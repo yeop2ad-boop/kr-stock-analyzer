@@ -5,13 +5,15 @@
 const el = (id) => document.getElementById(id);
 
 const tickerInput = el("tickerInput");
-const peersInput = el("peersInput");
 const analyzeBtn = el("analyzeBtn");
 const statusBox = el("statusBox");
 const results = el("results");
 const top30Btn = el("top30Btn");
 const top30Status = el("top30Status");
 const top30Results = el("top30Results");
+const popularBtn = el("popularBtn");
+const popularStatus = el("popularStatus");
+const popularResults = el("popularResults");
 
 // ---------- CORS 프록시 (여러 개를 순서대로 시도) ----------
 const PROXIES = [
@@ -63,6 +65,11 @@ async function yahooFundamentals(symbol, types) {
 
 async function yahooPeers(symbol) {
   const url = `https://query1.finance.yahoo.com/v6/finance/recommendationsbysymbol/${encodeURIComponent(symbol)}`;
+  return proxyFetchJson(url);
+}
+
+async function yahooMostActive(count = 50) {
+  const url = `https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?formatted=false&lang=en-US&region=US&scrIds=most_actives&count=${count}`;
   return proxyFetchJson(url);
 }
 
@@ -525,6 +532,7 @@ tickerInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") runAnalysis();
 });
 top30Btn.addEventListener("click", () => runTop30());
+popularBtn.addEventListener("click", () => runPopular());
 
 async function runAnalysis() {
   const ticker = tickerInput.value.trim().toUpperCase();
@@ -718,25 +726,18 @@ async function renderFinancials(ticker) {
 async function renderPeers(ticker, marketReturnsPromise) {
   el("peersSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
-  const manualInput = peersInput.value.trim();
-  let peerTickers = [];
-
-  if (manualInput) {
-    peerTickers = manualInput.split(",").map((s) => s.trim().toUpperCase()).filter(Boolean).slice(0, 5);
-  } else {
-    const peersData = await yahooPeers(ticker);
-    const list =
-      (peersData &&
-        peersData.finance &&
-        peersData.finance.result &&
-        peersData.finance.result[0] &&
-        peersData.finance.result[0].recommendedSymbols) ||
-      [];
-    peerTickers = list.map((p) => p.symbol).filter(Boolean).slice(0, 4);
-  }
+  const peersData = await yahooPeers(ticker);
+  const list =
+    (peersData &&
+      peersData.finance &&
+      peersData.finance.result &&
+      peersData.finance.result[0] &&
+      peersData.finance.result[0].recommendedSymbols) ||
+    [];
+  const peerTickers = list.map((p) => p.symbol).filter(Boolean).slice(0, 4);
 
   if (peerTickers.length === 0) {
-    el("peersSection").innerHTML = `<p class="muted">자동으로 경쟁사를 찾지 못했습니다. 위 검색창 아래 '경쟁사 티커' 입력란에 직접 입력해보세요.</p>`;
+    el("peersSection").innerHTML = `<p class="muted">자동으로 경쟁사를 찾지 못했습니다.</p>`;
     return;
   }
 
@@ -777,7 +778,7 @@ async function renderPeers(ticker, marketReturnsPromise) {
     .join("");
 
   el("peersSection").innerHTML = `
-    <p class="muted">최근 회계연도 매출액 기준 비교 ${manualInput ? "(수동 입력)" : "(자동 감지된 관련 종목)"}</p>
+    <p class="muted">최근 회계연도 매출액 기준 비교 (자동 감지된 관련 종목)</p>
     <div class="peer-table-header">
       <span></span><span></span><span>매출액</span><span>현재가</span><span>매력도</span>
     </div>
@@ -987,5 +988,87 @@ async function runTop30() {
     top30Status.textContent = `❌ ${err.message || "TOP30 분석 중 오류가 발생했습니다."}`;
   } finally {
     top30Btn.disabled = false;
+  }
+}
+
+// ---------- 인기종목: 당일 거래대금(가격 × 거래량) 상위 10개 ----------
+async function runPopular() {
+  popularBtn.disabled = true;
+  popularResults.innerHTML = "";
+  popularStatus.style.display = "block";
+  popularStatus.textContent = "인기종목을 불러오는 중...";
+
+  try {
+    const [data, { avgIndexReturn, sp500Return }] = await Promise.all([yahooMostActive(50), getMarketReturns()]);
+    const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
+
+    if (quotes.length === 0) {
+      throw new Error("인기종목 데이터를 가져오지 못했습니다.");
+    }
+
+    const ranked = quotes
+      .filter((q) => q && q.symbol && q.regularMarketPrice !== undefined && q.regularMarketVolume !== undefined)
+      .map((q) => ({
+        symbol: q.symbol,
+        name: q.shortName || q.longName || q.symbol,
+        price: q.regularMarketPrice,
+        changePct: q.regularMarketChangePercent,
+        volume: q.regularMarketVolume,
+        dollarVolume: (q.regularMarketPrice || 0) * (q.regularMarketVolume || 0),
+      }))
+      .sort((a, b) => b.dollarVolume - a.dollarVolume)
+      .slice(0, 10);
+
+    popularStatus.textContent = "가격 매력도 · 투자 위험도 점수를 계산하는 중...";
+
+    // 점수는 '분석하기'와 동일한 방식(차트+재무제표 직접 계산)으로 구해 값이 서로 어긋나지 않도록 함
+    const fullMetricsList = await Promise.all(ranked.map((r) => getFullMetrics(r.symbol).catch(() => null)));
+
+    const scored = ranked.map((r, i) => {
+      const m = fullMetricsList[i];
+      if (!m) return { ...r, attractiveness: null, risk: null };
+      const attractiveness = computeAttractivenessScore(m, avgIndexReturn);
+      const risk = computeRiskScore(m, sp500Return);
+      return { ...r, attractiveness: attractiveness.total, risk: risk.total };
+    });
+
+    popularStatus.style.display = "none";
+
+    const scoreClass = (score) => (score === null ? "" : score > 5 ? "delta-up" : score < 5 ? "delta-down" : "");
+
+    const rows = scored
+      .map((r, i) => {
+        const changeClass = r.changePct >= 0 ? "delta-up" : "delta-down";
+        return `
+      <tr>
+        <td>${i + 1}</td>
+        <td><b>${escapeHtml(r.symbol)}</b><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
+        <td>$${r.price.toFixed(2)}</td>
+        <td class="${changeClass}">${fmtPct(r.changePct)}</td>
+        <td>${fmtCompactCurrency(r.dollarVolume)}</td>
+        <td class="${scoreClass(r.attractiveness)}"><b>${r.attractiveness !== null ? r.attractiveness : "N/A"}</b></td>
+        <td class="${scoreClass(r.risk)}"><b>${r.risk !== null ? r.risk : "N/A"}</b></td>
+      </tr>`;
+      })
+      .join("");
+
+    popularResults.innerHTML = `
+      <div class="popular-table-wrap">
+        <table class="top30-table popular-table">
+          <thead>
+            <tr><th>순위</th><th>티커</th><th>현재가</th><th>등락률</th><th>거래대금</th><th>가격 매력도</th><th>투자 위험도</th></tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+      <p class="disclaimer">
+        ⚠️ 거래대금 = 당일 거래량 × 현재가(추정)이며, Yahoo Finance의 "가장 활발히 거래된 종목" 목록 중 상위 50개를 기준으로 재계산한 참고용 순위입니다.
+        가격 매력도·투자 위험도는 각 10점 만점 참고용 지표이며(5점보다 높으면 초록색, 낮으면 빨간색), 투자 자문이 아닙니다.
+      </p>
+    `;
+  } catch (err) {
+    popularStatus.textContent = `❌ ${err.message || "인기종목을 가져오지 못했습니다."}`;
+  } finally {
+    popularBtn.disabled = false;
   }
 }

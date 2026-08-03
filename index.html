@@ -18,10 +18,12 @@
         <input type="text" id="tickerInput" placeholder="예: AAPL, MSFT, TSLA" autocomplete="off" />
         <button id="analyzeBtn" type="button">🔍 분석하기</button>
       </div>
-      <div class="peers-row">
-        <label for="peersInput">경쟁사 티커 (선택, 쉼표로 구분 — 비워두면 자동 감지)</label>
-        <input type="text" id="peersInput" placeholder="예: MSFT, GOOGL, AMZN" autocomplete="off" />
+      <div class="popular-row">
+        <button id="popularBtn" type="button">🔥 인기종목</button>
+        <span class="muted popular-hint">당일 거래대금(거래량 × 가격) 상위 10개 종목을 보여줍니다.</span>
       </div>
+      <p id="popularStatus" class="muted popular-status" style="display:none;"></p>
+      <div id="popularResults"></div>
     </section>
 
     <section class="card top30-card">
