@@ -978,7 +978,7 @@ async function runTop30() {
     top30Results.innerHTML = `
       <table class="top30-table">
         <thead>
-          <tr><th>순위</th><th>티커</th><th>현재가</th><th>가격<br>매력도</th><th>투자<br>위험도</th><th>합산 점수</th></tr>
+          <tr><th>순위</th><th>티커</th><th>현재가</th><th>가격<br>매력</th><th>투자<br>위험</th><th>합산 점수</th></tr>
         </thead>
         <tbody>${rows}</tbody>
       </table>
@@ -1057,7 +1057,7 @@ async function runPopular() {
       <div class="popular-table-wrap">
         <table class="top30-table popular-table">
           <thead>
-            <tr><th>순위</th><th>티커</th><th>현재가</th><th>가격<br>매력도</th><th>투자<br>위험도</th></tr>
+            <tr><th>순위</th><th>티커</th><th>현재가</th><th>가격<br>매력</th><th>투자<br>위험</th></tr>
           </thead>
           <tbody>${rows}</tbody>
         </table>
