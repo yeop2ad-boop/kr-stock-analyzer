@@ -14,6 +14,7 @@ const top30Results = el("top30Results");
 const popularBtn = el("popularBtn");
 const popularStatus = el("popularStatus");
 const popularResults = el("popularResults");
+const searchCompleteMsg = el("searchCompleteMsg");
 
 // ---------- CORS 프록시 (여러 개를 순서대로 시도) ----------
 const PROXIES = [
@@ -544,6 +545,7 @@ async function runAnalysis() {
 
   analyzeBtn.disabled = true;
   results.style.display = "none";
+  searchCompleteMsg.style.display = "none";
   setStatus("loading", `${ticker} 데이터를 불러오는 중입니다...`);
 
   try {
@@ -595,6 +597,7 @@ async function runAnalysis() {
     });
 
     setStatus(null, null);
+    searchCompleteMsg.style.display = "block";
   } catch (err) {
     setStatus("error", `❌ ${escapeHtml(err.message || "알 수 없는 오류가 발생했습니다.")}`);
   } finally {

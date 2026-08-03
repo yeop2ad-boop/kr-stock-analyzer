@@ -16,8 +16,9 @@
     <section class="card search-card">
       <div class="search-row">
         <input type="text" id="tickerInput" placeholder="예: AAPL, MSFT, TSLA" autocomplete="off" />
-        <button id="analyzeBtn" type="button">🔍 분석</button>
+        <button id="analyzeBtn" type="button" aria-label="분석">🔍</button>
       </div>
+      <p id="searchCompleteMsg" class="search-complete-msg" style="display:none;">✅ 검색 완료! 스크롤을 내리면 분석 결과를 확인할 수 있습니다.</p>
       <div class="popular-row">
         <button id="popularBtn" type="button">🔥 인기종목</button>
         <span class="muted popular-hint">당일 거래대금(거래량 × 가격) 상위 10개 종목을 보여줍니다.</span>
