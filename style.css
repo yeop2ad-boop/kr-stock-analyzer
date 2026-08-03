@@ -98,6 +98,19 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
 .peers-row { margin-top: 12px; }
 .peers-row label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; }
 
+.top30-card { }
+.top30-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.top30-title { font-size: 16px; margin: 0 0 6px; }
+.top30-desc { font-size: 12px; margin: 0; max-width: 480px; }
+.top30-header button { flex-shrink: 0; font-size: 14px; padding: 10px 18px; background: #b8860b; }
+.top30-status { margin-top: 12px; font-size: 13px; }
+
+table.top30-table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 13px; }
+table.top30-table th, table.top30-table td { padding: 8px 6px; border-bottom: 1px solid var(--border); text-align: right; }
+table.top30-table th:nth-child(1), table.top30-table td:nth-child(1),
+table.top30-table th:nth-child(2), table.top30-table td:nth-child(2) { text-align: left; }
+table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: #b8860b; font-weight: 800; }
+
 .source-note {
   font-size: 12px;
   color: var(--muted);

@@ -9,6 +9,9 @@ const peersInput = el("peersInput");
 const analyzeBtn = el("analyzeBtn");
 const statusBox = el("statusBox");
 const results = el("results");
+const top30Btn = el("top30Btn");
+const top30Status = el("top30Status");
+const top30Results = el("top30Results");
 
 // ---------- CORS 프록시 (여러 개를 순서대로 시도) ----------
 const PROXIES = [
@@ -16,7 +19,12 @@ const PROXIES = [
   (u) => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u),
 ];
 
-async function proxyFetchJson(targetUrl) {
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// 프록시가 일시적으로 요청량 제한에 걸릴 수 있어, 전체 프록시를 한 바퀴 실패하면 잠깐 쉬었다 한 번 더 시도
+async function proxyFetchJson(targetUrl, retries = 1) {
   let lastErr;
   for (const makeProxyUrl of PROXIES) {
     try {
@@ -27,6 +35,10 @@ async function proxyFetchJson(targetUrl) {
     } catch (e) {
       lastErr = e;
     }
+  }
+  if (retries > 0) {
+    await sleep(1200);
+    return proxyFetchJson(targetUrl, retries - 1);
   }
   throw new Error("데이터 소스에 연결하지 못했습니다. 잠시 후 다시 시도해주세요. (" + (lastErr?.message || "") + ")");
 }
@@ -221,6 +233,15 @@ function computeAttractivenessScore(metrics, avgIndexReturn) {
   return { total, rangeScore, momentumScore, peScore, pe, rangePosition };
 }
 
+// fundamentals-timeseries 응답 블록에서 특정 항목의 가장 최근 값을 추출
+function latestFundamentalValue(block, key) {
+  const items = (block && block[key]) || [];
+  const valid = items.filter((it) => it && it.reportedValue && it.reportedValue.raw !== undefined);
+  if (!valid.length) return null;
+  valid.sort((a, b) => new Date(a.asOfDate) - new Date(b.asOfDate));
+  return valid[valid.length - 1].reportedValue.raw;
+}
+
 // 종목의 1년 수익률 + 부채/자본/순이익/매출(재무 위험도 산정용)을 한 번에 조회
 async function getRiskMetrics(symbol) {
   const [chartData, fundData] = await Promise.all([
@@ -228,24 +249,16 @@ async function getRiskMetrics(symbol) {
     yahooFundamentals(symbol, "annualTotalDebt,annualStockholdersEquity,annualNetIncome,annualTotalRevenue"),
   ]);
 
-  const latestOf = (block, key) => {
-    const items = (block && block[key]) || [];
-    const valid = items.filter((it) => it && it.reportedValue && it.reportedValue.raw !== undefined);
-    if (!valid.length) return null;
-    valid.sort((a, b) => new Date(a.asOfDate) - new Date(b.asOfDate));
-    return valid[valid.length - 1].reportedValue.raw;
-  };
-
   let totalDebt = null;
   let equity = null;
   let netIncome = null;
   let revenue = null;
   const resultArr = (fundData && fundData.timeseries && fundData.timeseries.result) || [];
   for (const block of resultArr) {
-    if (block.annualTotalDebt) totalDebt = latestOf(block, "annualTotalDebt");
-    if (block.annualStockholdersEquity) equity = latestOf(block, "annualStockholdersEquity");
-    if (block.annualNetIncome) netIncome = latestOf(block, "annualNetIncome");
-    if (block.annualTotalRevenue) revenue = latestOf(block, "annualTotalRevenue");
+    if (block.annualTotalDebt) totalDebt = latestFundamentalValue(block, "annualTotalDebt");
+    if (block.annualStockholdersEquity) equity = latestFundamentalValue(block, "annualStockholdersEquity");
+    if (block.annualNetIncome) netIncome = latestFundamentalValue(block, "annualNetIncome");
+    if (block.annualTotalRevenue) revenue = latestFundamentalValue(block, "annualTotalRevenue");
   }
 
   return {
@@ -254,6 +267,48 @@ async function getRiskMetrics(symbol) {
     equity,
     netIncome,
     revenue,
+  };
+}
+
+// 가격 매력도 + 투자 위험도 점수 계산에 필요한 모든 지표를 한 번(차트 1회 + 재무제표 1회)에 조회 (TOP30 랭킹용)
+async function getFullMetrics(symbol) {
+  const [chartData, fundData] = await Promise.all([
+    yahooChart(symbol),
+    yahooFundamentals(
+      symbol,
+      "annualTotalRevenue,annualBasicEPS,annualTotalDebt,annualStockholdersEquity,annualNetIncome"
+    ),
+  ]);
+
+  const result = chartData && chartData.chart && chartData.chart.result && chartData.chart.result[0];
+  if (!result) throw new Error(`${symbol} 데이터를 가져오지 못했습니다.`);
+  const meta = result.meta;
+
+  let revenue = null;
+  let eps = null;
+  let totalDebt = null;
+  let equity = null;
+  let netIncome = null;
+  const resultArr = (fundData && fundData.timeseries && fundData.timeseries.result) || [];
+  for (const block of resultArr) {
+    if (block.annualTotalRevenue) revenue = latestFundamentalValue(block, "annualTotalRevenue");
+    if (block.annualBasicEPS) eps = latestFundamentalValue(block, "annualBasicEPS");
+    if (block.annualTotalDebt) totalDebt = latestFundamentalValue(block, "annualTotalDebt");
+    if (block.annualStockholdersEquity) equity = latestFundamentalValue(block, "annualStockholdersEquity");
+    if (block.annualNetIncome) netIncome = latestFundamentalValue(block, "annualNetIncome");
+  }
+
+  return {
+    symbol,
+    price: meta.regularMarketPrice,
+    yearLow: meta.fiftyTwoWeekLow,
+    yearHigh: meta.fiftyTwoWeekHigh,
+    eps,
+    revenue,
+    totalDebt,
+    equity,
+    netIncome,
+    oneYearReturn: get1yReturnFromChart(chartData),
   };
 }
 
@@ -360,6 +415,64 @@ async function translateToKorean(text) {
   return text;
 }
 
+// ---------- S&P500 종목 목록 (위키백과, 프록시 불필요) ----------
+// 세션 내에서 한 번만 조회해 재사용
+let sp500TickersPromise = null;
+function getSP500Tickers() {
+  if (!sp500TickersPromise) {
+    sp500TickersPromise = (async () => {
+      const title = "List of S&P 500 companies";
+      const url =
+        "https://en.wikipedia.org/w/api.php?action=parse&page=" +
+        encodeURIComponent(title) +
+        "&prop=wikitext&section=1&format=json&origin=*";
+      const res = await fetch(url);
+      const data = await res.json();
+      const text = data && data.parse && data.parse.wikitext && data.parse.wikitext["*"];
+      if (!text) throw new Error("S&P500 종목 목록을 가져오지 못했습니다.");
+
+      const symbols = [];
+      const re = /\{\{\w+Symbol\|([A-Za-z0-9.\-]+)\}\}/g;
+      let m;
+      while ((m = re.exec(text))) {
+        symbols.push(m[1].toUpperCase());
+      }
+      if (symbols.length === 0) throw new Error("S&P500 종목 목록을 파싱하지 못했습니다.");
+      return [...new Set(symbols)];
+    })().catch((e) => {
+      sp500TickersPromise = null; // 실패 시 재시도 가능하도록 캐시 초기화
+      throw e;
+    });
+  }
+  return sp500TickersPromise;
+}
+
+// 동시 실행 개수를 제한하며 배열 각 항목에 비동기 작업을 적용 (프록시 과부하 방지 + 진행률 콜백)
+async function mapWithConcurrency(items, limit, worker, onProgress) {
+  const results = new Array(items.length);
+  let nextIndex = 0;
+  let completed = 0;
+
+  async function runWorker() {
+    while (nextIndex < items.length) {
+      const current = nextIndex++;
+      // 프록시에 요청이 몰리지 않도록 살짝 텀을 둠(부하가 크면 무료 프록시가 일시적으로 요청을 거부함)
+      if (current > 0) await sleep(120);
+      try {
+        results[current] = await worker(items[current], current);
+      } catch {
+        results[current] = null; // 개별 실패는 건너뛰고 순위 계산에서 제외
+      }
+      completed++;
+      if (onProgress) onProgress(completed, items.length);
+    }
+  }
+
+  const workerCount = Math.min(limit, items.length);
+  await Promise.all(Array.from({ length: workerCount }, runWorker));
+  return results;
+}
+
 // ---------- 유틸 ----------
 function fmtCompactCurrency(num) {
   if (num === null || num === undefined || isNaN(num)) return "N/A";
@@ -411,6 +524,7 @@ analyzeBtn.addEventListener("click", () => runAnalysis());
 tickerInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") runAnalysis();
 });
+top30Btn.addEventListener("click", () => runTop30());
 
 async function runAnalysis() {
   const ticker = tickerInput.value.trim().toUpperCase();
@@ -804,4 +918,74 @@ async function renderMacro() {
       </div>
     </div>
   `;
+}
+
+// ---------- TOP30: S&P500 전 종목 중 가격 매력도 + 투자 위험도 합산 상위 30개 ----------
+async function runTop30() {
+  top30Btn.disabled = true;
+  top30Results.innerHTML = "";
+  top30Status.style.display = "block";
+  top30Status.textContent = "S&P500 종목 목록을 불러오는 중...";
+
+  try {
+    const [tickers, { avgIndexReturn, sp500Return }] = await Promise.all([getSP500Tickers(), getMarketReturns()]);
+
+    top30Status.textContent = `0/${tickers.length} 종목 분석 중... (500개 이상을 순회하므로 몇 분 정도 걸릴 수 있습니다)`;
+
+    const metricsList = await mapWithConcurrency(tickers, 5, getFullMetrics, (completed, total) => {
+      top30Status.textContent = `${completed}/${total} 종목 분석 중... (500개 이상을 순회하므로 몇 분 정도 걸릴 수 있습니다)`;
+    });
+
+    const ranked = metricsList
+      .map((m) => {
+        if (!m) return null;
+        const attractiveness = computeAttractivenessScore(m, avgIndexReturn);
+        const risk = computeRiskScore(m, sp500Return);
+        const combined = Math.round((attractiveness.total + risk.total) * 10) / 10;
+        return { symbol: m.symbol, price: m.price, attractiveness: attractiveness.total, risk: risk.total, combined };
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.combined - a.combined)
+      .slice(0, 30);
+
+    const successCount = metricsList.filter(Boolean).length;
+    const failCount = tickers.length - successCount;
+    top30Status.textContent = `완료 — ${tickers.length}개 중 ${successCount}개 분석 성공${failCount ? `, ${failCount}개는 조회 실패로 제외` : ""}`;
+
+    if (ranked.length === 0) {
+      top30Results.innerHTML = `<p class="muted">순위를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
+      return;
+    }
+
+    const rows = ranked
+      .map(
+        (r, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td><b>${escapeHtml(r.symbol)}</b></td>
+        <td>${r.price !== undefined && r.price !== null ? "$" + r.price.toFixed(2) : "N/A"}</td>
+        <td>${r.attractiveness}/10</td>
+        <td>${r.risk}/10</td>
+        <td><b>${r.combined}/20</b></td>
+      </tr>`
+      )
+      .join("");
+
+    top30Results.innerHTML = `
+      <table class="top30-table">
+        <thead>
+          <tr><th>순위</th><th>티커</th><th>현재가</th><th>가격 매력도</th><th>투자 위험도</th><th>합산 점수</th></tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <p class="disclaimer">
+        ⚠️ 가격 매력도(10점 만점) + 투자 위험도(10점 만점)를 단순 합산한(20점 만점) 참고용 순위이며, 투자 자문이나 매수 추천이 아닙니다.
+        무료 데이터 소스/프록시의 한계로 일부 종목은 조회에 실패해 순위 계산에서 제외될 수 있습니다.
+      </p>
+    `;
+  } catch (err) {
+    top30Status.textContent = `❌ ${err.message || "TOP30 분석 중 오류가 발생했습니다."}`;
+  } finally {
+    top30Btn.disabled = false;
+  }
 }
