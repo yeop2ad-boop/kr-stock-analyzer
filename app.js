@@ -975,7 +975,7 @@ async function runTop30() {
     top30Results.innerHTML = `
       <table class="top30-table">
         <thead>
-          <tr><th>순위</th><th>티커</th><th>현재가</th><th>가격 매력도</th><th>투자 위험도</th><th>합산 점수</th></tr>
+          <tr><th>순위</th><th>티커</th><th>현재가</th><th>가격<br>매력도</th><th>투자<br>위험도</th><th>합산 점수</th></tr>
         </thead>
         <tbody>${rows}</tbody>
       </table>
@@ -1043,9 +1043,7 @@ async function runPopular() {
       <tr>
         <td>${i + 1}</td>
         <td><b>${escapeHtml(r.symbol)}</b><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
-        <td>$${r.price.toFixed(2)}</td>
-        <td class="${changeClass}">${fmtPct(r.changePct)}</td>
-        <td>${fmtCompactCurrency(r.dollarVolume)}</td>
+        <td>$${r.price.toFixed(2)}<br><span class="${changeClass}" style="font-size:11px;">(${fmtPct(r.changePct)})</span></td>
         <td class="${scoreClass(r.attractiveness)}"><b>${r.attractiveness !== null ? r.attractiveness : "N/A"}</b></td>
         <td class="${scoreClass(r.risk)}"><b>${r.risk !== null ? r.risk : "N/A"}</b></td>
       </tr>`;
@@ -1056,13 +1054,13 @@ async function runPopular() {
       <div class="popular-table-wrap">
         <table class="top30-table popular-table">
           <thead>
-            <tr><th>순위</th><th>티커</th><th>현재가</th><th>등락률</th><th>거래대금</th><th>가격 매력도</th><th>투자 위험도</th></tr>
+            <tr><th>순위</th><th>티커</th><th>현재가</th><th>가격<br>매력도</th><th>투자<br>위험도</th></tr>
           </thead>
           <tbody>${rows}</tbody>
         </table>
       </div>
       <p class="disclaimer">
-        ⚠️ 거래대금 = 당일 거래량 × 현재가(추정)이며, Yahoo Finance의 "가장 활발히 거래된 종목" 목록 중 상위 50개를 기준으로 재계산한 참고용 순위입니다.
+        ⚠️ 순위는 당일 거래대금(거래량 × 현재가 추정) 기준이며, Yahoo Finance의 "가장 활발히 거래된 종목" 목록 중 상위 50개를 기준으로 재계산했습니다.
         가격 매력도·투자 위험도는 각 10점 만점 참고용 지표이며(5점보다 높으면 초록색, 낮으면 빨간색), 투자 자문이 아닙니다.
       </p>
     `;
