@@ -36,7 +36,7 @@
       <div class="top30-header">
         <div>
           <h2 class="top30-title">🏆 S&amp;P500 구간별 TOP 10</h2>
-          <p class="muted top30-desc">S&amp;P500 종목을 100개씩 구간으로 나눠, 원하는 구간을 누르면 그 안에서 가격 매력도 + 투자 위험도 합산 점수가 높은 상위 10개를 보여줍니다.</p>
+          <p class="muted top30-desc">S&amp;P500을 100개 구간으로 나눠 구간 내 가격 매력도+투자 위험도 합산 상위 10개를 보여줍니다.</p>
         </div>
       </div>
       <div class="top30-range-row">
@@ -48,6 +48,23 @@
       </div>
       <p id="top30Status" class="muted top30-status" style="display:none;"></p>
       <div id="top30Results"></div>
+    </section>
+
+    <section class="card top30-card">
+      <div class="top30-header">
+        <div>
+          <h2 class="top30-title">🏆 나스닥 구간별 TOP 10</h2>
+          <p class="muted top30-desc">나스닥 종목을 시가총액 순(근사) 100개 구간 또는 TECH100(나스닥-100) 안에서 상위 10개를 보여줍니다.</p>
+        </div>
+      </div>
+      <div class="top30-range-row">
+        <button class="nasdaqRangeBtn" type="button" data-start="0" data-end="100">1–100</button>
+        <button class="nasdaqRangeBtn" type="button" data-start="100" data-end="200">101–200</button>
+        <button class="nasdaqRangeBtn" type="button" data-start="200" data-end="300">201–300</button>
+        <button id="nasdaq100Btn" type="button">TECH100</button>
+      </div>
+      <p id="nasdaqStatus" class="muted top30-status" style="display:none;"></p>
+      <div id="nasdaqResults"></div>
     </section>
 
     <p class="source-note">

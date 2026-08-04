@@ -9,7 +9,7 @@ const ALLOWED_HOSTS = [
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
@@ -38,8 +38,15 @@ export default {
     }
 
     try {
+      // GET은 그대로, POST는 요청 본문(JSON 스크리너 쿼리 등)까지 그대로 중계
+      const isPost = request.method === "POST";
       const upstream = await fetch(targetUrl, {
-        headers: { "User-Agent": "Mozilla/5.0 (compatible; StockAnalyzerProxy/1.0)" },
+        method: isPost ? "POST" : "GET",
+        headers: {
+          "User-Agent": "Mozilla/5.0 (compatible; StockAnalyzerProxy/1.0)",
+          ...(isPost ? { "Content-Type": "application/json" } : {}),
+        },
+        body: isPost ? await request.text() : undefined,
       });
       // 응답을 문자열로 통째로 버퍼링하지 않고 그대로 스트리밍해서 큰 응답(FRED 등)도 가볍게 처리
       return new Response(upstream.body, {

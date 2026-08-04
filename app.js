@@ -11,6 +11,11 @@ const results = el("results");
 const top30RangeBtns = Array.from(document.querySelectorAll(".top30RangeBtn"));
 const top30Status = el("top30Status");
 const top30Results = el("top30Results");
+const nasdaqRangeBtns = Array.from(document.querySelectorAll(".nasdaqRangeBtn"));
+const nasdaq100Btn = el("nasdaq100Btn");
+const nasdaqBtns = [...nasdaqRangeBtns, nasdaq100Btn];
+const nasdaqStatus = el("nasdaqStatus");
+const nasdaqResults = el("nasdaqResults");
 const popularBtn = el("popularBtn");
 const popularStatus = el("popularStatus");
 const popularResults = el("popularResults");
@@ -138,9 +143,13 @@ async function yahooPeers(symbol) {
   return proxyFetchJson(url);
 }
 
-async function yahooMostActive(count = 50) {
-  const url = `https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?formatted=false&lang=en-US&region=US&scrIds=most_actives&count=${count}`;
+async function yahooScreener(scrId, count = 50) {
+  const url = `https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?formatted=false&lang=en-US&region=US&scrIds=${scrId}&count=${count}`;
   return proxyFetchJson(url);
+}
+
+async function yahooMostActive(count = 50) {
+  return yahooScreener("most_actives", count);
 }
 
 // ---------- FRED(세인트루이스 연은) 헬퍼 : 내부 차트 API를 프록시로 조회 (비공식, 문서화되지 않음) ----------
@@ -496,6 +505,82 @@ function getSP500Tickers() {
   return sp500TickersPromise;
 }
 
+// ---------- 나스닥-100 종목 목록 (위키백과, 프록시 불필요) ----------
+let nasdaq100TickersPromise = null;
+function getNasdaq100Tickers() {
+  if (!nasdaq100TickersPromise) {
+    nasdaq100TickersPromise = (async () => {
+      const title = "List of NASDAQ-100 companies";
+      const url =
+        "https://en.wikipedia.org/w/api.php?action=parse&page=" +
+        encodeURIComponent(title) +
+        "&prop=wikitext&format=json&origin=*";
+      const res = await fetch(url);
+      const data = await res.json();
+      const text = data && data.parse && data.parse.wikitext && data.parse.wikitext["*"];
+      if (!text) throw new Error("나스닥-100 종목 목록을 가져오지 못했습니다.");
+
+      const startIdx = text.indexOf("component stocks");
+      const tableText = startIdx !== -1 ? text.slice(startIdx) : text;
+      const symbols = [];
+      // 이 표는 심볼이 템플릿이 아닌 일반 텍스트("| ABNB || [[Airbnb]] || ...")로 되어 있음
+      const re = /\|-\n\| ([A-Z]{1,6}(?:\.[A-Z])?) \|\|/g;
+      let m;
+      while ((m = re.exec(tableText))) {
+        symbols.push(m[1]);
+      }
+      if (symbols.length === 0) throw new Error("나스닥-100 종목 목록을 파싱하지 못했습니다.");
+      return [...new Set(symbols)];
+    })().catch((e) => {
+      nasdaq100TickersPromise = null;
+      throw e;
+    });
+  }
+  return nasdaq100TickersPromise;
+}
+
+// ---------- 나스닥 종목군 근사 목록 ----------
+// 시가총액 순 정렬 스크리너는 로그인 인증(crumb)이 필요해 무료로 접근할 수 없어서,
+// 여러 활발한 종목 스크리너를 나스닥 거래소로 필터링해 합친 뒤 시가총액 내림차순으로 정렬한 근사치를 사용
+let nasdaqUniversePromise = null;
+function getNasdaqUniverse() {
+  if (!nasdaqUniversePromise) {
+    nasdaqUniversePromise = (async () => {
+      const screenerIds = [
+        "most_actives",
+        "day_gainers",
+        "day_losers",
+        "growth_technology_stocks",
+        "undervalued_large_caps",
+        "undervalued_growth_stocks",
+        "aggressive_small_caps",
+        "small_cap_gainers",
+      ];
+      const results = await Promise.all(screenerIds.map((id) => yahooScreener(id, 100).catch(() => null)));
+
+      const nasdaqExchanges = new Set(["NMS", "NGM", "NCM"]);
+      const marketCapBySymbol = new Map();
+      for (const data of results) {
+        const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
+        for (const q of quotes) {
+          if (!q || !q.symbol) continue;
+          if (!nasdaqExchanges.has(q.exchange)) continue;
+          if (!marketCapBySymbol.has(q.symbol)) {
+            marketCapBySymbol.set(q.symbol, q.marketCap || 0);
+          }
+        }
+      }
+      if (marketCapBySymbol.size === 0) throw new Error("나스닥 종목군을 구성하지 못했습니다.");
+
+      return [...marketCapBySymbol.entries()].sort((a, b) => b[1] - a[1]).map(([symbol]) => symbol);
+    })().catch((e) => {
+      nasdaqUniversePromise = null;
+      throw e;
+    });
+  }
+  return nasdaqUniversePromise;
+}
+
 // 동시 실행 개수를 제한하며 배열 각 항목에 비동기 작업을 적용 (프록시 과부하 방지 + 진행률 콜백)
 async function mapWithConcurrency(items, limit, worker, onProgress) {
   const results = new Array(items.length);
@@ -578,6 +663,12 @@ top30RangeBtns.forEach((btn) => {
     runTop30(Number(btn.dataset.start), Number(btn.dataset.end));
   });
 });
+nasdaqRangeBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    runNasdaqRange(Number(btn.dataset.start), Number(btn.dataset.end));
+  });
+});
+nasdaq100Btn.addEventListener("click", () => runNasdaq100());
 popularBtn.addEventListener("click", () => runPopular());
 
 async function runAnalysis() {
@@ -967,22 +1058,18 @@ async function renderMacro() {
   `;
 }
 
-// ---------- 구간별 TOP10: S&P500 종목을 100개 구간으로 나눠 그 안에서 가격 매력도 + 투자 위험도 합산 상위 10개 ----------
-async function runTop30(startIdx, endIdx) {
-  top30RangeBtns.forEach((btn) => (btn.disabled = true));
-  top30Results.innerHTML = "";
-  top30Status.style.display = "block";
-  top30Status.textContent = "S&P500 종목 목록을 불러오는 중...";
+// ---------- 구간별 TOP10 공용 렌더러: 종목 목록을 받아 가격 매력도 + 투자 위험도 합산 상위 10개를 표시 ----------
+async function renderRankedTop10(tickers, rangeLabel, { statusEl, resultsEl, buttons }) {
+  buttons.forEach((btn) => (btn.disabled = true));
+  resultsEl.innerHTML = "";
+  statusEl.style.display = "block";
 
   try {
-    const [allTickers, { avgIndexReturn, sp500Return }] = await Promise.all([getSP500Tickers(), getMarketReturns()]);
-    const tickers = allTickers.slice(startIdx, endIdx);
-    const rangeLabel = `${startIdx + 1}–${Math.min(endIdx, allTickers.length)}`;
-
-    top30Status.textContent = `0/${tickers.length} 종목(${rangeLabel}구간) 분석 중...`;
+    const { avgIndexReturn, sp500Return } = await getMarketReturns();
+    statusEl.textContent = `0/${tickers.length} 종목(${rangeLabel}) 분석 중...`;
 
     const metricsList = await mapWithConcurrency(tickers, 5, getFullMetrics, (completed, total) => {
-      top30Status.textContent = `${completed}/${total} 종목(${rangeLabel}구간) 분석 중...`;
+      statusEl.textContent = `${completed}/${total} 종목(${rangeLabel}) 분석 중...`;
     });
 
     const ranked = metricsList
@@ -999,10 +1086,10 @@ async function runTop30(startIdx, endIdx) {
 
     const successCount = metricsList.filter(Boolean).length;
     const failCount = tickers.length - successCount;
-    top30Status.textContent = `완료 (${rangeLabel}구간) — ${tickers.length}개 중 ${successCount}개 분석 성공${failCount ? `, ${failCount}개는 조회 실패로 제외` : ""}`;
+    statusEl.textContent = `완료 (${rangeLabel}) — ${tickers.length}개 중 ${successCount}개 분석 성공${failCount ? `, ${failCount}개는 조회 실패로 제외` : ""}`;
 
     if (ranked.length === 0) {
-      top30Results.innerHTML = `<p class="muted">순위를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
+      resultsEl.innerHTML = `<p class="muted">순위를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
       return;
     }
 
@@ -1020,7 +1107,7 @@ async function runTop30(startIdx, endIdx) {
       )
       .join("");
 
-    top30Results.innerHTML = `
+    resultsEl.innerHTML = `
       <table class="top30-table">
         <thead>
           <tr><th>순위</th><th>티커</th><th>현재가</th><th>가격<br>매력</th><th>투자<br>위험</th><th>합산 점수</th></tr>
@@ -1033,10 +1120,50 @@ async function runTop30(startIdx, endIdx) {
       </p>
     `;
   } catch (err) {
-    top30Status.textContent = `❌ ${err.message || "분석 중 오류가 발생했습니다."}`;
+    statusEl.textContent = `❌ ${err.message || "분석 중 오류가 발생했습니다."}`;
   } finally {
-    top30RangeBtns.forEach((btn) => (btn.disabled = false));
+    buttons.forEach((btn) => (btn.disabled = false));
   }
+}
+
+// S&P500 구간별 TOP10
+async function runTop30(startIdx, endIdx) {
+  top30Status.style.display = "block";
+  top30Status.textContent = "S&P500 종목 목록을 불러오는 중...";
+  const allTickers = await getSP500Tickers().catch((e) => {
+    top30Status.textContent = `❌ ${e.message || "종목 목록을 가져오지 못했습니다."}`;
+    return null;
+  });
+  if (!allTickers) return;
+  const tickers = allTickers.slice(startIdx, endIdx);
+  const rangeLabel = `S&P500 ${startIdx + 1}–${Math.min(endIdx, allTickers.length)}`;
+  await renderRankedTop10(tickers, rangeLabel, { statusEl: top30Status, resultsEl: top30Results, buttons: top30RangeBtns });
+}
+
+// 나스닥 구간별 TOP10 (시가총액 순위는 인증이 필요해 막혀 있어, 여러 활발한 종목 스크리너를 합쳐 시총 내림차순으로 근사)
+async function runNasdaqRange(startIdx, endIdx) {
+  nasdaqStatus.style.display = "block";
+  nasdaqStatus.textContent = "나스닥 종목군을 구성하는 중...";
+  const universe = await getNasdaqUniverse().catch((e) => {
+    nasdaqStatus.textContent = `❌ ${e.message || "나스닥 종목군을 가져오지 못했습니다."}`;
+    return null;
+  });
+  if (!universe) return;
+  const tickers = universe.slice(startIdx, endIdx);
+  const rangeLabel = `나스닥 시총 ${startIdx + 1}–${Math.min(endIdx, universe.length)}(근사)`;
+  await renderRankedTop10(tickers, rangeLabel, { statusEl: nasdaqStatus, resultsEl: nasdaqResults, buttons: nasdaqBtns });
+}
+
+// 나스닥-100(대형 기술주 중심 100개) 안에서 TOP10
+async function runNasdaq100() {
+  nasdaqStatus.style.display = "block";
+  nasdaqStatus.textContent = "나스닥-100 종목 목록을 불러오는 중...";
+  const tickers = await getNasdaq100Tickers().catch((e) => {
+    nasdaqStatus.textContent = `❌ ${e.message || "나스닥-100 목록을 가져오지 못했습니다."}`;
+    return null;
+  });
+  if (!tickers) return;
+  await renderRankedTop10(tickers, "나스닥-100", { statusEl: nasdaqStatus, resultsEl: nasdaqResults, buttons: nasdaqBtns });
 }
 
 // ---------- 인기종목: 당일 거래대금(가격 × 거래량) 상위 10개 ----------
