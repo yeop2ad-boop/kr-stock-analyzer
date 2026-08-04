@@ -1063,7 +1063,8 @@ async function runPopular() {
     popularStatus.textContent = "가격 매력도 · 투자 위험도 점수를 계산하는 중...";
 
     // 점수는 '분석하기'와 동일한 방식(차트+재무제표 직접 계산)으로 구해 값이 서로 어긋나지 않도록 함
-    const fullMetricsList = await Promise.all(ranked.map((r) => getFullMetrics(r.symbol).catch(() => null)));
+    // 10개를 한꺼번에 요청하면 프록시가 과부하로 실패하는 경우가 많아 동시 요청 수를 제한
+    const fullMetricsList = await mapWithConcurrency(ranked, 3, (r) => getFullMetrics(r.symbol));
 
     const scored = ranked.map((r, i) => {
       const m = fullMetricsList[i];
