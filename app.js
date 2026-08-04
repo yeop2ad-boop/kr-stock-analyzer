@@ -32,12 +32,19 @@ document.addEventListener("click", (e) => {
 // ---------- CORS 프록시 (여러 개를 순서대로 시도) ----------
 // corsproxy.io는 "localhost/개발 환경"이 아닌 실제 도메인(예: 커스텀 도메인)에서의 무료 사용을 막아서,
 // 프로덕션 도메인에서도 안정적으로 동작하는 r.jina.ai를 우선 사용하고 나머지는 폴백으로 둔다.
+// jina.ai는 공유 인프라 부하에 따라 응답 속도 편차가 매우 커서(수백ms~20초 이상), 한 요청이 오래 걸리면
+// 포기하고 재시도/다음 프록시로 넘어가도록 요청마다 제한 시간을 둔다.
+const PROXY_TIMEOUT_MS = 7000;
+
 const PROXIES = [
   {
     name: "jina",
     fetch: async (targetUrl) => {
       // X-Return-Format: text 로 요청하면 markdown 변환 과정을 건너뛰고 원본을 그대로 반환해 더 빠르고 파싱도 단순해짐
-      const res = await fetch("https://r.jina.ai/" + targetUrl, { headers: { "X-Return-Format": "text" } });
+      const res = await fetch("https://r.jina.ai/" + targetUrl, {
+        headers: { "X-Return-Format": "text" },
+        signal: AbortSignal.timeout(PROXY_TIMEOUT_MS),
+      });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const text = await res.text();
       try {
@@ -53,7 +60,9 @@ const PROXIES = [
   {
     name: "corsproxy.io",
     fetch: async (targetUrl) => {
-      const res = await fetch("https://corsproxy.io/?url=" + encodeURIComponent(targetUrl));
+      const res = await fetch("https://corsproxy.io/?url=" + encodeURIComponent(targetUrl), {
+        signal: AbortSignal.timeout(PROXY_TIMEOUT_MS),
+      });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return res.json();
     },
@@ -61,7 +70,9 @@ const PROXIES = [
   {
     name: "allorigins",
     fetch: async (targetUrl) => {
-      const res = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(targetUrl));
+      const res = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(targetUrl), {
+        signal: AbortSignal.timeout(PROXY_TIMEOUT_MS),
+      });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return res.json();
     },
