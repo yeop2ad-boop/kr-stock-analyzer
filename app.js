@@ -288,34 +288,6 @@ function latestFundamentalValue(block, key) {
   return valid[valid.length - 1].reportedValue.raw;
 }
 
-// 종목의 1년 수익률 + 부채/자본/순이익/매출(재무 위험도 산정용)을 한 번에 조회
-async function getRiskMetrics(symbol) {
-  const [chartData, fundData] = await Promise.all([
-    yahooChart(symbol),
-    yahooFundamentals(symbol, "annualTotalDebt,annualStockholdersEquity,annualNetIncome,annualTotalRevenue"),
-  ]);
-
-  let totalDebt = null;
-  let equity = null;
-  let netIncome = null;
-  let revenue = null;
-  const resultArr = (fundData && fundData.timeseries && fundData.timeseries.result) || [];
-  for (const block of resultArr) {
-    if (block.annualTotalDebt) totalDebt = latestFundamentalValue(block, "annualTotalDebt");
-    if (block.annualStockholdersEquity) equity = latestFundamentalValue(block, "annualStockholdersEquity");
-    if (block.annualNetIncome) netIncome = latestFundamentalValue(block, "annualNetIncome");
-    if (block.annualTotalRevenue) revenue = latestFundamentalValue(block, "annualTotalRevenue");
-  }
-
-  return {
-    oneYearReturn: get1yReturnFromChart(chartData),
-    totalDebt,
-    equity,
-    netIncome,
-    revenue,
-  };
-}
-
 // 가격 매력도 + 투자 위험도 점수 계산에 필요한 모든 지표를 한 번(차트 1회 + 재무제표 1회)에 조회 (TOP30 랭킹용)
 async function getFullMetrics(symbol) {
   const [chartData, fundData] = await Promise.all([
@@ -615,10 +587,13 @@ async function runAnalysis() {
       el("financialsSection").innerHTML = `<p class="error-inline">실적 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
-    // 나스닥·다우존스 1년 수익률은 경쟁사 비교(3)와 가격 매력도 점수(5) 섹션이 함께 사용
+    // 나스닥·다우존스·S&P500 1년 수익률과, 분석 대상 자신의 지표(차트+재무제표)는
+    // 경쟁사 비교(3)·가격 매력도(5)·투자 위험도(6) 섹션이 각자 다시 조회하지 않고 공유해서
+    // 프록시 요청 수를 줄이고(속도·안정성 향상) 값도 서로 어긋나지 않도록 함
     const marketReturnsPromise = getMarketReturns();
+    const selfMetricsPromise = getFullMetrics(ticker);
 
-    renderPeers(ticker, marketReturnsPromise).catch((e) => {
+    renderPeers(ticker, marketReturnsPromise, selfMetricsPromise).catch((e) => {
       el("peersSection").innerHTML = `<p class="error-inline">경쟁사 비교 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
@@ -626,11 +601,11 @@ async function runAnalysis() {
       el("newsSection").innerHTML = `<p class="error-inline">뉴스를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
-    renderScore(ticker, meta, marketReturnsPromise).catch((e) => {
+    renderScore(marketReturnsPromise, selfMetricsPromise).catch((e) => {
       el("scoreSection").innerHTML = `<p class="error-inline">가격 매력도 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
-    renderRisk(ticker, marketReturnsPromise).catch((e) => {
+    renderRisk(marketReturnsPromise, selfMetricsPromise).catch((e) => {
       el("riskSection").innerHTML = `<p class="error-inline">투자 위험도 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
@@ -768,7 +743,7 @@ async function renderFinancials(ticker) {
 }
 
 // ---------- 3. 경쟁사 매출/주가/가격 매력도 비교 ----------
-async function renderPeers(ticker, marketReturnsPromise) {
+async function renderPeers(ticker, marketReturnsPromise, selfMetricsPromise) {
   el("peersSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
   const peersData = await yahooPeers(ticker);
@@ -786,17 +761,12 @@ async function renderPeers(ticker, marketReturnsPromise) {
     return;
   }
 
-  const symbols = [ticker, ...peerTickers];
-  const [metricsList, { avgIndexReturn }] = await Promise.all([
-    Promise.all(
-      symbols.map((s) =>
-        getCompanyMetrics(s)
-          .then((m) => ({ ...m, self: s === ticker }))
-          .catch(() => null)
-      )
-    ),
+  const [selfMetrics, peerMetricsList, { avgIndexReturn }] = await Promise.all([
+    selfMetricsPromise.then((m) => ({ ...m, self: true })).catch(() => null),
+    Promise.all(peerTickers.map((s) => getCompanyMetrics(s).catch(() => null))),
     marketReturnsPromise,
   ]);
+  const metricsList = [selfMetrics, ...peerMetricsList];
 
   const all = metricsList.filter((d) => d && d.revenue !== null && d.revenue !== undefined);
 
@@ -867,11 +837,11 @@ async function renderNews(searchData) {
 }
 
 // ---------- 5. 가격 매력도 점수 (vs 나스닥, 다우존스) ----------
-async function renderScore(ticker, meta, marketReturnsPromise) {
+async function renderScore(marketReturnsPromise, selfMetricsPromise) {
   el("scoreSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
   const [metrics, { nasdaqReturn, dowReturn, avgIndexReturn }] = await Promise.all([
-    getCompanyMetrics(ticker),
+    selfMetricsPromise,
     marketReturnsPromise,
   ]);
 
@@ -902,10 +872,10 @@ async function renderScore(ticker, meta, marketReturnsPromise) {
 }
 
 // ---------- 6. 투자 위험도 점수 (vs S&P500, 점수가 높을수록 위험이 낮음) ----------
-async function renderRisk(ticker, marketReturnsPromise) {
+async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
   el("riskSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
-  const [metrics, { sp500Return }] = await Promise.all([getRiskMetrics(ticker), marketReturnsPromise]);
+  const [metrics, { sp500Return }] = await Promise.all([selfMetricsPromise, marketReturnsPromise]);
 
   const { total, marketScore, debtScore, marginScore, relDiff, debtToEquity, netMargin } = computeRiskScore(
     metrics,
