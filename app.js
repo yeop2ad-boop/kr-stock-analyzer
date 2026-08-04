@@ -978,10 +978,10 @@ async function renderScore(marketReturnsPromise, selfMetricsPromise) {
       </div>
       <div class="score-details">
         <ul>
-          <li>📈 1년 주가 상승률: <b>${fmtPct(stockReturn)}</b> (참고 — 나스닥 <b>${fmtPct(nasdaqReturn)}</b> / 다우존스 <b>${fmtPct(dowReturn)}</b>)</li>
           <li>📍 52주 최고/최저 대비 위치: ${rangePosition !== null ? `저점 대비 <b>${(rangePosition * 100).toFixed(0)}%</b> 지점` : "N/A"} (저점에 가까울수록 가점)</li>
           <li>💰 P/E(주가수익비율): <b>${pe ? pe.toFixed(1) : "N/A"}</b> (시가총액 ÷ 최근 연간 순이익, 낮을수록 가점, 10배 만점·60배 이상 0점)</li>
           <li>세부 점수 — 52주 위치 ${rangeScore.toFixed(1)}/5, PE 밸류에이션 ${peScore.toFixed(1)}/5</li>
+          <li>📈 1년 주가 상승률: ${fmtPct(stockReturn)} (참고 — 나스닥 ${fmtPct(nasdaqReturn)} / 다우존스 ${fmtPct(dowReturn)})</li>
         </ul>
         <p class="disclaimer">
           ⚠️ 이 점수는 52주 가격 위치와 PE 밸류에이션을 조합한 <b>단순 참고용 정량 지표</b>이며,
