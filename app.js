@@ -286,6 +286,7 @@ async function getCompanyMetrics(symbol) {
     eps,
     netIncome,
     marketCap,
+    currency: meta.currency,
     oneYearReturn: get1yReturnFromChart(chartData),
   };
 }
@@ -380,6 +381,7 @@ async function getFullMetrics(symbol) {
     equity,
     netIncome,
     marketCap,
+    currency: meta.currency,
     oneYearReturn: get1yReturnFromChart(chartData),
   };
 }
@@ -555,9 +557,13 @@ function getSP500MarketCaps() {
 }
 
 // 캐싱된 S&P500 시가총액 목록과 비교해 이 종목의 근사 시총 순위(1위 = 최대 시총)를 계산.
-// S&P500 미편입 종목도 시총 값을 비교해 순위를 끼워넣는 방식으로 근사치를 매김
-async function getMarketCapRank(marketCap) {
+// S&P500 미편입 종목도 시총 값을 비교해 순위를 끼워넣는 방식으로 근사치를 매김.
+// S&P500 시총은 전부 USD 기준이라 원화 등 다른 통화로 표시되는 해외 상장 종목은 그대로 비교하면
+// 숫자 단위 차이 때문에 순위가 왜곡되므로(예: 원화 표시 시총이 물리적으로 훨씬 큰 숫자) 비교 대상에서 제외
+async function getMarketCapRank(metrics) {
+  const { marketCap, currency } = metrics;
   if (marketCap === null || marketCap === undefined) return null;
+  if (currency && currency !== "USD") return null;
   const caps = await getSP500MarketCaps();
   const higherCount = caps.filter((c) => c > marketCap).length;
   return higherCount + 1;
@@ -956,7 +962,7 @@ async function renderPeers(ticker, selfMetricsPromise) {
 
   const maxRev = Math.max(...all.map((d) => d.revenue || 0), 1);
   const scores = await Promise.all(
-    all.map(async (d) => computeAttractivenessScore(d, await getMarketCapRank(d.marketCap).catch(() => null)))
+    all.map(async (d) => computeAttractivenessScore(d, await getMarketCapRank(d).catch(() => null)))
   );
   const rows = all
     .map((d, i) => ({ d, score: scores[i] }))
@@ -1027,7 +1033,7 @@ async function renderScore(selfMetricsPromise) {
   if (!sp500MarketCapsPromise) {
     el("scoreSection").innerHTML = `<p class="muted">S&P500 시가총액 순위 계산 중... (세션 최초 1회, 다소 시간이 걸릴 수 있습니다)</p>`;
   }
-  const marketCapRank = await getMarketCapRank(metrics.marketCap).catch(() => null);
+  const marketCapRank = await getMarketCapRank(metrics).catch(() => null);
 
   const score = computeAttractivenessScore(metrics, marketCapRank);
   const { total, capRankScore, rangeScore, peScore, pe, rangePosition } = score;
@@ -1040,7 +1046,7 @@ async function renderScore(selfMetricsPromise) {
       </div>
       <div class="score-details">
         <ul>
-          <li>🏆 S&P500 시총 순위(근사): <b>${marketCapRank !== null ? marketCapRank + "위" : "N/A"}</b> (순위가 높을수록 가점)</li>
+          <li>🏆 S&P500 시총 순위(근사): <b>${marketCapRank !== null ? marketCapRank + "위" : metrics.currency && metrics.currency !== "USD" ? "N/A (해외 상장 종목 제외)" : "N/A"}</b> (순위가 높을수록 가점)</li>
           <li>📍 52주 최고/최저 대비 위치: ${rangePosition !== null ? `저점 대비 <b>${(rangePosition * 100).toFixed(0)}%</b> 지점` : "N/A"} (저점에 가까울수록 가점)</li>
           <li>💰 P/E(주가수익비율): <b>${pe ? pe.toFixed(1) : "N/A"}</b> (시가총액 ÷ 최근 연간 순이익, 낮을수록 가점, 10배 만점·50배 이상 0점)</li>
           <li>세부 점수 — 시총 순위 ${capRankScore.toFixed(1)}/2, 52주 위치 ${rangeScore.toFixed(1)}/4, PE 밸류에이션 ${peScore.toFixed(1)}/4</li>
@@ -1137,7 +1143,7 @@ async function renderRankedTop10(tickers, rangeLabel, { statusEl, resultsEl, but
       await Promise.all(
         metricsList.map(async (m) => {
           if (!m) return null;
-          const marketCapRank = await getMarketCapRank(m.marketCap).catch(() => null);
+          const marketCapRank = await getMarketCapRank(m).catch(() => null);
           const attractiveness = computeAttractivenessScore(m, marketCapRank);
           const risk = computeRiskScore(m, sp500Return);
           const combined = Math.round((attractiveness.total + risk.total) * 10) / 10;
@@ -1269,7 +1275,7 @@ async function runPopular() {
       ranked.map(async (r, i) => {
         const m = fullMetricsList[i];
         if (!m) return { ...r, attractiveness: null, risk: null };
-        const marketCapRank = await getMarketCapRank(m.marketCap).catch(() => null);
+        const marketCapRank = await getMarketCapRank(m).catch(() => null);
         const attractiveness = computeAttractivenessScore(m, marketCapRank);
         const risk = computeRiskScore(m, sp500Return);
         return { ...r, attractiveness: attractiveness.total, risk: risk.total };
