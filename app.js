@@ -377,32 +377,32 @@ async function getFullMetrics(symbol) {
 function computeRiskScore(metrics, sp500Return) {
   const { oneYearReturn, totalLiabilities, equity, netIncome, revenue } = metrics;
 
-  // 1) S&P500 대비 상대 수익률 (0~4점, 위쪽일수록 고득점 - 단조증가)
-  let marketScore = 2;
+  // 1) S&P500 대비 상대 수익률 (0~2점, 위쪽일수록 고득점 - 단조증가)
+  let marketScore = 1;
   let relDiff = null;
   if (oneYearReturn !== null && sp500Return !== null && sp500Return !== undefined) {
     relDiff = oneYearReturn - sp500Return;
-    marketScore = clamp(2 + relDiff / 15, 0, 4);
+    marketScore = clamp(1 + relDiff / 30, 0, 2);
   }
 
-  // 2) 부채비율 = 총부채(총자산-자기자본)/자기자본 (0~3점, 낮을수록 고득점)
-  // 50%까지는 만점, 이후 완만하게 감점(200%↓2점, 350%↓1점 근방). 은행 등 업종 특성상 구조적으로 부채비율이
+  // 2) 부채비율 = 총부채(총자산-자기자본)/자기자본 (0~4점, 낮을수록 고득점)
+  // 50%까지는 만점, 이후 완만하게 감점(200%↓2.7점, 350%↓1점 근방). 은행 등 업종 특성상 구조적으로 부채비율이
   // 매우 높은 업종은 이 지표만으로는 실제보다 저평가될 수 있음(업종 구분 없는 단순 지표의 한계)
-  let debtScore = 1;
+  let debtScore = 1.5;
   let debtToEquity = null;
   if (equity !== null && equity > 0 && totalLiabilities !== null) {
     debtToEquity = totalLiabilities / equity;
-    debtScore = clamp(3 - (debtToEquity - 0.5) / 1.5, 0, 3);
+    debtScore = clamp(4 - (debtToEquity - 0.5) / 1.125, 0, 4);
   } else if (equity !== null && equity <= 0) {
     debtScore = 0; // 자본잠식 등 고위험 상태
   }
 
-  // 3) 순이익률 Net Margin = 순이익/매출 (0~3점, 높을수록 고득점)
-  let marginScore = 1;
+  // 3) 순이익률 Net Margin = 순이익/매출 (0~4점, 높을수록 고득점, 30% 이상이면 만점)
+  let marginScore = 1.33;
   let netMargin = null;
   if (revenue !== null && revenue > 0 && netIncome !== null) {
     netMargin = netIncome / revenue;
-    marginScore = clamp(netMargin * 10, 0, 3);
+    marginScore = clamp(netMargin * (4 / 0.3), 0, 4);
   }
 
   const total = Math.round(clamp(marketScore + debtScore + marginScore, 0, 10) * 10) / 10;
@@ -1020,7 +1020,7 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
           <li>📊 S&P500 대비 1년 수익률: ${relDiff !== null ? `<b>${fmtPct(relDiff)}p</b> 차이 (S&P500 <b>${fmtPct(sp500Return)}</b>)` : "N/A"} (위쪽일수록 가점)</li>
           <li>🏦 부채비율(총부채/자기자본): <b>${debtToEquity !== null ? (debtToEquity * 100).toFixed(0) + "%" : "N/A"}</b> (낮을수록 가점)</li>
           <li>💵 순이익률(순이익/매출): <b>${netMargin !== null ? (netMargin * 100).toFixed(1) + "%" : "N/A"}</b> (높을수록 가점)</li>
-          <li>세부 점수 — S&P500 대비 모멘텀 ${marketScore.toFixed(1)}/4, 부채비율 ${debtScore.toFixed(1)}/3, 순이익률 ${marginScore.toFixed(1)}/3</li>
+          <li>세부 점수 — S&P500 대비 모멘텀 ${marketScore.toFixed(1)}/2, 부채비율 ${debtScore.toFixed(1)}/4, 순이익률 ${marginScore.toFixed(1)}/4</li>
         </ul>
         <p class="disclaimer">
           ⚠️ 점수가 높을수록(10점에 가까울수록) 재무적으로 더 안정적/저위험임을 의미합니다.
