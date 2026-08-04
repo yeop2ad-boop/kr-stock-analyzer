@@ -30,9 +30,37 @@ document.addEventListener("click", (e) => {
 });
 
 // ---------- CORS 프록시 (여러 개를 순서대로 시도) ----------
+// corsproxy.io는 "localhost/개발 환경"이 아닌 실제 도메인(예: 커스텀 도메인)에서의 무료 사용을 막아서,
+// 프로덕션 도메인에서도 안정적으로 동작하는 r.jina.ai를 우선 사용하고 나머지는 폴백으로 둔다.
 const PROXIES = [
-  (u) => "https://corsproxy.io/?url=" + encodeURIComponent(u),
-  (u) => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u),
+  {
+    name: "jina",
+    fetch: async (targetUrl) => {
+      const res = await fetch("https://r.jina.ai/" + targetUrl);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const text = await res.text();
+      const marker = "Markdown Content:\n";
+      const idx = text.indexOf(marker);
+      const jsonPart = idx !== -1 ? text.slice(idx + marker.length) : text;
+      return JSON.parse(jsonPart);
+    },
+  },
+  {
+    name: "corsproxy.io",
+    fetch: async (targetUrl) => {
+      const res = await fetch("https://corsproxy.io/?url=" + encodeURIComponent(targetUrl));
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    },
+  },
+  {
+    name: "allorigins",
+    fetch: async (targetUrl) => {
+      const res = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(targetUrl));
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    },
+  },
 ];
 
 function sleep(ms) {
@@ -42,12 +70,9 @@ function sleep(ms) {
 // 프록시가 일시적으로 요청량 제한에 걸릴 수 있어, 전체 프록시를 한 바퀴 실패하면 잠깐 쉬었다 한 번 더 시도
 async function proxyFetchJson(targetUrl, retries = 1) {
   let lastErr;
-  for (const makeProxyUrl of PROXIES) {
+  for (const proxy of PROXIES) {
     try {
-      const res = await fetch(makeProxyUrl(targetUrl));
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      return data;
+      return await proxy.fetch(targetUrl);
     } catch (e) {
       lastErr = e;
     }
