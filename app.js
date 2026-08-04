@@ -365,6 +365,7 @@ async function getFullMetrics(symbol) {
     eps,
     revenue,
     totalLiabilities,
+    totalAssets,
     equity,
     netIncome,
     marketCap,
@@ -374,7 +375,7 @@ async function getFullMetrics(symbol) {
 
 // S&P500 대비 모멘텀 + 부채비율 + 순이익률을 조합한 참고용 투자 위험도 점수(10점 만점, 높을수록 위험이 낮음)
 function computeRiskScore(metrics, sp500Return) {
-  const { oneYearReturn, totalLiabilities, equity, netIncome, revenue } = metrics;
+  const { oneYearReturn, totalLiabilities, totalAssets, netIncome, revenue } = metrics;
 
   // 1) S&P500 대비 모멘텀 (0~4점) — S&P500 연 수익률과의 차이(절대값)가 0%p면 만점,
   // 200%p 이상 벌어지면 0점 (50%p마다 1점 감점, 선형)
@@ -385,14 +386,12 @@ function computeRiskScore(metrics, sp500Return) {
     marketScore = clamp(4 * (1 - relDiff / 200), 0, 4);
   }
 
-  // 2) 부채비율 = 총부채(총자산-자기자본)÷자기자본 (0~3점) — 0%면 만점, 100%(1배) 이상이면 0점 (선형)
+  // 2) 부채비율 = 총부채(총자산-자기자본)÷총자산 (0~3점) — 0%면 만점, 100% 이상이면 0점 (선형)
   let debtScore = 1.5;
-  let debtToEquity = null;
-  if (equity !== null && equity > 0 && totalLiabilities !== null) {
-    debtToEquity = totalLiabilities / equity;
-    debtScore = clamp(3 * (1 - debtToEquity), 0, 3);
-  } else if (equity !== null && equity <= 0) {
-    debtScore = 0; // 자본잠식 등 고위험 상태
+  let debtToAssets = null;
+  if (totalAssets !== null && totalAssets > 0 && totalLiabilities !== null) {
+    debtToAssets = totalLiabilities / totalAssets;
+    debtScore = clamp(3 * (1 - debtToAssets), 0, 3);
   }
 
   // 3) 순이익률 = 순이익÷매출 (0~3점) — 0%는 0.5점, 10%p마다 0.5점씩 늘어 50% 이상이면 만점.
@@ -405,7 +404,7 @@ function computeRiskScore(metrics, sp500Return) {
   }
 
   const total = Math.round(clamp(marketScore + debtScore + marginScore, 0, 10) * 10) / 10;
-  return { total, marketScore, debtScore, marginScore, relDiff, debtToEquity, netMargin };
+  return { total, marketScore, debtScore, marginScore, relDiff, debtToAssets, netMargin };
 }
 
 // ---------- Wikipedia 헬퍼 (프록시 불필요, 공식 CORS 지원) ----------
@@ -999,7 +998,7 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
 
   const [metrics, { sp500Return }] = await Promise.all([selfMetricsPromise, marketReturnsPromise]);
 
-  const { total, marketScore, debtScore, marginScore, relDiff, debtToEquity, netMargin } = computeRiskScore(
+  const { total, marketScore, debtScore, marginScore, relDiff, debtToAssets, netMargin } = computeRiskScore(
     metrics,
     sp500Return
   );
@@ -1013,7 +1012,7 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
       <div class="score-details">
         <ul>
           <li>📊 S&P500과의 1년 수익률 차이: ${relDiff !== null ? `<b>${relDiff.toFixed(1)}%p</b> (S&P500 <b>${fmtPct(sp500Return)}</b>)` : "N/A"} (차이가 작을수록 가점)</li>
-          <li>🏦 부채비율(총부채/자기자본): <b>${debtToEquity !== null ? (debtToEquity * 100).toFixed(0) + "%" : "N/A"}</b> (낮을수록 가점, 100% 이상이면 0점)</li>
+          <li>🏦 부채비율(총부채/총자산): <b>${debtToAssets !== null ? (debtToAssets * 100).toFixed(0) + "%" : "N/A"}</b> (낮을수록 가점, 100% 이상이면 0점)</li>
           <li>💵 순이익률(순이익/매출): <b>${netMargin !== null ? (netMargin * 100).toFixed(1) + "%" : "N/A"}</b> (높을수록 가점, 적자면 0점)</li>
           <li>세부 점수 — S&P500 대비 모멘텀 ${marketScore.toFixed(1)}/4, 부채비율 ${debtScore.toFixed(1)}/3, 순이익률 ${marginScore.toFixed(1)}/3</li>
         </ul>
