@@ -35,10 +35,16 @@
     <section class="card top30-card">
       <div class="top30-header">
         <div>
-          <h2 class="top30-title">🏆 S&amp;P500 TOP 30</h2>
-          <p class="muted top30-desc">S&amp;P500 전 종목의 가격 매력도 + 투자 위험도 점수를 합산해 상위 30개를 보여줍니다. 500개 넘는 종목을 하나씩 조회하므로 몇 분 정도 걸릴 수 있습니다.</p>
+          <h2 class="top30-title">🏆 S&amp;P500 구간별 TOP 10</h2>
+          <p class="muted top30-desc">S&amp;P500 종목을 100개씩 구간으로 나눠, 원하는 구간을 누르면 그 안에서 가격 매력도 + 투자 위험도 합산 점수가 높은 상위 10개를 보여줍니다.</p>
         </div>
-        <button id="top30Btn" type="button">🏆 TOP30</button>
+      </div>
+      <div class="top30-range-row">
+        <button class="top30RangeBtn" type="button" data-start="0" data-end="100">1–100</button>
+        <button class="top30RangeBtn" type="button" data-start="100" data-end="200">101–200</button>
+        <button class="top30RangeBtn" type="button" data-start="200" data-end="300">201–300</button>
+        <button class="top30RangeBtn" type="button" data-start="300" data-end="400">301–400</button>
+        <button class="top30RangeBtn" type="button" data-start="400" data-end="500">401–500</button>
       </div>
       <p id="top30Status" class="muted top30-status" style="display:none;"></p>
       <div id="top30Results"></div>

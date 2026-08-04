@@ -8,7 +8,7 @@ const tickerInput = el("tickerInput");
 const analyzeBtn = el("analyzeBtn");
 const statusBox = el("statusBox");
 const results = el("results");
-const top30Btn = el("top30Btn");
+const top30RangeBtns = Array.from(document.querySelectorAll(".top30RangeBtn"));
 const top30Status = el("top30Status");
 const top30Results = el("top30Results");
 const popularBtn = el("popularBtn");
@@ -570,7 +570,11 @@ analyzeBtn.addEventListener("click", () => runAnalysis());
 tickerInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") runAnalysis();
 });
-top30Btn.addEventListener("click", () => runTop30());
+top30RangeBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    runTop30(Number(btn.dataset.start), Number(btn.dataset.end));
+  });
+});
 popularBtn.addEventListener("click", () => runPopular());
 
 async function runAnalysis() {
@@ -962,20 +966,22 @@ async function renderMacro() {
   `;
 }
 
-// ---------- TOP30: S&P500 전 종목 중 가격 매력도 + 투자 위험도 합산 상위 30개 ----------
-async function runTop30() {
-  top30Btn.disabled = true;
+// ---------- 구간별 TOP10: S&P500 종목을 100개 구간으로 나눠 그 안에서 가격 매력도 + 투자 위험도 합산 상위 10개 ----------
+async function runTop30(startIdx, endIdx) {
+  top30RangeBtns.forEach((btn) => (btn.disabled = true));
   top30Results.innerHTML = "";
   top30Status.style.display = "block";
   top30Status.textContent = "S&P500 종목 목록을 불러오는 중...";
 
   try {
-    const [tickers, { avgIndexReturn, sp500Return }] = await Promise.all([getSP500Tickers(), getMarketReturns()]);
+    const [allTickers, { avgIndexReturn, sp500Return }] = await Promise.all([getSP500Tickers(), getMarketReturns()]);
+    const tickers = allTickers.slice(startIdx, endIdx);
+    const rangeLabel = `${startIdx + 1}–${Math.min(endIdx, allTickers.length)}`;
 
-    top30Status.textContent = `0/${tickers.length} 종목 분석 중... (500개 이상을 순회하므로 몇 분 정도 걸릴 수 있습니다)`;
+    top30Status.textContent = `0/${tickers.length} 종목(${rangeLabel}구간) 분석 중...`;
 
     const metricsList = await mapWithConcurrency(tickers, 5, getFullMetrics, (completed, total) => {
-      top30Status.textContent = `${completed}/${total} 종목 분석 중... (500개 이상을 순회하므로 몇 분 정도 걸릴 수 있습니다)`;
+      top30Status.textContent = `${completed}/${total} 종목(${rangeLabel}구간) 분석 중...`;
     });
 
     const ranked = metricsList
@@ -988,11 +994,11 @@ async function runTop30() {
       })
       .filter(Boolean)
       .sort((a, b) => b.combined - a.combined)
-      .slice(0, 30);
+      .slice(0, 10);
 
     const successCount = metricsList.filter(Boolean).length;
     const failCount = tickers.length - successCount;
-    top30Status.textContent = `완료 — ${tickers.length}개 중 ${successCount}개 분석 성공${failCount ? `, ${failCount}개는 조회 실패로 제외` : ""}`;
+    top30Status.textContent = `완료 (${rangeLabel}구간) — ${tickers.length}개 중 ${successCount}개 분석 성공${failCount ? `, ${failCount}개는 조회 실패로 제외` : ""}`;
 
     if (ranked.length === 0) {
       top30Results.innerHTML = `<p class="muted">순위를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
@@ -1026,9 +1032,9 @@ async function runTop30() {
       </p>
     `;
   } catch (err) {
-    top30Status.textContent = `❌ ${err.message || "TOP30 분석 중 오류가 발생했습니다."}`;
+    top30Status.textContent = `❌ ${err.message || "분석 중 오류가 발생했습니다."}`;
   } finally {
-    top30Btn.disabled = false;
+    top30RangeBtns.forEach((btn) => (btn.disabled = false));
   }
 }
 
