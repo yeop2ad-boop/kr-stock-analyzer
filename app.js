@@ -298,17 +298,19 @@ function computeAttractivenessScore(metrics, avgIndexReturn) {
     rangeScore = clamp((1 - rangePosition) * 4, 0, 4);
   }
 
-  let momentumScore = 1.5;
+  // 지수(나스닥·다우 평균) 대비 1년 수익률 (0~4점) — 지수보다 많이 오를수록 무조건 고득점(단조증가),
+  // 적게 오르거나 떨어질수록 감점. relDiff 0%p(지수와 동일)일 때 중간값(2점), ±30%p에서 만점/0점.
+  let momentumScore = 2;
   if (oneYearReturn !== null && avgIndexReturn !== null && avgIndexReturn !== undefined) {
     const relDiff = oneYearReturn - avgIndexReturn;
-    momentumScore = clamp(3 - Math.abs(relDiff - 10) / 15, 0, 3);
+    momentumScore = clamp(2 + relDiff / 15, 0, 4);
   }
 
   let peScore = 1;
   let pe = null;
   if (eps && eps > 0 && price !== undefined && price !== null) {
     pe = price / eps;
-    peScore = clamp(3 - (pe - 15) / 10, 0, 3);
+    peScore = clamp(2 - (pe - 15) / 15, 0, 2);
   }
 
   const total = Math.round(clamp(rangeScore + momentumScore + peScore, 0, 10) * 10) / 10;
@@ -987,7 +989,7 @@ async function renderScore(marketReturnsPromise, selfMetricsPromise) {
           <li>📈 1년 주가 수익률: <b>${fmtPct(stockReturn)}</b> (나스닥 <b>${fmtPct(nasdaqReturn)}</b> / 다우존스 <b>${fmtPct(dowReturn)}</b>)</li>
           <li>📍 52주 최고/최저 대비 위치: ${rangePosition !== null ? `저점 대비 <b>${(rangePosition * 100).toFixed(0)}%</b> 지점` : "N/A"} (저점에 가까울수록 가점)</li>
           <li>💰 P/E(주가수익비율, 추정): <b>${pe ? pe.toFixed(1) : "N/A"}</b> (현재가 ÷ 최근 연간 EPS, 낮을수록 가점, 기준 PE≈15)</li>
-          <li>세부 점수 — 밸류에이션 위치 ${rangeScore.toFixed(1)}/4, 지수대비 모멘텀 ${momentumScore.toFixed(1)}/3, PE 밸류에이션 ${peScore.toFixed(1)}/3</li>
+          <li>세부 점수 — 밸류에이션 위치 ${rangeScore.toFixed(1)}/4, 지수대비 모멘텀 ${momentumScore.toFixed(1)}/4, PE 밸류에이션 ${peScore.toFixed(1)}/2</li>
         </ul>
         <p class="disclaimer">
           ⚠️ 이 점수는 52주 가격 위치, 지수 대비 1년 수익률, 추정 P/E를 조합한 <b>단순 참고용 정량 지표</b>이며,
