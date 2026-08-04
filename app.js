@@ -263,12 +263,16 @@ async function getCompanyMetrics(symbol) {
   const meta = result.meta;
 
   let revenue = null;
+  let revenueGrowth = null;
   let eps = null;
   let sharesOutstanding = null;
   const resultArr = fundData && fundData.timeseries && fundData.timeseries.result;
   if (resultArr) {
     for (const block of resultArr) {
-      if (block.annualTotalRevenue) revenue = latestFundamentalValue(block, "annualTotalRevenue");
+      if (block.annualTotalRevenue) {
+        revenue = latestFundamentalValue(block, "annualTotalRevenue");
+        revenueGrowth = revenueGrowthFromBlock(block);
+      }
       if (block.annualBasicEPS) eps = latestFundamentalValue(block, "annualBasicEPS");
       if (block.annualShareIssued) sharesOutstanding = latestFundamentalValue(block, "annualShareIssued");
     }
@@ -281,15 +285,16 @@ async function getCompanyMetrics(symbol) {
     yearLow: meta.fiftyTwoWeekLow,
     yearHigh: meta.fiftyTwoWeekHigh,
     revenue,
+    revenueGrowth,
     eps,
     marketCap,
     oneYearReturn: get1yReturnFromChart(chartData),
   };
 }
 
-// 52주 가격 위치 + 지수 대비 모멘텀 + 추정 PE를 조합한 참고용 가격 매력도 점수(10점 만점)
+// 52주 가격 위치 + 매출성장 대비 주가상승 + 추정 PE를 조합한 참고용 가격 매력도 점수(10점 만점)
 function computeAttractivenessScore(metrics, avgIndexReturn) {
-  const { price, yearLow, yearHigh, eps, oneYearReturn } = metrics;
+  const { price, yearLow, yearHigh, eps, oneYearReturn, revenueGrowth } = metrics;
 
   let rangeScore = 1.5;
   let rangePosition = null;
@@ -298,12 +303,20 @@ function computeAttractivenessScore(metrics, avgIndexReturn) {
     rangeScore = clamp((1 - rangePosition) * 4, 0, 4);
   }
 
-  // 지수(나스닥·다우 평균) 대비 1년 수익률 (0~4점) — 지수보다 많이 오를수록 무조건 고득점(단조증가),
-  // 적게 오르거나 떨어질수록 감점. relDiff 0%p(지수와 동일)일 때 중간값(2점), ±30%p에서 만점/0점.
-  let momentumScore = 2;
-  if (oneYearReturn !== null && avgIndexReturn !== null && avgIndexReturn !== undefined) {
-    const relDiff = oneYearReturn - avgIndexReturn;
-    momentumScore = clamp(2 + relDiff / 15, 0, 4);
+  // 연간 매출 성장률 ÷ 1년 주가 상승률 (0~4점) — 매출이 주가보다 더 많이(빠르게) 늘었을수록 고득점.
+  // 주가 상승률이 음수(주가 하락)면 0%로 취급: 매출이 늘었는데 주가는 못 따라갔다면 최고점(4),
+  // 매출조차 못 늘렸다면 최저점(0)으로 처리(0으로 나누는 상황을 명시적으로 분기).
+  // 그 외엔 비율 1(매출성장률=주가상승률)이 중간값(2점), 비율 2 이상이면 만점.
+  let growthScore = 2;
+  let growthRatio = null;
+  if (revenueGrowth !== null && revenueGrowth !== undefined && oneYearReturn !== null && oneYearReturn !== undefined) {
+    const priceGrowthForRatio = Math.max(oneYearReturn, 0);
+    if (priceGrowthForRatio === 0) {
+      growthScore = revenueGrowth > 0 ? 4 : 0;
+    } else {
+      growthRatio = revenueGrowth / priceGrowthForRatio;
+      growthScore = clamp(growthRatio * 2, 0, 4);
+    }
   }
 
   let peScore = 1;
@@ -313,8 +326,8 @@ function computeAttractivenessScore(metrics, avgIndexReturn) {
     peScore = clamp(2 - (pe - 15) / 15, 0, 2);
   }
 
-  const total = Math.round(clamp(rangeScore + momentumScore + peScore, 0, 10) * 10) / 10;
-  return { total, rangeScore, momentumScore, peScore, pe, rangePosition };
+  const total = Math.round(clamp(rangeScore + growthScore + peScore, 0, 10) * 10) / 10;
+  return { total, rangeScore, growthScore, peScore, pe, rangePosition, growthRatio };
 }
 
 // fundamentals-timeseries 응답 블록에서 특정 항목의 가장 최근 값을 추출
@@ -324,6 +337,18 @@ function latestFundamentalValue(block, key) {
   if (!valid.length) return null;
   valid.sort((a, b) => new Date(a.asOfDate) - new Date(b.asOfDate));
   return valid[valid.length - 1].reportedValue.raw;
+}
+
+// annualTotalRevenue 블록에서 최근 연도 대비 직전 연도의 매출 성장률(YoY, 소수) 계산
+function revenueGrowthFromBlock(block) {
+  const items = (block && block.annualTotalRevenue) || [];
+  const valid = items.filter((it) => it && it.reportedValue && it.reportedValue.raw !== undefined);
+  if (valid.length < 2) return null;
+  valid.sort((a, b) => new Date(a.asOfDate) - new Date(b.asOfDate));
+  const latest = valid[valid.length - 1].reportedValue.raw;
+  const prev = valid[valid.length - 2].reportedValue.raw;
+  if (!prev) return null;
+  return (latest - prev) / Math.abs(prev);
 }
 
 // 가격 매력도 + 투자 위험도 점수 계산에 필요한 모든 지표를 한 번(차트 1회 + 재무제표 1회)에 조회 (TOP30 랭킹용)
@@ -341,6 +366,7 @@ async function getFullMetrics(symbol) {
   const meta = result.meta;
 
   let revenue = null;
+  let revenueGrowth = null;
   let eps = null;
   let totalAssets = null;
   let equity = null;
@@ -348,7 +374,10 @@ async function getFullMetrics(symbol) {
   let sharesOutstanding = null;
   const resultArr = (fundData && fundData.timeseries && fundData.timeseries.result) || [];
   for (const block of resultArr) {
-    if (block.annualTotalRevenue) revenue = latestFundamentalValue(block, "annualTotalRevenue");
+    if (block.annualTotalRevenue) {
+      revenue = latestFundamentalValue(block, "annualTotalRevenue");
+      revenueGrowth = revenueGrowthFromBlock(block);
+    }
     if (block.annualBasicEPS) eps = latestFundamentalValue(block, "annualBasicEPS");
     if (block.annualTotalAssets) totalAssets = latestFundamentalValue(block, "annualTotalAssets");
     if (block.annualStockholdersEquity) equity = latestFundamentalValue(block, "annualStockholdersEquity");
@@ -367,6 +396,7 @@ async function getFullMetrics(symbol) {
     yearHigh: meta.fiftyTwoWeekHigh,
     eps,
     revenue,
+    revenueGrowth,
     totalLiabilities,
     equity,
     netIncome,
@@ -975,8 +1005,8 @@ async function renderScore(marketReturnsPromise, selfMetricsPromise) {
   ]);
 
   const score = computeAttractivenessScore(metrics, avgIndexReturn);
-  const { total, rangeScore, momentumScore, peScore, pe, rangePosition } = score;
-  const { oneYearReturn: stockReturn } = metrics;
+  const { total, rangeScore, growthScore, peScore, pe, rangePosition } = score;
+  const { oneYearReturn: stockReturn, revenueGrowth } = metrics;
 
   el("scoreSection").innerHTML = `
     <div class="score-wrap">
@@ -986,13 +1016,14 @@ async function renderScore(marketReturnsPromise, selfMetricsPromise) {
       </div>
       <div class="score-details">
         <ul>
-          <li>📈 1년 주가 수익률: <b>${fmtPct(stockReturn)}</b> (나스닥 <b>${fmtPct(nasdaqReturn)}</b> / 다우존스 <b>${fmtPct(dowReturn)}</b>)</li>
+          <li>📈 1년 주가 상승률: <b>${fmtPct(stockReturn)}</b> (참고 — 나스닥 <b>${fmtPct(nasdaqReturn)}</b> / 다우존스 <b>${fmtPct(dowReturn)}</b>)</li>
+          <li>📊 최근 연간 매출 성장률: <b>${fmtPct(revenueGrowth)}</b></li>
           <li>📍 52주 최고/최저 대비 위치: ${rangePosition !== null ? `저점 대비 <b>${(rangePosition * 100).toFixed(0)}%</b> 지점` : "N/A"} (저점에 가까울수록 가점)</li>
           <li>💰 P/E(주가수익비율, 추정): <b>${pe ? pe.toFixed(1) : "N/A"}</b> (현재가 ÷ 최근 연간 EPS, 낮을수록 가점, 기준 PE≈15)</li>
-          <li>세부 점수 — 밸류에이션 위치 ${rangeScore.toFixed(1)}/4, 지수대비 모멘텀 ${momentumScore.toFixed(1)}/4, PE 밸류에이션 ${peScore.toFixed(1)}/2</li>
+          <li>세부 점수 — 밸류에이션 위치 ${rangeScore.toFixed(1)}/4, 매출성장 대비 주가상승 ${growthScore.toFixed(1)}/4, PE 밸류에이션 ${peScore.toFixed(1)}/2</li>
         </ul>
         <p class="disclaimer">
-          ⚠️ 이 점수는 52주 가격 위치, 지수 대비 1년 수익률, 추정 P/E를 조합한 <b>단순 참고용 정량 지표</b>이며,
+          ⚠️ 이 점수는 52주 가격 위치, 매출 성장률 대비 주가 상승률, 추정 P/E를 조합한 <b>단순 참고용 정량 지표</b>이며,
           투자 자문이나 매수/매도 추천이 아닙니다. 실제 투자 판단은 재무제표 전체와 다른 정보를 종합해 본인 책임 하에 내려야 합니다.
         </p>
       </div>
