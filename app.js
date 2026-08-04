@@ -315,10 +315,16 @@ function computeAttractivenessScore(metrics, marketCapRank) {
   }
 
   // 3) PE 밸류에이션 = 최근 연간 시가총액 ÷ 순이익 (0~4점) — 10배면 만점, 50배 이상이면 0점 (10배마다 1점, 선형)
+  // 일부 해외 상장 종목은 시세는 USD인데 재무제표는 원래 보고 통화(KRW 등) 그대로 내려오는 경우가 있어
+  // (예: SKHY) 시가총액(USD)÷순이익(현지통화)이 뒤섞여 PE가 1배 미만처럼 비정상적으로 작게 나올 수 있음 —
+  // 정상적인 흑자 기업이 시총보다 큰 연간 순이익을 내는 경우는 사실상 없으므로 이런 값은 신뢰할 수 없다고 보고 제외
   let peScore = 2;
   let pe = null;
   if (marketCap !== undefined && marketCap !== null && netIncome && netIncome > 0) {
-    pe = marketCap / netIncome;
+    const rawPe = marketCap / netIncome;
+    if (rawPe >= 1) pe = rawPe;
+  }
+  if (pe !== null) {
     peScore = clamp(4 - (pe - 10) / 10, 0, 4);
   }
 
