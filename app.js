@@ -334,7 +334,7 @@ async function getFullMetrics(symbol) {
     yahooChart(symbol),
     yahooFundamentals(
       symbol,
-      "annualTotalRevenue,annualBasicEPS,annualTotalDebt,annualStockholdersEquity,annualNetIncome"
+      "annualTotalRevenue,annualBasicEPS,annualTotalAssets,annualStockholdersEquity,annualNetIncome"
     ),
   ]);
 
@@ -344,17 +344,20 @@ async function getFullMetrics(symbol) {
 
   let revenue = null;
   let eps = null;
-  let totalDebt = null;
+  let totalAssets = null;
   let equity = null;
   let netIncome = null;
   const resultArr = (fundData && fundData.timeseries && fundData.timeseries.result) || [];
   for (const block of resultArr) {
     if (block.annualTotalRevenue) revenue = latestFundamentalValue(block, "annualTotalRevenue");
     if (block.annualBasicEPS) eps = latestFundamentalValue(block, "annualBasicEPS");
-    if (block.annualTotalDebt) totalDebt = latestFundamentalValue(block, "annualTotalDebt");
+    if (block.annualTotalAssets) totalAssets = latestFundamentalValue(block, "annualTotalAssets");
     if (block.annualStockholdersEquity) equity = latestFundamentalValue(block, "annualStockholdersEquity");
     if (block.annualNetIncome) netIncome = latestFundamentalValue(block, "annualNetIncome");
   }
+  // 총부채 = 총자산 - 자기자본 (매입채무·미지급금 등 이자를 내지 않는 부채까지 포함한 회계상 '표준' 부채비율 계산용.
+  // 단순히 이자부담 차입금(장단기 대출/사채)만 쓰면 실제 대차대조표상 부채비율보다 크게 작게 나옴)
+  const totalLiabilities = totalAssets !== null && equity !== null ? totalAssets - equity : null;
 
   return {
     symbol,
@@ -363,7 +366,7 @@ async function getFullMetrics(symbol) {
     yearHigh: meta.fiftyTwoWeekHigh,
     eps,
     revenue,
-    totalDebt,
+    totalLiabilities,
     equity,
     netIncome,
     oneYearReturn: get1yReturnFromChart(chartData),
@@ -372,7 +375,7 @@ async function getFullMetrics(symbol) {
 
 // S&P500 대비 상대 수익률 + 부채비율 + 순이익률을 조합한 참고용 투자 위험도 점수(10점 만점, 높을수록 위험이 낮음)
 function computeRiskScore(metrics, sp500Return) {
-  const { oneYearReturn, totalDebt, equity, netIncome, revenue } = metrics;
+  const { oneYearReturn, totalLiabilities, equity, netIncome, revenue } = metrics;
 
   // 1) S&P500 대비 상대 수익률 (0~4점, 위쪽일수록 고득점 - 단조증가)
   let marketScore = 2;
@@ -382,12 +385,14 @@ function computeRiskScore(metrics, sp500Return) {
     marketScore = clamp(2 + relDiff / 15, 0, 4);
   }
 
-  // 2) 부채비율 Debt/Equity (0~3점, 낮을수록 고득점)
+  // 2) 부채비율 = 총부채(총자산-자기자본)/자기자본 (0~3점, 낮을수록 고득점)
+  // 50%까지는 만점, 이후 완만하게 감점(200%↓2점, 350%↓1점 근방). 은행 등 업종 특성상 구조적으로 부채비율이
+  // 매우 높은 업종은 이 지표만으로는 실제보다 저평가될 수 있음(업종 구분 없는 단순 지표의 한계)
   let debtScore = 1;
   let debtToEquity = null;
-  if (equity !== null && equity > 0 && totalDebt !== null) {
-    debtToEquity = totalDebt / equity;
-    debtScore = clamp(3 - debtToEquity, 0, 3);
+  if (equity !== null && equity > 0 && totalLiabilities !== null) {
+    debtToEquity = totalLiabilities / equity;
+    debtScore = clamp(3 - (debtToEquity - 0.5) / 1.5, 0, 3);
   } else if (equity !== null && equity <= 0) {
     debtScore = 0; // 자본잠식 등 고위험 상태
   }
