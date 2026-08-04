@@ -255,7 +255,7 @@ async function getMarketReturns() {
 async function getCompanyMetrics(symbol) {
   const [chartData, fundData] = await Promise.all([
     yahooChart(symbol),
-    yahooFundamentals(symbol, "annualTotalRevenue,annualBasicEPS").catch(() => null),
+    yahooFundamentals(symbol, "annualTotalRevenue,annualBasicEPS,annualShareIssued").catch(() => null),
   ]);
 
   const result = chartData && chartData.chart && chartData.chart.result && chartData.chart.result[0];
@@ -264,21 +264,16 @@ async function getCompanyMetrics(symbol) {
 
   let revenue = null;
   let eps = null;
+  let sharesOutstanding = null;
   const resultArr = fundData && fundData.timeseries && fundData.timeseries.result;
   if (resultArr) {
     for (const block of resultArr) {
-      const validRev = (block.annualTotalRevenue || []).filter((it) => it && it.reportedValue && it.reportedValue.raw !== undefined);
-      const validEps = (block.annualBasicEPS || []).filter((it) => it && it.reportedValue && it.reportedValue.raw !== undefined);
-      if (validRev.length) {
-        validRev.sort((a, b) => new Date(a.asOfDate) - new Date(b.asOfDate));
-        revenue = validRev[validRev.length - 1].reportedValue.raw;
-      }
-      if (validEps.length) {
-        validEps.sort((a, b) => new Date(a.asOfDate) - new Date(b.asOfDate));
-        eps = validEps[validEps.length - 1].reportedValue.raw;
-      }
+      if (block.annualTotalRevenue) revenue = latestFundamentalValue(block, "annualTotalRevenue");
+      if (block.annualBasicEPS) eps = latestFundamentalValue(block, "annualBasicEPS");
+      if (block.annualShareIssued) sharesOutstanding = latestFundamentalValue(block, "annualShareIssued");
     }
   }
+  const marketCap = meta.regularMarketPrice !== undefined && sharesOutstanding ? meta.regularMarketPrice * sharesOutstanding : null;
 
   return {
     symbol,
@@ -287,6 +282,7 @@ async function getCompanyMetrics(symbol) {
     yearHigh: meta.fiftyTwoWeekHigh,
     revenue,
     eps,
+    marketCap,
     oneYearReturn: get1yReturnFromChart(chartData),
   };
 }
@@ -334,7 +330,7 @@ async function getFullMetrics(symbol) {
     yahooChart(symbol),
     yahooFundamentals(
       symbol,
-      "annualTotalRevenue,annualBasicEPS,annualTotalAssets,annualStockholdersEquity,annualNetIncome"
+      "annualTotalRevenue,annualBasicEPS,annualTotalAssets,annualStockholdersEquity,annualNetIncome,annualShareIssued"
     ),
   ]);
 
@@ -347,6 +343,7 @@ async function getFullMetrics(symbol) {
   let totalAssets = null;
   let equity = null;
   let netIncome = null;
+  let sharesOutstanding = null;
   const resultArr = (fundData && fundData.timeseries && fundData.timeseries.result) || [];
   for (const block of resultArr) {
     if (block.annualTotalRevenue) revenue = latestFundamentalValue(block, "annualTotalRevenue");
@@ -354,10 +351,12 @@ async function getFullMetrics(symbol) {
     if (block.annualTotalAssets) totalAssets = latestFundamentalValue(block, "annualTotalAssets");
     if (block.annualStockholdersEquity) equity = latestFundamentalValue(block, "annualStockholdersEquity");
     if (block.annualNetIncome) netIncome = latestFundamentalValue(block, "annualNetIncome");
+    if (block.annualShareIssued) sharesOutstanding = latestFundamentalValue(block, "annualShareIssued");
   }
   // 총부채 = 총자산 - 자기자본 (매입채무·미지급금 등 이자를 내지 않는 부채까지 포함한 회계상 '표준' 부채비율 계산용.
   // 단순히 이자부담 차입금(장단기 대출/사채)만 쓰면 실제 대차대조표상 부채비율보다 크게 작게 나옴)
   const totalLiabilities = totalAssets !== null && equity !== null ? totalAssets - equity : null;
+  const marketCap = meta.regularMarketPrice !== undefined && sharesOutstanding ? meta.regularMarketPrice * sharesOutstanding : null;
 
   return {
     symbol,
@@ -369,6 +368,7 @@ async function getFullMetrics(symbol) {
     totalLiabilities,
     equity,
     netIncome,
+    marketCap,
     oneYearReturn: get1yReturnFromChart(chartData),
   };
 }
@@ -913,7 +913,7 @@ async function renderPeers(ticker, marketReturnsPromise, selfMetricsPromise) {
         <span class="bar-label">${escapeHtml(d.symbol)}${d.self ? " (분석대상)" : ""}</span>
         <div class="bar-track"><div class="bar-fill ${d.self ? "self" : ""}" style="width:${pct}%"></div></div>
         <span class="bar-value">${fmtCompactCurrency(d.revenue)}</span>
-        <span class="peer-price">${d.price !== undefined && d.price !== null ? "$" + d.price.toFixed(2) : "N/A"}</span>
+        <span class="peer-price">${fmtCompactCurrency(d.marketCap)}</span>
         <span class="peer-score">${score.total}/10</span>
       </div>`;
     })
@@ -922,7 +922,7 @@ async function renderPeers(ticker, marketReturnsPromise, selfMetricsPromise) {
   el("peersSection").innerHTML = `
     <p class="muted">최근 회계연도 매출액 기준 비교 (자동 감지된 관련 종목)</p>
     <div class="peer-table-header">
-      <span></span><span></span><span>매출액</span><span>현재가</span><span>매력도</span>
+      <span></span><span></span><span>매출액</span><span>시가총액</span><span>매력도</span>
     </div>
     <div class="bar-chart">${rows}</div>
   `;
