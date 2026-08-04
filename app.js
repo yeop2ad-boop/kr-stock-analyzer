@@ -781,7 +781,7 @@ async function runAnalysis() {
       el("newsSection").innerHTML = `<p class="error-inline">뉴스를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
-    renderScore(marketReturnsPromise, selfMetricsPromise).catch((e) => {
+    renderScore(selfMetricsPromise).catch((e) => {
       el("scoreSection").innerHTML = `<p class="error-inline">가격 매력도 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
@@ -1019,10 +1019,10 @@ async function renderNews(searchData) {
 }
 
 // ---------- 5. 가격 매력도 점수 (52주 위치 + PE 밸류에이션) ----------
-async function renderScore(marketReturnsPromise, selfMetricsPromise) {
+async function renderScore(selfMetricsPromise) {
   el("scoreSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
-  const [metrics, { nasdaqReturn, dowReturn }] = await Promise.all([selfMetricsPromise, marketReturnsPromise]);
+  const metrics = await selfMetricsPromise;
 
   if (!sp500MarketCapsPromise) {
     el("scoreSection").innerHTML = `<p class="muted">S&P500 시가총액 순위 계산 중... (세션 최초 1회, 다소 시간이 걸릴 수 있습니다)</p>`;
@@ -1031,7 +1031,6 @@ async function renderScore(marketReturnsPromise, selfMetricsPromise) {
 
   const score = computeAttractivenessScore(metrics, marketCapRank);
   const { total, capRankScore, rangeScore, peScore, pe, rangePosition } = score;
-  const { oneYearReturn: stockReturn } = metrics;
 
   el("scoreSection").innerHTML = `
     <div class="score-wrap">
@@ -1045,7 +1044,6 @@ async function renderScore(marketReturnsPromise, selfMetricsPromise) {
           <li>📍 52주 최고/최저 대비 위치: ${rangePosition !== null ? `저점 대비 <b>${(rangePosition * 100).toFixed(0)}%</b> 지점` : "N/A"} (저점에 가까울수록 가점)</li>
           <li>💰 P/E(주가수익비율): <b>${pe ? pe.toFixed(1) : "N/A"}</b> (시가총액 ÷ 최근 연간 순이익, 낮을수록 가점, 10배 만점·50배 이상 0점)</li>
           <li>세부 점수 — 시총 순위 ${capRankScore.toFixed(1)}/2, 52주 위치 ${rangeScore.toFixed(1)}/4, PE 밸류에이션 ${peScore.toFixed(1)}/4</li>
-          <li>📈 1년 주가 상승률: ${fmtPct(stockReturn)} (참고 — 나스닥 ${fmtPct(nasdaqReturn)} / 다우존스 ${fmtPct(dowReturn)})</li>
         </ul>
         <p class="disclaimer">
           ⚠️ 이 점수는 S&P500 시총 순위, 52주 가격 위치, PE 밸류에이션을 조합한 <b>단순 참고용 정량 지표</b>이며,
