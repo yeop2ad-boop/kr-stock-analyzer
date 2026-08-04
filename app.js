@@ -30,13 +30,25 @@ document.addEventListener("click", (e) => {
 });
 
 // ---------- CORS 프록시 (여러 개를 순서대로 시도) ----------
-// corsproxy.io는 "localhost/개발 환경"이 아닌 실제 도메인(예: 커스텀 도메인)에서의 무료 사용을 막아서,
-// 프로덕션 도메인에서도 안정적으로 동작하는 r.jina.ai를 우선 사용하고 나머지는 폴백으로 둔다.
+// 직접 만든 Cloudflare Worker(우리 서버)를 최우선으로 사용 — 야후 파이낸스는 빠르고 안정적으로 중계되지만,
+// FRED(fred.stlouisfed.org)는 그 사이트가 Cloudflare Workers발 요청 자체를 막고 있어(520) 실패하며,
+// 이 경우 아래 jina.ai로 자동 폴백되어 FRED는 계속 정상 작동한다.
+// corsproxy.io는 "localhost/개발 환경"이 아닌 실제 도메인(예: 커스텀 도메인)에서의 무료 사용을 막는다.
 // jina.ai는 공유 인프라 부하에 따라 응답 속도 편차가 매우 커서(수백ms~20초 이상), 한 요청이 오래 걸리면
 // 포기하고 재시도/다음 프록시로 넘어가도록 요청마다 제한 시간을 둔다.
 const PROXY_TIMEOUT_MS = 7000;
 
 const PROXIES = [
+  {
+    name: "own-worker",
+    fetch: async (targetUrl) => {
+      const res = await fetch("https://us-stock.yeop2ad.workers.dev/?url=" + encodeURIComponent(targetUrl), {
+        signal: AbortSignal.timeout(PROXY_TIMEOUT_MS),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    },
+  },
   {
     name: "jina",
     fetch: async (targetUrl) => {
