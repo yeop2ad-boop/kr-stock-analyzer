@@ -201,16 +201,16 @@ function getMacroMetrics() {
 
 // M2 통화량 증가폭(YoY) + 미국 장단기(10년-2년) 금리차를 조합한 참고용 거시경제 점수(10점 만점)
 function computeMacroScore({ m2Yoy, spread }) {
-  // 1) M2 통화량 YoY 증가율 (0~5점, 증가폭이 클수록 고득점 - 단조증가, -10%~+10% 구간 매핑)
+  // 1) M2 통화량 YoY 증가율 (0~5점) — +10%면 만점, 0% 이하면 0점 (2%p마다 1점, 선형)
   let m2Score = 2.5;
   if (m2Yoy !== null && m2Yoy !== undefined) {
-    m2Score = clamp(2.5 + m2Yoy / 4, 0, 5);
+    m2Score = clamp(m2Yoy / 2, 0, 5);
   }
 
-  // 2) 장단기 금리차(10Y-2Y) (0~5점, -1일 때 0점 · 2일 때 5점으로 선형 매핑)
+  // 2) 장단기 금리차(10Y-2Y) (0~5점) — 2 이상이면 만점, -0.5 이하면 0점 (0.5마다 1점, 선형)
   let curveScore = 2.5;
   if (spread !== null && spread !== undefined) {
-    curveScore = clamp(((spread + 1) / 3) * 5, 0, 5);
+    curveScore = clamp((spread + 0.5) / 0.5, 0, 5);
   }
 
   const total = Math.round(clamp(m2Score + curveScore, 0, 10) * 10) / 10;
@@ -251,11 +251,11 @@ async function getMarketReturns() {
   }
 }
 
-// 개별 종목의 가격/52주 범위/매출/EPS/1년 수익률을 한 번에 조회
+// 개별 종목의 가격/52주 범위/매출/순이익/1년 수익률을 한 번에 조회
 async function getCompanyMetrics(symbol) {
   const [chartData, fundData] = await Promise.all([
     yahooChart(symbol),
-    yahooFundamentals(symbol, "annualTotalRevenue,annualBasicEPS,annualShareIssued").catch(() => null),
+    yahooFundamentals(symbol, "annualTotalRevenue,annualBasicEPS,annualNetIncome,annualShareIssued").catch(() => null),
   ]);
 
   const result = chartData && chartData.chart && chartData.chart.result && chartData.chart.result[0];
@@ -263,17 +263,15 @@ async function getCompanyMetrics(symbol) {
   const meta = result.meta;
 
   let revenue = null;
-  let revenueGrowth = null;
   let eps = null;
+  let netIncome = null;
   let sharesOutstanding = null;
   const resultArr = fundData && fundData.timeseries && fundData.timeseries.result;
   if (resultArr) {
     for (const block of resultArr) {
-      if (block.annualTotalRevenue) {
-        revenue = latestFundamentalValue(block, "annualTotalRevenue");
-        revenueGrowth = revenueGrowthFromBlock(block);
-      }
+      if (block.annualTotalRevenue) revenue = latestFundamentalValue(block, "annualTotalRevenue");
       if (block.annualBasicEPS) eps = latestFundamentalValue(block, "annualBasicEPS");
+      if (block.annualNetIncome) netIncome = latestFundamentalValue(block, "annualNetIncome");
       if (block.annualShareIssued) sharesOutstanding = latestFundamentalValue(block, "annualShareIssued");
     }
   }
@@ -285,49 +283,35 @@ async function getCompanyMetrics(symbol) {
     yearLow: meta.fiftyTwoWeekLow,
     yearHigh: meta.fiftyTwoWeekHigh,
     revenue,
-    revenueGrowth,
     eps,
+    netIncome,
     marketCap,
     oneYearReturn: get1yReturnFromChart(chartData),
   };
 }
 
-// 52주 가격 위치 + 매출성장 대비 주가상승 + 추정 PE를 조합한 참고용 가격 매력도 점수(10점 만점)
-function computeAttractivenessScore(metrics, avgIndexReturn) {
-  const { price, yearLow, yearHigh, eps, oneYearReturn, revenueGrowth } = metrics;
+// 52주 최고/최저 대비 위치 + PE 밸류에이션(시가총액÷순이익)을 조합한 참고용 가격 매력도 점수(10점 만점)
+function computeAttractivenessScore(metrics) {
+  const { price, yearLow, yearHigh, marketCap, netIncome } = metrics;
 
-  let rangeScore = 1.5;
+  // 1) 52주 최고/최저 대비 위치 (0~5점) — 저점(0%)이면 만점, 고점(100%)이면 0점 (선형)
+  let rangeScore = 2.5;
   let rangePosition = null;
   if (yearLow !== undefined && yearLow !== null && yearHigh !== undefined && yearHigh > yearLow && price !== undefined && price !== null) {
     rangePosition = (price - yearLow) / (yearHigh - yearLow);
-    rangeScore = clamp((1 - rangePosition) * 4, 0, 4);
+    rangeScore = clamp(5 * (1 - rangePosition), 0, 5);
   }
 
-  // 연간 매출 성장률 ÷ 1년 주가 상승률 (0~4점) — 매출이 주가보다 더 많이(빠르게) 늘었을수록 고득점.
-  // 주가 상승률이 음수(주가 하락)면 0%로 취급: 매출이 늘었는데 주가는 못 따라갔다면 최고점(4),
-  // 매출조차 못 늘렸다면 최저점(0)으로 처리(0으로 나누는 상황을 명시적으로 분기).
-  // 그 외엔 비율 1(매출성장률=주가상승률)이 중간값(2점), 비율 2 이상이면 만점.
-  let growthScore = 2;
-  let growthRatio = null;
-  if (revenueGrowth !== null && revenueGrowth !== undefined && oneYearReturn !== null && oneYearReturn !== undefined) {
-    const priceGrowthForRatio = Math.max(oneYearReturn, 0);
-    if (priceGrowthForRatio === 0) {
-      growthScore = revenueGrowth > 0 ? 4 : 0;
-    } else {
-      growthRatio = revenueGrowth / priceGrowthForRatio;
-      growthScore = clamp(growthRatio * 2, 0, 4);
-    }
-  }
-
-  let peScore = 1;
+  // 2) PE 밸류에이션 = 최근 연간 시가총액 ÷ 순이익 (0~5점) — 10배면 만점, 60배 이상이면 0점 (10배마다 1점, 선형)
+  let peScore = 2.5;
   let pe = null;
-  if (eps && eps > 0 && price !== undefined && price !== null) {
-    pe = price / eps;
-    peScore = clamp(2 - (pe - 15) / 15, 0, 2);
+  if (marketCap !== undefined && marketCap !== null && netIncome && netIncome > 0) {
+    pe = marketCap / netIncome;
+    peScore = clamp(5 - (pe - 10) / 10, 0, 5);
   }
 
-  const total = Math.round(clamp(rangeScore + growthScore + peScore, 0, 10) * 10) / 10;
-  return { total, rangeScore, growthScore, peScore, pe, rangePosition, growthRatio };
+  const total = Math.round(clamp(rangeScore + peScore, 0, 10) * 10) / 10;
+  return { total, rangeScore, peScore, pe, rangePosition };
 }
 
 // fundamentals-timeseries 응답 블록에서 특정 항목의 가장 최근 값을 추출
@@ -337,18 +321,6 @@ function latestFundamentalValue(block, key) {
   if (!valid.length) return null;
   valid.sort((a, b) => new Date(a.asOfDate) - new Date(b.asOfDate));
   return valid[valid.length - 1].reportedValue.raw;
-}
-
-// annualTotalRevenue 블록에서 최근 연도 대비 직전 연도의 매출 성장률(YoY, 소수) 계산
-function revenueGrowthFromBlock(block) {
-  const items = (block && block.annualTotalRevenue) || [];
-  const valid = items.filter((it) => it && it.reportedValue && it.reportedValue.raw !== undefined);
-  if (valid.length < 2) return null;
-  valid.sort((a, b) => new Date(a.asOfDate) - new Date(b.asOfDate));
-  const latest = valid[valid.length - 1].reportedValue.raw;
-  const prev = valid[valid.length - 2].reportedValue.raw;
-  if (!prev) return null;
-  return (latest - prev) / Math.abs(prev);
 }
 
 // 가격 매력도 + 투자 위험도 점수 계산에 필요한 모든 지표를 한 번(차트 1회 + 재무제표 1회)에 조회 (TOP30 랭킹용)
@@ -366,7 +338,6 @@ async function getFullMetrics(symbol) {
   const meta = result.meta;
 
   let revenue = null;
-  let revenueGrowth = null;
   let eps = null;
   let totalAssets = null;
   let equity = null;
@@ -374,10 +345,7 @@ async function getFullMetrics(symbol) {
   let sharesOutstanding = null;
   const resultArr = (fundData && fundData.timeseries && fundData.timeseries.result) || [];
   for (const block of resultArr) {
-    if (block.annualTotalRevenue) {
-      revenue = latestFundamentalValue(block, "annualTotalRevenue");
-      revenueGrowth = revenueGrowthFromBlock(block);
-    }
+    if (block.annualTotalRevenue) revenue = latestFundamentalValue(block, "annualTotalRevenue");
     if (block.annualBasicEPS) eps = latestFundamentalValue(block, "annualBasicEPS");
     if (block.annualTotalAssets) totalAssets = latestFundamentalValue(block, "annualTotalAssets");
     if (block.annualStockholdersEquity) equity = latestFundamentalValue(block, "annualStockholdersEquity");
@@ -396,7 +364,6 @@ async function getFullMetrics(symbol) {
     yearHigh: meta.fiftyTwoWeekHigh,
     eps,
     revenue,
-    revenueGrowth,
     totalLiabilities,
     equity,
     netIncome,
@@ -405,36 +372,36 @@ async function getFullMetrics(symbol) {
   };
 }
 
-// S&P500 대비 상대 수익률 + 부채비율 + 순이익률을 조합한 참고용 투자 위험도 점수(10점 만점, 높을수록 위험이 낮음)
+// S&P500 대비 모멘텀 + 부채비율 + 순이익률을 조합한 참고용 투자 위험도 점수(10점 만점, 높을수록 위험이 낮음)
 function computeRiskScore(metrics, sp500Return) {
   const { oneYearReturn, totalLiabilities, equity, netIncome, revenue } = metrics;
 
-  // 1) S&P500 대비 상대 수익률 (0~2점, 위쪽일수록 고득점 - 단조증가)
-  let marketScore = 1;
+  // 1) S&P500 대비 모멘텀 (0~4점) — S&P500 연 수익률과의 차이(절대값)가 0%p면 만점,
+  // 200%p 이상 벌어지면 0점 (50%p마다 1점 감점, 선형)
+  let marketScore = 2;
   let relDiff = null;
   if (oneYearReturn !== null && sp500Return !== null && sp500Return !== undefined) {
-    relDiff = oneYearReturn - sp500Return;
-    marketScore = clamp(1 + relDiff / 30, 0, 2);
+    relDiff = Math.abs(sp500Return - oneYearReturn);
+    marketScore = clamp(4 * (1 - relDiff / 200), 0, 4);
   }
 
-  // 2) 부채비율 = 총부채(총자산-자기자본)/자기자본 (0~4점, 낮을수록 고득점)
-  // 50%까지는 만점, 이후 완만하게 감점(200%↓2.7점, 350%↓1점 근방). 은행 등 업종 특성상 구조적으로 부채비율이
-  // 매우 높은 업종은 이 지표만으로는 실제보다 저평가될 수 있음(업종 구분 없는 단순 지표의 한계)
+  // 2) 부채비율 = 총부채(총자산-자기자본)÷자기자본 (0~3점) — 0%면 만점, 100%(1배) 이상이면 0점 (선형)
   let debtScore = 1.5;
   let debtToEquity = null;
   if (equity !== null && equity > 0 && totalLiabilities !== null) {
     debtToEquity = totalLiabilities / equity;
-    debtScore = clamp(4 - (debtToEquity - 0.5) / 1.125, 0, 4);
+    debtScore = clamp(3 * (1 - debtToEquity), 0, 3);
   } else if (equity !== null && equity <= 0) {
     debtScore = 0; // 자본잠식 등 고위험 상태
   }
 
-  // 3) 순이익률 Net Margin = 순이익/매출 (0~4점, 높을수록 고득점, 30% 이상이면 만점)
-  let marginScore = 1.33;
+  // 3) 순이익률 = 순이익÷매출 (0~3점) — 0%는 0.5점, 10%p마다 0.5점씩 늘어 50% 이상이면 만점.
+  // 적자(음수 순이익률)는 무조건 0점 처리
+  let marginScore = 1.5;
   let netMargin = null;
   if (revenue !== null && revenue > 0 && netIncome !== null) {
     netMargin = netIncome / revenue;
-    marginScore = clamp(netMargin * (4 / 0.3), 0, 4);
+    marginScore = netMargin < 0 ? 0 : clamp(0.5 + netMargin * 5, 0, 3);
   }
 
   const total = Math.round(clamp(marketScore + debtScore + marginScore, 0, 10) * 10) / 10;
@@ -752,7 +719,7 @@ async function runAnalysis() {
     const marketReturnsPromise = getMarketReturns();
     const selfMetricsPromise = getFullMetrics(ticker);
 
-    renderPeers(ticker, marketReturnsPromise, selfMetricsPromise).catch((e) => {
+    renderPeers(ticker, selfMetricsPromise).catch((e) => {
       el("peersSection").innerHTML = `<p class="error-inline">경쟁사 비교 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
@@ -902,7 +869,7 @@ async function renderFinancials(ticker) {
 }
 
 // ---------- 3. 경쟁사 매출/주가/가격 매력도 비교 ----------
-async function renderPeers(ticker, marketReturnsPromise, selfMetricsPromise) {
+async function renderPeers(ticker, selfMetricsPromise) {
   el("peersSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
   const peersData = await yahooPeers(ticker);
@@ -920,10 +887,9 @@ async function renderPeers(ticker, marketReturnsPromise, selfMetricsPromise) {
     return;
   }
 
-  const [selfMetrics, peerMetricsList, { avgIndexReturn }] = await Promise.all([
+  const [selfMetrics, peerMetricsList] = await Promise.all([
     selfMetricsPromise.then((m) => ({ ...m, self: true })).catch(() => null),
     Promise.all(peerTickers.map((s) => getCompanyMetrics(s).catch(() => null))),
-    marketReturnsPromise,
   ]);
   const metricsList = [selfMetrics, ...peerMetricsList];
 
@@ -939,7 +905,7 @@ async function renderPeers(ticker, marketReturnsPromise, selfMetricsPromise) {
     .sort((a, b) => (b.revenue || 0) - (a.revenue || 0))
     .map((d) => {
       const pct = clamp(((d.revenue || 0) / maxRev) * 100, 2, 100);
-      const score = computeAttractivenessScore(d, avgIndexReturn);
+      const score = computeAttractivenessScore(d);
       return `
       <div class="peer-row">
         <span class="bar-label">${escapeHtml(d.symbol)}${d.self ? " (분석대상)" : ""}</span>
@@ -995,18 +961,15 @@ async function renderNews(searchData) {
   `;
 }
 
-// ---------- 5. 가격 매력도 점수 (vs 나스닥, 다우존스) ----------
+// ---------- 5. 가격 매력도 점수 (52주 위치 + PE 밸류에이션) ----------
 async function renderScore(marketReturnsPromise, selfMetricsPromise) {
   el("scoreSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
-  const [metrics, { nasdaqReturn, dowReturn, avgIndexReturn }] = await Promise.all([
-    selfMetricsPromise,
-    marketReturnsPromise,
-  ]);
+  const [metrics, { nasdaqReturn, dowReturn }] = await Promise.all([selfMetricsPromise, marketReturnsPromise]);
 
-  const score = computeAttractivenessScore(metrics, avgIndexReturn);
-  const { total, rangeScore, growthScore, peScore, pe, rangePosition } = score;
-  const { oneYearReturn: stockReturn, revenueGrowth } = metrics;
+  const score = computeAttractivenessScore(metrics);
+  const { total, rangeScore, peScore, pe, rangePosition } = score;
+  const { oneYearReturn: stockReturn } = metrics;
 
   el("scoreSection").innerHTML = `
     <div class="score-wrap">
@@ -1017,13 +980,12 @@ async function renderScore(marketReturnsPromise, selfMetricsPromise) {
       <div class="score-details">
         <ul>
           <li>📈 1년 주가 상승률: <b>${fmtPct(stockReturn)}</b> (참고 — 나스닥 <b>${fmtPct(nasdaqReturn)}</b> / 다우존스 <b>${fmtPct(dowReturn)}</b>)</li>
-          <li>📊 최근 연간 매출 성장률: <b>${fmtPct(revenueGrowth)}</b></li>
           <li>📍 52주 최고/최저 대비 위치: ${rangePosition !== null ? `저점 대비 <b>${(rangePosition * 100).toFixed(0)}%</b> 지점` : "N/A"} (저점에 가까울수록 가점)</li>
-          <li>💰 P/E(주가수익비율, 추정): <b>${pe ? pe.toFixed(1) : "N/A"}</b> (현재가 ÷ 최근 연간 EPS, 낮을수록 가점, 기준 PE≈15)</li>
-          <li>세부 점수 — 밸류에이션 위치 ${rangeScore.toFixed(1)}/4, 매출성장 대비 주가상승 ${growthScore.toFixed(1)}/4, PE 밸류에이션 ${peScore.toFixed(1)}/2</li>
+          <li>💰 P/E(주가수익비율): <b>${pe ? pe.toFixed(1) : "N/A"}</b> (시가총액 ÷ 최근 연간 순이익, 낮을수록 가점, 10배 만점·60배 이상 0점)</li>
+          <li>세부 점수 — 52주 위치 ${rangeScore.toFixed(1)}/5, PE 밸류에이션 ${peScore.toFixed(1)}/5</li>
         </ul>
         <p class="disclaimer">
-          ⚠️ 이 점수는 52주 가격 위치, 매출 성장률 대비 주가 상승률, 추정 P/E를 조합한 <b>단순 참고용 정량 지표</b>이며,
+          ⚠️ 이 점수는 52주 가격 위치와 PE 밸류에이션을 조합한 <b>단순 참고용 정량 지표</b>이며,
           투자 자문이나 매수/매도 추천이 아닙니다. 실제 투자 판단은 재무제표 전체와 다른 정보를 종합해 본인 책임 하에 내려야 합니다.
         </p>
       </div>
@@ -1050,10 +1012,10 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
       </div>
       <div class="score-details">
         <ul>
-          <li>📊 S&P500 대비 1년 수익률: ${relDiff !== null ? `<b>${fmtPct(relDiff)}p</b> 차이 (S&P500 <b>${fmtPct(sp500Return)}</b>)` : "N/A"} (위쪽일수록 가점)</li>
-          <li>🏦 부채비율(총부채/자기자본): <b>${debtToEquity !== null ? (debtToEquity * 100).toFixed(0) + "%" : "N/A"}</b> (낮을수록 가점)</li>
-          <li>💵 순이익률(순이익/매출): <b>${netMargin !== null ? (netMargin * 100).toFixed(1) + "%" : "N/A"}</b> (높을수록 가점)</li>
-          <li>세부 점수 — S&P500 대비 모멘텀 ${marketScore.toFixed(1)}/2, 부채비율 ${debtScore.toFixed(1)}/4, 순이익률 ${marginScore.toFixed(1)}/4</li>
+          <li>📊 S&P500과의 1년 수익률 차이: ${relDiff !== null ? `<b>${relDiff.toFixed(1)}%p</b> (S&P500 <b>${fmtPct(sp500Return)}</b>)` : "N/A"} (차이가 작을수록 가점)</li>
+          <li>🏦 부채비율(총부채/자기자본): <b>${debtToEquity !== null ? (debtToEquity * 100).toFixed(0) + "%" : "N/A"}</b> (낮을수록 가점, 100% 이상이면 0점)</li>
+          <li>💵 순이익률(순이익/매출): <b>${netMargin !== null ? (netMargin * 100).toFixed(1) + "%" : "N/A"}</b> (높을수록 가점, 적자면 0점)</li>
+          <li>세부 점수 — S&P500 대비 모멘텀 ${marketScore.toFixed(1)}/4, 부채비율 ${debtScore.toFixed(1)}/3, 순이익률 ${marginScore.toFixed(1)}/3</li>
         </ul>
         <p class="disclaimer">
           ⚠️ 점수가 높을수록(10점에 가까울수록) 재무적으로 더 안정적/저위험임을 의미합니다.
@@ -1103,7 +1065,7 @@ async function renderRankedTop10(tickers, rangeLabel, { statusEl, resultsEl, but
   statusEl.style.display = "block";
 
   try {
-    const { avgIndexReturn, sp500Return } = await getMarketReturns();
+    const { sp500Return } = await getMarketReturns();
     statusEl.textContent = `0/${tickers.length} 종목(${rangeLabel}) 분석 중...`;
 
     const metricsList = await mapWithConcurrency(tickers, 5, getFullMetrics, (completed, total) => {
@@ -1113,7 +1075,7 @@ async function renderRankedTop10(tickers, rangeLabel, { statusEl, resultsEl, but
     const ranked = metricsList
       .map((m) => {
         if (!m) return null;
-        const attractiveness = computeAttractivenessScore(m, avgIndexReturn);
+        const attractiveness = computeAttractivenessScore(m);
         const risk = computeRiskScore(m, sp500Return);
         const combined = Math.round((attractiveness.total + risk.total) * 10) / 10;
         return { symbol: m.symbol, price: m.price, attractiveness: attractiveness.total, risk: risk.total, combined };
@@ -1212,7 +1174,7 @@ async function runPopular() {
   popularStatus.textContent = "인기종목을 불러오는 중...";
 
   try {
-    const [data, { avgIndexReturn, sp500Return }] = await Promise.all([yahooMostActive(50), getMarketReturns()]);
+    const [data, { sp500Return }] = await Promise.all([yahooMostActive(50), getMarketReturns()]);
     const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
 
     if (quotes.length === 0) {
@@ -1241,7 +1203,7 @@ async function runPopular() {
     const scored = ranked.map((r, i) => {
       const m = fullMetricsList[i];
       if (!m) return { ...r, attractiveness: null, risk: null };
-      const attractiveness = computeAttractivenessScore(m, avgIndexReturn);
+      const attractiveness = computeAttractivenessScore(m);
       const risk = computeRiskScore(m, sp500Return);
       return { ...r, attractiveness: attractiveness.total, risk: risk.total };
     });
