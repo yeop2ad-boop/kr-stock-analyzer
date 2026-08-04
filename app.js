@@ -15,6 +15,19 @@ const popularBtn = el("popularBtn");
 const popularStatus = el("popularStatus");
 const popularResults = el("popularResults");
 const searchCompleteMsg = el("searchCompleteMsg");
+const contactBtn = el("contactBtn");
+const contactPopover = el("contactPopover");
+
+contactBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  const isOpen = contactPopover.style.display === "block";
+  contactPopover.style.display = isOpen ? "none" : "block";
+});
+document.addEventListener("click", (e) => {
+  if (contactPopover.style.display === "block" && !contactPopover.contains(e.target) && e.target !== contactBtn) {
+    contactPopover.style.display = "none";
+  }
+});
 
 // ---------- CORS 프록시 (여러 개를 순서대로 시도) ----------
 const PROXIES = [
