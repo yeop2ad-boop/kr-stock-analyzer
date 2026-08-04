@@ -37,13 +37,16 @@ document.addEventListener("click", (e) => {
 // jina.ai는 공유 인프라 부하에 따라 응답 속도 편차가 매우 커서(수백ms~20초 이상), 한 요청이 오래 걸리면
 // 포기하고 재시도/다음 프록시로 넘어가도록 요청마다 제한 시간을 둔다.
 const PROXY_TIMEOUT_MS = 7000;
+// own-worker는 평소 1초 미만으로 응답하므로, 막히면(아마 버스트 시 Yahoo/Cloudflare 쪽 순간 속도 제한)
+// 굳이 오래 기다리지 말고 훨씬 짧은 시간 안에 포기하고 다음 프록시로 넘어가는 게 더 빠름
+const OWN_WORKER_TIMEOUT_MS = 2500;
 
 const PROXIES = [
   {
     name: "own-worker",
     fetch: async (targetUrl) => {
       const res = await fetch("https://us-stock.yeop2ad.workers.dev/?url=" + encodeURIComponent(targetUrl), {
-        signal: AbortSignal.timeout(PROXY_TIMEOUT_MS),
+        signal: AbortSignal.timeout(OWN_WORKER_TIMEOUT_MS),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return res.json();
