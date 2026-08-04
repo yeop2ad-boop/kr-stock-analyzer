@@ -36,13 +36,18 @@ const PROXIES = [
   {
     name: "jina",
     fetch: async (targetUrl) => {
-      const res = await fetch("https://r.jina.ai/" + targetUrl);
+      // X-Return-Format: text 로 요청하면 markdown 변환 과정을 건너뛰고 원본을 그대로 반환해 더 빠르고 파싱도 단순해짐
+      const res = await fetch("https://r.jina.ai/" + targetUrl, { headers: { "X-Return-Format": "text" } });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const text = await res.text();
-      const marker = "Markdown Content:\n";
-      const idx = text.indexOf(marker);
-      const jsonPart = idx !== -1 ? text.slice(idx + marker.length) : text;
-      return JSON.parse(jsonPart);
+      try {
+        return JSON.parse(text);
+      } catch {
+        // 혹시 래핑된 형식으로 오면 예전 방식으로 한 번 더 시도
+        const marker = "Markdown Content:\n";
+        const idx = text.indexOf(marker);
+        return JSON.parse(idx !== -1 ? text.slice(idx + marker.length) : text);
+      }
     },
   },
   {
