@@ -1044,8 +1044,8 @@ async function renderMacro() {
       </div>
       <div class="score-details">
         <ul>
-          <li>💵 M2 통화량 증가율(전년 동월 대비, ${escapeHtml(m2DateStr)} 기준): <b>${fmtPct(m2Yoy)}</b> (증가폭이 클수록 가점)</li>
-          <li>📐 미국 장단기(10년-2년) 금리차(${escapeHtml(spreadDateStr)} 기준): <b>${spread !== null && spread !== undefined ? spread.toFixed(2) + "%p" : "N/A"}</b> (2에 가까울수록 가점, -1에 가까울수록 감점)</li>
+          <li>💵 M2 통화량 증가율(전년 동월 대비, ${escapeHtml(m2DateStr)} 기준): <b>${fmtPct(m2Yoy)}</b> (10% 이상이면 만점, 0% 이하면 0점)</li>
+          <li>📐 미국 장단기(10년-2년) 금리차(${escapeHtml(spreadDateStr)} 기준): <b>${spread !== null && spread !== undefined ? spread.toFixed(2) + "%p" : "N/A"}</b> (2 이상이면 만점, -0.5 이하면 0점)</li>
           <li>세부 점수 — M2 증가율 ${m2Score.toFixed(1)}/5, 장단기 금리차 ${curveScore.toFixed(1)}/5</li>
         </ul>
         <p class="disclaimer">
