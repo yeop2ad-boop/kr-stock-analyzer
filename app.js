@@ -7,10 +7,10 @@ const el = (id) => document.getElementById(id);
 const tickerInput = el("tickerInput");
 const analyzeBtn = el("analyzeBtn");
 const statusBox = el("statusBox");
-const homeView = el("homeView");
 const resultsView = el("resultsView");
 const backHomeBtn = el("backHomeBtn");
 const results = el("results");
+const fixedHeader = el("fixedHeader");
 const top30RangeBtns = Array.from(document.querySelectorAll(".top30RangeBtn"));
 const top30Status = el("top30Status");
 const top30Results = el("top30Results");
@@ -19,7 +19,7 @@ const nasdaq100Btn = el("nasdaq100Btn");
 const nasdaqBtns = [...nasdaqRangeBtns, nasdaq100Btn];
 const nasdaqStatus = el("nasdaqStatus");
 const nasdaqResults = el("nasdaqResults");
-const popularBtn = el("popularBtn");
+const popularCountBtns = Array.from(document.querySelectorAll(".popularCountBtn"));
 const popularStatus = el("popularStatus");
 const popularResults = el("popularResults");
 const contactBtn = el("contactBtn");
@@ -859,15 +859,62 @@ function setStatus(type, message) {
   statusBox.innerHTML = type === "loading" ? `<span class="spinner"></span>${message}` : message;
 }
 
+// ---------- 고정 헤더 높이 동기화(카테고리 서브툴바가 열리고 닫힐 때마다 본문 padding-top을 다시 맞춤) ----------
+function syncHeaderHeight() {
+  document.documentElement.style.setProperty("--fixed-header-h", fixedHeader.offsetHeight + "px");
+}
+window.addEventListener("resize", syncHeaderHeight);
+new ResizeObserver(syncHeaderHeight).observe(fixedHeader);
+syncHeaderHeight();
+
+// ---------- 카테고리 탭(인기종목/S&P500/나스닥) — 누르면 색이 활성화되며 서브툴바가 펼쳐짐 ----------
+const catButtons = { popular: el("catPopularBtn"), sp500: el("catSp500Btn"), nasdaq: el("catNasdaqBtn") };
+const subToolbars = { popular: el("popularSub"), sp500: el("sp500Sub"), nasdaq: el("nasdaqSub") };
+const resultGroups = { popular: [popularStatus, popularResults], sp500: [top30Status, top30Results], nasdaq: [nasdaqStatus, nasdaqResults] };
+let activeCategory = null;
+
+function setActiveCategory(cat) {
+  activeCategory = activeCategory === cat ? null : cat;
+  for (const key of Object.keys(catButtons)) {
+    catButtons[key].classList.toggle("active", key === activeCategory);
+    subToolbars[key].style.display = key === activeCategory ? "flex" : "none";
+  }
+  // 티커 분석 화면을 보고 있던 중 카테고리 탭을 누르면 그 화면부터 정리
+  if (activeCategory !== null && resultsView.style.display !== "none") {
+    history.pushState({}, "", location.pathname);
+    resultsView.style.display = "none";
+  }
+  syncHeaderHeight();
+}
+
+catButtons.popular.addEventListener("click", () => setActiveCategory("popular"));
+catButtons.sp500.addEventListener("click", () => setActiveCategory("sp500"));
+catButtons.nasdaq.addEventListener("click", () => setActiveCategory("nasdaq"));
+
+// 메인창에 하나의 결과만 보이도록: 선택된 카테고리 외 결과 영역과 티커 분석 화면을 모두 정리
+function prepareMainView(activeKey) {
+  for (const key of Object.keys(resultGroups)) {
+    if (key !== activeKey) {
+      resultGroups[key].forEach((elm) => (elm.style.display = "none"));
+    }
+  }
+  if (resultsView.style.display !== "none") {
+    history.pushState({}, "", location.pathname);
+  }
+  resultsView.style.display = "none";
+}
+
 // ---------- 홈 ↔ 티커 분석 화면 라우팅(뒤로가기 지원, ?ticker=로 특정 종목에 바로 접속 가능) ----------
 function showHomeView() {
-  homeView.style.display = "";
   resultsView.style.display = "none";
   document.title = "미국 기업 분석기";
 }
 
 function showResultsView(ticker) {
-  homeView.style.display = "none";
+  for (const key of Object.keys(resultGroups)) {
+    resultGroups[key].forEach((elm) => (elm.style.display = "none"));
+  }
+  setActiveCategory(null);
   resultsView.style.display = "block";
   document.title = `${ticker} 분석 - 미국 기업 분석기`;
   window.scrollTo(0, 0);
@@ -926,16 +973,26 @@ tickerInput.addEventListener("keydown", (e) => {
 });
 top30RangeBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
+    prepareMainView("sp500");
     runTop30(Number(btn.dataset.start), Number(btn.dataset.end));
   });
 });
 nasdaqRangeBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
+    prepareMainView("nasdaq");
     runNasdaqRange(Number(btn.dataset.start), Number(btn.dataset.end));
   });
 });
-nasdaq100Btn.addEventListener("click", () => runNasdaq100());
-popularBtn.addEventListener("click", () => runPopular());
+nasdaq100Btn.addEventListener("click", () => {
+  prepareMainView("nasdaq");
+  runNasdaq100();
+});
+popularCountBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    prepareMainView("popular");
+    runPopular(Number(btn.dataset.count));
+  });
+});
 
 async function runAnalysis(ticker) {
   analyzeBtn.disabled = true;
@@ -1448,8 +1505,8 @@ async function runNasdaq100() {
 }
 
 // ---------- 인기종목: 당일 거래대금(가격 × 거래량) 상위 10개 ----------
-async function runPopular() {
-  popularBtn.disabled = true;
+async function runPopular(count = 10) {
+  popularCountBtns.forEach((btn) => (btn.disabled = true));
   popularResults.innerHTML = "";
   popularStatus.style.display = "block";
   popularStatus.textContent = "인기종목을 불러오는 중...";
@@ -1473,7 +1530,7 @@ async function runPopular() {
         dollarVolume: (q.regularMarketPrice || 0) * (q.regularMarketVolume || 0),
       }))
       .sort((a, b) => b.dollarVolume - a.dollarVolume)
-      .slice(0, 10);
+      .slice(0, count);
 
     popularStatus.textContent = "가격 매력도 · 투자 위험도 점수를 계산하는 중...";
 
@@ -1524,6 +1581,6 @@ async function runPopular() {
   } catch (err) {
     popularStatus.textContent = `❌ ${err.message || "인기종목을 가져오지 못했습니다."}`;
   } finally {
-    popularBtn.disabled = false;
+    popularCountBtns.forEach((btn) => (btn.disabled = false));
   }
 }
