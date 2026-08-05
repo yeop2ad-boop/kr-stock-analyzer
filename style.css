@@ -130,7 +130,7 @@ body {
   border-top: 1px solid var(--border);
 }
 
-.chat-ticker-wrap { position: relative; flex: 1 1 100px; min-width: 90px; }
+.chat-ticker-wrap { position: relative; flex: 1 1 100%; min-width: 90px; }
 
 .chat-input {
   width: 100%;
@@ -144,7 +144,7 @@ body {
   box-sizing: border-box;
 }
 
-.chat-price-input { flex: 0 1 70px; }
+.chat-price-input { flex: 1 1 70px; }
 
 .chat-ticker-suggest {
   position: absolute;
