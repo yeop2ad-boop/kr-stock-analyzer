@@ -200,12 +200,21 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 .delta-down { color: var(--bad); }
 
 .bar-chart { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
-.bar-row { display: grid; grid-template-columns: 90px 1fr 90px; align-items: center; gap: 10px; font-size: 13px; }
+.bar-row { display: grid; grid-template-columns: 46px 40px 1fr 130px; align-items: center; gap: 8px; font-size: 13px; }
 .bar-row .bar-label { color: var(--muted); }
-.bar-track { background: var(--border); border-radius: 6px; overflow: hidden; height: 18px; }
+.bar-track { background: var(--border); border-radius: 6px; overflow: hidden; height: 18px; position: relative; }
 .bar-fill { height: 100%; background: var(--accent); border-radius: 6px 0 0 6px; }
 .bar-fill.self { background: #7c3aed; }
+.bar-fill-profit {
+  position: absolute; top: 0; left: 0; height: 100%;
+  background: var(--good); border-radius: 6px 0 0 6px; z-index: 1;
+}
+.bar-loss-zone { height: 18px; display: flex; justify-content: flex-end; }
+.bar-loss { height: 100%; background: var(--bad); border-radius: 6px 0 0 6px; }
 .bar-value { text-align: right; font-variant-numeric: tabular-nums; }
+.margin-pct { font-size: 11px; margin-left: 4px; font-weight: 600; }
+.margin-pct.good { color: var(--good); }
+.margin-pct.bad { color: var(--bad); }
 
 .peer-row {
   display: grid;

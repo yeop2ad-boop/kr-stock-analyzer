@@ -790,7 +790,7 @@ async function renderSummary(quote, meta) {
 async function renderFinancials(ticker) {
   el("financialsSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
-  const data = await yahooFundamentals(ticker, "annualTotalRevenue,annualBasicEPS");
+  const data = await yahooFundamentals(ticker, "annualTotalRevenue,annualBasicEPS,annualNetIncome");
   const resultArr = data && data.timeseries && data.timeseries.result;
   if (!resultArr || resultArr.length === 0) {
     el("financialsSection").innerHTML = `<p class="muted">실적 데이터를 찾을 수 없습니다.</p>`;
@@ -801,6 +801,7 @@ async function renderFinancials(ticker) {
   for (const block of resultArr) {
     const revItems = block.annualTotalRevenue || [];
     const epsItems = block.annualBasicEPS || [];
+    const netIncomeItems = block.annualNetIncome || [];
     for (const item of revItems) {
       if (!item || !item.asOfDate) continue;
       const year = item.asOfDate.slice(0, 4);
@@ -812,6 +813,12 @@ async function renderFinancials(ticker) {
       const year = item.asOfDate.slice(0, 4);
       byYear[year] = byYear[year] || {};
       byYear[year].eps = item.reportedValue?.raw ?? null;
+    }
+    for (const item of netIncomeItems) {
+      if (!item || !item.asOfDate) continue;
+      const year = item.asOfDate.slice(0, 4);
+      byYear[year] = byYear[year] || {};
+      byYear[year].netIncome = item.reportedValue?.raw ?? null;
     }
   }
 
@@ -855,15 +862,34 @@ async function renderFinancials(ticker) {
   }
 
   const maxRevenue = Math.max(...recentYears.map((y) => byYear[y].revenue || 0), 1);
+  const maxAbsLoss = Math.max(...recentYears.map((y) => (byYear[y].netIncome < 0 ? Math.abs(byYear[y].netIncome) : 0)), 1);
   const revBars = recentYears
     .map((y) => {
       const rev = byYear[y].revenue;
+      const netIncome = byYear[y].netIncome;
       const pct = clamp(((rev || 0) / maxRevenue) * 100, 2, 100);
+
+      let overlay = "";
+      let marginLabel = "";
+      if (netIncome !== null && netIncome !== undefined && rev) {
+        const marginPct = (netIncome / rev) * 100;
+        if (netIncome > 0) {
+          const profitPct = clamp((netIncome / maxRevenue) * 100, 0, pct);
+          overlay = `<div class="bar-fill-profit" style="width:${profitPct}%"></div>`;
+          marginLabel = `<span class="margin-pct good">순이익 ${marginPct.toFixed(0)}%</span>`;
+        } else if (netIncome < 0) {
+          const lossPct = clamp((Math.abs(netIncome) / maxAbsLoss) * 100, 2, 100);
+          overlay = `<div class="bar-loss-zone"><div class="bar-loss" style="width:${lossPct}%"></div></div>`;
+          marginLabel = `<span class="margin-pct bad">순손실 ${marginPct.toFixed(0)}%</span>`;
+        }
+      }
+
       return `
       <div class="bar-row">
         <span class="bar-label">${escapeHtml(y)}</span>
-        <div class="bar-track"><div class="bar-fill self" style="width:${pct}%"></div></div>
-        <span class="bar-value">${fmtCompactCurrency(rev)}</span>
+        ${netIncome < 0 ? overlay : `<div class="bar-loss-zone"></div>`}
+        <div class="bar-track"><div class="bar-fill self" style="width:${pct}%"></div>${netIncome > 0 ? overlay : ""}</div>
+        <span class="bar-value">${fmtCompactCurrency(rev)} ${marginLabel}</span>
       </div>`;
     })
     .join("");
