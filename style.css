@@ -92,7 +92,7 @@ body {
 .cat-btn.active { color: #fff; border-color: transparent; }
 .cat-popular.active { background: #d1495b; }
 .cat-sp500.active { background: #b8860b; }
-.cat-nasdaq.active { background: #2f6fed; }
+.cat-nasdaq.active { background: var(--accent); }
 
 .fh-sub {
   max-width: 860px;
