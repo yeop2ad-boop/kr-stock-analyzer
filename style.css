@@ -314,6 +314,19 @@ table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: #b8860b; fon
   margin: 0 0 16px;
 }
 
+.ticker-link { cursor: pointer; }
+.ticker-link:hover { text-decoration: underline; color: var(--accent); }
+
+.back-home-btn {
+  background: transparent;
+  color: var(--muted);
+  padding: 8px 4px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.back-home-btn:hover { color: var(--text); }
+
 .status-box {
   padding: 14px 18px;
   border-radius: var(--radius);

@@ -40,102 +40,107 @@
   </div>
 
   <div class="container">
-    <header>
-      <p class="eyebrow">US Stock Analysis</p>
-      <h1>미국 기업 분석기</h1>
-      <p class="subtitle">티커를 입력하면 사업 개요, 실적 추이, 경쟁사 비교, 최신 뉴스, 가격 매력도까지 한 번에 분석합니다. 별도 가입이나 API 키 없이 바로 사용할 수 있습니다.</p>
-    </header>
+    <div id="homeView">
+      <header>
+        <p class="eyebrow">US Stock Analysis</p>
+        <h1>미국 기업 분석기</h1>
+        <p class="subtitle">티커를 입력하면 사업 개요, 실적 추이, 경쟁사 비교, 최신 뉴스, 가격 매력도까지 한 번에 분석합니다. 별도 가입이나 API 키 없이 바로 사용할 수 있습니다.</p>
+      </header>
 
-    <section class="card search-card">
-      <div class="search-row">
-        <input type="text" id="tickerInput" placeholder="예: AAPL, MSFT, TSLA" autocomplete="off" />
-        <button id="analyzeBtn" type="button" aria-label="분석">🔍</button>
-      </div>
-      <p id="searchCompleteMsg" class="search-complete-msg" style="display:none;">✅ 검색 완료! 스크롤을 내리면 분석 결과를 확인할 수 있습니다.</p>
-      <div class="popular-row">
-        <button id="popularBtn" type="button">🔥 인기종목</button>
-        <span class="muted popular-hint">당일 거래대금(거래량 × 가격) 상위 10개 종목을 보여줍니다.</span>
-      </div>
-      <p id="popularStatus" class="muted popular-status" style="display:none;"></p>
-      <div id="popularResults"></div>
-    </section>
-
-    <section class="card top30-card">
-      <div class="top30-header">
-        <div>
-          <h2 class="top30-title">🏆 S&amp;P500 구간별 TOP 10</h2>
-          <p class="muted top30-desc">S&amp;P500을 100개 구간으로 나눠 구간 내 가격 매력도+투자 위험도 합산 상위 10개를 보여줍니다.</p>
+      <section class="card search-card">
+        <div class="search-row">
+          <input type="text" id="tickerInput" placeholder="예: AAPL, MSFT, TSLA" autocomplete="off" />
+          <button id="analyzeBtn" type="button" aria-label="분석">🔍</button>
         </div>
-      </div>
-      <div class="top30-range-row">
-        <button class="top30RangeBtn" type="button" data-start="0" data-end="100">1–100</button>
-        <button class="top30RangeBtn" type="button" data-start="100" data-end="200">101–200</button>
-        <button class="top30RangeBtn" type="button" data-start="200" data-end="300">201–300</button>
-        <button class="top30RangeBtn" type="button" data-start="300" data-end="400">301–400</button>
-        <button class="top30RangeBtn" type="button" data-start="400" data-end="500">401–500</button>
-      </div>
-      <p id="top30Status" class="muted top30-status" style="display:none;"></p>
-      <div id="top30Results"></div>
-    </section>
-
-    <section class="card top30-card">
-      <div class="top30-header">
-        <div>
-          <h2 class="top30-title">🏆 나스닥 구간별 TOP 10</h2>
-          <p class="muted top30-desc">나스닥 종목을 시가총액 순(근사) 100개 구간 또는 TECH100(나스닥-100) 안에서 상위 10개를 보여줍니다.</p>
+        <div class="popular-row">
+          <button id="popularBtn" type="button">🔥 인기종목</button>
+          <span class="muted popular-hint">당일 거래대금(거래량 × 가격) 상위 10개 종목을 보여줍니다.</span>
         </div>
-      </div>
-      <div class="top30-range-row">
-        <button class="nasdaqRangeBtn" type="button" data-start="0" data-end="100">1–100</button>
-        <button class="nasdaqRangeBtn" type="button" data-start="100" data-end="200">101–200</button>
-        <button class="nasdaqRangeBtn" type="button" data-start="200" data-end="300">201–300</button>
-        <button id="nasdaq100Btn" type="button">TECH100</button>
-      </div>
-      <p id="nasdaqStatus" class="muted top30-status" style="display:none;"></p>
-      <div id="nasdaqResults"></div>
-    </section>
+        <p id="popularStatus" class="muted popular-status" style="display:none;"></p>
+        <div id="popularResults"></div>
+      </section>
 
-    <p class="source-note">
-      ⓘ 이 도구는 별도 API 키 없이 공개된 비공식 금융 데이터 소스를 사용합니다. 공식 API가 아니므로 일시적으로 데이터를 못 가져오거나 느릴 수 있습니다 — 잠시 후 다시 시도해주세요.
-    </p>
+      <section class="card top30-card">
+        <div class="top30-header">
+          <div>
+            <h2 class="top30-title">🏆 S&amp;P500 구간별 TOP 10</h2>
+            <p class="muted top30-desc">S&amp;P500을 100개 구간으로 나눠 구간 내 가격 매력도+투자 위험도 합산 상위 10개를 보여줍니다.</p>
+          </div>
+        </div>
+        <div class="top30-range-row">
+          <button class="top30RangeBtn" type="button" data-start="0" data-end="100">1–100</button>
+          <button class="top30RangeBtn" type="button" data-start="100" data-end="200">101–200</button>
+          <button class="top30RangeBtn" type="button" data-start="200" data-end="300">201–300</button>
+          <button class="top30RangeBtn" type="button" data-start="300" data-end="400">301–400</button>
+          <button class="top30RangeBtn" type="button" data-start="400" data-end="500">401–500</button>
+        </div>
+        <p id="top30Status" class="muted top30-status" style="display:none;"></p>
+        <div id="top30Results"></div>
+      </section>
+
+      <section class="card top30-card">
+        <div class="top30-header">
+          <div>
+            <h2 class="top30-title">🏆 나스닥 구간별 TOP 10</h2>
+            <p class="muted top30-desc">나스닥 종목을 시가총액 순(근사) 100개 구간 또는 TECH100(나스닥-100) 안에서 상위 10개를 보여줍니다.</p>
+          </div>
+        </div>
+        <div class="top30-range-row">
+          <button class="nasdaqRangeBtn" type="button" data-start="0" data-end="100">1–100</button>
+          <button class="nasdaqRangeBtn" type="button" data-start="100" data-end="200">101–200</button>
+          <button class="nasdaqRangeBtn" type="button" data-start="200" data-end="300">201–300</button>
+          <button id="nasdaq100Btn" type="button">TECH100</button>
+        </div>
+        <p id="nasdaqStatus" class="muted top30-status" style="display:none;"></p>
+        <div id="nasdaqResults"></div>
+      </section>
+
+      <p class="source-note">
+        ⓘ 이 도구는 별도 API 키 없이 공개된 비공식 금융 데이터 소스를 사용합니다. 공식 API가 아니므로 일시적으로 데이터를 못 가져오거나 느릴 수 있습니다 — 잠시 후 다시 시도해주세요.
+      </p>
+    </div>
 
     <div id="statusBox" class="status-box" style="display:none;"></div>
 
-    <div id="results" class="results" style="display:none;">
-      <section class="card">
-        <h2>1️⃣ 사업 요약</h2>
-        <div id="summarySection" class="section-body"></div>
-      </section>
+    <div id="resultsView" style="display:none;">
+      <button id="backHomeBtn" class="back-home-btn" type="button">← 홈으로</button>
 
-      <section class="card">
-        <h2>2️⃣ 매출액 / 주당순이익(EPS) 3년 추이</h2>
-        <div id="financialsSection" class="section-body"></div>
-      </section>
+      <div id="results" class="results" style="display:none;">
+        <section class="card">
+          <h2>1️⃣ 사업 요약</h2>
+          <div id="summarySection" class="section-body"></div>
+        </section>
 
-      <section class="card">
-        <h2>3️⃣ 경쟁사 매출 비교</h2>
-        <div id="peersSection" class="section-body"></div>
-      </section>
+        <section class="card">
+          <h2>2️⃣ 매출액 / 주당순이익(EPS) 3년 추이</h2>
+          <div id="financialsSection" class="section-body"></div>
+        </section>
 
-      <section class="card">
-        <h2>4️⃣ 주요 뉴스</h2>
-        <div id="newsSection" class="section-body"></div>
-      </section>
+        <section class="card">
+          <h2>3️⃣ 경쟁사 매출 비교</h2>
+          <div id="peersSection" class="section-body"></div>
+        </section>
 
-      <section class="card">
-        <h2>5️⃣ 가격 매력도 점수 (높을수록 저평가 종목)</h2>
-        <div id="scoreSection" class="section-body"></div>
-      </section>
+        <section class="card">
+          <h2>4️⃣ 주요 뉴스</h2>
+          <div id="newsSection" class="section-body"></div>
+        </section>
 
-      <section class="card">
-        <h2>6️⃣ 투자 위험도 점수 (높을수록 변동성▼, 부채비율▼, 순수익율▲)</h2>
-        <div id="riskSection" class="section-body"></div>
-      </section>
+        <section class="card">
+          <h2>5️⃣ 가격 매력도 점수 (높을수록 저평가 종목)</h2>
+          <div id="scoreSection" class="section-body"></div>
+        </section>
 
-      <section class="card">
-        <h2>7️⃣ 거시경제 점수 (높을수록 시장 현금 유동성▲)</h2>
-        <div id="macroSection" class="section-body"></div>
-      </section>
+        <section class="card">
+          <h2>6️⃣ 투자 위험도 점수 (높을수록 변동성▼, 부채비율▼, 순수익율▲)</h2>
+          <div id="riskSection" class="section-body"></div>
+        </section>
+
+        <section class="card">
+          <h2>7️⃣ 거시경제 점수 (높을수록 시장 현금 유동성▲)</h2>
+          <div id="macroSection" class="section-body"></div>
+        </section>
+      </div>
     </div>
   </div>
 

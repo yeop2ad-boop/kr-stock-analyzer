@@ -7,6 +7,9 @@ const el = (id) => document.getElementById(id);
 const tickerInput = el("tickerInput");
 const analyzeBtn = el("analyzeBtn");
 const statusBox = el("statusBox");
+const homeView = el("homeView");
+const resultsView = el("resultsView");
+const backHomeBtn = el("backHomeBtn");
 const results = el("results");
 const top30RangeBtns = Array.from(document.querySelectorAll(".top30RangeBtn"));
 const top30Status = el("top30Status");
@@ -19,7 +22,6 @@ const nasdaqResults = el("nasdaqResults");
 const popularBtn = el("popularBtn");
 const popularStatus = el("popularStatus");
 const popularResults = el("popularResults");
-const searchCompleteMsg = el("searchCompleteMsg");
 const contactBtn = el("contactBtn");
 const chatPanel = el("chatPanel");
 const chatMessagesEl = el("chatMessages");
@@ -857,10 +859,70 @@ function setStatus(type, message) {
   statusBox.innerHTML = type === "loading" ? `<span class="spinner"></span>${message}` : message;
 }
 
+// ---------- 홈 ↔ 티커 분석 화면 라우팅(뒤로가기 지원, ?ticker=로 특정 종목에 바로 접속 가능) ----------
+function showHomeView() {
+  homeView.style.display = "";
+  resultsView.style.display = "none";
+  document.title = "미국 기업 분석기";
+}
+
+function showResultsView(ticker) {
+  homeView.style.display = "none";
+  resultsView.style.display = "block";
+  document.title = `${ticker} 분석 - 미국 기업 분석기`;
+  window.scrollTo(0, 0);
+}
+
+// push=false는 popstate(뒤로/앞으로가기)나 최초 URL 진입 처리 시, 이미 있는 히스토리 상태를 다시 쌓지 않기 위함
+function navigateToTicker(ticker, { push = true } = {}) {
+  if (push) {
+    history.pushState({ ticker }, "", "?ticker=" + encodeURIComponent(ticker));
+  }
+  tickerInput.value = ticker;
+  showResultsView(ticker);
+  runAnalysis(ticker);
+}
+
+backHomeBtn.addEventListener("click", () => {
+  history.pushState({}, "", location.pathname);
+  showHomeView();
+});
+
+window.addEventListener("popstate", () => {
+  const ticker = new URLSearchParams(location.search).get("ticker");
+  if (ticker) {
+    navigateToTicker(ticker.toUpperCase(), { push: false });
+  } else {
+    showHomeView();
+  }
+});
+
+// 종목 심볼 클릭 시 해당 종목 분석 화면으로 이동(TOP10·인기종목 표에 이벤트 위임으로 공통 적용)
+document.addEventListener("click", (e) => {
+  const link = e.target.closest(".ticker-link");
+  if (link && link.dataset.ticker) {
+    navigateToTicker(link.dataset.ticker);
+  }
+});
+
+// 페이지를 ?ticker=XXX로 바로 열었을 때 홈을 거치지 않고 해당 종목 분석부터 시작
+(function initRouteFromUrl() {
+  const ticker = new URLSearchParams(location.search).get("ticker");
+  if (ticker) navigateToTicker(ticker.toUpperCase(), { push: false });
+})();
+
 // ---------- 메인 분석 흐름 ----------
-analyzeBtn.addEventListener("click", () => runAnalysis());
+function triggerSearch() {
+  const ticker = tickerInput.value.trim().toUpperCase();
+  if (!ticker) {
+    setStatus("error", "❌ 분석할 기업의 티커를 입력해주세요. (예: AAPL)");
+    return;
+  }
+  navigateToTicker(ticker);
+}
+analyzeBtn.addEventListener("click", triggerSearch);
 tickerInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") runAnalysis();
+  if (e.key === "Enter") triggerSearch();
 });
 top30RangeBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -875,17 +937,9 @@ nasdaqRangeBtns.forEach((btn) => {
 nasdaq100Btn.addEventListener("click", () => runNasdaq100());
 popularBtn.addEventListener("click", () => runPopular());
 
-async function runAnalysis() {
-  const ticker = tickerInput.value.trim().toUpperCase();
-
-  if (!ticker) {
-    setStatus("error", "❌ 분석할 기업의 티커를 입력해주세요. (예: AAPL)");
-    return;
-  }
-
+async function runAnalysis(ticker) {
   analyzeBtn.disabled = true;
   results.style.display = "none";
-  searchCompleteMsg.style.display = "none";
   setStatus("loading", `${ticker} 데이터를 불러오는 중입니다...`);
 
   try {
@@ -940,7 +994,6 @@ async function runAnalysis() {
     });
 
     setStatus(null, null);
-    searchCompleteMsg.style.display = "block";
   } catch (err) {
     setStatus("error", `❌ ${escapeHtml(err.message || "알 수 없는 오류가 발생했습니다.")}`);
   } finally {
@@ -1326,7 +1379,7 @@ async function renderRankedTop10(tickers, rangeLabel, { statusEl, resultsEl, but
         (r, i) => `
       <tr>
         <td>${i + 1}</td>
-        <td><b>${escapeHtml(r.symbol)}</b></td>
+        <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></td>
         <td>${r.price !== undefined && r.price !== null ? "$" + r.price.toFixed(2) : "N/A"}</td>
         <td>${r.attractiveness}/10</td>
         <td>${r.risk}/10</td>
@@ -1446,7 +1499,7 @@ async function runPopular() {
         return `
       <tr>
         <td>${i + 1}</td>
-        <td><b>${escapeHtml(r.symbol)}</b><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
+        <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
         <td>$${r.price.toFixed(2)}<br><span class="${changeClass}" style="font-size:11px;">(${fmtPct(r.changePct)})</span></td>
         <td class="${scoreClass(r.attractiveness)}"><b>${r.attractiveness !== null ? r.attractiveness : "N/A"}</b></td>
         <td class="${scoreClass(r.risk)}"><b>${r.risk !== null ? r.risk : "N/A"}</b></td>
