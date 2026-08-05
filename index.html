@@ -9,8 +9,20 @@
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <button id="contactBtn" class="contact-btn" type="button" aria-label="문의하기">💬</button>
-  <div id="contactPopover" class="contact-popover" style="display:none;">요청, 문의 : yeop2ad@gmail.com</div>
+  <button id="contactBtn" class="contact-btn" type="button" aria-label="실시간 채팅">💬</button>
+  <div id="chatPanel" class="chat-panel" style="display:none;">
+    <div class="chat-header">
+      <span>💬 실시간 채팅 <span class="muted" style="font-weight:400;">(익명·24시간 보관)</span></span>
+      <button id="chatCloseBtn" class="chat-close-btn" type="button" aria-label="닫기">✕</button>
+    </div>
+    <div id="chatMessages" class="chat-messages"><p class="muted chat-empty">불러오는 중...</p></div>
+    <p id="chatError" class="chat-error" style="display:none;"></p>
+    <div class="chat-input-row">
+      <input type="text" id="chatInput" class="chat-input" maxlength="200" placeholder="메시지 입력 (웹주소·비속어 불가)" autocomplete="off" />
+      <button id="chatSendBtn" class="chat-send-btn" type="button">전송</button>
+    </div>
+    <p class="chat-footer muted">1:1 문의: yeop2ad@gmail.com</p>
+  </div>
 
   <div class="container">
     <header>

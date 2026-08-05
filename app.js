@@ -21,16 +21,137 @@ const popularStatus = el("popularStatus");
 const popularResults = el("popularResults");
 const searchCompleteMsg = el("searchCompleteMsg");
 const contactBtn = el("contactBtn");
-const contactPopover = el("contactPopover");
+const chatPanel = el("chatPanel");
+const chatMessagesEl = el("chatMessages");
+const chatInput = el("chatInput");
+const chatSendBtn = el("chatSendBtn");
+const chatError = el("chatError");
+const chatCloseBtn = el("chatCloseBtn");
+
+// ---------- 실시간 채팅(익명, 24시간 보관, 웹주소·비속어 차단은 서버(Worker)가 최종 판단) ----------
+const CHAT_API = "https://us-stock.yeop2ad.workers.dev/chat";
+const CHAT_POLL_MS = 4000;
+let chatPollTimer = null;
+let lastChatMessageCount = -1;
+
+const CHAT_URL_PATTERN = /(https?:\/\/|www\.)\S+/i;
+const CHAT_DOMAIN_PATTERN = /\b[a-z0-9-]+\.(com|net|org|co|io|me|xyz|info|biz|kr|shop|site|online|click|link|gg|tv|app|dev)\b/i;
+const CHAT_BANNED_WORDS = [
+  "씨발", "시발", "씨팔", "시팔", "ㅅㅂ", "ㅆㅂ", "개새끼", "병신", "ㅂㅅ",
+  "미친놈", "미친년", "좆", "존나", "지랄", "새끼", "썅", "닥쳐", "꺼져",
+  "죽어라", "개소리", "fuck", "shit", "bitch", "asshole", "retard",
+];
+
+// 서버 최종 판단 전 즉각적인 피드백을 위한 클라이언트 측 사전 검사(우회 가능성이 있어 참고용)
+function clientSideChatCheck(text) {
+  if (!text) return "메시지를 입력해주세요.";
+  if (text.length > 200) return "메시지는 200자 이내로 작성해주세요.";
+  if (CHAT_URL_PATTERN.test(text) || CHAT_DOMAIN_PATTERN.test(text)) return "웹사이트 주소는 입력할 수 없습니다.";
+  const normalized = text.replace(/\s+/g, "").toLowerCase();
+  if (CHAT_BANNED_WORDS.some((w) => normalized.includes(w))) return "부적절한 표현이 포함되어 있습니다.";
+  return null;
+}
+
+function fmtChatTime(t) {
+  return new Date(t).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" });
+}
+
+function renderChatMessages(messages) {
+  if (messages.length === 0) {
+    chatMessagesEl.innerHTML = `<p class="muted chat-empty">아직 메시지가 없습니다. 첫 메시지를 남겨보세요.</p>`;
+    return;
+  }
+  chatMessagesEl.innerHTML = messages
+    .map(
+      (m) =>
+        `<div class="chat-msg"><span class="chat-time">${escapeHtml(fmtChatTime(m.t))}</span><span class="chat-text">${escapeHtml(m.text)}</span></div>`
+    )
+    .join("");
+  chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+}
+
+async function loadChatMessages() {
+  try {
+    const res = await fetch(CHAT_API);
+    const data = await res.json();
+    const messages = (data && data.messages) || [];
+    if (messages.length !== lastChatMessageCount) {
+      lastChatMessageCount = messages.length;
+      renderChatMessages(messages);
+    }
+  } catch {
+    // 폴링 실패는 조용히 무시하고 다음 주기에 재시도
+  }
+}
+
+function startChatPolling() {
+  loadChatMessages();
+  stopChatPolling();
+  chatPollTimer = setInterval(loadChatMessages, CHAT_POLL_MS);
+}
+
+function stopChatPolling() {
+  if (chatPollTimer) clearInterval(chatPollTimer);
+  chatPollTimer = null;
+}
+
+async function sendChatMessage() {
+  const text = chatInput.value.trim();
+  const clientError = clientSideChatCheck(text);
+  if (clientError) {
+    chatError.textContent = clientError;
+    chatError.style.display = "block";
+    return;
+  }
+  chatError.style.display = "none";
+  chatSendBtn.disabled = true;
+  try {
+    const res = await fetch(CHAT_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      chatError.textContent = data.error || "전송에 실패했습니다.";
+      chatError.style.display = "block";
+      return;
+    }
+    chatInput.value = "";
+    const messages = data.messages || [];
+    lastChatMessageCount = messages.length;
+    renderChatMessages(messages);
+  } catch {
+    chatError.textContent = "전송에 실패했습니다. 잠시 후 다시 시도해주세요.";
+    chatError.style.display = "block";
+  } finally {
+    chatSendBtn.disabled = false;
+  }
+}
 
 contactBtn.addEventListener("click", (e) => {
   e.stopPropagation();
-  const isOpen = contactPopover.style.display === "block";
-  contactPopover.style.display = isOpen ? "none" : "block";
+  const isOpen = chatPanel.style.display !== "none";
+  chatPanel.style.display = isOpen ? "none" : "flex";
+  if (isOpen) {
+    stopChatPolling();
+  } else {
+    chatError.style.display = "none";
+    startChatPolling();
+  }
+});
+chatCloseBtn.addEventListener("click", () => {
+  chatPanel.style.display = "none";
+  stopChatPolling();
+});
+chatSendBtn.addEventListener("click", sendChatMessage);
+chatInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") sendChatMessage();
 });
 document.addEventListener("click", (e) => {
-  if (contactPopover.style.display === "block" && !contactPopover.contains(e.target) && e.target !== contactBtn) {
-    contactPopover.style.display = "none";
+  if (chatPanel.style.display !== "none" && !chatPanel.contains(e.target) && e.target !== contactBtn) {
+    chatPanel.style.display = "none";
+    stopChatPolling();
   }
 });
 
