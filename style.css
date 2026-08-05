@@ -58,17 +58,26 @@ body {
 }
 
 .chat-panel {
+  /* 시스템 다크모드와 무관하게 카톡풍 노란 테마를 항상 유지(자식 요소들이 참조하는 변수를 이 범위에서 재정의) */
+  --bg: #fffbe6;
+  --card-bg: #fffbe6;
+  --text: #3c1e1e;
+  --muted: #8a7a4a;
+  --border: #f0dfa0;
+  --accent-soft: #fff3bf;
+
   position: fixed;
   top: 68px;
   right: 14px;
   z-index: 100;
   width: min(320px, calc(100vw - 28px));
-  background: var(--card-bg);
+  background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
   flex-direction: column;
   overflow: hidden;
+  color: var(--text);
 }
 
 .chat-header {
