@@ -145,6 +145,10 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
 .popular-hint { font-size: 12px; }
 .popular-status { margin-top: 12px; font-size: 13px; }
 .popular-table-wrap { overflow-x: auto; }
+table.popular-table th:nth-child(4),
+table.popular-table td:nth-child(4),
+table.popular-table th:nth-child(5),
+table.popular-table td:nth-child(5) { min-width: 46px; }
 
 .top30-card { }
 .top30-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
