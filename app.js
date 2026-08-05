@@ -441,6 +441,21 @@ function get1yReturnFromChart(chartResult) {
   return ((latest - oldest) / oldest) * 100;
 }
 
+// 최근 거래일 대비 등락률(요약 카드의 현재가 옆 괄호 표시용) — 일봉 마지막 두 종가를 비교
+function getDailyChangePercent(chartResult) {
+  const result = chartResult && chartResult.chart && chartResult.chart.result && chartResult.chart.result[0];
+  if (!result) return null;
+  const timestamps = result.timestamp || [];
+  const closes = (result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
+  const pairs = timestamps.map((t, i) => ({ t, c: closes[i] })).filter((p) => p.c !== null && p.c !== undefined);
+  if (pairs.length < 2) return null;
+  pairs.sort((a, b) => a.t - b.t);
+  const prevClose = pairs[pairs.length - 2].c;
+  const latest = pairs[pairs.length - 1].c;
+  if (!prevClose) return null;
+  return ((latest - prevClose) / prevClose) * 100;
+}
+
 // 나스닥·다우존스·S&P500 1년 수익률 (여러 섹션이 공유해서 중복 요청을 줄임)
 async function getMarketReturns() {
   try {
@@ -1074,7 +1089,7 @@ async function runAnalysis(ticker) {
     results.style.display = "block";
     setStatus("loading", "섹션별 데이터를 정리하는 중입니다...");
 
-    renderSummary(quote, meta).catch((e) => {
+    renderSummary(quote, meta, getDailyChangePercent(chartData)).catch((e) => {
       el("summarySection").innerHTML = `<p class="error-inline">사업 요약을 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
@@ -1087,6 +1102,8 @@ async function runAnalysis(ticker) {
     // 프록시 요청 수를 줄이고(속도·안정성 향상) 값도 서로 어긋나지 않도록 함
     const marketReturnsPromise = getMarketReturns();
     const selfMetricsPromise = getFullMetrics(ticker);
+
+    renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise);
 
     renderPeers(ticker, selfMetricsPromise, quote.sector || quote.sectorDisp).catch((e) => {
       el("peersSection").innerHTML = `<p class="error-inline">경쟁사 비교 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
@@ -1117,7 +1134,7 @@ async function runAnalysis(ticker) {
 }
 
 // ---------- 1. 사업 요약 ----------
-async function renderSummary(quote, meta) {
+async function renderSummary(quote, meta, changePct) {
   el("summarySection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
   const companyName = quote.longname || quote.shortname || meta.longName || meta.symbol;
@@ -1135,9 +1152,41 @@ async function renderSummary(quote, meta) {
       <span>업종: <b>${escapeHtml(quote.industryDisp || quote.industry || "N/A")}</b></span>
       <span>섹터: <b>${escapeHtml(quote.sectorDisp || quote.sector || "N/A")}</b></span>
       <span>거래소: <b>${escapeHtml(quote.exchDisp || meta.fullExchangeName || "N/A")}</b></span>
-      <span>현재가: <b>$${(meta.regularMarketPrice ?? 0).toFixed(2)}</b></span>
+      <span>현재가: <b>$${(meta.regularMarketPrice ?? 0).toFixed(2)}</b> ${changePct !== null && changePct !== undefined ? `<span class="${changePct >= 0 ? "delta-up" : "delta-down"}">(${fmtPct(changePct)})</span>` : ""}</span>
     </div>
   `;
+}
+
+// 요약 카드 아래에 가격 매력도·투자 위험도·거시경제 점수를 한눈에 보는 작은 원형 배지로 가로 배치(상세 근거는 5·6·7번 섹션 참고)
+async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
+  const rowEl = el("summaryScoreRow");
+  try {
+    const [metrics, { sp500Return }, macroMetrics] = await Promise.all([
+      selfMetricsPromise,
+      marketReturnsPromise,
+      getMacroMetrics().catch(() => ({ m2Yoy: null, spread: null })),
+    ]);
+    const attractiveness = computeAttractivenessScore(metrics);
+    const risk = computeRiskScore(metrics, sp500Return);
+    const macro = computeMacroScore(macroMetrics);
+
+    rowEl.innerHTML = `
+      <div class="mini-score">
+        <div class="mini-score-circle">${attractiveness.total}</div>
+        <span class="mini-score-label">가격매력도</span>
+      </div>
+      <div class="mini-score">
+        <div class="mini-score-circle risk">${risk.total}</div>
+        <span class="mini-score-label">투자위험도</span>
+      </div>
+      <div class="mini-score">
+        <div class="mini-score-circle macro">${macro.total}</div>
+        <span class="mini-score-label">거시경제</span>
+      </div>
+    `;
+  } catch {
+    rowEl.innerHTML = "";
+  }
 }
 
 // fundamentals-timeseries 응답에서 통화 코드가 붙은 첫 항목을 찾아 재무제표의 보고 통화를 판별(연도별 공통값으로 가정)
