@@ -501,6 +501,7 @@ async function getCompanyMetrics(symbol) {
     }
   }
   const marketCap = meta.regularMarketPrice !== undefined && sharesOutstanding ? meta.regularMarketPrice * sharesOutstanding : null;
+  const revenueSeries = resultArr ? await annualFundamentalSeries(resultArr, "annualTotalRevenue", meta.currency) : [];
 
   return {
     symbol,
@@ -513,12 +514,13 @@ async function getCompanyMetrics(symbol) {
     marketCap,
     currency: meta.currency,
     oneYearReturn: get1yReturnFromChart(chartData),
+    revenueGrowth3y: avgRevenueGrowth3y(revenueSeries),
   };
 }
 
-// 시가총액 규모 가점 + 52주 최고/최저 대비 위치 + PE 밸류에이션(시가총액÷순이익)을 조합한 참고용 가격 매력도 점수(10점 만점)
+// 시가총액 규모 + 52주 최고/최저 대비 위치 + PE 밸류에이션 + 매출 성장성을 조합한 참고용 가격 매력도 점수(10점 만점)
 function computeAttractivenessScore(metrics) {
-  const { price, yearLow, yearHigh, marketCap, netIncome, currency } = metrics;
+  const { price, yearLow, yearHigh, marketCap, netIncome, currency, revenueGrowth3y } = metrics;
 
   // 1) 시가총액 규모 가점 (0~2점) — 1조달러 이상이면 만점, 300억달러 이하면 0점 (선형)
   // 시가총액을 신뢰할 수 없어 N/A로 표시되는 경우(데이터 누락, ADR 등 통화 문제로 제외된 해외 상장 종목)는 0점 처리
@@ -535,7 +537,7 @@ function computeAttractivenessScore(metrics) {
     rangeScore = clamp(4 * (1 - rangePosition), 0, 4);
   }
 
-  // 3) PE 밸류에이션 = 최근 연간 시가총액 ÷ 순이익 (0~4점) — 10배면 만점, 50배 이상이면 0점 (10배마다 1점, 선형)
+  // 3) PE 밸류에이션 = 직전년도 시가총액 ÷ 순이익 (0~2점) — 10배 이하면 만점, 70배 이상이면 0점 (30배마다 1점, 선형)
   // 일부 해외 상장 종목은 시세는 USD인데 재무제표는 원래 보고 통화(KRW 등) 그대로 내려오는 경우가 있어
   // (예: SKHY) 시가총액(USD)÷순이익(현지통화)이 뒤섞여 PE가 1배 미만처럼 비정상적으로 작게 나올 수 있음 —
   // 정상적인 흑자 기업이 시총보다 큰 연간 순이익을 내는 경우는 사실상 없으므로 이런 값은 신뢰할 수 없다고 보고 제외
@@ -547,11 +549,18 @@ function computeAttractivenessScore(metrics) {
     if (rawPe >= 1) pe = rawPe;
   }
   if (pe !== null) {
-    peScore = clamp(4 - (pe - 10) / 10, 0, 4);
+    peScore = clamp(2 - (pe - 10) / 30, 0, 2);
   }
 
-  const total = Math.round(clamp(marketCapScore + rangeScore + peScore, 0, 10) * 10) / 10;
-  return { total, marketCapScore, rangeScore, peScore, pe, rangePosition };
+  // 4) 매출 성장성 = 최근 3개 연도 전년 대비 매출 성장률 평균 (0~2점) — 30% 이상이면 만점, 0% 이하면 0점 (15%마다 1점, 선형)
+  // 데이터가 부족해 성장률을 계산할 수 없는 경우(N/A)도 0점 처리
+  let growthScore = 0;
+  if (revenueGrowth3y !== undefined && revenueGrowth3y !== null) {
+    growthScore = clamp(revenueGrowth3y / 15, 0, 2);
+  }
+
+  const total = Math.round(clamp(marketCapScore + rangeScore + peScore + growthScore, 0, 10) * 10) / 10;
+  return { total, marketCapScore, rangeScore, peScore, pe, rangePosition, growthScore, revenueGrowth3y };
 }
 
 // 통화쌍 환율(세션 내 캐시) — 재무제표가 시세와 다른 현지 통화로 내려오는 해외 상장 종목(TSM·SKHY 등) 환산용
@@ -581,6 +590,36 @@ async function latestFundamentalValue(block, key, quoteCurrency, { convert = tru
   if (!convert) return null;
   const rate = await getFxRate(latest.currencyCode, quoteCurrency);
   return rate !== null ? raw * rate : null;
+}
+
+// fundamentals-timeseries 응답에서 특정 항목의 연도별 시계열(과거→최근 정렬, 환율 자동 환산)을 추출 — 매출 성장률처럼 여러 해 값이 필요한 계산용
+async function annualFundamentalSeries(resultArr, key, quoteCurrency) {
+  const items = [];
+  for (const block of resultArr || []) {
+    for (const it of block[key] || []) {
+      if (it && it.asOfDate && it.reportedValue && it.reportedValue.raw !== undefined) items.push(it);
+    }
+  }
+  if (items.length === 0) return [];
+  items.sort((a, b) => new Date(a.asOfDate) - new Date(b.asOfDate));
+  const reportCurrency = items.find((it) => it.currencyCode)?.currencyCode;
+  const fxRate =
+    reportCurrency && quoteCurrency && reportCurrency !== quoteCurrency ? await getFxRate(reportCurrency, quoteCurrency) : 1;
+  if (fxRate === null) return [];
+  return items.map((it) => ({ date: it.asOfDate, value: it.reportedValue.raw * fxRate }));
+}
+
+// 최근 3개 연도의 전년 대비 매출 성장률 평균(%) — 최근 4개년 매출로 성장률 3개를 산출해 평균
+function avgRevenueGrowth3y(revenueSeries) {
+  const recent = (revenueSeries || []).slice(-4);
+  const growthRates = [];
+  for (let i = 1; i < recent.length; i++) {
+    const prev = recent[i - 1].value;
+    const cur = recent[i].value;
+    if (prev) growthRates.push(((cur - prev) / Math.abs(prev)) * 100);
+  }
+  if (growthRates.length === 0) return null;
+  return growthRates.reduce((a, b) => a + b, 0) / growthRates.length;
 }
 
 // 가격 매력도 + 투자 위험도 점수 계산에 필요한 모든 지표를 한 번(차트 1회 + 재무제표 1회)에 조회 (TOP30 랭킹용)
@@ -618,6 +657,7 @@ async function getFullMetrics(symbol) {
   // 단순히 이자부담 차입금(장단기 대출/사채)만 쓰면 실제 대차대조표상 부채비율보다 크게 작게 나옴)
   const totalLiabilities = totalAssets !== null && equity !== null ? totalAssets - equity : null;
   const marketCap = meta.regularMarketPrice !== undefined && sharesOutstanding ? meta.regularMarketPrice * sharesOutstanding : null;
+  const revenueSeries = await annualFundamentalSeries(resultArr, "annualTotalRevenue", meta.currency);
 
   return {
     symbol,
@@ -633,6 +673,7 @@ async function getFullMetrics(symbol) {
     marketCap,
     currency: meta.currency,
     oneYearReturn: get1yReturnFromChart(chartData),
+    revenueGrowth3y: avgRevenueGrowth3y(revenueSeries),
   };
 }
 
@@ -1448,14 +1489,14 @@ async function renderNews(searchData) {
   `;
 }
 
-// ---------- 5. 가격 매력도 점수 (52주 위치 + PE 밸류에이션) ----------
+// ---------- 5. 가격 매력도 점수 (52주 위치 + PE 밸류에이션 + 매출 성장성) ----------
 async function renderScore(selfMetricsPromise) {
   el("scoreSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
   const metrics = await selfMetricsPromise;
 
   const score = computeAttractivenessScore(metrics);
-  const { total, marketCapScore, rangeScore, peScore, pe, rangePosition } = score;
+  const { total, marketCapScore, rangeScore, peScore, pe, rangePosition, growthScore, revenueGrowth3y } = score;
   const isForeignCurrency = metrics.currency && metrics.currency !== "USD";
 
   el("scoreSection").innerHTML = `
@@ -1468,11 +1509,12 @@ async function renderScore(selfMetricsPromise) {
         <ul>
           <li>🏢 시가총액 밸류에이션: <b>${!isForeignCurrency && metrics.marketCap ? fmtCompactCurrency(metrics.marketCap) : "N/A" + (isForeignCurrency ? " (해외 상장 종목 제외)" : "")}</b> (1조달러 이상이면 만점, 300억달러 이하면 0점)</li>
           <li>📍 52주 최고/최저 대비 위치: ${rangePosition !== null ? `저점 대비 <b>${(rangePosition * 100).toFixed(0)}%</b> 지점` : "N/A"} (저점에 가까울수록 가점)</li>
-          <li>💰 P/E(주가수익비율): <b>${pe ? pe.toFixed(1) : "N/A"}</b> (시가총액 ÷ 최근 연간 순이익, 낮을수록 가점, 10배 만점·50배 이상 0점)</li>
-          <li>세부 점수 — 시가총액 밸류에이션 ${marketCapScore.toFixed(1)}/2, 52주 위치 ${rangeScore.toFixed(1)}/4, PE 밸류에이션 ${peScore.toFixed(1)}/4</li>
+          <li>💰 P/E(주가수익비율): <b>${pe ? pe.toFixed(1) : "N/A"}</b> (직전년도 시가총액 ÷ 순이익, 낮을수록 가점, 10배 이하 만점·70배 이상 0점)</li>
+          <li>📈 매출 성장성(최근 3개년 평균): <b>${revenueGrowth3y !== null && revenueGrowth3y !== undefined ? fmtPct(revenueGrowth3y) : "N/A"}</b> (전년 대비 매출 성장률, 높을수록 가점, 30% 이상 만점·0% 이하 0점)</li>
+          <li>세부 점수 — 시가총액 밸류에이션 ${marketCapScore.toFixed(1)}/2, 52주 위치 ${rangeScore.toFixed(1)}/4, PE 밸류에이션 ${peScore.toFixed(1)}/2, 매출 성장성 ${growthScore.toFixed(1)}/2</li>
         </ul>
         <p class="disclaimer">
-          ⚠️ 이 점수는 시가총액 규모, 52주 가격 위치, PE 밸류에이션을 조합한 <b>단순 참고용 정량 지표</b>이며,
+          ⚠️ 이 점수는 시가총액 규모, 52주 가격 위치, PE 밸류에이션, 매출 성장성을 조합한 <b>단순 참고용 정량 지표</b>이며,
           투자 자문이나 매수/매도 추천이 아닙니다. 실제 투자 판단은 재무제표 전체와 다른 정보를 종합해 본인 책임 하에 내려야 합니다.
         </p>
       </div>
