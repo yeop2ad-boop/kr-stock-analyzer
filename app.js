@@ -291,19 +291,15 @@ async function getCompanyMetrics(symbol) {
   };
 }
 
-// 시총 순위 가점 + 52주 최고/최저 대비 위치 + PE 밸류에이션(시가총액÷순이익)을 조합한 참고용 가격 매력도 점수(10점 만점)
-// marketCapRank: S&P500 시가총액 기준 근사 순위(getMarketCapRank로 미리 조회해 전달)
-function computeAttractivenessScore(metrics, marketCapRank) {
-  const { price, yearLow, yearHigh, marketCap, netIncome } = metrics;
+// 시가총액 규모 가점 + 52주 최고/최저 대비 위치 + PE 밸류에이션(시가총액÷순이익)을 조합한 참고용 가격 매력도 점수(10점 만점)
+function computeAttractivenessScore(metrics) {
+  const { price, yearLow, yearHigh, marketCap, netIncome, currency } = metrics;
 
-  // 1) 시총 순위 가점 (0~2점) — 1~30위 2점, 31~100위 1.5점, 101~200위 1점, 201~300위 0.5점, 301위 이하 0점
-  let capRankScore = 1;
-  if (marketCapRank !== null && marketCapRank !== undefined) {
-    if (marketCapRank <= 30) capRankScore = 2;
-    else if (marketCapRank <= 100) capRankScore = 1.5;
-    else if (marketCapRank <= 200) capRankScore = 1;
-    else if (marketCapRank <= 300) capRankScore = 0.5;
-    else capRankScore = 0;
+  // 1) 시가총액 규모 가점 (0~2점) — 1조달러 이상이면 만점, 300억달러 이하면 0점 (선형)
+  // 원화 등 USD가 아닌 통화로 표시되는 해외 상장 종목은 숫자 단위가 달라 그대로 비교할 수 없으므로 제외(중립값 유지)
+  let marketCapScore = 1;
+  if (marketCap !== undefined && marketCap !== null && (!currency || currency === "USD")) {
+    marketCapScore = clamp((2 * (marketCap - 3e10)) / (1e12 - 3e10), 0, 2);
   }
 
   // 2) 52주 최고/최저 대비 위치 (0~4점) — 저점(0%)이면 만점, 고점(100%)이면 0점 (선형)
@@ -328,8 +324,8 @@ function computeAttractivenessScore(metrics, marketCapRank) {
     peScore = clamp(4 - (pe - 10) / 10, 0, 4);
   }
 
-  const total = Math.round(clamp(capRankScore + rangeScore + peScore, 0, 10) * 10) / 10;
-  return { total, capRankScore, rangeScore, peScore, pe, rangePosition, marketCapRank };
+  const total = Math.round(clamp(marketCapScore + rangeScore + peScore, 0, 10) * 10) / 10;
+  return { total, marketCapScore, rangeScore, peScore, pe, rangePosition };
 }
 
 // fundamentals-timeseries 응답 블록에서 특정 항목의 가장 최근 값을 추출
@@ -527,62 +523,6 @@ function getSP500Tickers() {
   return sp500TickersPromise;
 }
 
-// 개별 종목의 시가총액만 가볍게 조회(S&P500 시총 순위 계산 전용 — 매출/EPS 등은 조회하지 않음)
-async function getMarketCapOnly(symbol) {
-  const [chartData, fundData] = await Promise.all([
-    yahooChart(symbol),
-    yahooFundamentals(symbol, "annualShareIssued").catch(() => null),
-  ]);
-  const result = chartData && chartData.chart && chartData.chart.result && chartData.chart.result[0];
-  if (!result) return null;
-  const meta = result.meta;
-  let sharesOutstanding = null;
-  const resultArr = fundData && fundData.timeseries && fundData.timeseries.result;
-  if (resultArr) {
-    for (const block of resultArr) {
-      if (block.annualShareIssued) sharesOutstanding = latestFundamentalValue(block, "annualShareIssued");
-    }
-  }
-  return meta.regularMarketPrice !== undefined && sharesOutstanding ? meta.regularMarketPrice * sharesOutstanding : null;
-}
-
-// S&P500 전체 종목의 시가총액을 내림차순으로 정렬해 캐싱(시총 순위 계산용, 세션 내 한 번만 계산 — 요청량이 많아 시간이 걸림)
-// 페이지 로드 시 미리 백그라운드로 시작해두므로, sp500MarketCapsPromise 존재 여부만으로는 완료 여부를 알 수 없어
-// 실제로 다 받아졌는지는 sp500MarketCapsReady 플래그로 별도 추적
-let sp500MarketCapsPromise = null;
-let sp500MarketCapsReady = false;
-function getSP500MarketCaps() {
-  if (!sp500MarketCapsPromise) {
-    sp500MarketCapsPromise = (async () => {
-      const tickers = await getSP500Tickers();
-      const caps = await mapWithConcurrency(tickers, 5, getMarketCapOnly);
-      return caps.filter((c) => c !== null && c > 0).sort((a, b) => b - a);
-    })()
-      .then((caps) => {
-        sp500MarketCapsReady = true;
-        return caps;
-      })
-      .catch((e) => {
-        sp500MarketCapsPromise = null; // 실패 시 재시도 가능하도록 캐시 초기화
-        throw e;
-      });
-  }
-  return sp500MarketCapsPromise;
-}
-
-// 캐싱된 S&P500 시가총액 목록과 비교해 이 종목의 근사 시총 순위(1위 = 최대 시총)를 계산.
-// S&P500 미편입 종목도 시총 값을 비교해 순위를 끼워넣는 방식으로 근사치를 매김.
-// S&P500 시총은 전부 USD 기준이라 원화 등 다른 통화로 표시되는 해외 상장 종목은 그대로 비교하면
-// 숫자 단위 차이 때문에 순위가 왜곡되므로(예: 원화 표시 시총이 물리적으로 훨씬 큰 숫자) 비교 대상에서 제외
-async function getMarketCapRank(metrics) {
-  const { marketCap, currency } = metrics;
-  if (marketCap === null || marketCap === undefined) return null;
-  if (currency && currency !== "USD") return null;
-  const caps = await getSP500MarketCaps();
-  const higherCount = caps.filter((c) => c > marketCap).length;
-  return higherCount + 1;
-}
-
 // ---------- 나스닥-100 종목 목록 (위키백과, 프록시 불필요) ----------
 let nasdaq100TickersPromise = null;
 function getNasdaq100Tickers() {
@@ -748,9 +688,6 @@ nasdaqRangeBtns.forEach((btn) => {
 });
 nasdaq100Btn.addEventListener("click", () => runNasdaq100());
 popularBtn.addEventListener("click", () => runPopular());
-
-// 페이지 로드 시 S&P500 시총 순위 캐시를 미리 백그라운드로 준비(첫 검색·인기종목 조회 시 대기 시간을 줄이기 위함)
-getSP500MarketCaps().catch(() => {});
 
 async function runAnalysis() {
   const ticker = tickerInput.value.trim().toUpperCase();
@@ -978,14 +915,11 @@ async function renderPeers(ticker, selfMetricsPromise) {
   }
 
   const maxRev = Math.max(...all.map((d) => d.revenue || 0), 1);
-  const scores = await Promise.all(
-    all.map(async (d) => computeAttractivenessScore(d, await getMarketCapRank(d).catch(() => null)))
-  );
   const rows = all
-    .map((d, i) => ({ d, score: scores[i] }))
-    .sort((a, b) => (b.d.revenue || 0) - (a.d.revenue || 0))
-    .map(({ d, score }) => {
+    .sort((a, b) => (b.revenue || 0) - (a.revenue || 0))
+    .map((d) => {
       const pct = clamp(((d.revenue || 0) / maxRev) * 100, 2, 100);
+      const score = computeAttractivenessScore(d);
       return `
       <div class="peer-row">
         <span class="bar-label">${escapeHtml(d.symbol)}${d.self ? " (분석대상)" : ""}</span>
@@ -1047,13 +981,9 @@ async function renderScore(selfMetricsPromise) {
 
   const metrics = await selfMetricsPromise;
 
-  if (!sp500MarketCapsReady) {
-    el("scoreSection").innerHTML = `<p class="muted">S&P500 시가총액 순위 계산 중... (세션 최초 1회, 다소 시간이 걸릴 수 있습니다)</p>`;
-  }
-  const marketCapRank = await getMarketCapRank(metrics).catch(() => null);
-
-  const score = computeAttractivenessScore(metrics, marketCapRank);
-  const { total, capRankScore, rangeScore, peScore, pe, rangePosition } = score;
+  const score = computeAttractivenessScore(metrics);
+  const { total, marketCapScore, rangeScore, peScore, pe, rangePosition } = score;
+  const isForeignCurrency = metrics.currency && metrics.currency !== "USD";
 
   el("scoreSection").innerHTML = `
     <div class="score-wrap">
@@ -1063,13 +993,13 @@ async function renderScore(selfMetricsPromise) {
       </div>
       <div class="score-details">
         <ul>
-          <li>🏆 S&P500 시총 순위(근사): <b>${marketCapRank !== null ? marketCapRank + "위" : metrics.currency && metrics.currency !== "USD" ? "N/A (해외 상장 종목 제외)" : "N/A"}</b> (순위가 높을수록 가점)</li>
+          <li>🏢 시가총액: <b>${!isForeignCurrency && metrics.marketCap ? fmtCompactCurrency(metrics.marketCap) : "N/A" + (isForeignCurrency ? " (해외 상장 종목 제외)" : "")}</b> (1조달러 이상이면 만점, 300억달러 이하면 0점)</li>
           <li>📍 52주 최고/최저 대비 위치: ${rangePosition !== null ? `저점 대비 <b>${(rangePosition * 100).toFixed(0)}%</b> 지점` : "N/A"} (저점에 가까울수록 가점)</li>
           <li>💰 P/E(주가수익비율): <b>${pe ? pe.toFixed(1) : "N/A"}</b> (시가총액 ÷ 최근 연간 순이익, 낮을수록 가점, 10배 만점·50배 이상 0점)</li>
-          <li>세부 점수 — 시총 순위 ${capRankScore.toFixed(1)}/2, 52주 위치 ${rangeScore.toFixed(1)}/4, PE 밸류에이션 ${peScore.toFixed(1)}/4</li>
+          <li>세부 점수 — 시가총액 ${marketCapScore.toFixed(1)}/2, 52주 위치 ${rangeScore.toFixed(1)}/4, PE 밸류에이션 ${peScore.toFixed(1)}/4</li>
         </ul>
         <p class="disclaimer">
-          ⚠️ 이 점수는 S&P500 시총 순위, 52주 가격 위치, PE 밸류에이션을 조합한 <b>단순 참고용 정량 지표</b>이며,
+          ⚠️ 이 점수는 시가총액 규모, 52주 가격 위치, PE 밸류에이션을 조합한 <b>단순 참고용 정량 지표</b>이며,
           투자 자문이나 매수/매도 추천이 아닙니다. 실제 투자 판단은 재무제표 전체와 다른 정보를 종합해 본인 책임 하에 내려야 합니다.
         </p>
       </div>
@@ -1156,18 +1086,14 @@ async function renderRankedTop10(tickers, rangeLabel, { statusEl, resultsEl, but
       statusEl.textContent = `${completed}/${total} 종목(${rangeLabel}) 분석 중...`;
     });
 
-    const ranked = (
-      await Promise.all(
-        metricsList.map(async (m) => {
-          if (!m) return null;
-          const marketCapRank = await getMarketCapRank(m).catch(() => null);
-          const attractiveness = computeAttractivenessScore(m, marketCapRank);
-          const risk = computeRiskScore(m, sp500Return);
-          const combined = Math.round((attractiveness.total + risk.total) * 10) / 10;
-          return { symbol: m.symbol, price: m.price, attractiveness: attractiveness.total, risk: risk.total, combined };
-        })
-      )
-    )
+    const ranked = metricsList
+      .map((m) => {
+        if (!m) return null;
+        const attractiveness = computeAttractivenessScore(m);
+        const risk = computeRiskScore(m, sp500Return);
+        const combined = Math.round((attractiveness.total + risk.total) * 10) / 10;
+        return { symbol: m.symbol, price: m.price, attractiveness: attractiveness.total, risk: risk.total, combined };
+      })
       .filter(Boolean)
       .sort((a, b) => b.combined - a.combined)
       .slice(0, 10);
@@ -1288,16 +1214,13 @@ async function runPopular() {
     // 10개를 한꺼번에 요청하면 프록시가 과부하로 실패하는 경우가 많아 동시 요청 수를 제한
     const fullMetricsList = await mapWithConcurrency(ranked, 3, (r) => getFullMetrics(r.symbol));
 
-    const scored = await Promise.all(
-      ranked.map(async (r, i) => {
-        const m = fullMetricsList[i];
-        if (!m) return { ...r, attractiveness: null, risk: null };
-        const marketCapRank = await getMarketCapRank(m).catch(() => null);
-        const attractiveness = computeAttractivenessScore(m, marketCapRank);
-        const risk = computeRiskScore(m, sp500Return);
-        return { ...r, attractiveness: attractiveness.total, risk: risk.total };
-      })
-    );
+    const scored = ranked.map((r, i) => {
+      const m = fullMetricsList[i];
+      if (!m) return { ...r, attractiveness: null, risk: null };
+      const attractiveness = computeAttractivenessScore(m);
+      const risk = computeRiskScore(m, sp500Return);
+      return { ...r, attractiveness: attractiveness.total, risk: risk.total };
+    });
 
     popularStatus.style.display = "none";
 
