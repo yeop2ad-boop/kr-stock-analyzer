@@ -920,13 +920,14 @@ async function renderPeers(ticker, selfMetricsPromise) {
     .map((d) => {
       const pct = clamp(((d.revenue || 0) / maxRev) * 100, 2, 100);
       const score = computeAttractivenessScore(d);
+      const scoreClass = score.total >= 5 ? "delta-up" : "delta-down";
       return `
       <div class="peer-row">
-        <span class="bar-label${d.self ? " self" : ""}">${escapeHtml(d.symbol)}${d.self ? " (분석대상)" : ""}</span>
+        <span class="bar-label${d.self ? " self" : ""}">${escapeHtml(d.symbol)}</span>
         <div class="bar-track"><div class="bar-fill ${d.self ? "self" : ""}" style="width:${pct}%"></div></div>
         <span class="bar-value">${fmtCompactCurrency(d.revenue)}</span>
         <span class="peer-price">${fmtCompactCurrency(d.marketCap)}</span>
-        <span class="peer-score">${score.total}/10</span>
+        <span class="peer-score ${scoreClass}">${score.total}</span>
       </div>`;
     })
     .join("");

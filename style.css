@@ -228,7 +228,7 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 .peer-table-header span:nth-child(5) { text-align: right; }
 .peer-price, .peer-score { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
 .peer-table-header + .bar-chart { margin-top: 6px; }
-.bar-label.self { color: #7c3aed; font-weight: 700; }
+.bar-label.self { font-weight: 800; }
 
 @media (max-width: 480px) {
   .peer-row, .peer-table-header {
