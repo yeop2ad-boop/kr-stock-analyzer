@@ -878,7 +878,7 @@ async function renderFinancials(ticker) {
           profitOverlay = `<div class="bar-fill-profit" style="width:${profitPct}%"><span class="profit-label">순이익 ${marginPct.toFixed(0)}%</span></div>`;
         } else if (netIncome < 0) {
           const lossPct = clamp((Math.abs(netIncome) / maxAbsLoss) * 100, 2, 100);
-          lossZoneContent = `<div class="bar-loss" style="width:${lossPct}%"><span class="loss-label">순손실 ${Math.abs(marginPct).toFixed(0)}%</span></div>`;
+          lossZoneContent = `<div class="bar-loss" style="width:${lossPct}%"></div><span class="loss-label">순손실 ${Math.abs(marginPct).toFixed(0)}%</span>`;
         }
       }
 
