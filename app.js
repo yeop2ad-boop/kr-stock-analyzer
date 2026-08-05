@@ -862,7 +862,6 @@ async function renderFinancials(ticker) {
   }
 
   const maxRevenue = Math.max(...recentYears.map((y) => byYear[y].revenue || 0), 1);
-  const maxAbsLoss = Math.max(...recentYears.map((y) => (byYear[y].netIncome < 0 ? Math.abs(byYear[y].netIncome) : 0)), 1);
   const revBars = recentYears
     .map((y) => {
       const rev = byYear[y].revenue;
@@ -875,10 +874,11 @@ async function renderFinancials(ticker) {
         const marginPct = (netIncome / rev) * 100;
         if (netIncome > 0) {
           const profitPct = clamp((netIncome / maxRevenue) * 100, 0, pct);
-          profitOverlay = `<div class="bar-fill-profit" style="width:${profitPct}%"><span class="profit-label">순이익 ${marginPct.toFixed(0)}%</span></div>`;
+          profitOverlay = `<div class="bar-fill-profit" style="width:${profitPct}%"><span class="profit-label">+${marginPct.toFixed(0)}%</span></div>`;
         } else if (netIncome < 0) {
-          const lossPct = clamp((Math.abs(netIncome) / maxAbsLoss) * 100, 2, 100);
-          lossZoneContent = `<div class="bar-loss" style="width:${lossPct}%"></div><span class="loss-label">순손실 ${Math.abs(marginPct).toFixed(0)}%</span>`;
+          // 순손실 비율(매출 대비, 절대값)이 100% 이상이면 그래프 최대, 0%에 가까울수록 작아짐
+          const lossPct = clamp(Math.abs(marginPct), 2, 100);
+          lossZoneContent = `<div class="bar-loss" style="width:${lossPct}%"></div><span class="loss-label">-${Math.abs(marginPct).toFixed(0)}%</span>`;
         }
       }
 
