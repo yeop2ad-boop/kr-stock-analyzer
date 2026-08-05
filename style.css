@@ -199,15 +199,28 @@ body {
   border-top: 1px solid var(--border);
 }
 
+.eyebrow {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #f5a623;
+}
+
 header h1 {
-  font-size: 28px;
-  margin: 0 0 6px;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 12px;
 }
 
 .subtitle {
   color: var(--muted);
-  margin: 0 0 24px;
-  font-size: 14px;
+  margin: 0 0 26px;
+  font-size: 15px;
+  line-height: 1.7;
+  max-width: 560px;
 }
 
 .card {
