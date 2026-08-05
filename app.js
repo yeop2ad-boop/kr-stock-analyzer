@@ -922,7 +922,7 @@ async function renderPeers(ticker, selfMetricsPromise) {
       const score = computeAttractivenessScore(d);
       return `
       <div class="peer-row">
-        <span class="bar-label">${escapeHtml(d.symbol)}${d.self ? " (분석대상)" : ""}</span>
+        <span class="bar-label${d.self ? " self" : ""}">${escapeHtml(d.symbol)}${d.self ? " (분석대상)" : ""}</span>
         <div class="bar-track"><div class="bar-fill ${d.self ? "self" : ""}" style="width:${pct}%"></div></div>
         <span class="bar-value">${fmtCompactCurrency(d.revenue)}</span>
         <span class="peer-price">${fmtCompactCurrency(d.marketCap)}</span>
