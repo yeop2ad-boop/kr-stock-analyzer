@@ -57,12 +57,12 @@ body {
   height: 40px;
   padding: 0;
   border-radius: 50%;
-  font-size: 20px;
+  font-size: 24px;
+  font-weight: 700;
   line-height: 1;
-  background: #fee500;
+  background: none;
   border: none;
-  color: #3c1e1e;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  color: var(--text);
 }
 
 .fh-search {
@@ -78,31 +78,43 @@ body {
   max-width: 860px;
   margin: 0 auto;
   display: flex;
-  gap: 8px;
+  flex-wrap: nowrap;
+  gap: 4px;
 }
 .cat-btn {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
   background: var(--bg);
   border: 1px solid var(--border);
   color: var(--muted);
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 700;
-  padding: 9px 10px;
+  padding: 9px 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .cat-btn.active { color: #fff; border-color: transparent; }
 .cat-popular.active { background: #d1495b; }
-.cat-sp500.active { background: #b8860b; }
-.cat-nasdaq.active { background: var(--accent); }
+.cat-nasdaq100.active { background: var(--accent); }
+.cat-tech100.active { background: #16a3a3; }
+.cat-sp100.active { background: #b8860b; }
+.cat-sp500.active { background: #8b5cf6; }
 
-.fh-sub {
-  max-width: 860px;
-  margin: 8px auto 0;
+.loading-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: #000;
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  align-items: center;
+  justify-content: center;
 }
-.sub-btn { flex: 1 1 auto; min-width: 60px; font-size: 12px; padding: 8px 6px; white-space: nowrap; }
-#popularSub .sub-btn { background: #d1495b; }
+.loading-splash-logo { width: min(280px, 70vw); height: auto; animation: splash-pulse 1.4s ease-in-out infinite; }
+@keyframes splash-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
 
 .chat-panel {
   position: fixed;
@@ -290,7 +302,6 @@ table.popular-table td:nth-child(4),
 table.popular-table th:nth-child(5),
 table.popular-table td:nth-child(5) { min-width: 46px; }
 
-.top30RangeBtn { background: #b8860b; }
 .top30-status { margin-top: 12px; font-size: 13px; }
 
 table.top30-table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 13px; }

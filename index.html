@@ -9,6 +9,14 @@
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div id="loadingSplash" class="loading-splash">
+    <svg viewBox="0 0 480 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="yeopinvest.com" class="loading-splash-logo">
+      <polyline points="22,70 38,50 52,58 72,28" fill="none" stroke="#f5a623" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+      <polygon points="72,28 62,30 70,38" fill="#f5a623" />
+      <text x="90" y="78" font-family="Pretendard, 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, Arial, sans-serif" font-weight="800" letter-spacing="-0.5px" font-size="46" fill="#eceef2">yeop<tspan fill="#6b9bff">invest</tspan><tspan font-weight="600" letter-spacing="0" fill="#8a94a6" font-size="26">.com</tspan></text>
+    </svg>
+  </div>
+
   <header id="fixedHeader" class="fixed-header">
     <div class="fh-topline">
       <div class="site-logo" aria-label="yeopinvest.com">
@@ -18,44 +26,26 @@
           <text x="90" y="78" font-family="Pretendard, 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, Arial, sans-serif" font-weight="800" letter-spacing="-0.5px" font-size="46" fill="#eceef2">yeop<tspan fill="#6b9bff">invest</tspan><tspan font-weight="600" letter-spacing="0" fill="#8a94a6" font-size="26">.com</tspan></text>
         </svg>
       </div>
-      <button id="contactBtn" class="contact-btn" type="button" aria-label="실시간 추천">💬</button>
+      <button id="contactBtn" class="contact-btn" type="button" aria-label="실시간 종목추천">…</button>
     </div>
 
     <div class="fh-search">
-      <input type="text" id="tickerInput" placeholder="예: AAPL, MSFT, TSLA" autocomplete="off" />
+      <input type="text" id="tickerInput" placeholder="티커를 검색해 주세요.(예: AAPL,TSLA)" autocomplete="off" />
       <button id="analyzeBtn" type="button" aria-label="분석">🔍</button>
     </div>
 
     <div class="fh-cats">
       <button type="button" class="cat-btn cat-popular" id="catPopularBtn">인기종목</button>
+      <button type="button" class="cat-btn cat-nasdaq100" id="catNasdaq100Btn">나스닥100</button>
+      <button type="button" class="cat-btn cat-tech100" id="catTech100Btn">테크100</button>
+      <button type="button" class="cat-btn cat-sp100" id="catSp100Btn">S&amp;P100</button>
       <button type="button" class="cat-btn cat-sp500" id="catSp500Btn">S&amp;P500</button>
-      <button type="button" class="cat-btn cat-nasdaq" id="catNasdaqBtn">나스닥</button>
-    </div>
-
-    <div class="fh-sub" id="popularSub" style="display:none;">
-      <button type="button" class="sub-btn popularCountBtn" data-count="10">10</button>
-      <button type="button" class="sub-btn popularCountBtn" data-count="20">20</button>
-      <button type="button" class="sub-btn popularCountBtn" data-count="30">30</button>
-      <button type="button" class="sub-btn popularCountBtn" data-count="40">40</button>
-    </div>
-    <div class="fh-sub" id="sp500Sub" style="display:none;">
-      <button type="button" class="sub-btn top30RangeBtn" data-start="0" data-end="100">1–100</button>
-      <button type="button" class="sub-btn top30RangeBtn" data-start="100" data-end="200">101–200</button>
-      <button type="button" class="sub-btn top30RangeBtn" data-start="200" data-end="300">201–300</button>
-      <button type="button" class="sub-btn top30RangeBtn" data-start="300" data-end="400">301–400</button>
-      <button type="button" class="sub-btn top30RangeBtn" data-start="400" data-end="500">401–500</button>
-    </div>
-    <div class="fh-sub" id="nasdaqSub" style="display:none;">
-      <button type="button" class="sub-btn nasdaqRangeBtn" data-start="0" data-end="100">1–100</button>
-      <button type="button" class="sub-btn nasdaqRangeBtn" data-start="100" data-end="200">101–200</button>
-      <button type="button" class="sub-btn nasdaqRangeBtn" data-start="200" data-end="300">201–300</button>
-      <button type="button" class="sub-btn" id="nasdaq100Btn">TECH100</button>
     </div>
   </header>
 
   <div id="chatPanel" class="chat-panel" style="display:none;">
     <div class="chat-header">
-      <span>💬 실시간 추천 <span class="muted" style="font-weight:400;">(익명·24시간 보관)</span></span>
+      <span>💬 실시간 종목추천 <span class="muted" style="font-weight:400;">(익명·24시간 보관)</span></span>
       <button id="chatCloseBtn" class="chat-close-btn" type="button" aria-label="닫기">✕</button>
     </div>
     <div id="chatMessages" class="chat-messages"><p class="muted chat-empty">불러오는 중...</p></div>
@@ -79,11 +69,8 @@
     <p id="popularStatus" class="muted top30-status" style="display:none;"></p>
     <div id="popularResults"></div>
 
-    <p id="top30Status" class="muted top30-status" style="display:none;"></p>
-    <div id="top30Results"></div>
-
-    <p id="nasdaqStatus" class="muted top30-status" style="display:none;"></p>
-    <div id="nasdaqResults"></div>
+    <p id="rankedStatus" class="muted top30-status" style="display:none;"></p>
+    <div id="rankedResults"></div>
 
     <div id="statusBox" class="status-box" style="display:none;"></div>
 

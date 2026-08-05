@@ -11,15 +11,9 @@ const resultsView = el("resultsView");
 const backHomeBtn = el("backHomeBtn");
 const results = el("results");
 const fixedHeader = el("fixedHeader");
-const top30RangeBtns = Array.from(document.querySelectorAll(".top30RangeBtn"));
-const top30Status = el("top30Status");
-const top30Results = el("top30Results");
-const nasdaqRangeBtns = Array.from(document.querySelectorAll(".nasdaqRangeBtn"));
-const nasdaq100Btn = el("nasdaq100Btn");
-const nasdaqBtns = [...nasdaqRangeBtns, nasdaq100Btn];
-const nasdaqStatus = el("nasdaqStatus");
-const nasdaqResults = el("nasdaqResults");
-const popularCountBtns = Array.from(document.querySelectorAll(".popularCountBtn"));
+const loadingSplash = el("loadingSplash");
+const rankedStatus = el("rankedStatus");
+const rankedResults = el("rankedResults");
 const popularStatus = el("popularStatus");
 const popularResults = el("popularResults");
 const contactBtn = el("contactBtn");
@@ -340,6 +334,33 @@ async function yahooMostActive(count = 50) {
   return yahooScreener("most_actives", count);
 }
 
+// Yahoo 검색 결과의 sector(영문)를 섹터별 예약 스크리너 ID로 매핑 — 경쟁사(동일 섹터) 후보 조회용
+const SECTOR_SCREENER_ID = {
+  Technology: "ms_technology",
+  Healthcare: "ms_healthcare",
+  "Financial Services": "ms_financial_services",
+  "Consumer Cyclical": "ms_consumer_cyclical",
+  "Consumer Defensive": "ms_consumer_defensive",
+  "Communication Services": "ms_communication_services",
+  Industrials: "ms_industrials",
+  Energy: "ms_energy",
+  Utilities: "ms_utilities",
+  "Real Estate": "ms_real_estate",
+  "Basic Materials": "ms_basic_materials",
+};
+
+// 동일 섹터 종목을 시가총액 내림차순으로 반환(자기 자신 제외) — 경쟁사 TOP3 + 시총 유사 종목 선정에 사용
+async function getSectorPeerCandidates(sector, selfSymbol) {
+  const scrId = SECTOR_SCREENER_ID[sector];
+  if (!scrId) return null;
+  const data = await yahooScreener(scrId, 60);
+  const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
+  return quotes
+    .filter((q) => q && q.symbol && q.symbol !== selfSymbol && q.marketCap !== undefined && q.marketCap !== null)
+    .map((q) => ({ symbol: q.symbol, marketCap: q.marketCap }))
+    .sort((a, b) => b.marketCap - a.marketCap);
+}
+
 // ---------- FRED(세인트루이스 연은) 헬퍼 : 내부 차트 API를 프록시로 조회 (비공식, 문서화되지 않음) ----------
 async function fetchFredSeries(seriesId) {
   const url = `https://fred.stlouisfed.org/graph/api/series/?id=${encodeURIComponent(seriesId)}&obs=true`;
@@ -457,10 +478,11 @@ async function getCompanyMetrics(symbol) {
   const resultArr = fundData && fundData.timeseries && fundData.timeseries.result;
   if (resultArr) {
     for (const block of resultArr) {
-      if (block.annualTotalRevenue) revenue = latestFundamentalValue(block, "annualTotalRevenue");
-      if (block.annualBasicEPS) eps = latestFundamentalValue(block, "annualBasicEPS");
-      if (block.annualNetIncome) netIncome = latestFundamentalValue(block, "annualNetIncome");
-      if (block.annualShareIssued) sharesOutstanding = latestFundamentalValue(block, "annualShareIssued");
+      if (block.annualTotalRevenue) revenue = await latestFundamentalValue(block, "annualTotalRevenue", meta.currency);
+      if (block.annualBasicEPS) eps = await latestFundamentalValue(block, "annualBasicEPS", meta.currency);
+      if (block.annualNetIncome) netIncome = await latestFundamentalValue(block, "annualNetIncome", meta.currency);
+      if (block.annualShareIssued)
+        sharesOutstanding = await latestFundamentalValue(block, "annualShareIssued", meta.currency, { convert: false });
     }
   }
   const marketCap = meta.regularMarketPrice !== undefined && sharesOutstanding ? meta.regularMarketPrice * sharesOutstanding : null;
@@ -484,8 +506,8 @@ function computeAttractivenessScore(metrics) {
   const { price, yearLow, yearHigh, marketCap, netIncome, currency } = metrics;
 
   // 1) 시가총액 규모 가점 (0~2점) — 1조달러 이상이면 만점, 300억달러 이하면 0점 (선형)
-  // 원화 등 USD가 아닌 통화로 표시되는 해외 상장 종목은 숫자 단위가 달라 그대로 비교할 수 없으므로 제외(중립값 유지)
-  let marketCapScore = 1;
+  // 시가총액을 신뢰할 수 없어 N/A로 표시되는 경우(데이터 누락, ADR 등 통화 문제로 제외된 해외 상장 종목)는 0점 처리
+  let marketCapScore = 0;
   if (marketCap !== undefined && marketCap !== null && (!currency || currency === "USD")) {
     marketCapScore = clamp((2 * (marketCap - 3e10)) / (1e12 - 3e10), 0, 2);
   }
@@ -502,7 +524,8 @@ function computeAttractivenessScore(metrics) {
   // 일부 해외 상장 종목은 시세는 USD인데 재무제표는 원래 보고 통화(KRW 등) 그대로 내려오는 경우가 있어
   // (예: SKHY) 시가총액(USD)÷순이익(현지통화)이 뒤섞여 PE가 1배 미만처럼 비정상적으로 작게 나올 수 있음 —
   // 정상적인 흑자 기업이 시총보다 큰 연간 순이익을 내는 경우는 사실상 없으므로 이런 값은 신뢰할 수 없다고 보고 제외
-  let peScore = 2;
+  // P/E를 신뢰할 수 없어 N/A로 표시되는 경우(순이익 데이터 누락, 비정상적으로 작은 값 등)도 0점 처리
+  let peScore = 0;
   let pe = null;
   if (marketCap !== undefined && marketCap !== null && netIncome && netIncome > 0) {
     const rawPe = marketCap / netIncome;
@@ -516,13 +539,33 @@ function computeAttractivenessScore(metrics) {
   return { total, marketCapScore, rangeScore, peScore, pe, rangePosition };
 }
 
+// 통화쌍 환율(세션 내 캐시) — 재무제표가 시세와 다른 현지 통화로 내려오는 해외 상장 종목(TSM·SKHY 등) 환산용
+const fxRateCache = new Map();
+async function getFxRate(fromCurrency, toCurrency) {
+  if (!fromCurrency || !toCurrency || fromCurrency === toCurrency) return 1;
+  const cacheKey = `${fromCurrency}${toCurrency}`;
+  if (fxRateCache.has(cacheKey)) return fxRateCache.get(cacheKey);
+  const rate = await yahooChart(`${fromCurrency}${toCurrency}=X`)
+    .then((c) => c?.chart?.result?.[0]?.meta?.regularMarketPrice ?? null)
+    .catch(() => null);
+  fxRateCache.set(cacheKey, rate);
+  return rate;
+}
+
 // fundamentals-timeseries 응답 블록에서 특정 항목의 가장 최근 값을 추출
-function latestFundamentalValue(block, key) {
+// 보고 통화가 시세 통화와 다르면(예: TSM은 매출이 USD 시세인데 TWD로 내려옴) 환율을 적용해 시세 통화로 환산.
+// convert=false인 항목(발행주식수 등 금액이 아닌 값)은 환산이 의미 없으므로 통화가 다르면 신뢰할 수 없다고 보고 제외
+async function latestFundamentalValue(block, key, quoteCurrency, { convert = true } = {}) {
   const items = (block && block[key]) || [];
   const valid = items.filter((it) => it && it.reportedValue && it.reportedValue.raw !== undefined);
   if (!valid.length) return null;
   valid.sort((a, b) => new Date(a.asOfDate) - new Date(b.asOfDate));
-  return valid[valid.length - 1].reportedValue.raw;
+  const latest = valid[valid.length - 1];
+  const raw = latest.reportedValue.raw;
+  if (!quoteCurrency || !latest.currencyCode || latest.currencyCode === quoteCurrency) return raw;
+  if (!convert) return null;
+  const rate = await getFxRate(latest.currencyCode, quoteCurrency);
+  return rate !== null ? raw * rate : null;
 }
 
 // 가격 매력도 + 투자 위험도 점수 계산에 필요한 모든 지표를 한 번(차트 1회 + 재무제표 1회)에 조회 (TOP30 랭킹용)
@@ -547,12 +590,14 @@ async function getFullMetrics(symbol) {
   let sharesOutstanding = null;
   const resultArr = (fundData && fundData.timeseries && fundData.timeseries.result) || [];
   for (const block of resultArr) {
-    if (block.annualTotalRevenue) revenue = latestFundamentalValue(block, "annualTotalRevenue");
-    if (block.annualBasicEPS) eps = latestFundamentalValue(block, "annualBasicEPS");
-    if (block.annualTotalAssets) totalAssets = latestFundamentalValue(block, "annualTotalAssets");
-    if (block.annualStockholdersEquity) equity = latestFundamentalValue(block, "annualStockholdersEquity");
-    if (block.annualNetIncome) netIncome = latestFundamentalValue(block, "annualNetIncome");
-    if (block.annualShareIssued) sharesOutstanding = latestFundamentalValue(block, "annualShareIssued");
+    if (block.annualTotalRevenue) revenue = await latestFundamentalValue(block, "annualTotalRevenue", meta.currency);
+    if (block.annualBasicEPS) eps = await latestFundamentalValue(block, "annualBasicEPS", meta.currency);
+    if (block.annualTotalAssets) totalAssets = await latestFundamentalValue(block, "annualTotalAssets", meta.currency);
+    if (block.annualStockholdersEquity)
+      equity = await latestFundamentalValue(block, "annualStockholdersEquity", meta.currency);
+    if (block.annualNetIncome) netIncome = await latestFundamentalValue(block, "annualNetIncome", meta.currency);
+    if (block.annualShareIssued)
+      sharesOutstanding = await latestFundamentalValue(block, "annualShareIssued", meta.currency, { convert: false });
   }
   // 총부채 = 총자산 - 자기자본 (매입채무·미지급금 등 이자를 내지 않는 부채까지 포함한 회계상 '표준' 부채비율 계산용.
   // 단순히 이자부담 차입금(장단기 대출/사채)만 쓰면 실제 대차대조표상 부채비율보다 크게 작게 나옴)
@@ -867,36 +912,61 @@ window.addEventListener("resize", syncHeaderHeight);
 new ResizeObserver(syncHeaderHeight).observe(fixedHeader);
 syncHeaderHeight();
 
-// ---------- 카테고리 탭(인기종목/S&P500/나스닥) — 누르면 색이 활성화되며 서브툴바가 펼쳐짐 ----------
-const catButtons = { popular: el("catPopularBtn"), sp500: el("catSp500Btn"), nasdaq: el("catNasdaqBtn") };
-const subToolbars = { popular: el("popularSub"), sp500: el("sp500Sub"), nasdaq: el("nasdaqSub") };
-const resultGroups = { popular: [popularStatus, popularResults], sp500: [top30Status, top30Results], nasdaq: [nasdaqStatus, nasdaqResults] };
+// ---------- 카테고리 탭(인기종목/나스닥100/테크100/S&P100/S&P500) — 서브뷰 없이 클릭 즉시 해당 순위를 불러옴 ----------
+const catButtons = {
+  popular: el("catPopularBtn"),
+  nasdaq100: el("catNasdaq100Btn"),
+  tech100: el("catTech100Btn"),
+  sp100: el("catSp100Btn"),
+  sp500: el("catSp500Btn"),
+};
+const resultGroups = { popular: [popularStatus, popularResults], ranked: [rankedStatus, rankedResults] };
 let activeCategory = null;
 
 function setActiveCategory(cat) {
-  activeCategory = activeCategory === cat ? null : cat;
+  activeCategory = cat;
   for (const key of Object.keys(catButtons)) {
     catButtons[key].classList.toggle("active", key === activeCategory);
-    subToolbars[key].style.display = key === activeCategory ? "flex" : "none";
   }
   // 티커 분석 화면을 보고 있던 중 카테고리 탭을 누르면 그 화면부터 정리
-  if (activeCategory !== null && resultsView.style.display !== "none") {
+  if (resultsView.style.display !== "none") {
     history.pushState({}, "", location.pathname);
     resultsView.style.display = "none";
   }
   syncHeaderHeight();
 }
 
-catButtons.popular.addEventListener("click", () => setActiveCategory("popular"));
-catButtons.sp500.addEventListener("click", () => setActiveCategory("sp500"));
-catButtons.nasdaq.addEventListener("click", () => setActiveCategory("nasdaq"));
+catButtons.popular.addEventListener("click", () => {
+  setActiveCategory("popular");
+  prepareMainView("popular");
+  runPopular(20);
+});
+catButtons.nasdaq100.addEventListener("click", () => {
+  setActiveCategory("nasdaq100");
+  prepareMainView("ranked");
+  runNasdaq100Universe();
+});
+catButtons.tech100.addEventListener("click", () => {
+  setActiveCategory("tech100");
+  prepareMainView("ranked");
+  runTech100();
+});
+catButtons.sp100.addEventListener("click", () => {
+  setActiveCategory("sp100");
+  prepareMainView("ranked");
+  runSP100();
+});
+catButtons.sp500.addEventListener("click", () => {
+  setActiveCategory("sp500");
+  prepareMainView("ranked");
+  runSP500();
+});
 
 // 메인창에 하나의 결과만 보이도록: 선택된 카테고리 외 결과 영역과 티커 분석 화면을 모두 정리
 function prepareMainView(activeKey) {
   for (const key of Object.keys(resultGroups)) {
-    if (key !== activeKey) {
-      resultGroups[key].forEach((elm) => (elm.style.display = "none"));
-    }
+    // 활성 그룹은 인라인 display를 지워 기본값(block)으로 되돌림 — 이전에 다른 탭 전환으로 숨겨져 있었을 수 있음
+    resultGroups[key].forEach((elm) => (elm.style.display = key === activeKey ? "" : "none"));
   }
   if (resultsView.style.display !== "none") {
     history.pushState({}, "", location.pathname);
@@ -953,9 +1023,20 @@ document.addEventListener("click", (e) => {
 });
 
 // 페이지를 ?ticker=XXX로 바로 열었을 때 홈을 거치지 않고 해당 종목 분석부터 시작
+// (?ticker=가 없는 일반 접속 시에는 인기종목(상위 20개)을 기본 화면으로 바로 불러오며,
+//  불러오는 동안은 검은 화면에 로고만 보여주는 스플래시로 가림)
 (function initRouteFromUrl() {
   const ticker = new URLSearchParams(location.search).get("ticker");
-  if (ticker) navigateToTicker(ticker.toUpperCase(), { push: false });
+  if (ticker) {
+    loadingSplash.style.display = "none";
+    navigateToTicker(ticker.toUpperCase(), { push: false });
+  } else {
+    setActiveCategory("popular");
+    prepareMainView("popular");
+    runPopular(20).finally(() => {
+      loadingSplash.style.display = "none";
+    });
+  }
 })();
 
 // ---------- 메인 분석 흐름 ----------
@@ -971,29 +1052,6 @@ analyzeBtn.addEventListener("click", triggerSearch);
 tickerInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") triggerSearch();
 });
-top30RangeBtns.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    prepareMainView("sp500");
-    runTop30(Number(btn.dataset.start), Number(btn.dataset.end));
-  });
-});
-nasdaqRangeBtns.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    prepareMainView("nasdaq");
-    runNasdaqRange(Number(btn.dataset.start), Number(btn.dataset.end));
-  });
-});
-nasdaq100Btn.addEventListener("click", () => {
-  prepareMainView("nasdaq");
-  runNasdaq100();
-});
-popularCountBtns.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    prepareMainView("popular");
-    runPopular(Number(btn.dataset.count));
-  });
-});
-
 async function runAnalysis(ticker) {
   analyzeBtn.disabled = true;
   results.style.display = "none";
@@ -1020,7 +1078,7 @@ async function runAnalysis(ticker) {
       el("summarySection").innerHTML = `<p class="error-inline">사업 요약을 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
-    renderFinancials(ticker).catch((e) => {
+    renderFinancials(ticker, meta.currency).catch((e) => {
       el("financialsSection").innerHTML = `<p class="error-inline">실적 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
@@ -1030,7 +1088,7 @@ async function runAnalysis(ticker) {
     const marketReturnsPromise = getMarketReturns();
     const selfMetricsPromise = getFullMetrics(ticker);
 
-    renderPeers(ticker, selfMetricsPromise).catch((e) => {
+    renderPeers(ticker, selfMetricsPromise, quote.sector || quote.sectorDisp).catch((e) => {
       el("peersSection").innerHTML = `<p class="error-inline">경쟁사 비교 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
@@ -1082,8 +1140,19 @@ async function renderSummary(quote, meta) {
   `;
 }
 
+// fundamentals-timeseries 응답에서 통화 코드가 붙은 첫 항목을 찾아 재무제표의 보고 통화를 판별(연도별 공통값으로 가정)
+function findReportCurrency(resultArr, keys) {
+  for (const block of resultArr) {
+    for (const key of keys) {
+      const found = (block[key] || []).find((it) => it && it.currencyCode);
+      if (found) return found.currencyCode;
+    }
+  }
+  return null;
+}
+
 // ---------- 2. 매출/EPS 3년 추이 ----------
-async function renderFinancials(ticker) {
+async function renderFinancials(ticker, quoteCurrency) {
   el("financialsSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
   const data = await yahooFundamentals(ticker, "annualTotalRevenue,annualBasicEPS,annualNetIncome");
@@ -1092,6 +1161,13 @@ async function renderFinancials(ticker) {
     el("financialsSection").innerHTML = `<p class="muted">실적 데이터를 찾을 수 없습니다.</p>`;
     return null;
   }
+
+  // 재무제표가 시세와 다른 현지 통화로 내려오는 해외 상장 종목(예: TSM은 매출이 TWD로 내려옴)은
+  // 환율을 적용해 시세와 같은 통화로 환산 — 연도별로 동일한 보고 통화를 쓴다고 가정하고 환율은 한 번만 조회
+  const reportCurrency = findReportCurrency(resultArr, ["annualTotalRevenue", "annualBasicEPS", "annualNetIncome"]);
+  const fxRate =
+    reportCurrency && quoteCurrency && reportCurrency !== quoteCurrency ? await getFxRate(reportCurrency, quoteCurrency) : 1;
+  const convert = (raw) => (raw === null || raw === undefined ? null : fxRate !== null ? raw * fxRate : null);
 
   const byYear = {};
   for (const block of resultArr) {
@@ -1102,19 +1178,19 @@ async function renderFinancials(ticker) {
       if (!item || !item.asOfDate) continue;
       const year = item.asOfDate.slice(0, 4);
       byYear[year] = byYear[year] || {};
-      byYear[year].revenue = item.reportedValue?.raw ?? null;
+      byYear[year].revenue = convert(item.reportedValue?.raw);
     }
     for (const item of epsItems) {
       if (!item || !item.asOfDate) continue;
       const year = item.asOfDate.slice(0, 4);
       byYear[year] = byYear[year] || {};
-      byYear[year].eps = item.reportedValue?.raw ?? null;
+      byYear[year].eps = convert(item.reportedValue?.raw);
     }
     for (const item of netIncomeItems) {
       if (!item || !item.asOfDate) continue;
       const year = item.asOfDate.slice(0, 4);
       byYear[year] = byYear[year] || {};
-      byYear[year].netIncome = item.reportedValue?.raw ?? null;
+      byYear[year].netIncome = convert(item.reportedValue?.raw);
     }
   }
 
@@ -1206,28 +1282,52 @@ async function renderFinancials(ticker) {
 }
 
 // ---------- 3. 경쟁사 매출/주가/가격 매력도 비교 ----------
-async function renderPeers(ticker, selfMetricsPromise) {
+// 경쟁사 4개 = 동일 섹터 시가총액 TOP3 + 시가총액이 자신과 가장 가까운 종목 1개
+// (섹터를 알 수 없는 경우엔 Yahoo의 연관 종목 추천으로 대체)
+async function renderPeers(ticker, selfMetricsPromise, sector) {
   el("peersSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
-  const peersData = await yahooPeers(ticker);
-  const list =
-    (peersData &&
-      peersData.finance &&
-      peersData.finance.result &&
-      peersData.finance.result[0] &&
-      peersData.finance.result[0].recommendedSymbols) ||
-    [];
-  const peerTickers = list.map((p) => p.symbol).filter(Boolean).slice(0, 4);
+  const [sectorCandidates, selfMetrics] = await Promise.all([
+    sector ? getSectorPeerCandidates(sector, ticker).catch(() => null) : Promise.resolve(null),
+    selfMetricsPromise.then((m) => ({ ...m, self: true })).catch(() => null),
+  ]);
+
+  let peerTickers = [];
+  let bySector = false;
+
+  if (sectorCandidates && sectorCandidates.length > 0) {
+    const top3 = sectorCandidates.slice(0, 3);
+    const rest = sectorCandidates.slice(3);
+    const selfCap = selfMetrics && selfMetrics.marketCap;
+    let similar = null;
+    if (rest.length > 0) {
+      similar =
+        selfCap !== undefined && selfCap !== null
+          ? rest.reduce((best, c) => (Math.abs(c.marketCap - selfCap) < Math.abs(best.marketCap - selfCap) ? c : best), rest[0])
+          : rest[0];
+    }
+    peerTickers = [...top3.map((c) => c.symbol), similar ? similar.symbol : null].filter(Boolean);
+    bySector = true;
+  }
+
+  if (peerTickers.length === 0) {
+    const peersData = await yahooPeers(ticker).catch(() => null);
+    const list =
+      (peersData &&
+        peersData.finance &&
+        peersData.finance.result &&
+        peersData.finance.result[0] &&
+        peersData.finance.result[0].recommendedSymbols) ||
+      [];
+    peerTickers = list.map((p) => p.symbol).filter(Boolean).slice(0, 4);
+  }
 
   if (peerTickers.length === 0) {
     el("peersSection").innerHTML = `<p class="muted">자동으로 경쟁사를 찾지 못했습니다.</p>`;
     return;
   }
 
-  const [selfMetrics, peerMetricsList] = await Promise.all([
-    selfMetricsPromise.then((m) => ({ ...m, self: true })).catch(() => null),
-    Promise.all(peerTickers.map((s) => getCompanyMetrics(s).catch(() => null))),
-  ]);
+  const peerMetricsList = await Promise.all(peerTickers.map((s) => getCompanyMetrics(s).catch(() => null)));
   const metricsList = [selfMetrics, ...peerMetricsList];
 
   const all = metricsList.filter((d) => d && d.revenue !== null && d.revenue !== undefined);
@@ -1256,7 +1356,7 @@ async function renderPeers(ticker, selfMetricsPromise) {
     .join("");
 
   el("peersSection").innerHTML = `
-    <p class="muted">최근 회계연도 매출액 기준 비교 (자동 감지된 관련 종목)</p>
+    <p class="muted">최근 회계연도 매출액 기준 비교 (${bySector ? "동일 섹터 시가총액 TOP3 + 시총 유사 종목 1개" : "자동 감지된 관련 종목"})</p>
     <div class="peer-table-header">
       <span></span><span></span><span>매출액</span><span>시가총액</span><span>매력도</span>
     </div>
@@ -1396,8 +1496,8 @@ async function renderMacro() {
   `;
 }
 
-// ---------- 구간별 TOP10 공용 렌더러: 종목 목록을 받아 가격 매력도 + 투자 위험도 합산 상위 10개를 표시 ----------
-async function renderRankedTop10(tickers, rangeLabel, { statusEl, resultsEl, buttons }) {
+// ---------- 구간별 TOP N 공용 렌더러: 종목 목록을 받아 가격 매력도 + 투자 위험도 합산 상위 N개를 표시(topN 기본값 10) ----------
+async function renderRankedTop10(tickers, rangeLabel, { statusEl, resultsEl, buttons, topN = 10 }) {
   buttons.forEach((btn) => (btn.disabled = true));
   resultsEl.innerHTML = "";
   statusEl.style.display = "block";
@@ -1420,7 +1520,7 @@ async function renderRankedTop10(tickers, rangeLabel, { statusEl, resultsEl, but
       })
       .filter(Boolean)
       .sort((a, b) => b.combined - a.combined)
-      .slice(0, 10);
+      .slice(0, topN);
 
     const successCount = metricsList.filter(Boolean).length;
     const failCount = tickers.length - successCount;
@@ -1464,49 +1564,79 @@ async function renderRankedTop10(tickers, rangeLabel, { statusEl, resultsEl, but
   }
 }
 
-// S&P500 구간별 TOP10
-async function runTop30(startIdx, endIdx) {
-  top30Status.style.display = "block";
-  top30Status.textContent = "S&P500 종목 목록을 불러오는 중...";
-  const allTickers = await getSP500Tickers().catch((e) => {
-    top30Status.textContent = `❌ ${e.message || "종목 목록을 가져오지 못했습니다."}`;
-    return null;
-  });
-  if (!allTickers) return;
-  const tickers = allTickers.slice(startIdx, endIdx);
-  const rangeLabel = `S&P500 ${startIdx + 1}–${Math.min(endIdx, allTickers.length)}`;
-  await renderRankedTop10(tickers, rangeLabel, { statusEl: top30Status, resultsEl: top30Results, buttons: top30RangeBtns });
-}
-
-// 나스닥 구간별 TOP10 (시가총액 순위는 인증이 필요해 막혀 있어, 여러 활발한 종목 스크리너를 합쳐 시총 내림차순으로 근사)
-async function runNasdaqRange(startIdx, endIdx) {
-  nasdaqStatus.style.display = "block";
-  nasdaqStatus.textContent = "나스닥 종목군을 구성하는 중...";
+// 나스닥 시총 상위 100(근사) 안에서 TOP20 (시가총액 순위는 인증이 필요해 막혀 있어, 여러 활발한 종목 스크리너를 합쳐 시총 내림차순으로 근사)
+async function runNasdaq100Universe() {
+  rankedStatus.style.display = "block";
+  rankedStatus.textContent = "나스닥 종목군을 구성하는 중...";
   const universe = await getNasdaqUniverse().catch((e) => {
-    nasdaqStatus.textContent = `❌ ${e.message || "나스닥 종목군을 가져오지 못했습니다."}`;
+    rankedStatus.textContent = `❌ ${e.message || "나스닥 종목군을 가져오지 못했습니다."}`;
     return null;
   });
   if (!universe) return;
-  const tickers = universe.slice(startIdx, endIdx);
-  const rangeLabel = `나스닥 시총 ${startIdx + 1}–${Math.min(endIdx, universe.length)}(근사)`;
-  await renderRankedTop10(tickers, rangeLabel, { statusEl: nasdaqStatus, resultsEl: nasdaqResults, buttons: nasdaqBtns });
+  const tickers = universe.slice(0, 100);
+  await renderRankedTop10(tickers, "나스닥100(시총 근사)", {
+    statusEl: rankedStatus,
+    resultsEl: rankedResults,
+    buttons: [catButtons.nasdaq100],
+    topN: 20,
+  });
 }
 
-// 나스닥-100(대형 기술주 중심 100개) 안에서 TOP10
-async function runNasdaq100() {
-  nasdaqStatus.style.display = "block";
-  nasdaqStatus.textContent = "나스닥-100 종목 목록을 불러오는 중...";
+// 테크100(나스닥-100 지수 공식 구성종목) 안에서 TOP20
+async function runTech100() {
+  rankedStatus.style.display = "block";
+  rankedStatus.textContent = "테크100(나스닥-100) 종목 목록을 불러오는 중...";
   const tickers = await getNasdaq100Tickers().catch((e) => {
-    nasdaqStatus.textContent = `❌ ${e.message || "나스닥-100 목록을 가져오지 못했습니다."}`;
+    rankedStatus.textContent = `❌ ${e.message || "테크100 목록을 가져오지 못했습니다."}`;
     return null;
   });
   if (!tickers) return;
-  await renderRankedTop10(tickers, "나스닥-100", { statusEl: nasdaqStatus, resultsEl: nasdaqResults, buttons: nasdaqBtns });
+  await renderRankedTop10(tickers, "테크100(나스닥-100)", {
+    statusEl: rankedStatus,
+    resultsEl: rankedResults,
+    buttons: [catButtons.tech100],
+    topN: 20,
+  });
 }
 
-// ---------- 인기종목: 당일 거래대금(가격 × 거래량) 상위 10개 ----------
-async function runPopular(count = 10) {
-  popularCountBtns.forEach((btn) => (btn.disabled = true));
+// S&P500 상위 100(근사) 안에서 TOP20
+async function runSP100() {
+  rankedStatus.style.display = "block";
+  rankedStatus.textContent = "S&P500 종목 목록을 불러오는 중...";
+  const allTickers = await getSP500Tickers().catch((e) => {
+    rankedStatus.textContent = `❌ ${e.message || "종목 목록을 가져오지 못했습니다."}`;
+    return null;
+  });
+  if (!allTickers) return;
+  const tickers = allTickers.slice(0, 100);
+  await renderRankedTop10(tickers, "S&P100(근사)", {
+    statusEl: rankedStatus,
+    resultsEl: rankedResults,
+    buttons: [catButtons.sp100],
+    topN: 20,
+  });
+}
+
+// S&P500 전체 종목 중 TOP50
+async function runSP500() {
+  rankedStatus.style.display = "block";
+  rankedStatus.textContent = "S&P500 종목 목록을 불러오는 중...";
+  const allTickers = await getSP500Tickers().catch((e) => {
+    rankedStatus.textContent = `❌ ${e.message || "종목 목록을 가져오지 못했습니다."}`;
+    return null;
+  });
+  if (!allTickers) return;
+  await renderRankedTop10(allTickers, "S&P500 전체", {
+    statusEl: rankedStatus,
+    resultsEl: rankedResults,
+    buttons: [catButtons.sp500],
+    topN: 50,
+  });
+}
+
+// ---------- 인기종목: 당일 거래대금(가격 × 거래량) 상위 20개 ----------
+async function runPopular(count = 20) {
+  catButtons.popular.disabled = true;
   popularResults.innerHTML = "";
   popularStatus.style.display = "block";
   popularStatus.textContent = "인기종목을 불러오는 중...";
@@ -1581,6 +1711,6 @@ async function runPopular(count = 10) {
   } catch (err) {
     popularStatus.textContent = `❌ ${err.message || "인기종목을 가져오지 못했습니다."}`;
   } finally {
-    popularCountBtns.forEach((btn) => (btn.disabled = false));
+    catButtons.popular.disabled = false;
   }
 }
