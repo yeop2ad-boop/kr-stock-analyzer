@@ -15,31 +15,28 @@ const CORS_HEADERS = {
 };
 
 // ---------- 채팅 설정 ----------
+// 자유 텍스트가 아닌 고정 항목(종목/평단가/매수·매도)만 입력받는 구조라 URL·욕설이 들어갈 자리가 없음 —
+// 대신 각 필드 형식을 엄격하게 검증해 티커 칸에 임의 문자열을 밀어넣는 우회를 막는다
 const CHAT_KEY = "chat_messages";
-const CHAT_MAX_LEN = 200;
 const CHAT_MAX_MESSAGES = 200;
 const CHAT_RETENTION_SEC = 24 * 60 * 60; // 24시간
-const CHAT_RATE_LIMIT_SEC = 3; // 같은 IP는 3초에 한 번만 전송 가능
+const CHAT_RATE_LIMIT_SEC = 20; // 같은 IP는 20초에 한 번만 등록 가능
 
-// 웹사이트 주소로 보이는 문자열(http/https, www., 흔한 도메인 형태)을 차단
-const URL_PATTERN = /(https?:\/\/|www\.)\S+/i;
-const DOMAIN_PATTERN =
-  /\b[a-z0-9-]+\.(com|net|org|co|io|me|xyz|info|biz|kr|shop|site|online|click|link|gg|tv|app|dev)\b/i;
+const TICKER_PATTERN = /^[A-Z]{1,6}(\.[A-Z]{1,2})?$/;
+const PRICE_PATTERN = /^\d{1,5}(\.\d{1,2})?$/;
 
-// 흔한 한글/영문 욕설·비방 표현(완전한 목록은 아니며, 사전 필터링 용도)
-const BANNED_WORDS = [
-  "씨발", "시발", "씨팔", "시팔", "ㅅㅂ", "ㅆㅂ", "개새끼", "병신", "ㅂㅅ",
-  "미친놈", "미친년", "좆", "존나", "지랄", "새끼", "썅", "닥쳐", "꺼져",
-  "죽어라", "개소리", "fuck", "shit", "bitch", "asshole", "retard",
-];
+function validatePost(body) {
+  const ticker = (body && typeof body.ticker === "string" ? body.ticker : "").trim().toUpperCase();
+  const price = (body && typeof body.price === "string" ? body.price : "").trim();
+  const side = body && typeof body.side === "string" ? body.side : "";
 
-function containsBannedContent(text) {
-  if (URL_PATTERN.test(text) || DOMAIN_PATTERN.test(text)) return "url";
-  const normalized = text.replace(/\s+/g, "").toLowerCase();
-  for (const w of BANNED_WORDS) {
-    if (normalized.includes(w)) return "profanity";
+  if (!TICKER_PATTERN.test(ticker)) return { error: "종목 티커 형식이 올바르지 않습니다." };
+  if (price.length === 0 || price.length > 5 || !PRICE_PATTERN.test(price)) {
+    return { error: "평단가는 숫자 5자 이내로 입력해주세요." };
   }
-  return null;
+  if (side !== "buy" && side !== "sell") return { error: "매수/매도를 선택해주세요." };
+
+  return { post: { ticker, price, side } };
 }
 
 async function getChatMessages(env) {
@@ -53,7 +50,9 @@ async function getChatMessages(env) {
   }
   if (!Array.isArray(messages)) return [];
   const cutoff = Date.now() - CHAT_RETENTION_SEC * 1000;
-  return messages.filter((m) => m && typeof m.t === "number" && m.t >= cutoff && typeof m.text === "string");
+  return messages.filter(
+    (m) => m && typeof m.t === "number" && m.t >= cutoff && typeof m.ticker === "string" && typeof m.price === "string"
+  );
 }
 
 async function handleChat(request, env) {
@@ -86,18 +85,11 @@ async function handleChat(request, env) {
       return jsonResponse({ error: "잘못된 요청입니다." }, 400);
     }
 
-    const text = (body && typeof body.text === "string" ? body.text : "").trim();
-    if (!text) return jsonResponse({ error: "메시지를 입력해주세요." }, 400);
-    if (text.length > CHAT_MAX_LEN) {
-      return jsonResponse({ error: `메시지는 ${CHAT_MAX_LEN}자 이내로 작성해주세요.` }, 400);
-    }
-
-    const banned = containsBannedContent(text);
-    if (banned === "url") return jsonResponse({ error: "웹사이트 주소는 입력할 수 없습니다." }, 400);
-    if (banned === "profanity") return jsonResponse({ error: "부적절한 표현이 포함되어 있습니다." }, 400);
+    const { post, error } = validatePost(body);
+    if (error) return jsonResponse({ error }, 400);
 
     const messages = await getChatMessages(env);
-    messages.push({ t: Date.now(), text });
+    messages.push({ t: Date.now(), ...post });
     const trimmed = messages.slice(-CHAT_MAX_MESSAGES);
 
     await env.CHAT_KV.put(CHAT_KEY, JSON.stringify(trimmed), { expirationTtl: CHAT_RETENTION_SEC });

@@ -110,7 +110,11 @@ body {
   margin-right: 6px;
   font-variant-numeric: tabular-nums;
 }
-.chat-text { word-break: break-word; }
+.chat-text { word-break: break-word; margin-left: 4px; }
+.chat-ticker { margin-left: 4px; }
+.chat-side { margin-left: 6px; font-weight: 700; font-size: 12px; }
+.chat-side.good { color: var(--good); }
+.chat-side.bad { color: var(--bad); }
 
 .chat-error {
   margin: 0 12px 6px;
@@ -118,15 +122,18 @@ body {
   color: var(--bad);
 }
 
-.chat-input-row {
+.chat-post-form {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
   padding: 10px 12px;
   border-top: 1px solid var(--border);
 }
 
+.chat-ticker-wrap { position: relative; flex: 1 1 100px; min-width: 90px; }
+
 .chat-input {
-  flex: 1;
+  width: 100%;
   min-width: 0;
   padding: 8px 10px;
   border-radius: 8px;
@@ -134,9 +141,45 @@ body {
   background: var(--bg);
   color: var(--text);
   font-size: 13px;
+  box-sizing: border-box;
 }
 
+.chat-price-input { flex: 0 1 70px; }
+
+.chat-ticker-suggest {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.chat-ticker-option { padding: 7px 10px; font-size: 12px; cursor: pointer; }
+.chat-ticker-option:hover { background: var(--accent-soft); }
+
+.chat-side-toggle { display: flex; gap: 4px; flex: 0 0 auto; }
+
+.chat-side-btn {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.chat-side-btn.buy.active { background: var(--good); border-color: var(--good); color: #fff; }
+.chat-side-btn.sell.active { background: var(--bad); border-color: var(--bad); color: #fff; }
+
 .chat-send-btn {
+  flex: 0 0 auto;
   padding: 8px 12px;
   border-radius: 8px;
   border: none;

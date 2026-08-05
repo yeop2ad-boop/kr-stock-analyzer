@@ -17,9 +17,17 @@
     </div>
     <div id="chatMessages" class="chat-messages"><p class="muted chat-empty">불러오는 중...</p></div>
     <p id="chatError" class="chat-error" style="display:none;"></p>
-    <div class="chat-input-row">
-      <input type="text" id="chatInput" class="chat-input" maxlength="200" placeholder="메시지 입력 (웹주소·비속어 불가)" autocomplete="off" />
-      <button id="chatSendBtn" class="chat-send-btn" type="button">전송</button>
+    <div class="chat-post-form">
+      <div class="chat-ticker-wrap">
+        <input type="text" id="chatTickerInput" class="chat-input" maxlength="10" placeholder="종목 (예: AAPL)" autocomplete="off" />
+        <div id="chatTickerSuggest" class="chat-ticker-suggest" style="display:none;"></div>
+      </div>
+      <input type="text" id="chatPriceInput" class="chat-input chat-price-input" maxlength="5" placeholder="평단가" autocomplete="off" />
+      <div class="chat-side-toggle">
+        <button type="button" id="chatBuyBtn" class="chat-side-btn buy" data-side="buy">매수</button>
+        <button type="button" id="chatSellBtn" class="chat-side-btn sell" data-side="sell">매도</button>
+      </div>
+      <button id="chatSendBtn" class="chat-send-btn" type="button">등록</button>
     </div>
     <p class="chat-footer muted">1:1 문의: yeop2ad@gmail.com</p>
   </div>
