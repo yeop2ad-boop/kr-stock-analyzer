@@ -869,29 +869,27 @@ async function renderFinancials(ticker) {
       const netIncome = byYear[y].netIncome;
       const pct = clamp(((rev || 0) / maxRevenue) * 100, 2, 100);
 
-      let overlay = "";
-      let marginLabel = "";
+      let lossZoneContent = "";
+      let profitOverlay = "";
       if (netIncome !== null && netIncome !== undefined && rev) {
         const marginPct = (netIncome / rev) * 100;
         if (netIncome > 0) {
           const profitPct = clamp((netIncome / maxRevenue) * 100, 0, pct);
-          overlay = `<div class="bar-fill-profit" style="width:${profitPct}%"></div>`;
-          marginLabel = `<span class="margin-pct good">순이익 ${marginPct.toFixed(0)}%</span>`;
+          profitOverlay = `<div class="bar-fill-profit" style="width:${profitPct}%"><span class="profit-label">순이익 ${marginPct.toFixed(0)}%</span></div>`;
         } else if (netIncome < 0) {
           const lossPct = clamp((Math.abs(netIncome) / maxAbsLoss) * 100, 2, 100);
-          overlay = `<div class="bar-loss-zone"><div class="bar-loss" style="width:${lossPct}%"></div></div>`;
-          marginLabel = `<span class="margin-pct bad">순손실 ${Math.abs(marginPct).toFixed(0)}%</span>`;
+          lossZoneContent = `<div class="bar-loss" style="width:${lossPct}%"><span class="loss-label">순손실 ${Math.abs(marginPct).toFixed(0)}%</span></div>`;
         }
       }
 
       return `
       <div class="bar-row">
         <span class="bar-label">${escapeHtml(y)}</span>
-        ${netIncome < 0 ? overlay : `<div class="bar-loss-zone"></div>`}
+        <div class="bar-loss-zone">${lossZoneContent}</div>
         <div class="bar-track">
           <div class="bar-fill self" style="width:${pct}%"></div>
-          ${netIncome > 0 ? overlay : ""}
-          <span class="bar-value-overlay">${fmtCompactCurrency(rev)}${marginLabel ? " · " + marginLabel : ""}</span>
+          ${profitOverlay}
+          <span class="bar-revenue-label">${fmtCompactCurrency(rev)}</span>
         </div>
       </div>`;
     })
