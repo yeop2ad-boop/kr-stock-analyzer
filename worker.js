@@ -69,9 +69,14 @@ async function handleChat(request, env) {
   if (request.method === "POST") {
     const ip = request.headers.get("CF-Connecting-IP") || "unknown";
     const rlKey = "rl_" + ip;
-    const recentlyPosted = await env.CHAT_KV.get(rlKey);
-    if (recentlyPosted) {
-      return jsonResponse({ error: "너무 빠르게 전송했습니다. 잠시 후 다시 시도해주세요." }, 429);
+    // KV expirationTtl은 60초 미만을 허용하지 않으므로, 실제 3초 판정은 저장된 타임스탬프로 직접 계산하고
+    // TTL은 정리(cleanup) 목적으로만 넉넉히 60초를 준다
+    const lastPostedRaw = await env.CHAT_KV.get(rlKey);
+    if (lastPostedRaw) {
+      const lastPostedAt = Number(lastPostedRaw);
+      if (!Number.isNaN(lastPostedAt) && Date.now() - lastPostedAt < CHAT_RATE_LIMIT_SEC * 1000) {
+        return jsonResponse({ error: "너무 빠르게 전송했습니다. 잠시 후 다시 시도해주세요." }, 429);
+      }
     }
 
     let body;
@@ -96,7 +101,7 @@ async function handleChat(request, env) {
     const trimmed = messages.slice(-CHAT_MAX_MESSAGES);
 
     await env.CHAT_KV.put(CHAT_KEY, JSON.stringify(trimmed), { expirationTtl: CHAT_RETENTION_SEC });
-    await env.CHAT_KV.put(rlKey, "1", { expirationTtl: CHAT_RATE_LIMIT_SEC });
+    await env.CHAT_KV.put(rlKey, String(Date.now()), { expirationTtl: 60 });
 
     return jsonResponse({ messages: trimmed }, 200);
   }
