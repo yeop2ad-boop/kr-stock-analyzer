@@ -880,7 +880,7 @@ async function renderFinancials(ticker) {
         } else if (netIncome < 0) {
           const lossPct = clamp((Math.abs(netIncome) / maxAbsLoss) * 100, 2, 100);
           overlay = `<div class="bar-loss-zone"><div class="bar-loss" style="width:${lossPct}%"></div></div>`;
-          marginLabel = `<span class="margin-pct bad">순손실 ${marginPct.toFixed(0)}%</span>`;
+          marginLabel = `<span class="margin-pct bad">순손실 ${Math.abs(marginPct).toFixed(0)}%</span>`;
         }
       }
 
