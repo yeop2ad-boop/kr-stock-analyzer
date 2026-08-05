@@ -547,17 +547,25 @@ async function getMarketCapOnly(symbol) {
 }
 
 // S&P500 전체 종목의 시가총액을 내림차순으로 정렬해 캐싱(시총 순위 계산용, 세션 내 한 번만 계산 — 요청량이 많아 시간이 걸림)
+// 페이지 로드 시 미리 백그라운드로 시작해두므로, sp500MarketCapsPromise 존재 여부만으로는 완료 여부를 알 수 없어
+// 실제로 다 받아졌는지는 sp500MarketCapsReady 플래그로 별도 추적
 let sp500MarketCapsPromise = null;
+let sp500MarketCapsReady = false;
 function getSP500MarketCaps() {
   if (!sp500MarketCapsPromise) {
     sp500MarketCapsPromise = (async () => {
       const tickers = await getSP500Tickers();
       const caps = await mapWithConcurrency(tickers, 5, getMarketCapOnly);
       return caps.filter((c) => c !== null && c > 0).sort((a, b) => b - a);
-    })().catch((e) => {
-      sp500MarketCapsPromise = null; // 실패 시 재시도 가능하도록 캐시 초기화
-      throw e;
-    });
+    })()
+      .then((caps) => {
+        sp500MarketCapsReady = true;
+        return caps;
+      })
+      .catch((e) => {
+        sp500MarketCapsPromise = null; // 실패 시 재시도 가능하도록 캐시 초기화
+        throw e;
+      });
   }
   return sp500MarketCapsPromise;
 }
@@ -740,6 +748,9 @@ nasdaqRangeBtns.forEach((btn) => {
 });
 nasdaq100Btn.addEventListener("click", () => runNasdaq100());
 popularBtn.addEventListener("click", () => runPopular());
+
+// 페이지 로드 시 S&P500 시총 순위 캐시를 미리 백그라운드로 준비(첫 검색·인기종목 조회 시 대기 시간을 줄이기 위함)
+getSP500MarketCaps().catch(() => {});
 
 async function runAnalysis() {
   const ticker = tickerInput.value.trim().toUpperCase();
@@ -1036,7 +1047,7 @@ async function renderScore(selfMetricsPromise) {
 
   const metrics = await selfMetricsPromise;
 
-  if (!sp500MarketCapsPromise) {
+  if (!sp500MarketCapsReady) {
     el("scoreSection").innerHTML = `<p class="muted">S&P500 시가총액 순위 계산 중... (세션 최초 1회, 다소 시간이 걸릴 수 있습니다)</p>`;
   }
   const marketCapRank = await getMarketCapRank(metrics).catch(() => null);
