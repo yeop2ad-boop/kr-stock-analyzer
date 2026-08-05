@@ -1021,10 +1021,10 @@ async function renderScore(selfMetricsPromise) {
       </div>
       <div class="score-details">
         <ul>
-          <li>🏢 시가총액: <b>${!isForeignCurrency && metrics.marketCap ? fmtCompactCurrency(metrics.marketCap) : "N/A" + (isForeignCurrency ? " (해외 상장 종목 제외)" : "")}</b> (1조달러 이상이면 만점, 300억달러 이하면 0점)</li>
+          <li>🏢 시가총액 밸류에이션: <b>${!isForeignCurrency && metrics.marketCap ? fmtCompactCurrency(metrics.marketCap) : "N/A" + (isForeignCurrency ? " (해외 상장 종목 제외)" : "")}</b> (1조달러 이상이면 만점, 300억달러 이하면 0점)</li>
           <li>📍 52주 최고/최저 대비 위치: ${rangePosition !== null ? `저점 대비 <b>${(rangePosition * 100).toFixed(0)}%</b> 지점` : "N/A"} (저점에 가까울수록 가점)</li>
           <li>💰 P/E(주가수익비율): <b>${pe ? pe.toFixed(1) : "N/A"}</b> (시가총액 ÷ 최근 연간 순이익, 낮을수록 가점, 10배 만점·50배 이상 0점)</li>
-          <li>세부 점수 — 시가총액 ${marketCapScore.toFixed(1)}/2, 52주 위치 ${rangeScore.toFixed(1)}/4, PE 밸류에이션 ${peScore.toFixed(1)}/4</li>
+          <li>세부 점수 — 시가총액 밸류에이션 ${marketCapScore.toFixed(1)}/2, 52주 위치 ${rangeScore.toFixed(1)}/4, PE 밸류에이션 ${peScore.toFixed(1)}/4</li>
         </ul>
         <p class="disclaimer">
           ⚠️ 이 점수는 시가총액 규모, 52주 가격 위치, PE 밸류에이션을 조합한 <b>단순 참고용 정량 지표</b>이며,
