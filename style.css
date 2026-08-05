@@ -279,10 +279,15 @@ table.popular-table td:nth-child(5) { min-width: 46px; }
 .top30-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .top30-title { font-size: 16px; margin: 0 0 6px; }
 .top30-desc { font-size: 12px; margin: 0; max-width: 480px; }
-.top30-range-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-.top30RangeBtn { flex: 1 1 auto; min-width: 90px; font-size: 13px; padding: 10px 12px; background: #b8860b; }
-.top30RangeBtn:disabled { opacity: 0.5; }
+.top30-range-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.top30-range-row button { width: 100%; font-size: 13px; padding: 10px 12px; }
+.top30RangeBtn { background: #b8860b; }
+.top30-range-row button:disabled { opacity: 0.5; }
 .top30-status { margin-top: 12px; font-size: 13px; }
+
+@media (max-width: 480px) {
+  .top30-range-row { grid-template-columns: repeat(2, 1fr); }
+}
 
 table.top30-table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 13px; }
 table.top30-table th, table.top30-table td { padding: 8px 6px; border-bottom: 1px solid var(--border); text-align: center; }
