@@ -888,8 +888,11 @@ async function renderFinancials(ticker) {
       <div class="bar-row">
         <span class="bar-label">${escapeHtml(y)}</span>
         ${netIncome < 0 ? overlay : `<div class="bar-loss-zone"></div>`}
-        <div class="bar-track"><div class="bar-fill self" style="width:${pct}%"></div>${netIncome > 0 ? overlay : ""}</div>
-        <span class="bar-value">${fmtCompactCurrency(rev)} ${marginLabel}</span>
+        <div class="bar-track">
+          <div class="bar-fill self" style="width:${pct}%"></div>
+          ${netIncome > 0 ? overlay : ""}
+          <span class="bar-value-overlay">${fmtCompactCurrency(rev)}${marginLabel ? " · " + marginLabel : ""}</span>
+        </div>
       </div>`;
     })
     .join("");

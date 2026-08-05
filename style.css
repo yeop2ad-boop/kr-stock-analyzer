@@ -200,21 +200,27 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 .delta-down { color: var(--bad); }
 
 .bar-chart { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
-.bar-row { display: grid; grid-template-columns: 46px 40px 1fr 130px; align-items: center; gap: 8px; font-size: 13px; }
+.bar-row { display: grid; grid-template-columns: 42px 36px 1fr; align-items: center; gap: 8px; font-size: 13px; }
 .bar-row .bar-label { color: var(--muted); }
-.bar-track { background: var(--border); border-radius: 6px; overflow: hidden; height: 18px; position: relative; }
+.bar-track { background: var(--border); border-radius: 6px; overflow: hidden; height: 26px; position: relative; }
 .bar-fill { height: 100%; background: var(--accent); border-radius: 6px 0 0 6px; }
 .bar-fill.self { background: #7c3aed; }
 .bar-fill-profit {
   position: absolute; top: 0; left: 0; height: 100%;
   background: var(--good); border-radius: 6px 0 0 6px; z-index: 1;
 }
-.bar-loss-zone { height: 18px; display: flex; justify-content: flex-end; }
+.bar-loss-zone { height: 26px; display: flex; justify-content: flex-end; }
 .bar-loss { height: 100%; background: var(--bad); border-radius: 6px 0 0 6px; }
 .bar-value { text-align: right; font-variant-numeric: tabular-nums; }
+.bar-value-overlay {
+  position: absolute; top: 50%; left: 10px; transform: translateY(-50%);
+  z-index: 2; color: #fff; font-weight: 700; font-size: 12px;
+  white-space: nowrap; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
 .margin-pct { font-size: 11px; margin-left: 4px; font-weight: 600; }
 .margin-pct.good { color: var(--good); }
 .margin-pct.bad { color: var(--bad); }
+.bar-value-overlay .margin-pct { color: inherit; opacity: 0.9; }
 
 .peer-row {
   display: grid;
