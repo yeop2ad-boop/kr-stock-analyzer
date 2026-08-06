@@ -16,6 +16,8 @@ const rankedStatus = el("rankedStatus");
 const rankedResults = el("rankedResults");
 const popularStatus = el("popularStatus");
 const popularResults = el("popularResults");
+const moversStatus = el("moversStatus");
+const moversResults = el("moversResults");
 const contactBtn = el("contactBtn");
 const chatPanel = el("chatPanel");
 const chatMessagesEl = el("chatMessages");
@@ -975,8 +977,14 @@ const catButtons = {
   tech100: el("catTech100Btn"),
   sp100: el("catSp100Btn"),
   sp500: el("catSp500Btn"),
+  surge: el("catSurgeBtn"),
+  plunge: el("catPlungeBtn"),
 };
-const resultGroups = { popular: [popularStatus, popularResults], ranked: [rankedStatus, rankedResults] };
+const resultGroups = {
+  popular: [popularStatus, popularResults],
+  ranked: [rankedStatus, rankedResults],
+  movers: [moversStatus, moversResults],
+};
 let activeCategory = null;
 
 function setActiveCategory(cat) {
@@ -1016,6 +1024,16 @@ catButtons.sp500.addEventListener("click", () => {
   setActiveCategory("sp500");
   prepareMainView("ranked");
   runSP500();
+});
+catButtons.surge.addEventListener("click", () => {
+  setActiveCategory("surge");
+  prepareMainView("movers");
+  runMovers("surge");
+});
+catButtons.plunge.addEventListener("click", () => {
+  setActiveCategory("plunge");
+  prepareMainView("movers");
+  runMovers("plunge");
 });
 
 // 메인창에 하나의 결과만 보이도록: 선택된 카테고리 외 결과 영역과 티커 분석 화면을 모두 정리
@@ -1725,6 +1743,63 @@ async function runSP500() {
   });
 }
 
+// 티커/현재가(+등락률)/가격매력/투자위험 5열 표 — 인기종목·급등주·급락주가 공유하는 렌더러
+function moversTableHtml(scored, rankNote) {
+  const scoreClass = (score) => (score === null ? "" : score > 5 ? "delta-up" : score < 5 ? "delta-down" : "");
+
+  const rows = scored
+    .map((r, i) => {
+      const changeClass = r.changePct >= 0 ? "delta-up" : "delta-down";
+      return `
+      <tr>
+        <td>${i + 1}</td>
+        <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
+        <td>$${r.price.toFixed(2)}<br><span class="${changeClass}" style="font-size:11px;">(${fmtPct(r.changePct)})</span></td>
+        <td class="${scoreClass(r.attractiveness)}"><b>${r.attractiveness !== null ? r.attractiveness : "N/A"}</b></td>
+        <td class="${scoreClass(r.risk)}"><b>${r.risk !== null ? r.risk : "N/A"}</b></td>
+      </tr>`;
+    })
+    .join("");
+
+  return `
+      <div class="popular-table-wrap">
+        <table class="top30-table popular-table">
+          <thead>
+            <tr><th>순위</th><th>티커</th><th>현재가</th><th>가격<br>매력</th><th>투자<br>위험</th></tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+      <p class="disclaimer">
+        ⚠️ ${rankNote}
+        가격 매력도·투자 위험도는 각 10점 만점 참고용 지표이며(5점보다 높으면 초록색, 낮으면 빨간색), 투자 자문이 아닙니다.
+      </p>
+    `;
+}
+
+// 후보 목록(가벼운 조회로 얻은 심볼/현재가/등락률)에 대해 가격 매력도·투자 위험도 점수를 매겨 표 HTML까지 완성
+// marketReturnsPromise는 후보 목록을 모으는 동안 미리 병렬로 시작해둔 getMarketReturns() 호출을 전달받음
+async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl, resultsEl, rankNote }) {
+  statusEl.textContent = "가격 매력도 · 투자 위험도 점수를 계산하는 중...";
+
+  // 한꺼번에 요청하면 프록시가 과부하로 실패하는 경우가 많아 동시 요청 수를 제한
+  const [{ sp500Return }, fullMetricsList] = await Promise.all([
+    marketReturnsPromise,
+    mapWithConcurrency(candidates, 3, (r) => getFullMetrics(r.symbol)),
+  ]);
+
+  const scored = candidates.map((r, i) => {
+    const m = fullMetricsList[i];
+    if (!m) return { ...r, attractiveness: null, risk: null };
+    const attractiveness = computeAttractivenessScore(m);
+    const risk = computeRiskScore(m, sp500Return);
+    return { ...r, attractiveness: attractiveness.total, risk: risk.total };
+  });
+
+  statusEl.style.display = "none";
+  resultsEl.innerHTML = moversTableHtml(scored, rankNote);
+}
+
 // ---------- 인기종목: 당일 거래대금(가격 × 거래량) 상위 20개 ----------
 async function runPopular(count = 20) {
   catButtons.popular.disabled = true;
@@ -1733,7 +1808,8 @@ async function runPopular(count = 20) {
   popularStatus.textContent = "인기종목을 불러오는 중...";
 
   try {
-    const [data, { sp500Return }] = await Promise.all([yahooMostActive(50), getMarketReturns()]);
+    const marketReturnsPromise = getMarketReturns();
+    const data = await yahooMostActive(50);
     const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
 
     if (quotes.length === 0) {
@@ -1753,55 +1829,58 @@ async function runPopular(count = 20) {
       .sort((a, b) => b.dollarVolume - a.dollarVolume)
       .slice(0, count);
 
-    popularStatus.textContent = "가격 매력도 · 투자 위험도 점수를 계산하는 중...";
-
-    // 점수는 '분석하기'와 동일한 방식(차트+재무제표 직접 계산)으로 구해 값이 서로 어긋나지 않도록 함
-    // 10개를 한꺼번에 요청하면 프록시가 과부하로 실패하는 경우가 많아 동시 요청 수를 제한
-    const fullMetricsList = await mapWithConcurrency(ranked, 3, (r) => getFullMetrics(r.symbol));
-
-    const scored = ranked.map((r, i) => {
-      const m = fullMetricsList[i];
-      if (!m) return { ...r, attractiveness: null, risk: null };
-      const attractiveness = computeAttractivenessScore(m);
-      const risk = computeRiskScore(m, sp500Return);
-      return { ...r, attractiveness: attractiveness.total, risk: risk.total };
+    await scoreAndRenderMovers(ranked, marketReturnsPromise, {
+      statusEl: popularStatus,
+      resultsEl: popularResults,
+      rankNote:
+        '순위는 당일 거래대금(거래량 × 현재가 추정) 기준이며, Yahoo Finance의 "가장 활발히 거래된 종목" 목록 중 상위 50개를 기준으로 재계산했습니다.',
     });
-
-    popularStatus.style.display = "none";
-
-    const scoreClass = (score) => (score === null ? "" : score > 5 ? "delta-up" : score < 5 ? "delta-down" : "");
-
-    const rows = scored
-      .map((r, i) => {
-        const changeClass = r.changePct >= 0 ? "delta-up" : "delta-down";
-        return `
-      <tr>
-        <td>${i + 1}</td>
-        <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
-        <td>$${r.price.toFixed(2)}<br><span class="${changeClass}" style="font-size:11px;">(${fmtPct(r.changePct)})</span></td>
-        <td class="${scoreClass(r.attractiveness)}"><b>${r.attractiveness !== null ? r.attractiveness : "N/A"}</b></td>
-        <td class="${scoreClass(r.risk)}"><b>${r.risk !== null ? r.risk : "N/A"}</b></td>
-      </tr>`;
-      })
-      .join("");
-
-    popularResults.innerHTML = `
-      <div class="popular-table-wrap">
-        <table class="top30-table popular-table">
-          <thead>
-            <tr><th>순위</th><th>티커</th><th>현재가</th><th>가격<br>매력</th><th>투자<br>위험</th></tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>
-      <p class="disclaimer">
-        ⚠️ 순위는 당일 거래대금(거래량 × 현재가 추정) 기준이며, Yahoo Finance의 "가장 활발히 거래된 종목" 목록 중 상위 50개를 기준으로 재계산했습니다.
-        가격 매력도·투자 위험도는 각 10점 만점 참고용 지표이며(5점보다 높으면 초록색, 낮으면 빨간색), 투자 자문이 아닙니다.
-      </p>
-    `;
   } catch (err) {
     popularStatus.textContent = `❌ ${err.message || "인기종목을 가져오지 못했습니다."}`;
   } finally {
     catButtons.popular.disabled = false;
+  }
+}
+
+// S&P500 전 종목의 전일 등락률을 가볍게 조회(차트 1회, 5일치 일봉)해 급등주/급락주 정렬 후보로 사용
+async function getSP500DailyChanges() {
+  const tickers = await getSP500Tickers();
+  const results = await mapWithConcurrency(tickers, 15, async (symbol) => {
+    const chart = await yahooChart(symbol, "5d", "1d").catch(() => null);
+    const changePct = getDailyChangePercent(chart);
+    const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
+    if (changePct === null || !meta || meta.regularMarketPrice === undefined) return null;
+    return { symbol, name: meta.shortName || meta.longName || symbol, price: meta.regularMarketPrice, changePct };
+  });
+  return results.filter(Boolean);
+}
+
+// ---------- 급등주/급락주: S&P500 종목 중 전일 등락률 상위·하위 50개 ----------
+async function runMovers(direction) {
+  const btn = direction === "surge" ? catButtons.surge : catButtons.plunge;
+  const label = direction === "surge" ? "급등주" : "급락주";
+  btn.disabled = true;
+  moversResults.innerHTML = "";
+  moversStatus.style.display = "block";
+  moversStatus.textContent = `S&P500 ${label}을 불러오는 중...`;
+
+  try {
+    const marketReturnsPromise = getMarketReturns();
+    const candidates = await getSP500DailyChanges();
+    if (candidates.length === 0) throw new Error(`${label} 데이터를 가져오지 못했습니다.`);
+
+    const sorted = candidates
+      .sort((a, b) => (direction === "surge" ? b.changePct - a.changePct : a.changePct - b.changePct))
+      .slice(0, 50);
+
+    await scoreAndRenderMovers(sorted, marketReturnsPromise, {
+      statusEl: moversStatus,
+      resultsEl: moversResults,
+      rankNote: `순위는 전일 대비 등락률(${direction === "surge" ? "상승률 높은" : "하락률 큰"} 순) 기준이며, S&P500 편입 종목 중 상위 50개입니다.`,
+    });
+  } catch (err) {
+    moversStatus.textContent = `❌ ${err.message || `${label}을 가져오지 못했습니다.`}`;
+  } finally {
+    btn.disabled = false;
   }
 }

@@ -100,6 +100,16 @@ body {
 .cat-tech100.active { background: #16a3a3; }
 .cat-sp100.active { background: #b8860b; }
 .cat-sp500.active { background: #8b5cf6; }
+.cat-surge.active { background: var(--good); }
+.cat-plunge.active { background: var(--bad); }
+
+.fh-cats-secondary {
+  max-width: 860px;
+  margin: 8px auto 0;
+  display: flex;
+  gap: 8px;
+}
+.fh-cats-secondary .cat-btn { font-size: 13px; padding: 9px 6px; }
 
 .loading-splash {
   position: fixed;
