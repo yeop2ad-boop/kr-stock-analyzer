@@ -5,10 +5,11 @@
 const el = (id) => document.getElementById(id);
 
 const tickerInput = el("tickerInput");
+const tickerSuggest = el("tickerSuggest");
 const analyzeBtn = el("analyzeBtn");
 const statusBox = el("statusBox");
 const resultsView = el("resultsView");
-const backHomeBtn = el("backHomeBtn");
+const siteLogo = el("siteLogo");
 const results = el("results");
 const fixedHeader = el("fixedHeader");
 const loadingSplash = el("loadingSplash");
@@ -21,24 +22,19 @@ const moversResults = el("moversResults");
 const contactBtn = el("contactBtn");
 const chatPanel = el("chatPanel");
 const chatMessagesEl = el("chatMessages");
-const chatTickerInput = el("chatTickerInput");
-const chatTickerSuggest = el("chatTickerSuggest");
-const chatPriceInput = el("chatPriceInput");
-const chatBuyBtn = el("chatBuyBtn");
-const chatSellBtn = el("chatSellBtn");
+const chatTextInput = el("chatTextInput");
 const chatSendBtn = el("chatSendBtn");
 const chatError = el("chatError");
 const chatCloseBtn = el("chatCloseBtn");
 
-// ---------- 실시간 채팅(익명, 24시간 보관, 종목/평단가/매수·매도 고정 형식만 등록 가능) ----------
+// ---------- 자유토론방(익명, 24시간 보관, 자유 텍스트 최대 30자) ----------
 const CHAT_API = "https://us-stock.yeop2ad.workers.dev/chat";
 const CHAT_POLL_MS = 4000;
-const TICKER_PATTERN = /^[A-Z]{1,6}(\.[A-Z]{1,2})?$/;
-const PRICE_PATTERN = /^\d{1,5}(\.\d{1,2})?$/;
+const CHAT_MAX_LEN = 30;
+const CHAT_CLIENT_COOLDOWN_MS = 10000; // 연속 전송 시 10초 제한(서버에서도 동일하게 최종 검증)
 let chatPollTimer = null;
 let lastChatMessageCount = -1;
-let chatSelectedSide = null;
-let tickerSuggestTimer = null;
+let lastChatSentAt = 0;
 
 function fmtChatTime(t) {
   return new Date(t).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" });
@@ -50,17 +46,13 @@ function renderChatMessages(messages) {
     return;
   }
   chatMessagesEl.innerHTML = messages
-    .map((m) => {
-      const sideLabel = m.side === "buy" ? "매수" : "매도";
-      const sideClass = m.side === "buy" ? "good" : "bad";
-      return `
+    .map(
+      (m) => `
       <div class="chat-msg">
         <span class="chat-time">${escapeHtml(fmtChatTime(m.t))}</span>
-        <b class="chat-ticker">${escapeHtml(m.ticker)}</b>
-        <span class="chat-text">평단가 $${escapeHtml(m.price)}</span>
-        <span class="chat-side ${sideClass}">${sideLabel}</span>
-      </div>`;
-    })
+        <span class="chat-text">${escapeHtml(m.text)}</span>
+      </div>`
+    )
     .join("");
   chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
 }
@@ -90,70 +82,26 @@ function stopChatPolling() {
   chatPollTimer = null;
 }
 
-function setChatSide(side) {
-  chatSelectedSide = side;
-  chatBuyBtn.classList.toggle("active", side === "buy");
-  chatSellBtn.classList.toggle("active", side === "sell");
+// 서버와 동일한 기준을 클라이언트에서 먼저 확인해 불필요한 요청과 대기를 줄임(최종 검증은 항상 서버에서)
+function validateChatText(text) {
+  if (text.length === 0) return "메시지를 입력해주세요.";
+  if (text.length > CHAT_MAX_LEN) return `메시지는 최대 ${CHAT_MAX_LEN}자까지 입력할 수 있습니다.`;
+  if (/https?:\/\/|www\.|\.(com|net|org|kr|io|co)\b/i.test(text)) return "URL 주소는 등록할 수 없습니다.";
+  if (/(.)\1{4,}/.test(text)) return "같은 글자를 반복해서 입력할 수 없습니다.";
+  return null;
 }
-
-function hideTickerSuggest() {
-  chatTickerSuggest.style.display = "none";
-  chatTickerSuggest.innerHTML = "";
-}
-
-async function handleTickerInput() {
-  const q = chatTickerInput.value.trim();
-  if (tickerSuggestTimer) clearTimeout(tickerSuggestTimer);
-  if (q.length < 1) {
-    hideTickerSuggest();
-    return;
-  }
-  tickerSuggestTimer = setTimeout(async () => {
-    try {
-      const data = await yahooSearch(q);
-      const quotes = ((data && data.quotes) || []).filter((qt) => qt.symbol).slice(0, 6);
-      if (quotes.length === 0) {
-        hideTickerSuggest();
-        return;
-      }
-      chatTickerSuggest.innerHTML = quotes
-        .map(
-          (qt) =>
-            `<div class="chat-ticker-option" data-symbol="${escapeHtml(qt.symbol)}">
-              <b>${escapeHtml(qt.symbol)}</b> <span class="muted">${escapeHtml(qt.shortname || qt.longname || "")}</span>
-            </div>`
-        )
-        .join("");
-      chatTickerSuggest.style.display = "block";
-    } catch {
-      hideTickerSuggest();
-    }
-  }, 300);
-}
-
-chatTickerSuggest.addEventListener("click", (e) => {
-  const option = e.target.closest(".chat-ticker-option");
-  if (!option) return;
-  chatTickerInput.value = option.dataset.symbol;
-  hideTickerSuggest();
-});
 
 async function sendChatPost() {
-  const ticker = chatTickerInput.value.trim().toUpperCase();
-  const price = chatPriceInput.value.trim();
-
-  if (!TICKER_PATTERN.test(ticker)) {
-    chatError.textContent = "종목 티커를 올바르게 입력해주세요.";
+  const text = chatTextInput.value.trim();
+  const validationError = validateChatText(text);
+  if (validationError) {
+    chatError.textContent = validationError;
     chatError.style.display = "block";
     return;
   }
-  if (!PRICE_PATTERN.test(price)) {
-    chatError.textContent = "평단가는 숫자 5자 이내로 입력해주세요.";
-    chatError.style.display = "block";
-    return;
-  }
-  if (chatSelectedSide !== "buy" && chatSelectedSide !== "sell") {
-    chatError.textContent = "매수/매도를 선택해주세요.";
+  const now = Date.now();
+  if (now - lastChatSentAt < CHAT_CLIENT_COOLDOWN_MS) {
+    chatError.textContent = `너무 빠르게 전송했습니다. ${Math.ceil((CHAT_CLIENT_COOLDOWN_MS - (now - lastChatSentAt)) / 1000)}초 후 다시 시도해주세요.`;
     chatError.style.display = "block";
     return;
   }
@@ -164,7 +112,7 @@ async function sendChatPost() {
     const res = await fetch(CHAT_API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ticker, price, side: chatSelectedSide }),
+      body: JSON.stringify({ text }),
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
@@ -172,9 +120,8 @@ async function sendChatPost() {
       chatError.style.display = "block";
       return;
     }
-    chatTickerInput.value = "";
-    chatPriceInput.value = "";
-    setChatSide(null);
+    lastChatSentAt = now;
+    chatTextInput.value = "";
     const messages = data.messages || [];
     lastChatMessageCount = messages.length;
     renderChatMessages(messages);
@@ -201,20 +148,14 @@ chatCloseBtn.addEventListener("click", () => {
   chatPanel.style.display = "none";
   stopChatPolling();
 });
-chatTickerInput.addEventListener("input", handleTickerInput);
-chatBuyBtn.addEventListener("click", () => setChatSide(chatSelectedSide === "buy" ? null : "buy"));
-chatSellBtn.addEventListener("click", () => setChatSide(chatSelectedSide === "sell" ? null : "sell"));
 chatSendBtn.addEventListener("click", sendChatPost);
-chatPriceInput.addEventListener("keydown", (e) => {
+chatTextInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") sendChatPost();
 });
 document.addEventListener("click", (e) => {
   if (chatPanel.style.display !== "none" && !chatPanel.contains(e.target) && e.target !== contactBtn) {
     chatPanel.style.display = "none";
     stopChatPolling();
-  }
-  if (!chatTickerInput.contains(e.target) && !chatTickerSuggest.contains(e.target)) {
-    hideTickerSuggest();
   }
 });
 
@@ -458,19 +399,26 @@ function getDailyChangePercent(chartResult) {
   return ((latest - prevClose) / prevClose) * 100;
 }
 
-// 최근 5거래일 등락률(급등락 경고 이모지 표시용) — 일봉 마지막 종가와 5거래일 전 종가를 비교
-function get5dChangePercent(chartResult) {
+// 최근 5거래일 중 하루라도 ±10% 이상 급등/급락한 날이 있었는지(급등락 이모지 표시용) — 누적 5일 수익률이 아닌 일별 등락률 각각을 확인
+function get5dExtremeMoves(chartResult) {
   const result = chartResult && chartResult.chart && chartResult.chart.result && chartResult.chart.result[0];
-  if (!result) return null;
+  if (!result) return { hasSurge: false, hasPlunge: false };
   const timestamps = result.timestamp || [];
   const closes = (result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
   const pairs = timestamps.map((t, i) => ({ t, c: closes[i] })).filter((p) => p.c !== null && p.c !== undefined);
-  if (pairs.length < 6) return null;
   pairs.sort((a, b) => a.t - b.t);
-  const base = pairs[pairs.length - 6].c;
-  const latest = pairs[pairs.length - 1].c;
-  if (!base) return null;
-  return ((latest - base) / base) * 100;
+  const recent = pairs.slice(-6); // 종가 6개 = 일별 등락률 5개
+  let hasSurge = false;
+  let hasPlunge = false;
+  for (let i = 1; i < recent.length; i++) {
+    const prev = recent[i - 1].c;
+    const cur = recent[i].c;
+    if (!prev) continue;
+    const pct = ((cur - prev) / prev) * 100;
+    if (pct >= 10) hasSurge = true;
+    if (pct <= -10) hasPlunge = true;
+  }
+  return { hasSurge, hasPlunge };
 }
 
 // 나스닥·다우존스·S&P500 1년 수익률 (여러 섹션이 공유해서 중복 요청을 줄임)
@@ -690,7 +638,7 @@ async function getFullMetrics(symbol) {
     marketCap,
     currency: meta.currency,
     oneYearReturn: get1yReturnFromChart(chartData),
-    fiveDayChangePercent: get5dChangePercent(chartData),
+    fiveDayExtremes: get5dExtremeMoves(chartData),
     revenueGrowth3y: avgRevenueGrowth3y(revenueSeries),
   };
 }
@@ -957,15 +905,17 @@ function fmtPct(num, digits = 1) {
   return `${sign}${num.toFixed(digits)}%`;
 }
 
-// 최근 5거래일 등락률이 ±10% 이상인 급등락 종목에 붙일 경고 이모지(해당 없으면 빈 문자열)
-const SURGE_WARNING_TITLE = "최근 5거래일간 10% 이상 급등락";
-function surgeWarningEmoji(fiveDayChangePercent) {
-  return fiveDayChangePercent !== null && fiveDayChangePercent !== undefined && Math.abs(fiveDayChangePercent) >= 10
-    ? ` <span title="${SURGE_WARNING_TITLE}">⚠️</span>`
-    : "";
+// 최근 5거래일 중 하루라도 ±10% 이상 급등/급락한 종목에 붙일 이모지(급등 🔥, 급락 ⚠️, 해당 없으면 빈 문자열)
+const SURGE_WARNING_TITLE = "최근 5거래일 중 하루라도 ±10% 이상 급등락";
+function surgeWarningEmoji(fiveDayExtremes) {
+  if (!fiveDayExtremes) return "";
+  const { hasSurge, hasPlunge } = fiveDayExtremes;
+  if (!hasSurge && !hasPlunge) return "";
+  const icons = `${hasSurge ? "🔥" : ""}${hasPlunge ? "⚠️" : ""}`;
+  return ` <span title="${SURGE_WARNING_TITLE}">${icons}</span>`;
 }
 // 순위 표 위에 붙이는 경고 이모지 범례
-const SURGE_WARNING_LEGEND = `<p class="muted" style="font-size:11px;margin:0 0 6px;">⚠️ ${SURGE_WARNING_TITLE}</p>`;
+const SURGE_WARNING_LEGEND = `<p class="muted" style="font-size:11px;margin:0 0 6px;">🔥 급등 · ⚠️ 급락 — ${SURGE_WARNING_TITLE}</p>`;
 
 function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
@@ -983,6 +933,14 @@ function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str ?? "";
   return div.innerHTML;
+}
+
+// 실시간 시세 차트(Yahoo Finance)로 연결하는 링크 — 직접 차트를 그리지 않고 외부 사이트로 새 탭 연결
+function yahooChartUrl(symbol) {
+  return `https://finance.yahoo.com/quote/${encodeURIComponent(symbol)}/chart`;
+}
+function priceChartLink(symbol, priceHtml) {
+  return `<a class="price-chart-link" href="${yahooChartUrl(symbol)}" target="_blank" rel="noopener">${priceHtml}</a>`;
 }
 
 function setStatus(type, message) {
@@ -1012,6 +970,8 @@ const catButtons = {
   sp500: el("catSp500Btn"),
   surge: el("catSurgeBtn"),
   plunge: el("catPlungeBtn"),
+  lowRisk: el("catLowRiskBtn"),
+  undervalued: el("catUndervaluedBtn"),
 };
 const resultGroups = {
   popular: [popularStatus, popularResults],
@@ -1033,11 +993,7 @@ function setActiveCategory(cat) {
   syncHeaderHeight();
 }
 
-catButtons.popular.addEventListener("click", () => {
-  setActiveCategory("popular");
-  prepareMainView("popular");
-  runPopular(20);
-});
+catButtons.popular.addEventListener("click", showHomeView);
 catButtons.nasdaq100.addEventListener("click", () => {
   setActiveCategory("nasdaq100");
   prepareMainView("ranked");
@@ -1068,6 +1024,16 @@ catButtons.plunge.addEventListener("click", () => {
   prepareMainView("movers");
   runMovers("plunge");
 });
+catButtons.lowRisk.addEventListener("click", () => {
+  setActiveCategory("lowRisk");
+  prepareMainView("ranked");
+  runLowRisk30();
+});
+catButtons.undervalued.addEventListener("click", () => {
+  setActiveCategory("undervalued");
+  prepareMainView("ranked");
+  runUndervalued30();
+});
 
 // 메인창에 하나의 결과만 보이도록: 선택된 카테고리 외 결과 영역과 티커 분석 화면을 모두 정리
 function prepareMainView(activeKey) {
@@ -1082,9 +1048,12 @@ function prepareMainView(activeKey) {
 }
 
 // ---------- 홈 ↔ 티커 분석 화면 라우팅(뒤로가기 지원, ?ticker=로 특정 종목에 바로 접속 가능) ----------
+// 홈으로 돌아오면(로고 클릭, 뒤로가기) 빈 화면 대신 인기종목을 바로 불러와 보여줌
 function showHomeView() {
-  resultsView.style.display = "none";
   document.title = "미국 기업 분석기";
+  setActiveCategory("popular");
+  prepareMainView("popular");
+  return runPopular(20);
 }
 
 function showResultsView(ticker) {
@@ -1107,9 +1076,18 @@ function navigateToTicker(ticker, { push = true } = {}) {
   runAnalysis(ticker);
 }
 
-backHomeBtn.addEventListener("click", () => {
-  history.pushState({}, "", location.pathname);
+// 좌측 상단 로고를 누르면 홈(인기종목)으로 이동
+siteLogo.addEventListener("click", () => {
+  if (resultsView.style.display !== "none" || location.search) {
+    history.pushState({}, "", location.pathname);
+  }
   showHomeView();
+});
+siteLogo.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    siteLogo.click();
+  }
 });
 
 window.addEventListener("popstate", () => {
@@ -1138,13 +1116,166 @@ document.addEventListener("click", (e) => {
     loadingSplash.style.display = "none";
     navigateToTicker(ticker.toUpperCase(), { push: false });
   } else {
-    setActiveCategory("popular");
-    prepareMainView("popular");
-    runPopular(20).finally(() => {
+    showHomeView().finally(() => {
       loadingSplash.style.display = "none";
     });
   }
 })();
+
+// 한국어 회사명으로도 검색할 수 있도록 자주 찾는 미국 기업 위주로 별도 매핑(야후 검색 API는 한국어 매칭을 지원하지 않음)
+const KOREAN_COMPANY_NAMES = {
+  애플: "AAPL",
+  마이크로소프트: "MSFT",
+  마소: "MSFT",
+  구글: "GOOGL",
+  알파벳: "GOOGL",
+  아마존: "AMZN",
+  엔비디아: "NVDA",
+  테슬라: "TSLA",
+  메타: "META",
+  페이스북: "META",
+  넷플릭스: "NFLX",
+  에이엠디: "AMD",
+  인텔: "INTC",
+  마이크론: "MU",
+  브로드컴: "AVGO",
+  오라클: "ORCL",
+  세일즈포스: "CRM",
+  어도비: "ADBE",
+  퀄컴: "QCOM",
+  텍사스인스트루먼트: "TXN",
+  아이비엠: "IBM",
+  시스코: "CSCO",
+  페이팔: "PYPL",
+  우버: "UBER",
+  에어비앤비: "ABNB",
+  쇼피파이: "SHOP",
+  팔란티어: "PLTR",
+  코인베이스: "COIN",
+  스노우플레이크: "SNOW",
+  팔로알토네트웍스: "PANW",
+  크라우드스트라이크: "CRWD",
+  서비스나우: "NOW",
+  스포티파이: "SPOT",
+  디즈니: "DIS",
+  나이키: "NKE",
+  스타벅스: "SBUX",
+  맥도날드: "MCD",
+  코카콜라: "KO",
+  펩시: "PEP",
+  월마트: "WMT",
+  코스트코: "COST",
+  홈디포: "HD",
+  타겟: "TGT",
+  제이피모건: "JPM",
+  제이피모간: "JPM",
+  뱅크오브아메리카: "BAC",
+  골드만삭스: "GS",
+  비자: "V",
+  마스터카드: "MA",
+  존슨앤존슨: "JNJ",
+  화이자: "PFE",
+  모더나: "MRNA",
+  일라이릴리: "LLY",
+  유나이티드헬스: "UNH",
+  엑슨모빌: "XOM",
+  쉐브론: "CVX",
+  보잉: "BA",
+  포드: "F",
+  제너럴모터스: "GM",
+  에이티앤티: "T",
+  버라이즌: "VZ",
+  티에스엠씨: "TSM",
+  알리바바: "BABA",
+  니오: "NIO",
+  리비안: "RIVN",
+  루시드: "LCID",
+  핀둬둬: "PDD",
+  슈퍼마이크로: "SMCI",
+  소파이: "SOFI",
+  누홀딩스: "NU",
+  로블록스: "RBLX",
+  스냅: "SNAP",
+  룰루레몬: "LULU",
+  델: "DELL",
+  마라톤디지털: "MARA",
+  마벨: "MRVL",
+  어플라이드머티리얼즈: "AMAT",
+  웨스턴디지털: "WDC",
+  아이온큐: "IONQ",
+  인튜이티브서지컬: "ISRG",
+  버크셔: "BRK-B",
+  버크셔해서웨이: "BRK-B",
+};
+
+let mainTickerSuggestTimer = null;
+function hideMainTickerSuggest() {
+  tickerSuggest.style.display = "none";
+  tickerSuggest.innerHTML = "";
+}
+function renderMainTickerSuggest(items) {
+  if (items.length === 0) {
+    hideMainTickerSuggest();
+    return;
+  }
+  tickerSuggest.innerHTML = items
+    .map(
+      (it) =>
+        `<div class="chat-ticker-option" data-symbol="${escapeHtml(it.symbol)}">
+          <b>${escapeHtml(it.symbol)}</b> <span class="muted">${escapeHtml(it.name || "")}</span>
+        </div>`
+    )
+    .join("");
+  tickerSuggest.style.display = "block";
+}
+async function handleMainTickerInput() {
+  const q = tickerInput.value.trim();
+  if (mainTickerSuggestTimer) clearTimeout(mainTickerSuggestTimer);
+  if (q.length < 1) {
+    hideMainTickerSuggest();
+    return;
+  }
+
+  // 한국어 회사명 매칭은 목록이 작아 네트워크 응답을 기다리지 않고 바로 화면에 표시
+  const koreanMatches = Object.entries(KOREAN_COMPANY_NAMES)
+    .filter(([name]) => name.includes(q))
+    .map(([name, symbol]) => ({ symbol, name: `${name}(한글)` }));
+  renderMainTickerSuggest(koreanMatches.slice(0, 8));
+
+  mainTickerSuggestTimer = setTimeout(async () => {
+    let englishMatches = [];
+    try {
+      const data = await yahooSearch(q);
+      englishMatches = ((data && data.quotes) || [])
+        .filter((qt) => qt.symbol)
+        .map((qt) => ({ symbol: qt.symbol, name: qt.shortname || qt.longname || "" }));
+    } catch {
+      // 검색 실패 시 한국어 매칭 결과만이라도 유지
+    }
+    if (tickerInput.value.trim() !== q) return; // 응답이 오는 사이 검색어가 바뀌었으면 무시(경쟁 상태 방지)
+    const seen = new Set();
+    const merged = [...koreanMatches, ...englishMatches].filter((it) => {
+      if (seen.has(it.symbol)) return false;
+      seen.add(it.symbol);
+      return true;
+    });
+    renderMainTickerSuggest(merged.slice(0, 8));
+  }, 250);
+}
+
+tickerSuggest.addEventListener("click", (e) => {
+  const option = e.target.closest(".chat-ticker-option");
+  if (!option) return;
+  tickerInput.value = option.dataset.symbol;
+  hideMainTickerSuggest();
+  triggerSearch();
+});
+tickerInput.addEventListener("input", handleMainTickerInput);
+document.addEventListener("click", (e) => {
+  if (!tickerInput.contains(e.target) && !tickerSuggest.contains(e.target)) {
+    hideMainTickerSuggest();
+  }
+});
 
 // ---------- 메인 분석 흐름 ----------
 function triggerSearch() {
@@ -1153,6 +1284,7 @@ function triggerSearch() {
     setStatus("error", "❌ 분석할 기업의 티커를 입력해주세요. (예: AAPL)");
     return;
   }
+  hideMainTickerSuggest();
   navigateToTicker(ticker);
 }
 analyzeBtn.addEventListener("click", triggerSearch);
@@ -1182,7 +1314,7 @@ async function runAnalysis(ticker) {
     setStatus("loading", "섹션별 데이터를 정리하는 중입니다...");
 
     // 최근 5거래일간 ±10% 이상 급등락한 종목은 "요약" 제목 옆에 경고 이모지 표시
-    el("summaryHeading").innerHTML = `1️⃣ 요약${surgeWarningEmoji(get5dChangePercent(chartData))}`;
+    el("summaryHeading").innerHTML = `1️⃣ 요약${surgeWarningEmoji(get5dExtremeMoves(chartData))}`;
 
     renderSummary(quote, meta, getDailyChangePercent(chartData)).catch((e) => {
       el("summarySection").innerHTML = `<p class="error-inline">사업 요약을 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
@@ -1247,7 +1379,7 @@ async function renderSummary(quote, meta, changePct) {
       <span>업종: <b>${escapeHtml(quote.industryDisp || quote.industry || "N/A")}</b></span>
       <span>섹터: <b>${escapeHtml(quote.sectorDisp || quote.sector || "N/A")}</b></span>
       <span>거래소: <b>${escapeHtml(quote.exchDisp || meta.fullExchangeName || "N/A")}</b></span>
-      <span>현재가: <b>$${(meta.regularMarketPrice ?? 0).toFixed(2)}</b> ${changePct !== null && changePct !== undefined ? `<span class="${changePct >= 0 ? "delta-up" : "delta-down"}">(${fmtPct(changePct)})</span>` : ""}</span>
+      <span>현재가: <b>$${(meta.regularMarketPrice ?? 0).toFixed(2)}</b> ${changePct !== null && changePct !== undefined ? `<span class="${changePct >= 0 ? "delta-up" : "delta-down"}">(${fmtPct(changePct)})</span>` : ""}<a class="chart-link-btn" href="${yahooChartUrl(meta.symbol || quote.symbol || "")}" target="_blank" rel="noopener">📈 차트보기</a></span>
     </div>
   `;
 }
@@ -1641,7 +1773,11 @@ async function renderMacro() {
 }
 
 // ---------- 구간별 TOP N 공용 렌더러: 종목 목록을 받아 가격 매력도 + 투자 위험도 합산 상위 N개를 표시(topN 기본값 10) ----------
-async function renderRankedTop10(tickers, rangeLabel, { statusEl, resultsEl, buttons, topN = 10 }) {
+async function renderRankedTop10(
+  tickers,
+  rangeLabel,
+  { statusEl, resultsEl, buttons, topN = 10, sortFn = (a, b) => b.combined - a.combined }
+) {
   buttons.forEach((btn) => (btn.disabled = true));
   resultsEl.innerHTML = "";
   statusEl.style.display = "block";
@@ -1666,11 +1802,11 @@ async function renderRankedTop10(tickers, rangeLabel, { statusEl, resultsEl, but
           attractiveness: attractiveness.total,
           risk: risk.total,
           combined,
-          fiveDayChangePercent: m.fiveDayChangePercent,
+          fiveDayExtremes: m.fiveDayExtremes,
         };
       })
       .filter(Boolean)
-      .sort((a, b) => b.combined - a.combined)
+      .sort(sortFn)
       .slice(0, topN);
 
     const successCount = metricsList.filter(Boolean).length;
@@ -1686,9 +1822,9 @@ async function renderRankedTop10(tickers, rangeLabel, { statusEl, resultsEl, but
       .map(
         (r, i) => `
       <tr>
-        <td>${i + 1}${surgeWarningEmoji(r.fiveDayChangePercent)}</td>
+        <td>${i + 1}${surgeWarningEmoji(r.fiveDayExtremes)}</td>
         <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></td>
-        <td>${r.price !== undefined && r.price !== null ? "$" + r.price.toFixed(2) : "N/A"}</td>
+        <td>${r.price !== undefined && r.price !== null ? priceChartLink(r.symbol, "$" + r.price.toFixed(2)) : "N/A"}</td>
         <td>${r.attractiveness}/10</td>
         <td>${r.risk}/10</td>
         <td><b>${r.combined}/20</b></td>
@@ -1786,6 +1922,42 @@ async function runSP500() {
   });
 }
 
+// S&P500 전체 종목 중 투자위험도 TOP30(점수가 같으면 가격매력도가 높은 순)
+async function runLowRisk30() {
+  rankedStatus.style.display = "block";
+  rankedStatus.textContent = "S&P500 종목 목록을 불러오는 중...";
+  const allTickers = await getSP500Tickers().catch((e) => {
+    rankedStatus.textContent = `❌ ${e.message || "종목 목록을 가져오지 못했습니다."}`;
+    return null;
+  });
+  if (!allTickers) return;
+  await renderRankedTop10(allTickers, "S&P500 저위험", {
+    statusEl: rankedStatus,
+    resultsEl: rankedResults,
+    buttons: [catButtons.lowRisk],
+    topN: 30,
+    sortFn: (a, b) => b.risk - a.risk || b.attractiveness - a.attractiveness,
+  });
+}
+
+// S&P500 전체 종목 중 가격매력도 TOP30(점수가 같으면 투자위험도가 높은 순)
+async function runUndervalued30() {
+  rankedStatus.style.display = "block";
+  rankedStatus.textContent = "S&P500 종목 목록을 불러오는 중...";
+  const allTickers = await getSP500Tickers().catch((e) => {
+    rankedStatus.textContent = `❌ ${e.message || "종목 목록을 가져오지 못했습니다."}`;
+    return null;
+  });
+  if (!allTickers) return;
+  await renderRankedTop10(allTickers, "S&P500 저평가", {
+    statusEl: rankedStatus,
+    resultsEl: rankedResults,
+    buttons: [catButtons.undervalued],
+    topN: 30,
+    sortFn: (a, b) => b.attractiveness - a.attractiveness || b.risk - a.risk,
+  });
+}
+
 // 티커/현재가(+등락률)/가격매력/투자위험 5열 표 — 인기종목·급등주·급락주가 공유하는 렌더러
 function moversTableHtml(scored, rankNote) {
   const scoreClass = (score) => (score === null ? "" : score > 5 ? "delta-up" : score < 5 ? "delta-down" : "");
@@ -1795,9 +1967,9 @@ function moversTableHtml(scored, rankNote) {
       const changeClass = r.changePct >= 0 ? "delta-up" : "delta-down";
       return `
       <tr>
-        <td>${i + 1}${surgeWarningEmoji(r.fiveDayChangePercent)}</td>
+        <td>${i + 1}${surgeWarningEmoji(r.fiveDayExtremes)}</td>
         <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
-        <td>$${r.price.toFixed(2)}<br><span class="${changeClass}" style="font-size:11px;">(${fmtPct(r.changePct)})</span></td>
+        <td>${priceChartLink(r.symbol, "$" + r.price.toFixed(2))}<br><span class="${changeClass}" style="font-size:11px;">(${fmtPct(r.changePct)})</span></td>
         <td class="${scoreClass(r.attractiveness)}"><b>${r.attractiveness !== null ? r.attractiveness : "N/A"}</b></td>
         <td class="${scoreClass(r.risk)}"><b>${r.risk !== null ? r.risk : "N/A"}</b></td>
       </tr>`;
@@ -1834,10 +2006,10 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
 
   const scored = candidates.map((r, i) => {
     const m = fullMetricsList[i];
-    if (!m) return { ...r, attractiveness: null, risk: null, fiveDayChangePercent: null };
+    if (!m) return { ...r, attractiveness: null, risk: null, fiveDayExtremes: null };
     const attractiveness = computeAttractivenessScore(m);
     const risk = computeRiskScore(m, sp500Return);
-    return { ...r, attractiveness: attractiveness.total, risk: risk.total, fiveDayChangePercent: m.fiveDayChangePercent };
+    return { ...r, attractiveness: attractiveness.total, risk: risk.total, fiveDayExtremes: m.fiveDayExtremes };
   });
 
   statusEl.style.display = "none";

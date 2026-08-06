@@ -19,7 +19,7 @@
 
   <header id="fixedHeader" class="fixed-header">
     <div class="fh-topline">
-      <div class="site-logo" aria-label="yeopinvest.com">
+      <div class="site-logo" id="siteLogo" aria-label="yeopinvest.com" role="button" tabindex="0">
         <svg viewBox="0 0 480 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="yeopinvest.com">
           <polyline points="22,70 38,50 52,58 72,28" fill="none" stroke="#f5a623" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
           <polygon points="72,28 62,30 70,38" fill="#f5a623" />
@@ -32,6 +32,7 @@
     <div class="fh-search">
       <input type="text" id="tickerInput" placeholder="티커를 검색해 주세요.(예: AAPL,TSLA)" autocomplete="off" />
       <button id="analyzeBtn" type="button" aria-label="분석">🔍</button>
+      <div id="tickerSuggest" class="chat-ticker-suggest" style="display:none;"></div>
     </div>
 
     <div class="fh-cats">
@@ -44,29 +45,23 @@
     <div class="fh-cats-secondary">
       <button type="button" class="cat-btn cat-surge" id="catSurgeBtn">급등주</button>
       <button type="button" class="cat-btn cat-plunge" id="catPlungeBtn">급락주</button>
+      <button type="button" class="cat-btn cat-lowrisk" id="catLowRiskBtn">저위험30</button>
+      <button type="button" class="cat-btn cat-undervalued" id="catUndervaluedBtn">저평가30</button>
     </div>
   </header>
 
   <div id="chatPanel" class="chat-panel" style="display:none;">
     <div class="chat-header">
-      <span>💬 실시간 종목추천 <span class="muted" style="font-weight:400;">(익명·24시간 보관)</span></span>
+      <span>💬 자유토론방 <span class="muted" style="font-weight:400;">(익명·24시간 보관)</span></span>
       <button id="chatCloseBtn" class="chat-close-btn" type="button" aria-label="닫기">✕</button>
     </div>
     <div id="chatMessages" class="chat-messages"><p class="muted chat-empty">불러오는 중...</p></div>
     <p id="chatError" class="chat-error" style="display:none;"></p>
     <div class="chat-post-form">
-      <div class="chat-ticker-wrap">
-        <input type="text" id="chatTickerInput" class="chat-input" maxlength="10" placeholder="종목 (예: AAPL)" autocomplete="off" />
-        <div id="chatTickerSuggest" class="chat-ticker-suggest" style="display:none;"></div>
-      </div>
-      <input type="text" id="chatPriceInput" class="chat-input chat-price-input" maxlength="5" placeholder="평단가" autocomplete="off" />
-      <div class="chat-side-toggle">
-        <button type="button" id="chatBuyBtn" class="chat-side-btn buy" data-side="buy">매수</button>
-        <button type="button" id="chatSellBtn" class="chat-side-btn sell" data-side="sell">매도</button>
-      </div>
-      <button id="chatSendBtn" class="chat-send-btn" type="button">등록</button>
+      <input type="text" id="chatTextInput" class="chat-input chat-text-input" maxlength="30" placeholder="메시지를 입력하세요 (최대 30자)" autocomplete="off" />
+      <button id="chatSendBtn" class="chat-send-btn" type="button" aria-label="전송">➤</button>
     </div>
-    <p class="chat-footer muted">1:1 문의: yeop2ad@gmail.com</p>
+    <p class="chat-footer muted">비속어·URL·도배성 문구는 등록이 제한됩니다 · 1:1 문의: yeop2ad@gmail.com</p>
   </div>
 
   <div class="container" id="mainContainer">
@@ -82,8 +77,6 @@
     <div id="statusBox" class="status-box" style="display:none;"></div>
 
     <div id="resultsView" style="display:none;">
-      <button id="backHomeBtn" class="back-home-btn" type="button">← 홈으로</button>
-
       <div id="results" class="results" style="display:none;">
         <section class="card">
           <h2 id="summaryHeading">1️⃣ 요약</h2>

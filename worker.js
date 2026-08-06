@@ -1,6 +1,6 @@
-// Cloudflare Worker: 미국 기업 분석기용 CORS 중계 서버 + 익명 실시간 채팅 API
+// Cloudflare Worker: 미국 기업 분석기용 CORS 중계 서버 + 익명 자유토론방 채팅 API
 // 허용된 호스트(Yahoo Finance, FRED)로만 요청을 중계하며, 응답에 CORS 헤더를 붙여 반환합니다.
-// /chat 경로는 KV(CHAT_KV)에 최근 24시간 메시지만 저장하는 익명 공개 채팅을 제공합니다.
+// /chat 경로는 KV(CHAT_KV)에 최근 24시간 메시지만 저장하는 익명 공개 자유토론방(자유 텍스트 최대 30자)을 제공합니다.
 
 const ALLOWED_HOSTS = [
   "query1.finance.yahoo.com",
@@ -14,29 +14,35 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
-// ---------- 채팅 설정 ----------
-// 자유 텍스트가 아닌 고정 항목(종목/평단가/매수·매도)만 입력받는 구조라 URL·욕설이 들어갈 자리가 없음 —
-// 대신 각 필드 형식을 엄격하게 검증해 티커 칸에 임의 문자열을 밀어넣는 우회를 막는다
-const CHAT_KEY = "chat_messages";
+// ---------- 채팅 설정(자유토론방: 익명, 24시간 보관, 자유 텍스트 최대 30자) ----------
+const CHAT_KEY = "freechat_messages";
 const CHAT_MAX_MESSAGES = 200;
 const CHAT_RETENTION_SEC = 24 * 60 * 60; // 24시간
-const CHAT_RATE_LIMIT_SEC = 20; // 같은 IP는 20초에 한 번만 등록 가능
+const CHAT_RATE_LIMIT_SEC = 10; // 같은 IP는 10초에 한 번만 등록 가능(연속 전송 방지)
+const CHAT_MAX_LEN = 30;
 
-const TICKER_PATTERN = /^[A-Z]{1,6}(\.[A-Z]{1,2})?$/;
-const PRICE_PATTERN = /^\d{1,5}(\.\d{1,2})?$/;
+// 자주 신고되는 한국어·영어 비속어 위주 기본 필터 — 완벽한 차단은 아니며 명백한 욕설만 1차로 걸러냄
+const BANNED_WORDS = [
+  "씨발", "시발", "씨팔", "시팔", "ㅅㅂ", "병신", "존나", "졸라", "개새끼", "개새기",
+  "새끼", "지랄", "좆", "미친놈", "미친년", "걸레", "창녀", "잡놈",
+  "fuck", "shit", "bitch", "asshole", "cunt", "bastard",
+];
+
+function containsBannedWord(text) {
+  const normalized = text.toLowerCase().replace(/\s+/g, "");
+  return BANNED_WORDS.some((w) => normalized.includes(w));
+}
 
 function validatePost(body) {
-  const ticker = (body && typeof body.ticker === "string" ? body.ticker : "").trim().toUpperCase();
-  const price = (body && typeof body.price === "string" ? body.price : "").trim();
-  const side = body && typeof body.side === "string" ? body.side : "";
+  const text = (body && typeof body.text === "string" ? body.text : "").trim();
 
-  if (!TICKER_PATTERN.test(ticker)) return { error: "종목 티커 형식이 올바르지 않습니다." };
-  if (price.length === 0 || price.length > 5 || !PRICE_PATTERN.test(price)) {
-    return { error: "평단가는 숫자 5자 이내로 입력해주세요." };
-  }
-  if (side !== "buy" && side !== "sell") return { error: "매수/매도를 선택해주세요." };
+  if (text.length === 0) return { error: "메시지를 입력해주세요." };
+  if (text.length > CHAT_MAX_LEN) return { error: `메시지는 최대 ${CHAT_MAX_LEN}자까지 입력할 수 있습니다.` };
+  if (/https?:\/\/|www\.|\.(com|net|org|kr|io|co)\b/i.test(text)) return { error: "URL 주소는 등록할 수 없습니다." };
+  if (/(.)\1{4,}/.test(text)) return { error: "같은 글자를 반복해서 입력할 수 없습니다." };
+  if (containsBannedWord(text)) return { error: "부적절한 표현이 포함되어 있습니다." };
 
-  return { post: { ticker, price, side } };
+  return { post: { text } };
 }
 
 async function getChatMessages(env) {
@@ -50,9 +56,7 @@ async function getChatMessages(env) {
   }
   if (!Array.isArray(messages)) return [];
   const cutoff = Date.now() - CHAT_RETENTION_SEC * 1000;
-  return messages.filter(
-    (m) => m && typeof m.t === "number" && m.t >= cutoff && typeof m.ticker === "string" && typeof m.price === "string"
-  );
+  return messages.filter((m) => m && typeof m.t === "number" && m.t >= cutoff && typeof m.text === "string");
 }
 
 async function handleChat(request, env) {
