@@ -152,6 +152,15 @@ chatSendBtn.addEventListener("click", sendChatPost);
 chatTextInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") sendChatPost();
 });
+
+// 가격/차트보기 링크 클릭 시 새 탭 대신 앱 내 전체화면 모달로 TradingView 차트를 띄움(요약 카드·순위표 등 여러 곳에서 동적으로 삽입되므로 이벤트 위임 사용)
+el("chartModalCloseBtn").addEventListener("click", closeChartModal);
+document.addEventListener("click", (e) => {
+  const linkEl = e.target.closest(".price-chart-link, .chart-link-btn");
+  if (!linkEl) return;
+  e.preventDefault();
+  openChartModal(linkEl.dataset.chartSymbol);
+});
 document.addEventListener("click", (e) => {
   if (chatPanel.style.display !== "none" && !chatPanel.contains(e.target) && e.target !== contactBtn) {
     chatPanel.style.display = "none";
@@ -725,8 +734,8 @@ function computeRiskScore(metrics, sp500Return) {
   }
 
   // 4) 시가총액 가점 = 시가총액 ÷ 미국 시장 전체 시가총액 추정치(VTSAX 등 인덱스펀드가 이 비중만큼 보유한다고 가정) (0~2점)
-  // 6% 이상이면 만점, 0%면 0점 (3%p마다 1점, 선형). 시가총액을 신뢰할 수 없는 경우(N/A) 중립값 1점 처리
-  let vtsaxScore = 1;
+  // 6% 이상이면 만점, 0%면 0점 (3%p마다 1점, 선형). 시가총액을 신뢰할 수 없는 경우(N/A)는 0.1점 처리
+  let vtsaxScore = 0.1;
   let vtsaxWeightPct = null;
   if (marketCap !== undefined && marketCap !== null && (!currency || currency === "USD")) {
     vtsaxWeightPct = (marketCap / US_TOTAL_MARKET_CAP_ESTIMATE) * 100;
@@ -998,12 +1007,40 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
-// 실시간 시세 차트(Yahoo Finance)로 연결하는 링크 — 직접 차트를 그리지 않고 외부 사이트로 새 탭 연결
-function yahooChartUrl(symbol) {
-  return `https://finance.yahoo.com/quote/${encodeURIComponent(symbol)}/chart`;
+// 실시간 시세 차트(TradingView)를 앱 내 전체화면 모달로 띄우기 위한 임베드 위젯 URL
+// Yahoo Finance 차트보다 반응 속도가 빠름. TradingView는 클래스주 표기에 "-" 대신 "." 를 쓰므로(예: BRK-B → BRK.B) 변환 필요.
+// 검은 배경 + 1년(12M) 기본 범위 + 좌측 그리기 툴바 숨김으로 모바일에서 차트만 크게 보이도록 구성
+function tradingViewEmbedUrl(symbol) {
+  const config = {
+    symbol: symbol.replace(/-/g, "."),
+    interval: "D",
+    range: "12M",
+    theme: "dark",
+    style: "1",
+    locale: "kr",
+    hide_side_toolbar: true,
+    save_image: false,
+    allow_symbol_change: false,
+    backgroundColor: "#000000",
+    toolbar_bg: "#000000",
+  };
+  return `https://s.tradingview.com/embed-widget/advanced-chart/?locale=kr#${encodeURIComponent(JSON.stringify(config))}`;
 }
+
+function openChartModal(symbol) {
+  if (!symbol) return;
+  el("chartModalTitle").textContent = symbol;
+  el("chartFrame").src = tradingViewEmbedUrl(symbol);
+  el("chartModal").style.display = "flex";
+}
+
+function closeChartModal() {
+  el("chartModal").style.display = "none";
+  el("chartFrame").src = "about:blank";
+}
+
 function priceChartLink(symbol, priceHtml) {
-  return `<a class="price-chart-link" href="${yahooChartUrl(symbol)}" target="_blank" rel="noopener">${priceHtml}</a>`;
+  return `<a class="price-chart-link" href="#" data-chart-symbol="${escapeHtml(symbol)}">${priceHtml}</a>`;
 }
 
 function setStatus(type, message) {
@@ -1448,7 +1485,7 @@ async function renderSummary(quote, meta, changePct) {
       <span>업종: <b>${escapeHtml(quote.industryDisp || quote.industry || "N/A")}</b></span>
       <span>섹터: <b>${escapeHtml(quote.sectorDisp || quote.sector || "N/A")}</b></span>
       <span>거래소: <b>${escapeHtml(quote.exchDisp || meta.fullExchangeName || "N/A")}</b></span>
-      <span>현재가: <b>$${(meta.regularMarketPrice ?? 0).toFixed(2)}</b> ${changePct !== null && changePct !== undefined ? `<span class="${changePct >= 0 ? "delta-up" : "delta-down"}">(${fmtPct(changePct)})</span>` : ""}<a class="chart-link-btn" href="${yahooChartUrl(meta.symbol || quote.symbol || "")}" target="_blank" rel="noopener">📈 차트보기</a></span>
+      <span>현재가: <b>$${(meta.regularMarketPrice ?? 0).toFixed(2)}</b> ${changePct !== null && changePct !== undefined ? `<span class="${changePct >= 0 ? "delta-up" : "delta-down"}">(${fmtPct(changePct)})</span>` : ""}<a class="chart-link-btn" href="#" data-chart-symbol="${escapeHtml(meta.symbol || quote.symbol || "")}">📈 차트보기</a></span>
     </div>
   `;
 }

@@ -65,6 +65,14 @@
     <p class="chat-footer muted">비속어·URL·도배성 문구는 등록이 제한됩니다 · 1:1 문의: yeop2ad@gmail.com</p>
   </div>
 
+  <div id="chartModal" class="chart-modal" style="display:none;">
+    <div class="chart-modal-header">
+      <span id="chartModalTitle" class="chart-modal-title"></span>
+      <button id="chartModalCloseBtn" class="chart-modal-close" type="button" aria-label="닫기">✕</button>
+    </div>
+    <iframe id="chartFrame" class="chart-modal-frame" title="차트" allowfullscreen></iframe>
+  </div>
+
   <div class="container" id="mainContainer">
     <p id="popularStatus" class="muted top30-status" style="display:none;"></p>
     <div id="popularResults"></div>
