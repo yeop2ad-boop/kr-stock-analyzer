@@ -622,10 +622,7 @@ function avgRevenueGrowth3y(revenueSeries) {
 async function getFullMetrics(symbol) {
   const [chartData, fundData] = await Promise.all([
     yahooChart(symbol),
-    yahooFundamentals(
-      symbol,
-      "annualTotalRevenue,annualBasicEPS,annualTotalAssets,annualStockholdersEquity,annualNetIncome,annualShareIssued"
-    ),
+    yahooFundamentals(symbol, "annualTotalRevenue,annualBasicEPS,annualNetIncome,annualShareIssued"),
   ]);
 
   const result = chartData && chartData.chart && chartData.chart.result && chartData.chart.result[0];
@@ -634,24 +631,16 @@ async function getFullMetrics(symbol) {
 
   let revenue = null;
   let eps = null;
-  let totalAssets = null;
-  let equity = null;
   let netIncome = null;
   let sharesOutstanding = null;
   const resultArr = (fundData && fundData.timeseries && fundData.timeseries.result) || [];
   for (const block of resultArr) {
     if (block.annualTotalRevenue) revenue = await latestFundamentalValue(block, "annualTotalRevenue", meta.currency);
     if (block.annualBasicEPS) eps = await latestFundamentalValue(block, "annualBasicEPS", meta.currency);
-    if (block.annualTotalAssets) totalAssets = await latestFundamentalValue(block, "annualTotalAssets", meta.currency);
-    if (block.annualStockholdersEquity)
-      equity = await latestFundamentalValue(block, "annualStockholdersEquity", meta.currency);
     if (block.annualNetIncome) netIncome = await latestFundamentalValue(block, "annualNetIncome", meta.currency);
     if (block.annualShareIssued)
       sharesOutstanding = await latestFundamentalValue(block, "annualShareIssued", meta.currency, { convert: false });
   }
-  // 총부채 = 총자산 - 자기자본 (매입채무·미지급금 등 이자를 내지 않는 부채까지 포함한 회계상 '표준' 부채비율 계산용.
-  // 단순히 이자부담 차입금(장단기 대출/사채)만 쓰면 실제 대차대조표상 부채비율보다 크게 작게 나옴)
-  const totalLiabilities = totalAssets !== null && equity !== null ? totalAssets - equity : null;
   const marketCap = meta.regularMarketPrice !== undefined && sharesOutstanding ? meta.regularMarketPrice * sharesOutstanding : null;
   const revenueSeries = await annualFundamentalSeries(resultArr, "annualTotalRevenue", meta.currency);
 
@@ -662,9 +651,6 @@ async function getFullMetrics(symbol) {
     yearHigh: meta.fiftyTwoWeekHigh,
     eps,
     revenue,
-    totalLiabilities,
-    totalAssets,
-    equity,
     netIncome,
     marketCap,
     currency: meta.currency,
@@ -679,25 +665,54 @@ async function getFullMetrics(symbol) {
 // "시가총액 가점" 항목에서 VTSAX 등 미국 전체 시장 인덱스펀드 내 예상 시총 비중을 추정하는 분모로 사용
 const US_TOTAL_MARKET_CAP_ESTIMATE = 87.4e12;
 
-// S&P500 대비 모멘텀 + 부채비율 + 순이익률 + 매출 성장성 + 시가총액 가점을 조합한 참고용 투자 위험도 점수(10점 만점, 높을수록 위험이 낮음)
-function computeRiskScore(metrics, sp500Return) {
-  const { oneYearReturn, totalLiabilities, totalAssets, netIncome, revenue, revenueGrowth3y, marketCap, currency } = metrics;
+// 참고용 신용등급(S&P Global Ratings 장기 발행자 등급 기준) 테이블 — 자체 조사로 수동 입력한 정적 데이터로,
+// 실시간 갱신되지 않으므로 등급 변동 시 수동 업데이트가 필요함. 목록에 없는 종목은 "S&P 등급 없음"으로 1점 처리
+// 회사채를 발행한 적이 없어(무차입 경영 등) 신용등급 자체가 존재하지 않는 종목 표시용 값 — S&P 등급 없음과 구분해 3점 처리
+const NO_DEBT_RATING = "회사채 없음(무차입)";
 
-  // 1) S&P500 대비 모멘텀 (0~2점) — S&P500 연 수익률과의 차이(절대값)가 0%p면 만점,
+const TICKER_CREDIT_RATING = {
+  PLTR: NO_DEBT_RATING,
+  MSFT: "AAA", JNJ: "AAA", ADP: "AAA",
+  AAPL: "AA+", GOOGL: "AA+", GOOG: "AA+",
+  "BRK-B": "AA", "BRK-A": "AA", AMZN: "AA", WMT: "AA", CVX: "AA",
+  XOM: "AA-", PG: "AA-", V: "AA-", ABT: "AA-", ACN: "AA-",
+  COST: "A+", KO: "A+", PEP: "A+", UNH: "A+", MA: "A+", MRK: "A+", NVDA: "A+",
+  HD: "A", ORCL: "A", TXN: "A", ADBE: "A", LIN: "A", PFE: "A", QCOM: "A", CAT: "A", UPS: "A", CRM: "A",
+  JPM: "A-", BAC: "A-", WFC: "A-", CSCO: "A-", IBM: "A-", DIS: "A-", TMO: "A-", AMD: "A-", NFLX: "A-", CMCSA: "A-", ABBV: "A-",
+  SCHW: "A-", EQR: "A-",
+  MCD: "BBB+", SBUX: "BBB+", LOW: "BBB+", VZ: "BBB+", AVGO: "BBB+", PYPL: "BBB+", GS: "BBB+", ESS: "BBB+", APP: "BBB+", EA: "BBB+",
+  CME: "AA-", SPG: "A", PLD: "A", PSA: "A",
+  T: "BBB", INTC: "BBB", MU: "BBB", UBER: "BBB", GM: "BBB", SPCX: "BBB",
+  VICI: "BBB-", MSCI: "BBB-", BA: "BBB-", F: "BBB-",
+  AAL: "B+",
+};
+
+// S&P 신용등급 문자를 0~4점으로 환산. BBB 및 그 이하 등급은 0점
+const CREDIT_RATING_SCORE = {
+  AAA: 4, "AA+": 3.5, AA: 3, "AA-": 2.5, "A+": 2, A: 1.5, "A-": 1, "BBB+": 0.5,
+};
+
+// 투자등급(신용등급) + S&P500 대비 모멘텀 + 순이익률 + 시가총액 가점을 조합한 참고용 투자 위험도 점수(10점 만점, 높을수록 위험이 낮음)
+function computeRiskScore(metrics, sp500Return) {
+  const { symbol, oneYearReturn, netIncome, revenue, marketCap, currency } = metrics;
+
+  // 1) 투자등급 (0~4점) — S&P 신용등급 기준. AAA 4점, AA+ 3.5점, AA 3점, AA- 2.5점, A+ 2점, A 1.5점, A- 1점, BBB+ 0.5점, BBB 이하 0점
+  // 무차입 경영 등으로 회사채 자체가 없는 종목은 3점, 등급을 확인할 수 없는 종목(목록 미포함)은 1점 처리
+  let creditScore = 1;
+  const rating = symbol ? TICKER_CREDIT_RATING[symbol] : undefined;
+  if (rating === NO_DEBT_RATING) {
+    creditScore = 3;
+  } else if (rating !== undefined) {
+    creditScore = CREDIT_RATING_SCORE[rating] !== undefined ? CREDIT_RATING_SCORE[rating] : 0;
+  }
+
+  // 2) S&P500 대비 모멘텀 (0~2점) — S&P500 연 수익률과의 차이(절대값)가 0%p면 만점,
   // 200%p 이상 벌어지면 0점 (50%p 멀어질 때마다 0.5점 감점, 선형)
   let marketScore = 1;
   let relDiff = null;
   if (oneYearReturn !== null && sp500Return !== null && sp500Return !== undefined) {
     relDiff = Math.abs(sp500Return - oneYearReturn);
     marketScore = clamp(2 * (1 - relDiff / 200), 0, 2);
-  }
-
-  // 2) 부채비율 = 총부채(총자산-자기자본)÷총자산 (0~2점) — 0%면 만점, 100% 이상이면 0점 (선형)
-  let debtScore = 1;
-  let debtToAssets = null;
-  if (totalAssets !== null && totalAssets > 0 && totalLiabilities !== null) {
-    debtToAssets = totalLiabilities / totalAssets;
-    debtScore = clamp(2 * (1 - debtToAssets), 0, 2);
   }
 
   // 3) 순이익률 = 순이익÷매출 (0~2점) — 0%는 1/3점, 10%p마다 1/3점씩 늘어 50% 이상이면 만점.
@@ -709,14 +724,7 @@ function computeRiskScore(metrics, sp500Return) {
     marginScore = netMargin < 0 ? 0 : clamp(((2 / 3) * (0.5 + netMargin * 5)), 0, 2);
   }
 
-  // 4) 매출 성장성 = 최근 3개 연도 전년 대비 매출 성장률 평균 (0~2점) — 가격 매력도 점수와 동일한 공식
-  // 30% 이상이면 만점, 0% 이하면 0점 (15%마다 1점, 선형). 데이터가 부족한 경우(N/A)도 0점 처리
-  let growthScore = 0;
-  if (revenueGrowth3y !== undefined && revenueGrowth3y !== null) {
-    growthScore = clamp(revenueGrowth3y / 15, 0, 2);
-  }
-
-  // 5) 시가총액 가점 = 시가총액 ÷ 미국 시장 전체 시가총액 추정치(VTSAX 등 인덱스펀드가 이 비중만큼 보유한다고 가정) (0~2점)
+  // 4) 시가총액 가점 = 시가총액 ÷ 미국 시장 전체 시가총액 추정치(VTSAX 등 인덱스펀드가 이 비중만큼 보유한다고 가정) (0~2점)
   // 6% 이상이면 만점, 0%면 0점 (3%p마다 1점, 선형). 시가총액을 신뢰할 수 없는 경우(N/A) 중립값 1점 처리
   let vtsaxScore = 1;
   let vtsaxWeightPct = null;
@@ -725,17 +733,15 @@ function computeRiskScore(metrics, sp500Return) {
     vtsaxScore = clamp((vtsaxWeightPct / 6) * 2, 0, 2);
   }
 
-  const total = Math.round(clamp(marketScore + debtScore + marginScore + growthScore + vtsaxScore, 0, 10) * 10) / 10;
+  const total = Math.round(clamp(creditScore + marketScore + marginScore + vtsaxScore, 0, 10) * 10) / 10;
   return {
     total,
+    creditScore,
+    rating: rating || null,
     marketScore,
-    debtScore,
     marginScore,
     relDiff,
-    debtToAssets,
     netMargin,
-    growthScore,
-    revenueGrowth3y,
     vtsaxScore,
     vtsaxWeightPct,
   };
@@ -1777,14 +1783,12 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
 
   const {
     total,
+    creditScore,
+    rating,
     marketScore,
-    debtScore,
     marginScore,
     relDiff,
-    debtToAssets,
     netMargin,
-    growthScore,
-    revenueGrowth3y,
     vtsaxScore,
     vtsaxWeightPct,
   } = computeRiskScore(metrics, sp500Return);
@@ -1797,16 +1801,16 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
       </div>
       <div class="score-details">
         <ul>
+          <li>🏅 투자등급(신용등급): <b>${rating ? rating : "S&P 등급 없음"}</b> (AAA 4점 만점, BBB+ 0.5점, BBB 이하 0점, 회사채 없음 3점, S&P 등급 없음 1점)</li>
           <li>📊 S&P500과의 1년 수익률 차이: ${relDiff !== null ? `<b>${relDiff.toFixed(1)}%p</b> (S&P500 <b>${fmtPct(sp500Return)}</b>)` : "N/A"} (차이가 작을수록 가점)</li>
-          <li>🏦 부채비율(총부채/총자산): <b>${debtToAssets !== null ? (debtToAssets * 100).toFixed(0) + "%" : "N/A"}</b> (낮을수록 가점, 100% 이상이면 0점)</li>
           <li>💵 순이익률(순이익/매출): <b>${netMargin !== null ? (netMargin * 100).toFixed(1) + "%" : "N/A"}</b> (높을수록 가점, 적자면 0점)</li>
-          <li>📈 매출 성장성(최근 3개년 평균): <b>${revenueGrowth3y !== null && revenueGrowth3y !== undefined ? fmtPct(revenueGrowth3y) : "N/A"}</b> (높을수록 가점, 30% 이상 만점·0% 이하 0점)</li>
           <li>🏦 시가총액 가점(미국 전체 시장 내 시총 비중): <b>${vtsaxWeightPct !== null ? vtsaxWeightPct.toFixed(2) + "%" : "N/A"}</b> (VTSAX 등 인덱스펀드 예상 비중 근사, 6% 이상 만점·0% 0점)</li>
-          <li>세부 점수 — S&P500 대비 모멘텀 ${marketScore.toFixed(1)}/2, 부채비율 ${debtScore.toFixed(1)}/2, 순이익률 ${marginScore.toFixed(1)}/2, 매출 성장성 ${growthScore.toFixed(1)}/2, 시가총액 가점 ${vtsaxScore.toFixed(1)}/2</li>
+          <li>세부 점수 — 투자등급 ${creditScore.toFixed(1)}/4, S&P500 대비 모멘텀 ${marketScore.toFixed(1)}/2, 순이익률 ${marginScore.toFixed(1)}/2, 시가총액 가점 ${vtsaxScore.toFixed(1)}/2</li>
         </ul>
         <p class="disclaimer">
           ⚠️ 점수가 높을수록(10점에 가까울수록) 재무적으로 더 안정적/저위험임을 의미합니다.
-          S&P500 대비 수익률, 부채비율, 순이익률, 매출 성장성, 시가총액 가점을 조합한 <b>단순 참고용 정량 지표</b>이며, 투자 자문이나 매수/매도 추천이 아닙니다.
+          투자등급, S&P500 대비 수익률, 순이익률, 시가총액 가점을 조합한 <b>단순 참고용 정량 지표</b>이며, 투자 자문이나 매수/매도 추천이 아닙니다.
+          투자등급은 S&P 신용등급을 기준으로 자체 조사해 수동으로 입력한 참고용 데이터로, 실시간 갱신되지 않으며 목록에 없는 종목은 중립 처리됩니다.
           시가총액 가점은 실제 펀드 편입 비중이 아니라 시가총액 기준 추정치입니다.
         </p>
       </div>
