@@ -972,6 +972,7 @@ const catButtons = {
   plunge: el("catPlungeBtn"),
   lowRisk: el("catLowRiskBtn"),
   undervalued: el("catUndervaluedBtn"),
+  marketCap: el("catMarketCapBtn"),
 };
 const resultGroups = {
   popular: [popularStatus, popularResults],
@@ -1033,6 +1034,11 @@ catButtons.undervalued.addEventListener("click", () => {
   setActiveCategory("undervalued");
   prepareMainView("ranked");
   runUndervalued30();
+});
+catButtons.marketCap.addEventListener("click", () => {
+  setActiveCategory("marketCap");
+  prepareMainView("ranked");
+  runMarketCap30();
 });
 
 // 메인창에 하나의 결과만 보이도록: 선택된 카테고리 외 결과 영역과 티커 분석 화면을 모두 정리
@@ -1776,7 +1782,7 @@ async function renderMacro() {
 async function renderRankedTop10(
   tickers,
   rangeLabel,
-  { statusEl, resultsEl, buttons, topN = 10, sortFn = (a, b) => b.combined - a.combined }
+  { statusEl, resultsEl, buttons, topN = 10, sortFn = (a, b) => b.combined - a.combined, showMarketCap = false }
 ) {
   buttons.forEach((btn) => (btn.disabled = true));
   resultsEl.innerHTML = "";
@@ -1799,6 +1805,7 @@ async function renderRankedTop10(
         return {
           symbol: m.symbol,
           price: m.price,
+          marketCap: m.marketCap,
           attractiveness: attractiveness.total,
           risk: risk.total,
           combined,
@@ -1825,6 +1832,7 @@ async function renderRankedTop10(
         <td>${i + 1}${surgeWarningEmoji(r.fiveDayExtremes)}</td>
         <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></td>
         <td>${r.price !== undefined && r.price !== null ? priceChartLink(r.symbol, "$" + r.price.toFixed(2)) : "N/A"}</td>
+        ${showMarketCap ? `<td>${r.marketCap ? fmtCompactCurrency(r.marketCap) : "N/A"}</td>` : ""}
         <td>${r.attractiveness}/10</td>
         <td>${r.risk}/10</td>
         <td><b>${r.combined}/20</b></td>
@@ -1836,7 +1844,7 @@ async function renderRankedTop10(
       ${SURGE_WARNING_LEGEND}
       <table class="top30-table">
         <thead>
-          <tr><th>순위</th><th>티커</th><th>현재가</th><th>가격<br>매력</th><th>투자<br>위험</th><th>합산 점수</th></tr>
+          <tr><th>순위</th><th>티커</th><th>현재가</th>${showMarketCap ? "<th>시가총액</th>" : ""}<th>가격<br>매력</th><th>투자<br>위험</th><th>합산 점수</th></tr>
         </thead>
         <tbody>${rows}</tbody>
       </table>
@@ -1955,6 +1963,25 @@ async function runUndervalued30() {
     buttons: [catButtons.undervalued],
     topN: 30,
     sortFn: (a, b) => b.attractiveness - a.attractiveness || b.risk - a.risk,
+  });
+}
+
+// S&P500 전체 종목 중 시가총액 TOP30
+async function runMarketCap30() {
+  rankedStatus.style.display = "block";
+  rankedStatus.textContent = "S&P500 종목 목록을 불러오는 중...";
+  const allTickers = await getSP500Tickers().catch((e) => {
+    rankedStatus.textContent = `❌ ${e.message || "종목 목록을 가져오지 못했습니다."}`;
+    return null;
+  });
+  if (!allTickers) return;
+  await renderRankedTop10(allTickers, "S&P500 시가총액", {
+    statusEl: rankedStatus,
+    resultsEl: rankedResults,
+    buttons: [catButtons.marketCap],
+    topN: 30,
+    sortFn: (a, b) => (b.marketCap || 0) - (a.marketCap || 0),
+    showMarketCap: true,
   });
 }
 
