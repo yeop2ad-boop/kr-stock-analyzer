@@ -475,6 +475,56 @@ function countUpDaysIn10(chartResult) {
   return upDays;
 }
 
+// ---------- 과거분석(1년 전 스냅샷 vs 현재 비교)용 헬퍼 — 위 함수들의 "임의 시점 기준" 버전 ----------
+// 목표 시점 이후 첫 거래일 쌍을 찾음(주말·휴장일이면 다음 거래일로 자동 이동)
+function firstTradingDayOnOrAfter(pairs, targetTimestamp) {
+  for (const p of pairs) {
+    if (p.t >= targetTimestamp) return p;
+  }
+  return null;
+}
+
+// pairs(과거→최근 정렬)에서 asOfIndex로 끝나는 직전 n거래일 중 상승 마감일 수 — countUpDaysIn10의 임의 시점 버전
+function countUpDaysEndingAt(pairs, asOfIndex, n = 10) {
+  if (asOfIndex < 1) return null;
+  const start = Math.max(1, asOfIndex - n + 1);
+  let upDays = 0;
+  for (let i = start; i <= asOfIndex; i++) {
+    const prev = pairs[i - 1] && pairs[i - 1].c;
+    const cur = pairs[i] && pairs[i].c;
+    if (prev && cur > prev) upDays++;
+  }
+  return upDays;
+}
+
+// asOfIndex 시점 기준 직전 52주 종가 중 최고/최저(장중 고가·저가가 아닌 종가 기준 근사치)
+function yearRangeEndingAt(pairs, asOfIndex) {
+  const asOfT = pairs[asOfIndex] && pairs[asOfIndex].t;
+  if (asOfT === undefined) return { low: null, high: null };
+  const target = asOfT - YEAR_SECONDS;
+  const windowCloses = pairs.filter((p, i) => i <= asOfIndex && p.t >= target - HISTORY_TOLERANCE_SECONDS).map((p) => p.c);
+  if (windowCloses.length === 0) return { low: null, high: null };
+  return { low: Math.min(...windowCloses), high: Math.max(...windowCloses) };
+}
+
+// 임의 시점(asOfTimestamp) 기준 직전 1년 수익률(%) — get1yReturnFromChart의 시점 지정 버전
+function returnOverYearEndingAt(pairs, asOfTimestamp) {
+  if (pairs.length < 2) return null;
+  const latest = closestPair(pairs, asOfTimestamp);
+  if (!latest) return null;
+  const target = latest.t - YEAR_SECONDS;
+  if (pairs[0].t > target + HISTORY_TOLERANCE_SECONDS) return null;
+  const base = closestPair(pairs, target);
+  if (!base || !base.c) return null;
+  return ((latest.c - base.c) / base.c) * 100;
+}
+
+// 과거분석 기준 시점: "1년 전 + 이번 달 1일" (매달 1일이 지나면 자동으로 기준월이 한 달씩 이동)
+function getHistoricalReferenceDate() {
+  const now = new Date();
+  return new Date(now.getFullYear() - 1, now.getMonth(), 1);
+}
+
 // 나스닥·다우존스·S&P500 1년 수익률 (여러 섹션이 공유해서 중복 요청을 줄임)
 async function getMarketReturns() {
   try {
@@ -1061,13 +1111,13 @@ window.addEventListener("resize", syncHeaderHeight);
 new ResizeObserver(syncHeaderHeight).observe(fixedHeader);
 syncHeaderHeight();
 
-// ---------- 카테고리 탭(인기종목/나스닥100/테크100/S&P100/S&P500) — 서브뷰 없이 클릭 즉시 해당 순위를 불러옴 ----------
+// ---------- 카테고리 탭(인기종목/나스닥100/테크100/S&P500/과거분석) — 서브뷰 없이 클릭 즉시 해당 순위를 불러옴 ----------
 const catButtons = {
   popular: el("catPopularBtn"),
   nasdaq100: el("catNasdaq100Btn"),
   tech100: el("catTech100Btn"),
-  sp100: el("catSp100Btn"),
   sp500: el("catSp500Btn"),
+  historical: el("catHistoricalBtn"),
   surge: el("catSurgeBtn"),
   plunge: el("catPlungeBtn"),
   lowRisk: el("catLowRiskBtn"),
@@ -1105,15 +1155,15 @@ catButtons.tech100.addEventListener("click", () => {
   prepareMainView("ranked");
   runTech100();
 });
-catButtons.sp100.addEventListener("click", () => {
-  setActiveCategory("sp100");
-  prepareMainView("ranked");
-  runSP100();
-});
 catButtons.sp500.addEventListener("click", () => {
   setActiveCategory("sp500");
   prepareMainView("ranked");
   runSP500();
+});
+catButtons.historical.addEventListener("click", () => {
+  setActiveCategory("historical");
+  prepareMainView("ranked");
+  runHistoricalAnalysis();
 });
 catButtons.surge.addEventListener("click", () => {
   setActiveCategory("surge");
@@ -2004,24 +2054,6 @@ async function runTech100() {
   });
 }
 
-// S&P500 상위 100(근사) 안에서 TOP20
-async function runSP100() {
-  rankedStatus.style.display = "block";
-  rankedStatus.textContent = "S&P500 종목 목록을 불러오는 중...";
-  const allTickers = await getSP500Tickers().catch((e) => {
-    rankedStatus.textContent = `❌ ${e.message || "종목 목록을 가져오지 못했습니다."}`;
-    return null;
-  });
-  if (!allTickers) return;
-  const tickers = allTickers.slice(0, 100);
-  await renderRankedTop10(tickers, "S&P100(근사)", {
-    statusEl: rankedStatus,
-    resultsEl: rankedResults,
-    buttons: [catButtons.sp100],
-    topN: 20,
-  });
-}
-
 // S&P500 전체 종목 중 TOP50
 async function runSP500() {
   rankedStatus.style.display = "block";
@@ -2092,6 +2124,174 @@ async function runMarketCap30() {
     sortFn: (a, b) => (b.marketCap || 0) - (a.marketCap || 0),
     showMarketCap: true,
   });
+}
+
+// 과거분석 대상 종목 1개의 "기준 시점 스냅샷" 지표를 계산 — 2년치 차트로 기준 시점의 52주 범위·모멘텀·매출성장성까지 근사
+// (오늘 기준 데이터는 이미 phase1의 getFullMetrics 결과를 재사용하므로 여기서는 기준 시점 데이터만 새로 조회)
+async function getHistoricalCompareMetrics(symbol, sp500PairsPromise) {
+  const referenceTimestamp = Math.floor(getHistoricalReferenceDate().getTime() / 1000);
+
+  const [chartData, fundData] = await Promise.all([
+    yahooChart(symbol, "2y"),
+    yahooFundamentals(symbol, "annualTotalRevenue,annualNetIncome,annualShareIssued").catch(() => null),
+  ]);
+
+  const result = chartData && chartData.chart && chartData.chart.result && chartData.chart.result[0];
+  if (!result) return null;
+  const meta = result.meta;
+  const pairs = chartClosePairs(chartData);
+  const asOfPair = firstTradingDayOnOrAfter(pairs, referenceTimestamp);
+  if (!asOfPair) return null;
+  const asOfIndex = pairs.findIndex((p) => p.t === asOfPair.t);
+
+  const yearRange = yearRangeEndingAt(pairs, asOfIndex);
+  const upDays10AsOf = countUpDaysEndingAt(pairs, asOfIndex, 10);
+
+  let sharesOutstanding = null;
+  const resultArr = (fundData && fundData.timeseries && fundData.timeseries.result) || [];
+  for (const block of resultArr) {
+    if (block.annualShareIssued)
+      sharesOutstanding = await latestFundamentalValue(block, "annualShareIssued", meta.currency, { convert: false });
+  }
+  const revenueSeries = await annualFundamentalSeries(resultArr, "annualTotalRevenue", meta.currency);
+  const netIncomeSeries = await annualFundamentalSeries(resultArr, "annualNetIncome", meta.currency);
+
+  const asOfDate = new Date(asOfPair.t * 1000);
+  const revenueSeriesAsOf = revenueSeries.filter((it) => new Date(it.date) <= asOfDate);
+  const netIncomeSeriesAsOf = netIncomeSeries.filter((it) => new Date(it.date) <= asOfDate);
+  const revenueGrowth3yAsOf = avgRevenueGrowth3y(revenueSeriesAsOf);
+  const revenueAsOf = revenueSeriesAsOf.length ? revenueSeriesAsOf[revenueSeriesAsOf.length - 1].value : null;
+  const netIncomeAsOf = netIncomeSeriesAsOf.length ? netIncomeSeriesAsOf[netIncomeSeriesAsOf.length - 1].value : null;
+
+  const historicalPrice = asOfPair.c;
+  const historicalMarketCap = sharesOutstanding ? historicalPrice * sharesOutstanding : null;
+
+  const sp500Pairs = await sp500PairsPromise;
+  const sp500ReturnAsOf = returnOverYearEndingAt(sp500Pairs, asOfPair.t);
+  const oneYearReturnAsOf = returnOverYearEndingAt(pairs, asOfPair.t);
+
+  const metricsAsOf = {
+    symbol,
+    price: historicalPrice,
+    yearLow: yearRange.low,
+    yearHigh: yearRange.high,
+    upDays10: upDays10AsOf,
+    revenueGrowth3y: revenueGrowth3yAsOf,
+    oneYearReturn: oneYearReturnAsOf,
+    netIncome: netIncomeAsOf,
+    revenue: revenueAsOf,
+    marketCap: historicalMarketCap,
+    currency: meta.currency,
+  };
+
+  const attractiveness = computeAttractivenessScore(metricsAsOf);
+  const risk = computeRiskScore(metricsAsOf, sp500ReturnAsOf);
+
+  return {
+    asOfDate,
+    historicalPrice,
+    historicalMarketCap,
+    historicalAttractiveness: attractiveness.total,
+    historicalRisk: risk.total,
+  };
+}
+
+// 오늘 기준 S&P500 시가총액 상위 30개를, 과거분석 기준 시점(1년 전 + 이번 달 1일 이후 첫 거래일) 스냅샷과 비교
+async function runHistoricalAnalysis() {
+  rankedStatus.style.display = "block";
+  rankedResults.innerHTML = "";
+  catButtons.historical.disabled = true;
+
+  try {
+    rankedStatus.textContent = "S&P500 종목 목록을 불러오는 중...";
+    const allTickers = await getSP500Tickers();
+
+    rankedStatus.textContent = `0/${allTickers.length} 종목 분석 중(오늘 기준 시가총액 상위 30 선정)...`;
+    const metricsList = await mapWithConcurrency(allTickers, 5, getFullMetrics, (completed, total) => {
+      rankedStatus.textContent = `${completed}/${total} 종목 분석 중(오늘 기준 시가총액 상위 30 선정)...`;
+    });
+
+    const top30 = metricsList
+      .filter((m) => m && m.marketCap)
+      .sort((a, b) => b.marketCap - a.marketCap)
+      .slice(0, 30);
+
+    const sp500PairsPromise = yahooChart("^GSPC", "2y").then(chartClosePairs);
+
+    let done = 0;
+    rankedStatus.textContent = `0/${top30.length} 종목의 기준 시점 데이터 조회 중...`;
+    const historicalList = await mapWithConcurrency(
+      top30,
+      3,
+      async (m) => {
+        const h = await getHistoricalCompareMetrics(m.symbol, sp500PairsPromise);
+        done++;
+        rankedStatus.textContent = `${done}/${top30.length} 종목의 기준 시점 데이터 조회 중...`;
+        return h;
+      }
+    );
+
+    const rows = top30
+      .map((m, i) => {
+        const h = historicalList[i];
+        if (!h) return null;
+        const marketCapChangePct = h.historicalMarketCap ? ((m.marketCap - h.historicalMarketCap) / h.historicalMarketCap) * 100 : null;
+        const priceChangePct = h.historicalPrice ? ((m.price - h.historicalPrice) / h.historicalPrice) * 100 : null;
+        return {
+          symbol: m.symbol,
+          currentPrice: m.price,
+          currentMarketCap: m.marketCap,
+          marketCapChangePct,
+          priceChangePct,
+          historicalAttractiveness: h.historicalAttractiveness,
+          historicalRisk: h.historicalRisk,
+          asOfDate: h.asOfDate,
+        };
+      })
+      .filter(Boolean);
+
+    const successCount = rows.length;
+    const failCount = top30.length - successCount;
+    const refDateStr = rows[0] ? rows[0].asOfDate.toLocaleDateString("ko-KR") : "";
+    rankedStatus.textContent = `완료 (과거분석, 기준일 ${refDateStr}) — 시가총액 상위 30개 중 ${successCount}개 비교 성공${failCount ? `, ${failCount}개는 조회 실패로 제외` : ""}`;
+
+    if (rows.length === 0) {
+      rankedResults.innerHTML = `<p class="muted">데이터를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
+      return;
+    }
+
+    const tableRows = rows
+      .map(
+        (r, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></td>
+        <td>${fmtCompactCurrency(r.currentMarketCap)}<br><span class="${r.marketCapChangePct !== null && r.marketCapChangePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">${r.marketCapChangePct !== null ? fmtPct(r.marketCapChangePct) : "N/A"}</span></td>
+        <td>${priceChartLink(r.symbol, "$" + r.currentPrice.toFixed(2))}<br><span class="${r.priceChangePct !== null && r.priceChangePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">${r.priceChangePct !== null ? fmtPct(r.priceChangePct) : "N/A"}</span></td>
+        <td>${r.historicalAttractiveness}/10</td>
+        <td>${r.historicalRisk}/10</td>
+      </tr>`
+      )
+      .join("");
+
+    rankedResults.innerHTML = `
+      <table class="top30-table">
+        <thead>
+          <tr><th>순위</th><th>티커</th><th>시가총액<br>(증감률)</th><th>현재가<br>(등락률)</th><th>당시<br>매력점수</th><th>당시<br>투자위험</th></tr>
+        </thead>
+        <tbody>${tableRows}</tbody>
+      </table>
+      <p class="disclaimer">
+        <span style="filter:grayscale(1);">📢</span> 오늘 기준 시가총액 상위 30개 종목을 대상으로, ${refDateStr}(기준월 첫 거래일) 대비 현재까지의 시가총액·주가 변화와
+        ${refDateStr} 당시 기준으로 근사 계산한 가격 매력도·투자 위험도 점수를 함께 보여주는 참고용 정보입니다. 당시 점수는 그 시점까지의 차트·재무 데이터로
+        근사 계산한 값이라 실제와 다소 차이가 있을 수 있으며, 투자 자문이나 매수/매도 추천이 아닙니다. 기준 시점은 매달 1일이 지나면 한 달씩 자동으로 이동합니다.
+      </p>
+    `;
+  } catch (err) {
+    rankedStatus.textContent = `❌ ${err.message || "과거분석 데이터를 가져오지 못했습니다."}`;
+  } finally {
+    catButtons.historical.disabled = false;
+  }
 }
 
 // 티커/현재가(+등락률)/가격매력/투자위험 5열 표 — 인기종목·급등주·급락주가 공유하는 렌더러
