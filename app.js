@@ -310,8 +310,8 @@ async function yahooSearch(ticker) {
   return proxyFetchJson(url);
 }
 
-async function yahooChart(symbol) {
-  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=1y&interval=1d`;
+async function yahooChart(symbol, range = "1y", interval = "1d") {
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=${range}&interval=${interval}`;
   return proxyFetchJson(url);
 }
 
@@ -456,6 +456,21 @@ function getDailyChangePercent(chartResult) {
   const latest = pairs[pairs.length - 1].c;
   if (!prevClose) return null;
   return ((latest - prevClose) / prevClose) * 100;
+}
+
+// 최근 5거래일 등락률(급등락 경고 이모지 표시용) — 일봉 마지막 종가와 5거래일 전 종가를 비교
+function get5dChangePercent(chartResult) {
+  const result = chartResult && chartResult.chart && chartResult.chart.result && chartResult.chart.result[0];
+  if (!result) return null;
+  const timestamps = result.timestamp || [];
+  const closes = (result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
+  const pairs = timestamps.map((t, i) => ({ t, c: closes[i] })).filter((p) => p.c !== null && p.c !== undefined);
+  if (pairs.length < 6) return null;
+  pairs.sort((a, b) => a.t - b.t);
+  const base = pairs[pairs.length - 6].c;
+  const latest = pairs[pairs.length - 1].c;
+  if (!base) return null;
+  return ((latest - base) / base) * 100;
 }
 
 // 나스닥·다우존스·S&P500 1년 수익률 (여러 섹션이 공유해서 중복 요청을 줄임)
@@ -675,21 +690,22 @@ async function getFullMetrics(symbol) {
     marketCap,
     currency: meta.currency,
     oneYearReturn: get1yReturnFromChart(chartData),
+    fiveDayChangePercent: get5dChangePercent(chartData),
     revenueGrowth3y: avgRevenueGrowth3y(revenueSeries),
   };
 }
 
-// S&P500 대비 모멘텀 + 부채비율 + 순이익률을 조합한 참고용 투자 위험도 점수(10점 만점, 높을수록 위험이 낮음)
+// S&P500 대비 모멘텀 + 부채비율 + 순이익률 + 매출 성장성을 조합한 참고용 투자 위험도 점수(10점 만점, 높을수록 위험이 낮음)
 function computeRiskScore(metrics, sp500Return) {
-  const { oneYearReturn, totalLiabilities, totalAssets, netIncome, revenue } = metrics;
+  const { oneYearReturn, totalLiabilities, totalAssets, netIncome, revenue, revenueGrowth3y } = metrics;
 
-  // 1) S&P500 대비 모멘텀 (0~4점) — S&P500 연 수익률과의 차이(절대값)가 0%p면 만점,
-  // 200%p 이상 벌어지면 0점 (50%p마다 1점 감점, 선형)
-  let marketScore = 2;
+  // 1) S&P500 대비 모멘텀 (0~2점) — S&P500 연 수익률과의 차이(절대값)가 0%p면 만점,
+  // 200%p 이상 벌어지면 0점 (50%p 멀어질 때마다 0.5점 감점, 선형)
+  let marketScore = 1;
   let relDiff = null;
   if (oneYearReturn !== null && sp500Return !== null && sp500Return !== undefined) {
     relDiff = Math.abs(sp500Return - oneYearReturn);
-    marketScore = clamp(4 * (1 - relDiff / 200), 0, 4);
+    marketScore = clamp(2 * (1 - relDiff / 200), 0, 2);
   }
 
   // 2) 부채비율 = 총부채(총자산-자기자본)÷총자산 (0~3점) — 0%면 만점, 100% 이상이면 0점 (선형)
@@ -709,8 +725,15 @@ function computeRiskScore(metrics, sp500Return) {
     marginScore = netMargin < 0 ? 0 : clamp(0.5 + netMargin * 5, 0, 3);
   }
 
-  const total = Math.round(clamp(marketScore + debtScore + marginScore, 0, 10) * 10) / 10;
-  return { total, marketScore, debtScore, marginScore, relDiff, debtToAssets, netMargin };
+  // 4) 매출 성장성 = 최근 3개 연도 전년 대비 매출 성장률 평균 (0~2점) — 가격 매력도 점수와 동일한 공식
+  // 30% 이상이면 만점, 0% 이하면 0점 (15%마다 1점, 선형). 데이터가 부족한 경우(N/A)도 0점 처리
+  let growthScore = 0;
+  if (revenueGrowth3y !== undefined && revenueGrowth3y !== null) {
+    growthScore = clamp(revenueGrowth3y / 15, 0, 2);
+  }
+
+  const total = Math.round(clamp(marketScore + debtScore + marginScore + growthScore, 0, 10) * 10) / 10;
+  return { total, marketScore, debtScore, marginScore, relDiff, debtToAssets, netMargin, growthScore, revenueGrowth3y };
 }
 
 // ---------- Wikipedia 헬퍼 (프록시 불필요, 공식 CORS 지원) ----------
@@ -934,6 +957,16 @@ function fmtPct(num, digits = 1) {
   return `${sign}${num.toFixed(digits)}%`;
 }
 
+// 최근 5거래일 등락률이 ±10% 이상인 급등락 종목에 붙일 경고 이모지(해당 없으면 빈 문자열)
+const SURGE_WARNING_TITLE = "최근 5거래일간 10% 이상 급등락";
+function surgeWarningEmoji(fiveDayChangePercent) {
+  return fiveDayChangePercent !== null && fiveDayChangePercent !== undefined && Math.abs(fiveDayChangePercent) >= 10
+    ? ` <span title="${SURGE_WARNING_TITLE}">⚠️</span>`
+    : "";
+}
+// 순위 표 위에 붙이는 경고 이모지 범례
+const SURGE_WARNING_LEGEND = `<p class="muted" style="font-size:11px;margin:0 0 6px;">⚠️ ${SURGE_WARNING_TITLE}</p>`;
+
 function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
 }
@@ -1147,6 +1180,9 @@ async function runAnalysis(ticker) {
 
     results.style.display = "block";
     setStatus("loading", "섹션별 데이터를 정리하는 중입니다...");
+
+    // 최근 5거래일간 ±10% 이상 급등락한 종목은 "요약" 제목 옆에 경고 이모지 표시
+    el("summaryHeading").innerHTML = `1️⃣ 요약${surgeWarningEmoji(get5dChangePercent(chartData))}`;
 
     renderSummary(quote, meta, getDailyChangePercent(chartData)).catch((e) => {
       el("summarySection").innerHTML = `<p class="error-inline">사업 요약을 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
@@ -1546,10 +1582,8 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
 
   const [metrics, { sp500Return }] = await Promise.all([selfMetricsPromise, marketReturnsPromise]);
 
-  const { total, marketScore, debtScore, marginScore, relDiff, debtToAssets, netMargin } = computeRiskScore(
-    metrics,
-    sp500Return
-  );
+  const { total, marketScore, debtScore, marginScore, relDiff, debtToAssets, netMargin, growthScore, revenueGrowth3y } =
+    computeRiskScore(metrics, sp500Return);
 
   el("riskSection").innerHTML = `
     <div class="score-wrap">
@@ -1562,11 +1596,12 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
           <li>📊 S&P500과의 1년 수익률 차이: ${relDiff !== null ? `<b>${relDiff.toFixed(1)}%p</b> (S&P500 <b>${fmtPct(sp500Return)}</b>)` : "N/A"} (차이가 작을수록 가점)</li>
           <li>🏦 부채비율(총부채/총자산): <b>${debtToAssets !== null ? (debtToAssets * 100).toFixed(0) + "%" : "N/A"}</b> (낮을수록 가점, 100% 이상이면 0점)</li>
           <li>💵 순이익률(순이익/매출): <b>${netMargin !== null ? (netMargin * 100).toFixed(1) + "%" : "N/A"}</b> (높을수록 가점, 적자면 0점)</li>
-          <li>세부 점수 — S&P500 대비 모멘텀 ${marketScore.toFixed(1)}/4, 부채비율 ${debtScore.toFixed(1)}/3, 순이익률 ${marginScore.toFixed(1)}/3</li>
+          <li>📈 매출 성장성(최근 3개년 평균): <b>${revenueGrowth3y !== null && revenueGrowth3y !== undefined ? fmtPct(revenueGrowth3y) : "N/A"}</b> (높을수록 가점, 30% 이상 만점·0% 이하 0점)</li>
+          <li>세부 점수 — S&P500 대비 모멘텀 ${marketScore.toFixed(1)}/2, 부채비율 ${debtScore.toFixed(1)}/3, 순이익률 ${marginScore.toFixed(1)}/3, 매출 성장성 ${growthScore.toFixed(1)}/2</li>
         </ul>
         <p class="disclaimer">
           ⚠️ 점수가 높을수록(10점에 가까울수록) 재무적으로 더 안정적/저위험임을 의미합니다.
-          S&P500 대비 수익률, 부채비율, 순이익률을 조합한 <b>단순 참고용 정량 지표</b>이며, 투자 자문이나 매수/매도 추천이 아닙니다.
+          S&P500 대비 수익률, 부채비율, 순이익률, 매출 성장성을 조합한 <b>단순 참고용 정량 지표</b>이며, 투자 자문이나 매수/매도 추천이 아닙니다.
         </p>
       </div>
     </div>
@@ -1625,7 +1660,14 @@ async function renderRankedTop10(tickers, rangeLabel, { statusEl, resultsEl, but
         const attractiveness = computeAttractivenessScore(m);
         const risk = computeRiskScore(m, sp500Return);
         const combined = Math.round((attractiveness.total + risk.total) * 10) / 10;
-        return { symbol: m.symbol, price: m.price, attractiveness: attractiveness.total, risk: risk.total, combined };
+        return {
+          symbol: m.symbol,
+          price: m.price,
+          attractiveness: attractiveness.total,
+          risk: risk.total,
+          combined,
+          fiveDayChangePercent: m.fiveDayChangePercent,
+        };
       })
       .filter(Boolean)
       .sort((a, b) => b.combined - a.combined)
@@ -1644,7 +1686,7 @@ async function renderRankedTop10(tickers, rangeLabel, { statusEl, resultsEl, but
       .map(
         (r, i) => `
       <tr>
-        <td>${i + 1}</td>
+        <td>${i + 1}${surgeWarningEmoji(r.fiveDayChangePercent)}</td>
         <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></td>
         <td>${r.price !== undefined && r.price !== null ? "$" + r.price.toFixed(2) : "N/A"}</td>
         <td>${r.attractiveness}/10</td>
@@ -1655,6 +1697,7 @@ async function renderRankedTop10(tickers, rangeLabel, { statusEl, resultsEl, but
       .join("");
 
     resultsEl.innerHTML = `
+      ${SURGE_WARNING_LEGEND}
       <table class="top30-table">
         <thead>
           <tr><th>순위</th><th>티커</th><th>현재가</th><th>가격<br>매력</th><th>투자<br>위험</th><th>합산 점수</th></tr>
@@ -1662,7 +1705,7 @@ async function renderRankedTop10(tickers, rangeLabel, { statusEl, resultsEl, but
         <tbody>${rows}</tbody>
       </table>
       <p class="disclaimer">
-        ⚠️ 가격 매력도(10점 만점) + 투자 위험도(10점 만점)를 단순 합산한(20점 만점) 참고용 순위이며, 투자 자문이나 매수 추천이 아닙니다.
+        <span style="filter:grayscale(1);">📢</span> 가격 매력도(10점 만점) + 투자 위험도(10점 만점)를 단순 합산한(20점 만점) 참고용 순위이며, 투자 자문이나 매수 추천이 아닙니다.
         무료 데이터 소스/프록시의 한계로 일부 종목은 조회에 실패해 순위 계산에서 제외될 수 있습니다.
       </p>
     `;
@@ -1752,7 +1795,7 @@ function moversTableHtml(scored, rankNote) {
       const changeClass = r.changePct >= 0 ? "delta-up" : "delta-down";
       return `
       <tr>
-        <td>${i + 1}</td>
+        <td>${i + 1}${surgeWarningEmoji(r.fiveDayChangePercent)}</td>
         <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
         <td>$${r.price.toFixed(2)}<br><span class="${changeClass}" style="font-size:11px;">(${fmtPct(r.changePct)})</span></td>
         <td class="${scoreClass(r.attractiveness)}"><b>${r.attractiveness !== null ? r.attractiveness : "N/A"}</b></td>
@@ -1762,6 +1805,7 @@ function moversTableHtml(scored, rankNote) {
     .join("");
 
   return `
+      ${SURGE_WARNING_LEGEND}
       <div class="popular-table-wrap">
         <table class="top30-table popular-table">
           <thead>
@@ -1771,7 +1815,7 @@ function moversTableHtml(scored, rankNote) {
         </table>
       </div>
       <p class="disclaimer">
-        ⚠️ ${rankNote}
+        <span style="filter:grayscale(1);">📢</span> ${rankNote}
         가격 매력도·투자 위험도는 각 10점 만점 참고용 지표이며(5점보다 높으면 초록색, 낮으면 빨간색), 투자 자문이 아닙니다.
       </p>
     `;
@@ -1790,10 +1834,10 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
 
   const scored = candidates.map((r, i) => {
     const m = fullMetricsList[i];
-    if (!m) return { ...r, attractiveness: null, risk: null };
+    if (!m) return { ...r, attractiveness: null, risk: null, fiveDayChangePercent: null };
     const attractiveness = computeAttractivenessScore(m);
     const risk = computeRiskScore(m, sp500Return);
-    return { ...r, attractiveness: attractiveness.total, risk: risk.total };
+    return { ...r, attractiveness: attractiveness.total, risk: risk.total, fiveDayChangePercent: m.fiveDayChangePercent };
   });
 
   statusEl.style.display = "none";
