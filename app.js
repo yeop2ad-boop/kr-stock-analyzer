@@ -370,18 +370,44 @@ function computeMacroScore({ m2Yoy, spread }) {
 }
 
 // ---------- 종목별 지표 조회 + 가격 매력도 점수 계산 (사업요약/경쟁사비교/점수 섹션에서 공용으로 사용) ----------
-function get1yReturnFromChart(chartResult) {
+// 차트 데이터에서 (타임스탬프, 종가) 쌍을 과거→최근 순으로 정렬해 추출
+function chartClosePairs(chartResult) {
   const result = chartResult && chartResult.chart && chartResult.chart.result && chartResult.chart.result[0];
-  if (!result) return null;
+  if (!result) return [];
   const timestamps = result.timestamp || [];
   const closes = (result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
   const pairs = timestamps.map((t, i) => ({ t, c: closes[i] })).filter((p) => p.c !== null && p.c !== undefined);
-  if (pairs.length < 2) return null;
   pairs.sort((a, b) => a.t - b.t);
-  const oldest = pairs[0].c;
-  const latest = pairs[pairs.length - 1].c;
-  if (!oldest) return null;
-  return ((latest - oldest) / oldest) * 100;
+  return pairs;
+}
+
+// 목표 시점(유닉스 타임스탬프)에 가장 가까운 종가 쌍을 찾음
+function closestPair(pairs, targetTimestamp) {
+  let closest = null;
+  let minDiff = Infinity;
+  for (const p of pairs) {
+    const diff = Math.abs(p.t - targetTimestamp);
+    if (diff < minDiff) {
+      minDiff = diff;
+      closest = p;
+    }
+  }
+  return closest;
+}
+
+const YEAR_SECONDS = 365.25 * 24 * 3600;
+const HISTORY_TOLERANCE_SECONDS = 20 * 24 * 3600; // 주말·휴장일 여유분
+
+// 최근 1년 수익률(%) — 데이터가 실제로 1년치 이상 있을 때만 계산(최신 종가 시점 기준 1년 전과 비교, 차트 조회 범위와 무관하게 정확)
+function get1yReturnFromChart(chartResult) {
+  const pairs = chartClosePairs(chartResult);
+  if (pairs.length < 2) return null;
+  const latest = pairs[pairs.length - 1];
+  const target = latest.t - YEAR_SECONDS;
+  if (pairs[0].t > target + HISTORY_TOLERANCE_SECONDS) return null;
+  const base = closestPair(pairs, target);
+  if (!base || !base.c) return null;
+  return ((latest.c - base.c) / base.c) * 100;
 }
 
 // 최근 거래일 대비 등락률(요약 카드의 현재가 옆 괄호 표시용) — 일봉 마지막 두 종가를 비교
@@ -419,6 +445,25 @@ function get5dExtremeMoves(chartResult) {
     if (pct <= -10) hasPlunge = true;
   }
   return { hasSurge, hasPlunge };
+}
+
+// 직전 10거래일 중 상승 마감한 날의 수(0~10) — 가격 매력도의 "상승 모멘텀" 항목용
+function countUpDaysIn10(chartResult) {
+  const result = chartResult && chartResult.chart && chartResult.chart.result && chartResult.chart.result[0];
+  if (!result) return null;
+  const timestamps = result.timestamp || [];
+  const closes = (result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
+  const pairs = timestamps.map((t, i) => ({ t, c: closes[i] })).filter((p) => p.c !== null && p.c !== undefined);
+  pairs.sort((a, b) => a.t - b.t);
+  const recent = pairs.slice(-11); // 종가 11개 = 일별 등락 10개
+  if (recent.length < 2) return null;
+  let upDays = 0;
+  for (let i = 1; i < recent.length; i++) {
+    const prev = recent[i - 1].c;
+    const cur = recent[i].c;
+    if (prev && cur > prev) upDays++;
+  }
+  return upDays;
 }
 
 // 나스닥·다우존스·S&P500 1년 수익률 (여러 섹션이 공유해서 중복 요청을 줄임)
@@ -479,53 +524,39 @@ async function getCompanyMetrics(symbol) {
     marketCap,
     currency: meta.currency,
     oneYearReturn: get1yReturnFromChart(chartData),
+    upDays10: countUpDaysIn10(chartData),
     revenueGrowth3y: avgRevenueGrowth3y(revenueSeries),
   };
 }
 
-// 시가총액 규모 + 52주 최고/최저 대비 위치 + PE 밸류에이션 + 매출 성장성을 조합한 참고용 가격 매력도 점수(10점 만점)
+// 52주 최고/최저 대비 위치 + 3년 매출 성장성 + 상승 모멘텀을 조합한 참고용 가격 매력도 점수(10점 만점)
 function computeAttractivenessScore(metrics) {
-  const { price, yearLow, yearHigh, marketCap, netIncome, currency, revenueGrowth3y } = metrics;
+  const { price, yearLow, yearHigh, upDays10, revenueGrowth3y } = metrics;
 
-  // 1) 시가총액 규모 가점 (0~2점) — 1조달러 이상이면 만점, 300억달러 이하면 0점 (선형)
-  // 시가총액을 신뢰할 수 없어 N/A로 표시되는 경우(데이터 누락, ADR 등 통화 문제로 제외된 해외 상장 종목)는 0점 처리
-  let marketCapScore = 0;
-  if (marketCap !== undefined && marketCap !== null && (!currency || currency === "USD")) {
-    marketCapScore = clamp((2 * (marketCap - 3e10)) / (1e12 - 3e10), 0, 2);
-  }
-
-  // 2) 52주 최고/최저 대비 위치 (0~4점) — 저점(0%)이면 만점, 고점(100%)이면 0점 (선형)
-  let rangeScore = 2;
+  // 1) 52주 최고/최저 대비 위치 (0~3점) — 저점(0%)이면 만점, 고점(100%)이면 0점 (선형)
+  let rangeScore = 1.5;
   let rangePosition = null;
   if (yearLow !== undefined && yearLow !== null && yearHigh !== undefined && yearHigh > yearLow && price !== undefined && price !== null) {
     rangePosition = (price - yearLow) / (yearHigh - yearLow);
-    rangeScore = clamp(4 * (1 - rangePosition), 0, 4);
+    rangeScore = clamp(3 * (1 - rangePosition), 0, 3);
   }
 
-  // 3) PE 밸류에이션 = 직전년도 시가총액 ÷ 순이익 (0~2점) — 10배 이하면 만점, 70배 이상이면 0점 (30배마다 1점, 선형)
-  // 일부 해외 상장 종목은 시세는 USD인데 재무제표는 원래 보고 통화(KRW 등) 그대로 내려오는 경우가 있어
-  // (예: SKHY) 시가총액(USD)÷순이익(현지통화)이 뒤섞여 PE가 1배 미만처럼 비정상적으로 작게 나올 수 있음 —
-  // 정상적인 흑자 기업이 시총보다 큰 연간 순이익을 내는 경우는 사실상 없으므로 이런 값은 신뢰할 수 없다고 보고 제외
-  // P/E를 신뢰할 수 없어 N/A로 표시되는 경우(순이익 데이터 누락, 비정상적으로 작은 값 등)도 0점 처리
-  let peScore = 0;
-  let pe = null;
-  if (marketCap !== undefined && marketCap !== null && netIncome && netIncome > 0) {
-    const rawPe = marketCap / netIncome;
-    if (rawPe >= 1) pe = rawPe;
-  }
-  if (pe !== null) {
-    peScore = clamp(2 - (pe - 10) / 30, 0, 2);
-  }
-
-  // 4) 매출 성장성 = 최근 3개 연도 전년 대비 매출 성장률 평균 (0~2점) — 30% 이상이면 만점, 0% 이하면 0점 (15%마다 1점, 선형)
+  // 2) 3년 평균 매출 성장성 (0~3점) — 30% 이상 3점, 20% 2점, 10% 1점, 0% 이하 0점 (10%p마다 1점, 선형)
   // 데이터가 부족해 성장률을 계산할 수 없는 경우(N/A)도 0점 처리
   let growthScore = 0;
   if (revenueGrowth3y !== undefined && revenueGrowth3y !== null) {
-    growthScore = clamp(revenueGrowth3y / 15, 0, 2);
+    growthScore = clamp(revenueGrowth3y / 10, 0, 3);
   }
 
-  const total = Math.round(clamp(marketCapScore + rangeScore + peScore + growthScore, 0, 10) * 10) / 10;
-  return { total, marketCapScore, rangeScore, peScore, pe, rangePosition, growthScore, revenueGrowth3y };
+  // 3) 상승 모멘텀 = 직전 10거래일 중 상승 마감한 날의 수 (0~4점) — 10일 모두 상승이면 만점, 0일이면 0점 (선형)
+  // 데이터가 부족한 경우(N/A)도 0점 처리
+  let momentumScore = 0;
+  if (upDays10 !== undefined && upDays10 !== null) {
+    momentumScore = clamp((upDays10 / 10) * 4, 0, 4);
+  }
+
+  const total = Math.round(clamp(rangeScore + growthScore + momentumScore, 0, 10) * 10) / 10;
+  return { total, rangeScore, growthScore, revenueGrowth3y, rangePosition, momentumScore, upDays10 };
 }
 
 // 통화쌍 환율(세션 내 캐시) — 재무제표가 시세와 다른 현지 통화로 내려오는 해외 상장 종목(TSM·SKHY 등) 환산용
@@ -639,6 +670,7 @@ async function getFullMetrics(symbol) {
     currency: meta.currency,
     oneYearReturn: get1yReturnFromChart(chartData),
     fiveDayExtremes: get5dExtremeMoves(chartData),
+    upDays10: countUpDaysIn10(chartData),
     revenueGrowth3y: avgRevenueGrowth3y(revenueSeries),
   };
 }
@@ -1713,8 +1745,7 @@ async function renderScore(selfMetricsPromise) {
   const metrics = await selfMetricsPromise;
 
   const score = computeAttractivenessScore(metrics);
-  const { total, marketCapScore, rangeScore, peScore, pe, rangePosition, growthScore, revenueGrowth3y } = score;
-  const isForeignCurrency = metrics.currency && metrics.currency !== "USD";
+  const { total, rangeScore, growthScore, revenueGrowth3y, rangePosition, momentumScore, upDays10 } = score;
 
   el("scoreSection").innerHTML = `
     <div class="score-wrap">
@@ -1724,14 +1755,13 @@ async function renderScore(selfMetricsPromise) {
       </div>
       <div class="score-details">
         <ul>
-          <li>🏢 시가총액 밸류에이션: <b>${!isForeignCurrency && metrics.marketCap ? fmtCompactCurrency(metrics.marketCap) : "N/A" + (isForeignCurrency ? " (해외 상장 종목 제외)" : "")}</b> (1조달러 이상이면 만점, 300억달러 이하면 0점)</li>
           <li>📍 52주 최고/최저 대비 위치: ${rangePosition !== null ? `저점 대비 <b>${(rangePosition * 100).toFixed(0)}%</b> 지점` : "N/A"} (저점에 가까울수록 가점)</li>
-          <li>💰 P/E(주가수익비율): <b>${pe ? pe.toFixed(1) : "N/A"}</b> (직전년도 시가총액 ÷ 순이익, 낮을수록 가점, 10배 이하 만점·70배 이상 0점)</li>
           <li>📈 매출 성장성(최근 3개년 평균): <b>${revenueGrowth3y !== null && revenueGrowth3y !== undefined ? fmtPct(revenueGrowth3y) : "N/A"}</b> (전년 대비 매출 성장률, 높을수록 가점, 30% 이상 만점·0% 이하 0점)</li>
-          <li>세부 점수 — 시가총액 밸류에이션 ${marketCapScore.toFixed(1)}/2, 52주 위치 ${rangeScore.toFixed(1)}/4, PE 밸류에이션 ${peScore.toFixed(1)}/2, 매출 성장성 ${growthScore.toFixed(1)}/2</li>
+          <li>🚀 상승 모멘텀(직전 10거래일): <b>${upDays10 !== null && upDays10 !== undefined ? `${upDays10}일 상승` : "N/A"}</b> (상승일이 많을수록 가점, 10일 만점·0일 0점)</li>
+          <li>세부 점수 — 52주 위치 ${rangeScore.toFixed(1)}/3, 매출 성장성 ${growthScore.toFixed(1)}/3, 상승 모멘텀 ${momentumScore.toFixed(1)}/4</li>
         </ul>
         <p class="disclaimer">
-          ⚠️ 이 점수는 시가총액 규모, 52주 가격 위치, PE 밸류에이션, 매출 성장성을 조합한 <b>단순 참고용 정량 지표</b>이며,
+          ⚠️ 이 점수는 52주 가격 위치, 매출 성장성, 상승 모멘텀을 조합한 <b>단순 참고용 정량 지표</b>이며,
           투자 자문이나 매수/매도 추천이 아닙니다. 실제 투자 판단은 재무제표 전체와 다른 정보를 종합해 본인 책임 하에 내려야 합니다.
         </p>
       </div>
