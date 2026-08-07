@@ -554,10 +554,10 @@ function returnOverYearEndingAt(pairs, asOfTimestamp) {
   return ((latest.c - base.c) / base.c) * 100;
 }
 
-// 과거분석 기준 시점: "1년 전 + 이번 달 1일" (매달 1일이 지나면 자동으로 기준월이 한 달씩 이동)
+// 과거분석 기준 시점: "1년 전 + 다음 달 1일" (매달 1일이 지나면 자동으로 기준월이 한 달씩 이동)
 function getHistoricalReferenceDate() {
   const now = new Date();
-  return new Date(now.getFullYear() - 1, now.getMonth(), 1);
+  return new Date(now.getFullYear() - 1, now.getMonth() + 1, 1);
 }
 
 // 나스닥·다우존스·S&P500 1년 수익률 (여러 섹션이 공유해서 중복 요청을 줄임)
