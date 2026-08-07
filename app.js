@@ -301,6 +301,21 @@ const SECTOR_SCREENER_ID = {
   "Basic Materials": "ms_basic_materials",
 };
 
+// GICS 11개 섹터(영문) → 한글 표기 — 요약 섹션의 "섹터" 항목용(고정된 11개라 정적 매핑으로 정확하게 표시)
+const SECTOR_KO = {
+  Technology: "기술",
+  Healthcare: "헬스케어",
+  "Financial Services": "금융",
+  "Consumer Cyclical": "경기소비재",
+  "Consumer Defensive": "필수소비재",
+  "Communication Services": "커뮤니케이션 서비스",
+  Industrials: "산업재",
+  Energy: "에너지",
+  Utilities: "유틸리티",
+  "Real Estate": "부동산",
+  "Basic Materials": "소재",
+};
+
 // 동일 섹터 종목을 시가총액 내림차순으로 반환(자기 자신 제외) — 경쟁사 TOP3 + 시총 유사 종목 선정에 사용
 async function getSectorPeerCandidates(sector, selfSymbol) {
   const scrId = SECTOR_SCREENER_ID[sector];
@@ -1028,8 +1043,8 @@ function surgeWarningEmoji(fiveDayExtremes) {
 }
 // 순위 표 위에 붙이는 경고 이모지 범례 + 상승압력/투자위험 점수 의미 설명
 const SURGE_WARNING_LEGEND = `
-  <p class="muted" style="font-size:11px;margin:0 0 4px;">🔥 급등 · ⚠️ 급락 — ${SURGE_WARNING_TITLE}</p>
-  <p class="muted" style="font-size:11px;margin:0 0 6px;">📈 상승압력 — 현재 상승 압력이 높음을 의미<br>🛡️ 투자위험 — 1년 후 하락 가능성이 낮음을 의미</p>
+  <p class="muted" style="font-size:11px;margin:0 0 4px;opacity:0.65;">🔥 급등 · ⚠️ 급락 — ${SURGE_WARNING_TITLE}</p>
+  <p class="muted" style="font-size:11px;margin:0 0 2px;opacity:0.65;">📈 상승압력 — 현재 상승 압력이 높음을 의미<br>🛡️ 투자위험 — 1년 후 하락 가능성이 낮음을 의미</p>
 `;
 
 function clamp(n, min, max) {
@@ -1522,11 +1537,16 @@ async function renderSummary(quote, meta, changePct) {
     // 위키백과 매칭 실패 시 안내 문구 유지
   }
 
+  const industryEn = quote.industryDisp || quote.industry || "";
+  const sectorEn = quote.sectorDisp || quote.sector || "";
+  const industryKo = industryEn ? await translateToKorean(industryEn).catch(() => industryEn) : "";
+  const sectorKo = sectorEn ? SECTOR_KO[sectorEn] || (await translateToKorean(sectorEn).catch(() => sectorEn)) : "";
+
   el("summarySection").innerHTML = `
     <p class="summary-text"><b>${escapeHtml(companyName)} (${escapeHtml(meta.symbol || quote.symbol || "")})</b> — ${escapeHtml(oneLiner)}</p>
     <div class="company-meta">
-      <span>업종: <b>${escapeHtml(quote.industryDisp || quote.industry || "N/A")}</b></span>
-      <span>섹터: <b>${escapeHtml(quote.sectorDisp || quote.sector || "N/A")}</b></span>
+      <span>업종: <b>${escapeHtml(industryKo || "N/A")}</b></span>
+      <span>섹터: <b>${escapeHtml(sectorKo || "N/A")}</b></span>
       <span>거래소: <b>${escapeHtml(quote.exchDisp || meta.fullExchangeName || "N/A")}</b></span>
       <span>현재가: <b>$${(meta.regularMarketPrice ?? 0).toFixed(2)}</b> ${changePct !== null && changePct !== undefined ? `<span class="${changePct >= 0 ? "delta-up" : "delta-down"}">(${fmtPct(changePct)})</span>` : ""}<a class="chart-link-btn" href="#" data-chart-symbol="${escapeHtml(meta.symbol || quote.symbol || "")}">📈 차트보기</a></span>
     </div>
