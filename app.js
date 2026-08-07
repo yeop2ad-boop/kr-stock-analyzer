@@ -404,8 +404,40 @@ function closestPair(pairs, targetTimestamp) {
   return closest;
 }
 
+// 차트 데이터에서 (타임스탬프, 거래량) 쌍을 과거→최근 순으로 정렬해 추출 — chartClosePairs의 거래량 버전
+function chartVolumePairs(chartResult) {
+  const result = chartResult && chartResult.chart && chartResult.chart.result && chartResult.chart.result[0];
+  if (!result) return [];
+  const timestamps = result.timestamp || [];
+  const volumes = (result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].volume) || [];
+  const pairs = timestamps.map((t, i) => ({ t, v: volumes[i] })).filter((p) => p.v !== null && p.v !== undefined);
+  pairs.sort((a, b) => a.t - b.t);
+  return pairs;
+}
+
+// asOfTimestamp 시점의 하루 거래량과 그 직전 1년간 평균 거래량 — 가격 매력도의 "거래량 가점" 항목용
+function volumeStatsEndingAt(volumePairs, asOfTimestamp) {
+  if (volumePairs.length === 0) return { dailyVolume: null, avgVolume1y: null };
+  const latest = closestPair(volumePairs, asOfTimestamp);
+  if (!latest) return { dailyVolume: null, avgVolume1y: null };
+  const target = latest.t - YEAR_SECONDS;
+  const windowVolumes = volumePairs.filter((p) => p.t <= latest.t && p.t >= target - HISTORY_TOLERANCE_SECONDS).map((p) => p.v);
+  const avgVolume1y = windowVolumes.length ? windowVolumes.reduce((a, b) => a + b, 0) / windowVolumes.length : null;
+  return { dailyVolume: latest.v, avgVolume1y };
+}
+
+// 차트 데이터 자체의 최신 시점 기준 거래량 통계(오늘 기준 지표용) — volumeStatsEndingAt의 "최신 시점" 버전
+function currentVolumeStats(chartResult) {
+  const volumePairs = chartVolumePairs(chartResult);
+  const latest = volumePairs[volumePairs.length - 1];
+  if (!latest) return { dailyVolume: null, avgVolume1y: null };
+  return volumeStatsEndingAt(volumePairs, latest.t);
+}
+
 const YEAR_SECONDS = 365.25 * 24 * 3600;
 const HISTORY_TOLERANCE_SECONDS = 20 * 24 * 3600; // 주말·휴장일 여유분
+const THREE_MONTH_SECONDS = 91 * 24 * 3600;
+const MOMENTUM_TOLERANCE_SECONDS = 10 * 24 * 3600; // 3개월 구간은 1년보다 짧으므로 여유 허용치도 비례해 축소
 
 // 최근 1년 수익률(%) — 데이터가 실제로 1년치 이상 있을 때만 계산(최신 종가 시점 기준 1년 전과 비교, 차트 조회 범위와 무관하게 정확)
 function get1yReturnFromChart(chartResult) {
@@ -417,6 +449,26 @@ function get1yReturnFromChart(chartResult) {
   const base = closestPair(pairs, target);
   if (!base || !base.c) return null;
   return ((latest.c - base.c) / base.c) * 100;
+}
+
+// 임의 시점(asOfTimestamp) 기준 직전 windowSeconds 구간의 수익률(%) — "상승 모멘텀"의 3개월 버전과 과거분석에서 공용으로 사용
+function returnOverWindowEndingAt(pairs, asOfTimestamp, windowSeconds, toleranceSeconds) {
+  if (pairs.length < 2) return null;
+  const latest = closestPair(pairs, asOfTimestamp);
+  if (!latest) return null;
+  const target = latest.t - windowSeconds;
+  if (pairs[0].t > target + toleranceSeconds) return null;
+  const base = closestPair(pairs, target);
+  if (!base || !base.c) return null;
+  return ((latest.c - base.c) / base.c) * 100;
+}
+
+// 최근 3개월 누적 수익률(%) — 가격 매력도의 "상승 모멘텀" 항목용(기존 10거래일 상승일수 방식 대체)
+function get3MonthReturn(chartResult) {
+  const pairs = chartClosePairs(chartResult);
+  const latest = pairs[pairs.length - 1];
+  if (!latest) return null;
+  return returnOverWindowEndingAt(pairs, latest.t, THREE_MONTH_SECONDS, MOMENTUM_TOLERANCE_SECONDS);
 }
 
 // 최근 거래일 대비 등락률(요약 카드의 현재가 옆 괄호 표시용) — 일봉 마지막 두 종가를 비교
@@ -456,25 +508,6 @@ function get5dExtremeMoves(chartResult) {
   return { hasSurge, hasPlunge };
 }
 
-// 직전 10거래일 중 상승 마감한 날의 수(0~10) — 가격 매력도의 "상승 모멘텀" 항목용
-function countUpDaysIn10(chartResult) {
-  const result = chartResult && chartResult.chart && chartResult.chart.result && chartResult.chart.result[0];
-  if (!result) return null;
-  const timestamps = result.timestamp || [];
-  const closes = (result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
-  const pairs = timestamps.map((t, i) => ({ t, c: closes[i] })).filter((p) => p.c !== null && p.c !== undefined);
-  pairs.sort((a, b) => a.t - b.t);
-  const recent = pairs.slice(-11); // 종가 11개 = 일별 등락 10개
-  if (recent.length < 2) return null;
-  let upDays = 0;
-  for (let i = 1; i < recent.length; i++) {
-    const prev = recent[i - 1].c;
-    const cur = recent[i].c;
-    if (prev && cur > prev) upDays++;
-  }
-  return upDays;
-}
-
 // ---------- 과거분석(1년 전 스냅샷 vs 현재 비교)용 헬퍼 — 위 함수들의 "임의 시점 기준" 버전 ----------
 // 목표 시점 이후 첫 거래일 쌍을 찾음(주말·휴장일이면 다음 거래일로 자동 이동)
 function firstTradingDayOnOrAfter(pairs, targetTimestamp) {
@@ -482,29 +515,6 @@ function firstTradingDayOnOrAfter(pairs, targetTimestamp) {
     if (p.t >= targetTimestamp) return p;
   }
   return null;
-}
-
-// pairs(과거→최근 정렬)에서 asOfIndex로 끝나는 직전 n거래일 중 상승 마감일 수 — countUpDaysIn10의 임의 시점 버전
-function countUpDaysEndingAt(pairs, asOfIndex, n = 10) {
-  if (asOfIndex < 1) return null;
-  const start = Math.max(1, asOfIndex - n + 1);
-  let upDays = 0;
-  for (let i = start; i <= asOfIndex; i++) {
-    const prev = pairs[i - 1] && pairs[i - 1].c;
-    const cur = pairs[i] && pairs[i].c;
-    if (prev && cur > prev) upDays++;
-  }
-  return upDays;
-}
-
-// asOfIndex 시점 기준 직전 52주 종가 중 최고/최저(장중 고가·저가가 아닌 종가 기준 근사치)
-function yearRangeEndingAt(pairs, asOfIndex) {
-  const asOfT = pairs[asOfIndex] && pairs[asOfIndex].t;
-  if (asOfT === undefined) return { low: null, high: null };
-  const target = asOfT - YEAR_SECONDS;
-  const windowCloses = pairs.filter((p, i) => i <= asOfIndex && p.t >= target - HISTORY_TOLERANCE_SECONDS).map((p) => p.c);
-  if (windowCloses.length === 0) return { low: null, high: null };
-  return { low: Math.min(...windowCloses), high: Math.max(...windowCloses) };
 }
 
 // 임의 시점(asOfTimestamp) 기준 직전 1년 수익률(%) — get1yReturnFromChart의 시점 지정 버전
@@ -572,50 +582,53 @@ async function getCompanyMetrics(symbol) {
   const marketCap = meta.regularMarketPrice !== undefined && sharesOutstanding ? meta.regularMarketPrice * sharesOutstanding : null;
   const revenueSeries = resultArr ? await annualFundamentalSeries(resultArr, "annualTotalRevenue", meta.currency) : [];
 
+  const { dailyVolume, avgVolume1y } = currentVolumeStats(chartData);
+
   return {
     symbol,
     price: meta.regularMarketPrice,
-    yearLow: meta.fiftyTwoWeekLow,
-    yearHigh: meta.fiftyTwoWeekHigh,
     revenue,
     eps,
     netIncome,
     marketCap,
     currency: meta.currency,
     oneYearReturn: get1yReturnFromChart(chartData),
-    upDays10: countUpDaysIn10(chartData),
+    momentum3m: get3MonthReturn(chartData),
     revenueGrowth3y: avgRevenueGrowth3y(revenueSeries),
+    dailyVolume,
+    avgVolume1y,
   };
 }
 
-// 52주 최고/최저 대비 위치 + 3년 매출 성장성 + 상승 모멘텀을 조합한 참고용 가격 매력도 점수(10점 만점)
+// 거래량 가점 + 3년 매출 성장성 + 상승 모멘텀을 조합한 참고용 가격 매력도 점수(10점 만점)
 function computeAttractivenessScore(metrics) {
-  const { price, yearLow, yearHigh, upDays10, revenueGrowth3y } = metrics;
+  const { dailyVolume, avgVolume1y, momentum3m, revenueGrowth3y } = metrics;
 
-  // 1) 52주 최고/최저 대비 위치 (0~3점) — 저점(0%)이면 만점, 고점(100%)이면 0점 (선형)
-  let rangeScore = 1.5;
-  let rangePosition = null;
-  if (yearLow !== undefined && yearLow !== null && yearHigh !== undefined && yearHigh > yearLow && price !== undefined && price !== null) {
-    rangePosition = (price - yearLow) / (yearHigh - yearLow);
-    rangeScore = clamp(3 * (1 - rangePosition), 0, 3);
+  // 1) 거래량 가점 (0~2점) — 하루 거래량이 1년 평균 대비 +50% 이상이면 만점, -50% 이하면 0점 (선형)
+  // 거래량 데이터가 부족한 경우 중립값 1점 처리
+  let volumeScore = 1;
+  let volumeDiffPct = null;
+  if (dailyVolume !== undefined && dailyVolume !== null && avgVolume1y) {
+    volumeDiffPct = ((dailyVolume - avgVolume1y) / avgVolume1y) * 100;
+    volumeScore = clamp(((volumeDiffPct + 50) / 100) * 2, 0, 2);
   }
 
-  // 2) 3년 평균 매출 성장성 (0~3점) — 30% 이상 3점, 20% 2점, 10% 1점, 0% 이하 0점 (10%p마다 1점, 선형)
+  // 2) 3년 평균 매출 성장성 (0~4점) — 40% 이상 4점, 0% 이하 0점 (10%p마다 1점, 선형)
   // 데이터가 부족해 성장률을 계산할 수 없는 경우(N/A)도 0점 처리
   let growthScore = 0;
   if (revenueGrowth3y !== undefined && revenueGrowth3y !== null) {
-    growthScore = clamp(revenueGrowth3y / 10, 0, 3);
+    growthScore = clamp(revenueGrowth3y / 10, 0, 4);
   }
 
-  // 3) 상승 모멘텀 = 직전 10거래일 중 상승 마감한 날의 수 (0~4점) — 10일 모두 상승이면 만점, 0일이면 0점 (선형)
+  // 3) 상승 모멘텀 = 최근 3개월 누적 수익률 (0~4점) — 25% 이상이면 만점, 0% 이하면 0점 (선형)
   // 데이터가 부족한 경우(N/A)도 0점 처리
   let momentumScore = 0;
-  if (upDays10 !== undefined && upDays10 !== null) {
-    momentumScore = clamp((upDays10 / 10) * 4, 0, 4);
+  if (momentum3m !== undefined && momentum3m !== null) {
+    momentumScore = clamp((momentum3m / 25) * 4, 0, 4);
   }
 
-  const total = Math.round(clamp(rangeScore + growthScore + momentumScore, 0, 10) * 10) / 10;
-  return { total, rangeScore, growthScore, revenueGrowth3y, rangePosition, momentumScore, upDays10 };
+  const total = Math.round(clamp(volumeScore + growthScore + momentumScore, 0, 10) * 10) / 10;
+  return { total, volumeScore, volumeDiffPct, growthScore, revenueGrowth3y, momentumScore, momentum3m };
 }
 
 // 통화쌍 환율(세션 내 캐시) — 재무제표가 시세와 다른 현지 통화로 내려오는 해외 상장 종목(TSM·SKHY 등) 환산용
@@ -702,12 +715,11 @@ async function getFullMetrics(symbol) {
   }
   const marketCap = meta.regularMarketPrice !== undefined && sharesOutstanding ? meta.regularMarketPrice * sharesOutstanding : null;
   const revenueSeries = await annualFundamentalSeries(resultArr, "annualTotalRevenue", meta.currency);
+  const { dailyVolume, avgVolume1y } = currentVolumeStats(chartData);
 
   return {
     symbol,
     price: meta.regularMarketPrice,
-    yearLow: meta.fiftyTwoWeekLow,
-    yearHigh: meta.fiftyTwoWeekHigh,
     eps,
     revenue,
     netIncome,
@@ -715,8 +727,10 @@ async function getFullMetrics(symbol) {
     currency: meta.currency,
     oneYearReturn: get1yReturnFromChart(chartData),
     fiveDayExtremes: get5dExtremeMoves(chartData),
-    upDays10: countUpDaysIn10(chartData),
+    momentum3m: get3MonthReturn(chartData),
     revenueGrowth3y: avgRevenueGrowth3y(revenueSeries),
+    dailyVolume,
+    avgVolume1y,
   };
 }
 
@@ -1831,14 +1845,14 @@ async function renderNews(searchData) {
   `;
 }
 
-// ---------- 5. 가격 매력도 점수 (52주 위치 + PE 밸류에이션 + 매출 성장성) ----------
+// ---------- 5. 가격 매력도 점수 (거래량 가점 + 매출 성장성 + 상승 모멘텀) ----------
 async function renderScore(selfMetricsPromise) {
   el("scoreSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
   const metrics = await selfMetricsPromise;
 
   const score = computeAttractivenessScore(metrics);
-  const { total, rangeScore, growthScore, revenueGrowth3y, rangePosition, momentumScore, upDays10 } = score;
+  const { total, volumeScore, volumeDiffPct, growthScore, revenueGrowth3y, momentumScore, momentum3m } = score;
 
   el("scoreSection").innerHTML = `
     <div class="score-wrap">
@@ -1848,13 +1862,13 @@ async function renderScore(selfMetricsPromise) {
       </div>
       <div class="score-details">
         <ul>
-          <li>📍 52주 최고/최저 대비 위치: ${rangePosition !== null ? `저점 대비 <b>${(rangePosition * 100).toFixed(0)}%</b> 지점` : "N/A"} (저점에 가까울수록 가점)</li>
-          <li>📈 매출 성장성(최근 3개년 평균): <b>${revenueGrowth3y !== null && revenueGrowth3y !== undefined ? fmtPct(revenueGrowth3y) : "N/A"}</b> (전년 대비 매출 성장률, 높을수록 가점, 30% 이상 만점·0% 이하 0점)</li>
-          <li>🚀 상승 모멘텀(직전 10거래일): <b>${upDays10 !== null && upDays10 !== undefined ? `${upDays10}일 상승` : "N/A"}</b> (상승일이 많을수록 가점, 10일 만점·0일 0점)</li>
-          <li>세부 점수 — 52주 위치 ${rangeScore.toFixed(1)}/3, 매출 성장성 ${growthScore.toFixed(1)}/3, 상승 모멘텀 ${momentumScore.toFixed(1)}/4</li>
+          <li>📊 거래량 가점(1년 평균 대비): <b>${volumeDiffPct !== null ? fmtPct(volumeDiffPct) : "N/A"}</b> (평균보다 많을수록 가점, +50% 이상 만점·-50% 이하 0점)</li>
+          <li>📈 매출 성장성(최근 3개년 평균): <b>${revenueGrowth3y !== null && revenueGrowth3y !== undefined ? fmtPct(revenueGrowth3y) : "N/A"}</b> (전년 대비 매출 성장률, 높을수록 가점, 40% 이상 만점·0% 이하 0점)</li>
+          <li>🚀 상승 모멘텀(최근 3개월 수익률): <b>${momentum3m !== null && momentum3m !== undefined ? fmtPct(momentum3m) : "N/A"}</b> (높을수록 가점, 25% 이상 만점·0% 이하 0점)</li>
+          <li>세부 점수 — 거래량 가점 ${volumeScore.toFixed(1)}/2, 매출 성장성 ${growthScore.toFixed(1)}/4, 상승 모멘텀 ${momentumScore.toFixed(1)}/4</li>
         </ul>
         <p class="disclaimer">
-          ⚠️ 이 점수는 52주 가격 위치, 매출 성장성, 상승 모멘텀을 조합한 <b>단순 참고용 정량 지표</b>이며,
+          ⚠️ 이 점수는 거래량, 매출 성장성, 상승 모멘텀을 조합한 <b>단순 참고용 정량 지표</b>이며,
           투자 자문이나 매수/매도 추천이 아닙니다. 실제 투자 판단은 재무제표 전체와 다른 정보를 종합해 본인 책임 하에 내려야 합니다.
         </p>
       </div>
@@ -2142,10 +2156,10 @@ async function getHistoricalCompareMetrics(symbol, sp500PairsPromise) {
   const pairs = chartClosePairs(chartData);
   const asOfPair = firstTradingDayOnOrAfter(pairs, referenceTimestamp);
   if (!asOfPair) return null;
-  const asOfIndex = pairs.findIndex((p) => p.t === asOfPair.t);
 
-  const yearRange = yearRangeEndingAt(pairs, asOfIndex);
-  const upDays10AsOf = countUpDaysEndingAt(pairs, asOfIndex, 10);
+  const momentum3mAsOf = returnOverWindowEndingAt(pairs, asOfPair.t, THREE_MONTH_SECONDS, MOMENTUM_TOLERANCE_SECONDS);
+  const volumePairs = chartVolumePairs(chartData);
+  const { dailyVolume: dailyVolumeAsOf, avgVolume1y: avgVolume1yAsOf } = volumeStatsEndingAt(volumePairs, asOfPair.t);
 
   let sharesOutstanding = null;
   const resultArr = (fundData && fundData.timeseries && fundData.timeseries.result) || [];
@@ -2173,9 +2187,9 @@ async function getHistoricalCompareMetrics(symbol, sp500PairsPromise) {
   const metricsAsOf = {
     symbol,
     price: historicalPrice,
-    yearLow: yearRange.low,
-    yearHigh: yearRange.high,
-    upDays10: upDays10AsOf,
+    momentum3m: momentum3mAsOf,
+    dailyVolume: dailyVolumeAsOf,
+    avgVolume1y: avgVolume1yAsOf,
     revenueGrowth3y: revenueGrowth3yAsOf,
     oneYearReturn: oneYearReturnAsOf,
     netIncome: netIncomeAsOf,
@@ -2248,7 +2262,8 @@ async function runHistoricalAnalysis() {
           asOfDate: h.asOfDate,
         };
       })
-      .filter(Boolean);
+      .filter(Boolean)
+      .sort((a, b) => (b.priceChangePct ?? -Infinity) - (a.priceChangePct ?? -Infinity));
 
     const successCount = rows.length;
     const failCount = top30.length - successCount;
@@ -2277,12 +2292,12 @@ async function runHistoricalAnalysis() {
     rankedResults.innerHTML = `
       <table class="top30-table">
         <thead>
-          <tr><th>순위</th><th>티커</th><th>시가총액<br>(증감률)</th><th>현재가<br>(등락률)</th><th>당시<br>매력점수</th><th>당시<br>투자위험</th></tr>
+          <tr><th>상승률<br>순위</th><th>티커</th><th>시가총액<br>(증감률)</th><th>현재가<br>(등락률)</th><th>당시<br>매력점수</th><th>당시<br>투자위험</th></tr>
         </thead>
         <tbody>${tableRows}</tbody>
       </table>
       <p class="disclaimer">
-        <span style="filter:grayscale(1);">📢</span> 오늘 기준 시가총액 상위 30개 종목을 대상으로, ${refDateStr}(기준월 첫 거래일) 대비 현재까지의 시가총액·주가 변화와
+        <span style="filter:grayscale(1);">📢</span> 오늘 기준 시가총액 상위 30개 종목을 뽑아 <b>주가 상승률이 높은 순</b>으로 정렬했습니다. ${refDateStr}(기준월 첫 거래일) 대비 현재까지의 시가총액·주가 변화와
         ${refDateStr} 당시 기준으로 근사 계산한 가격 매력도·투자 위험도 점수를 함께 보여주는 참고용 정보입니다. 당시 점수는 그 시점까지의 차트·재무 데이터로
         근사 계산한 값이라 실제와 다소 차이가 있을 수 있으며, 투자 자문이나 매수/매도 추천이 아닙니다. 기준 시점은 매달 1일이 지나면 한 달씩 자동으로 이동합니다.
       </p>
