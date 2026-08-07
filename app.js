@@ -1196,7 +1196,7 @@ function prepareMainView(activeKey) {
 // ---------- 홈 ↔ 티커 분석 화면 라우팅(뒤로가기 지원, ?ticker=로 특정 종목에 바로 접속 가능) ----------
 // 홈으로 돌아오면(로고 클릭, 뒤로가기) 빈 화면 대신 인기종목을 바로 불러와 보여줌
 function showHomeView() {
-  document.title = "미국 기업 분석기";
+  document.title = "미국 기업 분석기 (yeopinvest.com)";
   setActiveCategory("popular");
   prepareMainView("popular");
   return runPopular(20);
@@ -1208,7 +1208,7 @@ function showResultsView(ticker) {
   }
   setActiveCategory(null);
   resultsView.style.display = "block";
-  document.title = `${ticker} 분석 - 미국 기업 분석기`;
+  document.title = `${ticker} 분석 - 미국 기업 분석기 (yeopinvest.com)`;
   window.scrollTo(0, 0);
 }
 
@@ -2181,16 +2181,23 @@ async function runHistoricalAnalysis(direction) {
   btn.disabled = true;
 
   try {
-    rankedStatus.textContent = "S&P100 종목 목록을 불러오는 중...";
-    const universe = (await getSP500Tickers()).slice(0, 100);
+    rankedStatus.textContent = "S&P500 종목 목록을 불러오는 중...";
+    const allTickers = await getSP500Tickers();
 
-    rankedStatus.textContent = `0/${universe.length} 종목 분석 중(1년 ${rankLabel} 상위 30 선정)...`;
-    const metricsList = await mapWithConcurrency(universe, 5, getFullMetrics, (completed, total) => {
-      rankedStatus.textContent = `${completed}/${total} 종목 분석 중(1년 ${rankLabel} 상위 30 선정)...`;
+    rankedStatus.textContent = `0/${allTickers.length} 종목 분석 중(시가총액 상위 100 및 1년 ${rankLabel} 상위 30 선정)...`;
+    const allMetricsList = await mapWithConcurrency(allTickers, 5, getFullMetrics, (completed, total) => {
+      rankedStatus.textContent = `${completed}/${total} 종목 분석 중(시가총액 상위 100 및 1년 ${rankLabel} 상위 30 선정)...`;
     });
 
+    // getSP500Tickers()는 위키백과 표 등장 순(사실상 티커 알파벳순)이라 시가총액 순이 아니므로,
+    // 전체 종목을 분석한 뒤 marketCap 기준으로 정렬해 실제 시가총액 상위 100개(S&P100 근사)를 선정
+    const metricsList = allMetricsList
+      .filter((m) => m && m.marketCap)
+      .sort((a, b) => b.marketCap - a.marketCap)
+      .slice(0, 100);
+
     const top30 = metricsList
-      .filter((m) => m && m.oneYearReturn !== null && m.oneYearReturn !== undefined)
+      .filter((m) => m.oneYearReturn !== null && m.oneYearReturn !== undefined)
       .sort((a, b) => (isUp ? b.oneYearReturn - a.oneYearReturn : a.oneYearReturn - b.oneYearReturn))
       .slice(0, 30);
 
