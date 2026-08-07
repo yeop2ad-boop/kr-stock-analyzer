@@ -404,34 +404,44 @@ function closestPair(pairs, targetTimestamp) {
   return closest;
 }
 
-// 차트 데이터에서 (타임스탬프, 거래량) 쌍을 과거→최근 순으로 정렬해 추출 — chartClosePairs의 거래량 버전
-function chartVolumePairs(chartResult) {
+// 차트 데이터에서 (타임스탬프, 거래대금=종가×거래량) 쌍을 과거→최근 순으로 정렬해 추출 — chartClosePairs의 거래대금 버전
+function chartDollarVolumePairs(chartResult) {
   const result = chartResult && chartResult.chart && chartResult.chart.result && chartResult.chart.result[0];
   if (!result) return [];
   const timestamps = result.timestamp || [];
-  const volumes = (result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].volume) || [];
-  const pairs = timestamps.map((t, i) => ({ t, v: volumes[i] })).filter((p) => p.v !== null && p.v !== undefined);
+  const quote = result.indicators && result.indicators.quote && result.indicators.quote[0];
+  const closes = (quote && quote.close) || [];
+  const volumes = (quote && quote.volume) || [];
+  const pairs = timestamps
+    .map((t, i) => ({
+      t,
+      dv: closes[i] !== null && closes[i] !== undefined && volumes[i] !== null && volumes[i] !== undefined ? closes[i] * volumes[i] : null,
+    }))
+    .filter((p) => p.dv !== null);
   pairs.sort((a, b) => a.t - b.t);
   return pairs;
 }
 
-// asOfTimestamp 시점의 하루 거래량과 그 직전 1년간 평균 거래량 — 가격 매력도의 "거래량 가점" 항목용
-function volumeStatsEndingAt(volumePairs, asOfTimestamp) {
-  if (volumePairs.length === 0) return { dailyVolume: null, avgVolume1y: null };
-  const latest = closestPair(volumePairs, asOfTimestamp);
-  if (!latest) return { dailyVolume: null, avgVolume1y: null };
+// asOfTimestamp 기준 최근 5거래일 평균 거래대금과 그 직전 1년간 평균 거래대금 — 가격 매력도의 "총 거래대금" 항목용
+function dollarVolumeStatsEndingAt(dollarVolumePairs, asOfTimestamp) {
+  if (dollarVolumePairs.length === 0) return { recent5dAvg: null, avg1y: null };
+  const latest = closestPair(dollarVolumePairs, asOfTimestamp);
+  if (!latest) return { recent5dAvg: null, avg1y: null };
+  const latestIndex = dollarVolumePairs.findIndex((p) => p.t === latest.t);
+  const recentSlice = dollarVolumePairs.slice(Math.max(0, latestIndex - 4), latestIndex + 1); // 최근 5거래일(해당일 포함)
+  const recent5dAvg = recentSlice.length ? recentSlice.reduce((a, p) => a + p.dv, 0) / recentSlice.length : null;
   const target = latest.t - YEAR_SECONDS;
-  const windowVolumes = volumePairs.filter((p) => p.t <= latest.t && p.t >= target - HISTORY_TOLERANCE_SECONDS).map((p) => p.v);
-  const avgVolume1y = windowVolumes.length ? windowVolumes.reduce((a, b) => a + b, 0) / windowVolumes.length : null;
-  return { dailyVolume: latest.v, avgVolume1y };
+  const windowValues = dollarVolumePairs.filter((p) => p.t <= latest.t && p.t >= target - HISTORY_TOLERANCE_SECONDS).map((p) => p.dv);
+  const avg1y = windowValues.length ? windowValues.reduce((a, b) => a + b, 0) / windowValues.length : null;
+  return { recent5dAvg, avg1y };
 }
 
-// 차트 데이터 자체의 최신 시점 기준 거래량 통계(오늘 기준 지표용) — volumeStatsEndingAt의 "최신 시점" 버전
-function currentVolumeStats(chartResult) {
-  const volumePairs = chartVolumePairs(chartResult);
-  const latest = volumePairs[volumePairs.length - 1];
-  if (!latest) return { dailyVolume: null, avgVolume1y: null };
-  return volumeStatsEndingAt(volumePairs, latest.t);
+// 차트 데이터 자체의 최신 시점 기준 거래대금 통계(오늘 기준 지표용) — dollarVolumeStatsEndingAt의 "최신 시점" 버전
+function currentDollarVolumeStats(chartResult) {
+  const dollarVolumePairs = chartDollarVolumePairs(chartResult);
+  const latest = dollarVolumePairs[dollarVolumePairs.length - 1];
+  if (!latest) return { recent5dAvg: null, avg1y: null };
+  return dollarVolumeStatsEndingAt(dollarVolumePairs, latest.t);
 }
 
 const YEAR_SECONDS = 365.25 * 24 * 3600;
@@ -582,7 +592,7 @@ async function getCompanyMetrics(symbol) {
   const marketCap = meta.regularMarketPrice !== undefined && sharesOutstanding ? meta.regularMarketPrice * sharesOutstanding : null;
   const revenueSeries = resultArr ? await annualFundamentalSeries(resultArr, "annualTotalRevenue", meta.currency) : [];
 
-  const { dailyVolume, avgVolume1y } = currentVolumeStats(chartData);
+  const { recent5dAvg, avg1y } = currentDollarVolumeStats(chartData);
 
   return {
     symbol,
@@ -595,29 +605,29 @@ async function getCompanyMetrics(symbol) {
     oneYearReturn: get1yReturnFromChart(chartData),
     momentum3m: get3MonthReturn(chartData),
     revenueGrowth3y: avgRevenueGrowth3y(revenueSeries),
-    dailyVolume,
-    avgVolume1y,
+    recentDollarVolume: recent5dAvg,
+    avgDollarVolume1y: avg1y,
   };
 }
 
-// 거래량 가점 + 3년 매출 성장성 + 상승 모멘텀을 조합한 참고용 가격 매력도 점수(10점 만점)
+// 총 거래대금 + 3년 매출 성장성 + 상승 모멘텀을 조합한 참고용 가격 매력도 점수(10점 만점)
 function computeAttractivenessScore(metrics) {
-  const { dailyVolume, avgVolume1y, momentum3m, revenueGrowth3y } = metrics;
+  const { recentDollarVolume, avgDollarVolume1y, momentum3m, revenueGrowth3y } = metrics;
 
-  // 1) 거래량 가점 (0~2점) — 하루 거래량이 1년 평균 대비 +50% 이상이면 만점, -50% 이하면 0점 (선형)
-  // 거래량 데이터가 부족한 경우 중립값 1점 처리
-  let volumeScore = 1;
-  let volumeDiffPct = null;
-  if (dailyVolume !== undefined && dailyVolume !== null && avgVolume1y) {
-    volumeDiffPct = ((dailyVolume - avgVolume1y) / avgVolume1y) * 100;
-    volumeScore = clamp(((volumeDiffPct + 50) / 100) * 2, 0, 2);
+  // 1) 총 거래대금 (0~3점) — 최근 5거래일 평균 거래대금이 1년 평균 대비 2배 이상이면 만점, 0.5배면 0점 (선형)
+  // 거래대금 데이터가 부족한 경우 중립값 1.5점 처리
+  let volumeScore = 1.5;
+  let volumeRatio = null;
+  if (recentDollarVolume !== undefined && recentDollarVolume !== null && avgDollarVolume1y) {
+    volumeRatio = recentDollarVolume / avgDollarVolume1y;
+    volumeScore = clamp(2 * (volumeRatio - 0.5), 0, 3);
   }
 
-  // 2) 3년 평균 매출 성장성 (0~4점) — 40% 이상 4점, 0% 이하 0점 (10%p마다 1점, 선형)
+  // 2) 3년 평균 매출 성장성 (0~3점) — 30% 이상 3점, 0% 이하 0점 (10%p마다 1점, 선형)
   // 데이터가 부족해 성장률을 계산할 수 없는 경우(N/A)도 0점 처리
   let growthScore = 0;
   if (revenueGrowth3y !== undefined && revenueGrowth3y !== null) {
-    growthScore = clamp(revenueGrowth3y / 10, 0, 4);
+    growthScore = clamp(revenueGrowth3y / 10, 0, 3);
   }
 
   // 3) 상승 모멘텀 = 최근 3개월 누적 수익률 (0~4점) — 25% 이상이면 만점, 0% 이하면 0점 (선형)
@@ -628,7 +638,7 @@ function computeAttractivenessScore(metrics) {
   }
 
   const total = Math.round(clamp(volumeScore + growthScore + momentumScore, 0, 10) * 10) / 10;
-  return { total, volumeScore, volumeDiffPct, growthScore, revenueGrowth3y, momentumScore, momentum3m };
+  return { total, volumeScore, volumeRatio, growthScore, revenueGrowth3y, momentumScore, momentum3m };
 }
 
 // 통화쌍 환율(세션 내 캐시) — 재무제표가 시세와 다른 현지 통화로 내려오는 해외 상장 종목(TSM·SKHY 등) 환산용
@@ -715,7 +725,7 @@ async function getFullMetrics(symbol) {
   }
   const marketCap = meta.regularMarketPrice !== undefined && sharesOutstanding ? meta.regularMarketPrice * sharesOutstanding : null;
   const revenueSeries = await annualFundamentalSeries(resultArr, "annualTotalRevenue", meta.currency);
-  const { dailyVolume, avgVolume1y } = currentVolumeStats(chartData);
+  const { recent5dAvg, avg1y } = currentDollarVolumeStats(chartData);
 
   return {
     symbol,
@@ -729,8 +739,8 @@ async function getFullMetrics(symbol) {
     fiveDayExtremes: get5dExtremeMoves(chartData),
     momentum3m: get3MonthReturn(chartData),
     revenueGrowth3y: avgRevenueGrowth3y(revenueSeries),
-    dailyVolume,
-    avgVolume1y,
+    recentDollarVolume: recent5dAvg,
+    avgDollarVolume1y: avg1y,
   };
 }
 
@@ -1811,14 +1821,14 @@ async function renderNews(searchData) {
   `;
 }
 
-// ---------- 5. 가격 매력도 점수 (거래량 가점 + 매출 성장성 + 상승 모멘텀) ----------
+// ---------- 5. 가격 매력도 점수 (총 거래대금 + 매출 성장성 + 상승 모멘텀) ----------
 async function renderScore(selfMetricsPromise) {
   el("scoreSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
   const metrics = await selfMetricsPromise;
 
   const score = computeAttractivenessScore(metrics);
-  const { total, volumeScore, volumeDiffPct, growthScore, revenueGrowth3y, momentumScore, momentum3m } = score;
+  const { total, volumeScore, volumeRatio, growthScore, revenueGrowth3y, momentumScore, momentum3m } = score;
 
   el("scoreSection").innerHTML = `
     <div class="score-wrap">
@@ -1828,13 +1838,13 @@ async function renderScore(selfMetricsPromise) {
       </div>
       <div class="score-details">
         <ul>
-          <li>📊 거래량 가점(1년 평균 대비): <b>${volumeDiffPct !== null ? fmtPct(volumeDiffPct) : "N/A"}</b> (평균보다 많을수록 가점, +50% 이상 만점·-50% 이하 0점)</li>
-          <li>📈 매출 성장성(최근 3개년 평균): <b>${revenueGrowth3y !== null && revenueGrowth3y !== undefined ? fmtPct(revenueGrowth3y) : "N/A"}</b> (전년 대비 매출 성장률, 높을수록 가점, 40% 이상 만점·0% 이하 0점)</li>
+          <li>📊 총 거래대금(최근 5거래일 평균, 1년 평균 대비): <b>${volumeRatio !== null ? volumeRatio.toFixed(2) + "배" : "N/A"}</b> (2배 이상 만점, 1.5배 2점, 1배 1점, 0.5배 이하 0점)</li>
+          <li>📈 매출 성장성(최근 3개년 평균): <b>${revenueGrowth3y !== null && revenueGrowth3y !== undefined ? fmtPct(revenueGrowth3y) : "N/A"}</b> (전년 대비 매출 성장률, 높을수록 가점, 30% 이상 만점·0% 이하 0점)</li>
           <li>🚀 상승 모멘텀(최근 3개월 수익률): <b>${momentum3m !== null && momentum3m !== undefined ? fmtPct(momentum3m) : "N/A"}</b> (높을수록 가점, 25% 이상 만점·0% 이하 0점)</li>
-          <li>세부 점수 — 거래량 가점 ${volumeScore.toFixed(1)}/2, 매출 성장성 ${growthScore.toFixed(1)}/4, 상승 모멘텀 ${momentumScore.toFixed(1)}/4</li>
+          <li>세부 점수 — 총 거래대금 ${volumeScore.toFixed(1)}/3, 매출 성장성 ${growthScore.toFixed(1)}/3, 상승 모멘텀 ${momentumScore.toFixed(1)}/4</li>
         </ul>
         <p class="disclaimer">
-          ⚠️ 이 점수는 거래량, 매출 성장성, 상승 모멘텀을 조합한 <b>단순 참고용 정량 지표</b>이며,
+          ⚠️ 이 점수는 거래대금, 매출 성장성, 상승 모멘텀을 조합한 <b>단순 참고용 정량 지표</b>이며,
           투자 자문이나 매수/매도 추천이 아닙니다. 실제 투자 판단은 재무제표 전체와 다른 정보를 종합해 본인 책임 하에 내려야 합니다.
         </p>
       </div>
@@ -2107,8 +2117,8 @@ async function getHistoricalCompareMetrics(symbol, sp500PairsPromise) {
   if (!asOfPair) return null;
 
   const momentum3mAsOf = returnOverWindowEndingAt(pairs, asOfPair.t, THREE_MONTH_SECONDS, MOMENTUM_TOLERANCE_SECONDS);
-  const volumePairs = chartVolumePairs(chartData);
-  const { dailyVolume: dailyVolumeAsOf, avgVolume1y: avgVolume1yAsOf } = volumeStatsEndingAt(volumePairs, asOfPair.t);
+  const dollarVolumePairs = chartDollarVolumePairs(chartData);
+  const { recent5dAvg: recentDollarVolumeAsOf, avg1y: avgDollarVolume1yAsOf } = dollarVolumeStatsEndingAt(dollarVolumePairs, asOfPair.t);
 
   let sharesOutstanding = null;
   const resultArr = (fundData && fundData.timeseries && fundData.timeseries.result) || [];
@@ -2137,8 +2147,8 @@ async function getHistoricalCompareMetrics(symbol, sp500PairsPromise) {
     symbol,
     price: historicalPrice,
     momentum3m: momentum3mAsOf,
-    dailyVolume: dailyVolumeAsOf,
-    avgVolume1y: avgVolume1yAsOf,
+    recentDollarVolume: recentDollarVolumeAsOf,
+    avgDollarVolume1y: avgDollarVolume1yAsOf,
     revenueGrowth3y: revenueGrowth3yAsOf,
     oneYearReturn: oneYearReturnAsOf,
     netIncome: netIncomeAsOf,
