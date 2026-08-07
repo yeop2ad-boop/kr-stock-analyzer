@@ -110,7 +110,7 @@ body {
   align-items: center;
   justify-content: center;
 }
-.loading-splash-logo { width: min(280px, 70vw); height: auto; animation: splash-pulse 1.4s ease-in-out infinite; }
+.loading-splash-logo { width: min(340px, 78vw); height: auto; animation: splash-pulse 1.4s ease-in-out infinite; }
 @keyframes splash-pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.55; }
