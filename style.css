@@ -81,42 +81,22 @@ body {
   display: flex;
   flex-wrap: nowrap;
   gap: 4px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .cat-btn {
-  flex: 1 1 0;
-  min-width: 0;
+  flex: 0 0 auto;
   background: var(--bg);
   border: 1px solid var(--border);
   color: var(--muted);
   font-size: 11px;
   font-weight: 700;
-  padding: 9px 2px;
+  padding: 9px 12px;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
-.cat-btn.active { color: #fff; border-color: transparent; }
-.cat-popular.active { background: #d1495b; }
-.cat-nasdaq100.active { background: var(--accent); }
-.cat-sp500.active { background: #8b5cf6; }
-.cat-historical-up.active { background: var(--good); }
-.cat-historical-down.active { background: var(--bad); }
+.cat-btn.active { color: #fff; border-color: #fff; font-weight: 800; }
 .cat-historical-up .cat-arrow { color: var(--good); }
 .cat-historical-down .cat-arrow { color: var(--bad); }
-.cat-surge.active { background: var(--good); }
-.cat-plunge.active { background: var(--bad); }
-.cat-lowrisk.active { background: #2f9e44; }
-.cat-undervalued.active { background: #e8590c; }
-.cat-marketcap.active { background: #1971c2; }
-
-.fh-cats-secondary {
-  max-width: 860px;
-  margin: 8px auto 0;
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 4px;
-}
-.fh-cats-secondary .cat-btn { font-size: 11px; padding: 9px 2px; }
 
 .loading-splash {
   position: fixed;

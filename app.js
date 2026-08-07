@@ -568,7 +568,10 @@ async function getMarketReturns() {
 async function getCompanyMetrics(symbol) {
   const [chartData, fundData] = await Promise.all([
     yahooChart(symbol),
-    yahooFundamentals(symbol, "annualTotalRevenue,annualBasicEPS,annualNetIncome,annualShareIssued").catch(() => null),
+    yahooFundamentals(
+      symbol,
+      "annualTotalRevenue,annualBasicEPS,annualNetIncome,annualShareIssued,quarterlyTotalRevenue"
+    ).catch(() => null),
   ]);
 
   const result = chartData && chartData.chart && chartData.chart.result && chartData.chart.result[0];
@@ -590,7 +593,7 @@ async function getCompanyMetrics(symbol) {
     }
   }
   const marketCap = meta.regularMarketPrice !== undefined && sharesOutstanding ? meta.regularMarketPrice * sharesOutstanding : null;
-  const revenueSeries = resultArr ? await annualFundamentalSeries(resultArr, "annualTotalRevenue", meta.currency) : [];
+  const revenueQuarterlySeries = resultArr ? await fundamentalSeries(resultArr, "quarterlyTotalRevenue", meta.currency) : [];
 
   const { recent5dAvg, avg1y } = currentDollarVolumeStats(chartData);
 
@@ -604,15 +607,15 @@ async function getCompanyMetrics(symbol) {
     currency: meta.currency,
     oneYearReturn: get1yReturnFromChart(chartData),
     momentum3m: get3MonthReturn(chartData),
-    revenueGrowth3y: avgRevenueGrowth3y(revenueSeries),
+    revenueGrowthYoY: latestQuarterRevenueYoY(revenueQuarterlySeries),
     recentDollarVolume: recent5dAvg,
     avgDollarVolume1y: avg1y,
   };
 }
 
-// 총 거래대금 + 3년 매출 성장성 + 상승 모멘텀을 조합한 참고용 가격 매력도 점수(10점 만점)
+// 총 거래대금 + 최근 분기 매출 YoY 성장성 + 상승 모멘텀을 조합한 참고용 가격 매력도 점수(10점 만점)
 function computeAttractivenessScore(metrics) {
-  const { recentDollarVolume, avgDollarVolume1y, momentum3m, revenueGrowth3y } = metrics;
+  const { recentDollarVolume, avgDollarVolume1y, momentum3m, revenueGrowthYoY } = metrics;
 
   // 1) 총 거래대금 (0~3점) — 최근 5거래일 평균 거래대금이 1년 평균 대비 2배 이상이면 만점, 0.5배면 0점 (선형)
   // 거래대금 데이터가 부족한 경우 중립값 1.5점 처리
@@ -623,11 +626,11 @@ function computeAttractivenessScore(metrics) {
     volumeScore = clamp(2 * (volumeRatio - 0.5), 0, 3);
   }
 
-  // 2) 3년 평균 매출 성장성 (0~3점) — 30% 이상 3점, 0% 이하 0점 (10%p마다 1점, 선형)
+  // 2) 가장 최근 분기 매출의 전년 동기 대비(YoY) 성장률 (0~3점) — 30% 이상 3점, 0% 이하 0점 (10%p마다 1점, 선형)
   // 데이터가 부족해 성장률을 계산할 수 없는 경우(N/A)도 0점 처리
   let growthScore = 0;
-  if (revenueGrowth3y !== undefined && revenueGrowth3y !== null) {
-    growthScore = clamp(revenueGrowth3y / 10, 0, 3);
+  if (revenueGrowthYoY !== undefined && revenueGrowthYoY !== null) {
+    growthScore = clamp(revenueGrowthYoY / 10, 0, 3);
   }
 
   // 3) 상승 모멘텀 = 최근 3개월 누적 수익률 (0~4점) — 25% 이상이면 만점, 0% 이하면 0점 (선형)
@@ -638,7 +641,7 @@ function computeAttractivenessScore(metrics) {
   }
 
   const total = Math.round(clamp(volumeScore + growthScore + momentumScore, 0, 10) * 10) / 10;
-  return { total, volumeScore, volumeRatio, growthScore, revenueGrowth3y, momentumScore, momentum3m };
+  return { total, volumeScore, volumeRatio, growthScore, revenueGrowthYoY, momentumScore, momentum3m };
 }
 
 // 통화쌍 환율(세션 내 캐시) — 재무제표가 시세와 다른 현지 통화로 내려오는 해외 상장 종목(TSM·SKHY 등) 환산용
@@ -670,8 +673,8 @@ async function latestFundamentalValue(block, key, quoteCurrency, { convert = tru
   return rate !== null ? raw * rate : null;
 }
 
-// fundamentals-timeseries 응답에서 특정 항목의 연도별 시계열(과거→최근 정렬, 환율 자동 환산)을 추출 — 매출 성장률처럼 여러 해 값이 필요한 계산용
-async function annualFundamentalSeries(resultArr, key, quoteCurrency) {
+// fundamentals-timeseries 응답에서 특정 항목의 시계열(과거→최근 정렬, 환율 자동 환산)을 추출 — annual/quarterly 등 여러 기간 값이 필요한 계산용
+async function fundamentalSeries(resultArr, key, quoteCurrency) {
   const items = [];
   for (const block of resultArr || []) {
     for (const it of block[key] || []) {
@@ -687,24 +690,21 @@ async function annualFundamentalSeries(resultArr, key, quoteCurrency) {
   return items.map((it) => ({ date: it.asOfDate, value: it.reportedValue.raw * fxRate }));
 }
 
-// 최근 3개 연도의 전년 대비 매출 성장률 평균(%) — 최근 4개년 매출로 성장률 3개를 산출해 평균
-function avgRevenueGrowth3y(revenueSeries) {
-  const recent = (revenueSeries || []).slice(-4);
-  const growthRates = [];
-  for (let i = 1; i < recent.length; i++) {
-    const prev = recent[i - 1].value;
-    const cur = recent[i].value;
-    if (prev) growthRates.push(((cur - prev) / Math.abs(prev)) * 100);
-  }
-  if (growthRates.length === 0) return null;
-  return growthRates.reduce((a, b) => a + b, 0) / growthRates.length;
+// 가장 최근 분기 매출의 전년 동기 대비(YoY) 성장률(%) — 분기 매출 시계열에서 최신 분기 vs 4분기 전(작년 같은 분기) 비교
+function latestQuarterRevenueYoY(revenueQuarterlySeries) {
+  const series = revenueQuarterlySeries || [];
+  if (series.length < 5) return null;
+  const latest = series[series.length - 1].value;
+  const yearAgo = series[series.length - 5].value;
+  if (!yearAgo) return null;
+  return ((latest - yearAgo) / Math.abs(yearAgo)) * 100;
 }
 
 // 가격 매력도 + 투자 위험도 점수 계산에 필요한 모든 지표를 한 번(차트 1회 + 재무제표 1회)에 조회 (TOP30 랭킹용)
 async function getFullMetrics(symbol) {
   const [chartData, fundData] = await Promise.all([
     yahooChart(symbol),
-    yahooFundamentals(symbol, "annualTotalRevenue,annualBasicEPS,annualNetIncome,annualShareIssued"),
+    yahooFundamentals(symbol, "annualTotalRevenue,annualBasicEPS,annualNetIncome,annualShareIssued,quarterlyTotalRevenue"),
   ]);
 
   const result = chartData && chartData.chart && chartData.chart.result && chartData.chart.result[0];
@@ -724,7 +724,7 @@ async function getFullMetrics(symbol) {
       sharesOutstanding = await latestFundamentalValue(block, "annualShareIssued", meta.currency, { convert: false });
   }
   const marketCap = meta.regularMarketPrice !== undefined && sharesOutstanding ? meta.regularMarketPrice * sharesOutstanding : null;
-  const revenueSeries = await annualFundamentalSeries(resultArr, "annualTotalRevenue", meta.currency);
+  const revenueQuarterlySeries = await fundamentalSeries(resultArr, "quarterlyTotalRevenue", meta.currency);
   const { recent5dAvg, avg1y } = currentDollarVolumeStats(chartData);
 
   return {
@@ -738,7 +738,7 @@ async function getFullMetrics(symbol) {
     oneYearReturn: get1yReturnFromChart(chartData),
     fiveDayExtremes: get5dExtremeMoves(chartData),
     momentum3m: get3MonthReturn(chartData),
-    revenueGrowth3y: avgRevenueGrowth3y(revenueSeries),
+    revenueGrowthYoY: latestQuarterRevenueYoY(revenueQuarterlySeries),
     recentDollarVolume: recent5dAvg,
     avgDollarVolume1y: avg1y,
   };
@@ -1828,7 +1828,7 @@ async function renderScore(selfMetricsPromise) {
   const metrics = await selfMetricsPromise;
 
   const score = computeAttractivenessScore(metrics);
-  const { total, volumeScore, volumeRatio, growthScore, revenueGrowth3y, momentumScore, momentum3m } = score;
+  const { total, volumeScore, volumeRatio, growthScore, revenueGrowthYoY, momentumScore, momentum3m } = score;
 
   el("scoreSection").innerHTML = `
     <div class="score-wrap">
@@ -1839,7 +1839,7 @@ async function renderScore(selfMetricsPromise) {
       <div class="score-details">
         <ul>
           <li>📊 총 거래대금(최근 5거래일 평균, 1년 평균 대비): <b>${volumeRatio !== null ? volumeRatio.toFixed(2) + "배" : "N/A"}</b> (2배 이상 만점, 1.5배 2점, 1배 1점, 0.5배 이하 0점)</li>
-          <li>📈 매출 성장성(최근 3개년 평균): <b>${revenueGrowth3y !== null && revenueGrowth3y !== undefined ? fmtPct(revenueGrowth3y) : "N/A"}</b> (전년 대비 매출 성장률, 높을수록 가점, 30% 이상 만점·0% 이하 0점)</li>
+          <li>📈 매출 성장성(최근 분기 YoY): <b>${revenueGrowthYoY !== null && revenueGrowthYoY !== undefined ? fmtPct(revenueGrowthYoY) : "N/A"}</b> (가장 최근 분기 매출의 전년 동기 대비 성장률, 높을수록 가점, 30% 이상 만점·0% 이하 0점)</li>
           <li>🚀 상승 모멘텀(최근 3개월 수익률): <b>${momentum3m !== null && momentum3m !== undefined ? fmtPct(momentum3m) : "N/A"}</b> (높을수록 가점, 25% 이상 만점·0% 이하 0점)</li>
           <li>세부 점수 — 총 거래대금 ${volumeScore.toFixed(1)}/3, 매출 성장성 ${growthScore.toFixed(1)}/3, 상승 모멘텀 ${momentumScore.toFixed(1)}/4</li>
         </ul>
@@ -2106,7 +2106,7 @@ async function getHistoricalCompareMetrics(symbol, sp500PairsPromise) {
 
   const [chartData, fundData] = await Promise.all([
     yahooChart(symbol, "2y"),
-    yahooFundamentals(symbol, "annualTotalRevenue,annualNetIncome,annualShareIssued").catch(() => null),
+    yahooFundamentals(symbol, "annualTotalRevenue,annualNetIncome,annualShareIssued,quarterlyTotalRevenue").catch(() => null),
   ]);
 
   const result = chartData && chartData.chart && chartData.chart.result && chartData.chart.result[0];
@@ -2126,13 +2126,15 @@ async function getHistoricalCompareMetrics(symbol, sp500PairsPromise) {
     if (block.annualShareIssued)
       sharesOutstanding = await latestFundamentalValue(block, "annualShareIssued", meta.currency, { convert: false });
   }
-  const revenueSeries = await annualFundamentalSeries(resultArr, "annualTotalRevenue", meta.currency);
-  const netIncomeSeries = await annualFundamentalSeries(resultArr, "annualNetIncome", meta.currency);
+  const revenueSeries = await fundamentalSeries(resultArr, "annualTotalRevenue", meta.currency);
+  const revenueQuarterlySeries = await fundamentalSeries(resultArr, "quarterlyTotalRevenue", meta.currency);
+  const netIncomeSeries = await fundamentalSeries(resultArr, "annualNetIncome", meta.currency);
 
   const asOfDate = new Date(asOfPair.t * 1000);
   const revenueSeriesAsOf = revenueSeries.filter((it) => new Date(it.date) <= asOfDate);
+  const revenueQuarterlySeriesAsOf = revenueQuarterlySeries.filter((it) => new Date(it.date) <= asOfDate);
   const netIncomeSeriesAsOf = netIncomeSeries.filter((it) => new Date(it.date) <= asOfDate);
-  const revenueGrowth3yAsOf = avgRevenueGrowth3y(revenueSeriesAsOf);
+  const revenueGrowthYoYAsOf = latestQuarterRevenueYoY(revenueQuarterlySeriesAsOf);
   const revenueAsOf = revenueSeriesAsOf.length ? revenueSeriesAsOf[revenueSeriesAsOf.length - 1].value : null;
   const netIncomeAsOf = netIncomeSeriesAsOf.length ? netIncomeSeriesAsOf[netIncomeSeriesAsOf.length - 1].value : null;
 
@@ -2149,7 +2151,7 @@ async function getHistoricalCompareMetrics(symbol, sp500PairsPromise) {
     momentum3m: momentum3mAsOf,
     recentDollarVolume: recentDollarVolumeAsOf,
     avgDollarVolume1y: avgDollarVolume1yAsOf,
-    revenueGrowth3y: revenueGrowth3yAsOf,
+    revenueGrowthYoY: revenueGrowthYoYAsOf,
     oneYearReturn: oneYearReturnAsOf,
     netIncome: netIncomeAsOf,
     revenue: revenueAsOf,
@@ -2169,8 +2171,8 @@ async function getHistoricalCompareMetrics(symbol, sp500PairsPromise) {
   };
 }
 
-// 오늘 기준 S&P500 시가총액 상위 30개를, 과거분석 기준 시점(1년 전 + 이번 달 1일 이후 첫 거래일) 스냅샷과 비교
-// direction: "up" — S&P100 중 1년 상승률 상위 30개 / "down" — S&P100 중 1년 하락률 상위(가장 많이 내린) 30개
+// S&P500 전체 종목 중 1년 등락률 TOP30을, 과거분석 기준 시점(1년 전 + 이번 달 1일 이후 첫 거래일) 스냅샷과 비교
+// direction: "up" — S&P500 중 1년 상승률 상위 30개 / "down" — S&P500 중 1년 하락률 상위(가장 많이 내린) 30개
 async function runHistoricalAnalysis(direction) {
   const isUp = direction === "up";
   const btn = isUp ? catButtons.historicalUp : catButtons.historicalDown;
@@ -2180,35 +2182,35 @@ async function runHistoricalAnalysis(direction) {
   rankedResults.innerHTML = "";
   btn.disabled = true;
 
+  const refDate = getHistoricalReferenceDate();
+  const introYearMonthStr = `${String(refDate.getFullYear()).slice(-2)}.${refDate.getMonth() + 1}월`;
+  const introMsg = `📢 과거 1년전(${introYearMonthStr}) 데이터를 분석하여 ${isUp ? "상승량" : "하락량"} TOP30을 비교합니다. 또한 당시 점수를 반영합니다.`;
+  const setStatus = (msg) => {
+    rankedStatus.innerHTML = `${introMsg}<br><span style="font-size:12px;">${msg}</span>`;
+  };
+
   try {
-    rankedStatus.textContent = "S&P500 종목 목록을 불러오는 중...";
+    setStatus("S&P500 종목 목록을 불러오는 중...");
     const allTickers = await getSP500Tickers();
 
-    rankedStatus.textContent = `0/${allTickers.length} 종목 분석 중(시가총액 상위 100 및 1년 ${rankLabel} 상위 30 선정)...`;
+    setStatus(`0/${allTickers.length} 종목 분석 중(S&P500 전체 중 1년 ${rankLabel} 상위 30 선정)...`);
     const allMetricsList = await mapWithConcurrency(allTickers, 5, getFullMetrics, (completed, total) => {
-      rankedStatus.textContent = `${completed}/${total} 종목 분석 중(시가총액 상위 100 및 1년 ${rankLabel} 상위 30 선정)...`;
+      setStatus(`${completed}/${total} 종목 분석 중(S&P500 전체 중 1년 ${rankLabel} 상위 30 선정)...`);
     });
 
-    // getSP500Tickers()는 위키백과 표 등장 순(사실상 티커 알파벳순)이라 시가총액 순이 아니므로,
-    // 전체 종목을 분석한 뒤 marketCap 기준으로 정렬해 실제 시가총액 상위 100개(S&P100 근사)를 선정
-    const metricsList = allMetricsList
-      .filter((m) => m && m.marketCap)
-      .sort((a, b) => b.marketCap - a.marketCap)
-      .slice(0, 100);
-
-    const top30 = metricsList
-      .filter((m) => m.oneYearReturn !== null && m.oneYearReturn !== undefined)
+    const top30 = allMetricsList
+      .filter((m) => m && m.oneYearReturn !== null && m.oneYearReturn !== undefined)
       .sort((a, b) => (isUp ? b.oneYearReturn - a.oneYearReturn : a.oneYearReturn - b.oneYearReturn))
       .slice(0, 30);
 
     const sp500PairsPromise = yahooChart("^GSPC", "2y").then(chartClosePairs);
 
     let done = 0;
-    rankedStatus.textContent = `0/${top30.length} 종목의 기준 시점 데이터 조회 중...`;
+    setStatus(`0/${top30.length} 종목의 기준 시점 데이터 조회 중...`);
     const historicalList = await mapWithConcurrency(top30, 3, async (m) => {
       const h = await getHistoricalCompareMetrics(m.symbol, sp500PairsPromise);
       done++;
-      rankedStatus.textContent = `${done}/${top30.length} 종목의 기준 시점 데이터 조회 중...`;
+      setStatus(`${done}/${top30.length} 종목의 기준 시점 데이터 조회 중...`);
       return h;
     });
 
@@ -2239,7 +2241,7 @@ async function runHistoricalAnalysis(direction) {
     const successCount = rows.length;
     const failCount = top30.length - successCount;
     const refDateStr = rows[0] ? rows[0].asOfDate.toLocaleDateString("ko-KR") : "";
-    rankedStatus.textContent = `완료 (과거분석-${rankLabel}, 기준일 ${refDateStr}) — S&P100 중 ${rankLabel} 상위 30개 중 ${successCount}개 비교 성공${failCount ? `, ${failCount}개는 조회 실패로 제외` : ""}`;
+    setStatus(`완료 (기준일 ${refDateStr}) — S&P500 중 ${rankLabel} 상위 30개 중 ${successCount}개 비교 성공${failCount ? `, ${failCount}개는 조회 실패로 제외` : ""}`);
 
     if (rows.length === 0) {
       rankedResults.innerHTML = `<p class="muted">데이터를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
@@ -2268,13 +2270,13 @@ async function runHistoricalAnalysis(direction) {
         <tbody>${tableRows}</tbody>
       </table>
       <p class="disclaimer">
-        <span style="filter:grayscale(1);">📢</span> S&P100 중 <b>1년 ${rankLabel}이 ${isUp ? "높은" : "큰(많이 내린)"} 순</b> 상위 30개 종목입니다. ${refDateStr}(기준월 첫 거래일) 대비 현재까지의 시가총액·주가 변화와
+        <span style="filter:grayscale(1);">📢</span> S&P500 중 <b>1년 ${rankLabel}이 ${isUp ? "높은" : "큰(많이 내린)"} 순</b> 상위 30개 종목입니다. ${refDateStr}(기준월 첫 거래일) 대비 현재까지의 시가총액·주가 변화와
         ${refDateStr} 당시 기준으로 근사 계산한 가격 매력도·투자 위험도 점수를 함께 보여주는 참고용 정보입니다. 당시 점수는 그 시점까지의 차트·재무 데이터로
         근사 계산한 값이라 실제와 다소 차이가 있을 수 있으며, 투자 자문이나 매수/매도 추천이 아닙니다. 기준 시점은 매달 1일이 지나면 한 달씩 자동으로 이동합니다.
       </p>
     `;
   } catch (err) {
-    rankedStatus.textContent = `❌ ${err.message || "과거분석 데이터를 가져오지 못했습니다."}`;
+    setStatus(`❌ ${err.message || "과거분석 데이터를 가져오지 못했습니다."}`);
   } finally {
     btn.disabled = false;
   }
