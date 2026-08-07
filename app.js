@@ -715,6 +715,17 @@ function latestQuarterRevenueYoY(revenueQuarterlySeries) {
   return ((latest - yearAgo) / Math.abs(yearAgo)) * 100;
 }
 
+// 최근 연간 매출의 전년 대비(YoY) 성장률(%) — Yahoo 분기 시계열이 최근 5개 분기만 제공해 과거분석 기준 시점에는
+// 분기 YoY를 계산할 만큼 데이터가 남아있지 않을 때가 많아, 연간 데이터로 대체 계산하는 과거분석 전용 폴백
+function latestAnnualRevenueYoY(revenueAnnualSeries) {
+  const series = revenueAnnualSeries || [];
+  if (series.length < 2) return null;
+  const latest = series[series.length - 1].value;
+  const prev = series[series.length - 2].value;
+  if (!prev) return null;
+  return ((latest - prev) / Math.abs(prev)) * 100;
+}
+
 // 상승압력도 + 투자 위험도 점수 계산에 필요한 모든 지표를 한 번(차트 1회 + 재무제표 1회)에 조회 (TOP30 랭킹용)
 async function getFullMetrics(symbol) {
   const [chartData, fundData] = await Promise.all([
@@ -2157,7 +2168,7 @@ async function getHistoricalCompareMetrics(symbol, sp500PairsPromise) {
   const revenueSeriesAsOf = revenueSeries.filter((it) => new Date(it.date) <= asOfDate);
   const revenueQuarterlySeriesAsOf = revenueQuarterlySeries.filter((it) => new Date(it.date) <= asOfDate);
   const netIncomeSeriesAsOf = netIncomeSeries.filter((it) => new Date(it.date) <= asOfDate);
-  const revenueGrowthYoYAsOf = latestQuarterRevenueYoY(revenueQuarterlySeriesAsOf);
+  const revenueGrowthYoYAsOf = latestQuarterRevenueYoY(revenueQuarterlySeriesAsOf) ?? latestAnnualRevenueYoY(revenueSeriesAsOf);
   const revenueAsOf = revenueSeriesAsOf.length ? revenueSeriesAsOf[revenueSeriesAsOf.length - 1].value : null;
   const netIncomeAsOf = netIncomeSeriesAsOf.length ? netIncomeSeriesAsOf[netIncomeSeriesAsOf.length - 1].value : null;
 
