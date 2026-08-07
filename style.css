@@ -83,7 +83,10 @@ body {
   gap: 4px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+.fh-cats::-webkit-scrollbar { display: none; }
 .cat-btn {
   flex: 0 0 auto;
   background: var(--bg);
