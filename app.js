@@ -921,40 +921,6 @@ function getSP500Tickers() {
   return sp500TickersPromise;
 }
 
-// ---------- 나스닥-100 종목 목록 (위키백과, 프록시 불필요) ----------
-let nasdaq100TickersPromise = null;
-function getNasdaq100Tickers() {
-  if (!nasdaq100TickersPromise) {
-    nasdaq100TickersPromise = (async () => {
-      const title = "List of NASDAQ-100 companies";
-      const url =
-        "https://en.wikipedia.org/w/api.php?action=parse&page=" +
-        encodeURIComponent(title) +
-        "&prop=wikitext&format=json&origin=*";
-      const res = await fetch(url);
-      const data = await res.json();
-      const text = data && data.parse && data.parse.wikitext && data.parse.wikitext["*"];
-      if (!text) throw new Error("나스닥-100 종목 목록을 가져오지 못했습니다.");
-
-      const startIdx = text.indexOf("component stocks");
-      const tableText = startIdx !== -1 ? text.slice(startIdx) : text;
-      const symbols = [];
-      // 이 표는 심볼이 템플릿이 아닌 일반 텍스트("| ABNB || [[Airbnb]] || ...")로 되어 있음
-      const re = /\|-\n\| ([A-Z]{1,6}(?:\.[A-Z])?) \|\|/g;
-      let m;
-      while ((m = re.exec(tableText))) {
-        symbols.push(m[1]);
-      }
-      if (symbols.length === 0) throw new Error("나스닥-100 종목 목록을 파싱하지 못했습니다.");
-      return [...new Set(symbols)];
-    })().catch((e) => {
-      nasdaq100TickersPromise = null;
-      throw e;
-    });
-  }
-  return nasdaq100TickersPromise;
-}
-
 // ---------- 나스닥 종목군 근사 목록 ----------
 // 시가총액 순 정렬 스크리너는 로그인 인증(crumb)이 필요해 무료로 접근할 수 없어서,
 // 여러 활발한 종목 스크리너를 나스닥 거래소로 필터링해 합친 뒤 시가총액 내림차순으로 정렬한 근사치를 사용
@@ -1125,13 +1091,13 @@ window.addEventListener("resize", syncHeaderHeight);
 new ResizeObserver(syncHeaderHeight).observe(fixedHeader);
 syncHeaderHeight();
 
-// ---------- 카테고리 탭(인기종목/나스닥100/테크100/S&P500/과거분석) — 서브뷰 없이 클릭 즉시 해당 순위를 불러옴 ----------
+// ---------- 카테고리 탭(인기종목/나스닥100/S&P500/과거분석-상승/과거분석-하락) — 서브뷰 없이 클릭 즉시 해당 순위를 불러옴 ----------
 const catButtons = {
   popular: el("catPopularBtn"),
   nasdaq100: el("catNasdaq100Btn"),
-  tech100: el("catTech100Btn"),
   sp500: el("catSp500Btn"),
-  historical: el("catHistoricalBtn"),
+  historicalUp: el("catHistoricalUpBtn"),
+  historicalDown: el("catHistoricalDownBtn"),
   surge: el("catSurgeBtn"),
   plunge: el("catPlungeBtn"),
   lowRisk: el("catLowRiskBtn"),
@@ -1164,20 +1130,20 @@ catButtons.nasdaq100.addEventListener("click", () => {
   prepareMainView("ranked");
   runNasdaq100Universe();
 });
-catButtons.tech100.addEventListener("click", () => {
-  setActiveCategory("tech100");
-  prepareMainView("ranked");
-  runTech100();
-});
 catButtons.sp500.addEventListener("click", () => {
   setActiveCategory("sp500");
   prepareMainView("ranked");
   runSP500();
 });
-catButtons.historical.addEventListener("click", () => {
-  setActiveCategory("historical");
+catButtons.historicalUp.addEventListener("click", () => {
+  setActiveCategory("historicalUp");
   prepareMainView("ranked");
-  runHistoricalAnalysis();
+  runHistoricalAnalysis("up");
+});
+catButtons.historicalDown.addEventListener("click", () => {
+  setActiveCategory("historicalDown");
+  prepareMainView("ranked");
+  runHistoricalAnalysis("down");
 });
 catButtons.surge.addEventListener("click", () => {
   setActiveCategory("surge");
@@ -2051,23 +2017,6 @@ async function runNasdaq100Universe() {
   });
 }
 
-// 테크100(나스닥-100 지수 공식 구성종목) 안에서 TOP20
-async function runTech100() {
-  rankedStatus.style.display = "block";
-  rankedStatus.textContent = "테크100(나스닥-100) 종목 목록을 불러오는 중...";
-  const tickers = await getNasdaq100Tickers().catch((e) => {
-    rankedStatus.textContent = `❌ ${e.message || "테크100 목록을 가져오지 못했습니다."}`;
-    return null;
-  });
-  if (!tickers) return;
-  await renderRankedTop10(tickers, "테크100(나스닥-100)", {
-    statusEl: rankedStatus,
-    resultsEl: rankedResults,
-    buttons: [catButtons.tech100],
-    topN: 20,
-  });
-}
-
 // S&P500 전체 종목 중 TOP50
 async function runSP500() {
   rankedStatus.style.display = "block";
@@ -2211,39 +2160,40 @@ async function getHistoricalCompareMetrics(symbol, sp500PairsPromise) {
 }
 
 // 오늘 기준 S&P500 시가총액 상위 30개를, 과거분석 기준 시점(1년 전 + 이번 달 1일 이후 첫 거래일) 스냅샷과 비교
-async function runHistoricalAnalysis() {
+// direction: "up" — S&P100 중 1년 상승률 상위 30개 / "down" — S&P100 중 1년 하락률 상위(가장 많이 내린) 30개
+async function runHistoricalAnalysis(direction) {
+  const isUp = direction === "up";
+  const btn = isUp ? catButtons.historicalUp : catButtons.historicalDown;
+  const rankLabel = isUp ? "상승률" : "하락률";
+
   rankedStatus.style.display = "block";
   rankedResults.innerHTML = "";
-  catButtons.historical.disabled = true;
+  btn.disabled = true;
 
   try {
-    rankedStatus.textContent = "S&P500 종목 목록을 불러오는 중...";
-    const allTickers = await getSP500Tickers();
+    rankedStatus.textContent = "S&P100 종목 목록을 불러오는 중...";
+    const universe = (await getSP500Tickers()).slice(0, 100);
 
-    rankedStatus.textContent = `0/${allTickers.length} 종목 분석 중(오늘 기준 시가총액 상위 30 선정)...`;
-    const metricsList = await mapWithConcurrency(allTickers, 5, getFullMetrics, (completed, total) => {
-      rankedStatus.textContent = `${completed}/${total} 종목 분석 중(오늘 기준 시가총액 상위 30 선정)...`;
+    rankedStatus.textContent = `0/${universe.length} 종목 분석 중(1년 ${rankLabel} 상위 30 선정)...`;
+    const metricsList = await mapWithConcurrency(universe, 5, getFullMetrics, (completed, total) => {
+      rankedStatus.textContent = `${completed}/${total} 종목 분석 중(1년 ${rankLabel} 상위 30 선정)...`;
     });
 
     const top30 = metricsList
-      .filter((m) => m && m.marketCap)
-      .sort((a, b) => b.marketCap - a.marketCap)
+      .filter((m) => m && m.oneYearReturn !== null && m.oneYearReturn !== undefined)
+      .sort((a, b) => (isUp ? b.oneYearReturn - a.oneYearReturn : a.oneYearReturn - b.oneYearReturn))
       .slice(0, 30);
 
     const sp500PairsPromise = yahooChart("^GSPC", "2y").then(chartClosePairs);
 
     let done = 0;
     rankedStatus.textContent = `0/${top30.length} 종목의 기준 시점 데이터 조회 중...`;
-    const historicalList = await mapWithConcurrency(
-      top30,
-      3,
-      async (m) => {
-        const h = await getHistoricalCompareMetrics(m.symbol, sp500PairsPromise);
-        done++;
-        rankedStatus.textContent = `${done}/${top30.length} 종목의 기준 시점 데이터 조회 중...`;
-        return h;
-      }
-    );
+    const historicalList = await mapWithConcurrency(top30, 3, async (m) => {
+      const h = await getHistoricalCompareMetrics(m.symbol, sp500PairsPromise);
+      done++;
+      rankedStatus.textContent = `${done}/${top30.length} 종목의 기준 시점 데이터 조회 중...`;
+      return h;
+    });
 
     const rows = top30
       .map((m, i) => {
@@ -2263,12 +2213,16 @@ async function runHistoricalAnalysis() {
         };
       })
       .filter(Boolean)
-      .sort((a, b) => (b.priceChangePct ?? -Infinity) - (a.priceChangePct ?? -Infinity));
+      .sort((a, b) =>
+        isUp
+          ? (b.priceChangePct ?? -Infinity) - (a.priceChangePct ?? -Infinity)
+          : (a.priceChangePct ?? Infinity) - (b.priceChangePct ?? Infinity)
+      );
 
     const successCount = rows.length;
     const failCount = top30.length - successCount;
     const refDateStr = rows[0] ? rows[0].asOfDate.toLocaleDateString("ko-KR") : "";
-    rankedStatus.textContent = `완료 (과거분석, 기준일 ${refDateStr}) — 시가총액 상위 30개 중 ${successCount}개 비교 성공${failCount ? `, ${failCount}개는 조회 실패로 제외` : ""}`;
+    rankedStatus.textContent = `완료 (과거분석-${rankLabel}, 기준일 ${refDateStr}) — S&P100 중 ${rankLabel} 상위 30개 중 ${successCount}개 비교 성공${failCount ? `, ${failCount}개는 조회 실패로 제외` : ""}`;
 
     if (rows.length === 0) {
       rankedResults.innerHTML = `<p class="muted">데이터를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
@@ -2292,12 +2246,12 @@ async function runHistoricalAnalysis() {
     rankedResults.innerHTML = `
       <table class="top30-table">
         <thead>
-          <tr><th>상승률<br>순위</th><th>티커</th><th>시가총액<br>(증감률)</th><th>현재가<br>(등락률)</th><th>당시<br>매력점수</th><th>당시<br>투자위험</th></tr>
+          <tr><th>${rankLabel}<br>순위</th><th>티커</th><th>시가총액<br>(증감률)</th><th>현재가<br>(등락률)</th><th>당시<br>매력점수</th><th>당시<br>투자위험</th></tr>
         </thead>
         <tbody>${tableRows}</tbody>
       </table>
       <p class="disclaimer">
-        <span style="filter:grayscale(1);">📢</span> 오늘 기준 시가총액 상위 30개 종목을 뽑아 <b>주가 상승률이 높은 순</b>으로 정렬했습니다. ${refDateStr}(기준월 첫 거래일) 대비 현재까지의 시가총액·주가 변화와
+        <span style="filter:grayscale(1);">📢</span> S&P100 중 <b>1년 ${rankLabel}이 ${isUp ? "높은" : "큰(많이 내린)"} 순</b> 상위 30개 종목입니다. ${refDateStr}(기준월 첫 거래일) 대비 현재까지의 시가총액·주가 변화와
         ${refDateStr} 당시 기준으로 근사 계산한 가격 매력도·투자 위험도 점수를 함께 보여주는 참고용 정보입니다. 당시 점수는 그 시점까지의 차트·재무 데이터로
         근사 계산한 값이라 실제와 다소 차이가 있을 수 있으며, 투자 자문이나 매수/매도 추천이 아닙니다. 기준 시점은 매달 1일이 지나면 한 달씩 자동으로 이동합니다.
       </p>
@@ -2305,7 +2259,7 @@ async function runHistoricalAnalysis() {
   } catch (err) {
     rankedStatus.textContent = `❌ ${err.message || "과거분석 데이터를 가져오지 못했습니다."}`;
   } finally {
-    catButtons.historical.disabled = false;
+    btn.disabled = false;
   }
 }
 

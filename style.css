@@ -98,9 +98,11 @@ body {
 .cat-btn.active { color: #fff; border-color: transparent; }
 .cat-popular.active { background: #d1495b; }
 .cat-nasdaq100.active { background: var(--accent); }
-.cat-tech100.active { background: #16a3a3; }
 .cat-sp500.active { background: #8b5cf6; }
-.cat-historical.active { background: #b8860b; }
+.cat-historical-up.active { background: var(--good); }
+.cat-historical-down.active { background: var(--bad); }
+.cat-historical-up .cat-arrow { color: var(--good); }
+.cat-historical-down .cat-arrow { color: var(--bad); }
 .cat-surge.active { background: var(--good); }
 .cat-plunge.active { background: var(--bad); }
 .cat-lowrisk.active { background: #2f9e44; }
