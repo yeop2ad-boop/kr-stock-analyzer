@@ -75,7 +75,7 @@ body {
 .fh-search input[type="text"] { flex: 1; }
 .fh-search button { font-size: 18px; padding: 10px 14px; line-height: 1; white-space: nowrap; }
 
-.fh-cats {
+.tab-bar {
   max-width: 860px;
   margin: 0 auto;
   display: flex;
@@ -86,7 +86,9 @@ body {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-.fh-cats::-webkit-scrollbar { display: none; }
+.tab-bar::-webkit-scrollbar { display: none; }
+.tab-bar .cat-btn { font-size: 12.5px; padding: 10px 14px; }
+
 .cat-btn {
   flex: 0 0 auto;
   background: var(--bg);
@@ -100,6 +102,39 @@ body {
 .cat-btn.active { color: #fff; border-color: #fff; font-weight: 800; }
 .cat-historical-up .cat-arrow { color: var(--good); }
 .cat-historical-down .cat-arrow { color: var(--bad); }
+
+.top30-sub-nav {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  margin-bottom: 12px;
+}
+.top30-sub-nav::-webkit-scrollbar { display: none; }
+
+.historical-full-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+/* ---------- 7탭 스와이프 캐로셀 ---------- */
+.carousel-viewport {
+  position: relative;
+  overflow: hidden;
+  touch-action: pan-y;
+  transition: height 0.25s ease;
+}
+.carousel-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+.carousel-panel.snapping { transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
 
 .loading-splash {
   position: fixed;
@@ -313,6 +348,8 @@ button:hover { filter: brightness(1.05); }
 button:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .popular-table-wrap { overflow-x: auto; }
+
+.load-more-btn { display: block; width: 100%; margin-top: 12px; text-align: center; }
 table.popular-table th:nth-child(4),
 table.popular-table td:nth-child(4),
 table.popular-table th:nth-child(5),

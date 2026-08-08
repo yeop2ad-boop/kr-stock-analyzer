@@ -51,17 +51,14 @@
       <div id="tickerSuggest" class="chat-ticker-suggest" style="display:none;"></div>
     </div>
 
-    <div class="fh-cats">
-      <button type="button" class="cat-btn cat-popular" id="catPopularBtn">🔥 인기종목</button>
-      <button type="button" class="cat-btn cat-nasdaq100" id="catNasdaq100Btn">나스닥100</button>
-      <button type="button" class="cat-btn cat-sp500" id="catSp500Btn">S&amp;P500</button>
-      <button type="button" class="cat-btn cat-historical-up" id="catHistoricalUpBtn"><span class="cat-arrow">▲</span> 과거분석</button>
-      <button type="button" class="cat-btn cat-historical-down" id="catHistoricalDownBtn"><span class="cat-arrow">▼</span> 과거분석</button>
-      <button type="button" class="cat-btn cat-surge" id="catSurgeBtn">급등주</button>
-      <button type="button" class="cat-btn cat-plunge" id="catPlungeBtn">급락주</button>
-      <button type="button" class="cat-btn cat-lowrisk" id="catLowRiskBtn">저위험30</button>
-      <button type="button" class="cat-btn cat-undervalued" id="catUndervaluedBtn">저평가30</button>
-      <button type="button" class="cat-btn cat-marketcap" id="catMarketCapBtn">시가총액30</button>
+    <div class="tab-bar" id="tabBar">
+      <button type="button" class="cat-btn" data-tab="search" id="tabSearchBtn">기업검색</button>
+      <button type="button" class="cat-btn" data-tab="popular" id="tabPopularBtn">🔥 인기종목</button>
+      <button type="button" class="cat-btn" data-tab="historical" id="tabHistoricalBtn">과거분석</button>
+      <button type="button" class="cat-btn" data-tab="surge" id="tabSurgeBtn">급등주</button>
+      <button type="button" class="cat-btn" data-tab="plunge" id="tabPlungeBtn">급락주</button>
+      <button type="button" class="cat-btn" data-tab="top30" id="tabTop30Btn">TOP30</button>
+      <button type="button" class="cat-btn" data-tab="future" id="tabFutureBtn">미래예측(베타)</button>
     </div>
   </header>
 
@@ -88,55 +85,89 @@
   </div>
 
   <div class="container" id="mainContainer">
-    <p id="popularStatus" class="muted top30-status" style="display:none;"></p>
-    <div id="popularResults"></div>
+    <div class="carousel-viewport" id="carouselViewport">
 
-    <p id="rankedStatus" class="muted top30-status" style="display:none;"></p>
-    <div id="rankedResults"></div>
+      <div class="carousel-panel" data-panel="search" id="panelSearch">
+        <div id="statusBox" class="status-box" style="display:none;"></div>
+        <div id="results" class="results" style="display:none;">
+          <section class="card">
+            <h2 id="summaryHeading">1️⃣ 요약</h2>
+            <div id="summarySection" class="section-body"></div>
+            <div id="summaryScoreRow" class="mini-score-row"></div>
+          </section>
 
-    <p id="moversStatus" class="muted top30-status" style="display:none;"></p>
-    <div id="moversResults"></div>
+          <section class="card">
+            <h2>2️⃣ 매출액 / 주당순이익(EPS) 3년 추이</h2>
+            <div id="financialsSection" class="section-body"></div>
+          </section>
 
-    <div id="statusBox" class="status-box" style="display:none;"></div>
+          <section class="card">
+            <h2>3️⃣ 경쟁사 매출 비교</h2>
+            <div id="peersSection" class="section-body"></div>
+          </section>
 
-    <div id="resultsView" style="display:none;">
-      <div id="results" class="results" style="display:none;">
-        <section class="card">
-          <h2 id="summaryHeading">1️⃣ 요약</h2>
-          <div id="summarySection" class="section-body"></div>
-          <div id="summaryScoreRow" class="mini-score-row"></div>
-        </section>
+          <section class="card">
+            <h2>4️⃣ 주요 뉴스</h2>
+            <div id="newsSection" class="section-body"></div>
+          </section>
 
-        <section class="card">
-          <h2>2️⃣ 매출액 / 주당순이익(EPS) 3년 추이</h2>
-          <div id="financialsSection" class="section-body"></div>
-        </section>
+          <section class="card">
+            <h2>5️⃣ 상승압력도 점수</h2>
+            <div id="scoreSection" class="section-body"></div>
+          </section>
 
-        <section class="card">
-          <h2>3️⃣ 경쟁사 매출 비교</h2>
-          <div id="peersSection" class="section-body"></div>
-        </section>
+          <section class="card">
+            <h2>6️⃣ 투자 위험도 점수</h2>
+            <div id="riskSection" class="section-body"></div>
+          </section>
 
-        <section class="card">
-          <h2>4️⃣ 주요 뉴스</h2>
-          <div id="newsSection" class="section-body"></div>
-        </section>
-
-        <section class="card">
-          <h2>5️⃣ 상승압력도 점수</h2>
-          <div id="scoreSection" class="section-body"></div>
-        </section>
-
-        <section class="card">
-          <h2>6️⃣ 투자 위험도 점수</h2>
-          <div id="riskSection" class="section-body"></div>
-        </section>
-
-        <section class="card">
-          <h2>7️⃣ 거시경제 점수</h2>
-          <div id="macroSection" class="section-body"></div>
-        </section>
+          <section class="card">
+            <h2>7️⃣ 거시경제 점수</h2>
+            <div id="macroSection" class="section-body"></div>
+          </section>
+        </div>
       </div>
+
+      <div class="carousel-panel" data-panel="popular" id="panelPopular">
+        <p id="popularStatus" class="muted top30-status" style="display:none;"></p>
+        <div id="popularResults"></div>
+      </div>
+
+      <div class="carousel-panel" data-panel="historical" id="panelHistorical">
+        <p id="historicalStatus" class="muted top30-status" style="display:none;"></p>
+        <div id="historicalResults"></div>
+        <div class="historical-full-buttons">
+          <button type="button" class="cat-btn cat-historical-up" id="historicalFullUpBtn"><span class="cat-arrow">▲</span> 과거분석(전체)</button>
+          <button type="button" class="cat-btn cat-historical-down" id="historicalFullDownBtn"><span class="cat-arrow">▼</span> 과거분석(전체)</button>
+        </div>
+      </div>
+
+      <div class="carousel-panel" data-panel="surge" id="panelSurge">
+        <p id="surgeStatus" class="muted top30-status" style="display:none;"></p>
+        <div id="surgeResults"></div>
+      </div>
+
+      <div class="carousel-panel" data-panel="plunge" id="panelPlunge">
+        <p id="plungeStatus" class="muted top30-status" style="display:none;"></p>
+        <div id="plungeResults"></div>
+      </div>
+
+      <div class="carousel-panel" data-panel="top30" id="panelTop30">
+        <div class="top30-sub-nav">
+          <button type="button" class="cat-btn" id="top30Nasdaq100Btn">나스닥100</button>
+          <button type="button" class="cat-btn" id="top30Sp500Btn">S&amp;P500</button>
+          <button type="button" class="cat-btn" id="top30UndervaluedBtn">저평가30</button>
+          <button type="button" class="cat-btn" id="top30LowRiskBtn">저위험30</button>
+          <button type="button" class="cat-btn" id="top30MarketCapBtn">시가총액30</button>
+        </div>
+        <p id="top30Status" class="muted top30-status" style="display:none;"></p>
+        <div id="top30Results"></div>
+      </div>
+
+      <div class="carousel-panel" data-panel="future" id="panelFuture">
+        <p class="muted" style="text-align:center;padding:60px 0;">🚧 미래예측 기능은 준비 중입니다. 곧 만나요!</p>
+      </div>
+
     </div>
 
     <p class="source-note">
