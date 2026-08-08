@@ -1232,12 +1232,17 @@ function isNestedHScrollable(target, dx) {
 
 carouselViewport.addEventListener("pointerdown", (e) => {
   if (e.pointerType === "mouse" && e.button !== 0) return;
+  const now = performance.now();
   dragState = {
     pointerId: e.pointerId,
     startX: e.clientX,
     startY: e.clientY,
     lastX: e.clientX,
-    startTime: performance.now(),
+    // prevX/prevMoveTime은 "떼기 직전 마지막 구간"의 속도만 따로 재기 위한 값(전체 평균 속도로 재면
+    // 손을 댄 뒤 잠깐 멈췄다가 빠르게 튕기는 실제 스와이프에서 속도가 과소평가되어 스냅이 안 먹힘)
+    prevX: e.clientX,
+    startTime: now,
+    prevMoveTime: now,
     axisLocked: false,
     isHorizontal: false,
     viewportWidth: carouselViewport.clientWidth,
@@ -1263,7 +1268,10 @@ carouselViewport.addEventListener("pointermove", (e) => {
   }
   if (!dragState.isHorizontal) return;
   e.preventDefault();
+  dragState.prevX = dragState.lastX;
+  dragState.prevMoveTime = dragState.lastMoveTime ?? dragState.startTime;
   dragState.lastX = e.clientX;
+  dragState.lastMoveTime = performance.now();
   let offsetFraction = dx / dragState.viewportWidth;
   const atStart = activeTabIndex === 0 && offsetFraction > 0;
   const atEnd = activeTabIndex === TAB_ORDER.length - 1 && offsetFraction < 0;
@@ -1274,11 +1282,14 @@ carouselViewport.addEventListener("pointermove", (e) => {
 function endDrag(e) {
   if (!dragState || e.pointerId !== dragState.pointerId) return;
   if (dragState.isHorizontal) {
-    const dx = dragState.lastX - dragState.startX;
-    const elapsed = Math.max(1, performance.now() - dragState.startTime);
-    const velocity = dx / elapsed; // px/ms, 빠르게 튕기면 이동 거리가 짧아도 다음 탭으로 넘어감
-    const threshold = dragState.viewportWidth * 0.22;
-    const isFastFlick = Math.abs(dx) > 10 && Math.abs(velocity) > 0.5; // 최소 이동거리 없이 속도만으로 판정되지 않도록 방지
+    const dx = dragState.lastX - dragState.startX; // 전체 이동거리(먼 거리 스와이프 판정용)
+    // 속도는 손을 뗀 직전 마지막 구간만으로 계산(전체 평균으로 재면 누르고 잠깐 멈췄다 튕기는
+    // 실제 스와이프에서 속도가 희석돼 플릭으로 인식되지 않는 문제가 있었음)
+    const recentDx = dragState.lastX - dragState.prevX;
+    const recentElapsed = Math.max(1, dragState.lastMoveTime - dragState.prevMoveTime);
+    const velocity = recentDx / recentElapsed; // px/ms
+    const threshold = dragState.viewportWidth * 0.18;
+    const isFastFlick = Math.abs(dx) > 10 && Math.abs(velocity) > 0.35; // 최소 이동거리 없이 속도만으로 판정되지 않도록 방지
     let target = activeTabIndex;
     if (dx <= -threshold || (isFastFlick && velocity < 0)) target = activeTabIndex + 1;
     else if (dx >= threshold || (isFastFlick && velocity > 0)) target = activeTabIndex - 1;
