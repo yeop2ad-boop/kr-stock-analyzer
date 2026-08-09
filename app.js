@@ -2455,6 +2455,7 @@ async function renderRankedTop10(
       .join("");
 
     resultsEl.innerHTML = `
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 순위는 상승압력(10점) + 투자위험(10점)을 단순 합산한 점수(20점 만점) 기준이며 투자 자문이 아닙니다.</p>
       ${SURGE_WARNING_LEGEND}
       <table class="top30-table">
         <thead>
@@ -2462,10 +2463,6 @@ async function renderRankedTop10(
         </thead>
         <tbody>${rows}</tbody>
       </table>
-      <p class="disclaimer">
-        <span style="filter:grayscale(1);">📢</span> 상승압력도(10점 만점) + 투자 위험도(10점 만점)를 단순 합산한(20점 만점) 참고용 순위이며, 투자 자문이나 매수 추천이 아닙니다.
-        무료 데이터 소스/프록시의 한계로 일부 종목은 조회에 실패해 순위 계산에서 제외될 수 있습니다.
-      </p>
     `;
   } catch (err) {
     statusEl.textContent = `❌ ${err.message || "분석 중 오류가 발생했습니다."}`;
@@ -2681,13 +2678,14 @@ function historicalTableHtml(rows, rankColumnLabel) {
         <td>${i + 1}</td>
         <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></span>${r.name ? `<br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span>` : ""}</td>
         <td>${priceChartLink(r.symbol, "$" + r.currentPrice.toFixed(2))}<br><span class="${r.priceChangePct !== null && r.priceChangePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">${r.priceChangePct !== null ? fmtPct(r.priceChangePct) : "N/A"}</span></td>
-        <td class="${scoreClass(r.historicalAttractiveness)}"><b>${r.historicalAttractiveness}/10</b></td>
-        <td class="${scoreClass(r.historicalRisk)}"><b>${r.historicalRisk}/10</b></td>
+        <td class="${scoreClass(r.historicalAttractiveness)}"><b>${r.historicalAttractiveness}</b></td>
+        <td class="${scoreClass(r.historicalRisk)}"><b>${r.historicalRisk}</b></td>
       </tr>`;
     })
     .join("");
 
   return `
+    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 1년전 상승압력·투자위험은 <b>1년 전 시점</b> 기준으로 근사 계산한 참고용 점수입니다(각 10점 만점, 높을수록 상승 여력 크고·위험 낮음 / 5점보다 높으면 초록·낮으면 빨강). 투자 자문이 아닙니다.</p>
     <table class="top30-table">
       <thead>
         <tr><th>${rankColumnLabel}</th><th>티커</th><th>현재가<br>(등락률)</th><th>1년전<br>상승압력</th><th>1년전<br>투자위험</th></tr>
@@ -2756,14 +2754,7 @@ async function runHistoricalAnalysis(direction) {
       return;
     }
 
-    historicalResults.innerHTML = `
-      ${historicalTableHtml(rows, `${rankLabel}<br>순위`)}
-      <p class="disclaimer">
-        <span style="filter:grayscale(1);">📢</span> S&P500 중 <b>1년 ${rankLabel}이 ${isUp ? "높은" : "큰(많이 내린)"} 순</b> 상위 30개 종목입니다. ${refDateStr}(기준월 첫 거래일) 대비 현재까지의 주가 변화와
-        ${refDateStr} 당시 기준으로 근사 계산한 상승압력도·투자 위험도 점수를 함께 보여주는 참고용 정보입니다. 당시 점수는 그 시점까지의 차트·재무 데이터로
-        근사 계산한 값이라 실제와 다소 차이가 있을 수 있으며, 투자 자문이나 매수/매도 추천이 아닙니다. 기준 시점은 매달 1일이 지나면 한 달씩 자동으로 이동합니다.
-      </p>
-    `;
+    historicalResults.innerHTML = historicalTableHtml(rows, `${rankLabel}<br>순위`);
   } catch (err) {
     setStatus(`❌ ${err.message || "과거분석 데이터를 가져오지 못했습니다."}`);
   } finally {
@@ -2826,6 +2817,7 @@ function moversTableHtml(scored, rankNote) {
     .join("");
 
   return `
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${rankNote} 상승압력·투자위험은 각 10점 만점(5점보다 높으면 초록·낮으면 빨강)이며 투자 자문이 아닙니다.</p>
       ${SURGE_WARNING_LEGEND}
       <div class="popular-table-wrap">
         <table class="top30-table popular-table">
@@ -2835,10 +2827,6 @@ function moversTableHtml(scored, rankNote) {
           <tbody>${rows}</tbody>
         </table>
       </div>
-      <p class="disclaimer">
-        <span style="filter:grayscale(1);">📢</span> ${rankNote}
-        상승압력도·투자 위험도는 각 10점 만점 참고용 지표이며(5점보다 높으면 초록색, 낮으면 빨간색), 투자 자문이 아닙니다.
-      </p>
     `;
 }
 
@@ -3015,11 +3003,8 @@ async function runIndexTab() {
 
     indexStatus.style.display = "none";
     indexResults.innerHTML = `
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 환율·지수·원자재·가상자산은 전일 종가 대비, 국채·금리차는 FRED 최신치(전 영업일 대비) 기준이며 상승은 초록·하락은 빨강입니다.</p>
       <div class="idx-list">${rows}</div>
-      <p class="disclaimer">
-        <span style="filter:grayscale(1);">📢</span> 환율·주가지수·원자재·가상자산은 전일 종가 대비, 국채 수익률·장단기 금리차는 FRED 최신 발표치(전 영업일 대비) 기준입니다.
-        상승은 초록, 하락은 빨강으로 표시하며 일부 지수(차이나 A50 등)는 데이터 제공 여부에 따라 N/A로 표시될 수 있습니다. 투자 자문이 아닙니다.
-      </p>
     `;
   } catch (err) {
     indexStatus.textContent = `❌ ${err.message || "지수 데이터를 가져오지 못했습니다."}`;
@@ -3057,8 +3042,7 @@ async function runPopular() {
     await scoreAndRenderMovers(ranked, marketReturnsPromise, {
       statusEl: popularStatus,
       resultsEl: popularResults,
-      rankNote:
-        '순위는 당일 거래대금(거래량 × 현재가 추정) 기준이며, Yahoo Finance의 "가장 활발히 거래된 종목" 목록 중 상위 50개를 기준으로 재계산했습니다.',
+      rankNote: "순위는 당일 거래대금(거래량 × 현재가 추정) 기준입니다.",
       initialCount: 10,
       fullCount: 20,
     });
