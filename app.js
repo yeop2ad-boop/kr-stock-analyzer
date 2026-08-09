@@ -324,30 +324,6 @@ const SECTOR_KO = {
   "Basic Materials": "소재",
 };
 
-// SECTOR_KO와 짝을 이루는 섹터별 아이콘 — 인기종목/급등주/급락주 표에서 티커 옆에 표시
-const SECTOR_ICON = {
-  Technology: "💻",
-  Healthcare: "🏥",
-  "Financial Services": "🏦",
-  "Consumer Cyclical": "🛍️",
-  "Consumer Defensive": "🛒",
-  "Communication Services": "📡",
-  Industrials: "🏭",
-  Energy: "⛽",
-  Utilities: "💡",
-  "Real Estate": "🏢",
-  "Basic Materials": "⚙️",
-};
-
-// 여러 종목의 섹터를 병렬 조회 — 인기종목류·과거분석 표의 섹터 아이콘 표시용 (종목당 호출 1회 추가)
-async function fetchSectorsFor(symbols) {
-  return mapWithConcurrency(symbols, 3, (symbol) =>
-    yahooSearch(symbol)
-      .then((d) => d?.quotes?.[0]?.sector || d?.quotes?.[0]?.sectorDisp || null)
-      .catch(() => null)
-  );
-}
-
 // 동일 섹터 종목을 시가총액 내림차순으로 반환(자기 자신 제외) — 경쟁사 TOP3 + 시총 유사 종목 선정에 사용
 async function getSectorPeerCandidates(sector, selfSymbol) {
   const scrId = SECTOR_SCREENER_ID[sector];
@@ -1658,6 +1634,115 @@ const KOREAN_COMPANY_NAMES = {
   인튜이티브서지컬: "ISRG",
   버크셔: "BRK-B",
   버크셔해서웨이: "BRK-B",
+
+  // 추가 확장분(자주 찾는 미국 기업·별칭 위주)
+  애브비: "ABBV",
+  써모피셔: "TMO",
+  액센츄어: "ACN",
+  컴캐스트: "CMCSA",
+  캐터필러: "CAT",
+  허니웰: "HON",
+  아메리칸익스프레스: "AXP",
+  아멕스: "AXP",
+  웰스파고: "WFC",
+  씨티그룹: "C",
+  씨티: "C",
+  모건스탠리: "MS",
+  블랙록: "BLK",
+  프록터앤갬블: "PG",
+  피앤지: "PG",
+  필립모리스: "PM",
+  알트리아: "MO",
+  로우스: "LOW",
+  티제이맥스: "TJX",
+  부킹홀딩스: "BKNG",
+  부킹: "BKNG",
+  메리어트: "MAR",
+  매리어트: "MAR",
+  도어대시: "DASH",
+  블록: "XYZ",
+  스퀘어: "XYZ",
+  로빈후드: "HOOD",
+  드래프트킹스: "DKNG",
+  카바나: "CVNA",
+  카르바나: "CVNA",
+  데이터독: "DDOG",
+  클라우드플레어: "NET",
+  몽고디비: "MDB",
+  지스케일러: "ZS",
+  옥타: "OKTA",
+  유니티: "U",
+  메르카도리브레: "MELI",
+  징둥: "JD",
+  바이두: "BIDU",
+  리오토: "LI",
+  리샹: "LI",
+  샤오펑: "XPEV",
+  치폴레: "CMG",
+  제너럴일렉트릭: "GE",
+  지이: "GE",
+  레이시온: "RTX",
+  록히드마틴: "LMT",
+  노스럽그루먼: "NOC",
+  존디어: "DE",
+  디어: "DE",
+  쓰리엠: "MMM",
+  유피에스: "UPS",
+  페덱스: "FDX",
+  델타항공: "DAL",
+  아메리칸항공: "AAL",
+  유나이티드항공: "UAL",
+  사우스웨스트: "LUV",
+  카니발: "CCL",
+  로열캐리비안: "RCL",
+  힐튼: "HLT",
+  코노코필립스: "COP",
+  옥시덴탈: "OXY",
+  슐럼버거: "SLB",
+  넥스트에라: "NEE",
+  듀크에너지: "DUK",
+  서던컴퍼니: "SO",
+  다우: "DOW",
+  뉴몬트: "NEM",
+  프리포트맥모란: "FCX",
+  뉴코: "NUE",
+  아리스타: "ANET",
+  포티넷: "FTNT",
+  인튜이트: "INTU",
+  워크데이: "WDAY",
+  아틀라시안: "TEAM",
+  온세미: "ON",
+  램리서치: "LRCX",
+  케이엘에이: "KLAC",
+  에이에스엠엘: "ASML",
+  애널로그디바이스: "ADI",
+  애보트: "ABT",
+  다나허: "DHR",
+  메드트로닉: "MDT",
+  브리스톨마이어스: "BMY",
+  암젠: "AMGN",
+  길리어드: "GILD",
+  리제네론: "REGN",
+  버텍스: "VRTX",
+  스트라이커: "SYK",
+  보스턴사이언티픽: "BSX",
+  처브: "CB",
+  프로그레시브: "PGR",
+  콜게이트: "CL",
+  킴벌리클라크: "KMB",
+  허쉬: "HSY",
+  몬스터: "MNST",
+  제너럴밀스: "GIS",
+  크래프트하인즈: "KHC",
+  몬델리즈: "MDLZ",
+  이베이: "EBAY",
+  핀터레스트: "PINS",
+  트레이드데스크: "TTD",
+  어펌: "AFRM",
+  엔페이즈: "ENPH",
+  퍼스트솔라: "FSLR",
+  플러그파워: "PLUG",
+  씨브이에스: "CVS",
 };
 
 let mainTickerSuggestTimer = null;
@@ -1730,12 +1815,22 @@ document.addEventListener("click", (e) => {
 });
 
 // ---------- 메인 분석 흐름 ----------
+// 입력값을 티커로 해석 — 한글 회사명(예: "애플" → AAPL), "애플(AAPL)"처럼 괄호 안 티커 표기, 영문 티커를 모두 지원
+function resolveKoreanTicker(input) {
+  const raw = (input || "").trim();
+  const paren = raw.match(/\(([A-Za-z][A-Za-z.\-]{0,6})\)/); // "이름(TICKER)" 형태면 괄호 안 티커 우선
+  if (paren) return paren[1].toUpperCase();
+  const key = raw.replace(/\s+/g, ""); // 공백 제거 후 한글명 매핑 조회("존슨 앤 존슨" 등 대응)
+  if (KOREAN_COMPANY_NAMES[key]) return KOREAN_COMPANY_NAMES[key];
+  return raw.toUpperCase();
+}
+
 function triggerSearch() {
-  const ticker = tickerInput.value.trim().toUpperCase();
-  if (!ticker) {
-    setStatus("error", "❌ 분석할 기업의 티커를 입력해주세요. (예: AAPL)");
+  if (!tickerInput.value.trim()) {
+    setStatus("error", "❌ 분석할 기업의 티커나 한글 회사명을 입력해주세요. (예: AAPL, 애플)");
     return;
   }
+  const ticker = resolveKoreanTicker(tickerInput.value);
   hideMainTickerSuggest();
   navigateToTicker(ticker);
 }
@@ -1880,12 +1975,11 @@ async function runTickerHistorical(ticker, container) {
   container.innerHTML = `<p class="muted">불러오는 중...</p>`;
   try {
     const sp500PairsPromise = yahooChart("^GSPC", "2y").then(chartClosePairs);
-    const [m, h, [sector]] = await Promise.all([
+    const [m, h] = await Promise.all([
       getFullMetrics(ticker),
       getHistoricalCompareMetrics(ticker, sp500PairsPromise),
-      fetchSectorsFor([ticker]),
     ]);
-    const rows = buildHistoricalCompareRows([{ ...m, sector }], [h]);
+    const rows = buildHistoricalCompareRows([m], [h]);
     if (rows.length === 0) {
       container.innerHTML = `<p class="muted">이 종목은 과거 비교 데이터를 계산할 수 없습니다(최근 상장 등으로 1년 전 데이터가 없을 수 있습니다).</p>`;
       return;
@@ -2570,20 +2664,22 @@ function buildHistoricalCompareRows(tickerMetricsList, historicalList) {
     .filter(Boolean);
 }
 
-// buildHistoricalCompareRows 결과로 과거분석 표 HTML(범례 제외)을 생성 — moversTableHtml과 동일한 5컬럼 구성(순위/티커+섹터아이콘/현재가(등락률)/상승압력/투자위험)
+// 티커 앞에 표시할 작은 원형 기업 로고 — financialmodelingprep 로고 이미지를 쓰고, 로드 실패 시 티커 앞 2글자 배지로 폴백(추가 네트워크 호출 없음)
+function tickerLogoHtml(symbol) {
+  const s = escapeHtml(symbol);
+  return `<span class="ticker-logo-wrap"><img class="ticker-logo" src="https://financialmodelingprep.com/image-stock/${encodeURIComponent(symbol)}.png" alt="${s}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><span class="ticker-logo-badge" style="display:none;">${s.slice(0, 2)}</span></span>`;
+}
+
+// buildHistoricalCompareRows 결과로 과거분석 표 HTML(범례 제외)을 생성 — moversTableHtml과 동일한 5컬럼 구성(순위/티커+원형로고/현재가(등락률)/상승압력/투자위험)
 // rankColumnLabel만 호출부마다 다름
 function historicalTableHtml(rows, rankColumnLabel) {
   const scoreClass = (score) => (score === null ? "" : score > 5 ? "delta-up" : score < 5 ? "delta-down" : "");
   const tableRows = rows
     .map((r, i) => {
-      const sectorIcon =
-        r.sector && SECTOR_ICON[r.sector]
-          ? `<span title="${escapeHtml(SECTOR_KO[r.sector] || r.sector)}">${SECTOR_ICON[r.sector]}</span> `
-          : "";
       return `
       <tr>
         <td>${i + 1}</td>
-        <td>${sectorIcon}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b>${r.name ? `<br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span>` : ""}</td>
+        <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></span>${r.name ? `<br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span>` : ""}</td>
         <td>${priceChartLink(r.symbol, "$" + r.currentPrice.toFixed(2))}<br><span class="${r.priceChangePct !== null && r.priceChangePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">${r.priceChangePct !== null ? fmtPct(r.priceChangePct) : "N/A"}</span></td>
         <td class="${scoreClass(r.historicalAttractiveness)}"><b>${r.historicalAttractiveness}/10</b></td>
         <td class="${scoreClass(r.historicalRisk)}"><b>${r.historicalRisk}/10</b></td>
@@ -2637,18 +2733,14 @@ async function runHistoricalAnalysis(direction) {
 
     let done = 0;
     setStatus(`0/${top30.length} 종목의 기준 시점 데이터 조회 중...`);
-    const [historicalList, sectorList] = await Promise.all([
-      mapWithConcurrency(top30, 3, async (m) => {
-        const h = await getHistoricalCompareMetrics(m.symbol, sp500PairsPromise);
-        done++;
-        setStatus(`${done}/${top30.length} 종목의 기준 시점 데이터 조회 중...`);
-        return h;
-      }),
-      fetchSectorsFor(top30.map((m) => m.symbol)),
-    ]);
-    const top30WithSector = top30.map((m, i) => ({ ...m, sector: sectorList[i] }));
+    const historicalList = await mapWithConcurrency(top30, 3, async (m) => {
+      const h = await getHistoricalCompareMetrics(m.symbol, sp500PairsPromise);
+      done++;
+      setStatus(`${done}/${top30.length} 종목의 기준 시점 데이터 조회 중...`);
+      return h;
+    });
 
-    const rows = buildHistoricalCompareRows(top30WithSector, historicalList).sort((a, b) =>
+    const rows = buildHistoricalCompareRows(top30, historicalList).sort((a, b) =>
       isUp
         ? (b.priceChangePct ?? -Infinity) - (a.priceChangePct ?? -Infinity)
         : (a.priceChangePct ?? Infinity) - (b.priceChangePct ?? Infinity)
@@ -2690,14 +2782,13 @@ async function runHistoricalQuick() {
 
   try {
     const sp500PairsPromise = yahooChart("^GSPC", "2y").then(chartClosePairs);
-    const [tickerMetricsList, historicalList, sectorList] = await Promise.all([
+    const [tickerMetricsList, historicalList] = await Promise.all([
       mapWithConcurrency(HISTORICAL_QUICK_TICKERS, 5, getFullMetrics),
       mapWithConcurrency(HISTORICAL_QUICK_TICKERS, 3, (symbol) => getHistoricalCompareMetrics(symbol, sp500PairsPromise)),
-      fetchSectorsFor(HISTORICAL_QUICK_TICKERS),
     ]);
 
     const validIndices = tickerMetricsList.map((m, i) => (m ? i : null)).filter((i) => i !== null);
-    const validMetrics = validIndices.map((i) => ({ ...tickerMetricsList[i], sector: sectorList[i] }));
+    const validMetrics = validIndices.map((i) => tickerMetricsList[i]);
     const validHistorical = validIndices.map((i) => historicalList[i]);
     const rows = buildHistoricalCompareRows(validMetrics, validHistorical).sort(
       (a, b) => (b.priceChangePct ?? -Infinity) - (a.priceChangePct ?? -Infinity)
@@ -2723,11 +2814,10 @@ function moversTableHtml(scored, rankNote) {
   const rows = scored
     .map((r, i) => {
       const changeClass = r.changePct >= 0 ? "delta-up" : "delta-down";
-      const sectorIcon = r.sector && SECTOR_ICON[r.sector] ? `<span title="${escapeHtml(SECTOR_KO[r.sector] || r.sector)}">${SECTOR_ICON[r.sector]}</span> ` : "";
       return `
       <tr>
         <td>${i + 1}${surgeWarningEmoji(r.fiveDayExtremes)}</td>
-        <td>${sectorIcon}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
+        <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
         <td>${priceChartLink(r.symbol, "$" + r.price.toFixed(2))}<br><span class="${changeClass}" style="font-size:11px;">(${fmtPct(r.changePct)})</span></td>
         <td class="${r.isIPO ? "" : scoreClass(r.attractiveness)}"><b>${scoreCellText(r.attractiveness, r.isIPO)}</b></td>
         <td class="${r.isIPO ? "" : scoreClass(r.risk)}"><b>${scoreCellText(r.risk, r.isIPO)}</b></td>
@@ -2768,19 +2858,14 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
       statusEl.style.display = "block";
       statusEl.textContent = "상승압력도 · 투자 위험도 점수를 계산하는 중...";
       // 한꺼번에 요청하면 프록시가 과부하로 실패하는 경우가 많아 동시 요청 수를 제한
-      // 섹터 아이콘 표시용으로 sector도 병렬 조회(이 표들에서만 종목당 호출이 1개 늘어남)
-      const [fullMetricsList, sectorList] = await Promise.all([
-        mapWithConcurrency(pending, 3, (r) => getFullMetrics(r.symbol)),
-        fetchSectorsFor(pending.map((r) => r.symbol)),
-      ]);
+      const fullMetricsList = await mapWithConcurrency(pending, 3, (r) => getFullMetrics(r.symbol));
       const newlyScored = pending.map((r, i) => {
         const m = fullMetricsList[i];
-        const sector = sectorList[i];
-        if (!m) return { ...r, attractiveness: null, risk: null, fiveDayExtremes: null, isIPO: false, sector };
+        if (!m) return { ...r, attractiveness: null, risk: null, fiveDayExtremes: null, isIPO: false };
         const isIPO = isRecentIPO(m.firstTradeDate);
         const attractiveness = computeAttractivenessScore(m);
         const risk = computeRiskScore(m, sp500Return);
-        return { ...r, attractiveness: attractiveness.total, risk: risk.total, fiveDayExtremes: m.fiveDayExtremes, isIPO, sector };
+        return { ...r, attractiveness: attractiveness.total, risk: risk.total, fiveDayExtremes: m.fiveDayExtremes, isIPO };
       });
       scored = scored.concat(newlyScored);
     }
