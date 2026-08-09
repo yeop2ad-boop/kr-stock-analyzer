@@ -823,8 +823,11 @@ const US_TOTAL_MARKET_CAP_ESTIMATE = 87.4e12;
 
 // 참고용 신용등급(S&P Global Ratings 장기 발행자 등급 기준) 테이블 — 자체 조사로 수동 입력한 정적 데이터로,
 // 실시간 갱신되지 않으므로 등급 변동 시 수동 업데이트가 필요함. 목록에 없는 종목은 "S&P 등급 없음"으로 1점 처리
-// 회사채를 발행한 적이 없어(무차입 경영 등) 신용등급 자체가 존재하지 않는 종목 표시용 값 — S&P 등급 없음과 구분해 3점 처리
-const NO_DEBT_RATING = "회사채 없음(무차입)";
+// 회사채를 발행한 적이 없어(순현금·무차입 경영 등) 신용등급 자체가 존재하지 않는 종목 표시용 값 — S&P 등급 없음과 구분해 3점 처리
+const NO_DEBT_RATING = "회사채 없음";
+// 유이자부채(회사채·term loan 등)는 있으나 S&P가 발행자 등급을 매기지 않는 종목 표시용 값(다른 평가사만 평가 등) — 1점 처리
+// 위 두 값은 화면 세부점수에 숫자 대신 사유 문자열로 그대로 표시됨(투자등급이 없으면 점수가 아니라 사유를 노출)
+const UNRATED_REASON = "미평가";
 
 const TICKER_CREDIT_RATING = {
   PLTR: NO_DEBT_RATING,
@@ -843,7 +846,8 @@ const TICKER_CREDIT_RATING = {
   AAL: "B+",
 
   // 아래는 S&P500 시가총액 상위 100개 전수 조사로 추가(2026-08 기준 웹검색으로 확인, S&P Global Ratings 장기 발행자 등급만)
-  // PANW·ANET·SPGI는 조사 결과 S&P 자체 등급을 확인하지 못해(주로 무차입/자사 미평가) 목록에서 제외 — "S&P 등급 없음"(1점)으로 자동 처리됨
+  // 재조사(2026-08): PANW·ANET는 회사채 없음(순현금), SPGI는 유이자부채 있으나 자사 미평가
+  PANW: NO_DEBT_RATING, ANET: NO_DEBT_RATING, SPGI: UNRATED_REASON,
   META: "AA-", BLK: "AA-",
   LLY: "A+",
   AMAT: "A", DE: "A", TRV: "A", BNY: "A", TJX: "A", PGR: "A", BMY: "A",
@@ -855,7 +859,8 @@ const TICKER_CREDIT_RATING = {
   SNDK: "BB+",
 
   // 아래는 S&P500 시가총액 101~500위 전수 조사 1차분으로 추가(2026-08 기준 웹검색으로 확인, S&P Global Ratings 장기 발행자 등급만)
-  // VRTX·MNST·DASH·MPWR·MTD는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외 — "S&P 등급 없음"(1점)으로 자동 처리됨
+  // 재조사(2026-08): VRTX·MNST·DASH·MPWR는 회사채 없음(순현금), MTD는 유이자부채 있으나 S&P 미평가(Moody's만)
+  VRTX: NO_DEBT_RATING, MNST: NO_DEBT_RATING, DASH: NO_DEBT_RATING, MPWR: NO_DEBT_RATING, MTD: UNRATED_REASON,
   HON: "A", GD: "A", MDT: "A", TGT: "A", BX: "A+",
   TT: "A-", MET: "A-", CI: "A-", CDNS: "A-", ABNB: "A-", MRSH: "A-", ECL: "A-", NUE: "A-", ICE: "A-", AEP: "A-", TFC: "A-", TEL: "A-",
   SYK: "BBB+", NEM: "BBB+", FTNT: "BBB+", HWM: "BBB+", REGN: "BBB+", SO: "BBB+", JCI: "BBB+", DUK: "BBB+", COR: "BBB+",
@@ -867,7 +872,8 @@ const TICKER_CREDIT_RATING = {
   COHR: "BB",
 
   // 2차분 (101~500위 조사, 예산 소진 전 완료분)
-  // ISRG는 조사 결과 S&P 자체 등급을 확인하지 못해(무차입) 목록에서 제외
+  // 재조사(2026-08): ISRG는 회사채 없음(무부채, 순현금)
+  ISRG: NO_DEBT_RATING,
   ITW: "A+", GWW: "A+", CL: "A+",
   EMR: "A", CB: "A", CMI: "A", USB: "A", NOW: "A",
   CTAS: "A-", AIG: "A-", WM: "A-", PNC: "A-", LMT: "A-",
@@ -879,7 +885,8 @@ const TICKER_CREDIT_RATING = {
   FICO: "BB+",
 
   // 3차분 (101~500위 조사, 예산 소진 전 완료분)
-  // RMD·VEEV·DXCM는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  // 재조사(2026-08): VEEV는 회사채 없음(순현금), RMD·DXCM는 유이자부채 있으나 S&P 현행 발행자등급 미확인
+  VEEV: NO_DEBT_RATING, RMD: UNRATED_REASON, DXCM: UNRATED_REASON,
   ADM: "A", KVUE: "A", CINF: "A+",
   DGX: "BBB+", VMC: "BBB+", NTAP: "BBB+", ZTS: "BBB+", OMC: "BBB+", BIIB: "BBB+", IBKR: "BBB+",
   LVS: "BBB", LII: "BBB", IR: "BBB", EFX: "BBB",
@@ -891,7 +898,8 @@ const TICKER_CREDIT_RATING = {
   EQT: "BBB-", CASY: "BBB-", IT: "BBB-",
 
   // 5차분 (101~500위 조사, 예산 소진 전 완료분)
-  // CMG는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  // 재조사(2026-08): CMG는 회사채 없음(회사채 미발행, 리스부채만 존재)
+  CMG: NO_DEBT_RATING,
   KMB: "A", HSY: "A",
   ROP: "BBB+", CBRE: "BBB+", PAYX: "BBB+", A: "BBB+", PEG: "BBB+",
   LUV: "BBB", FISV: "BBB",
@@ -900,7 +908,8 @@ const TICKER_CREDIT_RATING = {
   LYV: "BB-", COIN: "BB-",
 
   // 6차분 (101~500위 조사, 예산 소진 전 완료분)
-  // FIX는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  // 재조사(2026-08): FIX는 회사채 없음(순현금, 신용라인 무차입)
+  FIX: NO_DEBT_RATING,
   PCAR: "A+",
   APD: "A", APO: "A",
   EOG: "A-", AON: "A-",
@@ -911,7 +920,8 @@ const TICKER_CREDIT_RATING = {
   TDG: "BB-",
 
   // 7차분 (101~500위 조사, 예산 소진 전 완료분)
-  // MCHP·ODFL는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  // 재조사(2026-08): ODFL는 회사채 없음(무차입), MCHP는 유이자부채 있으나 S&P 미평가(Fitch·Moody's만)
+  ODFL: NO_DEBT_RATING, MCHP: UNRATED_REASON,
   NTRS: "A+",
   HIG: "A-", EXC: "A-", RJF: "A-",
   FERG: "BBB+", XEL: "BBB+", CFG: "BBB+", MTB: "BBB+", JBHT: "BBB+", VTR: "BBB+",
@@ -928,7 +938,8 @@ const TICKER_CREDIT_RATING = {
   AXON: "BB+", CPAY: "BB+", ON: "BB+",
 
   // 9차분 (101~500위 조사, 예산 소진 전 완료분)
-  // FSLR·WST는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  // 재조사(2026-08): FSLR·WST 모두 회사채 없음(순현금, 부채는 소액/리스 수준)
+  FSLR: NO_DEBT_RATING, WST: NO_DEBT_RATING,
   AWK: "A",
   PPL: "A-", AVB: "A-",
   HUBB: "BBB+", CHRW: "BBB+", CNP: "BBB+", PHM: "BBB+",
@@ -938,14 +949,16 @@ const TICKER_CREDIT_RATING = {
   ECHO: "CCC+",
 
   // 10차분 (101~500위 조사, 예산 소진 전 완료분)
-  // WSM·CPRT·CTSH는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  // 재조사(2026-08): WSM·CPRT는 회사채 없음(순현금·무차입), CTSH는 term loan 있으나 S&P 미평가
+  WSM: NO_DEBT_RATING, CPRT: NO_DEBT_RATING, CTSH: UNRATED_REASON,
   SNA: "A-", ATO: "A-",
   AEE: "BBB+", DTE: "BBB+", RF: "BBB+", DVN: "BBB+", EG: "BBB+", ES: "BBB+", HBAN: "BBB+", FE: "BBB+",
   STZ: "BBB", KEY: "BBB", DG: "BBB", GIS: "BBB", HPQ: "BBB",
   Q: "BB+",
 
   // 11차분 (101~500위 조사, 예산 소진 전 완료분)
-  // IDXX·GRMN·FAST·TER·CIEN는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  // 재조사(2026-08): GRMN·FAST·TER는 회사채 없음(순현금), IDXX는 사모 senior notes 있으나 S&P 미평가, CIEN은 S&P BB+ 확인(2025-01)
+  GRMN: NO_DEBT_RATING, FAST: NO_DEBT_RATING, TER: NO_DEBT_RATING, IDXX: UNRATED_REASON, CIEN: "BB+",
   NKE: "A+",
   ACGL: "A", BKR: "A",
   ETR: "BBB+", DHI: "BBB+", CARR: "BBB+", D: "BBB+",
@@ -956,7 +969,8 @@ const TICKER_CREDIT_RATING = {
   LITE: "B",
 
   // 12차분 (101~500위 조사, 예산 소진 전 완료분)
-  // JKHY·COO·TYL·LULU는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  // 재조사(2026-08): JKHY는 회사채 없음(소액 리볼버뿐), COO·TYL은 유이자부채(전환사채 등) 있으나 S&P 미평가, LULU는 S&P BBB 확인
+  JKHY: NO_DEBT_RATING, COO: UNRATED_REASON, TYL: UNRATED_REASON, LULU: "BBB",
   GL: "A",
   KIM: "A-", MAA: "A-",
   BBY: "BBB+", DOC: "BBB+",
@@ -966,7 +980,8 @@ const TICKER_CREDIT_RATING = {
   TKO: "B+",
 
   // 13차분 (101~500위 재조사분)
-  // ERIE는 조사 결과 S&P 자체 등급을 확인하지 못해(AM Best만 평가) 목록에서 제외
+  // 재조사(2026-08): ERIE는 회사채 없음(무차입, 보험사라 AM Best만 평가)
+  ERIE: NO_DEBT_RATING,
   BG: "A-",
   CMS: "BBB+", IEX: "BBB+", NI: "BBB+", DD: "BBB+", EVRG: "BBB+",
   AMCR: "BBB", AVY: "BBB", HAS: "BBB", LYB: "BBB", SBAC: "BBB", BR: "BBB",
@@ -974,7 +989,8 @@ const TICKER_CREDIT_RATING = {
   VTRS: "BB+", CHTR: "BB+",
 
   // 14차분 (101~500위 재조사분)
-  // SMCI는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  // 재조사(2026-08): SMCI는 전환사채 약 $4.8B 보유하나 S&P 발행자 등급 미평가
+  SMCI: UNRATED_REASON,
   BEN: "A",
   SWK: "BBB+", IVZ: "BBB+", LNT: "BBB+",
   INVH: "BBB", WY: "BBB", ROL: "BBB", SJM: "BBB", CF: "BBB",
@@ -983,7 +999,8 @@ const TICKER_CREDIT_RATING = {
   GEN: "BB",
 
   // 15차분 (101~500위 재조사분)
-  // DECK·CSGP·ALGN·FDS는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  // 재조사(2026-08): DECK·ALGN은 회사채 없음(순현금), CSGP·FDS는 유이자부채(senior notes) 있으나 S&P 미평가
+  DECK: NO_DEBT_RATING, ALGN: NO_DEBT_RATING, CSGP: UNRATED_REASON, FDS: UNRATED_REASON,
   REG: "A-", HRL: "A-", CPT: "A-",
   CLX: "BBB+", UDR: "BBB+", PNW: "BBB+",
   SOLV: "BBB", MKC: "BBB", RVTY: "BBB",
@@ -993,14 +1010,16 @@ const TICKER_CREDIT_RATING = {
   DVA: "BB", GDDY: "BB",
 
   // 16차분 (101~500위 재조사분)
-  // EXPD·INCY·TPL·MRNA는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  // 재조사(2026-08): EXPD·INCY·TPL·MRNA 모두 회사채 없음(순현금, 부채는 리스/소액 수준)
+  EXPD: NO_DEBT_RATING, INCY: NO_DEBT_RATING, TPL: NO_DEBT_RATING, MRNA: NO_DEBT_RATING,
   TROW: "A+", L: "A",
   ULTA: "BBB", SW: "BBB", VLTO: "BBB", DRI: "BBB", FOX: "BBB", IFF: "BBB",
   BRO: "BBB-", STE: "BBB-",
   NRG: "BB",
 
   // 17차분 (16차분에서 접속 차단으로 보류했던 종목 재조사)
-  // FFIV(F5)는 무차입 기조로 S&P 자체 등급이 없어 목록에서 제외
+  // 재조사(2026-08): FFIV(F5)는 회사채 없음(무차입 기조)
+  FFIV: NO_DEBT_RATING,
   PKG: "BBB", FTV: "BBB",
   DOW: "BBB-", // S&P 2026-02-18 BBB→BBB- 하향(부정적)
 };
@@ -1015,11 +1034,13 @@ function computeRiskScore(metrics, sp500Return) {
   const { symbol, oneYearReturn, netIncome, revenue, marketCap, currency } = metrics;
 
   // 1) 투자등급 (0~4점) — S&P 신용등급 기준. AAA 4점, AA+ 3.5점, AA 3점, AA- 2.5점, A+ 2점, A 1.5점, A- 1점, BBB+ 0.5점, BBB 이하 0점
-  // 무차입 경영 등으로 회사채 자체가 없는 종목은 3점, 등급을 확인할 수 없는 종목(목록 미포함)은 1점 처리
+  // 회사채 자체가 없는 종목(NO_DEBT_RATING)은 3점, S&P 미평가(UNRATED_REASON)·목록 미포함은 1점 처리
   let creditScore = 1;
   const rating = symbol ? TICKER_CREDIT_RATING[symbol] : undefined;
   if (rating === NO_DEBT_RATING) {
     creditScore = 3;
+  } else if (rating === UNRATED_REASON) {
+    creditScore = 1;
   } else if (rating !== undefined) {
     creditScore = CREDIT_RATING_SCORE[rating] !== undefined ? CREDIT_RATING_SCORE[rating] : 0;
   }
@@ -2227,11 +2248,11 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
       </div>
       <div class="score-details">
         <ul>
-          <li>🏅 투자등급(신용등급): <b>${rating ? rating : "S&P 등급 없음"}</b> (AAA 4점 만점, BBB+ 0.5점, BBB 이하 0점, 회사채 없음 3점, S&P 등급 없음 1점)</li>
+          <li>🏅 투자등급(신용등급): <b>${rating ? rating : "S&P 등급 없음"}</b> (AAA 4점 만점, BBB+ 0.5점, BBB 이하 0점, 회사채 없음 3점, 미평가·목록없음 1점)</li>
           <li>📊 S&P500과의 1년 수익률 차이: ${relDiff !== null ? `<b>${relDiff.toFixed(1)}%p</b> (S&P500 <b>${fmtPct(sp500Return)}</b>)` : "N/A"} (차이가 작을수록 가점)</li>
           <li>💵 순이익률(순이익/매출): <b>${netMargin !== null ? (netMargin * 100).toFixed(1) + "%" : "N/A"}</b> (높을수록 가점, 적자면 0점)</li>
           <li>🏦 시가총액 가점(미국 전체 시장 내 시총 비중): <b>${vtsaxWeightPct !== null ? vtsaxWeightPct.toFixed(2) + "%" : "N/A"}</b> (VTSAX 등 인덱스펀드 예상 비중 근사, 6% 이상 만점·0% 0점)</li>
-          <li>세부 점수 — 투자등급 ${creditScore.toFixed(1)}/4, S&P500 대비 모멘텀 ${marketScore.toFixed(1)}/2, 순이익률 ${marginScore.toFixed(1)}/2, 시가총액 가점 ${vtsaxScore.toFixed(1)}/2</li>
+          <li>세부 점수 — 투자등급 ${rating === NO_DEBT_RATING || rating === UNRATED_REASON ? rating : creditScore.toFixed(1) + "/4"}, S&P500 대비 모멘텀 ${marketScore.toFixed(1)}/2, 순이익률 ${marginScore.toFixed(1)}/2, 시가총액 가점 ${vtsaxScore.toFixed(1)}/2</li>
         </ul>
         <p class="disclaimer">
           ⚠️ 점수가 높을수록(10점에 가까울수록) 재무적으로 더 안정적/저위험임을 의미합니다.
