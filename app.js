@@ -841,6 +841,18 @@ const TICKER_CREDIT_RATING = {
   T: "BBB", INTC: "BBB", MU: "BBB", UBER: "BBB", GM: "BBB", SPCX: "BBB",
   VICI: "BBB-", MSCI: "BBB-", BA: "BBB-", F: "BBB-",
   AAL: "B+",
+
+  // 아래는 S&P500 시가총액 상위 100개 전수 조사로 추가(2026-08 기준 웹검색으로 확인, S&P Global Ratings 장기 발행자 등급만)
+  // PANW·ANET·SPGI는 조사 결과 S&P 자체 등급을 확인하지 못해(주로 무차입/자사 미평가) 목록에서 제외 — "S&P 등급 없음"(1점)으로 자동 처리됨
+  META: "AA-", BLK: "AA-",
+  LLY: "A+",
+  AMAT: "A", DE: "A", TRV: "A", BNY: "A", TJX: "A", PGR: "A", BMY: "A",
+  LRCX: "A-", MS: "A-", PM: "A-", GE: "A-", BKNG: "A-", UNP: "A-", COP: "A-", KLAC: "A-", ALL: "A-", AXP: "A-",
+  APH: "A-", ADI: "A-", AMP: "A-", DHR: "A-", NEE: "A-", ETN: "A-", AFL: "A-", WELL: "A-", MCO: "A-",
+  C: "BBB+", RTX: "BBB+", GLW: "BBB+", MCK: "BBB+", TMUS: "BBB+", AMGN: "BBB+", EBAY: "BBB+", PH: "BBB+", MO: "BBB+", MMM: "BBB+", GILD: "BBB+",
+  TSLA: "BBB", DELL: "BBB", MPC: "BBB", GEV: "BBB", VLO: "BBB", CVS: "BBB",
+  CRWD: "BBB-", MRVL: "BBB-", STX: "BBB-",
+  SNDK: "BB+",
 };
 
 // S&P 신용등급 문자를 0~4점으로 환산. BBB 및 그 이하 등급은 0점
