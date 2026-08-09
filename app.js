@@ -1223,13 +1223,6 @@ function ensureTabLoaded(key) {
 // ---------- 가로 스와이프(포인터 드래그로 손가락을 따라 화면이 끌려오는 캐로셀) ----------
 let dragState = null;
 
-// 드래그 시작 지점이 가로 스크롤 가능한 표(.popular-table-wrap) 안이고 그 방향으로 더 스크롤할 여지가 있으면 네이티브 스크롤에 양보
-function isNestedHScrollable(target, dx) {
-  const wrap = target.closest && target.closest(".popular-table-wrap");
-  if (!wrap) return false;
-  return dx < 0 ? wrap.scrollLeft + wrap.clientWidth < wrap.scrollWidth - 1 : wrap.scrollLeft > 0;
-}
-
 carouselViewport.addEventListener("pointerdown", (e) => {
   if (e.pointerType === "mouse" && e.button !== 0) return;
   const now = performance.now();
@@ -1246,7 +1239,6 @@ carouselViewport.addEventListener("pointerdown", (e) => {
     axisLocked: false,
     isHorizontal: false,
     viewportWidth: carouselViewport.clientWidth,
-    startTarget: e.target,
   };
 });
 
@@ -1257,7 +1249,7 @@ carouselViewport.addEventListener("pointermove", (e) => {
   if (!dragState.axisLocked) {
     if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
     dragState.axisLocked = true;
-    dragState.isHorizontal = Math.abs(dx) > Math.abs(dy) && !isNestedHScrollable(dragState.startTarget, dx);
+    dragState.isHorizontal = Math.abs(dx) > Math.abs(dy);
     if (dragState.isHorizontal) {
       try {
         carouselViewport.setPointerCapture(dragState.pointerId);
