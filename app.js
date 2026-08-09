@@ -1933,9 +1933,10 @@ async function renderSummary(quote, meta, changePct) {
         <span class="summary-ticker-logo-wrap">
           <img
             class="summary-ticker-logo"
-            src="https://financialmodelingprep.com/image-stock/${encodeURIComponent(symbol)}.png"
+            src="${logoSources(symbol, 128).primary}"
             alt="${escapeHtml(symbol)}"
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+            ${logoSources(symbol, 128).useFallback ? `data-fallback="${logoSources(symbol, 128).fmp}"` : ""}
+            onerror="${LOGO_ONERROR}"
           />
           <span class="summary-ticker-badge" style="display:none;">${escapeHtml(symbol)}</span>
         </span>
@@ -2662,9 +2663,25 @@ function buildHistoricalCompareRows(tickerMetricsList, historicalList) {
 }
 
 // 티커 앞에 표시할 작은 원형 기업 로고 — financialmodelingprep 로고 이미지를 쓰고, 로드 실패 시 티커 앞 2글자 배지로 폴백(추가 네트워크 호출 없음)
+// 회사 로고 소스 — logo.dev(티커 기반 고화질·동일 크기·레티나)를 우선 사용하고, 토큰이 없거나 로드 실패 시
+// financialmodelingprep 이미지로 폴백, 둘 다 실패하면 티커 배지 표시. LOGODEV_TOKEN에 publishable 토큰(pk_...)을 넣으면 자동 활성화.
+const LOGODEV_TOKEN = ""; // TODO: logo.dev publishable 토큰(pk_...)을 넣으면 고화질 로고로 전환됨
+function logoSources(symbol, size) {
+  const enc = encodeURIComponent(symbol);
+  const fmp = `https://financialmodelingprep.com/image-stock/${enc}.png`;
+  const primary = LOGODEV_TOKEN
+    ? `https://img.logo.dev/ticker/${enc}?token=${encodeURIComponent(LOGODEV_TOKEN)}&size=${size || 80}&retina=true&format=png`
+    : fmp;
+  return { primary, fmp, useFallback: !!LOGODEV_TOKEN };
+}
+// 로고 <img>의 onerror 체인 — data-fallback(FMP)이 있으면 한 번 그걸로 교체하고, 없으면 형제 배지로 대체
+const LOGO_ONERROR = "var f=this.dataset.fallback; if(f){this.removeAttribute('data-fallback');this.src=f;}else{this.style.display='none';this.nextElementSibling.style.display='flex';}";
+
 function tickerLogoHtml(symbol) {
   const s = escapeHtml(symbol);
-  return `<span class="ticker-logo-wrap"><img class="ticker-logo" src="https://financialmodelingprep.com/image-stock/${encodeURIComponent(symbol)}.png" alt="${s}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><span class="ticker-logo-badge" style="display:none;">${s.slice(0, 2)}</span></span>`;
+  const { primary, fmp, useFallback } = logoSources(symbol, 80);
+  const fb = useFallback ? ` data-fallback="${fmp}"` : "";
+  return `<span class="ticker-logo-wrap"><img class="ticker-logo" src="${primary}" alt="${s}" loading="lazy"${fb} onerror="${LOGO_ONERROR}" /><span class="ticker-logo-badge" style="display:none;">${s.slice(0, 2)}</span></span>`;
 }
 
 // buildHistoricalCompareRows 결과로 과거분석 표 HTML(범례 제외)을 생성 — moversTableHtml과 동일한 5컬럼 구성(순위/티커+원형로고/현재가(등락률)/상승압력/투자위험)
