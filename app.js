@@ -853,6 +853,117 @@ const TICKER_CREDIT_RATING = {
   TSLA: "BBB", DELL: "BBB", MPC: "BBB", GEV: "BBB", VLO: "BBB", CVS: "BBB",
   CRWD: "BBB-", MRVL: "BBB-", STX: "BBB-",
   SNDK: "BB+",
+
+  // 아래는 S&P500 시가총액 101~500위 전수 조사 1차분으로 추가(2026-08 기준 웹검색으로 확인, S&P Global Ratings 장기 발행자 등급만)
+  // VRTX·MNST·DASH·MPWR·MTD는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외 — "S&P 등급 없음"(1점)으로 자동 처리됨
+  HON: "A", GD: "A", MDT: "A", TGT: "A", BX: "A+",
+  TT: "A-", MET: "A-", CI: "A-", CDNS: "A-", ABNB: "A-", MRSH: "A-", ECL: "A-", NUE: "A-", ICE: "A-", AEP: "A-", TFC: "A-", TEL: "A-",
+  SYK: "BBB+", NEM: "BBB+", FTNT: "BBB+", HWM: "BBB+", REGN: "BBB+", SO: "BBB+", JCI: "BBB+", DUK: "BBB+", COR: "BBB+",
+  CSX: "BBB+", AME: "BBB+", RSG: "BBB+", DLR: "BBB+", NXPI: "BBB+", AJG: "BBB+",
+  MDLZ: "BBB", PWR: "BBB", KR: "BBB", VRSN: "BBB", VRSK: "BBB", EQIX: "BBB", RCL: "BBB", MAR: "BBB",
+  KMI: "BBB", WAT: "BBB", BDX: "BBB", SYY: "BBB", CAH: "BBB",
+  FCX: "BBB-", VRT: "BBB-", JBL: "BBB-", SYF: "BBB-",
+  HLT: "BB+", OXY: "BB+", URI: "BB+",
+  COHR: "BB",
+
+  // 2차분 (101~500위 조사, 예산 소진 전 완료분)
+  // ISRG는 조사 결과 S&P 자체 등급을 확인하지 못해(무차입) 목록에서 제외
+  ITW: "A+", GWW: "A+", CL: "A+",
+  EMR: "A", CB: "A", CMI: "A", USB: "A", NOW: "A",
+  CTAS: "A-", AIG: "A-", WM: "A-", PNC: "A-", LMT: "A-",
+  PSX: "BBB+", NVR: "BBB+", WMB: "BBB+", NSC: "BBB+", NOC: "BBB+", CEG: "BBB+",
+  COF: "BBB", EXPE: "BBB", SHW: "BBB", HCA: "BBB-",
+  WDC: "BBB-",
+  STT: "A", KKR: "A", ELV: "A", PRU: "A", SLB: "A",
+  INTU: "A-", BSX: "A-", ROST: "A-", WEC: "A-",
+  FICO: "BB+",
+
+  // 3차분 (101~500위 조사, 예산 소진 전 완료분)
+  // RMD·VEEV·DXCM는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  ADM: "A", KVUE: "A", CINF: "A+",
+  DGX: "BBB+", VMC: "BBB+", NTAP: "BBB+", ZTS: "BBB+", OMC: "BBB+", BIIB: "BBB+", IBKR: "BBB+",
+  LVS: "BBB", LII: "BBB", IR: "BBB", EFX: "BBB",
+  IRM: "BB-",
+
+  // 4차분 (101~500위 조사, 예산 소진 전 완료분)
+  HAL: "BBB+", MLM: "BBB+", WTW: "BBB+", EXR: "BBB+", ARES: "BBB+", CHD: "BBB+",
+  TPR: "BBB", GEHC: "BBB", CCI: "BBB", TDY: "BBB", OTIS: "BBB", KHC: "BBB", XYL: "BBB", TSCO: "BBB", ZBH: "BBB", NDSN: "BBB",
+  EQT: "BBB-", CASY: "BBB-", IT: "BBB-",
+
+  // 5차분 (101~500위 조사, 예산 소진 전 완료분)
+  // CMG는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  KMB: "A", HSY: "A",
+  ROP: "BBB+", CBRE: "BBB+", PAYX: "BBB+", A: "BBB+", PEG: "BBB+",
+  LUV: "BBB", FISV: "BBB",
+  CCL: "BBB-", KDP: "BBB-",
+  BALL: "BB+", UAL: "BB+", YUM: "BB+", CNC: "BB+",
+  LYV: "BB-", COIN: "BB-",
+
+  // 6차분 (101~500위 조사, 예산 소진 전 완료분)
+  // FIX는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  PCAR: "A+",
+  APD: "A", APO: "A",
+  EOG: "A-", AON: "A-",
+  ORLY: "BBB+", CRH: "BBB+", PPG: "BBB+",
+  SNPS: "BBB", HUM: "BBB", FDX: "BBB", STLD: "BBB", HPE: "BBB", KEYS: "BBB",
+  MSI: "BBB-", VST: "BBB-",
+  WBD: "BB+",
+  TDG: "BB-",
+
+  // 7차분 (101~500위 조사, 예산 소진 전 완료분)
+  // MCHP·ODFL는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  NTRS: "A+",
+  HIG: "A-", EXC: "A-", RJF: "A-",
+  FERG: "BBB+", XEL: "BBB+", CFG: "BBB+", MTB: "BBB+", JBHT: "BBB+", VTR: "BBB+",
+  WAB: "BBB", WDAY: "BBB",
+  EME: "BBB-", FLEX: "BBB-",
+  XYZ: "BB+",
+  PCG: "BB",
+  CVNA: "B",
+
+  // 8차분 (101~500위 조사, 예산 소진 전 완료분)
+  WRB: "A-", PFG: "A-", RL: "A-", EL: "A-", CTVA: "A-",
+  NDAQ: "BBB+", DOV: "BBB+", SRE: "BBB+", HONA: "BBB+", ADSK: "BBB+", FITB: "BBB+",
+  OKE: "BBB", LHX: "BBB", FANG: "BBB", AZO: "BBB", TTWO: "BBB",
+  AXON: "BB+", CPAY: "BB+", ON: "BB+",
+
+  // 9차분 (101~500위 조사, 예산 소진 전 완료분)
+  // FSLR·WST는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  AWK: "A",
+  PPL: "A-", AVB: "A-",
+  HUBB: "BBB+", CHRW: "BBB+", CNP: "BBB+", PHM: "BBB+",
+  FIS: "BBB", FOXA: "BBB", LEN: "BBB", LH: "BBB", IP: "BBB", TSN: "BBB", DLTR: "BBB",
+  EIX: "BBB-",
+  ZBRA: "BB+",
+  ECHO: "CCC+",
+
+  // 10차분 (101~500위 조사, 예산 소진 전 완료분)
+  // WSM·CPRT·CTSH는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  SNA: "A-", ATO: "A-",
+  AEE: "BBB+", DTE: "BBB+", RF: "BBB+", DVN: "BBB+", EG: "BBB+", ES: "BBB+", HBAN: "BBB+", FE: "BBB+",
+  STZ: "BBB", KEY: "BBB", DG: "BBB", GIS: "BBB", HPQ: "BBB",
+  Q: "BB+",
+
+  // 11차분 (101~500위 조사, 예산 소진 전 완료분)
+  // IDXX·GRMN·FAST·TER·CIEN는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  NKE: "A+",
+  ACGL: "A", BKR: "A",
+  ETR: "BBB+", DHI: "BBB+", CARR: "BBB+", D: "BBB+",
+  ROK: "A-", O: "A-",
+  TRGP: "BBB", EW: "BBB",
+  DAL: "BBB-",
+  IQV: "BB+",
+  LITE: "B",
+
+  // 12차분 (101~500위 조사, 예산 소진 전 완료분)
+  // JKHY·COO·TYL·LULU는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  GL: "A",
+  KIM: "A-", MAA: "A-",
+  BBY: "BBB+", DOC: "BBB+",
+  MAS: "BBB", TXT: "BBB", AIZ: "BBB", ALLE: "BBB",
+  AKAM: "BBB-", HST: "BBB-", NWSA: "BBB-", ALB: "BBB-",
+  GNRC: "BB+",
+  TKO: "B+",
 };
 
 // S&P 신용등급 문자를 0~4점으로 환산. BBB 및 그 이하 등급은 0점
