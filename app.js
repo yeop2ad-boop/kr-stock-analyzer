@@ -964,6 +964,45 @@ const TICKER_CREDIT_RATING = {
   AKAM: "BBB-", HST: "BBB-", NWSA: "BBB-", ALB: "BBB-",
   GNRC: "BB+",
   TKO: "B+",
+
+  // 13차분 (101~500위 재조사분)
+  // ERIE는 조사 결과 S&P 자체 등급을 확인하지 못해(AM Best만 평가) 목록에서 제외
+  BG: "A-",
+  CMS: "BBB+", IEX: "BBB+", NI: "BBB+", DD: "BBB+", EVRG: "BBB+",
+  AMCR: "BBB", AVY: "BBB", HAS: "BBB", LYB: "BBB", SBAC: "BBB", BR: "BBB",
+  EXE: "BBB-", FDXF: "BBB-", GPN: "BBB-", BAX: "BBB-",
+  VTRS: "BB+", CHTR: "BB+",
+
+  // 14차분 (101~500위 재조사분)
+  // SMCI는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  BEN: "A",
+  SWK: "BBB+", IVZ: "BBB+", LNT: "BBB+",
+  INVH: "BBB", WY: "BBB", ROL: "BBB", SJM: "BBB", CF: "BBB",
+  GPC: "BBB-", APA: "BBB-", NWS: "BBB-", CDW: "BBB-", HII: "BBB-", LDOS: "BBB-", J: "BBB-",
+  PTC: "BB+",
+  GEN: "BB",
+
+  // 15차분 (101~500위 재조사분)
+  // DECK·CSGP·ALGN·FDS는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  REG: "A-", HRL: "A-", CPT: "A-",
+  CLX: "BBB+", UDR: "BBB+", PNW: "BBB+",
+  SOLV: "BBB", MKC: "BBB", RVTY: "BBB",
+  TRMB: "BBB-", AES: "BBB-",
+  CRL: "BB+",
+  WYNN: "BB-",
+  DVA: "BB", GDDY: "BB",
+
+  // 16차분 (101~500위 재조사분)
+  // EXPD·INCY·TPL·MRNA는 조사 결과 S&P 자체 등급을 확인하지 못해 목록에서 제외
+  TROW: "A+", L: "A",
+  ULTA: "BBB", SW: "BBB", VLTO: "BBB", DRI: "BBB", FOX: "BBB", IFF: "BBB",
+  BRO: "BBB-", STE: "BBB-",
+  NRG: "BB",
+
+  // 17차분 (16차분에서 접속 차단으로 보류했던 종목 재조사)
+  // FFIV(F5)는 무차입 기조로 S&P 자체 등급이 없어 목록에서 제외
+  PKG: "BBB", FTV: "BBB",
+  DOW: "BBB-", // S&P 2026-02-18 BBB→BBB- 하향(부정적)
 };
 
 // S&P 신용등급 문자를 0~4점으로 환산. BBB 및 그 이하 등급은 0점
