@@ -339,6 +339,15 @@ const SECTOR_ICON = {
   "Basic Materials": "⚙️",
 };
 
+// 여러 종목의 섹터를 병렬 조회 — 인기종목류·과거분석 표의 섹터 아이콘 표시용 (종목당 호출 1회 추가)
+async function fetchSectorsFor(symbols) {
+  return mapWithConcurrency(symbols, 3, (symbol) =>
+    yahooSearch(symbol)
+      .then((d) => d?.quotes?.[0]?.sector || d?.quotes?.[0]?.sectorDisp || null)
+      .catch(() => null)
+  );
+}
+
 // 동일 섹터 종목을 시가총액 내림차순으로 반환(자기 자신 제외) — 경쟁사 TOP3 + 시총 유사 종목 선정에 사용
 async function getSectorPeerCandidates(sector, selfSymbol) {
   const scrId = SECTOR_SCREENER_ID[sector];
@@ -1688,8 +1697,12 @@ async function runTickerHistorical(ticker, container) {
   container.innerHTML = `<p class="muted">불러오는 중...</p>`;
   try {
     const sp500PairsPromise = yahooChart("^GSPC", "2y").then(chartClosePairs);
-    const [m, h] = await Promise.all([getFullMetrics(ticker), getHistoricalCompareMetrics(ticker, sp500PairsPromise)]);
-    const rows = buildHistoricalCompareRows([m], [h]);
+    const [m, h, [sector]] = await Promise.all([
+      getFullMetrics(ticker),
+      getHistoricalCompareMetrics(ticker, sp500PairsPromise),
+      fetchSectorsFor([ticker]),
+    ]);
+    const rows = buildHistoricalCompareRows([{ ...m, sector }], [h]);
     if (rows.length === 0) {
       container.innerHTML = `<p class="muted">이 종목은 과거 비교 데이터를 계산할 수 없습니다(최근 상장 등으로 1년 전 데이터가 없을 수 있습니다).</p>`;
       return;
@@ -2363,6 +2376,7 @@ function buildHistoricalCompareRows(tickerMetricsList, historicalList) {
       return {
         symbol: m.symbol,
         name: m.name,
+        sector: m.sector,
         currentPrice: m.price,
         priceChangePct,
         historicalAttractiveness: h.historicalAttractiveness,
@@ -2373,26 +2387,31 @@ function buildHistoricalCompareRows(tickerMetricsList, historicalList) {
     .filter(Boolean);
 }
 
-// buildHistoricalCompareRows 결과로 과거분석 표 HTML(범례 제외)을 생성 — moversTableHtml과 동일한 5컬럼 구성(순위/티커/현재가(등락률)/상승압력/투자위험)
+// buildHistoricalCompareRows 결과로 과거분석 표 HTML(범례 제외)을 생성 — moversTableHtml과 동일한 5컬럼 구성(순위/티커+섹터아이콘/현재가(등락률)/상승압력/투자위험)
 // rankColumnLabel만 호출부마다 다름
 function historicalTableHtml(rows, rankColumnLabel) {
+  const scoreClass = (score) => (score === null ? "" : score > 5 ? "delta-up" : score < 5 ? "delta-down" : "");
   const tableRows = rows
-    .map(
-      (r, i) => `
+    .map((r, i) => {
+      const sectorIcon =
+        r.sector && SECTOR_ICON[r.sector]
+          ? `<span title="${escapeHtml(SECTOR_KO[r.sector] || r.sector)}">${SECTOR_ICON[r.sector]}</span> `
+          : "";
+      return `
       <tr>
         <td>${i + 1}</td>
-        <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b>${r.name ? `<br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span>` : ""}</td>
+        <td>${sectorIcon}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b>${r.name ? `<br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span>` : ""}</td>
         <td>${priceChartLink(r.symbol, "$" + r.currentPrice.toFixed(2))}<br><span class="${r.priceChangePct !== null && r.priceChangePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">${r.priceChangePct !== null ? fmtPct(r.priceChangePct) : "N/A"}</span></td>
-        <td>${r.historicalAttractiveness}/10</td>
-        <td>${r.historicalRisk}/10</td>
-      </tr>`
-    )
+        <td class="${scoreClass(r.historicalAttractiveness)}"><b>${r.historicalAttractiveness}/10</b></td>
+        <td class="${scoreClass(r.historicalRisk)}"><b>${r.historicalRisk}/10</b></td>
+      </tr>`;
+    })
     .join("");
 
   return `
     <table class="top30-table">
       <thead>
-        <tr><th>${rankColumnLabel}</th><th>티커</th><th>현재가<br>(등락률)</th><th>상승<br>압력</th><th>투자<br>위험</th></tr>
+        <tr><th>${rankColumnLabel}</th><th>티커</th><th>현재가<br>(등락률)</th><th>1년전<br>상승압력</th><th>1년전<br>투자위험</th></tr>
       </thead>
       <tbody>${tableRows}</tbody>
     </table>
@@ -2435,14 +2454,18 @@ async function runHistoricalAnalysis(direction) {
 
     let done = 0;
     setStatus(`0/${top30.length} 종목의 기준 시점 데이터 조회 중...`);
-    const historicalList = await mapWithConcurrency(top30, 3, async (m) => {
-      const h = await getHistoricalCompareMetrics(m.symbol, sp500PairsPromise);
-      done++;
-      setStatus(`${done}/${top30.length} 종목의 기준 시점 데이터 조회 중...`);
-      return h;
-    });
+    const [historicalList, sectorList] = await Promise.all([
+      mapWithConcurrency(top30, 3, async (m) => {
+        const h = await getHistoricalCompareMetrics(m.symbol, sp500PairsPromise);
+        done++;
+        setStatus(`${done}/${top30.length} 종목의 기준 시점 데이터 조회 중...`);
+        return h;
+      }),
+      fetchSectorsFor(top30.map((m) => m.symbol)),
+    ]);
+    const top30WithSector = top30.map((m, i) => ({ ...m, sector: sectorList[i] }));
 
-    const rows = buildHistoricalCompareRows(top30, historicalList).sort((a, b) =>
+    const rows = buildHistoricalCompareRows(top30WithSector, historicalList).sort((a, b) =>
       isUp
         ? (b.priceChangePct ?? -Infinity) - (a.priceChangePct ?? -Infinity)
         : (a.priceChangePct ?? Infinity) - (b.priceChangePct ?? Infinity)
@@ -2484,13 +2507,15 @@ async function runHistoricalQuick() {
 
   try {
     const sp500PairsPromise = yahooChart("^GSPC", "2y").then(chartClosePairs);
-    const [tickerMetricsList, historicalList] = await Promise.all([
+    const [tickerMetricsList, historicalList, sectorList] = await Promise.all([
       mapWithConcurrency(HISTORICAL_QUICK_TICKERS, 5, getFullMetrics),
       mapWithConcurrency(HISTORICAL_QUICK_TICKERS, 3, (symbol) => getHistoricalCompareMetrics(symbol, sp500PairsPromise)),
+      fetchSectorsFor(HISTORICAL_QUICK_TICKERS),
     ]);
 
-    const validMetrics = tickerMetricsList.filter(Boolean);
-    const validHistorical = validMetrics.map((m) => historicalList[tickerMetricsList.indexOf(m)]);
+    const validIndices = tickerMetricsList.map((m, i) => (m ? i : null)).filter((i) => i !== null);
+    const validMetrics = validIndices.map((i) => ({ ...tickerMetricsList[i], sector: sectorList[i] }));
+    const validHistorical = validIndices.map((i) => historicalList[i]);
     const rows = buildHistoricalCompareRows(validMetrics, validHistorical).sort(
       (a, b) => (b.priceChangePct ?? -Infinity) - (a.priceChangePct ?? -Infinity)
     );
@@ -2563,11 +2588,7 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
       // 섹터 아이콘 표시용으로 sector도 병렬 조회(이 표들에서만 종목당 호출이 1개 늘어남)
       const [fullMetricsList, sectorList] = await Promise.all([
         mapWithConcurrency(pending, 3, (r) => getFullMetrics(r.symbol)),
-        mapWithConcurrency(pending, 3, (r) =>
-          yahooSearch(r.symbol)
-            .then((d) => d?.quotes?.[0]?.sector || d?.quotes?.[0]?.sectorDisp || null)
-            .catch(() => null)
-        ),
+        fetchSectorsFor(pending.map((r) => r.symbol)),
       ]);
       const newlyScored = pending.map((r, i) => {
         const m = fullMetricsList[i];
