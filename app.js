@@ -2895,48 +2895,130 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
   await scoreUpTo(initialCount);
 }
 
-// ---------- 지수: 미국·한국 주요 지수 실시간 등락 ----------
+// ---------- 지수: 환율·주요 지수·원자재·가상자산·국채를 이미지 스타일 카드로 표시 ----------
+// 레이아웃: 왼쪽 = 종목명 + (날짜 | 티커), 오른쪽 = 가격 + 변동량(퍼센트). 색상은 한국식(상승=빨강, 하락=파랑)
+// src="yahoo"는 야후 차트(전일 종가 대비), src="fred"는 FRED 최신 발표치(전 영업일 대비)
+// vSuffix: 가격 뒤 단위 / cSuffix: 변동량 뒤 단위(미지정 시 vSuffix 사용)
 const INDEX_LIST = [
-  { symbol: "^GSPC", name: "S&P500", flag: "🇺🇸" },
-  { symbol: "^NDX", name: "나스닥100", flag: "🇺🇸" },
-  { symbol: "^DJI", name: "다우존스", flag: "🇺🇸" },
-  { symbol: "^IXIC", name: "나스닥종합", flag: "🇺🇸" },
-  { symbol: "^KS11", name: "코스피", flag: "🇰🇷" },
-  { symbol: "^KQ11", name: "코스닥", flag: "🇰🇷" },
+  { src: "yahoo", symbol: "KRW=X", name: "달러/원 환율", ticker: "USD/KRW" },
+  { src: "yahoo", symbol: "JPY=X", name: "달러/엔 환율", ticker: "USD/JPY" },
+  { src: "yahoo", symbol: "^GSPC", name: "S&P 500", ticker: "SPX" },
+  { src: "yahoo", symbol: "^NDX", name: "US Tech 100", ticker: "NDX" },
+  { src: "yahoo", symbol: "^DJI", name: "다우 종합", ticker: "DJI" },
+  { src: "yahoo", symbol: "^IXIC", name: "나스닥 종합", ticker: "IXIC" },
+  { src: "yahoo", symbol: "^RUT", name: "러셀 2000", ticker: "RUT" },
+  { src: "yahoo", symbol: "^VIX", name: "S&P500 VIX", ticker: "VIX" },
+  { src: "yahoo", symbol: "^KS11", name: "코스피", ticker: "KOSPI" },
+  { src: "yahoo", symbol: "^KQ11", name: "코스닥", ticker: "KOSDAQ" },
+  { src: "yahoo", symbol: "^N225", name: "닛케이 225", ticker: "JP225" },
+  { src: "yahoo", symbol: "^HSI", name: "홍콩 항셍", ticker: "HSI" },
+  { src: "yahoo", symbol: "XIN9.FGI", name: "차이나 A50", ticker: "CHINA50" },
+  { src: "yahoo", symbol: "^HSTECH", name: "항셍테크", ticker: "HSTECH" },
+  { src: "yahoo", symbol: "BTC-USD", name: "비트코인", ticker: "BTC" },
+  { src: "yahoo", symbol: "ETH-USD", name: "이더리움", ticker: "ETH" },
+  { src: "yahoo", symbol: "GC=F", name: "금", ticker: "GOLD" },
+  { src: "yahoo", symbol: "SI=F", name: "은", ticker: "SILVER" },
+  { src: "yahoo", symbol: "CL=F", name: "WTI 원유", ticker: "WTI" },
+  { src: "yahoo", symbol: "BZ=F", name: "브렌트유", ticker: "BRENT" },
+  { src: "fred", symbol: "T10Y2Y", name: "장단기 금리차(10Y-2Y)", ticker: "T10Y2Y", vSuffix: "%p", cSuffix: "%p" },
+  { src: "fred", symbol: "DGS2", name: "미국 2년물 국채", ticker: "US2Y", vSuffix: "%", cSuffix: "%p" },
+  { src: "fred", symbol: "DGS10", name: "미국 10년물 국채", ticker: "US10Y", vSuffix: "%", cSuffix: "%p" },
+  { src: "fred", symbol: "DGS30", name: "미국 30년물 국채", ticker: "US30Y", vSuffix: "%", cSuffix: "%p" },
 ];
+
+// 야후 차트 → { price, change(전일종가 대비 변동량), changePct, date }
+function yahooSnapshot(chart) {
+  const result = chart && chart.chart && chart.chart.result && chart.chart.result[0];
+  if (!result) return null;
+  const meta = result.meta || {};
+  const timestamps = result.timestamp || [];
+  const closes = (result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
+  const pairs = timestamps.map((t, i) => ({ t, c: closes[i] })).filter((p) => p.c !== null && p.c !== undefined);
+  pairs.sort((a, b) => a.t - b.t);
+  if (pairs.length < 1) return null;
+  const latest = pairs[pairs.length - 1];
+  const prevClose = pairs.length >= 2 ? pairs[pairs.length - 2].c : (meta.chartPreviousClose ?? null);
+  const price = meta.regularMarketPrice ?? latest.c;
+  const change = prevClose !== null && prevClose !== undefined && price !== null && price !== undefined ? price - prevClose : null;
+  const changePct = change !== null && prevClose ? (change / prevClose) * 100 : null;
+  const date = meta.regularMarketTime ? new Date(meta.regularMarketTime * 1000) : new Date(latest.t * 1000);
+  return { price, change, changePct, date };
+}
+
+// FRED 시계열([date, value] 배열) → { price, change(전 영업일 대비), changePct, date }
+function fredSnapshot(points) {
+  const clean = (points || []).map((p) => [p[0], Number(p[1])]).filter((p) => Number.isFinite(p[1]));
+  if (clean.length < 1) return null;
+  const latest = clean[clean.length - 1];
+  const prev = clean.length >= 2 ? clean[clean.length - 2] : null;
+  const price = latest[1];
+  const change = prev ? price - prev[1] : null;
+  const changePct = prev && prev[1] ? (change / prev[1]) * 100 : null;
+  return { price, change, changePct, date: new Date(latest[0]) };
+}
+
+// 지수 카드 1행 HTML — 이미지 스타일(왼쪽 종목/날짜/티커, 오른쪽 가격/변동량(퍼센트))
+function indexRowHtml(item, snap) {
+  const num = (n, d = 2) => n.toLocaleString("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d });
+  const dateStr = snap && snap.date ? `${String(snap.date.getMonth() + 1).padStart(2, "0")}/${String(snap.date.getDate()).padStart(2, "0")}` : "";
+  const sub = `${dateStr ? `<span class="idx-clock">🕐 ${dateStr}</span> | ` : ""}<span class="idx-ticker">${escapeHtml(item.ticker)}</span>`;
+
+  if (!snap || snap.price === null || snap.price === undefined) {
+    return `<div class="idx-row"><div class="idx-left"><div class="idx-name">${escapeHtml(item.name)}</div><div class="idx-sub">${sub}</div></div><div class="idx-right"><div class="idx-price">N/A</div></div></div>`;
+  }
+
+  const vSuffix = item.vSuffix || "";
+  const cSuffix = item.cSuffix || vSuffix;
+  const priceStr = num(snap.price) + vSuffix;
+  const sign = (n) => (n >= 0 ? "+" : "");
+  let deltaStr = "";
+  let cls = "";
+  if (snap.change !== null && snap.change !== undefined) {
+    cls = snap.change >= 0 ? "delta-up" : "delta-down"; // 초록=상승, 빨강=하락(앱 공통 색상)
+    deltaStr = `${sign(snap.change)}${num(snap.change)}${cSuffix}`;
+    // 스프레드(0 부근) 등에서 퍼센트가 비정상적으로 커지면 생략
+    if (snap.changePct !== null && snap.changePct !== undefined && Number.isFinite(snap.changePct) && Math.abs(snap.changePct) < 1000) {
+      deltaStr += ` (${sign(snap.changePct)}${snap.changePct.toFixed(2)}%)`;
+    }
+  }
+
+  return `
+    <div class="idx-row">
+      <div class="idx-left">
+        <div class="idx-name">${escapeHtml(item.name)}</div>
+        <div class="idx-sub">${sub}</div>
+      </div>
+      <div class="idx-right">
+        <div class="idx-price">${priceStr}</div>
+        <div class="idx-delta ${cls}">${deltaStr}</div>
+      </div>
+    </div>`;
+}
+
 async function runIndexTab() {
   indexStatus.style.display = "block";
   indexStatus.textContent = "지수 데이터를 불러오는 중...";
 
   try {
-    const results = await mapWithConcurrency(INDEX_LIST, 6, async (idx) => {
-      const chart = await yahooChart(idx.symbol, "5d", "1d");
-      const changePct = getDailyChangePercent(chart);
-      const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
-      return { ...idx, price: meta ? meta.regularMarketPrice : null, changePct };
+    const snaps = await mapWithConcurrency(INDEX_LIST, 6, async (item) => {
+      try {
+        if (item.src === "fred") {
+          return fredSnapshot(await fetchFredSeries(item.symbol));
+        }
+        return yahooSnapshot(await yahooChart(item.symbol, "5d", "1d"));
+      } catch {
+        return null;
+      }
     });
 
-    const rows = results
-      .map(
-        (r) => `
-      <tr>
-        <td>${r.flag} <b>${escapeHtml(r.name)}</b></td>
-        <td>${r.price !== null && r.price !== undefined ? r.price.toLocaleString("ko-KR", { maximumFractionDigits: 2 }) : "N/A"}</td>
-        <td class="${r.changePct !== null && r.changePct >= 0 ? "delta-up" : "delta-down"}">${r.changePct !== null ? fmtPct(r.changePct) : "N/A"}</td>
-      </tr>`
-      )
-      .join("");
+    const rows = INDEX_LIST.map((item, i) => indexRowHtml(item, snaps[i])).join("");
 
     indexStatus.style.display = "none";
     indexResults.innerHTML = `
-      <table class="top30-table">
-        <thead>
-          <tr><th>지수</th><th>현재가</th><th>등락률</th></tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
+      <div class="idx-list">${rows}</div>
       <p class="disclaimer">
-        <span style="filter:grayscale(1);">📢</span> S&P500·나스닥100·다우존스·나스닥종합은 미국 지수, 코스피·코스닥은 한국 지수이며 전일 종가 대비 등락률입니다. 투자 자문이 아닙니다.
+        <span style="filter:grayscale(1);">📢</span> 환율·주가지수·원자재·가상자산은 전일 종가 대비, 국채 수익률·장단기 금리차는 FRED 최신 발표치(전 영업일 대비) 기준입니다.
+        상승은 초록, 하락은 빨강으로 표시하며 일부 지수(차이나 A50 등)는 데이터 제공 여부에 따라 N/A로 표시될 수 있습니다. 투자 자문이 아닙니다.
       </p>
     `;
   } catch (err) {

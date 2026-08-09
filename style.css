@@ -461,6 +461,26 @@ table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: #b8860b; fon
   background: var(--accent-soft);
 }
 
+/* 지수 탭 — 이미지 스타일 카드 리스트(왼쪽 종목/날짜/티커, 오른쪽 가격/변동량) */
+.idx-list { display: flex; flex-direction: column; }
+.idx-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--border);
+}
+.idx-row:last-child { border-bottom: none; }
+.idx-left { min-width: 0; }
+.idx-name { font-weight: 800; font-size: 15px; line-height: 1.25; }
+.idx-sub { margin-top: 4px; font-size: 12px; color: var(--muted); }
+.idx-clock { color: var(--bad); }
+.idx-ticker { color: var(--muted); letter-spacing: 0.2px; }
+.idx-right { text-align: right; white-space: nowrap; flex: none; }
+.idx-price { font-weight: 800; font-size: 16px; }
+.idx-delta { margin-top: 3px; font-size: 12.5px; font-weight: 700; }
+
 .ticker-historical-toggle-btn { margin-left: 8px; padding: 2px 10px; font-size: 11px; border-radius: 6px; }
 #tickerHistoricalRow { margin-top: 14px; }
 
