@@ -404,8 +404,38 @@ table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: #b8860b; fon
 .section-body .muted { color: var(--muted); }
 
 .summary-text { font-size: 15px; }
-.company-meta { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 10px; font-size: 13px; color: var(--muted); }
+.company-meta { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 10px; font-size: 13px; color: var(--muted); clear: both; }
 .company-meta span b { color: var(--text); }
+
+.summary-main { overflow: auto; } /* 아래 float 클리어(플로트된 로고가 company-meta를 밀어내지 않도록) */
+.summary-ticker-logo-wrap {
+  float: left;
+  width: 48px;
+  height: 48px;
+  margin: 2px 10px 4px 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.summary-ticker-logo { width: 100%; height: 100%; object-fit: contain; }
+.summary-ticker-badge {
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: 0.3px;
+  background: var(--accent-soft);
+}
+
+.ticker-historical-toggle-btn { margin-left: 8px; padding: 2px 10px; font-size: 11px; border-radius: 6px; }
+#tickerHistoricalRow { margin-top: 14px; }
 
 table.fin-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 13px; }
 table.fin-table th, table.fin-table td { padding: 8px 6px; border-bottom: 1px solid var(--border); text-align: right; }
@@ -496,6 +526,7 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
   border: 3px solid var(--accent);
 }
 .score-badge .score-num { font-size: 30px; font-weight: 800; color: var(--accent); }
+.score-badge .score-num.ipo-label { font-size: 19px; }
 .score-badge .score-den { font-size: 12px; color: var(--muted); }
 .score-badge.risk { background: #143327; border-color: var(--good); }
 .score-badge.risk .score-num { color: var(--good); }

@@ -19,6 +19,8 @@ const historicalFullUpBtn = el("historicalFullUpBtn");
 const historicalFullDownBtn = el("historicalFullDownBtn");
 const popularStatus = el("popularStatus");
 const popularResults = el("popularResults");
+const indexStatus = el("indexStatus");
+const indexResults = el("indexResults");
 const surgeStatus = el("surgeStatus");
 const surgeResults = el("surgeResults");
 const plungeStatus = el("plungeStatus");
@@ -320,6 +322,21 @@ const SECTOR_KO = {
   Utilities: "유틸리티",
   "Real Estate": "부동산",
   "Basic Materials": "소재",
+};
+
+// SECTOR_KO와 짝을 이루는 섹터별 아이콘 — 인기종목/급등주/급락주 표에서 티커 옆에 표시
+const SECTOR_ICON = {
+  Technology: "💻",
+  Healthcare: "🏥",
+  "Financial Services": "🏦",
+  "Consumer Cyclical": "🛍️",
+  "Consumer Defensive": "🛒",
+  "Communication Services": "📡",
+  Industrials: "🏭",
+  Energy: "⛽",
+  Utilities: "💡",
+  "Real Estate": "🏢",
+  "Basic Materials": "⚙️",
 };
 
 // 동일 섹터 종목을 시가총액 내림차순으로 반환(자기 자신 제외) — 경쟁사 TOP3 + 시총 유사 종목 선정에 사용
@@ -631,6 +648,7 @@ async function getCompanyMetrics(symbol) {
     revenueGrowthYoY: latestQuarterRevenueYoY(revenueQuarterlySeries),
     recentDollarVolume: recent5dAvg,
     avgDollarVolume1y: avg1y,
+    firstTradeDate: meta.firstTradeDate ?? null,
   };
 }
 
@@ -761,6 +779,7 @@ async function getFullMetrics(symbol) {
 
   return {
     symbol,
+    name: meta.shortName || meta.longName || symbol,
     price: meta.regularMarketPrice,
     eps,
     revenue,
@@ -773,7 +792,20 @@ async function getFullMetrics(symbol) {
     revenueGrowthYoY: latestQuarterRevenueYoY(revenueQuarterlySeries),
     recentDollarVolume: recent5dAvg,
     avgDollarVolume1y: avg1y,
+    firstTradeDate: meta.firstTradeDate ?? null,
   };
+}
+
+// 상장(IPO)한 지 약 3개월(92일) 이내인지 — 데이터가 부족해 점수 신뢰도가 낮은 종목을 점수 대신 "IPO"로 표기하는 데 사용
+function isRecentIPO(firstTradeDateEpoch) {
+  if (!firstTradeDateEpoch) return false;
+  return (Date.now() / 1000 - firstTradeDateEpoch) / 86400 <= 92;
+}
+
+// 점수 셀 표시용 — 최근 IPO 종목은 데이터가 부족해 신뢰도 낮은 점수 대신 "IPO"로 표기
+function scoreCellText(score, isIPO) {
+  if (isIPO) return "IPO";
+  return score !== null && score !== undefined ? score : "N/A";
 }
 
 // 미국 시장 전체 시가총액 추정치 — S&P500 전체 종목 시가총액 합계로 근사(2026-08 기준 관측값, 시간이 지나며 실제 시장 규모와 달라질 수 있어 주기적 갱신 필요)
@@ -1137,10 +1169,11 @@ new ResizeObserver(syncHeaderHeight).observe(fixedHeader);
 syncHeaderHeight();
 
 // ---------- 7탭 스와이프 캐로셀(기업검색/인기종목/과거분석/급등주/급락주/TOP30/미래예측) ----------
-const TAB_ORDER = ["search", "popular", "historical", "surge", "plunge", "top30", "future"];
+const TAB_ORDER = ["search", "popular", "index", "historical", "surge", "plunge", "top30", "future"];
 const panels = {
   search: el("panelSearch"),
   popular: el("panelPopular"),
+  index: el("panelIndex"),
   historical: el("panelHistorical"),
   surge: el("panelSurge"),
   plunge: el("panelPlunge"),
@@ -1150,6 +1183,7 @@ const panels = {
 const tabButtons = {
   search: el("tabSearchBtn"),
   popular: el("tabPopularBtn"),
+  index: el("tabIndexBtn"),
   historical: el("tabHistoricalBtn"),
   surge: el("tabSurgeBtn"),
   plunge: el("tabPlungeBtn"),
@@ -1206,6 +1240,7 @@ TAB_ORDER.forEach((key, i) => {
 // ---------- 탭별 데이터 로딩 캐싱: 한 번 로딩된 탭은 다시 방문해도 재요청하지 않음 ----------
 const TAB_LOADERS = {
   popular: () => runPopular(),
+  index: () => runIndexTab(),
   historical: () => runHistoricalQuick(),
   surge: () => runMovers("surge"),
   plunge: () => runMovers("plunge"),
@@ -1340,6 +1375,7 @@ document.addEventListener("click", (e) => {
   // 무료 프록시 과부하를 피하려고 한 탭씩 순서대로 로딩(사용자가 먼저 스와이프해서 들어가면 ensureTabLoaded가 그 자리에서 바로 시작함)
   (async () => {
     await ensureTabLoaded("popular");
+    await ensureTabLoaded("index");
     await ensureTabLoaded("historical");
     await ensureTabLoaded("surge");
     await ensureTabLoaded("plunge");
@@ -1602,15 +1638,66 @@ async function renderSummary(quote, meta, changePct) {
   const industryKo = industryEn ? await translateToKorean(industryEn).catch(() => industryEn) : "";
   const sectorKo = sectorEn ? SECTOR_KO[sectorEn] || (await translateToKorean(sectorEn).catch(() => sectorEn)) : "";
 
+  const symbol = meta.symbol || quote.symbol || "";
+
   el("summarySection").innerHTML = `
-    <p class="summary-text"><b>${escapeHtml(companyName)} (${escapeHtml(meta.symbol || quote.symbol || "")})</b> — ${escapeHtml(oneLiner)}</p>
-    <div class="company-meta">
-      <span>업종: <b>${escapeHtml(industryKo || "N/A")}</b></span>
-      <span>섹터: <b>${escapeHtml(sectorKo || "N/A")}</b></span>
-      <span>거래소: <b>${escapeHtml(quote.exchDisp || meta.fullExchangeName || "N/A")}</b></span>
-      <span>현재가: <b>$${(meta.regularMarketPrice ?? 0).toFixed(2)}</b> ${changePct !== null && changePct !== undefined ? `<span class="${changePct >= 0 ? "delta-up" : "delta-down"}">(${fmtPct(changePct)})</span>` : ""}<a class="chart-link-btn" href="#" data-chart-symbol="${escapeHtml(meta.symbol || quote.symbol || "")}">📈 차트보기</a></span>
+    <div class="summary-main">
+      <p class="summary-text">
+        <span class="summary-ticker-logo-wrap">
+          <img
+            class="summary-ticker-logo"
+            src="https://financialmodelingprep.com/image-stock/${encodeURIComponent(symbol)}.png"
+            alt="${escapeHtml(symbol)}"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+          />
+          <span class="summary-ticker-badge" style="display:none;">${escapeHtml(symbol)}</span>
+        </span>
+        <b>${escapeHtml(companyName)}</b> — ${escapeHtml(oneLiner)}
+      </p>
+      <div class="company-meta">
+        <span>업종: <b>${escapeHtml(industryKo || "N/A")}</b></span>
+        <span>섹터: <b>${escapeHtml(sectorKo || "N/A")}</b></span>
+        <span>거래소: <b>${escapeHtml(quote.exchDisp || meta.fullExchangeName || "N/A")}</b></span>
+        <span>현재가: <b>$${(meta.regularMarketPrice ?? 0).toFixed(2)}</b> ${changePct !== null && changePct !== undefined ? `<span class="${changePct >= 0 ? "delta-up" : "delta-down"}">(${fmtPct(changePct)})</span>` : ""}<a class="chart-link-btn" href="#" data-chart-symbol="${escapeHtml(symbol)}">📈 차트보기</a><button type="button" class="cat-btn ticker-historical-toggle-btn" id="tickerHistoricalToggleBtn" data-ticker="${escapeHtml(symbol)}">🕰️ 과거분석</button></span>
+      </div>
     </div>
+    <div id="tickerHistoricalRow" style="display:none;"></div>
   `;
+
+  const toggleBtn = el("tickerHistoricalToggleBtn");
+  let tickerHistoricalLoaded = false;
+  toggleBtn.addEventListener("click", async () => {
+    const row = el("tickerHistoricalRow");
+    const isOpen = row.style.display !== "none";
+    if (isOpen) {
+      row.style.display = "none";
+      toggleBtn.classList.remove("active");
+      return;
+    }
+    row.style.display = "block";
+    toggleBtn.classList.add("active");
+    if (!tickerHistoricalLoaded) {
+      tickerHistoricalLoaded = true;
+      await runTickerHistorical(symbol, row);
+    }
+  });
+}
+
+// 차트보기 옆 "과거분석" 버튼용 — 해당 종목 1개만 기존 과거분석과 동일한 방식(현재 vs 1년 전 스냅샷)으로 비교
+async function runTickerHistorical(ticker, container) {
+  container.innerHTML = `<p class="muted">불러오는 중...</p>`;
+  try {
+    const sp500PairsPromise = yahooChart("^GSPC", "2y").then(chartClosePairs);
+    const [m, h] = await Promise.all([getFullMetrics(ticker), getHistoricalCompareMetrics(ticker, sp500PairsPromise)]);
+    const rows = buildHistoricalCompareRows([m], [h]);
+    if (rows.length === 0) {
+      container.innerHTML = `<p class="muted">이 종목은 과거 비교 데이터를 계산할 수 없습니다(최근 상장 등으로 1년 전 데이터가 없을 수 있습니다).</p>`;
+      return;
+    }
+    container.innerHTML = historicalTableHtml(rows, "순위");
+  } catch (err) {
+    container.innerHTML = `<p class="error-inline">과거분석 데이터를 가져오지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
+  }
 }
 
 // 요약 카드 아래에 상승압력도·투자 위험도·거시경제 점수를 한눈에 보는 작은 원형 배지로 가로 배치(상세 근거는 5·6·7번 섹션 참고)
@@ -1625,14 +1712,15 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
     const attractiveness = computeAttractivenessScore(metrics);
     const risk = computeRiskScore(metrics, sp500Return);
     const macro = computeMacroScore(macroMetrics);
+    const isIPO = isRecentIPO(metrics.firstTradeDate);
 
     rowEl.innerHTML = `
       <div class="mini-score">
-        <div class="mini-score-circle">${attractiveness.total}</div>
+        <div class="mini-score-circle">${isIPO ? "IPO" : attractiveness.total}</div>
         <span class="mini-score-label">상승압력도</span>
       </div>
       <div class="mini-score">
-        <div class="mini-score-circle risk">${risk.total}</div>
+        <div class="mini-score-circle risk">${isIPO ? "IPO" : risk.total}</div>
         <span class="mini-score-label">투자위험도</span>
       </div>
       <div class="mini-score">
@@ -1848,14 +1936,15 @@ async function renderPeers(ticker, selfMetricsPromise, sector) {
     .map((d) => {
       const pct = clamp(((d.revenue || 0) / maxRev) * 100, 2, 100);
       const score = computeAttractivenessScore(d);
-      const scoreClass = score.total >= 5 ? "delta-up" : "delta-down";
+      const isIPO = isRecentIPO(d.firstTradeDate);
+      const scoreClass = isIPO ? "" : score.total >= 5 ? "delta-up" : "delta-down";
       return `
       <div class="peer-row">
         <span class="bar-label${d.self ? " self" : ""}">${escapeHtml(d.symbol)}</span>
         <div class="bar-track"><div class="bar-fill ${d.self ? "self" : ""}" style="width:${pct}%"></div></div>
         <span class="bar-value">${fmtCompactCurrency(d.revenue)}</span>
         <span class="peer-price">${fmtCompactCurrency(d.marketCap)}</span>
-        <span class="peer-score ${scoreClass}">${score.total}</span>
+        <span class="peer-score ${scoreClass}">${isIPO ? "IPO" : score.total}</span>
       </div>`;
     })
     .join("");
@@ -1912,11 +2001,12 @@ async function renderScore(selfMetricsPromise) {
 
   const score = computeAttractivenessScore(metrics);
   const { total, volumeScore, volumeRatio, growthScore, revenueGrowthYoY, momentumScore, momentum3m } = score;
+  const isIPO = isRecentIPO(metrics.firstTradeDate);
 
   el("scoreSection").innerHTML = `
     <div class="score-wrap">
       <div class="score-badge">
-        <div class="score-num">${total}</div>
+        <div class="score-num${isIPO ? " ipo-label" : ""}">${isIPO ? "IPO" : total}</div>
         <div class="score-den">/ 10</div>
       </div>
       <div class="score-details">
@@ -1952,11 +2042,12 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
     vtsaxScore,
     vtsaxWeightPct,
   } = computeRiskScore(metrics, sp500Return);
+  const isIPO = isRecentIPO(metrics.firstTradeDate);
 
   el("riskSection").innerHTML = `
     <div class="score-wrap">
       <div class="score-badge risk">
-        <div class="score-num">${total}</div>
+        <div class="score-num${isIPO ? " ipo-label" : ""}">${isIPO ? "IPO" : total}</div>
         <div class="score-den">/ 10</div>
       </div>
       <div class="score-details">
@@ -2042,6 +2133,7 @@ async function renderRankedTop10(
           risk: risk.total,
           combined,
           fiveDayExtremes: m.fiveDayExtremes,
+          isIPO: isRecentIPO(m.firstTradeDate),
         };
       })
       .filter(Boolean)
@@ -2065,9 +2157,9 @@ async function renderRankedTop10(
         <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></td>
         <td>${r.price !== undefined && r.price !== null ? priceChartLink(r.symbol, "$" + r.price.toFixed(2)) : "N/A"}</td>
         ${showMarketCap ? `<td>${r.marketCap ? fmtCompactCurrency(r.marketCap) : "N/A"}</td>` : ""}
-        <td>${r.attractiveness}/10</td>
-        <td>${r.risk}/10</td>
-        <td><b>${r.combined}/20</b></td>
+        <td>${r.isIPO ? "IPO" : `${r.attractiveness}/10`}</td>
+        <td>${r.isIPO ? "IPO" : `${r.risk}/10`}</td>
+        <td><b>${r.isIPO ? "IPO" : `${r.combined}/20`}</b></td>
       </tr>`
       )
       .join("");
@@ -2267,13 +2359,11 @@ function buildHistoricalCompareRows(tickerMetricsList, historicalList) {
     .map((m, i) => {
       const h = historicalList[i];
       if (!h) return null;
-      const marketCapChangePct = h.historicalMarketCap ? ((m.marketCap - h.historicalMarketCap) / h.historicalMarketCap) * 100 : null;
       const priceChangePct = h.historicalPrice ? ((m.price - h.historicalPrice) / h.historicalPrice) * 100 : null;
       return {
         symbol: m.symbol,
+        name: m.name,
         currentPrice: m.price,
-        currentMarketCap: m.marketCap,
-        marketCapChangePct,
         priceChangePct,
         historicalAttractiveness: h.historicalAttractiveness,
         historicalRisk: h.historicalRisk,
@@ -2283,15 +2373,15 @@ function buildHistoricalCompareRows(tickerMetricsList, historicalList) {
     .filter(Boolean);
 }
 
-// buildHistoricalCompareRows 결과로 과거분석 표 HTML(범례 제외)을 생성 — rankColumnLabel만 호출부마다 다름
+// buildHistoricalCompareRows 결과로 과거분석 표 HTML(범례 제외)을 생성 — moversTableHtml과 동일한 5컬럼 구성(순위/티커/현재가(등락률)/상승압력/투자위험)
+// rankColumnLabel만 호출부마다 다름
 function historicalTableHtml(rows, rankColumnLabel) {
   const tableRows = rows
     .map(
       (r, i) => `
       <tr>
         <td>${i + 1}</td>
-        <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></td>
-        <td>${fmtCompactCurrency(r.currentMarketCap)}<br><span class="${r.marketCapChangePct !== null && r.marketCapChangePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">${r.marketCapChangePct !== null ? fmtPct(r.marketCapChangePct) : "N/A"}</span></td>
+        <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b>${r.name ? `<br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span>` : ""}</td>
         <td>${priceChartLink(r.symbol, "$" + r.currentPrice.toFixed(2))}<br><span class="${r.priceChangePct !== null && r.priceChangePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">${r.priceChangePct !== null ? fmtPct(r.priceChangePct) : "N/A"}</span></td>
         <td>${r.historicalAttractiveness}/10</td>
         <td>${r.historicalRisk}/10</td>
@@ -2302,7 +2392,7 @@ function historicalTableHtml(rows, rankColumnLabel) {
   return `
     <table class="top30-table">
       <thead>
-        <tr><th>${rankColumnLabel}</th><th>티커</th><th>시가총액<br>(증감률)</th><th>현재가<br>(등락률)</th><th>당시<br>상승압력</th><th>당시<br>투자위험</th></tr>
+        <tr><th>${rankColumnLabel}</th><th>티커</th><th>현재가<br>(등락률)</th><th>상승<br>압력</th><th>투자<br>위험</th></tr>
       </thead>
       <tbody>${tableRows}</tbody>
     </table>
@@ -2371,7 +2461,7 @@ async function runHistoricalAnalysis(direction) {
     historicalResults.innerHTML = `
       ${historicalTableHtml(rows, `${rankLabel}<br>순위`)}
       <p class="disclaimer">
-        <span style="filter:grayscale(1);">📢</span> S&P500 중 <b>1년 ${rankLabel}이 ${isUp ? "높은" : "큰(많이 내린)"} 순</b> 상위 30개 종목입니다. ${refDateStr}(기준월 첫 거래일) 대비 현재까지의 시가총액·주가 변화와
+        <span style="filter:grayscale(1);">📢</span> S&P500 중 <b>1년 ${rankLabel}이 ${isUp ? "높은" : "큰(많이 내린)"} 순</b> 상위 30개 종목입니다. ${refDateStr}(기준월 첫 거래일) 대비 현재까지의 주가 변화와
         ${refDateStr} 당시 기준으로 근사 계산한 상승압력도·투자 위험도 점수를 함께 보여주는 참고용 정보입니다. 당시 점수는 그 시점까지의 차트·재무 데이터로
         근사 계산한 값이라 실제와 다소 차이가 있을 수 있으며, 투자 자문이나 매수/매도 추천이 아닙니다. 기준 시점은 매달 1일이 지나면 한 달씩 자동으로 이동합니다.
       </p>
@@ -2425,13 +2515,14 @@ function moversTableHtml(scored, rankNote) {
   const rows = scored
     .map((r, i) => {
       const changeClass = r.changePct >= 0 ? "delta-up" : "delta-down";
+      const sectorIcon = r.sector && SECTOR_ICON[r.sector] ? `<span title="${escapeHtml(SECTOR_KO[r.sector] || r.sector)}">${SECTOR_ICON[r.sector]}</span> ` : "";
       return `
       <tr>
         <td>${i + 1}${surgeWarningEmoji(r.fiveDayExtremes)}</td>
-        <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
+        <td>${sectorIcon}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
         <td>${priceChartLink(r.symbol, "$" + r.price.toFixed(2))}<br><span class="${changeClass}" style="font-size:11px;">(${fmtPct(r.changePct)})</span></td>
-        <td class="${scoreClass(r.attractiveness)}"><b>${r.attractiveness !== null ? r.attractiveness : "N/A"}</b></td>
-        <td class="${scoreClass(r.risk)}"><b>${r.risk !== null ? r.risk : "N/A"}</b></td>
+        <td class="${r.isIPO ? "" : scoreClass(r.attractiveness)}"><b>${scoreCellText(r.attractiveness, r.isIPO)}</b></td>
+        <td class="${r.isIPO ? "" : scoreClass(r.risk)}"><b>${scoreCellText(r.risk, r.isIPO)}</b></td>
       </tr>`;
     })
     .join("");
@@ -2469,13 +2560,23 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
       statusEl.style.display = "block";
       statusEl.textContent = "상승압력도 · 투자 위험도 점수를 계산하는 중...";
       // 한꺼번에 요청하면 프록시가 과부하로 실패하는 경우가 많아 동시 요청 수를 제한
-      const fullMetricsList = await mapWithConcurrency(pending, 3, (r) => getFullMetrics(r.symbol));
+      // 섹터 아이콘 표시용으로 sector도 병렬 조회(이 표들에서만 종목당 호출이 1개 늘어남)
+      const [fullMetricsList, sectorList] = await Promise.all([
+        mapWithConcurrency(pending, 3, (r) => getFullMetrics(r.symbol)),
+        mapWithConcurrency(pending, 3, (r) =>
+          yahooSearch(r.symbol)
+            .then((d) => d?.quotes?.[0]?.sector || d?.quotes?.[0]?.sectorDisp || null)
+            .catch(() => null)
+        ),
+      ]);
       const newlyScored = pending.map((r, i) => {
         const m = fullMetricsList[i];
-        if (!m) return { ...r, attractiveness: null, risk: null, fiveDayExtremes: null };
+        const sector = sectorList[i];
+        if (!m) return { ...r, attractiveness: null, risk: null, fiveDayExtremes: null, isIPO: false, sector };
+        const isIPO = isRecentIPO(m.firstTradeDate);
         const attractiveness = computeAttractivenessScore(m);
         const risk = computeRiskScore(m, sp500Return);
-        return { ...r, attractiveness: attractiveness.total, risk: risk.total, fiveDayExtremes: m.fiveDayExtremes };
+        return { ...r, attractiveness: attractiveness.total, risk: risk.total, fiveDayExtremes: m.fiveDayExtremes, isIPO, sector };
       });
       scored = scored.concat(newlyScored);
     }
@@ -2503,6 +2604,55 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
   }
 
   await scoreUpTo(initialCount);
+}
+
+// ---------- 지수: 미국·한국 주요 지수 실시간 등락 ----------
+const INDEX_LIST = [
+  { symbol: "^GSPC", name: "S&P500", flag: "🇺🇸" },
+  { symbol: "^NDX", name: "나스닥100", flag: "🇺🇸" },
+  { symbol: "^DJI", name: "다우존스", flag: "🇺🇸" },
+  { symbol: "^IXIC", name: "나스닥종합", flag: "🇺🇸" },
+  { symbol: "^KS11", name: "코스피", flag: "🇰🇷" },
+  { symbol: "^KQ11", name: "코스닥", flag: "🇰🇷" },
+];
+async function runIndexTab() {
+  indexStatus.style.display = "block";
+  indexStatus.textContent = "지수 데이터를 불러오는 중...";
+
+  try {
+    const results = await mapWithConcurrency(INDEX_LIST, 6, async (idx) => {
+      const chart = await yahooChart(idx.symbol, "5d", "1d");
+      const changePct = getDailyChangePercent(chart);
+      const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
+      return { ...idx, price: meta ? meta.regularMarketPrice : null, changePct };
+    });
+
+    const rows = results
+      .map(
+        (r) => `
+      <tr>
+        <td>${r.flag} <b>${escapeHtml(r.name)}</b></td>
+        <td>${r.price !== null && r.price !== undefined ? r.price.toLocaleString("ko-KR", { maximumFractionDigits: 2 }) : "N/A"}</td>
+        <td class="${r.changePct !== null && r.changePct >= 0 ? "delta-up" : "delta-down"}">${r.changePct !== null ? fmtPct(r.changePct) : "N/A"}</td>
+      </tr>`
+      )
+      .join("");
+
+    indexStatus.style.display = "none";
+    indexResults.innerHTML = `
+      <table class="top30-table">
+        <thead>
+          <tr><th>지수</th><th>현재가</th><th>등락률</th></tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <p class="disclaimer">
+        <span style="filter:grayscale(1);">📢</span> S&P500·나스닥100·다우존스·나스닥종합은 미국 지수, 코스피·코스닥은 한국 지수이며 전일 종가 대비 등락률입니다. 투자 자문이 아닙니다.
+      </p>
+    `;
+  } catch (err) {
+    indexStatus.textContent = `❌ ${err.message || "지수 데이터를 가져오지 못했습니다."}`;
+  }
 }
 
 // ---------- 인기종목: 당일 거래대금(가격 × 거래량) 상위 20개, 접속 시 10개만 먼저 표시 ----------
