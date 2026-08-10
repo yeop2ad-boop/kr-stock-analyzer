@@ -21,10 +21,6 @@ const popularStatus = el("popularStatus");
 const popularResults = el("popularResults");
 const indexStatus = el("indexStatus");
 const indexResults = el("indexResults");
-const surgeStatus = el("surgeStatus");
-const surgeResults = el("surgeResults");
-const plungeStatus = el("plungeStatus");
-const plungeResults = el("plungeResults");
 const top30Status = el("top30Status");
 const top30Results = el("top30Results");
 const contactBtn = el("contactBtn");
@@ -1336,15 +1332,13 @@ window.addEventListener("resize", syncHeaderHeight);
 new ResizeObserver(syncHeaderHeight).observe(fixedHeader);
 syncHeaderHeight();
 
-// ---------- 7탭 스와이프 캐로셀(기업검색/인기종목/과거분석/급등주/급락주/TOP30/미래예측) ----------
-const TAB_ORDER = ["search", "popular", "index", "historical", "surge", "plunge", "top30", "future"];
+// ---------- 스와이프 캐로셀(기업검색/인기종목/지수/과거분석/TOP30/미래예측) — 급등주·급락주는 TOP30 탭 내 버튼으로 통합 ----------
+const TAB_ORDER = ["search", "popular", "index", "historical", "top30", "future"];
 const panels = {
   search: el("panelSearch"),
   popular: el("panelPopular"),
   index: el("panelIndex"),
   historical: el("panelHistorical"),
-  surge: el("panelSurge"),
-  plunge: el("panelPlunge"),
   top30: el("panelTop30"),
   future: el("panelFuture"),
 };
@@ -1353,17 +1347,17 @@ const tabButtons = {
   popular: el("tabPopularBtn"),
   index: el("tabIndexBtn"),
   historical: el("tabHistoricalBtn"),
-  surge: el("tabSurgeBtn"),
-  plunge: el("tabPlungeBtn"),
   top30: el("tabTop30Btn"),
   future: el("tabFutureBtn"),
 };
 const top30Buttons = {
-  nasdaq100: el("top30Nasdaq100Btn"),
-  sp500: el("top30Sp500Btn"),
+  surge: el("top30SurgeBtn"),
+  plunge: el("top30PlungeBtn"),
   undervalued: el("top30UndervaluedBtn"),
   lowRisk: el("top30LowRiskBtn"),
   marketCap: el("top30MarketCapBtn"),
+  nasdaq100: el("top30Nasdaq100Btn"),
+  sp500: el("top30Sp500Btn"),
 };
 
 let activeTabIndex = 0;
@@ -1410,10 +1404,9 @@ const TAB_LOADERS = {
   popular: () => runPopular(),
   index: () => runIndexTab(),
   historical: () => runHistoricalQuick(),
-  surge: () => runMovers("surge"),
-  plunge: () => runMovers("plunge"),
+  top30: () => runMovers("surge"), // TOP30 진입 시 첫 버튼(급등주)을 자동 표시
   // search: navigateToTicker()가 직접 담당(항상 최신 검색어를 반영해야 하므로 캐시 대상에서 제외)
-  // top30/future: 자동 로딩 없음(top30은 서브 버튼 클릭 시, future는 준비중 안내만)
+  // future: 준비중 안내만
 };
 const tabLoadPromises = {};
 function ensureTabLoaded(key) {
@@ -1545,8 +1538,7 @@ document.addEventListener("click", (e) => {
     await ensureTabLoaded("popular");
     await ensureTabLoaded("index");
     await ensureTabLoaded("historical");
-    await ensureTabLoaded("surge");
-    await ensureTabLoaded("plunge");
+    await ensureTabLoaded("top30"); // 급등주 미리 로딩(진입 시 바로 표시)
   })();
 })();
 
@@ -2414,6 +2406,7 @@ async function renderRankedTop10(
   { statusEl, resultsEl, buttons, topN = 10, sortFn = (a, b) => b.combined - a.combined, showMarketCap = false }
 ) {
   buttons.forEach((btn) => (btn.disabled = true));
+  if (buttons[0]) setTop30Active(buttons[0]);
   resultsEl.innerHTML = "";
   statusEl.style.display = "block";
 
@@ -2577,11 +2570,24 @@ async function runMarketCap30() {
   });
 }
 
-top30Buttons.nasdaq100.addEventListener("click", runNasdaq100Universe);
-top30Buttons.sp500.addEventListener("click", runSP500);
-top30Buttons.undervalued.addEventListener("click", runUndervalued30);
-top30Buttons.lowRisk.addEventListener("click", runLowRisk30);
-top30Buttons.marketCap.addEventListener("click", runMarketCap30);
+// TOP30 서브내비에서 현재 선택된 버튼만 활성 표시
+function setTop30Active(activeBtn) {
+  Object.values(top30Buttons).forEach((b) => b && b.classList.toggle("active", b === activeBtn));
+}
+
+// 클릭 즉시 활성 표시(데이터 조회를 기다리지 않도록) 후 해당 목록 로딩
+const bindTop30 = (btn, run) =>
+  btn.addEventListener("click", () => {
+    setTop30Active(btn);
+    run();
+  });
+bindTop30(top30Buttons.surge, () => runMovers("surge"));
+bindTop30(top30Buttons.plunge, () => runMovers("plunge"));
+bindTop30(top30Buttons.nasdaq100, runNasdaq100Universe);
+bindTop30(top30Buttons.sp500, runSP500);
+bindTop30(top30Buttons.undervalued, runUndervalued30);
+bindTop30(top30Buttons.lowRisk, runLowRisk30);
+bindTop30(top30Buttons.marketCap, runMarketCap30);
 
 // 과거분석 대상 종목 1개의 "기준 시점 스냅샷" 지표를 계산 — 2년치 차트로 기준 시점의 52주 범위·모멘텀·매출성장성까지 근사
 // (오늘 기준 데이터는 이미 phase1의 getFullMetrics 결과를 재사용하므로 여기서는 기준 시점 데이터만 새로 조회)
@@ -2900,14 +2906,16 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
         : "");
   }
 
-  // resultsEl.innerHTML이 매번 통째로 교체되므로 더보기 버튼 클릭은 이벤트 위임으로 한 번만 부착
+  // 같은 결과영역(TOP30)을 급등주·급락주 등 여러 목록이 공유하므로, 더보기 클릭은 항상 "가장 최근" 렌더의 핸들러를 호출해야 함
+  // → 리스너는 한 번만 부착하되 실제 동작은 resultsEl._loadMore(최신 scoreUpTo)로 위임(오래된 클로저 호출 방지)
+  resultsEl._loadMore = (count) => scoreUpTo(count);
   if (!resultsEl.dataset.moreBound) {
     resultsEl.addEventListener("click", (e) => {
       const moreBtn = e.target.closest(".load-more-btn");
       if (!moreBtn) return;
       moreBtn.disabled = true;
       moreBtn.textContent = "불러오는 중...";
-      scoreUpTo(Number(moreBtn.dataset.nextCount));
+      resultsEl._loadMore(Number(moreBtn.dataset.nextCount));
     });
     resultsEl.dataset.moreBound = "1";
   }
@@ -3109,12 +3117,11 @@ async function getSP500DailyChanges() {
 
 // ---------- 급등주/급락주: S&P500 종목 중 전일 등락률 상위·하위 50개, 접속 시 10개만 먼저 표시 ----------
 async function runMovers(direction) {
-  const statusEl = direction === "surge" ? surgeStatus : plungeStatus;
-  const resultsEl = direction === "surge" ? surgeResults : plungeResults;
   const label = direction === "surge" ? "급등주" : "급락주";
-  resultsEl.innerHTML = "";
-  statusEl.style.display = "block";
-  statusEl.textContent = `S&P500 ${label}을 불러오는 중...`;
+  setTop30Active(direction === "surge" ? top30Buttons.surge : top30Buttons.plunge);
+  top30Results.innerHTML = "";
+  top30Status.style.display = "block";
+  top30Status.textContent = `S&P500 ${label}을 불러오는 중...`;
 
   try {
     const marketReturnsPromise = getMarketReturns();
@@ -3127,13 +3134,13 @@ async function runMovers(direction) {
       .slice(0, 50);
 
     await scoreAndRenderMovers(sorted, marketReturnsPromise, {
-      statusEl,
-      resultsEl,
+      statusEl: top30Status,
+      resultsEl: top30Results,
       rankNote: `순위는 전일 대비 등락률(${direction === "surge" ? "상승률 높은" : "하락률 큰"} 순) 기준이며, S&P500 편입 종목 중 상위 50개입니다.`,
       initialCount: 10,
       fullCount: 50,
     });
   } catch (err) {
-    statusEl.textContent = `❌ ${err.message || `${label}을 가져오지 못했습니다.`}`;
+    top30Status.textContent = `❌ ${err.message || `${label}을 가져오지 못했습니다.`}`;
   }
 }

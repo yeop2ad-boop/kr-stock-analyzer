@@ -114,6 +114,8 @@ body {
   margin-bottom: 12px;
 }
 .top30-sub-nav::-webkit-scrollbar { display: none; }
+/* 버튼이 많아 가로로 길어져도 각 버튼은 줄어들지 않고 그대로 유지(가로 스크롤로 접근) */
+.top30-sub-nav .cat-btn { flex: 0 0 auto; white-space: nowrap; }
 
 .historical-full-buttons {
   display: flex;

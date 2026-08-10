@@ -56,8 +56,6 @@
       <button type="button" class="cat-btn" data-tab="popular" id="tabPopularBtn">🔥 인기종목</button>
       <button type="button" class="cat-btn" data-tab="index" id="tabIndexBtn">지수</button>
       <button type="button" class="cat-btn" data-tab="historical" id="tabHistoricalBtn">과거분석</button>
-      <button type="button" class="cat-btn" data-tab="surge" id="tabSurgeBtn">급등주</button>
-      <button type="button" class="cat-btn" data-tab="plunge" id="tabPlungeBtn">급락주</button>
       <button type="button" class="cat-btn" data-tab="top30" id="tabTop30Btn">TOP30</button>
       <button type="button" class="cat-btn" data-tab="future" id="tabFutureBtn">미래예측(베타)</button>
     </div>
@@ -151,23 +149,15 @@
         </div>
       </div>
 
-      <div class="carousel-panel" data-panel="surge" id="panelSurge">
-        <p id="surgeStatus" class="muted top30-status" style="display:none;"></p>
-        <div id="surgeResults"></div>
-      </div>
-
-      <div class="carousel-panel" data-panel="plunge" id="panelPlunge">
-        <p id="plungeStatus" class="muted top30-status" style="display:none;"></p>
-        <div id="plungeResults"></div>
-      </div>
-
       <div class="carousel-panel" data-panel="top30" id="panelTop30">
         <div class="top30-sub-nav">
-          <button type="button" class="cat-btn" id="top30Nasdaq100Btn">나스닥100</button>
-          <button type="button" class="cat-btn" id="top30Sp500Btn">S&amp;P500</button>
+          <button type="button" class="cat-btn" id="top30SurgeBtn">급등주</button>
+          <button type="button" class="cat-btn" id="top30PlungeBtn">급락주</button>
           <button type="button" class="cat-btn" id="top30UndervaluedBtn">상승압력</button>
           <button type="button" class="cat-btn" id="top30LowRiskBtn">저위험</button>
           <button type="button" class="cat-btn" id="top30MarketCapBtn">시가총액</button>
+          <button type="button" class="cat-btn" id="top30Nasdaq100Btn">나스닥100</button>
+          <button type="button" class="cat-btn" id="top30Sp500Btn">S&amp;P500</button>
         </div>
         <p id="top30Status" class="muted top30-status" style="display:none;"></p>
         <div id="top30Results"></div>
