@@ -731,7 +731,7 @@ function latestAnnualRevenueYoY(revenueAnnualSeries) {
   return ((latest - prev) / Math.abs(prev)) * 100;
 }
 
-// 상승압력도 + 투자 위험도 점수 계산에 필요한 모든 지표를 한 번(차트 1회 + 재무제표 1회)에 조회 (TOP30 랭킹용)
+// 상승압력도 + 투자 안정성 점수 계산에 필요한 모든 지표를 한 번(차트 1회 + 재무제표 1회)에 조회 (TOP30 랭킹용)
 async function getFullMetrics(symbol) {
   const [chartData, fundData] = await Promise.all([
     yahooChart(symbol),
@@ -803,6 +803,7 @@ const UNRATED_REASON = "미평가";
 
 const TICKER_CREDIT_RATING = {
   PLTR: NO_DEBT_RATING,
+  CRCL: NO_DEBT_RATING, // 서클(2025 IPO, USDC 발행사) — S&P·Moody's 발행자 등급 미확인, 유이자부채 거의 없음(D/E~0.01)
   MSFT: "AAA", JNJ: "AAA", ADP: "AAA",
   AAPL: "AA+", GOOGL: "AA+", GOOG: "AA+",
   "BRK-B": "AA", "BRK-A": "AA", AMZN: "AA", WMT: "AA", CVX: "AA",
@@ -1001,7 +1002,7 @@ const CREDIT_RATING_SCORE = {
   AAA: 4, "AA+": 3.5, AA: 3, "AA-": 2.5, "A+": 2, A: 1.5, "A-": 1, "BBB+": 0.5,
 };
 
-// 투자등급(신용등급) + S&P500 대비 모멘텀 + 순이익률 + 시가총액 가점을 조합한 참고용 투자 위험도 점수(10점 만점, 높을수록 위험이 낮음)
+// 투자등급(신용등급) + S&P500 대비 모멘텀 + 순이익률 + 시가총액 가점을 조합한 참고용 투자 안정성 점수(10점 만점, 높을수록 위험이 낮음)
 function computeRiskScore(metrics, sp500Return) {
   const { symbol, oneYearReturn, netIncome, revenue, marketCap, currency } = metrics;
 
@@ -1254,10 +1255,10 @@ function surgeWarningEmoji(fiveDayExtremes) {
   const icons = `${hasSurge ? "🔥" : ""}${hasPlunge ? "⚠️" : ""}`;
   return ` <span title="${SURGE_WARNING_TITLE}">${icons}</span>`;
 }
-// 순위 표 위에 붙이는 경고 이모지 범례 + 상승압력/투자위험 점수 의미 설명
+// 순위 표 위에 붙이는 경고 이모지 범례 + 상승압력/투자안정 점수 의미 설명
 const SURGE_WARNING_LEGEND = `
   <p class="muted" style="font-size:11px;margin:0 0 4px;opacity:0.65;">🔥 급등 · ⚠️ 급락 — ${SURGE_WARNING_TITLE}</p>
-  <p class="muted" style="font-size:11px;margin:0 0 2px;opacity:0.65;">📈 상승압력 — 현재 상승 압력이 높음을 의미<br>🛡️ 투자위험 — 1년 후 하락 가능성이 낮음을 의미</p>
+  <p class="muted" style="font-size:11px;margin:0 0 2px;opacity:0.65;">📈 상승압력 — 현재 상승 압력이 높음을 의미<br>🛡️ 투자안정 — 1년 후 하락 가능성이 낮음을 의미</p>
 `;
 
 function clamp(n, min, max) {
@@ -1879,7 +1880,7 @@ async function runAnalysis(ticker) {
     });
 
     // 나스닥·다우존스·S&P500 1년 수익률과, 분석 대상 자신의 지표(차트+재무제표)는
-    // 경쟁사 비교(3)·상승압력도(5)·투자 위험도(6) 섹션이 각자 다시 조회하지 않고 공유해서
+    // 경쟁사 비교(3)·상승압력도(5)·투자 안정성(6) 섹션이 각자 다시 조회하지 않고 공유해서
     // 프록시 요청 수를 줄이고(속도·안정성 향상) 값도 서로 어긋나지 않도록 함
     const marketReturnsPromise = getMarketReturns();
     const selfMetricsPromise = getFullMetrics(ticker);
@@ -1899,7 +1900,7 @@ async function runAnalysis(ticker) {
     });
 
     renderRisk(marketReturnsPromise, selfMetricsPromise).catch((e) => {
-      el("riskSection").innerHTML = `<p class="error-inline">투자 위험도 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
+      el("riskSection").innerHTML = `<p class="error-inline">투자 안정성 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
     renderMacro().catch((e) => {
@@ -1998,7 +1999,7 @@ async function runTickerHistorical(ticker, container) {
   }
 }
 
-// 요약 카드 아래에 상승압력도·투자 위험도·거시경제 점수를 한눈에 보는 작은 원형 배지로 가로 배치(상세 근거는 5·6·7번 섹션 참고)
+// 요약 카드 아래에 상승압력도·투자 안정성·거시경제 점수를 한눈에 보는 작은 원형 배지로 가로 배치(상세 근거는 5·6·7번 섹션 참고)
 async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
   const rowEl = el("summaryScoreRow");
   try {
@@ -2019,7 +2020,7 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
       </div>
       <div class="mini-score">
         <div class="mini-score-circle risk">${isIPO ? "IPO" : risk.total}</div>
-        <span class="mini-score-label">투자위험도</span>
+        <span class="mini-score-label">투자안정성</span>
       </div>
       <div class="mini-score">
         <div class="mini-score-circle macro">${macro.total}</div>
@@ -2250,7 +2251,7 @@ async function renderPeers(ticker, selfMetricsPromise, sector) {
   el("peersSection").innerHTML = `
     <p class="muted">최근 회계연도 매출액 기준 비교 (${bySector ? "동일 섹터 시가총액 TOP3 + 시총 유사 종목 1개" : "자동 감지된 관련 종목"})</p>
     <div class="peer-table-header">
-      <span></span><span></span><span>매출액</span><span>시가총액</span><span>상승압력</span>
+      <span></span><span></span><span>매출액</span><span>시가총액</span><span>상승력</span>
     </div>
     <div class="bar-chart">${rows}</div>
   `;
@@ -2323,7 +2324,7 @@ async function renderScore(selfMetricsPromise) {
   `;
 }
 
-// ---------- 6. 투자 위험도 점수 (vs S&P500, 점수가 높을수록 위험이 낮음) ----------
+// ---------- 6. 투자 안정성 점수 (vs S&P500, 점수가 높을수록 위험이 낮음) ----------
 async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
   el("riskSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
@@ -2399,7 +2400,7 @@ async function renderMacro() {
   `;
 }
 
-// ---------- 구간별 TOP N 공용 렌더러: 종목 목록을 받아 상승압력도 + 투자 위험도 합산 상위 N개를 표시(topN 기본값 10) ----------
+// ---------- 구간별 TOP N 공용 렌더러: 종목 목록을 받아 상승압력도 + 투자 안정성 합산 상위 N개를 표시(topN 기본값 10) ----------
 async function renderRankedTop10(
   tickers,
   rangeLabel,
@@ -2464,11 +2465,11 @@ async function renderRankedTop10(
       .join("");
 
     resultsEl.innerHTML = `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 순위는 상승압력(10점) + 투자위험(10점)을 단순 합산한 점수(20점 만점) 기준이며 투자 자문이 아닙니다.</p>
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 순위는 상승압력(10점) + 투자안정(10점)을 단순 합산한 점수(20점 만점) 기준이며 투자 자문이 아닙니다.</p>
       ${SURGE_WARNING_LEGEND}
       <table class="top30-table">
         <thead>
-          <tr><th>순위</th><th>티커</th><th>현재가</th>${showMarketCap ? "<th>시가총액</th>" : ""}<th>상승<br>압력</th><th>투자<br>위험</th><th>합산 점수</th></tr>
+          <tr><th>순위</th><th>티커</th><th>현재가</th>${showMarketCap ? "<th>시가총액</th>" : ""}<th>상승<br>압력</th><th>투자<br>안정</th><th>합산 점수</th></tr>
         </thead>
         <tbody>${rows}</tbody>
       </table>
@@ -2515,7 +2516,7 @@ async function runSP500() {
   });
 }
 
-// S&P500 전체 종목 중 투자위험도 TOP30(점수가 같으면 상승압력도가 높은 순)
+// S&P500 전체 종목 중 투자안정성 TOP30(점수가 같으면 상승압력도가 높은 순)
 async function runLowRisk30() {
   top30Status.style.display = "block";
   top30Status.textContent = "S&P500 종목 목록을 불러오는 중...";
@@ -2533,7 +2534,7 @@ async function runLowRisk30() {
   });
 }
 
-// S&P500 전체 종목 중 상승압력도 TOP30(점수가 같으면 투자위험도가 높은 순)
+// S&P500 전체 종목 중 상승압력도 TOP30(점수가 같으면 투자안정성가 높은 순)
 async function runUndervalued30() {
   top30Status.style.display = "block";
   top30Status.textContent = "S&P500 종목 목록을 불러오는 중...";
@@ -2705,7 +2706,7 @@ function tickerLogoHtml(symbol) {
   return `<span class="ticker-logo-wrap"><img class="ticker-logo" src="${primary}" alt="${s}" loading="lazy"${fb} onerror="${LOGO_ONERROR}" /><span class="ticker-logo-badge" style="display:none;">${s.slice(0, 2)}</span></span>`;
 }
 
-// buildHistoricalCompareRows 결과로 과거분석 표 HTML(범례 제외)을 생성 — moversTableHtml과 동일한 5컬럼 구성(순위/티커+원형로고/현재가(등락률)/상승압력/투자위험)
+// buildHistoricalCompareRows 결과로 과거분석 표 HTML(범례 제외)을 생성 — moversTableHtml과 동일한 5컬럼 구성(순위/티커+원형로고/현재가(등락률)/상승압력/투자안정)
 // rankColumnLabel만 호출부마다 다름
 function historicalTableHtml(rows, rankColumnLabel) {
   const scoreClass = (score) => (score === null ? "" : score > 5 ? "delta-up" : score < 5 ? "delta-down" : "");
@@ -2723,10 +2724,10 @@ function historicalTableHtml(rows, rankColumnLabel) {
     .join("");
 
   return `
-    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 1년전 상승압력·투자위험은 <b>1년 전 시점</b> 기준으로 근사 계산한 참고용 점수입니다(각 10점 만점, 높을수록 상승 여력 크고·위험 낮음 / 5점보다 높으면 초록·낮으면 빨강). 투자 자문이 아닙니다.</p>
+    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 1년전 상승압력·투자안정은 <b>1년 전 시점</b> 기준으로 근사 계산한 참고용 점수입니다(각 10점 만점, 높을수록 상승 여력 크고·재무 안정적 / 5점보다 높으면 초록·낮으면 빨강). 투자 자문이 아닙니다.</p>
     <table class="top30-table">
       <thead>
-        <tr><th>${rankColumnLabel}</th><th>티커</th><th>현재가<br>(등락률)</th><th>1년전<br>상승압력</th><th>1년전<br>투자위험</th></tr>
+        <tr><th>${rankColumnLabel}</th><th>티커</th><th>현재가<br>(등락률)</th><th>1년전<br>상승압력</th><th>1년전<br>투자안정</th></tr>
       </thead>
       <tbody>${tableRows}</tbody>
     </table>
@@ -2836,7 +2837,7 @@ async function runHistoricalQuick() {
   }
 }
 
-// 티커/현재가(+등락률)/상승압력/투자위험 5열 표 — 인기종목·급등주·급락주가 공유하는 렌더러
+// 티커/현재가(+등락률)/상승압력/투자안정 5열 표 — 인기종목·급등주·급락주가 공유하는 렌더러
 function moversTableHtml(scored, rankNote) {
   const scoreClass = (score) => (score === null ? "" : score > 5 ? "delta-up" : score < 5 ? "delta-down" : "");
 
@@ -2855,12 +2856,12 @@ function moversTableHtml(scored, rankNote) {
     .join("");
 
   return `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${rankNote} 상승압력·투자위험은 각 10점 만점(5점보다 높으면 초록·낮으면 빨강)이며 투자 자문이 아닙니다.</p>
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${rankNote} 상승압력·투자안정은 각 10점 만점(5점보다 높으면 초록·낮으면 빨강)이며 투자 자문이 아닙니다.</p>
       ${SURGE_WARNING_LEGEND}
       <div class="popular-table-wrap">
         <table class="top30-table popular-table">
           <thead>
-            <tr><th>순위</th><th>티커</th><th>현재가</th><th>상승<br>압력</th><th>투자<br>위험</th></tr>
+            <tr><th>순위</th><th>티커</th><th>현재가</th><th>상승<br>압력</th><th>투자<br>안정</th></tr>
           </thead>
           <tbody>${rows}</tbody>
         </table>
@@ -2868,7 +2869,7 @@ function moversTableHtml(scored, rankNote) {
     `;
 }
 
-// 후보 목록(가벼운 조회로 얻은 심볼/현재가/등락률)에 대해 상승압력도·투자 위험도 점수를 매겨 표 HTML까지 완성
+// 후보 목록(가벼운 조회로 얻은 심볼/현재가/등락률)에 대해 상승압력도·투자 안정성 점수를 매겨 표 HTML까지 완성
 // marketReturnsPromise는 후보 목록을 모으는 동안 미리 병렬로 시작해둔 getMarketReturns() 호출을 전달받음
 // initialCount만큼만 먼저 스코어링해 빠르게 보여주고, "더보기" 클릭 시 fullCount까지 나머지를 추가로 스코어링(이미 계산한 항목은 재요청하지 않음)
 async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl, resultsEl, rankNote, initialCount, fullCount }) {
@@ -2882,7 +2883,7 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
     const pending = candidates.slice(scored.length, count);
     if (pending.length > 0) {
       statusEl.style.display = "block";
-      statusEl.textContent = "상승압력도 · 투자 위험도 점수를 계산하는 중...";
+      statusEl.textContent = "상승압력도 · 투자 안정성 점수를 계산하는 중...";
       // 한꺼번에 요청하면 프록시가 과부하로 실패하는 경우가 많아 동시 요청 수를 제한
       const fullMetricsList = await mapWithConcurrency(pending, 3, (r) => getFullMetrics(r.symbol));
       const newlyScored = pending.map((r, i) => {
