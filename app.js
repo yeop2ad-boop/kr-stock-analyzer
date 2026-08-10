@@ -1763,8 +1763,9 @@ const KOREAN_COMPANY_NAMES = {
   레딧: "RDDT",
   대만반도체: "TSM",
   타이완반도체: "TSM",
-  하이닉스: "000660.KS",
-  에스케이하이닉스: "000660.KS",
+  하이닉스: "SKHY",
+  에스케이하이닉스: "SKHY",
+  에스케이하이닉스adr: "SKHY",
 };
 
 let mainTickerSuggestTimer = null;
@@ -2731,9 +2732,12 @@ function logoSources(symbol, size) {
 const LOGO_ONERROR = "var f=this.dataset.fallback; if(f){this.removeAttribute('data-fallback');this.src=f;}else{this.style.display='none';this.nextElementSibling.style.display='flex';}";
 
 // 특정 종목은 자체 호스팅한 지정 로고로 대체(자동 소스 화질/누락 문제 대응). bg로 원 배경색을 채워 로고가 잘리지 않게 함.
+const SKHYNIX_LOGO = { src: "logos/skhynix.png", bg: "#ffffff" };
 const LOGO_OVERRIDE = {
   // 스페이스X(SPCX)는 기존 자동 로고 유지 — 전역 인셋(72%)으로 축소되어 잘리지 않음
-  "000660.KS": { src: "logos/skhynix.png", bg: "#ffffff" }, // SK하이닉스 — 지정 로고
+  SKHY: SKHYNIX_LOGO, // SK하이닉스 나스닥 ADR(2026-07 상장)
+  SKHYV: SKHYNIX_LOGO, // 상장 초기 임시 심볼
+  "000660.KS": SKHYNIX_LOGO, // 한국거래소 원주
 };
 
 function tickerLogoHtml(symbol) {
