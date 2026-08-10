@@ -1778,6 +1778,12 @@ const KOREAN_COMPANY_NAMES = {
   에스케이하이닉스adr: "SKHY",
 };
 
+// 티커 → 한글명 역매핑(KOREAN_COMPANY_NAMES 재사용) — 같은 티커에 별칭이 여러 개면 먼저 나오는 것을 사용
+const TICKER_TO_KOREAN_NAME = {};
+for (const [ko, tk] of Object.entries(KOREAN_COMPANY_NAMES)) {
+  if (!TICKER_TO_KOREAN_NAME[tk]) TICKER_TO_KOREAN_NAME[tk] = ko;
+}
+
 let mainTickerSuggestTimer = null;
 function hideMainTickerSuggest() {
   tickerSuggest.style.display = "none";
@@ -3404,7 +3410,6 @@ function buildFutureChartSvg(data) {
 }
 
 function renderFutureChart(data) {
-  el("futureChartModalTitle").textContent = data.ticker;
   el("futureChartContainer").innerHTML = buildFutureChartSvg(data);
   const yearsNote = data.historicalBuckets.length
     ? `흰색: 과거 ${data.historicalBuckets.length}개년(전후 6개월) 계절성 흐름 · `
@@ -3566,14 +3571,53 @@ function buildFutureRiskChartSvg({ history, currentReturn, bucket }) {
   </svg>`;
 }
 
-async function renderFutureRiskSection(ticker) {
+// 미래예측 모달 상단(틀고정 헤더): 로고-한글이름-영어티커-상승압력/투자안정성/거시경제(원형 점수)를 한 줄로 표시
+async function renderFutureModalHeader(ticker, quote, metricsPromise, marketReturnsPromise) {
+  const titleEl = el("futureChartModalTitle");
+  const koName = TICKER_TO_KOREAN_NAME[ticker] || (quote && (quote.longname || quote.shortname)) || ticker;
+  titleEl.innerHTML = `
+    <span class="future-modal-identity">
+      ${tickerLogoHtml(ticker)}
+      <span class="future-modal-name">${escapeHtml(koName)}</span>
+      <span class="future-modal-ticker">${escapeHtml(ticker)}</span>
+    </span>
+    <span class="future-modal-scores" id="futureModalScores">
+      <span class="mini-score-circle small">·</span>
+      <span class="mini-score-circle small risk">·</span>
+      <span class="mini-score-circle small macro">·</span>
+    </span>
+  `;
+  try {
+    const [metrics, marketReturns, macroMetrics] = await Promise.all([
+      metricsPromise,
+      marketReturnsPromise,
+      getMacroMetrics().catch(() => ({ m2Yoy: null, spread: null })),
+    ]);
+    const attractiveness = computeAttractivenessScore(metrics);
+    const risk = computeRiskScore(metrics, marketReturns.sp500Return);
+    const macro = computeMacroScore(macroMetrics);
+    const isIPO = isRecentIPO(metrics.firstTradeDate);
+    const scoresEl = el("futureModalScores");
+    if (scoresEl) {
+      scoresEl.innerHTML = `
+        <span class="mini-score-circle small" title="상승압력도">${isIPO ? "IPO" : attractiveness.total}</span>
+        <span class="mini-score-circle small risk" title="투자안정성">${isIPO ? "IPO" : risk.total}</span>
+        <span class="mini-score-circle small macro" title="거시경제">${macro.total}</span>
+      `;
+    }
+  } catch {
+    // 점수 계산이 실패해도 로고·이름·티커는 그대로 유지
+  }
+}
+
+async function renderFutureRiskSection(ticker, metricsPromise, marketReturnsPromise) {
   const riskContainer = el("futureRiskContainer");
   const riskCaption = el("futureRiskCaption");
   riskContainer.innerHTML = `<p class="muted" style="text-align:center;padding:20px 0;">투자안정성 구간별 통계를 불러오는 중...</p>`;
   riskCaption.textContent = "";
 
   try {
-    const [metrics, marketReturns] = await Promise.all([getFullMetrics(ticker), getMarketReturns()]);
+    const [metrics, marketReturns] = await Promise.all([metricsPromise, marketReturnsPromise]);
     const riskScore = computeRiskScore(metrics, marketReturns.sp500Return);
     const bucket = clamp(Math.floor(riskScore.total), 0, 9);
     const { history } = await fetchFutureRiskBands(bucket);
@@ -3610,7 +3654,12 @@ async function runFuturePrediction() {
     }
     const data = await computeFuturePrediction(ticker);
     renderFutureChart(data);
-    renderFutureRiskSection(ticker); // 2번째 그래프는 별도 API 호출이라 독립적으로 로딩(실패해도 1번째 그래프는 그대로 유지)
+
+    // 상단 틀고정 헤더(로고·이름·점수)와 2번째 그래프가 같은 지표(상승압력도/투자안정성)를 쓰므로 fetch를 한 번만 공유
+    const metricsPromise = getFullMetrics(ticker);
+    const marketReturnsPromise = getMarketReturns();
+    renderFutureModalHeader(ticker, quote, metricsPromise, marketReturnsPromise);
+    renderFutureRiskSection(ticker, metricsPromise, marketReturnsPromise); // 실패해도 1번째 그래프는 그대로 유지
     setFutureStatus(null, null);
   } catch (err) {
     setFutureStatus("error", `❌ ${escapeHtml(err.message || "예측 차트를 불러오지 못했습니다.")}`);

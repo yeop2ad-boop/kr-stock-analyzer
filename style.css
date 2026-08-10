@@ -208,6 +208,34 @@ body {
   cursor: pointer;
 }
 
+/* 미래예측 모달 상단(틀고정 헤더) — 로고·한글이름·티커·점수 3종을 한 줄로 배치, 좁은 화면에서만 2줄로 감싸짐 */
+.chart-modal-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+.future-modal-identity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.future-modal-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 34vw;
+}
+.future-modal-ticker { font-size: 13px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.future-modal-scores { display: flex; align-items: center; gap: 6px; flex: none; }
+.mini-score-circle.small { width: 24px; height: 24px; font-size: 10.5px; font-weight: 800; border-width: 1.5px; }
+
 .chart-modal-frame {
   flex: 1;
   width: 100%;
