@@ -1763,6 +1763,8 @@ const KOREAN_COMPANY_NAMES = {
   레딧: "RDDT",
   대만반도체: "TSM",
   타이완반도체: "TSM",
+  하이닉스: "000660.KS",
+  에스케이하이닉스: "000660.KS",
 };
 
 let mainTickerSuggestTimer = null;
@@ -1962,17 +1964,19 @@ async function renderSummary(quote, meta, changePct) {
 
   const symbol = meta.symbol || quote.symbol || "";
 
+  // 지정 로고(override)가 있으면 그걸 쓰고, 없으면 기존 자동 소스(logo.dev/FMP) 사용
+  const _logoOv = LOGO_OVERRIDE[symbol];
+  const _logoSrc = logoSources(symbol, 128);
+  const summaryLogoWrapStyle = _logoOv && _logoOv.bg ? ` style="background:${_logoOv.bg}"` : "";
+  const summaryLogoImg = _logoOv
+    ? `<img class="summary-ticker-logo" src="${_logoOv.src}" alt="${escapeHtml(symbol)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />`
+    : `<img class="summary-ticker-logo" src="${_logoSrc.primary}" alt="${escapeHtml(symbol)}" ${_logoSrc.useFallback ? `data-fallback="${_logoSrc.fmp}"` : ""} onerror="${LOGO_ONERROR}" />`;
+
   el("summarySection").innerHTML = `
     <div class="summary-main">
       <p class="summary-text">
-        <span class="summary-ticker-logo-wrap">
-          <img
-            class="summary-ticker-logo"
-            src="${logoSources(symbol, 128).primary}"
-            alt="${escapeHtml(symbol)}"
-            ${logoSources(symbol, 128).useFallback ? `data-fallback="${logoSources(symbol, 128).fmp}"` : ""}
-            onerror="${LOGO_ONERROR}"
-          />
+        <span class="summary-ticker-logo-wrap"${summaryLogoWrapStyle}>
+          ${summaryLogoImg}
           <span class="summary-ticker-badge" style="display:none;">${escapeHtml(symbol)}</span>
         </span>
         <b>${escapeHtml(companyName)}</b> — ${escapeHtml(oneLiner)}
@@ -2726,8 +2730,18 @@ function logoSources(symbol, size) {
 // 로고 <img>의 onerror 체인 — data-fallback(FMP)이 있으면 한 번 그걸로 교체하고, 없으면 형제 배지로 대체
 const LOGO_ONERROR = "var f=this.dataset.fallback; if(f){this.removeAttribute('data-fallback');this.src=f;}else{this.style.display='none';this.nextElementSibling.style.display='flex';}";
 
+// 특정 종목은 자체 호스팅한 지정 로고로 대체(자동 소스 화질/누락 문제 대응). bg로 원 배경색을 채워 로고가 잘리지 않게 함.
+const LOGO_OVERRIDE = {
+  // 스페이스X(SPCX)는 기존 자동 로고 유지 — 전역 인셋(72%)으로 축소되어 잘리지 않음
+  "000660.KS": { src: "logos/skhynix.png", bg: "#ffffff" }, // SK하이닉스 — 지정 로고
+};
+
 function tickerLogoHtml(symbol) {
   const s = escapeHtml(symbol);
+  const ov = LOGO_OVERRIDE[symbol];
+  if (ov) {
+    return `<span class="ticker-logo-wrap" style="background:${ov.bg}"><img class="ticker-logo" src="${ov.src}" alt="${s}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><span class="ticker-logo-badge" style="display:none;">${s.slice(0, 2)}</span></span>`;
+  }
   const { primary, fmp, useFallback } = logoSources(symbol, 80);
   const fb = useFallback ? ` data-fallback="${fmp}"` : "";
   return `<span class="ticker-logo-wrap"><img class="ticker-logo" src="${primary}" alt="${s}" loading="lazy"${fb} onerror="${LOGO_ONERROR}" /><span class="ticker-logo-badge" style="display:none;">${s.slice(0, 2)}</span></span>`;
