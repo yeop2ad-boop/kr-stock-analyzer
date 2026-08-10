@@ -615,6 +615,14 @@ async function handleFutureRiskStatus(env) {
   );
 }
 
+// 하루치 배치를 즉시 한 번 실행 — 이번 달 스냅샷을 Cron이 자연스럽게 다 쌓을 때까지(약 한 달) 기다리지 않고
+// 지금 당장 여러 번 반복 호출해서 이번 달분을 미리 채워 넣을 때 사용(그 뒤로는 평소처럼 Cron이 자동으로 이어받음)
+async function handleFutureRunNow(env) {
+  if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
+  await runFutureScanTick(env);
+  return handleFutureRiskStatus(env);
+}
+
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") {
@@ -633,6 +641,10 @@ export default {
 
     if (requestUrl.pathname === "/future-risk-bands/status") {
       return handleFutureRiskStatus(env);
+    }
+
+    if (requestUrl.pathname === "/future-risk-bands/run-now") {
+      return handleFutureRunNow(env);
     }
 
     const targetUrl = requestUrl.searchParams.get("url");
