@@ -529,6 +529,10 @@ function computeDecileSnapshot(monthKey, results) {
         modeLo = lo;
       }
     }
+    // 최다분포 구간뿐 아니라 실제로 데이터가 있는 모든 10%p 구간을 높은 순으로 나열 — 우측 구간별 범례에 사용
+    const bands = [...bandCounts.entries()]
+      .map(([lo, count]) => ({ lo, hi: lo + 10, count }))
+      .sort((a, b) => b.lo - a.lo);
     return {
       bucket: idx,
       count: returns.length,
@@ -536,6 +540,7 @@ function computeDecileSnapshot(monthKey, results) {
       max: round1(max),
       modeBand: { lo: modeLo, hi: modeLo + 10, count: modeCount },
       modeMid: round1(modeLo + 5),
+      bands,
     };
   });
 
@@ -593,7 +598,7 @@ async function handleFutureRiskBands(request, env) {
     .map((snap) => {
       const d = snap.deciles && snap.deciles[bucket];
       if (!d || d.count === 0) return null;
-      return { monthKey: snap.monthKey, min: d.min, max: d.max, count: d.count, modeBand: d.modeBand, modeMid: d.modeMid, sampleSize: snap.sampleSize };
+      return { monthKey: snap.monthKey, min: d.min, max: d.max, count: d.count, modeBand: d.modeBand, modeMid: d.modeMid, bands: d.bands || [], sampleSize: snap.sampleSize };
     })
     .filter(Boolean)
     .sort((a, b) => a.monthKey.localeCompare(b.monthKey));
