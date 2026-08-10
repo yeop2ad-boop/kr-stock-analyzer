@@ -3461,8 +3461,6 @@ function formatMonthKey(date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
 }
 
-const FUTURE_RISK_BAND_COLORS = ["#e5342f", "#f5a623", "#e6d332", "#3ecf6d", "#4a90e2", "#3f51b5", "#8e44ad"]; // 빨주노초파남보
-
 // actualPoints: 1번 차트의 currentBucket.points(frac 0~1이 전체 12개월 창 기준, 0~0.5가 "6개월 전~현재")를 그대로 재사용해
 // 두 차트의 최근 6개월 실제 궤적이 완전히 동일한 모양·간격으로 겹쳐 보이게 함
 function buildFutureRiskChartSvg({ history, bucket, actualPoints, axisMonthStart, currentPrice }) {
@@ -3534,12 +3532,21 @@ function buildFutureRiskChartSvg({ history, bucket, actualPoints, axisMonthStart
   let historySvg = actualPath ? `<path d="${actualPath}" fill="none" stroke="#e5342f" stroke-width="2.4" stroke-linejoin="round" />` : "";
   historySvg += `<circle cx="${nowX.toFixed(1)}" cy="${yFn(curVal).toFixed(1)}" r="3.2" fill="#e5342f" />`;
 
-  // 현재 지점에서 이 구간(투자안정성 버킷) DB에 실제로 쌓인 수익률대 각각을 향해 빨주노초파남보 순서로 팬아웃
+  // 현재 지점에서 이 구간(투자안정성 버킷) DB에 실제로 쌓인 수익률대 각각을 향해 팬아웃 —
+  // 색이 너무 많으면(빨주노초파남보) 복잡해 보여서, 가장 높은 구간만 초록·가장 낮은 구간만 파랑으로 표시하고
+  // 나머지는 흰색 계열로 통일하되, 그 구간에 몰린 종목 수(비중)가 클수록 더 진한(불투명한) 흰색으로 표현
   const nowY = yFn(curVal);
+  const maxBandCount = Math.max(...bands.map((b) => b.count));
   let fanSvg = "";
   const labelYs = []; // 라벨 세로 겹침 방지용 — 값이 높은 밴드부터 순서대로 최소 13px씩 벌림
   bands.forEach((b, i) => {
-    const color = FUTURE_RISK_BAND_COLORS[i % FUTURE_RISK_BAND_COLORS.length];
+    let color;
+    if (i === 0) color = "#3ecf6d"; // 가장 높은 수익률대: 초록
+    else if (i === bands.length - 1) color = "#4a90e2"; // 가장 낮은 수익률대: 파랑
+    else {
+      const intensity = 0.35 + 0.55 * (b.count / maxBandCount); // 비중 클수록 진한 흰색
+      color = `rgba(255,255,255,${intensity.toFixed(2)})`;
+    }
     const targetVal = (b.lo + b.hi) / 2;
     const targetY = yFn(targetVal);
     fanSvg += `<line x1="${nowX.toFixed(1)}" y1="${nowY.toFixed(1)}" x2="${forecastX.toFixed(1)}" y2="${targetY.toFixed(1)}" stroke="${color}" stroke-width="2" stroke-linecap="round" />`;
