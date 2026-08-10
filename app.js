@@ -995,6 +995,20 @@ const TICKER_CREDIT_RATING = {
   FFIV: NO_DEBT_RATING,
   PKG: "BBB", FTV: "BBB",
   DOW: "BBB-", // S&P 2026-02-18 BBB→BBB- 하향(부정적)
+
+  // 한국인 인기(서학개미) 개별주 조사분 (2026-08, 대부분 S&P500 미편입)
+  // 실제 S&P 발행자 등급 확인:
+  TSM: "AA-", BABA: "A+",
+  DKNG: "BB", SNAP: "BB-",
+  MSTR: "B-", // 스트래티지(구 마이크로스트래티지) — 비트코인 전략, S&P B- 정크
+  // 순현금·무차입이라 S&P 등급 자체가 없음 → 회사채 없음(2점):
+  ARM: NO_DEBT_RATING, IONQ: NO_DEBT_RATING, PDD: NO_DEBT_RATING, LI: NO_DEBT_RATING,
+  CELH: NO_DEBT_RATING, GME: NO_DEBT_RATING, RDDT: NO_DEBT_RATING,
+  // 유이자부채(회사채·전환사채 등)는 있으나 S&P 발행자 등급 없음 → 미평가(1점):
+  HOOD: UNRATED_REASON, CPNG: UNRATED_REASON, SOFI: UNRATED_REASON,
+  RIVN: UNRATED_REASON, NIO: UNRATED_REASON, LCID: UNRATED_REASON,
+  RKLB: UNRATED_REASON, RBLX: UNRATED_REASON, U: UNRATED_REASON,
+  XPEV: UNRATED_REASON, AFRM: UNRATED_REASON,
 };
 
 // S&P 신용등급 문자를 0~4점으로 환산. BBB 및 그 이하 등급은 0점
@@ -1736,6 +1750,19 @@ const KOREAN_COMPANY_NAMES = {
   퍼스트솔라: "FSLR",
   플러그파워: "PLUG",
   씨브이에스: "CVS",
+
+  // 한국인 인기(서학개미) 개별주 한글명 추가분
+  서클: "CRCL",
+  스트래티지: "MSTR",
+  마이크로스트래티지: "MSTR",
+  쿠팡: "CPNG",
+  암홀딩스: "ARM",
+  로켓랩: "RKLB",
+  셀시우스: "CELH",
+  게임스탑: "GME",
+  레딧: "RDDT",
+  대만반도체: "TSM",
+  타이완반도체: "TSM",
 };
 
 let mainTickerSuggestTimer = null;
@@ -2734,8 +2761,8 @@ function historicalTableHtml(rows, rankColumnLabel) {
   `;
 }
 
-// S&P500 전체 종목 중 1년 등락률 TOP30을, 과거분석 기준 시점(1년 전 + 이번 달 1일 이후 첫 거래일) 스냅샷과 비교
-// direction: "up" — S&P500 중 1년 상승률 상위 30개 / "down" — S&P500 중 1년 하락률 상위(가장 많이 내린) 30개
+// S&P500 전체 종목 중 1년 등락률 TOP50을, 과거분석 기준 시점(1년 전 + 이번 달 1일 이후 첫 거래일) 스냅샷과 비교
+// direction: "up" — S&P500 중 1년 상승률 상위 50개 / "down" — S&P500 중 1년 하락률 상위(가장 많이 내린) 50개
 async function runHistoricalAnalysis(direction) {
   const isUp = direction === "up";
   const btn = isUp ? historicalFullUpBtn : historicalFullDownBtn;
@@ -2747,7 +2774,7 @@ async function runHistoricalAnalysis(direction) {
 
   const refDate = getHistoricalReferenceDate();
   const introYearMonthStr = `${String(refDate.getFullYear()).slice(-2)}.${refDate.getMonth() + 1}월`;
-  const introMsg = `📢 과거 1년전(${introYearMonthStr}) 데이터를 분석하여 ${isUp ? "상승량" : "하락량"} TOP30을 비교합니다. 또한 당시 점수를 반영합니다.`;
+  const introMsg = `📢 과거 1년전(${introYearMonthStr}) 데이터를 분석하여 ${isUp ? "상승량" : "하락량"} TOP50을 비교합니다. 또한 당시 점수를 반영합니다.`;
   const setStatus = (msg) => {
     historicalStatus.innerHTML = `${introMsg}<br><span style="font-size:12px;">${msg}</span>`;
   };
@@ -2756,15 +2783,15 @@ async function runHistoricalAnalysis(direction) {
     setStatus("S&P500 종목 목록을 불러오는 중...");
     const allTickers = await getSP500Tickers();
 
-    setStatus(`0/${allTickers.length} 종목 분석 중(S&P500 전체 중 1년 ${rankLabel} 상위 30 선정)...`);
+    setStatus(`0/${allTickers.length} 종목 분석 중(S&P500 전체 중 1년 ${rankLabel} 상위 50 선정)...`);
     const allMetricsList = await mapWithConcurrency(allTickers, 5, getFullMetrics, (completed, total) => {
-      setStatus(`${completed}/${total} 종목 분석 중(S&P500 전체 중 1년 ${rankLabel} 상위 30 선정)...`);
+      setStatus(`${completed}/${total} 종목 분석 중(S&P500 전체 중 1년 ${rankLabel} 상위 50 선정)...`);
     });
 
     const top30 = allMetricsList
       .filter((m) => m && m.oneYearReturn !== null && m.oneYearReturn !== undefined)
       .sort((a, b) => (isUp ? b.oneYearReturn - a.oneYearReturn : a.oneYearReturn - b.oneYearReturn))
-      .slice(0, 30);
+      .slice(0, 50);
 
     const sp500PairsPromise = yahooChart("^GSPC", "2y").then(chartClosePairs);
 
@@ -2786,7 +2813,7 @@ async function runHistoricalAnalysis(direction) {
     const successCount = rows.length;
     const failCount = top30.length - successCount;
     const refDateStr = rows[0] ? rows[0].asOfDate.toLocaleDateString("ko-KR") : "";
-    setStatus(`완료 (기준일 ${refDateStr}) — S&P500 중 ${rankLabel} 상위 30개 중 ${successCount}개 비교 성공${failCount ? `, ${failCount}개는 조회 실패로 제외` : ""}`);
+    setStatus(`완료 (기준일 ${refDateStr}) — S&P500 중 ${rankLabel} 상위 50개 중 ${successCount}개 비교 성공${failCount ? `, ${failCount}개는 조회 실패로 제외` : ""}`);
 
     if (rows.length === 0) {
       historicalResults.innerHTML = `<p class="muted">데이터를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
