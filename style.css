@@ -77,15 +77,33 @@ body {
 
 .future-search {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 14px;
 }
 .future-search input[type="text"] {
-  flex: 1;
-  border: 2px solid var(--accent);
+  width: 100%;
+  max-width: 420px;
+  padding: 14px 16px;
+  border: 3px solid var(--accent);
   background: var(--accent-soft);
+  border-radius: 10px;
+  text-align: center;
+  font-size: 15px;
 }
-.future-search button { font-size: 18px; padding: 10px 14px; line-height: 1; white-space: nowrap; }
+.future-search button {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--accent);
+  font-size: 20px;
+  line-height: 1;
+  padding: 0 0 0 3px; /* 재생 삼각형이 원 중앙에 오도록 살짝 보정 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .tab-bar {
   max-width: 860px;
