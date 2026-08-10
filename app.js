@@ -3342,10 +3342,10 @@ function pathFromPoints(points, xFn, yFn) {
 }
 
 function buildFutureChartSvg(data) {
-  const W = 720,
+  const W = 780,
     H = 470;
   const ML = 44,
-    MR = 78, // "예상" 아래 예상가($XX.XX(+YY%)) 두 번째 줄이 잘리지 않도록 연도 라벨보다 넉넉히 확보
+    MR = 132, // "예상" 아래 예상가($XX.XX(+YY%)) 줄이 길어져도(모바일에서 잘리지 않도록) 넉넉히 확보
     MT = 22,
     MB = 56; // (현재) 아래 오늘 기준 현재가를 한 줄 더 넣을 공간
   const PW = W - ML - MR;
@@ -3499,10 +3499,14 @@ function buildFutureRiskChartSvg({ history, bucket, actualPoints, axisMonthStart
   const nowIdx = 6; // 2월(0)~8월(6, 현재) 7칸 + 예측 지점(7)
   const forecastIdx = 7;
 
-  const curVal = actualPoints.length ? actualPoints[actualPoints.length - 1].pct : modeMid;
+  // 1번 차트(actualPoints)는 "6개월 전" 시점을 0%로 잡은 값이지만, 2번 차트는 팬아웃 라인(구간별 1년 기대수익률)이
+  // 전부 "오늘 기준" 값이므로 기준이 서로 다르면 안 맞음 — actualPoints를 오늘(마지막 값)이 0%가 되도록 다시 기준을 잡음
+  const rawCurVal = actualPoints.length ? actualPoints[actualPoints.length - 1].pct : 0;
+  const rebasedActualPoints = actualPoints.map((p) => ({ frac: p.frac, pct: p.pct - rawCurVal }));
+  const curVal = 0; // 오늘(현재) 위치가 항상 기준점(0%)
   const bandTargets = bands.map((b) => (b.lo + b.hi) / 2);
 
-  const allVals = [...actualPoints.map((p) => p.pct), curVal, modeMid, ...bandTargets];
+  const allVals = [...rebasedActualPoints.map((p) => p.pct), curVal, modeMid, ...bandTargets];
   const { lo, hi, step } = niceAxisBounds(Math.min(...allVals), Math.max(...allVals));
 
   // 팬아웃 라인 라벨이 세로로 촘촘히 몰리면 겹치므로, 값 기준 y좌표를 구한 뒤 최소 간격(13px)을 강제로 벌려줌(값 순서는 유지)
@@ -3553,7 +3557,7 @@ function buildFutureRiskChartSvg({ history, bucket, actualPoints, axisMonthStart
   }
 
   // 최근 6개월 실제 궤적 — 1번 차트와 동일한 데이터·간격을 그대로 재사용(빨간 실선)
-  const actualPath = actualPoints.map((p, i) => `${i === 0 ? "M" : "L"}${xFnActual(p.frac).toFixed(1)},${yFn(p.pct).toFixed(1)}`).join(" ");
+  const actualPath = rebasedActualPoints.map((p, i) => `${i === 0 ? "M" : "L"}${xFnActual(p.frac).toFixed(1)},${yFn(p.pct).toFixed(1)}`).join(" ");
   let historySvg = actualPath ? `<path d="${actualPath}" fill="none" stroke="#e5342f" stroke-width="2.4" stroke-linejoin="round" />` : "";
   historySvg += `<circle cx="${nowX.toFixed(1)}" cy="${yFn(curVal).toFixed(1)}" r="3.2" fill="#e5342f" />`;
 
@@ -3565,8 +3569,10 @@ function buildFutureRiskChartSvg({ history, bucket, actualPoints, axisMonthStart
   let fanSvg = "";
   const labelYs = []; // 라벨 세로 겹침 방지용 — 값이 높은 밴드부터 순서대로 최소 13px씩 벌림
   bands.forEach((b, i) => {
+    const isMode = b.lo === modeBucket.lo; // 최다분포(예상) 구간은 그 줄 라벨에 "(예상)"을 붙여서 오른쪽 끝에서 바로 알아보게 함
     let color;
-    if (i === 0) color = "#3ecf6d"; // 가장 높은 수익률대: 초록
+    if (isMode) color = "#e5342f"; // 최다분포(예상) 구간: 빨강
+    else if (i === 0) color = "#3ecf6d"; // 가장 높은 수익률대: 초록
     else if (i === bands.length - 1) color = "#4a90e2"; // 가장 낮은 수익률대: 파랑
     else {
       const intensity = 0.35 + 0.55 * (b.count / maxBandCount); // 비중 클수록 진한 흰색
@@ -3574,19 +3580,15 @@ function buildFutureRiskChartSvg({ history, bucket, actualPoints, axisMonthStart
     }
     const targetVal = (b.lo + b.hi) / 2;
     const targetY = yFn(targetVal);
-    fanSvg += `<line x1="${nowX.toFixed(1)}" y1="${nowY.toFixed(1)}" x2="${forecastX.toFixed(1)}" y2="${targetY.toFixed(1)}" stroke="${color}" stroke-width="2" stroke-linecap="round" />`;
+    const dash = isMode ? ' stroke-dasharray="7,6"' : "";
+    fanSvg += `<line x1="${nowX.toFixed(1)}" y1="${nowY.toFixed(1)}" x2="${forecastX.toFixed(1)}" y2="${targetY.toFixed(1)}" stroke="${color}" stroke-width="${isMode ? 2.6 : 2}"${dash} stroke-linecap="round" />`;
     let labelY = targetY;
     if (labelYs.length && labelY - labelYs[labelYs.length - 1] < 13) labelY = labelYs[labelYs.length - 1] + 13;
     labelYs.push(labelY);
     const hiTxt = `${b.hi > 0 ? "+" : ""}${b.hi}`;
     const loTxt = `${b.lo > 0 ? "+" : ""}${b.lo}`;
-    fanSvg += `<text x="${(forecastX + 6).toFixed(1)}" y="${(labelY + 4).toFixed(1)}" font-size="11" font-weight="700" fill="${color}">${hiTxt}~${loTxt}%: ${b.count}건</text>`;
+    fanSvg += `<text x="${(forecastX + 6).toFixed(1)}" y="${(labelY + 4).toFixed(1)}" font-size="11" font-weight="700" fill="${color}">${hiTxt}~${loTxt}%: ${b.count}건${isMode ? " (예상)" : ""}</text>`;
   });
-
-  // 가장 많이 몰린 구간(최다분포)으로 향하는 선은 빨간 점선 "예상"으로 별도 강조하고, 그 값(%)도 빨간색으로 같이 표기
-  const modeY = yFn(modeMid);
-  fanSvg += `<line x1="${nowX.toFixed(1)}" y1="${nowY.toFixed(1)}" x2="${forecastX.toFixed(1)}" y2="${modeY.toFixed(1)}" stroke="#e5342f" stroke-width="2.6" stroke-dasharray="7,6" stroke-linecap="round" />`;
-  fanSvg += `<text x="${(nowX + (forecastX - nowX) * 0.35).toFixed(1)}" y="${(nowY + (modeY - nowY) * 0.35 - 8).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="#e5342f">예상 (${modeMid > 0 ? "+" : ""}${modeMid}%)</text>`;
 
   const svgH = labelYs.length ? Math.max(H, labelYs[labelYs.length - 1] + 24) : H;
   const forecastPctFromToday = modeMid; // 이 차트는 처음부터 오늘 현재가를 기준으로 계산하므로 y축 값 자체가 곧 오늘 대비 변동률
