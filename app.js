@@ -3422,8 +3422,13 @@ function renderFutureChart(data) {
   const yearsNote = data.historicalBuckets.length
     ? `흰색: 과거 ${data.historicalBuckets.length}개년(전후 6개월) 계절성 흐름 · `
     : `과거 데이터가 부족해 계절성 비교 없이 최근 추세만 표시했습니다 · `;
+  let forecastNote = "";
+  if (data.currentPrice && data.forecast.price) {
+    const pctFromToday = (data.forecast.price / data.currentPrice - 1) * 100;
+    forecastNote = ` · 6개월 후 예상 변동률: ${pctFromToday >= 0 ? "+" : ""}${pctFromToday.toFixed(1)}%`;
+  }
   el("futureChartCaption").textContent =
-    `${data.ticker} · ${yearsNote}빨간 실선: 최근 6개월 실제 흐름 · 빨간 점선: ${data.hasForwardData ? "과거 흐름의 평균 기울기로 추정한 " : ""}향후 6개월 예상(참고용, 실제와 다를 수 있습니다)`;
+    `${data.ticker} · ${yearsNote}빨간 실선: 최근 6개월 실제 흐름 · 빨간 점선: ${data.hasForwardData ? "과거 흐름의 평균 기울기로 추정한 " : ""}향후 6개월 예상(참고용, 실제와 다를 수 있습니다)${forecastNote}`;
   el("futureChartModal").style.display = "flex";
 }
 
@@ -3466,9 +3471,25 @@ function formatMonthKey(date) {
 
 // actualPoints: 1번 차트의 currentBucket.points(frac 0~1이 전체 12개월 창 기준, 0~0.5가 "6개월 전~현재")를 그대로 재사용해
 // 두 차트의 최근 6개월 실제 궤적이 완전히 동일한 모양·간격으로 겹쳐 보이게 함
+// DB에는 10%p 단위로 쌓여 있지만, 팬아웃 라인이 너무 많아 복잡해 보이지 않도록 화면에 보여줄 때만 50%p 단위로 묶음
+function groupBandsByFifty(rawBands) {
+  const buckets = new Map();
+  for (const b of rawBands) {
+    const bucketLo = Math.floor(b.lo / 50) * 50;
+    const existing = buckets.get(bucketLo) || { lo: bucketLo, hi: bucketLo + 50, count: 0 };
+    existing.count += b.count;
+    buckets.set(bucketLo, existing);
+  }
+  return [...buckets.values()].sort((a, b) => b.lo - a.lo);
+}
+
 function buildFutureRiskChartSvg({ history, bucket, actualPoints, axisMonthStart, currentPrice }) {
   const bands0 = history[history.length - 1];
-  const bands = bands0.bands && bands0.bands.length ? bands0.bands : [bands0.modeBand].filter(Boolean);
+  const rawBands = bands0.bands && bands0.bands.length ? bands0.bands : [bands0.modeBand].filter(Boolean);
+  const bands = groupBandsByFifty(rawBands);
+  // 최다분포(예상)도 화면에 보이는 50%p 단위 기준으로 다시 계산 — 원본 10%p 기준 modeBand와 표시가 어긋나지 않도록
+  const modeBucket = bands.reduce((best, b) => (b.count > best.count ? b : best), bands[0]);
+  const modeMid = (modeBucket.lo + modeBucket.hi) / 2;
 
   const W = 780;
   const ML = 44,
@@ -3478,10 +3499,10 @@ function buildFutureRiskChartSvg({ history, bucket, actualPoints, axisMonthStart
   const nowIdx = 6; // 2월(0)~8월(6, 현재) 7칸 + 예측 지점(7)
   const forecastIdx = 7;
 
-  const curVal = actualPoints.length ? actualPoints[actualPoints.length - 1].pct : bands0.modeMid;
+  const curVal = actualPoints.length ? actualPoints[actualPoints.length - 1].pct : modeMid;
   const bandTargets = bands.map((b) => (b.lo + b.hi) / 2);
 
-  const allVals = [...actualPoints.map((p) => p.pct), curVal, bands0.modeMid, ...bandTargets];
+  const allVals = [...actualPoints.map((p) => p.pct), curVal, modeMid, ...bandTargets];
   const { lo, hi, step } = niceAxisBounds(Math.min(...allVals), Math.max(...allVals));
 
   // 팬아웃 라인 라벨이 세로로 촘촘히 몰리면 겹치므로, 값 기준 y좌표를 구한 뒤 최소 간격(13px)을 강제로 벌려줌(값 순서는 유지)
@@ -3524,9 +3545,10 @@ function buildFutureRiskChartSvg({ history, bucket, actualPoints, axisMonthStart
   // (현재)/(1년후) 아래 실제 달러 가격 — 1번 차트의 "예상가" 표기와 같은 형식
   axisSvg += `<text x="${nowX.toFixed(1)}" y="${(MT + PH + 32).toFixed(1)}" text-anchor="middle" font-size="11" fill="#f5a623" font-weight="700">(현재)</text>`;
   axisSvg += `<text x="${forecastX.toFixed(1)}" y="${(MT + PH + 32).toFixed(1)}" text-anchor="middle" font-size="11" fill="#f5a623" font-weight="700">(1년후)</text>`;
+  let forecastPrice = null;
   if (currentPrice !== null && currentPrice !== undefined) {
     axisSvg += `<text x="${nowX.toFixed(1)}" y="${(MT + PH + 48).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="#f5a623">$${currentPrice.toFixed(2)}</text>`;
-    const forecastPrice = currentPrice * (1 + bands0.modeMid / 100);
+    forecastPrice = currentPrice * (1 + modeMid / 100);
     axisSvg += `<text x="${forecastX.toFixed(1)}" y="${(MT + PH + 48).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="#e5342f">$${forecastPrice.toFixed(2)}</text>`;
   }
 
@@ -3561,20 +3583,23 @@ function buildFutureRiskChartSvg({ history, bucket, actualPoints, axisMonthStart
     fanSvg += `<text x="${(forecastX + 6).toFixed(1)}" y="${(labelY + 4).toFixed(1)}" font-size="11" font-weight="700" fill="${color}">${hiTxt}~${loTxt}%: ${b.count}건</text>`;
   });
 
-  // 가장 많이 몰린 구간(최다분포)으로 향하는 선은 빨간 점선 "예상"으로 별도 강조
-  const modeY = yFn(bands0.modeMid);
+  // 가장 많이 몰린 구간(최다분포)으로 향하는 선은 빨간 점선 "예상"으로 별도 강조하고, 그 값(%)도 빨간색으로 같이 표기
+  const modeY = yFn(modeMid);
   fanSvg += `<line x1="${nowX.toFixed(1)}" y1="${nowY.toFixed(1)}" x2="${forecastX.toFixed(1)}" y2="${modeY.toFixed(1)}" stroke="#e5342f" stroke-width="2.6" stroke-dasharray="7,6" stroke-linecap="round" />`;
-  fanSvg += `<text x="${(nowX + (forecastX - nowX) * 0.35).toFixed(1)}" y="${(nowY + (modeY - nowY) * 0.35 - 8).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="#e5342f">예상</text>`;
+  fanSvg += `<text x="${(nowX + (forecastX - nowX) * 0.35).toFixed(1)}" y="${(nowY + (modeY - nowY) * 0.35 - 8).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="#e5342f">예상 (${modeMid > 0 ? "+" : ""}${modeMid}%)</text>`;
 
   const svgH = labelYs.length ? Math.max(H, labelYs[labelYs.length - 1] + 24) : H;
+  const forecastPctFromToday = modeMid; // 이 차트는 처음부터 오늘 현재가를 기준으로 계산하므로 y축 값 자체가 곧 오늘 대비 변동률
 
-  return `<svg viewBox="0 0 ${W} ${svgH}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="투자안정성 ${bucket}~${bucket + 1}점 구간 1년 수익률 예측">
+  const svg = `<svg viewBox="0 0 ${W} ${svgH}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="투자안정성 ${bucket}~${bucket + 1}점 구간 1년 수익률 예측">
     <rect x="0" y="0" width="${W}" height="${svgH}" fill="#000" />
     ${gridSvg}
     ${axisSvg}
     ${historySvg}
     ${fanSvg}
   </svg>`;
+
+  return { svg, forecastPctFromToday, forecastPrice };
 }
 
 // 미래예측 모달 상단(틀고정 헤더): 로고-한글이름-영어티커-상승압력/투자안정성/거시경제(원형 점수)를 한 줄로 표시
@@ -3633,17 +3658,20 @@ async function renderFutureRiskSection(ticker, metricsPromise, marketReturnsProm
       return;
     }
 
-    riskContainer.innerHTML = buildFutureRiskChartSvg({
+    const { svg, forecastPctFromToday } = buildFutureRiskChartSvg({
       history,
       bucket,
       actualPoints: futureData.currentBucket.points,
       axisMonthStart: futureData.axisMonthStart,
       currentPrice: metrics.price ?? null,
     });
+    riskContainer.innerHTML = svg;
     const last = history[history.length - 1];
+    const pctSign = forecastPctFromToday >= 0 ? "+" : "";
     riskCaption.textContent =
       `${ticker}는 투자안정성 ${bucket}~${bucket + 1}점 구간(최근 집계 ${last.sampleSize}종목 표본) · 빨간 실선: ${ticker}의 최근 6개월 실제 흐름(위 차트와 동일) · ` +
-      `빨주노초파남보 팬아웃 라인: 이 구간에 실제로 쌓인 수익률대별 종목 수 · 빨간 점선 "예상": 가장 많이 몰린 수익률대(${last.modeBand.lo > 0 ? "+" : ""}${last.modeBand.lo}~${last.modeBand.hi > 0 ? "+" : ""}${last.modeBand.hi}%)로 향하는 1년 후 예상(참고용, 투자 자문이 아닙니다)`;
+      `초록: 가장 높은 수익률대, 파랑: 가장 낮은 수익률대, 흰색(진할수록 비중 큼): 그 사이 구간별 종목 수 · ` +
+      `빨간 점선 "예상": 이 구간에서 가장 많이 몰린 수익률대로 향하는 1년 후 예상, 오늘 대비 ${pctSign}${forecastPctFromToday.toFixed(1)}% 변동 예상(참고용, 투자 자문이 아닙니다)`;
   } catch (err) {
     riskContainer.innerHTML = `<p class="error-inline" style="text-align:center;padding:20px 0;">❌ 구간별 통계를 불러오지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
   }
