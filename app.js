@@ -1968,7 +1968,8 @@ async function renderSummary(quote, meta, changePct) {
   // 지정 로고(override)가 있으면 그걸 쓰고, 없으면 기존 자동 소스(logo.dev/FMP) 사용
   const _logoOv = LOGO_OVERRIDE[symbol];
   const _logoSrc = logoSources(symbol, 128);
-  const summaryLogoWrapStyle = _logoOv && _logoOv.bg ? ` style="background:${_logoOv.bg}"` : "";
+  const _logoBg = logoBg(symbol);
+  const summaryLogoWrapStyle = _logoBg ? ` style="background:${_logoBg}"` : "";
   const summaryLogoImg = _logoOv
     ? `<img class="summary-ticker-logo" src="${_logoOv.src}" alt="${escapeHtml(symbol)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />`
     : `<img class="summary-ticker-logo" src="${_logoSrc.primary}" alt="${escapeHtml(symbol)}" ${_logoSrc.useFallback ? `data-fallback="${_logoSrc.fmp}"` : ""} onerror="${LOGO_ONERROR}" />`;
@@ -2740,15 +2741,32 @@ const LOGO_OVERRIDE = {
   "000660.KS": SKHYNIX_LOGO, // 한국거래소 원주
 };
 
+// FMP 로고가 순백색이라 흰 원 배경에서 안 보이는 종목들(506개 전수 픽셀 분석 결과 61개) — 어두운 배경을 깔아 흰 로고가 보이게 함
+const WHITE_LOGO_BG = "#14161c";
+const WHITE_LOGO_TICKERS = new Set([
+  "ABBV","ADI","ADSK","AIG","ALB","ALL","AMP","ANET","APP","AVB","AWK","AXON","BA","BAX","BLK","CDNS","CEG","CRL","CSX","CTAS",
+  "DD","DGX","DHI","DIS","DXCM","EQIX","ETN","FAST","HSY","IBM","JBL","KMI","KR","LCID","LEN","LI","LITE","LMT","LRCX","MAS",
+  "MRVL","NIO","NKE","NTAP","NXPI","ON","RBLX","RCL","REGN","STT","SYY","TPR","UBER","ULTA","UNH","V","VRTX","WAT","WSM","WYNN","XPEV",
+]);
+// 로고 원 배경색 결정: 지정 override.bg > 흰색 로고면 어두운 배경 > 기본(CSS 흰색)
+function logoBg(symbol) {
+  const ov = LOGO_OVERRIDE[symbol];
+  if (ov && ov.bg) return ov.bg;
+  if (WHITE_LOGO_TICKERS.has(symbol)) return WHITE_LOGO_BG;
+  return null;
+}
+
 function tickerLogoHtml(symbol) {
   const s = escapeHtml(symbol);
   const ov = LOGO_OVERRIDE[symbol];
-  if (ov) {
-    return `<span class="ticker-logo-wrap" style="background:${ov.bg}"><img class="ticker-logo" src="${ov.src}" alt="${s}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><span class="ticker-logo-badge" style="display:none;">${s.slice(0, 2)}</span></span>`;
+  const bg = logoBg(symbol);
+  const wrapStyle = bg ? ` style="background:${bg}"` : "";
+  if (ov && ov.src) {
+    return `<span class="ticker-logo-wrap"${wrapStyle}><img class="ticker-logo" src="${ov.src}" alt="${s}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><span class="ticker-logo-badge" style="display:none;">${s.slice(0, 2)}</span></span>`;
   }
   const { primary, fmp, useFallback } = logoSources(symbol, 80);
   const fb = useFallback ? ` data-fallback="${fmp}"` : "";
-  return `<span class="ticker-logo-wrap"><img class="ticker-logo" src="${primary}" alt="${s}" loading="lazy"${fb} onerror="${LOGO_ONERROR}" /><span class="ticker-logo-badge" style="display:none;">${s.slice(0, 2)}</span></span>`;
+  return `<span class="ticker-logo-wrap"${wrapStyle}><img class="ticker-logo" src="${primary}" alt="${s}" loading="lazy"${fb} onerror="${LOGO_ONERROR}" /><span class="ticker-logo-badge" style="display:none;">${s.slice(0, 2)}</span></span>`;
 }
 
 // buildHistoricalCompareRows 결과로 과거분석 표 HTML(범례 제외)을 생성 — moversTableHtml과 동일한 5컬럼 구성(순위/티커+원형로고/현재가(등락률)/상승압력/투자안정)
