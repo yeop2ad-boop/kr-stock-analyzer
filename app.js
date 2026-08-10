@@ -23,6 +23,9 @@ const indexStatus = el("indexStatus");
 const indexResults = el("indexResults");
 const top30Status = el("top30Status");
 const top30Results = el("top30Results");
+const futureTickerInput = el("futureTickerInput");
+const futureAnalyzeBtn = el("futureAnalyzeBtn");
+const futureStatus = el("futureStatus");
 const contactBtn = el("contactBtn");
 const chatPanel = el("chatPanel");
 const chatMessagesEl = el("chatMessages");
@@ -266,6 +269,13 @@ async function yahooSearch(ticker) {
 
 async function yahooChart(symbol, range = "1y", interval = "1d") {
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=${range}&interval=${interval}`;
+  return proxyFetchJson(url);
+}
+
+// range 대신 정확한 기간(period1~period2, 유닉스초)을 지정 — 미래예측 차트처럼 여러 해의 구간을 서로 어긋남 없이
+// 정확한 실제 날짜 기준으로 겹쳐 그려야 할 때, range 프리셋의 간격 근사치에 의존하지 않기 위해 사용
+async function yahooChartRange(symbol, period1, period2, interval = "1d") {
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?period1=${period1}&period2=${period2}&interval=${interval}`;
   return proxyFetchJson(url);
 }
 
@@ -3208,3 +3218,371 @@ async function runMovers(direction) {
     top30Status.textContent = `❌ ${err.message || `${label}을 가져오지 못했습니다.`}`;
   }
 }
+
+// ---------- 미래예측(베타): 과거 4개년 계절성(흰색) + 최근 6개월 실제 흐름·향후 6개월 예측(빨간색)을 한 차트에 표시 ----------
+// 설계: 오늘을 기준으로 anchor = 오늘로부터 k년 전(k=4,3,2,1은 과거 4개년, k=0은 현재)을 잡고, 각 anchor의 앞뒤 6개월(총 12개월) 구간을
+// 창(window)으로 삼는다. 창 시작 시점의 종가를 0%로 놓고 이후 각 거래일의 %변화를 구하면 서로 다른 해라도 같은 기준으로 겹쳐 비교할 수 있다.
+// x좌표는 항상 "실제 경과일 / 창 전체 길이(12개월)"로 계산하므로(인덱스 기반이 아님) 그래프가 좌우로 늘어나거나 틀어지지 않는다.
+// 현재(k=0) 구간은 창의 뒤쪽 절반(6개월치)이 아직 미래라 실데이터가 없으므로, 앞쪽 절반만 실선으로 그리고
+// 과거 4개년의 "창 중간→끝" 구간 변화폭 평균(=4년 평균 기울기)을 오늘 시점 값에 더해 점선으로 이어 그린다.
+const FUTURE_YEARS_BACK = 4;
+const FUTURE_MONTH_NAMES_KO = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
+const FUTURE_LINE_COLORS = ["#eceef2", "#c7cbd6", "#a7acbc", "#888fa3"];
+
+function addMonths(date, months) {
+  const d = new Date(date.getTime());
+  d.setMonth(d.getMonth() + months);
+  return d;
+}
+
+// pairs(chartClosePairs 결과)에서 windowStartSec~dataEndSec 구간만 뽑아 baseClose 대비 %로 환산하고,
+// x좌표(frac)는 실제 창 전체 길이(fullEndSec) 기준으로 계산 — 현재 구간처럼 데이터가 창의 절반까지만 있어도 폭 비율은 정확히 유지됨
+function buildBucketSeries(pairs, windowStartSec, dataEndSec, fullEndSec, baseClose) {
+  return pairs
+    .filter((p) => p.t >= windowStartSec && p.t <= dataEndSec)
+    .map((p) => ({ frac: (p.t - windowStartSec) / (fullEndSec - windowStartSec), pct: ((p.c - baseClose) / baseClose) * 100 }));
+}
+
+async function computeFuturePrediction(ticker) {
+  const now = new Date();
+  const nowSec = Math.floor(now.getTime() / 1000);
+
+  const buckets = [];
+  for (let k = FUTURE_YEARS_BACK; k >= 0; k--) {
+    const anchor = addMonths(now, -12 * k);
+    const windowStartSec = Math.floor(addMonths(anchor, -6).getTime() / 1000);
+    const fullEndSec = Math.floor(addMonths(anchor, 6).getTime() / 1000);
+    const dataEndSec = k === 0 ? nowSec : fullEndSec;
+    buckets.push({ k, year: anchor.getFullYear(), windowStartSec, dataEndSec, fullEndSec });
+  }
+
+  const earliestStartSec = buckets[0].windowStartSec; // k=FUTURE_YEARS_BACK(가장 과거)이 배열의 첫 원소
+  const chartData = await yahooChartRange(ticker, earliestStartSec - 5 * 24 * 3600, nowSec + 24 * 3600, "1d");
+  if (!chartData || !chartData.chart || !chartData.chart.result || !chartData.chart.result[0]) {
+    throw new Error(`'${ticker}'의 시세 데이터를 가져오지 못했습니다.`);
+  }
+  const pairs = chartClosePairs(chartData);
+  if (pairs.length < 2) {
+    throw new Error(`'${ticker}'의 시세 데이터가 충분하지 않습니다.`);
+  }
+
+  const series = [];
+  for (const b of buckets) {
+    const base = closestPair(pairs, b.windowStartSec);
+    // 상장한 지 얼마 안 된 종목은 그만큼 과거 데이터가 없어 closestPair가 엉뚱하게 먼 시점을 반환할 수 있으므로,
+    // 창 시작 시점과 30일 이상 어긋나면 그 해는 신뢰할 수 없다고 보고 건너뜀(억지로 왜곡된 선을 그리지 않음)
+    if (!base || !base.c || Math.abs(base.t - b.windowStartSec) > 30 * 24 * 3600) continue;
+    const points = buildBucketSeries(pairs, b.windowStartSec, b.dataEndSec, b.fullEndSec, base.c);
+    if (points.length < 2) continue;
+    series.push({ k: b.k, year: b.year, points });
+  }
+
+  const currentBucket = series.find((s) => s.k === 0);
+  if (!currentBucket) throw new Error(`'${ticker}'의 최근 6개월 데이터를 가져오지 못했습니다.`);
+  const historicalBuckets = series.filter((s) => s.k !== 0).sort((a, b) => b.year - a.year);
+
+  const currentPct = currentBucket.points[currentBucket.points.length - 1].pct;
+
+  // "4년 평균 기울기" = 과거 각 해의 후반부(창의 6개월 지점→12개월 지점) 변화폭의 평균
+  const forwardDeltas = historicalBuckets
+    .map((s) => {
+      let mid = s.points[0];
+      for (const p of s.points) {
+        if (Math.abs(p.frac - 0.5) < Math.abs(mid.frac - 0.5)) mid = p;
+      }
+      const end = s.points[s.points.length - 1];
+      if (end.frac < 0.9) return null; // 후반부가 거의 없는 해는 기울기 계산에서 제외
+      return end.pct - mid.pct;
+    })
+    .filter((v) => v !== null);
+
+  const avgForwardDelta = forwardDeltas.length ? forwardDeltas.reduce((a, b) => a + b, 0) / forwardDeltas.length : 0;
+  const projectedEndPct = currentPct + avgForwardDelta;
+
+  return {
+    ticker,
+    historicalBuckets,
+    currentBucket,
+    forecast: { endPct: projectedEndPct },
+    axisMonthStart: addMonths(now, -6),
+    hasForwardData: forwardDeltas.length > 0,
+  };
+}
+
+function niceStep(range) {
+  const rough = range / 6;
+  const candidates = [5, 10, 20, 25, 50, 100, 200, 250, 500, 1000];
+  for (const c of candidates) if (rough <= c) return c;
+  return Math.ceil(rough / 500) * 500;
+}
+
+function niceAxisBounds(minVal, maxVal) {
+  const span = Math.max(maxVal - minVal, 10);
+  const pad = span * 0.15;
+  const step = niceStep(span + pad * 2);
+  const lo = Math.floor((minVal - pad) / step) * step;
+  const hi = Math.ceil((maxVal + pad) / step) * step;
+  return { lo, hi, step };
+}
+
+function pathFromPoints(points, xFn, yFn) {
+  return points.map((p, i) => `${i === 0 ? "M" : "L"}${xFn(p.frac).toFixed(1)},${yFn(p.pct).toFixed(1)}`).join(" ");
+}
+
+function buildFutureChartSvg(data) {
+  const W = 720,
+    H = 460;
+  const ML = 44,
+    MR = 46,
+    MT = 22,
+    MB = 40;
+  const PW = W - ML - MR;
+  const PH = H - MT - MB;
+
+  const allPct = [];
+  data.historicalBuckets.forEach((s) => s.points.forEach((p) => allPct.push(p.pct)));
+  data.currentBucket.points.forEach((p) => allPct.push(p.pct));
+  allPct.push(data.forecast.endPct);
+
+  const { lo, hi, step } = niceAxisBounds(Math.min(...allPct), Math.max(...allPct));
+  const xFn = (frac) => ML + frac * PW;
+  const yFn = (val) => MT + (1 - (val - lo) / (hi - lo)) * PH;
+
+  let gridSvg = "";
+  for (let v = Math.ceil(lo / step) * step; v <= hi + 0.001; v += step) {
+    const y = yFn(v);
+    const emphasize = Math.abs(v) < 0.001;
+    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${ML + PW}" y2="${y.toFixed(1)}" stroke="${emphasize ? "#555b6b" : "#23262f"}" stroke-width="${emphasize ? 1.4 : 1}" />`;
+    gridSvg += `<text x="${ML - 8}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="#8a90a3">${v > 0 ? "+" : ""}${Math.round(v)}%</text>`;
+  }
+
+  let axisSvg = "";
+  for (let m = 0; m <= 12; m++) {
+    const frac = m / 12;
+    const x = xFn(frac);
+    const labelDate = addMonths(data.axisMonthStart, m);
+    const isNow = m === 6;
+    axisSvg += `<line x1="${x.toFixed(1)}" y1="${MT}" x2="${x.toFixed(1)}" y2="${MT + PH}" stroke="${isNow ? "#f5a623" : "#20232b"}" stroke-width="${isNow ? 1.6 : 1}" ${isNow ? "" : 'stroke-dasharray="2,3"'} />`;
+    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 16).toFixed(1)}" text-anchor="middle" font-size="11" fill="${isNow ? "#f5a623" : "#8a90a3"}" font-weight="${isNow ? "700" : "400"}">${FUTURE_MONTH_NAMES_KO[labelDate.getMonth()]}</text>`;
+  }
+  axisSvg += `<text x="${xFn(0.5).toFixed(1)}" y="${(MT + PH + 32).toFixed(1)}" text-anchor="middle" font-size="11" fill="#f5a623" font-weight="700">(현재)</text>`;
+
+  let linesSvg = "";
+  data.historicalBuckets.forEach((s, i) => {
+    const color = FUTURE_LINE_COLORS[i % FUTURE_LINE_COLORS.length];
+    linesSvg += `<path d="${pathFromPoints(s.points, xFn, yFn)}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" />`;
+    const last = s.points[s.points.length - 1];
+    linesSvg += `<text x="${(xFn(last.frac) + 6).toFixed(1)}" y="${(yFn(last.pct) + 4).toFixed(1)}" font-size="12" font-weight="700" fill="${color}">${String(s.year).slice(2)}</text>`;
+  });
+
+  const curPoints = data.currentBucket.points;
+  linesSvg += `<path d="${pathFromPoints(curPoints, xFn, yFn)}" fill="none" stroke="#e5342f" stroke-width="2.6" stroke-linejoin="round" />`;
+
+  const lastReal = curPoints[curPoints.length - 1];
+  const fx0 = xFn(lastReal.frac),
+    fy0 = yFn(lastReal.pct);
+  const fx1 = xFn(1),
+    fy1 = yFn(data.forecast.endPct);
+  linesSvg += `<line x1="${fx0.toFixed(1)}" y1="${fy0.toFixed(1)}" x2="${fx1.toFixed(1)}" y2="${fy1.toFixed(1)}" stroke="#e5342f" stroke-width="2.6" stroke-dasharray="7,6" stroke-linecap="round" />`;
+  linesSvg += `<circle cx="${fx0.toFixed(1)}" cy="${fy0.toFixed(1)}" r="3.2" fill="#e5342f" />`;
+  linesSvg += `<text x="${(fx1 + 6).toFixed(1)}" y="${(fy1 + 4).toFixed(1)}" font-size="12" font-weight="700" fill="#e5342f">예상</text>`;
+
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHtml(data.ticker)} 미래예측 차트">
+    <rect x="0" y="0" width="${W}" height="${H}" fill="#000" />
+    ${gridSvg}
+    ${axisSvg}
+    ${linesSvg}
+  </svg>`;
+}
+
+function renderFutureChart(data) {
+  el("futureChartModalTitle").textContent = data.ticker;
+  el("futureChartContainer").innerHTML = buildFutureChartSvg(data);
+  const yearsNote = data.historicalBuckets.length
+    ? `흰색: 과거 ${data.historicalBuckets.length}개년(전후 6개월) 계절성 흐름 · `
+    : `과거 데이터가 부족해 계절성 비교 없이 최근 추세만 표시했습니다 · `;
+  el("futureChartCaption").textContent =
+    `${data.ticker} · ${yearsNote}빨간 실선: 최근 6개월 실제 흐름 · 빨간 점선: ${data.hasForwardData ? "과거 흐름의 평균 기울기로 추정한 " : ""}향후 6개월 예상(참고용, 실제와 다를 수 있습니다)`;
+  el("futureChartModal").style.display = "flex";
+}
+
+function closeFutureChartModal() {
+  el("futureChartModal").style.display = "none";
+}
+el("futureChartModalCloseBtn").addEventListener("click", closeFutureChartModal);
+
+function setFutureStatus(type, message) {
+  if (!message) {
+    futureStatus.style.display = "none";
+    return;
+  }
+  futureStatus.style.display = "block";
+  futureStatus.className = `status-box ${type}`;
+  futureStatus.innerHTML = type === "loading" ? `<span class="spinner"></span>${message}` : message;
+}
+
+// ---------- 미래예측 2번째 그래프: 투자안정성 점수 구간(0~10점, 1점 단위 10구간)별 1년 수익률 최소/최대·최다분포 추이 ----------
+// 데이터 출처: 백엔드 Worker가 매일 조금씩 S&P500을 스캔해 KV에 쌓고, 매달 말일에 그 달 스냅샷을 확정 발행(worker.js 참고).
+// 이 기능을 막 배포한 시점에는 KV에 스냅샷이 하나도 없어 history가 빈 배열로 오는 게 정상이며, 그 경우 안내 문구만 표시한다.
+const FUTURE_RISK_API = "https://us-stock.yeop2ad.workers.dev/future-risk-bands";
+
+async function fetchFutureRiskBands(bucket) {
+  const res = await fetch(`${FUTURE_RISK_API}?bucket=${bucket}`);
+  if (!res.ok) throw new Error("구간별 통계를 가져오지 못했습니다.");
+  return res.json();
+}
+
+// "YYYY-MM" 두 시점 사이의 개월 수 차이 — 스냅샷이 매달 한 번씩만 쌓이므로 실제 날짜 대신 월 단위 정수 인덱스로 x축을 구성
+function monthIndexOf(monthKey, baseMonthKey) {
+  const [y, m] = monthKey.split("-").map(Number);
+  const [by, bm] = baseMonthKey.split("-").map(Number);
+  return (y - by) * 12 + (m - bm);
+}
+
+function buildFutureRiskChartSvg({ history, currentReturn, bucket }) {
+  const W = 720,
+    H = 380;
+  const ML = 44,
+    MR = 64,
+    MT = 22,
+    MB = 40;
+  const PW = W - ML - MR;
+  const PH = H - MT - MB;
+
+  const baseMonthKey = history[0].monthKey;
+  const points = history.map((h) => ({ ...h, idx: monthIndexOf(h.monthKey, baseMonthKey) }));
+  const last = points[points.length - 1];
+  const nowIdx = last.idx;
+  const futureIdx = nowIdx + 12; // 1년 후 예측 지점
+  const redCutoffIdx = nowIdx - 5; // 최근 6개 스냅샷(달) 구간부터 빨간색
+
+  // 검색한 종목의 실제 1년 수익률을 "현재위치"로 쓰되, 계산이 안 되면(데이터 부족 등) 그 구간의 최다분포 중간값으로 대체
+  const curVal = currentReturn !== null && currentReturn !== undefined ? currentReturn : last.modeMid;
+
+  const allVals = [];
+  points.forEach((p) => allVals.push(p.min, p.max));
+  allVals.push(curVal, last.modeMid);
+  const { lo, hi, step } = niceAxisBounds(Math.min(...allVals), Math.max(...allVals));
+
+  const xFn = (idx) => ML + (idx / futureIdx) * PW;
+  const yFn = (val) => MT + (1 - (val - lo) / (hi - lo)) * PH;
+
+  let gridSvg = "";
+  for (let v = Math.ceil(lo / step) * step; v <= hi + 0.001; v += step) {
+    const y = yFn(v);
+    const emphasize = Math.abs(v) < 0.001;
+    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${ML + PW}" y2="${y.toFixed(1)}" stroke="${emphasize ? "#555b6b" : "#23262f"}" stroke-width="${emphasize ? 1.4 : 1}" />`;
+    gridSvg += `<text x="${ML - 8}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="#8a90a3">${v > 0 ? "+" : ""}${Math.round(v)}%</text>`;
+  }
+
+  let axisSvg = "";
+  points.forEach((p) => {
+    const x = xFn(p.idx);
+    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 16).toFixed(1)}" text-anchor="middle" font-size="10" fill="#8a90a3">${p.monthKey.slice(2)}</text>`;
+  });
+  const fx = xFn(futureIdx);
+  axisSvg += `<text x="${fx.toFixed(1)}" y="${(MT + PH + 16).toFixed(1)}" text-anchor="middle" font-size="10" fill="#f5a623" font-weight="700">1년후</text>`;
+  axisSvg += `<line x1="${xFn(nowIdx).toFixed(1)}" y1="${MT}" x2="${xFn(nowIdx).toFixed(1)}" y2="${MT + PH}" stroke="#f5a623" stroke-width="1.4" stroke-dasharray="2,3" />`;
+
+  function linePath(key, fromIdxIncl, toIdxIncl) {
+    const seg = points.filter((p) => p.idx >= fromIdxIncl && p.idx <= toIdxIncl);
+    if (seg.length === 0) return "";
+    return seg.map((p, i) => `${i === 0 ? "M" : "L"}${xFn(p.idx).toFixed(1)},${yFn(p[key]).toFixed(1)}`).join(" ");
+  }
+
+  let bandSvg = "";
+  ["min", "max"].forEach((key) => {
+    const whiteD = linePath(key, -Infinity, Infinity);
+    if (whiteD) bandSvg += `<path d="${whiteD}" fill="none" stroke="#a7acbc" stroke-width="1.8" stroke-linejoin="round" />`;
+    const redD = linePath(key, redCutoffIdx, nowIdx);
+    if (redD) bandSvg += `<path d="${redD}" fill="none" stroke="#e5342f" stroke-width="2.2" stroke-linejoin="round" />`;
+    points.forEach((p) => {
+      bandSvg += `<circle cx="${xFn(p.idx).toFixed(1)}" cy="${yFn(p[key]).toFixed(1)}" r="2.4" fill="${p.idx >= redCutoffIdx ? "#e5342f" : "#a7acbc"}" />`;
+    });
+  });
+  const lastLabelX = xFn(last.idx) + 6;
+  bandSvg += `<text x="${lastLabelX.toFixed(1)}" y="${(yFn(last.max) - 4).toFixed(1)}" font-size="11" font-weight="700" fill="#a7acbc">최대</text>`;
+  bandSvg += `<text x="${lastLabelX.toFixed(1)}" y="${(yFn(last.min) + 12).toFixed(1)}" font-size="11" font-weight="700" fill="#a7acbc">최소</text>`;
+
+  // 마지막(최신) 시점: 이 구간의 최소·최대·검색 종목의 현재위치를 꼭짓점으로 하는 주황 반투명 삼각형(테두리는 진하게)
+  const tx = xFn(nowIdx);
+  const triLeftX = tx - 9;
+  const triRightX = tx + 11;
+  const triPoints = `${triLeftX.toFixed(1)},${yFn(last.min).toFixed(1)} ${triLeftX.toFixed(1)},${yFn(last.max).toFixed(1)} ${triRightX.toFixed(1)},${yFn(curVal).toFixed(1)}`;
+  const triangleSvg = `<polygon points="${triPoints}" fill="rgba(245,166,35,0.35)" stroke="#f5a623" stroke-width="2.2" stroke-linejoin="round" />`;
+
+  // 1년 후까지: 이 구간에서 가장 많이 몰린 10%p 수익률대의 중간값으로 수렴하는 빨간 점선 예측
+  const fx2 = xFn(futureIdx);
+  const fy = yFn(last.modeMid);
+  const forecastSvg = `
+    <line x1="${triRightX.toFixed(1)}" y1="${yFn(curVal).toFixed(1)}" x2="${fx2.toFixed(1)}" y2="${fy.toFixed(1)}" stroke="#e5342f" stroke-width="2.4" stroke-dasharray="7,6" stroke-linecap="round" />
+    <circle cx="${fx2.toFixed(1)}" cy="${fy.toFixed(1)}" r="3.2" fill="#e5342f" />
+    <text x="${(fx2 - 4).toFixed(1)}" y="${(fy - 8).toFixed(1)}" text-anchor="end" font-size="11" font-weight="700" fill="#e5342f">${last.modeMid > 0 ? "+" : ""}${last.modeMid}%</text>
+  `;
+
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="투자안정성 ${bucket}~${bucket + 1}점 구간 1년 수익률 추이">
+    <rect x="0" y="0" width="${W}" height="${H}" fill="#000" />
+    ${gridSvg}
+    ${axisSvg}
+    ${bandSvg}
+    ${triangleSvg}
+    ${forecastSvg}
+  </svg>`;
+}
+
+async function renderFutureRiskSection(ticker) {
+  const riskContainer = el("futureRiskContainer");
+  const riskCaption = el("futureRiskCaption");
+  riskContainer.innerHTML = `<p class="muted" style="text-align:center;padding:20px 0;">투자안정성 구간별 통계를 불러오는 중...</p>`;
+  riskCaption.textContent = "";
+
+  try {
+    const [metrics, marketReturns] = await Promise.all([getFullMetrics(ticker), getMarketReturns()]);
+    const riskScore = computeRiskScore(metrics, marketReturns.sp500Return);
+    const bucket = clamp(Math.floor(riskScore.total), 0, 9);
+    const { history } = await fetchFutureRiskBands(bucket);
+
+    if (!history || history.length === 0) {
+      riskContainer.innerHTML = `<p class="muted" style="text-align:center;padding:20px 0;">🚧 이 구간(투자안정성 ${bucket}~${bucket + 1}점)의 월별 통계가 아직 쌓이지 않았습니다. 서버가 매달 말일에 자동으로 갱신하며, 데이터가 쌓이는 대로 이 자리에 표시됩니다.</p>`;
+      return;
+    }
+
+    riskContainer.innerHTML = buildFutureRiskChartSvg({ history, currentReturn: metrics.oneYearReturn, bucket });
+    const last = history[history.length - 1];
+    riskCaption.textContent =
+      `${ticker}는 투자안정성 ${bucket}~${bucket + 1}점 구간(최근 집계 ${last.sampleSize}종목 표본) · 주황 삼각형: 이 구간의 최근 1년 수익률 최소·최대와 ${ticker}의 현재 위치 · ` +
+      `빨간 실선: 최근 6개월 · 빨간 점선: 이 구간에서 가장 많이 몰린 수익률대(${last.modeBand.lo > 0 ? "+" : ""}${last.modeBand.lo}~${last.modeBand.hi > 0 ? "+" : ""}${last.modeBand.hi}%)의 중간값으로 향하는 1년 후 예상(참고용, 투자 자문이 아닙니다)`;
+  } catch (err) {
+    riskContainer.innerHTML = `<p class="error-inline" style="text-align:center;padding:20px 0;">❌ 구간별 통계를 불러오지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
+  }
+}
+
+async function runFuturePrediction() {
+  if (!futureTickerInput.value.trim()) {
+    setFutureStatus("error", "❌ 예측할 기업의 티커나 한글 회사명을 입력해주세요. (예: AAPL, 애플)");
+    return;
+  }
+  const ticker = resolveKoreanTicker(futureTickerInput.value);
+  futureAnalyzeBtn.disabled = true;
+  setFutureStatus("loading", `${ticker} 데이터를 불러오는 중입니다...`);
+
+  try {
+    const searchData = await yahooSearch(ticker);
+    const quote = searchData && searchData.quotes && searchData.quotes[0];
+    if (!quote) {
+      throw new Error(`'${ticker}' 티커를 찾을 수 없습니다. 정확한 미국 상장 티커인지 확인해주세요.`);
+    }
+    const data = await computeFuturePrediction(ticker);
+    renderFutureChart(data);
+    renderFutureRiskSection(ticker); // 2번째 그래프는 별도 API 호출이라 독립적으로 로딩(실패해도 1번째 그래프는 그대로 유지)
+    setFutureStatus(null, null);
+  } catch (err) {
+    setFutureStatus("error", `❌ ${escapeHtml(err.message || "예측 차트를 불러오지 못했습니다.")}`);
+  } finally {
+    futureAnalyzeBtn.disabled = false;
+  }
+}
+futureAnalyzeBtn.addEventListener("click", runFuturePrediction);
+futureTickerInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") runFuturePrediction();
+});

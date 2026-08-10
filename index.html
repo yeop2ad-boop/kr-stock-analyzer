@@ -83,6 +83,21 @@
     <iframe id="chartFrame" class="chart-modal-frame" title="차트" allowfullscreen></iframe>
   </div>
 
+  <div id="futureChartModal" class="chart-modal" style="display:none;">
+    <div class="chart-modal-header">
+      <span id="futureChartModalTitle" class="chart-modal-title"></span>
+      <button id="futureChartModalCloseBtn" class="chart-modal-close" type="button" aria-label="닫기">✕</button>
+    </div>
+    <div class="future-chart-body">
+      <div id="futureChartContainer" class="future-chart-container"></div>
+      <p id="futureChartCaption" class="future-chart-caption"></p>
+      <hr class="future-chart-divider" />
+      <h3 class="future-chart-subheading">📊 투자안정성 구간별 1년 수익률 분포 (베타, 매달 갱신)</h3>
+      <div id="futureRiskContainer" class="future-chart-container"></div>
+      <p id="futureRiskCaption" class="future-chart-caption"></p>
+    </div>
+  </div>
+
   <div class="container" id="mainContainer">
     <div class="carousel-viewport" id="carouselViewport">
 
@@ -164,7 +179,12 @@
       </div>
 
       <div class="carousel-panel" data-panel="future" id="panelFuture">
-        <p class="muted" style="text-align:center;padding:60px 0;">🚧 미래예측 기능은 준비 중입니다. 곧 만나요!</p>
+        <div class="future-search">
+          <input type="text" id="futureTickerInput" placeholder="티커를 입력하세요. EX)TSLA,AAPL" autocomplete="off" />
+          <button id="futureAnalyzeBtn" type="button" aria-label="검색">🔍</button>
+        </div>
+        <p id="futureStatus" class="status-box" style="display:none;"></p>
+        <p class="muted" style="text-align:center;padding:40px 0;">티커를 입력하고 검색하면 최근 6개월 실제 흐름과 과거 4개년 계절성을 바탕으로 한 향후 6개월 예측 차트를 볼 수 있어요.</p>
       </div>
 
     </div>
