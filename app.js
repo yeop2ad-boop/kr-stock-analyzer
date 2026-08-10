@@ -3307,12 +3307,14 @@ async function computeFuturePrediction(ticker) {
   const avgForwardDelta = forwardDeltas.length ? forwardDeltas.reduce((a, b) => a + b, 0) / forwardDeltas.length : 0;
   const projectedEndPct = currentPct + avgForwardDelta;
 
+  const currentPrice = currentBasePrice !== null ? currentBasePrice * (1 + currentPct / 100) : null;
   const forecastPrice = currentBasePrice !== null ? currentBasePrice * (1 + projectedEndPct / 100) : null;
 
   return {
     ticker,
     historicalBuckets,
     currentBucket,
+    currentPrice,
     forecast: { endPct: projectedEndPct, price: forecastPrice },
     axisMonthStart: addMonths(now, -6),
     hasForwardData: forwardDeltas.length > 0,
@@ -3341,11 +3343,11 @@ function pathFromPoints(points, xFn, yFn) {
 
 function buildFutureChartSvg(data) {
   const W = 720,
-    H = 460;
+    H = 470;
   const ML = 44,
     MR = 78, // "예상" 아래 예상가($XX.XX(+YY%)) 두 번째 줄이 잘리지 않도록 연도 라벨보다 넉넉히 확보
     MT = 22,
-    MB = 40;
+    MB = 56; // (현재) 아래 오늘 기준 현재가를 한 줄 더 넣을 공간
   const PW = W - ML - MR;
   const PH = H - MT - MB;
 
@@ -3376,6 +3378,9 @@ function buildFutureChartSvg(data) {
     axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 16).toFixed(1)}" text-anchor="middle" font-size="11" fill="${isNow ? "#f5a623" : "#8a90a3"}" font-weight="${isNow ? "700" : "400"}">${FUTURE_MONTH_NAMES_KO[labelDate.getMonth()]}</text>`;
   }
   axisSvg += `<text x="${xFn(0.5).toFixed(1)}" y="${(MT + PH + 32).toFixed(1)}" text-anchor="middle" font-size="11" fill="#f5a623" font-weight="700">(현재)</text>`;
+  if (data.currentPrice !== null && data.currentPrice !== undefined) {
+    axisSvg += `<text x="${xFn(0.5).toFixed(1)}" y="${(MT + PH + 48).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="#f5a623">$${data.currentPrice.toFixed(2)}</text>`;
+  }
 
   let linesSvg = "";
   data.historicalBuckets.forEach((s, i) => {
@@ -3483,7 +3488,13 @@ function buildFutureRiskChartSvg({ history, bucket, actualPoints, axisMonthStart
   const H = Math.max(380, MT + bands.length * 15 + MB + 40);
   const PH = H - MT - MB;
 
-  const xFnSlot = (slot) => ML + (slot / forecastIdx) * (W - ML - MR);
+  // 직전 6개월 구간은 기존 대비 가로 폭을 1/3로 줄이고(전체의 6/7 → 2/7), 남는 폭은 전부 1년후 구간에 몰아줘서
+  // 1년후 구간이 6개월 구간보다 눈에 띄게 길게 보이도록 함
+  const plotWidth = W - ML - MR;
+  const historicalWidth = plotWidth * (nowIdx / forecastIdx / 3);
+  const forecastWidth = plotWidth - historicalWidth;
+  const xFnSlot = (slot) =>
+    slot <= nowIdx ? ML + (slot / nowIdx) * historicalWidth : ML + historicalWidth + ((slot - nowIdx) / (forecastIdx - nowIdx)) * forecastWidth;
   const xFnActual = (frac) => xFnSlot(Math.min(frac / 0.5, 1) * nowIdx); // 1번 차트 frac(0~0.5=6개월전~현재)를 0~6칸에 맞춤
   const yFn = (val) => MT + (1 - (val - lo) / (hi - lo)) * PH;
 
