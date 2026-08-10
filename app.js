@@ -799,7 +799,7 @@ const US_TOTAL_MARKET_CAP_ESTIMATE = 87.4e12;
 
 // 참고용 신용등급(S&P Global Ratings 장기 발행자 등급 기준) 테이블 — 자체 조사로 수동 입력한 정적 데이터로,
 // 실시간 갱신되지 않으므로 등급 변동 시 수동 업데이트가 필요함. 목록에 없는 종목은 "S&P 등급 없음"으로 1점 처리
-// 회사채를 발행한 적이 없어(순현금·무차입 경영 등) 신용등급 자체가 존재하지 않는 종목 표시용 값 — S&P 등급 없음과 구분해 3점 처리
+// 회사채를 발행한 적이 없어(순현금·무차입 경영 등) 신용등급 자체가 존재하지 않는 종목 표시용 값 — S&P 등급 없음과 구분해 2점 처리
 const NO_DEBT_RATING = "회사채 없음";
 // 유이자부채(회사채·term loan 등)는 있으나 S&P가 발행자 등급을 매기지 않는 종목 표시용 값(다른 평가사만 평가 등) — 1점 처리
 // 위 두 값은 화면 세부점수에 숫자 대신 사유 문자열로 그대로 표시됨(투자등급이 없으면 점수가 아니라 사유를 노출)
@@ -1010,11 +1010,11 @@ function computeRiskScore(metrics, sp500Return) {
   const { symbol, oneYearReturn, netIncome, revenue, marketCap, currency } = metrics;
 
   // 1) 투자등급 (0~4점) — S&P 신용등급 기준. AAA 4점, AA+ 3.5점, AA 3점, AA- 2.5점, A+ 2점, A 1.5점, A- 1점, BBB+ 0.5점, BBB 이하 0점
-  // 회사채 자체가 없는 종목(NO_DEBT_RATING)은 3점, S&P 미평가(UNRATED_REASON)·목록 미포함은 1점 처리
+  // 회사채 자체가 없는 종목(NO_DEBT_RATING)은 2점, S&P 미평가(UNRATED_REASON)·목록 미포함은 1점 처리
   let creditScore = 1;
   const rating = symbol ? TICKER_CREDIT_RATING[symbol] : undefined;
   if (rating === NO_DEBT_RATING) {
-    creditScore = 3;
+    creditScore = 2;
   } else if (rating === UNRATED_REASON) {
     creditScore = 1;
   } else if (rating !== undefined) {
@@ -1750,6 +1750,16 @@ function hideMainTickerSuggest() {
   tickerSuggest.style.display = "none";
   tickerSuggest.innerHTML = "";
 }
+// 야후 검색 결과의 거래소 코드/표기를 사람이 읽기 쉬운 상장 위치로 정규화(NYSE / NASDAQ / NYSE American 등)
+function normalizeExchange(q) {
+  const raw = ((q && (q.exchDisp || q.exchange)) || "").toString();
+  const s = raw.toUpperCase();
+  if (s.includes("NASDAQ") || s === "NMS" || s === "NGM" || s === "NCM") return "NASDAQ";
+  if (s.includes("AMERICAN") || s === "ASE" || s === "AMEX") return "NYSE American";
+  if (s.includes("ARCA") || s === "PCX") return "NYSE Arca";
+  if (s.includes("NYSE") || s === "NYQ") return "NYSE";
+  return raw; // 그 외는 야후 표기 그대로 노출
+}
 function renderMainTickerSuggest(items) {
   if (items.length === 0) {
     hideMainTickerSuggest();
@@ -1759,7 +1769,7 @@ function renderMainTickerSuggest(items) {
     .map(
       (it) =>
         `<div class="chat-ticker-option" data-symbol="${escapeHtml(it.symbol)}">
-          <b>${escapeHtml(it.symbol)}</b> <span class="muted">${escapeHtml(it.name || "")}</span>
+          <b>${escapeHtml(it.symbol)}</b> <span class="muted">${escapeHtml(it.name || "")}</span>${it.exchange ? ` <span class="muted">(${escapeHtml(it.exchange)})</span>` : ""}
         </div>`
     )
     .join("");
@@ -1773,10 +1783,10 @@ async function handleMainTickerInput() {
     return;
   }
 
-  // 한국어 회사명 매칭은 목록이 작아 네트워크 응답을 기다리지 않고 바로 화면에 표시
+  // 한국어 회사명 매칭은 목록이 작아 네트워크 응답을 기다리지 않고 바로 화면에 표시(거래소는 영문 결과에서 보강)
   const koreanMatches = Object.entries(KOREAN_COMPANY_NAMES)
     .filter(([name]) => name.includes(q))
-    .map(([name, symbol]) => ({ symbol, name: `${name}(한글)` }));
+    .map(([name, symbol]) => ({ symbol, name, exchange: null }));
   renderMainTickerSuggest(koreanMatches.slice(0, 8));
 
   mainTickerSuggestTimer = setTimeout(async () => {
@@ -1785,11 +1795,16 @@ async function handleMainTickerInput() {
       const data = await yahooSearch(q);
       englishMatches = ((data && data.quotes) || [])
         .filter((qt) => qt.symbol)
-        .map((qt) => ({ symbol: qt.symbol, name: qt.shortname || qt.longname || "" }));
+        .map((qt) => ({ symbol: qt.symbol, name: qt.shortname || qt.longname || "", exchange: normalizeExchange(qt) }));
     } catch {
       // 검색 실패 시 한국어 매칭 결과만이라도 유지
     }
     if (tickerInput.value.trim() !== q) return; // 응답이 오는 사이 검색어가 바뀌었으면 무시(경쟁 상태 방지)
+    // 한글 매칭에 상장 거래소가 없으면 같은 심볼의 영문 결과에서 보강
+    const exBySymbol = new Map(englishMatches.map((e) => [e.symbol, e.exchange]));
+    koreanMatches.forEach((k) => {
+      if (!k.exchange && exBySymbol.has(k.symbol)) k.exchange = exBySymbol.get(k.symbol);
+    });
     const seen = new Set();
     const merged = [...koreanMatches, ...englishMatches].filter((it) => {
       if (seen.has(it.symbol)) return false;
@@ -2243,7 +2258,7 @@ async function renderPeers(ticker, selfMetricsPromise, sector) {
   el("peersSection").innerHTML = `
     <p class="muted">최근 회계연도 매출액 기준 비교 (${bySector ? "동일 섹터 시가총액 TOP3 + 시총 유사 종목 1개" : "자동 감지된 관련 종목"})</p>
     <div class="peer-table-header">
-      <span></span><span></span><span>매출액</span><span>시가총액</span><span>매력도</span>
+      <span></span><span></span><span>매출액</span><span>시가총액</span><span>상승압력</span>
     </div>
     <div class="bar-chart">${rows}</div>
   `;
@@ -2343,7 +2358,7 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
       </div>
       <div class="score-details">
         <ul>
-          <li>🏅 투자등급(신용등급): <b>${rating ? rating : "S&P 등급 없음"}</b> (AAA 4점 만점, BBB+ 0.5점, BBB 이하 0점, 회사채 없음 3점, 미평가·목록없음 1점)</li>
+          <li>🏅 투자등급(신용등급): <b>${rating ? rating : "S&P 등급 없음"}</b> (AAA 4점 만점, BBB+ 0.5점, BBB 이하 0점, 회사채 없음 2점, 미평가·목록없음 1점)</li>
           <li>📊 S&P500과의 1년 수익률 차이: ${relDiff !== null ? `<b>${relDiff.toFixed(1)}%p</b> (S&P500 <b>${fmtPct(sp500Return)}</b>)` : "N/A"} (차이가 작을수록 가점)</li>
           <li>💵 순이익률(순이익/매출): <b>${netMargin !== null ? (netMargin * 100).toFixed(1) + "%" : "N/A"}</b> (높을수록 가점, 적자면 0점)</li>
           <li>🏦 시가총액 가점(미국 전체 시장 내 시총 비중): <b>${vtsaxWeightPct !== null ? vtsaxWeightPct.toFixed(2) + "%" : "N/A"}</b> (VTSAX 등 인덱스펀드 예상 비중 근사, 6% 이상 만점·0% 0점)</li>
@@ -2918,11 +2933,10 @@ const INDEX_LIST = [
   { src: "yahoo", symbol: "^N225", name: "닛케이 225", ticker: "JP225" },
   { src: "yahoo", symbol: "^HSI", name: "홍콩 항셍", ticker: "HSI" },
   { src: "yahoo", symbol: "XIN9.FGI", name: "차이나 A50", ticker: "CHINA50" },
-  { src: "yahoo", symbol: "^HSTECH", name: "항셍테크", ticker: "HSTECH" },
   { src: "yahoo", symbol: "BTC-USD", name: "비트코인", ticker: "BTC" },
   { src: "yahoo", symbol: "ETH-USD", name: "이더리움", ticker: "ETH" },
-  { src: "yahoo", symbol: "GC=F", name: "금", ticker: "GOLD" },
-  { src: "yahoo", symbol: "SI=F", name: "은", ticker: "SILVER" },
+  { src: "yahoo", symbol: "GC=F", name: "금(Gold)", ticker: "GOLD" },
+  { src: "yahoo", symbol: "SI=F", name: "은(Silver)", ticker: "SILVER" },
   { src: "yahoo", symbol: "CL=F", name: "WTI 원유", ticker: "WTI" },
   { src: "yahoo", symbol: "BZ=F", name: "브렌트유", ticker: "BRENT" },
   { src: "fred", symbol: "T10Y2Y", name: "장단기 금리차(10Y-2Y)", ticker: "T10Y2Y", vSuffix: "%p", cSuffix: "%p" },
@@ -3027,6 +3041,8 @@ async function runIndexTab() {
     indexStatus.textContent = `❌ ${err.message || "지수 데이터를 가져오지 못했습니다."}`;
   }
 }
+// 지수는 무료 프록시라 실시간 스트리밍은 불가 — 새로고침 버튼으로 최신값을 다시 조회
+el("indexRefreshBtn").addEventListener("click", () => runIndexTab());
 
 // ---------- 인기종목: 당일 거래대금(가격 × 거래량) 상위 20개, 접속 시 10개만 먼저 표시 ----------
 async function runPopular() {
