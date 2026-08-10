@@ -93,16 +93,31 @@ body {
   font-size: 15px;
 }
 .future-search button {
-  width: 54px;
-  height: 54px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
-  background: var(--accent);
-  font-size: 20px;
+  background: conic-gradient(from 90deg, #ff0040, #ff00ff, #8000ff, #0000ff, #00ffff, #00ff00, #ffff00, #ff8000, #ff0040);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  font-size: 22px;
   line-height: 1;
   padding: 0 0 0 3px; /* 재생 삼각형이 원 중앙에 오도록 살짝 보정 */
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.future-beta-warning {
+  text-align: center;
+  padding: 12px 16px;
+  margin: 16px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--warn);
+  background: #362a12;
+  border: 1px solid var(--warn);
+  border-radius: 8px;
 }
 
 .tab-bar {
