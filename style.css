@@ -278,15 +278,23 @@ body {
 
 .future-chart-body {
   flex: 1;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   padding: 12px 10px 24px;
   background: #000;
 }
 /* 화면이 좁을 땐(모바일) 차트를 억지로 줄이지 않고 최소폭을 유지해 라벨 글자가 너무 작아지지 않게 하고,
-   대신 가로 스크롤로 볼 수 있게 함(데이터 비율 자체는 항상 정확하게 유지됨) */
-.future-chart-container { width: 100%; max-width: 720px; min-width: 600px; margin: 0 auto; }
-.future-chart-container svg { width: 100%; height: auto; display: block; }
+   대신 가로 스크롤로 볼 수 있게 함(데이터 비율 자체는 항상 정확하게 유지됨).
+   스크롤은 이 컨테이너 자신에게 걸어서(캡션·구분선 등은 제외) 1번·2번 그래프가 서로 묶이지 않고 각자 따로 스크롤됨 */
+.future-chart-container {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.future-chart-container svg { min-width: 600px; width: 100%; height: auto; display: block; }
 .future-chart-caption {
   max-width: 720px;
   margin: 10px auto 0;
