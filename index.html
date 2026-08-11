@@ -55,10 +55,10 @@
       <button type="button" class="cat-btn" data-tab="search" id="tabSearchBtn">기업검색</button>
       <button type="button" class="cat-btn" data-tab="popular" id="tabPopularBtn">🔥 인기종목</button>
       <button type="button" class="cat-btn" data-tab="index" id="tabIndexBtn">지수</button>
-      <button type="button" class="cat-btn" data-tab="historical" id="tabHistoricalBtn">과거분석</button>
+      <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn">인사이트</button>
       <button type="button" class="cat-btn" data-tab="valuation" id="tabValuationBtn">가치평가</button>
       <button type="button" class="cat-btn" data-tab="trend" id="tabTrendBtn">추세평가</button>
-      <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn">인사이트</button>
+      <button type="button" class="cat-btn" data-tab="historical" id="tabHistoricalBtn">과거분석</button>
       <button type="button" class="cat-btn" data-tab="future" id="tabFutureBtn">미래예측(베타)</button>
     </div>
   </header>
@@ -143,13 +143,17 @@
         <div id="indexResults"></div>
       </div>
 
-      <div class="carousel-panel" data-panel="historical" id="panelHistorical">
-        <p id="historicalStatus" class="muted top30-status" style="display:none;"></p>
-        <div id="historicalResults"></div>
-        <div class="historical-full-buttons">
-          <button type="button" class="cat-btn cat-historical-up" id="historicalFullUpBtn"><span class="cat-arrow">▲</span> 과거분석(전체)</button>
-          <button type="button" class="cat-btn cat-historical-down" id="historicalFullDownBtn"><span class="cat-arrow">▼</span> 과거분석(전체)</button>
+      <div class="carousel-panel" data-panel="insight" id="panelInsight">
+        <div class="top30-sub-nav">
+          <button type="button" class="cat-btn" id="insightBlackrockBtn">블랙록</button>
+          <button type="button" class="cat-btn" id="insightVanguardBtn">뱅가드</button>
+          <button type="button" class="cat-btn" id="insightBerkshireBtn">버크셔 해서웨이</button>
+          <button type="button" class="cat-btn" id="insightGoldmanBtn">골드만삭스</button>
+          <button type="button" class="cat-btn" id="insightMorganStanleyBtn">모건스탠리</button>
+          <button type="button" class="cat-btn" id="insightJpmorganBtn">JP모건 체이스</button>
         </div>
+        <p id="insightStatus" class="muted top30-status" style="display:none;"></p>
+        <div id="insightResults"></div>
       </div>
 
       <div class="carousel-panel" data-panel="valuation" id="panelValuation">
@@ -177,17 +181,13 @@
         <div id="trendResults"></div>
       </div>
 
-      <div class="carousel-panel" data-panel="insight" id="panelInsight">
-        <div class="top30-sub-nav">
-          <button type="button" class="cat-btn" id="insightBlackrockBtn">블랙록</button>
-          <button type="button" class="cat-btn" id="insightVanguardBtn">뱅가드</button>
-          <button type="button" class="cat-btn" id="insightBerkshireBtn">버크셔 해서웨이</button>
-          <button type="button" class="cat-btn" id="insightGoldmanBtn">골드만삭스</button>
-          <button type="button" class="cat-btn" id="insightMorganStanleyBtn">모건스탠리</button>
-          <button type="button" class="cat-btn" id="insightJpmorganBtn">JP모건 체이스</button>
+      <div class="carousel-panel" data-panel="historical" id="panelHistorical">
+        <p id="historicalStatus" class="muted top30-status" style="display:none;"></p>
+        <div id="historicalResults"></div>
+        <div class="historical-full-buttons">
+          <button type="button" class="cat-btn cat-historical-up" id="historicalFullUpBtn"><span class="cat-arrow">▲</span> 과거분석(전체)</button>
+          <button type="button" class="cat-btn cat-historical-down" id="historicalFullDownBtn"><span class="cat-arrow">▼</span> 과거분석(전체)</button>
         </div>
-        <p id="insightStatus" class="muted top30-status" style="display:none;"></p>
-        <div id="insightResults"></div>
       </div>
 
       <div class="carousel-panel" data-panel="future" id="panelFuture">

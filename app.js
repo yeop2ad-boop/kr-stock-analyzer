@@ -1387,7 +1387,7 @@ new ResizeObserver(syncHeaderHeight).observe(fixedHeader);
 syncHeaderHeight();
 
 // ---------- 스와이프 캐로셀(기업검색/인기종목/지수/과거분석/가치평가/추세평가/인사이트/미래예측) ----------
-const TAB_ORDER = ["search", "popular", "index", "historical", "valuation", "trend", "insight", "future"];
+const TAB_ORDER = ["search", "popular", "index", "insight", "valuation", "trend", "historical", "future"];
 const panels = {
   search: el("panelSearch"),
   popular: el("panelPopular"),
