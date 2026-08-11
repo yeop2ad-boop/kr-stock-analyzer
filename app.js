@@ -366,30 +366,13 @@ let macroMetricsPromise = null;
 function getMacroMetrics() {
   if (!macroMetricsPromise) {
     macroMetricsPromise = (async () => {
-      const [m2Points, curvePoints] = await Promise.all([fetchFredSeries("M2SL"), fetchFredSeries("T10Y2Y")]);
-
-      const latestM2 = m2Points[m2Points.length - 1];
-      const yearAgoTarget = new Date(latestM2[0]);
-      yearAgoTarget.setFullYear(yearAgoTarget.getFullYear() - 1);
-      let closest = m2Points[0];
-      let minDiff = Infinity;
-      for (const p of m2Points) {
-        const diff = Math.abs(new Date(p[0]) - yearAgoTarget);
-        if (diff < minDiff) {
-          minDiff = diff;
-          closest = p;
-        }
-      }
-      const m2Yoy = closest[1] ? ((latestM2[1] - closest[1]) / closest[1]) * 100 : null;
-
-      const latestSpread = curvePoints[curvePoints.length - 1];
-
+      const chart = await yahooChart("^VIX", "5d", "1d");
+      const result = chart && chart.chart && chart.chart.result && chart.chart.result[0];
+      const meta = result && result.meta;
+      if (!meta || meta.regularMarketPrice === undefined) throw new Error("VIX 데이터를 가져오지 못했습니다.");
       return {
-        m2Yoy,
-        m2Value: latestM2[1],
-        m2Date: new Date(latestM2[0]),
-        spread: latestSpread[1],
-        spreadDate: new Date(latestSpread[0]),
+        vix: meta.regularMarketPrice,
+        vixDate: meta.regularMarketTime ? new Date(meta.regularMarketTime * 1000) : new Date(),
       };
     })().catch((e) => {
       macroMetricsPromise = null; // 실패 시 다음 조회에서 재시도할 수 있도록 캐시 초기화
@@ -399,22 +382,35 @@ function getMacroMetrics() {
   return macroMetricsPromise;
 }
 
-// M2 통화량 증가폭(YoY) + 미국 장단기(10년-2년) 금리차를 조합한 참고용 거시경제 점수(10점 만점)
-function computeMacroScore({ m2Yoy, spread }) {
-  // 1) M2 통화량 YoY 증가율 (0~5점) — +10%면 만점, 0% 이하면 0점 (2%p마다 1점, 선형)
-  let m2Score = 2.5;
-  if (m2Yoy !== null && m2Yoy !== undefined) {
-    m2Score = clamp(m2Yoy / 2, 0, 5);
+// "투자황금기(공포지수연동)" 점수 — VIX(공포지수)가 높을수록(시장이 패닉일수록) 역발상 매수 기회로 보고 점수를 올림.
+// VIX 25 이하는 평시로 보고 5점 고정, 25~35 구간은 5~10점 선형(VIX 2당 1점), 35를 넘으면 상한 없이 계속 상승하되
+// 상승 속도는 완만해짐(VIX 5당 1점). 10점을 넘어가면 배지 색이 더 진한 골드로 바뀜(macroGoldStyle 참고)
+function computeMacroScore({ vix }) {
+  let total = 5;
+  if (vix !== null && vix !== undefined) {
+    if (vix <= 25) total = 5;
+    else if (vix <= 35) total = 5 + (vix - 25) * 0.5;
+    else total = 10 + (vix - 35) * 0.2;
   }
+  total = Math.round(total * 10) / 10;
+  return { total, vix };
+}
 
-  // 2) 장단기 금리차(10Y-2Y) (0~5점) — 2 이상이면 만점, -0.5 이하면 0점 (0.5마다 1점, 선형)
-  let curveScore = 2.5;
-  if (spread !== null && spread !== undefined) {
-    curveScore = clamp((spread + 0.5) / 0.5, 0, 5);
-  }
+// 점수가 10점을 넘으면(VIX 극단적 공포) 은은한 amber(--warn)에서 점점 더 쨍한 골드로 — 15점 이상에서 최대 강도
+function macroGoldColor(score) {
+  if (score === null || score === undefined || score < 10) return null;
+  const intensity = clamp((score - 10) / 5, 0, 1);
+  const from = [201, 138, 26]; // --warn
+  const to = [255, 215, 0]; // 쨍한 골드
+  const mix = from.map((f, i) => Math.round(f + (to[i] - f) * intensity));
+  return { color: `rgb(${mix.join(",")})`, intensity };
+}
 
-  const total = Math.round(clamp(m2Score + curveScore, 0, 10) * 10) / 10;
-  return { total, m2Score, curveScore };
+function macroGoldStyle(score) {
+  const gold = macroGoldColor(score);
+  if (!gold) return "";
+  const glow = `box-shadow:0 0 ${(6 + gold.intensity * 12).toFixed(0)}px rgba(255,215,0,${(0.3 + gold.intensity * 0.5).toFixed(2)});`;
+  return ` style="border-color:${gold.color};color:${gold.color};${glow}"`;
 }
 
 // ---------- 종목별 지표 조회 + 상승압력도 점수 계산 (사업요약/경쟁사비교/점수 섹션에서 공용으로 사용) ----------
@@ -2107,7 +2103,7 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
     const [metrics, { sp500Return }, macroMetrics] = await Promise.all([
       selfMetricsPromise,
       marketReturnsPromise,
-      getMacroMetrics().catch(() => ({ m2Yoy: null, spread: null })),
+      getMacroMetrics().catch(() => ({ vix: null })),
     ]);
     const attractiveness = computeAttractivenessScore(metrics);
     const risk = computeRiskScore(metrics, sp500Return);
@@ -2124,8 +2120,8 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
         <span class="mini-score-label">투자안정성</span>
       </div>
       <div class="mini-score">
-        <div class="mini-score-circle macro">${macro.total}</div>
-        <span class="mini-score-label">거시경제</span>
+        <div class="mini-score-circle macro"${macroGoldStyle(macro.total)}>${macro.total}</div>
+        <span class="mini-score-label">투자황금기<br>(공포지수연동)</span>
       </div>
     `;
   } catch {
@@ -2469,32 +2465,30 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
   `;
 }
 
-// ---------- 7. 거시경제 점수 (M2 통화량 증가폭 + 미국 장단기 금리차, 종목과 무관) ----------
+// ---------- 7. 투자황금기 점수(공포지수연동) — VIX(CBOE 변동성지수)가 높을수록(시장 패닉) 역발상 매수 기회로 보고 점수를 올림, 종목과 무관 ----------
 async function renderMacro() {
   el("macroSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
-  const { m2Yoy, m2Date, spread, spreadDate } = await getMacroMetrics();
-  const { total, m2Score, curveScore } = computeMacroScore({ m2Yoy, spread });
+  const { vix, vixDate } = await getMacroMetrics();
+  const { total } = computeMacroScore({ vix });
 
-  const m2DateStr = m2Date ? `${m2Date.getFullYear()}.${m2Date.getMonth() + 1}` : "";
-  const spreadDateStr = spreadDate ? spreadDate.toLocaleDateString("ko-KR") : "";
+  const vixDateStr = vixDate ? vixDate.toLocaleDateString("ko-KR") : "";
 
   el("macroSection").innerHTML = `
     <div class="score-wrap">
-      <div class="score-badge macro">
+      <div class="score-badge macro"${macroGoldStyle(total)}>
         <div class="score-num">${total}</div>
         <div class="score-den">/ 10</div>
       </div>
       <div class="score-details">
         <ul>
-          <li>💵 M2 통화량 증가율(전년 동월 대비, ${escapeHtml(m2DateStr)} 기준): <b>${fmtPct(m2Yoy)}</b> (10% 이상이면 만점, 0% 이하면 0점)</li>
-          <li>📐 미국 장단기(10년-2년) 금리차(${escapeHtml(spreadDateStr)} 기준): <b>${spread !== null && spread !== undefined ? spread.toFixed(2) + "%p" : "N/A"}</b> (2 이상이면 만점, -0.5 이하면 0점)</li>
-          <li>세부 점수 — M2 증가율 ${m2Score.toFixed(1)}/5, 장단기 금리차 ${curveScore.toFixed(1)}/5</li>
+          <li>😱 VIX(공포지수, ${escapeHtml(vixDateStr)} 기준): <b>${vix !== null && vix !== undefined ? vix.toFixed(2) : "N/A"}</b></li>
+          <li>VIX 25 이하는 평시로 보고 5점 고정, 25~35 구간은 5~10점 선형(2당 1점), 35 초과는 상한 없이 계속 상승(5당 1점, 완만해짐)</li>
+          <li>10점을 넘으면(VIX 35+, 극단적 공포) 배지 색이 점점 더 진한 골드로 바뀝니다</li>
         </ul>
         <p class="disclaimer">
-          ⚠️ 이 점수는 특정 종목과 무관한 미국 전체 거시경제 지표(연방준비은행 FRED 데이터 기반)이며,
-          M2 통화량 증가율과 장단기 금리차를 조합한 <b>단순 참고용 정량 지표</b>입니다. 투자 자문이나 매수/매도 추천이 아니며,
-          FRED의 비공식/내부 데이터 엔드포인트를 사용하므로 일시적으로 조회가 안 될 수 있습니다.
+          ⚠️ 이 점수는 특정 종목과 무관한 시장 전체 공포지수(VIX) 기반 <b>단순 참고용 정량 지표</b>이며, "공포가 클수록 저가 매수 기회"라는
+          역발상 관점을 반영한 것입니다. 투자 자문이나 매수/매도 추천이 아니며, 실제로는 공포가 더 깊어질 수도 있습니다.
         </p>
       </div>
     </div>
@@ -3168,25 +3162,28 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
 // src="yahoo"는 야후 차트(전일 종가 대비), src="fred"는 FRED 최신 발표치(전 영업일 대비)
 // vSuffix: 가격 뒤 단위 / cSuffix: 변동량 뒤 단위(미지정 시 vSuffix 사용)
 // chartSymbol: 클릭 시 TradingView 차트 모달에 넘길 심볼(야후 티커와 표기가 달라 별도 매핑 필요) — 없으면(null) 클릭 비활성
+// 앞쪽 8개(S&P500~WTI)는 접속 시 바로 보이는 우선 표시 종목(INDEX_PRIORITY_COUNT), 나머지는 "더보기"로 펼쳐야 보임
+const INDEX_PRIORITY_COUNT = 8;
 const INDEX_LIST = [
-  { src: "yahoo", symbol: "KRW=X", name: "🇰🇷 달러/원 환율", ticker: "USD/KRW", chartSymbol: "FX:USDKRW" },
-  { src: "yahoo", symbol: "JPY=X", name: "🇯🇵 달러/엔 환율", ticker: "USD/JPY", chartSymbol: "FX:USDJPY" },
   { src: "yahoo", symbol: "^GSPC", name: "🇺🇸 S&P 500", ticker: "SPX", chartSymbol: "SP:SPX" },
-  { src: "yahoo", symbol: "^NDX", name: "🇺🇸 US Tech 100", ticker: "NDX", chartSymbol: "NASDAQ:NDX" },
   { src: "yahoo", symbol: "^DJI", name: "🇺🇸 다우 종합", ticker: "DJI", chartSymbol: "DJ:DJI" },
   { src: "yahoo", symbol: "^IXIC", name: "🇺🇸 나스닥 종합", ticker: "IXIC", chartSymbol: "NASDAQ:IXIC" },
   { src: "yahoo", symbol: "^RUT", name: "🇺🇸 러셀 2000", ticker: "RUT", chartSymbol: "TVC:RUT" },
   { src: "yahoo", symbol: "^VIX", name: "🇺🇸 S&P500 VIX", ticker: "VIX", chartSymbol: "TVC:VIX" },
+  { src: "yahoo", symbol: "GC=F", name: "🥇 금(Gold)", ticker: "GOLD", chartSymbol: "TVC:GOLD" },
+  { src: "yahoo", symbol: "BTC-USD", name: "₿ 비트코인", ticker: "BTC", chartSymbol: "COINBASE:BTCUSD" },
+  { src: "yahoo", symbol: "CL=F", name: "🛢️ WTI 원유", ticker: "WTI", chartSymbol: "TVC:USOIL" },
+  // ---- 더보기(INDEX_PRIORITY_COUNT 이후)부터는 기본 접힘 ----
+  { src: "yahoo", symbol: "KRW=X", name: "🇰🇷 달러/원 환율", ticker: "USD/KRW", chartSymbol: "FX:USDKRW" },
+  { src: "yahoo", symbol: "JPY=X", name: "🇯🇵 달러/엔 환율", ticker: "USD/JPY", chartSymbol: "FX:USDJPY" },
+  { src: "yahoo", symbol: "^NDX", name: "🇺🇸 US Tech 100", ticker: "NDX", chartSymbol: "NASDAQ:NDX" },
   { src: "yahoo", symbol: "^KS11", name: "🇰🇷 코스피", ticker: "KOSPI", chartSymbol: "KRX:KOSPI" },
   { src: "yahoo", symbol: "^KQ11", name: "🇰🇷 코스닥", ticker: "KOSDAQ", chartSymbol: "KRX:KOSDAQ" },
   { src: "yahoo", symbol: "^N225", name: "🇯🇵 닛케이 225", ticker: "JP225", chartSymbol: "TVC:NI225" },
   { src: "yahoo", symbol: "^HSI", name: "🇭🇰 홍콩 항셍", ticker: "HSI", chartSymbol: "TVC:HSI" },
   { src: "yahoo", symbol: "XIN9.FGI", name: "🇨🇳 차이나 A50", ticker: "CHINA50", chartSymbol: "TVC:CN50" },
-  { src: "yahoo", symbol: "BTC-USD", name: "₿ 비트코인", ticker: "BTC", chartSymbol: "COINBASE:BTCUSD" },
   { src: "yahoo", symbol: "ETH-USD", name: "Ξ 이더리움", ticker: "ETH", chartSymbol: "COINBASE:ETHUSD" },
-  { src: "yahoo", symbol: "GC=F", name: "🥇 금(Gold)", ticker: "GOLD", chartSymbol: "TVC:GOLD" },
   { src: "yahoo", symbol: "SI=F", name: "🥈 은(Silver)", ticker: "SILVER", chartSymbol: "TVC:SILVER" },
-  { src: "yahoo", symbol: "CL=F", name: "🛢️ WTI 원유", ticker: "WTI", chartSymbol: "TVC:USOIL" },
   { src: "yahoo", symbol: "BZ=F", name: "🛢️ 브렌트유", ticker: "BRENT", chartSymbol: "TVC:UKOIL" },
   { src: "fred", symbol: "T10Y2Y", name: "🇺🇸 장단기 금리차(10Y-2Y)", ticker: "T10Y2Y", vSuffix: "%p", cSuffix: "%p", chartSymbol: null },
   { src: "fred", symbol: "DGS2", name: "🇺🇸 미국 2년물 국채", ticker: "US2Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US02Y" },
@@ -3267,6 +3264,9 @@ function indexRowHtml(item, snap) {
     </div>`;
 }
 
+// 접힘/펼침 상태는 새로고침·자동갱신(20초)에도 유지되도록 모듈 스코프에 둠
+let indexShowAll = false;
+
 async function runIndexTab() {
   indexStatus.style.display = "block";
   indexStatus.textContent = "지수 데이터를 불러오는 중...";
@@ -3283,13 +3283,21 @@ async function runIndexTab() {
       }
     });
 
-    const rows = INDEX_LIST.map((item, i) => indexRowHtml(item, snaps[i])).join("");
+    const visibleList = indexShowAll ? INDEX_LIST : INDEX_LIST.slice(0, INDEX_PRIORITY_COUNT);
+    const rows = visibleList.map((item, i) => indexRowHtml(item, snaps[i])).join("");
+    const hiddenCount = INDEX_LIST.length - INDEX_PRIORITY_COUNT;
+    const toggleBtn = `<button type="button" class="cat-btn index-toggle-btn" id="indexToggleBtn">${indexShowAll ? "간략히 보기" : `더보기 (${hiddenCount}개)`}</button>`;
 
     indexStatus.style.display = "none";
     indexResults.innerHTML = `
       <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 환율·지수·원자재·가상자산은 전일 종가 대비, 국채·금리차는 FRED 최신치(전 영업일 대비) 기준이며 상승은 초록·하락은 빨강입니다.</p>
       <div class="idx-list">${rows}</div>
+      ${toggleBtn}
     `;
+    el("indexToggleBtn").addEventListener("click", () => {
+      indexShowAll = !indexShowAll;
+      runIndexTab();
+    });
   } catch (err) {
     indexStatus.textContent = `❌ ${err.message || "지수 데이터를 가져오지 못했습니다."}`;
   }
@@ -3878,36 +3886,17 @@ function buildFutureRiskChartSvg({ history, bucket, actualPoints, axisMonthStart
   return { svg, forecastPctFromToday, forecastPrice };
 }
 
-// ---------- 미래예측 3번째 그래프: 거시경제 점수별 S&P500 30년 추이 ----------
+// ---------- 미래예측 3번째 그래프: 투자황금기 점수(VIX 공포지수 기반) 별 S&P500 30년 추이 ----------
 // 검색한 종목과 무관한 시장 전체 데이터라 세션 내에서 한 번만 계산해 캐시(여러 번 검색해도 재요청하지 않음)
 let macroScoreChartDataPromise = null;
 
-// FRED 시계열([date, value] 배열)에서 목표 날짜와 가장 가까운 관측치 하나를 찾음(getMacroMetrics의 "최신값 찾기"를 임의 과거 시점으로 일반화)
-function closestFredPoint(points, targetDate) {
-  const targetTime = targetDate.getTime();
-  let closest = points[0];
-  let minDiff = Infinity;
-  for (const p of points) {
-    const diff = Math.abs(new Date(p[0]).getTime() - targetTime);
-    if (diff < minDiff) {
-      minDiff = diff;
-      closest = p;
-    }
-  }
-  return closest;
-}
-
-// computeMacroScore와 동일한 공식을, "지금"이 아니라 임의 과거 시점 기준으로 계산 — M2 YoY·금리차 모두 그 시점에 가장 가까운 FRED 관측치를 사용
-// 점수(total)뿐 아니라 원본 지표(m2Yoy, spread)도 그대로 반환 — 차트에는 점수 대신 이 두 원본 값을 라벨로 표시
-function computeMacroScoreAtDate(m2Points, curvePoints, date) {
-  const m2Now = closestFredPoint(m2Points, date);
-  const yearAgo = new Date(date);
-  yearAgo.setFullYear(yearAgo.getFullYear() - 1);
-  const m2YearAgo = closestFredPoint(m2Points, yearAgo);
-  const m2Yoy = m2YearAgo[1] ? ((m2Now[1] - m2YearAgo[1]) / m2YearAgo[1]) * 100 : null;
-  const spreadPoint = closestFredPoint(curvePoints, date);
-  const spread = spreadPoint[1];
-  return { ...computeMacroScore({ m2Yoy, spread }), m2Yoy, spread };
+// computeMacroScore와 동일한 공식을, "지금"이 아니라 임의 과거 시점 기준으로 계산 — VIX 주간 종가 시계열에서 그 시점에
+// 가장 가까운 값을 사용. 점수(total)뿐 아니라 원본 VIX 값도 그대로 반환(차트에는 점수 대신 VIX 값을 라벨로 표시)
+function computeMacroScoreAtDate(vixPairs, date) {
+  const targetSec = Math.floor(date.getTime() / 1000);
+  const point = closestPair(vixPairs, targetSec);
+  const vix = point ? point.c : null;
+  return { ...computeMacroScore({ vix }), vix };
 }
 
 async function computeMacroScoreChartData() {
@@ -3916,29 +3905,30 @@ async function computeMacroScoreChartData() {
   const startYear = now.getFullYear() - 30;
   const startSec = Math.floor(new Date(startYear, 0, 1).getTime() / 1000);
 
-  const [chartData, m2Points, curvePoints, liveMacro] = await Promise.all([
+  const [chartData, vixChartData, liveMacro] = await Promise.all([
     yahooChartRange("^GSPC", startSec, nowSec, "1wk"),
-    fetchFredSeries("M2SL"),
-    fetchFredSeries("T10Y2Y"),
+    yahooChartRange("^VIX", startSec, nowSec, "1wk"),
     getMacroMetrics(),
   ]);
   const pairs = chartClosePairs(chartData);
   if (pairs.length < 2) throw new Error("S&P500 장기 데이터를 가져오지 못했습니다.");
+  const vixPairs = chartClosePairs(vixChartData);
+  if (vixPairs.length < 2) throw new Error("VIX 장기 데이터를 가져오지 못했습니다.");
 
   // 6개월 간격(2월 1일/8월 1일)으로 30년치 — 시작 연도는 오늘 기준으로 매번 다시 계산되므로 시간이 지나도 항상 최근 30년을 가리킴
-  // 라벨은 점수 대신 원본 지표 두 줄(윗줄: 장단기금리차, 아랫줄: M2 통화량 YoY %)로 표시
+  // 라벨은 점수 대신 원본 VIX 값으로 표시
   const points = [];
   for (let anchor = new Date(startYear, 1, 1); anchor < now; anchor = addMonths(anchor, 6)) {
     const anchorSec = Math.floor(anchor.getTime() / 1000);
     const pricePoint = closestPair(pairs, anchorSec);
     if (!pricePoint || Math.abs(pricePoint.t - anchorSec) > 20 * 24 * 3600) continue; // 그 시점 데이터가 없으면(상장 전 등) 건너뜀
-    const m = computeMacroScoreAtDate(m2Points, curvePoints, anchor);
-    points.push({ t: pricePoint.t, price: pricePoint.c, score: m.total, spread: m.spread, m2Yoy: m.m2Yoy, isNow: false });
+    const m = computeMacroScoreAtDate(vixPairs, anchor);
+    points.push({ t: pricePoint.t, price: pricePoint.c, score: m.total, vix: m.vix, isNow: false });
   }
-  // 마지막은 "지금" 실시간 점수 — 매달 1일 기준으로 다시 볼 때마다 최신 M2·금리차가 반영되므로 항상 현재 시점을 정확히 대표함
+  // 마지막은 "지금" 실시간 점수 — 다시 볼 때마다 최신 VIX가 반영되므로 항상 현재 시점을 정확히 대표함
   const last = pairs[pairs.length - 1];
   const liveScore = computeMacroScore(liveMacro);
-  points.push({ t: last.t, price: last.c, score: liveScore.total, spread: liveMacro.spread, m2Yoy: liveMacro.m2Yoy, isNow: true });
+  points.push({ t: last.t, price: last.c, score: liveScore.total, vix: liveMacro.vix, isNow: true });
 
   // 각 점 시점부터 다음 6개월 구간 동안 S&P500이 20% 이상 급락했는지 표시(라벨을 노란색으로 강조)
   for (let i = 0; i < points.length - 1; i++) {
@@ -4000,35 +3990,27 @@ function buildMacroScoreChartSvg({ pairs, points }) {
   const linePath = pairs.map((p, i) => `${i === 0 ? "M" : "L"}${xFn(p.t).toFixed(1)},${yFn(p.c).toFixed(1)}`).join(" ");
   let linesSvg = `<path d="${linePath}" fill="none" stroke="#e5342f" stroke-width="1.8" stroke-linejoin="round" />`;
 
-  // 점(그 시점의 거시경제 점수)은 빨간 선 위(그 날짜의 S&P 실제 값 높이)에 정확히 얹어서 찍음 — 8~10점 구간은(지금 점도 포함) 주황,
-  // 그 외 과거 점은 흰색. 라벨은 점수 대신 원본 지표 두 줄(윗줄: 장단기금리차, 아랫줄: M2 통화량 YoY %)로 표시하고,
+  // 점(그 시점의 투자황금기 점수)은 빨간 선 위(그 날짜의 S&P 실제 값 높이)에 정확히 얹어서 찍음 — 8점 이상(지금 점도 포함)은 주황,
+  // 10점을 넘으면(VIX 35+ 극단적 공포) 점점 더 쨍한 골드로, 그 외 과거 점은 흰색. 라벨은 점수 대신 원본 VIX 값으로 표시하고,
   // 위/아래를 번갈아 배치해 6개월 간격(약 60개)이 서로 덜 겹치게 함
   points.forEach((p, i) => {
     const x = xFn(p.t);
     const y = yFn(p.price);
     const isHigh = p.isNow || p.score >= 8;
-    const dotColor = isHigh ? "#f5a623" : "#eceef2";
+    const gold = macroGoldColor(p.score);
+    const dotColor = gold ? gold.color : isHigh ? "#f5a623" : "#eceef2";
     const textColor = p.crashWarn ? "#f5d90a" : dotColor;
     const r = p.isNow ? 4.2 : 2.6;
     linesSvg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${dotColor}" stroke="#000" stroke-width="1" />`;
-    const spreadTxt = p.spread !== null && p.spread !== undefined ? `${p.spread >= 0 ? "+" : ""}${p.spread.toFixed(2)}%p` : "N/A";
-    const m2Txt = p.m2Yoy !== null && p.m2Yoy !== undefined ? `${p.m2Yoy >= 0 ? "+" : ""}${p.m2Yoy.toFixed(1)}%` : "N/A";
+    const vixTxt = p.vix !== null && p.vix !== undefined ? `VIX ${p.vix.toFixed(1)}` : "N/A";
     const fontSize = p.isNow ? 10 : 7.5;
     const rowH = p.isNow ? 12 : 9;
     const above = p.isNow || i % 2 === 0;
-    let spreadY, m2Y;
-    if (above) {
-      m2Y = y - 6;
-      spreadY = m2Y - rowH;
-    } else {
-      spreadY = y + rowH;
-      m2Y = spreadY + rowH;
-    }
-    linesSvg += `<text x="${x.toFixed(1)}" y="${spreadY.toFixed(1)}" text-anchor="middle" font-size="${fontSize}" font-weight="700" fill="${textColor}">${spreadTxt}</text>`;
-    linesSvg += `<text x="${x.toFixed(1)}" y="${m2Y.toFixed(1)}" text-anchor="middle" font-size="${fontSize}" font-weight="700" fill="${textColor}">${m2Txt}</text>`;
+    const labelY = above ? y - 6 : y + rowH;
+    linesSvg += `<text x="${x.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-size="${fontSize}" font-weight="700" fill="${textColor}">${vixTxt}</text>`;
   });
 
-  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="거시경제 점수별 S&P500 30년 추이">
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="투자황금기 점수(VIX 공포지수)별 S&P500 30년 추이">
     <rect x="0" y="0" width="${W}" height="${H}" fill="#000" />
     ${gridSvg}
     ${axisSvg}
@@ -4047,8 +4029,8 @@ async function renderMacroScoreChart() {
     container.innerHTML = buildMacroScoreChartSvg(data);
     macroScoreChartRendered = true;
     caption.textContent =
-      "빨간 선: S&P500 지수(1996~현재, 주간 종가) · 점 라벨: 6개월 간격(2월/8월 1일 기준) 윗줄 장단기금리차(10Y-2Y)·아랫줄 M2 통화량 YoY % · " +
-      "주황 점: 거시경제 점수 8~10점 구간(현재 포함), 흰 점: 그 외 · 노란 글씨: 그 시점 이후 6개월간 20% 이상 급락(참고용, 투자 자문이 아닙니다)";
+      "빨간 선: S&P500 지수(1996~현재, 주간 종가) · 점 라벨: 6개월 간격(2월/8월 1일 기준) VIX(공포지수) 값 · " +
+      "주황~골드 점: 투자황금기 점수 8점 이상(10점을 넘을수록 더 진한 골드, 현재 포함), 흰 점: 그 외 · 노란 글씨: 그 시점 이후 6개월간 20% 이상 급락(참고용, 투자 자문이 아닙니다)";
   } catch (err) {
     container.innerHTML = `<p class="error-inline" style="text-align:center;padding:20px 0;">❌ S&amp;P500 장기 데이터를 불러오지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
   }
@@ -4074,7 +4056,7 @@ async function renderFutureModalHeader(ticker, quote, metricsPromise, marketRetu
     const [metrics, marketReturns, macroMetrics] = await Promise.all([
       metricsPromise,
       marketReturnsPromise,
-      getMacroMetrics().catch(() => ({ m2Yoy: null, spread: null })),
+      getMacroMetrics().catch(() => ({ vix: null })),
     ]);
     const attractiveness = computeAttractivenessScore(metrics);
     const risk = computeRiskScore(metrics, marketReturns.sp500Return);
@@ -4085,7 +4067,7 @@ async function renderFutureModalHeader(ticker, quote, metricsPromise, marketRetu
       scoresEl.innerHTML = `
         <span class="mini-score-circle small" title="상승압력도">${isIPO ? "IPO" : attractiveness.total}</span>
         <span class="mini-score-circle small risk" title="투자안정성">${isIPO ? "IPO" : risk.total}</span>
-        <span class="mini-score-circle small macro" title="거시경제">${macro.total}</span>
+        <span class="mini-score-circle small macro" title="투자황금기(공포지수연동)"${macroGoldStyle(macro.total)}>${macro.total}</span>
       `;
     }
   } catch {
