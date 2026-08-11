@@ -2730,12 +2730,14 @@ function buildHistoricalCompareRows(tickerMetricsList, historicalList) {
       const h = historicalList[i];
       if (!h) return null;
       const priceChangePct = h.historicalPrice ? ((m.price - h.historicalPrice) / h.historicalPrice) * 100 : null;
+      const priceChangeAmt = h.historicalPrice ? m.price - h.historicalPrice : null;
       return {
         symbol: m.symbol,
         name: m.name,
         sector: m.sector,
         currentPrice: m.price,
         priceChangePct,
+        priceChangeAmt,
         historicalAttractiveness: h.historicalAttractiveness,
         historicalRisk: h.historicalRisk,
         asOfDate: h.asOfDate,
@@ -2806,7 +2808,7 @@ function historicalTableHtml(rows, rankColumnLabel) {
       <tr>
         <td>${i + 1}</td>
         <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></span>${r.name ? `<br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span>` : ""}</td>
-        <td>${priceChartLink(r.symbol, "$" + r.currentPrice.toFixed(2))}<br><span class="${r.priceChangePct !== null && r.priceChangePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">${r.priceChangePct !== null ? fmtPct(r.priceChangePct) : "N/A"}</span></td>
+        <td>${priceChartLink(r.symbol, "$" + r.currentPrice.toFixed(2))}<br><span class="${r.priceChangePct !== null && r.priceChangePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">${r.priceChangeAmt !== null ? `${r.priceChangeAmt >= 0 ? "+" : ""}$${r.priceChangeAmt.toFixed(2)} ` : ""}${r.priceChangePct !== null ? fmtPct(r.priceChangePct) : "N/A"}</span></td>
         <td class="${scoreClass(r.historicalAttractiveness)}"><b>${r.historicalAttractiveness}</b></td>
         <td class="${scoreClass(r.historicalRisk)}"><b>${r.historicalRisk}</b></td>
       </tr>`;
