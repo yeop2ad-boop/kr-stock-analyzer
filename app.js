@@ -3422,13 +3422,13 @@ function renderFutureChart(data) {
   const yearsNote = data.historicalBuckets.length
     ? `흰색: 과거 ${data.historicalBuckets.length}개년(전후 6개월) 계절성 흐름 · `
     : `과거 데이터가 부족해 계절성 비교 없이 최근 추세만 표시했습니다 · `;
+  const baseNote = `${data.ticker} · ${yearsNote}빨간 실선: 최근 6개월 실제 흐름 · 빨간 점선: ${data.hasForwardData ? "과거 흐름의 평균 기울기로 추정한 " : ""}향후 6개월 예상(참고용, 실제와 다를 수 있습니다)`;
   let forecastNote = "";
   if (data.currentPrice && data.forecast.price) {
     const pctFromToday = (data.forecast.price / data.currentPrice - 1) * 100;
-    forecastNote = ` · 6개월 후 예상 변동률: ${pctFromToday >= 0 ? "+" : ""}${pctFromToday.toFixed(1)}%`;
+    forecastNote = ` · <span style="color:var(--warn);font-weight:700;">6개월 후 예상 변동량: ${pctFromToday >= 0 ? "+" : ""}${pctFromToday.toFixed(1)}%</span>`;
   }
-  el("futureChartCaption").textContent =
-    `${data.ticker} · ${yearsNote}빨간 실선: 최근 6개월 실제 흐름 · 빨간 점선: ${data.hasForwardData ? "과거 흐름의 평균 기울기로 추정한 " : ""}향후 6개월 예상(참고용, 실제와 다를 수 있습니다)${forecastNote}`;
+  el("futureChartCaption").innerHTML = `${escapeHtml(baseNote)}${forecastNote}`;
   el("futureChartModal").style.display = "flex";
 }
 
@@ -3471,12 +3471,13 @@ function formatMonthKey(date) {
 
 // actualPoints: 1번 차트의 currentBucket.points(frac 0~1이 전체 12개월 창 기준, 0~0.5가 "6개월 전~현재")를 그대로 재사용해
 // 두 차트의 최근 6개월 실제 궤적이 완전히 동일한 모양·간격으로 겹쳐 보이게 함
-// DB에는 10%p 단위로 쌓여 있지만, 팬아웃 라인이 너무 많아 복잡해 보이지 않도록 화면에 보여줄 때만 50%p 단위로 묶음
-function groupBandsByFifty(rawBands) {
+// DB에는 10%p 단위로 쌓여 있지만, 팬아웃 라인이 너무 많아 복잡해 보이지 않도록 화면에 보여줄 때만 넓은 단위로 묶음
+// (투자안정성 5~10점 구간은 표본이 더 촘촘한 편이라 20%p, 그 아래(0~5점)는 50%p로 묶음)
+function groupBands(rawBands, width) {
   const buckets = new Map();
   for (const b of rawBands) {
-    const bucketLo = Math.floor(b.lo / 50) * 50;
-    const existing = buckets.get(bucketLo) || { lo: bucketLo, hi: bucketLo + 50, count: 0 };
+    const bucketLo = Math.floor(b.lo / width) * width;
+    const existing = buckets.get(bucketLo) || { lo: bucketLo, hi: bucketLo + width, count: 0 };
     existing.count += b.count;
     buckets.set(bucketLo, existing);
   }
@@ -3486,10 +3487,12 @@ function groupBandsByFifty(rawBands) {
 function buildFutureRiskChartSvg({ history, bucket, actualPoints, axisMonthStart, currentPrice }) {
   const bands0 = history[history.length - 1];
   const rawBands = bands0.bands && bands0.bands.length ? bands0.bands : [bands0.modeBand].filter(Boolean);
-  const bands = groupBandsByFifty(rawBands);
-  // 최다분포(예상)도 화면에 보이는 50%p 단위 기준으로 다시 계산 — 원본 10%p 기준 modeBand와 표시가 어긋나지 않도록
+  const bands = groupBands(rawBands, bucket >= 5 ? 20 : 50);
+  // 최다분포(예상)도 화면에 보이는 그룹 단위 기준으로 다시 계산 — 원본 10%p 기준 modeBand와 표시가 어긋나지 않도록
   const modeBucket = bands.reduce((best, b) => (b.count > best.count ? b : best), bands[0]);
   const modeMid = (modeBucket.lo + modeBucket.hi) / 2;
+  // 0~1점 구간은 표본 편차가 너무 커서 "최다분포=예상" 하나로 대표하기 부적절하므로 예상(빨간 점선) 강조를 생략
+  const showForecast = bucket !== 0;
 
   const W = 780;
   const ML = 44,
@@ -3552,8 +3555,10 @@ function buildFutureRiskChartSvg({ history, bucket, actualPoints, axisMonthStart
   let forecastPrice = null;
   if (currentPrice !== null && currentPrice !== undefined) {
     axisSvg += `<text x="${nowX.toFixed(1)}" y="${(MT + PH + 48).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="#f5a623">$${currentPrice.toFixed(2)}</text>`;
-    forecastPrice = currentPrice * (1 + modeMid / 100);
-    axisSvg += `<text x="${forecastX.toFixed(1)}" y="${(MT + PH + 48).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="#e5342f">$${forecastPrice.toFixed(2)}</text>`;
+    if (showForecast) {
+      forecastPrice = currentPrice * (1 + modeMid / 100);
+      axisSvg += `<text x="${forecastX.toFixed(1)}" y="${(MT + PH + 48).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="#e5342f">$${forecastPrice.toFixed(2)}</text>`;
+    }
   }
 
   // 최근 6개월 실제 궤적 — 1번 차트와 동일한 데이터·간격을 그대로 재사용(빨간 실선)
@@ -3569,7 +3574,7 @@ function buildFutureRiskChartSvg({ history, bucket, actualPoints, axisMonthStart
   let fanSvg = "";
   const labelYs = []; // 라벨 세로 겹침 방지용 — 값이 높은 밴드부터 순서대로 최소 13px씩 벌림
   bands.forEach((b, i) => {
-    const isMode = b.lo === modeBucket.lo; // 최다분포(예상) 구간은 그 줄 라벨에 "(예상)"을 붙여서 오른쪽 끝에서 바로 알아보게 함
+    const isMode = showForecast && b.lo === modeBucket.lo; // 최다분포(예상) 구간은 그 줄 라벨에 "(예상)"을 붙여서 오른쪽 끝에서 바로 알아보게 함
     let color;
     if (isMode) color = "#e5342f"; // 최다분포(예상) 구간: 빨강
     else if (i === 0) color = "#3ecf6d"; // 가장 높은 수익률대: 초록
@@ -3591,7 +3596,8 @@ function buildFutureRiskChartSvg({ history, bucket, actualPoints, axisMonthStart
   });
 
   const svgH = labelYs.length ? Math.max(H, labelYs[labelYs.length - 1] + 24) : H;
-  const forecastPctFromToday = modeMid; // 이 차트는 처음부터 오늘 현재가를 기준으로 계산하므로 y축 값 자체가 곧 오늘 대비 변동률
+  // 이 차트는 처음부터 오늘 현재가를 기준으로 계산하므로 y축 값 자체가 곧 오늘 대비 변동률(0~1점 구간은 예상 자체를 생략)
+  const forecastPctFromToday = showForecast ? modeMid : null;
 
   const svg = `<svg viewBox="0 0 ${W} ${svgH}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="투자안정성 ${bucket}~${bucket + 1}점 구간 1년 수익률 예측">
     <rect x="0" y="0" width="${W}" height="${svgH}" fill="#000" />
@@ -3669,11 +3675,17 @@ async function renderFutureRiskSection(ticker, metricsPromise, marketReturnsProm
     });
     riskContainer.innerHTML = svg;
     const last = history[history.length - 1];
-    const pctSign = forecastPctFromToday >= 0 ? "+" : "";
-    riskCaption.textContent =
+    const baseNote =
       `${ticker}는 투자안정성 ${bucket}~${bucket + 1}점 구간(최근 집계 ${last.sampleSize}종목 표본) · 빨간 실선: ${ticker}의 최근 6개월 실제 흐름(위 차트와 동일) · ` +
-      `초록: 가장 높은 수익률대, 파랑: 가장 낮은 수익률대, 흰색(진할수록 비중 큼): 그 사이 구간별 종목 수 · ` +
-      `빨간 점선 "예상": 이 구간에서 가장 많이 몰린 수익률대로 향하는 1년 후 예상, 오늘 대비 ${pctSign}${forecastPctFromToday.toFixed(1)}% 변동 예상(참고용, 투자 자문이 아닙니다)`;
+      `초록: 가장 높은 수익률대, 파랑: 가장 낮은 수익률대, 흰색(진할수록 비중 큼): 그 사이 구간별 종목 수`;
+    if (forecastPctFromToday === null) {
+      riskCaption.innerHTML = `${escapeHtml(baseNote)} · <span style="color:var(--warn);font-weight:700;">0~1점 구간은 표본 편차가 너무 커서 1년 후 예상을 생략합니다.</span>`;
+    } else {
+      const pctSign = forecastPctFromToday >= 0 ? "+" : "";
+      riskCaption.innerHTML =
+        `${escapeHtml(baseNote)} · 빨간 점선 "예상": 이 구간에서 가장 많이 몰린 수익률대로 향하는 1년 후 예상(참고용, 투자 자문이 아닙니다) · ` +
+        `<span style="color:var(--warn);font-weight:700;">1년 후 예상 변동량: ${pctSign}${forecastPctFromToday.toFixed(1)}%</span>`;
+    }
   } catch (err) {
     riskContainer.innerHTML = `<p class="error-inline" style="text-align:center;padding:20px 0;">❌ 구간별 통계를 불러오지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
   }
