@@ -3288,15 +3288,25 @@ async function runIndexTab() {
     const hiddenCount = INDEX_LIST.length - INDEX_PRIORITY_COUNT;
     const toggleBtn = `<button type="button" class="cat-btn index-toggle-btn" id="indexToggleBtn">${indexShowAll ? "간략히 보기" : `더보기 (${hiddenCount}개)`}</button>`;
 
-    // 새로고침 버튼 옆에 원/달러 환율을 작게 표시(더보기 안에 숨어있어도 항상 조회는 되므로 별도 요청 없이 재사용)
+    // 새로고침 버튼 옆에 원/달러 환율을 변동량(변동%)까지 작게 표시(더보기 안에 숨어있어도 항상 조회는 되므로 별도 요청 없이 재사용)
     const usdKrwIdx = INDEX_LIST.findIndex((item) => item.symbol === "KRW=X");
     const usdKrwSnap = usdKrwIdx !== -1 ? snaps[usdKrwIdx] : null;
     const usdKrwEl = el("indexUsdKrwMini");
     if (usdKrwEl) {
-      usdKrwEl.textContent =
-        usdKrwSnap && usdKrwSnap.price !== null && usdKrwSnap.price !== undefined
-          ? `$1 = ₩${usdKrwSnap.price.toLocaleString("ko-KR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-          : "";
+      if (usdKrwSnap && usdKrwSnap.price !== null && usdKrwSnap.price !== undefined) {
+        const priceStr = `$1 = ₩${usdKrwSnap.price.toLocaleString("ko-KR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        let deltaHtml = "";
+        if (usdKrwSnap.change !== null && usdKrwSnap.change !== undefined) {
+          const sign = usdKrwSnap.change >= 0 ? "+" : "";
+          const cls = usdKrwSnap.change >= 0 ? "delta-up" : "delta-down";
+          const pctStr =
+            usdKrwSnap.changePct !== null && usdKrwSnap.changePct !== undefined ? ` ${sign}${usdKrwSnap.changePct.toFixed(2)}%` : "";
+          deltaHtml = ` <span class="${cls}">(${sign}${usdKrwSnap.change.toFixed(2)}${pctStr})</span>`;
+        }
+        usdKrwEl.innerHTML = priceStr + deltaHtml;
+      } else {
+        usdKrwEl.textContent = "";
+      }
     }
 
     indexStatus.style.display = "none";
