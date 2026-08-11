@@ -3162,7 +3162,7 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
 // src="yahoo"는 야후 차트(전일 종가 대비), src="fred"는 FRED 최신 발표치(전 영업일 대비)
 // vSuffix: 가격 뒤 단위 / cSuffix: 변동량 뒤 단위(미지정 시 vSuffix 사용)
 // chartSymbol: 클릭 시 TradingView 차트 모달에 넘길 심볼(야후 티커와 표기가 달라 별도 매핑 필요) — 없으면(null) 클릭 비활성
-// 앞쪽 8개(S&P500~WTI)는 접속 시 바로 보이는 우선 표시 종목(INDEX_PRIORITY_COUNT), 나머지는 "더보기"로 펼쳐야 보임
+// 접속 시 바로 보이는 우선 표시 종목(전부) — 나머지는 "더보기"를 누르면 나오는 4개 카테고리(원자재/지수/암호화폐/채권) 버튼 안에 있음
 const INDEX_PRIORITY_COUNT = 8;
 const INDEX_LIST = [
   { src: "yahoo", symbol: "^GSPC", name: "🇺🇸 S&P 500", ticker: "SPX", chartSymbol: "SP:SPX" },
@@ -3173,23 +3173,85 @@ const INDEX_LIST = [
   { src: "yahoo", symbol: "GC=F", name: "🥇 금(Gold)", ticker: "GOLD", chartSymbol: "TVC:GOLD" },
   { src: "yahoo", symbol: "BTC-USD", name: "₿ 비트코인", ticker: "BTC", chartSymbol: "COINBASE:BTCUSD" },
   { src: "yahoo", symbol: "CL=F", name: "🛢️ WTI 원유", ticker: "WTI", chartSymbol: "TVC:USOIL" },
-  // ---- 더보기(INDEX_PRIORITY_COUNT 이후)부터는 기본 접힘 ----
-  { src: "yahoo", symbol: "KRW=X", name: "🇰🇷 달러/원 환율", ticker: "USD/KRW", chartSymbol: "FX:USDKRW" },
-  { src: "yahoo", symbol: "JPY=X", name: "🇯🇵 달러/엔 환율", ticker: "USD/JPY", chartSymbol: "FX:USDJPY" },
-  { src: "yahoo", symbol: "^NDX", name: "🇺🇸 US Tech 100", ticker: "NDX", chartSymbol: "NASDAQ:NDX" },
-  { src: "yahoo", symbol: "^KS11", name: "🇰🇷 코스피", ticker: "KOSPI", chartSymbol: "KRX:KOSPI" },
-  { src: "yahoo", symbol: "^KQ11", name: "🇰🇷 코스닥", ticker: "KOSDAQ", chartSymbol: "KRX:KOSDAQ" },
-  { src: "yahoo", symbol: "^N225", name: "🇯🇵 닛케이 225", ticker: "JP225", chartSymbol: "TVC:NI225" },
-  { src: "yahoo", symbol: "^HSI", name: "🇭🇰 홍콩 항셍", ticker: "HSI", chartSymbol: "TVC:HSI" },
-  { src: "yahoo", symbol: "XIN9.FGI", name: "🇨🇳 차이나 A50", ticker: "CHINA50", chartSymbol: "TVC:CN50" },
-  { src: "yahoo", symbol: "ETH-USD", name: "Ξ 이더리움", ticker: "ETH", chartSymbol: "COINBASE:ETHUSD" },
-  { src: "yahoo", symbol: "SI=F", name: "🥈 은(Silver)", ticker: "SILVER", chartSymbol: "TVC:SILVER" },
-  { src: "yahoo", symbol: "BZ=F", name: "🛢️ 브렌트유", ticker: "BRENT", chartSymbol: "TVC:UKOIL" },
-  { src: "fred", symbol: "T10Y2Y", name: "🇺🇸 장단기 금리차(10Y-2Y)", ticker: "T10Y2Y", vSuffix: "%p", cSuffix: "%p", chartSymbol: null },
-  { src: "fred", symbol: "DGS2", name: "🇺🇸 미국 2년물 국채", ticker: "US2Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US02Y" },
-  { src: "fred", symbol: "DGS10", name: "🇺🇸 미국 10년물 국채", ticker: "US10Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US10Y" },
-  { src: "fred", symbol: "DGS30", name: "🇺🇸 미국 30년물 국채", ticker: "US30Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US30Y" },
 ];
+
+// "더보기" 클릭 시 나오는 4개 카테고리 — 각 카테고리는 처음 열 때만 그때그때 조회해서 캐시(매번 전체를 다 불러오지 않음)
+// ⚠️ 아연·니켈·납(LME 선물), 코스피100, 일본국채30년·한국채5년물은 야후·FRED 어디서도 정상적인 데이터를 못 찾아 제외함
+const INDEX_CATEGORIES = {
+  commodities: {
+    label: "원자재",
+    items: [
+      { src: "yahoo", symbol: "GC=F", name: "🥇 금(Gold)", ticker: "GOLD", chartSymbol: "TVC:GOLD" },
+      { src: "yahoo", symbol: "SI=F", name: "🥈 은(Silver)", ticker: "SILVER", chartSymbol: "TVC:SILVER" },
+      { src: "yahoo", symbol: "HG=F", name: "🟠 구리", ticker: "COPPER", chartSymbol: "COMEX:HG1!" },
+      { src: "yahoo", symbol: "CL=F", name: "🛢️ WTI유", ticker: "WTI", chartSymbol: "TVC:USOIL" },
+      { src: "yahoo", symbol: "BZ=F", name: "🛢️ 브렌트유", ticker: "BRENT", chartSymbol: "TVC:UKOIL" },
+      { src: "yahoo", symbol: "NG=F", name: "🔥 천연가스", ticker: "NATGAS", chartSymbol: "NYMEX:NG1!" },
+      { src: "yahoo", symbol: "RB=F", name: "⛽ 가솔린(RBOB)", ticker: "RBOB", chartSymbol: "NYMEX:RB1!" },
+      { src: "yahoo", symbol: "PL=F", name: "⚪ 백금", ticker: "PLATINUM", chartSymbol: "TVC:PLATINUM" },
+      { src: "yahoo", symbol: "ALI=F", name: "🔩 알루미늄", ticker: "ALUMINUM", chartSymbol: "COMEX:ALI1!" },
+      { src: "yahoo", symbol: "ZR=F", name: "🌾 현미", ticker: "RICE", chartSymbol: "CBOT:ZR1!" },
+      { src: "yahoo", symbol: "LE=F", name: "🐄 생우", ticker: "CATTLE", chartSymbol: "CME:LE1!" },
+      { src: "yahoo", symbol: "HE=F", name: "🐖 돈육", ticker: "HOGS", chartSymbol: "CME:HE1!" },
+      { src: "yahoo", symbol: "ZW=F", name: "🌾 미국 소맥", ticker: "WHEAT", chartSymbol: "CBOT:ZW1!" },
+      { src: "yahoo", symbol: "ZC=F", name: "🌽 미국 옥수수", ticker: "CORN", chartSymbol: "CBOT:ZC1!" },
+      { src: "yahoo", symbol: "ZS=F", name: "🌱 미국 대두", ticker: "SOYBEAN", chartSymbol: "CBOT:ZS1!" },
+      { src: "yahoo", symbol: "KC=F", name: "☕ 미국 커피", ticker: "COFFEE", chartSymbol: "ICEUS:KC1!" },
+      { src: "yahoo", symbol: "SB=F", name: "🍬 미국 설탕", ticker: "SUGAR", chartSymbol: "ICEUS:SB1!" },
+      { src: "yahoo", symbol: "CT=F", name: "🧵 미국 원면", ticker: "COTTON", chartSymbol: "ICEUS:CT1!" },
+      { src: "yahoo", symbol: "CC=F", name: "🍫 미국 코코아", ticker: "COCOA", chartSymbol: "ICEUS:CC1!" },
+    ],
+  },
+  indices: {
+    label: "지수",
+    items: [
+      { src: "yahoo", symbol: "KRW=X", name: "🇰🇷 달러/원 환율", ticker: "USD/KRW", chartSymbol: "FX:USDKRW" },
+      { src: "yahoo", symbol: "JPY=X", name: "🇯🇵 달러/엔 환율", ticker: "USD/JPY", chartSymbol: "FX:USDJPY" },
+      { src: "yahoo", symbol: "^KS11", name: "🇰🇷 코스피", ticker: "KOSPI", chartSymbol: "KRX:KOSPI" },
+      { src: "yahoo", symbol: "^KQ11", name: "🇰🇷 코스닥", ticker: "KOSDAQ", chartSymbol: "KRX:KOSDAQ" },
+      { src: "yahoo", symbol: "^N225", name: "🇯🇵 닛케이 225", ticker: "JP225", chartSymbol: "TVC:NI225" },
+      { src: "yahoo", symbol: "^NDX", name: "🇺🇸 US Tech 100", ticker: "NDX", chartSymbol: "NASDAQ:NDX" },
+      { src: "yahoo", symbol: "^HSI", name: "🇭🇰 항셍", ticker: "HSI", chartSymbol: "TVC:HSI" },
+      { src: "yahoo", symbol: "000001.SS", name: "🇨🇳 상해종합", ticker: "SSEC", chartSymbol: "TVC:SHCOMP" },
+      { src: "yahoo", symbol: "^GDAXI", name: "🇩🇪 독일 DAX", ticker: "DAX", chartSymbol: "XETR:DAX" },
+      { src: "yahoo", symbol: "^FTSE", name: "🇬🇧 FTSE 100", ticker: "UKX", chartSymbol: "TVC:UKX" },
+      { src: "yahoo", symbol: "^FCHI", name: "🇫🇷 프랑스 CAC 40", ticker: "CAC40", chartSymbol: "TVC:CAC40" },
+      { src: "yahoo", symbol: "^AEX", name: "🇳🇱 네덜란드 AEX", ticker: "AEX", chartSymbol: "TVC:AEX" },
+      { src: "yahoo", symbol: "^STOXX50E", name: "🇪🇺 Euro Stoxx 50", ticker: "SX5E", chartSymbol: "TVC:SX5E" },
+      { src: "yahoo", symbol: "FTSEMIB.MI", name: "🇮🇹 이탈리아 FTSE MIB", ticker: "FTSEMIB", chartSymbol: "TVC:FTSEMIB" },
+      { src: "yahoo", symbol: "^IBEX", name: "🇪🇸 IBEX 35", ticker: "IBEX35", chartSymbol: "TVC:IBEX35" },
+      { src: "yahoo", symbol: "^AXJO", name: "🇦🇺 호주 S&P/ASX 200", ticker: "ASX200", chartSymbol: "ASX:XJO" },
+      { src: "yahoo", symbol: "^STI", name: "🇸🇬 싱가폴 STI", ticker: "STI", chartSymbol: "TVC:STI" },
+      { src: "yahoo", symbol: "^NSEI", name: "🇮🇳 인도 니프티50", ticker: "NIFTY50", chartSymbol: "NSE:NIFTY" },
+    ],
+  },
+  crypto: {
+    label: "암호화폐",
+    items: [
+      { src: "yahoo", symbol: "BTC-USD", name: "₿ 비트코인", ticker: "BTC", chartSymbol: "COINBASE:BTCUSD" },
+      { src: "yahoo", symbol: "ETH-USD", name: "Ξ 이더리움", ticker: "ETH", chartSymbol: "COINBASE:ETHUSD" },
+      { src: "yahoo", symbol: "USDT-USD", name: "🪙 테더", ticker: "USDT", chartSymbol: null },
+      { src: "yahoo", symbol: "BNB-USD", name: "🪙 BNB", ticker: "BNB", chartSymbol: "BINANCE:BNBUSDT" },
+      { src: "yahoo", symbol: "USDC-USD", name: "🪙 USDC", ticker: "USDC", chartSymbol: null },
+      { src: "yahoo", symbol: "XRP-USD", name: "🪙 XRP(리플)", ticker: "XRP", chartSymbol: "COINBASE:XRPUSD" },
+      { src: "yahoo", symbol: "SOL-USD", name: "🪙 솔라나", ticker: "SOL", chartSymbol: "COINBASE:SOLUSD" },
+      { src: "yahoo", symbol: "TRX-USD", name: "🪙 트론", ticker: "TRX", chartSymbol: "BINANCE:TRXUSDT" },
+      { src: "yahoo", symbol: "DOGE-USD", name: "🪙 도지코인", ticker: "DOGE", chartSymbol: "COINBASE:DOGEUSD" },
+    ],
+  },
+  bonds: {
+    label: "채권",
+    items: [
+      { src: "fred", symbol: "T10Y2Y", name: "🇺🇸 장단기 금리차(10Y-2Y)", ticker: "T10Y2Y", vSuffix: "%p", cSuffix: "%p", chartSymbol: null },
+      { src: "fred", symbol: "DGS30", name: "🇺🇸 미국 30년물", ticker: "US30Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US30Y" },
+      { src: "fred", symbol: "DGS10", name: "🇺🇸 미국 10년물", ticker: "US10Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US10Y" },
+      { src: "fred", symbol: "DGS2", name: "🇺🇸 미국 2년물", ticker: "US2Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US02Y" },
+      // 일본·한국 10년물은 FRED에 월간 데이터만 있어(OECD 장기금리 시리즈) 전월 대비로 표시됨(다른 항목은 전일 대비)
+      { src: "fred", symbol: "IRLTLT01JPM156N", name: "🇯🇵 일본국채 10년(월간)", ticker: "JP10Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:JP10Y" },
+      { src: "fred", symbol: "IRLTLT01KRM156N", name: "🇰🇷 한국채 10년(월간)", ticker: "KR10Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:KR10Y" },
+    ],
+  },
+};
 
 // 야후 차트 → { price, change(전일종가 대비 변동량), changePct, date }
 function yahooSnapshot(chart) {
@@ -3264,33 +3326,39 @@ function indexRowHtml(item, snap) {
     </div>`;
 }
 
-// 접힘/펼침 상태는 새로고침·자동갱신(20초)에도 유지되도록 모듈 스코프에 둠
-let indexShowAll = false;
+// 개별 종목 하나의 스냅샷 조회(야후/FRED 공용) — 실패해도 조용히 null 반환(그 행만 N/A로 표시됨)
+async function fetchOneIndexSnap(item) {
+  try {
+    if (item.src === "fred") {
+      return fredSnapshot(await fetchFredSeries(item.symbol));
+    }
+    return yahooSnapshot(await yahooChart(item.symbol, "5d", "1d"));
+  } catch {
+    return null;
+  }
+}
+
+// 더보기(카테고리 버튼 행) 펼침 여부·선택된 카테고리는 새로고침·자동갱신(20초)에도 유지되도록 모듈 스코프에 둠
+let indexCategoryOpen = false;
+let indexActiveCategory = null; // "commodities" | "indices" | "crypto" | "bonds" | null
 
 async function runIndexTab() {
   indexStatus.style.display = "block";
   indexStatus.textContent = "지수 데이터를 불러오는 중...";
 
   try {
-    const snaps = await mapWithConcurrency(INDEX_LIST, 6, async (item) => {
-      try {
-        if (item.src === "fred") {
-          return fredSnapshot(await fetchFredSeries(item.symbol));
-        }
-        return yahooSnapshot(await yahooChart(item.symbol, "5d", "1d"));
-      } catch {
-        return null;
-      }
-    });
+    const categoryItems = indexActiveCategory ? INDEX_CATEGORIES[indexActiveCategory].items : [];
+    const [prioritySnaps, categorySnaps, usdKrwChart] = await Promise.all([
+      mapWithConcurrency(INDEX_LIST, 6, fetchOneIndexSnap),
+      mapWithConcurrency(categoryItems, 6, fetchOneIndexSnap),
+      yahooChart("KRW=X", "5d", "1d").catch(() => null),
+    ]);
 
-    const visibleList = indexShowAll ? INDEX_LIST : INDEX_LIST.slice(0, INDEX_PRIORITY_COUNT);
-    const rows = visibleList.map((item, i) => indexRowHtml(item, snaps[i])).join("");
-    const hiddenCount = INDEX_LIST.length - INDEX_PRIORITY_COUNT;
-    const toggleBtn = `<button type="button" class="cat-btn index-toggle-btn" id="indexToggleBtn">${indexShowAll ? "간략히 보기" : `더보기 (${hiddenCount}개)`}</button>`;
+    const rows = INDEX_LIST.map((item, i) => indexRowHtml(item, prioritySnaps[i])).join("");
+    const categoryRows = categoryItems.map((item, i) => indexRowHtml(item, categorySnaps[i])).join("");
 
-    // 새로고침 버튼 옆에 원/달러 환율을 변동량(변동%)까지 작게 표시(더보기 안에 숨어있어도 항상 조회는 되므로 별도 요청 없이 재사용)
-    const usdKrwIdx = INDEX_LIST.findIndex((item) => item.symbol === "KRW=X");
-    const usdKrwSnap = usdKrwIdx !== -1 ? snaps[usdKrwIdx] : null;
+    // 새로고침 버튼 옆에 원/달러 환율을 변동량(변동%)까지 작게 표시(카테고리 목록과 무관하게 항상 조회)
+    const usdKrwSnap = usdKrwChart ? yahooSnapshot(usdKrwChart) : null;
     const usdKrwEl = el("indexUsdKrwMini");
     if (usdKrwEl) {
       if (usdKrwSnap && usdKrwSnap.price !== null && usdKrwSnap.price !== undefined) {
@@ -3309,15 +3377,35 @@ async function runIndexTab() {
       }
     }
 
+    const categoryButtonsHtml = indexCategoryOpen
+      ? `<div class="top30-sub-nav idx-category-nav">${Object.entries(INDEX_CATEGORIES)
+          .map(
+            ([key, cat]) =>
+              `<button type="button" class="cat-btn idx-category-btn${indexActiveCategory === key ? " active" : ""}" data-category="${key}">${escapeHtml(cat.label)}</button>`
+          )
+          .join("")}</div>`
+      : "";
+    const toggleBtnLabel = indexCategoryOpen ? "간략히 보기" : "더보기";
+
     indexStatus.style.display = "none";
     indexResults.innerHTML = `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 환율·지수·원자재·가상자산은 전일 종가 대비, 국채·금리차는 FRED 최신치(전 영업일 대비) 기준이며 상승은 초록·하락은 빨강입니다.</p>
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 환율·지수·원자재·가상자산은 전일 종가 대비, 국채·금리차는 FRED 최신치(전 영업일 대비, 일본·한국 10년물은 월간 데이터라 전월 대비) 기준이며 상승은 초록·하락은 빨강입니다.</p>
       <div class="idx-list">${rows}</div>
-      ${toggleBtn}
+      <button type="button" class="cat-btn index-toggle-btn" id="indexToggleBtn">${toggleBtnLabel}</button>
+      ${categoryButtonsHtml}
+      ${indexActiveCategory ? `<div class="idx-list">${categoryRows}</div>` : ""}
     `;
     el("indexToggleBtn").addEventListener("click", () => {
-      indexShowAll = !indexShowAll;
+      indexCategoryOpen = !indexCategoryOpen;
+      if (!indexCategoryOpen) indexActiveCategory = null;
       runIndexTab();
+    });
+    indexResults.querySelectorAll(".idx-category-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const key = btn.dataset.category;
+        indexActiveCategory = indexActiveCategory === key ? null : key;
+        runIndexTab();
+      });
     });
   } catch (err) {
     indexStatus.textContent = `❌ ${err.message || "지수 데이터를 가져오지 못했습니다."}`;
