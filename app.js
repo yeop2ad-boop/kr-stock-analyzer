@@ -1215,6 +1215,46 @@ function getSP500Tickers() {
   return sp500TickersPromise;
 }
 
+// S&P500 종목을 "시가총액 상위 약 30개 먼저, 나머지는 원래 순서"로 재배열한 목록 — 가치평가·추세평가 탭에서
+// 처음에 관심도 높은 대형주부터 빠르게 보여주기 위한 용도(시가총액 정렬 전용 스크리너는 인증이 필요해 막혀 있어서,
+// 여러 활발한 종목 스크리너 결과를 합쳐 시가총액 내림차순으로 근사)
+let sp500PriorityOrderPromise = null;
+function getSP500PriorityOrder() {
+  if (!sp500PriorityOrderPromise) {
+    sp500PriorityOrderPromise = (async () => {
+      const [allTickers, screenerResults] = await Promise.all([
+        getSP500Tickers(),
+        Promise.all(
+          ["most_actives", "day_gainers", "day_losers", "undervalued_large_caps", "growth_technology_stocks"].map((id) =>
+            yahooScreener(id, 100).catch(() => null)
+          )
+        ),
+      ]);
+      const sp500Set = new Set(allTickers);
+      const marketCapBySymbol = new Map();
+      for (const data of screenerResults) {
+        const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
+        for (const q of quotes) {
+          if (!q || !q.symbol || !sp500Set.has(q.symbol)) continue;
+          const existing = marketCapBySymbol.get(q.symbol);
+          if (existing === undefined || (q.marketCap || 0) > existing) marketCapBySymbol.set(q.symbol, q.marketCap || 0);
+        }
+      }
+      const topByMarketCap = [...marketCapBySymbol.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .map(([symbol]) => symbol)
+        .slice(0, 30);
+      const topSet = new Set(topByMarketCap);
+      const rest = allTickers.filter((t) => !topSet.has(t));
+      return [...topByMarketCap, ...rest];
+    })().catch((e) => {
+      sp500PriorityOrderPromise = null;
+      throw e;
+    });
+  }
+  return sp500PriorityOrderPromise;
+}
+
 // 동시 실행 개수를 제한하며 배열 각 항목에 비동기 작업을 적용 (프록시 과부하 방지 + 진행률 콜백)
 async function mapWithConcurrency(items, limit, worker, onProgress) {
   const results = new Array(items.length);
@@ -2462,39 +2502,48 @@ async function renderMacro() {
 }
 
 // ---------- 가치평가 탭 공용 렌더러 ----------
-// 정렬 자체는 S&P500 전 종목을 다 계산해야 정확해서(순위를 매기려면 후보를 다 알아야 함), "더보기"는 추가 조회가 아니라
-// 이미 계산해 정렬해 둔 배열에서 더 꺼내 보여주는 것뿐이라 클릭하면 바로 나타남
+// 처음엔 시가총액 상위 약 30개만 빠르게 조회·계산해서 보여주고(tickers는 호출부에서 이미 시총 상위 30개가
+// 앞쪽에 오도록 정렬해서 넘김), "전체보기"를 누르면 나머지 S&P500 전 종목(약 470개)을 마저 조회해 다시 정렬함
 async function renderValueRanking(
   tickers,
   label,
-  { statusEl, resultsEl, buttons, mapFn = (m) => m, sortFn, metricHeaderHtml, metricCellFn, noteHtml, initialCount = 10 }
+  { statusEl, resultsEl, buttons, mapFn = (list) => list, sortFn, metricHeaderHtml, metricCellFn, noteHtml, initialCount = 30 }
 ) {
   buttons.forEach((btn) => (btn.disabled = true));
   resultsEl.innerHTML = "";
   statusEl.style.display = "block";
 
-  try {
-    statusEl.textContent = `0/${tickers.length} 종목(${label}) 분석 중...`;
-    const metricsList = await mapWithConcurrency(tickers, 5, getFullMetrics, (completed, total) => {
-      statusEl.textContent = `${completed}/${total} 종목(${label}) 분석 중...`;
-    });
+  let cursor = 0;
+  let rawScored = [];
 
-    const ranked = await mapFn(metricsList.filter(Boolean));
-    ranked.sort(sortFn);
+  async function scoreUpTo(targetCursor) {
+    targetCursor = Math.min(targetCursor, tickers.length);
+    const isFullScan = targetCursor - cursor > initialCount; // 초기 배치보다 큰 구간을 한 번에 요청하면 "전체보기" 클릭으로 간주
+    try {
+      const pending = tickers.slice(cursor, targetCursor);
+      if (pending.length > 0) {
+        const startCursor = cursor;
+        statusEl.style.display = "block";
+        const label2 = isFullScan ? `전체 검색 중(약 1분 소요될 수 있어요)` : `${label} 확인 중`;
+        statusEl.textContent = `${startCursor}/${targetCursor} 종목 ${label2}...`;
+        const metricsList = await mapWithConcurrency(pending, 5, getFullMetrics, (completed) => {
+          statusEl.textContent = `${startCursor + completed}/${targetCursor} 종목 ${label2}...`;
+        });
+        rawScored = rawScored.concat(metricsList.filter(Boolean));
+        cursor = targetCursor;
+      }
+      statusEl.style.display = "none";
 
-    const successCount = metricsList.filter(Boolean).length;
-    const failCount = tickers.length - successCount;
-    statusEl.textContent = `완료 (${label}) — ${tickers.length}개 중 ${successCount}개 분석 성공${failCount ? `, ${failCount}개는 조회 실패로 제외` : ""}`;
+      if (rawScored.length === 0) {
+        resultsEl.innerHTML = `<p class="muted">순위를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
+        return;
+      }
 
-    if (ranked.length === 0) {
-      resultsEl.innerHTML = `<p class="muted">순위를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
-      return;
-    }
+      const ranked = await mapFn(rawScored.slice());
+      ranked.sort(sortFn);
+      const hasMore = cursor < tickers.length;
 
-    function renderUpTo(count) {
-      const shown = ranked.slice(0, count);
-      const hasMore = count < ranked.length;
-      const rows = shown
+      const rows = ranked
         .map(
           (r, i) => `
         <tr>
@@ -2507,29 +2556,37 @@ async function renderValueRanking(
         .join("");
       resultsEl.innerHTML = `
         ${noteHtml || ""}
+        <p class="muted" style="font-size:12px;">시가총액 상위 ${Math.min(cursor, initialCount)}개${cursor > initialCount ? ` + 나머지 ${cursor - initialCount}개` : ""} 확인(S&amp;P500 ${tickers.length}개 중 ${cursor}개, ${ranked.length}개 성공)</p>
         <table class="top30-table">
           <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>${metricHeaderHtml}</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
-        ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${Math.min(count + initialCount, ranked.length)}">더보기 (${count}/${ranked.length})</button>` : ""}
+        ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${tickers.length}">전체보기 (나머지 ${tickers.length - cursor}개 · 500개 전부 검색 시 약 1분 소요)</button>` : ""}
       `;
+    } catch (err) {
+      statusEl.textContent = `❌ ${err.message || "분석 중 오류가 발생했습니다."}`;
     }
-
-    resultsEl._loadMore = renderUpTo;
-    if (!resultsEl.dataset.moreBound) {
-      resultsEl.addEventListener("click", (e) => {
-        const moreBtn = e.target.closest(".load-more-btn");
-        if (!moreBtn) return;
-        resultsEl._loadMore(Number(moreBtn.dataset.nextCount));
-      });
-      resultsEl.dataset.moreBound = "1";
-    }
-    renderUpTo(initialCount);
-  } catch (err) {
-    statusEl.textContent = `❌ ${err.message || "분석 중 오류가 발생했습니다."}`;
-  } finally {
-    buttons.forEach((btn) => (btn.disabled = false));
   }
+
+  resultsEl._loadMore = (count) => {
+    const moreBtn = resultsEl.querySelector(".load-more-btn");
+    if (moreBtn) {
+      moreBtn.disabled = true;
+      moreBtn.textContent = "전체 검색 중...";
+    }
+    scoreUpTo(count);
+  };
+  if (!resultsEl.dataset.moreBound) {
+    resultsEl.addEventListener("click", (e) => {
+      const moreBtn = e.target.closest(".load-more-btn");
+      if (!moreBtn) return;
+      resultsEl._loadMore(Number(moreBtn.dataset.nextCount));
+    });
+    resultsEl.dataset.moreBound = "1";
+  }
+
+  await scoreUpTo(initialCount);
+  buttons.forEach((btn) => (btn.disabled = false));
 }
 
 const VALUE_DISCLAIMER = `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> S&amp;P500 편입 종목 전체를 대상으로 계산한 순위이며 투자 자문이 아닙니다.</p>`;
@@ -2548,7 +2605,7 @@ async function runValueScreenFromSP500(btn, label, opts) {
   setValuationActive(btn);
   valuationStatus.style.display = "block";
   valuationStatus.textContent = "S&P500 종목 목록을 불러오는 중...";
-  const allTickers = await getSP500Tickers().catch((e) => {
+  const allTickers = await getSP500PriorityOrder().catch((e) => {
     valuationStatus.textContent = `❌ ${e.message || "종목 목록을 가져오지 못했습니다."}`;
     return null;
   });
@@ -2898,7 +2955,7 @@ function historicalTableHtml(rows, rankColumnLabel) {
       <tr>
         <td>${i + 1}</td>
         <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></span>${r.name ? `<br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span>` : ""}</td>
-        <td>${priceChartLink(r.symbol, "$" + r.currentPrice.toFixed(2))}<br><span class="${r.priceChangePct !== null && r.priceChangePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">${r.priceChangeAmt !== null ? `${r.priceChangeAmt >= 0 ? "+" : ""}$${r.priceChangeAmt.toFixed(2)} ` : ""}${r.priceChangePct !== null ? fmtPct(r.priceChangePct) : "N/A"}</span></td>
+        <td>${priceChartLink(r.symbol, "$" + r.currentPrice.toFixed(2))}<br><span class="${r.priceChangePct !== null && r.priceChangePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">${r.priceChangeAmt !== null ? `${r.priceChangeAmt >= 0 ? "+" : ""}$${r.priceChangeAmt.toFixed(2)} ` : ""}${r.priceChangePct !== null ? `(${fmtPct(r.priceChangePct)})` : "N/A"}</span></td>
         <td class="${scoreClass(r.historicalAttractiveness)}"><b>${r.historicalAttractiveness}</b></td>
         <td class="${scoreClass(r.historicalRisk)}"><b>${r.historicalRisk}</b></td>
       </tr>`;
@@ -3112,29 +3169,29 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
 // vSuffix: 가격 뒤 단위 / cSuffix: 변동량 뒤 단위(미지정 시 vSuffix 사용)
 // chartSymbol: 클릭 시 TradingView 차트 모달에 넘길 심볼(야후 티커와 표기가 달라 별도 매핑 필요) — 없으면(null) 클릭 비활성
 const INDEX_LIST = [
-  { src: "yahoo", symbol: "KRW=X", name: "달러/원 환율", ticker: "USD/KRW", chartSymbol: "FX:USDKRW" },
-  { src: "yahoo", symbol: "JPY=X", name: "달러/엔 환율", ticker: "USD/JPY", chartSymbol: "FX:USDJPY" },
-  { src: "yahoo", symbol: "^GSPC", name: "S&P 500", ticker: "SPX", chartSymbol: "SP:SPX" },
-  { src: "yahoo", symbol: "^NDX", name: "US Tech 100", ticker: "NDX", chartSymbol: "NASDAQ:NDX" },
-  { src: "yahoo", symbol: "^DJI", name: "다우 종합", ticker: "DJI", chartSymbol: "DJ:DJI" },
-  { src: "yahoo", symbol: "^IXIC", name: "나스닥 종합", ticker: "IXIC", chartSymbol: "NASDAQ:IXIC" },
-  { src: "yahoo", symbol: "^RUT", name: "러셀 2000", ticker: "RUT", chartSymbol: "TVC:RUT" },
-  { src: "yahoo", symbol: "^VIX", name: "S&P500 VIX", ticker: "VIX", chartSymbol: "TVC:VIX" },
-  { src: "yahoo", symbol: "^KS11", name: "코스피", ticker: "KOSPI", chartSymbol: "KRX:KOSPI" },
-  { src: "yahoo", symbol: "^KQ11", name: "코스닥", ticker: "KOSDAQ", chartSymbol: "KRX:KOSDAQ" },
-  { src: "yahoo", symbol: "^N225", name: "닛케이 225", ticker: "JP225", chartSymbol: "TVC:NI225" },
-  { src: "yahoo", symbol: "^HSI", name: "홍콩 항셍", ticker: "HSI", chartSymbol: "TVC:HSI" },
-  { src: "yahoo", symbol: "XIN9.FGI", name: "차이나 A50", ticker: "CHINA50", chartSymbol: "TVC:CN50" },
-  { src: "yahoo", symbol: "BTC-USD", name: "비트코인", ticker: "BTC", chartSymbol: "COINBASE:BTCUSD" },
-  { src: "yahoo", symbol: "ETH-USD", name: "이더리움", ticker: "ETH", chartSymbol: "COINBASE:ETHUSD" },
-  { src: "yahoo", symbol: "GC=F", name: "금(Gold)", ticker: "GOLD", chartSymbol: "TVC:GOLD" },
-  { src: "yahoo", symbol: "SI=F", name: "은(Silver)", ticker: "SILVER", chartSymbol: "TVC:SILVER" },
-  { src: "yahoo", symbol: "CL=F", name: "WTI 원유", ticker: "WTI", chartSymbol: "TVC:USOIL" },
-  { src: "yahoo", symbol: "BZ=F", name: "브렌트유", ticker: "BRENT", chartSymbol: "TVC:UKOIL" },
-  { src: "fred", symbol: "T10Y2Y", name: "장단기 금리차(10Y-2Y)", ticker: "T10Y2Y", vSuffix: "%p", cSuffix: "%p", chartSymbol: null },
-  { src: "fred", symbol: "DGS2", name: "미국 2년물 국채", ticker: "US2Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US02Y" },
-  { src: "fred", symbol: "DGS10", name: "미국 10년물 국채", ticker: "US10Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US10Y" },
-  { src: "fred", symbol: "DGS30", name: "미국 30년물 국채", ticker: "US30Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US30Y" },
+  { src: "yahoo", symbol: "KRW=X", name: "🇰🇷 달러/원 환율", ticker: "USD/KRW", chartSymbol: "FX:USDKRW" },
+  { src: "yahoo", symbol: "JPY=X", name: "🇯🇵 달러/엔 환율", ticker: "USD/JPY", chartSymbol: "FX:USDJPY" },
+  { src: "yahoo", symbol: "^GSPC", name: "🇺🇸 S&P 500", ticker: "SPX", chartSymbol: "SP:SPX" },
+  { src: "yahoo", symbol: "^NDX", name: "🇺🇸 US Tech 100", ticker: "NDX", chartSymbol: "NASDAQ:NDX" },
+  { src: "yahoo", symbol: "^DJI", name: "🇺🇸 다우 종합", ticker: "DJI", chartSymbol: "DJ:DJI" },
+  { src: "yahoo", symbol: "^IXIC", name: "🇺🇸 나스닥 종합", ticker: "IXIC", chartSymbol: "NASDAQ:IXIC" },
+  { src: "yahoo", symbol: "^RUT", name: "🇺🇸 러셀 2000", ticker: "RUT", chartSymbol: "TVC:RUT" },
+  { src: "yahoo", symbol: "^VIX", name: "🇺🇸 S&P500 VIX", ticker: "VIX", chartSymbol: "TVC:VIX" },
+  { src: "yahoo", symbol: "^KS11", name: "🇰🇷 코스피", ticker: "KOSPI", chartSymbol: "KRX:KOSPI" },
+  { src: "yahoo", symbol: "^KQ11", name: "🇰🇷 코스닥", ticker: "KOSDAQ", chartSymbol: "KRX:KOSDAQ" },
+  { src: "yahoo", symbol: "^N225", name: "🇯🇵 닛케이 225", ticker: "JP225", chartSymbol: "TVC:NI225" },
+  { src: "yahoo", symbol: "^HSI", name: "🇭🇰 홍콩 항셍", ticker: "HSI", chartSymbol: "TVC:HSI" },
+  { src: "yahoo", symbol: "XIN9.FGI", name: "🇨🇳 차이나 A50", ticker: "CHINA50", chartSymbol: "TVC:CN50" },
+  { src: "yahoo", symbol: "BTC-USD", name: "₿ 비트코인", ticker: "BTC", chartSymbol: "COINBASE:BTCUSD" },
+  { src: "yahoo", symbol: "ETH-USD", name: "Ξ 이더리움", ticker: "ETH", chartSymbol: "COINBASE:ETHUSD" },
+  { src: "yahoo", symbol: "GC=F", name: "🥇 금(Gold)", ticker: "GOLD", chartSymbol: "TVC:GOLD" },
+  { src: "yahoo", symbol: "SI=F", name: "🥈 은(Silver)", ticker: "SILVER", chartSymbol: "TVC:SILVER" },
+  { src: "yahoo", symbol: "CL=F", name: "🛢️ WTI 원유", ticker: "WTI", chartSymbol: "TVC:USOIL" },
+  { src: "yahoo", symbol: "BZ=F", name: "🛢️ 브렌트유", ticker: "BRENT", chartSymbol: "TVC:UKOIL" },
+  { src: "fred", symbol: "T10Y2Y", name: "🇺🇸 장단기 금리차(10Y-2Y)", ticker: "T10Y2Y", vSuffix: "%p", cSuffix: "%p", chartSymbol: null },
+  { src: "fred", symbol: "DGS2", name: "🇺🇸 미국 2년물 국채", ticker: "US2Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US02Y" },
+  { src: "fred", symbol: "DGS10", name: "🇺🇸 미국 10년물 국채", ticker: "US10Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US10Y" },
+  { src: "fred", symbol: "DGS30", name: "🇺🇸 미국 30년물 국채", ticker: "US30Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US30Y" },
 ];
 
 // 야후 차트 → { price, change(전일종가 대비 변동량), changePct, date }
@@ -3408,7 +3465,7 @@ async function runTrendPressure() {
   setTrendActive(trendButtons.pressure);
   trendStatus.style.display = "block";
   trendStatus.textContent = "S&P500 종목 목록을 불러오는 중...";
-  const allTickers = await getSP500Tickers().catch((e) => {
+  const allTickers = await getSP500PriorityOrder().catch((e) => {
     trendStatus.textContent = `❌ ${e.message || "종목 목록을 가져오지 못했습니다."}`;
     return null;
   });
