@@ -3645,6 +3645,158 @@ function buildFutureRiskChartSvg({ history, bucket, actualPoints, axisMonthStart
   return { svg, forecastPctFromToday, forecastPrice };
 }
 
+// ---------- 미래예측 3번째 그래프: 거시경제 점수별 S&P500 30년 추이 ----------
+// 검색한 종목과 무관한 시장 전체 데이터라 세션 내에서 한 번만 계산해 캐시(여러 번 검색해도 재요청하지 않음)
+let macroScoreChartDataPromise = null;
+
+// FRED 시계열([date, value] 배열)에서 목표 날짜와 가장 가까운 관측치 하나를 찾음(getMacroMetrics의 "최신값 찾기"를 임의 과거 시점으로 일반화)
+function closestFredPoint(points, targetDate) {
+  const targetTime = targetDate.getTime();
+  let closest = points[0];
+  let minDiff = Infinity;
+  for (const p of points) {
+    const diff = Math.abs(new Date(p[0]).getTime() - targetTime);
+    if (diff < minDiff) {
+      minDiff = diff;
+      closest = p;
+    }
+  }
+  return closest;
+}
+
+// computeMacroScore와 동일한 공식을, "지금"이 아니라 임의 과거 시점 기준으로 계산 — M2 YoY·금리차 모두 그 시점에 가장 가까운 FRED 관측치를 사용
+function computeMacroScoreAtDate(m2Points, curvePoints, date) {
+  const m2Now = closestFredPoint(m2Points, date);
+  const yearAgo = new Date(date);
+  yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+  const m2YearAgo = closestFredPoint(m2Points, yearAgo);
+  const m2Yoy = m2YearAgo[1] ? ((m2Now[1] - m2YearAgo[1]) / m2YearAgo[1]) * 100 : null;
+  const spreadPoint = closestFredPoint(curvePoints, date);
+  return computeMacroScore({ m2Yoy, spread: spreadPoint[1] });
+}
+
+async function computeMacroScoreChartData() {
+  const now = new Date();
+  const nowSec = Math.floor(now.getTime() / 1000);
+  const startYear = now.getFullYear() - 30;
+  const startSec = Math.floor(new Date(startYear, 0, 1).getTime() / 1000);
+
+  const [chartData, m2Points, curvePoints, liveMacro] = await Promise.all([
+    yahooChartRange("^GSPC", startSec, nowSec, "1wk"),
+    fetchFredSeries("M2SL"),
+    fetchFredSeries("T10Y2Y"),
+    getMacroMetrics(),
+  ]);
+  const pairs = chartClosePairs(chartData);
+  if (pairs.length < 2) throw new Error("S&P500 장기 데이터를 가져오지 못했습니다.");
+
+  // 매년 8월 1일 기준(올해 이전 30개년) — 시작 연도는 오늘 기준으로 매번 다시 계산되므로 시간이 지나도 항상 최근 30년을 가리킴
+  const points = [];
+  for (let y = startYear; y < now.getFullYear(); y++) {
+    const anchor = new Date(y, 7, 1); // 8월(0-indexed 7) 1일
+    const anchorSec = Math.floor(anchor.getTime() / 1000);
+    const pricePoint = closestPair(pairs, anchorSec);
+    if (!pricePoint || Math.abs(pricePoint.t - anchorSec) > 20 * 24 * 3600) continue; // 그 시점 데이터가 없으면(상장 전 등) 건너뜀
+    const score = computeMacroScoreAtDate(m2Points, curvePoints, anchor);
+    points.push({ t: pricePoint.t, price: pricePoint.c, score: score.total, label: `${score.total}점(${String(y).slice(2)}.8)`, isNow: false });
+  }
+  // 마지막은 "지금" 실시간 점수 — 매달 1일 기준으로 다시 볼 때마다 최신 M2·금리차가 반영되므로 항상 현재 시점을 정확히 대표함
+  const last = pairs[pairs.length - 1];
+  const liveScore = computeMacroScore(liveMacro);
+  points.push({ t: last.t, price: last.c, score: liveScore.total, label: `${liveScore.total}점(현재)`, isNow: true });
+
+  return { pairs, points };
+}
+
+function getMacroScoreChartData() {
+  if (!macroScoreChartDataPromise) {
+    macroScoreChartDataPromise = computeMacroScoreChartData().catch((e) => {
+      macroScoreChartDataPromise = null; // 실패 시 다음 검색에서 재시도 가능하도록 캐시 초기화
+      throw e;
+    });
+  }
+  return macroScoreChartDataPromise;
+}
+
+function buildMacroScoreChartSvg({ pairs, points }) {
+  const W = 780,
+    H = 420;
+  const ML = 56,
+    MR = 20,
+    MT = 26,
+    MB = 40;
+  const PW = W - ML - MR;
+  const PH = H - MT - MB;
+
+  const minT = pairs[0].t;
+  const maxT = pairs[pairs.length - 1].t;
+  const prices = pairs.map((p) => p.c);
+  const { lo: rawLo, hi, step } = niceAxisBounds(Math.min(...prices), Math.max(...prices));
+  const lo = Math.max(0, rawLo); // 지수 값은 음수가 없으므로 하한을 0 밑으로 내려가지 않게 고정
+
+  const xFn = (t) => ML + ((t - minT) / (maxT - minT)) * PW;
+  const yFn = (v) => MT + (1 - (v - lo) / (hi - lo)) * PH;
+
+  let gridSvg = "";
+  for (let v = Math.ceil(lo / step) * step; v <= hi + 0.001; v += step) {
+    const y = yFn(v);
+    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${ML + PW}" y2="${y.toFixed(1)}" stroke="#23262f" stroke-width="1" />`;
+    gridSvg += `<text x="${(ML - 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="10" fill="#8a90a3">${Math.round(v).toLocaleString()}</text>`;
+  }
+
+  // x축: 5년 단위로 연도 라벨(30년치를 1년 단위로 다 넣으면 서로 겹쳐서 5년 단위로 성기게 표시)
+  let axisSvg = "";
+  const firstYear = new Date(minT * 1000).getFullYear();
+  const lastYear = new Date(maxT * 1000).getFullYear();
+  for (let y = Math.ceil(firstYear / 5) * 5; y <= lastYear; y += 5) {
+    const t = Math.floor(new Date(y, 0, 1).getTime() / 1000);
+    if (t < minT || t > maxT) continue;
+    const x = xFn(t);
+    axisSvg += `<line x1="${x.toFixed(1)}" y1="${MT}" x2="${x.toFixed(1)}" y2="${MT + PH}" stroke="#1a1d24" stroke-width="1" />`;
+    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 16).toFixed(1)}" text-anchor="middle" font-size="10" fill="#8a90a3">${y}</text>`;
+  }
+
+  const linePath = pairs.map((p, i) => `${i === 0 ? "M" : "L"}${xFn(p.t).toFixed(1)},${yFn(p.c).toFixed(1)}`).join(" ");
+  let linesSvg = `<path d="${linePath}" fill="none" stroke="#e5342f" stroke-width="1.8" stroke-linejoin="round" />`;
+
+  // 점(그 시점의 거시경제 점수)은 빨간 선 위(그 날짜의 S&P 실제 값 높이)에 정확히 얹어서 찍음 — 라벨은 위/아래를 번갈아 배치해 30여 개가 서로 덜 겹치게 함
+  points.forEach((p, i) => {
+    const x = xFn(p.t);
+    const y = yFn(p.price);
+    const color = p.isNow ? "#f5a623" : "#eceef2";
+    const r = p.isNow ? 4.2 : 2.8;
+    linesSvg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${color}" stroke="#000" stroke-width="1" />`;
+    const above = p.isNow || i % 2 === 0;
+    const labelY = above ? y - 8 : y + 14;
+    linesSvg += `<text x="${x.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-size="${p.isNow ? 11 : 9}" font-weight="700" fill="${color}">${p.label}</text>`;
+  });
+
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="거시경제 점수별 S&P500 30년 추이">
+    <rect x="0" y="0" width="${W}" height="${H}" fill="#000" />
+    ${gridSvg}
+    ${axisSvg}
+    ${linesSvg}
+  </svg>`;
+}
+
+let macroScoreChartRendered = false;
+async function renderMacroScoreChart() {
+  if (macroScoreChartRendered) return; // 검색할 때마다 다시 그릴 필요 없는 시장 전체 데이터라 최초 1회만 렌더링
+  const container = el("futureMacroChartContainer");
+  const caption = el("futureMacroChartCaption");
+  container.innerHTML = `<p class="muted" style="text-align:center;padding:20px 0;">S&amp;P500 30년 데이터를 불러오는 중...</p>`;
+  try {
+    const data = await getMacroScoreChartData();
+    container.innerHTML = buildMacroScoreChartSvg(data);
+    macroScoreChartRendered = true;
+    caption.textContent =
+      "빨간 선: S&P500 지수(1996~현재, 주간 종가) · 흰 점: 매년 8월 1일 기준 거시경제 점수(M2 통화량 YoY + 장단기 금리차 조합, 10점 만점) · " +
+      "주황 점: 현재 거시경제 점수(참고용, 투자 자문이 아닙니다)";
+  } catch (err) {
+    container.innerHTML = `<p class="error-inline" style="text-align:center;padding:20px 0;">❌ S&amp;P500 장기 데이터를 불러오지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
+  }
+}
+
 // 미래예측 모달 상단(틀고정 헤더): 로고-한글이름-영어티커-상승압력/투자안정성/거시경제(원형 점수)를 한 줄로 표시
 async function renderFutureModalHeader(ticker, quote, metricsPromise, marketReturnsPromise) {
   const titleEl = el("futureChartModalTitle");
@@ -3749,6 +3901,7 @@ async function runFuturePrediction() {
     const marketReturnsPromise = getMarketReturns();
     renderFutureModalHeader(ticker, quote, metricsPromise, marketReturnsPromise);
     renderFutureRiskSection(ticker, metricsPromise, marketReturnsPromise, data); // 실패해도 1번째 그래프는 그대로 유지
+    renderMacroScoreChart(); // 종목과 무관한 시장 전체 차트라 최초 1회만 그리고 이후 검색부터는 캐시된 결과를 재사용
     setFutureStatus(null, null);
   } catch (err) {
     setFutureStatus("error", `❌ ${escapeHtml(err.message || "예측 차트를 불러오지 못했습니다.")}`);
