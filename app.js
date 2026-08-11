@@ -3288,6 +3288,17 @@ async function runIndexTab() {
     const hiddenCount = INDEX_LIST.length - INDEX_PRIORITY_COUNT;
     const toggleBtn = `<button type="button" class="cat-btn index-toggle-btn" id="indexToggleBtn">${indexShowAll ? "간략히 보기" : `더보기 (${hiddenCount}개)`}</button>`;
 
+    // 새로고침 버튼 옆에 원/달러 환율을 작게 표시(더보기 안에 숨어있어도 항상 조회는 되므로 별도 요청 없이 재사용)
+    const usdKrwIdx = INDEX_LIST.findIndex((item) => item.symbol === "KRW=X");
+    const usdKrwSnap = usdKrwIdx !== -1 ? snaps[usdKrwIdx] : null;
+    const usdKrwEl = el("indexUsdKrwMini");
+    if (usdKrwEl) {
+      usdKrwEl.textContent =
+        usdKrwSnap && usdKrwSnap.price !== null && usdKrwSnap.price !== undefined
+          ? `$1 = ₩${usdKrwSnap.price.toLocaleString("ko-KR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+          : "";
+    }
+
     indexStatus.style.display = "none";
     indexResults.innerHTML = `
       <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 환율·지수·원자재·가상자산은 전일 종가 대비, 국채·금리차는 FRED 최신치(전 영업일 대비) 기준이며 상승은 초록·하락은 빨강입니다.</p>
