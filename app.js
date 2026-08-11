@@ -1479,8 +1479,8 @@ const TAB_LOADERS = {
   popular: () => runPopular(),
   index: () => runIndexTab(),
   historical: () => runHistoricalQuick(),
-  valuation: () => runValueRevenue(), // 가치평가 진입 시 첫 버튼(매출액 증가)을 자동 표시
-  trend: () => runTrendVolume(), // 추세평가 진입 시 거래량을 자동 표시(한국보유는 아직 준비 중이라 기본값에서 제외)
+  valuation: () => runValueRevenue(), // 가치평가 진입 시 매출액 증가를 자동 표시
+  trend: () => runMovers("surge"), // 추세평가 진입 시 급등주를 자동 표시
   insight: () => runInsight("blackrock"), // 인사이트 진입 시 첫 버튼(블랙록)을 자동 표시
   // search: navigateToTicker()가 직접 담당(항상 최신 검색어를 반영해야 하므로 캐시 대상에서 제외)
   // future: 준비중 안내만
