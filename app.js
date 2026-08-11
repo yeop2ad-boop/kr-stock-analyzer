@@ -3469,13 +3469,8 @@ function renderFutureChart(data) {
     forecastNote = ` · <span style="color:var(--warn);font-weight:700;">6개월 후 예상 변동량: ${pctFromToday >= 0 ? "+" : ""}${pctFromToday.toFixed(1)}%</span>`;
   }
   el("futureChartCaption").innerHTML = `${escapeHtml(baseNote)}${forecastNote}`;
-  el("futureChartModal").style.display = "flex";
+  el("futureResultsSection").style.display = "block"; // 전체화면 모달 대신 탭 화면 안에 그대로 이어붙여 표시
 }
-
-function closeFutureChartModal() {
-  el("futureChartModal").style.display = "none";
-}
-el("futureChartModalCloseBtn").addEventListener("click", closeFutureChartModal);
 
 function setFutureStatus(type, message) {
   if (!message) {

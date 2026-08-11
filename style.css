@@ -276,11 +276,21 @@ body {
   background: #000;
 }
 
+/* 예전엔 전체화면 고정 모달 안이라 flex:1로 남은 세로 공간을 채웠지만, 이제 탭 화면 안에 그대로 이어붙는(인라인)
+   카드라 페이지 자체가 스크롤되므로 별도 높이 강제나 세로 스크롤이 필요 없음 */
+.future-inline-card {
+  background: #000;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-top: 16px;
+}
+.future-inline-header {
+  padding: 10px 12px;
+  background: #000;
+  border-bottom: 1px solid var(--border);
+}
 .future-chart-body {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
   padding: 12px 10px 24px;
   background: #000;
 }
