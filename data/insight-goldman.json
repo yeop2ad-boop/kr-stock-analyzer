@@ -1,0 +1,33 @@
+{
+  "filerName": "Goldman Sachs Group Inc",
+  "asOf": "2026-03-31",
+  "prevAsOf": "2025-12-31",
+  "filedDate": "2026-05-15",
+  "prevFiledDate": "2026-02-10",
+  "totalValueUSD": 870939686922,
+  "totalValueLabel": "$870.94B",
+  "accessionNumber": "0000886982-26-000274",
+  "updatedAt": "2026-08-11T00:00:00.000Z",
+  "holdings": [
+    { "ticker": "NVDA", "name": "NVIDIA", "cusip": "67066G104", "weightPct": 4.42, "weightChangePt": -0.74, "valueUSD": 38468012425, "valueChangeUSD": -3336580031, "valueChangePct": -8.0 },
+    { "ticker": "SPY", "name": "SPDR S&P 500 ETF Trust", "cusip": "78462F103", "weightPct": 3.65, "weightChangePt": 0.16, "valueUSD": 31823754236, "valueChangeUSD": 3448051792, "valueChangePct": 12.2 },
+    { "ticker": "AAPL", "name": "Apple", "cusip": "037833100", "weightPct": 3.57, "weightChangePt": -0.50, "valueUSD": 31130641039, "valueChangeUSD": -1933162694, "valueChangePct": -5.8 },
+    { "ticker": "MSFT", "name": "Microsoft", "cusip": "594918104", "weightPct": 2.99, "weightChangePt": -0.51, "valueUSD": 26035672240, "valueChangeUSD": -2382459795, "valueChangePct": -8.4 },
+    { "ticker": "GOOGL", "name": "Alphabet (Class A)", "cusip": "02079K305", "weightPct": 2.04, "weightChangePt": -0.16, "valueUSD": 17800607254, "valueChangeUSD": -49794484, "valueChangePct": -0.3 },
+    { "ticker": "AMZN", "name": "Amazon", "cusip": "023135106", "weightPct": 1.83, "weightChangePt": -0.34, "valueUSD": 15968250713, "valueChangeUSD": -1675319022, "valueChangePct": -9.5 },
+    { "ticker": "TSLA", "name": "Tesla", "cusip": "88160R101", "weightPct": 1.46, "weightChangePt": -0.80, "valueUSD": 12689832894, "valueChangeUSD": -5581384395, "valueChangePct": -30.5 },
+    { "ticker": "AVGO", "name": "Broadcom", "cusip": "11135F101", "weightPct": 1.37, "weightChangePt": -0.19, "valueUSD": 11949856188, "valueChangeUSD": -713754836, "valueChangePct": -5.6 },
+    { "ticker": "META", "name": "Meta Platforms", "cusip": "30303M102", "weightPct": 1.36, "weightChangePt": 0.00, "valueUSD": 11813815381, "valueChangeUSD": 780982178, "valueChangePct": 7.1 },
+    { "ticker": "QQQ", "name": "Invesco QQQ Trust", "cusip": "46090E103", "weightPct": 1.31, "weightChangePt": -0.03, "valueUSD": 11449429052, "valueChangeUSD": 537910497, "valueChangePct": 4.9 },
+    { "ticker": "GOOG", "name": "Alphabet (Class C)", "cusip": "02079K107", "weightPct": 1.16, "weightChangePt": 0.07, "valueUSD": 10083267999, "valueChangeUSD": 1283266297, "valueChangePct": 14.6 },
+    { "ticker": null, "name": "iShares Tr (ETF)", "cusip": "464287200", "weightPct": 1.04, "weightChangePt": -0.03, "valueUSD": 9046887775, "valueChangeUSD": 370845532, "valueChangePct": 4.3 },
+    { "ticker": null, "name": "Vanguard Index Fds (ETF)", "cusip": "922908363", "weightPct": 1.03, "weightChangePt": -0.05, "valueUSD": 9000425562, "valueChangeUSD": 175664775, "valueChangePct": 2.0 },
+    { "ticker": null, "name": "iShares Tr (ETF)", "cusip": "464288513", "weightPct": 0.99, "weightChangePt": 0.12, "valueUSD": 8618622700, "valueChangeUSD": 1571006158, "valueChangePct": 22.3 },
+    { "ticker": "TSM", "name": "Taiwan Semiconductor Mfg", "cusip": "874039100", "weightPct": 0.94, "weightChangePt": 0.44, "valueUSD": 8207890951, "valueChangeUSD": 4166254730, "valueChangePct": 103.1 },
+    { "ticker": null, "name": "iShares Tr (ETF)", "cusip": "464287655", "weightPct": 0.86, "weightChangePt": 0.25, "valueUSD": 7495405150, "valueChangeUSD": 2525835855, "valueChangePct": 50.8 },
+    { "ticker": "JPM", "name": "JPMorgan Chase", "cusip": "46625H100", "weightPct": 0.84, "weightChangePt": -0.08, "valueUSD": 7335636573, "valueChangeUSD": -130879629, "valueChangePct": -1.8 },
+    { "ticker": "LLY", "name": "Eli Lilly", "cusip": "532457108", "weightPct": 0.74, "weightChangePt": -0.20, "valueUSD": 6418582295, "valueChangeUSD": -1215675767, "valueChangePct": -15.9 },
+    { "ticker": "XOM", "name": "Exxon Mobil", "cusip": "30231G102", "weightPct": 0.69, "weightChangePt": 0.24, "valueUSD": 5998941708, "valueChangeUSD": 2376932876, "valueChangePct": 65.6 },
+    { "ticker": "MU", "name": "Micron Technology", "cusip": "595112103", "weightPct": 0.65, "weightChangePt": 0.26, "valueUSD": 5629856967, "valueChangeUSD": 2467056270, "valueChangePct": 78.0 }
+  ]
+}

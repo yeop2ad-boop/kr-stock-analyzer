@@ -327,6 +327,11 @@ body {
   color: var(--text);
   text-align: center;
 }
+.future-chart-wip {
+  font-size: 12px;
+  font-weight: 700;
+  color: #f5a623;
+}
 
 .chat-header {
   display: flex;

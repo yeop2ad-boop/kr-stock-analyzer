@@ -57,6 +57,7 @@
       <button type="button" class="cat-btn" data-tab="index" id="tabIndexBtn">지수</button>
       <button type="button" class="cat-btn" data-tab="historical" id="tabHistoricalBtn">과거분석</button>
       <button type="button" class="cat-btn" data-tab="top30" id="tabTop30Btn">TOP30</button>
+      <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn">인사이트</button>
       <button type="button" class="cat-btn" data-tab="future" id="tabFutureBtn">미래예측(베타)</button>
     </div>
   </header>
@@ -164,6 +165,19 @@
         <div id="top30Results"></div>
       </div>
 
+      <div class="carousel-panel" data-panel="insight" id="panelInsight">
+        <div class="top30-sub-nav">
+          <button type="button" class="cat-btn" id="insightBlackrockBtn">블랙록</button>
+          <button type="button" class="cat-btn" id="insightVanguardBtn">뱅가드</button>
+          <button type="button" class="cat-btn" id="insightBerkshireBtn">버크셔 해서웨이</button>
+          <button type="button" class="cat-btn" id="insightGoldmanBtn">골드만삭스</button>
+          <button type="button" class="cat-btn" id="insightMorganStanleyBtn">모건스탠리</button>
+          <button type="button" class="cat-btn" id="insightJpmorganBtn">JP모건 체이스</button>
+        </div>
+        <p id="insightStatus" class="muted top30-status" style="display:none;"></p>
+        <div id="insightResults"></div>
+      </div>
+
       <div class="carousel-panel" data-panel="future" id="panelFuture">
         <div class="future-search">
           <input type="text" id="futureTickerInput" placeholder="티커를 입력하세요. EX)TSLA,AAPL" autocomplete="off" />
@@ -185,7 +199,7 @@
             <div id="futureRiskContainer" class="future-chart-container"></div>
             <p id="futureRiskCaption" class="future-chart-caption"></p>
             <hr class="future-chart-divider" />
-            <h3 class="future-chart-subheading">🌐 거시경제 점수별 S&amp;P500 추이 (1996~현재, 30년)</h3>
+            <h3 class="future-chart-subheading">🌐 거시경제 점수별 S&amp;P500 추이 (1996~현재, 30년) <span class="future-chart-wip">· 베타(미완성)</span></h3>
             <div id="futureMacroChartContainer" class="future-chart-container"></div>
             <p id="futureMacroChartCaption" class="future-chart-caption"></p>
           </div>

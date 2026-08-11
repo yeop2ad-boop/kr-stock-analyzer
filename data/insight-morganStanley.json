@@ -1,0 +1,33 @@
+{
+  "filerName": "Morgan Stanley",
+  "asOf": "2026-03-31",
+  "prevAsOf": "2025-12-31",
+  "filedDate": "2026-05-15",
+  "prevFiledDate": "2026-02-13",
+  "totalValueUSD": 1659786624056,
+  "totalValueLabel": "$1.66T",
+  "accessionNumber": "0000895421-26-000183",
+  "updatedAt": "2026-08-11T00:00:00.000Z",
+  "holdings": [
+    { "ticker": "AAPL", "name": "Apple", "cusip": "037833100", "weightPct": 3.74, "weightChangePt": 0.00, "valueUSD": 62045240497, "valueChangeUSD": -613877817, "valueChangePct": -1.0 },
+    { "ticker": "NVDA", "name": "NVIDIA", "cusip": "67066G104", "weightPct": 3.60, "weightChangePt": 0.00, "valueUSD": 59811238475, "valueChangeUSD": -565150073, "valueChangePct": -0.9 },
+    { "ticker": "MSFT", "name": "Microsoft", "cusip": "594918104", "weightPct": 2.79, "weightChangePt": -0.71, "valueUSD": 46227307160, "valueChangeUSD": -12397382788, "valueChangePct": -21.1 },
+    { "ticker": "AMZN", "name": "Amazon", "cusip": "023135106", "weightPct": 2.18, "weightChangePt": -0.04, "valueUSD": 36223539022, "valueChangeUSD": -1072435837, "valueChangePct": -2.9 },
+    { "ticker": "GOOGL", "name": "Alphabet (Class A)", "cusip": "02079K305", "weightPct": 2.10, "weightChangePt": -0.18, "valueUSD": 34781992722, "valueChangeUSD": -3339645435, "valueChangePct": -8.8 },
+    { "ticker": "SPY", "name": "SPDR S&P 500 ETF Trust", "cusip": "78462F103", "weightPct": 1.59, "weightChangePt": 0.39, "valueUSD": 26340547800, "valueChangeUSD": 6343578157, "valueChangePct": 31.7 },
+    { "ticker": "AVGO", "name": "Broadcom", "cusip": "11135F101", "weightPct": 1.42, "weightChangePt": -0.09, "valueUSD": 23502689812, "valueChangeUSD": -1750413534, "valueChangePct": -6.9 },
+    { "ticker": "META", "name": "Meta Platforms", "cusip": "30303M102", "weightPct": 1.31, "weightChangePt": -0.17, "valueUSD": 21786119180, "valueChangeUSD": -3002309508, "valueChangePct": -12.1 },
+    { "ticker": "GOOG", "name": "Alphabet (Class C)", "cusip": "02079K107", "weightPct": 1.24, "weightChangePt": -0.11, "valueUSD": 20558558401, "valueChangeUSD": -1985279718, "valueChangePct": -8.8 },
+    { "ticker": "JPM", "name": "JPMorgan Chase", "cusip": "46625H100", "weightPct": 1.21, "weightChangePt": -0.06, "valueUSD": 20163033832, "valueChangeUSD": -1227628339, "valueChangePct": -5.7 },
+    { "ticker": null, "name": "iShares Tr (ETF)", "cusip": "464287200", "weightPct": 0.92, "weightChangePt": -0.06, "valueUSD": 15273270143, "valueChangeUSD": -1184630762, "valueChangePct": -7.2 },
+    { "ticker": "TSLA", "name": "Tesla", "cusip": "88160R101", "weightPct": 0.88, "weightChangePt": -0.08, "valueUSD": 14564199417, "valueChangeUSD": -1528139832, "valueChangePct": -9.5 },
+    { "ticker": null, "name": "Vanguard Index Fds (ETF)", "cusip": "922908363", "weightPct": 0.88, "weightChangePt": -0.04, "valueUSD": 14559741819, "valueChangeUSD": -847822659, "valueChangePct": -5.5 },
+    { "ticker": "LLY", "name": "Eli Lilly", "cusip": "532457108", "weightPct": 0.86, "weightChangePt": -0.14, "valueUSD": 14198914633, "valueChangeUSD": -2558595601, "valueChangePct": -15.3 },
+    { "ticker": "V", "name": "Visa", "cusip": "92826C839", "weightPct": 0.84, "weightChangePt": -0.14, "valueUSD": 13896981623, "valueChangeUSD": -2538370808, "valueChangePct": -15.4 },
+    { "ticker": "BRK-B", "name": "Berkshire Hathaway", "cusip": "084670702", "weightPct": 0.78, "weightChangePt": -0.01, "valueUSD": 12868648994, "valueChangeUSD": -341095405, "valueChangePct": -2.6 },
+    { "ticker": null, "name": "iShares Tr (ETF)", "cusip": "464287614", "weightPct": 0.76, "weightChangePt": -0.02, "valueUSD": 12691628892, "valueChangeUSD": -388573637, "valueChangePct": -3.0 },
+    { "ticker": "QQQ", "name": "Invesco QQQ Trust", "cusip": "46090E103", "weightPct": 0.75, "weightChangePt": 0.16, "valueUSD": 12429817407, "valueChangeUSD": 2575152646, "valueChangePct": 26.1 },
+    { "ticker": "XOM", "name": "Exxon Mobil", "cusip": "30231G102", "weightPct": 0.73, "weightChangePt": 0.20, "valueUSD": 12167845678, "valueChangeUSD": 3207587039, "valueChangePct": 35.8 },
+    { "ticker": "JNJ", "name": "Johnson & Johnson", "cusip": "478160104", "weightPct": 0.66, "weightChangePt": 0.09, "valueUSD": 10931642638, "valueChangeUSD": 1344561428, "valueChangePct": 14.0 }
+  ]
+}

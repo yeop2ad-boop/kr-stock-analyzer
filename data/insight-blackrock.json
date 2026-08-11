@@ -1,0 +1,33 @@
+{
+  "filerName": "BlackRock, Inc.",
+  "asOf": "2026-06-30",
+  "prevAsOf": "2026-03-31",
+  "filedDate": "2026-08-07",
+  "prevFiledDate": "2026-05-13",
+  "totalValueUSD": 6729538649155,
+  "totalValueLabel": "$6.73T",
+  "accessionNumber": "0002012383-26-003238",
+  "updatedAt": "2026-08-11T00:00:00.000Z",
+  "holdings": [
+    { "ticker": "NVDA", "name": "NVIDIA", "cusip": "67066G104", "weightPct": 5.78, "weightChangePt": -0.10, "valueUSD": 388869850000, "valueChangeUSD": 52516921998, "valueChangePct": 15.6 },
+    { "ticker": "AAPL", "name": "Apple", "cusip": "037833100", "weightPct": 5.01, "weightChangePt": -0.07, "valueUSD": 337005479182, "valueChangeUSD": 46435236308, "valueChangePct": 16.0 },
+    { "ticker": "MSFT", "name": "Microsoft", "cusip": "594918104", "weightPct": 3.37, "weightChangePt": -0.47, "valueUSD": 226588430065, "valueChangeUSD": 6908795868, "valueChangePct": 3.1 },
+    { "ticker": "AMZN", "name": "Amazon", "cusip": "023135106", "weightPct": 2.66, "weightChangePt": -0.02, "valueUSD": 178948040777, "valueChangeUSD": 25517032921, "valueChangePct": 16.6 },
+    { "ticker": "GOOGL", "name": "Alphabet (Class A)", "cusip": "02079K305", "weightPct": 2.45, "weightChangePt": 0.20, "valueUSD": 164737850334, "valueChangeUSD": 36203996195, "valueChangePct": 28.2 },
+    { "ticker": "AVGO", "name": "Broadcom", "cusip": "11135F101", "weightPct": 2.24, "weightChangePt": 0.15, "valueUSD": 150452659740, "valueChangeUSD": 30977536765, "valueChangePct": 25.9 },
+    { "ticker": "GOOG", "name": "Alphabet (Class C)", "cusip": "02079K107", "weightPct": 1.94, "weightChangePt": 0.11, "valueUSD": 130704717750, "valueChangeUSD": 26070151275, "valueChangePct": 24.9 },
+    { "ticker": "MU", "name": "Micron Technology", "cusip": "595112103", "weightPct": 1.80, "weightChangePt": 1.19, "valueUSD": 121044874050, "valueChangeUSD": 86127898437, "valueChangePct": 246.7 },
+    { "ticker": "META", "name": "Meta Platforms", "cusip": "30303M102", "weightPct": 1.45, "weightChangePt": -0.24, "valueUSD": 97700383569, "valueChangeUSD": 1086916844, "valueChangePct": 1.1 },
+    { "ticker": "TSLA", "name": "Tesla", "cusip": "88160R101", "weightPct": 1.34, "weightChangePt": -0.01, "valueUSD": 90101743181, "valueChangeUSD": 12729895661, "valueChangePct": 16.5 },
+    { "ticker": "AMD", "name": "Advanced Micro Devices", "cusip": "007903107", "weightPct": 1.30, "weightChangePt": 0.78, "valueUSD": 87311650335, "valueChangeUSD": 57658394799, "valueChangePct": 194.4 },
+    { "ticker": "LLY", "name": "Eli Lilly", "cusip": "532457108", "weightPct": 1.20, "weightChangePt": 0.14, "valueUSD": 81009980560, "valueChangeUSD": 19850939667, "valueChangePct": 32.5 },
+    { "ticker": "JPM", "name": "JPMorgan Chase", "cusip": "46625H100", "weightPct": 1.00, "weightChangePt": -0.07, "valueUSD": 67525081319, "valueChangeUSD": 6263086325, "valueChangePct": 10.2 },
+    { "ticker": null, "name": "iShares Tr (ETF)", "cusip": "464287200", "weightPct": 0.99, "weightChangePt": -0.01, "valueUSD": 66765222344, "valueChangeUSD": 9639901554, "valueChangePct": 16.9 },
+    { "ticker": "BRK-B", "name": "Berkshire Hathaway", "cusip": "084670702", "weightPct": 0.90, "weightChangePt": -0.11, "valueUSD": 60638817437, "valueChangeUSD": 2556113541, "valueChangePct": 4.4 },
+    { "ticker": "INTC", "name": "Intel", "cusip": "458140100", "weightPct": 0.88, "weightChangePt": 0.54, "valueUSD": 59549257550, "valueChangeUSD": 39788102517, "valueChangePct": 201.3 },
+    { "ticker": "AMAT", "name": "Applied Materials", "cusip": "038222105", "weightPct": 0.86, "weightChangePt": 0.39, "valueUSD": 57993650239, "valueChangeUSD": 31000841972, "valueChangePct": 114.8 },
+    { "ticker": "LRCX", "name": "Lam Research", "cusip": "512807306", "weightPct": 0.86, "weightChangePt": 0.36, "valueUSD": 57559559941, "valueChangeUSD": 29162902554, "valueChangePct": 102.7 },
+    { "ticker": "JNJ", "name": "Johnson & Johnson", "cusip": "478160104", "weightPct": 0.80, "weightChangePt": -0.11, "valueUSD": 53866596264, "valueChangeUSD": 1706633607, "valueChangePct": 3.3 },
+    { "ticker": "V", "name": "Visa", "cusip": "92826C839", "weightPct": 0.70, "weightChangePt": -0.02, "valueUSD": 47232878134, "valueChangeUSD": 6070526281, "valueChangePct": 14.7 }
+  ]
+}

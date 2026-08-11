@@ -1,0 +1,33 @@
+{
+  "filerName": "Berkshire Hathaway Inc",
+  "asOf": "2026-03-31",
+  "prevAsOf": "2025-12-31",
+  "filedDate": "2026-05-15",
+  "prevFiledDate": "2026-02-17",
+  "totalValueUSD": 263095703570,
+  "totalValueLabel": "$263.10B",
+  "accessionNumber": "0001193125-26-226661",
+  "updatedAt": "2026-08-11T00:00:00.000Z",
+  "holdings": [
+    { "ticker": "AAPL", "name": "Apple", "cusip": "037833100", "weightPct": 21.99, "weightChangePt": -0.61, "valueUSD": 57843260493, "valueChangeUSD": -4118474790, "valueChangePct": -6.6 },
+    { "ticker": "AXP", "name": "American Express", "cusip": "025816109", "weightPct": 17.43, "weightChangePt": -3.03, "valueUSD": 45859204536, "valueChangeUSD": -10229173929, "valueChangePct": -18.2 },
+    { "ticker": "KO", "name": "Coca-Cola", "cusip": "191216100", "weightPct": 11.56, "weightChangePt": 1.36, "valueUSD": 30420000000, "valueChangeUSD": 2456000000, "valueChangePct": 8.8 },
+    { "ticker": "BAC", "name": "Bank of America", "cusip": "060505104", "weightPct": 9.52, "weightChangePt": -0.86, "valueUSD": 25039178044, "valueChangeUSD": -3412098326, "valueChangePct": -12.0 },
+    { "ticker": "CVX", "name": "Chevron", "cusip": "166764100", "weightPct": 6.64, "weightChangePt": -0.60, "valueUSD": 17457364606, "valueChangeUSD": -2379766525, "valueChangePct": -12.0 },
+    { "ticker": "OXY", "name": "Occidental Petroleum", "cusip": "674599105", "weightPct": 6.55, "weightChangePt": 2.57, "valueUSD": 17221193015, "valueChangeUSD": 6326801372, "valueChangePct": 58.1 },
+    { "ticker": "GOOGL", "name": "Alphabet (Class A)", "cusip": "02079K305", "weightPct": 5.93, "weightChangePt": 3.89, "valueUSD": 15600071913, "valueChangeUSD": 10014229467, "valueChangePct": 179.3 },
+    { "ticker": "CB", "name": "Chubb", "cusip": "H1467J104", "weightPct": 4.24, "weightChangePt": 0.34, "valueUSD": 11162836215, "valueChangeUSD": 472981217, "valueChangePct": 4.4 },
+    { "ticker": "MCO", "name": "Moody's", "cusip": "615369105", "weightPct": 4.09, "weightChangePt": -0.51, "valueUSD": 10762190653, "valueChangeUSD": -1840365439, "valueChangePct": -14.6 },
+    { "ticker": "KHC", "name": "Kraft Heinz", "cusip": "500754106", "weightPct": 2.78, "weightChangePt": -0.10, "valueUSD": 7323527057, "valueChangeUSD": -573117280, "valueChangePct": -7.3 },
+    { "ticker": "DVA", "name": "DaVita", "cusip": "23918K108", "weightPct": 1.76, "weightChangePt": 0.44, "valueUSD": 4626158909, "valueChangeUSD": 1018011534, "valueChangePct": 28.2 },
+    { "ticker": "KR", "name": "Kroger", "cusip": "501044101", "weightPct": 1.38, "weightChangePt": 0.24, "valueUSD": 3618000000, "valueChangeUSD": 494000000, "valueChangePct": 15.8 },
+    { "ticker": "SIRI", "name": "SiriusXM", "cusip": "829933100", "weightPct": 1.09, "weightChangePt": 0.18, "valueUSD": 2880548260, "valueChangeUSD": 385029955, "valueChangePct": 15.4 },
+    { "ticker": "DAL", "name": "Delta Air Lines", "cusip": "247361702", "weightPct": 1.01, "weightChangePt": null, "valueUSD": 2646532635, "valueChangeUSD": 2646532635, "valueChangePct": null },
+    { "ticker": "VRSN", "name": "Verisign", "cusip": "92343E102", "weightPct": 0.85, "weightChangePt": 0.05, "valueUSD": 2232726597, "valueChangeUSD": 48635251, "valueChangePct": 2.2 },
+    { "ticker": "COF", "name": "Capital One", "cusip": "14040H105", "weightPct": 0.50, "weightChangePt": -0.14, "valueUSD": 1304374500, "valueChangeUSD": -428499500, "valueChangePct": -24.7 },
+    { "ticker": "NYT", "name": "New York Times (Class A)", "cusip": "650111107", "weightPct": 0.48, "weightChangePt": 0.35, "valueUSD": 1268219376, "valueChangeUSD": 916555428, "valueChangePct": 260.6 },
+    { "ticker": "ALLY", "name": "Ally Financial", "cusip": "02005N100", "weightPct": 0.43, "weightChangePt": -0.05, "valueUSD": 1137670000, "valueChangeUSD": -175740001, "valueChangePct": -13.4 },
+    { "ticker": "GOOG", "name": "Alphabet (Class C)", "cusip": "02079K107", "weightPct": 0.39, "weightChangePt": null, "valueUSD": 1028454775, "valueChangeUSD": 1028454775, "valueChangePct": null },
+    { "ticker": "LLYVA", "name": "Liberty Live Group", "cusip": "530909308", "weightPct": 0.38, "weightChangePt": 0.05, "valueUSD": 996356028, "valueChangeUSD": 88443340, "valueChangePct": 9.7 }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "filerName": "Vanguard Group Inc",
+  "asOf": "2025-12-31",
+  "prevAsOf": "2025-09-30",
+  "filedDate": "2026-01-29",
+  "prevFiledDate": "2025-11-07",
+  "totalValueUSD": 6897676080637,
+  "totalValueLabel": "$6.90T",
+  "accessionNumber": "0000102909-26-000031",
+  "updatedAt": "2026-08-11T00:00:00.000Z",
+  "holdings": [
+    { "ticker": "NVDA", "name": "NVIDIA", "cusip": "67066G104", "weightPct": 6.13, "weightChangePt": -0.08, "valueUSD": 422736430797, "valueChangeUSD": 7869494486, "valueChangePct": 1.9 },
+    { "ticker": "AAPL", "name": "Apple", "cusip": "037833100", "weightPct": 5.62, "weightChangePt": 0.29, "valueUSD": 387749544852, "valueChangeUSD": 31413406619, "valueChangePct": 8.8 },
+    { "ticker": "MSFT", "name": "Microsoft", "cusip": "594918104", "weightPct": 5.03, "weightChangePt": -0.41, "valueUSD": 347211390598, "valueChangeUSD": -16382611514, "valueChangePct": -4.5 },
+    { "ticker": "AMZN", "name": "Amazon", "cusip": "023135106", "weightPct": 2.83, "weightChangePt": 0.03, "valueUSD": 195135349873, "valueChangeUSD": 8426534869, "valueChangePct": 4.5 },
+    { "ticker": "AVGO", "name": "Broadcom", "cusip": "11135F101", "weightPct": 2.42, "weightChangePt": 0.06, "valueUSD": 167064997221, "valueChangeUSD": 9108184390, "valueChangePct": 5.8 },
+    { "ticker": "GOOGL", "name": "Alphabet (Class A)", "cusip": "02079K305", "weightPct": 2.40, "weightChangePt": 0.52, "valueUSD": 165567397786, "valueChangeUSD": 40021410659, "valueChangePct": 31.9 },
+    { "ticker": "GOOG", "name": "Alphabet (Class C)", "cusip": "02079K107", "weightPct": 1.92, "weightChangePt": 0.41, "valueUSD": 132114124826, "valueChangeUSD": 31555849610, "valueChangePct": 31.4 },
+    { "ticker": "META", "name": "Meta Platforms", "cusip": "30303M102", "weightPct": 1.91, "weightChangePt": -0.20, "valueUSD": 132015115418, "valueChangeUSD": -9519262230, "valueChangePct": -6.7 },
+    { "ticker": "TSLA", "name": "Tesla", "cusip": "88160R101", "weightPct": 1.69, "weightChangePt": 0.01, "valueUSD": 116443761793, "valueChangeUSD": 4202524678, "valueChangePct": 3.7 },
+    { "ticker": "LLY", "name": "Eli Lilly", "cusip": "532457108", "weightPct": 1.28, "weightChangePt": 0.35, "valueUSD": 88087192938, "valueChangeUSD": 26315408031, "valueChangePct": 42.6 },
+    { "ticker": "JPM", "name": "JPMorgan Chase", "cusip": "46625H100", "weightPct": 1.24, "weightChangePt": -0.01, "valueUSD": 85632602370, "valueChangeUSD": 1761470269, "valueChangePct": 2.1 },
+    { "ticker": "BRK-B", "name": "Berkshire Hathaway", "cusip": "084670702", "weightPct": 1.14, "weightChangePt": -0.02, "valueUSD": 78967921468, "valueChangeUSD": 1382011418, "valueChangePct": 1.8 },
+    { "ticker": "V", "name": "Visa", "cusip": "92826C839", "weightPct": 0.82, "weightChangePt": 0.00, "valueUSD": 56455834042, "valueChangeUSD": 1861836127, "valueChangePct": 3.4 },
+    { "ticker": "XOM", "name": "Exxon Mobil", "cusip": "30231G102", "weightPct": 0.75, "weightChangePt": 0.02, "valueUSD": 51717501091, "valueChangeUSD": 3294360851, "valueChangePct": 6.8 },
+    { "ticker": "JNJ", "name": "Johnson & Johnson", "cusip": "478160104", "weightPct": 0.72, "weightChangePt": 0.06, "valueUSD": 49740362171, "valueChangeUSD": 5866543954, "valueChangePct": 13.4 },
+    { "ticker": "WMT", "name": "Walmart", "cusip": "931142103", "weightPct": 0.71, "weightChangePt": 0.04, "valueUSD": 49015625634, "valueChangeUSD": 4117257342, "valueChangePct": 9.2 },
+    { "ticker": "MA", "name": "Mastercard", "cusip": "57636Q104", "weightPct": 0.66, "weightChangePt": -0.02, "valueUSD": 45612086891, "valueChangeUSD": 430746385, "valueChangePct": 1.0 },
+    { "ticker": "ABBV", "name": "AbbVie", "cusip": "00287Y109", "weightPct": 0.60, "weightChangePt": -0.02, "valueUSD": 41306353424, "valueChangeUSD": 150752612, "valueChangePct": 0.4 },
+    { "ticker": "PLTR", "name": "Palantir Technologies", "cusip": "69608A108", "weightPct": 0.56, "weightChangePt": -0.03, "valueUSD": 38295188421, "valueChangeUSD": -721944953, "valueChangePct": -1.9 },
+    { "ticker": "COST", "name": "Costco", "cusip": "22160K105", "weightPct": 0.55, "weightChangePt": -0.06, "valueUSD": 37615889097, "valueChangeUSD": -2607703184, "valueChangePct": -6.5 }
+  ]
+}

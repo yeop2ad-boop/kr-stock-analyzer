@@ -106,11 +106,12 @@ async function handleChat(request, env) {
 }
 
 // ---------- 미래예측 2번째 그래프: 투자안정성 점수 구간별 1년 수익률 통계를 매달 집계하는 Cron 작업 ----------
-// 무료 플랜은 Worker 1회 실행당 외부 fetch(subrequest)가 50개로 제한되어 S&P500 500종목을 한 번에 훑을 수 없으므로,
-// 매일 조금씩(FUTURE_BATCH_SIZE종목) 나눠 스캔해 KV에 누적하고, 그 달의 마지막 날에 지금까지 모인 결과로 스냅샷을 확정한다.
+// Workers 유료 플랜(2026-02 변경 이후 기본 10,000 subrequests/invocation, CPU 30초 기본·최대 5분)으로 전환하면서
+// 무료 플랜의 50 subrequest 제한이 사라져 S&P500 500종목을 하루 만에 다 훑을 수 있음 — 배치/이어하기 로직 자체는
+// (혹시 모를 타임아웃에 대비한 안전장치로) 그대로 두되 크기만 500으로 키움. 이제 대부분 하루 만에 그 달 스냅샷이 확정됨.
 // ⚠️ 아래 신용등급 표(TICKER_CREDIT_RATING)는 app.js의 동일한 표를 그대로 복사한 것이다 — app.js를 수정할 때 여기도 함께 갱신해야
 // 두 곳의 점수가 어긋나지 않는다(브라우저 스크립트와 Worker는 서로 다른 파일이라 상수를 공유할 수 없음).
-const FUTURE_BATCH_SIZE = 18;
+const FUTURE_BATCH_SIZE = 500;
 const FUTURE_PROGRESS_KEY = "future_progress";
 const FUTURE_SNAPSHOT_PREFIX = "future_snapshot_";
 
@@ -564,7 +565,9 @@ async function runFutureScanTick(env) {
   const batch = progress.remaining.slice(0, FUTURE_BATCH_SIZE);
   progress.remaining = progress.remaining.slice(FUTURE_BATCH_SIZE);
 
-  const batchResults = await mapWithConcurrencyWorker(batch, 4, async (symbol) => {
+  // 동시성도 4 → 16으로 올림(너무 높이면 Yahoo 비공식 API 자체의 요청 빈도 제한에 걸릴 수 있어 무제한으로 올리지는 않음 —
+  // 이건 Cloudflare 플랜과 무관하게 데이터 출처 쪽 제약이라 그대로 유지)
+  const batchResults = await mapWithConcurrencyWorker(batch, 16, async (symbol) => {
     const inputs = await fetchRiskInputs(symbol);
     if (!inputs || inputs.oneYearReturn === null || inputs.oneYearReturn === undefined) return null;
     const score = computeInvestmentStabilityScore(inputs, progress.sp500Return);
@@ -620,8 +623,8 @@ async function handleFutureRiskStatus(env) {
   );
 }
 
-// 하루치 배치를 즉시 한 번 실행 — 이번 달 스냅샷을 Cron이 자연스럽게 다 쌓을 때까지(약 한 달) 기다리지 않고
-// 지금 당장 여러 번 반복 호출해서 이번 달분을 미리 채워 넣을 때 사용(그 뒤로는 평소처럼 Cron이 자동으로 이어받음)
+// 배치를 즉시 한 번 실행 — FUTURE_BATCH_SIZE가 500(S&P500 전체)이라 보통 한 번 호출로 이번 달 스냅샷이 바로 확정됨.
+// Cron을 기다리지 않고 지금 당장 채워 넣고 싶을 때 수동으로 호출(그 뒤로는 평소처럼 Cron이 자동으로 이어받음)
 async function handleFutureRunNow(env) {
   if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
   await runFutureScanTick(env);

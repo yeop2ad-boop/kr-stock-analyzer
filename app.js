@@ -1366,13 +1366,14 @@ new ResizeObserver(syncHeaderHeight).observe(fixedHeader);
 syncHeaderHeight();
 
 // ---------- 스와이프 캐로셀(기업검색/인기종목/지수/과거분석/TOP30/미래예측) — 급등주·급락주는 TOP30 탭 내 버튼으로 통합 ----------
-const TAB_ORDER = ["search", "popular", "index", "historical", "top30", "future"];
+const TAB_ORDER = ["search", "popular", "index", "historical", "top30", "insight", "future"];
 const panels = {
   search: el("panelSearch"),
   popular: el("panelPopular"),
   index: el("panelIndex"),
   historical: el("panelHistorical"),
   top30: el("panelTop30"),
+  insight: el("panelInsight"),
   future: el("panelFuture"),
 };
 const tabButtons = {
@@ -1381,6 +1382,7 @@ const tabButtons = {
   index: el("tabIndexBtn"),
   historical: el("tabHistoricalBtn"),
   top30: el("tabTop30Btn"),
+  insight: el("tabInsightBtn"),
   future: el("tabFutureBtn"),
 };
 const top30Buttons = {
@@ -1391,6 +1393,14 @@ const top30Buttons = {
   marketCap: el("top30MarketCapBtn"),
   nasdaq100: el("top30Nasdaq100Btn"),
   sp500: el("top30Sp500Btn"),
+};
+const insightButtons = {
+  blackrock: el("insightBlackrockBtn"),
+  vanguard: el("insightVanguardBtn"),
+  berkshire: el("insightBerkshireBtn"),
+  goldman: el("insightGoldmanBtn"),
+  morganStanley: el("insightMorganStanleyBtn"),
+  jpmorgan: el("insightJpmorganBtn"),
 };
 
 let activeTabIndex = 0;
@@ -1441,6 +1451,7 @@ const TAB_LOADERS = {
   index: () => runIndexTab(),
   historical: () => runHistoricalQuick(),
   top30: () => runMovers("surge"), // TOP30 진입 시 첫 버튼(급등주)을 자동 표시
+  insight: () => runInsight("blackrock"), // 인사이트 진입 시 첫 버튼(블랙록)을 자동 표시
   // search: navigateToTicker()가 직접 담당(항상 최신 검색어를 반영해야 하므로 캐시 대상에서 제외)
   // future: 준비중 안내만
 };
@@ -2650,6 +2661,119 @@ bindTop30(top30Buttons.undervalued, runUndervalued30);
 bindTop30(top30Buttons.lowRisk, runLowRisk30);
 bindTop30(top30Buttons.marketCap, runMarketCap30);
 
+// 인사이트 서브내비(거대기업 13F 보유종목)에서 현재 선택된 버튼만 활성 표시
+function setInsightActive(activeBtn) {
+  Object.values(insightButtons).forEach((b) => b && b.classList.toggle("active", b === activeBtn));
+}
+const bindInsight = (btn, institution) =>
+  btn.addEventListener("click", () => {
+    setInsightActive(btn);
+    runInsight(institution);
+  });
+bindInsight(insightButtons.blackrock, "blackrock");
+bindInsight(insightButtons.vanguard, "vanguard");
+bindInsight(insightButtons.berkshire, "berkshire");
+bindInsight(insightButtons.goldman, "goldman");
+bindInsight(insightButtons.morganStanley, "morganStanley");
+bindInsight(insightButtons.jpmorgan, "jpmorgan");
+
+// 거대기업(블랙록·뱅가드·버크셔 등) 13F 공시 기반 보유종목 TOP20
+// SEC EDGAR 13F-HR(분기 공시)에서 직접 집계한 데이터. 13F는 분기 1회(최대 45일 지연)만 갱신되므로
+// 실시간 백엔드 대신 분기마다 이 스냅샷을 갱신하는 방식으로 운영(자세한 내용은 각 institution 데이터의 asOf/prevAsOf 참고)
+const INSIGHT_INSTITUTION_LABELS = {
+  blackrock: "블랙록",
+  vanguard: "뱅가드",
+  berkshire: "버크셔 해서웨이",
+  goldman: "골드만삭스",
+  morganStanley: "모건스탠리",
+  jpmorgan: "JP모건 체이스",
+};
+
+// 실제 데이터는 data/insight-<institution>.json에서 fetch — 이 파일들은 scripts/scan-13f.js가
+// SEC EDGAR 13F-HR 공시를 직접 파싱해서 만들고, GitHub Actions(.github/workflows/insight-13f-scan.yml)가
+// 매일 새 공시 여부를 확인해 자동으로 갱신·커밋한다(공시 다음날 안에 반영됨).
+const insightDataCache = {};
+async function getInsightData(institution) {
+  if (insightDataCache[institution]) return insightDataCache[institution];
+  const res = await fetch(`data/insight-${institution}.json`, { cache: "no-store" });
+  if (!res.ok) return null;
+  const data = await res.json();
+  insightDataCache[institution] = data;
+  return data;
+}
+
+function fmtBigUSD(usd, signed = false) {
+  const sign = signed ? (usd > 0 ? "+" : usd < 0 ? "-" : "") : "";
+  const abs = Math.abs(usd);
+  let str;
+  if (abs >= 1e12) str = `$${(abs / 1e12).toFixed(2)}T`;
+  else if (abs >= 1e9) str = `$${(abs / 1e9).toFixed(2)}B`;
+  else if (abs >= 1e6) str = `$${(abs / 1e6).toFixed(1)}M`;
+  else str = `$${abs.toLocaleString()}`;
+  return sign + str;
+}
+
+// "2026-05-15" -> "5/15"(제출일 기준 짧은 표기, 앞자리 0 제거)
+function fmtSubmitMD(isoDate) {
+  const [, m, d] = isoDate.split("-");
+  return `${Number(m)}/${Number(d)}`;
+}
+
+function insightTableHtml(data) {
+  const rows = data.holdings
+    .map((h, i) => {
+      const weightHtml =
+        h.weightChangePt === null
+          ? `${h.weightPct.toFixed(2)}%<br><span class="muted" style="font-size:11px;">(신규)</span>`
+          : `${h.weightPct.toFixed(2)}%<br><span class="${h.weightChangePt >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(h.weightChangePt, 2)}p)</span>`;
+      const valueDeltaHtml =
+        h.valueChangePct === null
+          ? `<span class="muted">신규 편입</span>`
+          : `<span class="${h.valueChangeUSD >= 0 ? "delta-up" : "delta-down"}">${fmtBigUSD(h.valueChangeUSD, true)} (${fmtPct(h.valueChangePct, 1)})</span>`;
+      const nameCellHtml = h.ticker
+        ? `<span class="ticker-cell">${tickerLogoHtml(h.ticker)}<b class="ticker-link" data-ticker="${escapeHtml(h.ticker)}">${escapeHtml(h.ticker)}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(h.name)}</span>`
+        : `<b>${escapeHtml(h.name)}</b><br><span class="muted" style="font-size:11px;">티커 매칭 안 됨</span>`;
+      return `
+      <tr>
+        <td>${i + 1}</td>
+        <td>${nameCellHtml}</td>
+        <td>${weightHtml}</td>
+        <td>${fmtBigUSD(h.valueUSD)}<br><span style="font-size:11px;">${valueDeltaHtml}</span></td>
+      </tr>`;
+    })
+    .join("");
+
+  const noteHtml = data.dataNote
+    ? `<p class="disclaimer" style="color:#f5a623;">⚠️ ${escapeHtml(data.dataNote)}</p>`
+    : "";
+  return `
+    <p class="disclaimer tab-note">📢 <b>${escapeHtml(data.filerName)}</b> SEC 13F 공시 기준(${data.asOf} 보유 기준, ${data.filedDate} 제출) 보유종목 TOP20 · 총 신고 가치 ${fmtBigUSD(data.totalValueUSD)} · 직전 제출(${data.prevFiledDate}) 대비 비중·금액 변동 표시. 13F는 매수/매도 시점이 아닌 분기말 스냅샷이라 최대 45일 지연될 수 있으며, 투자 자문이 아닙니다.</p>
+    ${noteHtml}
+    <table class="top30-table">
+      <thead>
+        <tr><th>순위</th><th>종목</th><th>${data.filedDate.slice(5)}<br>비중 (변동)</th><th>총 신고가치<br>(금액변동)</th></tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+async function runInsight(institution) {
+  setInsightActive(insightButtons[institution]);
+  const status = el("insightStatus");
+  const results = el("insightResults");
+  status.style.display = "";
+  status.textContent = `⏳ ${INSIGHT_INSTITUTION_LABELS[institution]} 데이터를 불러오는 중...`;
+  results.innerHTML = "";
+  const data = await getInsightData(institution);
+  if (!data) {
+    status.textContent = `🚧 ${INSIGHT_INSTITUTION_LABELS[institution]} 보유종목 데이터는 준비 중입니다. SEC 13F 공시(분기 공개, 최대 45일 지연)를 기반으로 곧 제공될 예정입니다.`;
+    return;
+  }
+  status.style.display = "none";
+  results.innerHTML = insightTableHtml(data);
+}
+
 // 과거분석 대상 종목 1개의 "기준 시점 스냅샷" 지표를 계산 — 2년치 차트로 기준 시점의 52주 범위·모멘텀·매출성장성까지 근사
 // (오늘 기준 데이터는 이미 phase1의 getFullMetrics 결과를 재사용하므로 여기서는 기준 시점 데이터만 새로 조회)
 async function getHistoricalCompareMetrics(symbol, sp500PairsPromise) {
@@ -3665,6 +3789,7 @@ function closestFredPoint(points, targetDate) {
 }
 
 // computeMacroScore와 동일한 공식을, "지금"이 아니라 임의 과거 시점 기준으로 계산 — M2 YoY·금리차 모두 그 시점에 가장 가까운 FRED 관측치를 사용
+// 점수(total)뿐 아니라 원본 지표(m2Yoy, spread)도 그대로 반환 — 차트에는 점수 대신 이 두 원본 값을 라벨로 표시
 function computeMacroScoreAtDate(m2Points, curvePoints, date) {
   const m2Now = closestFredPoint(m2Points, date);
   const yearAgo = new Date(date);
@@ -3672,7 +3797,8 @@ function computeMacroScoreAtDate(m2Points, curvePoints, date) {
   const m2YearAgo = closestFredPoint(m2Points, yearAgo);
   const m2Yoy = m2YearAgo[1] ? ((m2Now[1] - m2YearAgo[1]) / m2YearAgo[1]) * 100 : null;
   const spreadPoint = closestFredPoint(curvePoints, date);
-  return computeMacroScore({ m2Yoy, spread: spreadPoint[1] });
+  const spread = spreadPoint[1];
+  return { ...computeMacroScore({ m2Yoy, spread }), m2Yoy, spread };
 }
 
 async function computeMacroScoreChartData() {
@@ -3690,20 +3816,26 @@ async function computeMacroScoreChartData() {
   const pairs = chartClosePairs(chartData);
   if (pairs.length < 2) throw new Error("S&P500 장기 데이터를 가져오지 못했습니다.");
 
-  // 매년 8월 1일 기준(올해 이전 30개년) — 시작 연도는 오늘 기준으로 매번 다시 계산되므로 시간이 지나도 항상 최근 30년을 가리킴
+  // 6개월 간격(2월 1일/8월 1일)으로 30년치 — 시작 연도는 오늘 기준으로 매번 다시 계산되므로 시간이 지나도 항상 최근 30년을 가리킴
+  // 라벨은 점수 대신 원본 지표 두 줄(윗줄: 장단기금리차, 아랫줄: M2 통화량 YoY %)로 표시
   const points = [];
-  for (let y = startYear; y < now.getFullYear(); y++) {
-    const anchor = new Date(y, 7, 1); // 8월(0-indexed 7) 1일
+  for (let anchor = new Date(startYear, 1, 1); anchor < now; anchor = addMonths(anchor, 6)) {
     const anchorSec = Math.floor(anchor.getTime() / 1000);
     const pricePoint = closestPair(pairs, anchorSec);
     if (!pricePoint || Math.abs(pricePoint.t - anchorSec) > 20 * 24 * 3600) continue; // 그 시점 데이터가 없으면(상장 전 등) 건너뜀
-    const score = computeMacroScoreAtDate(m2Points, curvePoints, anchor);
-    points.push({ t: pricePoint.t, price: pricePoint.c, score: score.total, label: `${score.total}점(${String(y).slice(2)}.8)`, isNow: false });
+    const m = computeMacroScoreAtDate(m2Points, curvePoints, anchor);
+    points.push({ t: pricePoint.t, price: pricePoint.c, score: m.total, spread: m.spread, m2Yoy: m.m2Yoy, isNow: false });
   }
   // 마지막은 "지금" 실시간 점수 — 매달 1일 기준으로 다시 볼 때마다 최신 M2·금리차가 반영되므로 항상 현재 시점을 정확히 대표함
   const last = pairs[pairs.length - 1];
   const liveScore = computeMacroScore(liveMacro);
-  points.push({ t: last.t, price: last.c, score: liveScore.total, label: `${liveScore.total}점(현재)`, isNow: true });
+  points.push({ t: last.t, price: last.c, score: liveScore.total, spread: liveMacro.spread, m2Yoy: liveMacro.m2Yoy, isNow: true });
+
+  // 각 점 시점부터 다음 6개월 구간 동안 S&P500이 20% 이상 급락했는지 표시(라벨을 노란색으로 강조)
+  for (let i = 0; i < points.length - 1; i++) {
+    const pct = (points[i + 1].price / points[i].price - 1) * 100;
+    points[i].crashWarn = pct <= -20;
+  }
 
   return { pairs, points };
 }
@@ -3759,16 +3891,32 @@ function buildMacroScoreChartSvg({ pairs, points }) {
   const linePath = pairs.map((p, i) => `${i === 0 ? "M" : "L"}${xFn(p.t).toFixed(1)},${yFn(p.c).toFixed(1)}`).join(" ");
   let linesSvg = `<path d="${linePath}" fill="none" stroke="#e5342f" stroke-width="1.8" stroke-linejoin="round" />`;
 
-  // 점(그 시점의 거시경제 점수)은 빨간 선 위(그 날짜의 S&P 실제 값 높이)에 정확히 얹어서 찍음 — 라벨은 위/아래를 번갈아 배치해 30여 개가 서로 덜 겹치게 함
+  // 점(그 시점의 거시경제 점수)은 빨간 선 위(그 날짜의 S&P 실제 값 높이)에 정확히 얹어서 찍음 — 8~10점 구간은(지금 점도 포함) 주황,
+  // 그 외 과거 점은 흰색. 라벨은 점수 대신 원본 지표 두 줄(윗줄: 장단기금리차, 아랫줄: M2 통화량 YoY %)로 표시하고,
+  // 위/아래를 번갈아 배치해 6개월 간격(약 60개)이 서로 덜 겹치게 함
   points.forEach((p, i) => {
     const x = xFn(p.t);
     const y = yFn(p.price);
-    const color = p.isNow ? "#f5a623" : "#eceef2";
-    const r = p.isNow ? 4.2 : 2.8;
-    linesSvg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${color}" stroke="#000" stroke-width="1" />`;
+    const isHigh = p.isNow || p.score >= 8;
+    const dotColor = isHigh ? "#f5a623" : "#eceef2";
+    const textColor = p.crashWarn ? "#f5d90a" : dotColor;
+    const r = p.isNow ? 4.2 : 2.6;
+    linesSvg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${dotColor}" stroke="#000" stroke-width="1" />`;
+    const spreadTxt = p.spread !== null && p.spread !== undefined ? `${p.spread >= 0 ? "+" : ""}${p.spread.toFixed(2)}%p` : "N/A";
+    const m2Txt = p.m2Yoy !== null && p.m2Yoy !== undefined ? `${p.m2Yoy >= 0 ? "+" : ""}${p.m2Yoy.toFixed(1)}%` : "N/A";
+    const fontSize = p.isNow ? 10 : 7.5;
+    const rowH = p.isNow ? 12 : 9;
     const above = p.isNow || i % 2 === 0;
-    const labelY = above ? y - 8 : y + 14;
-    linesSvg += `<text x="${x.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-size="${p.isNow ? 11 : 9}" font-weight="700" fill="${color}">${p.label}</text>`;
+    let spreadY, m2Y;
+    if (above) {
+      m2Y = y - 6;
+      spreadY = m2Y - rowH;
+    } else {
+      spreadY = y + rowH;
+      m2Y = spreadY + rowH;
+    }
+    linesSvg += `<text x="${x.toFixed(1)}" y="${spreadY.toFixed(1)}" text-anchor="middle" font-size="${fontSize}" font-weight="700" fill="${textColor}">${spreadTxt}</text>`;
+    linesSvg += `<text x="${x.toFixed(1)}" y="${m2Y.toFixed(1)}" text-anchor="middle" font-size="${fontSize}" font-weight="700" fill="${textColor}">${m2Txt}</text>`;
   });
 
   return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="거시경제 점수별 S&P500 30년 추이">
@@ -3790,8 +3938,8 @@ async function renderMacroScoreChart() {
     container.innerHTML = buildMacroScoreChartSvg(data);
     macroScoreChartRendered = true;
     caption.textContent =
-      "빨간 선: S&P500 지수(1996~현재, 주간 종가) · 흰 점: 매년 8월 1일 기준 거시경제 점수(M2 통화량 YoY + 장단기 금리차 조합, 10점 만점) · " +
-      "주황 점: 현재 거시경제 점수(참고용, 투자 자문이 아닙니다)";
+      "빨간 선: S&P500 지수(1996~현재, 주간 종가) · 점 라벨: 6개월 간격(2월/8월 1일 기준) 윗줄 장단기금리차(10Y-2Y)·아랫줄 M2 통화량 YoY % · " +
+      "주황 점: 거시경제 점수 8~10점 구간(현재 포함), 흰 점: 그 외 · 노란 글씨: 그 시점 이후 6개월간 20% 이상 급락(참고용, 투자 자문이 아닙니다)";
   } catch (err) {
     container.innerHTML = `<p class="error-inline" style="text-align:center;padding:20px 0;">❌ S&amp;P500 장기 데이터를 불러오지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
   }
