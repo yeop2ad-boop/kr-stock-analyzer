@@ -168,6 +168,14 @@ document.addEventListener("click", (e) => {
   e.preventDefault();
   openChartModal(linkEl.dataset.chartSymbol);
 });
+// 지수 카드는 <a>가 아니라 role="button" div라 클릭 외에 키보드(Enter/Space) 접근성도 함께 지원
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter" && e.key !== " ") return;
+  const rowEl = e.target.closest(".idx-row-clickable");
+  if (!rowEl) return;
+  e.preventDefault();
+  openChartModal(rowEl.dataset.chartSymbol);
+});
 document.addEventListener("click", (e) => {
   if (chatPanel.style.display !== "none" && !chatPanel.contains(e.target) && e.target !== contactBtn) {
     chatPanel.style.display = "none";
@@ -1418,6 +1426,9 @@ function switchTab(index) {
     TAB_ORDER.forEach((key) => panels[key].classList.remove("snapping"));
   }, 320);
   ensureTabLoaded(TAB_ORDER[index]);
+  // 지수 탭에 있을 때만 자동 갱신(다른 탭으로 나가면 즉시 중단해 불필요한 요청을 만들지 않음)
+  if (TAB_ORDER[index] === "index") startIndexAutoRefresh();
+  else stopIndexAutoRefresh();
 }
 
 TAB_ORDER.forEach((key, i) => {
@@ -3007,30 +3018,31 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
 // 레이아웃: 왼쪽 = 종목명 + (날짜 | 티커), 오른쪽 = 가격 + 변동량(퍼센트). 색상은 한국식(상승=빨강, 하락=파랑)
 // src="yahoo"는 야후 차트(전일 종가 대비), src="fred"는 FRED 최신 발표치(전 영업일 대비)
 // vSuffix: 가격 뒤 단위 / cSuffix: 변동량 뒤 단위(미지정 시 vSuffix 사용)
+// chartSymbol: 클릭 시 TradingView 차트 모달에 넘길 심볼(야후 티커와 표기가 달라 별도 매핑 필요) — 없으면(null) 클릭 비활성
 const INDEX_LIST = [
-  { src: "yahoo", symbol: "KRW=X", name: "달러/원 환율", ticker: "USD/KRW" },
-  { src: "yahoo", symbol: "JPY=X", name: "달러/엔 환율", ticker: "USD/JPY" },
-  { src: "yahoo", symbol: "^GSPC", name: "S&P 500", ticker: "SPX" },
-  { src: "yahoo", symbol: "^NDX", name: "US Tech 100", ticker: "NDX" },
-  { src: "yahoo", symbol: "^DJI", name: "다우 종합", ticker: "DJI" },
-  { src: "yahoo", symbol: "^IXIC", name: "나스닥 종합", ticker: "IXIC" },
-  { src: "yahoo", symbol: "^RUT", name: "러셀 2000", ticker: "RUT" },
-  { src: "yahoo", symbol: "^VIX", name: "S&P500 VIX", ticker: "VIX" },
-  { src: "yahoo", symbol: "^KS11", name: "코스피", ticker: "KOSPI" },
-  { src: "yahoo", symbol: "^KQ11", name: "코스닥", ticker: "KOSDAQ" },
-  { src: "yahoo", symbol: "^N225", name: "닛케이 225", ticker: "JP225" },
-  { src: "yahoo", symbol: "^HSI", name: "홍콩 항셍", ticker: "HSI" },
-  { src: "yahoo", symbol: "XIN9.FGI", name: "차이나 A50", ticker: "CHINA50" },
-  { src: "yahoo", symbol: "BTC-USD", name: "비트코인", ticker: "BTC" },
-  { src: "yahoo", symbol: "ETH-USD", name: "이더리움", ticker: "ETH" },
-  { src: "yahoo", symbol: "GC=F", name: "금(Gold)", ticker: "GOLD" },
-  { src: "yahoo", symbol: "SI=F", name: "은(Silver)", ticker: "SILVER" },
-  { src: "yahoo", symbol: "CL=F", name: "WTI 원유", ticker: "WTI" },
-  { src: "yahoo", symbol: "BZ=F", name: "브렌트유", ticker: "BRENT" },
-  { src: "fred", symbol: "T10Y2Y", name: "장단기 금리차(10Y-2Y)", ticker: "T10Y2Y", vSuffix: "%p", cSuffix: "%p" },
-  { src: "fred", symbol: "DGS2", name: "미국 2년물 국채", ticker: "US2Y", vSuffix: "%", cSuffix: "%p" },
-  { src: "fred", symbol: "DGS10", name: "미국 10년물 국채", ticker: "US10Y", vSuffix: "%", cSuffix: "%p" },
-  { src: "fred", symbol: "DGS30", name: "미국 30년물 국채", ticker: "US30Y", vSuffix: "%", cSuffix: "%p" },
+  { src: "yahoo", symbol: "KRW=X", name: "달러/원 환율", ticker: "USD/KRW", chartSymbol: "FX:USDKRW" },
+  { src: "yahoo", symbol: "JPY=X", name: "달러/엔 환율", ticker: "USD/JPY", chartSymbol: "FX:USDJPY" },
+  { src: "yahoo", symbol: "^GSPC", name: "S&P 500", ticker: "SPX", chartSymbol: "SP:SPX" },
+  { src: "yahoo", symbol: "^NDX", name: "US Tech 100", ticker: "NDX", chartSymbol: "NASDAQ:NDX" },
+  { src: "yahoo", symbol: "^DJI", name: "다우 종합", ticker: "DJI", chartSymbol: "DJ:DJI" },
+  { src: "yahoo", symbol: "^IXIC", name: "나스닥 종합", ticker: "IXIC", chartSymbol: "NASDAQ:IXIC" },
+  { src: "yahoo", symbol: "^RUT", name: "러셀 2000", ticker: "RUT", chartSymbol: "TVC:RUT" },
+  { src: "yahoo", symbol: "^VIX", name: "S&P500 VIX", ticker: "VIX", chartSymbol: "TVC:VIX" },
+  { src: "yahoo", symbol: "^KS11", name: "코스피", ticker: "KOSPI", chartSymbol: "KRX:KOSPI" },
+  { src: "yahoo", symbol: "^KQ11", name: "코스닥", ticker: "KOSDAQ", chartSymbol: "KRX:KOSDAQ" },
+  { src: "yahoo", symbol: "^N225", name: "닛케이 225", ticker: "JP225", chartSymbol: "TVC:NI225" },
+  { src: "yahoo", symbol: "^HSI", name: "홍콩 항셍", ticker: "HSI", chartSymbol: "TVC:HSI" },
+  { src: "yahoo", symbol: "XIN9.FGI", name: "차이나 A50", ticker: "CHINA50", chartSymbol: "TVC:CN50" },
+  { src: "yahoo", symbol: "BTC-USD", name: "비트코인", ticker: "BTC", chartSymbol: "COINBASE:BTCUSD" },
+  { src: "yahoo", symbol: "ETH-USD", name: "이더리움", ticker: "ETH", chartSymbol: "COINBASE:ETHUSD" },
+  { src: "yahoo", symbol: "GC=F", name: "금(Gold)", ticker: "GOLD", chartSymbol: "TVC:GOLD" },
+  { src: "yahoo", symbol: "SI=F", name: "은(Silver)", ticker: "SILVER", chartSymbol: "TVC:SILVER" },
+  { src: "yahoo", symbol: "CL=F", name: "WTI 원유", ticker: "WTI", chartSymbol: "TVC:USOIL" },
+  { src: "yahoo", symbol: "BZ=F", name: "브렌트유", ticker: "BRENT", chartSymbol: "TVC:UKOIL" },
+  { src: "fred", symbol: "T10Y2Y", name: "장단기 금리차(10Y-2Y)", ticker: "T10Y2Y", vSuffix: "%p", cSuffix: "%p", chartSymbol: null },
+  { src: "fred", symbol: "DGS2", name: "미국 2년물 국채", ticker: "US2Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US02Y" },
+  { src: "fred", symbol: "DGS10", name: "미국 10년물 국채", ticker: "US10Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US10Y" },
+  { src: "fred", symbol: "DGS30", name: "미국 30년물 국채", ticker: "US30Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US30Y" },
 ];
 
 // 야후 차트 → { price, change(전일종가 대비 변동량), changePct, date }
@@ -3065,13 +3077,17 @@ function fredSnapshot(points) {
 }
 
 // 지수 카드 1행 HTML — 이미지 스타일(왼쪽 종목/날짜/티커, 오른쪽 가격/변동량(퍼센트))
+// chartSymbol이 있는 종목은 클릭 시 기존 TradingView 차트 모달이 열리도록 price-chart-link 델리게이션에 태움
 function indexRowHtml(item, snap) {
   const num = (n, d = 2) => n.toLocaleString("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d });
   const dateStr = snap && snap.date ? `${String(snap.date.getMonth() + 1).padStart(2, "0")}/${String(snap.date.getDate()).padStart(2, "0")}` : "";
   const sub = `${dateStr ? `<span class="idx-clock">🕐 ${dateStr}</span> | ` : ""}<span class="idx-ticker">${escapeHtml(item.ticker)}</span>`;
+  const clickable = !!item.chartSymbol;
+  const rowClass = `idx-row${clickable ? " price-chart-link idx-row-clickable" : ""}`;
+  const rowAttrs = clickable ? ` data-chart-symbol="${escapeHtml(item.chartSymbol)}" role="button" tabindex="0"` : "";
 
   if (!snap || snap.price === null || snap.price === undefined) {
-    return `<div class="idx-row"><div class="idx-left"><div class="idx-name">${escapeHtml(item.name)}</div><div class="idx-sub">${sub}</div></div><div class="idx-right"><div class="idx-price">N/A</div></div></div>`;
+    return `<div class="${rowClass}"${rowAttrs}><div class="idx-left"><div class="idx-name">${escapeHtml(item.name)}</div><div class="idx-sub">${sub}</div></div><div class="idx-right"><div class="idx-price">N/A</div></div></div>`;
   }
 
   const vSuffix = item.vSuffix || "";
@@ -3090,7 +3106,7 @@ function indexRowHtml(item, snap) {
   }
 
   return `
-    <div class="idx-row">
+    <div class="${rowClass}"${rowAttrs}>
       <div class="idx-left">
         <div class="idx-name">${escapeHtml(item.name)}</div>
         <div class="idx-sub">${sub}</div>
@@ -3129,8 +3145,30 @@ async function runIndexTab() {
     indexStatus.textContent = `❌ ${err.message || "지수 데이터를 가져오지 못했습니다."}`;
   }
 }
-// 지수는 무료 프록시라 실시간 스트리밍은 불가 — 새로고침 버튼으로 최신값을 다시 조회
 el("indexRefreshBtn").addEventListener("click", () => runIndexTab());
+
+// ---------- 지수 자동 갱신: 지수 탭이 활성화되어 있는 동안만 주기적으로 새로고침 ----------
+// 0.5초 간격은 무료 CORS 프록시·FRED에 초당 수십 건의 요청을 보내는 셈이라 곧바로 차단(429/520)당해
+// 오히려 "채권이 업데이트 안 됨" 증상을 더 악화시킴 — 대신 20초마다 갱신해 체감상 실시간에 가깝게 유지하면서도
+// 화면이 백그라운드에 있을 땐(document.hidden) 요청을 건너뛰어 불필요한 트래픽을 줄임.
+// 이 주기 동안 어쩌다 한 번 FRED 요청이 실패해도(520 등) 다음 주기에 자동으로 다시 시도되므로
+// "채권 값이 그대로 멈춰 있는" 문제도 자연스럽게 해소됨.
+const INDEX_AUTO_REFRESH_MS = 20000;
+// var를 씀(let/const 아님) — 이 파일 맨 앞쪽 initApp()이 페이지 로딩 초반에 곧바로 switchTab(0)을 호출하는데,
+// 그 안에서 stopIndexAutoRefresh()가 이 변수를 즉시 참조하므로, 아직 이 줄까지 실행되지 않은 시점에도
+// TDZ(Temporal Dead Zone) 에러 없이 안전하게 접근되도록 var로 선언(var는 스크립트 시작 시 즉시 undefined로 호이스팅됨)
+var indexAutoRefreshTimer = null;
+function startIndexAutoRefresh() {
+  stopIndexAutoRefresh();
+  indexAutoRefreshTimer = setInterval(() => {
+    if (document.hidden) return;
+    runIndexTab();
+  }, INDEX_AUTO_REFRESH_MS);
+}
+function stopIndexAutoRefresh() {
+  if (indexAutoRefreshTimer) clearInterval(indexAutoRefreshTimer);
+  indexAutoRefreshTimer = null;
+}
 
 // ---------- 인기종목: 당일 거래대금(가격 × 거래량) 상위 20개, 접속 시 10개만 먼저 표시 ----------
 async function runPopular() {
