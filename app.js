@@ -21,8 +21,10 @@ const popularStatus = el("popularStatus");
 const popularResults = el("popularResults");
 const indexStatus = el("indexStatus");
 const indexResults = el("indexResults");
-const top30Status = el("top30Status");
-const top30Results = el("top30Results");
+const valuationStatus = el("valuationStatus");
+const valuationResults = el("valuationResults");
+const trendStatus = el("trendStatus");
+const trendResults = el("trendResults");
 const futureTickerInput = el("futureTickerInput");
 const futureAnalyzeBtn = el("futureAnalyzeBtn");
 const futureStatus = el("futureStatus");
@@ -738,6 +740,16 @@ function latestQuarterRevenueYoY(revenueQuarterlySeries) {
   return ((latest - yearAgo) / Math.abs(yearAgo)) * 100;
 }
 
+// 가장 최근 회계연도의 전년 대비(YoY) 성장률(%) — 연간 시계열의 마지막 두 회계연도를 비교(가치평가 탭: 매출액·현금흐름·순이익 증가 랭킹용)
+function latestAnnualGrowth(annualSeries) {
+  const series = annualSeries || [];
+  if (series.length < 2) return null;
+  const latest = series[series.length - 1].value;
+  const prior = series[series.length - 2].value;
+  if (!prior) return null;
+  return ((latest - prior) / Math.abs(prior)) * 100;
+}
+
 // 최근 연간 매출의 전년 대비(YoY) 성장률(%) — Yahoo 분기 시계열이 최근 5개 분기만 제공해 과거분석 기준 시점에는
 // 분기 YoY를 계산할 만큼 데이터가 남아있지 않을 때가 많아, 연간 데이터로 대체 계산하는 과거분석 전용 폴백
 function latestAnnualRevenueYoY(revenueAnnualSeries) {
@@ -753,7 +765,10 @@ function latestAnnualRevenueYoY(revenueAnnualSeries) {
 async function getFullMetrics(symbol) {
   const [chartData, fundData] = await Promise.all([
     yahooChart(symbol),
-    yahooFundamentals(symbol, "annualTotalRevenue,annualBasicEPS,annualNetIncome,annualShareIssued,quarterlyTotalRevenue"),
+    yahooFundamentals(
+      symbol,
+      "annualTotalRevenue,annualBasicEPS,annualNetIncome,annualShareIssued,quarterlyTotalRevenue,annualOperatingCashFlow"
+    ),
   ]);
 
   const result = chartData && chartData.chart && chartData.chart.result && chartData.chart.result[0];
@@ -774,6 +789,9 @@ async function getFullMetrics(symbol) {
   }
   const marketCap = meta.regularMarketPrice !== undefined && sharesOutstanding ? meta.regularMarketPrice * sharesOutstanding : null;
   const revenueQuarterlySeries = await fundamentalSeries(resultArr, "quarterlyTotalRevenue", meta.currency);
+  const revenueAnnualSeries = await fundamentalSeries(resultArr, "annualTotalRevenue", meta.currency);
+  const netIncomeAnnualSeries = await fundamentalSeries(resultArr, "annualNetIncome", meta.currency);
+  const operatingCashFlowAnnualSeries = await fundamentalSeries(resultArr, "annualOperatingCashFlow", meta.currency);
   const { recent5dAvg, avg1y } = currentDollarVolumeStats(chartData);
 
   return {
@@ -789,6 +807,11 @@ async function getFullMetrics(symbol) {
     fiveDayExtremes: get5dExtremeMoves(chartData),
     momentum3m: get3MonthReturn(chartData),
     revenueGrowthYoY: latestQuarterRevenueYoY(revenueQuarterlySeries),
+    // 가치평가 탭(매출액·현금흐름·순이익 증가, PER)용 — 최근 회계연도 기준
+    revenueGrowthAnnual: latestAnnualGrowth(revenueAnnualSeries),
+    netIncomeGrowthAnnual: latestAnnualGrowth(netIncomeAnnualSeries),
+    operatingCashFlowGrowthAnnual: latestAnnualGrowth(operatingCashFlowAnnualSeries),
+    per: meta.regularMarketPrice !== undefined && eps > 0 ? meta.regularMarketPrice / eps : null,
     recentDollarVolume: recent5dAvg,
     avgDollarVolume1y: avg1y,
     firstTradeDate: meta.firstTradeDate ?? null,
@@ -1192,48 +1215,6 @@ function getSP500Tickers() {
   return sp500TickersPromise;
 }
 
-// ---------- 나스닥 종목군 근사 목록 ----------
-// 시가총액 순 정렬 스크리너는 로그인 인증(crumb)이 필요해 무료로 접근할 수 없어서,
-// 여러 활발한 종목 스크리너를 나스닥 거래소로 필터링해 합친 뒤 시가총액 내림차순으로 정렬한 근사치를 사용
-let nasdaqUniversePromise = null;
-function getNasdaqUniverse() {
-  if (!nasdaqUniversePromise) {
-    nasdaqUniversePromise = (async () => {
-      const screenerIds = [
-        "most_actives",
-        "day_gainers",
-        "day_losers",
-        "growth_technology_stocks",
-        "undervalued_large_caps",
-        "undervalued_growth_stocks",
-        "aggressive_small_caps",
-        "small_cap_gainers",
-      ];
-      const results = await Promise.all(screenerIds.map((id) => yahooScreener(id, 100).catch(() => null)));
-
-      const nasdaqExchanges = new Set(["NMS", "NGM", "NCM"]);
-      const marketCapBySymbol = new Map();
-      for (const data of results) {
-        const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
-        for (const q of quotes) {
-          if (!q || !q.symbol) continue;
-          if (!nasdaqExchanges.has(q.exchange)) continue;
-          if (!marketCapBySymbol.has(q.symbol)) {
-            marketCapBySymbol.set(q.symbol, q.marketCap || 0);
-          }
-        }
-      }
-      if (marketCapBySymbol.size === 0) throw new Error("나스닥 종목군을 구성하지 못했습니다.");
-
-      return [...marketCapBySymbol.entries()].sort((a, b) => b[1] - a[1]).map(([symbol]) => symbol);
-    })().catch((e) => {
-      nasdaqUniversePromise = null;
-      throw e;
-    });
-  }
-  return nasdaqUniversePromise;
-}
-
 // 동시 실행 개수를 제한하며 배열 각 항목에 비동기 작업을 적용 (프록시 과부하 방지 + 진행률 콜백)
 async function mapWithConcurrency(items, limit, worker, onProgress) {
   const results = new Array(items.length);
@@ -1365,14 +1346,15 @@ window.addEventListener("resize", syncHeaderHeight);
 new ResizeObserver(syncHeaderHeight).observe(fixedHeader);
 syncHeaderHeight();
 
-// ---------- 스와이프 캐로셀(기업검색/인기종목/지수/과거분석/TOP30/미래예측) — 급등주·급락주는 TOP30 탭 내 버튼으로 통합 ----------
-const TAB_ORDER = ["search", "popular", "index", "historical", "top30", "insight", "future"];
+// ---------- 스와이프 캐로셀(기업검색/인기종목/지수/과거분석/가치평가/추세평가/인사이트/미래예측) ----------
+const TAB_ORDER = ["search", "popular", "index", "historical", "valuation", "trend", "insight", "future"];
 const panels = {
   search: el("panelSearch"),
   popular: el("panelPopular"),
   index: el("panelIndex"),
   historical: el("panelHistorical"),
-  top30: el("panelTop30"),
+  valuation: el("panelValuation"),
+  trend: el("panelTrend"),
   insight: el("panelInsight"),
   future: el("panelFuture"),
 };
@@ -1381,18 +1363,25 @@ const tabButtons = {
   popular: el("tabPopularBtn"),
   index: el("tabIndexBtn"),
   historical: el("tabHistoricalBtn"),
-  top30: el("tabTop30Btn"),
+  valuation: el("tabValuationBtn"),
+  trend: el("tabTrendBtn"),
   insight: el("tabInsightBtn"),
   future: el("tabFutureBtn"),
 };
-const top30Buttons = {
-  surge: el("top30SurgeBtn"),
-  plunge: el("top30PlungeBtn"),
-  undervalued: el("top30UndervaluedBtn"),
-  lowRisk: el("top30LowRiskBtn"),
-  marketCap: el("top30MarketCapBtn"),
-  nasdaq100: el("top30Nasdaq100Btn"),
-  sp500: el("top30Sp500Btn"),
+const valuationButtons = {
+  revenue: el("valuationRevenueBtn"),
+  cashFlow: el("valuationCashFlowBtn"),
+  netIncome: el("valuationNetIncomeBtn"),
+  per: el("valuationPerBtn"),
+  stability: el("valuationStabilityBtn"),
+  marketCap: el("valuationMarketCapBtn"),
+};
+const trendButtons = {
+  korea: el("trendKoreaBtn"),
+  volume: el("trendVolumeBtn"),
+  plunge: el("trendPlungeBtn"),
+  surge: el("trendSurgeBtn"),
+  pressure: el("trendPressureBtn"),
 };
 const insightButtons = {
   blackrock: el("insightBlackrockBtn"),
@@ -1450,7 +1439,8 @@ const TAB_LOADERS = {
   popular: () => runPopular(),
   index: () => runIndexTab(),
   historical: () => runHistoricalQuick(),
-  top30: () => runMovers("surge"), // TOP30 진입 시 첫 버튼(급등주)을 자동 표시
+  valuation: () => runValueRevenue(), // 가치평가 진입 시 첫 버튼(매출액 증가)을 자동 표시
+  trend: () => runTrendVolume(), // 추세평가 진입 시 거래량을 자동 표시(한국보유는 아직 준비 중이라 기본값에서 제외)
   insight: () => runInsight("blackrock"), // 인사이트 진입 시 첫 버튼(블랙록)을 자동 표시
   // search: navigateToTicker()가 직접 담당(항상 최신 검색어를 반영해야 하므로 캐시 대상에서 제외)
   // future: 준비중 안내만
@@ -2471,80 +2461,70 @@ async function renderMacro() {
   `;
 }
 
-// ---------- 구간별 TOP N 공용 렌더러: 종목 목록을 받아 상승압력도 + 투자 안정성 합산 상위 N개를 표시(topN 기본값 10) ----------
-async function renderRankedTop10(
+// ---------- 가치평가 탭 공용 렌더러 ----------
+// 정렬 자체는 S&P500 전 종목을 다 계산해야 정확해서(순위를 매기려면 후보를 다 알아야 함), "더보기"는 추가 조회가 아니라
+// 이미 계산해 정렬해 둔 배열에서 더 꺼내 보여주는 것뿐이라 클릭하면 바로 나타남
+async function renderValueRanking(
   tickers,
-  rangeLabel,
-  { statusEl, resultsEl, buttons, topN = 10, sortFn = (a, b) => b.combined - a.combined, showMarketCap = false }
+  label,
+  { statusEl, resultsEl, buttons, mapFn = (m) => m, sortFn, metricHeaderHtml, metricCellFn, noteHtml, initialCount = 10 }
 ) {
   buttons.forEach((btn) => (btn.disabled = true));
-  if (buttons[0]) setTop30Active(buttons[0]);
   resultsEl.innerHTML = "";
   statusEl.style.display = "block";
 
   try {
-    const { sp500Return } = await getMarketReturns();
-    statusEl.textContent = `0/${tickers.length} 종목(${rangeLabel}) 분석 중...`;
-
+    statusEl.textContent = `0/${tickers.length} 종목(${label}) 분석 중...`;
     const metricsList = await mapWithConcurrency(tickers, 5, getFullMetrics, (completed, total) => {
-      statusEl.textContent = `${completed}/${total} 종목(${rangeLabel}) 분석 중...`;
+      statusEl.textContent = `${completed}/${total} 종목(${label}) 분석 중...`;
     });
 
-    const ranked = metricsList
-      .map((m) => {
-        if (!m) return null;
-        const attractiveness = computeAttractivenessScore(m);
-        const risk = computeRiskScore(m, sp500Return);
-        const combined = Math.round((attractiveness.total + risk.total) * 10) / 10;
-        return {
-          symbol: m.symbol,
-          price: m.price,
-          marketCap: m.marketCap,
-          attractiveness: attractiveness.total,
-          risk: risk.total,
-          combined,
-          fiveDayExtremes: m.fiveDayExtremes,
-          isIPO: isRecentIPO(m.firstTradeDate),
-        };
-      })
-      .filter(Boolean)
-      .sort(sortFn)
-      .slice(0, topN);
+    const ranked = await mapFn(metricsList.filter(Boolean));
+    ranked.sort(sortFn);
 
     const successCount = metricsList.filter(Boolean).length;
     const failCount = tickers.length - successCount;
-    statusEl.textContent = `완료 (${rangeLabel}) — ${tickers.length}개 중 ${successCount}개 분석 성공${failCount ? `, ${failCount}개는 조회 실패로 제외` : ""}`;
+    statusEl.textContent = `완료 (${label}) — ${tickers.length}개 중 ${successCount}개 분석 성공${failCount ? `, ${failCount}개는 조회 실패로 제외` : ""}`;
 
     if (ranked.length === 0) {
       resultsEl.innerHTML = `<p class="muted">순위를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
       return;
     }
 
-    const rows = ranked
-      .map(
-        (r, i) => `
-      <tr>
-        <td>${i + 1}${surgeWarningEmoji(r.fiveDayExtremes)}</td>
-        <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></td>
-        <td>${r.price !== undefined && r.price !== null ? priceChartLink(r.symbol, "$" + r.price.toFixed(2)) : "N/A"}</td>
-        ${showMarketCap ? `<td>${r.marketCap ? fmtCompactCurrency(r.marketCap) : "N/A"}</td>` : ""}
-        <td>${r.isIPO ? "IPO" : `${r.attractiveness}/10`}</td>
-        <td>${r.isIPO ? "IPO" : `${r.risk}/10`}</td>
-        <td><b>${r.isIPO ? "IPO" : `${r.combined}/20`}</b></td>
-      </tr>`
-      )
-      .join("");
+    function renderUpTo(count) {
+      const shown = ranked.slice(0, count);
+      const hasMore = count < ranked.length;
+      const rows = shown
+        .map(
+          (r, i) => `
+        <tr>
+          <td>${i + 1}${surgeWarningEmoji(r.fiveDayExtremes)}</td>
+          <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></td>
+          <td>${r.price !== undefined && r.price !== null ? priceChartLink(r.symbol, "$" + r.price.toFixed(2)) : "N/A"}</td>
+          <td>${metricCellFn(r)}</td>
+        </tr>`
+        )
+        .join("");
+      resultsEl.innerHTML = `
+        ${noteHtml || ""}
+        <table class="top30-table">
+          <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>${metricHeaderHtml}</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${Math.min(count + initialCount, ranked.length)}">더보기 (${count}/${ranked.length})</button>` : ""}
+      `;
+    }
 
-    resultsEl.innerHTML = `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 순위는 상승압력(10점) + 투자안정(10점)을 단순 합산한 점수(20점 만점) 기준이며 투자 자문이 아닙니다.</p>
-      ${SURGE_WARNING_LEGEND}
-      <table class="top30-table">
-        <thead>
-          <tr><th>순위</th><th>티커</th><th>현재가</th>${showMarketCap ? "<th>시가총액</th>" : ""}<th>상승<br>압력</th><th>투자<br>안정</th><th>합산 점수</th></tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
-    `;
+    resultsEl._loadMore = renderUpTo;
+    if (!resultsEl.dataset.moreBound) {
+      resultsEl.addEventListener("click", (e) => {
+        const moreBtn = e.target.closest(".load-more-btn");
+        if (!moreBtn) return;
+        resultsEl._loadMore(Number(moreBtn.dataset.nextCount));
+      });
+      resultsEl.dataset.moreBound = "1";
+    }
+    renderUpTo(initialCount);
   } catch (err) {
     statusEl.textContent = `❌ ${err.message || "분석 중 오류가 발생했습니다."}`;
   } finally {
@@ -2552,114 +2532,100 @@ async function renderRankedTop10(
   }
 }
 
-// 나스닥 시총 상위 100(근사) 안에서 TOP20 (시가총액 순위는 인증이 필요해 막혀 있어, 여러 활발한 종목 스크리너를 합쳐 시총 내림차순으로 근사)
-async function runNasdaq100Universe() {
-  top30Status.style.display = "block";
-  top30Status.textContent = "나스닥 종목군을 구성하는 중...";
-  const universe = await getNasdaqUniverse().catch((e) => {
-    top30Status.textContent = `❌ ${e.message || "나스닥 종목군을 가져오지 못했습니다."}`;
-    return null;
-  });
-  if (!universe) return;
-  const tickers = universe.slice(0, 100);
-  await renderRankedTop10(tickers, "나스닥100(시총 근사)", {
-    statusEl: top30Status,
-    resultsEl: top30Results,
-    buttons: [top30Buttons.nasdaq100],
-    topN: 20,
-  });
-}
+const VALUE_DISCLAIMER = `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> S&amp;P500 편입 종목 전체를 대상으로 계산한 순위이며 투자 자문이 아닙니다.</p>`;
 
-// S&P500 전체 종목 중 TOP50
-async function runSP500() {
-  top30Status.style.display = "block";
-  top30Status.textContent = "S&P500 종목 목록을 불러오는 중...";
-  const allTickers = await getSP500Tickers().catch((e) => {
-    top30Status.textContent = `❌ ${e.message || "종목 목록을 가져오지 못했습니다."}`;
-    return null;
-  });
-  if (!allTickers) return;
-  await renderRankedTop10(allTickers, "S&P500 전체", {
-    statusEl: top30Status,
-    resultsEl: top30Results,
-    buttons: [top30Buttons.sp500],
-    topN: 50,
-  });
+// 가치평가 서브내비에서 현재 선택된 버튼만 활성 표시
+function setValuationActive(activeBtn) {
+  Object.values(valuationButtons).forEach((b) => b && b.classList.toggle("active", b === activeBtn));
 }
-
-// S&P500 전체 종목 중 투자안정성 TOP30(점수가 같으면 상승압력도가 높은 순)
-async function runLowRisk30() {
-  top30Status.style.display = "block";
-  top30Status.textContent = "S&P500 종목 목록을 불러오는 중...";
-  const allTickers = await getSP500Tickers().catch((e) => {
-    top30Status.textContent = `❌ ${e.message || "종목 목록을 가져오지 못했습니다."}`;
-    return null;
-  });
-  if (!allTickers) return;
-  await renderRankedTop10(allTickers, "S&P500 저위험", {
-    statusEl: top30Status,
-    resultsEl: top30Results,
-    buttons: [top30Buttons.lowRisk],
-    topN: 30,
-    sortFn: (a, b) => b.risk - a.risk || b.attractiveness - a.attractiveness,
-  });
-}
-
-// S&P500 전체 종목 중 상승압력도 TOP30(점수가 같으면 투자안정성가 높은 순)
-async function runUndervalued30() {
-  top30Status.style.display = "block";
-  top30Status.textContent = "S&P500 종목 목록을 불러오는 중...";
-  const allTickers = await getSP500Tickers().catch((e) => {
-    top30Status.textContent = `❌ ${e.message || "종목 목록을 가져오지 못했습니다."}`;
-    return null;
-  });
-  if (!allTickers) return;
-  await renderRankedTop10(allTickers, "S&P500 저평가", {
-    statusEl: top30Status,
-    resultsEl: top30Results,
-    buttons: [top30Buttons.undervalued],
-    topN: 30,
-    sortFn: (a, b) => b.attractiveness - a.attractiveness || b.risk - a.risk,
-  });
-}
-
-// S&P500 전체 종목 중 시가총액 TOP30
-async function runMarketCap30() {
-  top30Status.style.display = "block";
-  top30Status.textContent = "S&P500 종목 목록을 불러오는 중...";
-  const allTickers = await getSP500Tickers().catch((e) => {
-    top30Status.textContent = `❌ ${e.message || "종목 목록을 가져오지 못했습니다."}`;
-    return null;
-  });
-  if (!allTickers) return;
-  await renderRankedTop10(allTickers, "S&P500 시가총액", {
-    statusEl: top30Status,
-    resultsEl: top30Results,
-    buttons: [top30Buttons.marketCap],
-    topN: 30,
-    sortFn: (a, b) => (b.marketCap || 0) - (a.marketCap || 0),
-    showMarketCap: true,
-  });
-}
-
-// TOP30 서브내비에서 현재 선택된 버튼만 활성 표시
-function setTop30Active(activeBtn) {
-  Object.values(top30Buttons).forEach((b) => b && b.classList.toggle("active", b === activeBtn));
-}
-
-// 클릭 즉시 활성 표시(데이터 조회를 기다리지 않도록) 후 해당 목록 로딩
-const bindTop30 = (btn, run) =>
+const bindValuation = (btn, run) =>
   btn.addEventListener("click", () => {
-    setTop30Active(btn);
+    setValuationActive(btn);
     run();
   });
-bindTop30(top30Buttons.surge, () => runMovers("surge"));
-bindTop30(top30Buttons.plunge, () => runMovers("plunge"));
-bindTop30(top30Buttons.nasdaq100, runNasdaq100Universe);
-bindTop30(top30Buttons.sp500, runSP500);
-bindTop30(top30Buttons.undervalued, runUndervalued30);
-bindTop30(top30Buttons.lowRisk, runLowRisk30);
-bindTop30(top30Buttons.marketCap, runMarketCap30);
+
+async function runValueScreenFromSP500(btn, label, opts) {
+  setValuationActive(btn);
+  valuationStatus.style.display = "block";
+  valuationStatus.textContent = "S&P500 종목 목록을 불러오는 중...";
+  const allTickers = await getSP500Tickers().catch((e) => {
+    valuationStatus.textContent = `❌ ${e.message || "종목 목록을 가져오지 못했습니다."}`;
+    return null;
+  });
+  if (!allTickers) return;
+  await renderValueRanking(allTickers, label, {
+    statusEl: valuationStatus,
+    resultsEl: valuationResults,
+    buttons: [btn],
+    ...opts,
+  });
+}
+
+const fmtGrowthCell = (v) => (v === null || v === undefined ? "N/A" : `<span class="${v >= 0 ? "delta-up" : "delta-down"}">${fmtPct(v, 1)}</span>`);
+
+async function runValueRevenue() {
+  await runValueScreenFromSP500(valuationButtons.revenue, "매출액 증가", {
+    sortFn: (a, b) => (b.revenueGrowthAnnual ?? -Infinity) - (a.revenueGrowthAnnual ?? -Infinity),
+    metricHeaderHtml: "매출액 증가율(YoY)",
+    metricCellFn: (r) => fmtGrowthCell(r.revenueGrowthAnnual),
+    noteHtml: VALUE_DISCLAIMER,
+  });
+}
+
+async function runValueCashFlow() {
+  await runValueScreenFromSP500(valuationButtons.cashFlow, "현금흐름 증가", {
+    sortFn: (a, b) => (b.operatingCashFlowGrowthAnnual ?? -Infinity) - (a.operatingCashFlowGrowthAnnual ?? -Infinity),
+    metricHeaderHtml: "영업현금흐름 증가율(YoY)",
+    metricCellFn: (r) => fmtGrowthCell(r.operatingCashFlowGrowthAnnual),
+    noteHtml: VALUE_DISCLAIMER,
+  });
+}
+
+async function runValueNetIncome() {
+  await runValueScreenFromSP500(valuationButtons.netIncome, "순이익 증가", {
+    sortFn: (a, b) => (b.netIncomeGrowthAnnual ?? -Infinity) - (a.netIncomeGrowthAnnual ?? -Infinity),
+    metricHeaderHtml: "순이익 증가율(YoY)",
+    metricCellFn: (r) => fmtGrowthCell(r.netIncomeGrowthAnnual),
+    noteHtml: VALUE_DISCLAIMER,
+  });
+}
+
+async function runValuePer() {
+  await runValueScreenFromSP500(valuationButtons.per, "PER", {
+    sortFn: (a, b) => (a.per ?? Infinity) - (b.per ?? Infinity),
+    metricHeaderHtml: "PER(현재가 기준)",
+    metricCellFn: (r) => (r.per === null || r.per === undefined ? "N/A" : `${r.per.toFixed(1)}배`),
+    noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> PER = 현재가 ÷ 최근 회계연도 EPS(낮을수록 저평가), 적자 기업은 N/A 처리되어 순위에서 제외됩니다. 투자 자문이 아닙니다.</p>`,
+  });
+}
+
+async function runValueStability() {
+  const { sp500Return } = await getMarketReturns();
+  await runValueScreenFromSP500(valuationButtons.stability, "투자안정", {
+    mapFn: (list) =>
+      list.map((m) => ({ ...m, riskTotal: computeRiskScore(m, sp500Return).total, isIPO: isRecentIPO(m.firstTradeDate) })),
+    sortFn: (a, b) => b.riskTotal - a.riskTotal,
+    metricHeaderHtml: "투자안정성 점수",
+    metricCellFn: (r) => (r.isIPO ? "IPO" : `<b>${r.riskTotal}/10</b>`),
+    noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 투자안정성 점수(10점 만점, 높을수록 재무적으로 안정적)는 신용등급·모멘텀·수익성·시가총액을 종합한 참고용 지표이며 투자 자문이 아닙니다.</p>`,
+  });
+}
+
+async function runValueMarketCap() {
+  await runValueScreenFromSP500(valuationButtons.marketCap, "시가총액", {
+    sortFn: (a, b) => (b.marketCap || 0) - (a.marketCap || 0),
+    metricHeaderHtml: "시가총액",
+    metricCellFn: (r) => (r.marketCap ? fmtCompactCurrency(r.marketCap) : "N/A"),
+    noteHtml: VALUE_DISCLAIMER,
+  });
+}
+
+bindValuation(valuationButtons.revenue, runValueRevenue);
+bindValuation(valuationButtons.cashFlow, runValueCashFlow);
+bindValuation(valuationButtons.netIncome, runValueNetIncome);
+bindValuation(valuationButtons.per, runValuePer);
+bindValuation(valuationButtons.stability, runValueStability);
+bindValuation(valuationButtons.marketCap, runValueMarketCap);
 
 // 인사이트 서브내비(거대기업 13F 보유종목)에서 현재 선택된 버튼만 활성 표시
 function setInsightActive(activeBtn) {
@@ -3359,13 +3325,23 @@ async function getSP500DailyChanges() {
   return sp500DailyChangesPromise;
 }
 
+// 추세평가 서브내비에서 현재 선택된 버튼만 활성 표시
+function setTrendActive(activeBtn) {
+  Object.values(trendButtons).forEach((b) => b && b.classList.toggle("active", b === activeBtn));
+}
+const bindTrend = (btn, run) =>
+  btn.addEventListener("click", () => {
+    setTrendActive(btn);
+    run();
+  });
+
 // ---------- 급등주/급락주: S&P500 종목 중 전일 등락률 상위·하위 50개, 접속 시 10개만 먼저 표시 ----------
 async function runMovers(direction) {
   const label = direction === "surge" ? "급등주" : "급락주";
-  setTop30Active(direction === "surge" ? top30Buttons.surge : top30Buttons.plunge);
-  top30Results.innerHTML = "";
-  top30Status.style.display = "block";
-  top30Status.textContent = `S&P500 ${label}을 불러오는 중...`;
+  setTrendActive(direction === "surge" ? trendButtons.surge : trendButtons.plunge);
+  trendResults.innerHTML = "";
+  trendStatus.style.display = "block";
+  trendStatus.textContent = `S&P500 ${label}을 불러오는 중...`;
 
   try {
     const marketReturnsPromise = getMarketReturns();
@@ -3378,16 +3354,92 @@ async function runMovers(direction) {
       .slice(0, 50);
 
     await scoreAndRenderMovers(sorted, marketReturnsPromise, {
-      statusEl: top30Status,
-      resultsEl: top30Results,
+      statusEl: trendStatus,
+      resultsEl: trendResults,
       rankNote: `순위는 전일 대비 등락률(${direction === "surge" ? "상승률 높은" : "하락률 큰"} 순) 기준이며, S&P500 편입 종목 중 상위 50개입니다.`,
       initialCount: 10,
       fullCount: 50,
     });
   } catch (err) {
-    top30Status.textContent = `❌ ${err.message || `${label}을 가져오지 못했습니다.`}`;
+    trendStatus.textContent = `❌ ${err.message || `${label}을 가져오지 못했습니다.`}`;
   }
 }
+
+// ---------- 거래량: 인기종목(당일 거래대금 상위)과 동일한 데이터·로직을 추세평가 탭에도 표시 ----------
+async function runTrendVolume() {
+  setTrendActive(trendButtons.volume);
+  trendResults.innerHTML = "";
+  trendStatus.style.display = "block";
+  trendStatus.textContent = "거래량을 불러오는 중...";
+
+  try {
+    const marketReturnsPromise = getMarketReturns();
+    const data = await yahooMostActive(50);
+    const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
+    if (quotes.length === 0) throw new Error("거래량 데이터를 가져오지 못했습니다.");
+
+    const ranked = quotes
+      .filter((q) => q && q.symbol && q.regularMarketPrice !== undefined && q.regularMarketVolume !== undefined)
+      .map((q) => ({
+        symbol: q.symbol,
+        name: q.shortName || q.longName || q.symbol,
+        price: q.regularMarketPrice,
+        changePct: q.regularMarketChangePercent,
+        volume: q.regularMarketVolume,
+        dollarVolume: (q.regularMarketPrice || 0) * (q.regularMarketVolume || 0),
+      }))
+      .sort((a, b) => b.dollarVolume - a.dollarVolume)
+      .slice(0, 20);
+
+    await scoreAndRenderMovers(ranked, marketReturnsPromise, {
+      statusEl: trendStatus,
+      resultsEl: trendResults,
+      rankNote: "순위는 당일 거래대금(거래량 × 현재가 추정) 기준입니다.",
+      initialCount: 10,
+      fullCount: 20,
+    });
+  } catch (err) {
+    trendStatus.textContent = `❌ ${err.message || "거래량 데이터를 가져오지 못했습니다."}`;
+  }
+}
+
+// ---------- 상승압력: S&P500 전 종목 중 상승압력도 점수가 높은 순(가치평가 탭과 같은 방식의 정렬+더보기 렌더러 재사용) ----------
+async function runTrendPressure() {
+  setTrendActive(trendButtons.pressure);
+  trendStatus.style.display = "block";
+  trendStatus.textContent = "S&P500 종목 목록을 불러오는 중...";
+  const allTickers = await getSP500Tickers().catch((e) => {
+    trendStatus.textContent = `❌ ${e.message || "종목 목록을 가져오지 못했습니다."}`;
+    return null;
+  });
+  if (!allTickers) return;
+
+  await renderValueRanking(allTickers, "상승압력", {
+    statusEl: trendStatus,
+    resultsEl: trendResults,
+    buttons: [trendButtons.pressure],
+    mapFn: (list) => list.map((m) => ({ ...m, attractivenessTotal: computeAttractivenessScore(m).total, isIPO: isRecentIPO(m.firstTradeDate) })),
+    sortFn: (a, b) => b.attractivenessTotal - a.attractivenessTotal,
+    metricHeaderHtml: "상승압력도 점수",
+    metricCellFn: (r) => (r.isIPO ? "IPO" : `<b>${r.attractivenessTotal}/10</b>`),
+    noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 상승압력도 점수(10점 만점, 높을수록 단기 상승 여력 참고치가 큼)는 거래대금·모멘텀·매출 성장성을 종합한 참고용 지표이며 투자 자문이 아닙니다.</p>`,
+  });
+}
+
+// ---------- 한국보유 비중: 한국예탁결제원(SEIBro) 종목별 외화증권 보관 현황 API 연동 필요 — API 키 발급 전까지 준비중 안내만 표시 ----------
+function runTrendKorea() {
+  setTrendActive(trendButtons.korea);
+  trendResults.innerHTML = "";
+  trendStatus.style.display = "";
+  trendStatus.textContent =
+    "🚧 한국보유 비중 데이터는 준비 중입니다. 한국예탁결제원(SEIBro) 오픈API 연동이 필요하며, API 키 발급 후 제공될 예정입니다.";
+}
+
+bindTrend(trendButtons.korea, runTrendKorea);
+bindTrend(trendButtons.volume, runTrendVolume);
+bindTrend(trendButtons.plunge, () => runMovers("plunge"));
+bindTrend(trendButtons.surge, () => runMovers("surge"));
+bindTrend(trendButtons.pressure, runTrendPressure);
 
 // ---------- 미래예측(베타): 과거 4개년 계절성(흰색) + 최근 6개월 실제 흐름·향후 6개월 예측(빨간색)을 한 차트에 표시 ----------
 // 설계: 오늘을 기준으로 anchor = 오늘로부터 k년 전(k=4,3,2,1은 과거 4개년, k=0은 현재)을 잡고, 각 anchor의 앞뒤 6개월(총 12개월) 구간을
