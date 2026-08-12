@@ -42,7 +42,7 @@
           <text x="90" y="78" font-family="Pretendard, 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, Arial, sans-serif" font-weight="800" letter-spacing="-0.5px" font-size="46" fill="#eceef2">yeop<tspan fill="#6b9bff">invest</tspan><tspan font-weight="600" letter-spacing="0" fill="#8a94a6" font-size="26">.com</tspan></text>
         </svg>
       </div>
-      <button id="contactBtn" class="contact-btn" type="button" aria-label="실시간 종목추천">…</button>
+      <button id="contactBtn" class="contact-btn" type="button" aria-label="개미투자 게시판">…</button>
     </div>
 
     <div class="fh-search">
@@ -63,16 +63,21 @@
     </div>
   </header>
 
-  <div id="chatPanel" class="chat-panel" style="display:none;">
+  <div id="chatPanel" class="chat-panel board-panel" style="display:none;">
     <div class="chat-header">
-      <span>💬 자유토론방 <span class="muted" style="font-weight:400;">(익명·24시간 보관)</span></span>
+      <span>📋 개미투자 게시판 <span class="muted" style="font-weight:400;">(익명·24시간 보관)</span></span>
       <button id="chatCloseBtn" class="chat-close-btn" type="button" aria-label="닫기">✕</button>
+    </div>
+    <div class="board-list-head">
+      <span class="board-col-no">번호</span>
+      <span class="board-col-content">내용</span>
+      <span class="board-col-time">시간</span>
     </div>
     <div id="chatMessages" class="chat-messages"><p class="muted chat-empty">불러오는 중...</p></div>
     <p id="chatError" class="chat-error" style="display:none;"></p>
     <div class="chat-post-form">
-      <input type="text" id="chatTextInput" class="chat-input chat-text-input" maxlength="30" placeholder="메시지를 입력하세요 (최대 30자)" autocomplete="off" />
-      <button id="chatSendBtn" class="chat-send-btn" type="button" aria-label="전송">➤</button>
+      <input type="text" id="chatTextInput" class="chat-input chat-text-input" maxlength="30" placeholder="글을 남겨주세요 (최대 30자)" autocomplete="off" />
+      <button id="chatSendBtn" class="chat-send-btn" type="button" aria-label="등록">➤</button>
     </div>
     <p class="chat-footer muted">비속어·URL·도배성 문구는 등록이 제한됩니다 · 1:1 문의: yeop2ad@gmail.com</p>
   </div>
@@ -101,6 +106,11 @@
           <section class="card">
             <h2>2️⃣ 매출액 / 주당순이익(EPS) 3년 추이</h2>
             <div id="financialsSection" class="section-body"></div>
+          </section>
+
+          <section class="card">
+            <h2>2️⃣+ 최근 분기 실적 &amp; 다음 분기 가이던스</h2>
+            <div id="quarterlyEarningsSection" class="section-body"></div>
           </section>
 
           <section class="card">
@@ -144,21 +154,33 @@
           <button type="button" class="cat-btn" id="indexCatBondsBtn">채권</button>
           <button type="button" class="cat-btn" id="indexCatFxBtn">환율</button>
         </div>
-        <div class="index-toolbar">
-          <button type="button" class="cat-btn" id="indexRefreshBtn">🔄 새로고침</button>
-        </div>
+        <div id="indexPullToRefresh" class="pull-refresh" aria-hidden="true"><span class="pull-refresh-text">↓ 당겨서 새로고침</span></div>
         <p id="indexStatus" class="muted top30-status" style="display:none;"></p>
         <div id="indexResults"></div>
       </div>
 
       <div class="carousel-panel" data-panel="insight" id="panelInsight">
         <div class="top30-sub-nav">
-          <button type="button" class="cat-btn" id="insightBlackrockBtn">블랙록</button>
-          <button type="button" class="cat-btn" id="insightVanguardBtn">뱅가드</button>
-          <button type="button" class="cat-btn" id="insightBerkshireBtn">버크셔 해서웨이</button>
-          <button type="button" class="cat-btn" id="insightGoldmanBtn">골드만삭스</button>
-          <button type="button" class="cat-btn" id="insightMorganStanleyBtn">모건스탠리</button>
-          <button type="button" class="cat-btn" id="insightJpmorganBtn">JP모건 체이스</button>
+          <button type="button" class="cat-btn" id="insightCatFirmsBtn">1.자산&amp;투자사</button>
+          <button type="button" class="cat-btn" id="insightCatBrandBtn">2.브랜드평판순</button>
+          <button type="button" class="cat-btn" id="insightCatTechBtn">3.신기술</button>
+          <button type="button" class="cat-btn" id="insightCatCalendarBtn">4.실적&amp;공시 일정</button>
+          <button type="button" class="cat-btn" id="insightCatNewsBtn">5.뉴스</button>
+        </div>
+        <div class="top30-sub-nav insight-firms-nav" id="insightFirmsNav">
+          <div class="insight-firms-row">
+            <span class="insight-firms-row-label">자산운용사</span>
+            <button type="button" class="cat-btn" id="insightBlackrockBtn">블랙록</button>
+            <button type="button" class="cat-btn" id="insightVanguardBtn">뱅가드</button>
+            <button type="button" class="cat-btn" id="insightStateBtn">State Street</button>
+          </div>
+          <div class="insight-firms-row">
+            <span class="insight-firms-row-label">투자회사</span>
+            <button type="button" class="cat-btn" id="insightBerkshireBtn">버크셔 해서웨이</button>
+            <button type="button" class="cat-btn" id="insightGoldmanBtn">골드만삭스</button>
+            <button type="button" class="cat-btn" id="insightMorganStanleyBtn">모건스탠리</button>
+            <button type="button" class="cat-btn" id="insightJpmorganBtn">JP모건 체이스</button>
+          </div>
         </div>
         <p id="insightStatus" class="muted top30-status" style="display:none;"></p>
         <div id="insightResults"></div>
@@ -219,8 +241,8 @@
             <div id="futureRiskContainer" class="future-chart-container"></div>
             <p id="futureRiskCaption" class="future-chart-caption"></p>
             <hr class="future-chart-divider" />
-            <h3 class="future-chart-subheading">🌐 S&amp;P500 VIX별 S&amp;P500 추이 (1996~현재, 30년) <span class="future-chart-wip">· 베타(미완성)</span></h3>
-            <div id="futureMacroChartContainer" class="future-chart-container"></div>
+            <h3 class="future-chart-subheading">VIX지수를 활용한 투자시점 점검표</h3>
+            <div id="futureMacroChartContainer" class="future-chart-container future-macro-chart"></div>
             <p id="futureMacroChartCaption" class="future-chart-caption"></p>
           </div>
         </div>

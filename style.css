@@ -9,6 +9,8 @@
   --good: #1a9c5c;
   --bad: #d64545;
   --warn: #c98a1a;
+  --pos: #d64545; /* 양수/상승 = 빨강(한국식) */
+  --neg: #3b7dd8; /* 음수/하락 = 파랑(한국식) */
   --radius: 12px;
 }
 
@@ -145,8 +147,8 @@ body {
   white-space: nowrap;
 }
 .cat-btn.active { color: #fff; border-color: #fff; font-weight: 800; }
-.cat-historical-up .cat-arrow { color: var(--good); }
-.cat-historical-down .cat-arrow { color: var(--bad); }
+.cat-historical-up .cat-arrow { color: var(--pos); }
+.cat-historical-down .cat-arrow { color: var(--neg); }
 
 .top30-sub-nav {
   display: flex;
@@ -161,6 +163,28 @@ body {
 .top30-sub-nav::-webkit-scrollbar { display: none; }
 /* 버튼이 많아 가로로 길어져도 각 버튼은 줄어들지 않고 그대로 유지(가로 스크롤로 접근) */
 .top30-sub-nav .cat-btn { flex: 0 0 auto; white-space: nowrap; }
+
+/* 인사이트 "1.자산&투자사" 선택 시에만 보이는 2단 서브버튼(윗줄 자산운용사/아랫줄 투자회사) */
+.insight-firms-nav { flex-direction: column; overflow-x: visible; }
+.insight-firms-row { display: flex; align-items: center; gap: 4px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+.insight-firms-row::-webkit-scrollbar { display: none; }
+.insight-firms-row-label { flex: 0 0 auto; font-size: 11px; color: var(--muted); font-weight: 700; width: 62px; }
+
+/* 실적&공시 일정 캘린더 목록 */
+.econ-cal-list { display: flex; flex-direction: column; }
+.econ-cal-row {
+  display: grid;
+  grid-template-columns: 78px 76px 1fr;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12.5px;
+}
+.econ-cal-row:last-child { border-bottom: none; }
+.econ-cal-date { color: var(--muted); font-variant-numeric: tabular-nums; }
+.econ-cal-cat { font-size: 11px; color: var(--accent); font-weight: 700; }
+.econ-cal-title { font-weight: 600; }
 
 .historical-full-buttons {
   display: flex;
@@ -305,6 +329,9 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 .future-chart-container svg { min-width: 600px; width: 100%; height: auto; display: block; }
+/* VIX지수를 활용한 투자시점 점검표(3번 차트) — 1년 단위 점(약 30개)이 항상 넉넉한 간격으로 보이도록
+   화면 폭에 맞춰 줄어들지 않고(width:auto) 실제 SVG 폭(JS에서 점 개수에 비례해 계산)만큼 항상 가로 스크롤됨 */
+.future-macro-chart svg { min-width: 780px; width: auto; }
 .future-chart-caption {
   max-width: 720px;
   margin: 10px auto 0;
@@ -352,26 +379,55 @@ body {
   cursor: pointer;
 }
 
+/* 게시판 헤더 행(번호/내용/시간) — 목록 컬럼과 폭을 맞춰야 함(.chat-msg와 동일한 grid) */
+.board-list-head {
+  display: grid;
+  grid-template-columns: 40px 1fr 52px;
+  gap: 8px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  flex: none;
+}
+
 .chat-messages {
   flex: 1;
   overflow-y: auto;
   min-height: 0;
-  padding: 10px 12px;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
 }
 
 .chat-empty { font-size: 12px; text-align: center; margin: auto 0; }
 
-.chat-msg { font-size: 13px; line-height: 1.4; }
+.chat-msg {
+  display: grid;
+  grid-template-columns: 40px 1fr 52px;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1.4;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.chat-msg:nth-child(even) { background: rgba(255, 255, 255, 0.02); }
+.chat-no {
+  color: var(--muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
 .chat-time {
   color: var(--muted);
   font-size: 11px;
-  margin-right: 6px;
+  text-align: right;
   font-variant-numeric: tabular-nums;
 }
-.chat-text { word-break: break-word; margin-left: 4px; }
+.chat-text { word-break: break-word; }
 
 .chat-error {
   margin: 0 12px 6px;
@@ -594,9 +650,33 @@ table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: #b8860b; fon
 }
 
 /* 지수 탭 — 이미지 스타일 카드 리스트(왼쪽 종목/날짜/티커, 오른쪽 가격/변동량) */
-.index-toolbar { display: flex; align-items: center; margin-bottom: 8px; }
-.index-toolbar .cat-btn { padding: 4px 12px; font-size: 12px; }
+/* 새로고침 버튼 대신 아래로 당겨서 새로고침(pull-to-refresh) — 평소엔 높이 0으로 숨겨져 있다가 당기는 동안만 표시 */
+.pull-refresh {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 0;
+  overflow: visible;
+  margin-bottom: 0;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+.pull-refresh-visible { opacity: 1; margin-bottom: 8px; }
+.pull-refresh-text {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 14px;
+}
+.pull-refresh-ready .pull-refresh-text { color: var(--accent); border-color: var(--accent); }
 .idx-list { display: flex; flex-direction: column; }
+.crypto-logo-wrap { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; margin-right: 5px; vertical-align: -3px; }
+.crypto-logo { width: 16px; height: 16px; border-radius: 50%; object-fit: contain; }
+.crypto-logo-badge { font-size: 13px; line-height: 1; }
 .idx-row {
   display: flex;
   align-items: center;
@@ -623,8 +703,8 @@ table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: #b8860b; fon
 table.fin-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 13px; }
 table.fin-table th, table.fin-table td { padding: 8px 6px; border-bottom: 1px solid var(--border); text-align: right; }
 table.fin-table th:first-child, table.fin-table td:first-child { text-align: left; }
-.delta-up { color: var(--good); }
-.delta-down { color: var(--bad); }
+.delta-up { color: var(--pos); }
+.delta-down { color: var(--neg); }
 
 .bar-chart { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
 .bar-row { display: grid; grid-template-columns: 42px 46px 1fr; align-items: center; gap: 8px; font-size: 13px; }
@@ -634,7 +714,7 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 .bar-fill.self { background: #7c3aed; }
 .bar-fill-profit {
   position: absolute; top: 0; left: 0; height: 100%;
-  background: var(--good); border-radius: 6px 0 0 6px; z-index: 1;
+  background: var(--pos); border-radius: 6px 0 0 6px; z-index: 1;
   display: flex; align-items: center; justify-content: flex-start; overflow: visible;
 }
 .profit-label {
@@ -642,7 +722,7 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
   white-space: nowrap; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
 }
 .bar-loss-zone { height: 26px; position: relative; overflow: hidden; }
-.bar-loss { position: absolute; top: 0; right: 0; height: 100%; background: var(--bad); border-radius: 6px 0 0 6px; }
+.bar-loss { position: absolute; top: 0; right: 0; height: 100%; background: var(--neg); border-radius: 6px 0 0 6px; }
 .loss-label {
   position: absolute; top: 50%; right: 5px; transform: translateY(-50%);
   z-index: 2; color: #fff; font-weight: 700; font-size: 10px;
@@ -655,8 +735,45 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
   white-space: nowrap; text-shadow: 0 1px 2px rgba(255, 255, 255, 0.55);
 }
 .margin-pct { font-size: 11px; margin-left: 4px; font-weight: 600; }
-.margin-pct.good { color: var(--good); }
-.margin-pct.bad { color: var(--bad); }
+.margin-pct.good { color: var(--pos); }
+.margin-pct.bad { color: var(--neg); }
+
+/* 최근 분기 실적(3개) + 다음 분기 가이던스(1개, 빨간 점선) — 세로 막대 4개 */
+.qbar-chart {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  align-items: end;
+  margin-top: 12px;
+  height: 180px;
+}
+.qbar-col { display: flex; flex-direction: column; align-items: center; height: 100%; }
+.qbar-values { display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 700; margin-bottom: 4px; }
+.qbar-revenue { color: var(--text); }
+.qbar-net { font-size: 10px; }
+.qbar-track {
+  width: 60%;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+}
+.qbar-fill { width: 45%; border-radius: 4px 4px 0 0; min-height: 3px; }
+.qbar-fill-revenue { background: var(--accent); }
+.qbar-fill-net { background: #7c3aed; }
+.qbar-guidance .qbar-fill { background: transparent; border: 2px dashed var(--pos); }
+.qbar-guidance .qbar-track { border-bottom: 1px dashed var(--pos); }
+.qbar-label { margin-top: 6px; font-size: 11px; font-weight: 700; text-align: center; }
+.qbar-guidance .qbar-label { color: var(--pos); }
+.qbar-date { font-size: 9px; color: var(--muted); text-align: center; }
+.qbar-legend { display: flex; gap: 14px; justify-content: center; margin-top: 10px; font-size: 11px; color: var(--muted); }
+.qbar-swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+.qbar-swatch-revenue { background: var(--accent); }
+.qbar-swatch-net { background: #7c3aed; }
+.qbar-dates { font-size: 12px; margin: 10px 0 2px; }
+.qbar-date-list { margin: 0; padding-left: 18px; font-size: 12px; color: var(--muted); }
 
 .peer-row {
   display: grid;

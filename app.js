@@ -56,10 +56,11 @@ function renderChatMessages(messages) {
   }
   chatMessagesEl.innerHTML = messages
     .map(
-      (m) => `
+      (m, i) => `
       <div class="chat-msg">
-        <span class="chat-time">${escapeHtml(fmtChatTime(m.t))}</span>
+        <span class="chat-no">${i + 1}</span>
         <span class="chat-text">${escapeHtml(m.text)}</span>
+        <span class="chat-time">${escapeHtml(fmtChatTime(m.t))}</span>
       </div>`
     )
     .join("");
@@ -301,6 +302,12 @@ async function yahooPeers(symbol) {
   return proxyFetchJson(url);
 }
 
+// 분기 실적 발표 이력(earningsHistory)·다음 분기 애널리스트 컨센서스(earningsTrend)·다음 실적 발표 예정일(calendarEvents) 조회
+async function yahooQuoteSummary(symbol, modules) {
+  const url = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(symbol)}?modules=${modules}`;
+  return proxyFetchJson(url);
+}
+
 async function yahooScreener(scrId, count = 50) {
   const url = `https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?formatted=false&lang=en-US&region=US&scrIds=${scrId}&count=${count}`;
   return proxyFetchJson(url);
@@ -340,16 +347,36 @@ const SECTOR_KO = {
   "Basic Materials": "소재",
 };
 
-// 동일 섹터 종목을 시가총액 내림차순으로 반환(자기 자신 제외) — 경쟁사 TOP3 + 시총 유사 종목 선정에 사용
-async function getSectorPeerCandidates(sector, selfSymbol) {
+// 동일 섹터 종목을 시가총액 내림차순으로 반환(자기 자신 제외) — 경쟁사 TOP3(업종 일치 우선) + 시총 유사 종목 선정에 사용.
+// Yahoo 스크리너 응답엔 세부 업종(industry) 필드가 없어, 섹터 후보 중 시총 상위 일부만 v1/finance/search로
+// 하나씩 조회해 industryDisp가 자기 자신과 같은 후보를 골라낸다(과도한 API 호출을 막기 위해 상위 15개로 제한).
+async function getSectorPeerCandidates(sector, selfSymbol, selfIndustry) {
   const scrId = SECTOR_SCREENER_ID[sector];
   if (!scrId) return null;
   const data = await yahooScreener(scrId, 60);
   const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
-  return quotes
+  const candidates = quotes
     .filter((q) => q && q.symbol && q.symbol !== selfSymbol && q.marketCap !== undefined && q.marketCap !== null)
     .map((q) => ({ symbol: q.symbol, marketCap: q.marketCap }))
     .sort((a, b) => b.marketCap - a.marketCap);
+
+  let industryCandidates = [];
+  if (selfIndustry && candidates.length > 0) {
+    const top = candidates.slice(0, 15);
+    const checked = await mapWithConcurrency(top, 5, async (c) => {
+      try {
+        const s = await yahooSearch(c.symbol);
+        const q = s && s.quotes && s.quotes[0];
+        const ind = q && (q.industryDisp || q.industry);
+        return ind === selfIndustry ? c : null;
+      } catch {
+        return null;
+      }
+    });
+    industryCandidates = checked.filter(Boolean);
+  }
+
+  return { candidates, industryCandidates };
 }
 
 // ---------- FRED(세인트루이스 연은) 헬퍼 : 내부 차트 API를 프록시로 조회 (비공식, 문서화되지 않음) ----------
@@ -1432,10 +1459,18 @@ const trendButtons = {
 const insightButtons = {
   blackrock: el("insightBlackrockBtn"),
   vanguard: el("insightVanguardBtn"),
+  state: el("insightStateBtn"),
   berkshire: el("insightBerkshireBtn"),
   goldman: el("insightGoldmanBtn"),
   morganStanley: el("insightMorganStanleyBtn"),
   jpmorgan: el("insightJpmorganBtn"),
+};
+const insightCategoryButtons = {
+  firms: el("insightCatFirmsBtn"),
+  brand: el("insightCatBrandBtn"),
+  tech: el("insightCatTechBtn"),
+  calendar: el("insightCatCalendarBtn"),
+  news: el("insightCatNewsBtn"),
 };
 
 let activeTabIndex = 0;
@@ -1983,6 +2018,10 @@ async function runAnalysis(ticker) {
       el("financialsSection").innerHTML = `<p class="error-inline">실적 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
+    renderQuarterlyEarnings(ticker, meta.currency).catch((e) => {
+      el("quarterlyEarningsSection").innerHTML = `<p class="error-inline">분기 실적 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
+    });
+
     // 나스닥·다우존스·S&P500 1년 수익률과, 분석 대상 자신의 지표(차트+재무제표)는
     // 경쟁사 비교(3)·상승압력도(5)·투자 안정성(6) 섹션이 각자 다시 조회하지 않고 공유해서
     // 프록시 요청 수를 줄이고(속도·안정성 향상) 값도 서로 어긋나지 않도록 함
@@ -1991,7 +2030,7 @@ async function runAnalysis(ticker) {
 
     renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise);
 
-    renderPeers(ticker, selfMetricsPromise, quote.sector || quote.sectorDisp).catch((e) => {
+    renderPeers(ticker, selfMetricsPromise, quote.sector || quote.sectorDisp, quote.industryDisp || quote.industry).catch((e) => {
       el("peersSection").innerHTML = `<p class="error-inline">경쟁사 비교 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
@@ -2280,23 +2319,132 @@ async function renderFinancials(ticker, quoteCurrency) {
   return byYear[lastYear]?.eps ?? null;
 }
 
+// ---------- 2+. 최근 분기 실적(최근 3개) + 다음 분기 가이던스(1개) ----------
+// ⚠️ Yahoo의 quoteSummary(earningsHistory/earningsTrend/calendarEvents)와 v7/finance/quote는 최근 "Invalid Crumb"
+// 인증 요구로 이 앱의 무인증 프록시로는 접근이 막혀 있어(실제 발표일·애널리스트 컨센서스를 제공하는 유일한 소스),
+// 실제 기업 가이던스·컨센서스 추정치를 가져올 방법이 없음. 대신 fundamentals-timeseries(무인증, 정상 동작)의
+// 분기별 매출/순이익 실적만으로 4번째(다음 분기) 막대를 "최근 분기 대비 성장률 기반 추정치"로 계산해 표시하고,
+// 발표일도 정확한 발표일이 아닌 회계분기 마감일(asOfDate)로 표시 — 라벨과 캡션에 명확히 "추정" 표기해 오해를 방지함.
+function projectNextQuarter(quarters, key) {
+  const vals = quarters.map((q) => q[key]).filter((v) => v !== null && v !== undefined);
+  if (vals.length === 0) return null;
+  if (vals.length === 1) return vals[0];
+  const growthRates = [];
+  for (let i = 1; i < vals.length; i++) {
+    if (vals[i - 1]) growthRates.push((vals[i] - vals[i - 1]) / Math.abs(vals[i - 1]));
+  }
+  const avgGrowth = growthRates.length ? growthRates.reduce((a, b) => a + b, 0) / growthRates.length : 0;
+  return vals[vals.length - 1] * (1 + avgGrowth);
+}
+
+function quarterBarHtml(label, q) {
+  const isGuidance = !!q.guidance;
+  const maxAbs = Math.max(Math.abs(q.revenue || 0), Math.abs(q.netIncome || 0), 1);
+  const revH = clamp((Math.abs(q.revenue || 0) / maxAbs) * 100, 4, 100);
+  const netH = clamp((Math.abs(q.netIncome || 0) / maxAbs) * 100, 4, 100);
+  const netNeg = (q.netIncome || 0) < 0;
+  return `
+    <div class="qbar-col${isGuidance ? " qbar-guidance" : ""}">
+      <div class="qbar-values">
+        <span class="qbar-revenue">${q.revenue !== null && q.revenue !== undefined ? fmtCompactCurrency(q.revenue) : "N/A"}</span>
+        <span class="qbar-net ${netNeg ? "delta-down" : "delta-up"}">${q.netIncome !== null && q.netIncome !== undefined ? fmtCompactCurrency(q.netIncome) : "N/A"}</span>
+      </div>
+      <div class="qbar-track">
+        <div class="qbar-fill qbar-fill-revenue" style="height:${revH}%"></div>
+        <div class="qbar-fill qbar-fill-net" style="height:${netH}%"></div>
+      </div>
+      <div class="qbar-label">${escapeHtml(label)}</div>
+      <div class="qbar-date">${escapeHtml(q.dateLabel || "")}</div>
+    </div>`;
+}
+
+async function renderQuarterlyEarnings(ticker, quoteCurrency) {
+  el("quarterlyEarningsSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
+
+  const data = await yahooFundamentals(ticker, "quarterlyTotalRevenue,quarterlyNetIncome");
+  const resultArr = data && data.timeseries && data.timeseries.result;
+  if (!resultArr || resultArr.length === 0) {
+    el("quarterlyEarningsSection").innerHTML = `<p class="muted">분기 실적 데이터를 찾을 수 없습니다.</p>`;
+    return;
+  }
+
+  const reportCurrency = findReportCurrency(resultArr, ["quarterlyTotalRevenue", "quarterlyNetIncome"]);
+  const fxRate =
+    reportCurrency && quoteCurrency && reportCurrency !== quoteCurrency ? await getFxRate(reportCurrency, quoteCurrency) : 1;
+  const convert = (raw) => (raw === null || raw === undefined ? null : fxRate !== null ? raw * fxRate : null);
+
+  const byDate = {};
+  for (const block of resultArr) {
+    for (const item of block.quarterlyTotalRevenue || []) {
+      if (!item || !item.asOfDate) continue;
+      byDate[item.asOfDate] = byDate[item.asOfDate] || {};
+      byDate[item.asOfDate].revenue = convert(item.reportedValue?.raw);
+    }
+    for (const item of block.quarterlyNetIncome || []) {
+      if (!item || !item.asOfDate) continue;
+      byDate[item.asOfDate] = byDate[item.asOfDate] || {};
+      byDate[item.asOfDate].netIncome = convert(item.reportedValue?.raw);
+    }
+  }
+
+  const dates = Object.keys(byDate).sort();
+  const recent = dates.slice(-3).map((d) => ({ date: d, dateLabel: d, revenue: byDate[d].revenue, netIncome: byDate[d].netIncome }));
+
+  if (recent.length === 0) {
+    el("quarterlyEarningsSection").innerHTML = `<p class="muted">분기 실적 데이터를 찾을 수 없습니다.</p>`;
+    return;
+  }
+
+  const lastDate = new Date(recent[recent.length - 1].date + "T00:00:00");
+  const nextDate = addMonths(lastDate, 3);
+  const nextDateLabel = `${nextDate.getFullYear()}-${String(nextDate.getMonth() + 1).padStart(2, "0")}-${String(nextDate.getDate()).padStart(2, "0")}(예상)`;
+  const guidance = {
+    revenue: projectNextQuarter(recent, "revenue"),
+    netIncome: projectNextQuarter(recent, "netIncome"),
+    dateLabel: nextDateLabel,
+    guidance: true,
+  };
+
+  const allFour = [...recent, guidance];
+  const bars = allFour.map((q, i) => quarterBarHtml(i === allFour.length - 1 ? `${i + 1}분기(가이던스)` : `${i + 1}분기`, q)).join("");
+
+  const reportedDatesHtml = recent.map((q) => `<li>${escapeHtml(q.date)} (회계분기 마감 기준)</li>`).join("");
+
+  el("quarterlyEarningsSection").innerHTML = `
+    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 왼쪽 3개는 최근 실보고 분기(매출액/순이익), 가장 오른쪽(빨간 점선)은 다음 분기 추세 기반 추정치입니다. 실제 기업 발표 가이던스나 애널리스트 컨센서스가 아니며, 발표일도 정확한 발표일이 아닌 회계분기 마감일 기준입니다.</p>
+    <div class="qbar-chart">${bars}</div>
+    <div class="qbar-legend"><span><span class="qbar-swatch qbar-swatch-revenue"></span>매출액</span><span><span class="qbar-swatch qbar-swatch-net"></span>순이익</span></div>
+    <p class="qbar-dates"><b>올해 발표된 분기(마감일 기준):</b></p>
+    <ul class="qbar-date-list">${reportedDatesHtml}</ul>
+    <p class="qbar-dates"><b>다음 분기 마감(추정):</b> ${escapeHtml(nextDateLabel)}</p>
+  `;
+}
+
 // ---------- 3. 경쟁사 매출/주가/상승압력도 비교 ----------
-// 경쟁사 4개 = 동일 섹터 시가총액 TOP3 + 시가총액이 자신과 가장 가까운 종목 1개
+// 경쟁사 4개 = 동일 업종(industry) 시가총액 TOP3(부족하면 동일 섹터로 보충) + 시가총액이 자신과 가장 가까운 종목 1개
 // (섹터를 알 수 없는 경우엔 Yahoo의 연관 종목 추천으로 대체)
-async function renderPeers(ticker, selfMetricsPromise, sector) {
+async function renderPeers(ticker, selfMetricsPromise, sector, industry) {
   el("peersSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
-  const [sectorCandidates, selfMetrics] = await Promise.all([
-    sector ? getSectorPeerCandidates(sector, ticker).catch(() => null) : Promise.resolve(null),
+  const [sectorResult, selfMetrics] = await Promise.all([
+    sector ? getSectorPeerCandidates(sector, ticker, industry).catch(() => null) : Promise.resolve(null),
     selfMetricsPromise.then((m) => ({ ...m, self: true })).catch(() => null),
   ]);
 
   let peerTickers = [];
   let bySector = false;
+  let byIndustry = false;
 
-  if (sectorCandidates && sectorCandidates.length > 0) {
-    const top3 = sectorCandidates.slice(0, 3);
-    const rest = sectorCandidates.slice(3);
+  if (sectorResult && sectorResult.candidates.length > 0) {
+    const { candidates, industryCandidates } = sectorResult;
+    // 업종 일치 후보가 3개 이상이면 그걸로 TOP3, 부족하면 섹터 전체 시총순으로 보충
+    const top3 =
+      industryCandidates.length >= 3
+        ? industryCandidates.slice(0, 3)
+        : [...industryCandidates, ...candidates.filter((c) => !industryCandidates.includes(c))].slice(0, 3);
+    byIndustry = industryCandidates.length >= 3;
+    const top3Symbols = new Set(top3.map((c) => c.symbol));
+    const rest = candidates.filter((c) => !top3Symbols.has(c.symbol));
     const selfCap = selfMetrics && selfMetrics.marketCap;
     let similar = null;
     if (rest.length > 0) {
@@ -2356,7 +2504,7 @@ async function renderPeers(ticker, selfMetricsPromise, sector) {
     .join("");
 
   el("peersSection").innerHTML = `
-    <p class="muted">최근 회계연도 매출액 기준 비교 (${bySector ? "동일 섹터 시가총액 TOP3 + 시총 유사 종목 1개" : "자동 감지된 관련 종목"})</p>
+    <p class="muted">최근 회계연도 매출액 기준 비교 (${bySector ? `동일 ${byIndustry ? "업종" : "섹터"} 시가총액 TOP3 + 시총 유사 종목 1개` : "자동 감지된 관련 종목"})</p>
     <div class="peer-table-header">
       <span></span><span></span><span>매출액</span><span>시가총액</span><span>상승력</span>
     </div>
@@ -2688,17 +2836,48 @@ bindValuation(valuationButtons.per, runValuePer);
 bindValuation(valuationButtons.stability, runValueStability);
 bindValuation(valuationButtons.marketCap, runValueMarketCap);
 
+// 인사이트 대분류(1.자산&투자사 / 2.브랜드평판순 / 3.신기술 / 4.실적&공시 일정 / 5.뉴스) 전환
+// "자산&투자사"를 선택했을 때만 기관 2단 서브버튼(insightFirmsNav)을 보여줌
+let insightActiveCategory = "firms";
+let insightActiveInstitution = "blackrock";
+const insightFirmsNav = el("insightFirmsNav");
+function setInsightCategoryActive(key) {
+  Object.entries(insightCategoryButtons).forEach(([k, btn]) => btn && btn.classList.toggle("active", k === key));
+}
+function switchInsightCategory(key) {
+  if (insightActiveCategory === key) return;
+  insightActiveCategory = key;
+  setInsightCategoryActive(key);
+  insightFirmsNav.style.display = key === "firms" ? "" : "none";
+  runInsightCategory(key);
+}
+Object.entries(insightCategoryButtons).forEach(([key, btn]) => {
+  if (!btn) return;
+  btn.addEventListener("click", () => switchInsightCategory(key));
+});
+setInsightCategoryActive(insightActiveCategory);
+
+function runInsightCategory(key) {
+  if (key === "firms") runInsight(insightActiveInstitution);
+  else if (key === "brand") runInsightPlaceholder("브랜드평판순", "브랜드 평판 순위");
+  else if (key === "tech") runInsightPlaceholder("신기술", "신기술 관련 인사이트");
+  else if (key === "calendar") runInsightCalendar();
+  else if (key === "news") runInsightPlaceholder("뉴스", "인사이트 뉴스");
+}
+
 // 인사이트 서브내비(거대기업 13F 보유종목)에서 현재 선택된 버튼만 활성 표시
 function setInsightActive(activeBtn) {
   Object.values(insightButtons).forEach((b) => b && b.classList.toggle("active", b === activeBtn));
 }
 const bindInsight = (btn, institution) =>
   btn.addEventListener("click", () => {
+    insightActiveInstitution = institution;
     setInsightActive(btn);
     runInsight(institution);
   });
 bindInsight(insightButtons.blackrock, "blackrock");
 bindInsight(insightButtons.vanguard, "vanguard");
+bindInsight(insightButtons.state, "state");
 bindInsight(insightButtons.berkshire, "berkshire");
 bindInsight(insightButtons.goldman, "goldman");
 bindInsight(insightButtons.morganStanley, "morganStanley");
@@ -2707,9 +2886,11 @@ bindInsight(insightButtons.jpmorgan, "jpmorgan");
 // 거대기업(블랙록·뱅가드·버크셔 등) 13F 공시 기반 보유종목 TOP20
 // SEC EDGAR 13F-HR(분기 공시)에서 직접 집계한 데이터. 13F는 분기 1회(최대 45일 지연)만 갱신되므로
 // 실시간 백엔드 대신 분기마다 이 스냅샷을 갱신하는 방식으로 운영(자세한 내용은 각 institution 데이터의 asOf/prevAsOf 참고)
+// 윗줄(자산운용사) = 블랙록·뱅가드·State Street(패시브 3대 운용사), 아랫줄(투자회사) = 버크셔·골드만삭스·모건스탠리·JP모건
 const INSIGHT_INSTITUTION_LABELS = {
   blackrock: "블랙록",
   vanguard: "뱅가드",
+  state: "State Street",
   berkshire: "버크셔 해서웨이",
   goldman: "골드만삭스",
   morganStanley: "모건스탠리",
@@ -2786,6 +2967,10 @@ function insightTableHtml(data) {
 }
 
 async function runInsight(institution) {
+  insightActiveInstitution = institution;
+  insightActiveCategory = "firms";
+  setInsightCategoryActive("firms");
+  insightFirmsNav.style.display = "";
   setInsightActive(insightButtons[institution]);
   const status = el("insightStatus");
   const results = el("insightResults");
@@ -2799,6 +2984,125 @@ async function runInsight(institution) {
   }
   status.style.display = "none";
   results.innerHTML = insightTableHtml(data);
+}
+
+// "2.브랜드평판순"·"3.신기술"·"5.뉴스"는 이 앱이 접근 가능한 데이터 소스(Yahoo Finance·FRED)로는
+// 실시간으로 가져올 방법이 없어(순위·평판·뉴스 큐레이션은 별도 서비스가 필요) 준비 중 안내만 표시
+function runInsightPlaceholder(shortTitle, longTitle) {
+  const status = el("insightStatus");
+  status.style.display = "";
+  status.textContent = `🚧 ${shortTitle}은(는) 준비 중입니다.`;
+  el("insightResults").innerHTML = `<p class="muted" style="text-align:center;padding:24px 0;">🚧 ${escapeHtml(longTitle)} 기능은 아직 준비 중입니다.<br>빠른 시일 내에 제공할 예정입니다.</p>`;
+}
+
+// ---------- 4. 실적&공시 일정 ----------
+// 일반기업 실적발표(주요 대형주, Yahoo fundamentals-timeseries로 실시간 추정) + 13F 기관 공시 마감 +
+// 미국/한국/일본 금리 발표 + 미국 CPI·고용지표(정적 조사 데이터, data/econ-calendar-2026.json) +
+// 미국 옵션만기일(매월 세번째 금요일, 계산)을 합쳐 날짜순 캘린더로 표시
+const CALENDAR_WATCHLIST = ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "BRK-B", "JPM", "WMT"];
+const ECON_CALENDAR_CATEGORY_LABEL = {
+  earnings: "🏢 기업실적",
+  "13f": "📑 13F 공시",
+  rate: "🏦 금리 발표",
+  cpi: "📈 CPI",
+  jobs: "👷 고용지표",
+  opex: "📅 옵션만기",
+};
+const ECON_CALENDAR_COUNTRY_FLAG = { us: "🇺🇸", kr: "🇰🇷", jp: "🇯🇵" };
+
+// 매달 세 번째 금요일(미국 개별주식·지수옵션 월간 만기일) — 3/6/9/12월은 분기 마감(쿼드러플 위칭)으로 별도 표기
+function usOptionsExpirationDates(year) {
+  const dates = [];
+  for (let month = 0; month < 12; month++) {
+    const d = new Date(year, month, 1);
+    const firstFriday = 1 + ((5 - d.getDay() + 7) % 7);
+    const thirdFriday = firstFriday + 14;
+    const quad = [2, 5, 8, 11].includes(month);
+    dates.push({ date: new Date(year, month, thirdFriday), quad });
+  }
+  return dates;
+}
+
+let econCalendarDataPromise = null;
+function getEconCalendarData() {
+  if (!econCalendarDataPromise) {
+    econCalendarDataPromise = fetch("data/econ-calendar-2026.json", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : { events: [] }))
+      .catch(() => ({ events: [] }));
+  }
+  return econCalendarDataPromise;
+}
+
+// 관심종목(대형주)의 다음 분기 마감일 기준 발표 예정일을 근사 추정(회계분기 마감 + 약 1개월 뒤) — 정확한 발표일은
+// quoteSummary(calendarEvents)가 이 앱의 무인증 프록시에서 "Invalid Crumb" 오류로 막혀 있어 가져올 수 없음
+async function estimateNextEarningsDate(symbol) {
+  try {
+    const data = await yahooFundamentals(symbol, "quarterlyTotalRevenue");
+    const resultArr = data && data.timeseries && data.timeseries.result;
+    const items = (resultArr && resultArr[0] && resultArr[0].quarterlyTotalRevenue) || [];
+    const dates = items.map((it) => it && it.asOfDate).filter(Boolean).sort();
+    if (dates.length === 0) return null;
+    const lastQuarterEnd = new Date(dates[dates.length - 1] + "T00:00:00");
+    const nextQuarterEnd = addMonths(lastQuarterEnd, 3);
+    const estReportDate = addMonths(nextQuarterEnd, 1);
+    return { symbol, date: estReportDate };
+  } catch {
+    return null;
+  }
+}
+
+async function runInsightCalendar() {
+  const status = el("insightStatus");
+  const results = el("insightResults");
+  status.style.display = "";
+  status.textContent = "⏳ 실적&공시 일정을 불러오는 중...";
+  results.innerHTML = "";
+
+  const [econData, earningsEstimates] = await Promise.all([
+    getEconCalendarData(),
+    mapWithConcurrency(CALENDAR_WATCHLIST, 5, estimateNextEarningsDate),
+  ]);
+
+  const now = new Date();
+  const year = now.getFullYear();
+  const events = [...(econData.events || [])];
+
+  usOptionsExpirationDates(year).forEach((o) => {
+    const d = o.date;
+    events.push({
+      date: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`,
+      category: "opex",
+      country: "us",
+      title: o.quad ? "미국 옵션만기(쿼드러플 위칭)" : "미국 옵션만기(월간)",
+    });
+  });
+
+  earningsEstimates.filter(Boolean).forEach((e) => {
+    const koName = TICKER_TO_KOREAN_NAME[e.symbol] || e.symbol;
+    events.push({
+      date: `${e.date.getFullYear()}-${String(e.date.getMonth() + 1).padStart(2, "0")}-${String(e.date.getDate()).padStart(2, "0")}`,
+      category: "earnings",
+      country: "us",
+      title: `${koName}(${e.symbol}) 실적발표(추정)`,
+    });
+  });
+
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  const upcoming = events.filter((e) => e.date >= todayStr).sort((a, b) => a.date.localeCompare(b.date));
+
+  status.style.display = "none";
+  const rows = upcoming
+    .map((e) => {
+      const flag = ECON_CALENDAR_COUNTRY_FLAG[e.country] || "";
+      const catLabel = ECON_CALENDAR_CATEGORY_LABEL[e.category] || e.category;
+      return `<div class="econ-cal-row"><span class="econ-cal-date">${escapeHtml(e.date)}</span><span class="econ-cal-cat">${catLabel}</span><span class="econ-cal-title">${flag} ${escapeHtml(e.title)}</span></div>`;
+    })
+    .join("");
+
+  results.innerHTML = `
+    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 일반기업 실적발표는 주요 대형주 대상 추정치(회계분기 마감 기준), 13F 공시 마감·금리 발표·CPI·고용지표는 2026년 공식 일정 조사 기준(변경될 수 있음), 옵션만기일은 매월 세 번째 금요일로 계산한 값입니다. 투자 자문이 아닙니다.</p>
+    <div class="econ-cal-list">${rows || `<p class="muted" style="text-align:center;padding:16px 0;">표시할 예정 일정이 없습니다.</p>`}</div>
+  `;
 }
 
 // 과거분석 대상 종목 1개의 "기준 시점 스냅샷" 지표를 계산 — 2년치 차트로 기준 시점의 52주 범위·모멘텀·매출성장성까지 근사
@@ -2967,7 +3271,7 @@ function historicalTableHtml(rows, rankColumnLabel) {
     .join("");
 
   return `
-    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 1년전 상승압력·투자안정은 <b>1년 전 시점</b> 기준으로 근사 계산한 참고용 점수입니다(각 10점 만점, 높을수록 상승 여력 크고·재무 안정적 / 5점보다 높으면 초록·낮으면 빨강). 투자 자문이 아닙니다.</p>
+    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 1년전 상승압력·투자안정은 <b>1년 전 시점</b> 기준으로 근사 계산한 참고용 점수입니다(각 10점 만점, 높을수록 상승 여력 크고·재무 안정적 / 5점보다 높으면 빨강·낮으면 파랑). 투자 자문이 아닙니다.</p>
     <table class="top30-table">
       <thead>
         <tr><th>${rankColumnLabel}</th><th>티커</th><th>현재가<br>(등락률)</th><th>1년전<br>상승압력</th><th>1년전<br>투자안정</th></tr>
@@ -3099,7 +3403,7 @@ function moversTableHtml(scored, rankNote) {
     .join("");
 
   return `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${rankNote} 상승압력·투자안정은 각 10점 만점(5점보다 높으면 초록·낮으면 빨강)이며 투자 자문이 아닙니다.</p>
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${rankNote} 상승압력·투자안정은 각 10점 만점(5점보다 높으면 빨강·낮으면 파랑)이며 투자 자문이 아닙니다.</p>
       ${SURGE_WARNING_LEGEND}
       <div class="popular-table-wrap">
         <table class="top30-table popular-table">
@@ -3179,15 +3483,13 @@ const INDEX_CATEGORIES = {
   usMarkets: {
     label: "미국시장",
     items: [
-      { src: "yahoo", symbol: "KRW=X", name: "🇰🇷 달러/원 환율", ticker: "USD/KRW", chartSymbol: "FX:USDKRW" },
-      { src: "yahoo", symbol: "JPY=X", name: "🇯🇵 달러/엔 환율", ticker: "USD/JPY", chartSymbol: "FX:USDJPY" },
       { src: "yahoo", symbol: "^GSPC", name: "🇺🇸 S&P 500", ticker: "SPX", chartSymbol: "SP:SPX" },
       { src: "yahoo", symbol: "^DJI", name: "🇺🇸 다우 종합", ticker: "DJI", chartSymbol: "DJ:DJI" },
       { src: "yahoo", symbol: "^IXIC", name: "🇺🇸 나스닥 종합", ticker: "IXIC", chartSymbol: "NASDAQ:IXIC" },
       { src: "yahoo", symbol: "^RUT", name: "🇺🇸 러셀 2000", ticker: "RUT", chartSymbol: "TVC:RUT" },
       { src: "yahoo", symbol: "^VIX", name: "🇺🇸 S&P500 VIX", ticker: "VIX", chartSymbol: "TVC:VIX" },
-      { src: "yahoo", symbol: "GC=F", name: "🥇 금(Gold)", ticker: "GOLD", chartSymbol: "TVC:GOLD" },
-      { src: "yahoo", symbol: "BTC-USD", name: "₿ 비트코인", ticker: "BTC", chartSymbol: "COINBASE:BTCUSD" },
+      { src: "yahoo", symbol: "GC=F", name: "🟨 금(Gold)", ticker: "GOLD", chartSymbol: "TVC:GOLD" },
+      { src: "yahoo", symbol: "BTC-USD", name: "₿ 비트코인", ticker: "BTC", chartSymbol: "COINBASE:BTCUSD", crypto: true },
       { src: "yahoo", symbol: "CL=F", name: "🛢️ WTI 원유", ticker: "WTI", chartSymbol: "TVC:USOIL" },
     ],
   },
@@ -3198,7 +3500,7 @@ const INDEX_CATEGORIES = {
       { src: "yahoo", symbol: "^KQ11", name: "🇰🇷 코스닥", ticker: "KOSDAQ", chartSymbol: "KRX:KOSDAQ" },
       { src: "yahoo", symbol: "^N225", name: "🇯🇵 닛케이 225", ticker: "JP225", chartSymbol: "TVC:NI225" },
       { src: "yahoo", symbol: "^NDX", name: "🇺🇸 US Tech 100", ticker: "NDX", chartSymbol: "NASDAQ:NDX" },
-      { src: "yahoo", symbol: "^HSI", name: "🇭🇰 항셍", ticker: "HSI", chartSymbol: "TVC:HSI" },
+      { src: "yahoo", symbol: "^HSI", name: "🇭🇰 항셍(홍콩)", ticker: "HSI", chartSymbol: "TVC:HSI" },
       { src: "yahoo", symbol: "000001.SS", name: "🇨🇳 상해종합", ticker: "SSEC", chartSymbol: "TVC:SHCOMP" },
       { src: "yahoo", symbol: "^GDAXI", name: "🇩🇪 독일 DAX", ticker: "DAX", chartSymbol: "XETR:DAX" },
       { src: "yahoo", symbol: "^FTSE", name: "🇬🇧 FTSE 100", ticker: "UKX", chartSymbol: "TVC:UKX" },
@@ -3215,23 +3517,23 @@ const INDEX_CATEGORIES = {
   crypto: {
     label: "암호화폐",
     items: [
-      { src: "yahoo", symbol: "BTC-USD", name: "₿ 비트코인", ticker: "BTC", chartSymbol: "COINBASE:BTCUSD" },
-      { src: "yahoo", symbol: "ETH-USD", name: "Ξ 이더리움", ticker: "ETH", chartSymbol: "COINBASE:ETHUSD" },
-      { src: "yahoo", symbol: "USDT-USD", name: "🪙 테더", ticker: "USDT", chartSymbol: null },
-      { src: "yahoo", symbol: "BNB-USD", name: "🪙 BNB", ticker: "BNB", chartSymbol: "BINANCE:BNBUSDT" },
-      { src: "yahoo", symbol: "USDC-USD", name: "🪙 USDC", ticker: "USDC", chartSymbol: null },
-      { src: "yahoo", symbol: "XRP-USD", name: "🪙 XRP(리플)", ticker: "XRP", chartSymbol: "COINBASE:XRPUSD" },
-      { src: "yahoo", symbol: "SOL-USD", name: "🪙 솔라나", ticker: "SOL", chartSymbol: "COINBASE:SOLUSD" },
-      { src: "yahoo", symbol: "TRX-USD", name: "🪙 트론", ticker: "TRX", chartSymbol: "BINANCE:TRXUSDT" },
-      { src: "yahoo", symbol: "DOGE-USD", name: "🪙 도지코인", ticker: "DOGE", chartSymbol: "COINBASE:DOGEUSD" },
+      { src: "yahoo", symbol: "BTC-USD", name: "비트코인", ticker: "BTC", chartSymbol: "COINBASE:BTCUSD", crypto: true },
+      { src: "yahoo", symbol: "ETH-USD", name: "이더리움", ticker: "ETH", chartSymbol: "COINBASE:ETHUSD", crypto: true },
+      { src: "yahoo", symbol: "USDT-USD", name: "테더", ticker: "USDT", chartSymbol: null, crypto: true },
+      { src: "yahoo", symbol: "BNB-USD", name: "BNB", ticker: "BNB", chartSymbol: "BINANCE:BNBUSDT", crypto: true },
+      { src: "yahoo", symbol: "USDC-USD", name: "USDC", ticker: "USDC", chartSymbol: null, crypto: true },
+      { src: "yahoo", symbol: "XRP-USD", name: "XRP(리플)", ticker: "XRP", chartSymbol: "COINBASE:XRPUSD", crypto: true },
+      { src: "yahoo", symbol: "SOL-USD", name: "솔라나", ticker: "SOL", chartSymbol: "COINBASE:SOLUSD", crypto: true },
+      { src: "yahoo", symbol: "TRX-USD", name: "트론", ticker: "TRX", chartSymbol: "BINANCE:TRXUSDT", crypto: true },
+      { src: "yahoo", symbol: "DOGE-USD", name: "도지코인", ticker: "DOGE", chartSymbol: "COINBASE:DOGEUSD", crypto: true },
     ],
   },
   commodities: {
     label: "원자재",
     items: [
-      { src: "yahoo", symbol: "GC=F", name: "🥇 금(Gold)", ticker: "GOLD", chartSymbol: "TVC:GOLD" },
-      { src: "yahoo", symbol: "SI=F", name: "🥈 은(Silver)", ticker: "SILVER", chartSymbol: "TVC:SILVER" },
-      { src: "yahoo", symbol: "HG=F", name: "🟠 구리", ticker: "COPPER", chartSymbol: "COMEX:HG1!" },
+      { src: "yahoo", symbol: "GC=F", name: "🟨 금(Gold)", ticker: "GOLD", chartSymbol: "TVC:GOLD" },
+      { src: "yahoo", symbol: "SI=F", name: "⬜ 은(Silver)", ticker: "SILVER", chartSymbol: "TVC:SILVER" },
+      { src: "yahoo", symbol: "HG=F", name: "🟧 구리", ticker: "COPPER", chartSymbol: "COMEX:HG1!" },
       { src: "yahoo", symbol: "CL=F", name: "🛢️ WTI유", ticker: "WTI", chartSymbol: "TVC:USOIL" },
       { src: "yahoo", symbol: "BZ=F", name: "🛢️ 브렌트유", ticker: "BRENT", chartSymbol: "TVC:UKOIL" },
       { src: "yahoo", symbol: "NG=F", name: "🔥 천연가스", ticker: "NATGAS", chartSymbol: "NYMEX:NG1!" },
@@ -3305,18 +3607,26 @@ function fredSnapshot(points) {
   return { price, change, changePct, date: new Date(latest[0]) };
 }
 
+// 암호화폐 로고 — jsDelivr에 호스팅된 spothq/cryptocurrency-icons 세트를 티커(소문자)로 조회, 실패 시 🪙 배지로 폴백(추가 네트워크 호출 없음)
+function cryptoLogoHtml(ticker) {
+  const sym = ticker.toLowerCase();
+  const src = `https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/${encodeURIComponent(sym)}.png`;
+  return `<span class="crypto-logo-wrap"><img class="crypto-logo" src="${src}" alt="" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';" /><span class="crypto-logo-badge" style="display:none;">🪙</span></span>`;
+}
+
 // 지수 카드 1행 HTML — 이미지 스타일(왼쪽 종목/날짜/티커, 오른쪽 가격/변동량(퍼센트))
 // chartSymbol이 있는 종목은 클릭 시 기존 TradingView 차트 모달이 열리도록 price-chart-link 델리게이션에 태움
 function indexRowHtml(item, snap) {
   const num = (n, d = 2) => n.toLocaleString("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d });
   const dateStr = snap && snap.date ? `${String(snap.date.getMonth() + 1).padStart(2, "0")}/${String(snap.date.getDate()).padStart(2, "0")}` : "";
   const sub = `${dateStr ? `<span class="idx-clock">🕐 ${dateStr}</span> | ` : ""}<span class="idx-ticker">${escapeHtml(item.ticker)}</span>`;
+  const nameHtml = `${item.crypto ? cryptoLogoHtml(item.ticker) : ""}${escapeHtml(item.name)}`;
   const clickable = !!item.chartSymbol;
   const rowClass = `idx-row${clickable ? " price-chart-link idx-row-clickable" : ""}`;
   const rowAttrs = clickable ? ` data-chart-symbol="${escapeHtml(item.chartSymbol)}" role="button" tabindex="0"` : "";
 
   if (!snap || snap.price === null || snap.price === undefined) {
-    return `<div class="${rowClass}"${rowAttrs}><div class="idx-left"><div class="idx-name">${escapeHtml(item.name)}</div><div class="idx-sub">${sub}</div></div><div class="idx-right"><div class="idx-price">N/A</div></div></div>`;
+    return `<div class="${rowClass}"${rowAttrs}><div class="idx-left"><div class="idx-name">${nameHtml}</div><div class="idx-sub">${sub}</div></div><div class="idx-right"><div class="idx-price">N/A</div></div></div>`;
   }
 
   const vSuffix = item.vSuffix || "";
@@ -3326,7 +3636,7 @@ function indexRowHtml(item, snap) {
   let deltaStr = "";
   let cls = "";
   if (snap.change !== null && snap.change !== undefined) {
-    cls = snap.change >= 0 ? "delta-up" : "delta-down"; // 초록=상승, 빨강=하락(앱 공통 색상)
+    cls = snap.change >= 0 ? "delta-up" : "delta-down"; // 빨강=상승, 파랑=하락(앱 공통 색상)
     deltaStr = `${sign(snap.change)}${num(snap.change)}${cSuffix}`;
     // 스프레드(0 부근) 등에서 퍼센트가 비정상적으로 커지면 생략
     if (snap.changePct !== null && snap.changePct !== undefined && Number.isFinite(snap.changePct) && Math.abs(snap.changePct) < 1000) {
@@ -3337,7 +3647,7 @@ function indexRowHtml(item, snap) {
   return `
     <div class="${rowClass}"${rowAttrs}>
       <div class="idx-left">
-        <div class="idx-name">${escapeHtml(item.name)}</div>
+        <div class="idx-name">${nameHtml}</div>
         <div class="idx-sub">${sub}</div>
       </div>
       <div class="idx-right">
@@ -3404,7 +3714,7 @@ async function runIndexTab() {
 
     indexStatus.style.display = "none";
     indexResults.innerHTML = `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 환율·지수·원자재·가상자산은 전일 종가 대비, 국채·금리차는 FRED 최신치(전 영업일 대비, 일본·한국 10년물은 월간 데이터라 전월 대비) 기준이며 상승은 초록·하락은 빨강입니다.</p>
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 환율·지수·원자재·가상자산은 전일 종가 대비, 국채·금리차는 FRED 최신치(전 영업일 대비, 일본·한국 10년물은 월간 데이터라 전월 대비) 기준이며 상승은 빨강·하락은 파랑입니다.</p>
       <div class="idx-list">${rows}</div>
       ${moreBtnHtml}
     `;
@@ -3419,7 +3729,74 @@ async function runIndexTab() {
     indexStatus.textContent = `❌ ${err.message || "지수 데이터를 가져오지 못했습니다."}`;
   }
 }
-el("indexRefreshBtn").addEventListener("click", () => runIndexTab());
+
+// ---------- 지수 탭: 새로고침 버튼 대신 아래로 당겨서 새로고침(pull-to-refresh) ----------
+// 문서/윈도우가 맨 위로 스크롤된 상태에서 지수 탭이 활성화되어 있을 때만 동작(다른 탭·스크롤 중엔 무시).
+// 캐로셀 좌우 스와이프(#carouselViewport의 pointer 핸들러)는 수평 드래그만 가로채므로 수직 당김과 충돌하지 않음.
+(function setupIndexPullToRefresh() {
+  const panel = el("panelIndex");
+  const indicator = el("indexPullToRefresh");
+  if (!panel || !indicator) return;
+  const indicatorText = indicator.querySelector(".pull-refresh-text");
+  const THRESHOLD = 60;
+  let startY = null;
+  let pulling = false;
+  let refreshing = false;
+
+  panel.addEventListener(
+    "touchstart",
+    (e) => {
+      if (TAB_ORDER[activeTabIndex] !== "index" || window.scrollY > 0 || refreshing) {
+        startY = null;
+        return;
+      }
+      startY = e.touches[0].clientY;
+      pulling = false;
+    },
+    { passive: true }
+  );
+
+  panel.addEventListener(
+    "touchmove",
+    (e) => {
+      if (startY === null || refreshing) return;
+      const dy = e.touches[0].clientY - startY;
+      if (dy <= 0 || window.scrollY > 0) {
+        pulling = false;
+        indicator.classList.remove("pull-refresh-visible", "pull-refresh-ready");
+        return;
+      }
+      pulling = true;
+      const dist = Math.min(dy, THRESHOLD * 1.6);
+      indicator.classList.add("pull-refresh-visible");
+      indicator.classList.toggle("pull-refresh-ready", dist >= THRESHOLD);
+      indicator.style.transform = `translateY(${dist}px)`;
+      indicatorText.textContent = dist >= THRESHOLD ? "↑ 놓으면 새로고침" : "↓ 당겨서 새로고침";
+    },
+    { passive: true }
+  );
+
+  panel.addEventListener("touchend", () => {
+    if (!pulling) {
+      startY = null;
+      return;
+    }
+    const ready = indicator.classList.contains("pull-refresh-ready");
+    indicator.classList.remove("pull-refresh-visible", "pull-refresh-ready");
+    indicator.style.transform = "";
+    startY = null;
+    pulling = false;
+    if (ready && !refreshing) {
+      refreshing = true;
+      indicatorText.textContent = "🔄 새로고침 중...";
+      indicator.classList.add("pull-refresh-visible");
+      Promise.resolve(runIndexTab()).finally(() => {
+        refreshing = false;
+        indicator.classList.remove("pull-refresh-visible");
+      });
+    }
+  });
+})();
 
 // ---------- 지수 자동 갱신: 지수 탭이 활성화되어 있는 동안만 주기적으로 새로고침 ----------
 // 0.5초 간격은 무료 CORS 프록시·FRED에 초당 수십 건의 요청을 보내는 셈이라 곧바로 차단(429/520)당해
@@ -4032,10 +4409,10 @@ async function computeMacroScoreChartData() {
   const vixPairs = chartClosePairs(vixChartData);
   if (vixPairs.length < 2) throw new Error("VIX 장기 데이터를 가져오지 못했습니다.");
 
-  // 6개월 간격(2월 1일/8월 1일)으로 30년치 — 시작 연도는 오늘 기준으로 매번 다시 계산되므로 시간이 지나도 항상 최근 30년을 가리킴
-  // 라벨은 점수 대신 원본 VIX 값으로 표시
+  // 1년 간격(매년 1월 1일)으로 30년치 — 시작 연도는 오늘 기준으로 매번 다시 계산되므로 시간이 지나도 항상 최근 30년을 가리킴
+  // 라벨은 그 시점의 투자황금기(VIX 환산) 점수로 표시
   const points = [];
-  for (let anchor = new Date(startYear, 1, 1); anchor < now; anchor = addMonths(anchor, 6)) {
+  for (let anchor = new Date(startYear, 0, 1); anchor < now; anchor = addMonths(anchor, 12)) {
     const anchorSec = Math.floor(anchor.getTime() / 1000);
     const pricePoint = closestPair(pairs, anchorSec);
     if (!pricePoint || Math.abs(pricePoint.t - anchorSec) > 20 * 24 * 3600) continue; // 그 시점 데이터가 없으면(상장 전 등) 건너뜀
@@ -4047,7 +4424,7 @@ async function computeMacroScoreChartData() {
   const liveScore = computeMacroScore(liveMacro);
   points.push({ t: last.t, price: last.c, score: liveScore.total, vix: liveMacro.vix, isNow: true });
 
-  // 각 점 시점부터 다음 6개월 구간 동안 S&P500이 20% 이상 급락했는지 표시(라벨을 노란색으로 강조)
+  // 각 점 시점부터 다음 1년 구간 동안 S&P500이 20% 이상 급락했는지 표시(라벨을 노란색으로 강조)
   for (let i = 0; i < points.length - 1; i++) {
     const pct = (points[i + 1].price / points[i].price - 1) * 100;
     points[i].crashWarn = pct <= -20;
@@ -4067,7 +4444,8 @@ function getMacroScoreChartData() {
 }
 
 function buildMacroScoreChartSvg({ pairs, points }) {
-  const W = 780,
+  // 1년 간격 점(약 30개)을 가로 스크롤로 넉넉하게 볼 수 있도록 점 개수에 비례해 캔버스 폭을 넓힘(고정 min-width는 CSS에서 강제)
+  const W = Math.max(780, points.length * 45),
     H = 420;
   const ML = 56,
     MR = 20,
@@ -4092,11 +4470,11 @@ function buildMacroScoreChartSvg({ pairs, points }) {
     gridSvg += `<text x="${(ML - 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="10" fill="#8a90a3">${Math.round(v).toLocaleString()}</text>`;
   }
 
-  // x축: 5년 단위로 연도 라벨(30년치를 1년 단위로 다 넣으면 서로 겹쳐서 5년 단위로 성기게 표시)
+  // x축: 매년 연도 라벨(가로 스크롤 가능한 넓은 캔버스라 1년 단위로 넣어도 겹치지 않음)
   let axisSvg = "";
   const firstYear = new Date(minT * 1000).getFullYear();
   const lastYear = new Date(maxT * 1000).getFullYear();
-  for (let y = Math.ceil(firstYear / 5) * 5; y <= lastYear; y += 5) {
+  for (let y = firstYear; y <= lastYear; y += 1) {
     const t = Math.floor(new Date(y, 0, 1).getTime() / 1000);
     if (t < minT || t > maxT) continue;
     const x = xFn(t);
@@ -4108,8 +4486,8 @@ function buildMacroScoreChartSvg({ pairs, points }) {
   let linesSvg = `<path d="${linePath}" fill="none" stroke="#e5342f" stroke-width="1.8" stroke-linejoin="round" />`;
 
   // 점(그 시점의 투자황금기 점수)은 빨간 선 위(그 날짜의 S&P 실제 값 높이)에 정확히 얹어서 찍음 — 8점 이상(지금 점도 포함)은 주황,
-  // 10점을 넘으면(VIX 35+ 극단적 공포) 점점 더 쨍한 골드로, 그 외 과거 점은 흰색. 라벨은 점수 대신 원본 VIX 값으로 표시하고,
-  // 위/아래를 번갈아 배치해 6개월 간격(약 60개)이 서로 덜 겹치게 함
+  // 10점을 넘으면(VIX 35+ 극단적 공포) 점점 더 쨍한 골드로, 그 외 과거 점은 흰색. 라벨은 VIX를 환산한 투자황금기 점수(0~10점)로 표시하고,
+  // 위/아래를 번갈아 배치해 1년 간격(약 30개)이 서로 덜 겹치게 함
   points.forEach((p, i) => {
     const x = xFn(p.t);
     const y = yFn(p.price);
@@ -4119,15 +4497,15 @@ function buildMacroScoreChartSvg({ pairs, points }) {
     const textColor = p.crashWarn ? "#f5d90a" : dotColor;
     const r = p.isNow ? 4.2 : 2.6;
     linesSvg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${dotColor}" stroke="#000" stroke-width="1" />`;
-    const vixTxt = p.vix !== null && p.vix !== undefined ? `VIX ${p.vix.toFixed(1)}` : "N/A";
-    const fontSize = p.isNow ? 10 : 7.5;
+    const scoreTxt = p.score !== null && p.score !== undefined ? `${p.score}점` : "N/A";
+    const fontSize = p.isNow ? 10 : 8.5;
     const rowH = p.isNow ? 12 : 9;
     const above = p.isNow || i % 2 === 0;
     const labelY = above ? y - 6 : y + rowH;
-    linesSvg += `<text x="${x.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-size="${fontSize}" font-weight="700" fill="${textColor}">${vixTxt}</text>`;
+    linesSvg += `<text x="${x.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-size="${fontSize}" font-weight="700" fill="${textColor}">${scoreTxt}</text>`;
   });
 
-  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="S&P500 VIX별 S&P500 30년 추이">
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="VIX지수를 활용한 투자시점 점검표">
     <rect x="0" y="0" width="${W}" height="${H}" fill="#000" />
     ${gridSvg}
     ${axisSvg}
@@ -4146,8 +4524,8 @@ async function renderMacroScoreChart() {
     container.innerHTML = buildMacroScoreChartSvg(data);
     macroScoreChartRendered = true;
     caption.textContent =
-      "빨간 선: S&P500 지수(1996~현재, 주간 종가) · 점 라벨: 6개월 간격(2월/8월 1일 기준) VIX(공포지수) 값 · " +
-      "주황~골드 점: S&P500 VIX 점수 8점 이상(10점을 넘을수록 더 진한 골드, 현재 포함), 흰 점: 그 외 · 노란 글씨: 그 시점 이후 6개월간 20% 이상 급락(참고용, 투자 자문이 아닙니다)";
+      "빨간 선: S&P500 지수(1996~현재, 주간 종가) · 점 라벨: 1년 간격(매년 1월 1일 기준) VIX(공포지수)를 환산한 투자황금기 점수(0~10점) · " +
+      "주황~골드 점: 점수 8점 이상(10점을 넘을수록 더 진한 골드, 현재 포함), 흰 점: 그 외 · 노란 글씨: 그 시점 이후 1년간 20% 이상 급락(참고용, 투자 자문이 아닙니다)";
   } catch (err) {
     container.innerHTML = `<p class="error-inline" style="text-align:center;padding:20px 0;">❌ S&amp;P500 장기 데이터를 불러오지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
   }

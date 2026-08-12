@@ -1,0 +1,67 @@
+{
+  "updatedAt": "2026-08-12",
+  "sourceNote": "FOMC/BOJ/BOK/CPI/고용 발표일은 각 기관이 연초에 공개한 2026년 공식 일정을 조사해 정리한 정적 데이터이며, 회의 결과에 따라 일정이 변경될 수 있습니다.",
+  "events": [
+    { "date": "2026-01-15", "category": "rate", "country": "kr", "title": "한국은행 기준금리 결정" },
+    { "date": "2026-01-23", "category": "rate", "country": "jp", "title": "일본은행(BOJ) 금리 결정" },
+    { "date": "2026-01-28", "category": "rate", "country": "us", "title": "FOMC 금리 결정" },
+
+    { "date": "2026-02-11", "category": "jobs", "country": "us", "title": "미국 고용지표(실업률, 1월분)" },
+    { "date": "2026-02-13", "category": "cpi", "country": "us", "title": "미국 CPI(1월분)" },
+    { "date": "2026-02-14", "category": "13f", "country": "us", "title": "13F 기관 공시 마감(4분기분)" },
+    { "date": "2026-02-26", "category": "rate", "country": "kr", "title": "한국은행 기준금리 결정" },
+
+    { "date": "2026-03-06", "category": "jobs", "country": "us", "title": "미국 고용지표(실업률, 2월분)" },
+    { "date": "2026-03-11", "category": "cpi", "country": "us", "title": "미국 CPI(2월분)" },
+    { "date": "2026-03-18", "category": "rate", "country": "us", "title": "FOMC 금리 결정" },
+    { "date": "2026-03-19", "category": "rate", "country": "jp", "title": "일본은행(BOJ) 금리 결정" },
+
+    { "date": "2026-04-03", "category": "jobs", "country": "us", "title": "미국 고용지표(실업률, 3월분)" },
+    { "date": "2026-04-10", "category": "cpi", "country": "us", "title": "미국 CPI(3월분)" },
+    { "date": "2026-04-10", "category": "rate", "country": "kr", "title": "한국은행 기준금리 결정" },
+    { "date": "2026-04-28", "category": "rate", "country": "jp", "title": "일본은행(BOJ) 금리 결정" },
+    { "date": "2026-04-29", "category": "rate", "country": "us", "title": "FOMC 금리 결정" },
+
+    { "date": "2026-05-08", "category": "jobs", "country": "us", "title": "미국 고용지표(실업률, 4월분)" },
+    { "date": "2026-05-12", "category": "cpi", "country": "us", "title": "미국 CPI(4월분)" },
+    { "date": "2026-05-15", "category": "13f", "country": "us", "title": "13F 기관 공시 마감(1분기분)" },
+    { "date": "2026-05-28", "category": "rate", "country": "kr", "title": "한국은행 기준금리 결정" },
+
+    { "date": "2026-06-05", "category": "jobs", "country": "us", "title": "미국 고용지표(실업률, 5월분)" },
+    { "date": "2026-06-10", "category": "cpi", "country": "us", "title": "미국 CPI(5월분)" },
+    { "date": "2026-06-16", "category": "rate", "country": "jp", "title": "일본은행(BOJ) 금리 결정" },
+    { "date": "2026-06-17", "category": "rate", "country": "us", "title": "FOMC 금리 결정" },
+
+    { "date": "2026-07-02", "category": "jobs", "country": "us", "title": "미국 고용지표(실업률, 6월분)" },
+    { "date": "2026-07-14", "category": "cpi", "country": "us", "title": "미국 CPI(6월분)" },
+    { "date": "2026-07-16", "category": "rate", "country": "kr", "title": "한국은행 기준금리 결정" },
+    { "date": "2026-07-29", "category": "rate", "country": "us", "title": "FOMC 금리 결정" },
+    { "date": "2026-07-31", "category": "rate", "country": "jp", "title": "일본은행(BOJ) 금리 결정" },
+
+    { "date": "2026-08-07", "category": "jobs", "country": "us", "title": "미국 고용지표(실업률, 7월분)" },
+    { "date": "2026-08-12", "category": "cpi", "country": "us", "title": "미국 CPI(7월분)" },
+    { "date": "2026-08-14", "category": "13f", "country": "us", "title": "13F 기관 공시 마감(2분기분)" },
+    { "date": "2026-08-27", "category": "rate", "country": "kr", "title": "한국은행 기준금리 결정" },
+
+    { "date": "2026-09-04", "category": "jobs", "country": "us", "title": "미국 고용지표(실업률, 8월분)" },
+    { "date": "2026-09-11", "category": "cpi", "country": "us", "title": "미국 CPI(8월분)" },
+    { "date": "2026-09-16", "category": "rate", "country": "us", "title": "FOMC 금리 결정" },
+    { "date": "2026-09-18", "category": "rate", "country": "jp", "title": "일본은행(BOJ) 금리 결정" },
+
+    { "date": "2026-10-02", "category": "jobs", "country": "us", "title": "미국 고용지표(실업률, 9월분)" },
+    { "date": "2026-10-14", "category": "cpi", "country": "us", "title": "미국 CPI(9월분)" },
+    { "date": "2026-10-22", "category": "rate", "country": "kr", "title": "한국은행 기준금리 결정" },
+    { "date": "2026-10-28", "category": "rate", "country": "us", "title": "FOMC 금리 결정" },
+    { "date": "2026-10-30", "category": "rate", "country": "jp", "title": "일본은행(BOJ) 금리 결정" },
+
+    { "date": "2026-11-06", "category": "jobs", "country": "us", "title": "미국 고용지표(실업률, 10월분, 추정)" },
+    { "date": "2026-11-10", "category": "cpi", "country": "us", "title": "미국 CPI(10월분)" },
+    { "date": "2026-11-14", "category": "13f", "country": "us", "title": "13F 기관 공시 마감(3분기분)" },
+    { "date": "2026-11-26", "category": "rate", "country": "kr", "title": "한국은행 기준금리 결정" },
+
+    { "date": "2026-12-04", "category": "jobs", "country": "us", "title": "미국 고용지표(실업률, 11월분, 추정)" },
+    { "date": "2026-12-09", "category": "rate", "country": "us", "title": "FOMC 금리 결정" },
+    { "date": "2026-12-10", "category": "cpi", "country": "us", "title": "미국 CPI(11월분)" },
+    { "date": "2026-12-18", "category": "rate", "country": "jp", "title": "일본은행(BOJ) 금리 결정" }
+  ]
+}
