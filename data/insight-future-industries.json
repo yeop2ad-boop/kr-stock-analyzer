@@ -1,0 +1,44 @@
+{
+  "updatedAt": "2026-08-12",
+  "sourceNote": "블랙록·JP모건·골드만삭스 등 대형 자산운용사·투자은행의 2025~2026년 테마 리서치(메가트렌드·아웃룩 보고서)가 공통적으로 유망 산업으로 지목한 20개 분야를, 각 산업의 연평균 성장률(CAGR)은 시장조사기관(Grand View Research, MarketsandMarkets, Precedence Research 등)의 공개 추정치를 참고해 정리했습니다. 기관별 구분은 해당 산업을 자주 다루는 대표 리서치 성격에 따른 분류이며, 특정 기관이 이 수치를 직접 발표했다는 의미는 아닙니다.",
+  "groups": [
+    {
+      "institution": "블랙록(BlackRock)",
+      "focus": "인프라·에너지 메가트렌드",
+      "industries": [
+        { "name": "데이터센터 인프라", "cagrPct": 15.0 },
+        { "name": "반도체(AI 칩 중심)", "cagrPct": 14.0 },
+        { "name": "태양광·재생에너지", "cagrPct": 15.0 },
+        { "name": "배터리 에너지저장(BESS)", "cagrPct": 17.0 },
+        { "name": "원자력·차세대 소형원자로(SMR)", "cagrPct": 10.0 },
+        { "name": "우주산업(뉴스페이스)", "cagrPct": 8.0 },
+        { "name": "방위산업 테크", "cagrPct": 6.0 }
+      ]
+    },
+    {
+      "institution": "JP모건(JPMorgan)",
+      "focus": "AI·디지털 전환",
+      "industries": [
+        { "name": "AI 소프트웨어·서비스", "cagrPct": 29.0 },
+        { "name": "클라우드 컴퓨팅", "cagrPct": 20.0 },
+        { "name": "디지털 결제·핀테크", "cagrPct": 17.0 },
+        { "name": "전기차(EV) 배터리", "cagrPct": 18.0 },
+        { "name": "자율주행", "cagrPct": 20.0 },
+        { "name": "드론(UAV)", "cagrPct": 14.0 },
+        { "name": "3D프린팅(적층제조)", "cagrPct": 20.0 }
+      ]
+    },
+    {
+      "institution": "골드만삭스(Goldman Sachs)",
+      "focus": "차세대 기술·헬스케어",
+      "industries": [
+        { "name": "휴머노이드 로봇", "cagrPct": 40.0 },
+        { "name": "양자컴퓨팅", "cagrPct": 32.0 },
+        { "name": "산업용 로봇·자동화", "cagrPct": 20.0 },
+        { "name": "사이버보안", "cagrPct": 12.0 },
+        { "name": "GLP-1·비만치료제", "cagrPct": 23.0 },
+        { "name": "유전자치료·바이오테크", "cagrPct": 8.0 }
+      ]
+    }
+  ]
+}

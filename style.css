@@ -186,6 +186,24 @@ body {
 .econ-cal-cat { font-size: 11px; color: var(--accent); font-weight: 700; }
 .econ-cal-title { font-weight: 600; }
 
+/* 6.미래산업 성장성 — 기관별(블랙록/JP모건/골드만삭스) 유망 산업 20개 성장률 목록 */
+.future-ind-group { margin-top: 18px; }
+.future-ind-group:first-of-type { margin-top: 10px; }
+.future-ind-group-title { font-size: 14px; font-weight: 800; margin: 0 0 6px; }
+.future-ind-list { display: flex; flex-direction: column; }
+.future-ind-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 4px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.future-ind-row:last-child { border-bottom: none; }
+.future-ind-name { font-weight: 600; }
+.future-ind-cagr { white-space: nowrap; }
+
 .historical-full-buttons {
   display: flex;
   gap: 8px;
@@ -549,6 +567,12 @@ table.top30-table { width: 100%; border-collapse: collapse; margin-top: 14px; fo
 table.top30-table th, table.top30-table td { padding: 8px 6px; border-bottom: 1px solid var(--border); text-align: center; }
 table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: #b8860b; font-weight: 800; }
 
+/* 좁은 화면에서 표가 억지로 줄어들며 셀 내용이 줄바꿈되는 대신, 표 자체를 가로 스크롤(테이블은 최소폭 유지) */
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+/* 인사이트 보유종목 표의 "비중 (변동)" 컬럼(3번째)이 모바일에서 줄바꿈되던 문제 — 최소폭을 넉넉히 줘서 한 줄로 유지 */
+table.insight-holdings-table { min-width: 520px; }
+table.insight-holdings-table th:nth-child(3), table.insight-holdings-table td:nth-child(3) { min-width: 130px; white-space: nowrap; }
+
 .source-note {
   font-size: 12px;
   color: var(--muted);
@@ -703,8 +727,8 @@ table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: #b8860b; fon
 table.fin-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 13px; }
 table.fin-table th, table.fin-table td { padding: 8px 6px; border-bottom: 1px solid var(--border); text-align: right; }
 table.fin-table th:first-child, table.fin-table td:first-child { text-align: left; }
-.delta-up { color: var(--pos); }
-.delta-down { color: var(--neg); }
+.delta-up { color: var(--pos); font-weight: 800; }
+.delta-down { color: var(--neg); font-weight: 800; }
 
 .bar-chart { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
 .bar-row { display: grid; grid-template-columns: 42px 46px 1fr; align-items: center; gap: 8px; font-size: 13px; }

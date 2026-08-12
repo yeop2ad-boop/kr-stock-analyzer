@@ -1464,6 +1464,8 @@ const insightButtons = {
   goldman: el("insightGoldmanBtn"),
   morganStanley: el("insightMorganStanleyBtn"),
   jpmorgan: el("insightJpmorganBtn"),
+  ark: el("insightArkBtn"),
+  softbank: el("insightSoftbankBtn"),
 };
 const insightCategoryButtons = {
   firms: el("insightCatFirmsBtn"),
@@ -1471,6 +1473,7 @@ const insightCategoryButtons = {
   tech: el("insightCatTechBtn"),
   calendar: el("insightCatCalendarBtn"),
   news: el("insightCatNewsBtn"),
+  futureIndustry: el("insightCatFutureIndustryBtn"),
 };
 
 let activeTabIndex = 0;
@@ -2863,6 +2866,7 @@ function runInsightCategory(key) {
   else if (key === "tech") runInsightPlaceholder("신기술", "신기술 관련 인사이트");
   else if (key === "calendar") runInsightCalendar();
   else if (key === "news") runInsightPlaceholder("뉴스", "인사이트 뉴스");
+  else if (key === "futureIndustry") runInsightFutureIndustry();
 }
 
 // 인사이트 서브내비(거대기업 13F 보유종목)에서 현재 선택된 버튼만 활성 표시
@@ -2882,6 +2886,8 @@ bindInsight(insightButtons.berkshire, "berkshire");
 bindInsight(insightButtons.goldman, "goldman");
 bindInsight(insightButtons.morganStanley, "morganStanley");
 bindInsight(insightButtons.jpmorgan, "jpmorgan");
+bindInsight(insightButtons.ark, "ark");
+bindInsight(insightButtons.softbank, "softbank");
 
 // 거대기업(블랙록·뱅가드·버크셔 등) 13F 공시 기반 보유종목 TOP20
 // SEC EDGAR 13F-HR(분기 공시)에서 직접 집계한 데이터. 13F는 분기 1회(최대 45일 지연)만 갱신되므로
@@ -2895,6 +2901,8 @@ const INSIGHT_INSTITUTION_LABELS = {
   goldman: "골드만삭스",
   morganStanley: "모건스탠리",
   jpmorgan: "JP모건 체이스",
+  ark: "ARK 인베스트",
+  softbank: "소프트뱅크",
 };
 
 // 실제 데이터는 data/insight-<institution>.json에서 fetch — 이 파일들은 scripts/scan-13f.js가
@@ -2932,8 +2940,8 @@ function insightTableHtml(data) {
     .map((h, i) => {
       const weightHtml =
         h.weightChangePt === null
-          ? `${h.weightPct.toFixed(2)}%<br><span class="muted" style="font-size:11px;">(신규)</span>`
-          : `${h.weightPct.toFixed(2)}%<br><span class="${h.weightChangePt >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(h.weightChangePt, 2)}p)</span>`;
+          ? `${h.weightPct.toFixed(2)}%<br><span class="muted" style="font-size:11px;white-space:nowrap;">(신규)</span>`
+          : `${h.weightPct.toFixed(2)}%<br><span class="${h.weightChangePt >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;white-space:nowrap;">(${fmtPct(h.weightChangePt, 2)})</span>`;
       const valueDeltaHtml =
         h.valueChangePct === null
           ? `<span class="muted">신규 편입</span>`
@@ -2957,12 +2965,14 @@ function insightTableHtml(data) {
   return `
     <p class="disclaimer tab-note">📢 <b>${escapeHtml(data.filerName)}</b> SEC 13F 공시 기준(${data.asOf} 보유 기준, ${data.filedDate} 제출) 보유종목 TOP20 · 총 신고 가치 ${fmtBigUSD(data.totalValueUSD)} · 직전 제출(${data.prevFiledDate}) 대비 비중·금액 변동 표시. 13F는 매수/매도 시점이 아닌 분기말 스냅샷이라 최대 45일 지연될 수 있으며, 투자 자문이 아닙니다.</p>
     ${noteHtml}
-    <table class="top30-table">
-      <thead>
-        <tr><th>순위</th><th>종목</th><th>${data.filedDate.slice(5)}<br>비중 (변동)</th><th>총 신고가치<br>(금액변동)</th></tr>
-      </thead>
-      <tbody>${rows}</tbody>
-    </table>
+    <div class="table-scroll">
+      <table class="top30-table insight-holdings-table">
+        <thead>
+          <tr><th>순위</th><th>종목</th><th>${data.filedDate.slice(5)}<br>비중 (변동)</th><th>총 신고가치<br>(금액변동)</th></tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
   `;
 }
 
@@ -3102,6 +3112,56 @@ async function runInsightCalendar() {
   results.innerHTML = `
     <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 일반기업 실적발표는 주요 대형주 대상 추정치(회계분기 마감 기준), 13F 공시 마감·금리 발표·CPI·고용지표는 2026년 공식 일정 조사 기준(변경될 수 있음), 옵션만기일은 매월 세 번째 금요일로 계산한 값입니다. 투자 자문이 아닙니다.</p>
     <div class="econ-cal-list">${rows || `<p class="muted" style="text-align:center;padding:16px 0;">표시할 예정 일정이 없습니다.</p>`}</div>
+  `;
+}
+
+// ---------- 6. 미래산업 성장성 ----------
+// 블랙록·JP모건·골드만삭스(대형 자산운용사·투자은행 중 규모가 큰 3곳) 테마 리서치가 공통적으로 짚는
+// 유망 산업 20개와 연평균 성장률(CAGR)을 정적으로 정리한 data/insight-future-industries.json을 표시
+let futureIndustryDataPromise = null;
+function getFutureIndustryData() {
+  if (!futureIndustryDataPromise) {
+    futureIndustryDataPromise = fetch("data/insight-future-industries.json", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+  }
+  return futureIndustryDataPromise;
+}
+
+async function runInsightFutureIndustry() {
+  const status = el("insightStatus");
+  const results = el("insightResults");
+  status.style.display = "";
+  status.textContent = "⏳ 미래산업 성장성 데이터를 불러오는 중...";
+  results.innerHTML = "";
+
+  const data = await getFutureIndustryData();
+  if (!data || !data.groups) {
+    status.textContent = "🚧 미래산업 성장성 데이터를 가져오지 못했습니다.";
+    return;
+  }
+
+  status.style.display = "none";
+  const groupsHtml = data.groups
+    .map((g) => {
+      const rows = [...g.industries]
+        .sort((a, b) => b.cagrPct - a.cagrPct)
+        .map(
+          (ind) =>
+            `<div class="future-ind-row"><span class="future-ind-name">${escapeHtml(ind.name)}</span><span class="future-ind-cagr delta-up">연평균 +${ind.cagrPct.toFixed(1)}%</span></div>`
+        )
+        .join("");
+      return `
+        <div class="future-ind-group">
+          <h3 class="future-ind-group-title">${escapeHtml(g.institution)} <span class="muted" style="font-weight:400;font-size:12px;">· ${escapeHtml(g.focus)}</span></h3>
+          <div class="future-ind-list">${rows}</div>
+        </div>`;
+    })
+    .join("");
+
+  results.innerHTML = `
+    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${escapeHtml(data.sourceNote)}</p>
+    ${groupsHtml}
   `;
 }
 

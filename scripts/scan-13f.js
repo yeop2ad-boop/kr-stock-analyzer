@@ -21,6 +21,10 @@ const INSTITUTIONS = {
   goldman: { cik: "886982", filerName: "Goldman Sachs Group Inc" },
   morganStanley: { cik: "895421", filerName: "Morgan Stanley" },
   jpmorgan: { cik: "19617", filerName: "JPMorgan Chase & Co" },
+  ark: { cik: "1697748", filerName: "ARK Investment Management LLC" },
+  // 소프트뱅크그룹 본사는 13F-NT(면제 통지)만 제출 — 실제 미국 주식 보유(비전펀드) 신고는
+  // 자회사 SB Investment Advisers (UK) Ltd가 13F-HR로 직접 제출함
+  softbank: { cik: "1731509", filerName: "SB Investment Advisers (UK) Ltd (SoftBank Vision Fund)" },
 };
 
 // CUSIP은 13F에 티커 없이 회사명만 나와서 수동 매칭 — 대형 운용사 top20에 반복적으로 등장하는
