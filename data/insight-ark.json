@@ -1,0 +1,213 @@
+{
+  "filerName": "ARK Investment Management LLC",
+  "asOf": "2026-03-31",
+  "prevAsOf": "2025-12-31",
+  "filedDate": "2026-05-12",
+  "prevFiledDate": "2026-02-11",
+  "totalValueUSD": 12859485476,
+  "totalValueLabel": "$12.86B",
+  "accessionNumber": "0001104659-26-059240",
+  "updatedAt": "2026-08-12T16:12:54.747Z",
+  "holdings": [
+    {
+      "ticker": "TSLA",
+      "name": "Tesla Inc",
+      "cusip": "88160R101",
+      "weightPct": 8.18,
+      "weightChangePt": -0.51,
+      "valueUSD": 1052546690,
+      "valueChangeUSD": -258158459,
+      "valueChangePct": -19.7
+    },
+    {
+      "ticker": null,
+      "name": "Advanced Micro Devices Inc",
+      "cusip": "007903107",
+      "weightPct": 4.29,
+      "weightChangePt": 0.63,
+      "valueUSD": 551875889,
+      "valueChangeUSD": 461225,
+      "valueChangePct": 0.1
+    },
+    {
+      "ticker": null,
+      "name": "CRISPR Therapeutics AG",
+      "cusip": "H17182108",
+      "weightPct": 4.19,
+      "weightChangePt": 0.52,
+      "valueUSD": 538189027,
+      "valueChangeUSD": -13587650,
+      "valueChangePct": -2.5
+    },
+    {
+      "ticker": null,
+      "name": "Shopify Inc",
+      "cusip": "82509L107",
+      "weightPct": 3.85,
+      "weightChangePt": -0.4,
+      "valueUSD": 495553074,
+      "valueChangeUSD": -144930060,
+      "valueChangePct": -22.6
+    },
+    {
+      "ticker": null,
+      "name": "Palantir Technologies Inc",
+      "cusip": "69608A108",
+      "weightPct": 3.54,
+      "weightChangePt": -0.28,
+      "valueUSD": 454913400,
+      "valueChangeUSD": -119556932,
+      "valueChangePct": -20.8
+    },
+    {
+      "ticker": null,
+      "name": "Tempus AI Inc",
+      "cusip": "88023B103",
+      "weightPct": 3.38,
+      "weightChangePt": 0.42,
+      "valueUSD": 434462230,
+      "valueChangeUSD": -11813019,
+      "valueChangePct": -2.6
+    },
+    {
+      "ticker": null,
+      "name": "Circle Internet Group Inc",
+      "cusip": "172573107",
+      "weightPct": 3.35,
+      "weightChangePt": 1.17,
+      "valueUSD": 430249668,
+      "valueChangeUSD": 101818536,
+      "valueChangePct": 31
+    },
+    {
+      "ticker": null,
+      "name": "Robinhood Markets Inc",
+      "cusip": "770700102",
+      "weightPct": 3.24,
+      "weightChangePt": -0.37,
+      "valueUSD": 416012113,
+      "valueChangeUSD": -127570341,
+      "valueChangePct": -23.5
+    },
+    {
+      "ticker": null,
+      "name": "Coinbase Global Inc",
+      "cusip": "19260Q107",
+      "weightPct": 3.22,
+      "weightChangePt": -0.59,
+      "valueUSD": 414329300,
+      "valueChangeUSD": -160502388,
+      "valueChangePct": -27.9
+    },
+    {
+      "ticker": null,
+      "name": "Teradyne Inc",
+      "cusip": "880770102",
+      "weightPct": 2.87,
+      "weightChangePt": -0.16,
+      "valueUSD": 369128978,
+      "valueChangeUSD": -86948026,
+      "valueChangePct": -19.1
+    },
+    {
+      "ticker": null,
+      "name": "Roku Inc",
+      "cusip": "77543R102",
+      "weightPct": 2.81,
+      "weightChangePt": -1.42,
+      "valueUSD": 361486706,
+      "valueChangeUSD": -276623069,
+      "valueChangePct": -43.4
+    },
+    {
+      "ticker": null,
+      "name": "ROBLOX Corp",
+      "cusip": "771049103",
+      "weightPct": 2.59,
+      "weightChangePt": -0.01,
+      "valueUSD": 333483744,
+      "valueChangeUSD": -58242569,
+      "valueChangePct": -14.9
+    },
+    {
+      "ticker": null,
+      "name": "Twist Bioscience Corp",
+      "cusip": "90184D100",
+      "weightPct": 2.34,
+      "weightChangePt": 0.75,
+      "valueUSD": 301406681,
+      "valueChangeUSD": 61619487,
+      "valueChangePct": 25.7
+    },
+    {
+      "ticker": null,
+      "name": "Beam Therapeutics Inc",
+      "cusip": "07373V105",
+      "weightPct": 2.25,
+      "weightChangePt": -0.05,
+      "valueUSD": 289139697,
+      "valueChangeUSD": -56450791,
+      "valueChangePct": -16.3
+    },
+    {
+      "ticker": "AMZN",
+      "name": "Amazon.com Inc",
+      "cusip": "023135106",
+      "weightPct": 2.19,
+      "weightChangePt": 0.34,
+      "valueUSD": 282264888,
+      "valueChangeUSD": 2441520,
+      "valueChangePct": 0.9
+    },
+    {
+      "ticker": null,
+      "name": "10X Genomics Inc",
+      "cusip": "88025U109",
+      "weightPct": 1.93,
+      "weightChangePt": 0.56,
+      "valueUSD": 248758647,
+      "valueChangeUSD": 42153859,
+      "valueChangePct": 20.4
+    },
+    {
+      "ticker": null,
+      "name": "Kratos Defense &amp; Security Solutions Inc.",
+      "cusip": "50077B207",
+      "weightPct": 1.91,
+      "weightChangePt": 0.17,
+      "valueUSD": 246164080,
+      "valueChangeUSD": -16038368,
+      "valueChangePct": -6.1
+    },
+    {
+      "ticker": null,
+      "name": "Bullish",
+      "cusip": "G16910120",
+      "weightPct": 1.82,
+      "weightChangePt": 0.61,
+      "valueUSD": 234461649,
+      "valueChangeUSD": 51863884,
+      "valueChangePct": 28.4
+    },
+    {
+      "ticker": null,
+      "name": "Deere &amp; Co",
+      "cusip": "244199105",
+      "weightPct": 1.75,
+      "weightChangePt": 0.44,
+      "valueUSD": 224798576,
+      "valueChangeUSD": 28371148,
+      "valueChangePct": 14.4
+    },
+    {
+      "ticker": null,
+      "name": "Taiwan Semiconductor Manufacturing Company Ltd",
+      "cusip": "874039100",
+      "weightPct": 1.65,
+      "weightChangePt": 0.14,
+      "valueUSD": 212132567,
+      "valueChangeUSD": -15353409,
+      "valueChangePct": -6.7
+    }
+  ]
+}

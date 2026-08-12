@@ -1,0 +1,113 @@
+{
+  "filerName": "SB Investment Advisers (UK) Ltd (SoftBank Vision Fund)",
+  "asOf": "2026-03-31",
+  "prevAsOf": "2025-12-31",
+  "filedDate": "2026-05-18",
+  "prevFiledDate": "2026-02-18",
+  "totalValueUSD": 7728140952,
+  "totalValueLabel": "$7.73B",
+  "accessionNumber": "0001493152-26-023965",
+  "updatedAt": "2026-08-12T16:12:55.342Z",
+  "holdings": [
+    {
+      "ticker": null,
+      "name": "COUPANG INC",
+      "cusip": "22266T109",
+      "weightPct": 70.74,
+      "weightChangePt": 2.4,
+      "valueUSD": 5466557850,
+      "valueChangeUSD": -1363744040,
+      "valueChangePct": -20
+    },
+    {
+      "ticker": null,
+      "name": "GRAB HOLDINGS LIMITED",
+      "cusip": "G4124C109",
+      "weightPct": 19.03,
+      "weightChangePt": -1.03,
+      "valueUSD": 1470575820,
+      "valueChangeUSD": -534389573,
+      "valueChangePct": -26.7
+    },
+    {
+      "ticker": null,
+      "name": "RELAY THERAPEUTICS INC",
+      "cusip": "75943R102",
+      "weightPct": 3.59,
+      "weightChangePt": 1.23,
+      "valueUSD": 277654382,
+      "valueChangeUSD": 41578395,
+      "valueChangePct": 17.6
+    },
+    {
+      "ticker": null,
+      "name": "COMPASS INC",
+      "cusip": "20464U100",
+      "weightPct": 2.08,
+      "weightChangePt": -0.57,
+      "valueUSD": 160854372,
+      "valueChangeUSD": -104061253,
+      "valueChangePct": -39.3
+    },
+    {
+      "ticker": null,
+      "name": "VIR BIOTECHNOLOGY INC",
+      "cusip": "92764N102",
+      "weightPct": 1.27,
+      "weightChangePt": 0.48,
+      "valueUSD": 98094913,
+      "valueChangeUSD": 18999542,
+      "valueChangePct": 24
+    },
+    {
+      "ticker": null,
+      "name": "AURORA INNOVATION INC",
+      "cusip": "051774107",
+      "weightPct": 1.06,
+      "weightChangePt": 0.3,
+      "valueUSD": 81624451,
+      "valueChangeUSD": 5547293,
+      "valueChangePct": 7.3
+    },
+    {
+      "ticker": null,
+      "name": "ROIVANT SCIENCES LTD",
+      "cusip": "G76279101",
+      "weightPct": 0.96,
+      "weightChangePt": -2.61,
+      "valueUSD": 74006976,
+      "valueChangeUSD": -282168209,
+      "valueChangePct": -79.2
+    },
+    {
+      "ticker": null,
+      "name": "ENERGY VAULT HOLDINGS INC",
+      "cusip": "29280W109",
+      "weightPct": 0.66,
+      "weightChangePt": -0.19,
+      "valueUSD": 51267582,
+      "valueChangeUSD": -34181677,
+      "valueChangePct": -40
+    },
+    {
+      "ticker": null,
+      "name": "FULL TRUCK ALLIANCE CO LTD",
+      "cusip": "35969L108",
+      "weightPct": 0.57,
+      "weightChangePt": 0,
+      "valueUSD": 43760837,
+      "valueChangeUSD": -12811908,
+      "valueChangePct": -22.6
+    },
+    {
+      "ticker": null,
+      "name": "GINKGO BIOWORKS HOLDINGS INC",
+      "cusip": "37611X209",
+      "weightPct": 0.05,
+      "weightChangePt": 0,
+      "valueUSD": 3743769,
+      "valueChangeUSD": -1331389,
+      "valueChangePct": -26.2
+    }
+  ]
+}

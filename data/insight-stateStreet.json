@@ -1,0 +1,213 @@
+{
+  "filerName": "State Street Corp",
+  "asOf": "2026-06-30",
+  "prevAsOf": "2026-03-31",
+  "filedDate": "2026-08-07",
+  "prevFiledDate": "2026-05-15",
+  "totalValueUSD": 3371239854465,
+  "totalValueLabel": "$3371.24B",
+  "accessionNumber": "0000093751-26-000507",
+  "updatedAt": "2026-08-12T16:12:54.036Z",
+  "holdings": [
+    {
+      "ticker": "NVDA",
+      "name": "NVIDIA CORPORATION",
+      "cusip": "67066G104",
+      "weightPct": 5.99,
+      "weightChangePt": 0.01,
+      "valueUSD": 202047567909,
+      "valueChangeUSD": 28704244679,
+      "valueChangePct": 16.6
+    },
+    {
+      "ticker": "AAPL",
+      "name": "APPLE INC",
+      "cusip": "037833100",
+      "weightPct": 5.28,
+      "weightChangePt": 0,
+      "valueUSD": 177993996255,
+      "valueChangeUSD": 25125770065,
+      "valueChangePct": 16.4
+    },
+    {
+      "ticker": "MSFT",
+      "name": "MICROSOFT CORP",
+      "cusip": "594918104",
+      "weightPct": 3.49,
+      "weightChangePt": -0.43,
+      "valueUSD": 117744958902,
+      "valueChangeUSD": 4210751563,
+      "valueChangePct": 3.7
+    },
+    {
+      "ticker": "AMZN",
+      "name": "AMAZON COM INC",
+      "cusip": "023135106",
+      "weightPct": 2.81,
+      "weightChangePt": 0,
+      "valueUSD": 94665539570,
+      "valueChangeUSD": 13346451215,
+      "valueChangePct": 16.4
+    },
+    {
+      "ticker": "GOOGL",
+      "name": "ALPHABET INC",
+      "cusip": "02079K305",
+      "weightPct": 2.53,
+      "weightChangePt": 0.29,
+      "valueUSD": 85403303049,
+      "valueChangeUSD": 20340227051,
+      "valueChangePct": 31.3
+    },
+    {
+      "ticker": "AVGO",
+      "name": "BROADCOM INC",
+      "cusip": "11135F101",
+      "weightPct": 2.21,
+      "weightChangePt": 0.16,
+      "valueUSD": 74379179363,
+      "valueChangeUSD": 15145083757,
+      "valueChangePct": 25.6
+    },
+    {
+      "ticker": "GOOG",
+      "name": "ALPHABET INC",
+      "cusip": "02079K107",
+      "weightPct": 2,
+      "weightChangePt": 0.16,
+      "valueUSD": 67458979762,
+      "valueChangeUSD": 14184846003,
+      "valueChangePct": 26.6
+    },
+    {
+      "ticker": null,
+      "name": "MICRON TECHNOLOGY INC",
+      "cusip": "595112103",
+      "weightPct": 1.71,
+      "weightChangePt": 1.1,
+      "valueUSD": 57802075982,
+      "valueChangeUSD": 40145783473,
+      "valueChangePct": 227.4
+    },
+    {
+      "ticker": "META",
+      "name": "META PLATFORMS INC",
+      "cusip": "30303M102",
+      "weightPct": 1.54,
+      "weightChangePt": -0.21,
+      "valueUSD": 51841811018,
+      "valueChangeUSD": 1194666439,
+      "valueChangePct": 2.4
+    },
+    {
+      "ticker": "TSLA",
+      "name": "TESLA INC",
+      "cusip": "88160R101",
+      "weightPct": 1.47,
+      "weightChangePt": -0.01,
+      "valueUSD": 49402311574,
+      "valueChangeUSD": 6764275062,
+      "valueChangePct": 15.9
+    },
+    {
+      "ticker": null,
+      "name": "ELI LILLY &amp; CO",
+      "cusip": "532457108",
+      "weightPct": 1.29,
+      "weightChangePt": 0.16,
+      "valueUSD": 43438261820,
+      "valueChangeUSD": 10685250280,
+      "valueChangePct": 32.6
+    },
+    {
+      "ticker": null,
+      "name": "ADVANCED MICRO DEVICES INC",
+      "cusip": "007903107",
+      "weightPct": 1.28,
+      "weightChangePt": 0.76,
+      "valueUSD": 43197447595,
+      "valueChangeUSD": 27986738310,
+      "valueChangePct": 184
+    },
+    {
+      "ticker": "JPM",
+      "name": "JPMORGAN CHASE &amp; CO",
+      "cusip": "46625H100",
+      "weightPct": 1.22,
+      "weightChangePt": -0.05,
+      "valueUSD": 40984757878,
+      "valueChangeUSD": 4427535278,
+      "valueChangePct": 12.1
+    },
+    {
+      "ticker": null,
+      "name": "BERKSHIRE HATHAWAY INC DEL",
+      "cusip": "084670702",
+      "weightPct": 1.12,
+      "weightChangePt": -0.1,
+      "valueUSD": 37903435637,
+      "valueChangeUSD": 2395165127,
+      "valueChangePct": 6.7
+    },
+    {
+      "ticker": null,
+      "name": "CATERPILLAR INC",
+      "cusip": "149123101",
+      "weightPct": 1.09,
+      "weightChangePt": 0.23,
+      "valueUSD": 36624377308,
+      "valueChangeUSD": 11912864598,
+      "valueChangePct": 48.2
+    },
+    {
+      "ticker": "JNJ",
+      "name": "JOHNSON &amp; JOHNSON",
+      "cusip": "478160104",
+      "weightPct": 1.01,
+      "weightChangePt": -0.12,
+      "valueUSD": 33975097069,
+      "valueChangeUSD": 1348153230,
+      "valueChangePct": 4.1
+    },
+    {
+      "ticker": null,
+      "name": "INTEL CORP",
+      "cusip": "458140100",
+      "weightPct": 0.9,
+      "weightChangePt": 0.57,
+      "valueUSD": 30278720120,
+      "valueChangeUSD": 20820733596,
+      "valueChangePct": 220.1
+    },
+    {
+      "ticker": "V",
+      "name": "VISA INC",
+      "cusip": "92826C839",
+      "weightPct": 0.84,
+      "weightChangePt": -0.02,
+      "valueUSD": 28432626186,
+      "valueChangeUSD": 3556456212,
+      "valueChangePct": 14.3
+    },
+    {
+      "ticker": null,
+      "name": "EXXON MOBIL CORP",
+      "cusip": "30231G102",
+      "weightPct": 0.84,
+      "weightChangePt": -0.41,
+      "valueUSD": 28275271835,
+      "valueChangeUSD": -8015745276,
+      "valueChangePct": -22.1
+    },
+    {
+      "ticker": null,
+      "name": "APPLIED MATLS INC",
+      "cusip": "038222105",
+      "weightPct": 0.82,
+      "weightChangePt": 0.38,
+      "valueUSD": 27647533737,
+      "valueChangeUSD": 14828033296,
+      "valueChangePct": 115.7
+    }
+  ]
+}
