@@ -2121,7 +2121,7 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
       </div>
       <div class="mini-score">
         <div class="mini-score-circle macro"${macroGoldStyle(macro.total)}>${macro.total}</div>
-        <span class="mini-score-label">투자황금기<br>(공포지수연동)</span>
+        <span class="mini-score-label">S&amp;P500 VIX</span>
       </div>
     `;
   } catch {
@@ -3162,51 +3162,28 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
 // src="yahoo"는 야후 차트(전일 종가 대비), src="fred"는 FRED 최신 발표치(전 영업일 대비)
 // vSuffix: 가격 뒤 단위 / cSuffix: 변동량 뒤 단위(미지정 시 vSuffix 사용)
 // chartSymbol: 클릭 시 TradingView 차트 모달에 넘길 심볼(야후 티커와 표기가 달라 별도 매핑 필요) — 없으면(null) 클릭 비활성
-// 접속 시 바로 보이는 우선 표시 종목(전부) — 나머지는 "더보기"를 누르면 나오는 4개 카테고리(원자재/지수/암호화폐/채권) 버튼 안에 있음
-const INDEX_PRIORITY_COUNT = 8;
-const INDEX_LIST = [
-  { src: "yahoo", symbol: "^GSPC", name: "🇺🇸 S&P 500", ticker: "SPX", chartSymbol: "SP:SPX" },
-  { src: "yahoo", symbol: "^DJI", name: "🇺🇸 다우 종합", ticker: "DJI", chartSymbol: "DJ:DJI" },
-  { src: "yahoo", symbol: "^IXIC", name: "🇺🇸 나스닥 종합", ticker: "IXIC", chartSymbol: "NASDAQ:IXIC" },
-  { src: "yahoo", symbol: "^RUT", name: "🇺🇸 러셀 2000", ticker: "RUT", chartSymbol: "TVC:RUT" },
-  { src: "yahoo", symbol: "^VIX", name: "🇺🇸 S&P500 VIX", ticker: "VIX", chartSymbol: "TVC:VIX" },
-  { src: "yahoo", symbol: "GC=F", name: "🥇 금(Gold)", ticker: "GOLD", chartSymbol: "TVC:GOLD" },
-  { src: "yahoo", symbol: "BTC-USD", name: "₿ 비트코인", ticker: "BTC", chartSymbol: "COINBASE:BTCUSD" },
-  { src: "yahoo", symbol: "CL=F", name: "🛢️ WTI 원유", ticker: "WTI", chartSymbol: "TVC:USOIL" },
-];
-
-// "더보기" 클릭 시 나오는 4개 카테고리 — 각 카테고리는 처음 열 때만 그때그때 조회해서 캐시(매번 전체를 다 불러오지 않음)
+// 카테고리별로 최대 10개까지 먼저 보여주고, 그보다 많으면 "더보기"로 나머지를 펼침(카테고리는 처음 볼 때만 그때그때 조회해서 캐시)
 // ⚠️ 아연·니켈·납(LME 선물), 코스피100, 일본국채30년·한국채5년물은 야후·FRED 어디서도 정상적인 데이터를 못 찾아 제외함
+const INDEX_CATEGORY_PAGE_SIZE = 10;
 const INDEX_CATEGORIES = {
-  commodities: {
-    label: "원자재",
+  usMarkets: {
+    label: "US Market",
     items: [
+      { src: "yahoo", symbol: "KRW=X", name: "🇰🇷 달러/원 환율", ticker: "USD/KRW", chartSymbol: "FX:USDKRW" },
+      { src: "yahoo", symbol: "JPY=X", name: "🇯🇵 달러/엔 환율", ticker: "USD/JPY", chartSymbol: "FX:USDJPY" },
+      { src: "yahoo", symbol: "^GSPC", name: "🇺🇸 S&P 500", ticker: "SPX", chartSymbol: "SP:SPX" },
+      { src: "yahoo", symbol: "^DJI", name: "🇺🇸 다우 종합", ticker: "DJI", chartSymbol: "DJ:DJI" },
+      { src: "yahoo", symbol: "^IXIC", name: "🇺🇸 나스닥 종합", ticker: "IXIC", chartSymbol: "NASDAQ:IXIC" },
+      { src: "yahoo", symbol: "^RUT", name: "🇺🇸 러셀 2000", ticker: "RUT", chartSymbol: "TVC:RUT" },
+      { src: "yahoo", symbol: "^VIX", name: "🇺🇸 S&P500 VIX", ticker: "VIX", chartSymbol: "TVC:VIX" },
       { src: "yahoo", symbol: "GC=F", name: "🥇 금(Gold)", ticker: "GOLD", chartSymbol: "TVC:GOLD" },
-      { src: "yahoo", symbol: "SI=F", name: "🥈 은(Silver)", ticker: "SILVER", chartSymbol: "TVC:SILVER" },
-      { src: "yahoo", symbol: "HG=F", name: "🟠 구리", ticker: "COPPER", chartSymbol: "COMEX:HG1!" },
-      { src: "yahoo", symbol: "CL=F", name: "🛢️ WTI유", ticker: "WTI", chartSymbol: "TVC:USOIL" },
-      { src: "yahoo", symbol: "BZ=F", name: "🛢️ 브렌트유", ticker: "BRENT", chartSymbol: "TVC:UKOIL" },
-      { src: "yahoo", symbol: "NG=F", name: "🔥 천연가스", ticker: "NATGAS", chartSymbol: "NYMEX:NG1!" },
-      { src: "yahoo", symbol: "RB=F", name: "⛽ 가솔린(RBOB)", ticker: "RBOB", chartSymbol: "NYMEX:RB1!" },
-      { src: "yahoo", symbol: "PL=F", name: "⚪ 백금", ticker: "PLATINUM", chartSymbol: "TVC:PLATINUM" },
-      { src: "yahoo", symbol: "ALI=F", name: "🔩 알루미늄", ticker: "ALUMINUM", chartSymbol: "COMEX:ALI1!" },
-      { src: "yahoo", symbol: "ZR=F", name: "🌾 현미", ticker: "RICE", chartSymbol: "CBOT:ZR1!" },
-      { src: "yahoo", symbol: "LE=F", name: "🐄 생우", ticker: "CATTLE", chartSymbol: "CME:LE1!" },
-      { src: "yahoo", symbol: "HE=F", name: "🐖 돈육", ticker: "HOGS", chartSymbol: "CME:HE1!" },
-      { src: "yahoo", symbol: "ZW=F", name: "🌾 미국 소맥", ticker: "WHEAT", chartSymbol: "CBOT:ZW1!" },
-      { src: "yahoo", symbol: "ZC=F", name: "🌽 미국 옥수수", ticker: "CORN", chartSymbol: "CBOT:ZC1!" },
-      { src: "yahoo", symbol: "ZS=F", name: "🌱 미국 대두", ticker: "SOYBEAN", chartSymbol: "CBOT:ZS1!" },
-      { src: "yahoo", symbol: "KC=F", name: "☕ 미국 커피", ticker: "COFFEE", chartSymbol: "ICEUS:KC1!" },
-      { src: "yahoo", symbol: "SB=F", name: "🍬 미국 설탕", ticker: "SUGAR", chartSymbol: "ICEUS:SB1!" },
-      { src: "yahoo", symbol: "CT=F", name: "🧵 미국 원면", ticker: "COTTON", chartSymbol: "ICEUS:CT1!" },
-      { src: "yahoo", symbol: "CC=F", name: "🍫 미국 코코아", ticker: "COCOA", chartSymbol: "ICEUS:CC1!" },
+      { src: "yahoo", symbol: "BTC-USD", name: "₿ 비트코인", ticker: "BTC", chartSymbol: "COINBASE:BTCUSD" },
+      { src: "yahoo", symbol: "CL=F", name: "🛢️ WTI 원유", ticker: "WTI", chartSymbol: "TVC:USOIL" },
     ],
   },
   indices: {
     label: "지수",
     items: [
-      { src: "yahoo", symbol: "KRW=X", name: "🇰🇷 달러/원 환율", ticker: "USD/KRW", chartSymbol: "FX:USDKRW" },
-      { src: "yahoo", symbol: "JPY=X", name: "🇯🇵 달러/엔 환율", ticker: "USD/JPY", chartSymbol: "FX:USDJPY" },
       { src: "yahoo", symbol: "^KS11", name: "🇰🇷 코스피", ticker: "KOSPI", chartSymbol: "KRX:KOSPI" },
       { src: "yahoo", symbol: "^KQ11", name: "🇰🇷 코스닥", ticker: "KOSDAQ", chartSymbol: "KRX:KOSDAQ" },
       { src: "yahoo", symbol: "^N225", name: "🇯🇵 닛케이 225", ticker: "JP225", chartSymbol: "TVC:NI225" },
@@ -3237,6 +3214,30 @@ const INDEX_CATEGORIES = {
       { src: "yahoo", symbol: "SOL-USD", name: "🪙 솔라나", ticker: "SOL", chartSymbol: "COINBASE:SOLUSD" },
       { src: "yahoo", symbol: "TRX-USD", name: "🪙 트론", ticker: "TRX", chartSymbol: "BINANCE:TRXUSDT" },
       { src: "yahoo", symbol: "DOGE-USD", name: "🪙 도지코인", ticker: "DOGE", chartSymbol: "COINBASE:DOGEUSD" },
+    ],
+  },
+  commodities: {
+    label: "원자재",
+    items: [
+      { src: "yahoo", symbol: "GC=F", name: "🥇 금(Gold)", ticker: "GOLD", chartSymbol: "TVC:GOLD" },
+      { src: "yahoo", symbol: "SI=F", name: "🥈 은(Silver)", ticker: "SILVER", chartSymbol: "TVC:SILVER" },
+      { src: "yahoo", symbol: "HG=F", name: "🟠 구리", ticker: "COPPER", chartSymbol: "COMEX:HG1!" },
+      { src: "yahoo", symbol: "CL=F", name: "🛢️ WTI유", ticker: "WTI", chartSymbol: "TVC:USOIL" },
+      { src: "yahoo", symbol: "BZ=F", name: "🛢️ 브렌트유", ticker: "BRENT", chartSymbol: "TVC:UKOIL" },
+      { src: "yahoo", symbol: "NG=F", name: "🔥 천연가스", ticker: "NATGAS", chartSymbol: "NYMEX:NG1!" },
+      { src: "yahoo", symbol: "RB=F", name: "⛽ 가솔린(RBOB)", ticker: "RBOB", chartSymbol: "NYMEX:RB1!" },
+      { src: "yahoo", symbol: "PL=F", name: "⚪ 백금", ticker: "PLATINUM", chartSymbol: "TVC:PLATINUM" },
+      { src: "yahoo", symbol: "ALI=F", name: "🔩 알루미늄", ticker: "ALUMINUM", chartSymbol: "COMEX:ALI1!" },
+      { src: "yahoo", symbol: "ZR=F", name: "🌾 현미", ticker: "RICE", chartSymbol: "CBOT:ZR1!" },
+      { src: "yahoo", symbol: "LE=F", name: "🐄 생우", ticker: "CATTLE", chartSymbol: "CME:LE1!" },
+      { src: "yahoo", symbol: "HE=F", name: "🐖 돈육", ticker: "HOGS", chartSymbol: "CME:HE1!" },
+      { src: "yahoo", symbol: "ZW=F", name: "🌾 미국 소맥", ticker: "WHEAT", chartSymbol: "CBOT:ZW1!" },
+      { src: "yahoo", symbol: "ZC=F", name: "🌽 미국 옥수수", ticker: "CORN", chartSymbol: "CBOT:ZC1!" },
+      { src: "yahoo", symbol: "ZS=F", name: "🌱 미국 대두", ticker: "SOYBEAN", chartSymbol: "CBOT:ZS1!" },
+      { src: "yahoo", symbol: "KC=F", name: "☕ 미국 커피", ticker: "COFFEE", chartSymbol: "ICEUS:KC1!" },
+      { src: "yahoo", symbol: "SB=F", name: "🍬 미국 설탕", ticker: "SUGAR", chartSymbol: "ICEUS:SB1!" },
+      { src: "yahoo", symbol: "CT=F", name: "🧵 미국 원면", ticker: "COTTON", chartSymbol: "ICEUS:CT1!" },
+      { src: "yahoo", symbol: "CC=F", name: "🍫 미국 코코아", ticker: "COCOA", chartSymbol: "ICEUS:CC1!" },
     ],
   },
   bonds: {
@@ -3338,75 +3339,61 @@ async function fetchOneIndexSnap(item) {
   }
 }
 
-// 더보기(카테고리 버튼 행) 펼침 여부·선택된 카테고리는 새로고침·자동갱신(20초)에도 유지되도록 모듈 스코프에 둠
-let indexCategoryOpen = false;
-let indexActiveCategory = null; // "commodities" | "indices" | "crypto" | "bonds" | null
+// 현재 선택된 카테고리·"더보기"로 펼친 카테고리 목록은 새로고침·자동갱신(20초)에도 유지되도록 모듈 스코프에 둠
+let indexActiveCategory = "usMarkets"; // "usMarkets" | "indices" | "crypto" | "commodities" | "bonds"
+const indexExpandedCategories = new Set(); // "더보기"를 눌러 전체를 펼친 카테고리 key 모음
+
+const indexCategoryButtons = {
+  usMarkets: el("indexCatUsMarketsBtn"),
+  indices: el("indexCatIndicesBtn"),
+  crypto: el("indexCatCryptoBtn"),
+  commodities: el("indexCatCommoditiesBtn"),
+  bonds: el("indexCatBondsBtn"),
+};
+function setIndexCategoryActive(key) {
+  Object.entries(indexCategoryButtons).forEach(([k, btn]) => btn && btn.classList.toggle("active", k === key));
+}
+Object.entries(indexCategoryButtons).forEach(([key, btn]) => {
+  if (!btn) return;
+  btn.addEventListener("click", () => {
+    if (indexActiveCategory === key) return;
+    indexActiveCategory = key;
+    setIndexCategoryActive(key);
+    runIndexTab();
+  });
+});
+setIndexCategoryActive(indexActiveCategory);
 
 async function runIndexTab() {
   indexStatus.style.display = "block";
   indexStatus.textContent = "지수 데이터를 불러오는 중...";
 
   try {
-    const categoryItems = indexActiveCategory ? INDEX_CATEGORIES[indexActiveCategory].items : [];
-    const [prioritySnaps, categorySnaps, usdKrwChart] = await Promise.all([
-      mapWithConcurrency(INDEX_LIST, 6, fetchOneIndexSnap),
-      mapWithConcurrency(categoryItems, 6, fetchOneIndexSnap),
-      yahooChart("KRW=X", "5d", "1d").catch(() => null),
-    ]);
+    const cat = INDEX_CATEGORIES[indexActiveCategory];
+    const items = cat.items;
+    const snaps = await mapWithConcurrency(items, 6, fetchOneIndexSnap);
 
-    const rows = INDEX_LIST.map((item, i) => indexRowHtml(item, prioritySnaps[i])).join("");
-    const categoryRows = categoryItems.map((item, i) => indexRowHtml(item, categorySnaps[i])).join("");
-
-    // 새로고침 버튼 옆에 원/달러 환율을 변동량(변동%)까지 작게 표시(카테고리 목록과 무관하게 항상 조회)
-    const usdKrwSnap = usdKrwChart ? yahooSnapshot(usdKrwChart) : null;
-    const usdKrwEl = el("indexUsdKrwMini");
-    if (usdKrwEl) {
-      if (usdKrwSnap && usdKrwSnap.price !== null && usdKrwSnap.price !== undefined) {
-        const priceStr = `$1 = ₩${usdKrwSnap.price.toLocaleString("ko-KR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-        let deltaHtml = "";
-        if (usdKrwSnap.change !== null && usdKrwSnap.change !== undefined) {
-          const sign = usdKrwSnap.change >= 0 ? "+" : "";
-          const cls = usdKrwSnap.change >= 0 ? "delta-up" : "delta-down";
-          const pctStr =
-            usdKrwSnap.changePct !== null && usdKrwSnap.changePct !== undefined ? ` ${sign}${usdKrwSnap.changePct.toFixed(2)}%` : "";
-          deltaHtml = ` <span class="${cls}">(${sign}${usdKrwSnap.change.toFixed(2)}${pctStr})</span>`;
-        }
-        usdKrwEl.innerHTML = priceStr + deltaHtml;
-      } else {
-        usdKrwEl.textContent = "";
-      }
-    }
-
-    const categoryButtonsHtml = indexCategoryOpen
-      ? `<div class="top30-sub-nav idx-category-nav">${Object.entries(INDEX_CATEGORIES)
-          .map(
-            ([key, cat]) =>
-              `<button type="button" class="cat-btn idx-category-btn${indexActiveCategory === key ? " active" : ""}" data-category="${key}">${escapeHtml(cat.label)}</button>`
-          )
-          .join("")}</div>`
-      : "";
-    const toggleBtnLabel = indexCategoryOpen ? "간략히 보기" : "더보기";
+    const expanded = indexExpandedCategories.has(indexActiveCategory);
+    const visibleCount = expanded ? items.length : Math.min(INDEX_CATEGORY_PAGE_SIZE, items.length);
+    const rows = items.slice(0, visibleCount).map((item, i) => indexRowHtml(item, snaps[i])).join("");
+    const moreBtnHtml =
+      items.length > INDEX_CATEGORY_PAGE_SIZE
+        ? `<button type="button" class="cat-btn index-toggle-btn" id="indexToggleBtn">${expanded ? "간략히 보기" : "더보기"}</button>`
+        : "";
 
     indexStatus.style.display = "none";
     indexResults.innerHTML = `
       <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 환율·지수·원자재·가상자산은 전일 종가 대비, 국채·금리차는 FRED 최신치(전 영업일 대비, 일본·한국 10년물은 월간 데이터라 전월 대비) 기준이며 상승은 초록·하락은 빨강입니다.</p>
       <div class="idx-list">${rows}</div>
-      <button type="button" class="cat-btn index-toggle-btn" id="indexToggleBtn">${toggleBtnLabel}</button>
-      ${categoryButtonsHtml}
-      ${indexActiveCategory ? `<div class="idx-list">${categoryRows}</div>` : ""}
+      ${moreBtnHtml}
     `;
-    el("indexToggleBtn").addEventListener("click", () => {
-      indexCategoryOpen = !indexCategoryOpen;
-      if (!indexCategoryOpen) indexActiveCategory = null;
-      runIndexTab();
-    });
-    indexResults.querySelectorAll(".idx-category-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const key = btn.dataset.category;
-        indexActiveCategory = indexActiveCategory === key ? null : key;
+    if (moreBtnHtml) {
+      el("indexToggleBtn").addEventListener("click", () => {
+        if (expanded) indexExpandedCategories.delete(indexActiveCategory);
+        else indexExpandedCategories.add(indexActiveCategory);
         runIndexTab();
       });
-    });
+    }
   } catch (err) {
     indexStatus.textContent = `❌ ${err.message || "지수 데이터를 가져오지 못했습니다."}`;
   }
@@ -4119,7 +4106,7 @@ function buildMacroScoreChartSvg({ pairs, points }) {
     linesSvg += `<text x="${x.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-size="${fontSize}" font-weight="700" fill="${textColor}">${vixTxt}</text>`;
   });
 
-  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="투자황금기 점수(VIX 공포지수)별 S&P500 30년 추이">
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="S&P500 VIX별 S&P500 30년 추이">
     <rect x="0" y="0" width="${W}" height="${H}" fill="#000" />
     ${gridSvg}
     ${axisSvg}
@@ -4139,7 +4126,7 @@ async function renderMacroScoreChart() {
     macroScoreChartRendered = true;
     caption.textContent =
       "빨간 선: S&P500 지수(1996~현재, 주간 종가) · 점 라벨: 6개월 간격(2월/8월 1일 기준) VIX(공포지수) 값 · " +
-      "주황~골드 점: 투자황금기 점수 8점 이상(10점을 넘을수록 더 진한 골드, 현재 포함), 흰 점: 그 외 · 노란 글씨: 그 시점 이후 6개월간 20% 이상 급락(참고용, 투자 자문이 아닙니다)";
+      "주황~골드 점: S&P500 VIX 점수 8점 이상(10점을 넘을수록 더 진한 골드, 현재 포함), 흰 점: 그 외 · 노란 글씨: 그 시점 이후 6개월간 20% 이상 급락(참고용, 투자 자문이 아닙니다)";
   } catch (err) {
     container.innerHTML = `<p class="error-inline" style="text-align:center;padding:20px 0;">❌ S&amp;P500 장기 데이터를 불러오지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
   }
@@ -4176,7 +4163,7 @@ async function renderFutureModalHeader(ticker, quote, metricsPromise, marketRetu
       scoresEl.innerHTML = `
         <span class="mini-score-circle small" title="상승압력도">${isIPO ? "IPO" : attractiveness.total}</span>
         <span class="mini-score-circle small risk" title="투자안정성">${isIPO ? "IPO" : risk.total}</span>
-        <span class="mini-score-circle small macro" title="투자황금기(공포지수연동)"${macroGoldStyle(macro.total)}>${macro.total}</span>
+        <span class="mini-score-circle small macro" title="S&P500 VIX"${macroGoldStyle(macro.total)}>${macro.total}</span>
       `;
     }
   } catch {

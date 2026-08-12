@@ -54,7 +54,7 @@
     <div class="tab-bar" id="tabBar">
       <button type="button" class="cat-btn" data-tab="search" id="tabSearchBtn">기업검색</button>
       <button type="button" class="cat-btn" data-tab="popular" id="tabPopularBtn">🔥 인기종목</button>
-      <button type="button" class="cat-btn" data-tab="index" id="tabIndexBtn">US Markets</button>
+      <button type="button" class="cat-btn" data-tab="index" id="tabIndexBtn">Markets</button>
       <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn">인사이트</button>
       <button type="button" class="cat-btn" data-tab="valuation" id="tabValuationBtn">가치평가</button>
       <button type="button" class="cat-btn" data-tab="trend" id="tabTrendBtn">추세평가</button>
@@ -124,7 +124,7 @@
           </section>
 
           <section class="card">
-            <h2>7️⃣ 투자황금기 점수(공포지수연동)</h2>
+            <h2>7️⃣ S&P500 VIX</h2>
             <div id="macroSection" class="section-body"></div>
           </section>
         </div>
@@ -136,9 +136,15 @@
       </div>
 
       <div class="carousel-panel" data-panel="index" id="panelIndex">
+        <div class="top30-sub-nav">
+          <button type="button" class="cat-btn" id="indexCatUsMarketsBtn">US Market</button>
+          <button type="button" class="cat-btn" id="indexCatIndicesBtn">지수</button>
+          <button type="button" class="cat-btn" id="indexCatCryptoBtn">암호화폐</button>
+          <button type="button" class="cat-btn" id="indexCatCommoditiesBtn">원자재</button>
+          <button type="button" class="cat-btn" id="indexCatBondsBtn">채권</button>
+        </div>
         <div class="index-toolbar">
           <button type="button" class="cat-btn" id="indexRefreshBtn">🔄 새로고침</button>
-          <span id="indexUsdKrwMini" class="idx-usdkrw-mini"></span>
         </div>
         <p id="indexStatus" class="muted top30-status" style="display:none;"></p>
         <div id="indexResults"></div>
@@ -212,7 +218,7 @@
             <div id="futureRiskContainer" class="future-chart-container"></div>
             <p id="futureRiskCaption" class="future-chart-caption"></p>
             <hr class="future-chart-divider" />
-            <h3 class="future-chart-subheading">🌐 투자황금기 점수(공포지수연동)별 S&amp;P500 추이 (1996~현재, 30년) <span class="future-chart-wip">· 베타(미완성)</span></h3>
+            <h3 class="future-chart-subheading">🌐 S&amp;P500 VIX별 S&amp;P500 추이 (1996~현재, 30년) <span class="future-chart-wip">· 베타(미완성)</span></h3>
             <div id="futureMacroChartContainer" class="future-chart-container"></div>
             <p id="futureMacroChartCaption" class="future-chart-caption"></p>
           </div>
