@@ -367,12 +367,12 @@ function getMacroMetrics() {
   if (!macroMetricsPromise) {
     macroMetricsPromise = (async () => {
       const chart = await yahooChart("^VIX", "5d", "1d");
-      const result = chart && chart.chart && chart.chart.result && chart.chart.result[0];
-      const meta = result && result.meta;
-      if (!meta || meta.regularMarketPrice === undefined) throw new Error("VIX 데이터를 가져오지 못했습니다.");
+      const snap = yahooSnapshot(chart);
+      if (!snap || snap.price === null || snap.price === undefined) throw new Error("VIX 데이터를 가져오지 못했습니다.");
       return {
-        vix: meta.regularMarketPrice,
-        vixDate: meta.regularMarketTime ? new Date(meta.regularMarketTime * 1000) : new Date(),
+        vix: snap.price,
+        vixChangePct: snap.changePct,
+        vixDate: snap.date,
       };
     })().catch((e) => {
       macroMetricsPromise = null; // 실패 시 다음 조회에서 재시도할 수 있도록 캐시 초기화
@@ -411,6 +411,16 @@ function macroGoldStyle(score) {
   if (!gold) return "";
   const glow = `box-shadow:0 0 ${(6 + gold.intensity * 12).toFixed(0)}px rgba(255,215,0,${(0.3 + gold.intensity * 0.5).toFixed(2)});`;
   return ` style="border-color:${gold.color};color:${gold.color};${glow}"`;
+}
+
+// 요약 배지 라벨 아래에 붙일 "VIX : 값(변동%)" 줄(중앙정렬은 .mini-score-label의 text-align:center가 담당)
+function vixLineHtml({ vix, vixChangePct } = {}) {
+  if (vix === null || vix === undefined) return "";
+  const pctStr =
+    vixChangePct !== null && vixChangePct !== undefined && Number.isFinite(vixChangePct)
+      ? `(${vixChangePct >= 0 ? "+" : ""}${vixChangePct.toFixed(2)}%)`
+      : "";
+  return `<br>VIX : ${vix.toFixed(1)}${pctStr}`;
 }
 
 // ---------- 종목별 지표 조회 + 상승압력도 점수 계산 (사업요약/경쟁사비교/점수 섹션에서 공용으로 사용) ----------
@@ -2121,7 +2131,7 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
       </div>
       <div class="mini-score">
         <div class="mini-score-circle macro"${macroGoldStyle(macro.total)}>${macro.total}</div>
-        <span class="mini-score-label">S&amp;P500 VIX${macroMetrics.vix !== null && macroMetrics.vix !== undefined ? `<br>(${macroMetrics.vix.toFixed(1)})` : ""}</span>
+        <span class="mini-score-label">S&amp;P500 VIX${vixLineHtml(macroMetrics)}</span>
       </div>
     `;
   } catch {
