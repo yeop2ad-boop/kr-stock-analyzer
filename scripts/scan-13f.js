@@ -18,6 +18,9 @@ const INSTITUTIONS = {
   berkshire: { cik: "1067983", filerName: "Berkshire Hathaway Inc" },
   blackrock: { cik: "2012383", filerName: "BlackRock, Inc." },
   vanguard: { cik: "102909", filerName: "Vanguard Group Inc" },
+  // 주의: 키를 "state"로 지으면 output이 data/insight-state.json이 되어, 이 스크립트 자신의 갱신 이력을
+  // 저장하는 STATE_FILE(같은 경로)과 충돌해 서로 덮어씀 — 그래서 "stateStreet"로 키를 분리함
+  stateStreet: { cik: "93751", filerName: "State Street Corp" },
   goldman: { cik: "886982", filerName: "Goldman Sachs Group Inc" },
   morganStanley: { cik: "895421", filerName: "Morgan Stanley" },
   jpmorgan: { cik: "19617", filerName: "JPMorgan Chase & Co" },

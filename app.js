@@ -1459,7 +1459,7 @@ const trendButtons = {
 const insightButtons = {
   blackrock: el("insightBlackrockBtn"),
   vanguard: el("insightVanguardBtn"),
-  state: el("insightStateBtn"),
+  stateStreet: el("insightStateBtn"),
   berkshire: el("insightBerkshireBtn"),
   goldman: el("insightGoldmanBtn"),
   morganStanley: el("insightMorganStanleyBtn"),
@@ -2881,7 +2881,7 @@ const bindInsight = (btn, institution) =>
   });
 bindInsight(insightButtons.blackrock, "blackrock");
 bindInsight(insightButtons.vanguard, "vanguard");
-bindInsight(insightButtons.state, "state");
+bindInsight(insightButtons.stateStreet, "stateStreet");
 bindInsight(insightButtons.berkshire, "berkshire");
 bindInsight(insightButtons.goldman, "goldman");
 bindInsight(insightButtons.morganStanley, "morganStanley");
@@ -2896,7 +2896,7 @@ bindInsight(insightButtons.softbank, "softbank");
 const INSIGHT_INSTITUTION_LABELS = {
   blackrock: "블랙록",
   vanguard: "뱅가드",
-  state: "State Street",
+  stateStreet: "State Street",
   berkshire: "버크셔 해서웨이",
   goldman: "골드만삭스",
   morganStanley: "모건스탠리",
@@ -2965,14 +2965,15 @@ function insightTableHtml(data) {
   return `
     <p class="disclaimer tab-note">📢 <b>${escapeHtml(data.filerName)}</b> SEC 13F 공시 기준(${data.asOf} 보유 기준, ${data.filedDate} 제출) 보유종목 TOP20 · 총 신고 가치 ${fmtBigUSD(data.totalValueUSD)} · 직전 제출(${data.prevFiledDate}) 대비 비중·금액 변동 표시. 13F는 매수/매도 시점이 아닌 분기말 스냅샷이라 최대 45일 지연될 수 있으며, 투자 자문이 아닙니다.</p>
     ${noteHtml}
-    <div class="table-scroll">
-      <table class="top30-table insight-holdings-table">
-        <thead>
-          <tr><th>순위</th><th>종목</th><th>${data.filedDate.slice(5)}<br>비중 (변동)</th><th>총 신고가치<br>(금액변동)</th></tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>
+    <table class="top30-table insight-holdings-table">
+      <colgroup>
+        <col class="col-rank" /><col class="col-name" /><col class="col-weight" /><col class="col-value" />
+      </colgroup>
+      <thead>
+        <tr><th>순위</th><th>종목</th><th>${data.filedDate.slice(5)}<br>비중 (변동)</th><th>총 신고가치<br>(금액변동)</th></tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
   `;
 }
 
@@ -2988,7 +2989,7 @@ async function runInsight(institution) {
   status.textContent = `⏳ ${INSIGHT_INSTITUTION_LABELS[institution]} 데이터를 불러오는 중...`;
   results.innerHTML = "";
   const data = await getInsightData(institution);
-  if (!data) {
+  if (!data || !Array.isArray(data.holdings)) {
     status.textContent = `🚧 ${INSIGHT_INSTITUTION_LABELS[institution]} 보유종목 데이터는 준비 중입니다. SEC 13F 공시(분기 공개, 최대 45일 지연)를 기반으로 곧 제공될 예정입니다.`;
     return;
   }

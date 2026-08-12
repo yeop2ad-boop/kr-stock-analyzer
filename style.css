@@ -567,11 +567,16 @@ table.top30-table { width: 100%; border-collapse: collapse; margin-top: 14px; fo
 table.top30-table th, table.top30-table td { padding: 8px 6px; border-bottom: 1px solid var(--border); text-align: center; }
 table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: #b8860b; font-weight: 800; }
 
-/* 좁은 화면에서 표가 억지로 줄어들며 셀 내용이 줄바꿈되는 대신, 표 자체를 가로 스크롤(테이블은 최소폭 유지) */
-.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-/* 인사이트 보유종목 표의 "비중 (변동)" 컬럼(3번째)이 모바일에서 줄바꿈되던 문제 — 최소폭을 넉넉히 줘서 한 줄로 유지 */
-table.insight-holdings-table { min-width: 520px; }
-table.insight-holdings-table th:nth-child(3), table.insight-holdings-table td:nth-child(3) { min-width: 130px; white-space: nowrap; }
+/* 인사이트 보유종목 표 — 화면 밖으로 넘치지 않게(가로 스크롤 없이) table-layout:fixed로 4개 컬럼 비율을 고정하고,
+   "비중 (변동)" 컬럼(3번째)에 더 넓은 비율을 줘서 줄바꿈 없이 한 줄로 표시. 그래도 폭이 모자라는 극단적인 경우(초소형 화면)엔
+   overflow-x가 아니라 텍스트를 말줄임(ellipsis)해서 화면 우측으로 밀려나가는 일이 없도록 함 */
+table.insight-holdings-table { table-layout: fixed; width: 100%; }
+table.insight-holdings-table col.col-rank { width: 10%; }
+table.insight-holdings-table col.col-name { width: 28%; }
+table.insight-holdings-table col.col-weight { width: 33%; }
+table.insight-holdings-table col.col-value { width: 29%; }
+table.insight-holdings-table th, table.insight-holdings-table td { padding: 8px 4px; overflow: hidden; }
+table.insight-holdings-table td span, table.insight-holdings-table td b { max-width: 100%; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: bottom; }
 
 .source-note {
   font-size: 12px;
