@@ -2121,7 +2121,7 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
       </div>
       <div class="mini-score">
         <div class="mini-score-circle macro"${macroGoldStyle(macro.total)}>${macro.total}</div>
-        <span class="mini-score-label">S&amp;P500 VIX</span>
+        <span class="mini-score-label">S&amp;P500 VIX${macroMetrics.vix !== null && macroMetrics.vix !== undefined ? `<br>(${macroMetrics.vix.toFixed(1)})` : ""}</span>
       </div>
     `;
   } catch {
@@ -3167,7 +3167,7 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
 const INDEX_CATEGORY_PAGE_SIZE = 10;
 const INDEX_CATEGORIES = {
   usMarkets: {
-    label: "US Market",
+    label: "미국시장",
     items: [
       { src: "yahoo", symbol: "KRW=X", name: "🇰🇷 달러/원 환율", ticker: "USD/KRW", chartSymbol: "FX:USDKRW" },
       { src: "yahoo", symbol: "JPY=X", name: "🇯🇵 달러/엔 환율", ticker: "USD/JPY", chartSymbol: "FX:USDJPY" },
@@ -3250,6 +3250,16 @@ const INDEX_CATEGORIES = {
       // 일본·한국 10년물은 FRED에 월간 데이터만 있어(OECD 장기금리 시리즈) 전월 대비로 표시됨(다른 항목은 전일 대비)
       { src: "fred", symbol: "IRLTLT01JPM156N", name: "🇯🇵 일본국채 10년(월간)", ticker: "JP10Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:JP10Y" },
       { src: "fred", symbol: "IRLTLT01KRM156N", name: "🇰🇷 한국채 10년(월간)", ticker: "KR10Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:KR10Y" },
+    ],
+  },
+  fx: {
+    label: "환율",
+    items: [
+      { src: "yahoo", symbol: "KRW=X", name: "🇰🇷 달러/원 환율", ticker: "USD/KRW", chartSymbol: "FX:USDKRW" },
+      { src: "yahoo", symbol: "JPY=X", name: "🇯🇵 달러/엔 환율", ticker: "USD/JPY", chartSymbol: "FX:USDJPY" },
+      { src: "yahoo", symbol: "EURUSD=X", name: "🇪🇺 유로/달러 환율", ticker: "EUR/USD", chartSymbol: "FX:EURUSD" },
+      { src: "yahoo", symbol: "CNY=X", name: "🇨🇳 달러/위안 환율", ticker: "USD/CNY", chartSymbol: "FX:USDCNY" },
+      { src: "yahoo", symbol: "GBPUSD=X", name: "🇬🇧 파운드/달러 환율", ticker: "GBP/USD", chartSymbol: "FX:GBPUSD" },
     ],
   },
 };
@@ -3349,6 +3359,7 @@ const indexCategoryButtons = {
   crypto: el("indexCatCryptoBtn"),
   commodities: el("indexCatCommoditiesBtn"),
   bonds: el("indexCatBondsBtn"),
+  fx: el("indexCatFxBtn"),
 };
 function setIndexCategoryActive(key) {
   Object.entries(indexCategoryButtons).forEach(([k, btn]) => btn && btn.classList.toggle("active", k === key));
