@@ -106,7 +106,7 @@
         <div id="statusBox" class="status-box" style="display:none;"></div>
         <div id="results" class="results" style="display:none;">
           <div class="top30-sub-nav summary-subtabs" id="summarySubtabNav">
-            <button type="button" class="cat-btn active" id="summarySubtabSummaryBtn" data-summary-subtab="summary">요약</button>
+            <button type="button" class="cat-btn active" id="summarySubtabSummaryBtn" data-summary-subtab="summary">개요</button>
             <button type="button" class="cat-btn" id="summarySubtabRevenueBtn" data-summary-subtab="revenue">매출액</button>
             <button type="button" class="cat-btn" id="summarySubtabPeersBtn" data-summary-subtab="peers">경쟁사 매출 비교</button>
             <button type="button" class="cat-btn" id="summarySubtabScoreBtn" data-summary-subtab="investscore">invest점수</button>
@@ -115,6 +115,8 @@
 
           <div class="summary-subtab-panel" data-summary-subtabpanel="summary">
           <section class="card">
+            <div id="summaryChartStatus" class="muted top30-status" style="display:none;"></div>
+            <div id="summaryChartContainer" class="future-chart-container"></div>
             <div class="top30-sub-nav" id="summaryChartPeriodNav">
               <button type="button" class="cat-btn" data-chart-period="1d">1일</button>
               <button type="button" class="cat-btn" data-chart-period="5d">1주</button>
@@ -123,9 +125,6 @@
               <button type="button" class="cat-btn" data-chart-period="5y">5년</button>
               <button type="button" class="cat-btn" data-chart-period="max">최대</button>
             </div>
-            <div id="summaryChartStatus" class="muted top30-status" style="display:none;"></div>
-            <div id="summaryChartContainer" class="future-chart-container"></div>
-            <h2 id="summaryHeading">요약</h2>
             <div id="summarySection" class="section-body"></div>
             <div id="summaryScoreRow" class="mini-score-row"></div>
 

@@ -2114,9 +2114,6 @@ async function runAnalysis(ticker) {
     results.style.display = "block";
     setStatus("loading", "섹션별 데이터를 정리하는 중입니다...");
 
-    // 최근 5거래일간 ±10% 이상 급등락한 종목은 "요약" 제목 옆에 경고 이모지 표시
-    el("summaryHeading").innerHTML = `1️⃣ 요약${surgeWarningEmoji(get5dExtremeMoves(chartData))}`;
-
     renderSummary(quote, meta, getDailyChangePercent(chartData)).catch((e) => {
       el("summarySection").innerHTML = `<p class="error-inline">사업 요약을 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
@@ -4667,21 +4664,36 @@ const CHART_PERIOD_LABEL_FMT = {
   max: (d) => d.toLocaleDateString("ko-KR", { year: "numeric" }),
 };
 
-function buildPriceChartSvg(pairs, period, symbol) {
-  const W = 780,
-    H = 340;
-  const ML = 8,
-    MR = 76,
-    MT = 16,
-    MB = 32;
+// 차트 지오메트리는 build/interaction 두 함수가 동일한 좌표계를 써야 크로스헤어가 정확히 맞아떨어짐
+const PRICE_CHART_GEOM = { W: 780, H: 340, ML: 8, MR: 80, MT: 16, MB: 32 };
+const PRICE_TAG_W = 72,
+  PRICE_TAG_NOTCH = 6,
+  PRICE_TAG_H = 20;
+
+// 현재가/터치 위치를 가리키는 "책갈피" 모양(왼쪽 삼각 포인터 + 사각 라벨) path
+function bookmarkTagPath(xStart, yCenter) {
+  const halfH = PRICE_TAG_H / 2;
+  const x1 = xStart + PRICE_TAG_NOTCH;
+  const x2 = x1 + PRICE_TAG_W;
+  const yT = (yCenter - halfH).toFixed(1);
+  const yB = (yCenter + halfH).toFixed(1);
+  return `M${xStart.toFixed(1)},${yCenter.toFixed(1)} L${x1.toFixed(1)},${yT} L${x2.toFixed(1)},${yT} L${x2.toFixed(1)},${yB} L${x1.toFixed(1)},${yB} Z`;
+}
+
+function priceChartScales(pairs) {
+  const { W, H, ML, MR, MT, MB } = PRICE_CHART_GEOM;
   const PW = W - ML - MR;
   const PH = H - MT - MB;
   const N = pairs.length;
-
   const prices = pairs.map((p) => p.c);
   const { lo, hi, step } = priceAxisBounds(Math.min(...prices), Math.max(...prices));
   const xFn = (i) => ML + (N <= 1 ? 0 : (i / (N - 1)) * PW);
   const yFn = (v) => MT + (1 - (v - lo) / (hi - lo)) * PH;
+  return { W, H, ML, MR, MT, MB, PW, PH, N, lo, hi, step, xFn, yFn };
+}
+
+function buildPriceChartSvg(pairs, period, symbol) {
+  const { W, H, ML, MT, PW, PH, N, lo, hi, step, xFn, yFn } = priceChartScales(pairs);
 
   let gridSvg = "";
   for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) {
@@ -4719,12 +4731,80 @@ function buildPriceChartSvg(pairs, period, symbol) {
     ${gridSvg}
     <path d="${areaPath}" fill="url(#${gradId})" stroke="none" />
     <path d="${linePath}" fill="none" stroke="#2f6fed" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" />
-    <line x1="${ML}" y1="${lastY.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${lastY.toFixed(1)}" stroke="#8a90a3" stroke-width="1" stroke-dasharray="3,3" />
-    <circle cx="${lastX.toFixed(1)}" cy="${lastY.toFixed(1)}" r="3.5" fill="#2f6fed" />
-    <rect x="${(ML + PW + 2).toFixed(1)}" y="${(lastY - 10).toFixed(1)}" width="72" height="20" rx="4" fill="#eceef2" />
-    <text x="${(ML + PW + 38).toFixed(1)}" y="${(lastY + 4).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="#0b0d12">${fmtChartPrice(last.c)}</text>
+    <g id="pcCurrentMarker">
+      <line x1="${ML}" y1="${lastY.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${lastY.toFixed(1)}" stroke="#8a90a3" stroke-width="1" stroke-dasharray="3,3" />
+      <circle cx="${lastX.toFixed(1)}" cy="${lastY.toFixed(1)}" r="3.5" fill="#2f6fed" />
+      <path d="${bookmarkTagPath(ML + PW, lastY)}" fill="#eceef2" />
+      <text x="${(ML + PW + PRICE_TAG_NOTCH + PRICE_TAG_W / 2).toFixed(1)}" y="${(lastY + 4).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="#0b0d12">${fmtChartPrice(last.c)}</text>
+    </g>
     ${axisSvg}
+    <rect id="pcHitArea" x="${ML}" y="0" width="${PW}" height="${H}" fill="transparent" style="touch-action:none;" />
+    <g id="pcCrosshair" style="display:none;">
+      <line x1="0" y1="${MT}" x2="0" y2="${(MT + PH).toFixed(1)}" stroke="#8a90a3" stroke-width="1" stroke-dasharray="2,2" />
+      <line id="pcCrosshairHLine" x1="${ML}" y1="0" x2="${(ML + PW).toFixed(1)}" y2="0" stroke="#8a90a3" stroke-width="1" stroke-dasharray="2,2" />
+      <circle id="pcCrosshairDot" r="4" fill="#0b0d12" stroke="#2f6fed" stroke-width="2" />
+      <path id="pcCrosshairTagPath" fill="#eceef2" />
+      <text id="pcCrosshairTagText" text-anchor="middle" font-size="11" font-weight="700" fill="#0b0d12"></text>
+    </g>
   </svg>`;
+}
+
+// 차트를 누르고 있는 동안 가장 가까운 지점의 가격을 오른쪽 책갈피에 실시간으로 보여줌(증권앱 스타일)
+function setupPriceChartCrosshair(containerEl, pairs) {
+  const svg = containerEl.querySelector("svg");
+  const hitArea = svg && svg.querySelector("#pcHitArea");
+  if (!svg || !hitArea) return;
+  const { ML, MT, PW, PH, N, xFn, yFn } = priceChartScales(pairs);
+  const crosshair = svg.querySelector("#pcCrosshair");
+  const vLine = crosshair.querySelector("line");
+  const hLine = svg.querySelector("#pcCrosshairHLine");
+  const dot = svg.querySelector("#pcCrosshairDot");
+  const tagPath = svg.querySelector("#pcCrosshairTagPath");
+  const tagText = svg.querySelector("#pcCrosshairTagText");
+  const currentMarker = svg.querySelector("#pcCurrentMarker");
+
+  function indexFromClientX(clientX) {
+    const rect = svg.getBoundingClientRect();
+    const relX = ((clientX - rect.left) / rect.width) * PRICE_CHART_GEOM.W;
+    const idx = Math.round(((relX - ML) / PW) * (N - 1));
+    return Math.max(0, Math.min(N - 1, idx));
+  }
+
+  function showAt(idx) {
+    const x = xFn(idx);
+    const y = yFn(pairs[idx].c);
+    vLine.setAttribute("x1", x.toFixed(1));
+    vLine.setAttribute("x2", x.toFixed(1));
+    hLine.setAttribute("y1", y.toFixed(1));
+    hLine.setAttribute("y2", y.toFixed(1));
+    dot.setAttribute("cx", x.toFixed(1));
+    dot.setAttribute("cy", y.toFixed(1));
+    tagPath.setAttribute("d", bookmarkTagPath(ML + PW, y));
+    tagText.setAttribute("x", (ML + PW + PRICE_TAG_NOTCH + PRICE_TAG_W / 2).toFixed(1));
+    tagText.setAttribute("y", (y + 4).toFixed(1));
+    tagText.textContent = fmtChartPrice(pairs[idx].c);
+    crosshair.style.display = "";
+    currentMarker.style.display = "none";
+  }
+  function hide() {
+    crosshair.style.display = "none";
+    currentMarker.style.display = "";
+  }
+
+  hitArea.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    showAt(indexFromClientX(e.clientX));
+    hitArea.setPointerCapture(e.pointerId);
+  });
+  hitArea.addEventListener("pointermove", (e) => {
+    if (e.buttons !== 1) return;
+    showAt(indexFromClientX(e.clientX));
+  });
+  hitArea.addEventListener("pointerup", hide);
+  hitArea.addEventListener("pointercancel", hide);
+  hitArea.addEventListener("pointerleave", (e) => {
+    if (e.buttons !== 1) hide();
+  });
 }
 
 let summaryChartCurrentSymbol = null;
@@ -4742,6 +4822,7 @@ async function runSummaryChart(symbol, period) {
     if (pairs.length < 2) throw new Error("차트 데이터가 부족합니다.");
     statusEl.style.display = "none";
     containerEl.innerHTML = buildPriceChartSvg(pairs, period, symbol);
+    setupPriceChartCrosshair(containerEl, pairs);
   } catch (err) {
     statusEl.style.display = "block";
     statusEl.textContent = `❌ ${err.message || "차트를 불러오지 못했습니다."}`;
