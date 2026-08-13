@@ -24,12 +24,31 @@ const UA_HEADERS = { "User-Agent": "yeopinvest.com econpick-bot contact@yeopinve
 const SEC_HEADERS = { "User-Agent": "yeopinvest.com contact@yeopinvest.com" };
 
 // ---------- 소스 풀 (풀 방식 — 사이트마다 매일 5개씩 나오지 않아도 되고, 부족하면 있는 만큼만 사용) ----------
+// Technology 피드는 경제와 무관한 일반 과학/기술 기사가 많이 섞여 나와서 제외.
+// White House 보도자료는 미국 정부저작물이라 퍼블릭도메인 — 대통령 관련 소식을 안전하게 다룰 수 있는 소스.
 const RSS_FEEDS = [
   { name: "The Conversation (Business)", url: "https://theconversation.com/us/business/articles.atom" },
-  { name: "The Conversation (Technology)", url: "https://theconversation.com/us/technology/articles.atom" },
   { name: "Federal Reserve 보도자료", url: "https://www.federalreserve.gov/feeds/press_all.xml" },
   { name: "EIA Today in Energy", url: "https://www.eia.gov/rss/todayinenergy.xml" },
+  { name: "White House 보도자료", url: "https://www.whitehouse.gov/news/feed" },
 ];
+
+// 이 키워드가 제목에 포함된 후보는 우선적으로 선정(실적/금리/트럼프/머스크/비트코인/채권/원유/금 등 관심 토픽) —
+// 다만 우리가 쓰는 소스가 CC/공공저작물 한정이라 이런 인물·자산 관련 소식이 매일 나오진 않을 수 있음
+const PRIORITY_KEYWORDS = [
+  "earnings", "quarterly results", "quarterly report", "results of operations", "profit", "revenue",
+  "interest rate", "rate decision", "rate cut", "rate hike", "fomc", "federal funds rate",
+  "trump", "white house",
+  "musk", "tesla", "spacex",
+  "bitcoin", "crypto", "cryptocurrency",
+  "treasury bond", "bond market", "treasury yield",
+  "oil", "crude", "opec", "petroleum",
+  "gold price", "gold market",
+];
+function matchesPriorityKeyword(title) {
+  const t = title.toLowerCase();
+  return PRIORITY_KEYWORDS.some((k) => t.includes(k));
+}
 
 // M7 빅테크 관련 기업 이벤트(테슬라/애플/아마존 등) — SEC EDGAR 8-K(수시공시)는 미국 정부기관에
 // 접수된 공개기록이라 100% 퍼블릭도메인. scan-13f.js와 동일한 SEC 조회 패턴 재사용.
@@ -147,13 +166,15 @@ async function fetchArticleText(url) {
   return stripHtml(html).slice(0, 8000);
 }
 
+// 제목 번역 + 5줄 요약을 한 번의 호출로 함께 받음(카드 헤드라인이 영문으로 보이던 문제 해결)
 async function summarizeKo(title, bodyText) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) throw new Error("ANTHROPIC_API_KEY 환경변수가 설정되지 않음");
   const prompt =
-    `다음은 미국 경제 뉴스 기사입니다. 한국어로 핵심만 최대 5문장(5줄) 이내로 간결하게 요약해줘. ` +
-    `번호나 불릿 없이 자연스러운 문장으로, 각 문장은 줄바꿈으로 구분해줘.\n\n` +
-    `제목: ${title}\n\n본문:\n${bodyText.slice(0, 6000)}`;
+    `다음은 미국 경제 뉴스 기사입니다. 아래 형식 그대로만 답변해줘(다른 설명 문구 없이):\n\n` +
+    `[제목]\n(원문 제목을 자연스러운 한국어 뉴스 헤드라인으로 번역, 한 줄)\n\n` +
+    `[요약]\n(한국어로 핵심만 최대 5문장(5줄) 이내로 간결하게 요약. 번호나 불릿 없이 자연스러운 문장으로, 각 문장은 줄바꿈으로 구분)\n\n` +
+    `원문 제목: ${title}\n\n본문:\n${bodyText.slice(0, 6000)}`;
   const res = await fetchWithTimeout(
     "https://api.anthropic.com/v1/messages",
     {
@@ -161,7 +182,7 @@ async function summarizeKo(title, bodyText) {
       headers: { "content-type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01" },
       body: JSON.stringify({
         model: "claude-haiku-4-5-20251001",
-        max_tokens: 500,
+        max_tokens: 600,
         messages: [{ role: "user", content: prompt }],
       }),
     },
@@ -171,7 +192,11 @@ async function summarizeKo(title, bodyText) {
   const data = await res.json();
   const text = (data.content || []).map((c) => c.text || "").join("").trim();
   if (!text) throw new Error("Anthropic 응답에 텍스트 없음");
-  return text;
+  const titleMatch = text.match(/\[제목\]\s*\n?([\s\S]*?)(?:\n\[요약\]|$)/);
+  const summaryMatch = text.match(/\[요약\]\s*\n?([\s\S]*)$/);
+  const titleKo = titleMatch && titleMatch[1].trim() ? titleMatch[1].trim() : title;
+  const summaryKo = summaryMatch && summaryMatch[1].trim() ? summaryMatch[1].trim() : text;
+  return { titleKo, summaryKo };
 }
 
 async function generateImage(title) {
@@ -252,7 +277,8 @@ async function main() {
   const seenLinks = new Set(seen.map((s) => s.link));
 
   const freshCutoff = Date.now() - FRESH_WINDOW_DAYS * 24 * 60 * 60 * 1000;
-  const candidatesBySource = {};
+  const priorityBySource = {};
+  const normalBySource = {};
   const linksThisRun = new Set();
 
   function addCandidates(list) {
@@ -260,8 +286,9 @@ async function main() {
       if (!it.publishedAt || Date.parse(it.publishedAt) < freshCutoff) continue;
       if (seenLinks.has(it.link) || linksThisRun.has(it.link)) continue;
       linksThisRun.add(it.link);
-      if (!candidatesBySource[it.source]) candidatesBySource[it.source] = [];
-      candidatesBySource[it.source].push(it);
+      const bucket = matchesPriorityKeyword(it.title) ? priorityBySource : normalBySource;
+      if (!bucket[it.source]) bucket[it.source] = [];
+      bucket[it.source].push(it);
     }
   }
 
@@ -285,29 +312,32 @@ async function main() {
     }
   }
 
-  const selected = selectRoundRobin(candidatesBySource, MAX_ITEMS_PER_RUN);
-  console.log(`오늘 선정된 후보: ${selected.length}건 (최대 ${MAX_ITEMS_PER_RUN}건 중)`);
+  // 관심 키워드(실적/금리/트럼프/머스크/비트코인/채권/원유/금 등) 매치 후보를 먼저 채우고, 남는 자리만 일반 후보로 채움
+  const prioritySelected = selectRoundRobin(priorityBySource, MAX_ITEMS_PER_RUN);
+  const normalSelected = selectRoundRobin(normalBySource, Math.max(0, MAX_ITEMS_PER_RUN - prioritySelected.length));
+  const selected = [...prioritySelected, ...normalSelected];
+  console.log(`오늘 선정된 후보: ${selected.length}건 (키워드 매치 ${prioritySelected.length}건 포함, 최대 ${MAX_ITEMS_PER_RUN}건 중)`);
 
   const newItems = [];
   for (const cand of selected) {
     try {
       const bodyText = await fetchArticleText(cand.link);
-      const summary = await summarizeKo(cand.title, bodyText);
+      const { titleKo, summaryKo } = await summarizeKo(cand.title, bodyText);
       const imageBuffer = await generateImage(cand.title);
       const id = makeId(cand.link);
       fs.writeFileSync(path.join(IMAGES_DIR, `${id}.webp`), imageBuffer);
       newItems.push({
         id,
-        title: cand.title,
+        title: titleKo,
         link: cand.link,
         source: cand.source,
-        summary,
+        summary: summaryKo,
         image: `data/econpick-images/${id}.webp`,
         publishedAt: cand.publishedAt,
         createdAt: new Date().toISOString(),
       });
       seen.push({ link: cand.link, usedAt: new Date().toISOString() });
-      console.log(`[완료] ${cand.source} — ${cand.title}`);
+      console.log(`[완료] ${cand.source} — ${titleKo}`);
     } catch (err) {
       console.error(`[건너뜀] ${cand.source} — ${cand.title}:`, err.message);
     }
