@@ -187,9 +187,12 @@ async function generateImage(title) {
       method: "POST",
       headers: { "content-type": "application/json", authorization: `Bearer ${apiKey}` },
       body: JSON.stringify({
-        model: "gpt-image-1",
+        // gpt-image-1은 2026-10-23 API 퇴출 예정이라 후속 모델인 gpt-image-2 사용.
+        // quality:"low"로 카드 썸네일 용도에 충분한 품질을 유지하며 장당 비용을 최소화(1024x1024 기준 약 $0.006/장)
+        model: "gpt-image-2",
         prompt,
         size: "1024x1024",
+        quality: "low",
         output_format: "webp",
         output_compression: 70,
       }),
