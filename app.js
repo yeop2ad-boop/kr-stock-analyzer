@@ -37,6 +37,12 @@ const chatTextInput = el("chatTextInput");
 const chatSendBtn = el("chatSendBtn");
 const chatError = el("chatError");
 const chatCloseBtn = el("chatCloseBtn");
+const econPickBtn = el("econPickBtn");
+const econPickPanel = el("econPickPanel");
+const econPickCloseBtn = el("econPickCloseBtn");
+const econPickBody = el("econPickBody");
+const econPickGrid = el("econPickGrid");
+const econPickSentinel = el("econPickSentinel");
 
 // ---------- 자유토론방(익명, 24시간 보관, 자유 텍스트 최대 30자) ----------
 const CHAT_API = "https://us-stock.yeop2ad.workers.dev/chat";
@@ -186,6 +192,98 @@ document.addEventListener("click", (e) => {
     chatPanel.style.display = "none";
     stopChatPolling();
   }
+});
+
+// ---------- 경제pick (매일 오전 7시 KST, GitHub Actions가 CC/공공저작물 미국 경제뉴스를 모아 AI요약+AI이미지로 갱신) ----------
+const ECONPICK_DATA_URL = "data/econpick.json";
+const ECONPICK_INITIAL_COUNT = 8;
+const ECONPICK_PAGE_SIZE = 4;
+let econPickItems = null; // 최초 오픈 시 1회만 fetch해서 세션 동안 재사용
+let econPickRenderedCount = 0;
+let econPickExpandedIdx = null;
+let econPickObserver = null;
+
+function econPickCardHtml(item, idx) {
+  const expanded = idx === econPickExpandedIdx;
+  const summaryBlock = expanded
+    ? `<div class="econpick-summary">${escapeHtml(item.summary || "")}<br /><a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer">원문보기 →</a></div>`
+    : "";
+  return `
+    <div class="econpick-card${expanded ? " expanded" : ""}" data-idx="${idx}">
+      <img class="econpick-thumb" src="${escapeHtml(item.image)}" alt="" loading="lazy" />
+      <p class="econpick-title">${escapeHtml(item.title)}</p>
+      <p class="econpick-meta">${escapeHtml(item.source || "")}</p>
+      ${summaryBlock}
+    </div>`;
+}
+
+function renderEconPickCards() {
+  econPickGrid.innerHTML = econPickItems
+    .slice(0, econPickRenderedCount)
+    .map((item, idx) => econPickCardHtml(item, idx))
+    .join("");
+}
+
+function econPickLoadMore() {
+  if (!econPickItems || econPickRenderedCount >= econPickItems.length) return;
+  econPickRenderedCount = Math.min(econPickRenderedCount + ECONPICK_PAGE_SIZE, econPickItems.length);
+  renderEconPickCards();
+}
+
+function setupEconPickObserver() {
+  if (econPickObserver) return;
+  econPickObserver = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((e) => e.isIntersecting)) econPickLoadMore();
+    },
+    { root: econPickBody, rootMargin: "200px" }
+  );
+  econPickObserver.observe(econPickSentinel);
+}
+
+async function openEconPick() {
+  econPickPanel.style.display = "flex";
+  if (econPickItems) return; // 이미 불러온 데이터가 있으면 재요청 없이 그대로 재표시
+  econPickGrid.innerHTML = `<p class="muted">불러오는 중...</p>`;
+  try {
+    const res = await fetch(ECONPICK_DATA_URL);
+    if (!res.ok) throw new Error("데이터를 불러오지 못했습니다.");
+    const data = await res.json();
+    econPickItems = Array.isArray(data) ? data : [];
+    if (econPickItems.length === 0) {
+      econPickGrid.innerHTML = `<p class="econpick-empty">오늘 준비된 뉴스가 아직 없습니다.</p>`;
+      return;
+    }
+    econPickRenderedCount = Math.min(ECONPICK_INITIAL_COUNT, econPickItems.length);
+    renderEconPickCards();
+    setupEconPickObserver();
+  } catch (e) {
+    econPickGrid.innerHTML = `<p class="error-inline">경제pick을 불러오지 못했습니다: ${escapeHtml(e.message)}</p>`;
+  }
+}
+
+function closeEconPick() {
+  econPickPanel.style.display = "none";
+}
+
+econPickBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  if (econPickPanel.style.display !== "none") closeEconPick();
+  else openEconPick();
+});
+econPickCloseBtn.addEventListener("click", closeEconPick);
+document.addEventListener("click", (e) => {
+  if (econPickPanel.style.display !== "none" && !econPickPanel.contains(e.target) && e.target !== econPickBtn) {
+    closeEconPick();
+  }
+});
+econPickGrid.addEventListener("click", (e) => {
+  if (e.target.closest("a")) return; // 원문보기 링크는 확장/축소를 건드리지 않음
+  const cardEl = e.target.closest(".econpick-card");
+  if (!cardEl) return;
+  const idx = Number(cardEl.dataset.idx);
+  econPickExpandedIdx = econPickExpandedIdx === idx ? null : idx;
+  renderEconPickCards();
 });
 
 // ---------- CORS 프록시 (여러 개를 순서대로 시도) ----------

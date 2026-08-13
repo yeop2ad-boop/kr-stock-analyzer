@@ -45,6 +45,7 @@
 
     <div class="fh-search">
       <input type="text" id="tickerInput" placeholder="티커를 검색해 주세요.(예: AAPL,TSLA)" autocomplete="off" />
+      <button id="econPickBtn" type="button" aria-label="경제pick">📰</button>
       <button id="analyzeBtn" type="button" aria-label="분석">🔍</button>
       <div id="tickerSuggest" class="chat-ticker-suggest" style="display:none;"></div>
     </div>
@@ -76,6 +77,17 @@
       <button id="chatSendBtn" class="chat-send-btn" type="button" aria-label="등록">➤</button>
     </div>
     <p class="chat-footer muted">비속어·URL·도배성 문구는 등록이 제한됩니다 · 1:1 문의: yeop2ad@gmail.com</p>
+  </div>
+
+  <div id="econPickPanel" class="chat-panel board-panel econpick-panel" style="display:none;">
+    <div class="chat-header">
+      <span>📰 경제pick <span class="muted" style="font-weight:400;">(매일 오전 7시 업데이트)</span></span>
+      <button id="econPickCloseBtn" class="chat-close-btn" type="button" aria-label="닫기">✕</button>
+    </div>
+    <div id="econPickBody" class="econpick-body">
+      <div id="econPickGrid" class="econpick-grid"></div>
+      <div id="econPickSentinel" class="econpick-sentinel"></div>
+    </div>
   </div>
 
   <div id="chartModal" class="chart-modal" style="display:none;">

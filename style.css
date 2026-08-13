@@ -216,6 +216,81 @@ body {
   overflow: hidden;
 }
 
+/* 경제pick — chat-panel과 동일한 상단 오버레이 패턴을 쓰되, 카드 그리드가 더 길어서 높이만 넉넉히 */
+.econpick-panel { height: 85vh; }
+
+.econpick-body {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  padding: 12px;
+}
+
+.econpick-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.econpick-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.econpick-thumb {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+  background: var(--card-bg);
+}
+
+.econpick-title {
+  margin: 0;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.econpick-meta {
+  padding: 0 10px 8px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* 카드 클릭 시 그리드 두 칸을 모두 차지하며 확장 — 아래 카드들은 자연스럽게 밀려 내려감 */
+.econpick-card.expanded { grid-column: 1 / -1; }
+.econpick-card.expanded .econpick-thumb { aspect-ratio: 16 / 9; }
+.econpick-card.expanded .econpick-title { -webkit-line-clamp: unset; }
+
+.econpick-summary {
+  padding: 4px 10px 12px;
+  font-size: 13px;
+  color: var(--text);
+  white-space: pre-line;
+}
+
+.econpick-summary a {
+  display: inline-block;
+  margin-top: 8px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.econpick-sentinel { height: 1px; }
+
+.econpick-empty { text-align: center; color: var(--muted); font-size: 13px; padding: 30px 0; }
+
 .chart-modal {
   position: fixed;
   inset: 0;
