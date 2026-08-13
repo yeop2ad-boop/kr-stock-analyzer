@@ -45,18 +45,18 @@
 
     <div class="fh-search">
       <input type="text" id="tickerInput" placeholder="티커를 검색해 주세요.(예: AAPL,TSLA)" autocomplete="off" />
-      <button id="econPickBtn" type="button" aria-label="경제pick">📰</button>
       <button id="analyzeBtn" type="button" aria-label="분석">🔍</button>
       <div id="tickerSuggest" class="chat-ticker-suggest" style="display:none;"></div>
     </div>
 
     <div class="tab-bar" id="tabBar">
+      <button type="button" class="cat-btn" id="econPickBtn">📰 경제pick</button>
       <button type="button" class="cat-btn" data-tab="search" id="tabSearchBtn">기업</button>
       <button type="button" class="cat-btn" data-tab="popular" id="tabPopularBtn">🔥 인기종목</button>
       <button type="button" class="cat-btn" data-tab="index" id="tabIndexBtn">US Markets</button>
       <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn">인사이트</button>
-      <button type="button" class="cat-btn" data-tab="valuation" id="tabValuationBtn">가치Value</button>
-      <button type="button" class="cat-btn" data-tab="trend" id="tabTrendBtn">추세Trend</button>
+      <button type="button" class="cat-btn" data-tab="valuation" id="tabValuationBtn">기업가치</button>
+      <button type="button" class="cat-btn" data-tab="trend" id="tabTrendBtn">주식동향</button>
     </div>
   </header>
 
@@ -114,7 +114,7 @@
           </div>
 
           <div class="summary-subtab-panel" data-summary-subtabpanel="summary">
-          <section class="card">
+          <section class="flush-section">
             <div id="summaryChartStatus" class="muted top30-status" style="display:none;"></div>
             <div id="summaryChartContainer" class="future-chart-container"></div>
             <div class="top30-sub-nav" id="summaryChartPeriodNav">
@@ -168,43 +168,43 @@
           </div>
 
           <div class="summary-subtab-panel" data-summary-subtabpanel="revenue" style="display:none;">
-          <section class="card">
+          <section class="flush-section">
             <h2>매출액 / 주당순이익(EPS) 3년 추이</h2>
             <div id="financialsSection" class="section-body"></div>
           </section>
 
-          <section class="card">
+          <section class="flush-section">
             <h2>최근 분기 실적 &amp; 다음 분기 가이던스</h2>
             <div id="quarterlyEarningsSection" class="section-body"></div>
           </section>
           </div>
 
           <div class="summary-subtab-panel" data-summary-subtabpanel="peers" style="display:none;">
-          <section class="card">
+          <section class="flush-section">
             <h2>경쟁사 매출 비교</h2>
             <div id="peersSection" class="section-body"></div>
           </section>
           </div>
 
           <div class="summary-subtab-panel" data-summary-subtabpanel="news" style="display:none;">
-          <section class="card">
+          <section class="flush-section">
             <h2>주요 뉴스</h2>
             <div id="newsSection" class="section-body"></div>
           </section>
           </div>
 
           <div class="summary-subtab-panel" data-summary-subtabpanel="investscore" style="display:none;">
-          <section class="card">
+          <section class="flush-section">
             <h2>상승압력도 점수</h2>
             <div id="scoreSection" class="section-body"></div>
           </section>
 
-          <section class="card">
+          <section class="flush-section">
             <h2>투자 안정성 점수</h2>
             <div id="riskSection" class="section-body"></div>
           </section>
 
-          <section class="card">
+          <section class="flush-section">
             <h2>S&P500 VIX</h2>
             <div id="macroSection" class="section-body"></div>
           </section>

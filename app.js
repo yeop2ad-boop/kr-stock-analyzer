@@ -736,7 +736,7 @@ async function getMarketReturns() {
   }
 }
 
-// 세션 내 반복 호출 시 매번 지수 3종을 다시 조회하지 않도록 캐싱(가치Value 랭킹 표에서 종목마다 투자등급을 계산할 때 공용으로 사용)
+// 세션 내 반복 호출 시 매번 지수 3종을 다시 조회하지 않도록 캐싱(기업가치 랭킹 표에서 종목마다 투자등급을 계산할 때 공용으로 사용)
 let _marketReturnsCache = null;
 async function getMarketReturnsCached() {
   if (!_marketReturnsCache) _marketReturnsCache = getMarketReturns();
@@ -1526,7 +1526,7 @@ window.addEventListener("resize", syncHeaderHeight);
 new ResizeObserver(syncHeaderHeight).observe(fixedHeader);
 syncHeaderHeight();
 
-// ---------- 스와이프 캐로셀(기업검색/인기종목/지수/가치Value/추세Trend/인사이트) — 과거분석·미래예측은 기업검색 요약 페이지 내부로 이동 ----------
+// ---------- 스와이프 캐로셀(기업검색/인기종목/지수/기업가치/주식동향/인사이트) — 과거분석·미래예측은 기업검색 요약 페이지 내부로 이동 ----------
 const TAB_ORDER = ["search", "popular", "index", "insight", "valuation", "trend"];
 const panels = {
   search: el("panelSearch"),
