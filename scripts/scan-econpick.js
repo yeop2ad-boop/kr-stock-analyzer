@@ -28,7 +28,7 @@ const RSS_FEEDS = [
   { name: "The Conversation (Business)", url: "https://theconversation.com/us/business/articles.atom" },
   { name: "The Conversation (Technology)", url: "https://theconversation.com/us/technology/articles.atom" },
   { name: "Federal Reserve 보도자료", url: "https://www.federalreserve.gov/feeds/press_all.xml" },
-  { name: "EIA Today in Energy", url: "https://www.eia.gov/todayinenergy/rss/todayinenergy.xml" },
+  { name: "EIA Today in Energy", url: "https://www.eia.gov/rss/todayinenergy.xml" },
 ];
 
 // M7 빅테크 관련 기업 이벤트(테슬라/애플/아마존 등) — SEC EDGAR 8-K(수시공시)는 미국 정부기관에
