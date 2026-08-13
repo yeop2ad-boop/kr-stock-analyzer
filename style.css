@@ -77,39 +77,6 @@ body {
 .fh-search input[type="text"] { flex: 1; }
 .fh-search button { font-size: 18px; padding: 10px 14px; line-height: 1; white-space: nowrap; }
 
-.future-search {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-.future-search input[type="text"] {
-  width: 100%;
-  max-width: 420px;
-  padding: 14px 16px;
-  border: 3px solid var(--accent);
-  background: var(--accent-soft);
-  border-radius: 10px;
-  text-align: center;
-  font-size: 15px;
-}
-.future-search button {
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  background: conic-gradient(from 90deg, #ff0040, #ff00ff, #8000ff, #0000ff, #00ffff, #00ff00, #ffff00, #ff8000, #ff0040);
-  border: 2px solid rgba(255, 255, 255, 0.85);
-  font-size: 22px;
-  line-height: 1;
-  padding: 0 0 0 3px; /* 재생 삼각형이 원 중앙에 오도록 살짝 보정 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-}
-
 .future-beta-warning {
   text-align: center;
   padding: 12px 16px;
@@ -203,12 +170,6 @@ body {
 .future-ind-row:last-child { border-bottom: none; }
 .future-ind-name { font-weight: 600; }
 .future-ind-cagr { white-space: nowrap; }
-
-.historical-full-buttons {
-  display: flex;
-  gap: 8px;
-  margin-top: 16px;
-}
 
 /* ---------- 7탭 스와이프 캐로셀 ---------- */
 .carousel-viewport {
@@ -726,7 +687,19 @@ table.insight-holdings-table td span, table.insight-holdings-table td b { max-wi
 .idx-price { font-weight: 800; font-size: 16px; }
 .idx-delta { margin-top: 3px; font-size: 12.5px; font-weight: 700; }
 
-.ticker-historical-toggle-btn { margin-left: 8px; padding: 2px 10px; font-size: 11px; border-radius: 6px; }
+.summary-action-row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.summary-action-btn {
+  flex: 0 0 auto;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.summary-action-btn.active { color: #fff; border-color: #fff; font-weight: 800; }
 #tickerHistoricalRow { margin-top: 14px; }
 
 table.fin-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 13px; }
@@ -768,39 +741,6 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 .margin-pct.bad { color: var(--neg); }
 
 /* 최근 분기 실적(3개) + 다음 분기 가이던스(1개, 빨간 점선) — 세로 막대 4개 */
-.qbar-chart {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  align-items: end;
-  margin-top: 12px;
-  height: 180px;
-}
-.qbar-col { display: flex; flex-direction: column; align-items: center; height: 100%; }
-.qbar-values { display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 700; margin-bottom: 4px; }
-.qbar-revenue { color: var(--text); }
-.qbar-net { font-size: 10px; }
-.qbar-track {
-  width: 60%;
-  flex: 1;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 4px;
-  border-bottom: 1px solid var(--border);
-}
-.qbar-fill { width: 45%; border-radius: 4px 4px 0 0; min-height: 3px; }
-.qbar-fill-revenue { background: var(--accent); }
-.qbar-fill-net { background: #7c3aed; }
-.qbar-guidance .qbar-fill { background: transparent; border: 2px dashed var(--pos); }
-.qbar-guidance .qbar-track { border-bottom: 1px dashed var(--pos); }
-.qbar-label { margin-top: 6px; font-size: 11px; font-weight: 700; text-align: center; }
-.qbar-guidance .qbar-label { color: var(--pos); }
-.qbar-date { font-size: 9px; color: var(--muted); text-align: center; }
-.qbar-legend { display: flex; gap: 14px; justify-content: center; margin-top: 10px; font-size: 11px; color: var(--muted); }
-.qbar-swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
-.qbar-swatch-revenue { background: var(--accent); }
-.qbar-swatch-net { background: #7c3aed; }
 .qbar-dates { font-size: 12px; margin: 10px 0 2px; }
 .qbar-date-list { margin: 0; padding-left: 18px; font-size: 12px; color: var(--muted); }
 
@@ -844,6 +784,7 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 .news-item .news-meta { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
 .news-item .news-summary { font-size: 13px; color: var(--text); }
 .news-item .news-original { font-size: 12px; color: var(--muted); font-style: italic; }
+.news-item .news-source { font-size: 11px; color: var(--muted); opacity: 0.75; margin-top: 2px; }
 
 .score-wrap { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
 .score-badge {

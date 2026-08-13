@@ -26,20 +26,18 @@
 </head>
 <body>
   <div id="loadingSplash" class="loading-splash">
-    <svg viewBox="0 0 480 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="yeopinvest.com" class="loading-splash-logo">
-      <polyline points="22,70 38,50 52,58 72,28" fill="none" stroke="#f5a623" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
-      <polygon points="72,28 62,30 70,38" fill="#f5a623" />
-      <text x="90" y="78" font-family="Pretendard, 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, Arial, sans-serif" font-weight="800" letter-spacing="-0.5px" font-size="46" fill="#eceef2">yeop<tspan fill="#6b9bff">invest</tspan><tspan font-weight="600" letter-spacing="0" fill="#8a94a6" font-size="26">.com</tspan></text>
+    <svg viewBox="0 0 410 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="yeopinvest.com" class="loading-splash-logo">
+      <image href="logos/site_logo_arrow_only.png" x="4" y="15" width="60" height="36" />
+      <text x="28" y="78" font-family="Pretendard, 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, Arial, sans-serif" font-weight="800" letter-spacing="-0.5px" font-size="46" fill="#eceef2">yeop<tspan fill="#6b9bff">invest</tspan><tspan font-weight="600" letter-spacing="0" fill="#8a94a6" font-size="26">.com</tspan></text>
     </svg>
   </div>
 
   <header id="fixedHeader" class="fixed-header">
     <div class="fh-topline">
       <div class="site-logo" id="siteLogo" aria-label="yeopinvest.com" role="button" tabindex="0">
-        <svg viewBox="0 0 480 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="yeopinvest.com">
-          <polyline points="22,70 38,50 52,58 72,28" fill="none" stroke="#f5a623" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
-          <polygon points="72,28 62,30 70,38" fill="#f5a623" />
-          <text x="90" y="78" font-family="Pretendard, 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, Arial, sans-serif" font-weight="800" letter-spacing="-0.5px" font-size="46" fill="#eceef2">yeop<tspan fill="#6b9bff">invest</tspan><tspan font-weight="600" letter-spacing="0" fill="#8a94a6" font-size="26">.com</tspan></text>
+        <svg viewBox="0 0 410 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="yeopinvest.com">
+          <image href="logos/site_logo_arrow_only.png" x="4" y="15" width="60" height="36" />
+          <text x="28" y="78" font-family="Pretendard, 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, Arial, sans-serif" font-weight="800" letter-spacing="-0.5px" font-size="46" fill="#eceef2">yeop<tspan fill="#6b9bff">invest</tspan><tspan font-weight="600" letter-spacing="0" fill="#8a94a6" font-size="26">.com</tspan></text>
         </svg>
       </div>
       <button id="contactBtn" class="contact-btn" type="button" aria-label="개미투자 게시판">…</button>
@@ -52,14 +50,12 @@
     </div>
 
     <div class="tab-bar" id="tabBar">
-      <button type="button" class="cat-btn" data-tab="search" id="tabSearchBtn">기업검색</button>
+      <button type="button" class="cat-btn" data-tab="search" id="tabSearchBtn">기업</button>
       <button type="button" class="cat-btn" data-tab="popular" id="tabPopularBtn">🔥 인기종목</button>
       <button type="button" class="cat-btn" data-tab="index" id="tabIndexBtn">US Markets</button>
       <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn">인사이트</button>
-      <button type="button" class="cat-btn" data-tab="valuation" id="tabValuationBtn">가치평가</button>
-      <button type="button" class="cat-btn" data-tab="trend" id="tabTrendBtn">추세평가</button>
-      <button type="button" class="cat-btn" data-tab="historical" id="tabHistoricalBtn">과거분석</button>
-      <button type="button" class="cat-btn" data-tab="future" id="tabFutureBtn">미래예측(베타)</button>
+      <button type="button" class="cat-btn" data-tab="valuation" id="tabValuationBtn">가치Value</button>
+      <button type="button" class="cat-btn" data-tab="trend" id="tabTrendBtn">추세Trend</button>
     </div>
   </header>
 
@@ -97,46 +93,111 @@
       <div class="carousel-panel" data-panel="search" id="panelSearch">
         <div id="statusBox" class="status-box" style="display:none;"></div>
         <div id="results" class="results" style="display:none;">
+          <div class="top30-sub-nav summary-subtabs" id="summarySubtabNav">
+            <button type="button" class="cat-btn active" id="summarySubtabSummaryBtn" data-summary-subtab="summary">요약</button>
+            <button type="button" class="cat-btn" id="summarySubtabRevenueBtn" data-summary-subtab="revenue">매출액</button>
+            <button type="button" class="cat-btn" id="summarySubtabPeersBtn" data-summary-subtab="peers">경쟁사 매출 비교</button>
+            <button type="button" class="cat-btn" id="summarySubtabScoreBtn" data-summary-subtab="investscore">invest점수</button>
+            <button type="button" class="cat-btn" id="summarySubtabNewsBtn" data-summary-subtab="news">주요 뉴스</button>
+          </div>
+
+          <div class="summary-subtab-panel" data-summary-subtabpanel="summary">
           <section class="card">
-            <h2 id="summaryHeading">1️⃣ 요약</h2>
+            <div class="top30-sub-nav" id="summaryChartPeriodNav">
+              <button type="button" class="cat-btn" data-chart-period="1d">1일</button>
+              <button type="button" class="cat-btn" data-chart-period="5d">1주</button>
+              <button type="button" class="cat-btn" data-chart-period="1mo">1달</button>
+              <button type="button" class="cat-btn active" data-chart-period="1y">1년</button>
+              <button type="button" class="cat-btn" data-chart-period="5y">5년</button>
+              <button type="button" class="cat-btn" data-chart-period="max">최대</button>
+            </div>
+            <div id="summaryChartStatus" class="muted top30-status" style="display:none;"></div>
+            <div id="summaryChartContainer" class="future-chart-container"></div>
+            <h2 id="summaryHeading">요약</h2>
             <div id="summarySection" class="section-body"></div>
             <div id="summaryScoreRow" class="mini-score-row"></div>
-          </section>
 
+            <div id="historicalInlineWrap" style="display:none;">
+              <div class="top30-sub-nav">
+                <button type="button" class="cat-btn" id="historicalMajorBtn">주요종목</button>
+                <button type="button" class="cat-btn cat-historical-up" id="historicalFullUpBtn"><span class="cat-arrow">▲</span> 과거분석(전체)</button>
+                <button type="button" class="cat-btn cat-historical-down" id="historicalFullDownBtn"><span class="cat-arrow">▼</span> 과거분석(전체)</button>
+              </div>
+              <p id="historicalStatus" class="muted top30-status" style="display:none;"></p>
+              <div id="historicalResults"></div>
+            </div>
+
+            <div id="futureInlineWrap" style="display:none;">
+              <p id="futureStatus" class="status-box" style="display:none;"></p>
+              <p class="future-beta-warning">⚠️ 베타 서비스로, 아직 예측이 정확하지 않을 수 있습니다.</p>
+              <div id="futureResultsSection" class="future-inline-card" style="display:none;">
+                <div class="future-inline-header">
+                  <span id="futureChartModalTitle" class="chart-modal-title"></span>
+                </div>
+                <div class="future-chart-body">
+                  <h3 class="future-chart-subheading">📈 4년 평균주기 예측 - 6개월후 주가예상</h3>
+                  <div id="futureChartContainer" class="future-chart-container"></div>
+                  <p id="futureChartCaption" class="future-chart-caption"></p>
+                  <hr class="future-chart-divider" />
+                  <h3 class="future-chart-subheading">📊 투자안정성 구간별 분포도 예측 - 1년후 주가 예상</h3>
+                  <div id="futureRiskContainer" class="future-chart-container"></div>
+                  <p id="futureRiskCaption" class="future-chart-caption"></p>
+                  <hr class="future-chart-divider" />
+                  <h3 class="future-chart-subheading">VIX지수를 활용한 투자시점 점검표</h3>
+                  <div id="futureMacroChartContainer" class="future-chart-container future-macro-chart"></div>
+                  <p id="futureMacroChartCaption" class="future-chart-caption"></p>
+                </div>
+              </div>
+            </div>
+
+            <div id="sReportInlineWrap" style="display:none;">
+              <p class="muted" style="padding:12px 0;">🚧 s리포트는 준비 중입니다.</p>
+            </div>
+          </section>
+          </div>
+
+          <div class="summary-subtab-panel" data-summary-subtabpanel="revenue" style="display:none;">
           <section class="card">
-            <h2>2️⃣ 매출액 / 주당순이익(EPS) 3년 추이</h2>
+            <h2>매출액 / 주당순이익(EPS) 3년 추이</h2>
             <div id="financialsSection" class="section-body"></div>
           </section>
 
           <section class="card">
-            <h2>2️⃣+ 최근 분기 실적 &amp; 다음 분기 가이던스</h2>
+            <h2>최근 분기 실적 &amp; 다음 분기 가이던스</h2>
             <div id="quarterlyEarningsSection" class="section-body"></div>
           </section>
+          </div>
 
+          <div class="summary-subtab-panel" data-summary-subtabpanel="peers" style="display:none;">
           <section class="card">
-            <h2>3️⃣ 경쟁사 매출 비교</h2>
+            <h2>경쟁사 매출 비교</h2>
             <div id="peersSection" class="section-body"></div>
           </section>
+          </div>
 
+          <div class="summary-subtab-panel" data-summary-subtabpanel="news" style="display:none;">
           <section class="card">
-            <h2>4️⃣ 주요 뉴스</h2>
+            <h2>주요 뉴스</h2>
             <div id="newsSection" class="section-body"></div>
           </section>
+          </div>
 
+          <div class="summary-subtab-panel" data-summary-subtabpanel="investscore" style="display:none;">
           <section class="card">
-            <h2>5️⃣ 상승압력도 점수</h2>
+            <h2>상승압력도 점수</h2>
             <div id="scoreSection" class="section-body"></div>
           </section>
 
           <section class="card">
-            <h2>6️⃣ 투자 안정성 점수</h2>
+            <h2>투자 안정성 점수</h2>
             <div id="riskSection" class="section-body"></div>
           </section>
 
           <section class="card">
-            <h2>7️⃣ S&P500 VIX</h2>
+            <h2>S&P500 VIX</h2>
             <div id="macroSection" class="section-body"></div>
           </section>
+          </div>
         </div>
       </div>
 
@@ -149,10 +210,10 @@
         <div class="top30-sub-nav">
           <button type="button" class="cat-btn" id="indexCatUsMarketsBtn">미국시장</button>
           <button type="button" class="cat-btn" id="indexCatIndicesBtn">지수</button>
-          <button type="button" class="cat-btn" id="indexCatCryptoBtn">암호화폐</button>
           <button type="button" class="cat-btn" id="indexCatCommoditiesBtn">원자재</button>
+          <button type="button" class="cat-btn" id="indexCatFxBtn">외환</button>
+          <button type="button" class="cat-btn" id="indexCatCryptoBtn">암호화폐</button>
           <button type="button" class="cat-btn" id="indexCatBondsBtn">채권</button>
-          <button type="button" class="cat-btn" id="indexCatFxBtn">환율</button>
         </div>
         <div id="indexPullToRefresh" class="pull-refresh" aria-hidden="true"><span class="pull-refresh-text">↓ 당겨서 새로고침</span></div>
         <p id="indexStatus" class="muted top30-status" style="display:none;"></p>
@@ -194,8 +255,9 @@
           <button type="button" class="cat-btn" id="valuationRevenueBtn">매출액 증가</button>
           <button type="button" class="cat-btn" id="valuationCashFlowBtn">현금흐름 증가</button>
           <button type="button" class="cat-btn" id="valuationNetIncomeBtn">순이익 증가</button>
+          <button type="button" class="cat-btn" id="valuationEpsBtn">EPS</button>
           <button type="button" class="cat-btn" id="valuationPerBtn">PER</button>
-          <button type="button" class="cat-btn" id="valuationStabilityBtn">투자안정</button>
+          <button type="button" class="cat-btn" id="valuationStabilityBtn">투자등급</button>
           <button type="button" class="cat-btn" id="valuationMarketCapBtn">시가총액</button>
         </div>
         <p id="valuationStatus" class="muted top30-status" style="display:none;"></p>
@@ -204,52 +266,18 @@
 
       <div class="carousel-panel" data-panel="trend" id="panelTrend">
         <div class="top30-sub-nav">
-          <button type="button" class="cat-btn" id="trendKoreaBtn">한국보유 비중</button>
           <button type="button" class="cat-btn" id="trendVolumeBtn">거래량</button>
-          <button type="button" class="cat-btn" id="trendPlungeBtn">급락주</button>
           <button type="button" class="cat-btn" id="trendSurgeBtn">급등주</button>
-          <button type="button" class="cat-btn" id="trendPressureBtn">상승압력</button>
+          <button type="button" class="cat-btn" id="trendPlungeBtn">급락주</button>
+          <button type="button" class="cat-btn" id="trendPressureBtn">추세상승</button>
+          <button type="button" class="cat-btn" id="trendUsStockBtn">US Stock</button>
+          <button type="button" class="cat-btn" id="trendUsEtfBtn">US ETF</button>
+          <button type="button" class="cat-btn" id="trendKrEtfBtn">KR ETF</button>
         </div>
         <p id="trendStatus" class="muted top30-status" style="display:none;"></p>
         <div id="trendResults"></div>
       </div>
 
-      <div class="carousel-panel" data-panel="historical" id="panelHistorical">
-        <p id="historicalStatus" class="muted top30-status" style="display:none;"></p>
-        <div id="historicalResults"></div>
-        <div class="historical-full-buttons">
-          <button type="button" class="cat-btn cat-historical-up" id="historicalFullUpBtn"><span class="cat-arrow">▲</span> 과거분석(전체)</button>
-          <button type="button" class="cat-btn cat-historical-down" id="historicalFullDownBtn"><span class="cat-arrow">▼</span> 과거분석(전체)</button>
-        </div>
-      </div>
-
-      <div class="carousel-panel" data-panel="future" id="panelFuture">
-        <div class="future-search">
-          <input type="text" id="futureTickerInput" placeholder="티커를 입력하세요. EX)TSLA,AAPL" autocomplete="off" />
-          <button id="futureAnalyzeBtn" type="button" aria-label="검색">▶</button>
-        </div>
-        <p id="futureStatus" class="status-box" style="display:none;"></p>
-        <p class="future-beta-warning">⚠️ 베타 서비스로, 아직 예측이 정확하지 않을 수 있습니다.</p>
-
-        <div id="futureResultsSection" class="future-inline-card" style="display:none;">
-          <div class="future-inline-header">
-            <span id="futureChartModalTitle" class="chart-modal-title"></span>
-          </div>
-          <div class="future-chart-body">
-            <h3 class="future-chart-subheading">📈 4년 평균주기 예측 - 6개월후 주가예상</h3>
-            <div id="futureChartContainer" class="future-chart-container"></div>
-            <p id="futureChartCaption" class="future-chart-caption"></p>
-            <hr class="future-chart-divider" />
-            <h3 class="future-chart-subheading">📊 투자안정성 구간별 분포도 예측 - 1년후 주가 예상</h3>
-            <div id="futureRiskContainer" class="future-chart-container"></div>
-            <p id="futureRiskCaption" class="future-chart-caption"></p>
-            <hr class="future-chart-divider" />
-            <h3 class="future-chart-subheading">VIX지수를 활용한 투자시점 점검표</h3>
-            <div id="futureMacroChartContainer" class="future-chart-container future-macro-chart"></div>
-            <p id="futureMacroChartCaption" class="future-chart-caption"></p>
-          </div>
-        </div>
-      </div>
 
     </div>
 
