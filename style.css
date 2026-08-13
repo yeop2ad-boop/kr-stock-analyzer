@@ -216,13 +216,23 @@ body {
   overflow: hidden;
 }
 
-/* 경제pick — chat-panel과 동일한 상단 오버레이 패턴을 쓰되, 카드 그리드가 더 길어서 높이만 넉넉히 */
-.econpick-panel { height: 85vh; }
+/* 경제pick — 오버레이 모달이 아니라 탭바 바로 아래 인라인으로 펼쳐짐(다른 탭으로 이동해도 유지됨).
+   fixedHeader 안에 있어서 열리면 syncHeaderHeight()가 자동으로 헤더 높이를 재계산해 본문을 밀어냄 */
+.econpick-panel {
+  display: flex;
+  flex-direction: column;
+  max-width: 860px;
+  margin: 10px auto 0;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
 
 .econpick-body {
-  flex: 1;
+  max-height: 60vh;
   overflow-y: auto;
-  min-height: 0;
+  -webkit-overflow-scrolling: touch;
   padding: 12px;
 }
 
@@ -577,10 +587,22 @@ body {
 #summaryChartContainer {
   max-width: none;
   overflow-x: visible;
+  margin-left: -20px;
+  margin-right: -20px;
+  width: calc(100% + 40px);
 }
 #summaryChartContainer svg {
   min-width: 0;
 }
+
+/* 기간 버튼도 그래프와 같은 폭으로 좌우 꽉 차게(카드 패딩이 없어진 뒤 화면 끝까지) + 버튼끼리 균등 분할 */
+#summaryChartPeriodNav {
+  margin-left: -20px;
+  margin-right: -20px;
+  width: calc(100% + 40px);
+  overflow-x: visible;
+}
+#summaryChartPeriodNav .cat-btn { flex: 1 1 0; text-align: center; }
 
 input[type="text"], input[type="password"] {
   flex: 1;

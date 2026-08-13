@@ -272,11 +272,8 @@ econPickBtn.addEventListener("click", (e) => {
   else openEconPick();
 });
 econPickCloseBtn.addEventListener("click", closeEconPick);
-document.addEventListener("click", (e) => {
-  if (econPickPanel.style.display !== "none" && !econPickPanel.contains(e.target) && e.target !== econPickBtn) {
-    closeEconPick();
-  }
-});
+// 오버레이 모달이 아니라 탭바 아래 인라인 섹션이라, 다른 탭 버튼을 눌러도 닫히지 않고 그대로 유지됨
+// (닫기는 ✕ 버튼이나 경제pick 버튼 재클릭으로만)
 econPickGrid.addEventListener("click", (e) => {
   if (e.target.closest("a")) return; // 원문보기 링크는 확장/축소를 건드리지 않음
   const cardEl = e.target.closest(".econpick-card");
@@ -4665,10 +4662,10 @@ const CHART_PERIOD_LABEL_FMT = {
 };
 
 // 차트 지오메트리는 build/interaction 두 함수가 동일한 좌표계를 써야 크로스헤어가 정확히 맞아떨어짐
-const PRICE_CHART_GEOM = { W: 780, H: 340, ML: 8, MR: 80, MT: 16, MB: 32 };
-const PRICE_TAG_W = 72,
-  PRICE_TAG_NOTCH = 6,
-  PRICE_TAG_H = 20;
+const PRICE_CHART_GEOM = { W: 780, H: 440, ML: 8, MR: 112, MT: 20, MB: 44 };
+const PRICE_TAG_W = 96,
+  PRICE_TAG_NOTCH = 8,
+  PRICE_TAG_H = 28;
 
 // 현재가/터치 위치를 가리키는 "책갈피" 모양(왼쪽 삼각 포인터 + 사각 라벨) path
 function bookmarkTagPath(xStart, yCenter) {
@@ -4699,7 +4696,7 @@ function buildPriceChartSvg(pairs, period, symbol) {
   for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) {
     const y = yFn(v);
     gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="#23262f" stroke-width="1" />`;
-    gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" font-size="11" fill="#8a90a3">${fmtChartPrice(v)}</text>`;
+    gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 5).toFixed(1)}" font-size="14" fill="#8a90a3">${fmtChartPrice(v)}</text>`;
   }
 
   let axisSvg = "";
@@ -4709,7 +4706,7 @@ function buildPriceChartSvg(pairs, period, symbol) {
     const x = xFn(idx);
     const d = new Date(pairs[idx].t * 1000);
     const anchor = k === 0 ? "start" : k === 4 ? "end" : "middle";
-    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 20).toFixed(1)}" text-anchor="${anchor}" font-size="11" fill="#8a90a3">${escapeHtml(fmt(d))}</text>`;
+    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 28).toFixed(1)}" text-anchor="${anchor}" font-size="14" fill="#8a90a3">${escapeHtml(fmt(d))}</text>`;
   }
 
   const linePath = pairs.map((p, i) => `${i === 0 ? "M" : "L"}${xFn(i).toFixed(1)},${yFn(p.c).toFixed(1)}`).join(" ");
@@ -4735,7 +4732,7 @@ function buildPriceChartSvg(pairs, period, symbol) {
       <line x1="${ML}" y1="${lastY.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${lastY.toFixed(1)}" stroke="#8a90a3" stroke-width="1" stroke-dasharray="3,3" />
       <circle cx="${lastX.toFixed(1)}" cy="${lastY.toFixed(1)}" r="3.5" fill="#2f6fed" />
       <path d="${bookmarkTagPath(ML + PW, lastY)}" fill="#eceef2" />
-      <text x="${(ML + PW + PRICE_TAG_NOTCH + PRICE_TAG_W / 2).toFixed(1)}" y="${(lastY + 4).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="#0b0d12">${fmtChartPrice(last.c)}</text>
+      <text x="${(ML + PW + PRICE_TAG_NOTCH + PRICE_TAG_W / 2).toFixed(1)}" y="${(lastY + 5).toFixed(1)}" text-anchor="middle" font-size="14" font-weight="700" fill="#0b0d12">${fmtChartPrice(last.c)}</text>
     </g>
     ${axisSvg}
     <rect id="pcHitArea" x="${ML}" y="0" width="${PW}" height="${H}" fill="transparent" style="touch-action:none;" />
@@ -4744,7 +4741,7 @@ function buildPriceChartSvg(pairs, period, symbol) {
       <line id="pcCrosshairHLine" x1="${ML}" y1="0" x2="${(ML + PW).toFixed(1)}" y2="0" stroke="#8a90a3" stroke-width="1" stroke-dasharray="2,2" />
       <circle id="pcCrosshairDot" r="4" fill="#0b0d12" stroke="#2f6fed" stroke-width="2" />
       <path id="pcCrosshairTagPath" fill="#eceef2" />
-      <text id="pcCrosshairTagText" text-anchor="middle" font-size="11" font-weight="700" fill="#0b0d12"></text>
+      <text id="pcCrosshairTagText" text-anchor="middle" font-size="14" font-weight="700" fill="#0b0d12"></text>
     </g>
   </svg>`;
 }
@@ -4781,7 +4778,7 @@ function setupPriceChartCrosshair(containerEl, pairs) {
     dot.setAttribute("cy", y.toFixed(1));
     tagPath.setAttribute("d", bookmarkTagPath(ML + PW, y));
     tagText.setAttribute("x", (ML + PW + PRICE_TAG_NOTCH + PRICE_TAG_W / 2).toFixed(1));
-    tagText.setAttribute("y", (y + 4).toFixed(1));
+    tagText.setAttribute("y", (y + 5).toFixed(1));
     tagText.textContent = fmtChartPrice(pairs[idx].c);
     crosshair.style.display = "";
     currentMarker.style.display = "none";
