@@ -199,13 +199,40 @@ async function summarizeKo(title, bodyText) {
   return { titleKo, summaryKo };
 }
 
-async function generateImage(title) {
+// 인물이 중심인 뉴스는 캐리커처로, 그 외 일반 뉴스는 2가지 플랫 일러스트 스타일을 순번대로 번갈아 사용해
+// 카드가 다 비슷비슷해 보이지 않도록 다양성을 줌(PRIORITY_KEYWORDS의 인물 관련 항목 재사용 + 보강)
+const PERSON_KEYWORDS = ["trump", "musk", "biden", "powell", "zuckerberg", "bezos"];
+function isPersonTopic(title) {
+  const t = title.toLowerCase();
+  return PERSON_KEYWORDS.some((k) => t.includes(k));
+}
+const IMAGE_STYLE_VARIANTS = [
+  "Modern flat editorial illustration, clean minimal professional business/finance magazine style, soft muted color palette, abstract or symbolic composition",
+  "Bold geometric collage-style illustration, vibrant contrasting color blocks with halftone texture accents, contemporary business magazine cover style",
+];
+function buildImagePrompt(title, seed) {
+  if (isPersonTopic(title)) {
+    return {
+      style: "caricature",
+      prompt:
+        `Colorful editorial caricature illustration for a business/finance magazine, exaggerated but respectful and recognizable likeness, ` +
+        `of the public figure central to this US economic news topic: "${title}". ` +
+        `Digital caricature art style, plain uncluttered background, no text, no logos, square 1:1 composition.`,
+    };
+  }
+  const variantIdx = seed % IMAGE_STYLE_VARIANTS.length;
+  return {
+    style: `flat-${variantIdx}`,
+    prompt:
+      `${IMAGE_STYLE_VARIANTS[variantIdx]} representing this US economic news topic: "${title}". ` +
+      `No text, no logos, no brand names, no real recognizable people, square 1:1 composition.`,
+  };
+}
+
+async function generateImage(title, seed) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw new Error("OPENAI_API_KEY 환경변수가 설정되지 않음");
-  const prompt =
-    `Modern flat editorial illustration representing this US economic news topic: "${title}". ` +
-    `Clean, minimal, professional business/finance magazine style, soft muted color palette, ` +
-    `abstract or symbolic composition, no text, no logos, no brand names, no real recognizable people, square 1:1 composition.`;
+  const { style, prompt } = buildImagePrompt(title, seed);
   const res = await fetchWithTimeout(
     "https://api.openai.com/v1/images/generations",
     {
@@ -228,7 +255,22 @@ async function generateImage(title) {
   const data = await res.json();
   const b64 = data.data && data.data[0] && data.data[0].b64_json;
   if (!b64) throw new Error("OpenAI 응답에 이미지 데이터 없음");
-  return Buffer.from(b64, "base64");
+  return { buffer: Buffer.from(b64, "base64"), style };
+}
+
+// 동시성 제한 병렬 처리 — 항목을 순차로 처리하면(요약+이미지 생성에 항목당 최대 ~1분) 전체 실행 시간이
+// 길어져 "매일 07:00 업데이트" 안내와 실제 반영 시각 사이 격차가 커지므로, 몇 개씩 동시에 처리해 단축함
+async function mapWithConcurrency(items, limit, fn) {
+  const results = new Array(items.length);
+  let nextIndex = 0;
+  async function worker() {
+    while (nextIndex < items.length) {
+      const i = nextIndex++;
+      results[i] = await fn(items[i], i);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return results;
 }
 
 // 소스별로 한 개씩 번갈아 뽑아 특정 소스가 결과를 독점하지 않도록 함(각 리스트는 이미 최신순으로 정렬돼 있음)
@@ -318,15 +360,16 @@ async function main() {
   const selected = [...prioritySelected, ...normalSelected];
   console.log(`오늘 선정된 후보: ${selected.length}건 (키워드 매치 ${prioritySelected.length}건 포함, 최대 ${MAX_ITEMS_PER_RUN}건 중)`);
 
-  const newItems = [];
-  for (const cand of selected) {
+  const CONCURRENCY = 4; // OpenAI/Anthropic 레이트리밋을 넘지 않는 선에서 총 실행 시간을 크게 줄임
+  const processed = await mapWithConcurrency(selected, CONCURRENCY, async (cand, i) => {
     try {
       const bodyText = await fetchArticleText(cand.link);
       const { titleKo, summaryKo } = await summarizeKo(cand.title, bodyText);
-      const imageBuffer = await generateImage(cand.title);
+      const { buffer: imageBuffer, style } = await generateImage(cand.title, i);
       const id = makeId(cand.link);
       fs.writeFileSync(path.join(IMAGES_DIR, `${id}.webp`), imageBuffer);
-      newItems.push({
+      console.log(`[완료] ${cand.source} — ${titleKo} (${style})`);
+      return {
         id,
         title: titleKo,
         link: cand.link,
@@ -335,13 +378,15 @@ async function main() {
         image: `data/econpick-images/${id}.webp`,
         publishedAt: cand.publishedAt,
         createdAt: new Date().toISOString(),
-      });
-      seen.push({ link: cand.link, usedAt: new Date().toISOString() });
-      console.log(`[완료] ${cand.source} — ${titleKo}`);
+        style,
+      };
     } catch (err) {
       console.error(`[건너뜀] ${cand.source} — ${cand.title}:`, err.message);
+      return null;
     }
-  }
+  });
+  const newItems = processed.filter(Boolean);
+  for (const item of newItems) seen.push({ link: item.link, usedAt: item.createdAt });
 
   const merged = [...newItems, ...existingItems];
   merged.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));

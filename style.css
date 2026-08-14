@@ -67,6 +67,72 @@ body {
   color: var(--text);
 }
 
+.fh-actions { display: flex; align-items: center; gap: 4px; }
+
+.login-header-btn {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 19px;
+  line-height: 1;
+  background: none;
+  border: none;
+  color: var(--muted);
+}
+
+.user-menu { position: relative; }
+.user-avatar-btn {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 800;
+  overflow: hidden;
+}
+.user-avatar-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 210;
+  min-width: 180px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+  padding: 12px;
+}
+.user-dropdown-name { margin: 0; font-size: 13.5px; font-weight: 700; color: var(--text); }
+.user-dropdown-email {
+  margin: 2px 0 10px;
+  font-size: 12px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.user-dropdown-logout {
+  width: 100%;
+  padding: 8px 0;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
 .fh-search {
   position: relative;
   max-width: 860px;
@@ -76,6 +142,134 @@ body {
 }
 .fh-search input[type="text"] { flex: 1; }
 .fh-search button { font-size: 18px; padding: 10px 14px; line-height: 1; white-space: nowrap; }
+
+/* 틀고정 헤더의 검색창은 입력창이 아니라 버튼 — 누르면 전체화면 검색 오버레이가 오른쪽에서 슬라이드인 */
+.search-open-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto 10px;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--muted);
+  text-align: left;
+}
+.search-open-icon { font-size: 15px; flex: none; }
+.search-open-placeholder { font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 480;
+  background: var(--bg);
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.search-overlay.open { transform: translateX(0); }
+
+.search-overlay-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+}
+.search-overlay-back {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 20px;
+}
+.search-overlay-search { flex: 1; margin: 0; max-width: none; }
+
+.search-overlay-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 16px 40px;
+}
+.search-section { margin-bottom: 28px; }
+.search-section h3 { margin: 0 0 10px; font-size: 13px; color: var(--muted); }
+.search-chip-list { display: flex; flex-direction: column; }
+.search-chip-empty { padding: 8px 0; font-size: 13px; }
+.search-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  width: 100%;
+  text-align: left;
+  color: var(--text);
+}
+.search-chip-symbol { font-weight: 800; font-size: 14px; }
+.search-chip-name { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* 기업 패널 — 틀고정 탭이 아니라 검색/티커클릭 시 오른쪽에서 슬라이드인하는 전체화면 오버레이.
+   chart-modal(400)보다 낮게 둬서 패널 안에서 TradingView 차트를 열면 그 위로 정상적으로 뜸 */
+.company-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 350;
+  background: var(--bg);
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.company-panel.open { transform: translateX(0); }
+
+.company-panel-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+}
+.company-panel-bar .site-logo.small svg { height: 24px; }
+.company-panel-bar .search-open-btn.small {
+  width: auto;
+  max-width: none;
+  margin: 0 0 0 auto;
+  height: 34px;
+  padding: 0 14px;
+  font-size: 16px;
+}
+
+.company-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 14px 20px 80px;
+}
+.company-panel-body #summarySubtabNav {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--bg);
+  padding-top: 2px;
+}
 
 .future-beta-warning {
   text-align: center;
@@ -364,6 +558,126 @@ body {
   background: #000;
 }
 
+.login-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: var(--bg);
+  flex-direction: column;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.login-modal-close {
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  margin: 16px 0 0 16px;
+  padding: 4px;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 22px;
+  z-index: 1;
+}
+
+.login-modal-body {
+  flex: 1;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  padding: 12px 24px 60px;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-quote {
+  margin: 16px 0 40px;
+  padding: 0;
+  border: none;
+  text-align: center;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.5;
+  color: var(--text);
+}
+.login-quote-en { display: inline-block; margin-top: 12px; font-size: 12.5px; font-weight: 500; color: var(--muted); }
+.login-quote-author { display: inline-block; margin-top: 6px; font-size: 12.5px; font-weight: 500; color: var(--muted); }
+
+.login-provider-list { display: flex; flex-direction: column; gap: 12px; }
+
+.login-provider-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 54px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+.login-provider-icon { position: absolute; left: 18px; width: 20px; height: 20px; flex: none; }
+
+.login-provider-google { background: #fff; color: #1f1f1f; border-color: var(--border); }
+.login-provider-kakao { background: #FEE500; color: #191600; }
+.login-provider-naver { background: #03C75A; color: #fff; }
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 22px 0;
+  color: var(--muted);
+  font-size: 11.5px;
+}
+.login-divider::before,
+.login-divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+.login-email-form { display: flex; flex-direction: column; gap: 10px; }
+.login-email-input {
+  width: 100%;
+  height: 50px;
+  padding: 0 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 14px;
+}
+.login-error { margin: 0; font-size: 12.5px; color: var(--bad); }
+.login-email-submit {
+  width: 100%;
+  height: 54px;
+  margin-top: 2px;
+  border-radius: 14px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.login-switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 18px;
+  font-size: 12.5px;
+}
+.login-switch-btn { background: none; border: none; color: var(--accent); font-size: 12.5px; font-weight: 700; padding: 0; }
+
+.login-forgot-btn {
+  margin: 14px auto 0;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 0;
+}
+
 /* 예전엔 전체화면 고정 모달 안이라 flex:1로 남은 세로 공간을 채웠지만, 이제 탭 화면 안에 그대로 이어붙는(인라인)
    카드라 페이지 자체가 스크롤되므로 별도 높이 강제나 세로 스크롤이 필요 없음 */
 .future-inline-card {
@@ -582,27 +896,115 @@ body {
   margin: 0 0 12px;
 }
 
+.section-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.section-heading-row h2 { margin: 0; }
+.ground-open-btn {
+  flex: none;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* 투자 그라운드: 졸라맨 + 회사 로고 + 52주 5등분 가격표를 보여주는 풀스크린 모달(.chart-modal 패턴 재사용) */
+.ground-modal { background: var(--bg); }
+.ground-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 24px 16px;
+  display: flex;
+  justify-content: center;
+}
+.ground-body svg { width: 100%; max-width: 360px; height: auto; }
+.ground-share-btn {
+  flex: none;
+  margin: 12px 16px 20px;
+  height: 48px;
+  border-radius: 12px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* 공유하기 바텀시트 */
+.share-sheet { position: fixed; inset: 0; z-index: 520; }
+.share-sheet-backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.5); }
+.share-sheet-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--card-bg);
+  border-radius: 16px 16px 0 0;
+  padding: 20px 16px calc(20px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.share-sheet-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 50px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+.share-sheet-icon { font-size: 18px; }
+.share-sheet-cancel {
+  height: 46px;
+  margin-top: 4px;
+  border-radius: 12px;
+  border: none;
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
 /* 기업 탭 가격 차트는 최소폭을 강제하지 않고 화면 폭에 그대로 맞춰 가로 스크롤 없이 한눈에 보이게 함
    (viewBox 기반 SVG라 폭이 줄어도 데이터 비율 자체는 항상 정확함) */
 #summaryChartContainer {
   max-width: none;
-  overflow-x: visible;
-  margin-left: -20px;
-  margin-right: -20px;
-  width: calc(100% + 40px);
+  overflow-x: hidden;
+  width: 100%;
 }
 #summaryChartContainer svg {
   min-width: 0;
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
-/* 기간 버튼도 그래프와 같은 폭으로 좌우 꽉 차게(카드 패딩이 없어진 뒤 화면 끝까지) + 버튼끼리 균등 분할 */
+/* 분기 실적 그래프(막대 5개)도 좁은 화면에서 가로 스크롤 없이 한 화면에 다 들어오도록 */
+#quarterlyEarningsSection .future-chart-container { max-width: none; }
+#quarterlyEarningsSection .future-chart-container svg { min-width: 0; width: 100%; }
+
+.peers-inline { margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--border); }
+
+/* 기간 버튼: 그래프와 같은 폭에서 균등 분할, 테두리는 없애고 active 상태는 굵은 흰 글자로만 구분 */
 #summaryChartPeriodNav {
-  margin-left: -20px;
-  margin-right: -20px;
-  width: calc(100% + 40px);
+  width: 100%;
   overflow-x: visible;
 }
-#summaryChartPeriodNav .cat-btn { flex: 1 1 0; text-align: center; }
+#summaryChartPeriodNav .cat-btn { flex: 1 1 0; text-align: center; border: none; }
 
 input[type="text"], input[type="password"] {
   flex: 1;
@@ -825,6 +1227,10 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 .delta-up { color: var(--pos); font-weight: 800; }
 .delta-down { color: var(--neg); font-weight: 800; }
 
+.net-income-cell { display: inline-block; padding: 2px 8px; border-radius: 6px; font-weight: 700; }
+.net-income-cell.positive { background: rgba(26, 156, 92, 0.18); color: var(--good); }
+.net-income-cell.negative { background: rgba(214, 69, 69, 0.18); color: var(--bad); }
+
 .bar-chart { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
 .bar-row { display: grid; grid-template-columns: 42px 46px 1fr; align-items: center; gap: 8px; font-size: 13px; }
 .bar-row .bar-label { color: var(--muted); }
@@ -857,9 +1263,7 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 .margin-pct.good { color: var(--pos); }
 .margin-pct.bad { color: var(--neg); }
 
-/* 최근 분기 실적(3개) + 다음 분기 가이던스(1개, 빨간 점선) — 세로 막대 4개 */
 .qbar-dates { font-size: 12px; margin: 10px 0 2px; }
-.qbar-date-list { margin: 0; padding-left: 18px; font-size: 12px; color: var(--muted); }
 
 .peer-row {
   display: grid;
@@ -903,6 +1307,24 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 .news-item .news-original { font-size: 12px; color: var(--muted); font-style: italic; }
 .news-item .news-source { font-size: 11px; color: var(--muted); opacity: 0.75; margin-top: 2px; }
 
+/* invest점수 서브탭: 원형점수를 제목 아래 중앙에 두고, 상세 설명은 그 아래 전체 폭으로 작고 흐리게 */
+.invest-score-label {
+  display: inline-block;
+  margin: 4px 0 14px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+.invest-score-h2 {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--text);
+}
+
 .score-wrap { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
 .score-badge {
   flex-shrink: 0;
@@ -919,16 +1341,17 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 .score-badge.risk .score-num { color: var(--good); }
 .score-badge.macro { background: #362a12; border-color: var(--warn); }
 .score-badge.macro .score-num { color: var(--warn); }
+.score-macro-vix-line { margin: -6px 0 14px; font-size: 11.5px; color: var(--muted); }
 
 .mini-score-row {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   gap: 10px;
   margin-top: 16px;
   padding-top: 14px;
   border-top: 1px dashed var(--border);
 }
-.mini-score { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.mini-score { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; }
 .mini-score-circle {
   width: 52px;
   height: 52px;
@@ -948,7 +1371,8 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 
 .score-details { flex: 1; min-width: 220px; font-size: 13px; }
 .score-details ul { margin: 0; padding-left: 18px; }
-.score-details li { margin-bottom: 6px; }
+.score-details li { margin-bottom: 6px; font-size: 11.5px; color: var(--muted); }
+.score-details li b { color: var(--text); font-weight: 700; }
 
 .disclaimer { margin-top: 14px; font-size: 11px; color: var(--muted); border-top: 1px dashed var(--border); padding-top: 10px; }
 /* 탭 상단 1줄 설명 — disclaimer를 맨 위에 놓는 변형(테두리를 아래쪽으로) */

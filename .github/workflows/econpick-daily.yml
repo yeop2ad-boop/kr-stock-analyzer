@@ -2,8 +2,9 @@ name: 경제pick 일일 갱신
 
 on:
   schedule:
-    # 매일 22:00 UTC = 한국시간(KST) 익일 07:00
-    - cron: "0 22 * * *"
+    # 매일 20:50 UTC = 한국시간(KST) 익일 05:50 — 정각(00분)은 GitHub Actions 스케줄 큐가 몰려 지연이 크므로
+    # 정시를 피한 분(50분)으로 잡고, 07:00 노출 목표보다 넉넉히 앞당겨 실행 지연·처리 시간(요약+이미지 생성)을 흡수함
+    - cron: "50 20 * * *"
   workflow_dispatch: {}
 
 permissions:

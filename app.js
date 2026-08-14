@@ -4,9 +4,29 @@
 
 const el = (id) => document.getElementById(id);
 
+// US Markets가 기본 탭이라 initApp()의 switchTab(0)이 로딩 초반에 곧바로 startIndexAutoRefresh()를 호출함 —
+// 그 함수가 참조하기 전에 값이 준비되어 있어야 하므로 파일 맨 앞에 둠(TDZ 에러 방지)
+const INDEX_AUTO_REFRESH_MS = 20000;
+
 const tickerInput = el("tickerInput");
 const tickerSuggest = el("tickerSuggest");
 const analyzeBtn = el("analyzeBtn");
+const searchOpenBtn = el("searchOpenBtn");
+const searchOverlay = el("searchOverlay");
+const searchOverlayCloseBtn = el("searchOverlayCloseBtn");
+const recentSearchList = el("recentSearchList");
+const popularSearchList = el("popularSearchList");
+const groundOpenBtn = el("groundOpenBtn");
+const groundModal = el("groundModal");
+const groundModalCloseBtn = el("groundModalCloseBtn");
+const groundBody = el("groundBody");
+const groundShareOpenBtn = el("groundShareOpenBtn");
+const shareSheet = el("shareSheet");
+const shareSheetBackdrop = el("shareSheetBackdrop");
+const shareSheetCloseBtn = el("shareSheetCloseBtn");
+const shareKakaoBtn = el("shareKakaoBtn");
+const shareInstaBtn = el("shareInstaBtn");
+const shareSaveBtn = el("shareSaveBtn");
 const statusBox = el("statusBox");
 const siteLogo = el("siteLogo");
 const results = el("results");
@@ -21,8 +41,6 @@ const historicalMajorBtn = el("historicalMajorBtn");
 const historicalInlineWrap = el("historicalInlineWrap");
 const futureInlineWrap = el("futureInlineWrap");
 const sReportInlineWrap = el("sReportInlineWrap");
-const popularStatus = el("popularStatus");
-const popularResults = el("popularResults");
 const indexStatus = el("indexStatus");
 const indexResults = el("indexResults");
 const valuationStatus = el("valuationStatus");
@@ -193,6 +211,227 @@ document.addEventListener("click", (e) => {
     stopChatPolling();
   }
 });
+
+// ---------- 로그인/회원가입 (Firebase Authentication) ----------
+// 구글·이메일은 Firebase가 직접 처리하고, 카카오·네이버는 Firebase가 네이티브 지원하지 않으므로
+// OAuth authorization code를 Worker(/auth/kakao, /auth/naver)로 전달해 검증받은 뒤 발급받는
+// Firebase 커스텀 토큰으로 signInWithCustomToken 합니다. 안드로이드 앱 출시 시에도 같은 Firebase
+// 프로젝트 + 같은 Worker 엔드포인트를 그대로 재사용해 동일 계정으로 로그인할 수 있습니다.
+const AUTH_ORIGIN = "https://us-stock.yeop2ad.workers.dev";
+const loginBtn = el("loginBtn");
+const loginModal = el("loginModal");
+const loginModalCloseBtn = el("loginModalCloseBtn");
+const loginGoogleBtn = el("loginGoogleBtn");
+const loginKakaoBtn = el("loginKakaoBtn");
+const loginNaverBtn = el("loginNaverBtn");
+const loginEmailForm = el("loginEmailForm");
+const loginEmailInput = el("loginEmailInput");
+const loginPasswordInput = el("loginPasswordInput");
+const loginError = el("loginError");
+const loginEmailSubmitBtn = el("loginEmailSubmitBtn");
+const loginSwitchText = el("loginSwitchText");
+const loginSwitchModeBtn = el("loginSwitchModeBtn");
+const loginForgotPasswordBtn = el("loginForgotPasswordBtn");
+const userMenu = el("userMenu");
+const userAvatarBtn = el("userAvatarBtn");
+const userAvatarImg = el("userAvatarImg");
+const userAvatarInitial = el("userAvatarInitial");
+const userDropdown = el("userDropdown");
+const userDropdownName = el("userDropdownName");
+const userDropdownEmail = el("userDropdownEmail");
+const logoutBtn = el("logoutBtn");
+
+let isSignupMode = false;
+
+function openLoginModal() {
+  setLoginError("");
+  loginModal.style.display = "flex";
+}
+function closeLoginModal() {
+  loginModal.style.display = "none";
+}
+function setLoginError(message) {
+  if (!message) {
+    loginError.style.display = "none";
+    return;
+  }
+  loginError.textContent = message;
+  loginError.style.display = "block";
+}
+function setSignupMode(next) {
+  isSignupMode = next;
+  loginEmailSubmitBtn.textContent = isSignupMode ? "회원가입" : "로그인";
+  loginSwitchText.textContent = isSignupMode ? "이미 계정이 있으신가요?" : "계정이 없으신가요?";
+  loginSwitchModeBtn.textContent = isSignupMode ? "로그인" : "회원가입";
+  setLoginError("");
+}
+
+const FIREBASE_ERROR_MESSAGES = {
+  "auth/invalid-email": "올바른 이메일 형식이 아닙니다.",
+  "auth/user-not-found": "가입되지 않은 이메일입니다.",
+  "auth/wrong-password": "비밀번호가 일치하지 않습니다.",
+  "auth/invalid-credential": "이메일 또는 비밀번호가 일치하지 않습니다.",
+  "auth/email-already-in-use": "이미 가입된 이메일입니다.",
+  "auth/weak-password": "비밀번호는 6자 이상이어야 합니다.",
+  "auth/popup-closed-by-user": "로그인 창이 닫혔습니다.",
+  "auth/too-many-requests": "잠시 후 다시 시도해주세요.",
+};
+function friendlyAuthError(err) {
+  return FIREBASE_ERROR_MESSAGES[err && err.code] || "로그인에 실패했습니다. 잠시 후 다시 시도해주세요.";
+}
+
+loginBtn.addEventListener("click", openLoginModal);
+loginModalCloseBtn.addEventListener("click", closeLoginModal);
+loginSwitchModeBtn.addEventListener("click", () => setSignupMode(!isSignupMode));
+
+loginGoogleBtn.addEventListener("click", async () => {
+  setLoginError("");
+  try {
+    await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    closeLoginModal();
+  } catch (err) {
+    setLoginError(friendlyAuthError(err));
+  }
+});
+
+loginEmailForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  setLoginError("");
+  const email = loginEmailInput.value.trim();
+  const password = loginPasswordInput.value;
+  loginEmailSubmitBtn.disabled = true;
+  try {
+    if (isSignupMode) {
+      await firebase.auth().createUserWithEmailAndPassword(email, password);
+    } else {
+      await firebase.auth().signInWithEmailAndPassword(email, password);
+    }
+    closeLoginModal();
+  } catch (err) {
+    setLoginError(friendlyAuthError(err));
+  } finally {
+    loginEmailSubmitBtn.disabled = false;
+  }
+});
+
+loginForgotPasswordBtn.addEventListener("click", async () => {
+  const email = loginEmailInput.value.trim();
+  if (!email) {
+    setLoginError("비밀번호를 재설정할 이메일을 먼저 입력해주세요.");
+    return;
+  }
+  try {
+    await firebase.auth().sendPasswordResetEmail(email);
+    setLoginError("");
+    alert("비밀번호 재설정 메일을 보냈습니다. 메일함을 확인해주세요.");
+  } catch (err) {
+    setLoginError(friendlyAuthError(err));
+  }
+});
+
+document.addEventListener("click", (e) => {
+  if (userDropdown.style.display === "none") return;
+  if (!userDropdown.contains(e.target) && e.target !== userAvatarBtn) {
+    userDropdown.style.display = "none";
+  }
+});
+userAvatarBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  userDropdown.style.display = userDropdown.style.display === "none" ? "block" : "none";
+});
+logoutBtn.addEventListener("click", async () => {
+  await firebase.auth().signOut();
+  userDropdown.style.display = "none";
+});
+
+function renderAuthState(user) {
+  if (user) {
+    loginBtn.style.display = "none";
+    userMenu.style.display = "block";
+    const name = user.displayName || (user.email ? user.email.split("@")[0] : "회원");
+    userDropdownName.textContent = name;
+    userDropdownEmail.textContent = user.email || "";
+    userDropdownEmail.style.display = user.email ? "block" : "none";
+    if (user.photoURL) {
+      userAvatarImg.src = user.photoURL;
+      userAvatarImg.style.display = "block";
+      userAvatarInitial.style.display = "none";
+    } else {
+      userAvatarImg.style.display = "none";
+      userAvatarInitial.style.display = "block";
+      userAvatarInitial.textContent = name.charAt(0).toUpperCase();
+    }
+  } else {
+    loginBtn.style.display = "flex";
+    userMenu.style.display = "none";
+    userDropdown.style.display = "none";
+  }
+}
+if (typeof firebase !== "undefined") {
+  firebase.auth().onAuthStateChanged(renderAuthState);
+}
+
+// ---------- 카카오/네이버 로그인 (OAuth authorization code 리다이렉트 방식 — 팝업 SDK 대신 리다이렉트를 쓰는 이유는
+// 나중에 안드로이드 앱 WebView 안에서도 동일하게 동작하도록 하기 위함) ----------
+function buildOAuthState(provider) {
+  const state = `${provider}_${Math.random().toString(36).slice(2)}${Date.now()}`;
+  sessionStorage.setItem("oauthState", state);
+  return state;
+}
+function oauthRedirectUri() {
+  return window.location.origin + window.location.pathname;
+}
+
+loginKakaoBtn.addEventListener("click", () => {
+  const state = buildOAuthState("kakao");
+  const url = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${encodeURIComponent(KAKAO_REST_API_KEY)}&redirect_uri=${encodeURIComponent(oauthRedirectUri())}&state=${encodeURIComponent(state)}`;
+  window.location.href = url;
+});
+
+loginNaverBtn.addEventListener("click", () => {
+  const state = buildOAuthState("naver");
+  const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${encodeURIComponent(NAVER_CLIENT_ID)}&redirect_uri=${encodeURIComponent(oauthRedirectUri())}&state=${encodeURIComponent(state)}`;
+  window.location.href = url;
+});
+
+async function completeSocialLogin(provider, code, state) {
+  openLoginModal();
+  setLoginError("로그인 처리 중...");
+  try {
+    const res = await fetch(`${AUTH_ORIGIN}/auth/${provider}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code, state, redirectUri: oauthRedirectUri() }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.customToken) {
+      setLoginError(data.error || "로그인에 실패했습니다.");
+      return;
+    }
+    await firebase.auth().signInWithCustomToken(data.customToken);
+    closeLoginModal();
+  } catch {
+    setLoginError("로그인에 실패했습니다. 잠시 후 다시 시도해주세요.");
+  }
+}
+
+// 카카오/네이버 인증 서버가 이 페이지로 ?code=&state= 를 붙여 되돌아온 경우를 처음 로드 시 한 번 확인
+(function handleOAuthRedirectReturn() {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
+  const state = params.get("state");
+  const oauthErr = params.get("error");
+  if (!code && !oauthErr) return;
+
+  const savedState = sessionStorage.getItem("oauthState");
+  sessionStorage.removeItem("oauthState");
+  window.history.replaceState(null, "", window.location.pathname);
+
+  if (oauthErr || !state || state !== savedState) return;
+  const provider = state.startsWith("kakao_") ? "kakao" : state.startsWith("naver_") ? "naver" : null;
+  if (!provider) return;
+  completeSocialLogin(provider, code, state);
+})();
 
 // ---------- 경제pick (매일 오전 7시 KST, GitHub Actions가 CC/공공저작물 미국 경제뉴스를 모아 AI요약+AI이미지로 갱신) ----------
 const ECONPICK_DATA_URL = "data/econpick.json";
@@ -1524,18 +1763,14 @@ new ResizeObserver(syncHeaderHeight).observe(fixedHeader);
 syncHeaderHeight();
 
 // ---------- 스와이프 캐로셀(기업검색/인기종목/지수/기업가치/주식동향/인사이트) — 과거분석·미래예측은 기업검색 요약 페이지 내부로 이동 ----------
-const TAB_ORDER = ["search", "popular", "index", "insight", "valuation", "trend"];
+const TAB_ORDER = ["index", "insight", "valuation", "trend"];
 const panels = {
-  search: el("panelSearch"),
-  popular: el("panelPopular"),
   index: el("panelIndex"),
   valuation: el("panelValuation"),
   trend: el("panelTrend"),
   insight: el("panelInsight"),
 };
 const tabButtons = {
-  search: el("tabSearchBtn"),
-  popular: el("tabPopularBtn"),
   index: el("tabIndexBtn"),
   valuation: el("tabValuationBtn"),
   trend: el("tabTrendBtn"),
@@ -1623,7 +1858,6 @@ TAB_ORDER.forEach((key, i) => {
 
 // ---------- 탭별 데이터 로딩 캐싱: 한 번 로딩된 탭은 다시 방문해도 재요청하지 않음 ----------
 const TAB_LOADERS = {
-  popular: () => runPopular(),
   index: () => runIndexTab(),
   valuation: () => runValueRevenue(), // 가치평가 진입 시 매출액 증가를 자동 표시
   trend: () => runMovers("surge"), // 추세평가 진입 시 급등주를 자동 표시
@@ -1711,7 +1945,95 @@ function endDrag(e) {
 carouselViewport.addEventListener("pointerup", endDrag);
 carouselViewport.addEventListener("pointercancel", endDrag);
 
-// ---------- 티커 검색/클릭 → 항상 탭1(기업검색)로 전환하며 그 종목을 로딩 ----------
+// ---------- 검색 오버레이(틀고정 검색"버튼"을 누르면 오른쪽에서 전체화면으로 슬라이드인) ----------
+const RECENT_SEARCH_KEY = "recentSearches";
+const RECENT_SEARCH_MAX = 5;
+const POPULAR_SEARCH_MAX = 5;
+
+function getRecentSearches() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(RECENT_SEARCH_KEY) || "[]");
+    return Array.isArray(raw) ? raw : [];
+  } catch {
+    return [];
+  }
+}
+function addRecentSearch(symbol) {
+  const next = [symbol, ...getRecentSearches().filter((s) => s !== symbol)].slice(0, RECENT_SEARCH_MAX);
+  localStorage.setItem(RECENT_SEARCH_KEY, JSON.stringify(next));
+}
+function searchChipHtml(symbol, name) {
+  return `<button type="button" class="search-chip" data-symbol="${escapeHtml(symbol)}">
+    <span class="search-chip-symbol">${escapeHtml(symbol)}</span>
+    <span class="search-chip-name">${escapeHtml(name || "")}</span>
+  </button>`;
+}
+function renderRecentSearches() {
+  const recent = getRecentSearches();
+  recentSearchList.innerHTML = recent.length
+    ? recent.map((s) => searchChipHtml(s, "")).join("")
+    : `<p class="muted search-chip-empty">최근 검색한 티커가 없습니다.</p>`;
+}
+let popularSearchCache = null;
+async function renderPopularSearches() {
+  if (popularSearchCache) {
+    popularSearchList.innerHTML = popularSearchCache.map((r) => searchChipHtml(r.symbol, r.name)).join("");
+    return;
+  }
+  try {
+    const candidates = await getUsStockVolumeCandidates();
+    popularSearchCache = candidates.slice(0, POPULAR_SEARCH_MAX);
+    popularSearchList.innerHTML = popularSearchCache.map((r) => searchChipHtml(r.symbol, r.name)).join("");
+  } catch {
+    popularSearchList.innerHTML = `<p class="muted search-chip-empty">인기 검색을 불러오지 못했습니다.</p>`;
+  }
+}
+function openSearchOverlay() {
+  searchOverlay.style.display = "flex";
+  requestAnimationFrame(() => searchOverlay.classList.add("open"));
+  renderRecentSearches();
+  renderPopularSearches();
+  tickerInput.focus();
+}
+function closeSearchOverlay() {
+  searchOverlay.classList.remove("open");
+  window.setTimeout(() => {
+    searchOverlay.style.display = "none";
+  }, 280);
+}
+searchOpenBtn.addEventListener("click", openSearchOverlay);
+searchOverlayCloseBtn.addEventListener("click", closeSearchOverlay);
+document.addEventListener("click", (e) => {
+  const chip = e.target.closest(".search-chip");
+  if (!chip) return;
+  navigateToTicker(chip.dataset.symbol);
+});
+
+// ---------- 기업 패널: 틀고정 탭이 아니라 오른쪽에서 슬라이드인하는 전체화면 오버레이 ----------
+const companyPanel = el("companyPanel");
+const companyPanelCloseBtn = el("companyPanelCloseBtn");
+const companyPanelLogo = el("companyPanelLogo");
+const companyPanelSearchBtn = el("companyPanelSearchBtn");
+
+function openCompanyPanel() {
+  companyPanel.style.display = "flex";
+  requestAnimationFrame(() => companyPanel.classList.add("open"));
+}
+function closeCompanyPanel({ push = true } = {}) {
+  companyPanel.classList.remove("open");
+  window.setTimeout(() => {
+    companyPanel.style.display = "none";
+  }, 280);
+  if (push && new URLSearchParams(location.search).get("ticker")) {
+    history.pushState(null, "", location.pathname);
+    document.title = "미국 기업 분석기 (yeopinvest.com)";
+  }
+}
+companyPanelCloseBtn.addEventListener("click", () => closeCompanyPanel());
+companyPanelSearchBtn.addEventListener("click", openSearchOverlay);
+companyPanelLogo.addEventListener("click", () => closeCompanyPanel());
+
+// ---------- 티커 검색/클릭 → 기업 패널을 열고 그 종목을 로딩 ----------
 // push=false는 popstate(뒤로/앞으로가기)나 최초 URL 진입 처리 시, 이미 있는 히스토리 상태를 다시 쌓지 않기 위함
 function navigateToTicker(ticker, { push = true } = {}) {
   ticker = ticker.toUpperCase();
@@ -1720,12 +2042,14 @@ function navigateToTicker(ticker, { push = true } = {}) {
   }
   tickerInput.value = ticker;
   document.title = `${ticker} 분석 - 미국 기업 분석기 (yeopinvest.com)`;
-  switchTab(TAB_ORDER.indexOf("search"));
+  addRecentSearch(ticker);
+  if (searchOverlay.style.display !== "none") closeSearchOverlay();
+  openCompanyPanel();
   runAnalysis(ticker);
 }
 
-// 좌측 상단 로고를 누르면 기업검색 탭으로 이동(마지막으로 보던 종목은 유지)
-siteLogo.addEventListener("click", () => switchTab(TAB_ORDER.indexOf("search")));
+// 좌측 상단 로고를 누르면 기업 패널을 닫고 메인 탭바(US Markets 등)로 돌아감
+siteLogo.addEventListener("click", () => closeCompanyPanel());
 siteLogo.addEventListener("keydown", (e) => {
   if (e.key === "Enter" || e.key === " ") {
     e.preventDefault();
@@ -1735,10 +2059,11 @@ siteLogo.addEventListener("keydown", (e) => {
 
 window.addEventListener("popstate", () => {
   const ticker = new URLSearchParams(location.search).get("ticker");
-  navigateToTicker(ticker || "AAPL", { push: false });
+  if (ticker) navigateToTicker(ticker, { push: false });
+  else closeCompanyPanel({ push: false });
 });
 
-// 종목 심볼 클릭 시 탭1(기업검색)로 전환하며 해당 종목 분석으로 이동(TOP10·인기종목 표에 이벤트 위임으로 공통 적용)
+// 종목 심볼 클릭 시 기업 패널을 열며 해당 종목 분석으로 이동(TOP10·인기종목 표에 이벤트 위임으로 공통 적용)
 document.addEventListener("click", (e) => {
   const link = e.target.closest(".ticker-link");
   if (link && link.dataset.ticker) {
@@ -1746,21 +2071,19 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// ---------- 초기 부팅: 탭1(기업검색)을 즉시 렌더한 뒤, 탭2~5를 순차적으로 백그라운드 로딩 ----------
+// ---------- 초기 부팅: 기본 화면은 US Markets(0번 탭) — ?ticker=가 있을 때만 기업 패널을 함께 염 ----------
 (function initApp() {
-  layoutPanels(0);
-  updateTabBarActive();
+  switchTab(0);
 
-  const initialTicker = new URLSearchParams(location.search).get("ticker") || "AAPL";
-  navigateToTicker(initialTicker, { push: false });
-  syncCarouselHeight();
+  const initialTicker = new URLSearchParams(location.search).get("ticker");
+  if (initialTicker) navigateToTicker(initialTicker, { push: false });
   loadingSplash.style.display = "none";
 
-  // 무료 프록시 과부하를 피하려고 한 탭씩 순서대로 로딩(사용자가 먼저 스와이프해서 들어가면 ensureTabLoaded가 그 자리에서 바로 시작함)
+  // 무료 프록시 과부하를 피하려고 순서대로 백그라운드 로딩(사용자가 먼저 스와이프해서 들어가면 ensureTabLoaded가 그 자리에서 바로 시작함)
   (async () => {
-    await ensureTabLoaded("popular");
-    await ensureTabLoaded("index");
-    await ensureTabLoaded("top30"); // 급등주 미리 로딩(진입 시 바로 표시)
+    await ensureTabLoaded("trend"); // 급등주 미리 로딩(진입 시 바로 표시)
+    await ensureTabLoaded("valuation");
+    await ensureTabLoaded("insight");
   })();
 })();
 
@@ -2089,6 +2412,8 @@ analyzeBtn.addEventListener("click", triggerSearch);
 tickerInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") triggerSearch();
 });
+let currentGroundData = null; // 투자 그라운드(52주 신고가~신저가 5등분)에 쓸 현재 종목의 데이터
+
 async function runAnalysis(ticker) {
   analyzeBtn.disabled = true;
   results.style.display = "none";
@@ -2107,6 +2432,23 @@ async function runAnalysis(ticker) {
       throw new Error(`'${ticker}'의 시세 데이터를 가져오지 못했습니다.`);
     }
     const meta = chartData.chart.result[0].meta;
+
+    // 투자 그라운드(52주 신고가~신저가 5등분)용 데이터 — meta에 없으면 방금 받은 1년 캔들에서 직접 계산
+    let groundHigh = meta.fiftyTwoWeekHigh;
+    let groundLow = meta.fiftyTwoWeekLow;
+    if (groundHigh === undefined || groundLow === undefined) {
+      const q = chartData.chart.result[0].indicators && chartData.chart.result[0].indicators.quote && chartData.chart.result[0].indicators.quote[0];
+      const highs = (q && q.high) || [];
+      const lows = (q && q.low) || [];
+      const validHighs = highs.filter((v) => v !== null && v !== undefined);
+      const validLows = lows.filter((v) => v !== null && v !== undefined);
+      if (validHighs.length) groundHigh = Math.max(...validHighs);
+      if (validLows.length) groundLow = Math.min(...validLows);
+    }
+    currentGroundData =
+      groundHigh !== undefined && groundLow !== undefined
+        ? { symbol: meta.symbol || ticker, name: quote.longname || quote.shortname || meta.symbol || ticker, high: groundHigh, low: groundLow, currency: meta.currency || "USD" }
+        : null;
 
     results.style.display = "block";
     setStatus("loading", "섹션별 데이터를 정리하는 중입니다...");
@@ -2159,18 +2501,158 @@ async function runAnalysis(ticker) {
   }
 }
 
-// ---------- 기업검색 요약 페이지 5분할 서브탭(요약/매출액/경쟁사매출비교/invest점수/주요뉴스) ----------
+// ---------- 투자 그라운드: 52주 신고가~신저가를 머리~발끝 5등분해 졸라맨으로 표시(회사 로고를 머리에 얹음) ----------
+const GROUND_LANDMARKS = ["머리", "어깨", "배꼽", "무릎", "발"];
+function fmtGroundPrice(v, currency) {
+  return (currency === "KRW" ? "₩" : "$") + v.toLocaleString(undefined, { maximumFractionDigits: 2 });
+}
+function buildGroundSvg({ symbol, high, low, currency }) {
+  const W = 320,
+    headY = 90,
+    footY = 430;
+  const stepY = (footY - headY) / 4;
+  const cx = W / 2;
+  const headR = 36;
+  const ys = [0, 1, 2, 3, 4].map((k) => headY + k * stepY);
+  const prices = [0, 1, 2, 3, 4].map((k) => high - (k / 4) * (high - low));
+  const { primary, fmp, useFallback } = logoSources(symbol, 160);
+
+  const guides = ys
+    .map(
+      (y, i) => `
+      <line x1="10" y1="${y}" x2="${W - 10}" y2="${y}" stroke="#2b2f3a" stroke-width="1" stroke-dasharray="3,3" />
+      <text x="10" y="${(y - 8).toFixed(1)}" font-size="13" fill="#9aa2b1">${GROUND_LANDMARKS[i]}</text>
+      <text x="${W - 10}" y="${(y - 8).toFixed(1)}" text-anchor="end" font-size="13" font-weight="700" fill="#eceef2">${fmtGroundPrice(prices[i], currency)}</text>`
+    )
+    .join("");
+
+  const shoulderY = ys[1];
+  const hipY = ys[2] + stepY * 0.3;
+
+  return `<svg viewBox="0 0 ${W} 470" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="투자 그라운드">
+    <defs>
+      <clipPath id="groundHeadClip"><circle cx="${cx}" cy="${headY}" r="${headR}" /></clipPath>
+    </defs>
+    <rect x="0" y="0" width="${W}" height="470" fill="#0b0d12" />
+    ${guides}
+    <line x1="${cx}" y1="${headY + headR}" x2="${cx}" y2="${hipY.toFixed(1)}" stroke="#eceef2" stroke-width="4" stroke-linecap="round" />
+    <line x1="${cx}" y1="${shoulderY.toFixed(1)}" x2="${cx - 44}" y2="${(shoulderY + 46).toFixed(1)}" stroke="#eceef2" stroke-width="4" stroke-linecap="round" />
+    <line x1="${cx}" y1="${shoulderY.toFixed(1)}" x2="${cx + 44}" y2="${(shoulderY + 46).toFixed(1)}" stroke="#eceef2" stroke-width="4" stroke-linecap="round" />
+    <line x1="${cx}" y1="${hipY.toFixed(1)}" x2="${cx - 36}" y2="${footY}" stroke="#eceef2" stroke-width="4" stroke-linecap="round" />
+    <line x1="${cx}" y1="${hipY.toFixed(1)}" x2="${cx + 36}" y2="${footY}" stroke="#eceef2" stroke-width="4" stroke-linecap="round" />
+    <circle cx="${cx}" cy="${headY}" r="${headR}" fill="#1c1f27" stroke="#eceef2" stroke-width="3" />
+    <image x="${cx - headR}" y="${headY - headR}" width="${headR * 2}" height="${headR * 2}" href="${primary}" clip-path="url(#groundHeadClip)" preserveAspectRatio="xMidYMid slice" ${useFallback ? `data-fallback="${fmp}"` : ""} onerror="var f=this.dataset.fallback; if(f){this.removeAttribute('data-fallback');this.setAttribute('href',f);}" />
+  </svg>`;
+}
+function openGroundModal() {
+  groundBody.innerHTML = currentGroundData
+    ? buildGroundSvg(currentGroundData)
+    : `<p class="muted">52주 데이터를 아직 불러오지 못했습니다.</p>`;
+  groundModal.style.display = "flex";
+}
+function closeGroundModal() {
+  groundModal.style.display = "none";
+}
+groundOpenBtn.addEventListener("click", openGroundModal);
+groundModalCloseBtn.addEventListener("click", closeGroundModal);
+
+// ---------- 공유하기 바텀시트: 그라운드 SVG를 캔버스로 그려 PNG로 변환 후 저장/공유 ----------
+// SVG 문자열을 PNG Blob으로 변환
+function groundSvgToPngBlob() {
+  return new Promise((resolve, reject) => {
+    const svgEl = groundBody.querySelector("svg");
+    if (!svgEl) return reject(new Error("그라운드 이미지가 없습니다."));
+    const svgText = new XMLSerializer().serializeToString(svgEl);
+    const svgBlob = new Blob([svgText], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(svgBlob);
+    const img = new Image();
+    img.onload = () => {
+      const scale = 2;
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      const ctx = canvas.getContext("2d");
+      ctx.scale(scale, scale);
+      ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+      canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("이미지 변환 실패"))), "image/png");
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("이미지를 만들지 못했습니다."));
+    };
+    img.src = url;
+  });
+}
+function downloadGroundBlob(blob, symbol) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `투자그라운드_${symbol}.png`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+// 시트가 열리자마자 PNG 변환을 미리 시작해둠 — navigator.share()는 사용자 클릭 직후(제스처 유효 시간 내)에
+// 바로 호출해야 브라우저가 허용하므로, 버튼 클릭 시점에는 이미 준비된 결과를 기다리기만 하면 되게 함
+let groundPngBlobPromise = null;
+function openShareSheet() {
+  groundPngBlobPromise = groundSvgToPngBlob();
+  shareSheet.style.display = "block";
+}
+function closeShareSheet() {
+  shareSheet.style.display = "none";
+}
+groundShareOpenBtn.addEventListener("click", openShareSheet);
+shareSheetCloseBtn.addEventListener("click", closeShareSheet);
+shareSheetBackdrop.addEventListener("click", closeShareSheet);
+
+async function shareOrDownloadGround(shareText) {
+  const symbol = (currentGroundData && currentGroundData.symbol) || "ground";
+  try {
+    const blob = await groundPngBlobPromise;
+    const file = new File([blob], `투자그라운드_${symbol}.png`, { type: "image/png" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: "투자 그라운드", text: shareText });
+      return;
+    }
+    downloadGroundBlob(blob, symbol);
+    alert("이미지를 저장했습니다. 저장된 이미지를 앱에서 직접 업로드해주세요.");
+  } catch (err) {
+    if (err && err.name === "AbortError") return; // 사용자가 공유 시트를 취소한 경우
+    alert("공유에 실패했습니다: " + (err.message || "알 수 없는 오류"));
+  }
+}
+shareSaveBtn.addEventListener("click", async () => {
+  closeShareSheet();
+  try {
+    const blob = await groundPngBlobPromise;
+    downloadGroundBlob(blob, (currentGroundData && currentGroundData.symbol) || "ground");
+  } catch (err) {
+    alert("저장에 실패했습니다: " + (err.message || "알 수 없는 오류"));
+  }
+});
+shareKakaoBtn.addEventListener("click", () => {
+  closeShareSheet();
+  shareOrDownloadGround("투자 그라운드 - 카카오톡으로 공유해보세요");
+});
+shareInstaBtn.addEventListener("click", () => {
+  closeShareSheet();
+  shareOrDownloadGround("투자 그라운드 - 인스타그램에 공유해보세요");
+});
+
+// ---------- 기업검색 요약 페이지 4분할 서브탭(요약/매출액/invest점수/주요뉴스) ----------
 const summarySubtabButtons = {
   summary: el("summarySubtabSummaryBtn"),
   revenue: el("summarySubtabRevenueBtn"),
-  peers: el("summarySubtabPeersBtn"),
   investscore: el("summarySubtabScoreBtn"),
   news: el("summarySubtabNewsBtn"),
 };
 const summarySubtabPanels = {
   summary: document.querySelector('[data-summary-subtabpanel="summary"]'),
   revenue: document.querySelector('[data-summary-subtabpanel="revenue"]'),
-  peers: document.querySelector('[data-summary-subtabpanel="peers"]'),
   investscore: document.querySelector('[data-summary-subtabpanel="investscore"]'),
   news: document.querySelector('[data-summary-subtabpanel="news"]'),
 };
@@ -2180,6 +2662,16 @@ function switchSummarySubtab(key) {
 }
 Object.entries(summarySubtabButtons).forEach(([key, btn]) => {
   btn.addEventListener("click", () => switchSummarySubtab(key));
+});
+
+// 경쟁사 매출 비교는 별도 서브탭 대신 매출액 서브탭 안(첫 그래프 바로 아래)에 토글로 표시 —
+// renderPeers()는 티커 로드 시 이미 항상 백그라운드로 #peersSection을 채워두므로 여기서는 표시 여부만 토글
+const peersToggleBtn = el("peersToggleBtn");
+const peersSectionEl = el("peersSection");
+peersToggleBtn.addEventListener("click", () => {
+  const isOpen = peersSectionEl.style.display !== "none";
+  peersSectionEl.style.display = isOpen ? "none" : "block";
+  peersToggleBtn.classList.toggle("active", !isOpen);
 });
 
 // ---------- 1. 사업 요약 ----------
@@ -2445,6 +2937,11 @@ async function renderFinancials(ticker, quoteCurrency) {
       }
     }
 
+    const netIncomeCell =
+      cur.netIncome === null || cur.netIncome === undefined
+        ? "N/A"
+        : `<span class="net-income-cell ${cur.netIncome >= 0 ? "positive" : "negative"}">${fmtCompactCurrency(cur.netIncome)}</span>`;
+
     rows += `
       <tr>
         <td>${escapeHtml(year)}</td>
@@ -2452,6 +2949,7 @@ async function renderFinancials(ticker, quoteCurrency) {
         <td>${revDelta}</td>
         <td>${cur.eps !== null && cur.eps !== undefined ? "$" + cur.eps.toFixed(2) : "N/A"}</td>
         <td>${epsDelta}</td>
+        <td>${netIncomeCell}</td>
       </tr>
     `;
   }
@@ -2493,7 +2991,7 @@ async function renderFinancials(ticker, quoteCurrency) {
   el("financialsSection").innerHTML = `
     <table class="fin-table">
       <thead>
-        <tr><th>연도</th><th>매출액</th><th>YoY</th><th>EPS</th><th>YoY</th></tr>
+        <tr><th>연도</th><th>매출액</th><th>YoY</th><th>EPS</th><th>YoY</th><th>순이익</th></tr>
       </thead>
       <tbody>${rows}</tbody>
     </table>
@@ -2522,7 +3020,9 @@ function projectNextQuarter(quarters, key) {
   return vals[vals.length - 1] * (1 + avgGrowth);
 }
 
-// 분기별 매출/주당순이익 듀얼축 막대그래프(참조 이미지 스타일) — 왼쪽 축은 매출, 오른쪽 축은 EPS, 마지막 분기는 예측(주황 표시)
+// 분기별 매출/주당순이익 듀얼축 막대그래프(참조 이미지 스타일) — 왼쪽 축은 매출, 오른쪽 축은 EPS.
+// 각 분기마다 "그 분기 이전 데이터만으로 계산했다면 나왔을 예측치"(predRevenue/predEps)를 노란 선으로 실제 막대 위에 겹쳐 비교하고,
+// 아직 발표되지 않은 마지막 분기는 revenue/eps가 null이라 실제 막대 없이 노란 예측선만 표시됨
 function buildRevenueEpsChartSvg(quarters) {
   const W = 780,
     H = 380;
@@ -2534,8 +3034,8 @@ function buildRevenueEpsChartSvg(quarters) {
   const PH = H - MT - MB;
   const N = quarters.length;
 
-  const maxRev = Math.max(...quarters.map((q) => q.revenue || 0), 1);
-  const maxEps = Math.max(...quarters.map((q) => q.eps || 0), 1);
+  const maxRev = Math.max(...quarters.map((q) => Math.max(q.revenue || 0, q.predRevenue || 0)), 1);
+  const maxEps = Math.max(...quarters.map((q) => Math.max(q.eps || 0, q.predEps || 0)), 1);
   const revStep = niceStepGeneric(maxRev / 5);
   const epsStep = niceStepGeneric(maxEps / 5);
   const revTop = Math.ceil(maxRev / revStep) * revStep || 1;
@@ -2559,19 +3059,29 @@ function buildRevenueEpsChartSvg(quarters) {
   let labelsSvg = "";
   quarters.forEach((q, i) => {
     const cx = ML + groupW * i + groupW / 2;
-    const revH = Math.max(((q.revenue || 0) / revTop) * PH, 2);
-    const epsH = Math.max(((q.eps || 0) / epsTop) * PH, 2);
     const revX = cx - barW - gap / 2;
     const epsX = cx + gap / 2;
-    const revY = MT + PH - revH;
-    const epsY = MT + PH - epsH;
-    const revColor = q.isForecast ? "#3a4a72" : "#1c2a4a";
-    const epsColor = q.isForecast ? "#7d8492" : "#5b6472";
-    barsSvg += `<rect x="${revX.toFixed(1)}" y="${revY.toFixed(1)}" width="${barW.toFixed(1)}" height="${revH.toFixed(1)}" fill="${revColor}" rx="2" />`;
-    barsSvg += `<rect x="${epsX.toFixed(1)}" y="${epsY.toFixed(1)}" width="${barW.toFixed(1)}" height="${epsH.toFixed(1)}" fill="${epsColor}" rx="2" />`;
-    if (q.isForecast) {
-      barsSvg += `<rect x="${revX.toFixed(1)}" y="${(revY - 6).toFixed(1)}" width="${barW.toFixed(1)}" height="4" fill="#f5a623" rx="2" />`;
-      barsSvg += `<rect x="${epsX.toFixed(1)}" y="${(epsY - 6).toFixed(1)}" width="${barW.toFixed(1)}" height="4" fill="#f5a623" rx="2" />`;
+
+    const hasRevenue = q.revenue !== null && q.revenue !== undefined;
+    const hasEps = q.eps !== null && q.eps !== undefined;
+    if (hasRevenue) {
+      const revH = Math.max((q.revenue / revTop) * PH, 2);
+      const revY = MT + PH - revH;
+      barsSvg += `<rect x="${revX.toFixed(1)}" y="${revY.toFixed(1)}" width="${barW.toFixed(1)}" height="${revH.toFixed(1)}" fill="#1c2a4a" rx="2" />`;
+    }
+    if (hasEps) {
+      const epsH = Math.max((q.eps / epsTop) * PH, 2);
+      const epsY = MT + PH - epsH;
+      barsSvg += `<rect x="${epsX.toFixed(1)}" y="${epsY.toFixed(1)}" width="${barW.toFixed(1)}" height="${epsH.toFixed(1)}" fill="#5b6472" rx="2" />`;
+    }
+    // 노란 예측선: 그 분기 이전 데이터 기준 예측치(마지막 미발표 분기는 이 선만 보임)
+    if (q.predRevenue !== null && q.predRevenue !== undefined) {
+      const predY = MT + PH - Math.max((q.predRevenue / revTop) * PH, 2);
+      barsSvg += `<line x1="${revX.toFixed(1)}" y1="${predY.toFixed(1)}" x2="${(revX + barW).toFixed(1)}" y2="${predY.toFixed(1)}" stroke="#f5c623" stroke-width="3" stroke-linecap="round" />`;
+    }
+    if (q.predEps !== null && q.predEps !== undefined) {
+      const predEpsY = MT + PH - Math.max((q.predEps / epsTop) * PH, 2);
+      barsSvg += `<line x1="${epsX.toFixed(1)}" y1="${predEpsY.toFixed(1)}" x2="${(epsX + barW).toFixed(1)}" y2="${predEpsY.toFixed(1)}" stroke="#f5c623" stroke-width="3" stroke-linecap="round" />`;
     }
     labelsSvg += `<text x="${cx.toFixed(1)}" y="${(MT + PH + 20).toFixed(1)}" text-anchor="middle" font-size="11" fill="#8a90a3">${escapeHtml(q.label)}</text>`;
   });
@@ -2580,7 +3090,7 @@ function buildRevenueEpsChartSvg(quarters) {
   const legend = `
     <circle cx="${ML}" cy="${legendY}" r="4" fill="#1c2a4a" /><text x="${ML + 10}" y="${legendY + 4}" font-size="11" fill="#c7cbd6">매출</text>
     <circle cx="${ML + 70}" cy="${legendY}" r="4" fill="#5b6472" /><text x="${ML + 80}" y="${legendY + 4}" font-size="11" fill="#c7cbd6">주당순이익</text>
-    <circle cx="${ML + 190}" cy="${legendY}" r="4" fill="#f5a623" /><text x="${ML + 200}" y="${legendY + 4}" font-size="11" fill="#c7cbd6">예측</text>
+    <line x1="${ML + 184}" y1="${legendY}" x2="${ML + 196}" y2="${legendY}" stroke="#f5c623" stroke-width="3" stroke-linecap="round" /><text x="${ML + 200}" y="${legendY + 4}" font-size="11" fill="#c7cbd6">예측선</text>
   `;
 
   return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="분기별 매출/주당순이익 차트">
@@ -2629,33 +3139,75 @@ async function renderQuarterlyEarnings(ticker, quoteCurrency) {
     return;
   }
 
+  // 각 분기마다 "그 분기 이전 데이터만으로 계산했다면 나왔을 예측치"를 역산(노란 예측선용) — 앞선 데이터가 없는 초기 분기는 null
+  const recentWithPred = recent.map((q) => {
+    const idx = dates.indexOf(q.date);
+    const priorQuarters = dates.slice(Math.max(0, idx - 4), idx).map((d) => byDate[d]);
+    return {
+      ...q,
+      predRevenue: priorQuarters.length ? projectNextQuarter(priorQuarters, "revenue") : null,
+      predEps: priorQuarters.length ? projectNextQuarter(priorQuarters, "eps") : null,
+    };
+  });
+
   const lastDate = new Date(recent[recent.length - 1].date + "T00:00:00");
   const nextDate = addMonths(lastDate, 3);
   const nextDateLabel = `${nextDate.getFullYear()}-${String(nextDate.getMonth() + 1).padStart(2, "0")}`;
   const guidance = {
-    date: null,
     revenue: projectNextQuarter(recent, "revenue"),
     eps: projectNextQuarter(recent, "eps"),
-    isForecast: true,
   };
+
+  // 실제 발표일 데이터는 이 앱의 무인증 프록시로는 가져올 수 없어(estimateNextEarningsDate 참고),
+  // 분기 마감 + 1개월이라는 동일한 근사식을 적용하고 주말이면 가장 가까운 평일로 보정
+  function nearestWeekday(date) {
+    const d = new Date(date);
+    const day = d.getDay();
+    if (day === 6) d.setDate(d.getDate() - 1);
+    else if (day === 0) d.setDate(d.getDate() + 1);
+    return d;
+  }
+  const estReportDate = nearestWeekday(addMonths(nextDate, 1));
+  const estReportDateLabel = `${estReportDate.getFullYear()}-${String(estReportDate.getMonth() + 1).padStart(2, "0")}-${String(estReportDate.getDate()).padStart(2, "0")}`;
 
   const quarterLabel = (d) => {
     const dt = new Date(d + "T00:00:00");
     return `${String(dt.getMonth() + 1).padStart(2, "0")}/${dt.getFullYear()}`;
   };
   const chartQuarters = [
-    ...recent.map((q) => ({ label: quarterLabel(q.date), revenue: q.revenue, eps: q.eps, isForecast: false })),
-    { label: `${nextDateLabel}(예측)`, revenue: guidance.revenue, eps: guidance.eps, isForecast: true },
+    ...recentWithPred.map((q) => ({ label: quarterLabel(q.date), revenue: q.revenue, eps: q.eps, predRevenue: q.predRevenue, predEps: q.predEps })),
+    { label: `${nextDateLabel}(예측)`, revenue: null, eps: null, predRevenue: guidance.revenue, predEps: guidance.eps },
   ];
 
-  const reportedDatesHtml = recent.map((q) => `<li>${escapeHtml(q.date)} (회계분기 마감 기준)</li>`).join("");
+  const epsCell = (v) => (v !== null && v !== undefined ? "$" + v.toFixed(2) : "N/A");
+  const quarterTableRows =
+    recentWithPred
+      .map(
+        (q) => `
+      <tr>
+        <td>${quarterLabel(q.date)}</td>
+        <td>${fmtCompactCurrency(q.revenue)}</td>
+        <td>${epsCell(q.eps)}</td>
+        <td class="muted">실적</td>
+      </tr>`
+      )
+      .join("") +
+    `
+      <tr>
+        <td>${escapeHtml(nextDateLabel)}</td>
+        <td>${fmtCompactCurrency(guidance.revenue)}</td>
+        <td>${epsCell(guidance.eps)}</td>
+        <td><span class="net-income-cell" style="background:rgba(245,198,35,0.18);color:#f5c623;">예측</span></td>
+      </tr>`;
 
   el("quarterlyEarningsSection").innerHTML = `
-    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 왼쪽 4개는 최근 실보고 분기(매출액/주당순이익), 가장 오른쪽(주황 표시)은 다음 분기 추세 기반 추정치입니다. 실제 기업 발표 가이던스나 애널리스트 컨센서스가 아니며, 발표일도 정확한 발표일이 아닌 회계분기 마감일 기준입니다.</p>
+    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 노란 선은 해당 분기 이전 데이터만으로 계산했다면 나왔을 추세 기반 예측치이며, 가장 오른쪽 분기는 아직 발표 전이라 예측선만 표시됩니다. 실제 기업 발표 가이던스나 애널리스트 컨센서스가 아닙니다.</p>
     <div class="future-chart-container">${buildRevenueEpsChartSvg(chartQuarters)}</div>
-    <p class="qbar-dates"><b>올해 발표된 분기(마감일 기준):</b></p>
-    <ul class="qbar-date-list">${reportedDatesHtml}</ul>
-    <p class="qbar-dates"><b>다음 분기 마감(추정):</b> ${escapeHtml(nextDateLabel)}</p>
+    <table class="fin-table">
+      <thead><tr><th>분기</th><th>매출액</th><th>EPS</th><th>구분</th></tr></thead>
+      <tbody>${quarterTableRows}</tbody>
+    </table>
+    <p class="qbar-dates"><b>다음 발표일(추정):</b> ${escapeHtml(estReportDateLabel)} <span class="muted">(실제 발표일이 아닌 근사 추정치)</span></p>
   `;
 }
 
@@ -2870,12 +3422,20 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
 async function renderMacro() {
   el("macroSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
-  const { vix, vixDate } = await getMacroMetrics();
+  const { vix, vixChangePct } = await getMacroMetrics();
   const { total } = computeMacroScore({ vix });
 
-  const vixDateStr = vixDate ? vixDate.toLocaleDateString("ko-KR") : "";
+  const vixPctStr =
+    vixChangePct !== null && vixChangePct !== undefined && Number.isFinite(vixChangePct)
+      ? `(${vixChangePct >= 0 ? "+" : ""}${vixChangePct.toFixed(2)}%)`
+      : "";
+  const vixLiveLine =
+    vix !== null && vix !== undefined
+      ? `<p class="score-macro-vix-line">😱 S&P500 VIX<br>^VIX : ${vix.toFixed(1)}${vixPctStr}</p>`
+      : "";
 
   el("macroSection").innerHTML = `
+    ${vixLiveLine}
     <div class="score-wrap">
       <div class="score-badge macro"${macroGoldStyle(total)}>
         <div class="score-num">${total}</div>
@@ -2883,7 +3443,6 @@ async function renderMacro() {
       </div>
       <div class="score-details">
         <ul>
-          <li>😱 VIX(공포지수, ${escapeHtml(vixDateStr)} 기준): <b>${vix !== null && vix !== undefined ? vix.toFixed(2) : "N/A"}</b></li>
           <li>VIX 25 이하는 평시로 보고 5점 고정, 25~35 구간은 5~10점 선형(2당 1점), 35 초과는 상한 없이 계속 상승(5당 1점, 완만해짐)</li>
           <li>10점을 넘으면(VIX 35+, 극단적 공포) 배지 색이 점점 더 진한 골드로 바뀝니다</li>
         </ul>
@@ -3820,7 +4379,7 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
 const INDEX_CATEGORY_PAGE_SIZE = 10;
 const INDEX_CATEGORIES = {
   usMarkets: {
-    label: "미국시장",
+    label: "주요",
     items: [
       { src: "yahoo", symbol: "^GSPC", name: "🇺🇸 S&P 500", ticker: "SPX", chartSymbol: "SP:SPX" },
       { src: "yahoo", symbol: "^DJI", name: "🇺🇸 다우 종합", ticker: "DJI", chartSymbol: "DJ:DJI" },
@@ -4015,6 +4574,7 @@ const indexExpandedCategories = new Set(); // "더보기"를 눌러 전체를 �
 const indexCategoryButtons = {
   usMarkets: el("indexCatUsMarketsBtn"),
   indices: el("indexCatIndicesBtn"),
+  stocks: el("indexCatStocksBtn"),
   crypto: el("indexCatCryptoBtn"),
   commodities: el("indexCatCommoditiesBtn"),
   bonds: el("indexCatBondsBtn"),
@@ -4035,6 +4595,18 @@ Object.entries(indexCategoryButtons).forEach(([key, btn]) => {
 setIndexCategoryActive(indexActiveCategory);
 
 async function runIndexTab() {
+  // "주식"은 지수 카드 스타일이 아니라 주식동향과 같은 순위표 스타일이라 별도 렌더러로 분기(로고만 이름 오른쪽에 배치)
+  if (indexActiveCategory === "stocks") {
+    return renderVolumeRanking(getUsStockVolumeCandidates(), {
+      statusEl: indexStatus,
+      resultsEl: indexResults,
+      initialCount: 10,
+      fullCount: 50,
+      rankNote: "순위는 당일 거래량(주식 수) 기준이며, 미국 전 종목 대상입니다. 투자 자문이 아닙니다.",
+      logoAfterName: true,
+    });
+  }
+
   indexStatus.style.display = "block";
   indexStatus.textContent = "지수 데이터를 불러오는 중...";
 
@@ -4143,10 +4715,8 @@ async function runIndexTab() {
 // 화면이 백그라운드에 있을 땐(document.hidden) 요청을 건너뛰어 불필요한 트래픽을 줄임.
 // 이 주기 동안 어쩌다 한 번 FRED 요청이 실패해도(520 등) 다음 주기에 자동으로 다시 시도되므로
 // "채권 값이 그대로 멈춰 있는" 문제도 자연스럽게 해소됨.
-const INDEX_AUTO_REFRESH_MS = 20000;
-// var를 씀(let/const 아님) — 이 파일 맨 앞쪽 initApp()이 페이지 로딩 초반에 곧바로 switchTab(0)을 호출하는데,
-// 그 안에서 stopIndexAutoRefresh()가 이 변수를 즉시 참조하므로, 아직 이 줄까지 실행되지 않은 시점에도
-// TDZ(Temporal Dead Zone) 에러 없이 안전하게 접근되도록 var로 선언(var는 스크립트 시작 시 즉시 undefined로 호이스팅됨)
+// (INDEX_AUTO_REFRESH_MS는 이 파일 맨 앞쪽으로 옮김 — US Markets가 기본 탭이 되면서 initApp()의 switchTab(0)이
+// 페이지 로딩 초반에 곧바로 startIndexAutoRefresh()를 호출하므로, const를 여기 그대로 두면 TDZ 에러가 남)
 var indexAutoRefreshTimer = null;
 function startIndexAutoRefresh() {
   stopIndexAutoRefresh();
@@ -4158,46 +4728,6 @@ function startIndexAutoRefresh() {
 function stopIndexAutoRefresh() {
   if (indexAutoRefreshTimer) clearInterval(indexAutoRefreshTimer);
   indexAutoRefreshTimer = null;
-}
-
-// ---------- 인기종목: 당일 거래대금(가격 × 거래량) 상위 20개, 접속 시 10개만 먼저 표시 ----------
-async function runPopular() {
-  popularResults.innerHTML = "";
-  popularStatus.style.display = "block";
-  popularStatus.textContent = "인기종목을 불러오는 중...";
-
-  try {
-    const marketReturnsPromise = getMarketReturns();
-    const data = await yahooMostActive(50);
-    const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
-
-    if (quotes.length === 0) {
-      throw new Error("인기종목 데이터를 가져오지 못했습니다.");
-    }
-
-    const ranked = quotes
-      .filter((q) => q && q.symbol && q.regularMarketPrice !== undefined && q.regularMarketVolume !== undefined)
-      .map((q) => ({
-        symbol: q.symbol,
-        name: q.shortName || q.longName || q.symbol,
-        price: q.regularMarketPrice,
-        changePct: q.regularMarketChangePercent,
-        volume: q.regularMarketVolume,
-        dollarVolume: (q.regularMarketPrice || 0) * (q.regularMarketVolume || 0),
-      }))
-      .sort((a, b) => b.dollarVolume - a.dollarVolume)
-      .slice(0, 20);
-
-    await scoreAndRenderMovers(ranked, marketReturnsPromise, {
-      statusEl: popularStatus,
-      resultsEl: popularResults,
-      rankNote: "순위는 당일 거래대금(거래량 × 현재가 추정) 기준입니다.",
-      initialCount: 10,
-      fullCount: 20,
-    });
-  } catch (err) {
-    popularStatus.textContent = `❌ ${err.message || "인기종목을 가져오지 못했습니다."}`;
-  }
 }
 
 // S&P500 전 종목의 전일 등락률을 가볍게 조회(차트 1회, 5일치 일봉)해 급등주/급락주 정렬 후보로 사용
@@ -4263,18 +4793,18 @@ async function runMovers(direction) {
   }
 }
 
-// ---------- 거래량: 인기종목(당일 거래대금 상위)과 동일한 데이터·로직을 추세평가 탭에도 표시 ----------
+// ---------- 인기종목: 당일 거래대금(가격 × 거래량) 상위 20개, 접속 시 10개만 먼저 표시(옛 틀고정 "인기종목" 탭이 여기로 통합됨) ----------
 async function runTrendVolume() {
   setTrendActive(trendButtons.volume);
   trendResults.innerHTML = "";
   trendStatus.style.display = "block";
-  trendStatus.textContent = "거래량을 불러오는 중...";
+  trendStatus.textContent = "인기종목을 불러오는 중...";
 
   try {
     const marketReturnsPromise = getMarketReturns();
     const data = await yahooMostActive(50);
     const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
-    if (quotes.length === 0) throw new Error("거래량 데이터를 가져오지 못했습니다.");
+    if (quotes.length === 0) throw new Error("인기종목 데이터를 가져오지 못했습니다.");
 
     const ranked = quotes
       .filter((q) => q && q.symbol && q.regularMarketPrice !== undefined && q.regularMarketVolume !== undefined)
@@ -4297,7 +4827,7 @@ async function runTrendVolume() {
       fullCount: 20,
     });
   } catch (err) {
-    trendStatus.textContent = `❌ ${err.message || "거래량 데이터를 가져오지 못했습니다."}`;
+    trendStatus.textContent = `❌ ${err.message || "인기종목을 가져오지 못했습니다."}`;
   }
 }
 
@@ -4330,13 +4860,17 @@ bindTrend(trendButtons.surge, () => runMovers("surge"));
 bindTrend(trendButtons.pressure, runTrendPressure);
 
 // ---------- US Stock/US ETF/KR ETF 거래량 랭킹: ETF는 상승압력·투자안정 점수가 의미 없어 순위·티커·현재가·거래량만 표시하는 전용 렌더러 사용 ----------
-function volumeRankingTableHtml(rows) {
+function volumeRankingTableHtml(rows, { logoAfterName = false } = {}) {
   const trs = rows
     .map(
       (r, i) => `
       <tr>
         <td>${i + 1}</td>
-        <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
+        <td><span class="ticker-cell">${
+          logoAfterName
+            ? `<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b>${tickerLogoHtml(r.symbol)}`
+            : `${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b>`
+        }</span><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
         <td>${priceChartLink(r.symbol, (r.currency === "KRW" ? "₩" : "$") + r.price.toLocaleString(undefined, { maximumFractionDigits: 2 }))}${r.changePct !== null && r.changePct !== undefined ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>` : ""}</td>
         <td>${r.volume !== null && r.volume !== undefined ? r.volume.toLocaleString() : "N/A"}</td>
       </tr>`
@@ -4352,7 +4886,7 @@ function volumeRankingTableHtml(rows) {
 }
 
 // candidatesPromise는 이미 거래량 내림차순 정렬된 전체 후보 배열(추가 API 호출 없이 already-fetched 데이터에서 더보기로 노출 범위만 넓힘)
-async function renderVolumeRanking(candidatesPromise, { statusEl, resultsEl, initialCount = 10, fullCount = 30, rankNote }) {
+async function renderVolumeRanking(candidatesPromise, { statusEl, resultsEl, initialCount = 10, fullCount = 30, rankNote, logoAfterName = false }) {
   statusEl.style.display = "block";
   statusEl.textContent = "거래량 데이터를 불러오는 중...";
   resultsEl.innerHTML = "";
@@ -4369,7 +4903,7 @@ async function renderVolumeRanking(candidatesPromise, { statusEl, resultsEl, ini
       const hasMore = shown < capped;
       resultsEl.innerHTML =
         (rankNote ? `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${rankNote}</p>` : "") +
-        volumeRankingTableHtml(all.slice(0, shown)) +
+        volumeRankingTableHtml(all.slice(0, shown), { logoAfterName }) +
         (hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${Math.min(shown + initialCount, capped)}">더보기 (${shown}/${capped})</button>` : "");
     };
     render();
@@ -4632,13 +5166,12 @@ function niceStepGeneric(rawStep) {
   else niceFrac = 10;
   return niceFrac * base;
 }
+// 최댓값이 그래프 맨 위에 거의 붙도록 위쪽 여백은 아주 작게, 아래쪽은 라벨이 안 잘릴 정도만 남김(둥근 step으로 반올림하지 않음)
 function priceAxisBounds(minVal, maxVal) {
   const span = Math.max(maxVal - minVal, Math.abs(maxVal || 1) * 0.001);
-  const pad = span * 0.12;
-  const step = niceStepGeneric((span + pad * 2) / 5);
-  const lo = Math.floor((minVal - pad) / step) * step;
-  const hi = Math.ceil((maxVal + pad) / step) * step;
-  return { lo, hi, step };
+  const lo = minVal - span * 0.05;
+  const hi = maxVal + span * 0.03;
+  return { lo, hi };
 }
 function fmtChartPrice(v) {
   if (Math.abs(v) >= 1000) return "$" + v.toLocaleString(undefined, { maximumFractionDigits: 0 });
@@ -4683,17 +5216,19 @@ function priceChartScales(pairs) {
   const PH = H - MT - MB;
   const N = pairs.length;
   const prices = pairs.map((p) => p.c);
-  const { lo, hi, step } = priceAxisBounds(Math.min(...prices), Math.max(...prices));
+  const { lo, hi } = priceAxisBounds(Math.min(...prices), Math.max(...prices));
   const xFn = (i) => ML + (N <= 1 ? 0 : (i / (N - 1)) * PW);
   const yFn = (v) => MT + (1 - (v - lo) / (hi - lo)) * PH;
-  return { W, H, ML, MR, MT, MB, PW, PH, N, lo, hi, step, xFn, yFn };
+  return { W, H, ML, MR, MT, MB, PW, PH, N, lo, hi, xFn, yFn };
 }
 
 function buildPriceChartSvg(pairs, period, symbol) {
-  const { W, H, ML, MT, PW, PH, N, lo, hi, step, xFn, yFn } = priceChartScales(pairs);
+  const { W, H, ML, MT, PW, PH, N, lo, hi, xFn, yFn } = priceChartScales(pairs);
 
+  // Y축 라벨은 항상 정확히 5개(lo~hi를 4등분한 점)만 표시
   let gridSvg = "";
-  for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) {
+  for (let k = 0; k <= 4; k++) {
+    const v = lo + (k / 4) * (hi - lo);
     const y = yFn(v);
     gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="#23262f" stroke-width="1" />`;
     gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 5).toFixed(1)}" font-size="14" fill="#8a90a3">${fmtChartPrice(v)}</text>`;
@@ -4732,7 +5267,7 @@ function buildPriceChartSvg(pairs, period, symbol) {
       <line x1="${ML}" y1="${lastY.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${lastY.toFixed(1)}" stroke="#8a90a3" stroke-width="1" stroke-dasharray="3,3" />
       <circle cx="${lastX.toFixed(1)}" cy="${lastY.toFixed(1)}" r="3.5" fill="#2f6fed" />
       <path d="${bookmarkTagPath(ML + PW, lastY)}" fill="#eceef2" />
-      <text x="${(ML + PW + PRICE_TAG_NOTCH + PRICE_TAG_W / 2).toFixed(1)}" y="${(lastY + 5).toFixed(1)}" text-anchor="middle" font-size="14" font-weight="700" fill="#0b0d12">${fmtChartPrice(last.c)}</text>
+      <text x="${(ML + PW + PRICE_TAG_NOTCH + 6).toFixed(1)}" y="${(lastY + 5).toFixed(1)}" text-anchor="start" font-size="14" font-weight="700" fill="#0b0d12">${fmtChartPrice(last.c)}</text>
     </g>
     ${axisSvg}
     <rect id="pcHitArea" x="${ML}" y="0" width="${PW}" height="${H}" fill="transparent" style="touch-action:none;" />
@@ -4741,7 +5276,7 @@ function buildPriceChartSvg(pairs, period, symbol) {
       <line id="pcCrosshairHLine" x1="${ML}" y1="0" x2="${(ML + PW).toFixed(1)}" y2="0" stroke="#8a90a3" stroke-width="1" stroke-dasharray="2,2" />
       <circle id="pcCrosshairDot" r="4" fill="#0b0d12" stroke="#2f6fed" stroke-width="2" />
       <path id="pcCrosshairTagPath" fill="#eceef2" />
-      <text id="pcCrosshairTagText" text-anchor="middle" font-size="14" font-weight="700" fill="#0b0d12"></text>
+      <text id="pcCrosshairTagText" text-anchor="start" font-size="14" font-weight="700" fill="#0b0d12"></text>
     </g>
   </svg>`;
 }
@@ -4777,7 +5312,7 @@ function setupPriceChartCrosshair(containerEl, pairs) {
     dot.setAttribute("cx", x.toFixed(1));
     dot.setAttribute("cy", y.toFixed(1));
     tagPath.setAttribute("d", bookmarkTagPath(ML + PW, y));
-    tagText.setAttribute("x", (ML + PW + PRICE_TAG_NOTCH + PRICE_TAG_W / 2).toFixed(1));
+    tagText.setAttribute("x", (ML + PW + PRICE_TAG_NOTCH + 6).toFixed(1));
     tagText.setAttribute("y", (y + 5).toFixed(1));
     tagText.textContent = fmtChartPrice(pairs[idx].c);
     crosshair.style.display = "";

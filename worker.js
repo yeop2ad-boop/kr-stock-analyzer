@@ -631,6 +631,151 @@ async function handleFutureRunNow(env) {
   return handleFutureRiskStatus(env);
 }
 
+// ---------- 로그인: 카카오/네이버 OAuth 검증 + Firebase 커스텀 토큰 발급 ----------
+// 카카오/네이버는 Firebase가 네이티브 지원하지 않으므로, 프론트엔드가 각 제공업체의 OAuth authorization
+// code를 여기로 보내면 code→access token 교환, 사용자 프로필 조회로 신원을 검증한 뒤 Firebase 서비스
+// 계정 키로 직접 서명한 커스텀 토큰(RS256 JWT)을 발급한다. firebase-admin 패키지 없이 Web Crypto API만으로
+// Firebase 커스텀 토큰 스펙(iss/sub=서비스 계정 이메일, aud 고정값, 최대 만료 1시간)을 그대로 구현한 것.
+const KAKAO_TOKEN_URL = "https://kauth.kakao.com/oauth/token";
+const KAKAO_USER_URL = "https://kapi.kakao.com/v2/user/me";
+const NAVER_TOKEN_URL = "https://nid.naver.com/oauth2.0/token";
+const NAVER_USER_URL = "https://openapi.naver.com/v1/nid/me";
+const FIREBASE_TOKEN_AUD = "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit";
+
+function base64UrlEncodeBytes(bytes) {
+  let binary = "";
+  const arr = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+  for (let i = 0; i < arr.length; i++) binary += String.fromCharCode(arr[i]);
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function base64UrlEncodeString(str) {
+  return base64UrlEncodeBytes(new TextEncoder().encode(str));
+}
+function pemToArrayBuffer(pem) {
+  const clean = pem.replace(/-----BEGIN PRIVATE KEY-----/, "").replace(/-----END PRIVATE KEY-----/, "").replace(/\s+/g, "");
+  const binary = atob(clean);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes.buffer;
+}
+
+async function mintFirebaseCustomToken(uid, extraClaims, env) {
+  if (!env.FIREBASE_CLIENT_EMAIL || !env.FIREBASE_PRIVATE_KEY) {
+    throw new Error("FIREBASE_CLIENT_EMAIL / FIREBASE_PRIVATE_KEY 환경변수가 설정되지 않았습니다.");
+  }
+  // Cloudflare 대시보드 환경변수에 줄바꿈이 포함된 PEM을 넣으면 "\n" 리터럴 문자열로 저장되는 경우가 흔해 실제 개행으로 복원
+  const privateKeyPem = env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n");
+  const key = await crypto.subtle.importKey(
+    "pkcs8",
+    pemToArrayBuffer(privateKeyPem),
+    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const now = Math.floor(Date.now() / 1000);
+  const header = { alg: "RS256", typ: "JWT" };
+  const payload = {
+    iss: env.FIREBASE_CLIENT_EMAIL,
+    sub: env.FIREBASE_CLIENT_EMAIL,
+    aud: FIREBASE_TOKEN_AUD,
+    iat: now,
+    exp: now + 3600,
+    uid,
+    claims: extraClaims || {},
+  };
+  const unsigned = `${base64UrlEncodeString(JSON.stringify(header))}.${base64UrlEncodeString(JSON.stringify(payload))}`;
+  const signature = await crypto.subtle.sign({ name: "RSASSA-PKCS1-v1_5" }, key, new TextEncoder().encode(unsigned));
+  return `${unsigned}.${base64UrlEncodeBytes(signature)}`;
+}
+
+async function handleKakaoAuth(request, env) {
+  if (!env.KAKAO_REST_API_KEY) return jsonResponse({ error: "KAKAO_REST_API_KEY 환경변수가 설정되지 않았습니다." }, 500);
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonResponse({ error: "잘못된 요청입니다." }, 400);
+  }
+  const { code, redirectUri } = body;
+  if (!code || !redirectUri) return jsonResponse({ error: "code, redirectUri가 필요합니다." }, 400);
+
+  const tokenRes = await fetch(KAKAO_TOKEN_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "authorization_code",
+      client_id: env.KAKAO_REST_API_KEY,
+      client_secret: env.KAKAO_CLIENT_SECRET || "",
+      redirect_uri: redirectUri,
+      code,
+    }),
+  });
+  const tokenData = await tokenRes.json();
+  if (!tokenRes.ok || !tokenData.access_token) {
+    return jsonResponse({ error: "카카오 인증에 실패했습니다.", detail: tokenData }, 401);
+  }
+
+  const userRes = await fetch(KAKAO_USER_URL, { headers: { Authorization: `Bearer ${tokenData.access_token}` } });
+  const userData = await userRes.json();
+  if (!userRes.ok || !userData.id) {
+    return jsonResponse({ error: "카카오 사용자 정보를 가져오지 못했습니다." }, 401);
+  }
+
+  const kakaoAccount = userData.kakao_account || {};
+  const profile = kakaoAccount.profile || {};
+  try {
+    const customToken = await mintFirebaseCustomToken(
+      `kakao:${userData.id}`,
+      { provider: "kakao", email: kakaoAccount.email || null, name: profile.nickname || null, picture: profile.profile_image_url || null },
+      env
+    );
+    return jsonResponse({ customToken }, 200);
+  } catch (e) {
+    return jsonResponse({ error: "토큰 발급에 실패했습니다.", detail: String(e) }, 500);
+  }
+}
+
+async function handleNaverAuth(request, env) {
+  if (!env.NAVER_CLIENT_ID || !env.NAVER_CLIENT_SECRET) {
+    return jsonResponse({ error: "NAVER_CLIENT_ID / NAVER_CLIENT_SECRET 환경변수가 설정되지 않았습니다." }, 500);
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonResponse({ error: "잘못된 요청입니다." }, 400);
+  }
+  const { code, state } = body;
+  if (!code || !state) return jsonResponse({ error: "code, state가 필요합니다." }, 400);
+
+  const tokenUrl = `${NAVER_TOKEN_URL}?grant_type=authorization_code&client_id=${encodeURIComponent(env.NAVER_CLIENT_ID)}&client_secret=${encodeURIComponent(env.NAVER_CLIENT_SECRET)}&code=${encodeURIComponent(code)}&state=${encodeURIComponent(state)}`;
+  const tokenRes = await fetch(tokenUrl);
+  const tokenData = await tokenRes.json();
+  if (!tokenRes.ok || !tokenData.access_token) {
+    return jsonResponse({ error: "네이버 인증에 실패했습니다.", detail: tokenData }, 401);
+  }
+
+  const userRes = await fetch(NAVER_USER_URL, { headers: { Authorization: `Bearer ${tokenData.access_token}` } });
+  const userData = await userRes.json();
+  const profile = userData.response;
+  if (!userRes.ok || !profile || !profile.id) {
+    return jsonResponse({ error: "네이버 사용자 정보를 가져오지 못했습니다." }, 401);
+  }
+
+  try {
+    const customToken = await mintFirebaseCustomToken(
+      `naver:${profile.id}`,
+      { provider: "naver", email: profile.email || null, name: profile.name || profile.nickname || null, picture: profile.profile_image || null },
+      env
+    );
+    return jsonResponse({ customToken }, 200);
+  } catch (e) {
+    return jsonResponse({ error: "토큰 발급에 실패했습니다.", detail: String(e) }, 500);
+  }
+}
+
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") {
@@ -653,6 +798,14 @@ export default {
 
     if (requestUrl.pathname === "/future-risk-bands/run-now") {
       return handleFutureRunNow(env);
+    }
+
+    if (requestUrl.pathname === "/auth/kakao" && request.method === "POST") {
+      return handleKakaoAuth(request, env);
+    }
+
+    if (requestUrl.pathname === "/auth/naver" && request.method === "POST") {
+      return handleNaverAuth(request, env);
     }
 
     const targetUrl = requestUrl.searchParams.get("url");
