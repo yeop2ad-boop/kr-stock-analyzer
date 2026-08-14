@@ -69,6 +69,21 @@ body {
 
 .fh-actions { display: flex; align-items: center; gap: 4px; }
 
+.header-icon-btn {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  color: var(--text);
+  line-height: 1;
+}
+.header-icon-btn svg { display: block; }
+
 .login-header-btn {
   flex: none;
   width: 40px;
@@ -1185,6 +1200,7 @@ table.insight-holdings-table td span, table.insight-holdings-table td b { max-wi
 }
 .pull-refresh-ready .pull-refresh-text { color: var(--accent); border-color: var(--accent); }
 .idx-list { display: flex; flex-direction: column; }
+.idx-name .ticker-logo-wrap { margin-right: 6px; vertical-align: -5px; }
 .crypto-logo-wrap { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; margin-right: 5px; vertical-align: -3px; }
 .crypto-logo { width: 16px; height: 16px; border-radius: 50%; object-fit: contain; }
 .crypto-logo-badge { font-size: 13px; line-height: 1; }
@@ -1203,6 +1219,7 @@ table.insight-holdings-table td span, table.insight-holdings-table td b { max-wi
 .idx-name { font-weight: 800; font-size: 15px; line-height: 1.25; }
 .idx-sub { margin-top: 4px; font-size: 12px; color: var(--muted); }
 .idx-clock { color: var(--bad); }
+.idx-clock-live { color: var(--text); }
 .idx-ticker { color: var(--muted); letter-spacing: 0.2px; }
 .idx-right { text-align: right; white-space: nowrap; flex: none; }
 .idx-price { font-weight: 800; font-size: 16px; }

@@ -5,12 +5,12 @@
 
 // 1) Firebase 콘솔(console.firebase.google.com) > 프로젝트 설정 > 일반 > 내 앱(웹 앱 추가) 에서 복사
 const firebaseConfig = {
-  apiKey: "YOUR_FIREBASE_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: "AIzaSyCNIcEq0puaUGBOrj007toB5MdLw1UH338",
+  authDomain: "yeopinvest.firebaseapp.com",
+  projectId: "yeopinvest",
+  storageBucket: "yeopinvest.firebasestorage.app",
+  messagingSenderId: "949194657159",
+  appId: "1:949194657159:web:9a9a74b334f470bb0ed722",
 };
 // firebase-app-compat.js가 어떤 이유로든(광고 차단기, 네트워크 문제 등) 로드되지 못해도
 // 이 사이트의 핵심 기능(주가 분석 등)까지 함께 멈추지 않도록 방어적으로 감쌈

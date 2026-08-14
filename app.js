@@ -4567,8 +4567,15 @@ function cryptoLogoHtml(ticker) {
 // chartSymbol이 있는 종목은 클릭 시 기존 TradingView 차트 모달이 열리도록 price-chart-link 델리게이션에 태움
 function indexRowHtml(item, snap) {
   const num = (n, d = 2) => n.toLocaleString("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d });
-  const dateStr = snap && snap.date ? `${String(snap.date.getMonth() + 1).padStart(2, "0")}/${String(snap.date.getDate()).padStart(2, "0")}` : "";
-  const sub = `${dateStr ? `<span class="idx-clock">🕐 ${dateStr}</span> | ` : ""}<span class="idx-ticker">${escapeHtml(item.ticker)}</span>`;
+  const now = new Date();
+  const isToday = !!(snap && snap.date) && snap.date.getFullYear() === now.getFullYear() && snap.date.getMonth() === now.getMonth() && snap.date.getDate() === now.getDate();
+  const clockLabel = snap && snap.date
+    ? (isToday
+        ? `${String(snap.date.getHours()).padStart(2, "0")}:${String(snap.date.getMinutes()).padStart(2, "0")}:${String(snap.date.getSeconds()).padStart(2, "0")}`
+        : `${String(snap.date.getMonth() + 1).padStart(2, "0")}/${String(snap.date.getDate()).padStart(2, "0")}`)
+    : "";
+  const clockClass = isToday ? "idx-clock idx-clock-live" : "idx-clock";
+  const sub = `${clockLabel ? `<span class="${clockClass}">🕐 ${clockLabel}</span> | ` : ""}<span class="idx-ticker">${escapeHtml(item.ticker)}</span>`;
   const nameHtml = `${item.crypto ? cryptoLogoHtml(item.ticker) : ""}${escapeHtml(item.name)}`;
   const clickable = !!item.chartSymbol;
   const rowClass = `idx-row${clickable ? " price-chart-link idx-row-clickable" : ""}`;
@@ -4646,7 +4653,7 @@ Object.entries(indexCategoryButtons).forEach(([key, btn]) => {
 setIndexCategoryActive(indexActiveCategory);
 
 async function runIndexTab() {
-  // "주식"은 지수 카드 스타일이 아니라 주식동향과 같은 순위표 스타일이라 별도 렌더러로 분기(로고만 이름 오른쪽에 배치)
+  // "주식"은 지수 카드와 동일한 스타일(로고+이름/티커, 가격/등락)로 표시 — 순위는 거래량 기준으로 정렬만 하고 화면엔 노출하지 않음
   if (indexActiveCategory === "stocks") {
     return renderVolumeRanking(getUsStockVolumeCandidates(), {
       statusEl: indexStatus,
@@ -4654,7 +4661,7 @@ async function runIndexTab() {
       initialCount: 10,
       fullCount: 50,
       rankNote: "순위는 당일 거래량(주식 수) 기준이며, 미국 전 종목 대상입니다. 투자 자문이 아닙니다.",
-      logoAfterName: true,
+      cardStyle: true,
     });
   }
 
@@ -4910,6 +4917,41 @@ bindTrend(trendButtons.plunge, () => runMovers("plunge"));
 bindTrend(trendButtons.surge, () => runMovers("surge"));
 bindTrend(trendButtons.pressure, runTrendPressure);
 
+// US Markets 탭의 "주식" 카테고리 전용 카드 행 — 지수 카드(idx-row)와 동일한 스타일(로고+이름/티커, 가격/등락)
+function stockCardRowHtml(r) {
+  const displayName = TICKER_TO_KOREAN_NAME[r.symbol] || r.name;
+  const priceStr = (r.currency === "KRW" ? "₩" : "$") + r.price.toLocaleString(undefined, { maximumFractionDigits: 2 });
+  const sign = (n) => (n >= 0 ? "+" : "");
+  let deltaStr = "";
+  let cls = "";
+  if (r.changePct !== null && r.changePct !== undefined) {
+    cls = r.changePct >= 0 ? "delta-up" : "delta-down";
+    const changeAmt = r.change !== null && r.change !== undefined ? `${sign(r.change)}${r.change.toLocaleString(undefined, { maximumFractionDigits: 2 })} ` : "";
+    deltaStr = `${changeAmt}(${sign(r.changePct)}${r.changePct.toFixed(2)}%)`;
+  }
+
+  const now = new Date();
+  const isToday = !!r.time && r.time.getFullYear() === now.getFullYear() && r.time.getMonth() === now.getMonth() && r.time.getDate() === now.getDate();
+  const clockLabel = r.time
+    ? (isToday
+        ? `${String(r.time.getHours()).padStart(2, "0")}:${String(r.time.getMinutes()).padStart(2, "0")}:${String(r.time.getSeconds()).padStart(2, "0")}`
+        : `${String(r.time.getMonth() + 1).padStart(2, "0")}/${String(r.time.getDate()).padStart(2, "0")}`)
+    : "";
+  const clockClass = isToday ? "idx-clock idx-clock-live" : "idx-clock";
+
+  return `
+    <div class="idx-row ticker-link idx-row-clickable" data-ticker="${escapeHtml(r.symbol)}">
+      <div class="idx-left">
+        <div class="idx-name">${tickerLogoHtml(r.symbol)}${escapeHtml(displayName)}</div>
+        <div class="idx-sub">${clockLabel ? `<span class="${clockClass}">🕐 ${clockLabel}</span> | ` : ""}<span class="idx-ticker">${escapeHtml(r.symbol)}</span></div>
+      </div>
+      <div class="idx-right">
+        <div class="idx-price">${priceStr}</div>
+        <div class="idx-delta ${cls}">${deltaStr}</div>
+      </div>
+    </div>`;
+}
+
 // ---------- US Stock/US ETF/KR ETF 거래량 랭킹: ETF는 상승압력·투자안정 점수가 의미 없어 순위·티커·현재가·거래량만 표시하는 전용 렌더러 사용 ----------
 function volumeRankingTableHtml(rows, { logoAfterName = false } = {}) {
   const trs = rows
@@ -4937,7 +4979,7 @@ function volumeRankingTableHtml(rows, { logoAfterName = false } = {}) {
 }
 
 // candidatesPromise는 이미 거래량 내림차순 정렬된 전체 후보 배열(추가 API 호출 없이 already-fetched 데이터에서 더보기로 노출 범위만 넓힘)
-async function renderVolumeRanking(candidatesPromise, { statusEl, resultsEl, initialCount = 10, fullCount = 30, rankNote, logoAfterName = false }) {
+async function renderVolumeRanking(candidatesPromise, { statusEl, resultsEl, initialCount = 10, fullCount = 30, rankNote, logoAfterName = false, cardStyle = false }) {
   statusEl.style.display = "block";
   statusEl.textContent = "거래량 데이터를 불러오는 중...";
   resultsEl.innerHTML = "";
@@ -4952,9 +4994,12 @@ async function renderVolumeRanking(candidatesPromise, { statusEl, resultsEl, ini
     let shown = Math.min(initialCount, capped);
     const render = () => {
       const hasMore = shown < capped;
+      const listHtml = cardStyle
+        ? `<div class="idx-list">${all.slice(0, shown).map(stockCardRowHtml).join("")}</div>`
+        : volumeRankingTableHtml(all.slice(0, shown), { logoAfterName });
       resultsEl.innerHTML =
         (rankNote ? `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${rankNote}</p>` : "") +
-        volumeRankingTableHtml(all.slice(0, shown), { logoAfterName }) +
+        listHtml +
         (hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${Math.min(shown + initialCount, capped)}">더보기 (${shown}/${capped})</button>` : "");
     };
     render();
@@ -4985,8 +5030,10 @@ async function getUsStockVolumeCandidates() {
       symbol: q.symbol,
       name: q.shortName || q.longName || q.symbol,
       price: q.regularMarketPrice,
+      change: q.regularMarketChange ?? null,
       changePct: q.regularMarketChangePercent ?? null,
       volume: q.regularMarketVolume,
+      time: q.regularMarketTime ? new Date(q.regularMarketTime * 1000) : null,
       currency: "USD",
     }))
     .sort((a, b) => b.volume - a.volume);
