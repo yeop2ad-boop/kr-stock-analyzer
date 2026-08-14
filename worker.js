@@ -105,6 +105,62 @@ async function handleChat(request, env) {
   return jsonResponse({ error: "Method not allowed" }, 405);
 }
 
+// ---------- 인기 검색어: 방문자 전체의 검색을 KV에 기록해 최근 24시간 기준으로 집계(검색 오버레이의 "인기 검색") ----------
+const SEARCH_LOG_KEY = "search_log_events";
+const SEARCH_LOG_MAX = 3000; // 저장 이벤트 상한(오래된 것부터 정리)
+const SEARCH_LOG_RETENTION_SEC = 24 * 60 * 60; // 24시간
+const SEARCH_POPULAR_MAX = 10;
+
+function isValidTickerSymbol(s) {
+  return typeof s === "string" && /^[A-Z0-9.\-\^]{1,10}$/.test(s);
+}
+
+async function getSearchLogEvents(env) {
+  const raw = await env.CHAT_KV.get(SEARCH_LOG_KEY);
+  if (!raw) return [];
+  let events;
+  try {
+    events = JSON.parse(raw);
+  } catch {
+    return [];
+  }
+  if (!Array.isArray(events)) return [];
+  const cutoff = Date.now() - SEARCH_LOG_RETENTION_SEC * 1000;
+  return events.filter((e) => e && typeof e.t === "number" && e.t >= cutoff && typeof e.symbol === "string");
+}
+
+async function handleSearchLog(request, env) {
+  if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonResponse({ error: "잘못된 요청입니다." }, 400);
+  }
+  const symbol = body && body.symbol ? String(body.symbol).toUpperCase().trim() : "";
+  if (!isValidTickerSymbol(symbol)) return jsonResponse({ error: "잘못된 티커입니다." }, 400);
+
+  const events = await getSearchLogEvents(env);
+  events.push({ symbol, t: Date.now() });
+  const trimmed = events.slice(-SEARCH_LOG_MAX);
+  await env.CHAT_KV.put(SEARCH_LOG_KEY, JSON.stringify(trimmed), { expirationTtl: SEARCH_LOG_RETENTION_SEC });
+  return jsonResponse({ ok: true }, 200);
+}
+
+async function handleSearchPopular(env) {
+  if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
+
+  const events = await getSearchLogEvents(env);
+  const counts = {};
+  for (const e of events) counts[e.symbol] = (counts[e.symbol] || 0) + 1;
+  const popular = Object.entries(counts)
+    .map(([symbol, count]) => ({ symbol, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, SEARCH_POPULAR_MAX);
+  return jsonResponse({ popular }, 200);
+}
+
 // ---------- 미래예측 2번째 그래프: 투자안정성 점수 구간별 1년 수익률 통계를 매달 집계하는 Cron 작업 ----------
 // Workers 유료 플랜(2026-02 변경 이후 기본 10,000 subrequests/invocation, CPU 30초 기본·최대 5분)으로 전환하면서
 // 무료 플랜의 50 subrequest 제한이 사라져 S&P500 500종목을 하루 만에 다 훑을 수 있음 — 배치/이어하기 로직 자체는
@@ -806,6 +862,14 @@ export default {
 
     if (requestUrl.pathname === "/auth/naver" && request.method === "POST") {
       return handleNaverAuth(request, env);
+    }
+
+    if (requestUrl.pathname === "/search-log" && request.method === "POST") {
+      return handleSearchLog(request, env);
+    }
+
+    if (requestUrl.pathname === "/search-popular") {
+      return handleSearchPopular(env);
     }
 
     const targetUrl = requestUrl.searchParams.get("url");

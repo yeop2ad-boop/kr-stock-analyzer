@@ -4,8 +4,8 @@
 
 const el = (id) => document.getElementById(id);
 
-// US Markets가 기본 탭이라 initApp()의 switchTab(0)이 로딩 초반에 곧바로 startIndexAutoRefresh()를 호출함 —
-// 그 함수가 참조하기 전에 값이 준비되어 있어야 하므로 파일 맨 앞에 둠(TDZ 에러 방지)
+// US Markets가 기본 탭이라 initApp()의 switchTab(TAB_ORDER.indexOf("index"))가 로딩 초반에 곧바로
+// startIndexAutoRefresh()를 호출함 — 그 함수가 참조하기 전에 값이 준비되어 있어야 하므로 파일 맨 앞에 둠(TDZ 에러 방지)
 const INDEX_AUTO_REFRESH_MS = 20000;
 
 const tickerInput = el("tickerInput");
@@ -48,16 +48,12 @@ const valuationResults = el("valuationResults");
 const trendStatus = el("trendStatus");
 const trendResults = el("trendResults");
 const futureStatus = el("futureStatus");
-const contactBtn = el("contactBtn");
 const chatPanel = el("chatPanel");
 const chatMessagesEl = el("chatMessages");
 const chatTextInput = el("chatTextInput");
 const chatSendBtn = el("chatSendBtn");
 const chatError = el("chatError");
 const chatCloseBtn = el("chatCloseBtn");
-const econPickBtn = el("econPickBtn");
-const econPickPanel = el("econPickPanel");
-const econPickCloseBtn = el("econPickCloseBtn");
 const econPickBody = el("econPickBody");
 const econPickGrid = el("econPickGrid");
 const econPickSentinel = el("econPickSentinel");
@@ -169,8 +165,8 @@ async function sendChatPost() {
   }
 }
 
-contactBtn.addEventListener("click", (e) => {
-  e.stopPropagation();
+function toggleChatPanel(e) {
+  if (e) e.stopPropagation();
   const isOpen = chatPanel.style.display !== "none";
   chatPanel.style.display = isOpen ? "none" : "flex";
   if (isOpen) {
@@ -179,7 +175,7 @@ contactBtn.addEventListener("click", (e) => {
     chatError.style.display = "none";
     startChatPolling();
   }
-});
+}
 chatCloseBtn.addEventListener("click", () => {
   chatPanel.style.display = "none";
   stopChatPolling();
@@ -206,7 +202,12 @@ document.addEventListener("keydown", (e) => {
   openChartModal(rowEl.dataset.chartSymbol);
 });
 document.addEventListener("click", (e) => {
-  if (chatPanel.style.display !== "none" && !chatPanel.contains(e.target) && e.target !== contactBtn) {
+  if (
+    chatPanel.style.display !== "none" &&
+    !chatPanel.contains(e.target) &&
+    e.target !== bottomNavButtons.invest &&
+    !bottomNavButtons.invest.contains(e.target)
+  ) {
     chatPanel.style.display = "none";
     stopChatPolling();
   }
@@ -218,7 +219,6 @@ document.addEventListener("click", (e) => {
 // Firebase 커스텀 토큰으로 signInWithCustomToken 합니다. 안드로이드 앱 출시 시에도 같은 Firebase
 // 프로젝트 + 같은 Worker 엔드포인트를 그대로 재사용해 동일 계정으로 로그인할 수 있습니다.
 const AUTH_ORIGIN = "https://us-stock.yeop2ad.workers.dev";
-const loginBtn = el("loginBtn");
 const loginModal = el("loginModal");
 const loginModalCloseBtn = el("loginModalCloseBtn");
 const loginGoogleBtn = el("loginGoogleBtn");
@@ -280,7 +280,6 @@ function friendlyAuthError(err) {
   return FIREBASE_ERROR_MESSAGES[err && err.code] || "로그인에 실패했습니다. 잠시 후 다시 시도해주세요.";
 }
 
-loginBtn.addEventListener("click", openLoginModal);
 loginModalCloseBtn.addEventListener("click", closeLoginModal);
 loginSwitchModeBtn.addEventListener("click", () => setSignupMode(!isSignupMode));
 
@@ -346,7 +345,6 @@ logoutBtn.addEventListener("click", async () => {
 
 function renderAuthState(user) {
   if (user) {
-    loginBtn.style.display = "none";
     userMenu.style.display = "block";
     const name = user.displayName || (user.email ? user.email.split("@")[0] : "회원");
     userDropdownName.textContent = name;
@@ -362,7 +360,6 @@ function renderAuthState(user) {
       userAvatarInitial.textContent = name.charAt(0).toUpperCase();
     }
   } else {
-    loginBtn.style.display = "flex";
     userMenu.style.display = "none";
     userDropdown.style.display = "none";
   }
@@ -480,8 +477,8 @@ function setupEconPickObserver() {
   econPickObserver.observe(econPickSentinel);
 }
 
-async function openEconPick() {
-  econPickPanel.style.display = "flex";
+// US Markets 등과 동일하게 일반 캐로셀 탭이 되어, TAB_LOADERS.econpick을 통해 탭 진입 시(최초 1회) 로딩됨
+async function loadEconPick() {
   if (econPickItems) return; // 이미 불러온 데이터가 있으면 재요청 없이 그대로 재표시
   econPickGrid.innerHTML = `<p class="muted">불러오는 중...</p>`;
   try {
@@ -501,18 +498,6 @@ async function openEconPick() {
   }
 }
 
-function closeEconPick() {
-  econPickPanel.style.display = "none";
-}
-
-econPickBtn.addEventListener("click", (e) => {
-  e.stopPropagation();
-  if (econPickPanel.style.display !== "none") closeEconPick();
-  else openEconPick();
-});
-econPickCloseBtn.addEventListener("click", closeEconPick);
-// 오버레이 모달이 아니라 탭바 아래 인라인 섹션이라, 다른 탭 버튼을 눌러도 닫히지 않고 그대로 유지됨
-// (닫기는 ✕ 버튼이나 경제pick 버튼 재클릭으로만)
 econPickGrid.addEventListener("click", (e) => {
   if (e.target.closest("a")) return; // 원문보기 링크는 확장/축소를 건드리지 않음
   const cardEl = e.target.closest(".econpick-card");
@@ -1763,14 +1748,18 @@ new ResizeObserver(syncHeaderHeight).observe(fixedHeader);
 syncHeaderHeight();
 
 // ---------- 스와이프 캐로셀(기업검색/인기종목/지수/기업가치/주식동향/인사이트) — 과거분석·미래예측은 기업검색 요약 페이지 내부로 이동 ----------
-const TAB_ORDER = ["index", "insight", "valuation", "trend"];
+// econpick이 탭바에서는 맨 왼쪽(스와이프 순서상 자연스러운 위치)이지만, 페이지 로드 시 기본으로 보여주는 탭은
+// initApp()에서 TAB_ORDER.indexOf("index")로 명시적으로 지정하므로 배열 순서 자체와는 무관함
+const TAB_ORDER = ["econpick", "index", "insight", "valuation", "trend"];
 const panels = {
+  econpick: el("panelEconpick"),
   index: el("panelIndex"),
   valuation: el("panelValuation"),
   trend: el("panelTrend"),
   insight: el("panelInsight"),
 };
 const tabButtons = {
+  econpick: el("econPickBtn"),
   index: el("tabIndexBtn"),
   valuation: el("tabValuationBtn"),
   trend: el("tabTrendBtn"),
@@ -1858,10 +1847,13 @@ TAB_ORDER.forEach((key, i) => {
 
 // ---------- 탭별 데이터 로딩 캐싱: 한 번 로딩된 탭은 다시 방문해도 재요청하지 않음 ----------
 const TAB_LOADERS = {
+  econpick: () => loadEconPick(),
   index: () => runIndexTab(),
   valuation: () => runValueRevenue(), // 가치평가 진입 시 매출액 증가를 자동 표시
   trend: () => runMovers("surge"), // 추세평가 진입 시 급등주를 자동 표시
-  insight: () => runInsight("blackrock"), // 인사이트 진입 시 첫 버튼(블랙록)을 자동 표시
+  // 인사이트 진입 시 기본은 첫 버튼(블랙록)이지만, 하단 네비게이션 등에서 이미 다른 카테고리(예: 캘린더)로
+  // 먼저 전환해둔 상태로 진입했다면 그 카테고리를 존중함(안 그러면 비동기 로딩이 뒤늦게 firms로 덮어씀)
+  insight: () => (insightActiveCategory === "firms" ? runInsight(insightActiveInstitution) : runInsightCategory(insightActiveCategory)),
   // search: navigateToTicker()가 직접 담당(항상 최신 검색어를 반영해야 하므로 캐시 대상에서 제외)
   // future: 준비중 안내만
 };
@@ -1962,31 +1954,43 @@ function addRecentSearch(symbol) {
   const next = [symbol, ...getRecentSearches().filter((s) => s !== symbol)].slice(0, RECENT_SEARCH_MAX);
   localStorage.setItem(RECENT_SEARCH_KEY, JSON.stringify(next));
 }
-function searchChipHtml(symbol, name) {
-  return `<button type="button" class="search-chip" data-symbol="${escapeHtml(symbol)}">
-    <span class="search-chip-symbol">${escapeHtml(symbol)}</span>
-    <span class="search-chip-name">${escapeHtml(name || "")}</span>
-  </button>`;
+function searchChipHtml(symbol) {
+  return `<button type="button" class="search-chip" data-symbol="${escapeHtml(symbol)}">${escapeHtml(symbol)}</button>`;
 }
 function renderRecentSearches() {
   const recent = getRecentSearches();
   recentSearchList.innerHTML = recent.length
-    ? recent.map((s) => searchChipHtml(s, "")).join("")
+    ? recent.map((s) => searchChipHtml(s)).join("")
     : `<p class="muted search-chip-empty">최근 검색한 티커가 없습니다.</p>`;
 }
+// 인기 검색 = 전체 방문자의 최근 24시간 검색 로그를 Worker(KV)에 집계해 받아옴(navigateToTicker에서 /search-log로 매번 기록)
 let popularSearchCache = null;
 async function renderPopularSearches() {
   if (popularSearchCache) {
-    popularSearchList.innerHTML = popularSearchCache.map((r) => searchChipHtml(r.symbol, r.name)).join("");
+    popularSearchList.innerHTML = popularSearchCache.map((r) => searchChipHtml(r.symbol)).join("");
     return;
   }
   try {
-    const candidates = await getUsStockVolumeCandidates();
-    popularSearchCache = candidates.slice(0, POPULAR_SEARCH_MAX);
-    popularSearchList.innerHTML = popularSearchCache.map((r) => searchChipHtml(r.symbol, r.name)).join("");
+    const res = await fetch(`${AUTH_ORIGIN}/search-popular`);
+    const data = await res.json();
+    const popular = (data && data.popular) || [];
+    if (popular.length === 0) {
+      popularSearchList.innerHTML = `<p class="muted search-chip-empty">아직 인기 검색어가 없습니다.</p>`;
+      return;
+    }
+    popularSearchCache = popular.slice(0, POPULAR_SEARCH_MAX);
+    popularSearchList.innerHTML = popularSearchCache.map((r) => searchChipHtml(r.symbol)).join("");
   } catch {
     popularSearchList.innerHTML = `<p class="muted search-chip-empty">인기 검색을 불러오지 못했습니다.</p>`;
   }
+}
+// 검색 성공 시 서버에 기록(실패해도 UI에 영향 없도록 조용히 무시) — 최근 24시간 인기 검색어 집계용
+function logSearchEvent(symbol) {
+  fetch(`${AUTH_ORIGIN}/search-log`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ symbol }),
+  }).catch(() => {});
 }
 function openSearchOverlay() {
   searchOverlay.style.display = "flex";
@@ -2007,6 +2011,43 @@ document.addEventListener("click", (e) => {
   const chip = e.target.closest(".search-chip");
   if (!chip) return;
   navigateToTicker(chip.dataset.symbol);
+});
+
+// ---------- 하단 고정 네비게이션(홈/캘린더/내투자/관심/로그인) ----------
+const bottomNavButtons = {
+  home: el("bottomNavHomeBtn"),
+  calendar: el("bottomNavCalendarBtn"),
+  invest: el("bottomNavInvestBtn"),
+  favorite: el("bottomNavFavoriteBtn"),
+  login: el("bottomNavLoginBtn"),
+};
+function setBottomNavActive(key) {
+  Object.entries(bottomNavButtons).forEach(([k, btn]) => btn.classList.toggle("active", k === key));
+}
+bottomNavButtons.home.addEventListener("click", () => {
+  setBottomNavActive("home");
+  closeCompanyPanel();
+  switchTab(TAB_ORDER.indexOf("index"));
+});
+bottomNavButtons.calendar.addEventListener("click", () => {
+  setBottomNavActive("calendar");
+  closeCompanyPanel();
+  // 카테고리를 먼저 바꿔둬야, switchTab()이 트리거하는 비동기 기본 로더(TAB_LOADERS.insight)가
+  // 나중에 실행되더라도 캘린더 카테고리를 그대로 존중해서 렌더링함(순서를 반대로 하면 firms로 덮어써짐)
+  insightActiveCategory = "calendar";
+  switchTab(TAB_ORDER.indexOf("insight"));
+  switchInsightCategory("calendar");
+});
+bottomNavButtons.invest.addEventListener("click", toggleChatPanel);
+bottomNavButtons.favorite.addEventListener("click", () => {
+  alert("🚧 관심종목은 준비 중입니다.");
+});
+bottomNavButtons.login.addEventListener("click", () => {
+  if (typeof firebase !== "undefined" && firebase.auth().currentUser) {
+    userAvatarBtn.click();
+  } else {
+    openLoginModal();
+  }
 });
 
 // ---------- 기업 패널: 틀고정 탭이 아니라 오른쪽에서 슬라이드인하는 전체화면 오버레이 ----------
@@ -2043,6 +2084,7 @@ function navigateToTicker(ticker, { push = true } = {}) {
   tickerInput.value = ticker;
   document.title = `${ticker} 분석 - 미국 기업 분석기 (yeopinvest.com)`;
   addRecentSearch(ticker);
+  logSearchEvent(ticker);
   if (searchOverlay.style.display !== "none") closeSearchOverlay();
   openCompanyPanel();
   runAnalysis(ticker);
@@ -2071,9 +2113,9 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// ---------- 초기 부팅: 기본 화면은 US Markets(0번 탭) — ?ticker=가 있을 때만 기업 패널을 함께 염 ----------
+// ---------- 초기 부팅: 기본 화면은 US Markets — ?ticker=가 있을 때만 기업 패널을 함께 염 ----------
 (function initApp() {
-  switchTab(0);
+  switchTab(TAB_ORDER.indexOf("index"));
 
   const initialTicker = new URLSearchParams(location.search).get("ticker");
   if (initialTicker) navigateToTicker(initialTicker, { push: false });
@@ -2081,6 +2123,7 @@ document.addEventListener("click", (e) => {
 
   // 무료 프록시 과부하를 피하려고 순서대로 백그라운드 로딩(사용자가 먼저 스와이프해서 들어가면 ensureTabLoaded가 그 자리에서 바로 시작함)
   (async () => {
+    await ensureTabLoaded("econpick");
     await ensureTabLoaded("trend"); // 급등주 미리 로딩(진입 시 바로 표시)
     await ensureTabLoaded("valuation");
     await ensureTabLoaded("insight");

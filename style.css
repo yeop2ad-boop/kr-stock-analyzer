@@ -27,7 +27,7 @@ body {
 .container {
   max-width: 860px;
   margin: 0 auto;
-  padding: calc(var(--fixed-header-h, 210px) + 16px) 20px 80px;
+  padding: calc(var(--fixed-header-h, 210px) + 16px) 20px 96px;
 }
 
 .fixed-header {
@@ -177,10 +177,8 @@ body {
   flex: none;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 14px;
-  background: var(--card-bg);
-  border-bottom: 1px solid var(--border);
+  gap: 14px;
+  padding: 16px;
 }
 .search-overlay-back {
   flex: none;
@@ -190,37 +188,50 @@ body {
   background: none;
   border: none;
   color: var(--text);
-  font-size: 20px;
+  font-size: 22px;
 }
-.search-overlay-search { flex: 1; margin: 0; max-width: none; }
+.search-overlay-title { margin: 0; font-size: 24px; font-weight: 800; color: var(--text); }
 
 .search-overlay-body {
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 20px 16px 40px;
+  padding: 4px 16px 40px;
 }
+
+/* 검색창 자체를 알약 모양 하나로 보이게(입력창+버튼을 감싸는 래퍼에 배경·둥근모서리를 주고 내부 요소는 테두리 제거) */
+.search-overlay-search {
+  margin: 0 0 28px;
+  max-width: none;
+  background: var(--card-bg);
+  border-radius: 999px;
+  padding: 4px 4px 4px 18px;
+}
+.search-overlay-search input[type="text"] {
+  border: none;
+  background: transparent;
+  padding: 11px 0;
+}
+.search-overlay-search input[type="text"]:focus { outline: none; }
+.search-overlay-search button { border-radius: 999px; }
+
 .search-section { margin-bottom: 28px; }
-.search-section h3 { margin: 0 0 10px; font-size: 13px; color: var(--muted); }
-.search-chip-list { display: flex; flex-direction: column; }
-.search-chip-empty { padding: 8px 0; font-size: 13px; }
+.search-section h3 { margin: 0 0 12px; font-size: 15px; font-weight: 700; color: var(--text); }
+.search-section-sub { margin-left: 6px; font-size: 12px; font-weight: 500; color: var(--muted); }
+.search-chip-list { display: flex; flex-wrap: wrap; gap: 10px; }
+.search-chip-empty { padding: 4px 0; font-size: 13px; }
 .search-chip {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 4px;
-  border-bottom: 1px solid var(--border);
   cursor: pointer;
-  background: none;
-  border-left: none;
-  border-right: none;
-  border-top: none;
-  width: 100%;
-  text-align: left;
+  background: var(--card-bg);
+  border: none;
+  border-radius: 999px;
+  padding: 12px 18px;
   color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
 }
-.search-chip-symbol { font-weight: 800; font-size: 14px; }
-.search-chip-name { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* 기업 패널 — 틀고정 탭이 아니라 검색/티커클릭 시 오른쪽에서 슬라이드인하는 전체화면 오버레이.
    chart-modal(400)보다 낮게 둬서 패널 안에서 TradingView 차트를 열면 그 위로 정상적으로 뜸 */
@@ -261,7 +272,7 @@ body {
   max-width: 860px;
   width: 100%;
   margin: 0 auto;
-  padding: 14px 20px 80px;
+  padding: 14px 20px 96px;
 }
 .company-panel-body #summarySubtabNav {
   position: sticky;
@@ -412,22 +423,9 @@ body {
 
 /* 경제pick — 오버레이 모달이 아니라 탭바 바로 아래 인라인으로 펼쳐짐(다른 탭으로 이동해도 유지됨).
    fixedHeader 안에 있어서 열리면 syncHeaderHeight()가 자동으로 헤더 높이를 재계산해 본문을 밀어냄 */
-.econpick-panel {
-  display: flex;
-  flex-direction: column;
-  max-width: 860px;
-  margin: 10px auto 0;
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  overflow: hidden;
-}
-
+/* 경제pick이 이제 일반 캐로셀 탭이라, 다른 탭들처럼 페이지 자체가 스크롤되고 내부에 별도 높이 제한이 없음 */
 .econpick-body {
-  max-height: 60vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 12px;
+  padding: 0;
 }
 
 .econpick-grid {
@@ -471,7 +469,8 @@ body {
 }
 
 /* 카드 클릭 시 그리드 두 칸을 모두 차지하며 확장 — 아래 카드들은 자연스럽게 밀려 내려감 */
-.econpick-card.expanded { grid-column: 1 / -1; }
+/* 카드가 펼쳐져도 grid-column을 넓히지 않고 자기 칸 안에서만 세로로 커지게 해서, 같은 줄의 다른 칸(카드)이
+   밀려 내려가지 않고 제자리를 유지함(그리드 행 높이만 커진 카드에 맞춰 자동으로 늘어남) */
 .econpick-card.expanded .econpick-thumb { aspect-ratio: 16 / 9; }
 .econpick-card.expanded .econpick-title { -webkit-line-clamp: unset; }
 
@@ -899,7 +898,7 @@ body {
 .section-heading-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 10px;
   margin-bottom: 12px;
 }
@@ -1226,6 +1225,46 @@ table.fin-table th, table.fin-table td { padding: 8px 6px; border-bottom: 1px so
 table.fin-table th:first-child, table.fin-table td:first-child { text-align: left; }
 .delta-up { color: var(--pos); font-weight: 800; }
 .delta-down { color: var(--neg); font-weight: 800; }
+
+/* 모바일 하단 고정 네비게이션 — 글자 없이 아이콘만(홈/캘린더/내투자/관심/로그인), 좌우 여백을 두고 둥글게 뜬
+   반투명 바 위에 버튼을 올림(눌린 아이콘은 배경 없이 흰색으로만 하이라이트). company-panel(350)보다 z-index가
+   낮아 전체화면 오버레이가 열리면 자연스럽게 그 아래로 가려짐 */
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 58px;
+  width: fit-content;
+  margin: 0 auto;
+  padding: 0 14px;
+  background: rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(4px) saturate(130%);
+  -webkit-backdrop-filter: blur(4px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+.bottom-nav-btn {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: rgba(255, 255, 255, 0.45);
+}
+.bottom-nav-btn svg { width: 24px; height: 24px; }
+.bottom-nav-btn.active { color: #fff; }
 
 .net-income-cell { display: inline-block; padding: 2px 8px; border-radius: 6px; font-weight: 700; }
 .net-income-cell.positive { background: rgba(26, 156, 92, 0.18); color: var(--good); }

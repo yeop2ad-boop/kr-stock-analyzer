@@ -41,8 +41,6 @@
         </svg>
       </div>
       <div class="fh-actions">
-        <button id="contactBtn" class="contact-btn" type="button" aria-label="개미투자 게시판">…</button>
-        <button id="loginBtn" class="login-header-btn" type="button" aria-label="로그인">👤</button>
         <div id="userMenu" class="user-menu" style="display:none;">
           <button id="userAvatarBtn" class="user-avatar-btn" type="button" aria-label="내 계정">
             <img id="userAvatarImg" class="user-avatar-img" src="" alt="" style="display:none;" />
@@ -63,22 +61,11 @@
     </button>
 
     <div class="tab-bar" id="tabBar">
-      <button type="button" class="cat-btn" id="econPickBtn">📰 경제pick</button>
+      <button type="button" class="cat-btn" data-tab="econpick" id="econPickBtn">📰 경제pick</button>
       <button type="button" class="cat-btn" data-tab="index" id="tabIndexBtn">US Markets</button>
       <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn">인사이트</button>
       <button type="button" class="cat-btn" data-tab="valuation" id="tabValuationBtn">기업가치</button>
       <button type="button" class="cat-btn" data-tab="trend" id="tabTrendBtn">투자동향</button>
-    </div>
-
-    <div id="econPickPanel" class="econpick-panel" style="display:none;">
-      <div class="chat-header">
-        <span>📰 경제pick <span class="muted" style="font-weight:400;">(매일 오전 7시 업데이트)</span></span>
-        <button id="econPickCloseBtn" class="chat-close-btn" type="button" aria-label="닫기">✕</button>
-      </div>
-      <div id="econPickBody" class="econpick-body">
-        <div id="econPickGrid" class="econpick-grid"></div>
-        <div id="econPickSentinel" class="econpick-sentinel"></div>
-      </div>
     </div>
   </header>
 
@@ -162,19 +149,20 @@
   <div id="searchOverlay" class="search-overlay" style="display:none;">
     <div class="search-overlay-bar">
       <button type="button" id="searchOverlayCloseBtn" class="search-overlay-back" aria-label="닫기">←</button>
+      <h2 class="search-overlay-title">검색</h2>
+    </div>
+    <div class="search-overlay-body">
       <div class="fh-search search-overlay-search">
         <input type="text" id="tickerInput" placeholder="티커를 검색해 주세요.(예: AAPL,TSLA)" autocomplete="off" />
         <button id="analyzeBtn" type="button" aria-label="분석">🔍</button>
         <div id="tickerSuggest" class="chat-ticker-suggest" style="display:none;"></div>
       </div>
-    </div>
-    <div class="search-overlay-body">
       <div class="search-section">
         <h3>최근 검색</h3>
         <div id="recentSearchList" class="search-chip-list"><p class="muted search-chip-empty">최근 검색한 티커가 없습니다.</p></div>
       </div>
       <div class="search-section">
-        <h3>인기 검색</h3>
+        <h3>인기 검색 <span class="search-section-sub">최근 24시간</span></h3>
         <div id="popularSearchList" class="search-chip-list"><p class="muted search-chip-empty">불러오는 중...</p></div>
       </div>
     </div>
@@ -287,7 +275,7 @@
         <section class="flush-section">
           <div class="section-heading-row">
             <h2>매출액 &amp; 주당순이익(EPS)</h2>
-            <button type="button" id="groundOpenBtn" class="ground-open-btn">🧍 투자 그라운드</button>
+            <button type="button" id="groundOpenBtn" class="ground-open-btn">투자 그라운드</button>
           </div>
           <div id="financialsSection" class="section-body"></div>
           <div id="peersSection" class="section-body peers-inline" style="display:none;"></div>
@@ -333,6 +321,14 @@
 
   <div class="container" id="mainContainer">
     <div class="carousel-viewport" id="carouselViewport">
+
+      <div class="carousel-panel" data-panel="econpick" id="panelEconpick">
+        <p class="muted" style="font-size:12px;margin:0 0 10px;">📰 경제pick <span style="font-weight:400;">(매일 오전 7시 업데이트)</span></p>
+        <div id="econPickBody" class="econpick-body">
+          <div id="econPickGrid" class="econpick-grid"></div>
+          <div id="econPickSentinel" class="econpick-sentinel"></div>
+        </div>
+      </div>
 
       <div class="carousel-panel" data-panel="index" id="panelIndex">
         <div class="top30-sub-nav">
@@ -414,6 +410,32 @@
       ⓘ 이 도구는 아직 베타버전으로 개발 진행 중이며, 매일 상승·하락 종목을 AI로 분석·비교하여 점수 배점 방식이 실시간으로 변경될 수 있습니다. 개발자 개인이 사용할 목적으로 개발하였으며 투자 시 참조 데이터로 사용 바랍니다. 주가를 분석·예측하는 것 이외의 다른 목적으로 점수가 변화하지 않습니다.
     </p>
   </div>
+
+  <nav id="bottomNav" class="bottom-nav">
+    <button type="button" class="bottom-nav-btn active" id="bottomNavHomeBtn" aria-label="홈">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.2c-.42 0-.82.15-1.13.42l-7 6.2c-.4.36-.63.87-.63 1.4V19a1.8 1.8 0 0 0 1.8 1.8h4.2a1 1 0 0 0 1-1v-4.6c0-.5.4-.9.9-.9h1.72c.5 0 .9.4.9.9V19.8a1 1 0 0 0 1 1h4.2A1.8 1.8 0 0 0 20.76 19v-7.78c0-.53-.23-1.04-.63-1.4l-7-6.2A1.7 1.7 0 0 0 12 3.2Z"/></svg>
+    </button>
+    <button type="button" class="bottom-nav-btn" id="bottomNavCalendarBtn" aria-label="캘린더">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3.5" y="5" width="17" height="15" rx="2.5" />
+        <path d="M8 3v3.4M16 3v3.4" />
+        <rect x="6.6" y="9.6" width="2.9" height="2.6" fill="currentColor" stroke="none" />
+        <rect x="10.55" y="9.6" width="2.9" height="2.6" fill="currentColor" stroke="none" />
+        <rect x="14.5" y="9.6" width="2.9" height="2.6" fill="currentColor" stroke="none" />
+        <rect x="6.6" y="13.3" width="2.9" height="2.6" fill="currentColor" stroke="none" />
+        <rect x="10.55" y="13.3" width="2.9" height="2.6" fill="currentColor" stroke="none" />
+      </svg>
+    </button>
+    <button type="button" class="bottom-nav-btn" id="bottomNavInvestBtn" aria-label="내투자">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg>
+    </button>
+    <button type="button" class="bottom-nav-btn" id="bottomNavFavoriteBtn" aria-label="관심">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z" /></svg>
+    </button>
+    <button type="button" class="bottom-nav-btn" id="bottomNavLoginBtn" aria-label="로그인">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4" /><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" /></svg>
+    </button>
+  </nav>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
