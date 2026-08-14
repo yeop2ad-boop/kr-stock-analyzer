@@ -1,5 +1,105 @@
 [
   {
+    "id": "448b2cd944db",
+    "title": "미국 주요 도시들의 폭력범죄 계속 감소",
+    "link": "https://www.whitehouse.gov/releases/2026/08/icymi-violent-crime-keeps-falling-in-biggest-u-s-cities/",
+    "source": "White House 보도자료",
+    "summary": "미국 최대 규모 도시들의 중범죄 신고 통계에 따르면 올해 상반기 살인 범죄가 전년 동기 대비 17.2% 감소했으며, 강도, 강간, 폭행 등도 함께 급락했다. 특히 민주당 지배 도시들에서 연방 자원과 주방위군 지원이 집중된 워싱턴 DC의 살인 범죄는 43.9%, 멤피스는 43.7% 감소했다. 전국 살인 범죄율은 지난 126년 이상 중 가장 낮은 수준으로 향하고 있으며, 범죄 데이터 분석가는 2026년 살인 범죄율이 역대 최저를 기록할 것으로 예측하고 있다.",
+    "image": "data/econpick-images/448b2cd944db.webp",
+    "publishedAt": "2026-08-11T17:38:27.000Z",
+    "createdAt": "2026-08-14T00:13:47.036Z"
+  },
+  {
+    "id": "33b95da3c977",
+    "title": "2026년 국가 약물 남용 1차 예방의 달",
+    "link": "https://www.whitehouse.gov/presidential-actions/2026/08/national-substance-use-primary-prevention-month-2026/",
+    "source": "White House 보도자료",
+    "summary": "트럼프 행정부는 2026년 국가 약물 남용 1차 예방의 달을 선포하며 마약 중독을 사전에 차단하겠다는 의지를 재확인했다. 펜타닐 관련 물질을 1급 마약으로 분류하는 헬트 펜타닐 법안 서명, 국경 강화, 카르텔 테러조직 지정 등을 통해 약물 유입을 차단하고 있다. 역사상 처음으로 2026년 국가 마약 통제 전략에서 근거 기반의 예방을 중심으로 학교, 지역사회, 종교기관을 결합한 통합 대응 체계를 수립했다. 부모, 교사, 목사 등 신뢰할 수 있는 성인들을 통한 교육이 약물 남용 예방의 강력한 방어선이 되고 있으며, 청소년 약물 금욕률이 기록적 수준으로 상승했다.",
+    "image": "data/econpick-images/33b95da3c977.webp",
+    "publishedAt": "2026-08-12T21:37:50.000Z",
+    "createdAt": "2026-08-14T00:13:24.682Z"
+  },
+  {
+    "id": "1bff1190050e",
+    "title": "초국경 사이버 범죄에 대응하기 위한 능력 확대",
+    "link": "https://www.whitehouse.gov/presidential-actions/2026/08/expanding-capabilities-to-combat-transnational-cyber-enabled-crime/",
+    "source": "White House 보도자료",
+    "summary": "트랜스내셔널 범죄조직(TCO)이 사이버 캠프레인을 통해 미국 시민과 기업에 대한 사기 행위를 지속적으로 자행하고 있다. 트럼프 행정부는 민간 기업의 혁신적 역량을 활용하여 사이버 범죄에 대한 대응 능력을 강화하기로 결정했다. 국가조정센터(NCC)는 연방 정부의 감시 및 통제 하에 민간 기업들이 해외 사이버 범죄조직을 대상으로 사이버 감시 및 사이버 작전을 수행할 수 있도록 하는 프로그램을 수립 및 관리한다. 이는 미국이 국가 전력의 모든 수단을 동원하여 초국경 사이버 범죄에 맞서겠다는 정책 방향을 반영한다.",
+    "image": "data/econpick-images/1bff1190050e.webp",
+    "publishedAt": "2026-08-12T21:43:13.000Z",
+    "createdAt": "2026-08-14T00:13:01.584Z"
+  },
+  {
+    "id": "376a82f2d12d",
+    "title": "대규모 환적 사기 적발",
+    "link": "https://www.whitehouse.gov/releases/2026/08/the-great-transshipment-scam/",
+    "source": "White House 보도자료",
+    "summary": "백악관이 '대규모 환적 사기'라는 제목의 보도자료를 발표했다. 환적(transshipment)은 원산지를 위장하기 위해 제3국을 거쳐 상품을 재수출하는 무역 사기 행위를 의미한다. 이는 관세 회피, 제재 우회, 불공정한 무역 관행과 관련된 경제 범죄이다. 구체적인 적발 내용과 규모에 대한 상세 정보는 제공된 본문에서 확인할 수 없다.",
+    "image": "data/econpick-images/376a82f2d12d.webp",
+    "publishedAt": "2026-08-13T09:00:00.000Z",
+    "createdAt": "2026-08-14T00:12:34.019Z"
+  },
+  {
+    "id": "dcd375cc5894",
+    "title": "미국 해군과 조선산업 기반 재건",
+    "link": "https://www.whitehouse.gov/presidential-actions/2026/08/rebuilding-the-united-states-navy-and-americas-shipbuilding-industrial-base/",
+    "source": "White House 보도자료",
+    "summary": "트럼프 행정부는 복잡한 설계와 반복적인 설계 변경으로 인한 비용 증가와 지연 문제를 해결하기 위해 미국 해군 재건 및 조선산업 기반 강화를 추진하고 있다. 해군 항모의 전자식 항공기 발사 시스템과 고급 무기 엘리베이터를 증기식 및 유압식 시스템으로 교체하는 계획을 60일 내에 수립할 것을 지시했다. 부족한 국내 조선 능력과 경쟁 부족 문제를 해결하기 위해 국내 투자 확대와 경쟁 도입을 추진하며, 필요시 외국 공급업체로부터의 구매를 허용하면서 동시에 미국 조선산업 기반에 대한 투자를 장려할 계획이다. 해양산업 기반 복구는 국가 안보와 경제 번영을 위한 주요 과제로 강조되고 있다.",
+    "image": "data/econpick-images/dcd375cc5894.webp",
+    "publishedAt": "2026-08-13T21:21:46.000Z",
+    "createdAt": "2026-08-14T00:12:12.530Z"
+  },
+  {
+    "id": "a6d89840e389",
+    "title": "미국, 무인항공기 수입 조정 추진",
+    "link": "https://www.whitehouse.gov/presidential-actions/2026/08/adjusting-imports-of-unmanned-aircraft-systems-and-unmanned-aircraft-systems-components-into-the-united-states/",
+    "source": "White House 보도자료",
+    "summary": "트럼프 행정부는 상무부 장관의 보고서를 바탕으로 무인항공기 시스템(UAS)과 관련 부품의 수입이 미국의 국가안보를 위협한다고 판단했다. 무인항공기는 현대 군사작전의 핵심 기술이며 법집행, 인프라 보호 등 광범위하게 활용되고 있다. 미국이 해외 무인항공기 생산업체에 지나치게 의존하고 있어 지정학적 변동이나 재난 시 공급망 차질이 발생할 수 있다는 우려가 제기됐다. 행정부는 무역확장법 232조에 따라 무인항공기 수입 조정을 위한 조치를 추진할 방침이다.",
+    "image": "data/econpick-images/a6d89840e389.webp",
+    "publishedAt": "2026-08-13T21:21:57.000Z",
+    "createdAt": "2026-08-14T00:11:42.888Z"
+  },
+  {
+    "id": "59f79c032f82",
+    "title": "\"미국 우선은 오하이오 우선\" 트럼프 대통령, 공화당이 오하이오를 위해 성과 제시",
+    "link": "https://www.whitehouse.gov/releases/2026/08/america-first-means-ohio-first-president-trump-republicans-deliver-for-ohio/",
+    "source": "White House 보도자료",
+    "summary": "트럼프 대통령이 오하이오를 방문해 재임 이후 달성한 경제 성과를 강조했습니다. 근로 가족 감세로 120만 명 이상의 오하이오 근로자가 초과근무 세금 감면 혜택을 받았으며, 평균 세금 환급액은 3,308달러에 달합니다. 오하이오 전역에서 살인사건이 16.1% 감소하는 등 범죄가 하락 추세를 보이고 있습니다. 일렉트라, 스텔란티스 등 기업들이 오하이오에 85억 달러 규모의 신규 투자를 발표했으며, 소프트뱅크와 협력해 남부 오하이오에 10기가와트의 전력 생산 시설을 구축할 계획입니다.",
+    "image": "data/econpick-images/59f79c032f82.webp",
+    "publishedAt": "2026-08-11T20:45:20.000Z",
+    "createdAt": "2026-08-14T00:11:17.775Z"
+  },
+  {
+    "id": "98c4fdf13000",
+    "title": "트럼프 대통령, 국제 사이버 범죄 대응 능력 확대",
+    "link": "https://www.whitehouse.gov/fact-sheets/2026/08/fact-sheet-president-donald-j-trump-expands-capabilities-to-combat-transnational-cyber-enabled-crime/",
+    "source": "White House 보도자료",
+    "summary": "트럼프 대통령이 미국 연방 법 집행기관이 외국에서 미국을 공격하는 초국적 범죄조직(TCO)을 방해하기 위해 사이버 도구를 사용할 수 있도록 하는 국가안보 대통령 메모랑덤(NSPM)에 서명했다. 국토안보 태스크포스 산하 국가조정센터(NCC)가 민간 부문과 협력하여 외국의 범죄조직을 방해하는 사이버 작전을 수행하도록 지시했다. 2025년 미국 소비자들이 사이버 범죄로 208억 달러 이상을 손실했으며, 73%의 미국 성인이 온라인 사기나 공격을 경험했다. 정부는 민간 기업과의 파트너십을 통해 랜섬웨어, 피싱, 금융 사기 등 TCO가 조직하는 공격에 대응할 능력을 강화할 계획이다.",
+    "image": "data/econpick-images/98c4fdf13000.webp",
+    "publishedAt": "2026-08-12T21:43:04.000Z",
+    "createdAt": "2026-08-14T00:10:51.437Z"
+  },
+  {
+    "id": "d92c5d43e8d0",
+    "title": "트럼프 대통령, 드론 및 부품에 관세 부과로 국방력 강화 및 미국 공급망 구축",
+    "link": "https://www.whitehouse.gov/fact-sheets/2026/08/fact-sheet-president-donald-j-trump-bolsters-national-security-and-strengthens-u-s-supply-chains-by-imposing-tariffs-on-drones-and-their-parts-and-components/",
+    "source": "White House 보도자료",
+    "summary": "트럼프 대통령은 국가안보 위협에 대응하기 위해 드론 및 드론 부품에 대한 관세를 부과하는 선언문에 서명했습니다. 국방에 민감한 대형 드론(최대 이륙 중량 25kg 초과) 및 열화상 카메라 장착 드론에는 100% 관세를 부과하고, 소형 드론과 기타 드론 부품에는 25% 관세를 적용합니다. EU, 일본, 한국, 대만 등 우방국 제품에는 10~15% 관세를 부과하며, 상무부 장관은 드론 제조업체의 국내 신규 투자를 지원하는 온쇼어링 프로그램을 운영할 수 있습니다. 관세는 서명 후 21일 후에 발효되며, 미국의 국방력과 고용 창출을 보호하기 위한 조치입니다.",
+    "image": "data/econpick-images/d92c5d43e8d0.webp",
+    "publishedAt": "2026-08-13T21:22:01.000Z",
+    "createdAt": "2026-08-14T00:10:25.983Z"
+  },
+  {
+    "id": "a3ea073f082d",
+    "title": "트럼프 대통령, 미국 해군 재건 및 조선 산업 기반 복구 추진",
+    "link": "https://www.whitehouse.gov/fact-sheets/2026/08/fact-sheet-president-donald-j-trump-rebuilds-the-u-s-navy-and-americas-shipbuilding-industrial-base/",
+    "source": "White House 보도자료",
+    "summary": "트럼프 대통령은 해군 조선 및 수리 프로그램의 장기적 문제를 해결하기 위해 국가안보 대통령 각서에 서명했습니다. 차세대 항공모함 CVN-81 건조 중 첨단 전자기 항공기 발사 시스템을 기존 증기식 및 유압식으로 교체하도록 지시했습니다. 해외 조선업체가 미국 조선소에 투자하고 미국 인력을 양성하는 동안 제한적으로 모함사 조선소에서 선박 2척까지 건조할 수 있도록 허용합니다. 80년 만에 처음으로 다섯 번째 해군 조선소를 설립하여 잠수함과 항공모함 수리 능력을 증대할 계획입니다. 해군 해상시스템사령부를 전면 검토하고 개혁하여 미국 해군 조선 산업의 만성적 문제를 해결하려고 합니다.",
+    "image": "data/econpick-images/a3ea073f082d.webp",
+    "publishedAt": "2026-08-13T21:23:07.000Z",
+    "createdAt": "2026-08-14T00:09:57.974Z"
+  },
+  {
     "id": "0611f77ea0aa",
     "title": "New tech adds phone tracking to license plate readers, associating devices with identifiable cars",
     "link": "https://theconversation.com/new-tech-adds-phone-tracking-to-license-plate-readers-associating-devices-with-identifiable-cars-288876",
