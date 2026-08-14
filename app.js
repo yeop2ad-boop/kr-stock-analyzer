@@ -441,11 +441,19 @@ let econPickObserver = null;
 
 function econPickCardHtml(item, idx) {
   const expanded = idx === econPickExpandedIdx;
+  const isRightCol = idx % 2 === 1;
+  // 2열 그리드에서 오른쪽 칸 카드를 펼치면 grid auto-placement가 기본적으로 "펼쳐진 카드"를 다음 줄로 내려버림 —
+  // 모든 카드에 자기 인덱스를 order로 부여해두고, 오른쪽 카드가 펼쳐질 때만 왼쪽 짝과 order를 맞바꿔서
+  // 펼쳐진 카드가 그 줄의 자리를 그대로 차지하고 왼쪽 카드가 대신 아래로 밀려나게 함
+  const rightNeighborExpanded = !isRightCol && econPickExpandedIdx === idx + 1;
+  let order = idx;
+  if (expanded && isRightCol) order = idx - 1;
+  else if (rightNeighborExpanded) order = idx + 1;
   const summaryBlock = expanded
     ? `<div class="econpick-summary">${escapeHtml(item.summary || "")}<br /><a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer">원문보기 →</a></div>`
     : "";
   return `
-    <div class="econpick-card${expanded ? " expanded" : ""}" data-idx="${idx}">
+    <div class="econpick-card${expanded ? " expanded" : ""}" data-idx="${idx}" style="order:${order}">
       <img class="econpick-thumb" src="${escapeHtml(item.image)}" alt="" loading="lazy" />
       <p class="econpick-title">${escapeHtml(item.title)}</p>
       <p class="econpick-meta">${escapeHtml(item.source || "")}</p>
