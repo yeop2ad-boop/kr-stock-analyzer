@@ -1,5 +1,60 @@
 [
   {
+    "id": "011bd37abc2f",
+    "title": "엔비디아, 오하이오주 대규모 AI 데이터센터 캠퍼스 개발을 위해 SB Energy와 다년간 파트너십 체결",
+    "link": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000069/nvda-20260817.htm",
+    "source": "SEC 8-K · NVIDIA",
+    "summary": "엔비디아는 2026년 8월 17일 SB Energy와 오하이오주 Pike County에 위치한 PORTS Technology Campus 개발을 위한 다년간 파트너십을 발표했다.\n엔비디아는 약 4.25기가와트 규모의 IT 부하에 대한 리스 잔존가치 보증 계약을 체결했으며, 추가로 3.8기가와트 확보가 가능하다.\nOpenAI가 테넌트로 참여하며 엔비디아의 DSX AI 팩토리 플랫폼 배포를 지원할 예정이다.\n엔비디아의 누적 지급 의무는 초기 약정 기준 최대 1,050억 달러로 제한된다.\n엔비디아의 보증 의무는 리스 개시 20주년, OpenAI의 신용등급 개선 달성 등의 조건에서 종료된다.",
+    "image": "data/econpick-images/011bd37abc2f.webp",
+    "publishedAt": "2026-08-17T00:00:00.000Z",
+    "createdAt": "2026-08-17T21:53:05.974Z",
+    "style": "flat-0"
+  },
+  {
+    "id": "6573e08adb25",
+    "title": "USS 링컨함: 현대 해군사에 남을 역사적 배치 작전",
+    "link": "https://www.whitehouse.gov/releases/2026/08/icymi-uss-lincoln-performance-for-the-ages/",
+    "source": "White House 보도자료",
+    "summary": "미 중앙군 사령관 브래드 쿠퍼 제독이 USS 에이브러햄 링컨함 방문 후 월스트리트저널에 기고한 글에서 함정의 승무원들을 극찬했다. 쿠퍼 제독은 260일 이상 해상에서, 150일 이상 전투지역에서 근무한 승무원들의 헌신과 성취를 높이 평가했다. 식량과 온수 등 수개월 전 제기됐던 문제들은 지휘부에 의해 해결됐으며, 승무원들은 피로해했지만 계속해서 임무를 수행하고 있다고 밝혔다. 이 배치는 현대 해군 역사에서 가장 작전 강도가 높고 중요한 배치로 기록될 것이라고 평가했다.",
+    "image": "data/econpick-images/6573e08adb25.webp",
+    "publishedAt": "2026-08-17T14:29:09.000Z",
+    "createdAt": "2026-08-17T21:52:46.944Z",
+    "style": "flat-1"
+  },
+  {
+    "id": "0eae61292e36",
+    "title": "멜라니아 트럼프 영부인, 우크라이나-러시아 전쟁 피해 아동 재결합 노력 성과",
+    "link": "https://www.whitehouse.gov/briefings-statements/2026/08/first-lady-melania-trumps-efforts-prove-successful-in-ukraine-russia/",
+    "source": "White House 보도자료",
+    "summary": "멜라니아 트럼프 영부인이 우크라이나-러시아 전쟁으로 가족과 떨어진 아동 한 명을 가족과 재결합시키는 데 성공했다. 영부인은 러시아 푸틴 대통령에게 보낸 평화 편지 이후 지금까지 34명의 아동과 가족의 재결합을 주선했다고 밝혔다. 영부인은 \"어머니와 자식을 오랜 시간 떨어진 상태에서 다시 만나게 하는 것보다 강력한 것은 없다\"고 강조했다. 영부인과 그의 대표는 전쟁으로 인해 가족과 헤어진 사람들의 재결합을 계속해서 주선할 계획이다.",
+    "image": "data/econpick-images/0eae61292e36.webp",
+    "publishedAt": "2026-08-17T13:02:21.000Z",
+    "createdAt": "2026-08-17T21:52:46.161Z",
+    "style": "caricature"
+  },
+  {
+    "id": "0604b31260b7",
+    "title": "트럼프 대통령, 60년 만에 최대 규모 처방약 가격 인하 달성",
+    "link": "https://www.whitehouse.gov/releases/2026/08/president-trump-delivers-largest-prescription-drug-price-drop-in-over-60-years/",
+    "source": "White House 보도자료",
+    "summary": "트럼프 행정부의 '최혜국 대우' 정책에 따라 처방약 가격이 60년 이상 만에 최대 규모로 인하됐다. 전 세계 상위 17개 제약사가 미국 가격을 다른 선진국 수준으로 맞추기로 합의해 브랜드 의약품 시장의 약 86%를 차지하고 있다. TrumpRx 플랫폼을 통해 이미 7억 달러의 절감액이 창출됐으며, GLP-1 의약품은 월 1,000달러에서 149달러로, 다른 고가 의약품들은 50~90% 이상 가격이 인하됐다. 트럼프 대통령 취임 이후 처방약 가격은 3.9% 하락했으며, 재향군인청은 올 회계연도에만 100억 달러 이상의 의약품 절감액을 확보했다.",
+    "image": "data/econpick-images/0604b31260b7.webp",
+    "publishedAt": "2026-08-17T14:03:07.000Z",
+    "createdAt": "2026-08-17T21:52:44.279Z",
+    "style": "caricature"
+  },
+  {
+    "id": "ddd5cb94da2d",
+    "title": "미국 걸프만 연안 해상 운송량 4월과 5월 급증",
+    "link": "https://www.eia.gov/todayinenergy/detail.php?id=67964",
+    "source": "EIA Today in Energy",
+    "summary": "미국 에너지정보청(EIA)에 따르면 걸프만에서 미국 서부해안으로의 원유 및 석유제품 해상 운송량이 4월과 5월에 전년 동기 대비 4배 이상 증가했다. 국토안보부가 3월 17일 발급한 존스법(Jones Act) 한시적 면제로 더 광범위한 선박들이 미국 항구 간 운송을 허용받았다. 걸프만에서 미국 동부해안으로의 운송량도 함께 증가했다.",
+    "image": "data/econpick-images/ddd5cb94da2d.webp",
+    "publishedAt": "2026-08-17T14:00:00.000Z",
+    "createdAt": "2026-08-17T21:52:41.680Z",
+    "style": "flat-0"
+  },
+  {
     "id": "c1ea05f6a97a",
     "title": "트럼프 대통령, 사회보장법 제정 91주년 기념 메시지 발표",
     "link": "https://www.whitehouse.gov/briefings-statements/2026/08/presidential-message-on-the-anniversary-of-the-social-security-act/",
