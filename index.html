@@ -59,11 +59,11 @@
     </div>
 
     <div class="tab-bar" id="tabBar">
-      <button type="button" class="cat-btn" data-tab="econpick" id="econPickBtn">📰 경제pick</button>
-      <button type="button" class="cat-btn" data-tab="index" id="tabIndexBtn">US Markets</button>
-      <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn">인사이트</button>
-      <button type="button" class="cat-btn" data-tab="valuation" id="tabValuationBtn">기업가치</button>
-      <button type="button" class="cat-btn" data-tab="trend" id="tabTrendBtn">투자동향</button>
+      <button type="button" class="cat-btn" data-tab="econpick" id="econPickBtn"><span class="tab-emoji" aria-hidden="true">📰</span><span class="tab-label">투데이</span></button>
+      <button type="button" class="cat-btn" data-tab="index" id="tabIndexBtn"><span class="tab-label">시장</span></button>
+      <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn"><span class="tab-label">인사이트</span></button>
+      <button type="button" class="cat-btn" data-tab="valuation" id="tabValuationBtn"><span class="tab-label">기업가치</span></button>
+      <button type="button" class="cat-btn" data-tab="trend" id="tabTrendBtn"><span class="tab-label">투자동향</span></button>
     </div>
   </header>
 
@@ -321,7 +321,7 @@
     <div class="carousel-viewport" id="carouselViewport">
 
       <div class="carousel-panel" data-panel="econpick" id="panelEconpick">
-        <p class="muted" style="font-size:12px;margin:0 0 10px;">📰 경제pick <span style="font-weight:400;">(매일 오전 7시 업데이트)</span></p>
+        <p class="muted" style="font-size:12px;margin:0 0 10px;">📰 투데이 <span style="font-weight:400;">(매일 오전 7시 업데이트)</span></p>
         <div id="econPickBody" class="econpick-body">
           <div id="econPickGrid" class="econpick-grid"></div>
           <div id="econPickSentinel" class="econpick-sentinel"></div>
@@ -330,13 +330,13 @@
 
       <div class="carousel-panel" data-panel="index" id="panelIndex">
         <div class="top30-sub-nav">
-          <button type="button" class="cat-btn" id="indexCatUsMarketsBtn">주요</button>
-          <button type="button" class="cat-btn" id="indexCatIndicesBtn">지수</button>
+          <button type="button" class="cat-btn" id="indexCatUsMarketsBtn">⭐ 주요</button>
+          <button type="button" class="cat-btn" id="indexCatIndicesBtn">📈 지수</button>
           <button type="button" class="cat-btn" id="indexCatStocksBtn">🔥 주식</button>
-          <button type="button" class="cat-btn" id="indexCatCommoditiesBtn">원자재</button>
-          <button type="button" class="cat-btn" id="indexCatFxBtn">외환</button>
-          <button type="button" class="cat-btn" id="indexCatCryptoBtn">암호화폐</button>
-          <button type="button" class="cat-btn" id="indexCatBondsBtn">채권</button>
+          <button type="button" class="cat-btn" id="indexCatCommoditiesBtn">🛢️ 원자재</button>
+          <button type="button" class="cat-btn" id="indexCatFxBtn">💱 외환</button>
+          <button type="button" class="cat-btn" id="indexCatCryptoBtn">🪙 암호화폐</button>
+          <button type="button" class="cat-btn" id="indexCatBondsBtn">📜 채권</button>
         </div>
         <div id="indexPullToRefresh" class="pull-refresh" aria-hidden="true"><span class="pull-refresh-text">↓ 당겨서 새로고침</span></div>
         <p id="indexStatus" class="muted top30-status" style="display:none;"></p>
@@ -345,12 +345,12 @@
 
       <div class="carousel-panel" data-panel="insight" id="panelInsight">
         <div class="top30-sub-nav">
-          <button type="button" class="cat-btn" id="insightCatFirmsBtn">1.자산&amp;투자사</button>
-          <button type="button" class="cat-btn" id="insightCatBrandBtn">2.브랜드평판순</button>
-          <button type="button" class="cat-btn" id="insightCatTechBtn">3.신기술</button>
-          <button type="button" class="cat-btn" id="insightCatCalendarBtn">4.실적&amp;공시 일정</button>
-          <button type="button" class="cat-btn" id="insightCatNewsBtn">5.뉴스</button>
-          <button type="button" class="cat-btn" id="insightCatFutureIndustryBtn">6.미래산업 성장성</button>
+          <button type="button" class="cat-btn" id="insightCatFirmsBtn">🏦 자산&amp;투자사</button>
+          <button type="button" class="cat-btn" id="insightCatBrandBtn">🏆 브랜드평판순</button>
+          <button type="button" class="cat-btn" id="insightCatTechBtn">🔬 신기술</button>
+          <button type="button" class="cat-btn" id="insightCatCalendarBtn">📅 실적&amp;공시 일정</button>
+          <button type="button" class="cat-btn" id="insightCatNewsBtn">📰 뉴스</button>
+          <button type="button" class="cat-btn" id="insightCatFutureIndustryBtn">🚀 미래산업 성장성</button>
         </div>
         <div class="top30-sub-nav insight-firms-nav" id="insightFirmsNav">
           <div class="insight-firms-row">
@@ -375,13 +375,13 @@
 
       <div class="carousel-panel" data-panel="valuation" id="panelValuation">
         <div class="top30-sub-nav">
-          <button type="button" class="cat-btn" id="valuationRevenueBtn">매출액 증가</button>
-          <button type="button" class="cat-btn" id="valuationCashFlowBtn">현금흐름 증가</button>
-          <button type="button" class="cat-btn" id="valuationNetIncomeBtn">순이익 증가</button>
-          <button type="button" class="cat-btn" id="valuationEpsBtn">EPS</button>
-          <button type="button" class="cat-btn" id="valuationPerBtn">PER</button>
-          <button type="button" class="cat-btn" id="valuationStabilityBtn">투자등급</button>
-          <button type="button" class="cat-btn" id="valuationMarketCapBtn">시가총액</button>
+          <button type="button" class="cat-btn" id="valuationRevenueBtn">📈 매출액 증가</button>
+          <button type="button" class="cat-btn" id="valuationCashFlowBtn">💰 현금흐름 증가</button>
+          <button type="button" class="cat-btn" id="valuationNetIncomeBtn">💵 순이익 증가</button>
+          <button type="button" class="cat-btn" id="valuationEpsBtn">🧮 EPS</button>
+          <button type="button" class="cat-btn" id="valuationPerBtn">⚖️ PER</button>
+          <button type="button" class="cat-btn" id="valuationStabilityBtn">🏅 투자등급</button>
+          <button type="button" class="cat-btn" id="valuationMarketCapBtn">🏢 시가총액</button>
         </div>
         <p id="valuationStatus" class="muted top30-status" style="display:none;"></p>
         <div id="valuationResults"></div>
@@ -389,13 +389,13 @@
 
       <div class="carousel-panel" data-panel="trend" id="panelTrend">
         <div class="top30-sub-nav">
-          <button type="button" class="cat-btn" id="trendVolumeBtn">인기종목</button>
-          <button type="button" class="cat-btn" id="trendSurgeBtn">급등주</button>
-          <button type="button" class="cat-btn" id="trendPlungeBtn">급락주</button>
-          <button type="button" class="cat-btn" id="trendPressureBtn">추세상승</button>
-          <button type="button" class="cat-btn" id="trendUsStockBtn">US Stock</button>
-          <button type="button" class="cat-btn" id="trendUsEtfBtn">US ETF</button>
-          <button type="button" class="cat-btn" id="trendKrEtfBtn">KR ETF</button>
+          <button type="button" class="cat-btn" id="trendVolumeBtn">👍 인기종목</button>
+          <button type="button" class="cat-btn" id="trendSurgeBtn">🚀 급등주</button>
+          <button type="button" class="cat-btn" id="trendPlungeBtn">📉 급락주</button>
+          <button type="button" class="cat-btn" id="trendPressureBtn">📈 추세상승</button>
+          <button type="button" class="cat-btn" id="trendUsStockBtn">🇺🇸 US Stock</button>
+          <button type="button" class="cat-btn" id="trendUsEtfBtn">🧺 US ETF</button>
+          <button type="button" class="cat-btn" id="trendKrEtfBtn">🇰🇷 KR ETF</button>
         </div>
         <p id="trendStatus" class="muted top30-status" style="display:none;"></p>
         <div id="trendResults"></div>
@@ -428,7 +428,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavFavoriteBtn" aria-label="관심">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z" /></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7l2.85 6.02 6.65.68-4.98 4.5 1.46 6.53L12 17.9l-5.98 3.53 1.46-6.53-4.98-4.5 6.65-.68L12 2.7z" /></svg>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavLoginBtn" aria-label="로그인">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4" /><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" /></svg>
