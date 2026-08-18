@@ -780,13 +780,12 @@ async function handleKakaoAuth(request, env) {
 
   const kakaoAccount = userData.kakao_account || {};
   const profile = kakaoAccount.profile || {};
+  const name = profile.nickname || null;
+  const picture = profile.profile_image_url || null;
+  const email = kakaoAccount.email || null;
   try {
-    const customToken = await mintFirebaseCustomToken(
-      `kakao:${userData.id}`,
-      { provider: "kakao", email: kakaoAccount.email || null, name: profile.nickname || null, picture: profile.profile_image_url || null },
-      env
-    );
-    return jsonResponse({ customToken }, 200);
+    const customToken = await mintFirebaseCustomToken(`kakao:${userData.id}`, { provider: "kakao", email, name, picture }, env);
+    return jsonResponse({ customToken, profile: { name, email, picture } }, 200);
   } catch (e) {
     return jsonResponse({ error: "토큰 발급에 실패했습니다.", detail: String(e) }, 500);
   }
@@ -820,13 +819,12 @@ async function handleNaverAuth(request, env) {
     return jsonResponse({ error: "네이버 사용자 정보를 가져오지 못했습니다." }, 401);
   }
 
+  const name = profile.name || profile.nickname || null;
+  const picture = profile.profile_image || null;
+  const email = profile.email || null;
   try {
-    const customToken = await mintFirebaseCustomToken(
-      `naver:${profile.id}`,
-      { provider: "naver", email: profile.email || null, name: profile.name || profile.nickname || null, picture: profile.profile_image || null },
-      env
-    );
-    return jsonResponse({ customToken }, 200);
+    const customToken = await mintFirebaseCustomToken(`naver:${profile.id}`, { provider: "naver", email, name, picture }, env);
+    return jsonResponse({ customToken, profile: { name, email, picture } }, 200);
   } catch (e) {
     return jsonResponse({ error: "토큰 발급에 실패했습니다.", detail: String(e) }, 500);
   }

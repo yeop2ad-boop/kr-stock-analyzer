@@ -302,6 +302,14 @@ async function completeSocialLogin(provider, code, state) {
       return;
     }
     await firebase.auth().signInWithCustomToken(data.customToken);
+    const profile = data.profile || {};
+    if (profile.name || profile.picture) {
+      await firebase.auth().currentUser.updateProfile({
+        displayName: profile.name || null,
+        photoURL: profile.picture || null,
+      });
+      renderAuthState(firebase.auth().currentUser);
+    }
     closeLoginModal();
   } catch {
     setLoginError("로그인에 실패했습니다. 잠시 후 다시 시도해주세요.");
