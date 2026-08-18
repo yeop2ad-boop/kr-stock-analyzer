@@ -24,4 +24,4 @@ if (typeof firebase !== "undefined") {
 const KAKAO_REST_API_KEY = "0903cfbdd09f05b23b57a07f0f7822b0";
 
 // 3) 네이버 개발자 콘솔(developers.naver.com) > 내 애플리케이션 > Client ID
-const NAVER_CLIENT_ID = "YOUR_NAVER_CLIENT_ID";
+const NAVER_CLIENT_ID = "WQjgDann3npAsDk4_G_8";
