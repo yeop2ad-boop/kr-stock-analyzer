@@ -1833,16 +1833,79 @@ document.addEventListener("click", (e) => {
   navigateToTicker(chip.dataset.symbol);
 });
 
-// ---------- 하단 고정 네비게이션(홈=기업검색/캘린더/시장/로그인) ----------
+// ---------- 하단 고정 네비게이션(홈=기업검색/캘린더/시장/더보기) ----------
 const bottomNavButtons = {
   home: el("bottomNavHomeBtn"),
   calendar: el("bottomNavCalendarBtn"),
   market: el("bottomNavMarketBtn"),
-  login: el("bottomNavLoginBtn"),
+  more: el("bottomNavMoreBtn"),
 };
 function setBottomNavActive(key) {
   Object.entries(bottomNavButtons).forEach(([k, btn]) => btn.classList.toggle("active", k === key));
 }
+
+// ---------- 더보기 패널: 전체화면이 아니라 오른쪽에서 최대 75%까지만 슬라이드인하는 드로어 ----------
+const toastEl = el("toast");
+let toastTimer = null;
+function showToast(message) {
+  toastEl.textContent = message;
+  toastEl.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1800);
+}
+
+const morePanel = el("morePanel");
+const morePanelBackdrop = el("morePanelBackdrop");
+const morePanelCloseBtn = el("morePanelCloseBtn");
+const morePanelUserRow = el("morePanelUserRow");
+const morePanelUserName = el("morePanelUserName");
+const morePanelAvatarImg = el("morePanelAvatarImg");
+const morePanelAvatarInitial = el("morePanelAvatarInitial");
+
+function renderMorePanelUser(user) {
+  if (user) {
+    const name = user.displayName || (user.email ? user.email.split("@")[0] : "회원");
+    morePanelUserName.textContent = name;
+    if (user.photoURL) {
+      morePanelAvatarImg.src = user.photoURL;
+      morePanelAvatarImg.style.display = "block";
+      morePanelAvatarInitial.style.display = "none";
+    } else {
+      morePanelAvatarImg.style.display = "none";
+      morePanelAvatarInitial.style.display = "block";
+      morePanelAvatarInitial.textContent = name.charAt(0).toUpperCase();
+    }
+  } else {
+    morePanelUserName.textContent = "로그인이 필요합니다";
+    morePanelAvatarImg.style.display = "none";
+    morePanelAvatarInitial.style.display = "block";
+    morePanelAvatarInitial.textContent = "?";
+  }
+}
+function openMorePanel() {
+  renderMorePanelUser(typeof firebase !== "undefined" ? firebase.auth().currentUser : null);
+  morePanel.style.display = "block";
+  requestAnimationFrame(() => morePanel.classList.add("open"));
+}
+function closeMorePanel() {
+  morePanel.classList.remove("open");
+  window.setTimeout(() => {
+    morePanel.style.display = "none";
+  }, 280);
+}
+morePanelBackdrop.addEventListener("click", closeMorePanel);
+morePanelCloseBtn.addEventListener("click", closeMorePanel);
+morePanelUserRow.addEventListener("click", () => {
+  closeMorePanel();
+  if (typeof firebase !== "undefined" && firebase.auth().currentUser) {
+    userAvatarBtn.click();
+  } else {
+    openLoginModal();
+  }
+});
+document.querySelectorAll(".more-panel-item").forEach((btn) => {
+  btn.addEventListener("click", () => showToast("준비중인 기능입니다."));
+});
 bottomNavButtons.home.addEventListener("click", () => {
   setBottomNavActive("home");
   closeCompanyPanel();
@@ -1862,12 +1925,8 @@ bottomNavButtons.market.addEventListener("click", () => {
   closeCompanyPanel();
   openMarketPanel();
 });
-bottomNavButtons.login.addEventListener("click", () => {
-  if (typeof firebase !== "undefined" && firebase.auth().currentUser) {
-    userAvatarBtn.click();
-  } else {
-    openLoginModal();
-  }
+bottomNavButtons.more.addEventListener("click", () => {
+  openMorePanel();
 });
 
 // ---------- 시장/투데이: companyPanel과 동일한 슬라이드 오버레이 패턴(캐러셀 밖에서 독립 관리) ----------
