@@ -573,6 +573,13 @@ body {
   line-height: 1.5;
   color: var(--text);
 }
+.login-quote-kr {
+  font-family: "Nanum Brush Script", "Pretendard", "Apple SD Gothic Neo", sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.75;
+  letter-spacing: 0.2px;
+}
 .login-quote-en { display: inline-block; margin-top: 12px; font-size: 12.5px; font-weight: 500; color: var(--muted); }
 .login-quote-author { display: inline-block; margin-top: 6px; font-size: 12.5px; font-weight: 500; color: var(--muted); }
 
