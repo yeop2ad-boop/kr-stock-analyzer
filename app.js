@@ -4,6 +4,53 @@
 
 const el = (id) => document.getElementById(id);
 
+// ---------- 핵심 내비게이션(탭바/서브탭/위저드) 아이콘 — 이모지 대신 로고와 동일한 주황(#e6983c) 단색 라인 아이콘 ----------
+const WIZ_ORANGE = "#e6983c";
+function svgIcon(inner) {
+  return `<svg class="btn-icon-svg" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="${WIZ_ORANGE}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+}
+const ICONS = {
+  star: svgIcon(`<path fill="${WIZ_ORANGE}" stroke="none" d="M12 2.7l2.85 6.02 6.65.68-4.98 4.5 1.46 6.53L12 17.9l-5.98 3.53 1.46-6.53-4.98-4.5 6.65-.68L12 2.7z"/>`),
+  search: svgIcon(`<circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15.2" y2="15.2"/>`),
+  "trending-up": svgIcon(`<path d="M3 17l6-6 4 4 8-8"/><path d="M15 6h6v6"/>`),
+  "trending-down": svgIcon(`<path d="M3 7l6 6 4-4 8 8"/><path d="M15 17h6v-6"/>`),
+  flame: svgIcon(`<path fill="${WIZ_ORANGE}" stroke="none" d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11Z"/>`),
+  barrel: svgIcon(`<rect x="6" y="4" width="12" height="16" rx="2"/><path d="M6 9h12M6 15h12"/>`),
+  exchange: svgIcon(`<path d="M4 8h13l-3-3M17 8l-3 3"/><path d="M20 16H7l3-3M7 16l3 3"/>`),
+  coin: svgIcon(`<circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10c0-1.2 1.2-2 2.5-2s2.5.7 2.5 1.8-1.2 1.5-2.5 1.5-2.5.6-2.5 1.7 1.2 1.8 2.5 1.8 2.5-.7 2.5-1.8"/>`),
+  scroll: svgIcon(`<rect x="5" y="4" width="14" height="16" rx="2"/><path d="M8.5 9h7M8.5 12.5h7M8.5 16h4"/>`),
+  bank: svgIcon(`<path d="M4 10l8-5 8 5"/><path d="M5 10v9M9 10v9M15 10v9M19 10v9M3 19h18"/>`),
+  trophy: svgIcon(`<path d="M8 3h8v6a4 4 0 0 1-8 0V3Z"/><path d="M8 4.5H5.5a2.5 2.5 0 0 0 2.5 4M16 4.5h2.5a2.5 2.5 0 0 1-2.5 4"/><path d="M12 13v3M9 20h6M10 20l.5-3h3l.5 3"/>`),
+  flask: svgIcon(`<path d="M10 3h4v5l4 9a2 2 0 0 1-2 3H8a2 2 0 0 1-2-3l4-9V3Z"/><path d="M9 3h6"/>`),
+  calendar: svgIcon(`<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/>`),
+  newspaper: svgIcon(`<rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M7.5 8h6M7.5 12h9M7.5 16h9"/>`),
+  rocket: svgIcon(
+    `<path d="M12 2c2.5 2 4 5.5 4 9 0 2-1 4-2 5v3l-2-1-2 1v-3c-1-1-2-3-2-5 0-3.5 1.5-7 4-9Z"/><circle cx="12" cy="10" r="1.4" fill="${WIZ_ORANGE}" stroke="none"/><path d="M9 16l-2 4M15 16l2 4"/>`
+  ),
+  wallet: svgIcon(`<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="17" cy="14.5" r="1.2" fill="${WIZ_ORANGE}" stroke="none"/>`),
+  dollar: svgIcon(`<path d="M12 3v18"/><path d="M16 7.5c0-1.5-1.8-2.5-4-2.5s-4 1-4 2.5 1.8 2 4 2.5 4 1 4 2.5-1.8 2.5-4 2.5-4-1-4-2.5"/>`),
+  calculator: svgIcon(
+    `<rect x="5" y="3" width="14" height="18" rx="2"/><rect x="7.5" y="5.5" width="9" height="3.5" rx="0.5"/><path stroke-width="2.6" d="M8.5 13h.01M12 13h.01M15.5 13h.01M8.5 17h.01M12 17h.01M15.5 17h.01"/>`
+  ),
+  scale: svgIcon(`<path d="M12 3v17"/><path d="M6 7h12"/><path d="M6 7l-3 6a3 3 0 0 0 6 0L6 7Z"/><path d="M18 7l-3 6a3 3 0 0 0 6 0l-3-6Z"/><path d="M8 20h8"/>`),
+  medal: svgIcon(`<circle cx="12" cy="15" r="5"/><path d="M9.5 10.5 7 4M14.5 10.5 17 4"/>`),
+  building: svgIcon(`<path d="M5 21V9l7-5 7 5v12"/><path d="M3 21h18M9 21v-6h6v6"/>`),
+  thumbsup: svgIcon(`<path d="M7 10v10H4V10h3Z"/><path d="M7 10l3-6a2 2 0 0 1 2 2v3h5.5a2 2 0 0 1 2 2.3l-1.3 6A2 2 0 0 1 16.2 20H9a2 2 0 0 1-2-2v-8Z"/>`),
+  basket: svgIcon(`<path d="M4 9h16l-2 10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L4 9Z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/>`),
+};
+function iconHtml(name) {
+  return ICONS[name] || "";
+}
+function flagBadgeHtml(code) {
+  return `<span class="wiz-flag-badge">${code}</span>`;
+}
+function mountIcons() {
+  document.querySelectorAll("[data-icon]").forEach((iconEl) => {
+    iconEl.innerHTML = iconHtml(iconEl.dataset.icon);
+  });
+}
+mountIcons();
+
 // 시장 패널이 열릴 때 openMarketPanel()이 곧바로 startIndexAutoRefresh()를 호출함 — 그 함수가
 // 참조하기 전에 값이 준비되어 있어야 하므로 파일 맨 앞에 둠(TDZ 에러 방지)
 const INDEX_AUTO_REFRESH_MS = 20000;
@@ -2159,7 +2206,7 @@ async function renderWatchlistList() {
   const list = getWatchlist();
   if (list.length === 0) {
     statusEl.style.display = "none";
-    listEl.innerHTML = `<p class="muted" style="padding:12px 0;">⭐ 관심종목이 없습니다. 종목 상세 화면에서 별 아이콘을 눌러 추가해보세요.</p>`;
+    listEl.innerHTML = `<p class="muted" style="padding:12px 0;">${iconHtml("star")} 관심종목이 없습니다. 종목 상세 화면에서 별 아이콘을 눌러 추가해보세요.</p>`;
     return;
   }
   statusEl.style.display = "block";
@@ -2313,24 +2360,27 @@ function renderWizardRoot() {
 
 // [랭킹찾기]는 새 데이터 로직 없이 기존 기업가치·투자동향 탭의 14개 랭킹 화면으로 그대로 이동만 시킴
 const RANKING_ENTRIES = [
-  { label: "📈 매출액 증가", tab: "valuation", run: () => runValueRevenue() },
-  { label: "💰 현금흐름 증가", tab: "valuation", run: () => runValueCashFlow() },
-  { label: "💵 순이익 증가", tab: "valuation", run: () => runValueNetIncome() },
-  { label: "🧮 EPS", tab: "valuation", run: () => runValueEps() },
-  { label: "⚖️ PER", tab: "valuation", run: () => runValuePer() },
-  { label: "🏅 투자등급", tab: "valuation", run: () => runValueStability() },
-  { label: "🏢 시가총액", tab: "valuation", run: () => runValueMarketCap() },
-  { label: "👍 인기종목", tab: "trend", run: () => runTrendVolume() },
-  { label: "🚀 급등주", tab: "trend", run: () => runMovers("surge") },
-  { label: "📉 급락주", tab: "trend", run: () => runMovers("plunge") },
-  { label: "📈 추세상승", tab: "trend", run: () => runTrendPressure() },
-  { label: "🇺🇸 US Stock", tab: "trend", run: () => runTrendUsStock() },
-  { label: "🧺 US ETF", tab: "trend", run: () => runTrendUsEtf() },
-  { label: "🇰🇷 KR ETF", tab: "trend", run: () => runTrendKrEtf() },
+  { icon: "trending-up", label: "매출액 증가", tab: "valuation", run: () => runValueRevenue() },
+  { icon: "wallet", label: "현금흐름 증가", tab: "valuation", run: () => runValueCashFlow() },
+  { icon: "dollar", label: "순이익 증가", tab: "valuation", run: () => runValueNetIncome() },
+  { icon: "calculator", label: "EPS", tab: "valuation", run: () => runValueEps() },
+  { icon: "scale", label: "PER", tab: "valuation", run: () => runValuePer() },
+  { icon: "medal", label: "투자등급", tab: "valuation", run: () => runValueStability() },
+  { icon: "building", label: "시가총액", tab: "valuation", run: () => runValueMarketCap() },
+  { icon: "thumbsup", label: "인기종목", tab: "trend", run: () => runTrendVolume() },
+  { icon: "rocket", label: "급등주", tab: "trend", run: () => runMovers("surge") },
+  { icon: "trending-down", label: "급락주", tab: "trend", run: () => runMovers("plunge") },
+  { icon: "trending-up", label: "추세상승", tab: "trend", run: () => runTrendPressure() },
+  { badge: "US", label: "US Stock", tab: "trend", run: () => runTrendUsStock() },
+  { icon: "basket", label: "US ETF", tab: "trend", run: () => runTrendUsEtf() },
+  { badge: "KR", label: "KR ETF", tab: "trend", run: () => runTrendKrEtf() },
 ];
 function renderWizardBranchA() {
   const items = RANKING_ENTRIES.map(
-    (entry, i) => `<button type="button" class="wizard-option-btn" data-wizard-action="rank-nav" data-rank-idx="${i}">${entry.label}</button>`
+    (entry, i) =>
+      `<button type="button" class="wizard-option-btn" data-wizard-action="rank-nav" data-rank-idx="${i}">${
+        entry.icon ? iconHtml(entry.icon) : flagBadgeHtml(entry.badge)
+      } ${entry.label}</button>`
   ).join("");
   return `
     <p class="wizard-question">[랭킹찾기]에서 찾으실 항목을 선택해주세요.</p>
@@ -2342,16 +2392,16 @@ function renderWizardBranchA() {
 // [선택찾기]의 2·3순위 "기준" — S&P500 + 섹터 필터와 자연스럽게 어울리는 10개만 제공.
 // (US Stock 거래량·US ETF·KR ETF·인기종목은 S&P500이 아닌 전체 시장/거래량 스크리너를 쓰거나 ETF라 섹터 개념이 없어 제외)
 const WIZARD_CRITERIA = [
-  { key: "revenue", label: "📈 매출액 증가", dir: "desc", get: (m) => m.revenueGrowthAnnual, fmt: (m) => fmtGrowthCell(m.revenueGrowthAnnual) },
-  { key: "cashFlow", label: "💰 현금흐름 증가", dir: "desc", get: (m) => m.operatingCashFlowGrowthAnnual, fmt: (m) => fmtGrowthCell(m.operatingCashFlowGrowthAnnual) },
-  { key: "netIncome", label: "💵 순이익 증가", dir: "desc", get: (m) => m.netIncomeGrowthAnnual, fmt: (m) => fmtGrowthCell(m.netIncomeGrowthAnnual) },
-  { key: "eps", label: "🧮 EPS", dir: "desc", get: (m) => m.eps, fmt: (m) => (m.eps === null || m.eps === undefined ? "N/A" : `$${m.eps.toFixed(2)}`) },
-  { key: "per", label: "⚖️ PER", dir: "asc", get: (m) => m.per, fmt: (m) => (m.per === null || m.per === undefined ? "N/A" : `${m.per.toFixed(1)}배`) },
-  { key: "stability", label: "🏅 투자등급", dir: "desc", get: (m) => m.riskTotal, fmt: (m) => (m.riskTotal === null || m.riskTotal === undefined ? "N/A" : `${m.riskTotal}/10`) },
-  { key: "marketCap", label: "🏢 시가총액", dir: "desc", get: (m) => m.marketCap, fmt: (m) => (m.marketCap ? fmtCompactCurrency(m.marketCap) : "N/A") },
-  { key: "pressure", label: "📈 상승압력도", dir: "desc", get: (m) => m.pressureTotal, fmt: (m) => (m.pressureTotal === null || m.pressureTotal === undefined ? "N/A" : `${m.pressureTotal}/10`) },
-  { key: "surge", label: "🚀 급등주(등락률)", dir: "desc", get: (m) => m.changePct, fmt: (m) => (m.changePct === null || m.changePct === undefined ? "N/A" : `${m.changePct >= 0 ? "+" : ""}${m.changePct.toFixed(2)}%`), needsDaily: true },
-  { key: "plunge", label: "📉 급락주(등락률)", dir: "asc", get: (m) => m.changePct, fmt: (m) => (m.changePct === null || m.changePct === undefined ? "N/A" : `${m.changePct >= 0 ? "+" : ""}${m.changePct.toFixed(2)}%`), needsDaily: true },
+  { key: "revenue", icon: "trending-up", label: "매출액 증가", dir: "desc", get: (m) => m.revenueGrowthAnnual, fmt: (m) => fmtGrowthCell(m.revenueGrowthAnnual) },
+  { key: "cashFlow", icon: "wallet", label: "현금흐름 증가", dir: "desc", get: (m) => m.operatingCashFlowGrowthAnnual, fmt: (m) => fmtGrowthCell(m.operatingCashFlowGrowthAnnual) },
+  { key: "netIncome", icon: "dollar", label: "순이익 증가", dir: "desc", get: (m) => m.netIncomeGrowthAnnual, fmt: (m) => fmtGrowthCell(m.netIncomeGrowthAnnual) },
+  { key: "eps", icon: "calculator", label: "EPS", dir: "desc", get: (m) => m.eps, fmt: (m) => (m.eps === null || m.eps === undefined ? "N/A" : `$${m.eps.toFixed(2)}`) },
+  { key: "per", icon: "scale", label: "PER", dir: "asc", get: (m) => m.per, fmt: (m) => (m.per === null || m.per === undefined ? "N/A" : `${m.per.toFixed(1)}배`) },
+  { key: "stability", icon: "medal", label: "투자등급", dir: "desc", get: (m) => m.riskTotal, fmt: (m) => (m.riskTotal === null || m.riskTotal === undefined ? "N/A" : `${m.riskTotal}/10`) },
+  { key: "marketCap", icon: "building", label: "시가총액", dir: "desc", get: (m) => m.marketCap, fmt: (m) => (m.marketCap ? fmtCompactCurrency(m.marketCap) : "N/A") },
+  { key: "pressure", icon: "trending-up", label: "상승압력도", dir: "desc", get: (m) => m.pressureTotal, fmt: (m) => (m.pressureTotal === null || m.pressureTotal === undefined ? "N/A" : `${m.pressureTotal}/10`) },
+  { key: "surge", icon: "rocket", label: "급등주(등락률)", dir: "desc", get: (m) => m.changePct, fmt: (m) => (m.changePct === null || m.changePct === undefined ? "N/A" : `${m.changePct >= 0 ? "+" : ""}${m.changePct.toFixed(2)}%`), needsDaily: true },
+  { key: "plunge", icon: "trending-down", label: "급락주(등락률)", dir: "asc", get: (m) => m.changePct, fmt: (m) => (m.changePct === null || m.changePct === undefined ? "N/A" : `${m.changePct >= 0 ? "+" : ""}${m.changePct.toFixed(2)}%`), needsDaily: true },
 ];
 
 function renderWizardBranchB1() {
@@ -2370,7 +2420,7 @@ function renderWizardBranchB1() {
 }
 function renderWizardBranchB2() {
   const items = WIZARD_CRITERIA.map(
-    (c) => `<button type="button" class="wizard-criteria-item" data-wizard-action="criteria2-pick" data-criteria="${c.key}">${c.label}</button>`
+    (c) => `<button type="button" class="wizard-criteria-item" data-wizard-action="criteria2-pick" data-criteria="${c.key}">${iconHtml(c.icon)} ${c.label}</button>`
   ).join("");
   return `
     <p class="wizard-question">2순위 · 기준을 선택해주세요. (TOP30까지 선정)</p>
@@ -2380,7 +2430,7 @@ function renderWizardBranchB2() {
 }
 function renderWizardBranchB3() {
   const items = WIZARD_CRITERIA.filter((c) => c.key !== searchWizardAnswers.criterion2)
-    .map((c) => `<button type="button" class="wizard-criteria-item" data-wizard-action="criteria3-pick" data-criteria="${c.key}">${c.label}</button>`)
+    .map((c) => `<button type="button" class="wizard-criteria-item" data-wizard-action="criteria3-pick" data-criteria="${c.key}">${iconHtml(c.icon)} ${c.label}</button>`)
     .join("");
   return `
     <p class="wizard-question">3순위 · 기준을 선택해주세요. (TOP15까지 선정)</p>

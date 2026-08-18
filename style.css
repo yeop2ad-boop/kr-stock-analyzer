@@ -84,6 +84,21 @@ body {
 }
 .header-icon-btn svg { display: block; }
 #companyPanelWatchlistBtn.active { color: var(--warn); }
+
+/* 이모지 대신 쓰는 주황(로고 색) 단색 라인 아이콘 — 탭바/서브탭/위저드 버튼 공용 */
+.btn-icon { display: inline-flex; align-items: center; vertical-align: -2px; }
+.btn-icon-svg { display: block; }
+.wiz-flag-badge {
+  display: inline-block;
+  border: 1px solid #e6983c;
+  border-radius: 3px;
+  padding: 0 4px;
+  font-size: 9px;
+  font-weight: 800;
+  color: #e6983c;
+  line-height: 1.5;
+  vertical-align: 1px;
+}
 #companyPanelWatchlistBtn.active svg { fill: currentColor; }
 
 .login-header-btn {

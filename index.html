@@ -59,8 +59,8 @@
     </div>
 
     <div class="tab-bar" id="tabBar">
-      <button type="button" class="cat-btn" data-tab="watchlist" id="watchlistTabBtn"><span class="tab-emoji" aria-hidden="true">⭐</span><span class="tab-label">관심종목</span></button>
-      <button type="button" class="cat-btn" id="searchTabBtn"><span class="tab-emoji" aria-hidden="true">🔍</span><span class="tab-label">기업검색</span></button>
+      <button type="button" class="cat-btn" data-tab="watchlist" id="watchlistTabBtn"><span class="tab-emoji btn-icon" data-icon="star" aria-hidden="true"></span><span class="tab-label">관심종목</span></button>
+      <button type="button" class="cat-btn" id="searchTabBtn"><span class="tab-emoji btn-icon" data-icon="search" aria-hidden="true"></span><span class="tab-label">기업검색</span></button>
       <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn"><span class="tab-label">인사이트</span></button>
       <button type="button" class="cat-btn" data-tab="valuation" id="tabValuationBtn"><span class="tab-label">기업가치</span></button>
       <button type="button" class="cat-btn" data-tab="trend" id="tabTrendBtn"><span class="tab-label">투자동향</span></button>
@@ -327,13 +327,13 @@
     </div>
     <div class="company-panel-body">
       <div class="top30-sub-nav">
-        <button type="button" class="cat-btn" id="indexCatUsMarketsBtn">⭐ 주요</button>
-        <button type="button" class="cat-btn" id="indexCatIndicesBtn">📈 지수</button>
-        <button type="button" class="cat-btn" id="indexCatStocksBtn">🔥 주식</button>
-        <button type="button" class="cat-btn" id="indexCatCommoditiesBtn">🛢️ 원자재</button>
-        <button type="button" class="cat-btn" id="indexCatFxBtn">💱 외환</button>
-        <button type="button" class="cat-btn" id="indexCatCryptoBtn">🪙 암호화폐</button>
-        <button type="button" class="cat-btn" id="indexCatBondsBtn">📜 채권</button>
+        <button type="button" class="cat-btn" id="indexCatUsMarketsBtn"><span class="btn-icon" data-icon="star"></span> 주요</button>
+        <button type="button" class="cat-btn" id="indexCatIndicesBtn"><span class="btn-icon" data-icon="trending-up"></span> 지수</button>
+        <button type="button" class="cat-btn" id="indexCatStocksBtn"><span class="btn-icon" data-icon="flame"></span> 주식</button>
+        <button type="button" class="cat-btn" id="indexCatCommoditiesBtn"><span class="btn-icon" data-icon="barrel"></span> 원자재</button>
+        <button type="button" class="cat-btn" id="indexCatFxBtn"><span class="btn-icon" data-icon="exchange"></span> 외환</button>
+        <button type="button" class="cat-btn" id="indexCatCryptoBtn"><span class="btn-icon" data-icon="coin"></span> 암호화폐</button>
+        <button type="button" class="cat-btn" id="indexCatBondsBtn"><span class="btn-icon" data-icon="scroll"></span> 채권</button>
       </div>
       <div id="indexPullToRefresh" class="pull-refresh" aria-hidden="true"><span class="pull-refresh-text">↓ 당겨서 새로고침</span></div>
       <p id="indexStatus" class="muted top30-status" style="display:none;"></p>
@@ -347,7 +347,7 @@
       <h2 class="search-overlay-title">투데이</h2>
     </div>
     <div class="company-panel-body">
-      <p class="muted" style="font-size:12px;margin:0 0 10px;">📰 투데이 <span style="font-weight:400;">(매일 오전 7시 업데이트)</span></p>
+      <p class="muted" style="font-size:12px;margin:0 0 10px;"><span class="btn-icon" data-icon="newspaper"></span> 투데이 <span style="font-weight:400;">(매일 오전 7시 업데이트)</span></p>
       <div id="econPickBody" class="econpick-body">
         <div id="econPickGrid" class="econpick-grid"></div>
         <div id="econPickSentinel" class="econpick-sentinel"></div>
@@ -369,19 +369,19 @@
     <div class="carousel-viewport" id="carouselViewport">
 
       <div class="carousel-panel" data-panel="watchlist" id="panelWatchlist">
-        <p class="muted" style="font-size:12px;margin:0 0 10px;">⭐ 관심종목</p>
+        <p class="muted" style="font-size:12px;margin:0 0 10px;"><span class="btn-icon" data-icon="star"></span> 관심종목</p>
         <p id="watchlistStatus" class="muted top30-status" style="display:none;"></p>
         <div id="watchlistList"></div>
       </div>
 
       <div class="carousel-panel" data-panel="insight" id="panelInsight">
         <div class="top30-sub-nav">
-          <button type="button" class="cat-btn" id="insightCatFirmsBtn">🏦 자산&amp;투자사</button>
-          <button type="button" class="cat-btn" id="insightCatBrandBtn">🏆 브랜드평판순</button>
-          <button type="button" class="cat-btn" id="insightCatTechBtn">🔬 신기술</button>
-          <button type="button" class="cat-btn" id="insightCatCalendarBtn">📅 실적&amp;공시 일정</button>
-          <button type="button" class="cat-btn" id="insightCatNewsBtn">📰 뉴스</button>
-          <button type="button" class="cat-btn" id="insightCatFutureIndustryBtn">🚀 미래산업 성장성</button>
+          <button type="button" class="cat-btn" id="insightCatFirmsBtn"><span class="btn-icon" data-icon="bank"></span> 자산&amp;투자사</button>
+          <button type="button" class="cat-btn" id="insightCatBrandBtn"><span class="btn-icon" data-icon="trophy"></span> 브랜드평판순</button>
+          <button type="button" class="cat-btn" id="insightCatTechBtn"><span class="btn-icon" data-icon="flask"></span> 신기술</button>
+          <button type="button" class="cat-btn" id="insightCatCalendarBtn"><span class="btn-icon" data-icon="calendar"></span> 실적&amp;공시 일정</button>
+          <button type="button" class="cat-btn" id="insightCatNewsBtn"><span class="btn-icon" data-icon="newspaper"></span> 뉴스</button>
+          <button type="button" class="cat-btn" id="insightCatFutureIndustryBtn"><span class="btn-icon" data-icon="rocket"></span> 미래산업 성장성</button>
         </div>
         <div class="top30-sub-nav insight-firms-nav" id="insightFirmsNav">
           <div class="insight-firms-row">
@@ -406,13 +406,13 @@
 
       <div class="carousel-panel" data-panel="valuation" id="panelValuation">
         <div class="top30-sub-nav">
-          <button type="button" class="cat-btn" id="valuationRevenueBtn">📈 매출액 증가</button>
-          <button type="button" class="cat-btn" id="valuationCashFlowBtn">💰 현금흐름 증가</button>
-          <button type="button" class="cat-btn" id="valuationNetIncomeBtn">💵 순이익 증가</button>
-          <button type="button" class="cat-btn" id="valuationEpsBtn">🧮 EPS</button>
-          <button type="button" class="cat-btn" id="valuationPerBtn">⚖️ PER</button>
-          <button type="button" class="cat-btn" id="valuationStabilityBtn">🏅 투자등급</button>
-          <button type="button" class="cat-btn" id="valuationMarketCapBtn">🏢 시가총액</button>
+          <button type="button" class="cat-btn" id="valuationRevenueBtn"><span class="btn-icon" data-icon="trending-up"></span> 매출액 증가</button>
+          <button type="button" class="cat-btn" id="valuationCashFlowBtn"><span class="btn-icon" data-icon="wallet"></span> 현금흐름 증가</button>
+          <button type="button" class="cat-btn" id="valuationNetIncomeBtn"><span class="btn-icon" data-icon="dollar"></span> 순이익 증가</button>
+          <button type="button" class="cat-btn" id="valuationEpsBtn"><span class="btn-icon" data-icon="calculator"></span> EPS</button>
+          <button type="button" class="cat-btn" id="valuationPerBtn"><span class="btn-icon" data-icon="scale"></span> PER</button>
+          <button type="button" class="cat-btn" id="valuationStabilityBtn"><span class="btn-icon" data-icon="medal"></span> 투자등급</button>
+          <button type="button" class="cat-btn" id="valuationMarketCapBtn"><span class="btn-icon" data-icon="building"></span> 시가총액</button>
         </div>
         <p id="valuationStatus" class="muted top30-status" style="display:none;"></p>
         <div id="valuationResults"></div>
@@ -420,13 +420,13 @@
 
       <div class="carousel-panel" data-panel="trend" id="panelTrend">
         <div class="top30-sub-nav">
-          <button type="button" class="cat-btn" id="trendVolumeBtn">👍 인기종목</button>
-          <button type="button" class="cat-btn" id="trendSurgeBtn">🚀 급등주</button>
-          <button type="button" class="cat-btn" id="trendPlungeBtn">📉 급락주</button>
-          <button type="button" class="cat-btn" id="trendPressureBtn">📈 추세상승</button>
-          <button type="button" class="cat-btn" id="trendUsStockBtn">🇺🇸 US Stock</button>
-          <button type="button" class="cat-btn" id="trendUsEtfBtn">🧺 US ETF</button>
-          <button type="button" class="cat-btn" id="trendKrEtfBtn">🇰🇷 KR ETF</button>
+          <button type="button" class="cat-btn" id="trendVolumeBtn"><span class="btn-icon" data-icon="thumbsup"></span> 인기종목</button>
+          <button type="button" class="cat-btn" id="trendSurgeBtn"><span class="btn-icon" data-icon="rocket"></span> 급등주</button>
+          <button type="button" class="cat-btn" id="trendPlungeBtn"><span class="btn-icon" data-icon="trending-down"></span> 급락주</button>
+          <button type="button" class="cat-btn" id="trendPressureBtn"><span class="btn-icon" data-icon="trending-up"></span> 추세상승</button>
+          <button type="button" class="cat-btn" id="trendUsStockBtn"><span class="wiz-flag-badge">US</span> US Stock</button>
+          <button type="button" class="cat-btn" id="trendUsEtfBtn"><span class="btn-icon" data-icon="basket"></span> US ETF</button>
+          <button type="button" class="cat-btn" id="trendKrEtfBtn"><span class="wiz-flag-badge">KR</span> KR ETF</button>
         </div>
         <p id="trendStatus" class="muted top30-status" style="display:none;"></p>
         <div id="trendResults"></div>
