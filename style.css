@@ -563,6 +563,13 @@ body {
   flex-direction: column;
 }
 
+.login-title {
+  margin: 16px 0 0;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+}
 .login-quote {
   margin: 16px 0 40px;
   padding: 0;
