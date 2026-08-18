@@ -184,6 +184,7 @@ loginGoogleBtn.addEventListener("click", async () => {
     await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
     closeLoginModal();
   } catch (err) {
+    console.error("구글 로그인 실패:", err);
     setLoginError(friendlyAuthError(err));
   }
 });
