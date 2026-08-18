@@ -4,8 +4,8 @@
 
 const el = (id) => document.getElementById(id);
 
-// US Markets가 기본 탭이라 initApp()의 switchTab(TAB_ORDER.indexOf("index"))가 로딩 초반에 곧바로
-// startIndexAutoRefresh()를 호출함 — 그 함수가 참조하기 전에 값이 준비되어 있어야 하므로 파일 맨 앞에 둠(TDZ 에러 방지)
+// 시장 패널이 열릴 때 openMarketPanel()이 곧바로 startIndexAutoRefresh()를 호출함 — 그 함수가
+// 참조하기 전에 값이 준비되어 있어야 하므로 파일 맨 앞에 둠(TDZ 에러 방지)
 const INDEX_AUTO_REFRESH_MS = 20000;
 
 const tickerInput = el("tickerInput");
@@ -1755,24 +1755,23 @@ window.addEventListener("resize", syncHeaderHeight);
 new ResizeObserver(syncHeaderHeight).observe(fixedHeader);
 syncHeaderHeight();
 
-// ---------- 스와이프 캐로셀(기업검색/인기종목/지수/기업가치/주식동향/인사이트) — 과거분석·미래예측은 기업검색 요약 페이지 내부로 이동 ----------
-// econpick이 탭바에서는 맨 왼쪽(스와이프 순서상 자연스러운 위치)이지만, 페이지 로드 시 기본으로 보여주는 탭은
-// initApp()에서 TAB_ORDER.indexOf("index")로 명시적으로 지정하므로 배열 순서 자체와는 무관함
-const TAB_ORDER = ["econpick", "index", "insight", "valuation", "trend"];
+// ---------- 스와이프 캐로셀(관심종목/기업가치/주식동향/인사이트) ----------
+// 시장·투데이·기업검색은 캐러셀에서 빠지고 companyPanel과 동일한 슬라이드 오버레이 패턴(openMarketPanel 등)으로
+// 별도 관리됨 — TAB_ORDER는 실제 스와이프되는 4개 패널만 담당
+const TAB_ORDER = ["watchlist", "insight", "valuation", "trend"];
 const panels = {
-  econpick: el("panelEconpick"),
-  index: el("panelIndex"),
+  watchlist: el("panelWatchlist"),
   valuation: el("panelValuation"),
   trend: el("panelTrend"),
   insight: el("panelInsight"),
 };
 const tabButtons = {
-  econpick: el("econPickBtn"),
-  index: el("tabIndexBtn"),
+  watchlist: el("watchlistTabBtn"),
   valuation: el("tabValuationBtn"),
   trend: el("tabTrendBtn"),
   insight: el("tabInsightBtn"),
 };
+const searchTabBtn = el("searchTabBtn");
 const valuationButtons = {
   revenue: el("valuationRevenueBtn"),
   cashFlow: el("valuationCashFlowBtn"),
@@ -1844,26 +1843,21 @@ function switchTab(index) {
     TAB_ORDER.forEach((key) => panels[key].classList.remove("snapping"));
   }, 320);
   ensureTabLoaded(TAB_ORDER[index]);
-  // 지수 탭에 있을 때만 자동 갱신(다른 탭으로 나가면 즉시 중단해 불필요한 요청을 만들지 않음)
-  if (TAB_ORDER[index] === "index") startIndexAutoRefresh();
-  else stopIndexAutoRefresh();
 }
 
 TAB_ORDER.forEach((key, i) => {
   tabButtons[key].addEventListener("click", () => switchTab(i));
 });
+searchTabBtn.addEventListener("click", openSearchWizardGate);
 
 // ---------- 탭별 데이터 로딩 캐싱: 한 번 로딩된 탭은 다시 방문해도 재요청하지 않음 ----------
 const TAB_LOADERS = {
-  econpick: () => loadEconPick(),
-  index: () => runIndexTab(),
+  watchlist: () => renderWatchlistList(),
   valuation: () => runValueRevenue(), // 가치평가 진입 시 매출액 증가를 자동 표시
   trend: () => runMovers("surge"), // 추세평가 진입 시 급등주를 자동 표시
   // 인사이트 진입 시 기본은 첫 버튼(블랙록)이지만, 하단 네비게이션 등에서 이미 다른 카테고리(예: 캘린더)로
   // 먼저 전환해둔 상태로 진입했다면 그 카테고리를 존중함(안 그러면 비동기 로딩이 뒤늦게 firms로 덮어씀)
   insight: () => (insightActiveCategory === "firms" ? runInsight(insightActiveInstitution) : runInsightCategory(insightActiveCategory)),
-  // search: navigateToTicker()가 직접 담당(항상 최신 검색어를 반영해야 하므로 캐시 대상에서 제외)
-  // future: 준비중 안내만
 };
 const tabLoadPromises = {};
 function ensureTabLoaded(key) {
@@ -2021,12 +2015,13 @@ document.addEventListener("click", (e) => {
   navigateToTicker(chip.dataset.symbol);
 });
 
-// ---------- 하단 고정 네비게이션(홈/캘린더/내투자/관심/로그인) ----------
+// ---------- 하단 고정 네비게이션(홈=기업검색/캘린더/시장/내투자/투데이/로그인) ----------
 const bottomNavButtons = {
   home: el("bottomNavHomeBtn"),
   calendar: el("bottomNavCalendarBtn"),
+  market: el("bottomNavMarketBtn"),
   invest: el("bottomNavInvestBtn"),
-  favorite: el("bottomNavFavoriteBtn"),
+  today: el("bottomNavFavoriteBtn"), // DOM id는 레거시(예전 ♥ 관심 자리) — 지금은 투데이 버튼으로 재사용
   login: el("bottomNavLoginBtn"),
 };
 function setBottomNavActive(key) {
@@ -2035,7 +2030,7 @@ function setBottomNavActive(key) {
 bottomNavButtons.home.addEventListener("click", () => {
   setBottomNavActive("home");
   closeCompanyPanel();
-  switchTab(TAB_ORDER.indexOf("index"));
+  openSearchWizardGate();
 });
 bottomNavButtons.calendar.addEventListener("click", () => {
   setBottomNavActive("calendar");
@@ -2046,9 +2041,16 @@ bottomNavButtons.calendar.addEventListener("click", () => {
   switchTab(TAB_ORDER.indexOf("insight"));
   switchInsightCategory("calendar");
 });
+bottomNavButtons.market.addEventListener("click", () => {
+  setBottomNavActive("market");
+  closeCompanyPanel();
+  openMarketPanel();
+});
 bottomNavButtons.invest.addEventListener("click", toggleChatPanel);
-bottomNavButtons.favorite.addEventListener("click", () => {
-  alert("🚧 관심종목은 준비 중입니다.");
+bottomNavButtons.today.addEventListener("click", () => {
+  setBottomNavActive("today");
+  closeCompanyPanel();
+  openEconPanel();
 });
 bottomNavButtons.login.addEventListener("click", () => {
   if (typeof firebase !== "undefined" && firebase.auth().currentUser) {
@@ -2057,6 +2059,34 @@ bottomNavButtons.login.addEventListener("click", () => {
     openLoginModal();
   }
 });
+
+// ---------- 시장/투데이: companyPanel과 동일한 슬라이드 오버레이 패턴(캐러셀 밖에서 독립 관리) ----------
+let marketPanelOpen = false;
+function openMarketPanel() {
+  el("marketPanel").style.display = "flex";
+  requestAnimationFrame(() => el("marketPanel").classList.add("open"));
+  marketPanelOpen = true;
+  startIndexAutoRefresh();
+  runIndexTab();
+}
+function closeMarketPanel() {
+  el("marketPanel").classList.remove("open");
+  window.setTimeout(() => { el("marketPanel").style.display = "none"; }, 280);
+  marketPanelOpen = false;
+  stopIndexAutoRefresh();
+}
+el("marketPanelCloseBtn").addEventListener("click", closeMarketPanel);
+
+function openEconPanel() {
+  el("econPanel").style.display = "flex";
+  requestAnimationFrame(() => el("econPanel").classList.add("open"));
+  loadEconPick();
+}
+function closeEconPanel() {
+  el("econPanel").classList.remove("open");
+  window.setTimeout(() => { el("econPanel").style.display = "none"; }, 280);
+}
+el("econPanelCloseBtn").addEventListener("click", closeEconPanel);
 
 // ---------- 기업 패널: 틀고정 탭이 아니라 오른쪽에서 슬라이드인하는 전체화면 오버레이 ----------
 const companyPanel = el("companyPanel");
@@ -2082,6 +2112,494 @@ companyPanelCloseBtn.addEventListener("click", () => closeCompanyPanel());
 companyPanelSearchBtn.addEventListener("click", openSearchOverlay);
 companyPanelLogo.addEventListener("click", () => closeCompanyPanel());
 
+// ---------- 관심종목 (localStorage 기반 — Firestore 등 서버 저장소가 없어 기기별로만 유지됨) ----------
+const WATCHLIST_KEY = "watchlist_v1";
+function getWatchlist() {
+  try {
+    const list = JSON.parse(localStorage.getItem(WATCHLIST_KEY));
+    return Array.isArray(list) ? list : [];
+  } catch {
+    return [];
+  }
+}
+function isWatchlisted(symbol) {
+  const sym = (symbol || "").toUpperCase();
+  return getWatchlist().some((w) => w.symbol === sym);
+}
+function saveWatchlist(list) {
+  localStorage.setItem(WATCHLIST_KEY, JSON.stringify(list));
+  tabLoadPromises.watchlist = null; // 다음에 관심종목 탭에 들어갈 때 최신 목록으로 다시 렌더링되도록 캐시 무효화
+}
+function addToWatchlist(symbol) {
+  const sym = symbol.toUpperCase();
+  if (isWatchlisted(sym)) return;
+  saveWatchlist([...getWatchlist(), { symbol: sym, addedAt: Date.now() }]);
+}
+function removeFromWatchlist(symbol) {
+  const sym = symbol.toUpperCase();
+  saveWatchlist(getWatchlist().filter((w) => w.symbol !== sym));
+}
+function toggleWatchlist(symbol) {
+  if (isWatchlisted(symbol)) removeFromWatchlist(symbol);
+  else addToWatchlist(symbol);
+  updateCompanyPanelWatchlistBtn(symbol);
+}
+const companyPanelWatchlistBtn = el("companyPanelWatchlistBtn");
+function updateCompanyPanelWatchlistBtn(symbol) {
+  companyPanelWatchlistBtn.classList.toggle("active", isWatchlisted(symbol));
+}
+companyPanelWatchlistBtn.addEventListener("click", () => {
+  const ticker = new URLSearchParams(location.search).get("ticker") || tickerInput.value;
+  if (ticker) toggleWatchlist(ticker);
+});
+
+async function renderWatchlistList() {
+  const statusEl = el("watchlistStatus");
+  const listEl = el("watchlistList");
+  const list = getWatchlist();
+  if (list.length === 0) {
+    statusEl.style.display = "none";
+    listEl.innerHTML = `<p class="muted" style="padding:12px 0;">⭐ 관심종목이 없습니다. 종목 상세 화면에서 별 아이콘을 눌러 추가해보세요.</p>`;
+    return;
+  }
+  statusEl.style.display = "block";
+  statusEl.textContent = "관심종목을 불러오는 중...";
+  try {
+    const rows = (
+      await mapWithConcurrency(list, 5, async (w) => {
+        try {
+          const chart = await yahooChart(w.symbol, "5d");
+          const snap = yahooSnapshot(chart);
+          return snap && { ...snap, symbol: w.symbol, name: w.symbol, time: snap.date };
+        } catch {
+          return null;
+        }
+      })
+    ).filter(Boolean);
+    statusEl.style.display = "none";
+    listEl.innerHTML = rows.length
+      ? `<div class="idx-list">${rows.map((r) => stockCardRowHtml(r)).join("")}</div>`
+      : `<p class="muted" style="padding:12px 0;">종목 정보를 불러오지 못했습니다.</p>`;
+  } catch (e) {
+    statusEl.style.display = "block";
+    statusEl.textContent = `❌ ${e.message || "관심종목을 불러오지 못했습니다."}`;
+  }
+}
+
+// ---------- 기업검색 위저드 (챗봇처럼 단계별로 질문 → 선택 → 다음 질문으로 넘어가는 검색 보드) ----------
+let searchWizardStep = "root";
+let searchWizardAnswers = {};
+
+function openSearchWizardGate() {
+  if (typeof firebase !== "undefined" && firebase.auth().currentUser) {
+    openSearchWizard();
+  } else {
+    openLoginModal();
+  }
+}
+function openSearchWizard() {
+  searchWizardStep = "root";
+  searchWizardAnswers = {};
+  el("searchWizardPanel").style.display = "flex";
+  requestAnimationFrame(() => el("searchWizardPanel").classList.add("open"));
+  renderSearchWizardStep();
+}
+function closeSearchWizard() {
+  el("searchWizardPanel").classList.remove("open");
+  window.setTimeout(() => { el("searchWizardPanel").style.display = "none"; }, 280);
+}
+el("searchWizardCloseBtn").addEventListener("click", closeSearchWizard);
+
+function wizardUserName() {
+  const user = typeof firebase !== "undefined" && firebase.auth().currentUser;
+  if (!user) return "회원";
+  return user.displayName || (user.email ? user.email.split("@")[0] : "회원");
+}
+
+function renderSearchWizardStep() {
+  const renderers = {
+    root: renderWizardRoot,
+    branchA: renderWizardBranchA,
+    branchB1: renderWizardBranchB1,
+    branchB2: renderWizardBranchB2,
+    branchB3: renderWizardBranchB3,
+    branchBResult: renderWizardBranchBResult,
+    branchC: renderWizardBranchC,
+    branchCStyle: renderWizardBranchCStyle,
+    branchCResult: renderWizardBranchCResult,
+  };
+  el("searchWizardBody").innerHTML = renderers[searchWizardStep]();
+}
+
+// 패널 오픈 시가 아니라 스크립트 로딩 시 1회만 위임 리스너를 붙여서, innerHTML 교체마다 재바인딩할 필요가 없게 함
+el("searchWizardBody").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-wizard-action]");
+  if (!btn) return;
+  const action = btn.dataset.wizardAction;
+  if (action === "back") {
+    searchWizardStep = btn.dataset.wizardBackStep;
+    renderSearchWizardStep();
+  } else if (action === "root-a") {
+    searchWizardStep = "branchA";
+    renderSearchWizardStep();
+  } else if (action === "root-b") {
+    searchWizardStep = "branchB1";
+    searchWizardAnswers = { sectors: [] };
+    renderSearchWizardStep();
+  } else if (action === "root-c") {
+    searchWizardStep = "branchC";
+    renderSearchWizardStep();
+  } else if (action === "rank-nav") {
+    const entry = RANKING_ENTRIES[Number(btn.dataset.rankIdx)];
+    closeSearchWizard();
+    switchTab(TAB_ORDER.indexOf(entry.tab));
+    entry.run();
+  } else if (action === "sector-toggle") {
+    const sector = btn.dataset.sector;
+    const set = new Set(searchWizardAnswers.sectors);
+    if (set.has(sector)) set.delete(sector);
+    else set.add(sector);
+    searchWizardAnswers.sectors = [...set];
+    btn.classList.toggle("checked", set.has(sector));
+  } else if (action === "sector-next") {
+    if (!searchWizardAnswers.sectors || searchWizardAnswers.sectors.length === 0) {
+      alert("섹터를 1개 이상 선택해주세요.");
+      return;
+    }
+    searchWizardStep = "branchB2";
+    renderSearchWizardStep();
+  } else if (action === "criteria2-pick") {
+    searchWizardAnswers.criterion2 = btn.dataset.criteria;
+    searchWizardStep = "branchB3";
+    renderSearchWizardStep();
+  } else if (action === "criteria3-pick") {
+    searchWizardAnswers.criterion3 = btn.dataset.criteria;
+    searchWizardStep = "branchBResult";
+    renderSearchWizardStep();
+    runBranchBPipeline();
+  } else if (action === "branchC-confirm") {
+    searchWizardStep = "branchCResult";
+    renderSearchWizardStep();
+    runBranchCConfirm();
+  } else if (action === "branchC-other") {
+    searchWizardStep = "branchCStyle";
+    renderSearchWizardStep();
+  } else if (action === "branchC-style-short") {
+    closeSearchWizard();
+    switchTab(TAB_ORDER.indexOf("trend"));
+    runTrendPressure();
+  } else if (action === "branchC-style-long") {
+    closeSearchWizard();
+    switchTab(TAB_ORDER.indexOf("valuation"));
+    runValueStability();
+  } else if (action === "share") {
+    shareWizardResult(wizardShareTitle, wizardShareText);
+  } else if (action === "share-self") {
+    copyWizardResultToSelf(wizardShareText);
+  }
+});
+
+function renderWizardRoot() {
+  const name = wizardUserName();
+  return `
+    <p class="wizard-question">${escapeHtml(name)}님, 투자할 기업을 찾고 계신가요?</p>
+    <div class="wizard-root-options">
+      <button type="button" class="wizard-root-option" data-wizard-action="root-a"><b>A. [랭킹찾기]</b> 각 부문별 랭킹으로 볼래요.</button>
+      <button type="button" class="wizard-root-option" data-wizard-action="root-b"><b>B. [선택찾기]</b> 내가 좋아하는 분야가 있어요.</button>
+      <button type="button" class="wizard-root-option" data-wizard-action="root-c"><b>C. [자동찾기]</b> 잘모르겠어요. 알아서 찾아주세요.</button>
+    </div>
+  `;
+}
+
+// [랭킹찾기]는 새 데이터 로직 없이 기존 기업가치·투자동향 탭의 14개 랭킹 화면으로 그대로 이동만 시킴
+const RANKING_ENTRIES = [
+  { label: "📈 매출액 증가", tab: "valuation", run: () => runValueRevenue() },
+  { label: "💰 현금흐름 증가", tab: "valuation", run: () => runValueCashFlow() },
+  { label: "💵 순이익 증가", tab: "valuation", run: () => runValueNetIncome() },
+  { label: "🧮 EPS", tab: "valuation", run: () => runValueEps() },
+  { label: "⚖️ PER", tab: "valuation", run: () => runValuePer() },
+  { label: "🏅 투자등급", tab: "valuation", run: () => runValueStability() },
+  { label: "🏢 시가총액", tab: "valuation", run: () => runValueMarketCap() },
+  { label: "👍 인기종목", tab: "trend", run: () => runTrendVolume() },
+  { label: "🚀 급등주", tab: "trend", run: () => runMovers("surge") },
+  { label: "📉 급락주", tab: "trend", run: () => runMovers("plunge") },
+  { label: "📈 추세상승", tab: "trend", run: () => runTrendPressure() },
+  { label: "🇺🇸 US Stock", tab: "trend", run: () => runTrendUsStock() },
+  { label: "🧺 US ETF", tab: "trend", run: () => runTrendUsEtf() },
+  { label: "🇰🇷 KR ETF", tab: "trend", run: () => runTrendKrEtf() },
+];
+function renderWizardBranchA() {
+  const items = RANKING_ENTRIES.map(
+    (entry, i) => `<button type="button" class="wizard-option-btn" data-wizard-action="rank-nav" data-rank-idx="${i}">${entry.label}</button>`
+  ).join("");
+  return `
+    <p class="wizard-question">[랭킹찾기]에서 찾으실 항목을 선택해주세요.</p>
+    <div class="wizard-option-grid">${items}</div>
+    <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="root">← 뒤로</button>
+  `;
+}
+
+// [선택찾기]의 2·3순위 "기준" — S&P500 + 섹터 필터와 자연스럽게 어울리는 10개만 제공.
+// (US Stock 거래량·US ETF·KR ETF·인기종목은 S&P500이 아닌 전체 시장/거래량 스크리너를 쓰거나 ETF라 섹터 개념이 없어 제외)
+const WIZARD_CRITERIA = [
+  { key: "revenue", label: "📈 매출액 증가", dir: "desc", get: (m) => m.revenueGrowthAnnual, fmt: (m) => fmtGrowthCell(m.revenueGrowthAnnual) },
+  { key: "cashFlow", label: "💰 현금흐름 증가", dir: "desc", get: (m) => m.operatingCashFlowGrowthAnnual, fmt: (m) => fmtGrowthCell(m.operatingCashFlowGrowthAnnual) },
+  { key: "netIncome", label: "💵 순이익 증가", dir: "desc", get: (m) => m.netIncomeGrowthAnnual, fmt: (m) => fmtGrowthCell(m.netIncomeGrowthAnnual) },
+  { key: "eps", label: "🧮 EPS", dir: "desc", get: (m) => m.eps, fmt: (m) => (m.eps === null || m.eps === undefined ? "N/A" : `$${m.eps.toFixed(2)}`) },
+  { key: "per", label: "⚖️ PER", dir: "asc", get: (m) => m.per, fmt: (m) => (m.per === null || m.per === undefined ? "N/A" : `${m.per.toFixed(1)}배`) },
+  { key: "stability", label: "🏅 투자등급", dir: "desc", get: (m) => m.riskTotal, fmt: (m) => (m.riskTotal === null || m.riskTotal === undefined ? "N/A" : `${m.riskTotal}/10`) },
+  { key: "marketCap", label: "🏢 시가총액", dir: "desc", get: (m) => m.marketCap, fmt: (m) => (m.marketCap ? fmtCompactCurrency(m.marketCap) : "N/A") },
+  { key: "pressure", label: "📈 상승압력도", dir: "desc", get: (m) => m.pressureTotal, fmt: (m) => (m.pressureTotal === null || m.pressureTotal === undefined ? "N/A" : `${m.pressureTotal}/10`) },
+  { key: "surge", label: "🚀 급등주(등락률)", dir: "desc", get: (m) => m.changePct, fmt: (m) => (m.changePct === null || m.changePct === undefined ? "N/A" : `${m.changePct >= 0 ? "+" : ""}${m.changePct.toFixed(2)}%`), needsDaily: true },
+  { key: "plunge", label: "📉 급락주(등락률)", dir: "asc", get: (m) => m.changePct, fmt: (m) => (m.changePct === null || m.changePct === undefined ? "N/A" : `${m.changePct >= 0 ? "+" : ""}${m.changePct.toFixed(2)}%`), needsDaily: true },
+];
+
+function renderWizardBranchB1() {
+  const items = Object.entries(SECTOR_KO)
+    .map(([en, ko]) => {
+      const checked = (searchWizardAnswers.sectors || []).includes(en);
+      return `<button type="button" class="wizard-sector-item${checked ? " checked" : ""}" data-wizard-action="sector-toggle" data-sector="${escapeHtml(en)}">${ko}</button>`;
+    })
+    .join("");
+  return `
+    <p class="wizard-question">1순위 · 분야(섹터)를 선택해주세요. (여러 개 선택 가능)</p>
+    <div class="wizard-sector-checklist">${items}</div>
+    <button type="button" class="wizard-confirm-btn" data-wizard-action="sector-next">다음</button>
+    <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="root">← 뒤로</button>
+  `;
+}
+function renderWizardBranchB2() {
+  const items = WIZARD_CRITERIA.map(
+    (c) => `<button type="button" class="wizard-criteria-item" data-wizard-action="criteria2-pick" data-criteria="${c.key}">${c.label}</button>`
+  ).join("");
+  return `
+    <p class="wizard-question">2순위 · 기준을 선택해주세요. (TOP30까지 선정)</p>
+    <div class="wizard-criteria-list">${items}</div>
+    <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="branchB1">← 뒤로</button>
+  `;
+}
+function renderWizardBranchB3() {
+  const items = WIZARD_CRITERIA.filter((c) => c.key !== searchWizardAnswers.criterion2)
+    .map((c) => `<button type="button" class="wizard-criteria-item" data-wizard-action="criteria3-pick" data-criteria="${c.key}">${c.label}</button>`)
+    .join("");
+  return `
+    <p class="wizard-question">3순위 · 기준을 선택해주세요. (TOP15까지 선정)</p>
+    <div class="wizard-criteria-list">${items}</div>
+    <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="branchB2">← 뒤로</button>
+  `;
+}
+function renderWizardBranchBResult() {
+  return `
+    <p class="wizard-question">선택하신 조건으로 종목을 찾고 있습니다...</p>
+    <div id="wizardBranchBResultBody"><p class="muted">불러오는 중...</p></div>
+    <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="root">← 처음으로</button>
+  `;
+}
+
+let sectorTickerMapPromise = null;
+function getSectorTickerMap() {
+  if (!sectorTickerMapPromise) {
+    sectorTickerMapPromise = (async () => {
+      const [sp500Tickers, entries] = await Promise.all([
+        getSP500Tickers(),
+        Promise.all(
+          Object.entries(SECTOR_SCREENER_ID).map(async ([sector, scrId]) => {
+            const data = await yahooScreener(scrId, 250).catch(() => null);
+            const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
+            return [sector, quotes.map((q) => q && q.symbol).filter(Boolean)];
+          })
+        ),
+      ]);
+      const sp500Set = new Set(sp500Tickers);
+      const map = new Map();
+      for (const [sector, symbols] of entries) {
+        map.set(sector, new Set(symbols.filter((s) => sp500Set.has(s))));
+      }
+      return map;
+    })().catch((e) => {
+      sectorTickerMapPromise = null;
+      throw e;
+    });
+  }
+  return sectorTickerMapPromise;
+}
+// 선택한 섹터(들)의 합집합을 시가총액 근사 정렬(getSP500PriorityOrder)로 필터링해 앞 50개 = TOP50 후보
+// (일부 S&P500 종목은 11개 섹터 스크리너 어디에도 안 걸려 누락될 수 있음 — 저비용 근사치로 감수한 한계)
+async function getBranchBCandidatePool(sectors) {
+  const [map, priorityOrder] = await Promise.all([getSectorTickerMap(), getSP500PriorityOrder()]);
+  const union = new Set();
+  for (const sector of sectors) {
+    const set = map.get(sector);
+    if (set) for (const sym of set) union.add(sym);
+  }
+  return priorityOrder.filter((sym) => union.has(sym)).slice(0, 50);
+}
+async function runBranchBPipeline() {
+  const bodyEl = el("wizardBranchBResultBody");
+  try {
+    const pool = await getBranchBCandidatePool(searchWizardAnswers.sectors);
+    if (pool.length === 0) {
+      bodyEl.innerHTML = `<p class="muted">선택하신 섹터에서 종목을 찾지 못했습니다.</p>`;
+      return;
+    }
+    const { sp500Return } = await getMarketReturnsCached();
+    let candidates = (await mapWithConcurrency(pool, 5, getFullMetrics)).filter(Boolean);
+    candidates = candidates.map((m) => ({
+      ...m,
+      riskTotal: computeRiskScore(m, sp500Return).total,
+      pressureTotal: computeAttractivenessScore(m).total,
+    }));
+    const c2 = WIZARD_CRITERIA.find((c) => c.key === searchWizardAnswers.criterion2);
+    const c3 = WIZARD_CRITERIA.find((c) => c.key === searchWizardAnswers.criterion3);
+    if (c2.needsDaily || c3.needsDaily) {
+      const daily = await getSP500DailyChanges();
+      const dailyMap = new Map(daily.map((d) => [d.symbol, d.changePct]));
+      candidates = candidates.map((m) => ({ ...m, changePct: dailyMap.has(m.symbol) ? dailyMap.get(m.symbol) : null }));
+    }
+    const sortByCriterion = (list, c) =>
+      [...list].sort((a, b) => {
+        const av = c.get(a);
+        const bv = c.get(b);
+        if (av === null || av === undefined) return 1;
+        if (bv === null || bv === undefined) return -1;
+        return c.dir === "asc" ? av - bv : bv - av;
+      });
+    const top30 = sortByCriterion(candidates, c2).slice(0, 30);
+    const top15 = sortByCriterion(top30, c3).slice(0, 15);
+    const table = wizardResultTableHtml(top15, `${c2.label} / ${c3.label}`, (r) => `${c2.fmt(r)} / ${c3.fmt(r)}`);
+    const plain = (html) => html.replace(/<[^>]+>/g, "");
+    wizardShareTitle = "기업검색 결과 (선택찾기)";
+    wizardShareText =
+      `[선택찾기] ${searchWizardAnswers.sectors.map((s) => SECTOR_KO[s] || s).join(", ")} 섹터 · ${c2.label} → ${c3.label} TOP15\n` +
+      top15.map((r, i) => `${i + 1}. ${r.symbol} (${plain(c2.fmt(r))} / ${plain(c3.fmt(r))})`).join("\n") +
+      `\n\nyeopinvest.com`;
+    bodyEl.innerHTML = `
+      ${table}
+      <div class="wizard-share-row">
+        <button type="button" class="cat-btn" data-wizard-action="share">공유하기</button>
+        <button type="button" class="cat-btn" data-wizard-action="share-self">나에게 공유하기</button>
+      </div>
+    `;
+  } catch (e) {
+    bodyEl.innerHTML = `<p class="muted">❌ ${e.message || "결과를 불러오지 못했습니다."}</p>`;
+  }
+}
+
+function renderWizardBranchC() {
+  return `
+    <p class="wizard-question">S&amp;P500 전체에서 상승압력도 + 투자안정성 합계 순서로 30위까지 찾아 보겠습니다.</p>
+    <div class="wizard-root-options">
+      <button type="button" class="wizard-root-option" data-wizard-action="branchC-confirm"><b>A. [확인]</b></button>
+      <button type="button" class="wizard-root-option" data-wizard-action="branchC-other"><b>B. [다른방법]</b></button>
+    </div>
+    <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="root">← 뒤로</button>
+  `;
+}
+function renderWizardBranchCStyle() {
+  return `
+    <p class="wizard-question">자신의 투자스타일 중 한 가지를 선택해주세요.</p>
+    <div class="wizard-root-options">
+      <button type="button" class="wizard-root-option" data-wizard-action="branchC-style-short">
+        <b>A. 단기적인 수익을 원함(▲600%~▼60%)</b><br><span class="wizard-option-sub">(거래대금, 매출성장, 최근3개월 상승률) — S&amp;P 500중 상승압력도 높은순위 30위까지</span>
+      </button>
+      <button type="button" class="wizard-root-option" data-wizard-action="branchC-style-long">
+        <b>B. 장기적으로 안정적인 상승을 원함(▲60%~▼30%)</b><br><span class="wizard-option-sub">(투자등급, 안정적상승, 순이익률, 시가총액 높은 주식) — S&amp;P 500중 투자안정성 높은순위 30위까지</span>
+      </button>
+    </div>
+    <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="branchC">← 뒤로</button>
+  `;
+}
+function renderWizardBranchCResult() {
+  return `
+    <p class="wizard-question">S&amp;P500 전체 스캔 결과입니다.</p>
+    <div id="wizardBranchCResultBody"><p class="muted">불러오는 중...</p></div>
+    <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="root">← 처음으로</button>
+  `;
+}
+async function runBranchCConfirm() {
+  const bodyEl = el("wizardBranchCResultBody");
+  bodyEl.innerHTML = `<p class="muted" id="wizardBranchCProgress">S&amp;P500 전체 종목을 확인하는 중... (최대 1분 정도 소요될 수 있어요)</p>`;
+  try {
+    const [tickers, { sp500Return }] = await Promise.all([getSP500Tickers(), getMarketReturnsCached()]);
+    const progressEl = el("wizardBranchCProgress");
+    const metricsList = await mapWithConcurrency(tickers, 5, getFullMetrics, (completed) => {
+      if (progressEl) progressEl.textContent = `${completed}/${tickers.length} 종목 확인 중...`;
+    });
+    const scored = metricsList.filter(Boolean).map((m) => ({
+      ...m,
+      combinedTotal: Math.round((computeAttractivenessScore(m).total + computeRiskScore(m, sp500Return).total) * 10) / 10,
+    }));
+    scored.sort((a, b) => b.combinedTotal - a.combinedTotal);
+    const top30 = scored.slice(0, 30);
+    const table = wizardResultTableHtml(top30, "상승압력+투자안정 합계", (r) => `<b>${r.combinedTotal}/20</b>`);
+    wizardShareTitle = "기업검색 결과 (자동찾기)";
+    wizardShareText =
+      `[자동찾기] S&P500 상승압력도+투자안정성 합계 TOP30\n` +
+      top30.map((r, i) => `${i + 1}. ${r.symbol} (${r.combinedTotal}/20)`).join("\n") +
+      `\n\nyeopinvest.com`;
+    bodyEl.innerHTML = `
+      ${table}
+      <div class="wizard-share-row">
+        <button type="button" class="cat-btn" data-wizard-action="share">공유하기</button>
+        <button type="button" class="cat-btn" data-wizard-action="share-self">나에게 공유하기</button>
+      </div>
+    `;
+  } catch (e) {
+    bodyEl.innerHTML = `<p class="muted">❌ ${e.message || "결과를 불러오지 못했습니다."}</p>`;
+  }
+}
+
+// Branch B/C 결과 화면 공용 표 렌더러 — 기존 top30-table 스타일 재사용(ticker-link/price-chart-link 위임 클릭 그대로 동작)
+function wizardResultTableHtml(rows, metricLabel, metricCellFn) {
+  const body = rows
+    .map(
+      (r, i) => `
+    <tr>
+      <td>${i + 1}${surgeWarningEmoji(r.fiveDayExtremes)}</td>
+      <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></td>
+      <td>${r.price !== undefined && r.price !== null ? priceChartLink(r.symbol, "$" + r.price.toFixed(2)) : "N/A"}</td>
+      <td>${metricCellFn(r)}</td>
+    </tr>`
+    )
+    .join("");
+  return `
+    <table class="top30-table">
+      <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>${metricLabel}</th></tr></thead>
+      <tbody>${body}</tbody>
+    </table>`;
+}
+
+// ---------- 위저드 결과 공유 (텍스트 기반 — 기존 shareOrDownloadGround는 이미지 전용이라 재사용 불가) ----------
+let wizardShareTitle = "";
+let wizardShareText = "";
+async function shareWizardResult(title, text) {
+  if (navigator.share) {
+    try {
+      await navigator.share({ title, text, url: location.origin });
+      return;
+    } catch (e) {
+      if (e && e.name === "AbortError") return;
+    }
+  }
+  await copyWizardResultFallback(text);
+}
+async function copyWizardResultFallback(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    alert("링크가 복사되었습니다.");
+  } catch {
+    alert("공유에 실패했습니다.");
+  }
+}
+async function copyWizardResultToSelf(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    alert("결과가 복사되었습니다. 메모 등에 붙여넣어 보관하세요.");
+  } catch {
+    alert("복사에 실패했습니다. 다시 시도해주세요.");
+  }
+}
+
 // ---------- 티커 검색/클릭 → 기업 패널을 열고 그 종목을 로딩 ----------
 // push=false는 popstate(뒤로/앞으로가기)나 최초 URL 진입 처리 시, 이미 있는 히스토리 상태를 다시 쌓지 않기 위함
 function navigateToTicker(ticker, { push = true } = {}) {
@@ -2095,6 +2613,7 @@ function navigateToTicker(ticker, { push = true } = {}) {
   logSearchEvent(ticker);
   if (searchOverlay.style.display !== "none") closeSearchOverlay();
   openCompanyPanel();
+  updateCompanyPanelWatchlistBtn(ticker);
   runAnalysis(ticker);
 }
 
@@ -2121,9 +2640,9 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// ---------- 초기 부팅: 기본 화면은 US Markets — ?ticker=가 있을 때만 기업 패널을 함께 염 ----------
+// ---------- 초기 부팅: 기본 화면은 관심종목 — ?ticker=가 있을 때만 기업 패널을 함께 염 ----------
 (function initApp() {
-  switchTab(TAB_ORDER.indexOf("index"));
+  switchTab(TAB_ORDER.indexOf("watchlist"));
 
   const initialTicker = new URLSearchParams(location.search).get("ticker");
   if (initialTicker) navigateToTicker(initialTicker, { push: false });
@@ -2131,7 +2650,7 @@ document.addEventListener("click", (e) => {
 
   // 무료 프록시 과부하를 피하려고 순서대로 백그라운드 로딩(사용자가 먼저 스와이프해서 들어가면 ensureTabLoaded가 그 자리에서 바로 시작함)
   (async () => {
-    await ensureTabLoaded("econpick");
+    await loadEconPick().catch(() => {});
     await ensureTabLoaded("trend"); // 급등주 미리 로딩(진입 시 바로 표시)
     await ensureTabLoaded("valuation");
     await ensureTabLoaded("insight");
@@ -4703,19 +5222,22 @@ async function runIndexTab() {
 // 문서/윈도우가 맨 위로 스크롤된 상태에서 지수 탭이 활성화되어 있을 때만 동작(다른 탭·스크롤 중엔 무시).
 // 캐로셀 좌우 스와이프(#carouselViewport의 pointer 핸들러)는 수평 드래그만 가로채므로 수직 당김과 충돌하지 않음.
 (function setupIndexPullToRefresh() {
-  const panel = el("panelIndex");
+  const panel = el("marketPanel");
+  const scrollBody = panel ? panel.querySelector(".company-panel-body") : null;
   const indicator = el("indexPullToRefresh");
-  if (!panel || !indicator) return;
+  if (!panel || !scrollBody || !indicator) return;
   const indicatorText = indicator.querySelector(".pull-refresh-text");
   const THRESHOLD = 60;
   let startY = null;
   let pulling = false;
   let refreshing = false;
 
+  // 시장 패널은 window가 아니라 .company-panel-body 내부에서 자체 스크롤되므로 window.scrollY 대신
+  // scrollBody.scrollTop으로 "맨 위에 있는지"를 판단해야 함
   panel.addEventListener(
     "touchstart",
     (e) => {
-      if (TAB_ORDER[activeTabIndex] !== "index" || window.scrollY > 0 || refreshing) {
+      if (!marketPanelOpen || scrollBody.scrollTop > 0 || refreshing) {
         startY = null;
         return;
       }
@@ -4730,7 +5252,7 @@ async function runIndexTab() {
     (e) => {
       if (startY === null || refreshing) return;
       const dy = e.touches[0].clientY - startY;
-      if (dy <= 0 || window.scrollY > 0) {
+      if (dy <= 0 || scrollBody.scrollTop > 0) {
         pulling = false;
         indicator.classList.remove("pull-refresh-visible", "pull-refresh-ready");
         return;

@@ -21,7 +21,7 @@ if (typeof firebase !== "undefined") {
 }
 
 // 2) 카카오 개발자 콘솔(developers.kakao.com) > 내 애플리케이션 > 앱 키 > REST API 키
-const KAKAO_REST_API_KEY = "YOUR_KAKAO_REST_API_KEY";
+const KAKAO_REST_API_KEY = "0903cfbdd09f05b23b57a07f0f7822b0";
 
 // 3) 네이버 개발자 콘솔(developers.naver.com) > 내 애플리케이션 > Client ID
 const NAVER_CLIENT_ID = "YOUR_NAVER_CLIENT_ID";

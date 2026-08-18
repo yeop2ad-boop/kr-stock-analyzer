@@ -59,8 +59,8 @@
     </div>
 
     <div class="tab-bar" id="tabBar">
-      <button type="button" class="cat-btn" data-tab="econpick" id="econPickBtn"><span class="tab-emoji" aria-hidden="true">📰</span><span class="tab-label">투데이</span></button>
-      <button type="button" class="cat-btn" data-tab="index" id="tabIndexBtn"><span class="tab-label">시장</span></button>
+      <button type="button" class="cat-btn" data-tab="watchlist" id="watchlistTabBtn"><span class="tab-emoji" aria-hidden="true">⭐</span><span class="tab-label">관심종목</span></button>
+      <button type="button" class="cat-btn" id="searchTabBtn"><span class="tab-emoji" aria-hidden="true">🔍</span><span class="tab-label">기업검색</span></button>
       <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn"><span class="tab-label">인사이트</span></button>
       <button type="button" class="cat-btn" data-tab="valuation" id="tabValuationBtn"><span class="tab-label">기업가치</span></button>
       <button type="button" class="cat-btn" data-tab="trend" id="tabTrendBtn"><span class="tab-label">투자동향</span></button>
@@ -203,6 +203,9 @@
           <text x="28" y="78" font-family="Pretendard, 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, Arial, sans-serif" font-weight="800" letter-spacing="-0.5px" font-size="46" fill="#eceef2">yeop<tspan fill="#6b9bff">invest</tspan><tspan font-weight="600" letter-spacing="0" fill="#8a94a6" font-size="26">.com</tspan></text>
         </svg>
       </div>
+      <button type="button" id="companyPanelWatchlistBtn" class="header-icon-btn" aria-label="관심종목">
+        <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7l2.85 6.02 6.65.68-4.98 4.5 1.46 6.53L12 17.9l-5.98 3.53 1.46-6.53-4.98-4.5 6.65-.68L12 2.7z" /></svg>
+      </button>
       <button type="button" id="companyPanelSearchBtn" class="search-open-btn small" aria-label="검색">🔍</button>
     </div>
     <div class="company-panel-body">
@@ -317,30 +320,58 @@
     </div>
   </div>
 
+  <div id="marketPanel" class="company-panel" style="display:none;">
+    <div class="company-panel-bar">
+      <button type="button" id="marketPanelCloseBtn" class="search-overlay-back" aria-label="닫기">←</button>
+      <h2 class="search-overlay-title">시장</h2>
+    </div>
+    <div class="company-panel-body">
+      <div class="top30-sub-nav">
+        <button type="button" class="cat-btn" id="indexCatUsMarketsBtn">⭐ 주요</button>
+        <button type="button" class="cat-btn" id="indexCatIndicesBtn">📈 지수</button>
+        <button type="button" class="cat-btn" id="indexCatStocksBtn">🔥 주식</button>
+        <button type="button" class="cat-btn" id="indexCatCommoditiesBtn">🛢️ 원자재</button>
+        <button type="button" class="cat-btn" id="indexCatFxBtn">💱 외환</button>
+        <button type="button" class="cat-btn" id="indexCatCryptoBtn">🪙 암호화폐</button>
+        <button type="button" class="cat-btn" id="indexCatBondsBtn">📜 채권</button>
+      </div>
+      <div id="indexPullToRefresh" class="pull-refresh" aria-hidden="true"><span class="pull-refresh-text">↓ 당겨서 새로고침</span></div>
+      <p id="indexStatus" class="muted top30-status" style="display:none;"></p>
+      <div id="indexResults"></div>
+    </div>
+  </div>
+
+  <div id="econPanel" class="company-panel" style="display:none;">
+    <div class="company-panel-bar">
+      <button type="button" id="econPanelCloseBtn" class="search-overlay-back" aria-label="닫기">←</button>
+      <h2 class="search-overlay-title">투데이</h2>
+    </div>
+    <div class="company-panel-body">
+      <p class="muted" style="font-size:12px;margin:0 0 10px;">📰 투데이 <span style="font-weight:400;">(매일 오전 7시 업데이트)</span></p>
+      <div id="econPickBody" class="econpick-body">
+        <div id="econPickGrid" class="econpick-grid"></div>
+        <div id="econPickSentinel" class="econpick-sentinel"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="searchWizardPanel" class="company-panel" style="display:none;">
+    <div class="company-panel-bar">
+      <button type="button" id="searchWizardCloseBtn" class="search-overlay-back" aria-label="닫기">←</button>
+      <h2 class="search-overlay-title">기업검색</h2>
+    </div>
+    <div class="company-panel-body">
+      <div id="searchWizardBody"></div>
+    </div>
+  </div>
+
   <div class="container" id="mainContainer">
     <div class="carousel-viewport" id="carouselViewport">
 
-      <div class="carousel-panel" data-panel="econpick" id="panelEconpick">
-        <p class="muted" style="font-size:12px;margin:0 0 10px;">📰 투데이 <span style="font-weight:400;">(매일 오전 7시 업데이트)</span></p>
-        <div id="econPickBody" class="econpick-body">
-          <div id="econPickGrid" class="econpick-grid"></div>
-          <div id="econPickSentinel" class="econpick-sentinel"></div>
-        </div>
-      </div>
-
-      <div class="carousel-panel" data-panel="index" id="panelIndex">
-        <div class="top30-sub-nav">
-          <button type="button" class="cat-btn" id="indexCatUsMarketsBtn">⭐ 주요</button>
-          <button type="button" class="cat-btn" id="indexCatIndicesBtn">📈 지수</button>
-          <button type="button" class="cat-btn" id="indexCatStocksBtn">🔥 주식</button>
-          <button type="button" class="cat-btn" id="indexCatCommoditiesBtn">🛢️ 원자재</button>
-          <button type="button" class="cat-btn" id="indexCatFxBtn">💱 외환</button>
-          <button type="button" class="cat-btn" id="indexCatCryptoBtn">🪙 암호화폐</button>
-          <button type="button" class="cat-btn" id="indexCatBondsBtn">📜 채권</button>
-        </div>
-        <div id="indexPullToRefresh" class="pull-refresh" aria-hidden="true"><span class="pull-refresh-text">↓ 당겨서 새로고침</span></div>
-        <p id="indexStatus" class="muted top30-status" style="display:none;"></p>
-        <div id="indexResults"></div>
+      <div class="carousel-panel" data-panel="watchlist" id="panelWatchlist">
+        <p class="muted" style="font-size:12px;margin:0 0 10px;">⭐ 관심종목</p>
+        <p id="watchlistStatus" class="muted top30-status" style="display:none;"></p>
+        <div id="watchlistList"></div>
       </div>
 
       <div class="carousel-panel" data-panel="insight" id="panelInsight">
@@ -424,11 +455,14 @@
         <rect x="10.55" y="13.3" width="2.9" height="2.6" fill="currentColor" stroke="none" />
       </svg>
     </button>
+    <button type="button" class="bottom-nav-btn" id="bottomNavMarketBtn" aria-label="시장">
+      <svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="12" width="3.4" height="8" rx="1"/><rect x="10.3" y="7" width="3.4" height="13" rx="1"/><rect x="16.6" y="3" width="3.4" height="17" rx="1"/></svg>
+    </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavInvestBtn" aria-label="내투자">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg>
     </button>
-    <button type="button" class="bottom-nav-btn" id="bottomNavFavoriteBtn" aria-label="관심">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7l2.85 6.02 6.65.68-4.98 4.5 1.46 6.53L12 17.9l-5.98 3.53 1.46-6.53-4.98-4.5 6.65-.68L12 2.7z" /></svg>
+    <button type="button" class="bottom-nav-btn" id="bottomNavFavoriteBtn" aria-label="투데이">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M7.5 8h6M7.5 12h9M7.5 16h9"/></svg>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavLoginBtn" aria-label="로그인">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4" /><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" /></svg>
