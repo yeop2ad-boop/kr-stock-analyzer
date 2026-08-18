@@ -88,17 +88,6 @@ body {
 /* 이모지 대신 쓰는 주황(로고 색) 단색 라인 아이콘 — 탭바/서브탭/위저드 버튼 공용 */
 .btn-icon { display: inline-flex; align-items: center; vertical-align: -2px; }
 .btn-icon-svg { display: block; }
-.wiz-flag-badge {
-  display: inline-block;
-  border: 1px solid #e6983c;
-  border-radius: 3px;
-  padding: 0 4px;
-  font-size: 9px;
-  font-weight: 800;
-  color: #e6983c;
-  line-height: 1.5;
-  vertical-align: 1px;
-}
 #companyPanelWatchlistBtn.active svg { fill: currentColor; }
 
 .login-header-btn {
@@ -478,97 +467,6 @@ body {
   50% { opacity: 0.55; }
 }
 
-.chat-panel {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 66.6667vh;
-  z-index: 200;
-  background: var(--card-bg);
-  border-bottom: 1px solid var(--border);
-  border-radius: 0 0 14px 14px;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
-  flex-direction: column;
-  overflow: hidden;
-}
-
-/* 경제pick — 오버레이 모달이 아니라 탭바 바로 아래 인라인으로 펼쳐짐(다른 탭으로 이동해도 유지됨).
-   fixedHeader 안에 있어서 열리면 syncHeaderHeight()가 자동으로 헤더 높이를 재계산해 본문을 밀어냄 */
-/* 경제pick이 이제 일반 캐로셀 탭이라, 다른 탭들처럼 페이지 자체가 스크롤되고 내부에 별도 높이 제한이 없음 */
-.econpick-body {
-  padding: 0;
-}
-
-.econpick-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.econpick-card {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  cursor: pointer;
-}
-
-.econpick-thumb {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  display: block;
-  background: var(--card-bg);
-}
-
-.econpick-title {
-  margin: 0;
-  padding: 8px 10px;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.econpick-meta {
-  padding: 0 10px 8px;
-  font-size: 11px;
-  color: var(--muted);
-}
-
-/* 카드 클릭 시 그리드 두 칸을 모두 차지하며 확장 — 아래 카드들은 자연스럽게 밀려 내려감 */
-/* 카드가 펼쳐져도 grid-column을 넓히지 않고 자기 칸 안에서만 세로로 커지게 해서, 같은 줄의 다른 칸(카드)이
-   밀려 내려가지 않고 제자리를 유지함(그리드 행 높이만 커진 카드에 맞춰 자동으로 늘어남) */
-/* 펼쳐진 카드는 두 칸을 다 차지하도록 넓어짐 — 어느 칸(왼쪽/오른쪽)이 펼쳐지든 항상 그 줄의 첫 자리를
-   먼저 차지하도록 app.js에서 order를 계산해 넣어주므로, 오른쪽 카드를 펼쳐도 자리를 유지하고 왼쪽 카드가 아래로 밀려남 */
-.econpick-card.expanded { grid-column: 1 / -1; }
-.econpick-card.expanded .econpick-thumb { aspect-ratio: 16 / 9; }
-.econpick-card.expanded .econpick-title { -webkit-line-clamp: unset; }
-
-.econpick-summary {
-  padding: 4px 10px 12px;
-  font-size: 13px;
-  color: var(--text);
-  white-space: pre-line;
-}
-
-.econpick-summary a {
-  display: inline-block;
-  margin-top: 8px;
-  color: var(--accent);
-  font-size: 12px;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.econpick-sentinel { height: 1px; }
-
-.econpick-empty { text-align: center; color: var(--muted); font-size: 13px; padding: 30px 0; }
-
 .chart-modal {
   position: fixed;
   inset: 0;
@@ -812,103 +710,6 @@ body {
   color: #f5a623;
 }
 
-.chat-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.chat-close-btn {
-  padding: 2px 6px;
-  background: transparent;
-  border: none;
-  color: var(--muted);
-  font-size: 14px;
-  cursor: pointer;
-}
-
-/* 게시판 헤더 행(번호/내용/시간) — 목록 컬럼과 폭을 맞춰야 함(.chat-msg와 동일한 grid) */
-.board-list-head {
-  display: grid;
-  grid-template-columns: 40px 1fr 52px;
-  gap: 8px;
-  padding: 6px 12px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--muted);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  flex: none;
-}
-
-.chat-messages {
-  flex: 1;
-  overflow-y: auto;
-  min-height: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.chat-empty { font-size: 12px; text-align: center; margin: auto 0; }
-
-.chat-msg {
-  display: grid;
-  grid-template-columns: 40px 1fr 52px;
-  align-items: baseline;
-  gap: 8px;
-  font-size: 13px;
-  line-height: 1.4;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--border);
-}
-.chat-msg:nth-child(even) { background: rgba(255, 255, 255, 0.02); }
-.chat-no {
-  color: var(--muted);
-  font-size: 11px;
-  font-variant-numeric: tabular-nums;
-  text-align: center;
-}
-.chat-time {
-  color: var(--muted);
-  font-size: 11px;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-.chat-text { word-break: break-word; }
-
-.chat-error {
-  margin: 0 12px 6px;
-  font-size: 12px;
-  color: var(--bad);
-}
-
-.chat-post-form {
-  display: flex;
-  gap: 6px;
-  padding: 10px 12px;
-  border-top: 1px solid var(--border);
-  flex: none;
-}
-
-.chat-input {
-  width: 100%;
-  min-width: 0;
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  font-size: 13px;
-  box-sizing: border-box;
-}
-
-.chat-text-input { flex: 1; }
-
 .chat-ticker-suggest {
   position: absolute;
   top: calc(100% + 4px);
@@ -925,27 +726,6 @@ body {
 
 .chat-ticker-option { padding: 7px 10px; font-size: 12px; cursor: pointer; }
 .chat-ticker-option:hover { background: var(--accent-soft); }
-
-.chat-send-btn {
-  flex: 0 0 auto;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border-radius: 8px;
-  border: none;
-  background: var(--accent);
-  color: #fff;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.chat-send-btn:disabled { opacity: 0.6; cursor: default; }
-
-.chat-footer {
-  padding: 8px 12px 10px;
-  font-size: 11px;
-  border-top: 1px solid var(--border);
-}
 
 .card {
   background: var(--card-bg);

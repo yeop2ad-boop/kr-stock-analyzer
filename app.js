@@ -28,7 +28,7 @@ const ICONS = {
     `<path d="M12 2c2.5 2 4 5.5 4 9 0 2-1 4-2 5v3l-2-1-2 1v-3c-1-1-2-3-2-5 0-3.5 1.5-7 4-9Z"/><circle cx="12" cy="10" r="1.4" fill="${WIZ_ORANGE}" stroke="none"/><path d="M9 16l-2 4M15 16l2 4"/>`
   ),
   wallet: svgIcon(`<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="17" cy="14.5" r="1.2" fill="${WIZ_ORANGE}" stroke="none"/>`),
-  dollar: svgIcon(`<path d="M12 3v18"/><path d="M16 7.5c0-1.5-1.8-2.5-4-2.5s-4 1-4 2.5 1.8 2 4 2.5 4 1 4 2.5-1.8 2.5-4 2.5-4-1-4-2.5"/>`),
+  dollar: svgIcon(`<path d="M12 5v14"/><path d="M15.5 8.3c0-1.3-1.6-2.1-3.5-2.1s-3.5.9-3.5 2.1 1.6 1.7 3.5 2 3.5.9 3.5 2.1-1.6 2.1-3.5 2.1-3.5-.8-3.5-2.1"/>`),
   calculator: svgIcon(
     `<rect x="5" y="3" width="14" height="18" rx="2"/><rect x="7.5" y="5.5" width="9" height="3.5" rx="0.5"/><path stroke-width="2.6" d="M8.5 13h.01M12 13h.01M15.5 13h.01M8.5 17h.01M12 17h.01M15.5 17h.01"/>`
   ),
@@ -40,9 +40,6 @@ const ICONS = {
 };
 function iconHtml(name) {
   return ICONS[name] || "";
-}
-function flagBadgeHtml(code) {
-  return `<span class="wiz-flag-badge">${code}</span>`;
 }
 function mountIcons() {
   document.querySelectorAll("[data-icon]").forEach((iconEl) => {
@@ -95,143 +92,6 @@ const valuationResults = el("valuationResults");
 const trendStatus = el("trendStatus");
 const trendResults = el("trendResults");
 const futureStatus = el("futureStatus");
-const chatPanel = el("chatPanel");
-const chatMessagesEl = el("chatMessages");
-const chatTextInput = el("chatTextInput");
-const chatSendBtn = el("chatSendBtn");
-const chatError = el("chatError");
-const chatCloseBtn = el("chatCloseBtn");
-const econPickBody = el("econPickBody");
-const econPickGrid = el("econPickGrid");
-const econPickSentinel = el("econPickSentinel");
-
-// ---------- 자유토론방(익명, 24시간 보관, 자유 텍스트 최대 30자) ----------
-const CHAT_API = "https://us-stock.yeop2ad.workers.dev/chat";
-const CHAT_POLL_MS = 4000;
-const CHAT_MAX_LEN = 30;
-const CHAT_CLIENT_COOLDOWN_MS = 10000; // 연속 전송 시 10초 제한(서버에서도 동일하게 최종 검증)
-let chatPollTimer = null;
-let lastChatMessageCount = -1;
-let lastChatSentAt = 0;
-
-function fmtChatTime(t) {
-  return new Date(t).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" });
-}
-
-function renderChatMessages(messages) {
-  if (messages.length === 0) {
-    chatMessagesEl.innerHTML = `<p class="muted chat-empty">아직 등록된 글이 없습니다. 첫 글을 남겨보세요.</p>`;
-    return;
-  }
-  chatMessagesEl.innerHTML = messages
-    .map(
-      (m, i) => `
-      <div class="chat-msg">
-        <span class="chat-no">${i + 1}</span>
-        <span class="chat-text">${escapeHtml(m.text)}</span>
-        <span class="chat-time">${escapeHtml(fmtChatTime(m.t))}</span>
-      </div>`
-    )
-    .join("");
-  chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
-}
-
-async function loadChatMessages() {
-  try {
-    const res = await fetch(CHAT_API);
-    const data = await res.json();
-    const messages = (data && data.messages) || [];
-    if (messages.length !== lastChatMessageCount) {
-      lastChatMessageCount = messages.length;
-      renderChatMessages(messages);
-    }
-  } catch {
-    // 폴링 실패는 조용히 무시하고 다음 주기에 재시도
-  }
-}
-
-function startChatPolling() {
-  loadChatMessages();
-  stopChatPolling();
-  chatPollTimer = setInterval(loadChatMessages, CHAT_POLL_MS);
-}
-
-function stopChatPolling() {
-  if (chatPollTimer) clearInterval(chatPollTimer);
-  chatPollTimer = null;
-}
-
-// 서버와 동일한 기준을 클라이언트에서 먼저 확인해 불필요한 요청과 대기를 줄임(최종 검증은 항상 서버에서)
-function validateChatText(text) {
-  if (text.length === 0) return "메시지를 입력해주세요.";
-  if (text.length > CHAT_MAX_LEN) return `메시지는 최대 ${CHAT_MAX_LEN}자까지 입력할 수 있습니다.`;
-  if (/https?:\/\/|www\.|\.(com|net|org|kr|io|co)\b/i.test(text)) return "URL 주소는 등록할 수 없습니다.";
-  if (/(.)\1{4,}/.test(text)) return "같은 글자를 반복해서 입력할 수 없습니다.";
-  return null;
-}
-
-async function sendChatPost() {
-  const text = chatTextInput.value.trim();
-  const validationError = validateChatText(text);
-  if (validationError) {
-    chatError.textContent = validationError;
-    chatError.style.display = "block";
-    return;
-  }
-  const now = Date.now();
-  if (now - lastChatSentAt < CHAT_CLIENT_COOLDOWN_MS) {
-    chatError.textContent = `너무 빠르게 전송했습니다. ${Math.ceil((CHAT_CLIENT_COOLDOWN_MS - (now - lastChatSentAt)) / 1000)}초 후 다시 시도해주세요.`;
-    chatError.style.display = "block";
-    return;
-  }
-
-  chatError.style.display = "none";
-  chatSendBtn.disabled = true;
-  try {
-    const res = await fetch(CHAT_API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text }),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      chatError.textContent = data.error || "등록에 실패했습니다.";
-      chatError.style.display = "block";
-      return;
-    }
-    lastChatSentAt = now;
-    chatTextInput.value = "";
-    const messages = data.messages || [];
-    lastChatMessageCount = messages.length;
-    renderChatMessages(messages);
-  } catch {
-    chatError.textContent = "등록에 실패했습니다. 잠시 후 다시 시도해주세요.";
-    chatError.style.display = "block";
-  } finally {
-    chatSendBtn.disabled = false;
-  }
-}
-
-function toggleChatPanel(e) {
-  if (e) e.stopPropagation();
-  const isOpen = chatPanel.style.display !== "none";
-  chatPanel.style.display = isOpen ? "none" : "flex";
-  if (isOpen) {
-    stopChatPolling();
-  } else {
-    chatError.style.display = "none";
-    startChatPolling();
-  }
-}
-chatCloseBtn.addEventListener("click", () => {
-  chatPanel.style.display = "none";
-  stopChatPolling();
-});
-chatSendBtn.addEventListener("click", sendChatPost);
-chatTextInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") sendChatPost();
-});
-
 // 가격/차트보기 링크 클릭 시 새 탭 대신 앱 내 전체화면 모달로 TradingView 차트를 띄움(요약 카드·순위표 등 여러 곳에서 동적으로 삽입되므로 이벤트 위임 사용)
 el("chartModalCloseBtn").addEventListener("click", closeChartModal);
 document.addEventListener("click", (e) => {
@@ -248,18 +108,6 @@ document.addEventListener("keydown", (e) => {
   e.preventDefault();
   openChartModal(rowEl.dataset.chartSymbol);
 });
-document.addEventListener("click", (e) => {
-  if (
-    chatPanel.style.display !== "none" &&
-    !chatPanel.contains(e.target) &&
-    e.target !== bottomNavButtons.invest &&
-    !bottomNavButtons.invest.contains(e.target)
-  ) {
-    chatPanel.style.display = "none";
-    stopChatPolling();
-  }
-});
-
 // ---------- 로그인/회원가입 (Firebase Authentication) ----------
 // 구글·이메일은 Firebase가 직접 처리하고, 카카오·네이버는 Firebase가 네이티브 지원하지 않으므로
 // OAuth authorization code를 Worker(/auth/kakao, /auth/naver)로 전달해 검증받은 뒤 발급받는
@@ -476,91 +324,6 @@ async function completeSocialLogin(provider, code, state) {
   if (!provider) return;
   completeSocialLogin(provider, code, state);
 })();
-
-// ---------- 경제pick (매일 오전 7시 KST, GitHub Actions가 CC/공공저작물 미국 경제뉴스를 모아 AI요약+AI이미지로 갱신) ----------
-const ECONPICK_DATA_URL = "data/econpick.json";
-const ECONPICK_INITIAL_COUNT = 8;
-const ECONPICK_PAGE_SIZE = 4;
-let econPickItems = null; // 최초 오픈 시 1회만 fetch해서 세션 동안 재사용
-let econPickRenderedCount = 0;
-let econPickExpandedIdx = null;
-let econPickObserver = null;
-
-function econPickCardHtml(item, idx) {
-  const expanded = idx === econPickExpandedIdx;
-  const isRightCol = idx % 2 === 1;
-  // 2열 그리드에서 오른쪽 칸 카드를 펼치면 grid auto-placement가 기본적으로 "펼쳐진 카드"를 다음 줄로 내려버림 —
-  // 모든 카드에 자기 인덱스를 order로 부여해두고, 오른쪽 카드가 펼쳐질 때만 왼쪽 짝과 order를 맞바꿔서
-  // 펼쳐진 카드가 그 줄의 자리를 그대로 차지하고 왼쪽 카드가 대신 아래로 밀려나게 함
-  const rightNeighborExpanded = !isRightCol && econPickExpandedIdx === idx + 1;
-  let order = idx;
-  if (expanded && isRightCol) order = idx - 1;
-  else if (rightNeighborExpanded) order = idx + 1;
-  const summaryBlock = expanded
-    ? `<div class="econpick-summary">${escapeHtml(item.summary || "")}<br /><a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer">원문보기 →</a></div>`
-    : "";
-  return `
-    <div class="econpick-card${expanded ? " expanded" : ""}" data-idx="${idx}" style="order:${order}">
-      <img class="econpick-thumb" src="${escapeHtml(item.image)}" alt="" loading="lazy" />
-      <p class="econpick-title">${escapeHtml(item.title)}</p>
-      <p class="econpick-meta">${escapeHtml(item.source || "")}</p>
-      ${summaryBlock}
-    </div>`;
-}
-
-function renderEconPickCards() {
-  econPickGrid.innerHTML = econPickItems
-    .slice(0, econPickRenderedCount)
-    .map((item, idx) => econPickCardHtml(item, idx))
-    .join("");
-}
-
-function econPickLoadMore() {
-  if (!econPickItems || econPickRenderedCount >= econPickItems.length) return;
-  econPickRenderedCount = Math.min(econPickRenderedCount + ECONPICK_PAGE_SIZE, econPickItems.length);
-  renderEconPickCards();
-}
-
-function setupEconPickObserver() {
-  if (econPickObserver) return;
-  econPickObserver = new IntersectionObserver(
-    (entries) => {
-      if (entries.some((e) => e.isIntersecting)) econPickLoadMore();
-    },
-    { root: econPickBody, rootMargin: "200px" }
-  );
-  econPickObserver.observe(econPickSentinel);
-}
-
-// US Markets 등과 동일하게 일반 캐로셀 탭이 되어, TAB_LOADERS.econpick을 통해 탭 진입 시(최초 1회) 로딩됨
-async function loadEconPick() {
-  if (econPickItems) return; // 이미 불러온 데이터가 있으면 재요청 없이 그대로 재표시
-  econPickGrid.innerHTML = `<p class="muted">불러오는 중...</p>`;
-  try {
-    const res = await fetch(ECONPICK_DATA_URL);
-    if (!res.ok) throw new Error("데이터를 불러오지 못했습니다.");
-    const data = await res.json();
-    econPickItems = Array.isArray(data) ? data : [];
-    if (econPickItems.length === 0) {
-      econPickGrid.innerHTML = `<p class="econpick-empty">오늘 준비된 뉴스가 아직 없습니다.</p>`;
-      return;
-    }
-    econPickRenderedCount = Math.min(ECONPICK_INITIAL_COUNT, econPickItems.length);
-    renderEconPickCards();
-    setupEconPickObserver();
-  } catch (e) {
-    econPickGrid.innerHTML = `<p class="error-inline">경제pick을 불러오지 못했습니다: ${escapeHtml(e.message)}</p>`;
-  }
-}
-
-econPickGrid.addEventListener("click", (e) => {
-  if (e.target.closest("a")) return; // 원문보기 링크는 확장/축소를 건드리지 않음
-  const cardEl = e.target.closest(".econpick-card");
-  if (!cardEl) return;
-  const idx = Number(cardEl.dataset.idx);
-  econPickExpandedIdx = econPickExpandedIdx === idx ? null : idx;
-  renderEconPickCards();
-});
 
 // ---------- CORS 프록시 (여러 개를 순서대로 시도) ----------
 // 직접 만든 Cloudflare Worker(우리 서버)를 최우선으로 사용 — 야후 파이낸스는 빠르고 안정적으로 중계되지만,
@@ -1833,7 +1596,6 @@ const trendButtons = {
   plunge: el("trendPlungeBtn"),
   surge: el("trendSurgeBtn"),
   pressure: el("trendPressureBtn"),
-  usStock: el("trendUsStockBtn"),
   usEtf: el("trendUsEtfBtn"),
   krEtf: el("trendKrEtfBtn"),
 };
@@ -2062,13 +1824,11 @@ document.addEventListener("click", (e) => {
   navigateToTicker(chip.dataset.symbol);
 });
 
-// ---------- 하단 고정 네비게이션(홈=기업검색/캘린더/시장/내투자/투데이/로그인) ----------
+// ---------- 하단 고정 네비게이션(홈=기업검색/캘린더/시장/로그인) ----------
 const bottomNavButtons = {
   home: el("bottomNavHomeBtn"),
   calendar: el("bottomNavCalendarBtn"),
   market: el("bottomNavMarketBtn"),
-  invest: el("bottomNavInvestBtn"),
-  today: el("bottomNavFavoriteBtn"), // DOM id는 레거시(예전 ♥ 관심 자리) — 지금은 투데이 버튼으로 재사용
   login: el("bottomNavLoginBtn"),
 };
 function setBottomNavActive(key) {
@@ -2092,12 +1852,6 @@ bottomNavButtons.market.addEventListener("click", () => {
   setBottomNavActive("market");
   closeCompanyPanel();
   openMarketPanel();
-});
-bottomNavButtons.invest.addEventListener("click", toggleChatPanel);
-bottomNavButtons.today.addEventListener("click", () => {
-  setBottomNavActive("today");
-  closeCompanyPanel();
-  openEconPanel();
 });
 bottomNavButtons.login.addEventListener("click", () => {
   if (typeof firebase !== "undefined" && firebase.auth().currentUser) {
@@ -2123,17 +1877,6 @@ function closeMarketPanel() {
   stopIndexAutoRefresh();
 }
 el("marketPanelCloseBtn").addEventListener("click", closeMarketPanel);
-
-function openEconPanel() {
-  el("econPanel").style.display = "flex";
-  requestAnimationFrame(() => el("econPanel").classList.add("open"));
-  loadEconPick();
-}
-function closeEconPanel() {
-  el("econPanel").classList.remove("open");
-  window.setTimeout(() => { el("econPanel").style.display = "none"; }, 280);
-}
-el("econPanelCloseBtn").addEventListener("click", closeEconPanel);
 
 // ---------- 기업 패널: 틀고정 탭이 아니라 오른쪽에서 슬라이드인하는 전체화면 오버레이 ----------
 const companyPanel = el("companyPanel");
@@ -2368,19 +2111,16 @@ const RANKING_ENTRIES = [
   { icon: "medal", label: "투자등급", tab: "valuation", run: () => runValueStability() },
   { icon: "building", label: "시가총액", tab: "valuation", run: () => runValueMarketCap() },
   { icon: "thumbsup", label: "인기종목", tab: "trend", run: () => runTrendVolume() },
-  { icon: "rocket", label: "급등주", tab: "trend", run: () => runMovers("surge") },
-  { icon: "trending-down", label: "급락주", tab: "trend", run: () => runMovers("plunge") },
-  { icon: "trending-up", label: "추세상승", tab: "trend", run: () => runTrendPressure() },
-  { badge: "US", label: "US Stock", tab: "trend", run: () => runTrendUsStock() },
+  { icon: "trending-up", label: "상승률", tab: "trend", run: () => runMovers("surge") },
+  { icon: "trending-down", label: "하락률", tab: "trend", run: () => runMovers("plunge") },
+  { icon: "rocket", label: "상승압력", tab: "trend", run: () => runTrendPressure() },
   { icon: "basket", label: "US ETF", tab: "trend", run: () => runTrendUsEtf() },
-  { badge: "KR", label: "KR ETF", tab: "trend", run: () => runTrendKrEtf() },
+  { icon: "basket", label: "KR ETF", tab: "trend", run: () => runTrendKrEtf() },
 ];
 function renderWizardBranchA() {
   const items = RANKING_ENTRIES.map(
     (entry, i) =>
-      `<button type="button" class="wizard-option-btn" data-wizard-action="rank-nav" data-rank-idx="${i}">${
-        entry.icon ? iconHtml(entry.icon) : flagBadgeHtml(entry.badge)
-      } ${entry.label}</button>`
+      `<button type="button" class="wizard-option-btn" data-wizard-action="rank-nav" data-rank-idx="${i}">${iconHtml(entry.icon)} ${entry.label}</button>`
   ).join("");
   return `
     <p class="wizard-question">[랭킹찾기]에서 찾으실 항목을 선택해주세요.</p>
@@ -2399,9 +2139,9 @@ const WIZARD_CRITERIA = [
   { key: "per", icon: "scale", label: "PER", dir: "asc", get: (m) => m.per, fmt: (m) => (m.per === null || m.per === undefined ? "N/A" : `${m.per.toFixed(1)}배`) },
   { key: "stability", icon: "medal", label: "투자등급", dir: "desc", get: (m) => m.riskTotal, fmt: (m) => (m.riskTotal === null || m.riskTotal === undefined ? "N/A" : `${m.riskTotal}/10`) },
   { key: "marketCap", icon: "building", label: "시가총액", dir: "desc", get: (m) => m.marketCap, fmt: (m) => (m.marketCap ? fmtCompactCurrency(m.marketCap) : "N/A") },
-  { key: "pressure", icon: "trending-up", label: "상승압력도", dir: "desc", get: (m) => m.pressureTotal, fmt: (m) => (m.pressureTotal === null || m.pressureTotal === undefined ? "N/A" : `${m.pressureTotal}/10`) },
-  { key: "surge", icon: "rocket", label: "급등주(등락률)", dir: "desc", get: (m) => m.changePct, fmt: (m) => (m.changePct === null || m.changePct === undefined ? "N/A" : `${m.changePct >= 0 ? "+" : ""}${m.changePct.toFixed(2)}%`), needsDaily: true },
-  { key: "plunge", icon: "trending-down", label: "급락주(등락률)", dir: "asc", get: (m) => m.changePct, fmt: (m) => (m.changePct === null || m.changePct === undefined ? "N/A" : `${m.changePct >= 0 ? "+" : ""}${m.changePct.toFixed(2)}%`), needsDaily: true },
+  { key: "pressure", icon: "rocket", label: "상승압력도", dir: "desc", get: (m) => m.pressureTotal, fmt: (m) => (m.pressureTotal === null || m.pressureTotal === undefined ? "N/A" : `${m.pressureTotal}/10`) },
+  { key: "surge", icon: "trending-up", label: "상승률(등락률)", dir: "desc", get: (m) => m.changePct, fmt: (m) => (m.changePct === null || m.changePct === undefined ? "N/A" : `${m.changePct >= 0 ? "+" : ""}${m.changePct.toFixed(2)}%`), needsDaily: true },
+  { key: "plunge", icon: "trending-down", label: "하락률(등락률)", dir: "asc", get: (m) => m.changePct, fmt: (m) => (m.changePct === null || m.changePct === undefined ? "N/A" : `${m.changePct >= 0 ? "+" : ""}${m.changePct.toFixed(2)}%`), needsDaily: true },
 ];
 
 function renderWizardBranchB1() {
@@ -2700,7 +2440,6 @@ document.addEventListener("click", (e) => {
 
   // 무료 프록시 과부하를 피하려고 순서대로 백그라운드 로딩(사용자가 먼저 스와이프해서 들어가면 ensureTabLoaded가 그 자리에서 바로 시작함)
   (async () => {
-    await loadEconPick().catch(() => {});
     await ensureTabLoaded("trend"); // 급등주 미리 로딩(진입 시 바로 표시)
     await ensureTabLoaded("valuation");
     await ensureTabLoaded("insight");
@@ -5395,7 +5134,7 @@ const bindTrend = (btn, run) =>
 
 // ---------- 급등주/급락주: S&P500 종목 중 전일 등락률 상위·하위 50개, 접속 시 10개만 먼저 표시 ----------
 async function runMovers(direction) {
-  const label = direction === "surge" ? "급등주" : "급락주";
+  const label = direction === "surge" ? "상승률" : "하락률";
   setTrendActive(direction === "surge" ? trendButtons.surge : trendButtons.plunge);
   trendResults.innerHTML = "";
   trendStatus.style.display = "block";
@@ -5611,9 +5350,10 @@ async function getUsStockVolumeCandidates() {
     .sort((a, b) => b.volume - a.volume);
 }
 
-async function getEtfVolumeCandidates(tickers, nameMap) {
+// ETF는 1년치 차트를 한 번만 받아 거래대금(1년 평균)·상승률(1년) 두 기준을 모두 계산 — 기준 전환 시 재조회 없이 재정렬만 함
+async function fetchEtfMetrics(tickers, nameMap) {
   const results = await mapWithConcurrency(tickers, 8, async (symbol) => {
-    const chart = await yahooChart(symbol, "5d", "1d").catch(() => null);
+    const chart = await yahooChart(symbol).catch(() => null);
     const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
     if (!meta || meta.regularMarketPrice === undefined) return null;
     return {
@@ -5621,11 +5361,12 @@ async function getEtfVolumeCandidates(tickers, nameMap) {
       name: (nameMap && nameMap[symbol]) || meta.shortName || meta.longName || symbol,
       price: meta.regularMarketPrice,
       changePct: getDailyChangePercent(chart),
-      volume: meta.regularMarketVolume ?? null,
+      avgDollarVolume1y: currentDollarVolumeStats(chart).avg1y,
+      oneYearReturn: get1yReturnFromChart(chart),
       currency: meta.currency || "USD",
     };
   });
-  return results.filter(Boolean).sort((a, b) => (b.volume || 0) - (a.volume || 0));
+  return results.filter(Boolean);
 }
 
 const US_ETF_TICKERS = [
@@ -5667,41 +5408,88 @@ const KR_ETF_LIST = [
   { t: "114260.KS", name: "KODEX 국고채3년" },
 ];
 
-async function runTrendUsStock() {
-  setTrendActive(trendButtons.usStock);
-  await renderVolumeRanking(getUsStockVolumeCandidates(), {
-    statusEl: trendStatus,
-    resultsEl: trendResults,
-    initialCount: 10,
-    fullCount: 30,
-    rankNote: "순위는 당일 거래량(주식 수) 기준이며, 미국 전 종목 대상입니다. 투자 자문이 아닙니다.",
-  });
+// ---------- US ETF / KR ETF: 거래대금(1년 평균) · 상승률(1년) 두 기준을 하위 버튼으로 전환하며 보는 랭킹 ----------
+let etfMetricsCache = {}; // region("us"|"kr") -> 이미 조회한 candidates 배열(기준 전환 시 재사용)
+let trendEtfActiveRegion = "us";
+let trendEtfActiveMetric = "volume"; // "volume" | "return"
+
+function etfRankingHtml(all, region, metric) {
+  const sorted = [...all].sort((a, b) =>
+    metric === "volume" ? (b.avgDollarVolume1y || 0) - (a.avgDollarVolume1y || 0) : (b.oneYearReturn ?? -Infinity) - (a.oneYearReturn ?? -Infinity)
+  );
+  const rows = sorted.slice(0, 30);
+  const metricCell = (r) =>
+    metric === "volume"
+      ? r.avgDollarVolume1y
+        ? fmtCompactCurrency(r.avgDollarVolume1y)
+        : "N/A"
+      : r.oneYearReturn !== null && r.oneYearReturn !== undefined
+      ? `<span class="${r.oneYearReturn >= 0 ? "delta-up" : "delta-down"}">${fmtPct(r.oneYearReturn)}</span>`
+      : "N/A";
+  const subnav = `
+    <div class="top30-sub-nav" style="margin-bottom:10px;">
+      <button type="button" class="cat-btn${metric === "volume" ? " active" : ""}" data-etf-metric="volume">거래대금(1년)</button>
+      <button type="button" class="cat-btn${metric === "return" ? " active" : ""}" data-etf-metric="return">상승률(1년)</button>
+    </div>`;
+  const rowsHtml = rows
+    .map(
+      (r, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
+        <td>${priceChartLink(r.symbol, (r.currency === "KRW" ? "₩" : "$") + r.price.toLocaleString(undefined, { maximumFractionDigits: 2 }))}${
+        r.changePct !== null && r.changePct !== undefined
+          ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
+          : ""
+      }</td>
+        <td>${metricCell(r)}</td>
+      </tr>`
+    )
+    .join("");
+  return `
+    ${subnav}
+    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${region === "us" ? "미국" : "한국"} 주요 상장 ETF 목록 중 ${
+    metric === "volume" ? "거래대금(1년 평균)" : "상승률(1년)"
+  } 상위 30개입니다. 투자 자문이 아닙니다.</p>
+    <div class="popular-table-wrap">
+      <table class="top30-table popular-table">
+        <thead><tr><th>순위</th><th>티커</th><th>현재가<br>(등락률)</th><th>${metric === "volume" ? "거래대금(1년)" : "상승률(1년)"}</th></tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+    </div>`;
 }
 
+async function runTrendEtf(region) {
+  trendEtfActiveRegion = region;
+  setTrendActive(region === "us" ? trendButtons.usEtf : trendButtons.krEtf);
+  trendResults.innerHTML = "";
+  trendStatus.style.display = "block";
+  trendStatus.textContent = "ETF 데이터를 불러오는 중...";
+  try {
+    if (!etfMetricsCache[region]) {
+      const nameMap = region === "kr" ? Object.fromEntries(KR_ETF_LIST.map((x) => [x.t, x.name])) : null;
+      const tickers = region === "us" ? US_ETF_TICKERS : KR_ETF_LIST.map((x) => x.t);
+      etfMetricsCache[region] = await fetchEtfMetrics(tickers, nameMap);
+    }
+    trendStatus.style.display = "none";
+    trendResults.innerHTML = etfRankingHtml(etfMetricsCache[region], region, trendEtfActiveMetric);
+  } catch (e) {
+    trendStatus.textContent = `❌ ${e.message || "ETF 데이터를 가져오지 못했습니다."}`;
+  }
+}
 async function runTrendUsEtf() {
-  setTrendActive(trendButtons.usEtf);
-  await renderVolumeRanking(getEtfVolumeCandidates(US_ETF_TICKERS), {
-    statusEl: trendStatus,
-    resultsEl: trendResults,
-    initialCount: 10,
-    fullCount: 30,
-    rankNote: "순위는 당일 거래량(주식 수) 기준이며, 미국 주요 상장 ETF 목록 중 상위입니다. 투자 자문이 아닙니다.",
-  });
+  await runTrendEtf("us");
 }
-
 async function runTrendKrEtf() {
-  setTrendActive(trendButtons.krEtf);
-  const nameMap = Object.fromEntries(KR_ETF_LIST.map((x) => [x.t, x.name]));
-  await renderVolumeRanking(getEtfVolumeCandidates(KR_ETF_LIST.map((x) => x.t), nameMap), {
-    statusEl: trendStatus,
-    resultsEl: trendResults,
-    initialCount: 10,
-    fullCount: 30,
-    rankNote: "순위는 당일 거래량(주식 수) 기준이며, 한국 주요 상장 ETF 목록 중 상위입니다. 투자 자문이 아닙니다.",
-  });
+  await runTrendEtf("kr");
 }
+trendResults.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-etf-metric]");
+  if (!btn || !etfMetricsCache[trendEtfActiveRegion]) return;
+  trendEtfActiveMetric = btn.dataset.etfMetric;
+  trendResults.innerHTML = etfRankingHtml(etfMetricsCache[trendEtfActiveRegion], trendEtfActiveRegion, trendEtfActiveMetric);
+});
 
-bindTrend(trendButtons.usStock, runTrendUsStock);
 bindTrend(trendButtons.usEtf, runTrendUsEtf);
 bindTrend(trendButtons.krEtf, runTrendKrEtf);
 

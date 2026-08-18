@@ -67,25 +67,6 @@
     </div>
   </header>
 
-  <div id="chatPanel" class="chat-panel board-panel" style="display:none;">
-    <div class="chat-header">
-      <span>📋 개미투자 게시판 <span class="muted" style="font-weight:400;">(익명·24시간 보관)</span></span>
-      <button id="chatCloseBtn" class="chat-close-btn" type="button" aria-label="닫기">✕</button>
-    </div>
-    <div class="board-list-head">
-      <span class="board-col-no">번호</span>
-      <span class="board-col-content">내용</span>
-      <span class="board-col-time">시간</span>
-    </div>
-    <div id="chatMessages" class="chat-messages"><p class="muted chat-empty">불러오는 중...</p></div>
-    <p id="chatError" class="chat-error" style="display:none;"></p>
-    <div class="chat-post-form">
-      <input type="text" id="chatTextInput" class="chat-input chat-text-input" maxlength="30" placeholder="글을 남겨주세요 (최대 30자)" autocomplete="off" />
-      <button id="chatSendBtn" class="chat-send-btn" type="button" aria-label="등록">➤</button>
-    </div>
-    <p class="chat-footer muted">비속어·URL·도배성 문구는 등록이 제한됩니다 · 1:1 문의: yeop2ad@gmail.com</p>
-  </div>
-
   <div id="chartModal" class="chart-modal" style="display:none;">
     <div class="chart-modal-header">
       <span id="chartModalTitle" class="chart-modal-title"></span>
@@ -341,20 +322,6 @@
     </div>
   </div>
 
-  <div id="econPanel" class="company-panel" style="display:none;">
-    <div class="company-panel-bar">
-      <button type="button" id="econPanelCloseBtn" class="search-overlay-back" aria-label="닫기">←</button>
-      <h2 class="search-overlay-title">투데이</h2>
-    </div>
-    <div class="company-panel-body">
-      <p class="muted" style="font-size:12px;margin:0 0 10px;"><span class="btn-icon" data-icon="newspaper"></span> 투데이 <span style="font-weight:400;">(매일 오전 7시 업데이트)</span></p>
-      <div id="econPickBody" class="econpick-body">
-        <div id="econPickGrid" class="econpick-grid"></div>
-        <div id="econPickSentinel" class="econpick-sentinel"></div>
-      </div>
-    </div>
-  </div>
-
   <div id="searchWizardPanel" class="company-panel" style="display:none;">
     <div class="company-panel-bar">
       <button type="button" id="searchWizardCloseBtn" class="search-overlay-back" aria-label="닫기">←</button>
@@ -421,12 +388,11 @@
       <div class="carousel-panel" data-panel="trend" id="panelTrend">
         <div class="top30-sub-nav">
           <button type="button" class="cat-btn" id="trendVolumeBtn"><span class="btn-icon" data-icon="thumbsup"></span> 인기종목</button>
-          <button type="button" class="cat-btn" id="trendSurgeBtn"><span class="btn-icon" data-icon="rocket"></span> 급등주</button>
-          <button type="button" class="cat-btn" id="trendPlungeBtn"><span class="btn-icon" data-icon="trending-down"></span> 급락주</button>
-          <button type="button" class="cat-btn" id="trendPressureBtn"><span class="btn-icon" data-icon="trending-up"></span> 추세상승</button>
-          <button type="button" class="cat-btn" id="trendUsStockBtn"><span class="wiz-flag-badge">US</span> US Stock</button>
+          <button type="button" class="cat-btn" id="trendSurgeBtn"><span class="btn-icon" data-icon="trending-up"></span> 상승률</button>
+          <button type="button" class="cat-btn" id="trendPlungeBtn"><span class="btn-icon" data-icon="trending-down"></span> 하락률</button>
+          <button type="button" class="cat-btn" id="trendPressureBtn"><span class="btn-icon" data-icon="rocket"></span> 상승압력</button>
           <button type="button" class="cat-btn" id="trendUsEtfBtn"><span class="btn-icon" data-icon="basket"></span> US ETF</button>
-          <button type="button" class="cat-btn" id="trendKrEtfBtn"><span class="wiz-flag-badge">KR</span> KR ETF</button>
+          <button type="button" class="cat-btn" id="trendKrEtfBtn"><span class="btn-icon" data-icon="basket"></span> KR ETF</button>
         </div>
         <p id="trendStatus" class="muted top30-status" style="display:none;"></p>
         <div id="trendResults"></div>
@@ -457,12 +423,6 @@
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavMarketBtn" aria-label="시장">
       <svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="12" width="3.4" height="8" rx="1"/><rect x="10.3" y="7" width="3.4" height="13" rx="1"/><rect x="16.6" y="3" width="3.4" height="17" rx="1"/></svg>
-    </button>
-    <button type="button" class="bottom-nav-btn" id="bottomNavInvestBtn" aria-label="내투자">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg>
-    </button>
-    <button type="button" class="bottom-nav-btn" id="bottomNavFavoriteBtn" aria-label="투데이">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M7.5 8h6M7.5 12h9M7.5 16h9"/></svg>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavLoginBtn" aria-label="로그인">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4" /><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" /></svg>
