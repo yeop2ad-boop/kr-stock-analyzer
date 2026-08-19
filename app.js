@@ -5431,17 +5431,20 @@ function logoBg(symbol) {
   return null;
 }
 
-function tickerLogoHtml(symbol) {
+// badgeLabel: 로고 이미지를 못 찾았을 때 대신 보여줄 배지 문구(기본은 티커 앞 2글자) — 한국 ETF처럼
+// 티커가 숫자라 의미 없는 경우, 호출부에서 운용사 브랜드명 약자(KODEX·TIGER 등)를 넘겨 대체
+function tickerLogoHtml(symbol, badgeLabel) {
   const s = escapeHtml(symbol);
+  const badge = escapeHtml(badgeLabel || symbol.slice(0, 2));
   const ov = LOGO_OVERRIDE[symbol];
   const bg = logoBg(symbol);
   const wrapStyle = bg ? ` style="background:${bg}"` : "";
   if (ov && ov.src) {
-    return `<span class="ticker-logo-wrap"${wrapStyle}><img class="ticker-logo" src="${ov.src}" alt="${s}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><span class="ticker-logo-badge" style="display:none;">${s.slice(0, 2)}</span></span>`;
+    return `<span class="ticker-logo-wrap"${wrapStyle}><img class="ticker-logo" src="${ov.src}" alt="${s}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><span class="ticker-logo-badge" style="display:none;">${badge}</span></span>`;
   }
   const { primary, fmp, useFallback } = logoSources(symbol, 80);
   const fb = useFallback ? ` data-fallback="${fmp}"` : "";
-  return `<span class="ticker-logo-wrap"${wrapStyle}><img class="ticker-logo" src="${primary}" alt="${s}" loading="lazy"${fb} onerror="${LOGO_ONERROR}" /><span class="ticker-logo-badge" style="display:none;">${s.slice(0, 2)}</span></span>`;
+  return `<span class="ticker-logo-wrap"${wrapStyle}><img class="ticker-logo" src="${primary}" alt="${s}" loading="lazy"${fb} onerror="${LOGO_ONERROR}" /><span class="ticker-logo-badge" style="display:none;">${badge}</span></span>`;
 }
 
 // buildHistoricalCompareRows 결과로 과거분석 표 HTML(범례 제외)을 생성 — moversTableHtml과 동일한 5컬럼 구성(순위/티커+원형로고/현재가(등락률)/상승압력/투자안정)
@@ -6488,23 +6491,18 @@ async function fetchEtfMetrics(tickers, nameMap) {
   return results.filter(Boolean);
 }
 
+// 레버리지·인버스·배수(2X 등)·원자재(원유·금 등 선물) 상품은 제외 — 순수 지수·섹터·테마 추종 ETF만 유지
 const US_ETF_TICKERS = [
   "SPY", "QQQ", "IWM", "VTI", "VOO", "DIA", "ARKK", "XLF", "XLK", "XLE",
-  "XLV", "XLY", "XLP", "XLI", "GLD", "SLV", "TLT", "HYG", "LQD", "EEM",
-  "EFA", "SOXL", "TQQQ", "SQQQ", "UVXY", "VXX", "SMH", "XBI", "KRE", "VNQ",
+  "XLV", "XLY", "XLP", "XLI", "TLT", "HYG", "LQD", "EEM",
+  "EFA", "VXX", "SMH", "XBI", "KRE", "VNQ",
 ];
 
 const KR_ETF_LIST = [
   { t: "069500.KS", name: "KODEX 200" },
   { t: "102110.KS", name: "TIGER 200" },
-  { t: "233740.KS", name: "KODEX 코스닥150레버리지" },
-  { t: "122630.KS", name: "KODEX 레버리지" },
-  { t: "252670.KS", name: "KODEX 200선물인버스2X" },
-  { t: "251340.KS", name: "KODEX 코스닥150선물인버스" },
-  { t: "114800.KS", name: "KODEX 인버스" },
   { t: "091160.KS", name: "KODEX 반도체" },
   { t: "091170.KS", name: "KODEX 은행" },
-  { t: "139660.KS", name: "TIGER 200선물레버리지" },
   { t: "305720.KS", name: "KODEX 2차전지산업" },
   { t: "091220.KS", name: "TIGER 반도체" },
   { t: "133690.KS", name: "TIGER 미국나스닥100" },
@@ -6512,17 +6510,13 @@ const KR_ETF_LIST = [
   { t: "381170.KS", name: "TIGER 미국테크TOP10 INDXX" },
   { t: "379800.KS", name: "KODEX 미국S&P500TR" },
   { t: "371460.KS", name: "TIGER 차이나전기차SOLACTIVE" },
-  { t: "396500.KS", name: "TIGER 부동산인프라고배당" },
+  // 396500.KS는 2024년경 "TIGER 부동산인프라고배당"에서 "TIGER 반도체TOP10"으로 재상장(같은 티커, 다른 테마) — 최신 명칭으로 수정
+  { t: "396500.KS", name: "TIGER 반도체TOP10" },
   { t: "192090.KS", name: "TIGER 차이나CSI300" },
   { t: "232080.KS", name: "TIGER 코스피" },
   { t: "277630.KS", name: "TIGER KRX2000" },
   { t: "148020.KS", name: "KBSTAR 200" },
-  { t: "294400.KS", name: "KBSTAR 200선물레버리지" },
   { t: "069660.KS", name: "KOSEF 200" },
-  { t: "104530.KS", name: "KODEX WTI원유선물(H)" },
-  { t: "130680.KS", name: "TIGER 원유선물Enhanced(H)" },
-  { t: "132030.KS", name: "KODEX 골드선물(H)" },
-  { t: "261240.KS", name: "KODEX WTI원유선물인버스(H)" },
   { t: "273130.KS", name: "KODEX 종합채권(AA-이상)액티브" },
   { t: "114260.KS", name: "KODEX 국고채3년" },
 ];
@@ -6550,12 +6544,19 @@ function etfRankingHtml(all, region, metric) {
       <button type="button" class="cat-btn${metric === "volume" ? " active" : ""}" data-etf-metric="volume">거래대금(1년)</button>
       <button type="button" class="cat-btn${metric === "return" ? " active" : ""}" data-etf-metric="return">상승률(1년)</button>
     </div>`;
+  // 한국 ETF는 티커가 숫자(예: 396500.KS)라 로고 실패 시 배지가 의미 없어짐 — 대신 운용사 브랜드 약자를 배지로 사용
+  const KR_ETF_BRAND_BADGE = { KODEX: "KX", TIGER: "TG", KBSTAR: "KB", KOSEF: "KS" };
+  const badgeFor = (r) => {
+    if (region !== "kr") return undefined;
+    const brand = r.name.split(" ")[0];
+    return KR_ETF_BRAND_BADGE[brand];
+  };
   const rowsHtml = rows
     .map(
       (r, i) => `
       <tr>
         <td>${i + 1}</td>
-        <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
+        <td><span class="ticker-cell">${tickerLogoHtml(r.symbol, badgeFor(r))}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
         <td>${priceChartLink(r.symbol, (r.currency === "KRW" ? "₩" : "$") + r.price.toLocaleString(undefined, { maximumFractionDigits: 2 }))}${
         r.changePct !== null && r.changePct !== undefined
           ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
