@@ -4685,22 +4685,24 @@ async function getPriceAnd1yReturn(symbol) {
 function brandRepTableHtml(rows, scoreLabel) {
   const trs = rows
     .map((r) => {
+      // 한글명이 있으면 한글명을 우선 쓰고, 관심종목 리스트처럼 이름(굵게)-티커(작게·아래줄)를 세로로 구분해 표시
+      const displayName = r.ticker ? TICKER_TO_KOREAN_NAME[r.ticker] || r.name : r.name;
       const nameCell = r.ticker
-        ? `<span class="ticker-cell">${tickerLogoHtml(r.ticker)}<b class="ticker-link" data-ticker="${escapeHtml(r.ticker)}">${escapeHtml(r.name)}</b></span>`
-        : `<span class="ticker-cell"><span class="ticker-logo-wrap"><span class="ticker-logo-badge" style="display:flex;">${escapeHtml(r.name.slice(0, 2))}</span></span>${escapeHtml(r.name)}</span>`;
-      let priceCell = `<span class="muted">비상장·매칭없음</span>`;
+        ? `<span class="brand-rep-name-cell">${tickerLogoHtml(r.ticker)}<span class="brand-rep-name-text"><b class="ticker-link" data-ticker="${escapeHtml(r.ticker)}">${escapeHtml(displayName)}</b><span class="muted brand-rep-ticker">${escapeHtml(r.ticker)}</span></span></span>`
+        : `<span class="brand-rep-name-cell"><span class="ticker-logo-wrap"><span class="ticker-logo-badge" style="display:flex;">${escapeHtml(r.name.slice(0, 2))}</span></span><span class="brand-rep-name-text"><b>${escapeHtml(displayName)}</b></span></span>`;
+      let priceCell = `<span class="muted">비상장</span>`;
       if (r.ticker) {
         priceCell = r.metrics
-          ? `${priceChartLink(r.ticker, "$" + r.metrics.price.toFixed(2))}<br><span class="${r.metrics.oneYearReturn >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">${r.metrics.oneYearChangeAmt !== null ? `${r.metrics.oneYearChangeAmt >= 0 ? "+" : ""}$${r.metrics.oneYearChangeAmt.toFixed(2)} ` : ""}${r.metrics.oneYearReturn !== null ? `(${fmtPct(r.metrics.oneYearReturn)})` : "N/A"}</span>`
+          ? `${priceChartLink(r.ticker, "$" + r.metrics.price.toFixed(2))}<br><span class="${r.metrics.oneYearReturn >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">${r.metrics.oneYearChangeAmt !== null ? `${r.metrics.oneYearChangeAmt >= 0 ? "+" : ""}$${r.metrics.oneYearChangeAmt.toFixed(2)}` : ""}${r.metrics.oneYearReturn !== null ? `<br>(${fmtPct(r.metrics.oneYearReturn)})` : r.metrics.oneYearChangeAmt === null ? "N/A" : ""}</span>`
           : `<span class="muted">조회 실패</span>`;
       }
-      const scoreCell = r.score !== null && r.score !== undefined ? r.score : r.prevRank ? `전년 ${r.prevRank}위` : "—";
+      const scoreCell = r.score !== null && r.score !== undefined ? r.score : r.prevRank ? `${r.prevRank}위` : "—";
       return `<tr><td>${r.rank}</td><td>${nameCell}</td><td>${priceCell}</td><td>${scoreCell}</td></tr>`;
     })
     .join("");
   return `
     <table class="top30-table brand-rep-table">
-      <thead><tr><th>순위</th><th>기업</th><th>현재가(1년 변동)</th><th>${escapeHtml(scoreLabel)}</th></tr></thead>
+      <thead><tr><th>순위</th><th>기업</th><th>현재가<br>(1년 변동)</th><th>${escapeHtml(scoreLabel)}</th></tr></thead>
       <tbody>${trs}</tbody>
     </table>`;
 }

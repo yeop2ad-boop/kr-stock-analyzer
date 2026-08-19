@@ -1159,6 +1159,14 @@ table.top30-table { width: 100%; border-collapse: collapse; margin-top: 14px; fo
 table.top30-table th, table.top30-table td { padding: 8px 6px; border-bottom: 1px solid var(--border); text-align: center; }
 table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: #b8860b; font-weight: 800; }
 
+/* 브랜드평판순 표: 기업 헤더는 다른 열과 같이 가운데 정렬 유지, 데이터 행(기업명)만 왼쪽 정렬 */
+.brand-rep-table td:nth-child(2) { text-align: left; }
+.brand-rep-table th:nth-child(3), .brand-rep-table th:nth-child(4) { white-space: nowrap; }
+.brand-rep-table th:nth-child(4) { min-width: 58px; }
+.brand-rep-name-cell { display: flex; align-items: center; gap: 8px; }
+.brand-rep-name-text { display: flex; flex-direction: column; gap: 2px; text-align: left; }
+.brand-rep-ticker { font-size: 11px; font-weight: 600; }
+
 /* ---------- 기업검색 위저드 ---------- */
 .wizard-question { font-size: 16px; font-weight: 700; margin: 4px 0 16px; line-height: 1.4; }
 .wizard-root-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
