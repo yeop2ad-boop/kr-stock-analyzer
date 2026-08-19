@@ -6293,7 +6293,7 @@ bindTrend(trendButtons.pressure, runTrendPressure);
 function stockCardRowHtml(r) {
   const displayName = TICKER_TO_KOREAN_NAME[r.symbol] || r.name;
   const currencySign = r.currency === "KRW" ? "₩" : "$";
-  const priceStr = "*" + currencySign + r.price.toLocaleString(undefined, { maximumFractionDigits: 2 });
+  const priceStr = currencySign + r.price.toLocaleString(undefined, { maximumFractionDigits: 2 });
   const sign = (n) => (n >= 0 ? "+" : "");
   let cls = "";
   let changeAmtStr = "";
