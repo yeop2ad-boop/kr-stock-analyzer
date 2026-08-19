@@ -4700,9 +4700,11 @@ function brandRepTableHtml(rows, scoreLabel) {
       return `<tr><td>${r.rank}</td><td>${nameCell}</td><td>${priceCell}</td><td>${scoreCell}</td></tr>`;
     })
     .join("");
+  // "인기도(Popularity)"처럼 영문 괄호가 붙는 라벨은 괄호 앞에서 줄바꿈(짧은 라벨은 괄호가 없어 그대로 유지)
+  const scoreLabelHtml = escapeHtml(scoreLabel).replace(/(\()/, "<br>$1");
   return `
     <table class="top30-table brand-rep-table">
-      <thead><tr><th>순위</th><th>기업</th><th>현재가<br>(1년 변동)</th><th>${escapeHtml(scoreLabel)}</th></tr></thead>
+      <thead><tr><th>순위</th><th>기업</th><th>현재가<br>(1년 변동)</th><th>${scoreLabelHtml}</th></tr></thead>
       <tbody>${trs}</tbody>
     </table>`;
 }
