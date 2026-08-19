@@ -281,10 +281,9 @@ body {
   justify-content: center;
   background: none;
   border: none;
-  color: var(--muted);
+  color: #e6983c;
   position: relative;
 }
-.search-watch-btn.active { color: var(--warn); }
 .search-watch-btn:not(.active)::after {
   content: "+";
   position: absolute;
