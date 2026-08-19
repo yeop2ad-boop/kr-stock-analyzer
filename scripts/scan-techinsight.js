@@ -230,7 +230,10 @@ async function main() {
   if (fs.existsSync(SEEN_FILE)) seen = JSON.parse(fs.readFileSync(SEEN_FILE, "utf8"));
   const seenLinks = new Set(seen.map((s) => s.link));
 
-  // 기관별로 최신순 후보 목록을 모으고, 그중 아직 쓰지 않은 첫 항목을 하나씩 선정(기관당 최대 1건/실행)
+  // 기관별로 최신순 후보 목록을 모으고, 하루 목표 건수(TARGET_COUNT)를 채울 때까지 기관을 돌아가며
+  // 아직 쓰지 않은 항목을 하나씩 뽑음(기관 4곳 × 최대 1건이면 최대 4건뿐이라 목표를 못 채우므로,
+  // 필요하면 한 기관에서 여러 건을 더 뽑아 채움 — 다만 매 라운드 모든 기관에 고르게 기회를 먼저 줌)
+  const TARGET_COUNT = 6;
   const candidatesBySource = {};
   for (const src of RSS_SOURCES) {
     try {
@@ -249,12 +252,26 @@ async function main() {
     console.error(`[${OECD_SOURCE.name}] 수집 실패:`, err.message);
   }
 
+  const sourceKeys = Object.keys(candidatesBySource);
+  const cursors = Object.fromEntries(sourceKeys.map((k) => [k, 0]));
   const selected = [];
-  for (const key of Object.keys(candidatesBySource)) {
-    const pick = candidatesBySource[key].find((it) => !seenLinks.has(it.link));
-    if (pick) selected.push({ ...pick, sourceKey: key });
+  let progressed = true;
+  while (selected.length < TARGET_COUNT && progressed) {
+    progressed = false;
+    for (const key of sourceKeys) {
+      if (selected.length >= TARGET_COUNT) break;
+      const list = candidatesBySource[key];
+      while (cursors[key] < list.length) {
+        const cand = list[cursors[key]++];
+        if (!seenLinks.has(cand.link)) {
+          selected.push({ ...cand, sourceKey: key });
+          progressed = true;
+          break;
+        }
+      }
+    }
   }
-  console.log(`오늘 선정된 후보: ${selected.length}건(기관당 최대 1건)`);
+  console.log(`오늘 선정된 후보: ${selected.length}건(목표 ${TARGET_COUNT}건, 기관 돌아가며 선정)`);
 
   const CONCURRENCY = 4;
   async function mapWithConcurrency(items, limit, fn) {
