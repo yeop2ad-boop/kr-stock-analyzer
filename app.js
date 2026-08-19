@@ -2328,7 +2328,9 @@ async function renderWatchlistList() {
         try {
           const chart = await yahooChart(w.symbol, "5d");
           const snap = yahooSnapshot(chart);
-          return snap && { ...snap, symbol: w.symbol, name: w.symbol, time: snap.date };
+          const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
+          const volume = meta && meta.regularMarketVolume !== undefined ? meta.regularMarketVolume : null;
+          return snap && { ...snap, symbol: w.symbol, name: w.symbol, time: snap.date, volume, currency: (meta && meta.currency) || "USD" };
         } catch {
           return null;
         }
