@@ -353,9 +353,11 @@ body {
   background: var(--bg);
   padding-top: 2px;
 }
-/* 검정 상세화면에서는 상단 고정바(detail-bar) 바로 아래에 서브탭이 틈 없이 붙도록 body의 top padding을 상쇄하고 폭도 화면 끝까지 채움 */
+/* 검정 상세화면에서는 상단 고정바(detail-bar) 바로 아래에 서브탭이 틈 없이 붙도록 body의 top padding 자체를 0으로 만들고
+   (sticky 요소에 음수 margin으로 상쇄시키는 방식은 스크롤 위치에 따라 어긋나서 padding 자체를 없앰), 서브탭 폭은 화면 끝까지 채움 */
+.company-panel-black .company-panel-body { padding-top: 0; }
 .company-panel-black .company-panel-body #summarySubtabNav {
-  margin: -14px -20px 12px;
+  margin: 0 -20px 12px;
   padding: 0 20px;
   background: #000;
 }
@@ -401,32 +403,21 @@ body {
   color: #fff;
   backdrop-filter: blur(2px);
 }
-.chart-type-toggle {
-  position: absolute;
-  bottom: 40px;
-  right: 8px;
-  z-index: 4;
-  display: flex;
-  gap: 4px;
-  background: rgba(20, 22, 28, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 8px;
-  padding: 3px;
-  backdrop-filter: blur(2px);
+/* 라인/캔들 전환 버튼 — 기간 버튼(1일~최대)과 같은 줄에 7번째 버튼으로 들어감(플로팅 아님) */
+#summaryChartPeriodNav {
+  gap: 2px;
 }
-.chart-type-btn {
-  width: 26px;
-  height: 26px;
-  padding: 0;
+#summaryChartPeriodNav .cat-btn {
+  background: transparent;
+  padding: 7px 8px;
+  font-size: 10.5px;
+}
+.chart-type-single-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
-  background: transparent;
-  border-radius: 6px;
-  color: var(--muted);
+  padding: 7px 10px;
 }
-.chart-type-btn.active { background: rgba(255, 255, 255, 0.14); color: #fff; }
 
 /* ---------- 종목 상세: 개요/매출액/invest점수/주요뉴스 서브탭 — 상단 tab-bar와 동일한 톤(굵은 흰 글씨+밑줄) ---------- */
 .detail-subtabs {
@@ -444,7 +435,7 @@ body {
   color: var(--muted);
   font-size: 14px;
   font-weight: 600;
-  padding: 12px 4px;
+  padding: 4px 4px 12px;
   text-align: center;
 }
 .detail-subtabs .cat-btn.active { color: #fff; font-weight: 800; }
@@ -774,6 +765,84 @@ body {
   background: #000;
 }
 
+/* 상승 압력/투자 안정 설명 옆 "+자세히" 버튼 + 배점 기준 모달 — 화면 전체가 아니라 스마트폰 화면 절반 높이 시트로 표시 */
+.score-method-detail-btn {
+  flex: none;
+  padding: 2px 9px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.score-method-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 410;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+}
+.score-method-sheet {
+  width: 100%;
+  max-width: 480px;
+  max-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+}
+.score-method-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  flex: none;
+}
+.score-method-title { font-size: 14px; font-weight: 800; color: var(--text); }
+.score-method-body {
+  flex: 1;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.score-method-card {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  padding: 14px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  border-right: 1px solid var(--border);
+}
+.score-method-card:last-child { border-right: none; }
+.score-method-card h4 { margin: 0 0 10px; font-size: 13.5px; }
+.score-method-swipe-hint { font-size: 10.5px; font-weight: 400; color: var(--muted); margin-left: 6px; }
+
+/* 배점 기준 모달 카드 상단 — 예시 종목 로고+이름 */
+.smb-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.smb-header .ticker-logo-wrap { width: 26px; height: 26px; flex: none; }
+.smb-header-name { font-size: 13px; font-weight: 800; color: var(--text); }
+
+/* 배점 항목 하나 = 상승형 막대그래프 한 줄(라벨+점수 → 막대 → 설명) */
+.smb-row { margin-bottom: 12px; }
+.smb-row-top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px; }
+.smb-label { font-size: 12.5px; font-weight: 700; color: var(--text); }
+.smb-value { font-size: 12.5px; font-weight: 800; }
+.smb-track { height: 8px; border-radius: 4px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+.smb-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+.smb-desc { margin: 4px 0 0; font-size: 11px; color: var(--muted); }
+.smb-desc b { color: var(--text); }
+.smb-formula { margin: 4px 0 8px; font-size: 13px; font-weight: 700; color: var(--text); padding-top: 8px; border-top: 1px dashed var(--border); }
+
 .login-modal {
   position: fixed;
   inset: 0;
@@ -978,12 +1047,22 @@ body {
   border: 1px solid var(--border);
   border-radius: 8px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
-  max-height: 180px;
+  max-height: 220px;
   overflow-y: auto;
 }
 
-.chat-ticker-option { padding: 7px 10px; font-size: 12px; cursor: pointer; }
+/* 작은 로고 - 한글이름 - 티커(거래소) 순으로 한 줄에 표시하는 컴팩트한 행 */
+.chat-ticker-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
 .chat-ticker-option:hover { background: var(--accent-soft); }
+.chat-ticker-option .ticker-logo-wrap { width: 20px; height: 20px; flex: none; }
+.chat-ticker-option-name { font-size: 12.5px; font-weight: 700; color: var(--text); }
+.chat-ticker-option-sub { font-size: 11px; color: var(--muted); }
 
 .card {
   background: var(--card-bg);
@@ -1897,8 +1976,8 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 .score-badge .score-den { font-size: 12px; color: var(--muted); }
 .score-badge.risk { background: #143327; border-color: var(--good); }
 .score-badge.risk .score-num { color: var(--good); }
-.score-badge.macro { background: #362a12; border-color: var(--warn); }
-.score-badge.macro .score-num { color: var(--warn); }
+.score-badge.macro .score-num { font-size: 26px; color: inherit; }
+.score-badge.macro .score-den { font-size: 10px; text-align: center; line-height: 1.2; padding: 0 6px; color: inherit; opacity: 0.75; }
 .score-macro-vix-line { margin: -6px 0 14px; font-size: 11.5px; color: var(--muted); }
 
 .mini-score-row {
@@ -1924,8 +2003,9 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
   color: var(--accent);
 }
 .mini-score-circle.risk { background: #143327; border-color: var(--good); color: var(--good); }
-.mini-score-circle.macro { background: #362a12; border-color: var(--warn); color: var(--warn); }
 .mini-score-label { font-size: 11px; color: var(--muted); white-space: nowrap; text-align: center; }
+
+.score-pill-empty { color: var(--muted); font-weight: 700; }
 
 .score-details { flex: 1; min-width: 220px; font-size: 13px; }
 .score-details ul { margin: 0; padding-left: 18px; }

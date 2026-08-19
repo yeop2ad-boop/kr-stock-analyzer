@@ -28,7 +28,7 @@ const ICONS = {
     `<path d="M12 2c2.5 2 4 5.5 4 9 0 2-1 4-2 5v3l-2-1-2 1v-3c-1-1-2-3-2-5 0-3.5 1.5-7 4-9Z"/><circle cx="12" cy="10" r="1.4" fill="${WIZ_ORANGE}" stroke="none"/><path d="M9 16l-2 4M15 16l2 4"/>`
   ),
   wallet: svgIcon(`<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="17" cy="14.5" r="1.2" fill="${WIZ_ORANGE}" stroke="none"/>`),
-  dollar: svgIcon(`<path d="M12 5v14"/><path d="M15.5 8.3c0-1.3-1.6-2.1-3.5-2.1s-3.5.9-3.5 2.1 1.6 1.7 3.5 2 3.5.9 3.5 2.1-1.6 2.1-3.5 2.1-3.5-.8-3.5-2.1"/>`),
+  dollar: svgIcon(`<path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>`),
   calculator: svgIcon(
     `<rect x="5" y="3" width="14" height="18" rx="2"/><rect x="7.5" y="5.5" width="9" height="3.5" rx="0.5"/><path stroke-width="2.6" d="M8.5 13h.01M12 13h.01M15.5 13h.01M8.5 17h.01M12 17h.01M15.5 17h.01"/>`
   ),
@@ -81,7 +81,8 @@ const historicalStatus = el("historicalStatus");
 const historicalResults = el("historicalResults");
 const historicalFullUpBtn = el("historicalFullUpBtn");
 const historicalFullDownBtn = el("historicalFullDownBtn");
-const historicalMajorBtn = el("historicalMajorBtn");
+const historicalMonthUpBtn = el("historicalMonthUpBtn");
+const historicalMonthDownBtn = el("historicalMonthDownBtn");
 const historicalInlineWrap = el("historicalInlineWrap");
 const futureInlineWrap = el("futureInlineWrap");
 const sReportInlineWrap = el("sReportInlineWrap");
@@ -99,6 +100,14 @@ document.addEventListener("click", (e) => {
   if (!linkEl) return;
   e.preventDefault();
   openChartModal(linkEl.dataset.chartSymbol);
+});
+// "+자세히" 버튼(SURGE_WARNING_LEGEND, 여러 화면에 동적으로 삽입됨)은 위임 방식으로 클릭 감지
+document.addEventListener("click", (e) => {
+  if (!e.target.closest("#scoreMethodDetailBtn")) return;
+  openScoreMethodModal();
+});
+el("scoreMethodModalCloseBtn").addEventListener("click", () => {
+  el("scoreMethodModal").style.display = "none";
 });
 // 지수 카드는 <a>가 아니라 role="button" div라 클릭 외에 키보드(Enter/Space) 접근성도 함께 지원
 document.addEventListener("keydown", (e) => {
@@ -547,8 +556,9 @@ let macroMetricsPromise = null;
 function getMacroMetrics() {
   if (!macroMetricsPromise) {
     macroMetricsPromise = (async () => {
-      const chart = await yahooChart("^VIX", "5d", "1d");
-      const snap = yahooSnapshot(chart);
+      // FRED(세인트루이스 연은) CBOE Volatility Index: VIX(VIXCLS) 시리즈를 그대로 사용(야후 ^VIX 대신)
+      const points = await fetchFredSeries("VIXCLS");
+      const snap = fredSnapshot(points);
       if (!snap || snap.price === null || snap.price === undefined) throw new Error("VIX 데이터를 가져오지 못했습니다.");
       return {
         vix: snap.price,
@@ -565,7 +575,7 @@ function getMacroMetrics() {
 
 // "투자황금기(공포지수연동)" 점수 — VIX(공포지수)가 높을수록(시장이 패닉일수록) 역발상 매수 기회로 보고 점수를 올림.
 // VIX 25 이하는 평시로 보고 5점 고정, 25~35 구간은 5~10점 선형(VIX 2당 1점), 35를 넘으면 상한 없이 계속 상승하되
-// 상승 속도는 완만해짐(VIX 5당 1점). 10점을 넘어가면 배지 색이 더 진한 골드로 바뀜(macroGoldStyle 참고)
+// 상승 속도는 완만해짐(VIX 5당 1점). 화면에는 이 0~10점 환산 점수 대신 원본 VIX 수치와 등급(vixGrade)을 표시함
 function computeMacroScore({ vix }) {
   let total = 5;
   if (vix !== null && vix !== undefined) {
@@ -577,21 +587,41 @@ function computeMacroScore({ vix }) {
   return { total, vix };
 }
 
-// 점수가 10점을 넘으면(VIX 극단적 공포) 은은한 amber(--warn)에서 점점 더 쨍한 골드로 — 15점 이상에서 최대 강도
-function macroGoldColor(score) {
-  if (score === null || score === undefined || score < 10) return null;
-  const intensity = clamp((score - 10) / 5, 0, 1);
-  const from = [201, 138, 26]; // --warn
-  const to = [255, 215, 0]; // 쨍한 골드
-  const mix = from.map((f, i) => Math.round(f + (to[i] - f) * intensity));
-  return { color: `rgb(${mix.join(",")})`, intensity };
+// VIX 원본 수치를 그대로 4단계 등급으로: 20미만 안심, 20~29.9 경계, 30~39.9 공포, 40이상 패닉(역발상 투자 황금기)
+function vixGrade(vix) {
+  if (vix === null || vix === undefined || Number.isNaN(vix)) return { label: "N/A", cls: "" };
+  if (vix < 20) return { label: "안심", cls: "calm" };
+  if (vix < 30) return { label: "경계", cls: "caution" };
+  if (vix < 40) return { label: "공포", cls: "fear" };
+  return { label: "패닉 (투자 황금기)", cls: "panic" };
 }
 
-function macroGoldStyle(score) {
-  const gold = macroGoldColor(score);
-  if (!gold) return "";
-  const glow = `box-shadow:0 0 ${(6 + gold.intensity * 12).toFixed(0)}px rgba(255,215,0,${(0.3 + gold.intensity * 0.5).toFixed(2)});`;
-  return ` style="border-color:${gold.color};color:${gold.color};${glow}"`;
+// ---------- 점수 색상 통일: 상승압력(파랑)·투자안정(초록)·공포지수(주황) 세 계열 — 텍스트/보더는 계열 고정색,
+// 배경만 값이 높을수록 흰색 계열, 낮을수록 검정 계열로 보간(값이 없으면 중립 회색) ----------
+const SCORE_COLOR_FAMILY = {
+  pressure: "#5b8def", // 상승압력 - 파랑
+  stability: "#22a866", // 투자안정 - 초록
+  fear: "#e08a2c", // 공포지수(VIX) - 주황
+};
+function scoreBgStyle(value, min, max, family) {
+  const color = SCORE_COLOR_FAMILY[family] || SCORE_COLOR_FAMILY.pressure;
+  if (value === null || value === undefined || Number.isNaN(value)) {
+    return { background: "#20232c", color };
+  }
+  const t = clamp((value - min) / (max - min), 0, 1);
+  const dark = [15, 17, 22];
+  const light = [244, 246, 250];
+  const mix = dark.map((d, i) => Math.round(d + (light[i] - d) * t));
+  return { background: `rgb(${mix.join(",")})`, color };
+}
+function scoreBgStyleAttr(value, min, max, family) {
+  const s = scoreBgStyle(value, min, max, family);
+  return ` style="background:${s.background};border-color:${s.color};color:${s.color};"`;
+}
+// 순위표의 상승 압력·투자 안정 점수 셀 전용 — 배경 없이 숫자만, 5점 이상이면 주황, 미만이면 흰색(상세페이지는 원래 배지 색 그대로 유지)
+function scoreRankColorHtml(text, value) {
+  if (value === null || value === undefined) return `<span class="score-pill-empty">${text}</span>`;
+  return `<b style="color:${value >= 5 ? "#e08a2c" : "#fff"};">${text}</b>`;
 }
 
 // 요약 배지 라벨 아래에 붙일 "VIX : 값(변동%)" 줄(중앙정렬은 .mini-score-label의 text-align:center가 담당)
@@ -735,6 +765,7 @@ function getDailyChangePercent(chartResult) {
   if (!prevClose) return null;
   return ((latest - prevClose) / prevClose) * 100;
 }
+
 
 // 최근 5거래일 중 하루라도 ±10% 이상 급등/급락한 날이 있었는지(급등락 이모지 표시용) — 누적 5일 수익률이 아닌 일별 등락률 각각을 확인
 function get5dExtremeMoves(chartResult) {
@@ -1516,10 +1547,13 @@ function surgeWarningEmoji(fiveDayExtremes) {
   const icons = `${hasSurge ? "🔥" : ""}${hasPlunge ? "⚠️" : ""}`;
   return ` <span title="${SURGE_WARNING_TITLE}">${icons}</span>`;
 }
-// 순위 표 위에 붙이는 경고 이모지 범례 + 상승압력/투자안정 점수 의미 설명
+// 순위 표 위에 붙이는 경고 이모지 범례 + 상승 압력/투자 안정 점수 의미 설명 + 배점기준 상세 모달 여는 버튼
 const SURGE_WARNING_LEGEND = `
   <p class="muted" style="font-size:11px;margin:0 0 4px;opacity:0.65;">🔥 급등 · ⚠️ 급락 — ${SURGE_WARNING_TITLE}</p>
-  <p class="muted" style="font-size:11px;margin:0 0 2px;opacity:0.65;">📈 상승압력 — 현재 상승 압력이 높음을 의미<br>🛡️ 투자안정 — 1년 후 하락 가능성이 낮음을 의미</p>
+  <p class="muted" style="font-size:11px;margin:0 0 2px;opacity:0.65;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+    <span>📈 상승 압력 — 현재 상승 압력이 높음을 의미<br>🛡️ 투자 안정 — 1년 후 하락 가능성이 낮음을 의미</span>
+    <button type="button" id="scoreMethodDetailBtn" class="score-method-detail-btn">+자세히</button>
+  </p>
 `;
 
 function clamp(n, min, max) {
@@ -2034,14 +2068,16 @@ function renderCompanyIdentity(ticker, quote, meta, changePct) {
   el("companyPanelLogoWrap").innerHTML = tickerLogoHtml(ticker);
   el("companyPanelName").textContent = displayName;
   el("companyPanelPrice").textContent = price !== undefined && price !== null ? `${currency}${price.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : "";
-  const changeEl = el("companyPanelChange");
+  const pctEl = el("companyPanelChangePct");
   if (changePct !== null && changePct !== undefined) {
-    const sign = changePct >= 0 ? "+" : "";
-    changeEl.textContent = `${sign}${changePct.toFixed(2)}%`;
-    changeEl.className = `detail-identity-change ${changePct >= 0 ? "delta-up" : "delta-down"}`;
+    const isUp = changePct >= 0;
+    const arrow = isUp ? "▲" : "▼";
+    const cls = isUp ? "delta-up" : "delta-down";
+    pctEl.textContent = `${arrow} (${isUp ? "+" : ""}${changePct.toFixed(2)}%)`;
+    pctEl.className = `detail-identity-change ${cls}`;
   } else {
-    changeEl.textContent = "";
-    changeEl.className = "detail-identity-change";
+    pctEl.textContent = "";
+    pctEl.className = "detail-identity-change";
   }
 }
 
@@ -2501,12 +2537,12 @@ const RANKING_ENTRIES = [
   { icon: "dollar", label: "순이익 증가", tab: "valuation", run: () => runValueNetIncome() },
   { icon: "calculator", label: "EPS", tab: "valuation", run: () => runValueEps() },
   { icon: "scale", label: "PER", tab: "valuation", run: () => runValuePer() },
-  { icon: "medal", label: "투자등급", tab: "valuation", run: () => runValueStability() },
+  { icon: "medal", label: "투자 안정", tab: "valuation", run: () => runValueStability() },
   { icon: "building", label: "시가총액", tab: "valuation", run: () => runValueMarketCap() },
   { icon: "thumbsup", label: "인기종목", tab: "trend", run: () => runTrendVolume() },
   { icon: "trending-up", label: "상승률", tab: "trend", run: () => runMovers("surge") },
   { icon: "trending-down", label: "하락률", tab: "trend", run: () => runMovers("plunge") },
-  { icon: "rocket", label: "상승압력", tab: "trend", run: () => runTrendPressure() },
+  { icon: "rocket", label: "상승 압력", tab: "trend", run: () => runTrendPressure() },
   { icon: "basket", label: "US ETF", tab: "trend", run: () => runTrendUsEtf() },
   { icon: "basket", label: "KR ETF", tab: "trend", run: () => runTrendKrEtf() },
 ];
@@ -2530,9 +2566,9 @@ const WIZARD_CRITERIA = [
   { key: "netIncome", icon: "dollar", label: "순이익 증가", dir: "desc", get: (m) => m.netIncomeGrowthAnnual, fmt: (m) => fmtGrowthCell(m.netIncomeGrowthAnnual) },
   { key: "eps", icon: "calculator", label: "EPS", dir: "desc", get: (m) => m.eps, fmt: (m) => (m.eps === null || m.eps === undefined ? "N/A" : `$${m.eps.toFixed(2)}`) },
   { key: "per", icon: "scale", label: "PER", dir: "asc", get: (m) => m.per, fmt: (m) => (m.per === null || m.per === undefined ? "N/A" : `${m.per.toFixed(1)}배`) },
-  { key: "stability", icon: "medal", label: "투자등급", dir: "desc", get: (m) => m.riskTotal, fmt: (m) => (m.riskTotal === null || m.riskTotal === undefined ? "N/A" : `${m.riskTotal}/10`) },
+  { key: "stability", icon: "medal", label: "투자 안정", dir: "desc", get: (m) => m.riskTotal, fmt: (m) => (m.riskTotal === null || m.riskTotal === undefined ? "N/A" : scoreRankColorHtml(m.riskTotal, m.riskTotal)) },
   { key: "marketCap", icon: "building", label: "시가총액", dir: "desc", get: (m) => m.marketCap, fmt: (m) => (m.marketCap ? fmtCompactCurrency(m.marketCap) : "N/A") },
-  { key: "pressure", icon: "rocket", label: "상승압력도", dir: "desc", get: (m) => m.pressureTotal, fmt: (m) => (m.pressureTotal === null || m.pressureTotal === undefined ? "N/A" : `${m.pressureTotal}/10`) },
+  { key: "pressure", icon: "rocket", label: "상승 압력", dir: "desc", get: (m) => m.pressureTotal, fmt: (m) => (m.pressureTotal === null || m.pressureTotal === undefined ? "N/A" : scoreRankColorHtml(m.pressureTotal, m.pressureTotal)) },
   { key: "surge", icon: "trending-up", label: "상승률(등락률)", dir: "desc", get: (m) => m.changePct, fmt: (m) => (m.changePct === null || m.changePct === undefined ? "N/A" : `${m.changePct >= 0 ? "+" : ""}${m.changePct.toFixed(2)}%`), needsDaily: true },
   { key: "plunge", icon: "trending-down", label: "하락률(등락률)", dir: "asc", get: (m) => m.changePct, fmt: (m) => (m.changePct === null || m.changePct === undefined ? "N/A" : `${m.changePct >= 0 ? "+" : ""}${m.changePct.toFixed(2)}%`), needsDaily: true },
 ];
@@ -2670,7 +2706,7 @@ async function runBranchBPipeline() {
 
 function renderWizardBranchC() {
   return `
-    <p class="wizard-question">S&amp;P500 전체에서 상승압력도 + 투자안정성 합계 순서로 30위까지 찾아 보겠습니다.</p>
+    <p class="wizard-question">S&amp;P500 전체에서 상승 압력 + 투자 안정 합계 순서로 30위까지 찾아 보겠습니다.</p>
     <div class="wizard-root-options">
       <button type="button" class="wizard-root-option" data-wizard-action="branchC-confirm"><b>A. [확인]</b></button>
       <button type="button" class="wizard-root-option" data-wizard-action="branchC-other"><b>B. [다른방법]</b></button>
@@ -2683,10 +2719,10 @@ function renderWizardBranchCStyle() {
     <p class="wizard-question">자신의 투자스타일 중 한 가지를 선택해주세요.</p>
     <div class="wizard-root-options">
       <button type="button" class="wizard-root-option" data-wizard-action="branchC-style-short">
-        <b>A. 단기적인 수익을 원함(▲600%~▼60%)</b><br><span class="wizard-option-sub">(거래대금, 매출성장, 최근3개월 상승률) — S&amp;P 500중 상승압력도 높은순위 30위까지</span>
+        <b>A. 단기적인 수익을 원함(▲600%~▼60%)</b><br><span class="wizard-option-sub">(거래대금, 매출성장, 최근3개월 상승률) — S&amp;P 500중 상승 압력 높은순위 30위까지</span>
       </button>
       <button type="button" class="wizard-root-option" data-wizard-action="branchC-style-long">
-        <b>B. 장기적으로 안정적인 상승을 원함(▲60%~▼30%)</b><br><span class="wizard-option-sub">(투자등급, 안정적상승, 순이익률, 시가총액 높은 주식) — S&amp;P 500중 투자안정성 높은순위 30위까지</span>
+        <b>B. 장기적으로 안정적인 상승을 원함(▲60%~▼30%)</b><br><span class="wizard-option-sub">(투자등급, 안정적상승, 순이익률, 시가총액 높은 주식) — S&amp;P 500중 투자 안정 높은순위 30위까지</span>
       </button>
     </div>
     <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="branchC">← 뒤로</button>
@@ -2714,10 +2750,10 @@ async function runBranchCConfirm() {
     }));
     scored.sort((a, b) => b.combinedTotal - a.combinedTotal);
     const top30 = scored.slice(0, 30);
-    const table = wizardResultTableHtml(top30, "상승압력+투자안정 합계", (r) => `<b>${r.combinedTotal}/20</b>`);
+    const table = wizardResultTableHtml(top30, "상승 압력+투자 안정 합계", (r) => `<b>${r.combinedTotal}</b>`);
     wizardShareTitle = "기업검색 결과 (자동찾기)";
     wizardShareText =
-      `[자동찾기] S&P500 상승압력도+투자안정성 합계 TOP30\n` +
+      `[자동찾기] S&P500 상승 압력+투자 안정 합계 TOP30\n` +
       top30.map((r, i) => `${i + 1}. ${r.symbol} (${r.combinedTotal}/20)`).join("\n") +
       `\n\nyeopinvest.com`;
     bodyEl.innerHTML = `
@@ -3077,12 +3113,14 @@ function renderMainTickerSuggest(items) {
     return;
   }
   tickerSuggest.innerHTML = items
-    .map(
-      (it) =>
-        `<div class="chat-ticker-option" data-symbol="${escapeHtml(it.symbol)}">
-          <b>${escapeHtml(it.symbol)}</b> <span class="muted">${escapeHtml(it.name || "")}</span>${it.exchange ? ` <span class="muted">(${escapeHtml(it.exchange)})</span>` : ""}
-        </div>`
-    )
+    .map((it) => {
+      const displayName = TICKER_TO_KOREAN_NAME[it.symbol] || it.name || it.symbol;
+      return `<div class="chat-ticker-option" data-symbol="${escapeHtml(it.symbol)}">
+          ${tickerLogoHtml(it.symbol)}
+          <span class="chat-ticker-option-name">${escapeHtml(displayName)}</span>
+          <span class="chat-ticker-option-sub">${escapeHtml(it.symbol)}${it.exchange ? ` · ${escapeHtml(it.exchange)}` : ""}</span>
+        </div>`;
+    })
     .join("");
   tickerSuggest.style.display = "block";
 }
@@ -3237,7 +3275,7 @@ async function runAnalysis(ticker) {
     });
 
     renderScore(selfMetricsPromise).catch((e) => {
-      el("scoreSection").innerHTML = `<p class="error-inline">상승압력도 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
+      el("scoreSection").innerHTML = `<p class="error-inline">상승 압력 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
     renderRisk(marketReturnsPromise, selfMetricsPromise).catch((e) => {
@@ -3540,6 +3578,7 @@ async function renderSummary(quote, meta, changePct) {
       tickerHistoricalLoaded = true;
       await runTickerHistorical(symbol, row);
     }
+    renderMacroScoreChart(); // 종목과 무관한 시장 전체 차트라 최초 1회만 그리고 이후 검색부터는 캐시된 결과를 재사용
   });
 
   let futureLoaded = false;
@@ -3607,20 +3646,20 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
     ]);
     const attractiveness = computeAttractivenessScore(metrics);
     const risk = computeRiskScore(metrics, sp500Return);
-    const macro = computeMacroScore(macroMetrics);
     const isIPO = isRecentIPO(metrics.firstTradeDate);
+    const vix = macroMetrics.vix;
 
     rowEl.innerHTML = `
       <div class="mini-score">
         <div class="mini-score-circle">${isIPO ? "IPO" : attractiveness.total}</div>
-        <span class="mini-score-label">상승압력도</span>
+        <span class="mini-score-label">상승 압력</span>
       </div>
       <div class="mini-score">
         <div class="mini-score-circle risk">${isIPO ? "IPO" : risk.total}</div>
-        <span class="mini-score-label">투자안정성</span>
+        <span class="mini-score-label">투자 안정</span>
       </div>
       <div class="mini-score">
-        <div class="mini-score-circle macro"${macroGoldStyle(macro.total)}>${macro.total}</div>
+        <div class="mini-score-circle macro"${scoreBgStyleAttr(vix, 10, 50, "fear")}>${vix !== null && vix !== undefined ? Math.round(vix) : "N/A"}</div>
         <span class="mini-score-label">S&amp;P500 VIX${vixLineHtml(macroMetrics)}</span>
       </div>
     `;
@@ -4056,14 +4095,14 @@ async function renderPeers(ticker, selfMetricsPromise, sector, industry) {
       const pct = clamp(((d.revenue || 0) / maxRev) * 100, 2, 100);
       const score = computeAttractivenessScore(d);
       const isIPO = isRecentIPO(d.firstTradeDate);
-      const scoreClass = isIPO ? "" : score.total >= 5 ? "delta-up" : "delta-down";
+      const scoreHtml = isIPO ? "IPO" : scoreRankColorHtml(score.total, score.total);
       return `
       <div class="peer-row">
         <span class="bar-label${d.self ? " self" : ""}">${escapeHtml(d.symbol)}</span>
         <div class="bar-track"><div class="bar-fill ${d.self ? "self" : ""}" style="width:${pct}%"></div></div>
         <span class="bar-value">${fmtCompactCurrency(d.revenue)}</span>
         <span class="peer-price">${fmtCompactCurrency(d.marketCap)}</span>
-        <span class="peer-score ${scoreClass}">${isIPO ? "IPO" : score.total}</span>
+        <span class="peer-score">${scoreHtml}</span>
       </div>`;
     })
     .join("");
@@ -4071,7 +4110,7 @@ async function renderPeers(ticker, selfMetricsPromise, sector, industry) {
   el("peersSection").innerHTML = `
     <p class="muted">최근 회계연도 매출액 기준 비교 (${bySector ? `동일 ${byIndustry ? "업종" : "섹터"} 시가총액 TOP3 + 시총 유사 종목 1개` : "자동 감지된 관련 종목"})</p>
     <div class="peer-table-header">
-      <span></span><span></span><span>매출액</span><span>시가총액</span><span>상승력</span>
+      <span></span><span></span><span>매출액</span><span>시가총액</span><span>상승 압력</span>
     </div>
     <div class="bar-chart">${rows}</div>
   `;
@@ -4197,7 +4236,7 @@ async function renderMacro() {
   el("macroSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
   const { vix, vixChangePct } = await getMacroMetrics();
-  const { total } = computeMacroScore({ vix });
+  const grade = vixGrade(vix);
 
   const vixPctStr =
     vixChangePct !== null && vixChangePct !== undefined && Number.isFinite(vixChangePct)
@@ -4205,28 +4244,147 @@ async function renderMacro() {
       : "";
   const vixLiveLine =
     vix !== null && vix !== undefined
-      ? `<p class="score-macro-vix-line">😱 S&P500 VIX<br>^VIX : ${vix.toFixed(1)}${vixPctStr}</p>`
+      ? `<p class="score-macro-vix-line">😱 S&P500 VIX(FRED: VIXCLS)<br>VIX : ${vix.toFixed(1)}${vixPctStr}</p>`
       : "";
 
   el("macroSection").innerHTML = `
     ${vixLiveLine}
     <div class="score-wrap">
-      <div class="score-badge macro"${macroGoldStyle(total)}>
-        <div class="score-num">${total}</div>
-        <div class="score-den">/ 10</div>
+      <div class="score-badge macro"${scoreBgStyleAttr(vix, 10, 50, "fear")}>
+        <div class="score-num">${vix !== null && vix !== undefined ? vix.toFixed(1) : "N/A"}</div>
+        <div class="score-den">${grade.label}</div>
       </div>
       <div class="score-details">
         <ul>
-          <li>VIX 25 이하는 평시로 보고 5점 고정, 25~35 구간은 5~10점 선형(2당 1점), 35 초과는 상한 없이 계속 상승(5당 1점, 완만해짐)</li>
-          <li>10점을 넘으면(VIX 35+, 극단적 공포) 배지 색이 점점 더 진한 골드로 바뀝니다</li>
+          <li>VIX(CBOE 변동성지수, FRED 시리즈 VIXCLS) 수치를 그대로 표시합니다</li>
+          <li>20 미만 <b>안심</b> · 20~29 <b>경계</b> · 30~39 <b>공포</b> · 40 이상 <b>패닉(역발상 투자 황금기)</b></li>
         </ul>
         <p class="disclaimer">
-          ⚠️ 이 점수는 특정 종목과 무관한 시장 전체 공포지수(VIX) 기반 <b>단순 참고용 정량 지표</b>이며, "공포가 클수록 저가 매수 기회"라는
-          역발상 관점을 반영한 것입니다. 투자 자문이나 매수/매도 추천이 아니며, 실제로는 공포가 더 깊어질 수도 있습니다.
+          ⚠️ 특정 종목과 무관한 시장 전체 공포지수(VIX) 수치이며, "공포가 클수록 저가 매수 기회"라는
+          역발상 관점을 반영한 등급입니다. 투자 자문이나 매수/매도 추천이 아니며, 실제로는 공포가 더 깊어질 수도 있습니다.
         </p>
       </div>
     </div>
   `;
+}
+
+// ---------- "+자세히" 배점 기준 모달 — 상승 압력·투자 안정 배점식을 GOOGL 실제 수치로 설명(세션 내 1회 계산 후 재사용) ----------
+let scoreMethodDataPromise = null;
+function getScoreMethodExampleData() {
+  if (!scoreMethodDataPromise) {
+    scoreMethodDataPromise = Promise.all([getFullMetrics("GOOGL"), getMarketReturnsCached()]).catch((e) => {
+      scoreMethodDataPromise = null;
+      throw e;
+    });
+  }
+  return scoreMethodDataPromise;
+}
+
+// 배점 기준 모달의 카드 상단(로고+기업명+"(예시)") — 두 카드가 공유
+function scoreMethodExampleHeaderHtml() {
+  return `<div class="smb-header">${tickerLogoHtml("GOOGL")}<span class="smb-header-name">Alphabet Inc. <span class="muted">(예시)</span></span></div>`;
+}
+// 배점 항목 하나를 막대그래프 한 줄로 — 값이 클수록 막대가 길게 차오름(0~max 기준)
+function scoreMethodBarRow(num, label, value, max, desc, color) {
+  const pct = value === null || value === undefined ? 0 : clamp((value / max) * 100, 0, 100);
+  const valText = value === null || value === undefined ? "N/A" : `${value.toFixed(1)}/${max}`;
+  return `
+    <div class="smb-row">
+      <div class="smb-row-top">
+        <span class="smb-label">${num} ${label}</span>
+        <span class="smb-value" style="color:${color};">${valText}</span>
+      </div>
+      <div class="smb-track"><div class="smb-fill" style="width:${pct}%;background:${color};"></div></div>
+      <p class="smb-desc">${desc}</p>
+    </div>`;
+}
+
+async function openScoreMethodModal() {
+  const modal = el("scoreMethodModal");
+  const body = el("scoreMethodBody");
+  modal.style.display = "flex";
+  body.innerHTML = `<p class="muted" style="padding:14px;">GOOGL 실제 수치를 불러오는 중...</p>`;
+
+  try {
+    const [metrics, { sp500Return }] = await getScoreMethodExampleData();
+    const score = computeAttractivenessScore(metrics);
+    const risk = computeRiskScore(metrics, sp500Return);
+    const pressureColor = SCORE_COLOR_FAMILY.pressure;
+    const stabilityColor = SCORE_COLOR_FAMILY.stability;
+
+    body.innerHTML = `
+      <div class="score-method-card">
+        ${scoreMethodExampleHeaderHtml()}
+        <h4>📈 상승 압력 (10점 만점)</h4>
+        ${scoreMethodBarRow(
+          "①",
+          "총 거래대금",
+          score.volumeScore,
+          3,
+          `최근 5거래일 평균 ÷ 1년 평균: <b>${score.volumeRatio !== null ? score.volumeRatio.toFixed(2) + "배" : "N/A"}</b> (2배 이상 만점, 0.5배 이하 0점)`,
+          pressureColor
+        )}
+        ${scoreMethodBarRow(
+          "②",
+          "매출 성장성",
+          score.growthScore,
+          3,
+          `최근 분기 매출 YoY: <b>${score.revenueGrowthYoY !== null && score.revenueGrowthYoY !== undefined ? fmtPct(score.revenueGrowthYoY) : "N/A"}</b> (30% 이상 만점, 0% 이하 0점)`,
+          pressureColor
+        )}
+        ${scoreMethodBarRow(
+          "③",
+          "상승 모멘텀",
+          score.momentumScore,
+          4,
+          `최근 3개월 수익률: <b>${score.momentum3m !== null && score.momentum3m !== undefined ? fmtPct(score.momentum3m) : "N/A"}</b> (25% 이상 만점, 0% 이하 0점)`,
+          pressureColor
+        )}
+        <p class="smb-formula">① + ② + ③ = <b style="color:${pressureColor};">${score.total}/10</b>점</p>
+        <p class="muted" style="font-size:11px;">높을수록 단기 상승 여력이 크다고 보는 참고용 지표이며, 투자 자문이 아닙니다.</p>
+      </div>
+      <div class="score-method-card">
+        ${scoreMethodExampleHeaderHtml()}
+        <h4>🛡️ 투자 안정 (10점 만점)</h4>
+        ${scoreMethodBarRow(
+          "①",
+          "투자등급",
+          risk.rating === NO_DEBT_RATING || risk.rating === UNRATED_REASON ? null : risk.creditScore,
+          4,
+          `S&P 신용등급: <b>${risk.rating || "S&P 등급 없음"}</b> (AAA 4점, BBB 이하 0점, 회사채 없음 2점, 미평가 1점)`,
+          stabilityColor
+        )}
+        ${scoreMethodBarRow(
+          "②",
+          "S&P500 대비 모멘텀",
+          risk.marketScore,
+          2,
+          `S&P500과의 1년 수익률 차이: <b>${risk.relDiff !== null ? risk.relDiff.toFixed(1) + "%p" : "N/A"}</b> (차이가 작을수록 만점)`,
+          stabilityColor
+        )}
+        ${scoreMethodBarRow(
+          "③",
+          "순이익률",
+          risk.marginScore,
+          2,
+          `순이익÷매출: <b>${risk.netMargin !== null ? (risk.netMargin * 100).toFixed(1) + "%" : "N/A"}</b> (50% 이상 만점, 적자 0점)`,
+          stabilityColor
+        )}
+        ${scoreMethodBarRow(
+          "④",
+          "시가총액 가점",
+          risk.vtsaxScore,
+          2,
+          `미국 전체 시장 내 시총 비중: <b>${risk.vtsaxWeightPct !== null ? risk.vtsaxWeightPct.toFixed(2) + "%" : "N/A"}</b> (6% 이상 만점)`,
+          stabilityColor
+        )}
+        <p class="smb-formula">① + ② + ③ + ④ = <b style="color:${stabilityColor};">${risk.total}/10</b>점</p>
+        <p class="muted" style="font-size:11px;">높을수록(10점에 가까울수록) 1년 후 하락 가능성이 낮다고 보는 참고용 지표이며, 투자 자문이 아닙니다.</p>
+      </div>
+    `;
+  } catch (err) {
+    body.innerHTML = `<p class="error-inline" style="padding:14px;">배점 기준 예시를 불러오지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
+  }
 }
 
 // ---------- 가치평가 탭 공용 렌더러 ----------
@@ -4289,7 +4447,7 @@ async function renderValueRanking(
           if (r.isIPO === undefined) r.isIPO = isRecentIPO(r.firstTradeDate);
         });
       }
-      const gradeCellHtml = (r) => (r.isIPO ? "IPO" : `<b>${r.riskTotal}/10</b>`);
+      const gradeCellHtml = (r) => (r.isIPO ? "IPO" : scoreRankColorHtml(r.riskTotal, r.riskTotal));
 
       const rows = ranked
         .map(
@@ -4306,7 +4464,7 @@ async function renderValueRanking(
         ${noteHtml || ""}
         <p class="muted" style="font-size:12px;">시가총액 상위 ${Math.min(cursor, initialCount)}개${cursor > initialCount ? ` + 나머지 ${cursor - initialCount}개` : ""} 확인(S&amp;P500 ${tickers.length}개 중 ${cursor}개, ${ranked.length}개 성공)</p>
         <table class="top30-table">
-          <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>${metricHeaderHtml}</th>${showGrade ? `<th>투자등급</th>` : ""}</tr></thead>
+          <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>${metricHeaderHtml}</th>${showGrade ? `<th>투자<br>안정</th>` : ""}</tr></thead>
           <tbody>${rows}</tbody>
         </table>
         ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${tickers.length}">전체보기 (나머지 ${tickers.length - cursor}개 · 500개 전부 검색 시 약 1분 소요)</button>` : ""}
@@ -4415,13 +4573,13 @@ async function runValuePer() {
 
 async function runValueStability() {
   const { sp500Return } = await getMarketReturns();
-  await runValueScreenFromSP500(valuationButtons.stability, "투자안정", {
+  await runValueScreenFromSP500(valuationButtons.stability, "투자 안정", {
     mapFn: (list) =>
       list.map((m) => ({ ...m, riskTotal: computeRiskScore(m, sp500Return).total, isIPO: isRecentIPO(m.firstTradeDate) })),
     sortFn: (a, b) => b.riskTotal - a.riskTotal,
-    metricHeaderHtml: "투자안정성 점수",
-    metricCellFn: (r) => (r.isIPO ? "IPO" : `<b>${r.riskTotal}/10</b>`),
-    noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 투자안정성 점수(10점 만점, 높을수록 재무적으로 안정적)는 신용등급·모멘텀·수익성·시가총액을 종합한 참고용 지표이며 투자 자문이 아닙니다.</p>`,
+    metricHeaderHtml: "투자 안정 점수",
+    metricCellFn: (r) => (r.isIPO ? "IPO" : scoreRankColorHtml(r.riskTotal, r.riskTotal)),
+    noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 투자 안정 점수(10점 만점, 높을수록 재무적으로 안정적)는 신용등급·모멘텀·수익성·시가총액을 종합한 참고용 지표이며 투자 자문이 아닙니다.</p>`,
     showGrade: false,
   });
 }
@@ -5369,7 +5527,7 @@ async function getHistoricalCompareMetrics(symbol, sp500PairsPromise) {
 }
 
 // getFullMetrics(현재) + getHistoricalCompareMetrics(과거 스냅샷) 결과 쌍을 표에 쓸 행 데이터로 합침
-// — 과거분석 전체(runHistoricalAnalysis)와 탭3 기본 퀵뷰(runHistoricalQuick)가 공유
+// — 검색 상세페이지의 단일 종목 과거분석(runTickerHistorical)에서 사용
 function buildHistoricalCompareRows(tickerMetricsList, historicalList) {
   return tickerMetricsList
     .map((m, i) => {
@@ -5447,10 +5605,9 @@ function tickerLogoHtml(symbol, badgeLabel) {
   return `<span class="ticker-logo-wrap"${wrapStyle}><img class="ticker-logo" src="${primary}" alt="${s}" loading="lazy"${fb} onerror="${LOGO_ONERROR}" /><span class="ticker-logo-badge" style="display:none;">${badge}</span></span>`;
 }
 
-// buildHistoricalCompareRows 결과로 과거분석 표 HTML(범례 제외)을 생성 — moversTableHtml과 동일한 5컬럼 구성(순위/티커+원형로고/현재가(등락률)/상승압력/투자안정)
-// rankColumnLabel만 호출부마다 다름
-function historicalTableHtml(rows, rankColumnLabel) {
-  const scoreClass = (score) => (score === null ? "" : score > 5 ? "delta-up" : score < 5 ? "delta-down" : "");
+// buildHistoricalCompareRows 결과로 과거분석 표 HTML(범례 제외)을 생성 — moversTableHtml과 동일한 5컬럼 구성(순위/티커+원형로고/현재가(등락률)/상승 압력/투자 안정)
+// rankColumnLabel·periodLabel(기본 "1년전", 한달 전 변형에선 "1개월전")만 호출부마다 다름
+function historicalTableHtml(rows, rankColumnLabel, periodLabel = "1년전") {
   const tableRows = rows
     .map((r, i) => {
       return `
@@ -5458,136 +5615,85 @@ function historicalTableHtml(rows, rankColumnLabel) {
         <td>${i + 1}</td>
         <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></span>${r.name ? `<br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span>` : ""}</td>
         <td>${priceChartLink(r.symbol, "$" + r.currentPrice.toFixed(2))}<br><span class="${r.priceChangePct !== null && r.priceChangePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">${r.priceChangeAmt !== null ? `${r.priceChangeAmt >= 0 ? "+" : ""}$${r.priceChangeAmt.toFixed(2)} ` : ""}${r.priceChangePct !== null ? `(${fmtPct(r.priceChangePct)})` : "N/A"}</span></td>
-        <td class="${scoreClass(r.historicalAttractiveness)}"><b>${r.historicalAttractiveness}</b></td>
-        <td class="${scoreClass(r.historicalRisk)}"><b>${r.historicalRisk}</b></td>
+        <td>${scoreRankColorHtml(r.historicalAttractiveness, r.historicalAttractiveness)}</td>
+        <td>${scoreRankColorHtml(r.historicalRisk, r.historicalRisk)}</td>
       </tr>`;
     })
     .join("");
 
   return `
-    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 1년전 상승압력·투자안정은 <b>1년 전 시점</b> 기준으로 근사 계산한 참고용 점수입니다(각 10점 만점, 높을수록 상승 여력 크고·재무 안정적 / 5점보다 높으면 빨강·낮으면 파랑). 투자 자문이 아닙니다.</p>
+    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${periodLabel} 상승 압력·투자 안정은 <b>${periodLabel} 시점</b> 기준으로 근사 계산한 참고용 점수입니다(각 10점 만점, 높을수록 상승 여력 크고·재무 안정적). 투자 자문이 아닙니다.</p>
     <table class="top30-table">
       <thead>
-        <tr><th>${rankColumnLabel}</th><th>티커</th><th>현재가<br>(등락률)</th><th>1년전<br>상승압력</th><th>1년전<br>투자안정</th></tr>
+        <tr><th>${rankColumnLabel}</th><th>티커</th><th>현재가<br>(등락률)</th><th>${periodLabel}<br>상승<br>압력</th><th>${periodLabel}<br>투자<br>안정</th></tr>
       </thead>
       <tbody>${tableRows}</tbody>
     </table>
   `;
 }
 
-// S&P500 전체 종목 중 1년 등락률 TOP50을, 과거분석 기준 시점(1년 전 + 이번 달 1일 이후 첫 거래일) 스냅샷과 비교
-// direction: "up" — S&P500 중 1년 상승률 상위 50개 / "down" — S&P500 중 1년 하락률 상위(가장 많이 내린) 50개
-async function runHistoricalAnalysis(direction) {
-  const isUp = direction === "up";
-  const btn = isUp ? historicalFullUpBtn : historicalFullDownBtn;
-  const rankLabel = isUp ? "상승률" : "하락률";
+// 한달 상승/한달 하락/1년 상승/1년 하락 TOP50 — GitHub Actions가 매일 미리 계산해둔 data/historical-movers.json을
+// 그대로 읽어 즉시 표시(scripts/scan-historical-movers.js가 매일 S&P500 전체를 스캔해 구워둠). 예전에는 버튼을
+// 누를 때마다 브라우저가 S&P500 500종목을 무료 프록시로 순차 스캔해(클릭 한 번에 약 1,000회 요청) 매우 느렸음
+let historicalMoversDataPromise = null;
+function getHistoricalMoversData() {
+  if (!historicalMoversDataPromise) {
+    historicalMoversDataPromise = fetch("data/historical-movers.json", { cache: "no-store" })
+      .then((res) => {
+        if (res.status === 404) throw new Error("데이터를 아직 준비 중입니다. 매일 자동 갱신되니 잠시 후 다시 확인해주세요.");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .catch((e) => {
+        historicalMoversDataPromise = null;
+        throw e;
+      });
+  }
+  return historicalMoversDataPromise;
+}
+
+const HISTORICAL_MOVERS_BUTTONS = {
+  month: { up: historicalMonthUpBtn, down: historicalMonthDownBtn },
+  year: { up: historicalFullUpBtn, down: historicalFullDownBtn },
+};
+
+// period: "month"(한달 전) | "year"(1년 전), direction: "up"(상승) | "down"(하락)
+async function runHistoricalMovers(period, direction) {
+  const btn = HISTORICAL_MOVERS_BUTTONS[period][direction];
+  const periodLabel = period === "month" ? "한달전" : "1년전";
+  const rankLabel = direction === "up" ? "상승률" : "하락률";
 
   historicalStatus.style.display = "block";
+  historicalStatus.textContent = "불러오는 중...";
   historicalResults.innerHTML = "";
   btn.disabled = true;
 
-  const refDate = getHistoricalReferenceDate();
-  const introYearMonthStr = `${String(refDate.getFullYear()).slice(-2)}.${refDate.getMonth() + 1}월`;
-  const introMsg = `📢 과거 1년전(${introYearMonthStr}) 데이터를 분석하여 ${isUp ? "상승량" : "하락량"} TOP50을 비교합니다. 또한 당시 점수를 반영합니다.`;
-  const setStatus = (msg) => {
-    historicalStatus.innerHTML = `${introMsg}<br><span style="font-size:12px;">${msg}</span>`;
-  };
-
   try {
-    setStatus("S&P500 종목 목록을 불러오는 중...");
-    const allTickers = await getSP500Tickers();
-
-    setStatus(`0/${allTickers.length} 종목 분석 중(S&P500 전체 중 1년 ${rankLabel} 상위 50 선정)...`);
-    const allMetricsList = await mapWithConcurrency(allTickers, 5, getFullMetrics, (completed, total) => {
-      setStatus(`${completed}/${total} 종목 분석 중(S&P500 전체 중 1년 ${rankLabel} 상위 50 선정)...`);
-    });
-
-    const top30 = allMetricsList
-      .filter((m) => m && m.oneYearReturn !== null && m.oneYearReturn !== undefined)
-      .sort((a, b) => (isUp ? b.oneYearReturn - a.oneYearReturn : a.oneYearReturn - b.oneYearReturn))
-      .slice(0, 50);
-
-    const sp500PairsPromise = yahooChart("^GSPC", "2y").then(chartClosePairs);
-
-    let done = 0;
-    setStatus(`0/${top30.length} 종목의 기준 시점 데이터 조회 중...`);
-    const historicalList = await mapWithConcurrency(top30, 3, async (m) => {
-      const h = await getHistoricalCompareMetrics(m.symbol, sp500PairsPromise);
-      done++;
-      setStatus(`${done}/${top30.length} 종목의 기준 시점 데이터 조회 중...`);
-      return h;
-    });
-
-    const rows = buildHistoricalCompareRows(top30, historicalList).sort((a, b) =>
-      isUp
-        ? (b.priceChangePct ?? -Infinity) - (a.priceChangePct ?? -Infinity)
-        : (a.priceChangePct ?? Infinity) - (b.priceChangePct ?? Infinity)
-    );
-
-    const successCount = rows.length;
-    const failCount = top30.length - successCount;
-    const refDateStr = rows[0] ? rows[0].asOfDate.toLocaleDateString("ko-KR") : "";
-    setStatus(`완료 (기준일 ${refDateStr}) — S&P500 중 ${rankLabel} 상위 50개 중 ${successCount}개 비교 성공${failCount ? `, ${failCount}개는 조회 실패로 제외` : ""}`);
-
+    const data = await getHistoricalMoversData();
+    const rows = (data[period] && data[period][direction]) || [];
     if (rows.length === 0) {
-      historicalResults.innerHTML = `<p class="muted">데이터를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
+      historicalStatus.textContent = "데이터를 아직 준비 중입니다. 매일 자동 갱신되니 잠시 후 다시 확인해주세요.";
       return;
     }
-
-    historicalResults.innerHTML = historicalTableHtml(rows, `${rankLabel}<br>순위`);
+    const refDateStr = new Date(rows[0].asOfDate).toLocaleDateString("ko-KR");
+    const generatedStr = data.generatedAt ? new Date(data.generatedAt).toLocaleString("ko-KR") : "";
+    historicalStatus.textContent = `${periodLabel}(기준일 ${refDateStr}) 대비 ${rankLabel} TOP${rows.length}${generatedStr ? ` — 최근 갱신: ${generatedStr}` : ""}`;
+    historicalResults.innerHTML = historicalTableHtml(rows, `${rankLabel}<br>순위`, periodLabel);
   } catch (err) {
-    setStatus(`❌ ${err.message || "과거분석 데이터를 가져오지 못했습니다."}`);
+    historicalStatus.textContent = `❌ ${err.message || "과거분석 데이터를 가져오지 못했습니다."}`;
   } finally {
     btn.disabled = false;
   }
 }
 
-historicalFullUpBtn.addEventListener("click", () => runHistoricalAnalysis("up"));
-historicalFullDownBtn.addEventListener("click", () => runHistoricalAnalysis("down"));
-
-// 주요종목 버튼: 고정 20종목만 현재가+과거 스냅샷을 비교(전체 500종목 스크리닝 없이 빠르게)
-const HISTORICAL_QUICK_TICKERS = [
-  "NVDA", "AAPL", "GOOGL", "MSFT", "AMZN", "AVGO", "META", "JPM", "ORCL", "TSLA",
-  "V", "WMT", "XOM", "UNH", "JNJ", "PG", "HD", "COST", "NFLX", "BAC",
-];
-async function runHistoricalQuick() {
-  historicalMajorBtn.disabled = true;
-  historicalStatus.style.display = "block";
-  historicalStatus.textContent = `주요 20종목 분석 중...`;
-
-  try {
-    const sp500PairsPromise = yahooChart("^GSPC", "2y").then(chartClosePairs);
-    const [tickerMetricsList, historicalList] = await Promise.all([
-      mapWithConcurrency(HISTORICAL_QUICK_TICKERS, 5, getFullMetrics),
-      mapWithConcurrency(HISTORICAL_QUICK_TICKERS, 3, (symbol) => getHistoricalCompareMetrics(symbol, sp500PairsPromise)),
-    ]);
-
-    const validIndices = tickerMetricsList.map((m, i) => (m ? i : null)).filter((i) => i !== null);
-    const validMetrics = validIndices.map((i) => tickerMetricsList[i]);
-    const validHistorical = validIndices.map((i) => historicalList[i]);
-    const rows = buildHistoricalCompareRows(validMetrics, validHistorical).sort(
-      (a, b) => (b.priceChangePct ?? -Infinity) - (a.priceChangePct ?? -Infinity)
-    );
-
-    if (rows.length === 0) {
-      historicalStatus.textContent = "❌ 데이터를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.";
-      return;
-    }
-
-    const refDateStr = rows[0].asOfDate.toLocaleDateString("ko-KR");
-    historicalStatus.textContent = `주요 20종목 비교 (기준일 ${refDateStr}) — 더 많은 종목은 상승/하락 과거분석(전체) 버튼으로 확인하세요`;
-    historicalResults.innerHTML = historicalTableHtml(rows, "순위");
-  } catch (err) {
-    historicalStatus.textContent = `❌ ${err.message || "과거분석 데이터를 가져오지 못했습니다."}`;
-  } finally {
-    historicalMajorBtn.disabled = false;
-  }
-}
-historicalMajorBtn.addEventListener("click", runHistoricalQuick);
+historicalMonthUpBtn.addEventListener("click", () => runHistoricalMovers("month", "up"));
+historicalMonthDownBtn.addEventListener("click", () => runHistoricalMovers("month", "down"));
+historicalFullUpBtn.addEventListener("click", () => runHistoricalMovers("year", "up"));
+historicalFullDownBtn.addEventListener("click", () => runHistoricalMovers("year", "down"));
 
 // 티커/현재가(+등락률)/상승압력/투자안정 5열 표 — 인기종목·급등주·급락주가 공유하는 렌더러
 function moversTableHtml(scored, rankNote) {
-  const scoreClass = (score) => (score === null ? "" : score > 5 ? "delta-up" : score < 5 ? "delta-down" : "");
+  const scorePill = (score, isIPO) => (isIPO ? "IPO" : scoreRankColorHtml(scoreCellText(score, isIPO), score));
 
   const rows = scored
     .map((r, i) => {
@@ -5597,14 +5703,14 @@ function moversTableHtml(scored, rankNote) {
         <td>${i + 1}${surgeWarningEmoji(r.fiveDayExtremes)}</td>
         <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
         <td>${priceChartLink(r.symbol, "$" + r.price.toFixed(2))}<br><span class="${changeClass}" style="font-size:11px;">(${fmtPct(r.changePct)})</span></td>
-        <td class="${r.isIPO ? "" : scoreClass(r.attractiveness)}"><b>${scoreCellText(r.attractiveness, r.isIPO)}</b></td>
-        <td class="${r.isIPO ? "" : scoreClass(r.risk)}"><b>${scoreCellText(r.risk, r.isIPO)}</b></td>
+        <td>${scorePill(r.attractiveness, r.isIPO)}</td>
+        <td>${scorePill(r.risk, r.isIPO)}</td>
       </tr>`;
     })
     .join("");
 
   return `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${rankNote} 상승압력·투자안정은 각 10점 만점(5점보다 높으면 빨강·낮으면 파랑)이며 투자 자문이 아닙니다.</p>
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${rankNote} 상승 압력·투자 안정은 각 10점 만점이며 투자 자문이 아닙니다.</p>
       ${SURGE_WARNING_LEGEND}
       <div class="popular-table-wrap">
         <table class="top30-table popular-table">
@@ -5631,7 +5737,7 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
     const pending = candidates.slice(scored.length, count);
     if (pending.length > 0) {
       statusEl.style.display = "block";
-      statusEl.textContent = "상승압력도 · 투자 안정성 점수를 계산하는 중...";
+      statusEl.textContent = "상승 압력 · 투자 안정 점수를 계산하는 중...";
       // 한꺼번에 요청하면 프록시가 과부하로 실패하는 경우가 많아 동시 요청 수를 제한
       const fullMetricsList = await mapWithConcurrency(pending, 3, (r) => getFullMetrics(r.symbol));
       const newlyScored = pending.map((r, i) => {
@@ -6323,15 +6429,15 @@ async function runTrendPressure() {
   });
   if (!allTickers) return;
 
-  await renderValueRanking(allTickers, "상승압력", {
+  await renderValueRanking(allTickers, "상승 압력", {
     statusEl: trendStatus,
     resultsEl: trendResults,
     buttons: [trendButtons.pressure],
     mapFn: (list) => list.map((m) => ({ ...m, attractivenessTotal: computeAttractivenessScore(m).total, isIPO: isRecentIPO(m.firstTradeDate) })),
     sortFn: (a, b) => b.attractivenessTotal - a.attractivenessTotal,
-    metricHeaderHtml: "상승압력도 점수",
-    metricCellFn: (r) => (r.isIPO ? "IPO" : `<b>${r.attractivenessTotal}/10</b>`),
-    noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 상승압력도 점수(10점 만점, 높을수록 단기 상승 여력 참고치가 큼)는 거래대금·모멘텀·매출 성장성을 종합한 참고용 지표이며 투자 자문이 아닙니다.</p>`,
+    metricHeaderHtml: "상승 압력 점수",
+    metricCellFn: (r) => (r.isIPO ? "IPO" : scoreRankColorHtml(r.attractivenessTotal, r.attractivenessTotal)),
+    noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 상승 압력 점수(10점 만점, 높을수록 단기 상승 여력 참고치가 큼)는 거래대금·모멘텀·매출 성장성을 종합한 참고용 지표이며 투자 자문이 아닙니다.</p>`,
   });
 }
 
@@ -6504,7 +6610,8 @@ const KR_ETF_LIST = [
   { t: "091160.KS", name: "KODEX 반도체" },
   { t: "091170.KS", name: "KODEX 은행" },
   { t: "305720.KS", name: "KODEX 2차전지산업" },
-  { t: "091220.KS", name: "TIGER 반도체" },
+  // 091220.KS는 TIGER 은행이고 TIGER 반도체의 실제 티커는 091230.KS(웹검색으로 확인, 2026-08) — 티커 정정
+  { t: "091230.KS", name: "TIGER 반도체" },
   { t: "133690.KS", name: "TIGER 미국나스닥100" },
   { t: "360750.KS", name: "TIGER 미국S&P500" },
   { t: "381170.KS", name: "TIGER 미국테크TOP10 INDXX" },
@@ -6513,8 +6620,9 @@ const KR_ETF_LIST = [
   // 396500.KS는 2024년경 "TIGER 부동산인프라고배당"에서 "TIGER 반도체TOP10"으로 재상장(같은 티커, 다른 테마) — 최신 명칭으로 수정
   { t: "396500.KS", name: "TIGER 반도체TOP10" },
   { t: "192090.KS", name: "TIGER 차이나CSI300" },
-  { t: "232080.KS", name: "TIGER 코스피" },
-  { t: "277630.KS", name: "TIGER KRX2000" },
+  // 232080.KS는 실제로 TIGER 코스닥150, 277630.KS는 TIGER 코스피(웹검색으로 확인, 2026-08) — 종목명 정정
+  { t: "232080.KS", name: "TIGER 코스닥150" },
+  { t: "277630.KS", name: "TIGER 코스피" },
   { t: "148020.KS", name: "KBSTAR 200" },
   { t: "069660.KS", name: "KOSEF 200" },
   { t: "273130.KS", name: "KODEX 종합채권(AA-이상)액티브" },
@@ -6773,8 +6881,8 @@ const CHART_PERIOD_LABEL_FMT = {
 };
 
 // 차트 지오메트리는 build/interaction 두 함수가 동일한 좌표계를 써야 크로스헤어가 정확히 맞아떨어짐
-const PRICE_CHART_GEOM = { W: 780, H: 440, ML: 8, MR: 148, MT: 24, MB: 52 };
-const PRICE_TAG_W = 132,
+const PRICE_CHART_GEOM = { W: 780, H: 440, ML: 8, MR: 122, MT: 24, MB: 52 };
+const PRICE_TAG_W = 108,
   PRICE_TAG_NOTCH = 8,
   PRICE_TAG_H = 36;
 
@@ -7039,15 +7147,19 @@ summaryChartPeriodNav.addEventListener("click", (e) => {
   runSummaryChart(summaryChartCurrentSymbol, btn.dataset.chartPeriod);
 });
 
-// ---------- 라인/캔들 차트 전환 버튼 ----------
-const summaryChartTypeToggle = el("summaryChartTypeToggle");
-summaryChartTypeToggle.addEventListener("click", (e) => {
-  const btn = e.target.closest(".chart-type-btn");
-  if (!btn || !summaryChartCurrentPairs) return;
-  const mode = btn.dataset.chartType;
-  if (mode === summaryChartMode) return;
+// ---------- 라인/캔들 차트 전환 버튼(단일 버튼이 클릭할 때마다 두 모드를 번갈아 전환) ----------
+const CHART_TYPE_ICONS = {
+  line: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,17 9,10 13,14 21,5"/></svg>`,
+  candle: `<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="1.4"><line x1="6" y1="2" x2="6" y2="22"/><rect x="3.3" y="8" width="5.4" height="7" fill="currentColor" stroke="none"/><line x1="14" y1="2" x2="14" y2="12"/><rect x="11.3" y="5" width="5.4" height="9" fill="currentColor" stroke="none"/><line x1="20" y1="9" x2="20" y2="22"/><rect x="17.3" y="12" width="5.4" height="6" fill="currentColor" stroke="none"/></svg>`,
+};
+const summaryChartTypeBtn = el("summaryChartTypeBtn");
+summaryChartTypeBtn.addEventListener("click", () => {
+  if (!summaryChartCurrentPairs) return;
+  const mode = summaryChartMode === "line" ? "candle" : "line";
   summaryChartMode = mode;
-  Array.from(summaryChartTypeToggle.children).forEach((b) => b.classList.toggle("active", b === btn));
+  summaryChartTypeBtn.dataset.chartType = mode;
+  summaryChartTypeBtn.innerHTML = CHART_TYPE_ICONS[mode];
+  summaryChartTypeBtn.setAttribute("aria-label", mode === "line" ? "라인 차트로 보는 중(눌러서 캔들로 전환)" : "캔들 차트로 보는 중(눌러서 라인으로 전환)");
   renderSummaryChartPairs(summaryChartCurrentPairs, summaryChartCurrentPeriod, summaryChartCurrentSymbol);
 });
 
@@ -7304,7 +7416,7 @@ function buildFutureRiskChartSvg({ history, bucket, actualPoints, axisMonthStart
   // 이 차트는 처음부터 오늘 현재가를 기준으로 계산하므로 y축 값 자체가 곧 오늘 대비 변동률(0~1점 구간은 예상 자체를 생략)
   const forecastPctFromToday = showForecast ? modeMid : null;
 
-  const svg = `<svg viewBox="0 0 ${W} ${svgH}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="투자안정성 ${bucket}~${bucket + 1}점 구간 1년 수익률 예측">
+  const svg = `<svg viewBox="0 0 ${W} ${svgH}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="투자 안정 ${bucket}~${bucket + 1}점 구간 1년 수익률 예측">
     <rect x="0" y="0" width="${W}" height="${svgH}" fill="#000" />
     ${gridSvg}
     ${axisSvg}
@@ -7327,6 +7439,14 @@ function computeMacroScoreAtDate(vixPairs, date) {
   const vix = point ? point.c : null;
   return { ...computeMacroScore({ vix }), vix };
 }
+
+// VIX 급등이 실제로 발생했던 대표 월 — 매년 1월 1일 정기 포인트와 별도로 차트에 항상 라벨을 표시
+const SPECIAL_MACRO_MONTHS = [
+  { y: 2020, m: 3 }, // 코로나 폭락
+  { y: 2022, m: 4 }, // 2022년 금리인상 조정
+  { y: 2025, m: 4 }, // 2025년 관세 충격
+  { y: 2026, m: 3 },
+];
 
 async function computeMacroScoreChartData() {
   const now = new Date();
@@ -7365,7 +7485,19 @@ async function computeMacroScoreChartData() {
     points[i].crashWarn = pct <= -20;
   }
 
-  return { pairs, points };
+  // 매년 1월 1일 정기 포인트 외에, VIX가 실제로 급등했던 특정 월을 별도로 항상 라벨 표시(코로나 폭락·2022년 조정·2025년 관세 충격 등)
+  const specialPoints = [];
+  for (const { y, m } of SPECIAL_MACRO_MONTHS) {
+    const anchor = new Date(y, m - 1, 1);
+    if (anchor >= now) continue;
+    const anchorSec = Math.floor(anchor.getTime() / 1000);
+    const pricePoint = closestPair(pairs, anchorSec);
+    if (!pricePoint || Math.abs(pricePoint.t - anchorSec) > 20 * 24 * 3600) continue;
+    const mm = computeMacroScoreAtDate(vixPairs, anchor);
+    specialPoints.push({ t: pricePoint.t, price: pricePoint.c, vix: mm.vix, label: `${String(y).slice(-2)}년${m}월` });
+  }
+
+  return { pairs, points, specialPoints };
 }
 
 function getMacroScoreChartData() {
@@ -7378,7 +7510,7 @@ function getMacroScoreChartData() {
   return macroScoreChartDataPromise;
 }
 
-function buildMacroScoreChartSvg({ pairs, points }) {
+function buildMacroScoreChartSvg({ pairs, points, specialPoints }) {
   // 1년 간격 점(약 30개)을 가로 스크롤로 넉넉하게 볼 수 있도록 점 개수에 비례해 캔버스 폭을 넓힘(고정 min-width는 CSS에서 강제)
   const W = Math.max(780, points.length * 45),
     H = 420;
@@ -7420,24 +7552,34 @@ function buildMacroScoreChartSvg({ pairs, points }) {
   const linePath = pairs.map((p, i) => `${i === 0 ? "M" : "L"}${xFn(p.t).toFixed(1)},${yFn(p.c).toFixed(1)}`).join(" ");
   let linesSvg = `<path d="${linePath}" fill="none" stroke="#e5342f" stroke-width="1.8" stroke-linejoin="round" />`;
 
-  // 점(그 시점의 투자황금기 점수)은 빨간 선 위(그 날짜의 S&P 실제 값 높이)에 정확히 얹어서 찍음 — 8점 이상(지금 점도 포함)은 주황,
-  // 10점을 넘으면(VIX 35+ 극단적 공포) 점점 더 쨍한 골드로, 그 외 과거 점은 흰색. 라벨은 VIX를 환산한 투자황금기 점수(0~10점)로 표시하고,
-  // 위/아래를 번갈아 배치해 1년 간격(약 30개)이 서로 덜 겹치게 함
+  // 점(그 시점의 VIX 원본 수치, 소수점 없이 정수로 표시)은 빨간 선 위(그 날짜의 S&P 실제 값 높이)에 정확히 얹어서 찍음 —
+  // VIX 40 이상(패닉)일 때만 주황, 그 외 과거 점은 흰색. 위/아래를 번갈아 배치해 1년 간격(약 30개)이 서로 덜 겹치게 함
   points.forEach((p, i) => {
     const x = xFn(p.t);
     const y = yFn(p.price);
-    const isHigh = p.isNow || p.score >= 8;
-    const gold = macroGoldColor(p.score);
-    const dotColor = gold ? gold.color : isHigh ? "#f5a623" : "#eceef2";
+    const isHigh = p.vix !== null && p.vix !== undefined && p.vix >= 40;
+    const dotColor = isHigh ? "#e08a2c" : "#eceef2";
     const textColor = p.crashWarn ? "#f5d90a" : dotColor;
     const r = p.isNow ? 4.2 : 2.6;
     linesSvg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${dotColor}" stroke="#000" stroke-width="1" />`;
-    const scoreTxt = p.score !== null && p.score !== undefined ? `${p.score}점` : "N/A";
+    const vixTxt = p.vix !== null && p.vix !== undefined ? `${Math.round(p.vix)}` : "N/A";
     const fontSize = p.isNow ? 10 : 8.5;
     const rowH = p.isNow ? 12 : 9;
     const above = p.isNow || i % 2 === 0;
     const labelY = above ? y - 6 : y + rowH;
-    linesSvg += `<text x="${x.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-size="${fontSize}" font-weight="700" fill="${textColor}">${scoreTxt}</text>`;
+    linesSvg += `<text x="${x.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-size="${fontSize}" font-weight="700" fill="${textColor}">${vixTxt}</text>`;
+  });
+
+  // 코로나 폭락(20년3월)·2022년 조정(22년4월)·2025년 관세 충격(25년4월) 등 특정 월 포인트는 연도 라벨과 별도로,
+  // 교대 배치 없이 항상 위쪽에 "YY년M월" 형식으로 표시
+  (specialPoints || []).forEach((p) => {
+    const x = xFn(p.t);
+    const y = yFn(p.price);
+    const isHigh = p.vix !== null && p.vix !== undefined && p.vix >= 40;
+    const dotColor = isHigh ? "#e08a2c" : "#f5d90a";
+    linesSvg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.4" fill="${dotColor}" stroke="#000" stroke-width="1" />`;
+    const vixTxt = p.vix !== null && p.vix !== undefined ? `${p.label} · ${Math.round(p.vix)}` : p.label;
+    linesSvg += `<text x="${x.toFixed(1)}" y="${(y - 14).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="700" fill="${dotColor}">${vixTxt}</text>`;
   });
 
   return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="VIX지수를 활용한 투자시점 점검표">
@@ -7459,8 +7601,8 @@ async function renderMacroScoreChart() {
     container.innerHTML = buildMacroScoreChartSvg(data);
     macroScoreChartRendered = true;
     caption.textContent =
-      "빨간 선: S&P500 지수(1996~현재, 주간 종가) · 점 라벨: 1년 간격(매년 1월 1일 기준) VIX(공포지수)를 환산한 투자황금기 점수(0~10점) · " +
-      "주황~골드 점: 점수 8점 이상(10점을 넘을수록 더 진한 골드, 현재 포함), 흰 점: 그 외 · 노란 글씨: 그 시점 이후 1년간 20% 이상 급락(참고용, 투자 자문이 아닙니다)";
+      "빨간 선: S&P500 지수(1996~현재, 주간 종가) · 점 라벨: 1년 간격(매년 1월 1일 기준) VIX(FRED VIXCLS) 수치 그대로 · " +
+      "주황 점: VIX 40 이상(패닉), 흰 점: 그 외 · 노란 글씨: 그 시점 이후 1년간 20% 이상 급락 · 노란 점: 코로나 폭락·2022년 조정·2025년 관세 충격 등 특정 월(참고용, 투자 자문이 아닙니다)";
   } catch (err) {
     container.innerHTML = `<p class="error-inline" style="text-align:center;padding:20px 0;">❌ S&amp;P500 장기 데이터를 불러오지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
   }
@@ -7490,14 +7632,14 @@ async function renderFutureModalHeader(ticker, quote, metricsPromise, marketRetu
     ]);
     const attractiveness = computeAttractivenessScore(metrics);
     const risk = computeRiskScore(metrics, marketReturns.sp500Return);
-    const macro = computeMacroScore(macroMetrics);
     const isIPO = isRecentIPO(metrics.firstTradeDate);
+    const vix = macroMetrics.vix;
     const scoresEl = el("futureModalScores");
     if (scoresEl) {
       scoresEl.innerHTML = `
-        <span class="mini-score-circle small" title="상승압력도">${isIPO ? "IPO" : attractiveness.total}</span>
-        <span class="mini-score-circle small risk" title="투자안정성">${isIPO ? "IPO" : risk.total}</span>
-        <span class="mini-score-circle small macro" title="S&P500 VIX"${macroGoldStyle(macro.total)}>${macro.total}</span>
+        <span class="mini-score-circle small" title="상승 압력">${isIPO ? "IPO" : attractiveness.total}</span>
+        <span class="mini-score-circle small risk" title="투자 안정">${isIPO ? "IPO" : risk.total}</span>
+        <span class="mini-score-circle small macro" title="S&P500 VIX"${scoreBgStyleAttr(vix, 10, 50, "fear")}>${vix !== null && vix !== undefined ? Math.round(vix) : "N/A"}</span>
       `;
     }
   } catch {
@@ -7508,7 +7650,7 @@ async function renderFutureModalHeader(ticker, quote, metricsPromise, marketRetu
 async function renderFutureRiskSection(ticker, metricsPromise, marketReturnsPromise, futureData) {
   const riskContainer = el("futureRiskContainer");
   const riskCaption = el("futureRiskCaption");
-  riskContainer.innerHTML = `<p class="muted" style="text-align:center;padding:20px 0;">투자안정성 구간별 통계를 불러오는 중...</p>`;
+  riskContainer.innerHTML = `<p class="muted" style="text-align:center;padding:20px 0;">투자 안정 구간별 통계를 불러오는 중...</p>`;
   riskCaption.textContent = "";
 
   try {
@@ -7518,7 +7660,7 @@ async function renderFutureRiskSection(ticker, metricsPromise, marketReturnsProm
     const { history } = await fetchFutureRiskBands(bucket);
 
     if (!history || history.length === 0) {
-      riskContainer.innerHTML = `<p class="muted" style="text-align:center;padding:20px 0;">🚧 이 구간(투자안정성 ${bucket}~${bucket + 1}점)의 월별 통계가 아직 쌓이지 않았습니다. 서버가 매달 말일에 자동으로 갱신하며, 데이터가 쌓이는 대로 이 자리에 표시됩니다.</p>`;
+      riskContainer.innerHTML = `<p class="muted" style="text-align:center;padding:20px 0;">🚧 이 구간(투자 안정 ${bucket}~${bucket + 1}점)의 월별 통계가 아직 쌓이지 않았습니다. 서버가 매달 말일에 자동으로 갱신하며, 데이터가 쌓이는 대로 이 자리에 표시됩니다.</p>`;
       return;
     }
 
@@ -7532,7 +7674,7 @@ async function renderFutureRiskSection(ticker, metricsPromise, marketReturnsProm
     riskContainer.innerHTML = svg;
     const last = history[history.length - 1];
     const baseNote =
-      `${ticker}는 투자안정성 ${bucket}~${bucket + 1}점 구간(최근 집계 ${last.sampleSize}종목 표본) · 빨간 실선: ${ticker}의 최근 6개월 실제 흐름(위 차트와 동일) · ` +
+      `${ticker}는 투자 안정 ${bucket}~${bucket + 1}점 구간(최근 집계 ${last.sampleSize}종목 표본) · 빨간 실선: ${ticker}의 최근 6개월 실제 흐름(위 차트와 동일) · ` +
       `초록: 가장 높은 수익률대, 파랑: 가장 낮은 수익률대, 흰색(진할수록 비중 큼): 그 사이 구간별 종목 수`;
     if (forecastPctFromToday === null) {
       riskCaption.innerHTML = `${escapeHtml(baseNote)} · <span style="color:var(--warn);font-weight:700;">0~1점 구간은 표본 편차가 너무 커서 1년 후 예상을 생략합니다.</span>`;
@@ -7565,7 +7707,6 @@ async function runFuturePrediction(ticker) {
     const marketReturnsPromise = getMarketReturns();
     renderFutureModalHeader(ticker, quote, metricsPromise, marketReturnsPromise);
     renderFutureRiskSection(ticker, metricsPromise, marketReturnsPromise, data); // 실패해도 1번째 그래프는 그대로 유지
-    renderMacroScoreChart(); // 종목과 무관한 시장 전체 차트라 최초 1회만 그리고 이후 검색부터는 캐시된 결과를 재사용
     setFutureStatus(null, null);
   } catch (err) {
     setFutureStatus("error", `❌ ${escapeHtml(err.message || "예측 차트를 불러오지 못했습니다.")}`);
