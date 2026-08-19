@@ -1,761 +1,761 @@
 {
-  "updatedAt": "2026-08-19T12:56:45.634Z",
+  "updatedAt": "2026-08-19T23:41:24.025Z",
   "prices": {
     "CHWY": {
-      "price": 23.04,
+      "price": 23.99,
       "currency": "USD",
-      "oneYearReturn": -43.73626254879343,
-      "oneYearChangeAmt": -17.90999984741211
+      "oneYearReturn": -41.38773615380472,
+      "oneYearChangeAmt": -16.940000534057617
     },
     "TM": {
-      "price": 188.25,
+      "price": 188.78,
       "currency": "USD",
-      "oneYearReturn": -5.211483275645483,
-      "oneYearChangeAmt": -10.350006103515625
+      "oneYearReturn": -5.226167746632556,
+      "oneYearChangeAmt": -10.410003662109375
     },
     "NVDA": {
-      "price": 219.74,
+      "price": 217.56,
       "currency": "USD",
-      "oneYearReturn": 25.108179376431217,
-      "oneYearChangeAmt": 44.100006103515625
+      "oneYearReturn": 24.036490951642165,
+      "oneYearChangeAmt": 42.160003662109375
     },
     "COST": {
-      "price": 961.35,
+      "price": 956.99,
       "currency": "USD",
-      "oneYearReturn": -1.9880716200610742,
-      "oneYearChangeAmt": -19.5
+      "oneYearReturn": -3.77851903969522,
+      "oneYearChangeAmt": -37.58001708984375
     },
     "HMC": {
-      "price": 31.95,
-      "currency": "USD",
-      "oneYearReturn": -6.112248283778513,
-      "oneYearChangeAmt": -2.079998016357422
-    },
-    "CHYM": {
       "price": 31.91,
       "currency": "USD",
-      "oneYearReturn": 13.8829383515253,
-      "oneYearChangeAmt": 3.8899993896484375
+      "oneYearReturn": -7.560835966804177,
+      "oneYearChangeAmt": -2.6100006103515625
+    },
+    "CHYM": {
+      "price": 33.07,
+      "currency": "USD",
+      "oneYearReturn": 24.463681124039255,
+      "oneYearChangeAmt": 6.5
     },
     "LLY": {
-      "price": 1225.73,
+      "price": 1280.34,
       "currency": "USD",
-      "oneYearReturn": 74.30496468612779,
-      "oneYearChangeAmt": 522.5199584960938
+      "oneYearReturn": 81.49523154191378,
+      "oneYearChangeAmt": 574.8999633789062
     },
     "HPQ": {
-      "price": 29.96,
+      "price": 29.94,
       "currency": "USD",
-      "oneYearReturn": 10.96295957212095,
-      "oneYearChangeAmt": 2.9599990844726562
+      "oneYearReturn": 13.109185155711206,
+      "oneYearChangeAmt": 3.470001220703125
     },
     "AMZN": {
-      "price": 259.45,
+      "price": 265.84,
       "currency": "USD",
-      "oneYearReturn": 13.788877004359874,
-      "oneYearChangeAmt": 31.440017700195312
+      "oneYearReturn": 18.77932140555668,
+      "oneYearChangeAmt": 42.029998779296875
     },
     "LOW": {
-      "price": 215.64,
+      "price": 220,
       "currency": "USD",
-      "oneYearReturn": -15.883908678677836,
-      "oneYearChangeAmt": -40.71998596191406
+      "oneYearReturn": -14.443498690476247,
+      "oneYearChangeAmt": -37.1400146484375
     },
     "PG": {
-      "price": 143.45,
+      "price": 144.38,
       "currency": "USD",
-      "oneYearReturn": -9.438129750189338,
-      "oneYearChangeAmt": -14.949996948242188
+      "oneYearReturn": -9.485292549097938,
+      "oneYearChangeAmt": -15.129989624023438
     },
     "AAPL": {
-      "price": 310.03,
+      "price": 316.83,
       "currency": "USD",
-      "oneYearReturn": 34.46825210887109,
-      "oneYearChangeAmt": 79.47000122070312
+      "oneYearReturn": 40.184060118050546,
+      "oneYearChangeAmt": 90.81999206542969
     },
     "ULTA": {
-      "price": 516.74,
+      "price": 527.85,
       "currency": "USD",
-      "oneYearReturn": 0.036782972780245664,
-      "oneYearChangeAmt": 0.19000244140625
+      "oneYearReturn": 2.1598972482144774,
+      "oneYearChangeAmt": 11.15997314453125
     },
     "GOOGL": {
-      "price": 344.2,
+      "price": 344.72,
       "currency": "USD",
-      "oneYearReturn": 70.7595374808896,
-      "oneYearChangeAmt": 142.6300048828125
+      "oneYearReturn": 72.94801753642986,
+      "oneYearChangeAmt": 145.39999389648438
     },
     "V": {
-      "price": 364.25,
+      "price": 365.54,
       "currency": "USD",
-      "oneYearReturn": 6.365889039533562,
-      "oneYearChangeAmt": 21.79998779296875
+      "oneYearReturn": 6.283260061448647,
+      "oneYearChangeAmt": 21.610015869140625
     },
     "MSFT": {
-      "price": 481.63,
+      "price": 484.31,
       "currency": "USD",
-      "oneYearReturn": -5.520133538128834,
-      "oneYearChangeAmt": -28.139984130859375
+      "oneYearReturn": -4.23356869620147,
+      "oneYearChangeAmt": -21.410003662109375
     },
     "AXP": {
-      "price": 338.52,
+      "price": 339.9,
       "currency": "USD",
-      "oneYearReturn": 10.591304235123927,
-      "oneYearChangeAmt": 32.41998291015625
+      "oneYearReturn": 10.214007984245645,
+      "oneYearChangeAmt": 31.5
     },
     "NFLX": {
-      "price": 77.77,
+      "price": 80.22,
       "currency": "USD",
-      "oneYearReturn": -35.94696202557894,
-      "oneYearChangeAmt": -43.64500427246094
+      "oneYearReturn": -33.913301227518815,
+      "oneYearChangeAmt": -41.16600036621094
     },
     "KR": {
-      "price": 56.34,
+      "price": 56.27,
       "currency": "USD",
-      "oneYearReturn": -20.333711566602066,
-      "oneYearChangeAmt": -14.380001068115234
+      "oneYearReturn": -21.662259469084226,
+      "oneYearChangeAmt": -15.560001373291016
     },
     "JPM": {
-      "price": 363.25,
+      "price": 357.26,
       "currency": "USD",
-      "oneYearReturn": 24.974195081300586,
-      "oneYearChangeAmt": 72.58999633789062
+      "oneYearReturn": 22.248843999448628,
+      "oneYearChangeAmt": 65.02001953125
     },
     "HD": {
-      "price": 337.49,
+      "price": 344.3,
       "currency": "USD",
-      "oneYearReturn": -17.11935655277285,
-      "oneYearChangeAmt": -69.71002197265625
+      "oneYearReturn": -14.297805505470285,
+      "oneYearChangeAmt": -57.44000244140625
     },
     "FDX": {
       "price": 328.38,
       "currency": "USD",
-      "oneYearReturn": 74.80357991085963,
-      "oneYearChangeAmt": 140.5234375
+      "oneYearReturn": 79.35811421516877,
+      "oneYearChangeAmt": 145.2937774658203
     },
     "TMUS": {
-      "price": 182.75,
+      "price": 182.36,
       "currency": "USD",
-      "oneYearReturn": -29.22701605759741,
-      "oneYearChangeAmt": -75.47000122070312
+      "oneYearReturn": -29.593454409207233,
+      "oneYearChangeAmt": -76.65000915527344
     },
     "DELL": {
-      "price": 468.65,
+      "price": 437.55,
       "currency": "USD",
-      "oneYearReturn": 246.6346186944774,
-      "oneYearChangeAmt": 333.4499969482422
+      "oneYearReturn": 240.55884366688383,
+      "oneYearChangeAmt": 309.0699920654297
     },
     "PSKY": {
-      "price": 10.43,
+      "price": 10.6,
       "currency": "USD",
-      "oneYearReturn": -22.626107868209562,
-      "oneYearChangeAmt": -3.049999237060547
+      "oneYearReturn": -24.17739106896935,
+      "oneYearChangeAmt": -3.3799991607666016
     },
     "IBM": {
-      "price": 232.67,
+      "price": 237.16,
       "currency": "USD",
-      "oneYearReturn": -3.568468440779165,
-      "oneYearChangeAmt": -8.610000610351562
+      "oneYearReturn": -2.222221942622802,
+      "oneYearChangeAmt": -5.3899993896484375
     },
     "UPS": {
-      "price": 101.93,
+      "price": 102.86,
       "currency": "USD",
-      "oneYearReturn": 16.093390389848146,
-      "oneYearChangeAmt": 14.129997253417969
+      "oneYearReturn": 18.311476560717484,
+      "oneYearChangeAmt": 15.919998168945312
     },
     "KO": {
-      "price": 88.82,
+      "price": 90.35,
       "currency": "USD",
-      "oneYearReturn": 26.65051072776898,
-      "oneYearChangeAmt": 18.69000244140625
+      "oneYearReturn": 27.793496993025634,
+      "oneYearChangeAmt": 19.650001525878906
     },
     "BBY": {
-      "price": 87.27,
+      "price": 89.21,
       "currency": "USD",
-      "oneYearReturn": 17.773277247157896,
-      "oneYearChangeAmt": 13.169998168945312
-    },
-    "PYPL": {
-      "price": 60.43,
-      "currency": "USD",
-      "oneYearReturn": -12.483710884300375,
-      "oneYearChangeAmt": -8.620002746582031
-    },
-    "NKE": {
-      "price": 40.06,
-      "currency": "USD",
-      "oneYearReturn": -47.89281633135073,
-      "oneYearChangeAmt": -36.81999588012695
-    },
-    "LUV": {
-      "price": 42.49,
-      "currency": "USD",
-      "oneYearReturn": 34.504594723738755,
-      "oneYearChangeAmt": 10.900001525878906
-    },
-    "HOOD": {
-      "price": 91.53,
-      "currency": "USD",
-      "oneYearReturn": -14.855815089026162,
-      "oneYearChangeAmt": -15.970001220703125
-    },
-    "GM": {
-      "price": 83.71,
-      "currency": "USD",
-      "oneYearReturn": 46.70521743740464,
-      "oneYearChangeAmt": 26.64999771118164
-    },
-    "PEP": {
-      "price": 140.13,
-      "currency": "USD",
-      "oneYearReturn": -7.906150427027471,
-      "oneYearChangeAmt": -12.029998779296875
-    },
-    "COF": {
-      "price": 221.47,
-      "currency": "USD",
-      "oneYearReturn": 3.1916905504425914,
-      "oneYearChangeAmt": 6.850006103515625
-    },
-    "DAL": {
-      "price": 85.7,
-      "currency": "USD",
-      "oneYearReturn": 41.65288751775568,
-      "oneYearChangeAmt": 25.199996948242188
-    },
-    "AEO": {
-      "price": 16.35,
-      "currency": "USD",
-      "oneYearReturn": 29.45368355757516,
-      "oneYearChangeAmt": 3.7200002670288086
-    },
-    "EBAY": {
-      "price": 102.27,
-      "currency": "USD",
-      "oneYearReturn": 2.3826181479230315,
-      "oneYearChangeAmt": 2.3799972534179688
-    },
-    "CVS": {
-      "price": 94.91,
-      "currency": "USD",
-      "oneYearReturn": 33.73256591465656,
-      "oneYearChangeAmt": 23.94000244140625
-    },
-    "VZ": {
-      "price": 48.54,
-      "currency": "USD",
-      "oneYearReturn": 8.010686245724063,
-      "oneYearChangeAmt": 3.6000022888183594
-    },
-    "GAP": {
-      "price": 20.08,
-      "currency": "USD",
-      "oneYearReturn": -3.0420047736213767,
-      "oneYearChangeAmt": -0.6299991607666016
-    },
-    "COIN": {
-      "price": 146.23,
-      "currency": "USD",
-      "oneYearReturn": -51.59069348762354,
-      "oneYearChangeAmt": -155.8400115966797
-    },
-    "CMG": {
-      "price": 33.36,
-      "currency": "USD",
-      "oneYearReturn": -22.867050611903903,
-      "oneYearChangeAmt": -9.889999389648438
-    },
-    "GS": {
-      "price": 1040.47,
-      "currency": "USD",
-      "oneYearReturn": 44.233270074092,
-      "oneYearChangeAmt": 319.0899658203125
-    },
-    "F": {
-      "price": 13.93,
-      "currency": "USD",
-      "oneYearReturn": 20.293613099762734,
-      "oneYearChangeAmt": 2.3500003814697266
-    },
-    "UAL": {
-      "price": 118.72,
-      "currency": "USD",
-      "oneYearReturn": 16.17574947096694,
-      "oneYearChangeAmt": 16.529998779296875
-    },
-    "WBD": {
-      "price": 28.48,
-      "currency": "USD",
-      "oneYearReturn": 146.36676910415417,
-      "oneYearChangeAmt": 16.91999912261963
-    },
-    "PFE": {
-      "price": 27.25,
-      "currency": "USD",
-      "oneYearReturn": 7.62243415654662,
-      "oneYearChangeAmt": 1.9300003051757812
-    },
-    "XOM": {
-      "price": 165.56,
-      "currency": "USD",
-      "oneYearReturn": 54.12399960965227,
-      "oneYearChangeAmt": 58.13999938964844
-    },
-    "TJX": {
-      "price": 150.85,
-      "currency": "USD",
-      "oneYearReturn": 12.056166672862977,
-      "oneYearChangeAmt": 16.230010986328125
-    },
-    "ABNB": {
-      "price": 183.25,
-      "currency": "USD",
-      "oneYearReturn": 45.43650793650794,
-      "oneYearChangeAmt": 57.25
-    },
-    "M": {
-      "price": 23.23,
-      "currency": "USD",
-      "oneYearReturn": 78.14416878982313,
-      "oneYearChangeAmt": 10.1899995803833
-    },
-    "JNJ": {
-      "price": 271.11,
-      "currency": "USD",
-      "oneYearReturn": 52.48030410474291,
-      "oneYearChangeAmt": 93.30998229980469
-    },
-    "DKNG": {
-      "price": 24.04,
-      "currency": "USD",
-      "oneYearReturn": -46.60150894915937,
-      "oneYearChangeAmt": -20.979999542236328
-    },
-    "SBUX": {
-      "price": 106.01,
-      "currency": "USD",
-      "oneYearReturn": 16.584187595341213,
-      "oneYearChangeAmt": 15.080001831054688
-    },
-    "ALL": {
-      "price": 261.15,
-      "currency": "USD",
-      "oneYearReturn": 24.132516320622848,
-      "oneYearChangeAmt": 50.769989013671875
-    },
-    "TGT": {
-      "price": 152.48,
-      "currency": "USD",
-      "oneYearReturn": 44.7228500799363,
-      "oneYearChangeAmt": 47.1199951171875
-    },
-    "UBER": {
-      "price": 74.66,
-      "currency": "USD",
-      "oneYearReturn": -21.67435595767911,
-      "oneYearChangeAmt": -20.659996032714844
-    },
-    "YUM": {
-      "price": 144.86,
-      "currency": "USD",
-      "oneYearReturn": -4.703634073325907,
-      "oneYearChangeAmt": -7.149993896484375
-    },
-    "AAL": {
-      "price": 14.05,
-      "currency": "USD",
-      "oneYearReturn": 6.278365408025796,
-      "oneYearChangeAmt": 0.8299999237060547
-    },
-    "T": {
-      "price": 24.9,
-      "currency": "USD",
-      "oneYearReturn": -14.078674907360641,
-      "oneYearChangeAmt": -4.079999923706055
-    },
-    "BUD": {
-      "price": 77.43,
-      "currency": "USD",
-      "oneYearReturn": 24.405524127683748,
-      "oneYearChangeAmt": 15.189998626708984
-    },
-    "UNH": {
-      "price": 393.93,
-      "currency": "USD",
-      "oneYearReturn": 29.48001752574093,
-      "oneYearChangeAmt": 89.69000244140625
-    },
-    "MCD": {
-      "price": 266.99,
-      "currency": "USD",
-      "oneYearReturn": -14.131799272006607,
-      "oneYearChangeAmt": -43.94000244140625
-    },
-    "DIS": {
-      "price": 103.95,
-      "currency": "USD",
-      "oneYearReturn": -10.596026533521796,
-      "oneYearChangeAmt": -12.319999694824219
-    },
-    "RDDT": {
-      "price": 158.25,
-      "currency": "USD",
-      "oneYearReturn": -30.646855517759658,
-      "oneYearChangeAmt": -69.92999267578125
-    },
-    "DASH": {
-      "price": 216.35,
-      "currency": "USD",
-      "oneYearReturn": -12.892052036544916,
-      "oneYearChangeAmt": -32.019989013671875
-    },
-    "BAC": {
-      "price": 64.23,
-      "currency": "USD",
-      "oneYearReturn": 33.5898521439899,
-      "oneYearChangeAmt": 16.150001525878906
-    },
-    "WMT": {
-      "price": 115.2,
-      "currency": "USD",
-      "oneYearReturn": 13.732842242064288,
-      "oneYearChangeAmt": 13.909996032714844
-    },
-    "DG": {
-      "price": 120.84,
-      "currency": "USD",
-      "oneYearReturn": 7.146655121327533,
-      "oneYearChangeAmt": 8.05999755859375
-    },
-    "LYV": {
-      "price": 179.84,
-      "currency": "USD",
-      "oneYearReturn": 10.399019690676514,
+      "oneYearReturn": 23.439882701352634,
       "oneYearChangeAmt": 16.94000244140625
     },
-    "CBRL": {
-      "price": 58.18,
+    "PYPL": {
+      "price": 61.25,
       "currency": "USD",
-      "oneYearReturn": -2.16916241642561,
-      "oneYearChangeAmt": -1.2900009155273438
+      "oneYearReturn": -10.032317343357036,
+      "oneYearChangeAmt": -6.8300018310546875
     },
-    "BA": {
-      "price": 223.06,
+    "NKE": {
+      "price": 41.05,
       "currency": "USD",
-      "oneYearReturn": -0.8622233072916667,
-      "oneYearChangeAmt": -1.94000244140625
+      "oneYearReturn": -46.17099647633232,
+      "oneYearChangeAmt": -35.21000289916992
     },
-    "DLTR": {
-      "price": 130.48,
+    "LUV": {
+      "price": 41.42,
       "currency": "USD",
-      "oneYearReturn": 16.00283768972336,
-      "oneYearChangeAmt": 17.99999237060547
+      "oneYearReturn": 32.84155793311434,
+      "oneYearChangeAmt": 10.239997863769531
     },
-    "BP": {
-      "price": 43.41,
+    "HOOD": {
+      "price": 95.77,
       "currency": "USD",
-      "oneYearReturn": 28.35600307251196,
-      "oneYearChangeAmt": 9.59000015258789
+      "oneYearReturn": -9.084868072453032,
+      "oneYearChangeAmt": -9.569999694824219
     },
-    "TSLA": {
-      "price": 336.87,
+    "GM": {
+      "price": 84.96,
       "currency": "USD",
-      "oneYearReturn": 2.295708485816198,
-      "oneYearChangeAmt": 7.55999755859375
+      "oneYearReturn": 49.656505899946346,
+      "oneYearChangeAmt": 28.189998626708984
     },
-    "WFC": {
-      "price": 87.4,
+    "PEP": {
+      "price": 142.58,
       "currency": "USD",
-      "oneYearReturn": 12.730559656886845,
-      "oneYearChangeAmt": 9.870002746582031
+      "oneYearReturn": -5.40701527731506,
+      "oneYearChangeAmt": -8.149993896484375
     },
-    "FOXA": {
-      "price": 69.03,
+    "COF": {
+      "price": 220.73,
       "currency": "USD",
-      "oneYearReturn": 18.710226943976892,
-      "oneYearChangeAmt": 10.879997253417969
+      "oneYearReturn": 2.8037766407852613,
+      "oneYearChangeAmt": 6.019989013671875
     },
-    "CMCSA": {
-      "price": 26.2,
+    "DAL": {
+      "price": 83.29,
       "currency": "USD",
-      "oneYearReturn": -17.511358266542697,
-      "oneYearChangeAmt": -5.561948776245117
+      "oneYearReturn": 41.04996103582243,
+      "oneYearChangeAmt": 24.240001678466797
     },
-    "QSR": {
-      "price": 76.56,
+    "AEO": {
+      "price": 16.67,
       "currency": "USD",
-      "oneYearReturn": 15.024039012616926,
-      "oneYearChangeAmt": 10
+      "oneYearReturn": 35.41835506138029,
+      "oneYearChangeAmt": 4.359999656677246
     },
-    "META": {
-      "price": 543.67,
+    "EBAY": {
+      "price": 102.64,
       "currency": "USD",
-      "oneYearReturn": -27.65343095753107,
-      "oneYearChangeAmt": -207.80999755859375
+      "oneYearReturn": 3.519917105456236,
+      "oneYearChangeAmt": 3.4899978637695312
     },
-    "PDD": {
-      "price": 87.27,
+    "CVS": {
+      "price": 93.65,
       "currency": "USD",
-      "oneYearReturn": -26.706981719376046,
-      "oneYearChangeAmt": -31.800003051757812
+      "oneYearReturn": 32.23665903619481,
+      "oneYearChangeAmt": 22.830001831054688
     },
-    "RYCEY": {
-      "price": 20.83,
+    "VZ": {
+      "price": 49.36,
       "currency": "USD",
-      "oneYearReturn": 45.055713243142925,
-      "oneYearChangeAmt": 6.470000267028809
+      "oneYearReturn": 9.542829795849363,
+      "oneYearChangeAmt": 4.299999237060547
     },
-    "HOG": {
-      "price": 27.23,
+    "GAP": {
+      "price": 20.1,
       "currency": "USD",
-      "oneYearReturn": -2.7500016348702565,
-      "oneYearChangeAmt": -0.7700004577636719
+      "oneYearReturn": -3.1325282820736073,
+      "oneYearChangeAmt": -0.6499996185302734
     },
-    "MBGYY": {
-      "price": 13.04,
+    "COIN": {
+      "price": 160.2,
       "currency": "USD",
-      "oneYearReturn": -16.889736707472462,
-      "oneYearChangeAmt": -2.6499996185302734
+      "oneYearReturn": -47.370153671673826,
+      "oneYearChangeAmt": -144.1900177001953
     },
-    "RACE": {
-      "price": 412.44,
+    "CMG": {
+      "price": 34.66,
       "currency": "USD",
-      "oneYearReturn": -12.525980394187433,
-      "oneYearChangeAmt": -59.05999755859375
+      "oneYearReturn": -19.526352233577448,
+      "oneYearChangeAmt": -8.40999984741211
     },
-    "ADDYY": {
-      "price": 89.1,
+    "GS": {
+      "price": 1021.65,
       "currency": "USD",
-      "oneYearReturn": -9.35910914752734,
-      "oneYearChangeAmt": -9.200004577636719
+      "oneYearReturn": 41.76195187836737,
+      "oneYearChangeAmt": 300.97003173828125
     },
-    "SONY": {
-      "price": 23.43,
-      "currency": "USD",
-      "oneYearReturn": -17.03257615059085,
-      "oneYearChangeAmt": -4.809999465942383
-    },
-    "LEVI": {
-      "price": 22.01,
-      "currency": "USD",
-      "oneYearReturn": 5.411882727651158,
-      "oneYearChangeAmt": 1.1300010681152344
-    },
-    "NTDOY": {
-      "price": 13.95,
-      "currency": "USD",
-      "oneYearReturn": -42.212095435068285,
-      "oneYearChangeAmt": -10.1899995803833
-    },
-    "H": {
-      "price": 178.72,
-      "currency": "USD",
-      "oneYearReturn": 27.638905704457034,
-      "oneYearChangeAmt": 38.69999694824219
-    },
-    "GT": {
-      "price": 5.93,
-      "currency": "USD",
-      "oneYearReturn": -30.23529613719267,
-      "oneYearChangeAmt": -2.570000171661377
-    },
-    "INTC": {
-      "price": 96.685,
-      "currency": "USD",
-      "oneYearReturn": 282.0229335504892,
-      "oneYearChangeAmt": 71.38000297546387
-    },
-    "MMM": {
-      "price": 180.94,
-      "currency": "USD",
-      "oneYearReturn": 17.234681051359658,
-      "oneYearChangeAmt": 26.600006103515625
-    },
-    "PHG": {
-      "price": 27.1,
-      "currency": "USD",
-      "oneYearReturn": -1.7047490698475645,
-      "oneYearChangeAmt": -0.4699993133544922
-    },
-    "IHG": {
-      "price": 159.38,
-      "currency": "USD",
-      "oneYearReturn": 30.56443457136359,
-      "oneYearChangeAmt": 37.31000518798828
-    },
-    "MGDDY": {
-      "price": 19.65,
-      "currency": "USD",
-      "oneYearReturn": 3.0414259726678035,
-      "oneYearChangeAmt": 0.5799999237060547
-    },
-    "BRDCY": {
-      "price": 12.61,
-      "currency": "USD",
-      "oneYearReturn": 12.338523190554913,
-      "oneYearChangeAmt": 1.3849992752075195
-    },
-    "NVO": {
-      "price": 45.71,
-      "currency": "USD",
-      "oneYearReturn": -16.55713745333646,
-      "oneYearChangeAmt": -9.069999694824219
-    },
-    "BURBY": {
-      "price": 14.53,
-      "currency": "USD",
-      "oneYearReturn": -7.746033441452753,
-      "oneYearChangeAmt": -1.2200002670288086
-    },
-    "CL": {
-      "price": 91.46,
-      "currency": "USD",
-      "oneYearReturn": 6.534654292443184,
-      "oneYearChangeAmt": 5.6100006103515625
-    },
-    "MAR": {
-      "price": 357.33,
-      "currency": "USD",
-      "oneYearReturn": 33.94182030410736,
-      "oneYearChangeAmt": 90.54998779296875
-    },
-    "CAT": {
-      "price": 840.87,
-      "currency": "USD",
-      "oneYearReturn": 102.08849107594249,
-      "oneYearChangeAmt": 424.7799987792969
-    },
-    "SPOT": {
-      "price": 516.28,
-      "currency": "USD",
-      "oneYearReturn": -28.229645260452596,
-      "oneYearChangeAmt": -203.0699462890625
-    },
-    "EL": {
-      "price": 84.27,
-      "currency": "USD",
-      "oneYearReturn": -6.231229478546563,
-      "oneYearChangeAmt": -5.600006103515625
-    },
-    "MA": {
-      "price": 574.31,
-      "currency": "USD",
-      "oneYearReturn": -1.9128643439442694,
-      "oneYearChangeAmt": -11.20001220703125
-    },
-    "UAA": {
-      "price": 5.07,
-      "currency": "USD",
-      "oneYearReturn": -0.19684551564682962,
-      "oneYearChangeAmt": -0.009999752044677734
-    },
-    "HLT": {
-      "price": 327.74,
-      "currency": "USD",
-      "oneYearReturn": 20.61236410536375,
-      "oneYearChangeAmt": 56.009979248046875
-    },
-    "LRLCY": {
-      "price": 86.75,
-      "currency": "USD",
-      "oneYearReturn": -6.750509364399177,
-      "oneYearChangeAmt": -6.279998779296875
-    },
-    "KVUE": {
-      "price": 18.8,
-      "currency": "USD",
-      "oneYearReturn": -12.5174525951968,
-      "oneYearChangeAmt": -2.690000534057617
-    },
-    "MDLZ": {
-      "price": 62.66,
-      "currency": "USD",
-      "oneYearReturn": 0,
-      "oneYearChangeAmt": 0
-    },
-    "CLX": {
-      "price": 105.55,
-      "currency": "USD",
-      "oneYearReturn": -12.631400393361258,
-      "oneYearChangeAmt": -15.259994506835938
-    },
-    "UL": {
-      "price": 62.03,
-      "currency": "USD",
-      "oneYearReturn": -11.114021599443316,
-      "oneYearChangeAmt": -7.756034851074219
-    },
-    "GIS": {
-      "price": 38.08,
-      "currency": "USD",
-      "oneYearReturn": -23.702660894660013,
-      "oneYearChangeAmt": -11.829998016357422
-    },
-    "KMB": {
-      "price": 107.72,
-      "currency": "USD",
-      "oneYearReturn": -18.977056266771612,
-      "oneYearChangeAmt": -25.229995727539062
-    },
-    "HSY": {
-      "price": 183.45,
-      "currency": "USD",
-      "oneYearReturn": 1.4825427960613975,
-      "oneYearChangeAmt": 2.67999267578125
-    },
-    "NWL": {
-      "price": 5.93,
-      "currency": "USD",
-      "oneYearReturn": 1.3675200856448455,
-      "oneYearChangeAmt": 0.07999992370605469
-    },
-    "MKC": {
-      "price": 55.28,
-      "currency": "USD",
-      "oneYearReturn": -19.942076269191986,
-      "oneYearChangeAmt": -13.770004272460938
-    },
-    "KHC": {
-      "price": 24.82,
-      "currency": "USD",
-      "oneYearReturn": -10.299965210016179,
-      "oneYearChangeAmt": -2.8500003814697266
-    },
-    "DOLE": {
-      "price": 12.92,
-      "currency": "USD",
-      "oneYearReturn": -9.58712308758768,
-      "oneYearChangeAmt": -1.369999885559082
-    },
-    "MAT": {
+    "F": {
       "price": 14.5,
       "currency": "USD",
-      "oneYearReturn": -17.89354402443653,
-      "oneYearChangeAmt": -3.1599998474121094
+      "oneYearReturn": 26.19669529017679,
+      "oneYearChangeAmt": 3.010000228881836
+    },
+    "UAL": {
+      "price": 115.78,
+      "currency": "USD",
+      "oneYearReturn": 15.96554790272644,
+      "oneYearChangeAmt": 15.94000244140625
+    },
+    "WBD": {
+      "price": 28.53,
+      "currency": "USD",
+      "oneYearReturn": 147.22704316252288,
+      "oneYearChangeAmt": 16.99000072479248
+    },
+    "PFE": {
+      "price": 28.24,
+      "currency": "USD",
+      "oneYearReturn": 11.268718301506738,
+      "oneYearChangeAmt": 2.8600006103515625
+    },
+    "XOM": {
+      "price": 164.77,
+      "currency": "USD",
+      "oneYearReturn": 51.819778978835096,
+      "oneYearChangeAmt": 56.24000549316406
+    },
+    "TJX": {
+      "price": 144.5,
+      "currency": "USD",
+      "oneYearReturn": 4.505674068876761,
+      "oneYearChangeAmt": 6.2299957275390625
+    },
+    "ABNB": {
+      "price": 186.39,
+      "currency": "USD",
+      "oneYearReturn": 49.159731718347125,
+      "oneYearChangeAmt": 61.43000030517578
+    },
+    "M": {
+      "price": 23.4,
+      "currency": "USD",
+      "oneYearReturn": 81.67701405758875,
+      "oneYearChangeAmt": 10.519999504089355
+    },
+    "JNJ": {
+      "price": 273.41,
+      "currency": "USD",
+      "oneYearReturn": 52.8796741560782,
+      "oneYearChangeAmt": 94.57000732421875
+    },
+    "DKNG": {
+      "price": 25.31,
+      "currency": "USD",
+      "oneYearReturn": -44.55641047110549,
+      "oneYearChangeAmt": -20.340002059936523
+    },
+    "SBUX": {
+      "price": 104.98,
+      "currency": "USD",
+      "oneYearReturn": 17.282986092613907,
+      "oneYearChangeAmt": 15.470001220703125
+    },
+    "ALL": {
+      "price": 259.74,
+      "currency": "USD",
+      "oneYearReturn": 21.589736996242802,
+      "oneYearChangeAmt": 46.1199951171875
+    },
+    "TGT": {
+      "price": 159,
+      "currency": "USD",
+      "oneYearReturn": 61.11054419559946,
+      "oneYearChangeAmt": 60.30999755859375
+    },
+    "UBER": {
+      "price": 78.04,
+      "currency": "USD",
+      "oneYearReturn": -16.739573113698814,
+      "oneYearChangeAmt": -15.69000244140625
+    },
+    "YUM": {
+      "price": 145.93,
+      "currency": "USD",
+      "oneYearReturn": -2.2833827144297225,
+      "oneYearChangeAmt": -3.410003662109375
+    },
+    "AAL": {
+      "price": 13.86,
+      "currency": "USD",
+      "oneYearReturn": 8.281245704274689,
+      "oneYearChangeAmt": 1.0599994659423828
+    },
+    "T": {
+      "price": 25.12,
+      "currency": "USD",
+      "oneYearReturn": -14.20764941890684,
+      "oneYearChangeAmt": -4.159999847412109
+    },
+    "BUD": {
+      "price": 78.13,
+      "currency": "USD",
+      "oneYearReturn": 23.83895556261645,
+      "oneYearChangeAmt": 15.039997100830078
+    },
+    "UNH": {
+      "price": 388.61,
+      "currency": "USD",
+      "oneYearReturn": 29.60578645206382,
+      "oneYearChangeAmt": 88.76998901367188
+    },
+    "MCD": {
+      "price": 267.45,
+      "currency": "USD",
+      "oneYearReturn": -14.574542073037296,
+      "oneYearChangeAmt": -45.629974365234375
+    },
+    "DIS": {
+      "price": 106.93,
+      "currency": "USD",
+      "oneYearReturn": -8.63807290778165,
+      "oneYearChangeAmt": -10.110000610351562
+    },
+    "RDDT": {
+      "price": 151.71,
+      "currency": "USD",
+      "oneYearReturn": -30.526166549368405,
+      "oneYearChangeAmt": -66.65998840332031
+    },
+    "DASH": {
+      "price": 220.22,
+      "currency": "USD",
+      "oneYearReturn": -9.679273806326158,
+      "oneYearChangeAmt": -23.600006103515625
+    },
+    "BAC": {
+      "price": 63.17,
+      "currency": "USD",
+      "oneYearReturn": 30.65149981908788,
+      "oneYearChangeAmt": 14.819999694824219
+    },
+    "WMT": {
+      "price": 114.3,
+      "currency": "USD",
+      "oneYearReturn": 11.43609573153338,
+      "oneYearChangeAmt": 11.730003356933594
+    },
+    "DG": {
+      "price": 122.31,
+      "currency": "USD",
+      "oneYearReturn": 6.495428109346994,
+      "oneYearChangeAmt": 7.459999084472656
+    },
+    "LYV": {
+      "price": 184.19,
+      "currency": "USD",
+      "oneYearReturn": 13.767763672167685,
+      "oneYearChangeAmt": 22.290008544921875
+    },
+    "CBRL": {
+      "price": 56.07,
+      "currency": "USD",
+      "oneYearReturn": -4.998306913010878,
+      "oneYearChangeAmt": -2.950000762939453
+    },
+    "BA": {
+      "price": 222.2,
+      "currency": "USD",
+      "oneYearReturn": -1.5158222865703717,
+      "oneYearChangeAmt": -3.4199981689453125
+    },
+    "DLTR": {
+      "price": 131.84,
+      "currency": "USD",
+      "oneYearReturn": 16.312305348633046,
+      "oneYearChangeAmt": 18.48999786376953
+    },
+    "BP": {
+      "price": 43.73,
+      "currency": "USD",
+      "oneYearReturn": 29.073194107396333,
+      "oneYearChangeAmt": 9.849998474121094
+    },
+    "TSLA": {
+      "price": 351.12,
+      "currency": "USD",
+      "oneYearReturn": 8.403828877317732,
+      "oneYearChangeAmt": 27.220001220703125
+    },
+    "WFC": {
+      "price": 85.94,
+      "currency": "USD",
+      "oneYearReturn": 9.953938606413455,
+      "oneYearChangeAmt": 7.779998779296875
+    },
+    "FOXA": {
+      "price": 67.96,
+      "currency": "USD",
+      "oneYearReturn": 15.245035912621505,
+      "oneYearChangeAmt": 8.989997863769531
+    },
+    "CMCSA": {
+      "price": 26.59,
+      "currency": "USD",
+      "oneYearReturn": -14.774616234703048,
+      "oneYearChangeAmt": -4.609624862670898
+    },
+    "QSR": {
+      "price": 77.1,
+      "currency": "USD",
+      "oneYearReturn": 20.941174077052697,
+      "oneYearChangeAmt": 13.349998474121094
+    },
+    "META": {
+      "price": 546.03,
+      "currency": "USD",
+      "oneYearReturn": -26.97399418348946,
+      "oneYearChangeAmt": -201.68994140625
+    },
+    "PDD": {
+      "price": 90.2,
+      "currency": "USD",
+      "oneYearReturn": -23.55932462013374,
+      "oneYearChangeAmt": -27.800003051757812
+    },
+    "RYCEY": {
+      "price": 20.56,
+      "currency": "USD",
+      "oneYearReturn": 48.44764548490654,
+      "oneYearChangeAmt": 6.709999084472656
+    },
+    "HOG": {
+      "price": 27.66,
+      "currency": "USD",
+      "oneYearReturn": 1.355804028845764,
+      "oneYearChangeAmt": 0.3699989318847656
+    },
+    "MBGYY": {
+      "price": 13.1,
+      "currency": "USD",
+      "oneYearReturn": -16.560506110713813,
+      "oneYearChangeAmt": -2.59999942779541
+    },
+    "RACE": {
+      "price": 425.18,
+      "currency": "USD",
+      "oneYearReturn": -9.231036145432329,
+      "oneYearChangeAmt": -43.240020751953125
+    },
+    "ADDYY": {
+      "price": 91.35,
+      "currency": "USD",
+      "oneYearReturn": -7.736595795210442,
+      "oneYearChangeAmt": -7.660003662109375
+    },
+    "SONY": {
+      "price": 23.49,
+      "currency": "USD",
+      "oneYearReturn": -16.465152666906736,
+      "oneYearChangeAmt": -4.630001068115234
+    },
+    "LEVI": {
+      "price": 22,
+      "currency": "USD",
+      "oneYearReturn": 5.718407326272019,
+      "oneYearChangeAmt": 1.1900005340576172
+    },
+    "NTDOY": {
+      "price": 13.78,
+      "currency": "USD",
+      "oneYearReturn": -40.83297899836438,
+      "oneYearChangeAmt": -9.510001182556152
+    },
+    "H": {
+      "price": 183.01,
+      "currency": "USD",
+      "oneYearReturn": 33.340615305527095,
+      "oneYearChangeAmt": 45.75999450683594
+    },
+    "GT": {
+      "price": 5.99,
+      "currency": "USD",
+      "oneYearReturn": -27.74427263351584,
+      "oneYearChangeAmt": -2.3000001907348633
+    },
+    "INTC": {
+      "price": 92.8,
+      "currency": "USD",
+      "oneYearReturn": 294.22259746194624,
+      "oneYearChangeAmt": 69.26000213623047
+    },
+    "MMM": {
+      "price": 180.66,
+      "currency": "USD",
+      "oneYearReturn": 16.743136453705574,
+      "oneYearChangeAmt": 25.910003662109375
+    },
+    "PHG": {
+      "price": 27.62,
+      "currency": "USD",
+      "oneYearReturn": -0.504320563739695,
+      "oneYearChangeAmt": -0.1399993896484375
+    },
+    "IHG": {
+      "price": 161.56,
+      "currency": "USD",
+      "oneYearReturn": 33.498596959224095,
+      "oneYearChangeAmt": 40.540000915527344
+    },
+    "MGDDY": {
+      "price": 19.86,
+      "currency": "USD",
+      "oneYearReturn": 4.361533861049807,
+      "oneYearChangeAmt": 0.8299999237060547
+    },
+    "BRDCY": {
+      "price": 12.68,
+      "currency": "USD",
+      "oneYearReturn": 12.511089530975037,
+      "oneYearChangeAmt": 1.4099998474121094
+    },
+    "NVO": {
+      "price": 46.48,
+      "currency": "USD",
+      "oneYearReturn": -14.401472936830087,
+      "oneYearChangeAmt": -7.819999694824219
+    },
+    "BURBY": {
+      "price": 14.7,
+      "currency": "USD",
+      "oneYearReturn": -10.256406822812309,
+      "oneYearChangeAmt": -1.6799993515014648
+    },
+    "CL": {
+      "price": 90.87,
+      "currency": "USD",
+      "oneYearReturn": 5.601393984756816,
+      "oneYearChangeAmt": 4.819999694824219
+    },
+    "MAR": {
+      "price": 359.95,
+      "currency": "USD",
+      "oneYearReturn": 36.587870024044186,
+      "oneYearChangeAmt": 96.42001342773438
+    },
+    "CAT": {
+      "price": 816.15,
+      "currency": "USD",
+      "oneYearReturn": 94.04884365304534,
+      "oneYearChangeAmt": 395.5600280761719
+    },
+    "SPOT": {
+      "price": 533.37,
+      "currency": "USD",
+      "oneYearReturn": -24.21460779930786,
+      "oneYearChangeAmt": -170.41998291015625
+    },
+    "EL": {
+      "price": 98.01,
+      "currency": "USD",
+      "oneYearReturn": 13.214742383891007,
+      "oneYearChangeAmt": 11.44000244140625
+    },
+    "MA": {
+      "price": 573.72,
+      "currency": "USD",
+      "oneYearReturn": -3.1990318902207506,
+      "oneYearChangeAmt": -18.96002197265625
+    },
+    "UAA": {
+      "price": 5.25,
+      "currency": "USD",
+      "oneYearReturn": 2.3391790035497877,
+      "oneYearChangeAmt": 0.11999988555908203
+    },
+    "HLT": {
+      "price": 334.73,
+      "currency": "USD",
+      "oneYearReturn": 24.02001428525716,
+      "oneYearChangeAmt": 64.83001708984375
+    },
+    "LRLCY": {
+      "price": 89.26,
+      "currency": "USD",
+      "oneYearReturn": -5.414856905402221,
+      "oneYearChangeAmt": -5.1100006103515625
+    },
+    "KVUE": {
+      "price": 19.13,
+      "currency": "USD",
+      "oneYearReturn": -11.558021715204708,
+      "oneYearChangeAmt": -2.5
+    },
+    "MDLZ": {
+      "price": 64.16,
+      "currency": "USD",
+      "oneYearReturn": 1.5672083613432082,
+      "oneYearChangeAmt": 0.9900054931640625
+    },
+    "CLX": {
+      "price": 107.9,
+      "currency": "USD",
+      "oneYearReturn": -11.010308019893685,
+      "oneYearChangeAmt": -13.349998474121094
+    },
+    "UL": {
+      "price": 63.18,
+      "currency": "USD",
+      "oneYearReturn": -11.730899086891107,
+      "oneYearChangeAmt": -8.396575927734375
+    },
+    "GIS": {
+      "price": 39.99,
+      "currency": "USD",
+      "oneYearReturn": -19.439963396119584,
+      "oneYearChangeAmt": -9.64999771118164
+    },
+    "KMB": {
+      "price": 109.88,
+      "currency": "USD",
+      "oneYearReturn": -17.544648219401378,
+      "oneYearChangeAmt": -23.37999725341797
+    },
+    "HSY": {
+      "price": 188.79,
+      "currency": "USD",
+      "oneYearReturn": 3.9649744443217623,
+      "oneYearChangeAmt": 7.1999969482421875
+    },
+    "NWL": {
+      "price": 6.16,
+      "currency": "USD",
+      "oneYearReturn": 10.592453457227666,
+      "oneYearChangeAmt": 0.5899996757507324
+    },
+    "MKC": {
+      "price": 56.48,
+      "currency": "USD",
+      "oneYearReturn": -19.175727300885406,
+      "oneYearChangeAmt": -13.39999771118164
+    },
+    "KHC": {
+      "price": 25.68,
+      "currency": "USD",
+      "oneYearReturn": -6.345732189193123,
+      "oneYearChangeAmt": -1.739999771118164
+    },
+    "DOLE": {
+      "price": 13.29,
+      "currency": "USD",
+      "oneYearReturn": -7.257501517027645,
+      "oneYearChangeAmt": -1.0399999618530273
+    },
+    "MAT": {
+      "price": 14.53,
+      "currency": "USD",
+      "oneYearReturn": -17.90960956682929,
+      "oneYearChangeAmt": -3.1700010299682617
     },
     "RBGLY": {
-      "price": 13.62,
+      "price": 13.75,
       "currency": "USD",
-      "oneYearReturn": -12.043235129679154,
-      "oneYearChangeAmt": -1.8648805618286133
+      "oneYearReturn": -12.904556141504242,
+      "oneYearChangeAmt": -2.037278175354004
     },
     "ENR": {
-      "price": 22.33,
+      "price": 21.72,
       "currency": "USD",
-      "oneYearReturn": -21.400915017111085,
-      "oneYearChangeAmt": -6.079999923706055
+      "oneYearReturn": -23.869615174873378,
+      "oneYearChangeAmt": -6.810001373291016
     },
     "WDFC": {
-      "price": 230.01,
+      "price": 223.23,
       "currency": "USD",
-      "oneYearReturn": 4.331845914058953,
-      "oneYearChangeAmt": 9.54998779296875
+      "oneYearReturn": 1.08223122137336,
+      "oneYearChangeAmt": 2.3899993896484375
     },
     "SJM": {
-      "price": 118.5,
+      "price": 122.84,
       "currency": "USD",
-      "oneYearReturn": 5.78468447698769,
-      "oneYearChangeAmt": 6.480003356933594
+      "oneYearReturn": 8.659878834015288,
+      "oneYearChangeAmt": 9.789993286132812
     }
   }
 }
