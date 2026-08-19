@@ -4646,6 +4646,21 @@ async function getBrandData(org) {
   return data;
 }
 
+// 순위·점수는 연 1회 발표되는 정적 데이터라 실시간 조회가 필요 없지만, 현재가·1년 변동까지 매번
+// 브라우저에서 라이브로 30개+ 종목을 조회하면(무료 CORS 프록시 경유) 화면이 한참 걸림 — 그래서
+// GitHub Actions(scan-brand-reputation-prices.js)가 매일 미리 구워둔 스냅샷을 우선 사용하고,
+// 스냅샷에 없는 티커(다음 자동 갱신 전 새로 추가된 경우 등)만 그때그때 라이브로 보충 조회함
+let brandPriceSnapshotPromise = null;
+function getBrandPriceSnapshot() {
+  if (!brandPriceSnapshotPromise) {
+    brandPriceSnapshotPromise = fetch("data/brand-reputation-prices.json", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => (data && data.prices) || {})
+      .catch(() => ({}));
+  }
+  return brandPriceSnapshotPromise;
+}
+
 // 가벼운 조회(차트 1개만)로 현재가 + 1년 변동(금액·%)만 계산 — getFullMetrics는 재무제표까지 같이 가져와
 // 브랜드 100개를 한꺼번에 조회하기엔 과함
 async function getPriceAnd1yReturn(symbol) {
@@ -4714,10 +4729,17 @@ async function runInsightBrand(org) {
   async function showUpTo(count) {
     const pending = rows.slice(shownCount, count).filter((r) => r.ticker && !r.metrics);
     if (pending.length) {
-      const metricsList = await mapWithConcurrency(pending, 4, (r) => getPriceAnd1yReturn(r.ticker));
-      pending.forEach((r, i) => {
-        r.metrics = metricsList[i];
+      const snapshot = await getBrandPriceSnapshot();
+      const stillMissing = pending.filter((r) => !snapshot[r.ticker]);
+      pending.forEach((r) => {
+        if (snapshot[r.ticker]) r.metrics = snapshot[r.ticker];
       });
+      if (stillMissing.length) {
+        const metricsList = await mapWithConcurrency(stillMissing, 4, (r) => getPriceAnd1yReturn(r.ticker));
+        stillMissing.forEach((r, i) => {
+          r.metrics = metricsList[i];
+        });
+      }
     }
     shownCount = count;
     const shown = rows.slice(0, shownCount);
