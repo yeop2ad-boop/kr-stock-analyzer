@@ -7440,7 +7440,7 @@ function computeMacroScoreAtDate(vixPairs, date) {
   return { ...computeMacroScore({ vix }), vix };
 }
 
-// VIX 급등이 실제로 발생했던 대표 월 — 매년 1월 1일 정기 포인트와 별도로 차트에 항상 라벨을 표시
+// 매년 1월 1일 정기 포인트와 별도로, VIX가 실제로 급등했던 특정 월에도 점을 하나씩 더 찍음(날짜 텍스트 없이 점수만 동일한 형식으로 표시)
 const SPECIAL_MACRO_MONTHS = [
   { y: 2020, m: 3 }, // 코로나 폭락
   { y: 2022, m: 4 }, // 2022년 금리인상 조정
@@ -7479,14 +7479,7 @@ async function computeMacroScoreChartData() {
   const liveScore = computeMacroScore(liveMacro);
   points.push({ t: last.t, price: last.c, score: liveScore.total, vix: liveMacro.vix, isNow: true });
 
-  // 각 점 시점부터 다음 1년 구간 동안 S&P500이 20% 이상 급락했는지 표시(라벨을 노란색으로 강조)
-  for (let i = 0; i < points.length - 1; i++) {
-    const pct = (points[i + 1].price / points[i].price - 1) * 100;
-    points[i].crashWarn = pct <= -20;
-  }
-
-  // 매년 1월 1일 정기 포인트 외에, VIX가 실제로 급등했던 특정 월을 별도로 항상 라벨 표시(코로나 폭락·2022년 조정·2025년 관세 충격 등)
-  const specialPoints = [];
+  // 특정 월(코로나 폭락 등)에도 정기 포인트와 동일한 형식(점수만, 날짜 텍스트 없음)으로 점을 추가
   for (const { y, m } of SPECIAL_MACRO_MONTHS) {
     const anchor = new Date(y, m - 1, 1);
     if (anchor >= now) continue;
@@ -7494,10 +7487,11 @@ async function computeMacroScoreChartData() {
     const pricePoint = closestPair(pairs, anchorSec);
     if (!pricePoint || Math.abs(pricePoint.t - anchorSec) > 20 * 24 * 3600) continue;
     const mm = computeMacroScoreAtDate(vixPairs, anchor);
-    specialPoints.push({ t: pricePoint.t, price: pricePoint.c, vix: mm.vix, label: `${String(y).slice(-2)}년${m}월` });
+    points.push({ t: pricePoint.t, price: pricePoint.c, score: mm.total, vix: mm.vix, isNow: false });
   }
+  points.sort((a, b) => a.t - b.t);
 
-  return { pairs, points, specialPoints };
+  return { pairs, points };
 }
 
 function getMacroScoreChartData() {
@@ -7510,7 +7504,7 @@ function getMacroScoreChartData() {
   return macroScoreChartDataPromise;
 }
 
-function buildMacroScoreChartSvg({ pairs, points, specialPoints }) {
+function buildMacroScoreChartSvg({ pairs, points }) {
   // 1년 간격 점(약 30개)을 가로 스크롤로 넉넉하게 볼 수 있도록 점 개수에 비례해 캔버스 폭을 넓힘(고정 min-width는 CSS에서 강제)
   const W = Math.max(780, points.length * 45),
     H = 420;
@@ -7552,34 +7546,21 @@ function buildMacroScoreChartSvg({ pairs, points, specialPoints }) {
   const linePath = pairs.map((p, i) => `${i === 0 ? "M" : "L"}${xFn(p.t).toFixed(1)},${yFn(p.c).toFixed(1)}`).join(" ");
   let linesSvg = `<path d="${linePath}" fill="none" stroke="#e5342f" stroke-width="1.8" stroke-linejoin="round" />`;
 
-  // 점(그 시점의 VIX 원본 수치, 소수점 없이 정수로 표시)은 빨간 선 위(그 날짜의 S&P 실제 값 높이)에 정확히 얹어서 찍음 —
-  // VIX 40 이상(패닉)일 때만 주황, 그 외 과거 점은 흰색. 위/아래를 번갈아 배치해 1년 간격(약 30개)이 서로 덜 겹치게 함
+  // 점(그 시점의 VIX 원본 수치, 소수점 없이 "N점" 형태로만 표시 — 날짜는 따로 적지 않음)은 빨간 선 위(그 날짜의 S&P 실제 값 높이)에
+  // 정확히 얹어서 찍음 — VIX 35 이상일 때만 주황, 그 외 과거 점은 흰색. 위/아래를 번갈아 배치해 1년 간격(약 30개)이 서로 덜 겹치게 함
   points.forEach((p, i) => {
     const x = xFn(p.t);
     const y = yFn(p.price);
-    const isHigh = p.vix !== null && p.vix !== undefined && p.vix >= 40;
+    const isHigh = p.vix !== null && p.vix !== undefined && p.vix >= 35;
     const dotColor = isHigh ? "#e08a2c" : "#eceef2";
-    const textColor = p.crashWarn ? "#f5d90a" : dotColor;
     const r = p.isNow ? 4.2 : 2.6;
     linesSvg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${dotColor}" stroke="#000" stroke-width="1" />`;
-    const vixTxt = p.vix !== null && p.vix !== undefined ? `${Math.round(p.vix)}` : "N/A";
+    const vixTxt = p.vix !== null && p.vix !== undefined ? `${Math.round(p.vix)}점` : "N/A";
     const fontSize = p.isNow ? 10 : 8.5;
     const rowH = p.isNow ? 12 : 9;
     const above = p.isNow || i % 2 === 0;
     const labelY = above ? y - 6 : y + rowH;
-    linesSvg += `<text x="${x.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-size="${fontSize}" font-weight="700" fill="${textColor}">${vixTxt}</text>`;
-  });
-
-  // 코로나 폭락(20년3월)·2022년 조정(22년4월)·2025년 관세 충격(25년4월) 등 특정 월 포인트는 연도 라벨과 별도로,
-  // 교대 배치 없이 항상 위쪽에 "YY년M월" 형식으로 표시
-  (specialPoints || []).forEach((p) => {
-    const x = xFn(p.t);
-    const y = yFn(p.price);
-    const isHigh = p.vix !== null && p.vix !== undefined && p.vix >= 40;
-    const dotColor = isHigh ? "#e08a2c" : "#f5d90a";
-    linesSvg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.4" fill="${dotColor}" stroke="#000" stroke-width="1" />`;
-    const vixTxt = p.vix !== null && p.vix !== undefined ? `${p.label} · ${Math.round(p.vix)}` : p.label;
-    linesSvg += `<text x="${x.toFixed(1)}" y="${(y - 14).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="700" fill="${dotColor}">${vixTxt}</text>`;
+    linesSvg += `<text x="${x.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-size="${fontSize}" font-weight="700" fill="${dotColor}">${vixTxt}</text>`;
   });
 
   return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="VIX지수를 활용한 투자시점 점검표">
@@ -7602,7 +7583,7 @@ async function renderMacroScoreChart() {
     macroScoreChartRendered = true;
     caption.textContent =
       "빨간 선: S&P500 지수(1996~현재, 주간 종가) · 점 라벨: 1년 간격(매년 1월 1일 기준) VIX(FRED VIXCLS) 수치 그대로 · " +
-      "주황 점: VIX 40 이상(패닉), 흰 점: 그 외 · 노란 글씨: 그 시점 이후 1년간 20% 이상 급락 · 노란 점: 코로나 폭락·2022년 조정·2025년 관세 충격 등 특정 월(참고용, 투자 자문이 아닙니다)";
+      "주황 점: VIX 35 이상, 흰 점: 그 외(참고용, 투자 자문이 아닙니다)";
   } catch (err) {
     container.innerHTML = `<p class="error-inline" style="text-align:center;padding:20px 0;">❌ S&amp;P500 장기 데이터를 불러오지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
   }
