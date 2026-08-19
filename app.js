@@ -438,6 +438,12 @@ async function yahooChartRange(symbol, period1, period2, interval = "1d") {
   return proxyFetchJson(url);
 }
 
+// 과거 배당 지급 이력(chart의 events=div) — 캘린더에서 다음 배당락일을 주기 기반으로 근사 추정하는 데 사용
+async function yahooDividends(symbol) {
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=2y&interval=1d&events=div`;
+  return proxyFetchJson(url);
+}
+
 async function yahooFundamentals(symbol, types) {
   const now = Math.floor(Date.now() / 1000);
   const fiveYearsAgo = now - 5 * 365 * 24 * 3600;
@@ -1914,11 +1920,7 @@ bottomNavButtons.home.addEventListener("click", () => {
 bottomNavButtons.calendar.addEventListener("click", () => {
   setBottomNavActive("calendar");
   closeCompanyPanel();
-  // 카테고리를 먼저 바꿔둬야, switchTab()이 트리거하는 비동기 기본 로더(TAB_LOADERS.insight)가
-  // 나중에 실행되더라도 캘린더 카테고리를 그대로 존중해서 렌더링함(순서를 반대로 하면 firms로 덮어써짐)
-  insightActiveCategory = "calendar";
-  switchTab(TAB_ORDER.indexOf("insight"));
-  switchInsightCategory("calendar");
+  openCalendarPanel();
 });
 bottomNavButtons.market.addEventListener("click", () => {
   setBottomNavActive("market");
@@ -1945,6 +1947,23 @@ function closeMarketPanel() {
   stopIndexAutoRefresh();
 }
 el("marketPanelCloseBtn").addEventListener("click", closeMarketPanel);
+
+// ---------- 캘린더 패널: 하단 네비 캘린더 아이콘 전용 — 인사이트 탭의 텍스트 목록과는 별개로,
+// 그리드+로고가 있는 화면을 독립된 슬라이드 오버레이로 보여줌(marketPanel과 동일한 패턴)
+let calendarPanelLoaded = false;
+function openCalendarPanel() {
+  el("calendarPanel").style.display = "flex";
+  requestAnimationFrame(() => el("calendarPanel").classList.add("open"));
+  if (!calendarPanelLoaded) {
+    calendarPanelLoaded = true;
+    runCalendarPanel();
+  }
+}
+function closeCalendarPanel() {
+  el("calendarPanel").classList.remove("open");
+  window.setTimeout(() => { el("calendarPanel").style.display = "none"; }, 280);
+}
+el("calendarPanelCloseBtn").addEventListener("click", closeCalendarPanel);
 
 // ---------- 기업 패널: 틀고정 탭이 아니라 오른쪽에서 슬라이드인하는 전체화면 오버레이 ----------
 const companyPanel = el("companyPanel");
@@ -4101,6 +4120,7 @@ bindValuation(valuationButtons.marketCap, runValueMarketCap);
 let insightActiveCategory = "firms";
 let insightActiveInstitution = "blackrock";
 const insightFirmsNav = el("insightFirmsNav");
+const insightBrandNav = el("insightBrandNav");
 function setInsightCategoryActive(key) {
   Object.entries(insightCategoryButtons).forEach(([k, btn]) => btn && btn.classList.toggle("active", k === key));
 }
@@ -4109,6 +4129,7 @@ function switchInsightCategory(key) {
   insightActiveCategory = key;
   setInsightCategoryActive(key);
   insightFirmsNav.style.display = key === "firms" ? "" : "none";
+  insightBrandNav.style.display = key === "brand" ? "" : "none";
   runInsightCategory(key);
 }
 Object.entries(insightCategoryButtons).forEach(([key, btn]) => {
@@ -4119,10 +4140,10 @@ setInsightCategoryActive(insightActiveCategory);
 
 function runInsightCategory(key) {
   if (key === "firms") runInsight(insightActiveInstitution);
-  else if (key === "brand") runInsightPlaceholder("브랜드평판순", "브랜드 평판 순위");
-  else if (key === "tech") runInsightPlaceholder("신기술", "신기술 관련 인사이트");
+  else if (key === "brand") runInsightBrand(insightActiveBrandOrg);
+  else if (key === "tech") runInsightTech();
   else if (key === "calendar") runInsightCalendar();
-  else if (key === "news") runInsightPlaceholder("뉴스", "인사이트 뉴스");
+  else if (key === "news") runInsightNews();
   else if (key === "futureIndustry") runInsightFutureIndustry();
 }
 
@@ -4254,29 +4275,228 @@ async function runInsight(institution) {
   results.innerHTML = insightTableHtml(data);
 }
 
-// "2.브랜드평판순"·"3.신기술"·"5.뉴스"는 이 앱이 접근 가능한 데이터 소스(Yahoo Finance·FRED)로는
-// 실시간으로 가져올 방법이 없어(순위·평판·뉴스 큐레이션은 별도 서비스가 필요) 준비 중 안내만 표시
-function runInsightPlaceholder(shortTitle, longTitle) {
+// ---------- 2. 브랜드평판순 ----------
+// Axios Harris Poll 100(2026년 전체 100개, RQ 점수) · RepTrak(2026년 전체표는 이메일 등록 리포트에만 있어
+// 공개된 가장 최신 완전판인 2025년 Global RepTrak 100 + 뉴스에 공개된 2026년 확인 순위 일부) ·
+// YouGov(연간 유료 리포트 대신 같은 회사가 실시간 공개 운영하는 Ratings 사이트의 인기도 지표, 40위까지)
+// — 세 곳 모두 실제 웹에 공개된 데이터만 정적으로 data/brand-reputation-*.json에 정리해두고,
+// 현재가·1년 변동은 이 함수가 매번 실시간으로 조회해서 붙임
+const BRAND_ORG_DATA_FILE = {
+  harris: "data/brand-reputation-harris.json",
+  reptrak: "data/brand-reputation-reptrak.json",
+  yougov: "data/brand-reputation-yougov.json",
+};
+const BRAND_ORG_LABEL = { harris: "Axios Harris Poll 100", reptrak: "RepTrak", yougov: "YouGov" };
+const insightBrandButtons = {
+  harris: el("insightBrandHarrisBtn"),
+  reptrak: el("insightBrandReptrakBtn"),
+  yougov: el("insightBrandYougovBtn"),
+};
+let insightActiveBrandOrg = "harris";
+function setInsightBrandActive(org) {
+  Object.entries(insightBrandButtons).forEach(([k, btn]) => btn && btn.classList.toggle("active", k === org));
+}
+Object.entries(insightBrandButtons).forEach(([org, btn]) => {
+  btn.addEventListener("click", () => {
+    if (insightActiveCategory === "brand" && insightActiveBrandOrg === org) return;
+    insightActiveCategory = "brand";
+    setInsightCategoryActive("brand");
+    insightFirmsNav.style.display = "none";
+    insightBrandNav.style.display = "";
+    runInsightBrand(org);
+  });
+});
+setInsightBrandActive(insightActiveBrandOrg);
+
+const brandDataCache = {};
+async function getBrandData(org) {
+  if (brandDataCache[org]) return brandDataCache[org];
+  const res = await fetch(BRAND_ORG_DATA_FILE[org], { cache: "no-store" });
+  if (!res.ok) return null;
+  const data = await res.json();
+  brandDataCache[org] = data;
+  return data;
+}
+
+// 가벼운 조회(차트 1개만)로 현재가 + 1년 변동(금액·%)만 계산 — getFullMetrics는 재무제표까지 같이 가져와
+// 브랜드 100개를 한꺼번에 조회하기엔 과함
+async function getPriceAnd1yReturn(symbol) {
+  try {
+    const chartData = await yahooChart(symbol, "1y");
+    const result = chartData && chartData.chart && chartData.chart.result && chartData.chart.result[0];
+    if (!result) return null;
+    const pairs = chartClosePairs(chartData);
+    const latest = pairs[pairs.length - 1];
+    const base = pairs.length >= 2 ? closestPair(pairs, latest.t - YEAR_SECONDS) : null;
+    return {
+      price: result.meta.regularMarketPrice,
+      currency: result.meta.currency,
+      oneYearReturn: get1yReturnFromChart(chartData),
+      oneYearChangeAmt: base && base.c && latest ? latest.c - base.c : null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function brandRepTableHtml(rows, scoreLabel) {
+  const trs = rows
+    .map((r) => {
+      const nameCell = r.ticker
+        ? `<span class="ticker-cell">${tickerLogoHtml(r.ticker)}<b class="ticker-link" data-ticker="${escapeHtml(r.ticker)}">${escapeHtml(r.name)}</b></span>`
+        : `<span class="ticker-cell"><span class="ticker-logo-wrap"><span class="ticker-logo-badge" style="display:flex;">${escapeHtml(r.name.slice(0, 2))}</span></span>${escapeHtml(r.name)}</span>`;
+      let priceCell = `<span class="muted">비상장·매칭없음</span>`;
+      if (r.ticker) {
+        priceCell = r.metrics
+          ? `${priceChartLink(r.ticker, "$" + r.metrics.price.toFixed(2))}<br><span class="${r.metrics.oneYearReturn >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">${r.metrics.oneYearChangeAmt !== null ? `${r.metrics.oneYearChangeAmt >= 0 ? "+" : ""}$${r.metrics.oneYearChangeAmt.toFixed(2)} ` : ""}${r.metrics.oneYearReturn !== null ? `(${fmtPct(r.metrics.oneYearReturn)})` : "N/A"}</span>`
+          : `<span class="muted">조회 실패</span>`;
+      }
+      const scoreCell = r.score !== null && r.score !== undefined ? r.score : r.prevRank ? `전년 ${r.prevRank}위` : "—";
+      return `<tr><td>${r.rank}</td><td>${nameCell}</td><td>${priceCell}</td><td>${scoreCell}</td></tr>`;
+    })
+    .join("");
+  return `
+    <table class="top30-table brand-rep-table">
+      <thead><tr><th>순위</th><th>기업</th><th>현재가(1년 변동)</th><th>${escapeHtml(scoreLabel)}</th></tr></thead>
+      <tbody>${trs}</tbody>
+    </table>`;
+}
+
+const BRAND_PAGE_SIZE = 30;
+const BRAND_PAGE_STEP = 20;
+async function runInsightBrand(org) {
+  insightActiveBrandOrg = org;
+  setInsightBrandActive(org);
   const status = el("insightStatus");
+  const results = el("insightResults");
   status.style.display = "";
-  status.textContent = `🚧 ${shortTitle}은(는) 준비 중입니다.`;
-  el("insightResults").innerHTML = `<p class="muted" style="text-align:center;padding:24px 0;">🚧 ${escapeHtml(longTitle)} 기능은 아직 준비 중입니다.<br>빠른 시일 내에 제공할 예정입니다.</p>`;
+  status.textContent = `⏳ ${BRAND_ORG_LABEL[org]} 데이터를 불러오는 중...`;
+  results.innerHTML = "";
+
+  const data = await getBrandData(org);
+  if (!data || !Array.isArray(data.companies)) {
+    status.textContent = `🚧 ${BRAND_ORG_LABEL[org]} 데이터를 가져오지 못했습니다.`;
+    return;
+  }
+  status.style.display = "none";
+
+  const rows = data.companies;
+  let shownCount = 0;
+
+  async function showUpTo(count) {
+    const pending = rows.slice(shownCount, count).filter((r) => r.ticker && !r.metrics);
+    if (pending.length) {
+      const metricsList = await mapWithConcurrency(pending, 4, (r) => getPriceAnd1yReturn(r.ticker));
+      pending.forEach((r, i) => {
+        r.metrics = metricsList[i];
+      });
+    }
+    shownCount = count;
+    const shown = rows.slice(0, shownCount);
+    const hasMore = shownCount < rows.length;
+    const nextCount = Math.min(shownCount + BRAND_PAGE_STEP, rows.length);
+    const confirmedNote =
+      data.confirmed2026 && data.confirmed2026.length
+        ? `<p class="disclaimer" style="margin-top:8px;">✅ 2026년 확인된 순위: ${data.confirmed2026.map((c) => `${escapeHtml(c.name)} ${c.rank}위`).join(" · ")}</p>`
+        : "";
+    results.innerHTML = `
+      <p class="disclaimer tab-note">📢 ${escapeHtml(data.sourceNote)} <a href="${escapeHtml(data.sourceUrl)}" target="_blank" rel="noopener">출처 보기</a></p>
+      ${brandRepTableHtml(shown, data.scoreLabel)}
+      ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${nextCount}">더보기 (${shownCount}/${rows.length})</button>` : ""}
+      ${confirmedNote}
+    `;
+  }
+
+  results._loadMore = (count) => showUpTo(count);
+  if (!results.dataset.brandMoreBound) {
+    results.addEventListener("click", (e) => {
+      const moreBtn = e.target.closest(".load-more-btn");
+      if (!moreBtn) return;
+      moreBtn.disabled = true;
+      moreBtn.textContent = "불러오는 중...";
+      results._loadMore(Number(moreBtn.dataset.nextCount));
+    });
+    results.dataset.brandMoreBound = "1";
+  }
+
+  await showUpTo(Math.min(BRAND_PAGE_SIZE, rows.length));
+}
+
+// ---------- 3. 신기술 ----------
+// MIT Technology Review·McKinsey·IEEE Spectrum·OECD 4곳의 최신 글을 매일 자동으로 요약·삽화 생성해
+// data/techinsight.json + data/techinsight-images/ 로 저장하는 파이프라인(scripts/scan-techinsight.js,
+// GitHub Actions techinsight-daily.yml)의 결과를 카드 형태로 표시. 첫 자동 실행 전에는 데이터가 없을 수 있음
+const TECH_SOURCE_LABEL = {
+  mit: "MIT Technology Review",
+  mckinsey: "McKinsey",
+  ieee: "IEEE Spectrum",
+  oecd: "OECD",
+};
+let techInsightDataPromise = null;
+function getTechInsightData() {
+  if (!techInsightDataPromise) {
+    techInsightDataPromise = fetch("data/techinsight.json", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : []))
+      .catch(() => []);
+  }
+  return techInsightDataPromise;
+}
+
+function techInsightCardHtml(item) {
+  const sourceLabel = TECH_SOURCE_LABEL[item.sourceKey] || item.source;
+  return `
+    <div class="tech-insight-card">
+      <img class="tech-insight-img" src="${escapeHtml(item.image)}" alt="" loading="lazy" />
+      <div class="tech-insight-body">
+        <span class="tech-insight-source">${escapeHtml(sourceLabel)}</span>
+        <h3 class="tech-insight-title">${escapeHtml(item.title)}</h3>
+        <p class="tech-insight-summary">${escapeHtml(item.summary).replace(/\n/g, "<br>")}</p>
+        <a class="tech-insight-link" href="${escapeHtml(item.link)}" target="_blank" rel="noopener">원문 보기(${escapeHtml(sourceLabel)}) →</a>
+      </div>
+    </div>`;
+}
+
+async function runInsightTech() {
+  const status = el("insightStatus");
+  const results = el("insightResults");
+  status.style.display = "";
+  status.textContent = "⏳ 신기술 인사이트를 불러오는 중...";
+  results.innerHTML = "";
+
+  const items = await getTechInsightData();
+  if (!Array.isArray(items) || items.length === 0) {
+    status.textContent = "🚧 신기술 인사이트는 준비 중입니다. 매일 자동 수집이 시작되면 곧 표시됩니다.";
+    return;
+  }
+  status.style.display = "none";
+  results.innerHTML = `
+    <p class="disclaimer tab-note">📢 MIT Technology Review·McKinsey·IEEE Spectrum·OECD의 최신 글 핵심을 자체적으로 요약·재구성한 것이며, 정확한 내용은 원문 링크에서 확인하세요. 삽화는 AI로 생성되어 실제 사진과 다를 수 있습니다.</p>
+    <div class="tech-insight-list">${items.map(techInsightCardHtml).join("")}</div>
+  `;
 }
 
 // ---------- 4. 실적&공시 일정 ----------
 // 일반기업 실적발표(주요 대형주, Yahoo fundamentals-timeseries로 실시간 추정) + 13F 기관 공시 마감 +
 // 미국/한국/일본 금리 발표 + 미국 CPI·고용지표(정적 조사 데이터, data/econ-calendar-2026.json) +
-// 미국 옵션만기일(매월 세번째 금요일, 계산)을 합쳐 날짜순 캘린더로 표시
+// 미국 옵션만기일(매월 세번째 금요일, 계산) + 관심종목의 실적발표·배당락(추정)을 합쳐
+// 이번달·다음달 달력(월간 그리드) + 날짜순 목록으로 표시
 const CALENDAR_WATCHLIST = ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "BRK-B", "JPM", "WMT"];
 const ECON_CALENDAR_CATEGORY_LABEL = {
   earnings: "🏢 기업실적",
   "13f": "📑 13F 공시",
-  rate: "🏦 금리 발표",
+  rate: "🏦 금리",
   cpi: "📈 CPI",
   jobs: "👷 고용지표",
   opex: "📅 옵션만기",
 };
 const ECON_CALENDAR_COUNTRY_FLAG = { us: "🇺🇸", kr: "🇰🇷", jp: "🇯🇵" };
+const CAL_DOT_CLASS = {
+  rate: "cal-dot-rate",
+  cpi: "cal-dot-cpi",
+  jobs: "cal-dot-jobs",
+  "13f": "cal-dot-13f",
+  opex: "cal-dot-opex",
+};
 
 // 매달 세 번째 금요일(미국 개별주식·지수옵션 월간 만기일) — 3/6/9/12월은 분기 마감(쿼드러플 위칭)으로 별도 표기
 function usOptionsExpirationDates(year) {
@@ -4301,6 +4521,14 @@ function getEconCalendarData() {
   return econCalendarDataPromise;
 }
 
+function toISODate(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+// 달력상 분기 라벨(1~4분기)는 회사별 회계연도가 아니라 해당 날짜가 속한 일반 달력 분기를 표시하는 근사치
+function fiscalQuarterLabel(date) {
+  return `${Math.floor(date.getMonth() / 3) + 1}분기`;
+}
+
 // 관심종목(대형주)의 다음 분기 마감일 기준 발표 예정일을 근사 추정(회계분기 마감 + 약 1개월 뒤) — 정확한 발표일은
 // quoteSummary(calendarEvents)가 이 앱의 무인증 프록시에서 "Invalid Crumb" 오류로 막혀 있어 가져올 수 없음
 async function estimateNextEarningsDate(symbol) {
@@ -4313,32 +4541,57 @@ async function estimateNextEarningsDate(symbol) {
     const lastQuarterEnd = new Date(dates[dates.length - 1] + "T00:00:00");
     const nextQuarterEnd = addMonths(lastQuarterEnd, 3);
     const estReportDate = addMonths(nextQuarterEnd, 1);
-    return { symbol, date: estReportDate };
+    return { symbol, date: estReportDate, quarterLabel: fiscalQuarterLabel(nextQuarterEnd) };
   } catch {
     return null;
   }
 }
 
-async function runInsightCalendar() {
-  const status = el("insightStatus");
-  const results = el("insightResults");
-  status.style.display = "";
-  status.textContent = "⏳ 실적&공시 일정을 불러오는 중...";
-  results.innerHTML = "";
+// 과거 배당 지급일 간격(최근 4회 평균 주기)으로 다음 배당락일을 근사 추정 — 배당을 지급하지 않는 종목은 null 반환
+async function estimateNextDividendDate(symbol) {
+  try {
+    const data = await yahooDividends(symbol);
+    const result = data && data.chart && data.chart.result && data.chart.result[0];
+    const divEvents = result && result.events && result.events.dividends;
+    if (!divEvents) return null;
+    const dates = Object.values(divEvents)
+      .map((d) => new Date(d.date * 1000))
+      .sort((a, b) => a - b);
+    if (dates.length < 2) return null;
+    const recent = dates.slice(-4);
+    let totalGapDays = 0;
+    for (let i = 1; i < recent.length; i++) totalGapDays += (recent[i] - recent[i - 1]) / 86400000;
+    const avgGapDays = totalGapDays / (recent.length - 1);
+    if (!avgGapDays || avgGapDays < 20) return null; // 비정상적으로 짧은 간격(데이터 이상)은 제외
+    let nextDate = new Date(dates[dates.length - 1].getTime() + avgGapDays * 86400000);
+    const now = new Date();
+    let guard = 0;
+    while (nextDate < now && guard++ < 12) nextDate = new Date(nextDate.getTime() + avgGapDays * 86400000);
+    return { symbol, date: nextDate, quarterLabel: fiscalQuarterLabel(nextDate) };
+  } catch {
+    return null;
+  }
+}
 
-  const [econData, earningsEstimates] = await Promise.all([
+// 캘린더에 표시할 전체 이벤트 목록(거시일정 + 옵션만기 + 관심종목 실적·배당) 구성
+// 관심종목이 없으면(로그아웃/미설정) 기본 대형주 목록(CALENDAR_WATCHLIST)으로 대체해 빈 화면을 방지
+async function buildCalendarEvents() {
+  const watchlistSymbols = getWatchlist().map((w) => w.symbol);
+  const symbolsForEstimate = watchlistSymbols.length ? watchlistSymbols : CALENDAR_WATCHLIST;
+
+  const [econData, earningsEstimates, dividendEstimates] = await Promise.all([
     getEconCalendarData(),
-    mapWithConcurrency(CALENDAR_WATCHLIST, 5, estimateNextEarningsDate),
+    mapWithConcurrency(symbolsForEstimate, 5, estimateNextEarningsDate),
+    mapWithConcurrency(symbolsForEstimate, 5, estimateNextDividendDate),
   ]);
 
+  const events = (econData.events || []).map((e) => ({ ...e, type: "macro" }));
   const now = new Date();
-  const year = now.getFullYear();
-  const events = [...(econData.events || [])];
 
-  usOptionsExpirationDates(year).forEach((o) => {
-    const d = o.date;
+  [usOptionsExpirationDates(now.getFullYear()), usOptionsExpirationDates(now.getFullYear() + 1)].flat().forEach((o) => {
     events.push({
-      date: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`,
+      date: toISODate(o.date),
+      type: "macro",
       category: "opex",
       country: "us",
       title: o.quad ? "미국 옵션만기(쿼드러플 위칭)" : "미국 옵션만기(월간)",
@@ -4346,30 +4599,296 @@ async function runInsightCalendar() {
   });
 
   earningsEstimates.filter(Boolean).forEach((e) => {
-    const koName = TICKER_TO_KOREAN_NAME[e.symbol] || e.symbol;
     events.push({
-      date: `${e.date.getFullYear()}-${String(e.date.getMonth() + 1).padStart(2, "0")}-${String(e.date.getDate()).padStart(2, "0")}`,
+      date: toISODate(e.date),
+      type: "stock",
       category: "earnings",
-      country: "us",
-      title: `${koName}(${e.symbol}) 실적발표(추정)`,
+      symbol: e.symbol,
+      title: `${e.quarterLabel} 실적발표(추정)`,
+    });
+  });
+  dividendEstimates.filter(Boolean).forEach((e) => {
+    events.push({
+      date: toISODate(e.date),
+      type: "stock",
+      category: "dividend",
+      symbol: e.symbol,
+      title: `${e.quarterLabel} 배당락(추정)`,
     });
   });
 
-  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-  const upcoming = events.filter((e) => e.date >= todayStr).sort((a, b) => a.date.localeCompare(b.date));
+  return { events, usingWatchlist: watchlistSymbols.length > 0 };
+}
+
+// 월간 그리드(일~토, 6행 고정칸) HTML — 이벤트가 있는 날짜는 상단에 최대 3개까지 점/미니로고, 초과분은 +N
+function calendarMonthGridHtml(year, month, eventsByDate, todayISO) {
+  const monthNames = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
+  const firstDow = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const cells = [];
+  for (let i = 0; i < firstDow; i++) cells.push(null);
+  for (let d = 1; d <= daysInMonth; d++) cells.push(d);
+  while (cells.length % 7 !== 0) cells.push(null);
+
+  const dowHtml = ["일", "월", "화", "수", "목", "금", "토"]
+    .map((s, i) => `<div class="cal-dow${i === 0 ? " cal-dow-sun" : ""}${i === 6 ? " cal-dow-sat" : ""}">${s}</div>`)
+    .join("");
+
+  const dayHtml = cells
+    .map((d) => {
+      if (d === null) return `<div class="cal-day cal-day-empty"></div>`;
+      const iso = toISODate(new Date(year, month, d));
+      const dayEvents = eventsByDate[iso] || [];
+      const isToday = iso === todayISO;
+      const dow = new Date(year, month, d).getDay();
+      // 로고 아이콘이 커진 만큼(18px) 한 칸에 최대 2개까지만 보여주고 나머지는 +N 배지로(좁은 화면에서 겹침 방지)
+      // 금리 발표는 국가별로 달라 색점 대신 국기 이모지로 표시(미국/한국/일본을 한눈에 구분)
+      const iconsHtml = dayEvents
+        .slice(0, 2)
+        .map((e) => {
+          if (e.type === "stock") return `<span class="cal-day-icon cal-day-icon-logo">${tickerLogoHtml(e.symbol)}</span>`;
+          if (e.category === "rate") return `<span class="cal-day-icon cal-day-icon-flag">${ECON_CALENDAR_COUNTRY_FLAG[e.country] || "🏦"}</span>`;
+          return `<span class="cal-day-icon cal-dot ${CAL_DOT_CLASS[e.category] || "cal-dot-etc"}"></span>`;
+        })
+        .join("");
+      const overflow = dayEvents.length > 2 ? `<span class="cal-day-more">+${dayEvents.length - 2}</span>` : "";
+      // 날짜를 누르면 지난 날짜여도(이번 달에 있었던 일정 확인용) 그날의 일정을 큰 팝업으로 보여줌
+      const isClickable = dayEvents.length > 0;
+      const cls = ["cal-day", isClickable ? "has-event" : "", isToday ? "cal-day-today" : "", dow === 0 ? "cal-day-sun" : "", dow === 6 ? "cal-day-sat" : ""]
+        .filter(Boolean)
+        .join(" ");
+      return `<div class="${cls}" data-date="${iso}"><span class="cal-day-num">${d}</span><span class="cal-day-icons">${iconsHtml}${overflow}</span></div>`;
+    })
+    .join("");
+
+  return `
+    <div class="cal-month">
+      <h3 class="cal-month-title">${year}년 ${monthNames[month]}</h3>
+      <div class="cal-grid">${dowHtml}${dayHtml}</div>
+    </div>`;
+}
+
+// 날짜별 목록(아젠다) — 종목 이벤트는 같은 날짜·같은 종목끼리 로고 하나에 내용을 쉼표로 묶어 표시(예: "로고 AAPL: 3분기 실적발표, 3분기 배당락")
+function calendarAgendaHtml(events, rangeStartISO, rangeEndISO) {
+  const filtered = events.filter((e) => e.date >= rangeStartISO && e.date <= rangeEndISO).sort((a, b) => a.date.localeCompare(b.date));
+  if (filtered.length === 0) return `<p class="muted" style="text-align:center;padding:16px 0;">표시할 예정 일정이 없습니다.</p>`;
+
+  const byDate = {};
+  filtered.forEach((e) => {
+    (byDate[e.date] = byDate[e.date] || []).push(e);
+  });
+
+  return Object.keys(byDate)
+    .sort()
+    .map((date) => {
+      const dayEvents = byDate[date];
+      const macroRows = dayEvents
+        .filter((e) => e.type === "macro")
+        .map((e) => {
+          const flag = ECON_CALENDAR_COUNTRY_FLAG[e.country] || "";
+          const catLabel = ECON_CALENDAR_CATEGORY_LABEL[e.category] || e.category;
+          return `<div class="cal-agenda-row"><span class="cal-agenda-cat">${catLabel}</span><span class="cal-agenda-text">${flag} ${escapeHtml(e.title)}</span></div>`;
+        })
+        .join("");
+
+      const stockGroups = {};
+      dayEvents
+        .filter((e) => e.type === "stock")
+        .forEach((e) => {
+          (stockGroups[e.symbol] = stockGroups[e.symbol] || []).push(e.title);
+        });
+      const stockRows = Object.entries(stockGroups)
+        .map(
+          ([sym, titles]) =>
+            `<div class="cal-agenda-row"><span class="cal-agenda-logo">${tickerLogoHtml(sym)}</span><span class="cal-agenda-text"><b class="ticker-link" data-ticker="${escapeHtml(sym)}">${escapeHtml(sym)}</b> ${titles.map((t) => escapeHtml(t)).join(", ")}</span></div>`
+        )
+        .join("");
+
+      const d = new Date(date + "T00:00:00");
+      const dow = ["일", "월", "화", "수", "목", "금", "토"][d.getDay()];
+      return `<div class="cal-agenda-group" id="cal-agenda-${date}"><div class="cal-agenda-date">${d.getMonth() + 1}월 ${d.getDate()}일 (${dow})</div>${macroRows}${stockRows}</div>`;
+    })
+    .join("");
+}
+
+// 인사이트 탭 "실적&공시 일정" 서브버튼 — 예전처럼 날짜순 텍스트 목록만 표시(그리드 없음).
+// 데이터 자체는 buildCalendarEvents()를 그대로 재사용해 관심종목 실적·배당(추정)도 함께 나옴
+async function runInsightCalendar() {
+  const status = el("insightStatus");
+  const results = el("insightResults");
+  status.style.display = "";
+  status.textContent = "⏳ 실적&공시 일정을 불러오는 중...";
+  results.innerHTML = "";
+
+  const { events, usingWatchlist } = await buildCalendarEvents();
+  const todayISO = toISODate(new Date());
+  const upcoming = events.filter((e) => e.date >= todayISO).sort((a, b) => a.date.localeCompare(b.date));
 
   status.style.display = "none";
   const rows = upcoming
     .map((e) => {
+      if (e.type === "stock") {
+        const catLabel = e.category === "earnings" ? "🏢 기업실적" : "💰 배당락";
+        return `<div class="econ-cal-row"><span class="econ-cal-date">${escapeHtml(e.date)}</span><span class="econ-cal-cat">${catLabel}</span><span class="econ-cal-title">${escapeHtml(e.symbol)} ${escapeHtml(e.title)}</span></div>`;
+      }
       const flag = ECON_CALENDAR_COUNTRY_FLAG[e.country] || "";
       const catLabel = ECON_CALENDAR_CATEGORY_LABEL[e.category] || e.category;
       return `<div class="econ-cal-row"><span class="econ-cal-date">${escapeHtml(e.date)}</span><span class="econ-cal-cat">${catLabel}</span><span class="econ-cal-title">${flag} ${escapeHtml(e.title)}</span></div>`;
     })
     .join("");
 
+  const watchlistNote = usingWatchlist
+    ? "🏢·💰 항목은 회원님의 관심종목 기준입니다."
+    : "🏢·💰 항목은 관심종목이 없어 주요 대형주 기준으로 표시 중입니다.";
+
   results.innerHTML = `
-    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 일반기업 실적발표는 주요 대형주 대상 추정치(회계분기 마감 기준), 13F 공시 마감·금리 발표·CPI·고용지표는 2026년 공식 일정 조사 기준(변경될 수 있음), 옵션만기일은 매월 세 번째 금요일로 계산한 값입니다. 투자 자문이 아닙니다.</p>
+    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 실적발표·배당락은 과거 발표 주기를 바탕으로 한 추정치, 13F 공시 마감·금리 발표·CPI·고용지표는 2026년 공식 일정 조사 기준(변경될 수 있음), 옵션만기일은 매월 세 번째 금요일로 계산한 값입니다. ${escapeHtml(watchlistNote)} 투자 자문이 아닙니다.</p>
     <div class="econ-cal-list">${rows || `<p class="muted" style="text-align:center;padding:16px 0;">표시할 예정 일정이 없습니다.</p>`}</div>
+  `;
+}
+
+// ---------- 캘린더 패널(하단 네비 캘린더 아이콘) — 이번달·다음달 그리드 + 로고가 붙은 날짜별 목록 ----------
+async function runCalendarPanel() {
+  const status = el("calendarPanelStatus");
+  const results = el("calendarPanelResults");
+  status.style.display = "";
+  status.textContent = "⏳ 캘린더를 불러오는 중...";
+  results.innerHTML = "";
+
+  const { events, usingWatchlist } = await buildCalendarEvents();
+
+  const now = new Date();
+  const todayISO = toISODate(now);
+  const eventsByDate = {};
+  events.forEach((e) => {
+    (eventsByDate[e.date] = eventsByDate[e.date] || []).push(e);
+  });
+
+  const thisMonthGrid = calendarMonthGridHtml(now.getFullYear(), now.getMonth(), eventsByDate, todayISO);
+  const nextMonthDate = addMonths(new Date(now.getFullYear(), now.getMonth(), 1), 1);
+  const nextMonthGrid = calendarMonthGridHtml(nextMonthDate.getFullYear(), nextMonthDate.getMonth(), eventsByDate, todayISO);
+
+  const rangeEnd = new Date(nextMonthDate.getFullYear(), nextMonthDate.getMonth() + 1, 0);
+  const agendaHtml = calendarAgendaHtml(events, todayISO, toISODate(rangeEnd));
+
+  const watchlistNote = usingWatchlist
+    ? "💰 배당락·🏢 실적발표 로고 항목은 회원님의 관심종목 기준입니다."
+    : "💰 배당락·🏢 실적발표 로고 항목은 관심종목이 없어 주요 대형주 기준으로 표시 중입니다. 관심종목을 추가하면 내 종목 일정으로 바뀝니다.";
+
+  status.style.display = "none";
+  results.innerHTML = `
+    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 실적발표·배당락은 과거 발표 주기를 바탕으로 한 추정치, 13F 공시 마감·금리 발표·CPI·고용지표는 2026년 공식 일정 조사 기준(변경될 수 있음), 옵션만기일은 매월 세 번째 금요일로 계산한 값입니다. ${escapeHtml(watchlistNote)} 투자 자문이 아닙니다.</p>
+    <div class="cal-wrap">
+      ${thisMonthGrid}
+      ${nextMonthGrid}
+    </div>
+    <h3 class="cal-agenda-heading">📋 다가오는 일정</h3>
+    <div class="cal-agenda">${agendaHtml}</div>
+  `;
+
+  results.querySelectorAll(".cal-day.has-event").forEach((dayEl) => {
+    dayEl.addEventListener("click", () => {
+      openCalendarDayModal(dayEl.dataset.date, eventsByDate[dayEl.dataset.date] || []);
+    });
+  });
+}
+
+// 날짜 칸을 눌렀을 때 그날의 일정을 큰 글씨·큰 로고로 보여주는 팝업(과거·미래 날짜 모두 동작)
+function calendarDayModalRowHtml(e) {
+  if (e.type === "stock") {
+    return `
+      <div class="cal-day-modal-row">
+        <span class="cal-day-modal-logo">${tickerLogoHtml(e.symbol)}</span>
+        <div class="cal-day-modal-text"><b class="ticker-link" data-ticker="${escapeHtml(e.symbol)}">${escapeHtml(e.symbol)}</b><span>${escapeHtml(e.title)}</span></div>
+      </div>`;
+  }
+  const flag = ECON_CALENDAR_COUNTRY_FLAG[e.country] || "";
+  const catLabel = ECON_CALENDAR_CATEGORY_LABEL[e.category] || e.category;
+  return `
+    <div class="cal-day-modal-row">
+      <span class="cal-day-modal-flag">${e.category === "rate" ? flag || "🏦" : catLabel.slice(0, 2)}</span>
+      <div class="cal-day-modal-text"><b>${catLabel}</b><span>${flag && e.category !== "rate" ? flag + " " : ""}${escapeHtml(e.title)}</span></div>
+    </div>`;
+}
+function openCalendarDayModal(iso, dayEvents) {
+  const d = new Date(iso + "T00:00:00");
+  const dow = ["일", "월", "화", "수", "목", "금", "토"][d.getDay()];
+  el("calendarDayModalTitle").textContent = `${d.getMonth() + 1}월 ${d.getDate()}일 (${dow})`;
+  el("calendarDayModalBody").innerHTML = dayEvents.map(calendarDayModalRowHtml).join("");
+  el("calendarDayModal").style.display = "flex";
+}
+function closeCalendarDayModal() {
+  el("calendarDayModal").style.display = "none";
+}
+el("calendarDayModalCloseBtn").addEventListener("click", closeCalendarDayModal);
+
+// ---------- 5. 뉴스 ----------
+// 관심종목(있으면)·없으면 주요 대형주 20개의 Yahoo Finance 뉴스를 모아 발행시각 기준 최신순으로 정렬해 TOP20 표시
+const NEWS_DEFAULT_WATCHLIST = [
+  "AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "BRK-B", "JPM", "WMT",
+  "V", "JNJ", "UNH", "XOM", "AVGO", "LLY", "MA", "HD", "PG", "COST",
+];
+async function getMultiTickerNews(symbols) {
+  const perSymbol = await mapWithConcurrency(symbols, 5, async (sym) => {
+    try {
+      const data = await yahooSearch(sym);
+      return ((data && data.news) || []).map((n) => ({ ...n, symbol: sym }));
+    } catch {
+      return [];
+    }
+  });
+  return perSymbol.flat();
+}
+
+async function runInsightNews() {
+  const status = el("insightStatus");
+  const results = el("insightResults");
+  status.style.display = "";
+  status.textContent = "⏳ 주요기업 최신 뉴스를 불러오는 중...";
+  results.innerHTML = "";
+
+  const watchlistSymbols = getWatchlist().map((w) => w.symbol);
+  const symbols = watchlistSymbols.length ? watchlistSymbols : NEWS_DEFAULT_WATCHLIST;
+
+  const allNews = await getMultiTickerNews(symbols);
+  allNews.sort((a, b) => (b.providerPublishTime || 0) - (a.providerPublishTime || 0));
+  const seenLinks = new Set();
+  const top20 = [];
+  for (const n of allNews) {
+    if (!n.link || seenLinks.has(n.link)) continue;
+    seenLinks.add(n.link);
+    top20.push(n);
+    if (top20.length >= 20) break;
+  }
+
+  if (top20.length === 0) {
+    status.textContent = "🚧 최근 뉴스를 찾을 수 없습니다.";
+    return;
+  }
+  status.style.display = "none";
+
+  const translatedTitles = await Promise.all(top20.map((n) => translateToKorean(n.title || "").catch(() => n.title || "")));
+
+  const rows = top20
+    .map((n, i) => {
+      const koTitle = translatedTitles[i] || n.title || "제목 없음";
+      const dateStr = n.providerPublishTime
+        ? new Date(n.providerPublishTime * 1000).toLocaleString("ko-KR", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
+        : "";
+      return `
+      <div class="major-news-row">
+        <span class="major-news-logo">${tickerLogoHtml(n.symbol)}</span>
+        <div class="major-news-body">
+          <a class="major-news-title" href="${escapeHtml(n.link || "#")}" target="_blank" rel="noopener">${escapeHtml(koTitle)}</a>
+          <div class="major-news-meta"><b class="ticker-link" data-ticker="${escapeHtml(n.symbol)}">${escapeHtml(n.symbol)}</b> · ${escapeHtml(n.publisher || "알 수 없음")}${dateStr ? " · " + escapeHtml(dateStr) : ""}</div>
+        </div>
+      </div>`;
+    })
+    .join("");
+
+  results.innerHTML = `
+    <p class="disclaimer tab-note">📢 주요기업 최신 뉴스 — ${watchlistSymbols.length ? "관심종목" : "주요 대형주 20개"} 기준으로 모은 뉴스를 발행 시각 최신순으로 정렬한 TOP20입니다(맨 위가 최신). 제목은 자동 번역되었습니다.</p>
+    <div class="major-news-list">${rows}</div>
   `;
 }
 

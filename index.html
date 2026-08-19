@@ -157,6 +157,14 @@
     <button type="button" id="groundShareOpenBtn" class="ground-share-btn">📤 공유하기</button>
   </div>
 
+  <div id="calendarDayModal" class="chart-modal calendar-day-modal" style="display:none;">
+    <div class="chart-modal-header">
+      <span id="calendarDayModalTitle" class="chart-modal-title"></span>
+      <button id="calendarDayModalCloseBtn" class="chart-modal-close" type="button" aria-label="닫기">✕</button>
+    </div>
+    <div id="calendarDayModalBody" class="calendar-day-modal-body"></div>
+  </div>
+
   <div id="shareSheet" class="share-sheet" style="display:none;">
     <div id="shareSheetBackdrop" class="share-sheet-backdrop"></div>
     <div class="share-sheet-panel">
@@ -333,6 +341,17 @@
     </div>
   </div>
 
+  <div id="calendarPanel" class="company-panel" style="display:none;">
+    <div class="company-panel-bar">
+      <button type="button" id="calendarPanelCloseBtn" class="search-overlay-back" aria-label="닫기">←</button>
+      <h2 class="search-overlay-title">캘린더</h2>
+    </div>
+    <div class="company-panel-body">
+      <p id="calendarPanelStatus" class="muted top30-status" style="display:none;"></p>
+      <div id="calendarPanelResults"></div>
+    </div>
+  </div>
+
   <div class="container" id="mainContainer">
     <div class="carousel-viewport" id="carouselViewport">
 
@@ -367,6 +386,11 @@
             <button type="button" class="cat-btn" id="insightArkBtn">ARK 인베스트</button>
             <button type="button" class="cat-btn" id="insightSoftbankBtn">소프트뱅크</button>
           </div>
+        </div>
+        <div class="top30-sub-nav" id="insightBrandNav" style="display:none;">
+          <button type="button" class="cat-btn" id="insightBrandHarrisBtn">Axios Harris Poll 100</button>
+          <button type="button" class="cat-btn" id="insightBrandReptrakBtn">RepTrak</button>
+          <button type="button" class="cat-btn" id="insightBrandYougovBtn">YouGov</button>
         </div>
         <p id="insightStatus" class="muted top30-status" style="display:none;"></p>
         <div id="insightResults"></div>
