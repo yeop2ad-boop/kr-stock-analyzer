@@ -1794,20 +1794,35 @@ function addRecentSearch(symbol) {
   const next = [symbol, ...getRecentSearches().filter((s) => s !== symbol)].slice(0, RECENT_SEARCH_MAX);
   localStorage.setItem(RECENT_SEARCH_KEY, JSON.stringify(next));
 }
-function searchChipHtml(symbol) {
-  return `<button type="button" class="search-chip" data-symbol="${escapeHtml(symbol)}">${escapeHtml(symbol)}</button>`;
+// 검색 오버레이의 최근/인기 검색 한 행 — 로고+이름/티커 왼쪽(누르면 종목 이동), 오른쪽은 가격 대신 관심종목 추가 별 버튼
+function searchResultRowHtml(symbol) {
+  const displayName = TICKER_TO_KOREAN_NAME[symbol] || symbol;
+  const watchlisted = isWatchlisted(symbol);
+  return `
+    <div class="search-result-row">
+      <button type="button" class="search-result-left" data-symbol="${escapeHtml(symbol)}">
+        ${tickerLogoHtml(symbol)}
+        <span class="search-result-text">
+          <span class="search-result-name">${escapeHtml(displayName)}</span>
+          <span class="search-result-sub">${escapeHtml(symbol)} · 주식</span>
+        </span>
+      </button>
+      <button type="button" class="search-watch-btn${watchlisted ? " active" : ""}" data-watch-symbol="${escapeHtml(symbol)}" aria-label="관심종목 추가">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="${watchlisted ? "currentColor" : "none"}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7l2.85 6.02 6.65.68-4.98 4.5 1.46 6.53L12 17.9l-5.98 3.53 1.46-6.53-4.98-4.5 6.65-.68L12 2.7z" /></svg>
+      </button>
+    </div>`;
 }
 function renderRecentSearches() {
   const recent = getRecentSearches();
   recentSearchList.innerHTML = recent.length
-    ? recent.map((s) => searchChipHtml(s)).join("")
+    ? recent.map(searchResultRowHtml).join("")
     : `<p class="muted search-chip-empty">최근 검색한 티커가 없습니다.</p>`;
 }
 // 인기 검색 = 전체 방문자의 최근 24시간 검색 로그를 Worker(KV)에 집계해 받아옴(navigateToTicker에서 /search-log로 매번 기록)
 let popularSearchCache = null;
 async function renderPopularSearches() {
   if (popularSearchCache) {
-    popularSearchList.innerHTML = popularSearchCache.map((r) => searchChipHtml(r.symbol)).join("");
+    popularSearchList.innerHTML = popularSearchCache.map((r) => searchResultRowHtml(r.symbol)).join("");
     return;
   }
   try {
@@ -1819,7 +1834,7 @@ async function renderPopularSearches() {
       return;
     }
     popularSearchCache = popular.slice(0, POPULAR_SEARCH_MAX);
-    popularSearchList.innerHTML = popularSearchCache.map((r) => searchChipHtml(r.symbol)).join("");
+    popularSearchList.innerHTML = popularSearchCache.map((r) => searchResultRowHtml(r.symbol)).join("");
   } catch {
     popularSearchList.innerHTML = `<p class="muted search-chip-empty">인기 검색을 불러오지 못했습니다.</p>`;
   }
@@ -1848,9 +1863,16 @@ function closeSearchOverlay() {
 searchOpenBtn.addEventListener("click", openSearchOverlay);
 searchOverlayCloseBtn.addEventListener("click", closeSearchOverlay);
 document.addEventListener("click", (e) => {
-  const chip = e.target.closest(".search-chip");
-  if (!chip) return;
-  navigateToTicker(chip.dataset.symbol);
+  const watchBtn = e.target.closest(".search-watch-btn");
+  if (watchBtn) {
+    toggleWatchlist(watchBtn.dataset.watchSymbol);
+    const active = isWatchlisted(watchBtn.dataset.watchSymbol);
+    watchBtn.classList.toggle("active", active);
+    watchBtn.querySelector("svg").setAttribute("fill", active ? "currentColor" : "none");
+    return;
+  }
+  const row = e.target.closest(".search-result-left");
+  if (row) navigateToTicker(row.dataset.symbol);
 });
 
 // ---------- 하단 고정 네비게이션(홈=기업검색/캘린더/시장/더보기) ----------
