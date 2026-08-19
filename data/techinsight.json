@@ -1,5 +1,53 @@
 [
   {
+    "id": "068d18a19dca",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "디지털 신호처리 분야 개척자 베데 류 91세로 별세",
+    "originalTitle": "Digital Signal Processing Pioneer Bede Liu Dies At 91",
+    "link": "https://spectrum.ieee.org/digital-signal-processing-pioneer-bede-liu",
+    "summary": "디지털 신호처리 분야의 선구자인 베데 류가 91세로 타계했다. 그는 음성, 이미지, 비디오 같은 신호를 분석하고 수정하는 수학적 알고리즘을 개발한 현대 디지털 신호처리의 창시자로 평가받으며, 50년 이상 프린스턴 대학에서 전기공학을 가르쳤다. 1970~80년대 그의 연구는 저전력 디지털 신호 프로세서 개발로 이어졌으며, 이는 오늘날 휴대전화 통화, 스트리밍 비디오, 인터넷 통신을 가능하게 하는 기반이 되었다. 비록 공학 분야 외에는 잘 알려지지 않았지만, 그의 업적은 전 세계 수십억 명이 사용하는 기술에 내재되어 있다.",
+    "image": "data/techinsight-images/068d18a19dca.webp",
+    "publishedAt": "2026-08-14T18:00:02.000Z",
+    "createdAt": "2026-08-19T13:20:38.428Z"
+  },
+  {
+    "id": "a7d177338217",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "AI 실제 사용 패턴 공개, 플록의 설계 방향 전환",
+    "originalTitle": "The Download: how people really use AI, and Flock’s design choices",
+    "link": "https://www.technologyreview.com/2026/08/18/1142229/the-download-how-people-use-ai-flock-cameras-design/",
+    "summary": "AI 관찰소라는 새로운 연구 프로젝트가 OpenAI와 Anthropic 같은 기업들이 공개하지 않은 AI의 실제 사용 행태를 드러냈으며, 개인용 활용이 업무용보다 훨씬 많다는 사실을 발견했습니다. 동시에 경찰용 자동 번호판 인식 기술을 운영해온 플록 세이프티는 불법적 남용을 방지하기 위해 플랫폼을 개선하고 있습니다. 이 외에도 메타를 상대로 한 아동 개인정보보호 소송, 테슬라의 사이버캡 로봇택시 출시, 중국의 AI 데이터셋 확산 등 기술 업계의 주요 이슈들이 진행 중입니다. 전 세계적으로 AI 개발과 규제 사이의 균형을 맞추려는 노력이 활발해지고 있습니다.",
+    "image": "data/techinsight-images/a7d177338217.webp",
+    "publishedAt": "2026-08-18T12:10:00.000Z",
+    "createdAt": "2026-08-19T13:20:10.443Z"
+  },
+  {
+    "id": "aa95229b217c",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "아이 감시 앱, 신뢰 훼손 우려로 재검토 필요",
+    "originalTitle": "Child-monitoring apps might need a reboot",
+    "link": "https://www.technologyreview.com/2026/08/19/1141623/child-monitoring-apps-need-reboot/",
+    "summary": "자녀의 온라인 안전을 위해 개발된 감시 앱들이 위험한 콘텐츠를 차단하고 학교 총기 사건이나 자해 위험을 예방하는 등 실질적인 성과를 거두고 있다. 그러나 아이들의 5분의 1가량은 감시받는다는 느낌을 받았고, 10분의 1은 부모와의 신뢰가 깨졌다고 응답했으며, 위험 없음을 추구하다 보니 필요한 위험 경험마저 빼앗기는 문제가 발생했다. 전문가들은 아이들을 더 감시하기보다 위험을 인식하고 대처하는 능력을 키우고 부모와의 신뢰를 구축하는 '회복력' 기반의 접근이 더 효과적이라고 제시한다. 소셜미디어 기업 자체에 안전 책임을 강제하는 방식도 영국, 호주 등에서 진행 중이다.",
+    "image": "data/techinsight-images/aa95229b217c.webp",
+    "publishedAt": "2026-08-19T09:00:00.000Z",
+    "createdAt": "2026-08-19T13:20:07.181Z"
+  },
+  {
+    "id": "8c42db092e68",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "AI 보조 도구에서 에이전트 집단으로: 소프트웨어 개발의 미래",
+    "originalTitle": "From AI Copilots to Agent Swarms",
+    "link": "https://spectrum.ieee.org/amd-agent-swarms",
+    "summary": "AMD는 지난해 AI를 통한 소프트웨어 개발 생산성을 예상보다 빠르게 30% 향상시켰으며, 단순한 코드 생성을 넘어 전체 개발 생명주기에 AI를 통합하고 있다. 현재는 엔지니어의 업무 방식을 모방하는 수준의 AI 에이전트를 활용하고 있으나, 미래에는 인간의 사고방식에 제약받지 않고 독립적으로 해결책을 찾을 수 있는 협업형 AI 에이전트 집단이 등장할 것으로 예상된다. 코드 분석, 디버깅, 테스팅, 배포 승인 등 개발 프로세스의 모든 단계에서 AI 에이전트가 활용되고 있으며, 일부 소프트웨어 컴포넌트에서는 80% 이상의 코드가 AI로 생성되고 있다. 차세대 AI 혁명은 엔지니어의 사고방식을 벗어나 스스로 최적의 솔루션을 발견하는 독립적인 에이전트 집단의 등장에 있을 것이다.",
+    "image": "data/techinsight-images/8c42db092e68.webp",
+    "publishedAt": "2026-08-17T14:00:01.000Z",
+    "createdAt": "2026-08-19T13:20:07.133Z"
+  },
+  {
     "id": "fa8a799c2691",
     "sourceKey": "ieee",
     "source": "IEEE Spectrum",
