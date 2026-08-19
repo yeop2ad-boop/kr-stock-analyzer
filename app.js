@@ -616,6 +616,20 @@ function chartClosePairs(chartResult) {
   return pairs;
 }
 
+// 캔들 차트용: 종가뿐 아니라 시가/고가/저가까지 포함(하나라도 없으면 그 봉은 제외)
+function chartOhlcPairs(chartResult) {
+  const result = chartResult && chartResult.chart && chartResult.chart.result && chartResult.chart.result[0];
+  if (!result) return [];
+  const timestamps = result.timestamp || [];
+  const q = (result.indicators && result.indicators.quote && result.indicators.quote[0]) || {};
+  const { open = [], high = [], low = [], close = [] } = q;
+  const pairs = timestamps
+    .map((t, i) => ({ t, o: open[i], h: high[i], l: low[i], c: close[i] }))
+    .filter((p) => [p.o, p.h, p.l, p.c].every((v) => v !== null && v !== undefined));
+  pairs.sort((a, b) => a.t - b.t);
+  return pairs;
+}
+
 // 목표 시점(유닉스 타임스탬프)에 가장 가까운 종가 쌍을 찾음
 function closestPair(pairs, targetTimestamp) {
   let closest = null;
@@ -1939,6 +1953,7 @@ function openMarketPanel() {
   marketPanelOpen = true;
   startIndexAutoRefresh();
   runIndexTab();
+  renderMarketWidget();
 }
 function closeMarketPanel() {
   el("marketPanel").classList.remove("open");
@@ -1968,8 +1983,8 @@ el("calendarPanelCloseBtn").addEventListener("click", closeCalendarPanel);
 // ---------- 기업 패널: 틀고정 탭이 아니라 오른쪽에서 슬라이드인하는 전체화면 오버레이 ----------
 const companyPanel = el("companyPanel");
 const companyPanelCloseBtn = el("companyPanelCloseBtn");
-const companyPanelLogo = el("companyPanelLogo");
 const companyPanelSearchBtn = el("companyPanelSearchBtn");
+const companyPanelAlertBtn = el("companyPanelAlertBtn");
 
 function openCompanyPanel() {
   companyPanel.style.display = "flex";
@@ -1987,10 +2002,35 @@ function closeCompanyPanel({ push = true } = {}) {
 }
 companyPanelCloseBtn.addEventListener("click", () => closeCompanyPanel());
 companyPanelSearchBtn.addEventListener("click", openSearchOverlay);
-companyPanelLogo.addEventListener("click", () => closeCompanyPanel());
+companyPanelAlertBtn.addEventListener("click", () => alert("가격 알림 기능은 준비 중입니다."));
+
+// 헤더의 종목이름/가격/등락률 표시 — 검정 배경 전체화면 상세 헤더용
+function renderCompanyIdentity(ticker, quote, meta, changePct) {
+  const displayName = TICKER_TO_KOREAN_NAME[ticker] || quote.longname || quote.shortname || meta.longName || ticker;
+  const price = meta.regularMarketPrice;
+  const currency = meta.currency === "KRW" ? "₩" : "$";
+  el("companyPanelLogoWrap").innerHTML = tickerLogoHtml(ticker);
+  el("companyPanelName").textContent = displayName;
+  el("companyPanelPrice").textContent = price !== undefined && price !== null ? `${currency}${price.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : "";
+  const changeEl = el("companyPanelChange");
+  if (changePct !== null && changePct !== undefined) {
+    const sign = changePct >= 0 ? "+" : "";
+    changeEl.textContent = `${sign}${changePct.toFixed(2)}%`;
+    changeEl.className = `detail-identity-change ${changePct >= 0 ? "delta-up" : "delta-down"}`;
+  } else {
+    changeEl.textContent = "";
+    changeEl.className = "detail-identity-change";
+  }
+}
 
 // ---------- 관심종목 (localStorage 기반 — Firestore 등 서버 저장소가 없어 기기별로만 유지됨) ----------
 const WATCHLIST_KEY = "watchlist_v1";
+const WATCHLIST_GROUPS_KEY = "watchlist_groups_v1";
+const WATCHLIST_ACTIVE_GROUP_KEY = "watchlist_active_group_v1";
+const WATCHLIST_SORT_KEY = "watchlist_sort_v1";
+const WATCHLIST_ALL_GROUP_ID = "__all__";
+const WATCHLIST_DEFAULT_GROUP_ID = "default";
+
 function getWatchlist() {
   try {
     const list = JSON.parse(localStorage.getItem(WATCHLIST_KEY));
@@ -2007,10 +2047,88 @@ function saveWatchlist(list) {
   localStorage.setItem(WATCHLIST_KEY, JSON.stringify(list));
   tabLoadPromises.watchlist = null; // 다음에 관심종목 탭에 들어갈 때 최신 목록으로 다시 렌더링되도록 캐시 무효화
 }
-function addToWatchlist(symbol) {
+
+// ---------- 관심종목 그룹(가로스크롤 탭) ----------
+function getWatchlistGroups() {
+  try {
+    const groups = JSON.parse(localStorage.getItem(WATCHLIST_GROUPS_KEY));
+    if (Array.isArray(groups) && groups.length) return groups;
+  } catch {
+    // 저장된 값이 없거나 손상된 경우 기본 그룹으로 대체
+  }
+  return [{ id: WATCHLIST_DEFAULT_GROUP_ID, name: "기본" }];
+}
+function saveWatchlistGroups(groups) {
+  localStorage.setItem(WATCHLIST_GROUPS_KEY, JSON.stringify(groups));
+}
+function addWatchlistGroup(name) {
+  const trimmed = (name || "").trim();
+  if (!trimmed) return null;
+  const groups = getWatchlistGroups();
+  const id = `g_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+  groups.push({ id, name: trimmed });
+  saveWatchlistGroups(groups);
+  return id;
+}
+function renameWatchlistGroup(id, name) {
+  const trimmed = (name || "").trim();
+  if (!trimmed) return;
+  const groups = getWatchlistGroups();
+  const g = groups.find((g) => g.id === id);
+  if (g) {
+    g.name = trimmed;
+    saveWatchlistGroups(groups);
+  }
+}
+function deleteWatchlistGroup(id) {
+  let groups = getWatchlistGroups();
+  if (groups.length <= 1) return; // 최소 1개 그룹은 유지
+  groups = groups.filter((g) => g.id !== id);
+  saveWatchlistGroups(groups);
+  const fallbackId = groups[0].id; // 삭제된 그룹의 종목은 남은 첫 그룹으로 이동
+  saveWatchlist(getWatchlist().map((w) => (w.groupId === id ? { ...w, groupId: fallbackId } : w)));
+  if (getActiveWatchlistGroup() === id) setActiveWatchlistGroup(WATCHLIST_ALL_GROUP_ID);
+}
+function getActiveWatchlistGroup() {
+  return localStorage.getItem(WATCHLIST_ACTIVE_GROUP_KEY) || WATCHLIST_ALL_GROUP_ID;
+}
+function setActiveWatchlistGroup(id) {
+  localStorage.setItem(WATCHLIST_ACTIVE_GROUP_KEY, id);
+}
+
+const WATCHLIST_SORT_OPTIONS = [
+  { id: "manual", label: "직접설정순" },
+  { id: "name", label: "이름순" },
+  { id: "changePct", label: "등락률순" },
+  { id: "price", label: "현재가순" },
+];
+function getWatchlistSort() {
+  const id = localStorage.getItem(WATCHLIST_SORT_KEY);
+  return WATCHLIST_SORT_OPTIONS.some((o) => o.id === id) ? id : "manual";
+}
+function setWatchlistSort(id) {
+  localStorage.setItem(WATCHLIST_SORT_KEY, id);
+}
+function sortWatchlistRows(rows) {
+  const mode = getWatchlistSort();
+  const arr = [...rows];
+  if (mode === "name") {
+    arr.sort((a, b) => (TICKER_TO_KOREAN_NAME[a.symbol] || a.name).localeCompare(TICKER_TO_KOREAN_NAME[b.symbol] || b.name, "ko"));
+  } else if (mode === "changePct") {
+    arr.sort((a, b) => (b.changePct ?? -Infinity) - (a.changePct ?? -Infinity));
+  } else if (mode === "price") {
+    arr.sort((a, b) => (b.price ?? -Infinity) - (a.price ?? -Infinity));
+  }
+  // manual(직접설정순)은 저장된(추가된) 순서를 그대로 유지하므로 별도 정렬 없음
+  return arr;
+}
+
+function addToWatchlist(symbol, groupId) {
   const sym = symbol.toUpperCase();
   if (isWatchlisted(sym)) return;
-  saveWatchlist([...getWatchlist(), { symbol: sym, addedAt: Date.now() }]);
+  const active = getActiveWatchlistGroup();
+  const gid = groupId || (active === WATCHLIST_ALL_GROUP_ID ? WATCHLIST_DEFAULT_GROUP_ID : active);
+  saveWatchlist([...getWatchlist(), { symbol: sym, addedAt: Date.now(), groupId: gid }]);
 }
 function removeFromWatchlist(symbol) {
   const sym = symbol.toUpperCase();
@@ -2030,11 +2148,174 @@ companyPanelWatchlistBtn.addEventListener("click", () => {
   if (ticker) toggleWatchlist(ticker);
 });
 
+// ---------- 관심종목 상단 그룹 탭 ----------
+function wlGroupTabsHtml(groups, activeId) {
+  const allTab = `<button type="button" class="wl-group-tab${activeId === WATCHLIST_ALL_GROUP_ID ? " active" : ""}" data-group-id="${WATCHLIST_ALL_GROUP_ID}">전체</button>`;
+  const groupTabs = groups
+    .map((g) => `<button type="button" class="wl-group-tab${activeId === g.id ? " active" : ""}" data-group-id="${escapeHtml(g.id)}">${escapeHtml(g.name)}</button>`)
+    .join("");
+  const addTab = `<button type="button" class="wl-group-tab wl-group-tab-add" id="wlGroupAddBtn">+ 새 그룹</button>`;
+  return allTab + groupTabs + addTab;
+}
+el("wlGroupTabs").addEventListener("click", (e) => {
+  if (e.target.closest("#wlGroupAddBtn")) {
+    openWlGroupModal();
+    return;
+  }
+  const tab = e.target.closest(".wl-group-tab");
+  if (!tab) return;
+  setActiveWatchlistGroup(tab.dataset.groupId);
+  renderWatchlistList();
+});
+el("wlGroupManageBtn").addEventListener("click", () => openWlGroupModal());
+
+// ---------- 관심종목 그룹 관리 모달(이름 변경·삭제·추가) ----------
+function wlGroupModalRowHtml(g) {
+  return `
+    <div class="wl-group-modal-row" data-group-id="${escapeHtml(g.id)}">
+      <input type="text" class="wl-group-name-input" value="${escapeHtml(g.name)}" maxlength="12" />
+      <button type="button" class="wl-group-row-btn wl-group-save-btn" title="이름 저장">✓</button>
+      <button type="button" class="wl-group-row-btn wl-group-delete-btn" title="삭제">🗑</button>
+    </div>`;
+}
+function renderWlGroupModal() {
+  const groups = getWatchlistGroups();
+  el("wlGroupModalBody").innerHTML = `
+    <div class="wl-group-modal-list">${groups.map(wlGroupModalRowHtml).join("")}</div>
+    <div class="wl-group-modal-new">
+      <input type="text" id="wlGroupNewInput" class="wl-group-name-input" placeholder="새 그룹 이름" maxlength="12" />
+      <button type="button" id="wlGroupNewAddBtn" class="wl-group-row-btn wl-group-save-btn" title="추가">+</button>
+    </div>`;
+}
+function openWlGroupModal() {
+  renderWlGroupModal();
+  el("wlGroupModal").style.display = "flex";
+}
+function closeWlGroupModal() {
+  el("wlGroupModal").style.display = "none";
+}
+el("wlGroupModalCloseBtn").addEventListener("click", closeWlGroupModal);
+el("wlGroupModalBody").addEventListener("click", (e) => {
+  const saveBtn = e.target.closest(".wl-group-save-btn");
+  const deleteBtn = e.target.closest(".wl-group-delete-btn");
+  const addBtn = e.target.closest("#wlGroupNewAddBtn");
+  if (saveBtn) {
+    const row = saveBtn.closest(".wl-group-modal-row");
+    if (row) {
+      renameWatchlistGroup(row.dataset.groupId, row.querySelector(".wl-group-name-input").value);
+      renderWlGroupModal();
+      renderWatchlistList();
+    }
+  } else if (deleteBtn) {
+    const row = deleteBtn.closest(".wl-group-modal-row");
+    if (row) {
+      if (getWatchlistGroups().length <= 1) {
+        alert("최소 1개의 그룹은 남아 있어야 합니다.");
+        return;
+      }
+      deleteWatchlistGroup(row.dataset.groupId);
+      renderWlGroupModal();
+      renderWatchlistList();
+    }
+  } else if (addBtn) {
+    const input = el("wlGroupNewInput");
+    const id = addWatchlistGroup(input.value);
+    if (id) {
+      setActiveWatchlistGroup(id);
+      renderWlGroupModal();
+      renderWatchlistList();
+    }
+  }
+});
+
+// ---------- 관심종목 정렬 드롭다운 ----------
+function wlSortMenuHtml() {
+  const current = getWatchlistSort();
+  return WATCHLIST_SORT_OPTIONS.map(
+    (o) => `<button type="button" class="wl-sort-option${o.id === current ? " active" : ""}" data-sort-id="${o.id}">${o.label}</button>`
+  ).join("");
+}
+const wlSortBtn = el("wlSortBtn");
+const wlSortMenu = el("wlSortMenu");
+wlSortBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  if (wlSortMenu.style.display !== "none") {
+    wlSortMenu.style.display = "none";
+    return;
+  }
+  wlSortMenu.innerHTML = wlSortMenuHtml();
+  wlSortMenu.style.display = "block";
+});
+wlSortMenu.addEventListener("click", (e) => {
+  const opt = e.target.closest(".wl-sort-option");
+  if (!opt) return;
+  setWatchlistSort(opt.dataset.sortId);
+  wlSortMenu.style.display = "none";
+  renderWatchlistList();
+});
+document.addEventListener("click", (e) => {
+  if (wlSortMenu.style.display !== "none" && !e.target.closest(".wl-sort-wrap")) wlSortMenu.style.display = "none";
+});
+
+// ---------- 관심종목 종목추가·공유 버튼 ----------
+el("wlAddStockBtn").addEventListener("click", () => openSearchOverlay());
+
+async function shareWatchlist() {
+  const groups = getWatchlistGroups();
+  const activeGroup = getActiveWatchlistGroup();
+  const list = getWatchlist().map((w) => (w.groupId ? w : { ...w, groupId: WATCHLIST_DEFAULT_GROUP_ID }));
+  const filtered = activeGroup === WATCHLIST_ALL_GROUP_ID ? list : list.filter((w) => w.groupId === activeGroup);
+  if (filtered.length === 0) {
+    alert("공유할 관심종목이 없습니다.");
+    return;
+  }
+  const groupName = activeGroup === WATCHLIST_ALL_GROUP_ID ? "전체" : (groups.find((g) => g.id === activeGroup) || {}).name || "관심종목";
+  const lines = filtered.map((w) => `· ${TICKER_TO_KOREAN_NAME[w.symbol] || w.symbol} (${w.symbol})`);
+  const text = `📌 내 관심종목 - ${groupName}\n${lines.join("\n")}\n\nyeopinvest.com`;
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: `내 관심종목 - ${groupName}`, text });
+      return;
+    }
+    throw new Error("no-web-share");
+  } catch (err) {
+    if (err && err.name === "AbortError") return; // 사용자가 공유 시트를 취소한 경우
+    try {
+      await navigator.clipboard.writeText(text);
+      alert("관심종목 목록을 클립보드에 복사했습니다. 카카오톡 등에 붙여넣기 해보세요.");
+    } catch {
+      alert("공유에 실패했습니다.");
+    }
+  }
+}
+el("wlShareBtn").addEventListener("click", shareWatchlist);
+
 async function renderWatchlistList() {
   const statusEl = el("watchlistStatus");
   const listEl = el("watchlistList");
-  const list = getWatchlist();
-  if (list.length === 0) {
+
+  const groups = getWatchlistGroups();
+  const rawList = getWatchlist();
+  let migrated = false; // 그룹 도입 이전에 저장된 항목엔 groupId가 없어 1회 마이그레이션
+  const list = rawList.map((w) => {
+    if (w.groupId) return w;
+    migrated = true;
+    return { ...w, groupId: WATCHLIST_DEFAULT_GROUP_ID };
+  });
+  if (migrated) saveWatchlist(list);
+
+  const validIds = new Set([WATCHLIST_ALL_GROUP_ID, ...groups.map((g) => g.id)]);
+  let activeGroup = getActiveWatchlistGroup();
+  if (!validIds.has(activeGroup)) {
+    activeGroup = WATCHLIST_ALL_GROUP_ID;
+    setActiveWatchlistGroup(activeGroup);
+  }
+  el("wlGroupTabs").innerHTML = wlGroupTabsHtml(groups, activeGroup);
+  el("wlSortBtnLabel").textContent = (WATCHLIST_SORT_OPTIONS.find((o) => o.id === getWatchlistSort()) || WATCHLIST_SORT_OPTIONS[0]).label;
+
+  const filtered = activeGroup === WATCHLIST_ALL_GROUP_ID ? list : list.filter((w) => w.groupId === activeGroup);
+
+  if (filtered.length === 0) {
     statusEl.style.display = "none";
     listEl.innerHTML = `<p class="muted" style="padding:12px 0;">${iconHtml("star")} 관심종목이 없습니다. 종목 상세 화면에서 별 아이콘을 눌러 추가해보세요.</p>`;
     return;
@@ -2043,7 +2324,7 @@ async function renderWatchlistList() {
   statusEl.textContent = "관심종목을 불러오는 중...";
   try {
     const rows = (
-      await mapWithConcurrency(list, 5, async (w) => {
+      await mapWithConcurrency(filtered, 5, async (w) => {
         try {
           const chart = await yahooChart(w.symbol, "5d");
           const snap = yahooSnapshot(chart);
@@ -2054,8 +2335,9 @@ async function renderWatchlistList() {
       })
     ).filter(Boolean);
     statusEl.style.display = "none";
-    listEl.innerHTML = rows.length
-      ? `<div class="idx-list">${rows.map((r) => stockCardRowHtml(r)).join("")}</div>`
+    const sorted = sortWatchlistRows(rows);
+    listEl.innerHTML = sorted.length
+      ? `<div class="idx-list">${sorted.map((r) => stockCardRowHtml(r)).join("")}</div>`
       : `<p class="muted" style="padding:12px 0;">종목 정보를 불러오지 못했습니다.</p>`;
   } catch (e) {
     statusEl.style.display = "block";
@@ -2899,6 +3181,9 @@ async function runAnalysis(ticker) {
     results.style.display = "block";
     setStatus("loading", "섹션별 데이터를 정리하는 중입니다...");
 
+    renderCompanyIdentity(ticker, quote, meta, getDailyChangePercent(chartData));
+    el("summaryChartExpandBtn").dataset.chartSymbol = ticker;
+
     renderSummary(quote, meta, getDailyChangePercent(chartData)).catch((e) => {
       el("summarySection").innerHTML = `<p class="error-inline">사업 요약을 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
@@ -3102,13 +3387,32 @@ const summarySubtabPanels = {
   investscore: document.querySelector('[data-summary-subtabpanel="investscore"]'),
   news: document.querySelector('[data-summary-subtabpanel="news"]'),
 };
+// 개요 아래로 매출액/invest점수/주요뉴스가 한 화면에 이어져 있어(단일 스크롤), 탭 클릭은 숨기고 보여주는 대신
+// 해당 섹션으로 부드럽게 스크롤만 시켜줌
 function switchSummarySubtab(key) {
-  Object.entries(summarySubtabButtons).forEach(([k, btn]) => btn.classList.toggle("active", k === key));
-  Object.entries(summarySubtabPanels).forEach(([k, panel]) => (panel.style.display = k === key ? "" : "none"));
+  const panel = summarySubtabPanels[key];
+  if (panel) panel.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 Object.entries(summarySubtabButtons).forEach(([key, btn]) => {
   btn.addEventListener("click", () => switchSummarySubtab(key));
 });
+
+// 스크롤 위치에 따라 현재 보고 있는 섹션의 탭이 자동으로 활성화되도록(스크롤 스파이) — 탭 클릭 없이 내려도
+// 다음 탭으로 자연스럽게 넘어가 보이게 함
+(function setupSummarySubtabScrollSpy() {
+  const scrollRoot = companyPanel.querySelector(".company-panel-body");
+  if (!scrollRoot) return;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries.filter((en) => en.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      if (!visible.length) return;
+      const key = visible[0].target.dataset.summarySubtabpanel;
+      Object.entries(summarySubtabButtons).forEach(([k, btn]) => btn.classList.toggle("active", k === key));
+    },
+    { root: scrollRoot, rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+  );
+  Object.values(summarySubtabPanels).forEach((panel) => panel && observer.observe(panel));
+})();
 
 // 경쟁사 매출 비교는 별도 서브탭 대신 매출액 서브탭 안(첫 그래프 바로 아래)에 토글로 표시 —
 // renderPeers()는 티커 로드 시 이미 항상 백그라운드로 #peersSection을 채워두므로 여기서는 표시 여부만 토글
@@ -5520,6 +5824,174 @@ async function fetchOneIndexSnap(item) {
   }
 }
 
+// ---------- 시장 상단 4x2 위젯: 기본 8개 지수를 카드 2장(각 2x2)으로 보여주고, ✎ 수정으로 종목을 바꿀 수 있음 ----------
+const MARKET_WIDGET_KEY = "market_widget_symbols_v1";
+const MARKET_WIDGET_DEFAULT_TICKERS = ["GOLD", "USD/KRW", "KOSPI", "KOSDAQ", "IXIC", "SPX", "DJI", "RUT"];
+
+// INDEX_CATEGORIES 전체를 티커 기준으로 평탄화(같은 티커가 여러 카테고리에 중복 등장하면 처음 것을 사용)
+const INDEX_ITEM_BY_TICKER = (() => {
+  const map = new Map();
+  Object.values(INDEX_CATEGORIES).forEach((cat) => {
+    cat.items.forEach((item) => {
+      if (!map.has(item.ticker)) map.set(item.ticker, item);
+    });
+  });
+  return map;
+})();
+
+function getMarketWidgetTickers() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(MARKET_WIDGET_KEY));
+    if (Array.isArray(saved) && saved.length === 8 && saved.every((t) => INDEX_ITEM_BY_TICKER.has(t))) return saved;
+  } catch {
+    // 저장된 값이 없거나 손상된 경우 기본값 사용
+  }
+  return MARKET_WIDGET_DEFAULT_TICKERS;
+}
+function setMarketWidgetTickers(tickers) {
+  localStorage.setItem(MARKET_WIDGET_KEY, JSON.stringify(tickers));
+}
+
+// 오늘 하루(5분봉) 종가만 뽑아 아주 작은 스파크라인용 좌표 배열로 변환
+async function fetchTodaySparkPoints(item) {
+  try {
+    const chart = await yahooChart(item.symbol, "1d", "5m");
+    const result = chart && chart.chart && chart.chart.result && chart.chart.result[0];
+    const closes = (result && result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
+    return closes.filter((c) => c !== null && c !== undefined);
+  } catch {
+    return [];
+  }
+}
+function sparklineSvg(points, isUp) {
+  if (!points || points.length < 2) return `<svg class="mkt-spark" viewBox="0 0 100 28"></svg>`;
+  const min = Math.min(...points);
+  const max = Math.max(...points);
+  const span = max - min || 1;
+  const stepX = 100 / (points.length - 1);
+  const d = points.map((p, i) => `${i === 0 ? "M" : "L"}${(i * stepX).toFixed(1)},${(26 - ((p - min) / span) * 24).toFixed(1)}`).join(" ");
+  const color = isUp ? "var(--pos)" : "var(--neg)";
+  return `<svg class="mkt-spark" viewBox="0 0 100 28" preserveAspectRatio="none"><path d="${d}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+
+function mktWidgetCellHtml(ticker, snap, points) {
+  const item = INDEX_ITEM_BY_TICKER.get(ticker);
+  if (!item) return `<div class="mkt-widget-cell"></div>`;
+  const num = (n, d = 2) => n.toLocaleString("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d });
+  const clickable = !!item.chartSymbol;
+  const cellAttrs = clickable ? ` data-chart-symbol="${escapeHtml(item.chartSymbol)}" role="button" tabindex="0"` : "";
+  if (!snap || snap.price === null || snap.price === undefined) {
+    return `<div class="mkt-widget-cell${clickable ? " price-chart-link" : ""}"${cellAttrs}>
+      <div class="mkt-widget-cell-name">${escapeHtml(item.name)}</div>
+      <div class="mkt-widget-cell-price">N/A</div>
+    </div>`;
+  }
+  const isUp = (snap.change ?? 0) >= 0;
+  const cls = isUp ? "delta-up" : "delta-down";
+  const sign = isUp ? "+" : "";
+  const vSuffix = item.vSuffix || "";
+  const cSuffix = item.cSuffix || vSuffix;
+  const deltaStr = snap.change !== null && snap.change !== undefined
+    ? `${sign}${num(snap.change)}${cSuffix}${snap.changePct !== null && snap.changePct !== undefined && Number.isFinite(snap.changePct) && Math.abs(snap.changePct) < 1000 ? ` (${sign}${snap.changePct.toFixed(2)}%)` : ""}`
+    : "";
+  return `
+    <div class="mkt-widget-cell${clickable ? " price-chart-link" : ""}"${cellAttrs}>
+      <div class="mkt-widget-cell-name">${escapeHtml(item.name)}</div>
+      <div class="mkt-widget-cell-price">${num(snap.price)}${vSuffix}</div>
+      <div class="mkt-widget-cell-delta ${cls}">${deltaStr}</div>
+      ${sparklineSvg(points, isUp)}
+    </div>`;
+}
+
+function mktWidgetCardHtml(tickers, snaps, sparks) {
+  const cells = tickers.map((t, i) => mktWidgetCellHtml(t, snaps[i], sparks[i])).join("");
+  return `<div class="mkt-widget-card">${cells}</div>`;
+}
+
+async function renderMarketWidget() {
+  const track = el("mktWidgetTrack");
+  const tickers = getMarketWidgetTickers();
+  const items = tickers.map((t) => INDEX_ITEM_BY_TICKER.get(t)).filter(Boolean);
+  const [snaps, sparks] = await Promise.all([
+    mapWithConcurrency(items, 8, fetchOneIndexSnap),
+    mapWithConcurrency(items, 8, fetchTodaySparkPoints),
+  ]);
+  const cardA = mktWidgetCardHtml(tickers.slice(0, 4), snaps.slice(0, 4), sparks.slice(0, 4));
+  const cardB = mktWidgetCardHtml(tickers.slice(4, 8), snaps.slice(4, 8), sparks.slice(4, 8));
+  track.innerHTML = cardA + cardB;
+  el("mktWidgetDots").innerHTML = `<span class="mkt-widget-dot active"></span><span class="mkt-widget-dot"></span>`;
+}
+
+// 카드 스크롤 위치에 맞춰 하단 점 표시 동기화
+el("mktWidgetTrack").addEventListener("scroll", () => {
+  const track = el("mktWidgetTrack");
+  const idx = Math.round(track.scrollLeft / track.clientWidth);
+  el("mktWidgetDots").querySelectorAll(".mkt-widget-dot").forEach((dot, i) => dot.classList.toggle("active", i === idx));
+});
+
+// ---------- 시장 위젯 종목 수정(체크박스로 정확히 8개 선택) ----------
+function mktWidgetEditBodyHtml(selected) {
+  const seenTickers = new Set(); // 금·비트코인처럼 같은 종목이 여러 카테고리에 중복 등장하므로 처음 나온 카테고리에서만 체크박스 생성
+  const groups = Object.entries(INDEX_CATEGORIES)
+    .filter(([key]) => key !== "bonds") // 채권은 FRED 소스라 인트라데이 스파크라인을 그릴 수 없어 선택지에서 제외
+    .map(([, cat]) => {
+      const opts = cat.items
+        .filter((item) => {
+          if (seenTickers.has(item.ticker)) return false;
+          seenTickers.add(item.ticker);
+          return true;
+        })
+        .map(
+          (item) => `
+        <label class="mkt-widget-edit-opt">
+          <input type="checkbox" value="${escapeHtml(item.ticker)}" ${selected.has(item.ticker) ? "checked" : ""} />
+          <span>${escapeHtml(item.name)}</span>
+        </label>`
+        )
+        .join("");
+      return opts ? `<div class="mkt-widget-edit-group"><p class="mkt-widget-edit-group-label">${escapeHtml(cat.label)}</p>${opts}</div>` : "";
+    })
+    .join("");
+  return `
+    <p class="mkt-widget-edit-count" id="mktWidgetEditCount">선택 ${selected.size}/8</p>
+    ${groups}
+    <button type="button" class="cat-btn mkt-widget-edit-save" id="mktWidgetEditSaveBtn">저장</button>
+  `;
+}
+function openMktWidgetEditModal() {
+  const selected = new Set(getMarketWidgetTickers());
+  el("mktWidgetEditBody").innerHTML = mktWidgetEditBodyHtml(selected);
+  el("mktWidgetEditModal").style.display = "flex";
+}
+function closeMktWidgetEditModal() {
+  el("mktWidgetEditModal").style.display = "none";
+}
+el("mktWidgetEditBtn").addEventListener("click", openMktWidgetEditModal);
+el("mktWidgetEditCloseBtn").addEventListener("click", closeMktWidgetEditModal);
+el("mktWidgetEditBody").addEventListener("change", (e) => {
+  const checkbox = e.target.closest('input[type="checkbox"]');
+  if (!checkbox) return;
+  const boxes = [...el("mktWidgetEditBody").querySelectorAll('input[type="checkbox"]')];
+  const checkedCount = boxes.filter((b) => b.checked).length;
+  if (checkedCount > 8) {
+    checkbox.checked = false;
+    alert("최대 8개까지만 선택할 수 있습니다.");
+    return;
+  }
+  el("mktWidgetEditCount").textContent = `선택 ${checkedCount}/8`;
+});
+el("mktWidgetEditBody").addEventListener("click", (e) => {
+  if (!e.target.closest("#mktWidgetEditSaveBtn")) return;
+  const boxes = [...el("mktWidgetEditBody").querySelectorAll('input[type="checkbox"]:checked')];
+  if (boxes.length !== 8) {
+    alert(`정확히 8개를 선택해주세요 (현재 ${boxes.length}개).`);
+    return;
+  }
+  setMarketWidgetTickers(boxes.map((b) => b.value));
+  closeMktWidgetEditModal();
+  renderMarketWidget();
+});
+
 // 현재 선택된 카테고리·"더보기"로 펼친 카테고리 목록은 새로고침·자동갱신(20초)에도 유지되도록 모듈 스코프에 둠
 let indexActiveCategory = "usMarkets"; // "usMarkets" | "indices" | "crypto" | "commodities" | "bonds"
 const indexExpandedCategories = new Set(); // "더보기"를 눌러 전체를 펼친 카테고리 key 모음
@@ -5818,15 +6290,19 @@ bindTrend(trendButtons.pressure, runTrendPressure);
 // US Markets 탭의 "주식" 카테고리 전용 카드 행 — 지수 카드(idx-row)와 동일한 스타일(로고+이름/티커, 가격/등락)
 function stockCardRowHtml(r) {
   const displayName = TICKER_TO_KOREAN_NAME[r.symbol] || r.name;
-  const priceStr = (r.currency === "KRW" ? "₩" : "$") + r.price.toLocaleString(undefined, { maximumFractionDigits: 2 });
+  const currencySign = r.currency === "KRW" ? "₩" : "$";
+  const priceStr = "*" + currencySign + r.price.toLocaleString(undefined, { maximumFractionDigits: 2 });
   const sign = (n) => (n >= 0 ? "+" : "");
-  let deltaStr = "";
   let cls = "";
+  let changeAmtStr = "";
+  let pctStr = "";
   if (r.changePct !== null && r.changePct !== undefined) {
     cls = r.changePct >= 0 ? "delta-up" : "delta-down";
-    const changeAmt = r.change !== null && r.change !== undefined ? `${sign(r.change)}${r.change.toLocaleString(undefined, { maximumFractionDigits: 2 })} ` : "";
-    deltaStr = `${changeAmt}(${sign(r.changePct)}${r.changePct.toFixed(2)}%)`;
+    const arrow = r.changePct >= 0 ? "▲" : "▼";
+    changeAmtStr = r.change !== null && r.change !== undefined ? `${sign(r.change)}${r.change.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : "";
+    pctStr = `${arrow} ${Math.abs(r.changePct).toFixed(2)}%`;
   }
+  const volumeStr = r.volume !== null && r.volume !== undefined ? r.volume.toLocaleString() : "N/A";
 
   const now = new Date();
   const isToday = !!r.time && r.time.getFullYear() === now.getFullYear() && r.time.getMonth() === now.getMonth() && r.time.getDate() === now.getDate();
@@ -5838,14 +6314,20 @@ function stockCardRowHtml(r) {
   const clockClass = isToday ? "idx-clock idx-clock-live" : "idx-clock";
 
   return `
-    <div class="idx-row ticker-link idx-row-clickable" data-ticker="${escapeHtml(r.symbol)}">
+    <div class="idx-row stock-card-row ticker-link idx-row-clickable" data-ticker="${escapeHtml(r.symbol)}">
       <div class="idx-left">
         <div class="idx-name">${tickerLogoHtml(r.symbol)}${escapeHtml(displayName)}</div>
         <div class="idx-sub">${clockLabel ? `<span class="${clockClass}">🕐 ${clockLabel}</span> | ` : ""}<span class="idx-ticker">${escapeHtml(r.symbol)}</span></div>
       </div>
-      <div class="idx-right">
-        <div class="idx-price">${priceStr}</div>
-        <div class="idx-delta ${cls}">${deltaStr}</div>
+      <div class="stock-card-right">
+        <div class="stock-card-r1">
+          <span class="stock-card-price ${cls}">${priceStr}</span>
+          <span class="stock-card-change ${cls}">${changeAmtStr}</span>
+        </div>
+        <div class="stock-card-r2">
+          <span class="stock-card-volume">${volumeStr}</span>
+          <span class="stock-card-pct ${cls}">${pctStr}</span>
+        </div>
       </div>
     </div>`;
 }
@@ -6240,10 +6722,10 @@ const CHART_PERIOD_LABEL_FMT = {
 };
 
 // 차트 지오메트리는 build/interaction 두 함수가 동일한 좌표계를 써야 크로스헤어가 정확히 맞아떨어짐
-const PRICE_CHART_GEOM = { W: 780, H: 440, ML: 8, MR: 112, MT: 20, MB: 44 };
-const PRICE_TAG_W = 96,
+const PRICE_CHART_GEOM = { W: 780, H: 440, ML: 8, MR: 148, MT: 24, MB: 52 };
+const PRICE_TAG_W = 132,
   PRICE_TAG_NOTCH = 8,
-  PRICE_TAG_H = 28;
+  PRICE_TAG_H = 36;
 
 // 현재가/터치 위치를 가리키는 "책갈피" 모양(왼쪽 삼각 포인터 + 사각 라벨) path
 function bookmarkTagPath(xStart, yCenter) {
@@ -6267,6 +6749,20 @@ function priceChartScales(pairs) {
   return { W, H, ML, MR, MT, MB, PW, PH, N, lo, hi, xFn, yFn };
 }
 
+// 캔들 차트용 스케일 — 종가만이 아니라 고가/저가까지 포함해 축 범위를 잡아야 심지(wick)가 잘리지 않음
+function priceChartScalesOhlc(pairs) {
+  const { W, H, ML, MR, MT, MB } = PRICE_CHART_GEOM;
+  const PW = W - ML - MR;
+  const PH = H - MT - MB;
+  const N = pairs.length;
+  const highs = pairs.map((p) => p.h);
+  const lows = pairs.map((p) => p.l);
+  const { lo, hi } = priceAxisBounds(Math.min(...lows), Math.max(...highs));
+  const xFn = (i) => ML + (N <= 1 ? 0 : (i / (N - 1)) * PW);
+  const yFn = (v) => MT + (1 - (v - lo) / (hi - lo)) * PH;
+  return { W, H, ML, MR, MT, MB, PW, PH, N, lo, hi, xFn, yFn };
+}
+
 function buildPriceChartSvg(pairs, period, symbol) {
   const { W, H, ML, MT, PW, PH, N, lo, hi, xFn, yFn } = priceChartScales(pairs);
 
@@ -6276,7 +6772,7 @@ function buildPriceChartSvg(pairs, period, symbol) {
     const v = lo + (k / 4) * (hi - lo);
     const y = yFn(v);
     gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="#23262f" stroke-width="1" />`;
-    gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 5).toFixed(1)}" font-size="14" fill="#8a90a3">${fmtChartPrice(v)}</text>`;
+    gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 7).toFixed(1)}" font-size="20" fill="#8a90a3">${fmtChartPrice(v)}</text>`;
   }
 
   let axisSvg = "";
@@ -6286,7 +6782,7 @@ function buildPriceChartSvg(pairs, period, symbol) {
     const x = xFn(idx);
     const d = new Date(pairs[idx].t * 1000);
     const anchor = k === 0 ? "start" : k === 4 ? "end" : "middle";
-    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 28).toFixed(1)}" text-anchor="${anchor}" font-size="14" fill="#8a90a3">${escapeHtml(fmt(d))}</text>`;
+    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 36).toFixed(1)}" text-anchor="${anchor}" font-size="20" fill="#8a90a3">${escapeHtml(fmt(d))}</text>`;
   }
 
   const linePath = pairs.map((p, i) => `${i === 0 ? "M" : "L"}${xFn(i).toFixed(1)},${yFn(p.c).toFixed(1)}`).join(" ");
@@ -6312,7 +6808,7 @@ function buildPriceChartSvg(pairs, period, symbol) {
       <line x1="${ML}" y1="${lastY.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${lastY.toFixed(1)}" stroke="#8a90a3" stroke-width="1" stroke-dasharray="3,3" />
       <circle cx="${lastX.toFixed(1)}" cy="${lastY.toFixed(1)}" r="3.5" fill="#2f6fed" />
       <path d="${bookmarkTagPath(ML + PW, lastY)}" fill="#eceef2" />
-      <text x="${(ML + PW + PRICE_TAG_NOTCH + 6).toFixed(1)}" y="${(lastY + 5).toFixed(1)}" text-anchor="start" font-size="14" font-weight="700" fill="#0b0d12">${fmtChartPrice(last.c)}</text>
+      <text x="${(ML + PW + PRICE_TAG_NOTCH + 8).toFixed(1)}" y="${(lastY + 7).toFixed(1)}" text-anchor="start" font-size="20" font-weight="700" fill="#0b0d12">${fmtChartPrice(last.c)}</text>
     </g>
     ${axisSvg}
     <rect id="pcHitArea" x="${ML}" y="0" width="${PW}" height="${H}" fill="transparent" style="touch-action:none;" />
@@ -6321,17 +6817,81 @@ function buildPriceChartSvg(pairs, period, symbol) {
       <line id="pcCrosshairHLine" x1="${ML}" y1="0" x2="${(ML + PW).toFixed(1)}" y2="0" stroke="#8a90a3" stroke-width="1" stroke-dasharray="2,2" />
       <circle id="pcCrosshairDot" r="4" fill="#0b0d12" stroke="#2f6fed" stroke-width="2" />
       <path id="pcCrosshairTagPath" fill="#eceef2" />
-      <text id="pcCrosshairTagText" text-anchor="start" font-size="14" font-weight="700" fill="#0b0d12"></text>
+      <text id="pcCrosshairTagText" text-anchor="start" font-size="20" font-weight="700" fill="#0b0d12"></text>
+    </g>
+  </svg>`;
+}
+
+// 캔들 차트 1행 렌더러 — buildPriceChartSvg와 같은 그리드·책갈피 패턴을 재사용하되 선 대신 봉을 그림
+function buildCandleChartSvg(pairs, period, symbol) {
+  const { W, H, ML, MT, PW, PH, N, lo, hi, xFn, yFn } = priceChartScalesOhlc(pairs);
+
+  let gridSvg = "";
+  for (let k = 0; k <= 4; k++) {
+    const v = lo + (k / 4) * (hi - lo);
+    const y = yFn(v);
+    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="#23262f" stroke-width="1" />`;
+    gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 7).toFixed(1)}" font-size="20" fill="#8a90a3">${fmtChartPrice(v)}</text>`;
+  }
+
+  let axisSvg = "";
+  const fmt = CHART_PERIOD_LABEL_FMT[period] || CHART_PERIOD_LABEL_FMT["1y"];
+  for (let k = 0; k <= 4; k++) {
+    const idx = Math.round((k / 4) * (N - 1));
+    const x = xFn(idx);
+    const d = new Date(pairs[idx].t * 1000);
+    const anchor = k === 0 ? "start" : k === 4 ? "end" : "middle";
+    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 36).toFixed(1)}" text-anchor="${anchor}" font-size="20" fill="#8a90a3">${escapeHtml(fmt(d))}</text>`;
+  }
+
+  const slotW = N > 1 ? PW / N : PW; // 봉 사이 간격의 60%를 몸통 너비로 사용(너무 촘촘하면 최소 1.5px 보장)
+  const bodyW = Math.max(1.5, slotW * 0.6);
+  let candlesSvg = "";
+  pairs.forEach((p, i) => {
+    const x = xFn(i);
+    const isUp = p.c >= p.o;
+    const color = isUp ? "var(--pos)" : "var(--neg)"; // 빨강=상승, 파랑=하락(앱 공통 색상)
+    const yHigh = yFn(p.h);
+    const yLow = yFn(p.l);
+    const yOpen = yFn(p.o);
+    const yClose = yFn(p.c);
+    const bodyTop = Math.min(yOpen, yClose);
+    const bodyH = Math.max(1, Math.abs(yClose - yOpen));
+    candlesSvg += `<line x1="${x.toFixed(1)}" y1="${yHigh.toFixed(1)}" x2="${x.toFixed(1)}" y2="${yLow.toFixed(1)}" stroke="${color}" stroke-width="1.2" />`;
+    candlesSvg += `<rect x="${(x - bodyW / 2).toFixed(1)}" y="${bodyTop.toFixed(1)}" width="${bodyW.toFixed(1)}" height="${bodyH.toFixed(1)}" fill="${color}" />`;
+  });
+
+  const last = pairs[N - 1];
+  const lastY = yFn(last.c);
+
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHtml(symbol)} 캔들 차트">
+    <rect x="0" y="0" width="${W}" height="${H}" fill="#0b0d12" />
+    ${gridSvg}
+    ${candlesSvg}
+    <g id="pcCurrentMarker">
+      <line x1="${ML}" y1="${lastY.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${lastY.toFixed(1)}" stroke="#8a90a3" stroke-width="1" stroke-dasharray="3,3" />
+      <path d="${bookmarkTagPath(ML + PW, lastY)}" fill="#eceef2" />
+      <text x="${(ML + PW + PRICE_TAG_NOTCH + 8).toFixed(1)}" y="${(lastY + 7).toFixed(1)}" text-anchor="start" font-size="20" font-weight="700" fill="#0b0d12">${fmtChartPrice(last.c)}</text>
+    </g>
+    ${axisSvg}
+    <rect id="pcHitArea" x="${ML}" y="0" width="${PW}" height="${H}" fill="transparent" style="touch-action:none;" />
+    <g id="pcCrosshair" style="display:none;">
+      <line x1="0" y1="${MT}" x2="0" y2="${(MT + PH).toFixed(1)}" stroke="#8a90a3" stroke-width="1" stroke-dasharray="2,2" />
+      <line id="pcCrosshairHLine" x1="${ML}" y1="0" x2="${(ML + PW).toFixed(1)}" y2="0" stroke="#8a90a3" stroke-width="1" stroke-dasharray="2,2" />
+      <circle id="pcCrosshairDot" r="4" fill="#0b0d12" stroke="#2f6fed" stroke-width="2" />
+      <path id="pcCrosshairTagPath" fill="#eceef2" />
+      <text id="pcCrosshairTagText" text-anchor="start" font-size="20" font-weight="700" fill="#0b0d12"></text>
     </g>
   </svg>`;
 }
 
 // 차트를 누르고 있는 동안 가장 가까운 지점의 가격을 오른쪽 책갈피에 실시간으로 보여줌(증권앱 스타일)
-function setupPriceChartCrosshair(containerEl, pairs) {
+// scalesFn: 라인 차트는 종가 기준(priceChartScales), 캔들 차트는 고가/저가까지 포함한 기준(priceChartScalesOhlc)을 써야 렌더링과 좌표가 일치함
+function setupPriceChartCrosshair(containerEl, pairs, scalesFn = priceChartScales) {
   const svg = containerEl.querySelector("svg");
   const hitArea = svg && svg.querySelector("#pcHitArea");
   if (!svg || !hitArea) return;
-  const { ML, MT, PW, PH, N, xFn, yFn } = priceChartScales(pairs);
+  const { ML, MT, PW, PH, N, xFn, yFn } = scalesFn(pairs);
   const crosshair = svg.querySelector("#pcCrosshair");
   const vLine = crosshair.querySelector("line");
   const hLine = svg.querySelector("#pcCrosshairHLine");
@@ -6357,8 +6917,8 @@ function setupPriceChartCrosshair(containerEl, pairs) {
     dot.setAttribute("cx", x.toFixed(1));
     dot.setAttribute("cy", y.toFixed(1));
     tagPath.setAttribute("d", bookmarkTagPath(ML + PW, y));
-    tagText.setAttribute("x", (ML + PW + PRICE_TAG_NOTCH + 6).toFixed(1));
-    tagText.setAttribute("y", (y + 5).toFixed(1));
+    tagText.setAttribute("x", (ML + PW + PRICE_TAG_NOTCH + 8).toFixed(1));
+    tagText.setAttribute("y", (y + 7).toFixed(1));
     tagText.textContent = fmtChartPrice(pairs[idx].c);
     crosshair.style.display = "";
     currentMarker.style.display = "none";
@@ -6385,21 +6945,36 @@ function setupPriceChartCrosshair(containerEl, pairs) {
 }
 
 let summaryChartCurrentSymbol = null;
+let summaryChartCurrentPeriod = "1y";
+let summaryChartCurrentPairs = null; // OHLC 캐시 — 라인↔캔들 전환 시 재조회 없이 즉시 다시 그리기 위함
+let summaryChartMode = "line"; // "line" | "candle"
+
+function renderSummaryChartPairs(pairs, period, symbol) {
+  const containerEl = el("summaryChartContainer");
+  if (summaryChartMode === "candle") {
+    containerEl.innerHTML = buildCandleChartSvg(pairs, period, symbol);
+    setupPriceChartCrosshair(containerEl, pairs, priceChartScalesOhlc);
+  } else {
+    containerEl.innerHTML = buildPriceChartSvg(pairs, period, symbol);
+    setupPriceChartCrosshair(containerEl, pairs, priceChartScales);
+  }
+}
+
 async function runSummaryChart(symbol, period) {
   summaryChartCurrentSymbol = symbol;
+  summaryChartCurrentPeriod = period;
   const statusEl = el("summaryChartStatus");
-  const containerEl = el("summaryChartContainer");
   statusEl.style.display = "block";
   statusEl.textContent = "차트를 불러오는 중...";
   try {
     const cfg = CHART_PERIOD_CONFIG[period] || CHART_PERIOD_CONFIG["1y"];
     const chart = await yahooChart(symbol, cfg.range, cfg.interval);
     if (summaryChartCurrentSymbol !== symbol) return; // 응답 도착 전 다른 종목으로 전환된 경우 무시
-    const pairs = chartClosePairs(chart);
+    const pairs = chartOhlcPairs(chart);
     if (pairs.length < 2) throw new Error("차트 데이터가 부족합니다.");
     statusEl.style.display = "none";
-    containerEl.innerHTML = buildPriceChartSvg(pairs, period, symbol);
-    setupPriceChartCrosshair(containerEl, pairs);
+    summaryChartCurrentPairs = pairs;
+    renderSummaryChartPairs(pairs, period, symbol);
   } catch (err) {
     statusEl.style.display = "block";
     statusEl.textContent = `❌ ${err.message || "차트를 불러오지 못했습니다."}`;
@@ -6411,6 +6986,18 @@ summaryChartPeriodNav.addEventListener("click", (e) => {
   if (!btn || !summaryChartCurrentSymbol) return;
   Array.from(summaryChartPeriodNav.children).forEach((b) => b.classList.toggle("active", b === btn));
   runSummaryChart(summaryChartCurrentSymbol, btn.dataset.chartPeriod);
+});
+
+// ---------- 라인/캔들 차트 전환 버튼 ----------
+const summaryChartTypeToggle = el("summaryChartTypeToggle");
+summaryChartTypeToggle.addEventListener("click", (e) => {
+  const btn = e.target.closest(".chart-type-btn");
+  if (!btn || !summaryChartCurrentPairs) return;
+  const mode = btn.dataset.chartType;
+  if (mode === summaryChartMode) return;
+  summaryChartMode = mode;
+  Array.from(summaryChartTypeToggle.children).forEach((b) => b.classList.toggle("active", b === btn));
+  renderSummaryChartPairs(summaryChartCurrentPairs, summaryChartCurrentPeriod, summaryChartCurrentSymbol);
 });
 
 function buildFutureChartSvg(data) {

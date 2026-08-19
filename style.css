@@ -302,6 +302,110 @@ body {
   background: var(--bg);
   padding-top: 2px;
 }
+/* 검정 상세화면에서는 상단 고정바(detail-bar) 바로 아래에 서브탭이 틈 없이 붙도록 body의 top padding을 상쇄하고 폭도 화면 끝까지 채움 */
+.company-panel-black .company-panel-body #summarySubtabNav {
+  margin: -14px -20px 12px;
+  padding: 0 20px;
+  background: #000;
+}
+
+/* ---------- 종목 상세화면: 검정 배경 + 이름/가격/등락률 헤더 ---------- */
+.company-panel-black { background: #000; }
+.company-panel-black .company-panel-body { background: #000; }
+.company-panel-black #summarySubtabNav { background: #000; }
+
+.detail-bar { background: #000; border-bottom-color: #14161c; }
+.detail-identity { flex: 1; min-width: 0; display: flex; flex-direction: row; align-items: center; gap: 8px; }
+.detail-identity-logo .ticker-logo-wrap { width: 30px; height: 30px; }
+.detail-identity-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.detail-identity-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.detail-identity-priceline { display: flex; align-items: baseline; gap: 6px; }
+.detail-identity-price { font-size: 16px; font-weight: 800; color: var(--text); }
+.detail-identity-change { font-size: 13px; font-weight: 700; }
+.detail-bar-actions { flex: none; display: flex; align-items: center; gap: 2px; }
+
+/* ---------- 종목 상세: 차트 위 오버레이(반투명 원형 차트보기 버튼 + 라인/캔들 토글) ---------- */
+.summary-chart-wrap { position: relative; }
+.chart-expand-btn {
+  position: absolute;
+  top: 10px;
+  left: 8px;
+  z-index: 4;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(20, 22, 28, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+  backdrop-filter: blur(2px);
+}
+.chart-type-toggle {
+  position: absolute;
+  bottom: 40px;
+  right: 8px;
+  z-index: 4;
+  display: flex;
+  gap: 4px;
+  background: rgba(20, 22, 28, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  padding: 3px;
+  backdrop-filter: blur(2px);
+}
+.chart-type-btn {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  color: var(--muted);
+}
+.chart-type-btn.active { background: rgba(255, 255, 255, 0.14); color: #fff; }
+
+/* ---------- 종목 상세: 개요/매출액/invest점수/주요뉴스 서브탭 — 상단 tab-bar와 동일한 톤(굵은 흰 글씨+밑줄) ---------- */
+.detail-subtabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.detail-subtabs .cat-btn {
+  flex: 1 1 0;
+  position: relative;
+  background: #000;
+  border: none;
+  border-radius: 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 4px;
+  text-align: center;
+}
+.detail-subtabs .cat-btn.active { color: #fff; font-weight: 800; }
+.detail-subtabs .cat-btn.active::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 3px;
+  border-radius: 2px;
+  background: #fff;
+}
 
 .future-beta-warning {
   text-align: center;
@@ -1249,6 +1353,189 @@ table.insight-holdings-table td span, table.insight-holdings-table td b { max-wi
 .idx-right { text-align: right; white-space: nowrap; flex: none; }
 .idx-price { font-weight: 800; font-size: 16px; }
 .idx-delta { margin-top: 3px; font-size: 12.5px; font-weight: 700; }
+
+.stock-card-right { flex: none; white-space: nowrap; text-align: right; }
+.stock-card-r1, .stock-card-r2 { display: flex; align-items: baseline; justify-content: flex-end; gap: 8px; }
+.stock-card-r2 { margin-top: 3px; }
+.stock-card-price { font-weight: 800; font-size: 16px; }
+.stock-card-change { font-weight: 700; font-size: 12.5px; min-width: 52px; text-align: right; }
+.stock-card-volume { font-size: 12px; color: var(--muted); font-weight: 600; }
+.stock-card-pct { font-size: 12.5px; font-weight: 700; min-width: 52px; text-align: right; }
+
+/* ---------- 관심종목: 그룹 탭 + 정렬/추가/공유 툴바 ---------- */
+.wl-group-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.wl-group-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  flex: 1;
+  min-width: 0;
+}
+.wl-group-tabs::-webkit-scrollbar { display: none; }
+.wl-group-tab {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 7px 13px;
+}
+.wl-group-tab.active { color: #fff; border-color: #fff; background: #000; }
+.wl-group-tab-add { color: var(--accent); border-style: dashed; }
+.wl-group-manage-btn {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.wl-toolbar { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+.wl-tool-btn {
+  flex: none;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.wl-tool-btn-share { margin-left: auto; color: var(--text); }
+.wl-tool-caret { font-size: 9px; }
+.wl-sort-wrap { position: relative; }
+.wl-sort-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 60;
+  min-width: 120px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+}
+.wl-sort-option {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 6px;
+}
+.wl-sort-option.active { color: var(--accent); font-weight: 800; }
+.wl-sort-option:hover, .wl-sort-option:focus-visible { background: var(--accent-soft); outline: none; }
+
+/* ---------- 관심종목 그룹 관리 모달 ---------- */
+.wl-group-modal-body { padding: 14px 12px; overflow-y: auto; }
+.wl-group-modal-list { display: flex; flex-direction: column; gap: 8px; }
+.wl-group-modal-row, .wl-group-modal-new { display: flex; align-items: center; gap: 8px; }
+.wl-group-modal-new { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+.wl-group-name-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 13.5px;
+  padding: 9px 10px;
+}
+.wl-group-row-btn {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.wl-group-save-btn { color: var(--accent); }
+.wl-group-delete-btn { color: var(--neg); }
+
+/* ---------- 시장 상단 4x2 위젯(카드 2장, 각 2x2, 오늘 스파크라인) ---------- */
+.mkt-widget { margin-bottom: 14px; }
+.mkt-widget-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+.mkt-widget-track::-webkit-scrollbar { display: none; }
+.mkt-widget-card {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--card-bg);
+}
+.mkt-widget-cell {
+  padding: 14px 12px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  min-width: 0;
+}
+.mkt-widget-cell:nth-child(2n) { border-right: none; }
+.mkt-widget-cell:nth-last-child(-n+2) { border-bottom: none; }
+.mkt-widget-cell.price-chart-link { cursor: pointer; }
+.mkt-widget-cell.price-chart-link:hover, .mkt-widget-cell.price-chart-link:focus-visible { background: var(--accent-soft); outline: none; }
+.mkt-widget-cell-name { font-size: 12.5px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mkt-widget-cell-price { margin-top: 6px; font-size: 19px; font-weight: 800; color: var(--text); }
+.mkt-widget-cell-delta { margin-top: 2px; font-size: 12px; font-weight: 700; }
+.mkt-spark { display: block; width: 100%; height: 20px; margin-top: 4px; }
+
+.mkt-widget-footer { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 8px; position: relative; }
+.mkt-widget-dots { display: flex; gap: 5px; }
+.mkt-widget-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+.mkt-widget-dot.active { background: var(--text); width: 16px; border-radius: 3px; }
+.mkt-widget-edit-btn {
+  position: absolute;
+  right: 0;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 6px;
+}
+
+/* ---------- 시장 위젯 종목 수정 모달 ---------- */
+.mkt-widget-edit-body { padding: 14px 12px; overflow-y: auto; }
+.mkt-widget-edit-count { margin: 0 0 12px; font-size: 13px; font-weight: 700; color: var(--accent); position: sticky; top: 0; background: #000; padding: 4px 0; }
+.mkt-widget-edit-group { margin-bottom: 16px; }
+.mkt-widget-edit-group-label { margin: 0 0 8px; font-size: 12px; font-weight: 700; color: var(--muted); }
+.mkt-widget-edit-opt { display: flex; align-items: center; gap: 8px; padding: 8px 2px; font-size: 13.5px; color: var(--text); }
+.mkt-widget-edit-opt input { flex: none; width: 16px; height: 16px; }
+.mkt-widget-edit-save { width: 100%; text-align: center; padding: 12px; font-size: 13.5px; margin-top: 6px; margin-bottom: 20px; }
 
 .summary-action-row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
 .summary-action-btn {
