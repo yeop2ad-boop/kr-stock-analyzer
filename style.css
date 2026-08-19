@@ -276,19 +276,21 @@ body {
   flex: none;
   width: 34px;
   height: 34px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   background: none;
   border: none;
-  color: #e6983c;
+  color: var(--muted);
   position: relative;
 }
+.search-watch-btn.active { color: var(--warn); }
 .search-watch-btn:not(.active)::after {
   content: "+";
   position: absolute;
   right: 0;
-  bottom: 2px;
+  top: 2px;
   width: 12px;
   height: 12px;
   border-radius: 50%;
@@ -386,6 +388,7 @@ body {
   z-index: 4;
   width: 30px;
   height: 30px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -411,6 +414,7 @@ body {
 .chart-type-btn {
   width: 26px;
   height: 26px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1439,6 +1443,7 @@ table.insight-holdings-table td span, table.insight-holdings-table td b { max-wi
   flex: none;
   width: 28px;
   height: 28px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1512,6 +1517,7 @@ table.insight-holdings-table td span, table.insight-holdings-table td b { max-wi
   flex: none;
   width: 34px;
   height: 34px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
