@@ -163,7 +163,7 @@ body {
 }
 .fh-search input[type="text"] { flex: 1; }
 .fh-search button { font-size: 18px; padding: 10px 14px; line-height: 1; white-space: nowrap; }
-.fh-search button.header-icon-btn { padding: 0; }
+.fh-search button.header-icon-btn { padding: 0; transform: translate(-1px, 1px); }
 
 /* 틀고정 헤더의 검색창은 입력창이 아니라 버튼 — 누르면 전체화면 검색 오버레이가 오른쪽에서 슬라이드인 */
 .search-open-btn {
@@ -207,10 +207,12 @@ body {
   width: 34px;
   height: 34px;
   padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
-  color: var(--text);
-  font-size: 22px;
+  color: var(--muted);
 }
 .search-overlay-title { margin: 0; font-size: 24px; font-weight: 800; color: var(--text); }
 
