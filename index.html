@@ -128,13 +128,15 @@
 
   <div id="searchOverlay" class="search-overlay" style="display:none;">
     <div class="search-overlay-bar">
-      <button type="button" id="searchOverlayCloseBtn" class="search-overlay-back" aria-label="닫기">←</button>
+      <button type="button" id="searchOverlayCloseBtn" class="search-overlay-back" aria-label="닫기">&lt;</button>
       <h2 class="search-overlay-title">검색</h2>
     </div>
     <div class="search-overlay-body">
       <div class="fh-search search-overlay-search">
         <input type="text" id="tickerInput" placeholder="티커를 검색해 주세요.(예: AAPL,TSLA)" autocomplete="off" />
-        <button id="analyzeBtn" type="button" aria-label="분석">🔍</button>
+        <button id="analyzeBtn" type="button" class="header-icon-btn" aria-label="분석">
+          <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15.2" y2="15.2"/></svg>
+        </button>
         <div id="tickerSuggest" class="chat-ticker-suggest" style="display:none;"></div>
       </div>
       <div class="search-section">
@@ -202,7 +204,7 @@
 
   <div id="companyPanel" class="company-panel company-panel-black" style="display:none;">
     <div class="company-panel-bar detail-bar">
-      <button type="button" id="companyPanelCloseBtn" class="search-overlay-back" aria-label="닫기">←</button>
+      <button type="button" id="companyPanelCloseBtn" class="search-overlay-back" aria-label="닫기">&lt;</button>
       <div class="detail-identity" id="companyPanelIdentity">
         <span class="detail-identity-logo" id="companyPanelLogoWrap"></span>
         <span class="detail-identity-text">
@@ -352,7 +354,7 @@
 
   <div id="marketPanel" class="company-panel" style="display:none;">
     <div class="company-panel-bar">
-      <button type="button" id="marketPanelCloseBtn" class="search-overlay-back" aria-label="닫기">←</button>
+      <button type="button" id="marketPanelCloseBtn" class="search-overlay-back" aria-label="닫기">&lt;</button>
       <h2 class="search-overlay-title">시장</h2>
     </div>
     <div class="company-panel-body">
@@ -380,7 +382,7 @@
 
   <div id="searchWizardPanel" class="company-panel" style="display:none;">
     <div class="company-panel-bar">
-      <button type="button" id="searchWizardCloseBtn" class="search-overlay-back" aria-label="닫기">←</button>
+      <button type="button" id="searchWizardCloseBtn" class="search-overlay-back" aria-label="닫기">&lt;</button>
       <h2 class="search-overlay-title">기업검색</h2>
     </div>
     <div class="company-panel-body">
@@ -390,7 +392,7 @@
 
   <div id="calendarPanel" class="company-panel" style="display:none;">
     <div class="company-panel-bar">
-      <button type="button" id="calendarPanelCloseBtn" class="search-overlay-back" aria-label="닫기">←</button>
+      <button type="button" id="calendarPanelCloseBtn" class="search-overlay-back" aria-label="닫기">&lt;</button>
       <h2 class="search-overlay-title">캘린더</h2>
     </div>
     <div class="company-panel-body">

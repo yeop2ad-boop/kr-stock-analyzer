@@ -163,6 +163,7 @@ body {
 }
 .fh-search input[type="text"] { flex: 1; }
 .fh-search button { font-size: 18px; padding: 10px 14px; line-height: 1; white-space: nowrap; }
+.fh-search button.header-icon-btn { padding: 0; }
 
 /* 틀고정 헤더의 검색창은 입력창이 아니라 버튼 — 누르면 전체화면 검색 오버레이가 오른쪽에서 슬라이드인 */
 .search-open-btn {
