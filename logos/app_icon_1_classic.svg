@@ -1,0 +1,7 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="yeopinvest app icon - classic">
+  <rect width="512" height="512" fill="#12161f"/>
+  <g transform="translate(256 256) scale(6) translate(-47 -49)">
+    <polyline points="22,70 38,50 52,58 63,41" fill="none" stroke="#f5a623" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <polygon points="72,28 71,46 56,36" fill="#f5a623"/>
+  </g>
+</svg>

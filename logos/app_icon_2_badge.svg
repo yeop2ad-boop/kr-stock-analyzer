@@ -1,0 +1,9 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="yeopinvest app icon - badge">
+  <rect width="512" height="512" fill="#12161f"/>
+  <circle cx="256" cy="256" r="218" fill="none" stroke="#2f6fed" stroke-width="8" opacity="0.55"/>
+  <circle cx="256" cy="256" r="196" fill="#181d29"/>
+  <g transform="translate(256 256) scale(5.4) translate(-47 -49)">
+    <polyline points="22,70 38,50 52,58 72,28" fill="none" stroke="#f5a623" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <polygon points="72,28 62,30 70,38" fill="#f5a623"/>
+  </g>
+</svg>
