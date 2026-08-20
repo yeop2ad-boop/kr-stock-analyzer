@@ -1521,7 +1521,7 @@ async function mapWithConcurrency(items, limit, worker, onProgress) {
 }
 
 // ---------- 유틸 ----------
-function fmtCompactCurrency(num) {
+function fmtCompactCurrency(num, currency = "USD") {
   if (num === null || num === undefined || isNaN(num)) return "N/A";
   const abs = Math.abs(num);
   let str;
@@ -1529,7 +1529,7 @@ function fmtCompactCurrency(num) {
   else if (abs >= 1e9) str = (num / 1e9).toFixed(2) + "B";
   else if (abs >= 1e6) str = (num / 1e6).toFixed(2) + "M";
   else str = num.toFixed(2);
-  return "$" + str;
+  return (currency === "KRW" ? "₩" : "$") + str;
 }
 
 function fmtPct(num, digits = 1) {
@@ -6642,7 +6642,7 @@ function etfRankingHtml(all, region, metric) {
   const metricCell = (r) =>
     metric === "volume"
       ? r.avgDollarVolume1y
-        ? fmtCompactCurrency(r.avgDollarVolume1y)
+        ? fmtCompactCurrency(r.avgDollarVolume1y, r.currency)
         : "N/A"
       : r.oneYearReturn !== null && r.oneYearReturn !== undefined
       ? `<span class="${r.oneYearReturn >= 0 ? "delta-up" : "delta-down"}">${fmtPct(r.oneYearReturn)}</span>`
