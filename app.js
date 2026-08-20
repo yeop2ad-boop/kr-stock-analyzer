@@ -3768,7 +3768,9 @@ async function renderSummary(quote, meta, changePct) {
       tickerHistoricalLoaded = true;
       await runTickerHistorical(symbol, row);
     }
-    renderMacroScoreChart(); // 종목과 무관한 시장 전체 차트라 최초 1회만 그리고 이후 검색부터는 캐시된 결과를 재사용
+    // 종목과 무관한 시장 전체 차트라 같은 시장 내에서는 최초 1회만 그리고 이후 검색부터는 캐시된 결과를 재사용
+    if (isKrTicker(symbol)) renderKrMacroScoreChart();
+    else renderMacroScoreChart();
   });
 
   let futureLoaded = false;
@@ -7727,7 +7729,7 @@ function getMacroScoreChartData() {
   return macroScoreChartDataPromise;
 }
 
-function buildMacroScoreChartSvg({ pairs, points }) {
+function buildMacroScoreChartSvg({ pairs, points }, highlightThreshold = 35) {
   // 1년 간격 점(약 30개)을 가로 스크롤로 넉넉하게 볼 수 있도록 점 개수에 비례해 캔버스 폭을 넓힘(고정 min-width는 CSS에서 강제)
   const W = Math.max(780, points.length * 45),
     H = 420;
@@ -7774,7 +7776,7 @@ function buildMacroScoreChartSvg({ pairs, points }) {
   points.forEach((p, i) => {
     const x = xFn(p.t);
     const y = yFn(p.price);
-    const isHigh = p.vix !== null && p.vix !== undefined && p.vix >= 35;
+    const isHigh = p.vix !== null && p.vix !== undefined && p.vix >= highlightThreshold;
     const dotColor = isHigh ? "#e08a2c" : "#eceef2";
     const r = p.isNow ? 4.2 : 2.6;
     linesSvg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${dotColor}" stroke="#000" stroke-width="1" />`;
@@ -7794,21 +7796,110 @@ function buildMacroScoreChartSvg({ pairs, points }) {
   </svg>`;
 }
 
-let macroScoreChartRendered = false;
+// futureMacroChartContainer는 미국(S&P500)·한국(코스피) 차트가 컨테이너를 공유하므로, 단순 boolean이 아니라
+// "마지막으로 그린 게 어느 시장인지"를 추적해서 시장을 바꿔가며 검색해도 항상 맞는 차트가 보이게 함
+let macroScoreChartRenderedMarket = null; // null | "US" | "KR"
 async function renderMacroScoreChart() {
-  if (macroScoreChartRendered) return; // 검색할 때마다 다시 그릴 필요 없는 시장 전체 데이터라 최초 1회만 렌더링
+  if (macroScoreChartRenderedMarket === "US") return; // 검색할 때마다 다시 그릴 필요 없는 시장 전체 데이터라 최초 1회만 렌더링
   const container = el("futureMacroChartContainer");
   const caption = el("futureMacroChartCaption");
   container.innerHTML = `<p class="muted" style="text-align:center;padding:20px 0;">S&amp;P500 30년 데이터를 불러오는 중...</p>`;
   try {
     const data = await getMacroScoreChartData();
     container.innerHTML = buildMacroScoreChartSvg(data);
-    macroScoreChartRendered = true;
+    macroScoreChartRenderedMarket = "US";
     caption.textContent =
       "빨간 선: S&P500 지수(1996~현재, 주간 종가) · 점 라벨: 1년 간격(매년 1월 1일 기준) VIX(FRED VIXCLS) 수치 그대로 · " +
       "주황 점: VIX 35 이상, 흰 점: 그 외(참고용, 투자 자문이 아닙니다)";
   } catch (err) {
     container.innerHTML = `<p class="error-inline" style="text-align:center;padding:20px 0;">❌ S&amp;P500 장기 데이터를 불러오지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
+  }
+}
+
+// ---------- 한국 종목용 과거분석 차트: 코스피(^KS11) 지수 + 자체 계산 변동성 점수 ----------
+// 미국 버전(30년, VIX 실측 시계열)과 달리 진짜 VKOSPI 과거 시계열이 없어서, 정기 포인트(매년 1월)는
+// getKrVolMetrics()과 동일한 방식(직전 20거래일 실현변동성×KR_VOL_CALIBRATION)으로 그 시점 기준 자체 계산.
+// 5개 특정월은 사용자가 직접 조사한 실제 변동성 고점 시기 점수를 계산 없이 그대로 사용.
+const KR_SPECIAL_VOL_POINTS = [
+  { y: 2011, m: 9, score: 75 },
+  { y: 2020, m: 3, score: 71 },
+  { y: 2024, m: 8, score: 48 },
+  { y: 2025, m: 4, score: 44 },
+  { y: 2026, m: 6, score: 97 },
+];
+
+let krMacroScoreChartDataPromise = null;
+function getKrMacroScoreChartData() {
+  if (!krMacroScoreChartDataPromise) {
+    krMacroScoreChartDataPromise = computeKrMacroScoreChartData().catch((e) => {
+      krMacroScoreChartDataPromise = null;
+      throw e;
+    });
+  }
+  return krMacroScoreChartDataPromise;
+}
+
+async function computeKrMacroScoreChartData() {
+  const now = new Date();
+  const nowSec = Math.floor(now.getTime() / 1000);
+  const startYear = 2011; // 조사된 특정월 데이터가 2011년부터라 그에 맞춤(Yahoo ^KS11 일봉도 2011년부터 안정적으로 확인됨)
+  const startSec = Math.floor(new Date(startYear, 0, 1).getTime() / 1000);
+
+  const [chartData, krVol] = await Promise.all([yahooChartRange("^KS11", startSec, nowSec, "1d"), getKrVolMetrics()]);
+  const pairs = chartClosePairs(chartData);
+  if (pairs.length < 2) throw new Error("코스피 장기 데이터를 가져오지 못했습니다.");
+
+  // idx 시점까지의 종가로 직전 20거래일 실현변동성 계산(getKrVolMetrics의 라이브 계산과 동일 공식)
+  function scoreAtIndex(idx) {
+    if (idx < 20) return null;
+    const closes = pairs.slice(0, idx + 1).map((p) => p.c);
+    const raw = annualizedRealizedVolPct(closes, 20);
+    return raw === null ? null : raw * KR_VOL_CALIBRATION;
+  }
+
+  const points = [];
+  for (let anchor = new Date(startYear, 0, 1); anchor < now; anchor = addMonths(anchor, 12)) {
+    const anchorSec = Math.floor(anchor.getTime() / 1000);
+    const idx = pairs.findIndex((p) => p.t >= anchorSec);
+    if (idx < 0) continue;
+    const pricePoint = pairs[idx];
+    if (Math.abs(pricePoint.t - anchorSec) > 20 * 24 * 3600) continue;
+    const score = scoreAtIndex(idx);
+    if (score === null) continue;
+    points.push({ t: pricePoint.t, price: pricePoint.c, score, vix: score, isNow: false });
+  }
+
+  const last = pairs[pairs.length - 1];
+  points.push({ t: last.t, price: last.c, score: krVol.vol, vix: krVol.vol, isNow: true });
+
+  // 사용자가 직접 조사한 특정월 변동성 고점 시기 점수 — 계산값이 아니라 그대로 사용
+  for (const { y, m, score } of KR_SPECIAL_VOL_POINTS) {
+    const anchor = new Date(y, m - 1, 1);
+    if (anchor >= now) continue;
+    const anchorSec = Math.floor(anchor.getTime() / 1000);
+    const pricePoint = closestPair(pairs, anchorSec);
+    if (!pricePoint || Math.abs(pricePoint.t - anchorSec) > 20 * 24 * 3600) continue;
+    points.push({ t: pricePoint.t, price: pricePoint.c, score, vix: score, isNow: false });
+  }
+  points.sort((a, b) => a.t - b.t);
+
+  return { pairs, points };
+}
+
+async function renderKrMacroScoreChart() {
+  if (macroScoreChartRenderedMarket === "KR") return;
+  const container = el("futureMacroChartContainer");
+  const caption = el("futureMacroChartCaption");
+  container.innerHTML = `<p class="muted" style="text-align:center;padding:20px 0;">코스피 장기 데이터를 불러오는 중...</p>`;
+  try {
+    const data = await getKrMacroScoreChartData();
+    container.innerHTML = buildMacroScoreChartSvg(data, 40);
+    macroScoreChartRenderedMarket = "KR";
+    caption.textContent =
+      "빨간 선: 코스피 지수(2011~현재, 일별 종가) · 점 라벨: 1년 간격(매년 1월 1일 기준) 자체 계산 실현변동성 지수(공식 VKOSPI 아님) · " +
+      "주황 점: 40점 이상, 흰 점: 그 외(2011.9·2020.3·2024.8·2025.4·2026.6은 실제 조사한 변동성 고점 시기 점수, 참고용, 투자 자문이 아닙니다)";
+  } catch (err) {
+    container.innerHTML = `<p class="error-inline" style="text-align:center;padding:20px 0;">❌ 코스피 장기 데이터를 불러오지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
   }
 }
 
