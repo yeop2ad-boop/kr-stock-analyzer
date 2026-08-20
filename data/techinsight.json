@@ -1,5 +1,53 @@
 [
   {
+    "id": "bcd90835f43e",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "시각 및 물리 AI 발전을 저해하는 데이터 병목 현상",
+    "originalTitle": "Inside the Data Bottleneck Slowing Visual and Physical AI",
+    "link": "https://content.knowledgehub.wiley.com/the-2026-state-of-visual-and-physical-ai-a-survey-of-700-practitioners-on-data-models-and-production/",
+    "summary": "700명 이상의 실무자를 대상으로 한 조사에서 시각 및 물리 AI 개발 현황을 분석한 보고서이다. 78%의 팀이 이미 시각 및 물리 AI에서 측정 가능한 가치를 확인하고 있지만, 여전히 상당한 비율의 팀이 문제를 겪고 있는 것으로 나타났다. 데이터 작업이 프로덕션 성공을 결정하는 핵심 요소임을 강조한다. AI 모델 실패의 원인과 데이터 관리의 중요성에 대해 다루고 있다.",
+    "image": "data/techinsight-images/bcd90835f43e.webp",
+    "publishedAt": "2026-08-12T14:18:05.000Z",
+    "createdAt": "2026-08-20T23:01:01.821Z"
+  },
+  {
+    "id": "fb15ff7944ce",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "기후위기 시대 청소년 심리 지원망과 지하 수소 채굴 열풍",
+    "originalTitle": "The Download: polycrisis support networks and a hydrogen gold rush",
+    "link": "https://www.technologyreview.com/2026/08/20/1142579/the-download-polycrisis-support-networks-underground-hydrogen-gold-rush/",
+    "summary": "기후변화, 분쟁, 주택난, 인공지능으로 인한 일자리 위협 등 다층적 위기 속에서 성장하는 청소년들의 불안감이 증가하면서 온라인 지원 네트워크들이 주목받고 있다. 포스 오브 네이처와 굿 그리프 네트워크 같은 플랫폼들이 수천 명의 참가자를 확보하며 청소년들이 이러한 위기를 극복할 수 있도록 돕고 있다. 한편 천연 수소 채굴이 21세기의 새로운 골드러시로 주목받고 있으며, 지하에 매장된 수소 가스가 기후 솔루션으로서 어떻게 채굴되고 저장될 수 있을지에 대한 연구가 활발히 진행 중이다.",
+    "image": "data/techinsight-images/fb15ff7944ce.webp",
+    "publishedAt": "2026-08-20T12:10:00.000Z",
+    "createdAt": "2026-08-20T23:00:37.401Z"
+  },
+  {
+    "id": "33427f312c28",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "엔지니어라면 제품 관리자의 사고방식을 갖춰야 한다",
+    "originalTitle": "Bring a Product Manager Mindset to Your Next Engineering Job",
+    "link": "https://spectrum.ieee.org/product-engineer",
+    "summary": "기업들이 제품 엔지니어 직무를 늘려가고 있지만 이를 채울 인재를 찾기 어려워하고 있다. AI 시대에는 코딩 능력보다 좋은 아이디어를 내고 문제를 발견하는 능력이 더 중요해졌기 때문이다. 제품 지향적 사고방식을 갖추려면 기술 스택과 무관하게 자신의 의견을 뒷받침할 수 있어야 하고, 업무 영역의 고객들을 이해하며, 안전한 실험을 빠르게 진행하고, 데이터 기반의 결정을 내려야 한다. 이러한 능력들은 엔지니어가 단순한 작업 수행자에서 사업에 실질적 가치를 창출하는 주도자로 성장하는 데 핵심적이다.",
+    "image": "data/techinsight-images/33427f312c28.webp",
+    "publishedAt": "2026-08-13T14:44:50.000Z",
+    "createdAt": "2026-08-20T23:00:34.346Z"
+  },
+  {
+    "id": "0f9772a27c74",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "AI의 의식 논쟁은 기업의 책임 회피를 위한 함정이다",
+    "originalTitle": "Debates over AI consciousness are a trap",
+    "link": "https://www.technologyreview.com/2026/08/20/1142571/ai-consciousness-debate-trap/",
+    "summary": "AI 기업들이 자신들의 시스템이 너무 고도화되어 통제 불가능하다는 주장을 제기함으로써 법적 책임을 피하려는 움직임이 있다. Anthropic과 OpenAI 같은 회사들은 AI의 의식이나 자율성에 대한 철학적 논의를 촉발하고 있으며, 이는 의도적으로 기업의 책임을 희석시키려는 전략으로 보인다. AI는 자연현상이 아닌 벤처캐피탈과 프로그래머에 의해 만들어진 소프트웨어일 뿐이며, 그 모든 행동은 건설자들의 목적에 의해 결정된다. AI에게 의식이나 법적 인격을 부여하는 것은 현재의 법적 틀에서 기업들을 책임으로부터 보호하는 결과를 초래할 수 있다. 따라서 의식에 대한 철학적 논쟁보다는 AI 기업들의 실제 피해에 대한 법적 책임을 명확히 하는 것이 더 중요하다.",
+    "image": "data/techinsight-images/0f9772a27c74.webp",
+    "publishedAt": "2026-08-20T15:42:39.000Z",
+    "createdAt": "2026-08-20T23:00:34.154Z"
+  },
+  {
     "id": "7896ec127bab",
     "sourceKey": "ieee",
     "source": "IEEE Spectrum",
