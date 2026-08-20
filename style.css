@@ -1755,10 +1755,6 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 }
 .bottom-nav-btn svg { width: 24px; height: 24px; }
 .bottom-nav-btn.active { color: #fff; }
-/* 국기 아이콘은 currentColor가 아니라 고유색이라 위 color 토글이 안 먹혀서 opacity로 별도 활성 표시 */
-.bottom-nav-btn.flag-btn svg { width: 26px; height: 26px; border-radius: 50%; }
-.bottom-nav-btn.flag-btn { opacity: .55; }
-.bottom-nav-btn.flag-btn.active { opacity: 1; }
 .bottom-nav-btn:active,
 .bottom-nav-btn:focus,
 .bottom-nav-btn:focus-visible { background: none; outline: none; }
