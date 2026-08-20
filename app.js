@@ -3305,7 +3305,11 @@ async function runAnalysis(ticker) {
     const quote = searchData && searchData.quotes && searchData.quotes[0];
 
     if (!quote) {
-      throw new Error(`'${ticker}' 티커를 찾을 수 없습니다. 정확한 미국 상장 티커인지 확인해주세요.`);
+      throw new Error(
+        isKrTicker(ticker)
+          ? `'${ticker}' 티커를 찾을 수 없습니다. 거래정지·관리종목이거나 정확하지 않은 티커일 수 있습니다.`
+          : `'${ticker}' 티커를 찾을 수 없습니다. 정확한 미국 상장 티커인지 확인해주세요.`
+      );
     }
 
     const chartData = await yahooChart(ticker);
@@ -7780,7 +7784,11 @@ async function runFuturePrediction(ticker) {
     const searchData = await yahooSearch(ticker);
     const quote = searchData && searchData.quotes && searchData.quotes[0];
     if (!quote) {
-      throw new Error(`'${ticker}' 티커를 찾을 수 없습니다. 정확한 미국 상장 티커인지 확인해주세요.`);
+      throw new Error(
+        isKrTicker(ticker)
+          ? `'${ticker}' 티커를 찾을 수 없습니다. 거래정지·관리종목이거나 정확하지 않은 티커일 수 있습니다.`
+          : `'${ticker}' 티커를 찾을 수 없습니다. 정확한 미국 상장 티커인지 확인해주세요.`
+      );
     }
     const data = await computeFuturePrediction(ticker);
     renderFutureChart(data);
