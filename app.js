@@ -1909,9 +1909,13 @@ document.addEventListener("click", (e) => {
   if (row) navigateToTicker(row.dataset.symbol);
 });
 
-// ---------- 하단 고정 네비게이션(홈=기업검색/캘린더/시장/더보기) ----------
+// ---------- 하단 고정 네비게이션(한국/미국=기업검색/캘린더/시장/더보기) ----------
+// 한국/미국 국기 버튼이 어느 쪽을 눌렀는지 표시만 하는 최소 상태 — 검색/스코어링 로직은
+// 아직 시장별로 분기하지 않음(향후 KR 전용 점수 배점 엔진 작업에서 사용 예정)
+let currentMarket = "US";
 const bottomNavButtons = {
-  home: el("bottomNavHomeBtn"),
+  korea: el("bottomNavKoreaBtn"),
+  us: el("bottomNavUsBtn"),
   calendar: el("bottomNavCalendarBtn"),
   market: el("bottomNavMarketBtn"),
   more: el("bottomNavMoreBtn"),
@@ -1982,8 +1986,15 @@ morePanelUserRow.addEventListener("click", () => {
 document.querySelectorAll(".more-panel-item").forEach((btn) => {
   btn.addEventListener("click", () => showToast("준비중인 기능입니다."));
 });
-bottomNavButtons.home.addEventListener("click", () => {
-  setBottomNavActive("home");
+bottomNavButtons.korea.addEventListener("click", () => {
+  currentMarket = "KR";
+  setBottomNavActive("korea");
+  closeCompanyPanel();
+  openSearchWizardGate();
+});
+bottomNavButtons.us.addEventListener("click", () => {
+  currentMarket = "US";
+  setBottomNavActive("us");
   closeCompanyPanel();
   openSearchWizardGate();
 });

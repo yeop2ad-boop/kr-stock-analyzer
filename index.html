@@ -502,8 +502,51 @@
   </div>
 
   <nav id="bottomNav" class="bottom-nav">
-    <button type="button" class="bottom-nav-btn active" id="bottomNavHomeBtn" aria-label="홈">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.2c-.42 0-.82.15-1.13.42l-7 6.2c-.4.36-.63.87-.63 1.4V19a1.8 1.8 0 0 0 1.8 1.8h4.2a1 1 0 0 0 1-1v-4.6c0-.5.4-.9.9-.9h1.72c.5 0 .9.4.9.9V19.8a1 1 0 0 0 1 1h4.2A1.8 1.8 0 0 0 20.76 19v-7.78c0-.53-.23-1.04-.63-1.4l-7-6.2A1.7 1.7 0 0 0 12 3.2Z"/></svg>
+    <button type="button" class="bottom-nav-btn flag-btn" id="bottomNavKoreaBtn" aria-label="한국">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="flagClipKr"><circle cx="12" cy="12" r="9.2"/></clipPath>
+        </defs>
+        <circle cx="12" cy="12" r="10.4" fill="#fff" stroke="#111" stroke-width="1.6"/>
+        <g clip-path="url(#flagClipKr)">
+          <rect x="2" y="2" width="20" height="20" fill="#fff"/>
+          <path d="M12 6.2a5.8 5.8 0 0 1 0 11.6 2.9 2.9 0 0 1 0-5.8 2.9 2.9 0 0 0 0-5.8z" fill="#c60c30"/>
+          <path d="M12 6.2a5.8 5.8 0 0 0 0 11.6 2.9 2.9 0 0 0 0-5.8 2.9 2.9 0 0 1 0-5.8z" fill="#003478"/>
+          <circle cx="12" cy="9.1" r="1.15" fill="#c60c30"/>
+          <circle cx="12" cy="14.9" r="1.15" fill="#003478"/>
+          <g stroke="#111" stroke-width="0.7">
+            <line x1="4.6" y1="6.0" x2="7.6" y2="4.4"/>
+            <line x1="5.0" y1="6.9" x2="8.0" y2="5.3"/>
+            <line x1="5.4" y1="7.8" x2="8.4" y2="6.2"/>
+            <line x1="16.4" y1="18.0" x2="17.4" y2="17.5"/>
+            <line x1="18.0" y1="17.2" x2="19.4" y2="16.6"/>
+            <line x1="16.0" y1="19.0" x2="17.0" y2="18.5"/>
+            <line x1="17.6" y1="18.2" x2="19.0" y2="17.6"/>
+            <line x1="15.6" y1="20.0" x2="16.6" y2="19.5"/>
+            <line x1="17.2" y1="19.2" x2="18.6" y2="18.6"/>
+          </g>
+        </g>
+      </svg>
+    </button>
+    <button type="button" class="bottom-nav-btn flag-btn active" id="bottomNavUsBtn" aria-label="미국">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="flagClipUs"><circle cx="12" cy="12" r="9.2"/></clipPath>
+        </defs>
+        <circle cx="12" cy="12" r="10.4" fill="#fff" stroke="#111" stroke-width="1.6"/>
+        <g clip-path="url(#flagClipUs)">
+          <rect x="2" y="2" width="20" height="20" fill="#b22234"/>
+          <g fill="#fff">
+            <rect x="2" y="4.15" width="20" height="1.54"/>
+            <rect x="2" y="7.23" width="20" height="1.54"/>
+            <rect x="2" y="10.31" width="20" height="1.54"/>
+            <rect x="2" y="13.38" width="20" height="1.54"/>
+            <rect x="2" y="16.46" width="20" height="1.54"/>
+            <rect x="2" y="19.54" width="20" height="1.54"/>
+          </g>
+          <rect x="2" y="2" width="11" height="9.85" fill="#3c3b6e"/>
+        </g>
+      </svg>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavCalendarBtn" aria-label="캘린더">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
