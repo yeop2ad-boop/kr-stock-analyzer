@@ -868,19 +868,24 @@ function getHistoricalReferenceDate() {
 // 나스닥·다우존스·S&P500 1년 수익률 (여러 섹션이 공유해서 중복 요청을 줄임)
 async function getMarketReturns() {
   try {
-    const [nasdaqChart, dowChart, sp500Chart] = await Promise.all([
+    const [nasdaqChart, dowChart, sp500Chart, kospi200Chart] = await Promise.all([
       yahooChart("^IXIC"),
       yahooChart("^DJI"),
       yahooChart("^GSPC"),
+      // 한국 종목 투자안정 점수(KOSPI200 대비 수익률)용. Yahoo의 ^KS200은 최근 데이터에 몇 주씩 결측(null)이
+      // 뚫려 있는 경우가 있어(1y 범위만 쓰면 그 결측 때문에 1년 전 기준점을 못 찾아 항상 null이 나옴),
+      // 2y 범위로 넉넉히 받아서 최근 유효한 종가를 기준으로 1년 수익률을 계산할 여유를 둠
+      yahooChart("^KS200", "2y").catch(() => null),
     ]);
     const nasdaqReturn = get1yReturnFromChart(nasdaqChart);
     const dowReturn = get1yReturnFromChart(dowChart);
     const sp500Return = get1yReturnFromChart(sp500Chart);
+    const kospi200Return = kospi200Chart ? get1yReturnFromChart(kospi200Chart) : null;
     const valid = [nasdaqReturn, dowReturn].filter((v) => v !== null);
     const avgIndexReturn = valid.length ? valid.reduce((a, b) => a + b, 0) / valid.length : null;
-    return { nasdaqReturn, dowReturn, sp500Return, avgIndexReturn };
+    return { nasdaqReturn, dowReturn, sp500Return, kospi200Return, avgIndexReturn };
   } catch {
-    return { nasdaqReturn: null, dowReturn: null, sp500Return: null, avgIndexReturn: null };
+    return { nasdaqReturn: null, dowReturn: null, sp500Return: null, kospi200Return: null, avgIndexReturn: null };
   }
 }
 
@@ -1121,6 +1126,25 @@ function scoreCellText(score, isIPO) {
 // 미국 시장 전체 시가총액 추정치 — S&P500 전체 종목 시가총액 합계로 근사(2026-08 기준 관측값, 시간이 지나며 실제 시장 규모와 달라질 수 있어 주기적 갱신 필요)
 // "시가총액 가점" 항목에서 VTSAX 등 미국 전체 시장 인덱스펀드 내 예상 시총 비중을 추정하는 분모로 사용
 const US_TOTAL_MARKET_CAP_ESTIMATE = 87.4e12;
+
+// KODEX 200(069500, 삼성자산운용) ETF 내 개별 종목 편입비중(%) — 한국 종목 "시가총액 가점"에서 미국의
+// VTSAX 시총비중 대신 사용. 출처: 삼성자산운용 공식 월간 팩트시트(https://m.samsungfund.com/sheet/20260805/2ETF01_20260731.pdf,
+// 2026-07-31 기준) "상위 10종목" 표 — 공식 자료지만 상위 10개까지만 공개되고 나머지 약 190개 구성종목의
+// 정확한 비중은 무료로 공개된 곳을 못 찾음(KRX 데이터마켓은 로그인 필요, 일별 전체 PDF 미확인).
+// 상위 10위(기아, 1.00%)보다 낮은 비중일 게 확실한 종목들은 3% 만점 기준상 실제로도 거의 0점에 가까워서
+// 영향이 작지만, 정확히는 "미확인"이지 "미편입 확정"은 아님 — 나중에 전체 구성종목 데이터를 구하면 교체 필요.
+const KODEX200_WEIGHTS = {
+  "005930.KS": 32.72, // 삼성전자
+  "000660.KS": 25.44, // SK하이닉스
+  "402340.KS": 2.48, // SK스퀘어
+  "105560.KS": 1.73, // KB금융
+  "009150.KS": 1.67, // 삼성전기
+  "005380.KS": 1.63, // 현대차
+  "055550.KS": 1.41, // 신한지주
+  "086790.KS": 1.05, // 하나금융지주
+  "068270.KS": 1.02, // 셀트리온
+  "000270.KS": 1.0, // 기아
+};
 
 // 참고용 신용등급(S&P Global Ratings 장기 발행자 등급 기준) 테이블 — 자체 조사로 수동 입력한 정적 데이터로,
 // 실시간 갱신되지 않으므로 등급 변동 시 수동 업데이트가 필요함. 목록에 없는 종목은 "S&P 등급 없음"으로 1점 처리
@@ -1377,9 +1401,12 @@ function isCreditReasonString(rating) {
   return rating === NO_DEBT_RATING || rating === UNRATED_REASON || rating === "회사채없음" || rating === "미평가";
 }
 
-// 투자등급(신용등급) + S&P500 대비 모멘텀 + 순이익률 + 시가총액 가점을 조합한 참고용 투자 안정성 점수(10점 만점, 높을수록 위험이 낮음)
-function computeRiskScore(metrics, sp500Return) {
+// 투자등급(신용등급) + 벤치마크 지수 대비 모멘텀 + 순이익률 + 시가총액 가점을 조합한 참고용 투자 안정성 점수
+// (10점 만점, 높을수록 위험이 낮음). 미국 종목은 S&P500·한국 종목은 KOSPI200을 벤치마크로 사용(kospi200Return 필요).
+function computeRiskScore(metrics, sp500Return, kospi200Return) {
   const { symbol, oneYearReturn, netIncome, revenue, marketCap, currency } = metrics;
+  const isKr = isKrTicker(symbol);
+  const benchmarkReturn = isKr ? kospi200Return : sp500Return;
 
   // 1) 투자등급 (0~4점) — 미국은 S&P, 한국(.KS/.KQ)은 국내 3대 신평사 기준.
   // AAA 4점, AA+ 3.5점, AA 3점, AA- 2.5점, A+ 2점, A 1.5점, A- 1점, BBB+ 0.5점, BBB 이하 0점
@@ -1413,29 +1440,47 @@ function computeRiskScore(metrics, sp500Return) {
     }
   }
 
-  // 2) S&P500 대비 모멘텀 (0~2점) — S&P500 연 수익률과의 차이(절대값)가 0%p면 만점,
-  // 200%p 이상 벌어지면 0점 (50%p 멀어질 때마다 0.5점 감점, 선형)
+  // 2) 벤치마크 지수 대비 모멘텀 (0~2점) — 벤치마크 연 수익률과의 차이(절대값)가 0%p면 만점,
+  // 200%p 이상 벌어지면 0점 (50%p 멀어질 때마다 0.5점 감점, 선형). 미국은 S&P500, 한국은 KOSPI200.
   let marketScore = 1;
   let relDiff = null;
-  if (oneYearReturn !== null && sp500Return !== null && sp500Return !== undefined) {
-    relDiff = Math.abs(sp500Return - oneYearReturn);
+  if (oneYearReturn !== null && benchmarkReturn !== null && benchmarkReturn !== undefined) {
+    relDiff = Math.abs(benchmarkReturn - oneYearReturn);
     marketScore = clamp(2 * (1 - relDiff / 200), 0, 2);
   }
 
-  // 3) 순이익률 = 순이익÷매출 (0~2점) — 0%는 1/3점, 10%p마다 1/3점씩 늘어 50% 이상이면 만점.
-  // 적자(음수 순이익률)는 무조건 0점 처리
+  // 3) 순이익률 = 순이익÷매출 (0~2점). 적자(음수 순이익률)는 무조건 0점.
+  // 미국: 0%는 1/3점, 10%p마다 1/3점씩 늘어 50% 이상이면 만점(사용자 지정, 완만한 곡선).
+  // 한국: 0%는 0점부터 시작해 35% 이상이면 만점(사용자 지정, 미국보다 가파른 선형).
   let marginScore = 1;
   let netMargin = null;
   if (revenue !== null && revenue > 0 && netIncome !== null) {
     netMargin = netIncome / revenue;
-    marginScore = netMargin < 0 ? 0 : clamp(((2 / 3) * (0.5 + netMargin * 5)), 0, 2);
+    if (netMargin < 0) {
+      marginScore = 0;
+    } else if (isKr) {
+      marginScore = clamp((netMargin / 0.35) * 2, 0, 2);
+    } else {
+      marginScore = clamp((2 / 3) * (0.5 + netMargin * 5), 0, 2);
+    }
   }
 
-  // 4) 시가총액 가점 = 시가총액 ÷ 미국 시장 전체 시가총액 추정치(VTSAX 등 인덱스펀드가 이 비중만큼 보유한다고 가정) (0~2점)
-  // 6% 이상이면 만점, 0%면 0점 (3%p마다 1점, 선형). 시가총액을 신뢰할 수 없는 경우(N/A)는 0.1점 처리
+  // 4) 시가총액 가점 (0~2점) — 미국은 시가총액 ÷ 미국 시장 전체 시가총액 추정치(VTSAX 등 인덱스펀드 예상 비중),
+  // 한국은 KODEX 200(코스피200 추종 ETF) 내 이 종목의 편입비중. 6%(미국)·3%(한국) 이상이면 만점, 0%면 0점,
+  // 그 사이는 선형. 데이터를 신뢰할 수 없는 경우(N/A)는 0.1점 처리
   let vtsaxScore = 0.1;
   let vtsaxWeightPct = null;
-  if (marketCap !== undefined && marketCap !== null && (!currency || currency === "USD")) {
+  if (isKr) {
+    const krSymbol = KR_PREFERRED_SHARE_MAP[symbol] || symbol;
+    const weightPct = KODEX200_WEIGHTS[krSymbol];
+    if (weightPct !== undefined) {
+      vtsaxWeightPct = weightPct;
+      vtsaxScore = clamp((weightPct / 3) * 2, 0, 2);
+    } else {
+      vtsaxWeightPct = 0;
+      vtsaxScore = 0; // KODEX 200 미편입 종목은 0점(사용자 지정)
+    }
+  } else if (marketCap !== undefined && marketCap !== null && (!currency || currency === "USD")) {
     vtsaxWeightPct = (marketCap / US_TOTAL_MARKET_CAP_ESTIMATE) * 100;
     vtsaxScore = clamp((vtsaxWeightPct / 6) * 2, 0, 2);
   }
@@ -1448,6 +1493,7 @@ function computeRiskScore(metrics, sp500Return) {
     marketScore,
     marginScore,
     relDiff,
+    benchmarkReturn,
     netMargin,
     vtsaxScore,
     vtsaxWeightPct,
@@ -3783,7 +3829,7 @@ async function runTickerHistorical(ticker, container) {
 async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
   const rowEl = el("summaryScoreRow");
   try {
-    const [metrics, { sp500Return }] = await Promise.all([selfMetricsPromise, marketReturnsPromise, krCreditRatingReady]);
+    const [metrics, { sp500Return, kospi200Return }] = await Promise.all([selfMetricsPromise, marketReturnsPromise, krCreditRatingReady]);
     const isKr = isKrTicker(metrics.symbol);
     const macroMetrics = isKr
       ? await getKrVolMetrics()
@@ -3791,7 +3837,7 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
           .catch(() => ({ vix: null }))
       : await getMacroMetrics().catch(() => ({ vix: null }));
     const attractiveness = computeAttractivenessScore(metrics);
-    const risk = computeRiskScore(metrics, sp500Return);
+    const risk = computeRiskScore(metrics, sp500Return, kospi200Return);
     const isIPO = isRecentIPO(metrics.firstTradeDate);
     const vix = macroMetrics.vix;
 
@@ -4337,7 +4383,7 @@ async function renderScore(selfMetricsPromise) {
 async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
   el("riskSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
-  const [metrics, { sp500Return }] = await Promise.all([selfMetricsPromise, marketReturnsPromise, krCreditRatingReady]);
+  const [metrics, { sp500Return, kospi200Return }] = await Promise.all([selfMetricsPromise, marketReturnsPromise, krCreditRatingReady]);
 
   const {
     total,
@@ -4346,10 +4392,11 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
     marketScore,
     marginScore,
     relDiff,
+    benchmarkReturn,
     netMargin,
     vtsaxScore,
     vtsaxWeightPct,
-  } = computeRiskScore(metrics, sp500Return);
+  } = computeRiskScore(metrics, sp500Return, kospi200Return);
   const isIPO = isRecentIPO(metrics.firstTradeDate);
   const isKr = isKrTicker(metrics.symbol);
 
@@ -4362,6 +4409,17 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
     ? "투자등급은 한국기업평가/한국신용평가/NICE신용평가 3사 기준으로 자체 조사해 수동으로 입력한 참고용 데이터로, 실시간 갱신되지 않으며 조사 범위 밖 종목은 중립 처리됩니다."
     : "투자등급은 S&P 신용등급을 기준으로 자체 조사해 수동으로 입력한 참고용 데이터로, 실시간 갱신되지 않으며 목록에 없는 종목은 중립 처리됩니다.";
 
+  const benchmarkName = isKr ? "KOSPI200" : "S&P500";
+  const marginScaleText = isKr ? "35% 이상 만점·0% 이하 0점" : "50% 이상 만점·적자 0점";
+  const capLabel = isKr ? "시가총액 가점(KODEX 200 내 편입비중)" : "시가총액 가점(미국 전체 시장 내 시총 비중)";
+  const capValueText = vtsaxWeightPct !== null ? vtsaxWeightPct.toFixed(2) + "%" : "N/A";
+  const capScaleText = isKr
+    ? "KODEX 200(삼성자산운용) 편입비중 기준, 3% 이상 만점·미편입 0점"
+    : "VTSAX 등 인덱스펀드 예상 비중 근사, 6% 이상 만점·0% 0점";
+  const capDisclaimerText = isKr
+    ? "시가총액 가점은 KODEX 200 공식 팩트시트에 공개된 상위 10종목 편입비중만 정확한 값이고, 나머지 종목은 그 밖 비중을 확인할 free 소스가 없어 미편입과 동일하게 0점 처리됩니다(실제로는 낮은 비중으로 편입돼 있을 수 있음)."
+    : "시가총액 가점은 실제 펀드 편입 비중이 아니라 시가총액 기준 추정치입니다.";
+
   el("riskSection").innerHTML = `
     <div class="score-wrap">
       <div class="score-badge risk">
@@ -4371,16 +4429,16 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
       <div class="score-details">
         <ul>
           <li>🏅 ${ratingLabel}: <b>${rating ? rating : ratingNoneText}</b> (${ratingScaleText})</li>
-          <li>📊 S&P500과의 1년 수익률 차이: ${relDiff !== null ? `<b>${relDiff.toFixed(1)}%p</b> (S&P500 <b>${fmtPct(sp500Return)}</b>)` : "N/A"} (차이가 작을수록 가점)</li>
-          <li>💵 순이익률(순이익/매출): <b>${netMargin !== null ? (netMargin * 100).toFixed(1) + "%" : "N/A"}</b> (높을수록 가점, 적자면 0점)</li>
-          <li>🏦 시가총액 가점(미국 전체 시장 내 시총 비중): <b>${vtsaxWeightPct !== null ? vtsaxWeightPct.toFixed(2) + "%" : "N/A"}</b> (VTSAX 등 인덱스펀드 예상 비중 근사, 6% 이상 만점·0% 0점)</li>
-          <li>세부 점수 — 투자등급 ${isCreditReasonString(rating) ? rating : creditScore.toFixed(1) + "/4"}, S&P500 대비 모멘텀 ${marketScore.toFixed(1)}/2, 순이익률 ${marginScore.toFixed(1)}/2, 시가총액 가점 ${vtsaxScore.toFixed(1)}/2</li>
+          <li>📊 ${benchmarkName}과의 1년 수익률 차이: ${relDiff !== null ? `<b>${relDiff.toFixed(1)}%p</b> (${benchmarkName} <b>${fmtPct(benchmarkReturn)}</b>)` : "N/A"} (차이가 작을수록 가점)</li>
+          <li>💵 순이익률(순이익/매출): <b>${netMargin !== null ? (netMargin * 100).toFixed(1) + "%" : "N/A"}</b> (높을수록 가점, 적자면 0점, ${marginScaleText})</li>
+          <li>🏦 ${capLabel}: <b>${capValueText}</b> (${capScaleText})</li>
+          <li>세부 점수 — 투자등급 ${isCreditReasonString(rating) ? rating : creditScore.toFixed(1) + "/4"}, ${benchmarkName} 대비 모멘텀 ${marketScore.toFixed(1)}/2, 순이익률 ${marginScore.toFixed(1)}/2, 시가총액 가점 ${vtsaxScore.toFixed(1)}/2</li>
         </ul>
         <p class="disclaimer">
           ⚠️ 점수가 높을수록(10점에 가까울수록) 재무적으로 더 안정적/저위험임을 의미합니다.
-          투자등급, S&P500 대비 수익률, 순이익률, 시가총액 가점을 조합한 <b>단순 참고용 정량 지표</b>이며, 투자 자문이나 매수/매도 추천이 아닙니다.
+          투자등급, ${benchmarkName} 대비 수익률, 순이익률, 시가총액 가점을 조합한 <b>단순 참고용 정량 지표</b>이며, 투자 자문이나 매수/매도 추천이 아닙니다.
           ${ratingDisclaimerText}
-          시가총액 가점은 실제 펀드 편입 비중이 아니라 시가총액 기준 추정치입니다.
+          ${capDisclaimerText}
         </p>
       </div>
     </div>
@@ -7779,7 +7837,7 @@ async function renderFutureModalHeader(ticker, quote, metricsPromise, marketRetu
           .catch(() => ({ vix: null }))
       : await getMacroMetrics().catch(() => ({ vix: null }));
     const attractiveness = computeAttractivenessScore(metrics);
-    const risk = computeRiskScore(metrics, marketReturns.sp500Return);
+    const risk = computeRiskScore(metrics, marketReturns.sp500Return, marketReturns.kospi200Return);
     const isIPO = isRecentIPO(metrics.firstTradeDate);
     const vix = macroMetrics.vix;
     const scoresEl = el("futureModalScores");
@@ -7803,7 +7861,7 @@ async function renderFutureRiskSection(ticker, metricsPromise, marketReturnsProm
 
   try {
     const [metrics, marketReturns] = await Promise.all([metricsPromise, marketReturnsPromise]);
-    const riskScore = computeRiskScore(metrics, marketReturns.sp500Return);
+    const riskScore = computeRiskScore(metrics, marketReturns.sp500Return, marketReturns.kospi200Return);
     const bucket = clamp(Math.floor(riskScore.total), 0, 9);
     const { history } = await fetchFutureRiskBands(bucket);
 
