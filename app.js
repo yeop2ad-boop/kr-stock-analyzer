@@ -1308,6 +1308,11 @@ const krCreditRatingReady = fetch("data/kr-credit-rating.json", { cache: "no-sto
   .then((data) => {
     KR_CREDIT_RATING_MAP = data.ratings || {};
     KR_PREFERRED_SHARE_MAP = data._preferredShareMap || {};
+    // 신용등급 리서치 과정에서 이미 확보한 597개 종목의 실제 한글 종목명을 TICKER_TO_KOREAN_NAME(아래에서 정의)에
+    // 합쳐서, 코스피/코스닥 종목이 검색결과·순위표·차트 제목 등에서 숫자 티커 대신 한글명으로 표시되게 함.
+    for (const [tk, entry] of Object.entries(KR_CREDIT_RATING_MAP)) {
+      if (entry && entry.name && !TICKER_TO_KOREAN_NAME[tk]) TICKER_TO_KOREAN_NAME[tk] = entry.name;
+    }
   })
   .catch(() => {});
 
@@ -1618,12 +1623,20 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+// 야후 스타일 한국 티커(005930.KS/.KQ)를 TradingView가 인식하는 "KRX:005930" 형식으로 변환.
+// TradingView는 코스피/코스닥 구분 없이 전부 KRX 거래소 하나로 묶여 있어 .KS/.KQ 접미사를 떼고 KRX: 접두사만 붙이면 됨.
+function toTradingViewSymbol(symbol) {
+  const krMatch = /^(\d{6}[A-Z0-9]*)\.(KS|KQ)$/.exec(symbol);
+  if (krMatch) return `KRX:${krMatch[1]}`;
+  return symbol.replace(/-/g, ".");
+}
+
 // 실시간 시세 차트(TradingView)를 앱 내 전체화면 모달로 띄우기 위한 임베드 위젯 URL
 // Yahoo Finance 차트보다 반응 속도가 빠름. TradingView는 클래스주 표기에 "-" 대신 "." 를 쓰므로(예: BRK-B → BRK.B) 변환 필요.
 // 검은 배경 + 1년(12M) 기본 범위 + 좌측 그리기 툴바 숨김으로 모바일에서 차트만 크게 보이도록 구성
 function tradingViewEmbedUrl(symbol) {
   const config = {
-    symbol: symbol.replace(/-/g, "."),
+    symbol: toTradingViewSymbol(symbol),
     interval: "D",
     range: "12M",
     theme: "dark",
@@ -1638,9 +1651,20 @@ function tradingViewEmbedUrl(symbol) {
   return `https://s.tradingview.com/embed-widget/advanced-chart/?locale=kr#${encodeURIComponent(JSON.stringify(config))}`;
 }
 
+// TradingView 웹사이트(tradingview.com/symbols/...)의 종목 페이지 URL — 심볼 자체는 존재해도
+// 무료 embed-widget으로는 한국거래소(KRX) 데이터를 못 띄워서("이 심볼은 트레이딩뷰에서만 쓸 수 있습니다"
+// 라이선스 제약 확인됨, 2026-08) 한국 종목은 이 페이지를 새 탭으로 여는 방식으로 우회
+function tradingViewPublicUrl(symbol) {
+  return `https://www.tradingview.com/symbols/${toTradingViewSymbol(symbol).replace(":", "-")}/`;
+}
+
 function openChartModal(symbol) {
   if (!symbol) return;
-  el("chartModalTitle").textContent = symbol;
+  if (isKrTicker(symbol)) {
+    window.open(tradingViewPublicUrl(symbol), "_blank", "noopener");
+    return;
+  }
+  el("chartModalTitle").textContent = TICKER_TO_KOREAN_NAME[symbol] || symbol;
   el("chartFrame").src = tradingViewEmbedUrl(symbol);
   el("chartModal").style.display = "flex";
 }
@@ -3265,6 +3289,7 @@ async function runAnalysis(ticker) {
   setStatus("loading", `${ticker} 데이터를 불러오는 중입니다...`);
 
   try {
+    await krCreditRatingReady; // 한글 종목명 표시가 필요하므로 KR 신용등급/종목명 맵 로딩을 먼저 보장
     const searchData = await yahooSearch(ticker);
     const quote = searchData && searchData.quotes && searchData.quotes[0];
 
