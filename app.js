@@ -1629,8 +1629,8 @@ function escapeHtml(str) {
 // 야후 스타일 한국 티커(005930.KS/.KQ)를 TradingView가 인식하는 "KRX:005930" 형식으로 변환.
 // TradingView는 코스피/코스닥 구분 없이 전부 KRX 거래소 하나로 묶여 있어 .KS/.KQ 접미사를 떼고 KRX: 접두사만 붙이면 됨.
 function toTradingViewSymbol(symbol) {
-  const krMatch = /^(\d{6}[A-Z0-9]*)\.(KS|KQ)$/.exec(symbol);
-  if (krMatch) return `KRX:${krMatch[1]}`;
+  // 코드 형식은 보통 6자리 숫자지만 일부 우선주는 영숫자 혼합 코드를 씀(예: 삼성물산우B=02826K) — 접미사만으로 판별
+  if (isKrTicker(symbol)) return `KRX:${symbol.slice(0, -3)}`;
   return symbol.replace(/-/g, ".");
 }
 
