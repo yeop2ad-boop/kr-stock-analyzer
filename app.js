@@ -596,6 +596,55 @@ function vixGrade(vix) {
   return { label: "패닉 (투자 황금기)", cls: "panic" };
 }
 
+// ---------- 한국(코스피) 종목용 자체 변동성 지표 — 진짜 VKOSPI(옵션 내재변동성) 아님 ----------
+// VKOSPI는 코스피200 옵션 가격 기반 "내재변동성" 지수라 옵션 체인 데이터가 있어야 계산되는데, 그런 데이터를
+// 무료로 구할 방법이 없었음(Yahoo/FRED 미제공, Investing.com은 서버 요청 자체를 403으로 차단, KRX 공식
+// 데이터마켓은 로그인 필요). 대신 이미 정당하게 쓰고 있는 KOSPI200(^KS200) 가격 데이터만으로 계산 가능한
+// "실현변동성(realized volatility, 최근 20거래일 일간수익률의 연환산 표준편차)"을 자체 지표로 사용.
+// KR_VOL_CALIBRATION은 실현변동성 원본 수치를 VKOSPI와 비슷한 체감 단위로 맞추기 위한 배율로,
+// 2026-08-21 기준 원본 20일 실현변동성 약 87.0%를 그 시점 VKOSPI 근사치인 57 부근에 맞춘 값(57/87 ≈ 0.655).
+// 실현변동성과 내재변동성은 서로 다른 개념이라 완전히 같은 숫자가 나오진 않으며 참고용 근사치임.
+const KR_VOL_CALIBRATION = 0.655;
+
+function annualizedRealizedVolPct(closes, window) {
+  const rets = [];
+  const start = Math.max(1, closes.length - window);
+  for (let i = start; i < closes.length; i++) {
+    if (closes[i] > 0 && closes[i - 1] > 0) rets.push(Math.log(closes[i] / closes[i - 1]));
+  }
+  if (rets.length < 2) return null;
+  const mean = rets.reduce((a, b) => a + b, 0) / rets.length;
+  const variance = rets.reduce((a, b) => a + (b - mean) ** 2, 0) / (rets.length - 1);
+  return Math.sqrt(variance) * Math.sqrt(252) * 100;
+}
+
+// KOSPI200(^KS200) 일별 종가로 실현변동성 계산 — 오늘자 20일 창(window)과 하루 전 20일 창을 각각 구해
+// "전일 대비 변화"처럼 보여줄 delta도 함께 반환(진짜 전일 데이터 재발표가 아니라 창이 하루씩 밀린 값의 차이)
+let krVolMetricsPromise = null;
+function getKrVolMetrics() {
+  if (!krVolMetricsPromise) {
+    krVolMetricsPromise = (async () => {
+      const chart = await yahooChart("^KS200", "3mo", "1d");
+      const result = chart && chart.chart && chart.chart.result && chart.chart.result[0];
+      const closes = (result && result.indicators && result.indicators.quote[0].close || []).filter(
+        (v) => v !== null && v !== undefined
+      );
+      if (closes.length < 5) throw new Error("KOSPI200 가격 데이터를 가져오지 못했습니다.");
+      const rawToday = annualizedRealizedVolPct(closes, 20);
+      const rawYesterday = annualizedRealizedVolPct(closes.slice(0, -1), 20);
+      if (rawToday === null) throw new Error("실현변동성을 계산할 데이터가 부족합니다.");
+      const vol = rawToday * KR_VOL_CALIBRATION;
+      const volPrev = rawYesterday !== null ? rawYesterday * KR_VOL_CALIBRATION : null;
+      const volChangePct = volPrev ? ((vol - volPrev) / volPrev) * 100 : null;
+      return { vol, volChangePct };
+    })().catch((e) => {
+      krVolMetricsPromise = null;
+      throw e;
+    });
+  }
+  return krVolMetricsPromise;
+}
+
 // ---------- 점수 색상 통일: 상승압력(파랑)·투자안정(초록)·공포지수(주황) 세 계열 — 텍스트/보더는 계열 고정색,
 // 배경만 값이 높을수록 흰색 계열, 낮을수록 검정 계열로 보간(값이 없으면 중립 회색) ----------
 const SCORE_COLOR_FAMILY = {
@@ -625,13 +674,13 @@ function scoreRankColorHtml(text, value) {
 }
 
 // 요약 배지 라벨 아래에 붙일 "VIX : 값(변동%)" 줄(중앙정렬은 .mini-score-label의 text-align:center가 담당)
-function vixLineHtml({ vix, vixChangePct } = {}) {
+function vixLineHtml({ vix, vixChangePct } = {}, label = "VIX") {
   if (vix === null || vix === undefined) return "";
   const pctStr =
     vixChangePct !== null && vixChangePct !== undefined && Number.isFinite(vixChangePct)
       ? `(${vixChangePct >= 0 ? "+" : ""}${vixChangePct.toFixed(2)}%)`
       : "";
-  return `<br>VIX : ${vix.toFixed(1)}${pctStr}`;
+  return `<br>${label} : ${vix.toFixed(1)}${pctStr}`;
 }
 
 // ---------- 종목별 지표 조회 + 상승압력도 점수 계산 (사업요약/경쟁사비교/점수 섹션에서 공용으로 사용) ----------
@@ -3377,7 +3426,7 @@ async function runAnalysis(ticker) {
       el("riskSection").innerHTML = `<p class="error-inline">투자 안정성 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
-    renderMacro().catch((e) => {
+    renderMacro(ticker).catch((e) => {
       el("macroSection").innerHTML = `<p class="error-inline">거시경제 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
@@ -3734,12 +3783,13 @@ async function runTickerHistorical(ticker, container) {
 async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
   const rowEl = el("summaryScoreRow");
   try {
-    const [metrics, { sp500Return }, macroMetrics] = await Promise.all([
-      selfMetricsPromise,
-      marketReturnsPromise,
-      getMacroMetrics().catch(() => ({ vix: null })),
-      krCreditRatingReady,
-    ]);
+    const [metrics, { sp500Return }] = await Promise.all([selfMetricsPromise, marketReturnsPromise, krCreditRatingReady]);
+    const isKr = isKrTicker(metrics.symbol);
+    const macroMetrics = isKr
+      ? await getKrVolMetrics()
+          .then((m) => ({ vix: m.vol, vixChangePct: m.volChangePct }))
+          .catch(() => ({ vix: null }))
+      : await getMacroMetrics().catch(() => ({ vix: null }));
     const attractiveness = computeAttractivenessScore(metrics);
     const risk = computeRiskScore(metrics, sp500Return);
     const isIPO = isRecentIPO(metrics.firstTradeDate);
@@ -3756,7 +3806,7 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
       </div>
       <div class="mini-score">
         <div class="mini-score-circle macro"${scoreBgStyleAttr(vix, 10, 50, "fear")}>${vix !== null && vix !== undefined ? Math.round(vix) : "N/A"}</div>
-        <span class="mini-score-label">S&amp;P500 VIX${vixLineHtml(macroMetrics)}</span>
+        <span class="mini-score-label">${isKr ? "코스피 변동성" : "S&amp;P500 VIX"}${vixLineHtml(macroMetrics, isKr ? "지수" : "VIX")}</span>
       </div>
     `;
   } catch {
@@ -4338,10 +4388,11 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
 }
 
 // ---------- 7. 투자황금기 점수(공포지수연동) — VIX(CBOE 변동성지수)가 높을수록(시장 패닉) 역발상 매수 기회로 보고 점수를 올림, 종목과 무관 ----------
-async function renderMacro() {
+async function renderMacro(ticker) {
   el("macroSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
-  const { vix, vixChangePct } = await getMacroMetrics();
+  const isKr = isKrTicker(ticker);
+  const { vix, vixChangePct } = isKr ? await getKrVolMetrics().then((m) => ({ vix: m.vol, vixChangePct: m.volChangePct })) : await getMacroMetrics();
   const grade = vixGrade(vix);
 
   const vixPctStr =
@@ -4350,8 +4401,19 @@ async function renderMacro() {
       : "";
   const vixLiveLine =
     vix !== null && vix !== undefined
-      ? `<p class="score-macro-vix-line">😱 S&P500 VIX(FRED: VIXCLS)<br>VIX : ${vix.toFixed(1)}${vixPctStr}</p>`
+      ? isKr
+        ? `<p class="score-macro-vix-line">😱 코스피 실현변동성(자체 계산)<br>지수 : ${vix.toFixed(1)}${vixPctStr}</p>`
+        : `<p class="score-macro-vix-line">😱 S&P500 VIX(FRED: VIXCLS)<br>VIX : ${vix.toFixed(1)}${vixPctStr}</p>`
       : "";
+
+  const disclaimerText = isKr
+    ? `⚠️ 특정 종목과 무관한 코스피 시장 전체 변동성 지표이며, "공포가 클수록 저가 매수 기회"라는
+       역발상 관점을 반영한 등급입니다. 투자 자문이나 매수/매도 추천이 아니며, 실제로는 공포가 더 깊어질 수도 있습니다.
+       이 지수는 한국거래소 공식 VKOSPI(옵션 내재변동성)가 아니라, KOSPI200 최근 20거래일 가격 변동으로 자체
+       계산한 실현변동성 근사치입니다 — 방향성은 비슷하지만 공식 VKOSPI와 숫자가 다를 수 있습니다.`
+    : `⚠️ 특정 종목과 무관한 시장 전체 공포지수(VIX) 수치이며, "공포가 클수록 저가 매수 기회"라는
+       역발상 관점을 반영한 등급입니다. 투자 자문이나 매수/매도 추천이 아니며, 실제로는 공포가 더 깊어질 수도 있습니다.`;
+  const gaugeLabel = isKr ? "코스피 실현변동성(자체 계산, VKOSPI 근사치)" : "VIX(CBOE 변동성지수, FRED 시리즈 VIXCLS)";
 
   el("macroSection").innerHTML = `
     ${vixLiveLine}
@@ -4362,13 +4424,10 @@ async function renderMacro() {
       </div>
       <div class="score-details">
         <ul>
-          <li>VIX(CBOE 변동성지수, FRED 시리즈 VIXCLS) 수치를 그대로 표시합니다</li>
+          <li>${gaugeLabel} 수치를 그대로 표시합니다</li>
           <li>20 미만 <b>안심</b> · 20~29 <b>경계</b> · 30~39 <b>공포</b> · 40 이상 <b>패닉(역발상 투자 황금기)</b></li>
         </ul>
-        <p class="disclaimer">
-          ⚠️ 특정 종목과 무관한 시장 전체 공포지수(VIX) 수치이며, "공포가 클수록 저가 매수 기회"라는
-          역발상 관점을 반영한 등급입니다. 투자 자문이나 매수/매도 추천이 아니며, 실제로는 공포가 더 깊어질 수도 있습니다.
-        </p>
+        <p class="disclaimer">${disclaimerText}</p>
       </div>
     </div>
   `;
@@ -7712,11 +7771,13 @@ async function renderFutureModalHeader(ticker, quote, metricsPromise, marketRetu
     </span>
   `;
   try {
-    const [metrics, marketReturns, macroMetrics] = await Promise.all([
-      metricsPromise,
-      marketReturnsPromise,
-      getMacroMetrics().catch(() => ({ vix: null })),
-    ]);
+    const [metrics, marketReturns] = await Promise.all([metricsPromise, marketReturnsPromise]);
+    const isKr = isKrTicker(metrics.symbol);
+    const macroMetrics = isKr
+      ? await getKrVolMetrics()
+          .then((m) => ({ vix: m.vol }))
+          .catch(() => ({ vix: null }))
+      : await getMacroMetrics().catch(() => ({ vix: null }));
     const attractiveness = computeAttractivenessScore(metrics);
     const risk = computeRiskScore(metrics, marketReturns.sp500Return);
     const isIPO = isRecentIPO(metrics.firstTradeDate);
@@ -7726,7 +7787,7 @@ async function renderFutureModalHeader(ticker, quote, metricsPromise, marketRetu
       scoresEl.innerHTML = `
         <span class="mini-score-circle small" title="상승 압력">${isIPO ? "IPO" : attractiveness.total}</span>
         <span class="mini-score-circle small risk" title="투자 안정">${isIPO ? "IPO" : risk.total}</span>
-        <span class="mini-score-circle small macro" title="S&P500 VIX"${scoreBgStyleAttr(vix, 10, 50, "fear")}>${vix !== null && vix !== undefined ? Math.round(vix) : "N/A"}</span>
+        <span class="mini-score-circle small macro" title="${isKr ? "코스피 변동성" : "S&P500 VIX"}"${scoreBgStyleAttr(vix, 10, 50, "fear")}>${vix !== null && vix !== undefined ? Math.round(vix) : "N/A"}</span>
       `;
     }
   } catch {
