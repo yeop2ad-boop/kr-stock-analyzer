@@ -1303,6 +1303,8 @@ const CREDIT_RATING_SCORE = {
 // 페이지 로드 직후 로컬 정적 파일이라 사실상 항상 사용 시점 전에 로딩이 끝남).
 let KR_CREDIT_RATING_MAP = {};
 let KR_PREFERRED_SHARE_MAP = {};
+// 한글 종목명 → 티커 역매핑(검색창에 "삼성전자"처럼 한글명을 직접 입력하고 바로 엔터 쳤을 때 resolveKoreanTicker가 사용)
+const KR_NAME_TO_TICKER = {};
 const krCreditRatingReady = fetch("data/kr-credit-rating.json", { cache: "no-store" })
   .then((res) => res.json())
   .then((data) => {
@@ -1312,6 +1314,7 @@ const krCreditRatingReady = fetch("data/kr-credit-rating.json", { cache: "no-sto
     // 합쳐서, 코스피/코스닥 종목이 검색결과·순위표·차트 제목 등에서 숫자 티커 대신 한글명으로 표시되게 함.
     for (const [tk, entry] of Object.entries(KR_CREDIT_RATING_MAP)) {
       if (entry && entry.name && !TICKER_TO_KOREAN_NAME[tk]) TICKER_TO_KOREAN_NAME[tk] = entry.name;
+      if (entry && entry.name && !KR_NAME_TO_TICKER[entry.name]) KR_NAME_TO_TICKER[entry.name] = tk;
     }
   })
   .catch(() => {});
@@ -3265,6 +3268,7 @@ function resolveKoreanTicker(input) {
   if (paren) return paren[1].toUpperCase();
   const key = raw.replace(/\s+/g, ""); // 공백 제거 후 한글명 매핑 조회("존슨 앤 존슨" 등 대응)
   if (KOREAN_COMPANY_NAMES[key]) return KOREAN_COMPANY_NAMES[key];
+  if (KR_NAME_TO_TICKER[raw]) return KR_NAME_TO_TICKER[raw]; // "삼성전자"처럼 국내 종목 한글명 직접 입력 대응(공백 없는 종목명이 대부분이라 원문 그대로 조회)
   return raw.toUpperCase();
 }
 
