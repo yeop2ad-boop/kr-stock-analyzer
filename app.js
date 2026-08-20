@@ -1326,9 +1326,10 @@ function computeRiskScore(metrics, sp500Return) {
 
   // 1) 투자등급 (0~4점) — 미국은 S&P, 한국(.KS/.KQ)은 국내 3대 신평사 기준.
   // AAA 4점, AA+ 3.5점, AA 3점, AA- 2.5점, A+ 2점, A 1.5점, A- 1점, BBB+ 0.5점, BBB 이하 0점
-  // 회사채 자체가 없는 종목은 2점. 미국은 미평가·목록 미포함 둘 다 1점(UNRATED_REASON)이지만,
-  // 한국은 "미평가"(실제 검색했으나 등급 미확인) 0점 / 조사 범위 밖(목록 자체에 없음) 1점으로 구분
-  // — kr-credit-rating.json의 _scoreScale에 명시된 사용자 지정 배점을 따름.
+  // 미국은 회사채 자체가 없는 종목 2점, 미평가·목록 미포함 둘 다 1점(UNRATED_REASON)이지만,
+  // 한국은 "회사채없음"(무차입 경영으로 신용평가 자체가 불필요할 만큼 우량한 경우가 많음) 4점 만점 처리,
+  // "미평가"(실제 검색했으나 등급 미확인) 0점 / 조사 범위 밖(목록 자체에 없음) 1점으로 구분
+  // — 한국 쪽은 kr-credit-rating.json의 _scoreScale과 다르게 사용자 지정으로 회사채없음만 4점 상향.
   let creditScore = 1;
   let rating;
   if (symbol && isKrTicker(symbol)) {
@@ -1337,7 +1338,7 @@ function computeRiskScore(metrics, sp500Return) {
     if (krEntry) {
       rating = krEntry.rating;
       if (rating === "회사채없음") {
-        creditScore = 2;
+        creditScore = 4;
       } else if (rating === "미평가") {
         creditScore = 0;
       } else {
@@ -4265,7 +4266,7 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
   const ratingLabel = isKr ? "투자등급(국내 신용등급)" : "투자등급(신용등급)";
   const ratingNoneText = isKr ? "등급 정보 없음" : "S&P 등급 없음";
   const ratingScaleText = isKr
-    ? "AAA 4점 만점, BBB+ 0.5점, BBB 이하 0점, 회사채없음 2점, 미평가 0점, 조사범위 밖 1점"
+    ? "AAA·회사채없음 4점 만점, BBB+ 0.5점, BBB 이하 0점, 미평가 0점, 조사범위 밖 1점"
     : "AAA 4점 만점, BBB+ 0.5점, BBB 이하 0점, 회사채 없음 2점, 미평가·목록없음 1점";
   const ratingDisclaimerText = isKr
     ? "투자등급은 한국기업평가/한국신용평가/NICE신용평가 3사 기준으로 자체 조사해 수동으로 입력한 참고용 데이터로, 실시간 갱신되지 않으며 조사 범위 밖 종목은 중립 처리됩니다."
