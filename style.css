@@ -1503,6 +1503,20 @@ table.insight-holdings-table td span, table.insight-holdings-table td b { max-wi
 .stock-card-volume { font-size: 12px; color: var(--muted); font-weight: 600; }
 .stock-card-pct { font-size: 12.5px; font-weight: 700; min-width: 52px; text-align: right; }
 
+/* ---------- 관심종목: 시장(미국/한국) 탭 — 완전 별도 저장공간을 전환 ---------- */
+.wl-market-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+.wl-market-tab {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 9px 0;
+}
+.wl-market-tab.active { color: #fff; border-color: #fff; background: #000; }
+
 /* ---------- 관심종목: 그룹 탭 + 정렬/추가/공유 툴바 ---------- */
 .wl-group-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
 .wl-group-tabs {

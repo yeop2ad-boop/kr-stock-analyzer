@@ -2259,16 +2259,54 @@ function renderCompanyIdentity(ticker, quote, meta, changePct) {
 }
 
 // ---------- 관심종목 (localStorage 기반 — Firestore 등 서버 저장소가 없어 기기별로만 유지됨) ----------
-const WATCHLIST_KEY = "watchlist_v1";
-const WATCHLIST_GROUPS_KEY = "watchlist_groups_v1";
-const WATCHLIST_ACTIVE_GROUP_KEY = "watchlist_active_group_v1";
-const WATCHLIST_SORT_KEY = "watchlist_sort_v1";
+// 미국/한국 종목을 완전히 별도 저장공간(키 자체가 다름)으로 분리 — 목록·그룹·정렬·활성그룹 전부 시장별로 독립.
+// watchlistActiveMarket("US"|"KR")은 관심종목 탭 상단의 시장 토글이 어느 쪽을 보고 있는지를 나타내며,
+// groupId 없이는 시장을 알 수 없는 그룹/정렬/활성그룹 함수들이 기본값으로 참조한다.
 const WATCHLIST_ALL_GROUP_ID = "__all__";
 const WATCHLIST_DEFAULT_GROUP_ID = "default";
+const WATCHLIST_ACTIVE_MARKET_KEY = "watchlist_active_market_v1";
 
-function getWatchlist() {
+function wlKey(base, market) {
+  return `${base}_${market === "KR" ? "kr" : "us"}`;
+}
+function watchlistMarketOf(symbol) {
+  return isKrTicker(symbol) ? "KR" : "US";
+}
+function getWatchlistActiveMarket() {
+  return localStorage.getItem(WATCHLIST_ACTIVE_MARKET_KEY) === "KR" ? "KR" : "US";
+}
+function setWatchlistActiveMarket(market) {
+  localStorage.setItem(WATCHLIST_ACTIVE_MARKET_KEY, market === "KR" ? "KR" : "US");
+}
+
+// 예전(시장 분리 이전) 단일 저장공간에 있던 데이터를 1회만 미국/한국으로 나눠 이관 — 이후엔 건드리지 않음
+(function migrateWatchlistToPerMarketStorage() {
+  const MIGRATION_FLAG = "watchlist_migrated_per_market_v1";
+  if (localStorage.getItem(MIGRATION_FLAG)) return;
   try {
-    const list = JSON.parse(localStorage.getItem(WATCHLIST_KEY));
+    const oldList = JSON.parse(localStorage.getItem("watchlist_v1"));
+    if (Array.isArray(oldList) && oldList.length) {
+      const usItems = oldList.filter((w) => watchlistMarketOf(w.symbol) === "US");
+      const krItems = oldList.filter((w) => watchlistMarketOf(w.symbol) === "KR");
+      if (usItems.length) localStorage.setItem(wlKey("watchlist_v1", "US"), JSON.stringify(usItems));
+      if (krItems.length) localStorage.setItem(wlKey("watchlist_v1", "KR"), JSON.stringify(krItems));
+    }
+    const oldGroups = localStorage.getItem("watchlist_groups_v1");
+    if (oldGroups) localStorage.setItem(wlKey("watchlist_groups_v1", "US"), oldGroups);
+    const oldActiveGroup = localStorage.getItem("watchlist_active_group_v1");
+    if (oldActiveGroup) localStorage.setItem(wlKey("watchlist_active_group_v1", "US"), oldActiveGroup);
+    const oldSort = localStorage.getItem("watchlist_sort_v1");
+    if (oldSort) localStorage.setItem(wlKey("watchlist_sort_v1", "US"), oldSort);
+  } catch {
+    // 이관 실패해도 새 빈 상태로 시작할 뿐 치명적이지 않음
+  } finally {
+    localStorage.setItem(MIGRATION_FLAG, "1");
+  }
+})();
+
+function getWatchlist(market = getWatchlistActiveMarket()) {
+  try {
+    const list = JSON.parse(localStorage.getItem(wlKey("watchlist_v1", market)));
     return Array.isArray(list) ? list : [];
   } catch {
     return [];
@@ -2276,25 +2314,25 @@ function getWatchlist() {
 }
 function isWatchlisted(symbol) {
   const sym = (symbol || "").toUpperCase();
-  return getWatchlist().some((w) => w.symbol === sym);
+  return getWatchlist(watchlistMarketOf(sym)).some((w) => w.symbol === sym);
 }
-function saveWatchlist(list) {
-  localStorage.setItem(WATCHLIST_KEY, JSON.stringify(list));
+function saveWatchlist(list, market = getWatchlistActiveMarket()) {
+  localStorage.setItem(wlKey("watchlist_v1", market), JSON.stringify(list));
   tabLoadPromises.watchlist = null; // 다음에 관심종목 탭에 들어갈 때 최신 목록으로 다시 렌더링되도록 캐시 무효화
 }
 
-// ---------- 관심종목 그룹(가로스크롤 탭) ----------
-function getWatchlistGroups() {
+// ---------- 관심종목 그룹(가로스크롤 탭) — 시장별 별도 ----------
+function getWatchlistGroups(market = getWatchlistActiveMarket()) {
   try {
-    const groups = JSON.parse(localStorage.getItem(WATCHLIST_GROUPS_KEY));
+    const groups = JSON.parse(localStorage.getItem(wlKey("watchlist_groups_v1", market)));
     if (Array.isArray(groups) && groups.length) return groups;
   } catch {
     // 저장된 값이 없거나 손상된 경우 기본 그룹으로 대체
   }
   return [{ id: WATCHLIST_DEFAULT_GROUP_ID, name: "기본" }];
 }
-function saveWatchlistGroups(groups) {
-  localStorage.setItem(WATCHLIST_GROUPS_KEY, JSON.stringify(groups));
+function saveWatchlistGroups(groups, market = getWatchlistActiveMarket()) {
+  localStorage.setItem(wlKey("watchlist_groups_v1", market), JSON.stringify(groups));
 }
 function addWatchlistGroup(name) {
   const trimmed = (name || "").trim();
@@ -2324,11 +2362,11 @@ function deleteWatchlistGroup(id) {
   saveWatchlist(getWatchlist().map((w) => (w.groupId === id ? { ...w, groupId: fallbackId } : w)));
   if (getActiveWatchlistGroup() === id) setActiveWatchlistGroup(WATCHLIST_ALL_GROUP_ID);
 }
-function getActiveWatchlistGroup() {
-  return localStorage.getItem(WATCHLIST_ACTIVE_GROUP_KEY) || WATCHLIST_ALL_GROUP_ID;
+function getActiveWatchlistGroup(market = getWatchlistActiveMarket()) {
+  return localStorage.getItem(wlKey("watchlist_active_group_v1", market)) || WATCHLIST_ALL_GROUP_ID;
 }
-function setActiveWatchlistGroup(id) {
-  localStorage.setItem(WATCHLIST_ACTIVE_GROUP_KEY, id);
+function setActiveWatchlistGroup(id, market = getWatchlistActiveMarket()) {
+  localStorage.setItem(wlKey("watchlist_active_group_v1", market), id);
 }
 
 const WATCHLIST_SORT_OPTIONS = [
@@ -2337,12 +2375,12 @@ const WATCHLIST_SORT_OPTIONS = [
   { id: "changePct", label: "등락률순" },
   { id: "price", label: "현재가순" },
 ];
-function getWatchlistSort() {
-  const id = localStorage.getItem(WATCHLIST_SORT_KEY);
+function getWatchlistSort(market = getWatchlistActiveMarket()) {
+  const id = localStorage.getItem(wlKey("watchlist_sort_v1", market));
   return WATCHLIST_SORT_OPTIONS.some((o) => o.id === id) ? id : "manual";
 }
-function setWatchlistSort(id) {
-  localStorage.setItem(WATCHLIST_SORT_KEY, id);
+function setWatchlistSort(id, market = getWatchlistActiveMarket()) {
+  localStorage.setItem(wlKey("watchlist_sort_v1", market), id);
 }
 function sortWatchlistRows(rows) {
   const mode = getWatchlistSort();
@@ -2361,13 +2399,15 @@ function sortWatchlistRows(rows) {
 function addToWatchlist(symbol, groupId) {
   const sym = symbol.toUpperCase();
   if (isWatchlisted(sym)) return;
-  const active = getActiveWatchlistGroup();
+  const market = watchlistMarketOf(sym);
+  const active = getActiveWatchlistGroup(market);
   const gid = groupId || (active === WATCHLIST_ALL_GROUP_ID ? WATCHLIST_DEFAULT_GROUP_ID : active);
-  saveWatchlist([...getWatchlist(), { symbol: sym, addedAt: Date.now(), groupId: gid }]);
+  saveWatchlist([...getWatchlist(market), { symbol: sym, addedAt: Date.now(), groupId: gid }], market);
 }
 function removeFromWatchlist(symbol) {
   const sym = symbol.toUpperCase();
-  saveWatchlist(getWatchlist().filter((w) => w.symbol !== sym));
+  const market = watchlistMarketOf(sym);
+  saveWatchlist(getWatchlist(market).filter((w) => w.symbol !== sym), market);
 }
 function toggleWatchlist(symbol) {
   if (isWatchlisted(symbol)) removeFromWatchlist(symbol);
@@ -2403,6 +2443,16 @@ el("wlGroupTabs").addEventListener("click", (e) => {
   renderWatchlistList();
 });
 el("wlGroupManageBtn").addEventListener("click", () => openWlGroupModal());
+
+// ---------- 관심종목 상단 시장(미국/한국) 탭 — 완전 별도 저장공간을 전환 ----------
+el("wlMarketTabs").addEventListener("click", (e) => {
+  const tab = e.target.closest("[data-wl-market]");
+  if (!tab) return;
+  const market = tab.dataset.wlMarket;
+  if (market === getWatchlistActiveMarket()) return;
+  setWatchlistActiveMarket(market);
+  renderWatchlistList();
+});
 
 // ---------- 관심종목 그룹 관리 모달(이름 변경·삭제·추가) ----------
 function wlGroupModalRowHtml(g) {
@@ -2528,6 +2578,11 @@ el("wlShareBtn").addEventListener("click", shareWatchlist);
 async function renderWatchlistList() {
   const statusEl = el("watchlistStatus");
   const listEl = el("watchlistList");
+
+  const activeMarket = getWatchlistActiveMarket();
+  el("wlMarketTabs")
+    .querySelectorAll("[data-wl-market]")
+    .forEach((btn) => btn.classList.toggle("active", btn.dataset.wlMarket === activeMarket));
 
   const groups = getWatchlistGroups();
   const rawList = getWatchlist();
