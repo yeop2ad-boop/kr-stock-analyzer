@@ -1292,24 +1292,67 @@ const TICKER_CREDIT_RATING = {
 };
 
 // S&P 신용등급 문자를 0~4점으로 환산. BBB 및 그 이하 등급은 0점
+// 국내(한국) 등급 문자도 표기가 동일(AAA/AA+/.../BBB+)해서 이 표를 그대로 재사용
 const CREDIT_RATING_SCORE = {
   AAA: 4, "AA+": 3.5, AA: 3, "AA-": 2.5, "A+": 2, A: 1.5, "A-": 1, "BBB+": 0.5,
 };
+
+// 한국(코스피/코스닥) 종목 신용등급 데이터 — data/kr-credit-rating.json에서 비동기 로드.
+// 국내 3대 신평사(한국기업평가/한국신용평가/NICE신용평가) 기준 실측 데이터. computeRiskScore는 동기 함수라
+// fetch 완료 전에 호출되면 이 맵이 비어 있을 수 있는데, 그 경우 목록없음과 동일하게 중립(1점) 처리됨(그래도
+// 페이지 로드 직후 로컬 정적 파일이라 사실상 항상 사용 시점 전에 로딩이 끝남).
+let KR_CREDIT_RATING_MAP = {};
+let KR_PREFERRED_SHARE_MAP = {};
+const krCreditRatingReady = fetch("data/kr-credit-rating.json", { cache: "no-store" })
+  .then((res) => res.json())
+  .then((data) => {
+    KR_CREDIT_RATING_MAP = data.ratings || {};
+    KR_PREFERRED_SHARE_MAP = data._preferredShareMap || {};
+  })
+  .catch(() => {});
+
+function isKrTicker(symbol) {
+  return typeof symbol === "string" && (symbol.endsWith(".KS") || symbol.endsWith(".KQ"));
+}
+
+// 신용등급 필드가 숫자 점수가 아니라 사유 문자열(회사채 없음/미평가, 한국·미국 표기 모두)로 표시돼야 하는지 판별
+function isCreditReasonString(rating) {
+  return rating === NO_DEBT_RATING || rating === UNRATED_REASON || rating === "회사채없음" || rating === "미평가";
+}
 
 // 투자등급(신용등급) + S&P500 대비 모멘텀 + 순이익률 + 시가총액 가점을 조합한 참고용 투자 안정성 점수(10점 만점, 높을수록 위험이 낮음)
 function computeRiskScore(metrics, sp500Return) {
   const { symbol, oneYearReturn, netIncome, revenue, marketCap, currency } = metrics;
 
-  // 1) 투자등급 (0~4점) — S&P 신용등급 기준. AAA 4점, AA+ 3.5점, AA 3점, AA- 2.5점, A+ 2점, A 1.5점, A- 1점, BBB+ 0.5점, BBB 이하 0점
-  // 회사채 자체가 없는 종목(NO_DEBT_RATING)은 2점, S&P 미평가(UNRATED_REASON)·목록 미포함은 1점 처리
+  // 1) 투자등급 (0~4점) — 미국은 S&P, 한국(.KS/.KQ)은 국내 3대 신평사 기준.
+  // AAA 4점, AA+ 3.5점, AA 3점, AA- 2.5점, A+ 2점, A 1.5점, A- 1점, BBB+ 0.5점, BBB 이하 0점
+  // 회사채 자체가 없는 종목은 2점. 미국은 미평가·목록 미포함 둘 다 1점(UNRATED_REASON)이지만,
+  // 한국은 "미평가"(실제 검색했으나 등급 미확인) 0점 / 조사 범위 밖(목록 자체에 없음) 1점으로 구분
+  // — kr-credit-rating.json의 _scoreScale에 명시된 사용자 지정 배점을 따름.
   let creditScore = 1;
-  const rating = symbol ? TICKER_CREDIT_RATING[symbol] : undefined;
-  if (rating === NO_DEBT_RATING) {
-    creditScore = 2;
-  } else if (rating === UNRATED_REASON) {
-    creditScore = 1;
-  } else if (rating !== undefined) {
-    creditScore = CREDIT_RATING_SCORE[rating] !== undefined ? CREDIT_RATING_SCORE[rating] : 0;
+  let rating;
+  if (symbol && isKrTicker(symbol)) {
+    const krSymbol = KR_PREFERRED_SHARE_MAP[symbol] || symbol;
+    const krEntry = KR_CREDIT_RATING_MAP[krSymbol];
+    if (krEntry) {
+      rating = krEntry.rating;
+      if (rating === "회사채없음") {
+        creditScore = 2;
+      } else if (rating === "미평가") {
+        creditScore = 0;
+      } else {
+        creditScore = CREDIT_RATING_SCORE[rating] !== undefined ? CREDIT_RATING_SCORE[rating] : 0;
+      }
+    }
+  } else {
+    rating = symbol ? TICKER_CREDIT_RATING[symbol] : undefined;
+    if (rating === NO_DEBT_RATING) {
+      creditScore = 2;
+    } else if (rating === UNRATED_REASON) {
+      creditScore = 1;
+    } else if (rating !== undefined) {
+      creditScore = CREDIT_RATING_SCORE[rating] !== undefined ? CREDIT_RATING_SCORE[rating] : 0;
+    }
   }
 
   // 2) S&P500 대비 모멘텀 (0~2점) — S&P500 연 수익률과의 차이(절대값)가 0%p면 만점,
@@ -3654,6 +3697,7 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
       selfMetricsPromise,
       marketReturnsPromise,
       getMacroMetrics().catch(() => ({ vix: null })),
+      krCreditRatingReady,
     ]);
     const attractiveness = computeAttractivenessScore(metrics);
     const risk = computeRiskScore(metrics, sp500Return);
@@ -4202,7 +4246,7 @@ async function renderScore(selfMetricsPromise) {
 async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
   el("riskSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
-  const [metrics, { sp500Return }] = await Promise.all([selfMetricsPromise, marketReturnsPromise]);
+  const [metrics, { sp500Return }] = await Promise.all([selfMetricsPromise, marketReturnsPromise, krCreditRatingReady]);
 
   const {
     total,
@@ -4216,6 +4260,16 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
     vtsaxWeightPct,
   } = computeRiskScore(metrics, sp500Return);
   const isIPO = isRecentIPO(metrics.firstTradeDate);
+  const isKr = isKrTicker(metrics.symbol);
+
+  const ratingLabel = isKr ? "투자등급(국내 신용등급)" : "투자등급(신용등급)";
+  const ratingNoneText = isKr ? "등급 정보 없음" : "S&P 등급 없음";
+  const ratingScaleText = isKr
+    ? "AAA 4점 만점, BBB+ 0.5점, BBB 이하 0점, 회사채없음 2점, 미평가 0점, 조사범위 밖 1점"
+    : "AAA 4점 만점, BBB+ 0.5점, BBB 이하 0점, 회사채 없음 2점, 미평가·목록없음 1점";
+  const ratingDisclaimerText = isKr
+    ? "투자등급은 한국기업평가/한국신용평가/NICE신용평가 3사 기준으로 자체 조사해 수동으로 입력한 참고용 데이터로, 실시간 갱신되지 않으며 조사 범위 밖 종목은 중립 처리됩니다."
+    : "투자등급은 S&P 신용등급을 기준으로 자체 조사해 수동으로 입력한 참고용 데이터로, 실시간 갱신되지 않으며 목록에 없는 종목은 중립 처리됩니다.";
 
   el("riskSection").innerHTML = `
     <div class="score-wrap">
@@ -4225,16 +4279,16 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
       </div>
       <div class="score-details">
         <ul>
-          <li>🏅 투자등급(신용등급): <b>${rating ? rating : "S&P 등급 없음"}</b> (AAA 4점 만점, BBB+ 0.5점, BBB 이하 0점, 회사채 없음 2점, 미평가·목록없음 1점)</li>
+          <li>🏅 ${ratingLabel}: <b>${rating ? rating : ratingNoneText}</b> (${ratingScaleText})</li>
           <li>📊 S&P500과의 1년 수익률 차이: ${relDiff !== null ? `<b>${relDiff.toFixed(1)}%p</b> (S&P500 <b>${fmtPct(sp500Return)}</b>)` : "N/A"} (차이가 작을수록 가점)</li>
           <li>💵 순이익률(순이익/매출): <b>${netMargin !== null ? (netMargin * 100).toFixed(1) + "%" : "N/A"}</b> (높을수록 가점, 적자면 0점)</li>
           <li>🏦 시가총액 가점(미국 전체 시장 내 시총 비중): <b>${vtsaxWeightPct !== null ? vtsaxWeightPct.toFixed(2) + "%" : "N/A"}</b> (VTSAX 등 인덱스펀드 예상 비중 근사, 6% 이상 만점·0% 0점)</li>
-          <li>세부 점수 — 투자등급 ${rating === NO_DEBT_RATING || rating === UNRATED_REASON ? rating : creditScore.toFixed(1) + "/4"}, S&P500 대비 모멘텀 ${marketScore.toFixed(1)}/2, 순이익률 ${marginScore.toFixed(1)}/2, 시가총액 가점 ${vtsaxScore.toFixed(1)}/2</li>
+          <li>세부 점수 — 투자등급 ${isCreditReasonString(rating) ? rating : creditScore.toFixed(1) + "/4"}, S&P500 대비 모멘텀 ${marketScore.toFixed(1)}/2, 순이익률 ${marginScore.toFixed(1)}/2, 시가총액 가점 ${vtsaxScore.toFixed(1)}/2</li>
         </ul>
         <p class="disclaimer">
           ⚠️ 점수가 높을수록(10점에 가까울수록) 재무적으로 더 안정적/저위험임을 의미합니다.
           투자등급, S&P500 대비 수익률, 순이익률, 시가총액 가점을 조합한 <b>단순 참고용 정량 지표</b>이며, 투자 자문이나 매수/매도 추천이 아닙니다.
-          투자등급은 S&P 신용등급을 기준으로 자체 조사해 수동으로 입력한 참고용 데이터로, 실시간 갱신되지 않으며 목록에 없는 종목은 중립 처리됩니다.
+          ${ratingDisclaimerText}
           시가총액 가점은 실제 펀드 편입 비중이 아니라 시가총액 기준 추정치입니다.
         </p>
       </div>
