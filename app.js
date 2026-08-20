@@ -3215,9 +3215,16 @@ async function handleMainTickerInput() {
   }
 
   // 한국어 회사명 매칭은 목록이 작아 네트워크 응답을 기다리지 않고 바로 화면에 표시(거래소는 영문 결과에서 보강)
-  const koreanMatches = Object.entries(KOREAN_COMPANY_NAMES)
-    .filter(([name]) => name.includes(q))
-    .map(([name, symbol]) => ({ symbol, name, exchange: null }));
+  // 미국 종목의 한글 닉네임(KOREAN_COMPANY_NAMES) + 한국 상장 종목 실제 회사명(KR_NAME_TO_TICKER) 둘 다 부분일치로 검색.
+  // 야후 검색 API는 한글 질의를 거부해서("Invalid Search Query") 코스피/코스닥 종목은 이 로컬 매칭이 사실상 유일한 경로.
+  const koreanMatches = [
+    ...Object.entries(KOREAN_COMPANY_NAMES)
+      .filter(([name]) => name.includes(q))
+      .map(([name, symbol]) => ({ symbol, name, exchange: null })),
+    ...Object.entries(KR_NAME_TO_TICKER)
+      .filter(([name]) => name.includes(q))
+      .map(([name, symbol]) => ({ symbol, name, exchange: symbol.endsWith(".KQ") ? "코스닥" : "코스피" })),
+  ];
   renderMainTickerSuggest(koreanMatches.slice(0, 8));
 
   mainTickerSuggestTimer = setTimeout(async () => {
