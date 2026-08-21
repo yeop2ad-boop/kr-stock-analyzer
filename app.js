@@ -5476,6 +5476,51 @@ async function getPriceAnd1yReturn(symbol) {
   }
 }
 
+// 티커가 없는(비상장) 브랜드평판 항목 전용 로고 — 자동 로고 소스(financialmodelingprep)는 티커 기반이라 쓸 수 없어서
+// Wikimedia Commons에서 받은 공식 로고를 logos/brand/에 자체 호스팅(모두 자유 이용 라이선스 파일만 사용).
+// 검색해도 커먼즈에 쓸 만한 로고가 없던 항목(Athletic Brewing, USAA, Windex, X Corp.)은 기존처럼 이니셜 배지로 남겨둠.
+const BRAND_NAME_LOGO = {
+  Aldi: { src: "logos/brand/aldi.png", bg: "#ffffff" },
+  "Alo Yoga": { src: "logos/brand/alo-yoga.svg", bg: "#ffffff" },
+  "Anthropic (Claude)": { src: "logos/brand/anthropic.svg", bg: "#ffffff" },
+  BIC: { src: "logos/brand/bic.svg", bg: "#ffffff" },
+  Barilla: { src: "logos/brand/barilla.svg", bg: "#ffffff" },
+  "Barnes & Noble": { src: "logos/brand/barnes-noble.svg", bg: "#ffffff" },
+  Bosch: { src: "logos/brand/bosch.svg", bg: "#ffffff" },
+  "Chick-fil-A": { src: "logos/brand/chick-fil-a.svg", bg: "#ffffff" },
+  Dior: { src: "logos/brand/dior.svg", bg: "#ffffff" },
+  "Dove (chocolate)": { src: "logos/brand/dove-chocolate.png", bg: "#ffffff" },
+  Duracell: { src: "logos/brand/duracell.svg", bg: "#ffffff" },
+  Dyson: { src: "logos/brand/dyson.svg", bg: "#ffffff" },
+  "Giorgio Armani": { src: "logos/brand/armani.png", bg: "#ffffff" },
+  LavAzza: { src: "logos/brand/lavazza.svg", bg: "#ffffff" },
+  Lego: { src: "logos/brand/lego.svg", bg: "#ffffff" },
+  Lipton: { src: "logos/brand/lipton.svg", bg: "#ffffff" },
+  "M&M's": { src: "logos/brand/mms.svg", bg: "#ffffff" },
+  Miele: { src: "logos/brand/miele.svg", bg: "#ffffff" },
+  "OpenAI (ChatGPT)": { src: "logos/brand/openai.svg", bg: "#ffffff" },
+  Patagonia: { src: "logos/brand/patagonia.svg", bg: "#ffffff" },
+  Pirelli: { src: "logos/brand/pirelli.svg", bg: "#ffffff" },
+  Polymarket: { src: "logos/brand/polymarket.svg", bg: "#ffffff" },
+  Rolex: { src: "logos/brand/rolex.svg", bg: "#ffffff" },
+  Shein: { src: "logos/brand/shein.svg", bg: "#ffffff" },
+  "Singapore Airlines": { src: "logos/brand/singapore-airlines.svg", bg: "#ffffff" },
+  Snickers: { src: "logos/brand/snickers.svg", bg: "#ffffff" },
+  SpaceX: { src: "logos/brand/spacex.svg", bg: "#ffffff" },
+  "Spirit Airlines": { src: "logos/brand/spirit-airlines.svg", bg: "#ffffff" },
+  "State Farm Insurance": { src: "logos/brand/state-farm.svg", bg: "#ffffff" },
+  TikTok: { src: "logos/brand/tiktok.svg", bg: "#ffffff" },
+  "Trader Joe's": { src: "logos/brand/trader-joes.svg", bg: "#ffffff" },
+  Ziploc: { src: "logos/brand/ziploc.svg", bg: "#ffffff" },
+};
+// 비상장 항목의 로고 셀 — 지정 로고가 있으면 그걸 쓰고, 없으면 기존처럼 이름 앞 2글자 배지로 폴백
+function brandNameLogoHtml(name) {
+  const ov = BRAND_NAME_LOGO[name];
+  if (!ov) return `<span class="ticker-logo-wrap"><span class="ticker-logo-badge" style="display:flex;">${escapeHtml(name.slice(0, 2))}</span></span>`;
+  const wrapStyle = ov.bg ? ` style="background:${ov.bg}"` : "";
+  return `<span class="ticker-logo-wrap"${wrapStyle}><img class="ticker-logo" src="${ov.src}" alt="${escapeHtml(name)}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><span class="ticker-logo-badge" style="display:none;">${escapeHtml(name.slice(0, 2))}</span></span>`;
+}
+
 function brandRepTableHtml(rows, scoreLabel) {
   const trs = rows
     .map((r) => {
@@ -5483,7 +5528,7 @@ function brandRepTableHtml(rows, scoreLabel) {
       const displayName = r.ticker ? TICKER_TO_KOREAN_NAME[r.ticker] || r.name : r.name;
       const nameCell = r.ticker
         ? `<span class="brand-rep-name-cell">${tickerLogoHtml(r.ticker)}<span class="brand-rep-name-text"><b class="ticker-link" data-ticker="${escapeHtml(r.ticker)}">${escapeHtml(displayName)}</b><span class="muted brand-rep-ticker">${escapeHtml(r.ticker)}</span></span></span>`
-        : `<span class="brand-rep-name-cell"><span class="ticker-logo-wrap"><span class="ticker-logo-badge" style="display:flex;">${escapeHtml(r.name.slice(0, 2))}</span></span><span class="brand-rep-name-text"><b>${escapeHtml(displayName)}</b></span></span>`;
+        : `<span class="brand-rep-name-cell">${brandNameLogoHtml(r.name)}<span class="brand-rep-name-text"><b>${escapeHtml(displayName)}</b></span></span>`;
       let priceCell = `<span class="muted">비상장</span>`;
       if (r.ticker) {
         priceCell = r.metrics
