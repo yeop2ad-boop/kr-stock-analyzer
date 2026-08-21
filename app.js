@@ -7,14 +7,14 @@ const el = (id) => document.getElementById(id);
 // ---------- 핵심 내비게이션(탭바/서브탭/위저드) 아이콘 — 이모지 대신 로고와 동일한 주황(#e6983c) 단색 라인 아이콘 ----------
 const WIZ_ORANGE = "#e6983c";
 function svgIcon(inner) {
-  return `<svg class="btn-icon-svg" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="${WIZ_ORANGE}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+  return `<svg class="btn-icon-svg" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
 }
 const ICONS = {
-  star: svgIcon(`<path fill="${WIZ_ORANGE}" stroke="none" d="M12 2.7l2.85 6.02 6.65.68-4.98 4.5 1.46 6.53L12 17.9l-5.98 3.53 1.46-6.53-4.98-4.5 6.65-.68L12 2.7z"/>`),
+  star: svgIcon(`<path fill="currentColor" stroke="none" d="M12 2.7l2.85 6.02 6.65.68-4.98 4.5 1.46 6.53L12 17.9l-5.98 3.53 1.46-6.53-4.98-4.5 6.65-.68L12 2.7z"/>`),
   search: svgIcon(`<circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15.2" y2="15.2"/>`),
   "trending-up": svgIcon(`<path d="M3 17l6-6 4 4 8-8"/><path d="M15 6h6v6"/>`),
   "trending-down": svgIcon(`<path d="M3 7l6 6 4-4 8 8"/><path d="M15 17h6v-6"/>`),
-  flame: svgIcon(`<path fill="${WIZ_ORANGE}" stroke="none" d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11Z"/>`),
+  flame: svgIcon(`<path fill="currentColor" stroke="none" d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11Z"/>`),
   barrel: svgIcon(`<rect x="6" y="4" width="12" height="16" rx="2"/><path d="M6 9h12M6 15h12"/>`),
   exchange: svgIcon(`<path d="M4 8h13l-3-3M17 8l-3 3"/><path d="M20 16H7l3-3M7 16l3 3"/>`),
   coin: svgIcon(`<circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10c0-1.2 1.2-2 2.5-2s2.5.7 2.5 1.8-1.2 1.5-2.5 1.5-2.5.6-2.5 1.7 1.2 1.8 2.5 1.8 2.5-.7 2.5-1.8"/>`),
@@ -25,9 +25,9 @@ const ICONS = {
   calendar: svgIcon(`<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/>`),
   newspaper: svgIcon(`<rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M7.5 8h6M7.5 12h9M7.5 16h9"/>`),
   rocket: svgIcon(
-    `<path d="M12 2c2.5 2 4 5.5 4 9 0 2-1 4-2 5v3l-2-1-2 1v-3c-1-1-2-3-2-5 0-3.5 1.5-7 4-9Z"/><circle cx="12" cy="10" r="1.4" fill="${WIZ_ORANGE}" stroke="none"/><path d="M9 16l-2 4M15 16l2 4"/>`
+    `<path d="M12 2c2.5 2 4 5.5 4 9 0 2-1 4-2 5v3l-2-1-2 1v-3c-1-1-2-3-2-5 0-3.5 1.5-7 4-9Z"/><circle cx="12" cy="10" r="1.4" fill="currentColor" stroke="none"/><path d="M9 16l-2 4M15 16l2 4"/>`
   ),
-  wallet: svgIcon(`<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="17" cy="14.5" r="1.2" fill="${WIZ_ORANGE}" stroke="none"/>`),
+  wallet: svgIcon(`<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="17" cy="14.5" r="1.2" fill="currentColor" stroke="none"/>`),
   dollar: svgIcon(`<path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>`),
   calculator: svgIcon(
     `<rect x="5" y="3" width="14" height="18" rx="2"/><rect x="7.5" y="5.5" width="9" height="3.5" rx="0.5"/><path stroke-width="2.6" d="M8.5 13h.01M12 13h.01M15.5 13h.01M8.5 17h.01M12 17h.01M15.5 17h.01"/>`
@@ -72,7 +72,6 @@ const shareKakaoBtn = el("shareKakaoBtn");
 const shareInstaBtn = el("shareInstaBtn");
 const shareSaveBtn = el("shareSaveBtn");
 const statusBox = el("statusBox");
-const siteLogo = el("siteLogo");
 const results = el("results");
 const fixedHeader = el("fixedHeader");
 const loadingSplash = el("loadingSplash");
@@ -643,6 +642,67 @@ function getKrVolMetrics() {
     });
   }
   return krVolMetricsPromise;
+}
+
+// ---------- 포모지수 — 국내(KR) 종목의 "공포지수" 자리에 VIX 대신 쓰는 자체 개발 지표 ----------
+// 공식: (코스피200+코스닥150 약 350종목 중 52주 신고가 종목수/전체) - (52주 신저가 종목수/전체)
+// 값이 클수록(신고가 종목이 몰림) 시장 과열(FOMO, 고점 경신 쏠림), 작을수록(음수, 신저가 종목이 몰림) 시장 공포·투매
+// 실시간 계산은 350종목을 매번 스캔해야 해 브라우저에서 하기엔 무겁고 느려서, Worker가 Cron으로 하루 한 번만 계산해 KV에 저장한
+// 값을 그대로 읽어옴(가격은 실시간이어도 "며칠 전 신고가/신저가 분포"라 하루 지연이 체감상 문제되지 않음)
+const KR_FOMO_INDEX_API = "https://us-stock.yeop2ad.workers.dev/kr-fomo-index";
+let krFomoIndexPromise = null;
+function getKrFomoMetrics() {
+  if (!krFomoIndexPromise) {
+    krFomoIndexPromise = fetch(KR_FOMO_INDEX_API)
+      .then((res) => {
+        if (!res.ok) throw new Error("포모지수를 가져오지 못했습니다.");
+        return res.json();
+      })
+      .then((data) => {
+        const history = Array.isArray(data.history) ? data.history : [];
+        const prev = history.length >= 2 ? history[history.length - 2] : null;
+        return {
+          score: typeof data.score === "number" ? data.score : null,
+          changeAbs: prev && typeof prev.score === "number" && typeof data.score === "number" ? data.score - prev.score : null,
+          date: data.date || null,
+        };
+      })
+      .catch((e) => {
+        krFomoIndexPromise = null;
+        throw e;
+      });
+  }
+  return krFomoIndexPromise;
+}
+// 포모지수는 값이 작을수록(음수, 신저가 쏠림) VIX의 "고fear=역발상 매수 찬스"와 같은 개념이 되도록 5단계로 등급화
+function fomoGrade(score) {
+  if (score === null || score === undefined || Number.isNaN(score)) return { label: "N/A" };
+  if (score <= -0.15) return { label: "패닉 (투자 황금기)" };
+  if (score <= -0.05) return { label: "공포" };
+  if (score < 0.05) return { label: "안심" };
+  if (score < 0.15) return { label: "경계" };
+  return { label: "과열 (FOMO)" };
+}
+// 원점수(-1~1, 실제로는 대부분 -0.3~0.3 사이)를 %p 단위로 환산해 사람이 읽기 쉬운 정수로 표시
+function fomoDisplayValue(score) {
+  if (score === null || score === undefined || Number.isNaN(score)) return "N/A";
+  const pt = Math.round(score * 100);
+  return `${pt >= 0 ? "+" : ""}${pt}`;
+}
+function fomoLineHtml(score, changeAbs) {
+  if (score === null || score === undefined) return "";
+  const pt = Math.round(score * 100);
+  const changeStr =
+    changeAbs !== null && changeAbs !== undefined && Number.isFinite(changeAbs)
+      ? `(전일대비 ${changeAbs >= 0 ? "+" : ""}${Math.round(changeAbs * 100)}%p)`
+      : "";
+  return `<br>포모지수 : ${pt >= 0 ? "+" : ""}${pt}%p ${changeStr}`;
+}
+// scoreBgStyleAttr는 "값이 클수록 더 하얗게(더 fear/attractive)"라는 전제라, 포모지수는 부호가 반대(음수일수록 fear)이므로
+// -score*100(=fear 강도, 신저가 쏠림일수록 커짐)으로 뒤집어 넣어 기존 배경색 로직을 그대로 재사용
+function fomoBgStyleAttr(score) {
+  if (score === null || score === undefined || Number.isNaN(score)) return scoreBgStyleAttr(null, -15, 15, "fear");
+  return scoreBgStyleAttr(-score * 100, -15, 15, "fear");
 }
 
 // ---------- 점수 색상 통일: 상승압력(파랑)·투자안정(초록)·공포지수(주황) 세 계열 — 텍스트/보더는 계열 고정색,
@@ -1838,6 +1898,7 @@ const trendButtons = {
   volume: el("trendVolumeBtn"),
   plunge: el("trendPlungeBtn"),
   surge: el("trendSurgeBtn"),
+  dividend: el("trendDividendBtn"),
   pressure: el("trendPressureBtn"),
   usEtf: el("trendUsEtfBtn"),
   krEtf: el("trendKrEtfBtn"),
@@ -2165,7 +2226,7 @@ document.querySelectorAll(".more-panel-item").forEach((btn) => {
 bottomNavButtons.home.addEventListener("click", () => {
   setBottomNavActive("home");
   closeCompanyPanel();
-  openSearchWizardGate();
+  switchTab(TAB_ORDER.indexOf("watchlist"));
 });
 bottomNavButtons.calendar.addEventListener("click", () => {
   setBottomNavActive("calendar");
@@ -2196,6 +2257,7 @@ function closeMarketPanel() {
   window.setTimeout(() => { el("marketPanel").style.display = "none"; }, 280);
   marketPanelOpen = false;
   stopIndexAutoRefresh();
+  setBottomNavActive("home");
 }
 el("marketPanelCloseBtn").addEventListener("click", closeMarketPanel);
 
@@ -2213,6 +2275,7 @@ function openCalendarPanel() {
 function closeCalendarPanel() {
   el("calendarPanel").classList.remove("open");
   window.setTimeout(() => { el("calendarPanel").style.display = "none"; }, 280);
+  setBottomNavActive("home");
 }
 el("calendarPanelCloseBtn").addEventListener("click", closeCalendarPanel);
 
@@ -2446,16 +2509,6 @@ el("wlGroupTabs").addEventListener("click", (e) => {
 });
 el("wlGroupManageBtn").addEventListener("click", () => openWlGroupModal());
 
-// ---------- 관심종목 상단 시장(미국/한국) 탭 — 완전 별도 저장공간을 전환 ----------
-el("wlMarketTabs").addEventListener("click", (e) => {
-  const tab = e.target.closest("[data-wl-market]");
-  if (!tab) return;
-  const market = tab.dataset.wlMarket;
-  if (market === getWatchlistActiveMarket()) return;
-  setWatchlistActiveMarket(market);
-  renderWatchlistList();
-});
-
 // ---------- 관심종목 그룹 관리 모달(이름 변경·삭제·추가) ----------
 function wlGroupModalRowHtml(g) {
   return `
@@ -2581,10 +2634,7 @@ async function renderWatchlistList() {
   const statusEl = el("watchlistStatus");
   const listEl = el("watchlistList");
 
-  const activeMarket = getWatchlistActiveMarket();
-  el("wlMarketTabs")
-    .querySelectorAll("[data-wl-market]")
-    .forEach((btn) => btn.classList.toggle("active", btn.dataset.wlMarket === activeMarket));
+  syncMarketModeUI();
 
   const groups = getWatchlistGroups();
   const rawList = getWatchlist();
@@ -2757,9 +2807,9 @@ function renderWizardRoot() {
   return `
     <p class="wizard-question">${escapeHtml(name)}님, 투자할 기업을 찾고 계신가요?</p>
     <div class="wizard-root-options">
-      <button type="button" class="wizard-root-option" data-wizard-action="root-a"><b>A. [랭킹찾기]</b> 각 부문별 랭킹으로 볼래요.</button>
-      <button type="button" class="wizard-root-option" data-wizard-action="root-b"><b>B. [선택찾기]</b> 내가 좋아하는 분야가 있어요.</button>
-      <button type="button" class="wizard-root-option" data-wizard-action="root-c"><b>C. [자동찾기]</b> 잘모르겠어요. 알아서 찾아주세요.</button>
+      <button type="button" class="wizard-root-option" data-wizard-action="root-a"><b>🏆 A. [랭킹찾기]</b> 각 부문별 랭킹으로 볼래요.</button>
+      <button type="button" class="wizard-root-option" data-wizard-action="root-b"><b>🎯 B. [선택찾기]</b> 내가 좋아하는 분야가 있어요.</button>
+      <button type="button" class="wizard-root-option" data-wizard-action="root-c"><b>🤖 C. [자동찾기]</b> 잘모르겠어요. 알아서 찾아주세요.</button>
     </div>
   `;
 }
@@ -3070,14 +3120,29 @@ function navigateToTicker(ticker, { push = true } = {}) {
   runAnalysis(ticker);
 }
 
-// 좌측 상단 로고를 누르면 기업 패널을 닫고 메인 탭바(US Markets 등)로 돌아감
-siteLogo.addEventListener("click", () => closeCompanyPanel());
-siteLogo.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" || e.key === " ") {
-    e.preventDefault();
-    siteLogo.click();
+// ---------- 좌측 상단 국내/해외 토글 — 관심종목 시장 전환과 연동되고, 전체 고정 아이콘 색상(주황↔파랑)도 함께 바뀜 ----------
+// 국내 탭은 아직 해외와 동일한 항목·데이터를 보여주는 1단계(색상 전환만) 상태이며, 실제 국내 전용 콘텐츠는 추후 단계에서 채움
+const marketModeKrBtn = el("marketModeKrBtn");
+const marketModeUsBtn = el("marketModeUsBtn");
+function syncMarketModeUI() {
+  const isKr = getWatchlistActiveMarket() === "KR";
+  document.body.dataset.marketMode = isKr ? "kr" : "us";
+  marketModeKrBtn.classList.toggle("active", isKr);
+  marketModeUsBtn.classList.toggle("active", !isKr);
+}
+function setAppMarketMode(mode) {
+  const market = mode === "kr" ? "KR" : "US";
+  if (market === getWatchlistActiveMarket()) {
+    syncMarketModeUI();
+    return;
   }
-});
+  setWatchlistActiveMarket(market);
+  syncMarketModeUI();
+  renderWatchlistList();
+}
+marketModeKrBtn.addEventListener("click", () => setAppMarketMode("kr"));
+marketModeUsBtn.addEventListener("click", () => setAppMarketMode("us"));
+syncMarketModeUI();
 
 window.addEventListener("popstate", () => {
   const ticker = new URLSearchParams(location.search).get("ticker");
@@ -3326,11 +3391,6 @@ for (const [ko, tk] of Object.entries(KOREAN_COMPANY_NAMES)) {
   if (!TICKER_TO_KOREAN_NAME[tk]) TICKER_TO_KOREAN_NAME[tk] = ko;
 }
 
-let mainTickerSuggestTimer = null;
-function hideMainTickerSuggest() {
-  tickerSuggest.style.display = "none";
-  tickerSuggest.innerHTML = "";
-}
 // 야후 검색 결과의 거래소 코드/표기를 사람이 읽기 쉬운 상장 위치로 정규화(NYSE / NASDAQ / NYSE American 등)
 function normalizeExchange(q) {
   const raw = ((q && (q.exchDisp || q.exchange)) || "").toString();
@@ -3341,83 +3401,106 @@ function normalizeExchange(q) {
   if (s.includes("NYSE") || s === "NYQ") return "NYSE";
   return raw; // 그 외는 야후 표기 그대로 노출
 }
-function renderMainTickerSuggest(items) {
-  if (items.length === 0) {
-    hideMainTickerSuggest();
-    return;
+// 티커 검색 입력 바(입력→자동완성→선택/엔터로 이동)를 하나의 컨트롤러로 묶어, 헤더 검색 오버레이와
+// 기업검색 위저드 상단 바에 동일한 동작을 붙일 수 있게 함
+function attachTickerSearchBar(inputEl, suggestEl, analyzeBtnEl, { onBeforeNavigate } = {}) {
+  let suggestTimer = null;
+  function hideSuggest() {
+    suggestEl.style.display = "none";
+    suggestEl.innerHTML = "";
   }
-  tickerSuggest.innerHTML = items
-    .map((it) => {
-      const displayName = TICKER_TO_KOREAN_NAME[it.symbol] || it.name || it.symbol;
-      return `<div class="chat-ticker-option" data-symbol="${escapeHtml(it.symbol)}">
-          ${tickerLogoHtml(it.symbol)}
-          <span class="chat-ticker-option-name">${escapeHtml(displayName)}</span>
-          <span class="chat-ticker-option-sub">${escapeHtml(it.symbol)}${it.exchange ? ` · ${escapeHtml(it.exchange)}` : ""}</span>
-        </div>`;
-    })
-    .join("");
-  tickerSuggest.style.display = "block";
-}
-async function handleMainTickerInput() {
-  const q = tickerInput.value.trim();
-  if (mainTickerSuggestTimer) clearTimeout(mainTickerSuggestTimer);
-  if (q.length < 1) {
-    hideMainTickerSuggest();
-    return;
-  }
-
-  // 한국어 회사명 매칭은 목록이 작아 네트워크 응답을 기다리지 않고 바로 화면에 표시(거래소는 영문 결과에서 보강)
-  // 미국 종목의 한글 닉네임(KOREAN_COMPANY_NAMES) + 한국 상장 종목 실제 회사명(KR_NAME_TO_TICKER) 둘 다 부분일치로 검색.
-  // 야후 검색 API는 한글 질의를 거부해서("Invalid Search Query") 코스피/코스닥 종목은 이 로컬 매칭이 사실상 유일한 경로.
-  const koreanMatches = [
-    ...Object.entries(KOREAN_COMPANY_NAMES)
-      .filter(([name]) => name.includes(q))
-      .map(([name, symbol]) => ({ symbol, name, exchange: null })),
-    ...Object.entries(KR_NAME_TO_TICKER)
-      .filter(([name]) => name.includes(q))
-      .map(([name, symbol]) => ({ symbol, name, exchange: symbol.endsWith(".KQ") ? "코스닥" : "코스피" })),
-  ];
-  renderMainTickerSuggest(koreanMatches.slice(0, 8));
-
-  mainTickerSuggestTimer = setTimeout(async () => {
-    let englishMatches = [];
-    try {
-      const data = await yahooSearch(q);
-      englishMatches = ((data && data.quotes) || [])
-        .filter((qt) => qt.symbol)
-        .map((qt) => ({ symbol: qt.symbol, name: qt.shortname || qt.longname || "", exchange: normalizeExchange(qt) }));
-    } catch {
-      // 검색 실패 시 한국어 매칭 결과만이라도 유지
+  function renderSuggest(items) {
+    if (items.length === 0) {
+      hideSuggest();
+      return;
     }
-    if (tickerInput.value.trim() !== q) return; // 응답이 오는 사이 검색어가 바뀌었으면 무시(경쟁 상태 방지)
-    // 한글 매칭에 상장 거래소가 없으면 같은 심볼의 영문 결과에서 보강
-    const exBySymbol = new Map(englishMatches.map((e) => [e.symbol, e.exchange]));
-    koreanMatches.forEach((k) => {
-      if (!k.exchange && exBySymbol.has(k.symbol)) k.exchange = exBySymbol.get(k.symbol);
-    });
-    const seen = new Set();
-    const merged = [...koreanMatches, ...englishMatches].filter((it) => {
-      if (seen.has(it.symbol)) return false;
-      seen.add(it.symbol);
-      return true;
-    });
-    renderMainTickerSuggest(merged.slice(0, 8));
-  }, 250);
-}
-
-tickerSuggest.addEventListener("click", (e) => {
-  const option = e.target.closest(".chat-ticker-option");
-  if (!option) return;
-  tickerInput.value = option.dataset.symbol;
-  hideMainTickerSuggest();
-  triggerSearch();
-});
-tickerInput.addEventListener("input", handleMainTickerInput);
-document.addEventListener("click", (e) => {
-  if (!tickerInput.contains(e.target) && !tickerSuggest.contains(e.target)) {
-    hideMainTickerSuggest();
+    suggestEl.innerHTML = items
+      .map((it) => {
+        const displayName = TICKER_TO_KOREAN_NAME[it.symbol] || it.name || it.symbol;
+        return `<div class="chat-ticker-option" data-symbol="${escapeHtml(it.symbol)}">
+            ${tickerLogoHtml(it.symbol)}
+            <span class="chat-ticker-option-name">${escapeHtml(displayName)}</span>
+            <span class="chat-ticker-option-sub">${escapeHtml(it.symbol)}${it.exchange ? ` · ${escapeHtml(it.exchange)}` : ""}</span>
+          </div>`;
+      })
+      .join("");
+    suggestEl.style.display = "block";
   }
-});
+  async function handleInput() {
+    const q = inputEl.value.trim();
+    if (suggestTimer) clearTimeout(suggestTimer);
+    if (q.length < 1) {
+      hideSuggest();
+      return;
+    }
+
+    // 한국어 회사명 매칭은 목록이 작아 네트워크 응답을 기다리지 않고 바로 화면에 표시(거래소는 영문 결과에서 보강)
+    // 미국 종목의 한글 닉네임(KOREAN_COMPANY_NAMES) + 한국 상장 종목 실제 회사명(KR_NAME_TO_TICKER) 둘 다 부분일치로 검색.
+    // 야후 검색 API는 한글 질의를 거부해서("Invalid Search Query") 코스피/코스닥 종목은 이 로컬 매칭이 사실상 유일한 경로.
+    const koreanMatches = [
+      ...Object.entries(KOREAN_COMPANY_NAMES)
+        .filter(([name]) => name.includes(q))
+        .map(([name, symbol]) => ({ symbol, name, exchange: null })),
+      ...Object.entries(KR_NAME_TO_TICKER)
+        .filter(([name]) => name.includes(q))
+        .map(([name, symbol]) => ({ symbol, name, exchange: symbol.endsWith(".KQ") ? "코스닥" : "코스피" })),
+    ];
+    renderSuggest(koreanMatches.slice(0, 8));
+
+    suggestTimer = setTimeout(async () => {
+      let englishMatches = [];
+      try {
+        const data = await yahooSearch(q);
+        englishMatches = ((data && data.quotes) || [])
+          .filter((qt) => qt.symbol)
+          .map((qt) => ({ symbol: qt.symbol, name: qt.shortname || qt.longname || "", exchange: normalizeExchange(qt) }));
+      } catch {
+        // 검색 실패 시 한국어 매칭 결과만이라도 유지
+      }
+      if (inputEl.value.trim() !== q) return; // 응답이 오는 사이 검색어가 바뀌었으면 무시(경쟁 상태 방지)
+      // 한글 매칭에 상장 거래소가 없으면 같은 심볼의 영문 결과에서 보강
+      const exBySymbol = new Map(englishMatches.map((e) => [e.symbol, e.exchange]));
+      koreanMatches.forEach((k) => {
+        if (!k.exchange && exBySymbol.has(k.symbol)) k.exchange = exBySymbol.get(k.symbol);
+      });
+      const seen = new Set();
+      const merged = [...koreanMatches, ...englishMatches].filter((it) => {
+        if (seen.has(it.symbol)) return false;
+        seen.add(it.symbol);
+        return true;
+      });
+      renderSuggest(merged.slice(0, 8));
+    }, 250);
+  }
+  function trigger() {
+    if (!inputEl.value.trim()) {
+      showToast("분석할 기업의 티커나 한글 회사명을 입력해주세요.");
+      return;
+    }
+    const ticker = resolveKoreanTicker(inputEl.value);
+    hideSuggest();
+    if (onBeforeNavigate) onBeforeNavigate();
+    navigateToTicker(ticker);
+  }
+  suggestEl.addEventListener("click", (e) => {
+    const option = e.target.closest(".chat-ticker-option");
+    if (!option) return;
+    inputEl.value = option.dataset.symbol;
+    hideSuggest();
+    trigger();
+  });
+  inputEl.addEventListener("input", handleInput);
+  document.addEventListener("click", (e) => {
+    if (!inputEl.contains(e.target) && !suggestEl.contains(e.target)) {
+      hideSuggest();
+    }
+  });
+  analyzeBtnEl.addEventListener("click", trigger);
+  inputEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") trigger();
+  });
+  return { trigger, hideSuggest };
+}
 
 // ---------- 메인 분석 흐름 ----------
 // 입력값을 티커로 해석 — 한글 회사명(예: "애플" → AAPL), "애플(AAPL)"처럼 괄호 안 티커 표기, 영문 티커를 모두 지원
@@ -3431,18 +3514,13 @@ function resolveKoreanTicker(input) {
   return raw.toUpperCase();
 }
 
+const mainTickerSearchBar = attachTickerSearchBar(tickerInput, tickerSuggest, analyzeBtn);
 function triggerSearch() {
-  if (!tickerInput.value.trim()) {
-    setStatus("error", "❌ 분석할 기업의 티커나 한글 회사명을 입력해주세요. (예: AAPL, 애플)");
-    return;
-  }
-  const ticker = resolveKoreanTicker(tickerInput.value);
-  hideMainTickerSuggest();
-  navigateToTicker(ticker);
+  mainTickerSearchBar.trigger();
 }
-analyzeBtn.addEventListener("click", triggerSearch);
-tickerInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") triggerSearch();
+// 기업검색 위저드 상단의 검색 바 — 헤더 검색과 동일하게 동작하되, 종목 선택 시 위저드 패널을 닫고 기업 패널을 보여줌
+attachTickerSearchBar(el("wizardTickerInput"), el("wizardTickerSuggest"), el("wizardAnalyzeBtn"), {
+  onBeforeNavigate: closeSearchWizard,
 });
 let currentGroundData = null; // 투자 그라운드(52주 신고가~신저가 5등분)에 쓸 현재 종목의 데이터
 
@@ -3493,7 +3571,13 @@ async function runAnalysis(ticker) {
     renderCompanyIdentity(ticker, quote, meta, getDailyChangePercent(chartData));
     el("summaryChartExpandBtn").dataset.chartSymbol = ticker;
 
-    renderSummary(quote, meta, getDailyChangePercent(chartData)).catch((e) => {
+    // 나스닥·다우존스·S&P500 1년 수익률과, 분석 대상 자신의 지표(차트+재무제표)는
+    // 경쟁사 비교(3)·상승압력도(5)·투자 안정성(6)·미래예측(요약 탭의 🔮 토글) 섹션이 각자 다시 조회하지 않고 공유해서
+    // 프록시 요청 수를 줄이고(속도·안정성 향상) 값도 서로 어긋나지 않도록 함
+    const marketReturnsPromise = getMarketReturns();
+    const selfMetricsPromise = getFullMetrics(ticker);
+
+    renderSummary(quote, meta, getDailyChangePercent(chartData), selfMetricsPromise, marketReturnsPromise).catch((e) => {
       el("summarySection").innerHTML = `<p class="error-inline">사업 요약을 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
@@ -3504,12 +3588,6 @@ async function runAnalysis(ticker) {
     renderQuarterlyEarnings(ticker, meta.currency).catch((e) => {
       el("quarterlyEarningsSection").innerHTML = `<p class="error-inline">분기 실적 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
-
-    // 나스닥·다우존스·S&P500 1년 수익률과, 분석 대상 자신의 지표(차트+재무제표)는
-    // 경쟁사 비교(3)·상승압력도(5)·투자 안정성(6) 섹션이 각자 다시 조회하지 않고 공유해서
-    // 프록시 요청 수를 줄이고(속도·안정성 향상) 값도 서로 어긋나지 않도록 함
-    const marketReturnsPromise = getMarketReturns();
-    const selfMetricsPromise = getFullMetrics(ticker);
 
     renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise);
 
@@ -3734,7 +3812,7 @@ peersToggleBtn.addEventListener("click", () => {
 });
 
 // ---------- 1. 사업 요약 ----------
-async function renderSummary(quote, meta, changePct) {
+async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketReturnsPromise) {
   el("summarySection").innerHTML = `<p class="muted">불러오는 중...</p>`;
   // 새 종목 검색 시 이전 종목의 과거분석/미래예측/s리포트 펼침 상태를 초기화(과거분석 3버튼 결과는 종목 무관이라 내용은 유지, 열림 상태만 접음)
   historicalInlineWrap.style.display = "none";
@@ -3843,7 +3921,7 @@ async function renderSummary(quote, meta, changePct) {
     futureToggleBtn.classList.add("active");
     if (!futureLoaded) {
       futureLoaded = true;
-      await runFuturePrediction(symbol);
+      await runFuturePrediction(symbol, selfMetricsPromise, marketReturnsPromise);
     }
   });
 
@@ -3890,15 +3968,25 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
   try {
     const [metrics, { sp500Return, kospi200Return }] = await Promise.all([selfMetricsPromise, marketReturnsPromise, krCreditRatingReady]);
     const isKr = isKrTicker(metrics.symbol);
-    const macroMetrics = isKr
-      ? await getKrVolMetrics()
-          .then((m) => ({ vix: m.vol, vixChangePct: m.volChangePct }))
-          .catch(() => ({ vix: null }))
-      : await getMacroMetrics().catch(() => ({ vix: null }));
     const attractiveness = computeAttractivenessScore(metrics);
     const risk = computeRiskScore(metrics, sp500Return, kospi200Return);
     const isIPO = isRecentIPO(metrics.firstTradeDate);
-    const vix = macroMetrics.vix;
+
+    let macroBadgeHtml;
+    if (isKr) {
+      const fomo = await getKrFomoMetrics().catch(() => ({ score: null, changeAbs: null }));
+      macroBadgeHtml = `
+        <div class="mini-score-circle macro"${fomoBgStyleAttr(fomo.score)}>${fomoDisplayValue(fomo.score)}</div>
+        <span class="mini-score-label">포모지수${fomoLineHtml(fomo.score, fomo.changeAbs)}</span>
+      `;
+    } else {
+      const macroMetrics = await getMacroMetrics().catch(() => ({ vix: null }));
+      const vix = macroMetrics.vix;
+      macroBadgeHtml = `
+        <div class="mini-score-circle macro"${scoreBgStyleAttr(vix, 10, 50, "fear")}>${vix !== null && vix !== undefined ? Math.round(vix) : "N/A"}</div>
+        <span class="mini-score-label">S&amp;P500 VIX${vixLineHtml(macroMetrics, "VIX")}</span>
+      `;
+    }
 
     rowEl.innerHTML = `
       <div class="mini-score">
@@ -3910,8 +3998,7 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
         <span class="mini-score-label">투자 안정</span>
       </div>
       <div class="mini-score">
-        <div class="mini-score-circle macro"${scoreBgStyleAttr(vix, 10, 50, "fear")}>${vix !== null && vix !== undefined ? Math.round(vix) : "N/A"}</div>
-        <span class="mini-score-label">${isKr ? "코스피 변동성" : "S&amp;P500 VIX"}${vixLineHtml(macroMetrics, isKr ? "지수" : "VIX")}</span>
+        ${macroBadgeHtml}
       </div>
     `;
   } catch {
@@ -4479,6 +4566,7 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
     ? "시가총액 가점은 KODEX 200 공식 팩트시트에 공개된 상위 10종목 편입비중만 정확한 값이고, 나머지 종목은 그 밖 비중을 확인할 free 소스가 없어 미편입과 동일하게 0점 처리됩니다(실제로는 낮은 비중으로 편입돼 있을 수 있음)."
     : "시가총액 가점은 실제 펀드 편입 비중이 아니라 시가총액 기준 추정치입니다.";
 
+  const stabilityColor = SCORE_COLOR_FAMILY.stability;
   el("riskSection").innerHTML = `
     <div class="score-wrap">
       <div class="score-badge risk">
@@ -4486,13 +4574,31 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
         <div class="score-den">/ 10</div>
       </div>
       <div class="score-details">
-        <ul>
-          <li>🏅 ${ratingLabel}: <b>${rating ? rating : ratingNoneText}</b> (${ratingScaleText})</li>
-          <li>📊 ${benchmarkName}과의 1년 수익률 차이: ${relDiff !== null ? `<b>${relDiff.toFixed(1)}%p</b> (${benchmarkName} <b>${fmtPct(benchmarkReturn)}</b>)` : "N/A"} (차이가 작을수록 가점)</li>
-          <li>💵 순이익률(순이익/매출): <b>${netMargin !== null ? (netMargin * 100).toFixed(1) + "%" : "N/A"}</b> (높을수록 가점, 적자면 0점, ${marginScaleText})</li>
-          <li>🏦 ${capLabel}: <b>${capValueText}</b> (${capScaleText})</li>
-          <li>세부 점수 — 투자등급 ${isCreditReasonString(rating) ? rating : creditScore.toFixed(1) + "/4"}, ${benchmarkName} 대비 모멘텀 ${marketScore.toFixed(1)}/2, 순이익률 ${marginScore.toFixed(1)}/2, 시가총액 가점 ${vtsaxScore.toFixed(1)}/2</li>
-        </ul>
+        ${scoreMethodBarRow(
+          "①",
+          ratingLabel,
+          isCreditReasonString(rating) ? null : creditScore,
+          4,
+          `${rating ? rating : ratingNoneText} (${ratingScaleText})`,
+          stabilityColor
+        )}
+        ${scoreMethodBarRow(
+          "②",
+          `${benchmarkName} 대비 모멘텀`,
+          marketScore,
+          2,
+          `${benchmarkName}과의 1년 수익률 차이: ${relDiff !== null ? `<b>${relDiff.toFixed(1)}%p</b> (${benchmarkName} <b>${fmtPct(benchmarkReturn)}</b>)` : "N/A"} (차이가 작을수록 가점)`,
+          stabilityColor
+        )}
+        ${scoreMethodBarRow(
+          "③",
+          "순이익률",
+          marginScore,
+          2,
+          `순이익÷매출: <b>${netMargin !== null ? (netMargin * 100).toFixed(1) + "%" : "N/A"}</b> (${marginScaleText})`,
+          stabilityColor
+        )}
+        ${scoreMethodBarRow("④", capLabel, vtsaxScore, 2, `${capValueText} (${capScaleText})`, stabilityColor)}
         <p class="disclaimer">
           ⚠️ 점수가 높을수록(10점에 가까울수록) 재무적으로 더 안정적/저위험임을 의미합니다.
           투자등급, ${benchmarkName} 대비 수익률, 순이익률, 시가총액 가점을 조합한 <b>단순 참고용 정량 지표</b>이며, 투자 자문이나 매수/매도 추천이 아닙니다.
@@ -4509,28 +4615,46 @@ async function renderMacro(ticker) {
   el("macroSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
   const isKr = isKrTicker(ticker);
-  const { vix, vixChangePct } = isKr ? await getKrVolMetrics().then((m) => ({ vix: m.vol, vixChangePct: m.volChangePct })) : await getMacroMetrics();
-  const grade = vixGrade(vix);
+  el("macroSectionTitle").textContent = isKr ? "포모지수" : "S&P 공포지수";
 
+  if (isKr) {
+    const fomo = await getKrFomoMetrics().catch(() => ({ score: null, changeAbs: null, date: null }));
+    const grade = fomoGrade(fomo.score);
+    const liveLine =
+      fomo.score !== null
+        ? `<p class="score-macro-vix-line">😱 포모지수(자체 개발, ${escapeHtml(fomo.date || "")} 기준)${fomoLineHtml(fomo.score, fomo.changeAbs)}</p>`
+        : "";
+    const fomoNumText = fomo.score === null || fomo.score === undefined ? "N/A" : `${fomoDisplayValue(fomo.score)}%p`;
+    el("macroSection").innerHTML = `
+      ${liveLine}
+      <div class="score-wrap">
+        <div class="score-badge macro"${fomoBgStyleAttr(fomo.score)}>
+          <div class="score-num">${fomoNumText}</div>
+          <div class="score-den">${grade.label}</div>
+        </div>
+        <div class="score-details">
+          <ul>
+            <li>코스피200+코스닥150(약 350종목) 중 52주 신고가 종목 비중에서 52주 신저가 종목 비중을 뺀 값(%p)</li>
+            <li>-15%p 이하 <b>패닉(역발상 투자 황금기)</b> · -5~-15%p <b>공포</b> · -5~+5%p <b>안심</b> · +5~+15%p <b>경계</b> · +15%p 이상 <b>과열(FOMO)</b></li>
+          </ul>
+          <p class="disclaimer">
+            ⚠️ 특정 종목과 무관한 코스피·코스닥 시장 전체 쏠림 지표이며, "신저가가 몰릴수록(공포) 저가 매수 기회"라는
+            역발상 관점을 반영한 등급입니다. 투자 자문이나 매수/매도 추천이 아니며, 실제로는 하락이 더 깊어질 수도 있습니다.
+            VIX와 달리 이 앱이 자체 개발한 지표로, 하루 한 번(Worker Cron)만 갱신됩니다.
+          </p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const { vix, vixChangePct } = await getMacroMetrics();
+  const grade = vixGrade(vix);
   const vixPctStr =
     vixChangePct !== null && vixChangePct !== undefined && Number.isFinite(vixChangePct)
       ? `(${vixChangePct >= 0 ? "+" : ""}${vixChangePct.toFixed(2)}%)`
       : "";
-  const vixLiveLine =
-    vix !== null && vix !== undefined
-      ? isKr
-        ? `<p class="score-macro-vix-line">😱 코스피 실현변동성(자체 계산)<br>지수 : ${vix.toFixed(1)}${vixPctStr}</p>`
-        : `<p class="score-macro-vix-line">😱 S&P500 VIX(FRED: VIXCLS)<br>VIX : ${vix.toFixed(1)}${vixPctStr}</p>`
-      : "";
-
-  const disclaimerText = isKr
-    ? `⚠️ 특정 종목과 무관한 코스피 시장 전체 변동성 지표이며, "공포가 클수록 저가 매수 기회"라는
-       역발상 관점을 반영한 등급입니다. 투자 자문이나 매수/매도 추천이 아니며, 실제로는 공포가 더 깊어질 수도 있습니다.
-       이 지수는 한국거래소 공식 VKOSPI(옵션 내재변동성)가 아니라, KOSPI200 최근 20거래일 가격 변동으로 자체
-       계산한 실현변동성 근사치입니다 — 방향성은 비슷하지만 공식 VKOSPI와 숫자가 다를 수 있습니다.`
-    : `⚠️ 특정 종목과 무관한 시장 전체 공포지수(VIX) 수치이며, "공포가 클수록 저가 매수 기회"라는
-       역발상 관점을 반영한 등급입니다. 투자 자문이나 매수/매도 추천이 아니며, 실제로는 공포가 더 깊어질 수도 있습니다.`;
-  const gaugeLabel = isKr ? "코스피 실현변동성(자체 계산, VKOSPI 근사치)" : "VIX(CBOE 변동성지수, FRED 시리즈 VIXCLS)";
+  const vixLiveLine = vix !== null && vix !== undefined ? `<p class="score-macro-vix-line">😱 S&P500 VIX(FRED: VIXCLS)<br>VIX : ${vix.toFixed(1)}${vixPctStr}</p>` : "";
 
   el("macroSection").innerHTML = `
     ${vixLiveLine}
@@ -4541,10 +4665,13 @@ async function renderMacro(ticker) {
       </div>
       <div class="score-details">
         <ul>
-          <li>${gaugeLabel} 수치를 그대로 표시합니다</li>
+          <li>VIX(CBOE 변동성지수, FRED 시리즈 VIXCLS) 수치를 그대로 표시합니다</li>
           <li>20 미만 <b>안심</b> · 20~29 <b>경계</b> · 30~39 <b>공포</b> · 40 이상 <b>패닉(역발상 투자 황금기)</b></li>
         </ul>
-        <p class="disclaimer">${disclaimerText}</p>
+        <p class="disclaimer">
+          ⚠️ 특정 종목과 무관한 시장 전체 공포지수(VIX) 수치이며, "공포가 클수록 저가 매수 기회"라는
+          역발상 관점을 반영한 등급입니다. 투자 자문이나 매수/매도 추천이 아니며, 실제로는 공포가 더 깊어질 수도 있습니다.
+        </p>
       </div>
     </div>
   `;
@@ -4778,6 +4905,119 @@ async function renderValueRanking(
 }
 
 const VALUE_DISCLAIMER = `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> S&amp;P500 편입 종목 전체를 대상으로 계산한 순위이며 투자 자문이 아닙니다.</p>`;
+const KR_VALUE_DISCLAIMER = `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 코스피200+코스닥150(약 350종목) 전체를 대상으로 계산한 순위이며 투자 자문이 아닙니다.</p>`;
+
+// ---------- 국내(KR) 랭킹 공용 인프라 — 코스피200+코스닥150 약 350종목을 스캔해 기업가치·투자동향 랭킹에서 재사용 ----------
+// 기업가치(매출액·현금흐름·순이익 증가, EPS, PER, 투자안정, 시가총액)와 투자동향의 상승압력은 종목당 재무제표까지
+// 조회하는 무거운 스캔(getFullMetrics)을 공유하고, 상승률·하락률·인기종목은 시세만 필요한 가벼운 스캔을 공유함
+let krFullMetricsScanPromise = null;
+function getKrFullMetricsScan() {
+  if (!krFullMetricsScanPromise) {
+    krFullMetricsScanPromise = (async () => {
+      const tickers = await getKrUniverseTickers();
+      const results = await mapWithConcurrency(tickers, 5, (symbol) => getFullMetrics(symbol).catch(() => null));
+      return results.filter(Boolean);
+    })().catch((e) => {
+      krFullMetricsScanPromise = null;
+      throw e;
+    });
+  }
+  return krFullMetricsScanPromise;
+}
+
+let krDailyChangesPromise = null;
+function getKrDailyChanges() {
+  if (!krDailyChangesPromise) {
+    krDailyChangesPromise = (async () => {
+      const tickers = await getKrUniverseTickers();
+      const results = await mapWithConcurrency(tickers, 15, async (symbol) => {
+        const chart = await yahooChart(symbol, "5d", "1d").catch(() => null);
+        const changePct = getDailyChangePercent(chart);
+        const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
+        if (changePct === null || !meta || meta.regularMarketPrice === undefined) return null;
+        const volume = meta.regularMarketVolume !== undefined ? meta.regularMarketVolume : null;
+        return {
+          symbol,
+          name: meta.shortName || meta.longName || symbol,
+          price: meta.regularMarketPrice,
+          currency: meta.currency,
+          changePct,
+          volume,
+          dollarVolume: volume !== null ? meta.regularMarketPrice * volume : null,
+        };
+      });
+      return results.filter(Boolean);
+    })().catch((e) => {
+      krDailyChangesPromise = null;
+      throw e;
+    });
+  }
+  return krDailyChangesPromise;
+}
+
+// dataPromiseFn: getKrFullMetricsScan(무거운 스캔, 기업가치·상승압력용) 또는 getKrDailyChanges(가벼운 스캔, 상승률·하락률·인기종목용)
+// showGrade: 투자안정 점수를 별도 열로 덧붙일지(투자안정 랭킹 자체는 그 점수가 이미 metricCellFn에 있으므로 false)
+async function renderKrRanking(dataPromiseFn, label, statusEl, resultsEl, { mapFn = (list) => list, sortFn, metricHeaderHtml, metricCellFn, noteHtml, showGrade = true }) {
+  resultsEl.innerHTML = "";
+  statusEl.style.display = "block";
+  statusEl.textContent = `코스피200+코스닥150 - ${label} 계산 중(약 1분 소요될 수 있어요)...`;
+
+  try {
+    const [raw, nameMap] = await Promise.all([dataPromiseFn(), getKrSymbolNameMap().catch(() => new Map())]);
+    statusEl.style.display = "none";
+    if (!raw || raw.length === 0) {
+      resultsEl.innerHTML = `<p class="muted">순위를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
+      return;
+    }
+    const ranked = await mapFn(raw.slice());
+    ranked.sort(sortFn);
+    const top50 = ranked.slice(0, 50);
+
+    if (showGrade) {
+      const { sp500Return, kospi200Return } = await getMarketReturnsCached();
+      top50.forEach((r) => {
+        if (r.riskTotal === undefined) r.riskTotal = computeRiskScore(r, sp500Return, kospi200Return).total;
+        if (r.isIPO === undefined) r.isIPO = isRecentIPO(r.firstTradeDate);
+      });
+    }
+    const gradeCellHtml = (r) => (r.isIPO ? "IPO" : scoreRankColorHtml(r.riskTotal, r.riskTotal));
+
+    const rowHtml = (r, i) => `
+      <tr>
+        <td>${i + 1}${r.fiveDayExtremes ? surgeWarningEmoji(r.fiveDayExtremes) : ""}</td>
+        <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(nameMap.get(r.symbol) || r.symbol)}</b></span></td>
+        <td>${r.price !== undefined && r.price !== null ? priceChartLink(r.symbol, fmtPrice(r.price, r.currency)) : "N/A"}</td>
+        <td>${metricCellFn(r)}</td>${showGrade ? `<td>${gradeCellHtml(r)}</td>` : ""}
+      </tr>`;
+
+    function paint(initialCount) {
+      const visible = top50.slice(0, initialCount);
+      const rest = top50.slice(initialCount);
+      resultsEl.innerHTML = `
+        ${noteHtml || ""}
+        <p class="muted" style="font-size:12px;">코스피200+코스닥150 전체 스캔 기준 상위 ${top50.length}개 중 ${visible.length}개 표시</p>
+        <table class="top30-table">
+          <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>${metricHeaderHtml}</th>${showGrade ? `<th>투자<br>안정</th>` : ""}</tr></thead>
+          <tbody>${visible.map(rowHtml).join("")}</tbody>
+        </table>
+        ${rest.length ? `<button type="button" class="cat-btn load-more-btn">더보기 (${visible.length}/${top50.length})</button>` : ""}
+      `;
+      // 결과 영역(valuationResults/trendResults)에는 다른 랭킹(renderValueRanking·scoreAndRenderMovers)이 이미 붙여둔
+      // ".load-more-btn" 위임 리스너가 남아있을 수 있어, 그 핸들러가 이 클릭까지 가로채 다른 결과로 덮어쓰지 않도록 버블링을 막음
+      const moreBtn = resultsEl.querySelector(".load-more-btn");
+      if (moreBtn) {
+        moreBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          resultsEl.querySelector("tbody").insertAdjacentHTML("beforeend", rest.map((r, i) => rowHtml(r, initialCount + i)).join(""));
+          moreBtn.remove();
+        });
+      }
+    }
+    paint(20);
+  } catch (err) {
+    statusEl.textContent = `❌ ${err.message || "오류가 발생했습니다."}`;
+  }
+}
 
 // 가치평가 서브내비에서 현재 선택된 버튼만 활성 표시
 function setValuationActive(activeBtn) {
@@ -4791,6 +5031,13 @@ const bindValuation = (btn, run) =>
 
 async function runValueScreenFromSP500(btn, label, opts) {
   setValuationActive(btn);
+
+  if (getWatchlistActiveMarket() === "KR") {
+    const krOpts = { ...opts, noteHtml: opts.noteHtml === VALUE_DISCLAIMER ? KR_VALUE_DISCLAIMER : opts.noteHtml };
+    await renderKrRanking(getKrFullMetricsScan, label, valuationStatus, valuationResults, krOpts);
+    return;
+  }
+
   valuationStatus.style.display = "block";
   valuationStatus.textContent = "S&P500 종목 목록을 불러오는 중...";
   const allTickers = await getSP500PriorityOrder().catch((e) => {
@@ -4839,7 +5086,7 @@ async function runValueEps() {
   await runValueScreenFromSP500(valuationButtons.eps, "EPS", {
     sortFn: (a, b) => (b.eps ?? -Infinity) - (a.eps ?? -Infinity),
     metricHeaderHtml: "주당순이익(EPS)",
-    metricCellFn: (r) => (r.eps === null || r.eps === undefined ? "N/A" : `$${r.eps.toFixed(2)}`),
+    metricCellFn: (r) => (r.eps === null || r.eps === undefined ? "N/A" : fmtPrice(r.eps, r.currency)),
     noteHtml: VALUE_DISCLAIMER,
   });
 }
@@ -4854,10 +5101,10 @@ async function runValuePer() {
 }
 
 async function runValueStability() {
-  const { sp500Return } = await getMarketReturns();
+  const { sp500Return, kospi200Return } = await getMarketReturns();
   await runValueScreenFromSP500(valuationButtons.stability, "투자 안정", {
     mapFn: (list) =>
-      list.map((m) => ({ ...m, riskTotal: computeRiskScore(m, sp500Return).total, isIPO: isRecentIPO(m.firstTradeDate) })),
+      list.map((m) => ({ ...m, riskTotal: computeRiskScore(m, sp500Return, kospi200Return).total, isIPO: isRecentIPO(m.firstTradeDate) })),
     sortFn: (a, b) => b.riskTotal - a.riskTotal,
     metricHeaderHtml: "투자 안정 점수",
     metricCellFn: (r) => (r.isIPO ? "IPO" : scoreRankColorHtml(r.riskTotal, r.riskTotal)),
@@ -5282,14 +5529,30 @@ const ECON_CALENDAR_CATEGORY_LABEL = {
   cpi: "📈 CPI",
   jobs: "👷 고용지표",
   opex: "📅 옵션만기",
+  pce: "📊 PCE",
+  gdp: "📐 GDP",
+  ism: "🏭 ISM",
+  retail: "🛍️ 소매판매",
+  cnpmi: "🏭 중국PMI",
+  trade: "🚢 수출입",
+  industry: "🏗️ 산업활동",
+  minwage: "💵 최저임금",
 };
-const ECON_CALENDAR_COUNTRY_FLAG = { us: "🇺🇸", kr: "🇰🇷", jp: "🇯🇵" };
+const ECON_CALENDAR_COUNTRY_FLAG = { us: "🇺🇸", kr: "🇰🇷", jp: "🇯🇵", cn: "🇨🇳" };
 const CAL_DOT_CLASS = {
   rate: "cal-dot-rate",
   cpi: "cal-dot-cpi",
   jobs: "cal-dot-jobs",
   "13f": "cal-dot-13f",
   opex: "cal-dot-opex",
+  pce: "cal-dot-pce",
+  gdp: "cal-dot-gdp",
+  ism: "cal-dot-ism",
+  retail: "cal-dot-retail",
+  cnpmi: "cal-dot-cnpmi",
+  trade: "cal-dot-trade",
+  industry: "cal-dot-industry",
+  minwage: "cal-dot-minwage",
 };
 
 // 매달 세 번째 금요일(미국 개별주식·지수옵션 월간 만기일) — 3/6/9/12월은 분기 마감(쿼드러플 위칭)으로 별도 표기
@@ -5536,6 +5799,7 @@ async function runInsightCalendar() {
     : "🏢·💰 항목은 관심종목이 없어 주요 대형주 기준으로 표시 중입니다.";
 
   results.innerHTML = `
+    <p class="muted" style="font-size:12px;margin:0 0 8px;">*관심종목 추가시 분기 실적, 배당락일이 일정에 추가됩니다.</p>
     <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 실적발표·배당락은 과거 발표 주기를 바탕으로 한 추정치, 13F 공시 마감·금리 발표·CPI·고용지표는 2026년 공식 일정 조사 기준(변경될 수 있음), 옵션만기일은 매월 세 번째 금요일로 계산한 값입니다. ${escapeHtml(watchlistNote)} 투자 자문이 아닙니다.</p>
     <div class="econ-cal-list">${rows || `<p class="muted" style="text-align:center;padding:16px 0;">표시할 예정 일정이 없습니다.</p>`}</div>
   `;
@@ -5571,6 +5835,7 @@ async function runCalendarPanel() {
 
   status.style.display = "none";
   results.innerHTML = `
+    <p class="muted" style="font-size:12px;margin:0 0 8px;">*관심종목 추가시 분기 실적, 배당락일이 일정에 추가됩니다.</p>
     <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 실적발표·배당락은 과거 발표 주기를 바탕으로 한 추정치, 13F 공시 마감·금리 발표·CPI·고용지표는 2026년 공식 일정 조사 기준(변경될 수 있음), 옵션만기일은 매월 세 번째 금요일로 계산한 값입니다. ${escapeHtml(watchlistNote)} 투자 자문이 아닙니다.</p>
     <div class="cal-wrap">
       ${thisMonthGrid}
@@ -6267,7 +6532,7 @@ async function fetchOneIndexSnap(item) {
 
 // ---------- 시장 상단 4x2 위젯: 기본 8개 지수를 카드 2장(각 2x2)으로 보여주고, ✎ 수정으로 종목을 바꿀 수 있음 ----------
 const MARKET_WIDGET_KEY = "market_widget_symbols_v1";
-const MARKET_WIDGET_DEFAULT_TICKERS = ["GOLD", "USD/KRW", "KOSPI", "KOSDAQ", "IXIC", "SPX", "DJI", "RUT"];
+const MARKET_WIDGET_DEFAULT_TICKERS = ["KOSPI", "KOSDAQ", "IXIC", "SPX", "GOLD", "USD/KRW", "DJI", "RUT"];
 
 // INDEX_CATEGORIES 전체를 티커 기준으로 평탄화(같은 티커가 여러 카테고리에 중복 등장하면 처음 것을 사용)
 const INDEX_ITEM_BY_TICKER = (() => {
@@ -6637,6 +6902,18 @@ async function runMovers(direction) {
   const label = direction === "surge" ? "상승률" : "하락률";
   setTrendActive(direction === "surge" ? trendButtons.surge : trendButtons.plunge);
   trendResults.innerHTML = "";
+
+  if (getWatchlistActiveMarket() === "KR") {
+    await renderKrRanking(getKrDailyChanges, label, trendStatus, trendResults, {
+      sortFn: (a, b) => (direction === "surge" ? b.changePct - a.changePct : a.changePct - b.changePct),
+      metricHeaderHtml: "등락률",
+      metricCellFn: (r) => fmtGrowthCell(r.changePct),
+      showGrade: false,
+      noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 순위는 전일 대비 등락률(${direction === "surge" ? "상승률 높은" : "하락률 큰"} 순) 기준이며, 코스피200+코스닥150(약 350종목) 중 상위 50개입니다.</p>`,
+    });
+    return;
+  }
+
   trendStatus.style.display = "block";
   trendStatus.textContent = `S&P500 ${label}을 불러오는 중...`;
 
@@ -6662,10 +6939,190 @@ async function runMovers(direction) {
   }
 }
 
+// ---------- 배당률: 최근 1년 지급 배당금 합계 ÷ 현재가 기준 상위 50개, 접속 시 20개만 먼저 표시 ----------
+// 미국은 S&P500, 국내는 코스피200+코스닥150(약 350종목)을 대상으로 함(좌측 상단 국내/해외 토글의 현재 상태를 따름).
+// 배당 지급 이력(2년치, chart API의 events=div)만 조회하면 되는 가벼운 요청이라 전체 종목을 한 번에 스캔해 정확한
+// 순위를 낸 뒤, "더보기"는 추가 네트워크 요청 없이 이미 계산해 둔 나머지 순위를 그대로 펼치기만 함
+let krUniverseDataPromise = null;
+function getKrUniverseData() {
+  if (!krUniverseDataPromise) {
+    krUniverseDataPromise = fetch("data/kr-universe-kospi200-kosdaq150.json", { cache: "no-store" })
+      .then((r) => r.json())
+      .catch((e) => {
+        krUniverseDataPromise = null;
+        throw e;
+      });
+  }
+  return krUniverseDataPromise;
+}
+async function getKrUniverseTickers() {
+  const data = await getKrUniverseData();
+  return [...(data.kospi200 || []), ...(data.kosdaq150 || [])].map((it) => it.symbol);
+}
+// 랭킹 표에 티커 대신 보여줄 한글 회사명 조회용(코스피200+코스닥150 목록에 이미 있는 실제 회사명을 그대로 사용)
+let krSymbolNameMapPromise = null;
+async function getKrSymbolNameMap() {
+  if (!krSymbolNameMapPromise) {
+    krSymbolNameMapPromise = getKrUniverseData().then((data) => {
+      const map = new Map();
+      [...(data.kospi200 || []), ...(data.kosdaq150 || [])].forEach((it) => map.set(it.symbol, it.name));
+      return map;
+    });
+  }
+  return krSymbolNameMapPromise;
+}
+
+// 최근 지급 이력(2년치)으로 배당컷·지급지연 여부를 판정 — 국내는 연 1회, 미국은 분기 1회가 흔해 주기가 서로 다르므로
+// 특정 개월수를 못박지 않고 실제 지급 간격의 평균("자기 자신의 평소 주기")을 기준으로 삼음
+// - cut: 가장 최근 지급액이 그 직전 지급액보다 20% 이상 줄어든 경우(배당컷 의심)
+// - overdue: 마지막 지급 이후 평소 주기의 1.5배 넘게 지났는데 다음 지급이 없는 경우(중단·지연 의심)
+function detectDividendWarning(divEvents) {
+  const dates = Object.values(divEvents)
+    .filter((d) => d && typeof d.amount === "number" && typeof d.date === "number")
+    .map((d) => ({ date: d.date, amount: d.amount }))
+    .sort((a, b) => a.date - b.date);
+  if (dates.length < 2) return null;
+
+  const last = dates[dates.length - 1];
+  const prev = dates[dates.length - 2];
+  if (last.amount < prev.amount * 0.8) return "cut";
+
+  const gaps = [];
+  for (let i = 1; i < dates.length; i++) gaps.push(dates[i].date - dates[i - 1].date);
+  const avgGapSec = gaps.reduce((a, b) => a + b, 0) / gaps.length;
+  const sinceLastSec = Date.now() / 1000 - last.date;
+  if (avgGapSec > 0 && sinceLastSec > avgGapSec * 1.5) return "overdue";
+
+  return null;
+}
+
+async function getDividendYieldInfo(symbol) {
+  try {
+    const data = await yahooDividends(symbol);
+    const result = data && data.chart && data.chart.result && data.chart.result[0];
+    if (!result) return null;
+    const meta = result.meta || {};
+    const price = meta.regularMarketPrice;
+    const divEvents = result.events && result.events.dividends;
+    if (!price || !divEvents) return null;
+    const oneYearAgoSec = Date.now() / 1000 - 365 * 86400;
+    const trailingSum = Object.values(divEvents)
+      .filter((d) => d && d.date >= oneYearAgoSec && typeof d.amount === "number")
+      .reduce((sum, d) => sum + d.amount, 0);
+    if (trailingSum <= 0) return null;
+    return {
+      symbol,
+      price,
+      currency: meta.currency,
+      name: meta.shortName || meta.longName || symbol,
+      yieldPct: (trailingSum / price) * 100,
+      dividendWarning: detectDividendWarning(divEvents),
+    };
+  } catch {
+    return null;
+  }
+}
+
+function dividendWarningHtml(r) {
+  if (r.dividendWarning === "cut") return ` <span class="dividend-warn" title="직전 지급액보다 배당금이 20% 넘게 줄었습니다(배당컷 의심)">⚠️컷</span>`;
+  if (r.dividendWarning === "overdue") return ` <span class="dividend-warn" title="평소 지급 주기보다 오래 배당 지급이 없습니다(지급 중단·지연 의심)">⚠️지연</span>`;
+  return "";
+}
+
+// 한국 종목은 티커 대신 회사명을 그대로 표시(순위표에서 티커보다 알아보기 쉬움), 해외 종목은 기존처럼 티커를 그대로 두고
+// 그 아래에 한글 별칭(없으면 영문 회사명)을 작게 덧붙임(moversTableHtml 등 다른 순위표와 같은 표기 방식)
+function dividendRowHtml(r, i, nameMap) {
+  const krName = nameMap && nameMap.get(r.symbol);
+  const gradeCellHtml = r.isIPO ? "IPO" : r.riskTotal !== undefined ? scoreRankColorHtml(r.riskTotal, r.riskTotal) : "N/A";
+  const tickerCellHtml = krName
+    ? `<span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(krName)}</b></span>`
+    : `<span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(TICKER_TO_KOREAN_NAME[r.symbol] || r.name || "")}</span>`;
+  return `
+    <tr>
+      <td>${i + 1}</td>
+      <td>${tickerCellHtml}</td>
+      <td>${priceChartLink(r.symbol, fmtPrice(r.price, r.currency))}</td>
+      <td>${r.yieldPct.toFixed(2)}%${dividendWarningHtml(r)}</td>
+      <td>${gradeCellHtml}</td>
+    </tr>`;
+}
+
+function renderDividendTable(ranked, universeLabel, initialCount, nameMap) {
+  const visible = ranked.slice(0, initialCount);
+  const rest = ranked.slice(initialCount);
+  trendResults.innerHTML = `
+    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 배당률은 최근 1년간 지급된 배당금 합계 ÷ 현재가 기준(${universeLabel} 대상)이며, 실제 배당 정책은 변경될 수 있습니다. <span class="dividend-warn">⚠️컷</span>은 직전 지급액보다 20% 넘게 줄어든 경우, <span class="dividend-warn">⚠️지연</span>은 평소 지급 주기보다 오래 지급이 없는 경우를 뜻합니다. 투자 자문이 아닙니다.</p>
+    <table class="top30-table">
+      <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>배당률</th><th>투자<br>안정</th></tr></thead>
+      <tbody id="trendDividendBody">${visible.map((r, i) => dividendRowHtml(r, i, nameMap)).join("")}</tbody>
+    </table>
+    ${rest.length ? `<button type="button" class="cat-btn load-more-btn" id="trendDividendMoreBtn">더보기 (${visible.length}/${ranked.length})</button>` : ""}
+  `;
+  if (rest.length) {
+    // trendResults에는 급등주/급락주 등에서 이미 붙여둔 ".load-more-btn" 위임 리스너가 남아있을 수 있어(재사용되는
+    // 같은 컨테이너), 그 핸들러가 이 버튼 클릭까지 가로채 다른 탭의 결과로 덮어쓰지 않도록 버블링을 막음
+    el("trendDividendMoreBtn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      el("trendDividendBody").insertAdjacentHTML("beforeend", rest.map((r, i) => dividendRowHtml(r, initialCount + i, nameMap)).join(""));
+      el("trendDividendMoreBtn").remove();
+    });
+  }
+}
+
+async function runTrendDividend() {
+  setTrendActive(trendButtons.dividend);
+  trendResults.innerHTML = "";
+  trendStatus.style.display = "block";
+
+  const isKr = getWatchlistActiveMarket() === "KR";
+  const universeLabel = isKr ? "코스피200+코스닥150" : "S&P500";
+  trendStatus.textContent = `${universeLabel} 배당률을 계산하는 중...`;
+
+  try {
+    const tickers = isKr ? await getKrUniverseTickers() : await getSP500Tickers();
+    const results = await mapWithConcurrency(tickers, 15, (symbol) => getDividendYieldInfo(symbol), (completed, total) => {
+      trendStatus.textContent = `${completed}/${total} 종목 배당률 확인 중...`;
+    });
+    const ranked = results.filter(Boolean).sort((a, b) => b.yieldPct - a.yieldPct).slice(0, 50);
+    if (ranked.length === 0) throw new Error("배당률 데이터를 가져오지 못했습니다.");
+
+    // 투자안정 점수는 재무제표까지 조회해야 해 배당률 스캔보다 무거우므로, 전체(350~500종목)가 아니라
+    // 이미 추려낸 상위 50개에 대해서만 추가로 조회해서 붙임(다른 랭킹의 전체 스캔보다 훨씬 가벼움)
+    trendStatus.style.display = "block";
+    trendStatus.textContent = `상위 ${ranked.length}개 종목의 투자 안정 점수를 계산하는 중...`;
+    const { sp500Return, kospi200Return } = await getMarketReturnsCached();
+    const fullMetricsList = await mapWithConcurrency(ranked, 5, (r) => getFullMetrics(r.symbol).catch(() => null));
+    ranked.forEach((r, i) => {
+      const m = fullMetricsList[i];
+      if (!m) return;
+      r.riskTotal = computeRiskScore(m, sp500Return, kospi200Return).total;
+      r.isIPO = isRecentIPO(m.firstTradeDate);
+    });
+
+    const nameMap = isKr ? await getKrSymbolNameMap().catch(() => new Map()) : null;
+    trendStatus.style.display = "none";
+    renderDividendTable(ranked, universeLabel, 20, nameMap);
+  } catch (err) {
+    trendStatus.textContent = `❌ ${err.message || "배당률을 가져오지 못했습니다."}`;
+  }
+}
+
 // ---------- 인기종목: 당일 거래대금(가격 × 거래량) 상위 20개, 접속 시 10개만 먼저 표시(옛 틀고정 "인기종목" 탭이 여기로 통합됨) ----------
 async function runTrendVolume() {
   setTrendActive(trendButtons.volume);
   trendResults.innerHTML = "";
+
+  if (getWatchlistActiveMarket() === "KR") {
+    await renderKrRanking(getKrDailyChanges, "인기종목", trendStatus, trendResults, {
+      sortFn: (a, b) => (b.dollarVolume ?? 0) - (a.dollarVolume ?? 0),
+      metricHeaderHtml: "거래대금",
+      metricCellFn: (r) => (r.dollarVolume ? fmtCompactCurrency(r.dollarVolume, r.currency) : "N/A"),
+      showGrade: false,
+      noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 순위는 당일 거래대금(거래량 × 현재가 추정) 기준이며, 코스피200+코스닥150(약 350종목) 중 상위 50개입니다.</p>`,
+    });
+    return;
+  }
+
   trendStatus.style.display = "block";
   trendStatus.textContent = "인기종목을 불러오는 중...";
 
@@ -6703,6 +7160,22 @@ async function runTrendVolume() {
 // ---------- 상승압력: S&P500 전 종목 중 상승압력도 점수가 높은 순(가치평가 탭과 같은 방식의 정렬+더보기 렌더러 재사용) ----------
 async function runTrendPressure() {
   setTrendActive(trendButtons.pressure);
+
+  const pressureOpts = {
+    mapFn: (list) => list.map((m) => ({ ...m, attractivenessTotal: computeAttractivenessScore(m).total, isIPO: isRecentIPO(m.firstTradeDate) })),
+    sortFn: (a, b) => b.attractivenessTotal - a.attractivenessTotal,
+    metricHeaderHtml: "상승 압력 점수",
+    metricCellFn: (r) => (r.isIPO ? "IPO" : scoreRankColorHtml(r.attractivenessTotal, r.attractivenessTotal)),
+  };
+
+  if (getWatchlistActiveMarket() === "KR") {
+    await renderKrRanking(getKrFullMetricsScan, "상승 압력", trendStatus, trendResults, {
+      ...pressureOpts,
+      noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 상승 압력 점수(10점 만점, 높을수록 단기 상승 여력 참고치가 큼)는 거래대금·모멘텀·매출 성장성을 종합한 참고용 지표이며 코스피200+코스닥150(약 350종목) 대상, 투자 자문이 아닙니다.</p>`,
+    });
+    return;
+  }
+
   trendStatus.style.display = "block";
   trendStatus.textContent = "S&P500 종목 목록을 불러오는 중...";
   const allTickers = await getSP500PriorityOrder().catch((e) => {
@@ -6715,10 +7188,7 @@ async function runTrendPressure() {
     statusEl: trendStatus,
     resultsEl: trendResults,
     buttons: [trendButtons.pressure],
-    mapFn: (list) => list.map((m) => ({ ...m, attractivenessTotal: computeAttractivenessScore(m).total, isIPO: isRecentIPO(m.firstTradeDate) })),
-    sortFn: (a, b) => b.attractivenessTotal - a.attractivenessTotal,
-    metricHeaderHtml: "상승 압력 점수",
-    metricCellFn: (r) => (r.isIPO ? "IPO" : scoreRankColorHtml(r.attractivenessTotal, r.attractivenessTotal)),
+    ...pressureOpts,
     noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 상승 압력 점수(10점 만점, 높을수록 단기 상승 여력 참고치가 큼)는 거래대금·모멘텀·매출 성장성을 종합한 참고용 지표이며 투자 자문이 아닙니다.</p>`,
   });
 }
@@ -6726,6 +7196,7 @@ async function runTrendPressure() {
 bindTrend(trendButtons.volume, runTrendVolume);
 bindTrend(trendButtons.plunge, () => runMovers("plunge"));
 bindTrend(trendButtons.surge, () => runMovers("surge"));
+bindTrend(trendButtons.dividend, runTrendDividend);
 bindTrend(trendButtons.pressure, runTrendPressure);
 
 // US Markets 탭의 "주식" 카테고리 전용 카드 행 — 지수 카드(idx-row)와 동일한 스타일(로고+이름/티커, 가격/등락)
@@ -7965,21 +8436,24 @@ async function renderFutureModalHeader(ticker, quote, metricsPromise, marketRetu
   try {
     const [metrics, marketReturns] = await Promise.all([metricsPromise, marketReturnsPromise]);
     const isKr = isKrTicker(metrics.symbol);
-    const macroMetrics = isKr
-      ? await getKrVolMetrics()
-          .then((m) => ({ vix: m.vol }))
-          .catch(() => ({ vix: null }))
-      : await getMacroMetrics().catch(() => ({ vix: null }));
     const attractiveness = computeAttractivenessScore(metrics);
     const risk = computeRiskScore(metrics, marketReturns.sp500Return, marketReturns.kospi200Return);
     const isIPO = isRecentIPO(metrics.firstTradeDate);
-    const vix = macroMetrics.vix;
+    let macroBadgeHtml;
+    if (isKr) {
+      const fomo = await getKrFomoMetrics().catch(() => ({ score: null }));
+      macroBadgeHtml = `<span class="mini-score-circle small macro" title="포모지수"${fomoBgStyleAttr(fomo.score)}>${fomoDisplayValue(fomo.score)}</span>`;
+    } else {
+      const macroMetrics = await getMacroMetrics().catch(() => ({ vix: null }));
+      const vix = macroMetrics.vix;
+      macroBadgeHtml = `<span class="mini-score-circle small macro" title="S&P500 VIX"${scoreBgStyleAttr(vix, 10, 50, "fear")}>${vix !== null && vix !== undefined ? Math.round(vix) : "N/A"}</span>`;
+    }
     const scoresEl = el("futureModalScores");
     if (scoresEl) {
       scoresEl.innerHTML = `
         <span class="mini-score-circle small" title="상승 압력">${isIPO ? "IPO" : attractiveness.total}</span>
         <span class="mini-score-circle small risk" title="투자 안정">${isIPO ? "IPO" : risk.total}</span>
-        <span class="mini-score-circle small macro" title="${isKr ? "코스피 변동성" : "S&P500 VIX"}"${scoreBgStyleAttr(vix, 10, 50, "fear")}>${vix !== null && vix !== undefined ? Math.round(vix) : "N/A"}</span>
+        ${macroBadgeHtml}
       `;
     }
   } catch {
@@ -8030,7 +8504,9 @@ async function renderFutureRiskSection(ticker, metricsPromise, marketReturnsProm
 }
 
 // 기업검색 요약 페이지의 "🔮 미래예측" 토글에서 현재 보고 있는 종목으로 바로 실행(별도 티커 입력 불필요)
-async function runFuturePrediction(ticker) {
+// metricsPromise/marketReturnsPromise를 넘겨받으면 요약 탭의 상승압력도·투자 안정성 점수와 동일한 fetch를 재사용해
+// 두 화면의 점수가 서로 어긋나지 않게 함(넘겨받지 못한 경우에만 이 함수가 직접 새로 fetch)
+async function runFuturePrediction(ticker, metricsPromise, marketReturnsPromise) {
   setFutureStatus("loading", `${ticker} 데이터를 불러오는 중입니다...`);
 
   try {
@@ -8046,11 +8522,10 @@ async function runFuturePrediction(ticker) {
     const data = await computeFuturePrediction(ticker);
     renderFutureChart(data);
 
-    // 상단 헤더(로고·이름·점수)와 2번째 그래프가 같은 지표(상승압력도/투자안정성)를 쓰므로 fetch를 한 번만 공유
-    const metricsPromise = getFullMetrics(ticker);
-    const marketReturnsPromise = getMarketReturns();
-    renderFutureModalHeader(ticker, quote, metricsPromise, marketReturnsPromise);
-    renderFutureRiskSection(ticker, metricsPromise, marketReturnsPromise, data); // 실패해도 1번째 그래프는 그대로 유지
+    const sharedMetricsPromise = metricsPromise || getFullMetrics(ticker);
+    const sharedMarketReturnsPromise = marketReturnsPromise || getMarketReturns();
+    renderFutureModalHeader(ticker, quote, sharedMetricsPromise, sharedMarketReturnsPromise);
+    renderFutureRiskSection(ticker, sharedMetricsPromise, sharedMarketReturnsPromise, data); // 실패해도 1번째 그래프는 그대로 유지
     setFutureStatus(null, null);
   } catch (err) {
     setFutureStatus("error", `❌ ${escapeHtml(err.message || "예측 차트를 불러오지 못했습니다.")}`);

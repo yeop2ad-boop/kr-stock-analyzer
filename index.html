@@ -37,11 +37,9 @@
 
   <header id="fixedHeader" class="fixed-header">
     <div class="fh-topline">
-      <div class="site-logo" id="siteLogo" aria-label="yeopinvest.com" role="button" tabindex="0">
-        <svg viewBox="0 0 410 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="yeopinvest.com">
-          <image href="logos/site_logo_arrow_only.png" x="4" y="15" width="60" height="36" />
-          <text x="28" y="78" font-family="Pretendard, 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, Arial, sans-serif" font-weight="800" letter-spacing="-0.5px" font-size="46" fill="#eceef2">yeop<tspan fill="#6b9bff">invest</tspan><tspan font-weight="600" letter-spacing="0" fill="#8a94a6" font-size="26">.com</tspan></text>
-        </svg>
+      <div class="market-mode-toggle" id="marketModeToggle" role="group" aria-label="국내/해외 전환">
+        <button type="button" class="market-mode-btn market-mode-btn-kr" id="marketModeKrBtn" data-mode="kr">국내</button>
+        <button type="button" class="market-mode-btn market-mode-btn-us active" id="marketModeUsBtn" data-mode="us">해외</button>
       </div>
       <div class="fh-actions">
         <button type="button" id="searchOpenBtn" class="header-icon-btn" aria-label="검색">
@@ -347,7 +345,7 @@
         </section>
 
         <section class="flush-section">
-          <h2 class="invest-score-h2">S&P 공포지수</h2>
+          <h2 class="invest-score-h2" id="macroSectionTitle">S&P 공포지수</h2>
           <div id="macroSection" class="section-body"></div>
         </section>
         </div>
@@ -396,6 +394,13 @@
       <h2 class="search-overlay-title">기업검색</h2>
     </div>
     <div class="company-panel-body">
+      <div class="fh-search search-overlay-search wizard-ticker-search">
+        <input type="text" id="wizardTickerInput" placeholder="티커를 검색해 주세요.(예: AAPL,TSLA)" autocomplete="off" />
+        <button id="wizardAnalyzeBtn" type="button" class="header-icon-btn" aria-label="분석">
+          <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15.2" y2="15.2"/></svg>
+        </button>
+        <div id="wizardTickerSuggest" class="chat-ticker-suggest" style="display:none;"></div>
+      </div>
       <div id="searchWizardBody"></div>
     </div>
   </div>
@@ -415,10 +420,6 @@
     <div class="carousel-viewport" id="carouselViewport">
 
       <div class="carousel-panel" data-panel="watchlist" id="panelWatchlist">
-        <div class="wl-market-tabs" id="wlMarketTabs">
-          <button type="button" class="wl-market-tab active" data-wl-market="US">🇺🇸 미국</button>
-          <button type="button" class="wl-market-tab" data-wl-market="KR">🇰🇷 한국</button>
-        </div>
         <div class="wl-group-row">
           <div class="wl-group-tabs" id="wlGroupTabs"></div>
           <button type="button" class="wl-group-manage-btn" id="wlGroupManageBtn" aria-label="그룹 관리">⚙</button>
@@ -438,7 +439,7 @@
       <div class="carousel-panel" data-panel="insight" id="panelInsight">
         <div class="top30-sub-nav">
           <button type="button" class="cat-btn" id="insightCatFirmsBtn"><span class="btn-icon" data-icon="bank"></span> 자산&amp;투자사</button>
-          <button type="button" class="cat-btn" id="insightCatBrandBtn"><span class="btn-icon" data-icon="trophy"></span> 브랜드평판순</button>
+          <button type="button" class="cat-btn" id="insightCatBrandBtn">🎯 다트공시</button>
           <button type="button" class="cat-btn" id="insightCatTechBtn"><span class="btn-icon" data-icon="flask"></span> 신기술</button>
           <button type="button" class="cat-btn" id="insightCatCalendarBtn"><span class="btn-icon" data-icon="calendar"></span> 실적&amp;공시 일정</button>
           <button type="button" class="cat-btn" id="insightCatNewsBtn"><span class="btn-icon" data-icon="newspaper"></span> 뉴스</button>
@@ -489,6 +490,7 @@
           <button type="button" class="cat-btn" id="trendVolumeBtn"><span class="btn-icon" data-icon="thumbsup"></span> 인기종목</button>
           <button type="button" class="cat-btn" id="trendSurgeBtn"><span class="btn-icon" data-icon="trending-up"></span> 상승률</button>
           <button type="button" class="cat-btn" id="trendPlungeBtn"><span class="btn-icon" data-icon="trending-down"></span> 하락률</button>
+          <button type="button" class="cat-btn" id="trendDividendBtn"><span class="btn-icon" data-icon="coin"></span> 배당률</button>
           <button type="button" class="cat-btn" id="trendPressureBtn"><span class="btn-icon" data-icon="rocket"></span> 상승 압력</button>
           <button type="button" class="cat-btn" id="trendUsEtfBtn"><span class="btn-icon" data-icon="basket"></span> US ETF</button>
           <button type="button" class="cat-btn" id="trendKrEtfBtn"><span class="btn-icon" data-icon="basket"></span> KR ETF</button>

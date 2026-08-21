@@ -16,6 +16,7 @@ const ITEMS_FILE = path.join(DATA_DIR, "techinsight.json");
 const SEEN_FILE = path.join(DATA_DIR, "techinsight-seen.json");
 
 const RETENTION_DAYS = 30; // 이보다 오래된 항목/이미지는 매 실행마다 정리(레포 용량 억제)
+const MAX_ITEMS = 20; // 30일이 안 지났어도 최신순으로 이 개수를 넘으면 오래된 것부터 정리(보관량 상한)
 const SEEN_MAX = 400;
 
 const UA_HEADERS = { "User-Agent": "yeopinvest.com techinsight-bot contact@yeopinvest.com" };
@@ -206,12 +207,14 @@ async function generateImage(sourceKey, title) {
   return Buffer.from(b64, "base64");
 }
 
+// items는 호출 전 이미 최신순(createdAt 내림차순)으로 정렬돼 있어야 함 — 30일이 지났거나(시간 상한),
+// 그 안이어도 최신 MAX_ITEMS개를 넘는(개수 상한) 항목은 모두 제외하고 이미지 파일도 함께 정리
 function pruneOldItems(items) {
   const cutoff = Date.now() - RETENTION_DAYS * 24 * 60 * 60 * 1000;
   const keep = [];
-  for (const it of items) {
+  for (const [i, it] of items.entries()) {
     const t = Date.parse(it.createdAt || it.publishedAt || 0);
-    if (t >= cutoff) {
+    if (t >= cutoff && i < MAX_ITEMS) {
       keep.push(it);
     } else if (it.image) {
       const imgPath = path.join(__dirname, "..", it.image);
@@ -322,7 +325,7 @@ async function main() {
   fs.writeFileSync(ITEMS_FILE, JSON.stringify(pruned, null, 2));
   const trimmedSeen = seen.slice(Math.max(0, seen.length - SEEN_MAX));
   fs.writeFileSync(SEEN_FILE, JSON.stringify(trimmedSeen, null, 2));
-  console.log(`저장 완료 — 신규 ${newItems.length}건, 전체 ${pruned.length}건(보관 ${RETENTION_DAYS}일)`);
+  console.log(`저장 완료 — 신규 ${newItems.length}건, 전체 ${pruned.length}건(최대 ${MAX_ITEMS}건, 보관 ${RETENTION_DAYS}일)`);
 }
 
 main().catch((err) => {

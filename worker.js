@@ -171,6 +171,18 @@ const FUTURE_BATCH_SIZE = 500;
 const FUTURE_PROGRESS_KEY = "future_progress";
 const FUTURE_SNAPSHOT_PREFIX = "future_snapshot_";
 
+// ---------- 포모지수(국내 전용 "공포·과열" 지표) — VIX 대신 코스피200+코스닥150(약 350종목)의 52주 신고가/신저가 종목수 비율로 매일 계산 ----------
+// 공식: (52주 신고가 종목수/전체) - (52주 신저가 종목수/전체). 값이 클수록(신고가 몰림) 시장 과열(FOMO), 작을수록(음수, 신저가 몰림) 시장 공포
+// 종목 목록은 data/kr-universe-kospi200-kosdaq150.json에서 가져온 것(공식 KRX 목록이 아니라 KODEX 200·KODEX 코스닥150 ETF 보유종목 기준 근사치,
+// 2026-08-20 기준) — 지수가 분기(3·6·9·12월)에 리밸런싱되므로 그 파일을 다시 조사해 갱신할 때 이 배열도 함께 교체해야 함
+const KR_FOMO_UNIVERSE = [
+  "005930.KS","000660.KS","402340.KS","009150.KS","005380.KS","105560.KS","055550.KS","012450.KS","028260.KS","034020.KS","000270.KS","012330.KS","086790.KS","006400.KS","068270.KS","035420.KS","032830.KS","066570.KS","005490.KS","316140.KS","034730.KS","000810.KS","373220.KS","267260.KS","009540.KS","207940.KS","010120.KS","329180.KS","033780.KS","017670.KS","010140.KS","298040.KS","035720.KS","051910.KS","042660.KS","030200.KS","079550.KS","064350.KS","015760.KS","267250.KS","003550.KS","006800.KS","042700.KS","047810.KS","096770.KS","278470.KS","010130.KS","018260.KS","138040.KS","000720.KS","011070.KS","000150.KS","071050.KS","028050.KS","086280.KS","005830.KS","323410.KS","011200.KS","003490.KS","259960.KS","010950.KS","003670.KS","007660.KS","016360.KS","003230.KS","024110.KS","180640.KS","272210.KS","006260.KS","078930.KS","021240.KS","000100.KS","009830.KS","161390.KS","352820.KS","039490.KS","090430.KS","175330.KS","005940.KS","032640.KS","443060.KS","010060.KS","138930.KS","036570.KS","064400.KS","267270.KS","326030.KS","001440.KS","066970.KS","047040.KS","241560.KS","034220.KS","062040.KS","000990.KS","001450.KS","307950.KS","271560.KS","051900.KS","082740.KS","004170.KS","454910.KS","047050.KS","128940.KS","004020.KS","139130.KS","161890.KS","483650.KS","011790.KS","009420.KS","375500.KS","192820.KS","002380.KS","014680.KS","017800.KS","088350.KS","012750.KS","204320.KS","011780.KS","052690.KS","001040.KS","377300.KS","111770.KS","035250.KS","097950.KS","004370.KS","139480.KS","450080.KS","036460.KS","103140.KS","008770.KS","028670.KS","030000.KS","457190.KS","008930.KS","282330.KS","081660.KS","029780.KS","018880.KS","071970.KS","112610.KS","251270.KS","120110.KS","069960.KS","022100.KS","011170.KS","051600.KS","302440.KS","023530.KS","007340.KS","011210.KS","007070.KS","009970.KS","383220.KS","005850.KS","298020.KS","073240.KS","000120.KS","026960.KS","017960.KS","093370.KS","006280.KS","004000.KS","002790.KS","004990.KS","192080.KS","003240.KS","000240.KS","069620.KS","361610.KS","185750.KS","000210.KS","001800.KS","001430.KS","285130.KS","000080.KS","007310.KS","034230.KS","006040.KS","456040.KS","280360.KS","001680.KS","069260.KS","298050.KS","005300.KS","300720.KS","003090.KS","009240.KS","006650.KS","005420.KS","137310.KS","071320.KS","000670.KS","008730.KS","002840.KS","003030.KS","002030.KS","014820.KS","268280.KS",
+  "196170.KQ","086520.KQ","247540.KQ","036930.KQ","028300.KQ","087010.KQ","240810.KQ","277810.KQ","039030.KQ","058470.KQ","298380.KQ","403870.KQ","108490.KQ","222800.KQ","141080.KQ","214450.KQ","319660.KQ","000250.KQ","080220.KQ","347850.KQ","032820.KQ","178320.KQ","084370.KQ","310210.KQ","226950.KQ","067310.KQ","095340.KQ","095610.KQ","257720.KQ","098460.KQ","005290.KQ","237690.KQ","089970.KQ","058610.KQ","145020.KQ","089030.KQ","357780.KQ","131290.KQ","319400.KQ","475830.KQ","039200.KQ","064760.KQ","083650.KQ","140860.KQ","007390.KQ","263750.KQ","323280.KQ","035900.KQ","290650.KQ","041510.KQ","131970.KQ","078600.KQ","096530.KQ","214150.KQ","082920.KQ","068760.KQ","214370.KQ","031980.KQ","241710.KQ","218410.KQ","090710.KQ","030530.KQ","466100.KQ","101490.KQ","445680.KQ","043260.KQ","048410.KQ","328130.KQ","420770.KQ","195940.KQ","183300.KQ","166090.KQ","085660.KQ","122870.KQ","137400.KQ","124500.KQ","189300.KQ","065350.KQ","358570.KQ","090360.KQ","099320.KQ","060370.KQ","050890.KQ","033100.KQ","161580.KQ","003380.KQ","281740.KQ","032500.KQ","036540.KQ","417200.KQ","074600.KQ","121600.KQ","213420.KQ","348370.KQ","232140.KQ","293490.KQ","437730.KQ","222080.KQ","388720.KQ","014620.KQ","036810.KQ","295310.KQ","035760.KQ","025980.KQ","204270.KQ","082270.KQ","052400.KQ","171090.KQ","025320.KQ","006730.KQ","056190.KQ","060250.KQ","042000.KQ","033500.KQ","112040.KQ","214430.KQ","253450.KQ","399720.KQ","067160.KQ","053800.KQ","038500.KQ","211050.KQ","100790.KQ","015750.KQ","018290.KQ","125490.KQ","030520.KQ","348210.KQ","251970.KQ","060280.KQ","032190.KQ","041190.KQ","272290.KQ","009520.KQ","078340.KQ","278280.KQ","036620.KQ","056080.KQ","215200.KQ","376300.KQ","253590.KQ","095660.KQ","069080.KQ","225570.KQ","036830.KQ","194480.KQ","101730.KQ","025900.KQ","352480.KQ",
+];
+const FOMO_LATEST_KEY = "fomo_latest";
+const FOMO_HISTORY_KEY = "fomo_history";
+const FOMO_HISTORY_MAX = 120; // 최근 약 4개월치(일 단위)만 보관
+
 const US_TOTAL_MARKET_CAP_ESTIMATE = 87.4e12;
 const NO_DEBT_RATING = "회사채 없음";
 const UNRATED_REASON = "미평가";
@@ -644,6 +656,76 @@ async function runFutureScanTick(env) {
   }
 }
 
+// 차트 meta의 52주 신고가/신저가 대비 현재가 위치를 판정 — meta에 없으면(가끔 비어있음) 받아온 1년 캔들에서 직접 계산
+// 부동소수점 오차를 감안해 0.1% 이내로 붙어있으면 "그 근처(사실상 도달)"로 취급
+function fiftyTwoWeekStatusFromChart(chart) {
+  const result = chart && chart.chart && chart.chart.result && chart.chart.result[0];
+  if (!result) return null;
+  const meta = result.meta || {};
+  let high = meta.fiftyTwoWeekHigh;
+  let low = meta.fiftyTwoWeekLow;
+  const price = meta.regularMarketPrice;
+  if ((high === undefined || high === null || low === undefined || low === null) && result.indicators && result.indicators.quote && result.indicators.quote[0]) {
+    const q = result.indicators.quote[0];
+    const highs = (q.high || []).filter((v) => v !== null && v !== undefined);
+    const lows = (q.low || []).filter((v) => v !== null && v !== undefined);
+    if (highs.length) high = Math.max(...highs);
+    if (lows.length) low = Math.min(...lows);
+  }
+  if (price === undefined || price === null || high === undefined || high === null || low === undefined || low === null) return null;
+  return { isHigh: price >= high * 0.999, isLow: price <= low * 1.001 };
+}
+
+// 매일 한 번(Cron Trigger)씩 호출 — 코스피200+코스닥150(약 350종목)을 하루 만에 한 번에 스캔(가벼운 차트 조회 1회씩이라 500종목도
+// 무리 없이 스캔하는 미래예측 배치보다도 부하가 적음)해 그날의 포모지수를 확정하고 최근 120일 히스토리에 누적
+async function runFomoScanTick(env) {
+  if (!env.CHAT_KV) return; // KV 바인딩이 없으면 조용히 건너뜀(기존 기능에 영향 없도록)
+  const results = await mapWithConcurrencyWorker(KR_FOMO_UNIVERSE, 16, async (symbol) => {
+    try {
+      return fiftyTwoWeekStatusFromChart(await fetchYahooChart(symbol, "1y", "1d"));
+    } catch {
+      return null;
+    }
+  });
+  const valid = results.filter(Boolean);
+  const total = KR_FOMO_UNIVERSE.length;
+  const highCount = valid.filter((r) => r.isHigh).length;
+  const lowCount = valid.filter((r) => r.isLow).length;
+  const score = highCount / total - lowCount / total;
+
+  const snapshot = {
+    date: new Date().toISOString().slice(0, 10),
+    universeSize: total,
+    scanned: valid.length,
+    highCount,
+    lowCount,
+    score: Math.round(score * 1000) / 1000,
+    computedAt: new Date().toISOString(),
+  };
+  await env.CHAT_KV.put(FOMO_LATEST_KEY, JSON.stringify(snapshot));
+
+  const historyRaw = await env.CHAT_KV.get(FOMO_HISTORY_KEY, "json");
+  const history = Array.isArray(historyRaw) ? historyRaw : [];
+  const withoutToday = history.filter((h) => h && h.date !== snapshot.date); // 같은 날 재실행(run-now 등) 시 중복 방지
+  withoutToday.push(snapshot);
+  const trimmed = withoutToday.slice(-FOMO_HISTORY_MAX);
+  await env.CHAT_KV.put(FOMO_HISTORY_KEY, JSON.stringify(trimmed));
+}
+
+async function handleFomoIndex(env) {
+  if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
+  const latest = await env.CHAT_KV.get(FOMO_LATEST_KEY, "json");
+  if (!latest) return jsonResponse({ error: "아직 계산된 데이터가 없습니다." }, 404);
+  const historyRaw = await env.CHAT_KV.get(FOMO_HISTORY_KEY, "json");
+  return jsonResponse({ ...latest, history: Array.isArray(historyRaw) ? historyRaw : [] }, 200);
+}
+
+// Cron을 기다리지 않고 지금 당장 첫 스캔을 채워 넣고 싶을 때 수동으로 호출(그 뒤로는 평소처럼 Cron이 매일 이어받음)
+async function handleFomoRunNow(env) {
+  await runFomoScanTick(env);
+  return handleFomoIndex(env);
+}
+
 async function handleFutureRiskBands(request, env) {
   if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
   const bucket = Number(new URL(request.url).searchParams.get("bucket"));
@@ -854,6 +936,14 @@ export default {
       return handleFutureRunNow(env);
     }
 
+    if (requestUrl.pathname === "/kr-fomo-index") {
+      return handleFomoIndex(env);
+    }
+
+    if (requestUrl.pathname === "/kr-fomo-index/run-now") {
+      return handleFomoRunNow(env);
+    }
+
     if (requestUrl.pathname === "/auth/kakao" && request.method === "POST") {
       return handleKakaoAuth(request, env);
     }
@@ -911,9 +1001,10 @@ export default {
     }
   },
 
-  // Cron Trigger가 매일 호출 — 미래예측 2번째 그래프용 투자안정성 구간 통계를 하루치씩 스캔해 KV에 누적
+  // Cron Trigger가 매일 호출 — 미래예측 2번째 그래프용 투자안정성 구간 통계 + 국내 포모지수를 매일 스캔해 KV에 누적
   async scheduled(event, env, ctx) {
     ctx.waitUntil(runFutureScanTick(env));
+    ctx.waitUntil(runFomoScanTick(env));
   },
 };
 

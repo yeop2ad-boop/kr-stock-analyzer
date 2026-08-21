@@ -12,7 +12,10 @@
   --pos: #d64545; /* 양수/상승 = 빨강(한국식) */
   --neg: #3b7dd8; /* 음수/하락 = 파랑(한국식) */
   --radius: 12px;
+  --icon-accent: #e6983c; /* 틀고정 아이콘 색 — 해외(기본) 모드는 주황 */
 }
+/* 좌측 상단 국내/해외 토글에서 국내를 선택하면 모든 틀고정 아이콘이 파랑으로 바뀜(검은/흰 배경 모두 잘 보이는 파랑) */
+body[data-market-mode="kr"] { --icon-accent: #6b9bff; }
 
 * { box-sizing: border-box; }
 
@@ -50,8 +53,20 @@ body {
   margin: 0 auto 10px;
 }
 
-.site-logo { display: block; line-height: 0; cursor: pointer; }
-.site-logo svg { height: 34px; width: auto; display: block; }
+.market-mode-toggle { display: flex; gap: 6px; }
+.market-mode-btn {
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 800;
+  padding: 7px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.market-mode-btn-kr.active { background: #6b9bff; border-color: #6b9bff; color: #14161c; }
+.market-mode-btn-us.active { background: #e6983c; border-color: #e6983c; color: #14161c; }
 
 .contact-btn {
   flex: none;
@@ -87,7 +102,7 @@ body {
 
 /* 이모지 대신 쓰는 주황(로고 색) 단색 라인 아이콘 — 탭바/서브탭/위저드 버튼 공용 */
 .btn-icon { display: inline-flex; align-items: center; vertical-align: -2px; }
-.btn-icon-svg { display: block; }
+.btn-icon-svg { display: block; color: var(--icon-accent); }
 #companyPanelWatchlistBtn.active svg { fill: currentColor; }
 
 .login-header-btn {
@@ -602,6 +617,14 @@ body {
 .cal-dot-jobs { background: #4caf7d; }
 .cal-dot-13f { background: #b57bf5; }
 .cal-dot-opex { background: #8a94a6; }
+.cal-dot-pce { background: #e0a03c; }
+.cal-dot-gdp { background: #47b8e0; }
+.cal-dot-ism { background: #d97ad9; }
+.cal-dot-retail { background: #9ccc65; }
+.cal-dot-cnpmi { background: #e05656; }
+.cal-dot-trade { background: #56c2e0; }
+.cal-dot-industry { background: #c9a227; }
+.cal-dot-minwage { background: #e0567a; }
 .cal-dot-etc { background: var(--muted); }
 .cal-day-more { font-size: 10px; color: var(--muted); line-height: 1; }
 
@@ -1236,6 +1259,7 @@ table.popular-table td:nth-child(5) { min-width: 46px; }
 
 table.top30-table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 13px; }
 table.top30-table th, table.top30-table td { padding: 8px 6px; border-bottom: 1px solid var(--border); text-align: center; }
+.dividend-warn { display: inline-block; font-size: 10.5px; font-weight: 700; color: var(--warn); white-space: nowrap; cursor: help; }
 table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: #b8860b; font-weight: 800; }
 
 /* 브랜드평판순 표: 기업 헤더는 다른 열과 같이 가운데 정렬 유지, 데이터 행(기업명)만 왼쪽 정렬 */
@@ -1502,20 +1526,6 @@ table.insight-holdings-table td span, table.insight-holdings-table td b { max-wi
 .stock-card-change { font-weight: 700; font-size: 12.5px; min-width: 52px; text-align: right; }
 .stock-card-volume { font-size: 12px; color: var(--muted); font-weight: 600; }
 .stock-card-pct { font-size: 12.5px; font-weight: 700; min-width: 52px; text-align: right; }
-
-/* ---------- 관심종목: 시장(미국/한국) 탭 — 완전 별도 저장공간을 전환 ---------- */
-.wl-market-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
-.wl-market-tab {
-  flex: 1;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 700;
-  padding: 9px 0;
-}
-.wl-market-tab.active { color: #fff; border-color: #fff; background: #000; }
 
 /* ---------- 관심종목: 그룹 탭 + 정렬/추가/공유 툴바 ---------- */
 .wl-group-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
