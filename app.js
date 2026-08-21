@@ -5011,19 +5011,35 @@ const KR_VALUE_DISCLAIMER = `<p class="disclaimer tab-note"><span style="filter:
 // ---------- 국내(KR) 랭킹 공용 인프라 — 코스피200+코스닥150 약 350종목을 스캔해 기업가치·투자동향 랭킹에서 재사용 ----------
 // 기업가치(매출액·현금흐름·순이익 증가, EPS, PER, 투자안정, 시가총액)와 투자동향의 상승압력은 종목당 재무제표까지
 // 조회하는 무거운 스캔(getFullMetrics)을 공유하고, 상승률·하락률·인기종목은 시세만 필요한 가벼운 스캔을 공유함
-let krFullMetricsScanPromise = null;
-function getKrFullMetricsScan() {
-  if (!krFullMetricsScanPromise) {
-    krFullMetricsScanPromise = (async () => {
-      const tickers = await getKrUniverseTickers();
-      const results = await mapWithConcurrency(tickers, 5, (symbol) => getFullMetrics(symbol).catch(() => null));
-      return results.filter(Boolean);
-    })().catch((e) => {
-      krFullMetricsScanPromise = null;
-      throw e;
-    });
+//
+// 접속 직후엔 시가총액 상위 30개까지만 스캔해서 빠르게 보여주고, "전체보기"를 눌러야 그때 나머지 약 320개를
+// 이어서 스캔함(미국 renderValueRanking과 동일한 방식). getKrUniverseTickers()가 반환하는 순서는 KODEX
+// 200/코스닥150 ETF 편입 비중(=시가총액) 내림차순이라 앞쪽 30개가 곧 시가총액 상위 30개.
+const krFullMetricsState = { tickers: null, items: [], cursor: 0, inflight: null };
+async function ensureKrFullMetrics(targetCount, onProgress) {
+  if (!krFullMetricsState.tickers) krFullMetricsState.tickers = await getKrUniverseTickers();
+  const total = krFullMetricsState.tickers.length;
+  targetCount = Math.min(targetCount, total);
+  while (krFullMetricsState.cursor < targetCount) {
+    if (krFullMetricsState.inflight) {
+      await krFullMetricsState.inflight.catch(() => {});
+      continue;
+    }
+    const startCursor = krFullMetricsState.cursor;
+    const pending = krFullMetricsState.tickers.slice(startCursor, targetCount);
+    krFullMetricsState.inflight = mapWithConcurrency(pending, 5, (symbol) => getFullMetrics(symbol).catch(() => null), (completed) => {
+      if (onProgress) onProgress(startCursor + completed, targetCount, total);
+    })
+      .then((results) => {
+        krFullMetricsState.items = krFullMetricsState.items.concat(results.filter(Boolean));
+        krFullMetricsState.cursor = targetCount;
+      })
+      .finally(() => {
+        krFullMetricsState.inflight = null;
+      });
+    await krFullMetricsState.inflight;
   }
-  return krFullMetricsScanPromise;
+  return { items: krFullMetricsState.items.slice(), total };
 }
 
 let krDailyChangesPromise = null;
@@ -5056,7 +5072,8 @@ function getKrDailyChanges() {
   return krDailyChangesPromise;
 }
 
-// dataPromiseFn: getKrFullMetricsScan(무거운 스캔, 기업가치·상승압력용) 또는 getKrDailyChanges(가벼운 스캔, 상승률·하락률·인기종목용)
+// dataPromiseFn: getKrDailyChanges(가벼운 스캔, 상승률·하락률·인기종목용) — 무거운 스캔(기업가치·상승압력)은
+// 이제 renderKrRankingStaged가 ensureKrFullMetrics로 단계적으로 처리함
 // showGrade: 투자안정 점수를 별도 열로 덧붙일지(투자안정 랭킹 자체는 그 점수가 이미 metricCellFn에 있으므로 false)
 async function renderKrRanking(dataPromiseFn, label, statusEl, resultsEl, { mapFn = (list) => list, sortFn, metricHeaderHtml, metricCellFn, noteHtml, showGrade = true }) {
   resultsEl.innerHTML = "";
@@ -5120,6 +5137,88 @@ async function renderKrRanking(dataPromiseFn, label, statusEl, resultsEl, { mapF
   }
 }
 
+// 국내(KR) "기업가치" 7종 + "상승 압력" 전용 렌더러 — renderKrRanking과 달리 접속 직후엔 시가총액 상위
+// 30개만 실제로 스캔해서 보여주고(ensureKrFullMetrics), "전체보기"를 눌러야 그때 나머지를 이어서 스캔함
+// (renderValueRanking의 미국 버전과 동일한 체감 속도를 내기 위함)
+async function renderKrRankingStaged(label, statusEl, resultsEl, { mapFn = (list) => list, sortFn, metricHeaderHtml, metricCellFn, noteHtml, showGrade = true, initialCount = 30 }) {
+  resultsEl.innerHTML = "";
+  statusEl.style.display = "block";
+
+  async function paintUpTo(targetCount) {
+    try {
+      const isFullScan = targetCount > initialCount;
+      statusEl.style.display = "block";
+      statusEl.textContent = isFullScan ? `전체 검색 중(약 1분 소요될 수 있어요)...` : `코스피200+코스닥150 - ${label} 계산 중...`;
+      const [{ items: raw, total }, nameMap] = await Promise.all([
+        ensureKrFullMetrics(targetCount, (done, target) => {
+          statusEl.textContent = `${done}/${target} 종목 ${isFullScan ? "전체" : label} 확인 중...`;
+        }),
+        getKrSymbolNameMap().catch(() => new Map()),
+      ]);
+      statusEl.style.display = "none";
+      if (!raw || raw.length === 0) {
+        resultsEl.innerHTML = `<p class="muted">순위를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
+        return;
+      }
+
+      const ranked = await mapFn(raw.slice());
+      ranked.sort(sortFn);
+      const hasMore = targetCount < total;
+
+      if (showGrade) {
+        const { sp500Return, kospi200Return } = await getMarketReturnsCached();
+        ranked.forEach((r) => {
+          if (r.riskTotal === undefined) r.riskTotal = computeRiskScore(r, sp500Return, kospi200Return).total;
+          if (r.isIPO === undefined) r.isIPO = isRecentIPO(r.firstTradeDate);
+        });
+      }
+      const gradeCellHtml = (r) => (r.isIPO ? "IPO" : scoreRankColorHtml(r.riskTotal, r.riskTotal));
+
+      const rows = ranked
+        .map(
+          (r, i) => `
+        <tr>
+          <td>${i + 1}${r.fiveDayExtremes ? surgeWarningEmoji(r.fiveDayExtremes) : ""}</td>
+          <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(nameMap.get(r.symbol) || r.symbol)}</b></span></td>
+          <td>${r.price !== undefined && r.price !== null ? priceChartLink(r.symbol, fmtPrice(r.price, r.currency)) : "N/A"}</td>
+          <td>${metricCellFn(r)}</td>${showGrade ? `<td>${gradeCellHtml(r)}</td>` : ""}
+        </tr>`
+        )
+        .join("");
+      resultsEl.innerHTML = `
+        ${noteHtml || ""}
+        <p class="muted" style="font-size:12px;">시가총액 상위 ${Math.min(targetCount, initialCount)}개${targetCount > initialCount ? ` + 나머지 ${targetCount - initialCount}개` : ""} 확인(코스피200+코스닥150 ${total}개 중 ${targetCount}개, ${ranked.length}개 성공)</p>
+        <table class="top30-table">
+          <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>${metricHeaderHtml}</th>${showGrade ? `<th>투자<br>안정</th>` : ""}</tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${total}">전체보기 (나머지 ${total - targetCount}개 · 전체 검색 시 약 1분 소요)</button>` : ""}
+      `;
+    } catch (err) {
+      statusEl.textContent = `❌ ${err.message || "오류가 발생했습니다."}`;
+    }
+  }
+
+  resultsEl._loadMore = (count) => {
+    const moreBtn = resultsEl.querySelector(".load-more-btn");
+    if (moreBtn) {
+      moreBtn.disabled = true;
+      moreBtn.textContent = "전체 검색 중...";
+    }
+    paintUpTo(count);
+  };
+  if (!resultsEl.dataset.moreBound) {
+    resultsEl.addEventListener("click", (e) => {
+      const moreBtn = e.target.closest(".load-more-btn");
+      if (!moreBtn) return;
+      resultsEl._loadMore(Number(moreBtn.dataset.nextCount));
+    });
+    resultsEl.dataset.moreBound = "1";
+  }
+
+  await paintUpTo(initialCount);
+}
+
 // 가치평가 서브내비에서 현재 선택된 버튼만 활성 표시
 function setValuationActive(activeBtn) {
   Object.values(valuationButtons).forEach((b) => b && b.classList.toggle("active", b === activeBtn));
@@ -5135,7 +5234,7 @@ async function runValueScreenFromSP500(btn, label, opts) {
 
   if (getWatchlistActiveMarket() === "KR") {
     const krOpts = { ...opts, noteHtml: opts.noteHtml === VALUE_DISCLAIMER ? KR_VALUE_DISCLAIMER : opts.noteHtml };
-    await renderKrRanking(getKrFullMetricsScan, label, valuationStatus, valuationResults, krOpts);
+    await renderKrRankingStaged(label, valuationStatus, valuationResults, krOpts);
     return;
   }
 
@@ -7292,6 +7391,44 @@ async function getDividendYieldInfo(symbol) {
   }
 }
 
+// 국내(KR) 배당률도 다른 랭킹과 동일하게 접속 직후엔 시가총액 상위 30개만 스캔해서 보여주고,
+// "전체보기"를 눌러야 나머지 약 320개를 이어서 스캔함(getKrUniverseTickers 순서 = 시가총액 내림차순)
+const krDividendState = { tickers: null, items: [], cursor: 0, inflight: null };
+async function ensureKrDividendYields(targetCount, onProgress) {
+  if (!krDividendState.tickers) krDividendState.tickers = await getKrUniverseTickers();
+  const total = krDividendState.tickers.length;
+  targetCount = Math.min(targetCount, total);
+  while (krDividendState.cursor < targetCount) {
+    if (krDividendState.inflight) {
+      await krDividendState.inflight.catch(() => {});
+      continue;
+    }
+    const startCursor = krDividendState.cursor;
+    const pending = krDividendState.tickers.slice(startCursor, targetCount);
+    krDividendState.inflight = mapWithConcurrency(pending, 15, (symbol) => getDividendYieldInfo(symbol), (completed) => {
+      if (onProgress) onProgress(startCursor + completed, targetCount, total);
+    })
+      .then((results) => {
+        krDividendState.items = krDividendState.items.concat(results.filter(Boolean));
+        krDividendState.cursor = targetCount;
+      })
+      .finally(() => {
+        krDividendState.inflight = null;
+      });
+    await krDividendState.inflight;
+  }
+  return { items: krDividendState.items.slice(), total };
+}
+// 배당률 상위 종목에 붙일 투자안정 점수(재무제표 조회)는 시가총액 상위 30개 단계에서 이미 계산한 종목을
+// "전체보기" 이후 다시 조회하지 않도록 심볼별로 캐싱
+const krDividendRiskCache = new Map();
+async function getFullMetricsForDividendRisk(symbol) {
+  if (krDividendRiskCache.has(symbol)) return krDividendRiskCache.get(symbol);
+  const m = await getFullMetrics(symbol).catch(() => null);
+  krDividendRiskCache.set(symbol, m);
+  return m;
+}
+
 function dividendWarningHtml(r) {
   if (r.dividendWarning === "cut") return ` <span class="dividend-warn" title="직전 지급액보다 배당금이 20% 넘게 줄었습니다(배당컷 의심)">⚠️컷</span>`;
   if (r.dividendWarning === "overdue") return ` <span class="dividend-warn" title="평소 지급 주기보다 오래 배당 지급이 없습니다(지급 중단·지연 의심)">⚠️지연</span>`;
@@ -7338,24 +7475,85 @@ function renderDividendTable(ranked, universeLabel, initialCount, nameMap) {
   }
 }
 
+// 국내(KR) 배당률 전용 — 접속 직후엔 시가총액 상위 30개만 스캔해서 보여주고, "전체보기"를 눌러야
+// 그때 나머지 약 320개를 이어서 스캔함(다른 국내 랭킹과 동일한 체감 속도)
+async function runTrendDividendKr(initialCount) {
+  async function paintUpTo(targetCount) {
+    try {
+      const isFullScan = targetCount > initialCount;
+      trendStatus.style.display = "block";
+      trendStatus.textContent = isFullScan ? `전체 검색 중(약 1분 소요될 수 있어요)...` : `코스피200+코스닥150 배당률을 계산하는 중...`;
+      const [{ items: raw, total }, nameMap] = await Promise.all([
+        ensureKrDividendYields(targetCount, (done, target) => {
+          trendStatus.textContent = `${done}/${target} 종목 배당률 확인 중...`;
+        }),
+        getKrSymbolNameMap().catch(() => new Map()),
+      ]);
+      if (raw.length === 0) throw new Error("배당률 데이터를 가져오지 못했습니다.");
+
+      const ranked = raw.slice().sort((a, b) => b.yieldPct - a.yieldPct);
+      const top50 = ranked.slice(0, 50);
+      const hasMore = targetCount < total;
+
+      // 투자안정 점수는 재무제표까지 조회해야 해 배당률 스캔보다 무거우므로, 이미 추려낸 상위 50개에 대해서만 추가로 조회
+      trendStatus.textContent = `상위 ${top50.length}개 종목의 투자 안정 점수를 계산하는 중...`;
+      const { sp500Return, kospi200Return } = await getMarketReturnsCached();
+      const fullMetricsList = await mapWithConcurrency(top50, 5, (r) => getFullMetricsForDividendRisk(r.symbol));
+      top50.forEach((r, i) => {
+        const m = fullMetricsList[i];
+        if (!m) return;
+        r.riskTotal = computeRiskScore(m, sp500Return, kospi200Return).total;
+        r.isIPO = isRecentIPO(m.firstTradeDate);
+      });
+      trendStatus.style.display = "none";
+
+      trendResults.innerHTML = `
+        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 배당률은 최근 1년간 지급된 배당금 합계 ÷ 현재가 기준(코스피200+코스닥150 대상)이며, 실제 배당 정책은 변경될 수 있습니다. <span class="dividend-warn">⚠️컷</span>은 직전 지급액보다 20% 넘게 줄어든 경우, <span class="dividend-warn">⚠️지연</span>은 평소 지급 주기보다 오래 지급이 없는 경우를 뜻합니다. 투자 자문이 아닙니다.</p>
+        <p class="muted" style="font-size:12px;">시가총액 상위 ${Math.min(targetCount, initialCount)}개${targetCount > initialCount ? ` + 나머지 ${targetCount - initialCount}개` : ""} 확인(코스피200+코스닥150 ${total}개 중 ${targetCount}개, 상위 ${top50.length}개 표시)</p>
+        <table class="top30-table">
+          <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>배당률</th><th>투자<br>안정</th></tr></thead>
+          <tbody>${top50.map((r, i) => dividendRowHtml(r, i, nameMap)).join("")}</tbody>
+        </table>
+        ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${total}">전체보기 (나머지 ${total - targetCount}개 · 전체 검색 시 약 1분 소요)</button>` : ""}
+      `;
+      const moreBtn = trendResults.querySelector(".load-more-btn");
+      if (moreBtn) {
+        moreBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          moreBtn.disabled = true;
+          moreBtn.textContent = "전체 검색 중...";
+          paintUpTo(Number(moreBtn.dataset.nextCount));
+        });
+      }
+    } catch (err) {
+      trendStatus.textContent = `❌ ${err.message || "배당률을 가져오지 못했습니다."}`;
+    }
+  }
+  await paintUpTo(initialCount);
+}
+
 async function runTrendDividend() {
   setTrendActive(trendButtons.dividend);
   trendResults.innerHTML = "";
   trendStatus.style.display = "block";
 
-  const isKr = getWatchlistActiveMarket() === "KR";
-  const universeLabel = isKr ? "코스피200+코스닥150" : "S&P500";
+  if (getWatchlistActiveMarket() === "KR") {
+    await runTrendDividendKr(30);
+    return;
+  }
+
+  const universeLabel = "S&P500";
   trendStatus.textContent = `${universeLabel} 배당률을 계산하는 중...`;
 
   try {
-    const tickers = isKr ? await getKrUniverseTickers() : await getSP500Tickers();
+    const tickers = await getSP500Tickers();
     const results = await mapWithConcurrency(tickers, 15, (symbol) => getDividendYieldInfo(symbol), (completed, total) => {
       trendStatus.textContent = `${completed}/${total} 종목 배당률 확인 중...`;
     });
     const ranked = results.filter(Boolean).sort((a, b) => b.yieldPct - a.yieldPct).slice(0, 50);
     if (ranked.length === 0) throw new Error("배당률 데이터를 가져오지 못했습니다.");
 
-    // 투자안정 점수는 재무제표까지 조회해야 해 배당률 스캔보다 무거우므로, 전체(350~500종목)가 아니라
+    // 투자안정 점수는 재무제표까지 조회해야 해 배당률 스캔보다 무거우므로, 전체(약 500종목)가 아니라
     // 이미 추려낸 상위 50개에 대해서만 추가로 조회해서 붙임(다른 랭킹의 전체 스캔보다 훨씬 가벼움)
     trendStatus.style.display = "block";
     trendStatus.textContent = `상위 ${ranked.length}개 종목의 투자 안정 점수를 계산하는 중...`;
@@ -7368,9 +7566,8 @@ async function runTrendDividend() {
       r.isIPO = isRecentIPO(m.firstTradeDate);
     });
 
-    const nameMap = isKr ? await getKrSymbolNameMap().catch(() => new Map()) : null;
     trendStatus.style.display = "none";
-    renderDividendTable(ranked, universeLabel, 20, nameMap);
+    renderDividendTable(ranked, universeLabel, 20, null);
   } catch (err) {
     trendStatus.textContent = `❌ ${err.message || "배당률을 가져오지 못했습니다."}`;
   }
@@ -7438,7 +7635,7 @@ async function runTrendPressure() {
   };
 
   if (getWatchlistActiveMarket() === "KR") {
-    await renderKrRanking(getKrFullMetricsScan, "상승 압력", trendStatus, trendResults, {
+    await renderKrRankingStaged("상승 압력", trendStatus, trendResults, {
       ...pressureOpts,
       noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 상승 압력 점수(10점 만점, 높을수록 단기 상승 여력 참고치가 큼)는 거래대금·모멘텀·매출 성장성을 종합한 참고용 지표이며 코스피200+코스닥150(약 350종목) 대상, 투자 자문이 아닙니다.</p>`,
     });
