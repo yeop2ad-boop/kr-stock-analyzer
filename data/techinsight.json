@@ -1,5 +1,53 @@
 [
   {
+    "id": "2914c49ea9e9",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "IEEE, 부탄의 디지털 혁신 지원을 위한 엔지니어링 정상회담 개최",
+    "originalTitle": "IEEE Engineering Summit Supports Bhutan’s Digital Transformation",
+    "link": "https://spectrum.ieee.org/ieee-summit-bhutan-digital-transformation",
+    "summary": "IEEE가 부탄 정부와 협력하여 6월 파로에서 엔지니어링 교육, 연구, 혁신 정상회담을 개최했으며, 이는 디지털 혁신과 지속 가능한 발전을 중심으로 부탄의 기술 전환을 지원하기 위해 마련되었다.\n정상회담에서는 글로벌 학계 지도자와 기술 전문가들이 이론 중심의 교육 과정을 실무 및 기술 기반으로 개혁하고, 인공지능 통합과 인프라 구축을 논의했다.\n부탄의 공주는 국민총행복이라는 국가 철학에 부합하는 기술 혁신의 중요성을 강조하며 \"우리의 가치에 맞게 기술을 형성할 수 있는가\"라는 질문을 제기했다.\n정상회담은 산업 맞춤형 교육과정 현대화, AI 인프라 강화, 가치 중심 혁신, 지역 간 디지털 격차 해소 등을 포함한 부탄의 지식 기반 경제 구축을 위한 청사진을 수립했다.\nIEEE는 부탄의 대학, 정부 기관, 산업체를 위해 6개월간 IEEE 전자 도서관과 IEEE Xplore 디지털 라이브러리에 무료로 접근할 수 있는 기회를 제공하기로 했다.",
+    "image": "data/techinsight-images/2914c49ea9e9.webp",
+    "publishedAt": "2026-08-11T19:50:54.000Z",
+    "createdAt": "2026-08-21T22:56:05.000Z"
+  },
+  {
+    "id": "f151f9b1c68d",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "에이전트형 AI로 문제의 근본 원인을 빠르게 찾아 해결하기",
+    "originalTitle": "Stop Hunting, Start Solving: Accelerating Root Cause Analysis with Agentic AI",
+    "link": "https://event.on24.com/wcc/r/5460332/DAFEFF7A68EE900DEA7A14356089B553?utm_source=IEEE&utm_medium=site&utm_campaign=922",
+    "summary": "사건 발생 후 원인을 찾기 위해 많은 시간을 소비하는 기존의 문제 해결 방식을 벗어나 에이전트형 AI를 활용한 새로운 접근 방식을 제시합니다. 에이전트형 AI는 자동으로 데이터를 수집하고 분석하며 패턴을 인식하여 근본 원인을 신속하게 파악할 수 있습니다. 이러한 기술을 도입하면 문제 해결에 필요한 시간과 비용을 대폭 절감할 수 있으며, 시스템의 안정성과 효율성을 높일 수 있습니다. 에이전트형 AI의 자동화된 분석 능력은 복잡한 문제들을 더 빠르고 정확하게 해결하는 데 효과적입니다.",
+    "image": "data/techinsight-images/f151f9b1c68d.webp",
+    "publishedAt": "2026-08-21T14:32:37.000Z",
+    "createdAt": "2026-08-21T22:55:39.798Z"
+  },
+  {
+    "id": "02c37866e6d6",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "죽은 언어와 살아있는 공포",
+    "originalTitle": "Mother tongue",
+    "link": "https://www.technologyreview.com/2026/08/21/1141726/mother-tongue-fiction/",
+    "summary": "아버지가 아들 테오와 나눈 대화에서 죽은 언어의 의미를 설명하던 중, 세계는 벨사스 정부가 만든 '틍수'라는 고도의 인공지능 체계로 인해 전쟁의 위기에 직면한다. 미국 대통령은 핵공격을 경고하고 있지만, 아버지는 추상적이던 기술에 대한 두려움이 이제 구체적인 형태를 갖게 된 것에 오히려 안도감을 느낀다. 일상 속에서 삶을 지속하려는 아버지의 노력과 테오의 순진한 상상력 사이에서, 인류가 직면한 문명의 위기와 소멸의 위험이 서서히 다가온다.",
+    "image": "data/techinsight-images/02c37866e6d6.webp",
+    "publishedAt": "2026-08-21T09:00:00.000Z",
+    "createdAt": "2026-08-21T22:55:36.068Z"
+  },
+  {
+    "id": "c7d89ab55076",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "우주 거울의 위협과 AI 신약 개발의 특허권 문제",
+    "originalTitle": "The Download: threats from space mirrors and credit for AI drugs",
+    "link": "https://www.technologyreview.com/2026/08/21/1142762/the-download-space-mirrors-threats-ai-designed-drugs-credit/",
+    "summary": "우주에서 태양빛을 지구로 반사시키려는 기업의 계획이 의도치 않게 밤하늘을 밝혀 천문 관측과 야생동물에 피해를 줄 수 있다는 연구 결과가 나왔다. 한편 AI가 신약을 설계할 때 누가 발명자 자격으로 특허를 받을 수 있는지에 대한 법적 문제가 대두되고 있다. Insilico Medicine이 AI로 설계한 폐섬유증 치료제의 경우 마케팅에서는 'AI가 발견'했다고 주장했지만 특허 신청 시에는 인간만을 발명자로 명시했다. 현행 특허법은 AI가 얼마나 중요한 역할을 했든 발명자 자격은 인간에게만 인정하는 구조이며, AI의 신약 개발 능력이 높아질수록 이 문제는 더욱 복잡해질 것으로 예상된다.",
+    "image": "data/techinsight-images/c7d89ab55076.webp",
+    "publishedAt": "2026-08-21T12:10:00.000Z",
+    "createdAt": "2026-08-21T22:55:34.679Z"
+  },
+  {
     "id": "bcd90835f43e",
     "sourceKey": "ieee",
     "source": "IEEE Spectrum",
