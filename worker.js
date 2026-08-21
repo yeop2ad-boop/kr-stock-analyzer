@@ -656,23 +656,22 @@ async function runFutureScanTick(env) {
   }
 }
 
-// 차트 meta의 52주 신고가/신저가 대비 현재가 위치를 판정 — meta에 없으면(가끔 비어있음) 받아온 1년 캔들에서 직접 계산
+// 52주 신고가/신저가 판정 — 처음엔 meta.fiftyTwoWeekHigh/Low(장중 틱 기준 최고/최저)를 썼는데, 그러면 종가가
+// 그 값과 거의 일치하는 경우가 실제로는 매우 드물어(장중 고점은 보통 종가보다 높음) 350종목을 스캔해도 신고가·
+// 신저가 종목이 0으로 나오는 문제가 있었음. "52주 신고가/신저가 종목"은 국내 시장에서 통상 종가 기준으로
+// 집계하므로, 1년치 일별 종가 시계열에서 직접 최고/최저 종가를 구해 오늘 종가와 비교하는 방식으로 변경.
 // 부동소수점 오차를 감안해 0.1% 이내로 붙어있으면 "그 근처(사실상 도달)"로 취급
 function fiftyTwoWeekStatusFromChart(chart) {
   const result = chart && chart.chart && chart.chart.result && chart.chart.result[0];
   if (!result) return null;
   const meta = result.meta || {};
-  let high = meta.fiftyTwoWeekHigh;
-  let low = meta.fiftyTwoWeekLow;
   const price = meta.regularMarketPrice;
-  if ((high === undefined || high === null || low === undefined || low === null) && result.indicators && result.indicators.quote && result.indicators.quote[0]) {
-    const q = result.indicators.quote[0];
-    const highs = (q.high || []).filter((v) => v !== null && v !== undefined);
-    const lows = (q.low || []).filter((v) => v !== null && v !== undefined);
-    if (highs.length) high = Math.max(...highs);
-    if (lows.length) low = Math.min(...lows);
-  }
-  if (price === undefined || price === null || high === undefined || high === null || low === undefined || low === null) return null;
+  const closes = ((result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || []).filter(
+    (v) => v !== null && v !== undefined
+  );
+  if (price === undefined || price === null || closes.length < 2) return null;
+  const high = Math.max(...closes);
+  const low = Math.min(...closes);
   return { isHigh: price >= high * 0.999, isLow: price <= low * 1.001 };
 }
 
