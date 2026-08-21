@@ -656,11 +656,9 @@ async function runFutureScanTick(env) {
   }
 }
 
-// 52주 신고가/신저가 판정 — 처음엔 meta.fiftyTwoWeekHigh/Low(장중 틱 기준 최고/최저)를 썼는데, 그러면 종가가
-// 그 값과 거의 일치하는 경우가 실제로는 매우 드물어(장중 고점은 보통 종가보다 높음) 350종목을 스캔해도 신고가·
-// 신저가 종목이 0으로 나오는 문제가 있었음. "52주 신고가/신저가 종목"은 국내 시장에서 통상 종가 기준으로
-// 집계하므로, 1년치 일별 종가 시계열에서 직접 최고/최저 종가를 구해 오늘 종가와 비교하는 방식으로 변경.
-// 부동소수점 오차를 감안해 0.1% 이내로 붙어있으면 "그 근처(사실상 도달)"로 취급
+// 52주 신고가/신저가 판정 — 종가 기준 최근 1년 최고·최저 대비 오늘 종가가 5% 이내로 근접하면
+// "신고가권/신저가권" 종목으로 집계(정확히 그 값을 찍어야만 인정하면 너무 적게 잡혀서, 근처까지 온
+// 종목도 포함하도록 여유폭을 5%로 넓힘)
 function fiftyTwoWeekStatusFromChart(chart) {
   const result = chart && chart.chart && chart.chart.result && chart.chart.result[0];
   if (!result) return null;
@@ -672,7 +670,7 @@ function fiftyTwoWeekStatusFromChart(chart) {
   if (price === undefined || price === null || closes.length < 2) return null;
   const high = Math.max(...closes);
   const low = Math.min(...closes);
-  return { isHigh: price >= high * 0.999, isLow: price <= low * 1.001 };
+  return { isHigh: price >= high * 0.95, isLow: price <= low * 1.05 };
 }
 
 // 매일 한 번(Cron Trigger)씩 호출 — 코스피200+코스닥150(약 350종목)을 하루 만에 한 번에 스캔(가벼운 차트 조회 1회씩이라 500종목도
