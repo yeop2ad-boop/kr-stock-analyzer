@@ -1,7 +1,7 @@
 /* 기본(메인) 테마 = 화이트. 설정(더보기 패널)에서 블랙 버전으로 전환 가능 — :root[data-theme="dark"]가 아래서 덮어씀 */
 :root {
   --bg: #ffffff;
-  --card-bg: #f3f4f6;
+  --card-bg: #ffffff;
   --text: #14161c;
   --muted: #6b7280;
   --border: #d1d5db;
@@ -295,6 +295,7 @@ body {
   margin: 0 0 28px;
   max-width: none;
   background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: 999px;
   padding: 4px 4px 4px 18px;
 }
