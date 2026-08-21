@@ -1465,6 +1465,16 @@ function isCreditReasonString(rating) {
   return rating === NO_DEBT_RATING || rating === UNRATED_REASON || rating === "회사채없음" || rating === "미평가";
 }
 
+// 점수 체계는 그대로 두고 화면 표기만 등급 문자 대신 별 이모지 개수로 바꿔줌(미평가·등급 정보 없음은 텍스트 유지)
+// AAA·AA+ 5별, AA·AA- 4별, A+·A 3별, A-·BBB+ 2별, BBB 이하 1별 / 회사채없음은 국내 5별·해외 3별
+const RATING_STAR_MAP = { AAA: 5, "AA+": 5, AA: 4, "AA-": 4, "A+": 3, A: 3, "A-": 2, "BBB+": 2 };
+function ratingToStars(rating, isKr) {
+  if (rating === NO_DEBT_RATING || rating === "회사채없음") return "⭐".repeat(isKr ? 5 : 3);
+  if (rating === UNRATED_REASON) return rating;
+  if (!rating) return rating;
+  return "⭐".repeat(RATING_STAR_MAP[rating] || 1);
+}
+
 // 투자등급(신용등급) + 벤치마크 지수 대비 모멘텀 + 순이익률 + 시가총액 가점을 조합한 참고용 투자 안정성 점수
 // (10점 만점, 높을수록 위험이 낮음). 미국 종목은 S&P500·한국 종목은 KOSPI200을 벤치마크로 사용(kospi200Return 필요).
 function computeRiskScore(metrics, sp500Return, kospi200Return) {
@@ -4713,7 +4723,7 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
           ratingLabel,
           isCreditReasonString(rating) ? null : creditScore,
           4,
-          `${rating ? rating : ratingNoneText} (${ratingScaleText})`,
+          `${rating ? ratingToStars(rating, isKr) : ratingNoneText} (${ratingScaleText})`,
           stabilityColor
         )}
         ${scoreMethodBarRow(
@@ -4894,7 +4904,7 @@ async function openScoreMethodModal() {
           "투자등급",
           risk.rating === NO_DEBT_RATING || risk.rating === UNRATED_REASON ? null : risk.creditScore,
           4,
-          `S&P 신용등급: <b>${risk.rating || "S&P 등급 없음"}</b> (AAA 4점, BBB 이하 0점, 회사채 없음 2점, 미평가 1점)`,
+          `S&P 신용등급: <b>${risk.rating ? ratingToStars(risk.rating, false) : "S&P 등급 없음"}</b> (AAA 4점, BBB 이하 0점, 회사채 없음 2점, 미평가 1점)`,
           stabilityColor
         )}
         ${scoreMethodBarRow(
