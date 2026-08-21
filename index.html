@@ -439,7 +439,7 @@
       <div class="carousel-panel" data-panel="insight" id="panelInsight">
         <div class="top30-sub-nav">
           <button type="button" class="cat-btn" id="insightCatFirmsBtn"><span class="btn-icon" data-icon="bank"></span> 자산&amp;투자사</button>
-          <button type="button" class="cat-btn" id="insightCatBrandBtn">🎯 다트공시</button>
+          <button type="button" class="cat-btn" id="insightCatBrandBtn"><span class="btn-icon" id="insightCatBrandIcon"></span> <span id="insightCatBrandLabel">브랜드평판순</span></button>
           <button type="button" class="cat-btn" id="insightCatTechBtn"><span class="btn-icon" data-icon="flask"></span> 신기술</button>
           <button type="button" class="cat-btn" id="insightCatCalendarBtn"><span class="btn-icon" data-icon="calendar"></span> 실적&amp;공시 일정</button>
           <button type="button" class="cat-btn" id="insightCatNewsBtn"><span class="btn-icon" data-icon="newspaper"></span> 뉴스</button>
@@ -463,9 +463,13 @@
           </div>
         </div>
         <div class="top30-sub-nav" id="insightBrandNav" style="display:none;">
-          <button type="button" class="cat-btn" id="insightBrandHarrisBtn">Axios Harris Poll 100</button>
-          <button type="button" class="cat-btn" id="insightBrandReptrakBtn">RepTrak</button>
-          <button type="button" class="cat-btn" id="insightBrandYougovBtn">YouGov</button>
+          <button type="button" class="cat-btn brand-org-btn" id="insightBrandHarrisBtn">Axios Harris Poll 100</button>
+          <button type="button" class="cat-btn brand-org-btn" id="insightBrandReptrakBtn">RepTrak</button>
+          <button type="button" class="cat-btn brand-org-btn" id="insightBrandYougovBtn">YouGov</button>
+          <button type="button" class="cat-btn dart-metric-btn" id="insightDartSalaryBtn" style="display:none;">평균연봉</button>
+          <button type="button" class="cat-btn dart-metric-btn" id="insightDartTenureBtn" style="display:none;">평균근속</button>
+          <button type="button" class="cat-btn dart-metric-btn" id="insightDartBuybackBtn" style="display:none;">자사주 취득</button>
+          <button type="button" class="cat-btn dart-metric-btn" id="insightDartHeadcountBtn" style="display:none;">직원증가</button>
         </div>
         <p id="insightStatus" class="muted top30-status" style="display:none;"></p>
         <div id="insightResults"></div>

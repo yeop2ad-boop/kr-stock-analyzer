@@ -37,6 +37,7 @@ const ICONS = {
   building: svgIcon(`<path d="M5 21V9l7-5 7 5v12"/><path d="M3 21h18M9 21v-6h6v6"/>`),
   thumbsup: svgIcon(`<path d="M7 10v10H4V10h3Z"/><path d="M7 10l3-6a2 2 0 0 1 2 2v3h5.5a2 2 0 0 1 2 2.3l-1.3 6A2 2 0 0 1 16.2 20H9a2 2 0 0 1-2-2v-8Z"/>`),
   basket: svgIcon(`<path d="M4 9h16l-2 10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L4 9Z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/>`),
+  dart: svgIcon(`<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/>`),
 };
 function iconHtml(name) {
   return ICONS[name] || "";
@@ -3124,11 +3125,25 @@ function navigateToTicker(ticker, { push = true } = {}) {
 // 국내 탭은 아직 해외와 동일한 항목·데이터를 보여주는 1단계(색상 전환만) 상태이며, 실제 국내 전용 콘텐츠는 추후 단계에서 채움
 const marketModeKrBtn = el("marketModeKrBtn");
 const marketModeUsBtn = el("marketModeUsBtn");
+// 다트공시/브랜드평판순 탭은 국내·해외 콘텐츠가 완전히 달라(다트공시: 4대 지표 랭킹, 브랜드평판순: 3개 기관 순위)
+// 아이콘·이름표까지 시장에 따라 통째로 바뀜 — insightActiveCategory 등은 이 시점엔 아직 선언 전(TDZ)이라
+// 직접 참조하지 않고, 커스텀 이벤트로 느슨하게 연결해 뒤쪽(파일 하단)의 코드가 필요하면 구독하게 함
+function syncDartTabForMarket() {
+  const isKr = getWatchlistActiveMarket() === "KR";
+  const iconEl = el("insightCatBrandIcon");
+  const labelEl = el("insightCatBrandLabel");
+  if (iconEl) iconEl.innerHTML = iconHtml(isKr ? "dart" : "trophy");
+  if (labelEl) labelEl.textContent = isKr ? "다트공시" : "브랜드평판순";
+  document.querySelectorAll(".brand-org-btn").forEach((b) => (b.style.display = isKr ? "none" : ""));
+  document.querySelectorAll(".dart-metric-btn").forEach((b) => (b.style.display = isKr ? "" : "none"));
+}
 function syncMarketModeUI() {
   const isKr = getWatchlistActiveMarket() === "KR";
   document.body.dataset.marketMode = isKr ? "kr" : "us";
   marketModeKrBtn.classList.toggle("active", isKr);
   marketModeUsBtn.classList.toggle("active", !isKr);
+  syncDartTabForMarket();
+  document.dispatchEvent(new CustomEvent("marketmodechange"));
 }
 function setAppMarketMode(mode) {
   const market = mode === "kr" ? "KR" : "US";
@@ -5145,6 +5160,14 @@ function switchInsightCategory(key) {
   setInsightCategoryActive(key);
   insightFirmsNav.style.display = key === "firms" ? "" : "none";
   insightBrandNav.style.display = key === "brand" ? "" : "none";
+  if (key === "brand") {
+    // 국내는 다트공시(4대 지표), 해외는 브랜드평판순(3개 기관) — 이전에 보던 항목이 지금 시장에 없는 종류면 기본값으로 리셋
+    const isKr = getWatchlistActiveMarket() === "KR";
+    if (isKr !== DART_METRIC_KEYS.includes(insightActiveBrandOrg)) {
+      insightActiveBrandOrg = defaultBrandOrgForMarket();
+      setInsightBrandActive(insightActiveBrandOrg);
+    }
+  }
   runInsightCategory(key);
 }
 Object.entries(insightCategoryButtons).forEach(([key, btn]) => {
@@ -5155,7 +5178,7 @@ setInsightCategoryActive(insightActiveCategory);
 
 function runInsightCategory(key) {
   if (key === "firms") runInsight(insightActiveInstitution);
-  else if (key === "brand") runInsightBrand(insightActiveBrandOrg);
+  else if (key === "brand") runInsightBrandTab(insightActiveBrandOrg);
   else if (key === "tech") runInsightTech();
   else if (key === "calendar") runInsightCalendar();
   else if (key === "news") runInsightNews();
@@ -5302,26 +5325,47 @@ const BRAND_ORG_DATA_FILE = {
   yougov: "data/brand-reputation-yougov.json",
 };
 const BRAND_ORG_LABEL = { harris: "Axios Harris Poll 100", reptrak: "RepTrak", yougov: "YouGov" };
+const DART_METRIC_KEYS = ["salary", "tenure", "buyback", "headcount"];
+const DART_METRIC_LABEL = { salary: "평균연봉", tenure: "평균근속", buyback: "자사주 취득", headcount: "직원증가" };
 const insightBrandButtons = {
   harris: el("insightBrandHarrisBtn"),
   reptrak: el("insightBrandReptrakBtn"),
   yougov: el("insightBrandYougovBtn"),
+  salary: el("insightDartSalaryBtn"),
+  tenure: el("insightDartTenureBtn"),
+  buyback: el("insightDartBuybackBtn"),
+  headcount: el("insightDartHeadcountBtn"),
 };
 let insightActiveBrandOrg = "harris";
 function setInsightBrandActive(org) {
   Object.entries(insightBrandButtons).forEach(([k, btn]) => btn && btn.classList.toggle("active", k === org));
 }
+function defaultBrandOrgForMarket() {
+  return getWatchlistActiveMarket() === "KR" ? "salary" : "harris";
+}
+function runInsightBrandTab(org) {
+  if (DART_METRIC_KEYS.includes(org)) runInsightDart(org);
+  else runInsightBrand(org);
+}
 Object.entries(insightBrandButtons).forEach(([org, btn]) => {
   btn.addEventListener("click", () => {
     if (insightActiveCategory === "brand" && insightActiveBrandOrg === org) return;
+    insightActiveBrandOrg = org;
     insightActiveCategory = "brand";
     setInsightCategoryActive("brand");
     insightFirmsNav.style.display = "none";
     insightBrandNav.style.display = "";
-    runInsightBrand(org);
+    runInsightBrandTab(org);
   });
 });
 setInsightBrandActive(insightActiveBrandOrg);
+// 국내/해외 토글을 바꾸는 순간 다트공시/브랜드평판순 탭을 보고 있었다면, 그 시장에 맞는 기본 항목으로 새로 불러옴
+document.addEventListener("marketmodechange", () => {
+  if (insightActiveCategory !== "brand") return;
+  insightActiveBrandOrg = defaultBrandOrgForMarket();
+  setInsightBrandActive(insightActiveBrandOrg);
+  runInsightBrandTab(insightActiveBrandOrg);
+});
 
 const brandDataCache = {};
 async function getBrandData(org) {
@@ -5461,6 +5505,98 @@ async function runInsightBrand(org) {
   }
 
   await showUpTo(Math.min(BRAND_PAGE_SIZE, rows.length));
+}
+
+// ---------- 다트공시(국내 전용) — DART 전자공시 기준 평균연봉·평균근속·자사주취득·직원증가 4대 지표 ----------
+// scripts/scan-dart-financials.js(GitHub Actions, 주 1회)가 미리 만들어둔 data/dart-financials.json을 그대로 읽어와
+// 정렬만 클라이언트에서 함(재무제표까지 조회해야 하는 무거운 API라 브라우저에서 실시간 스캔하지 않음)
+let dartFinancialsPromise = null;
+function getDartFinancialsData() {
+  if (!dartFinancialsPromise) {
+    dartFinancialsPromise = fetch("data/dart-financials.json", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+  }
+  return dartFinancialsPromise;
+}
+function dartMetricHeaderLabel(metric) {
+  return {
+    salary: "평균연봉",
+    tenure: "평균근속연수",
+    buyback: "자사주 취득금액(최근 1년, 이사회 결정 기준)",
+    headcount: "직원 증가(전년 대비)",
+  }[metric];
+}
+function dartMetricCellHtml(r, metric) {
+  if (metric === "salary") return r.avgSalary != null ? fmtCompactCurrency(r.avgSalary, "KRW") : "N/A";
+  if (metric === "tenure") return r.avgTenureYears != null ? `${r.avgTenureYears.toFixed(1)}년` : "N/A";
+  if (metric === "buyback") return r.buybackAmount ? fmtCompactCurrency(r.buybackAmount, "KRW") : "N/A";
+  if (metric === "headcount")
+    return r.headcountChange != null ? `<span class="${r.headcountChange >= 0 ? "delta-up" : "delta-down"}">${r.headcountChange >= 0 ? "+" : ""}${r.headcountChange.toLocaleString()}명</span>` : "N/A";
+  return "N/A";
+}
+const DART_METRIC_FILTER = {
+  salary: (r) => r.avgSalary != null,
+  tenure: (r) => r.avgTenureYears != null,
+  buyback: (r) => r.buybackAmount > 0,
+  headcount: (r) => r.headcountChange != null,
+};
+const DART_METRIC_SORT = {
+  salary: (a, b) => (b.avgSalary ?? -Infinity) - (a.avgSalary ?? -Infinity),
+  tenure: (a, b) => (b.avgTenureYears ?? -Infinity) - (a.avgTenureYears ?? -Infinity),
+  buyback: (a, b) => (b.buybackAmount ?? -Infinity) - (a.buybackAmount ?? -Infinity),
+  headcount: (a, b) => (b.headcountChange ?? -Infinity) - (a.headcountChange ?? -Infinity),
+};
+function dartRankRowHtml(r, i, metric) {
+  return `
+    <tr>
+      <td>${i + 1}</td>
+      <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.corpName || r.symbol)}</b></span></td>
+      <td>${dartMetricCellHtml(r, metric)}</td>
+    </tr>`;
+}
+async function runInsightDart(metric) {
+  insightActiveBrandOrg = metric;
+  setInsightBrandActive(metric);
+  const status = el("insightStatus");
+  const results = el("insightResults");
+  status.style.display = "";
+  status.textContent = `⏳ ${DART_METRIC_LABEL[metric]} 데이터를 불러오는 중...`;
+  results.innerHTML = "";
+
+  const data = await getDartFinancialsData();
+  if (!data || !Array.isArray(data.items)) {
+    status.textContent = `🚧 다트공시 데이터를 아직 가져올 수 없습니다.`;
+    return;
+  }
+  status.style.display = "none";
+
+  const ranked = data.items.filter(DART_METRIC_FILTER[metric]).sort(DART_METRIC_SORT[metric]).slice(0, 50);
+
+  function paint(count) {
+    const visible = ranked.slice(0, count);
+    const rest = ranked.slice(count);
+    results.innerHTML = `
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 코스피200+코스닥150(약 350종목) 대상, DART 전자공시(사업보고서 임직원 현황·자기주식취득결정, ${escapeHtml(String(data.dataYear || ""))}년 사업연도 기준) 데이터입니다. 자사주 취득금액은 이사회 결정(계획) 금액 합계로 실제 집행 완료 금액과 다를 수 있습니다. 투자 자문이 아닙니다.</p>
+      <table class="top30-table">
+        <thead><tr><th>순위</th><th>기업</th><th>${dartMetricHeaderLabel(metric)}</th></tr></thead>
+        <tbody>${visible.map((r, i) => dartRankRowHtml(r, i, metric)).join("")}</tbody>
+      </table>
+      ${rest.length ? `<button type="button" class="cat-btn load-more-btn" id="dartRankMoreBtn">더보기 (${visible.length}/${ranked.length})</button>` : ""}
+    `;
+    const moreBtn = el("dartRankMoreBtn");
+    if (moreBtn) {
+      moreBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        paint(ranked.length);
+      });
+    }
+  }
+  if (ranked.length === 0) {
+    results.innerHTML = `<p class="muted">표시할 데이터가 없습니다.</p>`;
+    return;
+  }
+  paint(20);
 }
 
 // ---------- 3. 신기술 ----------
