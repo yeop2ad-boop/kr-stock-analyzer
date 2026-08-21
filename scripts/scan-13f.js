@@ -12,7 +12,7 @@ const DATA_DIR = path.join(__dirname, "..", "data");
 const STATE_FILE = path.join(DATA_DIR, "insight-state.json");
 
 // SEC 요청 시 반드시 식별 가능한 User-Agent를 보내야 함(SEC의 공정 이용 정책)
-const SEC_HEADERS = { "User-Agent": "yeopinvest.com contact@yeopinvest.com" };
+const SEC_HEADERS = { "User-Agent": "netuja.com contact@netuja.com" };
 
 const INSTITUTIONS = {
   berkshire: { cik: "1067983", filerName: "Berkshire Hathaway Inc" },

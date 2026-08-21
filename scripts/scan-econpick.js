@@ -20,8 +20,8 @@ const FRESH_WINDOW_DAYS = 3; // 이보다 오래된 게시물은 후보에서 �
 const RETENTION_DAYS = 14; // 이보다 오래된 항목/이미지는 매 실행마다 정리(레포 용량 억제)
 const SEEN_MAX = 500; // 재등장 방지용 이력 상한
 
-const UA_HEADERS = { "User-Agent": "yeopinvest.com econpick-bot contact@yeopinvest.com" };
-const SEC_HEADERS = { "User-Agent": "yeopinvest.com contact@yeopinvest.com" };
+const UA_HEADERS = { "User-Agent": "netuja.com econpick-bot contact@netuja.com" };
+const SEC_HEADERS = { "User-Agent": "netuja.com contact@netuja.com" };
 
 // ---------- 소스 풀 (풀 방식 — 사이트마다 매일 5개씩 나오지 않아도 되고, 부족하면 있는 만큼만 사용) ----------
 // Technology 피드는 경제와 무관한 일반 과학/기술 기사가 많이 섞여 나와서 제외.

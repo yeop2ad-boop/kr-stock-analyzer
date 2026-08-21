@@ -1,5 +1,38 @@
+/* 기본(메인) 테마 = 화이트. 설정(더보기 패널)에서 블랙 버전으로 전환 가능 — :root[data-theme="dark"]가 아래서 덮어씀 */
 :root {
-  --bg: #14161c;
+  --bg: #ffffff;
+  --card-bg: #f3f4f6;
+  --text: #14161c;
+  --muted: #6b7280;
+  --border: #d1d5db;
+  --accent: #2563eb;
+  --accent-soft: #dbeafe;
+  --good: #15803d;
+  --bad: #dc2626;
+  --warn: #b45309;
+  --pos: #dc2626; /* 양수/상승 = 빨강(한국식) */
+  --neg: #1d4ed8; /* 음수/하락 = 파랑(한국식) */
+  --radius: 12px;
+  --icon-accent: #c2410c; /* 틀고정 아이콘 색 — 해외(기본) 모드는 주황 */
+  --good-soft: #e3f5ea;
+  --bad-soft: #fde8e8;
+  --bad-soft-border: #f3b4b4;
+  --warn-soft: #fef3e2;
+  --gold: #8a6a00;
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(20, 22, 28, 0.1);
+  --glass-icon: rgba(20, 22, 28, 0.45);
+  --glass-icon-active: #14161c;
+  --subtle-fill: rgba(20, 22, 28, 0.06);
+  --subtle-fill-2: rgba(20, 22, 28, 0.08);
+  --overlay-chip-bg: rgba(255, 255, 255, 0.75);
+  --overlay-chip-border: rgba(20, 22, 28, 0.14);
+  --overlay-chip-icon: #14161c;
+  --track-fill: rgba(20, 22, 28, 0.08);
+}
+/* 블랙 버전(설정에서 선택) — 기존 다크 테마 배색을 그대로 유지 */
+:root[data-theme="dark"] {
+  --bg: #000000;
   --card-bg: #1c1f27;
   --text: #eceef2;
   --muted: #9aa2b1;
@@ -9,13 +42,28 @@
   --good: #1a9c5c;
   --bad: #d64545;
   --warn: #c98a1a;
-  --pos: #d64545; /* 양수/상승 = 빨강(한국식) */
-  --neg: #3b7dd8; /* 음수/하락 = 파랑(한국식) */
-  --radius: 12px;
-  --icon-accent: #e6983c; /* 틀고정 아이콘 색 — 해외(기본) 모드는 주황 */
+  --pos: #d64545;
+  --neg: #3b7dd8;
+  --icon-accent: #e6983c;
+  --good-soft: #143327;
+  --bad-soft: #3a1f20;
+  --bad-soft-border: #5c2b2b;
+  --warn-soft: #362a12;
+  --gold: #b8860b;
+  --glass-bg: rgba(255, 255, 255, 0.035);
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-icon: rgba(255, 255, 255, 0.45);
+  --glass-icon-active: #ffffff;
+  --subtle-fill: rgba(255, 255, 255, 0.06);
+  --subtle-fill-2: rgba(255, 255, 255, 0.08);
+  --overlay-chip-bg: rgba(20, 22, 28, 0.55);
+  --overlay-chip-border: rgba(255, 255, 255, 0.18);
+  --overlay-chip-icon: #ffffff;
+  --track-fill: rgba(255, 255, 255, 0.08);
 }
-/* 좌측 상단 국내/해외 토글에서 국내를 선택하면 모든 틀고정 아이콘이 파랑으로 바뀜(검은/흰 배경 모두 잘 보이는 파랑) */
-body[data-market-mode="kr"] { --icon-accent: #6b9bff; }
+/* 좌측 상단 국내/해외 토글에서 국내를 선택하면 모든 틀고정 아이콘이 파랑으로 바뀜(화이트/블랙 배경 모두 잘 보이는 파랑) */
+body[data-market-mode="kr"] { --icon-accent: #1d4ed8; }
+:root[data-theme="dark"] body[data-market-mode="kr"] { --icon-accent: #6b9bff; }
 
 * { box-sizing: border-box; }
 
@@ -39,7 +87,7 @@ body {
   left: 0;
   right: 0;
   z-index: 100;
-  background: #000;
+  background: var(--bg);
   border-bottom: 1px solid var(--border);
   padding: 14px 14px 0px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
@@ -81,6 +129,10 @@ body {
   border: none;
   color: var(--text);
 }
+
+.fh-banner { height: 24px; width: auto; display: block; flex: none; }
+
+.fh-right-group { display: flex; align-items: center; gap: 14px; }
 
 .fh-actions { display: flex; align-items: center; gap: 4px; }
 
@@ -374,15 +426,15 @@ body {
 .company-panel-black .company-panel-body #summarySubtabNav {
   margin: 0 -20px 12px;
   padding: 0 20px;
-  background: #000;
+  background: var(--bg);
 }
 
-/* ---------- 종목 상세화면: 검정 배경 + 이름/가격/등락률 헤더 ---------- */
-.company-panel-black { background: #000; }
-.company-panel-black .company-panel-body { background: #000; }
-.company-panel-black #summarySubtabNav { background: #000; }
+/* ---------- 종목 상세화면: 이름/가격/등락률 헤더 ---------- */
+.company-panel-black { background: var(--bg); }
+.company-panel-black .company-panel-body { background: var(--bg); }
+.company-panel-black #summarySubtabNav { background: var(--bg); }
 
-.detail-bar { background: #000; border-bottom-color: #14161c; }
+.detail-bar { background: var(--bg); border-bottom-color: var(--border); }
 .detail-identity { flex: 1; min-width: 0; display: flex; flex-direction: row; align-items: center; gap: 8px; }
 .detail-identity-logo .ticker-logo-wrap { width: 30px; height: 30px; }
 .detail-identity-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
@@ -444,7 +496,7 @@ body {
 .detail-subtabs .cat-btn {
   flex: 1 1 0;
   position: relative;
-  background: #000;
+  background: var(--bg);
   border: none;
   border-radius: 0;
   color: var(--muted);
@@ -453,7 +505,7 @@ body {
   padding: 4px 4px 12px;
   text-align: center;
 }
-.detail-subtabs .cat-btn.active { color: #fff; font-weight: 800; }
+.detail-subtabs .cat-btn.active { color: var(--text); font-weight: 800; }
 .detail-subtabs .cat-btn.active::after {
   content: "";
   position: absolute;
@@ -463,7 +515,7 @@ body {
   width: 22px;
   height: 3px;
   border-radius: 2px;
-  background: #fff;
+  background: var(--text);
 }
 
 .future-beta-warning {
@@ -473,7 +525,7 @@ body {
   font-size: 13px;
   font-weight: 600;
   color: var(--warn);
-  background: #362a12;
+  background: var(--warn-soft);
   border: 1px solid var(--warn);
   border-radius: 8px;
 }
@@ -488,7 +540,7 @@ body {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  background: #000;
+  background: var(--bg);
   border-radius: 8px;
 }
 .tab-bar::-webkit-scrollbar { display: none; }
@@ -504,24 +556,24 @@ body {
   padding: 9px 12px;
   white-space: nowrap;
 }
-.cat-btn.active { color: #fff; border-color: #fff; font-weight: 800; }
+.cat-btn.active { color: var(--text); border-color: var(--text); font-weight: 800; }
 
-/* 상단 고정 탭바(투데이/시장/인사이트 등) — 검은 배경/테두리로 통일, 선택 시 굵은 흰 글씨 + 중앙 하단 짧은 밑줄 */
+/* 상단 고정 탭바(투데이/시장/인사이트 등) — 배경/테두리를 페이지 배경과 통일, 선택 시 굵은 글씨 + 중앙 하단 짧은 밑줄 */
 .tab-bar .cat-btn {
   position: relative;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  background: #000;
-  border-color: #000;
+  background: var(--bg);
+  border-color: var(--bg);
   border-radius: 0;
   color: var(--muted);
   font-weight: 600;
 }
 .tab-bar .cat-btn.active {
-  background: #000;
-  border-color: #000;
-  color: #fff;
+  background: var(--bg);
+  border-color: var(--bg);
+  color: var(--text);
   font-weight: 800;
 }
 .tab-bar .cat-btn .tab-emoji {
@@ -541,7 +593,7 @@ body {
   width: 18px;
   height: 3px;
   border-radius: 2px;
-  background: #fff;
+  background: var(--text);
 }
 .cat-historical-up .cat-arrow { color: var(--pos); }
 .cat-historical-down .cat-arrow { color: var(--neg); }
@@ -587,8 +639,8 @@ body {
 .cal-month-title { margin: 0 0 10px; font-size: 19px; font-weight: 800; }
 .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; }
 .cal-dow { text-align: center; font-size: 13px; font-weight: 700; color: var(--muted); padding-bottom: 6px; }
-.cal-dow-sun { color: #e0567c; }
-.cal-dow-sat { color: #6b9bff; }
+.cal-dow-sun { color: var(--pos); }
+.cal-dow-sat { color: var(--accent); }
 .cal-day {
   aspect-ratio: 1 / 1;
   display: flex;
@@ -602,8 +654,8 @@ body {
 }
 .cal-day-empty { visibility: hidden; }
 .cal-day-num { font-size: 16px; font-variant-numeric: tabular-nums; color: var(--text); font-weight: 600; }
-.cal-day-sun .cal-day-num { color: #e0567c; }
-.cal-day-sat .cal-day-num { color: #6b9bff; }
+.cal-day-sun .cal-day-num { color: var(--pos); }
+.cal-day-sat .cal-day-num { color: var(--accent); }
 .cal-day-today { background: var(--accent-soft); border-color: var(--accent); }
 .cal-day-today .cal-day-num { color: var(--accent); font-weight: 800; }
 .cal-day.has-event { cursor: pointer; }
@@ -714,12 +766,12 @@ body {
   position: fixed;
   inset: 0;
   z-index: 300;
-  background: #000;
+  background: var(--bg);
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.loading-splash-logo { width: min(340px, 78vw); height: auto; animation: splash-pulse 1.4s ease-in-out infinite; }
+.loading-splash-logo { width: min(140px, 32vw); height: auto; border-radius: 22%; animation: splash-pulse 1.4s ease-in-out infinite; }
 @keyframes splash-pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.55; }
@@ -729,7 +781,7 @@ body {
   position: fixed;
   inset: 0;
   z-index: 400;
-  background: #000;
+  background: var(--bg);
   flex-direction: column;
 }
 
@@ -738,7 +790,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 10px 12px;
-  background: #000;
+  background: var(--bg);
   color: var(--text);
   font-size: 13px;
   font-weight: 700;
@@ -860,7 +912,7 @@ body {
 .smb-row-top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px; }
 .smb-label { font-size: 12.5px; font-weight: 700; color: var(--text); }
 .smb-value { font-size: 12.5px; font-weight: 800; }
-.smb-track { height: 8px; border-radius: 4px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+.smb-track { height: 8px; border-radius: 4px; background: var(--track-fill); overflow: hidden; }
 .smb-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
 .smb-desc { margin: 4px 0 0; font-size: 11px; color: var(--muted); }
 .smb-desc b { color: var(--text); }
@@ -1003,7 +1055,7 @@ body {
 /* 예전엔 전체화면 고정 모달 안이라 flex:1로 남은 세로 공간을 채웠지만, 이제 탭 화면 안에 그대로 이어붙는(인라인)
    카드라 페이지 자체가 스크롤되므로 별도 높이 강제나 세로 스크롤이 필요 없음 */
 .future-inline-card {
-  background: #000;
+  background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
@@ -1011,12 +1063,12 @@ body {
 }
 .future-inline-header {
   padding: 10px 12px;
-  background: #000;
+  background: var(--card-bg);
   border-bottom: 1px solid var(--border);
 }
 .future-chart-body {
   padding: 12px 10px 24px;
-  background: #000;
+  background: var(--card-bg);
 }
 /* 화면이 좁을 땐(모바일) 차트를 억지로 줄이지 않고 최소폭을 유지해 라벨 글자가 너무 작아지지 않게 하고,
    대신 가로 스크롤로 볼 수 있게 함(데이터 비율 자체는 항상 정확하게 유지됨).
@@ -1043,7 +1095,7 @@ body {
   max-width: 720px;
   margin: 22px auto;
   border: none;
-  border-top: 1px solid #23262f;
+  border-top: 1px solid var(--border);
 }
 .future-chart-subheading {
   max-width: 720px;
@@ -1057,7 +1109,7 @@ body {
 .future-chart-wip {
   font-size: 12px;
   font-weight: 700;
-  color: #f5a623;
+  color: var(--warn);
 }
 
 .chat-ticker-suggest {
@@ -1260,7 +1312,7 @@ table.popular-table td:nth-child(5) { min-width: 46px; }
 table.top30-table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 13px; }
 table.top30-table th, table.top30-table td { padding: 8px 6px; border-bottom: 1px solid var(--border); text-align: center; }
 .dividend-warn { display: inline-block; font-size: 10.5px; font-weight: 700; color: var(--warn); white-space: nowrap; cursor: help; }
-table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: #b8860b; font-weight: 800; }
+table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: var(--gold); font-weight: 800; }
 
 /* 브랜드평판순 표: 기업 헤더는 다른 열과 같이 가운데 정렬 유지, 데이터 행(기업명)만 왼쪽 정렬 */
 .brand-rep-table td:nth-child(2), .brand-rep-table th:nth-child(2) { width: 40%; }
@@ -1405,7 +1457,7 @@ table.insight-holdings-table td span, table.insight-holdings-table td b { max-wi
   font-size: 14px;
 }
 .status-box.loading { background: var(--accent-soft); color: var(--accent); }
-.status-box.error { background: #3a1f20; color: var(--bad); border: 1px solid #5c2b2b; }
+.status-box.error { background: var(--bad-soft); color: var(--bad); border: 1px solid var(--bad-soft-border); }
 
 .section-body { font-size: 14px; }
 .section-body .error-inline { color: var(--bad); font-size: 13px; }
@@ -1552,7 +1604,7 @@ table.insight-holdings-table td span, table.insight-holdings-table td b { max-wi
   font-weight: 700;
   padding: 7px 13px;
 }
-.wl-group-tab.active { color: #fff; border-color: #fff; background: #000; }
+.wl-group-tab.active { color: var(--text); border-color: var(--text); background: var(--bg); }
 .wl-group-tab-add { color: var(--accent); border-style: dashed; }
 .wl-group-manage-btn {
   flex: none;
@@ -1697,7 +1749,7 @@ table.insight-holdings-table td span, table.insight-holdings-table td b { max-wi
 
 /* ---------- 시장 위젯 종목 수정 모달 ---------- */
 .mkt-widget-edit-body { padding: 14px 12px; overflow-y: auto; }
-.mkt-widget-edit-count { margin: 0 0 12px; font-size: 13px; font-weight: 700; color: var(--accent); position: sticky; top: 0; background: #000; padding: 4px 0; }
+.mkt-widget-edit-count { margin: 0 0 12px; font-size: 13px; font-weight: 700; color: var(--accent); position: sticky; top: 0; background: var(--bg); padding: 4px 0; }
 .mkt-widget-edit-group { margin-bottom: 16px; }
 .mkt-widget-edit-group-label { margin: 0 0 8px; font-size: 12px; font-weight: 700; color: var(--muted); }
 .mkt-widget-edit-opt { display: flex; align-items: center; gap: 8px; padding: 8px 2px; font-size: 13.5px; color: var(--text); }
@@ -1716,7 +1768,7 @@ table.insight-holdings-table td span, table.insight-holdings-table td b { max-wi
   border-radius: 6px;
   white-space: nowrap;
 }
-.summary-action-btn.active { color: #fff; border-color: #fff; font-weight: 800; }
+.summary-action-btn.active { color: var(--text); border-color: var(--text); font-weight: 800; }
 #tickerHistoricalRow { margin-top: 14px; }
 
 table.fin-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 13px; }
@@ -1742,10 +1794,10 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
   width: fit-content;
   margin: 0 auto;
   padding: 0 14px;
-  background: rgba(255, 255, 255, 0.035);
+  background: var(--glass-bg);
   backdrop-filter: blur(4px) saturate(130%);
   -webkit-backdrop-filter: blur(4px) saturate(130%);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid var(--glass-border);
   border-radius: 999px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
 }
@@ -1760,11 +1812,11 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
   padding: 0;
   border: none;
   background: none;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--glass-icon);
   -webkit-tap-highlight-color: transparent;
 }
 .bottom-nav-btn svg { width: 24px; height: 24px; }
-.bottom-nav-btn.active { color: #fff; }
+.bottom-nav-btn.active { color: var(--glass-icon-active); }
 .bottom-nav-btn:active,
 .bottom-nav-btn:focus,
 .bottom-nav-btn:focus-visible { background: none; outline: none; }
@@ -1809,7 +1861,7 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
   height: 30px;
   border: none;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--subtle-fill);
   color: var(--text);
   font-size: 15px;
   line-height: 1;
@@ -1830,7 +1882,7 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--subtle-fill-2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1855,7 +1907,7 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
   font-weight: 600;
   text-align: left;
 }
-.more-panel-item:active { background: rgba(255, 255, 255, 0.05); }
+.more-panel-item:active { background: var(--subtle-fill); }
 .more-panel-item svg { flex: none; width: 20px; height: 20px; color: var(--muted); }
 .more-panel-item-label { flex: 1; }
 .more-panel-badge {
@@ -1864,9 +1916,24 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
   font-weight: 700;
   padding: 3px 8px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--subtle-fill-2);
   color: var(--muted);
 }
+
+/* 더보기 패널 상단 "화면 테마" 행 — 아이콘+라벨은 다른 항목과 동일, 오른쪽에 화이트/블랙 선택 토글만 추가 */
+.more-panel-theme-row { cursor: default; }
+.more-panel-theme-row:active { background: none; }
+.theme-toggle { flex: none; display: flex; gap: 4px; margin-left: auto; }
+.theme-toggle-btn {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.theme-toggle-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
 .toast {
   position: fixed;
@@ -1998,7 +2065,7 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 .score-badge .score-num { font-size: 30px; font-weight: 800; color: var(--accent); }
 .score-badge .score-num.ipo-label { font-size: 19px; }
 .score-badge .score-den { font-size: 12px; color: var(--muted); }
-.score-badge.risk { background: #143327; border-color: var(--good); }
+.score-badge.risk { background: var(--good-soft); border-color: var(--good); }
 .score-badge.risk .score-num { color: var(--good); }
 .score-badge.macro .score-num { font-size: 26px; color: inherit; }
 .score-badge.macro .score-den { font-size: 10px; text-align: center; line-height: 1.2; padding: 0 6px; color: inherit; opacity: 0.75; }
@@ -2026,7 +2093,7 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
   border: 2px solid var(--accent);
   color: var(--accent);
 }
-.mini-score-circle.risk { background: #143327; border-color: var(--good); color: var(--good); }
+.mini-score-circle.risk { background: var(--good-soft); border-color: var(--good); color: var(--good); }
 .mini-score-label { font-size: 11px; color: var(--muted); white-space: nowrap; text-align: center; }
 
 .score-pill-empty { color: var(--muted); font-weight: 700; }

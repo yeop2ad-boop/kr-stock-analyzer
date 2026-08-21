@@ -19,7 +19,7 @@ const RETENTION_DAYS = 30; // 이보다 오래된 항목/이미지는 매 실행
 const MAX_ITEMS = 20; // 30일이 안 지났어도 최신순으로 이 개수를 넘으면 오래된 것부터 정리(보관량 상한)
 const SEEN_MAX = 400;
 
-const UA_HEADERS = { "User-Agent": "yeopinvest.com techinsight-bot contact@yeopinvest.com" };
+const UA_HEADERS = { "User-Agent": "netuja.com techinsight-bot contact@netuja.com" };
 
 // ---------- 소스 4곳(기관당 이번 실행에서 최신 글 1건씩만 후보로 사용) ----------
 // MIT Technology Review·IEEE Spectrum·McKinsey는 표준 RSS 제공. OECD는 RSS가 없어져 AI 정책 블로그

@@ -3,57 +3,66 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>미국 기업 분석기 (yeopinvest.com)</title>
+<title>내투자닷컴: 투자 성향부터 주식 분석까지</title>
 <meta name="description" content="AI 데이터 기반, 실시간 상승압력도 & 투자 안정성 리포트" />
 
 <meta property="og:type" content="website" />
-<meta property="og:site_name" content="미국 기업 분석기 (yeopinvest.com)" />
-<meta property="og:title" content="미국 기업 분석기 (yeopinvest.com)" />
+<meta property="og:site_name" content="내투자닷컴: 투자 성향부터 주식 분석까지" />
+<meta property="og:title" content="내투자닷컴: 투자 성향부터 주식 분석까지" />
 <meta property="og:description" content="AI 데이터 기반, 실시간 상승압력도 & 투자 안정성 리포트" />
-<meta property="og:url" content="https://yeopinvest.com/" />
-<meta property="og:image" content="https://yeopinvest.com/og-image.png" />
+<meta property="og:url" content="https://netuja.com/" />
+<meta property="og:image" content="https://netuja.com/og-image.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:locale" content="ko_KR" />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="미국 기업 분석기 (yeopinvest.com)" />
+<meta name="twitter:title" content="내투자닷컴: 투자 성향부터 주식 분석까지" />
 <meta name="twitter:description" content="AI 데이터 기반, 실시간 상승압력도 & 투자 안정성 리포트" />
-<meta name="twitter:image" content="https://yeopinvest.com/og-image.png" />
+<meta name="twitter:image" content="https://netuja.com/og-image.png" />
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6143524232759343"
      crossorigin="anonymous"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="style.css" />
+<script>
+  // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
+  (function () {
+    try {
+      var saved = localStorage.getItem("theme");
+      if (saved === "dark") document.documentElement.setAttribute("data-theme", "dark");
+    } catch (e) {}
+  })();
+</script>
 </head>
 <body>
   <div id="loadingSplash" class="loading-splash">
-    <svg viewBox="0 0 410 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="yeopinvest.com" class="loading-splash-logo">
-      <image href="logos/site_logo_arrow_only.png" x="4" y="15" width="60" height="36" />
-      <text x="28" y="78" font-family="Pretendard, 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, Arial, sans-serif" font-weight="800" letter-spacing="-0.5px" font-size="46" fill="#eceef2">yeop<tspan fill="#6b9bff">invest</tspan><tspan font-weight="600" letter-spacing="0" fill="#8a94a6" font-size="26">.com</tspan></text>
-    </svg>
+    <img src="logos/내투자_앱로고1.png" alt="netuja.com" class="loading-splash-logo" />
   </div>
 
   <header id="fixedHeader" class="fixed-header">
     <div class="fh-topline">
-      <div class="market-mode-toggle" id="marketModeToggle" role="group" aria-label="국내/해외 전환">
-        <button type="button" class="market-mode-btn market-mode-btn-kr" id="marketModeKrBtn" data-mode="kr">국내</button>
-        <button type="button" class="market-mode-btn market-mode-btn-us active" id="marketModeUsBtn" data-mode="us">해외</button>
-      </div>
-      <div class="fh-actions">
-        <button type="button" id="searchOpenBtn" class="header-icon-btn" aria-label="검색">
-          <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15.2" y2="15.2"/></svg>
-        </button>
-        <div id="userMenu" class="user-menu" style="display:none;">
-          <button id="userAvatarBtn" class="user-avatar-btn" type="button" aria-label="내 계정">
-            <img id="userAvatarImg" class="user-avatar-img" src="" alt="" style="display:none;" />
-            <span id="userAvatarInitial" class="user-avatar-initial"></span>
+      <img src="logos/내투자_배너1.png" alt="netuja.com" class="fh-banner" />
+      <div class="fh-right-group">
+        <div class="market-mode-toggle" id="marketModeToggle" role="group" aria-label="국내/해외 전환">
+          <button type="button" class="market-mode-btn market-mode-btn-kr" id="marketModeKrBtn" data-mode="kr">국내</button>
+          <button type="button" class="market-mode-btn market-mode-btn-us active" id="marketModeUsBtn" data-mode="us">해외</button>
+        </div>
+        <div class="fh-actions">
+          <button type="button" id="searchOpenBtn" class="header-icon-btn" aria-label="검색">
+            <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15.2" y2="15.2"/></svg>
           </button>
-          <div id="userDropdown" class="user-dropdown" style="display:none;">
-            <p id="userDropdownName" class="user-dropdown-name"></p>
-            <p id="userDropdownEmail" class="user-dropdown-email"></p>
-            <button id="logoutBtn" class="user-dropdown-logout" type="button">로그아웃</button>
+          <div id="userMenu" class="user-menu" style="display:none;">
+            <button id="userAvatarBtn" class="user-avatar-btn" type="button" aria-label="내 계정">
+              <img id="userAvatarImg" class="user-avatar-img" src="" alt="" style="display:none;" />
+              <span id="userAvatarInitial" class="user-avatar-initial"></span>
+            </button>
+            <div id="userDropdown" class="user-dropdown" style="display:none;">
+              <p id="userDropdownName" class="user-dropdown-name"></p>
+              <p id="userDropdownEmail" class="user-dropdown-email"></p>
+              <button id="logoutBtn" class="user-dropdown-logout" type="button">로그아웃</button>
+            </div>
           </div>
         </div>
       </div>
@@ -548,6 +557,14 @@
       </button>
       <div class="more-panel-divider"></div>
       <div class="more-panel-list">
+        <div class="more-panel-item more-panel-theme-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5" /><path d="M12 2.5v2.5M12 19v2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2.5 12H5M19 12h2.5M4.2 19.8 6 18M18 6l1.8-1.8" /></svg>
+          <span class="more-panel-item-label">화면 테마</span>
+          <div class="theme-toggle" id="themeToggle" role="group" aria-label="화면 테마 선택">
+            <button type="button" class="theme-toggle-btn" id="themeLightBtn" data-theme-choice="light">화이트</button>
+            <button type="button" class="theme-toggle-btn" id="themeDarkBtn" data-theme-choice="dark">블랙</button>
+          </div>
+        </div>
         <button type="button" class="more-panel-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" /></svg>
           <span class="more-panel-item-label">즐겨찾기 종목</span>

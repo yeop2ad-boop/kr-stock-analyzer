@@ -2221,9 +2221,32 @@ morePanelUserRow.addEventListener("click", () => {
     openLoginModal();
   }
 });
-document.querySelectorAll(".more-panel-item").forEach((btn) => {
+document.querySelectorAll(".more-panel-item:not(.more-panel-theme-row)").forEach((btn) => {
   btn.addEventListener("click", () => showToast("준비중인 기능입니다."));
 });
+
+// ---------- 화면 테마(화이트/블랙) — 기본은 화이트, 선택은 localStorage에 저장해 다음 방문에도 유지 ----------
+const THEME_KEY = "theme";
+const themeLightBtn = el("themeLightBtn");
+const themeDarkBtn = el("themeDarkBtn");
+function applyTheme(theme) {
+  if (theme === "dark") {
+    document.documentElement.setAttribute("data-theme", "dark");
+  } else {
+    document.documentElement.removeAttribute("data-theme");
+  }
+  themeLightBtn.classList.toggle("active", theme !== "dark");
+  themeDarkBtn.classList.toggle("active", theme === "dark");
+}
+function setTheme(theme) {
+  applyTheme(theme);
+  try {
+    localStorage.setItem(THEME_KEY, theme);
+  } catch (e) {}
+}
+applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light");
+themeLightBtn.addEventListener("click", () => setTheme("light"));
+themeDarkBtn.addEventListener("click", () => setTheme("dark"));
 bottomNavButtons.home.addEventListener("click", () => {
   setBottomNavActive("home");
   closeCompanyPanel();
@@ -2297,7 +2320,7 @@ function closeCompanyPanel({ push = true } = {}) {
   }, 280);
   if (push && new URLSearchParams(location.search).get("ticker")) {
     history.pushState(null, "", location.pathname);
-    document.title = "미국 기업 분석기 (yeopinvest.com)";
+    document.title = "내투자닷컴: 투자 성향부터 주식 분석까지";
   }
 }
 companyPanelCloseBtn.addEventListener("click", () => closeCompanyPanel());
@@ -2612,7 +2635,7 @@ async function shareWatchlist() {
   }
   const groupName = activeGroup === WATCHLIST_ALL_GROUP_ID ? "전체" : (groups.find((g) => g.id === activeGroup) || {}).name || "관심종목";
   const lines = filtered.map((w) => `· ${TICKER_TO_KOREAN_NAME[w.symbol] || w.symbol} (${w.symbol})`);
-  const text = `📌 내 관심종목 - ${groupName}\n${lines.join("\n")}\n\nyeopinvest.com`;
+  const text = `📌 내 관심종목 - ${groupName}\n${lines.join("\n")}\n\nnetuja.com`;
   try {
     if (navigator.share) {
       await navigator.share({ title: `내 관심종목 - ${groupName}`, text });
@@ -2976,7 +2999,7 @@ async function runBranchBPipeline() {
     wizardShareText =
       `[선택찾기] ${searchWizardAnswers.sectors.map((s) => SECTOR_KO[s] || s).join(", ")} 섹터 · ${c2.label} → ${c3.label} TOP15\n` +
       top15.map((r, i) => `${i + 1}. ${r.symbol} (${plain(c2.fmt(r))} / ${plain(c3.fmt(r))})`).join("\n") +
-      `\n\nyeopinvest.com`;
+      `\n\nnetuja.com`;
     bodyEl.innerHTML = `
       ${table}
       <div class="wizard-share-row">
@@ -3040,7 +3063,7 @@ async function runBranchCConfirm() {
     wizardShareText =
       `[자동찾기] S&P500 상승 압력+투자 안정 합계 TOP30\n` +
       top30.map((r, i) => `${i + 1}. ${r.symbol} (${r.combinedTotal}/20)`).join("\n") +
-      `\n\nyeopinvest.com`;
+      `\n\nnetuja.com`;
     bodyEl.innerHTML = `
       ${table}
       <div class="wizard-share-row">
@@ -3112,7 +3135,7 @@ function navigateToTicker(ticker, { push = true } = {}) {
     history.pushState({ ticker }, "", "?ticker=" + encodeURIComponent(ticker));
   }
   tickerInput.value = ticker;
-  document.title = `${ticker} 분석 - 미국 기업 분석기 (yeopinvest.com)`;
+  document.title = `${ticker} 분석 - 내투자닷컴`;
   addRecentSearch(ticker);
   logSearchEvent(ticker);
   if (searchOverlay.style.display !== "none") closeSearchOverlay();
