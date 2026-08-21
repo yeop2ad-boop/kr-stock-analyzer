@@ -3234,6 +3234,7 @@ const KOREAN_COMPANY_NAMES = {
   코스트코: "COST",
   홈디포: "HD",
   타겟: "TGT",
+  츄이: "CHWY",
   제이피모건: "JPM",
   제이피모간: "JPM",
   뱅크오브아메리카: "BAC",
@@ -5424,7 +5425,7 @@ function brandRepTableHtml(rows, scoreLabel) {
       let priceCell = `<span class="muted">비상장</span>`;
       if (r.ticker) {
         priceCell = r.metrics
-          ? `${priceChartLink(r.ticker, "$" + r.metrics.price.toFixed(2))}<br><span class="${r.metrics.oneYearReturn >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">${r.metrics.oneYearChangeAmt !== null ? `${r.metrics.oneYearChangeAmt >= 0 ? "+" : ""}$${r.metrics.oneYearChangeAmt.toFixed(2)}` : ""}${r.metrics.oneYearReturn !== null ? `<br>(${fmtPct(r.metrics.oneYearReturn)})` : r.metrics.oneYearChangeAmt === null ? "N/A" : ""}</span>`
+          ? `${priceChartLink(r.ticker, fmtPrice(r.metrics.price, r.metrics.currency))}<br><span class="${r.metrics.oneYearReturn >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">${r.metrics.oneYearChangeAmt !== null ? `${r.metrics.oneYearChangeAmt >= 0 ? "+" : ""}${fmtPrice(r.metrics.oneYearChangeAmt, r.metrics.currency)}` : ""}${r.metrics.oneYearReturn !== null ? `<br>(${fmtPct(r.metrics.oneYearReturn)})` : r.metrics.oneYearChangeAmt === null ? "N/A" : ""}</span>`
           : `<span class="muted">조회 실패</span>`;
       }
       const scoreCell = r.score !== null && r.score !== undefined ? r.score : r.prevRank ? `${r.prevRank}위` : "—";

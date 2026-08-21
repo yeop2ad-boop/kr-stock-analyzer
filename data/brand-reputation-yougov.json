@@ -27,7 +27,7 @@
     { "rank": 18, "name": "Duracell", "ticker": null, "score": 76 },
     { "rank": 19, "name": "McCormick", "ticker": "MKC", "score": 76 },
     { "rank": 20, "name": "Heinz Ketchup", "ticker": "KHC", "score": 76 },
-    { "rank": 21, "name": "Samsung", "ticker": null, "score": 75 },
+    { "rank": 21, "name": "Samsung", "ticker": "005930.KS", "score": 75 },
     { "rank": 22, "name": "Dole", "ticker": "DOLE", "score": 75 },
     { "rank": 23, "name": "Lay's", "ticker": "PEP", "score": 75 },
     { "rank": 24, "name": "Levi's", "ticker": "LEVI", "score": 75 },

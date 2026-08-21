@@ -9,7 +9,7 @@
   "companies": [
     { "rank": 1, "name": "Chewy", "ticker": "CHWY", "score": 82.5 },
     { "rank": 2, "name": "Toyota Motor Corporation", "ticker": "TM", "score": 81.9 },
-    { "rank": 3, "name": "Samsung", "ticker": null, "score": 81.8 },
+    { "rank": 3, "name": "Samsung", "ticker": "005930.KS", "score": 81.8 },
     { "rank": 4, "name": "Nvidia", "ticker": "NVDA", "score": 81.8 },
     { "rank": 5, "name": "Costco", "ticker": "COST", "score": 81.4 },
     { "rank": 6, "name": "Honda Motor Company", "ticker": "HMC", "score": 81.4 },

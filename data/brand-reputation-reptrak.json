@@ -26,7 +26,7 @@
     { "rank": 9, "name": "Adidas", "ticker": "ADDYY", "prevRank": 16 },
     { "rank": 10, "name": "Sony", "ticker": "SONY", "prevRank": 4 },
     { "rank": 11, "name": "Levi Strauss & Co.", "ticker": "LEVI", "prevRank": 9 },
-    { "rank": 12, "name": "Samsung", "ticker": null, "prevRank": null },
+    { "rank": 12, "name": "Samsung", "ticker": "005930.KS", "prevRank": null },
     { "rank": 13, "name": "Nintendo", "ticker": "NTDOY", "prevRank": 12 },
     { "rank": 14, "name": "Natura & Co Holding SA", "ticker": "NTCO", "prevRank": 53 },
     { "rank": 15, "name": "PayPal", "ticker": "PYPL", "prevRank": 8 },
