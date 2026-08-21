@@ -4187,14 +4187,14 @@ async function renderFinancials(ticker, quoteCurrency) {
     const netIncomeCell =
       cur.netIncome === null || cur.netIncome === undefined
         ? "N/A"
-        : `<span class="net-income-cell ${cur.netIncome >= 0 ? "positive" : "negative"}">${fmtCompactCurrency(cur.netIncome)}</span>`;
+        : `<span class="net-income-cell ${cur.netIncome >= 0 ? "positive" : "negative"}">${fmtCompactCurrency(cur.netIncome, quoteCurrency)}</span>`;
 
     rows += `
       <tr>
         <td>${escapeHtml(year)}</td>
-        <td>${fmtCompactCurrency(cur.revenue)}</td>
+        <td>${fmtCompactCurrency(cur.revenue, quoteCurrency)}</td>
         <td>${revDelta}</td>
-        <td>${cur.eps !== null && cur.eps !== undefined ? "$" + cur.eps.toFixed(2) : "N/A"}</td>
+        <td>${cur.eps !== null && cur.eps !== undefined ? fmtPrice(cur.eps, quoteCurrency) : "N/A"}</td>
         <td>${epsDelta}</td>
         <td>${netIncomeCell}</td>
       </tr>
@@ -4229,7 +4229,7 @@ async function renderFinancials(ticker, quoteCurrency) {
         <div class="bar-track">
           <div class="bar-fill self" style="width:${pct}%"></div>
           ${profitOverlay}
-          <span class="bar-revenue-label">${fmtCompactCurrency(rev)}</span>
+          <span class="bar-revenue-label">${fmtCompactCurrency(rev, quoteCurrency)}</span>
         </div>
       </div>`;
     })
@@ -4274,7 +4274,7 @@ const QBAR_PRED_COLOR = "#d97706";
 // 분기별 매출/주당순이익 듀얼축 막대그래프(참조 이미지 스타일) — 왼쪽 축은 매출, 오른쪽 축은 EPS.
 // 각 분기마다 "그 분기 이전 데이터만으로 계산했다면 나왔을 예측치"(predRevenue/predEps)를 선으로 실제 막대 위에 겹쳐 비교하고,
 // 아직 발표되지 않은 마지막 분기는 revenue/eps가 null이라 실제 막대 없이 예측선만 표시됨
-function buildRevenueEpsChartSvg(quarters) {
+function buildRevenueEpsChartSvg(quarters, quoteCurrency) {
   const W = 780,
     H = 380;
   const ML = 66,
@@ -4302,7 +4302,7 @@ function buildRevenueEpsChartSvg(quarters) {
     const epsV = (epsTop / 5) * i;
     const y = MT + PH - (v / revTop) * PH;
     gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${CHART_GRID}" stroke-width="1" />`;
-    gridSvg += `<text x="${(ML - 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="10" fill="${CHART_AXIS_TEXT}">${fmtCompactCurrency(v)}</text>`;
+    gridSvg += `<text x="${(ML - 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="10" fill="${CHART_AXIS_TEXT}">${fmtCompactCurrency(v, quoteCurrency)}</text>`;
     gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" font-size="10" fill="${CHART_AXIS_TEXT}">${epsV.toFixed(2)}</text>`;
   }
 
@@ -4430,14 +4430,14 @@ async function renderQuarterlyEarnings(ticker, quoteCurrency) {
     { label: `${nextDateLabel}(예측)`, revenue: null, eps: null, predRevenue: guidance.revenue, predEps: guidance.eps },
   ];
 
-  const epsCell = (v) => (v !== null && v !== undefined ? "$" + v.toFixed(2) : "N/A");
+  const epsCell = (v) => (v !== null && v !== undefined ? fmtPrice(v, quoteCurrency) : "N/A");
   const quarterTableRows =
     recentWithPred
       .map(
         (q) => `
       <tr>
         <td>${quarterLabel(q.date)}</td>
-        <td>${fmtCompactCurrency(q.revenue)}</td>
+        <td>${fmtCompactCurrency(q.revenue, quoteCurrency)}</td>
         <td>${epsCell(q.eps)}</td>
         <td class="muted">실적</td>
       </tr>`
@@ -4446,14 +4446,14 @@ async function renderQuarterlyEarnings(ticker, quoteCurrency) {
     `
       <tr>
         <td>${escapeHtml(nextDateLabel)}</td>
-        <td>${fmtCompactCurrency(guidance.revenue)}</td>
+        <td>${fmtCompactCurrency(guidance.revenue, quoteCurrency)}</td>
         <td>${epsCell(guidance.eps)}</td>
-        <td><span class="net-income-cell" style="background:rgba(245,198,35,0.18);color:#f5c623;">예측</span></td>
+        <td><span class="net-income-cell" style="background:var(--warn-soft);color:var(--warn);">예측</span></td>
       </tr>`;
 
   el("quarterlyEarningsSection").innerHTML = `
     <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 노란 선은 해당 분기 이전 데이터만으로 계산했다면 나왔을 추세 기반 예측치이며, 가장 오른쪽 분기는 아직 발표 전이라 예측선만 표시됩니다. 실제 기업 발표 가이던스나 애널리스트 컨센서스가 아닙니다.</p>
-    <div class="future-chart-container">${buildRevenueEpsChartSvg(chartQuarters)}</div>
+    <div class="future-chart-container">${buildRevenueEpsChartSvg(chartQuarters, quoteCurrency)}</div>
     <table class="fin-table">
       <thead><tr><th>분기</th><th>매출액</th><th>EPS</th><th>구분</th></tr></thead>
       <tbody>${quarterTableRows}</tbody>
@@ -4572,8 +4572,8 @@ async function renderPeers(ticker, selfMetricsPromise, sector, industry) {
       <div class="peer-row">
         <span class="bar-label${d.self ? " self" : ""}">${escapeHtml(d.symbol)}</span>
         <div class="bar-track"><div class="bar-fill ${d.self ? "self" : ""}" style="width:${pct}%"></div></div>
-        <span class="bar-value">${fmtCompactCurrency(d.revenue)}</span>
-        <span class="peer-price">${fmtCompactCurrency(d.marketCap)}</span>
+        <span class="bar-value">${fmtCompactCurrency(d.revenue, d.currency)}</span>
+        <span class="peer-price">${fmtCompactCurrency(d.marketCap, d.currency)}</span>
         <span class="peer-score">${scoreHtml}</span>
       </div>`;
     })
@@ -5353,7 +5353,7 @@ async function runValueMarketCap() {
   await runValueScreenFromSP500(valuationButtons.marketCap, "시가총액", {
     sortFn: (a, b) => (b.marketCap || 0) - (a.marketCap || 0),
     metricHeaderHtml: "시가총액",
-    metricCellFn: (r) => (r.marketCap ? fmtCompactCurrency(r.marketCap) : "N/A"),
+    metricCellFn: (r) => (r.marketCap ? fmtCompactCurrency(r.marketCap, r.currency) : "N/A"),
     noteHtml: VALUE_DISCLAIMER,
   });
 }
@@ -6489,6 +6489,7 @@ function buildHistoricalCompareRows(tickerMetricsList, historicalList) {
         name: m.name,
         sector: m.sector,
         currentPrice: m.price,
+        currency: m.currency,
         priceChangePct,
         priceChangeAmt,
         historicalAttractiveness: h.historicalAttractiveness,
@@ -6565,7 +6566,7 @@ function historicalTableHtml(rows, rankColumnLabel, periodLabel = "1년전") {
       <tr>
         <td>${i + 1}</td>
         <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></span>${r.name ? `<br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span>` : ""}</td>
-        <td>${priceChartLink(r.symbol, "$" + r.currentPrice.toFixed(2))}<br><span class="${r.priceChangePct !== null && r.priceChangePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">${r.priceChangeAmt !== null ? `${r.priceChangeAmt >= 0 ? "+" : ""}$${r.priceChangeAmt.toFixed(2)} ` : ""}${r.priceChangePct !== null ? `(${fmtPct(r.priceChangePct)})` : "N/A"}</span></td>
+        <td>${priceChartLink(r.symbol, fmtPrice(r.currentPrice, r.currency))}<br><span class="${r.priceChangePct !== null && r.priceChangePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">${r.priceChangeAmt !== null ? `${r.priceChangeAmt >= 0 ? "+" : ""}${fmtPrice(r.priceChangeAmt, r.currency)} ` : ""}${r.priceChangePct !== null ? `(${fmtPct(r.priceChangePct)})` : "N/A"}</span></td>
         <td>${scoreRankColorHtml(r.historicalAttractiveness, r.historicalAttractiveness)}</td>
         <td>${scoreRankColorHtml(r.historicalRisk, r.historicalRisk)}</td>
       </tr>`;
