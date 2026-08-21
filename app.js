@@ -713,11 +713,13 @@ const SCORE_COLOR_FAMILY = {
   stability: "#22a866", // 투자안정 - 초록
   fear: "#e08a2c", // 공포지수(VIX) - 주황
 };
-// 원형판 안쪽은 항상 화이트(계열색은 테두리·숫자로만 구분) — 예전엔 값이 높을수록 하얗게/낮을수록
-// 검게 보간했지만(다크 테마 전용 디자인), 화이트 테마 기본으로 바뀌면서 고정 화이트로 단순화
+// 원형판 안쪽은 다른 점수 배지(상승압력=accent-soft, 투자안정=good-soft)와 통일성 있게 계열별 연한 배경을
+// 사용 — 예전엔 값이 높을수록 하얗게/낮을수록 검게 보간했지만(다크 테마 전용 디자인) 화이트 테마 기본으로
+// 바뀌면서 고정 연한 배경으로 단순화
+const SCORE_SOFT_BG_FAMILY = { pressure: "var(--accent-soft)", stability: "var(--good-soft)", fear: "var(--warn-soft)" };
 function scoreBgStyle(value, min, max, family) {
   const color = SCORE_COLOR_FAMILY[family] || SCORE_COLOR_FAMILY.pressure;
-  return { background: "var(--bg)", color };
+  return { background: SCORE_SOFT_BG_FAMILY[family] || "var(--accent-soft)", color };
 }
 function scoreBgStyleAttr(value, min, max, family) {
   const s = scoreBgStyle(value, min, max, family);
@@ -1460,10 +1462,6 @@ function krExchangeName(symbol) {
   return null;
 }
 
-// 신용등급 필드가 숫자 점수가 아니라 사유 문자열(회사채 없음/미평가, 한국·미국 표기 모두)로 표시돼야 하는지 판별
-function isCreditReasonString(rating) {
-  return rating === NO_DEBT_RATING || rating === UNRATED_REASON || rating === "회사채없음" || rating === "미평가";
-}
 
 // 점수 체계는 그대로 두고 화면 표기만 등급 문자 대신 별 이모지 개수로 바꿔줌(미평가·등급 정보 없음은 텍스트 유지)
 // AAA·AA+ 5별, AA·AA- 4별, A+·A 3별, A-·BBB+ 2별, BBB 이하 1별 / 회사채없음은 국내 5별·해외 3별
@@ -4721,7 +4719,7 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
         ${scoreMethodBarRow(
           "①",
           ratingLabel,
-          isCreditReasonString(rating) ? null : creditScore,
+          creditScore,
           4,
           `${rating ? ratingToStars(rating, isKr) : ratingNoneText} (${ratingScaleText})`,
           stabilityColor
@@ -4902,7 +4900,7 @@ async function openScoreMethodModal() {
         ${scoreMethodBarRow(
           "①",
           "투자등급",
-          risk.rating === NO_DEBT_RATING || risk.rating === UNRATED_REASON ? null : risk.creditScore,
+          risk.creditScore,
           4,
           `S&P 신용등급: <b>${risk.rating ? ratingToStars(risk.rating, false) : "S&P 등급 없음"}</b> (AAA 4점, BBB 이하 0점, 회사채 없음 2점, 미평가 1점)`,
           stabilityColor
