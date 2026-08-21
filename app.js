@@ -731,7 +731,7 @@ function scoreBgStyleAttr(value, min, max, family) {
 // 순위표의 상승 압력·투자 안정 점수 셀 전용 — 배경 없이 숫자만, 5점 이상이면 주황, 미만이면 흰색(상세페이지는 원래 배지 색 그대로 유지)
 function scoreRankColorHtml(text, value) {
   if (value === null || value === undefined) return `<span class="score-pill-empty">${text}</span>`;
-  return `<b style="color:${value >= 5 ? "#e08a2c" : "#fff"};">${text}</b>`;
+  return `<b style="color:${value >= 5 ? "#e08a2c" : "var(--text)"};">${text}</b>`;
 }
 
 // 요약 배지 라벨 아래에 붙일 "VIX : 값(변동%)" 줄(중앙정렬은 .mini-score-label의 text-align:center가 담당)
