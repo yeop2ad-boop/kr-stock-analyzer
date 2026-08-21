@@ -466,9 +466,9 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: rgba(20, 22, 28, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #fff;
+  background: var(--overlay-chip-bg);
+  border: 1px solid var(--overlay-chip-border);
+  color: var(--overlay-chip-icon);
   backdrop-filter: blur(2px);
 }
 /* 라인/캔들 전환 버튼 — 기간 버튼(1일~최대)과 같은 줄에 7번째 버튼으로 들어감(플로팅 아님) */

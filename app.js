@@ -656,7 +656,7 @@ function getKrFomoMetrics() {
   if (!krFomoIndexPromise) {
     krFomoIndexPromise = fetch(KR_FOMO_INDEX_API)
       .then((res) => {
-        if (!res.ok) throw new Error("포모지수를 가져오지 못했습니다.");
+        if (!res.ok) throw new Error("FOMO지수를 가져오지 못했습니다.");
         return res.json();
       })
       .then((data) => {
@@ -697,7 +697,7 @@ function fomoLineHtml(score, changeAbs) {
     changeAbs !== null && changeAbs !== undefined && Number.isFinite(changeAbs)
       ? `(전일대비 ${changeAbs >= 0 ? "+" : ""}${Math.round(changeAbs * 100)}%p)`
       : "";
-  return `<br>포모지수 : ${pt >= 0 ? "+" : ""}${pt}%p ${changeStr}`;
+  return `<br>FOMO지수 : ${pt >= 0 ? "+" : ""}${pt}%p ${changeStr}`;
 }
 // scoreBgStyleAttr는 "값이 클수록 더 하얗게(더 fear/attractive)"라는 전제라, 포모지수는 부호가 반대(음수일수록 fear)이므로
 // -score*100(=fear 강도, 신저가 쏠림일수록 커짐)으로 뒤집어 넣어 기존 배경색 로직을 그대로 재사용
@@ -713,16 +713,11 @@ const SCORE_COLOR_FAMILY = {
   stability: "#22a866", // 투자안정 - 초록
   fear: "#e08a2c", // 공포지수(VIX) - 주황
 };
+// 원형판 안쪽은 항상 화이트(계열색은 테두리·숫자로만 구분) — 예전엔 값이 높을수록 하얗게/낮을수록
+// 검게 보간했지만(다크 테마 전용 디자인), 화이트 테마 기본으로 바뀌면서 고정 화이트로 단순화
 function scoreBgStyle(value, min, max, family) {
   const color = SCORE_COLOR_FAMILY[family] || SCORE_COLOR_FAMILY.pressure;
-  if (value === null || value === undefined || Number.isNaN(value)) {
-    return { background: "#20232c", color };
-  }
-  const t = clamp((value - min) / (max - min), 0, 1);
-  const dark = [15, 17, 22];
-  const light = [244, 246, 250];
-  const mix = dark.map((d, i) => Math.round(d + (light[i] - d) * t));
-  return { background: `rgb(${mix.join(",")})`, color };
+  return { background: "var(--bg)", color };
 }
 function scoreBgStyleAttr(value, min, max, family) {
   const s = scoreBgStyle(value, min, max, family);
@@ -4078,7 +4073,7 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
       const fomo = await getKrFomoMetrics().catch(() => ({ score: null, changeAbs: null }));
       macroBadgeHtml = `
         <div class="mini-score-circle macro"${fomoBgStyleAttr(fomo.score)}>${fomoDisplayValue(fomo.score)}</div>
-        <span class="mini-score-label">포모지수${fomoLineHtml(fomo.score, fomo.changeAbs)}</span>
+        <span class="mini-score-label">FOMO지수${fomoLineHtml(fomo.score, fomo.changeAbs)}</span>
       `;
     } else {
       const macroMetrics = await getMacroMetrics().catch(() => ({ vix: null }));
@@ -4272,9 +4267,13 @@ function projectNextQuarter(quarters, key) {
   return vals[vals.length - 1] * (1 + avgGrowth);
 }
 
+const QBAR_REVENUE_COLOR = "#2f6fed";
+const QBAR_EPS_COLOR = "#94a3b8";
+const QBAR_PRED_COLOR = "#d97706";
+
 // 분기별 매출/주당순이익 듀얼축 막대그래프(참조 이미지 스타일) — 왼쪽 축은 매출, 오른쪽 축은 EPS.
-// 각 분기마다 "그 분기 이전 데이터만으로 계산했다면 나왔을 예측치"(predRevenue/predEps)를 노란 선으로 실제 막대 위에 겹쳐 비교하고,
-// 아직 발표되지 않은 마지막 분기는 revenue/eps가 null이라 실제 막대 없이 노란 예측선만 표시됨
+// 각 분기마다 "그 분기 이전 데이터만으로 계산했다면 나왔을 예측치"(predRevenue/predEps)를 선으로 실제 막대 위에 겹쳐 비교하고,
+// 아직 발표되지 않은 마지막 분기는 revenue/eps가 null이라 실제 막대 없이 예측선만 표시됨
 function buildRevenueEpsChartSvg(quarters) {
   const W = 780,
     H = 380;
@@ -4302,9 +4301,9 @@ function buildRevenueEpsChartSvg(quarters) {
     const v = (revTop / 5) * i;
     const epsV = (epsTop / 5) * i;
     const y = MT + PH - (v / revTop) * PH;
-    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="#23262f" stroke-width="1" />`;
-    gridSvg += `<text x="${(ML - 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="10" fill="#8a90a3">${fmtCompactCurrency(v)}</text>`;
-    gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" font-size="10" fill="#8a90a3">${epsV.toFixed(2)}</text>`;
+    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${CHART_GRID}" stroke-width="1" />`;
+    gridSvg += `<text x="${(ML - 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="10" fill="${CHART_AXIS_TEXT}">${fmtCompactCurrency(v)}</text>`;
+    gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" font-size="10" fill="${CHART_AXIS_TEXT}">${epsV.toFixed(2)}</text>`;
   }
 
   let barsSvg = "";
@@ -4319,34 +4318,34 @@ function buildRevenueEpsChartSvg(quarters) {
     if (hasRevenue) {
       const revH = Math.max((q.revenue / revTop) * PH, 2);
       const revY = MT + PH - revH;
-      barsSvg += `<rect x="${revX.toFixed(1)}" y="${revY.toFixed(1)}" width="${barW.toFixed(1)}" height="${revH.toFixed(1)}" fill="#1c2a4a" rx="2" />`;
+      barsSvg += `<rect x="${revX.toFixed(1)}" y="${revY.toFixed(1)}" width="${barW.toFixed(1)}" height="${revH.toFixed(1)}" fill="${QBAR_REVENUE_COLOR}" rx="2" />`;
     }
     if (hasEps) {
       const epsH = Math.max((q.eps / epsTop) * PH, 2);
       const epsY = MT + PH - epsH;
-      barsSvg += `<rect x="${epsX.toFixed(1)}" y="${epsY.toFixed(1)}" width="${barW.toFixed(1)}" height="${epsH.toFixed(1)}" fill="#5b6472" rx="2" />`;
+      barsSvg += `<rect x="${epsX.toFixed(1)}" y="${epsY.toFixed(1)}" width="${barW.toFixed(1)}" height="${epsH.toFixed(1)}" fill="${QBAR_EPS_COLOR}" rx="2" />`;
     }
-    // 노란 예측선: 그 분기 이전 데이터 기준 예측치(마지막 미발표 분기는 이 선만 보임)
+    // 예측선: 그 분기 이전 데이터 기준 예측치(마지막 미발표 분기는 이 선만 보임)
     if (q.predRevenue !== null && q.predRevenue !== undefined) {
       const predY = MT + PH - Math.max((q.predRevenue / revTop) * PH, 2);
-      barsSvg += `<line x1="${revX.toFixed(1)}" y1="${predY.toFixed(1)}" x2="${(revX + barW).toFixed(1)}" y2="${predY.toFixed(1)}" stroke="#f5c623" stroke-width="3" stroke-linecap="round" />`;
+      barsSvg += `<line x1="${revX.toFixed(1)}" y1="${predY.toFixed(1)}" x2="${(revX + barW).toFixed(1)}" y2="${predY.toFixed(1)}" stroke="${QBAR_PRED_COLOR}" stroke-width="3" stroke-linecap="round" />`;
     }
     if (q.predEps !== null && q.predEps !== undefined) {
       const predEpsY = MT + PH - Math.max((q.predEps / epsTop) * PH, 2);
-      barsSvg += `<line x1="${epsX.toFixed(1)}" y1="${predEpsY.toFixed(1)}" x2="${(epsX + barW).toFixed(1)}" y2="${predEpsY.toFixed(1)}" stroke="#f5c623" stroke-width="3" stroke-linecap="round" />`;
+      barsSvg += `<line x1="${epsX.toFixed(1)}" y1="${predEpsY.toFixed(1)}" x2="${(epsX + barW).toFixed(1)}" y2="${predEpsY.toFixed(1)}" stroke="${QBAR_PRED_COLOR}" stroke-width="3" stroke-linecap="round" />`;
     }
-    labelsSvg += `<text x="${cx.toFixed(1)}" y="${(MT + PH + 20).toFixed(1)}" text-anchor="middle" font-size="11" fill="#8a90a3">${escapeHtml(q.label)}</text>`;
+    labelsSvg += `<text x="${cx.toFixed(1)}" y="${(MT + PH + 20).toFixed(1)}" text-anchor="middle" font-size="11" fill="${CHART_AXIS_TEXT}">${escapeHtml(q.label)}</text>`;
   });
 
   const legendY = 20;
   const legend = `
-    <circle cx="${ML}" cy="${legendY}" r="4" fill="#1c2a4a" /><text x="${ML + 10}" y="${legendY + 4}" font-size="11" fill="#c7cbd6">매출</text>
-    <circle cx="${ML + 70}" cy="${legendY}" r="4" fill="#5b6472" /><text x="${ML + 80}" y="${legendY + 4}" font-size="11" fill="#c7cbd6">주당순이익</text>
-    <line x1="${ML + 184}" y1="${legendY}" x2="${ML + 196}" y2="${legendY}" stroke="#f5c623" stroke-width="3" stroke-linecap="round" /><text x="${ML + 200}" y="${legendY + 4}" font-size="11" fill="#c7cbd6">예측선</text>
+    <circle cx="${ML}" cy="${legendY}" r="4" fill="${QBAR_REVENUE_COLOR}" /><text x="${ML + 10}" y="${legendY + 4}" font-size="11" fill="${CHART_AXIS_TEXT}">매출</text>
+    <circle cx="${ML + 70}" cy="${legendY}" r="4" fill="${QBAR_EPS_COLOR}" /><text x="${ML + 80}" y="${legendY + 4}" font-size="11" fill="${CHART_AXIS_TEXT}">주당순이익</text>
+    <line x1="${ML + 184}" y1="${legendY}" x2="${ML + 196}" y2="${legendY}" stroke="${QBAR_PRED_COLOR}" stroke-width="3" stroke-linecap="round" /><text x="${ML + 200}" y="${legendY + 4}" font-size="11" fill="${CHART_AXIS_TEXT}">예측선</text>
   `;
 
   return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="분기별 매출/주당순이익 차트">
-    <rect x="0" y="0" width="${W}" height="${H}" fill="#0b0d12" />
+    <rect x="0" y="0" width="${W}" height="${H}" fill="${CHART_BG}" />
     ${legend}
     ${gridSvg}
     ${barsSvg}
@@ -4463,14 +4462,42 @@ async function renderQuarterlyEarnings(ticker, quoteCurrency) {
   `;
 }
 
+// 국내(KR) 경쟁사 후보 — 미국은 사전 정의된 섹터 스크리너(region=US)로 한 번에 60개를 가져오지만, 코스피/코스닥은
+// 그런 스크리너가 없어서 시가총액 상위 종목(이미 시가총액 내림차순인 getKrUniverseTickers)을 순서대로 훑어
+// 개별 조회(yahooSearch)로 섹터가 일치하는 종목만 골라냄. 일치한 종목만 getCompanyMetrics로 시가총액까지 채워
+// 미국 경로와 동일한 모양({symbol, marketCap, industry})으로 반환해 renderPeers의 나머지 로직을 그대로 재사용
+async function getKrSectorPeerCandidates(sector, selfSymbol, selfIndustry) {
+  const allTickers = await getKrUniverseTickers();
+  const pool = allTickers.filter((t) => t !== selfSymbol).slice(0, 30);
+  const checked = await mapWithConcurrency(pool, 5, async (symbol) => {
+    try {
+      const s = await yahooSearch(symbol);
+      const q = s && s.quotes && s.quotes[0];
+      const sec = q && (q.sectorDisp || q.sector);
+      if (!q || sec !== sector) return null;
+      const ind = q.industryDisp || q.industry;
+      const m = await getCompanyMetrics(symbol).catch(() => null);
+      return { symbol, industry: ind, marketCap: m ? m.marketCap : null };
+    } catch {
+      return null;
+    }
+  });
+  const candidates = checked.filter(Boolean); // pool이 이미 시가총액 내림차순이라 순서 유지로 충분
+  const industryCandidates = selfIndustry ? candidates.filter((c) => c.industry === selfIndustry) : [];
+  return { candidates, industryCandidates };
+}
+
 // ---------- 3. 경쟁사 매출/주가/상승압력도 비교 ----------
 // 경쟁사 4개 = 동일 업종(industry) 시가총액 TOP3(부족하면 동일 섹터로 보충) + 시가총액이 자신과 가장 가까운 종목 1개
-// (섹터를 알 수 없는 경우엔 Yahoo의 연관 종목 추천으로 대체)
+// (섹터를 알 수 없는 경우엔 Yahoo의 연관 종목 추천으로 대체 — 국내 종목은 코스피200+코스닥150 시가총액 상위로 대체)
 async function renderPeers(ticker, selfMetricsPromise, sector, industry) {
   el("peersSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
+  const isKr = isKrTicker(ticker);
 
   const [sectorResult, selfMetrics] = await Promise.all([
-    sector ? getSectorPeerCandidates(sector, ticker, industry).catch(() => null) : Promise.resolve(null),
+    sector
+      ? (isKr ? getKrSectorPeerCandidates(sector, ticker, industry) : getSectorPeerCandidates(sector, ticker, industry)).catch(() => null)
+      : Promise.resolve(null),
     selfMetricsPromise.then((m) => ({ ...m, self: true })).catch(() => null),
   ]);
 
@@ -4501,15 +4528,21 @@ async function renderPeers(ticker, selfMetricsPromise, sector, industry) {
   }
 
   if (peerTickers.length === 0) {
-    const peersData = await yahooPeers(ticker).catch(() => null);
-    const list =
-      (peersData &&
-        peersData.finance &&
-        peersData.finance.result &&
-        peersData.finance.result[0] &&
-        peersData.finance.result[0].recommendedSymbols) ||
-      [];
-    peerTickers = list.map((p) => p.symbol).filter(Boolean).slice(0, 4);
+    if (isKr) {
+      // 야후의 "연관 종목 추천"은 해외 종목 위주라 국내 종목엔 부적합 — 대신 시가총액 상위 종목으로 대체
+      const allTickers = await getKrUniverseTickers();
+      peerTickers = allTickers.filter((t) => t !== ticker).slice(0, 4);
+    } else {
+      const peersData = await yahooPeers(ticker).catch(() => null);
+      const list =
+        (peersData &&
+          peersData.finance &&
+          peersData.finance.result &&
+          peersData.finance.result[0] &&
+          peersData.finance.result[0].recommendedSymbols) ||
+        [];
+      peerTickers = list.map((p) => p.symbol).filter(Boolean).slice(0, 4);
+    }
   }
 
   if (peerTickers.length === 0) {
@@ -4716,14 +4749,14 @@ async function renderMacro(ticker) {
   el("macroSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
   const isKr = isKrTicker(ticker);
-  el("macroSectionTitle").textContent = isKr ? "포모지수" : "S&P 공포지수";
+  el("macroSectionTitle").textContent = isKr ? "FOMO지수" : "S&P 공포지수";
 
   if (isKr) {
     const fomo = await getKrFomoMetrics().catch(() => ({ score: null, changeAbs: null, date: null }));
     const grade = fomoGrade(fomo.score);
     const liveLine =
       fomo.score !== null
-        ? `<p class="score-macro-vix-line">😱 포모지수(자체 개발, ${escapeHtml(fomo.date || "")} 기준)${fomoLineHtml(fomo.score, fomo.changeAbs)}</p>`
+        ? `<p class="score-macro-vix-line">😱 FOMO지수(자체 개발, ${escapeHtml(fomo.date || "")} 기준)${fomoLineHtml(fomo.score, fomo.changeAbs)}</p>`
         : "";
     const fomoNumText = fomo.score === null || fomo.score === undefined ? "N/A" : `${fomoDisplayValue(fomo.score)}%p`;
     el("macroSection").innerHTML = `
@@ -6575,16 +6608,131 @@ const HISTORICAL_MOVERS_BUTTONS = {
   year: { up: historicalFullUpBtn, down: historicalFullDownBtn },
 };
 
+// 국내(KR) 한달/1년 상승·하락 — 해외처럼 GitHub Actions가 매일 350종목을 미리 스캔해두는 인프라가 없어,
+// 접속 시 시가총액 상위 30개만 먼저 가격 변동률(차트만 조회하는 가벼운 스캔)로 훑어 순위를 보여주고
+// "전체보기"를 눌러야 나머지를 이어서 스캔함(다른 국내 랭킹과 동일한 체감 속도). 상승압력·투자안정은
+// 그 시점의 스냅샷이 아니라 "현재" 점수(국내 배점 방식)이며 화면에도 그렇게 표기함
+const krHistoricalPriceScanners = {};
+function getKrHistoricalPriceScanner(period) {
+  if (!krHistoricalPriceScanners[period]) {
+    const days = period === "month" ? 30 : 365;
+    krHistoricalPriceScanners[period] = makeIncrementalScan(
+      getKrUniverseTickers,
+      async (symbol) => {
+        const chart = await yahooChart(symbol, "2y", "1d").catch(() => null);
+        const result = chart && chart.chart && chart.chart.result && chart.chart.result[0];
+        const meta = result && result.meta;
+        const pairs = chartClosePairs(chart);
+        if (!meta || pairs.length < 2) return null;
+        const last = pairs[pairs.length - 1];
+        const base = closestPair(pairs, last.t - days * 86400);
+        if (!base || !base.c) return null;
+        return {
+          symbol,
+          currentPrice: last.c,
+          currency: meta.currency,
+          priceChangePct: ((last.c - base.c) / base.c) * 100,
+        };
+      },
+      10
+    );
+  }
+  return krHistoricalPriceScanners[period];
+}
+
+function krHistoricalRowHtml(r, i, nameMap) {
+  const changeClass = r.priceChangePct !== null && r.priceChangePct >= 0 ? "delta-up" : "delta-down";
+  const attractCellHtml = r.attractivenessTotal !== undefined ? scoreRankColorHtml(r.attractivenessTotal, r.attractivenessTotal) : "N/A";
+  const riskCellHtml = r.riskTotal !== undefined ? scoreRankColorHtml(r.riskTotal, r.riskTotal) : "N/A";
+  return `
+    <tr>
+      <td>${i + 1}</td>
+      <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml((nameMap && nameMap.get(r.symbol)) || r.symbol)}</b></span></td>
+      <td>${priceChartLink(r.symbol, fmtPrice(r.currentPrice, r.currency))}<br><span class="${changeClass}" style="font-size:11px;">(${fmtPct(r.priceChangePct)})</span></td>
+      <td>${attractCellHtml}</td>
+      <td>${riskCellHtml}</td>
+    </tr>`;
+}
+
+async function runHistoricalMoversKr(period, direction, initialCount) {
+  const scanner = getKrHistoricalPriceScanner(period);
+  const periodLabel = period === "month" ? "한달전" : "1년전";
+  const rankLabel = direction === "up" ? "상승률" : "하락률";
+
+  async function paintUpTo(targetCount) {
+    try {
+      const isFullScan = targetCount > initialCount;
+      historicalStatus.style.display = "block";
+      historicalStatus.textContent = isFullScan
+        ? `전체 검색 중(약 1분 소요될 수 있어요)...`
+        : `코스피200+코스닥150 ${periodLabel} 대비 ${rankLabel} 계산 중...`;
+      const [{ items: raw, total }, nameMap] = await Promise.all([
+        scanner(targetCount, (done, target) => {
+          historicalStatus.textContent = `${done}/${target} 종목 확인 중...`;
+        }),
+        getKrSymbolNameMap().catch(() => new Map()),
+      ]);
+      if (raw.length === 0) throw new Error("데이터를 가져오지 못했습니다.");
+
+      const ranked = raw
+        .slice()
+        .sort((a, b) => (direction === "up" ? b.priceChangePct - a.priceChangePct : a.priceChangePct - b.priceChangePct));
+      const top50 = ranked.slice(0, 50);
+      const hasMore = targetCount < total;
+
+      historicalStatus.textContent = `상위 ${top50.length}개 종목의 상승압력·투자안정 점수를 계산하는 중...`;
+      const { sp500Return, kospi200Return } = await getMarketReturnsCached();
+      const fullMetricsList = await mapWithConcurrency(top50, 5, (r) => getFullMetricsForDividendRisk(r.symbol));
+      top50.forEach((r, i) => {
+        const m = fullMetricsList[i];
+        if (!m) return;
+        r.attractivenessTotal = computeAttractivenessScore(m).total;
+        r.riskTotal = computeRiskScore(m, sp500Return, kospi200Return).total;
+      });
+      historicalStatus.style.display = "none";
+
+      historicalResults.innerHTML = `
+        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${periodLabel}(코스피200+코스닥150 대상) 대비 ${rankLabel} 기준이며, 상승 압력·투자 안정은 <b>현재 시점</b> 점수(국내 배점 방식)입니다. 투자 자문이 아닙니다.</p>
+        <p class="muted" style="font-size:12px;">시가총액 상위 ${Math.min(targetCount, initialCount)}개${targetCount > initialCount ? ` + 나머지 ${targetCount - initialCount}개` : ""} 확인(코스피200+코스닥150 ${total}개 중 ${targetCount}개, 상위 ${top50.length}개 표시)</p>
+        <table class="top30-table">
+          <thead><tr><th>${rankLabel}<br>순위</th><th>티커</th><th>현재가<br>(등락률)</th><th>상승<br>압력</th><th>투자<br>안정</th></tr></thead>
+          <tbody>${top50.map((r, i) => krHistoricalRowHtml(r, i, nameMap)).join("")}</tbody>
+        </table>
+        ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${total}">전체보기 (나머지 ${total - targetCount}개 · 전체 검색 시 약 1분 소요)</button>` : ""}
+      `;
+      const moreBtn = historicalResults.querySelector(".load-more-btn");
+      if (moreBtn) {
+        moreBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          moreBtn.disabled = true;
+          moreBtn.textContent = "전체 검색 중...";
+          paintUpTo(Number(moreBtn.dataset.nextCount));
+        });
+      }
+    } catch (err) {
+      historicalStatus.textContent = `❌ ${err.message || "과거분석 데이터를 가져오지 못했습니다."}`;
+    }
+  }
+  await paintUpTo(initialCount);
+}
+
 // period: "month"(한달 전) | "year"(1년 전), direction: "up"(상승) | "down"(하락)
 async function runHistoricalMovers(period, direction) {
   const btn = HISTORICAL_MOVERS_BUTTONS[period][direction];
+  historicalResults.innerHTML = "";
+  btn.disabled = true;
+
+  if (getWatchlistActiveMarket() === "KR") {
+    await runHistoricalMoversKr(period, direction, 30);
+    btn.disabled = false;
+    return;
+  }
+
   const periodLabel = period === "month" ? "한달전" : "1년전";
   const rankLabel = direction === "up" ? "상승률" : "하락률";
 
   historicalStatus.style.display = "block";
   historicalStatus.textContent = "불러오는 중...";
-  historicalResults.innerHTML = "";
-  btn.disabled = true;
 
   try {
     const data = await getHistoricalMoversData();
@@ -8034,6 +8182,14 @@ const PRICE_TAG_W = 108,
   PRICE_TAG_NOTCH = 8,
   PRICE_TAG_H = 36;
 
+// 가격/캔들 차트 색상 — 화이트 배경(사이트 화이트 테마와 통일), 현재가/터치 가격 책갈피는 앱 로고와 같은 주황
+const CHART_BG = "#ffffff";
+const CHART_GRID = "#e5e7eb";
+const CHART_AXIS_TEXT = "#6b7280";
+const CHART_CROSSHAIR = "#9aa2b1";
+const CHART_TAG_BG = "#f95403";
+const CHART_TAG_TEXT = "#ffffff";
+
 // 현재가/터치 위치를 가리키는 "책갈피" 모양(왼쪽 삼각 포인터 + 사각 라벨) path
 function bookmarkTagPath(xStart, yCenter) {
   const halfH = PRICE_TAG_H / 2;
@@ -8079,8 +8235,8 @@ function buildPriceChartSvg(pairs, period, symbol) {
   for (let k = 0; k <= 4; k++) {
     const v = lo + (k / 4) * (hi - lo);
     const y = yFn(v);
-    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="#23262f" stroke-width="1" />`;
-    gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 7).toFixed(1)}" font-size="20" fill="#8a90a3">${fmtChartPrice(v, chartCurrency)}</text>`;
+    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${CHART_GRID}" stroke-width="1" />`;
+    gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 7).toFixed(1)}" font-size="20" fill="${CHART_AXIS_TEXT}">${fmtChartPrice(v, chartCurrency)}</text>`;
   }
 
   let axisSvg = "";
@@ -8090,7 +8246,7 @@ function buildPriceChartSvg(pairs, period, symbol) {
     const x = xFn(idx);
     const d = new Date(pairs[idx].t * 1000);
     const anchor = k === 0 ? "start" : k === 4 ? "end" : "middle";
-    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 36).toFixed(1)}" text-anchor="${anchor}" font-size="20" fill="#8a90a3">${escapeHtml(fmt(d))}</text>`;
+    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 36).toFixed(1)}" text-anchor="${anchor}" font-size="20" fill="${CHART_AXIS_TEXT}">${escapeHtml(fmt(d))}</text>`;
   }
 
   const linePath = pairs.map((p, i) => `${i === 0 ? "M" : "L"}${xFn(i).toFixed(1)},${yFn(p.c).toFixed(1)}`).join(" ");
@@ -8108,24 +8264,24 @@ function buildPriceChartSvg(pairs, period, symbol) {
         <stop offset="100%" stop-color="#2f6fed" stop-opacity="0" />
       </linearGradient>
     </defs>
-    <rect x="0" y="0" width="${W}" height="${H}" fill="#0b0d12" />
+    <rect x="0" y="0" width="${W}" height="${H}" fill="${CHART_BG}" />
     ${gridSvg}
     <path d="${areaPath}" fill="url(#${gradId})" stroke="none" />
     <path d="${linePath}" fill="none" stroke="#2f6fed" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" />
     <g id="pcCurrentMarker">
-      <line x1="${ML}" y1="${lastY.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${lastY.toFixed(1)}" stroke="#8a90a3" stroke-width="1" stroke-dasharray="3,3" />
+      <line x1="${ML}" y1="${lastY.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${lastY.toFixed(1)}" stroke="${CHART_CROSSHAIR}" stroke-width="1" stroke-dasharray="3,3" />
       <circle cx="${lastX.toFixed(1)}" cy="${lastY.toFixed(1)}" r="3.5" fill="#2f6fed" />
-      <path d="${bookmarkTagPath(ML + PW, lastY)}" fill="#eceef2" />
-      <text x="${(ML + PW + PRICE_TAG_NOTCH + 8).toFixed(1)}" y="${(lastY + 7).toFixed(1)}" text-anchor="start" font-size="20" font-weight="700" fill="#0b0d12">${fmtChartPrice(last.c, chartCurrency)}</text>
+      <path d="${bookmarkTagPath(ML + PW, lastY)}" fill="${CHART_TAG_BG}" />
+      <text x="${(ML + PW + PRICE_TAG_NOTCH + 8).toFixed(1)}" y="${(lastY + 7).toFixed(1)}" text-anchor="start" font-size="20" font-weight="700" fill="${CHART_TAG_TEXT}">${fmtChartPrice(last.c, chartCurrency)}</text>
     </g>
     ${axisSvg}
     <rect id="pcHitArea" x="${ML}" y="0" width="${PW}" height="${H}" fill="transparent" style="touch-action:none;" />
     <g id="pcCrosshair" style="display:none;">
-      <line x1="0" y1="${MT}" x2="0" y2="${(MT + PH).toFixed(1)}" stroke="#8a90a3" stroke-width="1" stroke-dasharray="2,2" />
-      <line id="pcCrosshairHLine" x1="${ML}" y1="0" x2="${(ML + PW).toFixed(1)}" y2="0" stroke="#8a90a3" stroke-width="1" stroke-dasharray="2,2" />
-      <circle id="pcCrosshairDot" r="4" fill="#0b0d12" stroke="#2f6fed" stroke-width="2" />
-      <path id="pcCrosshairTagPath" fill="#eceef2" />
-      <text id="pcCrosshairTagText" text-anchor="start" font-size="20" font-weight="700" fill="#0b0d12"></text>
+      <line x1="0" y1="${MT}" x2="0" y2="${(MT + PH).toFixed(1)}" stroke="${CHART_CROSSHAIR}" stroke-width="1" stroke-dasharray="2,2" />
+      <line id="pcCrosshairHLine" x1="${ML}" y1="0" x2="${(ML + PW).toFixed(1)}" y2="0" stroke="${CHART_CROSSHAIR}" stroke-width="1" stroke-dasharray="2,2" />
+      <circle id="pcCrosshairDot" r="4" fill="${CHART_BG}" stroke="#2f6fed" stroke-width="2" />
+      <path id="pcCrosshairTagPath" fill="${CHART_TAG_BG}" />
+      <text id="pcCrosshairTagText" text-anchor="start" font-size="20" font-weight="700" fill="${CHART_TAG_TEXT}"></text>
     </g>
   </svg>`;
 }
@@ -8139,8 +8295,8 @@ function buildCandleChartSvg(pairs, period, symbol) {
   for (let k = 0; k <= 4; k++) {
     const v = lo + (k / 4) * (hi - lo);
     const y = yFn(v);
-    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="#23262f" stroke-width="1" />`;
-    gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 7).toFixed(1)}" font-size="20" fill="#8a90a3">${fmtChartPrice(v, chartCurrency)}</text>`;
+    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${CHART_GRID}" stroke-width="1" />`;
+    gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 7).toFixed(1)}" font-size="20" fill="${CHART_AXIS_TEXT}">${fmtChartPrice(v, chartCurrency)}</text>`;
   }
 
   let axisSvg = "";
@@ -8150,7 +8306,7 @@ function buildCandleChartSvg(pairs, period, symbol) {
     const x = xFn(idx);
     const d = new Date(pairs[idx].t * 1000);
     const anchor = k === 0 ? "start" : k === 4 ? "end" : "middle";
-    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 36).toFixed(1)}" text-anchor="${anchor}" font-size="20" fill="#8a90a3">${escapeHtml(fmt(d))}</text>`;
+    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 36).toFixed(1)}" text-anchor="${anchor}" font-size="20" fill="${CHART_AXIS_TEXT}">${escapeHtml(fmt(d))}</text>`;
   }
 
   const slotW = N > 1 ? PW / N : PW; // 봉 사이 간격의 60%를 몸통 너비로 사용(너무 촘촘하면 최소 1.5px 보장)
@@ -8174,22 +8330,22 @@ function buildCandleChartSvg(pairs, period, symbol) {
   const lastY = yFn(last.c);
 
   return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHtml(symbol)} 캔들 차트">
-    <rect x="0" y="0" width="${W}" height="${H}" fill="#0b0d12" />
+    <rect x="0" y="0" width="${W}" height="${H}" fill="${CHART_BG}" />
     ${gridSvg}
     ${candlesSvg}
     <g id="pcCurrentMarker">
-      <line x1="${ML}" y1="${lastY.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${lastY.toFixed(1)}" stroke="#8a90a3" stroke-width="1" stroke-dasharray="3,3" />
-      <path d="${bookmarkTagPath(ML + PW, lastY)}" fill="#eceef2" />
-      <text x="${(ML + PW + PRICE_TAG_NOTCH + 8).toFixed(1)}" y="${(lastY + 7).toFixed(1)}" text-anchor="start" font-size="20" font-weight="700" fill="#0b0d12">${fmtChartPrice(last.c, chartCurrency)}</text>
+      <line x1="${ML}" y1="${lastY.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${lastY.toFixed(1)}" stroke="${CHART_CROSSHAIR}" stroke-width="1" stroke-dasharray="3,3" />
+      <path d="${bookmarkTagPath(ML + PW, lastY)}" fill="${CHART_TAG_BG}" />
+      <text x="${(ML + PW + PRICE_TAG_NOTCH + 8).toFixed(1)}" y="${(lastY + 7).toFixed(1)}" text-anchor="start" font-size="20" font-weight="700" fill="${CHART_TAG_TEXT}">${fmtChartPrice(last.c, chartCurrency)}</text>
     </g>
     ${axisSvg}
     <rect id="pcHitArea" x="${ML}" y="0" width="${PW}" height="${H}" fill="transparent" style="touch-action:none;" />
     <g id="pcCrosshair" style="display:none;">
-      <line x1="0" y1="${MT}" x2="0" y2="${(MT + PH).toFixed(1)}" stroke="#8a90a3" stroke-width="1" stroke-dasharray="2,2" />
-      <line id="pcCrosshairHLine" x1="${ML}" y1="0" x2="${(ML + PW).toFixed(1)}" y2="0" stroke="#8a90a3" stroke-width="1" stroke-dasharray="2,2" />
-      <circle id="pcCrosshairDot" r="4" fill="#0b0d12" stroke="#2f6fed" stroke-width="2" />
-      <path id="pcCrosshairTagPath" fill="#eceef2" />
-      <text id="pcCrosshairTagText" text-anchor="start" font-size="20" font-weight="700" fill="#0b0d12"></text>
+      <line x1="0" y1="${MT}" x2="0" y2="${(MT + PH).toFixed(1)}" stroke="${CHART_CROSSHAIR}" stroke-width="1" stroke-dasharray="2,2" />
+      <line id="pcCrosshairHLine" x1="${ML}" y1="0" x2="${(ML + PW).toFixed(1)}" y2="0" stroke="${CHART_CROSSHAIR}" stroke-width="1" stroke-dasharray="2,2" />
+      <circle id="pcCrosshairDot" r="4" fill="${CHART_BG}" stroke="#2f6fed" stroke-width="2" />
+      <path id="pcCrosshairTagPath" fill="${CHART_TAG_BG}" />
+      <text id="pcCrosshairTagText" text-anchor="start" font-size="20" font-weight="700" fill="${CHART_TAG_TEXT}"></text>
     </g>
   </svg>`;
 }
@@ -8837,7 +8993,7 @@ async function renderFutureModalHeader(ticker, quote, metricsPromise, marketRetu
     let macroBadgeHtml;
     if (isKr) {
       const fomo = await getKrFomoMetrics().catch(() => ({ score: null }));
-      macroBadgeHtml = `<span class="mini-score-circle small macro" title="포모지수"${fomoBgStyleAttr(fomo.score)}>${fomoDisplayValue(fomo.score)}</span>`;
+      macroBadgeHtml = `<span class="mini-score-circle small macro" title="FOMO지수"${fomoBgStyleAttr(fomo.score)}>${fomoDisplayValue(fomo.score)}</span>`;
     } else {
       const macroMetrics = await getMacroMetrics().catch(() => ({ vix: null }));
       const vix = macroMetrics.vix;
