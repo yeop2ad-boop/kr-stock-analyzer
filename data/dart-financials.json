@@ -1,0 +1,3481 @@
+{
+  "updatedAt": "2026-08-21T13:33:53.446Z",
+  "dataYear": 2025,
+  "buybackPeriod": {
+    "from": "20250821",
+    "to": "20260821"
+  },
+  "source": "DART Open API(opendart.fss.or.kr) — 사업보고서 임직원 현황(empSttus), 자기주식취득결정(tsstkAqDecsn)",
+  "items": [
+    {
+      "symbol": "005930.KS",
+      "corpName": "삼성전자",
+      "avgSalary": 153628246.21162158,
+      "avgTenureYears": 13.731473219481538,
+      "headcount": 128881,
+      "headcountPrevYear": 129480,
+      "headcountChange": -599,
+      "buybackAmount": 28247299992000
+    },
+    {
+      "symbol": "000660.KS",
+      "corpName": "SK하이닉스",
+      "avgSalary": 177951055.02330023,
+      "avgTenureYears": 13.432906885872239,
+      "headcount": 34549,
+      "headcountPrevYear": 32390,
+      "headcountChange": 2159,
+      "buybackAmount": 40004340000000
+    },
+    {
+      "symbol": "402340.KS",
+      "corpName": "SK스퀘어",
+      "avgSalary": 270785714.28571427,
+      "avgTenureYears": 3.3821428571428576,
+      "headcount": 84,
+      "headcountPrevYear": 88,
+      "headcountChange": -4,
+      "buybackAmount": 140000000000
+    },
+    {
+      "symbol": "009150.KS",
+      "corpName": "삼성전기",
+      "avgSalary": 110129466.8528711,
+      "avgTenureYears": 15.762178591965826,
+      "headcount": 12173,
+      "headcountPrevYear": 12161,
+      "headcountChange": 12,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "005380.KS",
+      "corpName": "현대자동차",
+      "avgSalary": 131137345.38141547,
+      "avgTenureYears": 15.800632248822282,
+      "headcount": 72598,
+      "headcountPrevYear": 75137,
+      "headcountChange": -2539,
+      "buybackAmount": 400692410500
+    },
+    {
+      "symbol": "105560.KS",
+      "corpName": "KB금융",
+      "avgSalary": 195125000,
+      "avgTenureYears": null,
+      "headcount": 144,
+      "headcountPrevYear": 140,
+      "headcountChange": 4,
+      "buybackAmount": 1200000000000
+    },
+    {
+      "symbol": "055550.KS",
+      "corpName": "신한지주",
+      "avgSalary": 177492307.69230768,
+      "avgTenureYears": null,
+      "headcount": 195,
+      "headcountPrevYear": 185,
+      "headcountChange": 10,
+      "buybackAmount": 700000000000
+    },
+    {
+      "symbol": "012450.KS",
+      "corpName": "한화에어로스페이스",
+      "avgSalary": 121601760.56338029,
+      "avgTenureYears": 11.716373239436619,
+      "headcount": 5680,
+      "headcountPrevYear": 5330,
+      "headcountChange": 350,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "028260.KS",
+      "corpName": "삼성물산",
+      "avgSalary": 123071374.58157866,
+      "avgTenureYears": 15.013529856386999,
+      "headcount": 9261,
+      "headcountPrevYear": 9380,
+      "headcountChange": -119,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "034020.KS",
+      "corpName": "두산에너빌리티",
+      "avgSalary": 107203914.64784212,
+      "avgTenureYears": 13.403176640462057,
+      "headcount": 6233,
+      "headcountPrevYear": 6174,
+      "headcountChange": 59,
+      "buybackAmount": 130342656000
+    },
+    {
+      "symbol": "000270.KS",
+      "corpName": "기아",
+      "avgSalary": 133715883.60772303,
+      "avgTenureYears": 20.75669747853197,
+      "headcount": 36566,
+      "headcountPrevYear": 35747,
+      "headcountChange": 819,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "012330.KS",
+      "corpName": "현대모비스",
+      "avgSalary": 134261867.85506684,
+      "avgTenureYears": 11.806064716140282,
+      "headcount": 10322,
+      "headcountPrevYear": 10073,
+      "headcountChange": 249,
+      "buybackAmount": 500000000000
+    },
+    {
+      "symbol": "086790.KS",
+      "corpName": "하나금융지주",
+      "avgSalary": 171625954.19847327,
+      "avgTenureYears": 3.380916030534351,
+      "headcount": 131,
+      "headcountPrevYear": 129,
+      "headcountChange": 2,
+      "buybackAmount": 800000000000
+    },
+    {
+      "symbol": "006400.KS",
+      "corpName": "삼성SDI",
+      "avgSalary": 91461364.04861237,
+      "avgTenureYears": 12.111101033919827,
+      "headcount": 11026,
+      "headcountPrevYear": 11202,
+      "headcountChange": -176,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "068270.KS",
+      "corpName": "셀트리온",
+      "avgSalary": 96879872.20447284,
+      "avgTenureYears": 6.600255591054313,
+      "headcount": 1565,
+      "headcountPrevYear": 1494,
+      "headcountChange": 71,
+      "buybackAmount": 300000234900
+    },
+    {
+      "symbol": "035420.KS",
+      "corpName": "NAVER",
+      "avgSalary": 140959579.94848424,
+      "avgTenureYears": 7.659203487220131,
+      "headcount": 5047,
+      "headcountPrevYear": 4583,
+      "headcountChange": 464,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "032830.KS",
+      "corpName": "삼성생명",
+      "avgSalary": 157236729.11787665,
+      "avgTenureYears": 17.352341920374705,
+      "headcount": 5124,
+      "headcountPrevYear": 5163,
+      "headcountChange": -39,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "066570.KS",
+      "corpName": "LG전자",
+      "avgSalary": 121152296.1574508,
+      "avgTenureYears": 13.759067478912838,
+      "headcount": 34144,
+      "headcountPrevYear": 35727,
+      "headcountChange": -1583,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "005490.KS",
+      "corpName": "POSCO홀딩스",
+      "avgSalary": 151622137.40458015,
+      "avgTenureYears": 12.538931297709924,
+      "headcount": 524,
+      "headcountPrevYear": 527,
+      "headcountChange": -3,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "316140.KS",
+      "corpName": "우리금융지주",
+      "avgSalary": 172114035.0877193,
+      "avgTenureYears": null,
+      "headcount": 114,
+      "headcountPrevYear": 107,
+      "headcountChange": 7,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "034730.KS",
+      "corpName": "SK",
+      "avgSalary": 116272233.53699932,
+      "avgTenureYears": 11.658836840914233,
+      "headcount": 4419,
+      "headcountPrevYear": 4404,
+      "headcountChange": 15,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "000810.KS",
+      "corpName": "삼성화재해상보험",
+      "avgSalary": 155670160.79494128,
+      "avgTenureYears": 15.90390243902439,
+      "headcount": 5535,
+      "headcountPrevYear": 5549,
+      "headcountChange": -14,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "373220.KS",
+      "corpName": "LG에너지솔루션",
+      "avgSalary": 111681705.61832534,
+      "avgTenureYears": null,
+      "headcount": 12922,
+      "headcountPrevYear": 12635,
+      "headcountChange": 287,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "267260.KS",
+      "corpName": "HD현대일렉트릭",
+      "avgSalary": 128043005.88501585,
+      "avgTenureYears": 6.420325939339067,
+      "headcount": 2209,
+      "headcountPrevYear": 2184,
+      "headcountChange": 25,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "009540.KS",
+      "corpName": "HD한국조선해양",
+      "avgSalary": 127970900.84251459,
+      "avgTenureYears": 4.3,
+      "headcount": 1543,
+      "headcountPrevYear": 1411,
+      "headcountChange": 132,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "207940.KS",
+      "corpName": "삼성바이오로직스",
+      "avgSalary": 111748120.9899175,
+      "avgTenureYears": 4.932080659945004,
+      "headcount": 5455,
+      "headcountPrevYear": 5011,
+      "headcountChange": 444,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "010120.KS",
+      "corpName": "엘에스일렉트릭",
+      "avgSalary": 97397003.74531835,
+      "avgTenureYears": 18.469662921348316,
+      "headcount": 1602,
+      "headcountPrevYear": 1580,
+      "headcountChange": 22,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "329180.KS",
+      "corpName": "HD현대중공업",
+      "avgSalary": 86741936.40663713,
+      "avgTenureYears": 3.5885576995269917,
+      "headcount": 13319,
+      "headcountPrevYear": 11194,
+      "headcountChange": 2125,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "033780.KS",
+      "corpName": "케이티앤지",
+      "avgSalary": 115400138.53613484,
+      "avgTenureYears": 18.211937196952203,
+      "headcount": 4331,
+      "headcountPrevYear": 4442,
+      "headcountChange": -111,
+      "buybackAmount": 260000000000
+    },
+    {
+      "symbol": "017670.KS",
+      "corpName": "SK텔레콤",
+      "avgSalary": 162628480.06019562,
+      "avgTenureYears": 13.696106094808126,
+      "headcount": 5316,
+      "headcountPrevYear": 5493,
+      "headcountChange": -177,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "010140.KS",
+      "corpName": "삼성중공업",
+      "avgSalary": 104945733.42393942,
+      "avgTenureYears": 17.308474905348994,
+      "headcount": 10301,
+      "headcountPrevYear": 9837,
+      "headcountChange": 464,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "298040.KS",
+      "corpName": "효성중공업",
+      "avgSalary": 86894028.59545837,
+      "avgTenureYears": 13.127361928791702,
+      "headcount": 3567,
+      "headcountPrevYear": 3395,
+      "headcountChange": 172,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "035720.KS",
+      "corpName": "카카오",
+      "avgSalary": 112062723.10045895,
+      "avgTenureYears": null,
+      "headcount": 3922,
+      "headcountPrevYear": 4028,
+      "headcountChange": -106,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "051910.KS",
+      "corpName": "LG화학",
+      "avgSalary": 112096586.03534053,
+      "avgTenureYears": null,
+      "headcount": 5829,
+      "headcountPrevYear": 6161,
+      "headcountChange": -332,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "042660.KS",
+      "corpName": "한화오션",
+      "avgSalary": 90754696.72571121,
+      "avgTenureYears": 15.911540526033281,
+      "headcount": 11178,
+      "headcountPrevYear": 10202,
+      "headcountChange": 976,
+      "buybackAmount": 5107423400
+    },
+    {
+      "symbol": "030200.KS",
+      "corpName": "케이티",
+      "avgSalary": 110368886.47030814,
+      "avgTenureYears": 19.272940616284608,
+      "headcount": 14701,
+      "headcountPrevYear": 16927,
+      "headcountChange": -2226,
+      "buybackAmount": 186136400
+    },
+    {
+      "symbol": "079550.KS",
+      "corpName": "LIG디펜스앤에어로스페이스",
+      "avgSalary": 105838649.15572232,
+      "avgTenureYears": 7.709443402126329,
+      "headcount": 3198,
+      "headcountPrevYear": 2793,
+      "headcountChange": 405,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "064350.KS",
+      "corpName": "현대로템",
+      "avgSalary": 122827831.3864906,
+      "avgTenureYears": 12.78699847638395,
+      "headcount": 1969,
+      "headcountPrevYear": 1833,
+      "headcountChange": 136,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "015760.KS",
+      "corpName": "한국전력공사",
+      "avgSalary": 93169656.48087431,
+      "avgTenureYears": 14.982032786885245,
+      "headcount": 22875,
+      "headcountPrevYear": 22742,
+      "headcountChange": 133,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "267250.KS",
+      "corpName": "HD현대",
+      "avgSalary": 196633354.16666666,
+      "avgTenureYears": 2.7208333333333337,
+      "headcount": 48,
+      "headcountPrevYear": 53,
+      "headcountChange": -5,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "003550.KS",
+      "corpName": "LG",
+      "avgSalary": 184389743.58974358,
+      "avgTenureYears": null,
+      "headcount": 195,
+      "headcountPrevYear": 182,
+      "headcountChange": 13,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "006800.KS",
+      "corpName": "미래에셋증권",
+      "avgSalary": 159572065.37890044,
+      "avgTenureYears": 15.578945022288263,
+      "headcount": 1346,
+      "headcountPrevYear": 1406,
+      "headcountChange": -60,
+      "buybackAmount": 480100000000
+    },
+    {
+      "symbol": "042700.KS",
+      "corpName": "한미반도체",
+      "avgSalary": 69211286.29579376,
+      "avgTenureYears": null,
+      "headcount": 737,
+      "headcountPrevYear": 710,
+      "headcountChange": 27,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "047810.KS",
+      "corpName": "한국항공우주",
+      "avgSalary": 119019359.83479607,
+      "avgTenureYears": 11.708931337119257,
+      "headcount": 3874,
+      "headcountPrevYear": 3645,
+      "headcountChange": 229,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "096770.KS",
+      "corpName": "SK이노베이션",
+      "avgSalary": 148936666.66666666,
+      "avgTenureYears": 12.562533333333333,
+      "headcount": 1500,
+      "headcountPrevYear": 1564,
+      "headcountChange": -64,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "278470.KS",
+      "corpName": "에이피알",
+      "avgSalary": 129514459.66514459,
+      "avgTenureYears": 2.2,
+      "headcount": 657,
+      "headcountPrevYear": 554,
+      "headcountChange": 103,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "010130.KS",
+      "corpName": "고려아연",
+      "avgSalary": 121400194.74196689,
+      "avgTenureYears": null,
+      "headcount": 2054,
+      "headcountPrevYear": 1944,
+      "headcountChange": 110,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "018260.KS",
+      "corpName": "삼성에스디에스",
+      "avgSalary": 141033425.43898743,
+      "avgTenureYears": 17.20196987253766,
+      "headcount": 11219,
+      "headcountPrevYear": 11387,
+      "headcountChange": -168,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "138040.KS",
+      "corpName": "메리츠금융지주",
+      "avgSalary": 249710526.31578946,
+      "avgTenureYears": 4.094736842105264,
+      "headcount": 38,
+      "headcountPrevYear": 36,
+      "headcountChange": 2,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "000720.KS",
+      "corpName": "현대건설",
+      "avgSalary": 103282476.7300688,
+      "avgTenureYears": 13.132658842573857,
+      "headcount": 2471,
+      "headcountPrevYear": 2477,
+      "headcountChange": -6,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "011070.KS",
+      "corpName": "LG이노텍",
+      "avgSalary": 88461001.16414435,
+      "avgTenureYears": 7.173690337601863,
+      "headcount": 6013,
+      "headcountPrevYear": 6456,
+      "headcountChange": -443,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "000150.KS",
+      "corpName": "두산",
+      "avgSalary": 123453237.41007194,
+      "avgTenureYears": 15.728776978417267,
+      "headcount": 1112,
+      "headcountPrevYear": 1048,
+      "headcountChange": 64,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "071050.KS",
+      "corpName": "한국금융지주",
+      "avgSalary": 231258064.51612905,
+      "avgTenureYears": 3.6301075268817207,
+      "headcount": 93,
+      "headcountPrevYear": 87,
+      "headcountChange": 6,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "028050.KS",
+      "corpName": "삼성E&amp;A",
+      "avgSalary": 135491033.95650515,
+      "avgTenureYears": 12.757497138496758,
+      "headcount": 2621,
+      "headcountPrevYear": 2512,
+      "headcountChange": 109,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "086280.KS",
+      "corpName": "현대글로비스",
+      "avgSalary": 114300846.93100475,
+      "avgTenureYears": 6.984402759810264,
+      "headcount": 2319,
+      "headcountPrevYear": 2441,
+      "headcountChange": -122,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "005830.KS",
+      "corpName": "DB손해보험",
+      "avgSalary": 103702143.3418151,
+      "avgTenureYears": null,
+      "headcount": 4716,
+      "headcountPrevYear": 4702,
+      "headcountChange": 14,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "323410.KS",
+      "corpName": "카카오뱅크",
+      "avgSalary": 120093576.96566999,
+      "avgTenureYears": null,
+      "headcount": 1806,
+      "headcountPrevYear": 1663,
+      "headcountChange": 143,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "011200.KS",
+      "corpName": "HMM",
+      "avgSalary": 117408177.5147929,
+      "avgTenureYears": 6.805824175824176,
+      "headcount": 1183,
+      "headcountPrevYear": 1137,
+      "headcountChange": 46,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "003490.KS",
+      "corpName": "대한항공",
+      "avgSalary": 119314869.19380672,
+      "avgTenureYears": 17.84830485851575,
+      "headcount": 14984,
+      "headcountPrevYear": 15017,
+      "headcountChange": -33,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "259960.KS",
+      "corpName": "크래프톤",
+      "avgSalary": 113352219.07459868,
+      "avgTenureYears": null,
+      "headcount": 2118,
+      "headcountPrevYear": 1903,
+      "headcountChange": 215,
+      "buybackAmount": 399998424000
+    },
+    {
+      "symbol": "010950.KS",
+      "corpName": "S-Oil",
+      "avgSalary": 128653378.72892347,
+      "avgTenureYears": 15.129118028534373,
+      "headcount": 1542,
+      "headcountPrevYear": 1407,
+      "headcountChange": 135,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "003670.KS",
+      "corpName": "포스코퓨처엠",
+      "avgSalary": 87678751.25881168,
+      "avgTenureYears": 8.673111782477342,
+      "headcount": 2979,
+      "headcountPrevYear": 3045,
+      "headcountChange": -66,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "007660.KS",
+      "corpName": "이수페타시스",
+      "avgSalary": 98486983.91812865,
+      "avgTenureYears": null,
+      "headcount": 1368,
+      "headcountPrevYear": 1186,
+      "headcountChange": 182,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "016360.KS",
+      "corpName": "삼성증권",
+      "avgSalary": 149161543.9599714,
+      "avgTenureYears": 12.99192280200143,
+      "headcount": 1399,
+      "headcountPrevYear": 1325,
+      "headcountChange": 74,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "003230.KS",
+      "corpName": "삼양식품",
+      "avgSalary": 50165225.30864198,
+      "avgTenureYears": null,
+      "headcount": 1944,
+      "headcountPrevYear": 1467,
+      "headcountChange": 477,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "024110.KS",
+      "corpName": "기업은행",
+      "avgSalary": 94228177.98178722,
+      "avgTenureYears": null,
+      "headcount": 13507,
+      "headcountPrevYear": 13566,
+      "headcountChange": -59,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "180640.KS",
+      "corpName": "한진칼",
+      "avgSalary": 151640000,
+      "avgTenureYears": 6.516,
+      "headcount": 25,
+      "headcountPrevYear": 25,
+      "headcountChange": 0,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "272210.KS",
+      "corpName": "한화시스템",
+      "avgSalary": 109757678.13267814,
+      "avgTenureYears": 11.721437346437346,
+      "headcount": 3256,
+      "headcountPrevYear": 3187,
+      "headcountChange": 69,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "006260.KS",
+      "corpName": "LS",
+      "avgSalary": 145617021.27659574,
+      "avgTenureYears": 11.185106382978724,
+      "headcount": 94,
+      "headcountPrevYear": 92,
+      "headcountChange": 2,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "078930.KS",
+      "corpName": "GS",
+      "avgSalary": 141447916.66666666,
+      "avgTenureYears": 4.2250000000000005,
+      "headcount": 96,
+      "headcountPrevYear": 89,
+      "headcountChange": 7,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "021240.KS",
+      "corpName": "코웨이",
+      "avgSalary": 67685340.68010075,
+      "avgTenureYears": 9.325494332493703,
+      "headcount": 6352,
+      "headcountPrevYear": 6282,
+      "headcountChange": 70,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "000100.KS",
+      "corpName": "유한양행",
+      "avgSalary": 99141198.32791454,
+      "avgTenureYears": null,
+      "headcount": 2153,
+      "headcountPrevYear": 2117,
+      "headcountChange": 36,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "009830.KS",
+      "corpName": "한화솔루션",
+      "avgSalary": 66264627.151051626,
+      "avgTenureYears": 4.952428298279159,
+      "headcount": 2615,
+      "headcountPrevYear": 2902,
+      "headcountChange": -287,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "161390.KS",
+      "corpName": "한국타이어앤테크놀로지",
+      "avgSalary": 99213768.67395657,
+      "avgTenureYears": 11.121392268596953,
+      "headcount": 6493,
+      "headcountPrevYear": 6465,
+      "headcountChange": 28,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "352820.KS",
+      "corpName": "하이브",
+      "avgSalary": 89234042.55319148,
+      "avgTenureYears": 2.9584546472564393,
+      "headcount": 893,
+      "headcountPrevYear": 823,
+      "headcountChange": 70,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "039490.KS",
+      "corpName": "키움증권",
+      "avgSalary": 101534810.64131668,
+      "avgTenureYears": null,
+      "headcount": 881,
+      "headcountPrevYear": 724,
+      "headcountChange": 157,
+      "buybackAmount": 40000028652
+    },
+    {
+      "symbol": "090430.KS",
+      "corpName": "아모레퍼시픽",
+      "avgSalary": 87100232.3265848,
+      "avgTenureYears": 13.40049784268171,
+      "headcount": 3013,
+      "headcountPrevYear": 2994,
+      "headcountChange": 19,
+      "buybackAmount": 10000020800
+    },
+    {
+      "symbol": "175330.KS",
+      "corpName": "JB금융지주",
+      "avgSalary": 179259259.25925925,
+      "avgTenureYears": null,
+      "headcount": 108,
+      "headcountPrevYear": 109,
+      "headcountChange": -1,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "005940.KS",
+      "corpName": "NH투자증권",
+      "avgSalary": 160444613.05007586,
+      "avgTenureYears": 14.346358118361152,
+      "headcount": 1318,
+      "headcountPrevYear": 1350,
+      "headcountChange": -32,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "032640.KS",
+      "corpName": "LG유플러스",
+      "avgSalary": 123244034.81822836,
+      "avgTenureYears": 11.312800819252432,
+      "headcount": 9765,
+      "headcountPrevYear": 10571,
+      "headcountChange": -806,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "443060.KS",
+      "corpName": "HD현대마린솔루션",
+      "avgSalary": 111836997.5077187,
+      "avgTenureYears": 8.811663807890223,
+      "headcount": 583,
+      "headcountPrevYear": 537,
+      "headcountChange": 46,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "010060.KS",
+      "corpName": "OCI홀딩스",
+      "avgSalary": 130447761.19402985,
+      "avgTenureYears": 3.9283582089552236,
+      "headcount": 67,
+      "headcountPrevYear": 70,
+      "headcountChange": -3,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "138930.KS",
+      "corpName": "BNK금융지주",
+      "avgSalary": 169115702.47933885,
+      "avgTenureYears": null,
+      "headcount": 121,
+      "headcountPrevYear": 120,
+      "headcountChange": 1,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "036570.KS",
+      "corpName": "NC",
+      "avgSalary": 109034028.2035561,
+      "avgTenureYears": 7.470171673819743,
+      "headcount": 3262,
+      "headcountPrevYear": 3832,
+      "headcountChange": -570,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "064400.KS",
+      "corpName": "LG씨엔에스",
+      "avgSalary": 115517706.82148041,
+      "avgTenureYears": 12.88767489114659,
+      "headcount": 6890,
+      "headcountPrevYear": 6891,
+      "headcountChange": -1,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "267270.KS",
+      "corpName": "HD건설기계",
+      "avgSalary": 101425490.65004453,
+      "avgTenureYears": 6.168566340160285,
+      "headcount": 1123,
+      "headcountPrevYear": 1166,
+      "headcountChange": -43,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "326030.KS",
+      "corpName": "에스케이바이오팜",
+      "avgSalary": 120533088.23529412,
+      "avgTenureYears": 6.25,
+      "headcount": 272,
+      "headcountPrevYear": 265,
+      "headcountChange": 7,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "001440.KS",
+      "corpName": "대한전선",
+      "avgSalary": 70957972.80593325,
+      "avgTenureYears": 9.629913473423981,
+      "headcount": 809,
+      "headcountPrevYear": 626,
+      "headcountChange": 183,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "066970.KS",
+      "corpName": "엘앤에프",
+      "avgSalary": 54316395.01039501,
+      "avgTenureYears": null,
+      "headcount": 1924,
+      "headcountPrevYear": 1643,
+      "headcountChange": 281,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "047040.KS",
+      "corpName": "대우건설",
+      "avgSalary": 105608179.41952507,
+      "avgTenureYears": 15.646877748460865,
+      "headcount": 2274,
+      "headcountPrevYear": 2475,
+      "headcountChange": -201,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "241560.KS",
+      "corpName": "두산밥캣",
+      "avgSalary": 130156862.74509804,
+      "avgTenureYears": null,
+      "headcount": 153,
+      "headcountPrevYear": 150,
+      "headcountChange": 3,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "034220.KS",
+      "corpName": "LG디스플레이",
+      "avgSalary": 87507204.25706099,
+      "avgTenureYears": 14.929422840769547,
+      "headcount": 24430,
+      "headcountPrevYear": 25144,
+      "headcountChange": -714,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "062040.KS",
+      "corpName": "산일전기",
+      "avgSalary": 70039039.03903905,
+      "avgTenureYears": 4.751111111111111,
+      "headcount": 333,
+      "headcountPrevYear": 304,
+      "headcountChange": 29,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "000990.KS",
+      "corpName": "DB하이텍",
+      "avgSalary": 93032868.07744259,
+      "avgTenureYears": 10.291535344439442,
+      "headcount": 2221,
+      "headcountPrevYear": 2051,
+      "headcountChange": 170,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "001450.KS",
+      "corpName": "현대해상",
+      "avgSalary": 104171808.37722598,
+      "avgTenureYears": null,
+      "headcount": 3987,
+      "headcountPrevYear": 3990,
+      "headcountChange": -3,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "307950.KS",
+      "corpName": "현대오토에버",
+      "avgSalary": 100159253.5787321,
+      "avgTenureYears": 7.09325153374233,
+      "headcount": 3912,
+      "headcountPrevYear": 3595,
+      "headcountChange": 317,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "271560.KS",
+      "corpName": "오리온",
+      "avgSalary": 60358044.16403785,
+      "avgTenureYears": 8.264984227129338,
+      "headcount": 634,
+      "headcountPrevYear": 612,
+      "headcountChange": 22,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "051900.KS",
+      "corpName": "LG생활건강",
+      "avgSalary": 77308713.21407963,
+      "avgTenureYears": 15.777957299480668,
+      "headcount": 1733,
+      "headcountPrevYear": 2054,
+      "headcountChange": -321,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "082740.KS",
+      "corpName": "한화엔진",
+      "avgSalary": 100548054.91990846,
+      "avgTenureYears": 13.97848970251716,
+      "headcount": 874,
+      "headcountPrevYear": 825,
+      "headcountChange": 49,
+      "buybackAmount": 15680788200
+    },
+    {
+      "symbol": "004170.KS",
+      "corpName": "신세계",
+      "avgSalary": 89695520.12148823,
+      "avgTenureYears": 13.458959757023536,
+      "headcount": 2634,
+      "headcountPrevYear": 2672,
+      "headcountChange": -38,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "454910.KS",
+      "corpName": "두산로보틱스",
+      "avgSalary": 72454901.96078432,
+      "avgTenureYears": 3.8490196078431373,
+      "headcount": 255,
+      "headcountPrevYear": 234,
+      "headcountChange": 21,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "047050.KS",
+      "corpName": "포스코인터내셔널",
+      "avgSalary": 131932681.24280782,
+      "avgTenureYears": 15.448446490218643,
+      "headcount": 1738,
+      "headcountPrevYear": 1743,
+      "headcountChange": -5,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "128940.KS",
+      "corpName": "한미약품",
+      "avgSalary": 86354324.09739715,
+      "avgTenureYears": null,
+      "headcount": 2382,
+      "headcountPrevYear": 2388,
+      "headcountChange": -6,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "004020.KS",
+      "corpName": "현대제철",
+      "avgSalary": 112824867.4533949,
+      "avgTenureYears": null,
+      "headcount": 11694,
+      "headcountPrevYear": 11803,
+      "headcountChange": -109,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "139130.KS",
+      "corpName": "iM금융지주",
+      "avgSalary": 121853146.85314685,
+      "avgTenureYears": 2.956783216783217,
+      "headcount": 143,
+      "headcountPrevYear": 126,
+      "headcountChange": 17,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "161890.KS",
+      "corpName": "한국콜마",
+      "avgSalary": 63765888.456549935,
+      "avgTenureYears": 5.998702983138781,
+      "headcount": 1542,
+      "headcountPrevYear": 1304,
+      "headcountChange": 238,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "483650.KS",
+      "corpName": "달바글로벌",
+      "avgSalary": 124566502.46305418,
+      "avgTenureYears": 1.6847290640394088,
+      "headcount": 203,
+      "headcountPrevYear": 137,
+      "headcountChange": 66,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "011790.KS",
+      "corpName": "SKC",
+      "avgSalary": 106453488.37209302,
+      "avgTenureYears": 9.267441860465116,
+      "headcount": 172,
+      "headcountPrevYear": 178,
+      "headcountChange": -6,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "009420.KS",
+      "corpName": "한올바이오파마",
+      "avgSalary": 82028708.13397129,
+      "avgTenureYears": null,
+      "headcount": 209,
+      "headcountPrevYear": 209,
+      "headcountChange": 0,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "375500.KS",
+      "corpName": "DL이앤씨",
+      "avgSalary": 94686358.75402793,
+      "avgTenureYears": 12.721858216970999,
+      "headcount": 1862,
+      "headcountPrevYear": 2104,
+      "headcountChange": -242,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "192820.KS",
+      "corpName": "코스맥스",
+      "avgSalary": 77951400,
+      "avgTenureYears": null,
+      "headcount": 1565,
+      "headcountPrevYear": 1528,
+      "headcountChange": 37,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "002380.KS",
+      "corpName": "케이씨씨",
+      "avgSalary": 84962243.47312962,
+      "avgTenureYears": 17.347297154899895,
+      "headcount": 1898,
+      "headcountPrevYear": 1917,
+      "headcountChange": -19,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "014680.KS",
+      "corpName": "한솔케미칼",
+      "avgSalary": 116615921.7877095,
+      "avgTenureYears": 9.057402234636871,
+      "headcount": 716,
+      "headcountPrevYear": 680,
+      "headcountChange": 36,
+      "buybackAmount": 60000300000
+    },
+    {
+      "symbol": "017800.KS",
+      "corpName": "현대엘리베이터",
+      "avgSalary": 104517614.23090339,
+      "avgTenureYears": 11.957202650854553,
+      "headcount": 2867,
+      "headcountPrevYear": 2886,
+      "headcountChange": -19,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "088350.KS",
+      "corpName": "한화생명",
+      "avgSalary": 117701861.13099499,
+      "avgTenureYears": 16.832856120257695,
+      "headcount": 2794,
+      "headcountPrevYear": 2783,
+      "headcountChange": 11,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "012750.KS",
+      "corpName": "에스원",
+      "avgSalary": 80538188.52924475,
+      "avgTenureYears": 13.840971039182284,
+      "headcount": 7044,
+      "headcountPrevYear": 6958,
+      "headcountChange": 86,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "204320.KS",
+      "corpName": "HL만도",
+      "avgSalary": 108609195.40229885,
+      "avgTenureYears": 18.41797283176593,
+      "headcount": 3828,
+      "headcountPrevYear": 3918,
+      "headcountChange": -90,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "011780.KS",
+      "corpName": "금호석유화학",
+      "avgSalary": 103577210.46077211,
+      "avgTenureYears": 13.10373599003736,
+      "headcount": 1606,
+      "headcountPrevYear": 1579,
+      "headcountChange": 27,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "052690.KS",
+      "corpName": "한전기술",
+      "avgSalary": 87363746.95863748,
+      "avgTenureYears": 13.010056772100565,
+      "headcount": 2466,
+      "headcountPrevYear": 2407,
+      "headcountChange": 59,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "001040.KS",
+      "corpName": "CJ",
+      "avgSalary": 736437500,
+      "avgTenureYears": 14.075000000000001,
+      "headcount": 64,
+      "headcountPrevYear": 62,
+      "headcountChange": 2,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "377300.KS",
+      "corpName": "카카오페이",
+      "avgSalary": 85813572.54290171,
+      "avgTenureYears": null,
+      "headcount": 1282,
+      "headcountPrevYear": 1198,
+      "headcountChange": 84,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "111770.KS",
+      "corpName": "영원무역",
+      "avgSalary": 80960113.96011396,
+      "avgTenureYears": null,
+      "headcount": 351,
+      "headcountPrevYear": 339,
+      "headcountChange": 12,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "035250.KS",
+      "corpName": "강원랜드",
+      "avgSalary": 78187027.45722245,
+      "avgTenureYears": 13.87325507361719,
+      "headcount": 2513,
+      "headcountPrevYear": 2459,
+      "headcountChange": 54,
+      "buybackAmount": 40000000000
+    },
+    {
+      "symbol": "097950.KS",
+      "corpName": "CJ제일제당",
+      "avgSalary": 85346823.32463011,
+      "avgTenureYears": 9.352378880185668,
+      "headcount": 6894,
+      "headcountPrevYear": 7140,
+      "headcountChange": -246,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "004370.KS",
+      "corpName": "농심",
+      "avgSalary": 65071986.911470644,
+      "avgTenureYears": 11.099181966915106,
+      "headcount": 5501,
+      "headcountPrevYear": 5535,
+      "headcountChange": -34,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "139480.KS",
+      "corpName": "이마트",
+      "avgSalary": 52058374.86457205,
+      "avgTenureYears": 13.948884073672806,
+      "headcount": 23075,
+      "headcountPrevYear": 24548,
+      "headcountChange": -1473,
+      "buybackAmount": 73980000
+    },
+    {
+      "symbol": "450080.KS",
+      "corpName": "에코프로머티",
+      "avgSalary": 112164502.16450216,
+      "avgTenureYears": 4.348484848484849,
+      "headcount": 462,
+      "headcountPrevYear": 473,
+      "headcountChange": -11,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "036460.KS",
+      "corpName": "한국가스공사",
+      "avgSalary": 103083382.33397807,
+      "avgTenureYears": 16.502978723404254,
+      "headcount": 3102,
+      "headcountPrevYear": 3058,
+      "headcountChange": 44,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "103140.KS",
+      "corpName": "풍산",
+      "avgSalary": 91969005.46875,
+      "avgTenureYears": 13.59703125,
+      "headcount": 2560,
+      "headcountPrevYear": 2469,
+      "headcountChange": 91,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "008770.KS",
+      "corpName": "호텔신라",
+      "avgSalary": 53316205.533596836,
+      "avgTenureYears": 8.080632411067194,
+      "headcount": 1265,
+      "headcountPrevYear": 1231,
+      "headcountChange": 34,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "028670.KS",
+      "corpName": "팬오션",
+      "avgSalary": 114630630.63063063,
+      "avgTenureYears": 7.85945945945946,
+      "headcount": 999,
+      "headcountPrevYear": 954,
+      "headcountChange": 45,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "030000.KS",
+      "corpName": "제일기획",
+      "avgSalary": 120997352.74652548,
+      "avgTenureYears": 10.352614162806088,
+      "headcount": 1511,
+      "headcountPrevYear": 1474,
+      "headcountChange": 37,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "457190.KS",
+      "corpName": "이수스페셜티케미컬",
+      "avgSalary": 83962790.69767442,
+      "avgTenureYears": null,
+      "headcount": 215,
+      "headcountPrevYear": 193,
+      "headcountChange": 22,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "008930.KS",
+      "corpName": "한미사이언스",
+      "avgSalary": 72668711.65644172,
+      "avgTenureYears": null,
+      "headcount": 489,
+      "headcountPrevYear": 453,
+      "headcountChange": 36,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "282330.KS",
+      "corpName": "BGF리테일",
+      "avgSalary": 59258466.45367412,
+      "avgTenureYears": 5.564792332268371,
+      "headcount": 3130,
+      "headcountPrevYear": 3379,
+      "headcountChange": -249,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "081660.KS",
+      "corpName": "미스토홀딩스",
+      "avgSalary": 118046153.84615384,
+      "avgTenureYears": 3.6015384615384614,
+      "headcount": 65,
+      "headcountPrevYear": 55,
+      "headcountChange": 10,
+      "buybackAmount": 55000000000
+    },
+    {
+      "symbol": "029780.KS",
+      "corpName": "삼성카드",
+      "avgSalary": 147454992.62174127,
+      "avgTenureYears": 15.970929660600099,
+      "headcount": 2033,
+      "headcountPrevYear": 2021,
+      "headcountChange": 12,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "018880.KS",
+      "corpName": "한온시스템",
+      "avgSalary": 104067060.27890238,
+      "avgTenureYears": 18.645686009896536,
+      "headcount": 2223,
+      "headcountPrevYear": 2219,
+      "headcountChange": 4,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "071970.KS",
+      "corpName": "HD현대마린엔진",
+      "avgSalary": 94785714.28571428,
+      "avgTenureYears": 9.5,
+      "headcount": 210,
+      "headcountPrevYear": 199,
+      "headcountChange": 11,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "112610.KS",
+      "corpName": "씨에스윈드",
+      "avgSalary": 128071428.57142857,
+      "avgTenureYears": 5.885714285714285,
+      "headcount": 98,
+      "headcountPrevYear": 106,
+      "headcountChange": -8,
+      "buybackAmount": 3245000000
+    },
+    {
+      "symbol": "251270.KS",
+      "corpName": "넷마블",
+      "avgSalary": 84510691.82389937,
+      "avgTenureYears": 5.9083018867924535,
+      "headcount": 795,
+      "headcountPrevYear": 752,
+      "headcountChange": 43,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "120110.KS",
+      "corpName": "코오롱인더",
+      "avgSalary": 80008869.0660875,
+      "avgTenureYears": 12.17071051815079,
+      "headcount": 3223,
+      "headcountPrevYear": 2891,
+      "headcountChange": 332,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "069960.KS",
+      "corpName": "현대백화점",
+      "avgSalary": 77466071.99745142,
+      "avgTenureYears": 9.578050334501434,
+      "headcount": 3139,
+      "headcountPrevYear": 3178,
+      "headcountChange": -39,
+      "buybackAmount": 21000000000
+    },
+    {
+      "symbol": "022100.KS",
+      "corpName": "포스코DX",
+      "avgSalary": 90088180.11257036,
+      "avgTenureYears": 14.702439024390245,
+      "headcount": 1066,
+      "headcountPrevYear": 952,
+      "headcountChange": 114,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "011170.KS",
+      "corpName": "롯데케미칼",
+      "avgSalary": 103127385.60588641,
+      "avgTenureYears": 14.550632329271096,
+      "headcount": 4349,
+      "headcountPrevYear": 4764,
+      "headcountChange": -415,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "051600.KS",
+      "corpName": "한전KPS",
+      "avgSalary": 82407002.31303006,
+      "avgTenureYears": 13.85818041634541,
+      "headcount": 6485,
+      "headcountPrevYear": 6579,
+      "headcountChange": -94,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "302440.KS",
+      "corpName": "SK바이오사이언스",
+      "avgSalary": 67539415.41186891,
+      "avgTenureYears": null,
+      "headcount": 1129,
+      "headcountPrevYear": 1021,
+      "headcountChange": 108,
+      "buybackAmount": 17136925200
+    },
+    {
+      "symbol": "023530.KS",
+      "corpName": "롯데쇼핑",
+      "avgSalary": 44664592.11601307,
+      "avgTenureYears": 13.001348039215687,
+      "headcount": 9792,
+      "headcountPrevYear": 10348,
+      "headcountChange": -556,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "007340.KS",
+      "corpName": "DN오토모티브",
+      "avgSalary": 65328131.546134666,
+      "avgTenureYears": 6.675810473815462,
+      "headcount": 1604,
+      "headcountPrevYear": 1703,
+      "headcountChange": -99,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "011210.KS",
+      "corpName": "현대위아",
+      "avgSalary": 129136671.17726658,
+      "avgTenureYears": 10.807916102841677,
+      "headcount": 1478,
+      "headcountPrevYear": 1691,
+      "headcountChange": -213,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "007070.KS",
+      "corpName": "GS리테일",
+      "avgSalary": 36634037.81979978,
+      "avgTenureYears": 7.305311457174639,
+      "headcount": 3596,
+      "headcountPrevYear": 3743,
+      "headcountChange": -147,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "009970.KS",
+      "corpName": "영원무역홀딩스",
+      "avgSalary": 95549019.60784313,
+      "avgTenureYears": null,
+      "headcount": 51,
+      "headcountPrevYear": 52,
+      "headcountChange": -1,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "383220.KS",
+      "corpName": "F&amp;F",
+      "avgSalary": 79969040.24767801,
+      "avgTenureYears": null,
+      "headcount": 646,
+      "headcountPrevYear": 679,
+      "headcountChange": -33,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "005850.KS",
+      "corpName": "에스엘",
+      "avgSalary": 86218641.11498258,
+      "avgTenureYears": null,
+      "headcount": 3444,
+      "headcountPrevYear": 3346,
+      "headcountChange": 98,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "298020.KS",
+      "corpName": "효성티앤씨",
+      "avgSalary": 77408372.8278041,
+      "avgTenureYears": 14.384597156398103,
+      "headcount": 1266,
+      "headcountPrevYear": 1317,
+      "headcountChange": -51,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "073240.KS",
+      "corpName": "금호타이어",
+      "avgSalary": 90868936.48178656,
+      "avgTenureYears": 18.166040637012628,
+      "headcount": 5463,
+      "headcountPrevYear": 5551,
+      "headcountChange": -88,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "000120.KS",
+      "corpName": "CJ대한통운",
+      "avgSalary": 75087775.66817585,
+      "avgTenureYears": 9.949978092595297,
+      "headcount": 6847,
+      "headcountPrevYear": 7002,
+      "headcountChange": -155,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "026960.KS",
+      "corpName": "동서",
+      "avgSalary": 86791698.18181819,
+      "avgTenureYears": 16.339381818181817,
+      "headcount": 275,
+      "headcountPrevYear": 273,
+      "headcountChange": 2,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "017960.KS",
+      "corpName": "한국카본",
+      "avgSalary": 49767337.807606265,
+      "avgTenureYears": 9.43042505592841,
+      "headcount": 447,
+      "headcountPrevYear": 421,
+      "headcountChange": 26,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "093370.KS",
+      "corpName": "후성",
+      "avgSalary": 87308561.25356126,
+      "avgTenureYears": 10.758632478632478,
+      "headcount": 351,
+      "headcountPrevYear": 358,
+      "headcountChange": -7,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "006280.KS",
+      "corpName": "녹십자",
+      "avgSalary": 73238196.5121225,
+      "avgTenureYears": 9.860399829859636,
+      "headcount": 2351,
+      "headcountPrevYear": 2355,
+      "headcountChange": -4,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "004000.KS",
+      "corpName": "롯데정밀화학",
+      "avgSalary": 118805938.49416755,
+      "avgTenureYears": 16.802863202545073,
+      "headcount": 943,
+      "headcountPrevYear": 958,
+      "headcountChange": -15,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "002790.KS",
+      "corpName": "아모레퍼시픽홀딩스",
+      "avgSalary": 129100000,
+      "avgTenureYears": 13.4,
+      "headcount": 60,
+      "headcountPrevYear": 69,
+      "headcountChange": -9,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "004990.KS",
+      "corpName": "롯데지주",
+      "avgSalary": 144375000,
+      "avgTenureYears": 3.3864864864864868,
+      "headcount": 296,
+      "headcountPrevYear": 279,
+      "headcountChange": 17,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "192080.KS",
+      "corpName": "더블유게임즈",
+      "avgSalary": 98762402.08877285,
+      "avgTenureYears": null,
+      "headcount": 383,
+      "headcountPrevYear": 394,
+      "headcountChange": -11,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "003240.KS",
+      "corpName": "태광산업",
+      "avgSalary": 95397094.43099274,
+      "avgTenureYears": 12.673728813559322,
+      "headcount": 826,
+      "headcountPrevYear": 906,
+      "headcountChange": -80,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "000240.KS",
+      "corpName": "한국앤컴퍼니",
+      "avgSalary": 93184742.64705883,
+      "avgTenureYears": null,
+      "headcount": 1088,
+      "headcountPrevYear": 1050,
+      "headcountChange": 38,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "069620.KS",
+      "corpName": "대웅제약",
+      "avgSalary": 77582497.21293199,
+      "avgTenureYears": 6.839799331103679,
+      "headcount": 1794,
+      "headcountPrevYear": 1757,
+      "headcountChange": 37,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "361610.KS",
+      "corpName": "SK아이이테크놀로지",
+      "avgSalary": 126125391.84952979,
+      "avgTenureYears": 9.131128526645767,
+      "headcount": 319,
+      "headcountPrevYear": 389,
+      "headcountChange": -70,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "185750.KS",
+      "corpName": "종근당",
+      "avgSalary": 80579861.1111111,
+      "avgTenureYears": null,
+      "headcount": 2304,
+      "headcountPrevYear": 2336,
+      "headcountChange": -32,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "000210.KS",
+      "corpName": "DL",
+      "avgSalary": 180600000,
+      "avgTenureYears": 7.48,
+      "headcount": 25,
+      "headcountPrevYear": 24,
+      "headcountChange": 1,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "001800.KS",
+      "corpName": "오리온홀딩스",
+      "avgSalary": 409500000,
+      "avgTenureYears": 16,
+      "headcount": 8,
+      "headcountPrevYear": 8,
+      "headcountChange": 0,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "001430.KS",
+      "corpName": "세아베스틸지주",
+      "avgSalary": 120500000,
+      "avgTenureYears": null,
+      "headcount": 52,
+      "headcountPrevYear": 55,
+      "headcountChange": -3,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "285130.KS",
+      "corpName": "SK케미칼",
+      "avgSalary": 89926955.39754364,
+      "avgTenureYears": 10.608920491273432,
+      "headcount": 1547,
+      "headcountPrevYear": 1466,
+      "headcountChange": 81,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "000080.KS",
+      "corpName": "하이트진로",
+      "avgSalary": 124964581.58010411,
+      "avgTenureYears": null,
+      "headcount": 1729,
+      "headcountPrevYear": 1790,
+      "headcountChange": -61,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "007310.KS",
+      "corpName": "오뚜기",
+      "avgSalary": 51713105.07674144,
+      "avgTenureYears": 9.645808736717827,
+      "headcount": 3388,
+      "headcountPrevYear": 3460,
+      "headcountChange": -72,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "034230.KS",
+      "corpName": "파라다이스",
+      "avgSalary": 80642706.72097759,
+      "avgTenureYears": 10.375763747454176,
+      "headcount": 1473,
+      "headcountPrevYear": 1373,
+      "headcountChange": 100,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "006040.KS",
+      "corpName": "동원산업",
+      "avgSalary": 99898876.40449437,
+      "avgTenureYears": 5.322668539325843,
+      "headcount": 712,
+      "headcountPrevYear": 774,
+      "headcountChange": -62,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "456040.KS",
+      "corpName": "OCI",
+      "avgSalary": 95385714.28571428,
+      "avgTenureYears": 14.525,
+      "headcount": 1680,
+      "headcountPrevYear": 1610,
+      "headcountChange": 70,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "280360.KS",
+      "corpName": "롯데웰푸드",
+      "avgSalary": 60245917.387127765,
+      "avgTenureYears": 11.92231828370157,
+      "headcount": 3123,
+      "headcountPrevYear": 3502,
+      "headcountChange": -379,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "001680.KS",
+      "corpName": "대상",
+      "avgSalary": 66372612.19792865,
+      "avgTenureYears": null,
+      "headcount": 4345,
+      "headcountPrevYear": 4560,
+      "headcountChange": -215,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "069260.KS",
+      "corpName": "티케이지휴켐스",
+      "avgSalary": 110527896.99570815,
+      "avgTenureYears": 16.38197424892704,
+      "headcount": 233,
+      "headcountPrevYear": 243,
+      "headcountChange": -10,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "298050.KS",
+      "corpName": "HS효성첨단소재",
+      "avgSalary": 77043086.17234468,
+      "avgTenureYears": 12.8811623246493,
+      "headcount": 998,
+      "headcountPrevYear": 1019,
+      "headcountChange": -21,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "005300.KS",
+      "corpName": "롯데칠성음료",
+      "avgSalary": 72940914.15830547,
+      "avgTenureYears": 15.249498327759197,
+      "headcount": 3588,
+      "headcountPrevYear": 4002,
+      "headcountChange": -414,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "300720.KS",
+      "corpName": "한일시멘트",
+      "avgSalary": 63985973.469387755,
+      "avgTenureYears": 16.415,
+      "headcount": 980,
+      "headcountPrevYear": 683,
+      "headcountChange": 297,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "003090.KS",
+      "corpName": "대웅",
+      "avgSalary": 68951573.84987894,
+      "avgTenureYears": 4.63777239709443,
+      "headcount": 413,
+      "headcountPrevYear": 349,
+      "headcountChange": 64,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "009240.KS",
+      "corpName": "한샘",
+      "avgSalary": 61021180.03025719,
+      "avgTenureYears": 10.285779122541603,
+      "headcount": 1322,
+      "headcountPrevYear": 1371,
+      "headcountChange": -49,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "006650.KS",
+      "corpName": "대한유화",
+      "avgSalary": 96243648.96073903,
+      "avgTenureYears": 13.194549653579676,
+      "headcount": 866,
+      "headcountPrevYear": 870,
+      "headcountChange": -4,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "005420.KS",
+      "corpName": "코스모화학",
+      "avgSalary": 93062256.80933852,
+      "avgTenureYears": null,
+      "headcount": 257,
+      "headcountPrevYear": 291,
+      "headcountChange": -34,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "137310.KS",
+      "corpName": "에스디바이오센서",
+      "avgSalary": 69357553.57142857,
+      "avgTenureYears": 4.201160714285715,
+      "headcount": 336,
+      "headcountPrevYear": 329,
+      "headcountChange": 7,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "071320.KS",
+      "corpName": "지역난방공사",
+      "avgSalary": 82332113.42069589,
+      "avgTenureYears": 14.959561680976048,
+      "headcount": 2213,
+      "headcountPrevYear": 2189,
+      "headcountChange": 24,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "000670.KS",
+      "corpName": "영풍",
+      "avgSalary": 61890081.94622279,
+      "avgTenureYears": null,
+      "headcount": 781,
+      "headcountPrevYear": 738,
+      "headcountChange": 43,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "008730.KS",
+      "corpName": "율촌화학",
+      "avgSalary": 73676836.60957178,
+      "avgTenureYears": 20.65088161209068,
+      "headcount": 397,
+      "headcountPrevYear": 388,
+      "headcountChange": 9,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "002840.KS",
+      "corpName": "미원상사",
+      "avgSalary": 66235771.31782946,
+      "avgTenureYears": 6.702325581395349,
+      "headcount": 258,
+      "headcountPrevYear": 256,
+      "headcountChange": 2,
+      "buybackAmount": 16499682800
+    },
+    {
+      "symbol": "003030.KS",
+      "corpName": "세아제강지주",
+      "avgSalary": 100466666.66666667,
+      "avgTenureYears": 4.155555555555556,
+      "headcount": 45,
+      "headcountPrevYear": 42,
+      "headcountChange": 3,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "002030.KS",
+      "corpName": "아세아",
+      "avgSalary": 100048300,
+      "avgTenureYears": 18.826,
+      "headcount": 10,
+      "headcountPrevYear": 10,
+      "headcountChange": 0,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "014820.KS",
+      "corpName": "동원시스템즈",
+      "avgSalary": 67344100.76670317,
+      "avgTenureYears": 9.508433734939759,
+      "headcount": 913,
+      "headcountPrevYear": 888,
+      "headcountChange": 25,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "268280.KS",
+      "corpName": "미원에스씨",
+      "avgSalary": 69697156.75675675,
+      "avgTenureYears": 8.330540540540541,
+      "headcount": 370,
+      "headcountPrevYear": 382,
+      "headcountChange": -12,
+      "buybackAmount": 4242000000
+    },
+    {
+      "symbol": "196170.KQ",
+      "corpName": "알테오젠",
+      "avgSalary": 149111840.54037267,
+      "avgTenureYears": 4.056521739130434,
+      "headcount": 161,
+      "headcountPrevYear": 154,
+      "headcountChange": 7,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "086520.KQ",
+      "corpName": "에코프로",
+      "avgSalary": 114427027.02702703,
+      "avgTenureYears": 4.962702702702702,
+      "headcount": 185,
+      "headcountPrevYear": 190,
+      "headcountChange": -5,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "247540.KQ",
+      "corpName": "에코프로비엠",
+      "avgSalary": 56379814.077025235,
+      "avgTenureYears": 5.118459495351926,
+      "headcount": 753,
+      "headcountPrevYear": 787,
+      "headcountChange": -34,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "036930.KQ",
+      "corpName": "주성엔지니어링",
+      "avgSalary": 92923711.34020619,
+      "avgTenureYears": 8.065567010309278,
+      "headcount": 485,
+      "headcountPrevYear": 521,
+      "headcountChange": -36,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "028300.KQ",
+      "corpName": "HLB",
+      "avgSalary": 56005798.07692308,
+      "avgTenureYears": 4.830769230769231,
+      "headcount": 104,
+      "headcountPrevYear": 119,
+      "headcountChange": -15,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "087010.KQ",
+      "corpName": "펩트론",
+      "avgSalary": 59087831.25,
+      "avgTenureYears": 3.21875,
+      "headcount": 160,
+      "headcountPrevYear": 112,
+      "headcountChange": 48,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "240810.KQ",
+      "corpName": "원익IPS",
+      "avgSalary": 85830097.41550696,
+      "avgTenureYears": 7.5859509609012585,
+      "headcount": 1509,
+      "headcountPrevYear": 1484,
+      "headcountChange": 25,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "277810.KQ",
+      "corpName": "레인보우로보틱스",
+      "avgSalary": 41521385.0931677,
+      "avgTenureYears": null,
+      "headcount": 161,
+      "headcountPrevYear": 98,
+      "headcountChange": 63,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "039030.KQ",
+      "corpName": "이오테크닉스",
+      "avgSalary": 71747207.5471698,
+      "avgTenureYears": 9.122641509433961,
+      "headcount": 636,
+      "headcountPrevYear": 634,
+      "headcountChange": 2,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "058470.KQ",
+      "corpName": "리노공업",
+      "avgSalary": 115601772.6395864,
+      "avgTenureYears": null,
+      "headcount": 677,
+      "headcountPrevYear": 636,
+      "headcountChange": 41,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "298380.KQ",
+      "corpName": "에이비엘바이오",
+      "avgSalary": 124064814.81481482,
+      "avgTenureYears": null,
+      "headcount": 108,
+      "headcountPrevYear": 104,
+      "headcountChange": 4,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "403870.KQ",
+      "corpName": "HPSP",
+      "avgSalary": 138157480.31496063,
+      "avgTenureYears": 3.2055118110236216,
+      "headcount": 127,
+      "headcountPrevYear": 115,
+      "headcountChange": 12,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "108490.KQ",
+      "corpName": "로보티즈",
+      "avgSalary": 50891927.927927926,
+      "avgTenureYears": null,
+      "headcount": 111,
+      "headcountPrevYear": 153,
+      "headcountChange": -42,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "222800.KQ",
+      "corpName": "심텍",
+      "avgSalary": 59982935.90627154,
+      "avgTenureYears": 9.446864231564438,
+      "headcount": 2902,
+      "headcountPrevYear": 2824,
+      "headcountChange": 78,
+      "buybackAmount": 7596000000
+    },
+    {
+      "symbol": "141080.KQ",
+      "corpName": "리가켐바이오",
+      "avgSalary": 157920903.95480227,
+      "avgTenureYears": null,
+      "headcount": 177,
+      "headcountPrevYear": 170,
+      "headcountChange": 7,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "214450.KQ",
+      "corpName": "파마리서치",
+      "avgSalary": 69212927.756654,
+      "avgTenureYears": 3.277376425855513,
+      "headcount": 526,
+      "headcountPrevYear": 436,
+      "headcountChange": 90,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "319660.KQ",
+      "corpName": "피에스케이",
+      "avgSalary": 91542274.05247813,
+      "avgTenureYears": null,
+      "headcount": 343,
+      "headcountPrevYear": 332,
+      "headcountChange": 11,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "000250.KQ",
+      "corpName": "삼천당제약",
+      "avgSalary": 65814220.18348624,
+      "avgTenureYears": 8.307339449541285,
+      "headcount": 436,
+      "headcountPrevYear": 417,
+      "headcountChange": 19,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "080220.KQ",
+      "corpName": "제주반도체",
+      "avgSalary": 93179856.11510791,
+      "avgTenureYears": 8.616546762589929,
+      "headcount": 139,
+      "headcountPrevYear": 134,
+      "headcountChange": 5,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "347850.KQ",
+      "corpName": "디앤디파마텍",
+      "avgSalary": 155647058.82352942,
+      "avgTenureYears": 4.01764705882353,
+      "headcount": 17,
+      "headcountPrevYear": 18,
+      "headcountChange": -1,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "032820.KQ",
+      "corpName": "우리기술",
+      "avgSalary": 66666666.666666664,
+      "avgTenureYears": 9.043478260869565,
+      "headcount": 69,
+      "headcountPrevYear": 63,
+      "headcountChange": 6,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "178320.KQ",
+      "corpName": "서진시스템",
+      "avgSalary": 54954135.67839196,
+      "avgTenureYears": null,
+      "headcount": 199,
+      "headcountPrevYear": 191,
+      "headcountChange": 8,
+      "buybackAmount": 10000000000
+    },
+    {
+      "symbol": "084370.KQ",
+      "corpName": "유진테크",
+      "avgSalary": 100402298.85057472,
+      "avgTenureYears": 6.6770114942528735,
+      "headcount": 348,
+      "headcountPrevYear": 316,
+      "headcountChange": 32,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "310210.KQ",
+      "corpName": "보로노이",
+      "avgSalary": 81463087.24832214,
+      "avgTenureYears": 3.748322147651007,
+      "headcount": 149,
+      "headcountPrevYear": 147,
+      "headcountChange": 2,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "226950.KQ",
+      "corpName": "올릭스",
+      "avgSalary": 185776315.78947368,
+      "avgTenureYears": 4.314736842105263,
+      "headcount": 76,
+      "headcountPrevYear": 69,
+      "headcountChange": 7,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "067310.KQ",
+      "corpName": "하나마이크론",
+      "avgSalary": 63118028.534370944,
+      "avgTenureYears": 7.781322957198444,
+      "headcount": 771,
+      "headcountPrevYear": 801,
+      "headcountChange": -30,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "095340.KQ",
+      "corpName": "ISC",
+      "avgSalary": 63081081.08108108,
+      "avgTenureYears": 9.033906633906634,
+      "headcount": 407,
+      "headcountPrevYear": 217,
+      "headcountChange": 190,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "095610.KQ",
+      "corpName": "테스",
+      "avgSalary": 128500000,
+      "avgTenureYears": 8.278538812785389,
+      "headcount": 438,
+      "headcountPrevYear": 411,
+      "headcountChange": 27,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "257720.KQ",
+      "corpName": "실리콘투",
+      "avgSalary": 69111160.21682848,
+      "avgTenureYears": 2.8633333333333333,
+      "headcount": 309,
+      "headcountPrevYear": 118,
+      "headcountChange": 191,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "098460.KQ",
+      "corpName": "고영",
+      "avgSalary": 70095338.98305085,
+      "avgTenureYears": 6.722542372881356,
+      "headcount": 472,
+      "headcountPrevYear": 462,
+      "headcountChange": 10,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "005290.KQ",
+      "corpName": "동진쎄미켐",
+      "avgSalary": 84603558.4725537,
+      "avgTenureYears": 9.1,
+      "headcount": 1257,
+      "headcountPrevYear": 1450,
+      "headcountChange": -193,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "237690.KQ",
+      "corpName": "에스티팜",
+      "avgSalary": 67905128.20512821,
+      "avgTenureYears": 6.32,
+      "headcount": 780,
+      "headcountPrevYear": 664,
+      "headcountChange": 116,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "089970.KQ",
+      "corpName": "브이엠",
+      "avgSalary": 154278686.27450982,
+      "avgTenureYears": null,
+      "headcount": 102,
+      "headcountPrevYear": 67,
+      "headcountChange": 35,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "058610.KQ",
+      "corpName": "에스피지",
+      "avgSalary": 56978301.70316302,
+      "avgTenureYears": 7.794647201946471,
+      "headcount": 411,
+      "headcountPrevYear": 429,
+      "headcountChange": -18,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "145020.KQ",
+      "corpName": "휴젤",
+      "avgSalary": 64497615.262321144,
+      "avgTenureYears": 4.133974562798092,
+      "headcount": 629,
+      "headcountPrevYear": 609,
+      "headcountChange": 20,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "089030.KQ",
+      "corpName": "테크윙",
+      "avgSalary": 58427843.803056024,
+      "avgTenureYears": null,
+      "headcount": 589,
+      "headcountPrevYear": 594,
+      "headcountChange": -5,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "357780.KQ",
+      "corpName": "솔브레인",
+      "avgSalary": 93463371.57987644,
+      "avgTenureYears": 9.715445719329216,
+      "headcount": 1133,
+      "headcountPrevYear": 1192,
+      "headcountChange": -59,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "131290.KQ",
+      "corpName": "티에스이",
+      "avgSalary": 43355599.214145385,
+      "avgTenureYears": null,
+      "headcount": 509,
+      "headcountPrevYear": 319,
+      "headcountChange": 190,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "319400.KQ",
+      "corpName": "현대무벡스",
+      "avgSalary": 85274376.41723356,
+      "avgTenureYears": null,
+      "headcount": 441,
+      "headcountPrevYear": 423,
+      "headcountChange": 18,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "475830.KQ",
+      "corpName": "오름테라퓨틱",
+      "avgSalary": 168600000,
+      "avgTenureYears": null,
+      "headcount": 15,
+      "headcountPrevYear": 11,
+      "headcountChange": 4,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "039200.KQ",
+      "corpName": "오스코텍",
+      "avgSalary": 61807017.543859646,
+      "avgTenureYears": null,
+      "headcount": 57,
+      "headcountPrevYear": 51,
+      "headcountChange": 6,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "064760.KQ",
+      "corpName": "티씨케이",
+      "avgSalary": 86565124.8923077,
+      "avgTenureYears": null,
+      "headcount": 325,
+      "headcountPrevYear": 321,
+      "headcountChange": 4,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "083650.KQ",
+      "corpName": "비에이치아이",
+      "avgSalary": 77203488.37209302,
+      "avgTenureYears": 5.922238372093023,
+      "headcount": 688,
+      "headcountPrevYear": 558,
+      "headcountChange": 130,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "140860.KQ",
+      "corpName": "파크시스템스",
+      "avgSalary": 64227040.81632653,
+      "avgTenureYears": 4.696428571428571,
+      "headcount": 392,
+      "headcountPrevYear": 361,
+      "headcountChange": 31,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "007390.KQ",
+      "corpName": "네이처셀",
+      "avgSalary": 39960000,
+      "avgTenureYears": 5.9239999999999995,
+      "headcount": 50,
+      "headcountPrevYear": 58,
+      "headcountChange": -8,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "263750.KQ",
+      "corpName": "펄어비스",
+      "avgSalary": 101334489.0965732,
+      "avgTenureYears": null,
+      "headcount": 642,
+      "headcountPrevYear": 601,
+      "headcountChange": 41,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "323280.KQ",
+      "corpName": "태성",
+      "avgSalary": 50678647.61904762,
+      "avgTenureYears": null,
+      "headcount": 105,
+      "headcountPrevYear": 94,
+      "headcountChange": 11,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "035900.KQ",
+      "corpName": "JYP Ent.",
+      "avgSalary": 86718391.12903225,
+      "avgTenureYears": null,
+      "headcount": 496,
+      "headcountPrevYear": 422,
+      "headcountChange": 74,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "290650.KQ",
+      "corpName": "엘앤씨바이오",
+      "avgSalary": 36185764.705882356,
+      "avgTenureYears": 3.870735294117647,
+      "headcount": 68,
+      "headcountPrevYear": 56,
+      "headcountChange": 12,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "041510.KQ",
+      "corpName": "에스엠",
+      "avgSalary": 69697783.00653595,
+      "avgTenureYears": null,
+      "headcount": 765,
+      "headcountPrevYear": 723,
+      "headcountChange": 42,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "131970.KQ",
+      "corpName": "두산테스나",
+      "avgSalary": 72510086.45533141,
+      "avgTenureYears": null,
+      "headcount": 694,
+      "headcountPrevYear": 563,
+      "headcountChange": 131,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "078600.KQ",
+      "corpName": "대주전자재료",
+      "avgSalary": 68352941.1764706,
+      "avgTenureYears": 6.868347338935574,
+      "headcount": 357,
+      "headcountPrevYear": 364,
+      "headcountChange": -7,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "096530.KQ",
+      "corpName": "씨젠",
+      "avgSalary": 91231707.31707317,
+      "avgTenureYears": null,
+      "headcount": 328,
+      "headcountPrevYear": 365,
+      "headcountChange": -37,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "214150.KQ",
+      "corpName": "클래시스",
+      "avgSalary": 65435606.06060606,
+      "avgTenureYears": 3.25,
+      "headcount": 528,
+      "headcountPrevYear": 527,
+      "headcountChange": 1,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "082920.KQ",
+      "corpName": "비츠로셀",
+      "avgSalary": 68976744.18604651,
+      "avgTenureYears": null,
+      "headcount": 430,
+      "headcountPrevYear": 414,
+      "headcountChange": 16,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "068760.KQ",
+      "corpName": "셀트리온제약",
+      "avgSalary": 67188277.08703375,
+      "avgTenureYears": 5.725044404973357,
+      "headcount": 563,
+      "headcountPrevYear": 920,
+      "headcountChange": -357,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "214370.KQ",
+      "corpName": "케어젠",
+      "avgSalary": 50681592.039800994,
+      "avgTenureYears": null,
+      "headcount": 201,
+      "headcountPrevYear": 193,
+      "headcountChange": 8,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "031980.KQ",
+      "corpName": "피에스케이홀딩스",
+      "avgSalary": 88518796.9924812,
+      "avgTenureYears": null,
+      "headcount": 133,
+      "headcountPrevYear": 112,
+      "headcountChange": 21,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "241710.KQ",
+      "corpName": "코스메카코리아",
+      "avgSalary": 60000000,
+      "avgTenureYears": 5.929545454545456,
+      "headcount": 506,
+      "headcountPrevYear": 450,
+      "headcountChange": 56,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "218410.KQ",
+      "corpName": "RFHIC",
+      "avgSalary": 61071523.95209581,
+      "avgTenureYears": null,
+      "headcount": 334,
+      "headcountPrevYear": 314,
+      "headcountChange": 20,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "090710.KQ",
+      "corpName": "휴림로봇",
+      "avgSalary": 55732142.85714286,
+      "avgTenureYears": 5,
+      "headcount": 56,
+      "headcountPrevYear": 70,
+      "headcountChange": -14,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "030530.KQ",
+      "corpName": "원익홀딩스",
+      "avgSalary": 74591885.44152744,
+      "avgTenureYears": 6.223389021479713,
+      "headcount": 419,
+      "headcountPrevYear": 413,
+      "headcountChange": 6,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "466100.KQ",
+      "corpName": "클로봇",
+      "avgSalary": 44626275.2293578,
+      "avgTenureYears": 2.729357798165138,
+      "headcount": 109,
+      "headcountPrevYear": 103,
+      "headcountChange": 6,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "101490.KQ",
+      "corpName": "에스앤에스텍",
+      "avgSalary": 58826366.55948553,
+      "avgTenureYears": null,
+      "headcount": 311,
+      "headcountPrevYear": 299,
+      "headcountChange": 12,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "445680.KQ",
+      "corpName": "큐리옥스바이오시스템즈",
+      "avgSalary": 78692307.6923077,
+      "avgTenureYears": null,
+      "headcount": 13,
+      "headcountPrevYear": 13,
+      "headcountChange": 0,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "043260.KQ",
+      "corpName": "성호전자",
+      "avgSalary": 50354755.81395349,
+      "avgTenureYears": 6.181395348837208,
+      "headcount": 86,
+      "headcountPrevYear": 92,
+      "headcountChange": -6,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "048410.KQ",
+      "corpName": "현대바이오",
+      "avgSalary": 79134328.35820895,
+      "avgTenureYears": 4.402985074626866,
+      "headcount": 67,
+      "headcountPrevYear": 55,
+      "headcountChange": 12,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "328130.KQ",
+      "corpName": "루닛",
+      "avgSalary": 114861635.22012578,
+      "avgTenureYears": 3.4182389937106916,
+      "headcount": 159,
+      "headcountPrevYear": 189,
+      "headcountChange": -30,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "420770.KQ",
+      "corpName": "기가비스",
+      "avgSalary": 68471014.49275362,
+      "avgTenureYears": 7.034782608695652,
+      "headcount": 138,
+      "headcountPrevYear": 135,
+      "headcountChange": 3,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "195940.KQ",
+      "corpName": "HK이노엔",
+      "avgSalary": 83557228.91566265,
+      "avgTenureYears": 8.967831325301205,
+      "headcount": 1660,
+      "headcountPrevYear": 1668,
+      "headcountChange": -8,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "183300.KQ",
+      "corpName": "코미코",
+      "avgSalary": 62778801.84331797,
+      "avgTenureYears": 4.996313364055299,
+      "headcount": 868,
+      "headcountPrevYear": 767,
+      "headcountChange": 101,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "166090.KQ",
+      "corpName": "하나머티리얼즈",
+      "avgSalary": 76938633.19386332,
+      "avgTenureYears": 5.927336122733612,
+      "headcount": 717,
+      "headcountPrevYear": 738,
+      "headcountChange": -21,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "085660.KQ",
+      "corpName": "차바이오텍",
+      "avgSalary": 51471723.16384181,
+      "avgTenureYears": 4.939491525423729,
+      "headcount": 354,
+      "headcountPrevYear": 334,
+      "headcountChange": 20,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "122870.KQ",
+      "corpName": "와이지엔터테인먼트",
+      "avgSalary": 80906392.69406393,
+      "avgTenureYears": 3.9490410958904105,
+      "headcount": 438,
+      "headcountPrevYear": 496,
+      "headcountChange": -58,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "137400.KQ",
+      "corpName": "피엔티",
+      "avgSalary": 66376961.414790995,
+      "avgTenureYears": 4.913183279742765,
+      "headcount": 311,
+      "headcountPrevYear": 318,
+      "headcountChange": -7,
+      "buybackAmount": 1480450000
+    },
+    {
+      "symbol": "124500.KQ",
+      "corpName": "아이티센글로벌",
+      "avgSalary": 82482390.24390244,
+      "avgTenureYears": null,
+      "headcount": 164,
+      "headcountPrevYear": 230,
+      "headcountChange": -66,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "189300.KQ",
+      "corpName": "인텔리안테크",
+      "avgSalary": 73204000,
+      "avgTenureYears": 4.7256,
+      "headcount": 250,
+      "headcountPrevYear": 230,
+      "headcountChange": 20,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "065350.KQ",
+      "corpName": "신성델타테크",
+      "avgSalary": 63928205.12820513,
+      "avgTenureYears": null,
+      "headcount": 195,
+      "headcountPrevYear": 214,
+      "headcountChange": -19,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "358570.KQ",
+      "corpName": "지아이이노베이션",
+      "avgSalary": 131605121.95121951,
+      "avgTenureYears": 4.151219512195122,
+      "headcount": 82,
+      "headcountPrevYear": 84,
+      "headcountChange": -2,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "090360.KQ",
+      "corpName": "로보스타",
+      "avgSalary": 51058823.52941176,
+      "avgTenureYears": null,
+      "headcount": 204,
+      "headcountPrevYear": 184,
+      "headcountChange": 20,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "099320.KQ",
+      "corpName": "쎄트렉아이",
+      "avgSalary": 79524366.4717349,
+      "avgTenureYears": 6.480116959064328,
+      "headcount": 513,
+      "headcountPrevYear": 484,
+      "headcountChange": 29,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "060370.KQ",
+      "corpName": "LS마린솔루션",
+      "avgSalary": 89980769.23076923,
+      "avgTenureYears": 10.100000000000001,
+      "headcount": 52,
+      "headcountPrevYear": 44,
+      "headcountChange": 8,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "050890.KQ",
+      "corpName": "쏠리드",
+      "avgSalary": 67543543.54354355,
+      "avgTenureYears": null,
+      "headcount": 333,
+      "headcountPrevYear": 222,
+      "headcountChange": 111,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "033100.KQ",
+      "corpName": "제룡전기",
+      "avgSalary": 81417163.15789473,
+      "avgTenureYears": 7.814736842105263,
+      "headcount": 190,
+      "headcountPrevYear": 201,
+      "headcountChange": -11,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "161580.KQ",
+      "corpName": "필옵틱스",
+      "avgSalary": 60520376.17554859,
+      "avgTenureYears": 5.877742946708464,
+      "headcount": 319,
+      "headcountPrevYear": 332,
+      "headcountChange": -13,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "003380.KQ",
+      "corpName": "하림지주",
+      "avgSalary": 77483516.48351648,
+      "avgTenureYears": null,
+      "headcount": 91,
+      "headcountPrevYear": 74,
+      "headcountChange": 17,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "281740.KQ",
+      "corpName": "레이크머티리얼즈",
+      "avgSalary": 59573333.333333336,
+      "avgTenureYears": null,
+      "headcount": 300,
+      "headcountPrevYear": 287,
+      "headcountChange": 13,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "032500.KQ",
+      "corpName": "케이엠더블유",
+      "avgSalary": 55318840.57971015,
+      "avgTenureYears": 14.824347826086955,
+      "headcount": 69,
+      "headcountPrevYear": 75,
+      "headcountChange": -6,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "036540.KQ",
+      "corpName": "SFA반도체",
+      "avgSalary": 57782534.24657534,
+      "avgTenureYears": 8.181335616438355,
+      "headcount": 584,
+      "headcountPrevYear": 577,
+      "headcountChange": 7,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "417200.KQ",
+      "corpName": "LS머트리얼즈",
+      "avgSalary": 49500000,
+      "avgTenureYears": 6.509836065573771,
+      "headcount": 122,
+      "headcountPrevYear": 80,
+      "headcountChange": 42,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "074600.KQ",
+      "corpName": "원익QnC",
+      "avgSalary": null,
+      "avgTenureYears": 7.922298221614227,
+      "headcount": 731,
+      "headcountPrevYear": 714,
+      "headcountChange": 17,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "121600.KQ",
+      "corpName": "나노신소재",
+      "avgSalary": 48280000,
+      "avgTenureYears": 5.065714285714286,
+      "headcount": 350,
+      "headcountPrevYear": 288,
+      "headcountChange": 62,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "213420.KQ",
+      "corpName": "덕산네오룩스",
+      "avgSalary": 57819727.891156465,
+      "avgTenureYears": 4.4714285714285715,
+      "headcount": 294,
+      "headcountPrevYear": 277,
+      "headcountChange": 17,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "348370.KQ",
+      "corpName": "엔켐",
+      "avgSalary": 62268844.22110553,
+      "avgTenureYears": 2.914070351758794,
+      "headcount": 398,
+      "headcountPrevYear": 408,
+      "headcountChange": -10,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "232140.KQ",
+      "corpName": "와이씨",
+      "avgSalary": 60085714.28571428,
+      "avgTenureYears": null,
+      "headcount": 210,
+      "headcountPrevYear": 204,
+      "headcountChange": 6,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "293490.KQ",
+      "corpName": "카카오게임즈",
+      "avgSalary": 91255813.95348836,
+      "avgTenureYears": 5.328350951374207,
+      "headcount": 473,
+      "headcountPrevYear": 474,
+      "headcountChange": -1,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "437730.KQ",
+      "corpName": "삼현",
+      "avgSalary": 53709589.55223881,
+      "avgTenureYears": null,
+      "headcount": 134,
+      "headcountPrevYear": 111,
+      "headcountChange": 23,
+      "buybackAmount": 6000000000
+    },
+    {
+      "symbol": "222080.KQ",
+      "corpName": "SFA넥셀",
+      "avgSalary": 60473020.96436059,
+      "avgTenureYears": 6.29182389937107,
+      "headcount": 477,
+      "headcountPrevYear": 513,
+      "headcountChange": -36,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "388720.KQ",
+      "corpName": "유일로보틱스",
+      "avgSalary": 51299212.598425195,
+      "avgTenureYears": 2.3874015748031496,
+      "headcount": 127,
+      "headcountPrevYear": 90,
+      "headcountChange": 37,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "014620.KQ",
+      "corpName": "성광벤드",
+      "avgSalary": 74381179.46058092,
+      "avgTenureYears": 16.800829875518673,
+      "headcount": 241,
+      "headcountPrevYear": 249,
+      "headcountChange": -8,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "036810.KQ",
+      "corpName": "에프에스티",
+      "avgSalary": 54713450.29239766,
+      "avgTenureYears": 5.206315789473684,
+      "headcount": 855,
+      "headcountPrevYear": 834,
+      "headcountChange": 21,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "295310.KQ",
+      "corpName": "에이치브이엠",
+      "avgSalary": 48782008.62068965,
+      "avgTenureYears": 2.493103448275862,
+      "headcount": 116,
+      "headcountPrevYear": 89,
+      "headcountChange": 27,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "035760.KQ",
+      "corpName": "CJ ENM",
+      "avgSalary": 84966467.95827124,
+      "avgTenureYears": null,
+      "headcount": 1342,
+      "headcountPrevYear": 1285,
+      "headcountChange": 57,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "025980.KQ",
+      "corpName": "아난티",
+      "avgSalary": 42279477.01149426,
+      "avgTenureYears": 2.8955938697318007,
+      "headcount": 522,
+      "headcountPrevYear": 520,
+      "headcountChange": 2,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "204270.KQ",
+      "corpName": "제이앤티씨",
+      "avgSalary": 60573033.70786517,
+      "avgTenureYears": 10.758426966292134,
+      "headcount": 178,
+      "headcountPrevYear": 176,
+      "headcountChange": 2,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "082270.KQ",
+      "corpName": "젬백스",
+      "avgSalary": 47276497.69585253,
+      "avgTenureYears": null,
+      "headcount": 217,
+      "headcountPrevYear": 199,
+      "headcountChange": 18,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "052400.KQ",
+      "corpName": "코나아이",
+      "avgSalary": 66913838.12010444,
+      "avgTenureYears": 6.693681462140993,
+      "headcount": 383,
+      "headcountPrevYear": 395,
+      "headcountChange": -12,
+      "buybackAmount": 10020150000
+    },
+    {
+      "symbol": "171090.KQ",
+      "corpName": "선익시스템",
+      "avgSalary": 73693486.59003831,
+      "avgTenureYears": 5.66655172413793,
+      "headcount": 261,
+      "headcountPrevYear": 220,
+      "headcountChange": 41,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "025320.KQ",
+      "corpName": "시노펙스",
+      "avgSalary": 71233644.85981308,
+      "avgTenureYears": 6.294392523364486,
+      "headcount": 107,
+      "headcountPrevYear": 94,
+      "headcountChange": 13,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "006730.KQ",
+      "corpName": "서부T&amp;D",
+      "avgSalary": 32441134.765625,
+      "avgTenureYears": 2,
+      "headcount": 512,
+      "headcountPrevYear": 559,
+      "headcountChange": -47,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "056190.KQ",
+      "corpName": "SFA",
+      "avgSalary": 85539334.69387755,
+      "avgTenureYears": 9.835646258503402,
+      "headcount": 735,
+      "headcountPrevYear": 762,
+      "headcountChange": -27,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "060250.KQ",
+      "corpName": "NHN KCP",
+      "avgSalary": 60033185.840707965,
+      "avgTenureYears": 6.347566371681416,
+      "headcount": 452,
+      "headcountPrevYear": 407,
+      "headcountChange": 45,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "042000.KQ",
+      "corpName": "카페24",
+      "avgSalary": 77991669.04276986,
+      "avgTenureYears": null,
+      "headcount": 982,
+      "headcountPrevYear": 1035,
+      "headcountChange": -53,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "033500.KQ",
+      "corpName": "동성화인텍",
+      "avgSalary": 76243619.48955916,
+      "avgTenureYears": 6.185614849187935,
+      "headcount": 431,
+      "headcountPrevYear": 384,
+      "headcountChange": 47,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "112040.KQ",
+      "corpName": "위메이드",
+      "avgSalary": 93810126.58227848,
+      "avgTenureYears": 3.0343881856540085,
+      "headcount": 474,
+      "headcountPrevYear": 542,
+      "headcountChange": -68,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "214430.KQ",
+      "corpName": "아이쓰리시스템",
+      "avgSalary": 62366203.15581854,
+      "avgTenureYears": 7.5727810650887575,
+      "headcount": 507,
+      "headcountPrevYear": 479,
+      "headcountChange": 28,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "253450.KQ",
+      "corpName": "스튜디오드래곤",
+      "avgSalary": 94065491.62011173,
+      "avgTenureYears": 4.760335195530725,
+      "headcount": 179,
+      "headcountPrevYear": 173,
+      "headcountChange": 6,
+      "buybackAmount": 129195300
+    },
+    {
+      "symbol": "399720.KQ",
+      "corpName": "가온칩스",
+      "avgSalary": 81613026.81992337,
+      "avgTenureYears": 3.8385057471264368,
+      "headcount": 261,
+      "headcountPrevYear": 256,
+      "headcountChange": 5,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "067160.KQ",
+      "corpName": "SOOP",
+      "avgSalary": 75131611.31611316,
+      "avgTenureYears": null,
+      "headcount": 813,
+      "headcountPrevYear": 822,
+      "headcountChange": -9,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "053800.KQ",
+      "corpName": "안랩",
+      "avgSalary": 73387012.72871917,
+      "avgTenureYears": 7.975369928400955,
+      "headcount": 1257,
+      "headcountPrevYear": 1266,
+      "headcountChange": -9,
+      "buybackAmount": 34232009000
+    },
+    {
+      "symbol": "038500.KQ",
+      "corpName": "삼표시멘트",
+      "avgSalary": 94915254.23728813,
+      "avgTenureYears": 17.175808936825888,
+      "headcount": 649,
+      "headcountPrevYear": 741,
+      "headcountChange": -92,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "211050.KQ",
+      "corpName": "인카금융서비스",
+      "avgSalary": 62295240.78624079,
+      "avgTenureYears": null,
+      "headcount": 407,
+      "headcountPrevYear": 366,
+      "headcountChange": 41,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "100790.KQ",
+      "corpName": "미래에셋벤처투자",
+      "avgSalary": 204249529.4117647,
+      "avgTenureYears": 5.092941176470589,
+      "headcount": 34,
+      "headcountPrevYear": 32,
+      "headcountChange": 2,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "015750.KQ",
+      "corpName": "성우하이텍",
+      "avgSalary": 80672823.79349045,
+      "avgTenureYears": 12.187934904601573,
+      "headcount": 1782,
+      "headcountPrevYear": 1802,
+      "headcountChange": -20,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "018290.KQ",
+      "corpName": "브이티",
+      "avgSalary": 47805054.151624545,
+      "avgTenureYears": null,
+      "headcount": 277,
+      "headcountPrevYear": 212,
+      "headcountChange": 65,
+      "buybackAmount": 14999997750
+    },
+    {
+      "symbol": "125490.KQ",
+      "corpName": "한라캐스트",
+      "avgSalary": 46932203.38983051,
+      "avgTenureYears": 5.727118644067796,
+      "headcount": 59,
+      "headcountPrevYear": null,
+      "headcountChange": null,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "030520.KQ",
+      "corpName": "한컴",
+      "avgSalary": 87940476.1904762,
+      "avgTenureYears": 8.258571428571429,
+      "headcount": 420,
+      "headcountPrevYear": 395,
+      "headcountChange": 25,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "348210.KQ",
+      "corpName": "넥스틴",
+      "avgSalary": 90037629.92125984,
+      "avgTenureYears": null,
+      "headcount": 127,
+      "headcountPrevYear": 131,
+      "headcountChange": -4,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "251970.KQ",
+      "corpName": "펌텍코리아",
+      "avgSalary": 43292810.526315786,
+      "avgTenureYears": null,
+      "headcount": 665,
+      "headcountPrevYear": 659,
+      "headcountChange": 6,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "060280.KQ",
+      "corpName": "큐렉소",
+      "avgSalary": 63128712.87128713,
+      "avgTenureYears": null,
+      "headcount": 101,
+      "headcountPrevYear": 97,
+      "headcountChange": 4,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "032190.KQ",
+      "corpName": "다우데이타",
+      "avgSalary": 63362745.09803922,
+      "avgTenureYears": 6.137254901960785,
+      "headcount": 102,
+      "headcountPrevYear": 92,
+      "headcountChange": 10,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "041190.KQ",
+      "corpName": "우리기술투자",
+      "avgSalary": 109000000,
+      "avgTenureYears": 4.954545454545454,
+      "headcount": 11,
+      "headcountPrevYear": 12,
+      "headcountChange": -1,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "272290.KQ",
+      "corpName": "이녹스첨단소재",
+      "avgSalary": 76821182.94360386,
+      "avgTenureYears": 5.353466299862448,
+      "headcount": 727,
+      "headcountPrevYear": 767,
+      "headcountChange": -40,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "009520.KQ",
+      "corpName": "포스코엠텍",
+      "avgSalary": 81669669.66966967,
+      "avgTenureYears": 16.7982982982983,
+      "headcount": 999,
+      "headcountPrevYear": 1021,
+      "headcountChange": -22,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "078340.KQ",
+      "corpName": "컴투스",
+      "avgSalary": 82603322.25913621,
+      "avgTenureYears": null,
+      "headcount": 1505,
+      "headcountPrevYear": 1471,
+      "headcountChange": 34,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "278280.KQ",
+      "corpName": "천보",
+      "avgSalary": 47234617.02127659,
+      "avgTenureYears": 3.826595744680851,
+      "headcount": 94,
+      "headcountPrevYear": 96,
+      "headcountChange": -2,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "036620.KQ",
+      "corpName": "감성코퍼레이션",
+      "avgSalary": 59515151.515151516,
+      "avgTenureYears": 3.0262626262626267,
+      "headcount": 99,
+      "headcountPrevYear": 84,
+      "headcountChange": 15,
+      "buybackAmount": 6200000000
+    },
+    {
+      "symbol": "056080.KQ",
+      "corpName": "유진로봇",
+      "avgSalary": 71810669.0140845,
+      "avgTenureYears": 6.230774647887324,
+      "headcount": 142,
+      "headcountPrevYear": 153,
+      "headcountChange": -11,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "215200.KQ",
+      "corpName": "메가스터디교육",
+      "avgSalary": 41689124.37562437,
+      "avgTenureYears": 5.471328671328671,
+      "headcount": 2002,
+      "headcountPrevYear": 2168,
+      "headcountChange": -166,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "376300.KQ",
+      "corpName": "디어유",
+      "avgSalary": 66771428.571428575,
+      "avgTenureYears": null,
+      "headcount": 70,
+      "headcountPrevYear": 62,
+      "headcountChange": 8,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "253590.KQ",
+      "corpName": "네오셈",
+      "avgSalary": 58385089.55223881,
+      "avgTenureYears": null,
+      "headcount": 67,
+      "headcountPrevYear": 61,
+      "headcountChange": 6,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "095660.KQ",
+      "corpName": "네오위즈",
+      "avgSalary": 89588431.59065628,
+      "avgTenureYears": 4.652747497219133,
+      "headcount": 899,
+      "headcountPrevYear": 968,
+      "headcountChange": -69,
+      "buybackAmount": 6000000000
+    },
+    {
+      "symbol": "069080.KQ",
+      "corpName": "웹젠",
+      "avgSalary": 79474683.5443038,
+      "avgTenureYears": 7.892616033755275,
+      "headcount": 474,
+      "headcountPrevYear": 473,
+      "headcountChange": 1,
+      "buybackAmount": 10923000000
+    },
+    {
+      "symbol": "225570.KQ",
+      "corpName": "넥슨게임즈",
+      "avgSalary": 85720543.75729288,
+      "avgTenureYears": null,
+      "headcount": 1714,
+      "headcountPrevYear": 1459,
+      "headcountChange": 255,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "036830.KQ",
+      "corpName": "솔브레인홀딩스",
+      "avgSalary": 117186666.66666667,
+      "avgTenureYears": 4.98,
+      "headcount": 75,
+      "headcountPrevYear": 76,
+      "headcountChange": -1,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "194480.KQ",
+      "corpName": "데브시스터즈",
+      "avgSalary": 66772621.80974478,
+      "avgTenureYears": null,
+      "headcount": 431,
+      "headcountPrevYear": 312,
+      "headcountChange": 119,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "101730.KQ",
+      "corpName": "위메이드맥스",
+      "avgSalary": 66294117.64705882,
+      "avgTenureYears": 6.511764705882352,
+      "headcount": 17,
+      "headcountPrevYear": 12,
+      "headcountChange": 5,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "025900.KQ",
+      "corpName": "동화기업",
+      "avgSalary": 78954248.13895781,
+      "avgTenureYears": null,
+      "headcount": 403,
+      "headcountPrevYear": 472,
+      "headcountChange": -69,
+      "buybackAmount": 0
+    },
+    {
+      "symbol": "352480.KQ",
+      "corpName": "씨앤씨인터내셔널",
+      "avgSalary": 42750750.75075075,
+      "avgTenureYears": null,
+      "headcount": 666,
+      "headcountPrevYear": 619,
+      "headcountChange": 47,
+      "buybackAmount": 0
+    }
+  ]
+}
