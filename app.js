@@ -5008,39 +5008,42 @@ async function renderValueRanking(
 const VALUE_DISCLAIMER = `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> S&amp;P500 편입 종목 전체를 대상으로 계산한 순위이며 투자 자문이 아닙니다.</p>`;
 const KR_VALUE_DISCLAIMER = `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 코스피200+코스닥150(약 350종목) 전체를 대상으로 계산한 순위이며 투자 자문이 아닙니다.</p>`;
 
-// ---------- 국내(KR) 랭킹 공용 인프라 — 코스피200+코스닥150 약 350종목을 스캔해 기업가치·투자동향 랭킹에서 재사용 ----------
-// 기업가치(매출액·현금흐름·순이익 증가, EPS, PER, 투자안정, 시가총액)와 투자동향의 상승압력은 종목당 재무제표까지
-// 조회하는 무거운 스캔(getFullMetrics)을 공유하고, 상승률·하락률·인기종목은 시세만 필요한 가벼운 스캔을 공유함
-//
-// 접속 직후엔 시가총액 상위 30개까지만 스캔해서 빠르게 보여주고, "전체보기"를 눌러야 그때 나머지 약 320개를
-// 이어서 스캔함(미국 renderValueRanking과 동일한 방식). getKrUniverseTickers()가 반환하는 순서는 KODEX
-// 200/코스닥150 ETF 편입 비중(=시가총액) 내림차순이라 앞쪽 30개가 곧 시가총액 상위 30개.
-const krFullMetricsState = { tickers: null, items: [], cursor: 0, inflight: null };
-async function ensureKrFullMetrics(targetCount, onProgress) {
-  if (!krFullMetricsState.tickers) krFullMetricsState.tickers = await getKrUniverseTickers();
-  const total = krFullMetricsState.tickers.length;
-  targetCount = Math.min(targetCount, total);
-  while (krFullMetricsState.cursor < targetCount) {
-    if (krFullMetricsState.inflight) {
-      await krFullMetricsState.inflight.catch(() => {});
-      continue;
-    }
-    const startCursor = krFullMetricsState.cursor;
-    const pending = krFullMetricsState.tickers.slice(startCursor, targetCount);
-    krFullMetricsState.inflight = mapWithConcurrency(pending, 5, (symbol) => getFullMetrics(symbol).catch(() => null), (completed) => {
-      if (onProgress) onProgress(startCursor + completed, targetCount, total);
-    })
-      .then((results) => {
-        krFullMetricsState.items = krFullMetricsState.items.concat(results.filter(Boolean));
-        krFullMetricsState.cursor = targetCount;
+// ---------- 랭킹 공용 인프라: 종목 목록을 시가총액 우선순으로 필요한 만큼만 스캔하는 단계적 캐시 ----------
+// 접속 직후엔 시가총액 상위 30개까지만 스캔해서 빠르게 보여주고, "전체보기"를 눌러야 그때 나머지를 이어서
+// 스캔함. getTickers()가 반환하는 순서가 이미 시가총액 내림차순이어야 함
+// (KR: getKrUniverseTickers = KODEX 200/코스닥150 ETF 편입 비중순, US: getSP500PriorityOrder = 시가총액순).
+function makeIncrementalScan(getTickers, worker, concurrency) {
+  const state = { tickers: null, items: [], cursor: 0, inflight: null };
+  return async function ensure(targetCount, onProgress) {
+    if (!state.tickers) state.tickers = await getTickers();
+    const total = state.tickers.length;
+    targetCount = Math.min(targetCount, total);
+    while (state.cursor < targetCount) {
+      if (state.inflight) {
+        await state.inflight.catch(() => {});
+        continue;
+      }
+      const startCursor = state.cursor;
+      const pending = state.tickers.slice(startCursor, targetCount);
+      state.inflight = mapWithConcurrency(pending, concurrency, worker, (completed) => {
+        if (onProgress) onProgress(startCursor + completed, targetCount, total);
       })
-      .finally(() => {
-        krFullMetricsState.inflight = null;
-      });
-    await krFullMetricsState.inflight;
-  }
-  return { items: krFullMetricsState.items.slice(), total };
+        .then((results) => {
+          state.items = state.items.concat(results.filter(Boolean));
+          state.cursor = targetCount;
+        })
+        .finally(() => {
+          state.inflight = null;
+        });
+      await state.inflight;
+    }
+    return { items: state.items.slice(), total };
+  };
 }
+
+// 기업가치(매출액·현금흐름·순이익 증가, EPS, PER, 투자안정, 시가총액)와 투자동향의 상승압력이 공유하는
+// 국내(KR) 무거운 스캔(종목당 재무제표까지 조회)
+const ensureKrFullMetrics = makeIncrementalScan(getKrUniverseTickers, (symbol) => getFullMetrics(symbol).catch(() => null), 5);
 
 let krDailyChangesPromise = null;
 function getKrDailyChanges() {
@@ -7391,41 +7394,17 @@ async function getDividendYieldInfo(symbol) {
   }
 }
 
-// 국내(KR) 배당률도 다른 랭킹과 동일하게 접속 직후엔 시가총액 상위 30개만 스캔해서 보여주고,
-// "전체보기"를 눌러야 나머지 약 320개를 이어서 스캔함(getKrUniverseTickers 순서 = 시가총액 내림차순)
-const krDividendState = { tickers: null, items: [], cursor: 0, inflight: null };
-async function ensureKrDividendYields(targetCount, onProgress) {
-  if (!krDividendState.tickers) krDividendState.tickers = await getKrUniverseTickers();
-  const total = krDividendState.tickers.length;
-  targetCount = Math.min(targetCount, total);
-  while (krDividendState.cursor < targetCount) {
-    if (krDividendState.inflight) {
-      await krDividendState.inflight.catch(() => {});
-      continue;
-    }
-    const startCursor = krDividendState.cursor;
-    const pending = krDividendState.tickers.slice(startCursor, targetCount);
-    krDividendState.inflight = mapWithConcurrency(pending, 15, (symbol) => getDividendYieldInfo(symbol), (completed) => {
-      if (onProgress) onProgress(startCursor + completed, targetCount, total);
-    })
-      .then((results) => {
-        krDividendState.items = krDividendState.items.concat(results.filter(Boolean));
-        krDividendState.cursor = targetCount;
-      })
-      .finally(() => {
-        krDividendState.inflight = null;
-      });
-    await krDividendState.inflight;
-  }
-  return { items: krDividendState.items.slice(), total };
-}
+// 배당률(국내·해외 공통)도 다른 랭킹과 동일하게 접속 직후엔 시가총액 상위 30개만 스캔해서 보여주고,
+// "전체보기"를 눌러야 나머지를 이어서 스캔함
+const ensureKrDividendYields = makeIncrementalScan(getKrUniverseTickers, (symbol) => getDividendYieldInfo(symbol), 15);
+const ensureUsDividendYields = makeIncrementalScan(getSP500PriorityOrder, (symbol) => getDividendYieldInfo(symbol), 15);
 // 배당률 상위 종목에 붙일 투자안정 점수(재무제표 조회)는 시가총액 상위 30개 단계에서 이미 계산한 종목을
-// "전체보기" 이후 다시 조회하지 않도록 심볼별로 캐싱
-const krDividendRiskCache = new Map();
+// "전체보기" 이후 다시 조회하지 않도록 심볼별로 캐싱(국내·해외 공용)
+const dividendRiskMetricsCache = new Map();
 async function getFullMetricsForDividendRisk(symbol) {
-  if (krDividendRiskCache.has(symbol)) return krDividendRiskCache.get(symbol);
+  if (dividendRiskMetricsCache.has(symbol)) return dividendRiskMetricsCache.get(symbol);
   const m = await getFullMetrics(symbol).catch(() => null);
-  krDividendRiskCache.set(symbol, m);
+  dividendRiskMetricsCache.set(symbol, m);
   return m;
 }
 
@@ -7453,41 +7432,20 @@ function dividendRowHtml(r, i, nameMap) {
     </tr>`;
 }
 
-function renderDividendTable(ranked, universeLabel, initialCount, nameMap) {
-  const visible = ranked.slice(0, initialCount);
-  const rest = ranked.slice(initialCount);
-  trendResults.innerHTML = `
-    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 배당률은 최근 1년간 지급된 배당금 합계 ÷ 현재가 기준(${universeLabel} 대상)이며, 실제 배당 정책은 변경될 수 있습니다. <span class="dividend-warn">⚠️컷</span>은 직전 지급액보다 20% 넘게 줄어든 경우, <span class="dividend-warn">⚠️지연</span>은 평소 지급 주기보다 오래 지급이 없는 경우를 뜻합니다. 투자 자문이 아닙니다.</p>
-    <table class="top30-table">
-      <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>배당률</th><th>투자<br>안정</th></tr></thead>
-      <tbody id="trendDividendBody">${visible.map((r, i) => dividendRowHtml(r, i, nameMap)).join("")}</tbody>
-    </table>
-    ${rest.length ? `<button type="button" class="cat-btn load-more-btn" id="trendDividendMoreBtn">더보기 (${visible.length}/${ranked.length})</button>` : ""}
-  `;
-  if (rest.length) {
-    // trendResults에는 급등주/급락주 등에서 이미 붙여둔 ".load-more-btn" 위임 리스너가 남아있을 수 있어(재사용되는
-    // 같은 컨테이너), 그 핸들러가 이 버튼 클릭까지 가로채 다른 탭의 결과로 덮어쓰지 않도록 버블링을 막음
-    el("trendDividendMoreBtn").addEventListener("click", (e) => {
-      e.stopPropagation();
-      el("trendDividendBody").insertAdjacentHTML("beforeend", rest.map((r, i) => dividendRowHtml(r, initialCount + i, nameMap)).join(""));
-      el("trendDividendMoreBtn").remove();
-    });
-  }
-}
-
-// 국내(KR) 배당률 전용 — 접속 직후엔 시가총액 상위 30개만 스캔해서 보여주고, "전체보기"를 눌러야
-// 그때 나머지 약 320개를 이어서 스캔함(다른 국내 랭킹과 동일한 체감 속도)
-async function runTrendDividendKr(initialCount) {
+// 배당률(국내·해외 공통) 전용 — 접속 직후엔 시가총액 상위 30개만 스캔해서 보여주고, "전체보기"를 눌러야
+// 그때 나머지를 이어서 스캔함(다른 랭킹과 동일한 체감 속도). ensureYields: ensureKrDividendYields 또는
+// ensureUsDividendYields, getNameMap: 국내는 한글 회사명 조회(getKrSymbolNameMap), 해외는 불필요하므로 null
+async function runTrendDividendStaged(initialCount, ensureYields, universeLabel, getNameMap) {
   async function paintUpTo(targetCount) {
     try {
       const isFullScan = targetCount > initialCount;
       trendStatus.style.display = "block";
-      trendStatus.textContent = isFullScan ? `전체 검색 중(약 1분 소요될 수 있어요)...` : `코스피200+코스닥150 배당률을 계산하는 중...`;
+      trendStatus.textContent = isFullScan ? `전체 검색 중(약 1분 소요될 수 있어요)...` : `${universeLabel} 배당률을 계산하는 중...`;
       const [{ items: raw, total }, nameMap] = await Promise.all([
-        ensureKrDividendYields(targetCount, (done, target) => {
+        ensureYields(targetCount, (done, target) => {
           trendStatus.textContent = `${done}/${target} 종목 배당률 확인 중...`;
         }),
-        getKrSymbolNameMap().catch(() => new Map()),
+        getNameMap ? getNameMap() : Promise.resolve(null),
       ]);
       if (raw.length === 0) throw new Error("배당률 데이터를 가져오지 못했습니다.");
 
@@ -7508,8 +7466,8 @@ async function runTrendDividendKr(initialCount) {
       trendStatus.style.display = "none";
 
       trendResults.innerHTML = `
-        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 배당률은 최근 1년간 지급된 배당금 합계 ÷ 현재가 기준(코스피200+코스닥150 대상)이며, 실제 배당 정책은 변경될 수 있습니다. <span class="dividend-warn">⚠️컷</span>은 직전 지급액보다 20% 넘게 줄어든 경우, <span class="dividend-warn">⚠️지연</span>은 평소 지급 주기보다 오래 지급이 없는 경우를 뜻합니다. 투자 자문이 아닙니다.</p>
-        <p class="muted" style="font-size:12px;">시가총액 상위 ${Math.min(targetCount, initialCount)}개${targetCount > initialCount ? ` + 나머지 ${targetCount - initialCount}개` : ""} 확인(코스피200+코스닥150 ${total}개 중 ${targetCount}개, 상위 ${top50.length}개 표시)</p>
+        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 배당률은 최근 1년간 지급된 배당금 합계 ÷ 현재가 기준(${universeLabel} 대상)이며, 실제 배당 정책은 변경될 수 있습니다. <span class="dividend-warn">⚠️컷</span>은 직전 지급액보다 20% 넘게 줄어든 경우, <span class="dividend-warn">⚠️지연</span>은 평소 지급 주기보다 오래 지급이 없는 경우를 뜻합니다. 투자 자문이 아닙니다.</p>
+        <p class="muted" style="font-size:12px;">시가총액 상위 ${Math.min(targetCount, initialCount)}개${targetCount > initialCount ? ` + 나머지 ${targetCount - initialCount}개` : ""} 확인(${universeLabel} ${total}개 중 ${targetCount}개, 상위 ${top50.length}개 표시)</p>
         <table class="top30-table">
           <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>배당률</th><th>투자<br>안정</th></tr></thead>
           <tbody>${top50.map((r, i) => dividendRowHtml(r, i, nameMap)).join("")}</tbody>
@@ -7538,38 +7496,9 @@ async function runTrendDividend() {
   trendStatus.style.display = "block";
 
   if (getWatchlistActiveMarket() === "KR") {
-    await runTrendDividendKr(30);
-    return;
-  }
-
-  const universeLabel = "S&P500";
-  trendStatus.textContent = `${universeLabel} 배당률을 계산하는 중...`;
-
-  try {
-    const tickers = await getSP500Tickers();
-    const results = await mapWithConcurrency(tickers, 15, (symbol) => getDividendYieldInfo(symbol), (completed, total) => {
-      trendStatus.textContent = `${completed}/${total} 종목 배당률 확인 중...`;
-    });
-    const ranked = results.filter(Boolean).sort((a, b) => b.yieldPct - a.yieldPct).slice(0, 50);
-    if (ranked.length === 0) throw new Error("배당률 데이터를 가져오지 못했습니다.");
-
-    // 투자안정 점수는 재무제표까지 조회해야 해 배당률 스캔보다 무거우므로, 전체(약 500종목)가 아니라
-    // 이미 추려낸 상위 50개에 대해서만 추가로 조회해서 붙임(다른 랭킹의 전체 스캔보다 훨씬 가벼움)
-    trendStatus.style.display = "block";
-    trendStatus.textContent = `상위 ${ranked.length}개 종목의 투자 안정 점수를 계산하는 중...`;
-    const { sp500Return, kospi200Return } = await getMarketReturnsCached();
-    const fullMetricsList = await mapWithConcurrency(ranked, 5, (r) => getFullMetrics(r.symbol).catch(() => null));
-    ranked.forEach((r, i) => {
-      const m = fullMetricsList[i];
-      if (!m) return;
-      r.riskTotal = computeRiskScore(m, sp500Return, kospi200Return).total;
-      r.isIPO = isRecentIPO(m.firstTradeDate);
-    });
-
-    trendStatus.style.display = "none";
-    renderDividendTable(ranked, universeLabel, 20, null);
-  } catch (err) {
-    trendStatus.textContent = `❌ ${err.message || "배당률을 가져오지 못했습니다."}`;
+    await runTrendDividendStaged(30, ensureKrDividendYields, "코스피200+코스닥150", () => getKrSymbolNameMap().catch(() => new Map()));
+  } else {
+    await runTrendDividendStaged(30, ensureUsDividendYields, "S&P500", null);
   }
 }
 
