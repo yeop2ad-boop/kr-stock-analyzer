@@ -3399,6 +3399,68 @@ const KOREAN_COMPANY_NAMES = {
   하이닉스: "SKHY",
   에스케이하이닉스: "SKHY",
   에스케이하이닉스adr: "SKHY",
+
+  // 브랜드평판순(Harris/RepTrak/YouGov) 목록에 있던 회사들 한글명 추가분
+  아디다스: "ADDYY",
+  아메리칸이글: "AEO",
+  올스테이트: "ALL",
+  베스트바이: "BBY",
+  비엠더블유: "BMWYY",
+  비피: "BP",
+  브리지스톤: "BRDCY",
+  에이비인베브: "BUD",
+  버드와이저: "BUD",
+  버버리: "BURBY",
+  캐논: "CAJ",
+  크래커배럴: "CBRL",
+  차임: "CHYM",
+  클로락스: "CLX",
+  캐피탈원: "COF",
+  달러제너럴: "DG",
+  달러트리: "DLTR",
+  돌: "DOLE",
+  에스티로더: "EL",
+  에너자이저: "ENR",
+  폭스: "FOXA",
+  갭: "GAP",
+  굿이어: "GT",
+  하얏트: "H",
+  혼다: "HMC",
+  할리데이비슨: "HOG",
+  에이치피: "HPQ",
+  인터컨티넨탈: "IHG",
+  크로거: "KR",
+  켄뷰: "KVUE",
+  리바이스: "LEVI",
+  엘지전자: "LGEIY",
+  로레알: "LRLCY",
+  라이브네이션: "LYV",
+  메이시스: "M",
+  마텔: "MAT",
+  메르세데스벤츠: "MBGYY",
+  벤츠: "MBGYY",
+  미쉐린: "MGDDY",
+  맥코믹: "MKC",
+  나투라: "NTCO",
+  닌텐도: "NTDOY",
+  노보노디스크: "NVO",
+  뉴웰브랜즈: "NWL",
+  필립스: "PHG",
+  파라마운트스카이댄스: "PSKY",
+  레스토랑브랜즈: "QSR",
+  페라리: "RACE",
+  레킷벤키저: "RBGLY",
+  롤스로이스: "RYCEY",
+  스머커: "SJM",
+  소니: "SONY",
+  도요타: "TM",
+  티모바일: "TMUS",
+  언더아머: "UAA",
+  유니레버: "UL",
+  얼타뷰티: "ULTA",
+  워너브라더스디스커버리: "WBD",
+  더블유디사십: "WDFC",
+  얌브랜즈: "YUM",
 };
 
 // 티커 → 한글명 역매핑(KOREAN_COMPANY_NAMES 재사용) — 같은 티커에 별칭이 여러 개면 먼저 나오는 것을 사용
@@ -6256,6 +6318,8 @@ const LOGO_OVERRIDE = {
   SKHY: SKHYNIX_LOGO, // SK하이닉스 나스닥 ADR(2026-07 상장)
   SKHYV: SKHYNIX_LOGO, // 상장 초기 임시 심볼
   "000660.KS": SKHYNIX_LOGO, // 한국거래소 원주
+  // FMP에 로고가 없는(404) 종목들 — 브랜드평판순 목록 131개 전수 점검 후 확인된 것만 추가(나머지는 정상 로드됨)
+  LGEIY: { src: "logos/lg.svg", bg: "#ffffff" }, // LG전자 미국 OTC ADR — Wikimedia Commons(자유 이용) LG 로고
 };
 
 // FMP 로고가 순백색이라 흰 원 배경에서 안 보이는 종목들(506개 전수 픽셀 분석 결과 61개) — 어두운 배경을 깔아 흰 로고가 보이게 함
