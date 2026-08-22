@@ -36,8 +36,12 @@ async function fetchJson(url) {
   return res.json();
 }
 
-async function yahooChart(symbol, range, interval = "1d") {
-  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=${range}&interval=${interval}`;
+// ⚠️ range=max는 장기간 조회 시 Yahoo가 응답을 조용히 월봉(dataGranularity:"1mo")으로 낮춰버려서
+// "직전 1년" 슬라이딩 윈도우 계산이 전부 실패했었다(2026-08-22 1차 실행에서 전 종목·전 anchor가
+// null로 나온 원인). period1/period2(명시적 유닉스 타임스탬프)로 요청하면 긴 구간도 일봉을 그대로
+// 돌려주므로 이 방식으로 고정한다.
+async function yahooChartByPeriod(symbol, period1, period2, interval = "1d") {
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?period1=${period1}&period2=${period2}&interval=${interval}`;
   return fetchJson(url);
 }
 
@@ -131,11 +135,15 @@ async function main() {
   const anchors = buildAnchors();
   console.log(`anchor ${anchors.length}개: ${anchors.map((a) => a.label).join(", ")}`);
 
+  // 첫 anchor(START_YEAR 3월)의 "직전 1년" 창을 채우려면 최소 START_YEAR-1년 1월부터는 필요
+  const period1 = Math.floor(new Date(START_YEAR - 1, 0, 1).getTime() / 1000);
+  const period2 = Math.floor(Date.now() / 1000);
+
   const perTicker = await mapWithConcurrency(
     universe,
     8,
     async (symbol) => {
-      const chart = await yahooChart(symbol, "max");
+      const chart = await yahooChartByPeriod(symbol, period1, period2);
       const pairs = chartClosePairs(chart);
       return evaluateTicker(pairs, anchors);
     },
