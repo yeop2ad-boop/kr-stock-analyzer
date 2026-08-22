@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-21T23:43:38.385Z",
+  "generatedAt": "2026-08-22T23:39:45.066Z",
   "referenceDates": {
-    "month": "2026-07-21T00:00:00.000Z",
+    "month": "2026-07-22T00:00:00.000Z",
     "year": "2025-09-01T00:00:00.000Z"
   },
   "month": {
@@ -10,201 +10,261 @@
         "symbol": "MRNA",
         "name": "Moderna, Inc.",
         "currentPrice": 145.13,
-        "priceChangePct": 143.26181758496156,
-        "priceChangeAmt": 85.47000015258789,
-        "historicalAttractiveness": 2.5,
-        "historicalRisk": 3.3,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "SMCI",
-        "name": "Super Micro Computer, Inc.",
-        "currentPrice": 37.24,
-        "priceChangePct": 46.03921568627452,
-        "priceChangeAmt": 11.740000000000002,
-        "historicalAttractiveness": 3.3,
-        "historicalRisk": 2.8,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "IT",
-        "name": "Gartner, Inc.",
-        "currentPrice": 195.9,
-        "priceChangePct": 45.358754759667576,
-        "priceChangeAmt": 61.12999572753907,
-        "historicalAttractiveness": 0.1,
-        "historicalRisk": 1.9,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "NEM",
-        "name": "Newmont Corporation",
-        "currentPrice": 131.58,
-        "priceChangePct": 42.26403182948168,
-        "priceChangeAmt": 39.09000213623048,
-        "historicalAttractiveness": 2.2,
-        "historicalRisk": 3.6,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "CTSH",
-        "name": "Cognizant Technology Solutions ",
-        "currentPrice": 61.87,
-        "priceChangePct": 41.8060932508538,
-        "priceChangeAmt": 18.239998931884763,
-        "historicalAttractiveness": 1.3,
-        "historicalRisk": 3.1,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "priceChangePct": 149.9225086321732,
+        "priceChangeAmt": 87.06000030517578,
+        "historicalAttractiveness": 1.6,
+        "historicalRisk": 3.4,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "WDAY",
         "name": "Workday, Inc.",
         "currentPrice": 200.01,
-        "priceChangePct": 41.68024551550808,
-        "priceChangeAmt": 58.84000183105468,
-        "historicalAttractiveness": 3.4,
+        "priceChangePct": 51.042140738305534,
+        "priceChangeAmt": 67.59000183105468,
+        "historicalAttractiveness": 2.7,
         "historicalRisk": 2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
-        "symbol": "ZBRA",
-        "name": "Zebra Technologies Corporation",
-        "currentPrice": 368.51,
-        "priceChangePct": 40.43826546176504,
-        "priceChangeAmt": 106.11000610351562,
-        "historicalAttractiveness": 4.6,
-        "historicalRisk": 2.2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "symbol": "IT",
+        "name": "Gartner, Inc.",
+        "currentPrice": 195.9,
+        "priceChangePct": 48.296738038368986,
+        "priceChangeAmt": 63.79999389648438,
+        "historicalAttractiveness": 0.1,
+        "historicalRisk": 1.9,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "PLTR",
         "name": "Palantir Technologies Inc.",
         "currentPrice": 179.94,
-        "priceChangePct": 35.63997816426628,
-        "priceChangeAmt": 47.27999633789062,
+        "priceChangePct": 44.448904584428895,
+        "priceChangeAmt": 55.37000030517578,
         "historicalAttractiveness": 3,
         "historicalRisk": 5.3,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
-        "symbol": "LDOS",
-        "name": "Leidos Holdings, Inc.",
-        "currentPrice": 141.39,
-        "priceChangePct": 34.759819355247785,
-        "priceChangeAmt": 36.470001831054674,
-        "historicalAttractiveness": 1.8,
-        "historicalRisk": 2.1,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "symbol": "CTSH",
+        "name": "Cognizant Technology Solutions ",
+        "currentPrice": 61.87,
+        "priceChangePct": 43.283926731663165,
+        "priceChangeAmt": 18.689999694824216,
+        "historicalAttractiveness": 1.2,
+        "historicalRisk": 3.1,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
-        "symbol": "CRL",
-        "name": "Charles River Laboratories Inte",
-        "currentPrice": 295.19,
-        "priceChangePct": 34.54421522877265,
-        "priceChangeAmt": 75.79000610351562,
-        "historicalAttractiveness": 4.6,
-        "historicalRisk": 1.7,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "symbol": "ZBRA",
+        "name": "Zebra Technologies Corporation",
+        "currentPrice": 368.51,
+        "priceChangePct": 40.251189343482395,
+        "priceChangeAmt": 105.75999999999999,
+        "historicalAttractiveness": 5.1,
+        "historicalRisk": 2.2,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
-        "symbol": "ACN",
-        "name": "Accenture plc",
-        "currentPrice": 185.28,
-        "priceChangePct": 31.534856735180284,
-        "priceChangeAmt": 44.41999938964844,
-        "historicalAttractiveness": 1.6,
-        "historicalRisk": 4.5,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "VEEV",
-        "name": "Veeva Systems Inc.",
-        "currentPrice": 247.9,
-        "priceChangePct": 30.99767110763211,
-        "priceChangeAmt": 58.65999450683594,
-        "historicalAttractiveness": 3.9,
-        "historicalRisk": 4.8,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "ABNB",
-        "name": "Airbnb, Inc.",
-        "currentPrice": 187.3,
-        "priceChangePct": 29.97917561880688,
-        "priceChangeAmt": 43.199993896484386,
-        "historicalAttractiveness": 2.6,
-        "historicalRisk": 3.9,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "IQV",
-        "name": "IQVIA Holdings, Inc.",
-        "currentPrice": 259.82,
-        "priceChangePct": 28.866187031194467,
-        "priceChangeAmt": 58.20000488281249,
-        "historicalAttractiveness": 3.6,
-        "historicalRisk": 2.6,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "symbol": "NEM",
+        "name": "Newmont Corporation",
+        "currentPrice": 131.58,
+        "priceChangePct": 37.42036553524806,
+        "priceChangeAmt": 35.83000000000001,
+        "historicalAttractiveness": 2.3,
+        "historicalRisk": 3.6,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "PTC",
         "name": "PTC Inc.",
         "currentPrice": 154.68,
-        "priceChangePct": 28.07816866730072,
-        "priceChangeAmt": 33.9100033569336,
-        "historicalAttractiveness": 0.8,
+        "priceChangePct": 36.75183375946694,
+        "priceChangeAmt": 41.569999389648444,
+        "historicalAttractiveness": 1,
         "historicalRisk": 2.6,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
-        "symbol": "INTU",
-        "name": "Intuit Inc.",
-        "currentPrice": 367,
-        "priceChangePct": 26.5866387287122,
-        "priceChangeAmt": 77.07998657226562,
-        "historicalAttractiveness": 1.6,
-        "historicalRisk": 3.2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "symbol": "CRL",
+        "name": "Charles River Laboratories Inte",
+        "currentPrice": 295.19,
+        "priceChangePct": 34.9748532780547,
+        "priceChangeAmt": 76.49000305175781,
+        "historicalAttractiveness": 4.2,
+        "historicalRisk": 1.9,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "NOW",
         "name": "ServiceNow, Inc.",
         "currentPrice": 128.48,
-        "priceChangePct": 25.886736305513068,
-        "priceChangeAmt": 26.42000244140624,
-        "historicalAttractiveness": 3.6,
-        "historicalRisk": 3.7,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "priceChangePct": 34.59040564866117,
+        "priceChangeAmt": 33.02000091552733,
+        "historicalAttractiveness": 3.8,
+        "historicalRisk": 3.6,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "VEEV",
+        "name": "Veeva Systems Inc.",
+        "currentPrice": 247.9,
+        "priceChangePct": 34.326738499416564,
+        "priceChangeAmt": 63.34999694824219,
+        "historicalAttractiveness": 3.9,
+        "historicalRisk": 4.8,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "ABNB",
+        "name": "Airbnb, Inc.",
+        "currentPrice": 187.3,
+        "priceChangePct": 33.73794781766637,
+        "priceChangeAmt": 47.2499969482422,
+        "historicalAttractiveness": 2.3,
+        "historicalRisk": 3.9,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "ACN",
+        "name": "Accenture plc",
+        "currentPrice": 185.28,
+        "priceChangePct": 32.25783770677898,
+        "priceChangeAmt": 45.190003662109376,
+        "historicalAttractiveness": 1.3,
+        "historicalRisk": 4.5,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "LDOS",
+        "name": "Leidos Holdings, Inc.",
+        "currentPrice": 141.39,
+        "priceChangePct": 31.819874309177386,
+        "priceChangeAmt": 34.12999786376952,
+        "historicalAttractiveness": 1.7,
+        "historicalRisk": 2.1,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "IQV",
+        "name": "IQVIA Holdings, Inc.",
+        "currentPrice": 259.82,
+        "priceChangePct": 30.87849808999964,
+        "priceChangeAmt": 61.299995727539056,
+        "historicalAttractiveness": 3.3,
+        "historicalRisk": 2.5,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "DXCM",
+        "name": "DexCom, Inc.",
+        "currentPrice": 92.34,
+        "priceChangePct": 29.273413979404804,
+        "priceChangeAmt": 20.909999694824222,
+        "historicalAttractiveness": 4.2,
+        "historicalRisk": 3.6,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "INTU",
+        "name": "Intuit Inc.",
+        "currentPrice": 367,
+        "priceChangePct": 29.011846038298717,
+        "priceChangeAmt": 82.52999877929688,
+        "historicalAttractiveness": 1.6,
+        "historicalRisk": 3.2,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "CRM",
+        "name": "Salesforce, Inc.",
+        "currentPrice": 209.17,
+        "priceChangePct": 28.32515337423312,
+        "priceChangeAmt": 46.16999999999999,
+        "historicalAttractiveness": 2.1,
+        "historicalRisk": 3.9,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "REGN",
+        "name": "Regeneron Pharmaceuticals, Inc.",
+        "currentPrice": 834.04,
+        "priceChangePct": 28.08133071976363,
+        "priceChangeAmt": 182.8600073242187,
+        "historicalAttractiveness": 2.2,
+        "historicalRisk": 3.9,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "AXON",
+        "name": "Axon Enterprise, Inc.",
+        "currentPrice": 627.75,
+        "priceChangePct": 27.723862636683037,
+        "priceChangeAmt": 136.260009765625,
+        "historicalAttractiveness": 6.9,
+        "historicalRisk": 2,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "BR",
         "name": "Broadridge Financial Solutions,",
         "currentPrice": 182.18,
-        "priceChangePct": 25.63271974430137,
-        "priceChangeAmt": 37.17000549316407,
+        "priceChangePct": 26.4085527146077,
+        "priceChangeAmt": 38.06000488281251,
         "historicalAttractiveness": 1.1,
         "historicalRisk": 2.2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "ADBE",
+        "name": "Adobe Inc.",
+        "currentPrice": 275.3,
+        "priceChangePct": 26.076204080642945,
+        "priceChangeAmt": 56.93999938964845,
+        "historicalAttractiveness": 2,
+        "historicalRisk": 4.3,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "DASH",
+        "name": "DoorDash, Inc.",
+        "currentPrice": 223.49,
+        "priceChangePct": 25.74692250744846,
+        "priceChangeAmt": 45.76000427246095,
+        "historicalAttractiveness": 3.2,
+        "historicalRisk": 4.1,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "ERIE",
+        "name": "Erie Indemnity Company",
+        "currentPrice": 264.85,
+        "priceChangePct": 25.604666239860563,
+        "priceChangeAmt": 53.98999938964846,
+        "historicalAttractiveness": 2,
+        "historicalRisk": 4.2,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "BDX",
         "name": "Becton, Dickinson and Company",
         "currentPrice": 192,
-        "priceChangePct": 24.804995170628853,
-        "priceChangeAmt": 38.160003662109375,
-        "historicalAttractiveness": 0.8,
+        "priceChangePct": 25.35909859572519,
+        "priceChangeAmt": 38.839996337890625,
+        "historicalAttractiveness": 0.7,
         "historicalRisk": 2.5,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
-        "symbol": "GRMN",
-        "name": "Garmin Ltd.",
-        "currentPrice": 294.85,
-        "priceChangePct": 24.593284430412258,
-        "priceChangeAmt": 58.20000610351565,
+        "symbol": "ADSK",
+        "name": "Autodesk, Inc.",
+        "currentPrice": 253.825,
+        "priceChangePct": 24.729729729729723,
+        "priceChangeAmt": 50.32499999999999,
         "historicalAttractiveness": 2.8,
-        "historicalRisk": 5,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "historicalRisk": 2.9,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "CPRT",
@@ -212,299 +272,239 @@
         "currentPrice": 33.8,
         "priceChangePct": 24.401913526274825,
         "priceChangeAmt": 6.629999923706052,
-        "historicalAttractiveness": 1.2,
-        "historicalRisk": 4.9,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "EL",
-        "name": "Estee Lauder Companies, Inc. (T",
-        "currentPrice": 101.94,
-        "priceChangePct": 23.75864586726632,
-        "priceChangeAmt": 19.569997253417966,
-        "historicalAttractiveness": 1.9,
-        "historicalRisk": 3.2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "DXCM",
-        "name": "DexCom, Inc.",
-        "currentPrice": 92.34,
-        "priceChangePct": 23.53177257525084,
-        "priceChangeAmt": 17.590000000000003,
-        "historicalAttractiveness": 5.4,
-        "historicalRisk": 3.6,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "REGN",
-        "name": "Regeneron Pharmaceuticals, Inc.",
-        "currentPrice": 834.04,
-        "priceChangePct": 23.526710553208893,
-        "priceChangeAmt": 158.8499975585937,
-        "historicalAttractiveness": 2,
-        "historicalRisk": 3.9,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "CRM",
-        "name": "Salesforce, Inc.",
-        "currentPrice": 209.17,
-        "priceChangePct": 22.99776726030528,
-        "priceChangeAmt": 39.11000244140624,
-        "historicalAttractiveness": 2.2,
-        "historicalRisk": 4,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "AXON",
-        "name": "Axon Enterprise, Inc.",
-        "currentPrice": 627.75,
-        "priceChangePct": 22.80649950307519,
-        "priceChangeAmt": 116.57998657226562,
-        "historicalAttractiveness": 7.4,
-        "historicalRisk": 2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "ERIE",
-        "name": "Erie Indemnity Company",
-        "currentPrice": 264.85,
-        "priceChangePct": 22.718001580884597,
-        "priceChangeAmt": 49.02999267578127,
-        "historicalAttractiveness": 2.7,
-        "historicalRisk": 4.2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "FCX",
-        "name": "Freeport-McMoRan, Inc.",
-        "currentPrice": 76.66,
-        "priceChangePct": 22.538360481444535,
-        "priceChangeAmt": 14.099998626708981,
         "historicalAttractiveness": 1,
-        "historicalRisk": 2.5,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "DHR",
-        "name": "Danaher Corporation",
-        "currentPrice": 218.85,
-        "priceChangePct": 22.25574365438164,
-        "priceChangeAmt": 39.84000549316406,
-        "historicalAttractiveness": 3.6,
-        "historicalRisk": 3.6,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "historicalRisk": 4.9,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "MSFT",
         "name": "Microsoft Corporation",
         "currentPrice": 483.24,
-        "priceChangePct": 21.49340037712131,
-        "priceChangeAmt": 85.49000000000001,
-        "historicalAttractiveness": 2.7,
+        "priceChangePct": 23.799765469509357,
+        "priceChangeAmt": 92.90000366210938,
+        "historicalAttractiveness": 2.6,
         "historicalRisk": 8.4,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
-        "symbol": "FDS",
-        "name": "FactSet Research Systems Inc.",
-        "currentPrice": 299.91,
-        "priceChangePct": 21.445638269377113,
-        "priceChangeAmt": 52.96000305175784,
-        "historicalAttractiveness": 2.2,
-        "historicalRisk": 3.6,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "symbol": "EL",
+        "name": "Estee Lauder Companies, Inc. (T",
+        "currentPrice": 101.94,
+        "priceChangePct": 23.369240455569877,
+        "priceChangeAmt": 19.31000274658203,
+        "historicalAttractiveness": 1.7,
+        "historicalRisk": 3.1,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "TYL",
+        "name": "Tyler Technologies, Inc.",
+        "currentPrice": 350.73,
+        "priceChangePct": 23.357481346731937,
+        "priceChangeAmt": 66.40999267578127,
+        "historicalAttractiveness": 2.1,
+        "historicalRisk": 3.1,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "EXPE",
         "name": "Expedia Group, Inc.",
         "currentPrice": 321.63,
-        "priceChangePct": 21.39729638265223,
-        "priceChangeAmt": 56.689997558593745,
-        "historicalAttractiveness": 2.2,
-        "historicalRisk": 2.4,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "PSKY",
-        "name": "Paramount Skydance Corporation",
-        "currentPrice": 10.35,
-        "priceChangePct": 21.336463352911046,
-        "priceChangeAmt": 1.8200002670288082,
-        "historicalAttractiveness": 0.1,
+        "priceChangePct": 23.192131355106543,
+        "priceChangeAmt": 60.55001342773437,
+        "historicalAttractiveness": 2.1,
         "historicalRisk": 2.5,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
-        "symbol": "APA",
-        "name": "APA Corporation",
-        "currentPrice": 43.39,
-        "priceChangePct": 21.30276613005313,
-        "priceChangeAmt": 7.619999542236329,
-        "historicalAttractiveness": 1.5,
-        "historicalRisk": 2.1,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "ADBE",
-        "name": "Adobe Inc.",
-        "currentPrice": 275.3,
-        "priceChangePct": 21.192109333426842,
-        "priceChangeAmt": 48.139996337890636,
-        "historicalAttractiveness": 2,
-        "historicalRisk": 4.3,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "MRK",
-        "name": "Merck & Company, Inc.",
-        "currentPrice": 152.55,
-        "priceChangePct": 20.82211105572728,
-        "priceChangeAmt": 26.289997863769543,
-        "historicalAttractiveness": 3.5,
+        "symbol": "GRMN",
+        "name": "Garmin Ltd.",
+        "currentPrice": 294.85,
+        "priceChangePct": 22.593657949470202,
+        "priceChangeAmt": 54.340005493164085,
+        "historicalAttractiveness": 2.7,
         "historicalRisk": 5,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "FDS",
+        "name": "FactSet Research Systems Inc.",
+        "currentPrice": 299.91,
+        "priceChangePct": 22.307406626337908,
+        "priceChangeAmt": 54.69999328613284,
+        "historicalAttractiveness": 1.8,
+        "historicalRisk": 3.6,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "ROP",
+        "name": "Roper Technologies, Inc.",
+        "currentPrice": 411.79,
+        "priceChangePct": 22.298123147598556,
+        "priceChangeAmt": 75.0800085449219,
+        "historicalAttractiveness": 1.1,
+        "historicalRisk": 2.9,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "DHR",
+        "name": "Danaher Corporation",
+        "currentPrice": 218.85,
+        "priceChangePct": 22.16702062389657,
+        "priceChangeAmt": 39.71000061035156,
+        "historicalAttractiveness": 3.6,
+        "historicalRisk": 3.6,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "ALB",
         "name": "Albemarle Corporation",
         "currentPrice": 143.25,
-        "priceChangePct": 20.76378071414913,
-        "priceChangeAmt": 24.62999725341797,
-        "historicalAttractiveness": 3.4,
-        "historicalRisk": 1.7,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "priceChangePct": 21.966797549707344,
+        "priceChangeAmt": 25.800003051757812,
+        "historicalAttractiveness": 3.5,
+        "historicalRisk": 1.8,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "SMCI",
+        "name": "Super Micro Computer, Inc.",
+        "currentPrice": 37.24,
+        "priceChangePct": 21.85864087302145,
+        "priceChangeAmt": 6.680000534057619,
+        "historicalAttractiveness": 5.3,
+        "historicalRisk": 2.9,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "GEHC",
         "name": "GE HealthCare Technologies Inc.",
         "currentPrice": 74.82,
-        "priceChangePct": 20.59961137311021,
-        "priceChangeAmt": 12.77999908447265,
-        "historicalAttractiveness": 2.1,
+        "priceChangePct": 21.836834694525727,
+        "priceChangeAmt": 13.410000152587884,
+        "historicalAttractiveness": 1.7,
         "historicalRisk": 2.3,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "LH",
-        "name": "Labcorp Holdings Inc.",
-        "currentPrice": 336.34,
-        "priceChangePct": 20.379387024829875,
-        "priceChangeAmt": 56.9400061035156,
-        "historicalAttractiveness": 2.1,
-        "historicalRisk": 2.5,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "TMO",
-        "name": "Thermo Fisher Scientific Inc",
-        "currentPrice": 629.27,
-        "priceChangePct": 20.213573832935587,
-        "priceChangeAmt": 105.80997802734373,
-        "historicalAttractiveness": 2,
-        "historicalRisk": 3.8,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "ADSK",
-        "name": "Autodesk, Inc.",
-        "currentPrice": 253.825,
-        "priceChangePct": 20.2107541260157,
-        "priceChangeAmt": 42.675006103515614,
-        "historicalAttractiveness": 2.8,
-        "historicalRisk": 2.9,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "AMGN",
-        "name": "Amgen Inc.",
-        "currentPrice": 439.33,
-        "priceChangePct": 19.95686208894094,
-        "priceChangeAmt": 73.09000976562498,
-        "historicalAttractiveness": 3,
-        "historicalRisk": 3.6,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "HPQ",
-        "name": "HP Inc.",
-        "currentPrice": 29.71,
-        "priceChangePct": 19.75010334354917,
-        "priceChangeAmt": 4.900000534057618,
-        "historicalAttractiveness": 4.7,
-        "historicalRisk": 2.3,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "A",
-        "name": "Agilent Technologies, Inc.",
-        "currentPrice": 159,
-        "priceChangePct": 19.67484515246328,
-        "priceChangeAmt": 26.139999389648438,
-        "historicalAttractiveness": 4,
-        "historicalRisk": 3.5,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "TGT",
-        "name": "Target Corporation",
-        "currentPrice": 165.44,
-        "priceChangePct": 19.468518994978197,
-        "priceChangeAmt": 26.960004272460935,
-        "historicalAttractiveness": 2.1,
-        "historicalRisk": 3.8,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "FOXA",
         "name": "Fox Corporation",
         "currentPrice": 68.54,
-        "priceChangePct": 19.055064032182088,
-        "priceChangeAmt": 10.970000305175788,
-        "historicalAttractiveness": 4.1,
+        "priceChangePct": 21.417181707104383,
+        "priceChangeAmt": 12.089999237060553,
+        "historicalAttractiveness": 3.9,
         "historicalRisk": 2.5,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "DASH",
-        "name": "DoorDash, Inc.",
-        "currentPrice": 223.49,
-        "priceChangePct": 18.85237607933987,
-        "priceChangeAmt": 35.4500067138672,
-        "historicalAttractiveness": 3.8,
-        "historicalRisk": 4.2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "FOX",
-        "name": "Fox Corporation",
-        "currentPrice": 61.05,
-        "priceChangePct": 18.612781332990224,
-        "priceChangeAmt": 9.579998779296872,
-        "historicalAttractiveness": 3.2,
-        "historicalRisk": 2.5,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "BAX",
         "name": "Baxter International Inc.",
         "currentPrice": 26.34,
-        "priceChangePct": 18.595232263718053,
-        "priceChangeAmt": 4.130000915527344,
-        "historicalAttractiveness": 4.3,
+        "priceChangePct": 21.159154909435593,
+        "priceChangeAmt": 4.600000228881836,
+        "historicalAttractiveness": 4,
         "historicalRisk": 1.6,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "FOX",
+        "name": "Fox Corporation",
+        "currentPrice": 61.05,
+        "priceChangePct": 20.58068084546588,
+        "priceChangeAmt": 10.419998931884763,
+        "historicalAttractiveness": 3.1,
+        "historicalRisk": 2.5,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "TRMB",
+        "name": "Trimble Inc.",
+        "currentPrice": 60.25,
+        "priceChangePct": 20.259484700626963,
+        "priceChangeAmt": 10.150001525878906,
+        "historicalAttractiveness": 2.2,
+        "historicalRisk": 2.2,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "AMGN",
+        "name": "Amgen Inc.",
+        "currentPrice": 439.33,
+        "priceChangePct": 20.01912707301525,
+        "priceChangeAmt": 73.28001220703123,
+        "historicalAttractiveness": 2.9,
+        "historicalRisk": 3.6,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "RMD",
+        "name": "ResMed Inc.",
+        "currentPrice": 231.52,
+        "priceChangePct": 20.014512262162306,
+        "priceChangeAmt": 38.609996337890635,
+        "historicalAttractiveness": 1.6,
+        "historicalRisk": 3.8,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "TGT",
+        "name": "Target Corporation",
+        "currentPrice": 165.44,
+        "priceChangePct": 19.953597880232,
+        "priceChangeAmt": 27.520001831054685,
+        "historicalAttractiveness": 2,
+        "historicalRisk": 3.9,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "APA",
+        "name": "APA Corporation",
+        "currentPrice": 43.39,
+        "priceChangePct": 19.928136080730717,
+        "priceChangeAmt": 7.209999694824219,
+        "historicalAttractiveness": 1.4,
+        "historicalRisk": 2.1,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "MRK",
+        "name": "Merck & Company, Inc.",
+        "currentPrice": 152.55,
+        "priceChangePct": 19.67521655222476,
+        "priceChangeAmt": 25.079998779296886,
+        "historicalAttractiveness": 3.6,
+        "historicalRisk": 5.1,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "TMO",
+        "name": "Thermo Fisher Scientific Inc",
+        "currentPrice": 629.27,
+        "priceChangePct": 19.528544188808997,
+        "priceChangeAmt": 102.80997802734373,
+        "historicalAttractiveness": 2.5,
+        "historicalRisk": 3.9,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "LH",
+        "name": "Labcorp Holdings Inc.",
+        "currentPrice": 336.34,
+        "priceChangePct": 19.498333763603792,
+        "priceChangeAmt": 54.88000854492185,
+        "historicalAttractiveness": 2.3,
+        "historicalRisk": 2.5,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "WTW",
         "name": "Willis Towers Watson Public Lim",
         "currentPrice": 341.99,
-        "priceChangePct": 18.409386928688278,
-        "priceChangeAmt": 53.16999267578126,
+        "priceChangePct": 19.364066993596328,
+        "priceChangeAmt": 55.47999023437501,
         "historicalAttractiveness": 1.3,
-        "historicalRisk": 3.2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "historicalRisk": 3.1,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       }
     ],
     "down": [
@@ -512,501 +512,501 @@
         "symbol": "CHRW",
         "name": "C.H. Robinson Worldwide, Inc.",
         "currentPrice": 141.63,
-        "priceChangePct": -32.37035563062947,
-        "priceChangeAmt": -67.78999816894532,
+        "priceChangePct": -31.695203360980923,
+        "priceChangeAmt": -65.72000610351563,
         "historicalAttractiveness": 4.3,
-        "historicalRisk": 2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "historicalRisk": 2.1,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "APP",
         "name": "Applovin Corporation",
         "currentPrice": 305.77,
-        "priceChangePct": -28.67340076544171,
-        "priceChangeAmt": -122.92000244140627,
-        "historicalAttractiveness": 3.5,
+        "priceChangePct": -25.870347203289107,
+        "priceChangeAmt": -106.71001098632814,
+        "historicalAttractiveness": 3.7,
         "historicalRisk": 4.5,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "TTD",
-        "name": "The Trade Desk, Inc.",
-        "currentPrice": 13.18,
-        "priceChangePct": -27.78082191780822,
-        "priceChangeAmt": -5.07,
-        "historicalAttractiveness": 0.3,
-        "historicalRisk": 2.9,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "DVA",
         "name": "DaVita Inc.",
         "currentPrice": 173.82,
-        "priceChangePct": -26.7447737296743,
-        "priceChangeAmt": -63.45999877929688,
-        "historicalAttractiveness": 5.3,
-        "historicalRisk": 2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "priceChangePct": -25.103413207255027,
+        "priceChangeAmt": -58.260001831054694,
+        "historicalAttractiveness": 5.8,
+        "historicalRisk": 2.1,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "TTD",
+        "name": "The Trade Desk, Inc.",
+        "currentPrice": 13.18,
+        "priceChangePct": -25.028441085331288,
+        "priceChangeAmt": -4.399999923706055,
+        "historicalAttractiveness": 0.3,
+        "historicalRisk": 2.9,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "LII",
         "name": "Lennox International, Inc.",
         "currentPrice": 402.87,
-        "priceChangePct": -23.96957871828016,
-        "priceChangeAmt": -127.0100048828125,
-        "historicalAttractiveness": 2.4,
-        "historicalRisk": 2.6,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "ON",
-        "name": "ON Semiconductor Corporation",
-        "currentPrice": 74.21,
-        "priceChangePct": -18.504280705423263,
-        "priceChangeAmt": -16.849997558593756,
-        "historicalAttractiveness": 2.9,
-        "historicalRisk": 2.1,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "priceChangePct": -24.3834269592126,
+        "priceChangeAmt": -129.910029296875,
+        "historicalAttractiveness": 2.3,
+        "historicalRisk": 2.5,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "HONA",
         "name": "Honeywell Aerospace Inc.",
         "currentPrice": 164.73,
-        "priceChangePct": -17.69261491837494,
-        "priceChangeAmt": -35.40999938964845,
+        "priceChangePct": -20.71902927722337,
+        "priceChangeAmt": -43.049998779296885,
         "historicalAttractiveness": 2.1,
         "historicalRisk": 2.2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
-        "symbol": "RDDT",
-        "name": "Reddit, Inc.",
-        "currentPrice": 153.29,
-        "priceChangePct": -17.515065098639408,
-        "priceChangeAmt": -32.54999633789063,
-        "historicalAttractiveness": 6.3,
-        "historicalRisk": 5.1,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "NXPI",
-        "name": "NXP Semiconductors N.V.",
-        "currentPrice": 225.56,
-        "priceChangePct": -17.422659696093405,
-        "priceChangeAmt": -47.58999389648437,
-        "historicalAttractiveness": 7,
-        "historicalRisk": 3.4,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "LUV",
-        "name": "Southwest Airlines Company",
-        "currentPrice": 40.38,
-        "priceChangePct": -17.067157241919734,
-        "priceChangeAmt": -8.309998626708982,
-        "historicalAttractiveness": 5.1,
-        "historicalRisk": 2.3,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "APTV",
-        "name": "Aptiv PLC",
-        "currentPrice": 48.28,
-        "priceChangePct": -16.629252068358372,
-        "priceChangeAmt": -9.629999847412108,
-        "historicalAttractiveness": 0.5,
-        "historicalRisk": 3,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "WDC",
-        "name": "Western Digital Corporation",
-        "currentPrice": 459.44,
-        "priceChangePct": -16.22021048385822,
-        "priceChangeAmt": -88.9500146484375,
-        "historicalAttractiveness": 9.7,
+        "symbol": "ON",
+        "name": "ON Semiconductor Corporation",
+        "currentPrice": 74.21,
+        "priceChangePct": -19.62525882346526,
+        "priceChangeAmt": -18.120001831054694,
+        "historicalAttractiveness": 2.5,
         "historicalRisk": 2.1,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "VST",
-        "name": "Vistra Corp.",
-        "currentPrice": 136.21,
-        "priceChangePct": -16.090680426554254,
-        "priceChangeAmt": -26.12000183105468,
-        "historicalAttractiveness": 1.6,
-        "historicalRisk": 2.2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "CVS",
-        "name": "CVS Health Corporation",
-        "currentPrice": 93.02,
-        "priceChangePct": -15.89511638034478,
-        "priceChangeAmt": -17.579998474121098,
-        "historicalAttractiveness": 6.6,
-        "historicalRisk": 1.8,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "ROL",
-        "name": "Rollins, Inc.",
-        "currentPrice": 36.91,
-        "priceChangePct": -15.8458744040949,
-        "priceChangeAmt": -6.950000610351566,
-        "historicalAttractiveness": 2.7,
-        "historicalRisk": 2.4,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "KLAC",
-        "name": "KLA Corporation",
-        "currentPrice": 183.99,
-        "priceChangePct": -15.430225195490083,
-        "priceChangeAmt": -33.56999755859374,
-        "historicalAttractiveness": 7.1,
-        "historicalRisk": 3.5,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "META",
-        "name": "Meta Platforms, Inc.",
-        "currentPrice": 549.9,
-        "priceChangePct": -14.586601313230918,
-        "priceChangeAmt": -93.90999755859377,
-        "historicalAttractiveness": 3.7,
-        "historicalRisk": 6.2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "INTC",
-        "name": "Intel Corporation",
-        "currentPrice": 90.07,
-        "priceChangePct": -14.58510895528155,
-        "priceChangeAmt": -15.379996948242194,
-        "historicalAttractiveness": 8.9,
-        "historicalRisk": 0.2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "NRG",
         "name": "NRG Energy, Inc.",
         "currentPrice": 113.11,
-        "priceChangePct": -14.050155961977326,
-        "priceChangeAmt": -18.490006103515626,
-        "historicalAttractiveness": 1.6,
+        "priceChangePct": -19.19559690503175,
+        "priceChangeAmt": -26.869995727539063,
+        "historicalAttractiveness": 1.7,
+        "historicalRisk": 2.2,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "NXPI",
+        "name": "NXP Semiconductors N.V.",
+        "currentPrice": 225.56,
+        "priceChangePct": -19.096122713069732,
+        "priceChangeAmt": -53.23998779296875,
+        "historicalAttractiveness": 7.1,
+        "historicalRisk": 3.4,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "VST",
+        "name": "Vistra Corp.",
+        "currentPrice": 136.21,
+        "priceChangePct": -18.30994631604214,
+        "priceChangeAmt": -30.530005493164055,
+        "historicalAttractiveness": 1.8,
+        "historicalRisk": 2.2,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "WDC",
+        "name": "Western Digital Corporation",
+        "currentPrice": 459.44,
+        "priceChangePct": -17.466359943077563,
+        "priceChangeAmt": -97.22998291015625,
+        "historicalAttractiveness": 9.5,
         "historicalRisk": 2.1,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
-        "symbol": "VRT",
-        "name": "Vertiv Holdings, LLC",
-        "currentPrice": 261.95,
-        "priceChangePct": -13.973727422003288,
-        "priceChangeAmt": -42.55000000000001,
-        "historicalAttractiveness": 3.2,
-        "historicalRisk": 1.6,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "symbol": "APTV",
+        "name": "Aptiv PLC",
+        "currentPrice": 48.28,
+        "priceChangePct": -17.073172470440355,
+        "priceChangeAmt": -9.940001220703124,
+        "historicalAttractiveness": 0.4,
+        "historicalRisk": 3,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
-        "symbol": "FLEX",
-        "name": "Flex Ltd.",
-        "currentPrice": 110.45,
-        "priceChangePct": -13.297746660500383,
-        "priceChangeAmt": -16.939999389648435,
-        "historicalAttractiveness": 7.2,
-        "historicalRisk": 1.3,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "symbol": "LUV",
+        "name": "Southwest Airlines Company",
+        "currentPrice": 40.38,
+        "priceChangePct": -15.27486334603378,
+        "priceChangeAmt": -7.279999847412107,
+        "historicalAttractiveness": 5.4,
+        "historicalRisk": 2.3,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "ROL",
+        "name": "Rollins, Inc.",
+        "currentPrice": 36.91,
+        "priceChangePct": -15.090869649156685,
+        "priceChangeAmt": -6.560001220703128,
+        "historicalAttractiveness": 2.9,
+        "historicalRisk": 2.4,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "AMD",
         "name": "Advanced Micro Devices, Inc.",
         "currentPrice": 473.25,
-        "priceChangePct": -13.074223248786062,
-        "priceChangeAmt": -71.17999267578125,
-        "historicalAttractiveness": 8.6,
+        "priceChangePct": -14.31753021617515,
+        "priceChangeAmt": -79.08001708984375,
+        "historicalAttractiveness": 8.5,
         "historicalRisk": 2.1,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
-        "symbol": "AMAT",
-        "name": "Applied Materials, Inc.",
-        "currentPrice": 492.32,
-        "priceChangePct": -12.794259030159944,
-        "priceChangeAmt": -72.22998779296876,
-        "historicalAttractiveness": 7.6,
-        "historicalRisk": 3.3,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "UPS",
-        "name": "United Parcel Service, Inc.",
-        "currentPrice": 102.01,
-        "priceChangePct": -12.317342950803843,
-        "priceChangeAmt": -14.32999633789062,
-        "historicalAttractiveness": 3.3,
-        "historicalRisk": 4.1,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "ODFL",
-        "name": "Old Dominion Freight Line, Inc.",
-        "currentPrice": 206.47,
-        "priceChangePct": -12.061839982941663,
-        "priceChangeAmt": -28.319993286132814,
-        "historicalAttractiveness": 2.5,
-        "historicalRisk": 4.7,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "AKAM",
-        "name": "Akamai Technologies, Inc.",
-        "currentPrice": 110.42,
-        "priceChangePct": -11.600354845321984,
-        "priceChangeAmt": -14.490003662109373,
-        "historicalAttractiveness": 5.8,
-        "historicalRisk": 2.3,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "NCLH",
-        "name": "Norwegian Cruise Line Holdings ",
-        "currentPrice": 17.24,
-        "priceChangePct": -11.362471343191146,
-        "priceChangeAmt": -2.2100007629394547,
-        "historicalAttractiveness": 0.6,
-        "historicalRisk": 3.1,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "GEV",
-        "name": "GE Vernova Inc.",
-        "currentPrice": 956.85,
-        "priceChangePct": -11.305053899175476,
-        "priceChangeAmt": -121.96005859374998,
-        "historicalAttractiveness": 5.5,
-        "historicalRisk": 2.2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "DECK",
-        "name": "Deckers Outdoor Corporation",
-        "currentPrice": 91.68,
-        "priceChangePct": -11.257378601715311,
-        "priceChangeAmt": -11.629997558593743,
-        "historicalAttractiveness": 0.9,
-        "historicalRisk": 4.8,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "CMI",
-        "name": "Cummins Inc.",
-        "currentPrice": 587.68,
-        "priceChangePct": -11.018246780533042,
-        "priceChangeAmt": -72.7700122070313,
-        "historicalAttractiveness": 2.9,
+        "symbol": "KLAC",
+        "name": "KLA Corporation",
+        "currentPrice": 183.99,
+        "priceChangePct": -14.299688896684867,
+        "priceChangeAmt": -30.70000244140624,
+        "historicalAttractiveness": 6.5,
         "historicalRisk": 3.4,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
-        "symbol": "UNH",
-        "name": "UnitedHealth Group Incorporated",
-        "currentPrice": 390.11,
-        "priceChangePct": -10.596999073387444,
-        "priceChangeAmt": -46.24000610351561,
-        "historicalAttractiveness": 5.4,
-        "historicalRisk": 4.2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "symbol": "CVS",
+        "name": "CVS Health Corporation",
+        "currentPrice": 93.02,
+        "priceChangePct": -13.934124330045572,
+        "priceChangeAmt": -15.060001831054691,
+        "historicalAttractiveness": 6.7,
+        "historicalRisk": 1.8,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "FLEX",
+        "name": "Flex Ltd.",
+        "currentPrice": 110.45,
+        "priceChangePct": -13.031496062992124,
+        "priceChangeAmt": -16.549999999999997,
+        "historicalAttractiveness": 6.9,
+        "historicalRisk": 1.2,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "VRT",
+        "name": "Vertiv Holdings, LLC",
+        "currentPrice": 261.95,
+        "priceChangePct": -13.01965838269201,
+        "priceChangeAmt": -39.210003662109386,
+        "historicalAttractiveness": 3.1,
+        "historicalRisk": 1.6,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "NI",
         "name": "NiSource Inc",
         "currentPrice": 40.62,
-        "priceChangePct": -10.469471112432851,
-        "priceChangeAmt": -4.749998931884768,
-        "historicalAttractiveness": 2.3,
+        "priceChangePct": -12.776464964171996,
+        "priceChangeAmt": -5.949999694824221,
+        "historicalAttractiveness": 2.2,
         "historicalRisk": 3.2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
-        "symbol": "PODD",
-        "name": "Insulet Corporation",
-        "currentPrice": 148.16,
-        "priceChangePct": -9.504031947646661,
-        "priceChangeAmt": -15.560001220703128,
-        "historicalAttractiveness": 3.4,
-        "historicalRisk": 3,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "symbol": "META",
+        "name": "Meta Platforms, Inc.",
+        "currentPrice": 549.9,
+        "priceChangePct": -12.320421100450753,
+        "priceChangeAmt": -77.26998291015627,
+        "historicalAttractiveness": 3.5,
+        "historicalRisk": 6.1,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
-        "symbol": "CARR",
-        "name": "Carrier Global Corporation",
-        "currentPrice": 60.37,
-        "priceChangePct": -9.476686474796576,
-        "priceChangeAmt": -6.320002441406253,
-        "historicalAttractiveness": 2.8,
-        "historicalRisk": 2.8,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "symbol": "INTC",
+        "name": "Intel Corporation",
+        "currentPrice": 90.07,
+        "priceChangePct": -12.2295872253814,
+        "priceChangeAmt": -12.550002746582038,
+        "historicalAttractiveness": 8.6,
+        "historicalRisk": 0.2,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
-        "symbol": "MO",
-        "name": "Altria Group, Inc.",
-        "currentPrice": 66.09,
-        "priceChangePct": -9.453347123872872,
-        "priceChangeAmt": -6.899997863769528,
-        "historicalAttractiveness": 3.2,
+        "symbol": "UPS",
+        "name": "United Parcel Service, Inc.",
+        "currentPrice": 102.01,
+        "priceChangePct": -11.938878431548176,
+        "priceChangeAmt": -13.82999633789062,
+        "historicalAttractiveness": 3.3,
         "historicalRisk": 4,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "TJX",
-        "name": "TJX Companies, Inc. (The)",
-        "currentPrice": 140.53,
-        "priceChangePct": -9.364722841644083,
-        "priceChangeAmt": -14.520003051757811,
-        "historicalAttractiveness": 2.1,
-        "historicalRisk": 4.2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "TXN",
-        "name": "Texas Instruments Incorporated",
-        "currentPrice": 264.36,
-        "priceChangePct": -9.24819393130747,
-        "priceChangeAmt": -26.939987792968736,
-        "historicalAttractiveness": 7.8,
-        "historicalRisk": 4.8,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "CNP",
-        "name": "CenterPoint Energy, Inc (Holdin",
-        "currentPrice": 38.77,
-        "priceChangePct": -9.246257274891786,
-        "priceChangeAmt": -3.950001220703122,
-        "historicalAttractiveness": 2.9,
-        "historicalRisk": 3.2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "MCHP",
-        "name": "Microchip Technology Incorporat",
-        "currentPrice": 76.08,
-        "priceChangePct": -8.755094139942207,
-        "priceChangeAmt": -7.2999972534179705,
-        "historicalAttractiveness": 4.9,
-        "historicalRisk": 3.5,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "COHR",
-        "name": "Coherent Corp.",
-        "currentPrice": 289.52,
-        "priceChangePct": -8.732110558637537,
-        "priceChangeAmt": -27.700001220703143,
-        "historicalAttractiveness": 3.4,
-        "historicalRisk": 0.7,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "FDXF",
-        "name": "FedEx Freight Holding Company, ",
-        "currentPrice": 137.32,
-        "priceChangePct": -8.68466847902409,
-        "priceChangeAmt": -13.060004882812507,
-        "historicalAttractiveness": 0,
-        "historicalRisk": 1.6,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "SRE",
-        "name": "DBA Sempra",
-        "currentPrice": 82.89,
-        "priceChangePct": -8.499830719906967,
-        "priceChangeAmt": -7.699996337890624,
-        "historicalAttractiveness": 0.5,
-        "historicalRisk": 3.3,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "TPR",
-        "name": "Tapestry, Inc.",
-        "currentPrice": 130.17,
-        "priceChangePct": -8.434161053208488,
-        "priceChangeAmt": -11.990003662109388,
-        "historicalAttractiveness": 3.1,
-        "historicalRisk": 2.3,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
-      },
-      {
-        "symbol": "ALGN",
-        "name": "Align Technology, Inc.",
-        "currentPrice": 162.55,
-        "priceChangePct": -8.422535211267599,
-        "priceChangeAmt": -14.949999999999989,
-        "historicalAttractiveness": 1,
-        "historicalRisk": 4.4,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "TPL",
         "name": "Texas Pacific Land Corporation",
         "currentPrice": 383.64,
-        "priceChangePct": -8.419470376400461,
-        "priceChangeAmt": -35.27000366210939,
+        "priceChangePct": -11.419996630453557,
+        "priceChangeAmt": -49.46000610351564,
+        "historicalAttractiveness": 3.4,
+        "historicalRisk": 5.8,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "CARR",
+        "name": "Carrier Global Corporation",
+        "currentPrice": 60.37,
+        "priceChangePct": -11.350952492397777,
+        "priceChangeAmt": -7.729998474121096,
+        "historicalAttractiveness": 3.5,
+        "historicalRisk": 2.8,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "ODFL",
+        "name": "Old Dominion Freight Line, Inc.",
+        "currentPrice": 206.47,
+        "priceChangePct": -11.310138619673443,
+        "priceChangeAmt": -26.330003051757814,
+        "historicalAttractiveness": 2.8,
+        "historicalRisk": 4.8,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "CNP",
+        "name": "CenterPoint Energy, Inc (Holdin",
+        "currentPrice": 38.77,
+        "priceChangePct": -11.240843110969431,
+        "priceChangeAmt": -4.910000305175778,
         "historicalAttractiveness": 3.2,
-        "historicalRisk": 5.9,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "historicalRisk": 3.2,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "AKAM",
+        "name": "Akamai Technologies, Inc.",
+        "currentPrice": 110.42,
+        "priceChangePct": -11.166534763461152,
+        "priceChangeAmt": -13.88000305175781,
+        "historicalAttractiveness": 5.9,
+        "historicalRisk": 2.3,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "AMAT",
+        "name": "Applied Materials, Inc.",
+        "currentPrice": 492.32,
+        "priceChangePct": -11.120736714809501,
+        "priceChangeAmt": -61.59998291015626,
+        "historicalAttractiveness": 7.2,
+        "historicalRisk": 3.3,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "CMI",
+        "name": "Cummins Inc.",
+        "currentPrice": 587.68,
+        "priceChangePct": -11.058645478622784,
+        "priceChangeAmt": -73.07000000000005,
+        "historicalAttractiveness": 2.1,
+        "historicalRisk": 3.5,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "EIX",
         "name": "Edison International",
         "currentPrice": 71.59,
-        "priceChangePct": -8.417549345113523,
-        "priceChangeAmt": -6.579998168945309,
-        "historicalAttractiveness": 2.7,
+        "priceChangePct": -10.935553065155387,
+        "priceChangeAmt": -8.789997253417965,
+        "historicalAttractiveness": 3.5,
         "historicalRisk": 2.8,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
-        "symbol": "ECHO",
-        "name": "EchoStar Corporation",
-        "currentPrice": 86.81,
-        "priceChangePct": -8.389617936902589,
-        "priceChangeAmt": -7.9500021362304665,
+        "symbol": "SRE",
+        "name": "DBA Sempra",
+        "currentPrice": 82.89,
+        "priceChangePct": -10.918863749103206,
+        "priceChangeAmt": -10.160003051757812,
         "historicalAttractiveness": 0.6,
-        "historicalRisk": 0,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "historicalRisk": 3.3,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "NCLH",
+        "name": "Norwegian Cruise Line Holdings ",
+        "currentPrice": 17.24,
+        "priceChangePct": -10.812208649535007,
+        "priceChangeAmt": -2.0899999237060563,
+        "historicalAttractiveness": 0.7,
+        "historicalRisk": 3.1,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "DECK",
+        "name": "Deckers Outdoor Corporation",
+        "currentPrice": 91.68,
+        "priceChangePct": -10.529912259358007,
+        "priceChangeAmt": -10.790001220703118,
+        "historicalAttractiveness": 0.9,
+        "historicalRisk": 4.7,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "MCHP",
+        "name": "Microchip Technology Incorporat",
+        "currentPrice": 76.08,
+        "priceChangePct": -10.51516936727083,
+        "priceChangeAmt": -8.939996643066408,
+        "historicalAttractiveness": 4.9,
+        "historicalRisk": 3.5,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "TXN",
+        "name": "Texas Instruments Incorporated",
+        "currentPrice": 264.36,
+        "priceChangePct": -10.139706378141614,
+        "priceChangeAmt": -29.830002441406236,
+        "historicalAttractiveness": 8,
+        "historicalRisk": 4.8,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "RDDT",
+        "name": "Reddit, Inc.",
+        "currentPrice": 153.29,
+        "priceChangePct": -10.03052259246443,
+        "priceChangeAmt": -17.090004882812508,
+        "historicalAttractiveness": 4.2,
+        "historicalRisk": 5.1,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "TJX",
+        "name": "TJX Companies, Inc. (The)",
+        "currentPrice": 140.53,
+        "priceChangePct": -9.574675575236009,
+        "priceChangeAmt": -14.880003662109374,
+        "historicalAttractiveness": 1.9,
+        "historicalRisk": 4.2,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "UNH",
+        "name": "UnitedHealth Group Incorporated",
+        "currentPrice": 390.11,
+        "priceChangePct": -9.552293661590047,
+        "priceChangeAmt": -41.199997558593736,
+        "historicalAttractiveness": 4.8,
+        "historicalRisk": 4.2,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
         "symbol": "TXT",
         "name": "Textron Inc.",
         "currentPrice": 82.95,
-        "priceChangePct": -8.372913820286417,
-        "priceChangeAmt": -7.579998779296872,
-        "historicalAttractiveness": 1.3,
+        "priceChangePct": -9.5518473142759,
+        "priceChangeAmt": -8.759999084472653,
+        "historicalAttractiveness": 1.7,
         "historicalRisk": 2.4,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
-        "symbol": "KIM",
-        "name": "Kimco Realty Corporation (HC)",
-        "currentPrice": 24.02,
-        "priceChangePct": -7.969350004096051,
-        "priceChangeAmt": -2.080000381469727,
-        "historicalAttractiveness": 3,
+        "symbol": "TPR",
+        "name": "Tapestry, Inc.",
+        "currentPrice": 130.17,
+        "priceChangePct": -9.434353392206317,
+        "priceChangeAmt": -13.559995727539075,
+        "historicalAttractiveness": 3.1,
+        "historicalRisk": 2.3,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "AEP",
+        "name": "American Electric Power Company",
+        "currentPrice": 120.94,
+        "priceChangePct": -9.115508120973171,
+        "priceChangeAmt": -12.130007324218752,
+        "historicalAttractiveness": 1.9,
+        "historicalRisk": 3.9,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "DTE",
+        "name": "DTE Energy Company",
+        "currentPrice": 135.22,
+        "priceChangePct": -8.973411496405943,
+        "priceChangeAmt": -13.330003051757814,
+        "historicalAttractiveness": 2.9,
+        "historicalRisk": 3,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "ETR",
+        "name": "Entergy Corporation",
+        "currentPrice": 104.62,
+        "priceChangePct": -8.93105631852085,
+        "priceChangeAmt": -10.259997253417964,
+        "historicalAttractiveness": 3.1,
+        "historicalRisk": 3.2,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "PEG",
+        "name": "Public Service Enterprise Group",
+        "currentPrice": 72.61,
+        "priceChangePct": -8.758484130035251,
+        "priceChangeAmt": -6.970001831054688,
+        "historicalAttractiveness": 1.1,
+        "historicalRisk": 3.2,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "BG",
+        "name": "Bunge Limited",
+        "currentPrice": 113.11,
+        "priceChangePct": -8.693895295611023,
+        "priceChangeAmt": -10.76999725341797,
+        "historicalAttractiveness": 3.4,
+        "historicalRisk": 2.9,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "QCOM",
+        "name": "QUALCOMM Incorporated",
+        "currentPrice": 160.75,
+        "priceChangePct": -8.47235920350913,
+        "priceChangeAmt": -14.8800048828125,
+        "historicalAttractiveness": 4.9,
         "historicalRisk": 4.2,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       },
       {
-        "symbol": "EBAY",
-        "name": "eBay Inc.",
-        "currentPrice": 104.13,
-        "priceChangePct": -7.890316506823942,
-        "priceChangeAmt": -8.920003051757817,
-        "historicalAttractiveness": 3.6,
-        "historicalRisk": 3.3,
-        "asOfDate": "2026-07-21T13:30:00.000Z"
+        "symbol": "MO",
+        "name": "Altria Group, Inc.",
+        "currentPrice": 66.09,
+        "priceChangePct": -8.42455081502486,
+        "priceChangeAmt": -6.079998168945309,
+        "historicalAttractiveness": 2.8,
+        "historicalRisk": 4,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "PNW",
+        "name": "Pinnacle West Capital Corporati",
+        "currentPrice": 97.36,
+        "priceChangePct": -8.410162554186284,
+        "priceChangeAmt": -8.940003051757813,
+        "historicalAttractiveness": 2.9,
+        "historicalRisk": 3.2,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
+      },
+      {
+        "symbol": "LNT",
+        "name": "Alliant Energy Corporation",
+        "currentPrice": 67.86,
+        "priceChangePct": -8.322070957082953,
+        "priceChangeAmt": -6.159996643066407,
+        "historicalAttractiveness": 2.7,
+        "historicalRisk": 3.4,
+        "asOfDate": "2026-07-22T13:30:00.000Z"
       }
     ]
   },
