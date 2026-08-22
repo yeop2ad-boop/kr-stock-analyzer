@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-21T23:43:06.671Z",
+  "updatedAt": "2026-08-22T23:01:49.596Z",
   "prices": {
     "CHWY": {
       "price": 24.02,
@@ -506,10 +506,10 @@
       "oneYearChangeAmt": -38.730003356933594
     },
     "RYCEY": {
-      "price": 20.52,
+      "price": 20.54,
       "currency": "USD",
-      "oneYearReturn": 44.101129126299035,
-      "oneYearChangeAmt": 6.280000686645508
+      "oneYearReturn": 44.24158178139132,
+      "oneYearChangeAmt": 6.30000114440918
     },
     "HOG": {
       "price": 28.2,
@@ -530,10 +530,10 @@
       "oneYearChangeAmt": -34.47998046875
     },
     "ADDYY": {
-      "price": 90.22,
+      "price": 90.16,
       "currency": "USD",
-      "oneYearReturn": -10.380448135803983,
-      "oneYearChangeAmt": -10.449996948242188
+      "oneYearReturn": -10.440046387204625,
+      "oneYearChangeAmt": -10.509994506835938
     },
     "SONY": {
       "price": 23.92,
@@ -608,10 +608,10 @@
       "oneYearChangeAmt": -10.239997863769531
     },
     "BURBY": {
-      "price": 14.62,
+      "price": 14.6,
       "currency": "USD",
-      "oneYearReturn": -11.874624767387397,
-      "oneYearChangeAmt": -1.9700002670288086
+      "oneYearReturn": -11.99517632799866,
+      "oneYearChangeAmt": -1.989999771118164
     },
     "CL": {
       "price": 91.08,
@@ -740,10 +740,10 @@
       "oneYearChangeAmt": -3.8500003814697266
     },
     "RBGLY": {
-      "price": 14.16,
+      "price": 14.17,
       "currency": "USD",
-      "oneYearReturn": -10.66158211854487,
-      "oneYearChangeAmt": -1.6898441314697266
+      "oneYearReturn": -10.598488570777711,
+      "oneYearChangeAmt": -1.6798439025878906
     },
     "ENR": {
       "price": 21.47,
