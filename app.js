@@ -3053,6 +3053,7 @@ const RANKING_ENTRIES = [
   { icon: "thumbsup", label: "인기종목", tab: "trend", run: () => runTrendVolume() },
   { icon: "trending-up", label: "상승률", tab: "trend", run: () => runMovers("surge") },
   { icon: "trending-down", label: "하락률", tab: "trend", run: () => runMovers("plunge") },
+  { icon: "coin", label: "배당률", tab: "trend", run: () => runTrendDividend() },
   { icon: "rocket", label: "상승 압력", tab: "trend", run: () => runTrendPressure() },
   { icon: "basket", label: "US ETF", tab: "trend", run: () => runTrendUsEtf() },
   { icon: "basket", label: "KR ETF", tab: "trend", run: () => runTrendKrEtf() },
