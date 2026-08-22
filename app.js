@@ -6023,11 +6023,21 @@ function dartMetricCellHtml(r, metric) {
     return r.headcountChange != null ? `<span class="${r.headcountChange >= 0 ? "delta-up" : "delta-down"}">${r.headcountChange >= 0 ? "+" : ""}${r.headcountChange.toLocaleString()}명</span>` : "N/A";
   return "N/A";
 }
-// 평균연봉은 지주회사(직원 수 십 명 안팎, 임원 위주)가 섞이면 1인당 평균이 비정상적으로 치솟아
-// 순위를 왜곡함(예: 직원 8명짜리 지주사가 직원 수천 명 회사보다 위에 뜸) — 최소 인원 기준으로 걸러냄
+// 평균연봉은 지주회사(임원 위주 소수 인원, 실제 사업·직원은 계열사 별도 법인 소속)가 섞이면
+// 1인당 평균이 비정상적으로 치솟아 순위를 왜곡함(예: 직원 8명짜리 오리온홀딩스가 직원 수천 명인
+// 오리온 본체보다 위에 뜸). 최소 인원(100명) 기준을 넘겨도 KB금융(144명)·신한지주(195명)처럼
+// 금융지주·순수지주는 여전히 왜곡되므로(계열 은행 직원은 별도 법인 소속) 상호에 "지주"/"홀딩스"가
+// 들어간 곳 + 상호에 안 드러나는 대표 순수지주(LG·KB금융)를 함께 제외한다. SK·삼성물산·두산처럼
+// 지주회사여도 사업을 직접 운영해 직원 수가 많은 곳은 왜곡이 없어 그대로 둔다.
 const DART_MIN_HEADCOUNT_FOR_SALARY = 100;
+const HOLDING_COMPANY_NAME_PATTERN = /지주|홀딩스/;
+const HOLDING_COMPANY_EXTRA_NAMES = new Set(["LG", "KB금융"]);
+function isPureHoldingCompany(corpName) {
+  if (!corpName) return false;
+  return HOLDING_COMPANY_EXTRA_NAMES.has(corpName) || HOLDING_COMPANY_NAME_PATTERN.test(corpName);
+}
 const DART_METRIC_FILTER = {
-  salary: (r) => r.avgSalary != null && r.headcount >= DART_MIN_HEADCOUNT_FOR_SALARY,
+  salary: (r) => r.avgSalary != null && r.headcount >= DART_MIN_HEADCOUNT_FOR_SALARY && !isPureHoldingCompany(r.corpName),
   tenure: (r) => r.avgTenureYears != null,
   buyback: (r) => r.buybackAmount > 0,
   headcount: (r) => r.headcountChange != null,
@@ -6068,7 +6078,7 @@ async function runInsightDart(metric) {
     const visible = ranked.slice(0, count);
     const rest = ranked.slice(count);
     results.innerHTML = `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 코스피200+코스닥150(약 350종목) 대상, DART 전자공시(사업보고서 임직원 현황·자기주식취득결정, ${escapeHtml(String(data.dataYear || ""))}년 사업연도 기준) 데이터입니다. 자사주 취득금액은 이사회 결정(계획) 금액 합계로 실제 집행 완료 금액과 다를 수 있습니다.${metric === "salary" ? ` 직원 수 ${DART_MIN_HEADCOUNT_FOR_SALARY}명 미만 법인(주로 지주회사 등 소수 임원 위주 법인)은 1인당 평균이 왜곡될 수 있어 순위에서 제외했습니다.` : ""} 투자 자문이 아닙니다.</p>
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 코스피200+코스닥150(약 350종목) 대상, DART 전자공시(사업보고서 임직원 현황·자기주식취득결정, ${escapeHtml(String(data.dataYear || ""))}년 사업연도 기준) 데이터입니다. 자사주 취득금액은 이사회 결정(계획) 금액 합계로 실제 집행 완료 금액과 다를 수 있습니다.${metric === "salary" ? ` 직원 수 ${DART_MIN_HEADCOUNT_FOR_SALARY}명 미만 법인과 지주회사(상호에 "지주"·"홀딩스" 포함 및 LG·KB금융)는 임원 위주 소수 인원이라 1인당 평균이 왜곡될 수 있어 순위에서 제외했습니다.` : ""} 투자 자문이 아닙니다.</p>
       <table class="top30-table">
         <thead><tr><th>순위</th><th>기업</th><th>${dartMetricHeaderLabel(metric)}</th></tr></thead>
         <tbody>${visible.map((r, i) => dartRankRowHtml(r, i, metric)).join("")}</tbody>
