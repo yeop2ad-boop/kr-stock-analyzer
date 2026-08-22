@@ -2125,7 +2125,7 @@ function searchResultRowHtml(symbol) {
           <span class="search-result-sub">${escapeHtml(symbol)} · 주식</span>
         </span>
       </button>
-      <button type="button" class="search-watch-btn${watchlisted ? " active" : ""}" data-watch-symbol="${escapeHtml(symbol)}" aria-label="관심종목 추가">
+      <button type="button" class="search-watch-btn${watchlisted ? " active" : ""} ${isKrTicker(symbol) ? "market-kr" : "market-us"}" data-watch-symbol="${escapeHtml(symbol)}" aria-label="관심종목 추가">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="${watchlisted ? "currentColor" : "none"}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7l2.85 6.02 6.65.68-4.98 4.5 1.46 6.53L12 17.9l-5.98 3.53 1.46-6.53-4.98-4.5 6.65-.68L12 2.7z" /></svg>
       </button>
     </div>`;
@@ -2548,6 +2548,8 @@ function toggleWatchlist(symbol) {
 const companyPanelWatchlistBtn = el("companyPanelWatchlistBtn");
 function updateCompanyPanelWatchlistBtn(symbol) {
   companyPanelWatchlistBtn.classList.toggle("active", isWatchlisted(symbol));
+  companyPanelWatchlistBtn.classList.toggle("market-kr", isKrTicker(symbol));
+  companyPanelWatchlistBtn.classList.toggle("market-us", !isKrTicker(symbol));
 }
 companyPanelWatchlistBtn.addEventListener("click", () => {
   const ticker = new URLSearchParams(location.search).get("ticker") || tickerInput.value;

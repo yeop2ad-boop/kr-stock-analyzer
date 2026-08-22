@@ -151,6 +151,8 @@ body {
 }
 .header-icon-btn svg { display: block; }
 #companyPanelWatchlistBtn.active { color: var(--warn); }
+#companyPanelWatchlistBtn.active.market-kr { color: #6b9bff; }
+#companyPanelWatchlistBtn.active.market-us { color: #f60303; }
 
 /* 이모지 대신 쓰는 주황(로고 색) 단색 라인 아이콘 — 탭바/서브탭/위저드 버튼 공용 */
 .btn-icon { display: inline-flex; align-items: center; vertical-align: -2px; }
@@ -357,6 +359,8 @@ body {
   position: relative;
 }
 .search-watch-btn.active { color: var(--warn); }
+.search-watch-btn.active.market-kr { color: #6b9bff; }
+.search-watch-btn.active.market-us { color: #f60303; }
 .search-watch-btn:not(.active)::after {
   content: "+";
   position: absolute;
