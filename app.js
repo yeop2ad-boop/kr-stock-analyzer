@@ -6054,7 +6054,7 @@ function dartRankRowHtml(r, i, metric) {
   return `
     <tr>
       <td>${i + 1}</td>
-      <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.corpName || r.symbol)}</b></span></td>
+      <td><span class="ticker-cell">${tickerLogoHtml(r.symbol, r.corpName ? r.corpName.slice(0, 2) : undefined)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.corpName || r.symbol)}</b></span></td>
       <td>${dartMetricCellHtml(r, metric)}</td>
     </tr>`;
 }
