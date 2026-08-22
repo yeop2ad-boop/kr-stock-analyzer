@@ -1,5 +1,53 @@
 [
   {
+    "id": "6edeef6bd28d",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "기술 전문가에서 조직의 리더로 성장하기",
+    "originalTitle": "Navigating the Pivot From Tech Expert to Organizational Leader",
+    "link": "https://spectrum.ieee.org/navigating-pivot-tech-expert-leader",
+    "summary": "기술 전문가에서 조직 리더로의 전환은 STEM 커리어에서 가장 도전적인 단계로, 순수 기술 역량에서 벗어나 시스템 사고와 적응적 리더십을 습득해야 한다. 성공적인 리더십으로의 전환을 위해서는 개인의 기술적 우수성을 넘어 조직의 전략적 목표와 비즈니스 현실을 이해하고, 신뢰를 바탕으로 팀의 역량을 강화하는 데 집중해야 한다. 조직 내에서 혁신적인 아이디어를 추진하는 기업가적 사고방식은 주어진 업무만 수행하는 것이 아니라 조직의 장기 전략적 목표에 부합하는 해결책을 능동적으로 제시하는 것을 의미한다. 리더십은 세대 간의 양방향 아이디어 교환으로, 신진 리더는 경험 많은 임원진에게서 배우면서도 현대적 리더십은 상위 리더들도 적응력 있는 학습자로 남아야 함을 요구한다.",
+    "image": "data/techinsight-images/6edeef6bd28d.webp",
+    "publishedAt": "2026-08-07T18:00:01.000Z",
+    "createdAt": "2026-08-22T22:52:31.957Z"
+  },
+  {
+    "id": "a3f1b10540e9",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "암석에 전기를 쏴서 깨끗한 수소를 만든다",
+    "originalTitle": "Zap Rocks. Add Water. Get Clean Hydrogen",
+    "link": "https://spectrum.ieee.org/stimulated-geologic-hydrogen",
+    "summary": "매사추세츠 스타트업 에덴 지오파워는 지하 암석에 고전압 전기 펄스를 보내 암석을 부수는 '전기저수지자극' 기술을 개발했다. 이 방식으로 암석 사이에 균열망을 만들어 지하에서 수소 생성을 촉진할 수 있다. 현재 수소는 대부분 메탄과 수증기의 반응으로 만들어지는데 이는 많은 에너지가 필요하고 온실가스를 배출한다. 재생에너지 전기분해로 깨끗한 수소를 만드는 방법도 있지만 비용이 매우 비싸다는 것이 문제다. 지표면에 매장된 천연 수소 개발을 시도하는 기업들이 증가하고 있으며, 에덴의 기술은 이러한 지질 수소 추출의 새로운 가능성을 제시한다.",
+    "image": "data/techinsight-images/a3f1b10540e9.webp",
+    "publishedAt": "2026-08-11T13:00:01.000Z",
+    "createdAt": "2026-08-22T22:52:05.168Z"
+  },
+  {
+    "id": "4db71fc4427e",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "우주 거울로 햇빛을 지구에 쏘려는 회사, 밤하늘 전체를 밝혀버릴 수 있다",
+    "originalTitle": "This company’s plans to deploy space mirrors could jeopardize the night sky for many",
+    "link": "https://www.technologyreview.com/2026/08/21/1142755/space-mirrors-night-sky/",
+    "summary": "우주에서 햇빛을 지구로 반사시키려는 스타트업 리플렉트 오비탈이 올해 테스트 위성을 발사할 계획인데, 천문학자들의 연구에 따르면 이 위성들이 의도한 범위를 훨씬 넘어 광범위한 지역의 밤하늘을 밝힐 것으로 예상된다. 연구팀의 계산에 따르면 단일 위성도 목표 지역에서 보름달보다 40배 밝을 것이며, 400개 위성을 함께 운영하면 10,000개의 보름달만큼 밝아질 것으로 추정된다. 회사 경영진은 안전장치와 산란 제어 기술이 있다고 주장하지만, 천문학자들은 구체적인 데이터 없이 이러한 주장만으로는 신뢰할 수 없다고 지적한다. 현재 국제적 규제 체계가 부재한 상황에서 이 프로젝트는 천문학, 항공 안전, 야생동물 보호 등 여러 측면에서 심각한 우려를 낳고 있다.",
+    "image": "data/techinsight-images/4db71fc4427e.webp",
+    "publishedAt": "2026-08-21T09:00:00.000Z",
+    "createdAt": "2026-08-22T22:52:03.118Z"
+  },
+  {
+    "id": "785c810c16ee",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "AI가 신약을 개발하면 누가 특허권을 가질까?",
+    "originalTitle": "When AI designs a drug, who gets the credit?",
+    "link": "https://www.technologyreview.com/2026/08/21/1142627/when-ai-designs-a-drug-who-gets-the-credit/",
+    "summary": "인실리코 메디신 같은 바이오 기업들이 AI를 이용해 신약 후보물질을 발견하고 있지만, 특허 출원 시에는 인간만 발명자로 인정되는 모순이 발생하고 있다. 미국 법원은 AI를 발명자로 인정할 수 없다는 판결을 내렸는데, 이는 발명자를 '개인'으로 정의한 특허법의 문제에서 비롯됐다. 현재 미국 특허청은 AI를 단순 도구로 취급하며 명시적 언급을 요구하지 않지만, AI가 주도적 역할을 할수록 누가 진정한 발명자인지 판단하기 어려워질 것으로 예상된다. 전문가들은 기술 발전 속도에 맞춰 지식재산권법이 진화해야 한다고 지적하고 있다.",
+    "image": "data/techinsight-images/785c810c16ee.webp",
+    "publishedAt": "2026-08-21T09:00:00.000Z",
+    "createdAt": "2026-08-22T22:52:01.247Z"
+  },
+  {
     "id": "2914c49ea9e9",
     "sourceKey": "ieee",
     "source": "IEEE Spectrum",
@@ -190,29 +238,5 @@
     "image": "data/techinsight-images/8c42db092e68.webp",
     "publishedAt": "2026-08-17T14:00:01.000Z",
     "createdAt": "2026-08-19T13:20:07.133Z"
-  },
-  {
-    "id": "fa8a799c2691",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "IEEE 회장상 장학금, 혁신적인 청소년 발명가들을 표창하다",
-    "originalTitle": "IEEE Presidents’ Scholarship Honors Teen Innovators",
-    "link": "https://spectrum.ieee.org/ieee-presidents-scholarship-2026",
-    "summary": "IEEE 회장상 장학금은 장애인을 돕기 위한 보조 기술과 로봇을 개발한 세 명의 고등학생을 수상했다. 1위 수상자 홀리 탕은 혀의 움직임으로 휠체어와 디지털 기기를 조종할 수 있는 '텅게이지'라는 비침습적 인터페이스를 개발해 1만 달러의 장학금을 받았다. 2위와 3위 수상자들은 각각 생각으로 조종하는 외골격 장치와 험지 주행 로봇을 만들었다. IEEE 재단이 제정한 이 장학금은 전기공학, 컴퓨터과학 등 IEEE 관련 분야에서 뛰어난 역량을 보인 고등학생들을 인정하기 위해 수여된다.",
-    "image": "data/techinsight-images/fa8a799c2691.webp",
-    "publishedAt": "2026-08-17T18:00:04.000Z",
-    "createdAt": "2026-08-19T12:49:51.901Z"
-  },
-  {
-    "id": "a03f1f355f00",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "AI의 자기개선 약속, 예상보다 더 먼 미래일 수 있다",
-    "originalTitle": "The Download: AI’s self-improvement problem, and what’s driving the heat",
-    "link": "https://www.technologyreview.com/2026/08/19/1140195/the-download-ai-recursive-self-improvement-problem-heatwave-causes/",
-    "summary": "AI 업계가 주장해온 자동 자기개선의 실현이 예상보다 훨씬 늦을 수 있다는 새로운 연구 결과가 발표되었다. 연구진은 현재 AI 에이전트들이 명확한 답이 없는 개방형 연구를 수행하지 못하고 있으며, 이것이 진정한 혁신적 진전을 위해 필수적인 요소임을 발견했다. AI 시스템이 더 좁은 범위의 작업 개선만으로도 재귀적 자기개선에 도달할 수 있을지, 아니면 개방형 연구 능력이 반드시 필요한지가 핵심 질문이 되고 있다. 한편 올여름 극심한 열파는 기후변화뿐 아니라 엘니뇨 현상이 복합적으로 작용한 결과이며, 2027년에는 더욱 심할 수 있다고 전문가들은 경고하고 있다. OpenAI가 안전 우려로 일부 모델 개발을 중단하는 등 AI 업계 내에서도 기술 개발과 안전성 사이의 균형을 재조정하는 움직임이 나타나고 있다.",
-    "image": "data/techinsight-images/a03f1f355f00.webp",
-    "publishedAt": "2026-08-19T12:10:00.000Z",
-    "createdAt": "2026-08-19T12:49:49.533Z"
   }
 ]
