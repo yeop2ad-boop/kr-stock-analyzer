@@ -13,7 +13,7 @@
   --pos: #dc2626; /* 양수/상승 = 빨강(한국식) */
   --neg: #1d4ed8; /* 음수/하락 = 파랑(한국식) */
   --radius: 12px;
-  --icon-accent: #c2410c; /* 틀고정 아이콘 색 — 해외(기본) 모드는 주황 */
+  --icon-accent: #f60303; /* 틀고정 아이콘 색 — 해외(기본) 모드는 로고 점(.) 색과 통일한 빨강 */
   --good-soft: #e3f5ea;
   --bad-soft: #fde8e8;
   --bad-soft-border: #f3b4b4;
@@ -44,7 +44,7 @@
   --warn: #c98a1a;
   --pos: #d64545;
   --neg: #3b7dd8;
-  --icon-accent: #e6983c;
+  --icon-accent: #f60303;
   --good-soft: #143327;
   --bad-soft: #3a1f20;
   --bad-soft-border: #5c2b2b;
@@ -114,7 +114,7 @@ body {
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 .market-mode-btn-kr.active { background: #6b9bff; border-color: #6b9bff; color: #14161c; }
-.market-mode-btn-us.active { background: #e6983c; border-color: #e6983c; color: #14161c; }
+.market-mode-btn-us.active { background: #f60303; border-color: #f60303; color: #ffffff; }
 
 .contact-btn {
   flex: none;
@@ -909,6 +909,38 @@ body {
 .smb-header-name { font-size: 13px; font-weight: 800; color: var(--text); }
 
 /* 배점 항목 하나 = 상승형 막대그래프 한 줄(라벨+점수 → 막대 → 설명) */
+.score-bar-graph { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+
+/* FOMO지수·VIX 구간 게이지 — 색상 구간 막대 위에 현재값 위치를 삼각형 포인터로 표시 */
+.macro-gauge { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+.macro-gauge-track {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  overflow: visible;
+}
+.macro-gauge-zone:first-child { border-radius: 5px 0 0 5px; }
+.macro-gauge-zone:last-child { border-radius: 0 5px 5px 0; }
+.macro-gauge-pointer {
+  position: absolute;
+  top: -7px;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid var(--text);
+  transform: translateX(-6px);
+}
+.macro-gauge-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--muted);
+}
 .smb-row { margin-bottom: 12px; }
 .smb-row-top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px; }
 .smb-label { font-size: 12.5px; font-weight: 700; color: var(--text); }

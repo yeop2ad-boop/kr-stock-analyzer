@@ -706,6 +706,32 @@ function fomoBgStyleAttr(score) {
   return scoreBgStyleAttr(-score * 100, -15, 15, "fear");
 }
 
+// FOMO지수·VIX처럼 "구간별 등급 + 현재값 위치"를 한눈에 보여주는 가로형 구간 게이지 그래프.
+// zones: [{to, label, color}]를 왼쪽(min)부터 순서대로 넘기면 각 구간 폭을 자동 계산해 채우고,
+// 현재값 위치에 포인터(▲)를 표시한다. value가 없으면 게이지 없이 빈 문자열을 반환.
+function macroGaugeHtml(value, min, max, zones) {
+  if (value === null || value === undefined || Number.isNaN(value)) return "";
+  const clamped = clamp(value, min, max);
+  const pointerPct = ((clamped - min) / (max - min)) * 100;
+  let prevBound = min;
+  const zoneHtml = zones
+    .map((z) => {
+      const widthPct = ((z.to - prevBound) / (max - min)) * 100;
+      prevBound = z.to;
+      return `<span class="macro-gauge-zone" style="width:${widthPct}%;background:${z.color};"></span>`;
+    })
+    .join("");
+  const labelHtml = zones.map((z) => `<span>${escapeHtml(z.label)}</span>`).join("");
+  return `
+    <div class="macro-gauge">
+      <div class="macro-gauge-track">
+        ${zoneHtml}
+        <div class="macro-gauge-pointer" style="left:${pointerPct}%;"></div>
+      </div>
+      <div class="macro-gauge-labels">${labelHtml}</div>
+    </div>`;
+}
+
 // ---------- 점수 색상 통일: 상승압력(파랑)·투자안정(초록)·공포지수(주황) 세 계열 — 텍스트/보더는 계열 고정색,
 // 배경만 값이 높을수록 흰색 계열, 낮을수록 검정 계열로 보간(값이 없으면 중립 회색) ----------
 const SCORE_COLOR_FAMILY = {
@@ -4859,6 +4885,7 @@ async function renderScore(selfMetricsPromise) {
   const { total, volumeScore, volumeRatio, growthScore, revenueGrowthYoY, momentumScore, momentum3m } = score;
   const isIPO = isRecentIPO(metrics.firstTradeDate);
 
+  const pressureColor = SCORE_COLOR_FAMILY.pressure;
   el("scoreSection").innerHTML = `
     <div class="score-wrap">
       <div class="score-badge">
@@ -4870,13 +4897,17 @@ async function renderScore(selfMetricsPromise) {
           <li>📊 총 거래대금(최근 5거래일 평균, 1년 평균 대비): <b>${volumeRatio !== null ? volumeRatio.toFixed(2) + "배" : "N/A"}</b> (2배 이상 만점, 1.5배 2점, 1배 1점, 0.5배 이하 0점)</li>
           <li>📈 매출 성장성(최근 분기 YoY): <b>${revenueGrowthYoY !== null && revenueGrowthYoY !== undefined ? fmtPct(revenueGrowthYoY) : "N/A"}</b> (가장 최근 분기 매출의 전년 동기 대비 성장률, 높을수록 가점, 30% 이상 만점·0% 이하 0점)</li>
           <li>🚀 상승 모멘텀(최근 3개월 수익률): <b>${momentum3m !== null && momentum3m !== undefined ? fmtPct(momentum3m) : "N/A"}</b> (높을수록 가점, 25% 이상 만점·0% 이하 0점)</li>
-          <li>세부 점수 — 총 거래대금 ${volumeScore.toFixed(1)}/3, 매출 성장성 ${growthScore.toFixed(1)}/3, 상승 모멘텀 ${momentumScore.toFixed(1)}/4</li>
         </ul>
         <p class="disclaimer">
           ⚠️ 이 점수는 거래대금, 매출 성장성, 상승 모멘텀을 조합한 <b>단순 참고용 정량 지표</b>이며,
           투자 자문이나 매수/매도 추천이 아닙니다. 실제 투자 판단은 재무제표 전체와 다른 정보를 종합해 본인 책임 하에 내려야 합니다.
         </p>
       </div>
+    </div>
+    <div class="score-bar-graph">
+      ${scoreMethodBarRow("①", "총 거래대금", volumeScore, 3, `${volumeRatio !== null ? volumeRatio.toFixed(2) + "배" : "N/A"}`, pressureColor)}
+      ${scoreMethodBarRow("②", "매출 성장성", growthScore, 3, `${revenueGrowthYoY !== null && revenueGrowthYoY !== undefined ? fmtPct(revenueGrowthYoY) : "N/A"}`, pressureColor)}
+      ${scoreMethodBarRow("③", "상승 모멘텀", momentumScore, 4, `${momentum3m !== null && momentum3m !== undefined ? fmtPct(momentum3m) : "N/A"}`, pressureColor)}
     </div>
   `;
 }
@@ -4981,6 +5012,14 @@ async function renderMacro(ticker) {
         ? `<p class="score-macro-vix-line">😱 FOMO지수(자체 개발, ${escapeHtml(fomo.date || "")} 기준)${fomoLineHtml(fomo.score, fomo.changeAbs)}</p>`
         : "";
     const fomoNumText = fomo.score === null || fomo.score === undefined ? "N/A" : `${fomoDisplayValue(fomo.score)}%p`;
+    const fomoPt = fomo.score === null || fomo.score === undefined ? null : fomo.score * 100;
+    const fomoZones = [
+      { to: -15, label: "패닉", color: "#1d4ed8" },
+      { to: -5, label: "공포", color: "#5b8def" },
+      { to: 5, label: "안심", color: "#22a866" },
+      { to: 15, label: "경계", color: "#e08a2c" },
+      { to: 30, label: "과열", color: "#dc2626" },
+    ];
     el("macroSection").innerHTML = `
       ${liveLine}
       <div class="score-wrap">
@@ -5000,6 +5039,7 @@ async function renderMacro(ticker) {
           </p>
         </div>
       </div>
+      ${macroGaugeHtml(fomoPt, -30, 30, fomoZones)}
     `;
     return;
   }
@@ -5011,6 +5051,12 @@ async function renderMacro(ticker) {
       ? `(${vixChangePct >= 0 ? "+" : ""}${vixChangePct.toFixed(2)}%)`
       : "";
   const vixLiveLine = vix !== null && vix !== undefined ? `<p class="score-macro-vix-line">😱 S&P500 VIX(FRED: VIXCLS)<br>VIX : ${vix.toFixed(1)}${vixPctStr}</p>` : "";
+  const vixZones = [
+    { to: 20, label: "안심", color: "#22a866" },
+    { to: 30, label: "경계", color: "#e08a2c" },
+    { to: 40, label: "공포", color: "#f97316" },
+    { to: 60, label: "패닉", color: "#dc2626" },
+  ];
 
   el("macroSection").innerHTML = `
     ${vixLiveLine}
@@ -5030,6 +5076,7 @@ async function renderMacro(ticker) {
         </p>
       </div>
     </div>
+    ${macroGaugeHtml(vix, 0, 60, vixZones)}
   `;
 }
 
