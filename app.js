@@ -9098,7 +9098,12 @@ function getMacroScoreChartData() {
   return macroScoreChartDataPromise;
 }
 
-function buildMacroScoreChartSvg({ pairs, points }, highlightThreshold = 35) {
+function buildMacroScoreChartSvg(
+  { pairs, points },
+  highlightThreshold = 35,
+  formatLabel = (v) => `${Math.round(v)}점`,
+  ariaLabel = "VIX지수를 활용한 투자시점 점검표"
+) {
   // 1년 간격 점(약 30개)을 가로 스크롤로 넉넉하게 볼 수 있도록 점 개수에 비례해 캔버스 폭을 넓힘(고정 min-width는 CSS에서 강제)
   const W = Math.max(780, points.length * 45),
     H = 420;
@@ -9145,11 +9150,14 @@ function buildMacroScoreChartSvg({ pairs, points }, highlightThreshold = 35) {
   points.forEach((p, i) => {
     const x = xFn(p.t);
     const y = yFn(p.price);
-    const isHigh = p.vix !== null && p.vix !== undefined && p.vix >= highlightThreshold;
+    const isHigh =
+      p.vix !== null &&
+      p.vix !== undefined &&
+      (typeof highlightThreshold === "function" ? highlightThreshold(p.vix) : p.vix >= highlightThreshold);
     const dotColor = isHigh ? "#e08a2c" : "#eceef2";
     const r = p.isNow ? 4.2 : 2.6;
     linesSvg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${dotColor}" stroke="#000" stroke-width="1" />`;
-    const vixTxt = p.vix !== null && p.vix !== undefined ? `${Math.round(p.vix)}점` : "N/A";
+    const vixTxt = p.vix !== null && p.vix !== undefined ? formatLabel(p.vix) : "N/A";
     const fontSize = p.isNow ? 10 : 8.5;
     const rowH = p.isNow ? 12 : 9;
     const above = p.isNow || i % 2 === 0;
@@ -9157,7 +9165,7 @@ function buildMacroScoreChartSvg({ pairs, points }, highlightThreshold = 35) {
     linesSvg += `<text x="${x.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-size="${fontSize}" font-weight="700" fill="${dotColor}">${vixTxt}</text>`;
   });
 
-  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="VIX지수를 활용한 투자시점 점검표">
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHtml(ariaLabel)}">
     <rect x="0" y="0" width="${W}" height="${H}" fill="#000" />
     ${gridSvg}
     ${axisSvg}
@@ -9185,10 +9193,19 @@ async function renderMacroScoreChart() {
   }
 }
 
-// ---------- 한국 종목용 과거분석 차트: 코스피(^KS11) 지수 + 자체 계산 변동성 점수 ----------
-// 미국 버전(30년, VIX 실측 시계열)과 달리 진짜 VKOSPI 과거 시계열이 없어서, 모든 포인트를
-// getKrVolMetrics()과 동일한 방식(직전 20거래일 실현변동성×KR_VOL_CALIBRATION)으로 그 시점 기준 자체 계산.
-// 매년 3월·9월(6개월 간격)로 규칙적으로만 찍고, 임의로 고른 특정월 포인트는 넣지 않음(사용자 지정).
+// ---------- 한국 종목용 과거분석 차트: 코스피(^KS11) 지수 + FOMO지수 과거 이력 ----------
+// scripts/scan-kr-fomo-history.js(수동/주기적 배치)가 미리 역산해둔 data/kr-fomo-history.json을 읽어와
+// 매년 3월·9월(6개월 간격) 포인트로 표시하고, 가장 최근("현재") 포인트만 실시간 FOMO API 값으로 채운다.
+let krFomoHistoryDataPromise = null;
+function getKrFomoHistoryData() {
+  if (!krFomoHistoryDataPromise) {
+    krFomoHistoryDataPromise = fetch("data/kr-fomo-history.json", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+  }
+  return krFomoHistoryDataPromise;
+}
+
 let krMacroScoreChartDataPromise = null;
 function getKrMacroScoreChartData() {
   if (!krMacroScoreChartDataPromise) {
@@ -9203,22 +9220,21 @@ function getKrMacroScoreChartData() {
 async function computeKrMacroScoreChartData() {
   const now = new Date();
   const nowSec = Math.floor(now.getTime() / 1000);
-  const startYear = 2011; // 조사된 특정월 데이터가 2011년부터라 그에 맞춤(Yahoo ^KS11 일봉도 2011년부터 안정적으로 확인됨)
+  const startYear = 2011; // scan-kr-fomo-history.js가 역산하는 시작연도와 동일
   const startSec = Math.floor(new Date(startYear, 0, 1).getTime() / 1000);
 
-  const [chartData, krVol] = await Promise.all([yahooChartRange("^KS11", startSec, nowSec, "1d"), getKrVolMetrics()]);
+  const [chartData, fomoHistory, liveFomo] = await Promise.all([
+    yahooChartRange("^KS11", startSec, nowSec, "1d"),
+    getKrFomoHistoryData(),
+    getKrFomoMetrics().catch(() => ({ score: null })),
+  ]);
   const pairs = chartClosePairs(chartData);
   if (pairs.length < 2) throw new Error("코스피 장기 데이터를 가져오지 못했습니다.");
+  if (!fomoHistory || !Array.isArray(fomoHistory.points)) throw new Error("FOMO지수 과거 이력 데이터가 아직 준비되지 않았습니다.");
 
-  // idx 시점까지의 종가로 직전 20거래일 실현변동성 계산(getKrVolMetrics의 라이브 계산과 동일 공식)
-  function scoreAtIndex(idx) {
-    if (idx < 20) return null;
-    const closes = pairs.slice(0, idx + 1).map((p) => p.c);
-    const raw = annualizedRealizedVolPct(closes, 20);
-    return raw === null ? null : raw * KR_VOL_CALIBRATION;
-  }
+  const scoreByLabel = new Map(fomoHistory.points.map((p) => [p.date, p.score]));
 
-  // 매년 3월 1일·9월 1일(6개월 간격)에 규칙적으로만 포인트를 찍음 — 임의 선택 없이 전부 동일한 계산식
+  // 매년 3월 1일·9월 1일(6개월 간격)에 규칙적으로만 포인트를 찍음 — scan-kr-fomo-history.js의 anchor와 동일
   const points = [];
   for (let anchor = new Date(startYear, 2, 1); anchor < now; anchor = addMonths(anchor, 6)) {
     const anchorSec = Math.floor(anchor.getTime() / 1000);
@@ -9226,16 +9242,19 @@ async function computeKrMacroScoreChartData() {
     if (idx < 0) continue;
     const pricePoint = pairs[idx];
     if (Math.abs(pricePoint.t - anchorSec) > 20 * 24 * 3600) continue;
-    const score = scoreAtIndex(idx);
-    if (score === null) continue;
-    points.push({ t: pricePoint.t, price: pricePoint.c, score, vix: score, isNow: false });
+    const label = `${anchor.getFullYear()}-${String(anchor.getMonth() + 1).padStart(2, "0")}`;
+    const rawScore = scoreByLabel.get(label);
+    if (rawScore === undefined || rawScore === null) continue;
+    const pt = rawScore * 100;
+    points.push({ t: pricePoint.t, price: pricePoint.c, score: pt, vix: pt, isNow: false });
   }
 
   const last = pairs[pairs.length - 1];
-  points.push({ t: last.t, price: last.c, score: krVol.vol, vix: krVol.vol, isNow: true });
+  const livePt = liveFomo.score === null || liveFomo.score === undefined ? null : liveFomo.score * 100;
+  points.push({ t: last.t, price: last.c, score: livePt, vix: livePt, isNow: true });
   points.sort((a, b) => a.t - b.t);
 
-  return { pairs, points };
+  return { pairs, points, generatedAt: fomoHistory.generatedAt };
 }
 
 async function renderKrMacroScoreChart() {
@@ -9245,11 +9264,16 @@ async function renderKrMacroScoreChart() {
   container.innerHTML = `<p class="muted" style="text-align:center;padding:20px 0;">코스피 장기 데이터를 불러오는 중...</p>`;
   try {
     const data = await getKrMacroScoreChartData();
-    container.innerHTML = buildMacroScoreChartSvg(data, 40);
+    container.innerHTML = buildMacroScoreChartSvg(
+      data,
+      (v) => v !== null && v <= -15,
+      (v) => `${v >= 0 ? "+" : ""}${Math.round(v)}%p`,
+      "FOMO지수를 활용한 투자시점 점검표"
+    );
     macroScoreChartRenderedMarket = "KR";
     caption.textContent =
-      "빨간 선: 코스피 지수(2011~현재, 일별 종가) · 점 라벨: 6개월 간격(매년 3월 1일·9월 1일 기준) 자체 계산 실현변동성 지수(공식 VKOSPI 아님) · " +
-      "주황 점: 40점 이상, 흰 점: 그 외(참고용, 투자 자문이 아닙니다)";
+      "빨간 선: 코스피 지수(2011~현재, 일별 종가) · 점 라벨: 6개월 간격(매년 3월 1일·9월 1일 기준) FOMO지수(자체 개발, 52주 신고가·신저가 근접 종목 비율 역산) · " +
+      "주황 점: -15%p 이하(패닉·역발상 투자 황금기), 흰 점: 그 외 · 과거 종목 유니버스는 현재 KODEX 200·코스닥150 편입종목 기준 근사치라 생존편향이 있을 수 있습니다(참고용, 투자 자문이 아닙니다)";
   } catch (err) {
     container.innerHTML = `<p class="error-inline" style="text-align:center;padding:20px 0;">❌ 코스피 장기 데이터를 불러오지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
   }

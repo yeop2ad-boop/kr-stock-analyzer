@@ -1,0 +1,36 @@
+name: 국내 FOMO지수 과거 이력 갱신
+
+on:
+  schedule:
+    # 매월 1일 21:00 UTC = 한국시간(KST) 오전 6시 — anchor(3월1일/9월1일)가 6개월 간격이라 자주 바뀌지 않지만,
+    # 종목 유니버스 갱신·계산 로직 변경 등을 반영해 매월 재계산해둠(과거 확정 구간은 사실상 값이 고정적)
+    - cron: "0 21 1 * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: FOMO지수 과거 이력 역산
+        run: node scripts/scan-kr-fomo-history.js
+
+      - name: 변경사항 커밋 및 푸시
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/kr-fomo-history.json
+          if git diff --cached --quiet; then
+            echo "변경된 데이터 없음"
+          else
+            git commit -m "국내 FOMO지수 과거 이력 자동 갱신 ($(date -u +%Y-%m-%d))"
+            git push
+          fi
