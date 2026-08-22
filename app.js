@@ -6016,7 +6016,7 @@ function dartMetricHeaderLabel(metric) {
   }[metric];
 }
 function dartMetricCellHtml(r, metric) {
-  if (metric === "salary") return r.avgSalary != null ? fmtCompactCurrency(r.avgSalary, "KRW") : "N/A";
+  if (metric === "salary") return r.avgSalary != null ? `${Math.round(r.avgSalary).toLocaleString()}원` : "N/A";
   if (metric === "tenure") return r.avgTenureYears != null ? `${r.avgTenureYears.toFixed(1)}년` : "N/A";
   if (metric === "buyback") return r.buybackAmount ? fmtCompactCurrency(r.buybackAmount, "KRW") : "N/A";
   if (metric === "headcount")
