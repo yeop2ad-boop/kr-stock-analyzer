@@ -6023,8 +6023,11 @@ function dartMetricCellHtml(r, metric) {
     return r.headcountChange != null ? `<span class="${r.headcountChange >= 0 ? "delta-up" : "delta-down"}">${r.headcountChange >= 0 ? "+" : ""}${r.headcountChange.toLocaleString()}명</span>` : "N/A";
   return "N/A";
 }
+// 평균연봉은 지주회사(직원 수 십 명 안팎, 임원 위주)가 섞이면 1인당 평균이 비정상적으로 치솟아
+// 순위를 왜곡함(예: 직원 8명짜리 지주사가 직원 수천 명 회사보다 위에 뜸) — 최소 인원 기준으로 걸러냄
+const DART_MIN_HEADCOUNT_FOR_SALARY = 100;
 const DART_METRIC_FILTER = {
-  salary: (r) => r.avgSalary != null,
+  salary: (r) => r.avgSalary != null && r.headcount >= DART_MIN_HEADCOUNT_FOR_SALARY,
   tenure: (r) => r.avgTenureYears != null,
   buyback: (r) => r.buybackAmount > 0,
   headcount: (r) => r.headcountChange != null,
@@ -6065,7 +6068,7 @@ async function runInsightDart(metric) {
     const visible = ranked.slice(0, count);
     const rest = ranked.slice(count);
     results.innerHTML = `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 코스피200+코스닥150(약 350종목) 대상, DART 전자공시(사업보고서 임직원 현황·자기주식취득결정, ${escapeHtml(String(data.dataYear || ""))}년 사업연도 기준) 데이터입니다. 자사주 취득금액은 이사회 결정(계획) 금액 합계로 실제 집행 완료 금액과 다를 수 있습니다. 투자 자문이 아닙니다.</p>
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 코스피200+코스닥150(약 350종목) 대상, DART 전자공시(사업보고서 임직원 현황·자기주식취득결정, ${escapeHtml(String(data.dataYear || ""))}년 사업연도 기준) 데이터입니다. 자사주 취득금액은 이사회 결정(계획) 금액 합계로 실제 집행 완료 금액과 다를 수 있습니다.${metric === "salary" ? ` 직원 수 ${DART_MIN_HEADCOUNT_FOR_SALARY}명 미만 법인(주로 지주회사 등 소수 임원 위주 법인)은 1인당 평균이 왜곡될 수 있어 순위에서 제외했습니다.` : ""} 투자 자문이 아닙니다.</p>
       <table class="top30-table">
         <thead><tr><th>순위</th><th>기업</th><th>${dartMetricHeaderLabel(metric)}</th></tr></thead>
         <tbody>${visible.map((r, i) => dartRankRowHtml(r, i, metric)).join("")}</tbody>
