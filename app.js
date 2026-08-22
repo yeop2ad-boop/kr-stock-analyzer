@@ -6029,9 +6029,11 @@ function dartMetricCellHtml(r, metric) {
 // 금융지주·순수지주는 여전히 왜곡되므로(계열 은행 직원은 별도 법인 소속) 상호에 "지주"/"홀딩스"가
 // 들어간 곳 + 상호에 안 드러나는 대표 순수지주(LG·KB금융)를 함께 제외한다. SK·삼성물산·두산처럼
 // 지주회사여도 사업을 직접 운영해 직원 수가 많은 곳은 왜곡이 없어 그대로 둔다.
+// HD한국조선해양도 같은 케이스 — 조선 부문 중간지주회사로, 실제 생산인력은 현대중공업·현대미포조선·
+// 현대삼호중공업 등 별도 법인 소속이라 본사엔 설계·영업 인력만 남아 평균이 왜곡됨(2026-08 확인).
 const DART_MIN_HEADCOUNT_FOR_SALARY = 100;
 const HOLDING_COMPANY_NAME_PATTERN = /지주|홀딩스/;
-const HOLDING_COMPANY_EXTRA_NAMES = new Set(["LG", "KB금융"]);
+const HOLDING_COMPANY_EXTRA_NAMES = new Set(["LG", "KB금융", "HD한국조선해양"]);
 function isPureHoldingCompany(corpName) {
   if (!corpName) return false;
   return HOLDING_COMPANY_EXTRA_NAMES.has(corpName) || HOLDING_COMPANY_NAME_PATTERN.test(corpName);
