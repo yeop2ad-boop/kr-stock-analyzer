@@ -1183,6 +1183,160 @@ body {
   white-space: nowrap;
 }
 
+/* 관심종목 맨 위 자기진단 CTA 배너 버튼 */
+.self-test-banner-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 6px 12px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  text-align: left;
+  cursor: pointer;
+}
+.self-test-banner-icon { flex: none; font-size: 16px; line-height: 1; }
+.self-test-banner-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0; }
+.self-test-banner-title { font-size: 12.5px; font-weight: 800; color: var(--accent); line-height: 1.3; }
+.self-test-banner-sub { font-size: 10px; color: var(--muted); line-height: 1.3; }
+.self-test-banner-arrow { flex: none; font-size: 20px; color: var(--accent); }
+
+/* 투자성향 자기진단 테스트: 풀스크린 모달(.chart-modal 패턴 재사용) */
+.self-test-modal { background: var(--bg); }
+.self-test-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 16px 32px;
+}
+
+.self-test-progress-track {
+  width: 100%;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.self-test-progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.25s ease; }
+.self-test-qnum { font-size: 12px; font-weight: 700; color: var(--muted); margin: 0 0 6px; }
+.self-test-question { font-size: 18px; font-weight: 800; color: var(--text); line-height: 1.4; margin: 0 0 20px; }
+.self-test-options { display: flex; flex-direction: column; gap: 10px; }
+.self-test-option-btn {
+  width: 100%;
+  text-align: left;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.self-test-option-btn:active { border-color: var(--accent); background: var(--accent-soft); }
+
+/* 결과 상단 — 선택한 투자법에 따라 생성되는 주식/현금·채권 비중 바 */
+.self-test-alloc-bar-wrap { margin-bottom: 18px; }
+.self-test-alloc-label { font-size: 12px; font-weight: 700; color: var(--muted); margin: 0 0 6px; }
+.self-test-alloc-bar {
+  display: flex;
+  width: 100%;
+  height: 40px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.self-test-alloc-seg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: width 0.3s ease;
+}
+.self-test-alloc-stock { background: var(--accent); }
+.self-test-alloc-bond { background: var(--good); }
+
+.self-test-result-card { text-align: center; padding: 8px 0 22px; }
+.self-test-result-emoji { font-size: 56px; line-height: 1; margin-bottom: 8px; }
+.self-test-result-name { font-size: 21px; font-weight: 800; color: var(--text); margin: 0 0 4px; }
+.self-test-result-figure { font-size: 12.5px; font-weight: 700; color: var(--accent); margin: 0 0 10px; }
+.self-test-result-desc { font-size: 13.5px; color: var(--muted); line-height: 1.5; margin: 0; }
+
+.self-test-method-list { display: flex; flex-direction: column; gap: 8px; }
+.self-test-method-label { font-size: 13px; font-weight: 800; color: var(--text); margin: 4px 0 2px; }
+.self-test-method-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.self-test-method-btn.active { border-color: var(--accent); background: var(--accent-soft); }
+.self-test-method-num {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+}
+.self-test-method-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+.self-test-method-text .muted { font-size: 11.5px; }
+
+.self-test-age-input-wrap { display: flex; gap: 8px; margin: 2px 0 4px 36px; }
+.self-test-age-input-wrap input {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 12px;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+}
+.self-test-age-input-wrap button {
+  flex: none;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.self-test-retry-btn {
+  width: 100%;
+  margin-top: 18px;
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.self-test-disclaimer { font-size: 11px; color: var(--muted); text-align: center; margin: 10px 0 0; }
+
 /* 투자 그라운드: 졸라맨 + 회사 로고 + 52주 5등분 가격표를 보여주는 풀스크린 모달(.chart-modal 패턴 재사용) */
 .ground-modal { background: var(--bg); }
 .ground-body {

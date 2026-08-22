@@ -2657,6 +2657,206 @@ async function shareWatchlist() {
 }
 el("wlShareBtn").addEventListener("click", shareWatchlist);
 
+// ---------- 투자성향 자기진단 테스트 ----------
+// 성향(목표·기간)과 위험감수도(손실반응·재무여력)를 하나로 합친 6문항 미니 테스트.
+// 문항별 답변은 1~4점이며 합산 점수(6~24)로 3단계 유형을 가른다.
+const SELF_TEST_QUESTIONS = [
+  {
+    q: "지금 투자한 돈, 언제까지 안 써도 되나요?",
+    options: ["6개월 이내에 필요할 수도 있다", "1~3년 안에는 쓸 일 없다", "3~5년은 묻어둘 수 있다", "5년 이상, 없어도 그만인 돈이다"],
+  },
+  {
+    q: "보유 종목이 한 달 새 -20% 빠졌다면?",
+    options: ["바로 팔아서 손실을 확정한다", "불안하지만 일단 지켜본다", "계획대로 계속 보유한다", "오히려 싸졌다고 더 산다"],
+  },
+  {
+    q: "생활비 3~6개월치 비상금이 따로 있나요?",
+    options: ["없다, 투자금이 사실상 비상금이다", "1~2개월치 정도 있다", "3~6개월치는 있다", "6개월치 이상 넉넉히 있다"],
+  },
+  {
+    q: "요즘 가장 끌리는 투자처는?",
+    options: ["예금·채권 등 원금보장형", "배당주·대형 우량주", "성장주·해외주식", "코인·테마주·레버리지 상품"],
+  },
+  {
+    q: "포트폴리오를 얼마나 자주 들여다보나요?",
+    options: ["한 번 넣으면 거의 안 본다", "분기에 한두 번 점검한다", "매주 시황을 챙겨본다", "거의 매일 시세를 확인·매매한다"],
+  },
+  {
+    q: "둘 중 더 끌리는 선택지는?",
+    options: ["원금보장 + 확정 연 4%", "원금 대부분 보장 + 연 4~8% 기대", "손실 가능 + 연 10~15% 기대", "반토막 날 수도 있지만 2배 수익 가능"],
+  },
+];
+const SELF_TEST_TYPES = [
+  {
+    key: "safe",
+    min: 6,
+    max: 12,
+    name: "안정추구형",
+    emoji: "🐢",
+    figure: "존 보글 (뱅가드 창업자)",
+    desc: "원금을 지키는 게 최우선이에요. 화려하진 않아도 천천히, 꾸준하게 가는 걸 선호해요.",
+    vanguardStock: 40,
+  },
+  {
+    key: "balanced",
+    min: 13,
+    max: 18,
+    name: "균형투자형",
+    emoji: "⚖️",
+    figure: "워런 버핏 (버크셔 해서웨이)",
+    desc: "위험과 수익 사이 균형을 중시해요. 우량자산 중심으로 꾸준히 늘려가는 스타일이에요.",
+    vanguardStock: 60,
+  },
+  {
+    key: "aggressive",
+    min: 19,
+    max: 24,
+    name: "공격투자형",
+    emoji: "🚀",
+    figure: "캐시 우드 (ARK 인베스트)",
+    desc: "변동성을 감수하고서라도 높은 수익을 추구해요. 하락도 기회로 보는 스타일이에요.",
+    vanguardStock: 80,
+  },
+];
+
+const selfTestModal = el("selfTestModal");
+const selfTestBody = el("selfTestBody");
+let selfTestAnswers = [];
+let selfTestCurrentQ = 0;
+let selfTestResultType = null;
+let selfTestActiveMethod = null; // "vanguard" | "bogle" | "age"
+let selfTestAgeValue = "";
+
+function openSelfTestModal() {
+  selfTestAnswers = [];
+  selfTestCurrentQ = 0;
+  selfTestResultType = null;
+  selfTestActiveMethod = null;
+  selfTestModal.style.display = "flex";
+  renderSelfTestQuestion();
+}
+function closeSelfTestModal() {
+  selfTestModal.style.display = "none";
+}
+el("selfTestOpenBtn").addEventListener("click", openSelfTestModal);
+el("selfTestModalCloseBtn").addEventListener("click", closeSelfTestModal);
+
+function renderSelfTestQuestion() {
+  const total = SELF_TEST_QUESTIONS.length;
+  const qd = SELF_TEST_QUESTIONS[selfTestCurrentQ];
+  const pct = Math.round((selfTestCurrentQ / total) * 100);
+  selfTestBody.innerHTML = `
+    <div class="self-test-progress-track"><div class="self-test-progress-fill" style="width:${pct}%;"></div></div>
+    <p class="self-test-qnum">Q${selfTestCurrentQ + 1} / ${total}</p>
+    <h3 class="self-test-question">${qd.q}</h3>
+    <div class="self-test-options">
+      ${qd.options.map((opt, i) => `<button type="button" class="self-test-option-btn" data-idx="${i}">${opt}</button>`).join("")}
+    </div>`;
+  selfTestBody.querySelectorAll(".self-test-option-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      selfTestAnswers.push(Number(btn.dataset.idx) + 1);
+      selfTestCurrentQ++;
+      if (selfTestCurrentQ < total) renderSelfTestQuestion();
+      else computeSelfTestResult();
+    });
+  });
+}
+
+function computeSelfTestResult() {
+  const score = selfTestAnswers.reduce((a, b) => a + b, 0);
+  selfTestResultType = SELF_TEST_TYPES.find((t) => score >= t.min && score <= t.max) || SELF_TEST_TYPES[1];
+  selfTestActiveMethod = null;
+  renderSelfTestResult();
+}
+
+function selfTestAllocationFor(method) {
+  if (!selfTestResultType) return null;
+  if (method === "vanguard") {
+    const stock = selfTestResultType.vanguardStock;
+    return { stock, bond: 100 - stock, label: "Vanguard LifeStrategy Funds 기준" };
+  }
+  if (method === "bogle") {
+    return { stock: 60, bond: 40, label: "보글의 60/40 법칙 — 누구나 동일" };
+  }
+  if (method === "age") {
+    if (!selfTestAgeValue) return null;
+    const age = clamp(Number(selfTestAgeValue) || 0, 1, 99);
+    const stock = clamp(100 - age, 0, 100);
+    return { stock, bond: 100 - stock, label: `100 - 나이(${age}세) 기준` };
+  }
+  return null;
+}
+
+function selfTestAllocBarHtml(alloc) {
+  return `
+    <p class="self-test-alloc-label">${alloc.label}</p>
+    <div class="self-test-alloc-bar">
+      <div class="self-test-alloc-seg self-test-alloc-stock" style="width:${alloc.stock}%;">주식 ${alloc.stock}%</div>
+      <div class="self-test-alloc-seg self-test-alloc-bond" style="width:${alloc.bond}%;">현금·채권 ${alloc.bond}%</div>
+    </div>`;
+}
+
+function updateSelfTestAllocBar() {
+  const wrap = el("selfTestAllocWrap");
+  if (!wrap) return;
+  const alloc = selfTestActiveMethod ? selfTestAllocationFor(selfTestActiveMethod) : null;
+  wrap.style.display = alloc ? "block" : "none";
+  wrap.innerHTML = alloc ? selfTestAllocBarHtml(alloc) : "";
+}
+
+function renderSelfTestResult() {
+  const t = selfTestResultType;
+  selfTestBody.innerHTML = `
+    <div class="self-test-alloc-bar-wrap" id="selfTestAllocWrap" style="display:none;"></div>
+    <div class="self-test-result-card">
+      <div class="self-test-result-emoji">${t.emoji}</div>
+      <p class="self-test-result-name">${t.name}</p>
+      <p class="self-test-result-figure">대표 인물 — ${t.figure}</p>
+      <p class="self-test-result-desc">${t.desc}</p>
+    </div>
+    <div class="self-test-method-list">
+      <p class="self-test-method-label">이렇게 투자해보기</p>
+      <button type="button" class="self-test-method-btn" data-method="vanguard">
+        <span class="self-test-method-num">1</span>
+        <span class="self-test-method-text"><b>투자방식 따라하기</b><br><span class="muted">Vanguard LifeStrategy Funds</span></span>
+      </button>
+      <button type="button" class="self-test-method-btn" data-method="bogle">
+        <span class="self-test-method-num">2</span>
+        <span class="self-test-method-text"><b>뱅가드 창업자 60/40 법칙</b><br><span class="muted">주식 60% : 채권 40%, 언제나 동일</span></span>
+      </button>
+      <button type="button" class="self-test-method-btn" data-method="age">
+        <span class="self-test-method-num">3</span>
+        <span class="self-test-method-text"><b>100-나이 법칙</b><br><span class="muted">나이가 들수록 채권·현금 비중을 늘려요</span></span>
+      </button>
+      <div id="selfTestAgeInputWrap" class="self-test-age-input-wrap" style="display:none;">
+        <input type="number" id="selfTestAgeInput" placeholder="나이 입력" min="1" max="99" inputmode="numeric" />
+        <button type="button" id="selfTestAgeApplyBtn">적용</button>
+      </div>
+    </div>
+    <button type="button" class="self-test-retry-btn" id="selfTestRetryBtn">🔄 다시 진단하기</button>
+    <p class="self-test-disclaimer">⚠️ 참고용 콘텐츠이며, 투자 자문이 아닙니다.</p>`;
+
+  selfTestBody.querySelectorAll(".self-test-method-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const method = btn.dataset.method;
+      selfTestBody.querySelectorAll(".self-test-method-btn").forEach((b) => b.classList.toggle("active", b === btn));
+      el("selfTestAgeInputWrap").style.display = method === "age" ? "flex" : "none";
+      selfTestActiveMethod = method;
+      updateSelfTestAllocBar();
+    });
+  });
+  el("selfTestAgeApplyBtn").addEventListener("click", () => {
+    const val = el("selfTestAgeInput").value;
+    if (!val || Number(val) <= 0) {
+      showToast("나이를 입력해주세요.");
+      return;
+    }
+    selfTestAgeValue = val;
+    updateSelfTestAllocBar();
+  });
+  el("selfTestRetryBtn").addEventListener("click", openSelfTestModal);
+}
+
 async function renderWatchlistList() {
   const statusEl = el("watchlistStatus");
   const listEl = el("watchlistList");
