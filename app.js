@@ -1740,15 +1740,28 @@ async function mapWithConcurrency(items, limit, worker, onProgress) {
 }
 
 // ---------- 유틸 ----------
+// 한국 원화 금액: "조/억" 단위 표기 — 억 단위로 반올림하고 그 아래(만원 이하)는 표기하지 않음
+function fmtKrwCompact(num) {
+  const sign = num < 0 ? "-" : "";
+  const eok = Math.round(Math.abs(num) / 1e8);
+  if (eok === 0) return `${sign}1억원 미만`;
+  const jo = Math.floor(eok / 10000);
+  const eokRest = eok % 10000;
+  if (jo > 0 && eokRest > 0) return `${sign}${jo}조 ${eokRest.toLocaleString()}억원`;
+  if (jo > 0) return `${sign}${jo}조원`;
+  return `${sign}${eok.toLocaleString()}억원`;
+}
+
 function fmtCompactCurrency(num, currency = "USD") {
   if (num === null || num === undefined || isNaN(num)) return "N/A";
+  if (currency === "KRW") return fmtKrwCompact(num);
   const abs = Math.abs(num);
   let str;
   if (abs >= 1e12) str = (num / 1e12).toFixed(2) + "T";
   else if (abs >= 1e9) str = (num / 1e9).toFixed(2) + "B";
   else if (abs >= 1e6) str = (num / 1e6).toFixed(2) + "M";
   else str = num.toFixed(2);
-  return (currency === "KRW" ? "₩" : "$") + str;
+  return "$" + str;
 }
 
 function fmtPct(num, digits = 1) {
