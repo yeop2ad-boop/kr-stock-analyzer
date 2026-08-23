@@ -71,18 +71,21 @@ body {
 
 .brand-logo {
   flex: none;
+  display: flex;
+  align-items: center;
   border: none;
   background: none;
-  font-family: inherit;
-  font-size: 19px;
-  font-weight: 800;
-  color: var(--white);
-  letter-spacing: -0.5px;
   padding: 0 2px 0 0;
   cursor: pointer;
 }
-.top-bar.is-overseas .brand-logo { color: var(--text-dark); }
-.brand-dot { color: var(--red-dot); }
+.brand-logo-img {
+  height: 20px;
+  width: auto;
+  display: block;
+  /* 주황 배경(국내) 위에서는 로고 자체가 주황이라 안 보이니 흰색으로 반전 — 흰 배경(해외)에서는 원래 브랜드 색 그대로 */
+  filter: brightness(0) invert(1);
+}
+.top-bar.is-overseas .brand-logo-img { filter: none; }
 
 .toggle-pill {
   flex: none;
