@@ -385,22 +385,6 @@ body {
   gap: 6px;
 }
 
-.color-only-mini {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  border: 1px solid var(--line);
-  background: #fff;
-  color: var(--text-mid);
-  font-size: 10.5px;
-  font-weight: 700;
-  padding: 4px 9px;
-  border-radius: 999px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(15,23,42,0.08);
-}
-.color-only-mini.active { border-color: var(--orange); color: var(--orange-deep); background: #fff2ea; }
-
 .change-legend {
   display: flex;
   align-items: center;

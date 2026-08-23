@@ -547,7 +547,7 @@ document.addEventListener("click", (e) => {
   if (btn) showToast(btn.dataset.toast);
 });
 
-document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn)").forEach((btn) => {
+document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#logoModeBtn)").forEach((btn) => {
   btn.addEventListener("click", () => {
     const group = btn.parentElement;
     group.querySelectorAll(".active").forEach((b) => b.classList.remove("active"));
@@ -555,11 +555,11 @@ document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn)").forEac
   });
 });
 
-document.getElementById("colorOnlyToggle").addEventListener("click", (e) => {
+document.getElementById("logoModeBtn").addEventListener("click", (e) => {
   const btn = e.currentTarget;
   const on = mapWorld.classList.toggle("color-only");
+  btn.textContent = on ? "색상" : "로고";
   btn.classList.toggle("active", on);
-  btn.setAttribute("aria-pressed", String(on));
 });
 
 document.getElementById("resetViewBtn").addEventListener("click", () => fitToViewport(true));
