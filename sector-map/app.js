@@ -115,6 +115,28 @@ function fmtWonCompact(n) {
 
 // ---------- 1) pack 레이아웃 데이터 만들기 ----------
 // sizeMode: "marketCap"(기본, 시가총액 비례) | "equal"(균등 — 원 크기를 전부 동일하게)
+
+// 해외(S&P500) 자동 배치 결과를 "섹터 위치 지도"로 한 번만 계산해두고, 국내도 같은 자리에 섹터가 오도록 재사용한다
+// (국내/해외 데이터 모두 sector 필드가 같은 GICS 영문명을 쓰기 때문에 그대로 매칭 가능)
+let SECTOR_ANCHORS = null;
+function computeSectorAnchors() {
+  if (SECTOR_ANCHORS) return SECTOR_ANCHORS;
+  const bySector = new Map();
+  for (const c of SP500_DATA.companies) {
+    if (!c.marketCap) continue;
+    if (!bySector.has(c.sector)) bySector.set(c.sector, []);
+    bySector.get(c.sector).push(c);
+  }
+  const children = [...bySector.entries()].map(([sector, companies]) => ({
+    name: sector,
+    children: companies.map((c) => ({ value: c.marketCap })),
+  }));
+  const root = d3.hierarchy({ name: "root", children }).sum((d) => d.value).sort((a, b) => b.value - a.value);
+  d3.pack().size([WORLD_SIZE, WORLD_SIZE]).padding((d) => (d.depth === 1 ? 30 : 2))(root);
+  SECTOR_ANCHORS = new Map(root.children.map((s) => [s.data.name, { x: s.x, y: s.y }]));
+  return SECTOR_ANCHORS;
+}
+
 function buildPackedRoot(data) {
   const bySector = new Map();
   for (const c of data.companies) {
@@ -130,7 +152,36 @@ function buildPackedRoot(data) {
 
   const root = d3.hierarchy({ name: "root", children }).sum((d) => d.value).sort((a, b) => b.value - a.value);
 
-  d3.pack().size([WORLD_SIZE, WORLD_SIZE]).padding((d) => (d.depth === 1 ? 30 : 2))(root);
+  if (data === SP500_DATA) {
+    // 해외는 지금까지처럼 자동 배치 — 이 결과가 곧 국내 쪽 섹터 앵커 기준이 된다
+    d3.pack().size([WORLD_SIZE, WORLD_SIZE]).padding((d) => (d.depth === 1 ? 30 : 2))(root);
+  } else {
+    // 국내는 섹터별로 따로 pack해서 내부 배치만 구하고, 해외 기준 고정 위치(앵커)로 통째로 옮겨 놓는다
+    // → 국내/해외 지도를 오가도 "기술은 가운데, 헬스케어는 오른쪽 위" 처럼 섹터 위치가 비슷하게 느껴진다
+    const anchors = computeSectorAnchors();
+    for (const sectorNode of root.children) {
+      const sub = d3
+        .hierarchy({ name: sectorNode.data.name, children: sectorNode.children.map((c) => c.data) })
+        .sum((d) => d.value)
+        .sort((a, b) => b.value - a.value);
+      d3.pack().size([WORLD_SIZE, WORLD_SIZE]).padding(2)(sub);
+
+      const anchor = anchors.get(sectorNode.data.name) || { x: WORLD_SIZE / 2, y: WORLD_SIZE / 2 };
+      const dx = anchor.x - sub.x;
+      const dy = anchor.y - sub.y;
+      sectorNode.x = anchor.x;
+      sectorNode.y = anchor.y;
+      sectorNode.r = sub.r;
+
+      const posByData = new Map(sub.children.map((n) => [n.data, n]));
+      for (const leaf of sectorNode.children) {
+        const n = posByData.get(leaf.data);
+        leaf.x = n.x + dx;
+        leaf.y = n.y + dy;
+        leaf.r = n.r;
+      }
+    }
+  }
 
   return root;
 }
