@@ -1044,6 +1044,7 @@ function goToMainSite(openPanel) {
   window.location.href = openPanel ? `../index.html?open=${openPanel}` : "../index.html";
 }
 document.getElementById("brandLogoBtn").addEventListener("click", () => goToMainSite());
+document.getElementById("mapSearchBtn").addEventListener("click", () => goToMainSite("search"));
 document.getElementById("bottomNavStudyBtn").addEventListener("click", () => goToMainSite());
 document.getElementById("bottomNavMarketBtn2").addEventListener("click", () => goToMainSite("market"));
 document.getElementById("bottomNavCalendarBtn2").addEventListener("click", () => goToMainSite("calendar"));

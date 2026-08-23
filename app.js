@@ -2316,7 +2316,7 @@ bottomNavButtons.more.addEventListener("click", () => {
 (() => {
   const openParam = new URLSearchParams(window.location.search).get("open");
   if (!openParam) return;
-  const targetBtn = { market: bottomNavButtons.market, calendar: bottomNavButtons.calendar, more: bottomNavButtons.more }[openParam];
+  const targetBtn = { market: bottomNavButtons.market, calendar: bottomNavButtons.calendar, more: bottomNavButtons.more, search: searchOpenBtn }[openParam];
   if (targetBtn) targetBtn.click();
   history.replaceState(null, "", window.location.pathname); // 새로고침 시 다시 안 열리도록 쿼리스트링 제거
 })();

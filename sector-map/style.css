@@ -57,7 +57,6 @@ body {
 /* 해외 탭이 활성일 때는 헤더 배경이 흰색으로, 국내일 때는 주황 배경 유지 (호갱노노 단지/매물 토글 참고, 색상만 우리 브랜드색으로) */
 .top-bar.is-overseas {
   background: var(--white);
-  border-bottom: 1px solid var(--line);
 }
 
 .top-bar-row {
@@ -65,7 +64,10 @@ body {
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.25);
 }
+/* 흰 배경일 때는 참고 이미지처럼 희미하고 얇은 검은 실선 구분선 */
+.top-bar.is-overseas .top-bar-row { border-bottom: 1px solid rgba(0,0,0,0.09); }
 
 .brand-logo {
   flex: none;
@@ -131,17 +133,6 @@ body {
 .top-bar.is-overseas .icon-btn { color: var(--text-dark); }
 .icon-btn:active { background: rgba(255,255,255,0.18); }
 .icon-btn svg { width: 21px; height: 21px; }
-.icon-badge-dot {
-  position: absolute;
-  top: 7px;
-  right: 7px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #ff3b30;
-  border: 1.5px solid var(--orange);
-}
-.top-bar.is-overseas .icon-badge-dot { border-color: var(--white); }
 
 .filter-bar {
   display: flex;
@@ -149,7 +140,7 @@ body {
   gap: 8px;
   background: var(--white);
   padding: 10px 12px;
-  border-radius: 18px 18px 0 0;
+  border-radius: 0;
   overflow-x: auto;
   scrollbar-width: none;
 }
