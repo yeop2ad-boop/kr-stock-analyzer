@@ -63,7 +63,7 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 14px;
+  padding: 6px 14px;
   border-bottom: 1px solid rgba(255,255,255,0.25);
 }
 /* 흰 배경일 때는 참고 이미지처럼 희미하고 얇은 검은 실선 구분선 */
@@ -74,7 +74,7 @@ body {
   border: none;
   background: none;
   font-family: inherit;
-  font-size: 21px;
+  font-size: 19px;
   font-weight: 800;
   color: var(--white);
   letter-spacing: -0.5px;
@@ -98,9 +98,9 @@ body {
   border: none;
   background: transparent;
   color: rgba(255,255,255,0.92);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
-  padding: 7px 16px;
+  padding: 5.5px 14px;
   border-radius: 999px;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
@@ -122,8 +122,8 @@ body {
   border: none;
   background: transparent;
   color: var(--white);
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,7 +132,7 @@ body {
 }
 .top-bar.is-overseas .icon-btn { color: var(--text-dark); }
 .icon-btn:active { background: rgba(255,255,255,0.18); }
-.icon-btn svg { width: 21px; height: 21px; }
+.icon-btn svg { width: 19px; height: 19px; }
 
 .filter-bar {
   display: flex;
