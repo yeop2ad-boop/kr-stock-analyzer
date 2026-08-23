@@ -90,10 +90,9 @@ body {
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
-.toggle-btn.active {
-  background: var(--white);
-  color: var(--orange-deep);
-}
+/* 국내/해외 활성 색상은 내투자닷컴 본체와 동일한 규칙(국내=파랑, 해외=빨강) */
+.toggle-btn[data-market="domestic"].active { background: #6b9bff; color: #14161c; }
+.toggle-btn[data-market="overseas"].active { background: #f60303; color: #ffffff; }
 
 .top-bar-icons {
   margin-left: auto;

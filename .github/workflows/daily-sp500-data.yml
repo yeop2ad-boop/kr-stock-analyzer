@@ -1,4 +1,4 @@
-name: S&P 500 섹터맵 데이터 자동 갱신
+name: 섹터맵 데이터 자동 갱신(해외 S&P500 + 국내 코스피200/코스닥150)
 
 on:
   schedule:
@@ -20,10 +20,15 @@ jobs:
         working-directory: sector-map
         run: ./scripts/fetch-sp500-data.ps1
 
-      - name: 매출액/현금흐름/순이익 증가율 갱신
+      - name: 매출액/현금흐름/순이익 증가율 갱신(해외)
         shell: pwsh
         working-directory: sector-map
         run: ./scripts/fetch-growth-metrics.ps1
+
+      - name: 코스피200/코스닥150 갱신(국내)
+        shell: pwsh
+        working-directory: sector-map
+        run: ./scripts/fetch-kr-data.ps1
 
       - name: data.js 재생성
         shell: pwsh
@@ -31,15 +36,17 @@ jobs:
         run: |
           $json = Get-Content data/sp500-sectors.json -Raw
           "const SP500_DATA = $json;" | Set-Content data/sp500-data.js -Encoding utf8
+          $krJson = Get-Content data/kr-sectors.json -Raw
+          "const KR_SECTOR_DATA = $krJson;" | Set-Content data/kr-data.js -Encoding utf8
 
       - name: 변경사항 커밋 및 푸시
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add sector-map/data/sp500-sectors.json sector-map/data/sp500-data.js
+          git add sector-map/data/sp500-sectors.json sector-map/data/sp500-data.js sector-map/data/kr-sectors.json sector-map/data/kr-data.js
           if git diff --cached --quiet; then
             echo "변경된 데이터 없음"
           else
-            git commit -m "S&P500 섹터맵 데이터 자동 갱신 ($(date -u +%Y-%m-%d))"
+            git commit -m "섹터맵 데이터 자동 갱신 ($(date -u +%Y-%m-%d))"
             git push
           fi

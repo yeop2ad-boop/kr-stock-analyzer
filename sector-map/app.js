@@ -67,10 +67,23 @@ function fmtMarketCap(n) {
   return `$${n.toLocaleString()}`;
 }
 
+// 원화 금액용 — 억/조 단위(한국식 그룹핑)로 표기
+function fmtWonCompact(n) {
+  if (n === null || n === undefined) return "정보 없음";
+  const sign = n < 0 ? "-" : "";
+  const eok = Math.round(Math.abs(n) / 1e8);
+  const jo = Math.floor(eok / 10000);
+  const rest = eok % 10000;
+  if (jo > 0 && rest > 0) return `${sign}${jo}조 ${rest.toLocaleString()}억원`;
+  if (jo > 0) return `${sign}${jo}조원`;
+  if (eok > 0) return `${sign}${eok.toLocaleString()}억원`;
+  return `${sign}${Math.round(Math.abs(n)).toLocaleString()}원`;
+}
+
 // ---------- 1) pack 레이아웃 데이터 만들기 ----------
-function buildPackedRoot() {
+function buildPackedRoot(data) {
   const bySector = new Map();
-  for (const c of SP500_DATA.companies) {
+  for (const c of data.companies) {
     if (!c.marketCap) continue;
     if (!bySector.has(c.sector)) bySector.set(c.sector, []);
     bySector.get(c.sector).push(c);
@@ -93,6 +106,10 @@ const mapWorld = document.getElementById("mapWorld");
 const mapViewport = document.getElementById("mapViewport");
 const loadingIndicator = document.getElementById("loadingIndicator");
 const bubbleBySymbol = new Map(); // symbol -> .company-bubble 엘리먼트(지표 범위 필터 적용 시 빠르게 찾기용)
+
+// 국내/해외 전환 — 지금 화면에 그려진 데이터셋. KR_SECTOR_DATA는 data/kr-data.js가 만들어둠(없으면 국내 전환 시 안내만 표시)
+let ACTIVE_MARKET = "overseas";
+let ACTIVE_DATA = SP500_DATA;
 
 // 섹터 이름표를 "로고 하나"처럼 취급 — 섹터 원 맨 위 가장자리에 딱 붙여 고정하고,
 // d3-force로 (1) 종목 원끼리 절대 안 겹치게(사이즈별 최소 간격), (2) 이름표(알약 모양 사각형)와도 안 겹치게 풀어낸다.
@@ -413,7 +430,7 @@ function openCompanySheet(d) {
     <div class="sheet-stats">
       <div>
         <div class="sheet-stat-label">시가총액</div>
-        <div class="sheet-stat-value">${fmtMarketCap(d.marketCap)}</div>
+        <div class="sheet-stat-value">${d.currency === "KRW" ? fmtWonCompact(d.marketCap) : fmtMarketCap(d.marketCap)}</div>
       </div>
       <div>
         <div class="sheet-stat-label">등락률</div>
@@ -464,14 +481,6 @@ document.querySelectorAll(".bottom-nav-btn, .side-btn").forEach((btn) => {
   });
 });
 
-document.getElementById("marketTogglePill").addEventListener("click", (e) => {
-  const btn = e.target.closest(".toggle-btn");
-  if (!btn) return;
-  document.querySelectorAll("#marketTogglePill .toggle-btn").forEach((b) => b.classList.remove("active"));
-  btn.classList.add("active");
-  if (btn.dataset.market === "domestic") showToast("국내 섹터맵 (준비중 · 현재는 S&P500만 표시)");
-});
-
 document.getElementById("colorOnlyToggle").addEventListener("click", (e) => {
   const btn = e.currentTarget;
   const on = mapWorld.classList.toggle("color-only");
@@ -483,33 +492,39 @@ document.getElementById("resetViewBtn").addEventListener("click", () => fitToVie
 document.getElementById("fitAllBtn").addEventListener("click", () => fitToViewport(true));
 
 // ---------- 6) 상단 10개 지표 버튼 → 범위 지정 바텀시트(실시간 필터) ----------
-// 매출액·현금흐름·순이익 증가율은 내투자닷컴 본체와 같은 방식(종목별 fundamentals-timeseries, 하루 1회 배치)으로 채워진
-// data/sp500-sectors.json의 정적 값을 쓰고, 상승률·하락률·인기종목은 페이지가 열릴 때마다 Yahoo에서 실시간으로 새로 받아온다
-// (refreshLiveData 참고) — 그동안(받아오기 전)은 정적 스냅샷 값으로 우선 보여주다가 실시간 값이 도착하면 그걸로 덮어쓴다.
-const METRICS = {
-  revenueGrowth: { label: "매출액 증가", hasData: true, get: (c) => c.revenueGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
-  cashFlowGrowth: { label: "현금흐름 증가", hasData: true, get: (c) => c.cashFlowGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
-  netIncomeGrowth: { label: "순이익 증가", hasData: true, get: (c) => c.netIncomeGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
-  eps: { label: "EPS", hasData: true, get: (c) => c.eps, fmt: (v) => `$${v.toFixed(2)}` },
-  per: { label: "PER", hasData: true, get: (c) => c.per, fmt: (v) => `${v.toFixed(1)}배`, domainMax: 80 },
-  marketCap: { label: "시가총액", hasData: true, get: (c) => c.marketCap, fmt: fmtMarketCap },
-  popularStocks: {
-    label: "인기종목",
-    hasData: true,
-    needsLive: true,
-    get: (c) => c.dollarVolume,
-    fmt: (v) => fmtMarketCap(v) + "/일",
-  },
-  riseRate: { label: "상승률", hasData: true, live: true, get: (c) => c.changePercent, onlyPositive: true, fmt: (v) => `${v.toFixed(1)}%` },
-  fallRate: { label: "하락률", hasData: true, live: true, get: (c) => c.changePercent, onlyNegative: true, fmt: (v) => `${v.toFixed(1)}%` },
-  dividendYield: { label: "배당률", hasData: true, get: (c) => c.dividendYield, fmt: (v) => `${v.toFixed(2)}%` },
-};
+// 해외(S&P500): 매출액·현금흐름·순이익 증가율/EPS/PER/시가총액/배당률은 하루 1회 배치, 상승률·하락률·인기종목은
+// 페이지가 열릴 때마다 Yahoo에서 실시간으로 새로 받아온다(refreshLiveData). 국내(KOSPI200+KOSDAQ150)는 섹터 스크리너가
+// 없어 종목별로 하나씩 조회해야 해서, 10개 지표 전부 하루 1회 배치 스냅샷 값을 쓴다(배당률만 아직 수집 로직이 없어 준비중).
+function buildMetrics(market) {
+  const isKr = market === "domestic";
+  const capFmt = isKr ? fmtWonCompact : fmtMarketCap;
+  const epsFmt = isKr ? (v) => `₩${Math.round(v).toLocaleString()}` : (v) => `$${v.toFixed(2)}`;
+  return {
+    revenueGrowth: { label: "매출액 증가", hasData: true, get: (c) => c.revenueGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
+    cashFlowGrowth: { label: "현금흐름 증가", hasData: true, get: (c) => c.cashFlowGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
+    netIncomeGrowth: { label: "순이익 증가", hasData: true, get: (c) => c.netIncomeGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
+    eps: { label: "EPS", hasData: true, get: (c) => c.eps, fmt: epsFmt },
+    per: { label: "PER", hasData: true, get: (c) => c.per, fmt: (v) => `${v.toFixed(1)}배`, domainMax: 80 },
+    marketCap: { label: "시가총액", hasData: true, get: (c) => c.marketCap, fmt: capFmt },
+    popularStocks: {
+      label: "인기종목",
+      hasData: true,
+      needsLive: !isKr,
+      get: (c) => c.dollarVolume,
+      fmt: (v) => capFmt(v) + "/일",
+    },
+    riseRate: { label: "상승률", hasData: true, live: !isKr, get: (c) => c.changePercent, onlyPositive: true, fmt: (v) => `${v.toFixed(1)}%` },
+    fallRate: { label: "하락률", hasData: true, live: !isKr, get: (c) => c.changePercent, onlyNegative: true, fmt: (v) => `${v.toFixed(1)}%` },
+    dividendYield: { label: "배당률", hasData: !isKr, get: (c) => c.dividendYield, fmt: (v) => `${v.toFixed(2)}%` },
+  };
+}
+let METRICS = buildMetrics("overseas");
 
 function getMetricDomain(key) {
   const m = METRICS[key];
   // 실시간으로 값이 바뀌는 지표는 열 때마다 도메인을 새로 계산(캐시하면 실시간 갱신 후에도 옛 범위로 고정돼버림)
   if (m.domain && !m.live && !m.needsLive) return m.domain;
-  let values = SP500_DATA.companies.map(m.get).filter((v) => typeof v === "number" && Number.isFinite(v));
+  let values = ACTIVE_DATA.companies.map(m.get).filter((v) => typeof v === "number" && Number.isFinite(v));
   if (m.onlyPositive) values = values.filter((v) => v >= 0);
   if (m.onlyNegative) values = values.filter((v) => v <= 0);
   let min = values.length ? Math.min(...values) : 0;
@@ -547,7 +562,7 @@ function applyMetricFilter(key, range) {
   const [selMin, selMax] = range;
   const [domMin, domMax] = m.domain;
   const isFull = selMin <= domMin && selMax >= domMax;
-  for (const c of SP500_DATA.companies) {
+  for (const c of ACTIVE_DATA.companies) {
     const el = bubbleBySymbol.get(c.symbol);
     if (!el) continue;
     if (isFull) {
@@ -731,7 +746,7 @@ async function mapWithConcurrency(items, limit, worker) {
 }
 
 async function refreshLiveData() {
-  const companyBySymbol = new Map(SP500_DATA.companies.map((c) => [c.symbol, c]));
+  const companyBySymbol = new Map(ACTIVE_DATA.companies.map((c) => [c.symbol, c]));
   const sectorIds = Object.values(LIVE_SECTOR_SCREENER_ID);
 
   const results = await mapWithConcurrency(sectorIds, 3, fetchSectorScreenerLive);
@@ -763,7 +778,7 @@ async function refreshLiveData() {
 
 // 원 배경/테두리 색을 최신 changePercent 기준으로 다시 칠함(값 자체는 그대로 두고 색만 갱신)
 function refreshAllBubbleColors() {
-  for (const c of SP500_DATA.companies) {
+  for (const c of ACTIVE_DATA.companies) {
     const el = bubbleBySymbol.get(c.symbol);
     if (!el) continue;
     const chg = changeColor(c.changePercent);
@@ -773,12 +788,47 @@ function refreshAllBubbleColors() {
   }
 }
 
+// ---------- 8) 국내/해외 전환 ----------
+let packedRoot = null;
+
+function loadMarket(mode, animate) {
+  ACTIVE_MARKET = mode;
+  ACTIVE_DATA = mode === "domestic" ? KR_SECTOR_DATA : SP500_DATA;
+  METRICS = buildMetrics(mode);
+
+  closeCompanySheet();
+  closeRangeSheet();
+  activeMetricKey = null;
+  activeRange = null;
+
+  mapWorld.innerHTML = "";
+  bubbleBySymbol.clear();
+
+  packedRoot = buildPackedRoot(ACTIVE_DATA);
+  renderMap(packedRoot);
+  fitToViewport(!!animate);
+
+  if (mode === "overseas") {
+    refreshLiveData().catch(() => {});
+  }
+}
+
+document.getElementById("marketTogglePill").addEventListener("click", (e) => {
+  const btn = e.target.closest(".toggle-btn");
+  if (!btn) return;
+  const mode = btn.dataset.market;
+  if (mode === ACTIVE_MARKET) return;
+  if (mode === "domestic" && (typeof KR_SECTOR_DATA === "undefined" || !KR_SECTOR_DATA.companies || !KR_SECTOR_DATA.companies.length)) {
+    showToast("국내 섹터맵 데이터를 아직 못 불러왔어요");
+    return;
+  }
+  document.querySelectorAll("#marketTogglePill .toggle-btn").forEach((b) => b.classList.remove("active"));
+  btn.classList.add("active");
+  loadMarket(mode, true);
+});
+
 // ---------- 초기화 ----------
 window.addEventListener("resize", () => fitToViewport(false));
 
-const packedRoot = buildPackedRoot();
-renderMap(packedRoot);
-fitToViewport(false);
+loadMarket("overseas", false);
 loadingIndicator.classList.add("hidden");
-
-refreshLiveData().catch(() => {}); // 정적 스냅샷을 먼저 보여준 뒤, 실시간 시세로 조용히 덮어씀(실패해도 무시)
