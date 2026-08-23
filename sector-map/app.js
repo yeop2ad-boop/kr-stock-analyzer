@@ -904,6 +904,17 @@ document.querySelectorAll(".metric-chip").forEach((btn) => {
   });
 });
 
+// 칩마다 붙는 작은 ✕ — 필터가 걸려있을 때만 보이고, 누르면 그 지표 하나만 "전체"로 초기화(시트는 열지 않음)
+document.querySelectorAll(".chip-reset").forEach((el) => {
+  el.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const key = el.dataset.metric;
+    setFilterRange(key, getMetricDomain(key));
+    quickSliderCtrl.refresh();
+    panelControllers.forEach((ctrl) => ctrl.refresh());
+  });
+});
+
 rangeSheetResetBtn.addEventListener("click", () => {
   if (!quickSheetKey || !METRICS[quickSheetKey].hasData) return;
   quickSliderCtrl.reset();

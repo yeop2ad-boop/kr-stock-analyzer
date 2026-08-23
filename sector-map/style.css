@@ -184,6 +184,18 @@ body {
   color: #ffffff;
   background: var(--orange);
 }
+/* 필터가 걸린 칩에만 나타나는 작은 X — 누르면 그 지표만 초기화(전체 초기화 버튼과 별개) */
+.chip-reset {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.28);
+}
+.filter-chip.active .chip-reset { display: flex; }
+.filter-chip.active .chip-chevron { opacity: 0.85; }
 
 /* ---------- Map viewport ---------- */
 .map-viewport {
