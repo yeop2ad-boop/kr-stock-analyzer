@@ -54,6 +54,27 @@ function changeColorForText(pct) {
   return `rgb(${rgb.join(",")})`;
 }
 
+// financialmodelingprep이 일부 국내 종목엔 로고 대신 사옥/공장 사진 등 엉뚱한 이미지를 갖고 있어서
+// (전 종목 색상 다양성 스캔 + 육안 확인으로 찾음, scripts/scan-bad-logos.ps1), 그 심볼들은 로고 시도 자체를
+// 건너뛰고 바로 티커 배지를 보여준다 — 로컬/외부 둘 다 같은 소스라 폴백해도 어차피 같은 사진이 나옴.
+const BAD_LOGO_SYMBOLS = new Set([
+  "003030.KS", // 세아제강지주
+  "042660.KS", // 한화오션
+  "112610.KS", // 씨에스윈드
+  "010950.KS", // S-Oil
+  "011200.KS", // HMM
+  "003550.KS", // LG
+  "000720.KS", // 현대건설
+  "064350.KS", // 현대로템
+  "018260.KS", // 삼성에스디에스
+  "000240.KS", // 한국앤컴퍼니
+  "120110.KS", // 코오롱인더
+  "081660.KS", // 미스토홀딩스
+  "298040.KS", // 효성중공업
+  "010120.KS", // LS ELECTRIC
+  "069620.KS", // 대웅제약
+]);
+
 // 매번 외부(financialmodelingprep)에서 개별 요청하면 느려서, 미리 받아둔 로컬 캐시(logos/)를 우선 쓰고
 // 혹시 못 받아둔 심볼만 그때그때 외부 URL로 폴백한다(logo-failed 클래스가 붙기 전 마지막 시도).
 // 로컬 캐시는 저(32px)/중(80px)/고(250px, 원본) 3단계로 나눠서, 화면에 실제로 보이는 크기에 맞는 것만 불러온다
@@ -277,8 +298,12 @@ function renderCompanyBubble(leaf, sectorColorValue) {
   img.className = "company-logo-img";
   img.loading = "lazy";
   img.alt = d.symbol;
-  img.dataset.tier = "low";
-  img.src = logoUrl(d.symbol, "low");
+  if (BAD_LOGO_SYMBOLS.has(d.symbol)) {
+    el.classList.add("logo-failed"); // 로고 대신 사진이 걸려있는 게 확인된 종목 — 시도 없이 바로 배지
+  } else {
+    img.dataset.tier = "low";
+    img.src = logoUrl(d.symbol, "low");
+  }
   img.addEventListener("error", () => {
     if (!img.dataset.triedFallback) {
       img.dataset.triedFallback = "1";
