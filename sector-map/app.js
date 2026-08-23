@@ -332,6 +332,7 @@ function renderCompanyBubble(leaf, sectorColorValue) {
     const tag = document.createElement("div");
     tag.className = "company-ticker-tag";
     tag.textContent = badgeText;
+    tag.style.fontSize = `${Math.max(10, Math.min(28, leaf.r * 0.45))}px`;
     el.appendChild(tag);
   }
 

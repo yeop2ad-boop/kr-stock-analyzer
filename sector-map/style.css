@@ -295,8 +295,8 @@ body {
   font-weight: 700;
   color: #fff;
   background: rgba(20,22,28,0.78);
-  padding: 1px 6px;
-  border-radius: 6px;
+  padding: 0.1em 0.55em;
+  border-radius: 0.55em;
   white-space: nowrap;
   pointer-events: none;
 }
