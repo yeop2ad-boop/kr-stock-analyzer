@@ -114,6 +114,7 @@ function fmtWonCompact(n) {
 }
 
 // ---------- 1) pack 레이아웃 데이터 만들기 ----------
+// sizeMode: "marketCap"(기본, 시가총액 비례) | "equal"(균등 — 원 크기를 전부 동일하게)
 function buildPackedRoot(data) {
   const bySector = new Map();
   for (const c of data.companies) {
@@ -124,7 +125,7 @@ function buildPackedRoot(data) {
   const children = [...bySector.entries()].map(([sector, companies]) => ({
     name: sector,
     sectorKo: companies[0].sectorKo,
-    children: companies.map((c) => ({ ...c, value: c.marketCap })),
+    children: companies.map((c) => ({ ...c, value: sizeMode === "equal" ? 1 : c.marketCap })),
   }));
 
   const root = d3.hierarchy({ name: "root", children }).sum((d) => d.value).sort((a, b) => b.value - a.value);
@@ -143,6 +144,7 @@ const bubbleBySymbol = new Map(); // symbol -> .company-bubble 엘리먼트(지�
 // 국내/해외 전환 — 지금 화면에 그려진 데이터셋. KR_SECTOR_DATA는 data/kr-data.js가 만들어둠(없으면 국내 전환 시 안내만 표시)
 let ACTIVE_MARKET = "overseas";
 let ACTIVE_DATA = SP500_DATA;
+let sizeMode = "marketCap"; // "시총" 버튼으로 "equal"(균등)과 토글
 
 // 섹터 이름표를 "로고 하나"처럼 취급 — 섹터 원 맨 위 가장자리에 딱 붙여 고정하고,
 // d3-force로 (1) 종목 원끼리 절대 안 겹치게(사이즈별 최소 간격), (2) 이름표(알약 모양 사각형)와도 안 겹치게 풀어낸다.
@@ -315,17 +317,21 @@ function renderCompanyBubble(leaf, sectorColorValue) {
   el.appendChild(img);
   el.dataset.r = leaf.r; // 월드 좌표 반지름 — 화면상 크기 계산용(저/중/고화질 전환)
 
+  // 국내는 티커(005930.KS)만 봐선 무슨 회사인지 알기 어려우니, 로고 대신 배지가 뜨는 자리엔 한글 회사명을 씀
+  const isKrView = ACTIVE_MARKET === "domestic";
+  const badgeText = isKrView ? d.name : d.symbol;
+
   const fallback = document.createElement("div");
   fallback.className = "company-fallback-badge";
   fallback.style.setProperty("--sc", sectorColorValue);
-  fallback.style.fontSize = `${Math.max(9, Math.min(22, leaf.r * 0.32))}px`;
-  fallback.textContent = d.symbol;
+  fallback.style.fontSize = `${Math.max(9, Math.min(22, leaf.r * (isKrView ? 0.2 : 0.32)))}px`;
+  fallback.textContent = badgeText;
   el.appendChild(fallback);
 
   if (leaf.r > 26) {
     const tag = document.createElement("div");
     tag.className = "company-ticker-tag";
-    tag.textContent = d.symbol;
+    tag.textContent = badgeText;
     el.appendChild(tag);
   }
 
@@ -541,7 +547,7 @@ document.addEventListener("click", (e) => {
   if (btn) showToast(btn.dataset.toast);
 });
 
-document.querySelectorAll(".bottom-nav-btn, .side-btn").forEach((btn) => {
+document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn)").forEach((btn) => {
   btn.addEventListener("click", () => {
     const group = btn.parentElement;
     group.querySelectorAll(".active").forEach((b) => b.classList.remove("active"));
@@ -859,11 +865,8 @@ function refreshAllBubbleColors() {
 // ---------- 8) 국내/해외 전환 ----------
 let packedRoot = null;
 
-function loadMarket(mode, animate) {
-  ACTIVE_MARKET = mode;
-  ACTIVE_DATA = mode === "domestic" ? KR_SECTOR_DATA : SP500_DATA;
-  METRICS = buildMetrics(mode);
-
+// 데이터셋은 그대로 두고 원 배치만 다시 계산해서 새로 그림(시총/균등 사이즈 전환, 국내/해외 전환 공용)
+function rerenderMap(animate) {
   closeCompanySheet();
   closeRangeSheet();
   activeMetricKey = null;
@@ -875,6 +878,22 @@ function loadMarket(mode, animate) {
   packedRoot = buildPackedRoot(ACTIVE_DATA);
   renderMap(packedRoot);
   fitToViewport(!!animate);
+}
+
+document.getElementById("sizeModeBtn").addEventListener("click", (e) => {
+  const btn = e.currentTarget;
+  sizeMode = sizeMode === "equal" ? "marketCap" : "equal";
+  btn.textContent = sizeMode === "equal" ? "균등" : "시총";
+  btn.classList.toggle("active", sizeMode === "equal");
+  rerenderMap(true);
+});
+
+function loadMarket(mode, animate) {
+  ACTIVE_MARKET = mode;
+  ACTIVE_DATA = mode === "domestic" ? KR_SECTOR_DATA : SP500_DATA;
+  METRICS = buildMetrics(mode);
+
+  rerenderMap(animate);
 
   if (mode === "overseas") {
     refreshLiveData().catch(() => {});
