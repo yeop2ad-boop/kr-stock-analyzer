@@ -1981,7 +1981,7 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
   display: flex;
   border-top: 1px solid var(--border);
   background: var(--card-bg);
-  padding: 2px 4px calc(2px + env(safe-area-inset-bottom, 0px));
+  padding: 1px 4px calc(1px + env(safe-area-inset-bottom, 0px));
 }
 .bottom-nav-btn {
   flex: 1;
@@ -1994,12 +1994,13 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
   color: var(--muted);
   font-size: 11px;
   font-weight: 600;
-  padding: 2px 2px;
+  padding: 1px 2px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 .bottom-nav-btn svg { width: 26px; height: 26px; position: relative; top: 3px; }
-#bottomNavMoreBtn svg { width: 29px; height: 29px; top: 5px; }
+#bottomNavMoreBtn svg { width: 29px; height: 29px; top: 3px; }
+#bottomNavMoreBtn { position: relative; top: -2px; }
 #bottomNavMarketBtn svg { top: 5px; }
 .bottom-nav-btn.active { color: #e04600; }
 .bottom-nav-btn.active svg { color: #e04600; }

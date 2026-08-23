@@ -662,7 +662,7 @@ body {
   display: flex;
   border-top: 1px solid var(--line);
   background: var(--white);
-  padding: 2px 4px calc(2px + env(safe-area-inset-bottom));
+  padding: 1px 4px calc(1px + env(safe-area-inset-bottom));
   z-index: 40;
 }
 .bottom-nav-btn {
@@ -676,11 +676,12 @@ body {
   color: var(--text-soft);
   font-size: 11px;
   font-weight: 600;
-  padding: 2px 2px;
+  padding: 1px 2px;
   cursor: pointer;
 }
 .bottom-nav-btn svg { width: 26px; height: 26px; position: relative; top: 3px; }
-#bottomNavMoreBtn2 svg { width: 29px; height: 29px; top: 5px; }
+#bottomNavMoreBtn2 svg { width: 29px; height: 29px; top: 3px; }
+#bottomNavMoreBtn2 { position: relative; top: -2px; }
 #bottomNavMarketBtn2 svg { top: 5px; }
 .bottom-nav-btn.active { color: var(--orange-deep); }
 .bottom-nav-btn.active svg { color: var(--orange-deep); }
