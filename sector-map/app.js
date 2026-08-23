@@ -115,6 +115,29 @@ function fmtWonCompact(n) {
 
 // ---------- 1) pack 레이아웃 데이터 만들기 ----------
 // sizeMode: "marketCap"(기본, 시가총액 비례) | "equal"(균등 — 원 크기를 전부 동일하게)
+
+// 국내 지도만 고정 배치: 정중앙 십자로 기술(좌)/금융(우)/헬스케어(위)/산업재(아래)를 두고,
+// 나머지 6개 섹터는 그 사이사이 바깥쪽에 붙여 전체가 하나의 큰 원 모양이 되도록 배치한다.
+const KR_CENTER = WORLD_SIZE / 2;
+const KR_INNER_R = WORLD_SIZE * 0.25;
+const KR_OUTER_R = WORLD_SIZE * 0.39;
+function polar(deg, r) {
+  const rad = (deg * Math.PI) / 180;
+  return { x: KR_CENTER + r * Math.cos(rad), y: KR_CENTER + r * Math.sin(rad) };
+}
+const KR_SECTOR_ANCHORS = {
+  "Information Technology": polar(180, KR_INNER_R), // 기술 — 좌
+  Financials: polar(0, KR_INNER_R), // 금융 — 우
+  "Health Care": polar(270, KR_INNER_R), // 헬스케어 — 위
+  Industrials: polar(90, KR_INNER_R), // 산업재 — 아래
+  "Consumer Discretionary": polar(15, KR_OUTER_R),
+  Materials: polar(75, KR_OUTER_R),
+  Utilities: polar(135, KR_OUTER_R),
+  "Communication Services": polar(195, KR_OUTER_R),
+  "Consumer Staples": polar(255, KR_OUTER_R),
+  Energy: polar(315, KR_OUTER_R),
+};
+
 function buildPackedRoot(data) {
   const bySector = new Map();
   for (const c of data.companies) {
@@ -130,7 +153,37 @@ function buildPackedRoot(data) {
 
   const root = d3.hierarchy({ name: "root", children }).sum((d) => d.value).sort((a, b) => b.value - a.value);
 
+  // 항상 전체를 한 번에 pack해서 섹터별 크기 비율은 원래 알고리즘 그대로 정확하게 구한다
   d3.pack().size([WORLD_SIZE, WORLD_SIZE]).padding((d) => (d.depth === 1 ? 30 : 2))(root);
+
+  if (data === KR_SECTOR_DATA) {
+    // 국내만: 크기(r)는 그대로 두고, 목표 위치(십자+원형)로 최대한 당기되 서로 겹치지 않도록 d3-force로 미세 조정
+    const sectorNodes = root.children;
+    const initial = sectorNodes.map((s) => ({ x: s.x, y: s.y }));
+    sectorNodes.forEach((s) => {
+      const anchor = KR_SECTOR_ANCHORS[s.data.name] || { x: KR_CENTER, y: KR_CENTER };
+      s.x = anchor.x;
+      s.y = anchor.y;
+      s.tx = anchor.x;
+      s.ty = anchor.y;
+    });
+    const sim = d3
+      .forceSimulation(sectorNodes)
+      .force("collide", d3.forceCollide((d) => d.r + 20).iterations(6))
+      .force("x", d3.forceX((d) => d.tx).strength(0.4))
+      .force("y", d3.forceY((d) => d.ty).strength(0.4))
+      .stop();
+    for (let i = 0; i < 400; i++) sim.tick();
+
+    sectorNodes.forEach((s, i) => {
+      const dx = s.x - initial[i].x;
+      const dy = s.y - initial[i].y;
+      for (const leaf of s.children) {
+        leaf.x += dx;
+        leaf.y += dy;
+      }
+    });
+  }
 
   return root;
 }
@@ -548,7 +601,7 @@ document.addEventListener("click", (e) => {
   if (btn) showToast(btn.dataset.toast);
 });
 
-document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#logoModeBtn)").forEach((btn) => {
+document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#logoModeBtn):not(#watchFilterBtn)").forEach((btn) => {
   btn.addEventListener("click", () => {
     const group = btn.parentElement;
     group.querySelectorAll(".active").forEach((b) => b.classList.remove("active"));
@@ -567,6 +620,14 @@ logoModeBtn.addEventListener("click", (e) => {
   const colorOnly = mapWorld.classList.toggle("color-only");
   btn.textContent = colorOnly ? "색상" : "로고";
   btn.classList.toggle("active", !colorOnly);
+});
+
+// "관심" — 버튼 이름은 그대로, 누르면 주황 배경/흰 글씨로 강조되며 내 관심종목만 남김
+document.getElementById("watchFilterBtn").addEventListener("click", (e) => {
+  const btn = e.currentTarget;
+  watchOnlyMode = !watchOnlyMode;
+  btn.classList.toggle("active", watchOnlyMode);
+  applyAllFilters();
 });
 
 document.getElementById("resetViewBtn").addEventListener("click", () => {
@@ -628,6 +689,18 @@ function getMetricDomain(key) {
 const activeFilters = new Map();
 let liveDataLoaded = false; // 상승률/하락률/인기종목이 실시간 데이터로 한 번이라도 갱신됐는지
 
+// "관심" 버튼 — 본체(내투자닷컴)와 같은 origin이라 localStorage(watchlist_v1_us/kr)를 그대로 읽을 수 있다
+let watchOnlyMode = false;
+function getWatchlistSymbols() {
+  const key = ACTIVE_MARKET === "domestic" ? "watchlist_v1_kr" : "watchlist_v1_us";
+  try {
+    const list = JSON.parse(localStorage.getItem(key));
+    return new Set(Array.isArray(list) ? list.map((w) => w.symbol) : []);
+  } catch {
+    return new Set();
+  }
+}
+
 function isFullRange(key, range) {
   const [domMin, domMax] = getMetricDomain(key);
   return range[0] <= domMin && range[1] >= domMax;
@@ -635,9 +708,14 @@ function isFullRange(key, range) {
 
 // 슬라이더가 움직일 때마다 바로 호출 — 500개 원을 한 번씩 훑어서 활성 필터를 전부 만족하는지 확인(실시간 반응)
 function applyAllFilters() {
+  const watchSet = watchOnlyMode ? getWatchlistSymbols() : null;
   for (const c of ACTIVE_DATA.companies) {
     const el = bubbleBySymbol.get(c.symbol);
     if (!el) continue;
+    if (watchSet && !watchSet.has(c.symbol)) {
+      el.style.display = "none";
+      continue;
+    }
     let pass = true;
     for (const [key, range] of activeFilters) {
       const m = METRICS[key];
