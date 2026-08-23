@@ -54,7 +54,12 @@ function changeColorForText(pct) {
   return `rgb(${rgb.join(",")})`;
 }
 
+// 매번 외부(financialmodelingprep)에서 개별 요청하면 느려서, 미리 받아둔 로컬 캐시(logos/)를 우선 쓰고
+// 혹시 못 받아둔 심볼만 그때그때 외부 URL로 폴백한다(logo-failed 클래스가 붙기 전 마지막 시도).
 function logoUrl(symbol) {
+  return `logos/${encodeURIComponent(symbol)}.png`;
+}
+function logoUrlFallback(symbol) {
   return `https://financialmodelingprep.com/image-stock/${encodeURIComponent(symbol)}.png`;
 }
 
@@ -266,7 +271,14 @@ function renderCompanyBubble(leaf, sectorColorValue) {
   img.loading = "lazy";
   img.alt = d.symbol;
   img.src = logoUrl(d.symbol);
-  img.addEventListener("error", () => el.classList.add("logo-failed"), { once: true });
+  img.addEventListener("error", () => {
+    if (img.dataset.triedFallback) {
+      el.classList.add("logo-failed");
+    } else {
+      img.dataset.triedFallback = "1";
+      img.src = logoUrlFallback(d.symbol);
+    }
+  });
   el.appendChild(img);
 
   const fallback = document.createElement("div");
@@ -420,7 +432,7 @@ function openCompanySheet(d) {
   companySheetBody.innerHTML = `
     <button type="button" class="sheet-close" id="sheetCloseBtn" aria-label="닫기">&times;</button>
     <div class="sheet-top-row">
-      <img class="sheet-logo" src="${logoUrl(d.symbol)}" alt="${d.symbol}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+      <img class="sheet-logo" src="${logoUrl(d.symbol)}" alt="${d.symbol}" onerror="if(!this.dataset.tf){this.dataset.tf='1';this.src='${logoUrlFallback(d.symbol)}';}else{this.style.display='none';this.nextElementSibling.style.display='flex';}" />
       <div class="sheet-fallback-badge" style="display:none; background:${color};">${d.symbol}</div>
       <div>
         <div class="sheet-name">${d.name}</div>
