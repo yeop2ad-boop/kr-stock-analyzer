@@ -56,11 +56,18 @@ function changeColorForText(pct) {
 
 // 매번 외부(financialmodelingprep)에서 개별 요청하면 느려서, 미리 받아둔 로컬 캐시(logos/)를 우선 쓰고
 // 혹시 못 받아둔 심볼만 그때그때 외부 URL로 폴백한다(logo-failed 클래스가 붙기 전 마지막 시도).
-function logoUrl(symbol) {
-  return `logos/${encodeURIComponent(symbol)}.png`;
+// 로컬 캐시는 저(32px)/중(80px)/고(250px, 원본) 3단계로 나눠서, 화면에 실제로 보이는 크기에 맞는 것만 불러온다
+// (지도를 축소해서 보면 대부분 low만, 특정 섹터로 확대했을 때만 그 종목들이 mid/high로 자동 승급됨).
+function logoUrl(symbol, tier) {
+  return `logos/${tier || "low"}/${encodeURIComponent(symbol)}.png`;
 }
 function logoUrlFallback(symbol) {
   return `https://financialmodelingprep.com/image-stock/${encodeURIComponent(symbol)}.png`;
+}
+function pickLogoTier(onScreenRadiusPx) {
+  if (onScreenRadiusPx >= 55) return "high";
+  if (onScreenRadiusPx >= 20) return "mid";
+  return "low";
 }
 
 function fmtMarketCap(n) {
@@ -270,16 +277,18 @@ function renderCompanyBubble(leaf, sectorColorValue) {
   img.className = "company-logo-img";
   img.loading = "lazy";
   img.alt = d.symbol;
-  img.src = logoUrl(d.symbol);
+  img.dataset.tier = "low";
+  img.src = logoUrl(d.symbol, "low");
   img.addEventListener("error", () => {
-    if (img.dataset.triedFallback) {
-      el.classList.add("logo-failed");
-    } else {
+    if (!img.dataset.triedFallback) {
       img.dataset.triedFallback = "1";
       img.src = logoUrlFallback(d.symbol);
+    } else {
+      el.classList.add("logo-failed");
     }
   });
   el.appendChild(img);
+  el.dataset.r = leaf.r; // 월드 좌표 반지름 — 화면상 크기 계산용(저/중/고화질 전환)
 
   const fallback = document.createElement("div");
   fallback.className = "company-fallback-badge";
@@ -310,6 +319,28 @@ const maxK = 10;
 function applyTransform(animate) {
   mapWorld.style.transition = animate ? "transform 0.35s cubic-bezier(.2,.8,.3,1)" : "none";
   mapWorld.style.transform = `translate(${view.x}px, ${view.y}px) scale(${view.k})`;
+  scheduleLogoQualityUpdate();
+}
+
+// 화면에 실제로 보이는 크기(월드 반지름 x 현재 배율)에 맞춰 로고 화질을 저/중/고로 자동 전환.
+// 드래그/휠 중에는 매 프레임 부르지 않고, 움직임이 멈춘 뒤 한 번만 전체를 훑도록 디바운스.
+let logoQualityTimer = null;
+function scheduleLogoQualityUpdate() {
+  clearTimeout(logoQualityTimer);
+  logoQualityTimer = setTimeout(updateLogoQuality, 180);
+}
+function updateLogoQuality() {
+  for (const [symbol, el] of bubbleBySymbol) {
+    if (el.classList.contains("logo-failed")) continue;
+    const img = el.querySelector(".company-logo-img");
+    if (!img || img.dataset.triedFallback) continue;
+    const r = parseFloat(el.dataset.r || "0");
+    const tier = pickLogoTier(r * view.k);
+    if (img.dataset.tier !== tier) {
+      img.dataset.tier = tier;
+      img.src = logoUrl(symbol, tier);
+    }
+  }
 }
 
 function clampView() {
@@ -432,7 +463,7 @@ function openCompanySheet(d) {
   companySheetBody.innerHTML = `
     <button type="button" class="sheet-close" id="sheetCloseBtn" aria-label="닫기">&times;</button>
     <div class="sheet-top-row">
-      <img class="sheet-logo" src="${logoUrl(d.symbol)}" alt="${d.symbol}" onerror="if(!this.dataset.tf){this.dataset.tf='1';this.src='${logoUrlFallback(d.symbol)}';}else{this.style.display='none';this.nextElementSibling.style.display='flex';}" />
+      <img class="sheet-logo" src="${logoUrl(d.symbol, "mid")}" alt="${d.symbol}" onerror="if(!this.dataset.tf){this.dataset.tf='1';this.src='${logoUrlFallback(d.symbol)}';}else{this.style.display='none';this.nextElementSibling.style.display='flex';}" />
       <div class="sheet-fallback-badge" style="display:none; background:${color};">${d.symbol}</div>
       <div>
         <div class="sheet-name">${d.name}</div>
@@ -839,8 +870,25 @@ document.getElementById("marketTogglePill").addEventListener("click", (e) => {
   loadMarket(mode, true);
 });
 
+document.getElementById("brandLogoBtn").addEventListener("click", () => {
+  // 본체(내투자닷컴)로 돌아가기 — 세션 동안은 다시 섹터맵으로 안 튕기도록 플래그를 남김
+  try {
+    sessionStorage.setItem("ntj_skip_map_redirect", "1");
+  } catch {}
+  window.location.href = "../index.html";
+});
+
 // ---------- 초기화 ----------
 window.addEventListener("resize", () => fitToViewport(false));
 
-loadMarket("overseas", false);
+// 내투자닷컴 첫 화면에서 넘어온 경우 ?market=domestic 으로 국내를 기본값으로 염(데이터 없으면 해외로 대체)
+const requestedMarket = new URLSearchParams(window.location.search).get("market");
+const initialMarket =
+  requestedMarket === "domestic" && typeof KR_SECTOR_DATA !== "undefined" && KR_SECTOR_DATA.companies && KR_SECTOR_DATA.companies.length
+    ? "domestic"
+    : "overseas";
+document.querySelectorAll("#marketTogglePill .toggle-btn").forEach((b) => {
+  b.classList.toggle("active", b.dataset.market === initialMarket);
+});
+loadMarket(initialMarket, false);
 loadingIndicator.classList.add("hidden");

@@ -2,6 +2,12 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
+<script>
+  // 첫 진입은 섹터맵(국내)을 메인 화면으로 — 섹터맵에서 "내투자." 로고를 눌러 돌아온 경우(세션당 1회)는 다시 안 튕겨냄
+  if (!sessionStorage.getItem("ntj_skip_map_redirect")) {
+    location.replace("sector-map/index.html?market=domestic");
+  }
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>내투자닷컴: 투자 성향부터 주식 분석까지</title>
 <meta name="description" content="AI 데이터 기반, 실시간 상승압력도 & 투자 안정성 리포트" />
