@@ -630,6 +630,7 @@ function buildMetrics(market) {
       fmt: (v) => `TOP${Math.max(1, Math.round(v))}`,
       fixedDomain: [1, popularRank.universeSize],
       refreshRank: popularRank.refresh,
+      getRankCount: () => popularRank.map.size,
     },
     riseRate: { label: "상승률", hasData: true, live: !isKr, get: (c) => c.changePercent, onlyPositive: true, fmt: (v) => `${v.toFixed(1)}%` },
     fallRate: { label: "하락률", hasData: true, live: !isKr, get: (c) => c.changePercent, onlyNegative: true, fmt: (v) => `${v.toFixed(1)}%` },
@@ -858,6 +859,18 @@ function createSliderController(getKey, els, onNoDataChange) {
   return ctrl;
 }
 
+// 시트가 "준비중" 상태일 때 보여줄 문구 — 거래량(순위)은 지금까지 몇 개나 순위가 매겨졌는지 숫자로 보여준다
+// (해외는 실시간 조회가 끝나야 순위가 채워지므로 이 숫자가 로딩 진행 상황이 된다)
+function noDataMessage(key, m) {
+  if (key === "popularStocks" && m.getRankCount) {
+    const universe = m.fixedDomain[1];
+    const count = m.getRankCount();
+    const marketLabel = ACTIVE_MARKET === "domestic" ? "국내 주식 시장과" : "글로벌 주식 시장과";
+    return `${marketLabel} 실시간 연동중... ${count}/${universe}`;
+  }
+  return m.needsLive && !liveDataLoaded ? "실시간 데이터를 불러오는 중입니다..." : "데이터 준비중입니다";
+}
+
 // ---------- 6-1) 빠른 버튼 하나짜리 바텀시트 ----------
 const rangeSheet = document.getElementById("rangeSheet");
 const rangeSheetTitle = document.getElementById("rangeSheetTitle");
@@ -876,7 +889,7 @@ const quickSliderCtrl = createSliderController(
   },
   (noData, m) => {
     rangeSheet.classList.toggle("no-data", noData);
-    if (noData && m) rangeSheetNote.textContent = m.needsLive && !liveDataLoaded ? "실시간 데이터를 불러오는 중입니다..." : "데이터 준비중입니다";
+    if (noData && m) rangeSheetNote.textContent = noDataMessage(quickSheetKey, m);
   }
 );
 
@@ -947,9 +960,10 @@ function buildAllFiltersPanel() {
         <div class="range-slider-thumb" tabindex="0"></div>
       </div>
       <div class="range-slider-labels"></div>
-      <div class="filter-block-note">${m.needsLive && !liveDataLoaded ? "실시간 데이터를 불러오는 중입니다..." : "데이터 준비중입니다"}</div>
+      <div class="filter-block-note">${noDataMessage(key, m)}</div>
     `;
     allFiltersBody.appendChild(block);
+    const blockNote = block.querySelector(".filter-block-note");
 
     const ctrl = createSliderController(
       () => key,
@@ -960,7 +974,10 @@ function buildAllFiltersPanel() {
         thumbMax: block.querySelectorAll(".range-slider-thumb")[1],
         labels: block.querySelector(".range-slider-labels"),
       },
-      (noData) => block.classList.toggle("no-data", noData)
+      (noData, mm) => {
+        block.classList.toggle("no-data", noData);
+        if (noData && mm) blockNote.textContent = noDataMessage(key, mm);
+      }
     );
     ctrl.refresh();
     block.querySelector(".filter-block-reset").addEventListener("click", () => ctrl.reset());
@@ -1024,33 +1041,15 @@ async function fetchSectorScreenerLive(scrId) {
   return (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
 }
 
-// 동시에 너무 많이 쏘지 않도록 3개씩 묶어서 순차 처리
-async function mapWithConcurrency(items, limit, worker) {
-  const results = [];
-  let i = 0;
-  async function run() {
-    while (i < items.length) {
-      const idx = i++;
-      try {
-        results[idx] = await worker(items[idx]);
-      } catch {
-        results[idx] = null;
-      }
-    }
-  }
-  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, run));
-  return results;
-}
-
 async function refreshLiveData() {
   const companyBySymbol = new Map(ACTIVE_DATA.companies.map((c) => [c.symbol, c]));
   const sectorIds = Object.values(LIVE_SECTOR_SCREENER_ID);
-
-  const results = await mapWithConcurrency(sectorIds, 3, fetchSectorScreenerLive);
-
   let updated = 0;
-  for (const quotes of results) {
-    if (!quotes) continue;
+
+  // 섹터 하나가 끝날 때마다 바로 반영 — 거래량(순위) 시트를 보고 있으면 "OO/500" 진행 숫자가 실시간으로 올라간다
+  async function processSector(scrId) {
+    const quotes = await fetchSectorScreenerLive(scrId).catch(() => null);
+    if (!quotes) return;
     for (const q of quotes) {
       if (!q || !q.symbol) continue;
       let c = companyBySymbol.get(q.symbol) || companyBySymbol.get(q.symbol.replace("-", "."));
@@ -1061,7 +1060,21 @@ async function refreshLiveData() {
       }
       updated++;
     }
+    if (METRICS.popularStocks) {
+      METRICS.popularStocks.refreshRank();
+      if (quickSheetKey === "popularStocks" && rangeSheet.classList.contains("no-data")) {
+        rangeSheetNote.textContent = noDataMessage("popularStocks", METRICS.popularStocks);
+      }
+    }
   }
+
+  let idx = 0;
+  async function worker() {
+    while (idx < sectorIds.length) {
+      await processSector(sectorIds[idx++]);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(3, sectorIds.length) }, worker));
 
   if (updated === 0) return false; // 전부 실패(프록시 다운 등) — 정적 스냅샷 값 유지
   liveDataLoaded = true;
@@ -1070,7 +1083,6 @@ async function refreshLiveData() {
   for (const key of ["riseRate", "fallRate"]) {
     if (METRICS[key]) delete METRICS[key].domain;
   }
-  if (METRICS.popularStocks) METRICS.popularStocks.refreshRank(); // 거래대금이 갱신됐으니 거래량 순위(TOP)도 다시 계산
   applyAllFilters(); // 라이브 값이 바뀌었으니 지금 걸려있는 필터도 새 값 기준으로 재적용
   quickSliderCtrl.refresh(); // 빠른 시트가 라이브 지표를 보고 있었다면 눈금/썸 위치 갱신
   panelControllers.forEach((ctrl) => ctrl.refresh()); // 전체 설정 패널이 열려있었다면 해당 슬라이더들도 갱신
