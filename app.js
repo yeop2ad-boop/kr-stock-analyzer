@@ -2312,6 +2312,15 @@ bottomNavButtons.more.addEventListener("click", () => {
   openMorePanel();
 });
 
+// 섹터맵(지도) 하단 네비의 시장/캘린더/더보기 버튼에서 넘어온 경우 해당 패널을 바로 열어줌(?open=market|calendar|more)
+(() => {
+  const openParam = new URLSearchParams(window.location.search).get("open");
+  if (!openParam) return;
+  const targetBtn = { market: bottomNavButtons.market, calendar: bottomNavButtons.calendar, more: bottomNavButtons.more }[openParam];
+  if (targetBtn) targetBtn.click();
+  history.replaceState(null, "", window.location.pathname); // 새로고침 시 다시 안 열리도록 쿼리스트링 제거
+})();
+
 // ---------- 시장/투데이: companyPanel과 동일한 슬라이드 오버레이 패턴(캐러셀 밖에서 독립 관리) ----------
 let marketPanelOpen = false;
 function openMarketPanel() {

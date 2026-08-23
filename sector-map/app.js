@@ -1029,14 +1029,17 @@ document.getElementById("marketTogglePill").addEventListener("click", (e) => {
 });
 
 // 본체(내투자닷컴)로 돌아가기 — 세션 동안은 다시 섹터맵으로 안 튕기도록 플래그를 남김
-function goToMainSite() {
+function goToMainSite(openPanel) {
   try {
     sessionStorage.setItem("ntj_skip_map_redirect", "1");
   } catch {}
-  window.location.href = "../index.html";
+  window.location.href = openPanel ? `../index.html?open=${openPanel}` : "../index.html";
 }
-document.getElementById("brandLogoBtn").addEventListener("click", goToMainSite);
-document.getElementById("bottomNavStudyBtn").addEventListener("click", goToMainSite);
+document.getElementById("brandLogoBtn").addEventListener("click", () => goToMainSite());
+document.getElementById("bottomNavStudyBtn").addEventListener("click", () => goToMainSite());
+document.getElementById("bottomNavMarketBtn2").addEventListener("click", () => goToMainSite("market"));
+document.getElementById("bottomNavCalendarBtn2").addEventListener("click", () => goToMainSite("calendar"));
+document.getElementById("bottomNavMoreBtn2").addEventListener("click", () => goToMainSite("more"));
 
 // ---------- 초기화 ----------
 window.addEventListener("resize", () => fitToViewport(false));
