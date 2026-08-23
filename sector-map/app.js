@@ -115,29 +115,6 @@ function fmtWonCompact(n) {
 
 // ---------- 1) pack 레이아웃 데이터 만들기 ----------
 // sizeMode: "marketCap"(기본, 시가총액 비례) | "equal"(균등 — 원 크기를 전부 동일하게)
-
-// 국내 지도만 고정 배치: 정중앙 십자로 기술(좌)/금융(우)/헬스케어(위)/산업재(아래)를 두고,
-// 나머지 6개 섹터는 그 사이사이 바깥쪽에 붙여 전체가 하나의 큰 원 모양이 되도록 배치한다.
-const KR_CENTER = WORLD_SIZE / 2;
-const KR_INNER_R = WORLD_SIZE * 0.25;
-const KR_OUTER_R = WORLD_SIZE * 0.39;
-function polar(deg, r) {
-  const rad = (deg * Math.PI) / 180;
-  return { x: KR_CENTER + r * Math.cos(rad), y: KR_CENTER + r * Math.sin(rad) };
-}
-const KR_SECTOR_ANCHORS = {
-  "Information Technology": polar(180, KR_INNER_R), // 기술 — 좌
-  Financials: polar(0, KR_INNER_R), // 금융 — 우
-  "Health Care": polar(270, KR_INNER_R), // 헬스케어 — 위
-  Industrials: polar(90, KR_INNER_R), // 산업재 — 아래
-  "Consumer Discretionary": polar(15, KR_OUTER_R),
-  Materials: polar(75, KR_OUTER_R),
-  Utilities: polar(135, KR_OUTER_R),
-  "Communication Services": polar(195, KR_OUTER_R),
-  "Consumer Staples": polar(255, KR_OUTER_R),
-  Energy: polar(315, KR_OUTER_R),
-};
-
 function buildPackedRoot(data) {
   const bySector = new Map();
   for (const c of data.companies) {
@@ -153,37 +130,7 @@ function buildPackedRoot(data) {
 
   const root = d3.hierarchy({ name: "root", children }).sum((d) => d.value).sort((a, b) => b.value - a.value);
 
-  // 항상 전체를 한 번에 pack해서 섹터별 크기 비율은 원래 알고리즘 그대로 정확하게 구한다
   d3.pack().size([WORLD_SIZE, WORLD_SIZE]).padding((d) => (d.depth === 1 ? 30 : 2))(root);
-
-  if (data === KR_SECTOR_DATA) {
-    // 국내만: 크기(r)는 그대로 두고, 목표 위치(십자+원형)로 최대한 당기되 서로 겹치지 않도록 d3-force로 미세 조정
-    const sectorNodes = root.children;
-    const initial = sectorNodes.map((s) => ({ x: s.x, y: s.y }));
-    sectorNodes.forEach((s) => {
-      const anchor = KR_SECTOR_ANCHORS[s.data.name] || { x: KR_CENTER, y: KR_CENTER };
-      s.x = anchor.x;
-      s.y = anchor.y;
-      s.tx = anchor.x;
-      s.ty = anchor.y;
-    });
-    const sim = d3
-      .forceSimulation(sectorNodes)
-      .force("collide", d3.forceCollide((d) => d.r + 20).iterations(6))
-      .force("x", d3.forceX((d) => d.tx).strength(0.4))
-      .force("y", d3.forceY((d) => d.ty).strength(0.4))
-      .stop();
-    for (let i = 0; i < 400; i++) sim.tick();
-
-    sectorNodes.forEach((s, i) => {
-      const dx = s.x - initial[i].x;
-      const dy = s.y - initial[i].y;
-      for (const leaf of s.children) {
-        leaf.x += dx;
-        leaf.y += dy;
-      }
-    });
-  }
 
   return root;
 }
@@ -601,7 +548,7 @@ document.addEventListener("click", (e) => {
   if (btn) showToast(btn.dataset.toast);
 });
 
-document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#logoModeBtn):not(#watchFilterBtn)").forEach((btn) => {
+document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#logoModeBtn):not(#watchFilterBtn):not(#saveMapBtn)").forEach((btn) => {
   btn.addEventListener("click", () => {
     const group = btn.parentElement;
     group.querySelectorAll(".active").forEach((b) => b.classList.remove("active"));
@@ -1121,6 +1068,69 @@ function goToMainSite(openPanel) {
   } catch {}
   window.location.href = openPanel ? `../index.html?open=${openPanel}` : "../index.html";
 }
+// ---------- "저장" — 지금 화면에 보이는 지도를 캡처해서 전체화면으로 보여주고, 공유/저장하기 ----------
+const mapSnapshotOverlay = document.getElementById("mapSnapshotOverlay");
+const mapSnapshotImg = document.getElementById("mapSnapshotImg");
+const mapSnapshotSpinner = document.getElementById("mapSnapshotSpinner");
+let mapSnapshotBlob = null;
+
+function closeMapSnapshot() {
+  mapSnapshotOverlay.classList.remove("open");
+  mapSnapshotImg.style.display = "none";
+  mapSnapshotImg.src = "";
+  mapSnapshotBlob = null;
+}
+
+document.getElementById("saveMapBtn").addEventListener("click", async () => {
+  mapSnapshotOverlay.classList.add("open");
+  mapSnapshotImg.style.display = "none";
+  mapSnapshotSpinner.style.display = "block";
+  try {
+    // 지금 화면(뷰포트)에 실제로 보이는 부분만 캡처 — 확대/이동한 상태 그대로
+    const blob = await htmlToImage.toBlob(mapViewport, {
+      backgroundColor: "#ffffff",
+      pixelRatio: Math.min(2, window.devicePixelRatio || 1),
+    });
+    mapSnapshotBlob = blob;
+    mapSnapshotImg.src = URL.createObjectURL(blob);
+    mapSnapshotImg.style.display = "block";
+  } catch (err) {
+    showToast("캡처에 실패했어요");
+    closeMapSnapshot();
+  } finally {
+    mapSnapshotSpinner.style.display = "none";
+  }
+});
+
+document.getElementById("mapSnapshotCloseBtn").addEventListener("click", closeMapSnapshot);
+
+document.getElementById("mapSnapshotShareBtn").addEventListener("click", async () => {
+  if (!mapSnapshotBlob) return;
+  const file = new File([mapSnapshotBlob], "내투자-섹터맵.png", { type: "image/png" });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], title: "내투자. 섹터맵" });
+    } catch {} // 사용자가 공유 취소한 경우 등 — 별도 처리 없음
+  } else {
+    showToast("이 브라우저는 공유를 지원하지 않아요. 저장 후 직접 보내주세요");
+  }
+});
+
+document.getElementById("mapSnapshotSaveBtn").addEventListener("click", () => {
+  if (!mapSnapshotBlob) return;
+  // TODO: 카카오톡 "나에게 보내기" 자동 전송은 Kakao JS SDK 앱 키 + 공개 이미지 URL(업로드 서버)이 있어야 가능 —
+  // 지금은 기기에 이미지를 저장하고, 사용자가 카카오톡 등에서 직접 보내는 방식으로 대체함.
+  const url = URL.createObjectURL(mapSnapshotBlob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "내투자-섹터맵.png";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+  showToast("사진이 저장됐어요");
+});
+
 document.getElementById("brandLogoBtn").addEventListener("click", () => goToMainSite());
 document.getElementById("mapSearchBtn").addEventListener("click", () => goToMainSite("search"));
 document.getElementById("bottomNavStudyBtn").addEventListener("click", () => goToMainSite());
