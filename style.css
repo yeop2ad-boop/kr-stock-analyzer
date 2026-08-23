@@ -1999,6 +1999,8 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
   -webkit-tap-highlight-color: transparent;
 }
 .bottom-nav-btn svg { width: 26px; height: 26px; position: relative; top: 3px; }
+#bottomNavMoreBtn svg { width: 29px; height: 29px; top: 5px; }
+#bottomNavMarketBtn svg { top: 5px; }
 .bottom-nav-btn.active { color: #e04600; }
 .bottom-nav-btn.active svg { color: #e04600; }
 .bottom-nav-btn:active,

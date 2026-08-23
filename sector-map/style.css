@@ -680,6 +680,8 @@ body {
   cursor: pointer;
 }
 .bottom-nav-btn svg { width: 26px; height: 26px; position: relative; top: 3px; }
+#bottomNavMoreBtn2 svg { width: 29px; height: 29px; top: 5px; }
+#bottomNavMarketBtn2 svg { top: 5px; }
 .bottom-nav-btn.active { color: var(--orange-deep); }
 .bottom-nav-btn.active svg { color: var(--orange-deep); }
 
