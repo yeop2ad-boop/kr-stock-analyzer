@@ -2195,6 +2195,7 @@ document.addEventListener("click", (e) => {
 
 // ---------- 하단 고정 네비게이션(홈=기업검색/캘린더/시장/더보기) ----------
 const bottomNavButtons = {
+  map: el("bottomNavMapBtn"),
   home: el("bottomNavHomeBtn"),
   calendar: el("bottomNavCalendarBtn"),
   market: el("bottomNavMarketBtn"),
@@ -2289,6 +2290,9 @@ function setTheme(theme) {
 applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light");
 themeLightBtn.addEventListener("click", () => setTheme("light"));
 themeDarkBtn.addEventListener("click", () => setTheme("dark"));
+bottomNavButtons.map.addEventListener("click", () => {
+  window.location.href = "sector-map/index.html";
+});
 bottomNavButtons.home.addEventListener("click", () => {
   setBottomNavActive("home");
   closeCompanyPanel();
