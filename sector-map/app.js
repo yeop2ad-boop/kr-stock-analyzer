@@ -1013,6 +1013,7 @@ function loadMarket(mode, animate) {
   ACTIVE_DATA = mode === "domestic" ? KR_SECTOR_DATA : SP500_DATA;
   METRICS = buildMetrics(mode);
   activeFilters.clear(); // 시장이 바뀌면 종목 구성 자체가 달라지므로 필터는 초기화
+  document.querySelector(".top-bar").classList.toggle("is-overseas", mode === "overseas");
 
   rerenderMap(animate);
 

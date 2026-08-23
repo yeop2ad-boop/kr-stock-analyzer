@@ -52,13 +52,19 @@ body {
   background: linear-gradient(180deg, var(--orange) 0%, var(--orange-deep) 100%);
   padding-top: env(safe-area-inset-top);
   z-index: 40;
+  transition: background 0.2s ease;
+}
+/* 해외 탭이 활성일 때는 헤더 배경이 흰색으로, 국내일 때는 주황 배경 유지 (호갱노노 단지/매물 토글 참고, 색상만 우리 브랜드색으로) */
+.top-bar.is-overseas {
+  background: var(--white);
+  border-bottom: 1px solid var(--line);
 }
 
 .top-bar-row {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 14px 12px;
+  padding: 10px 14px;
 }
 
 .brand-logo {
@@ -73,6 +79,7 @@ body {
   padding: 0 2px 0 0;
   cursor: pointer;
 }
+.top-bar.is-overseas .brand-logo { color: var(--text-dark); }
 .brand-dot { color: var(--red-dot); }
 
 .toggle-pill {
@@ -82,7 +89,9 @@ body {
   border-radius: 999px;
   padding: 3px;
   gap: 2px;
+  transition: background 0.2s ease;
 }
+.top-bar.is-overseas .toggle-pill { background: var(--bg-app); }
 .toggle-btn {
   border: none;
   background: transparent;
@@ -94,9 +103,10 @@ body {
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
-/* 국내/해외 활성 색상은 내투자닷컴 본체와 동일한 규칙(국내=파랑, 해외=빨강) */
-.toggle-btn[data-market="domestic"].active { background: #6b9bff; color: #14161c; }
-.toggle-btn[data-market="overseas"].active { background: #f60303; color: #ffffff; }
+.top-bar.is-overseas .toggle-btn { color: var(--text-mid); }
+/* 선택된 쪽만 강조 — 국내가 켜지면 흰 배경 위에 흰 알약(주황 글씨), 해외가 켜지면 흰 배경 위에 주황 알약(흰 글씨) */
+.toggle-btn[data-market="domestic"].active { background: var(--white); color: var(--orange-deep); }
+.toggle-btn[data-market="overseas"].active { background: var(--orange); color: #ffffff; }
 
 .top-bar-icons {
   margin-left: auto;
@@ -110,14 +120,15 @@ body {
   border: none;
   background: transparent;
   color: var(--white);
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   cursor: pointer;
 }
+.top-bar.is-overseas .icon-btn { color: var(--text-dark); }
 .icon-btn:active { background: rgba(255,255,255,0.18); }
 .icon-btn svg { width: 21px; height: 21px; }
 .icon-badge-dot {
@@ -130,6 +141,7 @@ body {
   background: #ff3b30;
   border: 1.5px solid var(--orange);
 }
+.top-bar.is-overseas .icon-badge-dot { border-color: var(--white); }
 
 .filter-bar {
   display: flex;
@@ -318,10 +330,10 @@ body {
   color: var(--text-dark);
   font-size: 12.5px;
   font-weight: 700;
-  width: 52px;
-  height: 52px;
+  width: 39px;
+  height: 39px;
   padding: 0;
-  border-radius: 12px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
