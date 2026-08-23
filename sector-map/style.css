@@ -679,7 +679,7 @@ body {
   padding: 4px 2px;
   cursor: pointer;
 }
-.bottom-nav-btn svg { width: 23px; height: 23px; }
+.bottom-nav-btn svg { width: 26px; height: 26px; position: relative; top: 3px; }
 .bottom-nav-btn.active { color: var(--orange-deep); }
 .bottom-nav-btn.active svg { color: var(--orange-deep); }
 

@@ -1998,7 +1998,7 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-.bottom-nav-btn svg { width: 23px; height: 23px; }
+.bottom-nav-btn svg { width: 26px; height: 26px; position: relative; top: 3px; }
 .bottom-nav-btn.active { color: #e04600; }
 .bottom-nav-btn.active svg { color: #e04600; }
 .bottom-nav-btn:active,
