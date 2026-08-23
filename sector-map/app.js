@@ -113,6 +113,13 @@ function fmtWonCompact(n) {
   return `${sign}${Math.round(Math.abs(n)).toLocaleString()}원`;
 }
 
+// 시가총액 필터 슬라이더 눈금 전용 — 억 단위는 날리고 "조" 단위로만 반올림해서 표기(예: 148조)
+function fmtWonTrillionOnly(n) {
+  if (n === null || n === undefined) return "정보 없음";
+  const jo = Math.round(n / 1e12);
+  return `${jo.toLocaleString()}조`;
+}
+
 // ---------- 1) pack 레이아웃 데이터 만들기 ----------
 // sizeMode: "marketCap"(기본, 시가총액 비례) | "equal"(균등 — 원 크기를 전부 동일하게)
 function buildPackedRoot(data) {
@@ -588,23 +595,41 @@ document.getElementById("fitAllBtn").addEventListener("click", () => fitToViewpo
 // 해외(S&P500): 매출액·현금흐름·순이익 증가율/EPS/PER/시가총액/배당률은 하루 1회 배치, 상승률·하락률·인기종목은
 // 페이지가 열릴 때마다 Yahoo에서 실시간으로 새로 받아온다(refreshLiveData). 국내(KOSPI200+KOSDAQ150)는 섹터 스크리너가
 // 없어 종목별로 하나씩 조회해야 해서, 10개 지표 전부 하루 1회 배치 스냅샷 값을 쓴다(배당률만 아직 수집 로직이 없어 준비중).
+// "거래량" — 원값(달러/원 거래대금)이 아니라 거래대금 순위(1등이 제일 많이 거래됨)로 필터링한다.
+// 국내는 KOSPI200+KOSDAQ150 전체 유니버스 기준 TOP350, 해외는 S&P500 기준 TOP500까지 고정 범위로 보여준다.
+function buildPopularRank(isKr) {
+  const state = { map: new Map() };
+  state.refresh = () => {
+    const sorted = [...ACTIVE_DATA.companies]
+      .filter((c) => typeof c.dollarVolume === "number" && Number.isFinite(c.dollarVolume))
+      .sort((a, b) => b.dollarVolume - a.dollarVolume);
+    state.map = new Map(sorted.map((c, i) => [c.symbol, i + 1]));
+  };
+  state.universeSize = isKr ? 350 : 500;
+  return state;
+}
+
 function buildMetrics(market) {
   const isKr = market === "domestic";
   const capFmt = isKr ? fmtWonCompact : fmtMarketCap;
   const epsFmt = isKr ? (v) => `₩${Math.round(v).toLocaleString()}` : (v) => `$${v.toFixed(2)}`;
+  const popularRank = buildPopularRank(isKr);
+  popularRank.refresh();
   return {
     revenueGrowth: { label: "매출액 증가", hasData: true, get: (c) => c.revenueGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
     cashFlowGrowth: { label: "현금흐름 증가", hasData: true, get: (c) => c.cashFlowGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
     netIncomeGrowth: { label: "순이익 증가", hasData: true, get: (c) => c.netIncomeGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
     eps: { label: "EPS", hasData: true, get: (c) => c.eps, fmt: epsFmt },
     per: { label: "PER", hasData: true, get: (c) => c.per, fmt: (v) => `${v.toFixed(1)}배`, domainMax: 80 },
-    marketCap: { label: "시가총액", hasData: true, get: (c) => c.marketCap, fmt: capFmt },
+    marketCap: { label: "시가총액", hasData: true, get: (c) => c.marketCap, fmt: isKr ? fmtWonTrillionOnly : capFmt },
     popularStocks: {
-      label: "인기종목",
+      label: "거래량",
       hasData: true,
       needsLive: !isKr,
-      get: (c) => c.dollarVolume,
-      fmt: (v) => capFmt(v) + "/일",
+      get: (c) => popularRank.map.get(c.symbol),
+      fmt: (v) => `TOP${Math.max(1, Math.round(v))}`,
+      fixedDomain: [1, popularRank.universeSize],
+      refreshRank: popularRank.refresh,
     },
     riseRate: { label: "상승률", hasData: true, live: !isKr, get: (c) => c.changePercent, onlyPositive: true, fmt: (v) => `${v.toFixed(1)}%` },
     fallRate: { label: "하락률", hasData: true, live: !isKr, get: (c) => c.changePercent, onlyNegative: true, fmt: (v) => `${v.toFixed(1)}%` },
@@ -615,6 +640,8 @@ let METRICS = buildMetrics("overseas");
 
 function getMetricDomain(key) {
   const m = METRICS[key];
+  // 거래량(순위) 지표는 실제 값 대신 고정 순위 범위(TOP1~TOP350/500)를 그대로 씀 — 데이터 개수와 무관하게 항상 동일
+  if (m.fixedDomain) return m.fixedDomain;
   // 실시간으로 값이 바뀌는 지표는 열 때마다 도메인을 새로 계산(캐시하면 실시간 갱신 후에도 옛 범위로 고정돼버림)
   if (m.domain && !m.live && !m.needsLive) return m.domain;
   let values = ACTIVE_DATA.companies.map(m.get).filter((v) => typeof v === "number" && Number.isFinite(v));
@@ -653,6 +680,14 @@ function isFullRange(key, range) {
   return range[0] <= domMin && range[1] >= domMax;
 }
 
+// 10개 버튼 중 실제로 범위가 좁혀진(=필터가 걸린) 것만 계속 주황 배경으로 표시 — 시트를 닫아도 유지되고,
+// activeFilters가 메모리 상태라 새로고침하면 자연히 초기화된다.
+function syncMetricChipActive() {
+  document.querySelectorAll(".metric-chip").forEach((b) => {
+    b.classList.toggle("active", activeFilters.has(b.dataset.metric));
+  });
+}
+
 // 슬라이더가 움직일 때마다 바로 호출 — 500개 원을 한 번씩 훑어서 활성 필터를 전부 만족하는지 확인(실시간 반응)
 function applyAllFilters() {
   const watchSet = watchOnlyMode ? getWatchlistSymbols() : null;
@@ -675,6 +710,7 @@ function applyAllFilters() {
     }
     el.style.display = pass ? "" : "none";
   }
+  syncMetricChipActive();
 }
 
 function setFilterRange(key, range) {
@@ -685,10 +721,36 @@ function setFilterRange(key, range) {
 
 function resetAllFilters() {
   activeFilters.clear();
-  applyAllFilters();
-  document.querySelectorAll(".metric-chip").forEach((b) => b.classList.remove("active"));
+  applyAllFilters(); // 안에서 syncMetricChipActive()까지 처리됨
   quickSliderCtrl.refresh();
   panelControllers.forEach((ctrl) => ctrl.refresh());
+}
+
+// 국내 시가총액 슬라이더 전용 비선형 스케일 — SK스퀘어(중간 기준점)~맨 마지막(최소)을 막대의 3/4, 그 위로
+// 삼성전자/SK하이닉스 같은 최상위 초대형주까지는 나머지 1/4에 몰아넣어서, 대다수인 중·소형주 구간의 해상도를 확보한다.
+const KR_MARKETCAP_SPLIT_SYMBOL = "402340.KS"; // SK스퀘어
+const KR_MARKETCAP_SPLIT_FRAC = 0.75;
+function getKrMarketCapAnchor() {
+  const list = typeof KR_SECTOR_DATA !== "undefined" ? KR_SECTOR_DATA.companies : [];
+  const c = list.find((x) => x.symbol === KR_MARKETCAP_SPLIT_SYMBOL);
+  return c ? c.marketCap : null;
+}
+function scaleForKey(key) {
+  if (ACTIVE_MARKET !== "domestic" || key !== "marketCap") return null;
+  const anchor = getKrMarketCapAnchor();
+  const [domMin, domMax] = getMetricDomain(key);
+  if (!anchor || anchor <= domMin || anchor >= domMax) return null;
+  const s = KR_MARKETCAP_SPLIT_FRAC;
+  return {
+    toFrac(v) {
+      if (v <= anchor) return ((v - domMin) / (anchor - domMin)) * s;
+      return s + ((v - anchor) / (domMax - anchor)) * (1 - s);
+    },
+    toValue(t) {
+      if (t <= s) return domMin + (t / s) * (anchor - domMin);
+      return anchor + ((t - s) / (1 - s)) * (domMax - anchor);
+    },
+  };
 }
 
 // 슬라이더 하나(썸 2개 + 트랙 + 눈금)를 특정 지표(key)에 묶어서 드래그·눈금·"전체" 표시를 전담시키는 컨트롤러.
@@ -707,9 +769,11 @@ function createSliderController(getKey, els, onNoDataChange) {
     const key = getKey();
     const m = METRICS[key];
     const [domMin, domMax] = getMetricDomain(key);
+    const scale = scaleForKey(key);
     els.labels.innerHTML = "";
     for (let i = 0; i <= 5; i++) {
-      const v = domMin + ((domMax - domMin) * i) / 5;
+      const t = i / 5;
+      const v = scale ? scale.toValue(t) : domMin + (domMax - domMin) * t;
       const span = document.createElement("span");
       span.textContent = i === 5 ? "최대" : m.fmt(v);
       els.labels.appendChild(span);
@@ -718,15 +782,22 @@ function createSliderController(getKey, els, onNoDataChange) {
 
   function updateVisual() {
     const key = getKey();
+    const m = METRICS[key];
     const [domMin, domMax] = getMetricDomain(key);
     const [selMin, selMax] = currentRange();
+    const scale = scaleForKey(key);
     const span = domMax - domMin || 1;
-    const tMin = (selMin - domMin) / span;
-    const tMax = (selMax - domMin) / span;
+    const tMin = scale ? scale.toFrac(selMin) : (selMin - domMin) / span;
+    const tMax = scale ? scale.toFrac(selMax) : (selMax - domMin) / span;
     els.thumbMin.style.left = `${tMin * 100}%`;
     els.thumbMax.style.left = `${tMax * 100}%`;
     els.fill.style.left = `${tMin * 100}%`;
     els.fill.style.right = `${(1 - tMax) * 100}%`;
+    if (els.valueLabel) {
+      els.valueLabel.textContent = isFullRange(key, [selMin, selMax])
+        ? "전체"
+        : `${m.fmt(selMin)} 이상 ${m.fmt(selMax)} 이하`;
+    }
   }
 
   function refresh() {
@@ -742,8 +813,10 @@ function createSliderController(getKey, els, onNoDataChange) {
   function pointerToValue(clientX) {
     const rect = els.slider.getBoundingClientRect();
     const t = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-    const [domMin, domMax] = getMetricDomain(getKey());
-    return domMin + t * (domMax - domMin);
+    const key = getKey();
+    const [domMin, domMax] = getMetricDomain(key);
+    const scale = scaleForKey(key);
+    return scale ? scale.toValue(t) : domMin + t * (domMax - domMin);
   }
 
   function bindThumb(el, which) {
@@ -799,6 +872,7 @@ const quickSliderCtrl = createSliderController(
     thumbMin: document.getElementById("rangeThumbMin"),
     thumbMax: document.getElementById("rangeThumbMax"),
     labels: document.getElementById("rangeSliderLabels"),
+    valueLabel: document.getElementById("rangeSheetValue"),
   },
   (noData, m) => {
     rangeSheet.classList.toggle("no-data", noData);
@@ -811,14 +885,12 @@ function openRangeSheet(key) {
   closeAllFiltersPanel();
   quickSheetKey = key;
   rangeSheetTitle.textContent = METRICS[key].label;
-  document.querySelectorAll(".metric-chip").forEach((b) => b.classList.toggle("active", b.dataset.metric === key));
   quickSliderCtrl.refresh();
   rangeSheet.classList.add("open");
 }
 
 function closeRangeSheet() {
   rangeSheet.classList.remove("open");
-  document.querySelectorAll(".metric-chip").forEach((b) => b.classList.remove("active"));
 }
 
 document.querySelectorAll(".metric-chip").forEach((btn) => {
@@ -983,10 +1055,11 @@ async function refreshLiveData() {
   if (updated === 0) return false; // 전부 실패(프록시 다운 등) — 정적 스냅샷 값 유지
   liveDataLoaded = true;
   refreshAllBubbleColors();
-  // 상승률/하락률/인기종목처럼 실시간으로 바뀌는 지표는 도메인 캐시를 지우고 다시 계산해야 함
-  for (const key of ["riseRate", "fallRate", "popularStocks"]) {
+  // 상승률/하락률처럼 실시간으로 바뀌는 지표는 도메인 캐시를 지우고 다시 계산해야 함
+  for (const key of ["riseRate", "fallRate"]) {
     if (METRICS[key]) delete METRICS[key].domain;
   }
+  if (METRICS.popularStocks) METRICS.popularStocks.refreshRank(); // 거래대금이 갱신됐으니 거래량 순위(TOP)도 다시 계산
   applyAllFilters(); // 라이브 값이 바뀌었으니 지금 걸려있는 필터도 새 값 기준으로 재적용
   quickSliderCtrl.refresh(); // 빠른 시트가 라이브 지표를 보고 있었다면 눈금/썸 위치 갱신
   panelControllers.forEach((ctrl) => ctrl.refresh()); // 전체 설정 패널이 열려있었다면 해당 슬라이더들도 갱신

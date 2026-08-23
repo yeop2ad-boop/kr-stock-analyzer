@@ -178,8 +178,8 @@ body {
 }
 .filter-chip.active {
   border-color: var(--orange);
-  color: var(--orange-deep);
-  background: #fff2ea;
+  color: #ffffff;
+  background: var(--orange);
 }
 
 /* ---------- Map viewport ---------- */
@@ -505,9 +505,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 22px;
+  margin-bottom: 8px;
 }
 .range-sheet-header span { font-size: 15px; font-weight: 800; color: var(--text-dark); }
+.range-sheet-value {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--orange-deep);
+  margin-bottom: 18px;
+}
 .range-sheet-header button {
   border: none;
   background: none;
