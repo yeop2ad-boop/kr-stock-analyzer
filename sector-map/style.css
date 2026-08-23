@@ -571,6 +571,91 @@ body {
 }
 .range-sheet.no-data .range-sheet-note { display: block; }
 
+/* 전체 설정 패널 — 10개 지표를 한 화면에 쭉 늘어놓고 스크롤해서 한번에 설정 */
+.all-filters-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 44;
+  background: rgba(15,23,42,0.32);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.all-filters-backdrop.open { opacity: 1; pointer-events: auto; }
+
+.all-filters-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 8%;
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.18);
+  transform: translateY(100%);
+  transition: transform 0.28s cubic-bezier(.2,.8,.3,1);
+}
+.all-filters-sheet.open { transform: translateY(0); }
+.all-filters-header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.all-filters-header span { font-size: 16px; font-weight: 800; color: var(--text-dark); }
+.all-filters-header button {
+  border: none;
+  background: none;
+  color: var(--text-soft);
+  font-size: 22px;
+  line-height: 1;
+  padding: 6px;
+  cursor: pointer;
+}
+.all-filters-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 6px 20px 28px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.filter-block { padding: 18px 0; border-bottom: 1px solid var(--line); }
+.filter-block:last-child { border-bottom: none; }
+.filter-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.filter-block-header span { font-size: 14px; font-weight: 800; color: var(--text-dark); }
+.filter-block-header button {
+  border: none;
+  background: none;
+  color: var(--orange-deep);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 2px;
+}
+.filter-block-note {
+  display: none;
+  text-align: center;
+  color: var(--text-soft);
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 6px 0 2px;
+}
+.filter-block.no-data .range-slider,
+.filter-block.no-data .range-slider-labels {
+  display: none;
+}
+.filter-block.no-data .filter-block-note { display: block; }
+
 /* ---------- Bottom nav ---------- */
 .bottom-nav {
   flex: none;

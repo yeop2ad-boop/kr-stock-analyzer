@@ -562,7 +562,11 @@ document.getElementById("logoModeBtn").addEventListener("click", (e) => {
   btn.classList.toggle("active", on);
 });
 
-document.getElementById("resetViewBtn").addEventListener("click", () => fitToViewport(true));
+document.getElementById("resetViewBtn").addEventListener("click", () => {
+  resetAllFilters(); // 걸려있는 모든 지표 필터를 "전체"로
+  closeRangeSheet();
+  fitToViewport(true); // 지도 확대/이동 상태도 초기 화면으로
+});
 document.getElementById("fitAllBtn").addEventListener("click", () => fitToViewport(true));
 
 // ---------- 6) 상단 10개 지표 버튼 → 범위 지정 바텀시트(실시간 필터) ----------
@@ -612,90 +616,171 @@ function getMetricDomain(key) {
   return m.domain;
 }
 
-let activeMetricKey = null;
-let activeRange = null;
-
-const rangeSheet = document.getElementById("rangeSheet");
-const rangeSheetTitle = document.getElementById("rangeSheetTitle");
-const rangeSheetResetBtn = document.getElementById("rangeSheetResetBtn");
-const rangeSlider = document.getElementById("rangeSlider");
-const rangeSliderFill = document.getElementById("rangeSliderFill");
-const rangeThumbMin = document.getElementById("rangeThumbMin");
-const rangeThumbMax = document.getElementById("rangeThumbMax");
-const rangeSliderLabels = document.getElementById("rangeSliderLabels");
-const rangeSheetNote = document.getElementById("rangeSheetNote");
+// 지금 좁혀진 필터들 — key -> [min,max]. "전체" 범위인 지표는 여기 안 들어있음(=필터링에 영향 없음).
+// 여러 지표를 동시에 좁히면 전부 AND로 합쳐져서 적용됨(빠른 버튼/전체 설정 패널 둘 다 이 상태를 공유).
+const activeFilters = new Map();
 let liveDataLoaded = false; // 상승률/하락률/인기종목이 실시간 데이터로 한 번이라도 갱신됐는지
 
-function clearMetricFilter() {
-  for (const el of bubbleBySymbol.values()) el.style.display = "";
+function isFullRange(key, range) {
+  const [domMin, domMax] = getMetricDomain(key);
+  return range[0] <= domMin && range[1] >= domMax;
 }
 
-// 슬라이더가 움직일 때마다 바로 호출 — 500개 원을 한 번씩 훑어서 범위 밖이면 즉시 숨김(실시간 반응)
-function applyMetricFilter(key, range) {
-  const m = METRICS[key];
-  const [selMin, selMax] = range;
-  const [domMin, domMax] = m.domain;
-  const isFull = selMin <= domMin && selMax >= domMax;
+// 슬라이더가 움직일 때마다 바로 호출 — 500개 원을 한 번씩 훑어서 활성 필터를 전부 만족하는지 확인(실시간 반응)
+function applyAllFilters() {
   for (const c of ACTIVE_DATA.companies) {
     const el = bubbleBySymbol.get(c.symbol);
     if (!el) continue;
-    if (isFull) {
-      el.style.display = "";
-      continue;
+    let pass = true;
+    for (const [key, range] of activeFilters) {
+      const m = METRICS[key];
+      if (!m || !m.hasData) continue;
+      const v = m.get(c);
+      if (typeof v !== "number" || !Number.isFinite(v) || v < range[0] || v > range[1]) {
+        pass = false;
+        break;
+      }
     }
-    const v = m.get(c);
-    const pass = typeof v === "number" && Number.isFinite(v) && v >= selMin && v <= selMax;
     el.style.display = pass ? "" : "none";
   }
 }
 
-function updateSliderVisual() {
-  const m = METRICS[activeMetricKey];
-  const [domMin, domMax] = m.domain;
-  const [selMin, selMax] = activeRange;
-  const span = domMax - domMin || 1;
-  const tMin = (selMin - domMin) / span;
-  const tMax = (selMax - domMin) / span;
-  rangeThumbMin.style.left = `${tMin * 100}%`;
-  rangeThumbMax.style.left = `${tMax * 100}%`;
-  rangeSliderFill.style.left = `${tMin * 100}%`;
-  rangeSliderFill.style.right = `${(1 - tMax) * 100}%`;
+function setFilterRange(key, range) {
+  if (isFullRange(key, range)) activeFilters.delete(key);
+  else activeFilters.set(key, [...range]);
+  applyAllFilters();
 }
 
-// 슬라이더 아래 눈금 — 최소·최대만 찍지 않고 도메인을 6구간(5등분)으로 나눠 중간값도 같이 보여줌.
-// 맨 끝(오른쪽)은 실제 숫자 대신 "최대"로 표기(사진 속 평형 슬라이더와 동일한 규칙).
-function renderSliderTicks() {
-  const m = METRICS[activeMetricKey];
-  const [domMin, domMax] = m.domain;
-  const steps = 5; // 6개 눈금 = 5등분
-  rangeSliderLabels.innerHTML = "";
-  for (let i = 0; i <= steps; i++) {
-    const v = domMin + ((domMax - domMin) * i) / steps;
-    const span = document.createElement("span");
-    span.textContent = i === steps ? "최대" : m.fmt(v);
-    rangeSliderLabels.appendChild(span);
-  }
+function resetAllFilters() {
+  activeFilters.clear();
+  applyAllFilters();
+  document.querySelectorAll(".metric-chip").forEach((b) => b.classList.remove("active"));
+  quickSliderCtrl.refresh();
+  panelControllers.forEach((ctrl) => ctrl.refresh());
 }
+
+// 슬라이더 하나(썸 2개 + 트랙 + 눈금)를 특정 지표(key)에 묶어서 드래그·눈금·"전체" 표시를 전담시키는 컨트롤러.
+// 빠른 버튼(시트 1개짜리, key가 열 때마다 바뀜)과 전체 설정 패널(지표당 슬라이더 1개씩 고정) 둘 다 이걸로 만든다.
+let panelControllers = []; // 전체 설정 패널을 다시 그릴 때마다 교체됨
+function createSliderController(getKey, els, onNoDataChange) {
+  let dragging = null;
+
+  function currentRange() {
+    const key = getKey();
+    const domain = getMetricDomain(key);
+    return activeFilters.has(key) ? [...activeFilters.get(key)] : [domain[0], domain[1]];
+  }
+
+  function renderTicks() {
+    const key = getKey();
+    const m = METRICS[key];
+    const [domMin, domMax] = getMetricDomain(key);
+    els.labels.innerHTML = "";
+    for (let i = 0; i <= 5; i++) {
+      const v = domMin + ((domMax - domMin) * i) / 5;
+      const span = document.createElement("span");
+      span.textContent = i === 5 ? "최대" : m.fmt(v);
+      els.labels.appendChild(span);
+    }
+  }
+
+  function updateVisual() {
+    const key = getKey();
+    const [domMin, domMax] = getMetricDomain(key);
+    const [selMin, selMax] = currentRange();
+    const span = domMax - domMin || 1;
+    const tMin = (selMin - domMin) / span;
+    const tMax = (selMax - domMin) / span;
+    els.thumbMin.style.left = `${tMin * 100}%`;
+    els.thumbMax.style.left = `${tMax * 100}%`;
+    els.fill.style.left = `${tMin * 100}%`;
+    els.fill.style.right = `${(1 - tMax) * 100}%`;
+  }
+
+  function refresh() {
+    const key = getKey();
+    const m = key ? METRICS[key] : null;
+    const noData = !m || !m.hasData || !!(m.needsLive && !liveDataLoaded);
+    if (onNoDataChange) onNoDataChange(noData, m);
+    if (noData) return;
+    renderTicks();
+    updateVisual();
+  }
+
+  function pointerToValue(clientX) {
+    const rect = els.slider.getBoundingClientRect();
+    const t = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    const [domMin, domMax] = getMetricDomain(getKey());
+    return domMin + t * (domMax - domMin);
+  }
+
+  function bindThumb(el, which) {
+    el.addEventListener("pointerdown", (e) => {
+      dragging = which;
+      el.setPointerCapture(e.pointerId);
+      e.stopPropagation();
+    });
+  }
+  bindThumb(els.thumbMin, "min");
+  bindThumb(els.thumbMax, "max");
+
+  els.slider.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const key = getKey();
+    if (!key) return;
+    const range = currentRange();
+    const v = pointerToValue(e.clientX);
+    if (dragging === "min") range[0] = Math.min(v, range[1]);
+    else range[1] = Math.max(v, range[0]);
+    setFilterRange(key, range);
+    updateVisual();
+  });
+  window.addEventListener("pointerup", () => {
+    dragging = null;
+  });
+  window.addEventListener("pointercancel", () => {
+    dragging = null;
+  });
+
+  const ctrl = {
+    refresh,
+    reset: () => {
+      const key = getKey();
+      setFilterRange(key, getMetricDomain(key));
+      updateVisual();
+    },
+  };
+  return ctrl;
+}
+
+// ---------- 6-1) 빠른 버튼 하나짜리 바텀시트 ----------
+const rangeSheet = document.getElementById("rangeSheet");
+const rangeSheetTitle = document.getElementById("rangeSheetTitle");
+const rangeSheetResetBtn = document.getElementById("rangeSheetResetBtn");
+const rangeSheetNote = document.getElementById("rangeSheetNote");
+let quickSheetKey = null;
+const quickSliderCtrl = createSliderController(
+  () => quickSheetKey,
+  {
+    slider: document.getElementById("rangeSlider"),
+    fill: document.getElementById("rangeSliderFill"),
+    thumbMin: document.getElementById("rangeThumbMin"),
+    thumbMax: document.getElementById("rangeThumbMax"),
+    labels: document.getElementById("rangeSliderLabels"),
+  },
+  (noData, m) => {
+    rangeSheet.classList.toggle("no-data", noData);
+    if (noData && m) rangeSheetNote.textContent = m.needsLive && !liveDataLoaded ? "실시간 데이터를 불러오는 중입니다..." : "데이터 준비중입니다";
+  }
+);
 
 function openRangeSheet(key) {
   closeCompanySheet();
-  activeMetricKey = key;
-  const m = METRICS[key];
-  rangeSheetTitle.textContent = m.label;
+  closeAllFiltersPanel();
+  quickSheetKey = key;
+  rangeSheetTitle.textContent = METRICS[key].label;
   document.querySelectorAll(".metric-chip").forEach((b) => b.classList.toggle("active", b.dataset.metric === key));
-
-  clearMetricFilter();
-  if (!m.hasData || (m.needsLive && !liveDataLoaded)) {
-    rangeSheetNote.textContent = m.needsLive && !liveDataLoaded ? "실시간 데이터를 불러오는 중입니다..." : "데이터 준비중입니다";
-    rangeSheet.classList.add("no-data");
-    rangeSheet.classList.add("open");
-    return;
-  }
-  rangeSheet.classList.remove("no-data");
-  const domain = getMetricDomain(key);
-  activeRange = [domain[0], domain[1]]; // 처음엔 항상 "전체" 범위
-  renderSliderTicks();
-  updateSliderVisual();
+  quickSliderCtrl.refresh();
   rangeSheet.classList.add("open");
 }
 
@@ -707,10 +792,8 @@ function closeRangeSheet() {
 document.querySelectorAll(".metric-chip").forEach((btn) => {
   btn.addEventListener("click", () => {
     const key = btn.dataset.metric;
-    if (activeMetricKey === key && rangeSheet.classList.contains("open")) {
+    if (quickSheetKey === key && rangeSheet.classList.contains("open")) {
       closeRangeSheet();
-      clearMetricFilter();
-      activeMetricKey = null;
       return;
     }
     openRangeSheet(key);
@@ -718,47 +801,72 @@ document.querySelectorAll(".metric-chip").forEach((btn) => {
 });
 
 rangeSheetResetBtn.addEventListener("click", () => {
-  if (!activeMetricKey || !METRICS[activeMetricKey].hasData) return;
-  const domain = getMetricDomain(activeMetricKey);
-  activeRange = [domain[0], domain[1]];
-  updateSliderVisual();
-  clearMetricFilter();
+  if (!quickSheetKey || !METRICS[quickSheetKey].hasData) return;
+  quickSliderCtrl.reset();
 });
 
-let draggingThumb = null;
-function pointerToValue(clientX) {
-  const rect = rangeSlider.getBoundingClientRect();
-  const t = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-  const [domMin, domMax] = METRICS[activeMetricKey].domain;
-  return domMin + t * (domMax - domMin);
-}
-function bindThumb(thumbEl, which) {
-  thumbEl.addEventListener("pointerdown", (e) => {
-    draggingThumb = which;
-    thumbEl.setPointerCapture(e.pointerId);
-    e.stopPropagation();
-  });
-}
-bindThumb(rangeThumbMin, "min");
-bindThumb(rangeThumbMax, "max");
+// ---------- 6-2) 전체 설정 패널 — 10개 지표를 한 화면에 쭉 늘어놓고 한번에 조절 ----------
+const allFiltersBackdrop = document.getElementById("allFiltersBackdrop");
+const allFiltersSheet = document.getElementById("allFiltersSheet");
+const allFiltersBody = document.getElementById("allFiltersBody");
 
-rangeSlider.addEventListener("pointermove", (e) => {
-  if (!draggingThumb || !activeMetricKey) return;
-  const v = pointerToValue(e.clientX);
-  if (draggingThumb === "min") {
-    activeRange[0] = Math.min(v, activeRange[1]);
-  } else {
-    activeRange[1] = Math.max(v, activeRange[0]);
+function buildAllFiltersPanel() {
+  allFiltersBody.innerHTML = "";
+  panelControllers = [];
+  const metricButtons = [...document.querySelectorAll(".metric-chip")]; // 버튼 순서 = 패널에 나열할 순서
+  for (const btn of metricButtons) {
+    const key = btn.dataset.metric;
+    const m = METRICS[key];
+
+    const block = document.createElement("div");
+    block.className = "filter-block";
+    block.innerHTML = `
+      <div class="filter-block-header">
+        <span>${m.label}</span>
+        <button type="button" class="filter-block-reset">전체</button>
+      </div>
+      <div class="range-slider">
+        <div class="range-slider-track"></div>
+        <div class="range-slider-fill"></div>
+        <div class="range-slider-thumb" tabindex="0"></div>
+        <div class="range-slider-thumb" tabindex="0"></div>
+      </div>
+      <div class="range-slider-labels"></div>
+      <div class="filter-block-note">${m.needsLive && !liveDataLoaded ? "실시간 데이터를 불러오는 중입니다..." : "데이터 준비중입니다"}</div>
+    `;
+    allFiltersBody.appendChild(block);
+
+    const ctrl = createSliderController(
+      () => key,
+      {
+        slider: block.querySelector(".range-slider"),
+        fill: block.querySelector(".range-slider-fill"),
+        thumbMin: block.querySelectorAll(".range-slider-thumb")[0],
+        thumbMax: block.querySelectorAll(".range-slider-thumb")[1],
+        labels: block.querySelector(".range-slider-labels"),
+      },
+      (noData) => block.classList.toggle("no-data", noData)
+    );
+    ctrl.refresh();
+    block.querySelector(".filter-block-reset").addEventListener("click", () => ctrl.reset());
+    panelControllers.push(ctrl);
   }
-  updateSliderVisual();
-  applyMetricFilter(activeMetricKey, activeRange); // 매 프레임 즉시 반영
-});
-window.addEventListener("pointerup", () => {
-  draggingThumb = null;
-});
-window.addEventListener("pointercancel", () => {
-  draggingThumb = null;
-});
+}
+
+function openAllFiltersPanel() {
+  closeCompanySheet();
+  closeRangeSheet();
+  buildAllFiltersPanel();
+  allFiltersBackdrop.classList.add("open");
+  allFiltersSheet.classList.add("open");
+}
+function closeAllFiltersPanel() {
+  allFiltersBackdrop.classList.remove("open");
+  allFiltersSheet.classList.remove("open");
+}
+document.getElementById("allFiltersBtn").addEventListener("click", openAllFiltersPanel);
+document.getElementById("allFiltersCloseBtn").addEventListener("click", closeAllFiltersPanel);
+allFiltersBackdrop.addEventListener("click", closeAllFiltersPanel);
 
 // ---------- 7) 상승률·하락률·인기종목 실시간 갱신 ----------
 // 브라우저에서 직접 Yahoo Finance로 요청하면 CORS에 막히므로, 내투자닷컴 본체와 같은 방식으로
@@ -843,9 +951,13 @@ async function refreshLiveData() {
   if (updated === 0) return false; // 전부 실패(프록시 다운 등) — 정적 스냅샷 값 유지
   liveDataLoaded = true;
   refreshAllBubbleColors();
-  if (activeMetricKey && METRICS[activeMetricKey] && (METRICS[activeMetricKey].live || METRICS[activeMetricKey].needsLive)) {
-    openRangeSheet(activeMetricKey); // 지금 상승률/하락률/인기종목 시트가 열려 있으면 새 데이터로 다시 그림
+  // 상승률/하락률/인기종목처럼 실시간으로 바뀌는 지표는 도메인 캐시를 지우고 다시 계산해야 함
+  for (const key of ["riseRate", "fallRate", "popularStocks"]) {
+    if (METRICS[key]) delete METRICS[key].domain;
   }
+  applyAllFilters(); // 라이브 값이 바뀌었으니 지금 걸려있는 필터도 새 값 기준으로 재적용
+  quickSliderCtrl.refresh(); // 빠른 시트가 라이브 지표를 보고 있었다면 눈금/썸 위치 갱신
+  panelControllers.forEach((ctrl) => ctrl.refresh()); // 전체 설정 패널이 열려있었다면 해당 슬라이더들도 갱신
   showToast("실시간 시세로 갱신됨");
   return true;
 }
@@ -869,8 +981,8 @@ let packedRoot = null;
 function rerenderMap(animate) {
   closeCompanySheet();
   closeRangeSheet();
-  activeMetricKey = null;
-  activeRange = null;
+  closeAllFiltersPanel();
+  quickSheetKey = null;
 
   mapWorld.innerHTML = "";
   bubbleBySymbol.clear();
@@ -878,6 +990,7 @@ function rerenderMap(animate) {
   packedRoot = buildPackedRoot(ACTIVE_DATA);
   renderMap(packedRoot);
   fitToViewport(!!animate);
+  applyAllFilters(); // 균등/시총 전환처럼 데이터셋은 그대로인 경우, 새로 그려진 원에도 기존 필터를 다시 적용
 }
 
 document.getElementById("sizeModeBtn").addEventListener("click", (e) => {
@@ -892,6 +1005,7 @@ function loadMarket(mode, animate) {
   ACTIVE_MARKET = mode;
   ACTIVE_DATA = mode === "domestic" ? KR_SECTOR_DATA : SP500_DATA;
   METRICS = buildMetrics(mode);
+  activeFilters.clear(); // 시장이 바뀌면 종목 구성 자체가 달라지므로 필터는 초기화
 
   rerenderMap(animate);
 
@@ -914,13 +1028,15 @@ document.getElementById("marketTogglePill").addEventListener("click", (e) => {
   loadMarket(mode, true);
 });
 
-document.getElementById("brandLogoBtn").addEventListener("click", () => {
-  // 본체(내투자닷컴)로 돌아가기 — 세션 동안은 다시 섹터맵으로 안 튕기도록 플래그를 남김
+// 본체(내투자닷컴)로 돌아가기 — 세션 동안은 다시 섹터맵으로 안 튕기도록 플래그를 남김
+function goToMainSite() {
   try {
     sessionStorage.setItem("ntj_skip_map_redirect", "1");
   } catch {}
   window.location.href = "../index.html";
-});
+}
+document.getElementById("brandLogoBtn").addEventListener("click", goToMainSite);
+document.getElementById("bottomNavStudyBtn").addEventListener("click", goToMainSite);
 
 // ---------- 초기화 ----------
 window.addEventListener("resize", () => fitToViewport(false));
