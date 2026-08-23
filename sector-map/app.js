@@ -555,11 +555,17 @@ document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#log
   });
 });
 
-document.getElementById("logoModeBtn").addEventListener("click", (e) => {
+// 기본 화면은 색상만 보기 — 버튼을 누르면 로고 보기로 전환되며 주황 배경으로 강조된다
+const logoModeBtn = document.getElementById("logoModeBtn");
+mapWorld.classList.add("color-only");
+logoModeBtn.textContent = "색상";
+logoModeBtn.classList.remove("active");
+
+logoModeBtn.addEventListener("click", (e) => {
   const btn = e.currentTarget;
-  const on = mapWorld.classList.toggle("color-only");
-  btn.textContent = on ? "색상" : "로고";
-  btn.classList.toggle("active", on);
+  const colorOnly = mapWorld.classList.toggle("color-only");
+  btn.textContent = colorOnly ? "색상" : "로고";
+  btn.classList.toggle("active", !colorOnly);
 });
 
 document.getElementById("resetViewBtn").addEventListener("click", () => {
@@ -1055,3 +1061,19 @@ document.querySelectorAll("#marketTogglePill .toggle-btn").forEach((b) => {
 });
 loadMarket(initialMarket, false);
 loadingIndicator.classList.add("hidden");
+
+// 국내/해외 전환 시 로고가 다시 느리게 뜨지 않도록, 시작하자마자 두 시장 로고를 저화질부터 브라우저 캐시에 미리 받아둔다
+function preloadAllLogos() {
+  const symbols = new Set();
+  [SP500_DATA, typeof KR_SECTOR_DATA !== "undefined" ? KR_SECTOR_DATA : null].forEach((dataset) => {
+    if (!dataset || !dataset.companies) return;
+    for (const c of dataset.companies) {
+      if (!BAD_LOGO_SYMBOLS.has(c.symbol)) symbols.add(c.symbol);
+    }
+  });
+  symbols.forEach((symbol) => {
+    const img = new Image();
+    img.src = logoUrl(symbol, "low");
+  });
+}
+preloadAllLogos();
