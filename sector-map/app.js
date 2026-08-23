@@ -94,9 +94,9 @@ function pickLogoTier(onScreenRadiusPx) {
 function fmtMarketCap(n) {
   if (n === null || n === undefined) return "정보 없음";
   const t = 1e12, b = 1e9, m = 1e6;
-  if (n >= t) return `$${(n / t).toFixed(2)}조`;
-  if (n >= b) return `$${(n / b).toFixed(1)}십억`;
-  if (n >= m) return `$${(n / m).toFixed(0)}백만`;
+  if (n >= t) return `$${(n / t).toFixed(2)}T`;
+  if (n >= b) return `$${(n / b).toFixed(1)}B`;
+  if (n >= m) return `$${(n / m).toFixed(0)}M`;
   return `$${n.toLocaleString()}`;
 }
 
