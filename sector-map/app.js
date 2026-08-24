@@ -262,14 +262,21 @@ function renderMap(root) {
     const color = sectorColor(sectorNode.data.name);
     const bubble = document.createElement("div");
     bubble.className = "sector-bubble";
+    bubble.dataset.sector = sectorNode.data.name; // "등락" 모드에서 섹터별 평균 등락률을 찾을 때 씀
     bubble.style.setProperty("--sc", color);
     bubble.style.left = `${sectorNode.x - sectorNode.r}px`;
     bubble.style.top = `${sectorNode.y - sectorNode.r}px`;
     bubble.style.width = `${sectorNode.r * 2}px`;
     bubble.style.height = `${sectorNode.r * 2}px`;
 
+    // "등락" 모드일 때 원 가운데 표시할 평균 등락률 — 원 크기에 비례한 글자 크기로 항상 잘 보이게
+    const changeEl = document.createElement("span");
+    changeEl.className = "sector-bubble-change";
+    changeEl.style.fontSize = `${Math.max(11, Math.min(40, sectorNode.r * 0.16))}px`;
+    bubble.appendChild(changeEl);
+
     bubble.addEventListener("click", (e) => {
-      if (e.target !== bubble) return; // 하위 종목 클릭과 구분
+      if (e.target !== bubble && e.target !== changeEl) return; // 하위 종목 클릭과 구분
       zoomToNode(sectorNode);
     });
 
@@ -1257,48 +1264,49 @@ function fmtIdxChg(pct) {
 }
 
 // 지금 지도에 로드된 종목들의 changePercent(타일 색상과 동일한 소스)를 섹터별로 평균 — 별도 실시간 파이프라인을 새로 만들지 않고
-// 이미 로드된 스냅샷을 그대로 집계하므로 타일 색상과 항상 일치함
+// 이미 로드된 스냅샷을 그대로 집계하므로 타일 색상과 항상 일치함. 섹터 영어 키(sectorNode.data.name) 기준으로 바로 찾아 쓰도록 Map으로 반환
 function computeSectorAverages() {
   const bySector = new Map();
   for (const c of ACTIVE_DATA.companies) {
     if (typeof c.changePercent !== "number") continue;
-    if (!bySector.has(c.sector)) bySector.set(c.sector, { sectorKo: c.sectorKo, sum: 0, count: 0 });
+    if (!bySector.has(c.sector)) bySector.set(c.sector, { sum: 0, count: 0 });
     const g = bySector.get(c.sector);
     g.sum += c.changePercent;
     g.count += 1;
   }
-  return [...bySector.values()]
-    .filter((g) => g.count > 0)
-    .map((g) => ({ sectorKo: g.sectorKo, avg: g.sum / g.count }))
-    .sort((a, b) => b.avg - a.avg);
+  const result = new Map();
+  bySector.forEach((g, sector) => {
+    if (g.count > 0) result.set(sector, g.sum / g.count);
+  });
+  return result;
 }
 
-async function renderIndexSummaryBar() {
-  const bar = document.getElementById("indexSummaryBar");
-  if (!bar) return;
-  if (ACTIVE_MARKET !== "domestic") {
-    bar.style.display = "none";
-    return;
-  }
-  bar.style.display = "flex";
-  document.getElementById("indexSummaryDelay").style.display = isKrMarketOpen() ? "inline-flex" : "none";
-
-  const num = (n) => (n === null || n === undefined ? "-" : n.toLocaleString("ko-KR", { maximumFractionDigits: 2 }));
-  const [kospi, kosdaq] = await Promise.all([fetchYahooChartSnap("^KS11"), fetchYahooChartSnap("^KQ11")]);
-  const kospiChg = fmtIdxChg(kospi && kospi.changePct);
-  const kosdaqChg = fmtIdxChg(kosdaq && kosdaq.changePct);
-  document.getElementById("indexSummaryKospi").innerHTML =
-    `코스피 <b>${num(kospi && kospi.price)}</b> <span class="idx-chg ${kospiChg.cls}">${kospiChg.text}</span>`;
-  document.getElementById("indexSummaryKosdaq").innerHTML =
-    `코스닥 <b>${num(kosdaq && kosdaq.price)}</b> <span class="idx-chg ${kosdaqChg.cls}">${kosdaqChg.text}</span>`;
-
-  document.getElementById("indexSummarySectors").innerHTML = computeSectorAverages()
-    .map((s) => {
-      const chg = fmtIdxChg(s.avg);
-      return `<span class="index-summary-sector-item">${escHtmlLocal(s.sectorKo || "-")} <span class="idx-chg ${chg.cls}">${chg.text}</span></span>`;
-    })
-    .join("");
+// ---------- "등락" 버튼 — 누르면 섹터별 큰 원이 등락률에 따라 색이 채워지고 가운데 평균 등락률이 표시됨(+티커 테이프도 함께 토글) ----------
+let changeModeOn = false;
+function applyChangeModeToSectorBubbles() {
+  const avgBySector = changeModeOn ? computeSectorAverages() : null;
+  document.querySelectorAll(".sector-bubble").forEach((bubble) => {
+    const changeEl = bubble.querySelector(".sector-bubble-change");
+    if (!changeModeOn) {
+      bubble.classList.remove("sector-bubble-filled");
+      bubble.style.removeProperty("--chg-fill");
+      if (changeEl) changeEl.textContent = "";
+      return;
+    }
+    const avg = avgBySector.get(bubble.dataset.sector);
+    const chg = changeColor(avg);
+    bubble.classList.add("sector-bubble-filled");
+    bubble.style.setProperty("--chg-fill", chg.css);
+    if (changeEl) changeEl.textContent = avg === undefined ? "N/A" : `${avg >= 0 ? "+" : ""}${avg.toFixed(2)}%`;
+  });
 }
+function toggleChangeMode() {
+  changeModeOn = !changeModeOn;
+  document.getElementById("changeModeBtn").classList.toggle("active", changeModeOn);
+  document.getElementById("tickerTape").style.display = changeModeOn ? "block" : "none";
+  applyChangeModeToSectorBubbles();
+}
+document.getElementById("changeModeBtn").addEventListener("click", toggleChangeMode);
 
 // ---------- 상단 티커 테이프 — 본체(app.js) 시장 위젯의 기본 8개 지수를 원형 배지+회색 종목명+가격+등락률로 자동 스크롤 표시 ----------
 // 본체와 같은 localStorage 키를 읽어 종목 구성을 그대로 따라감(본체에서 위젯 종목을 바꾸면 이 테이프도 함께 바뀜).
@@ -1365,15 +1373,16 @@ function loadMarket(mode, animate) {
   document.querySelector(".top-bar").classList.toggle("is-overseas", mode === "overseas");
 
   rerenderMap(animate);
+  applyChangeModeToSectorBubbles(); // rerenderMap이 섹터 원을 새로 만들므로 등락 모드가 켜져 있었다면 채색도 다시 적용
 
   refreshActiveMarketLiveData().catch(() => {});
-  renderIndexSummaryBar().catch(() => {});
 }
 
 // 20분 지연 표시에 맞춰 5분마다 조용히(토스트 없이) 색상을 다시 갱신 — 페이지를 오래 켜둬도 계속 최신에 가깝게 유지됨
 setInterval(() => {
-  refreshActiveMarketLiveData({ silent: true }).catch(() => {});
-  renderIndexSummaryBar().catch(() => {});
+  refreshActiveMarketLiveData({ silent: true })
+    .catch(() => {})
+    .then(() => applyChangeModeToSectorBubbles());
 }, 5 * 60 * 1000);
 // AI 버튼 시각 표시는 매초 새로고침(장중 HH:MM:SS가 실시간으로 흐르는 것처럼 보이게)
 setInterval(renderAiFabTimestamp, 1000);
