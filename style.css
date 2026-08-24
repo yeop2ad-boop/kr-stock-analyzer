@@ -104,7 +104,7 @@ body[data-market-mode="kr"] .fh-banner { filter: brightness(0) invert(1); }
   align-items: center;
   justify-content: space-between;
   max-width: 860px;
-  margin: 0 auto -3px; /* 지도(섹터맵) 상단 툴바처럼 아래 탭바와 거의 맞닿게(살짝 겹치게) */
+  margin: 0 auto 6px; /* 아래 탭바(관심종목~뉴스·공시)와 겹치지 않게 여백 확보 */
 }
 
 /* 지도(섹터맵) 상단 toggle-pill과 동일한 디자인 — 알약 컨테이너 배경 안에서 선택된 쪽만 흰/주황 알약으로 강조 */
