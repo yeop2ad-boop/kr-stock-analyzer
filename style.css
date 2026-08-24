@@ -88,7 +88,7 @@ body {
   z-index: 100;
   background: var(--bg);
   border-bottom: 1px solid var(--border);
-  padding: 14px 14px 0px;
+  padding: calc(6px + env(safe-area-inset-top, 0px)) 14px 0px; /* 지도(섹터맵) 상단 툴바(top-bar padding-top: safe-area + top-bar-row padding 6px)와 동일한 위치 */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
   transition: background 0.2s ease;
 }
