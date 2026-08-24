@@ -62,7 +62,7 @@
   --track-fill: rgba(255, 255, 255, 0.08);
 }
 /* 좌측 상단 국내/해외 토글에서 국내를 선택하면 상단 툴바가 주황 배경으로 바뀌므로, 틀고정 아이콘도 흰색으로 맞춘다(섹터맵과 동일한 규칙) */
-body[data-market-mode="kr"] { --icon-accent: #ffffff; }
+body[data-market-mode="kr"] { --icon-accent: #14161c; }
 
 * { box-sizing: border-box; }
 
@@ -132,7 +132,7 @@ body[data-market-mode="kr"] .fh-banner { filter: brightness(0) invert(1); }
 body[data-market-mode="kr"] .market-mode-toggle { background: rgba(255,255,255,0.22); }
 body[data-market-mode="kr"] .market-mode-btn { color: rgba(255,255,255,0.9); }
 body[data-market-mode="kr"] .market-mode-btn-kr.active { background: #ffffff; color: #e04600; }
-body[data-market-mode="kr"] .header-icon-btn { color: #ffffff; }
+body[data-market-mode="kr"] .header-icon-btn { color: #14161c; }
 body[data-market-mode="kr"] .user-avatar-btn { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.6); color: #ffffff; }
 body[data-market-mode="kr"] .login-header-btn { color: #ffffff; }
 
@@ -626,22 +626,16 @@ body[data-market-mode="kr"] .login-header-btn { color: #ffffff; }
   border-radius: 2px;
   background: var(--text);
 }
-/* 국내 선택 시 탭바(관심종목~뉴스·공시)는 위 로고줄의 주황과 다르게 로고 점(.) 색과 통일한 빨강으로 —
-   .fixed-header의 14px 좌우 패딩을 음수 마진으로 상쇄해 탭바 배경이 화면 끝까지 끊김 없이 이어지도록 함 */
+/* 국내 선택 시에도 탭바(관심종목~뉴스·공시)는 해외와 동일하게 흰 배경 그대로 둠(위 로고줄만 주황) —
+   해외 모드는 탭바가 투명해서 .fixed-header의 흰 배경(var(--bg))이 그대로 비치는 것이므로, 국내는 위가
+   주황이라 탭바에 직접 같은 색을 칠해야 함. 화면 끝까지 이어지도록 14px 패딩을 음수 마진으로 상쇄 */
 body[data-market-mode="kr"] .tab-bar {
-  background: #f60303;
+  background: var(--bg);
   margin-left: -14px;
   margin-right: -14px;
   padding-left: 14px;
   padding-right: 14px;
 }
-body[data-market-mode="kr"] .tab-bar .cat-btn,
-body[data-market-mode="kr"] .tab-bar .cat-btn.active {
-  background: transparent;
-  border-color: transparent;
-  color: #ffffff;
-}
-body[data-market-mode="kr"] .tab-bar .cat-btn.active::after { background: #ffffff; }
 .cat-historical-up .cat-arrow { color: var(--pos); }
 .cat-historical-down .cat-arrow { color: var(--neg); }
 
@@ -662,11 +656,7 @@ body[data-market-mode="kr"] .tab-bar .cat-btn.active::after { background: #fffff
 /* Top랭킹 탭 — 기업가치+투자동향을 합친 14개 서브버튼. 마지막 2개(상승 압력·투자 안정)만 주황으로 구분 */
 .top-ranking-sub-nav { padding-bottom: 2px; }
 .top-ranking-tab { display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
-/* 이 아이콘들은 국내/해외에 따라 바뀌는 --icon-accent(빨강/흰색) 대신 버튼 글자색을 그대로 따라가게(currentColor) —
-   흰 배경 콘텐츠 영역이라 국내 모드의 흰색 아이콘 색을 그대로 물려받으면 안 보이는 문제를 막고, 다크모드에선 자연히 흰색이 됨 */
-.top-ranking-tab .btn-icon-svg { display: block; flex: none; color: currentColor; }
-#panelInsight .btn-icon-svg,
-#marketPanel .btn-icon-svg { color: currentColor; }
+.top-ranking-tab .btn-icon-svg { display: block; flex: none; }
 .top-ranking-tab-orange { border-color: rgba(224, 70, 0, 0.5); color: #e04600; }
 .top-ranking-tab-orange.active { color: #e04600; border-color: #e04600; background: rgba(224, 70, 0, 0.08); }
 
