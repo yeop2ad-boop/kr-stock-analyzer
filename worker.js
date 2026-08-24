@@ -766,6 +766,70 @@ async function handleFutureRunNow(env) {
   return handleFutureRiskStatus(env);
 }
 
+// ---------- M2 통화량(광의통화) 전년동월비 — 한국은행 ECOS Open API ----------
+// 통계표 161Y006("M2 상품별 구성내역(평잔, 원계열)") / 항목 BBHA00("M2(평잔, 원계열)")가 현재 계속 갱신되는 활성
+// 테이블임(구 101Y003/101Y004는 2003~2004년에 데이터가 끊긴 폐기 테이블이라 사용하지 않음 — 직접 호출로 확인).
+// 월별 데이터라 자주 바뀌지 않으므로 KV에 24시간 캐시해서 ECOS API 호출 빈도를 낮춘다.
+const ECOS_M2_STAT_CODE = "161Y006";
+const ECOS_M2_ITEM_CODE = "BBHA00";
+const M2_YOY_CACHE_KEY = "m2_yoy_cache";
+const M2_YOY_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+
+function ymKeyWorker(date) {
+  return `${date.getUTCFullYear()}${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
+}
+
+async function fetchEcosM2Series(env) {
+  const now = new Date();
+  const end = ymKeyWorker(now);
+  // FOMO 차트가 2011년부터 시작하므로 YoY 계산에 필요한 전년치까지 여유 있게 2009년부터 가져옴
+  const start = ymKeyWorker(new Date(Date.UTC(2009, 0, 1)));
+  const url = `https://ecos.bok.or.kr/api/StatisticSearch/${env.ECOS_API_KEY}/json/kr/1/500/${ECOS_M2_STAT_CODE}/M/${start}/${end}/${ECOS_M2_ITEM_CODE}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("ECOS fetch failed: " + res.status);
+  const data = await res.json();
+  const rows = (data && data.StatisticSearch && data.StatisticSearch.row) || [];
+  if (!rows.length) throw new Error((data && data.RESULT && data.RESULT.MESSAGE) || "ECOS 응답에 데이터가 없습니다.");
+  return rows
+    .map((r) => ({ ym: r.TIME, value: Number(r.DATA_VALUE) }))
+    .filter((r) => Number.isFinite(r.value))
+    .sort((a, b) => a.ym.localeCompare(b.ym));
+}
+
+// 같은 달(YYYYMM) 전년 동월 대비 증감률(%)만 남김 — 전년치가 없는 가장 이른 구간은 자연히 제외됨
+function computeM2YoyPoints(series) {
+  const byYm = new Map(series.map((r) => [r.ym, r.value]));
+  const points = [];
+  for (const { ym, value } of series) {
+    const y = Number(ym.slice(0, 4));
+    const m = ym.slice(4, 6);
+    const prevValue = byYm.get(`${y - 1}${m}`);
+    if (!prevValue) continue;
+    points.push({ ym, yoyPct: ((value - prevValue) / prevValue) * 100 });
+  }
+  return points;
+}
+
+async function handleM2Yoy(env) {
+  if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
+  if (!env.ECOS_API_KEY) return jsonResponse({ error: "ECOS_API_KEY 환경변수가 설정되지 않았습니다." }, 500);
+
+  const cached = await env.CHAT_KV.get(M2_YOY_CACHE_KEY, "json");
+  if (cached && Date.now() - cached.fetchedAt < M2_YOY_CACHE_TTL_MS) {
+    return jsonResponse(cached, 200);
+  }
+
+  try {
+    const points = computeM2YoyPoints(await fetchEcosM2Series(env));
+    const payload = { points, fetchedAt: Date.now() };
+    await env.CHAT_KV.put(M2_YOY_CACHE_KEY, JSON.stringify(payload));
+    return jsonResponse(payload, 200);
+  } catch (e) {
+    if (cached) return jsonResponse(cached, 200); // 갱신 실패해도 기존 캐시가 있으면 그거라도 반환
+    return jsonResponse({ error: "M2 데이터를 가져오지 못했습니다.", detail: String(e) }, 502);
+  }
+}
+
 // ---------- 로그인: 카카오/네이버 OAuth 검증 + Firebase 커스텀 토큰 발급 ----------
 // 카카오/네이버는 Firebase가 네이티브 지원하지 않으므로, 프론트엔드가 각 제공업체의 OAuth authorization
 // code를 여기로 보내면 code→access token 교환, 사용자 프로필 조회로 신원을 검증한 뒤 Firebase 서비스
@@ -939,6 +1003,10 @@ export default {
 
     if (requestUrl.pathname === "/kr-fomo-index/run-now") {
       return handleFomoRunNow(env);
+    }
+
+    if (requestUrl.pathname === "/m2-yoy") {
+      return handleM2Yoy(env);
     }
 
     if (requestUrl.pathname === "/auth/kakao" && request.method === "POST") {

@@ -109,6 +109,15 @@ document.addEventListener("click", (e) => {
 el("scoreMethodModalCloseBtn").addEventListener("click", () => {
   el("scoreMethodModal").style.display = "none";
 });
+// 과거분석의 VIX/FOMO 차트는 기본으로 접혀 있다가 "+자세히"를 눌러야 펼쳐짐 — 펼친 영역은 주황 반투명 박스로 표시
+el("futureMacroChartDetailBtn").addEventListener("click", () => {
+  const wrap = el("futureMacroChartDetailWrap");
+  const btn = el("futureMacroChartDetailBtn");
+  const isOpen = wrap.style.display !== "none";
+  wrap.style.display = isOpen ? "none" : "block";
+  wrap.classList.toggle("chart-detail-expanded", !isOpen);
+  btn.textContent = isOpen ? "+자세히" : "-접기";
+});
 // 지수 카드는 <a>가 아니라 role="button" div라 클릭 외에 키보드(Enter/Space) 접근성도 함께 지원
 document.addEventListener("keydown", (e) => {
   if (e.key !== "Enter" && e.key !== " ") return;
@@ -2313,12 +2322,19 @@ bottomNavButtons.more.addEventListener("click", () => {
 });
 
 // 섹터맵(지도) 하단 네비의 시장/캘린더/더보기 버튼에서 넘어온 경우 해당 패널을 바로 열어줌(?open=market|calendar|more)
+// 지도에서 이미 한 번 로드된 세션이라 스플래시 로딩 화면(z-index 300, 데이터 로드 끝나야 사라짐)까지 다시 기다릴 필요가
+// 없으므로, 이 경우엔 스플래시를 즉시 건너뛰어 패널이 지연 없이 바로 보이도록 함(체감상 "바로 안 열린다"는 느낌 해소)
 (() => {
   const openParam = new URLSearchParams(window.location.search).get("open");
   if (!openParam) return;
-  const targetBtn = { market: bottomNavButtons.market, calendar: bottomNavButtons.calendar, more: bottomNavButtons.more, search: searchOpenBtn }[openParam];
-  if (targetBtn) targetBtn.click();
+  loadingSplash.style.display = "none";
   history.replaceState(null, "", window.location.pathname); // 새로고침 시 다시 안 열리도록 쿼리스트링 제거
+  // 이 아래 스크립트에 아직 초기화되지 않은 const(companyPanel 등)를 클릭 핸들러가 참조하므로,
+  // 지금 바로 클릭하면 TDZ 오류가 나 패널이 안 열림 — 스크립트 전체 실행이 끝난 다음 틱으로 미룸
+  setTimeout(() => {
+    const targetBtn = { market: bottomNavButtons.market, calendar: bottomNavButtons.calendar, more: bottomNavButtons.more, search: searchOpenBtn }[openParam];
+    if (targetBtn) targetBtn.click();
+  }, 0);
 })();
 
 // ---------- 시장/투데이: companyPanel과 동일한 슬라이드 오버레이 패턴(캐러셀 밖에서 독립 관리) ----------
@@ -4241,7 +4257,10 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     sections.forEach(({ btn, els }) => {
       if (btn === exceptBtn) return;
       btn.classList.remove("active");
-      els.forEach((e) => (e.style.display = "none"));
+      els.forEach((e) => {
+        e.style.display = "none";
+        e.classList.remove("section-expanded");
+      });
     });
   }
 
@@ -4251,12 +4270,14 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     if (isOpen) {
       row.style.display = "none";
       historicalInlineWrap.style.display = "none";
+      historicalInlineWrap.classList.remove("section-expanded");
       toggleBtn.classList.remove("active");
       return;
     }
     closeAllSections(toggleBtn);
     row.style.display = "block";
     historicalInlineWrap.style.display = "block";
+    historicalInlineWrap.classList.add("section-expanded");
     toggleBtn.classList.add("active");
     if (!tickerHistoricalLoaded) {
       tickerHistoricalLoaded = true;
@@ -4272,11 +4293,13 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     const isOpen = futureInlineWrap.style.display !== "none";
     if (isOpen) {
       futureInlineWrap.style.display = "none";
+      futureInlineWrap.classList.remove("section-expanded");
       futureToggleBtn.classList.remove("active");
       return;
     }
     closeAllSections(futureToggleBtn);
     futureInlineWrap.style.display = "block";
+    futureInlineWrap.classList.add("section-expanded");
     futureToggleBtn.classList.add("active");
     if (!futureLoaded) {
       futureLoaded = true;
@@ -4288,11 +4311,13 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     const isOpen = sReportInlineWrap.style.display !== "none";
     if (isOpen) {
       sReportInlineWrap.style.display = "none";
+      sReportInlineWrap.classList.remove("section-expanded");
       sReportToggleBtn.classList.remove("active");
       return;
     }
     closeAllSections(sReportToggleBtn);
     sReportInlineWrap.style.display = "block";
+    sReportInlineWrap.classList.add("section-expanded");
     sReportToggleBtn.classList.add("active");
   });
 
@@ -7377,26 +7402,48 @@ function setMarketWidgetTickers(tickers) {
   localStorage.setItem(MARKET_WIDGET_KEY, JSON.stringify(tickers));
 }
 
-// 오늘 하루(5분봉) 종가만 뽑아 아주 작은 스파크라인용 좌표 배열로 변환
+// 오늘 하루(5분봉) 종가 + 타임스탬프 + 정규장 시작/종료(currentTradingPeriod.regular)를 함께 뽑아
+// 스파크라인이 "지금까지 쌓인 점 개수"가 아니라 "그날 정규장 전체 구간"을 고정된 x축으로 그릴 수 있게 함
 async function fetchTodaySparkPoints(item) {
   try {
     const chart = await yahooChart(item.symbol, "1d", "5m");
     const result = chart && chart.chart && chart.chart.result && chart.chart.result[0];
+    const timestamps = (result && result.timestamp) || [];
     const closes = (result && result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
-    return closes.filter((c) => c !== null && c !== undefined);
+    const points = timestamps
+      .map((t, i) => ({ t, c: closes[i] }))
+      .filter((p) => p.c !== null && p.c !== undefined);
+    const regular = result && result.meta && result.meta.currentTradingPeriod && result.meta.currentTradingPeriod.regular;
+    // 원자재/환율처럼 regular 세션 정보가 없는 종목은 오늘 받아온 데이터의 첫/마지막 시각으로 대체
+    const sessionStart = (regular && regular.start) || (points[0] && points[0].t) || null;
+    const sessionEnd = (regular && regular.end) || (points[points.length - 1] && points[points.length - 1].t) || null;
+    return { points, sessionStart, sessionEnd };
   } catch {
-    return [];
+    return { points: [], sessionStart: null, sessionEnd: null };
   }
 }
-function sparklineSvg(points, isUp) {
-  if (!points || points.length < 2) return `<svg class="mkt-spark" viewBox="0 0 100 28"></svg>`;
-  const min = Math.min(...points);
-  const max = Math.max(...points);
+// 점 개수 기준 균등 분배가 아니라 실제 시각을 정규장 시작~종료 구간에 매핑해서 그림 — 장중에는 오른쪽에
+// 아직 안 지난 시간만큼 빈 공간이 남고, 데이터가 쌓일수록 실제 시간 위치에 맞게 채워짐(하루 종일 좌우로 늘어나 보이지 않음).
+// 첫 데이터 포인트 위치엔 점선을 그어 "여기서부터 오늘 데이터가 시작됨"을 표시
+function sparklineSvg(data, isUp) {
+  const points = (data && data.points) || [];
+  if (points.length < 2) return `<svg class="mkt-spark" viewBox="0 0 100 28"></svg>`;
+  const closes = points.map((p) => p.c);
+  const min = Math.min(...closes);
+  const max = Math.max(...closes);
   const span = max - min || 1;
-  const stepX = 100 / (points.length - 1);
-  const d = points.map((p, i) => `${i === 0 ? "M" : "L"}${(i * stepX).toFixed(1)},${(26 - ((p - min) / span) * 24).toFixed(1)}`).join(" ");
+  const sessionStart = data.sessionStart ?? points[0].t;
+  const sessionEnd = data.sessionEnd ?? points[points.length - 1].t;
+  const tSpan = sessionEnd - sessionStart || 1;
+  const xFn = (t) => Math.min(100, Math.max(0, ((t - sessionStart) / tSpan) * 100));
+  const yFn = (c) => 26 - ((c - min) / span) * 24;
+  const d = points.map((p, i) => `${i === 0 ? "M" : "L"}${xFn(p.t).toFixed(1)},${yFn(p.c).toFixed(1)}`).join(" ");
   const color = isUp ? "var(--pos)" : "var(--neg)";
-  return `<svg class="mkt-spark" viewBox="0 0 100 28" preserveAspectRatio="none"><path d="${d}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const startX = xFn(points[0].t).toFixed(1);
+  return `<svg class="mkt-spark" viewBox="0 0 100 28" preserveAspectRatio="none">
+    <line x1="${startX}" y1="0" x2="${startX}" y2="28" stroke="${color}" stroke-width="1" stroke-dasharray="2,2" opacity="0.5" />
+    <path d="${d}" fill="none" stroke="${color}" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>`;
 }
 
 function mktWidgetCellHtml(ticker, snap, points) {
@@ -9115,17 +9162,23 @@ function buildMacroScoreChartSvg(
   { pairs, points },
   highlightThreshold = 35,
   formatLabel = (v) => `${Math.round(v)}점`,
-  ariaLabel = "VIX지수를 활용한 투자시점 점검표"
+  ariaLabel = "VIX지수를 활용한 투자시점 점검표",
+  m2Points = null // [{ t, yoyPct }] — 국내(FOMO) 차트에서만 "거래량"처럼 라인차트 아래에 월별 막대로 그림
 ) {
   // 1년 간격 점(약 30개)을 가로 스크롤로 넉넉하게 볼 수 있도록 점 개수에 비례해 캔버스 폭을 넓힘(고정 min-width는 CSS에서 강제)
-  const W = Math.max(780, points.length * 45),
-    H = 420;
+  const W = Math.max(780, points.length * 45);
   const ML = 56,
     MR = 20,
-    MT = 26,
-    MB = 40;
+    MT = 26;
   const PW = W - ML - MR;
-  const PH = H - MT - MB;
+  const PH = 354; // 메인 라인차트 플롯 높이(M2 패널 유무와 무관하게 고정 — 기존 420(=26+354+40) 레이아웃과 동일)
+
+  const hasM2 = Array.isArray(m2Points) && m2Points.length > 0;
+  const barGap = 16,
+    barH = 84,
+    axisLabelH = 24;
+  const axisY = hasM2 ? MT + PH + barGap + barH : MT + PH; // 연도 세로 그리드선이 뻗는 하단 끝(막대 패널 있으면 그 아래까지)
+  const H = hasM2 ? axisY + axisLabelH : MT + PH + 40;
 
   const minT = pairs[0].t;
   const maxT = pairs[pairs.length - 1].t;
@@ -9143,7 +9196,8 @@ function buildMacroScoreChartSvg(
     gridSvg += `<text x="${(ML - 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="10" fill="#8a90a3">${Math.round(v).toLocaleString()}</text>`;
   }
 
-  // x축: 매년 연도 라벨(가로 스크롤 가능한 넓은 캔버스라 1년 단위로 넣어도 겹치지 않음)
+  // x축: 매년 연도 라벨(가로 스크롤 가능한 넓은 캔버스라 1년 단위로 넣어도 겹치지 않음) — M2 막대 패널이 있으면
+  // 세로 그리드선이 그 패널까지 관통해서 두 패널의 시간축이 시각적으로 연결되도록 하고, 연도 숫자는 맨 아래에만 적음
   let axisSvg = "";
   const firstYear = new Date(minT * 1000).getFullYear();
   const lastYear = new Date(maxT * 1000).getFullYear();
@@ -9151,8 +9205,8 @@ function buildMacroScoreChartSvg(
     const t = Math.floor(new Date(y, 0, 1).getTime() / 1000);
     if (t < minT || t > maxT) continue;
     const x = xFn(t);
-    axisSvg += `<line x1="${x.toFixed(1)}" y1="${MT}" x2="${x.toFixed(1)}" y2="${MT + PH}" stroke="#1a1d24" stroke-width="1" />`;
-    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 16).toFixed(1)}" text-anchor="middle" font-size="10" fill="#8a90a3">${y}</text>`;
+    axisSvg += `<line x1="${x.toFixed(1)}" y1="${MT}" x2="${x.toFixed(1)}" y2="${axisY.toFixed(1)}" stroke="#1a1d24" stroke-width="1" />`;
+    axisSvg += `<text x="${x.toFixed(1)}" y="${(axisY + 16).toFixed(1)}" text-anchor="middle" font-size="10" fill="#8a90a3">${y}</text>`;
   }
 
   const linePath = pairs.map((p, i) => `${i === 0 ? "M" : "L"}${xFn(p.t).toFixed(1)},${yFn(p.c).toFixed(1)}`).join(" ");
@@ -9178,11 +9232,40 @@ function buildMacroScoreChartSvg(
     linesSvg += `<text x="${x.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-size="${fontSize}" font-weight="700" fill="${dotColor}">${vixTxt}</text>`;
   });
 
+  // M2 통화량 YoY 막대 서브패널 — 가격차트 아래 거래량 막대처럼, 메인 차트와 같은 시간축(xFn)을 공유해서 정렬
+  let m2Svg = "";
+  if (hasM2) {
+    const barTop = MT + PH + barGap;
+    const barBottom = barTop + barH;
+    const m2Values = m2Points.map((p) => p.yoyPct);
+    const m2Min = Math.min(0, ...m2Values);
+    const m2Max = Math.max(0, ...m2Values);
+    const m2Span = m2Max - m2Min || 1;
+    const m2Y = (v) => barBottom - ((v - m2Min) / m2Span) * barH;
+    const zeroY = m2Y(0);
+    const barW = Math.max(1, (PW / m2Points.length) * 0.7);
+
+    m2Svg += `<text x="${ML}" y="${(barTop - 6).toFixed(1)}" font-size="10" font-weight="700" fill="#8a90a3">M2 통화량 전년동월대비(%)</text>`;
+    m2Svg += `<line x1="${ML}" y1="${zeroY.toFixed(1)}" x2="${ML + PW}" y2="${zeroY.toFixed(1)}" stroke="#3a3f4a" stroke-width="1" />`;
+    m2Points.forEach((p) => {
+      const x = xFn(p.t);
+      if (x < ML - 1 || x > ML + PW + 1) return; // 메인 차트 시간 범위 밖(FOMO 시작연도 이전 등)은 생략
+      const y = m2Y(p.yoyPct);
+      const top = Math.min(y, zeroY);
+      const h = Math.max(0.6, Math.abs(zeroY - y));
+      const barColor = p.yoyPct >= 0 ? "#4c7fd1" : "#e5342f";
+      m2Svg += `<rect x="${(x - barW / 2).toFixed(1)}" y="${top.toFixed(1)}" width="${barW.toFixed(1)}" height="${h.toFixed(1)}" fill="${barColor}" opacity="0.75" />`;
+    });
+    m2Svg += `<text x="${(ML - 8).toFixed(1)}" y="${(barTop + 9).toFixed(1)}" text-anchor="end" font-size="9" fill="#8a90a3">${m2Max.toFixed(1)}%</text>`;
+    m2Svg += `<text x="${(ML - 8).toFixed(1)}" y="${barBottom.toFixed(1)}" text-anchor="end" font-size="9" fill="#8a90a3">${m2Min.toFixed(1)}%</text>`;
+  }
+
   return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHtml(ariaLabel)}">
     <rect x="0" y="0" width="${W}" height="${H}" fill="#000" />
     ${gridSvg}
     ${axisSvg}
     ${linesSvg}
+    ${m2Svg}
   </svg>`;
 }
 
@@ -9190,6 +9273,7 @@ function buildMacroScoreChartSvg(
 // "마지막으로 그린 게 어느 시장인지"를 추적해서 시장을 바꿔가며 검색해도 항상 맞는 차트가 보이게 함
 let macroScoreChartRenderedMarket = null; // null | "US" | "KR"
 async function renderMacroScoreChart() {
+  el("futureMacroChartHeading").textContent = "VIX지수를 활용한 투자시점 점검표";
   if (macroScoreChartRenderedMarket === "US") return; // 검색할 때마다 다시 그릴 필요 없는 시장 전체 데이터라 최초 1회만 렌더링
   const container = el("futureMacroChartContainer");
   const caption = el("futureMacroChartCaption");
@@ -9217,6 +9301,28 @@ function getKrFomoHistoryData() {
       .catch(() => null);
   }
   return krFomoHistoryDataPromise;
+}
+
+// M2 통화량(광의통화) 전년동월대비 증가율 — Worker(/m2-yoy)가 한국은행 ECOS를 대신 호출해 캐싱해둔 월별 시계열을 그대로 받아옴.
+// 실패해도 FOMO 차트 자체는 정상 표시돼야 하므로 호출부에서 항상 catch(()=>null) 처리
+let m2YoyDataPromise = null;
+function getM2YoyData() {
+  if (!m2YoyDataPromise) {
+    m2YoyDataPromise = fetch(`${AUTH_ORIGIN}/m2-yoy`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!data || !Array.isArray(data.points)) return null;
+        return data.points
+          .map((p) => {
+            const y = Number(p.ym.slice(0, 4));
+            const m = Number(p.ym.slice(4, 6)) - 1;
+            return { t: Math.floor(new Date(y, m, 1).getTime() / 1000), yoyPct: p.yoyPct };
+          })
+          .sort((a, b) => a.t - b.t);
+      })
+      .catch(() => null);
+  }
+  return m2YoyDataPromise;
 }
 
 let krMacroScoreChartDataPromise = null;
@@ -9271,22 +9377,25 @@ async function computeKrMacroScoreChartData() {
 }
 
 async function renderKrMacroScoreChart() {
+  el("futureMacroChartHeading").textContent = "FOMO지수를 활용한 투자시점 점검표";
   if (macroScoreChartRenderedMarket === "KR") return;
   const container = el("futureMacroChartContainer");
   const caption = el("futureMacroChartCaption");
   container.innerHTML = `<p class="muted" style="text-align:center;padding:20px 0;">코스피 장기 데이터를 불러오는 중...</p>`;
   try {
-    const data = await getKrMacroScoreChartData();
+    const [data, m2Points] = await Promise.all([getKrMacroScoreChartData(), getM2YoyData().catch(() => null)]);
     container.innerHTML = buildMacroScoreChartSvg(
       data,
       (v) => v !== null && v <= -15,
       (v) => `${v >= 0 ? "+" : ""}${Math.round(v)}%p`,
-      "FOMO지수를 활용한 투자시점 점검표"
+      "FOMO지수를 활용한 투자시점 점검표",
+      m2Points
     );
     macroScoreChartRenderedMarket = "KR";
     caption.textContent =
       "빨간 선: 코스피 지수(2011~현재, 일별 종가) · 점 라벨: 6개월 간격(매년 3월 1일·9월 1일 기준) FOMO지수(자체 개발, 52주 신고가·신저가 근접 종목 비율 역산) · " +
-      "주황 점: -15%p 이하(패닉·역발상 투자 황금기), 흰 점: 그 외 · 과거 종목 유니버스는 현재 KODEX 200·코스닥150 편입종목 기준 근사치라 생존편향이 있을 수 있습니다(참고용, 투자 자문이 아닙니다)";
+      "주황 점: -15%p 이하(패닉·역발상 투자 황금기), 흰 점: 그 외 · 파란/빨간 막대: M2(광의통화) 전년동월대비 증가율(월별, 한국은행 ECOS) · " +
+      "과거 종목 유니버스는 현재 KODEX 200·코스닥150 편입종목 기준 근사치라 생존편향이 있을 수 있습니다(참고용, 투자 자문이 아닙니다)";
   } catch (err) {
     container.innerHTML = `<p class="error-inline" style="text-align:center;padding:20px 0;">❌ 코스피 장기 데이터를 불러오지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
   }

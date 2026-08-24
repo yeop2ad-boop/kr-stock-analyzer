@@ -49,6 +49,7 @@
 <body>
   <div id="loadingSplash" class="loading-splash">
     <img src="logos/내투자_앱로고1.png" alt="netuja.com" class="loading-splash-logo" />
+    <p class="loading-splash-caption">100개 이상의 기업정보를 실시간 연결중...</p>
   </div>
 
   <header id="fixedHeader" class="fixed-header">
@@ -80,7 +81,7 @@
 
     <div class="tab-bar" id="tabBar">
       <button type="button" class="cat-btn" data-tab="watchlist" id="watchlistTabBtn"><span class="tab-emoji btn-icon" data-icon="star" aria-hidden="true"></span><span class="tab-label">관심종목</span></button>
-      <button type="button" class="cat-btn" id="searchTabBtn"><span class="tab-emoji btn-icon" data-icon="search" aria-hidden="true"></span><span class="tab-label">기업검색</span></button>
+      <button type="button" class="cat-btn" id="searchTabBtn"><span class="tab-emoji btn-icon" data-icon="search" aria-hidden="true"></span><span class="tab-label">기업찾기</span></button>
       <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn"><span class="tab-label">인사이트</span></button>
       <button type="button" class="cat-btn" data-tab="valuation" id="tabValuationBtn"><span class="tab-label">기업가치</span></button>
       <button type="button" class="cat-btn" data-tab="trend" id="tabTrendBtn"><span class="tab-label">투자동향</span></button>
@@ -310,9 +311,14 @@
           <div id="historicalResults"></div>
 
           <hr class="future-chart-divider" />
-          <h3 class="future-chart-subheading">VIX지수를 활용한 투자시점 점검표</h3>
-          <div id="futureMacroChartContainer" class="future-chart-container future-macro-chart"></div>
-          <p id="futureMacroChartCaption" class="future-chart-caption"></p>
+          <div class="future-chart-heading-row">
+            <h3 class="future-chart-subheading" id="futureMacroChartHeading">VIX지수를 활용한 투자시점 점검표</h3>
+            <button type="button" id="futureMacroChartDetailBtn" class="score-method-detail-btn">+자세히</button>
+          </div>
+          <div id="futureMacroChartDetailWrap" class="chart-detail-wrap" style="display:none;">
+            <div id="futureMacroChartContainer" class="future-chart-container future-macro-chart"></div>
+            <p id="futureMacroChartCaption" class="future-chart-caption"></p>
+          </div>
         </section>
 
         <section class="flush-section" id="futureInlineWrap" style="display:none;">
@@ -393,6 +399,7 @@
       <h2 class="search-overlay-title">시장</h2>
     </div>
     <div class="company-panel-body">
+      <p class="market-delay-note">📡 실시간 시세는 최대 20분 지연될 수 있습니다.</p>
       <div class="mkt-widget" id="mktWidget">
         <div class="mkt-widget-track" id="mktWidgetTrack"></div>
         <div class="mkt-widget-footer">
@@ -418,7 +425,7 @@
   <div id="searchWizardPanel" class="company-panel" style="display:none;">
     <div class="company-panel-bar">
       <button type="button" id="searchWizardCloseBtn" class="search-overlay-back" aria-label="닫기"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="20" y1="12" x2="5" y2="12"/><polyline points="11 5 4 12 11 19"/></svg></button>
-      <h2 class="search-overlay-title">기업검색</h2>
+      <h2 class="search-overlay-title">기업찾기</h2>
     </div>
     <div class="company-panel-body">
       <div class="fh-search search-overlay-search wizard-ticker-search">
@@ -551,9 +558,9 @@
       <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z" fill="currentColor"/><circle cx="12" cy="9.5" r="2.6" fill="#fff"/></svg>
       지도
     </button>
-    <button type="button" class="bottom-nav-btn active" id="bottomNavHomeBtn" aria-label="스터디">
+    <button type="button" class="bottom-nav-btn active" id="bottomNavHomeBtn" aria-label="기업분석">
       <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="13" width="4" height="8" rx="1" fill="currentColor"/><rect x="10" y="8" width="4" height="13" rx="1" fill="currentColor"/><rect x="16" y="3" width="4" height="18" rx="1" fill="currentColor"/></svg>
-      스터디
+      기업분석
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavCalendarBtn" aria-label="캘린더">
       <svg viewBox="0 0 24 24" fill="none">

@@ -327,11 +327,14 @@ function renderCompanyBubble(leaf, sectorColorValue) {
   // 국내는 티커(005930.KS)만 봐선 무슨 회사인지 알기 어려우니, 로고 대신 배지가 뜨는 자리엔 한글 회사명을 씀
   const isKrView = ACTIVE_MARKET === "domestic";
   const badgeText = isKrView ? d.name : d.symbol;
+  // 삼성전자·SK하이닉스는 지도에서 특히 눈에 잘 띄어야 하는 대표 종목이라 이름 라벨만 두 단계(약 1.4배) 더 크게 표시
+  const isBigCap = isKrView && (d.symbol === "005930.KS" || d.symbol === "000660.KS");
+  const bigCapScale = isBigCap ? 1.4 : 1;
 
   const fallback = document.createElement("div");
   fallback.className = "company-fallback-badge";
   fallback.style.setProperty("--sc", sectorColorValue);
-  fallback.style.fontSize = `${Math.max(9, Math.min(22, leaf.r * (isKrView ? 0.2 : 0.32)))}px`;
+  fallback.style.fontSize = `${Math.max(9, Math.min(22, leaf.r * (isKrView ? 0.2 : 0.32)) * bigCapScale)}px`;
   fallback.textContent = badgeText;
   el.appendChild(fallback);
 
@@ -339,7 +342,7 @@ function renderCompanyBubble(leaf, sectorColorValue) {
     const tag = document.createElement("div");
     tag.className = "company-ticker-tag";
     tag.textContent = badgeText;
-    tag.style.fontSize = `${Math.max(10, Math.min(28, leaf.r * 0.45))}px`;
+    tag.style.fontSize = `${Math.max(10, Math.min(28, leaf.r * 0.45) * bigCapScale)}px`;
     el.appendChild(tag);
   }
 
@@ -1129,6 +1132,150 @@ document.getElementById("sizeModeBtn").addEventListener("click", (e) => {
   rerenderMap(true);
 });
 
+// ---------- 상단 코스피/코스닥 + 섹터별 평균 등락률 요약 바(국내 모드 전용) + 상단 티커 테이프(국내/해외 공통) ----------
+function escHtmlLocal(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+// 한국 증시 운영시간(평일 09:00~15:30, KST) 간단 근사치 — 공휴일 캘린더는 반영하지 않음
+function isKrMarketOpen() {
+  const kst = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
+  const day = kst.getDay();
+  if (day === 0 || day === 6) return false;
+  const mins = kst.getHours() * 60 + kst.getMinutes();
+  return mins >= 9 * 60 && mins <= 15 * 60 + 30;
+}
+
+// Yahoo 차트(최근 5거래일 일봉)에서 현재가/전일대비 등락을 뽑음 — 기존 refreshLiveData와 동일한 CORS 프록시 재사용
+async function fetchYahooChartSnap(symbol) {
+  try {
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=5d&interval=1d`;
+    const data = await proxyFetchJson(url);
+    const result = data && data.chart && data.chart.result && data.chart.result[0];
+    if (!result) return null;
+    const meta = result.meta || {};
+    const timestamps = result.timestamp || [];
+    const closes = (result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
+    const pairs = timestamps.map((t, i) => ({ t, c: closes[i] })).filter((p) => p.c !== null && p.c !== undefined);
+    if (!pairs.length) return null;
+    const latest = pairs[pairs.length - 1];
+    const prevClose = pairs.length >= 2 ? pairs[pairs.length - 2].c : meta.chartPreviousClose ?? null;
+    const price = meta.regularMarketPrice ?? latest.c;
+    const change = prevClose !== null && prevClose !== undefined && price !== null && price !== undefined ? price - prevClose : null;
+    const changePct = change !== null && prevClose ? (change / prevClose) * 100 : null;
+    return { price, change, changePct };
+  } catch {
+    return null;
+  }
+}
+
+function fmtIdxChg(pct) {
+  if (pct === null || pct === undefined || !Number.isFinite(pct)) return { text: "-", cls: "" };
+  const sign = pct >= 0 ? "+" : "";
+  return { text: `${sign}${pct.toFixed(2)}%`, cls: pct >= 0 ? "idx-up" : "idx-down" };
+}
+
+// 지금 지도에 로드된 종목들의 changePercent(타일 색상과 동일한 소스)를 섹터별로 평균 — 별도 실시간 파이프라인을 새로 만들지 않고
+// 이미 로드된 스냅샷을 그대로 집계하므로 타일 색상과 항상 일치함
+function computeSectorAverages() {
+  const bySector = new Map();
+  for (const c of ACTIVE_DATA.companies) {
+    if (typeof c.changePercent !== "number") continue;
+    if (!bySector.has(c.sector)) bySector.set(c.sector, { sectorKo: c.sectorKo, sum: 0, count: 0 });
+    const g = bySector.get(c.sector);
+    g.sum += c.changePercent;
+    g.count += 1;
+  }
+  return [...bySector.values()]
+    .filter((g) => g.count > 0)
+    .map((g) => ({ sectorKo: g.sectorKo, avg: g.sum / g.count }))
+    .sort((a, b) => b.avg - a.avg);
+}
+
+async function renderIndexSummaryBar() {
+  const bar = document.getElementById("indexSummaryBar");
+  if (!bar) return;
+  if (ACTIVE_MARKET !== "domestic") {
+    bar.style.display = "none";
+    return;
+  }
+  bar.style.display = "flex";
+  document.getElementById("indexSummaryDelay").style.display = isKrMarketOpen() ? "inline-flex" : "none";
+
+  const num = (n) => (n === null || n === undefined ? "-" : n.toLocaleString("ko-KR", { maximumFractionDigits: 2 }));
+  const [kospi, kosdaq] = await Promise.all([fetchYahooChartSnap("^KS11"), fetchYahooChartSnap("^KQ11")]);
+  const kospiChg = fmtIdxChg(kospi && kospi.changePct);
+  const kosdaqChg = fmtIdxChg(kosdaq && kosdaq.changePct);
+  document.getElementById("indexSummaryKospi").innerHTML =
+    `코스피 <b>${num(kospi && kospi.price)}</b> <span class="idx-chg ${kospiChg.cls}">${kospiChg.text}</span>`;
+  document.getElementById("indexSummaryKosdaq").innerHTML =
+    `코스닥 <b>${num(kosdaq && kosdaq.price)}</b> <span class="idx-chg ${kosdaqChg.cls}">${kosdaqChg.text}</span>`;
+
+  document.getElementById("indexSummarySectors").innerHTML = computeSectorAverages()
+    .map((s) => {
+      const chg = fmtIdxChg(s.avg);
+      return `<span class="index-summary-sector-item">${escHtmlLocal(s.sectorKo || "-")} <span class="idx-chg ${chg.cls}">${chg.text}</span></span>`;
+    })
+    .join("");
+}
+
+// ---------- 상단 티커 테이프 — 본체(app.js) 시장 위젯의 기본 8개 지수를 원형 배지+회색 종목명+가격+등락률로 자동 스크롤 표시 ----------
+// 본체와 같은 localStorage 키를 읽어 종목 구성을 그대로 따라감(본체에서 위젯 종목을 바꾸면 이 테이프도 함께 바뀜).
+// 다만 이 페이지엔 본체의 전체 지수/원자재/암호화폐 카탈로그를 중복 보관하지 않으므로, 이 표에 없는 종목으로
+// 바꾼 경우엔 기본 8개로 안전하게 되돌아감
+const MARKET_WIDGET_STORAGE_KEY = "market_widget_symbols_v1";
+const TICKER_TAPE_ITEMS = {
+  KOSPI: { symbol: "^KS11", icon: "🇰🇷", name: "코스피" },
+  KOSDAQ: { symbol: "^KQ11", icon: "🇰🇷", name: "코스닥" },
+  IXIC: { symbol: "^IXIC", icon: "🇺🇸", name: "나스닥 종합" },
+  SPX: { symbol: "^GSPC", icon: "🇺🇸", name: "S&P 500" },
+  GOLD: { symbol: "GC=F", icon: "🟨", name: "금(Gold)" },
+  "USD/KRW": { symbol: "KRW=X", icon: "🇰🇷", name: "달러/원 환율" },
+  DJI: { symbol: "^DJI", icon: "🇺🇸", name: "다우 종합" },
+  RUT: { symbol: "^RUT", icon: "🇺🇸", name: "러셀 2000" },
+};
+const TICKER_TAPE_DEFAULT_ORDER = ["KOSPI", "KOSDAQ", "IXIC", "SPX", "GOLD", "USD/KRW", "DJI", "RUT"];
+
+function getTickerTapeOrder() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(MARKET_WIDGET_STORAGE_KEY));
+    if (Array.isArray(saved) && saved.length === 8 && saved.every((t) => TICKER_TAPE_ITEMS[t])) return saved;
+  } catch {
+    // 저장된 값이 없거나 손상된 경우 기본 순서 사용
+  }
+  return TICKER_TAPE_DEFAULT_ORDER;
+}
+
+async function renderTickerTape() {
+  const track = document.getElementById("tickerTapeTrack");
+  if (!track) return;
+  const order = getTickerTapeOrder();
+  const snaps = await Promise.all(order.map((t) => fetchYahooChartSnap(TICKER_TAPE_ITEMS[t].symbol)));
+  const cellsHtml = order
+    .map((t, i) => {
+      const item = TICKER_TAPE_ITEMS[t];
+      const snap = snaps[i];
+      const chg = fmtIdxChg(snap && snap.changePct);
+      const priceTxt = snap && snap.price !== null && snap.price !== undefined ? snap.price.toLocaleString("ko-KR", { maximumFractionDigits: 2 }) : "-";
+      return `<span class="ticker-tape-item" data-ticker="${t}">
+        <span class="ticker-tape-badge">${item.icon}</span>
+        <span class="ticker-tape-name">${escHtmlLocal(item.name)}</span>
+        <span class="ticker-tape-price">${priceTxt}</span>
+        <span class="ticker-tape-chg ${chg.cls}">${chg.text}</span>
+      </span>`;
+    })
+    .join("");
+  // 콘텐츠를 두 벌 이어붙여야 CSS 마퀴 애니메이션이 이음매 없이 반복됨
+  track.innerHTML = cellsHtml + cellsHtml;
+}
+
+const tickerTapeTrackEl = document.getElementById("tickerTapeTrack");
+if (tickerTapeTrackEl) {
+  tickerTapeTrackEl.addEventListener("click", (e) => {
+    if (e.target.closest(".ticker-tape-item")) goToMainSite("market");
+  });
+}
+
 function loadMarket(mode, animate) {
   ACTIVE_MARKET = mode;
   ACTIVE_DATA = mode === "domestic" ? KR_SECTOR_DATA : SP500_DATA;
@@ -1141,6 +1288,7 @@ function loadMarket(mode, animate) {
   if (mode === "overseas") {
     refreshLiveData().catch(() => {});
   }
+  renderIndexSummaryBar().catch(() => {});
 }
 
 document.getElementById("marketTogglePill").addEventListener("click", (e) => {
@@ -1247,6 +1395,7 @@ document.querySelectorAll("#marketTogglePill .toggle-btn").forEach((b) => {
   b.classList.toggle("active", b.dataset.market === initialMarket);
 });
 loadMarket(initialMarket, false);
+renderTickerTape().catch(() => {});
 loadingIndicator.classList.add("hidden");
 
 // 국내/해외 전환 시 로고가 다시 느리게 뜨지 않도록, 시작하자마자 두 시장 로고를 저화질부터 브라우저 캐시에 미리 받아둔다

@@ -794,10 +794,13 @@ body[data-market-mode="kr"] .tab-bar .cat-btn.active::after { background: #fffff
   z-index: 300;
   background: var(--bg);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 14px;
 }
 .loading-splash-logo { width: min(140px, 32vw); height: auto; border-radius: 22%; animation: splash-pulse 1.4s ease-in-out infinite; }
+.loading-splash-caption { margin: 0; font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: -0.1px; }
 @keyframes splash-pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.55; }
@@ -1168,6 +1171,34 @@ body[data-market-mode="kr"] .tab-bar .cat-btn.active::after { background: #fffff
   font-size: 12px;
   font-weight: 700;
   color: var(--warn);
+}
+
+/* 과거분석/미래예측/s리포트 버튼을 누르면 펼쳐지는 범위를 주황 반투명 박스로 표시 — 어디까지가 펼쳐진 내용인지 한눈에 보이게 함 */
+.flush-section.section-expanded {
+  background: rgba(233, 85, 0, 0.06);
+  border: 1px solid rgba(233, 85, 0, 0.28);
+  border-radius: 12px;
+  padding: 14px 12px;
+}
+
+/* FOMO/VIX 차트 제목 옆 "+자세히" 버튼 행 — 제목은 그대로 가운데 정렬 유지하면서 버튼만 오른쪽에 붙임 */
+.future-chart-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  max-width: 720px;
+  margin: 0 auto 12px;
+}
+.future-chart-heading-row .future-chart-subheading {
+  margin: 0;
+}
+/* "+자세히"를 눌러 펼친 차트 영역도 동일한 주황 반투명 박스 언어로 표시 */
+.chart-detail-wrap.chart-detail-expanded {
+  background: rgba(233, 85, 0, 0.06);
+  border: 1px solid rgba(233, 85, 0, 0.28);
+  border-radius: 12px;
+  padding: 12px 8px;
 }
 
 .chat-ticker-suggest {
@@ -1909,6 +1940,8 @@ table.insight-holdings-table td span, table.insight-holdings-table td b { max-wi
 .wl-group-save-btn { color: var(--accent); }
 .wl-group-delete-btn { color: var(--neg); }
 
+.market-delay-note { margin: 0 0 10px; font-size: 11.5px; font-weight: 600; color: var(--muted); text-align: center; }
+
 /* ---------- 시장 상단 4x2 위젯(카드 2장, 각 2x2, 오늘 스파크라인) ---------- */
 .mkt-widget { margin-bottom: 14px; }
 .mkt-widget-track {
@@ -2023,8 +2056,8 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 #bottomNavMoreBtn svg { width: 29px; height: 29px; top: 3px; }
 #bottomNavMoreBtn { position: relative; top: -2px; }
 #bottomNavMarketBtn svg { top: 5px; }
-.bottom-nav-btn.active { color: #e04600; }
-.bottom-nav-btn.active svg { color: #e04600; }
+.bottom-nav-btn.active { color: var(--text); }
+.bottom-nav-btn.active svg { color: var(--text); }
 .bottom-nav-btn:active,
 .bottom-nav-btn:focus,
 .bottom-nav-btn:focus-visible { background: none; outline: none; }
