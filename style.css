@@ -626,10 +626,15 @@ body[data-market-mode="kr"] .login-header-btn { color: #ffffff; }
   border-radius: 2px;
   background: var(--text);
 }
-/* 국내 선택 시 탭바는 흰 글씨/아이콘만 적용하고 배경은 투명하게 둬서 .fixed-header의 주황 그라데이션이
-   탭바 좌우(14px 인셋) 바깥까지 끊김 없이 그대로 이어지도록 함(탭바가 따로 그라데이션을 그리면 그 폭만큼만
-   칠해져 화면 양끝에 얇은 색 경계가 생김) */
-body[data-market-mode="kr"] .tab-bar { background: transparent; }
+/* 국내 선택 시 탭바(관심종목~뉴스·공시)는 위 로고줄의 주황과 다르게 로고 점(.) 색과 통일한 빨강으로 —
+   .fixed-header의 14px 좌우 패딩을 음수 마진으로 상쇄해 탭바 배경이 화면 끝까지 끊김 없이 이어지도록 함 */
+body[data-market-mode="kr"] .tab-bar {
+  background: #f60303;
+  margin-left: -14px;
+  margin-right: -14px;
+  padding-left: 14px;
+  padding-right: 14px;
+}
 body[data-market-mode="kr"] .tab-bar .cat-btn,
 body[data-market-mode="kr"] .tab-bar .cat-btn.active {
   background: transparent;
