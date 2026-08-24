@@ -59,163 +59,55 @@ function changeColorForText(pct) {
 // 건너뛰고 바로 티커 배지를 보여준다 — 로컬/외부 둘 다 같은 소스라 폴백해도 어차피 같은 사진이 나옴.
 const BAD_LOGO_SYMBOLS = new Set([
   "003030.KS", // 세아제강지주
-  "042660.KS", // 한화오션
-  "112610.KS", // 씨에스윈드
-  "010950.KS", // S-Oil
   "011200.KS", // HMM
-  "003550.KS", // LG
-  "000720.KS", // 현대건설
-  "064350.KS", // 현대로템
   "018260.KS", // 삼성에스디에스
   "000240.KS", // 한국앤컴퍼니
-  "120110.KS", // 코오롱인더
   "081660.KS", // 미스토홀딩스
   "298040.KS", // 효성중공업
   "010120.KS", // LS ELECTRIC
   "069620.KS", // 대웅제약
-  "000080.KS", // 하이트진로
-  "000100.KS", // 유한양행
-  "001040.KS", // CJ
   "000810.KS", // 삼성화재
   "001680.KS", // 대상
   "002790.KS", // 아모레퍼시픽홀딩스
-  "003230.KS", // 삼양식품
-  "004020.KS", // 현대제철
-  "004990.KS", // 롯데지주
   "005850.KS", // 에스엘
-  "006400.KS", // 삼성SDI
   "005940.KS", // NH투자증권
   "009150.KS", // 삼성전기
   "009970.KS", // 영원무역홀딩스
   "010060.KS", // OCI홀딩스
-  "011210.KS", // 현대위아
-  "012330.KS", // 현대모비스
-  "011780.KS", // 금호석유화학
-  "011070.KS", // LG이노텍
-  "011170.KS", // 롯데케미칼
-  "012450.KS", // 한화에어로스페이스
   "012750.KS", // 에스원
-  "015760.KS", // 한국전력
-  "009830.KS", // 한화솔루션
-  "030200.KS", // KT
-  "032640.KS", // LG유플러스
-  "032830.KS", // 삼성생명
   "033780.KS", // KT&G
   "034730.KS", // SK
   "035720.KS", // 카카오
   "047050.KS", // 포스코인터내셔널
-  "047810.KS", // 한국항공우주
-  "051910.KS", // LG화학
-  "051900.KS", // LG생활건강
   "071320.KS", // 지역난방공사
-  "078930.KS", // GS
   "086790.KS", // 하나금융지주
   "088350.KS", // 한화생명
-  "090430.KS", // 아모레퍼시픽
-  "097950.KS", // CJ제일제당
-  "105560.KS", // KB금융
   "112040.KQ", // 위메이드
-  "073240.KS", // 금호타이어
   "139480.KS", // 이마트
   "196170.KQ", // 알테오젠
   "207940.KS", // 삼성바이오로직스
   "204320.KS", // HL만도
-  "259960.KS", // 크래프톤
   "253450.KQ", // 스튜디오드래곤
   "267270.KS", // HD현대건설기계
-  "280360.KS", // 롯데웰푸드
   "285130.KS", // SK케미칼
   "293490.KQ", // 카카오게임즈
-  "323410.KS", // 카카오뱅크
   "326030.KS", // SK바이오팜
-  "352820.KS", // 하이브
-  "ABT", // Abbott Laboratories
-  "ABNB", // Airbnb
-  "ACN", // Accenture
-  "ADI", // Analog Devices
-  "ADSK", // Autodesk
-  "AIG", // American International Group
-  "ABBV", // AbbVie
-  "ALB", // Albemarle Corporation
-  "AKAM", // Akamai Technologies
-  "ALL", // Allstate
-  "AMD", // AMD
-  "AME", // Ametek
-  "AMP", // Ameriprise Financial
-  "AMZN", // Amazon
-  "ANET", // Arista Networks
-  "AMGN", // Amgen
   "ARE", // Alexandria Real Estate Equities
-  "APTV", // Aptiv
-  "APP", // AppLovin
-  "AWK", // American Water Works
-  "AXON", // Axon Enterprise
-  "BA", // Boeing
-  "BAX", // Baxter International
-  "BLK", // BlackRock
-  "CDNS", // Cadence Design Systems
   "CEG", // Constellation Energy
   "CHTR", // Charter Communications
-  "COO", // The Cooper Companies
   "CTAS", // Cintas
-  "DHI", // D. R. Horton
-  "DIS", // The Walt Disney Company
-  "DLR", // Digital Realty
   "EL", // The Estée Lauder Companies
-  "EOG", // EOG Resources
   "EMR", // Emerson Electric
-  "CSX", // CSX Corporation
-  "EQIX", // Equinix
-  "FAST", // Fastenal
-  "EVRG", // Evergy
-  "FCX", // Freeport-McMoRan
-  "FRT", // Federal Realty Investment Trust
   "FSLR", // First Solar
-  "GS", // Goldman Sachs
-  "HSY", // The Hershey Company
-  "IBM", // IBM
-  "JBL", // Jabil
-  "KR", // Kroger
-  "LMT", // Lockheed Martin
-  "MCK", // McKesson Corporation
-  "MDT", // Medtronic
-  "KHC", // Kraft Heinz
-  "MRNA", // Moderna
-  "MRVL", // Marvell Technology
-  "MS", // Morgan Stanley
-  "NKE", // Nike, Inc.
-  "NTAP", // NetApp
   "NSC", // Norfolk Southern Railway
-  "NUE", // Nucor
   "OKE", // Oneok
-  "ON", // onsemi
-  "PCAR", // Paccar
-  "MPWR", // Monolithic Power Systems
-  "RCL", // Royal Caribbean Group
-  "REGN", // Regeneron Pharmaceuticals
-  "STT", // State Street Corporation
-  "TSLA", // Tesla, Inc.
-  "TRV", // The Travelers Companies
-  "TTWO", // Take-Two Interactive
-  "UBER", // Uber
-  "ULTA", // Ulta Beauty
-  "UNH", // UnitedHealth Group
-  "V", // Visa Inc.
-  "URI", // United Rentals
-  "VICI", // Vici Properties
-  "VRTX", // Vertex Pharmaceuticals
   "VTR", // Ventas
-  "WELL", // Welltower
-  "WSM", // Williams-Sonoma, Inc.
-  "WYNN", // Wynn Resorts
-  "XEL", // Xcel Energy
-  "ZBH", // Zimmer Biomet
 ]);
 
 // 매번 외부(financialmodelingprep)에서 개별 요청하면 느려서, 미리 받아둔 로컬 캐시(logos/)를 우선 쓰고
 // 혹시 못 받아둔 심볼만 그때그때 외부 URL로 폴백한다(logo-failed 클래스가 붙기 전 마지막 시도).
-// 로컬 캐시는 저(32px)/중(80px)/고(250px, 원본) 3단계로 나눠서, 화면에 실제로 보이는 크기에 맞는 것만 불러온다
-// (지도를 축소해서 보면 대부분 low만, 특정 섹터로 확대했을 때만 그 종목들이 mid/high로 자동 승급됨).
+// 로컬 캐시는 저(low)/중(mid) 2단계만 두며, 현재는 둘 다 동일한 이미지(중화질 기준)를 가리킴 —
+// 화질 차등이 다시 필요해지면 low만 별도로 축소하면 됨. 고화질(high) 티어는 더 이상 사용하지 않음
 function logoUrl(symbol, tier) {
   return `logos/${tier || "low"}/${encodeURIComponent(symbol)}.png`;
 }
@@ -223,7 +115,6 @@ function logoUrlFallback(symbol) {
   return `https://financialmodelingprep.com/image-stock/${encodeURIComponent(symbol)}.png`;
 }
 function pickLogoTier(onScreenRadiusPx) {
-  if (onScreenRadiusPx >= 55) return "high";
   if (onScreenRadiusPx >= 20) return "mid";
   return "low";
 }
