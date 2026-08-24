@@ -4621,9 +4621,9 @@ function buildRevenueEpsChartSvg(quarters, quoteCurrency) {
     const v = (revTop / 5) * i;
     const epsV = (epsTop / 5) * i;
     const y = MT + PH - (v / revTop) * PH;
-    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${CHART_GRID}" stroke-width="1" />`;
-    gridSvg += `<text x="${(ML - 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="10" fill="${CHART_AXIS_TEXT}">${fmtCompactCurrency(v, quoteCurrency)}</text>`;
-    gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" font-size="10" fill="${CHART_AXIS_TEXT}">${epsV.toFixed(2)}</text>`;
+    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${chartGrid()}" stroke-width="1" />`;
+    gridSvg += `<text x="${(ML - 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="10" fill="${chartAxisText()}">${fmtCompactCurrency(v, quoteCurrency)}</text>`;
+    gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" font-size="10" fill="${chartAxisText()}">${epsV.toFixed(2)}</text>`;
   }
 
   let barsSvg = "";
@@ -4654,18 +4654,18 @@ function buildRevenueEpsChartSvg(quarters, quoteCurrency) {
       const predEpsY = MT + PH - Math.max((q.predEps / epsTop) * PH, 2);
       barsSvg += `<line x1="${epsX.toFixed(1)}" y1="${predEpsY.toFixed(1)}" x2="${(epsX + barW).toFixed(1)}" y2="${predEpsY.toFixed(1)}" stroke="${QBAR_PRED_COLOR}" stroke-width="3" stroke-linecap="round" />`;
     }
-    labelsSvg += `<text x="${cx.toFixed(1)}" y="${(MT + PH + 20).toFixed(1)}" text-anchor="middle" font-size="11" fill="${CHART_AXIS_TEXT}">${escapeHtml(q.label)}</text>`;
+    labelsSvg += `<text x="${cx.toFixed(1)}" y="${(MT + PH + 20).toFixed(1)}" text-anchor="middle" font-size="11" fill="${chartAxisText()}">${escapeHtml(q.label)}</text>`;
   });
 
   const legendY = 20;
   const legend = `
-    <circle cx="${ML}" cy="${legendY}" r="4" fill="${QBAR_REVENUE_COLOR}" /><text x="${ML + 10}" y="${legendY + 4}" font-size="11" fill="${CHART_AXIS_TEXT}">매출</text>
-    <circle cx="${ML + 70}" cy="${legendY}" r="4" fill="${QBAR_EPS_COLOR}" /><text x="${ML + 80}" y="${legendY + 4}" font-size="11" fill="${CHART_AXIS_TEXT}">주당순이익</text>
-    <line x1="${ML + 184}" y1="${legendY}" x2="${ML + 196}" y2="${legendY}" stroke="${QBAR_PRED_COLOR}" stroke-width="3" stroke-linecap="round" /><text x="${ML + 200}" y="${legendY + 4}" font-size="11" fill="${CHART_AXIS_TEXT}">예측선</text>
+    <circle cx="${ML}" cy="${legendY}" r="4" fill="${QBAR_REVENUE_COLOR}" /><text x="${ML + 10}" y="${legendY + 4}" font-size="11" fill="${chartAxisText()}">매출</text>
+    <circle cx="${ML + 70}" cy="${legendY}" r="4" fill="${QBAR_EPS_COLOR}" /><text x="${ML + 80}" y="${legendY + 4}" font-size="11" fill="${chartAxisText()}">주당순이익</text>
+    <line x1="${ML + 184}" y1="${legendY}" x2="${ML + 196}" y2="${legendY}" stroke="${QBAR_PRED_COLOR}" stroke-width="3" stroke-linecap="round" /><text x="${ML + 200}" y="${legendY + 4}" font-size="11" fill="${chartAxisText()}">예측선</text>
   `;
 
   return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="분기별 매출/주당순이익 차트">
-    <rect x="0" y="0" width="${W}" height="${H}" fill="${CHART_BG}" />
+    <rect x="0" y="0" width="${W}" height="${H}" fill="${chartBg()}" />
     ${legend}
     ${gridSvg}
     ${barsSvg}
@@ -8603,10 +8603,20 @@ const PRICE_TAG_W = 108,
   PRICE_TAG_NOTCH = 8,
   PRICE_TAG_H = 36;
 
-// 가격/캔들 차트 색상 — 화이트 배경(사이트 화이트 테마와 통일), 현재가/터치 가격 책갈피는 앱 로고와 같은 주황
-const CHART_BG = "#ffffff";
-const CHART_GRID = "#e5e7eb";
-const CHART_AXIS_TEXT = "#6b7280";
+// 가격/캔들/매출·EPS 차트 배경 — 기본(화이트)은 사이트 화이트 테마와 통일, 설정에서 "블랙으로 보기"를 켜면
+// 기업 상세 페이지의 다른 차트들(미래예측·투자안정 분포·FOMO/VIX 등)처럼 검정 배경으로 바뀜(함수로 둬서 매번 렌더 시점의 테마를 반영)
+function isDarkTheme() {
+  return document.documentElement.getAttribute("data-theme") === "dark";
+}
+function chartBg() {
+  return isDarkTheme() ? "#000000" : "#ffffff";
+}
+function chartGrid() {
+  return isDarkTheme() ? "#23262f" : "#e5e7eb";
+}
+function chartAxisText() {
+  return isDarkTheme() ? "#8a90a3" : "#6b7280";
+}
 const CHART_CROSSHAIR = "#9aa2b1";
 const CHART_TAG_BG = "#f95403";
 const CHART_TAG_TEXT = "#ffffff";
@@ -8656,8 +8666,8 @@ function buildPriceChartSvg(pairs, period, symbol) {
   for (let k = 0; k <= 4; k++) {
     const v = lo + (k / 4) * (hi - lo);
     const y = yFn(v);
-    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${CHART_GRID}" stroke-width="1" />`;
-    gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 7).toFixed(1)}" font-size="20" fill="${CHART_AXIS_TEXT}">${fmtChartPrice(v, chartCurrency)}</text>`;
+    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${chartGrid()}" stroke-width="1" />`;
+    gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 7).toFixed(1)}" font-size="20" fill="${chartAxisText()}">${fmtChartPrice(v, chartCurrency)}</text>`;
   }
 
   let axisSvg = "";
@@ -8667,7 +8677,7 @@ function buildPriceChartSvg(pairs, period, symbol) {
     const x = xFn(idx);
     const d = new Date(pairs[idx].t * 1000);
     const anchor = k === 0 ? "start" : k === 4 ? "end" : "middle";
-    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 36).toFixed(1)}" text-anchor="${anchor}" font-size="20" fill="${CHART_AXIS_TEXT}">${escapeHtml(fmt(d))}</text>`;
+    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 36).toFixed(1)}" text-anchor="${anchor}" font-size="20" fill="${chartAxisText()}">${escapeHtml(fmt(d))}</text>`;
   }
 
   const linePath = pairs.map((p, i) => `${i === 0 ? "M" : "L"}${xFn(i).toFixed(1)},${yFn(p.c).toFixed(1)}`).join(" ");
@@ -8685,7 +8695,7 @@ function buildPriceChartSvg(pairs, period, symbol) {
         <stop offset="100%" stop-color="#2f6fed" stop-opacity="0" />
       </linearGradient>
     </defs>
-    <rect x="0" y="0" width="${W}" height="${H}" fill="${CHART_BG}" />
+    <rect x="0" y="0" width="${W}" height="${H}" fill="${chartBg()}" />
     ${gridSvg}
     <path d="${areaPath}" fill="url(#${gradId})" stroke="none" />
     <path d="${linePath}" fill="none" stroke="#2f6fed" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" />
@@ -8700,7 +8710,7 @@ function buildPriceChartSvg(pairs, period, symbol) {
     <g id="pcCrosshair" style="display:none;">
       <line x1="0" y1="${MT}" x2="0" y2="${(MT + PH).toFixed(1)}" stroke="${CHART_CROSSHAIR}" stroke-width="1" stroke-dasharray="2,2" />
       <line id="pcCrosshairHLine" x1="${ML}" y1="0" x2="${(ML + PW).toFixed(1)}" y2="0" stroke="${CHART_CROSSHAIR}" stroke-width="1" stroke-dasharray="2,2" />
-      <circle id="pcCrosshairDot" r="4" fill="${CHART_BG}" stroke="#2f6fed" stroke-width="2" />
+      <circle id="pcCrosshairDot" r="4" fill="${chartBg()}" stroke="#2f6fed" stroke-width="2" />
       <path id="pcCrosshairTagPath" fill="${CHART_TAG_BG}" />
       <text id="pcCrosshairTagText" text-anchor="start" font-size="20" font-weight="700" fill="${CHART_TAG_TEXT}"></text>
     </g>
@@ -8716,8 +8726,8 @@ function buildCandleChartSvg(pairs, period, symbol) {
   for (let k = 0; k <= 4; k++) {
     const v = lo + (k / 4) * (hi - lo);
     const y = yFn(v);
-    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${CHART_GRID}" stroke-width="1" />`;
-    gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 7).toFixed(1)}" font-size="20" fill="${CHART_AXIS_TEXT}">${fmtChartPrice(v, chartCurrency)}</text>`;
+    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${chartGrid()}" stroke-width="1" />`;
+    gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 7).toFixed(1)}" font-size="20" fill="${chartAxisText()}">${fmtChartPrice(v, chartCurrency)}</text>`;
   }
 
   let axisSvg = "";
@@ -8727,7 +8737,7 @@ function buildCandleChartSvg(pairs, period, symbol) {
     const x = xFn(idx);
     const d = new Date(pairs[idx].t * 1000);
     const anchor = k === 0 ? "start" : k === 4 ? "end" : "middle";
-    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 36).toFixed(1)}" text-anchor="${anchor}" font-size="20" fill="${CHART_AXIS_TEXT}">${escapeHtml(fmt(d))}</text>`;
+    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 36).toFixed(1)}" text-anchor="${anchor}" font-size="20" fill="${chartAxisText()}">${escapeHtml(fmt(d))}</text>`;
   }
 
   const slotW = N > 1 ? PW / N : PW; // 봉 사이 간격의 60%를 몸통 너비로 사용(너무 촘촘하면 최소 1.5px 보장)
@@ -8751,7 +8761,7 @@ function buildCandleChartSvg(pairs, period, symbol) {
   const lastY = yFn(last.c);
 
   return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHtml(symbol)} 캔들 차트">
-    <rect x="0" y="0" width="${W}" height="${H}" fill="${CHART_BG}" />
+    <rect x="0" y="0" width="${W}" height="${H}" fill="${chartBg()}" />
     ${gridSvg}
     ${candlesSvg}
     <g id="pcCurrentMarker">
@@ -8764,7 +8774,7 @@ function buildCandleChartSvg(pairs, period, symbol) {
     <g id="pcCrosshair" style="display:none;">
       <line x1="0" y1="${MT}" x2="0" y2="${(MT + PH).toFixed(1)}" stroke="${CHART_CROSSHAIR}" stroke-width="1" stroke-dasharray="2,2" />
       <line id="pcCrosshairHLine" x1="${ML}" y1="0" x2="${(ML + PW).toFixed(1)}" y2="0" stroke="${CHART_CROSSHAIR}" stroke-width="1" stroke-dasharray="2,2" />
-      <circle id="pcCrosshairDot" r="4" fill="${CHART_BG}" stroke="#2f6fed" stroke-width="2" />
+      <circle id="pcCrosshairDot" r="4" fill="${chartBg()}" stroke="#2f6fed" stroke-width="2" />
       <path id="pcCrosshairTagPath" fill="${CHART_TAG_BG}" />
       <text id="pcCrosshairTagText" text-anchor="start" font-size="20" font-weight="700" fill="${CHART_TAG_TEXT}"></text>
     </g>
