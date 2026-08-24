@@ -105,11 +105,7 @@ body[data-market-mode="kr"] .fh-banner { filter: brightness(0) invert(1); }
   justify-content: space-between;
   max-width: 860px;
   margin: 0 auto 6px; /* 아래 탭바(관심종목~뉴스·공시)와 겹치지 않게 여백 확보 */
-  padding-bottom: 6px;
-  border-bottom: 1px solid rgba(20, 22, 28, 0.08); /* 지도(섹터맵) 상단 툴바 아래 흐린 구분선과 동일한 톤 */
 }
-/* 국내(주황 배경) 모드에서는 어두운 선 대신 흐린 흰 선으로 — 지도의 국내 모드 구분선과 동일 */
-body[data-market-mode="kr"] .fh-topline { border-bottom-color: rgba(255, 255, 255, 0.25); }
 
 /* 지도(섹터맵) 상단 toggle-pill과 동일한 디자인 — 알약 컨테이너 배경 안에서 선택된 쪽만 흰/주황 알약으로 강조 */
 .market-mode-toggle {
