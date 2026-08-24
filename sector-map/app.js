@@ -537,7 +537,7 @@ function openCompanySheet(d) {
       <img class="sheet-logo" src="${logoUrl(d.symbol, "mid")}" alt="${d.symbol}" onerror="if(!this.dataset.tf){this.dataset.tf='1';this.src='${logoUrlFallback(d.symbol)}';}else{this.style.display='none';this.nextElementSibling.style.display='flex';}" />
       <div class="sheet-fallback-badge" style="display:none; background:${color};">${d.symbol}</div>
       <div>
-        <div class="sheet-name">${d.name}</div>
+        <div class="sheet-name sheet-name-link" id="sheetNameLink" role="button" tabindex="0">${d.name}</div>
         <div class="sheet-symbol">${d.symbol} · ${d.sectorKo}</div>
       </div>
     </div>
@@ -564,6 +564,24 @@ function openCompanySheet(d) {
     const nowActive = toggleSheetWatchlist(d.symbol);
     watchBtn.classList.toggle("active", nowActive);
     watchBtn.querySelector("svg").setAttribute("fill", nowActive ? "currentColor" : "none");
+  });
+  // 종목명을 누르면 본체(내투자닷컴)의 검색 상세 페이지로 이동 — 지도에선 요약 정보만 보여주므로 더 자세히 보려면 여기로
+  const nameLink = document.getElementById("sheetNameLink");
+  const goToTickerDetail = () => {
+    try {
+      sessionStorage.setItem("ntj_skip_map_redirect", "1");
+    } catch {}
+    window.location.href = `../index.html?ticker=${encodeURIComponent(d.symbol)}`;
+  };
+  nameLink.addEventListener("click", (e) => {
+    e.stopPropagation();
+    goToTickerDetail();
+  });
+  nameLink.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      goToTickerDetail();
+    }
   });
 }
 function closeCompanySheet() {
