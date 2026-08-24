@@ -1930,7 +1930,7 @@ syncHeaderHeight();
 // ---------- 스와이프 캐로셀(관심종목/기업가치/주식동향/인사이트) ----------
 // 시장·투데이·기업검색은 캐러셀에서 빠지고 companyPanel과 동일한 슬라이드 오버레이 패턴(openMarketPanel 등)으로
 // 별도 관리됨 — TAB_ORDER는 실제 스와이프되는 4개 패널만 담당
-const TAB_ORDER = ["watchlist", "insight", "topranking"];
+const TAB_ORDER = ["watchlist", "topranking", "insight"];
 const panels = {
   watchlist: el("panelWatchlist"),
   topranking: el("panelTopRanking"),
