@@ -197,24 +197,23 @@ body {
 .filter-chip.active .chip-reset { display: flex; }
 .filter-chip.active .chip-chevron { opacity: 0.85; }
 
-/* ---------- 상단 티커 테이프 — 원형 배지-회색 종목명-현재가-등락률, 배경/테두리 투명, 우→좌 자동 스크롤 ---------- */
+/* ---------- 상단 티커 테이프 — 원형 배지-회색 종목명-현재가-등락률, 배경/테두리 투명, 우→좌 자동 스크롤.
+   JS(requestAnimationFrame)로 translateX를 직접 움직여서 같은 offset을 손가락 드래그로도 이어받아 좌우로 밀 수 있음 ---------- */
 .ticker-tape {
   flex: none;
   overflow: hidden;
   background: transparent;
   border-bottom: 1px solid var(--line);
   padding: 8px 0;
+  cursor: grab;
+  touch-action: pan-y;
 }
+.ticker-tape.dragging { cursor: grabbing; }
 .ticker-tape-track {
   display: flex;
   align-items: center;
   width: max-content;
-  animation: ticker-tape-scroll 32s linear infinite;
-}
-.ticker-tape:hover .ticker-tape-track { animation-play-state: paused; }
-@keyframes ticker-tape-scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  user-select: none;
 }
 .ticker-tape-item {
   flex: none;

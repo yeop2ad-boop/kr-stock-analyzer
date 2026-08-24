@@ -1372,6 +1372,7 @@ function toggleChangeMode() {
   document.getElementById("changeModeBtn").classList.toggle("active", changeModeOn);
   document.getElementById("tickerTape").style.display = changeModeOn ? "block" : "none";
   applyChangeModeToSectorBubbles();
+  if (changeModeOn) refreshTickerTapeVisibility();
 }
 document.getElementById("changeModeBtn").addEventListener("click", toggleChangeMode);
 
@@ -1421,13 +1422,97 @@ async function renderTickerTape() {
       </span>`;
     })
     .join("");
-  // 콘텐츠를 두 벌 이어붙여야 CSS 마퀴 애니메이션이 이음매 없이 반복됨
+  // 콘텐츠를 두 벌 이어붙여야 이음매 없이 반복됨(절반 폭만큼 이동하면 처음과 똑같은 그림)
   track.innerHTML = cellsHtml + cellsHtml;
+  tickerTapeHalfWidth = track.scrollWidth / 2;
+  wrapTickerTapeOffset();
+  applyTickerTapeTransform();
+  startTickerTapeLoop();
 }
 
+// 자동 스크롤은 CSS 애니메이션이 아니라 JS(requestAnimationFrame)로 직접 translateX를 움직여서,
+// 같은 offset 값을 손가락 드래그로도 그대로 이어받아 좌우로 밀어볼 수 있게 함(둘이 값을 공유)
+let tickerTapeOffsetX = 0;
+let tickerTapeHalfWidth = 0;
+let tickerTapeDragging = false;
+let tickerTapeDragStartX = 0;
+let tickerTapeDragStartOffset = 0;
+let tickerTapeDragMoved = 0;
+let tickerTapeRafId = null;
+let tickerTapeLastTs = null;
+
+function applyTickerTapeTransform() {
+  const track = document.getElementById("tickerTapeTrack");
+  if (track) track.style.transform = `translateX(${tickerTapeOffsetX}px)`;
+}
+function wrapTickerTapeOffset() {
+  if (!(tickerTapeHalfWidth > 0)) return;
+  while (tickerTapeOffsetX <= -tickerTapeHalfWidth) tickerTapeOffsetX += tickerTapeHalfWidth;
+  while (tickerTapeOffsetX > 0) tickerTapeOffsetX -= tickerTapeHalfWidth;
+}
+function tickerTapeTick(ts) {
+  const tape = document.getElementById("tickerTape");
+  if (!tape || tape.style.display === "none") {
+    tickerTapeRafId = null;
+    tickerTapeLastTs = null;
+    return;
+  }
+  if (!tickerTapeDragging && tickerTapeHalfWidth > 0 && tickerTapeLastTs !== null) {
+    const dt = (ts - tickerTapeLastTs) / 1000;
+    const speedPxPerSec = tickerTapeHalfWidth / 32; // 기존 CSS 마퀴(32초에 절반 폭 이동)와 같은 속도
+    tickerTapeOffsetX -= speedPxPerSec * dt;
+    wrapTickerTapeOffset();
+    applyTickerTapeTransform();
+  }
+  tickerTapeLastTs = ts;
+  tickerTapeRafId = requestAnimationFrame(tickerTapeTick);
+}
+function startTickerTapeLoop() {
+  if (tickerTapeRafId !== null) return;
+  tickerTapeLastTs = null;
+  tickerTapeRafId = requestAnimationFrame(tickerTapeTick);
+}
+// "등락" 버튼으로 티커 테이프가 다시 보일 때 — display:none이었던 동안엔 폭이 0으로 측정됐을 수 있어 다시 잼
+function refreshTickerTapeVisibility() {
+  requestAnimationFrame(() => {
+    const track = document.getElementById("tickerTapeTrack");
+    if (!track) return;
+    tickerTapeHalfWidth = track.scrollWidth / 2;
+    wrapTickerTapeOffset();
+    startTickerTapeLoop();
+  });
+}
+
+const tickerTapeEl = document.getElementById("tickerTape");
 const tickerTapeTrackEl = document.getElementById("tickerTapeTrack");
-if (tickerTapeTrackEl) {
+if (tickerTapeEl && tickerTapeTrackEl) {
+  tickerTapeEl.style.touchAction = "pan-y"; // 세로 스크롤은 페이지에 맡기고 가로 드래그만 직접 처리
+  tickerTapeEl.addEventListener("pointerdown", (e) => {
+    tickerTapeDragging = true;
+    tickerTapeDragStartX = e.clientX;
+    tickerTapeDragStartOffset = tickerTapeOffsetX;
+    tickerTapeDragMoved = 0;
+    tickerTapeEl.classList.add("dragging");
+    try { tickerTapeEl.setPointerCapture(e.pointerId); } catch {}
+  });
+  tickerTapeEl.addEventListener("pointermove", (e) => {
+    if (!tickerTapeDragging) return;
+    const delta = e.clientX - tickerTapeDragStartX;
+    tickerTapeDragMoved = Math.abs(delta);
+    tickerTapeOffsetX = tickerTapeDragStartOffset + delta;
+    wrapTickerTapeOffset();
+    applyTickerTapeTransform();
+  });
+  const endTickerTapeDrag = (e) => {
+    if (!tickerTapeDragging) return;
+    tickerTapeDragging = false;
+    tickerTapeEl.classList.remove("dragging");
+    try { tickerTapeEl.releasePointerCapture(e.pointerId); } catch {}
+  };
+  tickerTapeEl.addEventListener("pointerup", endTickerTapeDrag);
+  tickerTapeEl.addEventListener("pointercancel", endTickerTapeDrag);
   tickerTapeTrackEl.addEventListener("click", (e) => {
+    if (tickerTapeDragMoved > 6) return; // 드래그였으면 클릭(이동) 무시 — 손가락을 뗀 위치의 종목으로 안 튀도록
     if (e.target.closest(".ticker-tape-item")) goToMainSite("market");
   });
 }
