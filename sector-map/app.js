@@ -502,6 +502,23 @@ mapViewport.addEventListener("pointerleave", (e) => {
 const companySheet = document.getElementById("companySheet");
 const companySheetBody = document.getElementById("companySheetBody");
 
+// "관심" 필터와 같은 저장공간(watchlist_v1_kr/us)에 이 종목을 추가/제거 — 본체 검색화면의 별 버튼과 동일한 스키마
+function toggleSheetWatchlist(symbol) {
+  const key = ACTIVE_MARKET === "domestic" ? "watchlist_v1_kr" : "watchlist_v1_us";
+  let list = [];
+  try {
+    const parsed = JSON.parse(localStorage.getItem(key));
+    if (Array.isArray(parsed)) list = parsed;
+  } catch {
+    list = [];
+  }
+  const idx = list.findIndex((w) => w.symbol === symbol);
+  if (idx >= 0) list.splice(idx, 1);
+  else list.push({ symbol, addedAt: Date.now(), groupId: "default" });
+  localStorage.setItem(key, JSON.stringify(list));
+  return idx < 0;
+}
+
 function openCompanySheet(d) {
   const color = sectorColor(d.sector);
   const chgTextColor = changeColorForText(d.changePercent);
@@ -509,8 +526,13 @@ function openCompanySheet(d) {
     d.changePercent === null || d.changePercent === undefined
       ? "정보 없음"
       : `${d.changePercent > 0 ? "+" : ""}${d.changePercent.toFixed(2)}%`;
+  const watchlisted = getWatchlistSymbols().has(d.symbol);
+  const marketClass = ACTIVE_MARKET === "domestic" ? "market-kr" : "market-us";
   companySheetBody.innerHTML = `
     <button type="button" class="sheet-close" id="sheetCloseBtn" aria-label="닫기">&times;</button>
+    <button type="button" class="sheet-watch-btn${watchlisted ? " active" : ""} ${marketClass}" id="sheetWatchBtn" aria-label="관심종목 추가">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="${watchlisted ? "currentColor" : "none"}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7l2.85 6.02 6.65.68-4.98 4.5 1.46 6.53L12 17.9l-5.98 3.53 1.46-6.53-4.98-4.5 6.65-.68L12 2.7z" /></svg>
+    </button>
     <div class="sheet-top-row">
       <img class="sheet-logo" src="${logoUrl(d.symbol, "mid")}" alt="${d.symbol}" onerror="if(!this.dataset.tf){this.dataset.tf='1';this.src='${logoUrlFallback(d.symbol)}';}else{this.style.display='none';this.nextElementSibling.style.display='flex';}" />
       <div class="sheet-fallback-badge" style="display:none; background:${color};">${d.symbol}</div>
@@ -536,6 +558,13 @@ function openCompanySheet(d) {
   `;
   companySheet.classList.add("open");
   document.getElementById("sheetCloseBtn").addEventListener("click", closeCompanySheet);
+  const watchBtn = document.getElementById("sheetWatchBtn");
+  watchBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const nowActive = toggleSheetWatchlist(d.symbol);
+    watchBtn.classList.toggle("active", nowActive);
+    watchBtn.querySelector("svg").setAttribute("fill", nowActive ? "currentColor" : "none");
+  });
 }
 function closeCompanySheet() {
   companySheet.classList.remove("open");
@@ -1145,6 +1174,31 @@ function isUsMarketOpen() {
 
 // AI 버튼에 표시할 "색상이 언제 기준인지" — 오늘 안에 갱신됐으면 시:분:초(장중이면 주황), 날짜가 지났으면 월/일(빨강)
 let lastColorRefreshAt = null;
+// 실제 데이터는 20분 지연이므로 "지금 몇 시"가 아니라 "지금 보이는 색상이 몇 시 기준인지"(=지금-20분)를 보여줌.
+// 장이 이미 끝났으면 그 이후로는 데이터가 더 안 들어오니 마감 시각에 고정하고 더 흘러가지 않게 함
+function computeDelayedAsOfTime() {
+  const isKr = ACTIVE_MARKET === "domestic";
+  const tz = isKr ? "Asia/Seoul" : "America/New_York";
+  const local = new Date(new Date().toLocaleString("en-US", { timeZone: tz }));
+  const openMin = isKr ? 9 * 60 : 9 * 60 + 30;
+  const closeMin = isKr ? 15 * 60 + 30 : 16 * 60;
+  const nowMin = local.getHours() * 60 + local.getMinutes();
+  const isWeekend = local.getDay() === 0 || local.getDay() === 6;
+  const marketOpenNow = !isWeekend && nowMin >= openMin && nowMin <= closeMin;
+  if (marketOpenNow) {
+    return new Date(local.getTime() - 20 * 60 * 1000);
+  }
+  // 장 시작 전(프리마켓)이거나 마감 후, 주말이면 가장 최근 마감 시각에 고정 — 그 이후로는 새 데이터가 없으므로 시간이 흐를 필요 없음
+  const closeTime = new Date(local);
+  closeTime.setHours(Math.floor(closeMin / 60), closeMin % 60, 0, 0);
+  if (isWeekend || nowMin < openMin) {
+    do {
+      closeTime.setDate(closeTime.getDate() - 1);
+    } while (closeTime.getDay() === 0 || closeTime.getDay() === 6);
+  }
+  return closeTime;
+}
+
 function renderAiFabTimestamp() {
   const timeEl = document.getElementById("aiFabTime");
   if (!timeEl) return;
@@ -1156,18 +1210,20 @@ function renderAiFabTimestamp() {
   const now = new Date();
   const sameDay = refreshedAt.toDateString() === now.toDateString();
   if (!sameDay) {
+    // 오늘 안에 색상을 한 번도 못 받아온 경우(네트워크 실패 등)에만 마지막 성공 날짜를 경고로 표시
     const mm = String(refreshedAt.getMonth() + 1).padStart(2, "0");
     const dd = String(refreshedAt.getDate()).padStart(2, "0");
     timeEl.textContent = `${mm}/${dd}`;
-    timeEl.className = "ai-fab-time ai-fab-time-stale";
+    timeEl.className = "ai-fab ai-fab-time-stale";
     return;
   }
   const marketOpen = ACTIVE_MARKET === "domestic" ? isKrMarketOpen() : isUsMarketOpen();
-  const hh = String(refreshedAt.getHours()).padStart(2, "0");
-  const mi = String(refreshedAt.getMinutes()).padStart(2, "0");
-  const ss = String(refreshedAt.getSeconds()).padStart(2, "0");
+  const asOf = computeDelayedAsOfTime();
+  const hh = String(asOf.getHours()).padStart(2, "0");
+  const mi = String(asOf.getMinutes()).padStart(2, "0");
+  const ss = String(asOf.getSeconds()).padStart(2, "0");
   timeEl.textContent = `${hh}:${mi}:${ss}`;
-  timeEl.className = marketOpen ? "ai-fab-time ai-fab-time-live" : "ai-fab-time";
+  timeEl.className = marketOpen ? "ai-fab ai-fab-time-live" : "ai-fab";
 }
 
 // 국내/해외 어느 쪽이 활성인지에 맞춰 알맞은 실시간 갱신 함수를 호출하고, 성공 시 AI 버튼의 갱신 시각을 함께 업데이트
