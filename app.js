@@ -7964,8 +7964,9 @@ async function runMovers(direction) {
   if (getWatchlistActiveMarket() === "KR") {
     await renderKrRanking(getKrDailyChanges, label, trendStatus, trendResults, {
       mapFn: async (list) => {
-        // 투자안정 열을 다른 랭킹들과 동일하게 항상 채우기 위해, 상위 50개만 추려낸 뒤 전체 지표를 추가로 조회
-        const top = list.sort((a, b) => (direction === "surge" ? b.changePct - a.changePct : a.changePct - b.changePct)).slice(0, 50);
+        // 투자안정 열을 다른 랭킹들과 동일하게 항상 채우기 위해, 상위 30개만 추려낸 뒤 전체 지표를 추가로 조회
+        // (기존 기업가치 탭 기본 스캔 규모(30개)와 맞춰 로딩 시간이 크게 늘지 않도록 함)
+        const top = list.sort((a, b) => (direction === "surge" ? b.changePct - a.changePct : a.changePct - b.changePct)).slice(0, 30);
         const { sp500Return, kospi200Return } = await getMarketReturnsCached();
         const full = (await mapWithConcurrency(top, 8, (r) => getFullMetrics(r.symbol).catch(() => null))).filter(Boolean);
         const fullBySymbol = new Map(full.map((m) => [m.symbol, m]));
@@ -7979,7 +7980,7 @@ async function runMovers(direction) {
       sortFn: (a, b) => (direction === "surge" ? b.changePct - a.changePct : a.changePct - b.changePct),
       metricHeaderHtml: "등락률",
       metricCellFn: (r) => fmtGrowthCell(r.changePct),
-      noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 순위는 전일 대비 등락률(${direction === "surge" ? "상승률 높은" : "하락률 큰"} 순) 기준이며, 코스피200+코스닥150(약 350종목) 중 상위 50개입니다.</p>`,
+      noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 순위는 전일 대비 등락률(${direction === "surge" ? "상승률 높은" : "하락률 큰"} 순) 기준이며, 코스피200+코스닥150(약 350종목) 중 상위 30개입니다.</p>`,
     });
     return;
   }
@@ -8211,13 +8212,35 @@ async function runTrendVolume() {
   trendResults.innerHTML = "";
 
   if (getWatchlistActiveMarket() === "KR") {
-    // 해외 거래량 탭과 구성을 맞춤 — 거래대금(5거래일 평균) 기준으로 정렬하되, 항목1엔 거래대금 대신 상승 압력 점수를 보여줌
-    await renderKrRankingStaged("거래량", trendStatus, trendResults, {
-      mapFn: (list) => list.map((m) => ({ ...m, attractivenessTotal: computeAttractivenessScore(m).total, isIPO: isRecentIPO(m.firstTradeDate) })),
-      sortFn: (a, b) => (b.recentDollarVolume ?? 0) - (a.recentDollarVolume ?? 0),
+    // 해외 거래량 탭과 구성을 맞춤 — 거래대금 기준으로 정렬하되, 항목1엔 거래대금 대신 상승 압력 점수를 보여줌.
+    // 전체 350종목을 무거운 재무제표 조회(ensureKrFullMetrics)로 스캔하면 로딩이 크게 느려지므로,
+    // 가벼운 일별 등락(getKrDailyChanges, 차트 조회만)으로 먼저 거래대금 상위 30개만 추린 뒤
+    // 그 30개에 대해서만 무거운 조회를 추가로 돌림(상승률·하락률 탭과 동일한 2단계 패턴, 기존 기업가치 탭
+    // 기본 스캔 규모(30개)와 맞춰 로딩 시간이 크게 늘지 않도록 함)
+    await renderKrRanking(getKrDailyChanges, "거래량", trendStatus, trendResults, {
+      mapFn: async (list) => {
+        const top = list.sort((a, b) => (b.dollarVolume ?? 0) - (a.dollarVolume ?? 0)).slice(0, 30);
+        const { sp500Return, kospi200Return } = await getMarketReturnsCached();
+        const full = (await mapWithConcurrency(top, 8, (r) => getFullMetrics(r.symbol).catch(() => null))).filter(Boolean);
+        const fullBySymbol = new Map(full.map((m) => [m.symbol, m]));
+        return top
+          .map((r) => {
+            const m = fullBySymbol.get(r.symbol);
+            return m
+              ? {
+                  ...r,
+                  attractivenessTotal: computeAttractivenessScore(m).total,
+                  riskTotal: computeRiskScore(m, sp500Return, kospi200Return).total,
+                  isIPO: isRecentIPO(m.firstTradeDate),
+                }
+              : r;
+          })
+          .filter((r) => r.attractivenessTotal !== undefined);
+      },
+      sortFn: (a, b) => (b.dollarVolume ?? 0) - (a.dollarVolume ?? 0),
       metricHeaderHtml: "상승 압력 점수",
       metricCellFn: (r) => (r.isIPO ? "IPO" : scoreRankColorHtml(r.attractivenessTotal, r.attractivenessTotal)),
-      noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 순위는 거래대금(최근 5거래일 평균) 기준이며, 코스피200+코스닥150(약 350종목) 대상입니다. 투자 자문이 아닙니다.</p>`,
+      noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 순위는 당일 거래대금(거래량 × 현재가) 기준이며, 코스피200+코스닥150(약 350종목) 중 상위 30개입니다. 투자 자문이 아닙니다.</p>`,
     });
     return;
   }
