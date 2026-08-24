@@ -1007,7 +1007,10 @@ allFiltersBackdrop.addEventListener("click", closeAllFiltersPanel);
 // 브라우저에서 직접 Yahoo Finance로 요청하면 CORS에 막히므로, 내투자닷컴 본체와 같은 방식으로
 // 공개 CORS 프록시(corsproxy.io → 실패 시 allorigins)를 거쳐서 가져온다.
 async function proxyFetchJson(targetUrl) {
+  // corsproxy.io가 최근 이 도메인에서의 요청을 403으로 막는 경우가 잦아, 이미 안정적으로 쓰고 있는
+  // 내투자 전용 Worker(CORS 중계) 프록시를 최우선으로 시도하고, 혹시 몰라 기존 공개 프록시들을 그다음 순서로 남겨둠
   const proxies = [
+    (u) => "https://us-stock.yeop2ad.workers.dev/?url=" + encodeURIComponent(u),
     (u) => "https://corsproxy.io/?url=" + encodeURIComponent(u),
     (u) => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u),
   ];
