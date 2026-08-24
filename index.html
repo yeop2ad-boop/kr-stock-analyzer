@@ -308,16 +308,6 @@
           </div>
           <p id="historicalStatus" class="muted top30-status" style="display:none;"></p>
           <div id="historicalResults"></div>
-
-          <hr class="future-chart-divider" />
-          <div class="future-chart-heading-row">
-            <h3 class="future-chart-subheading" id="futureMacroChartHeading">VIX지수를 활용한 투자시점 점검표</h3>
-            <button type="button" id="futureMacroChartDetailBtn" class="score-method-detail-btn">+자세히</button>
-          </div>
-          <div id="futureMacroChartDetailWrap" class="chart-detail-wrap" style="display:none;">
-            <div id="futureMacroChartContainer" class="future-chart-container future-macro-chart"></div>
-            <p id="futureMacroChartCaption" class="future-chart-caption"></p>
-          </div>
         </section>
 
         <section class="flush-section" id="futureInlineWrap" style="display:none;">
@@ -377,8 +367,16 @@
         </section>
 
         <section class="flush-section">
-          <h2 class="invest-score-h2" id="macroSectionTitle">S&P 공포지수</h2>
+          <div class="section-heading-row">
+            <h2 class="invest-score-h2" id="macroSectionTitle">S&P 공포지수</h2>
+            <button type="button" id="futureMacroChartDetailBtn" class="score-method-detail-btn">+자세히</button>
+          </div>
           <div id="macroSection" class="section-body"></div>
+          <div id="futureMacroChartDetailWrap" class="chart-detail-wrap" style="display:none;">
+            <h3 class="future-chart-subheading" id="futureMacroChartHeading">VIX지수를 활용한 투자시점 점검표</h3>
+            <div id="futureMacroChartContainer" class="future-chart-container future-macro-chart"></div>
+            <p id="futureMacroChartCaption" class="future-chart-caption"></p>
+          </div>
         </section>
         </div>
 

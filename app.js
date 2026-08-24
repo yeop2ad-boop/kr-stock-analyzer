@@ -109,7 +109,8 @@ document.addEventListener("click", (e) => {
 el("scoreMethodModalCloseBtn").addEventListener("click", () => {
   el("scoreMethodModal").style.display = "none";
 });
-// 과거분석의 VIX/FOMO 차트는 기본으로 접혀 있다가 "+자세히"를 눌러야 펼쳐짐 — 펼친 영역은 주황 반투명 박스로 표시
+// 공포지수(S&P)/FOMO지수(국내) 제목 옆 "+자세히" — 기본으로 접혀 있다가 눌러야 VIX/FOMO 차트가 펼쳐짐(주황 반투명 박스로 표시).
+// 종목과 무관한 시장 전체 차트라 같은 시장 내에서는 최초 1회만 그리고 이후 검색부터는 캐시된 결과를 재사용(renderMacroScoreChart 내부에서 처리)
 el("futureMacroChartDetailBtn").addEventListener("click", () => {
   const wrap = el("futureMacroChartDetailWrap");
   const btn = el("futureMacroChartDetailBtn");
@@ -117,6 +118,11 @@ el("futureMacroChartDetailBtn").addEventListener("click", () => {
   wrap.style.display = isOpen ? "none" : "block";
   wrap.classList.toggle("chart-detail-expanded", !isOpen);
   btn.textContent = isOpen ? "+자세히" : "-접기";
+  if (!isOpen) {
+    const ticker = new URLSearchParams(location.search).get("ticker") || tickerInput.value;
+    if (isKrTicker(ticker)) renderKrMacroScoreChart();
+    else renderMacroScoreChart();
+  }
 });
 // 지수 카드는 <a>가 아니라 role="button" div라 클릭 외에 키보드(Enter/Space) 접근성도 함께 지원
 document.addEventListener("keydown", (e) => {
@@ -4422,9 +4428,6 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
       tickerHistoricalLoaded = true;
       await runTickerHistorical(symbol, row);
     }
-    // 종목과 무관한 시장 전체 차트라 같은 시장 내에서는 최초 1회만 그리고 이후 검색부터는 캐시된 결과를 재사용
-    if (isKrTicker(symbol)) renderKrMacroScoreChart();
-    else renderMacroScoreChart();
   });
 
   let futureLoaded = false;
