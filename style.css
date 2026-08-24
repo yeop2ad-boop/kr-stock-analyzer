@@ -107,23 +107,31 @@ body[data-market-mode="kr"] .fh-banner { filter: brightness(0) invert(1); }
   margin: 0 auto -3px; /* 지도(섹터맵) 상단 툴바처럼 아래 탭바와 거의 맞닿게(살짝 겹치게) */
 }
 
-.market-mode-toggle { display: flex; gap: 6px; }
+/* 지도(섹터맵) 상단 toggle-pill과 동일한 디자인 — 알약 컨테이너 배경 안에서 선택된 쪽만 흰/주황 알약으로 강조 */
+.market-mode-toggle {
+  display: flex;
+  gap: 2px;
+  background: var(--subtle-fill);
+  border-radius: 999px;
+  padding: 3px;
+}
 .market-mode-btn {
-  border: 1.5px solid var(--border);
+  border: none;
   background: transparent;
   color: var(--muted);
-  font-size: 14px;
-  font-weight: 800;
-  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5.5px 14px;
   border-radius: 999px;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease;
 }
-.market-mode-btn-kr.active { background: #6b9bff; border-color: #6b9bff; color: #14161c; }
-.market-mode-btn-us.active { background: #f60303; border-color: #f60303; color: #ffffff; }
-/* 국내 모드 상단 툴바 — 섹터맵 토글과 동일하게 주황 배경 위 흰 알약(국내)/투명 테두리(해외) */
-body[data-market-mode="kr"] .market-mode-btn { border-color: rgba(255,255,255,0.55); color: rgba(255,255,255,0.9); }
-body[data-market-mode="kr"] .market-mode-btn-kr.active { background: #ffffff; border-color: #ffffff; color: #e04600; }
+.market-mode-btn-kr.active { background: #ffffff; color: #e04600; }
+.market-mode-btn-us.active { background: #e04600; color: #ffffff; }
+/* 국내 모드 상단 툴바 — 섹터맵과 동일하게 주황 배경 위 반투명 흰 알약 컨테이너, 선택된 국내는 흰 알약(주황 글씨) */
+body[data-market-mode="kr"] .market-mode-toggle { background: rgba(255,255,255,0.22); }
+body[data-market-mode="kr"] .market-mode-btn { color: rgba(255,255,255,0.9); }
+body[data-market-mode="kr"] .market-mode-btn-kr.active { background: #ffffff; color: #e04600; }
 body[data-market-mode="kr"] .header-icon-btn { color: #ffffff; }
 body[data-market-mode="kr"] .user-avatar-btn { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.6); color: #ffffff; }
 body[data-market-mode="kr"] .login-header-btn { color: #ffffff; }
@@ -142,7 +150,7 @@ body[data-market-mode="kr"] .login-header-btn { color: #ffffff; }
   color: var(--text);
 }
 
-.fh-banner { height: 24px; width: auto; display: block; flex: none; }
+.fh-banner { height: 20px; width: auto; display: block; flex: none; } /* 지도 상단 로고와 동일 크기 */
 
 .fh-right-group { display: flex; align-items: center; gap: 14px; }
 
@@ -162,6 +170,12 @@ body[data-market-mode="kr"] .login-header-btn { color: #ffffff; }
   line-height: 1;
 }
 .header-icon-btn svg { display: block; }
+/* 맨 윗줄(로고-토글-검색) 아이콘 버튼만 지도 상단 아이콘과 동일한 크기로 — 다른 화면의 header-icon-btn(분석/알림 등)은 그대로 둠 */
+.fh-topline .header-icon-btn { width: 30px; height: 30px; border-radius: 50%; }
+.fh-topline .header-icon-btn svg { width: 19px; height: 19px; }
+.fh-topline .header-icon-btn:active { background: var(--subtle-fill); }
+/* 로그인(유저메뉴)은 더보기 패널로 이동 — 상단 맨 윗줄에서는 항상 숨김(로그인 상태와 무관하게) */
+.fh-topline .user-menu { display: none !important; }
 #companyPanelWatchlistBtn.active { color: var(--warn); }
 #companyPanelWatchlistBtn.active.market-kr { color: #6b9bff; }
 #companyPanelWatchlistBtn.active.market-us { color: #f60303; }
