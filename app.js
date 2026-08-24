@@ -3216,7 +3216,7 @@ function renderWizardRoot() {
 const RANKING_ENTRIES = [
   { icon: "trending-up", label: "상승률", tab: "trend", run: () => runMovers("surge") },
   { icon: "trending-down", label: "하락률", tab: "trend", run: () => runMovers("plunge") },
-  { icon: "trending-up", label: "매출액 증가", tab: "valuation", run: () => runValueRevenue() },
+  { icon: "bank", label: "매출액 증가", tab: "valuation", run: () => runValueRevenue() },
   { icon: "dollar", label: "순이익 증가", tab: "valuation", run: () => runValueNetIncome() },
   { icon: "building", label: "시가총액", tab: "valuation", run: () => runValueMarketCap() },
   { icon: "thumbsup", label: "거래량", tab: "trend", run: () => runTrendVolume() },
@@ -3257,7 +3257,7 @@ function renderTopRankingSubNav() {
     (entry, i) =>
       `<button type="button" class="cat-btn top-ranking-tab${entry.orange ? " top-ranking-tab-orange" : ""}" data-rank-idx="${i}">${iconHtml(
         entry.icon
-      )} ${entry.label}</button>`
+      )}<span>${entry.label}</span></button>`
   ).join("");
 }
 renderTopRankingSubNav();
@@ -3282,7 +3282,7 @@ function renderWizardBranchA() {
 // [선택찾기]의 2·3순위 "기준" — S&P500 + 섹터 필터와 자연스럽게 어울리는 10개만 제공.
 // (US Stock 거래량·US ETF·KR ETF·인기종목은 S&P500이 아닌 전체 시장/거래량 스크리너를 쓰거나 ETF라 섹터 개념이 없어 제외)
 const WIZARD_CRITERIA = [
-  { key: "revenue", icon: "trending-up", label: "매출액 증가", dir: "desc", get: (m) => m.revenueGrowthAnnual, fmt: (m) => fmtGrowthCell(m.revenueGrowthAnnual) },
+  { key: "revenue", icon: "bank", label: "매출액 증가", dir: "desc", get: (m) => m.revenueGrowthAnnual, fmt: (m) => fmtGrowthCell(m.revenueGrowthAnnual) },
   { key: "cashFlow", icon: "wallet", label: "현금흐름 증가", dir: "desc", get: (m) => m.operatingCashFlowGrowthAnnual, fmt: (m) => fmtGrowthCell(m.operatingCashFlowGrowthAnnual) },
   { key: "netIncome", icon: "dollar", label: "순이익 증가", dir: "desc", get: (m) => m.netIncomeGrowthAnnual, fmt: (m) => fmtGrowthCell(m.netIncomeGrowthAnnual) },
   { key: "eps", icon: "calculator", label: "EPS", dir: "desc", get: (m) => m.eps, fmt: (m) => (m.eps === null || m.eps === undefined ? "N/A" : `$${m.eps.toFixed(2)}`) },

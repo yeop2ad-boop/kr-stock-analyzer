@@ -654,6 +654,8 @@ body[data-market-mode="kr"] .tab-bar .cat-btn.active::after { background: #fffff
 
 /* Top랭킹 탭 — 기업가치+투자동향을 합친 14개 서브버튼. 마지막 2개(상승 압력·투자 안정)만 주황으로 구분 */
 .top-ranking-sub-nav { padding-bottom: 2px; }
+.top-ranking-tab { display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+.top-ranking-tab .btn-icon-svg { display: block; flex: none; }
 .top-ranking-tab-orange { border-color: rgba(224, 70, 0, 0.5); color: #e04600; }
 .top-ranking-tab-orange.active { color: #e04600; border-color: #e04600; background: rgba(224, 70, 0, 0.08); }
 
