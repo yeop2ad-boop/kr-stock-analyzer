@@ -1186,17 +1186,20 @@ function computeDelayedAsOfTime() {
   const isWeekend = local.getDay() === 0 || local.getDay() === 6;
   const marketOpenNow = !isWeekend && nowMin >= openMin && nowMin <= closeMin;
   if (marketOpenNow) {
-    return new Date(local.getTime() - 20 * 60 * 1000);
+    return { time: new Date(local.getTime() - 20 * 60 * 1000), isToday: true };
   }
-  // 장 시작 전(프리마켓)이거나 마감 후, 주말이면 가장 최근 마감 시각에 고정 — 그 이후로는 새 데이터가 없으므로 시간이 흐를 필요 없음
+  // 장 시작 전(프리마켓)이거나 마감 후, 주말이면 가장 최근 마감 시각에 고정 — 그 이후로는 새 데이터가 없으므로 시간이 흐를 필요 없음.
+  // 그 마감 시각이 오늘이 아니라 어제(이전 거래일)라면 시:분:초 대신 날짜로 보여줌(renderAiFabTimestamp에서 처리)
   const closeTime = new Date(local);
   closeTime.setHours(Math.floor(closeMin / 60), closeMin % 60, 0, 0);
+  let isToday = true;
   if (isWeekend || nowMin < openMin) {
+    isToday = false;
     do {
       closeTime.setDate(closeTime.getDate() - 1);
     } while (closeTime.getDay() === 0 || closeTime.getDay() === 6);
   }
-  return closeTime;
+  return { time: closeTime, isToday };
 }
 
 function renderAiFabTimestamp() {
@@ -1218,7 +1221,15 @@ function renderAiFabTimestamp() {
     return;
   }
   const marketOpen = ACTIVE_MARKET === "domestic" ? isKrMarketOpen() : isUsMarketOpen();
-  const asOf = computeDelayedAsOfTime();
+  const { time: asOf, isToday } = computeDelayedAsOfTime();
+  if (!isToday) {
+    // 아직 오늘 장이 시작 전이라 직전 거래일 마감 시각에 고정된 상태 — 시:분:초 대신 그 날짜를 보여줌
+    const mm = String(asOf.getMonth() + 1).padStart(2, "0");
+    const dd = String(asOf.getDate()).padStart(2, "0");
+    timeEl.textContent = `${mm}/${dd}`;
+    timeEl.className = "ai-fab";
+    return;
+  }
   const hh = String(asOf.getHours()).padStart(2, "0");
   const mi = String(asOf.getMinutes()).padStart(2, "0");
   const ss = String(asOf.getSeconds()).padStart(2, "0");
