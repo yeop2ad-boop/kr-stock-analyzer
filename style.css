@@ -1856,6 +1856,30 @@ table.insight-holdings-table td span, table.insight-holdings-table td b { max-wi
 }
 .wl-group-tab.active { color: var(--text); border-color: var(--text); background: var(--bg); }
 .wl-group-tab-add { color: var(--accent); border-style: dashed; }
+/* 그룹 탭 길게 누르기 → 인라인 이름변경, "+ 새 그룹" 클릭 → 인라인 생성. 탭과 같은 자리에서 입력창+확인(✓) 버튼만 보임 */
+.wl-group-tab-editing { display: inline-flex; align-items: center; gap: 4px; padding: 3px 4px 3px 10px; border-color: var(--accent); }
+.wl-group-tab-rename-input {
+  width: 70px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+}
+.wl-group-tab-rename-confirm {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
 .wl-group-manage-btn {
   flex: none;
   width: 28px;

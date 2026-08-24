@@ -2596,15 +2596,80 @@ function wlGroupTabsHtml(groups, activeId) {
 }
 el("wlGroupTabs").addEventListener("click", (e) => {
   if (e.target.closest("#wlGroupAddBtn")) {
-    openWlGroupModal();
+    startInlineNewGroup();
     return;
   }
+  if (e.target.closest(".wl-group-tab-rename-input, .wl-group-tab-rename-confirm")) return; // 인라인 이름변경 중엔 탭 전환 막음
   const tab = e.target.closest(".wl-group-tab");
   if (!tab) return;
   setActiveWatchlistGroup(tab.dataset.groupId);
   renderWatchlistList();
 });
 el("wlGroupManageBtn").addEventListener("click", () => openWlGroupModal());
+
+// ---------- 관심종목 그룹 탭 — "기본" 등 그룹 탭을 길게 누르면 그 자리에서 바로 이름 변경, "+ 새 그룹"은 누르면 바로 입력창이 생김 ----------
+function startInlineTabRename(tabBtn) {
+  const groupId = tabBtn.dataset.groupId;
+  const currentName = tabBtn.textContent;
+  tabBtn.outerHTML = `<span class="wl-group-tab wl-group-tab-editing" data-group-id="${escapeHtml(groupId)}">
+    <input type="text" class="wl-group-tab-rename-input" value="${escapeHtml(currentName)}" maxlength="12" />
+    <button type="button" class="wl-group-tab-rename-confirm">✓</button>
+  </span>`;
+  const input = el("wlGroupTabs").querySelector(".wl-group-tab-rename-input");
+  input.focus();
+  input.select();
+  const commit = () => {
+    const name = input.value.trim();
+    if (name) renameWatchlistGroup(groupId, name);
+    renderWatchlistList();
+  };
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") commit();
+    if (e.key === "Escape") renderWatchlistList();
+  });
+  input.addEventListener("blur", () => window.setTimeout(commit, 150)); // 확인 버튼 클릭이 blur보다 먼저 잡히도록 살짝 지연
+  el("wlGroupTabs").querySelector(".wl-group-tab-rename-confirm").addEventListener("click", commit);
+}
+
+function startInlineNewGroup() {
+  const addBtn = el("wlGroupAddBtn");
+  if (!addBtn) return;
+  addBtn.outerHTML = `<span class="wl-group-tab wl-group-tab-editing" id="wlGroupNewInlineWrap">
+    <input type="text" class="wl-group-tab-rename-input" id="wlGroupNewInlineInput" placeholder="새 그룹 이름" maxlength="12" />
+    <button type="button" class="wl-group-tab-rename-confirm" id="wlGroupNewInlineConfirm">✓</button>
+  </span>`;
+  const input = el("wlGroupNewInlineInput");
+  input.focus();
+  const commit = () => {
+    const id = addWatchlistGroup(input.value.trim());
+    if (id) setActiveWatchlistGroup(id);
+    renderWatchlistList();
+  };
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") commit();
+    if (e.key === "Escape") renderWatchlistList();
+  });
+  input.addEventListener("blur", () => window.setTimeout(commit, 150));
+  el("wlGroupNewInlineConfirm").addEventListener("click", commit);
+}
+
+// 길게 누르기(long-press, 500ms) 감지 — "전체"/"+ 새 그룹"은 대상에서 제외
+let wlGroupLongPressTimer = null;
+function wlGroupLongPressStart(e) {
+  const tab = e.target.closest(".wl-group-tab");
+  if (!tab || tab.id === "wlGroupAddBtn" || tab.dataset.groupId === WATCHLIST_ALL_GROUP_ID || tab.classList.contains("wl-group-tab-editing")) return;
+  wlGroupLongPressTimer = window.setTimeout(() => startInlineTabRename(tab), 500);
+}
+function wlGroupLongPressEnd() {
+  if (wlGroupLongPressTimer) {
+    window.clearTimeout(wlGroupLongPressTimer);
+    wlGroupLongPressTimer = null;
+  }
+}
+el("wlGroupTabs").addEventListener("pointerdown", wlGroupLongPressStart);
+el("wlGroupTabs").addEventListener("pointerup", wlGroupLongPressEnd);
+el("wlGroupTabs").addEventListener("pointerleave", wlGroupLongPressEnd);
+el("wlGroupTabs").addEventListener("pointercancel", wlGroupLongPressEnd);
 
 // ---------- 관심종목 그룹 관리 모달(이름 변경·삭제·추가) ----------
 function wlGroupModalRowHtml(g) {
