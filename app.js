@@ -4508,9 +4508,10 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
     } else {
       const macroMetrics = await getMacroMetrics().catch(() => ({ vix: null }));
       const vix = macroMetrics.vix;
+      const vixGradeShortLabel = vixGrade(vix).label.replace(/\s*\(.*\)$/, ""); // 원판 안엔 "패닉 (투자 황금기)" 대신 짧은 등급명("안심"/"경계"/"공포"/"패닉")만
       macroBadgeHtml = `
-        <div class="mini-score-circle macro"${scoreBgStyleAttr(vix, 10, 50, "fear")}>${vix !== null && vix !== undefined ? Math.round(vix) : "N/A"}</div>
-        <span class="mini-score-label">S&amp;P500 VIX${vixLineHtml(macroMetrics, "VIX")}</span>
+        <div class="mini-score-circle macro"${scoreBgStyleAttr(vix, 10, 50, "fear")}>${vixGradeShortLabel}</div>
+        <span class="mini-score-label">S&amp;P 공포지수${vixLineHtml(macroMetrics, "VIX")}</span>
       `;
     }
 
