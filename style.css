@@ -132,7 +132,7 @@ body[data-market-mode="kr"] .fh-banner { filter: brightness(0) invert(1); }
 body[data-market-mode="kr"] .market-mode-toggle { background: rgba(255,255,255,0.22); }
 body[data-market-mode="kr"] .market-mode-btn { color: rgba(255,255,255,0.9); }
 body[data-market-mode="kr"] .market-mode-btn-kr.active { background: #ffffff; color: #e04600; }
-body[data-market-mode="kr"] .header-icon-btn { color: #14161c; }
+body[data-market-mode="kr"] .header-icon-btn { color: #ffffff; }
 body[data-market-mode="kr"] .user-avatar-btn { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.6); color: #ffffff; }
 body[data-market-mode="kr"] .login-header-btn { color: #ffffff; }
 
