@@ -635,6 +635,7 @@ body[data-market-mode="kr"] .tab-bar {
   margin-right: -14px;
   padding-left: 14px;
   padding-right: 14px;
+  border-radius: 0; /* 화면 끝까지 닿는 사각 배경이라 둥근 모서리가 있으면 양끝 구석이 안 채워져 보임 */
 }
 .cat-historical-up .cat-arrow { color: var(--pos); }
 .cat-historical-down .cat-arrow { color: var(--neg); }
