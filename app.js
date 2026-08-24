@@ -1180,10 +1180,17 @@ async function getFullMetrics(symbol) {
   const operatingCashFlowAnnualSeries = await fundamentalSeries(resultArr, "annualOperatingCashFlow", meta.currency);
   const { recent5dAvg, avg1y } = currentDollarVolumeStats(chartData);
 
+  const prevClose = meta.chartPreviousClose ?? null;
+  const changePct =
+    meta.regularMarketPrice !== undefined && meta.regularMarketPrice !== null && prevClose
+      ? ((meta.regularMarketPrice - prevClose) / prevClose) * 100
+      : null;
+
   return {
     symbol,
     name: meta.shortName || meta.longName || symbol,
     price: meta.regularMarketPrice,
+    changePct,
     eps,
     revenue,
     netIncome,
@@ -1923,17 +1930,15 @@ syncHeaderHeight();
 // ---------- 스와이프 캐로셀(관심종목/기업가치/주식동향/인사이트) ----------
 // 시장·투데이·기업검색은 캐러셀에서 빠지고 companyPanel과 동일한 슬라이드 오버레이 패턴(openMarketPanel 등)으로
 // 별도 관리됨 — TAB_ORDER는 실제 스와이프되는 4개 패널만 담당
-const TAB_ORDER = ["watchlist", "insight", "valuation", "trend"];
+const TAB_ORDER = ["watchlist", "insight", "topranking"];
 const panels = {
   watchlist: el("panelWatchlist"),
-  valuation: el("panelValuation"),
-  trend: el("panelTrend"),
+  topranking: el("panelTopRanking"),
   insight: el("panelInsight"),
 };
 const tabButtons = {
   watchlist: el("watchlistTabBtn"),
-  valuation: el("tabValuationBtn"),
-  trend: el("tabTrendBtn"),
+  topranking: el("tabTopRankingBtn"),
   insight: el("tabInsightBtn"),
 };
 const searchTabBtn = el("searchTabBtn");
@@ -2018,8 +2023,7 @@ searchTabBtn.addEventListener("click", openSearchWizardGate);
 // ---------- 탭별 데이터 로딩 캐싱: 한 번 로딩된 탭은 다시 방문해도 재요청하지 않음 ----------
 const TAB_LOADERS = {
   watchlist: () => renderWatchlistList(),
-  valuation: () => runValueRevenue(), // 가치평가 진입 시 매출액 증가를 자동 표시
-  trend: () => runMovers("surge"), // 추세평가 진입 시 급등주를 자동 표시
+  topranking: () => runRankingEntry(0), // Top랭킹 진입 시 첫 항목(상승률)을 자동 표시
   // 인사이트 진입 시 기본은 첫 버튼(블랙록)이지만, 하단 네비게이션 등에서 이미 다른 카테고리(예: 캘린더)로
   // 먼저 전환해둔 상태로 진입했다면 그 카테고리를 존중함(안 그러면 비동기 로딩이 뒤늦게 firms로 덮어씀)
   insight: () => (insightActiveCategory === "firms" ? runInsight(insightActiveInstitution) : runInsightCategory(insightActiveCategory)),
@@ -3147,10 +3151,9 @@ el("searchWizardBody").addEventListener("click", (e) => {
     searchWizardStep = "branchC";
     renderSearchWizardStep();
   } else if (action === "rank-nav") {
-    const entry = RANKING_ENTRIES[Number(btn.dataset.rankIdx)];
     closeSearchWizard();
-    switchTab(TAB_ORDER.indexOf(entry.tab));
-    entry.run();
+    switchTab(TAB_ORDER.indexOf("topranking"));
+    runRankingEntry(Number(btn.dataset.rankIdx));
   } else if (action === "sector-toggle") {
     const sector = btn.dataset.sector;
     const set = new Set(searchWizardAnswers.sectors);
@@ -3183,12 +3186,12 @@ el("searchWizardBody").addEventListener("click", (e) => {
     renderSearchWizardStep();
   } else if (action === "branchC-style-short") {
     closeSearchWizard();
-    switchTab(TAB_ORDER.indexOf("trend"));
-    runTrendPressure();
+    switchTab(TAB_ORDER.indexOf("topranking"));
+    runRankingEntry(RANKING_ENTRIES.findIndex((e) => e.label === "상승 압력"));
   } else if (action === "branchC-style-long") {
     closeSearchWizard();
-    switchTab(TAB_ORDER.indexOf("valuation"));
-    runValueStability();
+    switchTab(TAB_ORDER.indexOf("topranking"));
+    runRankingEntry(RANKING_ENTRIES.findIndex((e) => e.label === "투자 안정"));
   } else if (action === "share") {
     shareWizardResult(wizardShareTitle, wizardShareText);
   } else if (action === "share-self") {
@@ -3208,27 +3211,66 @@ function renderWizardRoot() {
   `;
 }
 
-// [랭킹찾기]는 새 데이터 로직 없이 기존 기업가치·투자동향 탭의 14개 랭킹 화면으로 그대로 이동만 시킴
+// [랭킹찾기]와 Top랭킹 탭이 공유하는 14개 랭킹 화면 — 지도(섹터맵) 필터칩 순서(상승률-하락률-매출액-순이익-시가총액-거래량-
+// 배당률-현금흐름-PER-EPS)와 동일하게 배치하고, 그 뒤에 US/KR ETF, 마지막에 상승 압력·투자 안정(orange:true)을 붙임
 const RANKING_ENTRIES = [
-  { icon: "trending-up", label: "매출액 증가", tab: "valuation", run: () => runValueRevenue() },
-  { icon: "wallet", label: "현금흐름 증가", tab: "valuation", run: () => runValueCashFlow() },
-  { icon: "dollar", label: "순이익 증가", tab: "valuation", run: () => runValueNetIncome() },
-  { icon: "calculator", label: "EPS", tab: "valuation", run: () => runValueEps() },
-  { icon: "scale", label: "PER", tab: "valuation", run: () => runValuePer() },
-  { icon: "medal", label: "투자 안정", tab: "valuation", run: () => runValueStability() },
-  { icon: "building", label: "시가총액", tab: "valuation", run: () => runValueMarketCap() },
-  { icon: "thumbsup", label: "거래량", tab: "trend", run: () => runTrendVolume() },
   { icon: "trending-up", label: "상승률", tab: "trend", run: () => runMovers("surge") },
   { icon: "trending-down", label: "하락률", tab: "trend", run: () => runMovers("plunge") },
+  { icon: "trending-up", label: "매출액 증가", tab: "valuation", run: () => runValueRevenue() },
+  { icon: "dollar", label: "순이익 증가", tab: "valuation", run: () => runValueNetIncome() },
+  { icon: "building", label: "시가총액", tab: "valuation", run: () => runValueMarketCap() },
+  { icon: "thumbsup", label: "거래량", tab: "trend", run: () => runTrendVolume() },
   { icon: "coin", label: "배당률", tab: "trend", run: () => runTrendDividend() },
-  { icon: "rocket", label: "상승 압력", tab: "trend", run: () => runTrendPressure() },
+  { icon: "wallet", label: "현금흐름 증가", tab: "valuation", run: () => runValueCashFlow() },
+  { icon: "scale", label: "PER", tab: "valuation", run: () => runValuePer() },
+  { icon: "calculator", label: "EPS", tab: "valuation", run: () => runValueEps() },
   { icon: "basket", label: "US ETF", tab: "trend", run: () => runTrendUsEtf() },
   { icon: "basket", label: "KR ETF", tab: "trend", run: () => runTrendKrEtf() },
+  { icon: "rocket", label: "상승 압력", tab: "trend", run: () => runTrendPressure(), orange: true },
+  { icon: "medal", label: "투자 안정", tab: "valuation", run: () => runValueStability(), orange: true },
 ];
+// ---------- Top랭킹 탭 — 기업가치·투자동향을 통합한 화면. RANKING_ENTRIES를 그대로 재사용해 14개 항목을
+// 가로 스크롤 서브내비로 보여주고, 클릭하면 valuationGroup/trendGroup 중 해당하는 쪽만 보이게 전환함 ----------
+function showRankingGroup(tabKey) {
+  el("valuationGroup").style.display = tabKey === "valuation" ? "block" : "none";
+  el("trendGroup").style.display = tabKey === "trend" ? "block" : "none";
+}
+
+let topRankingActiveIdx = 0;
+function renderTopRankingSubNavActive() {
+  el("topRankingSubNav")
+    .querySelectorAll(".top-ranking-tab")
+    .forEach((btn, i) => btn.classList.toggle("active", i === topRankingActiveIdx));
+}
+
+function runRankingEntry(idx) {
+  const entry = RANKING_ENTRIES[idx];
+  if (!entry) return;
+  topRankingActiveIdx = idx;
+  showRankingGroup(entry.tab);
+  renderTopRankingSubNavActive();
+  entry.run();
+}
+
+function renderTopRankingSubNav() {
+  el("topRankingSubNav").innerHTML = RANKING_ENTRIES.map(
+    (entry, i) =>
+      `<button type="button" class="cat-btn top-ranking-tab${entry.orange ? " top-ranking-tab-orange" : ""}" data-rank-idx="${i}">${iconHtml(
+        entry.icon
+      )} ${entry.label}</button>`
+  ).join("");
+}
+renderTopRankingSubNav();
+el("topRankingSubNav").addEventListener("click", (e) => {
+  const btn = e.target.closest(".top-ranking-tab");
+  if (!btn) return;
+  runRankingEntry(Number(btn.dataset.rankIdx));
+});
+
 function renderWizardBranchA() {
   const items = RANKING_ENTRIES.map(
     (entry, i) =>
-      `<button type="button" class="wizard-option-btn" data-wizard-action="rank-nav" data-rank-idx="${i}">${iconHtml(entry.icon)} ${entry.label}</button>`
+      `<button type="button" class="wizard-option-btn${entry.orange ? " wizard-option-btn-orange" : ""}" data-wizard-action="rank-nav" data-rank-idx="${i}">${iconHtml(entry.icon)} ${entry.label}</button>`
   ).join("");
   return `
     <p class="wizard-question">[랭킹찾기]에서 찾으실 항목을 선택해주세요.</p>
@@ -5560,7 +5602,15 @@ async function renderKrRanking(dataPromiseFn, label, statusEl, resultsEl, { mapF
       <tr>
         <td>${i + 1}${r.fiveDayExtremes ? surgeWarningEmoji(r.fiveDayExtremes) : ""}</td>
         <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(nameMap.get(r.symbol) || r.symbol)}</b></span></td>
-        <td>${r.price !== undefined && r.price !== null ? priceChartLink(r.symbol, fmtPrice(r.price, r.currency)) : "N/A"}</td>
+        <td>${
+          r.price !== undefined && r.price !== null
+            ? `${priceChartLink(r.symbol, fmtPrice(r.price, r.currency))}${
+                r.changePct !== undefined && r.changePct !== null
+                  ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
+                  : ""
+              }`
+            : "N/A"
+        }</td>
         <td>${metricCellFn(r)}</td>${showGrade ? `<td>${gradeCellHtml(r)}</td>` : ""}
       </tr>`;
 
@@ -5636,7 +5686,15 @@ async function renderKrRankingStaged(label, statusEl, resultsEl, { mapFn = (list
         <tr>
           <td>${i + 1}${r.fiveDayExtremes ? surgeWarningEmoji(r.fiveDayExtremes) : ""}</td>
           <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(nameMap.get(r.symbol) || r.symbol)}</b></span></td>
-          <td>${r.price !== undefined && r.price !== null ? priceChartLink(r.symbol, fmtPrice(r.price, r.currency)) : "N/A"}</td>
+          <td>${
+          r.price !== undefined && r.price !== null
+            ? `${priceChartLink(r.symbol, fmtPrice(r.price, r.currency))}${
+                r.changePct !== undefined && r.changePct !== null
+                  ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
+                  : ""
+              }`
+            : "N/A"
+        }</td>
           <td>${metricCellFn(r)}</td>${showGrade ? `<td>${gradeCellHtml(r)}</td>` : ""}
         </tr>`
         )
@@ -7905,10 +7963,22 @@ async function runMovers(direction) {
 
   if (getWatchlistActiveMarket() === "KR") {
     await renderKrRanking(getKrDailyChanges, label, trendStatus, trendResults, {
+      mapFn: async (list) => {
+        // 투자안정 열을 다른 랭킹들과 동일하게 항상 채우기 위해, 상위 50개만 추려낸 뒤 전체 지표를 추가로 조회
+        const top = list.sort((a, b) => (direction === "surge" ? b.changePct - a.changePct : a.changePct - b.changePct)).slice(0, 50);
+        const { sp500Return, kospi200Return } = await getMarketReturnsCached();
+        const full = (await mapWithConcurrency(top, 8, (r) => getFullMetrics(r.symbol).catch(() => null))).filter(Boolean);
+        const fullBySymbol = new Map(full.map((m) => [m.symbol, m]));
+        return top
+          .map((r) => {
+            const m = fullBySymbol.get(r.symbol);
+            return m ? { ...r, riskTotal: computeRiskScore(m, sp500Return, kospi200Return).total, isIPO: isRecentIPO(m.firstTradeDate) } : r;
+          })
+          .filter((r) => r.riskTotal !== undefined);
+      },
       sortFn: (a, b) => (direction === "surge" ? b.changePct - a.changePct : a.changePct - b.changePct),
       metricHeaderHtml: "등락률",
       metricCellFn: (r) => fmtGrowthCell(r.changePct),
-      showGrade: false,
       noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 순위는 전일 대비 등락률(${direction === "surge" ? "상승률 높은" : "하락률 큰"} 순) 기준이며, 코스피200+코스닥150(약 350종목) 중 상위 50개입니다.</p>`,
     });
     return;
@@ -8055,7 +8125,11 @@ function dividendRowHtml(r, i, nameMap) {
     <tr>
       <td>${i + 1}</td>
       <td>${tickerCellHtml}</td>
-      <td>${priceChartLink(r.symbol, fmtPrice(r.price, r.currency))}</td>
+      <td>${priceChartLink(r.symbol, fmtPrice(r.price, r.currency))}${
+        r.changePct !== undefined && r.changePct !== null
+          ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
+          : ""
+      }</td>
       <td>${r.yieldPct.toFixed(2)}%${dividendWarningHtml(r)}</td>
       <td>${gradeCellHtml}</td>
     </tr>`;

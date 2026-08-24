@@ -801,8 +801,8 @@ body {
 #bottomNavMoreBtn2 svg { width: 29px; height: 29px; top: 3px; }
 #bottomNavMoreBtn2 { position: relative; top: -2px; }
 #bottomNavMarketBtn2 svg { top: 5px; }
-.bottom-nav-btn.active { color: var(--orange-deep); }
-.bottom-nav-btn.active svg { color: var(--orange-deep); }
+.bottom-nav-btn.active { color: var(--text-dark); }
+.bottom-nav-btn.active svg { color: var(--text-dark); }
 
 /* toast */
 .toast {

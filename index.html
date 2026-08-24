@@ -83,8 +83,7 @@
       <button type="button" class="cat-btn" data-tab="watchlist" id="watchlistTabBtn"><span class="tab-emoji btn-icon" data-icon="star" aria-hidden="true"></span><span class="tab-label">관심종목</span></button>
       <button type="button" class="cat-btn" id="searchTabBtn"><span class="tab-emoji btn-icon" data-icon="search" aria-hidden="true"></span><span class="tab-label">기업찾기</span></button>
       <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn"><span class="tab-label">인사이트</span></button>
-      <button type="button" class="cat-btn" data-tab="valuation" id="tabValuationBtn"><span class="tab-label">기업가치</span></button>
-      <button type="button" class="cat-btn" data-tab="trend" id="tabTrendBtn"><span class="tab-label">투자동향</span></button>
+      <button type="button" class="cat-btn" data-tab="topranking" id="tabTopRankingBtn"><span class="tab-label">Top랭킹</span></button>
     </div>
   </header>
 
@@ -518,34 +517,40 @@
         <div id="insightResults"></div>
       </div>
 
-      <div class="carousel-panel" data-panel="valuation" id="panelValuation">
-        <div class="top30-sub-nav">
-          <button type="button" class="cat-btn" id="valuationRevenueBtn"><span class="btn-icon" data-icon="trending-up"></span> 매출액 증가</button>
-          <button type="button" class="cat-btn" id="valuationCashFlowBtn"><span class="btn-icon" data-icon="wallet"></span> 현금흐름 증가</button>
-          <button type="button" class="cat-btn" id="valuationNetIncomeBtn"><span class="btn-icon" data-icon="dollar"></span> 순이익 증가</button>
-          <button type="button" class="cat-btn" id="valuationEpsBtn"><span class="btn-icon" data-icon="calculator"></span> EPS</button>
-          <button type="button" class="cat-btn" id="valuationPerBtn"><span class="btn-icon" data-icon="scale"></span> PER</button>
-          <button type="button" class="cat-btn" id="valuationStabilityBtn"><span class="btn-icon" data-icon="medal"></span> 투자 안정</button>
-          <button type="button" class="cat-btn" id="valuationMarketCapBtn"><span class="btn-icon" data-icon="building"></span> 시가총액</button>
-        </div>
-        <p id="valuationStatus" class="muted top30-status" style="display:none;"></p>
-        <div id="valuationResults"></div>
-      </div>
+      <div class="carousel-panel" data-panel="topranking" id="panelTopRanking">
+        <div class="top30-sub-nav top-ranking-sub-nav" id="topRankingSubNav"></div>
 
-      <div class="carousel-panel" data-panel="trend" id="panelTrend">
-        <div class="top30-sub-nav">
-          <button type="button" class="cat-btn" id="trendVolumeBtn"><span class="btn-icon" data-icon="thumbsup"></span> 거래량</button>
-          <button type="button" class="cat-btn" id="trendSurgeBtn"><span class="btn-icon" data-icon="trending-up"></span> 상승률</button>
-          <button type="button" class="cat-btn" id="trendPlungeBtn"><span class="btn-icon" data-icon="trending-down"></span> 하락률</button>
-          <button type="button" class="cat-btn" id="trendDividendBtn"><span class="btn-icon" data-icon="coin"></span> 배당률</button>
-          <button type="button" class="cat-btn" id="trendPressureBtn"><span class="btn-icon" data-icon="rocket"></span> 상승 압력</button>
-          <button type="button" class="cat-btn" id="trendUsEtfBtn"><span class="btn-icon" data-icon="basket"></span> US ETF</button>
-          <button type="button" class="cat-btn" id="trendKrEtfBtn"><span class="btn-icon" data-icon="basket"></span> KR ETF</button>
+        <div id="valuationGroup" style="display:none;">
+          <!-- 기존 기업가치 서브내비는 Top랭킹 통합 후 화면엔 안 보이지만, 각 항목의 렌더 함수가 내부적으로
+               이 버튼들의 active 상태를 계속 참조하므로 DOM에서 지우지 않고 숨김만 처리함 -->
+          <div class="top30-sub-nav" style="display:none;">
+            <button type="button" class="cat-btn" id="valuationRevenueBtn"><span class="btn-icon" data-icon="trending-up"></span> 매출액 증가</button>
+            <button type="button" class="cat-btn" id="valuationCashFlowBtn"><span class="btn-icon" data-icon="wallet"></span> 현금흐름 증가</button>
+            <button type="button" class="cat-btn" id="valuationNetIncomeBtn"><span class="btn-icon" data-icon="dollar"></span> 순이익 증가</button>
+            <button type="button" class="cat-btn" id="valuationEpsBtn"><span class="btn-icon" data-icon="calculator"></span> EPS</button>
+            <button type="button" class="cat-btn" id="valuationPerBtn"><span class="btn-icon" data-icon="scale"></span> PER</button>
+            <button type="button" class="cat-btn" id="valuationStabilityBtn"><span class="btn-icon" data-icon="medal"></span> 투자 안정</button>
+            <button type="button" class="cat-btn" id="valuationMarketCapBtn"><span class="btn-icon" data-icon="building"></span> 시가총액</button>
+          </div>
+          <p id="valuationStatus" class="muted top30-status" style="display:none;"></p>
+          <div id="valuationResults"></div>
         </div>
-        <p id="trendStatus" class="muted top30-status" style="display:none;"></p>
-        <div id="trendResults"></div>
-      </div>
 
+        <div id="trendGroup">
+          <!-- 기존 투자동향 서브내비도 마찬가지로 숨김만 처리(렌더 함수들이 참조) -->
+          <div class="top30-sub-nav" style="display:none;">
+            <button type="button" class="cat-btn" id="trendVolumeBtn"><span class="btn-icon" data-icon="thumbsup"></span> 거래량</button>
+            <button type="button" class="cat-btn" id="trendSurgeBtn"><span class="btn-icon" data-icon="trending-up"></span> 상승률</button>
+            <button type="button" class="cat-btn" id="trendPlungeBtn"><span class="btn-icon" data-icon="trending-down"></span> 하락률</button>
+            <button type="button" class="cat-btn" id="trendDividendBtn"><span class="btn-icon" data-icon="coin"></span> 배당률</button>
+            <button type="button" class="cat-btn" id="trendPressureBtn"><span class="btn-icon" data-icon="rocket"></span> 상승 압력</button>
+            <button type="button" class="cat-btn" id="trendUsEtfBtn"><span class="btn-icon" data-icon="basket"></span> US ETF</button>
+            <button type="button" class="cat-btn" id="trendKrEtfBtn"><span class="btn-icon" data-icon="basket"></span> KR ETF</button>
+          </div>
+          <p id="trendStatus" class="muted top30-status" style="display:none;"></p>
+          <div id="trendResults"></div>
+        </div>
+      </div>
 
     </div>
 

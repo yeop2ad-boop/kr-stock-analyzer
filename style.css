@@ -638,6 +638,11 @@ body[data-market-mode="kr"] .tab-bar .cat-btn.active::after { background: #fffff
 /* 버튼이 많아 가로로 길어져도 각 버튼은 줄어들지 않고 그대로 유지(가로 스크롤로 접근) */
 .top30-sub-nav .cat-btn { flex: 0 0 auto; white-space: nowrap; }
 
+/* Top랭킹 탭 — 기업가치+투자동향을 합친 14개 서브버튼. 마지막 2개(상승 압력·투자 안정)만 주황으로 구분 */
+.top-ranking-sub-nav { padding-bottom: 2px; }
+.top-ranking-tab-orange { border-color: rgba(224, 70, 0, 0.5); color: #e04600; }
+.top-ranking-tab-orange.active { color: #e04600; border-color: #e04600; background: rgba(224, 70, 0, 0.08); }
+
 /* 인사이트 "1.자산&투자사" 선택 시에만 보이는 2단 서브버튼(윗줄 자산운용사/아랫줄 투자회사) */
 .insight-firms-nav { flex-direction: column; overflow-x: visible; }
 .insight-firms-row { display: flex; align-items: center; gap: 4px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
@@ -1602,6 +1607,8 @@ table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: var(--gold);
   font-weight: 600;
   white-space: normal;
 }
+/* 랭킹찾기 목록의 마지막 2개(상승 압력·투자 안정)는 주황으로 강조 — Top랭킹 탭과 동일한 시각 언어 */
+.wizard-option-btn-orange { border-color: #e04600; color: #e04600; background: rgba(224, 70, 0, 0.06); }
 .wizard-sector-checklist {
   display: flex;
   flex-wrap: wrap;
