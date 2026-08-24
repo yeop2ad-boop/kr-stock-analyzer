@@ -766,6 +766,56 @@ async function handleFutureRunNow(env) {
   return handleFutureRiskStatus(env);
 }
 
+// ---------- 국내(코스피200+코스닥150) 실시간 등락률 요약 — 지도(섹터맵) 국내 모드 색상 갱신용 ----------
+// Yahoo의 배치 시세(v7/finance/quote)는 최근 인증(crumb)이 필요해져 브라우저에서 직접 호출할 수 없게 됐다(확인함).
+// 해외(S&P500)는 스크리너 API 한 번으로 전체를 받아오지만 KRX용 스크리너는 없어서, 이미 FOMO지수 계산에 쓰고 있는
+// KR_FOMO_UNIVERSE(약 350종목)를 재사용해 서버에서 종목별로 훑은 뒤 등락률만 모아 KV에 15분 캐시해둔다.
+const KR_QUOTES_CACHE_KEY = "kr_quotes_cache";
+const KR_QUOTES_CACHE_TTL_MS = 15 * 60 * 1000;
+
+async function fetchKrQuoteChangePct(symbol) {
+  try {
+    const chart = await fetchYahooChart(symbol, "5d", "1d");
+    const result = chart && chart.chart && chart.chart.result && chart.chart.result[0];
+    const meta = result && result.meta;
+    if (!meta) return null;
+    const pairs = chartClosePairsWorker(chart);
+    if (!pairs.length) return null;
+    const latest = pairs[pairs.length - 1];
+    const prevClose = pairs.length >= 2 ? pairs[pairs.length - 2].c : meta.chartPreviousClose ?? null;
+    const price = meta.regularMarketPrice ?? latest.c;
+    if (prevClose === null || prevClose === undefined || price === null || price === undefined || !prevClose) return null;
+    return ((price - prevClose) / prevClose) * 100;
+  } catch {
+    return null;
+  }
+}
+
+async function handleKrQuotes(env) {
+  if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
+
+  const cached = await env.CHAT_KV.get(KR_QUOTES_CACHE_KEY, "json");
+  if (cached && Date.now() - cached.fetchedAt < KR_QUOTES_CACHE_TTL_MS) {
+    return jsonResponse(cached, 200);
+  }
+
+  const results = await mapWithConcurrencyWorker(KR_FOMO_UNIVERSE, 16, async (symbol) => {
+    const chg = await fetchKrQuoteChangePct(symbol);
+    return chg === null ? null : [symbol, Math.round(chg * 100) / 100];
+  });
+  const quotes = {};
+  for (const r of results) {
+    if (r) quotes[r[0]] = r[1];
+  }
+  if (Object.keys(quotes).length > 0) {
+    const payload = { quotes, fetchedAt: Date.now() };
+    await env.CHAT_KV.put(KR_QUOTES_CACHE_KEY, JSON.stringify(payload));
+    return jsonResponse(payload, 200);
+  }
+  if (cached) return jsonResponse(cached, 200); // 갱신 실패해도 기존 캐시가 있으면 그거라도 반환
+  return jsonResponse({ error: "국내 시세를 가져오지 못했습니다." }, 502);
+}
+
 // ---------- M2 통화량(광의통화) 전년동월비 — 한국은행 ECOS Open API ----------
 // 통계표 161Y006("M2 상품별 구성내역(평잔, 원계열)") / 항목 BBHA00("M2(평잔, 원계열)")가 현재 계속 갱신되는 활성
 // 테이블임(구 101Y003/101Y004는 2003~2004년에 데이터가 끊긴 폐기 테이블이라 사용하지 않음 — 직접 호출로 확인).
@@ -1007,6 +1057,10 @@ export default {
 
     if (requestUrl.pathname === "/m2-yoy") {
       return handleM2Yoy(env);
+    }
+
+    if (requestUrl.pathname === "/kr-quotes") {
+      return handleKrQuotes(env);
     }
 
     if (requestUrl.pathname === "/auth/kakao" && request.method === "POST") {

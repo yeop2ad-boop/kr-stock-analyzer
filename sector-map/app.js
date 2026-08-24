@@ -1089,8 +1089,86 @@ async function refreshLiveData() {
   applyAllFilters(); // 라이브 값이 바뀌었으니 지금 걸려있는 필터도 새 값 기준으로 재적용
   quickSliderCtrl.refresh(); // 빠른 시트가 라이브 지표를 보고 있었다면 눈금/썸 위치 갱신
   panelControllers.forEach((ctrl) => ctrl.refresh()); // 전체 설정 패널이 열려있었다면 해당 슬라이더들도 갱신
-  showToast("실시간 시세로 갱신됨");
   return true;
+}
+
+// 국내(코스피200+코스닥150)는 Yahoo 스크리너가 없어 Worker(/kr-quotes, KR_FOMO_UNIVERSE 재사용 + 15분 캐시)가
+// 대신 훑어둔 등락률 요약을 받아옴 — 해외의 refreshLiveData와 같은 "적용" 마무리 로직을 그대로 재사용
+async function refreshDomesticLiveData() {
+  try {
+    const res = await fetch("https://us-stock.yeop2ad.workers.dev/kr-quotes");
+    if (!res.ok) return false;
+    const data = await res.json();
+    const quotes = data && data.quotes;
+    if (!quotes) return false;
+    const companyBySymbol = new Map(ACTIVE_DATA.companies.map((c) => [c.symbol, c]));
+    let updated = 0;
+    for (const [symbol, chg] of Object.entries(quotes)) {
+      const c = companyBySymbol.get(symbol);
+      if (!c) continue;
+      c.changePercent = chg;
+      updated++;
+    }
+    if (updated === 0) return false;
+    liveDataLoaded = true;
+    refreshAllBubbleColors();
+    for (const key of ["riseRate", "fallRate"]) {
+      if (METRICS[key]) delete METRICS[key].domain;
+    }
+    applyAllFilters();
+    quickSliderCtrl.refresh();
+    panelControllers.forEach((ctrl) => ctrl.refresh());
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// 미국 증시 운영시간(평일 09:30~16:00 ET) 간단 근사치 — 공휴일 캘린더는 반영하지 않음
+function isUsMarketOpen() {
+  const et = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
+  const day = et.getDay();
+  if (day === 0 || day === 6) return false;
+  const mins = et.getHours() * 60 + et.getMinutes();
+  return mins >= 9 * 60 + 30 && mins <= 16 * 60;
+}
+
+// AI 버튼에 표시할 "색상이 언제 기준인지" — 오늘 안에 갱신됐으면 시:분:초(장중이면 주황), 날짜가 지났으면 월/일(빨강)
+let lastColorRefreshAt = null;
+function renderAiFabTimestamp() {
+  const timeEl = document.getElementById("aiFabTime");
+  if (!timeEl) return;
+  if (!lastColorRefreshAt) {
+    timeEl.textContent = "";
+    return;
+  }
+  const refreshedAt = new Date(lastColorRefreshAt);
+  const now = new Date();
+  const sameDay = refreshedAt.toDateString() === now.toDateString();
+  if (!sameDay) {
+    const mm = String(refreshedAt.getMonth() + 1).padStart(2, "0");
+    const dd = String(refreshedAt.getDate()).padStart(2, "0");
+    timeEl.textContent = `${mm}/${dd}`;
+    timeEl.className = "ai-fab-time ai-fab-time-stale";
+    return;
+  }
+  const marketOpen = ACTIVE_MARKET === "domestic" ? isKrMarketOpen() : isUsMarketOpen();
+  const hh = String(refreshedAt.getHours()).padStart(2, "0");
+  const mi = String(refreshedAt.getMinutes()).padStart(2, "0");
+  const ss = String(refreshedAt.getSeconds()).padStart(2, "0");
+  timeEl.textContent = `${hh}:${mi}:${ss}`;
+  timeEl.className = marketOpen ? "ai-fab-time ai-fab-time-live" : "ai-fab-time";
+}
+
+// 국내/해외 어느 쪽이 활성인지에 맞춰 알맞은 실시간 갱신 함수를 호출하고, 성공 시 AI 버튼의 갱신 시각을 함께 업데이트
+async function refreshActiveMarketLiveData({ silent = false } = {}) {
+  const ok = ACTIVE_MARKET === "domestic" ? await refreshDomesticLiveData() : await refreshLiveData();
+  if (ok) {
+    lastColorRefreshAt = Date.now();
+    if (!silent) showToast("실시간 시세로 갱신됨");
+  }
+  renderAiFabTimestamp();
+  return ok;
 }
 
 // 원 배경/테두리 색을 최신 changePercent 기준으로 다시 칠함(값 자체는 그대로 두고 색만 갱신)
@@ -1285,11 +1363,17 @@ function loadMarket(mode, animate) {
 
   rerenderMap(animate);
 
-  if (mode === "overseas") {
-    refreshLiveData().catch(() => {});
-  }
+  refreshActiveMarketLiveData().catch(() => {});
   renderIndexSummaryBar().catch(() => {});
 }
+
+// 20분 지연 표시에 맞춰 5분마다 조용히(토스트 없이) 색상을 다시 갱신 — 페이지를 오래 켜둬도 계속 최신에 가깝게 유지됨
+setInterval(() => {
+  refreshActiveMarketLiveData({ silent: true }).catch(() => {});
+  renderIndexSummaryBar().catch(() => {});
+}, 5 * 60 * 1000);
+// AI 버튼 시각 표시는 매초 새로고침(장중 HH:MM:SS가 실시간으로 흐르는 것처럼 보이게)
+setInterval(renderAiFabTimestamp, 1000);
 
 document.getElementById("marketTogglePill").addEventListener("click", (e) => {
   const btn = e.target.closest(".toggle-btn");

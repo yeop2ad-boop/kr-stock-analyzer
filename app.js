@@ -2857,21 +2857,52 @@ function selfTestAllocationFor(method) {
   return null;
 }
 
-function selfTestAllocBarHtml(alloc) {
+// compact(관심목록 상단 고정용)일 땐 "주식 60%"가 아니라 "60%"만 — 자리가 좁은 세그먼트는(전체 그래프에서만) 안에 안 넣고 아래에 따로 적음
+function selfTestAllocBarHtml(alloc, { compact = false } = {}) {
+  const NARROW_PCT = 22; // 이 % 미만이면 막대 안에 글자를 넣을 자리가 부족하다고 보고 아래로 뺌(전체 그래프에서만 해당)
+  const stockNarrow = !compact && alloc.stock < NARROW_PCT;
+  const bondNarrow = !compact && alloc.bond < NARROW_PCT;
+  const stockText = compact ? `${alloc.stock}%` : stockNarrow ? "" : `주식 ${alloc.stock}%`;
+  const bondText = compact ? `${alloc.bond}%` : bondNarrow ? "" : `현금·채권 ${alloc.bond}%`;
+  const belowParts = [stockNarrow ? `주식 ${alloc.stock}%` : "", bondNarrow ? `현금·채권 ${alloc.bond}%` : ""].filter(Boolean);
   return `
-    <p class="self-test-alloc-label">${alloc.label}</p>
-    <div class="self-test-alloc-bar">
-      <div class="self-test-alloc-seg self-test-alloc-stock" style="width:${alloc.stock}%;">주식 ${alloc.stock}%</div>
-      <div class="self-test-alloc-seg self-test-alloc-bond" style="width:${alloc.bond}%;">현금·채권 ${alloc.bond}%</div>
-    </div>`;
+    ${compact ? "" : `<p class="self-test-alloc-label">${alloc.label}</p>`}
+    <div class="self-test-alloc-bar${compact ? " self-test-alloc-bar-compact" : ""}">
+      <div class="self-test-alloc-seg self-test-alloc-stock" style="width:${alloc.stock}%;">${stockText}</div>
+      <div class="self-test-alloc-seg self-test-alloc-bond" style="width:${alloc.bond}%;">${bondText}</div>
+    </div>
+    ${belowParts.length ? `<p class="self-test-alloc-below">${belowParts.join(" · ")}</p>` : ""}`;
 }
 
+// 방법을 하나 선택해 비중이 계산되면 그 결과를 저장해둬서, 관심목록 상단에도 계속 떠 있도록 함([[watchlistSelfTestPin]])
+const SELF_TEST_PIN_KEY = "selftest_pinned_alloc_v1";
 function updateSelfTestAllocBar() {
   const wrap = el("selfTestAllocWrap");
   if (!wrap) return;
   const alloc = selfTestActiveMethod ? selfTestAllocationFor(selfTestActiveMethod) : null;
   wrap.style.display = alloc ? "block" : "none";
   wrap.innerHTML = alloc ? selfTestAllocBarHtml(alloc) : "";
+  if (alloc) {
+    try {
+      localStorage.setItem(SELF_TEST_PIN_KEY, JSON.stringify(alloc));
+    } catch {}
+    renderPinnedSelfTestBar();
+  }
+}
+
+// 관심목록 탭 상단에 마지막으로 계산된 자산배분 결과를 계속 고정 표시(자기진단 모달을 닫아도, 새로고침해도 유지됨)
+function renderPinnedSelfTestBar() {
+  const pin = el("watchlistSelfTestPin");
+  if (!pin) return;
+  let alloc = null;
+  try {
+    alloc = JSON.parse(localStorage.getItem(SELF_TEST_PIN_KEY));
+  } catch {}
+  if (!alloc || typeof alloc.stock !== "number" || typeof alloc.bond !== "number") {
+    pin.innerHTML = "";
+    return;
+  }
+  pin.innerHTML = `<div class="watchlist-selftest-pin">${selfTestAllocBarHtml(alloc, { compact: true })}</div>`;
 }
 
 function renderSelfTestResult() {
@@ -2931,6 +2962,7 @@ async function renderWatchlistList() {
   const statusEl = el("watchlistStatus");
   const listEl = el("watchlistList");
 
+  renderPinnedSelfTestBar();
   syncMarketModeUI();
 
   const groups = getWatchlistGroups();
@@ -3120,7 +3152,7 @@ const RANKING_ENTRIES = [
   { icon: "scale", label: "PER", tab: "valuation", run: () => runValuePer() },
   { icon: "medal", label: "투자 안정", tab: "valuation", run: () => runValueStability() },
   { icon: "building", label: "시가총액", tab: "valuation", run: () => runValueMarketCap() },
-  { icon: "thumbsup", label: "인기종목", tab: "trend", run: () => runTrendVolume() },
+  { icon: "thumbsup", label: "거래량", tab: "trend", run: () => runTrendVolume() },
   { icon: "trending-up", label: "상승률", tab: "trend", run: () => runMovers("surge") },
   { icon: "trending-down", label: "하락률", tab: "trend", run: () => runMovers("plunge") },
   { icon: "coin", label: "배당률", tab: "trend", run: () => runTrendDividend() },
@@ -4933,21 +4965,35 @@ async function renderScore(selfMetricsPromise) {
         <div class="score-den">/ 10</div>
       </div>
       <div class="score-details">
-        <ul>
-          <li>📊 총 거래대금(최근 5거래일 평균, 1년 평균 대비): <b>${volumeRatio !== null ? volumeRatio.toFixed(2) + "배" : "N/A"}</b> (2배 이상 만점, 1.5배 2점, 1배 1점, 0.5배 이하 0점)</li>
-          <li>📈 매출 성장성(최근 분기 YoY): <b>${revenueGrowthYoY !== null && revenueGrowthYoY !== undefined ? fmtPct(revenueGrowthYoY) : "N/A"}</b> (가장 최근 분기 매출의 전년 동기 대비 성장률, 높을수록 가점, 30% 이상 만점·0% 이하 0점)</li>
-          <li>🚀 상승 모멘텀(최근 3개월 수익률): <b>${momentum3m !== null && momentum3m !== undefined ? fmtPct(momentum3m) : "N/A"}</b> (높을수록 가점, 25% 이상 만점·0% 이하 0점)</li>
-        </ul>
+        ${scoreMethodBarRow(
+          "①",
+          "총 거래대금",
+          volumeScore,
+          3,
+          `최근 5거래일 평균, 1년 평균 대비: <b>${volumeRatio !== null ? volumeRatio.toFixed(2) + "배" : "N/A"}</b> (2배 이상 만점, 1.5배 2점, 1배 1점, 0.5배 이하 0점)`,
+          pressureColor
+        )}
+        ${scoreMethodBarRow(
+          "②",
+          "매출 성장성",
+          growthScore,
+          3,
+          `최근 분기 YoY: <b>${revenueGrowthYoY !== null && revenueGrowthYoY !== undefined ? fmtPct(revenueGrowthYoY) : "N/A"}</b> (가장 최근 분기 매출의 전년 동기 대비 성장률, 높을수록 가점, 30% 이상 만점·0% 이하 0점)`,
+          pressureColor
+        )}
+        ${scoreMethodBarRow(
+          "③",
+          "상승 모멘텀",
+          momentumScore,
+          4,
+          `최근 3개월 수익률: <b>${momentum3m !== null && momentum3m !== undefined ? fmtPct(momentum3m) : "N/A"}</b> (높을수록 가점, 25% 이상 만점·0% 이하 0점)`,
+          pressureColor
+        )}
         <p class="disclaimer">
           ⚠️ 이 점수는 거래대금, 매출 성장성, 상승 모멘텀을 조합한 <b>단순 참고용 정량 지표</b>이며,
           투자 자문이나 매수/매도 추천이 아닙니다. 실제 투자 판단은 재무제표 전체와 다른 정보를 종합해 본인 책임 하에 내려야 합니다.
         </p>
       </div>
-    </div>
-    <div class="score-bar-graph">
-      ${scoreMethodBarRow("①", "총 거래대금", volumeScore, 3, `${volumeRatio !== null ? volumeRatio.toFixed(2) + "배" : "N/A"}`, pressureColor)}
-      ${scoreMethodBarRow("②", "매출 성장성", growthScore, 3, `${revenueGrowthYoY !== null && revenueGrowthYoY !== undefined ? fmtPct(revenueGrowthYoY) : "N/A"}`, pressureColor)}
-      ${scoreMethodBarRow("③", "상승 모멘텀", momentumScore, 4, `${momentum3m !== null && momentum3m !== undefined ? fmtPct(momentum3m) : "N/A"}`, pressureColor)}
     </div>
   `;
 }
@@ -5068,6 +5114,7 @@ async function renderMacro(ticker) {
           <div class="score-den">${grade.label}</div>
         </div>
         <div class="score-details">
+          ${macroGaugeHtml(fomoPt, -30, 30, fomoZones)}
           <ul>
             <li>코스피200+코스닥150(약 350종목) 중 52주 신고가 근처(5% 이내) 종목 비중에서 52주 신저가 근처(5% 이내) 종목 비중을 뺀 값(%p)</li>
             <li>-15%p 이하 <b>패닉(역발상 투자 황금기)</b> · -5~-15%p <b>공포</b> · -5~+5%p <b>안심</b> · +5~+15%p <b>경계</b> · +15%p 이상 <b>과열(FOMO)</b></li>
@@ -5079,7 +5126,6 @@ async function renderMacro(ticker) {
           </p>
         </div>
       </div>
-      ${macroGaugeHtml(fomoPt, -30, 30, fomoZones)}
     `;
     return;
   }
@@ -5106,6 +5152,7 @@ async function renderMacro(ticker) {
         <div class="score-den">${grade.label}</div>
       </div>
       <div class="score-details">
+        ${macroGaugeHtml(vix, 0, 60, vixZones)}
         <ul>
           <li>VIX(CBOE 변동성지수, FRED 시리즈 VIXCLS) 수치를 그대로 표시합니다</li>
           <li>20 미만 <b>안심</b> · 20~29 <b>경계</b> · 30~39 <b>공포</b> · 40 이상 <b>패닉(역발상 투자 황금기)</b></li>
@@ -5116,7 +5163,6 @@ async function renderMacro(ticker) {
         </p>
       </div>
     </div>
-    ${macroGaugeHtml(vix, 0, 60, vixZones)}
   `;
 }
 
@@ -7501,8 +7547,9 @@ el("mktWidgetTrack").addEventListener("scroll", () => {
   el("mktWidgetDots").querySelectorAll(".mkt-widget-dot").forEach((dot, i) => dot.classList.toggle("active", i === idx));
 });
 
-// ---------- 시장 위젯 종목 수정(체크박스로 정확히 8개 선택) ----------
-function mktWidgetEditBodyHtml(selected) {
+// ---------- 시장 위젯 종목 수정(체크박스로 정확히 8개 선택 + 선택 순서를 1~8번으로 표시) ----------
+function mktWidgetEditBodyHtml(orderedTickers) {
+  const orderByTicker = new Map(orderedTickers.map((t, i) => [t, i + 1]));
   const seenTickers = new Set(); // 금·비트코인처럼 같은 종목이 여러 카테고리에 중복 등장하므로 처음 나온 카테고리에서만 체크박스 생성
   const groups = Object.entries(INDEX_CATEGORIES)
     .filter(([key]) => key !== "bonds") // 채권은 FRED 소스라 인트라데이 스파크라인을 그릴 수 없어 선택지에서 제외
@@ -7513,26 +7560,27 @@ function mktWidgetEditBodyHtml(selected) {
           seenTickers.add(item.ticker);
           return true;
         })
-        .map(
-          (item) => `
+        .map((item) => {
+          const order = orderByTicker.get(item.ticker);
+          return `
         <label class="mkt-widget-edit-opt">
-          <input type="checkbox" value="${escapeHtml(item.ticker)}" ${selected.has(item.ticker) ? "checked" : ""} />
+          <input type="checkbox" value="${escapeHtml(item.ticker)}" ${order ? "checked" : ""} />
+          <span class="mkt-widget-edit-order">${order || ""}</span>
           <span>${escapeHtml(item.name)}</span>
-        </label>`
-        )
+        </label>`;
+        })
         .join("");
       return opts ? `<div class="mkt-widget-edit-group"><p class="mkt-widget-edit-group-label">${escapeHtml(cat.label)}</p>${opts}</div>` : "";
     })
     .join("");
   return `
-    <p class="mkt-widget-edit-count" id="mktWidgetEditCount">선택 ${selected.size}/8</p>
+    <p class="mkt-widget-edit-count" id="mktWidgetEditCount">선택 ${orderedTickers.length}/8</p>
     ${groups}
     <button type="button" class="cat-btn mkt-widget-edit-save" id="mktWidgetEditSaveBtn">저장</button>
   `;
 }
 function openMktWidgetEditModal() {
-  const selected = new Set(getMarketWidgetTickers());
-  el("mktWidgetEditBody").innerHTML = mktWidgetEditBodyHtml(selected);
+  el("mktWidgetEditBody").innerHTML = mktWidgetEditBodyHtml(getMarketWidgetTickers());
   el("mktWidgetEditModal").style.display = "flex";
 }
 function closeMktWidgetEditModal() {
@@ -7543,12 +7591,28 @@ el("mktWidgetEditCloseBtn").addEventListener("click", closeMktWidgetEditModal);
 el("mktWidgetEditBody").addEventListener("change", (e) => {
   const checkbox = e.target.closest('input[type="checkbox"]');
   if (!checkbox) return;
-  const boxes = [...el("mktWidgetEditBody").querySelectorAll('input[type="checkbox"]')];
+  const body = el("mktWidgetEditBody");
+  const boxes = [...body.querySelectorAll('input[type="checkbox"]')];
   const checkedCount = boxes.filter((b) => b.checked).length;
   if (checkedCount > 8) {
     checkbox.checked = false;
     alert("최대 8개까지만 선택할 수 있습니다.");
     return;
+  }
+  const orderSpan = checkbox.closest("label").querySelector(".mkt-widget-edit-order");
+  if (checkbox.checked) {
+    // 누르는 순서대로 1번부터 배정 — 이미 쓰인 번호가 있으면 남은 숫자 중 가장 빠른 것을 씀
+    const usedNumbers = new Set(
+      boxes
+        .filter((b) => b.checked && b !== checkbox)
+        .map((b) => Number(b.closest("label").querySelector(".mkt-widget-edit-order").textContent))
+        .filter((n) => n)
+    );
+    let n = 1;
+    while (usedNumbers.has(n)) n++;
+    orderSpan.textContent = n;
+  } else {
+    orderSpan.textContent = "";
   }
   el("mktWidgetEditCount").textContent = `선택 ${checkedCount}/8`;
 });
@@ -7559,7 +7623,12 @@ el("mktWidgetEditBody").addEventListener("click", (e) => {
     alert(`정확히 8개를 선택해주세요 (현재 ${boxes.length}개).`);
     return;
   }
-  setMarketWidgetTickers(boxes.map((b) => b.value));
+  // 체크박스 자체는 카테고리 순서로 나열돼 있으므로, 저장 시 배정된 번호(1~8) 기준으로 정렬해 위젯에 그 순서대로 반영
+  const ordered = boxes
+    .map((b) => ({ ticker: b.value, order: Number(b.closest("label").querySelector(".mkt-widget-edit-order").textContent) || 99 }))
+    .sort((a, b) => a.order - b.order)
+    .map((x) => x.ticker);
+  setMarketWidgetTickers(ordered);
   closeMktWidgetEditModal();
   renderMarketWidget();
 });
@@ -7997,18 +8066,19 @@ async function runTrendDividend() {
   }
 }
 
-// ---------- 인기종목: 당일 거래대금(가격 × 거래량) 상위 20개, 접속 시 10개만 먼저 표시(옛 틀고정 "인기종목" 탭이 여기로 통합됨) ----------
+// ---------- 거래량(구 인기종목): 당일 거래대금(가격 × 거래량) 상위 20개, 접속 시 10개만 먼저 표시(옛 틀고정 "인기종목" 탭이 여기로 통합됨) ----------
 async function runTrendVolume() {
   setTrendActive(trendButtons.volume);
   trendResults.innerHTML = "";
 
   if (getWatchlistActiveMarket() === "KR") {
-    await renderKrRanking(getKrDailyChanges, "인기종목", trendStatus, trendResults, {
-      sortFn: (a, b) => (b.dollarVolume ?? 0) - (a.dollarVolume ?? 0),
-      metricHeaderHtml: "거래대금",
-      metricCellFn: (r) => (r.dollarVolume ? fmtCompactCurrency(r.dollarVolume, r.currency) : "N/A"),
-      showGrade: false,
-      noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 순위는 당일 거래대금(거래량 × 현재가 추정) 기준이며, 코스피200+코스닥150(약 350종목) 중 상위 50개입니다.</p>`,
+    // 해외 거래량 탭과 구성을 맞춤 — 거래대금(5거래일 평균) 기준으로 정렬하되, 항목1엔 거래대금 대신 상승 압력 점수를 보여줌
+    await renderKrRankingStaged("거래량", trendStatus, trendResults, {
+      mapFn: (list) => list.map((m) => ({ ...m, attractivenessTotal: computeAttractivenessScore(m).total, isIPO: isRecentIPO(m.firstTradeDate) })),
+      sortFn: (a, b) => (b.recentDollarVolume ?? 0) - (a.recentDollarVolume ?? 0),
+      metricHeaderHtml: "상승 압력 점수",
+      metricCellFn: (r) => (r.isIPO ? "IPO" : scoreRankColorHtml(r.attractivenessTotal, r.attractivenessTotal)),
+      noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 순위는 거래대금(최근 5거래일 평균) 기준이며, 코스피200+코스닥150(약 350종목) 대상입니다. 투자 자문이 아닙니다.</p>`,
     });
     return;
   }
@@ -8306,7 +8376,11 @@ function etfRankingHtml(all, region, metric) {
       (r, i) => `
       <tr>
         <td>${i + 1}</td>
-        <td><span class="ticker-cell">${tickerLogoHtml(r.symbol, badgeFor(r))}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
+        <td>${
+          region === "kr"
+            ? `<span class="ticker-cell">${tickerLogoHtml(r.symbol, badgeFor(r))}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.name)}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(r.symbol)}</span>`
+            : `<span class="ticker-cell">${tickerLogoHtml(r.symbol, badgeFor(r))}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span>`
+        }</td>
         <td>${priceChartLink(r.symbol, fmtPrice(r.price, r.currency))}${
         r.changePct !== null && r.changePct !== undefined
           ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`

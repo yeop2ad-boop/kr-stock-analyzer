@@ -462,6 +462,7 @@
           </span>
           <span class="self-test-banner-arrow">›</span>
         </button>
+        <div id="watchlistSelfTestPin"></div>
         <div class="wl-group-row">
           <div class="wl-group-tabs" id="wlGroupTabs"></div>
           <button type="button" class="wl-group-manage-btn" id="wlGroupManageBtn" aria-label="그룹 관리">⚙</button>
@@ -533,7 +534,7 @@
 
       <div class="carousel-panel" data-panel="trend" id="panelTrend">
         <div class="top30-sub-nav">
-          <button type="button" class="cat-btn" id="trendVolumeBtn"><span class="btn-icon" data-icon="thumbsup"></span> 인기종목</button>
+          <button type="button" class="cat-btn" id="trendVolumeBtn"><span class="btn-icon" data-icon="thumbsup"></span> 거래량</button>
           <button type="button" class="cat-btn" id="trendSurgeBtn"><span class="btn-icon" data-icon="trending-up"></span> 상승률</button>
           <button type="button" class="cat-btn" id="trendPlungeBtn"><span class="btn-icon" data-icon="trending-down"></span> 하락률</button>
           <button type="button" class="cat-btn" id="trendDividendBtn"><span class="btn-icon" data-icon="coin"></span> 배당률</button>
@@ -604,6 +605,11 @@
           </div>
         </div>
         <button type="button" class="more-panel-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h9l7 7v9H4V4Z" /><path d="M13 4v7h7" /></svg>
+          <span class="more-panel-item-label">내투자 Pro UP <b class="more-panel-pro-badge">-7일 무료</b></span>
+          <span class="more-panel-badge">준비중</span>
+        </button>
+        <button type="button" class="more-panel-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" /></svg>
           <span class="more-panel-item-label">즐겨찾기 종목</span>
           <span class="more-panel-badge">준비중</span>
@@ -629,6 +635,22 @@
           <span class="more-panel-badge">준비중</span>
         </button>
       </div>
+      <div class="more-panel-divider"></div>
+      <div class="more-panel-section-label">시스템</div>
+      <ul class="more-panel-feature-list">
+        <li>⭐ 관심종목 — 그룹별 관심 종목 관리, 자기진단(투자성향 분석)</li>
+        <li>🔍 기업찾기 — 티커·한글명 검색, 최근/인기 검색어</li>
+        <li>📰 뉴스·공시 — 자산운용사, 브랜드평판, 신기술, 실적&공시 일정, 뉴스, 미래산업 성장성</li>
+        <li>💹 기업가치 — 매출액·현금흐름·순이익 증가, EPS, PER, 투자 안정, 시가총액</li>
+        <li>📈 투자동향 — 거래량, 상승률·하락률, 배당률, 상승 압력, US/KR ETF</li>
+        <li>🗺️ 지도(섹터맵) — 국내/해외 트리맵, 지표 필터, 코스피·코스닥 요약, 자동 스크롤 티커</li>
+        <li>🏦 시장 — 지수·주식·원자재·외환·암호화폐·채권 시세, 스파크라인 차트</li>
+        <li>🗓️ 캘린더 — 경제지표 발표 일정</li>
+        <li>🕰️ 과거분석 — FOMO지수(국내)/VIX지수(해외) + M2 통화량 YoY</li>
+        <li>🔮 미래예측 — 4년 평균주기 예측, 투자 안정 구간별 분포도</li>
+        <li>📄 s리포트 — 준비 중</li>
+        <li>👤 로그인 — 구글·카카오·네이버·이메일</li>
+      </ul>
     </div>
   </div>
 

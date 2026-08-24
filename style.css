@@ -104,7 +104,7 @@ body[data-market-mode="kr"] .fh-banner { filter: brightness(0) invert(1); }
   align-items: center;
   justify-content: space-between;
   max-width: 860px;
-  margin: 0 auto 10px;
+  margin: 0 auto -3px; /* 지도(섹터맵) 상단 툴바처럼 아래 탭바와 거의 맞닿게(살짝 겹치게) */
 }
 
 .market-mode-toggle { display: flex; gap: 6px; }
@@ -451,7 +451,7 @@ body[data-market-mode="kr"] .login-header-btn { color: #ffffff; }
 .company-panel-black .company-panel-body { background: var(--bg); }
 .company-panel-black #summarySubtabNav { background: var(--bg); }
 
-.detail-bar { background: var(--bg); border-bottom-color: var(--border); }
+.detail-bar { background: var(--bg); border-bottom: none; }
 .detail-identity { flex: 1; min-width: 0; display: flex; flex-direction: row; align-items: center; gap: 8px; }
 .detail-identity-logo .ticker-logo-wrap { width: 30px; height: 30px; }
 .detail-identity-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
@@ -940,7 +940,7 @@ body[data-market-mode="kr"] .tab-bar .cat-btn.active::after { background: #fffff
 .score-bar-graph { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
 
 /* FOMO지수·VIX 구간 게이지 — 색상 구간 막대 위에 현재값 위치를 삼각형 포인터로 표시 */
-.macro-gauge { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+.macro-gauge { margin: 0 0 12px; }
 .macro-gauge-track {
   position: relative;
   display: flex;
@@ -1326,14 +1326,14 @@ body[data-market-mode="kr"] .tab-bar .cat-btn.active::after { background: #fffff
 }
 .self-test-option-btn:active { border-color: var(--accent); background: var(--accent-soft); }
 
-/* 결과 상단 — 선택한 투자법에 따라 생성되는 주식/현금·채권 비중 바 */
+/* 결과 상단 — 선택한 투자법에 따라 생성되는 주식/현금·채권 비중 바(기존 높이의 절반, 아주 가늘게) */
 .self-test-alloc-bar-wrap { margin-bottom: 18px; }
 .self-test-alloc-label { font-size: 12px; font-weight: 700; color: var(--muted); margin: 0 0 6px; }
 .self-test-alloc-bar {
   display: flex;
   width: 100%;
-  height: 40px;
-  border-radius: 10px;
+  height: 20px;
+  border-radius: 6px;
   overflow: hidden;
   border: 1px solid var(--border);
 }
@@ -1341,7 +1341,7 @@ body[data-market-mode="kr"] .tab-bar .cat-btn.active::after { background: #fffff
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 10.5px;
   font-weight: 800;
   color: #fff;
   white-space: nowrap;
@@ -1350,6 +1350,13 @@ body[data-market-mode="kr"] .tab-bar .cat-btn.active::after { background: #fffff
 }
 .self-test-alloc-stock { background: var(--accent); }
 .self-test-alloc-bond { background: var(--good); }
+/* 세그먼트가 좁아서 글자가 안 들어갈 땐(전체 그래프에서만) 막대 아래에 따로 표시 */
+.self-test-alloc-below { margin: 4px 0 0; font-size: 11px; font-weight: 600; color: var(--muted); text-align: center; }
+
+/* 관심목록 탭 상단 고정 — 자기진단에서 방법을 고르면 계속 여기 떠 있음. %만 표시, 훨씬 더 얇게 */
+.watchlist-selftest-pin { margin: 10px 0; }
+.watchlist-selftest-pin .self-test-alloc-bar-compact { height: 12px; border-radius: 4px; }
+.watchlist-selftest-pin .self-test-alloc-seg { font-size: 8.5px; }
 
 .self-test-result-card { text-align: center; padding: 8px 0 22px; }
 .self-test-result-emoji { font-size: 56px; line-height: 1; margin-bottom: 8px; }
@@ -2159,6 +2166,35 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
   border-radius: 999px;
   background: var(--subtle-fill-2);
   color: var(--muted);
+}
+.more-panel-pro-badge {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #e04600;
+}
+
+/* 더보기 패널 맨 아래 "시스템" — 지금 앱에 있는 기능을 텍스트로 나열(참조용, 클릭 동작 없음) */
+.more-panel-section-label {
+  padding: 4px 18px 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--muted);
+}
+.more-panel-feature-list {
+  margin: 0;
+  padding: 0 18px 16px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.more-panel-feature-list li {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  line-height: 1.4;
 }
 
 /* 더보기 패널 상단 "화면 테마" 행 — 아이콘+라벨은 다른 항목과 동일, 오른쪽에 화이트/블랙 선택 토글만 추가 */

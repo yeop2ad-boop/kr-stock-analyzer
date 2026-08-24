@@ -457,11 +457,15 @@ body {
   color: var(--orange-deep);
   font-weight: 800;
   font-size: 13px;
-  padding: 9px 14px 9px 12px;
+  padding: 4px 14px 4px 12px; /* 기존 9px에서 상하 절반으로 축소 */
   border-radius: 999px;
   box-shadow: 0 4px 14px rgba(15,23,42,0.14);
   cursor: pointer;
 }
+/* 색상이 언제 기준으로 갱신됐는지 — 장중엔 HH:MM:SS(주황), 날짜가 지나면 MM/DD(빨강)로 아주 작게 표시 */
+.ai-fab-time { font-size: 8px; font-weight: 700; color: var(--text-soft); margin-left: 1px; letter-spacing: 0; }
+.ai-fab-time-live { color: var(--orange-deep); }
+.ai-fab-time-stale { color: var(--red-dot); }
 
 .locate-fab {
   position: absolute;
