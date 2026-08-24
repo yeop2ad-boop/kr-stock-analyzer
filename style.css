@@ -87,9 +87,9 @@ body {
   right: 0;
   z-index: 100;
   background: var(--bg);
-  border-bottom: 1px solid var(--border);
+  border-bottom: none;
   padding: calc(6px + env(safe-area-inset-top, 0px)) 14px 0px; /* 지도(섹터맵) 상단 툴바(top-bar padding-top: safe-area + top-bar-row padding 6px)와 동일한 위치 */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: none;
   transition: background 0.2s ease;
 }
 /* 국내 선택 시 맨 위 툴바를 섹터맵(지도)과 동일하게 주황 배경으로 — 해외는 기존 그대로(테마에 따라 흰/검정) */
@@ -571,7 +571,7 @@ body[data-market-mode="kr"] .login-header-btn { color: #ffffff; }
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  background: var(--bg);
+  background: transparent;
   border-radius: 8px;
 }
 .tab-bar::-webkit-scrollbar { display: none; }
@@ -595,15 +595,15 @@ body[data-market-mode="kr"] .login-header-btn { color: #ffffff; }
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  background: var(--bg);
-  border-color: var(--bg);
+  background: transparent;
+  border-color: transparent;
   border-radius: 0;
   color: var(--muted);
   font-weight: 600;
 }
 .tab-bar .cat-btn.active {
-  background: var(--bg);
-  border-color: var(--bg);
+  background: transparent;
+  border-color: transparent;
   color: var(--text);
   font-weight: 800;
 }
