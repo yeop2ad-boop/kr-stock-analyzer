@@ -5425,15 +5425,26 @@ async function renderValueRanking(
   async function scoreUpTo(targetCursor) {
     targetCursor = Math.min(targetCursor, tickers.length);
     const isFullScan = targetCursor - cursor > initialCount; // 초기 배치보다 큰 구간을 한 번에 요청하면 "전체보기" 클릭으로 간주
+    // "더보기" 클릭으로 이어서 불러오는 중이면(이미 버튼이 있으면) 맨 위 공지 자리 대신 그 버튼 자체에 진행 상황을 표시
+    // — 화면 맨 위로 안내문이 튀지 않고 사용자가 누른 자리 그대로에서 진행률이 보이게 함
+    const moreBtn = resultsEl.querySelector(".load-more-btn");
+    const setProgress = (text) => {
+      if (moreBtn) {
+        moreBtn.disabled = true;
+        moreBtn.textContent = text;
+      } else {
+        statusEl.style.display = "block";
+        statusEl.textContent = text;
+      }
+    };
     try {
       const pending = tickers.slice(cursor, targetCursor);
       if (pending.length > 0) {
         const startCursor = cursor;
-        statusEl.style.display = "block";
         const label2 = isFullScan ? `전체 검색 중(약 1분 소요될 수 있어요)` : `${label} 확인 중`;
-        statusEl.textContent = `${startCursor}/${targetCursor} 종목 ${label2}...`;
+        setProgress(`${startCursor}/${targetCursor} 종목 ${label2}...`);
         const metricsList = await mapWithConcurrency(pending, 5, getFullMetrics, (completed) => {
-          statusEl.textContent = `${startCursor + completed}/${targetCursor} 종목 ${label2}...`;
+          setProgress(`${startCursor + completed}/${targetCursor} 종목 ${label2}...`);
         });
         rawScored = rawScored.concat(metricsList.filter(Boolean));
         cursor = targetCursor;
@@ -5471,6 +5482,7 @@ async function renderValueRanking(
         .join("");
       resultsEl.innerHTML = `
         ${noteHtml || ""}
+        ${topCapNoteHtml(cursor, tickers.length, hasMore)}
         <p class="muted" style="font-size:12px;">시가총액 상위 ${Math.min(cursor, initialCount)}개${cursor > initialCount ? ` + 나머지 ${cursor - initialCount}개` : ""} 확인(S&amp;P500 ${tickers.length}개 중 ${cursor}개, ${ranked.length}개 성공)</p>
         <table class="top30-table">
           <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>${metricHeaderHtml}</th>${showGrade ? `<th>투자<br>안정</th>` : ""}</tr></thead>
@@ -5506,6 +5518,13 @@ async function renderValueRanking(
 
 const VALUE_DISCLAIMER = `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> S&amp;P500 편입 종목 전체를 대상으로 계산한 순위이며 투자 자문이 아닙니다.</p>`;
 const KR_VALUE_DISCLAIMER = `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 코스피200+코스닥150(약 350종목) 전체를 대상으로 계산한 순위이며 투자 자문이 아닙니다.</p>`;
+
+// 랭킹 결과가 전체 종목이 아니라 시가총액 상위 일부만 스캔한 상태일 때, 공지 바로 밑에 주황색으로 표시하는 주의문.
+// canLoadMore=true면 "더보기"로 전체를 마저 확인할 수 있는 경우(단계적 스캔), false면 이 화면에서는 더 볼 방법이 없는 경우(상위 30개 고정)
+function topCapNoteHtml(shown, total, canLoadMore) {
+  if (!(total > shown)) return ""; // 이미 전체를 다 봤으면(더보기를 끝까지 눌렀거나 원래 전체가 30개 이하면) 표시하지 않음
+  return `<p class="top30-scope-note">⚠️ 지금 결과는 전체 ${total}종목이 아닌 시가총액 상위 ${shown}개까지만 반영된 것입니다.${canLoadMore ? " '더보기'를 누르면 전체를 확인할 수 있어요." : ""}</p>`;
+}
 
 // ---------- 랭킹 공용 인프라: 종목 목록을 시가총액 우선순으로 필요한 만큼만 스캔하는 단계적 캐시 ----------
 // 접속 직후엔 시가총액 상위 30개까지만 스캔해서 빠르게 보여주고, "전체보기"를 눌러야 그때 나머지를 이어서
@@ -5623,6 +5642,7 @@ async function renderKrRanking(dataPromiseFn, label, statusEl, resultsEl, { mapF
       const rest = top50.slice(initialCount);
       resultsEl.innerHTML = `
         ${noteHtml || ""}
+        ${topCapNoteHtml(top50.length, raw.length, false)}
         <p class="muted" style="font-size:12px;">코스피200+코스닥150 전체 스캔 기준 상위 ${top50.length}개 중 ${visible.length}개 표시</p>
         <table class="top30-table">
           <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>${metricHeaderHtml}</th>${showGrade ? `<th>투자<br>안정</th>` : ""}</tr></thead>
@@ -5657,11 +5677,21 @@ async function renderKrRankingStaged(label, statusEl, resultsEl, { mapFn = (list
   async function paintUpTo(targetCount) {
     try {
       const isFullScan = targetCount > initialCount;
-      statusEl.style.display = "block";
-      statusEl.textContent = isFullScan ? `전체 검색 중(약 1분 소요될 수 있어요)...` : `코스피200+코스닥150 - ${label} 계산 중...`;
+      // "더보기" 클릭으로 이어서 불러오는 중이면(이미 버튼이 있으면) 맨 위 공지 자리 대신 그 버튼 자체에 진행 상황을 표시
+      const moreBtn = resultsEl.querySelector(".load-more-btn");
+      const setProgress = (text) => {
+        if (moreBtn) {
+          moreBtn.disabled = true;
+          moreBtn.textContent = text;
+        } else {
+          statusEl.style.display = "block";
+          statusEl.textContent = text;
+        }
+      };
+      setProgress(isFullScan ? `전체 검색 중(약 1분 소요될 수 있어요)...` : `코스피200+코스닥150 - ${label} 계산 중...`);
       const [{ items: raw, total }, nameMap] = await Promise.all([
         ensureKrFullMetrics(targetCount, (done, target) => {
-          statusEl.textContent = `${done}/${target} 종목 ${isFullScan ? "전체" : label} 확인 중...`;
+          setProgress(`${done}/${target} 종목 ${isFullScan ? "전체" : label} 확인 중...`);
         }),
         getKrSymbolNameMap().catch(() => new Map()),
       ]);
@@ -5705,6 +5735,7 @@ async function renderKrRankingStaged(label, statusEl, resultsEl, { mapFn = (list
         .join("");
       resultsEl.innerHTML = `
         ${noteHtml || ""}
+        ${topCapNoteHtml(targetCount, total, hasMore)}
         <p class="muted" style="font-size:12px;">시가총액 상위 ${Math.min(targetCount, initialCount)}개${targetCount > initialCount ? ` + 나머지 ${targetCount - initialCount}개` : ""} 확인(코스피200+코스닥150 ${total}개 중 ${targetCount}개, ${ranked.length}개 성공)</p>
         <table class="top30-table">
           <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>${metricHeaderHtml}</th>${showGrade ? `<th>투자<br>안정</th>` : ""}</tr></thead>
@@ -7299,9 +7330,16 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
 
   async function scoreUpTo(count) {
     const pending = candidates.slice(scored.length, count);
+    // "더보기" 클릭으로 이어서 불러오는 중이면(이미 버튼이 있으면) 맨 위 공지 자리 대신 그 버튼 자체에 진행 상황을 표시
+    const moreBtn = resultsEl.querySelector(".load-more-btn");
     if (pending.length > 0) {
-      statusEl.style.display = "block";
-      statusEl.textContent = "상승 압력 · 투자 안정 점수를 계산하는 중...";
+      if (moreBtn) {
+        moreBtn.disabled = true;
+        moreBtn.textContent = "상승 압력 · 투자 안정 점수를 계산하는 중...";
+      } else {
+        statusEl.style.display = "block";
+        statusEl.textContent = "상승 압력 · 투자 안정 점수를 계산하는 중...";
+      }
       // 한꺼번에 요청하면 프록시가 과부하로 실패하는 경우가 많아 동시 요청 수를 제한
       const fullMetricsList = await mapWithConcurrency(pending, 3, (r) => getFullMetrics(r.symbol));
       const newlyScored = pending.map((r, i) => {
@@ -7485,18 +7523,24 @@ function cryptoLogoHtml(ticker) {
   return `<span class="crypto-logo-wrap"><img class="crypto-logo" src="${src}" alt="" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';" /><span class="crypto-logo-badge" style="display:none;">🪙</span></span>`;
 }
 
-// 지수 카드 1행 HTML — 이미지 스타일(왼쪽 종목/날짜/티커, 오른쪽 가격/변동량(퍼센트))
-// chartSymbol이 있는 종목은 클릭 시 기존 TradingView 차트 모달이 열리도록 price-chart-link 델리게이션에 태움
-function indexRowHtml(item, snap) {
-  const num = (n, d = 2) => n.toLocaleString("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d });
+// snap.date를 "몇 시 기준 가격인지" 보여줄 라벨로 변환 — 오늘이면 시:분:초(강조), 아니면 월/일(회색)
+function snapClockLabel(snap) {
   const now = new Date();
   const isToday = !!(snap && snap.date) && snap.date.getFullYear() === now.getFullYear() && snap.date.getMonth() === now.getMonth() && snap.date.getDate() === now.getDate();
-  const clockLabel = snap && snap.date
+  const label = snap && snap.date
     ? (isToday
         ? `${String(snap.date.getHours()).padStart(2, "0")}:${String(snap.date.getMinutes()).padStart(2, "0")}:${String(snap.date.getSeconds()).padStart(2, "0")}`
         : `${String(snap.date.getMonth() + 1).padStart(2, "0")}/${String(snap.date.getDate()).padStart(2, "0")}`)
     : "";
-  const clockClass = isToday ? "idx-clock idx-clock-live" : "idx-clock";
+  const cls = isToday ? "idx-clock idx-clock-live" : "idx-clock";
+  return { label, cls, isToday };
+}
+
+// 지수 카드 1행 HTML — 이미지 스타일(왼쪽 종목/날짜/티커, 오른쪽 가격/변동량(퍼센트))
+// chartSymbol이 있는 종목은 클릭 시 기존 TradingView 차트 모달이 열리도록 price-chart-link 델리게이션에 태움
+function indexRowHtml(item, snap) {
+  const num = (n, d = 2) => n.toLocaleString("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d });
+  const { label: clockLabel, cls: clockClass } = snapClockLabel(snap);
   const sub = `${clockLabel ? `<span class="${clockClass}">🕐 ${clockLabel}</span> | ` : ""}<span class="idx-ticker">${escapeHtml(item.ticker)}</span>`;
   const nameHtml = `${item.crypto ? cryptoLogoHtml(item.ticker) : ""}${escapeHtml(item.name)}`;
   const clickable = !!item.chartSymbol;
@@ -7597,7 +7641,7 @@ async function fetchTodaySparkPoints(item) {
 }
 // 점 개수 기준 균등 분배가 아니라 실제 시각을 정규장 시작~종료 구간에 매핑해서 그림 — 장중에는 오른쪽에
 // 아직 안 지난 시간만큼 빈 공간이 남고, 데이터가 쌓일수록 실제 시간 위치에 맞게 채워짐(하루 종일 좌우로 늘어나 보이지 않음).
-// 첫 데이터 포인트 위치엔 점선을 그어 "여기서부터 오늘 데이터가 시작됨"을 표시
+// 오늘 시가(첫 데이터 포인트의 가격) 높이에 가로 점선을 그어 "여기가 오늘 시작가 기준선"임을 표시
 function sparklineSvg(data, isUp) {
   const points = (data && data.points) || [];
   if (points.length < 2) return `<svg class="mkt-spark" viewBox="0 0 100 28"></svg>`;
@@ -7612,9 +7656,9 @@ function sparklineSvg(data, isUp) {
   const yFn = (c) => 26 - ((c - min) / span) * 24;
   const d = points.map((p, i) => `${i === 0 ? "M" : "L"}${xFn(p.t).toFixed(1)},${yFn(p.c).toFixed(1)}`).join(" ");
   const color = isUp ? "var(--pos)" : "var(--neg)";
-  const startX = xFn(points[0].t).toFixed(1);
+  const openY = yFn(points[0].c).toFixed(1);
   return `<svg class="mkt-spark" viewBox="0 0 100 28" preserveAspectRatio="none">
-    <line x1="${startX}" y1="0" x2="${startX}" y2="28" stroke="${color}" stroke-width="1" stroke-dasharray="2,2" opacity="0.5" />
+    <line x1="0" y1="${openY}" x2="100" y2="${openY}" stroke="${color}" stroke-width="1" stroke-dasharray="2,2" opacity="0.5" />
     <path d="${d}" fill="none" stroke="${color}" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
   </svg>`;
 }
@@ -7625,9 +7669,14 @@ function mktWidgetCellHtml(ticker, snap, points) {
   const num = (n, d = 2) => n.toLocaleString("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d });
   const clickable = !!item.chartSymbol;
   const cellAttrs = clickable ? ` data-chart-symbol="${escapeHtml(item.chartSymbol)}" role="button" tabindex="0"` : "";
+  const { label: clockLabel, cls: clockClass } = snapClockLabel(snap);
+  const nameRow = `<div class="mkt-widget-cell-name-row">
+      <span class="mkt-widget-cell-name">${escapeHtml(item.name)}</span>
+      ${clockLabel ? `<span class="mkt-widget-cell-clock ${clockClass}">🕐 ${clockLabel}</span>` : ""}
+    </div>`;
   if (!snap || snap.price === null || snap.price === undefined) {
     return `<div class="mkt-widget-cell${clickable ? " price-chart-link" : ""}"${cellAttrs}>
-      <div class="mkt-widget-cell-name">${escapeHtml(item.name)}</div>
+      ${nameRow}
       <div class="mkt-widget-cell-price">N/A</div>
     </div>`;
   }
@@ -7641,7 +7690,7 @@ function mktWidgetCellHtml(ticker, snap, points) {
     : "";
   return `
     <div class="mkt-widget-cell${clickable ? " price-chart-link" : ""}"${cellAttrs}>
-      <div class="mkt-widget-cell-name">${escapeHtml(item.name)}</div>
+      ${nameRow}
       <div class="mkt-widget-cell-price">${num(snap.price)}${vSuffix}</div>
       <div class="mkt-widget-cell-delta ${cls}">${deltaStr}</div>
       ${sparklineSvg(points, isUp)}
@@ -8147,11 +8196,21 @@ async function runTrendDividendStaged(initialCount, ensureYields, universeLabel,
   async function paintUpTo(targetCount) {
     try {
       const isFullScan = targetCount > initialCount;
-      trendStatus.style.display = "block";
-      trendStatus.textContent = isFullScan ? `전체 검색 중(약 1분 소요될 수 있어요)...` : `${universeLabel} 배당률을 계산하는 중...`;
+      // "더보기" 클릭으로 이어서 불러오는 중이면(이미 버튼이 있으면) 맨 위 공지 자리 대신 그 버튼 자체에 진행 상황을 표시
+      const moreBtn = trendResults.querySelector(".load-more-btn");
+      const setProgress = (text) => {
+        if (moreBtn) {
+          moreBtn.disabled = true;
+          moreBtn.textContent = text;
+        } else {
+          trendStatus.style.display = "block";
+          trendStatus.textContent = text;
+        }
+      };
+      setProgress(isFullScan ? `전체 검색 중(약 1분 소요될 수 있어요)...` : `${universeLabel} 배당률을 계산하는 중...`);
       const [{ items: raw, total }, nameMap] = await Promise.all([
         ensureYields(targetCount, (done, target) => {
-          trendStatus.textContent = `${done}/${target} 종목 배당률 확인 중...`;
+          setProgress(`${done}/${target} 종목 배당률 확인 중...`);
         }),
         getNameMap ? getNameMap() : Promise.resolve(null),
       ]);
@@ -8162,7 +8221,7 @@ async function runTrendDividendStaged(initialCount, ensureYields, universeLabel,
       const hasMore = targetCount < total;
 
       // 투자안정 점수는 재무제표까지 조회해야 해 배당률 스캔보다 무거우므로, 이미 추려낸 상위 50개에 대해서만 추가로 조회
-      trendStatus.textContent = `상위 ${top50.length}개 종목의 투자 안정 점수를 계산하는 중...`;
+      setProgress(`상위 ${top50.length}개 종목의 투자 안정 점수를 계산하는 중...`);
       const { sp500Return, kospi200Return } = await getMarketReturnsCached();
       const fullMetricsList = await mapWithConcurrency(top50, 5, (r) => getFullMetricsForDividendRisk(r.symbol));
       top50.forEach((r, i) => {
@@ -8175,6 +8234,7 @@ async function runTrendDividendStaged(initialCount, ensureYields, universeLabel,
 
       trendResults.innerHTML = `
         <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 배당률은 최근 1년간 지급된 배당금 합계 ÷ 현재가 기준(${universeLabel} 대상)이며, 실제 배당 정책은 변경될 수 있습니다. <span class="dividend-warn">⚠️컷</span>은 직전 지급액보다 20% 넘게 줄어든 경우, <span class="dividend-warn">⚠️지연</span>은 평소 지급 주기보다 오래 지급이 없는 경우를 뜻합니다. 투자 자문이 아닙니다.</p>
+        ${topCapNoteHtml(targetCount, total, hasMore)}
         <p class="muted" style="font-size:12px;">시가총액 상위 ${Math.min(targetCount, initialCount)}개${targetCount > initialCount ? ` + 나머지 ${targetCount - initialCount}개` : ""} 확인(${universeLabel} ${total}개 중 ${targetCount}개, 상위 ${top50.length}개 표시)</p>
         <table class="top30-table">
           <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>배당률</th><th>투자<br>안정</th></tr></thead>
@@ -8182,13 +8242,13 @@ async function runTrendDividendStaged(initialCount, ensureYields, universeLabel,
         </table>
         ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${total}">전체보기 (나머지 ${total - targetCount}개 · 전체 검색 시 약 1분 소요)</button>` : ""}
       `;
-      const moreBtn = trendResults.querySelector(".load-more-btn");
-      if (moreBtn) {
-        moreBtn.addEventListener("click", (e) => {
+      const newMoreBtn = trendResults.querySelector(".load-more-btn");
+      if (newMoreBtn) {
+        newMoreBtn.addEventListener("click", (e) => {
           e.stopPropagation();
-          moreBtn.disabled = true;
-          moreBtn.textContent = "전체 검색 중...";
-          paintUpTo(Number(moreBtn.dataset.nextCount));
+          newMoreBtn.disabled = true;
+          newMoreBtn.textContent = "전체 검색 중...";
+          paintUpTo(Number(newMoreBtn.dataset.nextCount));
         });
       }
     } catch (err) {
