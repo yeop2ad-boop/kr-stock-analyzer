@@ -2395,7 +2395,7 @@ function closeCompanyPanel({ push = true } = {}) {
   }, 280);
   if (push && new URLSearchParams(location.search).get("ticker")) {
     history.pushState(null, "", location.pathname);
-    document.title = "내투자닷컴: 투자 성향부터 주식 분석까지";
+    document.title = "내투자닷컴: 주식시장을 한눈에";
   }
 }
 companyPanelCloseBtn.addEventListener("click", () => closeCompanyPanel());
