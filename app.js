@@ -1968,21 +1968,20 @@ window.addEventListener("resize", syncHeaderHeight);
 new ResizeObserver(syncHeaderHeight).observe(fixedHeader);
 syncHeaderHeight();
 
-// ---------- 스와이프 캐로셀(관심종목/기업가치/주식동향/인사이트) ----------
-// 시장·투데이·기업검색은 캐러셀에서 빠지고 companyPanel과 동일한 슬라이드 오버레이 패턴(openMarketPanel 등)으로
-// 별도 관리됨 — TAB_ORDER는 실제 스와이프되는 4개 패널만 담당
-const TAB_ORDER = ["watchlist", "topranking", "insight"];
+// ---------- 스와이프 캐로셀(기업가치·시장동향/인사이트) ----------
+// 관심종목·시장·캘린더·기업찾기는 캐러셀에서 빠지고 companyPanel과 동일한 슬라이드 오버레이 패턴(openMarketPanel 등)으로
+// 별도 관리됨. "기업가치"/"시장동향"은 같은 topranking 패널을 공유하며(RANKING_ENTRIES를 group별로 필터링해 보여줌)
+// TAB_ORDER에는 한 자리만 차지 — tabTrendBtn은 별도 변수로 빼서 activateRankingGroup()이 직접 처리함
+const TAB_ORDER = ["topranking", "insight"];
 const panels = {
-  watchlist: el("panelWatchlist"),
   topranking: el("panelTopRanking"),
   insight: el("panelInsight"),
 };
 const tabButtons = {
-  watchlist: el("watchlistTabBtn"),
-  topranking: el("tabTopRankingBtn"),
+  topranking: el("tabValuationBtn"),
   insight: el("tabInsightBtn"),
 };
-const searchTabBtn = el("searchTabBtn");
+const tabTrendBtn = el("tabTrendBtn");
 const valuationButtons = {
   revenue: el("valuationRevenueBtn"),
   cashFlow: el("valuationCashFlowBtn"),
@@ -2020,9 +2019,11 @@ const insightCategoryButtons = {
   firms: el("insightCatFirmsBtn"),
   brand: el("insightCatBrandBtn"),
   tech: el("insightCatTechBtn"),
-  calendar: el("insightCatCalendarBtn"),
-  news: el("insightCatNewsBtn"),
   futureIndustry: el("insightCatFutureIndustryBtn"),
+  salary: el("insightCatSalaryBtn"),
+  tenure: el("insightCatTenureBtn"),
+  buyback: el("insightCatBuybackBtn"),
+  headcount: el("insightCatHeadcountBtn"),
 };
 
 let activeTabIndex = 0;
@@ -2045,6 +2046,9 @@ window.addEventListener("resize", syncCarouselHeight);
 function updateTabBarActive() {
   const activeKey = TAB_ORDER[activeTabIndex];
   TAB_ORDER.forEach((key) => tabButtons[key].classList.toggle("active", key === activeKey));
+  // tabTrendBtn은 topranking과 같은 패널을 공유하는 두 번째 상단 버튼이라 여기선 일단 끄고,
+  // activateRankingGroup()이 실제로 어느 그룹(기업가치/시장동향)인지에 맞게 다시 켬
+  tabTrendBtn.classList.remove("active");
 }
 
 function switchTab(index) {
@@ -2061,15 +2065,15 @@ function switchTab(index) {
 }
 
 TAB_ORDER.forEach((key, i) => {
+  if (key === "topranking") return; // 기업가치/시장동향은 activateRankingGroup 전용 핸들러로 처리(아래 RANKING_ENTRIES 섹션)
   tabButtons[key].addEventListener("click", () => switchTab(i));
 });
-searchTabBtn.addEventListener("click", openSearchWizardGate);
 
 // ---------- 탭별 데이터 로딩 캐싱: 한 번 로딩된 탭은 다시 방문해도 재요청하지 않음 ----------
 const TAB_LOADERS = {
-  watchlist: () => renderWatchlistList(),
-  topranking: () => runRankingEntry(0), // Top랭킹 진입 시 첫 항목(상승률)을 자동 표시
-  // 인사이트 진입 시 기본은 첫 버튼(블랙록)이지만, 하단 네비게이션 등에서 이미 다른 카테고리(예: 캘린더)로
+  // 기업가치/시장동향은 activateRankingGroup()이 클릭될 때마다 매번 직접 그룹/서브내비/첫 항목을 처리하므로 별도 캐시 로더 불필요
+  topranking: () => {},
+  // 인사이트 진입 시 기본은 첫 버튼(블랙록)이지만, 하단 네비게이션 등에서 이미 다른 카테고리로
   // 먼저 전환해둔 상태로 진입했다면 그 카테고리를 존중함(안 그러면 비동기 로딩이 뒤늦게 firms로 덮어씀)
   insight: () => (insightActiveCategory === "firms" ? runInsight(insightActiveInstitution) : runInsightCategory(insightActiveCategory)),
 };
@@ -2253,12 +2257,11 @@ document.addEventListener("click", (e) => {
   if (row) navigateToTicker(row.dataset.symbol);
 });
 
-// ---------- 하단 고정 네비게이션(홈=기업검색/캘린더/시장/더보기) ----------
+// ---------- 하단 고정 네비게이션(도트맵/내투자찾기=기본 화면/관심목록/더보기) ----------
 const bottomNavButtons = {
   map: el("bottomNavMapBtn"),
   home: el("bottomNavHomeBtn"),
-  calendar: el("bottomNavCalendarBtn"),
-  market: el("bottomNavMarketBtn"),
+  watchlist: el("bottomNavWatchlistBtn"),
   more: el("bottomNavMoreBtn"),
 };
 function setBottomNavActive(key) {
@@ -2324,7 +2327,7 @@ morePanelUserRow.addEventListener("click", () => {
     openLoginModal();
   }
 });
-document.querySelectorAll(".more-panel-item:not(.more-panel-theme-row)").forEach((btn) => {
+document.querySelectorAll(".more-panel-item:not(.more-panel-theme-row):not(.more-panel-item-active)").forEach((btn) => {
   btn.addEventListener("click", () => showToast("준비중인 기능입니다."));
 });
 
@@ -2353,23 +2356,40 @@ themeDarkBtn.addEventListener("click", () => setTheme("dark"));
 bottomNavButtons.map.addEventListener("click", () => {
   window.location.href = "sector-map/index.html";
 });
+// "내투자찾기" — 옛 "홈" 버튼(관심종목을 보여주던 자리)이 이름·아이콘만 바뀐 것. 열려있는 오버레이를 전부 닫고
+// 기본 화면(기업가치 탭)으로 돌아감 — 처음 접속했을 때도 이 상태가 기본으로 켜져 있음
 bottomNavButtons.home.addEventListener("click", () => {
   setBottomNavActive("home");
   closeCompanyPanel();
-  switchTab(TAB_ORDER.indexOf("watchlist"));
+  closeWatchlistPanel();
+  closeMarketPanel();
+  closeCalendarPanel();
+  closeSearchWizard();
+  activateRankingGroup("disclosure");
 });
-bottomNavButtons.calendar.addEventListener("click", () => {
-  setBottomNavActive("calendar");
+bottomNavButtons.watchlist.addEventListener("click", () => {
+  setBottomNavActive("watchlist");
   closeCompanyPanel();
-  openCalendarPanel();
-});
-bottomNavButtons.market.addEventListener("click", () => {
-  setBottomNavActive("market");
-  closeCompanyPanel();
-  openMarketPanel();
+  openWatchlistPanel();
 });
 bottomNavButtons.more.addEventListener("click", () => {
   openMorePanel();
+});
+el("morePanelSearchBtn").addEventListener("click", () => {
+  closeMorePanel();
+  openSearchWizardGate();
+});
+el("morePanelMarketBtn").addEventListener("click", () => {
+  closeMorePanel();
+  setBottomNavActive("home");
+  closeCompanyPanel();
+  openMarketPanel();
+});
+el("morePanelCalendarBtn").addEventListener("click", () => {
+  closeMorePanel();
+  setBottomNavActive("home");
+  closeCompanyPanel();
+  openCalendarPanel();
 });
 
 // 섹터맵(지도) 하단 네비의 시장/캘린더/더보기 버튼에서 넘어온 경우 해당 패널을 바로 열어줌(?open=market|calendar|more)
@@ -2383,10 +2403,26 @@ bottomNavButtons.more.addEventListener("click", () => {
   // 이 아래 스크립트에 아직 초기화되지 않은 const(companyPanel 등)를 클릭 핸들러가 참조하므로,
   // 지금 바로 클릭하면 TDZ 오류가 나 패널이 안 열림 — 스크립트 전체 실행이 끝난 다음 틱으로 미룸
   setTimeout(() => {
-    const targetBtn = { market: bottomNavButtons.market, calendar: bottomNavButtons.calendar, more: bottomNavButtons.more, search: searchOpenBtn }[openParam];
+    // 시장/캘린더는 더보기 안으로 이동했으므로, 드로어를 열지 않고 바로 해당 오버레이만 켬(예전과 체감 동일)
+    const targetBtn = { market: el("morePanelMarketBtn"), calendar: el("morePanelCalendarBtn"), more: bottomNavButtons.more, search: searchOpenBtn }[openParam];
     if (targetBtn) targetBtn.click();
   }, 0);
 })();
+
+// ---------- 관심목록: companyPanel과 동일한 슬라이드 오버레이 패턴(캐러셀 밖에서 독립 관리) ----------
+let watchlistPanelLoaded = false;
+function openWatchlistPanel() {
+  el("watchlistPanel").style.display = "flex";
+  requestAnimationFrame(() => el("watchlistPanel").classList.add("open"));
+  renderWatchlistList(); // 매번 최신 목록으로 다시 그림(다른 화면에서 관심종목을 추가/삭제했을 수 있으므로)
+  watchlistPanelLoaded = true;
+}
+function closeWatchlistPanel() {
+  el("watchlistPanel").classList.remove("open");
+  window.setTimeout(() => { el("watchlistPanel").style.display = "none"; }, 280);
+  setBottomNavActive("home");
+}
+el("watchlistPanelCloseBtn").addEventListener("click", closeWatchlistPanel);
 
 // ---------- 시장/투데이: companyPanel과 동일한 슬라이드 오버레이 패턴(캐러셀 밖에서 독립 관리) ----------
 let marketPanelOpen = false;
@@ -3209,8 +3245,7 @@ el("searchWizardBody").addEventListener("click", (e) => {
     renderSearchWizardStep();
   } else if (action === "rank-nav") {
     closeSearchWizard();
-    switchTab(TAB_ORDER.indexOf("topranking"));
-    runRankingEntry(Number(btn.dataset.rankIdx));
+    goToRankingEntry(Number(btn.dataset.rankIdx));
   } else if (action === "sector-toggle") {
     const sector = btn.dataset.sector;
     const set = new Set(searchWizardAnswers.sectors);
@@ -3243,12 +3278,10 @@ el("searchWizardBody").addEventListener("click", (e) => {
     renderSearchWizardStep();
   } else if (action === "branchC-style-short") {
     closeSearchWizard();
-    switchTab(TAB_ORDER.indexOf("topranking"));
-    runRankingEntry(RANKING_ENTRIES.findIndex((e) => e.label === "상승 압력"));
+    goToRankingEntry(RANKING_ENTRIES.findIndex((e) => e.label === "상승 압력"));
   } else if (action === "branchC-style-long") {
     closeSearchWizard();
-    switchTab(TAB_ORDER.indexOf("topranking"));
-    runRankingEntry(RANKING_ENTRIES.findIndex((e) => e.label === "투자 안정"));
+    goToRankingEntry(RANKING_ENTRIES.findIndex((e) => e.label === "투자 안정"));
   } else if (action === "share") {
     shareWizardResult(wizardShareTitle, wizardShareText);
   } else if (action === "share-self") {
@@ -3301,7 +3334,7 @@ let topRankingActiveIdx = 0;
 function renderTopRankingSubNavActive() {
   el("topRankingSubNav")
     .querySelectorAll(".top-ranking-tab")
-    .forEach((btn, i) => btn.classList.toggle("active", i === topRankingActiveIdx));
+    .forEach((btn, i) => btn.classList.toggle("active", Number(btn.dataset.rankIdx) === topRankingActiveIdx));
 }
 
 function runRankingEntry(idx) {
@@ -3313,30 +3346,41 @@ function runRankingEntry(idx) {
   entry.run();
 }
 
-// 공시(재무/밸류에이션 성격)와 시장(시세/스코어 성격) 두 줄로 나눠서 각각 독립적으로 가로 스크롤되게 표시
-// — "자산&투자사" 서브내비(insight-firms-nav/-row)와 동일한 CSS를 재사용
-const TOP_RANKING_GROUP_LABEL = { disclosure: "공시", market: "시장" };
-function renderTopRankingSubNav() {
-  const rowsHtml = ["disclosure", "market"]
-    .map((groupKey) => {
-      const btns = RANKING_ENTRIES.map((entry, i) =>
-        entry.group !== groupKey
-          ? ""
-          : `<button type="button" class="cat-btn top-ranking-tab${entry.orange ? " top-ranking-tab-orange" : ""}" data-rank-idx="${i}">${iconHtml(
-              entry.icon
-            )}<span>${entry.label}</span></button>`
-      ).join("");
-      return `<div class="insight-firms-row"><span class="insight-firms-row-label">${TOP_RANKING_GROUP_LABEL[groupKey]}</span>${btns}</div>`;
-    })
-    .join("");
-  el("topRankingSubNav").innerHTML = rowsHtml;
+// "기업가치"/"시장동향" 상단탭은 같은 topranking 패널을 공유하며, 지금 보여줄 그룹(group)의 항목만
+// 한 줄 가로스크롤 서브내비로 그림(예전엔 공시/시장 두 줄을 한 화면에 같이 보여줬지만, 이제 그룹당 별도 상단탭이라 한 줄이면 충분)
+function renderGroupSubNav(groupKey) {
+  el("topRankingSubNav").innerHTML = RANKING_ENTRIES.map((entry, i) =>
+    entry.group !== groupKey
+      ? ""
+      : `<button type="button" class="cat-btn top-ranking-tab${entry.orange ? " top-ranking-tab-orange" : ""}" data-rank-idx="${i}">${iconHtml(
+          entry.icon
+        )}<span>${entry.label}</span></button>`
+  ).join("");
 }
-renderTopRankingSubNav();
 el("topRankingSubNav").addEventListener("click", (e) => {
   const btn = e.target.closest(".top-ranking-tab");
   if (!btn) return;
   runRankingEntry(Number(btn.dataset.rankIdx));
 });
+
+// 특정 랭킹 항목으로 바로 이동(위저드 종료 후 결과 화면 진입 등) — 상단탭(기업가치/시장동향) active 표시와
+// 서브내비를 그 항목이 속한 group에 맞게 다시 그린 뒤 실행
+function goToRankingEntry(idx) {
+  const entry = RANKING_ENTRIES[idx];
+  if (!entry) return;
+  switchTab(TAB_ORDER.indexOf("topranking"));
+  el("tabValuationBtn").classList.toggle("active", entry.group === "disclosure");
+  tabTrendBtn.classList.toggle("active", entry.group === "market");
+  renderGroupSubNav(entry.group);
+  runRankingEntry(idx);
+}
+// "기업가치"/"시장동향" 버튼 클릭 — 해당 그룹의 첫 항목으로 진입(재클릭 시에도 매번 새로 렌더링)
+function activateRankingGroup(groupKey) {
+  const idx = RANKING_ENTRIES.findIndex((e) => e.group === groupKey);
+  if (idx >= 0) goToRankingEntry(idx);
+}
+el("tabValuationBtn").addEventListener("click", () => activateRankingGroup("disclosure"));
+tabTrendBtn.addEventListener("click", () => activateRankingGroup("market"));
 
 function renderWizardBranchA() {
   const items = RANKING_ENTRIES.map(
@@ -3632,17 +3676,13 @@ function navigateToTicker(ticker, { push = true } = {}) {
 // 국내 탭은 아직 해외와 동일한 항목·데이터를 보여주는 1단계(색상 전환만) 상태이며, 실제 국내 전용 콘텐츠는 추후 단계에서 채움
 const marketModeKrBtn = el("marketModeKrBtn");
 const marketModeUsBtn = el("marketModeUsBtn");
-// 다트공시/브랜드평판순 탭은 국내·해외 콘텐츠가 완전히 달라(다트공시: 4대 지표 랭킹, 브랜드평판순: 3개 기관 순위)
-// 아이콘·이름표까지 시장에 따라 통째로 바뀜 — insightActiveCategory 등은 이 시점엔 아직 선언 전(TDZ)이라
-// 직접 참조하지 않고, 커스텀 이벤트로 느슨하게 연결해 뒤쪽(파일 하단)의 코드가 필요하면 구독하게 함
+// 다트공시 4종(평균연봉 등)은 최상위 인사이트 카테고리로 독립됐으므로, 브랜드평판 탭은 이제 시장과 무관하게
+// 항상 기관 3곳(Harris/RepTrak/YouGov) 고정 — 아이콘·이름표를 한 번만 정적으로 세팅
 function syncDartTabForMarket() {
-  const isKr = getWatchlistActiveMarket() === "KR";
   const iconEl = el("insightCatBrandIcon");
   const labelEl = el("insightCatBrandLabel");
-  if (iconEl) iconEl.innerHTML = iconHtml(isKr ? "dart" : "trophy");
-  if (labelEl) labelEl.textContent = isKr ? "다트공시" : "브랜드평판순";
-  document.querySelectorAll(".brand-org-btn").forEach((b) => (b.style.display = isKr ? "none" : ""));
-  document.querySelectorAll(".dart-metric-btn").forEach((b) => (b.style.display = isKr ? "" : "none"));
+  if (iconEl) iconEl.innerHTML = iconHtml("trophy");
+  if (labelEl) labelEl.textContent = "브랜드평판순";
 }
 function syncMarketModeUI() {
   const isKr = getWatchlistActiveMarket() === "KR";
@@ -3680,9 +3720,9 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// ---------- 초기 부팅: 기본 화면은 관심종목 — ?ticker=가 있을 때만 기업 패널을 함께 염 ----------
+// ---------- 초기 부팅: 기본 화면은 "내투자찾기"(기업가치 탭) — ?ticker=가 있을 때만 기업 패널을 함께 염 ----------
 (function initApp() {
-  switchTab(TAB_ORDER.indexOf("watchlist"));
+  activateRankingGroup("disclosure");
 
   const initialTicker = new URLSearchParams(location.search).get("ticker");
   if (initialTicker) navigateToTicker(initialTicker, { push: false });
@@ -3690,8 +3730,6 @@ document.addEventListener("click", (e) => {
 
   // 무료 프록시 과부하를 피하려고 순서대로 백그라운드 로딩(사용자가 먼저 스와이프해서 들어가면 ensureTabLoaded가 그 자리에서 바로 시작함)
   (async () => {
-    await ensureTabLoaded("trend"); // 급등주 미리 로딩(진입 시 바로 표시)
-    await ensureTabLoaded("valuation");
     await ensureTabLoaded("insight");
   })();
 })();
@@ -6006,14 +6044,6 @@ function switchInsightCategory(key) {
   setInsightCategoryActive(key);
   insightFirmsNav.style.display = key === "firms" ? "" : "none";
   insightBrandNav.style.display = key === "brand" ? "" : "none";
-  if (key === "brand") {
-    // 국내는 다트공시(4대 지표), 해외는 브랜드평판순(3개 기관) — 이전에 보던 항목이 지금 시장에 없는 종류면 기본값으로 리셋
-    const isKr = getWatchlistActiveMarket() === "KR";
-    if (isKr !== DART_METRIC_KEYS.includes(insightActiveBrandOrg)) {
-      insightActiveBrandOrg = defaultBrandOrgForMarket();
-      setInsightBrandActive(insightActiveBrandOrg);
-    }
-  }
   runInsightCategory(key);
 }
 Object.entries(insightCategoryButtons).forEach(([key, btn]) => {
@@ -6026,9 +6056,8 @@ function runInsightCategory(key) {
   if (key === "firms") runInsight(insightActiveInstitution);
   else if (key === "brand") runInsightBrandTab(insightActiveBrandOrg);
   else if (key === "tech") runInsightTech();
-  else if (key === "calendar") runInsightCalendar();
-  else if (key === "news") runInsightNews();
   else if (key === "futureIndustry") runInsightFutureIndustry();
+  else if (DART_METRIC_KEYS.includes(key)) runInsightDart(key); // 평균연봉/평균근속/자사주취득/직원증가 — 최상위로 승격된 다트공시 4종
 }
 
 // 인사이트 서브내비(거대기업 13F 보유종목)에서 현재 선택된 버튼만 활성 표시
@@ -6173,25 +6202,18 @@ const BRAND_ORG_DATA_FILE = {
 const BRAND_ORG_LABEL = { harris: "Axios Harris Poll 100", reptrak: "RepTrak", yougov: "YouGov" };
 const DART_METRIC_KEYS = ["salary", "tenure", "buyback", "headcount"];
 const DART_METRIC_LABEL = { salary: "평균연봉", tenure: "평균근속", buyback: "자사주 취득", headcount: "직원증가" };
+// 다트공시 4종(평균연봉 등)은 이제 최상위 인사이트 카테고리로 독립됐으므로, 브랜드평판은 항상 기관 3곳만 다룸
 const insightBrandButtons = {
   harris: el("insightBrandHarrisBtn"),
   reptrak: el("insightBrandReptrakBtn"),
   yougov: el("insightBrandYougovBtn"),
-  salary: el("insightDartSalaryBtn"),
-  tenure: el("insightDartTenureBtn"),
-  buyback: el("insightDartBuybackBtn"),
-  headcount: el("insightDartHeadcountBtn"),
 };
 let insightActiveBrandOrg = "harris";
 function setInsightBrandActive(org) {
   Object.entries(insightBrandButtons).forEach(([k, btn]) => btn && btn.classList.toggle("active", k === org));
 }
-function defaultBrandOrgForMarket() {
-  return getWatchlistActiveMarket() === "KR" ? "salary" : "harris";
-}
 function runInsightBrandTab(org) {
-  if (DART_METRIC_KEYS.includes(org)) runInsightDart(org);
-  else runInsightBrand(org);
+  runInsightBrand(org);
 }
 Object.entries(insightBrandButtons).forEach(([org, btn]) => {
   btn.addEventListener("click", () => {
@@ -6205,13 +6227,6 @@ Object.entries(insightBrandButtons).forEach(([org, btn]) => {
   });
 });
 setInsightBrandActive(insightActiveBrandOrg);
-// 국내/해외 토글을 바꾸는 순간 다트공시/브랜드평판순 탭을 보고 있었다면, 그 시장에 맞는 기본 항목으로 새로 불러옴
-document.addEventListener("marketmodechange", () => {
-  if (insightActiveCategory !== "brand") return;
-  insightActiveBrandOrg = defaultBrandOrgForMarket();
-  setInsightBrandActive(insightActiveBrandOrg);
-  runInsightBrandTab(insightActiveBrandOrg);
-});
 
 const brandDataCache = {};
 async function getBrandData(org) {
@@ -6462,8 +6477,8 @@ function dartRankRowHtml(r, i, metric) {
     </tr>`;
 }
 async function runInsightDart(metric) {
-  insightActiveBrandOrg = metric;
-  setInsightBrandActive(metric);
+  // 최상위 카테고리로 독립됐으므로 브랜드평판 상태(insightActiveBrandOrg)는 건드리지 않음(setInsightCategoryActive가
+  // switchInsightCategory에서 이미 이 버튼을 활성 표시함)
   const status = el("insightStatus");
   const results = el("insightResults");
   status.style.display = "";

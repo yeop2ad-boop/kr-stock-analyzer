@@ -80,10 +80,9 @@
     </div>
 
     <div class="tab-bar" id="tabBar">
-      <button type="button" class="cat-btn" data-tab="watchlist" id="watchlistTabBtn"><span class="tab-emoji btn-icon" data-icon="star" aria-hidden="true"></span><span class="tab-label">관심종목</span></button>
-      <button type="button" class="cat-btn" id="searchTabBtn"><span class="tab-emoji btn-icon" data-icon="search" aria-hidden="true"></span><span class="tab-label">기업찾기</span></button>
-      <button type="button" class="cat-btn" data-tab="topranking" id="tabTopRankingBtn"><span class="tab-emoji btn-icon" data-icon="trophy" aria-hidden="true"></span><span class="tab-label">Top랭킹</span></button>
-      <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn"><span class="tab-emoji btn-icon" data-icon="newspaper" aria-hidden="true"></span><span class="tab-label">뉴스·공시</span></button>
+      <button type="button" class="cat-btn" data-tab="topranking" id="tabValuationBtn"><span class="tab-emoji btn-icon" data-icon="bank" aria-hidden="true"></span><span class="tab-label">기업가치</span></button>
+      <button type="button" class="cat-btn" id="tabTrendBtn"><span class="tab-emoji btn-icon" data-icon="trending-up" aria-hidden="true"></span><span class="tab-label">시장동향</span></button>
+      <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn"><span class="tab-emoji btn-icon" data-icon="newspaper" aria-hidden="true"></span><span class="tab-label">인사이트</span></button>
     </div>
   </header>
 
@@ -390,6 +389,38 @@
     </div>
   </div>
 
+  <div id="watchlistPanel" class="company-panel" style="display:none;">
+    <div class="company-panel-bar">
+      <button type="button" id="watchlistPanelCloseBtn" class="search-overlay-back" aria-label="닫기"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="20" y1="12" x2="5" y2="12"/><polyline points="11 5 4 12 11 19"/></svg></button>
+      <h2 class="search-overlay-title">관심목록</h2>
+    </div>
+    <div class="company-panel-body">
+      <button type="button" class="self-test-banner-btn" id="selfTestOpenBtn">
+        <span class="self-test-banner-icon">🧭</span>
+        <span class="self-test-banner-text">
+          <span class="self-test-banner-title">+ 자기진단</span>
+          <span class="self-test-banner-sub">내 투자성향을 30초만에 확인해보세요</span>
+        </span>
+        <span class="self-test-banner-arrow">›</span>
+      </button>
+      <div id="watchlistSelfTestPin"></div>
+      <div class="wl-group-row">
+        <div class="wl-group-tabs" id="wlGroupTabs"></div>
+        <button type="button" class="wl-group-manage-btn" id="wlGroupManageBtn" aria-label="그룹 관리">⚙</button>
+      </div>
+      <div class="wl-toolbar">
+        <div class="wl-sort-wrap">
+          <button type="button" class="wl-tool-btn" id="wlSortBtn"><span id="wlSortBtnLabel">직접설정순</span> <span class="wl-tool-caret">⌄</span></button>
+          <div id="wlSortMenu" class="wl-sort-menu" style="display:none;"></div>
+        </div>
+        <button type="button" class="wl-tool-btn" id="wlAddStockBtn">+ 종목추가</button>
+        <button type="button" class="wl-tool-btn wl-tool-btn-share" id="wlShareBtn">🔗 공유</button>
+      </div>
+      <p id="watchlistStatus" class="muted top30-status" style="display:none;"></p>
+      <div id="watchlistList"></div>
+    </div>
+  </div>
+
   <div id="marketPanel" class="company-panel" style="display:none;">
     <div class="company-panel-bar">
       <button type="button" id="marketPanelCloseBtn" class="search-overlay-back" aria-label="닫기"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="20" y1="12" x2="5" y2="12"/><polyline points="11 5 4 12 11 19"/></svg></button>
@@ -450,40 +481,17 @@
   <div class="container" id="mainContainer">
     <div class="carousel-viewport" id="carouselViewport">
 
-      <div class="carousel-panel" data-panel="watchlist" id="panelWatchlist">
-        <button type="button" class="self-test-banner-btn" id="selfTestOpenBtn">
-          <span class="self-test-banner-icon">🧭</span>
-          <span class="self-test-banner-text">
-            <span class="self-test-banner-title">+ 자기진단</span>
-            <span class="self-test-banner-sub">내 투자성향을 30초만에 확인해보세요</span>
-          </span>
-          <span class="self-test-banner-arrow">›</span>
-        </button>
-        <div id="watchlistSelfTestPin"></div>
-        <div class="wl-group-row">
-          <div class="wl-group-tabs" id="wlGroupTabs"></div>
-          <button type="button" class="wl-group-manage-btn" id="wlGroupManageBtn" aria-label="그룹 관리">⚙</button>
-        </div>
-        <div class="wl-toolbar">
-          <div class="wl-sort-wrap">
-            <button type="button" class="wl-tool-btn" id="wlSortBtn"><span id="wlSortBtnLabel">직접설정순</span> <span class="wl-tool-caret">⌄</span></button>
-            <div id="wlSortMenu" class="wl-sort-menu" style="display:none;"></div>
-          </div>
-          <button type="button" class="wl-tool-btn" id="wlAddStockBtn">+ 종목추가</button>
-          <button type="button" class="wl-tool-btn wl-tool-btn-share" id="wlShareBtn">🔗 공유</button>
-        </div>
-        <p id="watchlistStatus" class="muted top30-status" style="display:none;"></p>
-        <div id="watchlistList"></div>
-      </div>
 
       <div class="carousel-panel" data-panel="insight" id="panelInsight">
         <div class="top30-sub-nav">
           <button type="button" class="cat-btn" id="insightCatFirmsBtn"><span class="btn-icon" data-icon="bank"></span> 자산&amp;투자사</button>
           <button type="button" class="cat-btn" id="insightCatBrandBtn"><span class="btn-icon" id="insightCatBrandIcon"></span> <span id="insightCatBrandLabel">브랜드평판순</span></button>
           <button type="button" class="cat-btn" id="insightCatTechBtn"><span class="btn-icon" data-icon="flask"></span> 신기술</button>
-          <button type="button" class="cat-btn" id="insightCatCalendarBtn"><span class="btn-icon" data-icon="calendar"></span> 실적&amp;공시 일정</button>
-          <button type="button" class="cat-btn" id="insightCatNewsBtn"><span class="btn-icon" data-icon="newspaper"></span> 뉴스</button>
           <button type="button" class="cat-btn" id="insightCatFutureIndustryBtn"><span class="btn-icon" data-icon="rocket"></span> 미래산업 성장성</button>
+          <button type="button" class="cat-btn" id="insightCatSalaryBtn"><span class="btn-icon" data-icon="coin"></span> 평균연봉</button>
+          <button type="button" class="cat-btn" id="insightCatTenureBtn"><span class="btn-icon" data-icon="medal"></span> 평균근속</button>
+          <button type="button" class="cat-btn" id="insightCatBuybackBtn"><span class="btn-icon" data-icon="wallet"></span> 자사주취득</button>
+          <button type="button" class="cat-btn" id="insightCatHeadcountBtn"><span class="btn-icon" data-icon="trending-up"></span> 직원증가</button>
         </div>
         <div class="top30-sub-nav insight-firms-nav" id="insightFirmsNav">
           <div class="insight-firms-row">
@@ -506,17 +514,13 @@
           <button type="button" class="cat-btn brand-org-btn" id="insightBrandHarrisBtn">Axios Harris Poll 100</button>
           <button type="button" class="cat-btn brand-org-btn" id="insightBrandReptrakBtn">RepTrak</button>
           <button type="button" class="cat-btn brand-org-btn" id="insightBrandYougovBtn">YouGov</button>
-          <button type="button" class="cat-btn dart-metric-btn" id="insightDartSalaryBtn" style="display:none;">평균연봉</button>
-          <button type="button" class="cat-btn dart-metric-btn" id="insightDartTenureBtn" style="display:none;">평균근속</button>
-          <button type="button" class="cat-btn dart-metric-btn" id="insightDartBuybackBtn" style="display:none;">자사주 취득</button>
-          <button type="button" class="cat-btn dart-metric-btn" id="insightDartHeadcountBtn" style="display:none;">직원증가</button>
         </div>
         <p id="insightStatus" class="muted top30-status" style="display:none;"></p>
         <div id="insightResults"></div>
       </div>
 
       <div class="carousel-panel" data-panel="topranking" id="panelTopRanking">
-        <div class="top30-sub-nav top-ranking-sub-nav insight-firms-nav" id="topRankingSubNav"></div>
+        <div class="top30-sub-nav top-ranking-sub-nav" id="topRankingSubNav"></div>
 
         <div id="valuationGroup" style="display:none;">
           <!-- 기존 기업가치 서브내비는 Top랭킹 통합 후 화면엔 안 보이지만, 각 항목의 렌더 함수가 내부적으로
@@ -562,26 +566,17 @@
   </div>
 
   <nav id="bottomNav" class="bottom-nav">
-    <button type="button" class="bottom-nav-btn" id="bottomNavMapBtn" aria-label="섹터맵">
+    <button type="button" class="bottom-nav-btn" id="bottomNavMapBtn" aria-label="도트맵">
       <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z" fill="currentColor"/><circle cx="12" cy="9.5" r="2.6" fill="#fff"/></svg>
-      지도
+      도트맵
     </button>
-    <button type="button" class="bottom-nav-btn active" id="bottomNavHomeBtn" aria-label="홈">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3.2c.4 0 .77.15 1.05.42l7 6.7c.3.28.45.66.45 1.05v7.13c0 1.1-.9 2-2 2h-3.5a1 1 0 0 1-1-1v-4.5a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v4.5a1 1 0 0 1-1 1H5.5c-1.1 0-2-.9-2-2v-7.13c0-.39.16-.77.45-1.05l7-6.7c.28-.27.65-.42 1.05-.42Z" fill="currentColor"/></svg>
-      홈
+    <button type="button" class="bottom-nav-btn active" id="bottomNavHomeBtn" aria-label="내투자찾기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="7"/><line x1="21" y1="21" x2="15.7" y2="15.7"/></svg>
+      내투자찾기
     </button>
-    <button type="button" class="bottom-nav-btn" id="bottomNavCalendarBtn" aria-label="캘린더">
-      <svg viewBox="0 0 24 24" fill="none">
-        <rect x="3.3" y="5.5" width="17.4" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/>
-        <line x1="3.3" y1="10" x2="20.7" y2="10" stroke="currentColor" stroke-width="1.7"/>
-        <rect x="7.2" y="2.3" width="2" height="5.6" rx="1" fill="currentColor"/>
-        <rect x="14.8" y="2.3" width="2" height="5.6" rx="1" fill="currentColor"/>
-      </svg>
-      캘린더
-    </button>
-    <button type="button" class="bottom-nav-btn" id="bottomNavMarketBtn" aria-label="시장">
-      <svg viewBox="0 0 24 24" fill="none"><polyline points="3 17 9 11 13 15 21 5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><polyline points="15 5 21 5 21 11" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      시장
+    <button type="button" class="bottom-nav-btn" id="bottomNavWatchlistBtn" aria-label="관심목록">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 2.7l2.85 6.02 6.65.68-4.98 4.5 1.46 6.53L12 17.9l-5.98 3.53 1.46-6.53-4.98-4.5 6.65-.68L12 2.7z" fill="currentColor"/></svg>
+      관심목록
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavMoreBtn" aria-label="더보기">
       <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="3" rx="1.5" fill="currentColor"/><rect x="4" y="10.5" width="16" height="3" rx="1.5" fill="currentColor"/><rect x="4" y="15" width="16" height="3" rx="1.5" fill="currentColor"/></svg>
@@ -611,6 +606,18 @@
             <button type="button" class="theme-toggle-btn" id="themeDarkBtn" data-theme-choice="dark">블랙</button>
           </div>
         </div>
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelSearchBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7" /><line x1="21" y1="21" x2="15.2" y2="15.2" /></svg>
+          <span class="more-panel-item-label">기업찾기</span>
+        </button>
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelMarketBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 5" /><polyline points="15 5 21 5 21 11" /></svg>
+          <span class="more-panel-item-label">시장</span>
+        </button>
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelCalendarBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.3" y="5.5" width="17.4" height="15" rx="2" /><line x1="3.3" y1="10" x2="20.7" y2="10" /><line x1="7.2" y1="2.8" x2="7.2" y2="7.4" /><line x1="14.8" y1="2.8" x2="14.8" y2="7.4" /></svg>
+          <span class="more-panel-item-label">캘린더</span>
+        </button>
         <button type="button" class="more-panel-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h9l7 7v9H4V4Z" /><path d="M13 4v7h7" /></svg>
           <span class="more-panel-item-label">내투자 Pro UP <b class="more-panel-pro-badge">-7일 무료</b></span>
@@ -642,22 +649,6 @@
           <span class="more-panel-badge">준비중</span>
         </button>
       </div>
-      <div class="more-panel-divider"></div>
-      <div class="more-panel-section-label">시스템</div>
-      <ul class="more-panel-feature-list">
-        <li>⭐ 관심종목 — 그룹별 관심 종목 관리, 자기진단(투자성향 분석)</li>
-        <li>🔍 기업찾기 — 티커·한글명 검색, 최근/인기 검색어</li>
-        <li>📰 뉴스·공시 — 자산운용사, 브랜드평판, 신기술, 실적&공시 일정, 뉴스, 미래산업 성장성</li>
-        <li>💹 기업가치 — 매출액·현금흐름·순이익 증가, EPS, PER, 투자 안정, 시가총액</li>
-        <li>📈 투자동향 — 거래량, 상승률·하락률, 배당률, 상승 압력, US/KR ETF</li>
-        <li>🗺️ 지도(섹터맵) — 국내/해외 트리맵, 지표 필터, 코스피·코스닥 요약, 자동 스크롤 티커</li>
-        <li>🏦 시장 — 지수·주식·원자재·외환·암호화폐·채권 시세, 스파크라인 차트</li>
-        <li>🗓️ 캘린더 — 경제지표 발표 일정</li>
-        <li>🕰️ 과거분석 — FOMO지수(국내)/VIX지수(해외) + M2 통화량 YoY</li>
-        <li>🔮 미래예측 — 4년 평균주기 예측, 투자 안정 구간별 분포도</li>
-        <li>📄 s리포트 — 준비 중</li>
-        <li>👤 로그인 — 구글·카카오·네이버·이메일</li>
-      </ul>
     </div>
   </div>
 
