@@ -2061,9 +2061,18 @@ function switchTab(index) {
 }
 
 TAB_ORDER.forEach((key, i) => {
+  if (key === "watchlist") return; // 로그인 필요 — 아래에서 별도 처리
   tabButtons[key].addEventListener("click", () => switchTab(i));
 });
-searchTabBtn.addEventListener("click", openSearchWizardGate);
+// 관심종목은 로그인한 사용자만 볼 수 있음 — 로그인 안 했으면 탭 전환 대신 로그인 모달을 먼저 띄움
+tabButtons.watchlist.addEventListener("click", () => {
+  if (typeof firebase !== "undefined" && firebase.auth().currentUser) {
+    switchTab(TAB_ORDER.indexOf("watchlist"));
+  } else {
+    openLoginModal();
+  }
+});
+searchTabBtn.addEventListener("click", openSearchWizard);
 
 // ---------- 탭별 데이터 로딩 캐싱: 한 번 로딩된 탭은 다시 방문해도 재요청하지 않음 ----------
 const TAB_LOADERS = {
@@ -3148,13 +3157,6 @@ async function renderWatchlistList() {
 let searchWizardStep = "root";
 let searchWizardAnswers = {};
 
-function openSearchWizardGate() {
-  if (typeof firebase !== "undefined" && firebase.auth().currentUser) {
-    openSearchWizard();
-  } else {
-    openLoginModal();
-  }
-}
 function openSearchWizard() {
   searchWizardStep = "root";
   searchWizardAnswers = {};
@@ -3682,9 +3684,13 @@ document.addEventListener("click", (e) => {
 
 // ---------- 초기 부팅: 기본 화면은 관심종목 — ?ticker=가 있을 때만 기업 패널을 함께 염 ----------
 (function initApp() {
-  switchTab(TAB_ORDER.indexOf("watchlist"));
+  // 뒤에 깔리는 캐로셀은 로그인 없이도 볼 수 있는 Top랭킹으로 기본값을 둠(관심종목은 로그인 필요)
+  switchTab(TAB_ORDER.indexOf("topranking"));
 
-  const initialTicker = new URLSearchParams(location.search).get("ticker");
+  const params = new URLSearchParams(location.search);
+  const initialTicker = params.get("ticker");
+  // 첫 화면은 기업찾기(로그인 불필요) — 단, 특정 종목이나 다른 패널(?open=)로 바로 들어온 딥링크면 위저드가 그 위를 덮지 않도록 건너뜀
+  if (!initialTicker && !params.get("open")) openSearchWizard();
   if (initialTicker) navigateToTicker(initialTicker, { push: false });
   loadingSplash.style.display = "none";
 
