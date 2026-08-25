@@ -162,7 +162,7 @@
     </div>
     <div class="search-overlay-body">
       <div class="fh-search search-overlay-search">
-        <input type="text" id="tickerInput" placeholder="티커를 검색해 주세요.(예: AAPL,TSLA)" autocomplete="off" />
+        <input type="text" id="tickerInput" placeholder="티커를 검색해 주세요.(예: AAPL,삼성전자)" autocomplete="off" />
         <button id="analyzeBtn" type="button" class="header-icon-btn" aria-label="분석">
           <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15.2" y2="15.2"/></svg>
         </button>
@@ -426,7 +426,7 @@
     </div>
     <div class="company-panel-body">
       <div class="fh-search search-overlay-search wizard-ticker-search">
-        <input type="text" id="wizardTickerInput" placeholder="티커를 검색해 주세요.(예: AAPL,TSLA)" autocomplete="off" />
+        <input type="text" id="wizardTickerInput" placeholder="티커를 검색해 주세요.(예: AAPL,삼성전자)" autocomplete="off" />
         <button id="wizardAnalyzeBtn" type="button" class="header-icon-btn" aria-label="분석">
           <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15.2" y2="15.2"/></svg>
         </button>
@@ -516,7 +516,7 @@
       </div>
 
       <div class="carousel-panel" data-panel="topranking" id="panelTopRanking">
-        <div class="top30-sub-nav top-ranking-sub-nav" id="topRankingSubNav"></div>
+        <div class="top30-sub-nav top-ranking-sub-nav insight-firms-nav" id="topRankingSubNav"></div>
 
         <div id="valuationGroup" style="display:none;">
           <!-- 기존 기업가치 서브내비는 Top랭킹 통합 후 화면엔 안 보이지만, 각 항목의 렌더 함수가 내부적으로
@@ -529,6 +529,10 @@
             <button type="button" class="cat-btn" id="valuationPerBtn"><span class="btn-icon" data-icon="scale"></span> PER</button>
             <button type="button" class="cat-btn" id="valuationStabilityBtn"><span class="btn-icon" data-icon="medal"></span> 투자 안정</button>
             <button type="button" class="cat-btn" id="valuationMarketCapBtn"><span class="btn-icon" data-icon="building"></span> 시가총액</button>
+            <button type="button" class="cat-btn" id="valuationOperatingMarginBtn"><span class="btn-icon" data-icon="scale"></span> 영업이익률</button>
+            <button type="button" class="cat-btn" id="valuationRoeBtn"><span class="btn-icon" data-icon="medal"></span> ROE</button>
+            <button type="button" class="cat-btn" id="valuationDebtRatioBtn"><span class="btn-icon" data-icon="scale"></span> 부채비율</button>
+            <button type="button" class="cat-btn" id="valuationWeek52LowBtn"><span class="btn-icon" data-icon="trending-down"></span> 52주최저</button>
           </div>
           <p id="valuationStatus" class="muted top30-status" style="display:none;"></p>
           <div id="valuationResults"></div>
@@ -537,7 +541,7 @@
         <div id="trendGroup">
           <!-- 기존 투자동향 서브내비도 마찬가지로 숨김만 처리(렌더 함수들이 참조) -->
           <div class="top30-sub-nav" style="display:none;">
-            <button type="button" class="cat-btn" id="trendVolumeBtn"><span class="btn-icon" data-icon="thumbsup"></span> 거래량</button>
+            <button type="button" class="cat-btn" id="trendVolumeBtn"><span class="btn-icon" data-icon="thumbsup"></span> 거래대금</button>
             <button type="button" class="cat-btn" id="trendSurgeBtn"><span class="btn-icon" data-icon="trending-up"></span> 상승률</button>
             <button type="button" class="cat-btn" id="trendPlungeBtn"><span class="btn-icon" data-icon="trending-down"></span> 하락률</button>
             <button type="button" class="cat-btn" id="trendDividendBtn"><span class="btn-icon" data-icon="coin"></span> 배당률</button>

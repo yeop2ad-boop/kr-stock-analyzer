@@ -1,4 +1,4 @@
-const SP500_DATA = ﻿{
+﻿const SP500_DATA = {
     "generatedAt":  "2026-08-23T08:19:28Z",
     "count":  489,
     "unmatched":  [
@@ -18,7 +18,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.74,
                           "revenueGrowth":  1.52,
                           "netIncomeGrowth":  -22.12,
-                          "cashFlowGrowth":  26.77
+                          "cashFlowGrowth":  26.77,
+                          "operatingMargin":  20.3,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  87.1
                       },
                       {
                           "symbol":  "AOS",
@@ -32,7 +36,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.28,
                           "revenueGrowth":  0.32,
                           "netIncomeGrowth":  2.36,
-                          "cashFlowGrowth":  6.02
+                          "cashFlowGrowth":  6.02,
+                          "operatingMargin":  18.9,
+                          "roe":  6.8,
+                          "debtRatio":  97.9,
+                          "week52RangePct":  30.9
                       },
                       {
                           "symbol":  "ABT",
@@ -46,7 +54,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.16,
                           "revenueGrowth":  5.67,
                           "netIncomeGrowth":  -51.32,
-                          "cashFlowGrowth":  11.78
+                          "cashFlowGrowth":  11.78,
+                          "operatingMargin":  12,
+                          "roe":  2.1,
+                          "debtRatio":  110.9,
+                          "week52RangePct":  62.5
                       },
                       {
                           "symbol":  "ABBV",
@@ -60,7 +72,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.61,
                           "revenueGrowth":  8.57,
                           "netIncomeGrowth":  -1.22,
-                          "cashFlowGrowth":  1.19
+                          "cashFlowGrowth":  1.19,
+                          "operatingMargin":  39.6,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  96.2
                       },
                       {
                           "symbol":  "ACN",
@@ -74,7 +90,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.52,
                           "revenueGrowth":  7.36,
                           "netIncomeGrowth":  5.69,
-                          "cashFlowGrowth":  25.66
+                          "cashFlowGrowth":  25.66,
+                          "operatingMargin":  17,
+                          "roe":  7.3,
+                          "debtRatio":  110.7,
+                          "week52RangePct":  39.5
                       },
                       {
                           "symbol":  "ADBE",
@@ -88,7 +108,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  10.53,
                           "netIncomeGrowth":  28.24,
-                          "cashFlowGrowth":  24.52
+                          "cashFlowGrowth":  24.52,
+                          "operatingMargin":  33.8,
+                          "roe":  14.9,
+                          "debtRatio":  159.9,
+                          "week52RangePct":  47.7
                       },
                       {
                           "symbol":  "AMD",
@@ -102,7 +126,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  34.34,
                           "netIncomeGrowth":  164.17,
-                          "cashFlowGrowth":  153.5
+                          "cashFlowGrowth":  153.5,
+                          "operatingMargin":  17.3,
+                          "roe":  3.4,
+                          "debtRatio":  25.6,
+                          "week52RangePct":  70.6
                       },
                       {
                           "symbol":  "AES",
@@ -116,7 +144,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.77,
                           "revenueGrowth":  -0.37,
                           "netIncomeGrowth":  -45.8,
-                          "cashFlowGrowth":  56.47
+                          "cashFlowGrowth":  56.47,
+                          "operatingMargin":  18.4,
+                          "roe":  8.6,
+                          "debtRatio":  899.8,
+                          "week52RangePct":  45.5
                       },
                       {
                           "symbol":  "AFL",
@@ -130,7 +162,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.1,
                           "revenueGrowth":  -9.27,
                           "netIncomeGrowth":  -33.01,
-                          "cashFlowGrowth":  -5.62
+                          "cashFlowGrowth":  -5.62,
+                          "operatingMargin":  null,
+                          "roe":  2.7,
+                          "debtRatio":  282.6,
+                          "week52RangePct":  53.0
                       },
                       {
                           "symbol":  "A",
@@ -144,7 +180,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.64,
                           "revenueGrowth":  6.73,
                           "netIncomeGrowth":  1.09,
-                          "cashFlowGrowth":  -10.97
+                          "cashFlowGrowth":  -10.97,
+                          "operatingMargin":  21.7,
+                          "roe":  4.8,
+                          "debtRatio":  83.4,
+                          "week52RangePct":  86.4
                       },
                       {
                           "symbol":  "APD",
@@ -158,7 +198,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.37,
                           "revenueGrowth":  -0.52,
                           "netIncomeGrowth":  -110.31,
-                          "cashFlowGrowth":  -10.69
+                          "cashFlowGrowth":  -10.69,
+                          "operatingMargin":  25.6,
+                          "roe":  -10.4,
+                          "debtRatio":  171.8,
+                          "week52RangePct":  89.9
                       },
                       {
                           "symbol":  "ABNB",
@@ -172,7 +216,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  10.26,
                           "netIncomeGrowth":  -5.17,
-                          "cashFlowGrowth":  2.83
+                          "cashFlowGrowth":  2.83,
+                          "operatingMargin":  21,
+                          "roe":  10.5,
+                          "debtRatio":  268.7,
+                          "week52RangePct":  96.1
                       },
                       {
                           "symbol":  "AKAM",
@@ -186,7 +234,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  5.44,
                           "netIncomeGrowth":  -10.47,
-                          "cashFlowGrowth":  -0.03
+                          "cashFlowGrowth":  -0.03,
+                          "operatingMargin":  7.6,
+                          "roe":  1.7,
+                          "debtRatio":  217.4,
+                          "week52RangePct":  36.8
                       },
                       {
                           "symbol":  "ALB",
@@ -200,7 +252,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.14,
                           "revenueGrowth":  -4.37,
                           "netIncomeGrowth":  56.71,
-                          "cashFlowGrowth":  86.41
+                          "cashFlowGrowth":  86.41,
+                          "operatingMargin":  26.4,
+                          "roe":  4.7,
+                          "debtRatio":  52.3,
+                          "week52RangePct":  46.9
                       },
                       {
                           "symbol":  "ARE",
@@ -214,7 +270,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  5.38,
                           "revenueGrowth":  -3.43,
                           "netIncomeGrowth":  -542.66,
-                          "cashFlowGrowth":  -6.01
+                          "cashFlowGrowth":  -6.01,
+                          "operatingMargin":  14.7,
+                          "roe":  -0.5,
+                          "debtRatio":  99.4,
+                          "week52RangePct":  30.0
                       },
                       {
                           "symbol":  "ALGN",
@@ -228,7 +288,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  0.9,
                           "netIncomeGrowth":  -2.61,
-                          "cashFlowGrowth":  -19.64
+                          "cashFlowGrowth":  -19.64,
+                          "operatingMargin":  18.2,
+                          "roe":  2.6,
+                          "debtRatio":  51.6,
+                          "week52RangePct":  48.0
                       },
                       {
                           "symbol":  "ALLE",
@@ -242,7 +306,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.31,
                           "revenueGrowth":  7.82,
                           "netIncomeGrowth":  7.75,
-                          "cashFlowGrowth":  16.12
+                          "cashFlowGrowth":  16.12,
+                          "operatingMargin":  22.1,
+                          "roe":  8.7,
+                          "debtRatio":  153,
+                          "week52RangePct":  64.8
                       },
                       {
                           "symbol":  "LNT",
@@ -256,7 +324,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.15,
                           "revenueGrowth":  9.57,
                           "netIncomeGrowth":  17.39,
-                          "cashFlowGrowth":  0.17
+                          "cashFlowGrowth":  0.17,
+                          "operatingMargin":  21,
+                          "roe":  3,
+                          "debtRatio":  234.3,
+                          "week52RangePct":  33.1
                       },
                       {
                           "symbol":  "ALL",
@@ -270,7 +342,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.7,
                           "revenueGrowth":  5.6,
                           "netIncomeGrowth":  120.31,
-                          "cashFlowGrowth":  13.2
+                          "cashFlowGrowth":  13.2,
+                          "operatingMargin":  null,
+                          "roe":  9.7,
+                          "debtRatio":  270.3,
+                          "week52RangePct":  80.9
                       },
                       {
                           "symbol":  "MO",
@@ -284,7 +360,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  6.42,
                           "revenueGrowth":  -1.49,
                           "netIncomeGrowth":  -38.33,
-                          "cashFlowGrowth":  6.14
+                          "cashFlowGrowth":  6.14,
+                          "operatingMargin":  58.9,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  61.6
                       },
                       {
                           "symbol":  "AMZN",
@@ -298,7 +378,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  12.38,
                           "netIncomeGrowth":  31.09,
-                          "cashFlowGrowth":  20.4
+                          "cashFlowGrowth":  20.4,
+                          "operatingMargin":  13.1,
+                          "roe":  6.8,
+                          "debtRatio":  107.4,
+                          "week52RangePct":  72.4
                       },
                       {
                           "symbol":  "AMCR",
@@ -312,7 +396,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  5.35,
                           "revenueGrowth":  56.61,
                           "netIncomeGrowth":  116.44,
-                          "cashFlowGrowth":  54.75
+                          "cashFlowGrowth":  54.75,
+                          "operatingMargin":  9,
+                          "roe":  2.4,
+                          "debtRatio":  222.5,
+                          "week52RangePct":  79.4
                       },
                       {
                           "symbol":  "AEE",
@@ -326,7 +414,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.83,
                           "revenueGrowth":  15.43,
                           "netIncomeGrowth":  null,
-                          "cashFlowGrowth":  21.35
+                          "cashFlowGrowth":  21.35,
+                          "operatingMargin":  24.4,
+                          "roe":  2.6,
+                          "debtRatio":  266.8,
+                          "week52RangePct":  48.7
                       },
                       {
                           "symbol":  "AEP",
@@ -340,7 +432,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.14,
                           "revenueGrowth":  10.93,
                           "netIncomeGrowth":  20.66,
-                          "cashFlowGrowth":  2.06
+                          "cashFlowGrowth":  2.06,
+                          "operatingMargin":  22.9,
+                          "roe":  2.2,
+                          "debtRatio":  275.2,
+                          "week52RangePct":  46.7
                       },
                       {
                           "symbol":  "AXP",
@@ -354,7 +450,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.13,
                           "revenueGrowth":  9.52,
                           "netIncomeGrowth":  6.95,
-                          "cashFlowGrowth":  31.16
+                          "cashFlowGrowth":  31.16,
+                          "operatingMargin":  null,
+                          "roe":  9.1,
+                          "debtRatio":  799.1,
+                          "week52RangePct":  48.0
                       },
                       {
                           "symbol":  "AIG",
@@ -368,7 +468,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.63,
                           "revenueGrowth":  -1.82,
                           "netIncomeGrowth":  320.51,
-                          "cashFlowGrowth":  1.25
+                          "cashFlowGrowth":  1.25,
+                          "operatingMargin":  null,
+                          "roe":  2.3,
+                          "debtRatio":  302.5,
+                          "week52RangePct":  38.2
                       },
                       {
                           "symbol":  "AMT",
@@ -382,7 +486,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.97,
                           "revenueGrowth":  5.11,
                           "netIncomeGrowth":  12.17,
-                          "cashFlowGrowth":  3.28
+                          "cashFlowGrowth":  3.28,
+                          "operatingMargin":  45.3,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  37.4
                       },
                       {
                           "symbol":  "AWK",
@@ -396,7 +504,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.64,
                           "revenueGrowth":  9.74,
                           "netIncomeGrowth":  5.71,
-                          "cashFlowGrowth":  0.68
+                          "cashFlowGrowth":  0.68,
+                          "operatingMargin":  40,
+                          "roe":  2.7,
+                          "debtRatio":  212.5,
+                          "week52RangePct":  77.1
                       },
                       {
                           "symbol":  "AMP",
@@ -410,7 +522,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.22,
                           "revenueGrowth":  7.04,
                           "netIncomeGrowth":  4.76,
-                          "cashFlowGrowth":  26.2
+                          "cashFlowGrowth":  26.2,
+                          "operatingMargin":  null,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  92.4
                       },
                       {
                           "symbol":  "AME",
@@ -424,7 +540,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.57,
                           "revenueGrowth":  6.63,
                           "netIncomeGrowth":  7.56,
-                          "cashFlowGrowth":  -1.48
+                          "cashFlowGrowth":  -1.48,
+                          "operatingMargin":  25.8,
+                          "roe":  3.6,
+                          "debtRatio":  47.4,
+                          "week52RangePct":  77.0
                       },
                       {
                           "symbol":  "AMGN",
@@ -438,7 +558,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.29,
                           "revenueGrowth":  9.95,
                           "netIncomeGrowth":  88.53,
-                          "cashFlowGrowth":  -13.33
+                          "cashFlowGrowth":  -13.33,
+                          "operatingMargin":  35,
+                          "roe":  20.3,
+                          "debtRatio":  718.3,
+                          "week52RangePct":  98.8
                       },
                       {
                           "symbol":  "APH",
@@ -452,7 +576,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.64,
                           "revenueGrowth":  51.71,
                           "netIncomeGrowth":  76.17,
-                          "cashFlowGrowth":  90.95
+                          "cashFlowGrowth":  90.95,
+                          "operatingMargin":  25.6,
+                          "roe":  6.7,
+                          "debtRatio":  200.6,
+                          "week52RangePct":  68.6
                       },
                       {
                           "symbol":  "ADI",
@@ -466,7 +594,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.18,
                           "revenueGrowth":  16.89,
                           "netIncomeGrowth":  38.65,
-                          "cashFlowGrowth":  24.91
+                          "cashFlowGrowth":  24.91,
+                          "operatingMargin":  38.1,
+                          "roe":  3.5,
+                          "debtRatio":  42.1,
+                          "week52RangePct":  66.4
                       },
                       {
                           "symbol":  "AON",
@@ -480,7 +612,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.92,
                           "revenueGrowth":  9.45,
                           "netIncomeGrowth":  39.22,
-                          "cashFlowGrowth":  14.7
+                          "cashFlowGrowth":  14.7,
+                          "operatingMargin":  23.8,
+                          "roe":  5.7,
+                          "debtRatio":  454.6,
+                          "week52RangePct":  70.1
                       },
                       {
                           "symbol":  "APA",
@@ -494,7 +630,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.3,
                           "revenueGrowth":  -8.39,
                           "netIncomeGrowth":  78.36,
-                          "cashFlowGrowth":  25.55
+                          "cashFlowGrowth":  25.55,
+                          "operatingMargin":  55.7,
+                          "roe":  10.6,
+                          "debtRatio":  142.8,
+                          "week52RangePct":  88.8
                       },
                       {
                           "symbol":  "APO",
@@ -508,7 +648,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.7,
                           "revenueGrowth":  22.73,
                           "netIncomeGrowth":  -23.71,
-                          "cashFlowGrowth":  122.75
+                          "cashFlowGrowth":  122.75,
+                          "operatingMargin":  15.7,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  61.8
                       },
                       {
                           "symbol":  "AAPL",
@@ -522,7 +666,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.35,
                           "revenueGrowth":  6.43,
                           "netIncomeGrowth":  19.5,
-                          "cashFlowGrowth":  -5.73
+                          "cashFlowGrowth":  -5.73,
+                          "operatingMargin":  32.6,
+                          "roe":  27.7,
+                          "debtRatio":  256.5,
+                          "week52RangePct":  71.4
                       },
                       {
                           "symbol":  "AMAT",
@@ -536,7 +684,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.43,
                           "revenueGrowth":  4.39,
                           "netIncomeGrowth":  -2.49,
-                          "cashFlowGrowth":  -8.29
+                          "cashFlowGrowth":  -8.29,
+                          "operatingMargin":  31.9,
+                          "roe":  11.7,
+                          "debtRatio":  68.5,
+                          "week52RangePct":  56.3
                       },
                       {
                           "symbol":  "APP",
@@ -550,7 +702,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  69.99,
                           "netIncomeGrowth":  111.03,
-                          "cashFlowGrowth":  89.19
+                          "cashFlowGrowth":  89.19,
+                          "operatingMargin":  77.7,
+                          "roe":  40,
+                          "debtRatio":  161.4,
+                          "week52RangePct":  0.2
                       },
                       {
                           "symbol":  "APTV",
@@ -564,7 +720,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  3.47,
                           "netIncomeGrowth":  -90.77,
-                          "cashFlowGrowth":  -10.67
+                          "cashFlowGrowth":  -10.67,
+                          "operatingMargin":  11.9,
+                          "roe":  2.8,
+                          "debtRatio":  105.6,
+                          "week52RangePct":  2.8
                       },
                       {
                           "symbol":  "ACGL",
@@ -578,7 +738,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  14,
                           "netIncomeGrowth":  2.02,
-                          "cashFlowGrowth":  -7.51
+                          "cashFlowGrowth":  -7.51,
+                          "operatingMargin":  null,
+                          "roe":  4.4,
+                          "debtRatio":  254.5,
+                          "week52RangePct":  75.9
                       },
                       {
                           "symbol":  "ADM",
@@ -592,7 +756,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.59,
                           "revenueGrowth":  -6.15,
                           "netIncomeGrowth":  -40.11,
-                          "cashFlowGrowth":  95.41
+                          "cashFlowGrowth":  95.41,
+                          "operatingMargin":  4,
+                          "roe":  3.9,
+                          "debtRatio":  125.8,
+                          "week52RangePct":  68.7
                       },
                       {
                           "symbol":  "ARES",
@@ -606,7 +774,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.82,
                           "revenueGrowth":  44.19,
                           "netIncomeGrowth":  13.72,
-                          "cashFlowGrowth":  17.05
+                          "cashFlowGrowth":  17.05,
+                          "operatingMargin":  17.4,
+                          "roe":  3.8,
+                          "debtRatio":  530,
+                          "week52RangePct":  48.6
                       },
                       {
                           "symbol":  "ANET",
@@ -620,7 +792,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  28.6,
                           "netIncomeGrowth":  23.12,
-                          "cashFlowGrowth":  17.9
+                          "cashFlowGrowth":  17.9,
+                          "operatingMargin":  45.4,
+                          "roe":  8.2,
+                          "debtRatio":  60.3,
+                          "week52RangePct":  73.4
                       },
                       {
                           "symbol":  "AJG",
@@ -634,7 +810,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.06,
                           "revenueGrowth":  20.66,
                           "netIncomeGrowth":  2.12,
-                          "cashFlowGrowth":  -25.28
+                          "cashFlowGrowth":  -25.28,
+                          "operatingMargin":  14.7,
+                          "roe":  1.4,
+                          "debtRatio":  244.8,
+                          "week52RangePct":  66.2
                       },
                       {
                           "symbol":  "AIZ",
@@ -648,7 +828,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.24,
                           "revenueGrowth":  7.89,
                           "netIncomeGrowth":  14.8,
-                          "cashFlowGrowth":  37.61
+                          "cashFlowGrowth":  37.61,
+                          "operatingMargin":  null,
+                          "roe":  4.9,
+                          "debtRatio":  491.7,
+                          "week52RangePct":  83.7
                       },
                       {
                           "symbol":  "T",
@@ -662,7 +846,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.39,
                           "revenueGrowth":  2.71,
                           "netIncomeGrowth":  100.52,
-                          "cashFlowGrowth":  3.9
+                          "cashFlowGrowth":  3.9,
+                          "operatingMargin":  23.2,
+                          "roe":  4.2,
+                          "debtRatio":  271.6,
+                          "week52RangePct":  58.6
                       },
                       {
                           "symbol":  "ATO",
@@ -676,7 +864,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.4,
                           "revenueGrowth":  12.91,
                           "netIncomeGrowth":  14.94,
-                          "cashFlowGrowth":  18.21
+                          "cashFlowGrowth":  18.21,
+                          "operatingMargin":  36.4,
+                          "roe":  1.6,
+                          "debtRatio":  107,
+                          "week52RangePct":  23.8
                       },
                       {
                           "symbol":  "ADSK",
@@ -690,7 +882,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  17.53,
                           "netIncomeGrowth":  1.08,
-                          "cashFlowGrowth":  52.58
+                          "cashFlowGrowth":  52.58,
+                          "operatingMargin":  29.5,
+                          "roe":  15.4,
+                          "debtRatio":  274.2,
+                          "week52RangePct":  48.0
                       },
                       {
                           "symbol":  "ADP",
@@ -704,7 +900,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.42,
                           "revenueGrowth":  6.74,
                           "netIncomeGrowth":  8.18,
-                          "cashFlowGrowth":  10.15
+                          "cashFlowGrowth":  10.15,
+                          "operatingMargin":  23,
+                          "roe":  16.2,
+                          "debtRatio":  947.8,
+                          "week52RangePct":  81.0
                       },
                       {
                           "symbol":  "AZO",
@@ -718,7 +918,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  2.43,
                           "netIncomeGrowth":  -6.17,
-                          "cashFlowGrowth":  3.77
+                          "cashFlowGrowth":  3.77,
+                          "operatingMargin":  19.1,
+                          "roe":  -23,
+                          "debtRatio":  -851.2,
+                          "week52RangePct":  7.2
                       },
                       {
                           "symbol":  "AVY",
@@ -732,7 +936,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.18,
                           "revenueGrowth":  1.14,
                           "netIncomeGrowth":  -2.4,
-                          "cashFlowGrowth":  -6.11
+                          "cashFlowGrowth":  -6.11,
+                          "operatingMargin":  13.6,
+                          "roe":  8.8,
+                          "debtRatio":  296.6,
+                          "week52RangePct":  66.4
                       },
                       {
                           "symbol":  "AXON",
@@ -746,7 +954,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  33.47,
                           "netIncomeGrowth":  -66.94,
-                          "cashFlowGrowth":  -48.24
+                          "cashFlowGrowth":  -48.24,
+                          "operatingMargin":  5.2,
+                          "roe":  0.8,
+                          "debtRatio":  103.6,
+                          "week52RangePct":  56.8
                       },
                       {
                           "symbol":  "BKR",
@@ -760,7 +972,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.48,
                           "revenueGrowth":  -0.34,
                           "netIncomeGrowth":  -13.13,
-                          "cashFlowGrowth":  14.35
+                          "cashFlowGrowth":  14.35,
+                          "operatingMargin":  12.8,
+                          "roe":  3.4,
+                          "debtRatio":  163.4,
+                          "week52RangePct":  68.2
                       },
                       {
                           "symbol":  "BALL",
@@ -774,7 +990,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.26,
                           "revenueGrowth":  11.58,
                           "netIncomeGrowth":  -77.25,
-                          "cashFlowGrowth":  997.39
+                          "cashFlowGrowth":  997.39,
+                          "operatingMargin":  9.2,
+                          "roe":  3.8,
+                          "debtRatio":  249.6,
+                          "week52RangePct":  83.5
                       },
                       {
                           "symbol":  "BAC",
@@ -788,7 +1008,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.07,
                           "revenueGrowth":  6.84,
                           "netIncomeGrowth":  13.11,
-                          "cashFlowGrowth":  243.25
+                          "cashFlowGrowth":  243.25,
+                          "operatingMargin":  null,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  84.8
                       },
                       {
                           "symbol":  "BAX",
@@ -802,7 +1026,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.15,
                           "revenueGrowth":  5.72,
                           "netIncomeGrowth":  -47.46,
-                          "cashFlowGrowth":  -17.08
+                          "cashFlowGrowth":  -17.08,
+                          "operatingMargin":  7.3,
+                          "roe":  2,
+                          "debtRatio":  219.3,
+                          "week52RangePct":  75.4
                       },
                       {
                           "symbol":  "BDX",
@@ -816,7 +1044,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.19,
                           "revenueGrowth":  8.24,
                           "netIncomeGrowth":  -1.58,
-                          "cashFlowGrowth":  -9.64
+                          "cashFlowGrowth":  -9.64,
+                          "operatingMargin":  15.1,
+                          "roe":  1.5,
+                          "debtRatio":  107.8,
+                          "week52RangePct":  96.4
                       },
                       {
                           "symbol":  "BBY",
@@ -830,7 +1062,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.47,
                           "revenueGrowth":  0.39,
                           "netIncomeGrowth":  15.32,
-                          "cashFlowGrowth":  -6.48
+                          "cashFlowGrowth":  -6.48,
+                          "operatingMargin":  4,
+                          "roe":  9,
+                          "debtRatio":  383,
+                          "week52RangePct":  89.5
                       },
                       {
                           "symbol":  "TECH",
@@ -844,7 +1080,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.44,
                           "revenueGrowth":  5.23,
                           "netIncomeGrowth":  -56.34,
-                          "cashFlowGrowth":  -3.82
+                          "cashFlowGrowth":  -3.82,
+                          "operatingMargin":  24.2,
+                          "roe":  2.4,
+                          "debtRatio":  22.3,
+                          "week52RangePct":  99.2
                       },
                       {
                           "symbol":  "BIIB",
@@ -858,7 +1098,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  2.22,
                           "netIncomeGrowth":  -20.79,
-                          "cashFlowGrowth":  -23.33
+                          "cashFlowGrowth":  -23.33,
+                          "operatingMargin":  17.6,
+                          "roe":  0.5,
+                          "debtRatio":  70.2,
+                          "week52RangePct":  95.6
                       },
                       {
                           "symbol":  "BLK",
@@ -872,7 +1116,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.98,
                           "revenueGrowth":  18.67,
                           "netIncomeGrowth":  -12.81,
-                          "cashFlowGrowth":  -20.76
+                          "cashFlowGrowth":  -20.76,
+                          "operatingMargin":  34.9,
+                          "roe":  3.3,
+                          "debtRatio":  193.2,
+                          "week52RangePct":  84.4
                       },
                       {
                           "symbol":  "BX",
@@ -886,7 +1134,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.65,
                           "revenueGrowth":  13.54,
                           "netIncomeGrowth":  8.74,
-                          "cashFlowGrowth":  33.93
+                          "cashFlowGrowth":  33.93,
+                          "operatingMargin":  null,
+                          "roe":  13.6,
+                          "debtRatio":  304.6,
+                          "week52RangePct":  47.4
                       },
                       {
                           "symbol":  "XYZ",
@@ -900,7 +1152,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  0.3,
                           "netIncomeGrowth":  -54.93,
-                          "cashFlowGrowth":  51.09
+                          "cashFlowGrowth":  51.09,
+                          "operatingMargin":  15.6,
+                          "roe":  0.4,
+                          "debtRatio":  77.8,
+                          "week52RangePct":  86.1
                       },
                       {
                           "symbol":  "BNY",
@@ -914,7 +1170,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.4,
                           "revenueGrowth":  8.22,
                           "netIncomeGrowth":  22.49,
-                          "cashFlowGrowth":  879.62
+                          "cashFlowGrowth":  879.62,
+                          "operatingMargin":  null,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  94.4
                       },
                       {
                           "symbol":  "BA",
@@ -928,7 +1188,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  34.5,
                           "netIncomeGrowth":  118.91,
-                          "cashFlowGrowth":  108.82
+                          "cashFlowGrowth":  108.82,
+                          "operatingMargin":  2,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  43.4
                       },
                       {
                           "symbol":  "BKNG",
@@ -942,7 +1206,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.8,
                           "revenueGrowth":  13.39,
                           "netIncomeGrowth":  -8.13,
-                          "cashFlowGrowth":  13.05
+                          "cashFlowGrowth":  13.05,
+                          "operatingMargin":  34,
+                          "roe":  -18.1,
+                          "debtRatio":  -375.3,
+                          "week52RangePct":  80.0
                       },
                       {
                           "symbol":  "BSX",
@@ -956,7 +1224,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  19.87,
                           "netIncomeGrowth":  56.31,
-                          "cashFlowGrowth":  31.99
+                          "cashFlowGrowth":  31.99,
+                          "operatingMargin":  20.6,
+                          "roe":  5.2,
+                          "debtRatio":  70.5,
+                          "week52RangePct":  10.1
                       },
                       {
                           "symbol":  "BMY",
@@ -970,7 +1242,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.76,
                           "revenueGrowth":  -0.22,
                           "netIncomeGrowth":  178.83,
-                          "cashFlowGrowth":  -6.81
+                          "cashFlowGrowth":  -6.81,
+                          "operatingMargin":  31,
+                          "roe":  14.9,
+                          "debtRatio":  292.6,
+                          "week52RangePct":  94.8
                       },
                       {
                           "symbol":  "AVGO",
@@ -984,7 +1260,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.71,
                           "revenueGrowth":  23.87,
                           "netIncomeGrowth":  292.3,
-                          "cashFlowGrowth":  37.95
+                          "cashFlowGrowth":  37.95,
+                          "operatingMargin":  48.9,
+                          "roe":  10.6,
+                          "debtRatio":  104.3,
+                          "week52RangePct":  34.4
                       },
                       {
                           "symbol":  "BR",
@@ -998,7 +1278,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.39,
                           "revenueGrowth":  8.53,
                           "netIncomeGrowth":  33.92,
-                          "cashFlowGrowth":  14.88
+                          "cashFlowGrowth":  14.88,
+                          "operatingMargin":  24.6,
+                          "roe":  14,
+                          "debtRatio":  214.9,
+                          "week52RangePct":  41.2
                       },
                       {
                           "symbol":  "BRO",
@@ -1012,7 +1296,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.91,
                           "revenueGrowth":  22.49,
                           "netIncomeGrowth":  6.14,
-                          "cashFlowGrowth":  23.51
+                          "cashFlowGrowth":  23.51,
+                          "operatingMargin":  25.2,
+                          "roe":  2.3,
+                          "debtRatio":  137.3,
+                          "week52RangePct":  47.6
                       },
                       {
                           "symbol":  "BLDR",
@@ -1026,7 +1314,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  -7.38,
                           "netIncomeGrowth":  -59.63,
-                          "cashFlowGrowth":  -35.07
+                          "cashFlowGrowth":  -35.07,
+                          "operatingMargin":  3.3,
+                          "roe":  -0.1,
+                          "debtRatio":  182.7,
+                          "week52RangePct":  6.0
                       },
                       {
                           "symbol":  "BG",
@@ -1040,7 +1332,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.55,
                           "revenueGrowth":  32.43,
                           "netIncomeGrowth":  -28.23,
-                          "cashFlowGrowth":  -55.58
+                          "cashFlowGrowth":  -55.58,
+                          "operatingMargin":  4.5,
+                          "roe":  4.2,
+                          "debtRatio":  184.1,
+                          "week52RangePct":  58.0
                       },
                       {
                           "symbol":  "BXP",
@@ -1054,7 +1350,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.14,
                           "revenueGrowth":  2.19,
                           "netIncomeGrowth":  1839.46,
-                          "cashFlowGrowth":  0.86
+                          "cashFlowGrowth":  0.86,
+                          "operatingMargin":  28.9,
+                          "roe":  1.3,
+                          "debtRatio":  337.7,
+                          "week52RangePct":  68.5
                       },
                       {
                           "symbol":  "CHRW",
@@ -1068,7 +1368,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.78,
                           "revenueGrowth":  -8.42,
                           "netIncomeGrowth":  26.07,
-                          "cashFlowGrowth":  79.64
+                          "cashFlowGrowth":  79.64,
+                          "operatingMargin":  4.4,
+                          "roe":  8.6,
+                          "debtRatio":  207.2,
+                          "week52RangePct":  22.2
                       },
                       {
                           "symbol":  "CDNS",
@@ -1082,7 +1386,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  14.12,
                           "netIncomeGrowth":  5.06,
-                          "cashFlowGrowth":  37.14
+                          "cashFlowGrowth":  37.14,
+                          "operatingMargin":  28.4,
+                          "roe":  5.4,
+                          "debtRatio":  76.2,
+                          "week52RangePct":  34.5
                       },
                       {
                           "symbol":  "CPT",
@@ -1096,7 +1404,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.94,
                           "revenueGrowth":  1.92,
                           "netIncomeGrowth":  135.44,
-                          "cashFlowGrowth":  6.68
+                          "cashFlowGrowth":  6.68,
+                          "operatingMargin":  19.3,
+                          "roe":  1.1,
+                          "debtRatio":  123,
+                          "week52RangePct":  54.2
                       },
                       {
                           "symbol":  "COF",
@@ -1110,7 +1422,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.47,
                           "revenueGrowth":  36.62,
                           "netIncomeGrowth":  -48.36,
-                          "cashFlowGrowth":  52.64
+                          "cashFlowGrowth":  52.64,
+                          "operatingMargin":  null,
+                          "roe":  2.7,
+                          "debtRatio":  492.2,
+                          "week52RangePct":  49.2
                       },
                       {
                           "symbol":  "CAH",
@@ -1124,7 +1440,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.9,
                           "revenueGrowth":  -1.87,
                           "netIncomeGrowth":  83.22,
-                          "cashFlowGrowth":  -36.28
+                          "cashFlowGrowth":  -36.28,
+                          "operatingMargin":  1.4,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  76.9
                       },
                       {
                           "symbol":  "CCL",
@@ -1138,7 +1458,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.75,
                           "revenueGrowth":  6.39,
                           "netIncomeGrowth":  44.05,
-                          "cashFlowGrowth":  4.98
+                          "cashFlowGrowth":  4.98,
+                          "operatingMargin":  12.8,
+                          "roe":  4.1,
+                          "debtRatio":  302.7,
+                          "week52RangePct":  21.4
                       },
                       {
                           "symbol":  "CARR",
@@ -1152,7 +1476,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.59,
                           "revenueGrowth":  -3.29,
                           "netIncomeGrowth":  -73.52,
-                          "cashFlowGrowth":  346.36
+                          "cashFlowGrowth":  346.36,
+                          "operatingMargin":  12.1,
+                          "roe":  3.8,
+                          "debtRatio":  181.8,
+                          "week52RangePct":  36.7
                       },
                       {
                           "symbol":  "CVNA",
@@ -1166,7 +1494,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  48.63,
                           "netIncomeGrowth":  570,
-                          "cashFlowGrowth":  12.85
+                          "cashFlowGrowth":  12.85,
+                          "operatingMargin":  9.2,
+                          "roe":  7.7,
+                          "debtRatio":  233.7,
+                          "week52RangePct":  41.6
                       },
                       {
                           "symbol":  "CASY",
@@ -1180,7 +1512,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.31,
                           "revenueGrowth":  10.16,
                           "netIncomeGrowth":  30.73,
-                          "cashFlowGrowth":  26.28
+                          "cashFlowGrowth":  26.28,
+                          "operatingMargin":  5.1,
+                          "roe":  4.1,
+                          "debtRatio":  126.1,
+                          "week52RangePct":  83.2
                       },
                       {
                           "symbol":  "CAT",
@@ -1194,7 +1530,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.79,
                           "revenueGrowth":  4.29,
                           "netIncomeGrowth":  -17.68,
-                          "cashFlowGrowth":  -2.46
+                          "cashFlowGrowth":  -2.46,
+                          "operatingMargin":  20.9,
+                          "roe":  18.5,
+                          "debtRatio":  429.1,
+                          "week52RangePct":  60.4
                       },
                       {
                           "symbol":  "CBRE",
@@ -1208,7 +1548,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  13.37,
                           "netIncomeGrowth":  19.52,
-                          "cashFlowGrowth":  -8.72
+                          "cashFlowGrowth":  -8.72,
+                          "operatingMargin":  3.2,
+                          "roe":  2.4,
+                          "debtRatio":  253.6,
+                          "week52RangePct":  57.5
                       },
                       {
                           "symbol":  "CDW",
@@ -1222,7 +1566,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.84,
                           "revenueGrowth":  6.79,
                           "netIncomeGrowth":  -1.04,
-                          "cashFlowGrowth":  -5.64
+                          "cashFlowGrowth":  -5.64,
+                          "operatingMargin":  6.5,
+                          "roe":  11.2,
+                          "debtRatio":  606.6,
+                          "week52RangePct":  47.5
                       },
                       {
                           "symbol":  "COR",
@@ -1236,7 +1584,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.75,
                           "revenueGrowth":  9.31,
                           "netIncomeGrowth":  2.99,
-                          "cashFlowGrowth":  11.2
+                          "cashFlowGrowth":  11.2,
+                          "operatingMargin":  1.4,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  59.5
                       },
                       {
                           "symbol":  "CNC",
@@ -1250,7 +1602,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  19.44,
                           "netIncomeGrowth":  -301.94,
-                          "cashFlowGrowth":  3203.9
+                          "cashFlowGrowth":  3203.9,
+                          "operatingMargin":  2.2,
+                          "roe":  4.8,
+                          "debtRatio":  267.5,
+                          "week52RangePct":  91.0
                       },
                       {
                           "symbol":  "CNP",
@@ -1264,7 +1620,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.48,
                           "revenueGrowth":  8.26,
                           "netIncomeGrowth":  3.24,
-                          "cashFlowGrowth":  16.22
+                          "cashFlowGrowth":  16.22,
+                          "operatingMargin":  24.8,
+                          "roe":  2.1,
+                          "debtRatio":  311.7,
+                          "week52RangePct":  28.9
                       },
                       {
                           "symbol":  "CF",
@@ -1278,7 +1638,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.85,
                           "revenueGrowth":  19.34,
                           "netIncomeGrowth":  19.46,
-                          "cashFlowGrowth":  21.18
+                          "cashFlowGrowth":  21.18,
+                          "operatingMargin":  49.6,
+                          "roe":  12.6,
+                          "debtRatio":  107.5,
+                          "week52RangePct":  80.9
                       },
                       {
                           "symbol":  "CRL",
@@ -1292,7 +1656,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  -0.85,
                           "netIncomeGrowth":  -1501.75,
-                          "cashFlowGrowth":  0.42
+                          "cashFlowGrowth":  0.42,
+                          "operatingMargin":  11.9,
+                          "roe":  -0.1,
+                          "debtRatio":  163.5,
+                          "week52RangePct":  99.5
                       },
                       {
                           "symbol":  "SCHW",
@@ -1306,7 +1674,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.14,
                           "revenueGrowth":  22.01,
                           "netIncomeGrowth":  48.97,
-                          "cashFlowGrowth":  248.73
+                          "cashFlowGrowth":  248.73,
+                          "operatingMargin":  null,
+                          "roe":  5.6,
+                          "debtRatio":  931.5,
+                          "week52RangePct":  97.1
                       },
                       {
                           "symbol":  "CHTR",
@@ -1320,7 +1692,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  -0.56,
                           "netIncomeGrowth":  -1.89,
-                          "cashFlowGrowth":  11.41
+                          "cashFlowGrowth":  11.41,
+                          "operatingMargin":  23,
+                          "roe":  7.6,
+                          "debtRatio":  788.8,
+                          "week52RangePct":  22.2
                       },
                       {
                           "symbol":  "CVX",
@@ -1334,7 +1710,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.47,
                           "revenueGrowth":  -4.64,
                           "netIncomeGrowth":  -30.36,
-                          "cashFlowGrowth":  7.77
+                          "cashFlowGrowth":  7.77,
+                          "operatingMargin":  21.2,
+                          "roe":  6.4,
+                          "debtRatio":  70.9,
+                          "week52RangePct":  83.0
                       },
                       {
                           "symbol":  "CMG",
@@ -1348,7 +1728,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  5.41,
                           "netIncomeGrowth":  0.11,
-                          "cashFlowGrowth":  0.42
+                          "cashFlowGrowth":  0.42,
+                          "operatingMargin":  16.6,
+                          "roe":  18.3,
+                          "debtRatio":  303,
+                          "week52RangePct":  66.1
                       },
                       {
                           "symbol":  "CB",
@@ -1362,7 +1746,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.2,
                           "revenueGrowth":  6.74,
                           "netIncomeGrowth":  11.19,
-                          "cashFlowGrowth":  -20.8
+                          "cashFlowGrowth":  -20.8,
+                          "operatingMargin":  null,
+                          "roe":  3.8,
+                          "debtRatio":  266,
+                          "week52RangePct":  80.0
                       },
                       {
                           "symbol":  "CHD",
@@ -1376,7 +1764,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.24,
                           "revenueGrowth":  1.57,
                           "netIncomeGrowth":  25.88,
-                          "cashFlowGrowth":  5.12
+                          "cashFlowGrowth":  5.12,
+                          "operatingMargin":  19.8,
+                          "roe":  5.2,
+                          "debtRatio":  115.2,
+                          "week52RangePct":  85.8
                       },
                       {
                           "symbol":  "CIEN",
@@ -1390,7 +1782,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  18.79,
                           "netIncomeGrowth":  46.91,
-                          "cashFlowGrowth":  56.67
+                          "cashFlowGrowth":  56.67,
+                          "operatingMargin":  15.2,
+                          "roe":  7.5,
+                          "debtRatio":  108.8,
+                          "week52RangePct":  51.5
                       },
                       {
                           "symbol":  "CI",
@@ -1404,7 +1800,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.25,
                           "revenueGrowth":  11.26,
                           "netIncomeGrowth":  73.47,
-                          "cashFlowGrowth":  -7.35
+                          "cashFlowGrowth":  -7.35,
+                          "operatingMargin":  3.4,
+                          "roe":  3.9,
+                          "debtRatio":  267.9,
+                          "week52RangePct":  53.9
                       },
                       {
                           "symbol":  "CINF",
@@ -1418,7 +1818,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.23,
                           "revenueGrowth":  11.41,
                           "netIncomeGrowth":  4.41,
-                          "cashFlowGrowth":  17.48
+                          "cashFlowGrowth":  17.48,
+                          "operatingMargin":  null,
+                          "roe":  1.7,
+                          "debtRatio":  162.3,
+                          "week52RangePct":  47.3
                       },
                       {
                           "symbol":  "CTAS",
@@ -1432,7 +1836,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.02,
                           "revenueGrowth":  8.94,
                           "netIncomeGrowth":  10.36,
-                          "cashFlowGrowth":  5.1
+                          "cashFlowGrowth":  5.1,
+                          "operatingMargin":  23.7,
+                          "roe":  9.9,
+                          "debtRatio":  104.9,
+                          "week52RangePct":  79.7
                       },
                       {
                           "symbol":  "CSCO",
@@ -1446,7 +1854,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.51,
                           "revenueGrowth":  5.3,
                           "netIncomeGrowth":  -1.36,
-                          "cashFlowGrowth":  30.45
+                          "cashFlowGrowth":  30.45,
+                          "operatingMargin":  25,
+                          "roe":  6.9,
+                          "debtRatio":  156.9,
+                          "week52RangePct":  68.6
                       },
                       {
                           "symbol":  "C",
@@ -1460,7 +1872,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.04,
                           "revenueGrowth":  5.63,
                           "netIncomeGrowth":  12.81,
-                          "cashFlowGrowth":  -243.85
+                          "cashFlowGrowth":  -243.85,
+                          "operatingMargin":  null,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  70.5
                       },
                       {
                           "symbol":  "CFG",
@@ -1474,7 +1890,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.63,
                           "revenueGrowth":  5.61,
                           "netIncomeGrowth":  21.34,
-                          "cashFlowGrowth":  10.49
+                          "cashFlowGrowth":  10.49,
+                          "operatingMargin":  null,
+                          "roe":  2.2,
+                          "debtRatio":  793.1,
+                          "week52RangePct":  81.4
                       },
                       {
                           "symbol":  "CLX",
@@ -1488,7 +1908,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.69,
                           "revenueGrowth":  -5.41,
                           "netIncomeGrowth":  -27.53,
-                          "cashFlowGrowth":  -37.61
+                          "cashFlowGrowth":  -37.61,
+                          "operatingMargin":  12.6,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  50.8
                       },
                       {
                           "symbol":  "CME",
@@ -1502,7 +1926,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.89,
                           "revenueGrowth":  6.37,
                           "netIncomeGrowth":  15.5,
-                          "cashFlowGrowth":  15.89
+                          "cashFlowGrowth":  15.89,
+                          "operatingMargin":  64.9,
+                          "roe":  3.9,
+                          "debtRatio":  634.1,
+                          "week52RangePct":  54.9
                       },
                       {
                           "symbol":  "CMS",
@@ -1516,7 +1944,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.34,
                           "revenueGrowth":  13.63,
                           "netIncomeGrowth":  6.78,
-                          "cashFlowGrowth":  -5.7
+                          "cashFlowGrowth":  -5.7,
+                          "operatingMargin":  14.4,
+                          "roe":  1.2,
+                          "debtRatio":  312.1,
+                          "week52RangePct":  4.2
                       },
                       {
                           "symbol":  "KO",
@@ -1530,7 +1962,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.33,
                           "revenueGrowth":  1.87,
                           "netIncomeGrowth":  23.29,
-                          "cashFlowGrowth":  8.86
+                          "cashFlowGrowth":  8.86,
+                          "operatingMargin":  35.1,
+                          "roe":  12.2,
+                          "debtRatio":  192.6,
+                          "week52RangePct":  98.2
                       },
                       {
                           "symbol":  "CTSH",
@@ -1544,7 +1980,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.13,
                           "revenueGrowth":  6.95,
                           "netIncomeGrowth":  -0.45,
-                          "cashFlowGrowth":  35.73
+                          "cashFlowGrowth":  35.73,
+                          "operatingMargin":  17.5,
+                          "roe":  4.4,
+                          "debtRatio":  44,
+                          "week52RangePct":  50.3
                       },
                       {
                           "symbol":  "COHR",
@@ -1558,7 +1998,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  22.51,
                           "netIncomeGrowth":  1530.74,
-                          "cashFlowGrowth":  -87.45
+                          "cashFlowGrowth":  -87.45,
+                          "operatingMargin":  12.5,
+                          "roe":  1.8,
+                          "debtRatio":  58.7,
+                          "week52RangePct":  53.5
                       },
                       {
                           "symbol":  "COIN",
@@ -1572,7 +2016,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  9.4,
                           "netIncomeGrowth":  -51.13,
-                          "cashFlowGrowth":  -21.83
+                          "cashFlowGrowth":  -21.83,
+                          "operatingMargin":  -2.4,
+                          "roe":  -2.7,
+                          "debtRatio":  102.3,
+                          "week52RangePct":  15.3
                       },
                       {
                           "symbol":  "CL",
@@ -1586,7 +2034,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.33,
                           "revenueGrowth":  1.4,
                           "netIncomeGrowth":  -26.2,
-                          "cashFlowGrowth":  2.22
+                          "cashFlowGrowth":  2.22,
+                          "operatingMargin":  19,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  72.6
                       },
                       {
                           "symbol":  "CMCSA",
@@ -1600,7 +2052,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.92,
                           "revenueGrowth":  -0.02,
                           "netIncomeGrowth":  23.51,
-                          "cashFlowGrowth":  21.57
+                          "cashFlowGrowth":  21.57,
+                          "operatingMargin":  17.2,
+                          "roe":  3.9,
+                          "debtRatio":  186.7,
+                          "week52RangePct":  49.6
                       },
                       {
                           "symbol":  "FIX",
@@ -1614,7 +2070,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.22,
                           "revenueGrowth":  29.52,
                           "netIncomeGrowth":  95.73,
-                          "cashFlowGrowth":  39.73
+                          "cashFlowGrowth":  39.73,
+                          "operatingMargin":  17.1,
+                          "roe":  13.7,
+                          "debtRatio":  163.8,
+                          "week52RangePct":  66.9
                       },
                       {
                           "symbol":  "COP",
@@ -1628,7 +2088,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.49,
                           "revenueGrowth":  7.67,
                           "netIncomeGrowth":  -13.6,
-                          "cashFlowGrowth":  -1.63
+                          "cashFlowGrowth":  -1.63,
+                          "operatingMargin":  31.2,
+                          "roe":  6,
+                          "debtRatio":  90.1,
+                          "week52RangePct":  95.0
                       },
                       {
                           "symbol":  "ED",
@@ -1642,7 +2106,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.3,
                           "revenueGrowth":  10.89,
                           "netIncomeGrowth":  11.15,
-                          "cashFlowGrowth":  32.82
+                          "cashFlowGrowth":  32.82,
+                          "operatingMargin":  14.2,
+                          "roe":  1.2,
+                          "debtRatio":  197.3,
+                          "week52RangePct":  59.9
                       },
                       {
                           "symbol":  "STZ",
@@ -1656,7 +2124,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.04,
                           "revenueGrowth":  -10.48,
                           "netIncomeGrowth":  2172.11,
-                          "cashFlowGrowth":  -15.33
+                          "cashFlowGrowth":  -15.33,
+                          "operatingMargin":  35.5,
+                          "roe":  7.9,
+                          "debtRatio":  164.2,
+                          "week52RangePct":  26.5
                       },
                       {
                           "symbol":  "CEG",
@@ -1670,7 +2142,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.63,
                           "revenueGrowth":  8.34,
                           "netIncomeGrowth":  -38.14,
-                          "cashFlowGrowth":  271.96
+                          "cashFlowGrowth":  271.96,
+                          "operatingMargin":  -0.6,
+                          "roe":  1.6,
+                          "debtRatio":  206.2,
+                          "week52RangePct":  24.3
                       },
                       {
                           "symbol":  "COO",
@@ -1684,7 +2160,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  5.06,
                           "netIncomeGrowth":  -4.44,
-                          "cashFlowGrowth":  12.24
+                          "cashFlowGrowth":  12.24,
+                          "operatingMargin":  -2.9,
+                          "roe":  -0.9,
+                          "debtRatio":  51.5,
+                          "week52RangePct":  54.7
                       },
                       {
                           "symbol":  "CPRT",
@@ -1698,7 +2178,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  9.68,
                           "netIncomeGrowth":  13.9,
-                          "cashFlowGrowth":  22.22
+                          "cashFlowGrowth":  22.22,
+                          "operatingMargin":  37.5,
+                          "roe":  4.6,
+                          "debtRatio":  9.8,
+                          "week52RangePct":  27.7
                       },
                       {
                           "symbol":  "GLW",
@@ -1712,7 +2196,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.75,
                           "revenueGrowth":  19.14,
                           "netIncomeGrowth":  215.42,
-                          "cashFlowGrowth":  38.99
+                          "cashFlowGrowth":  38.99,
+                          "operatingMargin":  15.5,
+                          "roe":  4.5,
+                          "debtRatio":  157.9,
+                          "week52RangePct":  38.6
                       },
                       {
                           "symbol":  "CPAY",
@@ -1726,7 +2214,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  13.93,
                           "netIncomeGrowth":  6.58,
-                          "cashFlowGrowth":  -22.71
+                          "cashFlowGrowth":  -22.71,
+                          "operatingMargin":  40.8,
+                          "roe":  10,
+                          "debtRatio":  649.6,
+                          "week52RangePct":  93.1
                       },
                       {
                           "symbol":  "CTVA",
@@ -1740,7 +2232,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.88,
                           "revenueGrowth":  2.92,
                           "netIncomeGrowth":  20.62,
-                          "cashFlowGrowth":  58.79
+                          "cashFlowGrowth":  58.79,
+                          "operatingMargin":  23.5,
+                          "roe":  3,
+                          "debtRatio":  74.3,
+                          "week52RangePct":  73.2
                       },
                       {
                           "symbol":  "CSGP",
@@ -1754,7 +2250,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  18.68,
                           "netIncomeGrowth":  -94.96,
-                          "cashFlowGrowth":  9.41
+                          "cashFlowGrowth":  9.41,
+                          "operatingMargin":  8.2,
+                          "roe":  0.7,
+                          "debtRatio":  27.7,
+                          "week52RangePct":  10.5
                       },
                       {
                           "symbol":  "COST",
@@ -1768,7 +2268,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.62,
                           "revenueGrowth":  8.17,
                           "netIncomeGrowth":  9.94,
-                          "cashFlowGrowth":  17.6
+                          "cashFlowGrowth":  17.6,
+                          "operatingMargin":  4,
+                          "roe":  6.5,
+                          "debtRatio":  157.9,
+                          "week52RangePct":  50.4
                       },
                       {
                           "symbol":  "CRH",
@@ -1782,7 +2286,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.64,
                           "revenueGrowth":  5.27,
                           "netIncomeGrowth":  7.87,
-                          "cashFlowGrowth":  12.75
+                          "cashFlowGrowth":  12.75,
+                          "operatingMargin":  18.8,
+                          "roe":  6.2,
+                          "debtRatio":  137.4,
+                          "week52RangePct":  8.4
                       },
                       {
                           "symbol":  "CRWD",
@@ -1796,7 +2304,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  21.71,
                           "netIncomeGrowth":  -966.22,
-                          "cashFlowGrowth":  16.69
+                          "cashFlowGrowth":  16.69,
+                          "operatingMargin":  -2.2,
+                          "roe":  0.6,
+                          "debtRatio":  142.3,
+                          "week52RangePct":  74.0
                       },
                       {
                           "symbol":  "CCI",
@@ -1810,7 +2322,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  5.63,
                           "revenueGrowth":  -4.39,
                           "netIncomeGrowth":  111.38,
-                          "cashFlowGrowth":  3.87
+                          "cashFlowGrowth":  3.87,
+                          "operatingMargin":  46.8,
+                          "roe":  -2.9,
+                          "debtRatio":  -757.9,
+                          "week52RangePct":  20.6
                       },
                       {
                           "symbol":  "CSX",
@@ -1824,7 +2340,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.09,
                           "revenueGrowth":  -3.08,
                           "netIncomeGrowth":  -16.74,
-                          "cashFlowGrowth":  -12.08
+                          "cashFlowGrowth":  -12.08,
+                          "operatingMargin":  38.3,
+                          "roe":  7.1,
+                          "debtRatio":  217.6,
+                          "week52RangePct":  90.1
                       },
                       {
                           "symbol":  "CMI",
@@ -1838,7 +2358,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.5,
                           "revenueGrowth":  -1.27,
                           "netIncomeGrowth":  -27.95,
-                          "cashFlowGrowth":  143.51
+                          "cashFlowGrowth":  143.51,
+                          "operatingMargin":  11.9,
+                          "roe":  5.3,
+                          "debtRatio":  170.6,
+                          "week52RangePct":  52.3
                       },
                       {
                           "symbol":  "CVS",
@@ -1852,7 +2376,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.86,
                           "revenueGrowth":  7.85,
                           "netIncomeGrowth":  -61.68,
-                          "cashFlowGrowth":  16.82
+                          "cashFlowGrowth":  16.82,
+                          "operatingMargin":  4.4,
+                          "roe":  3.7,
+                          "debtRatio":  218.1,
+                          "week52RangePct":  59.8
                       },
                       {
                           "symbol":  "DHR",
@@ -1866,7 +2394,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.73,
                           "revenueGrowth":  2.9,
                           "netIncomeGrowth":  -7.31,
-                          "cashFlowGrowth":  -4.07
+                          "cashFlowGrowth":  -4.07,
+                          "operatingMargin":  18,
+                          "roe":  1.7,
+                          "debtRatio":  75.6,
+                          "week52RangePct":  66.2
                       },
                       {
                           "symbol":  "DRI",
@@ -1880,7 +2412,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.92,
                           "revenueGrowth":  9.39,
                           "netIncomeGrowth":  14.97,
-                          "cashFlowGrowth":  8.82
+                          "cashFlowGrowth":  8.82,
+                          "operatingMargin":  14.5,
+                          "roe":  18.3,
+                          "debtRatio":  482.7,
+                          "week52RangePct":  93.1
                       },
                       {
                           "symbol":  "DDOG",
@@ -1894,7 +2430,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  27.68,
                           "netIncomeGrowth":  -41.36,
-                          "cashFlowGrowth":  20.62
+                          "cashFlowGrowth":  20.62,
+                          "operatingMargin":  0.7,
+                          "roe":  1,
+                          "debtRatio":  72.8,
+                          "week52RangePct":  65.6
                       },
                       {
                           "symbol":  "DVA",
@@ -1908,7 +2448,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  6.46,
                           "netIncomeGrowth":  -20.24,
-                          "cashFlowGrowth":  -6.7
+                          "cashFlowGrowth":  -6.7,
+                          "operatingMargin":  13.9,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  51.5
                       },
                       {
                           "symbol":  "DECK",
@@ -1922,7 +2466,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  9.76,
                           "netIncomeGrowth":  6,
-                          "cashFlowGrowth":  13.16
+                          "cashFlowGrowth":  13.16,
+                          "operatingMargin":  15.2,
+                          "roe":  5.6,
+                          "debtRatio":  68.1,
+                          "week52RangePct":  28.3
                       },
                       {
                           "symbol":  "DE",
@@ -1936,7 +2484,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.0,
                           "revenueGrowth":  -11.59,
                           "netIncomeGrowth":  -29.2,
-                          "cashFlowGrowth":  -19.2
+                          "cashFlowGrowth":  -19.2,
+                          "operatingMargin":  20.8,
+                          "roe":  6.5,
+                          "debtRatio":  290.2,
+                          "week52RangePct":  89.4
                       },
                       {
                           "symbol":  "DELL",
@@ -1950,7 +2502,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.57,
                           "revenueGrowth":  18.8,
                           "netIncomeGrowth":  29.27,
-                          "cashFlowGrowth":  147.4
+                          "cashFlowGrowth":  147.4,
+                          "operatingMargin":  8.6,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  80.0
                       },
                       {
                           "symbol":  "DAL",
@@ -1964,7 +2520,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.94,
                           "revenueGrowth":  2.79,
                           "netIncomeGrowth":  44.78,
-                          "cashFlowGrowth":  3.95
+                          "cashFlowGrowth":  3.95,
+                          "operatingMargin":  9.4,
+                          "roe":  7.4,
+                          "debtRatio":  295.7,
+                          "week52RangePct":  67.5
                       },
                       {
                           "symbol":  "DVN",
@@ -1978,7 +2538,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.61,
                           "revenueGrowth":  7.83,
                           "netIncomeGrowth":  -8.61,
-                          "cashFlowGrowth":  1.68
+                          "cashFlowGrowth":  1.68,
+                          "operatingMargin":  34.3,
+                          "roe":  4.6,
+                          "debtRatio":  69.8,
+                          "week52RangePct":  78.9
                       },
                       {
                           "symbol":  "DXCM",
@@ -1992,7 +2556,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  15.6,
                           "netIncomeGrowth":  45.14,
-                          "cashFlowGrowth":  45.6
+                          "cashFlowGrowth":  45.6,
+                          "operatingMargin":  24.3,
+                          "roe":  9.5,
+                          "debtRatio":  146.3,
+                          "week52RangePct":  96.0
                       },
                       {
                           "symbol":  "FANG",
@@ -2006,7 +2574,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.09,
                           "revenueGrowth":  35.43,
                           "netIncomeGrowth":  -50.15,
-                          "cashFlowGrowth":  36.57
+                          "cashFlowGrowth":  36.57,
+                          "operatingMargin":  45.5,
+                          "roe":  5,
+                          "debtRatio":  69.2,
+                          "week52RangePct":  86.3
                       },
                       {
                           "symbol":  "DLR",
@@ -2020,7 +2592,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.56,
                           "revenueGrowth":  10.04,
                           "netIncomeGrowth":  117.2,
-                          "cashFlowGrowth":  6.66
+                          "cashFlowGrowth":  6.66,
+                          "operatingMargin":  17.3,
+                          "roe":  0.8,
+                          "debtRatio":  100.4,
+                          "week52RangePct":  68.4
                       },
                       {
                           "symbol":  "DG",
@@ -2034,7 +2610,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.91,
                           "revenueGrowth":  5.2,
                           "netIncomeGrowth":  34.4,
-                          "cashFlowGrowth":  21.31
+                          "cashFlowGrowth":  21.31,
+                          "operatingMargin":  5.9,
+                          "roe":  5,
+                          "debtRatio":  258.5,
+                          "week52RangePct":  47.9
                       },
                       {
                           "symbol":  "DLTR",
@@ -2048,7 +2628,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  10.43,
                           "netIncomeGrowth":  142.33,
-                          "cashFlowGrowth":  -11.48
+                          "cashFlowGrowth":  -11.48,
+                          "operatingMargin":  9.5,
+                          "roe":  9.9,
+                          "debtRatio":  294.2,
+                          "week52RangePct":  90.2
                       },
                       {
                           "symbol":  "D",
@@ -2062,7 +2646,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.01,
                           "revenueGrowth":  14.16,
                           "netIncomeGrowth":  47.39,
-                          "cashFlowGrowth":  6.84
+                          "cashFlowGrowth":  6.84,
+                          "operatingMargin":  27,
+                          "roe":  2.1,
+                          "debtRatio":  291.2,
+                          "week52RangePct":  62.8
                       },
                       {
                           "symbol":  "DPZ",
@@ -2076,7 +2664,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.33,
                           "revenueGrowth":  4.96,
                           "netIncomeGrowth":  3,
-                          "cashFlowGrowth":  26.75
+                          "cashFlowGrowth":  26.75,
+                          "operatingMargin":  19.1,
+                          "roe":  -3.4,
+                          "debtRatio":  -144.3,
+                          "week52RangePct":  35.8
                       },
                       {
                           "symbol":  "DASH",
@@ -2090,7 +2682,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  27.93,
                           "netIncomeGrowth":  660.16,
-                          "cashFlowGrowth":  14.02
+                          "cashFlowGrowth":  14.02,
+                          "operatingMargin":  3.5,
+                          "roe":  2,
+                          "debtRatio":  97.1,
+                          "week52RangePct":  60.3
                       },
                       {
                           "symbol":  "DOV",
@@ -2104,7 +2700,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.04,
                           "revenueGrowth":  4.48,
                           "netIncomeGrowth":  -59.44,
-                          "cashFlowGrowth":  78.2
+                          "cashFlowGrowth":  78.2,
+                          "operatingMargin":  17.9,
+                          "roe":  4.1,
+                          "debtRatio":  77.8,
+                          "week52RangePct":  56.8
                       },
                       {
                           "symbol":  "DOW",
@@ -2118,7 +2718,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.33,
                           "revenueGrowth":  -6.97,
                           "netIncomeGrowth":  -335.04,
-                          "cashFlowGrowth":  -64.58
+                          "cashFlowGrowth":  -64.58,
+                          "operatingMargin":  11.5,
+                          "roe":  4.5,
+                          "debtRatio":  278.8,
+                          "week52RangePct":  48.8
                       },
                       {
                           "symbol":  "DHI",
@@ -2132,7 +2736,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.21,
                           "revenueGrowth":  -6.93,
                           "netIncomeGrowth":  -24.62,
-                          "cashFlowGrowth":  56.22
+                          "cashFlowGrowth":  56.22,
+                          "operatingMargin":  12.5,
+                          "roe":  3.8,
+                          "debtRatio":  50.8,
+                          "week52RangePct":  32.6
                       },
                       {
                           "symbol":  "DTE",
@@ -2146,7 +2754,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.45,
                           "revenueGrowth":  26.95,
                           "netIncomeGrowth":  4.13,
-                          "cashFlowGrowth":  -6.42
+                          "cashFlowGrowth":  -6.42,
+                          "operatingMargin":  8.1,
+                          "roe":  2,
+                          "debtRatio":  347.2,
+                          "week52RangePct":  31.9
                       },
                       {
                           "symbol":  "DUK",
@@ -2160,7 +2772,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.62,
                           "revenueGrowth":  6.19,
                           "netIncomeGrowth":  9.81,
-                          "cashFlowGrowth":  0.02
+                          "cashFlowGrowth":  0.02,
+                          "operatingMargin":  25.5,
+                          "roe":  2.8,
+                          "debtRatio":  260,
+                          "week52RangePct":  39.2
                       },
                       {
                           "symbol":  "DD",
@@ -2174,7 +2790,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.73,
                           "revenueGrowth":  1.93,
                           "netIncomeGrowth":  -210.81,
-                          "cashFlowGrowth":  -26.8
+                          "cashFlowGrowth":  -26.8,
+                          "operatingMargin":  13.8,
+                          "roe":  1.1,
+                          "debtRatio":  51.4,
+                          "week52RangePct":  67.5
                       },
                       {
                           "symbol":  "ETN",
@@ -2188,7 +2808,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.05,
                           "revenueGrowth":  10.33,
                           "netIncomeGrowth":  7.72,
-                          "cashFlowGrowth":  3.35
+                          "cashFlowGrowth":  3.35,
+                          "operatingMargin":  15.7,
+                          "roe":  4.4,
+                          "debtRatio":  179.1,
+                          "week52RangePct":  58.3
                       },
                       {
                           "symbol":  "EBAY",
@@ -2202,7 +2826,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.19,
                           "revenueGrowth":  7.95,
                           "netIncomeGrowth":  2.84,
-                          "cashFlowGrowth":  -18.85
+                          "cashFlowGrowth":  -18.85,
+                          "operatingMargin":  21.6,
+                          "roe":  11.8,
+                          "debtRatio":  284.4,
+                          "week52RangePct":  70.4
                       },
                       {
                           "symbol":  "ECHO",
@@ -2216,7 +2844,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  -5.18,
                           "netIncomeGrowth":  -12026.86,
-                          "cashFlowGrowth":  -107.93
+                          "cashFlowGrowth":  -107.93,
+                          "operatingMargin":  14.3,
+                          "roe":  59.8,
+                          "debtRatio":  178.2,
+                          "week52RangePct":  35.9
                       },
                       {
                           "symbol":  "ECL",
@@ -2230,7 +2862,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.04,
                           "revenueGrowth":  2.16,
                           "netIncomeGrowth":  -1.74,
-                          "cashFlowGrowth":  4.93
+                          "cashFlowGrowth":  4.93,
+                          "operatingMargin":  18.2,
+                          "roe":  5.3,
+                          "debtRatio":  197.3,
+                          "week52RangePct":  66.3
                       },
                       {
                           "symbol":  "EIX",
@@ -2244,7 +2880,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.9,
                           "revenueGrowth":  9.76,
                           "netIncomeGrowth":  204.08,
-                          "cashFlowGrowth":  15.68
+                          "cashFlowGrowth":  15.68,
+                          "operatingMargin":  25.1,
+                          "roe":  3.2,
+                          "debtRatio":  439.7,
+                          "week52RangePct":  74.2
                       },
                       {
                           "symbol":  "EW",
@@ -2258,7 +2898,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  11.55,
                           "netIncomeGrowth":  -74.28,
-                          "cashFlowGrowth":  194.15
+                          "cashFlowGrowth":  194.15,
+                          "operatingMargin":  31.2,
+                          "roe":  3.7,
+                          "debtRatio":  29,
+                          "week52RangePct":  75.9
                       },
                       {
                           "symbol":  "ELV",
@@ -2272,7 +2916,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.72,
                           "revenueGrowth":  12.62,
                           "netIncomeGrowth":  -5.32,
-                          "cashFlowGrowth":  -26.14
+                          "cashFlowGrowth":  -26.14,
+                          "operatingMargin":  null,
+                          "roe":  3.3,
+                          "debtRatio":  181.4,
+                          "week52RangePct":  79.2
                       },
                       {
                           "symbol":  "EMR",
@@ -2286,7 +2934,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.41,
                           "revenueGrowth":  3,
                           "netIncomeGrowth":  16.51,
-                          "cashFlowGrowth":  -7.02
+                          "cashFlowGrowth":  -7.02,
+                          "operatingMargin":  19.8,
+                          "roe":  3,
+                          "debtRatio":  107.2,
+                          "week52RangePct":  79.9
                       },
                       {
                           "symbol":  "ETR",
@@ -2300,7 +2952,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.45,
                           "revenueGrowth":  8.98,
                           "netIncomeGrowth":  67.11,
-                          "cashFlowGrowth":  14.75
+                          "cashFlowGrowth":  14.75,
+                          "operatingMargin":  18.5,
+                          "roe":  2.3,
+                          "debtRatio":  336.5,
+                          "week52RangePct":  60.5
                       },
                       {
                           "symbol":  "EOG",
@@ -2314,7 +2970,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.67,
                           "revenueGrowth":  -3.4,
                           "netIncomeGrowth":  -22.22,
-                          "cashFlowGrowth":  -17.29
+                          "cashFlowGrowth":  -17.29,
+                          "operatingMargin":  36.9,
+                          "roe":  6.4,
+                          "debtRatio":  72.7,
+                          "week52RangePct":  93.4
                       },
                       {
                           "symbol":  "EQT",
@@ -2328,7 +2988,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.23,
                           "revenueGrowth":  59.96,
                           "netIncomeGrowth":  784.41,
-                          "cashFlowGrowth":  81.32
+                          "cashFlowGrowth":  81.32,
+                          "operatingMargin":  20.3,
+                          "roe":  0.8,
+                          "debtRatio":  49.3,
+                          "week52RangePct":  28.8
                       },
                       {
                           "symbol":  "EFX",
@@ -2342,7 +3006,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.16,
                           "revenueGrowth":  6.92,
                           "netIncomeGrowth":  9.3,
-                          "cashFlowGrowth":  21.99
+                          "cashFlowGrowth":  21.99,
+                          "operatingMargin":  18.5,
+                          "roe":  4.2,
+                          "debtRatio":  170.4,
+                          "week52RangePct":  36.2
                       },
                       {
                           "symbol":  "EQIX",
@@ -2356,7 +3024,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.94,
                           "revenueGrowth":  5.36,
                           "netIncomeGrowth":  65.64,
-                          "cashFlowGrowth":  20.38
+                          "cashFlowGrowth":  20.38,
+                          "operatingMargin":  26.4,
+                          "roe":  3.3,
+                          "debtRatio":  185.5,
+                          "week52RangePct":  82.0
                       },
                       {
                           "symbol":  "ERIE",
@@ -2370,7 +3042,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.21,
                           "revenueGrowth":  7.41,
                           "netIncomeGrowth":  -6.83,
-                          "cashFlowGrowth":  12.34
+                          "cashFlowGrowth":  12.34,
+                          "operatingMargin":  null,
+                          "roe":  7.3,
+                          "debtRatio":  44.2,
+                          "week52RangePct":  40.4
                       },
                       {
                           "symbol":  "ESS",
@@ -2384,7 +3060,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.58,
                           "revenueGrowth":  6.36,
                           "netIncomeGrowth":  -9.69,
-                          "cashFlowGrowth":  0.57
+                          "cashFlowGrowth":  0.57,
+                          "operatingMargin":  22,
+                          "roe":  1.2,
+                          "debtRatio":  138.7,
+                          "week52RangePct":  85.0
                       },
                       {
                           "symbol":  "EL",
@@ -2398,7 +3078,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.37,
                           "revenueGrowth":  5.05,
                           "netIncomeGrowth":  116.06,
-                          "cashFlowGrowth":  39.39
+                          "cashFlowGrowth":  39.39,
+                          "operatingMargin":  15,
+                          "roe":  2.2,
+                          "debtRatio":  392.5,
+                          "week52RangePct":  68.4
                       },
                       {
                           "symbol":  "EG",
@@ -2412,7 +3096,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.16,
                           "revenueGrowth":  0.83,
                           "netIncomeGrowth":  15.88,
-                          "cashFlowGrowth":  -38.11
+                          "cashFlowGrowth":  -38.11,
+                          "operatingMargin":  null,
+                          "roe":  4.3,
+                          "debtRatio":  null,
+                          "week52RangePct":  75.4
                       },
                       {
                           "symbol":  "EVRG",
@@ -2426,7 +3114,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.44,
                           "revenueGrowth":  1.95,
                           "netIncomeGrowth":  -2.05,
-                          "cashFlowGrowth":  3.1
+                          "cashFlowGrowth":  3.1,
+                          "operatingMargin":  25.1,
+                          "roe":  2.1,
+                          "debtRatio":  245.3,
+                          "week52RangePct":  60.3
                       },
                       {
                           "symbol":  "ES",
@@ -2440,7 +3132,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.49,
                           "revenueGrowth":  13.83,
                           "netIncomeGrowth":  108.51,
-                          "cashFlowGrowth":  90.47
+                          "cashFlowGrowth":  90.47,
+                          "operatingMargin":  23.9,
+                          "roe":  3.7,
+                          "debtRatio":  290.5,
+                          "week52RangePct":  62.3
                       },
                       {
                           "symbol":  "EXC",
@@ -2454,7 +3150,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.84,
                           "revenueGrowth":  5.34,
                           "netIncomeGrowth":  12.52,
-                          "cashFlowGrowth":  12.3
+                          "cashFlowGrowth":  12.3,
+                          "operatingMargin":  16.4,
+                          "roe":  1.3,
+                          "debtRatio":  305.8,
+                          "week52RangePct":  21.8
                       },
                       {
                           "symbol":  "EXE",
@@ -2468,7 +3168,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.39,
                           "revenueGrowth":  188.77,
                           "netIncomeGrowth":  354.76,
-                          "cashFlowGrowth":  192.33
+                          "cashFlowGrowth":  192.33,
+                          "operatingMargin":  24.4,
+                          "roe":  2.7,
+                          "debtRatio":  44.4,
+                          "week52RangePct":  27.2
                       },
                       {
                           "symbol":  "EXPE",
@@ -2482,7 +3186,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.6,
                           "revenueGrowth":  7.61,
                           "netIncomeGrowth":  4.86,
-                          "cashFlowGrowth":  25.77
+                          "cashFlowGrowth":  25.77,
+                          "operatingMargin":  19,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  98.7
                       },
                       {
                           "symbol":  "EXPD",
@@ -2496,7 +3204,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.86,
                           "revenueGrowth":  4.42,
                           "netIncomeGrowth":  0.03,
-                          "cashFlowGrowth":  39.14
+                          "cashFlowGrowth":  39.14,
+                          "operatingMargin":  10,
+                          "roe":  12.6,
+                          "debtRatio":  142.2,
+                          "week52RangePct":  97.2
                       },
                       {
                           "symbol":  "EXR",
@@ -2510,7 +3222,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.41,
                           "revenueGrowth":  3.7,
                           "netIncomeGrowth":  13.96,
-                          "cashFlowGrowth":  -1.97
+                          "cashFlowGrowth":  -1.97,
+                          "operatingMargin":  42.9,
+                          "roe":  1.8,
+                          "debtRatio":  111.7,
+                          "week52RangePct":  61.9
                       },
                       {
                           "symbol":  "XOM",
@@ -2524,7 +3240,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.5,
                           "revenueGrowth":  -4.52,
                           "netIncomeGrowth":  -14.36,
-                          "cashFlowGrowth":  -5.55
+                          "cashFlowGrowth":  -5.55,
+                          "operatingMargin":  15.9,
+                          "roe":  5.6,
+                          "debtRatio":  76.5,
+                          "week52RangePct":  81.8
                       },
                       {
                           "symbol":  "FFIV",
@@ -2538,7 +3258,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  9.66,
                           "netIncomeGrowth":  22.16,
-                          "cashFlowGrowth":  19.84
+                          "cashFlowGrowth":  19.84,
+                          "operatingMargin":  24.6,
+                          "roe":  5.4,
+                          "debtRatio":  77.1,
+                          "week52RangePct":  73.5
                       },
                       {
                           "symbol":  "FDS",
@@ -2552,7 +3276,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.55,
                           "revenueGrowth":  5.39,
                           "netIncomeGrowth":  11.15,
-                          "cashFlowGrowth":  3.7
+                          "cashFlowGrowth":  3.7,
+                          "operatingMargin":  26.7,
+                          "roe":  6.2,
+                          "debtRatio":  106.3,
+                          "week52RangePct":  59.7
                       },
                       {
                           "symbol":  "FICO",
@@ -2566,7 +3294,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  15.91,
                           "netIncomeGrowth":  27.13,
-                          "cashFlowGrowth":  23.04
+                          "cashFlowGrowth":  23.04,
+                          "operatingMargin":  53.8,
+                          "roe":  -5.8,
+                          "debtRatio":  -149.7,
+                          "week52RangePct":  26.3
                       },
                       {
                           "symbol":  "FAST",
@@ -2580,7 +3312,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.87,
                           "revenueGrowth":  8.67,
                           "netIncomeGrowth":  9.37,
-                          "cashFlowGrowth":  10.45
+                          "cashFlowGrowth":  10.45,
+                          "operatingMargin":  21,
+                          "roe":  9.4,
+                          "debtRatio":  30.1,
+                          "week52RangePct":  88.2
                       },
                       {
                           "symbol":  "FRT",
@@ -2594,7 +3330,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.97,
                           "revenueGrowth":  6.36,
                           "netIncomeGrowth":  39.25,
-                          "cashFlowGrowth":  8.32
+                          "cashFlowGrowth":  8.32,
+                          "operatingMargin":  35.2,
+                          "roe":  2.5,
+                          "debtRatio":  161.7,
+                          "week52RangePct":  72.1
                       },
                       {
                           "symbol":  "FDX",
@@ -2608,7 +3348,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.5,
                           "revenueGrowth":  7.73,
                           "netIncomeGrowth":  8.33,
-                          "cashFlowGrowth":  26.85
+                          "cashFlowGrowth":  26.85,
+                          "operatingMargin":  8.4,
+                          "roe":  5,
+                          "debtRatio":  212.6,
+                          "week52RangePct":  93.2
                       },
                       {
                           "symbol":  "FDXF",
@@ -2622,7 +3366,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  -1.09,
                           "netIncomeGrowth":  -51.34,
-                          "cashFlowGrowth":  -89.09
+                          "cashFlowGrowth":  -89.09,
+                          "operatingMargin":  10.2,
+                          "roe":  3.3,
+                          "debtRatio":  73.1,
+                          "week52RangePct":  1.5
                       },
                       {
                           "symbol":  "FERG",
@@ -2636,7 +3384,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.47,
                           "revenueGrowth":  3.8,
                           "netIncomeGrowth":  6.97,
-                          "cashFlowGrowth":  1.87
+                          "cashFlowGrowth":  1.87,
+                          "operatingMargin":  8.2,
+                          "roe":  7,
+                          "debtRatio":  202.8,
+                          "week52RangePct":  45.0
                       },
                       {
                           "symbol":  "FIS",
@@ -2650,7 +3402,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.26,
                           "revenueGrowth":  5.43,
                           "netIncomeGrowth":  -73.66,
-                          "cashFlowGrowth":  35.97
+                          "cashFlowGrowth":  35.97,
+                          "operatingMargin":  15,
+                          "roe":  1.4,
+                          "debtRatio":  175,
+                          "week52RangePct":  11.7
                       },
                       {
                           "symbol":  "FITB",
@@ -2664,7 +3420,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.92,
                           "revenueGrowth":  6.61,
                           "netIncomeGrowth":  8.99,
-                          "cashFlowGrowth":  59.84
+                          "cashFlowGrowth":  59.84,
+                          "operatingMargin":  null,
+                          "roe":  0.5,
+                          "debtRatio":  770.9,
+                          "week52RangePct":  76.3
                       },
                       {
                           "symbol":  "FSLR",
@@ -2678,7 +3438,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  24.09,
                           "netIncomeGrowth":  18.28,
-                          "cashFlowGrowth":  68.89
+                          "cashFlowGrowth":  68.89,
+                          "operatingMargin":  42.6,
+                          "roe":  4.1,
+                          "debtRatio":  29.7,
+                          "week52RangePct":  18.4
                       },
                       {
                           "symbol":  "FE",
@@ -2692,7 +3456,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.05,
                           "revenueGrowth":  12.01,
                           "netIncomeGrowth":  4.29,
-                          "cashFlowGrowth":  27.98
+                          "cashFlowGrowth":  27.98,
+                          "operatingMargin":  12.3,
+                          "roe":  2.2,
+                          "debtRatio":  338.6,
+                          "week52RangePct":  39.1
                       },
                       {
                           "symbol":  "FISV",
@@ -2706,7 +3474,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  3.6,
                           "netIncomeGrowth":  11.15,
-                          "cashFlowGrowth":  -8.58
+                          "cashFlowGrowth":  -8.58,
+                          "operatingMargin":  19.1,
+                          "roe":  2.3,
+                          "debtRatio":  200.6,
+                          "week52RangePct":  6.4
                       },
                       {
                           "symbol":  "FLEX",
@@ -2720,7 +3492,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  8.14,
                           "netIncomeGrowth":  5.01,
-                          "cashFlowGrowth":  11.96
+                          "cashFlowGrowth":  11.96,
+                          "operatingMargin":  5.3,
+                          "roe":  4.9,
+                          "debtRatio":  328.8,
+                          "week52RangePct":  47.7
                       },
                       {
                           "symbol":  "F",
@@ -2734,7 +3510,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.16,
                           "revenueGrowth":  1.23,
                           "netIncomeGrowth":  -239.17,
-                          "cashFlowGrowth":  37.99
+                          "cashFlowGrowth":  37.99,
+                          "operatingMargin":  1.3,
+                          "roe":  -3.7,
+                          "debtRatio":  699.3,
+                          "week52RangePct":  42.3
                       },
                       {
                           "symbol":  "FTNT",
@@ -2748,7 +3528,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  14.17,
                           "netIncomeGrowth":  6.2,
-                          "cashFlowGrowth":  14.72
+                          "cashFlowGrowth":  14.72,
+                          "operatingMargin":  33.7,
+                          "roe":  39.1,
+                          "debtRatio":  600.1,
+                          "week52RangePct":  79.6
                       },
                       {
                           "symbol":  "FTV",
@@ -2762,7 +3546,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.47,
                           "revenueGrowth":  1.92,
                           "netIncomeGrowth":  -30.46,
-                          "cashFlowGrowth":  -29.05
+                          "cashFlowGrowth":  -29.05,
+                          "operatingMargin":  19.1,
+                          "roe":  2.6,
+                          "debtRatio":  91.5,
+                          "week52RangePct":  77.2
                       },
                       {
                           "symbol":  "BEN",
@@ -2776,7 +3564,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.85,
                           "revenueGrowth":  3.45,
                           "netIncomeGrowth":  12.93,
-                          "cashFlowGrowth":  9.76
+                          "cashFlowGrowth":  9.76,
+                          "operatingMargin":  15.9,
+                          "roe":  2.2,
+                          "debtRatio":  160.8,
+                          "week52RangePct":  89.1
                       },
                       {
                           "symbol":  "FCX",
@@ -2790,7 +3582,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.78,
                           "revenueGrowth":  1.81,
                           "netIncomeGrowth":  16.68,
-                          "cashFlowGrowth":  -21.65
+                          "cashFlowGrowth":  -21.65,
+                          "operatingMargin":  28.2,
+                          "roe":  4.9,
+                          "debtRatio":  136.8,
+                          "week52RangePct":  97.5
                       },
                       {
                           "symbol":  "GRMN",
@@ -2804,7 +3600,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.42,
                           "revenueGrowth":  15.06,
                           "netIncomeGrowth":  17.89,
-                          "cashFlowGrowth":  14.02
+                          "cashFlowGrowth":  14.02,
+                          "operatingMargin":  30.4,
+                          "roe":  6,
+                          "debtRatio":  26.5,
+                          "week52RangePct":  82.0
                       },
                       {
                           "symbol":  "IT",
@@ -2818,7 +3618,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  3.67,
                           "netIncomeGrowth":  -41.83,
-                          "cashFlowGrowth":  -13.1
+                          "cashFlowGrowth":  -13.1,
+                          "operatingMargin":  20.5,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  55.5
                       },
                       {
                           "symbol":  "GE",
@@ -2832,7 +3636,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.54,
                           "revenueGrowth":  18.48,
                           "netIncomeGrowth":  32.76,
-                          "cashFlowGrowth":  81.25
+                          "cashFlowGrowth":  81.25,
+                          "operatingMargin":  19.2,
+                          "roe":  13.4,
+                          "debtRatio":  622.5,
+                          "week52RangePct":  61.3
                       },
                       {
                           "symbol":  "GEHC",
@@ -2846,7 +3654,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.19,
                           "revenueGrowth":  4.84,
                           "netIncomeGrowth":  4.57,
-                          "cashFlowGrowth":  1.85
+                          "cashFlowGrowth":  1.85,
+                          "operatingMargin":  13.9,
+                          "roe":  5.1,
+                          "debtRatio":  237.2,
+                          "week52RangePct":  49.8
                       },
                       {
                           "symbol":  "GEV",
@@ -2860,7 +3672,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.21,
                           "revenueGrowth":  8.97,
                           "netIncomeGrowth":  214.69,
-                          "cashFlowGrowth":  93.07
+                          "cashFlowGrowth":  93.07,
+                          "operatingMargin":  5.9,
+                          "roe":  5.6,
+                          "debtRatio":  566.1,
+                          "week52RangePct":  61.9
                       },
                       {
                           "symbol":  "GEN",
@@ -2874,7 +3690,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.73,
                           "revenueGrowth":  27.06,
                           "netIncomeGrowth":  51.32,
-                          "cashFlowGrowth":  26.54
+                          "cashFlowGrowth":  26.54,
+                          "operatingMargin":  35.6,
+                          "roe":  8.1,
+                          "debtRatio":  489,
+                          "week52RangePct":  84.9
                       },
                       {
                           "symbol":  "GNRC",
@@ -2888,7 +3708,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  -2.02,
                           "netIncomeGrowth":  -50.95,
-                          "cashFlowGrowth":  -40.92
+                          "cashFlowGrowth":  -40.92,
+                          "operatingMargin":  17.9,
+                          "roe":  5,
+                          "debtRatio":  100.6,
+                          "week52RangePct":  42.5
                       },
                       {
                           "symbol":  "GD",
@@ -2902,7 +3726,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.66,
                           "revenueGrowth":  10.13,
                           "netIncomeGrowth":  11.32,
-                          "cashFlowGrowth":  24.51
+                          "cashFlowGrowth":  24.51,
+                          "operatingMargin":  10.4,
+                          "roe":  4.3,
+                          "debtRatio":  124.3,
+                          "week52RangePct":  82.6
                       },
                       {
                           "symbol":  "GIS",
@@ -2916,7 +3744,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  6.1,
                           "revenueGrowth":  -5.45,
                           "netIncomeGrowth":  -103.82,
-                          "cashFlowGrowth":  -25.77
+                          "cashFlowGrowth":  -25.77,
+                          "operatingMargin":  15.5,
+                          "roe":  -27.3,
+                          "debtRatio":  307.2,
+                          "week52RangePct":  46.8
                       },
                       {
                           "symbol":  "GM",
@@ -2930,7 +3762,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.82,
                           "revenueGrowth":  -1.29,
                           "netIncomeGrowth":  -55.11,
-                          "cashFlowGrowth":  33.47
+                          "cashFlowGrowth":  33.47,
+                          "operatingMargin":  3,
+                          "roe":  2.1,
+                          "debtRatio":  353.4,
+                          "week52RangePct":  87.0
                       },
                       {
                           "symbol":  "GPC",
@@ -2944,7 +3780,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.17,
                           "revenueGrowth":  3.46,
                           "netIncomeGrowth":  -92.71,
-                          "cashFlowGrowth":  -28.81
+                          "cashFlowGrowth":  -28.81,
+                          "operatingMargin":  6.2,
+                          "roe":  5,
+                          "debtRatio":  364.9,
+                          "week52RangePct":  73.9
                       },
                       {
                           "symbol":  "GILD",
@@ -2958,7 +3798,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.24,
                           "revenueGrowth":  2.39,
                           "netIncomeGrowth":  1672.92,
-                          "cashFlowGrowth":  -7.47
+                          "cashFlowGrowth":  -7.47,
+                          "operatingMargin":  32.5,
+                          "roe":  -88.7,
+                          "debtRatio":  318,
+                          "week52RangePct":  78.4
                       },
                       {
                           "symbol":  "GPN",
@@ -2972,7 +3816,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.07,
                           "revenueGrowth":  -0.39,
                           "netIncomeGrowth":  -10.84,
-                          "cashFlowGrowth":  -13.11
+                          "cashFlowGrowth":  -13.11,
+                          "operatingMargin":  10.2,
+                          "roe":  0.1,
+                          "debtRatio":  171.4,
+                          "week52RangePct":  95.4
                       },
                       {
                           "symbol":  "GL",
@@ -2986,7 +3834,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.77,
                           "revenueGrowth":  3.74,
                           "netIncomeGrowth":  8.45,
-                          "cashFlowGrowth":  -0.43
+                          "cashFlowGrowth":  -0.43,
+                          "operatingMargin":  null,
+                          "roe":  4.4,
+                          "debtRatio":  408.9,
+                          "week52RangePct":  71.1
                       },
                       {
                           "symbol":  "GDDY",
@@ -3000,7 +3852,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  8.26,
                           "netIncomeGrowth":  -6.61,
-                          "cashFlowGrowth":  24.21
+                          "cashFlowGrowth":  24.21,
+                          "operatingMargin":  27.1,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  36.7
                       },
                       {
                           "symbol":  "GS",
@@ -3014,7 +3870,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.92,
                           "revenueGrowth":  8.92,
                           "netIncomeGrowth":  20.31,
-                          "cashFlowGrowth":  -241.77
+                          "cashFlowGrowth":  -241.77,
+                          "operatingMargin":  null,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  72.8
                       },
                       {
                           "symbol":  "HAL",
@@ -3028,7 +3888,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.92,
                           "revenueGrowth":  -3.31,
                           "netIncomeGrowth":  -48.7,
-                          "cashFlowGrowth":  -24.29
+                          "cashFlowGrowth":  -24.29,
+                          "operatingMargin":  12,
+                          "roe":  4.9,
+                          "debtRatio":  134.2,
+                          "week52RangePct":  59.6
                       },
                       {
                           "symbol":  "HIG",
@@ -3042,7 +3906,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.76,
                           "revenueGrowth":  6.39,
                           "netIncomeGrowth":  23.3,
-                          "cashFlowGrowth":  0.22
+                          "cashFlowGrowth":  0.22,
+                          "operatingMargin":  null,
+                          "roe":  6.6,
+                          "debtRatio":  348.1,
+                          "week52RangePct":  72.5
                       },
                       {
                           "symbol":  "HAS",
@@ -3056,7 +3924,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.99,
                           "revenueGrowth":  13.68,
                           "netIncomeGrowth":  -183.61,
-                          "cashFlowGrowth":  5.4
+                          "cashFlowGrowth":  5.4,
+                          "operatingMargin":  22.2,
+                          "roe":  22.8,
+                          "debtRatio":  752.5,
+                          "week52RangePct":  69.1
                       },
                       {
                           "symbol":  "HCA",
@@ -3070,7 +3942,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.73,
                           "revenueGrowth":  7.08,
                           "netIncomeGrowth":  17.78,
-                          "cashFlowGrowth":  20.18
+                          "cashFlowGrowth":  20.18,
+                          "operatingMargin":  15.2,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  37.2
                       },
                       {
                           "symbol":  "DOC",
@@ -3084,7 +3960,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  5.7,
                           "revenueGrowth":  4.52,
                           "netIncomeGrowth":  -70.66,
-                          "cashFlowGrowth":  16.95
+                          "cashFlowGrowth":  16.95,
+                          "operatingMargin":  17.2,
+                          "roe":  0.7,
+                          "debtRatio":  155.3,
+                          "week52RangePct":  81.8
                       },
                       {
                           "symbol":  "HSIC",
@@ -3098,7 +3978,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  4.03,
                           "netIncomeGrowth":  2.05,
-                          "cashFlowGrowth":  -16.04
+                          "cashFlowGrowth":  -16.04,
+                          "operatingMargin":  5.8,
+                          "roe":  3,
+                          "debtRatio":  210.9,
+                          "week52RangePct":  91.2
                       },
                       {
                           "symbol":  "HSY",
@@ -3112,7 +3996,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.11,
                           "revenueGrowth":  4.38,
                           "netIncomeGrowth":  -60.24,
-                          "cashFlowGrowth":  -10.04
+                          "cashFlowGrowth":  -10.04,
+                          "operatingMargin":  23.1,
+                          "roe":  10,
+                          "debtRatio":  206.2,
+                          "week52RangePct":  36.5
                       },
                       {
                           "symbol":  "HPE",
@@ -3126,7 +4014,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.07,
                           "revenueGrowth":  13.84,
                           "netIncomeGrowth":  -97.79,
-                          "cashFlowGrowth":  -32.76
+                          "cashFlowGrowth":  -32.76,
+                          "operatingMargin":  7.7,
+                          "roe":  2.5,
+                          "debtRatio":  214.1,
+                          "week52RangePct":  73.4
                       },
                       {
                           "symbol":  "HLT",
@@ -3140,7 +4032,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.18,
                           "revenueGrowth":  7.74,
                           "netIncomeGrowth":  -5.08,
-                          "cashFlowGrowth":  5.76
+                          "cashFlowGrowth":  5.76,
+                          "operatingMargin":  25.7,
+                          "roe":  -7.6,
+                          "debtRatio":  -368,
+                          "week52RangePct":  73.3
                       },
                       {
                           "symbol":  "HD",
@@ -3154,7 +4050,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.78,
                           "revenueGrowth":  3.24,
                           "netIncomeGrowth":  -4.39,
-                          "cashFlowGrowth":  -17.59
+                          "cashFlowGrowth":  -17.59,
+                          "operatingMargin":  11.9,
+                          "roe":  23.7,
+                          "debtRatio":  677.7,
+                          "week52RangePct":  35.1
                       },
                       {
                           "symbol":  "HONA",
@@ -3168,7 +4068,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  12.68,
                           "netIncomeGrowth":  -36.81,
-                          "cashFlowGrowth":  45.98
+                          "cashFlowGrowth":  45.98,
+                          "operatingMargin":  14.9,
+                          "roe":  -4.3,
+                          "debtRatio":  -438.7,
+                          "week52RangePct":  7.6
                       },
                       {
                           "symbol":  "HON",
@@ -3182,7 +4086,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.3,
                           "revenueGrowth":  7.85,
                           "netIncomeGrowth":  -17.11,
-                          "cashFlowGrowth":  5.1
+                          "cashFlowGrowth":  5.1,
+                          "operatingMargin":  18.4,
+                          "roe":  30.7,
+                          "debtRatio":  315.5,
+                          "week52RangePct":  29.3
                       },
                       {
                           "symbol":  "HRL",
@@ -3196,7 +4104,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.9,
                           "revenueGrowth":  1.55,
                           "netIncomeGrowth":  -40.6,
-                          "cashFlowGrowth":  -33.27
+                          "cashFlowGrowth":  -33.27,
+                          "operatingMargin":  6.7,
+                          "roe":  2,
+                          "debtRatio":  67.7,
+                          "week52RangePct":  46.7
                       },
                       {
                           "symbol":  "HST",
@@ -3210,7 +4122,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.45,
                           "revenueGrowth":  7.57,
                           "netIncomeGrowth":  9.76,
-                          "cashFlowGrowth":  0.8
+                          "cashFlowGrowth":  0.8,
+                          "operatingMargin":  17.9,
+                          "roe":  3.7,
+                          "debtRatio":  103.9,
+                          "week52RangePct":  75.0
                       },
                       {
                           "symbol":  "HWM",
@@ -3224,7 +4140,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.21,
                           "revenueGrowth":  11.06,
                           "netIncomeGrowth":  30.56,
-                          "cashFlowGrowth":  45.15
+                          "cashFlowGrowth":  45.15,
+                          "operatingMargin":  27.9,
+                          "roe":  9.3,
+                          "debtRatio":  131.2,
+                          "week52RangePct":  66.4
                       },
                       {
                           "symbol":  "HPQ",
@@ -3238,7 +4158,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.04,
                           "revenueGrowth":  3.24,
                           "netIncomeGrowth":  -8.86,
-                          "cashFlowGrowth":  -1.39
+                          "cashFlowGrowth":  -1.39,
+                          "operatingMargin":  6.8,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  75.3
                       },
                       {
                           "symbol":  "HUBB",
@@ -3252,7 +4176,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.21,
                           "revenueGrowth":  3.84,
                           "netIncomeGrowth":  13.88,
-                          "cashFlowGrowth":  3.89
+                          "cashFlowGrowth":  3.89,
+                          "operatingMargin":  20.4,
+                          "roe":  6.1,
+                          "debtRatio":  202.5,
+                          "week52RangePct":  38.9
                       },
                       {
                           "symbol":  "HUM",
@@ -3266,7 +4194,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.93,
                           "revenueGrowth":  10.11,
                           "netIncomeGrowth":  -1.57,
-                          "cashFlowGrowth":  -68.95
+                          "cashFlowGrowth":  -68.95,
+                          "operatingMargin":  null,
+                          "roe":  3.6,
+                          "debtRatio":  197.4,
+                          "week52RangePct":  84.1
                       },
                       {
                           "symbol":  "HBAN",
@@ -3280,7 +4212,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.64,
                           "revenueGrowth":  10.22,
                           "netIncomeGrowth":  13.97,
-                          "cashFlowGrowth":  35.19
+                          "cashFlowGrowth":  35.19,
+                          "operatingMargin":  null,
+                          "roe":  2.2,
+                          "debtRatio":  770.4,
+                          "week52RangePct":  47.0
                       },
                       {
                           "symbol":  "HII",
@@ -3294,7 +4230,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.85,
                           "revenueGrowth":  8.23,
                           "netIncomeGrowth":  10,
-                          "cashFlowGrowth":  204.33
+                          "cashFlowGrowth":  204.33,
+                          "operatingMargin":  5.5,
+                          "roe":  3.9,
+                          "debtRatio":  138.7,
+                          "week52RangePct":  15.8
                       },
                       {
                           "symbol":  "IBM",
@@ -3308,7 +4248,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.87,
                           "revenueGrowth":  7.62,
                           "netIncomeGrowth":  75.88,
-                          "cashFlowGrowth":  -1.87
+                          "cashFlowGrowth":  -1.87,
+                          "operatingMargin":  16.6,
+                          "roe":  6.3,
+                          "debtRatio":  341.2,
+                          "week52RangePct":  23.9
                       },
                       {
                           "symbol":  "IEX",
@@ -3322,7 +4266,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.25,
                           "revenueGrowth":  5.77,
                           "netIncomeGrowth":  -4.32,
-                          "cashFlowGrowth":  1.84
+                          "cashFlowGrowth":  1.84,
+                          "operatingMargin":  22,
+                          "roe":  3.6,
+                          "debtRatio":  72.9,
+                          "week52RangePct":  88.2
                       },
                       {
                           "symbol":  "IDXX",
@@ -3336,7 +4284,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  10.42,
                           "netIncomeGrowth":  19.33,
-                          "cashFlowGrowth":  27.21
+                          "cashFlowGrowth":  27.21,
+                          "operatingMargin":  35,
+                          "roe":  21,
+                          "debtRatio":  113.5,
+                          "week52RangePct":  16.3
                       },
                       {
                           "symbol":  "ITW",
@@ -3350,7 +4302,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.44,
                           "revenueGrowth":  0.92,
                           "netIncomeGrowth":  -12.1,
-                          "cashFlowGrowth":  -4.72
+                          "cashFlowGrowth":  -4.72,
+                          "operatingMargin":  26.7,
+                          "roe":  28.2,
+                          "debtRatio":  469.9,
+                          "week52RangePct":  70.1
                       },
                       {
                           "symbol":  "INCY",
@@ -3364,7 +4320,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  21.22,
                           "netIncomeGrowth":  3844.96,
-                          "cashFlowGrowth":  321.52
+                          "cashFlowGrowth":  321.52,
+                          "operatingMargin":  41.8,
+                          "roe":  9.2,
+                          "debtRatio":  24.1,
+                          "week52RangePct":  91.0
                       },
                       {
                           "symbol":  "IR",
@@ -3378,7 +4338,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.1,
                           "revenueGrowth":  5.75,
                           "netIncomeGrowth":  -30.67,
-                          "cashFlowGrowth":  -2.94
+                          "cashFlowGrowth":  -2.94,
+                          "operatingMargin":  17.5,
+                          "roe":  2.5,
+                          "debtRatio":  78.1,
+                          "week52RangePct":  36.2
                       },
                       {
                           "symbol":  "INTC",
@@ -3392,7 +4356,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  -0.47,
                           "netIncomeGrowth":  98.58,
-                          "cashFlowGrowth":  17
+                          "cashFlowGrowth":  17,
+                          "operatingMargin":  12.2,
+                          "roe":  -12.6,
+                          "debtRatio":  113.4,
+                          "week52RangePct":  53.6
                       },
                       {
                           "symbol":  "IBKR",
@@ -3406,7 +4374,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.37,
                           "revenueGrowth":  9.73,
                           "netIncomeGrowth":  30.33,
-                          "cashFlowGrowth":  81.24
+                          "cashFlowGrowth":  81.24,
+                          "operatingMargin":  85.6,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  87.7
                       },
                       {
                           "symbol":  "ICE",
@@ -3420,7 +4392,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.29,
                           "revenueGrowth":  7.47,
                           "netIncomeGrowth":  20.37,
-                          "cashFlowGrowth":  1.15
+                          "cashFlowGrowth":  1.15,
+                          "operatingMargin":  38.9,
+                          "roe":  3.2,
+                          "debtRatio":  489.3,
+                          "week52RangePct":  71.8
                       },
                       {
                           "symbol":  "IFF",
@@ -3434,7 +4410,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.9,
                           "revenueGrowth":  -5.17,
                           "netIncomeGrowth":  -237.26,
-                          "cashFlowGrowth":  -20.56
+                          "cashFlowGrowth":  -20.56,
+                          "operatingMargin":  8.4,
+                          "roe":  0.4,
+                          "debtRatio":  79.7,
+                          "week52RangePct":  88.4
                       },
                       {
                           "symbol":  "IP",
@@ -3448,7 +4428,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.46,
                           "revenueGrowth":  49.25,
                           "netIncomeGrowth":  -731.24,
-                          "cashFlowGrowth":  1.19
+                          "cashFlowGrowth":  1.19,
+                          "operatingMargin":  0.7,
+                          "roe":  -0.1,
+                          "debtRatio":  152.7,
+                          "week52RangePct":  56.1
                       },
                       {
                           "symbol":  "INTU",
@@ -3462,7 +4446,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.31,
                           "revenueGrowth":  15.63,
                           "netIncomeGrowth":  30.58,
-                          "cashFlowGrowth":  27.09
+                          "cashFlowGrowth":  27.09,
+                          "operatingMargin":  47,
+                          "roe":  14.9,
+                          "debtRatio":  90.7,
+                          "week52RangePct":  25.9
                       },
                       {
                           "symbol":  "ISRG",
@@ -3476,7 +4464,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  20.51,
                           "netIncomeGrowth":  null,
-                          "cashFlowGrowth":  25.49
+                          "cashFlowGrowth":  25.49,
+                          "operatingMargin":  33.6,
+                          "roe":  4.5,
+                          "debtRatio":  14.2,
+                          "week52RangePct":  16.3
                       },
                       {
                           "symbol":  "IVZ",
@@ -3490,7 +4482,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.69,
                           "revenueGrowth":  5.11,
                           "netIncomeGrowth":  -136.36,
-                          "cashFlowGrowth":  28.18
+                          "cashFlowGrowth":  28.18,
+                          "operatingMargin":  19.9,
+                          "roe":  3.1,
+                          "debtRatio":  112.3,
+                          "week52RangePct":  97.1
                       },
                       {
                           "symbol":  "INVH",
@@ -3504,7 +4500,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.99,
                           "revenueGrowth":  4.21,
                           "netIncomeGrowth":  29.52,
-                          "cashFlowGrowth":  11.5
+                          "cashFlowGrowth":  11.5,
+                          "operatingMargin":  25.2,
+                          "roe":  2.4,
+                          "debtRatio":  103.3,
+                          "week52RangePct":  87.7
                       },
                       {
                           "symbol":  "IQV",
@@ -3518,7 +4518,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  5.87,
                           "netIncomeGrowth":  -0.95,
-                          "cashFlowGrowth":  -2.28
+                          "cashFlowGrowth":  -2.28,
+                          "operatingMargin":  13,
+                          "roe":  4.1,
+                          "debtRatio":  382.1,
+                          "week52RangePct":  98.5
                       },
                       {
                           "symbol":  "IRM",
@@ -3532,7 +4536,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.83,
                           "revenueGrowth":  12.23,
                           "netIncomeGrowth":  -19.74,
-                          "cashFlowGrowth":  11.97
+                          "cashFlowGrowth":  11.97,
+                          "operatingMargin":  19.1,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  76.3
                       },
                       {
                           "symbol":  "JBHT",
@@ -3546,7 +4554,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.65,
                           "revenueGrowth":  -0.73,
                           "netIncomeGrowth":  4.8,
-                          "cashFlowGrowth":  13.16
+                          "cashFlowGrowth":  13.16,
+                          "operatingMargin":  7.4,
+                          "roe":  5,
+                          "debtRatio":  117.2,
+                          "week52RangePct":  76.5
                       },
                       {
                           "symbol":  "JBL",
@@ -3560,7 +4572,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.1,
                           "revenueGrowth":  3.18,
                           "netIncomeGrowth":  -52.67,
-                          "cashFlowGrowth":  -4.43
+                          "cashFlowGrowth":  -4.43,
+                          "operatingMargin":  5.2,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  48.2
                       },
                       {
                           "symbol":  "JKHY",
@@ -3574,7 +4590,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.43,
                           "revenueGrowth":  7.21,
                           "netIncomeGrowth":  19.36,
-                          "cashFlowGrowth":  12.93
+                          "cashFlowGrowth":  12.93,
+                          "operatingMargin":  24.4,
+                          "roe":  5.8,
+                          "debtRatio":  42.9,
+                          "week52RangePct":  68.4
                       },
                       {
                           "symbol":  "J",
@@ -3588,7 +4608,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.96,
                           "revenueGrowth":  4.6,
                           "netIncomeGrowth":  -64.11,
-                          "cashFlowGrowth":  -34.89
+                          "cashFlowGrowth":  -34.89,
+                          "operatingMargin":  7,
+                          "roe":  4.2,
+                          "debtRatio":  260.2,
+                          "week52RangePct":  73.2
                       },
                       {
                           "symbol":  "JNJ",
@@ -3602,7 +4626,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.98,
                           "revenueGrowth":  6.05,
                           "netIncomeGrowth":  90.56,
-                          "cashFlowGrowth":  1.09
+                          "cashFlowGrowth":  1.09,
+                          "operatingMargin":  28.3,
+                          "roe":  6.5,
+                          "debtRatio":  136.6,
+                          "week52RangePct":  96.7
                       },
                       {
                           "symbol":  "JCI",
@@ -3616,7 +4644,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.12,
                           "revenueGrowth":  2.81,
                           "netIncomeGrowth":  93.02,
-                          "cashFlowGrowth":  -33.32
+                          "cashFlowGrowth":  -33.32,
+                          "operatingMargin":  16.1,
+                          "roe":  5.6,
+                          "debtRatio":  187.2,
+                          "week52RangePct":  73.6
                       },
                       {
                           "symbol":  "JPM",
@@ -3630,7 +4662,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.71,
                           "revenueGrowth":  7.32,
                           "netIncomeGrowth":  -2.43,
-                          "cashFlowGrowth":  -251.76
+                          "cashFlowGrowth":  -251.76,
+                          "operatingMargin":  null,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  88.4
                       },
                       {
                           "symbol":  "KDP",
@@ -3644,7 +4680,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.87,
                           "revenueGrowth":  8.16,
                           "netIncomeGrowth":  44.27,
-                          "cashFlowGrowth":  -10.27
+                          "cashFlowGrowth":  -10.27,
+                          "operatingMargin":  19,
+                          "roe":  1.1,
+                          "debtRatio":  174,
+                          "week52RangePct":  85.3
                       },
                       {
                           "symbol":  "KEY",
@@ -3658,7 +4698,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.75,
                           "revenueGrowth":  65.72,
                           "netIncomeGrowth":  1236.02,
-                          "cashFlowGrowth":  232.53
+                          "cashFlowGrowth":  232.53,
+                          "operatingMargin":  null,
+                          "roe":  2.6,
+                          "debtRatio":  843.9,
+                          "week52RangePct":  71.1
                       },
                       {
                           "symbol":  "KEYS",
@@ -3672,7 +4716,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  7.95,
                           "netIncomeGrowth":  38.44,
-                          "cashFlowGrowth":  33.94
+                          "cashFlowGrowth":  33.94,
+                          "operatingMargin":  23.7,
+                          "roe":  5.5,
+                          "debtRatio":  85.4,
+                          "week52RangePct":  70.3
                       },
                       {
                           "symbol":  "KMB",
@@ -3686,7 +4734,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.68,
                           "revenueGrowth":  -2.13,
                           "netIncomeGrowth":  -20.59,
-                          "cashFlowGrowth":  -14.13
+                          "cashFlowGrowth":  -14.13,
+                          "operatingMargin":  15.1,
+                          "roe":  19.7,
+                          "debtRatio":  953.1,
+                          "week52RangePct":  48.5
                       },
                       {
                           "symbol":  "KIM",
@@ -3700,7 +4752,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.66,
                           "revenueGrowth":  5.06,
                           "netIncomeGrowth":  42.35,
-                          "cashFlowGrowth":  11.38
+                          "cashFlowGrowth":  11.38,
+                          "operatingMargin":  36.6,
+                          "roe":  1.5,
+                          "debtRatio":  93.6,
+                          "week52RangePct":  64.7
                       },
                       {
                           "symbol":  "KMI",
@@ -3714,7 +4770,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.81,
                           "revenueGrowth":  12.17,
                           "netIncomeGrowth":  16.95,
-                          "cashFlowGrowth":  5
+                          "cashFlowGrowth":  5,
+                          "operatingMargin":  30.1,
+                          "roe":  2.7,
+                          "debtRatio":  130.2,
+                          "week52RangePct":  58.6
                       },
                       {
                           "symbol":  "KKR",
@@ -3728,7 +4788,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.72,
                           "revenueGrowth":  -11.24,
                           "netIncomeGrowth":  -22.94,
-                          "cashFlowGrowth":  -92.82
+                          "cashFlowGrowth":  -92.82,
+                          "operatingMargin":  5.8,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  35.5
                       },
                       {
                           "symbol":  "KLAC",
@@ -3742,7 +4806,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.5,
                           "revenueGrowth":  11.71,
                           "netIncomeGrowth":  18.94,
-                          "cashFlowGrowth":  1.5
+                          "cashFlowGrowth":  1.5,
+                          "operatingMargin":  42.5,
+                          "roe":  21.5,
+                          "debtRatio":  182.7,
+                          "week52RangePct":  43.9
                       },
                       {
                           "symbol":  "KHC",
@@ -3756,7 +4824,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  6.25,
                           "revenueGrowth":  -3.5,
                           "netIncomeGrowth":  -313.05,
-                          "cashFlowGrowth":  6.64
+                          "cashFlowGrowth":  6.64,
+                          "operatingMargin":  14.7,
+                          "roe":  -15.2,
+                          "debtRatio":  102.6,
+                          "week52RangePct":  65.7
                       },
                       {
                           "symbol":  "KR",
@@ -3770,7 +4842,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.49,
                           "revenueGrowth":  0.35,
                           "netIncomeGrowth":  -61.88,
-                          "cashFlowGrowth":  26.18
+                          "cashFlowGrowth":  26.18,
+                          "operatingMargin":  3.1,
+                          "roe":  14,
+                          "debtRatio":  677,
+                          "week52RangePct":  22.0
                       },
                       {
                           "symbol":  "LHX",
@@ -3784,7 +4860,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.87,
                           "revenueGrowth":  2.53,
                           "netIncomeGrowth":  6.92,
-                          "cashFlowGrowth":  21.38
+                          "cashFlowGrowth":  21.38,
+                          "operatingMargin":  11.3,
+                          "roe":  2.8,
+                          "debtRatio":  105.9,
+                          "week52RangePct":  1.1
                       },
                       {
                           "symbol":  "LH",
@@ -3798,7 +4878,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.86,
                           "revenueGrowth":  7.25,
                           "netIncomeGrowth":  17.49,
-                          "cashFlowGrowth":  3.45
+                          "cashFlowGrowth":  3.45,
+                          "operatingMargin":  12.2,
+                          "roe":  3.5,
+                          "debtRatio":  115.1,
+                          "week52RangePct":  99.6
                       },
                       {
                           "symbol":  "LRCX",
@@ -3812,7 +4896,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.33,
                           "revenueGrowth":  26.02,
                           "netIncomeGrowth":  35.59,
-                          "cashFlowGrowth":  -5.11
+                          "cashFlowGrowth":  -5.11,
+                          "operatingMargin":  37.4,
+                          "roe":  18.3,
+                          "debtRatio":  88.7,
+                          "week52RangePct":  62.7
                       },
                       {
                           "symbol":  "LVS",
@@ -3826,7 +4914,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.55,
                           "revenueGrowth":  15.22,
                           "netIncomeGrowth":  12.52,
-                          "cashFlowGrowth":  -5.65
+                          "cashFlowGrowth":  -5.65,
+                          "operatingMargin":  19.8,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  10.5
                       },
                       {
                           "symbol":  "LDOS",
@@ -3840,7 +4932,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.22,
                           "revenueGrowth":  3.07,
                           "netIncomeGrowth":  15.47,
-                          "cashFlowGrowth":  21.95
+                          "cashFlowGrowth":  21.95,
+                          "operatingMargin":  11.7,
+                          "roe":  6.7,
+                          "debtRatio":  194.9,
+                          "week52RangePct":  37.0
                       },
                       {
                           "symbol":  "LEN",
@@ -3854,7 +4950,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.3,
                           "revenueGrowth":  -3.54,
                           "netIncomeGrowth":  -47.15,
-                          "cashFlowGrowth":  -90.98
+                          "cashFlowGrowth":  -90.98,
+                          "operatingMargin":  5.3,
+                          "roe":  1.4,
+                          "debtRatio":  55.2,
+                          "week52RangePct":  12.9
                       },
                       {
                           "symbol":  "LII",
@@ -3868,7 +4968,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.35,
                           "revenueGrowth":  -2.73,
                           "netIncomeGrowth":  -0.65,
-                          "cashFlowGrowth":  null
+                          "cashFlowGrowth":  null,
+                          "operatingMargin":  23.1,
+                          "roe":  20.7,
+                          "debtRatio":  250.4,
+                          "week52RangePct":  2.2
                       },
                       {
                           "symbol":  "LLY",
@@ -3882,7 +4986,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.55,
                           "revenueGrowth":  44.7,
                           "netIncomeGrowth":  94.9,
-                          "cashFlowGrowth":  90.67
+                          "cashFlowGrowth":  90.67,
+                          "operatingMargin":  54.2,
+                          "roe":  20.9,
+                          "debtRatio":  320,
+                          "week52RangePct":  92.1
                       },
                       {
                           "symbol":  "LIN",
@@ -3896,7 +5004,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.31,
                           "revenueGrowth":  2.97,
                           "netIncomeGrowth":  5.07,
-                          "cashFlowGrowth":  9.84
+                          "cashFlowGrowth":  9.84,
+                          "operatingMargin":  27.3,
+                          "roe":  4.9,
+                          "debtRatio":  122.1,
+                          "week52RangePct":  63.7
                       },
                       {
                           "symbol":  "LYV",
@@ -3910,7 +5022,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  8.83,
                           "netIncomeGrowth":  -44.66,
-                          "cashFlowGrowth":  -19.12
+                          "cashFlowGrowth":  -19.12,
+                          "operatingMargin":  6.7,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  92.7
                       },
                       {
                           "symbol":  "LMT",
@@ -3924,7 +5040,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.45,
                           "revenueGrowth":  5.64,
                           "netIncomeGrowth":  -5.98,
-                          "cashFlowGrowth":  22.73
+                          "cashFlowGrowth":  22.73,
+                          "operatingMargin":  12.4,
+                          "roe":  20.9,
+                          "debtRatio":  612.2,
+                          "week52RangePct":  49.8
                       },
                       {
                           "symbol":  "L",
@@ -3938,7 +5058,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.23,
                           "revenueGrowth":  5.44,
                           "netIncomeGrowth":  17.89,
-                          "cashFlowGrowth":  8.4
+                          "cashFlowGrowth":  8.4,
+                          "operatingMargin":  null,
+                          "roe":  2.3,
+                          "debtRatio":  351.5,
+                          "week52RangePct":  63.1
                       },
                       {
                           "symbol":  "LOW",
@@ -3952,7 +5076,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.31,
                           "revenueGrowth":  3.12,
                           "netIncomeGrowth":  -4.36,
-                          "cashFlowGrowth":  2.48
+                          "cashFlowGrowth":  2.48,
+                          "operatingMargin":  11.1,
+                          "roe":  -17.6,
+                          "debtRatio":  -692.7,
+                          "week52RangePct":  18.8
                       },
                       {
                           "symbol":  "LULU",
@@ -3966,7 +5094,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  4.86,
                           "netIncomeGrowth":  -12.97,
-                          "cashFlowGrowth":  -29.49
+                          "cashFlowGrowth":  -29.49,
+                          "operatingMargin":  11.2,
+                          "roe":  4,
+                          "debtRatio":  76.8,
+                          "week52RangePct":  15.1
                       },
                       {
                           "symbol":  "LITE",
@@ -3980,7 +5112,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  83.22,
                           "netIncomeGrowth":  -26876.45,
-                          "cashFlowGrowth":  494.93
+                          "cashFlowGrowth":  494.93,
+                          "operatingMargin":  21.7,
+                          "roe":  4.8,
+                          "debtRatio":  136.4,
+                          "week52RangePct":  73.4
                       },
                       {
                           "symbol":  "LYB",
@@ -3994,7 +5130,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.09,
                           "revenueGrowth":  -9.71,
                           "netIncomeGrowth":  -154.78,
-                          "cashFlowGrowth":  -40.77
+                          "cashFlowGrowth":  -40.77,
+                          "operatingMargin":  17.6,
+                          "roe":  5.2,
+                          "debtRatio":  222,
+                          "week52RangePct":  55.8
                       },
                       {
                           "symbol":  "MTB",
@@ -4008,7 +5148,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.5,
                           "revenueGrowth":  4.34,
                           "netIncomeGrowth":  10.16,
-                          "cashFlowGrowth":  -16.81
+                          "cashFlowGrowth":  -16.81,
+                          "operatingMargin":  null,
+                          "roe":  2.9,
+                          "debtRatio":  684.6,
+                          "week52RangePct":  82.6
                       },
                       {
                           "symbol":  "MPC",
@@ -4022,7 +5166,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.11,
                           "revenueGrowth":  -4.44,
                           "netIncomeGrowth":  17.47,
-                          "cashFlowGrowth":  -4.75
+                          "cashFlowGrowth":  -4.75,
+                          "operatingMargin":  13.4,
+                          "roe":  26.9,
+                          "debtRatio":  359.5,
+                          "week52RangePct":  97.5
                       },
                       {
                           "symbol":  "MAR",
@@ -4036,7 +5184,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.82,
                           "revenueGrowth":  4.33,
                           "netIncomeGrowth":  9.52,
-                          "cashFlowGrowth":  16.84
+                          "cashFlowGrowth":  16.84,
+                          "operatingMargin":  17.2,
+                          "roe":  -16.9,
+                          "debtRatio":  -720.7,
+                          "week52RangePct":  67.1
                       },
                       {
                           "symbol":  "MRSH",
@@ -4050,7 +5202,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.06,
                           "revenueGrowth":  10.32,
                           "netIncomeGrowth":  2.46,
-                          "cashFlowGrowth":  23.01
+                          "cashFlowGrowth":  23.01,
+                          "operatingMargin":  25.6,
+                          "roe":  8.3,
+                          "debtRatio":  291.4,
+                          "week52RangePct":  74.3
                       },
                       {
                           "symbol":  "MLM",
@@ -4064,7 +5220,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.63,
                           "revenueGrowth":  8.62,
                           "netIncomeGrowth":  -43.01,
-                          "cashFlowGrowth":  22.34
+                          "cashFlowGrowth":  22.34,
+                          "operatingMargin":  20,
+                          "roe":  2.2,
+                          "debtRatio":  84.5,
+                          "week52RangePct":  5.8
                       },
                       {
                           "symbol":  "MRVL",
@@ -4078,7 +5238,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.1,
                           "revenueGrowth":  42.09,
                           "netIncomeGrowth":  401.71,
-                          "cashFlowGrowth":  4.12
+                          "cashFlowGrowth":  4.12,
+                          "operatingMargin":  14.5,
+                          "roe":  0.2,
+                          "debtRatio":  47.9,
+                          "week52RangePct":  62.5
                       },
                       {
                           "symbol":  "MAS",
@@ -4092,7 +5256,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.75,
                           "revenueGrowth":  -3.4,
                           "netIncomeGrowth":  -1.46,
-                          "cashFlowGrowth":  -4.93
+                          "cashFlowGrowth":  -4.93,
+                          "operatingMargin":  23.6,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  59.1
                       },
                       {
                           "symbol":  "MA",
@@ -4106,7 +5274,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.6,
                           "revenueGrowth":  16.42,
                           "netIncomeGrowth":  16.27,
-                          "cashFlowGrowth":  19.4
+                          "cashFlowGrowth":  19.4,
+                          "operatingMargin":  61.7,
+                          "roe":  78.2,
+                          "debtRatio":  928.3,
+                          "week52RangePct":  98.7
                       },
                       {
                           "symbol":  "MKC",
@@ -4120,7 +5292,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.47,
                           "revenueGrowth":  1.73,
                           "netIncomeGrowth":  0.11,
-                          "cashFlowGrowth":  4.37
+                          "cashFlowGrowth":  4.37,
+                          "operatingMargin":  17.4,
+                          "roe":  2.1,
+                          "debtRatio":  127.3,
+                          "week52RangePct":  41.2
                       },
                       {
                           "symbol":  "MCD",
@@ -4134,7 +5310,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.75,
                           "revenueGrowth":  3.72,
                           "netIncomeGrowth":  4.13,
-                          "cashFlowGrowth":  11.69
+                          "cashFlowGrowth":  11.69,
+                          "operatingMargin":  46.5,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  14.3
                       },
                       {
                           "symbol":  "MCK",
@@ -4148,7 +5328,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.44,
                           "revenueGrowth":  12.36,
                           "netIncomeGrowth":  44.52,
-                          "cashFlowGrowth":  1.15
+                          "cashFlowGrowth":  1.15,
+                          "operatingMargin":  1.3,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  61.5
                       },
                       {
                           "symbol":  "MDT",
@@ -4162,7 +5346,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.09,
                           "revenueGrowth":  8.43,
                           "netIncomeGrowth":  2.98,
-                          "cashFlowGrowth":  4.06
+                          "cashFlowGrowth":  4.06,
+                          "operatingMargin":  20.5,
+                          "roe":  2.5,
+                          "debtRatio":  86.8,
+                          "week52RangePct":  59.3
                       },
                       {
                           "symbol":  "MRK",
@@ -4176,7 +5364,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.23,
                           "revenueGrowth":  1.31,
                           "netIncomeGrowth":  6.64,
-                          "cashFlowGrowth":  -23.27
+                          "cashFlowGrowth":  -23.27,
+                          "operatingMargin":  -2.6,
+                          "roe":  -3.2,
+                          "debtRatio":  209.4,
+                          "week52RangePct":  95.0
                       },
                       {
                           "symbol":  "META",
@@ -4190,7 +5382,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.38,
                           "revenueGrowth":  22.17,
                           "netIncomeGrowth":  -3.05,
-                          "cashFlowGrowth":  26.8
+                          "cashFlowGrowth":  26.8,
+                          "operatingMargin":  30.9,
+                          "roe":  6.1,
+                          "debtRatio":  72.3,
+                          "week52RangePct":  14.3
                       },
                       {
                           "symbol":  "MET",
@@ -4204,7 +5400,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.51,
                           "revenueGrowth":  7.88,
                           "netIncomeGrowth":  -23.66,
-                          "cashFlowGrowth":  17.08
+                          "cashFlowGrowth":  17.08,
+                          "operatingMargin":  null,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  86.0
                       },
                       {
                           "symbol":  "MTD",
@@ -4218,7 +5418,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  3.98,
                           "netIncomeGrowth":  0.7,
-                          "cashFlowGrowth":  -1.3
+                          "cashFlowGrowth":  -1.3,
+                          "operatingMargin":  30.6,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  74.9
                       },
                       {
                           "symbol":  "MGM",
@@ -4232,7 +5436,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  1.72,
                           "netIncomeGrowth":  -72.43,
-                          "cashFlowGrowth":  7.06
+                          "cashFlowGrowth":  7.06,
+                          "operatingMargin":  6.8,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  64.7
                       },
                       {
                           "symbol":  "MCHP",
@@ -4246,7 +5454,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.39,
                           "revenueGrowth":  7.08,
                           "netIncomeGrowth":  46100,
-                          "cashFlowGrowth":  7.13
+                          "cashFlowGrowth":  7.13,
+                          "operatingMargin":  24,
+                          "roe":  3.6,
+                          "debtRatio":  123.3,
+                          "week52RangePct":  44.8
                       },
                       {
                           "symbol":  "MU",
@@ -4260,7 +5472,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.05,
                           "revenueGrowth":  48.85,
                           "netIncomeGrowth":  997.56,
-                          "cashFlowGrowth":  106.01
+                          "cashFlowGrowth":  106.01,
+                          "operatingMargin":  80.4,
+                          "roe":  28,
+                          "debtRatio":  33.1,
+                          "week52RangePct":  69.8
                       },
                       {
                           "symbol":  "MSFT",
@@ -4274,7 +5490,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.75,
                           "revenueGrowth":  17.79,
                           "netIncomeGrowth":  31.34,
-                          "cashFlowGrowth":  34.35
+                          "cashFlowGrowth":  34.35,
+                          "operatingMargin":  45.1,
+                          "roe":  8.1,
+                          "debtRatio":  71.4,
+                          "week52RangePct":  67.5
                       },
                       {
                           "symbol":  "MAA",
@@ -4288,7 +5508,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.66,
                           "revenueGrowth":  0.83,
                           "netIncomeGrowth":  -15.28,
-                          "cashFlowGrowth":  -1.83
+                          "cashFlowGrowth":  -1.83,
+                          "operatingMargin":  25.4,
+                          "roe":  2.2,
+                          "debtRatio":  117.2,
+                          "week52RangePct":  49.3
                       },
                       {
                           "symbol":  "MRNA",
@@ -4302,7 +5526,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  -39.92,
                           "netIncomeGrowth":  20.75,
-                          "cashFlowGrowth":  37.65
+                          "cashFlowGrowth":  37.65,
+                          "operatingMargin":  -569.9,
+                          "roe":  -11.6,
+                          "debtRatio":  62.1,
+                          "week52RangePct":  75.5
                       },
                       {
                           "symbol":  "TAP",
@@ -4316,7 +5544,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.47,
                           "revenueGrowth":  -4.18,
                           "netIncomeGrowth":  -290.63,
-                          "cashFlowGrowth":  -6.59
+                          "cashFlowGrowth":  -6.59,
+                          "operatingMargin":  11.1,
+                          "roe":  2.3,
+                          "debtRatio":  137.9,
+                          "week52RangePct":  29.5
                       },
                       {
                           "symbol":  "MDLZ",
@@ -4330,7 +5562,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.23,
                           "revenueGrowth":  5.75,
                           "netIncomeGrowth":  -46.84,
-                          "cashFlowGrowth":  -8.07
+                          "cashFlowGrowth":  -8.07,
+                          "operatingMargin":  8.5,
+                          "roe":  2.2,
+                          "debtRatio":  176,
+                          "week52RangePct":  87.4
                       },
                       {
                           "symbol":  "MPWR",
@@ -4344,7 +5580,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.61,
                           "revenueGrowth":  26.43,
                           "netIncomeGrowth":  -60.96,
-                          "cashFlowGrowth":  6.32
+                          "cashFlowGrowth":  6.32,
+                          "operatingMargin":  31,
+                          "roe":  6.6,
+                          "debtRatio":  20.3,
+                          "week52RangePct":  53.0
                       },
                       {
                           "symbol":  "MNST",
@@ -4358,7 +5598,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  10.7,
                           "netIncomeGrowth":  26.27,
-                          "cashFlowGrowth":  8.8
+                          "cashFlowGrowth":  8.8,
+                          "operatingMargin":  29.2,
+                          "roe":  6.2,
+                          "debtRatio":  21.6,
+                          "week52RangePct":  93.6
                       },
                       {
                           "symbol":  "MCO",
@@ -4372,7 +5616,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.82,
                           "revenueGrowth":  8.89,
                           "netIncomeGrowth":  19.48,
-                          "cashFlowGrowth":  2.22
+                          "cashFlowGrowth":  2.22,
+                          "operatingMargin":  49.3,
+                          "roe":  29,
+                          "debtRatio":  380.5,
+                          "week52RangePct":  75.4
                       },
                       {
                           "symbol":  "MS",
@@ -4386,7 +5634,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.15,
                           "revenueGrowth":  14.48,
                           "netIncomeGrowth":  25.92,
-                          "cashFlowGrowth":  -1413.44
+                          "cashFlowGrowth":  -1413.44,
+                          "operatingMargin":  null,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  79.0
                       },
                       {
                           "symbol":  "MOS",
@@ -4400,7 +5652,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.61,
                           "revenueGrowth":  8.36,
                           "netIncomeGrowth":  209.15,
-                          "cashFlowGrowth":  -36.51
+                          "cashFlowGrowth":  -36.51,
+                          "operatingMargin":  -1,
+                          "roe":  -2.4,
+                          "debtRatio":  113.5,
+                          "week52RangePct":  24.4
                       },
                       {
                           "symbol":  "MSI",
@@ -4414,7 +5670,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.01,
                           "revenueGrowth":  8,
                           "netIncomeGrowth":  36.59,
-                          "cashFlowGrowth":  18.65
+                          "cashFlowGrowth":  18.65,
+                          "operatingMargin":  26.4,
+                          "roe":  20.8,
+                          "debtRatio":  619.5,
+                          "week52RangePct":  91.0
                       },
                       {
                           "symbol":  "MSCI",
@@ -4428,7 +5688,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.46,
                           "revenueGrowth":  9.75,
                           "netIncomeGrowth":  8.4,
-                          "cashFlowGrowth":  5.78
+                          "cashFlowGrowth":  5.78,
+                          "operatingMargin":  56.2,
+                          "roe":  -12.7,
+                          "debtRatio":  -308.3,
+                          "week52RangePct":  48.9
                       },
                       {
                           "symbol":  "NDAQ",
@@ -4442,7 +5706,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.18,
                           "revenueGrowth":  11.65,
                           "netIncomeGrowth":  60.07,
-                          "cashFlowGrowth":  16.3
+                          "cashFlowGrowth":  16.3,
+                          "operatingMargin":  28.9,
+                          "roe":  4.2,
+                          "debtRatio":  128,
+                          "week52RangePct":  88.1
                       },
                       {
                           "symbol":  "NTAP",
@@ -4456,7 +5724,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.08,
                           "revenueGrowth":  5.37,
                           "netIncomeGrowth":  7.59,
-                          "cashFlowGrowth":  37.25
+                          "cashFlowGrowth":  37.25,
+                          "operatingMargin":  27.3,
+                          "roe":  29.9,
+                          "debtRatio":  695.3,
+                          "week52RangePct":  80.8
                       },
                       {
                           "symbol":  "NFLX",
@@ -4470,7 +5742,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  15.85,
                           "netIncomeGrowth":  26.05,
-                          "cashFlowGrowth":  37.87
+                          "cashFlowGrowth":  37.87,
+                          "operatingMargin":  33.4,
+                          "roe":  11.3,
+                          "debtRatio":  93.9,
+                          "week52RangePct":  24.2
                       },
                       {
                           "symbol":  "NEM",
@@ -4484,7 +5760,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.79,
                           "revenueGrowth":  21.34,
                           "netIncomeGrowth":  111.62,
-                          "cashFlowGrowth":  62.41
+                          "cashFlowGrowth":  62.41,
+                          "operatingMargin":  51.6,
+                          "roe":  6.2,
+                          "debtRatio":  63.1,
+                          "week52RangePct":  95.2
                       },
                       {
                           "symbol":  "NEE",
@@ -4498,7 +5778,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.98,
                           "revenueGrowth":  10.74,
                           "netIncomeGrowth":  -1.6,
-                          "cashFlowGrowth":  -5.84
+                          "cashFlowGrowth":  -5.84,
+                          "operatingMargin":  30.2,
+                          "roe":  5.5,
+                          "debtRatio":  288.2,
+                          "week52RangePct":  50.4
                       },
                       {
                           "symbol":  "NKE",
@@ -4512,7 +5796,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.02,
                           "revenueGrowth":  0.19,
                           "netIncomeGrowth":  -3.45,
-                          "cashFlowGrowth":  -22.44
+                          "cashFlowGrowth":  -22.44,
+                          "operatingMargin":  11.9,
+                          "roe":  7.2,
+                          "debtRatio":  158.4,
+                          "week52RangePct":  4.6
                       },
                       {
                           "symbol":  "NI",
@@ -4526,7 +5814,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.95,
                           "revenueGrowth":  21.76,
                           "netIncomeGrowth":  22.24,
-                          "cashFlowGrowth":  32.6
+                          "cashFlowGrowth":  32.6,
+                          "operatingMargin":  17,
+                          "roe":  0.5,
+                          "debtRatio":  267.9,
+                          "week52RangePct":  22.1
                       },
                       {
                           "symbol":  "NDSN",
@@ -4540,7 +5832,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.99,
                           "revenueGrowth":  3.78,
                           "netIncomeGrowth":  3.68,
-                          "cashFlowGrowth":  29.3
+                          "cashFlowGrowth":  29.3,
+                          "operatingMargin":  26.6,
+                          "roe":  3.7,
+                          "debtRatio":  86.3,
+                          "week52RangePct":  96.1
                       },
                       {
                           "symbol":  "NSC",
@@ -4554,7 +5850,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.54,
                           "revenueGrowth":  0.47,
                           "netIncomeGrowth":  9.57,
-                          "cashFlowGrowth":  7.63
+                          "cashFlowGrowth":  7.63,
+                          "operatingMargin":  36.5,
+                          "roe":  4.5,
+                          "debtRatio":  177.6,
+                          "week52RangePct":  93.8
                       },
                       {
                           "symbol":  "NTRS",
@@ -4568,7 +5868,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.78,
                           "revenueGrowth":  -2.46,
                           "netIncomeGrowth":  -14.48,
-                          "cashFlowGrowth":  1238.58
+                          "cashFlowGrowth":  1238.58,
+                          "operatingMargin":  null,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  87.8
                       },
                       {
                           "symbol":  "NOC",
@@ -4582,7 +5886,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.79,
                           "revenueGrowth":  2.24,
                           "netIncomeGrowth":  0.19,
-                          "cashFlowGrowth":  8.41
+                          "cashFlowGrowth":  8.41,
+                          "operatingMargin":  10.1,
+                          "roe":  6.1,
+                          "debtRatio":  183.8,
+                          "week52RangePct":  23.8
                       },
                       {
                           "symbol":  "NCLH",
@@ -4596,7 +5904,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  3.67,
                           "netIncomeGrowth":  -53.5,
-                          "cashFlowGrowth":  1.95
+                          "cashFlowGrowth":  1.95,
+                          "operatingMargin":  13.8,
+                          "roe":  8.7,
+                          "debtRatio":  833.3,
+                          "week52RangePct":  21.3
                       },
                       {
                           "symbol":  "NRG",
@@ -4610,7 +5922,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.68,
                           "revenueGrowth":  9.18,
                           "netIncomeGrowth":  -23.2,
-                          "cashFlowGrowth":  -17.04
+                          "cashFlowGrowth":  -17.04,
+                          "operatingMargin":  12.8,
+                          "roe":  10.4,
+                          "debtRatio":  722.7,
+                          "week52RangePct":  0.6
                       },
                       {
                           "symbol":  "NUE",
@@ -4624,7 +5940,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.92,
                           "revenueGrowth":  5.73,
                           "netIncomeGrowth":  -13.96,
-                          "cashFlowGrowth":  -18.72
+                          "cashFlowGrowth":  -18.72,
+                          "operatingMargin":  11.8,
+                          "roe":  3.5,
+                          "debtRatio":  61,
+                          "week52RangePct":  76.2
                       },
                       {
                           "symbol":  "NVDA",
@@ -4638,7 +5958,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.47,
                           "revenueGrowth":  65.47,
                           "netIncomeGrowth":  64.75,
-                          "cashFlowGrowth":  60.27
+                          "cashFlowGrowth":  60.27,
+                          "operatingMargin":  65.6,
+                          "roe":  29.8,
+                          "debtRatio":  32.7,
+                          "week52RangePct":  61.3
                       },
                       {
                           "symbol":  "NVR",
@@ -4652,7 +5976,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  -1.91,
                           "netIncomeGrowth":  -20.34,
-                          "cashFlowGrowth":  -18.42
+                          "cashFlowGrowth":  -18.42,
+                          "operatingMargin":  13.4,
+                          "roe":  7,
+                          "debtRatio":  61.3,
+                          "week52RangePct":  28.8
                       },
                       {
                           "symbol":  "NXPI",
@@ -4666,7 +5994,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.8,
                           "revenueGrowth":  -2.74,
                           "netIncomeGrowth":  -19.48,
-                          "cashFlowGrowth":  1.37
+                          "cashFlowGrowth":  1.37,
+                          "operatingMargin":  30.8,
+                          "roe":  6.7,
+                          "debtRatio":  130.7,
+                          "week52RangePct":  25.1
                       },
                       {
                           "symbol":  "ORLY",
@@ -4680,7 +6012,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  6.42,
                           "netIncomeGrowth":  6.35,
-                          "cashFlowGrowth":  -9.43
+                          "cashFlowGrowth":  -9.43,
+                          "operatingMargin":  20.2,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  31.0
                       },
                       {
                           "symbol":  "OXY",
@@ -4694,7 +6030,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.83,
                           "revenueGrowth":  -1.93,
                           "netIncomeGrowth":  -23.89,
-                          "cashFlowGrowth":  -7.93
+                          "cashFlowGrowth":  -7.93,
+                          "operatingMargin":  45.4,
+                          "roe":  7.1,
+                          "debtRatio":  91,
+                          "week52RangePct":  74.4
                       },
                       {
                           "symbol":  "ODFL",
@@ -4708,7 +6048,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.56,
                           "revenueGrowth":  -5.48,
                           "netIncomeGrowth":  -13.69,
-                          "cashFlowGrowth":  -17.43
+                          "cashFlowGrowth":  -17.43,
+                          "operatingMargin":  29.9,
+                          "roe":  7.7,
+                          "debtRatio":  26.1,
+                          "week52RangePct":  59.9
                       },
                       {
                           "symbol":  "OMC",
@@ -4722,7 +6066,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.66,
                           "revenueGrowth":  10.09,
                           "netIncomeGrowth":  -103.68,
-                          "cashFlowGrowth":  69.5
+                          "cashFlowGrowth":  69.5,
+                          "operatingMargin":  14.1,
+                          "roe":  6.1,
+                          "debtRatio":  406.9,
+                          "week52RangePct":  97.3
                       },
                       {
                           "symbol":  "ON",
@@ -4736,7 +6084,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  -15.35,
                           "netIncomeGrowth":  -92.31,
-                          "cashFlowGrowth":  -7.69
+                          "cashFlowGrowth":  -7.69,
+                          "operatingMargin":  18.7,
+                          "roe":  3.1,
+                          "debtRatio":  86.5,
+                          "week52RangePct":  30.3
                       },
                       {
                           "symbol":  "OKE",
@@ -4750,7 +6102,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.59,
                           "revenueGrowth":  54.99,
                           "netIncomeGrowth":  11.8,
-                          "cashFlowGrowth":  14.55
+                          "cashFlowGrowth":  14.55,
+                          "operatingMargin":  13.3,
+                          "roe":  4.2,
+                          "debtRatio":  198.2,
+                          "week52RangePct":  85.6
                       },
                       {
                           "symbol":  "ORCL",
@@ -4764,7 +6120,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.37,
                           "revenueGrowth":  17.35,
                           "netIncomeGrowth":  37.32,
-                          "cashFlowGrowth":  53.58
+                          "cashFlowGrowth":  53.58,
+                          "operatingMargin":  36.3,
+                          "roe":  10.1,
+                          "debtRatio":  514.5,
+                          "week52RangePct":  12.1
                       },
                       {
                           "symbol":  "OTIS",
@@ -4778,7 +6138,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.46,
                           "revenueGrowth":  1.19,
                           "netIncomeGrowth":  -15.87,
-                          "cashFlowGrowth":  2.11
+                          "cashFlowGrowth":  2.11,
+                          "operatingMargin":  14.9,
+                          "roe":  -7.4,
+                          "debtRatio":  -289,
+                          "week52RangePct":  11.9
                       },
                       {
                           "symbol":  "PCAR",
@@ -4792,7 +6156,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.07,
                           "revenueGrowth":  -15.5,
                           "netIncomeGrowth":  -42.92,
-                          "cashFlowGrowth":  -4.85
+                          "cashFlowGrowth":  -4.85,
+                          "operatingMargin":  11.7,
+                          "roe":  3.7,
+                          "debtRatio":  116.4,
+                          "week52RangePct":  80.2
                       },
                       {
                           "symbol":  "PKG",
@@ -4806,7 +6174,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.37,
                           "revenueGrowth":  7.23,
                           "netIncomeGrowth":  -3.85,
-                          "cashFlowGrowth":  30.75
+                          "cashFlowGrowth":  30.75,
+                          "operatingMargin":  13.4,
+                          "roe":  4.1,
+                          "debtRatio":  136.3,
+                          "week52RangePct":  83.8
                       },
                       {
                           "symbol":  "PLTR",
@@ -4820,7 +6192,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  56.18,
                           "netIncomeGrowth":  251.59,
-                          "cashFlowGrowth":  84.98
+                          "cashFlowGrowth":  84.98,
+                          "operatingMargin":  47.1,
+                          "roe":  10.9,
+                          "debtRatio":  18.4,
+                          "week52RangePct":  68.7
                       },
                       {
                           "symbol":  "PANW",
@@ -4834,7 +6210,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  14.87,
                           "netIncomeGrowth":  -56.01,
-                          "cashFlowGrowth":  14.07
+                          "cashFlowGrowth":  14.07,
+                          "operatingMargin":  -6.1,
+                          "roe":  -0.6,
+                          "debtRatio":  67.2,
+                          "week52RangePct":  81.5
                       },
                       {
                           "symbol":  "PSKY",
@@ -4848,7 +6228,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.93,
                           "revenueGrowth":  -1.48,
                           "netIncomeGrowth":  -918.09,
-                          "cashFlowGrowth":  58.32
+                          "cashFlowGrowth":  58.32,
+                          "operatingMargin":  9.6,
+                          "roe":  0.3,
+                          "debtRatio":  268.5,
+                          "week52RangePct":  20.6
                       },
                       {
                           "symbol":  "PH",
@@ -4862,7 +6246,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.8,
                           "revenueGrowth":  -0.4,
                           "netIncomeGrowth":  24.16,
-                          "cashFlowGrowth":  11.58
+                          "cashFlowGrowth":  11.58,
+                          "operatingMargin":  20.7,
+                          "roe":  6.2,
+                          "debtRatio":  109.9,
+                          "week52RangePct":  77.7
                       },
                       {
                           "symbol":  "PAYX",
@@ -4876,7 +6264,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.82,
                           "revenueGrowth":  16.88,
                           "netIncomeGrowth":  6.2,
-                          "cashFlowGrowth":  34.5
+                          "cashFlowGrowth":  34.5,
+                          "operatingMargin":  37.7,
+                          "roe":  11.3,
+                          "debtRatio":  333,
+                          "week52RangePct":  75.0
                       },
                       {
                           "symbol":  "PYPL",
@@ -4890,7 +6282,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.91,
                           "revenueGrowth":  4.32,
                           "netIncomeGrowth":  26.19,
-                          "cashFlowGrowth":  -13.88
+                          "cashFlowGrowth":  -13.88,
+                          "operatingMargin":  17.7,
+                          "roe":  5.6,
+                          "debtRatio":  317.4,
+                          "week52RangePct":  57.0
                       },
                       {
                           "symbol":  "PNR",
@@ -4904,7 +6300,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.65,
                           "revenueGrowth":  2.28,
                           "netIncomeGrowth":  4.54,
-                          "cashFlowGrowth":  6.27
+                          "cashFlowGrowth":  6.27,
+                          "operatingMargin":  17.9,
+                          "roe":  3.4,
+                          "debtRatio":  79,
+                          "week52RangePct":  10.1
                       },
                       {
                           "symbol":  "PEP",
@@ -4918,7 +6318,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.13,
                           "revenueGrowth":  2.25,
                           "netIncomeGrowth":  -13.97,
-                          "cashFlowGrowth":  -3.36
+                          "cashFlowGrowth":  -3.36,
+                          "operatingMargin":  16.6,
+                          "roe":  13.5,
+                          "debtRatio":  406.9,
+                          "week52RangePct":  29.0
                       },
                       {
                           "symbol":  "PFE",
@@ -4932,7 +6336,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  6.13,
                           "revenueGrowth":  -1.65,
                           "netIncomeGrowth":  -3.24,
-                          "cashFlowGrowth":  -8.16
+                          "cashFlowGrowth":  -8.16,
+                          "operatingMargin":  23.5,
+                          "roe":  -0.3,
+                          "debtRatio":  135.7,
+                          "week52RangePct":  84.9
                       },
                       {
                           "symbol":  "PCG",
@@ -4946,7 +6354,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.14,
                           "revenueGrowth":  2.11,
                           "netIncomeGrowth":  7.6,
-                          "cashFlowGrowth":  8.48
+                          "cashFlowGrowth":  8.48,
+                          "operatingMargin":  21.4,
+                          "roe":  2.2,
+                          "debtRatio":  327.2,
+                          "week52RangePct":  78.2
                       },
                       {
                           "symbol":  "PM",
@@ -4960,7 +6372,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.12,
                           "revenueGrowth":  7.31,
                           "netIncomeGrowth":  60.8,
-                          "cashFlowGrowth":  0.13
+                          "cashFlowGrowth":  0.13,
+                          "operatingMargin":  40.5,
+                          "roe":  -32.8,
+                          "debtRatio":  -873,
+                          "week52RangePct":  75.2
                       },
                       {
                           "symbol":  "PSX",
@@ -4974,7 +6390,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.09,
                           "revenueGrowth":  -7.53,
                           "netIncomeGrowth":  107.98,
-                          "cashFlowGrowth":  18.4
+                          "cashFlowGrowth":  18.4,
+                          "operatingMargin":  8.4,
+                          "roe":  12.2,
+                          "debtRatio":  155.9,
+                          "week52RangePct":  95.8
                       },
                       {
                           "symbol":  "PNW",
@@ -4988,7 +6408,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.74,
                           "revenueGrowth":  4.2,
                           "netIncomeGrowth":  1.27,
-                          "cashFlowGrowth":  12.13
+                          "cashFlowGrowth":  12.13,
+                          "operatingMargin":  21,
+                          "roe":  2.5,
+                          "debtRatio":  362.5,
+                          "week52RangePct":  47.9
                       },
                       {
                           "symbol":  "PNC",
@@ -5002,7 +6426,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.29,
                           "revenueGrowth":  10.9,
                           "netIncomeGrowth":  17.78,
-                          "cashFlowGrowth":  -44.37
+                          "cashFlowGrowth":  -44.37,
+                          "operatingMargin":  null,
+                          "roe":  3.2,
+                          "debtRatio":  862.4,
+                          "week52RangePct":  81.4
                       },
                       {
                           "symbol":  "PPG",
@@ -5016,7 +6444,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.6,
                           "revenueGrowth":  0.19,
                           "netIncomeGrowth":  41.22,
-                          "cashFlowGrowth":  36.69
+                          "cashFlowGrowth":  36.69,
+                          "operatingMargin":  14.1,
+                          "roe":  5.2,
+                          "debtRatio":  165.2,
+                          "week52RangePct":  49.6
                       },
                       {
                           "symbol":  "PPL",
@@ -5030,7 +6462,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.32,
                           "revenueGrowth":  6.85,
                           "netIncomeGrowth":  33,
-                          "cashFlowGrowth":  12.35
+                          "cashFlowGrowth":  12.35,
+                          "operatingMargin":  26.9,
+                          "roe":  3,
+                          "debtRatio":  208.3,
+                          "week52RangePct":  26.9
                       },
                       {
                           "symbol":  "PFG",
@@ -5044,7 +6480,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.03,
                           "revenueGrowth":  -3.11,
                           "netIncomeGrowth":  -24.56,
-                          "cashFlowGrowth":  -1.44
+                          "cashFlowGrowth":  -1.44,
+                          "operatingMargin":  null,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  87.8
                       },
                       {
                           "symbol":  "PG",
@@ -5058,7 +6498,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.01,
                           "revenueGrowth":  3.26,
                           "netIncomeGrowth":  0.45,
-                          "cashFlowGrowth":  9.76
+                          "cashFlowGrowth":  9.76,
+                          "operatingMargin":  18.6,
+                          "roe":  5.6,
+                          "debtRatio":  133.5,
+                          "week52RangePct":  30.3
                       },
                       {
                           "symbol":  "PGR",
@@ -5072,7 +6516,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.18,
                           "revenueGrowth":  16.32,
                           "netIncomeGrowth":  33.35,
-                          "cashFlowGrowth":  16.07
+                          "cashFlowGrowth":  16.07,
+                          "operatingMargin":  null,
+                          "roe":  9.6,
+                          "debtRatio":  263.9,
+                          "week52RangePct":  57.3
                       },
                       {
                           "symbol":  "PLD",
@@ -5086,7 +6534,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.02,
                           "revenueGrowth":  7.18,
                           "netIncomeGrowth":  -10.81,
-                          "cashFlowGrowth":  1.96
+                          "cashFlowGrowth":  1.96,
+                          "operatingMargin":  39.6,
+                          "roe":  2,
+                          "debtRatio":  79.8,
+                          "week52RangePct":  76.7
                       },
                       {
                           "symbol":  "PRU",
@@ -5100,7 +6552,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.62,
                           "revenueGrowth":  -13.74,
                           "netIncomeGrowth":  31.13,
-                          "cashFlowGrowth":  -26.24
+                          "cashFlowGrowth":  -26.24,
+                          "operatingMargin":  null,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  85.9
                       },
                       {
                           "symbol":  "PEG",
@@ -5114,7 +6570,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.69,
                           "revenueGrowth":  18.25,
                           "netIncomeGrowth":  19.13,
-                          "cashFlowGrowth":  54.62
+                          "cashFlowGrowth":  54.62,
+                          "operatingMargin":  18.1,
+                          "roe":  1.9,
+                          "debtRatio":  239.4,
+                          "week52RangePct":  6.6
                       },
                       {
                           "symbol":  "PTC",
@@ -5128,7 +6588,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  19.18,
                           "netIncomeGrowth":  95.04,
-                          "cashFlowGrowth":  15.7
+                          "cashFlowGrowth":  15.7,
+                          "operatingMargin":  27.7,
+                          "roe":  3.4,
+                          "debtRatio":  87.7,
+                          "week52RangePct":  42.0
                       },
                       {
                           "symbol":  "PSA",
@@ -5142,7 +6606,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.72,
                           "revenueGrowth":  2.74,
                           "netIncomeGrowth":  -13.88,
-                          "cashFlowGrowth":  1.86
+                          "cashFlowGrowth":  1.86,
+                          "operatingMargin":  45.2,
+                          "roe":  5.4,
+                          "debtRatio":  117.9,
+                          "week52RangePct":  86.6
                       },
                       {
                           "symbol":  "PHM",
@@ -5156,7 +6624,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.81,
                           "revenueGrowth":  -3.54,
                           "netIncomeGrowth":  -28.04,
-                          "cashFlowGrowth":  11.33
+                          "cashFlowGrowth":  11.33,
+                          "operatingMargin":  15.4,
+                          "roe":  3.6,
+                          "debtRatio":  40.3,
+                          "week52RangePct":  58.7
                       },
                       {
                           "symbol":  "PWR",
@@ -5170,7 +6642,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.07,
                           "revenueGrowth":  20.31,
                           "netIncomeGrowth":  13.66,
-                          "cashFlowGrowth":  7.15
+                          "cashFlowGrowth":  7.15,
+                          "operatingMargin":  7.2,
+                          "roe":  4.7,
+                          "debtRatio":  192.5,
+                          "week52RangePct":  59.6
                       },
                       {
                           "symbol":  "QCOM",
@@ -5184,7 +6660,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.29,
                           "revenueGrowth":  13.66,
                           "netIncomeGrowth":  -45.37,
-                          "cashFlowGrowth":  14.83
+                          "cashFlowGrowth":  14.83,
+                          "operatingMargin":  16.3,
+                          "roe":  7.2,
+                          "debtRatio":  107.4,
+                          "week52RangePct":  26.5
                       },
                       {
                           "symbol":  "DGX",
@@ -5198,7 +6678,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.41,
                           "revenueGrowth":  11.78,
                           "netIncomeGrowth":  13.89,
-                          "cashFlowGrowth":  41.38
+                          "cashFlowGrowth":  41.38,
+                          "operatingMargin":  15.1,
+                          "roe":  4.3,
+                          "debtRatio":  120.3,
+                          "week52RangePct":  97.2
                       },
                       {
                           "symbol":  "Q",
@@ -5212,7 +6696,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.25,
                           "revenueGrowth":  9.67,
                           "netIncomeGrowth":  -0.14,
-                          "cashFlowGrowth":  19.98
+                          "cashFlowGrowth":  19.98,
+                          "operatingMargin":  22.3,
+                          "roe":  1.7,
+                          "debtRatio":  93.4,
+                          "week52RangePct":  52.2
                       },
                       {
                           "symbol":  "RL",
@@ -5226,7 +6714,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.0,
                           "revenueGrowth":  14.63,
                           "netIncomeGrowth":  26.68,
-                          "cashFlowGrowth":  -6.55
+                          "cashFlowGrowth":  -6.55,
+                          "operatingMargin":  18.7,
+                          "roe":  9.6,
+                          "debtRatio":  181.4,
+                          "week52RangePct":  62.3
                       },
                       {
                           "symbol":  "RJF",
@@ -5240,7 +6732,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.23,
                           "revenueGrowth":  9.52,
                           "netIncomeGrowth":  3.24,
-                          "cashFlowGrowth":  12.95
+                          "cashFlowGrowth":  12.95,
+                          "operatingMargin":  null,
+                          "roe":  4.7,
+                          "debtRatio":  641.4,
+                          "week52RangePct":  86.2
                       },
                       {
                           "symbol":  "RDDT",
@@ -5254,7 +6750,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  69.4,
                           "netIncomeGrowth":  209.38,
-                          "cashFlowGrowth":  211.11
+                          "cashFlowGrowth":  211.11,
+                          "operatingMargin":  28.8,
+                          "roe":  7.7,
+                          "debtRatio":  10.7,
+                          "week52RangePct":  20.4
                       },
                       {
                           "symbol":  "RTX",
@@ -5268,7 +6768,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.39,
                           "revenueGrowth":  9.74,
                           "netIncomeGrowth":  41.01,
-                          "cashFlowGrowth":  47.6
+                          "cashFlowGrowth":  47.6,
+                          "operatingMargin":  11.4,
+                          "roe":  3.2,
+                          "debtRatio":  159.4,
+                          "week52RangePct":  76.8
                       },
                       {
                           "symbol":  "O",
@@ -5282,7 +6786,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  5.19,
                           "revenueGrowth":  9.07,
                           "netIncomeGrowth":  22.98,
-                          "cashFlowGrowth":  11.8
+                          "cashFlowGrowth":  11.8,
+                          "operatingMargin":  42.4,
+                          "roe":  0.9,
+                          "debtRatio":  87.3,
+                          "week52RangePct":  60.5
                       },
                       {
                           "symbol":  "REG",
@@ -5296,7 +6804,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.97,
                           "revenueGrowth":  6.85,
                           "netIncomeGrowth":  31.74,
-                          "cashFlowGrowth":  4.74
+                          "cashFlowGrowth":  4.74,
+                          "operatingMargin":  37.5,
+                          "roe":  1.9,
+                          "debtRatio":  85.3,
+                          "week52RangePct":  58.5
                       },
                       {
                           "symbol":  "REGN",
@@ -5310,7 +6822,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.45,
                           "revenueGrowth":  0.99,
                           "netIncomeGrowth":  2.09,
-                          "cashFlowGrowth":  12.63
+                          "cashFlowGrowth":  12.63,
+                          "operatingMargin":  33.1,
+                          "roe":  4.1,
+                          "debtRatio":  31.6,
+                          "week52RangePct":  94.0
                       },
                       {
                           "symbol":  "RF",
@@ -5324,7 +6840,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.6,
                           "revenueGrowth":  6.25,
                           "netIncomeGrowth":  13.89,
-                          "cashFlowGrowth":  36.48
+                          "cashFlowGrowth":  36.48,
+                          "operatingMargin":  null,
+                          "roe":  3,
+                          "debtRatio":  755.8,
+                          "week52RangePct":  81.2
                       },
                       {
                           "symbol":  "RSG",
@@ -5338,7 +6858,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.21,
                           "revenueGrowth":  3.49,
                           "netIncomeGrowth":  4.7,
-                          "cashFlowGrowth":  9.15
+                          "cashFlowGrowth":  9.15,
+                          "operatingMargin":  20.4,
+                          "roe":  4.7,
+                          "debtRatio":  192.2,
+                          "week52RangePct":  68.8
                       },
                       {
                           "symbol":  "RVTY",
@@ -5352,7 +6876,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.22,
                           "revenueGrowth":  3.67,
                           "netIncomeGrowth":  -10.79,
-                          "cashFlowGrowth":  -7.22
+                          "cashFlowGrowth":  -7.22,
+                          "operatingMargin":  10.7,
+                          "roe":  0.6,
+                          "debtRatio":  67,
+                          "week52RangePct":  95.5
                       },
                       {
                           "symbol":  "HOOD",
@@ -5366,7 +6894,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  51.58,
                           "netIncomeGrowth":  33.45,
-                          "cashFlowGrowth":  1143.31
+                          "cashFlowGrowth":  1143.31,
+                          "operatingMargin":  43.9,
+                          "roe":  5.9,
+                          "debtRatio":  495.9,
+                          "week52RangePct":  44.4
                       },
                       {
                           "symbol":  "ROK",
@@ -5380,7 +6912,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.26,
                           "revenueGrowth":  0.94,
                           "netIncomeGrowth":  -8.81,
-                          "cashFlowGrowth":  78.7
+                          "cashFlowGrowth":  78.7,
+                          "operatingMargin":  20.8,
+                          "roe":  11.7,
+                          "debtRatio":  217.4,
+                          "week52RangePct":  58.9
                       },
                       {
                           "symbol":  "ROL",
@@ -5394,7 +6930,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.98,
                           "revenueGrowth":  10.99,
                           "netIncomeGrowth":  12.93,
-                          "cashFlowGrowth":  11.59
+                          "cashFlowGrowth":  11.59,
+                          "operatingMargin":  18.7,
+                          "roe":  10.1,
+                          "debtRatio":  134.7,
+                          "week52RangePct":  4.7
                       },
                       {
                           "symbol":  "ROP",
@@ -5408,7 +6948,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.88,
                           "revenueGrowth":  12.26,
                           "netIncomeGrowth":  -0.84,
-                          "cashFlowGrowth":  6.15
+                          "cashFlowGrowth":  6.15,
+                          "operatingMargin":  27.7,
+                          "roe":  6.2,
+                          "debtRatio":  88.1,
+                          "week52RangePct":  48.4
                       },
                       {
                           "symbol":  "ROST",
@@ -5422,7 +6966,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.74,
                           "revenueGrowth":  7.67,
                           "netIncomeGrowth":  2.6,
-                          "cashFlowGrowth":  28.42
+                          "cashFlowGrowth":  28.42,
+                          "operatingMargin":  13.4,
+                          "roe":  10.3,
+                          "debtRatio":  146.7,
+                          "week52RangePct":  86.4
                       },
                       {
                           "symbol":  "RCL",
@@ -5436,7 +6984,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.71,
                           "revenueGrowth":  8.79,
                           "netIncomeGrowth":  48.35,
-                          "cashFlowGrowth":  22.79
+                          "cashFlowGrowth":  22.79,
+                          "operatingMargin":  27.1,
+                          "roe":  11,
+                          "debtRatio":  333.9,
+                          "week52RangePct":  45.3
                       },
                       {
                           "symbol":  "SPGI",
@@ -5450,7 +7002,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.9,
                           "revenueGrowth":  7.94,
                           "netIncomeGrowth":  16.07,
-                          "cashFlowGrowth":  -0.67
+                          "cashFlowGrowth":  -0.67,
+                          "operatingMargin":  43.4,
+                          "roe":  3.9,
+                          "debtRatio":  83.4,
+                          "week52RangePct":  45.5
                       },
                       {
                           "symbol":  "CRM",
@@ -5464,7 +7020,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.84,
                           "revenueGrowth":  9.58,
                           "netIncomeGrowth":  20.33,
-                          "cashFlowGrowth":  14.54
+                          "cashFlowGrowth":  14.54,
+                          "operatingMargin":  21.8,
+                          "roe":  6.2,
+                          "debtRatio":  211.6,
+                          "week52RangePct":  51.1
                       },
                       {
                           "symbol":  "SNDK",
@@ -5478,7 +7038,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  175.3,
                           "netIncomeGrowth":  796.71,
-                          "cashFlowGrowth":  13794.05
+                          "cashFlowGrowth":  13794.05,
+                          "operatingMargin":  70,
+                          "roe":  26.2,
+                          "debtRatio":  23.9,
+                          "week52RangePct":  62.7
                       },
                       {
                           "symbol":  "SBAC",
@@ -5492,7 +7056,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.74,
                           "revenueGrowth":  5.06,
                           "netIncomeGrowth":  40.57,
-                          "cashFlowGrowth":  -3.26
+                          "cashFlowGrowth":  -3.26,
+                          "operatingMargin":  53.2,
+                          "roe":  -4.3,
+                          "debtRatio":  -351.8,
+                          "week52RangePct":  36.5
                       },
                       {
                           "symbol":  "SLB",
@@ -5506,7 +7074,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.19,
                           "revenueGrowth":  -1.6,
                           "netIncomeGrowth":  -24.37,
-                          "cashFlowGrowth":  -1.71
+                          "cashFlowGrowth":  -1.71,
+                          "operatingMargin":  12.7,
+                          "roe":  3,
+                          "debtRatio":  108.5,
+                          "week52RangePct":  82.3
                       },
                       {
                           "symbol":  "STX",
@@ -5520,7 +7092,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.35,
                           "revenueGrowth":  34.06,
                           "netIncomeGrowth":  116.75,
-                          "cashFlowGrowth":  239.24
+                          "cashFlowGrowth":  239.24,
+                          "operatingMargin":  43.1,
+                          "roe":  59.7,
+                          "debtRatio":  360.2,
+                          "week52RangePct":  64.3
                       },
                       {
                           "symbol":  "SRE",
@@ -5534,7 +7110,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.17,
                           "revenueGrowth":  3.92,
                           "netIncomeGrowth":  -35.81,
-                          "cashFlowGrowth":  -6.97
+                          "cashFlowGrowth":  -6.97,
+                          "operatingMargin":  27.8,
+                          "roe":  2.4,
+                          "debtRatio":  220.1,
+                          "week52RangePct":  25.4
                       },
                       {
                           "symbol":  "NOW",
@@ -5548,7 +7128,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  20.88,
                           "netIncomeGrowth":  22.67,
-                          "cashFlowGrowth":  27.58
+                          "cashFlowGrowth":  27.58,
+                          "operatingMargin":  4.1,
+                          "roe":  2.4,
+                          "debtRatio":  153,
+                          "week52RangePct":  41.2
                       },
                       {
                           "symbol":  "SHW",
@@ -5562,7 +7146,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.92,
                           "revenueGrowth":  2.06,
                           "netIncomeGrowth":  -4.21,
-                          "cashFlowGrowth":  9.46
+                          "cashFlowGrowth":  9.46,
+                          "operatingMargin":  18.1,
+                          "roe":  21.9,
+                          "debtRatio":  599.2,
+                          "week52RangePct":  64.7
                       },
                       {
                           "symbol":  "SPG",
@@ -5576,7 +7164,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.08,
                           "revenueGrowth":  6.72,
                           "netIncomeGrowth":  95.18,
-                          "cashFlowGrowth":  8.44
+                          "cashFlowGrowth":  8.44,
+                          "operatingMargin":  43.4,
+                          "roe":  9.9,
+                          "debtRatio":  685.4,
+                          "week52RangePct":  73.2
                       },
                       {
                           "symbol":  "SWKS",
@@ -5590,7 +7182,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.13,
                           "revenueGrowth":  -2.18,
                           "netIncomeGrowth":  -19.95,
-                          "cashFlowGrowth":  -28.71
+                          "cashFlowGrowth":  -28.71,
+                          "operatingMargin":  7.3,
+                          "roe":  0.6,
+                          "debtRatio":  29.4,
+                          "week52RangePct":  38.3
                       },
                       {
                           "symbol":  "SJM",
@@ -5604,7 +7200,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.6,
                           "revenueGrowth":  3.72,
                           "netIncomeGrowth":  88.73,
-                          "cashFlowGrowth":  21.74
+                          "cashFlowGrowth":  21.74,
+                          "operatingMargin":  19.8,
+                          "roe":  7,
+                          "debtRatio":  192.6,
+                          "week52RangePct":  95.5
                       },
                       {
                           "symbol":  "SW",
@@ -5618,7 +7218,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.66,
                           "revenueGrowth":  47.7,
                           "netIncomeGrowth":  119.12,
-                          "cashFlowGrowth":  128.73
+                          "cashFlowGrowth":  128.73,
+                          "operatingMargin":  5.3,
+                          "roe":  0.5,
+                          "debtRatio":  150.5,
+                          "week52RangePct":  80.1
                       },
                       {
                           "symbol":  "SNA",
@@ -5632,7 +7236,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.48,
                           "revenueGrowth":  0.93,
                           "netIncomeGrowth":  -2.59,
-                          "cashFlowGrowth":  -11.15
+                          "cashFlowGrowth":  -11.15,
+                          "operatingMargin":  25.2,
+                          "roe":  4.3,
+                          "debtRatio":  42.6,
+                          "week52RangePct":  72.5
                       },
                       {
                           "symbol":  "SOLV",
@@ -5646,7 +7254,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  0.86,
                           "netIncomeGrowth":  224.84,
-                          "cashFlowGrowth":  -68.86
+                          "cashFlowGrowth":  -68.86,
+                          "operatingMargin":  8.2,
+                          "roe":  1.9,
+                          "debtRatio":  196.8,
+                          "week52RangePct":  99.1
                       },
                       {
                           "symbol":  "SO",
@@ -5660,7 +7272,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.42,
                           "revenueGrowth":  10.59,
                           "netIncomeGrowth":  -1.36,
-                          "cashFlowGrowth":  0.14
+                          "cashFlowGrowth":  0.14,
+                          "operatingMargin":  25.5,
+                          "roe":  3,
+                          "debtRatio":  302.5,
+                          "week52RangePct":  37.0
                       },
                       {
                           "symbol":  "LUV",
@@ -5674,7 +7290,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.78,
                           "revenueGrowth":  2.11,
                           "netIncomeGrowth":  -5.16,
-                          "cashFlowGrowth":  298.7
+                          "cashFlowGrowth":  298.7,
+                          "operatingMargin":  3.4,
+                          "roe":  3.3,
+                          "debtRatio":  325.3,
+                          "week52RangePct":  44.3
                       },
                       {
                           "symbol":  "SWK",
@@ -5688,7 +7308,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.36,
                           "revenueGrowth":  -1.53,
                           "netIncomeGrowth":  36.56,
-                          "cashFlowGrowth":  -12.26
+                          "cashFlowGrowth":  -12.26,
+                          "operatingMargin":  9,
+                          "roe":  3.9,
+                          "debtRatio":  124.3,
+                          "week52RangePct":  85.6
                       },
                       {
                           "symbol":  "SBUX",
@@ -5702,7 +7326,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.32,
                           "revenueGrowth":  2.79,
                           "netIncomeGrowth":  -50.64,
-                          "cashFlowGrowth":  -22.12
+                          "cashFlowGrowth":  -22.12,
+                          "operatingMargin":  12.9,
+                          "roe":  -13.6,
+                          "debtRatio":  -468.6,
+                          "week52RangePct":  90.7
                       },
                       {
                           "symbol":  "STT",
@@ -5716,7 +7344,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.97,
                           "revenueGrowth":  8.1,
                           "netIncomeGrowth":  9.6,
-                          "cashFlowGrowth":  190.07
+                          "cashFlowGrowth":  190.07,
+                          "operatingMargin":  null,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  95.3
                       },
                       {
                           "symbol":  "STLD",
@@ -5730,7 +7362,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.93,
                           "revenueGrowth":  3.63,
                           "netIncomeGrowth":  -22.87,
-                          "cashFlowGrowth":  -21.41
+                          "cashFlowGrowth":  -21.41,
+                          "operatingMargin":  12.4,
+                          "roe":  5.7,
+                          "debtRatio":  82.3,
+                          "week52RangePct":  63.3
                       },
                       {
                           "symbol":  "STE",
@@ -5744,7 +7380,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.08,
                           "revenueGrowth":  8.73,
                           "netIncomeGrowth":  27.27,
-                          "cashFlowGrowth":  16.84
+                          "cashFlowGrowth":  16.84,
+                          "operatingMargin":  19.2,
+                          "roe":  2.8,
+                          "debtRatio":  48.8,
+                          "week52RangePct":  57.5
                       },
                       {
                           "symbol":  "SYK",
@@ -5758,7 +7398,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.07,
                           "revenueGrowth":  11.16,
                           "netIncomeGrowth":  8.45,
-                          "cashFlowGrowth":  18.91
+                          "cashFlowGrowth":  18.91,
+                          "operatingMargin":  25.2,
+                          "roe":  5.3,
+                          "debtRatio":  99.8,
+                          "week52RangePct":  40.4
                       },
                       {
                           "symbol":  "SMCI",
@@ -5772,7 +7416,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  46.59,
                           "netIncomeGrowth":  -9.01,
-                          "cashFlowGrowth":  166.76
+                          "cashFlowGrowth":  166.76,
+                          "operatingMargin":  6.1,
+                          "roe":  6.4,
+                          "debtRatio":  209.6,
+                          "week52RangePct":  39.9
                       },
                       {
                           "symbol":  "SYF",
@@ -5786,7 +7434,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.71,
                           "revenueGrowth":  -0.5,
                           "netIncomeGrowth":  1.51,
-                          "cashFlowGrowth":  0.03
+                          "cashFlowGrowth":  0.03,
+                          "operatingMargin":  null,
+                          "roe":  5.2,
+                          "debtRatio":  621.6,
+                          "week52RangePct":  65.9
                       },
                       {
                           "symbol":  "SNPS",
@@ -5800,7 +7452,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  15.12,
                           "netIncomeGrowth":  -41.14,
-                          "cashFlowGrowth":  7.93
+                          "cashFlowGrowth":  7.93,
+                          "operatingMargin":  10.4,
+                          "roe":  0.1,
+                          "debtRatio":  53.8,
+                          "week52RangePct":  11.4
                       },
                       {
                           "symbol":  "SYY",
@@ -5814,7 +7470,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.62,
                           "revenueGrowth":  3.2,
                           "netIncomeGrowth":  -6.5,
-                          "cashFlowGrowth":  -16.03
+                          "cashFlowGrowth":  -16.03,
+                          "operatingMargin":  3,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  66.2
                       },
                       {
                           "symbol":  "TMUS",
@@ -5828,7 +7488,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.23,
                           "revenueGrowth":  8.49,
                           "netIncomeGrowth":  -3.06,
-                          "cashFlowGrowth":  25.38
+                          "cashFlowGrowth":  25.38,
+                          "operatingMargin":  24.1,
+                          "roe":  5.8,
+                          "debtRatio":  279.5,
+                          "week52RangePct":  18.2
                       },
                       {
                           "symbol":  "TROW",
@@ -5842,7 +7506,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.66,
                           "revenueGrowth":  3.12,
                           "netIncomeGrowth":  -0.62,
-                          "cashFlowGrowth":  4.02
+                          "cashFlowGrowth":  4.02,
+                          "operatingMargin":  29.6,
+                          "roe":  5.7,
+                          "debtRatio":  28.9,
+                          "week52RangePct":  73.6
                       },
                       {
                           "symbol":  "TTWO",
@@ -5856,7 +7524,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  18.16,
                           "netIncomeGrowth":  93.34,
-                          "cashFlowGrowth":  1481.19
+                          "cashFlowGrowth":  1481.19,
+                          "operatingMargin":  -2.3,
+                          "roe":  -0.9,
+                          "debtRatio":  151.2,
+                          "week52RangePct":  58.6
                       },
                       {
                           "symbol":  "TPR",
@@ -5870,7 +7542,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.42,
                           "revenueGrowth":  5.09,
                           "netIncomeGrowth":  -77.55,
-                          "cashFlowGrowth":  -3.11
+                          "cashFlowGrowth":  -3.11,
+                          "operatingMargin":  22.3,
+                          "roe":  50.4,
+                          "debtRatio":  847.6,
+                          "week52RangePct":  54.5
                       },
                       {
                           "symbol":  "TRGP",
@@ -5884,7 +7560,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.67,
                           "revenueGrowth":  3.95,
                           "netIncomeGrowth":  46.57,
-                          "cashFlowGrowth":  7.33
+                          "cashFlowGrowth":  7.33,
+                          "operatingMargin":  27.8,
+                          "roe":  20.9,
+                          "debtRatio":  676,
+                          "week52RangePct":  91.6
                       },
                       {
                           "symbol":  "TGT",
@@ -5898,7 +7578,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.8,
                           "revenueGrowth":  -1.68,
                           "netIncomeGrowth":  -9.44,
-                          "cashFlowGrowth":  -10.93
+                          "cashFlowGrowth":  -10.93,
+                          "operatingMargin":  4.5,
+                          "roe":  4.8,
+                          "debtRatio":  253.8,
+                          "week52RangePct":  99.0
                       },
                       {
                           "symbol":  "TEL",
@@ -5912,7 +7596,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.53,
                           "revenueGrowth":  8.94,
                           "netIncomeGrowth":  -42.31,
-                          "cashFlowGrowth":  19.04
+                          "cashFlowGrowth":  19.04,
+                          "operatingMargin":  20.8,
+                          "roe":  5.6,
+                          "debtRatio":  95.7,
+                          "week52RangePct":  19.5
                       },
                       {
                           "symbol":  "TDY",
@@ -5926,7 +7614,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  7.86,
                           "netIncomeGrowth":  9.23,
-                          "cashFlowGrowth":  -0.05
+                          "cashFlowGrowth":  -0.05,
+                          "operatingMargin":  20,
+                          "roe":  2.3,
+                          "debtRatio":  39.9,
+                          "week52RangePct":  66.2
                       },
                       {
                           "symbol":  "TER",
@@ -5940,7 +7632,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.14,
                           "revenueGrowth":  13.13,
                           "netIncomeGrowth":  2.15,
-                          "cashFlowGrowth":  0.33
+                          "cashFlowGrowth":  0.33,
+                          "operatingMargin":  33.2,
+                          "roe":  10.9,
+                          "debtRatio":  42.3,
+                          "week52RangePct":  67.5
                       },
                       {
                           "symbol":  "TSLA",
@@ -5954,7 +7650,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  -2.93,
                           "netIncomeGrowth":  -46.79,
-                          "cashFlowGrowth":  -1.18
+                          "cashFlowGrowth":  -1.18,
+                          "operatingMargin":  1.4,
+                          "roe":  1.3,
+                          "debtRatio":  70.2,
+                          "week52RangePct":  25.6
                       },
                       {
                           "symbol":  "TXN",
@@ -5968,7 +7668,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.15,
                           "revenueGrowth":  13.05,
                           "netIncomeGrowth":  4.21,
-                          "cashFlowGrowth":  13.22
+                          "cashFlowGrowth":  13.22,
+                          "operatingMargin":  42.6,
+                          "roe":  11,
+                          "debtRatio":  99.3,
+                          "week52RangePct":  58.6
                       },
                       {
                           "symbol":  "TPL",
@@ -5982,7 +7686,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.63,
                           "revenueGrowth":  13.09,
                           "netIncomeGrowth":  6.04,
-                          "cashFlowGrowth":  11.26
+                          "cashFlowGrowth":  11.26,
+                          "operatingMargin":  78,
+                          "roe":  9.2,
+                          "debtRatio":  11.2,
+                          "week52RangePct":  37.5
                       },
                       {
                           "symbol":  "TXT",
@@ -5996,7 +7704,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.1,
                           "revenueGrowth":  8.01,
                           "netIncomeGrowth":  11.77,
-                          "cashFlowGrowth":  29.39
+                          "cashFlowGrowth":  29.39,
+                          "operatingMargin":  7,
+                          "roe":  3.1,
+                          "debtRatio":  125.2,
+                          "week52RangePct":  17.1
                       },
                       {
                           "symbol":  "TMO",
@@ -6010,7 +7722,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.3,
                           "revenueGrowth":  3.91,
                           "netIncomeGrowth":  5.82,
-                          "cashFlowGrowth":  -9.8
+                          "cashFlowGrowth":  -9.8,
+                          "operatingMargin":  18.2,
+                          "roe":  3.3,
+                          "debtRatio":  114.6,
+                          "week52RangePct":  92.7
                       },
                       {
                           "symbol":  "TJX",
@@ -6024,7 +7740,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.37,
                           "revenueGrowth":  7.12,
                           "netIncomeGrowth":  12.95,
-                          "cashFlowGrowth":  12.39
+                          "cashFlowGrowth":  12.39,
+                          "operatingMargin":  11.8,
+                          "roe":  12.8,
+                          "debtRatio":  247.6,
+                          "week52RangePct":  16.9
                       },
                       {
                           "symbol":  "TKO",
@@ -6038,7 +7758,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.61,
                           "revenueGrowth":  -3.05,
                           "netIncomeGrowth":  1976.99,
-                          "cashFlowGrowth":  119.38
+                          "cashFlowGrowth":  119.38,
+                          "operatingMargin":  27.8,
+                          "roe":  3,
+                          "debtRatio":  232.6,
+                          "week52RangePct":  34.2
                       },
                       {
                           "symbol":  "TTD",
@@ -6052,7 +7776,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  18.47,
                           "netIncomeGrowth":  12.78,
-                          "cashFlowGrowth":  34.25
+                          "cashFlowGrowth":  34.25,
+                          "operatingMargin":  14.2,
+                          "roe":  2.5,
+                          "debtRatio":  123.9,
+                          "week52RangePct":  1.0
                       },
                       {
                           "symbol":  "TSCO",
@@ -6066,7 +7794,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.74,
                           "revenueGrowth":  4.31,
                           "netIncomeGrowth":  -0.47,
-                          "cashFlowGrowth":  15.09
+                          "cashFlowGrowth":  15.09,
+                          "operatingMargin":  11.7,
+                          "roe":  13.7,
+                          "debtRatio":  362.2,
+                          "week52RangePct":  21.9
                       },
                       {
                           "symbol":  "TT",
@@ -6080,7 +7812,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.93,
                           "revenueGrowth":  7.48,
                           "netIncomeGrowth":  13.66,
-                          "cashFlowGrowth":  1.55
+                          "cashFlowGrowth":  1.55,
+                          "operatingMargin":  19.3,
+                          "roe":  10.7,
+                          "debtRatio":  177.2,
+                          "week52RangePct":  66.5
                       },
                       {
                           "symbol":  "TDG",
@@ -6094,7 +7830,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  11.22,
                           "netIncomeGrowth":  21,
-                          "cashFlowGrowth":  -0.34
+                          "cashFlowGrowth":  -0.34,
+                          "operatingMargin":  45.5,
+                          "roe":  -5.5,
+                          "debtRatio":  -371.8,
+                          "week52RangePct":  22.2
                       },
                       {
                           "symbol":  "TRV",
@@ -6108,7 +7848,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.38,
                           "revenueGrowth":  5.17,
                           "netIncomeGrowth":  25.79,
-                          "cashFlowGrowth":  16.88
+                          "cashFlowGrowth":  16.88,
+                          "operatingMargin":  null,
+                          "roe":  6.7,
+                          "debtRatio":  333.5,
+                          "week52RangePct":  80.8
                       },
                       {
                           "symbol":  "TRMB",
@@ -6122,7 +7866,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  -2.61,
                           "netIncomeGrowth":  -71.82,
-                          "cashFlowGrowth":  -27.32
+                          "cashFlowGrowth":  -27.32,
+                          "operatingMargin":  15.6,
+                          "roe":  1.8,
+                          "debtRatio":  59.5,
+                          "week52RangePct":  34.9
                       },
                       {
                           "symbol":  "TFC",
@@ -6136,7 +7884,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.13,
                           "revenueGrowth":  53.03,
                           "netIncomeGrowth":  10.15,
-                          "cashFlowGrowth":  165.2
+                          "cashFlowGrowth":  165.2,
+                          "operatingMargin":  null,
+                          "roe":  2.3,
+                          "debtRatio":  754.9,
+                          "week52RangePct":  65.0
                       },
                       {
                           "symbol":  "TYL",
@@ -6150,7 +7902,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  9.1,
                           "netIncomeGrowth":  19.99,
-                          "cashFlowGrowth":  4.63
+                          "cashFlowGrowth":  4.63,
+                          "operatingMargin":  14.7,
+                          "roe":  3.1,
+                          "debtRatio":  91.4,
+                          "week52RangePct":  28.8
                       },
                       {
                           "symbol":  "TSN",
@@ -6164,7 +7920,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.49,
                           "revenueGrowth":  2.12,
                           "netIncomeGrowth":  -40.75,
-                          "cashFlowGrowth":  -16.8
+                          "cashFlowGrowth":  -16.8,
+                          "operatingMargin":  2.6,
+                          "roe":  1,
+                          "debtRatio":  96.4,
+                          "week52RangePct":  38.6
                       },
                       {
                           "symbol":  "USB",
@@ -6178,7 +7938,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.35,
                           "revenueGrowth":  4.41,
                           "netIncomeGrowth":  20.18,
-                          "cashFlowGrowth":  -29.78
+                          "cashFlowGrowth":  -29.78,
+                          "operatingMargin":  null,
+                          "roe":  3.2,
+                          "debtRatio":  975.8,
+                          "week52RangePct":  82.6
                       },
                       {
                           "symbol":  "UBER",
@@ -6192,7 +7956,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  18.28,
                           "netIncomeGrowth":  2,
-                          "cashFlowGrowth":  41.5
+                          "cashFlowGrowth":  41.5,
+                          "operatingMargin":  13.3,
+                          "roe":  8.8,
+                          "debtRatio":  136.9,
+                          "week52RangePct":  37.9
                       },
                       {
                           "symbol":  "UDR",
@@ -6206,7 +7974,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  4.58,
                           "revenueGrowth":  2.42,
                           "netIncomeGrowth":  321.62,
-                          "cashFlowGrowth":  2.97
+                          "cashFlowGrowth":  2.97,
+                          "operatingMargin":  19.6,
+                          "roe":  2.3,
+                          "debtRatio":  218.7,
+                          "week52RangePct":  60.2
                       },
                       {
                           "symbol":  "ULTA",
@@ -6220,7 +7992,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  9.71,
                           "netIncomeGrowth":  -3.97,
-                          "cashFlowGrowth":  12.26
+                          "cashFlowGrowth":  12.26,
+                          "operatingMargin":  14.3,
+                          "roe":  13.2,
+                          "debtRatio":  167.2,
+                          "week52RangePct":  35.1
                       },
                       {
                           "symbol":  "UNP",
@@ -6234,7 +8010,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.84,
                           "revenueGrowth":  1.07,
                           "netIncomeGrowth":  5.8,
-                          "cashFlowGrowth":  -0.6
+                          "cashFlowGrowth":  -0.6,
+                          "operatingMargin":  40.3,
+                          "roe":  9.6,
+                          "debtRatio":  244.5,
+                          "week52RangePct":  94.2
                       },
                       {
                           "symbol":  "UAL",
@@ -6248,7 +8028,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  3.52,
                           "netIncomeGrowth":  6.48,
-                          "cashFlowGrowth":  -10.74
+                          "cashFlowGrowth":  -10.74,
+                          "operatingMargin":  5.4,
+                          "roe":  4.8,
+                          "debtRatio":  406.5,
+                          "week52RangePct":  53.4
                       },
                       {
                           "symbol":  "UPS",
@@ -6262,7 +8046,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  6.43,
                           "revenueGrowth":  -2.65,
                           "netIncomeGrowth":  -3.63,
-                          "cashFlowGrowth":  -16.52
+                          "cashFlowGrowth":  -16.52,
+                          "operatingMargin":  4.1,
+                          "roe":  4,
+                          "debtRatio":  372.8,
+                          "week52RangePct":  51.3
                       },
                       {
                           "symbol":  "URI",
@@ -6276,7 +8064,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.72,
                           "revenueGrowth":  4.91,
                           "netIncomeGrowth":  -3.15,
-                          "cashFlowGrowth":  14.17
+                          "cashFlowGrowth":  14.17,
+                          "operatingMargin":  25.9,
+                          "roe":  8.2,
+                          "debtRatio":  239.5,
+                          "week52RangePct":  80.0
                       },
                       {
                           "symbol":  "UNH",
@@ -6290,7 +8082,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.38,
                           "revenueGrowth":  11.81,
                           "netIncomeGrowth":  -16.31,
-                          "cashFlowGrowth":  -18.62
+                          "cashFlowGrowth":  -18.62,
+                          "operatingMargin":  8,
+                          "roe":  6.4,
+                          "debtRatio":  211.8,
+                          "week52RangePct":  69.4
                       },
                       {
                           "symbol":  "UHS",
@@ -6304,7 +8100,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.45,
                           "revenueGrowth":  9.71,
                           "netIncomeGrowth":  30.36,
-                          "cashFlowGrowth":  -9.81
+                          "cashFlowGrowth":  -9.81,
+                          "operatingMargin":  11.1,
+                          "roe":  4.8,
+                          "debtRatio":  110.2,
+                          "week52RangePct":  34.2
                       },
                       {
                           "symbol":  "VLO",
@@ -6318,7 +8118,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.38,
                           "revenueGrowth":  -5.54,
                           "netIncomeGrowth":  -15.23,
-                          "cashFlowGrowth":  -12.82
+                          "cashFlowGrowth":  -12.82,
+                          "operatingMargin":  11.7,
+                          "roe":  14.9,
+                          "debtRatio":  145.6,
+                          "week52RangePct":  96.6
                       },
                       {
                           "symbol":  "VEEV",
@@ -6332,7 +8136,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  16.34,
                           "netIncomeGrowth":  27.27,
-                          "cashFlowGrowth":  29.83
+                          "cashFlowGrowth":  29.83,
+                          "operatingMargin":  30.9,
+                          "roe":  3.6,
+                          "debtRatio":  25,
+                          "week52RangePct":  61.8
                       },
                       {
                           "symbol":  "VTR",
@@ -6346,7 +8154,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.15,
                           "revenueGrowth":  18.47,
                           "netIncomeGrowth":  209.76,
-                          "cashFlowGrowth":  23.85
+                          "cashFlowGrowth":  23.85,
+                          "operatingMargin":  13.4,
+                          "roe":  0.5,
+                          "debtRatio":  102.1,
+                          "week52RangePct":  76.9
                       },
                       {
                           "symbol":  "VLTO",
@@ -6360,7 +8172,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.53,
                           "revenueGrowth":  5.97,
                           "netIncomeGrowth":  12.85,
-                          "cashFlowGrowth":  23.09
+                          "cashFlowGrowth":  23.09,
+                          "operatingMargin":  21.4,
+                          "roe":  7.8,
+                          "debtRatio":  176.3,
+                          "week52RangePct":  64.8
                       },
                       {
                           "symbol":  "VRSN",
@@ -6374,7 +8190,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.15,
                           "revenueGrowth":  6.37,
                           "netIncomeGrowth":  5.09,
-                          "cashFlowGrowth":  20.88
+                          "cashFlowGrowth":  20.88,
+                          "operatingMargin":  68.2,
+                          "roe":  -9.6,
+                          "debtRatio":  -180,
+                          "week52RangePct":  79.1
                       },
                       {
                           "symbol":  "VRSK",
@@ -6388,7 +8208,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.07,
                           "revenueGrowth":  6.63,
                           "netIncomeGrowth":  -5.14,
-                          "cashFlowGrowth":  25.52
+                          "cashFlowGrowth":  25.52,
+                          "operatingMargin":  45.1,
+                          "roe":  -19.2,
+                          "debtRatio":  -478.1,
+                          "week52RangePct":  28.5
                       },
                       {
                           "symbol":  "VZ",
@@ -6402,7 +8226,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  5.72,
                           "revenueGrowth":  2.52,
                           "netIncomeGrowth":  -1.9,
-                          "cashFlowGrowth":  0.61
+                          "cashFlowGrowth":  0.61,
+                          "operatingMargin":  21,
+                          "roe":  3.7,
+                          "debtRatio":  293.5,
+                          "week52RangePct":  88.5
                       },
                       {
                           "symbol":  "VRTX",
@@ -6416,7 +8244,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  8.9,
                           "netIncomeGrowth":  838.09,
-                          "cashFlowGrowth":  837.19
+                          "cashFlowGrowth":  837.19,
+                          "operatingMargin":  38.1,
+                          "roe":  5.4,
+                          "debtRatio":  35.4,
+                          "week52RangePct":  95.7
                       },
                       {
                           "symbol":  "VRT",
@@ -6430,7 +8262,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.1,
                           "revenueGrowth":  27.69,
                           "netIncomeGrowth":  168.82,
-                          "cashFlowGrowth":  60.22
+                          "cashFlowGrowth":  60.22,
+                          "operatingMargin":  19.5,
+                          "roe":  10.5,
+                          "debtRatio":  234.2,
+                          "week52RangePct":  52.2
                       },
                       {
                           "symbol":  "VTRS",
@@ -6444,7 +8280,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.94,
                           "revenueGrowth":  -2.98,
                           "netIncomeGrowth":  -454.23,
-                          "cashFlowGrowth":  0.56
+                          "cashFlowGrowth":  0.56,
+                          "operatingMargin":  2,
+                          "roe":  -0.8,
+                          "debtRatio":  145.7,
+                          "week52RangePct":  79.4
                       },
                       {
                           "symbol":  "VICI",
@@ -6458,7 +8298,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  6.79,
                           "revenueGrowth":  4.08,
                           "netIncomeGrowth":  3.61,
-                          "cashFlowGrowth":  5.4
+                          "cashFlowGrowth":  5.4,
+                          "operatingMargin":  70.4,
+                          "roe":  1.8,
+                          "debtRatio":  64,
+                          "week52RangePct":  12.0
                       },
                       {
                           "symbol":  "V",
@@ -6472,7 +8316,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.72,
                           "revenueGrowth":  11.34,
                           "netIncomeGrowth":  1.6,
-                          "cashFlowGrowth":  15.58
+                          "cashFlowGrowth":  15.58,
+                          "operatingMargin":  61.3,
+                          "roe":  16,
+                          "debtRatio":  168.9,
+                          "week52RangePct":  98.9
                       },
                       {
                           "symbol":  "VMRK",
@@ -6486,7 +8334,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  null,
                           "netIncomeGrowth":  null,
-                          "cashFlowGrowth":  null
+                          "cashFlowGrowth":  null,
+                          "operatingMargin":  null,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  75.9
                       },
                       {
                           "symbol":  "VMC",
@@ -6500,7 +8352,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.75,
                           "revenueGrowth":  7.06,
                           "netIncomeGrowth":  18.07,
-                          "cashFlowGrowth":  28.62
+                          "cashFlowGrowth":  28.62,
+                          "operatingMargin":  21.7,
+                          "roe":  3.8,
+                          "debtRatio":  94,
+                          "week52RangePct":  30.0
                       },
                       {
                           "symbol":  "WRB",
@@ -6514,7 +8370,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.58,
                           "revenueGrowth":  6.93,
                           "netIncomeGrowth":  1.33,
-                          "cashFlowGrowth":  -2.6
+                          "cashFlowGrowth":  -2.6,
+                          "operatingMargin":  null,
+                          "roe":  4.6,
+                          "debtRatio":  364.4,
+                          "week52RangePct":  42.4
                       },
                       {
                           "symbol":  "GWW",
@@ -6528,7 +8388,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.76,
                           "revenueGrowth":  4.51,
                           "netIncomeGrowth":  -10.63,
-                          "cashFlowGrowth":  -4.55
+                          "cashFlowGrowth":  -4.55,
+                          "operatingMargin":  16.1,
+                          "roe":  13.8,
+                          "debtRatio":  123.6,
+                          "week52RangePct":  80.9
                       },
                       {
                           "symbol":  "WAB",
@@ -6542,7 +8406,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.42,
                           "revenueGrowth":  7.51,
                           "netIncomeGrowth":  10.8,
-                          "cashFlowGrowth":  -4.09
+                          "cashFlowGrowth":  -4.09,
+                          "operatingMargin":  18.9,
+                          "roe":  3.5,
+                          "debtRatio":  106,
+                          "week52RangePct":  92.6
                       },
                       {
                           "symbol":  "WMT",
@@ -6556,7 +8424,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.95,
                           "revenueGrowth":  4.73,
                           "netIncomeGrowth":  12.64,
-                          "cashFlowGrowth":  14.05
+                          "cashFlowGrowth":  14.05,
+                          "operatingMargin":  4.2,
+                          "roe":  5.7,
+                          "debtRatio":  200,
+                          "week52RangePct":  27.9
                       },
                       {
                           "symbol":  "DIS",
@@ -6570,7 +8442,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.39,
                           "revenueGrowth":  3.35,
                           "netIncomeGrowth":  149.48,
-                          "cashFlowGrowth":  29.56
+                          "cashFlowGrowth":  29.56,
+                          "operatingMargin":  18.9,
+                          "roe":  2.4,
+                          "debtRatio":  79.9,
+                          "week52RangePct":  66.8
                       },
                       {
                           "symbol":  "WBD",
@@ -6584,7 +8460,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  -5.15,
                           "netIncomeGrowth":  106.43,
-                          "cashFlowGrowth":  -19.65
+                          "cashFlowGrowth":  -19.65,
+                          "operatingMargin":  4.3,
+                          "roe":  0.5,
+                          "debtRatio":  192.6,
+                          "week52RangePct":  93.1
                       },
                       {
                           "symbol":  "WM",
@@ -6598,7 +8478,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.58,
                           "revenueGrowth":  14.24,
                           "netIncomeGrowth":  -1.38,
-                          "cashFlowGrowth":  12.12
+                          "cashFlowGrowth":  12.12,
+                          "operatingMargin":  19,
+                          "roe":  7.9,
+                          "debtRatio":  367.9,
+                          "week52RangePct":  59.9
                       },
                       {
                           "symbol":  "WAT",
@@ -6612,7 +8496,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  6.99,
                           "netIncomeGrowth":  0.75,
-                          "cashFlowGrowth":  -14.38
+                          "cashFlowGrowth":  -14.38,
+                          "operatingMargin":  -3.7,
+                          "roe":  -0.5,
+                          "debtRatio":  60.4,
+                          "week52RangePct":  92.1
                       },
                       {
                           "symbol":  "WEC",
@@ -6626,7 +8514,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.59,
                           "revenueGrowth":  13.96,
                           "netIncomeGrowth":  1.98,
-                          "cashFlowGrowth":  5.22
+                          "cashFlowGrowth":  5.22,
+                          "operatingMargin":  21,
+                          "roe":  2.1,
+                          "debtRatio":  269.5,
+                          "week52RangePct":  27.3
                       },
                       {
                           "symbol":  "WFC",
@@ -6640,7 +8532,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.39,
                           "revenueGrowth":  1.7,
                           "netIncomeGrowth":  8.19,
-                          "cashFlowGrowth":  -726.06
+                          "cashFlowGrowth":  -726.06,
+                          "operatingMargin":  null,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  47.8
                       },
                       {
                           "symbol":  "WELL",
@@ -6654,7 +8550,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.42,
                           "revenueGrowth":  35.82,
                           "netIncomeGrowth":  -1.56,
-                          "cashFlowGrowth":  27.71
+                          "cashFlowGrowth":  27.71,
+                          "operatingMargin":  16.9,
+                          "roe":  1.7,
+                          "debtRatio":  50.9,
+                          "week52RangePct":  83.4
                       },
                       {
                           "symbol":  "WST",
@@ -6668,7 +8568,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.25,
                           "revenueGrowth":  6.25,
                           "netIncomeGrowth":  0.2,
-                          "cashFlowGrowth":  15.52
+                          "cashFlowGrowth":  15.52,
+                          "operatingMargin":  22,
+                          "roe":  5.2,
+                          "debtRatio":  36.3,
+                          "week52RangePct":  79.8
                       },
                       {
                           "symbol":  "WDC",
@@ -6682,7 +8586,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.13,
                           "revenueGrowth":  35.7,
                           "netIncomeGrowth":  399.62,
-                          "cashFlowGrowth":  132.35
+                          "cashFlowGrowth":  132.35,
+                          "operatingMargin":  37,
+                          "roe":  33.1,
+                          "debtRatio":  55.4,
+                          "week52RangePct":  49.5
                       },
                       {
                           "symbol":  "WY",
@@ -6696,7 +8604,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.44,
                           "revenueGrowth":  -3.07,
                           "netIncomeGrowth":  -18.18,
-                          "cashFlowGrowth":  -44.25
+                          "cashFlowGrowth":  -44.25,
+                          "operatingMargin":  8.8,
+                          "roe":  1.7,
+                          "debtRatio":  74.6,
+                          "week52RangePct":  49.0
                       },
                       {
                           "symbol":  "WSM",
@@ -6710,7 +8622,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.28,
                           "revenueGrowth":  1.24,
                           "netIncomeGrowth":  -3.27,
-                          "cashFlowGrowth":  -3.33
+                          "cashFlowGrowth":  -3.33,
+                          "operatingMargin":  16.2,
+                          "roe":  12.4,
+                          "debtRatio":  170.6,
+                          "week52RangePct":  80.8
                       },
                       {
                           "symbol":  "WMB",
@@ -6724,7 +8640,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.98,
                           "revenueGrowth":  13.78,
                           "netIncomeGrowth":  17.66,
-                          "cashFlowGrowth":  18.58
+                          "cashFlowGrowth":  18.58,
+                          "operatingMargin":  38.3,
+                          "roe":  6.3,
+                          "debtRatio":  343,
+                          "week52RangePct":  62.0
                       },
                       {
                           "symbol":  "WTW",
@@ -6738,7 +8658,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.12,
                           "revenueGrowth":  -2.24,
                           "netIncomeGrowth":  1737.76,
-                          "cashFlowGrowth":  17.39
+                          "cashFlowGrowth":  17.39,
+                          "operatingMargin":  17.2,
+                          "roe":  3,
+                          "debtRatio":  296.4,
+                          "week52RangePct":  98.2
                       },
                       {
                           "symbol":  "WDAY",
@@ -6752,7 +8676,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  13.09,
                           "netIncomeGrowth":  31.75,
-                          "cashFlowGrowth":  19.42
+                          "cashFlowGrowth":  19.42,
+                          "operatingMargin":  13.3,
+                          "roe":  3.3,
+                          "debtRatio":  140.8,
+                          "week52RangePct":  63.7
                       },
                       {
                           "symbol":  "WYNN",
@@ -6766,7 +8694,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.0,
                           "revenueGrowth":  0.14,
                           "netIncomeGrowth":  -34.67,
-                          "cashFlowGrowth":  -5.16
+                          "cashFlowGrowth":  -5.16,
+                          "operatingMargin":  16.5,
+                          "roe":  null,
+                          "debtRatio":  null,
+                          "week52RangePct":  16.3
                       },
                       {
                           "symbol":  "XEL",
@@ -6780,7 +8712,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  3.11,
                           "revenueGrowth":  9.14,
                           "netIncomeGrowth":  4.24,
-                          "cashFlowGrowth":  -12.02
+                          "cashFlowGrowth":  -12.02,
+                          "operatingMargin":  22.7,
+                          "roe":  2.4,
+                          "debtRatio":  262.3,
+                          "week52RangePct":  46.7
                       },
                       {
                           "symbol":  "XYL",
@@ -6794,7 +8730,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.52,
                           "revenueGrowth":  5.52,
                           "netIncomeGrowth":  7.53,
-                          "cashFlowGrowth":  -1.74
+                          "cashFlowGrowth":  -1.74,
+                          "operatingMargin":  17.2,
+                          "roe":  2.5,
+                          "debtRatio":  64.1,
+                          "week52RangePct":  18.2
                       },
                       {
                           "symbol":  "YUM",
@@ -6808,7 +8748,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  1.96,
                           "revenueGrowth":  8.81,
                           "netIncomeGrowth":  4.91,
-                          "cashFlowGrowth":  19.01
+                          "cashFlowGrowth":  19.01,
+                          "operatingMargin":  30.5,
+                          "roe":  -12,
+                          "debtRatio":  -222.2,
+                          "week52RangePct":  61.0
                       },
                       {
                           "symbol":  "ZBRA",
@@ -6822,7 +8766,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  null,
                           "revenueGrowth":  8.33,
                           "netIncomeGrowth":  -20.64,
-                          "cashFlowGrowth":  -9.48
+                          "cashFlowGrowth":  -9.48,
+                          "operatingMargin":  21.3,
+                          "roe":  6.8,
+                          "debtRatio":  151.4,
+                          "week52RangePct":  87.7
                       },
                       {
                           "symbol":  "ZBH",
@@ -6836,7 +8784,11 @@ const SP500_DATA = ﻿{
                           "dividendYield":  0.95,
                           "revenueGrowth":  7.2,
                           "netIncomeGrowth":  -21.98,
-                          "cashFlowGrowth":  13.19
+                          "cashFlowGrowth":  13.19,
+                          "operatingMargin":  17.2,
+                          "roe":  1.6,
+                          "debtRatio":  80.5,
+                          "week52RangePct":  74.9
                       },
                       {
                           "symbol":  "ZTS",
@@ -6850,8 +8802,12 @@ const SP500_DATA = ﻿{
                           "dividendYield":  2.73,
                           "revenueGrowth":  2.28,
                           "netIncomeGrowth":  7.52,
-                          "cashFlowGrowth":  -1.66
+                          "cashFlowGrowth":  -1.66,
+                          "operatingMargin":  40.5,
+                          "roe":  22,
+                          "debtRatio":  378.9,
+                          "week52RangePct":  7.2
                       }
-                  ]
+                  ],
+    "ratiosUpdatedAt":  "2026-08-25T11:26:13Z"
 }
-;

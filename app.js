@@ -1159,7 +1159,8 @@ async function getFullMetrics(symbol) {
     yahooChart(symbol),
     yahooFundamentals(
       symbol,
-      "annualTotalRevenue,annualBasicEPS,annualNetIncome,annualShareIssued,quarterlyTotalRevenue,annualOperatingCashFlow"
+      "annualTotalRevenue,annualBasicEPS,annualNetIncome,annualShareIssued,quarterlyTotalRevenue,annualOperatingCashFlow," +
+        "quarterlyOperatingIncome,quarterlyNetIncome,quarterlyStockholdersEquity,quarterlyTotalLiabilitiesNetMinorityInterest"
     ),
   ]);
 
@@ -1184,6 +1185,36 @@ async function getFullMetrics(symbol) {
   const revenueAnnualSeries = await fundamentalSeries(resultArr, "annualTotalRevenue", meta.currency);
   const netIncomeAnnualSeries = await fundamentalSeries(resultArr, "annualNetIncome", meta.currency);
   const operatingCashFlowAnnualSeries = await fundamentalSeries(resultArr, "annualOperatingCashFlow", meta.currency);
+
+  // 직전 분기(가장 최근) 기준 영업이익률·ROE·부채비율 — 영업이익/순이익/자기자본/부채총계는 모두 같은 분기말 스냅샷이라야
+  // 비율이 의미 있으므로, 매출도 연간이 아니라 quarterlyTotalRevenue 시계열의 마지막 값을 그대로 사용
+  const operatingIncomeQuarterlySeries = await fundamentalSeries(resultArr, "quarterlyOperatingIncome", meta.currency);
+  const netIncomeQuarterlySeries = await fundamentalSeries(resultArr, "quarterlyNetIncome", meta.currency);
+  const stockholdersEquityQuarterlySeries = await fundamentalSeries(resultArr, "quarterlyStockholdersEquity", meta.currency);
+  const totalLiabilitiesQuarterlySeries = await fundamentalSeries(resultArr, "quarterlyTotalLiabilitiesNetMinorityInterest", meta.currency);
+  const lastVal = (series) => (series && series.length ? series[series.length - 1].value : null);
+  const latestRevenueQ = lastVal(revenueQuarterlySeries);
+  const latestOperatingIncomeQ = lastVal(operatingIncomeQuarterlySeries);
+  const latestNetIncomeQ = lastVal(netIncomeQuarterlySeries);
+  const latestEquityQ = lastVal(stockholdersEquityQuarterlySeries);
+  const latestLiabilitiesQ = lastVal(totalLiabilitiesQuarterlySeries);
+  const operatingMarginQuarterly =
+    latestRevenueQ !== null && latestOperatingIncomeQ !== null && latestRevenueQ !== 0
+      ? (latestOperatingIncomeQ / latestRevenueQ) * 100
+      : null;
+  // 자기자본이 0 이하(자본잠식 등)면 ROE·부채비율이 부호가 뒤집혀 오히려 "우량"처럼 보이는 왜곡이 생기므로 N/A 처리
+  const roeQuarterly =
+    latestNetIncomeQ !== null && latestEquityQ !== null && latestEquityQ > 0 ? (latestNetIncomeQ / latestEquityQ) * 100 : null;
+  const debtRatioQuarterly =
+    latestLiabilitiesQ !== null && latestEquityQ !== null && latestEquityQ > 0 ? (latestLiabilitiesQ / latestEquityQ) * 100 : null;
+  // 52주 최고~최저 구간에서 현재가의 위치(0%=52주 최저, 100%=52주 최고) — 차트 meta에 이미 포함돼 있어 별도 조회 불필요
+  const weekHigh = meta.fiftyTwoWeekHigh;
+  const weekLow = meta.fiftyTwoWeekLow;
+  const week52RangePct =
+    meta.regularMarketPrice !== undefined && weekHigh !== undefined && weekLow !== undefined && weekHigh > weekLow
+      ? ((meta.regularMarketPrice - weekLow) / (weekHigh - weekLow)) * 100
+      : null;
+
   const { recent5dAvg, avg1y } = currentDollarVolumeStats(chartData);
 
   const prevClose = meta.chartPreviousClose ?? null;
@@ -1210,6 +1241,10 @@ async function getFullMetrics(symbol) {
     revenueGrowthAnnual: latestAnnualGrowth(revenueAnnualSeries),
     netIncomeGrowthAnnual: latestAnnualGrowth(netIncomeAnnualSeries),
     operatingCashFlowGrowthAnnual: latestAnnualGrowth(operatingCashFlowAnnualSeries),
+    operatingMarginQuarterly,
+    roeQuarterly,
+    debtRatioQuarterly,
+    week52RangePct,
     per: meta.regularMarketPrice !== undefined && eps > 0 ? meta.regularMarketPrice / eps : null,
     recentDollarVolume: recent5dAvg,
     avgDollarVolume1y: avg1y,
@@ -1956,6 +1991,10 @@ const valuationButtons = {
   per: el("valuationPerBtn"),
   stability: el("valuationStabilityBtn"),
   marketCap: el("valuationMarketCapBtn"),
+  operatingMargin: el("valuationOperatingMarginBtn"),
+  roe: el("valuationRoeBtn"),
+  debtRatio: el("valuationDebtRatioBtn"),
+  week52Low: el("valuationWeek52LowBtn"),
 };
 const trendButtons = {
   volume: el("trendVolumeBtn"),
@@ -2195,6 +2234,8 @@ function closeSearchOverlay() {
   searchOverlay.classList.remove("open");
   window.setTimeout(() => {
     searchOverlay.style.display = "none";
+    tickerInput.value = "";
+    mainTickerSearchBar.hideSuggest();
   }, 280);
 }
 searchOpenBtn.addEventListener("click", openSearchOverlay);
@@ -2840,6 +2881,7 @@ const SELF_TEST_TYPES = [
     emoji: "🐢",
     figure: "존 보글 (뱅가드 창업자)",
     desc: "원금을 지키는 게 최우선이에요. 화려하진 않아도 천천히, 꾸준하게 가는 걸 선호해요.",
+    caution: "채권·현금 비중이 높아도 물가상승률만큼은 자산이 못 자랄 수 있으니 장기 목표엔 주식 비중을 완전히 0으로 두지 않는 게 좋아요. 안전자산이라도 신용등급·만기가 다르면 손실이 날 수 있으니 상품 성격을 꼭 확인하세요.",
     vanguardStock: 40,
   },
   {
@@ -2850,6 +2892,7 @@ const SELF_TEST_TYPES = [
     emoji: "⚖️",
     figure: "워런 버핏 (버크셔 해서웨이)",
     desc: "위험과 수익 사이 균형을 중시해요. 우량자산 중심으로 꾸준히 늘려가는 스타일이에요.",
+    caution: "주식과 채권을 같이 담아도 하락장에선 둘 다 동반 하락할 수 있으니 완전한 방어 수단은 아니에요. 정기적으로(예: 분기 1회) 비중을 원래대로 재조정(리밸런싱)하지 않으면 시간이 지날수록 처음 설계한 균형에서 벗어나요.",
     vanguardStock: 60,
   },
   {
@@ -2860,6 +2903,7 @@ const SELF_TEST_TYPES = [
     emoji: "🚀",
     figure: "캐시 우드 (ARK 인베스트)",
     desc: "변동성을 감수하고서라도 높은 수익을 추구해요. 하락도 기회로 보는 스타일이에요.",
+    caution: "고수익을 노리는 만큼 단기간 반토막 수준의 손실도 감수해야 하니, 생활비 등 단기에 꼭 필요한 자금은 이 비중에 넣지 마세요. 레버리지·테마주 위주로만 몰아넣기보다 일부는 우량자산에 분산해야 변동성을 견디기 쉬워요.",
     vanguardStock: 80,
   },
 ];
@@ -2939,14 +2983,16 @@ function selfTestAllocBarHtml(alloc, { compact = false } = {}) {
   const bondNarrow = !compact && alloc.bond < NARROW_PCT;
   const stockText = compact ? `${alloc.stock}%` : stockNarrow ? "" : `주식 ${alloc.stock}%`;
   const bondText = compact ? `${alloc.bond}%` : bondNarrow ? "" : `현금·채권 ${alloc.bond}%`;
-  const belowParts = [stockNarrow ? `주식 ${alloc.stock}%` : "", bondNarrow ? `현금·채권 ${alloc.bond}%` : ""].filter(Boolean);
   return `
-    ${compact ? "" : `<p class="self-test-alloc-label">${alloc.label}</p>`}
+    ${compact ? "" : `<div class="self-test-alloc-label-row"><p class="self-test-alloc-label">${alloc.label}</p><button type="button" class="self-test-alloc-confirm-btn" id="selfTestAllocConfirmBtn">확인</button></div>`}
     <div class="self-test-alloc-bar${compact ? " self-test-alloc-bar-compact" : ""}">
       <div class="self-test-alloc-seg self-test-alloc-stock" style="width:${alloc.stock}%;">${stockText}</div>
       <div class="self-test-alloc-seg self-test-alloc-bond" style="width:${alloc.bond}%;">${bondText}</div>
     </div>
-    ${belowParts.length ? `<p class="self-test-alloc-below">${belowParts.join(" · ")}</p>` : ""}`;
+    ${stockNarrow || bondNarrow ? `<p class="self-test-alloc-below">
+      <span class="self-test-alloc-below-item" style="width:${alloc.stock}%;">${stockNarrow ? `주식 ${alloc.stock}%` : ""}</span>
+      <span class="self-test-alloc-below-item" style="width:${alloc.bond}%;">${bondNarrow ? `현금·채권 ${alloc.bond}%` : ""}</span>
+    </p>` : ""}`;
 }
 
 // 방법을 하나 선택해 비중이 계산되면 그 결과를 저장해둬서, 관심목록 상단에도 계속 떠 있도록 함([[watchlistSelfTestPin]])
@@ -2962,6 +3008,8 @@ function updateSelfTestAllocBar() {
       localStorage.setItem(SELF_TEST_PIN_KEY, JSON.stringify(alloc));
     } catch {}
     renderPinnedSelfTestBar();
+    const confirmBtn = el("selfTestAllocConfirmBtn");
+    if (confirmBtn) confirmBtn.addEventListener("click", closeSelfTestModal);
   }
 }
 
@@ -2989,12 +3037,13 @@ function renderSelfTestResult() {
       <p class="self-test-result-name">${t.name}</p>
       <p class="self-test-result-figure">대표 인물 — ${t.figure}</p>
       <p class="self-test-result-desc">${t.desc}</p>
+      <p class="self-test-result-caution">⚠️ 투자 시 유의사항<br>${t.caution}</p>
     </div>
     <div class="self-test-method-list">
       <p class="self-test-method-label">이렇게 투자해보기</p>
       <button type="button" class="self-test-method-btn" data-method="vanguard">
         <span class="self-test-method-num">1</span>
-        <span class="self-test-method-text"><b>투자방식 따라하기</b><br><span class="muted">Vanguard LifeStrategy Funds</span></span>
+        <span class="self-test-method-text"><b>내 투자성향 따라하기</b><br><span class="muted">Vanguard LifeStrategy Funds</span></span>
       </button>
       <button type="button" class="self-test-method-btn" data-method="bogle">
         <span class="self-test-method-num">2</span>
@@ -3021,6 +3070,8 @@ function renderSelfTestResult() {
       updateSelfTestAllocBar();
     });
   });
+  // 결과가 나오는 즉시 첫 번째 방법("내 투자성향 따라하기")이 자동으로 선택된 상태로 보여줌
+  selfTestBody.querySelector('.self-test-method-btn[data-method="vanguard"]')?.click();
   el("selfTestAgeApplyBtn").addEventListener("click", () => {
     const val = el("selfTestAgeInput").value;
     if (!val || Number(val) <= 0) {
@@ -3217,23 +3268,27 @@ function renderWizardRoot() {
   `;
 }
 
-// [랭킹찾기]와 Top랭킹 탭이 공유하는 14개 랭킹 화면 — 지도(섹터맵) 필터칩 순서(상승률-하락률-매출액-순이익-시가총액-거래량-
-// 배당률-현금흐름-PER-EPS)와 동일하게 배치하고, 그 뒤에 US/KR ETF, 마지막에 상승 압력·투자 안정(orange:true)을 붙임
+// [랭킹찾기]와 Top랭킹 탭이 공유하는 랭킹 화면 목록 — 사용자가 지정한 순서(2026-08-25 재정렬):
+// 공시(group:"disclosure") 9개 + 시장(group:"market") 8개, Top랭킹에서는 이 group 기준으로 2줄 가로스크롤로 나눠 보여줌.
+// EPS는 제거하고 영업이익률·ROE·부채비율·52주최저를 새로 추가함(모두 getFullMetrics의 직전분기 재무제표 기반).
 const RANKING_ENTRIES = [
-  { icon: "trending-up", label: "상승률", tab: "trend", run: () => runMovers("surge") },
-  { icon: "trending-down", label: "하락률", tab: "trend", run: () => runMovers("plunge") },
-  { icon: "bank", label: "매출액 증가", tab: "valuation", run: () => runValueRevenue() },
-  { icon: "dollar", label: "순이익 증가", tab: "valuation", run: () => runValueNetIncome() },
-  { icon: "building", label: "시가총액", tab: "valuation", run: () => runValueMarketCap() },
-  { icon: "thumbsup", label: "거래량", tab: "trend", run: () => runTrendVolume() },
-  { icon: "coin", label: "배당률", tab: "trend", run: () => runTrendDividend() },
-  { icon: "wallet", label: "현금흐름 증가", tab: "valuation", run: () => runValueCashFlow() },
-  { icon: "scale", label: "PER", tab: "valuation", run: () => runValuePer() },
-  { icon: "calculator", label: "EPS", tab: "valuation", run: () => runValueEps() },
-  { icon: "basket", label: "US ETF", tab: "trend", run: () => runTrendUsEtf() },
-  { icon: "basket", label: "KR ETF", tab: "trend", run: () => runTrendKrEtf() },
-  { icon: "rocket", label: "상승 압력", tab: "trend", run: () => runTrendPressure(), orange: true },
-  { icon: "medal", label: "투자 안정", tab: "valuation", run: () => runValueStability(), orange: true },
+  { icon: "bank", label: "매출성장", tab: "valuation", group: "disclosure", run: () => runValueRevenue() },
+  { icon: "dollar", label: "순이익증가", tab: "valuation", group: "disclosure", run: () => runValueNetIncome() },
+  { icon: "coin", label: "배당률", tab: "trend", group: "disclosure", run: () => runTrendDividend() },
+  { icon: "scale", label: "부채비율", tab: "valuation", group: "disclosure", run: () => runValueDebtRatio() },
+  { icon: "wallet", label: "현금흐름 증가", tab: "valuation", group: "disclosure", run: () => runValueCashFlow() },
+  { icon: "building", label: "시가총액", tab: "valuation", group: "disclosure", run: () => runValueMarketCap() },
+  { icon: "scale", label: "영업이익률", tab: "valuation", group: "disclosure", run: () => runValueOperatingMargin() },
+  { icon: "scale", label: "PER", tab: "valuation", group: "disclosure", run: () => runValuePer() },
+  { icon: "medal", label: "ROE", tab: "valuation", group: "disclosure", run: () => runValueRoe() },
+  { icon: "trending-down", label: "52주최저", tab: "valuation", group: "market", run: () => runValueWeek52Low() },
+  { icon: "thumbsup", label: "거래대금", tab: "trend", group: "market", run: () => runTrendVolume() },
+  { icon: "trending-up", label: "상승률", tab: "trend", group: "market", run: () => runMovers("surge") },
+  { icon: "trending-down", label: "하락률", tab: "trend", group: "market", run: () => runMovers("plunge") },
+  { icon: "basket", label: "KR ETF", tab: "trend", group: "market", run: () => runTrendKrEtf() },
+  { icon: "basket", label: "US ETF", tab: "trend", group: "market", run: () => runTrendUsEtf() },
+  { icon: "rocket", label: "상승 압력", tab: "trend", group: "market", run: () => runTrendPressure(), orange: true },
+  { icon: "medal", label: "투자 안정", tab: "valuation", group: "market", run: () => runValueStability(), orange: true },
 ];
 // ---------- Top랭킹 탭 — 기업가치·투자동향을 통합한 화면. RANKING_ENTRIES를 그대로 재사용해 14개 항목을
 // 가로 스크롤 서브내비로 보여주고, 클릭하면 valuationGroup/trendGroup 중 해당하는 쪽만 보이게 전환함 ----------
@@ -3258,13 +3313,23 @@ function runRankingEntry(idx) {
   entry.run();
 }
 
+// 공시(재무/밸류에이션 성격)와 시장(시세/스코어 성격) 두 줄로 나눠서 각각 독립적으로 가로 스크롤되게 표시
+// — "자산&투자사" 서브내비(insight-firms-nav/-row)와 동일한 CSS를 재사용
+const TOP_RANKING_GROUP_LABEL = { disclosure: "공시", market: "시장" };
 function renderTopRankingSubNav() {
-  el("topRankingSubNav").innerHTML = RANKING_ENTRIES.map(
-    (entry, i) =>
-      `<button type="button" class="cat-btn top-ranking-tab${entry.orange ? " top-ranking-tab-orange" : ""}" data-rank-idx="${i}">${iconHtml(
-        entry.icon
-      )}<span>${entry.label}</span></button>`
-  ).join("");
+  const rowsHtml = ["disclosure", "market"]
+    .map((groupKey) => {
+      const btns = RANKING_ENTRIES.map((entry, i) =>
+        entry.group !== groupKey
+          ? ""
+          : `<button type="button" class="cat-btn top-ranking-tab${entry.orange ? " top-ranking-tab-orange" : ""}" data-rank-idx="${i}">${iconHtml(
+              entry.icon
+            )}<span>${entry.label}</span></button>`
+      ).join("");
+      return `<div class="insight-firms-row"><span class="insight-firms-row-label">${TOP_RANKING_GROUP_LABEL[groupKey]}</span>${btns}</div>`;
+    })
+    .join("");
+  el("topRankingSubNav").innerHTML = rowsHtml;
 }
 renderTopRankingSubNav();
 el("topRankingSubNav").addEventListener("click", (e) => {
@@ -3291,7 +3356,7 @@ const WIZARD_CRITERIA = [
   { key: "revenue", icon: "bank", label: "매출액 증가", dir: "desc", get: (m) => m.revenueGrowthAnnual, fmt: (m) => fmtGrowthCell(m.revenueGrowthAnnual) },
   { key: "cashFlow", icon: "wallet", label: "현금흐름 증가", dir: "desc", get: (m) => m.operatingCashFlowGrowthAnnual, fmt: (m) => fmtGrowthCell(m.operatingCashFlowGrowthAnnual) },
   { key: "netIncome", icon: "dollar", label: "순이익 증가", dir: "desc", get: (m) => m.netIncomeGrowthAnnual, fmt: (m) => fmtGrowthCell(m.netIncomeGrowthAnnual) },
-  { key: "eps", icon: "calculator", label: "EPS", dir: "desc", get: (m) => m.eps, fmt: (m) => (m.eps === null || m.eps === undefined ? "N/A" : `$${m.eps.toFixed(2)}`) },
+  { key: "roe", icon: "medal", label: "ROE", dir: "desc", get: (m) => m.roeQuarterly, fmt: (m) => (m.roeQuarterly === null || m.roeQuarterly === undefined ? "N/A" : `${m.roeQuarterly.toFixed(1)}%`) },
   { key: "per", icon: "scale", label: "PER", dir: "asc", get: (m) => m.per, fmt: (m) => (m.per === null || m.per === undefined ? "N/A" : `${m.per.toFixed(1)}배`) },
   { key: "stability", icon: "medal", label: "투자 안정", dir: "desc", get: (m) => m.riskTotal, fmt: (m) => (m.riskTotal === null || m.riskTotal === undefined ? "N/A" : scoreRankColorHtml(m.riskTotal, m.riskTotal)) },
   { key: "marketCap", icon: "building", label: "시가총액", dir: "desc", get: (m) => m.marketCap, fmt: (m) => (m.marketCap ? fmtCompactCurrency(m.marketCap) : "N/A") },
@@ -3510,7 +3575,7 @@ function wizardResultTableHtml(rows, metricLabel, metricCellFn) {
     .join("");
   return `
     <table class="top30-table">
-      <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>${metricLabel}</th></tr></thead>
+      <thead><tr><th>순위</th><th>기업명</th><th>현재가</th><th>${metricLabel}</th></tr></thead>
       <tbody>${body}</tbody>
     </table>`;
 }
@@ -3633,6 +3698,9 @@ document.addEventListener("click", (e) => {
 
 // 한국어 회사명으로도 검색할 수 있도록 자주 찾는 미국 기업 위주로 별도 매핑(야후 검색 API는 한국어 매칭을 지원하지 않음)
 const KOREAN_COMPANY_NAMES = {
+  // 데이터셋 공식명("NAVER","현대차")과 다른 흔한 검색어 별칭 — 이름 자체가 다르면 name.includes(q) 부분일치로도 안 잡히므로 직접 등록
+  네이버: "035420.KS",
+  현대자동차: "005380.KS",
   애플: "AAPL",
   마이크로소프트: "MSFT",
   마소: "MSFT",
@@ -5474,7 +5542,7 @@ async function renderValueRanking(
           (r, i) => `
         <tr>
           <td>${i + 1}${surgeWarningEmoji(r.fiveDayExtremes)}</td>
-          <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></td>
+          <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(TICKER_TO_KOREAN_NAME[r.symbol] || r.name || "")}</span></td>
           <td>${r.price !== undefined && r.price !== null ? priceChartLink(r.symbol, "$" + r.price.toFixed(2)) : "N/A"}</td>
           <td>${metricCellFn(r)}</td>${showGrade ? `<td>${gradeCellHtml(r)}</td>` : ""}
         </tr>`
@@ -5483,9 +5551,9 @@ async function renderValueRanking(
       resultsEl.innerHTML = `
         ${noteHtml || ""}
         ${topCapNoteHtml(cursor, tickers.length, hasMore)}
-        <p class="muted" style="font-size:12px;">시가총액 상위 ${Math.min(cursor, initialCount)}개${cursor > initialCount ? ` + 나머지 ${cursor - initialCount}개` : ""} 확인(S&amp;P500 ${tickers.length}개 중 ${cursor}개, ${ranked.length}개 성공)</p>
+        <p class="muted" style="font-size:12px;">시가총액 상위 ${ranked.length}개 확인</p>
         <table class="top30-table">
-          <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>${metricHeaderHtml}</th>${showGrade ? `<th>투자<br>안정</th>` : ""}</tr></thead>
+          <thead><tr><th>순위</th><th>기업명</th><th>현재가</th><th>${metricHeaderHtml}</th>${showGrade ? `<th>투자<br>안정</th>` : ""}</tr></thead>
           <tbody>${rows}</tbody>
         </table>
         ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${tickers.length}">전체보기 (나머지 ${tickers.length - cursor}개 · 500개 전부 검색 시 약 1분 소요)</button>` : ""}
@@ -5645,7 +5713,7 @@ async function renderKrRanking(dataPromiseFn, label, statusEl, resultsEl, { mapF
         ${topCapNoteHtml(top50.length, raw.length, false)}
         <p class="muted" style="font-size:12px;">코스피200+코스닥150 전체 스캔 기준 상위 ${top50.length}개 중 ${visible.length}개 표시</p>
         <table class="top30-table">
-          <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>${metricHeaderHtml}</th>${showGrade ? `<th>투자<br>안정</th>` : ""}</tr></thead>
+          <thead><tr><th>순위</th><th>기업명</th><th>현재가</th><th>${metricHeaderHtml}</th>${showGrade ? `<th>투자<br>안정</th>` : ""}</tr></thead>
           <tbody>${visible.map(rowHtml).join("")}</tbody>
         </table>
         ${rest.length ? `<button type="button" class="cat-btn load-more-btn">더보기 (${visible.length}/${top50.length})</button>` : ""}
@@ -5736,9 +5804,9 @@ async function renderKrRankingStaged(label, statusEl, resultsEl, { mapFn = (list
       resultsEl.innerHTML = `
         ${noteHtml || ""}
         ${topCapNoteHtml(targetCount, total, hasMore)}
-        <p class="muted" style="font-size:12px;">시가총액 상위 ${Math.min(targetCount, initialCount)}개${targetCount > initialCount ? ` + 나머지 ${targetCount - initialCount}개` : ""} 확인(코스피200+코스닥150 ${total}개 중 ${targetCount}개, ${ranked.length}개 성공)</p>
+        <p class="muted" style="font-size:12px;">시가총액 상위 ${ranked.length}개 확인</p>
         <table class="top30-table">
-          <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>${metricHeaderHtml}</th>${showGrade ? `<th>투자<br>안정</th>` : ""}</tr></thead>
+          <thead><tr><th>순위</th><th>기업명</th><th>현재가</th><th>${metricHeaderHtml}</th>${showGrade ? `<th>투자<br>안정</th>` : ""}</tr></thead>
           <tbody>${rows}</tbody>
         </table>
         ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${total}">전체보기 (나머지 ${total - targetCount}개 · 전체 검색 시 약 1분 소요)</button>` : ""}
@@ -5871,6 +5939,46 @@ async function runValueMarketCap() {
   });
 }
 
+const OPERATING_MARGIN_NOTE = `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 영업이익률 = 직전 분기 영업이익 ÷ 직전 분기 매출액(같은 분기 기준). 투자 자문이 아닙니다.</p>`;
+async function runValueOperatingMargin() {
+  await runValueScreenFromSP500(valuationButtons.operatingMargin, "영업이익률", {
+    sortFn: (a, b) => (b.operatingMarginQuarterly ?? -Infinity) - (a.operatingMarginQuarterly ?? -Infinity),
+    metricHeaderHtml: "영업이익률(직전분기)",
+    metricCellFn: (r) => (r.operatingMarginQuarterly === null || r.operatingMarginQuarterly === undefined ? "N/A" : `${r.operatingMarginQuarterly.toFixed(1)}%`),
+    noteHtml: OPERATING_MARGIN_NOTE,
+  });
+}
+
+const ROE_NOTE = `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ROE = 직전 분기 순이익 ÷ 직전 분기말 자기자본(연환산하지 않은 분기 기준). 투자 자문이 아닙니다.</p>`;
+async function runValueRoe() {
+  await runValueScreenFromSP500(valuationButtons.roe, "ROE", {
+    sortFn: (a, b) => (b.roeQuarterly ?? -Infinity) - (a.roeQuarterly ?? -Infinity),
+    metricHeaderHtml: "ROE(직전분기)",
+    metricCellFn: (r) => (r.roeQuarterly === null || r.roeQuarterly === undefined ? "N/A" : `${r.roeQuarterly.toFixed(1)}%`),
+    noteHtml: ROE_NOTE,
+  });
+}
+
+const DEBT_RATIO_NOTE = `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 부채비율 = 직전 분기말 부채총계 ÷ 직전 분기말 자기자본(낮을수록 재무구조가 안정적). 투자 자문이 아닙니다.</p>`;
+async function runValueDebtRatio() {
+  await runValueScreenFromSP500(valuationButtons.debtRatio, "부채비율", {
+    sortFn: (a, b) => (a.debtRatioQuarterly ?? Infinity) - (b.debtRatioQuarterly ?? Infinity),
+    metricHeaderHtml: "부채비율(직전분기)",
+    metricCellFn: (r) => (r.debtRatioQuarterly === null || r.debtRatioQuarterly === undefined ? "N/A" : `${r.debtRatioQuarterly.toFixed(1)}%`),
+    noteHtml: DEBT_RATIO_NOTE,
+  });
+}
+
+const WEEK52_LOW_NOTE = `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 52주최저 = 최근 52주 최고~최저 구간에서 현재가의 위치(0%=52주 최저, 100%=52주 최고) — 낮을수록 저점에 가깝습니다. 투자 자문이 아닙니다.</p>`;
+async function runValueWeek52Low() {
+  await runValueScreenFromSP500(valuationButtons.week52Low, "52주최저", {
+    sortFn: (a, b) => (a.week52RangePct ?? Infinity) - (b.week52RangePct ?? Infinity),
+    metricHeaderHtml: "52주 구간 위치",
+    metricCellFn: (r) => (r.week52RangePct === null || r.week52RangePct === undefined ? "N/A" : `${r.week52RangePct.toFixed(0)}%`),
+    noteHtml: WEEK52_LOW_NOTE,
+  });
+}
+
 bindValuation(valuationButtons.revenue, runValueRevenue);
 bindValuation(valuationButtons.cashFlow, runValueCashFlow);
 bindValuation(valuationButtons.netIncome, runValueNetIncome);
@@ -5878,6 +5986,10 @@ bindValuation(valuationButtons.eps, runValueEps);
 bindValuation(valuationButtons.per, runValuePer);
 bindValuation(valuationButtons.stability, runValueStability);
 bindValuation(valuationButtons.marketCap, runValueMarketCap);
+bindValuation(valuationButtons.operatingMargin, runValueOperatingMargin);
+bindValuation(valuationButtons.roe, runValueRoe);
+bindValuation(valuationButtons.debtRatio, runValueDebtRatio);
+bindValuation(valuationButtons.week52Low, runValueWeek52Low);
 
 // 인사이트 대분류(1.자산&투자사 / 2.브랜드평판순 / 3.신기술 / 4.실적&공시 일정 / 5.뉴스) 전환
 // "자산&투자사"를 선택했을 때만 기관 2단 서브버튼(insightFirmsNav)을 보여줌
@@ -7105,7 +7217,7 @@ function historicalTableHtml(rows, rankColumnLabel, periodLabel = "1년전") {
     <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${periodLabel} 상승 압력·투자 안정은 <b>${periodLabel} 시점</b> 기준으로 근사 계산한 참고용 점수입니다(각 10점 만점, 높을수록 상승 여력 크고·재무 안정적). 투자 자문이 아닙니다.</p>
     <table class="top30-table">
       <thead>
-        <tr><th>${rankColumnLabel}</th><th>티커</th><th>현재가<br>(등락률)</th><th>${periodLabel}<br>상승<br>압력</th><th>${periodLabel}<br>투자<br>안정</th></tr>
+        <tr><th>${rankColumnLabel}</th><th>기업명</th><th>현재가<br>(등락률)</th><th>${periodLabel}<br>상승<br>압력</th><th>${periodLabel}<br>투자<br>안정</th></tr>
       </thead>
       <tbody>${tableRows}</tbody>
     </table>
@@ -7222,9 +7334,9 @@ async function runHistoricalMoversKr(period, direction, initialCount) {
 
       historicalResults.innerHTML = `
         <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${periodLabel}(코스피200+코스닥150 대상) 대비 ${rankLabel} 기준이며, 상승 압력·투자 안정은 <b>현재 시점</b> 점수(국내 배점 방식)입니다. 투자 자문이 아닙니다.</p>
-        <p class="muted" style="font-size:12px;">시가총액 상위 ${Math.min(targetCount, initialCount)}개${targetCount > initialCount ? ` + 나머지 ${targetCount - initialCount}개` : ""} 확인(코스피200+코스닥150 ${total}개 중 ${targetCount}개, 상위 ${top50.length}개 표시)</p>
+        <p class="muted" style="font-size:12px;">시가총액 상위 ${top50.length}개 확인</p>
         <table class="top30-table">
-          <thead><tr><th>${rankLabel}<br>순위</th><th>티커</th><th>현재가<br>(등락률)</th><th>상승<br>압력</th><th>투자<br>안정</th></tr></thead>
+          <thead><tr><th>${rankLabel}<br>순위</th><th>기업명</th><th>현재가<br>(등락률)</th><th>상승<br>압력</th><th>투자<br>안정</th></tr></thead>
           <tbody>${top50.map((r, i) => krHistoricalRowHtml(r, i, nameMap)).join("")}</tbody>
         </table>
         ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${total}">전체보기 (나머지 ${total - targetCount}개 · 전체 검색 시 약 1분 소요)</button>` : ""}
@@ -7310,7 +7422,7 @@ function moversTableHtml(scored, rankNote) {
       <div class="popular-table-wrap">
         <table class="top30-table popular-table">
           <thead>
-            <tr><th>순위</th><th>티커</th><th>현재가</th><th>상승<br>압력</th><th>투자<br>안정</th></tr>
+            <tr><th>순위</th><th>기업명</th><th>현재가</th><th>상승<br>압력</th><th>투자<br>안정</th></tr>
           </thead>
           <tbody>${rows}</tbody>
         </table>
@@ -8235,9 +8347,9 @@ async function runTrendDividendStaged(initialCount, ensureYields, universeLabel,
       trendResults.innerHTML = `
         <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 배당률은 최근 1년간 지급된 배당금 합계 ÷ 현재가 기준(${universeLabel} 대상)이며, 실제 배당 정책은 변경될 수 있습니다. <span class="dividend-warn">⚠️컷</span>은 직전 지급액보다 20% 넘게 줄어든 경우, <span class="dividend-warn">⚠️지연</span>은 평소 지급 주기보다 오래 지급이 없는 경우를 뜻합니다. 투자 자문이 아닙니다.</p>
         ${topCapNoteHtml(targetCount, total, hasMore)}
-        <p class="muted" style="font-size:12px;">시가총액 상위 ${Math.min(targetCount, initialCount)}개${targetCount > initialCount ? ` + 나머지 ${targetCount - initialCount}개` : ""} 확인(${universeLabel} ${total}개 중 ${targetCount}개, 상위 ${top50.length}개 표시)</p>
+        <p class="muted" style="font-size:12px;">시가총액 상위 ${top50.length}개 확인</p>
         <table class="top30-table">
-          <thead><tr><th>순위</th><th>티커</th><th>현재가</th><th>배당률</th><th>투자<br>안정</th></tr></thead>
+          <thead><tr><th>순위</th><th>기업명</th><th>현재가</th><th>배당률</th><th>투자<br>안정</th></tr></thead>
           <tbody>${top50.map((r, i) => dividendRowHtml(r, i, nameMap)).join("")}</tbody>
         </table>
         ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${total}">전체보기 (나머지 ${total - targetCount}개 · 전체 검색 시 약 1분 소요)</button>` : ""}
@@ -8449,7 +8561,7 @@ function volumeRankingTableHtml(rows, { logoAfterName = false } = {}) {
   return `
     <div class="popular-table-wrap">
       <table class="top30-table popular-table">
-        <thead><tr><th>순위</th><th>티커</th><th>현재가<br>(등락률)</th><th>거래량</th></tr></thead>
+        <thead><tr><th>순위</th><th>기업명</th><th>현재가<br>(등락률)</th><th>거래량</th></tr></thead>
         <tbody>${trs}</tbody>
       </table>
     </div>`;
@@ -8623,7 +8735,7 @@ function etfRankingHtml(all, region, metric) {
   } 상위 30개입니다. 투자 자문이 아닙니다.</p>
     <div class="popular-table-wrap">
       <table class="top30-table popular-table">
-        <thead><tr><th>순위</th><th>티커</th><th>현재가<br>(등락률)</th><th>${metric === "volume" ? "거래대금(1년)" : "상승률(1년)"}</th></tr></thead>
+        <thead><tr><th>순위</th><th>기업명</th><th>현재가<br>(등락률)</th><th>${metric === "volume" ? "거래대금(1년)" : "상승률(1년)"}</th></tr></thead>
         <tbody>${rowsHtml}</tbody>
       </table>
     </div>`;

@@ -63,7 +63,6 @@ const BAD_LOGO_SYMBOLS = new Set([
   "018260.KS", // 삼성에스디에스
   "000240.KS", // 한국앤컴퍼니
   "081660.KS", // 미스토홀딩스
-  "298040.KS", // 효성중공업
   "010120.KS", // LS ELECTRIC
   "069620.KS", // 대웅제약
   "000810.KS", // 삼성화재
@@ -77,7 +76,6 @@ const BAD_LOGO_SYMBOLS = new Set([
   "012750.KS", // 에스원
   "033780.KS", // KT&G
   "034730.KS", // SK
-  "035720.KS", // 카카오
   "047050.KS", // 포스코인터내셔널
   "071320.KS", // 지역난방공사
   "086790.KS", // 하나금융지주
@@ -179,7 +177,7 @@ const bubbleBySymbol = new Map(); // symbol -> .company-bubble 엘리먼트(지�
 // 국내/해외 전환 — 지금 화면에 그려진 데이터셋. KR_SECTOR_DATA는 data/kr-data.js가 만들어둠(없으면 국내 전환 시 안내만 표시)
 let ACTIVE_MARKET = "overseas";
 let ACTIVE_DATA = SP500_DATA;
-let sizeMode = "marketCap"; // "시총" 버튼으로 "equal"(균등)과 토글
+let sizeMode = "equal"; // 기본값 균등 — "시총" 버튼으로 "marketCap"과 토글(버튼 이름은 항상 "시총", 시총 모드일 때만 주황 강조)
 
 // 섹터 이름표를 "로고 하나"처럼 취급 — 섹터 원 맨 위 가장자리에 딱 붙여 고정하고,
 // d3-force로 (1) 종목 원끼리 절대 안 겹치게(사이즈별 최소 간격), (2) 이름표(알약 모양 사각형)와도 안 겹치게 풀어낸다.
@@ -424,13 +422,17 @@ function clampView() {
   view.k = Math.min(maxK, Math.max(minK, view.k));
 }
 
+// 우측에 떠있는 side-btn 컬럼(39px+오른쪽여백12px)과 locate-fab(44px+12px)이 화면폭이 좁을 때
+// 지도 오른쪽 끝의 개별종목을 가리는 문제 — 중심점을 그만큼 왼쪽으로 당겨서 여유 공간을 확보한다.
+const RIGHT_CONTROLS_RESERVE = 60;
+
 function fitToViewport(animate) {
   const vw = mapViewport.clientWidth;
   const vh = mapViewport.clientHeight;
   fitK = Math.min(vw, vh) / WORLD_SIZE;
   minK = fitK * 0.55;
   view.k = fitK;
-  view.x = (vw - WORLD_SIZE * view.k) / 2;
+  view.x = (vw - RIGHT_CONTROLS_RESERVE - WORLD_SIZE * view.k) / 2;
   view.y = (vh - WORLD_SIZE * view.k) / 2;
   applyTransform(animate);
 }
@@ -547,13 +549,92 @@ function toggleSheetWatchlist(symbol) {
   return idx < 0;
 }
 
+// 상세시트를 열 때마다 클릭한 종목 하나만 실시간 시세를 다시 조회(오늘 시가/고가/저가/현재가/거래량/전일종가) —
+// 나머지 지도 전체는 5분 주기 색상 갱신으로 충분하지만, 지금 보고 있는 상세시트 숫자는 즉시 최신이어야 하므로 별도 조회
+async function fetchLiveQuoteForSheet(symbol) {
+  // range=1d&interval=5m는 KR 티커에서 chartPreviousClose가 regularMarketPrice와 같은 값으로 깨져 나오는 경우가
+  // 있어서, 이미 검증된(fetch-kr-data.ps1 등에서 쓰는) range=5d&interval=1d 패턴을 그대로 사용
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=5d&interval=1d`;
+  const data = await proxyFetchJson(url);
+  const meta = data && data.chart && data.chart.result && data.chart.result[0] && data.chart.result[0].meta;
+  if (!meta) return null;
+  const prevClose = meta.chartPreviousClose ?? null;
+  // regularMarketOpen은 Yahoo가 아예 안 채워주는 경우가 흔해서(장중이 아니면 특히), 없으면 전일종가를 시가 대용으로 사용
+  const open = meta.regularMarketOpen ?? prevClose;
+  return {
+    price: meta.regularMarketPrice ?? null,
+    open,
+    high: meta.regularMarketDayHigh ?? null,
+    low: meta.regularMarketDayLow ?? null,
+    volume: meta.regularMarketVolume ?? null,
+    prevClose,
+  };
+}
+
+// 실제 상승/하락 방향 색상(그라데이션 아님, 지도 타일용 changeColorForText와는 별개) — 상승 빨강/하락 파랑/0%는 검정
+function simpleDirColor(v) {
+  if (v === null || v === undefined || Number.isNaN(v)) return "var(--text-soft)";
+  if (v > 0) return `rgb(${CHG_POS_MAX.join(",")})`;
+  if (v < 0) return `rgb(${CHG_NEG_MAX.join(",")})`;
+  return "#000";
+}
+
+// 오늘 시가~고가~저가~현재가로 그리는 작은 캔들 아이콘 — 시가와 현재가 차이가 거의 없으면(도지) 굵은 십자 표시
+function candleIconSvg(open, high, low, price) {
+  const W = 14, H = 30, PAD = 3;
+  const usableH = H - PAD * 2;
+  const validInputs = [open, high, low, price].every((v) => typeof v === "number" && Number.isFinite(v));
+  // 시가를 전일종가로 대신하는 경우 당일 고가/저가 범위를 벗어날 수 있어(갭 상승/하락), 실제 표시 범위는 네 값 전체의 최댓값/최솟값으로 넉넉히 잡음
+  const effHigh = validInputs ? Math.max(high, open, price) : null;
+  const effLow = validInputs ? Math.min(low, open, price) : null;
+  const hasRange = validInputs && effHigh > effLow;
+  if (!hasRange) {
+    return `<svg class="sheet-candle-icon" viewBox="0 0 ${W} ${H}"><line x1="${W / 2}" y1="${PAD}" x2="${W / 2}" y2="${H - PAD}" stroke="#c3c8d1" stroke-width="1.6"/><line x1="${W / 2 - 3}" y1="${H / 2}" x2="${W / 2 + 3}" y2="${H / 2}" stroke="#c3c8d1" stroke-width="1.6"/></svg>`;
+  }
+  const range = effHigh - effLow;
+  const yFor = (v) => PAD + usableH - ((v - effLow) / range) * usableH;
+  const up = price >= open;
+  const color = up ? `rgb(${CHG_POS_MAX.join(",")})` : `rgb(${CHG_NEG_MAX.join(",")})`;
+  const bodyTop = yFor(Math.max(open, price));
+  const bodyBottom = yFor(Math.min(open, price));
+  const bodyHeight = Math.max(bodyBottom - bodyTop, 1.6);
+  return `<svg class="sheet-candle-icon" viewBox="0 0 ${W} ${H}">
+    <line x1="${W / 2}" y1="${yFor(high)}" x2="${W / 2}" y2="${yFor(low)}" stroke="${color}" stroke-width="1.4"/>
+    <rect x="${W / 2 - 3.5}" y="${bodyTop}" width="7" height="${bodyHeight}" fill="${color}"/>
+  </svg>`;
+}
+
+// 국내는 kr-data.js의 exchange(KOSPI/KOSDAQ)로 코스피200/코스닥150 배지, 해외는 항상 S&P500
+function marketBadgeLabel(d) {
+  if (ACTIVE_MARKET === "domestic") return d.exchange === "KOSDAQ" ? "코스닥150" : "코스피200";
+  return "S&P500";
+}
+
+function priceStatsHtml(d, live) {
+  const price = live ? live.price : null;
+  const prevClose = live ? live.prevClose : null;
+  const changeAmt = price !== null && prevClose !== null ? price - prevClose : null;
+  // 실시간 조회가 끝났으면 그 값으로 직접 계산한 등락률을 우선 사용(지도 타일 색상과 동일한 최신값) —
+  // 아직 조회 전(첫 렌더)이거나 조회에 실패했을 때만 정적 스냅샷(d.changePercent)으로 대체 표시
+  const changePct = changeAmt !== null && prevClose ? (changeAmt / prevClose) * 100 : live ? null : d.changePercent;
+  const priceStr = price === null ? "불러오는 중..." : d.currency === "KRW" ? `${Math.round(price).toLocaleString()}원` : `$${price.toFixed(2)}`;
+  const volStr = live && live.volume !== null && live.volume !== undefined ? live.volume.toLocaleString() : "-";
+  const amtStr = changeAmt === null ? "-" : `${changeAmt > 0 ? "+" : ""}${d.currency === "KRW" ? Math.round(changeAmt).toLocaleString() : changeAmt.toFixed(2)}`;
+  const pctStr = changePct === null || changePct === undefined ? "-" : `${changePct > 0 ? "▲" : changePct < 0 ? "▼" : ""}${changePct > 0 ? "+" : ""}${changePct.toFixed(2)}%`;
+  return `
+    <div class="sheet-price-block">
+      ${candleIconSvg(live && live.open, live && live.high, live && live.low, price)}
+      <div class="sheet-price-grid">
+        <div class="sheet-price-cell" style="color:${simpleDirColor(changePct)};">${priceStr}</div>
+        <div class="sheet-price-cell" style="color:${simpleDirColor(changeAmt)};">${amtStr}</div>
+        <div class="sheet-price-cell sheet-price-cell-muted">${volStr}</div>
+        <div class="sheet-price-cell" style="color:${simpleDirColor(changePct)};">${pctStr}</div>
+      </div>
+    </div>`;
+}
+
 function openCompanySheet(d) {
   const color = sectorColor(d.sector);
-  const chgTextColor = changeColorForText(d.changePercent);
-  const chgText =
-    d.changePercent === null || d.changePercent === undefined
-      ? "정보 없음"
-      : `${d.changePercent > 0 ? "+" : ""}${d.changePercent.toFixed(2)}%`;
   const watchlisted = getWatchlistSymbols().has(d.symbol);
   const marketClass = ACTIVE_MARKET === "domestic" ? "market-kr" : "market-us";
   companySheetBody.innerHTML = `
@@ -568,27 +649,27 @@ function openCompanySheet(d) {
           : `<img class="sheet-logo" src="${logoUrl(d.symbol, "mid")}" alt="${d.symbol}" onerror="if(!this.dataset.tf){this.dataset.tf='1';this.src='${logoUrlFallback(d.symbol)}';}else{this.style.display='none';this.nextElementSibling.style.display='flex';}" />`
       }
       <div class="sheet-fallback-badge" style="display:${BAD_LOGO_SYMBOLS.has(d.symbol) ? "flex" : "none"}; background:${color};">${d.symbol}</div>
-      <div>
+      <div class="sheet-name-wrap">
         <div class="sheet-name sheet-name-link" id="sheetNameLink" role="button" tabindex="0">${d.name}</div>
-        <div class="sheet-symbol">${d.symbol} · ${d.sectorKo}</div>
+        <div class="sheet-symbol">${d.symbol} <span class="sheet-market-badge">${marketBadgeLabel(d)}</span> · ${d.sectorKo}</div>
+      </div>
+      <div class="sheet-marketcap-corner">
+        <div class="sheet-marketcap-label">시가총액</div>
+        <div class="sheet-marketcap-value">${d.currency === "KRW" ? fmtWonCompact(d.marketCap) : fmtMarketCap(d.marketCap)}</div>
       </div>
     </div>
-    <div class="sheet-stats">
-      <div>
-        <div class="sheet-stat-label">시가총액</div>
-        <div class="sheet-stat-value">${d.currency === "KRW" ? fmtWonCompact(d.marketCap) : fmtMarketCap(d.marketCap)}</div>
-      </div>
-      <div>
-        <div class="sheet-stat-label">등락률</div>
-        <div class="sheet-stat-value" style="color:${chgTextColor};">${chgText}</div>
-      </div>
-      <div>
-        <div class="sheet-stat-label">섹터</div>
-        <div class="sheet-stat-value">${d.sectorKo}</div>
-      </div>
-    </div>
+    <div id="sheetPriceStats">${priceStatsHtml(d, null)}</div>
   `;
   companySheet.classList.add("open");
+  // 정적 스냅샷(d) 대신 지금 이 순간의 실제 시세를 한 번 더 가져와 캔들·현재가·거래량·등락금액·등락률을 갱신
+  // — 지도 타일 색상은 5분 주기로 실시간이지만 상세시트 숫자는 마지막 rerenderMap 시점 스냅샷일 수 있던 문제 해결
+  fetchLiveQuoteForSheet(d.symbol)
+    .then((live) => {
+      if (!live || !companySheet.classList.contains("open")) return;
+      const priceStatsEl = document.getElementById("sheetPriceStats");
+      if (priceStatsEl) priceStatsEl.innerHTML = priceStatsHtml(d, live);
+    })
+    .catch(() => {});
   document.getElementById("sheetCloseBtn").addEventListener("click", closeCompanySheet);
   const watchBtn = document.getElementById("sheetWatchBtn");
   watchBtn.addEventListener("click", (e) => {
@@ -652,16 +733,15 @@ document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#log
   });
 });
 
-// 기본 화면은 색상만 보기 — 버튼을 누르면 로고 보기로 전환되며 주황 배경으로 강조된다
+// 기본 화면은 색상만 보기 — 버튼을 누르면 로고 보기로 전환되며 주황 배경으로 강조된다 (버튼 이름은 항상 "로고")
 const logoModeBtn = document.getElementById("logoModeBtn");
 mapWorld.classList.add("color-only");
-logoModeBtn.textContent = "색상";
+logoModeBtn.textContent = "로고";
 logoModeBtn.classList.remove("active");
 
 logoModeBtn.addEventListener("click", (e) => {
   const btn = e.currentTarget;
   const colorOnly = mapWorld.classList.toggle("color-only");
-  btn.textContent = colorOnly ? "색상" : "로고";
   btn.classList.toggle("active", !colorOnly);
 });
 
@@ -701,18 +781,19 @@ function buildPopularRank(isKr) {
 function buildMetrics(market) {
   const isKr = market === "domestic";
   const capFmt = isKr ? fmtWonCompact : fmtMarketCap;
-  const epsFmt = isKr ? (v) => `₩${Math.round(v).toLocaleString()}` : (v) => `$${v.toFixed(2)}`;
   const popularRank = buildPopularRank(isKr);
   popularRank.refresh();
   return {
-    revenueGrowth: { label: "매출액 증가", hasData: true, get: (c) => c.revenueGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
-    cashFlowGrowth: { label: "현금흐름 증가", hasData: true, get: (c) => c.cashFlowGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
-    netIncomeGrowth: { label: "순이익 증가", hasData: true, get: (c) => c.netIncomeGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
-    eps: { label: "EPS", hasData: true, get: (c) => c.eps, fmt: epsFmt },
-    per: { label: "PER", hasData: true, get: (c) => c.per, fmt: (v) => `${v.toFixed(1)}배`, domainMax: 80 },
-    marketCap: { label: "시가총액", hasData: true, get: (c) => c.marketCap, fmt: isKr ? fmtWonTrillionOnly : capFmt },
+    week52RangePct: {
+      label: "52주최저",
+      hasData: true,
+      get: (c) => c.week52RangePct,
+      fmt: (v) => `${v.toFixed(0)}%`,
+      domainMin: 0,
+      domainMax: 100,
+    },
     popularStocks: {
-      label: "거래량",
+      label: "거래대금",
       hasData: true,
       needsLive: !isKr,
       get: (c) => popularRank.map.get(c.symbol),
@@ -721,9 +802,17 @@ function buildMetrics(market) {
       refreshRank: popularRank.refresh,
       getRankCount: () => popularRank.map.size,
     },
-    riseRate: { label: "상승률", hasData: true, live: !isKr, get: (c) => c.changePercent, onlyPositive: true, fmt: (v) => `${v.toFixed(1)}%` },
-    fallRate: { label: "하락률", hasData: true, live: !isKr, get: (c) => c.changePercent, onlyNegative: true, fmt: (v) => `${v.toFixed(1)}%` },
+    // 상승률/하락률을 하나로 합쳐 최저(가장 큰 하락)~최고(가장 큰 상승)가 한 슬라이더 안에 전부 보이도록 함
+    changePct: { label: "등락률", hasData: true, live: !isKr, get: (c) => c.changePercent, fmt: (v) => `${v.toFixed(1)}%` },
+    revenueGrowth: { label: "매출성장", hasData: true, get: (c) => c.revenueGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
+    netIncomeGrowth: { label: "순이익증가", hasData: true, get: (c) => c.netIncomeGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
     dividendYield: { label: "배당률", hasData: !isKr, get: (c) => c.dividendYield, fmt: (v) => `${v.toFixed(2)}%` },
+    debtRatio: { label: "부채비율", hasData: true, get: (c) => c.debtRatio, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 300 },
+    cashFlowGrowth: { label: "현금흐름 증가", hasData: true, get: (c) => c.cashFlowGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
+    marketCap: { label: "시가총액", hasData: true, get: (c) => c.marketCap, fmt: isKr ? fmtWonTrillionOnly : capFmt },
+    operatingMargin: { label: "영업이익률", hasData: true, get: (c) => c.operatingMargin, fmt: (v) => `${v.toFixed(1)}%`, domainMin: -50, domainMax: 60 },
+    per: { label: "PER", hasData: true, get: (c) => c.per, fmt: (v) => `${v.toFixed(1)}배`, domainMax: 80 },
+    roe: { label: "ROE", hasData: true, get: (c) => c.roe, fmt: (v) => `${v.toFixed(1)}%`, domainMin: -50, domainMax: 60 },
   };
 }
 let METRICS = buildMetrics("overseas");
@@ -1137,6 +1226,7 @@ async function refreshLiveData() {
   const companyBySymbol = new Map(ACTIVE_DATA.companies.map((c) => [c.symbol, c]));
   const sectorIds = Object.values(LIVE_SECTOR_SCREENER_ID);
   let updated = 0;
+  let maxQuoteTime = 0; // 이번 조회에서 받은 종목들의 실제 regularMarketTime 중 가장 최신 — 지도 시계를 이 값에 맞춤(시장위젯과 동일한 기준)
 
   // 섹터 하나가 끝날 때마다 바로 반영 — 거래량(순위) 시트를 보고 있으면 "OO/500" 진행 숫자가 실시간으로 올라간다
   async function processSector(scrId) {
@@ -1150,6 +1240,7 @@ async function refreshLiveData() {
       if (typeof q.regularMarketPrice === "number" && typeof q.regularMarketVolume === "number") {
         c.dollarVolume = q.regularMarketPrice * q.regularMarketVolume;
       }
+      if (typeof q.regularMarketTime === "number" && q.regularMarketTime > maxQuoteTime) maxQuoteTime = q.regularMarketTime;
       updated++;
     }
     if (METRICS.popularStocks) {
@@ -1167,12 +1258,13 @@ async function refreshLiveData() {
     }
   }
   await Promise.all(Array.from({ length: Math.min(3, sectorIds.length) }, worker));
+  if (maxQuoteTime > 0) lastDataAsOfTime = new Date(maxQuoteTime * 1000);
 
   if (updated === 0) return false; // 전부 실패(프록시 다운 등) — 정적 스냅샷 값 유지
   liveDataLoaded = true;
   refreshAllBubbleColors();
   // 상승률/하락률처럼 실시간으로 바뀌는 지표는 도메인 캐시를 지우고 다시 계산해야 함
-  for (const key of ["riseRate", "fallRate"]) {
+  for (const key of ["changePct"]) {
     if (METRICS[key]) delete METRICS[key].domain;
   }
   applyAllFilters(); // 라이브 값이 바뀌었으니 지금 걸려있는 필터도 새 값 기준으로 재적용
@@ -1200,8 +1292,9 @@ async function refreshDomesticLiveData() {
     }
     if (updated === 0) return false;
     liveDataLoaded = true;
+    if (typeof data.fetchedAt === "number") lastDataAsOfTime = new Date(data.fetchedAt);
     refreshAllBubbleColors();
-    for (const key of ["riseRate", "fallRate"]) {
+    for (const key of ["changePct"]) {
       if (METRICS[key]) delete METRICS[key].domain;
     }
     applyAllFilters();
@@ -1224,6 +1317,9 @@ function isUsMarketOpen() {
 
 // AI 버튼에 표시할 "색상이 언제 기준인지" — 오늘 안에 갱신됐으면 시:분:초(장중이면 주황), 날짜가 지났으면 월/일(빨강)
 let lastColorRefreshAt = null;
+// 실제 데이터 자체의 시각(해외: Yahoo regularMarketTime 중 최신값, 국내: Worker가 응답을 받아온 fetchedAt) — 지도 시계를
+// "지금 몇 시니까 아마 이쯤이겠지" 식 추정이 아니라 본체 시장 위젯과 동일하게 실제 데이터 시점 그대로 보여주는 데 씀
+let lastDataAsOfTime = null;
 // 실제 데이터는 20분 지연이므로 "지금 몇 시"가 아니라 "지금 보이는 색상이 몇 시 기준인지"(=지금-20분)를 보여줌.
 // 장이 이미 끝났으면 그 이후로는 데이터가 더 안 들어오니 마감 시각에 고정하고 더 흘러가지 않게 함
 function computeDelayedAsOfTime() {
@@ -1256,7 +1352,8 @@ function renderAiFabTimestamp() {
   const timeEl = document.getElementById("aiFabTime");
   if (!timeEl) return;
   if (!lastColorRefreshAt) {
-    timeEl.textContent = "";
+    timeEl.textContent = "연결중...";
+    timeEl.className = "ai-fab";
     return;
   }
   const refreshedAt = new Date(lastColorRefreshAt);
@@ -1271,7 +1368,9 @@ function renderAiFabTimestamp() {
     return;
   }
   const marketOpen = ACTIVE_MARKET === "domestic" ? isKrMarketOpen() : isUsMarketOpen();
-  const { time: asOf, isToday } = computeDelayedAsOfTime();
+  // 실제 데이터 자체의 시각이 있으면(정상 케이스) 그걸 그대로 씀 — 장 마감 후에도 본체 시장 위젯처럼 데이터가
+  // 실제로 더 들어오는 만큼 시계도 따라 움직이고, 더 이상 안 들어오면 자연히 그 마지막 시각에 멈춰 있게 됨(가짜 고정 아님)
+  const { time: asOf, isToday } = lastDataAsOfTime ? { time: lastDataAsOfTime, isToday: lastDataAsOfTime.toDateString() === new Date().toDateString() } : computeDelayedAsOfTime();
   if (!isToday) {
     // 아직 오늘 장이 시작 전이라 직전 거래일 마감 시각에 고정된 상태 — 시:분:초 대신 그 날짜를 보여줌
     const mm = String(asOf.getMonth() + 1).padStart(2, "0");
@@ -1332,8 +1431,7 @@ function rerenderMap(animate) {
 document.getElementById("sizeModeBtn").addEventListener("click", (e) => {
   const btn = e.currentTarget;
   sizeMode = sizeMode === "equal" ? "marketCap" : "equal";
-  btn.textContent = sizeMode === "equal" ? "균등" : "시총";
-  btn.classList.toggle("active", sizeMode === "equal");
+  btn.classList.toggle("active", sizeMode === "marketCap");
   rerenderMap(true);
 });
 
@@ -1578,6 +1676,7 @@ function loadMarket(mode, animate) {
   applyChangeModeToSectorBubbles(); // rerenderMap이 섹터 원을 새로 만들므로 등락 모드가 켜져 있었다면 채색도 다시 적용
 
   refreshActiveMarketLiveData().catch(() => {});
+  scheduleInactiveMarketPreload(); // 시장 전환 시에도 방금 떠난 쪽 로고를 한가할 때 다시 캐시해둠(다음에 돌아왔을 때 즉시 뜨도록)
 }
 
 // 20분 지연 표시에 맞춰 5분마다 조용히(토스트 없이) 색상을 다시 갱신 — 페이지를 오래 켜둬도 계속 최신에 가깝게 유지됨
@@ -1696,18 +1795,38 @@ loadMarket(initialMarket, false);
 renderTickerTape().catch(() => {});
 loadingIndicator.classList.add("hidden");
 
-// 국내/해외 전환 시 로고가 다시 느리게 뜨지 않도록, 시작하자마자 두 시장 로고를 저화질부터 브라우저 캐시에 미리 받아둔다
-function preloadAllLogos() {
-  const symbols = new Set();
-  [SP500_DATA, typeof KR_SECTOR_DATA !== "undefined" ? KR_SECTOR_DATA : null].forEach((dataset) => {
-    if (!dataset || !dataset.companies) return;
-    for (const c of dataset.companies) {
-      if (!BAD_LOGO_SYMBOLS.has(c.symbol)) symbols.add(c.symbol);
-    }
-  });
-  symbols.forEach((symbol) => {
-    const img = new Image();
-    img.src = logoUrl(symbol, "low");
-  });
+// 국내/해외 전환 시 로고가 다시 느리게 뜨지 않도록 반대쪽 시장 로고를 미리 캐시에 받아둔다.
+// 예전엔 접속 즉시 양쪽 시장 850개를 전부 한꺼번에 요청해서, 지금 보고 있는 시장(각 종목 <img loading="lazy">가
+// 이미 알아서 불러오는 중인)의 로고 요청과 대역폭을 놓고 경쟁하는 게 첫 화면 체감 속도 저하의 원인이었음(성능 관찰 기록).
+// 지금 보고 있는 시장은 건너뛰고(중복 요청 방지), 반대쪽 시장만, 그것도 메인 스레드가 한가해진 뒤 작은 묶음으로
+// 나눠서 조용히 받아온다 — "지금 보고 있는 구역"의 실시간 로고 요청이 항상 우선되도록.
+function preloadInactiveMarketLogos() {
+  const activeSymbols = new Set((ACTIVE_DATA && ACTIVE_DATA.companies ? ACTIVE_DATA.companies : []).map((c) => c.symbol));
+  const inactiveDataset = ACTIVE_MARKET === "domestic" ? SP500_DATA : typeof KR_SECTOR_DATA !== "undefined" ? KR_SECTOR_DATA : null;
+  if (!inactiveDataset || !inactiveDataset.companies) return;
+  const symbols = inactiveDataset.companies
+    .map((c) => c.symbol)
+    .filter((symbol) => !activeSymbols.has(symbol) && !BAD_LOGO_SYMBOLS.has(symbol));
+
+  const BATCH_SIZE = 20;
+  const BATCH_DELAY_MS = 120;
+  let i = 0;
+  function loadNextBatch() {
+    const batch = symbols.slice(i, i + BATCH_SIZE);
+    batch.forEach((symbol) => {
+      const img = new Image();
+      img.src = logoUrl(symbol, "low");
+    });
+    i += BATCH_SIZE;
+    if (i < symbols.length) setTimeout(loadNextBatch, BATCH_DELAY_MS);
+  }
+  loadNextBatch();
 }
-preloadAllLogos();
+function scheduleInactiveMarketPreload() {
+  if (typeof requestIdleCallback === "function") {
+    requestIdleCallback(preloadInactiveMarketLogos, { timeout: 4000 });
+  } else {
+    setTimeout(preloadInactiveMarketLogos, 2000);
+  }
+}
+// loadMarket()이 초기 로드 + 시장 전환 시마다 이 함수를 호출하므로 여기서 별도로 또 부르지 않음
