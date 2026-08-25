@@ -24,15 +24,26 @@ $wikiUrl = "https://en.wikipedia.org/w/api.php?action=parse&page=List_of_S%26P_5
 $wikiResp = Invoke-RestMethod -Uri $wikiUrl -Headers $headers
 $wikitext = $wikiResp.parse.wikitext.'*'
 
-# 표 행 파싱: || {{XxxSymbol|TICKER}} \n || [[Name]] \n || Sector \n || SubIndustry ...
-$rowPattern = '\{\{\w+Symbol\|([A-Za-z0-9.\-]+)\}\}\s*\r?\n\|\|\s*\[\[([^\]|]+)(?:\|[^\]]+)?\]\]\s*\r?\n\|\|\s*([^\r\n|]+)'
-$matches = [regex]::Matches($wikitext, $rowPattern)
+# 표 행 파싱: "|-"로 행을 나누고 각 행을 "||"로 셀 분리(줄바꿈 유무·HTML주석·[[Name]] (Class A) 같은
+# 부가텍스트에 안 흔들림). 일부 행은 셀 구분에 "||" 대신 단독 "|"를 쓰기도 해서(예: PODD) 먼저 정규화한다.
+# 2026-08-25: 기존 줄바꿈 강제 정규식이 GOOGL/GOOG/BRK.B/FOXA/FOX/NWSA/NWS/BF.B/EME/PODD/KVUE/RMD/VST
+# 13개 종목을 통째로 놓치는 버그를 발견해 이 방식으로 교체함(전체 502개 중 489개만 파싱되고 있었음).
+$normalizedWikitext = [regex]::Replace($wikitext, '(\r?\n)\|(?![\|\-\}])', '$1||')
+$rowBlocks = [regex]::Split($normalizedWikitext, '\r?\n\|-\r?\n')
 
 $companies = @()
-foreach ($m in $matches) {
-  $symbol = $m.Groups[1].Value.Trim().ToUpper()
-  $name = $m.Groups[2].Value.Trim()
-  $sector = $m.Groups[3].Value.Trim()
+foreach ($block in $rowBlocks) {
+  $cells = $block -split '\|\|'
+  if ($cells.Count -lt 4) { continue }
+  $symMatch = [regex]::Match($cells[1], '\{\{\w+Symbol\|([A-Za-z0-9.\-]+)\}\}')
+  if (-not $symMatch.Success) { continue }
+  # Yahoo Finance API는 클래스 티커를 점(.)이 아닌 대시(-)로 표기함(BRK.B -> BRK-B) — 이 앱 전체가
+  # 이 심볼을 그대로 Yahoo API 호출에 쓰므로(fetchLiveQuoteForSheet 등) 저장 시점부터 대시로 정규화
+  $symbol = $symMatch.Groups[1].Value.Trim().ToUpper() -replace '\.', '-'
+  $nameMatch = [regex]::Match($cells[2], '\[\[([^\]\|]+)(?:\|[^\]]+)?\]\]')
+  $name = if ($nameMatch.Success) { $nameMatch.Groups[1].Value.Trim() } else { $cells[2].Trim() }
+  if (-not $name) { continue }
+  $sector = $cells[3].Trim()
   $companies += [PSCustomObject]@{ symbol = $symbol; name = $name; sector = $sector }
 }
 Write-Host "   -> $($companies.Count)개 종목 파싱 완료"
