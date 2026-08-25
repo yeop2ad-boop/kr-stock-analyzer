@@ -544,22 +544,13 @@ body {
   display: flex; align-items: center; justify-content: center;
   color: #fff; font-weight: 800; font-size: 13px;
 }
-.sheet-name-wrap { flex: 1; min-width: 0; }
 .sheet-name { font-size: 15.5px; font-weight: 800; color: var(--text-dark); }
 .sheet-name-link { cursor: pointer; }
 .sheet-name-link:active { opacity: 0.7; }
 .sheet-symbol { font-size: 12.5px; color: var(--text-mid); font-weight: 600; margin-top: 2px; }
-.sheet-market-badge { display: inline-block; font-size: 10px; font-weight: 700; color: var(--text-mid); background: rgba(15, 23, 42, 0.07); padding: 1px 5px; border-radius: 6px; margin: 0 2px; vertical-align: 1px; }
-/* 시가총액은 우측 상단에 아주 작은 글씨로 — X 닫기 버튼과 안 겹치게 오른쪽 여백 확보 */
-.sheet-marketcap-corner { flex: none; text-align: right; padding-right: 26px; margin-top: 24px; align-self: flex-start; }
-.sheet-marketcap-label { font-size: 9.5px; color: var(--text-soft); font-weight: 600; }
-.sheet-marketcap-value { font-size: 10.5px; color: var(--text-mid); font-weight: 700; margin-top: 1px; }
-/* 캔들 + 현재가/등락금액/거래량/등락률 2x2 블록 — 상승 빨강·하락 파랑·0%는 검정(simpleDirColor) */
-.sheet-price-block { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
-.sheet-candle-icon { flex: none; }
-.sheet-price-grid { display: grid; grid-template-columns: auto auto; column-gap: 20px; row-gap: 3px; }
-.sheet-price-cell { font-size: 15px; font-weight: 800; }
-.sheet-price-cell-muted { font-size: 12.5px; font-weight: 600; color: var(--text-soft); }
+.sheet-stats { display: flex; gap: 22px; margin-top: 16px; }
+.sheet-stat-label { font-size: 11.5px; color: var(--text-soft); font-weight: 600; }
+.sheet-stat-value { font-size: 15px; color: var(--text-dark); font-weight: 800; margin-top: 3px; }
 .sheet-close {
   position: absolute; top: 10px; right: 12px;
   border: none; background: none; color: var(--text-soft);
