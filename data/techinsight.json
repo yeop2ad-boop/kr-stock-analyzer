@@ -1,5 +1,53 @@
 [
   {
+    "id": "5760a8490193",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "AI 시대 적응력 있는 엔지니어가 갖춰야 할 역량",
+    "originalTitle": "What It Takes to Be an Adaptable Engineer",
+    "link": "https://spectrum.ieee.org/adaptable-engineer-core-skills",
+    "summary": "AI의 급속한 발전으로 엔지니어들이 사용하는 기술 도구와 업무 방식이 빠르게 변하고 있어, 채용 시장에서 '적응력'이 점점 중요해지고 있다. 그러나 대학 교육과 직장 훈련에서는 적응력이 무엇인지, 어떻게 개발해야 하는지 명확히 설명하지 못하고 있다. 적응력은 변화와 불확실성을 인식하고 효과적으로 대응하는 능력을 의미하며, 그 구체적 형태는 산업마다 다르게 나타난다. 기술 분야의 인재들은 현재 '불편한 과도기'를 겪고 있으며, 올바른 사고방식과 리더십의 지원이 있다면 이 적응 과정을 성공적으로 헤쳐나갈 수 있다.",
+    "image": "data/techinsight-images/5760a8490193.webp",
+    "publishedAt": "2026-08-24T14:00:01.000Z",
+    "createdAt": "2026-08-24T22:58:05.996Z"
+  },
+  {
+    "id": "3fa6206d4fef",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "IEEE 시니어 멤버십, 오해를 풀다",
+    "originalTitle": "IEEE Senior Membership Demystified",
+    "link": "https://spectrum.ieee.org/ieee-senior-membership-demystified",
+    "summary": "IEEE 시니어 멤버십에 대한 여러 오해들이 실제로는 근거 없다는 것을 저자의 경험을 통해 설명한다. 학위나 논문 출판, 업계 내 명성이 필수 요건이 아니며, 10년의 경험과 5년의 의미 있는 성과만으로도 자격이 충분하다. 저자는 애플에서 머신러닝 엔지니어로 일하며 논문 리뷰, 멘토링 등의 활동을 하던 중 자신의 경력 변화를 반영할 자격증으로 시니어 멤버십을 신청했다. 동료 평가를 거친 이 자격증은 한 순간의 성취가 아닌 지속적인 전문적 기여를 증명하며, 실제로 리더십 역할과 편집 기회 등 커리어 성장에 빠르게 도움이 되었다.",
+    "image": "data/techinsight-images/3fa6206d4fef.webp",
+    "publishedAt": "2026-08-24T18:00:01.000Z",
+    "createdAt": "2026-08-24T22:57:42.686Z"
+  },
+  {
+    "id": "10fa6ee4a434",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "아이들은 AI를 능가한다, 우주여행 에이전트의 부상",
+    "originalTitle": "The Download: kids outlearning AI, and space travel agents",
+    "link": "https://www.technologyreview.com/2026/08/24/1142863/the-download-kids-outlearning-ai-space-travel-agents/",
+    "summary": "아이들은 대규모언어모델이 습득하는 데이터의 극히 일부만으로도 언어를 마스터하는 반면, AI는 인간이 모국어를 배우는 과정에서 경험하는 단어량의 10만 배를 처리해야 한다는 '데이터 효율성 격차'가 존재한다. 과학자들은 아이들의 학습 방식을 역설계하여 더욱 효율적인 AI 모델 개발과 언어 습득의 비밀을 풀기를 희망하고 있다. 한편 우주여행 사업가 로만 치포루카는 민간 우주 경험을 제공하는 스페이스VIP를 창립하여 우주를 여행지로 상품화했으며, 이는 고급 라이프스타일 산업에 새로운 시장을 열어주고 있다.",
+    "image": "data/techinsight-images/10fa6ee4a434.webp",
+    "publishedAt": "2026-08-24T12:10:00.000Z",
+    "createdAt": "2026-08-24T22:57:40.476Z"
+  },
+  {
+    "id": "b09e26ca9fd0",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "교실에서 AI를 똑똑하게 활용하는 방법",
+    "originalTitle": "How to encourage smarter AI use in the classroom",
+    "link": "https://www.technologyreview.com/2026/08/24/1142630/ai-school-classroom-policies/",
+    "summary": "챗봇의 등장으로 학교들이 학생들의 AI 사용을 어떻게 관리할지 고민하게 되었다. 커넥티컷의 체셔 아카데미는 교사들에게 일반적인 AI 활용 기술을 교육하고, 신호등 시스템(녹색은 AI 사용 허용, 빨강은 금지, 노랑은 특정 도구만 허용)을 도입해 학생들이 언제 AI를 쓸 수 있는지 명확히 했다. 학교는 또한 학생들이 AI의 강점과 약점을 직접 체험하고 성찰하는 과제를 설계했으며, 학생 AI 위원회를 만들어 건강한 AI 사용 문화를 조성하고 있다. 교사들은 AI가 행정 업무와 교육 자료 준비에 도움이 되지만, 정확성과 개인성이 필요한 피드백이나 학생 대면 자료 생성에는 신중해야 함을 배웠다.",
+    "image": "data/techinsight-images/b09e26ca9fd0.webp",
+    "publishedAt": "2026-08-24T14:20:19.000Z",
+    "createdAt": "2026-08-24T22:57:40.350Z"
+  },
+  {
     "id": "2e73808acccb",
     "sourceKey": "ieee",
     "source": "IEEE Spectrum",
@@ -190,53 +238,5 @@
     "image": "data/techinsight-images/0f9772a27c74.webp",
     "publishedAt": "2026-08-20T15:42:39.000Z",
     "createdAt": "2026-08-20T23:00:34.154Z"
-  },
-  {
-    "id": "7896ec127bab",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "대형 플랫폼에서 하드웨어 구축 전에 안테나 커플링 예측하기",
-    "originalTitle": "Predict Antenna Coupling on Electrically Large Platforms Before Building Hardware",
-    "link": "https://content.knowledgehub.wiley.com/efficient-and-accurate-prediction-of-cosite-isolation-on-large-platforms/",
-    "summary": "항공기 같은 대형 플랫폼에 장착된 안테나 간의 커플링을 시뮬레이션으로 미리 예측하는 방법을 소개하는 기술 자료입니다. 이를 통해 엔지니어와 연구자들은 실제 하드웨어를 제작하기 전에 안테나 간 상호작용을 정확히 파악할 수 있습니다. 매우 약한 커플링 신호까지도 정확하게 측정 가능하며, 비용이 많이 드는 프로토타입 제작 단계를 줄일 수 있습니다. 이는 대규모 플랫폼 설계의 효율성과 정확성을 크게 향상시키는 시뮬레이션 기반 접근 방식입니다.",
-    "image": "data/techinsight-images/7896ec127bab.webp",
-    "publishedAt": "2026-08-14T17:27:12.000Z",
-    "createdAt": "2026-08-19T22:55:40.375Z"
-  },
-  {
-    "id": "dcedd6fa1f80",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "AI 기업들의 주장과 달리 실제 AI 사용 현황은 여전히 미스터리다",
-    "originalTitle": "We still don’t know how people are really using AI",
-    "link": "https://www.technologyreview.com/2026/08/18/1142226/how-people-use-ai/",
-    "summary": "AI 기업들이 공개하는 사용 데이터는 자신들에게 유리한 정보만 선별해서 제시하고 있어 실제 사용 현황을 제대로 파악하기 어렵다는 지적이 제기되고 있다. AI 옵저버토리라는 새로운 독립 연구 플랫폼은 Claude, ChatGPT, Gemini 등 다양한 AI 모델에서 수집한 실제 대화 데이터를 분석한 결과, AI 기업들이 강조하는 업무 사용은 전체의 절반에 불과하며 건강, 관계, 민감한 콘텐츠 관련 대화가 훨씬 더 많이 이루어지고 있음을 발견했다. 모델별로도 사용 패턴이 크게 달라서 Grok은 뉘스와 정치 정보 검색에 많이 쓰이고, Claude는 코딩, Gemini는 소셜 및 롤플레이에 활용되는 등 서로 다른 특징을 보였다. AI 기업들이 자신들의 데이터를 외부와 공유하지 않기 때문에 독립적인 연구를 통해 실제 사용 현황을 파악하는 것이 중요하다.",
-    "image": "data/techinsight-images/dcedd6fa1f80.webp",
-    "publishedAt": "2026-08-18T10:06:43.000Z",
-    "createdAt": "2026-08-19T22:55:09.518Z"
-  },
-  {
-    "id": "e608a03499cf",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "우주비행사의 역할, 새로운 전환점을 맞다",
-    "originalTitle": "The role of the astronaut is in flux",
-    "link": "https://www.technologyreview.com/2026/08/18/1141614/book-review-astronaut-role-in-flux/",
-    "summary": "아르테미스 II 미션의 성공으로 인류의 우주 탐사가 새로운 시대를 맞고 있지만, 인간을 우주에 보내야 하는 근본적인 이유에 대한 의문이 제기되고 있다. 우주 탐사의 정당성은 지정학적 위상, 과학적 호기심, 상업적 기회 등 다양하게 제시되어 왔지만, 궁극적으로는 인류의 본능적인 탐험 본능이 우주 진출의 원동력이라는 주장이 대두되고 있다. 앞으로 달과 화성이 단순한 꿈의 대상이 아닌 실제 업무 공간, 관광지, 군사 영역으로 변모하면서, 우주 미래에 대한 결정이 소수의 기업가와 국가들에 의해서만 이루어져서는 안 되며 대중의 목소리가 필요하다는 점을 강조하고 있다. 냉전 시대 미소 간 우주 경쟁이 핵전쟁의 상징적 대리전이었다면, 현재 미중 간 우주 경쟁은 달의 물과 같은 실질적 자원 확보를 둘러싼 경합으로 변화하고 있다.",
-    "image": "data/techinsight-images/e608a03499cf.webp",
-    "publishedAt": "2026-08-18T09:00:00.000Z",
-    "createdAt": "2026-08-19T22:55:07.434Z"
-  },
-  {
-    "id": "aa9c1a1cdf42",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "조직 내 혁신 아이디어를 추진하기 위한 리더십 확보 전략",
-    "originalTitle": "Gaining Leadership Backing for Your Innovations",
-    "link": "https://spectrum.ieee.org/leadership-backing-innovation",
-    "summary": "조직 내에서 자신의 부서 밖의 혁신 아이디어를 발전시키려는 직원들은 종종 기회를 놓치게 된다. Google과 3M 같은 선진 기업들은 직원들이 업무 시간의 일부를 자신의 아이디어 개발에 쓸 수 있도록 공식적으로 허용하는 문화를 만들어 왔다. 일부 회사들은 관리자가 암묵적으로 용인하는 부트레깅이나 스컹크웍스 같은 비공식 프로젝트를 통해 혁신을 추진한다. Post-it Note, 매킨토시 컴퓨터, Gmail 등 많은 성공 사례들이 이러한 방식에서 비롯되었다. 조직 내에서 변화를 이끌기 위해서는 아이디어를 뒷받침할 리더십 지지자들의 네트워크를 구축하는 것이 필수적이다.",
-    "image": "data/techinsight-images/aa9c1a1cdf42.webp",
-    "publishedAt": "2026-08-19T18:00:02.000Z",
-    "createdAt": "2026-08-19T22:55:06.482Z"
   }
 ]
