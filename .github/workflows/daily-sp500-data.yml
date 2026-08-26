@@ -2,8 +2,8 @@ name: 섹터맵 데이터 자동 갱신(해외 S&P500 + 국내 코스피200/코�
 
 on:
   schedule:
-    # 매일 22:00 UTC = 한국시간(KST) 오전 7시
-    - cron: "0 22 * * *"
+    # 매일 09:00 UTC = 한국시간(KST) 오후 6시
+    - cron: "0 9 * * *"
   workflow_dispatch: {}
 
 permissions:
@@ -12,41 +12,49 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v5
 
-      - name: 시가총액/섹터/PER/EPS/배당률/등락률 갱신
+      - name: 시가총액/섹터/PER/EPS/배당률/등락률 갱신(해외)
         shell: pwsh
         working-directory: sector-map
         run: ./scripts/fetch-sp500-data.ps1
 
-      - name: 매출액/현금흐름/순이익 증가율 갱신(해외)
+      - name: 매출액/현금흐름/순이익 증가율 갱신(해외, 연간 실적 기준)
         shell: pwsh
         working-directory: sector-map
         run: ./scripts/fetch-growth-metrics.ps1
 
-      - name: 코스피200/코스닥150 갱신(국내)
+      - name: 코스피200/코스닥150 갱신(국내, 실적 증가율 포함)
         shell: pwsh
         working-directory: sector-map
         run: ./scripts/fetch-kr-data.ps1
 
-      - name: data.js 재생성
+      - name: 영업이익률/ROE/부채비율/52주최저 갱신(해외+국내)
         shell: pwsh
         working-directory: sector-map
-        run: |
-          $json = Get-Content data/sp500-sectors.json -Raw
-          "const SP500_DATA = $json;" | Set-Content data/sp500-data.js -Encoding utf8
-          $krJson = Get-Content data/kr-sectors.json -Raw
-          "const KR_SECTOR_DATA = $krJson;" | Set-Content data/kr-data.js -Encoding utf8
+        run: ./scripts/fetch-financial-ratios.ps1
+
+      - name: 상승압력/투자안정 점수 갱신(해외+국내)
+        shell: pwsh
+        working-directory: sector-map
+        run: ./scripts/fetch-momentum-scores.ps1
+
+      - name: 지도가 실제 로드하는 core/extra 데이터 파일에 병합
+        shell: pwsh
+        working-directory: sector-map
+        run: ./scripts/regenerate-core-extra.ps1
 
       - name: 변경사항 커밋 및 푸시
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add sector-map/data/sp500-sectors.json sector-map/data/sp500-data.js sector-map/data/kr-sectors.json sector-map/data/kr-data.js
+          git add sector-map/data/sp500-sectors.json sector-map/data/kr-sectors.json sector-map/data/sp500-data-core.js sector-map/data/sp500-data-extra.js sector-map/data/kr-data-core.js sector-map/data/kr-data-extra.js
           if git diff --cached --quiet; then
             echo "변경된 데이터 없음"
           else
             git commit -m "섹터맵 데이터 자동 갱신 ($(date -u +%Y-%m-%d))"
+            git pull --rebase origin main
             git push
           fi
