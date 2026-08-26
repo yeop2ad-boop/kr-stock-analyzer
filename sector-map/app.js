@@ -1861,6 +1861,10 @@ document.querySelectorAll("#marketTogglePill .toggle-btn").forEach((b) => {
 loadMarket(initialMarket, false);
 renderTickerTape().catch(() => {});
 loadingIndicator.classList.add("hidden");
+// 지도 자체 첫 렌더(원 배치까지)가 끝났으므로 본체 첫 화면과 같은 전체화면 스플래시를 내림 —
+// 실시간 시세/색상은 loadMarket 내부에서 이어서 비동기로 불러오지만, 스플래시까지 그걸 기다리진 않음(본체와 동일한 패턴)
+const mapLoadingSplashEl = document.getElementById("mapLoadingSplash");
+if (mapLoadingSplashEl) mapLoadingSplashEl.style.display = "none";
 
 // 국내/해외 전환 시 로고가 다시 느리게 뜨지 않도록 반대쪽 시장 로고를 미리 캐시에 받아둔다.
 // 예전엔 접속 즉시 양쪽 시장 850개를 전부 한꺼번에 요청해서, 지금 보고 있는 시장(각 종목 <img loading="lazy">가
