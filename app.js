@@ -6254,27 +6254,42 @@ function getKrInstitutionData() {
   }
   return krInstitutionDataPromise;
 }
+// 해외 13F 테이블(insightTableHtml)과 동일한 4열 구조(순위/종목/비중(변동)/총 신고가치(금액변동))로 통일 —
+// 별도 안내문구 없이 표만 표시. DART 5%룰은 종목마다 공시일이 달라 헤더에 날짜를 못 박지 못하므로, 비중 셀 아래에 종목별 공시일을 표시
 function krInstitutionTableHtml(inst) {
   if (!inst.holdings || !inst.holdings.length) {
-    return `<p class="disclaimer tab-note">🚧 ${escapeHtml(inst.unavailableNote || "DART 5%룰(대량보유상황보고서) 공시 기준으로 확인 가능한 개별 종목 보유 내역이 없습니다.")}</p>`;
+    return `<p class="disclaimer tab-note">🚧 ${escapeHtml(inst.unavailableNote || "공시된 개별 종목 보유 내역이 없습니다.")}</p>`;
   }
-  const caveatHtml = inst.dataCaveat ? `<p class="disclaimer" style="color:#f5a623;">⚠️ ${escapeHtml(inst.dataCaveat)}</p>` : "";
   const rows = inst.holdings
-    .map(
-      (h, i) => `
+    .map((h, i) => {
+      const nameCellHtml = h.ticker
+        ? `<span class="ticker-cell">${tickerLogoHtml(h.ticker)}<b class="ticker-link" data-ticker="${escapeHtml(h.ticker)}">${escapeHtml(h.name)}</b></span>`
+        : `<b>${escapeHtml(h.name)}</b>`;
+      const deltaHtml = h.isNew
+        ? `<span class="muted" style="font-size:11px;white-space:nowrap;">(신규) · ${escapeHtml(h.asOfDate)}</span>`
+        : typeof h.weightChangePt === "number"
+          ? `<span class="${h.weightChangePt >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;white-space:nowrap;">(${h.weightChangePt >= 0 ? "+" : ""}${h.weightChangePt.toFixed(2)}%p) · ${escapeHtml(h.asOfDate)}</span>`
+          : `<span class="muted" style="font-size:11px;white-space:nowrap;">${escapeHtml(h.asOfDate)}</span>`;
+      const valueHtml = typeof h.valueKRW === "number" ? fmtKrwCompact(h.valueKRW) : "N/A";
+      const valueDeltaHtml =
+        typeof h.valueChangeKRW === "number"
+          ? `<span class="${h.valueChangeKRW >= 0 ? "delta-up" : "delta-down"}">${h.valueChangeKRW >= 0 ? "+" : ""}${fmtKrwCompact(h.valueChangeKRW)}</span>`
+          : "";
+      return `
       <tr>
         <td>${i + 1}</td>
-        <td>${h.ticker ? tickerLogoHtml(h.ticker) : ""}<b class="${h.ticker ? "ticker-link" : ""}" ${h.ticker ? `data-ticker="${escapeHtml(h.ticker)}"` : ""}>${escapeHtml(h.name)}</b></td>
-        <td>${h.weightPct.toFixed(2)}%${h.note ? `<br><span class="muted" style="font-size:11px;">${escapeHtml(h.note)}</span>` : ""}</td>
-        <td>${escapeHtml(h.asOfDate)}</td>
-        <td>${h.sourceUrl ? `<a href="${escapeHtml(h.sourceUrl)}" target="_blank" rel="noopener" style="font-size:11px;">DART 공시</a>` : ""}</td>
-      </tr>`
-    )
+        <td>${nameCellHtml}</td>
+        <td>${h.weightPct.toFixed(2)}%<br>${deltaHtml}</td>
+        <td>${valueHtml}${valueDeltaHtml ? `<br><span style="font-size:11px;">${valueDeltaHtml}</span>` : ""}</td>
+      </tr>`;
+    })
     .join("");
   return `
-    ${caveatHtml}
     <table class="top30-table insight-holdings-table">
-      <thead><tr><th>순위</th><th>종목</th><th>보유비중</th><th>기준/공시일</th><th>출처</th></tr></thead>
+      <colgroup>
+        <col class="col-rank" /><col class="col-name" /><col class="col-weight" /><col class="col-value" />
+      </colgroup>
+      <thead><tr><th>순위</th><th>종목</th><th>비중 (변동)</th><th>총 신고가치<br>(금액변동)</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
 }
@@ -6298,10 +6313,7 @@ async function runInsightKr(institution) {
     return;
   }
   status.style.display = "none";
-  const noteHtml = data.sourceNote
-    ? `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${escapeHtml(data.sourceNote)}</p>`
-    : "";
-  results.innerHTML = `${noteHtml}${krInstitutionTableHtml(inst)}`;
+  results.innerHTML = krInstitutionTableHtml(inst);
 }
 Object.entries(insightKrButtons).forEach(([key, btn]) => {
   if (!btn) return;
