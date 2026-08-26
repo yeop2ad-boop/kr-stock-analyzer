@@ -101,6 +101,12 @@ document.addEventListener("click", (e) => {
   e.preventDefault();
   openChartModal(linkEl.dataset.chartSymbol);
 });
+// 원자재/채권/외환 행(.asset-detail-link) — 종목이 아니므로 차트 모달 대신 전용 상세페이지(개요+뉴스)로 이동
+document.addEventListener("click", (e) => {
+  const linkEl = e.target.closest(".asset-detail-link");
+  if (!linkEl) return;
+  openAssetDetail(linkEl.dataset.assetCat, linkEl.dataset.assetTicker);
+});
 // "+자세히" 버튼(SURGE_WARNING_LEGEND, 여러 화면에 동적으로 삽입됨)은 위임 방식으로 클릭 감지
 document.addEventListener("click", (e) => {
   if (!e.target.closest("#scoreMethodDetailBtn")) return;
@@ -130,7 +136,8 @@ document.addEventListener("keydown", (e) => {
   const rowEl = e.target.closest(".idx-row-clickable");
   if (!rowEl) return;
   e.preventDefault();
-  openChartModal(rowEl.dataset.chartSymbol);
+  if (rowEl.dataset.assetCat) openAssetDetail(rowEl.dataset.assetCat, rowEl.dataset.assetTicker);
+  else openChartModal(rowEl.dataset.chartSymbol);
 });
 // ---------- 로그인/회원가입 (Firebase Authentication) ----------
 // 구글·이메일은 Firebase가 직접 처리하고, 카카오·네이버는 Firebase가 네이티브 지원하지 않으므로
@@ -5116,8 +5123,9 @@ async function renderPeers(ticker, selfMetricsPromise, sector, industry) {
 }
 
 // ---------- 4. 주요 뉴스: 최근 1개월 이내, 최대 10건 ----------
-async function renderNews(searchData) {
-  el("newsSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
+// containerEl을 받을 수 있게 해서(기본값 newsSection) 원자재/채권/외환 상세페이지(assetDetailNews)에서도 재사용
+async function renderNews(searchData, containerEl = el("newsSection")) {
+  containerEl.innerHTML = `<p class="muted">불러오는 중...</p>`;
 
   const allNews = (searchData && searchData.news) || [];
   const oneMonthAgoSec = Date.now() / 1000 - 30 * 86400;
@@ -5126,7 +5134,7 @@ async function renderNews(searchData) {
     .slice(0, 10);
 
   if (news.length === 0) {
-    el("newsSection").innerHTML = `<p class="muted">최근 1개월 이내 뉴스를 찾을 수 없습니다.</p>`;
+    containerEl.innerHTML = `<p class="muted">최근 1개월 이내 뉴스를 찾을 수 없습니다.</p>`;
     return;
   }
 
@@ -5148,7 +5156,7 @@ async function renderNews(searchData) {
     })
     .join("");
 
-  el("newsSection").innerHTML = `
+  containerEl.innerHTML = `
     ${items}
     <p class="muted" style="font-size:12px;margin-top:8px;">※ 제목은 자동 번역되었으며, 본문 요약은 제공되지 않습니다. 최근 1개월 이내 기사 최대 10건입니다.</p>
   `;
@@ -7580,47 +7588,47 @@ const INDEX_CATEGORIES = {
   commodities: {
     label: "원자재",
     items: [
-      { src: "yahoo", symbol: "GC=F", name: "🟨 금(Gold)", ticker: "GOLD", chartSymbol: "TVC:GOLD" },
-      { src: "yahoo", symbol: "SI=F", name: "⬜ 은(Silver)", ticker: "SILVER", chartSymbol: "TVC:SILVER" },
-      { src: "yahoo", symbol: "HG=F", name: "🟧 구리", ticker: "COPPER", chartSymbol: "COMEX:HG1!" },
-      { src: "yahoo", symbol: "CL=F", name: "🛢️ WTI유", ticker: "WTI", chartSymbol: "TVC:USOIL" },
-      { src: "yahoo", symbol: "BZ=F", name: "🛢️ 브렌트유", ticker: "BRENT", chartSymbol: "TVC:UKOIL" },
-      { src: "yahoo", symbol: "NG=F", name: "🔥 천연가스", ticker: "NATGAS", chartSymbol: "NYMEX:NG1!" },
-      { src: "yahoo", symbol: "RB=F", name: "⛽ 가솔린(RBOB)", ticker: "RBOB", chartSymbol: "NYMEX:RB1!" },
-      { src: "yahoo", symbol: "PL=F", name: "⚪ 백금", ticker: "PLATINUM", chartSymbol: "TVC:PLATINUM" },
-      { src: "yahoo", symbol: "ALI=F", name: "🔩 알루미늄", ticker: "ALUMINUM", chartSymbol: "COMEX:ALI1!" },
-      { src: "yahoo", symbol: "ZR=F", name: "🌾 현미", ticker: "RICE", chartSymbol: "CBOT:ZR1!" },
-      { src: "yahoo", symbol: "LE=F", name: "🐄 생우", ticker: "CATTLE", chartSymbol: "CME:LE1!" },
-      { src: "yahoo", symbol: "HE=F", name: "🐖 돈육", ticker: "HOGS", chartSymbol: "CME:HE1!" },
-      { src: "yahoo", symbol: "ZW=F", name: "🌾 미국 소맥", ticker: "WHEAT", chartSymbol: "CBOT:ZW1!" },
-      { src: "yahoo", symbol: "ZC=F", name: "🌽 미국 옥수수", ticker: "CORN", chartSymbol: "CBOT:ZC1!" },
-      { src: "yahoo", symbol: "ZS=F", name: "🌱 미국 대두", ticker: "SOYBEAN", chartSymbol: "CBOT:ZS1!" },
-      { src: "yahoo", symbol: "KC=F", name: "☕ 미국 커피", ticker: "COFFEE", chartSymbol: "ICEUS:KC1!" },
-      { src: "yahoo", symbol: "SB=F", name: "🍬 미국 설탕", ticker: "SUGAR", chartSymbol: "ICEUS:SB1!" },
-      { src: "yahoo", symbol: "CT=F", name: "🧵 미국 원면", ticker: "COTTON", chartSymbol: "ICEUS:CT1!" },
-      { src: "yahoo", symbol: "CC=F", name: "🍫 미국 코코아", ticker: "COCOA", chartSymbol: "ICEUS:CC1!" },
+      { src: "yahoo", symbol: "GC=F", name: "🟨 금(Gold)", ticker: "GOLD", chartSymbol: "TVC:GOLD", wikiQuery: "Gold" },
+      { src: "yahoo", symbol: "SI=F", name: "⬜ 은(Silver)", ticker: "SILVER", chartSymbol: "TVC:SILVER", wikiQuery: "Silver" },
+      { src: "yahoo", symbol: "HG=F", name: "🟧 구리", ticker: "COPPER", chartSymbol: "COMEX:HG1!", wikiQuery: "Copper" },
+      { src: "yahoo", symbol: "CL=F", name: "🛢️ WTI유", ticker: "WTI", chartSymbol: "TVC:USOIL", wikiQuery: "West Texas Intermediate" },
+      { src: "yahoo", symbol: "BZ=F", name: "🛢️ 브렌트유", ticker: "BRENT", chartSymbol: "TVC:UKOIL", wikiQuery: "Brent Crude" },
+      { src: "yahoo", symbol: "NG=F", name: "🔥 천연가스", ticker: "NATGAS", chartSymbol: "NYMEX:NG1!", wikiQuery: "Natural gas" },
+      { src: "yahoo", symbol: "RB=F", name: "⛽ 가솔린(RBOB)", ticker: "RBOB", chartSymbol: "NYMEX:RB1!", wikiQuery: "Gasoline" },
+      { src: "yahoo", symbol: "PL=F", name: "⚪ 백금", ticker: "PLATINUM", chartSymbol: "TVC:PLATINUM", wikiQuery: "Platinum" },
+      { src: "yahoo", symbol: "ALI=F", name: "🔩 알루미늄", ticker: "ALUMINUM", chartSymbol: "COMEX:ALI1!", wikiQuery: "Aluminium" },
+      { src: "yahoo", symbol: "ZR=F", name: "🌾 현미", ticker: "RICE", chartSymbol: "CBOT:ZR1!", wikiQuery: "Rice" },
+      { src: "yahoo", symbol: "LE=F", name: "🐄 생우", ticker: "CATTLE", chartSymbol: "CME:LE1!", wikiQuery: "Cattle" },
+      { src: "yahoo", symbol: "HE=F", name: "🐖 돈육", ticker: "HOGS", chartSymbol: "CME:HE1!", wikiQuery: "Domestic pig" },
+      { src: "yahoo", symbol: "ZW=F", name: "🌾 미국 소맥", ticker: "WHEAT", chartSymbol: "CBOT:ZW1!", wikiQuery: "Wheat" },
+      { src: "yahoo", symbol: "ZC=F", name: "🌽 미국 옥수수", ticker: "CORN", chartSymbol: "CBOT:ZC1!", wikiQuery: "Maize" },
+      { src: "yahoo", symbol: "ZS=F", name: "🌱 미국 대두", ticker: "SOYBEAN", chartSymbol: "CBOT:ZS1!", wikiQuery: "Soybean" },
+      { src: "yahoo", symbol: "KC=F", name: "☕ 미국 커피", ticker: "COFFEE", chartSymbol: "ICEUS:KC1!", wikiQuery: "Coffee" },
+      { src: "yahoo", symbol: "SB=F", name: "🍬 미국 설탕", ticker: "SUGAR", chartSymbol: "ICEUS:SB1!", wikiQuery: "Sugar" },
+      { src: "yahoo", symbol: "CT=F", name: "🧵 미국 원면", ticker: "COTTON", chartSymbol: "ICEUS:CT1!", wikiQuery: "Cotton" },
+      { src: "yahoo", symbol: "CC=F", name: "🍫 미국 코코아", ticker: "COCOA", chartSymbol: "ICEUS:CC1!", wikiQuery: "Cocoa bean" },
     ],
   },
   bonds: {
     label: "채권",
     items: [
-      { src: "fred", symbol: "T10Y2Y", name: "🇺🇸 장단기 금리차(10Y-2Y)", ticker: "T10Y2Y", vSuffix: "%p", cSuffix: "%p", chartSymbol: null },
-      { src: "fred", symbol: "DGS30", name: "🇺🇸 미국 30년물", ticker: "US30Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US30Y" },
-      { src: "fred", symbol: "DGS10", name: "🇺🇸 미국 10년물", ticker: "US10Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US10Y" },
-      { src: "fred", symbol: "DGS2", name: "🇺🇸 미국 2년물", ticker: "US2Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US02Y" },
+      { src: "fred", symbol: "T10Y2Y", name: "🇺🇸 장단기 금리차(10Y-2Y)", ticker: "T10Y2Y", vSuffix: "%p", cSuffix: "%p", chartSymbol: null, wikiQuery: "Yield curve", newsSymbol: "^TNX" },
+      { src: "fred", symbol: "DGS30", name: "🇺🇸 미국 30년물", ticker: "US30Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US30Y", wikiQuery: "United States Treasury security", newsSymbol: "^TYX" },
+      { src: "fred", symbol: "DGS10", name: "🇺🇸 미국 10년물", ticker: "US10Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US10Y", wikiQuery: "United States Treasury security", newsSymbol: "^TNX" },
+      { src: "fred", symbol: "DGS2", name: "🇺🇸 미국 2년물", ticker: "US2Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:US02Y", wikiQuery: "United States Treasury security", newsSymbol: "^FVX" },
       // 일본·한국 10년물은 FRED에 월간 데이터만 있어(OECD 장기금리 시리즈) 전월 대비로 표시됨(다른 항목은 전일 대비)
-      { src: "fred", symbol: "IRLTLT01JPM156N", name: "🇯🇵 일본국채 10년(월간)", ticker: "JP10Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:JP10Y" },
-      { src: "fred", symbol: "IRLTLT01KRM156N", name: "🇰🇷 한국채 10년(월간)", ticker: "KR10Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:KR10Y" },
+      { src: "fred", symbol: "IRLTLT01JPM156N", name: "🇯🇵 일본국채 10년(월간)", ticker: "JP10Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:JP10Y", wikiQuery: "Japanese government bond" },
+      { src: "fred", symbol: "IRLTLT01KRM156N", name: "🇰🇷 한국채 10년(월간)", ticker: "KR10Y", vSuffix: "%", cSuffix: "%p", chartSymbol: "TVC:KR10Y", wikiQuery: "Korea Treasury Bond" },
     ],
   },
   fx: {
     label: "환율",
     items: [
-      { src: "yahoo", symbol: "KRW=X", name: "🇰🇷 달러/원 환율", ticker: "USD/KRW", chartSymbol: "FX:USDKRW" },
-      { src: "yahoo", symbol: "JPY=X", name: "🇯🇵 달러/엔 환율", ticker: "USD/JPY", chartSymbol: "FX:USDJPY" },
-      { src: "yahoo", symbol: "EURUSD=X", name: "🇪🇺 유로/달러 환율", ticker: "EUR/USD", chartSymbol: "FX:EURUSD" },
-      { src: "yahoo", symbol: "CNY=X", name: "🇨🇳 달러/위안 환율", ticker: "USD/CNY", chartSymbol: "FX:USDCNY" },
-      { src: "yahoo", symbol: "GBPUSD=X", name: "🇬🇧 파운드/달러 환율", ticker: "GBP/USD", chartSymbol: "FX:GBPUSD" },
+      { src: "yahoo", symbol: "KRW=X", name: "🇰🇷 달러/원 환율", ticker: "USD/KRW", chartSymbol: "FX:USDKRW", wikiQuery: "South Korean won" },
+      { src: "yahoo", symbol: "JPY=X", name: "🇯🇵 달러/엔 환율", ticker: "USD/JPY", chartSymbol: "FX:USDJPY", wikiQuery: "Japanese yen" },
+      { src: "yahoo", symbol: "EURUSD=X", name: "🇪🇺 유로/달러 환율", ticker: "EUR/USD", chartSymbol: "FX:EURUSD", wikiQuery: "Euro" },
+      { src: "yahoo", symbol: "CNY=X", name: "🇨🇳 달러/위안 환율", ticker: "USD/CNY", chartSymbol: "FX:USDCNY", wikiQuery: "Renminbi" },
+      { src: "yahoo", symbol: "GBPUSD=X", name: "🇬🇧 파운드/달러 환율", ticker: "GBP/USD", chartSymbol: "FX:GBPUSD", wikiQuery: "Pound sterling" },
     ],
   },
 };
@@ -7678,14 +7686,20 @@ function snapClockLabel(snap) {
 
 // 지수 카드 1행 HTML — 이미지 스타일(왼쪽 종목/날짜/티커, 오른쪽 가격/변동량(퍼센트))
 // chartSymbol이 있는 종목은 클릭 시 기존 TradingView 차트 모달이 열리도록 price-chart-link 델리게이션에 태움
-function indexRowHtml(item, snap) {
+function indexRowHtml(item, snap, categoryKey) {
   const num = (n, d = 2) => n.toLocaleString("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d });
   const { label: clockLabel, cls: clockClass } = snapClockLabel(snap);
   const sub = `${clockLabel ? `<span class="${clockClass}">🕐 ${clockLabel}</span> | ` : ""}<span class="idx-ticker">${escapeHtml(item.ticker)}</span>`;
   const nameHtml = `${item.crypto ? cryptoLogoHtml(item.ticker) : ""}${escapeHtml(item.name)}`;
-  const clickable = !!item.chartSymbol;
-  const rowClass = `idx-row${clickable ? " price-chart-link idx-row-clickable" : ""}`;
-  const rowAttrs = clickable ? ` data-chart-symbol="${escapeHtml(item.chartSymbol)}" role="button" tabindex="0"` : "";
+  // 원자재/채권/외환은 종목이 아니므로 TradingView 차트 모달 대신 전용 상세페이지(개요+뉴스)로 연결
+  const isAssetDetail = categoryKey === "commodities" || categoryKey === "bonds" || categoryKey === "fx";
+  const clickable = isAssetDetail || !!item.chartSymbol;
+  const rowClass = `idx-row${isAssetDetail ? " asset-detail-link idx-row-clickable" : clickable ? " price-chart-link idx-row-clickable" : ""}`;
+  const rowAttrs = isAssetDetail
+    ? ` data-asset-cat="${escapeHtml(categoryKey)}" data-asset-ticker="${escapeHtml(item.ticker)}" role="button" tabindex="0"`
+    : clickable
+    ? ` data-chart-symbol="${escapeHtml(item.chartSymbol)}" role="button" tabindex="0"`
+    : "";
 
   if (!snap || snap.price === null || snap.price === undefined) {
     return `<div class="${rowClass}"${rowAttrs}><div class="idx-left"><div class="idx-name">${nameHtml}</div><div class="idx-sub">${sub}</div></div><div class="idx-right"><div class="idx-price">N/A</div></div></div>`;
@@ -7730,6 +7744,121 @@ async function fetchOneIndexSnap(item) {
     return null;
   }
 }
+
+// ---------- 원자재/채권/외환 상세페이지: 종목이 아니므로 재무·밸류에이션 없이 시세+개요+뉴스만 ----------
+const ASSET_DETAIL_CATEGORIES = ["commodities", "bonds", "fx"];
+function findAssetItem(categoryKey, ticker) {
+  const cat = INDEX_CATEGORIES[categoryKey];
+  return cat && cat.items.find((i) => i.ticker === ticker);
+}
+function getAllAssetSearchItems() {
+  return ASSET_DETAIL_CATEGORIES.flatMap((categoryKey) => INDEX_CATEGORIES[categoryKey].items.map((item) => ({ ...item, categoryKey })));
+}
+function assetDetailPriceHtml(item, snap) {
+  if (!snap || snap.price === null || snap.price === undefined) {
+    return `<p class="muted">시세를 가져오지 못했습니다.</p>`;
+  }
+  const num = (n, d = 2) => n.toLocaleString("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d });
+  const vSuffix = item.vSuffix || "";
+  const cSuffix = item.cSuffix || vSuffix;
+  const sign = (n) => (n >= 0 ? "+" : "");
+  let cls = "";
+  let deltaStr = "";
+  if (snap.change !== null && snap.change !== undefined) {
+    cls = snap.change >= 0 ? "delta-up" : "delta-down";
+    deltaStr = `${sign(snap.change)}${num(snap.change)}${cSuffix}`;
+    if (snap.changePct !== null && snap.changePct !== undefined && Number.isFinite(snap.changePct) && Math.abs(snap.changePct) < 1000) {
+      deltaStr += ` (${sign(snap.changePct)}${snap.changePct.toFixed(2)}%)`;
+    }
+  }
+  return `
+    <div class="asset-detail-price-row">
+      <span class="asset-detail-price">${num(snap.price)}${vSuffix}</span>
+      <span class="asset-detail-delta ${cls}">${deltaStr}</span>
+    </div>`;
+}
+let assetDetailLoadToken = 0;
+async function openAssetDetail(categoryKey, ticker) {
+  const item = findAssetItem(categoryKey, ticker);
+  if (!item) return;
+  const myToken = ++assetDetailLoadToken; // 여러 항목을 연달아 열 때 늦게 도착한 이전 요청이 화면을 덮어쓰지 않도록 방지
+  el("assetDetailTitle").textContent = item.name;
+  el("assetDetailPanel").style.display = "flex";
+  requestAnimationFrame(() => el("assetDetailPanel").classList.add("open"));
+  el("assetDetailSearchInput").value = "";
+  el("assetDetailSuggest").style.display = "none";
+  el("assetDetailPriceBlock").innerHTML = `<p class="muted">불러오는 중...</p>`;
+  el("assetDetailOverview").innerHTML = `<p class="muted">불러오는 중...</p>`;
+  el("assetDetailNews").innerHTML = `<p class="muted">불러오는 중...</p>`;
+
+  fetchOneIndexSnap(item).then((snap) => {
+    if (myToken !== assetDetailLoadToken) return;
+    el("assetDetailPriceBlock").innerHTML = assetDetailPriceHtml(item, snap);
+  });
+  getBusinessSummaryKo(item.wikiQuery || item.name)
+    .then((text) => {
+      if (myToken !== assetDetailLoadToken) return;
+      el("assetDetailOverview").innerHTML = `<p>${escapeHtml(text)}</p>`;
+    })
+    .catch(() => {
+      if (myToken !== assetDetailLoadToken) return;
+      el("assetDetailOverview").innerHTML = `<p class="muted">개요 정보를 찾을 수 없습니다.</p>`;
+    });
+  // 뉴스는 위키 검색어(설명용 영단어)가 아니라 야후가 인식하는 실제 시세 심볼로 검색해야 관련 기사가 나옴
+  // (예: "Gold"로 검색하면 금 시세가 아니라 티커가 "GOLD"인 배릭골드 뉴스가 잡힘 — GC=F로 검색해야 금 관련 기사가 나옴)
+  const newsQuery = item.newsSymbol || (item.src === "fred" ? item.wikiQuery || item.name : item.symbol);
+  yahooSearch(newsQuery)
+    .then((data) => {
+      if (myToken !== assetDetailLoadToken) return;
+      renderNews(data, el("assetDetailNews"));
+    })
+    .catch(() => {
+      if (myToken !== assetDetailLoadToken) return;
+      el("assetDetailNews").innerHTML = `<p class="muted">뉴스를 가져오지 못했습니다.</p>`;
+    });
+}
+function closeAssetDetailPanel() {
+  el("assetDetailPanel").classList.remove("open");
+  window.setTimeout(() => {
+    el("assetDetailPanel").style.display = "none";
+  }, 280);
+}
+el("assetDetailCloseBtn").addEventListener("click", closeAssetDetailPanel);
+el("assetDetailSearchInput").addEventListener("input", () => {
+  const q = el("assetDetailSearchInput").value.trim();
+  const suggestEl = el("assetDetailSuggest");
+  if (!q) {
+    suggestEl.style.display = "none";
+    return;
+  }
+  const upperQ = q.toUpperCase();
+  const matches = getAllAssetSearchItems().filter((m) => m.name.includes(q) || m.ticker.toUpperCase().includes(upperQ));
+  if (matches.length === 0) {
+    suggestEl.style.display = "none";
+    return;
+  }
+  suggestEl.innerHTML = matches
+    .slice(0, 8)
+    .map(
+      (m) =>
+        `<div class="chat-ticker-option" data-asset-cat="${escapeHtml(m.categoryKey)}" data-asset-ticker="${escapeHtml(m.ticker)}">
+          <span class="chat-ticker-option-name">${escapeHtml(m.name)}</span>
+          <span class="chat-ticker-option-sub">${escapeHtml(m.ticker)}</span>
+        </div>`
+    )
+    .join("");
+  suggestEl.style.display = "block";
+});
+el("assetDetailSuggest").addEventListener("click", (e) => {
+  const opt = e.target.closest(".chat-ticker-option");
+  if (!opt) return;
+  openAssetDetail(opt.dataset.assetCat, opt.dataset.assetTicker);
+});
+document.addEventListener("click", (e) => {
+  if (!el("assetDetailSearchInput").contains(e.target) && !el("assetDetailSuggest").contains(e.target)) {
+    el("assetDetailSuggest").style.display = "none";
+  }
+});
 
 // ---------- 시장 상단 4x2 위젯: 기본 8개 지수를 카드 2장(각 2x2)으로 보여주고, ✎ 수정으로 종목을 바꿀 수 있음 ----------
 const MARKET_WIDGET_KEY = "market_widget_symbols_v1";
@@ -7994,14 +8123,17 @@ async function runIndexTab() {
   indexStatus.style.display = "block";
   indexStatus.textContent = "지수 데이터를 불러오는 중...";
 
+  // await 도중 사용자가 다른 카테고리 탭을 눌러도 이 함수가 시작된 시점의 카테고리를 그대로 써야
+  // items 배열과 categoryKey가 어긋나지 않음(indexActiveCategory는 전역 mutable 변수라 나중에 바뀔 수 있음)
+  const categoryKey = indexActiveCategory;
   try {
-    const cat = INDEX_CATEGORIES[indexActiveCategory];
+    const cat = INDEX_CATEGORIES[categoryKey];
     const items = cat.items;
     const snaps = await mapWithConcurrency(items, 6, fetchOneIndexSnap);
 
-    const expanded = indexExpandedCategories.has(indexActiveCategory);
+    const expanded = indexExpandedCategories.has(categoryKey);
     const visibleCount = expanded ? items.length : Math.min(INDEX_CATEGORY_PAGE_SIZE, items.length);
-    const rows = items.slice(0, visibleCount).map((item, i) => indexRowHtml(item, snaps[i])).join("");
+    const rows = items.slice(0, visibleCount).map((item, i) => indexRowHtml(item, snaps[i], categoryKey)).join("");
     const moreBtnHtml =
       items.length > INDEX_CATEGORY_PAGE_SIZE
         ? `<button type="button" class="cat-btn index-toggle-btn" id="indexToggleBtn">${expanded ? "간략히 보기" : "더보기"}</button>`
@@ -8015,8 +8147,8 @@ async function runIndexTab() {
     `;
     if (moreBtnHtml) {
       el("indexToggleBtn").addEventListener("click", () => {
-        if (expanded) indexExpandedCategories.delete(indexActiveCategory);
-        else indexExpandedCategories.add(indexActiveCategory);
+        if (expanded) indexExpandedCategories.delete(categoryKey);
+        else indexExpandedCategories.add(categoryKey);
         runIndexTab();
       });
     }

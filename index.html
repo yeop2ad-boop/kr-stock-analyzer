@@ -420,6 +420,24 @@
     </div>
   </div>
 
+  <div id="assetDetailPanel" class="company-panel" style="display:none;">
+    <div class="company-panel-bar">
+      <button type="button" id="assetDetailCloseBtn" class="search-overlay-back" aria-label="닫기"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="20" y1="12" x2="5" y2="12"/><polyline points="11 5 4 12 11 19"/></svg></button>
+      <h2 class="search-overlay-title" id="assetDetailTitle">-</h2>
+    </div>
+    <div class="company-panel-body">
+      <div class="fh-search search-overlay-search">
+        <input type="text" id="assetDetailSearchInput" placeholder="원자재·채권·환율 검색 (예: 금, 미국 10년물, 달러/원)" autocomplete="off" />
+        <div id="assetDetailSuggest" class="chat-ticker-suggest" style="display:none;"></div>
+      </div>
+      <div id="assetDetailPriceBlock" class="asset-detail-price-block"></div>
+      <h3 class="asset-detail-section-title">개요</h3>
+      <div id="assetDetailOverview" class="asset-detail-overview"><p class="muted">불러오는 중...</p></div>
+      <h3 class="asset-detail-section-title">뉴스</h3>
+      <div id="assetDetailNews" class="asset-detail-news"><p class="muted">불러오는 중...</p></div>
+    </div>
+  </div>
+
   <div id="searchWizardPanel" class="company-panel" style="display:none;">
     <div class="company-panel-bar">
       <button type="button" id="searchWizardCloseBtn" class="search-overlay-back" aria-label="닫기"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="20" y1="12" x2="5" y2="12"/><polyline points="11 5 4 12 11 19"/></svg></button>

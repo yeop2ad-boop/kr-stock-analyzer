@@ -1864,6 +1864,15 @@ table.insight-holdings-table td span, table.insight-holdings-table td b { max-wi
 .idx-price { font-weight: 800; font-size: 16px; }
 .idx-delta { margin-top: 3px; font-size: 12.5px; font-weight: 700; }
 
+/* 원자재/채권/외환 상세페이지 — 종목이 아니라 시세+개요+뉴스만 표시 */
+.asset-detail-price-block { padding: 14px 2px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
+.asset-detail-price-row { display: flex; align-items: baseline; gap: 10px; }
+.asset-detail-price { font-weight: 800; font-size: 24px; }
+.asset-detail-delta { font-size: 14px; font-weight: 700; }
+.asset-detail-section-title { margin: 18px 0 8px; font-size: 14px; font-weight: 800; color: var(--text); }
+.asset-detail-overview { font-size: 14px; line-height: 1.6; color: var(--text); }
+.asset-detail-news { display: flex; flex-direction: column; gap: 12px; }
+
 .stock-card-right { flex: none; white-space: nowrap; text-align: right; }
 .stock-card-r1, .stock-card-r2 { display: flex; align-items: baseline; justify-content: flex-end; gap: 8px; }
 .stock-card-r2 { margin-top: 3px; }
