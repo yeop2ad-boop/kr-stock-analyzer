@@ -101,7 +101,6 @@ $final = [ordered]@{
   updatedAt = (Get-Date -Format "yyyy-MM-dd")
   institutions = [ordered]@{
     nps = [ordered]@{ name = "국민연금공단"; holdings = (Build-Holdings "nps" $TopN) }
-    kic = [ordered]@{ name = "한국투자공사"; holdings = @(); unavailableNote = "한국투자공사법 제31조④에 따라 위탁자산(외환보유고)은 해외에만 운용해야 해서, 국내 상장주식 5%룰 공시 대상 사례가 구조적으로 없습니다(DART 대량보유 상황보고 전수 조회로 재확인)." }
     samsungAm = [ordered]@{ name = "삼성자산운용"; holdings = (Build-Holdings "samsungAm" $TopN) }
     miraeAm = [ordered]@{ name = "미래에셋자산운용"; holdings = (Build-Holdings "miraeAm" $TopN) }
     kbAm = [ordered]@{ name = "KB자산운용"; holdings = (Build-Holdings "kbAm" $TopN) }

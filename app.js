@@ -2028,7 +2028,6 @@ const insightButtons = {
 };
 const insightKrButtons = {
   nps: el("insightNpsBtn"),
-  kic: el("insightKicBtn"),
   samsungAm: el("insightSamsungAmBtn"),
   miraeAm: el("insightMiraeAmBtn"),
   kbAm: el("insightKbAmBtn"),
@@ -6240,7 +6239,6 @@ async function runInsight(institution) {
 // 상시 갱신 배치가 없음(수동으로 최신 DART 공시 재확인 후 JSON을 갱신하는 방식) — dataNote로 갱신 기준일 명시
 const INSIGHT_KR_INSTITUTION_LABELS = {
   nps: "국민연금공단",
-  kic: "한국투자공사",
   samsungAm: "삼성자산운용",
   miraeAm: "미래에셋자산운용",
   kbAm: "KB자산운용",
