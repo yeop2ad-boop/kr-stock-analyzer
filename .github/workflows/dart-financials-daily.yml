@@ -2,8 +2,8 @@ name: 다트공시 데이터 갱신
 
 on:
   schedule:
-    # 매주 월요일 21:00 UTC = 한국시간(KST) 월요일 오전 6시 — 재무·인사 데이터라 매일 바뀌지 않아 주 1회
-    - cron: "0 21 * * 1"
+    # 매일 09:00 UTC = 한국시간(KST) 오후 6시 (지도 데이터 자동 갱신과 동일 시각)
+    - cron: "0 9 * * *"
   workflow_dispatch: {}
 
 permissions:
@@ -33,5 +33,6 @@ jobs:
             echo "변경된 데이터 없음"
           else
             git commit -m "다트공시: 자동 갱신 ($(date -u +%Y-%m-%d))"
+            git pull --rebase origin main
             git push
           fi
