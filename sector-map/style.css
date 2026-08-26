@@ -2,7 +2,6 @@
   --orange: #f95503;
   --orange-deep: #e04600;
   --red-dot: #f60303;
-  --market-kr: #1e3a8a; /* 국내 = 진한 파랑(본체 내투자닷컴과 동일) */
   --bg-app: #eef0f3;
   --bg-map: #ffffff;
   --bg-map-grid: #f4f5f7;
@@ -67,12 +66,16 @@ body {
 }
 
 /* ---------- Top bar ---------- */
-/* 본체(내투자닷컴)와 동일하게, 상단바 배경은 국내/해외 어느 쪽을 눌러도 바뀌지 않음 — 구분은 아래 토글 알약 색상(국내=파랑/해외=주황)으로만 표시 */
 .top-bar {
   flex: none;
-  background: var(--white);
+  background: linear-gradient(180deg, var(--orange) 0%, var(--orange-deep) 100%);
   padding-top: env(safe-area-inset-top);
   z-index: 40;
+  transition: background 0.2s ease;
+}
+/* 해외 탭이 활성일 때는 헤더 배경이 흰색으로, 국내일 때는 주황 배경 유지 (호갱노노 단지/매물 토글 참고, 색상만 우리 브랜드색으로) */
+.top-bar.is-overseas {
+  background: var(--white);
 }
 
 .top-bar-row {
@@ -80,8 +83,10 @@ body {
   align-items: center;
   gap: 10px;
   padding: 6px 14px;
-  border-bottom: 1px solid rgba(0,0,0,0.09);
+  border-bottom: 1px solid rgba(255,255,255,0.25);
 }
+/* 흰 배경일 때는 참고 이미지처럼 희미하고 얇은 검은 실선 구분선 */
+.top-bar.is-overseas .top-bar-row { border-bottom: 1px solid rgba(0,0,0,0.09); }
 
 .brand-logo {
   flex: none;
@@ -96,20 +101,25 @@ body {
   height: 20px;
   width: auto;
   display: block;
+  /* 주황 배경(국내) 위에서는 로고 자체가 주황이라 안 보이니 흰색으로 반전 — 흰 배경(해외)에서는 원래 브랜드 색 그대로 */
+  filter: brightness(0) invert(1);
 }
+.top-bar.is-overseas .brand-logo-img { filter: none; }
 
 .toggle-pill {
   flex: none;
   display: flex;
-  background: var(--bg-app);
+  background: rgba(255,255,255,0.22);
   border-radius: 999px;
   padding: 3px;
   gap: 2px;
+  transition: background 0.2s ease;
 }
+.top-bar.is-overseas .toggle-pill { background: var(--bg-app); }
 .toggle-btn {
   border: none;
   background: transparent;
-  color: var(--text-mid);
+  color: rgba(255,255,255,0.92);
   font-size: 13px;
   font-weight: 700;
   padding: 5.5px 14px;
@@ -117,9 +127,10 @@ body {
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
-/* 선택된 쪽만 강조 — 국내=진한 파랑 알약(흰 글씨), 해외=로고 색(주황) 알약(흰 글씨) */
-.toggle-btn[data-market="domestic"].active { background: var(--market-kr); color: #ffffff; }
-.toggle-btn[data-market="overseas"].active { background: var(--orange-deep); color: #ffffff; }
+.top-bar.is-overseas .toggle-btn { color: var(--text-mid); }
+/* 선택된 쪽만 강조 — 국내가 켜지면 흰 배경 위에 흰 알약(주황 글씨), 해외가 켜지면 흰 배경 위에 주황 알약(흰 글씨) */
+.toggle-btn[data-market="domestic"].active { background: var(--white); color: var(--orange-deep); }
+.toggle-btn[data-market="overseas"].active { background: var(--orange); color: #ffffff; }
 
 .top-bar-icons {
   margin-left: auto;
@@ -132,7 +143,7 @@ body {
   position: relative;
   border: none;
   background: transparent;
-  color: var(--text-dark);
+  color: var(--white);
   width: 30px;
   height: 30px;
   display: flex;
@@ -141,7 +152,8 @@ body {
   border-radius: 50%;
   cursor: pointer;
 }
-.icon-btn:active { background: rgba(0,0,0,0.08); }
+.top-bar.is-overseas .icon-btn { color: var(--text-dark); }
+.icon-btn:active { background: rgba(255,255,255,0.18); }
 .icon-btn svg { width: 19px; height: 19px; }
 
 .filter-bar {
