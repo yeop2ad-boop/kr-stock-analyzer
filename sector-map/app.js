@@ -474,6 +474,9 @@ let pinchStartDist = null;
 let pinchStartK = null;
 
 mapViewport.addEventListener("pointerdown", (e) => {
+  // 지도 팬/핀치 캡처 대상은 지도 배경(버블 포함)뿐 — 시총/로고/관심/등락/저장/시계/전체보기 같은 고정 UI 버튼 위에서
+  // 눌렀을 때도 무조건 setPointerCapture하면 이후 click이 버튼이 아니라 mapViewport로 가버려서 버튼이 안 눌리는 버그가 있었음
+  if (e.target.closest(".map-side-buttons, .ai-fab, .locate-fab")) return;
   mapViewport.setPointerCapture(e.pointerId);
   activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
   mapViewport.classList.add("grabbing");
