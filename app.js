@@ -4443,6 +4443,143 @@ peersToggleBtn.addEventListener("click", () => {
   peersToggleBtn.classList.toggle("active", !isOpen);
 });
 
+// ---------- S리포트: 기업가치·시장동향 15개 항목을 한 번에 비교해 수치+전체 유니버스 내 순위를 보여줌 ----------
+// 순위 계산은 매번 500+개 종목의 재무제표를 새로 조회하면 너무 느려서, 지도(sector-map)가 이미 배치로
+// 수집해둔 전체 유니버스 스냅샷(sector-map/data/{kr,sp500}-sectors.json — S&P500 501개/코스피200+코스닥150
+// 347개, revenueGrowth 등 13개 필드 + pressureScore·stabilityScore 포함)을 그대로 재사용한다. 거래대금만
+// 예외로, 이 스냅샷엔 미국 종목의 dollarVolume이 없어서(비공식 API 배치 비용 문제) 미국은 순위 없이 본인의
+// 실시간 값(selfMetrics.recentDollarVolume)만 보여준다.
+const sReportUniverseCache = { us: null, kr: null };
+function getSReportUniverse(isKr) {
+  const key = isKr ? "kr" : "us";
+  if (!sReportUniverseCache[key]) {
+    const path = isKr ? "sector-map/data/kr-sectors.json" : "sector-map/data/sp500-sectors.json";
+    sReportUniverseCache[key] = fetch(path, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+  }
+  return sReportUniverseCache[key];
+}
+
+const S_REPORT_METRICS = [
+  { key: "revenueGrowth", label: "매출성장", unit: "pct", better: "high" },
+  { key: "netIncomeGrowth", label: "순이익증가", unit: "pct", better: "high" },
+  { key: "dividendYield", label: "배당률", unit: "pct2", better: "high", usOnly: true },
+  { key: "debtRatio", label: "부채비율", unit: "levelPct", better: "low" },
+  { key: "cashFlowGrowth", label: "현금흐름 증가", unit: "pct", better: "high" },
+  { key: "marketCap", label: "시가총액", unit: "currency", better: "high" },
+  { key: "operatingMargin", label: "영업이익률", unit: "pct", better: "high" },
+  { key: "per", label: "PER", unit: "per", better: "low" },
+  { key: "roe", label: "ROE", unit: "pct", better: "high" },
+  { key: "week52RangePct", label: "52주최저", unit: "pct0", better: "low" },
+  { key: "dollarVolume", label: "거래대금", unit: "currency", better: "high" },
+  { key: "changePercent", label: "상승률", unit: "pct", better: "high", rankNote: "상승 기준" },
+  { key: "changePercent", label: "하락률", unit: "pct", better: "low", rankNote: "하락 기준" },
+  { key: "pressureScore", label: "상승 압력", unit: "score", better: "high" },
+  { key: "stabilityScore", label: "투자 안정", unit: "score", better: "high" },
+];
+
+// 유니버스 전체(companies)에서 symbol의 순위를 계산 — better:"high"면 값이 클수록 1위, "low"면 값이 작을수록 1위.
+// 값이 숫자가 아닌(N/A) 종목은 순위 계산 대상에서 아예 제외(전체 모수도 그만큼 줄어듦).
+function computeUniverseRank(companies, symbol, getValue, better) {
+  const valid = companies
+    .map((c) => ({ symbol: c.symbol, v: getValue(c) }))
+    .filter((x) => typeof x.v === "number" && Number.isFinite(x.v));
+  if (!valid.length) return null;
+  valid.sort((a, b) => (better === "high" ? b.v - a.v : a.v - b.v));
+  const idx = valid.findIndex((x) => x.symbol === symbol);
+  if (idx === -1) return null;
+  return { rank: idx + 1, total: valid.length, value: valid[idx].v };
+}
+
+function sReportFmtValue(unit, v, currency) {
+  if (v === null || v === undefined || !Number.isFinite(v)) return "N/A";
+  if (unit === "pct") return `<span class="${v >= 0 ? "delta-up" : "delta-down"}">${v >= 0 ? "+" : ""}${v.toFixed(1)}%</span>`;
+  if (unit === "pct2") return `${v.toFixed(2)}%`;
+  if (unit === "pct0") return `${v.toFixed(0)}%`;
+  if (unit === "levelPct") return `${v.toFixed(1)}%`;
+  if (unit === "per") return `${v.toFixed(1)}배`;
+  if (unit === "score") return `${v.toFixed(1)}점`;
+  if (unit === "currency") return fmtCompactCurrency(v, currency);
+  return String(v);
+}
+
+function sReportRowHtml(r) {
+  const labelHtml = r.rankNote
+    ? `${escapeHtml(r.label)} <span class="muted" style="font-size:11px;">(${escapeHtml(r.rankNote)})</span>`
+    : escapeHtml(r.label);
+  if (r.na) {
+    return `<tr><td>${labelHtml}</td><td colspan="2" class="muted">${escapeHtml(r.naReason || "데이터 없음")}</td></tr>`;
+  }
+  const valueHtml = sReportFmtValue(r.unit, r.value, r.currency);
+  let rankHtml = `<span class="muted">순위 준비중</span>`;
+  if (r.rankInfo) {
+    const pct = (r.rankInfo.rank / r.rankInfo.total) * 100;
+    const extreme = pct <= 10 ? " 🔥" : pct >= 90 ? " ⚠️" : "";
+    rankHtml = `${r.rankInfo.rank}위 / ${r.rankInfo.total} <span class="muted" style="font-size:11px;">(상위 ${pct.toFixed(0)}%)</span>${extreme}`;
+  }
+  return `<tr><td>${labelHtml}</td><td>${valueHtml}</td><td>${rankHtml}</td></tr>`;
+}
+
+// 순위를 계산할 수 있었던 항목들의 평균 백분위(작을수록 상위권)를 기준으로 총평 한 줄을 생성.
+// 상업적 조언으로 읽히지 않도록 "투자 자문이 아님"을 항상 붙이고, 단정적 매수/매도 표현은 쓰지 않음.
+function sReportVerdict(avgPercentile) {
+  if (avgPercentile === null) return "";
+  if (avgPercentile <= 20) {
+    return `🏆 <b>종합 평가: 상위권</b> — 순위를 계산할 수 있었던 항목들의 평균이 상위 ${avgPercentile.toFixed(0)}%로, 비교 대상 전체 종목 중에서도 우수한 지표가 많은 편입니다. 참고용 지표이며 투자 자문이 아닙니다.`;
+  }
+  if (avgPercentile >= 80) {
+    return `⚠️ <b>종합 평가: 하위권</b> — 순위를 계산할 수 있었던 항목들의 평균이 하위 ${(100 - avgPercentile).toFixed(0)}%로, 비교 대상 전체 종목 대비 지표가 부진한 편입니다. 참고용 지표이며 투자 자문이 아니니 투자 판단은 다른 근거와 함께 신중히 내려주세요.`;
+  }
+  return `<b>종합 평가: 평균 수준</b> — 순위를 계산할 수 있었던 항목들의 평균이 상위 ${avgPercentile.toFixed(0)}% 수준으로, 비교 대상 전체 종목 대비 특별히 튀지 않는 평이한 지표 분포입니다. 참고용 지표이며 투자 자문이 아닙니다.`;
+}
+
+async function runSReport(symbol, selfMetricsPromise) {
+  const isKr = isKrTicker(symbol);
+  sReportInlineWrap.innerHTML = `<p class="muted" style="padding:12px 0;">⏳ S리포트를 계산하는 중...</p>`;
+
+  const [universe, selfMetrics] = await Promise.all([getSReportUniverse(isKr), selfMetricsPromise.catch(() => null)]);
+
+  if (!universe || !Array.isArray(universe.companies)) {
+    sReportInlineWrap.innerHTML = `<p class="muted" style="padding:12px 0;">🚧 S리포트 데이터를 가져오지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
+    return;
+  }
+  const companies = universe.companies;
+  const self = companies.find((c) => c.symbol === symbol);
+  if (!self) {
+    const universeLabel = isKr ? "코스피200+코스닥150" : "S&P500";
+    sReportInlineWrap.innerHTML = `<p class="muted" style="padding:12px 0;">이 종목은 S리포트 비교 대상 유니버스(${universeLabel})에 포함되지 않아 순위를 계산할 수 없습니다.</p>`;
+    return;
+  }
+
+  const currency = isKr ? "KRW" : "USD";
+  const rows = S_REPORT_METRICS.map((m) => {
+    if (m.usOnly && isKr) {
+      return { ...m, na: true, naReason: "국내 종목은 배당률 데이터를 제공하지 않습니다." };
+    }
+    if (m.key === "dollarVolume" && !isKr) {
+      return { ...m, value: selfMetrics ? selfMetrics.recentDollarVolume : null, rankInfo: null, currency };
+    }
+    const rankInfo = computeUniverseRank(companies, symbol, (c) => c[m.key], m.better);
+    return { ...m, value: self[m.key], rankInfo, currency };
+  });
+
+  const validRanks = rows.filter((r) => r.rankInfo);
+  const avgPercentile = validRanks.length
+    ? validRanks.reduce((sum, r) => sum + (r.rankInfo.rank / r.rankInfo.total) * 100, 0) / validRanks.length
+    : null;
+
+  const universeLabel = isKr ? "코스피200+코스닥150" : "S&P500";
+  sReportInlineWrap.innerHTML = `
+    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} ${companies.length}개 종목 기준 순위입니다(거래대금은 미국 종목의 경우 배치 데이터가 없어 순위 없이 실시간 값만 표시). 참고용 지표이며 투자 자문이 아닙니다.</p>
+    <table class="s-report-table">
+      <thead><tr><th>항목</th><th>수치</th><th>순위</th></tr></thead>
+      <tbody>${rows.map(sReportRowHtml).join("")}</tbody>
+    </table>
+    ${sReportVerdict(avgPercentile) ? `<p class="s-report-verdict">${sReportVerdict(avgPercentile)}</p>` : ""}
+  `;
+}
+
 // ---------- 1. 사업 요약 ----------
 async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketReturnsPromise) {
   el("summarySection").innerHTML = `<p class="muted">불러오는 중...</p>`;
@@ -4561,7 +4698,8 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     }
   });
 
-  sReportToggleBtn.addEventListener("click", () => {
+  let sReportLoaded = false;
+  sReportToggleBtn.addEventListener("click", async () => {
     const isOpen = sReportInlineWrap.style.display !== "none";
     if (isOpen) {
       sReportInlineWrap.style.display = "none";
@@ -4573,6 +4711,10 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     sReportInlineWrap.style.display = "block";
     sReportInlineWrap.classList.add("section-expanded");
     sReportToggleBtn.classList.add("active");
+    if (!sReportLoaded) {
+      sReportLoaded = true;
+      await runSReport(symbol, selfMetricsPromise);
+    }
   });
 
   // 요약 탭 상단 가격 차트: 새 종목 조회 시 기간 버튼을 기본값(1년)으로 되돌리고 다시 그림

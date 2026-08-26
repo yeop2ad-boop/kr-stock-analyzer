@@ -1611,6 +1611,11 @@ table.top30-table th, table.top30-table td { padding: 8px 6px; border-bottom: 1p
 .dividend-warn { display: inline-block; font-size: 10.5px; font-weight: 700; color: var(--warn); white-space: nowrap; cursor: help; }
 table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: var(--gold); font-weight: 800; }
 
+table.s-report-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+table.s-report-table th, table.s-report-table td { padding: 8px 6px; border-bottom: 1px solid var(--border); text-align: center; }
+table.s-report-table td:first-child { text-align: left; font-weight: 600; }
+.s-report-verdict { margin-top: 12px; padding: 10px 12px; background: var(--accent-soft); border-radius: 10px; font-size: 13px; line-height: 1.5; }
+
 /* 브랜드평판순 표: 기업 헤더는 다른 열과 같이 가운데 정렬 유지, 데이터 행(기업명)만 왼쪽 정렬 */
 .brand-rep-table td:nth-child(2), .brand-rep-table th:nth-child(2) { width: 40%; }
 .brand-rep-table td:nth-child(2) { text-align: left; }
