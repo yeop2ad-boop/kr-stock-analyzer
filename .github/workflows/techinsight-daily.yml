@@ -1,9 +1,8 @@
 name: 신기술 인사이트 자동 생성
 
 on:
-  schedule:
-    # 매일 22:00 UTC = 한국시간(KST) 오전 7시
-    - cron: "0 22 * * *"
+  # 2026-08-26: Anthropic/OpenAI API 종량제 비용 문제로 자동 스케줄 중지(사용자 요청).
+  # 필요 시 Actions 탭에서 이 워크플로를 "Run workflow"로 수동 실행은 여전히 가능.
   workflow_dispatch: {}
 
 permissions:
