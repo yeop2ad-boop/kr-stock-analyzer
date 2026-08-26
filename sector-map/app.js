@@ -571,7 +571,43 @@ async function fetchLiveQuoteForSheet(symbol) {
   };
 }
 
+// 현재 상세시트가 열려서 보여주고 있는 종목 심볼 — refreshAllBubbleColors()가 지도 전체를 갱신할 때
+// 지금 시트가 보고 있는 종목과 같은 경우에만 시트 숫자도 같이 최신화하기 위해 기억해둠
+let currentSheetSymbol = null;
+
+// 상세시트의 현재가 표시용 — 마켓캡처럼 억/조 단위로 뭉치지 않고 실제 주당 가격 그대로(KRW는 원 단위, 그 외는 $ + 소수 2자리)
+function fmtSheetPrice(price, currency) {
+  if (price === null || price === undefined) return "정보 없음";
+  if (currency === "KRW") return `${Math.round(price).toLocaleString()}원`;
+  return `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+// 상세시트가 열려있는 동안 현재가/등락률을 실제 시세로 다시 조회해 갱신 — openCompanySheet가 처음 열 때,
+// 그리고 지도 전체 색상이 갱신될 때(refreshAllBubbleColors)마다 호출되어 시트 숫자가 타일 색상과 항상 같이 최신 상태를 유지
+function updateSheetLiveValues(symbol) {
+  if (!companySheet.classList.contains("open") || currentSheetSymbol !== symbol) return;
+  fetchLiveQuoteForSheet(symbol)
+    .then((live) => {
+      if (!live || !companySheet.classList.contains("open") || currentSheetSymbol !== symbol) return;
+      const price = live.price;
+      const prevClose = live.prevClose;
+      const priceEl = document.getElementById("sheetPriceValue");
+      if (priceEl && price !== null && price !== undefined) {
+        const currency = ACTIVE_MARKET === "domestic" ? "KRW" : "USD";
+        priceEl.textContent = fmtSheetPrice(price, currency);
+      }
+      if (price === null || prevClose === null || !prevClose) return;
+      const changePct = ((price - prevClose) / prevClose) * 100;
+      const valueEl = document.getElementById("sheetChangeValue");
+      if (!valueEl) return;
+      valueEl.textContent = `${changePct > 0 ? "+" : ""}${changePct.toFixed(2)}%`;
+      valueEl.style.color = changeColorForText(changePct);
+    })
+    .catch(() => {});
+}
+
 function openCompanySheet(d) {
+  currentSheetSymbol = d.symbol;
   const color = sectorColor(d.sector);
   const chgTextColor = changeColorForText(d.changePercent);
   const chgText =
@@ -603,6 +639,10 @@ function openCompanySheet(d) {
         <div class="sheet-stat-value">${d.currency === "KRW" ? fmtWonCompact(d.marketCap) : fmtMarketCap(d.marketCap)}</div>
       </div>
       <div>
+        <div class="sheet-stat-label">현재가</div>
+        <div class="sheet-stat-value" id="sheetPriceValue">불러오는 중...</div>
+      </div>
+      <div>
         <div class="sheet-stat-label">등락률</div>
         <div class="sheet-stat-value" id="sheetChangeValue" style="color:${chgTextColor};">${chgText}</div>
       </div>
@@ -613,21 +653,10 @@ function openCompanySheet(d) {
     </div>
   `;
   companySheet.classList.add("open");
-  // 등락률만 지금 이 순간의 실제 시세로 다시 조회해 갱신 — 정적 스냅샷(d.changePercent)이 지도 타일 색상보다
-  // 오래된 값일 수 있던 문제 해결(레이아웃은 기존 그대로, 숫자만 실시간 반영)
-  fetchLiveQuoteForSheet(d.symbol)
-    .then((live) => {
-      if (!live || !companySheet.classList.contains("open")) return;
-      const price = live.price;
-      const prevClose = live.prevClose;
-      if (price === null || prevClose === null || !prevClose) return;
-      const changePct = ((price - prevClose) / prevClose) * 100;
-      const valueEl = document.getElementById("sheetChangeValue");
-      if (!valueEl) return;
-      valueEl.textContent = `${changePct > 0 ? "+" : ""}${changePct.toFixed(2)}%`;
-      valueEl.style.color = changeColorForText(changePct);
-    })
-    .catch(() => {});
+  // 현재가/등락률을 지금 이 순간의 실제 시세로 다시 조회해 갱신 — 정적 스냅샷(d.changePercent)이 지도 타일 색상보다
+  // 오래된 값일 수 있던 문제 해결(레이아웃은 기존 그대로, 숫자만 실시간 반영). 시트가 열려있는 동안은
+  // refreshAllBubbleColors()가 지도 색상을 새로고침할 때마다 updateSheetLiveValues가 다시 호출되어 계속 동기화됨
+  updateSheetLiveValues(d.symbol);
   document.getElementById("sheetCloseBtn").addEventListener("click", closeCompanySheet);
   const watchBtn = document.getElementById("sheetWatchBtn");
   watchBtn.addEventListener("click", (e) => {
@@ -657,6 +686,7 @@ function openCompanySheet(d) {
 }
 function closeCompanySheet() {
   companySheet.classList.remove("open");
+  currentSheetSymbol = null;
 }
 mapViewport.addEventListener("pointerdown", (e) => {
   if (companySheet.classList.contains("open") && !companySheet.contains(e.target)) closeCompanySheet();
@@ -1442,6 +1472,8 @@ function refreshAllBubbleColors() {
     const glowStrength = Math.abs(chg.t);
     el.style.setProperty("--chg-glow", glowStrength > 0.08 ? `0 0 ${4 + glowStrength * 10}px ${chg.css}` : "");
   }
+  // 지도 타일 색상이 새로 갱신될 때, 지금 상세시트가 열려서 보고 있는 종목이 있다면 그 시트의 현재가/등락률도 같이 최신화
+  if (currentSheetSymbol) updateSheetLiveValues(currentSheetSymbol);
 }
 
 // ---------- 8) 국내/해외 전환 ----------
