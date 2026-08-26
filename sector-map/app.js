@@ -4,6 +4,11 @@
 // 나머지(전체 유니버스의 상위권 밖 종목)는 data/sp500-data-extra.js/kr-data-extra.js에 따로 있고, "+전체보기"를
 // 눌렀을 때만 동적으로 불러온다(ensureExtraDataLoaded) — 초기 로딩 용량을 줄이기 위함.
 
+// PWA로 홈 화면에 설치 가능하게(앱스토어 등록 없이) 서비스워커 등록 — 캐싱 없이 통과만 시키는 최소 워커
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
+}
+
 const WORLD_SIZE = 2000; // .map-world 의 world-space 좌표 크기(px, CSS와 동일해야 함)
 
 const SECTOR_COLOR_VAR = {

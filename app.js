@@ -4,6 +4,11 @@
 
 const el = (id) => document.getElementById(id);
 
+// PWA로 홈 화면에 설치 가능하게(앱스토어 등록 없이) 서비스워커 등록 — 캐싱 없이 통과만 시키는 최소 워커
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
+}
+
 // ---------- 핵심 내비게이션(탭바/서브탭/위저드) 아이콘 — 이모지 대신 로고와 동일한 주황(#e6983c) 단색 라인 아이콘 ----------
 const WIZ_ORANGE = "#e6983c";
 function svgIcon(inner) {
