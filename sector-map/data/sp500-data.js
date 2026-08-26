@@ -1,6 +1,6 @@
 ﻿const SP500_DATA = {
     "generatedAt":  "2026-08-23T08:19:28Z",
-    "count":  502,
+    "count":  501,
     "companies":  [
                       {
                           "symbol":  "MMM",
@@ -8823,24 +8823,6 @@
                           "week52RangePct":  69.5
                       },
                       {
-                          "symbol":  "GOOG",
-                          "name":  "Alphabet Inc.",
-                          "sector":  "Communication Services",
-                          "sectorKo":  "커뮤니케이션",
-                          "marketCap":  4201593962496,
-                          "changePercent":  -0.30181044,
-                          "per":  17.246485,
-                          "eps":  19.92,
-                          "dividendYield":  0.26,
-                          "revenueGrowth":  15.09,
-                          "netIncomeGrowth":  32.01,
-                          "cashFlowGrowth":  31.46,
-                          "operatingMargin":  34,
-                          "roe":  17.5,
-                          "debtRatio":  44,
-                          "week52RangePct":  69.1
-                      },
-                      {
                           "symbol":  "BRK-B",
                           "name":  "Berkshire Hathaway",
                           "sector":  "Financial Services",
@@ -9044,4 +9026,3 @@
                       "VMRK"
                   ]
 }
-
