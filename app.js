@@ -6265,11 +6265,12 @@ function krInstitutionTableHtml(inst) {
       const nameCellHtml = h.ticker
         ? `<span class="ticker-cell">${tickerLogoHtml(h.ticker)}<b class="ticker-link" data-ticker="${escapeHtml(h.ticker)}">${escapeHtml(h.name)}</b></span>`
         : `<b>${escapeHtml(h.name)}</b>`;
+      const dateHtml = `<span class="muted" style="font-size:11px;white-space:nowrap;">${escapeHtml(h.asOfDate)}</span>`;
       const deltaHtml = h.isNew
-        ? `<span class="muted" style="font-size:11px;white-space:nowrap;">(신규) · ${escapeHtml(h.asOfDate)}</span>`
+        ? `<span class="muted" style="font-size:11px;white-space:nowrap;">(신규)</span><br>${dateHtml}`
         : typeof h.weightChangePt === "number"
-          ? `<span class="${h.weightChangePt >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;white-space:nowrap;">(${h.weightChangePt >= 0 ? "+" : ""}${h.weightChangePt.toFixed(2)}%p) · ${escapeHtml(h.asOfDate)}</span>`
-          : `<span class="muted" style="font-size:11px;white-space:nowrap;">${escapeHtml(h.asOfDate)}</span>`;
+          ? `<span class="${h.weightChangePt >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;white-space:nowrap;">(${h.weightChangePt >= 0 ? "+" : ""}${h.weightChangePt.toFixed(2)}%p)</span><br>${dateHtml}`
+          : dateHtml;
       const valueHtml = typeof h.valueKRW === "number" ? fmtKrwCompact(h.valueKRW) : "N/A";
       const valueDeltaHtml =
         typeof h.valueChangeKRW === "number"

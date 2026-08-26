@@ -9,12 +9,17 @@
                                                           "weightPct":  13.41,
                                                           "asOfDate":  "2025-03-11",
                                                           "ticker":  "016360.KS",
+                                                          "valueKRW":  1060112206500,
+                                                          "valueChangeKRW":  63210682500,
                                                           "weightChangePt":  0.8
                                                       },
                                                       {
                                                           "name":  "비에이치",
                                                           "weightPct":  13.32,
                                                           "asOfDate":  "2026-07-01",
+                                                          "ticker":  "090460.KS",
+                                                          "valueKRW":  76490074700,
+                                                          "valueChangeKRW":  33596749940,
                                                           "weightChangePt":  5.85
                                                       },
                                                       {
@@ -22,6 +27,8 @@
                                                           "weightPct":  13.04,
                                                           "asOfDate":  "2025-07-02",
                                                           "ticker":  "001040.KS",
+                                                          "valueKRW":  497466538800,
+                                                          "valueChangeKRW":  38659248000,
                                                           "weightChangePt":  1.02
                                                       },
                                                       {
@@ -29,12 +36,17 @@
                                                           "weightPct":  12.99,
                                                           "asOfDate":  "2025-07-02",
                                                           "ticker":  "069960.KS",
+                                                          "valueKRW":  280670680000,
+                                                          "valueChangeKRW":  45448163500,
                                                           "weightChangePt":  2.11
                                                       },
                                                       {
                                                           "name":  "HD건설기계",
                                                           "weightPct":  12.99,
                                                           "asOfDate":  "2025-10-01",
+                                                          "ticker":  "267270.KS",
+                                                          "valueKRW":  320627106000,
+                                                          "valueChangeKRW":  66454489200,
                                                           "weightChangePt":  2.7
                                                       },
                                                       {
@@ -42,6 +54,8 @@
                                                           "weightPct":  12.98,
                                                           "asOfDate":  "2026-07-01",
                                                           "ticker":  "241710.KQ",
+                                                          "valueKRW":  192202276700,
+                                                          "valueChangeKRW":  14987505900,
                                                           "weightChangePt":  1.02
                                                       },
                                                       {
@@ -49,6 +63,8 @@
                                                           "weightPct":  12.86,
                                                           "asOfDate":  "2025-07-02",
                                                           "ticker":  "071050.KS",
+                                                          "valueKRW":  1369909186400,
+                                                          "valueChangeKRW":  112848725600,
                                                           "weightChangePt":  1.06
                                                       },
                                                       {
@@ -56,6 +72,8 @@
                                                           "weightPct":  12.85,
                                                           "asOfDate":  "2026-07-01",
                                                           "ticker":  "192820.KS",
+                                                          "valueKRW":  419953824000,
+                                                          "valueChangeKRW":  66518208000,
                                                           "weightChangePt":  2.04
                                                       },
                                                       {
@@ -63,12 +81,17 @@
                                                           "weightPct":  12.78,
                                                           "asOfDate":  "2026-04-01",
                                                           "ticker":  "010060.KS",
+                                                          "valueKRW":  657337765500,
+                                                          "valueChangeKRW":  50038789500,
                                                           "weightChangePt":  1.06
                                                       },
                                                       {
                                                           "name":  "대덕전자",
                                                           "weightPct":  12.76,
                                                           "asOfDate":  "2026-04-01",
+                                                          "ticker":  "353200.KS",
+                                                          "valueKRW":  674946370000,
+                                                          "valueChangeKRW":  -5326781000,
                                                           "weightChangePt":  -0.11
                                                       },
                                                       {
@@ -76,6 +99,8 @@
                                                           "weightPct":  12.7,
                                                           "asOfDate":  "2025-07-02",
                                                           "ticker":  "004170.KS",
+                                                          "valueKRW":  519403816000,
+                                                          "valueChangeKRW":  45561768000,
                                                           "weightChangePt":  1.11
                                                       },
                                                       {
@@ -83,6 +108,8 @@
                                                           "weightPct":  12.68,
                                                           "asOfDate":  "2026-07-01",
                                                           "ticker":  "161890.KS",
+                                                          "valueKRW":  445247841600,
+                                                          "valueChangeKRW":  75673430400,
                                                           "weightChangePt":  2.16
                                                       },
                                                       {
@@ -90,6 +117,8 @@
                                                           "weightPct":  12.37,
                                                           "asOfDate":  "2026-07-01",
                                                           "ticker":  "023530.KS",
+                                                          "valueKRW":  367838333900,
+                                                          "valueChangeKRW":  62965304900,
                                                           "weightChangePt":  2.12
                                                       },
                                                       {
@@ -97,6 +126,8 @@
                                                           "weightPct":  11.89,
                                                           "asOfDate":  "2026-07-01",
                                                           "ticker":  "014680.KS",
+                                                          "valueKRW":  273664170000,
+                                                          "valueChangeKRW":  -25548412500,
                                                           "weightChangePt":  -1.11
                                                       },
                                                       {
@@ -104,6 +135,8 @@
                                                           "weightPct":  11.69,
                                                           "asOfDate":  "2025-10-01",
                                                           "ticker":  "039490.KS",
+                                                          "valueKRW":  851864103000,
+                                                          "valueChangeKRW":  -60267957000,
                                                           "weightChangePt":  -1.14
                                                       },
                                                       {
@@ -111,6 +144,8 @@
                                                           "weightPct":  11.37,
                                                           "asOfDate":  "2026-04-01",
                                                           "ticker":  "034230.KS",
+                                                          "valueKRW":  104170994180,
+                                                          "valueChangeKRW":  39013775300,
                                                           "weightChangePt":  4.24
                                                       },
                                                       {
@@ -118,6 +153,8 @@
                                                           "weightPct":  11.2,
                                                           "asOfDate":  "2026-07-01",
                                                           "ticker":  "375500.KS",
+                                                          "valueKRW":  317717677200,
+                                                          "valueChangeKRW":  89249493600,
                                                           "weightChangePt":  3.14
                                                       },
                                                       {
@@ -125,6 +162,8 @@
                                                           "weightPct":  10.99,
                                                           "asOfDate":  "2026-06-01",
                                                           "ticker":  "298020.KS",
+                                                          "valueKRW":  155755070000,
+                                                          "valueChangeKRW":  14338277500,
                                                           "weightChangePt":  1.01
                                                       },
                                                       {
@@ -132,6 +171,8 @@
                                                           "weightPct":  10.95,
                                                           "asOfDate":  "2026-07-01",
                                                           "ticker":  "204320.KS",
+                                                          "valueKRW":  259052220000,
+                                                          "valueChangeKRW":  89308800,
                                                           "weightChangePt":  0.01
                                                       },
                                                       {
@@ -139,6 +180,8 @@
                                                           "weightPct":  10.92,
                                                           "asOfDate":  "2026-07-01",
                                                           "ticker":  "120110.KS",
+                                                          "valueKRW":  171942351600,
+                                                          "valueChangeKRW":  28774514400,
                                                           "weightChangePt":  1.03
                                                       },
                                                       {
@@ -146,6 +189,8 @@
                                                           "weightPct":  10.67,
                                                           "asOfDate":  "2026-07-01",
                                                           "ticker":  "001680.KS",
+                                                          "valueKRW":  67127321250,
+                                                          "valueChangeKRW":  -6306816450,
                                                           "weightChangePt":  -1.01
                                                       },
                                                       {
@@ -153,6 +198,8 @@
                                                           "weightPct":  10.67,
                                                           "asOfDate":  "2026-07-01",
                                                           "ticker":  "006650.KS",
+                                                          "valueKRW":  61039968000,
+                                                          "valueChangeKRW":  -5797000000,
                                                           "weightChangePt":  -1.01
                                                       },
                                                       {
@@ -160,6 +207,8 @@
                                                           "weightPct":  10.61,
                                                           "asOfDate":  "2026-03-25",
                                                           "ticker":  "128940.KS",
+                                                          "valueKRW":  720311870000,
+                                                          "valueChangeKRW":  -62848990000,
                                                           "weightChangePt":  -0.92
                                                       },
                                                       {
@@ -167,6 +216,8 @@
                                                           "weightPct":  10.58,
                                                           "asOfDate":  "2026-06-01",
                                                           "ticker":  "003230.KS",
+                                                          "valueKRW":  1201467806000,
+                                                          "valueChangeKRW":  113966875000,
                                                           "weightChangePt":  1
                                                       },
                                                       {
@@ -174,6 +225,8 @@
                                                           "weightPct":  10.57,
                                                           "asOfDate":  "2026-01-02",
                                                           "ticker":  "052690.KS",
+                                                          "valueKRW":  498389154000,
+                                                          "valueChangeKRW":  -47677687800,
                                                           "weightChangePt":  -1.01
                                                       },
                                                       {
@@ -181,6 +234,8 @@
                                                           "weightPct":  10.56,
                                                           "asOfDate":  "2026-07-01",
                                                           "ticker":  "009420.KS",
+                                                          "valueKRW":  349290602700,
+                                                          "valueChangeKRW":  41109931800,
                                                           "weightChangePt":  1.24
                                                       },
                                                       {
@@ -188,24 +243,35 @@
                                                           "weightPct":  10.54,
                                                           "asOfDate":  "2026-07-01",
                                                           "ticker":  "011070.KS",
+                                                          "valueKRW":  1453985093000,
+                                                          "valueChangeKRW":  287321056000,
                                                           "weightChangePt":  2.08
                                                       },
                                                       {
                                                           "name":  "SBS",
                                                           "weightPct":  10.52,
                                                           "asOfDate":  "2026-04-01",
+                                                          "ticker":  "034120.KS",
+                                                          "valueKRW":  24172890000,
+                                                          "valueChangeKRW":  -2310648270,
                                                           "weightChangePt":  -1
                                                       },
                                                       {
                                                           "name":  "롯데관광개발",
                                                           "weightPct":  10.47,
                                                           "asOfDate":  "2026-07-01",
+                                                          "ticker":  "032350.KS",
+                                                          "valueKRW":  111800114360,
+                                                          "valueChangeKRW":  11864353600,
                                                           "weightChangePt":  1.11
                                                       },
                                                       {
                                                           "name":  "동아쏘시오홀딩스",
                                                           "weightPct":  10.47,
                                                           "asOfDate":  "2025-10-01",
+                                                          "ticker":  "000640.KS",
+                                                          "valueKRW":  64049169600,
+                                                          "valueChangeKRW":  7823462400,
                                                           "weightChangePt":  1.01
                                                       }
                                                   ]
@@ -224,6 +290,9 @@
                                                                 "name":  "KB발해인프라",
                                                                 "weightPct":  17.57,
                                                                 "asOfDate":  "2026-07-08",
+                                                                "ticker":  "415640.KS",
+                                                                "valueKRW":  223064122960,
+                                                                "valueChangeKRW":  -14854468440,
                                                                 "weightChangePt":  -1.17
                                                             },
                                                             {
@@ -231,6 +300,8 @@
                                                                 "weightPct":  8.03,
                                                                 "asOfDate":  "2026-03-04",
                                                                 "ticker":  "080220.KQ",
+                                                                "valueKRW":  210508657100,
+                                                                "valueChangeKRW":  74509738300,
                                                                 "weightChangePt":  2.84
                                                             },
                                                             {
@@ -238,6 +309,8 @@
                                                                 "weightPct":  7.62,
                                                                 "asOfDate":  "2026-06-02",
                                                                 "ticker":  "033100.KQ",
+                                                                "valueKRW":  58592516400,
+                                                                "valueChangeKRW":  6020391300,
                                                                 "weightChangePt":  0.78
                                                             },
                                                             {
@@ -245,6 +318,8 @@
                                                                 "weightPct":  7.62,
                                                                 "asOfDate":  "2026-02-06",
                                                                 "ticker":  "348370.KQ",
+                                                                "valueKRW":  31770639070,
+                                                                "valueChangeKRW":  10767742010,
                                                                 "weightChangePt":  2.56
                                                             },
                                                             {
@@ -252,6 +327,8 @@
                                                                 "weightPct":  7.43,
                                                                 "asOfDate":  "2026-07-06",
                                                                 "ticker":  "403870.KQ",
+                                                                "valueKRW":  296607376000,
+                                                                "valueChangeKRW":  21701276500,
                                                                 "weightChangePt":  0.68
                                                             },
                                                             {
@@ -259,6 +336,8 @@
                                                                 "weightPct":  7.25,
                                                                 "asOfDate":  "2026-07-06",
                                                                 "ticker":  "101490.KQ",
+                                                                "valueKRW":  65011865050,
+                                                                "valueChangeKRW":  -13758423600,
                                                                 "weightChangePt":  -1.53
                                                             },
                                                             {
@@ -266,6 +345,8 @@
                                                                 "weightPct":  7.2,
                                                                 "asOfDate":  "2026-07-08",
                                                                 "ticker":  "121600.KQ",
+                                                                "valueKRW":  42581567000,
+                                                                "valueChangeKRW":  -3329270400,
                                                                 "weightChangePt":  -0.6
                                                             },
                                                             {
@@ -273,6 +354,8 @@
                                                                 "weightPct":  7.16,
                                                                 "asOfDate":  "2026-08-10",
                                                                 "ticker":  "466100.KQ",
+                                                                "valueKRW":  49960177900,
+                                                                "valueChangeKRW":  14114167800,
                                                                 "weightChangePt":  1.87
                                                             },
                                                             {
@@ -280,6 +363,8 @@
                                                                 "weightPct":  6.93,
                                                                 "asOfDate":  "2026-03-06",
                                                                 "ticker":  "222800.KQ",
+                                                                "valueKRW":  291526274200,
+                                                                "valueChangeKRW":  68200630400,
                                                                 "weightChangePt":  1.62
                                                             },
                                                             {
@@ -287,6 +372,8 @@
                                                                 "weightPct":  6.9,
                                                                 "asOfDate":  "2026-03-05",
                                                                 "ticker":  "067310.KQ",
+                                                                "valueKRW":  168968673500,
+                                                                "valueChangeKRW":  38915110850,
                                                                 "weightChangePt":  1.58
                                                             },
                                                             {
@@ -294,6 +381,8 @@
                                                                 "weightPct":  6.75,
                                                                 "asOfDate":  "2026-03-04",
                                                                 "ticker":  "098460.KQ",
+                                                                "valueKRW":  132755676900,
+                                                                "valueChangeKRW":  30143524500,
                                                                 "weightChangePt":  1.53
                                                             },
                                                             {
@@ -301,6 +390,8 @@
                                                                 "weightPct":  6.72,
                                                                 "asOfDate":  "2026-03-06",
                                                                 "ticker":  "348210.KQ",
+                                                                "valueKRW":  23221770000,
+                                                                "valueChangeKRW":  5149782000,
                                                                 "weightChangePt":  1.49
                                                             },
                                                             {
@@ -308,6 +399,8 @@
                                                                 "weightPct":  6.46,
                                                                 "asOfDate":  "2026-03-05",
                                                                 "ticker":  "161580.KQ",
+                                                                "valueKRW":  41589652500,
+                                                                "valueChangeKRW":  7124425000,
                                                                 "weightChangePt":  1.1
                                                             },
                                                             {
@@ -315,6 +408,8 @@
                                                                 "weightPct":  6.42,
                                                                 "asOfDate":  "2026-07-08",
                                                                 "ticker":  "058470.KQ",
+                                                                "valueKRW":  324827007200,
+                                                                "valueChangeKRW":  -54640759200,
                                                                 "weightChangePt":  -1.08
                                                             },
                                                             {
@@ -322,6 +417,8 @@
                                                                 "weightPct":  6.38,
                                                                 "asOfDate":  "2026-07-06",
                                                                 "ticker":  "039030.KQ",
+                                                                "valueKRW":  314927968500,
+                                                                "valueChangeKRW":  -57128121000,
                                                                 "weightChangePt":  -1.16
                                                             },
                                                             {
@@ -329,6 +426,8 @@
                                                                 "weightPct":  6.31,
                                                                 "asOfDate":  "2026-07-08",
                                                                 "ticker":  "089030.KQ",
+                                                                "valueKRW":  114945960000,
+                                                                "valueChangeKRW":  -14789372400,
                                                                 "weightChangePt":  -0.81
                                                             },
                                                             {
@@ -336,6 +435,8 @@
                                                                 "weightPct":  6.29,
                                                                 "asOfDate":  "2026-04-06",
                                                                 "ticker":  "108490.KQ",
+                                                                "valueKRW":  230927182500,
+                                                                "valueChangeKRW":  36860073000,
                                                                 "weightChangePt":  0.97
                                                             },
                                                             {
@@ -343,6 +444,8 @@
                                                                 "weightPct":  6.28,
                                                                 "asOfDate":  "2026-03-05",
                                                                 "ticker":  "323280.KQ",
+                                                                "valueKRW":  95710744900,
+                                                                "valueChangeKRW":  16135564200,
                                                                 "weightChangePt":  1.06
                                                             },
                                                             {
@@ -350,6 +453,8 @@
                                                                 "weightPct":  6.27,
                                                                 "asOfDate":  "2026-03-05",
                                                                 "ticker":  "060280.KQ",
+                                                                "valueKRW":  22791086400,
+                                                                "valueChangeKRW":  4106046000,
                                                                 "weightChangePt":  1.13
                                                             },
                                                             {
@@ -357,6 +462,8 @@
                                                                 "weightPct":  6,
                                                                 "asOfDate":  "2026-07-06",
                                                                 "ticker":  "036930.KQ",
+                                                                "valueKRW":  483972231600,
+                                                                "valueChangeKRW":  -83366905200,
                                                                 "weightChangePt":  -1.04
                                                             },
                                                             {
@@ -364,6 +471,8 @@
                                                                 "weightPct":  5.94,
                                                                 "asOfDate":  "2026-07-08",
                                                                 "ticker":  "319660.KQ",
+                                                                "valueKRW":  222934768000,
+                                                                "valueChangeKRW":  -51021057500,
                                                                 "weightChangePt":  -1.36
                                                             },
                                                             {
@@ -371,6 +480,8 @@
                                                                 "weightPct":  5.92,
                                                                 "asOfDate":  "2026-06-02",
                                                                 "ticker":  "240810.KQ",
+                                                                "valueKRW":  317432776200,
+                                                                "valueChangeKRW":  -66750275100,
                                                                 "weightChangePt":  -1.24
                                                             },
                                                             {
@@ -378,6 +489,8 @@
                                                                 "weightPct":  5.89,
                                                                 "asOfDate":  "2026-07-08",
                                                                 "ticker":  "131970.KQ",
+                                                                "valueKRW":  90815512200,
+                                                                "valueChangeKRW":  -16881051600,
                                                                 "weightChangePt":  -1.09
                                                             },
                                                             {
@@ -385,30 +498,44 @@
                                                                 "weightPct":  5.87,
                                                                 "asOfDate":  "2026-04-06",
                                                                 "ticker":  "218410.KQ",
+                                                                "valueKRW":  74093017500,
+                                                                "valueChangeKRW":  10778462500,
                                                                 "weightChangePt":  0.84
                                                             },
                                                             {
                                                                 "name":  "대원전선",
                                                                 "weightPct":  5.86,
                                                                 "asOfDate":  "2026-06-02",
+                                                                "ticker":  "006340.KS",
+                                                                "valueKRW":  62594302960,
+                                                                "valueChangeKRW":  9047103320,
                                                                 "weightChangePt":  0.85
                                                             },
                                                             {
                                                                 "name":  "뉴로메카",
                                                                 "weightPct":  5.67,
                                                                 "asOfDate":  "2026-08-10",
+                                                                "ticker":  "348340.KQ",
+                                                                "valueKRW":  16856506800,
+                                                                "valueChangeKRW":  3392290650,
                                                                 "weightChangePt":  -0.03
                                                             },
                                                             {
                                                                 "name":  "KB스타리츠",
                                                                 "weightPct":  5.31,
                                                                 "asOfDate":  "2026-06-18",
+                                                                "ticker":  "432320.KS",
+                                                                "valueKRW":  11432727361,
+                                                                "valueChangeKRW":  11432727361,
                                                                 "isNew":  true
                                                             },
                                                             {
                                                                 "name":  "디앤디플랫폼리츠",
                                                                 "weightPct":  5.31,
                                                                 "asOfDate":  "2026-06-18",
+                                                                "ticker":  "377190.KS",
+                                                                "valueKRW":  10241472140,
+                                                                "valueChangeKRW":  10241472140,
                                                                 "isNew":  true
                                                             },
                                                             {
@@ -416,12 +543,17 @@
                                                                 "weightPct":  5.28,
                                                                 "asOfDate":  "2026-03-10",
                                                                 "ticker":  "166090.KQ",
+                                                                "valueKRW":  55243046800,
+                                                                "valueChangeKRW":  55243046800,
                                                                 "isNew":  true
                                                             },
                                                             {
                                                                 "name":  "이지스밸류플러스리츠",
                                                                 "weightPct":  5.26,
                                                                 "asOfDate":  "2025-12-15",
+                                                                "ticker":  "334890.KS",
+                                                                "valueKRW":  14160397000,
+                                                                "valueChangeKRW":  14160397000,
                                                                 "isNew":  true
                                                             }
                                                         ]
@@ -433,90 +565,135 @@
                                                               "name":  "코람코라이프인프라리츠",
                                                               "weightPct":  28.88,
                                                               "asOfDate":  "2026-07-01",
+                                                              "ticker":  "357120.KS",
+                                                              "valueKRW":  120995994210,
+                                                              "valueChangeKRW":  5638968825,
                                                               "weightChangePt":  1.35
                                                           },
                                                           {
                                                               "name":  "미래에셋글로벌리츠",
                                                               "weightPct":  26.76,
                                                               "asOfDate":  "2025-12-01",
+                                                              "ticker":  "396690.KS",
+                                                              "valueKRW":  16535266800,
+                                                              "valueChangeKRW":  -165787440,
                                                               "weightChangePt":  -0.27
                                                           },
                                                           {
                                                               "name":  "한화리츠",
                                                               "weightPct":  26.71,
                                                               "asOfDate":  "2026-08-03",
+                                                              "ticker":  "451800.KS",
+                                                              "valueKRW":  260005795580,
+                                                              "valueChangeKRW":  10158993260,
                                                               "weightChangePt":  1.04
                                                           },
                                                           {
                                                               "name":  "맵스리얼티",
                                                               "weightPct":  26.34,
                                                               "asOfDate":  "2026-08-03",
+                                                              "ticker":  "094800.KS",
+                                                              "valueKRW":  175824238430,
+                                                              "valueChangeKRW":  8984904410,
                                                               "weightChangePt":  1.34
                                                           },
                                                           {
                                                               "name":  "신한알파리츠",
                                                               "weightPct":  22.17,
                                                               "asOfDate":  "2026-08-04",
+                                                              "ticker":  "293940.KS",
+                                                              "valueKRW":  146903801240,
+                                                              "valueChangeKRW":  9256240600,
                                                               "weightChangePt":  1.4
                                                           },
                                                           {
                                                               "name":  "SK리츠",
                                                               "weightPct":  21.98,
                                                               "asOfDate":  "2026-08-04",
+                                                              "ticker":  "395400.KS",
+                                                              "valueKRW":  374532557800,
+                                                              "valueChangeKRW":  20391887620,
                                                               "weightChangePt":  1.19
                                                           },
                                                           {
                                                               "name":  "ESR켄달스퀘어리츠",
                                                               "weightPct":  18.82,
                                                               "asOfDate":  "2026-05-04",
+                                                              "ticker":  "365550.KS",
+                                                              "valueKRW":  141966760330,
+                                                              "valueChangeKRW":  7659833450,
                                                               "weightChangePt":  1.01
                                                           },
                                                           {
                                                               "name":  "롯데리츠",
                                                               "weightPct":  15.82,
                                                               "asOfDate":  "2026-08-04",
+                                                              "ticker":  "330590.KS",
+                                                              "valueKRW":  180538992300,
+                                                              "valueChangeKRW":  11645800800,
                                                               "weightChangePt":  1.02
                                                           },
                                                           {
                                                               "name":  "KB발해인프라",
                                                               "weightPct":  15.44,
                                                               "asOfDate":  "2026-08-04",
+                                                              "ticker":  "415640.KS",
+                                                              "valueKRW":  195991982200,
+                                                              "valueChangeKRW":  17078542880,
                                                               "weightChangePt":  1.35
                                                           },
                                                           {
                                                               "name":  "코람코더원리츠",
                                                               "weightPct":  15.15,
                                                               "asOfDate":  "2026-07-02",
+                                                              "ticker":  "417310.KS",
+                                                              "valueKRW":  67521942890,
+                                                              "valueChangeKRW":  5565429160,
                                                               "weightChangePt":  1.25
                                                           },
                                                           {
                                                               "name":  "신한서부티엔디리츠",
                                                               "weightPct":  15.07,
                                                               "asOfDate":  "2026-07-02",
+                                                              "ticker":  "404990.KS",
+                                                              "valueKRW":  36698164555,
+                                                              "valueChangeKRW":  6432867545,
                                                               "weightChangePt":  2.25
                                                           },
                                                           {
                                                               "name":  "삼성FN리츠",
                                                               "weightPct":  14.8,
                                                               "asOfDate":  "2026-08-04",
+                                                              "ticker":  "448730.KS",
+                                                              "valueKRW":  74397395280,
+                                                              "valueChangeKRW":  5770740480,
                                                               "weightChangePt":  1.15
                                                           },
                                                           {
                                                               "name":  "디앤디플랫폼리츠",
                                                               "weightPct":  14.55,
                                                               "asOfDate":  "2026-07-01",
+                                                              "ticker":  "377190.KS",
+                                                              "valueKRW":  28041754200,
+                                                              "valueChangeKRW":  -24730240460,
                                                               "weightChangePt":  -12.83
                                                           },
                                                           {
                                                               "name":  "이지스밸류플러스리츠",
                                                               "weightPct":  14.49,
                                                               "asOfDate":  "2026-07-01",
+                                                              "ticker":  "334890.KS",
+                                                              "valueKRW":  38995396000,
+                                                              "valueChangeKRW":  4227214250,
                                                               "weightChangePt":  1.57
                                                           },
                                                           {
                                                               "name":  "미래에셋맵스리츠",
                                                               "weightPct":  11.23,
                                                               "asOfDate":  "2026-03-03",
+                                                              "ticker":  "357250.KS",
+                                                              "valueKRW":  5337903445,
+                                                              "valueChangeKRW":  -550147499,
                                                               "weightChangePt":  -1.16
                                                           },
                                                           {
@@ -524,30 +701,44 @@
                                                               "weightPct":  10.38,
                                                               "asOfDate":  "2026-08-03",
                                                               "ticker":  "000990.KS",
+                                                              "valueKRW":  413148669000,
+                                                              "valueChangeKRW":  -243228045000,
                                                               "weightChangePt":  -6.11
                                                           },
                                                           {
                                                               "name":  "제이알글로벌리츠",
                                                               "weightPct":  9.93,
                                                               "asOfDate":  "2025-12-02",
+                                                              "ticker":  "348950.KS",
+                                                              "valueKRW":  23157372852,
+                                                              "valueChangeKRW":  2445086382,
                                                               "weightChangePt":  1.05
                                                           },
                                                           {
                                                               "name":  "맥쿼리인프라",
                                                               "weightPct":  8.42,
                                                               "asOfDate":  "2026-04-02",
+                                                              "ticker":  "088980.KS",
+                                                              "valueKRW":  394961491400,
+                                                              "valueChangeKRW":  50062378800,
                                                               "weightChangePt":  1.07
                                                           },
                                                           {
                                                               "name":  "피엠티",
                                                               "weightPct":  7.79,
                                                               "asOfDate":  "2026-07-01",
+                                                              "ticker":  "147760.KQ",
+                                                              "valueKRW":  2954031525,
+                                                              "valueChangeKRW":  996366350,
                                                               "weightChangePt":  2.63
                                                           },
                                                           {
                                                               "name":  "뉴로메카",
                                                               "weightPct":  7.49,
                                                               "asOfDate":  "2026-08-04",
+                                                              "ticker":  "348340.KQ",
+                                                              "valueKRW":  17953863000,
+                                                              "valueChangeKRW":  6013170600,
                                                               "weightChangePt":  2.42
                                                           },
                                                           {
@@ -555,12 +746,17 @@
                                                               "weightPct":  7.31,
                                                               "asOfDate":  "2026-08-03",
                                                               "ticker":  "240810.KQ",
+                                                              "valueKRW":  392078118200,
+                                                              "valueChangeKRW":  -144864689800,
                                                               "weightChangePt":  -2.7
                                                           },
                                                           {
                                                               "name":  "이리츠코크렙",
                                                               "weightPct":  7.07,
                                                               "asOfDate":  "2026-07-01",
+                                                              "ticker":  "088260.KS",
+                                                              "valueKRW":  14149917520,
+                                                              "valueChangeKRW":  -23360328440,
                                                               "weightChangePt":  -11.67
                                                           },
                                                           {
@@ -568,6 +764,8 @@
                                                               "weightPct":  6.93,
                                                               "asOfDate":  "2026-08-03",
                                                               "ticker":  "036930.KQ",
+                                                              "valueKRW":  558450306000,
+                                                              "valueChangeKRW":  88543588800,
                                                               "weightChangePt":  1.1
                                                           },
                                                           {
@@ -575,6 +773,8 @@
                                                               "weightPct":  6.7,
                                                               "asOfDate":  "2026-07-07",
                                                               "ticker":  "007660.KS",
+                                                              "valueKRW":  544964592400,
+                                                              "valueChangeKRW":  229719091600,
                                                               "weightChangePt":  2.82
                                                           },
                                                           {
@@ -582,12 +782,17 @@
                                                               "weightPct":  6.7,
                                                               "asOfDate":  "2026-08-03",
                                                               "ticker":  "039030.KQ",
+                                                              "valueKRW":  330526242000,
+                                                              "valueChangeKRW":  -198126949500,
                                                               "weightChangePt":  -4.01
                                                           },
                                                           {
                                                               "name":  "디바이스",
                                                               "weightPct":  6.26,
                                                               "asOfDate":  "2026-08-04",
+                                                              "ticker":  "187870.KQ",
+                                                              "valueKRW":  9677452500,
+                                                              "valueChangeKRW":  -2770328700,
                                                               "weightChangePt":  -1.79
                                                           },
                                                           {
@@ -595,12 +800,17 @@
                                                               "weightPct":  6.26,
                                                               "asOfDate":  "2026-08-03",
                                                               "ticker":  "090360.KQ",
+                                                              "valueKRW":  48001727400,
+                                                              "valueChangeKRW":  9640447200,
                                                               "weightChangePt":  1.25
                                                           },
                                                           {
                                                               "name":  "CJ프레시웨이",
                                                               "weightPct":  6.09,
                                                               "asOfDate":  "2026-06-01",
+                                                              "ticker":  "051500.KQ",
+                                                              "valueKRW":  17889300000,
+                                                              "valueChangeKRW":  3097190250,
                                                               "weightChangePt":  1.06
                                                           },
                                                           {
@@ -608,6 +818,8 @@
                                                               "weightPct":  5.99,
                                                               "asOfDate":  "2026-08-03",
                                                               "ticker":  "120110.KS",
+                                                              "valueKRW":  94345148400,
+                                                              "valueChangeKRW":  14521071600,
                                                               "weightChangePt":  0.92
                                                           },
                                                           {
@@ -615,6 +827,8 @@
                                                               "weightPct":  5.91,
                                                               "asOfDate":  "2026-08-03",
                                                               "ticker":  "058470.KQ",
+                                                              "valueKRW":  299182663200,
+                                                              "valueChangeKRW":  -240019532800,
                                                               "weightChangePt":  -4.75
                                                           }
                                                       ]
@@ -626,12 +840,18 @@
                                                            "name":  "지엔씨에너지",
                                                            "weightPct":  7.21,
                                                            "asOfDate":  "2026-08-04",
+                                                           "ticker":  "119850.KQ",
+                                                           "valueKRW":  61171542000,
+                                                           "valueChangeKRW":  10410919200,
                                                            "weightChangePt":  1.23
                                                        },
                                                        {
                                                            "name":  "에스티아이",
                                                            "weightPct":  6.72,
                                                            "asOfDate":  "2026-05-04",
+                                                           "ticker":  "039440.KQ",
+                                                           "valueKRW":  21250272000,
+                                                           "valueChangeKRW":  -3637075200,
                                                            "weightChangePt":  -1.15
                                                        },
                                                        {
@@ -639,30 +859,44 @@
                                                            "weightPct":  6.02,
                                                            "asOfDate":  "2025-07-02",
                                                            "ticker":  "001680.KS",
+                                                           "valueKRW":  37874185800,
+                                                           "valueChangeKRW":  6293494350,
                                                            "weightChangePt":  1
                                                        },
                                                        {
                                                            "name":  "한스바이오메드",
                                                            "weightPct":  5.89,
                                                            "asOfDate":  "2026-07-02",
+                                                           "ticker":  "042520.KQ",
+                                                           "valueKRW":  16218137400,
+                                                           "valueChangeKRW":  -3694155100,
                                                            "weightChangePt":  -1.34
                                                        },
                                                        {
                                                            "name":  "알에스오토메이션",
                                                            "weightPct":  5.77,
                                                            "asOfDate":  "2026-06-17",
+                                                           "ticker":  "140670.KQ",
+                                                           "valueKRW":  7497199600,
+                                                           "valueChangeKRW":  7497199600,
                                                            "isNew":  true
                                                        },
                                                        {
                                                            "name":  "에브리봇",
                                                            "weightPct":  5.42,
                                                            "asOfDate":  "2026-06-17",
+                                                           "ticker":  "270660.KQ",
+                                                           "valueKRW":  10416017200,
+                                                           "valueChangeKRW":  10416017200,
                                                            "isNew":  true
                                                        },
                                                        {
                                                            "name":  "에스오에스랩",
                                                            "weightPct":  5.36,
                                                            "asOfDate":  "2026-01-30",
+                                                           "ticker":  "464080.KQ",
+                                                           "valueKRW":  9416572200,
+                                                           "valueChangeKRW":  9416572200,
                                                            "isNew":  true
                                                        },
                                                        {
@@ -670,6 +904,8 @@
                                                            "weightPct":  5.34,
                                                            "asOfDate":  "2026-08-04",
                                                            "ticker":  "241710.KQ",
+                                                           "valueKRW":  79029040800,
+                                                           "valueChangeKRW":  -11530408400,
                                                            "weightChangePt":  -0.77
                                                        },
                                                        {
@@ -677,12 +913,17 @@
                                                            "weightPct":  5.26,
                                                            "asOfDate":  "2026-07-20",
                                                            "ticker":  "033100.KQ",
+                                                           "valueKRW":  40390185000,
+                                                           "valueChangeKRW":  40390185000,
                                                            "isNew":  true
                                                        },
                                                        {
                                                            "name":  "제이엘케이",
                                                            "weightPct":  5.09,
                                                            "asOfDate":  "2026-06-19",
+                                                           "ticker":  "322510.KQ",
+                                                           "valueKRW":  6575421900,
+                                                           "valueChangeKRW":  6575421900,
                                                            "isNew":  true
                                                        },
                                                        {
@@ -690,12 +931,17 @@
                                                            "weightPct":  5.05,
                                                            "asOfDate":  "2026-07-02",
                                                            "ticker":  "295310.KQ",
+                                                           "valueKRW":  28655412500,
+                                                           "valueChangeKRW":  28655412500,
                                                            "isNew":  true
                                                        },
                                                        {
                                                            "name":  "뉴엔AI",
                                                            "weightPct":  5.04,
                                                            "asOfDate":  "2026-06-19",
+                                                           "ticker":  "463020.KQ",
+                                                           "valueKRW":  3897156300,
+                                                           "valueChangeKRW":  3897156300,
                                                            "isNew":  true
                                                        }
                                                    ]
