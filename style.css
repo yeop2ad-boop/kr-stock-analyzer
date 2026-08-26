@@ -95,7 +95,8 @@ body {
 /* 국내 선택 시 맨 위 툴바를 섹터맵(지도)과 동일하게 주황 배경으로 — 해외는 기존 그대로(테마에 따라 흰/검정) */
 body[data-market-mode="kr"] .fixed-header {
   background: linear-gradient(180deg, #f95503 0%, #e04600 100%);
-  border-bottom-color: transparent;
+  /* 해외의 얇은 구분선과 동일하게, 주황 배경 위에서 잘 보이도록 반투명 흰 선으로(지도 top-bar-row와 동일한 방식) */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
 }
 body[data-market-mode="kr"] .fh-banner { filter: brightness(0) invert(1); }
 /* 해외 선택 시 지도(섹터맵)의 .top-bar.is-overseas와 동일한 얇은 구분선 */
