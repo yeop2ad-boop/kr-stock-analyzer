@@ -7890,9 +7890,11 @@ function mktWidgetEditBodyHtml(orderedTickers) {
     })
     .join("");
   return `
-    <p class="mkt-widget-edit-count" id="mktWidgetEditCount">선택 ${orderedTickers.length}/8</p>
+    <div class="mkt-widget-edit-topbar">
+      <p class="mkt-widget-edit-count" id="mktWidgetEditCount">선택 ${orderedTickers.length}/8</p>
+      <button type="button" class="cat-btn mkt-widget-edit-save" id="mktWidgetEditSaveBtn">저장</button>
+    </div>
     ${groups}
-    <button type="button" class="cat-btn mkt-widget-edit-save" id="mktWidgetEditSaveBtn">저장</button>
   `;
 }
 function openMktWidgetEditModal() {
