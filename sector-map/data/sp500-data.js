@@ -59,7 +59,7 @@
                       {
                           "symbol":  "ABBV",
                           "name":  "AbbVie",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  468215398400,
                           "changePercent":  1.19543,
@@ -95,7 +95,7 @@
                       {
                           "symbol":  "ADBE",
                           "name":  "Adobe Inc.",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  109431742464,
                           "changePercent":  1.13143,
@@ -113,7 +113,7 @@
                       {
                           "symbol":  "AMD",
                           "name":  "AMD",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  772568776704,
                           "changePercent":  0.808387,
@@ -167,7 +167,7 @@
                       {
                           "symbol":  "A",
                           "name":  "Agilent Technologies",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  44906676224,
                           "changePercent":  1.72745,
@@ -203,7 +203,7 @@
                       {
                           "symbol":  "ABNB",
                           "name":  "Airbnb",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  112152559616,
                           "changePercent":  1.24324,
@@ -239,7 +239,7 @@
                       {
                           "symbol":  "ALB",
                           "name":  "Albemarle Corporation",
-                          "sector":  "Materials",
+                          "sector":  "Basic Materials",
                           "sectorKo":  "소재",
                           "marketCap":  16904224768,
                           "changePercent":  6.75162,
@@ -329,7 +329,7 @@
                       {
                           "symbol":  "ALL",
                           "name":  "Allstate",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  64182935552,
                           "changePercent":  -0.278931,
@@ -365,7 +365,7 @@
                       {
                           "symbol":  "AMZN",
                           "name":  "Amazon (company)",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  2789664358400,
                           "changePercent":  -0.568983,
@@ -383,8 +383,8 @@
                       {
                           "symbol":  "AMCR",
                           "name":  "Amcor",
-                          "sector":  "Materials",
-                          "sectorKo":  "소재",
+                          "sector":  "Consumer Cyclical",
+                          "sectorKo":  "경기소비재",
                           "marketCap":  22465378304,
                           "changePercent":  1.63146,
                           "per":  20.415966,
@@ -455,7 +455,7 @@
                       {
                           "symbol":  "AIG",
                           "name":  "American International Group",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  39802630144,
                           "changePercent":  0.488452,
@@ -563,7 +563,7 @@
                       {
                           "symbol":  "APH",
                           "name":  "Amphenol",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  193590722560,
                           "changePercent":  2.54718,
@@ -581,7 +581,7 @@
                       {
                           "symbol":  "ADI",
                           "name":  "Analog Devices",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  181727297536,
                           "changePercent":  0.769773,
@@ -635,7 +635,7 @@
                       {
                           "symbol":  "APO",
                           "name":  "Apollo Global Management",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  78359175168,
                           "changePercent":  2.08494,
@@ -653,7 +653,7 @@
                       {
                           "symbol":  "AAPL",
                           "name":  "Apple Inc.",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  4514709504000,
                           "changePercent":  -0.6264,
@@ -671,7 +671,7 @@
                       {
                           "symbol":  "AMAT",
                           "name":  "Applied Materials",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  390882099200,
                           "changePercent":  -0.783939,
@@ -707,7 +707,7 @@
                       {
                           "symbol":  "APTV",
                           "name":  "Aptiv",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  10024537088,
                           "changePercent":  2.65788,
@@ -743,7 +743,7 @@
                       {
                           "symbol":  "ADM",
                           "name":  "Archer Daniels Midland",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  38701355008,
                           "changePercent":  -1.71358,
@@ -869,7 +869,7 @@
                       {
                           "symbol":  "ADSK",
                           "name":  "Autodesk",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  53593939968,
                           "changePercent":  1.11744,
@@ -887,8 +887,8 @@
                       {
                           "symbol":  "ADP",
                           "name":  "ADP (company)",
-                          "sector":  "Industrials",
-                          "sectorKo":  "산업재",
+                          "sector":  "Technology",
+                          "sectorKo":  "기술",
                           "marketCap":  111555354624,
                           "changePercent":  0.573048,
                           "per":  25.644749,
@@ -923,8 +923,8 @@
                       {
                           "symbol":  "AVY",
                           "name":  "Avery Dennison",
-                          "sector":  "Materials",
-                          "sectorKo":  "소재",
+                          "sector":  "Consumer Cyclical",
+                          "sectorKo":  "경기소비재",
                           "marketCap":  13923040256,
                           "changePercent":  0.563835,
                           "per":  20.077597,
@@ -977,8 +977,8 @@
                       {
                           "symbol":  "BALL",
                           "name":  "Ball Corporation",
-                          "sector":  "Materials",
-                          "sectorKo":  "소재",
+                          "sector":  "Consumer Cyclical",
+                          "sectorKo":  "경기소비재",
                           "marketCap":  16832486400,
                           "changePercent":  1.56524,
                           "per":  18.22063,
@@ -1013,7 +1013,7 @@
                       {
                           "symbol":  "BAX",
                           "name":  "Baxter International",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  13617674240,
                           "changePercent":  -0.26505,
@@ -1031,7 +1031,7 @@
                       {
                           "symbol":  "BDX",
                           "name":  "BD (company)",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  52298268672,
                           "changePercent":  2.33451,
@@ -1049,7 +1049,7 @@
                       {
                           "symbol":  "BBY",
                           "name":  "Best Buy",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  18102788096,
                           "changePercent":  0.186628,
@@ -1085,7 +1085,7 @@
                       {
                           "symbol":  "BIIB",
                           "name":  "Biogen",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  32030111744,
                           "changePercent":  1.13366,
@@ -1103,7 +1103,7 @@
                       {
                           "symbol":  "BLK",
                           "name":  "BlackRock",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  187911847936,
                           "changePercent":  1.46778,
@@ -1121,7 +1121,7 @@
                       {
                           "symbol":  "BX",
                           "name":  "Blackstone Inc.",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  171381800960,
                           "changePercent":  1.43615,
@@ -1193,7 +1193,7 @@
                       {
                           "symbol":  "BKNG",
                           "name":  "Booking Holdings",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  157504372736,
                           "changePercent":  -0.119121,
@@ -1229,7 +1229,7 @@
                       {
                           "symbol":  "BMY",
                           "name":  "Bristol Myers Squibb",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  136882315264,
                           "changePercent":  2.35222,
@@ -1283,7 +1283,7 @@
                       {
                           "symbol":  "BRO",
                           "name":  "Brown \u0026 Brown",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  24399788032,
                           "changePercent":  1.16537,
@@ -1319,7 +1319,7 @@
                       {
                           "symbol":  "BG",
                           "name":  "Bunge Global",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  21730592768,
                           "changePercent":  -2.96817,
@@ -1373,7 +1373,7 @@
                       {
                           "symbol":  "CDNS",
                           "name":  "Cadence Design Systems",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  87855865856,
                           "changePercent":  1.73156,
@@ -1409,7 +1409,7 @@
                       {
                           "symbol":  "COF",
                           "name":  "Capital One",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  133684486144,
                           "changePercent":  2.55554,
@@ -1427,7 +1427,7 @@
                       {
                           "symbol":  "CAH",
                           "name":  "Cardinal Health",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  53378453504,
                           "changePercent":  0.459594,
@@ -1445,7 +1445,7 @@
                       {
                           "symbol":  "CCL",
                           "name":  "Carnival Corporation",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  35241070592,
                           "changePercent":  1.41899,
@@ -1499,8 +1499,8 @@
                       {
                           "symbol":  "CASY",
                           "name":  "Casey\u0027s",
-                          "sector":  "Consumer Staples",
-                          "sectorKo":  "필수소비재",
+                          "sector":  "Consumer Cyclical",
+                          "sectorKo":  "경기소비재",
                           "marketCap":  30926485504,
                           "changePercent":  0.888479,
                           "per":  43.664577,
@@ -1553,7 +1553,7 @@
                       {
                           "symbol":  "CDW",
                           "name":  "CDW",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  17158641664,
                           "changePercent":  2.7782,
@@ -1571,7 +1571,7 @@
                       {
                           "symbol":  "COR",
                           "name":  "Cencora",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  60690673664,
                           "changePercent":  1.06454,
@@ -1589,7 +1589,7 @@
                       {
                           "symbol":  "CNC",
                           "name":  "Centene Corporation",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  32119554048,
                           "changePercent":  1.37199,
@@ -1625,7 +1625,7 @@
                       {
                           "symbol":  "CF",
                           "name":  "CF Industries",
-                          "sector":  "Materials",
+                          "sector":  "Basic Materials",
                           "sectorKo":  "소재",
                           "marketCap":  19613421568,
                           "changePercent":  3.10263,
@@ -1643,7 +1643,7 @@
                       {
                           "symbol":  "CRL",
                           "name":  "Charles River Laboratories",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  14218632192,
                           "changePercent":  1.28324,
@@ -1661,7 +1661,7 @@
                       {
                           "symbol":  "SCHW",
                           "name":  "Charles Schwab Corporation",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  194204401664,
                           "changePercent":  2.28618,
@@ -1733,7 +1733,7 @@
                       {
                           "symbol":  "CB",
                           "name":  "Chubb Limited",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  131553894400,
                           "changePercent":  -0.548314,
@@ -1769,7 +1769,7 @@
                       {
                           "symbol":  "CIEN",
                           "name":  "Ciena",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  56025235456,
                           "changePercent":  0.843354,
@@ -1787,7 +1787,7 @@
                       {
                           "symbol":  "CI",
                           "name":  "Cigna",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  73329377280,
                           "changePercent":  1.1297,
@@ -1841,7 +1841,7 @@
                       {
                           "symbol":  "CSCO",
                           "name":  "Cisco",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  437656911872,
                           "changePercent":  1.32312,
@@ -1895,7 +1895,7 @@
                       {
                           "symbol":  "CLX",
                           "name":  "Clorox",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  12902129664,
                           "changePercent":  0.612978,
@@ -1913,7 +1913,7 @@
                       {
                           "symbol":  "CME",
                           "name":  "CME Group",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  98877112320,
                           "changePercent":  1.51734,
@@ -1967,7 +1967,7 @@
                       {
                           "symbol":  "CTSH",
                           "name":  "Cognizant",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  27868983296,
                           "changePercent":  1.55942,
@@ -1985,7 +1985,7 @@
                       {
                           "symbol":  "COHR",
                           "name":  "Coherent Corp.",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  56697348096,
                           "changePercent":  -0.175847,
@@ -2003,7 +2003,7 @@
                       {
                           "symbol":  "COIN",
                           "name":  "Coinbase",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  49202950144,
                           "changePercent":  8.20424,
@@ -2021,7 +2021,7 @@
                       {
                           "symbol":  "CL",
                           "name":  "Colgate-Palmolive",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  72606498816,
                           "changePercent":  1.53847,
@@ -2111,7 +2111,7 @@
                       {
                           "symbol":  "STZ",
                           "name":  "Constellation Brands",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  23171319808,
                           "changePercent":  1.13315,
@@ -2183,7 +2183,7 @@
                       {
                           "symbol":  "GLW",
                           "name":  "Corning Inc.",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  129070424064,
                           "changePercent":  -1.06306,
@@ -2201,8 +2201,8 @@
                       {
                           "symbol":  "CPAY",
                           "name":  "Corpay",
-                          "sector":  "Financials",
-                          "sectorKo":  "금융",
+                          "sector":  "Technology",
+                          "sectorKo":  "기술",
                           "marketCap":  27388590080,
                           "changePercent":  1.24515,
                           "per":  25.388313,
@@ -2219,7 +2219,7 @@
                       {
                           "symbol":  "CTVA",
                           "name":  "Corteva",
-                          "sector":  "Materials",
+                          "sector":  "Basic Materials",
                           "sectorKo":  "소재",
                           "marketCap":  54569963520,
                           "changePercent":  2.9323,
@@ -2255,7 +2255,7 @@
                       {
                           "symbol":  "COST",
                           "name":  "Costco",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  420302618624,
                           "changePercent":  1.52435,
@@ -2273,7 +2273,7 @@
                       {
                           "symbol":  "CRH",
                           "name":  "CRH plc",
-                          "sector":  "Materials",
+                          "sector":  "Basic Materials",
                           "sectorKo":  "소재",
                           "marketCap":  63248596992,
                           "changePercent":  2.12698,
@@ -2291,7 +2291,7 @@
                       {
                           "symbol":  "CRWD",
                           "name":  "CrowdStrike",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  195454861312,
                           "changePercent":  0.845855,
@@ -2363,7 +2363,7 @@
                       {
                           "symbol":  "CVS",
                           "name":  "CVS Health",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  118969819136,
                           "changePercent":  -0.672723,
@@ -2399,7 +2399,7 @@
                       {
                           "symbol":  "DRI",
                           "name":  "Darden Restaurants",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  25160855552,
                           "changePercent":  1.6747,
@@ -2417,7 +2417,7 @@
                       {
                           "symbol":  "DDOG",
                           "name":  "Datadog",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  84605255680,
                           "changePercent":  1.32014,
@@ -2435,7 +2435,7 @@
                       {
                           "symbol":  "DVA",
                           "name":  "DaVita",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  11089716224,
                           "changePercent":  -0.810316,
@@ -2453,7 +2453,7 @@
                       {
                           "symbol":  "DECK",
                           "name":  "Deckers Brands",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  12485152768,
                           "changePercent":  3.17353,
@@ -2489,7 +2489,7 @@
                       {
                           "symbol":  "DELL",
                           "name":  "Dell Technologies",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  285646618624,
                           "changePercent":  1.67901,
@@ -2543,7 +2543,7 @@
                       {
                           "symbol":  "DXCM",
                           "name":  "Dexcom",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  34845491200,
                           "changePercent":  2.34981,
@@ -2615,7 +2615,7 @@
                       {
                           "symbol":  "DLTR",
                           "name":  "Dollar Tree",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  25267113984,
                           "changePercent":  2.35889,
@@ -2651,7 +2651,7 @@
                       {
                           "symbol":  "DPZ",
                           "name":  "Domino\u0027s",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  11308991488,
                           "changePercent":  2.23705,
@@ -2705,7 +2705,7 @@
                       {
                           "symbol":  "DOW",
                           "name":  "Dow Chemical Company",
-                          "sector":  "Materials",
+                          "sector":  "Basic Materials",
                           "sectorKo":  "소재",
                           "marketCap":  23367720960,
                           "changePercent":  -1.67174,
@@ -2723,7 +2723,7 @@
                       {
                           "symbol":  "DHI",
                           "name":  "D. R. Horton",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  41493688320,
                           "changePercent":  0.692326,
@@ -2777,8 +2777,8 @@
                       {
                           "symbol":  "DD",
                           "name":  "DuPont",
-                          "sector":  "Industrials",
-                          "sectorKo":  "산업재",
+                          "sector":  "Basic Materials",
+                          "sectorKo":  "소재",
                           "marketCap":  18680496128,
                           "changePercent":  -0.0938935,
                           "per":  59.625004,
@@ -2813,7 +2813,7 @@
                       {
                           "symbol":  "EBAY",
                           "name":  "eBay",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  46337847296,
                           "changePercent":  -0.45885,
@@ -2849,7 +2849,7 @@
                       {
                           "symbol":  "ECL",
                           "name":  "Ecolab",
-                          "sector":  "Materials",
+                          "sector":  "Basic Materials",
                           "sectorKo":  "소재",
                           "marketCap":  78948950016,
                           "changePercent":  0.0532876,
@@ -2885,7 +2885,7 @@
                       {
                           "symbol":  "EW",
                           "name":  "Edwards Lifesciences",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  51754954752,
                           "changePercent":  -0.0445296,
@@ -2903,7 +2903,7 @@
                       {
                           "symbol":  "ELV",
                           "name":  "Elevance Health",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  86864830464,
                           "changePercent":  1.075,
@@ -3065,7 +3065,7 @@
                       {
                           "symbol":  "EL",
                           "name":  "The Estée Lauder Companies",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  36881375232,
                           "changePercent":  6.02184,
@@ -3173,7 +3173,7 @@
                       {
                           "symbol":  "EXPE",
                           "name":  "Expedia Group",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  38602702848,
                           "changePercent":  -0.783542,
@@ -3245,7 +3245,7 @@
                       {
                           "symbol":  "FFIV",
                           "name":  "F5, Inc.",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  21780514816,
                           "changePercent":  1.81053,
@@ -3263,7 +3263,7 @@
                       {
                           "symbol":  "FDS",
                           "name":  "FactSet",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  10666462208,
                           "changePercent":  -0.049988,
@@ -3281,7 +3281,7 @@
                       {
                           "symbol":  "FICO",
                           "name":  "FICO",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  25326901248,
                           "changePercent":  1.99348,
@@ -3389,8 +3389,8 @@
                       {
                           "symbol":  "FIS",
                           "name":  "FIS (company)",
-                          "sector":  "Financials",
-                          "sectorKo":  "금융",
+                          "sector":  "Technology",
+                          "sectorKo":  "기술",
                           "marketCap":  21319282688,
                           "changePercent":  1.87284,
                           "per":  6.35023,
@@ -3407,7 +3407,7 @@
                       {
                           "symbol":  "FITB",
                           "name":  "Fifth Third Bancorp",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  49715847168,
                           "changePercent":  0.587155,
@@ -3425,7 +3425,7 @@
                       {
                           "symbol":  "FSLR",
                           "name":  "First Solar",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  23028627456,
                           "changePercent":  0.102775,
@@ -3479,7 +3479,7 @@
                       {
                           "symbol":  "FLEX",
                           "name":  "Flex Ltd.",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  40800559104,
                           "changePercent":  0.117837,
@@ -3533,8 +3533,8 @@
                       {
                           "symbol":  "FTV",
                           "name":  "Fortive",
-                          "sector":  "Industrials",
-                          "sectorKo":  "산업재",
+                          "sector":  "Technology",
+                          "sectorKo":  "기술",
                           "marketCap":  18145185792,
                           "changePercent":  1.14478,
                           "per":  31.78836,
@@ -3569,7 +3569,7 @@
                       {
                           "symbol":  "FCX",
                           "name":  "Freeport-McMoRan",
-                          "sector":  "Materials",
+                          "sector":  "Basic Materials",
                           "sectorKo":  "소재",
                           "marketCap":  110085111808,
                           "changePercent":  7.63831,
@@ -3641,7 +3641,7 @@
                       {
                           "symbol":  "GEHC",
                           "name":  "GE HealthCare",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  33795164160,
                           "changePercent":  1.0262,
@@ -3677,7 +3677,7 @@
                       {
                           "symbol":  "GEN",
                           "name":  "Gen Digital",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  17317122048,
                           "changePercent":  2.67968,
@@ -3731,7 +3731,7 @@
                       {
                           "symbol":  "GIS",
                           "name":  "General Mills",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  21369141248,
                           "changePercent":  0.908863,
@@ -3749,7 +3749,7 @@
                       {
                           "symbol":  "GM",
                           "name":  "General Motors",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  79528419328,
                           "changePercent":  2.06616,
@@ -3803,8 +3803,8 @@
                       {
                           "symbol":  "GPN",
                           "name":  "Global Payments",
-                          "sector":  "Financials",
-                          "sectorKo":  "금융",
+                          "sector":  "Industrials",
+                          "sectorKo":  "산업재",
                           "marketCap":  24739172352,
                           "changePercent":  1.31123,
                           "per":  44.30806,
@@ -3839,7 +3839,7 @@
                       {
                           "symbol":  "GDDY",
                           "name":  "GoDaddy",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  12293692416,
                           "changePercent":  -1.14065,
@@ -3857,7 +3857,7 @@
                       {
                           "symbol":  "GS",
                           "name":  "Goldman Sachs",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  302608613376,
                           "changePercent":  3.72574,
@@ -3911,7 +3911,7 @@
                       {
                           "symbol":  "HAS",
                           "name":  "Hasbro",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  13193298944,
                           "changePercent":  -0.0213731,
@@ -3929,7 +3929,7 @@
                       {
                           "symbol":  "HCA",
                           "name":  "HCA Healthcare",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  92920283136,
                           "changePercent":  5.64157,
@@ -3965,7 +3965,7 @@
                       {
                           "symbol":  "HSIC",
                           "name":  "Henry Schein",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  9863019520,
                           "changePercent":  0.0452192,
@@ -4001,7 +4001,7 @@
                       {
                           "symbol":  "HPE",
                           "name":  "Hewlett Packard Enterprise",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  70778675200,
                           "changePercent":  1.0588,
@@ -4091,7 +4091,7 @@
                       {
                           "symbol":  "HRL",
                           "name":  "Hormel Foods",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  13141520384,
                           "changePercent":  -0.830568,
@@ -4145,7 +4145,7 @@
                       {
                           "symbol":  "HPQ",
                           "name":  "HP Inc.",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  27170467840,
                           "changePercent":  0.814387,
@@ -4199,7 +4199,7 @@
                       {
                           "symbol":  "HBAN",
                           "name":  "Huntington Bancshares",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  34407665664,
                           "changePercent":  0.117581,
@@ -4235,7 +4235,7 @@
                       {
                           "symbol":  "IBM",
                           "name":  "IBM",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  222042226688,
                           "changePercent":  0.851551,
@@ -4271,7 +4271,7 @@
                       {
                           "symbol":  "IDXX",
                           "name":  "Idexx Laboratories",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  43875569664,
                           "changePercent":  2.02799,
@@ -4307,7 +4307,7 @@
                       {
                           "symbol":  "INCY",
                           "name":  "Incyte",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  25906798592,
                           "changePercent":  0.463761,
@@ -4343,7 +4343,7 @@
                       {
                           "symbol":  "INTC",
                           "name":  "Intel",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  476119498752,
                           "changePercent":  -2.23597,
@@ -4361,7 +4361,7 @@
                       {
                           "symbol":  "IBKR",
                           "name":  "Interactive Brokers",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  159937167360,
                           "changePercent":  4.47413,
@@ -4379,7 +4379,7 @@
                       {
                           "symbol":  "ICE",
                           "name":  "Intercontinental Exchange",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  90524860416,
                           "changePercent":  1.66446,
@@ -4397,7 +4397,7 @@
                       {
                           "symbol":  "IFF",
                           "name":  "International Flavors \u0026 Fragrances",
-                          "sector":  "Materials",
+                          "sector":  "Basic Materials",
                           "sectorKo":  "소재",
                           "marketCap":  21504038912,
                           "changePercent":  1.06727,
@@ -4415,8 +4415,8 @@
                       {
                           "symbol":  "IP",
                           "name":  "International Paper",
-                          "sector":  "Materials",
-                          "sectorKo":  "소재",
+                          "sector":  "Consumer Cyclical",
+                          "sectorKo":  "경기소비재",
                           "marketCap":  21971855360,
                           "changePercent":  2.7998,
                           "per":  null,
@@ -4433,7 +4433,7 @@
                       {
                           "symbol":  "INTU",
                           "name":  "Intuit",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  100388077568,
                           "changePercent":  1.41764,
@@ -4469,7 +4469,7 @@
                       {
                           "symbol":  "IVZ",
                           "name":  "Invesco",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  14136822784,
                           "changePercent":  2.10459,
@@ -4505,7 +4505,7 @@
                       {
                           "symbol":  "IQV",
                           "name":  "IQVIA",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  42766372864,
                           "changePercent":  1.47238,
@@ -4577,8 +4577,8 @@
                       {
                           "symbol":  "JKHY",
                           "name":  "Jack Henry \u0026 Associates",
-                          "sector":  "Financials",
-                          "sectorKo":  "금융",
+                          "sector":  "Technology",
+                          "sectorKo":  "기술",
                           "marketCap":  11808640000,
                           "changePercent":  0.678456,
                           "per":  23.810888,
@@ -4649,7 +4649,7 @@
                       {
                           "symbol":  "JPM",
                           "name":  "JPMorgan Chase",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  934565052416,
                           "changePercent":  0.00853329,
@@ -4667,7 +4667,7 @@
                       {
                           "symbol":  "KDP",
                           "name":  "Keurig Dr Pepper",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  43600867328,
                           "changePercent":  1.20026,
@@ -4685,7 +4685,7 @@
                       {
                           "symbol":  "KEY",
                           "name":  "KeyCorp",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  23338102784,
                           "changePercent":  0.0915353,
@@ -4703,7 +4703,7 @@
                       {
                           "symbol":  "KEYS",
                           "name":  "Keysight Technologies",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  53836939264,
                           "changePercent":  -0.120061,
@@ -4793,7 +4793,7 @@
                       {
                           "symbol":  "KLAC",
                           "name":  "KLA Corporation",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  240391553024,
                           "changePercent":  -1.00613,
@@ -4829,7 +4829,7 @@
                       {
                           "symbol":  "KR",
                           "name":  "Kroger",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  35472277504,
                           "changePercent":  2.8054,
@@ -4865,7 +4865,7 @@
                       {
                           "symbol":  "LH",
                           "name":  "Labcorp",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  27277172736,
                           "changePercent":  1.06066,
@@ -4883,7 +4883,7 @@
                       {
                           "symbol":  "LRCX",
                           "name":  "Lam Research",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  392914796544,
                           "changePercent":  1.11744,
@@ -4901,7 +4901,7 @@
                       {
                           "symbol":  "LVS",
                           "name":  "Las Vegas Sands",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  30461386752,
                           "changePercent":  2.30585,
@@ -4919,8 +4919,8 @@
                       {
                           "symbol":  "LDOS",
                           "name":  "Leidos",
-                          "sector":  "Industrials",
-                          "sectorKo":  "산업재",
+                          "sector":  "Technology",
+                          "sectorKo":  "기술",
                           "marketCap":  17743343616,
                           "changePercent":  0.0141503,
                           "per":  13.214019,
@@ -4973,7 +4973,7 @@
                       {
                           "symbol":  "LLY",
                           "name":  "Eli Lilly and Company",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  1119492112384,
                           "changePercent":  0.88396,
@@ -4991,7 +4991,7 @@
                       {
                           "symbol":  "LIN",
                           "name":  "Linde plc",
-                          "sector":  "Materials",
+                          "sector":  "Basic Materials",
                           "sectorKo":  "소재",
                           "marketCap":  224760102912,
                           "changePercent":  1.30483,
@@ -5063,7 +5063,7 @@
                       {
                           "symbol":  "LOW",
                           "name":  "Lowe\u0027s",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  121163186176,
                           "changePercent":  -0.575136,
@@ -5099,7 +5099,7 @@
                       {
                           "symbol":  "LITE",
                           "name":  "Lumentum",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  77743890432,
                           "changePercent":  -1.42958,
@@ -5117,7 +5117,7 @@
                       {
                           "symbol":  "LYB",
                           "name":  "LyondellBasell",
-                          "sector":  "Materials",
+                          "sector":  "Basic Materials",
                           "sectorKo":  "소재",
                           "marketCap":  21814753280,
                           "changePercent":  -0.837004,
@@ -5189,7 +5189,7 @@
                       {
                           "symbol":  "MRSH",
                           "name":  "Marsh McLennan",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  91629330432,
                           "changePercent":  0.946316,
@@ -5207,7 +5207,7 @@
                       {
                           "symbol":  "MLM",
                           "name":  "Martin Marietta Materials",
-                          "sector":  "Materials",
+                          "sector":  "Basic Materials",
                           "sectorKo":  "소재",
                           "marketCap":  32130418688,
                           "changePercent":  1.83714,
@@ -5225,7 +5225,7 @@
                       {
                           "symbol":  "MRVL",
                           "name":  "Marvell Technology",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  212753924096,
                           "changePercent":  -5.56552,
@@ -5261,7 +5261,7 @@
                       {
                           "symbol":  "MA",
                           "name":  "Mastercard",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  508637642752,
                           "changePercent":  1.1815,
@@ -5279,7 +5279,7 @@
                       {
                           "symbol":  "MKC",
                           "name":  "McCormick \u0026 Company",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  14897064960,
                           "changePercent":  0.344076,
@@ -5297,7 +5297,7 @@
                       {
                           "symbol":  "MCD",
                           "name":  "McDonald\u0027s",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  191735480320,
                           "changePercent":  0.676256,
@@ -5333,7 +5333,7 @@
                       {
                           "symbol":  "MDT",
                           "name":  "Medtronic",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  119486201856,
                           "changePercent":  1.13759,
@@ -5387,7 +5387,7 @@
                       {
                           "symbol":  "MET",
                           "name":  "MetLife",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  59950891008,
                           "changePercent":  0.941576,
@@ -5405,7 +5405,7 @@
                       {
                           "symbol":  "MTD",
                           "name":  "Mettler Toledo",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  27956011008,
                           "changePercent":  0.144988,
@@ -5423,7 +5423,7 @@
                       {
                           "symbol":  "MGM",
                           "name":  "MGM Resorts",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  11190933504,
                           "changePercent":  1.32037,
@@ -5441,7 +5441,7 @@
                       {
                           "symbol":  "MCHP",
                           "name":  "Microchip Technology",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  41312104448,
                           "changePercent":  0.356159,
@@ -5459,7 +5459,7 @@
                       {
                           "symbol":  "MU",
                           "name":  "Micron Technology",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  1091874717696,
                           "changePercent":  -0.77489,
@@ -5477,7 +5477,7 @@
                       {
                           "symbol":  "MSFT",
                           "name":  "Microsoft",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  3588320657408,
                           "changePercent":  0.434375,
@@ -5513,7 +5513,7 @@
                       {
                           "symbol":  "MRNA",
                           "name":  "Moderna",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  57941106688,
                           "changePercent":  8.85838,
@@ -5531,7 +5531,7 @@
                       {
                           "symbol":  "TAP",
                           "name":  "Molson Coors",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  8006331904,
                           "changePercent":  0.774461,
@@ -5549,7 +5549,7 @@
                       {
                           "symbol":  "MDLZ",
                           "name":  "Mondelez International",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  82258051072,
                           "changePercent":  0.483314,
@@ -5567,7 +5567,7 @@
                       {
                           "symbol":  "MPWR",
                           "name":  "Monolithic Power Systems",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  64685948928,
                           "changePercent":  0.433393,
@@ -5585,7 +5585,7 @@
                       {
                           "symbol":  "MNST",
                           "name":  "Monster Beverage",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  93623083008,
                           "changePercent":  0.63171,
@@ -5603,7 +5603,7 @@
                       {
                           "symbol":  "MCO",
                           "name":  "Moody\u0027s Corporation",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  87165460480,
                           "changePercent":  0.912248,
@@ -5621,7 +5621,7 @@
                       {
                           "symbol":  "MS",
                           "name":  "Morgan Stanley",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  336415293440,
                           "changePercent":  3.2538,
@@ -5639,7 +5639,7 @@
                       {
                           "symbol":  "MOS",
                           "name":  "The Mosaic Company",
-                          "sector":  "Materials",
+                          "sector":  "Basic Materials",
                           "sectorKo":  "소재",
                           "marketCap":  7759832576,
                           "changePercent":  4.53961,
@@ -5657,7 +5657,7 @@
                       {
                           "symbol":  "MSI",
                           "name":  "Motorola Solutions",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  79514804224,
                           "changePercent":  1.44416,
@@ -5675,7 +5675,7 @@
                       {
                           "symbol":  "MSCI",
                           "name":  "MSCI",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  40965722112,
                           "changePercent":  -0.924837,
@@ -5693,7 +5693,7 @@
                       {
                           "symbol":  "NDAQ",
                           "name":  "Nasdaq, Inc.",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  54902755328,
                           "changePercent":  0.686825,
@@ -5711,7 +5711,7 @@
                       {
                           "symbol":  "NTAP",
                           "name":  "NetApp",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  37729964032,
                           "changePercent":  -0.280065,
@@ -5747,7 +5747,7 @@
                       {
                           "symbol":  "NEM",
                           "name":  "Newmont",
-                          "sector":  "Materials",
+                          "sector":  "Basic Materials",
                           "sectorKo":  "소재",
                           "marketCap":  138644832256,
                           "changePercent":  3.08681,
@@ -5783,7 +5783,7 @@
                       {
                           "symbol":  "NKE",
                           "name":  "Nike, Inc.",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  60467404800,
                           "changePercent":  1.36782,
@@ -5855,7 +5855,7 @@
                       {
                           "symbol":  "NTRS",
                           "name":  "Northern Trust",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  33645543424,
                           "changePercent":  0.761602,
@@ -5891,7 +5891,7 @@
                       {
                           "symbol":  "NCLH",
                           "name":  "Norwegian Cruise Line Holdings",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  7916398080,
                           "changePercent":  2.92537,
@@ -5927,7 +5927,7 @@
                       {
                           "symbol":  "NUE",
                           "name":  "Nucor",
-                          "sector":  "Materials",
+                          "sector":  "Basic Materials",
                           "sectorKo":  "소재",
                           "marketCap":  55273721856,
                           "changePercent":  1.30988,
@@ -5945,7 +5945,7 @@
                       {
                           "symbol":  "NVDA",
                           "name":  "Nvidia",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  5200733011968,
                           "changePercent":  -0.982248,
@@ -5963,7 +5963,7 @@
                       {
                           "symbol":  "NVR",
                           "name":  "NVR, Inc.",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  17029061632,
                           "changePercent":  0.928726,
@@ -5999,7 +5999,7 @@
                       {
                           "symbol":  "ORLY",
                           "name":  "O\u0027Reilly Auto Parts",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  72086495232,
                           "changePercent":  0.0336762,
@@ -6107,7 +6107,7 @@
                       {
                           "symbol":  "ORCL",
                           "name":  "Oracle Corporation",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  421902581760,
                           "changePercent":  3.09706,
@@ -6161,8 +6161,8 @@
                       {
                           "symbol":  "PKG",
                           "name":  "Packaging Corporation of America",
-                          "sector":  "Materials",
-                          "sectorKo":  "소재",
+                          "sector":  "Consumer Cyclical",
+                          "sectorKo":  "경기소비재",
                           "marketCap":  22523158528,
                           "changePercent":  1.29428,
                           "per":  32.78729,
@@ -6179,7 +6179,7 @@
                       {
                           "symbol":  "PLTR",
                           "name":  "Palantir Technologies",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  432406331392,
                           "changePercent":  3.4375694,
@@ -6197,7 +6197,7 @@
                       {
                           "symbol":  "PANW",
                           "name":  "Palo Alto Networks",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  291664035840,
                           "changePercent":  2.37727,
@@ -6251,8 +6251,8 @@
                       {
                           "symbol":  "PAYX",
                           "name":  "Paychex",
-                          "sector":  "Industrials",
-                          "sectorKo":  "산업재",
+                          "sector":  "Technology",
+                          "sectorKo":  "기술",
                           "marketCap":  44273623040,
                           "changePercent":  1.27329,
                           "per":  25.455011,
@@ -6269,7 +6269,7 @@
                       {
                           "symbol":  "PYPL",
                           "name":  "PayPal",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  52653617152,
                           "changePercent":  -1.20385,
@@ -6305,7 +6305,7 @@
                       {
                           "symbol":  "PEP",
                           "name":  "PepsiCo",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  195993681920,
                           "changePercent":  0.985356,
@@ -6431,7 +6431,7 @@
                       {
                           "symbol":  "PPG",
                           "name":  "PPG Industries",
-                          "sector":  "Materials",
+                          "sector":  "Basic Materials",
                           "sectorKo":  "소재",
                           "marketCap":  25259948032,
                           "changePercent":  1.05834,
@@ -6503,7 +6503,7 @@
                       {
                           "symbol":  "PGR",
                           "name":  "Progressive Corporation",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  127483199488,
                           "changePercent":  -0.481074,
@@ -6539,7 +6539,7 @@
                       {
                           "symbol":  "PRU",
                           "name":  "Prudential Financial",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  41796751360,
                           "changePercent":  0.464388,
@@ -6575,7 +6575,7 @@
                       {
                           "symbol":  "PTC",
                           "name":  "PTC (software company)",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  16783748096,
                           "changePercent":  0.755594,
@@ -6611,7 +6611,7 @@
                       {
                           "symbol":  "PHM",
                           "name":  "PulteGroup",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  24572739584,
                           "changePercent":  1.04175,
@@ -6665,7 +6665,7 @@
                       {
                           "symbol":  "DGX",
                           "name":  "Quest Diagnostics",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  26974144512,
                           "changePercent":  1.28056,
@@ -6701,7 +6701,7 @@
                       {
                           "symbol":  "RL",
                           "name":  "Ralph Lauren Corporation",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  22199746560,
                           "changePercent":  0.0187929,
@@ -6719,7 +6719,7 @@
                       {
                           "symbol":  "RJF",
                           "name":  "Raymond James Financial",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  33655918592,
                           "changePercent":  1.65361,
@@ -6809,7 +6809,7 @@
                       {
                           "symbol":  "REGN",
                           "name":  "Regeneron Pharmaceuticals",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  85868576768,
                           "changePercent":  0.895186,
@@ -6827,7 +6827,7 @@
                       {
                           "symbol":  "RF",
                           "name":  "Regions Financial Corporation",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  25907177472,
                           "changePercent":  0.628724,
@@ -6863,7 +6863,7 @@
                       {
                           "symbol":  "RVTY",
                           "name":  "Revvity",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  13920403456,
                           "changePercent":  0.499479,
@@ -6917,8 +6917,8 @@
                       {
                           "symbol":  "ROL",
                           "name":  "Rollins, Inc.",
-                          "sector":  "Industrials",
-                          "sectorKo":  "산업재",
+                          "sector":  "Consumer Cyclical",
+                          "sectorKo":  "경기소비재",
                           "marketCap":  17759076352,
                           "changePercent":  1.45684,
                           "per":  33.554546,
@@ -6989,7 +6989,7 @@
                       {
                           "symbol":  "SPGI",
                           "name":  "S\u0026P Global",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  127144296448,
                           "changePercent":  -0.201313,
@@ -7007,7 +7007,7 @@
                       {
                           "symbol":  "CRM",
                           "name":  "Salesforce",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  171310235648,
                           "changePercent":  1.82057,
@@ -7025,7 +7025,7 @@
                       {
                           "symbol":  "SNDK",
                           "name":  "Sandisk",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  233696444416,
                           "changePercent":  -0.283643,
@@ -7079,7 +7079,7 @@
                       {
                           "symbol":  "STX",
                           "name":  "Seagate Technology",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  192647839744,
                           "changePercent":  -0.0282262,
@@ -7115,7 +7115,7 @@
                       {
                           "symbol":  "NOW",
                           "name":  "ServiceNow",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  132830584832,
                           "changePercent":  -0.978809,
@@ -7133,7 +7133,7 @@
                       {
                           "symbol":  "SHW",
                           "name":  "Sherwin-Williams",
-                          "sector":  "Materials",
+                          "sector":  "Basic Materials",
                           "sectorKo":  "소재",
                           "marketCap":  84137541632,
                           "changePercent":  0.138687,
@@ -7169,7 +7169,7 @@
                       {
                           "symbol":  "SWKS",
                           "name":  "Skyworks Solutions",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  10102743040,
                           "changePercent":  -1.17751,
@@ -7331,7 +7331,7 @@
                       {
                           "symbol":  "STT",
                           "name":  "State Street Corporation",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  51404943360,
                           "changePercent":  2.21773,
@@ -7349,7 +7349,7 @@
                       {
                           "symbol":  "STLD",
                           "name":  "Steel Dynamics",
-                          "sector":  "Materials",
+                          "sector":  "Basic Materials",
                           "sectorKo":  "소재",
                           "marketCap":  32776267776,
                           "changePercent":  4.42009,
@@ -7367,7 +7367,7 @@
                       {
                           "symbol":  "STE",
                           "name":  "Steris",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  23198201856,
                           "changePercent":  0.928984,
@@ -7403,7 +7403,7 @@
                       {
                           "symbol":  "SMCI",
                           "name":  "Supermicro",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  24089552896,
                           "changePercent":  2.0274,
@@ -7421,7 +7421,7 @@
                       {
                           "symbol":  "SYF",
                           "name":  "Synchrony Financial",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  25857222656,
                           "changePercent":  3.59797,
@@ -7439,7 +7439,7 @@
                       {
                           "symbol":  "SNPS",
                           "name":  "Synopsys",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  76183879680,
                           "changePercent":  -0.0125699,
@@ -7457,7 +7457,7 @@
                       {
                           "symbol":  "SYY",
                           "name":  "Sysco",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  40245518336,
                           "changePercent":  1.25211,
@@ -7493,7 +7493,7 @@
                       {
                           "symbol":  "TROW",
                           "name":  "T. Rowe Price",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  23786852352,
                           "changePercent":  -0.606115,
@@ -7529,7 +7529,7 @@
                       {
                           "symbol":  "TPR",
                           "name":  "Tapestry, Inc.",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  25954813952,
                           "changePercent":  0.269597,
@@ -7583,7 +7583,7 @@
                       {
                           "symbol":  "TEL",
                           "name":  "TE Connectivity",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  58921730048,
                           "changePercent":  1.88226,
@@ -7601,7 +7601,7 @@
                       {
                           "symbol":  "TDY",
                           "name":  "Teledyne Technologies",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  29489162240,
                           "changePercent":  0.347032,
@@ -7619,7 +7619,7 @@
                       {
                           "symbol":  "TER",
                           "name":  "Teradyne",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  58743472128,
                           "changePercent":  -1.93397,
@@ -7637,7 +7637,7 @@
                       {
                           "symbol":  "TSLA",
                           "name":  "Tesla, Inc.",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  1433132728320,
                           "changePercent":  5.13719,
@@ -7709,7 +7709,7 @@
                       {
                           "symbol":  "TMO",
                           "name":  "Thermo Fisher Scientific",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  232670887936,
                           "changePercent":  0.274087,
@@ -7727,7 +7727,7 @@
                       {
                           "symbol":  "TJX",
                           "name":  "TJX Companies",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  155244101632,
                           "changePercent":  -0.113728,
@@ -7781,7 +7781,7 @@
                       {
                           "symbol":  "TSCO",
                           "name":  "Tractor Supply",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  18225983488,
                           "changePercent":  -0.199714,
@@ -7853,7 +7853,7 @@
                       {
                           "symbol":  "TRMB",
                           "name":  "Trimble Inc.",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  14049085440,
                           "changePercent":  0.95509326,
@@ -7871,7 +7871,7 @@
                       {
                           "symbol":  "TFC",
                           "name":  "Truist Financial",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  61594394624,
                           "changePercent":  0.378257,
@@ -7889,7 +7889,7 @@
                       {
                           "symbol":  "TYL",
                           "name":  "Tyler Technologies",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  14363191296,
                           "changePercent":  0.743953,
@@ -7907,7 +7907,7 @@
                       {
                           "symbol":  "TSN",
                           "name":  "Tyson Foods",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  20573351936,
                           "changePercent":  0.136983,
@@ -7925,7 +7925,7 @@
                       {
                           "symbol":  "USB",
                           "name":  "U.S. Bancorp",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  96677093376,
                           "changePercent":  0.437035,
@@ -7943,8 +7943,8 @@
                       {
                           "symbol":  "UBER",
                           "name":  "Uber",
-                          "sector":  "Industrials",
-                          "sectorKo":  "산업재",
+                          "sector":  "Technology",
+                          "sectorKo":  "기술",
                           "marketCap":  160953745408,
                           "changePercent":  0.318269,
                           "per":  17.280703,
@@ -7979,7 +7979,7 @@
                       {
                           "symbol":  "ULTA",
                           "name":  "Ulta Beauty",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  22417207296,
                           "changePercent":  1.22685,
@@ -8087,7 +8087,7 @@
                       {
                           "symbol":  "UHS",
                           "name":  "Universal Health Services",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  10447086592,
                           "changePercent":  2.53948,
@@ -8123,7 +8123,7 @@
                       {
                           "symbol":  "VEEV",
                           "name":  "Veeva Systems",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  40269692928,
                           "changePercent":  -1.04978,
@@ -8177,7 +8177,7 @@
                       {
                           "symbol":  "VRSN",
                           "name":  "Verisign",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  25474719744,
                           "changePercent":  1.76959,
@@ -8231,7 +8231,7 @@
                       {
                           "symbol":  "VRTX",
                           "name":  "Vertex Pharmaceuticals",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  138909253632,
                           "changePercent":  1.44189,
@@ -8267,7 +8267,7 @@
                       {
                           "symbol":  "VTRS",
                           "name":  "Viatris",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  18745001984,
                           "changePercent":  2.0,
@@ -8303,7 +8303,7 @@
                       {
                           "symbol":  "V",
                           "name":  "Visa Inc.",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  692749271040,
                           "changePercent":  1.45189,
@@ -8357,7 +8357,7 @@
                       {
                           "symbol":  "WRB",
                           "name":  "W. R. Berkley Corporation",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  25466208256,
                           "changePercent":  -0.838395,
@@ -8411,7 +8411,7 @@
                       {
                           "symbol":  "WMT",
                           "name":  "Walmart",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  825252773888,
                           "changePercent":  0.10377,
@@ -8555,7 +8555,7 @@
                       {
                           "symbol":  "WST",
                           "name":  "West Pharmaceutical Services",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  24848273408,
                           "changePercent":  -0.195043,
@@ -8573,7 +8573,7 @@
                       {
                           "symbol":  "WDC",
                           "name":  "Western Digital",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  165646925824,
                           "changePercent":  -2.04882,
@@ -8609,7 +8609,7 @@
                       {
                           "symbol":  "WSM",
                           "name":  "Williams-Sonoma, Inc.",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  27974240256,
                           "changePercent":  0.797626,
@@ -8645,7 +8645,7 @@
                       {
                           "symbol":  "WTW",
                           "name":  "Willis Towers Watson",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  31761272832,
                           "changePercent":  0.246225,
@@ -8663,7 +8663,7 @@
                       {
                           "symbol":  "WDAY",
                           "name":  "Workday, Inc.",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  49397161984,
                           "changePercent":  1.36326,
@@ -8681,7 +8681,7 @@
                       {
                           "symbol":  "WYNN",
                           "name":  "Wynn Resorts",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  10326221824,
                           "changePercent":  0.682731,
@@ -8735,7 +8735,7 @@
                       {
                           "symbol":  "YUM",
                           "name":  "Yum! Brands",
-                          "sector":  "Consumer Discretionary",
+                          "sector":  "Consumer Cyclical",
                           "sectorKo":  "경기소비재",
                           "marketCap":  41751138304,
                           "changePercent":  0.433272,
@@ -8753,7 +8753,7 @@
                       {
                           "symbol":  "ZBRA",
                           "name":  "Zebra Technologies",
-                          "sector":  "Information Technology",
+                          "sector":  "Technology",
                           "sectorKo":  "기술",
                           "marketCap":  17434451968,
                           "changePercent":  2.21625,
@@ -8771,7 +8771,7 @@
                       {
                           "symbol":  "ZBH",
                           "name":  "Zimmer Biomet",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  19260692480,
                           "changePercent":  2.03092,
@@ -8789,7 +8789,7 @@
                       {
                           "symbol":  "ZTS",
                           "name":  "Zoetis",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  32119873536,
                           "changePercent":  3.61238,
@@ -8843,7 +8843,7 @@
                       {
                           "symbol":  "BRK-B",
                           "name":  "Berkshire Hathaway",
-                          "sector":  "Financials",
+                          "sector":  "Financial Services",
                           "sectorKo":  "금융",
                           "marketCap":  1077590491136,
                           "changePercent":  -0.18639007,
@@ -8861,7 +8861,7 @@
                       {
                           "symbol":  "BF-B",
                           "name":  "Brown–Forman",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  13004213248,
                           "changePercent":  -1.4260864,
@@ -8933,7 +8933,7 @@
                       {
                           "symbol":  "PODD",
                           "name":  "Insulet Corporation",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  9914182656,
                           "changePercent":  -1.6985292,
@@ -8951,7 +8951,7 @@
                       {
                           "symbol":  "KVUE",
                           "name":  "Kenvue",
-                          "sector":  "Consumer Staples",
+                          "sector":  "Consumer Defensive",
                           "sectorKo":  "필수소비재",
                           "marketCap":  37159669760,
                           "changePercent":  -0.4313152,
@@ -9005,7 +9005,7 @@
                       {
                           "symbol":  "RMD",
                           "name":  "ResMed",
-                          "sector":  "Health Care",
+                          "sector":  "Healthcare",
                           "sectorKo":  "헬스케어",
                           "marketCap":  33936795648,
                           "changePercent":  1.2088611,
@@ -9043,4 +9043,5 @@
     "unmatched":  [
                       "VMRK"
                   ]
-};
+}
+
