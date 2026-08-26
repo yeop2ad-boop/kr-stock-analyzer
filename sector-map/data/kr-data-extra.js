@@ -1,5 +1,4 @@
 ﻿const KR_EXTRA_DATA = {
-    "generatedAt":  "2026-08-23T09:06:53Z",
     "count":  197,
     "companies":  [
                       {
@@ -21,7 +20,9 @@
                           "operatingMargin":  20.3,
                           "roe":  4.2,
                           "debtRatio":  29.5,
-                          "week52RangePct":  29.2
+                          "week52RangePct":  29.2,
+                          "pressureScore":  3,
+                          "stabilityScore":  1.9
                       },
                       {
                           "symbol":  "066970.KS",
@@ -42,7 +43,9 @@
                           "operatingMargin":  15.9,
                           "roe":  -9.8,
                           "debtRatio":  400.7,
-                          "week52RangePct":  36.9
+                          "week52RangePct":  36.9,
+                          "pressureScore":  3.6,
+                          "stabilityScore":  1.0
                       },
                       {
                           "symbol":  "001450.KS",
@@ -63,7 +66,9 @@
                           "operatingMargin":  null,
                           "roe":  4.2,
                           "debtRatio":  785.1,
-                          "week52RangePct":  99.2
+                          "week52RangePct":  99.2,
+                          "pressureScore":  6.2,
+                          "stabilityScore":  1.7
                       },
                       {
                           "symbol":  "000990.KS",
@@ -84,7 +89,9 @@
                           "operatingMargin":  17,
                           "roe":  3.8,
                           "debtRatio":  30,
-                          "week52RangePct":  26.3
+                          "week52RangePct":  26.3,
+                          "pressureScore":  2.7,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "082740.KS",
@@ -105,7 +112,9 @@
                           "operatingMargin":  14.9,
                           "roe":  8.7,
                           "debtRatio":  213.2,
-                          "week52RangePct":  19.9
+                          "week52RangePct":  19.9,
+                          "pressureScore":  0.6,
+                          "stabilityScore":  1.4
                       },
                       {
                           "symbol":  "018880.KS",
@@ -126,7 +135,9 @@
                           "operatingMargin":  3.5,
                           "roe":  1.7,
                           "debtRatio":  170.8,
-                          "week52RangePct":  24.2
+                          "week52RangePct":  24.2,
+                          "pressureScore":  0.5,
+                          "stabilityScore":  0.5
                       },
                       {
                           "symbol":  "004020.KS",
@@ -147,7 +158,9 @@
                           "operatingMargin":  0.3,
                           "roe":  -0.2,
                           "debtRatio":  78.4,
-                          "week52RangePct":  24.1
+                          "week52RangePct":  24.1,
+                          "pressureScore":  0.3,
+                          "stabilityScore":  0.4
                       },
                       {
                           "symbol":  "002380.KS",
@@ -168,7 +181,9 @@
                           "operatingMargin":  5.4,
                           "roe":  2.7,
                           "debtRatio":  117.6,
-                          "week52RangePct":  33.1
+                          "week52RangePct":  33.1,
+                          "pressureScore":  1,
+                          "stabilityScore":  2.1
                       },
                       {
                           "symbol":  "052690.KS",
@@ -189,7 +204,9 @@
                           "operatingMargin":  12.4,
                           "roe":  2.4,
                           "debtRatio":  49.2,
-                          "week52RangePct":  26.1
+                          "week52RangePct":  26.1,
+                          "pressureScore":  2.1,
+                          "stabilityScore":  1.6
                       },
                       {
                           "symbol":  "004170.KS",
@@ -210,7 +227,9 @@
                           "operatingMargin":  10.7,
                           "roe":  2.6,
                           "debtRatio":  195.8,
-                          "week52RangePct":  37.1
+                          "week52RangePct":  37.1,
+                          "pressureScore":  1.7,
+                          "stabilityScore":  1.9
                       },
                       {
                           "symbol":  "001040.KS",
@@ -231,7 +250,9 @@
                           "operatingMargin":  4,
                           "roe":  1.4,
                           "debtRatio":  584.8,
-                          "week52RangePct":  9.6
+                          "week52RangePct":  9.6,
+                          "pressureScore":  1.2,
+                          "stabilityScore":  0.3
                       },
                       {
                           "symbol":  "161890.KS",
@@ -252,7 +273,9 @@
                           "operatingMargin":  10.8,
                           "roe":  4.8,
                           "debtRatio":  211.2,
-                          "week52RangePct":  99.0
+                          "week52RangePct":  99.0,
+                          "pressureScore":  8.1,
+                          "stabilityScore":  1.7
                       },
                       {
                           "symbol":  "251270.KS",
@@ -273,7 +296,9 @@
                           "operatingMargin":  8.1,
                           "roe":  3.6,
                           "debtRatio":  43.6,
-                          "week52RangePct":  8.3
+                          "week52RangePct":  8.3,
+                          "pressureScore":  0.4,
+                          "stabilityScore":  0.5
                       },
                       {
                           "symbol":  "111770.KS",
@@ -294,7 +319,9 @@
                           "operatingMargin":  13.4,
                           "roe":  3.5,
                           "debtRatio":  40.7,
-                          "week52RangePct":  41.9
+                          "week52RangePct":  41.9,
+                          "pressureScore":  1.7,
+                          "stabilityScore":  1.5
                       },
                       {
                           "symbol":  "022100.KS",
@@ -315,7 +342,9 @@
                           "operatingMargin":  1.5,
                           "roe":  0.7,
                           "debtRatio":  44.5,
-                          "week52RangePct":  15.1
+                          "week52RangePct":  15.1,
+                          "pressureScore":  0,
+                          "stabilityScore":  0.7
                       },
                       {
                           "symbol":  "011790.KS",
@@ -336,7 +365,9 @@
                           "operatingMargin":  -5.8,
                           "roe":  -9.8,
                           "debtRatio":  569.5,
-                          "week52RangePct":  20.1
+                          "week52RangePct":  20.1,
+                          "pressureScore":  1.3,
+                          "stabilityScore":  0.4
                       },
                       {
                           "symbol":  "028670.KS",
@@ -357,7 +388,9 @@
                           "operatingMargin":  9.2,
                           "roe":  1.6,
                           "debtRatio":  92.6,
-                          "week52RangePct":  92.9
+                          "week52RangePct":  92.9,
+                          "pressureScore":  4.6,
+                          "stabilityScore":  1.4
                       },
                       {
                           "symbol":  "036460.KS",
@@ -378,7 +411,9 @@
                           "operatingMargin":  7.7,
                           "roe":  4.8,
                           "debtRatio":  371.8,
-                          "week52RangePct":  38.8
+                          "week52RangePct":  38.8,
+                          "pressureScore":  0,
+                          "stabilityScore":  0.4
                       },
                       {
                           "symbol":  "009420.KS",
@@ -399,7 +434,9 @@
                           "operatingMargin":  2.1,
                           "roe":  0.2,
                           "debtRatio":  50.2,
-                          "week52RangePct":  72.1
+                          "week52RangePct":  72.1,
+                          "pressureScore":  2.0,
+                          "stabilityScore":  1.5
                       },
                       {
                           "symbol":  "192820.KS",
@@ -420,7 +457,9 @@
                           "operatingMargin":  7.8,
                           "roe":  7.1,
                           "debtRatio":  319.4,
-                          "week52RangePct":  100
+                          "week52RangePct":  100,
+                          "pressureScore":  8.6,
+                          "stabilityScore":  1.1
                       },
                       {
                           "symbol":  "008930.KS",
@@ -441,7 +480,9 @@
                           "operatingMargin":  8.9,
                           "roe":  4.3,
                           "debtRatio":  49.5,
-                          "week52RangePct":  64.9
+                          "week52RangePct":  64.9,
+                          "pressureScore":  7.7,
+                          "stabilityScore":  1.1
                       },
                       {
                           "symbol":  "302440.KS",
@@ -462,7 +503,9 @@
                           "operatingMargin":  -26.4,
                           "roe":  -1.9,
                           "debtRatio":  54.7,
-                          "week52RangePct":  19.5
+                          "week52RangePct":  19.5,
+                          "pressureScore":  1,
+                          "stabilityScore":  0.3
                       },
                       {
                           "symbol":  "035250.KS",
@@ -483,7 +526,9 @@
                           "operatingMargin":  18.2,
                           "roe":  1,
                           "debtRatio":  23.4,
-                          "week52RangePct":  9.5
+                          "week52RangePct":  9.5,
+                          "pressureScore":  0.3,
+                          "stabilityScore":  1.5
                       },
                       {
                           "symbol":  "139130.KS",
@@ -504,7 +549,9 @@
                           "operatingMargin":  null,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  50.3
+                          "week52RangePct":  50.3,
+                          "pressureScore":  1,
+                          "stabilityScore":  1.9
                       },
                       {
                           "symbol":  "023530.KS",
@@ -525,7 +572,9 @@
                           "operatingMargin":  7.1,
                           "roe":  0.8,
                           "debtRatio":  140.4,
-                          "week52RangePct":  24.4
+                          "week52RangePct":  24.4,
+                          "pressureScore":  0.7,
+                          "stabilityScore":  1.0
                       },
                       {
                           "symbol":  "097950.KS",
@@ -546,7 +595,9 @@
                           "operatingMargin":  3.3,
                           "roe":  1.1,
                           "debtRatio":  256.2,
-                          "week52RangePct":  18.3
+                          "week52RangePct":  18.3,
+                          "pressureScore":  1.5,
+                          "stabilityScore":  0.3
                       },
                       {
                           "symbol":  "012750.KS",
@@ -567,7 +618,9 @@
                           "operatingMargin":  3.1,
                           "roe":  1.3,
                           "debtRatio":  45.8,
-                          "week52RangePct":  35.9
+                          "week52RangePct":  35.9,
+                          "pressureScore":  2.9,
+                          "stabilityScore":  0.9
                       },
                       {
                           "symbol":  "483650.KS",
@@ -588,7 +641,9 @@
                           "operatingMargin":  26.3,
                           "roe":  15.7,
                           "debtRatio":  28.7,
-                          "week52RangePct":  70.0
+                          "week52RangePct":  70.0,
+                          "pressureScore":  5.2,
+                          "stabilityScore":  1.7
                       },
                       {
                           "symbol":  "011780.KS",
@@ -609,7 +664,9 @@
                           "operatingMargin":  3.3,
                           "roe":  1.5,
                           "debtRatio":  36.7,
-                          "week52RangePct":  29.2
+                          "week52RangePct":  29.2,
+                          "pressureScore":  0.7,
+                          "stabilityScore":  0.8
                       },
                       {
                           "symbol":  "375500.KS",
@@ -630,7 +687,9 @@
                           "operatingMargin":  9.1,
                           "roe":  3,
                           "debtRatio":  87.5,
-                          "week52RangePct":  46.7
+                          "week52RangePct":  46.7,
+                          "pressureScore":  0,
+                          "stabilityScore":  1.4
                       },
                       {
                           "symbol":  "004370.KS",
@@ -651,7 +710,9 @@
                           "operatingMargin":  7.2,
                           "roe":  2.1,
                           "debtRatio":  37,
-                          "week52RangePct":  50.8
+                          "week52RangePct":  50.8,
+                          "pressureScore":  4.0,
+                          "stabilityScore":  0.9
                       },
                       {
                           "symbol":  "017800.KS",
@@ -672,7 +733,9 @@
                           "operatingMargin":  7.4,
                           "roe":  2.9,
                           "debtRatio":  283.7,
-                          "week52RangePct":  24.6
+                          "week52RangePct":  24.6,
+                          "pressureScore":  0.5,
+                          "stabilityScore":  1.0
                       },
                       {
                           "symbol":  "026960.KS",
@@ -693,7 +756,9 @@
                           "operatingMargin":  7.7,
                           "roe":  2.6,
                           "debtRatio":  4,
-                          "week52RangePct":  41.9
+                          "week52RangePct":  41.9,
+                          "pressureScore":  1.3,
+                          "stabilityScore":  2.0
                       },
                       {
                           "symbol":  "282330.KS",
@@ -714,7 +779,9 @@
                           "operatingMargin":  1.8,
                           "roe":  2.3,
                           "debtRatio":  176.4,
-                          "week52RangePct":  79.6
+                          "week52RangePct":  79.6,
+                          "pressureScore":  3.7,
+                          "stabilityScore":  0.8
                       },
                       {
                           "symbol":  "204320.KS",
@@ -735,7 +802,9 @@
                           "operatingMargin":  null,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  41.0
+                          "week52RangePct":  41.0,
+                          "pressureScore":  0,
+                          "stabilityScore":  1.9
                       },
                       {
                           "symbol":  "002790.KS",
@@ -756,7 +825,9 @@
                           "operatingMargin":  11.3,
                           "roe":  1.6,
                           "debtRatio":  45.7,
-                          "week52RangePct":  43.1
+                          "week52RangePct":  43.1,
+                          "pressureScore":  2.4,
+                          "stabilityScore":  0.7
                       },
                       {
                           "symbol":  "450080.KS",
@@ -777,7 +848,9 @@
                           "operatingMargin":  9.4,
                           "roe":  1.2,
                           "debtRatio":  117.7,
-                          "week52RangePct":  14.5
+                          "week52RangePct":  14.5,
+                          "pressureScore":  2.2,
+                          "stabilityScore":  0.5
                       },
                       {
                           "symbol":  "005850.KS",
@@ -798,7 +871,9 @@
                           "operatingMargin":  10.4,
                           "roe":  5.1,
                           "debtRatio":  64.8,
-                          "week52RangePct":  44.5
+                          "week52RangePct":  44.5,
+                          "pressureScore":  1.3,
+                          "stabilityScore":  1.4
                       },
                       {
                           "symbol":  "004990.KS",
@@ -819,7 +894,9 @@
                           "operatingMargin":  1.3,
                           "roe":  0.1,
                           "debtRatio":  217.7,
-                          "week52RangePct":  11.7
+                          "week52RangePct":  11.7,
+                          "pressureScore":  0.1,
+                          "stabilityScore":  0.3
                       },
                       {
                           "symbol":  "383220.KS",
@@ -840,7 +917,9 @@
                           "operatingMargin":  27.4,
                           "roe":  10,
                           "debtRatio":  43,
-                          "week52RangePct":  15.5
+                          "week52RangePct":  15.5,
+                          "pressureScore":  1.1,
+                          "stabilityScore":  1.6
                       },
                       {
                           "symbol":  "014680.KS",
@@ -861,7 +940,9 @@
                           "operatingMargin":  19.2,
                           "roe":  3.7,
                           "debtRatio":  44.9,
-                          "week52RangePct":  24.7
+                          "week52RangePct":  24.7,
+                          "pressureScore":  1.1,
+                          "stabilityScore":  1.6
                       },
                       {
                           "symbol":  "011170.KS",
@@ -882,7 +963,9 @@
                           "operatingMargin":  1.5,
                           "roe":  0.4,
                           "debtRatio":  106.4,
-                          "week52RangePct":  3.6
+                          "week52RangePct":  3.6,
+                          "pressureScore":  0.2,
+                          "stabilityScore":  0.3
                       },
                       {
                           "symbol":  "007340.KS",
@@ -903,7 +986,9 @@
                           "operatingMargin":  14.2,
                           "roe":  4.1,
                           "debtRatio":  181.9,
-                          "week52RangePct":  58.8
+                          "week52RangePct":  58.8,
+                          "pressureScore":  5.2,
+                          "stabilityScore":  1.8
                       },
                       {
                           "symbol":  "081660.KS",
@@ -924,7 +1009,9 @@
                           "operatingMargin":  15,
                           "roe":  4.4,
                           "debtRatio":  177.3,
-                          "week52RangePct":  29.3
+                          "week52RangePct":  29.3,
+                          "pressureScore":  2.1,
+                          "stabilityScore":  0.8
                       },
                       {
                           "symbol":  "000240.KS",
@@ -945,7 +1032,9 @@
                           "operatingMargin":  32.6,
                           "roe":  2.5,
                           "debtRatio":  11.8,
-                          "week52RangePct":  16.8
+                          "week52RangePct":  16.8,
+                          "pressureScore":  0.3,
+                          "stabilityScore":  1.9
                       },
                       {
                           "symbol":  "030000.KS",
@@ -966,7 +1055,9 @@
                           "operatingMargin":  3.6,
                           "roe":  1.9,
                           "debtRatio":  124.4,
-                          "week52RangePct":  24.7
+                          "week52RangePct":  24.7,
+                          "pressureScore":  0.5,
+                          "stabilityScore":  0.7
                       },
                       {
                           "symbol":  "007070.KS",
@@ -987,7 +1078,9 @@
                           "operatingMargin":  2,
                           "roe":  1.3,
                           "debtRatio":  125.5,
-                          "week52RangePct":  76.1
+                          "week52RangePct":  76.1,
+                          "pressureScore":  0.9,
+                          "stabilityScore":  1.2
                       },
                       {
                           "symbol":  "103140.KS",
@@ -1008,7 +1101,9 @@
                           "operatingMargin":  7.1,
                           "roe":  3.3,
                           "debtRatio":  102.2,
-                          "week52RangePct":  31.2
+                          "week52RangePct":  31.2,
+                          "pressureScore":  1,
+                          "stabilityScore":  0.4
                       },
                       {
                           "symbol":  "051600.KS",
@@ -1029,7 +1124,9 @@
                           "operatingMargin":  10.6,
                           "roe":  2.2,
                           "debtRatio":  31.8,
-                          "week52RangePct":  17.3
+                          "week52RangePct":  17.3,
+                          "pressureScore":  2.2,
+                          "stabilityScore":  0.9
                       },
                       {
                           "symbol":  "073240.KS",
@@ -1050,7 +1147,9 @@
                           "operatingMargin":  12.6,
                           "roe":  4.2,
                           "debtRatio":  158.3,
-                          "week52RangePct":  60.0
+                          "week52RangePct":  60.0,
+                          "pressureScore":  6.4,
+                          "stabilityScore":  1.3
                       },
                       {
                           "symbol":  "069960.KS",
@@ -1071,7 +1170,9 @@
                           "operatingMargin":  10.4,
                           "roe":  1.5,
                           "debtRatio":  122,
-                          "week52RangePct":  15.7
+                          "week52RangePct":  15.7,
+                          "pressureScore":  0.4,
+                          "stabilityScore":  1.0
                       },
                       {
                           "symbol":  "112610.KS",
@@ -1092,7 +1193,9 @@
                           "operatingMargin":  10.4,
                           "roe":  3.6,
                           "debtRatio":  180.4,
-                          "week52RangePct":  30.2
+                          "week52RangePct":  30.2,
+                          "pressureScore":  0.6,
+                          "stabilityScore":  0.7
                       },
                       {
                           "symbol":  "009970.KS",
@@ -1113,7 +1216,9 @@
                           "operatingMargin":  14.6,
                           "roe":  3.1,
                           "debtRatio":  56.3,
-                          "week52RangePct":  35.4
+                          "week52RangePct":  35.4,
+                          "pressureScore":  0.7,
+                          "stabilityScore":  1.3
                       },
                       {
                           "symbol":  "457190.KS",
@@ -1134,7 +1239,9 @@
                           "operatingMargin":  3.2,
                           "roe":  1.4,
                           "debtRatio":  195,
-                          "week52RangePct":  23.5
+                          "week52RangePct":  23.5,
+                          "pressureScore":  1,
+                          "stabilityScore":  0.8
                       },
                       {
                           "symbol":  "139480.KS",
@@ -1155,7 +1262,9 @@
                           "operatingMargin":  2.5,
                           "roe":  0.5,
                           "debtRatio":  179.3,
-                          "week52RangePct":  3.8
+                          "week52RangePct":  3.8,
+                          "pressureScore":  0,
+                          "stabilityScore":  0.5
                       },
                       {
                           "symbol":  "006040.KS",
@@ -1176,7 +1285,9 @@
                           "operatingMargin":  5.8,
                           "roe":  3,
                           "debtRatio":  112.3,
-                          "week52RangePct":  41.3
+                          "week52RangePct":  41.3,
+                          "pressureScore":  2.1,
+                          "stabilityScore":  0.6
                       },
                       {
                           "symbol":  "071970.KS",
@@ -1197,7 +1308,9 @@
                           "operatingMargin":  24.8,
                           "roe":  5.6,
                           "debtRatio":  74.8,
-                          "week52RangePct":  7.8
+                          "week52RangePct":  7.8,
+                          "pressureScore":  3,
+                          "stabilityScore":  2.2
                       },
                       {
                           "symbol":  "001430.KS",
@@ -1218,7 +1331,9 @@
                           "operatingMargin":  3.2,
                           "roe":  1.1,
                           "debtRatio":  105.6,
-                          "week52RangePct":  30.7
+                          "week52RangePct":  30.7,
+                          "pressureScore":  0.8,
+                          "stabilityScore":  1.2
                       },
                       {
                           "symbol":  "011210.KS",
@@ -1239,7 +1354,9 @@
                           "operatingMargin":  2.4,
                           "roe":  0.9,
                           "debtRatio":  84,
-                          "week52RangePct":  22.0
+                          "week52RangePct":  22.0,
+                          "pressureScore":  0.6,
+                          "stabilityScore":  0.8
                       },
                       {
                           "symbol":  "008770.KS",
@@ -1260,7 +1377,9 @@
                           "operatingMargin":  1.9,
                           "roe":  0.5,
                           "debtRatio":  202,
-                          "week52RangePct":  7.2
+                          "week52RangePct":  7.2,
+                          "pressureScore":  1.2,
+                          "stabilityScore":  0.4
                       },
                       {
                           "symbol":  "001800.KS",
@@ -1281,7 +1400,9 @@
                           "operatingMargin":  17.1,
                           "roe":  2.1,
                           "debtRatio":  49.1,
-                          "week52RangePct":  61.6
+                          "week52RangePct":  61.6,
+                          "pressureScore":  2.6,
+                          "stabilityScore":  1.0
                       },
                       {
                           "symbol":  "000120.KS",
@@ -1302,7 +1423,9 @@
                           "operatingMargin":  2.9,
                           "roe":  0.8,
                           "debtRatio":  154.6,
-                          "week52RangePct":  4.8
+                          "week52RangePct":  4.8,
+                          "pressureScore":  0.7,
+                          "stabilityScore":  0.5
                       },
                       {
                           "symbol":  "006280.KS",
@@ -1323,7 +1446,9 @@
                           "operatingMargin":  2.7,
                           "roe":  1.7,
                           "debtRatio":  119.4,
-                          "week52RangePct":  26.2
+                          "week52RangePct":  26.2,
+                          "pressureScore":  1.4,
+                          "stabilityScore":  0.4
                       },
                       {
                           "symbol":  "069620.KS",
@@ -1344,7 +1469,9 @@
                           "operatingMargin":  5.9,
                           "roe":  2.5,
                           "debtRatio":  126.3,
-                          "week52RangePct":  18.2
+                          "week52RangePct":  18.2,
+                          "pressureScore":  0.6,
+                          "stabilityScore":  1.1
                       },
                       {
                           "symbol":  "120110.KS",
@@ -1365,7 +1492,9 @@
                           "operatingMargin":  5,
                           "roe":  1.8,
                           "debtRatio":  90.1,
-                          "week52RangePct":  30.1
+                          "week52RangePct":  30.1,
+                          "pressureScore":  0.1,
+                          "stabilityScore":  1.1
                       },
                       {
                           "symbol":  "298020.KS",
@@ -1386,7 +1515,9 @@
                           "operatingMargin":  4.1,
                           "roe":  2.4,
                           "debtRatio":  248.8,
-                          "week52RangePct":  34.9
+                          "week52RangePct":  34.9,
+                          "pressureScore":  0.8,
+                          "stabilityScore":  0.9
                       },
                       {
                           "symbol":  "093370.KS",
@@ -1407,7 +1538,9 @@
                           "operatingMargin":  6.5,
                           "roe":  -2.9,
                           "debtRatio":  131.3,
-                          "week52RangePct":  38.7
+                          "week52RangePct":  38.7,
+                          "pressureScore":  3.9,
+                          "stabilityScore":  1.6
                       },
                       {
                           "symbol":  "192080.KS",
@@ -1428,7 +1561,9 @@
                           "operatingMargin":  33.4,
                           "roe":  4.5,
                           "debtRatio":  17.7,
-                          "week52RangePct":  37.6
+                          "week52RangePct":  37.6,
+                          "pressureScore":  3.5,
+                          "stabilityScore":  1.7
                       },
                       {
                           "symbol":  "280360.KS",
@@ -1449,7 +1584,9 @@
                           "operatingMargin":  3.5,
                           "roe":  0.8,
                           "debtRatio":  106.8,
-                          "week52RangePct":  97.4
+                          "week52RangePct":  97.4,
+                          "pressureScore":  5.7,
+                          "stabilityScore":  0.7
                       },
                       {
                           "symbol":  "300720.KS",
@@ -1470,7 +1607,9 @@
                           "operatingMargin":  5.8,
                           "roe":  0.5,
                           "debtRatio":  65.3,
-                          "week52RangePct":  38.7
+                          "week52RangePct":  38.7,
+                          "pressureScore":  1.9,
+                          "stabilityScore":  0.6
                       },
                       {
                           "symbol":  "361610.KS",
@@ -1491,7 +1630,9 @@
                           "operatingMargin":  -204.1,
                           "roe":  -3.2,
                           "debtRatio":  68.3,
-                          "week52RangePct":  15.1
+                          "week52RangePct":  15.1,
+                          "pressureScore":  0,
+                          "stabilityScore":  0.0
                       },
                       {
                           "symbol":  "017960.KS",
@@ -1512,7 +1653,9 @@
                           "operatingMargin":  19.4,
                           "roe":  2.7,
                           "debtRatio":  87.8,
-                          "week52RangePct":  13.0
+                          "week52RangePct":  13.0,
+                          "pressureScore":  0,
+                          "stabilityScore":  0.9
                       },
                       {
                           "symbol":  "004000.KS",
@@ -1533,7 +1676,9 @@
                           "operatingMargin":  6.4,
                           "roe":  1.8,
                           "debtRatio":  13.7,
-                          "week52RangePct":  15.7
+                          "week52RangePct":  15.7,
+                          "pressureScore":  1.5,
+                          "stabilityScore":  0.9
                       },
                       {
                           "symbol":  "007310.KS",
@@ -1554,7 +1699,9 @@
                           "operatingMargin":  6.2,
                           "roe":  1.7,
                           "debtRatio":  70.6,
-                          "week52RangePct":  22.8
+                          "week52RangePct":  22.8,
+                          "pressureScore":  0.5,
+                          "stabilityScore":  0.5
                       },
                       {
                           "symbol":  "000080.KS",
@@ -1575,7 +1722,9 @@
                           "operatingMargin":  9.5,
                           "roe":  3.2,
                           "debtRatio":  197.2,
-                          "week52RangePct":  27.0
+                          "week52RangePct":  27.0,
+                          "pressureScore":  0,
+                          "stabilityScore":  0.4
                       },
                       {
                           "symbol":  "000210.KS",
@@ -1596,7 +1745,9 @@
                           "operatingMargin":  8.8,
                           "roe":  0.2,
                           "debtRatio":  180.7,
-                          "week52RangePct":  32.5
+                          "week52RangePct":  32.5,
+                          "pressureScore":  0,
+                          "stabilityScore":  0.7
                       },
                       {
                           "symbol":  "185750.KS",
@@ -1617,7 +1768,9 @@
                           "operatingMargin":  3.1,
                           "roe":  1.2,
                           "debtRatio":  78.2,
-                          "week52RangePct":  12.8
+                          "week52RangePct":  12.8,
+                          "pressureScore":  1.2,
+                          "stabilityScore":  0.6
                       },
                       {
                           "symbol":  "005300.KS",
@@ -1638,7 +1791,9 @@
                           "operatingMargin":  5,
                           "roe":  1.6,
                           "debtRatio":  174,
-                          "week52RangePct":  6.2
+                          "week52RangePct":  6.2,
+                          "pressureScore":  0.5,
+                          "stabilityScore":  0.4
                       },
                       {
                           "symbol":  "009240.KS",
@@ -1659,7 +1814,9 @@
                           "operatingMargin":  2.5,
                           "roe":  0.7,
                           "debtRatio":  136.4,
-                          "week52RangePct":  40.6
+                          "week52RangePct":  40.6,
+                          "pressureScore":  4.2,
+                          "stabilityScore":  0.6
                       },
                       {
                           "symbol":  "285130.KS",
@@ -1680,7 +1837,9 @@
                           "operatingMargin":  -2.9,
                           "roe":  -0.5,
                           "debtRatio":  132.6,
-                          "week52RangePct":  30.8
+                          "week52RangePct":  30.8,
+                          "pressureScore":  4.1,
+                          "stabilityScore":  0.4
                       },
                       {
                           "symbol":  "071320.KS",
@@ -1701,7 +1860,9 @@
                           "operatingMargin":  22.3,
                           "roe":  8.8,
                           "debtRatio":  234.3,
-                          "week52RangePct":  24.7
+                          "week52RangePct":  24.7,
+                          "pressureScore":  0.6,
+                          "stabilityScore":  0.9
                       },
                       {
                           "symbol":  "034230.KS",
@@ -1722,7 +1883,9 @@
                           "operatingMargin":  12.7,
                           "roe":  1,
                           "debtRatio":  112.3,
-                          "week52RangePct":  3.1
+                          "week52RangePct":  3.1,
+                          "pressureScore":  0.4,
+                          "stabilityScore":  0.5
                       },
                       {
                           "symbol":  "298050.KS",
@@ -1743,7 +1906,9 @@
                           "operatingMargin":  4.2,
                           "roe":  0.8,
                           "debtRatio":  387.5,
-                          "week52RangePct":  22.5
+                          "week52RangePct":  22.5,
+                          "pressureScore":  0.1,
+                          "stabilityScore":  0.4
                       },
                       {
                           "symbol":  "003240.KS",
@@ -1764,7 +1929,9 @@
                           "operatingMargin":  -2.1,
                           "roe":  0.7,
                           "debtRatio":  13.6,
-                          "week52RangePct":  21.0
+                          "week52RangePct":  21.0,
+                          "pressureScore":  1.1,
+                          "stabilityScore":  0.7
                       },
                       {
                           "symbol":  "456040.KS",
@@ -1785,7 +1952,9 @@
                           "operatingMargin":  5.5,
                           "roe":  2.1,
                           "debtRatio":  98.5,
-                          "week52RangePct":  25.5
+                          "week52RangePct":  25.5,
+                          "pressureScore":  0,
+                          "stabilityScore":  1.0
                       },
                       {
                           "symbol":  "137310.KS",
@@ -1806,7 +1975,9 @@
                           "operatingMargin":  -6,
                           "roe":  1,
                           "debtRatio":  24.1,
-                          "week52RangePct":  8.8
+                          "week52RangePct":  8.8,
+                          "pressureScore":  3,
+                          "stabilityScore":  0.1
                       },
                       {
                           "symbol":  "000670.KS",
@@ -1827,7 +1998,9 @@
                           "operatingMargin":  5.1,
                           "roe":  0,
                           "debtRatio":  66.1,
-                          "week52RangePct":  23.0
+                          "week52RangePct":  23.0,
+                          "pressureScore":  3.1,
+                          "stabilityScore":  0.6
                       },
                       {
                           "symbol":  "003090.KS",
@@ -1848,7 +2021,9 @@
                           "operatingMargin":  9.7,
                           "roe":  2.8,
                           "debtRatio":  124.8,
-                          "week52RangePct":  9.7
+                          "week52RangePct":  9.7,
+                          "pressureScore":  0.2,
+                          "stabilityScore":  0.7
                       },
                       {
                           "symbol":  "268280.KS",
@@ -1869,7 +2044,9 @@
                           "operatingMargin":  13.8,
                           "roe":  4.7,
                           "debtRatio":  28.9,
-                          "week52RangePct":  69.6
+                          "week52RangePct":  69.6,
+                          "pressureScore":  5.6,
+                          "stabilityScore":  1.1
                       },
                       {
                           "symbol":  "069260.KS",
@@ -1890,7 +2067,9 @@
                           "operatingMargin":  5.2,
                           "roe":  1.6,
                           "debtRatio":  33.2,
-                          "week52RangePct":  25.1
+                          "week52RangePct":  25.1,
+                          "pressureScore":  1,
+                          "stabilityScore":  0.7
                       },
                       {
                           "symbol":  "001680.KS",
@@ -1911,7 +2090,9 @@
                           "operatingMargin":  5.2,
                           "roe":  2.9,
                           "debtRatio":  238.8,
-                          "week52RangePct":  24.2
+                          "week52RangePct":  24.2,
+                          "pressureScore":  0.6,
+                          "stabilityScore":  0.3
                       },
                       {
                           "symbol":  "014820.KS",
@@ -1932,7 +2113,9 @@
                           "operatingMargin":  3.9,
                           "roe":  1.8,
                           "debtRatio":  82.1,
-                          "week52RangePct":  33.6
+                          "week52RangePct":  33.6,
+                          "pressureScore":  1.3,
+                          "stabilityScore":  0.5
                       },
                       {
                           "symbol":  "002840.KS",
@@ -1953,7 +2136,9 @@
                           "operatingMargin":  8.4,
                           "roe":  2.6,
                           "debtRatio":  20.9,
-                          "week52RangePct":  48.1
+                          "week52RangePct":  48.1,
+                          "pressureScore":  4.6,
+                          "stabilityScore":  1.0
                       },
                       {
                           "symbol":  "006650.KS",
@@ -1974,7 +2159,9 @@
                           "operatingMargin":  8.7,
                           "roe":  2.9,
                           "debtRatio":  39.3,
-                          "week52RangePct":  2.2
+                          "week52RangePct":  2.2,
+                          "pressureScore":  1.4,
+                          "stabilityScore":  0.2
                       },
                       {
                           "symbol":  "003030.KS",
@@ -1995,7 +2182,9 @@
                           "operatingMargin":  2.7,
                           "roe":  -0.2,
                           "debtRatio":  169.9,
-                          "week52RangePct":  4.7
+                          "week52RangePct":  4.7,
+                          "pressureScore":  0.5,
+                          "stabilityScore":  1.1
                       },
                       {
                           "symbol":  "008730.KS",
@@ -2016,7 +2205,9 @@
                           "operatingMargin":  0.4,
                           "roe":  0.5,
                           "debtRatio":  136.4,
-                          "week52RangePct":  15.7
+                          "week52RangePct":  15.7,
+                          "pressureScore":  0,
+                          "stabilityScore":  1
                       },
                       {
                           "symbol":  "005420.KS",
@@ -2037,7 +2228,9 @@
                           "operatingMargin":  3.3,
                           "roe":  1.1,
                           "debtRatio":  277.5,
-                          "week52RangePct":  25.1
+                          "week52RangePct":  25.1,
+                          "pressureScore":  1.4,
+                          "stabilityScore":  1.1
                       },
                       {
                           "symbol":  "002030.KS",
@@ -2058,7 +2251,9 @@
                           "operatingMargin":  5.2,
                           "roe":  0.8,
                           "debtRatio":  108.3,
-                          "week52RangePct":  19.7
+                          "week52RangePct":  19.7,
+                          "pressureScore":  2.6,
+                          "stabilityScore":  1.2
                       },
                       {
                           "symbol":  "323280.KQ",
@@ -2079,7 +2274,9 @@
                           "operatingMargin":  -4.4,
                           "roe":  -0.4,
                           "debtRatio":  51,
-                          "week52RangePct":  37.4
+                          "week52RangePct":  37.4,
+                          "pressureScore":  3,
+                          "stabilityScore":  1.2
                       },
                       {
                           "symbol":  "030530.KQ",
@@ -2100,7 +2297,9 @@
                           "operatingMargin":  -1.9,
                           "roe":  -0.3,
                           "debtRatio":  72.3,
-                          "week52RangePct":  30.3
+                          "week52RangePct":  30.3,
+                          "pressureScore":  0,
+                          "stabilityScore":  2.1
                       },
                       {
                           "symbol":  "241710.KQ",
@@ -2121,7 +2320,9 @@
                           "operatingMargin":  11.8,
                           "roe":  6.8,
                           "debtRatio":  143.7,
-                          "week52RangePct":  94.8
+                          "week52RangePct":  94.8,
+                          "pressureScore":  10,
+                          "stabilityScore":  2.1
                       },
                       {
                           "symbol":  "096530.KQ",
@@ -2142,7 +2343,9 @@
                           "operatingMargin":  18.2,
                           "roe":  3.4,
                           "debtRatio":  22.7,
-                          "week52RangePct":  79.6
+                          "week52RangePct":  79.6,
+                          "pressureScore":  3.7,
+                          "stabilityScore":  1.3
                       },
                       {
                           "symbol":  "089970.KQ",
@@ -2163,7 +2366,9 @@
                           "operatingMargin":  33.9,
                           "roe":  12.5,
                           "debtRatio":  40.3,
-                          "week52RangePct":  44.3
+                          "week52RangePct":  44.3,
+                          "pressureScore":  3.6,
+                          "stabilityScore":  1
                       },
                       {
                           "symbol":  "039200.KQ",
@@ -2184,7 +2389,9 @@
                           "operatingMargin":  -273.8,
                           "roe":  -1.5,
                           "debtRatio":  22.3,
-                          "week52RangePct":  25.8
+                          "week52RangePct":  25.8,
+                          "pressureScore":  3,
+                          "stabilityScore":  2.6
                       },
                       {
                           "symbol":  "082920.KQ",
@@ -2205,7 +2412,9 @@
                           "operatingMargin":  29.7,
                           "roe":  6,
                           "debtRatio":  14.7,
-                          "week52RangePct":  33.8
+                          "week52RangePct":  33.8,
+                          "pressureScore":  3.2,
+                          "stabilityScore":  3.0
                       },
                       {
                           "symbol":  "420770.KQ",
@@ -2226,7 +2435,9 @@
                           "operatingMargin":  -16.2,
                           "roe":  0.3,
                           "debtRatio":  20.7,
-                          "week52RangePct":  45.8
+                          "week52RangePct":  45.8,
+                          "pressureScore":  5.4,
+                          "stabilityScore":  1.9
                       },
                       {
                           "symbol":  "475830.KQ",
@@ -2247,7 +2458,9 @@
                           "operatingMargin":  -3238462.5,
                           "roe":  -12.8,
                           "debtRatio":  161.6,
-                          "week52RangePct":  37.6
+                          "week52RangePct":  37.6,
+                          "pressureScore":  0.2,
+                          "stabilityScore":  1.9
                       },
                       {
                           "symbol":  "035900.KQ",
@@ -2268,7 +2481,9 @@
                           "operatingMargin":  17.9,
                           "roe":  5.1,
                           "debtRatio":  38.8,
-                          "week52RangePct":  2.4
+                          "week52RangePct":  2.4,
+                          "pressureScore":  3,
+                          "stabilityScore":  1.1
                       },
                       {
                           "symbol":  "043260.KQ",
@@ -2289,7 +2504,9 @@
                           "operatingMargin":  4.9,
                           "roe":  54.9,
                           "debtRatio":  132.4,
-                          "week52RangePct":  28.5
+                          "week52RangePct":  28.5,
+                          "pressureScore":  1.1,
+                          "stabilityScore":  2
                       },
                       {
                           "symbol":  "078600.KQ",
@@ -2310,7 +2527,9 @@
                           "operatingMargin":  10.1,
                           "roe":  -1.5,
                           "debtRatio":  166.1,
-                          "week52RangePct":  23.2
+                          "week52RangePct":  23.2,
+                          "pressureScore":  3,
+                          "stabilityScore":  1.2
                       },
                       {
                           "symbol":  "290650.KQ",
@@ -2331,7 +2550,9 @@
                           "operatingMargin":  19.8,
                           "roe":  1.3,
                           "debtRatio":  125.2,
-                          "week52RangePct":  24.2
+                          "week52RangePct":  24.2,
+                          "pressureScore":  3,
+                          "stabilityScore":  1.2
                       },
                       {
                           "symbol":  "218410.KQ",
@@ -2352,7 +2573,9 @@
                           "operatingMargin":  18,
                           "roe":  1.9,
                           "debtRatio":  39.4,
-                          "week52RangePct":  22.1
+                          "week52RangePct":  22.1,
+                          "pressureScore":  3,
+                          "stabilityScore":  2.2
                       },
                       {
                           "symbol":  "003380.KQ",
@@ -2373,7 +2596,9 @@
                           "operatingMargin":  7.3,
                           "roe":  2.1,
                           "debtRatio":  320.2,
-                          "week52RangePct":  32.7
+                          "week52RangePct":  32.7,
+                          "pressureScore":  1.1,
+                          "stabilityScore":  0.9
                       },
                       {
                           "symbol":  "195940.KQ",
@@ -2394,7 +2619,9 @@
                           "operatingMargin":  12.8,
                           "roe":  1.9,
                           "debtRatio":  54.6,
-                          "week52RangePct":  37.6
+                          "week52RangePct":  37.6,
+                          "pressureScore":  1,
+                          "stabilityScore":  0.8
                       },
                       {
                           "symbol":  "204270.KQ",
@@ -2415,7 +2642,9 @@
                           "operatingMargin":  -28.6,
                           "roe":  -3.5,
                           "debtRatio":  138.7,
-                          "week52RangePct":  48.0
+                          "week52RangePct":  48.0,
+                          "pressureScore":  1,
+                          "stabilityScore":  0.7
                       },
                       {
                           "symbol":  "437730.KQ",
@@ -2436,7 +2665,9 @@
                           "operatingMargin":  -13.3,
                           "roe":  -1.9,
                           "debtRatio":  60.9,
-                          "week52RangePct":  33.1
+                          "week52RangePct":  33.1,
+                          "pressureScore":  0,
+                          "stabilityScore":  2.6
                       },
                       {
                           "symbol":  "166090.KQ",
@@ -2457,7 +2688,9 @@
                           "operatingMargin":  22.8,
                           "roe":  3.6,
                           "debtRatio":  46.2,
-                          "week52RangePct":  48.7
+                          "week52RangePct":  48.7,
+                          "pressureScore":  3.1,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "036540.KQ",
@@ -2478,7 +2711,9 @@
                           "operatingMargin":  -5.8,
                           "roe":  0.2,
                           "debtRatio":  18.5,
-                          "week52RangePct":  30.6
+                          "week52RangePct":  30.6,
+                          "pressureScore":  3,
+                          "stabilityScore":  1.2
                       },
                       {
                           "symbol":  "101490.KQ",
@@ -2499,7 +2734,9 @@
                           "operatingMargin":  18.4,
                           "roe":  4.3,
                           "debtRatio":  26.1,
-                          "week52RangePct":  14.8
+                          "week52RangePct":  14.8,
+                          "pressureScore":  0.7,
+                          "stabilityScore":  1.6
                       },
                       {
                           "symbol":  "232140.KQ",
@@ -2520,7 +2757,9 @@
                           "operatingMargin":  12,
                           "roe":  0.3,
                           "debtRatio":  40.6,
-                          "week52RangePct":  28.2
+                          "week52RangePct":  28.2,
+                          "pressureScore":  0,
+                          "stabilityScore":  1.0
                       },
                       {
                           "symbol":  "090710.KQ",
@@ -2541,7 +2780,9 @@
                           "operatingMargin":  -15.2,
                           "roe":  -1,
                           "debtRatio":  56.2,
-                          "week52RangePct":  16.9
+                          "week52RangePct":  16.9,
+                          "pressureScore":  0,
+                          "stabilityScore":  1.9
                       },
                       {
                           "symbol":  "388720.KQ",
@@ -2562,7 +2803,9 @@
                           "operatingMargin":  -90.2,
                           "roe":  -8.5,
                           "debtRatio":  16.2,
-                          "week52RangePct":  13.3
+                          "week52RangePct":  13.3,
+                          "pressureScore":  0,
+                          "stabilityScore":  0.4
                       },
                       {
                           "symbol":  "213420.KQ",
@@ -2583,7 +2826,9 @@
                           "operatingMargin":  23.5,
                           "roe":  3.4,
                           "debtRatio":  51.8,
-                          "week52RangePct":  24.2
+                          "week52RangePct":  24.2,
+                          "pressureScore":  3,
+                          "stabilityScore":  1.1
                       },
                       {
                           "symbol":  "036830.KQ",
@@ -2604,7 +2849,9 @@
                           "operatingMargin":  0.8,
                           "roe":  1.3,
                           "debtRatio":  40.1,
-                          "week52RangePct":  32.0
+                          "week52RangePct":  32.0,
+                          "pressureScore":  3.6,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "038500.KQ",
@@ -2625,7 +2872,9 @@
                           "operatingMargin":  15,
                           "roe":  0.3,
                           "debtRatio":  83.6,
-                          "week52RangePct":  22.9
+                          "week52RangePct":  22.9,
+                          "pressureScore":  1,
+                          "stabilityScore":  2.2
                       },
                       {
                           "symbol":  "100790.KQ",
@@ -2646,7 +2895,9 @@
                           "operatingMargin":  28.1,
                           "roe":  2.9,
                           "debtRatio":  177.3,
-                          "week52RangePct":  15.8
+                          "week52RangePct":  15.8,
+                          "pressureScore":  3,
+                          "stabilityScore":  2.6
                       },
                       {
                           "symbol":  "065350.KQ",
@@ -2667,7 +2918,9 @@
                           "operatingMargin":  2.2,
                           "roe":  2.1,
                           "debtRatio":  251.6,
-                          "week52RangePct":  10.4
+                          "week52RangePct":  10.4,
+                          "pressureScore":  0.7,
+                          "stabilityScore":  0.1
                       },
                       {
                           "symbol":  "085660.KQ",
@@ -2688,7 +2941,9 @@
                           "operatingMargin":  -9.2,
                           "roe":  3,
                           "debtRatio":  343.5,
-                          "week52RangePct":  4.7
+                          "week52RangePct":  4.7,
+                          "pressureScore":  0.8,
+                          "stabilityScore":  0.3
                       },
                       {
                           "symbol":  "090360.KQ",
@@ -2709,7 +2964,9 @@
                           "operatingMargin":  0.3,
                           "roe":  1.1,
                           "debtRatio":  27,
-                          "week52RangePct":  36.3
+                          "week52RangePct":  36.3,
+                          "pressureScore":  3,
+                          "stabilityScore":  1.7
                       },
                       {
                           "symbol":  "099320.KQ",
@@ -2730,7 +2987,9 @@
                           "operatingMargin":  -5.4,
                           "roe":  -0.6,
                           "debtRatio":  55.2,
-                          "week52RangePct":  14.7
+                          "week52RangePct":  14.7,
+                          "pressureScore":  0,
+                          "stabilityScore":  1.3
                       },
                       {
                           "symbol":  "281740.KQ",
@@ -2751,7 +3010,9 @@
                           "operatingMargin":  12.8,
                           "roe":  4.6,
                           "debtRatio":  166,
-                          "week52RangePct":  13.5
+                          "week52RangePct":  13.5,
+                          "pressureScore":  0.4,
+                          "stabilityScore":  0.7
                       },
                       {
                           "symbol":  "124500.KQ",
@@ -2772,7 +3033,9 @@
                           "operatingMargin":  3,
                           "roe":  12.7,
                           "debtRatio":  752.1,
-                          "week52RangePct":  43.1
+                          "week52RangePct":  43.1,
+                          "pressureScore":  6,
+                          "stabilityScore":  1.9
                       },
                       {
                           "symbol":  "293490.KQ",
@@ -2793,7 +3056,9 @@
                           "operatingMargin":  -30.7,
                           "roe":  -2.6,
                           "debtRatio":  130.9,
-                          "week52RangePct":  14.7
+                          "week52RangePct":  14.7,
+                          "pressureScore":  0.6,
+                          "stabilityScore":  0.0
                       },
                       {
                           "symbol":  "032190.KQ",
@@ -2814,7 +3079,9 @@
                           "operatingMargin":  6.7,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  27.5
+                          "week52RangePct":  27.5,
+                          "pressureScore":  3,
+                          "stabilityScore":  0.8
                       },
                       {
                           "symbol":  "033100.KQ",
@@ -2835,7 +3102,9 @@
                           "operatingMargin":  17,
                           "roe":  3.5,
                           "debtRatio":  21.1,
-                          "week52RangePct":  25.3
+                          "week52RangePct":  25.3,
+                          "pressureScore":  0,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "251970.KQ",
@@ -2856,7 +3125,9 @@
                           "operatingMargin":  14.1,
                           "roe":  4.2,
                           "debtRatio":  38.5,
-                          "week52RangePct":  81.4
+                          "week52RangePct":  81.4,
+                          "pressureScore":  7,
+                          "stabilityScore":  1.0
                       },
                       {
                           "symbol":  "445680.KQ",
@@ -2877,7 +3148,9 @@
                           "operatingMargin":  -245.5,
                           "roe":  -5.1,
                           "debtRatio":  50.3,
-                          "week52RangePct":  19.5
+                          "week52RangePct":  19.5,
+                          "pressureScore":  3,
+                          "stabilityScore":  0.7
                       },
                       {
                           "symbol":  "417200.KQ",
@@ -2898,7 +3171,9 @@
                           "operatingMargin":  -2.7,
                           "roe":  -0.4,
                           "debtRatio":  41.8,
-                          "week52RangePct":  10.7
+                          "week52RangePct":  10.7,
+                          "pressureScore":  2.2,
+                          "stabilityScore":  0.6
                       },
                       {
                           "symbol":  "122870.KQ",
@@ -2919,7 +3194,9 @@
                           "operatingMargin":  13.2,
                           "roe":  0.9,
                           "debtRatio":  41.6,
-                          "week52RangePct":  6.7
+                          "week52RangePct":  6.7,
+                          "pressureScore":  3,
+                          "stabilityScore":  0.4
                       },
                       {
                           "symbol":  "466100.KQ",
@@ -2940,7 +3217,9 @@
                           "operatingMargin":  -30.8,
                           "roe":  -3.8,
                           "debtRatio":  15.4,
-                          "week52RangePct":  15.6
+                          "week52RangePct":  15.6,
+                          "pressureScore":  3,
+                          "stabilityScore":  1.0
                       },
                       {
                           "symbol":  "074600.KQ",
@@ -2961,7 +3240,9 @@
                           "operatingMargin":  8.5,
                           "roe":  3.2,
                           "debtRatio":  197,
-                          "week52RangePct":  35.3
+                          "week52RangePct":  35.3,
+                          "pressureScore":  1.1,
+                          "stabilityScore":  1.2
                       },
                       {
                           "symbol":  "137400.KQ",
@@ -2982,7 +3263,9 @@
                           "operatingMargin":  8.7,
                           "roe":  2.9,
                           "debtRatio":  150.5,
-                          "week52RangePct":  16.7
+                          "week52RangePct":  16.7,
+                          "pressureScore":  0,
+                          "stabilityScore":  0.8
                       },
                       {
                           "symbol":  "056190.KQ",
@@ -3003,7 +3286,9 @@
                           "operatingMargin":  4.3,
                           "roe":  2.1,
                           "debtRatio":  83.4,
-                          "week52RangePct":  36.4
+                          "week52RangePct":  36.4,
+                          "pressureScore":  0.1,
+                          "stabilityScore":  0.7
                       },
                       {
                           "symbol":  "035760.KQ",
@@ -3024,7 +3309,9 @@
                           "operatingMargin":  0.1,
                           "roe":  0.2,
                           "debtRatio":  181.8,
-                          "week52RangePct":  8.3
+                          "week52RangePct":  8.3,
+                          "pressureScore":  1.7,
+                          "stabilityScore":  0
                       },
                       {
                           "symbol":  "006730.KQ",
@@ -3045,7 +3332,9 @@
                           "operatingMargin":  26.9,
                           "roe":  0.4,
                           "debtRatio":  176.7,
-                          "week52RangePct":  19.1
+                          "week52RangePct":  19.1,
+                          "pressureScore":  3,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "189300.KQ",
@@ -3066,7 +3355,9 @@
                           "operatingMargin":  0.9,
                           "roe":  4.8,
                           "debtRatio":  85.2,
-                          "week52RangePct":  18.7
+                          "week52RangePct":  18.7,
+                          "pressureScore":  3,
+                          "stabilityScore":  1.0
                       },
                       {
                           "symbol":  "048410.KQ",
@@ -3087,7 +3378,9 @@
                           "operatingMargin":  -1436.9,
                           "roe":  -4.7,
                           "debtRatio":  15.3,
-                          "week52RangePct":  11.7
+                          "week52RangePct":  11.7,
+                          "pressureScore":  0,
+                          "stabilityScore":  0.7
                       },
                       {
                           "symbol":  "253450.KQ",
@@ -3108,7 +3401,9 @@
                           "operatingMargin":  4.1,
                           "roe":  0.9,
                           "debtRatio":  27.7,
-                          "week52RangePct":  7.3
+                          "week52RangePct":  7.3,
+                          "pressureScore":  1.6,
+                          "stabilityScore":  0.1
                       },
                       {
                           "symbol":  "171090.KQ",
@@ -3129,7 +3424,9 @@
                           "operatingMargin":  9.2,
                           "roe":  -10.6,
                           "debtRatio":  152.3,
-                          "week52RangePct":  26.8
+                          "week52RangePct":  26.8,
+                          "pressureScore":  0.1,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "032500.KQ",
@@ -3150,7 +3447,9 @@
                           "operatingMargin":  -26.7,
                           "roe":  -3.7,
                           "debtRatio":  77.1,
-                          "week52RangePct":  10.7
+                          "week52RangePct":  10.7,
+                          "pressureScore":  0,
+                          "stabilityScore":  0.7
                       },
                       {
                           "symbol":  "161580.KQ",
@@ -3171,7 +3470,9 @@
                           "operatingMargin":  -48.8,
                           "roe":  -9.5,
                           "debtRatio":  184.6,
-                          "week52RangePct":  17.6
+                          "week52RangePct":  17.6,
+                          "pressureScore":  0,
+                          "stabilityScore":  0.4
                       },
                       {
                           "symbol":  "014620.KQ",
@@ -3192,7 +3493,9 @@
                           "operatingMargin":  11.1,
                           "roe":  1.5,
                           "debtRatio":  8.1,
-                          "week52RangePct":  11.9
+                          "week52RangePct":  11.9,
+                          "pressureScore":  0,
+                          "stabilityScore":  1.1
                       },
                       {
                           "symbol":  "222080.KQ",
@@ -3213,7 +3516,9 @@
                           "operatingMargin":  4,
                           "roe":  1.1,
                           "debtRatio":  30.9,
-                          "week52RangePct":  15.4
+                          "week52RangePct":  15.4,
+                          "pressureScore":  0,
+                          "stabilityScore":  1.0
                       },
                       {
                           "symbol":  "328130.KQ",
@@ -3234,7 +3539,9 @@
                           "operatingMargin":  -56.8,
                           "roe":  -14.3,
                           "debtRatio":  212.4,
-                          "week52RangePct":  5.1
+                          "week52RangePct":  5.1,
+                          "pressureScore":  2.5,
+                          "stabilityScore":  0
                       },
                       {
                           "symbol":  "225570.KQ",
@@ -3255,7 +3562,9 @@
                           "operatingMargin":  -50.8,
                           "roe":  -9.2,
                           "debtRatio":  63.2,
-                          "week52RangePct":  37.8
+                          "week52RangePct":  37.8,
+                          "pressureScore":  1.2,
+                          "stabilityScore":  0.2
                       },
                       {
                           "symbol":  "052400.KQ",
@@ -3276,7 +3585,9 @@
                           "operatingMargin":  32.2,
                           "roe":  8.8,
                           "debtRatio":  102.1,
-                          "week52RangePct":  17.1
+                          "week52RangePct":  17.1,
+                          "pressureScore":  3,
+                          "stabilityScore":  1.6
                       },
                       {
                           "symbol":  "183300.KQ",
@@ -3297,7 +3608,9 @@
                           "operatingMargin":  13,
                           "roe":  4,
                           "debtRatio":  292.7,
-                          "week52RangePct":  25.7
+                          "week52RangePct":  25.7,
+                          "pressureScore":  2.6,
+                          "stabilityScore":  1.5
                       },
                       {
                           "symbol":  "121600.KQ",
@@ -3318,7 +3631,9 @@
                           "operatingMargin":  8.4,
                           "roe":  2.5,
                           "debtRatio":  50.9,
-                          "week52RangePct":  24.2
+                          "week52RangePct":  24.2,
+                          "pressureScore":  3,
+                          "stabilityScore":  0.4
                       },
                       {
                           "symbol":  "050890.KQ",
@@ -3339,7 +3654,9 @@
                           "operatingMargin":  -1.8,
                           "roe":  5.9,
                           "debtRatio":  62.4,
-                          "week52RangePct":  20.7
+                          "week52RangePct":  20.7,
+                          "pressureScore":  1.4,
+                          "stabilityScore":  1.6
                       },
                       {
                           "symbol":  "025980.KQ",
@@ -3360,7 +3677,9 @@
                           "operatingMargin":  -20.4,
                           "roe":  -2.4,
                           "debtRatio":  115.1,
-                          "week52RangePct":  25.1
+                          "week52RangePct":  25.1,
+                          "pressureScore":  3,
+                          "stabilityScore":  0.0
                       },
                       {
                           "symbol":  "060250.KQ",
@@ -3381,7 +3700,9 @@
                           "operatingMargin":  4,
                           "roe":  5.3,
                           "debtRatio":  116.9,
-                          "week52RangePct":  31.9
+                          "week52RangePct":  31.9,
+                          "pressureScore":  2.8,
+                          "stabilityScore":  0.8
                       },
                       {
                           "symbol":  "009520.KQ",
@@ -3402,7 +3723,9 @@
                           "operatingMargin":  2.4,
                           "roe":  1.9,
                           "debtRatio":  33.6,
-                          "week52RangePct":  30.7
+                          "week52RangePct":  30.7,
+                          "pressureScore":  2,
+                          "stabilityScore":  0.5
                       },
                       {
                           "symbol":  "295310.KQ",
@@ -3423,7 +3746,9 @@
                           "operatingMargin":  19,
                           "roe":  3.6,
                           "debtRatio":  95.1,
-                          "week52RangePct":  20.6
+                          "week52RangePct":  20.6,
+                          "pressureScore":  3,
+                          "stabilityScore":  2.1
                       },
                       {
                           "symbol":  "211050.KQ",
@@ -3444,7 +3769,9 @@
                           "operatingMargin":  8.7,
                           "roe":  10.2,
                           "debtRatio":  368.8,
-                          "week52RangePct":  28.9
+                          "week52RangePct":  28.9,
+                          "pressureScore":  4.4,
+                          "stabilityScore":  0.8
                       },
                       {
                           "symbol":  "399720.KQ",
@@ -3465,7 +3792,9 @@
                           "operatingMargin":  -19,
                           "roe":  -2.9,
                           "debtRatio":  201.2,
-                          "week52RangePct":  21.8
+                          "week52RangePct":  21.8,
+                          "pressureScore":  3,
+                          "stabilityScore":  0.5
                       },
                       {
                           "symbol":  "112040.KQ",
@@ -3486,7 +3815,9 @@
                           "operatingMargin":  5.5,
                           "roe":  5.7,
                           "debtRatio":  250.8,
-                          "week52RangePct":  13.4
+                          "week52RangePct":  13.4,
+                          "pressureScore":  1.1,
+                          "stabilityScore":  0.0
                       },
                       {
                           "symbol":  "053800.KQ",
@@ -3507,7 +3838,9 @@
                           "operatingMargin":  3.3,
                           "roe":  1.4,
                           "debtRatio":  37.3,
-                          "week52RangePct":  25.2
+                          "week52RangePct":  25.2,
+                          "pressureScore":  0.3,
+                          "stabilityScore":  1.6
                       },
                       {
                           "symbol":  "033500.KQ",
@@ -3528,7 +3861,9 @@
                           "operatingMargin":  11.7,
                           "roe":  6.5,
                           "debtRatio":  85.2,
-                          "week52RangePct":  17.3
+                          "week52RangePct":  17.3,
+                          "pressureScore":  0,
+                          "stabilityScore":  0.5
                       },
                       {
                           "symbol":  "358570.KQ",
@@ -3549,7 +3884,9 @@
                           "operatingMargin":  -219,
                           "roe":  -11.4,
                           "debtRatio":  7.7,
-                          "week52RangePct":  10.5
+                          "week52RangePct":  10.5,
+                          "pressureScore":  0,
+                          "stabilityScore":  0
                       },
                       {
                           "symbol":  "015750.KQ",
@@ -3570,7 +3907,9 @@
                           "operatingMargin":  5.2,
                           "roe":  1.8,
                           "debtRatio":  172,
-                          "week52RangePct":  17.3
+                          "week52RangePct":  17.3,
+                          "pressureScore":  0.2,
+                          "stabilityScore":  0.7
                       },
                       {
                           "symbol":  "036810.KQ",
@@ -3591,7 +3930,9 @@
                           "operatingMargin":  2,
                           "roe":  -1.1,
                           "debtRatio":  109.2,
-                          "week52RangePct":  34.2
+                          "week52RangePct":  34.2,
+                          "pressureScore":  0.2,
+                          "stabilityScore":  0.8
                       },
                       {
                           "symbol":  "041190.KQ",
@@ -3612,7 +3953,9 @@
                           "operatingMargin":  null,
                           "roe":  1.8,
                           "debtRatio":  20.9,
-                          "week52RangePct":  32.7
+                          "week52RangePct":  32.7,
+                          "pressureScore":  4.5,
+                          "stabilityScore":  2.2
                       },
                       {
                           "symbol":  "253590.KQ",
@@ -3633,7 +3976,9 @@
                           "operatingMargin":  4.1,
                           "roe":  1.8,
                           "debtRatio":  28.1,
-                          "week52RangePct":  29.7
+                          "week52RangePct":  29.7,
+                          "pressureScore":  0,
+                          "stabilityScore":  1.4
                       },
                       {
                           "symbol":  "056080.KQ",
@@ -3654,7 +3999,9 @@
                           "operatingMargin":  -79.5,
                           "roe":  -15.6,
                           "debtRatio":  103.1,
-                          "week52RangePct":  6.8
+                          "week52RangePct":  6.8,
+                          "pressureScore":  3,
+                          "stabilityScore":  0.6
                       },
                       {
                           "symbol":  "082270.KQ",
@@ -3675,7 +4022,9 @@
                           "operatingMargin":  -5.4,
                           "roe":  -1.8,
                           "debtRatio":  118.3,
-                          "week52RangePct":  3.0
+                          "week52RangePct":  3.0,
+                          "pressureScore":  3,
+                          "stabilityScore":  0
                       },
                       {
                           "symbol":  "214430.KQ",
@@ -3696,7 +4045,9 @@
                           "operatingMargin":  13.5,
                           "roe":  3.5,
                           "debtRatio":  40.6,
-                          "week52RangePct":  14.0
+                          "week52RangePct":  14.0,
+                          "pressureScore":  0,
+                          "stabilityScore":  1.1
                       },
                       {
                           "symbol":  "278280.KQ",
@@ -3717,7 +4068,9 @@
                           "operatingMargin":  -8.4,
                           "roe":  -2,
                           "debtRatio":  82.7,
-                          "week52RangePct":  18.9
+                          "week52RangePct":  18.9,
+                          "pressureScore":  1.5,
+                          "stabilityScore":  0.3
                       },
                       {
                           "symbol":  "376300.KQ",
@@ -3738,7 +4091,9 @@
                           "operatingMargin":  41.4,
                           "roe":  5.5,
                           "debtRatio":  19,
-                          "week52RangePct":  2.0
+                          "week52RangePct":  2.0,
+                          "pressureScore":  3,
+                          "stabilityScore":  1.3
                       },
                       {
                           "symbol":  "018290.KQ",
@@ -3759,7 +4114,9 @@
                           "operatingMargin":  15.2,
                           "roe":  7,
                           "debtRatio":  36.9,
-                          "week52RangePct":  8.9
+                          "week52RangePct":  8.9,
+                          "pressureScore":  1.4,
+                          "stabilityScore":  0.8
                       },
                       {
                           "symbol":  "125490.KQ",
@@ -3780,7 +4137,9 @@
                           "operatingMargin":  3.7,
                           "roe":  1.4,
                           "debtRatio":  103.8,
-                          "week52RangePct":  31.5
+                          "week52RangePct":  31.5,
+                          "pressureScore":  0,
+                          "stabilityScore":  1.9
                       },
                       {
                           "symbol":  "030520.KQ",
@@ -3801,7 +4160,9 @@
                           "operatingMargin":  13.5,
                           "roe":  2.5,
                           "debtRatio":  64.5,
-                          "week52RangePct":  22.1
+                          "week52RangePct":  22.1,
+                          "pressureScore":  0.4,
+                          "stabilityScore":  0.8
                       },
                       {
                           "symbol":  "067160.KQ",
@@ -3822,7 +4183,9 @@
                           "operatingMargin":  20,
                           "roe":  4.9,
                           "debtRatio":  88,
-                          "week52RangePct":  4.2
+                          "week52RangePct":  4.2,
+                          "pressureScore":  0,
+                          "stabilityScore":  1.2
                       },
                       {
                           "symbol":  "042000.KQ",
@@ -3843,7 +4206,9 @@
                           "operatingMargin":  8.3,
                           "roe":  2.4,
                           "debtRatio":  56.1,
-                          "week52RangePct":  6.2
+                          "week52RangePct":  6.2,
+                          "pressureScore":  0.6,
+                          "stabilityScore":  0.7
                       },
                       {
                           "symbol":  "348370.KQ",
@@ -3864,7 +4229,9 @@
                           "operatingMargin":  -28.8,
                           "roe":  -2.2,
                           "debtRatio":  131.1,
-                          "week52RangePct":  4.9
+                          "week52RangePct":  4.9,
+                          "pressureScore":  2.3,
+                          "stabilityScore":  0
                       },
                       {
                           "symbol":  "101730.KQ",
@@ -3885,7 +4252,9 @@
                           "operatingMargin":  -46.4,
                           "roe":  -2.6,
                           "debtRatio":  22.8,
-                          "week52RangePct":  30.7
+                          "week52RangePct":  30.7,
+                          "pressureScore":  3,
+                          "stabilityScore":  0.1
                       },
                       {
                           "symbol":  "272290.KQ",
@@ -3906,7 +4275,9 @@
                           "operatingMargin":  17.8,
                           "roe":  3.8,
                           "debtRatio":  126.9,
-                          "week52RangePct":  16.2
+                          "week52RangePct":  16.2,
+                          "pressureScore":  0,
+                          "stabilityScore":  1.1
                       },
                       {
                           "symbol":  "215200.KQ",
@@ -3927,7 +4298,9 @@
                           "operatingMargin":  11,
                           "roe":  4.6,
                           "debtRatio":  94.9,
-                          "week52RangePct":  9.4
+                          "week52RangePct":  9.4,
+                          "pressureScore":  0.4,
+                          "stabilityScore":  0.8
                       },
                       {
                           "symbol":  "025320.KQ",
@@ -3948,7 +4321,9 @@
                           "operatingMargin":  2.3,
                           "roe":  1.7,
                           "debtRatio":  50.5,
-                          "week52RangePct":  19.9
+                          "week52RangePct":  19.9,
+                          "pressureScore":  0,
+                          "stabilityScore":  0.3
                       },
                       {
                           "symbol":  "078340.KQ",
@@ -3969,7 +4344,9 @@
                           "operatingMargin":  3.5,
                           "roe":  -1.1,
                           "debtRatio":  52.5,
-                          "week52RangePct":  44.6
+                          "week52RangePct":  44.6,
+                          "pressureScore":  2.2,
+                          "stabilityScore":  0.6
                       },
                       {
                           "symbol":  "095660.KQ",
@@ -3990,7 +4367,9 @@
                           "operatingMargin":  6.9,
                           "roe":  3,
                           "debtRatio":  19.1,
-                          "week52RangePct":  13.5
+                          "week52RangePct":  13.5,
+                          "pressureScore":  1.4,
+                          "stabilityScore":  0.9
                       },
                       {
                           "symbol":  "060280.KQ",
@@ -4011,7 +4390,9 @@
                           "operatingMargin":  -5.7,
                           "roe":  0.5,
                           "debtRatio":  6.1,
-                          "week52RangePct":  12.3
+                          "week52RangePct":  12.3,
+                          "pressureScore":  0,
+                          "stabilityScore":  0.8
                       },
                       {
                           "symbol":  "036620.KQ",
@@ -4032,7 +4413,9 @@
                           "operatingMargin":  16.2,
                           "roe":  6,
                           "debtRatio":  34.7,
-                          "week52RangePct":  10.0
+                          "week52RangePct":  10.0,
+                          "pressureScore":  2.5,
+                          "stabilityScore":  1.0
                       },
                       {
                           "symbol":  "348210.KQ",
@@ -4053,7 +4436,9 @@
                           "operatingMargin":  -69.9,
                           "roe":  -1.5,
                           "debtRatio":  68.4,
-                          "week52RangePct":  12.7
+                          "week52RangePct":  12.7,
+                          "pressureScore":  0,
+                          "stabilityScore":  0.3
                       },
                       {
                           "symbol":  "069080.KQ",
@@ -4074,7 +4459,9 @@
                           "operatingMargin":  13.7,
                           "roe":  1.3,
                           "debtRatio":  15.7,
-                          "week52RangePct":  15.0
+                          "week52RangePct":  15.0,
+                          "pressureScore":  0.7,
+                          "stabilityScore":  1.0
                       },
                       {
                           "symbol":  "025900.KQ",
@@ -4095,7 +4482,9 @@
                           "operatingMargin":  -2.2,
                           "roe":  -0.5,
                           "debtRatio":  176.3,
-                          "week52RangePct":  32.0
+                          "week52RangePct":  32.0,
+                          "pressureScore":  1.4,
+                          "stabilityScore":  0.2
                       },
                       {
                           "symbol":  "352480.KQ",
@@ -4116,7 +4505,9 @@
                           "operatingMargin":  4.2,
                           "roe":  1.4,
                           "debtRatio":  19.6,
-                          "week52RangePct":  22.0
+                          "week52RangePct":  22.0,
+                          "pressureScore":  0.9,
+                          "stabilityScore":  0.3
                       },
                       {
                           "symbol":  "194480.KQ",
@@ -4137,8 +4528,11 @@
                           "operatingMargin":  -29.7,
                           "roe":  -9.9,
                           "debtRatio":  91.2,
-                          "week52RangePct":  5.5
+                          "week52RangePct":  5.5,
+                          "pressureScore":  0,
+                          "stabilityScore":  1.2
                       }
                   ],
-    "ratiosUpdatedAt":  "2026-08-25T11:29:54Z"
-}
+    "ratiosUpdatedAt":  "2026-08-25T11:29:54Z",
+    "generatedAt":  "2026-08-23T09:06:53Z"
+};

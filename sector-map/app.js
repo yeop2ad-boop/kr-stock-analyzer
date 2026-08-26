@@ -848,7 +848,6 @@ function buildPopularRank(isKr) {
 
 function buildMetrics(market) {
   const isKr = market === "domestic";
-  const capFmt = isKr ? fmtWonCompact : fmtMarketCap;
   const popularRank = buildPopularRank(isKr);
   popularRank.refresh();
   return {
@@ -870,6 +869,10 @@ function buildMetrics(market) {
       refreshRank: popularRank.refresh,
       getRankCount: () => popularRank.map.size,
     },
+    // 본체(app.js)의 computeAttractivenessScore·computeRiskScore와 동일 공식으로 배치 계산해둔 값
+    // (sector-map/scripts/fetch-momentum-scores.ps1, data/*-sectors.json에 pressureScore/stabilityScore로 저장)
+    pressureScore: { label: "상승압력", hasData: true, get: (c) => c.pressureScore, fmt: (v) => `${v.toFixed(1)}점`, domainMin: 0, domainMax: 10 },
+    stabilityScore: { label: "투자안정", hasData: true, get: (c) => c.stabilityScore, fmt: (v) => `${v.toFixed(1)}점`, domainMin: 0, domainMax: 10 },
     // 상승률/하락률을 하나로 합쳐 최저(가장 큰 하락)~최고(가장 큰 상승)가 한 슬라이더 안에 전부 보이도록 함
     changePct: { label: "등락률", hasData: true, live: !isKr, get: (c) => c.changePercent, fmt: (v) => `${v.toFixed(1)}%` },
     revenueGrowth: { label: "매출성장", hasData: true, get: (c) => c.revenueGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
@@ -877,10 +880,7 @@ function buildMetrics(market) {
     dividendYield: { label: "배당률", hasData: !isKr, get: (c) => c.dividendYield, fmt: (v) => `${v.toFixed(2)}%` },
     debtRatio: { label: "부채비율", hasData: true, get: (c) => c.debtRatio, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 300 },
     cashFlowGrowth: { label: "현금흐름 증가", hasData: true, get: (c) => c.cashFlowGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
-    marketCap: { label: "시가총액", hasData: true, get: (c) => c.marketCap, fmt: isKr ? fmtWonTrillionOnly : capFmt },
-    operatingMargin: { label: "영업이익률", hasData: true, get: (c) => c.operatingMargin, fmt: (v) => `${v.toFixed(1)}%`, domainMin: -50, domainMax: 60 },
     per: { label: "PER", hasData: true, get: (c) => c.per, fmt: (v) => `${v.toFixed(1)}배`, domainMax: 80 },
-    roe: { label: "ROE", hasData: true, get: (c) => c.roe, fmt: (v) => `${v.toFixed(1)}%`, domainMin: -50, domainMax: 60 },
   };
 }
 let METRICS = buildMetrics("overseas");
@@ -973,33 +973,10 @@ function resetAllFilters() {
   panelControllers.forEach((ctrl) => ctrl.refresh());
 }
 
-// 국내 시가총액 슬라이더 전용 비선형 스케일 — SK스퀘어(중간 기준점)~맨 마지막(최소)을 막대의 3/4, 그 위로
-// 삼성전자/SK하이닉스 같은 최상위 초대형주까지는 나머지 1/4에 몰아넣어서, 대다수인 중·소형주 구간의 해상도를 확보한다.
-const KR_MARKETCAP_SPLIT_SYMBOL = "402340.KS"; // SK스퀘어
-const KR_MARKETCAP_SPLIT_FRAC = 0.75;
-function getKrMarketCapAnchor() {
-  // core에 없으면(상위 150위 밖) extra가 이미 불러와져 있을 때만 거기서도 찾아봄 — extra 로딩을 새로 유발하진 않음
-  const core = typeof KR_CORE_DATA !== "undefined" ? KR_CORE_DATA.companies : [];
-  const extra = typeof KR_EXTRA_DATA !== "undefined" ? KR_EXTRA_DATA.companies : [];
-  const c = core.find((x) => x.symbol === KR_MARKETCAP_SPLIT_SYMBOL) || extra.find((x) => x.symbol === KR_MARKETCAP_SPLIT_SYMBOL);
-  return c ? c.marketCap : null;
-}
+// 예전엔 국내 시가총액 필터 슬라이더에 SK스퀘어를 기준점으로 한 비선형 스케일을 썼으나(2026-08-26),
+// 시가총액 필터 자체가 지도 필터 목록에서 빠지면서 더 이상 어떤 키로도 호출되지 않음(항상 null=선형 스케일 반환).
 function scaleForKey(key) {
-  if (ACTIVE_MARKET !== "domestic" || key !== "marketCap") return null;
-  const anchor = getKrMarketCapAnchor();
-  const [domMin, domMax] = getMetricDomain(key);
-  if (!anchor || anchor <= domMin || anchor >= domMax) return null;
-  const s = KR_MARKETCAP_SPLIT_FRAC;
-  return {
-    toFrac(v) {
-      if (v <= anchor) return ((v - domMin) / (anchor - domMin)) * s;
-      return s + ((v - anchor) / (domMax - anchor)) * (1 - s);
-    },
-    toValue(t) {
-      if (t <= s) return domMin + (t / s) * (anchor - domMin);
-      return anchor + ((t - s) / (1 - s)) * (domMax - anchor);
-    },
-  };
+  return null;
 }
 
 // 슬라이더 하나(썸 2개 + 트랙 + 눈금)를 특정 지표(key)에 묶어서 드래그·눈금·"전체" 표시를 전담시키는 컨트롤러.

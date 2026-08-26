@@ -1,5 +1,4 @@
 ﻿const SP500_EXTRA_DATA = {
-    "generatedAt":  "2026-08-23T08:19:28Z",
     "count":  301,
     "companies":  [
                       {
@@ -18,7 +17,9 @@
                           "operatingMargin":  1.4,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  59.5
+                          "week52RangePct":  59.5,
+                          "pressureScore":  4.3,
+                          "stabilityScore":  2.8
                       },
                       {
                           "symbol":  "NKE",
@@ -36,7 +37,9 @@
                           "operatingMargin":  11.9,
                           "roe":  7.2,
                           "debtRatio":  158.4,
-                          "week52RangePct":  4.6
+                          "week52RangePct":  4.6,
+                          "pressureScore":  0.6,
+                          "stabilityScore":  3.9
                       },
                       {
                           "symbol":  "PSA",
@@ -54,7 +57,9 @@
                           "operatingMargin":  45.2,
                           "roe":  5.4,
                           "debtRatio":  117.9,
-                          "week52RangePct":  86.6
+                          "week52RangePct":  86.6,
+                          "pressureScore":  1.1,
+                          "stabilityScore":  5.0
                       },
                       {
                           "symbol":  "MET",
@@ -72,7 +77,9 @@
                           "operatingMargin":  null,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  86.0
+                          "week52RangePct":  86.0,
+                          "pressureScore":  4.4,
+                          "stabilityScore":  3.5
                       },
                       {
                           "symbol":  "O",
@@ -90,7 +97,9 @@
                           "operatingMargin":  42.4,
                           "roe":  0.9,
                           "debtRatio":  87.3,
-                          "week52RangePct":  60.5
+                          "week52RangePct":  60.5,
+                          "pressureScore":  0.9,
+                          "stabilityScore":  3.9
                       },
                       {
                           "symbol":  "FANG",
@@ -108,7 +117,9 @@
                           "operatingMargin":  45.5,
                           "roe":  5,
                           "debtRatio":  69.2,
-                          "week52RangePct":  86.3
+                          "week52RangePct":  86.3,
+                          "pressureScore":  4.3,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "TEL",
@@ -126,7 +137,9 @@
                           "operatingMargin":  20.8,
                           "roe":  5.6,
                           "debtRatio":  95.7,
-                          "week52RangePct":  19.5
+                          "week52RangePct":  19.5,
+                          "pressureScore":  1.9,
+                          "stabilityScore":  3.5
                       },
                       {
                           "symbol":  "OKE",
@@ -144,7 +157,9 @@
                           "operatingMargin":  13.3,
                           "roe":  4.2,
                           "debtRatio":  198.2,
-                          "week52RangePct":  85.6
+                          "week52RangePct":  85.6,
+                          "pressureScore":  4.5,
+                          "stabilityScore":  2.6
                       },
                       {
                           "symbol":  "FAST",
@@ -162,7 +177,9 @@
                           "operatingMargin":  21,
                           "roe":  9.4,
                           "debtRatio":  30.1,
-                          "week52RangePct":  88.2
+                          "week52RangePct":  88.2,
+                          "pressureScore":  4.0,
+                          "stabilityScore":  4.7
                       },
                       {
                           "symbol":  "TER",
@@ -180,7 +197,9 @@
                           "operatingMargin":  33.2,
                           "roe":  10.9,
                           "debtRatio":  42.3,
-                          "week52RangePct":  67.5
+                          "week52RangePct":  67.5,
+                          "pressureScore":  3.2,
+                          "stabilityScore":  3.0
                       },
                       {
                           "symbol":  "D",
@@ -198,7 +217,9 @@
                           "operatingMargin":  27,
                           "roe":  2.1,
                           "debtRatio":  291.2,
-                          "week52RangePct":  62.8
+                          "week52RangePct":  62.8,
+                          "pressureScore":  2.6,
+                          "stabilityScore":  3.4
                       },
                       {
                           "symbol":  "FIX",
@@ -216,7 +237,9 @@
                           "operatingMargin":  17.1,
                           "roe":  13.7,
                           "debtRatio":  163.8,
-                          "week52RangePct":  66.9
+                          "week52RangePct":  66.9,
+                          "pressureScore":  3.7,
+                          "stabilityScore":  3.7
                       },
                       {
                           "symbol":  "AFL",
@@ -234,7 +257,9 @@
                           "operatingMargin":  null,
                           "roe":  2.7,
                           "debtRatio":  282.6,
-                          "week52RangePct":  53.0
+                          "week52RangePct":  53.0,
+                          "pressureScore":  0.6,
+                          "stabilityScore":  4.0
                       },
                       {
                           "symbol":  "MRNA",
@@ -252,7 +277,9 @@
                           "operatingMargin":  -569.9,
                           "roe":  -11.6,
                           "debtRatio":  62.1,
-                          "week52RangePct":  75.5
+                          "week52RangePct":  75.5,
+                          "pressureScore":  7.4,
+                          "stabilityScore":  2
                       },
                       {
                           "symbol":  "F",
@@ -270,7 +297,9 @@
                           "operatingMargin":  1.3,
                           "roe":  -3.7,
                           "debtRatio":  699.3,
-                          "week52RangePct":  42.3
+                          "week52RangePct":  42.3,
+                          "pressureScore":  0.2,
+                          "stabilityScore":  2.0
                       },
                       {
                           "symbol":  "NXPI",
@@ -288,7 +317,9 @@
                           "operatingMargin":  30.8,
                           "roe":  6.7,
                           "debtRatio":  130.7,
-                          "week52RangePct":  25.1
+                          "week52RangePct":  25.1,
+                          "pressureScore":  2,
+                          "stabilityScore":  3.2
                       },
                       {
                           "symbol":  "GRMN",
@@ -306,7 +337,9 @@
                           "operatingMargin":  30.4,
                           "roe":  6,
                           "debtRatio":  26.5,
-                          "week52RangePct":  82.0
+                          "week52RangePct":  82.0,
+                          "pressureScore":  5.7,
+                          "stabilityScore":  5.1
                       },
                       {
                           "symbol":  "COHR",
@@ -324,7 +357,9 @@
                           "operatingMargin":  12.5,
                           "roe":  1.8,
                           "debtRatio":  58.7,
-                          "week52RangePct":  53.5
+                          "week52RangePct":  53.5,
+                          "pressureScore":  2.9,
+                          "stabilityScore":  0.8
                       },
                       {
                           "symbol":  "CIEN",
@@ -342,7 +377,9 @@
                           "operatingMargin":  15.2,
                           "roe":  7.5,
                           "debtRatio":  108.8,
-                          "week52RangePct":  51.5
+                          "week52RangePct":  51.5,
+                          "pressureScore":  3,
+                          "stabilityScore":  0.4
                       },
                       {
                           "symbol":  "NUE",
@@ -360,7 +397,9 @@
                           "operatingMargin":  11.8,
                           "roe":  3.5,
                           "debtRatio":  61,
-                          "week52RangePct":  76.2
+                          "week52RangePct":  76.2,
+                          "pressureScore":  4.0,
+                          "stabilityScore":  3.0
                       },
                       {
                           "symbol":  "AME",
@@ -378,7 +417,9 @@
                           "operatingMargin":  25.8,
                           "roe":  3.6,
                           "debtRatio":  47.4,
-                          "week52RangePct":  77.0
+                          "week52RangePct":  77.0,
+                          "pressureScore":  3.9,
+                          "stabilityScore":  3.4
                       },
                       {
                           "symbol":  "NDAQ",
@@ -396,7 +437,9 @@
                           "operatingMargin":  28.9,
                           "roe":  4.2,
                           "debtRatio":  128,
-                          "week52RangePct":  88.1
+                          "week52RangePct":  88.1,
+                          "pressureScore":  4.0,
+                          "stabilityScore":  3.4
                       },
                       {
                           "symbol":  "CTVA",
@@ -414,7 +457,9 @@
                           "operatingMargin":  23.5,
                           "roe":  3,
                           "debtRatio":  74.3,
-                          "week52RangePct":  73.2
+                          "week52RangePct":  73.2,
+                          "pressureScore":  3.1,
+                          "stabilityScore":  3.5
                       },
                       {
                           "symbol":  "SRE",
@@ -432,7 +477,9 @@
                           "operatingMargin":  27.8,
                           "roe":  2.4,
                           "debtRatio":  220.1,
-                          "week52RangePct":  25.4
+                          "week52RangePct":  25.4,
+                          "pressureScore":  0.7,
+                          "stabilityScore":  3.2
                       },
                       {
                           "symbol":  "DAL",
@@ -450,7 +497,9 @@
                           "operatingMargin":  9.4,
                           "roe":  7.4,
                           "debtRatio":  295.7,
-                          "week52RangePct":  67.5
+                          "week52RangePct":  67.5,
+                          "pressureScore":  2.5,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "DVN",
@@ -468,7 +517,9 @@
                           "operatingMargin":  34.3,
                           "roe":  4.6,
                           "debtRatio":  69.8,
-                          "week52RangePct":  78.9
+                          "week52RangePct":  78.9,
+                          "pressureScore":  4.4,
+                          "stabilityScore":  3.2
                       },
                       {
                           "symbol":  "KEYS",
@@ -486,7 +537,9 @@
                           "operatingMargin":  23.7,
                           "roe":  5.5,
                           "debtRatio":  85.4,
-                          "week52RangePct":  70.3
+                          "week52RangePct":  70.3,
+                          "pressureScore":  4.1,
+                          "stabilityScore":  2.1
                       },
                       {
                           "symbol":  "ADSK",
@@ -504,7 +557,9 @@
                           "operatingMargin":  29.5,
                           "roe":  15.4,
                           "debtRatio":  274.2,
-                          "week52RangePct":  48.0
+                          "week52RangePct":  48.0,
+                          "pressureScore":  3.2,
+                          "stabilityScore":  3.1
                       },
                       {
                           "symbol":  "CAH",
@@ -522,7 +577,9 @@
                           "operatingMargin":  1.4,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  76.9
+                          "week52RangePct":  76.9,
+                          "pressureScore":  4.5,
+                          "stabilityScore":  1.9
                       },
                       {
                           "symbol":  "PYPL",
@@ -540,7 +597,9 @@
                           "operatingMargin":  17.7,
                           "roe":  5.6,
                           "debtRatio":  317.4,
-                          "week52RangePct":  57.0
+                          "week52RangePct":  57.0,
+                          "pressureScore":  4.7,
+                          "stabilityScore":  3.1
                       },
                       {
                           "symbol":  "BDX",
@@ -558,7 +617,9 @@
                           "operatingMargin":  15.1,
                           "roe":  1.5,
                           "debtRatio":  107.8,
-                          "week52RangePct":  96.4
+                          "week52RangePct":  96.4,
+                          "pressureScore":  4.9,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "HONA",
@@ -576,7 +637,9 @@
                           "operatingMargin":  14.9,
                           "roe":  -4.3,
                           "debtRatio":  -438.7,
-                          "week52RangePct":  7.6
+                          "week52RangePct":  7.6,
+                          "pressureScore":  0.3,
+                          "stabilityScore":  2.2
                       },
                       {
                           "symbol":  "EW",
@@ -594,7 +657,9 @@
                           "operatingMargin":  31.2,
                           "roe":  3.7,
                           "debtRatio":  29,
-                          "week52RangePct":  75.9
+                          "week52RangePct":  75.9,
+                          "pressureScore":  2.6,
+                          "stabilityScore":  2.9
                       },
                       {
                           "symbol":  "STT",
@@ -612,7 +677,9 @@
                           "operatingMargin":  null,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  95.3
+                          "week52RangePct":  95.3,
+                          "pressureScore":  5.8,
+                          "stabilityScore":  4.1
                       },
                       {
                           "symbol":  "AXON",
@@ -630,7 +697,9 @@
                           "operatingMargin":  5.2,
                           "roe":  0.8,
                           "debtRatio":  103.6,
-                          "week52RangePct":  56.8
+                          "week52RangePct":  56.8,
+                          "pressureScore":  7.4,
+                          "stabilityScore":  2.1
                       },
                       {
                           "symbol":  "WAB",
@@ -648,7 +717,9 @@
                           "operatingMargin":  18.9,
                           "roe":  3.5,
                           "debtRatio":  106,
-                          "week52RangePct":  92.6
+                          "week52RangePct":  92.6,
+                          "pressureScore":  4.9,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "CARR",
@@ -666,7 +737,9 @@
                           "operatingMargin":  12.1,
                           "roe":  3.8,
                           "debtRatio":  181.8,
-                          "week52RangePct":  36.7
+                          "week52RangePct":  36.7,
+                          "pressureScore":  0.6,
+                          "stabilityScore":  2.8
                       },
                       {
                           "symbol":  "FITB",
@@ -684,7 +757,9 @@
                           "operatingMargin":  null,
                           "roe":  0.5,
                           "debtRatio":  770.9,
-                          "week52RangePct":  76.3
+                          "week52RangePct":  76.3,
+                          "pressureScore":  4.9,
+                          "stabilityScore":  3.8
                       },
                       {
                           "symbol":  "LHX",
@@ -702,7 +777,9 @@
                           "operatingMargin":  11.3,
                           "roe":  2.8,
                           "debtRatio":  105.9,
-                          "week52RangePct":  1.1
+                          "week52RangePct":  1.1,
+                          "pressureScore":  1.7,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "WDAY",
@@ -720,7 +797,9 @@
                           "operatingMargin":  13.3,
                           "roe":  3.3,
                           "debtRatio":  140.8,
-                          "week52RangePct":  63.7
+                          "week52RangePct":  63.7,
+                          "pressureScore":  5.9,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "XYZ",
@@ -738,7 +817,9 @@
                           "operatingMargin":  15.6,
                           "roe":  0.4,
                           "debtRatio":  77.8,
-                          "week52RangePct":  86.1
+                          "week52RangePct":  86.1,
+                          "pressureScore":  3.6,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "COIN",
@@ -756,7 +837,9 @@
                           "operatingMargin":  -2.4,
                           "roe":  -2.7,
                           "debtRatio":  102.3,
-                          "week52RangePct":  15.3
+                          "week52RangePct":  15.3,
+                          "pressureScore":  1.8,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "AMP",
@@ -774,7 +857,9 @@
                           "operatingMargin":  null,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  92.4
+                          "week52RangePct":  92.4,
+                          "pressureScore":  5.5,
+                          "stabilityScore":  3.9
                       },
                       {
                           "symbol":  "ETR",
@@ -792,7 +877,9 @@
                           "operatingMargin":  18.5,
                           "roe":  2.3,
                           "debtRatio":  336.5,
-                          "week52RangePct":  60.5
+                          "week52RangePct":  60.5,
+                          "pressureScore":  1.2,
+                          "stabilityScore":  3.3
                       },
                       {
                           "symbol":  "ROK",
@@ -810,7 +897,9 @@
                           "operatingMargin":  20.8,
                           "roe":  11.7,
                           "debtRatio":  217.4,
-                          "week52RangePct":  58.9
+                          "week52RangePct":  58.9,
+                          "pressureScore":  1.1,
+                          "stabilityScore":  3.7
                       },
                       {
                           "symbol":  "AZO",
@@ -828,7 +917,9 @@
                           "operatingMargin":  19.1,
                           "roe":  -23,
                           "debtRatio":  -851.2,
-                          "week52RangePct":  7.2
+                          "week52RangePct":  7.2,
+                          "pressureScore":  1.8,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "VTR",
@@ -846,7 +937,9 @@
                           "operatingMargin":  13.4,
                           "roe":  0.5,
                           "debtRatio":  102.1,
-                          "week52RangePct":  76.9
+                          "week52RangePct":  76.9,
+                          "pressureScore":  3.6,
+                          "stabilityScore":  2.8
                       },
                       {
                           "symbol":  "XEL",
@@ -864,7 +957,9 @@
                           "operatingMargin":  22.7,
                           "roe":  2.4,
                           "debtRatio":  262.3,
-                          "week52RangePct":  46.7
+                          "week52RangePct":  46.7,
+                          "pressureScore":  0.7,
+                          "stabilityScore":  3.2
                       },
                       {
                           "symbol":  "FERG",
@@ -882,7 +977,9 @@
                           "operatingMargin":  8.2,
                           "roe":  7,
                           "debtRatio":  202.8,
-                          "week52RangePct":  45.0
+                          "week52RangePct":  45.0,
+                          "pressureScore":  1.5,
+                          "stabilityScore":  2.9
                       },
                       {
                           "symbol":  "CMG",
@@ -900,7 +997,9 @@
                           "operatingMargin":  16.6,
                           "roe":  18.3,
                           "debtRatio":  303,
-                          "week52RangePct":  66.1
+                          "week52RangePct":  66.1,
+                          "pressureScore":  3.7,
+                          "stabilityScore":  4.5
                       },
                       {
                           "symbol":  "ARES",
@@ -918,7 +1017,9 @@
                           "operatingMargin":  17.4,
                           "roe":  3.8,
                           "debtRatio":  530,
-                          "week52RangePct":  48.6
+                          "week52RangePct":  48.6,
+                          "pressureScore":  2.9,
+                          "stabilityScore":  2.8
                       },
                       {
                           "symbol":  "EBAY",
@@ -936,7 +1037,9 @@
                           "operatingMargin":  21.6,
                           "roe":  11.8,
                           "debtRatio":  284.4,
-                          "week52RangePct":  70.4
+                          "week52RangePct":  70.4,
+                          "pressureScore":  1.9,
+                          "stabilityScore":  3.4
                       },
                       {
                           "symbol":  "VST",
@@ -954,7 +1057,9 @@
                           "operatingMargin":  13.8,
                           "roe":  5.6,
                           "debtRatio":  676.9,
-                          "week52RangePct":  6.4
+                          "week52RangePct":  6.4,
+                          "pressureScore":  0.3,
+                          "stabilityScore":  2.1
                       },
                       {
                           "symbol":  "HUM",
@@ -972,7 +1077,9 @@
                           "operatingMargin":  null,
                           "roe":  3.6,
                           "debtRatio":  197.4,
-                          "week52RangePct":  84.1
+                          "week52RangePct":  84.1,
+                          "pressureScore":  7.3,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "EXC",
@@ -990,7 +1097,9 @@
                           "operatingMargin":  16.4,
                           "roe":  1.3,
                           "debtRatio":  305.8,
-                          "week52RangePct":  21.8
+                          "week52RangePct":  21.8,
+                          "pressureScore":  1,
+                          "stabilityScore":  3.5
                       },
                       {
                           "symbol":  "A",
@@ -1008,7 +1117,9 @@
                           "operatingMargin":  21.7,
                           "roe":  4.8,
                           "debtRatio":  83.4,
-                          "week52RangePct":  86.4
+                          "week52RangePct":  86.4,
+                          "pressureScore":  6.8,
+                          "stabilityScore":  3.4
                       },
                       {
                           "symbol":  "TTWO",
@@ -1026,7 +1137,9 @@
                           "operatingMargin":  -2.3,
                           "roe":  -0.9,
                           "debtRatio":  151.2,
-                          "week52RangePct":  58.6
+                          "week52RangePct":  58.6,
+                          "pressureScore":  2.3,
+                          "stabilityScore":  1.9
                       },
                       {
                           "symbol":  "PAYX",
@@ -1044,7 +1157,9 @@
                           "operatingMargin":  37.7,
                           "roe":  11.3,
                           "debtRatio":  333,
-                          "week52RangePct":  75.0
+                          "week52RangePct":  75.0,
+                          "pressureScore":  5.5,
+                          "stabilityScore":  3.5
                       },
                       {
                           "symbol":  "CBRE",
@@ -1062,7 +1177,9 @@
                           "operatingMargin":  3.2,
                           "roe":  2.4,
                           "debtRatio":  253.6,
-                          "week52RangePct":  57.5
+                          "week52RangePct":  57.5,
+                          "pressureScore":  4.2,
+                          "stabilityScore":  2.7
                       },
                       {
                           "symbol":  "IDXX",
@@ -1080,7 +1197,9 @@
                           "operatingMargin":  35,
                           "roe":  21,
                           "debtRatio":  113.5,
-                          "week52RangePct":  16.3
+                          "week52RangePct":  16.3,
+                          "pressureScore":  1.3,
+                          "stabilityScore":  3.8
                       },
                       {
                           "symbol":  "KDP",
@@ -1098,7 +1217,9 @@
                           "operatingMargin":  19,
                           "roe":  1.1,
                           "debtRatio":  174,
-                          "week52RangePct":  85.3
+                          "week52RangePct":  85.3,
+                          "pressureScore":  2.0,
+                          "stabilityScore":  2.7
                       },
                       {
                           "symbol":  "ODFL",
@@ -1116,7 +1237,9 @@
                           "operatingMargin":  29.9,
                           "roe":  7.7,
                           "debtRatio":  26.1,
-                          "week52RangePct":  59.9
+                          "week52RangePct":  59.9,
+                          "pressureScore":  1.1,
+                          "stabilityScore":  4.9
                       },
                       {
                           "symbol":  "IQV",
@@ -1134,7 +1257,9 @@
                           "operatingMargin":  13,
                           "roe":  4.1,
                           "debtRatio":  382.1,
-                          "week52RangePct":  98.5
+                          "week52RangePct":  98.5,
+                          "pressureScore":  5.6,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "LYV",
@@ -1152,7 +1277,9 @@
                           "operatingMargin":  6.7,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  92.7
+                          "week52RangePct":  92.7,
+                          "pressureScore":  2.8,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "PRU",
@@ -1170,7 +1297,9 @@
                           "operatingMargin":  null,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  85.9
+                          "week52RangePct":  85.9,
+                          "pressureScore":  5.2,
+                          "stabilityScore":  4.0
                       },
                       {
                           "symbol":  "YUM",
@@ -1188,7 +1317,9 @@
                           "operatingMargin":  30.5,
                           "roe":  -12,
                           "debtRatio":  -222.2,
-                          "week52RangePct":  61.0
+                          "week52RangePct":  61.0,
+                          "pressureScore":  3.0,
+                          "stabilityScore":  2.8
                       },
                       {
                           "symbol":  "DHI",
@@ -1206,7 +1337,9 @@
                           "operatingMargin":  12.5,
                           "roe":  3.8,
                           "debtRatio":  50.8,
-                          "week52RangePct":  32.6
+                          "week52RangePct":  32.6,
+                          "pressureScore":  0.2,
+                          "stabilityScore":  2.9
                       },
                       {
                           "symbol":  "MCHP",
@@ -1224,7 +1357,9 @@
                           "operatingMargin":  24,
                           "roe":  3.6,
                           "debtRatio":  123.3,
-                          "week52RangePct":  44.8
+                          "week52RangePct":  44.8,
+                          "pressureScore":  3.2,
+                          "stabilityScore":  3.4
                       },
                       {
                           "symbol":  "MSCI",
@@ -1242,7 +1377,9 @@
                           "operatingMargin":  56.2,
                           "roe":  -12.7,
                           "debtRatio":  -308.3,
-                          "week52RangePct":  48.9
+                          "week52RangePct":  48.9,
+                          "pressureScore":  1.4,
+                          "stabilityScore":  3.4
                       },
                       {
                           "symbol":  "FLEX",
@@ -1260,7 +1397,9 @@
                           "operatingMargin":  5.3,
                           "roe":  4.9,
                           "debtRatio":  328.8,
-                          "week52RangePct":  47.7
+                          "week52RangePct":  47.7,
+                          "pressureScore":  1.8,
+                          "stabilityScore":  1.5
                       },
                       {
                           "symbol":  "ROP",
@@ -1278,7 +1417,9 @@
                           "operatingMargin":  27.7,
                           "roe":  6.2,
                           "debtRatio":  88.1,
-                          "week52RangePct":  48.4
+                          "week52RangePct":  48.4,
+                          "pressureScore":  4.9,
+                          "stabilityScore":  3.1
                       },
                       {
                           "symbol":  "WAT",
@@ -1296,7 +1437,9 @@
                           "operatingMargin":  -3.7,
                           "roe":  -0.5,
                           "debtRatio":  60.4,
-                          "week52RangePct":  92.1
+                          "week52RangePct":  92.1,
+                          "pressureScore":  7.3,
+                          "stabilityScore":  2.8
                       },
                       {
                           "symbol":  "VEEV",
@@ -1314,7 +1457,9 @@
                           "operatingMargin":  30.9,
                           "roe":  3.6,
                           "debtRatio":  25,
-                          "week52RangePct":  61.8
+                          "week52RangePct":  61.8,
+                          "pressureScore":  6,
+                          "stabilityScore":  5.0
                       },
                       {
                           "symbol":  "SYY",
@@ -1332,7 +1477,9 @@
                           "operatingMargin":  3,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  66.2
+                          "week52RangePct":  66.2,
+                          "pressureScore":  2.3,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "AIG",
@@ -1350,7 +1497,9 @@
                           "operatingMargin":  null,
                           "roe":  2.3,
                           "debtRatio":  302.5,
-                          "week52RangePct":  38.2
+                          "week52RangePct":  38.2,
+                          "pressureScore":  0.5,
+                          "stabilityScore":  3.5
                       },
                       {
                           "symbol":  "ED",
@@ -1368,7 +1517,9 @@
                           "operatingMargin":  14.2,
                           "roe":  1.2,
                           "debtRatio":  197.3,
-                          "week52RangePct":  59.9
+                          "week52RangePct":  59.9,
+                          "pressureScore":  1.9,
+                          "stabilityScore":  3.6
                       },
                       {
                           "symbol":  "PCG",
@@ -1386,7 +1537,9 @@
                           "operatingMargin":  21.4,
                           "roe":  2.2,
                           "debtRatio":  327.2,
-                          "week52RangePct":  78.2
+                          "week52RangePct":  78.2,
+                          "pressureScore":  3.0,
+                          "stabilityScore":  2.7
                       },
                       {
                           "symbol":  "ADM",
@@ -1404,7 +1557,9 @@
                           "operatingMargin":  4,
                           "roe":  3.9,
                           "debtRatio":  125.8,
-                          "week52RangePct":  68.7
+                          "week52RangePct":  68.7,
+                          "pressureScore":  1.8,
+                          "stabilityScore":  3.8
                       },
                       {
                           "symbol":  "EXPE",
@@ -1422,7 +1577,9 @@
                           "operatingMargin":  19,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  98.7
+                          "week52RangePct":  98.7,
+                          "pressureScore":  5.8,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "NTAP",
@@ -1440,7 +1597,9 @@
                           "operatingMargin":  27.3,
                           "roe":  29.9,
                           "debtRatio":  695.3,
-                          "week52RangePct":  80.8
+                          "week52RangePct":  80.8,
+                          "pressureScore":  6.2,
+                          "stabilityScore":  2.9
                       },
                       {
                           "symbol":  "HSY",
@@ -1458,7 +1617,9 @@
                           "operatingMargin":  23.1,
                           "roe":  10,
                           "debtRatio":  206.2,
-                          "week52RangePct":  36.5
+                          "week52RangePct":  36.5,
+                          "pressureScore":  0.7,
+                          "stabilityScore":  3.9
                       },
                       {
                           "symbol":  "KVUE",
@@ -1476,7 +1637,9 @@
                           "operatingMargin":  19.2,
                           "roe":  4.3,
                           "debtRatio":  153.3,
-                          "week52RangePct":  72.3
+                          "week52RangePct":  72.3,
+                          "pressureScore":  1.9,
+                          "stabilityScore":  3.9
                       },
                       {
                           "symbol":  "EL",
@@ -1494,7 +1657,9 @@
                           "operatingMargin":  15,
                           "roe":  2.2,
                           "debtRatio":  392.5,
-                          "week52RangePct":  68.4
+                          "week52RangePct":  68.4,
+                          "pressureScore":  4.1,
+                          "stabilityScore":  3.4
                       },
                       {
                           "symbol":  "HIG",
@@ -1512,7 +1677,9 @@
                           "operatingMargin":  null,
                           "roe":  6.6,
                           "debtRatio":  348.1,
-                          "week52RangePct":  72.5
+                          "week52RangePct":  72.5,
+                          "pressureScore":  2.2,
+                          "stabilityScore":  3.7
                       },
                       {
                           "symbol":  "UAL",
@@ -1530,7 +1697,9 @@
                           "operatingMargin":  5.4,
                           "roe":  4.8,
                           "debtRatio":  406.5,
-                          "week52RangePct":  53.4
+                          "week52RangePct":  53.4,
+                          "pressureScore":  2.3,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "TKO",
@@ -1548,7 +1717,9 @@
                           "operatingMargin":  27.8,
                           "roe":  3,
                           "debtRatio":  232.6,
-                          "week52RangePct":  34.2
+                          "week52RangePct":  34.2,
+                          "pressureScore":  2.8,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "KMB",
@@ -1566,7 +1737,9 @@
                           "operatingMargin":  15.1,
                           "roe":  19.7,
                           "debtRatio":  953.1,
-                          "week52RangePct":  48.5
+                          "week52RangePct":  48.5,
+                          "pressureScore":  1.8,
+                          "stabilityScore":  3.9
                       },
                       {
                           "symbol":  "IRM",
@@ -1584,7 +1757,9 @@
                           "operatingMargin":  19.1,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  76.3
+                          "week52RangePct":  76.3,
+                          "pressureScore":  2.1,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "PEG",
@@ -1602,7 +1777,9 @@
                           "operatingMargin":  18.1,
                           "roe":  1.9,
                           "debtRatio":  239.4,
-                          "week52RangePct":  6.6
+                          "week52RangePct":  6.6,
+                          "pressureScore":  0,
+                          "stabilityScore":  3.1
                       },
                       {
                           "symbol":  "VMC",
@@ -1620,7 +1797,9 @@
                           "operatingMargin":  21.7,
                           "roe":  3.8,
                           "debtRatio":  94,
-                          "week52RangePct":  30.0
+                          "week52RangePct":  30.0,
+                          "pressureScore":  0.4,
+                          "stabilityScore":  3.1
                       },
                       {
                           "symbol":  "KR",
@@ -1638,7 +1817,9 @@
                           "operatingMargin":  3.1,
                           "roe":  14,
                           "debtRatio":  677,
-                          "week52RangePct":  22.0
+                          "week52RangePct":  22.0,
+                          "pressureScore":  0.6,
+                          "stabilityScore":  2.0
                       },
                       {
                           "symbol":  "CCL",
@@ -1656,7 +1837,9 @@
                           "operatingMargin":  12.8,
                           "roe":  4.1,
                           "debtRatio":  302.7,
-                          "week52RangePct":  21.4
+                          "week52RangePct":  21.4,
+                          "pressureScore":  0.9,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "DXCM",
@@ -1674,7 +1857,9 @@
                           "operatingMargin":  24.3,
                           "roe":  9.5,
                           "debtRatio":  146.3,
-                          "week52RangePct":  96.0
+                          "week52RangePct":  96.0,
+                          "pressureScore":  6,
+                          "stabilityScore":  3.9
                       },
                       {
                           "symbol":  "MTB",
@@ -1692,7 +1877,9 @@
                           "operatingMargin":  null,
                           "roe":  2.9,
                           "debtRatio":  684.6,
-                          "week52RangePct":  82.6
+                          "week52RangePct":  82.6,
+                          "pressureScore":  3.1,
+                          "stabilityScore":  3.8
                       },
                       {
                           "symbol":  "WEC",
@@ -1710,7 +1897,9 @@
                           "operatingMargin":  21,
                           "roe":  2.1,
                           "debtRatio":  269.5,
-                          "week52RangePct":  27.3
+                          "week52RangePct":  27.3,
+                          "pressureScore":  1,
+                          "stabilityScore":  3.7
                       },
                       {
                           "symbol":  "HBAN",
@@ -1728,7 +1917,9 @@
                           "operatingMargin":  null,
                           "roe":  2.2,
                           "debtRatio":  770.4,
-                          "week52RangePct":  47.0
+                          "week52RangePct":  47.0,
+                          "pressureScore":  4.3,
+                          "stabilityScore":  3.5
                       },
                       {
                           "symbol":  "RMD",
@@ -1746,7 +1937,9 @@
                           "operatingMargin":  34.9,
                           "roe":  6.1,
                           "debtRatio":  35.3,
-                          "week52RangePct":  51.7
+                          "week52RangePct":  51.7,
+                          "pressureScore":  4.3,
+                          "stabilityScore":  3.9
                       },
                       {
                           "symbol":  "ACGL",
@@ -1764,7 +1957,9 @@
                           "operatingMargin":  null,
                           "roe":  4.4,
                           "debtRatio":  254.5,
-                          "week52RangePct":  75.9
+                          "week52RangePct":  75.9,
+                          "pressureScore":  1.9,
+                          "stabilityScore":  4.5
                       },
                       {
                           "symbol":  "GEHC",
@@ -1782,7 +1977,9 @@
                           "operatingMargin":  13.9,
                           "roe":  5.1,
                           "debtRatio":  237.2,
-                          "week52RangePct":  49.8
+                          "week52RangePct":  49.8,
+                          "pressureScore":  3.1,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "RJF",
@@ -1800,7 +1997,9 @@
                           "operatingMargin":  null,
                           "roe":  4.7,
                           "debtRatio":  641.4,
-                          "week52RangePct":  86.2
+                          "week52RangePct":  86.2,
+                          "pressureScore":  5.3,
+                          "stabilityScore":  3.7
                       },
                       {
                           "symbol":  "NTRS",
@@ -1818,7 +2017,9 @@
                           "operatingMargin":  null,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  87.8
+                          "week52RangePct":  87.8,
+                          "pressureScore":  5.9,
+                          "stabilityScore":  4.8
                       },
                       {
                           "symbol":  "EQT",
@@ -1836,7 +2037,9 @@
                           "operatingMargin":  20.3,
                           "roe":  0.8,
                           "debtRatio":  49.3,
-                          "week52RangePct":  28.8
+                          "week52RangePct":  28.8,
+                          "pressureScore":  0.4,
+                          "stabilityScore":  3.0
                       },
                       {
                           "symbol":  "EME",
@@ -1854,7 +2057,9 @@
                           "operatingMargin":  10.6,
                           "roe":  9.9,
                           "debtRatio":  149,
-                          "week52RangePct":  49.5
+                          "week52RangePct":  49.5,
+                          "pressureScore":  2.3,
+                          "stabilityScore":  2.6
                       },
                       {
                           "symbol":  "CCI",
@@ -1872,7 +2077,9 @@
                           "operatingMargin":  46.8,
                           "roe":  -2.9,
                           "debtRatio":  -757.9,
-                          "week52RangePct":  20.6
+                          "week52RangePct":  20.6,
+                          "pressureScore":  0,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "JBL",
@@ -1890,7 +2097,9 @@
                           "operatingMargin":  5.2,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  48.2
+                          "week52RangePct":  48.2,
+                          "pressureScore":  1.4,
+                          "stabilityScore":  2.1
                       },
                       {
                           "symbol":  "STLD",
@@ -1908,7 +2117,9 @@
                           "operatingMargin":  12.4,
                           "roe":  5.7,
                           "debtRatio":  82.3,
-                          "week52RangePct":  63.3
+                          "week52RangePct":  63.3,
+                          "pressureScore":  5,
+                          "stabilityScore":  2.0
                       },
                       {
                           "symbol":  "EXR",
@@ -1926,7 +2137,9 @@
                           "operatingMargin":  42.9,
                           "roe":  1.8,
                           "debtRatio":  111.7,
-                          "week52RangePct":  61.9
+                          "week52RangePct":  61.9,
+                          "pressureScore":  0.6,
+                          "stabilityScore":  3.7
                       },
                       {
                           "symbol":  "MLM",
@@ -1944,7 +2157,9 @@
                           "operatingMargin":  20,
                           "roe":  2.2,
                           "debtRatio":  84.5,
-                          "week52RangePct":  5.8
+                          "week52RangePct":  5.8,
+                          "pressureScore":  2.7,
+                          "stabilityScore":  3.1
                       },
                       {
                           "symbol":  "ZTS",
@@ -1962,7 +2177,9 @@
                           "operatingMargin":  40.5,
                           "roe":  22,
                           "debtRatio":  378.9,
-                          "week52RangePct":  7.2
+                          "week52RangePct":  7.2,
+                          "pressureScore":  0,
+                          "stabilityScore":  3.1
                       },
                       {
                           "symbol":  "CNC",
@@ -1980,7 +2197,9 @@
                           "operatingMargin":  2.2,
                           "roe":  4.8,
                           "debtRatio":  267.5,
-                          "week52RangePct":  91.0
+                          "week52RangePct":  91.0,
+                          "pressureScore":  3.5,
+                          "stabilityScore":  0.9
                       },
                       {
                           "symbol":  "BIIB",
@@ -1998,7 +2217,9 @@
                           "operatingMargin":  17.6,
                           "roe":  0.5,
                           "debtRatio":  70.2,
-                          "week52RangePct":  95.6
+                          "week52RangePct":  95.6,
+                          "pressureScore":  2.3,
+                          "stabilityScore":  2.9
                       },
                       {
                           "symbol":  "WTW",
@@ -2016,7 +2237,9 @@
                           "operatingMargin":  17.2,
                           "roe":  3,
                           "debtRatio":  296.4,
-                          "week52RangePct":  98.2
+                          "week52RangePct":  98.2,
+                          "pressureScore":  5.2,
+                          "stabilityScore":  3.2
                       },
                       {
                           "symbol":  "CPRT",
@@ -2034,7 +2257,9 @@
                           "operatingMargin":  37.5,
                           "roe":  4.6,
                           "debtRatio":  9.8,
-                          "week52RangePct":  27.7
+                          "week52RangePct":  27.7,
+                          "pressureScore":  0.8,
+                          "stabilityScore":  4.9
                       },
                       {
                           "symbol":  "IR",
@@ -2052,7 +2277,9 @@
                           "operatingMargin":  17.5,
                           "roe":  2.5,
                           "debtRatio":  78.1,
-                          "week52RangePct":  36.2
+                          "week52RangePct":  36.2,
+                          "pressureScore":  3.5,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "CASY",
@@ -2070,7 +2297,9 @@
                           "operatingMargin":  5.1,
                           "roe":  4.1,
                           "debtRatio":  126.1,
-                          "week52RangePct":  83.2
+                          "week52RangePct":  83.2,
+                          "pressureScore":  2.5,
+                          "stabilityScore":  2.0
                       },
                       {
                           "symbol":  "LVS",
@@ -2088,7 +2317,9 @@
                           "operatingMargin":  19.8,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  10.5
+                          "week52RangePct":  10.5,
+                          "pressureScore":  0,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "KHC",
@@ -2106,7 +2337,9 @@
                           "operatingMargin":  14.7,
                           "roe":  -15.2,
                           "debtRatio":  102.6,
-                          "week52RangePct":  65.7
+                          "week52RangePct":  65.7,
+                          "pressureScore":  0.5,
+                          "stabilityScore":  1.7
                       },
                       {
                           "symbol":  "RDDT",
@@ -2124,7 +2357,9 @@
                           "operatingMargin":  28.8,
                           "roe":  7.7,
                           "debtRatio":  10.7,
-                          "week52RangePct":  20.4
+                          "week52RangePct":  20.4,
+                          "pressureScore":  3.7,
+                          "stabilityScore":  4.7
                       },
                       {
                           "symbol":  "TDY",
@@ -2142,7 +2377,9 @@
                           "operatingMargin":  20,
                           "roe":  2.3,
                           "debtRatio":  39.9,
-                          "week52RangePct":  66.2
+                          "week52RangePct":  66.2,
+                          "pressureScore":  2.0,
+                          "stabilityScore":  2.8
                       },
                       {
                           "symbol":  "HAL",
@@ -2160,7 +2397,9 @@
                           "operatingMargin":  12,
                           "roe":  4.9,
                           "debtRatio":  134.2,
-                          "week52RangePct":  59.6
+                          "week52RangePct":  59.6,
+                          "pressureScore":  1,
+                          "stabilityScore":  2.7
                       },
                       {
                           "symbol":  "CFG",
@@ -2178,7 +2417,9 @@
                           "operatingMargin":  null,
                           "roe":  2.2,
                           "debtRatio":  793.1,
-                          "week52RangePct":  81.4
+                          "week52RangePct":  81.4,
+                          "pressureScore":  3.2,
+                          "stabilityScore":  3.4
                       },
                       {
                           "symbol":  "AEE",
@@ -2196,7 +2437,9 @@
                           "operatingMargin":  24.4,
                           "roe":  2.6,
                           "debtRatio":  266.8,
-                          "week52RangePct":  48.7
+                          "week52RangePct":  48.7,
+                          "pressureScore":  0.7,
+                          "stabilityScore":  3.4
                       },
                       {
                           "symbol":  "VICI",
@@ -2214,7 +2457,9 @@
                           "operatingMargin":  70.4,
                           "roe":  1.8,
                           "debtRatio":  64,
-                          "week52RangePct":  12.0
+                          "week52RangePct":  12.0,
+                          "pressureScore":  0.9,
+                          "stabilityScore":  3.6
                       },
                       {
                           "symbol":  "FOXA",
@@ -2232,7 +2477,9 @@
                           "operatingMargin":  25.7,
                           "roe":  5.9,
                           "debtRatio":  91.7,
-                          "week52RangePct":  75
+                          "week52RangePct":  75,
+                          "pressureScore":  5.1,
+                          "stabilityScore":  2.7
                       },
                       {
                           "symbol":  "ON",
@@ -2250,7 +2497,9 @@
                           "operatingMargin":  18.7,
                           "roe":  3.1,
                           "debtRatio":  86.5,
-                          "week52RangePct":  30.3
+                          "week52RangePct":  30.3,
+                          "pressureScore":  0.9,
+                          "stabilityScore":  2.2
                       },
                       {
                           "symbol":  "ATO",
@@ -2268,7 +2517,9 @@
                           "operatingMargin":  36.4,
                           "roe":  1.6,
                           "debtRatio":  107,
-                          "week52RangePct":  23.8
+                          "week52RangePct":  23.8,
+                          "pressureScore":  0.8,
+                          "stabilityScore":  4.0
                       },
                       {
                           "symbol":  "DTE",
@@ -2286,7 +2537,9 @@
                           "operatingMargin":  8.1,
                           "roe":  2,
                           "debtRatio":  347.2,
-                          "week52RangePct":  31.9
+                          "week52RangePct":  31.9,
+                          "pressureScore":  2,
+                          "stabilityScore":  3.0
                       },
                       {
                           "symbol":  "WSM",
@@ -2304,7 +2557,9 @@
                           "operatingMargin":  16.2,
                           "roe":  12.4,
                           "debtRatio":  170.6,
-                          "week52RangePct":  80.8
+                          "week52RangePct":  80.8,
+                          "pressureScore":  3.5,
+                          "stabilityScore":  4.8
                       },
                       {
                           "symbol":  "FISV",
@@ -2322,7 +2577,9 @@
                           "operatingMargin":  19.1,
                           "roe":  2.3,
                           "debtRatio":  200.6,
-                          "week52RangePct":  6.4
+                          "week52RangePct":  6.4,
+                          "pressureScore":  0,
+                          "stabilityScore":  2.1
                       },
                       {
                           "symbol":  "MTD",
@@ -2340,7 +2597,9 @@
                           "operatingMargin":  30.6,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  74.9
+                          "week52RangePct":  74.9,
+                          "pressureScore":  6.4,
+                          "stabilityScore":  4.0
                       },
                       {
                           "symbol":  "CTSH",
@@ -2358,7 +2617,9 @@
                           "operatingMargin":  17.5,
                           "roe":  4.4,
                           "debtRatio":  44,
-                          "week52RangePct":  50.3
+                          "week52RangePct":  50.3,
+                          "pressureScore":  3.2,
+                          "stabilityScore":  3.4
                       },
                       {
                           "symbol":  "EIX",
@@ -2376,7 +2637,9 @@
                           "operatingMargin":  25.1,
                           "roe":  3.2,
                           "debtRatio":  439.7,
-                          "week52RangePct":  74.2
+                          "week52RangePct":  74.2,
+                          "pressureScore":  1.4,
+                          "stabilityScore":  3.0
                       },
                       {
                           "symbol":  "CPAY",
@@ -2394,7 +2657,9 @@
                           "operatingMargin":  40.8,
                           "roe":  10,
                           "debtRatio":  649.6,
-                          "week52RangePct":  93.1
+                          "week52RangePct":  93.1,
+                          "pressureScore":  5.6,
+                          "stabilityScore":  3.1
                       },
                       {
                           "symbol":  "LH",
@@ -2412,7 +2677,9 @@
                           "operatingMargin":  12.2,
                           "roe":  3.5,
                           "debtRatio":  115.1,
-                          "week52RangePct":  99.6
+                          "week52RangePct":  99.6,
+                          "pressureScore":  5.6,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "DG",
@@ -2430,7 +2697,9 @@
                           "operatingMargin":  5.9,
                           "roe":  5,
                           "debtRatio":  258.5,
-                          "week52RangePct":  47.9
+                          "week52RangePct":  47.9,
+                          "pressureScore":  3.2,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "OTIS",
@@ -2448,7 +2717,9 @@
                           "operatingMargin":  14.9,
                           "roe":  -7.4,
                           "debtRatio":  -289,
-                          "week52RangePct":  11.9
+                          "week52RangePct":  11.9,
+                          "pressureScore":  1.2,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "DOV",
@@ -2466,7 +2737,9 @@
                           "operatingMargin":  17.9,
                           "roe":  4.1,
                           "debtRatio":  77.8,
-                          "week52RangePct":  56.8
+                          "week52RangePct":  56.8,
+                          "pressureScore":  0.9,
+                          "stabilityScore":  3.2
                       },
                       {
                           "symbol":  "HPQ",
@@ -2484,7 +2757,9 @@
                           "operatingMargin":  6.8,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  75.3
+                          "week52RangePct":  75.3,
+                          "pressureScore":  3.9,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "DGX",
@@ -2502,7 +2777,9 @@
                           "operatingMargin":  15.1,
                           "roe":  4.3,
                           "debtRatio":  120.3,
-                          "week52RangePct":  97.2
+                          "week52RangePct":  97.2,
+                          "pressureScore":  6.1,
+                          "stabilityScore":  3.0
                       },
                       {
                           "symbol":  "Q",
@@ -2520,7 +2797,9 @@
                           "operatingMargin":  22.3,
                           "roe":  1.7,
                           "debtRatio":  93.4,
-                          "week52RangePct":  52.2
+                          "week52RangePct":  52.2,
+                          "pressureScore":  3,
+                          "stabilityScore":  1.8
                       },
                       {
                           "symbol":  "AWK",
@@ -2538,7 +2817,9 @@
                           "operatingMargin":  40,
                           "roe":  2.7,
                           "debtRatio":  212.5,
-                          "week52RangePct":  77.1
+                          "week52RangePct":  77.1,
+                          "pressureScore":  3.3,
+                          "stabilityScore":  4.3
                       },
                       {
                           "symbol":  "FE",
@@ -2556,7 +2837,9 @@
                           "operatingMargin":  12.3,
                           "roe":  2.2,
                           "debtRatio":  338.6,
-                          "week52RangePct":  39.1
+                          "week52RangePct":  39.1,
+                          "pressureScore":  1.2,
+                          "stabilityScore":  3.0
                       },
                       {
                           "symbol":  "XYL",
@@ -2574,7 +2857,9 @@
                           "operatingMargin":  17.2,
                           "roe":  2.5,
                           "debtRatio":  64.1,
-                          "week52RangePct":  18.2
+                          "week52RangePct":  18.2,
+                          "pressureScore":  1.2,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "TPL",
@@ -2592,7 +2877,9 @@
                           "operatingMargin":  78,
                           "roe":  9.2,
                           "debtRatio":  11.2,
-                          "week52RangePct":  37.5
+                          "week52RangePct":  37.5,
+                          "pressureScore":  3.9,
+                          "stabilityScore":  6.0
                       },
                       {
                           "symbol":  "ES",
@@ -2610,7 +2897,9 @@
                           "operatingMargin":  23.9,
                           "roe":  3.7,
                           "debtRatio":  290.5,
-                          "week52RangePct":  62.3
+                          "week52RangePct":  62.3,
+                          "pressureScore":  1.6,
+                          "stabilityScore":  3.2
                       },
                       {
                           "symbol":  "FOX",
@@ -2628,7 +2917,9 @@
                           "operatingMargin":  25.7,
                           "roe":  5.9,
                           "debtRatio":  91.7,
-                          "week52RangePct":  73.6
+                          "week52RangePct":  73.6,
+                          "pressureScore":  3.7,
+                          "stabilityScore":  2.6
                       },
                       {
                           "symbol":  "TPR",
@@ -2646,7 +2937,9 @@
                           "operatingMargin":  22.3,
                           "roe":  50.4,
                           "debtRatio":  847.6,
-                          "week52RangePct":  54.5
+                          "week52RangePct":  54.5,
+                          "pressureScore":  3.2,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "RF",
@@ -2664,7 +2957,9 @@
                           "operatingMargin":  null,
                           "roe":  3,
                           "debtRatio":  755.8,
-                          "week52RangePct":  81.2
+                          "week52RangePct":  81.2,
+                          "pressureScore":  1.5,
+                          "stabilityScore":  3.7
                       },
                       {
                           "symbol":  "INCY",
@@ -2682,7 +2977,9 @@
                           "operatingMargin":  41.8,
                           "roe":  9.2,
                           "debtRatio":  24.1,
-                          "week52RangePct":  91.0
+                          "week52RangePct":  91.0,
+                          "pressureScore":  7.3,
+                          "stabilityScore":  4.8
                       },
                       {
                           "symbol":  "SW",
@@ -2700,7 +2997,9 @@
                           "operatingMargin":  5.3,
                           "roe":  0.5,
                           "debtRatio":  150.5,
-                          "week52RangePct":  80.1
+                          "week52RangePct":  80.1,
+                          "pressureScore":  4.6,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "PPL",
@@ -2718,7 +3017,9 @@
                           "operatingMargin":  26.9,
                           "roe":  3,
                           "debtRatio":  208.3,
-                          "week52RangePct":  26.9
+                          "week52RangePct":  26.9,
+                          "pressureScore":  1.4,
+                          "stabilityScore":  3.6
                       },
                       {
                           "symbol":  "JBHT",
@@ -2736,7 +3037,9 @@
                           "operatingMargin":  7.4,
                           "roe":  5,
                           "debtRatio":  117.2,
-                          "week52RangePct":  76.5
+                          "week52RangePct":  76.5,
+                          "pressureScore":  2.4,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "SYF",
@@ -2754,7 +3057,9 @@
                           "operatingMargin":  null,
                           "roe":  5.2,
                           "debtRatio":  621.6,
-                          "week52RangePct":  65.9
+                          "week52RangePct":  65.9,
+                          "pressureScore":  3.1,
+                          "stabilityScore":  3.0
                       },
                       {
                           "symbol":  "CINF",
@@ -2772,7 +3077,9 @@
                           "operatingMargin":  null,
                           "roe":  1.7,
                           "debtRatio":  162.3,
-                          "week52RangePct":  47.3
+                          "week52RangePct":  47.3,
+                          "pressureScore":  2.2,
+                          "stabilityScore":  4.9
                       },
                       {
                           "symbol":  "CNP",
@@ -2790,7 +3097,9 @@
                           "operatingMargin":  24.8,
                           "roe":  2.1,
                           "debtRatio":  311.7,
-                          "week52RangePct":  28.9
+                          "week52RangePct":  28.9,
+                          "pressureScore":  1.9,
+                          "stabilityScore":  3.1
                       },
                       {
                           "symbol":  "VRSN",
@@ -2808,7 +3117,9 @@
                           "operatingMargin":  68.2,
                           "roe":  -9.6,
                           "debtRatio":  -180,
-                          "week52RangePct":  79.1
+                          "week52RangePct":  79.1,
+                          "pressureScore":  0.9,
+                          "stabilityScore":  3.9
                       },
                       {
                           "symbol":  "WRB",
@@ -2826,7 +3137,9 @@
                           "operatingMargin":  null,
                           "roe":  4.6,
                           "debtRatio":  364.4,
-                          "week52RangePct":  42.4
+                          "week52RangePct":  42.4,
+                          "pressureScore":  1.2,
+                          "stabilityScore":  3.5
                       },
                       {
                           "symbol":  "FICO",
@@ -2844,7 +3157,9 @@
                           "operatingMargin":  53.8,
                           "roe":  -5.8,
                           "debtRatio":  -149.7,
-                          "week52RangePct":  26.3
+                          "week52RangePct":  26.3,
+                          "pressureScore":  2.7,
+                          "stabilityScore":  3.0
                       },
                       {
                           "symbol":  "DLTR",
@@ -2862,7 +3177,9 @@
                           "operatingMargin":  9.5,
                           "roe":  9.9,
                           "debtRatio":  294.2,
-                          "week52RangePct":  90.2
+                          "week52RangePct":  90.2,
+                          "pressureScore":  5.1,
+                          "stabilityScore":  2.6
                       },
                       {
                           "symbol":  "PPG",
@@ -2880,7 +3197,9 @@
                           "operatingMargin":  14.1,
                           "roe":  5.2,
                           "debtRatio":  165.2,
-                          "week52RangePct":  49.6
+                          "week52RangePct":  49.6,
+                          "pressureScore":  1.1,
+                          "stabilityScore":  3.0
                       },
                       {
                           "symbol":  "ECHO",
@@ -2898,7 +3217,9 @@
                           "operatingMargin":  14.3,
                           "roe":  59.8,
                           "debtRatio":  178.2,
-                          "week52RangePct":  35.9
+                          "week52RangePct":  35.9,
+                          "pressureScore":  0,
+                          "stabilityScore":  1.5
                       },
                       {
                           "symbol":  "DRI",
@@ -2916,7 +3237,9 @@
                           "operatingMargin":  14.5,
                           "roe":  18.3,
                           "debtRatio":  482.7,
-                          "week52RangePct":  93.1
+                          "week52RangePct":  93.1,
+                          "pressureScore":  2.5,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "WST",
@@ -2934,7 +3257,9 @@
                           "operatingMargin":  22,
                           "roe":  5.2,
                           "debtRatio":  36.3,
-                          "week52RangePct":  79.8
+                          "week52RangePct":  79.8,
+                          "pressureScore":  3.7,
+                          "stabilityScore":  4.6
                       },
                       {
                           "symbol":  "HUBB",
@@ -2952,7 +3277,9 @@
                           "operatingMargin":  20.4,
                           "roe":  6.1,
                           "debtRatio":  202.5,
-                          "week52RangePct":  38.9
+                          "week52RangePct":  38.9,
+                          "pressureScore":  1.8,
+                          "stabilityScore":  3.2
                       },
                       {
                           "symbol":  "GPN",
@@ -2970,7 +3297,9 @@
                           "operatingMargin":  10.2,
                           "roe":  0.1,
                           "debtRatio":  171.4,
-                          "week52RangePct":  95.4
+                          "week52RangePct":  95.4,
+                          "pressureScore":  8,
+                          "stabilityScore":  2.8
                       },
                       {
                           "symbol":  "PHM",
@@ -2988,7 +3317,9 @@
                           "operatingMargin":  15.4,
                           "roe":  3.6,
                           "debtRatio":  40.3,
-                          "week52RangePct":  58.7
+                          "week52RangePct":  58.7,
+                          "pressureScore":  1.5,
+                          "stabilityScore":  3.1
                       },
                       {
                           "symbol":  "EXPD",
@@ -3006,7 +3337,9 @@
                           "operatingMargin":  10,
                           "roe":  12.6,
                           "debtRatio":  142.2,
-                          "week52RangePct":  97.2
+                          "week52RangePct":  97.2,
+                          "pressureScore":  6.1,
+                          "stabilityScore":  4.2
                       },
                       {
                           "symbol":  "VRSK",
@@ -3024,7 +3357,9 @@
                           "operatingMargin":  45.1,
                           "roe":  -19.2,
                           "debtRatio":  -478.1,
-                          "week52RangePct":  28.5
+                          "week52RangePct":  28.5,
+                          "pressureScore":  1.9,
+                          "stabilityScore":  2.8
                       },
                       {
                           "symbol":  "BRO",
@@ -3042,7 +3377,9 @@
                           "operatingMargin":  25.2,
                           "roe":  2.3,
                           "debtRatio":  137.3,
-                          "week52RangePct":  47.6
+                          "week52RangePct":  47.6,
+                          "pressureScore":  7,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "SMCI",
@@ -3060,7 +3397,9 @@
                           "operatingMargin":  6.1,
                           "roe":  6.4,
                           "debtRatio":  209.6,
-                          "week52RangePct":  39.9
+                          "week52RangePct":  39.9,
+                          "pressureScore":  4.1,
+                          "stabilityScore":  3.2
                       },
                       {
                           "symbol":  "VLTO",
@@ -3078,7 +3417,9 @@
                           "operatingMargin":  21.4,
                           "roe":  7.8,
                           "debtRatio":  176.3,
-                          "week52RangePct":  64.8
+                          "week52RangePct":  64.8,
+                          "pressureScore":  4.0,
+                          "stabilityScore":  2.6
                       },
                       {
                           "symbol":  "OMC",
@@ -3096,7 +3437,9 @@
                           "operatingMargin":  14.1,
                           "roe":  6.1,
                           "debtRatio":  406.9,
-                          "week52RangePct":  97.3
+                          "week52RangePct":  97.3,
+                          "pressureScore":  5.6,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "TROW",
@@ -3114,7 +3457,9 @@
                           "operatingMargin":  29.6,
                           "roe":  5.7,
                           "debtRatio":  28.9,
-                          "week52RangePct":  73.6
+                          "week52RangePct":  73.6,
+                          "pressureScore":  2.3,
+                          "stabilityScore":  5.1
                       },
                       {
                           "symbol":  "NRG",
@@ -3132,7 +3477,9 @@
                           "operatingMargin":  12.8,
                           "roe":  10.4,
                           "debtRatio":  722.7,
-                          "week52RangePct":  0.6
+                          "week52RangePct":  0.6,
+                          "pressureScore":  1.8,
+                          "stabilityScore":  2.0
                       },
                       {
                           "symbol":  "PFG",
@@ -3150,7 +3497,9 @@
                           "operatingMargin":  null,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  87.8
+                          "week52RangePct":  87.8,
+                          "pressureScore":  1.8,
+                          "stabilityScore":  3.4
                       },
                       {
                           "symbol":  "CHD",
@@ -3168,7 +3517,9 @@
                           "operatingMargin":  19.8,
                           "roe":  5.2,
                           "debtRatio":  115.2,
-                          "week52RangePct":  85.8
+                          "week52RangePct":  85.8,
+                          "pressureScore":  1.2,
+                          "stabilityScore":  3.2
                       },
                       {
                           "symbol":  "DOW",
@@ -3186,7 +3537,9 @@
                           "operatingMargin":  11.5,
                           "roe":  4.5,
                           "debtRatio":  278.8,
-                          "week52RangePct":  48.8
+                          "week52RangePct":  48.8,
+                          "pressureScore":  2.4,
+                          "stabilityScore":  2.0
                       },
                       {
                           "symbol":  "KEY",
@@ -3204,7 +3557,9 @@
                           "operatingMargin":  null,
                           "roe":  2.6,
                           "debtRatio":  843.9,
-                          "week52RangePct":  71.1
+                          "week52RangePct":  71.1,
+                          "pressureScore":  1.7,
+                          "stabilityScore":  3.1
                       },
                       {
                           "symbol":  "STE",
@@ -3222,7 +3577,9 @@
                           "operatingMargin":  19.2,
                           "roe":  2.8,
                           "debtRatio":  48.8,
-                          "week52RangePct":  57.5
+                          "week52RangePct":  57.5,
+                          "pressureScore":  2.8,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "STZ",
@@ -3240,7 +3597,9 @@
                           "operatingMargin":  35.5,
                           "roe":  7.9,
                           "debtRatio":  164.2,
-                          "week52RangePct":  26.5
+                          "week52RangePct":  26.5,
+                          "pressureScore":  0,
+                          "stabilityScore":  2.6
                       },
                       {
                           "symbol":  "FSLR",
@@ -3258,7 +3617,9 @@
                           "operatingMargin":  42.6,
                           "roe":  4.1,
                           "debtRatio":  29.7,
-                          "week52RangePct":  18.4
+                          "week52RangePct":  18.4,
+                          "pressureScore":  0,
+                          "stabilityScore":  5.2
                       },
                       {
                           "symbol":  "EFX",
@@ -3276,7 +3637,9 @@
                           "operatingMargin":  18.5,
                           "roe":  4.2,
                           "debtRatio":  170.4,
-                          "week52RangePct":  36.2
+                          "week52RangePct":  36.2,
+                          "pressureScore":  3.8,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "PKG",
@@ -3294,7 +3657,9 @@
                           "operatingMargin":  13.4,
                           "roe":  4.1,
                           "debtRatio":  136.3,
-                          "week52RangePct":  83.8
+                          "week52RangePct":  83.8,
+                          "pressureScore":  4.0,
+                          "stabilityScore":  2.6
                       },
                       {
                           "symbol":  "AMCR",
@@ -3312,7 +3677,9 @@
                           "operatingMargin":  9,
                           "roe":  2.4,
                           "debtRatio":  222.5,
-                          "week52RangePct":  79.4
+                          "week52RangePct":  79.4,
+                          "pressureScore":  6.8,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "L",
@@ -3330,7 +3697,9 @@
                           "operatingMargin":  null,
                           "roe":  2.3,
                           "debtRatio":  351.5,
-                          "week52RangePct":  63.1
+                          "week52RangePct":  63.1,
+                          "pressureScore":  1.2,
+                          "stabilityScore":  4.1
                       },
                       {
                           "symbol":  "ULTA",
@@ -3348,7 +3717,9 @@
                           "operatingMargin":  14.3,
                           "roe":  13.2,
                           "debtRatio":  167.2,
-                          "week52RangePct":  35.1
+                          "week52RangePct":  35.1,
+                          "pressureScore":  2.3,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "EXE",
@@ -3366,7 +3737,9 @@
                           "operatingMargin":  24.4,
                           "roe":  2.7,
                           "debtRatio":  44.4,
-                          "week52RangePct":  27.2
+                          "week52RangePct":  27.2,
+                          "pressureScore":  1.3,
+                          "stabilityScore":  2.7
                       },
                       {
                           "symbol":  "RL",
@@ -3384,7 +3757,9 @@
                           "operatingMargin":  18.7,
                           "roe":  9.6,
                           "debtRatio":  181.4,
-                          "week52RangePct":  62.3
+                          "week52RangePct":  62.3,
+                          "pressureScore":  2,
+                          "stabilityScore":  3.7
                       },
                       {
                           "symbol":  "IP",
@@ -3402,7 +3777,9 @@
                           "operatingMargin":  0.7,
                           "roe":  -0.1,
                           "debtRatio":  152.7,
-                          "week52RangePct":  56.1
+                          "week52RangePct":  56.1,
+                          "pressureScore":  4,
+                          "stabilityScore":  1.7
                       },
                       {
                           "symbol":  "LYB",
@@ -3420,7 +3797,9 @@
                           "operatingMargin":  17.6,
                           "roe":  5.2,
                           "debtRatio":  222,
-                          "week52RangePct":  55.8
+                          "week52RangePct":  55.8,
+                          "pressureScore":  2.1,
+                          "stabilityScore":  1.9
                       },
                       {
                           "symbol":  "FFIV",
@@ -3438,7 +3817,9 @@
                           "operatingMargin":  24.6,
                           "roe":  5.4,
                           "debtRatio":  77.1,
-                          "week52RangePct":  73.5
+                          "week52RangePct":  73.5,
+                          "pressureScore":  1.3,
+                          "stabilityScore":  5.0
                       },
                       {
                           "symbol":  "BG",
@@ -3456,7 +3837,9 @@
                           "operatingMargin":  4.5,
                           "roe":  4.2,
                           "debtRatio":  184.1,
-                          "week52RangePct":  58.0
+                          "week52RangePct":  58.0,
+                          "pressureScore":  3.6,
+                          "stabilityScore":  3.2
                       },
                       {
                           "symbol":  "IFF",
@@ -3474,7 +3857,9 @@
                           "operatingMargin":  8.4,
                           "roe":  0.4,
                           "debtRatio":  79.7,
-                          "week52RangePct":  88.4
+                          "week52RangePct":  88.4,
+                          "pressureScore":  2.8,
+                          "stabilityScore":  1.9
                       },
                       {
                           "symbol":  "CMS",
@@ -3492,7 +3877,9 @@
                           "operatingMargin":  14.4,
                           "roe":  1.2,
                           "debtRatio":  312.1,
-                          "week52RangePct":  4.2
+                          "week52RangePct":  4.2,
+                          "pressureScore":  0.9,
+                          "stabilityScore":  3.0
                       },
                       {
                           "symbol":  "GIS",
@@ -3510,7 +3897,9 @@
                           "operatingMargin":  15.5,
                           "roe":  -27.3,
                           "debtRatio":  307.2,
-                          "week52RangePct":  46.8
+                          "week52RangePct":  46.8,
+                          "pressureScore":  3.5,
+                          "stabilityScore":  1.6
                       },
                       {
                           "symbol":  "FIS",
@@ -3528,7 +3917,9 @@
                           "operatingMargin":  15,
                           "roe":  1.4,
                           "debtRatio":  175,
-                          "week52RangePct":  11.7
+                          "week52RangePct":  11.7,
+                          "pressureScore":  3.3,
+                          "stabilityScore":  1.8
                       },
                       {
                           "symbol":  "LEN",
@@ -3546,7 +3937,9 @@
                           "operatingMargin":  5.3,
                           "roe":  1.4,
                           "debtRatio":  55.2,
-                          "week52RangePct":  12.9
+                          "week52RangePct":  12.9,
+                          "pressureScore":  0,
+                          "stabilityScore":  2.0
                       },
                       {
                           "symbol":  "BR",
@@ -3564,7 +3957,9 @@
                           "operatingMargin":  24.6,
                           "roe":  14,
                           "debtRatio":  214.9,
-                          "week52RangePct":  41.2
+                          "week52RangePct":  41.2,
+                          "pressureScore":  5.2,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "TSN",
@@ -3582,7 +3977,9 @@
                           "operatingMargin":  2.6,
                           "roe":  1,
                           "debtRatio":  96.4,
-                          "week52RangePct":  38.6
+                          "week52RangePct":  38.6,
+                          "pressureScore":  0.5,
+                          "stabilityScore":  2.2
                       },
                       {
                           "symbol":  "FDXF",
@@ -3600,7 +3997,9 @@
                           "operatingMargin":  10.2,
                           "roe":  3.3,
                           "debtRatio":  73.1,
-                          "week52RangePct":  1.5
+                          "week52RangePct":  1.5,
+                          "pressureScore":  0,
+                          "stabilityScore":  1.6
                       },
                       {
                           "symbol":  "SNA",
@@ -3618,7 +4017,9 @@
                           "operatingMargin":  25.2,
                           "roe":  4.3,
                           "debtRatio":  42.6,
-                          "week52RangePct":  72.5
+                          "week52RangePct":  72.5,
+                          "pressureScore":  1.9,
+                          "stabilityScore":  4.0
                       },
                       {
                           "symbol":  "CHTR",
@@ -3636,7 +4037,9 @@
                           "operatingMargin":  23,
                           "roe":  7.6,
                           "debtRatio":  788.8,
-                          "week52RangePct":  22.2
+                          "week52RangePct":  22.2,
+                          "pressureScore":  1.1,
+                          "stabilityScore":  2.0
                       },
                       {
                           "symbol":  "ESS",
@@ -3654,7 +4057,9 @@
                           "operatingMargin":  22,
                           "roe":  1.2,
                           "debtRatio":  138.7,
-                          "week52RangePct":  85.0
+                          "week52RangePct":  85.0,
+                          "pressureScore":  1.7,
+                          "stabilityScore":  3.9
                       },
                       {
                           "symbol":  "LUV",
@@ -3672,7 +4077,9 @@
                           "operatingMargin":  3.4,
                           "roe":  3.3,
                           "debtRatio":  325.3,
-                          "week52RangePct":  44.3
+                          "week52RangePct":  44.3,
+                          "pressureScore":  1.7,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "CF",
@@ -3690,7 +4097,9 @@
                           "operatingMargin":  49.6,
                           "roe":  12.6,
                           "debtRatio":  107.5,
-                          "week52RangePct":  80.9
+                          "week52RangePct":  80.9,
+                          "pressureScore":  4.0,
+                          "stabilityScore":  2.8
                       },
                       {
                           "symbol":  "NI",
@@ -3708,7 +4117,9 @@
                           "operatingMargin":  17,
                           "roe":  0.5,
                           "debtRatio":  267.9,
-                          "week52RangePct":  22.1
+                          "week52RangePct":  22.1,
+                          "pressureScore":  1.4,
+                          "stabilityScore":  3.1
                       },
                       {
                           "symbol":  "SBAC",
@@ -3726,7 +4137,9 @@
                           "operatingMargin":  53.2,
                           "roe":  -4.3,
                           "debtRatio":  -351.8,
-                          "week52RangePct":  36.5
+                          "week52RangePct":  36.5,
+                          "pressureScore":  0.3,
+                          "stabilityScore":  3.3
                       },
                       {
                           "symbol":  "ZBH",
@@ -3744,7 +4157,9 @@
                           "operatingMargin":  17.2,
                           "roe":  1.6,
                           "debtRatio":  80.5,
-                          "week52RangePct":  74.9
+                          "week52RangePct":  74.9,
+                          "pressureScore":  4.1,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "NWS",
@@ -3762,7 +4177,9 @@
                           "operatingMargin":  12.6,
                           "roe":  2.1,
                           "debtRatio":  74,
-                          "week52RangePct":  94.3
+                          "week52RangePct":  94.3,
+                          "pressureScore":  3.8,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "VTRS",
@@ -3780,7 +4197,9 @@
                           "operatingMargin":  2,
                           "roe":  -0.8,
                           "debtRatio":  145.7,
-                          "week52RangePct":  79.4
+                          "week52RangePct":  79.4,
+                          "pressureScore":  1.3,
+                          "stabilityScore":  1.6
                       },
                       {
                           "symbol":  "DD",
@@ -3798,7 +4217,9 @@
                           "operatingMargin":  13.8,
                           "roe":  1.1,
                           "debtRatio":  51.4,
-                          "week52RangePct":  67.5
+                          "week52RangePct":  67.5,
+                          "pressureScore":  0.6,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "EVRG",
@@ -3816,7 +4237,9 @@
                           "operatingMargin":  25.1,
                           "roe":  2.1,
                           "debtRatio":  245.3,
-                          "week52RangePct":  60.3
+                          "week52RangePct":  60.3,
+                          "pressureScore":  1,
+                          "stabilityScore":  3.3
                       },
                       {
                           "symbol":  "NDSN",
@@ -3834,7 +4257,9 @@
                           "operatingMargin":  26.6,
                           "roe":  3.7,
                           "debtRatio":  86.3,
-                          "week52RangePct":  96.1
+                          "week52RangePct":  96.1,
+                          "pressureScore":  6.0,
+                          "stabilityScore":  2.6
                       },
                       {
                           "symbol":  "GPC",
@@ -3852,7 +4277,9 @@
                           "operatingMargin":  6.2,
                           "roe":  5,
                           "debtRatio":  364.9,
-                          "week52RangePct":  73.9
+                          "week52RangePct":  73.9,
+                          "pressureScore":  5.2,
+                          "stabilityScore":  2.2
                       },
                       {
                           "symbol":  "TSCO",
@@ -3870,7 +4297,9 @@
                           "operatingMargin":  11.7,
                           "roe":  13.7,
                           "debtRatio":  362.2,
-                          "week52RangePct":  21.9
+                          "week52RangePct":  21.9,
+                          "pressureScore":  3.1,
+                          "stabilityScore":  2.0
                       },
                       {
                           "symbol":  "FTV",
@@ -3888,7 +4317,9 @@
                           "operatingMargin":  19.1,
                           "roe":  2.6,
                           "debtRatio":  91.5,
-                          "week52RangePct":  77.2
+                          "week52RangePct":  77.2,
+                          "pressureScore":  1.1,
+                          "stabilityScore":  2.7
                       },
                       {
                           "symbol":  "BBY",
@@ -3906,7 +4337,9 @@
                           "operatingMargin":  4,
                           "roe":  9,
                           "debtRatio":  383,
-                          "week52RangePct":  89.5
+                          "week52RangePct":  89.5,
+                          "pressureScore":  4.8,
+                          "stabilityScore":  2.9
                       },
                       {
                           "symbol":  "INVH",
@@ -3924,7 +4357,9 @@
                           "operatingMargin":  25.2,
                           "roe":  2.4,
                           "debtRatio":  103.3,
-                          "week52RangePct":  87.7
+                          "week52RangePct":  87.7,
+                          "pressureScore":  1.4,
+                          "stabilityScore":  2.9
                       },
                       {
                           "symbol":  "ROL",
@@ -3942,7 +4377,9 @@
                           "operatingMargin":  18.7,
                           "roe":  10.1,
                           "debtRatio":  134.7,
-                          "week52RangePct":  4.7
+                          "week52RangePct":  4.7,
+                          "pressureScore":  1.3,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "LDOS",
@@ -3960,7 +4397,9 @@
                           "operatingMargin":  11.7,
                           "roe":  6.7,
                           "debtRatio":  194.9,
-                          "week52RangePct":  37.0
+                          "week52RangePct":  37.0,
+                          "pressureScore":  1.8,
+                          "stabilityScore":  2.2
                       },
                       {
                           "symbol":  "WY",
@@ -3978,7 +4417,9 @@
                           "operatingMargin":  8.8,
                           "roe":  1.7,
                           "debtRatio":  74.6,
-                          "week52RangePct":  49.0
+                          "week52RangePct":  49.0,
+                          "pressureScore":  0.2,
+                          "stabilityScore":  2.2
                       },
                       {
                           "symbol":  "LNT",
@@ -3996,7 +4437,9 @@
                           "operatingMargin":  21,
                           "roe":  3,
                           "debtRatio":  234.3,
-                          "week52RangePct":  33.1
+                          "week52RangePct":  33.1,
+                          "pressureScore":  0.7,
+                          "stabilityScore":  3.3
                       },
                       {
                           "symbol":  "J",
@@ -4014,7 +4457,9 @@
                           "operatingMargin":  7,
                           "roe":  4.2,
                           "debtRatio":  260.2,
-                          "week52RangePct":  73.2
+                          "week52RangePct":  73.2,
+                          "pressureScore":  7.7,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "ZBRA",
@@ -4032,7 +4477,9 @@
                           "operatingMargin":  21.3,
                           "roe":  6.8,
                           "debtRatio":  151.4,
-                          "week52RangePct":  87.7
+                          "week52RangePct":  87.7,
+                          "pressureScore":  6.8,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "BEN",
@@ -4050,7 +4497,9 @@
                           "operatingMargin":  15.9,
                           "roe":  2.2,
                           "debtRatio":  160.8,
-                          "week52RangePct":  89.1
+                          "week52RangePct":  89.1,
+                          "pressureScore":  3.1,
+                          "stabilityScore":  3.8
                       },
                       {
                           "symbol":  "GEN",
@@ -4068,7 +4517,9 @@
                           "operatingMargin":  35.6,
                           "roe":  8.1,
                           "debtRatio":  489,
-                          "week52RangePct":  84.9
+                          "week52RangePct":  84.9,
+                          "pressureScore":  4.8,
+                          "stabilityScore":  2.8
                       },
                       {
                           "symbol":  "IEX",
@@ -4086,7 +4537,9 @@
                           "operatingMargin":  22,
                           "roe":  3.6,
                           "debtRatio":  72.9,
-                          "week52RangePct":  88.2
+                          "week52RangePct":  88.2,
+                          "pressureScore":  3.2,
+                          "stabilityScore":  3.1
                       },
                       {
                           "symbol":  "CDW",
@@ -4104,7 +4557,9 @@
                           "operatingMargin":  6.5,
                           "roe":  11.2,
                           "debtRatio":  606.6,
-                          "week52RangePct":  47.5
+                          "week52RangePct":  47.5,
+                          "pressureScore":  5.5,
+                          "stabilityScore":  2.2
                       },
                       {
                           "symbol":  "NVR",
@@ -4122,7 +4577,9 @@
                           "operatingMargin":  13.4,
                           "roe":  7,
                           "debtRatio":  61.3,
-                          "week52RangePct":  28.8
+                          "week52RangePct":  28.8,
+                          "pressureScore":  1.6,
+                          "stabilityScore":  2.9
                       },
                       {
                           "symbol":  "ALB",
@@ -4140,7 +4597,9 @@
                           "operatingMargin":  26.4,
                           "roe":  4.7,
                           "debtRatio":  52.3,
-                          "week52RangePct":  46.9
+                          "week52RangePct":  46.9,
+                          "pressureScore":  3.4,
+                          "stabilityScore":  1.6
                       },
                       {
                           "symbol":  "BALL",
@@ -4158,7 +4617,9 @@
                           "operatingMargin":  9.2,
                           "roe":  3.8,
                           "debtRatio":  249.6,
-                          "week52RangePct":  83.5
+                          "week52RangePct":  83.5,
+                          "pressureScore":  4.3,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "PTC",
@@ -4176,7 +4637,9 @@
                           "operatingMargin":  27.7,
                           "roe":  3.4,
                           "debtRatio":  87.7,
-                          "week52RangePct":  42.0
+                          "week52RangePct":  42.0,
+                          "pressureScore":  1.3,
+                          "stabilityScore":  2.8
                       },
                       {
                           "symbol":  "NWSA",
@@ -4194,7 +4657,9 @@
                           "operatingMargin":  12.6,
                           "roe":  2.1,
                           "debtRatio":  74,
-                          "week52RangePct":  89.9
+                          "week52RangePct":  89.9,
+                          "pressureScore":  3.9,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "CHRW",
@@ -4212,7 +4677,9 @@
                           "operatingMargin":  4.4,
                           "roe":  8.6,
                           "debtRatio":  207.2,
-                          "week52RangePct":  22.2
+                          "week52RangePct":  22.2,
+                          "pressureScore":  0,
+                          "stabilityScore":  2.9
                       },
                       {
                           "symbol":  "HST",
@@ -4230,7 +4697,9 @@
                           "operatingMargin":  17.9,
                           "roe":  3.7,
                           "debtRatio":  103.9,
-                          "week52RangePct":  75.0
+                          "week52RangePct":  75.0,
+                          "pressureScore":  1.3,
+                          "stabilityScore":  2.6
                       },
                       {
                           "symbol":  "KIM",
@@ -4248,7 +4717,9 @@
                           "operatingMargin":  36.6,
                           "roe":  1.5,
                           "debtRatio":  93.6,
-                          "week52RangePct":  64.7
+                          "week52RangePct":  64.7,
+                          "pressureScore":  0.1,
+                          "stabilityScore":  4.2
                       },
                       {
                           "symbol":  "AKAM",
@@ -4266,7 +4737,9 @@
                           "operatingMargin":  7.6,
                           "roe":  1.7,
                           "debtRatio":  217.4,
-                          "week52RangePct":  36.8
+                          "week52RangePct":  36.8,
+                          "pressureScore":  0.8,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "MAA",
@@ -4284,7 +4757,9 @@
                           "operatingMargin":  25.4,
                           "roe":  2.2,
                           "debtRatio":  117.2,
-                          "week52RangePct":  49.3
+                          "week52RangePct":  49.3,
+                          "pressureScore":  0.6,
+                          "stabilityScore":  3.8
                       },
                       {
                           "symbol":  "SOLV",
@@ -4302,7 +4777,9 @@
                           "operatingMargin":  8.2,
                           "roe":  1.9,
                           "debtRatio":  196.8,
-                          "week52RangePct":  99.1
+                          "week52RangePct":  99.1,
+                          "pressureScore":  4.1,
+                          "stabilityScore":  2.9
                       },
                       {
                           "symbol":  "APA",
@@ -4320,7 +4797,9 @@
                           "operatingMargin":  55.7,
                           "roe":  10.6,
                           "debtRatio":  142.8,
-                          "week52RangePct":  88.8
+                          "week52RangePct":  88.8,
+                          "pressureScore":  4.1,
+                          "stabilityScore":  2.2
                       },
                       {
                           "symbol":  "DOC",
@@ -4338,7 +4817,9 @@
                           "operatingMargin":  17.2,
                           "roe":  0.7,
                           "debtRatio":  155.3,
-                          "week52RangePct":  81.8
+                          "week52RangePct":  81.8,
+                          "pressureScore":  2.8,
+                          "stabilityScore":  2.9
                       },
                       {
                           "symbol":  "SWK",
@@ -4356,7 +4837,9 @@
                           "operatingMargin":  9,
                           "roe":  3.9,
                           "debtRatio":  124.3,
-                          "week52RangePct":  85.6
+                          "week52RangePct":  85.6,
+                          "pressureScore":  4.6,
+                          "stabilityScore":  2.8
                       },
                       {
                           "symbol":  "MKC",
@@ -4374,7 +4857,9 @@
                           "operatingMargin":  17.4,
                           "roe":  2.1,
                           "debtRatio":  127.3,
-                          "week52RangePct":  41.2
+                          "week52RangePct":  41.2,
+                          "pressureScore":  4.0,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "COO",
@@ -4392,7 +4877,9 @@
                           "operatingMargin":  -2.9,
                           "roe":  -0.9,
                           "debtRatio":  51.5,
-                          "week52RangePct":  54.7
+                          "week52RangePct":  54.7,
+                          "pressureScore":  3.9,
+                          "stabilityScore":  3.4
                       },
                       {
                           "symbol":  "MAS",
@@ -4410,7 +4897,9 @@
                           "operatingMargin":  23.6,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  59.1
+                          "week52RangePct":  59.1,
+                          "pressureScore":  0.9,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "TYL",
@@ -4428,7 +4917,9 @@
                           "operatingMargin":  14.7,
                           "roe":  3.1,
                           "debtRatio":  91.4,
-                          "week52RangePct":  28.8
+                          "week52RangePct":  28.8,
+                          "pressureScore":  4.1,
+                          "stabilityScore":  3.2
                       },
                       {
                           "symbol":  "TXT",
@@ -4446,7 +4937,9 @@
                           "operatingMargin":  7,
                           "roe":  3.1,
                           "debtRatio":  125.2,
-                          "week52RangePct":  17.1
+                          "week52RangePct":  17.1,
+                          "pressureScore":  0.7,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "REG",
@@ -4464,7 +4957,9 @@
                           "operatingMargin":  37.5,
                           "roe":  1.9,
                           "debtRatio":  85.3,
-                          "week52RangePct":  58.5
+                          "week52RangePct":  58.5,
+                          "pressureScore":  1,
+                          "stabilityScore":  4.3
                       },
                       {
                           "symbol":  "CRL",
@@ -4482,7 +4977,9 @@
                           "operatingMargin":  11.9,
                           "roe":  -0.1,
                           "debtRatio":  163.5,
-                          "week52RangePct":  99.5
+                          "week52RangePct":  99.5,
+                          "pressureScore":  5.6,
+                          "stabilityScore":  1.4
                       },
                       {
                           "symbol":  "EG",
@@ -4500,7 +4997,9 @@
                           "operatingMargin":  null,
                           "roe":  4.3,
                           "debtRatio":  null,
-                          "week52RangePct":  75.4
+                          "week52RangePct":  75.4,
+                          "pressureScore":  1.8,
+                          "stabilityScore":  3.1
                       },
                       {
                           "symbol":  "IVZ",
@@ -4518,7 +5017,9 @@
                           "operatingMargin":  19.9,
                           "roe":  3.1,
                           "debtRatio":  112.3,
-                          "week52RangePct":  97.1
+                          "week52RangePct":  97.1,
+                          "pressureScore":  5.5,
+                          "stabilityScore":  2.2
                       },
                       {
                           "symbol":  "TRMB",
@@ -4536,7 +5037,9 @@
                           "operatingMargin":  15.6,
                           "roe":  1.8,
                           "debtRatio":  59.5,
-                          "week52RangePct":  34.9
+                          "week52RangePct":  34.9,
+                          "pressureScore":  3.5,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "AIZ",
@@ -4554,7 +5057,9 @@
                           "operatingMargin":  null,
                           "roe":  4.9,
                           "debtRatio":  491.7,
-                          "week52RangePct":  83.7
+                          "week52RangePct":  83.7,
+                          "pressureScore":  4.4,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "LII",
@@ -4572,7 +5077,9 @@
                           "operatingMargin":  23.1,
                           "roe":  20.7,
                           "debtRatio":  250.4,
-                          "week52RangePct":  2.2
+                          "week52RangePct":  2.2,
+                          "pressureScore":  0.6,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "AVY",
@@ -4590,7 +5097,9 @@
                           "operatingMargin":  13.6,
                           "roe":  8.8,
                           "debtRatio":  296.6,
-                          "week52RangePct":  66.4
+                          "week52RangePct":  66.4,
+                          "pressureScore":  3.8,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "RVTY",
@@ -4608,7 +5117,9 @@
                           "operatingMargin":  10.7,
                           "roe":  0.6,
                           "debtRatio":  67,
-                          "week52RangePct":  95.5
+                          "week52RangePct":  95.5,
+                          "pressureScore":  6.4,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "UDR",
@@ -4626,7 +5137,9 @@
                           "operatingMargin":  19.6,
                           "roe":  2.3,
                           "debtRatio":  218.7,
-                          "week52RangePct":  60.2
+                          "week52RangePct":  60.2,
+                          "pressureScore":  0.3,
+                          "stabilityScore":  3.4
                       },
                       {
                           "symbol":  "ERIE",
@@ -4644,7 +5157,9 @@
                           "operatingMargin":  null,
                           "roe":  7.3,
                           "debtRatio":  44.2,
-                          "week52RangePct":  40.4
+                          "week52RangePct":  40.4,
+                          "pressureScore":  3.8,
+                          "stabilityScore":  4.3
                       },
                       {
                           "symbol":  "ALLE",
@@ -4662,7 +5177,9 @@
                           "operatingMargin":  22.1,
                           "roe":  8.7,
                           "debtRatio":  153,
-                          "week52RangePct":  64.8
+                          "week52RangePct":  64.8,
+                          "pressureScore":  5.8,
+                          "stabilityScore":  2.6
                       },
                       {
                           "symbol":  "LULU",
@@ -4680,7 +5197,9 @@
                           "operatingMargin":  11.2,
                           "roe":  4,
                           "debtRatio":  76.8,
-                          "week52RangePct":  15.1
+                          "week52RangePct":  15.1,
+                          "pressureScore":  0.5,
+                          "stabilityScore":  2.2
                       },
                       {
                           "symbol":  "BAX",
@@ -4698,7 +5217,9 @@
                           "operatingMargin":  7.3,
                           "roe":  2,
                           "debtRatio":  219.3,
-                          "week52RangePct":  75.4
+                          "week52RangePct":  75.4,
+                          "pressureScore":  4.6,
+                          "stabilityScore":  1.9
                       },
                       {
                           "symbol":  "SJM",
@@ -4716,7 +5237,9 @@
                           "operatingMargin":  19.8,
                           "roe":  7,
                           "debtRatio":  192.6,
-                          "week52RangePct":  95.5
+                          "week52RangePct":  95.5,
+                          "pressureScore":  5.2,
+                          "stabilityScore":  2.0
                       },
                       {
                           "symbol":  "HAS",
@@ -4734,7 +5257,9 @@
                           "operatingMargin":  22.2,
                           "roe":  22.8,
                           "debtRatio":  752.5,
-                          "week52RangePct":  69.1
+                          "week52RangePct":  69.1,
+                          "pressureScore":  3.9,
+                          "stabilityScore":  2.0
                       },
                       {
                           "symbol":  "GL",
@@ -4752,7 +5277,9 @@
                           "operatingMargin":  null,
                           "roe":  4.4,
                           "debtRatio":  408.9,
-                          "week52RangePct":  71.1
+                          "week52RangePct":  71.1,
+                          "pressureScore":  3.2,
+                          "stabilityScore":  4.4
                       },
                       {
                           "symbol":  "HRL",
@@ -4770,7 +5297,9 @@
                           "operatingMargin":  6.7,
                           "roe":  2,
                           "debtRatio":  67.7,
-                          "week52RangePct":  46.7
+                          "week52RangePct":  46.7,
+                          "pressureScore":  2.8,
+                          "stabilityScore":  3.1
                       },
                       {
                           "symbol":  "CSGP",
@@ -4788,7 +5317,9 @@
                           "operatingMargin":  8.2,
                           "roe":  0.7,
                           "debtRatio":  27.7,
-                          "week52RangePct":  10.5
+                          "week52RangePct":  10.5,
+                          "pressureScore":  2.0,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "BF-B",
@@ -4806,7 +5337,9 @@
                           "operatingMargin":  25,
                           "roe":  1.3,
                           "debtRatio":  96.4,
-                          "week52RangePct":  61.4
+                          "week52RangePct":  61.4,
+                          "pressureScore":  1.5,
+                          "stabilityScore":  3.7
                       },
                       {
                           "symbol":  "CLX",
@@ -4824,7 +5357,9 @@
                           "operatingMargin":  12.6,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  50.8
+                          "week52RangePct":  50.8,
+                          "pressureScore":  1.6,
+                          "stabilityScore":  2.8
                       },
                       {
                           "symbol":  "DECK",
@@ -4842,7 +5377,9 @@
                           "operatingMargin":  15.2,
                           "roe":  5.6,
                           "debtRatio":  68.1,
-                          "week52RangePct":  28.3
+                          "week52RangePct":  28.3,
+                          "pressureScore":  1.1,
+                          "stabilityScore":  4.6
                       },
                       {
                           "symbol":  "IT",
@@ -4860,7 +5397,9 @@
                           "operatingMargin":  20.5,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  55.5
+                          "week52RangePct":  55.5,
+                          "pressureScore":  3.9,
+                          "stabilityScore":  2.3
                       },
                       {
                           "symbol":  "GDDY",
@@ -4878,7 +5417,9 @@
                           "operatingMargin":  27.1,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  36.7
+                          "week52RangePct":  36.7,
+                          "pressureScore":  2.3,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "BXP",
@@ -4896,7 +5437,9 @@
                           "operatingMargin":  28.9,
                           "roe":  1.3,
                           "debtRatio":  337.7,
-                          "week52RangePct":  68.5
+                          "week52RangePct":  68.5,
+                          "pressureScore":  3.3,
+                          "stabilityScore":  3.4
                       },
                       {
                           "symbol":  "GNRC",
@@ -4914,7 +5457,9 @@
                           "operatingMargin":  17.9,
                           "roe":  5,
                           "debtRatio":  100.6,
-                          "week52RangePct":  42.5
+                          "week52RangePct":  42.5,
+                          "pressureScore":  1.3,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "JKHY",
@@ -4932,7 +5477,9 @@
                           "operatingMargin":  24.4,
                           "roe":  5.8,
                           "debtRatio":  42.9,
-                          "week52RangePct":  68.4
+                          "week52RangePct":  68.4,
+                          "pressureScore":  5.7,
+                          "stabilityScore":  4.9
                       },
                       {
                           "symbol":  "PNW",
@@ -4950,7 +5497,9 @@
                           "operatingMargin":  21,
                           "roe":  2.5,
                           "debtRatio":  362.5,
-                          "week52RangePct":  47.9
+                          "week52RangePct":  47.9,
+                          "pressureScore":  1.1,
+                          "stabilityScore":  3.1
                       },
                       {
                           "symbol":  "HII",
@@ -4968,7 +5517,9 @@
                           "operatingMargin":  5.5,
                           "roe":  3.9,
                           "debtRatio":  138.7,
-                          "week52RangePct":  15.8
+                          "week52RangePct":  15.8,
+                          "pressureScore":  1.2,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "PSKY",
@@ -4986,7 +5537,9 @@
                           "operatingMargin":  9.6,
                           "roe":  0.3,
                           "debtRatio":  268.5,
-                          "week52RangePct":  20.6
+                          "week52RangePct":  20.6,
+                          "pressureScore":  0.3,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "ALGN",
@@ -5004,7 +5557,9 @@
                           "operatingMargin":  18.2,
                           "roe":  2.6,
                           "debtRatio":  51.6,
-                          "week52RangePct":  48.0
+                          "week52RangePct":  48.0,
+                          "pressureScore":  0.7,
+                          "stabilityScore":  4.6
                       },
                       {
                           "symbol":  "DPZ",
@@ -5022,7 +5577,9 @@
                           "operatingMargin":  19.1,
                           "roe":  -3.4,
                           "debtRatio":  -144.3,
-                          "week52RangePct":  35.8
+                          "week52RangePct":  35.8,
+                          "pressureScore":  2.7,
+                          "stabilityScore":  3.3
                       },
                       {
                           "symbol":  "TECH",
@@ -5040,7 +5597,9 @@
                           "operatingMargin":  24.2,
                           "roe":  2.4,
                           "debtRatio":  22.3,
-                          "week52RangePct":  99.2
+                          "week52RangePct":  99.2,
+                          "pressureScore":  4.9,
+                          "stabilityScore":  3.7
                       },
                       {
                           "symbol":  "MGM",
@@ -5058,7 +5617,9 @@
                           "operatingMargin":  6.8,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  64.7
+                          "week52RangePct":  64.7,
+                          "pressureScore":  0.7,
+                          "stabilityScore":  3.3
                       },
                       {
                           "symbol":  "DVA",
@@ -5076,7 +5637,9 @@
                           "operatingMargin":  13.9,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  51.5
+                          "week52RangePct":  51.5,
+                          "pressureScore":  1.1,
+                          "stabilityScore":  2.4
                       },
                       {
                           "symbol":  "CPT",
@@ -5094,7 +5657,9 @@
                           "operatingMargin":  19.3,
                           "roe":  1.1,
                           "debtRatio":  123,
-                          "week52RangePct":  54.2
+                          "week52RangePct":  54.2,
+                          "pressureScore":  0.4,
+                          "stabilityScore":  4.0
                       },
                       {
                           "symbol":  "FDS",
@@ -5112,7 +5677,9 @@
                           "operatingMargin":  26.7,
                           "roe":  6.2,
                           "debtRatio":  106.3,
-                          "week52RangePct":  59.7
+                          "week52RangePct":  59.7,
+                          "pressureScore":  5.7,
+                          "stabilityScore":  3.8
                       },
                       {
                           "symbol":  "AES",
@@ -5130,7 +5697,9 @@
                           "operatingMargin":  18.4,
                           "roe":  8.6,
                           "debtRatio":  899.8,
-                          "week52RangePct":  45.5
+                          "week52RangePct":  45.5,
+                          "pressureScore":  2.8,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "UHS",
@@ -5148,7 +5717,9 @@
                           "operatingMargin":  11.1,
                           "roe":  4.8,
                           "debtRatio":  110.2,
-                          "week52RangePct":  34.2
+                          "week52RangePct":  34.2,
+                          "pressureScore":  3.3,
+                          "stabilityScore":  3.4
                       },
                       {
                           "symbol":  "WYNN",
@@ -5166,7 +5737,9 @@
                           "operatingMargin":  16.5,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  16.3
+                          "week52RangePct":  16.3,
+                          "pressureScore":  1,
+                          "stabilityScore":  2.1
                       },
                       {
                           "symbol":  "PNR",
@@ -5184,7 +5757,9 @@
                           "operatingMargin":  17.9,
                           "roe":  3.4,
                           "debtRatio":  79,
-                          "week52RangePct":  10.1
+                          "week52RangePct":  10.1,
+                          "pressureScore":  0.9,
+                          "stabilityScore":  3.3
                       },
                       {
                           "symbol":  "FRT",
@@ -5202,7 +5777,9 @@
                           "operatingMargin":  35.2,
                           "roe":  2.5,
                           "debtRatio":  161.7,
-                          "week52RangePct":  72.1
+                          "week52RangePct":  72.1,
+                          "pressureScore":  1.1,
+                          "stabilityScore":  4.4
                       },
                       {
                           "symbol":  "SWKS",
@@ -5220,7 +5797,9 @@
                           "operatingMargin":  7.3,
                           "roe":  0.6,
                           "debtRatio":  29.4,
-                          "week52RangePct":  38.3
+                          "week52RangePct":  38.3,
+                          "pressureScore":  1,
+                          "stabilityScore":  3.4
                       },
                       {
                           "symbol":  "APTV",
@@ -5238,7 +5817,9 @@
                           "operatingMargin":  11.9,
                           "roe":  2.8,
                           "debtRatio":  105.6,
-                          "week52RangePct":  2.8
+                          "week52RangePct":  2.8,
+                          "pressureScore":  0.7,
+                          "stabilityScore":  2.8
                       },
                       {
                           "symbol":  "PODD",
@@ -5256,7 +5837,9 @@
                           "operatingMargin":  16.2,
                           "roe":  6.7,
                           "debtRatio":  122.5,
-                          "week52RangePct":  7.3
+                          "week52RangePct":  7.3,
+                          "pressureScore":  2.9,
+                          "stabilityScore":  2.9
                       },
                       {
                           "symbol":  "HSIC",
@@ -5274,7 +5857,9 @@
                           "operatingMargin":  5.8,
                           "roe":  3,
                           "debtRatio":  210.9,
-                          "week52RangePct":  91.2
+                          "week52RangePct":  91.2,
+                          "pressureScore":  3.9,
+                          "stabilityScore":  3.3
                       },
                       {
                           "symbol":  "ARE",
@@ -5292,7 +5877,9 @@
                           "operatingMargin":  14.7,
                           "roe":  -0.5,
                           "debtRatio":  99.4,
-                          "week52RangePct":  30.0
+                          "week52RangePct":  30.0,
+                          "pressureScore":  1.7,
+                          "stabilityScore":  2.5
                       },
                       {
                           "symbol":  "AOS",
@@ -5310,7 +5897,9 @@
                           "operatingMargin":  18.9,
                           "roe":  6.8,
                           "debtRatio":  97.9,
-                          "week52RangePct":  30.9
+                          "week52RangePct":  30.9,
+                          "pressureScore":  1.7,
+                          "stabilityScore":  3.5
                       },
                       {
                           "symbol":  "TAP",
@@ -5328,7 +5917,9 @@
                           "operatingMargin":  11.1,
                           "roe":  2.3,
                           "debtRatio":  137.9,
-                          "week52RangePct":  29.5
+                          "week52RangePct":  29.5,
+                          "pressureScore":  0.1,
+                          "stabilityScore":  2.6
                       },
                       {
                           "symbol":  "NCLH",
@@ -5346,7 +5937,9 @@
                           "operatingMargin":  13.8,
                           "roe":  8.7,
                           "debtRatio":  833.3,
-                          "week52RangePct":  21.3
+                          "week52RangePct":  21.3,
+                          "pressureScore":  0.6,
+                          "stabilityScore":  3.0
                       },
                       {
                           "symbol":  "MOS",
@@ -5364,7 +5957,9 @@
                           "operatingMargin":  -1,
                           "roe":  -2.4,
                           "debtRatio":  113.5,
-                          "week52RangePct":  24.4
+                          "week52RangePct":  24.4,
+                          "pressureScore":  1.6,
+                          "stabilityScore":  3.0
                       },
                       {
                           "symbol":  "BLDR",
@@ -5382,7 +5977,9 @@
                           "operatingMargin":  3.3,
                           "roe":  -0.1,
                           "debtRatio":  182.7,
-                          "week52RangePct":  6.0
+                          "week52RangePct":  6.0,
+                          "pressureScore":  0,
+                          "stabilityScore":  2.7
                       },
                       {
                           "symbol":  "TTD",
@@ -5400,7 +5997,9 @@
                           "operatingMargin":  14.2,
                           "roe":  2.5,
                           "debtRatio":  123.9,
-                          "week52RangePct":  1
+                          "week52RangePct":  1,
+                          "pressureScore":  0.3,
+                          "stabilityScore":  2.9
                       },
                       {
                           "symbol":  "VMRK",
@@ -5418,8 +6017,11 @@
                           "operatingMargin":  null,
                           "roe":  null,
                           "debtRatio":  null,
-                          "week52RangePct":  75.9
+                          "week52RangePct":  75.9,
+                          "pressureScore":  3.1,
+                          "stabilityScore":  4.4
                       }
                   ],
-    "ratiosUpdatedAt":  "2026-08-25T11:26:13Z"
-}
+    "ratiosUpdatedAt":  "2026-08-25T11:26:13Z",
+    "generatedAt":  "2026-08-23T08:19:28Z"
+};
