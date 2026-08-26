@@ -1,0 +1,17 @@
+{
+  "institution": "IMF",
+  "updatedAt": "2026-08-26",
+  "reportNote": "IMF는 업종별 성장률을 정기적으로 발표하지 않습니다(국가·지역 단위 GDP 전망이 중심). 이번 조사에서 확인된 유일한 업종형 수치는 2026년 4월 세계경제전망(WEO)의 '원자재 특별분석(Commodity Special Feature)'에 인용된 희토류 수요 전망뿐이며, 이는 IMF 자체 추정치가 아니라 IEA(국제에너지기구) Critical Minerals/Minerals Outlook 2025 자료를 재인용한 수치입니다. 반도체·자동차·조선 등 다른 업종은 IMF가 발표한 정량 성장률 전망이 없어 포함하지 못했습니다.",
+  "sections": [
+    {
+      "reportTitle": "World Economic Outlook (2026년 4월) — 원자재 특별분석: 희토류",
+      "publishedDate": "2026-04-14",
+      "forecastPeriod": "2025~2029년 연평균",
+      "metricLabel": "세계 수요(Global Demand) 연평균 증가율 기준 — IMF가 IEA 자료를 인용한 수치(IMF 자체 1차 추정 아님)",
+      "sourceUrl": "https://www.imf.org/en/publications/weo/issues/2026/04/14/world-economic-outlook-april-2026",
+      "industries": [
+        { "name": "희토류(Rare Earths)", "growthPct": 4.7 }
+      ]
+    }
+  ]
+}

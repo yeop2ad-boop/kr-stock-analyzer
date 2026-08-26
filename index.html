@@ -497,7 +497,7 @@
 
       <div class="carousel-panel" data-panel="insight" id="panelInsight">
         <div class="top30-sub-nav">
-          <button type="button" class="cat-btn" id="insightCatFirmsBtn"><span class="btn-icon" data-icon="bank"></span> 자산&amp;투자사</button>
+          <button type="button" class="cat-btn" id="insightCatFirmsBtn"><span class="btn-icon" data-icon="bank"></span> <span id="insightCatFirmsLabel">자산&amp;투자사</span></button>
           <button type="button" class="cat-btn" id="insightCatBrandBtn"><span class="btn-icon" id="insightCatBrandIcon"></span> <span id="insightCatBrandLabel">브랜드평판순</span></button>
           <button type="button" class="cat-btn" id="insightCatTechBtn"><span class="btn-icon" data-icon="flask"></span> 신기술</button>
           <!-- 실적&공시 일정/뉴스는 더보기 메뉴로 이동 — 렌더 함수(runInsightCalendar/runInsightNews)가 이 버튼의
@@ -522,6 +522,27 @@
             <button type="button" class="cat-btn" id="insightArkBtn">ARK 인베스트</button>
             <button type="button" class="cat-btn" id="insightSoftbankBtn">소프트뱅크</button>
           </div>
+        </div>
+        <div class="top30-sub-nav insight-firms-nav" id="insightKrFirmsNav" style="display:none;">
+          <div class="insight-firms-row">
+            <span class="insight-firms-row-label">기관투자자</span>
+            <button type="button" class="cat-btn" id="insightNpsBtn">국민연금</button>
+            <button type="button" class="cat-btn" id="insightKicBtn">한국투자공사</button>
+          </div>
+          <div class="insight-firms-row">
+            <span class="insight-firms-row-label">자산운용사</span>
+            <button type="button" class="cat-btn" id="insightSamsungAmBtn">삼성자산운용</button>
+            <button type="button" class="cat-btn" id="insightMiraeAmBtn">미래에셋자산운용</button>
+            <button type="button" class="cat-btn" id="insightKbAmBtn">KB자산운용</button>
+          </div>
+        </div>
+        <div class="top30-sub-nav" id="futureIndustryNav" style="display:none;">
+          <button type="button" class="cat-btn" id="futureIndAssetMgrBtn">자산운용사</button>
+          <button type="button" class="cat-btn" id="futureIndKdiBtn">한국개발연구원(KDI)</button>
+          <button type="button" class="cat-btn" id="futureIndKietBtn">산업연구원(KIET)</button>
+          <button type="button" class="cat-btn" id="futureIndBokBtn">한국은행</button>
+          <button type="button" class="cat-btn" id="futureIndOecdBtn">OECD</button>
+          <button type="button" class="cat-btn" id="futureIndImfBtn">IMF</button>
         </div>
         <div class="top30-sub-nav" id="insightBrandNav" style="display:none;">
           <button type="button" class="cat-btn brand-org-btn" id="insightBrandHarrisBtn">Axios Harris Poll 100</button>

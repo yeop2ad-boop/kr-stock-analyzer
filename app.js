@@ -2026,6 +2026,21 @@ const insightButtons = {
   ark: el("insightArkBtn"),
   softbank: el("insightSoftbankBtn"),
 };
+const insightKrButtons = {
+  nps: el("insightNpsBtn"),
+  kic: el("insightKicBtn"),
+  samsungAm: el("insightSamsungAmBtn"),
+  miraeAm: el("insightMiraeAmBtn"),
+  kbAm: el("insightKbAmBtn"),
+};
+const futureIndustryButtons = {
+  assetMgr: el("futureIndAssetMgrBtn"),
+  kdi: el("futureIndKdiBtn"),
+  kiet: el("futureIndKietBtn"),
+  bok: el("futureIndBokBtn"),
+  oecd: el("futureIndOecdBtn"),
+  imf: el("futureIndImfBtn"),
+};
 const insightCategoryButtons = {
   firms: el("insightCatFirmsBtn"),
   brand: el("insightCatBrandBtn"),
@@ -3679,11 +3694,19 @@ function syncDartTabForMarket() {
   document.querySelectorAll(".brand-org-btn").forEach((b) => (b.style.display = isKr ? "none" : ""));
   document.querySelectorAll(".dart-metric-btn").forEach((b) => (b.style.display = isKr ? "" : "none"));
 }
+// "자산&투자사" 탭도 국내·해외 콘텐츠가 완전히 다름(국내: DART 5%룰 기관&자산운용사, 해외: 13F 자산운용사·투자회사)
+// — 이름표만 여기서 즉시 바꾸고, 서브내비 전환·데이터 재조회는 dartTabForMarket과 동일하게 뒤쪽 marketmodechange 리스너에서 처리
+function syncFirmsTabForMarket() {
+  const isKr = getWatchlistActiveMarket() === "KR";
+  const labelEl = el("insightCatFirmsLabel");
+  if (labelEl) labelEl.textContent = isKr ? "기관&자산운용사" : "자산&투자사";
+}
 function syncMarketModeUI() {
   const isKr = getWatchlistActiveMarket() === "KR";
   document.body.dataset.marketMode = isKr ? "kr" : "us";
   marketModeKrBtn.classList.toggle("active", isKr);
   marketModeUsBtn.classList.toggle("active", !isKr);
+  syncFirmsTabForMarket();
   syncDartTabForMarket();
   document.dispatchEvent(new CustomEvent("marketmodechange"));
 }
@@ -6027,21 +6050,33 @@ bindValuation(valuationButtons.roe, runValueRoe);
 bindValuation(valuationButtons.debtRatio, runValueDebtRatio);
 bindValuation(valuationButtons.week52Low, runValueWeek52Low);
 
-// 인사이트 대분류(1.자산&투자사 / 2.브랜드평판순 / 3.신기술 / 4.실적&공시 일정 / 5.뉴스) 전환
-// "자산&투자사"를 선택했을 때만 기관 2단 서브버튼(insightFirmsNav)을 보여줌
+// 인사이트 대분류(1.자산&투자사 / 2.브랜드평판순 / 3.신기술 / 4.실적&공시 일정 / 5.뉴스 / 6.미래산업 성장성) 전환
+// "자산&투자사"를 선택했을 때만 기관 2단 서브버튼(해외: insightFirmsNav, 국내: insightKrFirmsNav)을 보여줌
 let insightActiveCategory = "firms";
 let insightActiveInstitution = "blackrock";
+let insightActiveKrInstitution = "nps";
+let insightActiveFutureSource = "assetMgr";
 const insightFirmsNav = el("insightFirmsNav");
+const insightKrFirmsNav = el("insightKrFirmsNav");
 const insightBrandNav = el("insightBrandNav");
+const futureIndustryNav = el("futureIndustryNav");
 function setInsightCategoryActive(key) {
   Object.entries(insightCategoryButtons).forEach(([k, btn]) => btn && btn.classList.toggle("active", k === key));
+}
+// "자산&투자사" 탭의 서브내비는 국내/해외에 따라 완전히 다른 기관 목록을 보여주므로, 두 nav 중 지금 시장에 맞는 쪽만 표시
+function updateFirmsNavVisibility() {
+  const isKr = getWatchlistActiveMarket() === "KR";
+  const showFirms = insightActiveCategory === "firms";
+  insightFirmsNav.style.display = showFirms && !isKr ? "" : "none";
+  insightKrFirmsNav.style.display = showFirms && isKr ? "" : "none";
 }
 function switchInsightCategory(key) {
   if (insightActiveCategory === key) return;
   insightActiveCategory = key;
   setInsightCategoryActive(key);
-  insightFirmsNav.style.display = key === "firms" ? "" : "none";
+  updateFirmsNavVisibility();
   insightBrandNav.style.display = key === "brand" ? "" : "none";
+  futureIndustryNav.style.display = key === "futureIndustry" ? "" : "none";
   if (key === "brand") {
     // 국내는 다트공시(4대 지표), 해외는 브랜드평판순(3개 기관) — 이전에 보던 항목이 지금 시장에 없는 종류면 기본값으로 리셋
     const isKr = getWatchlistActiveMarket() === "KR";
@@ -6059,12 +6094,14 @@ Object.entries(insightCategoryButtons).forEach(([key, btn]) => {
 setInsightCategoryActive(insightActiveCategory);
 
 function runInsightCategory(key) {
-  if (key === "firms") runInsight(insightActiveInstitution);
-  else if (key === "brand") runInsightBrandTab(insightActiveBrandOrg);
+  if (key === "firms") {
+    if (getWatchlistActiveMarket() === "KR") runInsightKr(insightActiveKrInstitution);
+    else runInsight(insightActiveInstitution);
+  } else if (key === "brand") runInsightBrandTab(insightActiveBrandOrg);
   else if (key === "tech") runInsightTech();
   else if (key === "calendar") runInsightCalendar();
   else if (key === "news") runInsightNews();
-  else if (key === "futureIndustry") runInsightFutureIndustry();
+  else if (key === "futureIndustry") runFutureIndustrySource(insightActiveFutureSource);
 }
 
 // 인사이트 서브내비(거대기업 13F 보유종목)에서 현재 선택된 버튼만 활성 표시
@@ -6179,7 +6216,9 @@ async function runInsight(institution) {
   insightActiveInstitution = institution;
   insightActiveCategory = "firms";
   setInsightCategoryActive("firms");
-  insightFirmsNav.style.display = "";
+  updateFirmsNavVisibility();
+  insightBrandNav.style.display = "none";
+  futureIndustryNav.style.display = "none";
   setInsightActive(insightButtons[institution]);
   const status = el("insightStatus");
   const results = el("insightResults");
@@ -6194,6 +6233,80 @@ async function runInsight(institution) {
   status.style.display = "none";
   results.innerHTML = insightTableHtml(data);
 }
+
+// ---------- 1-KR. 기관&자산운용사(국내) — DART 5%룰(대량보유상황보고서) 기반 개별 종목 보유비중 ----------
+// 실제 데이터는 data/insight-kr-institutions.json(정적, 수동 갱신)에서 fetch. SEC 13F처럼 구조화된 정기 공시가
+// 아니라 5% 이상 보유·1%p 이상 변동 시에만 수시로 올라오는 공시라, 종목 수가 institution마다 다르고
+// 상시 갱신 배치가 없음(수동으로 최신 DART 공시 재확인 후 JSON을 갱신하는 방식) — dataNote로 갱신 기준일 명시
+const INSIGHT_KR_INSTITUTION_LABELS = {
+  nps: "국민연금공단",
+  kic: "한국투자공사",
+  samsungAm: "삼성자산운용",
+  miraeAm: "미래에셋자산운용",
+  kbAm: "KB자산운용",
+};
+let krInstitutionDataPromise = null;
+function getKrInstitutionData() {
+  if (!krInstitutionDataPromise) {
+    krInstitutionDataPromise = fetch("data/insight-kr-institutions.json", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+  }
+  return krInstitutionDataPromise;
+}
+function krInstitutionTableHtml(inst) {
+  if (!inst.holdings || !inst.holdings.length) {
+    return `<p class="disclaimer tab-note">🚧 ${escapeHtml(inst.unavailableNote || "DART 5%룰(대량보유상황보고서) 공시 기준으로 확인 가능한 개별 종목 보유 내역이 없습니다.")}</p>`;
+  }
+  const caveatHtml = inst.dataCaveat ? `<p class="disclaimer" style="color:#f5a623;">⚠️ ${escapeHtml(inst.dataCaveat)}</p>` : "";
+  const rows = inst.holdings
+    .map(
+      (h, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td>${h.ticker ? tickerLogoHtml(h.ticker) : ""}<b class="${h.ticker ? "ticker-link" : ""}" ${h.ticker ? `data-ticker="${escapeHtml(h.ticker)}"` : ""}>${escapeHtml(h.name)}</b></td>
+        <td>${h.weightPct.toFixed(2)}%${h.note ? `<br><span class="muted" style="font-size:11px;">${escapeHtml(h.note)}</span>` : ""}</td>
+        <td>${escapeHtml(h.asOfDate)}</td>
+        <td>${h.sourceUrl ? `<a href="${escapeHtml(h.sourceUrl)}" target="_blank" rel="noopener" style="font-size:11px;">DART 공시</a>` : ""}</td>
+      </tr>`
+    )
+    .join("");
+  return `
+    ${caveatHtml}
+    <table class="top30-table insight-holdings-table">
+      <thead><tr><th>순위</th><th>종목</th><th>보유비중</th><th>기준/공시일</th><th>출처</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+async function runInsightKr(institution) {
+  insightActiveKrInstitution = institution;
+  insightActiveCategory = "firms";
+  setInsightCategoryActive("firms");
+  updateFirmsNavVisibility();
+  insightBrandNav.style.display = "none";
+  futureIndustryNav.style.display = "none";
+  Object.values(insightKrButtons).forEach((b) => b && b.classList.toggle("active", b === insightKrButtons[institution]));
+  const status = el("insightStatus");
+  const results = el("insightResults");
+  status.style.display = "";
+  status.textContent = `⏳ ${INSIGHT_KR_INSTITUTION_LABELS[institution]} 데이터를 불러오는 중...`;
+  results.innerHTML = "";
+  const data = await getKrInstitutionData();
+  const inst = data && data.institutions && data.institutions[institution];
+  if (!inst) {
+    status.textContent = `🚧 ${INSIGHT_KR_INSTITUTION_LABELS[institution]} 데이터는 준비 중입니다.`;
+    return;
+  }
+  status.style.display = "none";
+  const noteHtml = data.sourceNote
+    ? `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${escapeHtml(data.sourceNote)}</p>`
+    : "";
+  results.innerHTML = `${noteHtml}${krInstitutionTableHtml(inst)}`;
+}
+Object.entries(insightKrButtons).forEach(([key, btn]) => {
+  if (!btn) return;
+  btn.addEventListener("click", () => runInsightKr(key));
+});
 
 // ---------- 2. 브랜드평판순 ----------
 // Axios Harris Poll 100(2026년 전체 100개, RQ 점수) · RepTrak(2026년 전체표는 이메일 등록 리포트에만 있어
@@ -6236,6 +6349,8 @@ Object.entries(insightBrandButtons).forEach(([org, btn]) => {
     insightActiveCategory = "brand";
     setInsightCategoryActive("brand");
     insightFirmsNav.style.display = "none";
+    insightKrFirmsNav.style.display = "none";
+    futureIndustryNav.style.display = "none";
     insightBrandNav.style.display = "";
     runInsightBrandTab(org);
   });
@@ -6247,6 +6362,13 @@ document.addEventListener("marketmodechange", () => {
   insightActiveBrandOrg = defaultBrandOrgForMarket();
   setInsightBrandActive(insightActiveBrandOrg);
   runInsightBrandTab(insightActiveBrandOrg);
+});
+// "자산&투자사" 탭을 보고 있는 중에 국내/해외를 전환하면 서브내비(insightFirmsNav↔insightKrFirmsNav)와 데이터를 함께 갱신
+document.addEventListener("marketmodechange", () => {
+  if (insightActiveCategory !== "firms") return;
+  updateFirmsNavVisibility();
+  if (getWatchlistActiveMarket() === "KR") runInsightKr(insightActiveKrInstitution);
+  else runInsight(insightActiveInstitution);
 });
 
 const brandDataCache = {};
@@ -7030,8 +7152,10 @@ async function runInsightNews() {
 }
 
 // ---------- 6. 미래산업 성장성 ----------
-// 블랙록·JP모건·골드만삭스(대형 자산운용사·투자은행 중 규모가 큰 3곳) 테마 리서치가 공통적으로 짚는
-// 유망 산업 20개와 연평균 성장률(CAGR)을 정적으로 정리한 data/insight-future-industries.json을 표시
+// 6개 소스를 가로 스크롤 서브버튼(futureIndustryNav)으로 전환하며 보여줌:
+// 1) 자산운용사 — 블랙록·JP모건·골드만삭스 테마 리서치 공통 유망 산업(data/insight-future-industries.json, 기존 구조 유지)
+// 2~6) KDI·KIET·한국은행·OECD·IMF — 각 기관이 실제 발표한 보고서 기준(data/insight-future-industries-<key>.json),
+//    기관마다 발표 형식이 달라 industries 플랫 리스트가 아니라 report(섹션) 단위로 구조화(섹션마다 정확한 지표명·예측기간·발표일·출처 명시)
 let futureIndustryDataPromise = null;
 function getFutureIndustryData() {
   if (!futureIndustryDataPromise) {
@@ -7041,21 +7165,7 @@ function getFutureIndustryData() {
   }
   return futureIndustryDataPromise;
 }
-
-async function runInsightFutureIndustry() {
-  const status = el("insightStatus");
-  const results = el("insightResults");
-  status.style.display = "";
-  status.textContent = "⏳ 미래산업 성장성 데이터를 불러오는 중...";
-  results.innerHTML = "";
-
-  const data = await getFutureIndustryData();
-  if (!data || !data.groups) {
-    status.textContent = "🚧 미래산업 성장성 데이터를 가져오지 못했습니다.";
-    return;
-  }
-
-  status.style.display = "none";
+function futureIndustryGroupsHtml(data) {
   const groupsHtml = data.groups
     .map((g) => {
       const rows = [...g.industries]
@@ -7072,12 +7182,94 @@ async function runInsightFutureIndustry() {
         </div>`;
     })
     .join("");
-
-  results.innerHTML = `
-    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${escapeHtml(data.sourceNote)}</p>
-    ${groupsHtml}
-  `;
+  return `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${escapeHtml(data.sourceNote)}</p>${groupsHtml}`;
 }
+
+const FUTURE_INDUSTRY_SOURCE_FILE = {
+  kdi: "data/insight-future-industries-kdi.json",
+  kiet: "data/insight-future-industries-kiet.json",
+  bok: "data/insight-future-industries-bok.json",
+  oecd: "data/insight-future-industries-oecd.json",
+  imf: "data/insight-future-industries-imf.json",
+};
+const futureIndustrySourceCache = {};
+function getFutureIndustrySourceData(key) {
+  if (!futureIndustrySourceCache[key]) {
+    futureIndustrySourceCache[key] = fetch(FUTURE_INDUSTRY_SOURCE_FILE[key], { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+  }
+  return futureIndustrySourceCache[key];
+}
+// 기관마다 실제 공개된 산업별 성장률 전망의 형식·개수·지표가 다름(예: OECD·IMF는 전체 업종을 아우르는 표를 발표하지 않고
+// 특정 산업 보고서만 있음) — sections 배열로 그 다양성을 그대로 표현하고, section마다 정확한 지표명/예측기간/발표일을 병기
+function futureIndustrySectionsHtml(data) {
+  const topNote = data.reportNote
+    ? `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${escapeHtml(data.reportNote)}</p>`
+    : "";
+  const sectionsHtml = (data.sections || [])
+    .map((sec) => {
+      const rows = [...sec.industries]
+        .sort((a, b) => b.growthPct - a.growthPct)
+        .slice(0, 30)
+        .map(
+          (ind) =>
+            `<div class="future-ind-row"><span class="future-ind-name">${escapeHtml(ind.name)}</span><span class="future-ind-cagr ${ind.growthPct >= 0 ? "delta-up" : "delta-down"}">${ind.growthPct >= 0 ? "+" : ""}${ind.growthPct.toFixed(1)}%</span></div>`
+        )
+        .join("");
+      const metaBits = [sec.metricLabel, sec.forecastPeriod ? `예측기간 ${sec.forecastPeriod}` : null, sec.publishedDate ? `${sec.publishedDate} 발표` : null].filter(Boolean).join(" · ");
+      const linkHtml = sec.sourceUrl ? ` · <a href="${escapeHtml(sec.sourceUrl)}" target="_blank" rel="noopener">원문</a>` : "";
+      return `
+        <div class="future-ind-group">
+          <h3 class="future-ind-group-title">${escapeHtml(sec.reportTitle)}</h3>
+          <p class="disclaimer tab-note" style="margin-top:-6px;">${escapeHtml(metaBits)}${linkHtml}</p>
+          <div class="future-ind-list">${rows}</div>
+        </div>`;
+    })
+    .join("");
+  // 정성적(방향성만 확인, 정확한 %는 미확인) 참고사항 — 억지로 숫자 표에 끼워넣지 않고 별도 문단으로만 표시
+  const qualHtml = data.qualitativeNote
+    ? `<p class="disclaimer tab-note" style="margin-top:10px;">ℹ️ ${escapeHtml(data.qualitativeNote)}</p>`
+    : "";
+  return `${topNote}${sectionsHtml}${qualHtml}`;
+}
+
+async function runFutureIndustrySource(key) {
+  insightActiveFutureSource = key;
+  insightActiveCategory = "futureIndustry";
+  setInsightCategoryActive("futureIndustry");
+  updateFirmsNavVisibility();
+  insightBrandNav.style.display = "none";
+  futureIndustryNav.style.display = "";
+  Object.entries(futureIndustryButtons).forEach(([k, b]) => b && b.classList.toggle("active", k === key));
+  const status = el("insightStatus");
+  const results = el("insightResults");
+  status.style.display = "";
+  status.textContent = "⏳ 미래산업 성장성 데이터를 불러오는 중...";
+  results.innerHTML = "";
+
+  if (key === "assetMgr") {
+    const data = await getFutureIndustryData();
+    if (!data || !data.groups) {
+      status.textContent = "🚧 미래산업 성장성 데이터를 가져오지 못했습니다.";
+      return;
+    }
+    status.style.display = "none";
+    results.innerHTML = futureIndustryGroupsHtml(data);
+    return;
+  }
+  const data = await getFutureIndustrySourceData(key);
+  if (!data || !data.sections) {
+    status.textContent = "🚧 미래산업 성장성 데이터를 가져오지 못했습니다.";
+    return;
+  }
+  status.style.display = "none";
+  results.innerHTML = futureIndustrySectionsHtml(data);
+}
+Object.entries(futureIndustryButtons).forEach(([key, btn]) => {
+  if (!btn) return;
+  btn.addEventListener("click", () => runFutureIndustrySource(key));
+});
 
 // 과거분석 대상 종목 1개의 "기준 시점 스냅샷" 지표를 계산 — 2년치 차트로 기준 시점의 52주 범위·모멘텀·매출성장성까지 근사
 // (오늘 기준 데이터는 이미 phase1의 getFullMetrics 결과를 재사용하므로 여기서는 기준 시점 데이터만 새로 조회)
