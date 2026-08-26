@@ -1,6 +1,8 @@
 // ---------- 섹터맵 (S&P 500 원형 버블맵) ----------
-// data/sp500-data.js 가 만들어둔 전역 SP500_DATA({companies:[{symbol,name,sector,sectorKo,marketCap}]})를
+// data/sp500-data-core.js가 만들어둔 전역 SP500_CORE_DATA({companies:[{symbol,name,sector,sectorKo,marketCap}]})를
 // d3-hierarchy의 pack 레이아웃(원형 트리맵)에 태워 섹터별로 묶은 원들을 그린 뒤, 지도앱처럼 손가락/휠로 확대·축소·이동한다.
+// 나머지(전체 유니버스의 상위권 밖 종목)는 data/sp500-data-extra.js/kr-data-extra.js에 따로 있고, "+전체보기"를
+// 눌렀을 때만 동적으로 불러온다(ensureExtraDataLoaded) — 초기 로딩 용량을 줄이기 위함.
 
 const WORLD_SIZE = 2000; // .map-world 의 world-space 좌표 크기(px, CSS와 동일해야 함)
 
@@ -148,36 +150,84 @@ function fmtWonTrillionOnly(n) {
 
 // ---------- 1) pack 레이아웃 데이터 만들기 ----------
 // sizeMode: "marketCap"(기본, 시가총액 비례) | "equal"(균등 — 원 크기를 전부 동일하게)
-// 기본 화면은 상위 종목만 보여주고("전체보기" 버튼을 눌러야 전체 유니버스가 보임) — 시장별로 각자 켜고 끌 수 있음
-// 해외: 시가총액 상위 200개 / 국내: 코스피 상위 100개 + 코스닥 상위 50개
+// 기본 화면은 상위 종목만 보여주고("+전체보기" 버튼을 눌러야 전체 유니버스가 보임) — 시장별로 각자 켜고 끌 수 있음.
+// 초기 로딩을 가볍게 하려고 상위 종목(core)만 <script>로 즉시 불러오고, 나머지(extra)는 실제로 "+전체보기"를
+// 누르는 순간에만 별도 파일을 동적으로 불러온다(한 번 불러오면 캐시해서 다음 토글부터는 재요청하지 않음).
+// 해외: core=시가총액 상위 200개, extra=나머지(약 300개) / 국내: core=코스피 상위 100개+코스닥 상위 50개, extra=나머지(약 197개)
 const UNIVERSE_EXPANDED = { domestic: false, overseas: false };
-function filterUniverseCompanies(companies) {
-  if (UNIVERSE_EXPANDED[ACTIVE_MARKET]) return companies;
-  if (ACTIVE_MARKET === "domestic") {
-    const byMarketCapDesc = (a, b) => b.marketCap - a.marketCap;
-    const kospi = companies.filter((c) => c.exchange === "KOSPI").sort(byMarketCapDesc).slice(0, 100);
-    const kosdaq = companies.filter((c) => c.exchange === "KOSDAQ").sort(byMarketCapDesc).slice(0, 50);
-    return [...kospi, ...kosdaq];
-  }
-  return [...companies].sort((a, b) => b.marketCap - a.marketCap).slice(0, 200);
+const extraDataLoadPromises = {};
+function loadScriptOnce(src) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = src;
+    s.onload = resolve;
+    s.onerror = () => reject(new Error(`failed to load ${src}`));
+    document.head.appendChild(s);
+  });
 }
-// 시장/전체보기 상태에 맞는 버튼 라벨을 그리고, 클릭 시 UNIVERSE_EXPANDED를 토글해 지도를 다시 그림
-function updateUniverseToggleBtn() {
+function ensureExtraDataLoaded(market) {
+  if (extraDataLoadPromises[market]) return extraDataLoadPromises[market];
+  const src = market === "domestic" ? "data/kr-data-extra.js" : "data/sp500-data-extra.js";
+  extraDataLoadPromises[market] = loadScriptOnce(src).catch((err) => {
+    delete extraDataLoadPromises[market]; // 실패하면 다음 클릭 때 다시 시도할 수 있도록 캐시하지 않음
+    throw err;
+  });
+  return extraDataLoadPromises[market];
+}
+function coreDataFor(market) {
+  return market === "domestic"
+    ? typeof KR_CORE_DATA !== "undefined"
+      ? KR_CORE_DATA
+      : { companies: [] }
+    : SP500_CORE_DATA;
+}
+function extraDataFor(market) {
+  if (market === "domestic") return typeof KR_EXTRA_DATA !== "undefined" ? KR_EXTRA_DATA : null;
+  return typeof SP500_EXTRA_DATA !== "undefined" ? SP500_EXTRA_DATA : null;
+}
+// UNIVERSE_EXPANDED/ACTIVE_MARKET 상태에 맞게 ACTIVE_DATA를 다시 계산 — extra가 아직 안 불러와진 상태에서
+// 펼침으로 표시돼 있으면(로딩 실패 등) core만이라도 보여줌
+function updateActiveDataForUniverseState() {
+  const core = coreDataFor(ACTIVE_MARKET);
+  if (!UNIVERSE_EXPANDED[ACTIVE_MARKET]) {
+    ACTIVE_DATA = core;
+    return;
+  }
+  const extra = extraDataFor(ACTIVE_MARKET);
+  ACTIVE_DATA = extra ? { ...core, companies: [...core.companies, ...extra.companies] } : core;
+}
+// 시장/전체보기 상태에 맞는 버튼 라벨을 그림("불러오는 중"은 extra 파일을 처음 받아오는 동안만 잠깐 표시)
+function updateUniverseToggleBtn(loading) {
   const btn = document.getElementById("universeToggleBtn");
   if (!btn) return;
-  const expanded = UNIVERSE_EXPANDED[ACTIVE_MARKET];
-  btn.textContent = expanded ? "-접기" : "+전체보기";
+  if (loading) {
+    btn.textContent = "불러오는 중...";
+    return;
+  }
+  btn.textContent = UNIVERSE_EXPANDED[ACTIVE_MARKET] ? "-접기" : "+전체보기";
 }
-document.getElementById("universeToggleBtn").addEventListener("click", () => {
-  UNIVERSE_EXPANDED[ACTIVE_MARKET] = !UNIVERSE_EXPANDED[ACTIVE_MARKET];
+document.getElementById("universeToggleBtn").addEventListener("click", async () => {
+  const nextExpanded = !UNIVERSE_EXPANDED[ACTIVE_MARKET];
+  if (nextExpanded && !extraDataFor(ACTIVE_MARKET)) {
+    updateUniverseToggleBtn(true);
+    try {
+      await ensureExtraDataLoaded(ACTIVE_MARKET);
+    } catch {
+      showToast("전체 목록을 불러오지 못했어요. 다시 시도해주세요");
+      updateUniverseToggleBtn();
+      return;
+    }
+  }
+  UNIVERSE_EXPANDED[ACTIVE_MARKET] = nextExpanded;
+  updateActiveDataForUniverseState();
   updateUniverseToggleBtn();
   rerenderMap(true);
 });
 
 function buildPackedRoot(data) {
   const bySector = new Map();
-  const eligible = data.companies.filter((c) => c.marketCap);
-  for (const c of filterUniverseCompanies(eligible)) {
+  for (const c of data.companies) {
+    if (!c.marketCap) continue;
     if (!bySector.has(c.sector)) bySector.set(c.sector, []);
     bySector.get(c.sector).push(c);
   }
@@ -200,9 +250,10 @@ const mapViewport = document.getElementById("mapViewport");
 const loadingIndicator = document.getElementById("loadingIndicator");
 const bubbleBySymbol = new Map(); // symbol -> .company-bubble 엘리먼트(지표 범위 필터 적용 시 빠르게 찾기용)
 
-// 국내/해외 전환 — 지금 화면에 그려진 데이터셋. KR_SECTOR_DATA는 data/kr-data.js가 만들어둠(없으면 국내 전환 시 안내만 표시)
+// 국내/해외 전환 — 지금 화면에 그려진 데이터셋(기본은 core만, "+전체보기" 상태면 core+extra).
+// KR_CORE_DATA는 data/kr-data-core.js가 만들어둠(없으면 국내 전환 시 안내만 표시)
 let ACTIVE_MARKET = "overseas";
-let ACTIVE_DATA = SP500_DATA;
+let ACTIVE_DATA = coreDataFor(ACTIVE_MARKET);
 let sizeMode = "equal"; // 기본값 균등 — "시총" 버튼으로 "marketCap"과 토글(버튼 이름은 항상 "시총", 시총 모드일 때만 주황 강조)
 
 // 섹터 이름표를 "로고 하나"처럼 취급 — 섹터 원 맨 위 가장자리에 딱 붙여 고정하고,
@@ -927,8 +978,10 @@ function resetAllFilters() {
 const KR_MARKETCAP_SPLIT_SYMBOL = "402340.KS"; // SK스퀘어
 const KR_MARKETCAP_SPLIT_FRAC = 0.75;
 function getKrMarketCapAnchor() {
-  const list = typeof KR_SECTOR_DATA !== "undefined" ? KR_SECTOR_DATA.companies : [];
-  const c = list.find((x) => x.symbol === KR_MARKETCAP_SPLIT_SYMBOL);
+  // core에 없으면(상위 150위 밖) extra가 이미 불러와져 있을 때만 거기서도 찾아봄 — extra 로딩을 새로 유발하진 않음
+  const core = typeof KR_CORE_DATA !== "undefined" ? KR_CORE_DATA.companies : [];
+  const extra = typeof KR_EXTRA_DATA !== "undefined" ? KR_EXTRA_DATA.companies : [];
+  const c = core.find((x) => x.symbol === KR_MARKETCAP_SPLIT_SYMBOL) || extra.find((x) => x.symbol === KR_MARKETCAP_SPLIT_SYMBOL);
   return c ? c.marketCap : null;
 }
 function scaleForKey(key) {
@@ -1763,7 +1816,7 @@ if (tickerTapeEl && tickerTapeTrackEl) {
 
 function loadMarket(mode, animate) {
   ACTIVE_MARKET = mode;
-  ACTIVE_DATA = mode === "domestic" ? KR_SECTOR_DATA : SP500_DATA;
+  updateActiveDataForUniverseState();
   METRICS = buildMetrics(mode);
   activeFilters.clear(); // 시장이 바뀌면 종목 구성 자체가 달라지므로 필터는 초기화
   document.querySelector(".top-bar").classList.toggle("is-overseas", mode === "overseas");
@@ -1790,7 +1843,7 @@ document.getElementById("marketTogglePill").addEventListener("click", (e) => {
   if (!btn) return;
   const mode = btn.dataset.market;
   if (mode === ACTIVE_MARKET) return;
-  if (mode === "domestic" && (typeof KR_SECTOR_DATA === "undefined" || !KR_SECTOR_DATA.companies || !KR_SECTOR_DATA.companies.length)) {
+  if (mode === "domestic" && (typeof KR_CORE_DATA === "undefined" || !KR_CORE_DATA.companies || !KR_CORE_DATA.companies.length)) {
     showToast("국내 섹터맵 데이터를 아직 못 불러왔어요");
     return;
   }
@@ -1819,7 +1872,7 @@ window.addEventListener("resize", () => fitToViewport(false));
 // 내투자닷컴 첫 화면에서 넘어온 경우 ?market=domestic 으로 국내를 기본값으로 염(데이터 없으면 해외로 대체)
 const requestedMarket = new URLSearchParams(window.location.search).get("market");
 const initialMarket =
-  requestedMarket === "domestic" && typeof KR_SECTOR_DATA !== "undefined" && KR_SECTOR_DATA.companies && KR_SECTOR_DATA.companies.length
+  requestedMarket === "domestic" && typeof KR_CORE_DATA !== "undefined" && KR_CORE_DATA.companies && KR_CORE_DATA.companies.length
     ? "domestic"
     : "overseas";
 document.querySelectorAll("#marketTogglePill .toggle-btn").forEach((b) => {
@@ -1839,8 +1892,11 @@ if (mapLoadingSplashEl) mapLoadingSplashEl.style.display = "none";
 // 지금 보고 있는 시장은 건너뛰고(중복 요청 방지), 반대쪽 시장만, 그것도 메인 스레드가 한가해진 뒤 작은 묶음으로
 // 나눠서 조용히 받아온다 — "지금 보고 있는 구역"의 실시간 로고 요청이 항상 우선되도록.
 function preloadInactiveMarketLogos() {
+  // 반대쪽 시장도 core만 미리 캐시(전체 유니버스까지 미리 받으면 "+전체보기"를 늦게 불러오려는 취지와 어긋남) —
+  // 반대쪽에서 나중에 "+전체보기"를 누르면 그때는 어차피 extra 데이터 자체를 새로 받아와야 하므로 로고도 그때 받는다
+  const inactiveMarket = ACTIVE_MARKET === "domestic" ? "overseas" : "domestic";
   const activeSymbols = new Set((ACTIVE_DATA && ACTIVE_DATA.companies ? ACTIVE_DATA.companies : []).map((c) => c.symbol));
-  const inactiveDataset = ACTIVE_MARKET === "domestic" ? SP500_DATA : typeof KR_SECTOR_DATA !== "undefined" ? KR_SECTOR_DATA : null;
+  const inactiveDataset = coreDataFor(inactiveMarket);
   if (!inactiveDataset || !inactiveDataset.companies) return;
   const symbols = inactiveDataset.companies
     .map((c) => c.symbol)
