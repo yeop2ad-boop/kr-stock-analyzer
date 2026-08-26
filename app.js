@@ -2034,9 +2034,6 @@ const insightKrButtons = {
 };
 const futureIndustryButtons = {
   assetMgr: el("futureIndAssetMgrBtn"),
-  kdi: el("futureIndKdiBtn"),
-  kiet: el("futureIndKietBtn"),
-  bok: el("futureIndBokBtn"),
   oecd: el("futureIndOecdBtn"),
   imf: el("futureIndImfBtn"),
 };
@@ -7163,10 +7160,12 @@ async function runInsightNews() {
 }
 
 // ---------- 6. 미래산업 성장성 ----------
-// 6개 소스를 가로 스크롤 서브버튼(futureIndustryNav)으로 전환하며 보여줌:
+// 3개 소스를 가로 스크롤 서브버튼(futureIndustryNav)으로 전환하며 보여줌:
 // 1) 자산운용사 — 블랙록·JP모건·골드만삭스 테마 리서치 공통 유망 산업(data/insight-future-industries.json, 기존 구조 유지)
-// 2~6) KDI·KIET·한국은행·OECD·IMF — 각 기관이 실제 발표한 보고서 기준(data/insight-future-industries-<key>.json),
+// 2~3) OECD·IMF — 각 기관이 실제 발표한 보고서 기준(data/insight-future-industries-<key>.json),
 //    기관마다 발표 형식이 달라 industries 플랫 리스트가 아니라 report(섹션) 단위로 구조화(섹션마다 정확한 지표명·예측기간·발표일·출처 명시)
+// KDI·KIET·한국은행(BOK)은 공공누리 제4유형(상업이용+변경 모두 금지) 라이선스라 AI 재요약(변경) 자체가
+// 비영리로 운영해도 위반 소지가 있어 2026-08-26에 제외함 — data/research-content-licensing.md 참고
 let futureIndustryDataPromise = null;
 function getFutureIndustryData() {
   if (!futureIndustryDataPromise) {
@@ -7197,9 +7196,6 @@ function futureIndustryGroupsHtml(data) {
 }
 
 const FUTURE_INDUSTRY_SOURCE_FILE = {
-  kdi: "data/insight-future-industries-kdi.json",
-  kiet: "data/insight-future-industries-kiet.json",
-  bok: "data/insight-future-industries-bok.json",
   oecd: "data/insight-future-industries-oecd.json",
   imf: "data/insight-future-industries-imf.json",
 };
