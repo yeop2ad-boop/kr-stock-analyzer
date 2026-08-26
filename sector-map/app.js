@@ -148,10 +148,36 @@ function fmtWonTrillionOnly(n) {
 
 // ---------- 1) pack 레이아웃 데이터 만들기 ----------
 // sizeMode: "marketCap"(기본, 시가총액 비례) | "equal"(균등 — 원 크기를 전부 동일하게)
+// 기본 화면은 상위 종목만 보여주고("전체보기" 버튼을 눌러야 전체 유니버스가 보임) — 시장별로 각자 켜고 끌 수 있음
+// 해외: 시가총액 상위 200개 / 국내: 코스피 상위 100개 + 코스닥 상위 50개
+const UNIVERSE_EXPANDED = { domestic: false, overseas: false };
+function filterUniverseCompanies(companies) {
+  if (UNIVERSE_EXPANDED[ACTIVE_MARKET]) return companies;
+  if (ACTIVE_MARKET === "domestic") {
+    const byMarketCapDesc = (a, b) => b.marketCap - a.marketCap;
+    const kospi = companies.filter((c) => c.exchange === "KOSPI").sort(byMarketCapDesc).slice(0, 100);
+    const kosdaq = companies.filter((c) => c.exchange === "KOSDAQ").sort(byMarketCapDesc).slice(0, 50);
+    return [...kospi, ...kosdaq];
+  }
+  return [...companies].sort((a, b) => b.marketCap - a.marketCap).slice(0, 200);
+}
+// 시장/전체보기 상태에 맞는 버튼 라벨을 그리고, 클릭 시 UNIVERSE_EXPANDED를 토글해 지도를 다시 그림
+function updateUniverseToggleBtn() {
+  const btn = document.getElementById("universeToggleBtn");
+  if (!btn) return;
+  const expanded = UNIVERSE_EXPANDED[ACTIVE_MARKET];
+  btn.textContent = expanded ? "-접기" : "+전체보기";
+}
+document.getElementById("universeToggleBtn").addEventListener("click", () => {
+  UNIVERSE_EXPANDED[ACTIVE_MARKET] = !UNIVERSE_EXPANDED[ACTIVE_MARKET];
+  updateUniverseToggleBtn();
+  rerenderMap(true);
+});
+
 function buildPackedRoot(data) {
   const bySector = new Map();
-  for (const c of data.companies) {
-    if (!c.marketCap) continue;
+  const eligible = data.companies.filter((c) => c.marketCap);
+  for (const c of filterUniverseCompanies(eligible)) {
     if (!bySector.has(c.sector)) bySector.set(c.sector, []);
     bySector.get(c.sector).push(c);
   }
@@ -476,7 +502,7 @@ let pinchStartK = null;
 mapViewport.addEventListener("pointerdown", (e) => {
   // 지도 팬/핀치 캡처 대상은 지도 배경(버블 포함)뿐 — 시총/로고/관심/등락/저장/시계/전체보기 같은 고정 UI 버튼 위에서
   // 눌렀을 때도 무조건 setPointerCapture하면 이후 click이 버튼이 아니라 mapViewport로 가버려서 버튼이 안 눌리는 버그가 있었음
-  if (e.target.closest(".map-side-buttons, .ai-fab, .locate-fab")) return;
+  if (e.target.closest(".map-side-buttons, .ai-fab, .universe-toggle-btn, .locate-fab")) return;
   mapViewport.setPointerCapture(e.pointerId);
   activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
   mapViewport.classList.add("grabbing");
@@ -716,7 +742,7 @@ document.addEventListener("click", (e) => {
   if (btn) showToast(btn.dataset.toast);
 });
 
-document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#logoModeBtn):not(#watchFilterBtn):not(#saveMapBtn)").forEach((btn) => {
+document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#logoModeBtn):not(#watchFilterBtn)").forEach((btn) => {
   btn.addEventListener("click", () => {
     const group = btn.parentElement;
     group.querySelectorAll(".active").forEach((b) => b.classList.remove("active"));
@@ -1741,6 +1767,7 @@ function loadMarket(mode, animate) {
   METRICS = buildMetrics(mode);
   activeFilters.clear(); // 시장이 바뀌면 종목 구성 자체가 달라지므로 필터는 초기화
   document.querySelector(".top-bar").classList.toggle("is-overseas", mode === "overseas");
+  updateUniverseToggleBtn();
 
   rerenderMap(animate);
   applyChangeModeToSectorBubbles(); // rerenderMap이 섹터 원을 새로 만들므로 등락 모드가 켜져 있었다면 채색도 다시 적용
@@ -1779,69 +1806,6 @@ function goToMainSite(openPanel) {
   } catch {}
   window.location.href = openPanel ? `../index.html?open=${openPanel}` : "../index.html";
 }
-// ---------- "저장" — 지금 화면에 보이는 지도를 캡처해서 전체화면으로 보여주고, 공유/저장하기 ----------
-const mapSnapshotOverlay = document.getElementById("mapSnapshotOverlay");
-const mapSnapshotImg = document.getElementById("mapSnapshotImg");
-const mapSnapshotSpinner = document.getElementById("mapSnapshotSpinner");
-let mapSnapshotBlob = null;
-
-function closeMapSnapshot() {
-  mapSnapshotOverlay.classList.remove("open");
-  mapSnapshotImg.style.display = "none";
-  mapSnapshotImg.src = "";
-  mapSnapshotBlob = null;
-}
-
-document.getElementById("saveMapBtn").addEventListener("click", async () => {
-  mapSnapshotOverlay.classList.add("open");
-  mapSnapshotImg.style.display = "none";
-  mapSnapshotSpinner.style.display = "block";
-  try {
-    // 지금 화면(뷰포트)에 실제로 보이는 부분만 캡처 — 확대/이동한 상태 그대로
-    const blob = await htmlToImage.toBlob(mapViewport, {
-      backgroundColor: "#ffffff",
-      pixelRatio: Math.min(2, window.devicePixelRatio || 1),
-    });
-    mapSnapshotBlob = blob;
-    mapSnapshotImg.src = URL.createObjectURL(blob);
-    mapSnapshotImg.style.display = "block";
-  } catch (err) {
-    showToast("캡처에 실패했어요");
-    closeMapSnapshot();
-  } finally {
-    mapSnapshotSpinner.style.display = "none";
-  }
-});
-
-document.getElementById("mapSnapshotCloseBtn").addEventListener("click", closeMapSnapshot);
-
-document.getElementById("mapSnapshotShareBtn").addEventListener("click", async () => {
-  if (!mapSnapshotBlob) return;
-  const file = new File([mapSnapshotBlob], "내투자-섹터맵.png", { type: "image/png" });
-  if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    try {
-      await navigator.share({ files: [file], title: "내투자. 섹터맵" });
-    } catch {} // 사용자가 공유 취소한 경우 등 — 별도 처리 없음
-  } else {
-    showToast("이 브라우저는 공유를 지원하지 않아요. 저장 후 직접 보내주세요");
-  }
-});
-
-document.getElementById("mapSnapshotSaveBtn").addEventListener("click", () => {
-  if (!mapSnapshotBlob) return;
-  // TODO: 카카오톡 "나에게 보내기" 자동 전송은 Kakao JS SDK 앱 키 + 공개 이미지 URL(업로드 서버)이 있어야 가능 —
-  // 지금은 기기에 이미지를 저장하고, 사용자가 카카오톡 등에서 직접 보내는 방식으로 대체함.
-  const url = URL.createObjectURL(mapSnapshotBlob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "내투자-섹터맵.png";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 2000);
-  showToast("사진이 저장됐어요");
-});
-
 document.getElementById("brandLogoBtn").addEventListener("click", () => goToMainSite());
 document.getElementById("mapSearchBtn").addEventListener("click", () => goToMainSite("search"));
 document.getElementById("bottomNavStudyBtn").addEventListener("click", () => goToMainSite());
