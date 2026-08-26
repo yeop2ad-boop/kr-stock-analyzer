@@ -1979,10 +1979,13 @@ const panels = {
 };
 const tabButtons = {
   watchlist: el("watchlistTabBtn"),
-  topranking: el("tabTopRankingBtn"),
+  topranking: el("tabValuationBtn"),
   insight: el("tabInsightBtn"),
 };
 const searchTabBtn = el("searchTabBtn");
+// "시장동향"은 "기업가치"(topranking)와 같은 패널을 공유하는 두 번째 상단 버튼이라 TAB_ORDER엔 안 들어가고
+// activateRankingGroup()이 직접 active 상태와 렌더링을 처리함
+const tabTrendBtn = el("tabTrendBtn");
 const valuationButtons = {
   revenue: el("valuationRevenueBtn"),
   cashFlow: el("valuationCashFlowBtn"),
@@ -2045,6 +2048,9 @@ window.addEventListener("resize", syncCarouselHeight);
 function updateTabBarActive() {
   const activeKey = TAB_ORDER[activeTabIndex];
   TAB_ORDER.forEach((key) => tabButtons[key].classList.toggle("active", key === activeKey));
+  // tabTrendBtn은 topranking과 패널을 공유하므로 여기선 일단 끄고, activateRankingGroup()이
+  // 실제 그룹(기업가치/시장동향)에 맞게 다시 켬
+  tabTrendBtn.classList.remove("active");
 }
 
 function switchTab(index) {
@@ -2062,6 +2068,7 @@ function switchTab(index) {
 
 TAB_ORDER.forEach((key, i) => {
   if (key === "watchlist") return; // 로그인 필요 — 아래에서 별도 처리
+  if (key === "topranking") return; // 기업가치/시장동향은 activateRankingGroup 전용 핸들러로 처리(아래 RANKING_ENTRIES 섹션)
   tabButtons[key].addEventListener("click", () => switchTab(i));
 });
 // 관심종목은 로그인한 사용자만 볼 수 있음 — 로그인 안 했으면 탭 전환 대신 로그인 모달을 먼저 띄움
@@ -2077,7 +2084,8 @@ searchTabBtn.addEventListener("click", openSearchWizard);
 // ---------- 탭별 데이터 로딩 캐싱: 한 번 로딩된 탭은 다시 방문해도 재요청하지 않음 ----------
 const TAB_LOADERS = {
   watchlist: () => renderWatchlistList(),
-  topranking: () => runRankingEntry(0), // Top랭킹 진입 시 첫 항목(상승률)을 자동 표시
+  // 기업가치/시장동향은 activateRankingGroup()이 클릭될 때마다 매번 직접 그룹/서브내비/첫 항목을 처리하므로 별도 캐시 로더 불필요
+  topranking: () => {},
   // 인사이트 진입 시 기본은 첫 버튼(블랙록)이지만, 하단 네비게이션 등에서 이미 다른 카테고리(예: 캘린더)로
   // 먼저 전환해둔 상태로 진입했다면 그 카테고리를 존중함(안 그러면 비동기 로딩이 뒤늦게 firms로 덮어씀)
   insight: () => (insightActiveCategory === "firms" ? runInsight(insightActiveInstitution) : runInsightCategory(insightActiveCategory)),
@@ -2333,8 +2341,18 @@ morePanelUserRow.addEventListener("click", () => {
     openLoginModal();
   }
 });
-document.querySelectorAll(".more-panel-item:not(.more-panel-theme-row)").forEach((btn) => {
+document.querySelectorAll(".more-panel-item:not(.more-panel-theme-row):not(.more-panel-item-active)").forEach((btn) => {
   btn.addEventListener("click", () => showToast("준비중인 기능입니다."));
+});
+el("morePanelCalendarInsightBtn").addEventListener("click", () => {
+  closeMorePanel();
+  switchTab(TAB_ORDER.indexOf("insight"));
+  switchInsightCategory("calendar");
+});
+el("morePanelNewsInsightBtn").addEventListener("click", () => {
+  closeMorePanel();
+  switchTab(TAB_ORDER.indexOf("insight"));
+  switchInsightCategory("news");
 });
 
 // ---------- 화면 테마(화이트/블랙) — 기본은 화이트, 선택은 localStorage에 저장해 다음 방문에도 유지 ----------
@@ -3211,8 +3229,7 @@ el("searchWizardBody").addEventListener("click", (e) => {
     renderSearchWizardStep();
   } else if (action === "rank-nav") {
     closeSearchWizard();
-    switchTab(TAB_ORDER.indexOf("topranking"));
-    runRankingEntry(Number(btn.dataset.rankIdx));
+    goToRankingEntry(Number(btn.dataset.rankIdx));
   } else if (action === "sector-toggle") {
     const sector = btn.dataset.sector;
     const set = new Set(searchWizardAnswers.sectors);
@@ -3245,12 +3262,10 @@ el("searchWizardBody").addEventListener("click", (e) => {
     renderSearchWizardStep();
   } else if (action === "branchC-style-short") {
     closeSearchWizard();
-    switchTab(TAB_ORDER.indexOf("topranking"));
-    runRankingEntry(RANKING_ENTRIES.findIndex((e) => e.label === "상승 압력"));
+    goToRankingEntry(RANKING_ENTRIES.findIndex((e) => e.label === "상승 압력"));
   } else if (action === "branchC-style-long") {
     closeSearchWizard();
-    switchTab(TAB_ORDER.indexOf("topranking"));
-    runRankingEntry(RANKING_ENTRIES.findIndex((e) => e.label === "투자 안정"));
+    goToRankingEntry(RANKING_ENTRIES.findIndex((e) => e.label === "투자 안정"));
   } else if (action === "share") {
     shareWizardResult(wizardShareTitle, wizardShareText);
   } else if (action === "share-self") {
@@ -3303,7 +3318,7 @@ let topRankingActiveIdx = 0;
 function renderTopRankingSubNavActive() {
   el("topRankingSubNav")
     .querySelectorAll(".top-ranking-tab")
-    .forEach((btn, i) => btn.classList.toggle("active", i === topRankingActiveIdx));
+    .forEach((btn) => btn.classList.toggle("active", Number(btn.dataset.rankIdx) === topRankingActiveIdx));
 }
 
 function runRankingEntry(idx) {
@@ -3315,30 +3330,41 @@ function runRankingEntry(idx) {
   entry.run();
 }
 
-// 공시(재무/밸류에이션 성격)와 시장(시세/스코어 성격) 두 줄로 나눠서 각각 독립적으로 가로 스크롤되게 표시
-// — "자산&투자사" 서브내비(insight-firms-nav/-row)와 동일한 CSS를 재사용
-const TOP_RANKING_GROUP_LABEL = { disclosure: "공시", market: "시장" };
-function renderTopRankingSubNav() {
-  const rowsHtml = ["disclosure", "market"]
-    .map((groupKey) => {
-      const btns = RANKING_ENTRIES.map((entry, i) =>
-        entry.group !== groupKey
-          ? ""
-          : `<button type="button" class="cat-btn top-ranking-tab${entry.orange ? " top-ranking-tab-orange" : ""}" data-rank-idx="${i}">${iconHtml(
-              entry.icon
-            )}<span>${entry.label}</span></button>`
-      ).join("");
-      return `<div class="insight-firms-row"><span class="insight-firms-row-label">${TOP_RANKING_GROUP_LABEL[groupKey]}</span>${btns}</div>`;
-    })
-    .join("");
-  el("topRankingSubNav").innerHTML = rowsHtml;
+// "기업가치"/"시장동향" 상단탭은 같은 topranking 패널을 공유하며, 지금 보여줄 그룹(group)의 항목만
+// 한 줄 가로스크롤 서브내비로 그림
+function renderGroupSubNav(groupKey) {
+  el("topRankingSubNav").innerHTML = RANKING_ENTRIES.map((entry, i) =>
+    entry.group !== groupKey
+      ? ""
+      : `<button type="button" class="cat-btn top-ranking-tab${entry.orange ? " top-ranking-tab-orange" : ""}" data-rank-idx="${i}">${iconHtml(
+          entry.icon
+        )}<span>${entry.label}</span></button>`
+  ).join("");
 }
-renderTopRankingSubNav();
 el("topRankingSubNav").addEventListener("click", (e) => {
   const btn = e.target.closest(".top-ranking-tab");
   if (!btn) return;
   runRankingEntry(Number(btn.dataset.rankIdx));
 });
+
+// 특정 랭킹 항목으로 바로 이동(위저드 종료 후 결과 화면 진입 등) — 상단탭(기업가치/시장동향) active 표시와
+// 서브내비를 그 항목이 속한 group에 맞게 다시 그린 뒤 실행
+function goToRankingEntry(idx) {
+  const entry = RANKING_ENTRIES[idx];
+  if (!entry) return;
+  switchTab(TAB_ORDER.indexOf("topranking"));
+  el("tabValuationBtn").classList.toggle("active", entry.group === "disclosure");
+  tabTrendBtn.classList.toggle("active", entry.group === "market");
+  renderGroupSubNav(entry.group);
+  runRankingEntry(idx);
+}
+// "기업가치"/"시장동향" 버튼 클릭 — 해당 그룹의 첫 항목으로 진입(재클릭 시에도 매번 새로 렌더링)
+function activateRankingGroup(groupKey) {
+  const idx = RANKING_ENTRIES.findIndex((e) => e.group === groupKey);
+  if (idx >= 0) goToRankingEntry(idx);
+}
+el("tabValuationBtn").addEventListener("click", () => activateRankingGroup("disclosure"));
+tabTrendBtn.addEventListener("click", () => activateRankingGroup("market"));
 
 function renderWizardBranchA() {
   const items = RANKING_ENTRIES.map(
@@ -3682,24 +3708,20 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// ---------- 초기 부팅: 기본 화면은 관심종목 — ?ticker=가 있을 때만 기업 패널을 함께 염 ----------
+// ---------- 초기 부팅: 기본 화면은 "기업가치"(로그인 불필요) — ?ticker=가 있을 때만 기업 패널을 함께 염 ----------
 (function initApp() {
-  // 뒤에 깔리는 캐로셀은 로그인 없이도 볼 수 있는 Top랭킹으로 기본값을 둠(관심종목은 로그인 필요)
   switchTab(TAB_ORDER.indexOf("topranking"));
+  // entry.run()이 참조하는 일부 const(예: VALUE_DISCLAIMER)가 이 시점엔 아직 선언 전(TDZ)이라
+  // 스크립트 전체 실행이 끝난 다음 틱으로 미룸(companyPanel 딥링크 크래시와 동일한 원인/해법)
+  setTimeout(() => activateRankingGroup("disclosure"), 0);
 
   const params = new URLSearchParams(location.search);
   const initialTicker = params.get("ticker");
-  // 첫 화면은 기업찾기(로그인 불필요) — 단, 특정 종목이나 다른 패널(?open=)로 바로 들어온 딥링크면 위저드가 그 위를 덮지 않도록 건너뜀
-  if (!initialTicker && !params.get("open")) openSearchWizard();
   if (initialTicker) navigateToTicker(initialTicker, { push: false });
   loadingSplash.style.display = "none";
 
-  // 무료 프록시 과부하를 피하려고 순서대로 백그라운드 로딩(사용자가 먼저 스와이프해서 들어가면 ensureTabLoaded가 그 자리에서 바로 시작함)
-  (async () => {
-    await ensureTabLoaded("trend"); // 급등주 미리 로딩(진입 시 바로 표시)
-    await ensureTabLoaded("valuation");
-    await ensureTabLoaded("insight");
-  })();
+  // 무료 프록시 과부하를 피하려고 인사이트는 백그라운드로 미리 로딩(사용자가 먼저 스와이프해서 들어가면 ensureTabLoaded가 그 자리에서 바로 시작함)
+  ensureTabLoaded("insight");
 })();
 
 // 한국어 회사명으로도 검색할 수 있도록 자주 찾는 미국 기업 위주로 별도 매핑(야후 검색 API는 한국어 매칭을 지원하지 않음)

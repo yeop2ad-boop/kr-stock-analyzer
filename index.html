@@ -81,9 +81,10 @@
 
     <div class="tab-bar" id="tabBar">
       <button type="button" class="cat-btn" data-tab="watchlist" id="watchlistTabBtn"><span class="tab-emoji btn-icon" data-icon="star" aria-hidden="true"></span><span class="tab-label">관심종목</span></button>
-      <button type="button" class="cat-btn" id="searchTabBtn"><span class="tab-emoji btn-icon" data-icon="search" aria-hidden="true"></span><span class="tab-label">기업찾기</span></button>
-      <button type="button" class="cat-btn" data-tab="topranking" id="tabTopRankingBtn"><span class="tab-emoji btn-icon" data-icon="trophy" aria-hidden="true"></span><span class="tab-label">Top랭킹</span></button>
-      <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn"><span class="tab-emoji btn-icon" data-icon="newspaper" aria-hidden="true"></span><span class="tab-label">인사이트</span></button>
+      <button type="button" class="cat-btn" id="searchTabBtn"><span class="tab-emoji btn-icon" data-icon="search" aria-hidden="true"></span><span class="tab-label">간편검색</span></button>
+      <button type="button" class="cat-btn" data-tab="topranking" id="tabValuationBtn"><span class="tab-label">기업가치</span></button>
+      <button type="button" class="cat-btn" id="tabTrendBtn"><span class="tab-label">시장동향</span></button>
+      <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn"><span class="tab-label">인사이트</span></button>
     </div>
   </header>
 
@@ -481,8 +482,10 @@
           <button type="button" class="cat-btn" id="insightCatFirmsBtn"><span class="btn-icon" data-icon="bank"></span> 자산&amp;투자사</button>
           <button type="button" class="cat-btn" id="insightCatBrandBtn"><span class="btn-icon" id="insightCatBrandIcon"></span> <span id="insightCatBrandLabel">브랜드평판순</span></button>
           <button type="button" class="cat-btn" id="insightCatTechBtn"><span class="btn-icon" data-icon="flask"></span> 신기술</button>
-          <button type="button" class="cat-btn" id="insightCatCalendarBtn"><span class="btn-icon" data-icon="calendar"></span> 실적&amp;공시 일정</button>
-          <button type="button" class="cat-btn" id="insightCatNewsBtn"><span class="btn-icon" data-icon="newspaper"></span> 뉴스</button>
+          <!-- 실적&공시 일정/뉴스는 더보기 메뉴로 이동 — 렌더 함수(runInsightCalendar/runInsightNews)가 이 버튼의
+               active 상태를 계속 참조하므로 DOM에서 지우지 않고 숨김만 처리(more-panel의 신규 항목이 대신 트리거) -->
+          <button type="button" class="cat-btn" id="insightCatCalendarBtn" style="display:none;"><span class="btn-icon" data-icon="calendar"></span> 실적&amp;공시 일정</button>
+          <button type="button" class="cat-btn" id="insightCatNewsBtn" style="display:none;"><span class="btn-icon" data-icon="newspaper"></span> 뉴스</button>
           <button type="button" class="cat-btn" id="insightCatFutureIndustryBtn"><span class="btn-icon" data-icon="rocket"></span> 미래산업 성장성</button>
         </div>
         <div class="top30-sub-nav insight-firms-nav" id="insightFirmsNav">
@@ -516,7 +519,7 @@
       </div>
 
       <div class="carousel-panel" data-panel="topranking" id="panelTopRanking">
-        <div class="top30-sub-nav top-ranking-sub-nav insight-firms-nav" id="topRankingSubNav"></div>
+        <div class="top30-sub-nav top-ranking-sub-nav" id="topRankingSubNav"></div>
 
         <div id="valuationGroup" style="display:none;">
           <!-- 기존 기업가치 서브내비는 Top랭킹 통합 후 화면엔 안 보이지만, 각 항목의 렌더 함수가 내부적으로
@@ -611,6 +614,14 @@
             <button type="button" class="theme-toggle-btn" id="themeDarkBtn" data-theme-choice="dark">블랙</button>
           </div>
         </div>
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelCalendarInsightBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.3" y="5.5" width="17.4" height="15" rx="2" /><line x1="3.3" y1="10" x2="20.7" y2="10" /><line x1="7.2" y1="2.8" x2="7.2" y2="7.4" /><line x1="14.8" y1="2.8" x2="14.8" y2="7.4" /></svg>
+          <span class="more-panel-item-label">실적&amp;공시 일정</span>
+        </button>
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelNewsInsightBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h9l7 7v9H4V4Z" /><path d="M13 4v7h7" /></svg>
+          <span class="more-panel-item-label">뉴스</span>
+        </button>
         <button type="button" class="more-panel-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h9l7 7v9H4V4Z" /><path d="M13 4v7h7" /></svg>
           <span class="more-panel-item-label">내투자 Pro UP <b class="more-panel-pro-badge">-7일 무료</b></span>
