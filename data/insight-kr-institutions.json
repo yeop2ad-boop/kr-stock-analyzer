@@ -4,13 +4,43 @@
     "nps": {
       "name": "국민연금공단",
       "holdings": [
-        { "name": "비에이치", "weightPct": 13.32, "weightChangePt": 5.85, "asOfDate": "2026-07-01" },
-        { "name": "한국콜마", "weightPct": 12.68, "weightChangePt": 2.16, "asOfDate": "2026-07-01" },
-        { "name": "DL이앤씨", "weightPct": 11.20, "weightChangePt": 3.14, "asOfDate": "2026-07-01" },
+        { "name": "코스메카코리아", "weightPct": 11.96, "asOfDate": "2025-12-02" },
         { "name": "삼성전기", "ticker": "009150.KS", "weightPct": 9.87, "weightChangePt": -0.43, "asOfDate": "2026-07-01" },
         { "name": "KB금융", "ticker": "105560.KS", "weightPct": 9.23, "weightChangePt": 0.29, "asOfDate": "2026-07-21" },
-        { "name": "삼성에피스홀딩스", "weightPct": 5.7, "isNew": true, "asOfDate": "2025-11-24" },
-        { "name": "한솔아이원스", "weightPct": 5.03, "isNew": true, "asOfDate": "2026-04-01" }
+        { "name": "덕산네오룩스", "weightPct": 8.97, "asOfDate": "2025-12-02" },
+        { "name": "원익머트리얼즈", "weightPct": 8.64, "asOfDate": "2025-12-02" },
+        { "name": "SK하이닉스", "ticker": "000660.KS", "weightPct": 8.1, "weightChangePt": 0.5, "asOfDate": "2026-07-10" },
+        { "name": "삼성전자", "ticker": "005930.KS", "weightPct": 7.9, "weightChangePt": 0.6, "asOfDate": "2026-07-10" },
+        { "name": "와이지엔터테인먼트", "weightPct": 7.24, "asOfDate": "2025-12-02" },
+        { "name": "엠로", "weightPct": 7.19, "asOfDate": "2025-12-02" },
+        { "name": "피에스케이", "weightPct": 7.08, "asOfDate": "2025-12-02" },
+        { "name": "비나텍", "weightPct": 6.37, "asOfDate": "2025-12-02" },
+        { "name": "에이티아이", "weightPct": 6.26, "asOfDate": "2025-12-02" },
+        { "name": "에스티아이", "weightPct": 6.26, "asOfDate": "2025-12-02" },
+        { "name": "테스", "weightPct": 6.11, "asOfDate": "2025-12-02" },
+        { "name": "진시스템", "weightPct": 6.08, "asOfDate": "2025-12-02" },
+        { "name": "JYP엔터테인먼트", "weightPct": 6.06, "asOfDate": "2025-12-02" },
+        { "name": "리가켐바이오", "weightPct": 6.03, "asOfDate": "2025-12-02" },
+        { "name": "티씨케이", "weightPct": 6.03, "asOfDate": "2025-12-02" },
+        { "name": "에스에프에이", "weightPct": 5.35, "asOfDate": "2025-12-02" },
+        { "name": "디어유", "weightPct": 5.16, "asOfDate": "2025-12-02" },
+        { "name": "ISC", "weightPct": 5.15, "asOfDate": "2025-12-02" },
+        { "name": "HK이노엔", "weightPct": 5.12, "asOfDate": "2025-12-02" },
+        { "name": "에이치브이엠", "weightPct": 5.10, "asOfDate": "2025-12-02" },
+        { "name": "RFHIC", "weightPct": 5.10, "asOfDate": "2025-12-02" },
+        { "name": "AP시스템", "weightPct": 5.09, "asOfDate": "2025-12-02" },
+        { "name": "미코", "weightPct": 5.09, "asOfDate": "2025-12-02" },
+        { "name": "성광벤드", "weightPct": 5.07, "asOfDate": "2025-12-02" },
+        { "name": "브이티", "weightPct": 5.06, "asOfDate": "2025-12-02" },
+        { "name": "한글과컴퓨터", "weightPct": 5.05, "asOfDate": "2025-12-02" },
+        { "name": "코미코", "weightPct": 5.04, "asOfDate": "2025-12-02" },
+        { "name": "한솔아이원스", "weightPct": 5.03, "isNew": true, "asOfDate": "2026-04-01" },
+        { "name": "감성코퍼레이션", "weightPct": 5.03, "asOfDate": "2025-12-02" },
+        { "name": "에스앤에스텍", "weightPct": 5.02, "asOfDate": "2025-12-02" },
+        { "name": "솔브레인", "weightPct": 5.02, "asOfDate": "2025-12-02" },
+        { "name": "유진테크", "weightPct": 5.01, "asOfDate": "2025-12-02" },
+        { "name": "이녹스첨단소재", "weightPct": 5.01, "asOfDate": "2025-12-02" },
+        { "name": "태광", "weightPct": 5.00, "asOfDate": "2025-12-02" }
       ]
     },
     "kic": {
@@ -25,7 +55,10 @@
         { "name": "코미코", "weightPct": 5.32, "asOfDate": "2026-02-04" },
         { "name": "두산테스나", "weightPct": 5.22, "asOfDate": "2026-02-04" },
         { "name": "고영테크놀러지", "weightPct": 5.22, "asOfDate": "2026-02-04" },
+        { "name": "제주반도체", "weightPct": 5.19, "asOfDate": "2026-02-04" },
         { "name": "제룡전기", "weightPct": 5.19, "asOfDate": "2026-02-04" },
+        { "name": "큐렉소", "weightPct": 5.14, "asOfDate": "2026-02-04" },
+        { "name": "HPSP", "weightPct": 5.11, "asOfDate": "2026-02-04" },
         { "name": "우리기술", "weightPct": 5.05, "isNew": true, "asOfDate": "2026-08-11", "valueKRW": 99900000000 },
         { "name": "뉴로메카", "weightPct": 5.04, "isNew": true, "asOfDate": "2026-01-13" },
         { "name": "에스피지", "weightPct": 5.03, "isNew": true, "asOfDate": "2026-02-23" }
@@ -34,7 +67,8 @@
     "miraeAm": {
       "name": "미래에셋자산운용",
       "holdings": [
-        { "name": "미래에셋생명", "weightPct": 24.34, "asOfDate": "2026-06-08" },
+        { "name": "미래에셋생명", "weightPct": 24.49, "weightChangePt": 0.15, "asOfDate": "2026-08-10" },
+        { "name": "올릭스", "weightPct": 5.14, "weightChangePt": 0.29, "asOfDate": "2026-08-10" },
         { "name": "로보스타", "ticker": "090360.KQ", "weightPct": 5.06, "weightChangePt": 0.13, "asOfDate": "2026-05-27" }
       ]
     },
