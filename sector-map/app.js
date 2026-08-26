@@ -1277,6 +1277,46 @@ function isUsMarketOpen() {
   return mins >= 9 * 60 + 30 && mins <= 16 * 60;
 }
 
+// 임의의 순간(Date)을 "한국시간(Asia/Seoul) 벽시계 기준" 연/월/일/시/분/초 문자열로 쪼갬 — 지도 시계는
+// 보는 사람의 브라우저 시간대와 무관하게 항상 한국시간으로 표시해야 하므로, 로컬 getHours() 등을 쓰지 않고 이 함수로 통일
+function fmtKstParts(date) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Seoul",
+    hour12: false,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).formatToParts(date);
+  const m = {};
+  for (const p of parts) m[p.type] = p.value;
+  if (m.hour === "24") m.hour = "00"; // 일부 브라우저는 자정을 24시로 표기하므로 00시로 정규화
+  return m;
+}
+// tz(예: "America/New_York")의 특정 날짜/시각(그 거래소 현지 벽시계 기준)을 실제 UTC 순간(Date)으로 정확히 환산
+// — DST 여부까지 반영하기 위해 "그 순간을 tz로 표시하면 어떻게 보이는지"를 역산하는 방식(라이브러리 없이 처리)
+function zonedWallTimeToUtc(tz, y, mo, d, hh, mi) {
+  const guessUtcMs = Date.UTC(y, mo, d, hh, mi, 0);
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: tz,
+    hour12: false,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).formatToParts(new Date(guessUtcMs));
+  const p = {};
+  for (const part of parts) p[part.type] = part.value;
+  if (p.hour === "24") p.hour = "00";
+  const asZonedUtcMs = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second);
+  const offsetMs = asZonedUtcMs - guessUtcMs;
+  return new Date(guessUtcMs - offsetMs);
+}
+
 // AI 버튼에 표시할 "색상이 언제 기준인지" — 오늘 안에 갱신됐으면 시:분:초(장중이면 주황), 날짜가 지났으면 월/일(빨강)
 let lastColorRefreshAt = null;
 // 실제 데이터 자체의 시각(해외: S&P500 지수 ^GSPC, 국내: 코스피 지수 ^KS11의 실제 regularMarketTime) — 지도 시계를
@@ -1306,19 +1346,24 @@ function computeDelayedAsOfTime() {
   const isWeekend = local.getDay() === 0 || local.getDay() === 6;
   const marketOpenNow = !isWeekend && nowMin >= openMin && nowMin <= closeMin;
   if (marketOpenNow) {
-    return { time: new Date(local.getTime() - 20 * 60 * 1000), isToday: true };
+    // "지금"은 시간대와 무관한 절대 순간이므로 tz 보정 없이 그대로 20분만 빼면 됨
+    return { time: new Date(Date.now() - 20 * 60 * 1000), isToday: true };
   }
   // 장 시작 전(프리마켓)이거나 마감 후, 주말이면 가장 최근 마감 시각에 고정 — 그 이후로는 새 데이터가 없으므로 시간이 흐를 필요 없음.
   // 그 마감 시각이 오늘이 아니라 어제(이전 거래일)라면 시:분:초 대신 날짜로 보여줌(renderAiFabTimestamp에서 처리)
-  const closeTime = new Date(local);
-  closeTime.setHours(Math.floor(closeMin / 60), closeMin % 60, 0, 0);
+  let y = local.getFullYear(), mo = local.getMonth(), d = local.getDate();
   let isToday = true;
   if (isWeekend || nowMin < openMin) {
     isToday = false;
     do {
-      closeTime.setDate(closeTime.getDate() - 1);
-    } while (closeTime.getDay() === 0 || closeTime.getDay() === 6);
+      const prev = new Date(y, mo, d - 1);
+      y = prev.getFullYear();
+      mo = prev.getMonth();
+      d = prev.getDate();
+    } while (new Date(y, mo, d).getDay() === 0 || new Date(y, mo, d).getDay() === 6);
   }
+  // 그 거래소 현지 벽시계 기준 마감 시각을 실제 UTC 순간으로 정확히 환산(DST 반영) — 이후 렌더링에서 한국시간으로 재변환해 보여줌
+  const closeTime = zonedWallTimeToUtc(tz, y, mo, d, Math.floor(closeMin / 60), closeMin % 60);
   return { time: closeTime, isToday };
 }
 
@@ -1332,33 +1377,49 @@ function renderAiFabTimestamp() {
   }
   const refreshedAt = new Date(lastColorRefreshAt);
   const now = new Date();
-  const sameDay = refreshedAt.toDateString() === now.toDateString();
+  // 표시는 항상 한국시간(Asia/Seoul) 기준 — 보는 사람 브라우저 시간대와 무관하게 동일하게 보이도록 로컬 getter 대신 fmtKstParts 사용
+  const refreshedKst = fmtKstParts(refreshedAt);
+  const nowKst = fmtKstParts(now);
+  const sameDay = refreshedKst.year === nowKst.year && refreshedKst.month === nowKst.month && refreshedKst.day === nowKst.day;
   if (!sameDay) {
     // 오늘 안에 색상을 한 번도 못 받아온 경우(네트워크 실패 등)에만 마지막 성공 날짜를 경고로 표시
-    const mm = String(refreshedAt.getMonth() + 1).padStart(2, "0");
-    const dd = String(refreshedAt.getDate()).padStart(2, "0");
-    timeEl.textContent = `${mm}/${dd}`;
+    timeEl.textContent = `${refreshedKst.month}/${refreshedKst.day}`;
     timeEl.className = "ai-fab ai-fab-time-stale";
     return;
   }
   const marketOpen = ACTIVE_MARKET === "domestic" ? isKrMarketOpen() : isUsMarketOpen();
   // 실제 데이터 자체의 시각이 있으면(정상 케이스) 그걸 그대로 씀 — 장 마감 후에도 본체 시장 위젯처럼 데이터가
   // 실제로 더 들어오는 만큼 시계도 따라 움직이고, 더 이상 안 들어오면 자연히 그 마지막 시각에 멈춰 있게 됨(가짜 고정 아님)
-  const { time: asOf, isToday } = lastDataAsOfTime ? { time: lastDataAsOfTime, isToday: lastDataAsOfTime.toDateString() === new Date().toDateString() } : computeDelayedAsOfTime();
+  let asOf, isToday;
+  if (lastDataAsOfTime) {
+    const p = fmtKstParts(lastDataAsOfTime);
+    asOf = lastDataAsOfTime;
+    isToday = p.year === nowKst.year && p.month === nowKst.month && p.day === nowKst.day;
+  } else {
+    ({ time: asOf, isToday } = computeDelayedAsOfTime());
+  }
+  const asOfKst = fmtKstParts(asOf);
   if (!isToday) {
     // 아직 오늘 장이 시작 전이라 직전 거래일 마감 시각에 고정된 상태 — 시:분:초 대신 그 날짜를 보여줌
-    const mm = String(asOf.getMonth() + 1).padStart(2, "0");
-    const dd = String(asOf.getDate()).padStart(2, "0");
-    timeEl.textContent = `${mm}/${dd}`;
+    timeEl.textContent = `${asOfKst.month}/${asOfKst.day}`;
     timeEl.className = "ai-fab";
     return;
   }
-  const hh = String(asOf.getHours()).padStart(2, "0");
-  const mi = String(asOf.getMinutes()).padStart(2, "0");
-  const ss = String(asOf.getSeconds()).padStart(2, "0");
-  timeEl.textContent = `${hh}:${mi}:${ss}`;
+  timeEl.textContent = `${asOfKst.hour}:${asOfKst.minute}:${asOfKst.second}`;
   timeEl.className = marketOpen ? "ai-fab ai-fab-time-live" : "ai-fab";
 }
+
+// 지도 색상/실시간 시세를 즉시 다시 불러오는 탭-투-리프레시 — 클래스명(ai-fab)만 남기고 실제 버튼 기능이 없던 문제 해결
+let aiFabRefreshing = false;
+document.getElementById("aiFabTime").addEventListener("click", async () => {
+  if (aiFabRefreshing) return;
+  aiFabRefreshing = true;
+  try {
+    await refreshActiveMarketLiveData();
+  } finally {
+    aiFabRefreshing = false;
+  }
+});
 
 // 국내/해외 어느 쪽이 활성인지에 맞춰 알맞은 실시간 갱신 함수를 호출하고, 성공 시 AI 버튼의 갱신 시각을 함께 업데이트
 async function refreshActiveMarketLiveData({ silent = false } = {}) {
