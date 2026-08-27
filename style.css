@@ -2488,3 +2488,29 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
   vertical-align: middle;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== 로그인 동의 문구 · 사이트 공통 푸터 (면책·출처·약관 링크) ===== */
+.login-consent {
+  margin-top: 14px;
+  font-size: 11.5px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.6;
+}
+.login-consent a { color: var(--muted); text-decoration: underline; }
+
+.site-footer {
+  margin-top: 28px;
+  padding: 18px 16px calc(78px + env(safe-area-inset-bottom, 0px)); /* 하단 고정 내비게이션에 가리지 않도록 여유 확보 */
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
+.site-footer p {
+  max-width: 860px;
+  margin: 0 auto 6px;
+  font-size: 11px;
+  line-height: 1.65;
+  color: var(--muted);
+  text-align: center;
+}
+.site-footer-links a { color: var(--muted); text-decoration: underline; margin: 0 2px; }
