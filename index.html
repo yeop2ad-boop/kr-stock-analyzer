@@ -3,10 +3,18 @@
 <head>
 <meta charset="UTF-8" />
 <script>
-  // 첫 진입은 섹터맵(국내)을 메인 화면으로 — 섹터맵에서 "내투자." 로고를 눌러 돌아온 경우(세션당 1회)는 다시 안 튕겨냄
-  if (!sessionStorage.getItem("ntj_skip_map_redirect")) {
-    location.replace("sector-map/index.html?market=domestic");
-  }
+  // 첫 진입은 섹터맵(국내)을 메인 화면으로 — 단, 로그인한 사용자만.
+  // 로그인 기록(ntj_auth)이 없으면 이 페이지에 남아 로그인 게이트(app.js)를 먼저 통과해야 하고,
+  // 로그인 완료 직후 섹터맵으로 이어서 이동함(__ntjWantsMap). 섹터맵에서 "내투자." 로고로 돌아온 경우(세션당 1회)는 안 튕겨냄.
+  try {
+    if (!sessionStorage.getItem("ntj_skip_map_redirect")) {
+      if (localStorage.getItem("ntj_auth")) {
+        location.replace("sector-map/index.html?market=domestic");
+      } else {
+        window.__ntjWantsMap = true;
+      }
+    }
+  } catch (e) {}
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>내투자닷컴: 주식시장을 한눈에</title>

@@ -296,8 +296,45 @@ function renderAuthState(user) {
     userDropdown.style.display = "none";
   }
 }
+// ---------- 로그인 게이트: 로그인 없이는 서비스 화면에 진입 불가 ----------
+// 정적 사이트(GitHub Pages) 특성상 서버 강제가 아닌 화면(클라이언트) 차원의 차단.
+// localStorage "ntj_auth"는 "로그인된 적 있음" 힌트(리다이렉트 판단용)일 뿐,
+// 최종 판정은 아래 Firebase onAuthStateChanged가 담당한다.
+function enterGateMode() {
+  loginModalCloseBtn.style.display = "none";
+  loginModal.style.display = "flex";
+}
+function exitGateMode() {
+  loginModalCloseBtn.style.display = "";
+  closeLoginModal();
+}
 if (typeof firebase !== "undefined") {
-  firebase.auth().onAuthStateChanged(renderAuthState);
+  firebase.auth().onAuthStateChanged((user) => {
+    renderAuthState(user);
+    try {
+      if (user) localStorage.setItem("ntj_auth", "1");
+      else localStorage.removeItem("ntj_auth");
+    } catch (e) {}
+    if (user) {
+      exitGateMode();
+      // 첫 진입 화면(섹터맵)으로 가려다 게이트에 막힌 경우 — 로그인 직후 이어서 이동
+      if (window.__ntjWantsMap) {
+        window.__ntjWantsMap = false;
+        location.replace("sector-map/index.html?market=domestic");
+      }
+    } else {
+      enterGateMode();
+    }
+  });
+  // Firebase가 로그인 상태를 복원(비동기)하기 전에 화면이 노출되지 않도록,
+  // 로그인 기록이 없으면 미리 게이트를 띄워 둠
+  try {
+    if (!localStorage.getItem("ntj_auth")) enterGateMode();
+  } catch (e) {}
+} else {
+  // Firebase SDK 로드 실패(광고 차단기·네트워크 문제 등) — 로그인 판정이 불가능하므로 게이트 유지
+  enterGateMode();
+  setLoginError("로그인 모듈을 불러오지 못했습니다. 광고 차단 기능을 끄고 새로고침해 주세요.");
 }
 
 // ---------- 카카오/네이버 로그인 (OAuth authorization code 리다이렉트 방식 — 팝업 SDK 대신 리다이렉트를 쓰는 이유는
