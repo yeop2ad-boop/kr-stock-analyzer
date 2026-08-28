@@ -40,6 +40,19 @@ function detectDefaultMapLang() {
   });
 })();
 
+// 카카오톡 등 인앱 브라우저는 자체 하단 툴바가 화면 아래를 덮는데 100dvh가 그만큼을 빼주지 않아
+// 우리 하단 네비가 그 뒤에 숨는 문제 — 실제로 보이는 영역 높이(visualViewport)에 앱 셸 높이를 맞춤
+(function syncVisualViewportHeight() {
+  const vv = window.visualViewport;
+  if (!vv) return;
+  const apply = () => {
+    document.documentElement.style.setProperty("--vvh", `${Math.round(vv.height)}px`);
+  };
+  vv.addEventListener("resize", apply);
+  window.addEventListener("resize", apply);
+  apply();
+})();
+
 const WORLD_SIZE = 2000; // .map-world 의 world-space 좌표 크기(px, CSS와 동일해야 함)
 
 const SECTOR_COLOR_VAR = {

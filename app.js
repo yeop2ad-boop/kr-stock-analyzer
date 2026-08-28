@@ -1739,6 +1739,20 @@ function setStatus(type, message) {
   statusBox.innerHTML = type === "loading" ? `<span class="spinner"></span>${message}` : message;
 }
 
+// 카카오톡 등 인앱 브라우저의 자체 하단 툴바가 화면 아래를 덮어 하단 네비가 가려지는 문제 —
+// 실제 보이는 영역과 레이아웃 뷰포트의 차이만큼 하단 네비를 위로 올림
+(function syncBottomNavToVisualViewport() {
+  const vv = window.visualViewport;
+  if (!vv) return;
+  const apply = () => {
+    const gap = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+    document.documentElement.style.setProperty("--vv-bottom-gap", `${gap}px`);
+  };
+  vv.addEventListener("resize", apply);
+  window.addEventListener("resize", apply);
+  apply();
+})();
+
 // ---------- 고정 헤더 높이 동기화(카테고리 서브툴바가 열리고 닫힐 때마다 본문 padding-top을 다시 맞춤) ----------
 function syncHeaderHeight() {
   document.documentElement.style.setProperty("--fixed-header-h", fixedHeader.offsetHeight + "px");
