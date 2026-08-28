@@ -14,8 +14,7 @@ const MAP_I18N = {
   "market.kr": { ko: "국내", en: "KR" },
   "market.us": { ko: "해외", en: "US" },
   "nav.map": { ko: "지도", en: "Map" },
-  "nav.home": { ko: "홈", en: "Home" },
-  "nav.calendar": { ko: "캘린더", en: "Calendar" },
+  "tab.search": { ko: "간편검색", en: "Search" },
   "nav.marketBtn": { ko: "시장", en: "Market" },
   "nav.more": { ko: "더보기", en: "More" },
 };
@@ -2086,9 +2085,8 @@ function goToMainSite(openPanel) {
   window.location.href = openPanel ? `../index.html?open=${openPanel}` : "../index.html";
 }
 document.getElementById("mapSearchBtn").addEventListener("click", () => goToMainSite("search"));
-document.getElementById("bottomNavStudyBtn").addEventListener("click", () => goToMainSite());
+document.getElementById("bottomNavSearchBtn2").addEventListener("click", () => goToMainSite("wizard"));
 document.getElementById("bottomNavMarketBtn2").addEventListener("click", () => goToMainSite("market"));
-document.getElementById("bottomNavCalendarBtn2").addEventListener("click", () => goToMainSite("calendar"));
 document.getElementById("bottomNavMoreBtn2").addEventListener("click", () => goToMainSite("more"));
 
 // ---------- 초기화 ----------

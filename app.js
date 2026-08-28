@@ -2051,11 +2051,10 @@ document.addEventListener("click", (e) => {
   if (row) navigateToTicker(row.dataset.symbol);
 });
 
-// ---------- 하단 고정 네비게이션(홈=기업검색/캘린더/시장/더보기) ----------
+// ---------- 하단 고정 네비게이션(지도/간편검색/시장/더보기) — 홈은 지도(섹터맵)가 대신함 ----------
 const bottomNavButtons = {
   map: el("bottomNavMapBtn"),
-  home: el("bottomNavHomeBtn"),
-  calendar: el("bottomNavCalendarBtn"),
+  search: el("bottomNavSearchBtn"),
   market: el("bottomNavMarketBtn"),
   more: el("bottomNavMoreBtn"),
 };
@@ -2091,6 +2090,33 @@ morePanelBackdrop.addEventListener("click", closeMorePanel);
 morePanelCloseBtn.addEventListener("click", closeMorePanel);
 document.querySelectorAll(".more-panel-item:not(.more-panel-theme-row):not(.more-panel-item-active)").forEach((btn) => {
   btn.addEventListener("click", () => showToast("준비중인 기능입니다."));
+});
+// 상단 탭바에서 더보기로 이동한 4개 화면 + 캘린더 — 각 항목을 열면 그 화면만 보이도록 오버레이(시장/캘린더/기업상세)를 먼저 닫음
+function showOnlyCarouselView(fn) {
+  closeMorePanel();
+  closeCompanyPanel();
+  closeMarketPanel();
+  closeCalendarPanel();
+  setBottomNavActive(""); // 캐러셀 화면은 하단 네비 4버튼 어디에도 속하지 않으므로 active 해제
+  fn();
+}
+el("morePanelWatchlistBtn").addEventListener("click", () => {
+  showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist")));
+});
+el("morePanelValuationBtn").addEventListener("click", () => {
+  showOnlyCarouselView(() => activateRankingGroup("disclosure"));
+});
+el("morePanelTrendBtn").addEventListener("click", () => {
+  showOnlyCarouselView(() => activateRankingGroup("market"));
+});
+el("morePanelInsightBtn").addEventListener("click", () => {
+  showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("insight")));
+});
+el("morePanelCalendarOverlayBtn").addEventListener("click", () => {
+  closeMorePanel();
+  closeCompanyPanel();
+  closeMarketPanel();
+  openCalendarPanel();
 });
 el("morePanelCalendarInsightBtn").addEventListener("click", () => {
   closeMorePanel();
@@ -2235,15 +2261,9 @@ colorSchemeGlobalBtn.addEventListener("click", () => setColorScheme("global"));
 bottomNavButtons.map.addEventListener("click", () => {
   window.location.href = "sector-map/index.html";
 });
-bottomNavButtons.home.addEventListener("click", () => {
-  setBottomNavActive("home");
+bottomNavButtons.search.addEventListener("click", () => {
   closeCompanyPanel();
-  switchTab(TAB_ORDER.indexOf("watchlist"));
-});
-bottomNavButtons.calendar.addEventListener("click", () => {
-  setBottomNavActive("calendar");
-  closeCompanyPanel();
-  openCalendarPanel();
+  openSearchWizard();
 });
 bottomNavButtons.market.addEventListener("click", () => {
   setBottomNavActive("market");
@@ -2254,7 +2274,7 @@ bottomNavButtons.more.addEventListener("click", () => {
   openMorePanel();
 });
 
-// 섹터맵(지도) 하단 네비의 시장/캘린더/더보기 버튼에서 넘어온 경우 해당 패널을 바로 열어줌(?open=market|calendar|more)
+// 섹터맵(지도) 하단 네비 버튼에서 넘어온 경우 해당 화면을 바로 열어줌(?open=market|calendar|more|search|wizard)
 // 지도에서 이미 한 번 로드된 세션이라 스플래시 로딩 화면(z-index 300, 데이터 로드 끝나야 사라짐)까지 다시 기다릴 필요가
 // 없으므로, 이 경우엔 스플래시를 즉시 건너뛰어 패널이 지연 없이 바로 보이도록 함(체감상 "바로 안 열린다"는 느낌 해소)
 (() => {
@@ -2263,10 +2283,20 @@ bottomNavButtons.more.addEventListener("click", () => {
   loadingSplash.style.display = "none";
   history.replaceState(null, "", window.location.pathname); // 새로고침 시 다시 안 열리도록 쿼리스트링 제거
   // 이 아래 스크립트에 아직 초기화되지 않은 const(companyPanel 등)를 클릭 핸들러가 참조하므로,
-  // 지금 바로 클릭하면 TDZ 오류가 나 패널이 안 열림 — 스크립트 전체 실행이 끝난 다음 틱으로 미룸
+  // 지금 바로 실행하면 TDZ 오류가 나 패널이 안 열림 — 스크립트 전체 실행이 끝난 다음 틱으로 미룸
   setTimeout(() => {
-    const targetBtn = { market: bottomNavButtons.market, calendar: bottomNavButtons.calendar, more: bottomNavButtons.more, search: searchOpenBtn }[openParam];
-    if (targetBtn) targetBtn.click();
+    const actions = {
+      market: () => bottomNavButtons.market.click(),
+      calendar: () => {
+        closeCompanyPanel();
+        openCalendarPanel();
+      },
+      more: () => bottomNavButtons.more.click(),
+      search: () => searchOpenBtn.click(), // 지도 상단 돋보기 → 티커 검색 오버레이
+      wizard: () => bottomNavButtons.search.click(), // 지도 하단 간편검색 → 검색 위저드
+    };
+    const fn = actions[openParam];
+    if (fn) fn();
   }, 0);
 })();
 
