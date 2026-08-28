@@ -1105,9 +1105,16 @@ function buildMetrics(market) {
       label: "거래대금",
       hasData: true,
       needsLive: !isKr,
-      get: (c) => popularRank.map.get(c.symbol),
-      fmt: (v) => `TOP${Math.max(1, Math.round(v))}`,
-      fixedDomain: [1, popularRank.universeSize],
+      // 순위를 "상위 몇 %"로 환산 — 축소/전체보기와 무관하게 항상 상위 1%~100% 스케일
+      // (1위가 1% 미만이 되면 전체 범위에서도 잘려나가므로 최소 1%로 클램프)
+      get: (c) => {
+        const rank = popularRank.map.get(c.symbol);
+        const total = popularRank.map.size;
+        if (!rank || !total) return undefined;
+        return Math.max(1, (rank / total) * 100);
+      },
+      fmt: (v) => `상위 ${Math.max(1, Math.round(v))}%`,
+      fixedDomain: [1, 100],
       refreshRank: popularRank.refresh,
       getRankCount: () => popularRank.map.size,
     },
@@ -1119,7 +1126,7 @@ function buildMetrics(market) {
     changePct: { label: "등락률", hasData: true, live: !isKr, get: (c) => c.changePercent, fmt: (v) => `${v.toFixed(1)}%` },
     revenueGrowth: { label: "매출성장", hasData: true, get: (c) => c.revenueGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
     netIncomeGrowth: { label: "순이익증가", hasData: true, get: (c) => c.netIncomeGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
-    dividendYield: { label: "배당률", hasData: !isKr, get: (c) => c.dividendYield, fmt: (v) => `${v.toFixed(2)}%` },
+    dividendYield: { label: "배당률", hasData: true, get: (c) => c.dividendYield, fmt: (v) => `${v.toFixed(2)}%` },
     debtRatio: { label: "부채비율", hasData: true, get: (c) => c.debtRatio, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 300 },
     cashFlowGrowth: { label: "현금흐름 증가", hasData: true, get: (c) => c.cashFlowGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
     per: { label: "PER", hasData: true, get: (c) => c.per, fmt: (v) => `${v.toFixed(1)}배`, domainMax: 80 },
@@ -1129,15 +1136,8 @@ let METRICS = buildMetrics("overseas");
 
 function getMetricDomain(key) {
   const m = METRICS[key];
-  // 거래량(순위) 지표 — 시장·전체보기 상태에 따라 4가지 고정 상한:
-  // 국내 축소 TOP150 / 국내 전체보기 TOP350 / 해외 축소 TOP200 / 해외 전체보기 TOP500
-  // (실제 로드된 순위 수가 상한보다 적으면 그 수까지만 — 죽은 슬라이더 구간 방지)
-  if (m.fixedDomain) {
-    const expanded = UNIVERSE_EXPANDED[ACTIVE_MARKET];
-    const cap = ACTIVE_MARKET === "domestic" ? (expanded ? 350 : 150) : (expanded ? 500 : 200);
-    const count = m.getRankCount ? m.getRankCount() : 0;
-    return [1, Math.max(2, count > 0 ? Math.min(cap, count) : cap)];
-  }
+  // 거래량 지표 — 순위를 상위 %로 환산해 쓰므로 항상 고정 스케일(상위 1%~100%)
+  if (m.fixedDomain) return m.fixedDomain;
   // 실시간으로 값이 바뀌는 지표는 열 때마다 도메인을 새로 계산(캐시하면 실시간 갱신 후에도 옛 범위로 고정돼버림)
   if (m.domain && !m.live && !m.needsLive) return m.domain;
   let values = ACTIVE_DATA.companies.map(m.get).filter((v) => typeof v === "number" && Number.isFinite(v));
@@ -1337,10 +1337,9 @@ function createSliderController(getKey, els, onNoDataChange) {
 // (해외는 실시간 조회가 끝나야 순위가 채워지므로 이 숫자가 로딩 진행 상황이 된다)
 function noDataMessage(key, m) {
   if (key === "popularStocks" && m.getRankCount) {
-    const universe = m.fixedDomain[1];
     const count = m.getRankCount();
     const marketLabel = ACTIVE_MARKET === "domestic" ? "국내 주식 시장과" : "글로벌 주식 시장과";
-    return `${marketLabel} 실시간 연동중... ${count}/${universe}`;
+    return `${marketLabel} 실시간 연동중... ${count}개`;
   }
   return m.needsLive && !liveDataLoaded ? "실시간 데이터를 불러오는 중입니다..." : "데이터 준비중입니다";
 }

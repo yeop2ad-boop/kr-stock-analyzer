@@ -5470,6 +5470,8 @@ function creditStabilityRowHtml(rating, creditScore, color) {
         <span class="smb-label">① 재무안정</span>
         <span class="smb-value stars" style="color:${color};">${renderStars(stars)}</span>
       </div>
+      <div class="smb-track"><div class="smb-fill" style="width:${(stars / 5) * 100}%;background:${color};"></div></div>
+      <p class="smb-desc">채무 상환능력 · 수익 안정성 · 시장 신인도 3가지 요소를 종합 평가해 책정된 자체 등급입니다.</p>
     </div>`;
 }
 function scoreMethodBarRow(num, label, value, max, desc, color) {

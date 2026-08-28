@@ -62,6 +62,23 @@ foreach ($t in $tickers) {
       $changePercent = [math]::Round((($price - $prevClose) / $prevClose) * 100, 2)
     }
 
+    # (1-1) 배당률 — 최근 1년 배당 이벤트 합계 ÷ 현재가(%). 배당 이벤트 없으면 무배당 0%로 확정
+    $dividendYield = $null
+    try {
+      $divChart = Invoke-RestMethod -Uri "https://query1.finance.yahoo.com/v8/finance/chart/$sym`?range=1y&interval=1mo&events=div" -Headers $headers -TimeoutSec 15
+      $divPrice = $divChart.chart.result[0].meta.regularMarketPrice
+      if ($divPrice -and $divPrice -gt 0) {
+        $divSum = 0.0
+        $divEvents = $divChart.chart.result[0].events.dividends
+        if ($divEvents) {
+          foreach ($p in $divEvents.PSObject.Properties) {
+            if ($p.Value.amount) { $divSum += [double]$p.Value.amount }
+          }
+        }
+        $dividendYield = [math]::Round(($divSum / $divPrice) * 100, 2)
+      }
+    } catch {}
+
     # (2) 섹터
     $search = Invoke-RestMethod -Uri "https://query1.finance.yahoo.com/v1/finance/search?q=$sym&quotesCount=1&newsCount=0" -Headers $headers -TimeoutSec 15
     $q = $search.quotes[0]
@@ -97,7 +114,7 @@ foreach ($t in $tickers) {
       changePercent  = $changePercent
       per            = $per
       eps            = $eps
-      dividendYield  = $null
+      dividendYield  = $dividendYield
       dollarVolume   = $(if ($price -and $volume) { $price * $volume } else { $null })
       revenueGrowth  = Get-LatestYoyGrowth $revSeries
       netIncomeGrowth = Get-LatestYoyGrowth $niSeries
