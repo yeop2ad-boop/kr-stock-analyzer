@@ -61,6 +61,20 @@ function sectorColor(sector) {
   return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || "#888";
 }
 
+// 데이터셋에 GICS식("Information Technology")과 Yahoo식("Technology") 섹터 표기가 섞여 있어 같은 섹터가
+// 두 그룹으로 갈라지는 문제(예: "소재·1"짜리 미니 섹터가 따로 생김) — 표준 이름 하나로 병합
+const SECTOR_ALIAS = {
+  Technology: "Information Technology",
+  Healthcare: "Health Care",
+  "Financial Services": "Financials",
+  "Consumer Defensive": "Consumer Staples",
+  "Consumer Cyclical": "Consumer Discretionary",
+  "Basic Materials": "Materials",
+};
+function canonicalSector(sector) {
+  return SECTOR_ALIAS[sector] || sector;
+}
+
 // 등락률 색상: finviz map 방식 — +3% 이상 상승색, 0%(=배경색인 흰색) 기준, -3% 이하 하락색으로 선형 보간
 // 상승/하락 색상 스킴(더보기 패널과 공유하는 localStorage 키 "color_scheme") — 명시적으로 고른 적 없으면 접속 지역(타임존/브라우저 언어)으로 기본값 추정
 function detectDefaultColorScheme() {
@@ -280,8 +294,9 @@ function buildPackedRoot(data) {
   const bySector = new Map();
   for (const c of data.companies) {
     if (!c.marketCap) continue;
-    if (!bySector.has(c.sector)) bySector.set(c.sector, []);
-    bySector.get(c.sector).push(c);
+    const sec = canonicalSector(c.sector);
+    if (!bySector.has(sec)) bySector.set(sec, []);
+    bySector.get(sec).push(c);
   }
   const children = [...bySector.entries()].map(([sector, companies]) => ({
     name: sector,
@@ -303,8 +318,9 @@ function buildTreemapRoot(data) {
   const bySector = new Map();
   for (const c of data.companies) {
     if (!c.marketCap) continue;
-    if (!bySector.has(c.sector)) bySector.set(c.sector, []);
-    bySector.get(c.sector).push(c);
+    const sec = canonicalSector(c.sector);
+    if (!bySector.has(sec)) bySector.set(sec, []);
+    bySector.get(sec).push(c);
   }
   const children = [...bySector.entries()].map(([sector, companies]) => ({
     name: sector,
@@ -321,7 +337,7 @@ function buildTreemapRoot(data) {
     .tile(d3.treemapSquarify.ratio(1))
     .size([WORLD_SIZE, WORLD_SIZE])
     .paddingOuter(6)
-    .paddingTop((d) => (d.depth === 1 ? 34 : 0)) // 섹터 타일 상단에 이름표 자리 확보(제목 확대에 맞춰 넉넉하게)
+    .paddingTop((d) => (d.depth === 1 ? Math.min(34, Math.max(14, (d.y1 - d.y0) * 0.3)) : 0)) // 이름표 자리 — 초소형 섹터는 비례 축소
     .paddingInner((d) => (d.depth === 0 ? 8 : leafGap))
     .round(true)(root);
 
@@ -348,7 +364,9 @@ function renderSectorTileBubble(sectorNode, color) {
 
   const changeEl = document.createElement("span");
   changeEl.className = "sector-bubble-change";
-  changeEl.style.fontSize = `${Math.max(11, Math.min(30, (sectorNode.x1 - sectorNode.x0) * 0.05))}px`;
+  // 섹터 전체 합계 숫자 — 타일 가운데에 큼지막하게(짧은 변 기준 비례)
+  const minDim = Math.min(sectorNode.x1 - sectorNode.x0, sectorNode.y1 - sectorNode.y0);
+  changeEl.style.fontSize = `${Math.max(18, Math.min(72, minDim * 0.22))}px`;
   el.appendChild(changeEl);
 
   el.addEventListener("click", (e) => {
@@ -363,11 +381,14 @@ function renderSectorNameTile(sectorNode) {
   const el = document.createElement("div");
   el.className = "sector-name-bubble shape-square";
   const w = sectorNode.x1 - sectorNode.x0;
+  const h = sectorNode.y1 - sectorNode.y0;
+  // 초소형 섹터에서도 제목이 칸 밖으로 삐져나가지 않도록 섹터 높이에 맞춰 제목 높이/글자를 축소
+  const labelH = Math.max(12, Math.min(26, h - 10));
   el.style.left = `${sectorNode.x0 + 4}px`;
   el.style.top = `${sectorNode.y0 + 4}px`;
-  el.style.height = `26px`;
+  el.style.height = `${labelH}px`;
   el.style.maxWidth = `${Math.max(0, w - 8)}px`;
-  el.style.fontSize = `${Math.max(13, Math.min(22, w * 0.06))}px`;
+  el.style.fontSize = `${Math.max(9, Math.min(22, Math.min(w * 0.06, labelH * 0.7)))}px`;
   el.textContent = `${sectorNode.data.sectorKo} · ${sectorNode.children.length}`;
   el.addEventListener("click", () => zoomToNode(sectorNode));
   return el;
@@ -578,10 +599,10 @@ function renderMap(root) {
     bubble.style.width = `${sectorNode.r * 2}px`;
     bubble.style.height = `${sectorNode.r * 2}px`;
 
-    // "등락" 모드일 때 원 가운데 표시할 평균 등락률 — 원 크기에 비례한 글자 크기로 항상 잘 보이게
+    // "등락" 모드일 때 원 가운데 표시할 평균 등락률 — 섹터 전체 합계 숫자이므로 큼지막하게
     const changeEl = document.createElement("span");
     changeEl.className = "sector-bubble-change";
-    changeEl.style.fontSize = `${Math.max(11, Math.min(40, sectorNode.r * 0.16))}px`;
+    changeEl.style.fontSize = `${Math.max(18, Math.min(72, sectorNode.r * 0.3))}px`;
     bubble.appendChild(changeEl);
 
     bubble.addEventListener("click", (e) => {
@@ -1960,8 +1981,9 @@ function computeSectorAverages() {
   const bySector = new Map();
   for (const c of ACTIVE_DATA.companies) {
     if (typeof c.changePercent !== "number") continue;
-    if (!bySector.has(c.sector)) bySector.set(c.sector, { sum: 0, count: 0 });
-    const g = bySector.get(c.sector);
+    const sec = canonicalSector(c.sector);
+    if (!bySector.has(sec)) bySector.set(sec, { sum: 0, count: 0 });
+    const g = bySector.get(sec);
     g.sum += c.changePercent;
     g.count += 1;
   }
@@ -1987,8 +2009,14 @@ function applyChangeModeToSectorBubbles() {
     const avg = avgBySector.get(bubble.dataset.sector);
     const chg = changeColor(avg);
     bubble.classList.add("sector-bubble-filled");
-    bubble.style.setProperty("--chg-fill", chg.css);
-    if (changeEl) changeEl.textContent = avg === undefined ? "N/A" : `${avg >= 0 ? "+" : ""}${avg.toFixed(2)}%`;
+    // 배경은 방향색의 은은한 틴트로만 깔고, 숫자는 진한 등락색으로 크게 — 같은 색 배경에 같은 색 글씨가 묻히지 않도록 분리
+    const dirMax = chg.t >= 0 ? CHG_POS_MAX : CHG_NEG_MAX;
+    const tint = mixRgb(CHG_BG, dirMax, Math.min(0.3, Math.abs(chg.t) * 0.3 + 0.08));
+    bubble.style.setProperty("--chg-fill", `rgb(${tint.join(",")})`);
+    if (changeEl) {
+      changeEl.textContent = avg === undefined ? "N/A" : `${avg >= 0 ? "+" : ""}${avg.toFixed(2)}%`;
+      changeEl.style.color = avg === undefined ? "var(--text-mid)" : changeColorForText(avg);
+    }
   });
 }
 function toggleChangeMode() {

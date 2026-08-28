@@ -302,11 +302,13 @@ body {
 .sector-bubble-change {
   position: relative;
   z-index: 1;
-  font-weight: 800;
-  color: #fff;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  /* 색은 JS가 등락색으로 직접 지정(연한 틴트 배경 위 진한 등락색 숫자) */
   pointer-events: none;
 }
+/* 등락 모드에서 사각형 섹터도 숫자를 정중앙에 — 평소 이름표용 하단 정렬을 해제 */
+.sector-bubble.shape-square.sector-bubble-filled { align-items: center; padding-bottom: 0; }
 /* 섹터 이름표 — 원래 알약(pill) 모양 그대로, 다른 종목 로고와 겹치지 않도록 섹터 원 맨 위에 고정된 자리를 차지함 */
 .sector-name-bubble {
   position: absolute;
@@ -567,12 +569,12 @@ body {
   z-index: 41;
   background: var(--white);
   border-radius: 20px 20px 0 0;
-  box-shadow: 0 -8px 24px rgba(0,0,0,0.18);
+  /* 그림자는 열려 있을 때만 — 닫혀서 화면 아래 숨은 상태에서 그림자가 위로 번져 하단에 어두운 띠처럼 보이는 문제 방지 */
   transform: translateY(100%);
   transition: transform 0.28s cubic-bezier(.2,.8,.3,1);
   padding: 8px 18px calc(22px + env(safe-area-inset-bottom));
 }
-.company-sheet.open { transform: translateY(0); }
+.company-sheet.open { transform: translateY(0); box-shadow: 0 -8px 24px rgba(0,0,0,0.18); }
 .company-sheet-handle {
   width: 36px;
   height: 4px;
@@ -645,14 +647,13 @@ body {
   z-index: 43;
   background: var(--white);
   border-radius: 16px 0 0 16px;
-  box-shadow: -8px 0 24px rgba(0,0,0,0.18);
   transform: translateX(100%);
   transition: transform 0.28s cubic-bezier(.2,.8,.3,1);
   padding: calc(14px + env(safe-area-inset-top)) 16px calc(14px + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
 }
-.watchlist-sheet.open { transform: translateX(0); }
+.watchlist-sheet.open { transform: translateX(0); box-shadow: -8px 0 24px rgba(0,0,0,0.18); }
 .watchlist-sheet .range-sheet-header { flex: none; }
 .watchlist-sheet-list {
   flex: 1;
@@ -701,13 +702,13 @@ body {
   z-index: 42;
   background: var(--white);
   border-radius: 20px 20px 0 0;
-  box-shadow: 0 -8px 24px rgba(0,0,0,0.18);
+  /* 그림자는 열려 있을 때만 — 닫힌 시트의 그림자가 하단에 어두운 띠처럼 보이는 문제 방지 */
   transform: translateY(100%);
   transition: transform 0.28s cubic-bezier(.2,.8,.3,1);
   padding: 8px 22px calc(26px + env(safe-area-inset-bottom));
   touch-action: none;
 }
-.range-sheet.open { transform: translateY(0); }
+.range-sheet.open { transform: translateY(0); box-shadow: 0 -8px 24px rgba(0,0,0,0.18); }
 .range-sheet-handle {
   width: 36px;
   height: 4px;
