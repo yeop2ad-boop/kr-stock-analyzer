@@ -3,8 +3,11 @@
   --navy-deep: #0d1730;
   --red-dot: #f60303;
   --bg-app: #eef0f3;
-  --bg-map: #000000; /* 지도 기본환경 = 흑색 */
-  --bg-map-grid: #131417;
+  --bg-map: #ffffff; /* 기본 화이트 — 설정(더보기)의 화이트/블랙 토글(localStorage "theme")에 연동 */
+  --bg-map-grid: #f4f5f7;
+  --bubble-ring: rgba(15,23,42,0.12); /* 지도 배경 위 타일 경계 링 — 화이트 배경용 어두운 링 */
+  --badge-text: #14161c; /* 로고 없는 종목의 이니셜 텍스트 */
+  --badge-glow: 0 0 4px #fff, 0 0 4px #fff, 0 1px 2px rgba(255,255,255,0.9);
   --white: #ffffff;
   --text-dark: #1c1f26;
   --text-mid: #6b7280;
@@ -22,6 +25,14 @@
   --sector-utilities: #22d3ee;
   --sector-real-estate: #c084fc;
   --sector-materials: #eab308;
+}
+/* 블랙 테마(설정에서 선택) — 지도 배경과 그 위 대비 요소만 흑색 기준으로 전환 */
+:root[data-theme="dark"] {
+  --bg-map: #000000;
+  --bg-map-grid: #131417;
+  --bubble-ring: rgba(255,255,255,0.14);
+  --badge-text: #ffffff;
+  --badge-glow: 0 0 4px rgba(0,0,0,0.9), 0 0 4px rgba(0,0,0,0.9), 0 1px 2px rgba(0,0,0,0.95);
 }
 
 /* 지도 자체 첫 로딩 스플래시 — 본체(내투자닷컴) 첫 화면과 동일한 로고+문구, 지도 초기 렌더가 끝나면 바로 숨김 */
@@ -322,10 +333,10 @@ body {
   position: absolute;
   z-index: 1;
   border-radius: 50%;
-  background: var(--chg, #000);
+  background: var(--chg, var(--bg-map));
   border: 2px solid var(--chg, var(--sc, #666));
-  /* 흑색 지도 배경 위에서 타일 경계가 보이도록 밝은 얇은 링 사용(기존엔 흰 배경용 어두운 링이었음) */
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.14), var(--chg-glow, 0 2px 8px rgba(0,0,0,0.5));
+  /* 타일 경계 링 — 화이트 배경에선 어두운 링, 블랙 배경에선 밝은 링(--bubble-ring이 테마 따라 전환) */
+  box-shadow: 0 0 0 1px var(--bubble-ring), var(--chg-glow, 0 2px 8px rgba(15,23,42,0.15));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -353,14 +364,14 @@ body {
   box-sizing: border-box;
   border-radius: 50%;
   background: transparent;
-  /* 흑색 기본 배경~채색 타일까지 두루 잘 읽히도록 흰 글자 + 어두운 후광으로 전환(기존엔 흰 배경 전용 검정 글자였음) */
-  color: #fff;
+  /* 테마 따라 전환 — 화이트 배경: 검정 글자+흰 후광 / 블랙 배경: 흰 글자+검정 후광 */
+  color: var(--badge-text);
   font-weight: 800;
   text-align: center;
   line-height: 1.15;
   word-break: keep-all;
   overflow-wrap: break-word;
-  text-shadow: 0 0 4px rgba(0,0,0,0.9), 0 0 4px rgba(0,0,0,0.9), 0 1px 2px rgba(0,0,0,0.95);
+  text-shadow: var(--badge-glow);
   pointer-events: none;
 }
 .company-bubble.logo-failed .company-logo-img { display: none; }
@@ -372,7 +383,7 @@ body {
 }
 .map-world.color-only .company-fallback-badge {
   display: flex !important;
-  color: #fff;
+  color: var(--badge-text);
 }
 .map-world.color-only .company-ticker-tag {
   display: none !important;

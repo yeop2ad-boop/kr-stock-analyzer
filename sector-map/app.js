@@ -77,7 +77,8 @@ try {
 } catch (e) {
   __mapColorScheme = detectDefaultColorScheme();
 }
-const CHG_BG = [0, 0, 0]; // 지도 배경색(--bg-map)과 동일 — 기본환경이 흑색이라 검정으로 맞춤
+// 지도 배경색(--bg-map)과 동일해야 0% 등락 종목이 배경에 자연스럽게 녹아듦 — 화이트 테마 흰색/블랙 테마 검정
+const CHG_BG = document.documentElement.getAttribute("data-theme") === "dark" ? [0, 0, 0] : [255, 255, 255];
 const CHG_POS_MAX = __mapColorScheme === "global" ? [22, 163, 74] : [230, 25, 25]; // 상승: 초록(해외식) / 빨강(한국식)
 const CHG_NEG_MAX = __mapColorScheme === "global" ? [220, 38, 38] : [21, 71, 199]; // 하락: 빨강(해외식) / 파랑(한국식)
 const CHG_CLAMP = 3; // %

@@ -2,6 +2,14 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
+<script>
+  // 저장된 화면 테마(화이트/블랙, 본체 더보기 패널과 공유하는 localStorage "theme")를 CSS 적용 전에 미리 심어 첫 렌더 색 튐(FOUC) 방지
+  (function () {
+    try {
+      if (localStorage.getItem("theme") === "dark") document.documentElement.setAttribute("data-theme", "dark");
+    } catch (e) {}
+  })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <title>마켓맵. 섹터맵</title>
 <link rel="icon" type="image/png" sizes="512x512" href="../logos/내투자_앱로고2_512.png" />
