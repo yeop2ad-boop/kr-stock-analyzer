@@ -1175,21 +1175,21 @@ function applyAllFilters() {
   for (const c of ACTIVE_DATA.companies) {
     const el = bubbleBySymbol.get(c.symbol);
     if (!el) continue;
-    if (watchSet && !watchSet.has(c.symbol)) {
-      el.style.display = "none";
-      continue;
-    }
-    let pass = true;
-    for (const [key, range] of activeFilters) {
-      const m = METRICS[key];
-      if (!m || !m.hasData) continue;
-      const v = m.get(c);
-      if (typeof v !== "number" || !Number.isFinite(v) || v < range[0] || v > range[1]) {
-        pass = false;
-        break;
+    let pass = !(watchSet && !watchSet.has(c.symbol));
+    if (pass) {
+      for (const [key, range] of activeFilters) {
+        const m = METRICS[key];
+        if (!m || !m.hasData) continue;
+        const v = m.get(c);
+        if (typeof v !== "number" || !Number.isFinite(v) || v < range[0] || v > range[1]) {
+          pass = false;
+          break;
+        }
       }
     }
-    el.style.display = pass ? "" : "none";
+    // display:none으로 없애면 사각형(트리맵) 모드에서 격자에 구멍이 뚫려 화면이 깨져 보임 —
+    // 대신 흐리게 남겨서 지도 모양은 유지하고 통과 종목만 도드라지게(원형 모드도 동일하게 자연스러움)
+    el.classList.toggle("filtered-out", !pass);
   }
   syncMetricChipActive();
 }

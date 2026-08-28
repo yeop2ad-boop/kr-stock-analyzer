@@ -352,6 +352,8 @@ body {
 /* 사각 타일은 글로우(blur) 그림자를 빼서 200개 타일 리페인트 부담을 줄임 — 핀치줌/드래그 버벅임 완화 */
 .company-bubble.shape-square { border-radius: 3px; box-shadow: 0 0 0 1px var(--bubble-ring); }
 .company-bubble:active { filter: brightness(0.94); }
+/* 필터에서 제외된 종목 — 숨기는 대신 흐리게 남겨 트리맵 격자가 깨져 보이지 않게 함 */
+.company-bubble.filtered-out { opacity: 0.07; pointer-events: none; transition: opacity 0.18s ease; }
 .company-logo-img {
   width: 74%;
   height: 74%;
