@@ -1372,6 +1372,8 @@ function enableSheetDragToClose(sheetEl, handleEl, closeFn) {
 }
 enableSheetDragToClose(companySheet, companySheet.querySelector(".company-sheet-handle"), closeCompanySheet);
 enableSheetDragToClose(rangeSheet, rangeSheet.querySelector(".range-sheet-handle"), closeRangeSheet);
+// 핸들 바가 작아 잡기 어려운 경우를 위해 시트 헤더(제목 줄)도 통째로 드래그 존으로 등록
+enableSheetDragToClose(rangeSheet, rangeSheet.querySelector(".range-sheet-header"), closeRangeSheet);
 
 // ---------- 즐겨찾기 바텀시트 — 상단 별 버튼으로 열고, 항목을 누르면 지도에서 그 종목으로 줌+상세시트(화면 이동 없음) ----------
 const watchlistSheet = document.getElementById("watchlistSheet");
@@ -1466,6 +1468,7 @@ document.getElementById("mapWatchlistBtn").addEventListener("click", () => {
   else openWatchlistSheet();
 });
 enableSheetDragToClose(watchlistSheet, document.getElementById("watchlistSheetHandle"), closeWatchlistSheet);
+enableSheetDragToClose(watchlistSheet, watchlistSheet.querySelector(".range-sheet-header"), closeWatchlistSheet);
 
 document.querySelectorAll(".metric-chip").forEach((btn) => {
   btn.addEventListener("click", () => {
