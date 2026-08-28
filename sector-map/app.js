@@ -9,6 +9,37 @@ if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
 }
 
+// 언어(한국어/영문) — 더보기 패널(본체)과 공유하는 localStorage 키("app_lang")를 읽어 지도 상단바/하단 네비 등 정적 텍스트만 번역
+const MAP_I18N = {
+  "market.kr": { ko: "국내", en: "KR" },
+  "market.us": { ko: "해외", en: "US" },
+  "nav.map": { ko: "지도", en: "Map" },
+  "nav.home": { ko: "홈", en: "Home" },
+  "nav.calendar": { ko: "캘린더", en: "Calendar" },
+  "nav.marketBtn": { ko: "시장", en: "Market" },
+  "nav.more": { ko: "더보기", en: "More" },
+};
+function detectDefaultMapLang() {
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+    const nav = (navigator.language || "").toLowerCase();
+    if (tz === "Asia/Seoul" || nav.startsWith("ko")) return "ko";
+  } catch (e) {}
+  return "en";
+}
+(function applyMapLang() {
+  let lang = null;
+  try {
+    lang = localStorage.getItem("app_lang");
+  } catch (e) {}
+  const isEn = (lang || detectDefaultMapLang()) === "en";
+  document.documentElement.lang = isEn ? "en" : "ko";
+  document.querySelectorAll("[data-i18n]").forEach((node) => {
+    const dict = MAP_I18N[node.getAttribute("data-i18n")];
+    if (dict) node.textContent = isEn ? dict.en : dict.ko;
+  });
+})();
+
 const WORLD_SIZE = 2000; // .map-world 의 world-space 좌표 크기(px, CSS와 동일해야 함)
 
 const SECTOR_COLOR_VAR = {
@@ -30,10 +61,25 @@ function sectorColor(sector) {
   return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || "#888";
 }
 
-// 등락률 색상: finviz map 방식 — +3% 이상 빨강, 0%(=배경색인 흰색) 기준, -3% 이하 진한 파랑으로 선형 보간
+// 등락률 색상: finviz map 방식 — +3% 이상 상승색, 0%(=배경색인 흰색) 기준, -3% 이하 하락색으로 선형 보간
+// 상승/하락 색상 스킴(더보기 패널과 공유하는 localStorage 키 "color_scheme") — 명시적으로 고른 적 없으면 접속 지역(타임존/브라우저 언어)으로 기본값 추정
+function detectDefaultColorScheme() {
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+    const nav = (navigator.language || "").toLowerCase();
+    if (tz === "Asia/Seoul" || nav.startsWith("ko")) return "kr";
+  } catch (e) {}
+  return "global";
+}
+let __mapColorScheme = "kr";
+try {
+  __mapColorScheme = localStorage.getItem("color_scheme") || detectDefaultColorScheme();
+} catch (e) {
+  __mapColorScheme = detectDefaultColorScheme();
+}
 const CHG_BG = [255, 255, 255]; // 지도 배경색(--bg-map)과 동일
-const CHG_POS_MAX = [230, 25, 25]; // 빨강
-const CHG_NEG_MAX = [21, 71, 199]; // 진한 파랑
+const CHG_POS_MAX = __mapColorScheme === "global" ? [22, 163, 74] : [230, 25, 25]; // 상승: 초록(해외식) / 빨강(한국식)
+const CHG_NEG_MAX = __mapColorScheme === "global" ? [220, 38, 38] : [21, 71, 199]; // 하락: 빨강(해외식) / 파랑(한국식)
 const CHG_CLAMP = 3; // %
 
 function mixRgb(a, b, t) {
@@ -1136,6 +1182,39 @@ function closeRangeSheet() {
   rangeSheet.classList.remove("open");
 }
 
+// 핸들을 살짝만 아래로 끌어도(낮은 임계값) 시트가 닫히는 드래그 제스처
+function enableSheetDragToClose(sheetEl, handleEl, closeFn) {
+  const DRAG_CLOSE_THRESHOLD = 24; // px — 살짝만 내려도 닫히도록 낮게 설정
+  let startY = null;
+  let dragging = false;
+  handleEl.addEventListener("pointerdown", (e) => {
+    startY = e.clientY;
+    dragging = true;
+    sheetEl.style.transition = "none";
+    try {
+      handleEl.setPointerCapture(e.pointerId);
+    } catch {}
+  });
+  handleEl.addEventListener("pointermove", (e) => {
+    if (!dragging || startY === null) return;
+    const dy = Math.max(0, e.clientY - startY);
+    sheetEl.style.transform = `translateY(${dy}px)`;
+  });
+  function endDrag(e) {
+    if (!dragging) return;
+    dragging = false;
+    const dy = startY === null ? 0 : Math.max(0, (e.clientY ?? startY) - startY);
+    startY = null;
+    sheetEl.style.transition = "";
+    sheetEl.style.transform = "";
+    if (dy > DRAG_CLOSE_THRESHOLD) closeFn();
+  }
+  handleEl.addEventListener("pointerup", endDrag);
+  handleEl.addEventListener("pointercancel", endDrag);
+}
+enableSheetDragToClose(companySheet, companySheet.querySelector(".company-sheet-handle"), closeCompanySheet);
+enableSheetDragToClose(rangeSheet, rangeSheet.querySelector(".range-sheet-handle"), closeRangeSheet);
+
 document.querySelectorAll(".metric-chip").forEach((btn) => {
   btn.addEventListener("click", () => {
     const key = btn.dataset.metric;
@@ -1841,7 +1920,6 @@ function goToMainSite(openPanel) {
   } catch {}
   window.location.href = openPanel ? `../index.html?open=${openPanel}` : "../index.html";
 }
-document.getElementById("brandLogoBtn").addEventListener("click", () => goToMainSite());
 document.getElementById("mapSearchBtn").addEventListener("click", () => goToMainSite("search"));
 document.getElementById("bottomNavStudyBtn").addEventListener("click", () => goToMainSite());
 document.getElementById("bottomNavMarketBtn2").addEventListener("click", () => goToMainSite("market"));

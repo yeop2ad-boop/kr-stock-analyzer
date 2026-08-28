@@ -1,6 +1,6 @@
 :root {
-  --orange: #f95503;
-  --orange-deep: #e04600;
+  --navy: #1b2a4a; /* 마켓맵 기준색(다크 네이비) — 기존 주황(--orange)에서 전환, 앞으로 모든 신규 강조색의 기준 */
+  --navy-deep: #0d1730;
   --red-dot: #f60303;
   --bg-app: #eef0f3;
   --bg-map: #ffffff;
@@ -44,7 +44,8 @@
 }
 
 * { box-sizing: border-box; }
-html, body { height: 100%; }
+/* 100%는 모바일 브라우저 주소창 접힘/펼침에 따라 100dvh와 어긋나 세로 스크롤이 생길 수 있어, html/body도 .app-shell과 동일한 100dvh로 고정 + overflow:hidden 이중 안전장치 */
+html, body { height: 100dvh; overflow: hidden; }
 body {
   margin: 0;
   font-family: "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
@@ -68,7 +69,7 @@ body {
 /* ---------- Top bar ---------- */
 .top-bar {
   flex: none;
-  background: linear-gradient(180deg, var(--orange) 0%, var(--orange-deep) 100%);
+  background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
   padding-top: env(safe-area-inset-top);
   z-index: 40;
   transition: background 0.2s ease;
@@ -82,29 +83,12 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 14px;
+  /* 좌측 로고 제거 후 국내/해외 토글을 화면 왼쪽에 붙임 */
+  padding: 6px 14px 6px 8px;
   border-bottom: 1px solid rgba(255,255,255,0.25);
 }
 /* 흰 배경일 때는 참고 이미지처럼 희미하고 얇은 검은 실선 구분선 */
 .top-bar.is-overseas .top-bar-row { border-bottom: 1px solid rgba(0,0,0,0.09); }
-
-.brand-logo {
-  flex: none;
-  display: flex;
-  align-items: center;
-  border: none;
-  background: none;
-  padding: 0 2px 0 0;
-  cursor: pointer;
-}
-.brand-logo-img {
-  height: 20px;
-  width: auto;
-  display: block;
-  /* 주황 배경(국내) 위에서는 로고 자체가 주황이라 안 보이니 흰색으로 반전 — 흰 배경(해외)에서는 원래 브랜드 색 그대로 */
-  filter: brightness(0) invert(1);
-}
-.top-bar.is-overseas .brand-logo-img { filter: none; }
 
 .toggle-pill {
   flex: none;
@@ -129,8 +113,8 @@ body {
 }
 .top-bar.is-overseas .toggle-btn { color: var(--text-mid); }
 /* 선택된 쪽만 강조 — 국내가 켜지면 흰 배경 위에 흰 알약(주황 글씨), 해외가 켜지면 흰 배경 위에 주황 알약(흰 글씨) */
-.toggle-btn[data-market="domestic"].active { background: var(--white); color: var(--orange-deep); }
-.toggle-btn[data-market="overseas"].active { background: var(--orange); color: #ffffff; }
+.toggle-btn[data-market="domestic"].active { background: var(--white); color: var(--navy-deep); }
+.toggle-btn[data-market="overseas"].active { background: var(--navy); color: #ffffff; }
 
 .top-bar-icons {
   margin-left: auto;
@@ -199,9 +183,9 @@ body {
   white-space: nowrap;
 }
 .filter-chip.active {
-  border-color: var(--orange);
+  border-color: var(--navy);
   color: #ffffff;
-  background: var(--orange);
+  background: var(--navy);
 }
 /* 필터가 걸린 칩에만 나타나는 작은 X — 누르면 그 지표만 초기화(전체 초기화 버튼과 별개) */
 .chip-reset {
@@ -425,7 +409,7 @@ body {
   backdrop-filter: blur(4px);
   box-shadow: 0 2px 10px rgba(15,23,42,0.1);
 }
-.side-btn.active { background: var(--orange); color: #fff; border-color: var(--orange); }
+.side-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
 .side-btn-dot {
   position: absolute;
   top: 6px;
@@ -456,7 +440,7 @@ body {
   cursor: pointer;
   user-select: none;
 }
-.ai-fab-time-live { color: var(--orange-deep); }
+.ai-fab-time-live { color: var(--navy-deep); }
 .ai-fab-time-stale { color: var(--red-dot); }
 .universe-toggle-btn {
   background: #fff;
@@ -465,7 +449,7 @@ body {
   padding: 4px 10px;
   font-size: 10.5px;
   font-weight: 700;
-  color: var(--orange-deep);
+  color: var(--navy-deep);
   cursor: pointer;
   white-space: nowrap;
 }
@@ -481,7 +465,7 @@ body {
   border-radius: 50%;
   border: 1px solid var(--line);
   background: #fff;
-  color: var(--orange-deep);
+  color: var(--navy-deep);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -542,7 +526,7 @@ body {
   height: 30px;
   border-radius: 50%;
   border: 3px solid rgba(249,85,3,0.25);
-  border-top-color: var(--orange);
+  border-top-color: var(--navy);
   animation: spin 0.8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -553,13 +537,14 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 30;
+  /* 하단 네비(z-index 40)보다 위에 그려 시트가 올라올 때 네비를 덮게 함 */
+  z-index: 41;
   background: var(--white);
   border-radius: 20px 20px 0 0;
   box-shadow: 0 -8px 24px rgba(0,0,0,0.18);
   transform: translateY(100%);
   transition: transform 0.28s cubic-bezier(.2,.8,.3,1);
-  padding: 8px 18px 22px;
+  padding: 8px 18px calc(22px + env(safe-area-inset-bottom));
 }
 .company-sheet.open { transform: translateY(0); }
 .company-sheet-handle {
@@ -568,6 +553,7 @@ body {
   border-radius: 999px;
   background: var(--line);
   margin: 6px auto 12px;
+  touch-action: none;
 }
 .sheet-top-row { display: flex; align-items: center; gap: 12px; }
 .sheet-logo { width: 46px; height: 46px; border-radius: 50%; object-fit: contain; background: #fff; border: 1px solid var(--line); flex: none; }
@@ -595,7 +581,7 @@ body {
   background: none; border: none; color: var(--text-soft);
   cursor: pointer;
 }
-.sheet-watch-btn.active { color: var(--orange-deep); }
+.sheet-watch-btn.active { color: var(--navy-deep); }
 .sheet-watch-btn.active.market-kr { color: #6b9bff; }
 .sheet-watch-btn.active.market-us { color: var(--red-dot); }
 .sheet-watch-btn:not(.active)::after {
@@ -620,13 +606,14 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 35;
+  /* 하단 네비(z-index 40)보다 위에 그려 시트가 올라올 때 네비를 덮게 함 */
+  z-index: 42;
   background: var(--white);
   border-radius: 20px 20px 0 0;
   box-shadow: 0 -8px 24px rgba(0,0,0,0.18);
   transform: translateY(100%);
   transition: transform 0.28s cubic-bezier(.2,.8,.3,1);
-  padding: 8px 22px 26px;
+  padding: 8px 22px calc(26px + env(safe-area-inset-bottom));
   touch-action: none;
 }
 .range-sheet.open { transform: translateY(0); }
@@ -647,13 +634,13 @@ body {
 .range-sheet-value {
   font-size: 13.5px;
   font-weight: 700;
-  color: var(--orange-deep);
+  color: var(--navy-deep);
   margin-bottom: 18px;
 }
 .range-sheet-header button {
   border: none;
   background: none;
-  color: var(--orange-deep);
+  color: var(--navy-deep);
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
@@ -681,7 +668,7 @@ body {
   height: 4px;
   transform: translateY(-50%);
   border-radius: 999px;
-  background: var(--orange);
+  background: var(--navy);
 }
 .range-slider-thumb {
   position: absolute;
@@ -691,7 +678,7 @@ body {
   transform: translate(-50%, -50%);
   border-radius: 50%;
   background: #fff;
-  border: 2px solid var(--orange);
+  border: 2px solid var(--navy);
   box-shadow: 0 2px 6px rgba(15,23,42,0.25);
   cursor: grab;
 }
@@ -785,7 +772,7 @@ body {
 .filter-block-header button {
   border: none;
   background: none;
-  color: var(--orange-deep);
+  color: var(--navy-deep);
   font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;

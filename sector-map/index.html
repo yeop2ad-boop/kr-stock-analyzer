@@ -10,20 +10,20 @@
   } catch (e) {}
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-<title>내투자. 섹터맵</title>
+<title>마켓맵. 섹터맵</title>
 <link rel="icon" type="image/png" sizes="512x512" href="../logos/내투자_앱로고2_512.png" />
 <link rel="icon" type="image/png" sizes="180x180" href="../logos/내투자_앱로고2_180.png" />
 <link rel="apple-touch-icon" href="../logos/내투자_앱로고2_180.png" />
 <link rel="manifest" href="../manifest.json" />
-<meta name="theme-color" content="#2563eb" />
+<meta name="theme-color" content="#1b2a4a" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-<meta name="apple-mobile-web-app-title" content="내투자" />
+<meta name="apple-mobile-web-app-title" content="마켓맵" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 <div id="mapLoadingSplash" class="loading-splash">
-  <img src="../logos/내투자_앱로고2.png" alt="netuja.com" class="loading-splash-logo" />
+  <img src="../logos/내투자_앱로고2.png" alt="marketmap.kr" class="loading-splash-logo" />
   <p class="loading-splash-caption">100개 이상의 기업정보를 실시간 연결중...</p>
 </div>
 
@@ -31,13 +31,9 @@
 
   <header class="top-bar">
     <div class="top-bar-row">
-      <button type="button" class="brand-logo" id="brandLogoBtn">
-        <img src="../logos/내투자_배너1.png" alt="내투자.com" class="brand-logo-img" />
-      </button>
-
       <div class="toggle-pill" id="marketTogglePill">
-        <button type="button" class="toggle-btn" data-market="domestic">국내</button>
-        <button type="button" class="toggle-btn active" data-market="overseas">해외</button>
+        <button type="button" class="toggle-btn" data-market="domestic" data-i18n="market.kr">국내</button>
+        <button type="button" class="toggle-btn active" data-market="overseas" data-i18n="market.us">해외</button>
       </div>
 
       <div class="top-bar-icons">
@@ -126,28 +122,6 @@
       섹터맵 불러오는 중...
     </div>
 
-    <div class="company-sheet" id="companySheet">
-      <div class="company-sheet-handle"></div>
-      <div class="company-sheet-body" id="companySheetBody"></div>
-    </div>
-
-    <div class="range-sheet" id="rangeSheet">
-      <div class="range-sheet-handle"></div>
-      <div class="range-sheet-header">
-        <span id="rangeSheetTitle">시가총액</span>
-        <button type="button" id="rangeSheetResetBtn">전체</button>
-      </div>
-      <div class="range-sheet-value" id="rangeSheetValue">전체</div>
-      <div class="range-slider" id="rangeSlider">
-        <div class="range-slider-track"></div>
-        <div class="range-slider-fill" id="rangeSliderFill"></div>
-        <div class="range-slider-thumb" id="rangeThumbMin" tabindex="0"></div>
-        <div class="range-slider-thumb" id="rangeThumbMax" tabindex="0"></div>
-      </div>
-      <div class="range-slider-labels" id="rangeSliderLabels"></div>
-      <div class="range-sheet-note" id="rangeSheetNote">데이터 준비중입니다</div>
-    </div>
-
     <div class="all-filters-backdrop" id="allFiltersBackdrop"></div>
     <div class="all-filters-sheet" id="allFiltersSheet">
       <div class="range-sheet-handle"></div>
@@ -159,14 +133,37 @@
     </div>
   </main>
 
+  <!-- app-shell 직계 자식으로 배치 — bottom:0 기준을 map-viewport가 아니라 화면 진짜 바닥(app-shell)으로 잡아 하단 네비를 덮으며 올라오게 함 -->
+  <div class="company-sheet" id="companySheet">
+    <div class="company-sheet-handle"></div>
+    <div class="company-sheet-body" id="companySheetBody"></div>
+  </div>
+
+  <div class="range-sheet" id="rangeSheet">
+    <div class="range-sheet-handle"></div>
+    <div class="range-sheet-header">
+      <span id="rangeSheetTitle">시가총액</span>
+      <button type="button" id="rangeSheetResetBtn">전체</button>
+    </div>
+    <div class="range-sheet-value" id="rangeSheetValue">전체</div>
+    <div class="range-slider" id="rangeSlider">
+      <div class="range-slider-track"></div>
+      <div class="range-slider-fill" id="rangeSliderFill"></div>
+      <div class="range-slider-thumb" id="rangeThumbMin" tabindex="0"></div>
+      <div class="range-slider-thumb" id="rangeThumbMax" tabindex="0"></div>
+    </div>
+    <div class="range-slider-labels" id="rangeSliderLabels"></div>
+    <div class="range-sheet-note" id="rangeSheetNote">데이터 준비중입니다</div>
+  </div>
+
   <nav class="bottom-nav">
     <button type="button" class="bottom-nav-btn active" data-toast="지도">
       <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z" fill="currentColor"/><circle cx="12" cy="9.5" r="2.6" fill="#fff"/></svg>
-      지도
+      <span data-i18n="nav.map">지도</span>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavStudyBtn" aria-label="홈">
       <svg viewBox="0 0 24 24" fill="none"><path d="M12 3.2c.4 0 .77.15 1.05.42l7 6.7c.3.28.45.66.45 1.05v7.13c0 1.1-.9 2-2 2h-3.5a1 1 0 0 1-1-1v-4.5a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v4.5a1 1 0 0 1-1 1H5.5c-1.1 0-2-.9-2-2v-7.13c0-.39.16-.77.45-1.05l7-6.7c.28-.27.65-.42 1.05-.42Z" fill="currentColor"/></svg>
-      홈
+      <span data-i18n="nav.home">홈</span>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavCalendarBtn2" aria-label="캘린더">
       <svg viewBox="0 0 24 24" fill="none">
@@ -175,15 +172,15 @@
         <rect x="7.2" y="2.3" width="2" height="5.6" rx="1" fill="currentColor"/>
         <rect x="14.8" y="2.3" width="2" height="5.6" rx="1" fill="currentColor"/>
       </svg>
-      캘린더
+      <span data-i18n="nav.calendar">캘린더</span>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavMarketBtn2" aria-label="시장">
       <svg viewBox="0 0 24 24" fill="none"><polyline points="3 17 9 11 13 15 21 5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><polyline points="15 5 21 5 21 11" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      시장
+      <span data-i18n="nav.marketBtn">시장</span>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavMoreBtn2" aria-label="더보기">
       <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="3" rx="1.5" fill="currentColor"/><rect x="4" y="10.5" width="16" height="3" rx="1.5" fill="currentColor"/><rect x="4" y="15" width="16" height="3" rx="1.5" fill="currentColor"/></svg>
-      더보기
+      <span data-i18n="nav.more">더보기</span>
     </button>
   </nav>
 

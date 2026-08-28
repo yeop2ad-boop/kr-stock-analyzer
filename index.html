@@ -17,15 +17,15 @@
   } catch (e) {}
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>내투자닷컴: 주식시장을 한눈에</title>
+<title>마켓맵: 동글한 주식시장</title>
 <meta name="description" content="AI 데이터 기반, 실시간 상승압력도 & 투자 안정성 리포트" />
 
 <meta property="og:type" content="website" />
-<meta property="og:site_name" content="내투자닷컴: 주식시장을 한눈에" />
-<meta property="og:title" content="내투자닷컴: 주식시장을 한눈에" />
+<meta property="og:site_name" content="마켓맵: 동글한 주식시장" />
+<meta property="og:title" content="마켓맵: 동글한 주식시장" />
 <meta property="og:description" content="AI 데이터 기반, 실시간 상승압력도 & 투자 안정성 리포트" />
-<meta property="og:url" content="https://netuja.com/" />
-<meta property="og:image" content="https://netuja.com/og-image.png" />
+<meta property="og:url" content="https://marketmap.kr/" />
+<meta property="og:image" content="https://marketmap.kr/og-image.png" />
 <meta property="og:image:width" content="1024" />
 <meta property="og:image:height" content="1024" />
 <meta property="og:locale" content="ko_KR" />
@@ -37,12 +37,12 @@
 <meta name="theme-color" content="#2563eb" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-<meta name="apple-mobile-web-app-title" content="내투자" />
+<meta name="apple-mobile-web-app-title" content="마켓맵" />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="내투자닷컴: 주식시장을 한눈에" />
+<meta name="twitter:title" content="마켓맵: 동글한 주식시장" />
 <meta name="twitter:description" content="AI 데이터 기반, 실시간 상승압력도 & 투자 안정성 리포트" />
-<meta name="twitter:image" content="https://netuja.com/og-image.png" />
+<meta name="twitter:image" content="https://marketmap.kr/og-image.png" />
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6143524232759343"
      crossorigin="anonymous"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -61,17 +61,17 @@
 </head>
 <body>
   <div id="loadingSplash" class="loading-splash">
-    <img src="logos/내투자_앱로고2.png" alt="netuja.com" class="loading-splash-logo" />
+    <img src="logos/내투자_앱로고2.png" alt="marketmap.kr" class="loading-splash-logo" />
     <p class="loading-splash-caption">100개 이상의 기업정보를 실시간 연결중...</p>
   </div>
 
   <header id="fixedHeader" class="fixed-header">
     <div class="fh-topline">
-      <img src="logos/내투자_배너1.png" alt="netuja.com" class="fh-banner" />
+      <img src="logos/내투자_배너1.png" alt="marketmap.kr" class="fh-banner" />
       <div class="fh-right-group">
         <div class="market-mode-toggle" id="marketModeToggle" role="group" aria-label="국내/해외 전환">
-          <button type="button" class="market-mode-btn market-mode-btn-kr" id="marketModeKrBtn" data-mode="kr">국내</button>
-          <button type="button" class="market-mode-btn market-mode-btn-us active" id="marketModeUsBtn" data-mode="us">해외</button>
+          <button type="button" class="market-mode-btn market-mode-btn-kr" id="marketModeKrBtn" data-mode="kr" data-i18n="market.kr">국내</button>
+          <button type="button" class="market-mode-btn market-mode-btn-us active" id="marketModeUsBtn" data-mode="us" data-i18n="market.us">해외</button>
         </div>
         <div class="fh-actions">
           <button type="button" id="searchOpenBtn" class="header-icon-btn" aria-label="검색">
@@ -93,11 +93,11 @@
     </div>
 
     <div class="tab-bar" id="tabBar">
-      <button type="button" class="cat-btn" data-tab="watchlist" id="watchlistTabBtn"><span class="tab-emoji btn-icon" data-icon="star" aria-hidden="true"></span><span class="tab-label">관심종목</span></button>
-      <button type="button" class="cat-btn" id="searchTabBtn"><span class="tab-emoji btn-icon" data-icon="search" aria-hidden="true"></span><span class="tab-label">간편검색</span></button>
-      <button type="button" class="cat-btn" data-tab="topranking" id="tabValuationBtn"><span class="tab-label">기업가치</span></button>
-      <button type="button" class="cat-btn" id="tabTrendBtn"><span class="tab-label">시장동향</span></button>
-      <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn"><span class="tab-label">인사이트</span></button>
+      <button type="button" class="cat-btn" data-tab="watchlist" id="watchlistTabBtn"><span class="tab-emoji btn-icon" data-icon="star" aria-hidden="true"></span><span class="tab-label" data-i18n="tab.watchlist">관심종목</span></button>
+      <button type="button" class="cat-btn" id="searchTabBtn"><span class="tab-emoji btn-icon" data-icon="search" aria-hidden="true"></span><span class="tab-label" data-i18n="tab.search">간편검색</span></button>
+      <button type="button" class="cat-btn" data-tab="topranking" id="tabValuationBtn"><span class="tab-label" data-i18n="tab.valuation">기업가치</span></button>
+      <button type="button" class="cat-btn" id="tabTrendBtn"><span class="tab-label" data-i18n="tab.trend">시장동향</span></button>
+      <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn"><span class="tab-label" data-i18n="tab.insight">인사이트</span></button>
     </div>
   </header>
 
@@ -613,11 +613,11 @@
   <nav id="bottomNav" class="bottom-nav">
     <button type="button" class="bottom-nav-btn" id="bottomNavMapBtn" aria-label="섹터맵">
       <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z" fill="currentColor"/><circle cx="12" cy="9.5" r="2.6" fill="#fff"/></svg>
-      지도
+      <span data-i18n="nav.map">지도</span>
     </button>
     <button type="button" class="bottom-nav-btn active" id="bottomNavHomeBtn" aria-label="홈">
       <svg viewBox="0 0 24 24" fill="none"><path d="M12 3.2c.4 0 .77.15 1.05.42l7 6.7c.3.28.45.66.45 1.05v7.13c0 1.1-.9 2-2 2h-3.5a1 1 0 0 1-1-1v-4.5a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v4.5a1 1 0 0 1-1 1H5.5c-1.1 0-2-.9-2-2v-7.13c0-.39.16-.77.45-1.05l7-6.7c.28-.27.65-.42 1.05-.42Z" fill="currentColor"/></svg>
-      홈
+      <span data-i18n="nav.home">홈</span>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavCalendarBtn" aria-label="캘린더">
       <svg viewBox="0 0 24 24" fill="none">
@@ -626,15 +626,15 @@
         <rect x="7.2" y="2.3" width="2" height="5.6" rx="1" fill="currentColor"/>
         <rect x="14.8" y="2.3" width="2" height="5.6" rx="1" fill="currentColor"/>
       </svg>
-      캘린더
+      <span data-i18n="nav.calendar">캘린더</span>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavMarketBtn" aria-label="시장">
       <svg viewBox="0 0 24 24" fill="none"><polyline points="3 17 9 11 13 15 21 5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><polyline points="15 5 21 5 21 11" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      시장
+      <span data-i18n="nav.marketBtn">시장</span>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavMoreBtn" aria-label="더보기">
       <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="3" rx="1.5" fill="currentColor"/><rect x="4" y="10.5" width="16" height="3" rx="1.5" fill="currentColor"/><rect x="4" y="15" width="16" height="3" rx="1.5" fill="currentColor"/></svg>
-      더보기
+      <span data-i18n="nav.more">더보기</span>
     </button>
   </nav>
 
@@ -654,49 +654,65 @@
       <div class="more-panel-list">
         <div class="more-panel-item more-panel-theme-row">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5" /><path d="M12 2.5v2.5M12 19v2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2.5 12H5M19 12h2.5M4.2 19.8 6 18M18 6l1.8-1.8" /></svg>
-          <span class="more-panel-item-label">화면 테마</span>
+          <span class="more-panel-item-label" data-i18n="more.theme">화면 테마</span>
           <div class="theme-toggle" id="themeToggle" role="group" aria-label="화면 테마 선택">
-            <button type="button" class="theme-toggle-btn" id="themeLightBtn" data-theme-choice="light">화이트</button>
-            <button type="button" class="theme-toggle-btn" id="themeDarkBtn" data-theme-choice="dark">블랙</button>
+            <button type="button" class="theme-toggle-btn" id="themeLightBtn" data-theme-choice="light" data-i18n="more.theme.light">화이트</button>
+            <button type="button" class="theme-toggle-btn" id="themeDarkBtn" data-theme-choice="dark" data-i18n="more.theme.dark">블랙</button>
+          </div>
+        </div>
+        <div class="more-panel-item more-panel-theme-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5" /><path d="M2.5 12h19M12 2.5c2.5 2.6 3.8 6 3.8 9.5s-1.3 6.9-3.8 9.5c-2.5-2.6-3.8-6-3.8-9.5S9.5 5.1 12 2.5Z" /></svg>
+          <span class="more-panel-item-label" id="morePanelLangLabel" data-i18n="more.lang">언어</span>
+          <div class="theme-toggle" id="langToggle" role="group" aria-label="언어 선택">
+            <button type="button" class="theme-toggle-btn" id="langKrBtn" data-lang-choice="ko">KR</button>
+            <button type="button" class="theme-toggle-btn" id="langUsBtn" data-lang-choice="en">US</button>
+          </div>
+        </div>
+        <div class="more-panel-item more-panel-theme-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M4 12l4-4M4 12l4 4M20 12l-4-4M20 12l-4 4" /></svg>
+          <span class="more-panel-item-label" id="morePanelColorLabel" data-i18n="more.color">상승·하락 색상</span>
+          <div class="theme-toggle" id="colorSchemeToggle" role="group" aria-label="상승 하락 색상 선택">
+            <button type="button" class="theme-toggle-btn" id="colorSchemeKrBtn" data-scheme-choice="kr" data-i18n="more.color.kr">빨강·파랑</button>
+            <button type="button" class="theme-toggle-btn" id="colorSchemeGlobalBtn" data-scheme-choice="global" data-i18n="more.color.global">초록·빨강</button>
           </div>
         </div>
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelCalendarInsightBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.3" y="5.5" width="17.4" height="15" rx="2" /><line x1="3.3" y1="10" x2="20.7" y2="10" /><line x1="7.2" y1="2.8" x2="7.2" y2="7.4" /><line x1="14.8" y1="2.8" x2="14.8" y2="7.4" /></svg>
-          <span class="more-panel-item-label">실적&amp;공시 일정</span>
+          <span class="more-panel-item-label" data-i18n="more.calendarInsight">실적&amp;공시 일정</span>
         </button>
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelNewsInsightBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h9l7 7v9H4V4Z" /><path d="M13 4v7h7" /></svg>
-          <span class="more-panel-item-label">뉴스</span>
+          <span class="more-panel-item-label" data-i18n="more.news">뉴스</span>
         </button>
         <button type="button" class="more-panel-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h9l7 7v9H4V4Z" /><path d="M13 4v7h7" /></svg>
-          <span class="more-panel-item-label">내투자 Pro UP <b class="more-panel-pro-badge">-7일 무료</b></span>
-          <span class="more-panel-badge">준비중</span>
+          <span class="more-panel-item-label">마켓맵 Pro UP <b class="more-panel-pro-badge" data-i18n="more.proBadge">-7일 무료</b></span>
+          <span class="more-panel-badge" data-i18n="more.soon">준비중</span>
         </button>
         <button type="button" class="more-panel-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" /></svg>
-          <span class="more-panel-item-label">즐겨찾기 종목</span>
-          <span class="more-panel-badge">준비중</span>
+          <span class="more-panel-item-label" data-i18n="more.favorites">즐겨찾기 종목</span>
+          <span class="more-panel-badge" data-i18n="more.soon">준비중</span>
         </button>
         <button type="button" class="more-panel-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 16v-5a6 6 0 0 0-4.5-5.8V4a1.5 1.5 0 0 0-3 0v1.2A6 6 0 0 0 6 11v5l-2 2v1h16v-1l-2-2Z" /><path d="M10 21a2 2 0 0 0 4 0" /></svg>
-          <span class="more-panel-item-label">알림 설정</span>
-          <span class="more-panel-badge">준비중</span>
+          <span class="more-panel-item-label" data-i18n="more.alerts">알림 설정</span>
+          <span class="more-panel-badge" data-i18n="more.soon">준비중</span>
         </button>
         <button type="button" class="more-panel-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h13l3 3-3 3H4V5Z" /><path d="M7 5v15" /></svg>
-          <span class="more-panel-item-label">공지사항</span>
-          <span class="more-panel-badge">준비중</span>
+          <span class="more-panel-item-label" data-i18n="more.notice">공지사항</span>
+          <span class="more-panel-badge" data-i18n="more.soon">준비중</span>
         </button>
         <button type="button" class="more-panel-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2" /><path d="M3.5 6.5 12 13l8.5-6.5" /></svg>
-          <span class="more-panel-item-label">문의하기</span>
-          <span class="more-panel-badge">준비중</span>
+          <span class="more-panel-item-label" data-i18n="more.contact">문의하기</span>
+          <span class="more-panel-badge" data-i18n="more.soon">준비중</span>
         </button>
         <button type="button" class="more-panel-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" /><path d="M12 11v5.5M12 8v.01" /></svg>
-          <span class="more-panel-item-label">앱 정보</span>
-          <span class="more-panel-badge">준비중</span>
+          <span class="more-panel-item-label" data-i18n="more.about">앱 정보</span>
+          <span class="more-panel-badge" data-i18n="more.soon">준비중</span>
         </button>
       </div>
     </div>

@@ -2427,6 +2427,113 @@ function setTheme(theme) {
 applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light");
 themeLightBtn.addEventListener("click", () => setTheme("light"));
 themeDarkBtn.addEventListener("click", () => setTheme("dark"));
+
+// ---------- 언어(한국어/영문) — 접속 지역(타임존/브라우저 언어)에 따라 기본값 추정, 명시적으로 고른 뒤에만 저장 ----------
+const I18N = {
+  "market.kr": { ko: "국내", en: "KR" },
+  "market.us": { ko: "해외", en: "US" },
+  "tab.watchlist": { ko: "관심종목", en: "Watchlist" },
+  "tab.search": { ko: "간편검색", en: "Search" },
+  "tab.valuation": { ko: "기업가치", en: "Value" },
+  "tab.trend": { ko: "시장동향", en: "Trends" },
+  "tab.insight": { ko: "인사이트", en: "Insight" },
+  "nav.map": { ko: "지도", en: "Map" },
+  "nav.home": { ko: "홈", en: "Home" },
+  "nav.calendar": { ko: "캘린더", en: "Calendar" },
+  "nav.marketBtn": { ko: "시장", en: "Market" },
+  "nav.more": { ko: "더보기", en: "More" },
+  "more.theme": { ko: "화면 테마", en: "Theme" },
+  "more.theme.light": { ko: "화이트", en: "White" },
+  "more.theme.dark": { ko: "블랙", en: "Black" },
+  "more.lang": { ko: "언어", en: "Language" },
+  "more.color": { ko: "상승·하락 색상", en: "Up/Down Colors" },
+  "more.color.kr": { ko: "빨강·파랑", en: "Red·Blue" },
+  "more.color.global": { ko: "초록·빨강", en: "Green·Red" },
+  "more.calendarInsight": { ko: "실적&공시 일정", en: "Earnings & Filings" },
+  "more.news": { ko: "뉴스", en: "News" },
+  "more.proBadge": { ko: "-7일 무료", en: "-7 days free" },
+  "more.soon": { ko: "준비중", en: "Coming soon" },
+  "more.favorites": { ko: "즐겨찾기 종목", en: "Favorites" },
+  "more.alerts": { ko: "알림 설정", en: "Alerts" },
+  "more.notice": { ko: "공지사항", en: "Notices" },
+  "more.contact": { ko: "문의하기", en: "Contact" },
+  "more.about": { ko: "앱 정보", en: "About" },
+};
+const LANG_KEY = "app_lang";
+const langKrBtn = el("langKrBtn");
+const langUsBtn = el("langUsBtn");
+function detectDefaultLang() {
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+    const nav = (navigator.language || "").toLowerCase();
+    if (tz === "Asia/Seoul" || nav.startsWith("ko")) return "ko";
+  } catch (e) {}
+  return "en";
+}
+function applyLang(lang) {
+  const isEn = lang === "en";
+  document.documentElement.lang = isEn ? "en" : "ko";
+  langKrBtn.classList.toggle("active", !isEn);
+  langUsBtn.classList.toggle("active", isEn);
+  document.querySelectorAll("[data-i18n]").forEach((node) => {
+    const dict = I18N[node.getAttribute("data-i18n")];
+    if (dict) node.textContent = isEn ? dict.en : dict.ko;
+  });
+  // 종목 상세(예: "AAPL 분석 - 마켓맵" / "AAPL Analysis - MarketMap")를 보고 있는 중이 아닐 때만 앱 이름:슬로건 타이틀을 언어에 맞춰 갱신
+  if (!document.title.includes(" - ")) {
+    document.title = isEn ? "MarketMap: Stocks in Circles" : "마켓맵: 동글한 주식시장";
+  }
+}
+function setLang(lang) {
+  applyLang(lang);
+  try {
+    localStorage.setItem(LANG_KEY, lang);
+  } catch (e) {}
+}
+let __savedLang = null;
+try {
+  __savedLang = localStorage.getItem(LANG_KEY);
+} catch (e) {}
+applyLang(__savedLang || detectDefaultLang());
+langKrBtn.addEventListener("click", () => setLang("ko"));
+langUsBtn.addEventListener("click", () => setLang("en"));
+
+// ---------- 상승/하락 색상(한국식 빨강-파랑 / 해외식 초록-빨강) — 지도 색상까지 공유하도록 localStorage 키를 공용으로 사용 ----------
+const COLOR_SCHEME_KEY = "color_scheme";
+const colorSchemeKrBtn = el("colorSchemeKrBtn");
+const colorSchemeGlobalBtn = el("colorSchemeGlobalBtn");
+function detectDefaultColorScheme() {
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+    const nav = (navigator.language || "").toLowerCase();
+    if (tz === "Asia/Seoul" || nav.startsWith("ko")) return "kr";
+  } catch (e) {}
+  return "global";
+}
+function applyColorScheme(scheme) {
+  const isGlobal = scheme === "global";
+  if (isGlobal) {
+    document.documentElement.setAttribute("data-colorscheme", "global");
+  } else {
+    document.documentElement.removeAttribute("data-colorscheme");
+  }
+  colorSchemeKrBtn.classList.toggle("active", !isGlobal);
+  colorSchemeGlobalBtn.classList.toggle("active", isGlobal);
+}
+function setColorScheme(scheme) {
+  applyColorScheme(scheme);
+  try {
+    localStorage.setItem(COLOR_SCHEME_KEY, scheme);
+  } catch (e) {}
+}
+let __savedScheme = null;
+try {
+  __savedScheme = localStorage.getItem(COLOR_SCHEME_KEY);
+} catch (e) {}
+applyColorScheme(__savedScheme || detectDefaultColorScheme());
+colorSchemeKrBtn.addEventListener("click", () => setColorScheme("kr"));
+colorSchemeGlobalBtn.addEventListener("click", () => setColorScheme("global"));
+
 bottomNavButtons.map.addEventListener("click", () => {
   window.location.href = "sector-map/index.html";
 });
@@ -2519,7 +2626,7 @@ function closeCompanyPanel({ push = true } = {}) {
   }, 280);
   if (push && new URLSearchParams(location.search).get("ticker")) {
     history.pushState(null, "", location.pathname);
-    document.title = "내투자닷컴: 주식시장을 한눈에";
+    document.title = document.documentElement.lang === "en" ? "MarketMap: Stocks in Circles" : "마켓맵: 동글한 주식시장";
   }
 }
 companyPanelCloseBtn.addEventListener("click", () => closeCompanyPanel());
@@ -2901,7 +3008,7 @@ async function shareWatchlist() {
   }
   const groupName = activeGroup === WATCHLIST_ALL_GROUP_ID ? "전체" : (groups.find((g) => g.id === activeGroup) || {}).name || "관심종목";
   const lines = filtered.map((w) => `· ${TICKER_TO_KOREAN_NAME[w.symbol] || w.symbol} (${w.symbol})`);
-  const text = `📌 내 관심종목 - ${groupName}\n${lines.join("\n")}\n\nnetuja.com`;
+  const text = `📌 내 관심종목 - ${groupName}\n${lines.join("\n")}\n\nmarketmap.kr`;
   try {
     if (navigator.share) {
       await navigator.share({ title: `내 관심종목 - ${groupName}`, text });
@@ -3561,7 +3668,7 @@ async function runBranchBPipeline() {
     wizardShareText =
       `[선택찾기] ${searchWizardAnswers.sectors.map((s) => SECTOR_KO[s] || s).join(", ")} 섹터 · ${c2.label} → ${c3.label} TOP15\n` +
       top15.map((r, i) => `${i + 1}. ${r.symbol} (${plain(c2.fmt(r))} / ${plain(c3.fmt(r))})`).join("\n") +
-      `\n\nnetuja.com`;
+      `\n\nmarketmap.kr`;
     bodyEl.innerHTML = `
       ${table}
       <div class="wizard-share-row">
@@ -3592,7 +3699,7 @@ function renderWizardBranchCStyle() {
         <b>A. 단기적인 수익을 원함(▲600%~▼60%)</b><br><span class="wizard-option-sub">(거래대금, 매출성장, 최근3개월 상승률) — S&amp;P 500중 상승 압력 높은순위 30위까지</span>
       </button>
       <button type="button" class="wizard-root-option" data-wizard-action="branchC-style-long">
-        <b>B. 장기적으로 안정적인 상승을 원함(▲60%~▼30%)</b><br><span class="wizard-option-sub">(투자등급, 안정적상승, 순이익률, 시가총액 높은 주식) — S&amp;P 500중 투자 안정 높은순위 30위까지</span>
+        <b>B. 장기적으로 안정적인 상승을 원함(▲60%~▼30%)</b><br><span class="wizard-option-sub">(재무안정, 안정적상승, 순이익률, 시가총액 높은 주식) — S&amp;P 500중 투자 안정 높은순위 30위까지</span>
       </button>
     </div>
     <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="branchC">← 뒤로</button>
@@ -3625,7 +3732,7 @@ async function runBranchCConfirm() {
     wizardShareText =
       `[자동찾기] S&P500 상승 압력+투자 안정 합계 TOP30\n` +
       top30.map((r, i) => `${i + 1}. ${r.symbol} (${r.combinedTotal}/20)`).join("\n") +
-      `\n\nnetuja.com`;
+      `\n\nmarketmap.kr`;
     bodyEl.innerHTML = `
       ${table}
       <div class="wizard-share-row">
@@ -3697,7 +3804,7 @@ function navigateToTicker(ticker, { push = true } = {}) {
     history.pushState({ ticker }, "", "?ticker=" + encodeURIComponent(ticker));
   }
   tickerInput.value = ticker;
-  document.title = `${ticker} 분석 - 내투자닷컴`;
+  document.title = document.documentElement.lang === "en" ? `${ticker} Analysis - MarketMap` : `${ticker} 분석 - 마켓맵`;
   addRecentSearch(ticker);
   logSearchEvent(ticker);
   if (searchOverlay.style.display !== "none") closeSearchOverlay();
@@ -5427,14 +5534,9 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
   const isIPO = isRecentIPO(metrics.firstTradeDate);
   const isKr = isKrTicker(metrics.symbol);
 
-  const ratingLabel = isKr ? "투자등급(국내 신용등급)" : "투자등급(신용등급)";
-  const ratingNoneText = isKr ? "등급 정보 없음" : "S&P 등급 없음";
-  const ratingScaleText = isKr
-    ? "AAA·회사채없음 4점 만점, BBB+ 0.5점, BBB 이하 0점, 미평가 0점, 조사범위 밖 1점"
-    : "AAA 4점 만점, BBB+ 0.5점, BBB 이하 0점, 회사채 없음 2점, 미평가·목록없음 1점";
   const ratingDisclaimerText = isKr
-    ? "투자등급은 한국기업평가/한국신용평가/NICE신용평가 3사 기준으로 자체 조사해 수동으로 입력한 참고용 데이터로, 실시간 갱신되지 않으며 조사 범위 밖 종목은 중립 처리됩니다."
-    : "투자등급은 S&P 신용등급을 기준으로 자체 조사해 수동으로 입력한 참고용 데이터로, 실시간 갱신되지 않으며 목록에 없는 종목은 중립 처리됩니다.";
+    ? "재무안정(구 신용등급)은 한국기업평가/한국신용평가/NICE신용평가 3사 기준으로 자체 조사해 수동으로 입력한 참고용 데이터로, 실시간 갱신되지 않으며 세부 배점 방법은 비공개입니다."
+    : "재무안정(구 신용등급)은 S&P 신용등급을 기준으로 자체 조사해 수동으로 입력한 참고용 데이터로, 실시간 갱신되지 않으며 세부 배점 방법은 비공개입니다.";
 
   const benchmarkName = isKr ? "KOSPI200" : "S&P500";
   const marginScaleText = isKr ? "35% 이상 만점·0% 이하 0점" : "50% 이상 만점·적자 0점";
@@ -5455,14 +5557,7 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
         <div class="score-den">/ 10</div>
       </div>
       <div class="score-details">
-        ${scoreMethodBarRow(
-          "①",
-          ratingLabel,
-          creditScore,
-          4,
-          `${rating ? rating : ratingNoneText} (${ratingScaleText})`,
-          stabilityColor
-        )}
+        ${creditStabilityRowHtml(rating, creditScore, stabilityColor)}
         ${scoreMethodBarRow(
           "②",
           `${benchmarkName} 대비 모멘텀`,
@@ -5482,7 +5577,7 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
         ${scoreMethodBarRow("④", capLabel, vtsaxScore, 2, `${capValueText} (${capScaleText})`, stabilityColor)}
         <p class="disclaimer">
           ⚠️ 점수가 높을수록(10점에 가까울수록) 재무적으로 더 안정적/저위험임을 의미합니다.
-          투자등급, ${benchmarkName} 대비 수익률, 순이익률, 시가총액 가점을 조합한 <b>단순 참고용 정량 지표</b>이며, 투자 자문이나 매수/매도 추천이 아닙니다.
+          재무안정, ${benchmarkName} 대비 수익률, 순이익률, 시가총액 가점을 조합한 <b>단순 참고용 정량 지표</b>이며, 투자 자문이나 매수/매도 추천이 아닙니다.
           ${ratingDisclaimerText}
           ${capDisclaimerText}
         </p>
@@ -5591,6 +5686,38 @@ function scoreMethodExampleHeaderHtml() {
   return `<div class="smb-header">${tickerLogoHtml("GOOGL")}<span class="smb-header-name">Alphabet Inc. <span class="muted">(예시)</span></span></div>`;
 }
 // 배점 항목 하나를 막대그래프 한 줄로 — 값이 클수록 막대가 길게 차오름(0~max 기준)
+// 재무안정(구 신용등급) 전용 — 세부 배점 방법은 비공개하고 5점 만점 별(정수)로만 표시. 단, 미평가·회사채없음은 사유+점수를 그대로 공개.
+function renderStars(count) {
+  const full = Math.max(0, Math.min(5, Math.round(count)));
+  let html = "";
+  for (let i = 0; i < 5; i++) html += i < full ? "★" : "☆";
+  return html;
+}
+function creditStabilityRowHtml(rating, creditScore, color) {
+  const isUnratedOrNoBond = rating === UNRATED_REASON || rating === NO_DEBT_RATING || rating === "회사채없음";
+  if (isUnratedOrNoBond) {
+    const reason =
+      rating === NO_DEBT_RATING || rating === "회사채없음"
+        ? "회사채를 발행한 적이 없어(무차입 경영 등) 신용등급 자체가 존재하지 않는 종목입니다."
+        : "신용평가사의 등급 조사 대상이 아니거나 등급이 확인되지 않은 종목입니다.";
+    return `
+      <div class="smb-row">
+        <div class="smb-row-top">
+          <span class="smb-label">① 재무안정</span>
+          <span class="smb-value" style="color:${color};">${rating} (${creditScore}/4점)</span>
+        </div>
+        <p class="smb-desc">${reason}</p>
+      </div>`;
+  }
+  const stars = Math.round((creditScore / 4) * 5);
+  return `
+    <div class="smb-row">
+      <div class="smb-row-top">
+        <span class="smb-label">① 재무안정</span>
+        <span class="smb-value stars" style="color:${color};">${renderStars(stars)}</span>
+      </div>
+    </div>`;
+}
 function scoreMethodBarRow(num, label, value, max, desc, color) {
   const pct = value === null || value === undefined ? 0 : clamp((value / max) * 100, 0, 100);
   const valText = value === null || value === undefined ? "N/A" : `${value.toFixed(1)}/${max}`;
@@ -5652,14 +5779,7 @@ async function openScoreMethodModal() {
       <div class="score-method-card">
         ${scoreMethodExampleHeaderHtml()}
         <h4>🛡️ 투자 안정 (10점 만점)</h4>
-        ${scoreMethodBarRow(
-          "①",
-          "투자등급",
-          risk.creditScore,
-          4,
-          `S&P 신용등급: <b>${risk.rating ? risk.rating : "S&P 등급 없음"}</b> (AAA 4점, BBB 이하 0점, 회사채 없음 2점, 미평가 1점)`,
-          stabilityColor
-        )}
+        ${creditStabilityRowHtml(risk.rating, risk.creditScore, stabilityColor)}
         ${scoreMethodBarRow(
           "②",
           "S&P500 대비 모멘텀",
@@ -6154,7 +6274,7 @@ async function runValueStability() {
     sortFn: (a, b) => b.riskTotal - a.riskTotal,
     metricHeaderHtml: "투자 안정 점수",
     metricCellFn: (r) => (r.isIPO ? "IPO" : scoreRankColorHtml(r.riskTotal, r.riskTotal)),
-    noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 투자 안정 점수(10점 만점, 높을수록 재무적으로 안정적)는 신용등급·모멘텀·수익성·시가총액을 종합한 참고용 지표이며 투자 자문이 아닙니다.</p>`,
+    noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 투자 안정 점수(10점 만점, 높을수록 재무적으로 안정적)는 재무안정·모멘텀·수익성·시가총액을 종합한 참고용 지표이며 투자 자문이 아닙니다.</p>`,
     showGrade: false,
   });
 }

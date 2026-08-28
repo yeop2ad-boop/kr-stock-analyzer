@@ -63,6 +63,9 @@
 }
 /* 좌측 상단 국내/해외 토글에서 국내를 선택하면 상단 툴바가 주황 배경으로 바뀌므로, 틀고정 아이콘도 흰색으로 맞춘다(섹터맵과 동일한 규칙) */
 body[data-market-mode="kr"] { --icon-accent: #14161c; }
+/* 상승/하락 색상 — 설정(더보기)에서 "초록·빨강"(해외식)으로 전환하면 --pos/--neg만 덮어써서 전체(차트·표·지도)에 반영 */
+:root[data-colorscheme="global"] { --pos: #16a34a; --neg: #dc2626; }
+:root[data-theme="dark"][data-colorscheme="global"] { --pos: #22c55e; --neg: #e15252; }
 
 * { box-sizing: border-box; }
 
@@ -1005,6 +1008,7 @@ body[data-market-mode="us"] .carousel-panel .cat-btn.active:not(.top-ranking-tab
 .smb-row-top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px; }
 .smb-label { font-size: 12.5px; font-weight: 700; color: var(--text); }
 .smb-value { font-size: 12.5px; font-weight: 800; }
+.smb-value.stars { font-size: 16px; letter-spacing: 1px; }
 .smb-track { height: 8px; border-radius: 4px; background: var(--track-fill); overflow: hidden; }
 .smb-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
 .smb-desc { margin: 4px 0 0; font-size: 11px; color: var(--muted); }
