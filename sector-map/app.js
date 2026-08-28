@@ -1992,9 +1992,8 @@ function applyChangeModeToSectorBubbles() {
 function toggleChangeMode() {
   changeModeOn = !changeModeOn;
   document.getElementById("changeModeBtn").classList.toggle("active", changeModeOn);
-  document.getElementById("tickerTape").style.display = changeModeOn ? "block" : "none";
+  // 대표 종목 티커 테이프는 표시하지 않음(사용자 요청으로 제거) — 섹터 평균 등락 채색만 적용
   applyChangeModeToSectorBubbles();
-  if (changeModeOn) refreshTickerTapeVisibility();
 }
 document.getElementById("changeModeBtn").addEventListener("click", toggleChangeMode);
 
