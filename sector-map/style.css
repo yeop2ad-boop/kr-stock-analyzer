@@ -150,6 +150,9 @@ body {
 .top-bar.is-overseas .icon-btn { color: var(--text-dark); }
 .icon-btn:active { background: rgba(255,255,255,0.18); }
 .icon-btn svg { width: 19px; height: 19px; }
+/* 즐겨찾기 별 버튼만 살짝 크게 */
+#mapWatchlistBtn { width: 34px; height: 34px; }
+#mapWatchlistBtn svg { width: 23px; height: 23px; }
 
 .filter-bar {
   display: flex;
@@ -632,23 +635,28 @@ body {
   text-align: center;
 }
 
-/* 즐겨찾기 바텀시트 — 상단 별 버튼으로 열림, range-sheet와 동일한 패턴(하단 네비 위 z-index) */
+/* 즐겨찾기 드로어 — 상단 별 버튼으로 열림, 화면 이동 없이 오른쪽에서 슬라이드 인 */
 .watchlist-sheet {
   position: absolute;
-  left: 0;
-  right: 0;
+  top: 0;
   bottom: 0;
+  right: 0;
+  width: min(78%, 340px);
   z-index: 43;
   background: var(--white);
-  border-radius: 20px 20px 0 0;
-  box-shadow: 0 -8px 24px rgba(0,0,0,0.18);
-  transform: translateY(100%);
+  border-radius: 16px 0 0 16px;
+  box-shadow: -8px 0 24px rgba(0,0,0,0.18);
+  transform: translateX(100%);
   transition: transform 0.28s cubic-bezier(.2,.8,.3,1);
-  padding: 8px 18px calc(14px + env(safe-area-inset-bottom));
+  padding: calc(14px + env(safe-area-inset-top)) 16px calc(14px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
 }
-.watchlist-sheet.open { transform: translateY(0); }
+.watchlist-sheet.open { transform: translateX(0); }
+.watchlist-sheet .range-sheet-header { flex: none; }
 .watchlist-sheet-list {
-  max-height: 42vh;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   display: flex;

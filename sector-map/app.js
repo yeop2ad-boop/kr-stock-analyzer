@@ -1467,8 +1467,7 @@ document.getElementById("mapWatchlistBtn").addEventListener("click", () => {
   if (watchlistSheet.classList.contains("open")) closeWatchlistSheet();
   else openWatchlistSheet();
 });
-enableSheetDragToClose(watchlistSheet, document.getElementById("watchlistSheetHandle"), closeWatchlistSheet);
-enableSheetDragToClose(watchlistSheet, watchlistSheet.querySelector(".range-sheet-header"), closeWatchlistSheet);
+// 즐겨찾기는 오른쪽 슬라이드 드로어라 아래로 끌어내리기 대신 지도 탭/별 버튼 재클릭으로 닫음
 
 document.querySelectorAll(".metric-chip").forEach((btn) => {
   btn.addEventListener("click", () => {
