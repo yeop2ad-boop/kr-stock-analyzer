@@ -43,7 +43,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260829c" />
+<link rel="stylesheet" href="style.css?v=20260829d" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -63,6 +63,7 @@
   <header id="fixedHeader" class="fixed-header">
     <div class="fh-topline">
       <img src="logos/marketmap-logo.png" alt="marketmap.kr" class="fh-banner" />
+      <h2 id="carouselViewTitle" class="search-overlay-title carousel-view-title" data-i18n="tab.valuation">기업가치</h2>
       <div class="market-mode-toggle" id="marketModeToggle" role="group" aria-label="국내/해외 전환">
         <button type="button" class="market-mode-btn market-mode-btn-kr" id="marketModeKrBtn" data-mode="kr" data-i18n="market.kr">국내</button>
         <button type="button" class="market-mode-btn market-mode-btn-us active" id="marketModeUsBtn" data-mode="us" data-i18n="market.us">해외</button>
@@ -73,9 +74,6 @@
         </button>
       </div>
     </div>
-
-    <!-- 현재 열려 있는 화면 이름 — 시장/캘린더 오버레이 제목(.search-overlay-title)과 동일한 글씨체 -->
-    <h2 id="carouselViewTitle" class="search-overlay-title carousel-view-title" data-i18n="tab.valuation">기업가치</h2>
 
     <!-- 상단 탭바 — 관심목록/기업가치/시장동향/인사이트가 전부 더보기 패널로 이동해 숨김(버튼 자체는 JS가 참조하므로 DOM엔 유지) -->
     <div class="tab-bar" id="tabBar" style="display:none;">
@@ -665,6 +663,6 @@
   </footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js?v=20260829c"></script>
+  <script src="app.js?v=20260829d"></script>
 </body>
 </html>

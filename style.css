@@ -251,8 +251,15 @@ body[data-market-mode="kr"] .fh-topline .header-icon-btn { color: #ffffff; }
   color: var(--muted);
 }
 .search-overlay-title { margin: 0; font-size: 24px; font-weight: 800; color: var(--text); }
-/* 고정 헤더 안 현재 화면 이름(기업가치/시장동향/인사이트/관심종목) — 오버레이 제목과 동일 글씨체 */
-.carousel-view-title { max-width: 860px; width: 100%; margin: 6px auto 10px; }
+/* 현재 화면 이름 — 로고 바로 오른쪽 같은 줄(로고-이름-국내해외 순), 오버레이 제목과 동일 글씨체·크기만 한 줄에 맞게 축소 */
+.carousel-view-title {
+  margin: 0;
+  font-size: 20px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 body[data-market-mode="kr"] .carousel-view-title { color: #ffffff; }
 /* 더보기 드로어 상단 제목 */
 .more-panel-title { padding: 14px 18px 6px; }
