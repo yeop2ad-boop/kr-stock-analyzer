@@ -276,6 +276,7 @@ function updateActiveDataForUniverseState() {
   ACTIVE_DATA = extra ? { ...core, companies: [...core.companies, ...extra.companies] } : core;
 }
 // 시장/전체보기 상태에 맞는 버튼 라벨을 그림("불러오는 중"은 extra 파일을 처음 받아오는 동안만 잠깐 표시)
+// 라벨은 지수 이름으로 — 국내: +KOSPI200/+KOSDAQ150(펼치기) ↔ -KOSPI100/-KOSDAQ50(접기), 해외: +S&P500 ↔ -S&P200
 function updateUniverseToggleBtn(loading) {
   const btn = document.getElementById("universeToggleBtn");
   if (!btn) return;
@@ -283,7 +284,12 @@ function updateUniverseToggleBtn(loading) {
     btn.textContent = "불러오는 중...";
     return;
   }
-  btn.textContent = UNIVERSE_EXPANDED[ACTIVE_MARKET] ? "-접기" : "+전체보기";
+  const expanded = UNIVERSE_EXPANDED[ACTIVE_MARKET];
+  if (ACTIVE_MARKET === "domestic") {
+    btn.innerHTML = expanded ? "-KOSPI100<br>-KOSDAQ50" : "+KOSPI200<br>+KOSDAQ150";
+  } else {
+    btn.innerHTML = expanded ? "-S&amp;P200" : "+S&amp;P500";
+  }
 }
 document.getElementById("universeToggleBtn").addEventListener("click", async () => {
   const nextExpanded = !UNIVERSE_EXPANDED[ACTIVE_MARKET];
