@@ -349,7 +349,8 @@ body {
   cursor: pointer;
   overflow: hidden;
 }
-.company-bubble.shape-square { border-radius: 3px; }
+/* 사각 타일은 글로우(blur) 그림자를 빼서 200개 타일 리페인트 부담을 줄임 — 핀치줌/드래그 버벅임 완화 */
+.company-bubble.shape-square { border-radius: 3px; box-shadow: 0 0 0 1px var(--bubble-ring); }
 .company-bubble:active { filter: brightness(0.94); }
 .company-logo-img {
   width: 74%;
@@ -690,7 +691,9 @@ body {
 .watchlist-sheet-row-name { flex: 1; min-width: 0; }
 .watchlist-sheet-row-name b { display: block; font-size: 14px; font-weight: 800; color: var(--text-dark); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .watchlist-sheet-row-name span { display: block; font-size: 11.5px; font-weight: 600; color: var(--text-mid); margin-top: 1px; }
-.watchlist-sheet-row-chg { flex: none; font-size: 13.5px; font-weight: 800; }
+.watchlist-sheet-row-right { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+.watchlist-sheet-row-price { font-size: 13.5px; font-weight: 800; color: var(--text-dark); }
+.watchlist-sheet-row-chg { font-size: 12px; font-weight: 700; }
 .watchlist-sheet-empty { padding: 26px 4px 20px; text-align: center; font-size: 13px; font-weight: 600; color: var(--text-mid); }
 
 /* 지표 범위 지정 바텀시트 — 화면 전체가 아니라 슬라이더가 들어갈 만큼만 살짝 올라옴 */

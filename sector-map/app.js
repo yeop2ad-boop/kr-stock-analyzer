@@ -1116,8 +1116,13 @@ let METRICS = buildMetrics("overseas");
 
 function getMetricDomain(key) {
   const m = METRICS[key];
-  // 거래량(순위) 지표는 실제 값 대신 고정 순위 범위(TOP1~TOP350/500)를 그대로 씀 — 데이터 개수와 무관하게 항상 동일
-  if (m.fixedDomain) return m.fixedDomain;
+  // 거래량(순위) 지표 — 슬라이더 범위를 "실제 로드된 종목 수"에 맞춤. 고정 TOP500으로 두면 코어 200종목만
+  // 로드된 상태에서 슬라이더 3/5가 죽은 구간이 되고, 유효 구간에선 조금만 드래그해도 수십 등수가 한꺼번에
+  // 잘려나가 절반이 사라져 보이는 문제가 있었음(+전체보기 시엔 자연히 TOP350/500까지 늘어남)
+  if (m.fixedDomain) {
+    const count = m.getRankCount ? m.getRankCount() : 0;
+    return [1, Math.max(2, count > 0 ? Math.min(m.fixedDomain[1], count) : m.fixedDomain[1])];
+  }
   // 실시간으로 값이 바뀌는 지표는 열 때마다 도메인을 새로 계산(캐시하면 실시간 갱신 후에도 옛 범위로 고정돼버림)
   if (m.domain && !m.live && !m.needsLive) return m.domain;
   let values = ACTIVE_DATA.companies.map(m.get).filter((v) => typeof v === "number" && Number.isFinite(v));
@@ -1458,6 +1463,12 @@ function openWatchlistSheet() {
       nameWrap.appendChild(symEl);
       row.appendChild(nameWrap);
 
+      // 오른쪽: 현재가(위) + 등락률(아래) — 현재가는 실시간 시세를 비동기 조회해 채움
+      const rightWrap = document.createElement("div");
+      rightWrap.className = "watchlist-sheet-row-right";
+      const priceEl = document.createElement("span");
+      priceEl.className = "watchlist-sheet-row-price";
+      priceEl.textContent = "…";
       const chgEl = document.createElement("span");
       chgEl.className = "watchlist-sheet-row-chg";
       const pct = c ? c.changePercent : null;
@@ -1468,7 +1479,18 @@ function openWatchlistSheet() {
         chgEl.textContent = `${pct >= 0 ? "+" : ""}${pct.toFixed(2)}%`;
         chgEl.style.color = changeColorForText(pct);
       }
-      row.appendChild(chgEl);
+      rightWrap.appendChild(priceEl);
+      rightWrap.appendChild(chgEl);
+      row.appendChild(rightWrap);
+
+      const currency = symbol.endsWith(".KS") || symbol.endsWith(".KQ") ? "KRW" : "USD";
+      fetchLiveQuoteForSheet(symbol)
+        .then((q) => {
+          priceEl.textContent = q && q.price !== null ? fmtSheetPrice(q.price, currency) : "-";
+        })
+        .catch(() => {
+          priceEl.textContent = "-";
+        });
 
       row.addEventListener("click", () => {
         closeWatchlistSheet();

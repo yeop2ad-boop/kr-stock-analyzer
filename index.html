@@ -43,7 +43,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="style.css?v=20260829b" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -63,16 +63,14 @@
   <header id="fixedHeader" class="fixed-header">
     <div class="fh-topline">
       <img src="logos/marketmap-logo.png" alt="marketmap.kr" class="fh-banner" />
-      <div class="fh-right-group">
-        <div class="market-mode-toggle" id="marketModeToggle" role="group" aria-label="국내/해외 전환">
-          <button type="button" class="market-mode-btn market-mode-btn-kr" id="marketModeKrBtn" data-mode="kr" data-i18n="market.kr">국내</button>
-          <button type="button" class="market-mode-btn market-mode-btn-us active" id="marketModeUsBtn" data-mode="us" data-i18n="market.us">해외</button>
-        </div>
-        <div class="fh-actions">
-          <button type="button" id="searchOpenBtn" class="header-icon-btn" aria-label="검색">
-            <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15.2" y2="15.2"/></svg>
-          </button>
-        </div>
+      <div class="market-mode-toggle" id="marketModeToggle" role="group" aria-label="국내/해외 전환">
+        <button type="button" class="market-mode-btn market-mode-btn-kr" id="marketModeKrBtn" data-mode="kr" data-i18n="market.kr">국내</button>
+        <button type="button" class="market-mode-btn market-mode-btn-us active" id="marketModeUsBtn" data-mode="us" data-i18n="market.us">해외</button>
+      </div>
+      <div class="fh-actions">
+        <button type="button" id="searchOpenBtn" class="header-icon-btn" aria-label="검색">
+          <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15.2" y2="15.2"/></svg>
+        </button>
       </div>
     </div>
 
@@ -663,6 +661,6 @@
   </footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=20260829b"></script>
 </body>
 </html>
