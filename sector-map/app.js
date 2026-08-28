@@ -317,9 +317,11 @@ function buildTreemapRoot(data) {
   const leafGap = sizeMode === "equal" ? 4 : 0; // 시총: 0(따따닥 붙게) / 균등: 살짝 떨어지게
   d3
     .treemap()
+    // finviz 히트맵과 같은 기준 — 큰 종목부터 왼쪽 위에서 가로/세로로 질서있게 채우고, 타일이 최대한 정사각형에 가깝게(ratio 1)
+    .tile(d3.treemapSquarify.ratio(1))
     .size([WORLD_SIZE, WORLD_SIZE])
     .paddingOuter(6)
-    .paddingTop((d) => (d.depth === 1 ? 26 : 0)) // 섹터 타일 상단에 이름표 자리 확보
+    .paddingTop((d) => (d.depth === 1 ? 34 : 0)) // 섹터 타일 상단에 이름표 자리 확보(제목 확대에 맞춰 넉넉하게)
     .paddingInner((d) => (d.depth === 0 ? 8 : leafGap))
     .round(true)(root);
 
@@ -362,10 +364,10 @@ function renderSectorNameTile(sectorNode) {
   el.className = "sector-name-bubble shape-square";
   const w = sectorNode.x1 - sectorNode.x0;
   el.style.left = `${sectorNode.x0 + 4}px`;
-  el.style.top = `${sectorNode.y0 + 3}px`;
-  el.style.height = `20px`;
+  el.style.top = `${sectorNode.y0 + 4}px`;
+  el.style.height = `26px`;
   el.style.maxWidth = `${Math.max(0, w - 8)}px`;
-  el.style.fontSize = `${Math.max(10, Math.min(17, w * 0.045))}px`;
+  el.style.fontSize = `${Math.max(13, Math.min(22, w * 0.06))}px`;
   el.textContent = `${sectorNode.data.sectorKo} · ${sectorNode.children.length}`;
   el.addEventListener("click", () => zoomToNode(sectorNode));
   return el;
@@ -458,7 +460,7 @@ const bubbleBySymbol = new Map(); // symbol -> .company-bubble 엘리먼트(지�
 let ACTIVE_MARKET = "overseas";
 let ACTIVE_DATA = coreDataFor(ACTIVE_MARKET);
 let sizeMode = "equal"; // 기본값 균등 — "시총" 버튼으로 "marketCap"과 토글(버튼 이름은 항상 "시총", 시총 모드일 때만 주황 강조)
-let shapeMode = "circle"; // 기본값 원형 — "네모" 버튼으로 "square"(트리맵)와 토글
+let shapeMode = "square"; // 기본값 사각형(트리맵) — "원형" 버튼으로 "circle"(버블맵)과 토글(버튼 라벨은 항상 "원형", 원형 모드일 때만 강조)
 
 // 섹터 이름표를 "로고 하나"처럼 취급 — 섹터 원 맨 위 가장자리에 딱 붙여 고정하고,
 // d3-force로 (1) 종목 원끼리 절대 안 겹치게(사이즈별 최소 간격), (2) 이름표(알약 모양 사각형)와도 안 겹치게 풀어낸다.
@@ -1903,7 +1905,7 @@ document.getElementById("sizeModeBtn").addEventListener("click", (e) => {
 document.getElementById("shapeModeBtn").addEventListener("click", (e) => {
   const btn = e.currentTarget;
   shapeMode = shapeMode === "circle" ? "square" : "circle";
-  btn.classList.toggle("active", shapeMode === "square");
+  btn.classList.toggle("active", shapeMode === "circle");
   rerenderMap(true);
 });
 

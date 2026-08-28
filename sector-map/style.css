@@ -293,7 +293,7 @@ body {
   cursor: pointer;
   transition: background-color 0.25s ease;
 }
-.sector-bubble.shape-square { border-radius: 8px; align-items: flex-end; justify-content: center; padding-bottom: 6%; }
+.sector-bubble.shape-square { border-radius: 8px; border-width: 3.5px; align-items: flex-end; justify-content: center; padding-bottom: 6%; }
 /* "등락" 모드 — 섹터 원 전체가 등락률 색으로 채워지고 가운데 평균 등락률 숫자가 보임 */
 .sector-bubble.sector-bubble-filled { background: var(--chg-fill, transparent); border-color: transparent; z-index: 2; }
 .sector-bubble-change {
