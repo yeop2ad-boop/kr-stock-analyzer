@@ -1116,12 +1116,14 @@ let METRICS = buildMetrics("overseas");
 
 function getMetricDomain(key) {
   const m = METRICS[key];
-  // 거래량(순위) 지표 — 슬라이더 범위를 "실제 로드된 종목 수"에 맞춤. 고정 TOP500으로 두면 코어 200종목만
-  // 로드된 상태에서 슬라이더 3/5가 죽은 구간이 되고, 유효 구간에선 조금만 드래그해도 수십 등수가 한꺼번에
-  // 잘려나가 절반이 사라져 보이는 문제가 있었음(+전체보기 시엔 자연히 TOP350/500까지 늘어남)
+  // 거래량(순위) 지표 — 시장·전체보기 상태에 따라 4가지 고정 상한:
+  // 국내 축소 TOP150 / 국내 전체보기 TOP350 / 해외 축소 TOP200 / 해외 전체보기 TOP500
+  // (실제 로드된 순위 수가 상한보다 적으면 그 수까지만 — 죽은 슬라이더 구간 방지)
   if (m.fixedDomain) {
+    const expanded = UNIVERSE_EXPANDED[ACTIVE_MARKET];
+    const cap = ACTIVE_MARKET === "domestic" ? (expanded ? 350 : 150) : (expanded ? 500 : 200);
     const count = m.getRankCount ? m.getRankCount() : 0;
-    return [1, Math.max(2, count > 0 ? Math.min(m.fixedDomain[1], count) : m.fixedDomain[1])];
+    return [1, Math.max(2, count > 0 ? Math.min(cap, count) : cap)];
   }
   // 실시간으로 값이 바뀌는 지표는 열 때마다 도메인을 새로 계산(캐시하면 실시간 갱신 후에도 옛 범위로 고정돼버림)
   if (m.domain && !m.live && !m.needsLive) return m.domain;
@@ -2201,7 +2203,8 @@ function loadMarket(mode, animate) {
   rerenderMap(animate);
   applyChangeModeToSectorBubbles(); // rerenderMap이 섹터 원을 새로 만들므로 등락 모드가 켜져 있었다면 채색도 다시 적용
 
-  refreshActiveMarketLiveData().catch(() => {});
+  // 자동 로드(첫 접속·시장 전환)는 조용히 갱신 — "실시간 시세로 갱신됨" 토스트는 시계를 직접 눌렀을 때만
+  refreshActiveMarketLiveData({ silent: true }).catch(() => {});
   scheduleInactiveMarketPreload(); // 시장 전환 시에도 방금 떠난 쪽 로고를 한가할 때 다시 캐시해둠(다음에 돌아왔을 때 즉시 뜨도록)
 }
 
