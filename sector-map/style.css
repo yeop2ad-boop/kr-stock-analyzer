@@ -94,10 +94,11 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  /* 좌측 로고 제거 후 국내/해외 토글을 화면 왼쪽에 붙임 */
   padding: 6px 14px 6px 8px;
   border-bottom: 1px solid rgba(255,255,255,0.25);
 }
+/* 본체 헤더(.fh-banner)와 완전 동일한 스타일의 마켓맵 로고 */
+.map-brand-logo { height: 28px; width: auto; display: block; flex: none; border-radius: 6px; }
 /* 흰 배경일 때는 참고 이미지처럼 희미하고 얇은 검은 실선 구분선 */
 .top-bar.is-overseas .top-bar-row { border-bottom: 1px solid rgba(0,0,0,0.09); }
 
