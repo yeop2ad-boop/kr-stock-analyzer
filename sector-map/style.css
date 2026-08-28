@@ -8,11 +8,6 @@
   --bubble-ring: rgba(15,23,42,0.12); /* 지도 배경 위 타일 경계 링 — 화이트 배경용 어두운 링 */
   --badge-text: #14161c; /* 로고 없는 종목의 이니셜 텍스트 */
   --badge-glow: 0 0 4px #fff, 0 0 4px #fff, 0 1px 2px rgba(255,255,255,0.9);
-  /* 시안C(비비드 글래스) 섹터 카드/헤더 */
-  --sector-card-bg: #ffffff;
-  --sector-card-shadow: 0 1px 4px rgba(20,30,60,0.08);
-  --sector-header-bg: #f0f2f5;
-  --sector-header-text: #1b2a4a;
   --white: #ffffff;
   --text-dark: #1c1f26;
   --text-mid: #6b7280;
@@ -38,10 +33,6 @@
   --bubble-ring: rgba(255,255,255,0.14);
   --badge-text: #ffffff;
   --badge-glow: 0 0 4px rgba(0,0,0,0.9), 0 0 4px rgba(0,0,0,0.9), 0 1px 2px rgba(0,0,0,0.95);
-  --sector-card-bg: rgba(255,255,255,0.05);
-  --sector-card-shadow: none;
-  --sector-header-bg: rgba(255,255,255,0.08);
-  --sector-header-text: #e8ebf2;
 }
 
 /* 지도 자체 첫 로딩 스플래시 — 본체(내투자닷컴) 첫 화면과 동일한 로고+문구, 지도 초기 렌더가 끝나면 바로 숨김 */
@@ -306,34 +297,7 @@ body {
   cursor: pointer;
   transition: background-color 0.25s ease;
 }
-/* 시안C: 색 테두리 대신 카드 배경 + 상단 헤더바 */
-.sector-bubble.shape-square {
-  border-radius: 10px;
-  border: none;
-  background: var(--sector-card-bg);
-  box-shadow: var(--sector-card-shadow);
-  align-items: center;
-  justify-content: center;
-  padding-bottom: 0;
-}
-.sector-header-bar {
-  position: absolute;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  padding: 0 8px;
-  background: var(--sector-header-bg);
-  color: var(--sector-header-text);
-  font-weight: 800;
-  letter-spacing: -0.2px;
-  border-radius: 10px 10px 0 0;
-  overflow: hidden;
-  cursor: pointer;
-}
-.sector-header-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.sector-header-badge { font-style: normal; font-weight: 800; border-radius: 999px; padding: 1px 7px; flex: none; }
+.sector-bubble.shape-square { border-radius: 8px; border-width: 3.5px; align-items: flex-end; justify-content: center; padding-bottom: 6%; }
 /* "등락" 모드 — 섹터 원 전체가 등락률 색으로 채워지고 가운데 평균 등락률 숫자가 보임 */
 .sector-bubble.sector-bubble-filled { background: var(--chg-fill, transparent); border-color: transparent; z-index: 2; }
 .sector-bubble-change {
@@ -375,20 +339,18 @@ body {
   position: absolute;
   z-index: 1;
   border-radius: 50%;
-  background: var(--bg-map);
-  /* 시안C: 색 테두리/글로우 없이 그라데이션 배경(JS 인라인)으로만 표현 */
-  border: none;
-  box-shadow: none;
+  background: var(--chg, var(--bg-map));
+  border: 2px solid var(--chg, var(--sc, #666));
+  /* 타일 경계 링 — 화이트 배경에선 어두운 링, 블랙 배경에선 밝은 링(--bubble-ring이 테마 따라 전환) */
+  box-shadow: 0 0 0 1px var(--bubble-ring), var(--chg-glow, 0 2px 8px rgba(15,23,42,0.15));
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   overflow: hidden;
 }
-/* 시안C: 라운드 그라데이션 타일 — 테두리/그림자 없이 간격으로 구분(리페인트 부담도 최소) */
-.company-bubble.shape-square { border-radius: 7px; border: none; box-shadow: none; }
-/* 그라데이션 타일 위 텍스트는 테마와 무관하게 흰색+어두운 후광 */
-.company-bubble.shape-square .company-fallback-badge { color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+/* 사각 타일은 글로우(blur) 그림자를 빼서 200개 타일 리페인트 부담을 줄임 — 핀치줌/드래그 버벅임 완화 */
+.company-bubble.shape-square { border-radius: 3px; box-shadow: 0 0 0 1px var(--bubble-ring); }
 .company-bubble:active { filter: brightness(0.94); }
 .company-logo-img {
   width: 74%;

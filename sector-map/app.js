@@ -122,30 +122,6 @@ function changeColorForText(pct) {
   return `rgb(${rgb.join(",")})`;
 }
 
-// ---- 타일 그라데이션(시안 C: 비비드 글래스) — 등락 크기에 따라 밝은 톤→진한 톤으로 보간, 0% 부근은 회색 ----
-const TILE_GRAY = document.documentElement.getAttribute("data-theme") === "dark"
-  ? [[58, 63, 77], [44, 49, 61]]
-  : [[195, 201, 212], [168, 176, 190]];
-const TILE_RED = { lightTop: [239, 107, 107], lightBot: [220, 68, 68], deepTop: [220, 68, 68], deepBot: [153, 27, 27] };
-const TILE_GREEN = { lightTop: [73, 201, 135], lightBot: [47, 188, 114], deepTop: [22, 163, 74], deepBot: [21, 128, 61] };
-const TILE_BLUE = { lightTop: [107, 143, 227], lightBot: [75, 116, 216], deepTop: [37, 99, 235], deepBot: [29, 78, 216] };
-const TILE_UP = __mapColorScheme === "global" ? TILE_GREEN : TILE_RED;
-const TILE_DOWN = __mapColorScheme === "global" ? TILE_RED : TILE_BLUE;
-
-function tileFill(pct) {
-  const gray = `linear-gradient(160deg, rgb(${TILE_GRAY[0].join(",")}), rgb(${TILE_GRAY[1].join(",")}))`;
-  if (pct === null || pct === undefined || Number.isNaN(pct)) return gray;
-  const t = Math.min(1, Math.abs(pct) / CHG_CLAMP);
-  if (t < 0.04) return gray;
-  const pal = pct >= 0 ? TILE_UP : TILE_DOWN;
-  const top = mixRgb(pal.lightTop, pal.deepTop, t);
-  const bot = mixRgb(pal.lightBot, pal.deepBot, t);
-  return `linear-gradient(160deg, rgb(${top.join(",")}), rgb(${bot.join(",")}))`;
-}
-function applyTileColor(el, pct) {
-  el.style.background = tileFill(pct);
-}
-
 // financialmodelingprep이 일부 국내 종목엔 로고 대신 사옥/공장 사진 등 엉뚱한 이미지를 갖고 있어서
 // (전 종목 색상 다양성 스캔 + 육안 확인으로 찾음, scripts/scan-bad-logos.ps1), 그 심볼들은 로고 시도 자체를
 // 건너뛰고 바로 티커 배지를 보여준다 — 로컬/외부 둘 다 같은 소스라 폴백해도 어차피 같은 사진이 나옴.
@@ -354,8 +330,7 @@ function buildTreemapRoot(data) {
 
   const root = d3.hierarchy({ name: "root", children }).sum((d) => d.value).sort((a, b) => b.value - a.value);
 
-  // 시안C 라운드 타일이 겹쳐 보이지 않도록 시총 모드도 최소 간격 2는 유지(균등은 그대로 여유 있게)
-  const leafGap = sizeMode === "equal" ? 5 : 2;
+  const leafGap = sizeMode === "equal" ? 4 : 0; // 시총: 0(따따닥 붙게) / 균등: 살짝 떨어지게
   d3
     .treemap()
     // finviz 히트맵과 같은 기준 — 큰 종목부터 왼쪽 위에서 가로/세로로 질서있게 채우고, 타일이 최대한 정사각형에 가깝게(ratio 1)
@@ -402,37 +377,19 @@ function renderSectorTileBubble(sectorNode, color) {
   return el;
 }
 
-function renderSectorNameTile(sectorNode, avg) {
+function renderSectorNameTile(sectorNode) {
   const el = document.createElement("div");
-  el.className = "sector-header-bar";
+  el.className = "sector-name-bubble shape-square";
   const w = sectorNode.x1 - sectorNode.x0;
   const h = sectorNode.y1 - sectorNode.y0;
-  // 트리맵 paddingTop과 동일한 공식으로 헤더 높이 산정 — 초소형 섹터에선 비례 축소
-  const headerH = Math.min(34, Math.max(14, h * 0.3)) - 2;
-  el.style.left = `${sectorNode.x0}px`;
-  el.style.top = `${sectorNode.y0}px`;
-  el.style.width = `${w}px`;
-  el.style.height = `${headerH}px`;
-  const fs = Math.max(9, Math.min(17, Math.min(w * 0.05, headerH * 0.6)));
-  el.style.fontSize = `${fs}px`;
-
-  const nameEl = document.createElement("span");
-  nameEl.className = "sector-header-name";
-  nameEl.textContent = `${sectorNode.data.sectorKo} · ${sectorNode.children.length}`;
-  el.appendChild(nameEl);
-
-  // 헤더 오른쪽 섹터 평균 등락 배지(시안C) — 데이터 없으면 생략
-  if (typeof avg === "number" && Number.isFinite(avg)) {
-    const badge = document.createElement("i");
-    badge.className = "sector-header-badge";
-    badge.textContent = `${avg >= 0 ? "+" : ""}${avg.toFixed(1)}%`;
-    badge.style.color = changeColorForText(avg);
-    const dir = avg >= 0 ? TILE_UP : TILE_DOWN;
-    badge.style.background = `rgba(${dir.deepTop.join(",")}, 0.14)`;
-    badge.style.fontSize = `${Math.max(8, fs * 0.85)}px`;
-    el.appendChild(badge);
-  }
-
+  // 초소형 섹터에서도 제목이 칸 밖으로 삐져나가지 않도록 섹터 높이에 맞춰 제목 높이/글자를 축소
+  const labelH = Math.max(12, Math.min(26, h - 10));
+  el.style.left = `${sectorNode.x0 + 4}px`;
+  el.style.top = `${sectorNode.y0 + 4}px`;
+  el.style.height = `${labelH}px`;
+  el.style.maxWidth = `${Math.max(0, w - 8)}px`;
+  el.style.fontSize = `${Math.max(9, Math.min(22, Math.min(w * 0.06, labelH * 0.7)))}px`;
+  el.textContent = `${sectorNode.data.sectorKo} · ${sectorNode.children.length}`;
   el.addEventListener("click", () => zoomToNode(sectorNode));
   return el;
 }
@@ -442,7 +399,12 @@ function renderCompanyTile(leaf, sectorColorValue) {
   const el = document.createElement("div");
   el.className = "company-bubble shape-square";
   el.style.setProperty("--sc", sectorColorValue);
-  applyTileColor(el, d.changePercent); // 시안C: 등락 그라데이션 배경(테두리/글로우 없음)
+  const chg = changeColor(d.changePercent);
+  el.style.setProperty("--chg", chg.css);
+  const glowStrength = Math.abs(chg.t);
+  if (glowStrength > 0.08) {
+    el.style.setProperty("--chg-glow", `0 0 ${4 + glowStrength * 10}px ${chg.css}`);
+  }
   const w = leaf.x1 - leaf.x0;
   const h = leaf.y1 - leaf.y0;
   el.style.left = `${leaf.x0}px`;
@@ -493,7 +455,6 @@ function renderCompanyTile(leaf, sectorColorValue) {
 
 function renderMapSquare(root) {
   const frag = document.createDocumentFragment();
-  const avgBySector = computeSectorAverages(); // 시안C 헤더의 섹터 평균 등락 배지용
 
   for (const sectorNode of root.children) {
     const color = sectorColor(sectorNode.data.name);
@@ -503,7 +464,7 @@ function renderMapSquare(root) {
       frag.appendChild(renderCompanyTile(leaf, color));
     }
 
-    frag.appendChild(renderSectorNameTile(sectorNode, avgBySector.get(sectorNode.data.name)));
+    frag.appendChild(renderSectorNameTile(sectorNode));
   }
 
   mapWorld.appendChild(frag);
@@ -668,7 +629,12 @@ function renderCompanyBubble(leaf, sectorColorValue) {
   const el = document.createElement("div");
   el.className = "company-bubble";
   el.style.setProperty("--sc", sectorColorValue);
-  applyTileColor(el, d.changePercent); // 시안C: 등락 그라데이션 배경(원형도 동일)
+  const chg = changeColor(d.changePercent);
+  el.style.setProperty("--chg", chg.css);
+  const glowStrength = Math.abs(chg.t);
+  if (glowStrength > 0.08) {
+    el.style.setProperty("--chg-glow", `0 0 ${4 + glowStrength * 10}px ${chg.css}`);
+  }
   el.style.left = `${leaf.x - leaf.r}px`;
   el.style.top = `${leaf.y - leaf.r}px`;
   el.style.width = `${leaf.r * 2}px`;
@@ -1936,12 +1902,15 @@ async function refreshActiveMarketLiveData({ silent = false } = {}) {
   return ok;
 }
 
-// 타일 배경색을 최신 changePercent 기준으로 다시 칠함(값 자체는 그대로 두고 색만 갱신)
+// 원 배경/테두리 색을 최신 changePercent 기준으로 다시 칠함(값 자체는 그대로 두고 색만 갱신)
 function refreshAllBubbleColors() {
   for (const c of ACTIVE_DATA.companies) {
     const el = bubbleBySymbol.get(c.symbol);
     if (!el) continue;
-    applyTileColor(el, c.changePercent);
+    const chg = changeColor(c.changePercent);
+    el.style.setProperty("--chg", chg.css);
+    const glowStrength = Math.abs(chg.t);
+    el.style.setProperty("--chg-glow", glowStrength > 0.08 ? `0 0 ${4 + glowStrength * 10}px ${chg.css}` : "");
   }
   // 지도 타일 색상이 새로 갱신될 때, 지금 상세시트가 열려서 보고 있는 종목이 있다면 그 시트의 현재가/등락률도 같이 최신화
   if (currentSheetSymbol) updateSheetLiveValues(currentSheetSymbol);
