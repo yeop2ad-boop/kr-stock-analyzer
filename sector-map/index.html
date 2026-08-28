@@ -41,6 +41,9 @@
         <button type="button" class="icon-btn" id="mapSearchBtn" aria-label="검색">
           <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
+        <button type="button" class="icon-btn" id="mapWatchlistBtn" aria-label="즐겨찾기">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
       </div>
     </div>
 
@@ -139,6 +142,15 @@
   <div class="company-sheet" id="companySheet">
     <div class="company-sheet-handle"></div>
     <div class="company-sheet-body" id="companySheetBody"></div>
+  </div>
+
+  <!-- 상단 별 버튼으로 여는 즐겨찾기 목록 — 다른 화면으로 이동하지 않고 지도 위 바텀시트로 표시 -->
+  <div class="watchlist-sheet" id="watchlistSheet">
+    <div class="range-sheet-handle" id="watchlistSheetHandle"></div>
+    <div class="range-sheet-header">
+      <span data-i18n="map.watchlist">즐겨찾기</span>
+    </div>
+    <div class="watchlist-sheet-list" id="watchlistSheetList"></div>
   </div>
 
   <div class="range-sheet" id="rangeSheet">

@@ -15,6 +15,7 @@ const MAP_I18N = {
   "market.us": { ko: "해외", en: "US" },
   "nav.map": { ko: "지도", en: "Map" },
   "tab.search": { ko: "간편검색", en: "Search" },
+  "map.watchlist": { ko: "즐겨찾기", en: "Favorites" },
   "nav.marketBtn": { ko: "시장", en: "Market" },
   "nav.more": { ko: "더보기", en: "More" },
 };
@@ -980,6 +981,8 @@ mapViewport.addEventListener("pointerdown", (e) => {
   ) {
     closeRangeSheet();
   }
+  const wlSheet = document.getElementById("watchlistSheet");
+  if (wlSheet.classList.contains("open") && !wlSheet.contains(e.target)) wlSheet.classList.remove("open");
 });
 
 // ---------- 5) 상단/하단 임시 버튼 토스트 + 국내/해외 토글 ----------
@@ -1324,6 +1327,7 @@ const quickSliderCtrl = createSliderController(
 function openRangeSheet(key) {
   closeCompanySheet();
   closeAllFiltersPanel();
+  closeWatchlistSheet();
   quickSheetKey = key;
   rangeSheetTitle.textContent = METRICS[key].label;
   quickSliderCtrl.refresh();
@@ -1366,6 +1370,100 @@ function enableSheetDragToClose(sheetEl, handleEl, closeFn) {
 }
 enableSheetDragToClose(companySheet, companySheet.querySelector(".company-sheet-handle"), closeCompanySheet);
 enableSheetDragToClose(rangeSheet, rangeSheet.querySelector(".range-sheet-handle"), closeRangeSheet);
+
+// ---------- 즐겨찾기 바텀시트 — 상단 별 버튼으로 열고, 항목을 누르면 지도에서 그 종목으로 줌+상세시트(화면 이동 없음) ----------
+const watchlistSheet = document.getElementById("watchlistSheet");
+const watchlistSheetList = document.getElementById("watchlistSheetList");
+
+function closeWatchlistSheet() {
+  watchlistSheet.classList.remove("open");
+}
+
+function findLeafBySymbol(symbol) {
+  if (!packedRoot) return null;
+  for (const sectorNode of packedRoot.children) {
+    for (const leaf of sectorNode.children) {
+      if (leaf.data.symbol === symbol) return leaf;
+    }
+  }
+  return null;
+}
+
+function openWatchlistSheet() {
+  closeCompanySheet();
+  closeRangeSheet();
+  closeAllFiltersPanel();
+
+  watchlistSheetList.innerHTML = "";
+  const symbols = [...getWatchlistSymbols()];
+  const bySymbol = new Map(ACTIVE_DATA.companies.map((c) => [c.symbol, c]));
+  const isEn = document.documentElement.lang === "en";
+
+  if (symbols.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "watchlist-sheet-empty";
+    empty.textContent = isEn ? "No favorites yet. Tap the ★ on a stock to add it." : "즐겨찾기한 종목이 없습니다. 종목 상세에서 ★을 눌러 추가해보세요.";
+    watchlistSheetList.appendChild(empty);
+  } else {
+    for (const symbol of symbols) {
+      const c = bySymbol.get(symbol);
+      const row = document.createElement("button");
+      row.type = "button";
+      row.className = "watchlist-sheet-row";
+
+      if (c && !BAD_LOGO_SYMBOLS.has(symbol)) {
+        const img = document.createElement("img");
+        img.className = "watchlist-sheet-row-logo";
+        img.loading = "lazy";
+        img.alt = symbol;
+        img.src = logoUrl(symbol, "low");
+        img.addEventListener("error", () => {
+          img.style.display = "none";
+        });
+        row.appendChild(img);
+      }
+
+      const nameWrap = document.createElement("div");
+      nameWrap.className = "watchlist-sheet-row-name";
+      const nameEl = document.createElement("b");
+      nameEl.textContent = c ? c.name : symbol;
+      const symEl = document.createElement("span");
+      symEl.textContent = symbol;
+      nameWrap.appendChild(nameEl);
+      nameWrap.appendChild(symEl);
+      row.appendChild(nameWrap);
+
+      const chgEl = document.createElement("span");
+      chgEl.className = "watchlist-sheet-row-chg";
+      const pct = c ? c.changePercent : null;
+      if (pct === null || pct === undefined || Number.isNaN(pct)) {
+        chgEl.textContent = "-";
+        chgEl.style.color = "var(--text-mid)";
+      } else {
+        chgEl.textContent = `${pct >= 0 ? "+" : ""}${pct.toFixed(2)}%`;
+        chgEl.style.color = changeColorForText(pct);
+      }
+      row.appendChild(chgEl);
+
+      row.addEventListener("click", () => {
+        closeWatchlistSheet();
+        const leaf = findLeafBySymbol(symbol);
+        if (leaf) zoomToNode(leaf);
+        if (c) openCompanySheet(c);
+      });
+
+      watchlistSheetList.appendChild(row);
+    }
+  }
+
+  watchlistSheet.classList.add("open");
+}
+
+document.getElementById("mapWatchlistBtn").addEventListener("click", () => {
+  if (watchlistSheet.classList.contains("open")) closeWatchlistSheet();
+  else openWatchlistSheet();
+});
+enableSheetDragToClose(watchlistSheet, document.getElementById("watchlistSheetHandle"), closeWatchlistSheet);
 
 document.querySelectorAll(".metric-chip").forEach((btn) => {
   btn.addEventListener("click", () => {

@@ -623,6 +623,57 @@ body {
   text-align: center;
 }
 
+/* 즐겨찾기 바텀시트 — 상단 별 버튼으로 열림, range-sheet와 동일한 패턴(하단 네비 위 z-index) */
+.watchlist-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 43;
+  background: var(--white);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.18);
+  transform: translateY(100%);
+  transition: transform 0.28s cubic-bezier(.2,.8,.3,1);
+  padding: 8px 18px calc(14px + env(safe-area-inset-bottom));
+}
+.watchlist-sheet.open { transform: translateY(0); }
+.watchlist-sheet-list {
+  max-height: 42vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+}
+.watchlist-sheet-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 4px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  cursor: pointer;
+}
+.watchlist-sheet-row:last-child { border-bottom: none; }
+.watchlist-sheet-row:active { background: rgba(15,23,42,0.05); }
+.watchlist-sheet-row-logo {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+.watchlist-sheet-row-name { flex: 1; min-width: 0; }
+.watchlist-sheet-row-name b { display: block; font-size: 14px; font-weight: 800; color: var(--text-dark); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.watchlist-sheet-row-name span { display: block; font-size: 11.5px; font-weight: 600; color: var(--text-mid); margin-top: 1px; }
+.watchlist-sheet-row-chg { flex: none; font-size: 13.5px; font-weight: 800; }
+.watchlist-sheet-empty { padding: 26px 4px 20px; text-align: center; font-size: 13px; font-weight: 600; color: var(--text-mid); }
+
 /* 지표 범위 지정 바텀시트 — 화면 전체가 아니라 슬라이더가 들어갈 만큼만 살짝 올라옴 */
 .range-sheet {
   position: absolute;
