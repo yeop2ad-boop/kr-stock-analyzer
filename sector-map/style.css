@@ -3,8 +3,8 @@
   --navy-deep: #0d1730;
   --red-dot: #f60303;
   --bg-app: #eef0f3;
-  --bg-map: #ffffff;
-  --bg-map-grid: #f4f5f7;
+  --bg-map: #000000; /* 지도 기본환경 = 흑색 */
+  --bg-map-grid: #131417;
   --white: #ffffff;
   --text-dark: #1c1f26;
   --text-mid: #6b7280;
@@ -282,6 +282,7 @@ body {
   cursor: pointer;
   transition: background-color 0.25s ease;
 }
+.sector-bubble.shape-square { border-radius: 8px; align-items: flex-end; justify-content: center; padding-bottom: 6%; }
 /* "등락" 모드 — 섹터 원 전체가 등락률 색으로 채워지고 가운데 평균 등락률 숫자가 보임 */
 .sector-bubble.sector-bubble-filled { background: var(--chg-fill, transparent); border-color: transparent; z-index: 2; }
 .sector-bubble-change {
@@ -308,21 +309,30 @@ body {
   box-shadow: 0 2px 8px rgba(15,23,42,0.18);
   cursor: pointer;
 }
+.sector-name-bubble.shape-square {
+  border-radius: 5px;
+  justify-content: flex-start;
+  padding: 0 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 /* company bubble */
 .company-bubble {
   position: absolute;
   z-index: 1;
   border-radius: 50%;
-  background: var(--chg, #fff);
+  background: var(--chg, #000);
   border: 2px solid var(--chg, var(--sc, #666));
-  box-shadow: 0 0 0 1px rgba(15,23,42,0.12), var(--chg-glow, 0 2px 8px rgba(15,23,42,0.15));
+  /* 흑색 지도 배경 위에서 타일 경계가 보이도록 밝은 얇은 링 사용(기존엔 흰 배경용 어두운 링이었음) */
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.14), var(--chg-glow, 0 2px 8px rgba(0,0,0,0.5));
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   overflow: hidden;
 }
+.company-bubble.shape-square { border-radius: 3px; }
 .company-bubble:active { filter: brightness(0.94); }
 .company-logo-img {
   width: 74%;
@@ -343,13 +353,14 @@ body {
   box-sizing: border-box;
   border-radius: 50%;
   background: transparent;
-  color: #14161c;
+  /* 흑색 기본 배경~채색 타일까지 두루 잘 읽히도록 흰 글자 + 어두운 후광으로 전환(기존엔 흰 배경 전용 검정 글자였음) */
+  color: #fff;
   font-weight: 800;
   text-align: center;
   line-height: 1.15;
   word-break: keep-all;
   overflow-wrap: break-word;
-  text-shadow: 0 0 4px #fff, 0 0 4px #fff, 0 1px 2px rgba(255,255,255,0.9);
+  text-shadow: 0 0 4px rgba(0,0,0,0.9), 0 0 4px rgba(0,0,0,0.9), 0 1px 2px rgba(0,0,0,0.95);
   pointer-events: none;
 }
 .company-bubble.logo-failed .company-logo-img { display: none; }
@@ -361,7 +372,7 @@ body {
 }
 .map-world.color-only .company-fallback-badge {
   display: flex !important;
-  color: #14161c;
+  color: #fff;
 }
 .map-world.color-only .company-ticker-tag {
   display: none !important;
@@ -374,7 +385,8 @@ body {
   font-size: 11px;
   font-weight: 700;
   color: #fff;
-  background: rgba(20,22,28,0.78);
+  background: rgba(30,32,38,0.9);
+  border: 1px solid rgba(255,255,255,0.14);
   padding: 0.1em 0.55em;
   border-radius: 0.55em;
   white-space: nowrap;
