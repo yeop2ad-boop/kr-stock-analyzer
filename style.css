@@ -155,7 +155,7 @@ body[data-market-mode="kr"] .fh-topline .header-icon-btn { color: #ffffff; }
   color: var(--text);
 }
 
-.fh-banner { height: 20px; width: auto; display: block; flex: none; } /* 지도 상단 로고와 동일 크기 */
+.fh-banner { height: 28px; width: auto; display: block; flex: none; border-radius: 6px; } /* 정사각 마켓맵 로고 — 워드마크 시절(20px)보다 살짝 키움 */
 
 .fh-right-group { display: flex; align-items: center; gap: 14px; }
 
