@@ -1,4 +1,4 @@
-/* 기본(메인) 테마 = 화이트. 설정(더보기 패널)에서 블랙 버전으로 전환 가능 — :root[data-theme="dark"]가 아래서 덮어씀 */
+﻿/* 기본(메인) 테마 = 화이트. 설정(더보기 패널)에서 블랙 버전으로 전환 가능 — :root[data-theme="dark"]가 아래서 덮어씀 */
 :root {
   --bg: #ffffff;
   --card-bg: #ffffff;
@@ -140,8 +140,6 @@ body[data-market-mode="kr"] .market-mode-btn { color: rgba(255,255,255,0.9); }
 body[data-market-mode="kr"] .market-mode-btn-kr.active { background: #ffffff; color: #e04600; }
 /* 상단 툴바(주황 배경)의 아이콘만 흰색으로 — 종목 상세페이지(.detail-bar, 흰 배경)의 검색/알림/즐겨찾기 아이콘은 대상에서 제외해야 흰 배경 위에서 보임 */
 body[data-market-mode="kr"] .fh-topline .header-icon-btn { color: #ffffff; }
-body[data-market-mode="kr"] .user-avatar-btn { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.6); color: #ffffff; }
-body[data-market-mode="kr"] .login-header-btn { color: #ffffff; }
 
 .contact-btn {
   flex: none;
@@ -181,8 +179,6 @@ body[data-market-mode="kr"] .login-header-btn { color: #ffffff; }
 .fh-topline .header-icon-btn { width: 30px; height: 30px; border-radius: 50%; }
 .fh-topline .header-icon-btn svg { width: 19px; height: 19px; }
 .fh-topline .header-icon-btn:active { background: var(--subtle-fill); }
-/* 로그인(유저메뉴)은 더보기 패널로 이동 — 상단 맨 윗줄에서는 항상 숨김(로그인 상태와 무관하게) */
-.fh-topline .user-menu { display: none !important; }
 #companyPanelWatchlistBtn.active { color: var(--warn); }
 #companyPanelWatchlistBtn.active.market-kr { color: #6b9bff; }
 #companyPanelWatchlistBtn.active.market-us { color: #f60303; }
@@ -191,70 +187,6 @@ body[data-market-mode="kr"] .login-header-btn { color: #ffffff; }
 .btn-icon { display: inline-flex; align-items: center; vertical-align: -2px; }
 .btn-icon-svg { display: block; color: var(--icon-accent); }
 #companyPanelWatchlistBtn.active svg { fill: currentColor; }
-
-.login-header-btn {
-  flex: none;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border-radius: 50%;
-  font-size: 19px;
-  line-height: 1;
-  background: none;
-  border: none;
-  color: var(--muted);
-}
-
-.user-menu { position: relative; }
-.user-avatar-btn {
-  flex: none;
-  width: 34px;
-  height: 34px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-size: 14px;
-  font-weight: 800;
-  overflow: hidden;
-}
-.user-avatar-img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-.user-dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  z-index: 210;
-  min-width: 180px;
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
-  padding: 12px;
-}
-.user-dropdown-name { margin: 0; font-size: 13.5px; font-weight: 700; color: var(--text); }
-.user-dropdown-email {
-  margin: 2px 0 10px;
-  font-size: 12px;
-  color: var(--muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.user-dropdown-logout {
-  width: 100%;
-  padding: 8px 0;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  font-size: 12.5px;
-  font-weight: 600;
-}
 
 .fh-search {
   position: relative;
@@ -1015,139 +947,6 @@ body[data-market-mode="us"] .carousel-panel .cat-btn.active:not(.top-ranking-tab
 .smb-desc b { color: var(--text); }
 .smb-formula { margin: 4px 0 8px; font-size: 13px; font-weight: 700; color: var(--text); padding-top: 8px; border-top: 1px dashed var(--border); }
 
-.login-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 500;
-  background: var(--bg);
-  flex-direction: column;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.login-modal-close {
-  position: sticky;
-  top: 0;
-  align-self: flex-start;
-  margin: 16px 0 0 16px;
-  padding: 4px;
-  background: transparent;
-  border: none;
-  color: var(--text);
-  font-size: 22px;
-  z-index: 1;
-}
-
-.login-modal-body {
-  flex: 1;
-  width: 100%;
-  max-width: 360px;
-  margin: 0 auto;
-  padding: 12px 24px 60px;
-  display: flex;
-  flex-direction: column;
-}
-
-.login-title {
-  margin: 16px 0 0;
-  text-align: center;
-  font-size: 24px;
-  font-weight: 800;
-  color: var(--text);
-}
-.login-quote {
-  margin: 16px 0 40px;
-  padding: 0;
-  border: none;
-  text-align: center;
-  font-size: 19px;
-  font-weight: 800;
-  line-height: 1.5;
-  color: var(--text);
-}
-.login-quote-kr {
-  font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-  font-size: 17px;
-  font-weight: 700;
-  line-height: 1.5;
-  letter-spacing: -0.2px;
-}
-.login-quote-en { display: inline-block; margin-top: 12px; font-size: 12.5px; font-weight: 500; color: var(--muted); }
-.login-quote-author { display: inline-block; margin-top: 6px; font-size: 12.5px; font-weight: 500; color: var(--muted); }
-
-.login-provider-list { display: flex; flex-direction: column; gap: 12px; }
-
-.login-provider-btn {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 54px;
-  border-radius: 14px;
-  font-size: 15px;
-  font-weight: 700;
-  border: 1px solid transparent;
-}
-.login-provider-icon { position: absolute; left: 18px; width: 20px; height: 20px; flex: none; }
-
-.login-provider-google { background: #fff; color: #1f1f1f; border-color: var(--border); }
-.login-provider-kakao { background: #FEE500; color: #191600; }
-.login-provider-naver { background: #03C75A; color: #fff; }
-
-.login-divider {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 22px 0;
-  color: var(--muted);
-  font-size: 11.5px;
-}
-.login-divider::before,
-.login-divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
-
-.login-email-form { display: flex; flex-direction: column; gap: 10px; }
-.login-email-input {
-  width: 100%;
-  height: 50px;
-  padding: 0 16px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  background: var(--card-bg);
-  color: var(--text);
-  font-size: 14px;
-}
-.login-error { margin: 0; font-size: 12.5px; color: var(--bad); }
-.login-email-submit {
-  width: 100%;
-  height: 54px;
-  margin-top: 2px;
-  border-radius: 14px;
-  border: none;
-  background: var(--accent);
-  color: #fff;
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.login-switch-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin-top: 18px;
-  font-size: 12.5px;
-}
-.login-switch-btn { background: none; border: none; color: var(--accent); font-size: 12.5px; font-weight: 700; padding: 0; }
-
-.login-forgot-btn {
-  margin: 14px auto 0;
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-size: 12px;
-  padding: 0;
-}
 
 /* 예전엔 전체화면 고정 모달 안이라 flex:1로 남은 세로 공간을 채웠지만, 이제 탭 화면 안에 그대로 이어붙는(인라인)
    카드라 페이지 자체가 스크롤되므로 별도 높이 강제나 세로 스크롤이 필요 없음 */
@@ -2209,33 +2008,6 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
   font-size: 15px;
   line-height: 1;
 }
-.more-panel-user {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 4px 18px 18px;
-  background: none;
-  border: none;
-  color: var(--text);
-  text-align: left;
-}
-.more-panel-avatar {
-  flex: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--subtle-fill-2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-.more-panel-avatar-img { width: 100%; height: 100%; object-fit: cover; }
-.more-panel-avatar-initial { font-size: 16px; font-weight: 700; color: var(--muted); }
-.more-panel-user-name { flex: 1; font-size: 16px; font-weight: 700; }
-.more-panel-chevron { flex: none; width: 18px; height: 18px; color: var(--muted); }
-.more-panel-divider { height: 1px; background: var(--border); margin: 0 0 8px; }
 .more-panel-list { display: flex; flex-direction: column; padding: 4px 8px; }
 .more-panel-item {
   display: flex;
@@ -2493,16 +2265,7 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ===== 로그인 동의 문구 · 사이트 공통 푸터 (면책·출처·약관 링크) ===== */
-.login-consent {
-  margin-top: 14px;
-  font-size: 11.5px;
-  color: var(--muted);
-  text-align: center;
-  line-height: 1.6;
-}
-.login-consent a { color: var(--muted); text-decoration: underline; }
-
+/* ===== 사이트 공통 푸터 (면책·출처·약관 링크) ===== */
 .site-footer {
   margin-top: 28px;
   padding: 18px 16px calc(78px + env(safe-area-inset-bottom, 0px)); /* 하단 고정 내비게이션에 가리지 않도록 여유 확보 */

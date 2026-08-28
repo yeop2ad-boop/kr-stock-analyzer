@@ -2,13 +2,6 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
-<script>
-  // 로그인 게이트: 로그인 기록(ntj_auth)이 없으면 루트 로그인 화면으로 보냄
-  // (최종 판정은 페이지 하단의 Firebase 스크립트가 한 번 더 확인)
-  try {
-    if (!localStorage.getItem("ntj_auth")) location.replace("../index.html");
-  } catch (e) {}
-</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <title>마켓맵. 섹터맵</title>
 <link rel="icon" type="image/png" sizes="512x512" href="../logos/내투자_앱로고2_512.png" />
@@ -192,20 +185,5 @@
 <script src="data/sp500-data-core.js"></script>
 <script src="data/kr-data-core.js" onerror="window.KR_CORE_DATA = { companies: [] };"></script>
 <script src="app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="../firebase-config.js"></script>
-<script>
-  // 로그인 상태 최종 확인 — 로그아웃 상태로 판정되면 루트 로그인 화면으로 보냄
-  if (typeof firebase !== "undefined") {
-    firebase.auth().onAuthStateChanged(function (user) {
-      try {
-        if (user) localStorage.setItem("ntj_auth", "1");
-        else localStorage.removeItem("ntj_auth");
-      } catch (e) {}
-      if (!user) location.replace("../index.html");
-    });
-  }
-</script>
 </body>
 </html>

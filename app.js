@@ -144,268 +144,8 @@ document.addEventListener("keydown", (e) => {
   if (rowEl.dataset.assetCat) openAssetDetail(rowEl.dataset.assetCat, rowEl.dataset.assetTicker);
   else openChartModal(rowEl.dataset.chartSymbol);
 });
-// ---------- 로그인/회원가입 (Firebase Authentication) ----------
-// 구글·이메일은 Firebase가 직접 처리하고, 카카오·네이버는 Firebase가 네이티브 지원하지 않으므로
-// OAuth authorization code를 Worker(/auth/kakao, /auth/naver)로 전달해 검증받은 뒤 발급받는
-// Firebase 커스텀 토큰으로 signInWithCustomToken 합니다. 안드로이드 앱 출시 시에도 같은 Firebase
-// 프로젝트 + 같은 Worker 엔드포인트를 그대로 재사용해 동일 계정으로 로그인할 수 있습니다.
+// 데이터 프록시 Worker 주소 — /search-popular, /search-log, /m2-yoy 등에서 사용
 const AUTH_ORIGIN = "https://us-stock.yeop2ad.workers.dev";
-const loginModal = el("loginModal");
-const loginModalCloseBtn = el("loginModalCloseBtn");
-const loginGoogleBtn = el("loginGoogleBtn");
-const loginKakaoBtn = el("loginKakaoBtn");
-const loginNaverBtn = el("loginNaverBtn");
-const loginEmailForm = el("loginEmailForm");
-const loginEmailInput = el("loginEmailInput");
-const loginPasswordInput = el("loginPasswordInput");
-const loginError = el("loginError");
-const loginEmailSubmitBtn = el("loginEmailSubmitBtn");
-const loginSwitchText = el("loginSwitchText");
-const loginSwitchModeBtn = el("loginSwitchModeBtn");
-const loginForgotPasswordBtn = el("loginForgotPasswordBtn");
-const userMenu = el("userMenu");
-const userAvatarBtn = el("userAvatarBtn");
-const userAvatarImg = el("userAvatarImg");
-const userAvatarInitial = el("userAvatarInitial");
-const userDropdown = el("userDropdown");
-const userDropdownName = el("userDropdownName");
-const userDropdownEmail = el("userDropdownEmail");
-const logoutBtn = el("logoutBtn");
-
-let isSignupMode = false;
-
-function openLoginModal() {
-  setLoginError("");
-  loginModal.style.display = "flex";
-}
-function closeLoginModal() {
-  loginModal.style.display = "none";
-}
-function setLoginError(message) {
-  if (!message) {
-    loginError.style.display = "none";
-    return;
-  }
-  loginError.textContent = message;
-  loginError.style.display = "block";
-}
-function setSignupMode(next) {
-  isSignupMode = next;
-  loginEmailSubmitBtn.textContent = isSignupMode ? "회원가입" : "로그인";
-  loginSwitchText.textContent = isSignupMode ? "이미 계정이 있으신가요?" : "계정이 없으신가요?";
-  loginSwitchModeBtn.textContent = isSignupMode ? "로그인" : "회원가입";
-  setLoginError("");
-}
-
-const FIREBASE_ERROR_MESSAGES = {
-  "auth/invalid-email": "올바른 이메일 형식이 아닙니다.",
-  "auth/user-not-found": "가입되지 않은 이메일입니다.",
-  "auth/wrong-password": "비밀번호가 일치하지 않습니다.",
-  "auth/invalid-credential": "이메일 또는 비밀번호가 일치하지 않습니다.",
-  "auth/email-already-in-use": "이미 가입된 이메일입니다.",
-  "auth/weak-password": "비밀번호는 6자 이상이어야 합니다.",
-  "auth/popup-closed-by-user": "로그인 창이 닫혔습니다.",
-  "auth/too-many-requests": "잠시 후 다시 시도해주세요.",
-};
-function friendlyAuthError(err) {
-  return FIREBASE_ERROR_MESSAGES[err && err.code] || "로그인에 실패했습니다. 잠시 후 다시 시도해주세요.";
-}
-
-loginModalCloseBtn.addEventListener("click", closeLoginModal);
-loginSwitchModeBtn.addEventListener("click", () => setSignupMode(!isSignupMode));
-
-loginGoogleBtn.addEventListener("click", async () => {
-  setLoginError("");
-  try {
-    await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
-    closeLoginModal();
-  } catch (err) {
-    console.error("구글 로그인 실패:", err);
-    setLoginError(friendlyAuthError(err));
-  }
-});
-
-loginEmailForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  setLoginError("");
-  const email = loginEmailInput.value.trim();
-  const password = loginPasswordInput.value;
-  loginEmailSubmitBtn.disabled = true;
-  try {
-    if (isSignupMode) {
-      await firebase.auth().createUserWithEmailAndPassword(email, password);
-    } else {
-      await firebase.auth().signInWithEmailAndPassword(email, password);
-    }
-    closeLoginModal();
-  } catch (err) {
-    setLoginError(friendlyAuthError(err));
-  } finally {
-    loginEmailSubmitBtn.disabled = false;
-  }
-});
-
-loginForgotPasswordBtn.addEventListener("click", async () => {
-  const email = loginEmailInput.value.trim();
-  if (!email) {
-    setLoginError("비밀번호를 재설정할 이메일을 먼저 입력해주세요.");
-    return;
-  }
-  try {
-    await firebase.auth().sendPasswordResetEmail(email);
-    setLoginError("");
-    alert("비밀번호 재설정 메일을 보냈습니다. 메일함을 확인해주세요.");
-  } catch (err) {
-    setLoginError(friendlyAuthError(err));
-  }
-});
-
-document.addEventListener("click", (e) => {
-  if (userDropdown.style.display === "none") return;
-  if (!userDropdown.contains(e.target) && e.target !== userAvatarBtn) {
-    userDropdown.style.display = "none";
-  }
-});
-userAvatarBtn.addEventListener("click", (e) => {
-  e.stopPropagation();
-  userDropdown.style.display = userDropdown.style.display === "none" ? "block" : "none";
-});
-logoutBtn.addEventListener("click", async () => {
-  await firebase.auth().signOut();
-  userDropdown.style.display = "none";
-});
-
-function renderAuthState(user) {
-  if (user) {
-    userMenu.style.display = "block";
-    const name = user.displayName || (user.email ? user.email.split("@")[0] : "회원");
-    userDropdownName.textContent = name;
-    userDropdownEmail.textContent = user.email || "";
-    userDropdownEmail.style.display = user.email ? "block" : "none";
-    if (user.photoURL) {
-      userAvatarImg.src = user.photoURL;
-      userAvatarImg.style.display = "block";
-      userAvatarInitial.style.display = "none";
-    } else {
-      userAvatarImg.style.display = "none";
-      userAvatarInitial.style.display = "block";
-      userAvatarInitial.textContent = name.charAt(0).toUpperCase();
-    }
-  } else {
-    userMenu.style.display = "none";
-    userDropdown.style.display = "none";
-  }
-}
-// ---------- 로그인 게이트: 로그인 없이는 서비스 화면에 진입 불가 ----------
-// 정적 사이트(GitHub Pages) 특성상 서버 강제가 아닌 화면(클라이언트) 차원의 차단.
-// localStorage "ntj_auth"는 "로그인된 적 있음" 힌트(리다이렉트 판단용)일 뿐,
-// 최종 판정은 아래 Firebase onAuthStateChanged가 담당한다.
-function enterGateMode() {
-  loginModalCloseBtn.style.display = "none";
-  loginModal.style.display = "flex";
-}
-function exitGateMode() {
-  loginModalCloseBtn.style.display = "";
-  closeLoginModal();
-}
-if (typeof firebase !== "undefined") {
-  firebase.auth().onAuthStateChanged((user) => {
-    renderAuthState(user);
-    try {
-      if (user) localStorage.setItem("ntj_auth", "1");
-      else localStorage.removeItem("ntj_auth");
-    } catch (e) {}
-    if (user) {
-      exitGateMode();
-      // 첫 진입 화면(섹터맵)으로 가려다 게이트에 막힌 경우 — 로그인 직후 이어서 이동
-      if (window.__ntjWantsMap) {
-        window.__ntjWantsMap = false;
-        location.replace("sector-map/index.html?market=domestic");
-      }
-    } else {
-      enterGateMode();
-    }
-  });
-  // Firebase가 로그인 상태를 복원(비동기)하기 전에 화면이 노출되지 않도록,
-  // 로그인 기록이 없으면 미리 게이트를 띄워 둠
-  try {
-    if (!localStorage.getItem("ntj_auth")) enterGateMode();
-  } catch (e) {}
-} else {
-  // Firebase SDK 로드 실패(광고 차단기·네트워크 문제 등) — 로그인 판정이 불가능하므로 게이트 유지
-  enterGateMode();
-  setLoginError("로그인 모듈을 불러오지 못했습니다. 광고 차단 기능을 끄고 새로고침해 주세요.");
-}
-
-// ---------- 카카오/네이버 로그인 (OAuth authorization code 리다이렉트 방식 — 팝업 SDK 대신 리다이렉트를 쓰는 이유는
-// 나중에 안드로이드 앱 WebView 안에서도 동일하게 동작하도록 하기 위함) ----------
-function buildOAuthState(provider) {
-  const state = `${provider}_${Math.random().toString(36).slice(2)}${Date.now()}`;
-  sessionStorage.setItem("oauthState", state);
-  return state;
-}
-function oauthRedirectUri() {
-  return window.location.origin + window.location.pathname;
-}
-
-loginKakaoBtn.addEventListener("click", () => {
-  const state = buildOAuthState("kakao");
-  const url = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${encodeURIComponent(KAKAO_REST_API_KEY)}&redirect_uri=${encodeURIComponent(oauthRedirectUri())}&state=${encodeURIComponent(state)}`;
-  window.location.href = url;
-});
-
-loginNaverBtn.addEventListener("click", () => {
-  const state = buildOAuthState("naver");
-  const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${encodeURIComponent(NAVER_CLIENT_ID)}&redirect_uri=${encodeURIComponent(oauthRedirectUri())}&state=${encodeURIComponent(state)}`;
-  window.location.href = url;
-});
-
-async function completeSocialLogin(provider, code, state) {
-  openLoginModal();
-  setLoginError("로그인 처리 중...");
-  try {
-    const res = await fetch(`${AUTH_ORIGIN}/auth/${provider}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code, state, redirectUri: oauthRedirectUri() }),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok || !data.customToken) {
-      setLoginError(data.error || "로그인에 실패했습니다.");
-      return;
-    }
-    await firebase.auth().signInWithCustomToken(data.customToken);
-    const profile = data.profile || {};
-    if (profile.name || profile.picture) {
-      await firebase.auth().currentUser.updateProfile({
-        displayName: profile.name || null,
-        photoURL: profile.picture || null,
-      });
-      renderAuthState(firebase.auth().currentUser);
-    }
-    closeLoginModal();
-  } catch {
-    setLoginError("로그인에 실패했습니다. 잠시 후 다시 시도해주세요.");
-  }
-}
-
-// 카카오/네이버 인증 서버가 이 페이지로 ?code=&state= 를 붙여 되돌아온 경우를 처음 로드 시 한 번 확인
-(function handleOAuthRedirectReturn() {
-  const params = new URLSearchParams(window.location.search);
-  const code = params.get("code");
-  const state = params.get("state");
-  const oauthErr = params.get("error");
-  if (!code && !oauthErr) return;
-
-  const savedState = sessionStorage.getItem("oauthState");
-  sessionStorage.removeItem("oauthState");
-  window.history.replaceState(null, "", window.location.pathname);
-
-  if (oauthErr || !state || state !== savedState) return;
-  const provider = state.startsWith("kakao_") ? "kakao" : state.startsWith("naver_") ? "naver" : null;
-  if (!provider) return;
-  completeSocialLogin(provider, code, state);
-})();
 
 // ---------- CORS 프록시 (여러 개를 순서대로 시도) ----------
 // 직접 만든 Cloudflare Worker(우리 서버)를 최우선으로 사용 — 야후 파이낸스는 빠르고 안정적으로 중계되지만,
@@ -2117,17 +1857,8 @@ function switchTab(index) {
 }
 
 TAB_ORDER.forEach((key, i) => {
-  if (key === "watchlist") return; // 로그인 필요 — 아래에서 별도 처리
   if (key === "topranking") return; // 기업가치/시장동향은 activateRankingGroup 전용 핸들러로 처리(아래 RANKING_ENTRIES 섹션)
   tabButtons[key].addEventListener("click", () => switchTab(i));
-});
-// 관심종목은 로그인한 사용자만 볼 수 있음 — 로그인 안 했으면 탭 전환 대신 로그인 모달을 먼저 띄움
-tabButtons.watchlist.addEventListener("click", () => {
-  if (typeof firebase !== "undefined" && firebase.auth().currentUser) {
-    switchTab(TAB_ORDER.indexOf("watchlist"));
-  } else {
-    openLoginModal();
-  }
 });
 searchTabBtn.addEventListener("click", openSearchWizard);
 
@@ -2345,33 +2076,8 @@ function showToast(message) {
 const morePanel = el("morePanel");
 const morePanelBackdrop = el("morePanelBackdrop");
 const morePanelCloseBtn = el("morePanelCloseBtn");
-const morePanelUserRow = el("morePanelUserRow");
-const morePanelUserName = el("morePanelUserName");
-const morePanelAvatarImg = el("morePanelAvatarImg");
-const morePanelAvatarInitial = el("morePanelAvatarInitial");
 
-function renderMorePanelUser(user) {
-  if (user) {
-    const name = user.displayName || (user.email ? user.email.split("@")[0] : "회원");
-    morePanelUserName.textContent = name;
-    if (user.photoURL) {
-      morePanelAvatarImg.src = user.photoURL;
-      morePanelAvatarImg.style.display = "block";
-      morePanelAvatarInitial.style.display = "none";
-    } else {
-      morePanelAvatarImg.style.display = "none";
-      morePanelAvatarInitial.style.display = "block";
-      morePanelAvatarInitial.textContent = name.charAt(0).toUpperCase();
-    }
-  } else {
-    morePanelUserName.textContent = "로그인이 필요합니다";
-    morePanelAvatarImg.style.display = "none";
-    morePanelAvatarInitial.style.display = "block";
-    morePanelAvatarInitial.textContent = "?";
-  }
-}
 function openMorePanel() {
-  renderMorePanelUser(typeof firebase !== "undefined" ? firebase.auth().currentUser : null);
   morePanel.style.display = "block";
   requestAnimationFrame(() => morePanel.classList.add("open"));
 }
@@ -2383,14 +2089,6 @@ function closeMorePanel() {
 }
 morePanelBackdrop.addEventListener("click", closeMorePanel);
 morePanelCloseBtn.addEventListener("click", closeMorePanel);
-morePanelUserRow.addEventListener("click", () => {
-  closeMorePanel();
-  if (typeof firebase !== "undefined" && firebase.auth().currentUser) {
-    userAvatarBtn.click();
-  } else {
-    openLoginModal();
-  }
-});
 document.querySelectorAll(".more-panel-item:not(.more-panel-theme-row):not(.more-panel-item-active)").forEach((btn) => {
   btn.addEventListener("click", () => showToast("준비중인 기능입니다."));
 });
@@ -3346,9 +3044,7 @@ function closeSearchWizard() {
 el("searchWizardCloseBtn").addEventListener("click", closeSearchWizard);
 
 function wizardUserName() {
-  const user = typeof firebase !== "undefined" && firebase.auth().currentUser;
-  if (!user) return "회원";
-  return user.displayName || (user.email ? user.email.split("@")[0] : "회원");
+  return "회원";
 }
 
 function renderSearchWizardStep() {
