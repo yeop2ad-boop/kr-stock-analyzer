@@ -1843,8 +1843,21 @@ function updateTabBarActive() {
   tabTrendBtn.classList.remove("active");
 }
 
+// 헤더의 현재 화면 이름(기업가치/시장동향/인사이트/관심종목) — data-i18n을 같이 갱신해 언어 토글 시 자동 번역되게 함
+function setCarouselViewTitle(i18nKey) {
+  const titleEl = el("carouselViewTitle");
+  if (!titleEl) return;
+  titleEl.setAttribute("data-i18n", i18nKey);
+  const dict = I18N[i18nKey];
+  if (dict) titleEl.textContent = document.documentElement.lang === "en" ? dict.en : dict.ko;
+}
+
 function switchTab(index) {
   index = Math.max(0, Math.min(TAB_ORDER.length - 1, index));
+  const switchKey = TAB_ORDER[index];
+  if (switchKey === "watchlist") setCarouselViewTitle("tab.watchlist");
+  else if (switchKey === "insight") setCarouselViewTitle("tab.insight");
+  // topranking은 기업가치/시장동향 중 어느 쪽인지 activateRankingGroup/goToRankingEntry가 정함
   activeTabIndex = index;
   TAB_ORDER.forEach((key) => panels[key].classList.add("snapping"));
   layoutPanels(0);
@@ -3238,6 +3251,7 @@ function goToRankingEntry(idx) {
   switchTab(TAB_ORDER.indexOf("topranking"));
   el("tabValuationBtn").classList.toggle("active", entry.group === "disclosure");
   tabTrendBtn.classList.toggle("active", entry.group === "market");
+  setCarouselViewTitle(entry.group === "disclosure" ? "tab.valuation" : "tab.trend");
   renderGroupSubNav(entry.group);
   runRankingEntry(idx);
 }
