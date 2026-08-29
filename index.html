@@ -41,7 +41,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260830e" />
+<link rel="stylesheet" href="style.css?v=20260830f" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -588,6 +588,10 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.3" y="5.5" width="17.4" height="15" rx="2" /><line x1="3.3" y1="10" x2="20.7" y2="10" /><line x1="7.2" y1="2.8" x2="7.2" y2="7.4" /><line x1="14.8" y1="2.8" x2="14.8" y2="7.4" /></svg>
           <span class="more-panel-item-label" data-i18n="nav.calendar">캘린더</span>
         </button>
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelNewsInsightBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h9l7 7v9H4V4Z" /><path d="M13 4v7h7" /></svg>
+          <span class="more-panel-item-label" data-i18n="more.news">뉴스</span>
+        </button>
         <div class="more-panel-item more-panel-theme-row">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5" /><path d="M12 2.5v2.5M12 19v2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2.5 12H5M19 12h2.5M4.2 19.8 6 18M18 6l1.8-1.8" /></svg>
           <span class="more-panel-item-label" data-i18n="more.theme">화면 테마</span>
@@ -612,45 +616,62 @@
             <button type="button" class="theme-toggle-btn" id="colorSchemeGlobalBtn" data-scheme-choice="global" data-i18n="more.color.global">초록·빨강</button>
           </div>
         </div>
-        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelCalendarInsightBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.3" y="5.5" width="17.4" height="15" rx="2" /><line x1="3.3" y1="10" x2="20.7" y2="10" /><line x1="7.2" y1="2.8" x2="7.2" y2="7.4" /><line x1="14.8" y1="2.8" x2="14.8" y2="7.4" /></svg>
-          <span class="more-panel-item-label" data-i18n="more.calendarInsight">실적&amp;공시 일정</span>
-        </button>
-        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelNewsInsightBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h9l7 7v9H4V4Z" /><path d="M13 4v7h7" /></svg>
-          <span class="more-panel-item-label" data-i18n="more.news">뉴스</span>
-        </button>
-        <button type="button" class="more-panel-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h9l7 7v9H4V4Z" /><path d="M13 4v7h7" /></svg>
-          <span class="more-panel-item-label">굴려볼까 Pro UP <b class="more-panel-pro-badge" data-i18n="more.proBadge">-7일 무료</b></span>
-          <span class="more-panel-badge" data-i18n="more.soon">준비중</span>
-        </button>
-        <button type="button" class="more-panel-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" /></svg>
-          <span class="more-panel-item-label" data-i18n="more.favorites">즐겨찾기 종목</span>
-          <span class="more-panel-badge" data-i18n="more.soon">준비중</span>
-        </button>
-        <button type="button" class="more-panel-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 16v-5a6 6 0 0 0-4.5-5.8V4a1.5 1.5 0 0 0-3 0v1.2A6 6 0 0 0 6 11v5l-2 2v1h16v-1l-2-2Z" /><path d="M10 21a2 2 0 0 0 4 0" /></svg>
-          <span class="more-panel-item-label" data-i18n="more.alerts">알림 설정</span>
-          <span class="more-panel-badge" data-i18n="more.soon">준비중</span>
-        </button>
-        <button type="button" class="more-panel-item">
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelNoticeBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h13l3 3-3 3H4V5Z" /><path d="M7 5v15" /></svg>
           <span class="more-panel-item-label" data-i18n="more.notice">공지사항</span>
-          <span class="more-panel-badge" data-i18n="more.soon">준비중</span>
         </button>
-        <button type="button" class="more-panel-item">
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelContactBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2" /><path d="M3.5 6.5 12 13l8.5-6.5" /></svg>
           <span class="more-panel-item-label" data-i18n="more.contact">문의하기</span>
-          <span class="more-panel-badge" data-i18n="more.soon">준비중</span>
         </button>
-        <button type="button" class="more-panel-item">
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelAboutBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" /><path d="M12 11v5.5M12 8v.01" /></svg>
           <span class="more-panel-item-label" data-i18n="more.about">앱 정보</span>
-          <span class="more-panel-badge" data-i18n="more.soon">준비중</span>
         </button>
       </div>
+    </div>
+  </div>
+
+  <div id="noticeModal" class="chart-modal" style="display:none;">
+    <div class="chart-modal-header">
+      <span class="chart-modal-title" data-i18n="more.notice">공지사항</span>
+      <button id="noticeModalCloseBtn" class="chart-modal-close" type="button" aria-label="닫기">✕</button>
+    </div>
+    <div class="info-modal-body">
+      <p class="info-modal-date">2026.08.30</p>
+      <div class="info-notice-item">
+        <b>📱 구글 플레이 앱 출시 준비</b>
+        <p>굴려볼까가 곧 구글 플레이 스토어에 정식 등록됩니다. 홈 화면에서 앱으로 만나보세요.</p>
+      </div>
+      <div class="info-notice-item">
+        <b>✨ 주요 변경사항</b>
+        <ul>
+          <li>서비스 이름이 <b>굴려볼까</b>로 새단장했습니다 (주소: marketmap.kr)</li>
+          <li>시장 지도 첫 화면이 개선되었습니다 — 중심 위치와 확대 수준 조정</li>
+          <li>더보기 메뉴가 정리되고 <b>문의하기</b>가 열렸습니다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="aboutModal" class="chart-modal" style="display:none;">
+    <div class="chart-modal-header">
+      <span class="chart-modal-title" data-i18n="more.about">앱 정보</span>
+      <button id="aboutModalCloseBtn" class="chart-modal-close" type="button" aria-label="닫기">✕</button>
+    </div>
+    <div class="info-modal-body about-body">
+      <img src="logos/marketmap-192.png" class="about-logo" alt="굴려볼까" />
+      <h3 class="about-name">굴려볼까</h3>
+      <p class="about-slogan">실적비교 · 내주식분석 · 마켓맵</p>
+      <div class="about-rows">
+        <div><span>버전</span><span>1.0.0</span></div>
+        <div><span>개발</span><span>Marketmap Lab</span></div>
+        <div><span>웹사이트</span><span>marketmap.kr</span></div>
+        <div><span>문의</span><span>hyhykhy6@gmail.com</span></div>
+      </div>
+      <p class="about-links"><a href="terms.html">이용약관</a> · <a href="privacy.html">개인정보처리방침</a></p>
+      <p class="about-copy">본 서비스가 제공하는 모든 정보는 투자 참고용이며, 투자자문이나 매수·매도 추천이 아닙니다.</p>
+      <p class="about-copy">© 2026 Marketmap Lab. All rights reserved.</p>
     </div>
   </div>
 
@@ -662,6 +683,6 @@
   </footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js?v=20260830j"></script>
+  <script src="app.js?v=20260830k"></script>
 </body>
 </html>

@@ -2145,15 +2145,29 @@ el("morePanelCalendarOverlayBtn").addEventListener("click", () => {
   closeMarketPanel();
   openCalendarPanel();
 });
-el("morePanelCalendarInsightBtn").addEventListener("click", () => {
-  closeMorePanel();
-  switchTab(TAB_ORDER.indexOf("insight"));
-  switchInsightCategory("calendar");
-});
 el("morePanelNewsInsightBtn").addEventListener("click", () => {
   closeMorePanel();
   switchTab(TAB_ORDER.indexOf("insight"));
   switchInsightCategory("news");
+});
+// 공지사항/앱 정보 모달 + 문의하기(메일 앱 연결)
+el("morePanelNoticeBtn").addEventListener("click", () => {
+  closeMorePanel();
+  el("noticeModal").style.display = "flex";
+});
+el("noticeModalCloseBtn").addEventListener("click", () => {
+  el("noticeModal").style.display = "none";
+});
+el("morePanelAboutBtn").addEventListener("click", () => {
+  closeMorePanel();
+  el("aboutModal").style.display = "flex";
+});
+el("aboutModalCloseBtn").addEventListener("click", () => {
+  el("aboutModal").style.display = "none";
+});
+el("morePanelContactBtn").addEventListener("click", () => {
+  closeMorePanel();
+  window.location.href = "mailto:hyhykhy6@gmail.com?subject=" + encodeURIComponent("[굴려볼까 문의]");
 });
 
 // ---------- 화면 테마(화이트/블랙) — 기본은 화이트, 선택은 localStorage에 저장해 다음 방문에도 유지 ----------
@@ -3624,6 +3638,9 @@ window.addEventListener("popstate", () => {
 document.addEventListener("click", (e) => {
   const link = e.target.closest(".ticker-link");
   if (link && link.dataset.ticker) {
+    // 간편검색(위저드) 안의 종목을 눌렀을 때 위저드가 상세 화면을 가리지 않도록 먼저 닫음
+    const wiz = el("searchWizardPanel");
+    if (wiz && wiz.classList.contains("open")) closeSearchWizard();
     navigateToTicker(link.dataset.ticker);
   }
 });
