@@ -303,24 +303,24 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 6px;
+  gap: 8px;
   white-space: nowrap;
 }
 .market-index-name {
-  font-size: 42px;
+  font-size: 52px;
   font-weight: 800;
   letter-spacing: -0.5px;
   color: var(--badge-text);
 }
 .market-index-value {
-  font-size: 88px;
+  font-size: 112px;
   font-weight: 900;
-  letter-spacing: -2px;
+  letter-spacing: -2.5px;
   line-height: 1;
   color: var(--badge-text);
 }
 .market-index-chg {
-  font-size: 44px;
+  font-size: 54px;
   font-weight: 800;
   color: var(--text-mid);
 }
