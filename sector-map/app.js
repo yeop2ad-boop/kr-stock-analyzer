@@ -332,8 +332,10 @@ document.getElementById("universeToggleBtn").addEventListener("click", async () 
   refreshActiveMarketLiveData({ silent: true }).catch(() => {});
 });
 
-// 지도 맨 위에 실제 지수 카드(국기·이름/지수값/등락)가 들어갈 띠 높이(월드 좌표) — 섹터 원들은 이 아래로 배치됨
-const MARKET_LABEL_STRIP = 210;
+// 지도 맨 위에 실제 지수 카드(국기·이름/지수값/등락)가 들어갈 띠 높이(월드 좌표) — 섹터 원들은 이 아래로 배치됨.
+// 카드 실높이(~190) + 전체보기/해외에서 카드를 아래로 내리는 오프셋(최대 95)까지 감안해 넉넉하게 —
+// 부족하면 전체보기+시총 모드에서 맨 위 섹터 원이 지수 제목과 겹침
+const MARKET_LABEL_STRIP = 290;
 
 // 지도 상단에 보여줄 실제 지수들 — 구성종목 평균이 아니라 지수 자체(^KS11 등)를 야후에서 조회
 // 실제 종합지수 그대로 — 축소/전체보기 구분 없이 항상 코스피(^KS11)/코스닥(^KQ11)/S&P500(^GSPC)
