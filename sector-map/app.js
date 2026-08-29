@@ -371,6 +371,13 @@ function marketIndexEntries() {
   return [{ name: expanded ? "S&P500" : "S&P200", avg: avgOf(ACTIVE_DATA.companies) }];
 }
 
+// 시장 라벨 등락 색 — 크기와 무관하게 상승=상승색/하락=하락색 고정, 표기상 0.0%일 때만 회색
+function solidChangeColor(pct) {
+  if (pct === null || pct === undefined || Number.isNaN(pct) || Math.abs(pct) < 0.05) return "var(--text-mid)";
+  const rgb = pct > 0 ? CHG_POS_MAX : CHG_NEG_MAX;
+  return `rgb(${rgb.join(",")})`;
+}
+
 function renderMarketIndexLabels() {
   const wrap = document.createElement("div");
   wrap.className = "market-index-labels";
@@ -389,7 +396,7 @@ function renderMarketIndexLabels() {
       chgEl.textContent = "-";
     } else {
       chgEl.textContent = `${entry.avg >= 0 ? "+" : ""}${entry.avg.toFixed(1)}%`;
-      chgEl.style.color = changeColorForText(entry.avg);
+      chgEl.style.color = solidChangeColor(entry.avg);
     }
     item.appendChild(nameEl);
     item.appendChild(chgEl);
@@ -413,7 +420,7 @@ function refreshMarketIndexLabels() {
       chgEl.style.color = "";
     } else {
       chgEl.textContent = `${entry.avg >= 0 ? "+" : ""}${entry.avg.toFixed(1)}%`;
-      chgEl.style.color = changeColorForText(entry.avg);
+      chgEl.style.color = solidChangeColor(entry.avg);
     }
   });
 }
