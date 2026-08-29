@@ -259,10 +259,13 @@ function loadScriptOnce(src) {
 function ensureExtraDataLoaded(market) {
   if (extraDataLoadPromises[market]) return extraDataLoadPromises[market];
   const src = market === "domestic" ? "data/kr-data-extra.js" : "data/sp500-data-extra.js";
-  extraDataLoadPromises[market] = loadScriptOnce(src).catch((err) => {
-    delete extraDataLoadPromises[market]; // 실패하면 다음 클릭 때 다시 시도할 수 있도록 캐시하지 않음
-    throw err;
-  });
+  // 모바일/인앱 브라우저에서 간헐적 네트워크 실패가 잦아 한 번은 자동 재시도(600ms 후) — 그래도 실패하면 토스트
+  extraDataLoadPromises[market] = loadScriptOnce(src)
+    .catch(() => new Promise((res) => setTimeout(res, 600)).then(() => loadScriptOnce(src)))
+    .catch((err) => {
+      delete extraDataLoadPromises[market]; // 실패하면 다음 클릭 때 다시 시도할 수 있도록 캐시하지 않음
+      throw err;
+    });
   return extraDataLoadPromises[market];
 }
 function coreDataFor(market) {
