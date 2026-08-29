@@ -2230,9 +2230,9 @@ function applyLang(lang) {
     const dict = I18N[node.getAttribute("data-i18n")];
     if (dict) node.textContent = isEn ? dict.en : dict.ko;
   });
-  // 종목 상세(예: "AAPL 분석 - 마켓맵" / "AAPL Analysis - MarketMap")를 보고 있는 중이 아닐 때만 앱 이름:슬로건 타이틀을 언어에 맞춰 갱신
+  // 종목 상세(예: "AAPL 분석 - 눈보" / "AAPL Analysis - Noonbo")를 보고 있는 중이 아닐 때만 앱 이름:슬로건 타이틀을 언어에 맞춰 갱신
   if (!document.title.includes(" - ")) {
-    document.title = isEn ? "MarketMap: Stocks in Circles" : "마켓맵: 동글한 주식시장";
+    document.title = isEn ? "Noonbo: See Stocks as a Map" : "눈보: 주식을 지도로 보다";
   }
 }
 function setLang(lang) {
@@ -2381,7 +2381,7 @@ function closeCompanyPanel({ push = true } = {}) {
   }, 280);
   if (push && new URLSearchParams(location.search).get("ticker")) {
     history.pushState(null, "", location.pathname);
-    document.title = document.documentElement.lang === "en" ? "MarketMap: Stocks in Circles" : "마켓맵: 동글한 주식시장";
+    document.title = document.documentElement.lang === "en" ? "Noonbo: See Stocks as a Map" : "눈보: 주식을 지도로 보다";
   }
 }
 companyPanelCloseBtn.addEventListener("click", () => closeCompanyPanel());
@@ -2763,7 +2763,7 @@ async function shareWatchlist() {
   }
   const groupName = activeGroup === WATCHLIST_ALL_GROUP_ID ? "전체" : (groups.find((g) => g.id === activeGroup) || {}).name || "관심종목";
   const lines = filtered.map((w) => `· ${TICKER_TO_KOREAN_NAME[w.symbol] || w.symbol} (${w.symbol})`);
-  const text = `📌 내 관심종목 - ${groupName}\n${lines.join("\n")}\n\nmarketmap.kr`;
+  const text = `📌 내 관심종목 - ${groupName}\n${lines.join("\n")}\n\nnoonbo.com`;
   try {
     if (navigator.share) {
       await navigator.share({ title: `내 관심종목 - ${groupName}`, text });
@@ -3422,7 +3422,7 @@ async function runBranchBPipeline() {
     wizardShareText =
       `[선택찾기] ${searchWizardAnswers.sectors.map((s) => SECTOR_KO[s] || s).join(", ")} 섹터 · ${c2.label} → ${c3.label} TOP15\n` +
       top15.map((r, i) => `${i + 1}. ${r.symbol} (${plain(c2.fmt(r))} / ${plain(c3.fmt(r))})`).join("\n") +
-      `\n\nmarketmap.kr`;
+      `\n\nnoonbo.com`;
     bodyEl.innerHTML = `
       ${table}
       <div class="wizard-share-row">
@@ -3486,7 +3486,7 @@ async function runBranchCConfirm() {
     wizardShareText =
       `[자동찾기] S&P500 상승 압력+투자 안정 합계 TOP30\n` +
       top30.map((r, i) => `${i + 1}. ${r.symbol} (${r.combinedTotal}/20)`).join("\n") +
-      `\n\nmarketmap.kr`;
+      `\n\nnoonbo.com`;
     bodyEl.innerHTML = `
       ${table}
       <div class="wizard-share-row">
@@ -3558,7 +3558,7 @@ function navigateToTicker(ticker, { push = true } = {}) {
     history.pushState({ ticker }, "", "?ticker=" + encodeURIComponent(ticker));
   }
   tickerInput.value = ticker;
-  document.title = document.documentElement.lang === "en" ? `${ticker} Analysis - MarketMap` : `${ticker} 분석 - 마켓맵`;
+  document.title = document.documentElement.lang === "en" ? `${ticker} Analysis - Noonbo` : `${ticker} 분석 - 눈보`;
   addRecentSearch(ticker);
   logSearchEvent(ticker);
   if (searchOverlay.style.display !== "none") closeSearchOverlay();
