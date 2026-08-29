@@ -15,7 +15,7 @@ const MAP_I18N = {
   "market.us": { ko: "해외", en: "US" },
   "nav.map": { ko: "지도", en: "Map" },
   "tab.search": { ko: "간편검색", en: "Search" },
-  "map.watchlist": { ko: "즐겨찾기", en: "Favorites" },
+  "map.watchlist": { ko: "관심목록", en: "Watchlist" },
   "nav.marketBtn": { ko: "시장", en: "Market" },
   "nav.more": { ko: "더보기", en: "More" },
 };
@@ -1452,7 +1452,7 @@ function openWatchlistSheet() {
   if (symbols.length === 0) {
     const empty = document.createElement("div");
     empty.className = "watchlist-sheet-empty";
-    empty.textContent = isEn ? "No favorites yet. Tap the ★ on a stock to add it." : "즐겨찾기한 종목이 없습니다. 종목 상세에서 ★을 눌러 추가해보세요.";
+    empty.textContent = isEn ? "No stocks in your watchlist yet. Tap the ★ on a stock to add it." : "관심목록에 담긴 종목이 없습니다. 종목 상세에서 ★을 눌러 추가해보세요.";
     watchlistSheetList.appendChild(empty);
   } else {
     for (const symbol of symbols) {
@@ -1530,7 +1530,8 @@ document.getElementById("mapWatchlistBtn").addEventListener("click", () => {
   if (watchlistSheet.classList.contains("open")) closeWatchlistSheet();
   else openWatchlistSheet();
 });
-// 즐겨찾기는 오른쪽 슬라이드 드로어라 아래로 끌어내리기 대신 지도 탭/별 버튼 재클릭으로 닫음
+// 관심목록 드로어 우측 상단 뒤로가기 버튼 — 누르면 다시 숨김
+document.getElementById("watchlistSheetCloseBtn").addEventListener("click", closeWatchlistSheet);
 
 document.querySelectorAll(".metric-chip").forEach((btn) => {
   btn.addEventListener("click", () => {

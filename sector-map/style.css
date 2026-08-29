@@ -599,16 +599,22 @@ body {
   right: 0;
   /* 하단 네비를 덮지 않고 그 위에서 열림 — 네비 실제 높이는 JS가 --bottom-nav-h로 동기화 */
   bottom: var(--bottom-nav-h, 64px);
-  z-index: 41;
+  /* 하단 네비(z-index 40)보다 아래 레이어 — 시트가 툴바 "뒤에서" 올라오고 닫힐 땐 툴바 뒤로 들어가는 것처럼 보임 */
+  z-index: 39;
   background: var(--white);
   border-radius: 20px 20px 0 0;
-  /* 그림자는 열려 있을 때만 — 닫혀서 화면 아래 숨은 상태에서 그림자가 위로 번져 하단에 어두운 띠처럼 보이는 문제 방지 */
-  /* 닫힘 위치는 네비 높이까지 더해 완전히 화면 밖으로 — 안 그러면 닫힌 시트 윗부분이 네비 위에 남아 탭을 가로챔 */
-  transform: translateY(calc(100% + var(--bottom-nav-h, 64px)));
-  transition: transform 0.28s cubic-bezier(.2,.8,.3,1);
+  /* 닫힘: 네비 바로 뒤 위치(translateY 100%) — 네비가 불투명하게 가려주고, visibility로 탭 가로채기도 차단 */
+  transform: translateY(100%);
+  visibility: hidden;
+  transition: transform 0.28s cubic-bezier(.2,.8,.3,1), visibility 0s linear 0.28s;
   padding: 8px 18px 20px;
 }
-.company-sheet.open { transform: translateY(0); box-shadow: 0 -8px 24px rgba(0,0,0,0.18); }
+.company-sheet.open {
+  transform: translateY(0);
+  visibility: visible;
+  transition: transform 0.28s cubic-bezier(.2,.8,.3,1);
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.18);
+}
 .company-sheet-handle {
   width: 36px;
   height: 4px;
@@ -722,6 +728,16 @@ body {
   border: 1px solid var(--line);
 }
 .watchlist-sheet-row-name { flex: 1; min-width: 0; }
+.watchlist-close-btn {
+  margin-left: auto;
+  border: none;
+  background: none;
+  color: var(--text-soft);
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
 .watchlist-sheet-row-name b { display: block; font-size: 14px; font-weight: 800; color: var(--text-dark); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .watchlist-sheet-row-name span { display: block; font-size: 11.5px; font-weight: 600; color: var(--text-mid); margin-top: 1px; }
 .watchlist-sheet-row-right { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
@@ -736,17 +752,22 @@ body {
   right: 0;
   /* 하단 네비를 덮지 않고 그 위에서 열림 */
   bottom: var(--bottom-nav-h, 64px);
-  z-index: 42;
+  /* 하단 네비보다 아래 레이어 — 툴바 뒤에서 날아오고 닫힐 땐 툴바 뒤로 들어감 */
+  z-index: 39;
   background: var(--white);
   border-radius: 20px 20px 0 0;
-  /* 그림자는 열려 있을 때만 — 닫힌 시트의 그림자가 하단에 어두운 띠처럼 보이는 문제 방지 */
-  /* 닫힘 위치는 네비 높이까지 더해 완전히 화면 밖으로(닫힌 시트가 네비/전체설정 X 탭을 가로채지 않게) */
-  transform: translateY(calc(100% + var(--bottom-nav-h, 64px)));
-  transition: transform 0.28s cubic-bezier(.2,.8,.3,1);
+  transform: translateY(100%);
+  visibility: hidden;
+  transition: transform 0.28s cubic-bezier(.2,.8,.3,1), visibility 0s linear 0.28s;
   padding: 8px 22px 22px;
   touch-action: none;
 }
-.range-sheet.open { transform: translateY(0); box-shadow: 0 -8px 24px rgba(0,0,0,0.18); }
+.range-sheet.open {
+  transform: translateY(0);
+  visibility: visible;
+  transition: transform 0.28s cubic-bezier(.2,.8,.3,1);
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.18);
+}
 .range-sheet-handle {
   width: 36px;
   height: 4px;

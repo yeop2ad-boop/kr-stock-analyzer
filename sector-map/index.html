@@ -20,7 +20,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="마켓맵" />
-<link rel="stylesheet" href="style.css?v=20260830b" />
+<link rel="stylesheet" href="style.css?v=20260830d" />
 <!-- 지도가 떠 있는 동안 본체 파일을 미리 받아둠 — 간편검색/시장/더보기로 처음 넘어갈 때 로딩 체감 단축 -->
 <link rel="prefetch" href="../app.js?v=20260829e" />
 <link rel="prefetch" href="../style.css?v=20260829e" />
@@ -46,7 +46,7 @@
         <button type="button" class="icon-btn" id="mapSearchBtn" aria-label="검색">
           <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
-        <button type="button" class="icon-btn" id="mapWatchlistBtn" aria-label="즐겨찾기">
+        <button type="button" class="icon-btn" id="mapWatchlistBtn" aria-label="관심목록">
           <svg viewBox="0 0 24 24" fill="none"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
@@ -148,10 +148,13 @@
     <div class="company-sheet-body" id="companySheetBody"></div>
   </div>
 
-  <!-- 상단 별 버튼으로 여는 즐겨찾기 목록 — 다른 화면으로 이동하지 않고 오른쪽에서 슬라이드 인 되는 드로어 -->
+  <!-- 상단 별 버튼으로 여는 관심목록 — 다른 화면으로 이동하지 않고 오른쪽에서 슬라이드 인 되는 드로어 -->
   <div class="watchlist-sheet" id="watchlistSheet">
     <div class="range-sheet-header">
-      <span data-i18n="map.watchlist">즐겨찾기</span>
+      <span data-i18n="map.watchlist">관심목록</span>
+      <button type="button" id="watchlistSheetCloseBtn" class="watchlist-close-btn" aria-label="뒤로가기">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+      </button>
     </div>
     <div class="watchlist-sheet-list" id="watchlistSheetList"></div>
   </div>
@@ -198,6 +201,6 @@
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script src="data/sp500-data-core.js"></script>
 <script src="data/kr-data-core.js" onerror="window.KR_CORE_DATA = { companies: [] };"></script>
-<script src="app.js?v=20260830c"></script>
+<script src="app.js?v=20260830d"></script>
 </body>
 </html>
