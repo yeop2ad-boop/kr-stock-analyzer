@@ -444,8 +444,10 @@ function renderMarketIndexLabels() {
   const wrap = document.createElement("div");
   wrap.className = "market-index-labels";
   wrap.style.height = `${MARKET_LABEL_STRIP}px`;
-  // 전체보기에선 지도 중심을 안 내리는 대신 라벨만 아래로 내려 전체보기 버튼과 안 겹치게 함
-  wrap.style.top = UNIVERSE_EXPANDED[ACTIVE_MARKET] ? "45px" : "0px";
+  // 전체보기에선 지도 중심을 안 내리는 대신 라벨만 아래로 내려 전체보기 버튼과 안 겹치게 함.
+  // 해외는 카드가 1장뿐이라 국내보다 위로 붙어 보여서 항상 50px 추가로 내림
+  const labelTop = (UNIVERSE_EXPANDED[ACTIVE_MARKET] ? 45 : 0) + (ACTIVE_MARKET === "overseas" ? 50 : 0);
+  wrap.style.top = `${labelTop}px`;
   for (const def of currentIndexDefs()) {
     const card = document.createElement("div");
     card.className = "market-index-label";
