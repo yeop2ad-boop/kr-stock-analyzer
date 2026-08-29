@@ -598,15 +598,15 @@ body {
   left: 0;
   right: 0;
   /* 하단 네비를 덮지 않고 그 위에서 열림 — 네비 실제 높이는 JS가 --bottom-nav-h로 동기화 */
-  /* 화면 맨 아래 기준 — 시트 아랫부분(여백)은 불투명한 하단 툴바 뒤로 숨어 지도가 더 보임 */
+  /* 화면 맨 아래에서 올라와 하단 툴바까지 덮는 시트 */
   bottom: 0;
-  z-index: 39; /* 하단 네비(z 60)보다 아래 — 툴바가 시트와 그림자까지 전부 가림 */
+  z-index: 70; /* 하단 네비(z 60)보다 위 */
   background: var(--white);
   border-radius: 20px 20px 0 0;
   transform: translateY(100%);
   visibility: hidden;
   transition: transform 0.28s cubic-bezier(.2,.8,.3,1), visibility 0s linear 0.28s;
-  padding: 6px 18px calc(6px + var(--bottom-nav-h, 64px));
+  padding: 6px 18px calc(16px + env(safe-area-inset-bottom));
 }
 .company-sheet.open {
   transform: translateY(0);
@@ -750,15 +750,15 @@ body {
   left: 0;
   right: 0;
   /* 하단 네비를 덮지 않고 그 위에서 열림 */
-  /* 화면 맨 아래 기준 — 아랫여백은 불투명한 하단 툴바 뒤로 숨어 지도가 더 보임 */
+  /* 화면 맨 아래에서 올라와 하단 툴바까지 덮는 시트 */
   bottom: 0;
-  z-index: 39; /* 하단 네비(z 60)보다 아래 — 툴바가 시트와 그림자까지 전부 가림 */
+  z-index: 70; /* 하단 네비(z 60)보다 위 */
   background: var(--white);
   border-radius: 20px 20px 0 0;
   transform: translateY(100%);
   visibility: hidden;
   transition: transform 0.28s cubic-bezier(.2,.8,.3,1), visibility 0s linear 0.28s;
-  padding: 6px 22px calc(6px + var(--bottom-nav-h, 64px));
+  padding: 6px 22px calc(16px + env(safe-area-inset-bottom));
   touch-action: none;
 }
 .range-sheet.open {
