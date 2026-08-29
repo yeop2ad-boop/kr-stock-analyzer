@@ -6428,6 +6428,16 @@ document.addEventListener("marketmodechange", () => {
   if (getWatchlistActiveMarket() === "KR") runInsightKr(insightActiveKrInstitution);
   else runInsight(insightActiveInstitution);
 });
+// 국내/해외 전환 시 지금 보고 있는 화면을 새 시장 기준으로 즉시 새로고침 —
+// 기업가치/시장동향은 활성 그룹의 첫 항목을 자동 실행, 인사이트의 나머지 카테고리도 현재 카테고리를 다시 불러옴
+document.addEventListener("marketmodechange", () => {
+  const activeKey = TAB_ORDER[activeTabIndex];
+  if (activeKey === "topranking") {
+    activateRankingGroup(tabTrendBtn.classList.contains("active") ? "market" : "disclosure");
+  } else if (activeKey === "insight" && insightActiveCategory && insightActiveCategory !== "brand" && insightActiveCategory !== "firms") {
+    runInsightCategory(insightActiveCategory);
+  }
+});
 
 const brandDataCache = {};
 async function getBrandData(org) {
