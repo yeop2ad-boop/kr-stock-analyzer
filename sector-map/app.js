@@ -734,9 +734,9 @@ function clampView() {
   view.k = Math.min(maxK, Math.max(minK, view.k));
 }
 
-// 예전엔 우측 side-btn 컬럼을 피해 중심을 60px 왼쪽으로 당겼으나, 지도가 왼쪽으로 치우쳐 보인다는
-// 피드백으로 0으로 되돌림 — 지도는 화면 정중앙 기준(사용자 요청: 국내/해외 모두 중심을 우측으로)
-const RIGHT_CONTROLS_RESERVE = 0;
+// 지도 중심 미세 조정 이력: 60(좌측 치우침) → 0(정중앙) → 20(사용자 요청으로 10px만 다시 왼쪽으로, 국내/해외 공통)
+// view.x에서 이 값의 절반만큼 왼쪽으로 이동함
+const RIGHT_CONTROLS_RESERVE = 20;
 
 // 좌측 상단에 떠 있는 시계/전체보기 버튼이 지도 맨 위 시장 라벨(코스피100 등)과 겹치지 않도록 —
 // 축소 보기: 지도 중심 자체를 아래로 / 전체보기: 중심은 그대로 두고 라벨 글씨만 아래로(renderMarketIndexLabels)
