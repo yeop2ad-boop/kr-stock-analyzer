@@ -313,8 +313,44 @@ document.getElementById("universeToggleBtn").addEventListener("click", async () 
   refreshActiveMarketLiveData({ silent: true }).catch(() => {});
 });
 
-// 지도 맨 위에 전체 시장 이름+등락률 라벨이 들어갈 띠 높이(월드 좌표) — 섹터 원들은 이 아래로 배치됨
-const MARKET_LABEL_STRIP = 110;
+// 지도 맨 위에 실제 지수 카드(국기·이름/지수값/등락)가 들어갈 띠 높이(월드 좌표) — 섹터 원들은 이 아래로 배치됨
+const MARKET_LABEL_STRIP = 210;
+
+// 지도 상단에 보여줄 실제 지수들 — 구성종목 평균이 아니라 지수 자체(^KS11 등)를 야후에서 조회
+const MARKET_INDEX_DEFS = {
+  domestic: [
+    { symbol: "^KS11", nameKo: "코스피", nameEn: "KOSPI", flag: "🇰🇷" },
+    { symbol: "^KQ11", nameKo: "코스닥", nameEn: "KOSDAQ", flag: "🇰🇷" },
+  ],
+  overseas: [{ symbol: "^GSPC", nameKo: "S&P500", nameEn: "S&P500", flag: "🇺🇸" }],
+};
+const INDEX_QUOTE_CACHE = {}; // symbol -> { price, change, pct }
+
+async function fetchIndexQuote(symbol) {
+  try {
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=5d&interval=1d`;
+    const data = await proxyFetchJson(url);
+    const meta = data && data.chart && data.chart.result && data.chart.result[0] && data.chart.result[0].meta;
+    const price = meta && meta.regularMarketPrice;
+    const prev = meta && meta.chartPreviousClose;
+    if (typeof price !== "number" || typeof prev !== "number" || prev === 0) return null;
+    return { price, change: price - prev, pct: ((price - prev) / prev) * 100 };
+  } catch {
+    return null;
+  }
+}
+
+// 활성 시장의 지수 시세를 받아와 캐시하고 상단 카드 갱신 — 로드 시 + 5분 주기 실시간 갱신에서 호출
+async function refreshIndexQuotes() {
+  const defs = MARKET_INDEX_DEFS[ACTIVE_MARKET] || [];
+  await Promise.all(
+    defs.map(async (d) => {
+      const q = await fetchIndexQuote(d.symbol);
+      if (q) INDEX_QUOTE_CACHE[d.symbol] = q;
+    })
+  );
+  refreshMarketIndexLabels();
+}
 
 function buildPackedRoot(data) {
   const bySector = new Map();
@@ -357,20 +393,6 @@ function avgChangeOf(list) {
   return weightTotal > 0 ? sum / weightTotal : null;
 }
 
-function marketIndexEntries() {
-  const expanded = UNIVERSE_EXPANDED[ACTIVE_MARKET];
-  const avgOf = avgChangeOf;
-  if (ACTIVE_MARKET === "domestic") {
-    const kospi = ACTIVE_DATA.companies.filter((c) => c.exchange === "KOSPI");
-    const kosdaq = ACTIVE_DATA.companies.filter((c) => c.exchange === "KOSDAQ");
-    return [
-      { name: expanded ? "코스피200" : "코스피100", avg: avgOf(kospi) },
-      { name: expanded ? "코스닥150" : "코스닥50", avg: avgOf(kosdaq) },
-    ];
-  }
-  return [{ name: expanded ? "S&P500" : "S&P200", avg: avgOf(ACTIVE_DATA.companies) }];
-}
-
 // 시장 라벨 등락 색 — 크기와 무관하게 상승=상승색/하락=하락색 고정, 표기상 0.0%일 때만 회색
 function solidChangeColor(pct) {
   if (pct === null || pct === undefined || Number.isNaN(pct) || Math.abs(pct) < 0.05) return "var(--text-mid)";
@@ -382,46 +404,50 @@ function renderMarketIndexLabels() {
   const wrap = document.createElement("div");
   wrap.className = "market-index-labels";
   wrap.style.height = `${MARKET_LABEL_STRIP}px`;
-  // 전체보기에선 지도 중심을 안 내리는 대신 라벨 글씨만 아래로 내려 전체보기 버튼과 안 겹치게 함
-  wrap.style.top = UNIVERSE_EXPANDED[ACTIVE_MARKET] ? "65px" : "0px";
-  for (const entry of marketIndexEntries()) {
-    const item = document.createElement("div");
-    item.className = "market-index-label";
-    const nameEl = document.createElement("span");
+  // 전체보기에선 지도 중심을 안 내리는 대신 라벨만 아래로 내려 전체보기 버튼과 안 겹치게 함
+  wrap.style.top = UNIVERSE_EXPANDED[ACTIVE_MARKET] ? "45px" : "0px";
+  const isEn = document.documentElement.lang === "en";
+  for (const def of MARKET_INDEX_DEFS[ACTIVE_MARKET] || []) {
+    const card = document.createElement("div");
+    card.className = "market-index-label";
+    card.dataset.symbol = def.symbol;
+
+    const nameEl = document.createElement("div");
     nameEl.className = "market-index-name";
-    nameEl.textContent = entry.name;
-    const chgEl = document.createElement("span");
+    nameEl.textContent = `${def.flag} ${isEn ? def.nameEn : def.nameKo}`;
+
+    const valueEl = document.createElement("div");
+    valueEl.className = "market-index-value";
+    valueEl.textContent = "—";
+
+    const chgEl = document.createElement("div");
     chgEl.className = "market-index-chg";
-    if (entry.avg === null) {
-      chgEl.textContent = "-";
-    } else {
-      chgEl.textContent = `${entry.avg >= 0 ? "+" : ""}${entry.avg.toFixed(1)}%`;
-      chgEl.style.color = solidChangeColor(entry.avg);
-    }
-    item.appendChild(nameEl);
-    item.appendChild(chgEl);
-    wrap.appendChild(item);
+    chgEl.textContent = "";
+
+    card.appendChild(nameEl);
+    card.appendChild(valueEl);
+    card.appendChild(chgEl);
+    wrap.appendChild(card);
   }
+  // 캐시에 이미 값이 있으면 즉시 채우고, 없으면 조회가 끝나는 대로 refreshMarketIndexLabels가 채움
+  setTimeout(refreshMarketIndexLabels, 0);
   return wrap;
 }
 
-// 실시간 색 갱신 때 시장 라벨 등락률도 함께 최신화
+// 지수 시세 캐시로 상단 카드(지수값/등락) 갱신 — 실시간 색 갱신·지수 조회 완료 시 호출
 function refreshMarketIndexLabels() {
   const wrap = document.querySelector(".market-index-labels");
   if (!wrap) return;
-  const entries = marketIndexEntries();
-  const items = wrap.querySelectorAll(".market-index-label");
-  entries.forEach((entry, i) => {
-    const item = items[i];
-    if (!item) return;
-    const chgEl = item.querySelector(".market-index-chg");
-    if (entry.avg === null) {
-      chgEl.textContent = "-";
-      chgEl.style.color = "";
-    } else {
-      chgEl.textContent = `${entry.avg >= 0 ? "+" : ""}${entry.avg.toFixed(1)}%`;
-      chgEl.style.color = solidChangeColor(entry.avg);
-    }
+  wrap.querySelectorAll(".market-index-label").forEach((card) => {
+    const q = INDEX_QUOTE_CACHE[card.dataset.symbol];
+    if (!q) return;
+    card.querySelector(".market-index-value").textContent = q.price.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    const chgEl = card.querySelector(".market-index-chg");
+    chgEl.textContent = `${q.change >= 0 ? "+" : ""}${q.change.toFixed(2)} (${q.pct >= 0 ? "+" : ""}${q.pct.toFixed(2)}%)`;
+    chgEl.style.color = solidChangeColor(q.pct);
   });
 }
 
@@ -1855,6 +1881,7 @@ document.getElementById("aiFabTime").addEventListener("click", async () => {
 
 // 국내/해외 어느 쪽이 활성인지에 맞춰 알맞은 실시간 갱신 함수를 호출하고, 성공 시 AI 버튼의 갱신 시각을 함께 업데이트
 async function refreshActiveMarketLiveData({ silent = false } = {}) {
+  refreshIndexQuotes().catch(() => {}); // 상단 지수 카드(코스피/코스닥/S&P500)도 함께 갱신
   const ok = ACTIVE_MARKET === "domestic" ? await refreshDomesticLiveData() : await refreshLiveData();
   if (ok) {
     lastColorRefreshAt = Date.now();
