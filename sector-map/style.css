@@ -298,7 +298,6 @@ body {
   cursor: pointer;
   transition: background-color 0.25s ease;
 }
-.sector-bubble.shape-square { border-radius: 8px; border-width: 3.5px; align-items: flex-end; justify-content: center; padding-bottom: 6%; }
 /* "등락" 모드 — 섹터 원 전체가 등락률 색으로 채워지고 가운데 평균 등락률 숫자가 보임 */
 .sector-bubble.sector-bubble-filled { background: var(--chg-fill, transparent); border-color: transparent; z-index: 2; }
 .sector-bubble-change {
@@ -309,8 +308,6 @@ body {
   /* 색은 JS가 등락색으로 직접 지정(연한 틴트 배경 위 진한 등락색 숫자) */
   pointer-events: none;
 }
-/* 등락 모드에서 사각형 섹터도 숫자를 정중앙에 — 평소 이름표용 하단 정렬을 해제 */
-.sector-bubble.shape-square.sector-bubble-filled { align-items: center; padding-bottom: 0; }
 /* 섹터 이름표 — 원래 알약(pill) 모양 그대로, 다른 종목 로고와 겹치지 않도록 섹터 원 맨 위에 고정된 자리를 차지함 */
 .sector-name-bubble {
   position: absolute;
@@ -327,14 +324,6 @@ body {
   box-shadow: 0 2px 8px rgba(15,23,42,0.18);
   cursor: pointer;
 }
-.sector-name-bubble.shape-square {
-  border-radius: 5px;
-  justify-content: flex-start;
-  padding: 0 8px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 /* company bubble */
 .company-bubble {
   position: absolute;
@@ -350,8 +339,6 @@ body {
   cursor: pointer;
   overflow: hidden;
 }
-/* 사각 타일은 글로우(blur) 그림자를 빼서 200개 타일 리페인트 부담을 줄임 — 핀치줌/드래그 버벅임 완화 */
-.company-bubble.shape-square { border-radius: 3px; box-shadow: 0 0 0 1px var(--bubble-ring); }
 .company-bubble:active { filter: brightness(0.94); }
 /* 필터에서 제외된 종목 — 완전히 숨김(사용자 선택: 반투명 잔상 없이 아예 제거) */
 .company-bubble.filtered-out { display: none; }

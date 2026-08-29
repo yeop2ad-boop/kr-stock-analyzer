@@ -330,165 +330,6 @@ function buildPackedRoot(data) {
   return root;
 }
 
-// "네모" 모드 — 원형 pack 대신 finviz식 사각형 트리맵(d3.treemap)으로 섹터별 타일을 그림.
-// 시총 모드일 땐 타일 사이 간격 0(따따닥 붙게), 균등 모드일 땐 살짝 떨어지게 — buildPackedRoot와 동일한
-// 그룹핑/value 로직을 그대로 쓰되 레이아웃 함수만 pack→treemap으로 바꿈.
-function buildTreemapRoot(data) {
-  const bySector = new Map();
-  for (const c of data.companies) {
-    if (!c.marketCap) continue;
-    const sec = canonicalSector(c.sector);
-    if (!bySector.has(sec)) bySector.set(sec, []);
-    bySector.get(sec).push(c);
-  }
-  const children = [...bySector.entries()].map(([sector, companies]) => ({
-    name: sector,
-    sectorKo: companies[0].sectorKo,
-    children: companies.map((c) => ({ ...c, value: sizeMode === "equal" ? 1 : c.marketCap })),
-  }));
-
-  const root = d3.hierarchy({ name: "root", children }).sum((d) => d.value).sort((a, b) => b.value - a.value);
-
-  const leafGap = sizeMode === "equal" ? 4 : 0; // 시총: 0(따따닥 붙게) / 균등: 살짝 떨어지게
-  d3
-    .treemap()
-    // finviz 히트맵과 같은 기준 — 큰 종목부터 왼쪽 위에서 가로/세로로 질서있게 채우고, 타일이 최대한 정사각형에 가깝게(ratio 1)
-    .tile(d3.treemapSquarify.ratio(1))
-    .size([WORLD_SIZE, WORLD_SIZE])
-    .paddingOuter(6)
-    .paddingTop((d) => (d.depth === 1 ? Math.min(34, Math.max(14, (d.y1 - d.y0) * 0.3)) : 0)) // 이름표 자리 — 초소형 섹터는 비례 축소
-    .paddingInner((d) => (d.depth === 0 ? 8 : leafGap))
-    .round(true)(root);
-
-  // zoomToNode/updateLogoQuality 등 원형 코드와 좌표 규약(x/y/r)을 공유하기 위해 합성 프로퍼티를 붙여둠
-  for (const node of root.descendants()) {
-    if (node.depth === 0) continue;
-    node.x = (node.x0 + node.x1) / 2;
-    node.y = (node.y0 + node.y1) / 2;
-    node.r = Math.max(node.x1 - node.x0, node.y1 - node.y0) / 2;
-  }
-
-  return root;
-}
-
-function renderSectorTileBubble(sectorNode, color) {
-  const el = document.createElement("div");
-  el.className = "sector-bubble shape-square";
-  el.dataset.sector = sectorNode.data.name;
-  el.style.setProperty("--sc", color);
-  el.style.left = `${sectorNode.x0}px`;
-  el.style.top = `${sectorNode.y0}px`;
-  el.style.width = `${sectorNode.x1 - sectorNode.x0}px`;
-  el.style.height = `${sectorNode.y1 - sectorNode.y0}px`;
-
-  const changeEl = document.createElement("span");
-  changeEl.className = "sector-bubble-change";
-  // 섹터 전체 합계 숫자 — 타일 가운데에 큼지막하게(짧은 변 기준 비례)
-  const minDim = Math.min(sectorNode.x1 - sectorNode.x0, sectorNode.y1 - sectorNode.y0);
-  changeEl.style.fontSize = `${Math.max(18, Math.min(72, minDim * 0.22))}px`;
-  el.appendChild(changeEl);
-
-  el.addEventListener("click", (e) => {
-    if (e.target !== el && e.target !== changeEl) return;
-    zoomToNode(sectorNode);
-  });
-
-  return el;
-}
-
-function renderSectorNameTile(sectorNode) {
-  const el = document.createElement("div");
-  el.className = "sector-name-bubble shape-square";
-  const w = sectorNode.x1 - sectorNode.x0;
-  const h = sectorNode.y1 - sectorNode.y0;
-  // 초소형 섹터에서도 제목이 칸 밖으로 삐져나가지 않도록 섹터 높이에 맞춰 제목 높이/글자를 축소
-  const labelH = Math.max(12, Math.min(26, h - 10));
-  el.style.left = `${sectorNode.x0 + 4}px`;
-  el.style.top = `${sectorNode.y0 + 4}px`;
-  el.style.height = `${labelH}px`;
-  el.style.maxWidth = `${Math.max(0, w - 8)}px`;
-  el.style.fontSize = `${Math.max(9, Math.min(22, Math.min(w * 0.06, labelH * 0.7)))}px`;
-  el.textContent = `${sectorNode.data.sectorKo} · ${sectorNode.children.length}`;
-  el.addEventListener("click", () => zoomToNode(sectorNode));
-  return el;
-}
-
-function renderCompanyTile(leaf, sectorColorValue) {
-  const d = leaf.data;
-  const el = document.createElement("div");
-  el.className = "company-bubble shape-square";
-  el.style.setProperty("--sc", sectorColorValue);
-  const chg = changeColor(d.changePercent);
-  el.style.setProperty("--chg", chg.css);
-  const glowStrength = Math.abs(chg.t);
-  if (glowStrength > 0.08) {
-    el.style.setProperty("--chg-glow", `0 0 ${4 + glowStrength * 10}px ${chg.css}`);
-  }
-  const w = leaf.x1 - leaf.x0;
-  const h = leaf.y1 - leaf.y0;
-  el.style.left = `${leaf.x0}px`;
-  el.style.top = `${leaf.y0}px`;
-  el.style.width = `${w}px`;
-  el.style.height = `${h}px`;
-
-  const img = document.createElement("img");
-  img.className = "company-logo-img";
-  img.loading = "lazy";
-  img.alt = d.symbol;
-  if (BAD_LOGO_SYMBOLS.has(d.symbol)) {
-    el.classList.add("logo-failed");
-  } else {
-    img.dataset.tier = "low";
-    img.src = logoUrl(d.symbol, "low");
-  }
-  img.addEventListener("error", () => {
-    if (!img.dataset.triedFallback) {
-      img.dataset.triedFallback = "1";
-      img.src = logoUrlFallback(d.symbol);
-    } else {
-      el.classList.add("logo-failed");
-    }
-  });
-  el.appendChild(img);
-  el.dataset.r = leaf.r; // 화면상 크기 계산용(저/중/고화질 전환) — 합성된 반지름값 재사용
-
-  const isKrView = ACTIVE_MARKET === "domestic";
-  const badgeText = isKrView ? d.name : d.symbol;
-  const isBigCap = isKrView && (d.symbol === "005930.KS" || d.symbol === "000660.KS");
-  const bigCapScale = isBigCap ? 1.4 : 1;
-  const minDim = Math.min(w, h);
-
-  const fallback = document.createElement("div");
-  fallback.className = "company-fallback-badge";
-  fallback.style.setProperty("--sc", sectorColorValue);
-  fallback.style.fontSize = `${Math.max(9, Math.min(22, minDim * (isKrView ? 0.2 : 0.32)) * bigCapScale)}px`;
-  fallback.textContent = badgeText;
-  el.appendChild(fallback);
-
-  // 네모 타일은 간격이 0에 가까워 원형의 하단 오버플로 티커태그를 쓰면 아래 타일과 겹치므로 생략
-  el.addEventListener("click", () => openCompanySheet(d));
-
-  bubbleBySymbol.set(d.symbol, el);
-  return el;
-}
-
-function renderMapSquare(root) {
-  const frag = document.createDocumentFragment();
-
-  for (const sectorNode of root.children) {
-    const color = sectorColor(sectorNode.data.name);
-    frag.appendChild(renderSectorTileBubble(sectorNode, color));
-
-    for (const leaf of sectorNode.children) {
-      frag.appendChild(renderCompanyTile(leaf, color));
-    }
-
-    frag.appendChild(renderSectorNameTile(sectorNode));
-  }
-
-  mapWorld.appendChild(frag);
-}
-
 // ---------- 2) DOM 렌더링 ----------
 const mapWorld = document.getElementById("mapWorld");
 const mapViewport = document.getElementById("mapViewport");
@@ -500,7 +341,6 @@ const bubbleBySymbol = new Map(); // symbol -> .company-bubble 엘리먼트(지�
 let ACTIVE_MARKET = "overseas";
 let ACTIVE_DATA = coreDataFor(ACTIVE_MARKET);
 let sizeMode = "equal"; // 기본값 균등 — "시총" 버튼으로 "marketCap"과 토글(버튼 이름은 항상 "시총", 시총 모드일 때만 주황 강조)
-let shapeMode = "square"; // 기본값 사각형(트리맵) — "원형" 버튼으로 "circle"(버블맵)과 토글(버튼 라벨은 항상 "원형", 원형 모드일 때만 강조)
 
 // 섹터 이름표를 "로고 하나"처럼 취급 — 섹터 원 맨 위 가장자리에 딱 붙여 고정하고,
 // d3-force로 (1) 종목 원끼리 절대 안 겹치게(사이즈별 최소 간격), (2) 이름표(알약 모양 사각형)와도 안 겹치게 풀어낸다.
@@ -1041,7 +881,7 @@ document.addEventListener("click", (e) => {
   if (btn) showToast(btn.dataset.toast);
 });
 
-document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#shapeModeBtn):not(#logoModeBtn):not(#watchFilterBtn)").forEach((btn) => {
+document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#logoModeBtn):not(#watchFilterBtn)").forEach((btn) => {
   btn.addEventListener("click", () => {
     const group = btn.parentElement;
     group.querySelectorAll(".active").forEach((b) => b.classList.remove("active"));
@@ -1949,28 +1789,16 @@ function rerenderMap(animate) {
   mapWorld.innerHTML = "";
   bubbleBySymbol.clear();
 
-  if (shapeMode === "square") {
-    packedRoot = buildTreemapRoot(ACTIVE_DATA);
-    renderMapSquare(packedRoot);
-  } else {
-    packedRoot = buildPackedRoot(ACTIVE_DATA);
-    renderMap(packedRoot);
-  }
+  packedRoot = buildPackedRoot(ACTIVE_DATA);
+  renderMap(packedRoot);
   fitToViewport(!!animate);
-  applyAllFilters(); // 균등/시총 전환처럼 데이터셋은 그대로인 경우, 새로 그려진 원/타일에도 기존 필터를 다시 적용
+  applyAllFilters(); // 균등/시총 전환처럼 데이터셋은 그대로인 경우, 새로 그려진 원에도 기존 필터를 다시 적용
 }
 
 document.getElementById("sizeModeBtn").addEventListener("click", (e) => {
   const btn = e.currentTarget;
   sizeMode = sizeMode === "equal" ? "marketCap" : "equal";
   btn.classList.toggle("active", sizeMode === "marketCap");
-  rerenderMap(true);
-});
-
-document.getElementById("shapeModeBtn").addEventListener("click", (e) => {
-  const btn = e.currentTarget;
-  shapeMode = shapeMode === "circle" ? "square" : "circle";
-  btn.classList.toggle("active", shapeMode === "circle");
   rerenderMap(true);
 });
 
