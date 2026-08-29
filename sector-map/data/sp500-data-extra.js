@@ -18,7 +18,7 @@ const SP500_EXTRA_DATA = {
       "roe": 25.0,
       "debtRatio": 2640.7,
       "week52RangePct": 58.2,
-      "pressureScore": 3.8,
+      "pressureScore": 4.0,
       "stabilityScore": 2.8
     },
     {
@@ -38,7 +38,7 @@ const SP500_EXTRA_DATA = {
       "roe": 7.2,
       "debtRatio": 158.4,
       "week52RangePct": 3.5,
-      "pressureScore": 1.4,
+      "pressureScore": 1.2,
       "stabilityScore": 3.9
     },
     {
@@ -58,8 +58,8 @@ const SP500_EXTRA_DATA = {
       "roe": 5.4,
       "debtRatio": 117.9,
       "week52RangePct": 72.1,
-      "pressureScore": 1.1,
-      "stabilityScore": 5.0
+      "pressureScore": 0.7,
+      "stabilityScore": 4.9
     },
     {
       "symbol": "MET",
@@ -78,7 +78,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.7,
       "debtRatio": 2665.4,
       "week52RangePct": 86.8,
-      "pressureScore": 4.3,
+      "pressureScore": 4.7,
       "stabilityScore": 3.5
     },
     {
@@ -98,7 +98,7 @@ const SP500_EXTRA_DATA = {
       "roe": 0.9,
       "debtRatio": 87.3,
       "week52RangePct": 50.7,
-      "pressureScore": 1.3,
+      "pressureScore": 1.2,
       "stabilityScore": 3.8
     },
     {
@@ -107,7 +107,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Energy",
       "sectorKo": "에너지",
       "marketCap": 55607201792,
-      "changePercent": -1.4213076,
+      "changePercent": -1.42131,
       "per": 37.65143,
       "eps": 5.25,
       "dividendYield": 2.19,
@@ -118,7 +118,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.0,
       "debtRatio": 69.2,
       "week52RangePct": 76.7,
-      "pressureScore": 4.3,
+      "pressureScore": 4.2,
       "stabilityScore": 2.6
     },
     {
@@ -138,7 +138,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.6,
       "debtRatio": 95.7,
       "week52RangePct": 19.9,
-      "pressureScore": 1.8,
+      "pressureScore": 2.1,
       "stabilityScore": 3.5
     },
     {
@@ -158,7 +158,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.2,
       "debtRatio": 198.2,
       "week52RangePct": 90.7,
-      "pressureScore": 5.7,
+      "pressureScore": 5.1,
       "stabilityScore": 2.6
     },
     {
@@ -167,7 +167,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Industrials",
       "sectorKo": "산업재",
       "marketCap": 57122430976,
-      "changePercent": -2.6498475,
+      "changePercent": -2.64985,
       "per": 42.54701,
       "eps": 1.17,
       "dividendYield": 1.88,
@@ -178,7 +178,7 @@ const SP500_EXTRA_DATA = {
       "roe": 9.4,
       "debtRatio": 30.1,
       "week52RangePct": 77.5,
-      "pressureScore": 4.0,
+      "pressureScore": 4.2,
       "stabilityScore": 4.7
     },
     {
@@ -187,7 +187,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 55496278016,
-      "changePercent": -4.593344,
+      "changePercent": -4.59334,
       "per": 48.69273,
       "eps": 7.29,
       "dividendYield": 0.14,
@@ -199,7 +199,7 @@ const SP500_EXTRA_DATA = {
       "debtRatio": 42.3,
       "week52RangePct": 64.9,
       "pressureScore": 3.6,
-      "stabilityScore": 3.1
+      "stabilityScore": 3.0
     },
     {
       "symbol": "D",
@@ -238,8 +238,8 @@ const SP500_EXTRA_DATA = {
       "roe": 13.7,
       "debtRatio": 163.8,
       "week52RangePct": 60.4,
-      "pressureScore": 3.9,
-      "stabilityScore": 3.8
+      "pressureScore": 4.0,
+      "stabilityScore": 3.6
     },
     {
       "symbol": "AFL",
@@ -258,7 +258,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.7,
       "debtRatio": 282.6,
       "week52RangePct": 46.4,
-      "pressureScore": 1.3,
+      "pressureScore": 1.1,
       "stabilityScore": 4.0
     },
     {
@@ -267,7 +267,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Health Care",
       "sectorKo": "헬스케어",
       "marketCap": 55090565120,
-      "changePercent": -3.3480413,
+      "changePercent": -3.34804,
       "per": null,
       "eps": -7.98,
       "dividendYield": null,
@@ -298,7 +298,7 @@ const SP500_EXTRA_DATA = {
       "roe": -3.7,
       "debtRatio": 699.3,
       "week52RangePct": 41.5,
-      "pressureScore": 0.2,
+      "pressureScore": 0.3,
       "stabilityScore": 2.0
     },
     {
@@ -307,7 +307,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 56378867712,
-      "changePercent": -1.0094743,
+      "changePercent": -1.00947,
       "per": 19.076792,
       "eps": 11.72,
       "dividendYield": 1.8,
@@ -318,7 +318,7 @@ const SP500_EXTRA_DATA = {
       "roe": 6.7,
       "debtRatio": 130.7,
       "week52RangePct": 25.9,
-      "pressureScore": 2.4,
+      "pressureScore": 2.3,
       "stabilityScore": 3.2
     },
     {
@@ -338,7 +338,7 @@ const SP500_EXTRA_DATA = {
       "roe": 6.0,
       "debtRatio": 26.5,
       "week52RangePct": 77.2,
-      "pressureScore": 6.0,
+      "pressureScore": 6.1,
       "stabilityScore": 5.1
     },
     {
@@ -358,8 +358,8 @@ const SP500_EXTRA_DATA = {
       "roe": 1.8,
       "debtRatio": 58.7,
       "week52RangePct": 54.6,
-      "pressureScore": 3.2,
-      "stabilityScore": 0.8
+      "pressureScore": 3.3,
+      "stabilityScore": 0.7
     },
     {
       "symbol": "CIEN",
@@ -398,7 +398,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.5,
       "debtRatio": 61.0,
       "week52RangePct": 80.1,
-      "pressureScore": 2.9,
+      "pressureScore": 3.7,
       "stabilityScore": 3.0
     },
     {
@@ -418,7 +418,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.6,
       "debtRatio": 47.4,
       "week52RangePct": 69.6,
-      "pressureScore": 3.3,
+      "pressureScore": 3.7,
       "stabilityScore": 3.4
     },
     {
@@ -427,7 +427,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Financials",
       "sectorKo": "금융",
       "marketCap": 55512039424,
-      "changePercent": -0.040262625,
+      "changePercent": -0.0402626,
       "per": 28.953352,
       "eps": 3.43,
       "dividendYield": 1.17,
@@ -438,7 +438,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.2,
       "debtRatio": 128.0,
       "week52RangePct": 90.2,
-      "pressureScore": 3.6,
+      "pressureScore": 4.1,
       "stabilityScore": 3.4
     },
     {
@@ -458,7 +458,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.0,
       "debtRatio": 74.3,
       "week52RangePct": 76.8,
-      "pressureScore": 3.7,
+      "pressureScore": 3.1,
       "stabilityScore": 3.5
     },
     {
@@ -498,7 +498,7 @@ const SP500_EXTRA_DATA = {
       "roe": 7.4,
       "debtRatio": 295.7,
       "week52RangePct": 61.6,
-      "pressureScore": 2.2,
+      "pressureScore": 2.3,
       "stabilityScore": 2.5
     },
     {
@@ -518,8 +518,8 @@ const SP500_EXTRA_DATA = {
       "roe": 4.6,
       "debtRatio": 69.8,
       "week52RangePct": 74.8,
-      "pressureScore": 4.4,
-      "stabilityScore": 3.2
+      "pressureScore": 4.5,
+      "stabilityScore": 3.3
     },
     {
       "symbol": "KEYS",
@@ -538,7 +538,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.5,
       "debtRatio": 85.4,
       "week52RangePct": 74.6,
-      "pressureScore": 4.5,
+      "pressureScore": 4.2,
       "stabilityScore": 2.1
     },
     {
@@ -547,7 +547,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 55037120512,
-      "changePercent": -3.6661923,
+      "changePercent": -3.66619,
       "per": 33.80804,
       "eps": 7.71,
       "dividendYield": null,
@@ -558,7 +558,7 @@ const SP500_EXTRA_DATA = {
       "roe": 15.4,
       "debtRatio": 274.2,
       "week52RangePct": 52.3,
-      "pressureScore": 5.4,
+      "pressureScore": 5.0,
       "stabilityScore": 3.0
     },
     {
@@ -578,7 +578,7 @@ const SP500_EXTRA_DATA = {
       "roe": -14.1,
       "debtRatio": -2096.1,
       "week52RangePct": 78.9,
-      "pressureScore": 4.7,
+      "pressureScore": 4.4,
       "stabilityScore": 2.0
     },
     {
@@ -587,7 +587,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Financials",
       "sectorKo": "금융",
       "marketCap": 46254919680,
-      "changePercent": -12.705387,
+      "changePercent": -12.7054,
       "per": 10.143667,
       "eps": 5.29,
       "dividendYield": 0.91,
@@ -598,8 +598,8 @@ const SP500_EXTRA_DATA = {
       "roe": 5.6,
       "debtRatio": 317.4,
       "week52RangePct": 37.3,
-      "pressureScore": 4.5,
-      "stabilityScore": 2.9
+      "pressureScore": 4.8,
+      "stabilityScore": 3.1
     },
     {
       "symbol": "BDX",
@@ -618,7 +618,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1.5,
       "debtRatio": 107.8,
       "week52RangePct": 94.6,
-      "pressureScore": 4.9,
+      "pressureScore": 5.0,
       "stabilityScore": 2.6
     },
     {
@@ -627,7 +627,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Industrials",
       "sectorKo": "산업재",
       "marketCap": 51463614464,
-      "changePercent": 1.0077729,
+      "changePercent": 1.00777,
       "per": 49.503048,
       "eps": 3.28,
       "dividendYield": null,
@@ -638,7 +638,7 @@ const SP500_EXTRA_DATA = {
       "roe": -4.3,
       "debtRatio": -438.7,
       "week52RangePct": 8.4,
-      "pressureScore": 0.4,
+      "pressureScore": 0.6,
       "stabilityScore": 2.2
     },
     {
@@ -658,7 +658,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.7,
       "debtRatio": 29.0,
       "week52RangePct": 74.7,
-      "pressureScore": 2.6,
+      "pressureScore": 2.7,
       "stabilityScore": 2.9
     },
     {
@@ -687,7 +687,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Industrials",
       "sectorKo": "산업재",
       "marketCap": 48801751040,
-      "changePercent": -1.7130288,
+      "changePercent": -1.71303,
       "per": 252.40755,
       "eps": 2.38,
       "dividendYield": null,
@@ -718,7 +718,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.5,
       "debtRatio": 106.0,
       "week52RangePct": 88.2,
-      "pressureScore": 4.3,
+      "pressureScore": 4.9,
       "stabilityScore": 2.4
     },
     {
@@ -758,7 +758,7 @@ const SP500_EXTRA_DATA = {
       "roe": 0.5,
       "debtRatio": 770.9,
       "week52RangePct": 74.5,
-      "pressureScore": 4.7,
+      "pressureScore": 4.8,
       "stabilityScore": 3.8
     },
     {
@@ -778,7 +778,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.8,
       "debtRatio": 105.9,
       "week52RangePct": 3.5,
-      "pressureScore": 1.8,
+      "pressureScore": 1.9,
       "stabilityScore": 2.3
     },
     {
@@ -787,7 +787,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 50560409600,
-      "changePercent": 5.760187,
+      "changePercent": 5.76019,
       "per": 41.609756,
       "eps": 4.92,
       "dividendYield": null,
@@ -798,8 +798,8 @@ const SP500_EXTRA_DATA = {
       "roe": 3.3,
       "debtRatio": 140.8,
       "week52RangePct": 67.6,
-      "pressureScore": 7.3,
-      "stabilityScore": 2.3
+      "pressureScore": 6.7,
+      "stabilityScore": 2.2
     },
     {
       "symbol": "XYZ",
@@ -818,7 +818,7 @@ const SP500_EXTRA_DATA = {
       "roe": 0.4,
       "debtRatio": 77.8,
       "week52RangePct": 91.3,
-      "pressureScore": 3.0,
+      "pressureScore": 3.9,
       "stabilityScore": 2.4
     },
     {
@@ -827,7 +827,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Financials",
       "sectorKo": "금융",
       "marketCap": 47131828224,
-      "changePercent": -6.333894,
+      "changePercent": -6.33389,
       "per": null,
       "eps": -3.87,
       "dividendYield": null,
@@ -838,8 +838,8 @@ const SP500_EXTRA_DATA = {
       "roe": -2.7,
       "debtRatio": 102.3,
       "week52RangePct": 15.0,
-      "pressureScore": 0.6,
-      "stabilityScore": 2.3
+      "pressureScore": 1.8,
+      "stabilityScore": 2.4
     },
     {
       "symbol": "AMP",
@@ -858,7 +858,7 @@ const SP500_EXTRA_DATA = {
       "roe": 17.5,
       "debtRatio": 3008.2,
       "week52RangePct": 91.2,
-      "pressureScore": 5.3,
+      "pressureScore": 5.6,
       "stabilityScore": 3.9
     },
     {
@@ -878,7 +878,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.3,
       "debtRatio": 336.5,
       "week52RangePct": 60.4,
-      "pressureScore": 1.3,
+      "pressureScore": 1.4,
       "stabilityScore": 3.3
     },
     {
@@ -918,7 +918,7 @@ const SP500_EXTRA_DATA = {
       "roe": -23.0,
       "debtRatio": -851.2,
       "week52RangePct": 4.0,
-      "pressureScore": 2.2,
+      "pressureScore": 2.0,
       "stabilityScore": 2.3
     },
     {
@@ -947,7 +947,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Utilities",
       "sectorKo": "유틸리티",
       "marketCap": 47753289728,
-      "changePercent": -0.92017454,
+      "changePercent": -0.920175,
       "per": 20.945204,
       "eps": 3.65,
       "dividendYield": 3.07,
@@ -958,7 +958,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.4,
       "debtRatio": 262.3,
       "week52RangePct": 39.9,
-      "pressureScore": 0.7,
+      "pressureScore": 0.9,
       "stabilityScore": 3.2
     },
     {
@@ -978,8 +978,8 @@ const SP500_EXTRA_DATA = {
       "roe": 7.0,
       "debtRatio": 202.8,
       "week52RangePct": 32.6,
-      "pressureScore": 1.5,
-      "stabilityScore": 2.8
+      "pressureScore": 1.8,
+      "stabilityScore": 2.9
     },
     {
       "symbol": "CMG",
@@ -998,7 +998,7 @@ const SP500_EXTRA_DATA = {
       "roe": 18.3,
       "debtRatio": 303.0,
       "week52RangePct": 67.6,
-      "pressureScore": 4.5,
+      "pressureScore": 3.9,
       "stabilityScore": 4.5
     },
     {
@@ -1018,7 +1018,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.8,
       "debtRatio": 530.0,
       "week52RangePct": 51.3,
-      "pressureScore": 2.6,
+      "pressureScore": 3.0,
       "stabilityScore": 2.8
     },
     {
@@ -1027,7 +1027,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Consumer Discretionary",
       "sectorKo": "경기소비재",
       "marketCap": 47000899584,
-      "changePercent": 3.5896466,
+      "changePercent": 3.58965,
       "per": 22.189075,
       "eps": 4.76,
       "dividendYield": 1.21,
@@ -1038,7 +1038,7 @@ const SP500_EXTRA_DATA = {
       "roe": 11.8,
       "debtRatio": 284.4,
       "week52RangePct": 66.8,
-      "pressureScore": 1.9,
+      "pressureScore": 1.8,
       "stabilityScore": 3.4
     },
     {
@@ -1058,7 +1058,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.6,
       "debtRatio": 676.9,
       "week52RangePct": 5.1,
-      "pressureScore": 0.3,
+      "pressureScore": 0.4,
       "stabilityScore": 2.1
     },
     {
@@ -1078,7 +1078,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.6,
       "debtRatio": 197.4,
       "week52RangePct": 83.7,
-      "pressureScore": 7.3,
+      "pressureScore": 7.4,
       "stabilityScore": 2.3
     },
     {
@@ -1087,7 +1087,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Utilities",
       "sectorKo": "유틸리티",
       "marketCap": 45259055104,
-      "changePercent": -0.06824108,
+      "changePercent": -0.0682411,
       "per": 16.150736,
       "eps": 2.72,
       "dividendYield": 3.82,
@@ -1118,7 +1118,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.8,
       "debtRatio": 83.4,
       "week52RangePct": 82.1,
-      "pressureScore": 5.7,
+      "pressureScore": 6.1,
       "stabilityScore": 3.4
     },
     {
@@ -1127,7 +1127,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Communication Services",
       "sectorKo": "커뮤니케이션",
       "marketCap": 44013326336,
-      "changePercent": 1.0257508,
+      "changePercent": 1.02575,
       "per": null,
       "eps": -1.72,
       "dividendYield": null,
@@ -1138,7 +1138,7 @@ const SP500_EXTRA_DATA = {
       "roe": -0.9,
       "debtRatio": 151.2,
       "week52RangePct": 61.0,
-      "pressureScore": 2.9,
+      "pressureScore": 2.8,
       "stabilityScore": 1.8
     },
     {
@@ -1147,7 +1147,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Industrials",
       "sectorKo": "산업재",
       "marketCap": 45185949696,
-      "changePercent": 0.44275582,
+      "changePercent": 0.442756,
       "per": 25.979551,
       "eps": 4.89,
       "dividendYield": 3.76,
@@ -1157,7 +1157,7 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 37.7,
       "roe": 11.3,
       "debtRatio": 333.0,
-      "week52RangePct": 76.9,
+      "week52RangePct": 77.6,
       "pressureScore": 5.5,
       "stabilityScore": 3.5
     },
@@ -1178,7 +1178,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.4,
       "debtRatio": 253.6,
       "week52RangePct": 55.4,
-      "pressureScore": 5.0,
+      "pressureScore": 4.3,
       "stabilityScore": 2.7
     },
     {
@@ -1187,7 +1187,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Health Care",
       "sectorKo": "헬스케어",
       "marketCap": 43779276800,
-      "changePercent": 1.8180767,
+      "changePercent": 1.81808,
       "per": 39.001408,
       "eps": 14.23,
       "dividendYield": null,
@@ -1198,7 +1198,7 @@ const SP500_EXTRA_DATA = {
       "roe": 21.0,
       "debtRatio": 113.5,
       "week52RangePct": 14.5,
-      "pressureScore": 1.1,
+      "pressureScore": 1.2,
       "stabilityScore": 3.8
     },
     {
@@ -1207,7 +1207,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Consumer Staples",
       "sectorKo": "필수소비재",
       "marketCap": 43791380480,
-      "changePercent": 0.94103247,
+      "changePercent": 0.941032,
       "per": 32.50505,
       "eps": 0.99,
       "dividendYield": 2.89,
@@ -1218,7 +1218,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1.1,
       "debtRatio": 174.0,
       "week52RangePct": 81.7,
-      "pressureScore": 2.3,
+      "pressureScore": 2.1,
       "stabilityScore": 2.7
     },
     {
@@ -1227,7 +1227,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Industrials",
       "sectorKo": "산업재",
       "marketCap": 41187246080,
-      "changePercent": -0.71478194,
+      "changePercent": -0.714782,
       "per": 38.19808,
       "eps": 5.2,
       "dividendYield": 0.58,
@@ -1258,7 +1258,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.1,
       "debtRatio": 382.1,
       "week52RangePct": 96.8,
-      "pressureScore": 5.9,
+      "pressureScore": 5.8,
       "stabilityScore": 2.4
     },
     {
@@ -1278,7 +1278,7 @@ const SP500_EXTRA_DATA = {
       "roe": 357.6,
       "debtRatio": 32019.5,
       "week52RangePct": 88.1,
-      "pressureScore": 2.6,
+      "pressureScore": 2.7,
       "stabilityScore": 2.3
     },
     {
@@ -1298,7 +1298,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.1,
       "debtRatio": 2371.9,
       "week52RangePct": 77.9,
-      "pressureScore": 5.2,
+      "pressureScore": 5.6,
       "stabilityScore": 3.9
     },
     {
@@ -1318,7 +1318,7 @@ const SP500_EXTRA_DATA = {
       "roe": -12.0,
       "debtRatio": -222.2,
       "week52RangePct": 50.4,
-      "pressureScore": 2.9,
+      "pressureScore": 2.7,
       "stabilityScore": 2.8
     },
     {
@@ -1347,7 +1347,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 39601623040,
-      "changePercent": -3.3911746,
+      "changePercent": -3.39117,
       "per": 107.25,
       "eps": 0.68,
       "dividendYield": 2.41,
@@ -1358,8 +1358,8 @@ const SP500_EXTRA_DATA = {
       "roe": 3.6,
       "debtRatio": 123.3,
       "week52RangePct": 42.5,
-      "pressureScore": 3.7,
-      "stabilityScore": 3.4
+      "pressureScore": 3.5,
+      "stabilityScore": 3.5
     },
     {
       "symbol": "MSCI",
@@ -1387,7 +1387,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 40819027968,
-      "changePercent": -4.1630554,
+      "changePercent": -4.16306,
       "per": 42.664093,
       "eps": 2.59,
       "dividendYield": null,
@@ -1398,8 +1398,8 @@ const SP500_EXTRA_DATA = {
       "roe": 4.9,
       "debtRatio": 328.8,
       "week52RangePct": 51.0,
-      "pressureScore": 1.9,
-      "stabilityScore": 1.6
+      "pressureScore": 2.0,
+      "stabilityScore": 1.5
     },
     {
       "symbol": "ROP",
@@ -1407,7 +1407,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 42151550976,
-      "changePercent": 0.83039814,
+      "changePercent": 0.830398,
       "per": 17.750937,
       "eps": 24.01,
       "dividendYield": 0.86,
@@ -1417,7 +1417,7 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 27.7,
       "roe": 6.2,
       "debtRatio": 88.1,
-      "week52RangePct": 53.2,
+      "week52RangePct": 53.7,
       "pressureScore": 5.1,
       "stabilityScore": 3.1
     },
@@ -1438,7 +1438,7 @@ const SP500_EXTRA_DATA = {
       "roe": -0.5,
       "debtRatio": 60.4,
       "week52RangePct": 92.0,
-      "pressureScore": 4.8,
+      "pressureScore": 6.1,
       "stabilityScore": 2.8
     },
     {
@@ -1458,7 +1458,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.6,
       "debtRatio": 25.0,
       "week52RangePct": 79.2,
-      "pressureScore": 8.3,
+      "pressureScore": 7.7,
       "stabilityScore": 5.1
     },
     {
@@ -1478,7 +1478,7 @@ const SP500_EXTRA_DATA = {
       "roe": 14.8,
       "debtRatio": 1118.2,
       "week52RangePct": 58.1,
-      "pressureScore": 1.8,
+      "pressureScore": 1.9,
       "stabilityScore": 2.2
     },
     {
@@ -1518,7 +1518,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1.2,
       "debtRatio": 197.3,
       "week52RangePct": 58.9,
-      "pressureScore": 2.3,
+      "pressureScore": 2.1,
       "stabilityScore": 3.6
     },
     {
@@ -1538,8 +1538,8 @@ const SP500_EXTRA_DATA = {
       "roe": 2.2,
       "debtRatio": 327.2,
       "week52RangePct": 46.9,
-      "pressureScore": 2.9,
-      "stabilityScore": 2.6
+      "pressureScore": 2.8,
+      "stabilityScore": 2.7
     },
     {
       "symbol": "ADM",
@@ -1558,7 +1558,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.9,
       "debtRatio": 125.8,
       "week52RangePct": 79.0,
-      "pressureScore": 2.1,
+      "pressureScore": 1.8,
       "stabilityScore": 3.8
     },
     {
@@ -1567,7 +1567,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Consumer Discretionary",
       "sectorKo": "경기소비재",
       "marketCap": 39539171328,
-      "changePercent": 3.2986295,
+      "changePercent": 3.29863,
       "per": 20.706474,
       "eps": 15.91,
       "dividendYield": 0.6,
@@ -1578,8 +1578,8 @@ const SP500_EXTRA_DATA = {
       "roe": 72.6,
       "debtRatio": 2199.3,
       "week52RangePct": 92.0,
-      "pressureScore": 6.1,
-      "stabilityScore": 2.3
+      "pressureScore": 6.2,
+      "stabilityScore": 2.4
     },
     {
       "symbol": "NTAP",
@@ -1587,7 +1587,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 36640944128,
-      "changePercent": -1.8988645,
+      "changePercent": -1.89886,
       "per": 29.45197,
       "eps": 6.35,
       "dividendYield": 1.09,
@@ -1598,7 +1598,7 @@ const SP500_EXTRA_DATA = {
       "roe": 29.9,
       "debtRatio": 695.3,
       "week52RangePct": 80.9,
-      "pressureScore": 3.6,
+      "pressureScore": 6.5,
       "stabilityScore": 3.0
     },
     {
@@ -1638,7 +1638,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.3,
       "debtRatio": 153.3,
       "week52RangePct": 75.7,
-      "pressureScore": 2.3,
+      "pressureScore": 2.0,
       "stabilityScore": 3.9
     },
     {
@@ -1658,7 +1658,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.2,
       "debtRatio": 392.5,
       "week52RangePct": 67.1,
-      "pressureScore": 4.3,
+      "pressureScore": 4.7,
       "stabilityScore": 3.3
     },
     {
@@ -1678,8 +1678,8 @@ const SP500_EXTRA_DATA = {
       "roe": 6.6,
       "debtRatio": 348.1,
       "week52RangePct": 70.8,
-      "pressureScore": 2.5,
-      "stabilityScore": 3.7
+      "pressureScore": 2.7,
+      "stabilityScore": 3.6
     },
     {
       "symbol": "UAL",
@@ -1687,7 +1687,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Industrials",
       "sectorKo": "산업재",
       "marketCap": 35897409536,
-      "changePercent": -1.5926692,
+      "changePercent": -1.59267,
       "per": 10.355804,
       "eps": 10.68,
       "dividendYield": null,
@@ -1698,7 +1698,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.8,
       "debtRatio": 406.5,
       "week52RangePct": 48.0,
-      "pressureScore": 1.6,
+      "pressureScore": 1.7,
       "stabilityScore": 2.4
     },
     {
@@ -1718,7 +1718,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.0,
       "debtRatio": 232.6,
       "week52RangePct": 17.0,
-      "pressureScore": 2.5,
+      "pressureScore": 2.6,
       "stabilityScore": 2.3
     },
     {
@@ -1727,7 +1727,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Consumer Staples",
       "sectorKo": "필수소비재",
       "marketCap": 36364066816,
-      "changePercent": -0.39098045,
+      "changePercent": -0.39098,
       "per": 21.650198,
       "eps": 5.06,
       "dividendYield": 4.66,
@@ -1738,7 +1738,7 @@ const SP500_EXTRA_DATA = {
       "roe": 19.7,
       "debtRatio": 953.1,
       "week52RangePct": 43.8,
-      "pressureScore": 2.4,
+      "pressureScore": 2.0,
       "stabilityScore": 3.9
     },
     {
@@ -1758,7 +1758,7 @@ const SP500_EXTRA_DATA = {
       "roe": -7.9,
       "debtRatio": -1783.7,
       "week52RangePct": 69.6,
-      "pressureScore": 2.5,
+      "pressureScore": 2.4,
       "stabilityScore": 2.3
     },
     {
@@ -1798,7 +1798,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.8,
       "debtRatio": 94.0,
       "week52RangePct": 28.1,
-      "pressureScore": 0.7,
+      "pressureScore": 0.8,
       "stabilityScore": 3.0
     },
     {
@@ -1818,7 +1818,7 @@ const SP500_EXTRA_DATA = {
       "roe": 14.0,
       "debtRatio": 677.0,
       "week52RangePct": 15.9,
-      "pressureScore": 0.5,
+      "pressureScore": 0.6,
       "stabilityScore": 2.0
     },
     {
@@ -1847,7 +1847,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Health Care",
       "sectorKo": "헬스케어",
       "marketCap": 34271905792,
-      "changePercent": 1.7135164,
+      "changePercent": 1.71352,
       "per": 35.897232,
       "eps": 2.53,
       "dividendYield": null,
@@ -1858,7 +1858,7 @@ const SP500_EXTRA_DATA = {
       "roe": 9.5,
       "debtRatio": 146.3,
       "week52RangePct": 95.4,
-      "pressureScore": 5.7,
+      "pressureScore": 5.8,
       "stabilityScore": 3.9
     },
     {
@@ -1878,7 +1878,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.9,
       "debtRatio": 684.6,
       "week52RangePct": 77.0,
-      "pressureScore": 2.5,
+      "pressureScore": 2.8,
       "stabilityScore": 3.8
     },
     {
@@ -1898,7 +1898,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.1,
       "debtRatio": 269.5,
       "week52RangePct": 19.3,
-      "pressureScore": 0.9,
+      "pressureScore": 1.2,
       "stabilityScore": 3.7
     },
     {
@@ -1907,7 +1907,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Financials",
       "sectorKo": "금융",
       "marketCap": 34185418752,
-      "changePercent": 0.35586873,
+      "changePercent": 0.355869,
       "per": 13.015386,
       "eps": 1.3,
       "dividendYield": 3.68,
@@ -1918,7 +1918,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.2,
       "debtRatio": 770.4,
       "week52RangePct": 44.4,
-      "pressureScore": 3.9,
+      "pressureScore": 4.1,
       "stabilityScore": 3.5
     },
     {
@@ -1938,7 +1938,7 @@ const SP500_EXTRA_DATA = {
       "roe": 6.1,
       "debtRatio": 35.3,
       "week52RangePct": 57.4,
-      "pressureScore": 6.6,
+      "pressureScore": 5.2,
       "stabilityScore": 3.9
     },
     {
@@ -1947,7 +1947,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Financials",
       "sectorKo": "금융",
       "marketCap": 33704437760,
-      "changePercent": 0.08099858,
+      "changePercent": 0.0809986,
       "per": 7.733959,
       "eps": 12.78,
       "dividendYield": null,
@@ -1958,7 +1958,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.4,
       "debtRatio": 254.5,
       "week52RangePct": 66.5,
-      "pressureScore": 2.6,
+      "pressureScore": 1.8,
       "stabilityScore": 4.5
     },
     {
@@ -1967,7 +1967,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Health Care",
       "sectorKo": "헬스케어",
       "marketCap": 32627111936,
-      "changePercent": -1.0416733,
+      "changePercent": -1.04167,
       "per": 16.526497,
       "eps": 4.34,
       "dividendYield": 0.19,
@@ -1978,7 +1978,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.1,
       "debtRatio": 237.2,
       "week52RangePct": 41.8,
-      "pressureScore": 3.1,
+      "pressureScore": 3.2,
       "stabilityScore": 2.5
     },
     {
@@ -1998,7 +1998,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.7,
       "debtRatio": 641.4,
       "week52RangePct": 92.3,
-      "pressureScore": 6.4,
+      "pressureScore": 6.2,
       "stabilityScore": 3.7
     },
     {
@@ -2007,7 +2007,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Financials",
       "sectorKo": "금융",
       "marketCap": 34174283776,
-      "changePercent": 0.27915874,
+      "changePercent": 0.279159,
       "per": 16.033476,
       "eps": 11.65,
       "dividendYield": 1.76,
@@ -2018,7 +2018,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.9,
       "debtRatio": 1237.9,
       "week52RangePct": 88.0,
-      "pressureScore": 6.1,
+      "pressureScore": 6.0,
       "stabilityScore": 4.8
     },
     {
@@ -2038,7 +2038,7 @@ const SP500_EXTRA_DATA = {
       "roe": 0.8,
       "debtRatio": 49.3,
       "week52RangePct": 32.7,
-      "pressureScore": 0.6,
+      "pressureScore": 0.7,
       "stabilityScore": 3.0
     },
     {
@@ -2058,8 +2058,8 @@ const SP500_EXTRA_DATA = {
       "roe": 9.9,
       "debtRatio": 149.0,
       "week52RangePct": 45.3,
-      "pressureScore": 2.8,
-      "stabilityScore": 2.6
+      "pressureScore": 2.7,
+      "stabilityScore": 2.5
     },
     {
       "symbol": "CCI",
@@ -2098,7 +2098,7 @@ const SP500_EXTRA_DATA = {
       "roe": 20.8,
       "debtRatio": 1700.1,
       "week52RangePct": 46.7,
-      "pressureScore": 1.7,
+      "pressureScore": 1.6,
       "stabilityScore": 2.1
     },
     {
@@ -2107,7 +2107,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Materials",
       "sectorKo": "소재",
       "marketCap": 33634086912,
-      "changePercent": -0.4982204,
+      "changePercent": -0.49822,
       "per": 21.313805,
       "eps": 11.01,
       "dividendYield": 0.9,
@@ -2118,7 +2118,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.7,
       "debtRatio": 82.3,
       "week52RangePct": 66.6,
-      "pressureScore": 4.3,
+      "pressureScore": 4.8,
       "stabilityScore": 2.0
     },
     {
@@ -2138,7 +2138,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1.8,
       "debtRatio": 111.7,
       "week52RangePct": 51.9,
-      "pressureScore": 0.9,
+      "pressureScore": 0.8,
       "stabilityScore": 3.6
     },
     {
@@ -2177,7 +2177,7 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 40.5,
       "roe": 22.0,
       "debtRatio": 378.9,
-      "week52RangePct": 7.4,
+      "week52RangePct": 7.5,
       "pressureScore": 0.2,
       "stabilityScore": 3.1
     },
@@ -2198,7 +2198,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.8,
       "debtRatio": 267.5,
       "week52RangePct": 88.8,
-      "pressureScore": 2.8,
+      "pressureScore": 3.2,
       "stabilityScore": 1.0
     },
     {
@@ -2207,7 +2207,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Health Care",
       "sectorKo": "헬스케어",
       "marketCap": 32284248064,
-      "changePercent": -1.3544018,
+      "changePercent": -1.3544,
       "per": 38.809944,
       "eps": 5.63,
       "dividendYield": null,
@@ -2217,8 +2217,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 17.6,
       "roe": 0.5,
       "debtRatio": 70.2,
-      "week52RangePct": 95.2,
-      "pressureScore": 2.2,
+      "week52RangePct": 95.1,
+      "pressureScore": 2.4,
       "stabilityScore": 2.8
     },
     {
@@ -2227,7 +2227,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Financials",
       "sectorKo": "금융",
       "marketCap": 31924727808,
-      "changePercent": 1.2279916,
+      "changePercent": 1.22799,
       "per": 21.271658,
       "eps": 16.16,
       "dividendYield": 1.13,
@@ -2238,8 +2238,8 @@ const SP500_EXTRA_DATA = {
       "roe": 3.0,
       "debtRatio": 296.4,
       "week52RangePct": 91.9,
-      "pressureScore": 5.4,
-      "stabilityScore": 3.3
+      "pressureScore": 5.5,
+      "stabilityScore": 3.2
     },
     {
       "symbol": "CPRT",
@@ -2258,7 +2258,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.6,
       "debtRatio": 9.8,
       "week52RangePct": 26.5,
-      "pressureScore": 0.8,
+      "pressureScore": 0.9,
       "stabilityScore": 4.9
     },
     {
@@ -2278,7 +2278,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.5,
       "debtRatio": 78.1,
       "week52RangePct": 32.0,
-      "pressureScore": 2.9,
+      "pressureScore": 3.5,
       "stabilityScore": 2.4
     },
     {
@@ -2287,7 +2287,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Consumer Staples",
       "sectorKo": "필수소비재",
       "marketCap": 27956099072,
-      "changePercent": -1.0361856,
+      "changePercent": -1.03619,
       "per": 39.42954,
       "eps": 19.16,
       "dividendYield": 0.34,
@@ -2298,7 +2298,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.1,
       "debtRatio": 126.1,
       "week52RangePct": 60.6,
-      "pressureScore": 2.1,
+      "pressureScore": 2.0,
       "stabilityScore": 2.1
     },
     {
@@ -2318,7 +2318,7 @@ const SP500_EXTRA_DATA = {
       "roe": 59.6,
       "debtRatio": 3272.3,
       "week52RangePct": 4.2,
-      "pressureScore": 0.6,
+      "pressureScore": 0.4,
       "stabilityScore": 2.3
     },
     {
@@ -2327,9 +2327,9 @@ const SP500_EXTRA_DATA = {
       "sector": "Consumer Staples",
       "sectorKo": "필수소비재",
       "marketCap": 30475671552,
-      "changePercent": 2.2682118,
+      "changePercent": 2.26821,
       "per": null,
-      "eps": -2.92,
+      "eps": -2.88,
       "dividendYield": 6.37,
       "revenueGrowth": -3.5,
       "netIncomeGrowth": -313.05,
@@ -2338,7 +2338,7 @@ const SP500_EXTRA_DATA = {
       "roe": -15.2,
       "debtRatio": 102.6,
       "week52RangePct": 66.1,
-      "pressureScore": 2.6,
+      "pressureScore": 1.5,
       "stabilityScore": 1.7
     },
     {
@@ -2358,7 +2358,7 @@ const SP500_EXTRA_DATA = {
       "roe": 7.7,
       "debtRatio": 10.7,
       "week52RangePct": 20.6,
-      "pressureScore": 3.1,
+      "pressureScore": 3.2,
       "stabilityScore": 4.6
     },
     {
@@ -2378,7 +2378,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.3,
       "debtRatio": 39.9,
       "week52RangePct": 64.7,
-      "pressureScore": 1.4,
+      "pressureScore": 1.6,
       "stabilityScore": 2.8
     },
     {
@@ -2399,7 +2399,7 @@ const SP500_EXTRA_DATA = {
       "debtRatio": 134.2,
       "week52RangePct": 66.6,
       "pressureScore": 1.4,
-      "stabilityScore": 2.6
+      "stabilityScore": 2.7
     },
     {
       "symbol": "CFG",
@@ -2418,7 +2418,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.2,
       "debtRatio": 793.1,
       "week52RangePct": 79.5,
-      "pressureScore": 3.2,
+      "pressureScore": 3.4,
       "stabilityScore": 3.4
     },
     {
@@ -2438,7 +2438,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.6,
       "debtRatio": 266.8,
       "week52RangePct": 43.9,
-      "pressureScore": 0.6,
+      "pressureScore": 0.8,
       "stabilityScore": 3.4
     },
     {
@@ -2458,7 +2458,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1.8,
       "debtRatio": 64.0,
       "week52RangePct": 1.5,
-      "pressureScore": 0.9,
+      "pressureScore": 1.2,
       "stabilityScore": 3.6
     },
     {
@@ -2467,7 +2467,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Communication Services",
       "sectorKo": "커뮤니케이션",
       "marketCap": 28766330880,
-      "changePercent": 1.7851784,
+      "changePercent": 1.78518,
       "per": 17.817709,
       "eps": 3.84,
       "dividendYield": 0.86,
@@ -2478,7 +2478,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.9,
       "debtRatio": 91.7,
       "week52RangePct": 71.6,
-      "pressureScore": 5.3,
+      "pressureScore": 4.7,
       "stabilityScore": 2.6
     },
     {
@@ -2487,7 +2487,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 28268425216,
-      "changePercent": -2.9278107,
+      "changePercent": -2.92781,
       "per": 47.45752,
       "eps": 1.53,
       "dividendYield": null,
@@ -2498,7 +2498,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.1,
       "debtRatio": 86.5,
       "week52RangePct": 31.0,
-      "pressureScore": 1.2,
+      "pressureScore": 1.1,
       "stabilityScore": 2.1
     },
     {
@@ -2518,7 +2518,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1.6,
       "debtRatio": 107.0,
       "week52RangePct": 20.2,
-      "pressureScore": 0.8,
+      "pressureScore": 0.9,
       "stabilityScore": 4.0
     },
     {
@@ -2558,8 +2558,8 @@ const SP500_EXTRA_DATA = {
       "roe": 12.4,
       "debtRatio": 170.6,
       "week52RangePct": 77.8,
-      "pressureScore": 5.0,
-      "stabilityScore": 4.8
+      "pressureScore": 5.1,
+      "stabilityScore": 4.7
     },
     {
       "symbol": "FISV",
@@ -2567,7 +2567,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Financials",
       "sectorKo": "금융",
       "marketCap": 28279353344,
-      "changePercent": 1.1411154,
+      "changePercent": 1.14112,
       "per": 10.18774,
       "eps": 5.22,
       "dividendYield": null,
@@ -2598,7 +2598,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1816.3,
       "debtRatio": 28527.8,
       "week52RangePct": 74.8,
-      "pressureScore": 4.3,
+      "pressureScore": 5.1,
       "stabilityScore": 3.9
     },
     {
@@ -2607,7 +2607,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 30290919424,
-      "changePercent": 0.43915087,
+      "changePercent": 0.439151,
       "per": 13.74249,
       "eps": 4.66,
       "dividendYield": 2.07,
@@ -2618,7 +2618,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.4,
       "debtRatio": 44.0,
       "week52RangePct": 54.0,
-      "pressureScore": 3.5,
+      "pressureScore": 4.1,
       "stabilityScore": 3.4
     },
     {
@@ -2638,8 +2638,8 @@ const SP500_EXTRA_DATA = {
       "roe": 3.2,
       "debtRatio": 439.7,
       "week52RangePct": 61.3,
-      "pressureScore": 1.6,
-      "stabilityScore": 3.1
+      "pressureScore": 1.9,
+      "stabilityScore": 3.0
     },
     {
       "symbol": "CPAY",
@@ -2658,7 +2658,7 @@ const SP500_EXTRA_DATA = {
       "roe": 10.0,
       "debtRatio": 649.6,
       "week52RangePct": 89.6,
-      "pressureScore": 5.3,
+      "pressureScore": 5.7,
       "stabilityScore": 3.1
     },
     {
@@ -2678,7 +2678,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.5,
       "debtRatio": 115.1,
       "week52RangePct": 93.1,
-      "pressureScore": 5.7,
+      "pressureScore": 6.0,
       "stabilityScore": 2.5
     },
     {
@@ -2698,7 +2698,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.0,
       "debtRatio": 258.5,
       "week52RangePct": 44.0,
-      "pressureScore": 3.2,
+      "pressureScore": 3.6,
       "stabilityScore": 2.4
     },
     {
@@ -2718,7 +2718,7 @@ const SP500_EXTRA_DATA = {
       "roe": -7.4,
       "debtRatio": -289.0,
       "week52RangePct": 10.2,
-      "pressureScore": 1.4,
+      "pressureScore": 1.3,
       "stabilityScore": 2.3
     },
     {
@@ -2738,7 +2738,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.1,
       "debtRatio": 77.8,
       "week52RangePct": 50.5,
-      "pressureScore": 1.5,
+      "pressureScore": 1.3,
       "stabilityScore": 3.2
     },
     {
@@ -2758,8 +2758,8 @@ const SP500_EXTRA_DATA = {
       "roe": -312.5,
       "debtRatio": -29916.7,
       "week52RangePct": 88.6,
-      "pressureScore": 5.3,
-      "stabilityScore": 2.4
+      "pressureScore": 6.0,
+      "stabilityScore": 2.3
     },
     {
       "symbol": "DGX",
@@ -2778,7 +2778,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.3,
       "debtRatio": 120.3,
       "week52RangePct": 94.2,
-      "pressureScore": 5.9,
+      "pressureScore": 6.3,
       "stabilityScore": 3.0
     },
     {
@@ -2818,7 +2818,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.7,
       "debtRatio": 212.5,
       "week52RangePct": 70.7,
-      "pressureScore": 3.8,
+      "pressureScore": 3.7,
       "stabilityScore": 4.3
     },
     {
@@ -2838,7 +2838,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.2,
       "debtRatio": 338.6,
       "week52RangePct": 31.8,
-      "pressureScore": 1.3,
+      "pressureScore": 1.5,
       "stabilityScore": 2.9
     },
     {
@@ -2858,7 +2858,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.5,
       "debtRatio": 64.1,
       "week52RangePct": 12.3,
-      "pressureScore": 1.2,
+      "pressureScore": 1.5,
       "stabilityScore": 2.3
     },
     {
@@ -2878,7 +2878,7 @@ const SP500_EXTRA_DATA = {
       "roe": 9.2,
       "debtRatio": 11.2,
       "week52RangePct": 34.2,
-      "pressureScore": 3.2,
+      "pressureScore": 3.3,
       "stabilityScore": 6.0
     },
     {
@@ -2898,7 +2898,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.7,
       "debtRatio": 290.5,
       "week52RangePct": 59.4,
-      "pressureScore": 1.9,
+      "pressureScore": 1.8,
       "stabilityScore": 3.2
     },
     {
@@ -2907,7 +2907,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Communication Services",
       "sectorKo": "커뮤니케이션",
       "marketCap": 25781225472,
-      "changePercent": 1.5231757,
+      "changePercent": 1.52318,
       "per": 15.96875,
       "eps": 3.84,
       "dividendYield": 0.96,
@@ -2918,7 +2918,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.9,
       "debtRatio": 91.7,
       "week52RangePct": 71.6,
-      "pressureScore": 4.2,
+      "pressureScore": 3.3,
       "stabilityScore": 2.6
     },
     {
@@ -2958,7 +2958,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.0,
       "debtRatio": 755.8,
       "week52RangePct": 78.1,
-      "pressureScore": 1.4,
+      "pressureScore": 1.6,
       "stabilityScore": 3.7
     },
     {
@@ -2967,7 +2967,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Health Care",
       "sectorKo": "헬스케어",
       "marketCap": 25209518080,
-      "changePercent": -2.6381676,
+      "changePercent": -2.63817,
       "per": 15.843312,
       "eps": 7.85,
       "dividendYield": null,
@@ -2998,7 +2998,7 @@ const SP500_EXTRA_DATA = {
       "roe": 0.5,
       "debtRatio": 150.5,
       "week52RangePct": 78.1,
-      "pressureScore": 3.7,
+      "pressureScore": 3.9,
       "stabilityScore": 2.2
     },
     {
@@ -3027,7 +3027,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Industrials",
       "sectorKo": "산업재",
       "marketCap": 24510715904,
-      "changePercent": -0.89601564,
+      "changePercent": -0.896016,
       "per": 37.130867,
       "eps": 7.03,
       "dividendYield": 0.68,
@@ -3038,7 +3038,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.0,
       "debtRatio": 117.2,
       "week52RangePct": 77.2,
-      "pressureScore": 2.4,
+      "pressureScore": 2.5,
       "stabilityScore": 2.4
     },
     {
@@ -3058,7 +3058,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.2,
       "debtRatio": 621.6,
       "week52RangePct": 58.3,
-      "pressureScore": 2.7,
+      "pressureScore": 3.3,
       "stabilityScore": 3.0
     },
     {
@@ -3067,7 +3067,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Financials",
       "sectorKo": "금융",
       "marketCap": 26393620480,
-      "changePercent": -0.3188054,
+      "changePercent": -0.318805,
       "per": 8.119452,
       "eps": 21.18,
       "dividendYield": 2.18,
@@ -3078,7 +3078,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1.7,
       "debtRatio": 162.3,
       "week52RangePct": 49.0,
-      "pressureScore": 2.9,
+      "pressureScore": 2.7,
       "stabilityScore": 4.9
     },
     {
@@ -3098,7 +3098,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.1,
       "debtRatio": 311.7,
       "week52RangePct": 30.5,
-      "pressureScore": 2.0,
+      "pressureScore": 2.1,
       "stabilityScore": 3.1
     },
     {
@@ -3107,7 +3107,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 26390470656,
-      "changePercent": -0.9500282,
+      "changePercent": -0.950028,
       "per": 31.731522,
       "eps": 9.2,
       "dividendYield": 1.1,
@@ -3118,7 +3118,7 @@ const SP500_EXTRA_DATA = {
       "roe": -9.6,
       "debtRatio": -180.0,
       "week52RangePct": 80.2,
-      "pressureScore": 1.6,
+      "pressureScore": 1.2,
       "stabilityScore": 3.9
     },
     {
@@ -3138,7 +3138,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.6,
       "debtRatio": 364.4,
       "week52RangePct": 34.6,
-      "pressureScore": 1.7,
+      "pressureScore": 1.6,
       "stabilityScore": 3.5
     },
     {
@@ -3158,7 +3158,7 @@ const SP500_EXTRA_DATA = {
       "roe": -5.8,
       "debtRatio": -149.7,
       "week52RangePct": 25.1,
-      "pressureScore": 2.6,
+      "pressureScore": 2.8,
       "stabilityScore": 3.0
     },
     {
@@ -3167,7 +3167,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Consumer Staples",
       "sectorKo": "필수소비재",
       "marketCap": 24065462272,
-      "changePercent": 0.99212164,
+      "changePercent": 0.992122,
       "per": 15.698897,
       "eps": 8.17,
       "dividendYield": null,
@@ -3178,7 +3178,7 @@ const SP500_EXTRA_DATA = {
       "roe": 9.9,
       "debtRatio": 294.2,
       "week52RangePct": 75.5,
-      "pressureScore": 3.5,
+      "pressureScore": 3.8,
       "stabilityScore": 2.5
     },
     {
@@ -3198,7 +3198,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.2,
       "debtRatio": 165.2,
       "week52RangePct": 52.0,
-      "pressureScore": 1.0,
+      "pressureScore": 0.9,
       "stabilityScore": 3.0
     },
     {
@@ -3207,7 +3207,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Communication Services",
       "sectorKo": "커뮤니케이션",
       "marketCap": 25226213376,
-      "changePercent": 0.42788842,
+      "changePercent": 0.427888,
       "per": null,
       "eps": -24.88,
       "dividendYield": null,
@@ -3217,7 +3217,7 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 14.3,
       "roe": 59.8,
       "debtRatio": 178.2,
-      "week52RangePct": 33.6,
+      "week52RangePct": 30.5,
       "pressureScore": 0.0,
       "stabilityScore": 1.8
     },
@@ -3238,7 +3238,7 @@ const SP500_EXTRA_DATA = {
       "roe": 18.3,
       "debtRatio": 482.7,
       "week52RangePct": 76.7,
-      "pressureScore": 2.5,
+      "pressureScore": 2.1,
       "stabilityScore": 2.5
     },
     {
@@ -3258,7 +3258,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.2,
       "debtRatio": 36.3,
       "week52RangePct": 70.1,
-      "pressureScore": 2.4,
+      "pressureScore": 2.9,
       "stabilityScore": 4.7
     },
     {
@@ -3298,7 +3298,7 @@ const SP500_EXTRA_DATA = {
       "roe": 0.1,
       "debtRatio": 171.4,
       "week52RangePct": 88.3,
-      "pressureScore": 7.5,
+      "pressureScore": 8.4,
       "stabilityScore": 2.8
     },
     {
@@ -3318,7 +3318,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.6,
       "debtRatio": 40.3,
       "week52RangePct": 55.7,
-      "pressureScore": 1.6,
+      "pressureScore": 1.3,
       "stabilityScore": 3.0
     },
     {
@@ -3347,7 +3347,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Industrials",
       "sectorKo": "산업재",
       "marketCap": 25126057984,
-      "changePercent": 0.39262903,
+      "changePercent": 0.392629,
       "per": 29.457756,
       "eps": 6.51,
       "dividendYield": 1.05,
@@ -3358,7 +3358,7 @@ const SP500_EXTRA_DATA = {
       "roe": -19.2,
       "debtRatio": -478.1,
       "week52RangePct": 30.4,
-      "pressureScore": 2.1,
+      "pressureScore": 2.3,
       "stabilityScore": 2.8
     },
     {
@@ -3377,7 +3377,7 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 25.2,
       "roe": 2.3,
       "debtRatio": 137.3,
-      "week52RangePct": 44.6,
+      "week52RangePct": 45.0,
       "pressureScore": 7.0,
       "stabilityScore": 2.5
     },
@@ -3387,7 +3387,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 23986053120,
-      "changePercent": -3.5881362,
+      "changePercent": -3.58814,
       "per": 11.374234,
       "eps": 3.26,
       "dividendYield": null,
@@ -3418,7 +3418,7 @@ const SP500_EXTRA_DATA = {
       "roe": 7.8,
       "debtRatio": 176.3,
       "week52RangePct": 62.1,
-      "pressureScore": 4.4,
+      "pressureScore": 4.2,
       "stabilityScore": 2.6
     },
     {
@@ -3438,7 +3438,7 @@ const SP500_EXTRA_DATA = {
       "roe": 6.1,
       "debtRatio": 406.9,
       "week52RangePct": 94.4,
-      "pressureScore": 6.5,
+      "pressureScore": 6.1,
       "stabilityScore": 2.4
     },
     {
@@ -3447,7 +3447,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Financials",
       "sectorKo": "금융",
       "marketCap": 23729254400,
-      "changePercent": -0.99679846,
+      "changePercent": -0.996798,
       "per": 11.168674,
       "eps": 9.96,
       "dividendYield": 4.63,
@@ -3458,7 +3458,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.7,
       "debtRatio": 28.9,
       "week52RangePct": 70.7,
-      "pressureScore": 2.2,
+      "pressureScore": 2.6,
       "stabilityScore": 5.1
     },
     {
@@ -3478,7 +3478,7 @@ const SP500_EXTRA_DATA = {
       "roe": 10.4,
       "debtRatio": 722.7,
       "week52RangePct": 0.6,
-      "pressureScore": 1.7,
+      "pressureScore": 1.8,
       "stabilityScore": 2.0
     },
     {
@@ -3487,7 +3487,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Financials",
       "sectorKo": "금융",
       "marketCap": 23853398016,
-      "changePercent": -0.67753816,
+      "changePercent": -0.677538,
       "per": 15.870371,
       "eps": 7.02,
       "dividendYield": 3.0,
@@ -3498,7 +3498,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.3,
       "debtRatio": 2798.9,
       "week52RangePct": 86.6,
-      "pressureScore": 2.1,
+      "pressureScore": 2.3,
       "stabilityScore": 3.4
     },
     {
@@ -3518,7 +3518,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.2,
       "debtRatio": 115.2,
       "week52RangePct": 80.7,
-      "pressureScore": 1.5,
+      "pressureScore": 1.4,
       "stabilityScore": 3.1
     },
     {
@@ -3538,7 +3538,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.5,
       "debtRatio": 278.8,
       "week52RangePct": 44.6,
-      "pressureScore": 2.2,
+      "pressureScore": 2.4,
       "stabilityScore": 2.0
     },
     {
@@ -3558,7 +3558,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.6,
       "debtRatio": 843.9,
       "week52RangePct": 71.6,
-      "pressureScore": 1.6,
+      "pressureScore": 1.8,
       "stabilityScore": 3.1
     },
     {
@@ -3578,7 +3578,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.8,
       "debtRatio": 48.8,
       "week52RangePct": 52.0,
-      "pressureScore": 2.8,
+      "pressureScore": 2.6,
       "stabilityScore": 2.5
     },
     {
@@ -3607,7 +3607,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 21973274624,
-      "changePercent": -2.6844356,
+      "changePercent": -2.68444,
       "per": 12.605427,
       "eps": 16.22,
       "dividendYield": null,
@@ -3638,7 +3638,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.2,
       "debtRatio": 170.4,
       "week52RangePct": 36.0,
-      "pressureScore": 4.0,
+      "pressureScore": 3.9,
       "stabilityScore": 2.3
     },
     {
@@ -3658,7 +3658,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.1,
       "debtRatio": 136.3,
       "week52RangePct": 71.4,
-      "pressureScore": 3.4,
+      "pressureScore": 3.7,
       "stabilityScore": 2.5
     },
     {
@@ -3678,7 +3678,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.4,
       "debtRatio": 222.5,
       "week52RangePct": 70.9,
-      "pressureScore": 6.9,
+      "pressureScore": 6.7,
       "stabilityScore": 2.4
     },
     {
@@ -3698,7 +3698,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.3,
       "debtRatio": 351.5,
       "week52RangePct": 56.4,
-      "pressureScore": 1.6,
+      "pressureScore": 1.5,
       "stabilityScore": 4.1
     },
     {
@@ -3707,7 +3707,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Consumer Discretionary",
       "sectorKo": "경기소비재",
       "marketCap": 22246969344,
-      "changePercent": -4.184406,
+      "changePercent": -4.18441,
       "per": 18.85933,
       "eps": 27.44,
       "dividendYield": null,
@@ -3718,8 +3718,8 @@ const SP500_EXTRA_DATA = {
       "roe": 13.2,
       "debtRatio": 167.2,
       "week52RangePct": 27.2,
-      "pressureScore": 3.1,
-      "stabilityScore": 2.5
+      "pressureScore": 2.8,
+      "stabilityScore": 2.6
     },
     {
       "symbol": "EXE",
@@ -3727,7 +3727,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Energy",
       "sectorKo": "에너지",
       "marketCap": 23482703872,
-      "changePercent": 0.16326904,
+      "changePercent": 0.163269,
       "per": 8.462069,
       "eps": 11.6,
       "dividendYield": 2.35,
@@ -3738,7 +3738,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.7,
       "debtRatio": 44.4,
       "week52RangePct": 31.6,
-      "pressureScore": 1.3,
+      "pressureScore": 1.4,
       "stabilityScore": 2.7
     },
     {
@@ -3778,7 +3778,7 @@ const SP500_EXTRA_DATA = {
       "roe": -0.1,
       "debtRatio": 152.7,
       "week52RangePct": 47.9,
-      "pressureScore": 3.1,
+      "pressureScore": 3.4,
       "stabilityScore": 1.6
     },
     {
@@ -3798,7 +3798,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.2,
       "debtRatio": 222.0,
       "week52RangePct": 52.1,
-      "pressureScore": 2.0,
+      "pressureScore": 2.1,
       "stabilityScore": 1.9
     },
     {
@@ -3807,7 +3807,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 22324701184,
-      "changePercent": -3.8954735,
+      "changePercent": -3.89547,
       "per": 31.388533,
       "eps": 12.56,
       "dividendYield": null,
@@ -3818,7 +3818,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.4,
       "debtRatio": 77.1,
       "week52RangePct": 80.7,
-      "pressureScore": 1.8,
+      "pressureScore": 2.6,
       "stabilityScore": 5.0
     },
     {
@@ -3838,8 +3838,8 @@ const SP500_EXTRA_DATA = {
       "roe": 4.2,
       "debtRatio": 184.1,
       "week52RangePct": 67.1,
-      "pressureScore": 4.0,
-      "stabilityScore": 3.2
+      "pressureScore": 4.1,
+      "stabilityScore": 3.3
     },
     {
       "symbol": "IFF",
@@ -3858,7 +3858,7 @@ const SP500_EXTRA_DATA = {
       "roe": 0.4,
       "debtRatio": 79.7,
       "week52RangePct": 95.5,
-      "pressureScore": 3.4,
+      "pressureScore": 2.7,
       "stabilityScore": 1.9
     },
     {
@@ -3878,7 +3878,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1.2,
       "debtRatio": 312.1,
       "week52RangePct": 2.5,
-      "pressureScore": 0.7,
+      "pressureScore": 0.9,
       "stabilityScore": 3.0
     },
     {
@@ -3898,8 +3898,8 @@ const SP500_EXTRA_DATA = {
       "roe": -27.3,
       "debtRatio": 307.2,
       "week52RangePct": 50.1,
-      "pressureScore": 4.8,
-      "stabilityScore": 1.7
+      "pressureScore": 4.0,
+      "stabilityScore": 1.6
     },
     {
       "symbol": "FIS",
@@ -3918,8 +3918,8 @@ const SP500_EXTRA_DATA = {
       "roe": 1.4,
       "debtRatio": 175.0,
       "week52RangePct": 12.2,
-      "pressureScore": 3.5,
-      "stabilityScore": 1.9
+      "pressureScore": 3.7,
+      "stabilityScore": 1.8
     },
     {
       "symbol": "LEN",
@@ -3957,8 +3957,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 24.6,
       "roe": 14.0,
       "debtRatio": 214.9,
-      "week52RangePct": 39.9,
-      "pressureScore": 4.8,
+      "week52RangePct": 40.5,
+      "pressureScore": 5.4,
       "stabilityScore": 2.4
     },
     {
@@ -3978,8 +3978,8 @@ const SP500_EXTRA_DATA = {
       "roe": 1.0,
       "debtRatio": 96.4,
       "week52RangePct": 25.6,
-      "pressureScore": 0.3,
-      "stabilityScore": 2.2
+      "pressureScore": 0.7,
+      "stabilityScore": 2.1
     },
     {
       "symbol": "FDXF",
@@ -4018,7 +4018,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.3,
       "debtRatio": 42.6,
       "week52RangePct": 70.0,
-      "pressureScore": 1.6,
+      "pressureScore": 1.8,
       "stabilityScore": 4.0
     },
     {
@@ -4027,7 +4027,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Communication Services",
       "sectorKo": "커뮤니케이션",
       "marketCap": 20704516096,
-      "changePercent": 3.5733466,
+      "changePercent": 3.57335,
       "per": 3.9973977,
       "eps": 38.43,
       "dividendYield": null,
@@ -4038,7 +4038,7 @@ const SP500_EXTRA_DATA = {
       "roe": 7.6,
       "debtRatio": 788.8,
       "week52RangePct": 24.1,
-      "pressureScore": 1.5,
+      "pressureScore": 0.6,
       "stabilityScore": 2.0
     },
     {
@@ -4058,7 +4058,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1.2,
       "debtRatio": 138.7,
       "week52RangePct": 70.2,
-      "pressureScore": 2.5,
+      "pressureScore": 1.8,
       "stabilityScore": 3.9
     },
     {
@@ -4078,7 +4078,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.3,
       "debtRatio": 325.3,
       "week52RangePct": 40.2,
-      "pressureScore": 1.7,
+      "pressureScore": 1.8,
       "stabilityScore": 2.4
     },
     {
@@ -4098,7 +4098,7 @@ const SP500_EXTRA_DATA = {
       "roe": 12.6,
       "debtRatio": 107.5,
       "week52RangePct": 75.7,
-      "pressureScore": 4.2,
+      "pressureScore": 3.9,
       "stabilityScore": 2.8
     },
     {
@@ -4118,7 +4118,7 @@ const SP500_EXTRA_DATA = {
       "roe": 0.5,
       "debtRatio": 267.9,
       "week52RangePct": 19.7,
-      "pressureScore": 1.3,
+      "pressureScore": 1.5,
       "stabilityScore": 3.1
     },
     {
@@ -4127,7 +4127,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Real Estate",
       "sectorKo": "부동산",
       "marketCap": 20257523712,
-      "changePercent": 2.134141,
+      "changePercent": 2.13414,
       "per": 20.598703,
       "eps": 9.27,
       "dividendYield": 2.67,
@@ -4138,7 +4138,7 @@ const SP500_EXTRA_DATA = {
       "roe": -4.3,
       "debtRatio": -351.8,
       "week52RangePct": 46.0,
-      "pressureScore": 0.5,
+      "pressureScore": 0.6,
       "stabilityScore": 3.3
     },
     {
@@ -4158,7 +4158,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1.6,
       "debtRatio": 80.5,
       "week52RangePct": 78.5,
-      "pressureScore": 4.5,
+      "pressureScore": 4.1,
       "stabilityScore": 2.4
     },
     {
@@ -4167,7 +4167,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Communication Services",
       "sectorKo": "커뮤니케이션",
       "marketCap": 18720022528,
-      "changePercent": -1.3306943,
+      "changePercent": -1.33069,
       "per": 33.83495,
       "eps": 1.03,
       "dividendYield": 0.57,
@@ -4178,7 +4178,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.1,
       "debtRatio": 74.0,
       "week52RangePct": 91.1,
-      "pressureScore": 4.9,
+      "pressureScore": 4.5,
       "stabilityScore": 2.4
     },
     {
@@ -4187,7 +4187,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Health Care",
       "sectorKo": "헬스케어",
       "marketCap": 18767974400,
-      "changePercent": -3.2563605,
+      "changePercent": -3.25636,
       "per": null,
       "eps": -0.37,
       "dividendYield": 2.84,
@@ -4198,8 +4198,8 @@ const SP500_EXTRA_DATA = {
       "roe": -0.8,
       "debtRatio": 145.7,
       "week52RangePct": 77.1,
-      "pressureScore": 1.2,
-      "stabilityScore": 1.7
+      "pressureScore": 1.9,
+      "stabilityScore": 1.6
     },
     {
       "symbol": "DD",
@@ -4218,7 +4218,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1.1,
       "debtRatio": 51.4,
       "week52RangePct": 67.9,
-      "pressureScore": 0.7,
+      "pressureScore": 0.8,
       "stabilityScore": 2.3
     },
     {
@@ -4227,7 +4227,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Utilities",
       "sectorKo": "유틸리티",
       "marketCap": 18595241984,
-      "changePercent": -0.94570947,
+      "changePercent": -0.945709,
       "per": 20.52163,
       "eps": 3.93,
       "dividendYield": 3.41,
@@ -4238,7 +4238,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.1,
       "debtRatio": 245.3,
       "week52RangePct": 56.2,
-      "pressureScore": 1.4,
+      "pressureScore": 1.5,
       "stabilityScore": 3.3
     },
     {
@@ -4247,7 +4247,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Industrials",
       "sectorKo": "산업재",
       "marketCap": 18085488640,
-      "changePercent": -1.8891307,
+      "changePercent": -1.88913,
       "per": 32.82002,
       "eps": 9.89,
       "dividendYield": 0.99,
@@ -4258,8 +4258,8 @@ const SP500_EXTRA_DATA = {
       "roe": 3.7,
       "debtRatio": 86.3,
       "week52RangePct": 87.8,
-      "pressureScore": 4.2,
-      "stabilityScore": 2.7
+      "pressureScore": 4.9,
+      "stabilityScore": 2.6
     },
     {
       "symbol": "GPC",
@@ -4278,7 +4278,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.0,
       "debtRatio": 364.9,
       "week52RangePct": 76.9,
-      "pressureScore": 5.3,
+      "pressureScore": 5.5,
       "stabilityScore": 2.1
     },
     {
@@ -4287,7 +4287,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Consumer Discretionary",
       "sectorKo": "경기소비재",
       "marketCap": 18090514432,
-      "changePercent": 0.057638206,
+      "changePercent": 0.0576382,
       "per": 18.083334,
       "eps": 1.92,
       "dividendYield": 2.77,
@@ -4297,8 +4297,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 11.7,
       "roe": 13.7,
       "debtRatio": 362.2,
-      "week52RangePct": 18.4,
-      "pressureScore": 2.4,
+      "week52RangePct": 18.8,
+      "pressureScore": 2.5,
       "stabilityScore": 1.9
     },
     {
@@ -4318,8 +4318,8 @@ const SP500_EXTRA_DATA = {
       "roe": 2.6,
       "debtRatio": 91.5,
       "week52RangePct": 73.0,
-      "pressureScore": 1.4,
-      "stabilityScore": 2.8
+      "pressureScore": 1.2,
+      "stabilityScore": 2.7
     },
     {
       "symbol": "BBY",
@@ -4338,7 +4338,7 @@ const SP500_EXTRA_DATA = {
       "roe": 9.0,
       "debtRatio": 383.0,
       "week52RangePct": 75.6,
-      "pressureScore": 3.3,
+      "pressureScore": 4.0,
       "stabilityScore": 2.9
     },
     {
@@ -4357,8 +4357,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 25.2,
       "roe": 2.4,
       "debtRatio": 103.3,
-      "week52RangePct": 70.5,
-      "pressureScore": 1.5,
+      "week52RangePct": 72.2,
+      "pressureScore": 1.3,
       "stabilityScore": 2.8
     },
     {
@@ -4378,8 +4378,8 @@ const SP500_EXTRA_DATA = {
       "roe": 10.1,
       "debtRatio": 134.7,
       "week52RangePct": 1.9,
-      "pressureScore": 1.5,
-      "stabilityScore": 2.3
+      "pressureScore": 1.6,
+      "stabilityScore": 2.2
     },
     {
       "symbol": "LDOS",
@@ -4398,7 +4398,7 @@ const SP500_EXTRA_DATA = {
       "roe": 6.7,
       "debtRatio": 194.9,
       "week52RangePct": 39.1,
-      "pressureScore": 2.8,
+      "pressureScore": 2.2,
       "stabilityScore": 2.2
     },
     {
@@ -4427,7 +4427,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Utilities",
       "sectorKo": "유틸리티",
       "marketCap": 17639137280,
-      "changePercent": -0.26389137,
+      "changePercent": -0.263891,
       "per": 21.52848,
       "eps": 3.16,
       "dividendYield": 3.14,
@@ -4458,7 +4458,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.2,
       "debtRatio": 260.2,
       "week52RangePct": 73.8,
-      "pressureScore": 7.7,
+      "pressureScore": 7.8,
       "stabilityScore": 2.3
     },
     {
@@ -4467,7 +4467,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 16978923520,
-      "changePercent": -1.2904582,
+      "changePercent": -1.29046,
       "per": 32.671864,
       "eps": 10.91,
       "dividendYield": null,
@@ -4478,7 +4478,7 @@ const SP500_EXTRA_DATA = {
       "roe": 6.8,
       "debtRatio": 151.4,
       "week52RangePct": 84.1,
-      "pressureScore": 7.0,
+      "pressureScore": 7.1,
       "stabilityScore": 2.5
     },
     {
@@ -4498,7 +4498,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.2,
       "debtRatio": 160.8,
       "week52RangePct": 89.3,
-      "pressureScore": 2.9,
+      "pressureScore": 3.4,
       "stabilityScore": 3.9
     },
     {
@@ -4507,7 +4507,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 18568169472,
-      "changePercent": 1.7049196,
+      "changePercent": 1.70492,
       "per": 18.14035,
       "eps": 1.71,
       "dividendYield": 1.64,
@@ -4518,7 +4518,7 @@ const SP500_EXTRA_DATA = {
       "roe": 8.1,
       "debtRatio": 489.0,
       "week52RangePct": 98.0,
-      "pressureScore": 5.5,
+      "pressureScore": 6.2,
       "stabilityScore": 2.8
     },
     {
@@ -4538,7 +4538,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.6,
       "debtRatio": 72.9,
       "week52RangePct": 84.2,
-      "pressureScore": 2.7,
+      "pressureScore": 3.5,
       "stabilityScore": 3.1
     },
     {
@@ -4547,7 +4547,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 18463823872,
-      "changePercent": -0.8592326,
+      "changePercent": -0.859233,
       "per": 17.729893,
       "eps": 8.33,
       "dividendYield": 1.69,
@@ -4558,7 +4558,7 @@ const SP500_EXTRA_DATA = {
       "roe": 11.2,
       "debtRatio": 606.6,
       "week52RangePct": 67.9,
-      "pressureScore": 4.8,
+      "pressureScore": 6.0,
       "stabilityScore": 2.2
     },
     {
@@ -4578,7 +4578,7 @@ const SP500_EXTRA_DATA = {
       "roe": 7.0,
       "debtRatio": 61.3,
       "week52RangePct": 28.7,
-      "pressureScore": 1.9,
+      "pressureScore": 1.7,
       "stabilityScore": 2.9
     },
     {
@@ -4598,7 +4598,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.7,
       "debtRatio": 52.3,
       "week52RangePct": 44.1,
-      "pressureScore": 3.2,
+      "pressureScore": 3.5,
       "stabilityScore": 1.6
     },
     {
@@ -4618,7 +4618,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.8,
       "debtRatio": 249.6,
       "week52RangePct": 80.7,
-      "pressureScore": 4.8,
+      "pressureScore": 4.2,
       "stabilityScore": 2.6
     },
     {
@@ -4627,7 +4627,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 17051758592,
-      "changePercent": -1.1324335,
+      "changePercent": -1.13243,
       "per": 15.227713,
       "eps": 10.32,
       "dividendYield": null,
@@ -4637,8 +4637,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 27.7,
       "roe": 3.4,
       "debtRatio": 87.7,
-      "week52RangePct": 45.3,
-      "pressureScore": 3.1,
+      "week52RangePct": 45.5,
+      "pressureScore": 3.2,
       "stabilityScore": 2.8
     },
     {
@@ -4647,7 +4647,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Communication Services",
       "sectorKo": "커뮤니케이션",
       "marketCap": 16635842560,
-      "changePercent": -0.7053582,
+      "changePercent": -0.705358,
       "per": 30.06796,
       "eps": 1.03,
       "dividendYield": 0.64,
@@ -4658,7 +4658,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.1,
       "debtRatio": 74.0,
       "week52RangePct": 92.7,
-      "pressureScore": 5.1,
+      "pressureScore": 4.7,
       "stabilityScore": 2.4
     },
     {
@@ -4667,7 +4667,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Industrials",
       "sectorKo": "산업재",
       "marketCap": 17573261312,
-      "changePercent": -0.49622864,
+      "changePercent": -0.496229,
       "per": 28.700382,
       "eps": 5.24,
       "dividendYield": 1.67,
@@ -4678,7 +4678,7 @@ const SP500_EXTRA_DATA = {
       "roe": 8.6,
       "debtRatio": 207.2,
       "week52RangePct": 30.9,
-      "pressureScore": 0.2,
+      "pressureScore": 0.3,
       "stabilityScore": 2.9
     },
     {
@@ -4687,7 +4687,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Real Estate",
       "sectorKo": "부동산",
       "marketCap": 15478506496,
-      "changePercent": -0.26857415,
+      "changePercent": -0.268574,
       "per": 14.95302,
       "eps": 1.49,
       "dividendYield": 3.58,
@@ -4698,7 +4698,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.7,
       "debtRatio": 103.9,
       "week52RangePct": 66.0,
-      "pressureScore": 1.3,
+      "pressureScore": 1.6,
       "stabilityScore": 2.7
     },
     {
@@ -4718,7 +4718,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1.5,
       "debtRatio": 93.6,
       "week52RangePct": 58.3,
-      "pressureScore": 0.8,
+      "pressureScore": 0.7,
       "stabilityScore": 4.1
     },
     {
@@ -4727,7 +4727,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 15445224448,
-      "changePercent": -3.3890657,
+      "changePercent": -3.38907,
       "per": 38.938408,
       "eps": 2.76,
       "dividendYield": null,
@@ -4738,7 +4738,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1.7,
       "debtRatio": 217.4,
       "week52RangePct": 38.7,
-      "pressureScore": 1.0,
+      "pressureScore": 1.1,
       "stabilityScore": 2.5
     },
     {
@@ -4758,7 +4758,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.2,
       "debtRatio": 117.2,
       "week52RangePct": 35.7,
-      "pressureScore": 0.5,
+      "pressureScore": 0.4,
       "stabilityScore": 3.7
     },
     {
@@ -4778,7 +4778,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1.9,
       "debtRatio": 196.8,
       "week52RangePct": 94.8,
-      "pressureScore": 4.4,
+      "pressureScore": 4.2,
       "stabilityScore": 2.9
     },
     {
@@ -4787,7 +4787,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Energy",
       "sectorKo": "에너지",
       "marketCap": 14903954432,
-      "changePercent": 0.3775362,
+      "changePercent": 0.377536,
       "per": 8.974684,
       "eps": 4.74,
       "dividendYield": 2.36,
@@ -4798,7 +4798,7 @@ const SP500_EXTRA_DATA = {
       "roe": 10.6,
       "debtRatio": 142.8,
       "week52RangePct": 87.0,
-      "pressureScore": 4.4,
+      "pressureScore": 4.5,
       "stabilityScore": 2.2
     },
     {
@@ -4818,7 +4818,7 @@ const SP500_EXTRA_DATA = {
       "roe": 0.7,
       "debtRatio": 155.3,
       "week52RangePct": 72.6,
-      "pressureScore": 2.7,
+      "pressureScore": 2.8,
       "stabilityScore": 2.9
     },
     {
@@ -4838,7 +4838,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.9,
       "debtRatio": 124.3,
       "week52RangePct": 83.9,
-      "pressureScore": 4.5,
+      "pressureScore": 4.8,
       "stabilityScore": 2.8
     },
     {
@@ -4867,7 +4867,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Health Care",
       "sectorKo": "헬스케어",
       "marketCap": 13880329216,
-      "changePercent": 0.2959401,
+      "changePercent": 0.29594,
       "per": 60.31356,
       "eps": 1.18,
       "dividendYield": null,
@@ -4878,7 +4878,7 @@ const SP500_EXTRA_DATA = {
       "roe": -0.9,
       "debtRatio": 51.5,
       "week52RangePct": 39.7,
-      "pressureScore": 3.5,
+      "pressureScore": 3.6,
       "stabilityScore": 3.5
     },
     {
@@ -4898,7 +4898,7 @@ const SP500_EXTRA_DATA = {
       "roe": -86.9,
       "debtRatio": -1508.2,
       "week52RangePct": 59.2,
-      "pressureScore": 1.0,
+      "pressureScore": 0.8,
       "stabilityScore": 2.5
     },
     {
@@ -4918,7 +4918,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.1,
       "debtRatio": 91.4,
       "week52RangePct": 36.2,
-      "pressureScore": 6.0,
+      "pressureScore": 5.6,
       "stabilityScore": 3.3
     },
     {
@@ -4947,7 +4947,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Real Estate",
       "sectorKo": "부동산",
       "marketCap": 14119122944,
-      "changePercent": 0.079509094,
+      "changePercent": 0.0795091,
       "per": 25.427608,
       "eps": 2.97,
       "dividendYield": 4.0,
@@ -4958,7 +4958,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1.9,
       "debtRatio": 85.3,
       "week52RangePct": 51.5,
-      "pressureScore": 1.0,
+      "pressureScore": 1.1,
       "stabilityScore": 4.3
     },
     {
@@ -4978,7 +4978,7 @@ const SP500_EXTRA_DATA = {
       "roe": -0.1,
       "debtRatio": 163.5,
       "week52RangePct": 92.6,
-      "pressureScore": 6.0,
+      "pressureScore": 6.2,
       "stabilityScore": 1.4
     },
     {
@@ -4998,7 +4998,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.3,
       "debtRatio": null,
       "week52RangePct": 76.2,
-      "pressureScore": 3.1,
+      "pressureScore": 2.5,
       "stabilityScore": 3.1
     },
     {
@@ -5018,7 +5018,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.1,
       "debtRatio": 112.3,
       "week52RangePct": 93.9,
-      "pressureScore": 4.9,
+      "pressureScore": 5.5,
       "stabilityScore": 2.2
     },
     {
@@ -5027,7 +5027,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 14226301952,
-      "changePercent": -0.86123264,
+      "changePercent": -0.861233,
       "per": null,
       "eps": -0.48,
       "dividendYield": null,
@@ -5038,7 +5038,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1.8,
       "debtRatio": 59.5,
       "week52RangePct": 35.9,
-      "pressureScore": 3.6,
+      "pressureScore": 4.3,
       "stabilityScore": 2.3
     },
     {
@@ -5058,7 +5058,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.9,
       "debtRatio": 491.7,
       "week52RangePct": 81.5,
-      "pressureScore": 4.0,
+      "pressureScore": 4.6,
       "stabilityScore": 2.4
     },
     {
@@ -5078,7 +5078,7 @@ const SP500_EXTRA_DATA = {
       "roe": 20.7,
       "debtRatio": 250.4,
       "week52RangePct": 3.0,
-      "pressureScore": 0.7,
+      "pressureScore": 0.8,
       "stabilityScore": 2.4
     },
     {
@@ -5098,7 +5098,7 @@ const SP500_EXTRA_DATA = {
       "roe": 8.8,
       "debtRatio": 296.6,
       "week52RangePct": 53.8,
-      "pressureScore": 4.0,
+      "pressureScore": 3.7,
       "stabilityScore": 2.4
     },
     {
@@ -5118,7 +5118,7 @@ const SP500_EXTRA_DATA = {
       "roe": 0.6,
       "debtRatio": 67.0,
       "week52RangePct": 97.4,
-      "pressureScore": 6.0,
+      "pressureScore": 6.6,
       "stabilityScore": 2.4
     },
     {
@@ -5147,7 +5147,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Financials",
       "sectorKo": "금융",
       "marketCap": 13616281600,
-      "changePercent": 0.37002444,
+      "changePercent": 0.370024,
       "per": 23.608341,
       "eps": 11.03,
       "dividendYield": 2.25,
@@ -5157,8 +5157,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 7.3,
       "debtRatio": 44.2,
-      "week52RangePct": 36.4,
-      "pressureScore": 4.9,
+      "week52RangePct": 37.1,
+      "pressureScore": 4.7,
       "stabilityScore": 4.3
     },
     {
@@ -5187,7 +5187,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Consumer Discretionary",
       "sectorKo": "경기소비재",
       "marketCap": 13718449152,
-      "changePercent": 5.0521717,
+      "changePercent": 5.05217,
       "per": 9.782186,
       "eps": 12.35,
       "dividendYield": null,
@@ -5228,8 +5228,8 @@ const SP500_EXTRA_DATA = {
       "sectorKo": "필수소비재",
       "marketCap": 14136979456,
       "changePercent": 0.379248,
-      "per": 61.553482,
-      "eps": 2.15,
+      "per": 61.841118,
+      "eps": 2.14,
       "dividendYield": 3.4,
       "revenueGrowth": 3.72,
       "netIncomeGrowth": 88.73,
@@ -5238,7 +5238,7 @@ const SP500_EXTRA_DATA = {
       "roe": 7.0,
       "debtRatio": 192.6,
       "week52RangePct": 92.5,
-      "pressureScore": 6.2,
+      "pressureScore": 6.1,
       "stabilityScore": 2.0
     },
     {
@@ -5247,7 +5247,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Consumer Discretionary",
       "sectorKo": "경기소비재",
       "marketCap": 13290619904,
-      "changePercent": 0.05309307,
+      "changePercent": 0.0530931,
       "per": 16.766905,
       "eps": 5.62,
       "dividendYield": 2.97,
@@ -5258,7 +5258,7 @@ const SP500_EXTRA_DATA = {
       "roe": 22.8,
       "debtRatio": 752.5,
       "week52RangePct": 66.0,
-      "pressureScore": 3.6,
+      "pressureScore": 3.8,
       "stabilityScore": 2.0
     },
     {
@@ -5278,7 +5278,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.4,
       "debtRatio": 408.9,
       "week52RangePct": 70.5,
-      "pressureScore": 3.4,
+      "pressureScore": 3.7,
       "stabilityScore": 4.4
     },
     {
@@ -5298,7 +5298,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.0,
       "debtRatio": 67.7,
       "week52RangePct": 27.1,
-      "pressureScore": 2.9,
+      "pressureScore": 2.4,
       "stabilityScore": 3.1
     },
     {
@@ -5307,7 +5307,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Real Estate",
       "sectorKo": "부동산",
       "marketCap": 13055467520,
-      "changePercent": 2.8079164,
+      "changePercent": 2.80792,
       "per": 179.0,
       "eps": 0.18,
       "dividendYield": null,
@@ -5338,7 +5338,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1.3,
       "debtRatio": 96.4,
       "week52RangePct": 49.5,
-      "pressureScore": 1.1,
+      "pressureScore": 1.0,
       "stabilityScore": 3.7
     },
     {
@@ -5358,7 +5358,7 @@ const SP500_EXTRA_DATA = {
       "roe": 181.1,
       "debtRatio": 8380.0,
       "week52RangePct": 40.3,
-      "pressureScore": 2.6,
+      "pressureScore": 1.7,
       "stabilityScore": 2.8
     },
     {
@@ -5398,7 +5398,7 @@ const SP500_EXTRA_DATA = {
       "roe": 350.8,
       "debtRatio": 11977.6,
       "week52RangePct": 52.4,
-      "pressureScore": 4.4,
+      "pressureScore": 4.5,
       "stabilityScore": 2.3
     },
     {
@@ -5418,7 +5418,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3583.6,
       "debtRatio": 119252.2,
       "week52RangePct": 33.1,
-      "pressureScore": 3.6,
+      "pressureScore": 3.4,
       "stabilityScore": 2.4
     },
     {
@@ -5438,7 +5438,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1.3,
       "debtRatio": 337.7,
       "week52RangePct": 66.2,
-      "pressureScore": 3.1,
+      "pressureScore": 3.3,
       "stabilityScore": 3.4
     },
     {
@@ -5458,7 +5458,7 @@ const SP500_EXTRA_DATA = {
       "roe": 5.0,
       "debtRatio": 100.6,
       "week52RangePct": 30.3,
-      "pressureScore": 2.5,
+      "pressureScore": 2.0,
       "stabilityScore": 2.3
     },
     {
@@ -5467,7 +5467,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Financials",
       "sectorKo": "금융",
       "marketCap": 12059449344,
-      "changePercent": 0.053051364,
+      "changePercent": 0.0530514,
       "per": 24.351507,
       "eps": 6.97,
       "dividendYield": 1.44,
@@ -5498,7 +5498,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.5,
       "debtRatio": 362.5,
       "week52RangePct": 47.7,
-      "pressureScore": 1.2,
+      "pressureScore": 1.5,
       "stabilityScore": 3.1
     },
     {
@@ -5518,7 +5518,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.9,
       "debtRatio": 138.7,
       "week52RangePct": 15.6,
-      "pressureScore": 1.3,
+      "pressureScore": 1.4,
       "stabilityScore": 2.4
     },
     {
@@ -5538,8 +5538,8 @@ const SP500_EXTRA_DATA = {
       "roe": 0.3,
       "debtRatio": 268.5,
       "week52RangePct": 24.6,
-      "pressureScore": 1.0,
-      "stabilityScore": 2.6
+      "pressureScore": 0.5,
+      "stabilityScore": 2.5
     },
     {
       "symbol": "ALGN",
@@ -5547,7 +5547,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Health Care",
       "sectorKo": "헬스케어",
       "marketCap": 11194460160,
-      "changePercent": -0.7932477,
+      "changePercent": -0.793248,
       "per": 27.405218,
       "eps": 5.75,
       "dividendYield": null,
@@ -5567,7 +5567,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Consumer Discretionary",
       "sectorKo": "경기소비재",
       "marketCap": 11578607616,
-      "changePercent": 5.4042277,
+      "changePercent": 5.40423,
       "per": 19.852526,
       "eps": 17.63,
       "dividendYield": 2.4,
@@ -5578,7 +5578,7 @@ const SP500_EXTRA_DATA = {
       "roe": -3.4,
       "debtRatio": -144.3,
       "week52RangePct": 36.4,
-      "pressureScore": 3.5,
+      "pressureScore": 2.4,
       "stabilityScore": 3.3
     },
     {
@@ -5587,7 +5587,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Health Care",
       "sectorKo": "헬스케어",
       "marketCap": 11345799168,
-      "changePercent": -0.16558956,
+      "changePercent": -0.16559,
       "per": 62.37069,
       "eps": 1.16,
       "dividendYield": 0.44,
@@ -5598,7 +5598,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.4,
       "debtRatio": 22.3,
       "week52RangePct": 99.1,
-      "pressureScore": 4.4,
+      "pressureScore": 4.7,
       "stabilityScore": 3.7
     },
     {
@@ -5619,7 +5619,7 @@ const SP500_EXTRA_DATA = {
       "debtRatio": 1450.9,
       "week52RangePct": 58.4,
       "pressureScore": 0.1,
-      "stabilityScore": 3.2
+      "stabilityScore": 3.3
     },
     {
       "symbol": "DVA",
@@ -5638,7 +5638,7 @@ const SP500_EXTRA_DATA = {
       "roe": -26.1,
       "debtRatio": -2177.5,
       "week52RangePct": 54.4,
-      "pressureScore": 1.2,
+      "pressureScore": 1.3,
       "stabilityScore": 2.4
     },
     {
@@ -5658,7 +5658,7 @@ const SP500_EXTRA_DATA = {
       "roe": 1.1,
       "debtRatio": 123.0,
       "week52RangePct": 42.2,
-      "pressureScore": 0.2,
+      "pressureScore": 0.4,
       "stabilityScore": 3.9
     },
     {
@@ -5678,7 +5678,7 @@ const SP500_EXTRA_DATA = {
       "roe": 6.2,
       "debtRatio": 106.3,
       "week52RangePct": 64.5,
-      "pressureScore": 6.3,
+      "pressureScore": 6.2,
       "stabilityScore": 3.8
     },
     {
@@ -5698,7 +5698,7 @@ const SP500_EXTRA_DATA = {
       "roe": 8.6,
       "debtRatio": 899.8,
       "week52RangePct": 45.1,
-      "pressureScore": 2.8,
+      "pressureScore": 3.0,
       "stabilityScore": 2.5
     },
     {
@@ -5718,7 +5718,7 @@ const SP500_EXTRA_DATA = {
       "roe": 4.8,
       "debtRatio": 110.2,
       "week52RangePct": 29.7,
-      "pressureScore": 3.9,
+      "pressureScore": 3.6,
       "stabilityScore": 3.4
     },
     {
@@ -5727,7 +5727,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Consumer Discretionary",
       "sectorKo": "경기소비재",
       "marketCap": 9809292288,
-      "changePercent": 1.7626338,
+      "changePercent": 1.76263,
       "per": 22.844126,
       "eps": 4.17,
       "dividendYield": 1.07,
@@ -5738,7 +5738,7 @@ const SP500_EXTRA_DATA = {
       "roe": -82.7,
       "debtRatio": -8300.9,
       "week52RangePct": 6.5,
-      "pressureScore": 1.3,
+      "pressureScore": 1.2,
       "stabilityScore": 2.0
     },
     {
@@ -5758,7 +5758,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.4,
       "debtRatio": 79.0,
       "week52RangePct": 7.2,
-      "pressureScore": 1.5,
+      "pressureScore": 1.4,
       "stabilityScore": 3.2
     },
     {
@@ -5778,7 +5778,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.5,
       "debtRatio": 161.7,
       "week52RangePct": 70.0,
-      "pressureScore": 1.3,
+      "pressureScore": 1.2,
       "stabilityScore": 4.4
     },
     {
@@ -5787,7 +5787,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Information Technology",
       "sectorKo": "기술",
       "marketCap": 9895208960,
-      "changePercent": -2.3307595,
+      "changePercent": -2.33076,
       "per": 34.088085,
       "eps": 1.93,
       "dividendYield": 4.13,
@@ -5798,7 +5798,7 @@ const SP500_EXTRA_DATA = {
       "roe": 0.6,
       "debtRatio": 29.4,
       "week52RangePct": 35.6,
-      "pressureScore": 1.1,
+      "pressureScore": 1.4,
       "stabilityScore": 3.4
     },
     {
@@ -5818,7 +5818,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.8,
       "debtRatio": 105.6,
       "week52RangePct": 2.0,
-      "pressureScore": 1.3,
+      "pressureScore": 1.2,
       "stabilityScore": 2.7
     },
     {
@@ -5827,7 +5827,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Health Care",
       "sectorKo": "헬스케어",
       "marketCap": 10065375232,
-      "changePercent": 1.1993593,
+      "changePercent": 1.19936,
       "per": 27.228895,
       "eps": 5.33,
       "dividendYield": null,
@@ -5847,7 +5847,7 @@ const SP500_EXTRA_DATA = {
       "sector": "Health Care",
       "sectorKo": "헬스케어",
       "marketCap": 10197827584,
-      "changePercent": -0.8418278,
+      "changePercent": -0.841828,
       "per": 26.099123,
       "eps": 3.43,
       "dividendYield": null,
@@ -5858,7 +5858,7 @@ const SP500_EXTRA_DATA = {
       "roe": 3.0,
       "debtRatio": 210.9,
       "week52RangePct": 91.2,
-      "pressureScore": 3.7,
+      "pressureScore": 3.9,
       "stabilityScore": 3.3
     },
     {
@@ -5878,7 +5878,7 @@ const SP500_EXTRA_DATA = {
       "roe": -0.5,
       "debtRatio": 99.4,
       "week52RangePct": 24.9,
-      "pressureScore": 1.3,
+      "pressureScore": 1.7,
       "stabilityScore": 2.4
     },
     {
@@ -5918,7 +5918,7 @@ const SP500_EXTRA_DATA = {
       "roe": 2.3,
       "debtRatio": 137.9,
       "week52RangePct": 20.4,
-      "pressureScore": 1.1,
+      "pressureScore": 0.7,
       "stabilityScore": 2.6
     },
     {
@@ -5958,7 +5958,7 @@ const SP500_EXTRA_DATA = {
       "roe": -2.4,
       "debtRatio": 113.5,
       "week52RangePct": 22.1,
-      "pressureScore": 0.6,
+      "pressureScore": 1.0,
       "stabilityScore": 3.0
     },
     {
@@ -6018,10 +6018,10 @@ const SP500_EXTRA_DATA = {
       "roe": 1.3,
       "debtRatio": 83.8,
       "week52RangePct": 57.2,
-      "pressureScore": 3.1,
+      "pressureScore": 3.2,
       "stabilityScore": 4.3
     }
   ],
   "ratiosUpdatedAt": "2026-08-25T11:26:13Z",
-  "generatedAt": "2026-08-28T21:48:35Z"
+  "generatedAt": "2026-08-29T09:00:50Z"
 };
