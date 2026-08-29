@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "kr.marketmap.app",
+        "sha256_cert_fingerprints": ["30:E2:36:BB:1B:69:D6:ED:13:4B:0A:D5:1B:75:E1:67:CC:49:84:9E:39:60:B9:FE:20:CB:27:A5:F1:01:3B:69"]
+      }
+    }]
