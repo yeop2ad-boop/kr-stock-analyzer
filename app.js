@@ -2230,9 +2230,10 @@ function applyLang(lang) {
     const dict = I18N[node.getAttribute("data-i18n")];
     if (dict) node.textContent = isEn ? dict.en : dict.ko;
   });
-  // 종목 상세(예: "AAPL 분석 - 눈보" / "AAPL Analysis - Noonbo")를 보고 있는 중이 아닐 때만 앱 이름:슬로건 타이틀을 언어에 맞춰 갱신
-  if (!document.title.includes(" - ")) {
-    document.title = isEn ? "Noonbo: See Stocks as a Map" : "눈보: 주식을 지도로 보다";
+  // 종목 상세(예: "AAPL 분석 - 눈보" / "AAPL Analysis - Noonbo")를 보고 있는 중이 아닐 때만 앱 이름/슬로건 타이틀을 언어에 맞춰 갱신
+  // (새 슬로건 자체에 " - "가 들어가므로 "분석 - "/"Analysis - " 패턴으로만 종목 상세를 판별)
+  if (!/분석 - |Analysis - /.test(document.title)) {
+    document.title = isEn ? "noonbo - See Stocks as a Map" : "noonbo 눈보 - 주식을 지도로 보다";
   }
 }
 function setLang(lang) {
@@ -2381,7 +2382,7 @@ function closeCompanyPanel({ push = true } = {}) {
   }, 280);
   if (push && new URLSearchParams(location.search).get("ticker")) {
     history.pushState(null, "", location.pathname);
-    document.title = document.documentElement.lang === "en" ? "Noonbo: See Stocks as a Map" : "눈보: 주식을 지도로 보다";
+    document.title = document.documentElement.lang === "en" ? "noonbo - See Stocks as a Map" : "noonbo 눈보 - 주식을 지도로 보다";
   }
 }
 companyPanelCloseBtn.addEventListener("click", () => closeCompanyPanel());
