@@ -595,15 +595,16 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
-  /* 하단 네비(z-index 40)보다 위에 그려 시트가 올라올 때 네비를 덮게 함 */
+  /* 하단 네비를 덮지 않고 그 위에서 열림 — 네비 실제 높이는 JS가 --bottom-nav-h로 동기화 */
+  bottom: var(--bottom-nav-h, 64px);
   z-index: 41;
   background: var(--white);
   border-radius: 20px 20px 0 0;
   /* 그림자는 열려 있을 때만 — 닫혀서 화면 아래 숨은 상태에서 그림자가 위로 번져 하단에 어두운 띠처럼 보이는 문제 방지 */
-  transform: translateY(100%);
+  /* 닫힘 위치는 네비 높이까지 더해 완전히 화면 밖으로 — 안 그러면 닫힌 시트 윗부분이 네비 위에 남아 탭을 가로챔 */
+  transform: translateY(calc(100% + var(--bottom-nav-h, 64px)));
   transition: transform 0.28s cubic-bezier(.2,.8,.3,1);
-  padding: 8px 18px calc(22px + env(safe-area-inset-bottom));
+  padding: 8px 18px 20px;
 }
 .company-sheet.open { transform: translateY(0); box-shadow: 0 -8px 24px rgba(0,0,0,0.18); }
 .company-sheet-handle {
@@ -672,7 +673,8 @@ body {
 .watchlist-sheet {
   position: absolute;
   top: 0;
-  bottom: 0;
+  /* 하단 네비를 덮지 않고 그 위까지만 내려옴 */
+  bottom: var(--bottom-nav-h, 64px);
   right: 0;
   width: min(78%, 340px);
   z-index: 43;
@@ -680,7 +682,7 @@ body {
   border-radius: 16px 0 0 16px;
   transform: translateX(100%);
   transition: transform 0.28s cubic-bezier(.2,.8,.3,1);
-  padding: calc(14px + env(safe-area-inset-top)) 16px calc(14px + env(safe-area-inset-bottom));
+  padding: calc(14px + env(safe-area-inset-top)) 16px 14px;
   display: flex;
   flex-direction: column;
 }
@@ -730,15 +732,16 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
-  /* 하단 네비(z-index 40)보다 위에 그려 시트가 올라올 때 네비를 덮게 함 */
+  /* 하단 네비를 덮지 않고 그 위에서 열림 */
+  bottom: var(--bottom-nav-h, 64px);
   z-index: 42;
   background: var(--white);
   border-radius: 20px 20px 0 0;
   /* 그림자는 열려 있을 때만 — 닫힌 시트의 그림자가 하단에 어두운 띠처럼 보이는 문제 방지 */
-  transform: translateY(100%);
+  /* 닫힘 위치는 네비 높이까지 더해 완전히 화면 밖으로(닫힌 시트가 네비/전체설정 X 탭을 가로채지 않게) */
+  transform: translateY(calc(100% + var(--bottom-nav-h, 64px)));
   transition: transform 0.28s cubic-bezier(.2,.8,.3,1);
-  padding: 8px 22px calc(26px + env(safe-area-inset-bottom));
+  padding: 8px 22px 22px;
   touch-action: none;
 }
 .range-sheet.open { transform: translateY(0); box-shadow: 0 -8px 24px rgba(0,0,0,0.18); }

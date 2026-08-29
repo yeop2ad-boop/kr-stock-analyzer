@@ -53,6 +53,18 @@ function detectDefaultMapLang() {
   apply();
 })();
 
+// 하단 네비 실제 높이를 CSS 변수로 — 바텀시트/즐겨찾기 드로어가 네비를 덮지 않고 그 "위에서" 열리도록 기준점 제공
+(function syncBottomNavHeight() {
+  const apply = () => {
+    const nav = document.querySelector(".bottom-nav");
+    if (nav) document.documentElement.style.setProperty("--bottom-nav-h", `${nav.offsetHeight}px`);
+  };
+  window.addEventListener("resize", apply);
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", apply);
+  else apply();
+  setTimeout(apply, 300); // safe-area 반영 등 첫 레이아웃 안정화 후 한 번 더
+})();
+
 const WORLD_SIZE = 2000; // .map-world 의 world-space 좌표 크기(px, CSS와 동일해야 함)
 
 const SECTOR_COLOR_VAR = {
