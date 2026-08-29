@@ -1,7 +1,7 @@
 {
   "name": "눈보",
   "short_name": "눈보",
-  "description": "noonbo 눈보 - 주식을 지도로 보다 — AI 데이터 기반, 실시간 상승압력도 & 투자 안정성 리포트",
+  "description": "noonbo 눈보: 주식시장을 지도로 — AI 데이터 기반, 실시간 상승압력도 & 투자 안정성 리포트",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
