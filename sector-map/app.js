@@ -333,38 +333,18 @@ document.getElementById("universeToggleBtn").addEventListener("click", async () 
 const MARKET_LABEL_STRIP = 210;
 
 // 지도 상단에 보여줄 실제 지수들 — 구성종목 평균이 아니라 지수 자체(^KS11 등)를 야후에서 조회
-// 실존 지수만 사용(야후에 코스피100/코스닥50/150/S&P200 지수는 없음) — 이름·값 모두 실제 지수 그대로.
-// 축소: 코스피(^KS11)/코스닥(^KQ11)/S&P500(^GSPC), 전체보기: 코스피200(^KS200)/코스닥/S&P500
+// 실제 종합지수 그대로 — 축소/전체보기 구분 없이 항상 코스피(^KS11)/코스닥(^KQ11)/S&P500(^GSPC)
 const MARKET_INDEX_DEFS = {
   domestic: [
-    {
-      collapsed: { symbol: "^KS11", name: "코스피" },
-      expanded: { symbol: "^KS200", name: "코스피200" },
-      flag: "🇰🇷",
-    },
-    {
-      collapsed: { symbol: "^KQ11", name: "코스닥" },
-      expanded: { symbol: "^KQ11", name: "코스닥" },
-      flag: "🇰🇷",
-    },
+    { symbol: "^KS11", name: "코스피", flag: "🇰🇷" },
+    { symbol: "^KQ11", name: "코스닥", flag: "🇰🇷" },
   ],
-  overseas: [
-    {
-      collapsed: { symbol: "^GSPC", name: "S&P500" },
-      expanded: { symbol: "^GSPC", name: "S&P500" },
-      flag: "🇺🇸",
-    },
-  ],
+  overseas: [{ symbol: "^GSPC", name: "S&P500", flag: "🇺🇸" }],
 };
 const INDEX_QUOTE_CACHE = {}; // symbol -> { price, change, pct }
 
-// 지금 유니버스 상태(축소/전체보기)에 맞는 지수 목록
 function currentIndexDefs() {
-  const expanded = UNIVERSE_EXPANDED[ACTIVE_MARKET];
-  return (MARKET_INDEX_DEFS[ACTIVE_MARKET] || []).map((d) => ({
-    flag: d.flag,
-    ...(expanded ? d.expanded : d.collapsed),
-  }));
+  return MARKET_INDEX_DEFS[ACTIVE_MARKET] || [];
 }
 
 async function fetchIndexQuote(symbol) {
@@ -749,9 +729,9 @@ function clampView() {
   view.k = Math.min(maxK, Math.max(minK, view.k));
 }
 
-// 우측에 떠있는 side-btn 컬럼(39px+오른쪽여백12px)과 locate-fab(44px+12px)이 화면폭이 좁을 때
-// 지도 오른쪽 끝의 개별종목을 가리는 문제 — 중심점을 그만큼 왼쪽으로 당겨서 여유 공간을 확보한다.
-const RIGHT_CONTROLS_RESERVE = 60;
+// 예전엔 우측 side-btn 컬럼을 피해 중심을 60px 왼쪽으로 당겼으나, 지도가 왼쪽으로 치우쳐 보인다는
+// 피드백으로 0으로 되돌림 — 지도는 화면 정중앙 기준(사용자 요청: 국내/해외 모두 중심을 우측으로)
+const RIGHT_CONTROLS_RESERVE = 0;
 
 // 좌측 상단에 떠 있는 시계/전체보기 버튼이 지도 맨 위 시장 라벨(코스피100 등)과 겹치지 않도록 —
 // 축소 보기: 지도 중심 자체를 아래로 / 전체보기: 중심은 그대로 두고 라벨 글씨만 아래로(renderMarketIndexLabels)
@@ -766,6 +746,12 @@ function fitToViewport(animate) {
   view.x = (vw - RIGHT_CONTROLS_RESERVE - WORLD_SIZE * view.k) / 2;
   const topReserve = UNIVERSE_EXPANDED[ACTIVE_MARKET] ? 0 : TOP_CONTROLS_RESERVE;
   view.y = (vh + topReserve - WORLD_SIZE * view.k) / 2;
+  // 지도 중심이 우측 버튼 공간(RIGHT_CONTROLS_RESERVE)만큼 왼쪽으로 밀리므로,
+  // 상단 지수 카드는 그만큼 오른쪽으로 보정해 화면 기준 정중앙에 오도록 함
+  document.documentElement.style.setProperty(
+    "--index-label-shift",
+    `${Math.round(RIGHT_CONTROLS_RESERVE / 2 / view.k)}px`
+  );
   applyTransform(animate);
 }
 

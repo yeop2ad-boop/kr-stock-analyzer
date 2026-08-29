@@ -296,6 +296,8 @@ body {
   gap: 220px;
   pointer-events: none;
   z-index: 2;
+  /* 지도 중심의 좌측 치우침(우측 버튼 공간)을 보정해 화면 기준 정중앙 정렬 — 값은 fitToViewport가 계산 */
+  transform: translateX(var(--index-label-shift, 0px));
 }
 .market-index-label {
   display: flex;
