@@ -375,6 +375,8 @@ function renderMarketIndexLabels() {
   const wrap = document.createElement("div");
   wrap.className = "market-index-labels";
   wrap.style.height = `${MARKET_LABEL_STRIP}px`;
+  // 전체보기에선 지도 중심을 안 내리는 대신 라벨 글씨만 아래로 내려 전체보기 버튼과 안 겹치게 함
+  wrap.style.top = UNIVERSE_EXPANDED[ACTIVE_MARKET] ? "65px" : "0px";
   for (const entry of marketIndexEntries()) {
     const item = document.createElement("div");
     item.className = "market-index-label";
@@ -677,6 +679,10 @@ function clampView() {
 // 지도 오른쪽 끝의 개별종목을 가리는 문제 — 중심점을 그만큼 왼쪽으로 당겨서 여유 공간을 확보한다.
 const RIGHT_CONTROLS_RESERVE = 60;
 
+// 좌측 상단에 떠 있는 시계/전체보기 버튼이 지도 맨 위 시장 라벨(코스피100 등)과 겹치지 않도록 —
+// 축소 보기: 지도 중심 자체를 아래로 / 전체보기: 중심은 그대로 두고 라벨 글씨만 아래로(renderMarketIndexLabels)
+const TOP_CONTROLS_RESERVE = 45;
+
 function fitToViewport(animate) {
   const vw = mapViewport.clientWidth;
   const vh = mapViewport.clientHeight;
@@ -684,7 +690,8 @@ function fitToViewport(animate) {
   minK = fitK * 0.55;
   view.k = fitK;
   view.x = (vw - RIGHT_CONTROLS_RESERVE - WORLD_SIZE * view.k) / 2;
-  view.y = (vh - WORLD_SIZE * view.k) / 2;
+  const topReserve = UNIVERSE_EXPANDED[ACTIVE_MARKET] ? 0 : TOP_CONTROLS_RESERVE;
+  view.y = (vh + topReserve - WORLD_SIZE * view.k) / 2;
   applyTransform(animate);
 }
 
