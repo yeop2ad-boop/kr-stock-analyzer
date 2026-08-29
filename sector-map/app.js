@@ -321,16 +321,39 @@ document.getElementById("universeToggleBtn").addEventListener("click", async () 
 const MARKET_LABEL_STRIP = 210;
 
 // 지도 상단에 보여줄 실제 지수들 — 구성종목 평균이 아니라 지수 자체(^KS11 등)를 야후에서 조회
-// 이름은 지금 보이는 유니버스에 맞춰 표기(축소: 코스피100/코스닥50/S&P200, 전체보기: 코스피200/코스닥150/S&P500)
-// — 지수 '값'은 어느 쪽이든 실제 코스피/코스닥/S&P500 지수 그대로
+// 실존 지수만 사용(야후에 코스피100/코스닥50/150/S&P200 지수는 없음) — 이름·값 모두 실제 지수 그대로.
+// 축소: 코스피(^KS11)/코스닥(^KQ11)/S&P500(^GSPC), 전체보기: 코스피200(^KS200)/코스닥/S&P500
 const MARKET_INDEX_DEFS = {
   domestic: [
-    { symbol: "^KS11", nameCollapsed: "코스피100", nameExpanded: "코스피200", flag: "🇰🇷" },
-    { symbol: "^KQ11", nameCollapsed: "코스닥50", nameExpanded: "코스닥150", flag: "🇰🇷" },
+    {
+      collapsed: { symbol: "^KS11", name: "코스피" },
+      expanded: { symbol: "^KS200", name: "코스피200" },
+      flag: "🇰🇷",
+    },
+    {
+      collapsed: { symbol: "^KQ11", name: "코스닥" },
+      expanded: { symbol: "^KQ11", name: "코스닥" },
+      flag: "🇰🇷",
+    },
   ],
-  overseas: [{ symbol: "^GSPC", nameCollapsed: "S&P200", nameExpanded: "S&P500", flag: "🇺🇸" }],
+  overseas: [
+    {
+      collapsed: { symbol: "^GSPC", name: "S&P500" },
+      expanded: { symbol: "^GSPC", name: "S&P500" },
+      flag: "🇺🇸",
+    },
+  ],
 };
 const INDEX_QUOTE_CACHE = {}; // symbol -> { price, change, pct }
+
+// 지금 유니버스 상태(축소/전체보기)에 맞는 지수 목록
+function currentIndexDefs() {
+  const expanded = UNIVERSE_EXPANDED[ACTIVE_MARKET];
+  return (MARKET_INDEX_DEFS[ACTIVE_MARKET] || []).map((d) => ({
+    flag: d.flag,
+    ...(expanded ? d.expanded : d.collapsed),
+  }));
+}
 
 async function fetchIndexQuote(symbol) {
   try {
@@ -346,11 +369,10 @@ async function fetchIndexQuote(symbol) {
   }
 }
 
-// 활성 시장의 지수 시세를 받아와 캐시하고 상단 카드 갱신 — 로드 시 + 5분 주기 실시간 갱신에서 호출
+// 활성 시장·유니버스 상태의 지수 시세를 받아와 캐시하고 상단 카드 갱신 — 로드/전체보기/5분 주기 갱신에서 호출
 async function refreshIndexQuotes() {
-  const defs = MARKET_INDEX_DEFS[ACTIVE_MARKET] || [];
   await Promise.all(
-    defs.map(async (d) => {
+    currentIndexDefs().map(async (d) => {
       const q = await fetchIndexQuote(d.symbol);
       if (q) INDEX_QUOTE_CACHE[d.symbol] = q;
     })
@@ -412,15 +434,14 @@ function renderMarketIndexLabels() {
   wrap.style.height = `${MARKET_LABEL_STRIP}px`;
   // 전체보기에선 지도 중심을 안 내리는 대신 라벨만 아래로 내려 전체보기 버튼과 안 겹치게 함
   wrap.style.top = UNIVERSE_EXPANDED[ACTIVE_MARKET] ? "45px" : "0px";
-  const expanded = UNIVERSE_EXPANDED[ACTIVE_MARKET];
-  for (const def of MARKET_INDEX_DEFS[ACTIVE_MARKET] || []) {
+  for (const def of currentIndexDefs()) {
     const card = document.createElement("div");
     card.className = "market-index-label";
     card.dataset.symbol = def.symbol;
 
     const nameEl = document.createElement("div");
     nameEl.className = "market-index-name";
-    nameEl.textContent = `${def.flag} ${expanded ? def.nameExpanded : def.nameCollapsed}`;
+    nameEl.textContent = `${def.flag} ${def.name}`;
 
     const valueEl = document.createElement("div");
     valueEl.className = "market-index-value";
