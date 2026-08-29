@@ -2764,7 +2764,7 @@ async function shareWatchlist() {
   }
   const groupName = activeGroup === WATCHLIST_ALL_GROUP_ID ? "전체" : (groups.find((g) => g.id === activeGroup) || {}).name || "관심종목";
   const lines = filtered.map((w) => `· ${TICKER_TO_KOREAN_NAME[w.symbol] || w.symbol} (${w.symbol})`);
-  const text = `📌 내 관심종목 - ${groupName}\n${lines.join("\n")}\n\nnoonbo.com`;
+  const text = `📌 내 관심종목 - ${groupName}\n${lines.join("\n")}\n\nmarketmap.kr`;
   try {
     if (navigator.share) {
       await navigator.share({ title: `내 관심종목 - ${groupName}`, text });
@@ -3423,7 +3423,7 @@ async function runBranchBPipeline() {
     wizardShareText =
       `[선택찾기] ${searchWizardAnswers.sectors.map((s) => SECTOR_KO[s] || s).join(", ")} 섹터 · ${c2.label} → ${c3.label} TOP15\n` +
       top15.map((r, i) => `${i + 1}. ${r.symbol} (${plain(c2.fmt(r))} / ${plain(c3.fmt(r))})`).join("\n") +
-      `\n\nnoonbo.com`;
+      `\n\nmarketmap.kr`;
     bodyEl.innerHTML = `
       ${table}
       <div class="wizard-share-row">
@@ -3487,7 +3487,7 @@ async function runBranchCConfirm() {
     wizardShareText =
       `[자동찾기] S&P500 상승 압력+투자 안정 합계 TOP30\n` +
       top30.map((r, i) => `${i + 1}. ${r.symbol} (${r.combinedTotal}/20)`).join("\n") +
-      `\n\nnoonbo.com`;
+      `\n\nmarketmap.kr`;
     bodyEl.innerHTML = `
       ${table}
       <div class="wizard-share-row">
