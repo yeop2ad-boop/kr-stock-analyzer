@@ -286,18 +286,22 @@ function updateUniverseToggleBtn(loading) {
   btn.textContent = UNIVERSE_EXPANDED[ACTIVE_MARKET] ? "-접기" : "+전체보기";
 }
 document.getElementById("universeToggleBtn").addEventListener("click", async () => {
-  const nextExpanded = !UNIVERSE_EXPANDED[ACTIVE_MARKET];
-  if (nextExpanded && !extraDataFor(ACTIVE_MARKET)) {
+  // await(extra 로딩) 중에 국내↔해외를 바꾸면 ACTIVE_MARKET이 달라져 엉뚱한 시장이 펼쳐지는 경쟁 조건 방지 —
+  // 클릭 시점의 시장을 고정해서 그 시장에만 적용하고, 도중에 시장이 바뀌었으면 화면은 건드리지 않음
+  const market = ACTIVE_MARKET;
+  const nextExpanded = !UNIVERSE_EXPANDED[market];
+  if (nextExpanded && !extraDataFor(market)) {
     updateUniverseToggleBtn(true);
     try {
-      await ensureExtraDataLoaded(ACTIVE_MARKET);
+      await ensureExtraDataLoaded(market);
     } catch {
       showToast("전체 목록을 불러오지 못했어요. 다시 시도해주세요");
       updateUniverseToggleBtn();
       return;
     }
   }
-  UNIVERSE_EXPANDED[ACTIVE_MARKET] = nextExpanded;
+  if (market !== ACTIVE_MARKET) return; // 로딩 사이 시장이 바뀜 — 원래 시장 상태/화면 그대로 둠
+  UNIVERSE_EXPANDED[market] = nextExpanded;
   updateActiveDataForUniverseState();
   updateUniverseToggleBtn();
   // 종목 구성이 바뀌었으니 거래대금 순위표부터 즉시 재계산 — 안 하면 새로 추가된 종목들이 "순위 없음" 상태라
@@ -317,12 +321,14 @@ document.getElementById("universeToggleBtn").addEventListener("click", async () 
 const MARKET_LABEL_STRIP = 210;
 
 // 지도 상단에 보여줄 실제 지수들 — 구성종목 평균이 아니라 지수 자체(^KS11 등)를 야후에서 조회
+// 이름은 지금 보이는 유니버스에 맞춰 표기(축소: 코스피100/코스닥50/S&P200, 전체보기: 코스피200/코스닥150/S&P500)
+// — 지수 '값'은 어느 쪽이든 실제 코스피/코스닥/S&P500 지수 그대로
 const MARKET_INDEX_DEFS = {
   domestic: [
-    { symbol: "^KS11", nameKo: "코스피", nameEn: "KOSPI", flag: "🇰🇷" },
-    { symbol: "^KQ11", nameKo: "코스닥", nameEn: "KOSDAQ", flag: "🇰🇷" },
+    { symbol: "^KS11", nameCollapsed: "코스피100", nameExpanded: "코스피200", flag: "🇰🇷" },
+    { symbol: "^KQ11", nameCollapsed: "코스닥50", nameExpanded: "코스닥150", flag: "🇰🇷" },
   ],
-  overseas: [{ symbol: "^GSPC", nameKo: "S&P500", nameEn: "S&P500", flag: "🇺🇸" }],
+  overseas: [{ symbol: "^GSPC", nameCollapsed: "S&P200", nameExpanded: "S&P500", flag: "🇺🇸" }],
 };
 const INDEX_QUOTE_CACHE = {}; // symbol -> { price, change, pct }
 
@@ -406,7 +412,7 @@ function renderMarketIndexLabels() {
   wrap.style.height = `${MARKET_LABEL_STRIP}px`;
   // 전체보기에선 지도 중심을 안 내리는 대신 라벨만 아래로 내려 전체보기 버튼과 안 겹치게 함
   wrap.style.top = UNIVERSE_EXPANDED[ACTIVE_MARKET] ? "45px" : "0px";
-  const isEn = document.documentElement.lang === "en";
+  const expanded = UNIVERSE_EXPANDED[ACTIVE_MARKET];
   for (const def of MARKET_INDEX_DEFS[ACTIVE_MARKET] || []) {
     const card = document.createElement("div");
     card.className = "market-index-label";
@@ -414,7 +420,7 @@ function renderMarketIndexLabels() {
 
     const nameEl = document.createElement("div");
     nameEl.className = "market-index-name";
-    nameEl.textContent = `${def.flag} ${isEn ? def.nameEn : def.nameKo}`;
+    nameEl.textContent = `${def.flag} ${expanded ? def.nameExpanded : def.nameCollapsed}`;
 
     const valueEl = document.createElement("div");
     valueEl.className = "market-index-value";
