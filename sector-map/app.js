@@ -1540,7 +1540,13 @@ document.querySelectorAll(".metric-chip").forEach((btn) => {
       closeRangeSheet();
       return;
     }
-    openRangeSheet(key);
+    // 다른 지표로 전환할 땐 시트가 한 번 내려갔다가 새 지표로 다시 올라오는 모션
+    if (rangeSheet.classList.contains("open")) {
+      closeRangeSheet();
+      setTimeout(() => openRangeSheet(key), 300);
+    } else {
+      openRangeSheet(key);
+    }
   });
 });
 
