@@ -309,6 +309,9 @@ document.getElementById("universeToggleBtn").addEventListener("click", async () 
   panelControllers.forEach((ctrl) => ctrl.refresh());
 });
 
+// 지도 맨 위에 전체 시장 이름+등락률 라벨이 들어갈 띠 높이(월드 좌표) — 섹터 원들은 이 아래로 배치됨
+const MARKET_LABEL_STRIP = 110;
+
 function buildPackedRoot(data) {
   const bySector = new Map();
   for (const c of data.companies) {
@@ -325,9 +328,88 @@ function buildPackedRoot(data) {
 
   const root = d3.hierarchy({ name: "root", children }).sum((d) => d.value).sort((a, b) => b.value - a.value);
 
-  d3.pack().size([WORLD_SIZE, WORLD_SIZE]).padding((d) => (d.depth === 1 ? 30 : 2))(root);
+  d3.pack().size([WORLD_SIZE, WORLD_SIZE - MARKET_LABEL_STRIP]).padding((d) => (d.depth === 1 ? 30 : 2))(root);
+
+  // 상단 시장 라벨 띠만큼 전체를 아래로 내림(줌/클릭 등 좌표 로직은 노드 좌표 그대로 사용하므로 안전)
+  for (const node of root.descendants()) node.y += MARKET_LABEL_STRIP;
 
   return root;
+}
+
+// 섹터들 위(지도 안 월드 좌표)에 전체 시장 이름+평균 등락률 표시 — 버튼이 아니라 지도 요소.
+// 국내: 코스피100/코스닥50(축소) ↔ 코스피200/코스닥150(전체보기), 해외: S&P200(축소) ↔ S&P500(전체보기)
+// 등락률 집계 공용 헬퍼 — 균등 모드: 단순 평균 / 시총 모드: 시총 가중 평균(전체 시총 중 몇 %가 움직였는지)
+function avgChangeOf(list) {
+  const useCap = sizeMode === "marketCap";
+  let sum = 0;
+  let weightTotal = 0;
+  for (const c of list) {
+    if (typeof c.changePercent !== "number" || !Number.isFinite(c.changePercent)) continue;
+    const w = useCap ? (typeof c.marketCap === "number" && c.marketCap > 0 ? c.marketCap : 0) : 1;
+    if (!w) continue;
+    sum += c.changePercent * w;
+    weightTotal += w;
+  }
+  return weightTotal > 0 ? sum / weightTotal : null;
+}
+
+function marketIndexEntries() {
+  const expanded = UNIVERSE_EXPANDED[ACTIVE_MARKET];
+  const avgOf = avgChangeOf;
+  if (ACTIVE_MARKET === "domestic") {
+    const kospi = ACTIVE_DATA.companies.filter((c) => c.exchange === "KOSPI");
+    const kosdaq = ACTIVE_DATA.companies.filter((c) => c.exchange === "KOSDAQ");
+    return [
+      { name: expanded ? "코스피200" : "코스피100", avg: avgOf(kospi) },
+      { name: expanded ? "코스닥150" : "코스닥50", avg: avgOf(kosdaq) },
+    ];
+  }
+  return [{ name: expanded ? "S&P500" : "S&P200", avg: avgOf(ACTIVE_DATA.companies) }];
+}
+
+function renderMarketIndexLabels() {
+  const wrap = document.createElement("div");
+  wrap.className = "market-index-labels";
+  wrap.style.height = `${MARKET_LABEL_STRIP}px`;
+  for (const entry of marketIndexEntries()) {
+    const item = document.createElement("div");
+    item.className = "market-index-label";
+    const nameEl = document.createElement("span");
+    nameEl.className = "market-index-name";
+    nameEl.textContent = entry.name;
+    const chgEl = document.createElement("span");
+    chgEl.className = "market-index-chg";
+    if (entry.avg === null) {
+      chgEl.textContent = "-";
+    } else {
+      chgEl.textContent = `${entry.avg >= 0 ? "+" : ""}${entry.avg.toFixed(1)}%`;
+      chgEl.style.color = changeColorForText(entry.avg);
+    }
+    item.appendChild(nameEl);
+    item.appendChild(chgEl);
+    wrap.appendChild(item);
+  }
+  return wrap;
+}
+
+// 실시간 색 갱신 때 시장 라벨 등락률도 함께 최신화
+function refreshMarketIndexLabels() {
+  const wrap = document.querySelector(".market-index-labels");
+  if (!wrap) return;
+  const entries = marketIndexEntries();
+  const items = wrap.querySelectorAll(".market-index-label");
+  entries.forEach((entry, i) => {
+    const item = items[i];
+    if (!item) return;
+    const chgEl = item.querySelector(".market-index-chg");
+    if (entry.avg === null) {
+      chgEl.textContent = "-";
+      chgEl.style.color = "";
+    } else {
+      chgEl.textContent = `${entry.avg >= 0 ? "+" : ""}${entry.avg.toFixed(1)}%`;
+      chgEl.style.color = changeColorForText(entry.avg);
+    }
+  });
 }
 
 // ---------- 2) DOM 렌더링 ----------
@@ -446,6 +528,8 @@ function renderSectorNameBubble(sectorNode, pos, color) {
 
 function renderMap(root) {
   const frag = document.createDocumentFragment();
+
+  frag.appendChild(renderMarketIndexLabels());
 
   for (const sectorNode of root.children) {
     const color = sectorColor(sectorNode.data.name);
@@ -1772,6 +1856,7 @@ function refreshAllBubbleColors() {
     const glowStrength = Math.abs(chg.t);
     el.style.setProperty("--chg-glow", glowStrength > 0.08 ? `0 0 ${4 + glowStrength * 10}px ${chg.css}` : "");
   }
+  refreshMarketIndexLabels(); // 상단 시장 이름 옆 평균 등락률도 최신 값으로
   // 지도 타일 색상이 새로 갱신될 때, 지금 상세시트가 열려서 보고 있는 종목이 있다면 그 시트의 현재가/등락률도 같이 최신화
   if (currentSheetSymbol) updateSheetLiveValues(currentSheetSymbol);
 }
@@ -1793,6 +1878,7 @@ function rerenderMap(animate) {
   renderMap(packedRoot);
   fitToViewport(!!animate);
   applyAllFilters(); // 균등/시총 전환처럼 데이터셋은 그대로인 경우, 새로 그려진 원에도 기존 필터를 다시 적용
+  applyChangeModeToSectorBubbles(); // 등락 모드가 켜져 있었다면 새로 만든 섹터 원에도 채색·평균값을 다시 적용(시총/균등 가중 방식도 반영)
 }
 
 document.getElementById("sizeModeBtn").addEventListener("click", (e) => {
@@ -1850,16 +1936,15 @@ function fmtIdxChg(pct) {
 function computeSectorAverages() {
   const bySector = new Map();
   for (const c of ACTIVE_DATA.companies) {
-    if (typeof c.changePercent !== "number") continue;
     const sec = canonicalSector(c.sector);
-    if (!bySector.has(sec)) bySector.set(sec, { sum: 0, count: 0 });
-    const g = bySector.get(sec);
-    g.sum += c.changePercent;
-    g.count += 1;
+    if (!bySector.has(sec)) bySector.set(sec, []);
+    bySector.get(sec).push(c);
   }
   const result = new Map();
-  bySector.forEach((g, sector) => {
-    if (g.count > 0) result.set(sector, g.sum / g.count);
+  bySector.forEach((list, sector) => {
+    // 균등 모드: 단순 평균 / 시총 모드: 시총 가중 평균(섹터 전체 시총 대비 변동) — avgChangeOf가 sizeMode 따라 분기
+    const avg = avgChangeOf(list);
+    if (avg !== null) result.set(sector, avg);
   });
   return result;
 }
