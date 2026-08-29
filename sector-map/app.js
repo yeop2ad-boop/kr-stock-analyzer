@@ -300,13 +300,17 @@ document.getElementById("universeToggleBtn").addEventListener("click", async () 
   UNIVERSE_EXPANDED[ACTIVE_MARKET] = nextExpanded;
   updateActiveDataForUniverseState();
   updateUniverseToggleBtn();
-  // 전체보기/접기로 종목 수가 바뀌면 캐시된 지표 범위(m.domain)가 낡아 슬라이더가 실제 값 분포와 어긋남
-  // (예: 전체보기 직후 기존 범위 밖 종목들이 필터에 걸려 절반이 사라져 보임) — 전부 무효화하고 다시 계산
+  // 종목 구성이 바뀌었으니 거래대금 순위표부터 즉시 재계산 — 안 하면 새로 추가된 종목들이 "순위 없음" 상태라
+  // 슬라이더를 한 칸만 좁혀도(상위 99% 등) 전부 필터에 탈락해 절반이 사라져 보임
+  if (METRICS.popularStocks && METRICS.popularStocks.refreshRank) METRICS.popularStocks.refreshRank();
+  // 전체보기/접기로 종목 수가 바뀌면 캐시된 지표 범위(m.domain)도 낡음 — 전부 무효화하고 다시 계산
   for (const key of Object.keys(METRICS)) delete METRICS[key].domain;
   activeFilters.clear();
   rerenderMap(true);
   quickSliderCtrl.refresh();
   panelControllers.forEach((ctrl) => ctrl.refresh());
+  // 해외 extra 배치 데이터엔 거래대금이 없어 실시간 조회로 채움(등락 색상·순위 재계산도 내부에서 함께 처리)
+  refreshActiveMarketLiveData({ silent: true }).catch(() => {});
 });
 
 // 지도 맨 위에 전체 시장 이름+등락률 라벨이 들어갈 띠 높이(월드 좌표) — 섹터 원들은 이 아래로 배치됨
