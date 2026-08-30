@@ -747,13 +747,12 @@ function fitToViewport(animate) {
   const vh = mapViewport.clientHeight;
   fitK = Math.min(vw, vh) / WORLD_SIZE;
   minK = fitK * 0.55;
-  // 시장·보기 상태별 초기 배율/세로 위치(사용자 지정):
-  // 국내 축소 40px 위 / 국내 전체보기 줌인 2단(1.25²) / 해외 축소 50px 위 / 해외 전체보기 줌인 1단 + 20px 위
+  // 시장·보기 상태별 초기 세로 위치(사용자 지정): 국내 축소 40px 위 / 해외 축소 50px 위 / 해외 전체보기 20px 위
+  // (전체보기 줌인은 도입했다가 사용자 요청으로 원복 — 항상 전체가 다 보이는 fitK 유지)
   const expanded = UNIVERSE_EXPANDED[ACTIVE_MARKET];
   const isKr = ACTIVE_MARKET === "domestic";
-  const zoomMul = expanded ? (isKr ? 1.5625 : 1.25) : 1;
   const upShift = expanded ? (isKr ? 0 : 20) : (isKr ? 40 : 50);
-  view.k = Math.min(maxK, fitK * zoomMul);
+  view.k = fitK;
   view.x = (vw - RIGHT_CONTROLS_RESERVE - WORLD_SIZE * view.k) / 2;
   const topReserve = expanded ? 0 : TOP_CONTROLS_RESERVE;
   view.y = (vh + topReserve - WORLD_SIZE * view.k) / 2 - upShift;
