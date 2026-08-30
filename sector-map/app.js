@@ -400,8 +400,8 @@ function buildPackedRoot(data) {
     .tile(d3.treemapSquarify.ratio(1))
     .size([WORLD_SIZE, WORLD_SIZE - MARKET_LABEL_STRIP])
     .paddingOuter(5)
-    .paddingTop((d) => (d.depth === 1 ? 30 : 0)) // 섹터 타일 상단 이름표 자리
-    .paddingInner((d) => (d.depth === 0 ? 7 : 1.5))
+    .paddingTop((d) => (d.depth === 1 ? 30 : 0)) // 섹터 타일 상단 풀폭 헤더 바 자리
+    .paddingInner((d) => (d.depth === 0 ? 14 : 1.5)) // 섹터 사이는 넓게 띄워 경계가 또렷하게
     .round(true)(root);
 
   // 상단 시장 라벨 띠만큼 전체를 아래로 내리고, zoomToNode 등 기존 좌표 규약(x/y/r)용 합성 프로퍼티를 붙임
@@ -607,15 +607,16 @@ function renderSectorNameBubble(sectorNode, pos, color) {
   return el;
 }
 
-// 섹터 사각 타일 상단 이름표(paddingTop 30px 안에 들어감)
+// 섹터 사각 타일 상단 풀폭 헤더 바(paddingTop 30px 안에 들어감) — 섹터 구분 + 큰 탭 타깃(누르면 그 섹터로 줌인)
 function renderSectorNameTile(sectorNode) {
   const el = document.createElement("div");
   el.className = "sector-name-bubble shape-square";
+  el.style.setProperty("--sc", sectorColor(sectorNode.data.name));
   const w = sectorNode.x1 - sectorNode.x0;
-  el.style.left = `${sectorNode.x0 + 5}px`;
-  el.style.top = `${sectorNode.y0 + 4}px`;
-  el.style.height = `21px`;
-  el.style.maxWidth = `${Math.max(0, w - 10)}px`;
+  el.style.left = `${sectorNode.x0 + 2}px`;
+  el.style.top = `${sectorNode.y0 + 3}px`;
+  el.style.width = `${Math.max(0, w - 4)}px`;
+  el.style.height = `24px`;
   el.style.fontSize = `${Math.max(11, Math.min(16, w * 0.055))}px`;
   el.textContent = `${sectorNode.data.sectorKo} · ${sectorNode.children.length}`;
   el.addEventListener("click", () => zoomToNode(sectorNode));
@@ -790,7 +791,10 @@ function fitToViewport(animate) {
 function zoomToNode(node) {
   const vw = mapViewport.clientWidth;
   const vh = mapViewport.clientHeight;
-  const targetK = Math.min(maxK, (Math.min(vw, vh) / (node.r * 2)) * 0.92);
+  // 사각 타일은 가로/세로가 다르므로 양쪽 다 화면에 들어오는 배율로(원형 시절 r 기반 계산을 대체)
+  const nodeW = node.x1 !== undefined ? node.x1 - node.x0 : node.r * 2;
+  const nodeH = node.y1 !== undefined ? node.y1 - node.y0 : node.r * 2;
+  const targetK = Math.min(maxK, Math.min(vw / nodeW, vh / nodeH) * 0.92);
   view.k = targetK;
   view.x = vw / 2 - node.x * targetK;
   view.y = vh / 2 - node.y * targetK;
