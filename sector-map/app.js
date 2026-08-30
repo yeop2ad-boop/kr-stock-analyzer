@@ -122,6 +122,14 @@ const CHG_POS_MAX = __mapColorScheme === "global" ? [22, 163, 74] : [230, 25, 25
 const CHG_NEG_MAX = __mapColorScheme === "global" ? [220, 38, 38] : [21, 71, 199]; // 하락: 빨강(해외식) / 파랑(한국식)
 const CHG_CLAMP = 3; // %
 
+// 왼쪽 아래 색상 범례 바도 현재 색상 스킴(빨강·파랑/초록·빨강)과 테마 배경을 그대로 따라가도록 JS에서 지정
+// (CSS 하드코딩 그라데이션은 스킴을 바꿔도 안 바뀌던 버그의 원인)
+(function syncChangeLegendBar() {
+  const bar = document.querySelector(".change-legend-bar");
+  if (!bar) return;
+  bar.style.background = `linear-gradient(90deg, rgb(${CHG_NEG_MAX.join(",")}) 0%, rgb(${CHG_BG.join(",")}) 50%, rgb(${CHG_POS_MAX.join(",")}) 100%)`;
+})();
+
 function mixRgb(a, b, t) {
   return [0, 1, 2].map((i) => Math.round(a[i] + (b[i] - a[i]) * t));
 }
