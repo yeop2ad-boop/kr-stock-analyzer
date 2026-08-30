@@ -859,6 +859,7 @@ function fitToViewport(animate) {
 }
 
 function zoomToNode(node) {
+  if (mapLocked) return; // 고정 모드에선 섹터/종목 줌 이동도 잠금
   const vw = mapViewport.clientWidth;
   const vh = mapViewport.clientHeight;
   // 사각 타일은 가로/세로가 다르므로 양쪽 다 화면에 들어오는 배율로(원형 시절 r 기반 계산을 대체)
@@ -871,11 +872,15 @@ function zoomToNode(node) {
   applyTransform(true);
 }
 
+// "고정" 버튼 — 켜져 있는 동안 지도 팬/줌/핀치/섹터 줌인을 전부 잠가 화면을 그대로 유지(다시 누르면 해제)
+let mapLocked = false;
+
 // -- 마우스 휠 확대/축소(포인터 위치를 기준으로) --
 mapViewport.addEventListener(
   "wheel",
   (e) => {
     e.preventDefault();
+    if (mapLocked) return;
     const rect = mapViewport.getBoundingClientRect();
     const px = e.clientX - rect.left;
     const py = e.clientY - rect.top;
@@ -898,6 +903,7 @@ let pinchStartDist = null;
 let pinchStartK = null;
 
 mapViewport.addEventListener("pointerdown", (e) => {
+  if (mapLocked) return; // 고정 모드 — 팬/핀치 시작 자체를 막음(타일 클릭은 click 이벤트라 그대로 동작)
   // 지도 팬/핀치 캡처 대상은 지도 배경(버블 포함)뿐 — 시총/로고/관심/등락/저장/시계/전체보기 같은 고정 UI 버튼 위에서
   // 눌렀을 때도 무조건 setPointerCapture하면 이후 click이 버튼이 아니라 mapViewport로 가버려서 버튼이 안 눌리는 버그가 있었음
   if (e.target.closest(".map-side-buttons, .ai-fab, .universe-toggle-btn, .locate-fab")) return;
@@ -1142,7 +1148,7 @@ document.addEventListener("click", (e) => {
   if (btn) showToast(btn.dataset.toast);
 });
 
-document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#shapeModeBtn):not(#watchFilterBtn)").forEach((btn) => {
+document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#shapeModeBtn):not(#watchFilterBtn):not(#lockModeBtn)").forEach((btn) => {
   btn.addEventListener("click", () => {
     const group = btn.parentElement;
     group.querySelectorAll(".active").forEach((b) => b.classList.remove("active"));
@@ -1153,12 +1159,22 @@ document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#sha
 // 로고 모드는 사각 히트맵 전환(2026-08-30)과 함께 폐기 — 사각: 종목명+등락률 텍스트, 원형: 텍스트 배지(color-only CSS 재사용)
 mapWorld.classList.add("color-only");
 
-// "원형" — 기본 사각(트리맵)과 예전 버블맵을 토글(원형일 때만 주황 강조), 선택은 다음 방문에도 유지
+// "고정" — 누르면 해제할 때까지 지도 화면(위치/배율)이 잠김
+document.getElementById("lockModeBtn").addEventListener("click", (e) => {
+  mapLocked = !mapLocked;
+  e.currentTarget.classList.toggle("active", mapLocked);
+});
+
+// 지도 모양 버튼 — 라벨은 "현재 모드"(사각↔원형)를 표시, 누르면 반대 모드로 전환. 선택은 다음 방문에도 유지
 const shapeModeBtn = document.getElementById("shapeModeBtn");
-shapeModeBtn.classList.toggle("active", shapeMode === "circle");
-shapeModeBtn.addEventListener("click", (e) => {
+function syncShapeModeBtn() {
+  shapeModeBtn.textContent = shapeMode === "circle" ? "원형" : "사각";
+  shapeModeBtn.classList.toggle("active", shapeMode === "circle");
+}
+syncShapeModeBtn();
+shapeModeBtn.addEventListener("click", () => {
   shapeMode = shapeMode === "circle" ? "square" : "circle";
-  e.currentTarget.classList.toggle("active", shapeMode === "circle");
+  syncShapeModeBtn();
   try {
     localStorage.setItem("map_shape_mode", shapeMode);
   } catch (err) {}
@@ -2120,9 +2136,11 @@ function rerenderMap(animate) {
   applyChangeModeToSectorBubbles(); // 등락 모드가 켜져 있었다면 새로 만든 섹터 원에도 채색·평균값을 다시 적용(시총/균등 가중 방식도 반영)
 }
 
+// 버튼 라벨은 "현재 모드"를 표시(균등↔시총) — 누르면 반대 모드로 전환되며 라벨도 함께 바뀜(사용자 확정 방식)
 document.getElementById("sizeModeBtn").addEventListener("click", (e) => {
   const btn = e.currentTarget;
   sizeMode = sizeMode === "equal" ? "marketCap" : "equal";
+  btn.textContent = sizeMode === "marketCap" ? "시총" : "균등";
   btn.classList.toggle("active", sizeMode === "marketCap");
   rerenderMap(true);
 });
