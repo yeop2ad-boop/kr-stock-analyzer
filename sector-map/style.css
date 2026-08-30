@@ -1022,3 +1022,16 @@ body {
 #scoreInfoCloseBtn { border: none; background: transparent; color: inherit; font-size: 16px; cursor: pointer; }
 .score-info-body p { margin: 0 0 10px; font-size: 13px; line-height: 1.55; }
 .score-info-note { color: var(--muted, #8a94a6); font-size: 11px !important; }
+/* ---------- 사각 히트맵(2026-08-30 원형/로고 폐기) ---------- */
+.sector-bubble.shape-square { border-radius: 10px; border-width: 2px; }
+.sector-name-bubble.shape-square { border-radius: 6px; padding: 0 8px; }
+.company-bubble.shape-square { border-radius: 3px; border-width: 0; box-shadow: 0 0 0 0.5px var(--bubble-ring); }
+.company-tile-label {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 100%; height: 100%; gap: 1px; padding: 2px; box-sizing: border-box;
+  text-align: center; overflow: hidden; pointer-events: none;
+  color: var(--badge-text); text-shadow: var(--badge-glow);
+  font-weight: 800; line-height: 1.12; letter-spacing: -0.2px;
+}
+.company-tile-name { max-width: 100%; overflow: hidden; word-break: keep-all; }
+.company-tile-chg { font-weight: 700; opacity: 0.85; }

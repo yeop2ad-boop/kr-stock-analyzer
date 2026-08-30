@@ -393,10 +393,26 @@ function buildPackedRoot(data) {
 
   const root = d3.hierarchy({ name: "root", children }).sum((d) => d.value).sort((a, b) => b.value - a.value);
 
-  d3.pack().size([WORLD_SIZE, WORLD_SIZE - MARKET_LABEL_STRIP]).padding((d) => (d.depth === 1 ? 30 : 2))(root);
+  // finviz식 사각 트리맵 — 큰 종목부터 왼쪽 위에서 질서있게 채우고 타일이 정사각형에 가깝게(ratio 1).
+  // 원형(pack) 지도는 2026-08-30 사용자 확정으로 폐기(로고 모드 포함) — 복원 필요 시 git 히스토리 0a03a88 이전 참고.
+  d3
+    .treemap()
+    .tile(d3.treemapSquarify.ratio(1))
+    .size([WORLD_SIZE, WORLD_SIZE - MARKET_LABEL_STRIP])
+    .paddingOuter(5)
+    .paddingTop((d) => (d.depth === 1 ? 30 : 0)) // 섹터 타일 상단 이름표 자리
+    .paddingInner((d) => (d.depth === 0 ? 7 : 1.5))
+    .round(true)(root);
 
-  // 상단 시장 라벨 띠만큼 전체를 아래로 내림(줌/클릭 등 좌표 로직은 노드 좌표 그대로 사용하므로 안전)
-  for (const node of root.descendants()) node.y += MARKET_LABEL_STRIP;
+  // 상단 시장 라벨 띠만큼 전체를 아래로 내리고, zoomToNode 등 기존 좌표 규약(x/y/r)용 합성 프로퍼티를 붙임
+  for (const node of root.descendants()) {
+    if (node.depth === 0) continue;
+    node.y0 += MARKET_LABEL_STRIP;
+    node.y1 += MARKET_LABEL_STRIP;
+    node.x = (node.x0 + node.x1) / 2;
+    node.y = (node.y0 + node.y1) / 2;
+    node.r = Math.max(node.x1 - node.x0, node.y1 - node.y0) / 2;
+  }
 
   return root;
 }
@@ -591,6 +607,21 @@ function renderSectorNameBubble(sectorNode, pos, color) {
   return el;
 }
 
+// 섹터 사각 타일 상단 이름표(paddingTop 30px 안에 들어감)
+function renderSectorNameTile(sectorNode) {
+  const el = document.createElement("div");
+  el.className = "sector-name-bubble shape-square";
+  const w = sectorNode.x1 - sectorNode.x0;
+  el.style.left = `${sectorNode.x0 + 5}px`;
+  el.style.top = `${sectorNode.y0 + 4}px`;
+  el.style.height = `21px`;
+  el.style.maxWidth = `${Math.max(0, w - 10)}px`;
+  el.style.fontSize = `${Math.max(11, Math.min(16, w * 0.055))}px`;
+  el.textContent = `${sectorNode.data.sectorKo} · ${sectorNode.children.length}`;
+  el.addEventListener("click", () => zoomToNode(sectorNode));
+  return el;
+}
+
 function renderMap(root) {
   const frag = document.createDocumentFragment();
 
@@ -599,18 +630,18 @@ function renderMap(root) {
   for (const sectorNode of root.children) {
     const color = sectorColor(sectorNode.data.name);
     const bubble = document.createElement("div");
-    bubble.className = "sector-bubble";
+    bubble.className = "sector-bubble shape-square";
     bubble.dataset.sector = sectorNode.data.name; // "등락" 모드에서 섹터별 평균 등락률을 찾을 때 씀
     bubble.style.setProperty("--sc", color);
-    bubble.style.left = `${sectorNode.x - sectorNode.r}px`;
-    bubble.style.top = `${sectorNode.y - sectorNode.r}px`;
-    bubble.style.width = `${sectorNode.r * 2}px`;
-    bubble.style.height = `${sectorNode.r * 2}px`;
+    bubble.style.left = `${sectorNode.x0}px`;
+    bubble.style.top = `${sectorNode.y0}px`;
+    bubble.style.width = `${sectorNode.x1 - sectorNode.x0}px`;
+    bubble.style.height = `${sectorNode.y1 - sectorNode.y0}px`;
 
-    // "등락" 모드일 때 원 가운데 표시할 평균 등락률 — 섹터 전체 합계 숫자이므로 큼지막하게
+    // "등락" 모드일 때 타일 가운데 표시할 평균 등락률 — 섹터 전체 합계 숫자이므로 큼지막하게
     const changeEl = document.createElement("span");
     changeEl.className = "sector-bubble-change";
-    changeEl.style.fontSize = `${Math.max(18, Math.min(72, sectorNode.r * 0.3))}px`;
+    changeEl.style.fontSize = `${Math.max(18, Math.min(72, (sectorNode.x1 - sectorNode.x0) * 0.15))}px`;
     bubble.appendChild(changeEl);
 
     bubble.addEventListener("click", (e) => {
@@ -620,76 +651,60 @@ function renderMap(root) {
 
     frag.appendChild(bubble);
 
-    const labelPos = layoutSectorLabel(sectorNode);
-
     for (const leaf of sectorNode.children) {
       frag.appendChild(renderCompanyBubble(leaf, color));
     }
 
-    frag.appendChild(renderSectorNameBubble(sectorNode, labelPos, color));
+    frag.appendChild(renderSectorNameTile(sectorNode));
   }
 
   mapWorld.appendChild(frag);
 }
 
+// 타일 안 등락률 표기 공용 포맷 — refreshAllBubbleColors의 실시간 갱신에서도 같은 형식 사용
+function fmtTileChg(pct) {
+  if (typeof pct !== "number" || !Number.isFinite(pct)) return "";
+  return `${pct >= 0 ? "+" : ""}${pct.toFixed(2)}%`;
+}
+
+// 사각 타일 하나 — 로고 없이 종목명(국내는 한글명, 해외는 티커)+등락률 텍스트만 표시(finviz 방식)
 function renderCompanyBubble(leaf, sectorColorValue) {
   const d = leaf.data;
   const el = document.createElement("div");
-  el.className = "company-bubble";
+  el.className = "company-bubble shape-square";
   el.style.setProperty("--sc", sectorColorValue);
   const chg = changeColor(d.changePercent);
   el.style.setProperty("--chg", chg.css);
-  const glowStrength = Math.abs(chg.t);
-  if (glowStrength > 0.08) {
-    el.style.setProperty("--chg-glow", `0 0 ${4 + glowStrength * 10}px ${chg.css}`);
-  }
-  el.style.left = `${leaf.x - leaf.r}px`;
-  el.style.top = `${leaf.y - leaf.r}px`;
-  el.style.width = `${leaf.r * 2}px`;
-  el.style.height = `${leaf.r * 2}px`;
+  const w = leaf.x1 - leaf.x0;
+  const h = leaf.y1 - leaf.y0;
+  el.style.left = `${leaf.x0}px`;
+  el.style.top = `${leaf.y0}px`;
+  el.style.width = `${w}px`;
+  el.style.height = `${h}px`;
+  el.dataset.r = leaf.r;
 
-  const img = document.createElement("img");
-  img.className = "company-logo-img";
-  img.loading = "lazy";
-  img.alt = d.symbol;
-  if (BAD_LOGO_SYMBOLS.has(d.symbol)) {
-    el.classList.add("logo-failed"); // 로고 대신 사진이 걸려있는 게 확인된 종목 — 시도 없이 바로 배지
-  } else {
-    img.dataset.tier = "low";
-    img.src = logoUrl(d.symbol, "low");
-  }
-  img.addEventListener("error", () => {
-    if (!img.dataset.triedFallback) {
-      img.dataset.triedFallback = "1";
-      img.src = logoUrlFallback(d.symbol);
-    } else {
-      el.classList.add("logo-failed");
-    }
-  });
-  el.appendChild(img);
-  el.dataset.r = leaf.r; // 월드 좌표 반지름 — 화면상 크기 계산용(저/중/고화질 전환)
-
-  // 국내는 티커(005930.KS)만 봐선 무슨 회사인지 알기 어려우니, 로고 대신 배지가 뜨는 자리엔 한글 회사명을 씀
   const isKrView = ACTIVE_MARKET === "domestic";
-  const badgeText = isKrView ? d.name : d.symbol;
-  // 삼성전자·SK하이닉스는 지도에서 특히 눈에 잘 띄어야 하는 대표 종목이라 이름 라벨만 두 단계(약 1.4배) 더 크게 표시
-  const isBigCap = isKrView && (d.symbol === "005930.KS" || d.symbol === "000660.KS");
-  const bigCapScale = isBigCap ? 1.4 : 1;
+  const nameText = isKrView ? d.name : d.symbol;
+  const minDim = Math.min(w, h);
 
-  const fallback = document.createElement("div");
-  fallback.className = "company-fallback-badge";
-  fallback.style.setProperty("--sc", sectorColorValue);
-  fallback.style.fontSize = `${Math.max(9, Math.min(22, leaf.r * (isKrView ? 0.2 : 0.32)) * bigCapScale)}px`;
-  fallback.textContent = badgeText;
-  el.appendChild(fallback);
+  const label = document.createElement("div");
+  label.className = "company-tile-label";
+  if (minDim < 14) label.style.display = "none"; // 너무 작은 타일은 색만
 
-  if (leaf.r > 26) {
-    const tag = document.createElement("div");
-    tag.className = "company-ticker-tag";
-    tag.textContent = badgeText;
-    tag.style.fontSize = `${Math.max(10, Math.min(28, leaf.r * 0.45) * bigCapScale)}px`;
-    el.appendChild(tag);
-  }
+  const nameEl = document.createElement("span");
+  nameEl.className = "company-tile-name";
+  nameEl.style.fontSize = `${Math.max(8, Math.min(64, minDim * (isKrView ? 0.16 : 0.22)))}px`;
+  nameEl.textContent = nameText;
+  label.appendChild(nameEl);
+
+  const chgEl = document.createElement("span");
+  chgEl.className = "company-tile-chg";
+  chgEl.style.fontSize = `${Math.max(7, Math.min(44, minDim * 0.12))}px`;
+  if (minDim < 30) chgEl.style.display = "none"; // 작은 타일은 이름만
+  chgEl.textContent = fmtTileChg(d.changePercent);
+  label.appendChild(chgEl);
+
+  el.appendChild(label);
 
   el.addEventListener("click", () => openCompanySheet(d));
 
@@ -706,7 +721,6 @@ const maxK = 10;
 function applyTransform(animate) {
   mapWorld.style.transition = animate ? "transform 0.35s cubic-bezier(.2,.8,.3,1)" : "none";
   mapWorld.style.transform = `translate(${view.x}px, ${view.y}px) scale(${view.k})`;
-  scheduleLogoQualityUpdate();
 }
 
 // 화면에 실제로 보이는 크기(월드 반지름 x 현재 배율)에 맞춰 로고 화질을 저/중/고로 자동 전환.
@@ -1054,17 +1068,7 @@ document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#log
   });
 });
 
-// 기본 화면은 색상만 보기 — 버튼을 누르면 로고 보기로 전환되며 주황 배경으로 강조된다 (버튼 이름은 항상 "로고")
-const logoModeBtn = document.getElementById("logoModeBtn");
-mapWorld.classList.add("color-only");
-logoModeBtn.textContent = "로고";
-logoModeBtn.classList.remove("active");
-
-logoModeBtn.addEventListener("click", (e) => {
-  const btn = e.currentTarget;
-  const colorOnly = mapWorld.classList.toggle("color-only");
-  btn.classList.toggle("active", !colorOnly);
-});
+// 로고 모드는 사각 히트맵 전환(2026-08-30)과 함께 폐기 — 타일에 항상 종목명+등락률 텍스트 표시
 
 // "관심" — 버튼 이름은 그대로, 누르면 주황 배경/흰 글씨로 강조되며 내 관심종목만 남김
 document.getElementById("watchFilterBtn").addEventListener("click", (e) => {
@@ -1993,8 +1997,8 @@ function refreshAllBubbleColors() {
     if (!el) continue;
     const chg = changeColor(c.changePercent);
     el.style.setProperty("--chg", chg.css);
-    const glowStrength = Math.abs(chg.t);
-    el.style.setProperty("--chg-glow", glowStrength > 0.08 ? `0 0 ${4 + glowStrength * 10}px ${chg.css}` : "");
+    const chgTextEl = el.querySelector(".company-tile-chg");
+    if (chgTextEl) chgTextEl.textContent = fmtTileChg(c.changePercent);
   }
   refreshMarketIndexLabels(); // 상단 시장 이름 옆 평균 등락률도 최신 값으로
   // 지도 타일 색상이 새로 갱신될 때, 지금 상세시트가 열려서 보고 있는 종목이 있다면 그 시트의 현재가/등락률도 같이 최신화
@@ -2340,6 +2344,7 @@ if (mapLoadingSplashEl) mapLoadingSplashEl.style.display = "none";
 // 지금 보고 있는 시장은 건너뛰고(중복 요청 방지), 반대쪽 시장만, 그것도 메인 스레드가 한가해진 뒤 작은 묶음으로
 // 나눠서 조용히 받아온다 — "지금 보고 있는 구역"의 실시간 로고 요청이 항상 우선되도록.
 function preloadInactiveMarketLogos() {
+  return; // 사각 히트맵 전환(2026-08-30)으로 지도에 로고가 없어져 프리로드 불필요 — 시트/관심목록 로고는 소량이라 지연 로드로 충분
   // 반대쪽 시장도 core만 미리 캐시(전체 유니버스까지 미리 받으면 "+전체보기"를 늦게 불러오려는 취지와 어긋남) —
   // 반대쪽에서 나중에 "+전체보기"를 누르면 그때는 어차피 extra 데이터 자체를 새로 받아와야 하므로 로고도 그때 받는다
   const inactiveMarket = ACTIVE_MARKET === "domestic" ? "overseas" : "domestic";
