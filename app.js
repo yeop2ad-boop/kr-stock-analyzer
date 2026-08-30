@@ -10214,20 +10214,21 @@ async function computeKrMacroScoreChartData() {
   if (pairs.length < 2) throw new Error("코스피 장기 데이터를 가져오지 못했습니다.");
   if (!fomoHistory || !Array.isArray(fomoHistory.points)) throw new Error("FOMO지수 과거 이력 데이터가 아직 준비되지 않았습니다.");
 
-  const scoreByLabel = new Map(fomoHistory.points.map((p) => [p.date, p.score]));
-
-  // 매년 3월 1일·9월 1일(6개월 간격)에 규칙적으로만 포인트를 찍음 — scan-kr-fomo-history.js의 anchor와 동일
+  // data/kr-fomo-history.json에 있는 anchor를 전부 표시 — 기본은 매년 3/1·9/1(6개월 간격)이고,
+  // 특정 시점(예: 2020-03-19 코로나 저점, 2025-11, 2026-06)을 수동 추가하면 그대로 점이 찍힘.
+  // date는 "YYYY-MM"(그 달 1일로 해석) 또는 "YYYY-MM-DD" 둘 다 지원.
   const points = [];
-  for (let anchor = new Date(startYear, 2, 1); anchor < now; anchor = addMonths(anchor, 6)) {
+  for (const p of fomoHistory.points) {
+    if (p.score === undefined || p.score === null) continue;
+    const parts = p.date.split("-").map(Number);
+    const anchor = new Date(parts[0], (parts[1] || 1) - 1, parts[2] || 1);
+    if (!(anchor < now)) continue;
     const anchorSec = Math.floor(anchor.getTime() / 1000);
-    const idx = pairs.findIndex((p) => p.t >= anchorSec);
+    const idx = pairs.findIndex((pp) => pp.t >= anchorSec);
     if (idx < 0) continue;
     const pricePoint = pairs[idx];
     if (Math.abs(pricePoint.t - anchorSec) > 20 * 24 * 3600) continue;
-    const label = `${anchor.getFullYear()}-${String(anchor.getMonth() + 1).padStart(2, "0")}`;
-    const rawScore = scoreByLabel.get(label);
-    if (rawScore === undefined || rawScore === null) continue;
-    const pt = rawScore * 100;
+    const pt = p.score * 100;
     points.push({ t: pricePoint.t, price: pricePoint.c, score: pt, vix: pt, isNow: false });
   }
 
@@ -10256,7 +10257,7 @@ async function renderKrMacroScoreChart() {
     );
     macroScoreChartRenderedMarket = "KR";
     caption.textContent =
-      "빨간 선: 코스피 지수(2011~현재, 일별 종가) · 점 라벨: 6개월 간격(매년 3월 1일·9월 1일 기준) FOMO지수(자체 개발, 52주 신고가·신저가 근접 종목 비율 역산) · " +
+      "빨간 선: 코스피 지수(2011~현재, 일별 종가) · 점 라벨: FOMO지수(자체 개발, 52주 신고가·신저가 근접 종목 비율 역산 — 기본 6개월 간격(3월·9월) + 코로나 저점(2020-03-19) 등 주요 시점 추가) · " +
       "주황 점: -15%p 이하(패닉·역발상 투자 황금기), 흰 점: 그 외 · 파란/빨간 막대: M2(광의통화) 전년동월대비 증가율(월별, 한국은행 ECOS) · " +
       "과거 종목 유니버스는 현재 KODEX 200·코스닥150 편입종목 기준 근사치라 생존편향이 있을 수 있습니다(참고용, 투자 자문이 아닙니다)";
   } catch (err) {
