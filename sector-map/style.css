@@ -1035,3 +1035,13 @@ body {
 }
 .company-tile-name { max-width: 100%; overflow: hidden; word-break: keep-all; }
 .company-tile-chg { font-weight: 700; opacity: 0.85; }
+/* ---------- "고정" 클린 뷰 모드(2026-08-30) — 지도와 고정 버튼만 남기고 UI를 투명하게 밀어냄 ---------- */
+.top-bar, .bottom-nav, .map-side-buttons .side-btn, .ai-fab-row, .locate-fab, .bottom-left-controls {
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+body.map-fixed-mode .top-bar { opacity: 0; transform: translateY(-100%); pointer-events: none; }
+body.map-fixed-mode .bottom-nav { opacity: 0; transform: translateY(100%); pointer-events: none; }
+body.map-fixed-mode .map-side-buttons .side-btn:not(#lockModeBtn) { opacity: 0; transform: translateX(18px); pointer-events: none; }
+body.map-fixed-mode .ai-fab-row,
+body.map-fixed-mode .locate-fab,
+body.map-fixed-mode .bottom-left-controls { opacity: 0; pointer-events: none; }

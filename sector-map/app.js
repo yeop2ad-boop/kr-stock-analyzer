@@ -1167,10 +1167,12 @@ document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#sha
 // 로고 모드는 사각 히트맵 전환(2026-08-30)과 함께 폐기 — 사각: 종목명+등락률 텍스트, 원형: 텍스트 배지(color-only CSS 재사용)
 mapWorld.classList.add("color-only");
 
-// "고정" — 누르면 해제할 때까지 지도 화면(위치/배율)이 잠김
+// "고정" — 누르면 해제할 때까지 지도 화면(위치/배율)이 잠기고,
+// 상단 툴바·하단 네비·사이드 버튼·전체보기·시계·범례가 전부 투명하게 밀려나 지도+고정 버튼만 남음(클린 뷰)
 document.getElementById("lockModeBtn").addEventListener("click", (e) => {
   mapLocked = !mapLocked;
   e.currentTarget.classList.toggle("active", mapLocked);
+  document.body.classList.toggle("map-fixed-mode", mapLocked);
 });
 
 // 지도 모양 버튼 — 라벨은 "현재 모드"(사각↔원형)를 표시, 누르면 반대 모드로 전환. 선택은 다음 방문에도 유지
