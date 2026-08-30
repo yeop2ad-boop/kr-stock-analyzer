@@ -1871,6 +1871,9 @@ function switchTab(index) {
   const switchKey = TAB_ORDER[index];
   if (switchKey === "watchlist") setCarouselViewTitle("tab.watchlist");
   else if (switchKey === "insight") setCarouselViewTitle("tab.insight");
+  // 관심종목 화면에선 상단 별(관심종목 이동 버튼)이 자기 자신이라 숨김(사용자 요청)
+  const fhStar = el("fhWatchlistBtn");
+  if (fhStar) fhStar.style.display = switchKey === "watchlist" ? "none" : "";
   // topranking은 기업가치/시장동향 중 어느 쪽인지 activateRankingGroup/goToRankingEntry가 정함
   activeTabIndex = index;
   TAB_ORDER.forEach((key) => panels[key].classList.add("snapping"));
