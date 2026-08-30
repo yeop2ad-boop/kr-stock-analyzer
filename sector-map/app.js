@@ -460,8 +460,9 @@ function renderMarketIndexLabels() {
   wrap.className = "market-index-labels";
   wrap.style.height = `${MARKET_LABEL_STRIP}px`;
   // 전체보기에선 지도 중심을 안 내리는 대신 라벨만 아래로 내려 전체보기 버튼과 안 겹치게 함.
-  // 해외는 카드가 1장뿐이라 국내보다 위로 붙어 보여서 항상 50px 추가로 내림
-  const labelTop = (UNIVERSE_EXPANDED[ACTIVE_MARKET] ? 45 : 0) + (ACTIVE_MARKET === "overseas" ? 50 : 0);
+  // 해외 S&P500 카드 위치(2026-08-30 사용자 조정): 축소 45(기존 50에서 5 위) / 전체보기 45+35=80(기존 95에서 15 위)
+  const expandedNow = UNIVERSE_EXPANDED[ACTIVE_MARKET];
+  const labelTop = (expandedNow ? 45 : 0) + (ACTIVE_MARKET === "overseas" ? (expandedNow ? 35 : 45) : 0);
   wrap.style.top = `${labelTop}px`;
   for (const def of currentIndexDefs()) {
     const card = document.createElement("div");

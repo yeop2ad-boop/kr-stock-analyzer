@@ -2321,3 +2321,5 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 .about-copy { color: var(--muted); font-size: 12px; margin-top: 14px; }
 /* 상단바 2줄 구성(2026-08-30) — 1줄: 로고·국내해외·돋보기·별(지도와 동일 배치), 2줄: 현재 화면 제목 */
 .fh-titleline { max-width: 860px; margin: 0 auto 6px; display: flex; align-items: center; min-height: 26px; }
+/* 랭킹 표 헤더 줄바꿈 정리(2026-08-30) — "투자안정"이 한 글자씩 세로로 꺾이지 않도록: <br>로 지정한 2줄(투자/안정)만 유지 */
+table.top30-table th, table.popular-table th { white-space: nowrap; }

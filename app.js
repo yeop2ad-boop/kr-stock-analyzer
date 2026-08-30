@@ -9176,7 +9176,7 @@ function etfRankingHtml(all, region, metric) {
   } 상위 30개입니다. 투자 자문이 아닙니다.</p>
     <div class="popular-table-wrap">
       <table class="top30-table popular-table">
-        <thead><tr><th>순위</th><th>기업명</th><th>현재가<br>(등락률)</th><th>${metric === "volume" ? "거래대금(1년)" : "상승률(1년)"}</th></tr></thead>
+        <thead><tr><th>순위</th><th>기업명</th><th>현재가<br>(등락률)</th><th>${metric === "volume" ? "거래대금<br>(1년)" : "상승률<br>(1년)"}</th></tr></thead>
         <tbody>${rowsHtml}</tbody>
       </table>
     </div>`;
