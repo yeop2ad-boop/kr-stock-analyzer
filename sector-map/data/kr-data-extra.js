@@ -22,7 +22,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 29.5,
       "week52RangePct": 29.2,
       "pressureScore": 3.0,
-      "stabilityScore": 1.9
+      "stabilityScore": 2.3
     },
     {
       "symbol": "066970.KS",
@@ -45,7 +45,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 400.7,
       "week52RangePct": 45.6,
       "pressureScore": 4.1,
-      "stabilityScore": 1.4
+      "stabilityScore": 1.0
     },
     {
       "symbol": "001450.KS",
@@ -59,7 +59,7 @@ const KR_EXTRA_DATA = {
       "per": 4.03,
       "eps": 13006.0,
       "dividendYield": 0.0,
-      "dollarVolume": 34005556400.0,
+      "dollarVolume": 31323252800.0,
       "revenueGrowth": 8.27,
       "netIncomeGrowth": 19.9,
       "cashFlowGrowth": 153.07,
@@ -68,7 +68,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 785.1,
       "week52RangePct": 99.2,
       "pressureScore": 5.7,
-      "stabilityScore": 1.7
+      "stabilityScore": 1.4
     },
     {
       "symbol": "000990.KS",
@@ -82,7 +82,7 @@ const KR_EXTRA_DATA = {
       "per": 14.94,
       "eps": 6285.0,
       "dividendYield": 0.86,
-      "dollarVolume": 23641015200.0,
+      "dollarVolume": 21571083600.0,
       "revenueGrowth": 23.52,
       "netIncomeGrowth": 11.59,
       "cashFlowGrowth": -6.71,
@@ -91,7 +91,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 30.0,
       "week52RangePct": 26.9,
       "pressureScore": 2.6,
-      "stabilityScore": 2.6
+      "stabilityScore": 2.0
     },
     {
       "symbol": "082740.KS",
@@ -114,7 +114,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 213.2,
       "week52RangePct": 21.2,
       "pressureScore": 0.6,
-      "stabilityScore": 1.4
+      "stabilityScore": 1.7
     },
     {
       "symbol": "018880.KS",
@@ -137,7 +137,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 170.8,
       "week52RangePct": 23.1,
       "pressureScore": 0.5,
-      "stabilityScore": 0.5
+      "stabilityScore": 1.0
     },
     {
       "symbol": "004020.KS",
@@ -160,7 +160,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 78.4,
       "week52RangePct": 27.5,
       "pressureScore": 1.0,
-      "stabilityScore": 0.5
+      "stabilityScore": 1.0
     },
     {
       "symbol": "002380.KS",
@@ -174,7 +174,7 @@ const KR_EXTRA_DATA = {
       "per": 2.26,
       "eps": 209201.0,
       "dividendYield": 3.17,
-      "dollarVolume": 9604947500.0,
+      "dollarVolume": 9300013500.0,
       "revenueGrowth": -2.63,
       "netIncomeGrowth": 347.47,
       "cashFlowGrowth": 32.28,
@@ -183,7 +183,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 117.6,
       "week52RangePct": 38.6,
       "pressureScore": 0.4,
-      "stabilityScore": 2.1
+      "stabilityScore": 2.4
     },
     {
       "symbol": "052690.KS",
@@ -206,7 +206,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 49.2,
       "week52RangePct": 37.5,
       "pressureScore": 4.3,
-      "stabilityScore": 1.7
+      "stabilityScore": 1.9
     },
     {
       "symbol": "004170.KS",
@@ -229,7 +229,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 195.8,
       "week52RangePct": 38.8,
       "pressureScore": 2.4,
-      "stabilityScore": 1.9
+      "stabilityScore": 1.0
     },
     {
       "symbol": "001040.KS",
@@ -243,7 +243,7 @@ const KR_EXTRA_DATA = {
       "per": 30.55,
       "eps": 4271.0,
       "dividendYield": 2.53,
-      "dollarVolume": 8883396000.0,
+      "dollarVolume": 8486415000.0,
       "revenueGrowth": 3.14,
       "netIncomeGrowth": 52.04,
       "cashFlowGrowth": 3.24,
@@ -252,7 +252,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 584.8,
       "week52RangePct": 11.5,
       "pressureScore": 0.8,
-      "stabilityScore": 0.3
+      "stabilityScore": 1.0
     },
     {
       "symbol": "161890.KS",
@@ -275,7 +275,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 211.2,
       "week52RangePct": 99.8,
       "pressureScore": 8.1,
-      "stabilityScore": 1.8
+      "stabilityScore": 1.3
     },
     {
       "symbol": "251270.KS",
@@ -298,7 +298,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 43.6,
       "week52RangePct": 9.3,
       "pressureScore": 0.4,
-      "stabilityScore": 0.6
+      "stabilityScore": 1.5
     },
     {
       "symbol": "111770.KS",
@@ -321,7 +321,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 40.7,
       "week52RangePct": 37.7,
       "pressureScore": 1.5,
-      "stabilityScore": 1.5
+      "stabilityScore": 1.7
     },
     {
       "symbol": "022100.KS",
@@ -344,7 +344,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 44.5,
       "week52RangePct": 16.8,
       "pressureScore": 0.0,
-      "stabilityScore": 0.7
+      "stabilityScore": 1.3
     },
     {
       "symbol": "011790.KS",
@@ -367,7 +367,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 569.5,
       "week52RangePct": 24.5,
       "pressureScore": 1.3,
-      "stabilityScore": 0.5
+      "stabilityScore": 1.0
     },
     {
       "symbol": "028670.KS",
@@ -413,7 +413,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 371.8,
       "week52RangePct": 40.9,
       "pressureScore": 0.7,
-      "stabilityScore": 0.5
+      "stabilityScore": 1.0
     },
     {
       "symbol": "009420.KS",
@@ -436,7 +436,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 50.2,
       "week52RangePct": 80.9,
       "pressureScore": 2.1,
-      "stabilityScore": 1.6
+      "stabilityScore": 1.0
     },
     {
       "symbol": "192820.KS",
@@ -459,7 +459,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 319.4,
       "week52RangePct": 98.2,
       "pressureScore": 8.6,
-      "stabilityScore": 1.2
+      "stabilityScore": 1.3
     },
     {
       "symbol": "008930.KS",
@@ -482,7 +482,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 49.5,
       "week52RangePct": 59.2,
       "pressureScore": 7.7,
-      "stabilityScore": 1.0
+      "stabilityScore": 1.5
     },
     {
       "symbol": "302440.KS",
@@ -505,7 +505,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 54.7,
       "week52RangePct": 24.2,
       "pressureScore": 0.9,
-      "stabilityScore": 0.3
+      "stabilityScore": 1.0
     },
     {
       "symbol": "035250.KS",
@@ -528,7 +528,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 23.4,
       "week52RangePct": 15.3,
       "pressureScore": 0.3,
-      "stabilityScore": 1.5
+      "stabilityScore": 2.2
     },
     {
       "symbol": "139130.KS",
@@ -551,7 +551,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 1593.3,
       "week52RangePct": 56.6,
       "pressureScore": 1.6,
-      "stabilityScore": 1.9
+      "stabilityScore": 2.1
     },
     {
       "symbol": "023530.KS",
@@ -597,7 +597,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 256.2,
       "week52RangePct": 21.0,
       "pressureScore": 1.3,
-      "stabilityScore": 0.3
+      "stabilityScore": 1.0
     },
     {
       "symbol": "012750.KS",
@@ -620,7 +620,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 45.8,
       "week52RangePct": 46.1,
       "pressureScore": 4.8,
-      "stabilityScore": 0.9
+      "stabilityScore": 1.4
     },
     {
       "symbol": "483650.KS",
@@ -643,7 +643,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 28.7,
       "week52RangePct": 67.6,
       "pressureScore": 6.4,
-      "stabilityScore": 1.6
+      "stabilityScore": 1.9
     },
     {
       "symbol": "011780.KS",
@@ -666,7 +666,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 36.7,
       "week52RangePct": 38.8,
       "pressureScore": 0.6,
-      "stabilityScore": 0.9
+      "stabilityScore": 1.2
     },
     {
       "symbol": "375500.KS",
@@ -689,7 +689,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 87.5,
       "week52RangePct": 51.1,
       "pressureScore": 0.2,
-      "stabilityScore": 1.5
+      "stabilityScore": 1.3
     },
     {
       "symbol": "004370.KS",
@@ -712,7 +712,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 37.0,
       "week52RangePct": 50.6,
       "pressureScore": 4.7,
-      "stabilityScore": 0.9
+      "stabilityScore": 1.3
     },
     {
       "symbol": "017800.KS",
@@ -735,7 +735,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 283.7,
       "week52RangePct": 26.7,
       "pressureScore": 0.0,
-      "stabilityScore": 1.0
+      "stabilityScore": 1.6
     },
     {
       "symbol": "026960.KS",
@@ -758,7 +758,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 4.0,
       "week52RangePct": 44.2,
       "pressureScore": 1.9,
-      "stabilityScore": 2.0
+      "stabilityScore": 2.6
     },
     {
       "symbol": "282330.KS",
@@ -781,7 +781,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 176.4,
       "week52RangePct": 82.7,
       "pressureScore": 4.6,
-      "stabilityScore": 0.9
+      "stabilityScore": 1.1
     },
     {
       "symbol": "204320.KS",
@@ -804,7 +804,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": null,
       "week52RangePct": 38.7,
       "pressureScore": 0.0,
-      "stabilityScore": 1.0
+      "stabilityScore": 1.1
     },
     {
       "symbol": "002790.KS",
@@ -818,7 +818,7 @@ const KR_EXTRA_DATA = {
       "per": 20.57,
       "eps": 1361.0,
       "dividendYield": 1.43,
-      "dollarVolume": 4862060000.0,
+      "dollarVolume": 4753420000.0,
       "revenueGrowth": 8.53,
       "netIncomeGrowth": -50.78,
       "cashFlowGrowth": 63.37,
@@ -827,7 +827,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 45.7,
       "week52RangePct": 50.3,
       "pressureScore": 4.3,
-      "stabilityScore": 0.7
+      "stabilityScore": 1.2
     },
     {
       "symbol": "450080.KS",
@@ -850,7 +850,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 117.7,
       "week52RangePct": 18.4,
       "pressureScore": 2.2,
-      "stabilityScore": 0.6
+      "stabilityScore": 1.4
     },
     {
       "symbol": "005850.KS",
@@ -864,7 +864,7 @@ const KR_EXTRA_DATA = {
       "per": 7.76,
       "eps": 6749.0,
       "dividendYield": 5.29,
-      "dollarVolume": 3483552000.0,
+      "dollarVolume": 3392009200.0,
       "revenueGrowth": 5.36,
       "netIncomeGrowth": -15.62,
       "cashFlowGrowth": 5.52,
@@ -873,7 +873,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 64.8,
       "week52RangePct": 42.2,
       "pressureScore": 1.3,
-      "stabilityScore": 1.4
+      "stabilityScore": 1.3
     },
     {
       "symbol": "004990.KS",
@@ -887,7 +887,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -9028.0,
       "dividendYield": 5.18,
-      "dollarVolume": 2076296250.0,
+      "dollarVolume": 1917751500.0,
       "revenueGrowth": -1.38,
       "netIncomeGrowth": 36.44,
       "cashFlowGrowth": 9.8,
@@ -896,7 +896,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 217.7,
       "week52RangePct": 16.3,
       "pressureScore": 0.1,
-      "stabilityScore": 0.3
+      "stabilityScore": 1.0
     },
     {
       "symbol": "383220.KS",
@@ -919,7 +919,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 43.0,
       "week52RangePct": 28.7,
       "pressureScore": 1.2,
-      "stabilityScore": 1.7
+      "stabilityScore": 2.2
     },
     {
       "symbol": "014680.KS",
@@ -942,7 +942,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 44.9,
       "week52RangePct": 23.6,
       "pressureScore": 1.1,
-      "stabilityScore": 1.6
+      "stabilityScore": 2.0
     },
     {
       "symbol": "011170.KS",
@@ -965,7 +965,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 106.4,
       "week52RangePct": 10.4,
       "pressureScore": 0.2,
-      "stabilityScore": 0.4
+      "stabilityScore": 1.0
     },
     {
       "symbol": "007340.KS",
@@ -988,7 +988,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 181.9,
       "week52RangePct": 55.8,
       "pressureScore": 3.8,
-      "stabilityScore": 1.7
+      "stabilityScore": 1.4
     },
     {
       "symbol": "081660.KS",
@@ -1011,7 +1011,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 177.3,
       "week52RangePct": 27.0,
       "pressureScore": 2.2,
-      "stabilityScore": 0.8
+      "stabilityScore": 1.3
     },
     {
       "symbol": "000240.KS",
@@ -1025,7 +1025,7 @@ const KR_EXTRA_DATA = {
       "per": 6.75,
       "eps": 3666.0,
       "dividendYield": 4.57,
-      "dollarVolume": 1243365750.0,
+      "dollarVolume": 1174981500.0,
       "revenueGrowth": 4.78,
       "netIncomeGrowth": -0.99,
       "cashFlowGrowth": 76.88,
@@ -1034,7 +1034,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 11.8,
       "week52RangePct": 21.5,
       "pressureScore": 0.3,
-      "stabilityScore": 1.9
+      "stabilityScore": 2.4
     },
     {
       "symbol": "030000.KS",
@@ -1057,7 +1057,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 124.4,
       "week52RangePct": 28.5,
       "pressureScore": 0.9,
-      "stabilityScore": 0.7
+      "stabilityScore": 1.3
     },
     {
       "symbol": "007070.KS",
@@ -1080,7 +1080,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 125.5,
       "week52RangePct": 76.4,
       "pressureScore": 1.6,
-      "stabilityScore": 1.1
+      "stabilityScore": 1.0
     },
     {
       "symbol": "103140.KS",
@@ -1103,7 +1103,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 102.2,
       "week52RangePct": 30.0,
       "pressureScore": 2.5,
-      "stabilityScore": 0.4
+      "stabilityScore": 1.2
     },
     {
       "symbol": "051600.KS",
@@ -1126,7 +1126,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 31.8,
       "week52RangePct": 20.2,
       "pressureScore": 2.7,
-      "stabilityScore": 0.9
+      "stabilityScore": 1.5
     },
     {
       "symbol": "073240.KS",
@@ -1172,7 +1172,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 122.0,
       "week52RangePct": 15.9,
       "pressureScore": 0.6,
-      "stabilityScore": 1.0
+      "stabilityScore": 1.3
     },
     {
       "symbol": "112610.KS",
@@ -1195,7 +1195,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 180.4,
       "week52RangePct": 33.2,
       "pressureScore": 0.9,
-      "stabilityScore": 0.7
+      "stabilityScore": 1.1
     },
     {
       "symbol": "009970.KS",
@@ -1218,7 +1218,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 56.3,
       "week52RangePct": 33.8,
       "pressureScore": 0.7,
-      "stabilityScore": 1.3
+      "stabilityScore": 1.4
     },
     {
       "symbol": "457190.KS",
@@ -1241,7 +1241,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 195.0,
       "week52RangePct": 26.0,
       "pressureScore": 1.0,
-      "stabilityScore": 0.9
+      "stabilityScore": 1.0
     },
     {
       "symbol": "139480.KS",
@@ -1264,7 +1264,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 179.3,
       "week52RangePct": 7.3,
       "pressureScore": 0.0,
-      "stabilityScore": 0.6
+      "stabilityScore": 1.0
     },
     {
       "symbol": "006040.KS",
@@ -1278,7 +1278,7 @@ const KR_EXTRA_DATA = {
       "per": 4.4,
       "eps": 8793.0,
       "dividendYield": 3.1,
-      "dollarVolume": 1677487300.0,
+      "dollarVolume": 1603202000.0,
       "revenueGrowth": 7.15,
       "netIncomeGrowth": 387.55,
       "cashFlowGrowth": 10.63,
@@ -1287,7 +1287,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 112.3,
       "week52RangePct": 40.6,
       "pressureScore": 2.3,
-      "stabilityScore": 0.6
+      "stabilityScore": 1.2
     },
     {
       "symbol": "071970.KS",
@@ -1310,7 +1310,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 74.8,
       "week52RangePct": 9.2,
       "pressureScore": 3.0,
-      "stabilityScore": 2.1
+      "stabilityScore": 3.0
     },
     {
       "symbol": "001430.KS",
@@ -1324,7 +1324,7 @@ const KR_EXTRA_DATA = {
       "per": 27.19,
       "eps": 1567.0,
       "dividendYield": 2.82,
-      "dollarVolume": 3681832800.0,
+      "dollarVolume": 3600040800.0,
       "revenueGrowth": 0.43,
       "netIncomeGrowth": 177.7,
       "cashFlowGrowth": -64.32,
@@ -1356,7 +1356,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 84.0,
       "week52RangePct": 19.4,
       "pressureScore": 0.6,
-      "stabilityScore": 0.7
+      "stabilityScore": 1.1
     },
     {
       "symbol": "008770.KS",
@@ -1379,7 +1379,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 202.0,
       "week52RangePct": 10.8,
       "pressureScore": 1.1,
-      "stabilityScore": 0.4
+      "stabilityScore": 1.0
     },
     {
       "symbol": "001800.KS",
@@ -1393,7 +1393,7 @@ const KR_EXTRA_DATA = {
       "per": 13.03,
       "eps": 2011.0,
       "dividendYield": 6.3,
-      "dollarVolume": 2453237000.0,
+      "dollarVolume": 2411657600.0,
       "revenueGrowth": 6.19,
       "netIncomeGrowth": -24.68,
       "cashFlowGrowth": -23.99,
@@ -1402,7 +1402,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 49.1,
       "week52RangePct": 67.6,
       "pressureScore": 3.3,
-      "stabilityScore": 1.0
+      "stabilityScore": 1.2
     },
     {
       "symbol": "000120.KS",
@@ -1416,7 +1416,7 @@ const KR_EXTRA_DATA = {
       "per": 6.58,
       "eps": 11347.0,
       "dividendYield": 1.07,
-      "dollarVolume": 2882971800.0,
+      "dollarVolume": 2765543400.0,
       "revenueGrowth": 1.39,
       "netIncomeGrowth": -2.58,
       "cashFlowGrowth": 48.85,
@@ -1425,7 +1425,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 154.6,
       "week52RangePct": 6.3,
       "pressureScore": 0.7,
-      "stabilityScore": 0.5
+      "stabilityScore": 1.1
     },
     {
       "symbol": "006280.KS",
@@ -1439,7 +1439,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -410.0,
       "dividendYield": 1.15,
-      "dollarVolume": 2535223500.0,
+      "dollarVolume": 2437218000.0,
       "revenueGrowth": 18.54,
       "netIncomeGrowth": 82.22,
       "cashFlowGrowth": 286.05,
@@ -1448,7 +1448,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 119.4,
       "week52RangePct": 31.6,
       "pressureScore": 1.3,
-      "stabilityScore": 0.5
+      "stabilityScore": 1.0
     },
     {
       "symbol": "069620.KS",
@@ -1471,7 +1471,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 126.3,
       "week52RangePct": 25.2,
       "pressureScore": 0.7,
-      "stabilityScore": 1.1
+      "stabilityScore": 1.7
     },
     {
       "symbol": "120110.KS",
@@ -1494,7 +1494,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 90.1,
       "week52RangePct": 32.0,
       "pressureScore": 0.0,
-      "stabilityScore": 1.1
+      "stabilityScore": 1.0
     },
     {
       "symbol": "298020.KS",
@@ -1517,7 +1517,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 248.8,
       "week52RangePct": 41.1,
       "pressureScore": 0.7,
-      "stabilityScore": 1.1
+      "stabilityScore": 1.0
     },
     {
       "symbol": "093370.KS",
@@ -1540,7 +1540,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 131.3,
       "week52RangePct": 39.1,
       "pressureScore": 5.2,
-      "stabilityScore": 1.6
+      "stabilityScore": 1.1
     },
     {
       "symbol": "192080.KS",
@@ -1563,7 +1563,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 17.7,
       "week52RangePct": 41.4,
       "pressureScore": 2.7,
-      "stabilityScore": 1.7
+      "stabilityScore": 2.0
     },
     {
       "symbol": "280360.KS",
@@ -1586,7 +1586,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 106.8,
       "week52RangePct": 97.1,
       "pressureScore": 7.5,
-      "stabilityScore": 0.8
+      "stabilityScore": 1.1
     },
     {
       "symbol": "300720.KS",
@@ -1609,7 +1609,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 65.3,
       "week52RangePct": 50.2,
       "pressureScore": 3.9,
-      "stabilityScore": 0.7
+      "stabilityScore": 1.3
     },
     {
       "symbol": "361610.KS",
@@ -1632,7 +1632,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 68.3,
       "week52RangePct": 20.8,
       "pressureScore": 3.0,
-      "stabilityScore": 0.1
+      "stabilityScore": 1.0
     },
     {
       "symbol": "017960.KS",
@@ -1655,7 +1655,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 87.8,
       "week52RangePct": 18.0,
       "pressureScore": 0.0,
-      "stabilityScore": 0.9
+      "stabilityScore": 1.6
     },
     {
       "symbol": "004000.KS",
@@ -1669,7 +1669,7 @@ const KR_EXTRA_DATA = {
       "per": 11.61,
       "eps": 4165.0,
       "dividendYield": 3.1,
-      "dollarVolume": 2238169850.0,
+      "dollarVolume": 2152493650.0,
       "revenueGrowth": 4.92,
       "netIncomeGrowth": 191.62,
       "cashFlowGrowth": 88.01,
@@ -1678,7 +1678,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 13.7,
       "week52RangePct": 23.9,
       "pressureScore": 1.5,
-      "stabilityScore": 1.0
+      "stabilityScore": 1.3
     },
     {
       "symbol": "007310.KS",
@@ -1692,7 +1692,7 @@ const KR_EXTRA_DATA = {
       "per": 16.72,
       "eps": 20279.0,
       "dividendYield": 2.65,
-      "dollarVolume": 1607877000.0,
+      "dollarVolume": 1554315000.0,
       "revenueGrowth": 3.83,
       "netIncomeGrowth": -49.36,
       "cashFlowGrowth": -39.39,
@@ -1701,7 +1701,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 70.6,
       "week52RangePct": 27.0,
       "pressureScore": 0.9,
-      "stabilityScore": 0.5
+      "stabilityScore": 1.1
     },
     {
       "symbol": "000080.KS",
@@ -1715,7 +1715,7 @@ const KR_EXTRA_DATA = {
       "per": 26.38,
       "eps": 596.0,
       "dividendYield": 0.0,
-      "dollarVolume": 2133392640.0,
+      "dollarVolume": 2053739400.0,
       "revenueGrowth": -3.87,
       "netIncomeGrowth": -56.72,
       "cashFlowGrowth": -21.06,
@@ -1724,7 +1724,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 197.2,
       "week52RangePct": 33.2,
       "pressureScore": 0.2,
-      "stabilityScore": 0.4
+      "stabilityScore": 1.1
     },
     {
       "symbol": "000210.KS",
@@ -1738,7 +1738,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -3985.0,
       "dividendYield": 0.0,
-      "dollarVolume": 3066500000.0,
+      "dollarVolume": 2952050000.0,
       "revenueGrowth": -5.14,
       "netIncomeGrowth": -198.48,
       "cashFlowGrowth": -7.57,
@@ -1747,7 +1747,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 180.7,
       "week52RangePct": 36.8,
       "pressureScore": 0.0,
-      "stabilityScore": 0.8
+      "stabilityScore": 1.0
     },
     {
       "symbol": "185750.KS",
@@ -1770,7 +1770,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 78.2,
       "week52RangePct": 15.7,
       "pressureScore": 1.2,
-      "stabilityScore": 0.6
+      "stabilityScore": 1.3
     },
     {
       "symbol": "005300.KS",
@@ -1784,7 +1784,7 @@ const KR_EXTRA_DATA = {
       "per": 21.21,
       "eps": 4697.0,
       "dividendYield": 3.41,
-      "dollarVolume": 2734916400.0,
+      "dollarVolume": 2650654800.0,
       "revenueGrowth": -1.33,
       "netIncomeGrowth": -20.09,
       "cashFlowGrowth": 8.73,
@@ -1793,7 +1793,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 174.0,
       "week52RangePct": 9.4,
       "pressureScore": 0.6,
-      "stabilityScore": 0.4
+      "stabilityScore": 1.1
     },
     {
       "symbol": "009240.KS",
@@ -1807,7 +1807,7 @@ const KR_EXTRA_DATA = {
       "per": 14.14,
       "eps": 2808.0,
       "dividendYield": 3.78,
-      "dollarVolume": 1374652200.0,
+      "dollarVolume": 1344003800.0,
       "revenueGrowth": -8.59,
       "netIncomeGrowth": -69.38,
       "cashFlowGrowth": 41.88,
@@ -1816,7 +1816,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 136.4,
       "week52RangePct": 43.0,
       "pressureScore": 4.2,
-      "stabilityScore": 0.6
+      "stabilityScore": 1.2
     },
     {
       "symbol": "285130.KS",
@@ -1839,7 +1839,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 132.6,
       "week52RangePct": 39.9,
       "pressureScore": 7.7,
-      "stabilityScore": 0.5
+      "stabilityScore": 1.1
     },
     {
       "symbol": "071320.KS",
@@ -1862,7 +1862,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 234.3,
       "week52RangePct": 25.6,
       "pressureScore": 0.7,
-      "stabilityScore": 0.9
+      "stabilityScore": 1.5
     },
     {
       "symbol": "034230.KS",
@@ -1885,7 +1885,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 112.3,
       "week52RangePct": 5.9,
       "pressureScore": 0.4,
-      "stabilityScore": 0.5
+      "stabilityScore": 1.5
     },
     {
       "symbol": "298050.KS",
@@ -1908,7 +1908,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 387.5,
       "week52RangePct": 29.8,
       "pressureScore": 0.5,
-      "stabilityScore": 0.4
+      "stabilityScore": 1.0
     },
     {
       "symbol": "003240.KS",
@@ -1922,7 +1922,7 @@ const KR_EXTRA_DATA = {
       "per": 9.56,
       "eps": 96033.0,
       "dividendYield": 0.19,
-      "dollarVolume": 1220022000.0,
+      "dollarVolume": 1189728000.0,
       "revenueGrowth": -9.87,
       "netIncomeGrowth": -62.33,
       "cashFlowGrowth": -158.27,
@@ -1931,7 +1931,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 13.6,
       "week52RangePct": 22.7,
       "pressureScore": 1.0,
-      "stabilityScore": 0.8
+      "stabilityScore": 1.3
     },
     {
       "symbol": "456040.KS",
@@ -1977,7 +1977,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 24.1,
       "week52RangePct": 9.7,
       "pressureScore": 3.3,
-      "stabilityScore": 0.1
+      "stabilityScore": 1.0
     },
     {
       "symbol": "000670.KS",
@@ -1991,7 +1991,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -464.0,
       "dividendYield": 0.24,
-      "dollarVolume": 1380447200.0,
+      "dollarVolume": 1349052800.0,
       "revenueGrowth": 4.36,
       "netIncomeGrowth": 96.71,
       "cashFlowGrowth": -70.75,
@@ -2000,7 +2000,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 66.1,
       "week52RangePct": 25.1,
       "pressureScore": 3.2,
-      "stabilityScore": 0.6
+      "stabilityScore": 1.0
     },
     {
       "symbol": "003090.KS",
@@ -2014,7 +2014,7 @@ const KR_EXTRA_DATA = {
       "per": 4.2,
       "eps": 4280.0,
       "dividendYield": 1.11,
-      "dollarVolume": 1004813460.0,
+      "dollarVolume": 952300650.0,
       "revenueGrowth": 6.79,
       "netIncomeGrowth": 202.43,
       "cashFlowGrowth": 58.62,
@@ -2023,7 +2023,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 124.8,
       "week52RangePct": 17.0,
       "pressureScore": 0.2,
-      "stabilityScore": 0.7
+      "stabilityScore": 1.5
     },
     {
       "symbol": "268280.KS",
@@ -2046,7 +2046,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 28.9,
       "week52RangePct": 74.5,
       "pressureScore": 5.8,
-      "stabilityScore": 1.1
+      "stabilityScore": 1.7
     },
     {
       "symbol": "069260.KS",
@@ -2069,7 +2069,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 33.2,
       "week52RangePct": 28.8,
       "pressureScore": 1.0,
-      "stabilityScore": 0.7
+      "stabilityScore": 1.3
     },
     {
       "symbol": "001680.KS",
@@ -2083,7 +2083,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -8447.0,
       "dividendYield": 4.67,
-      "dollarVolume": 3878529200.0,
+      "dollarVolume": 3769693200.0,
       "revenueGrowth": 3.44,
       "netIncomeGrowth": -419.64,
       "cashFlowGrowth": 0.21,
@@ -2092,7 +2092,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 238.8,
       "week52RangePct": 28.1,
       "pressureScore": 1.6,
-      "stabilityScore": 0.3
+      "stabilityScore": 1.0
     },
     {
       "symbol": "014820.KS",
@@ -2115,7 +2115,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 82.1,
       "week52RangePct": 37.4,
       "pressureScore": 1.2,
-      "stabilityScore": 0.5
+      "stabilityScore": 1.2
     },
     {
       "symbol": "002840.KS",
@@ -2129,7 +2129,7 @@ const KR_EXTRA_DATA = {
       "per": 14.69,
       "eps": 9449.0,
       "dividendYield": 1.37,
-      "dollarVolume": 481774800.0,
+      "dollarVolume": 471226000.0,
       "revenueGrowth": 1.23,
       "netIncomeGrowth": -13.9,
       "cashFlowGrowth": -13.77,
@@ -2138,7 +2138,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 20.9,
       "week52RangePct": 56.2,
       "pressureScore": 5.3,
-      "stabilityScore": 1.0
+      "stabilityScore": 1.6
     },
     {
       "symbol": "006650.KS",
@@ -2152,7 +2152,7 @@ const KR_EXTRA_DATA = {
       "per": 18.66,
       "eps": 5134.0,
       "dividendYield": 1.36,
-      "dollarVolume": 7498170200.0,
+      "dollarVolume": 7391065800.0,
       "revenueGrowth": 19.56,
       "netIncomeGrowth": 471.78,
       "cashFlowGrowth": 52.35,
@@ -2161,7 +2161,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 39.3,
       "week52RangePct": 13.4,
       "pressureScore": 1.6,
-      "stabilityScore": 0.3
+      "stabilityScore": 1.1
     },
     {
       "symbol": "003030.KS",
@@ -2175,7 +2175,7 @@ const KR_EXTRA_DATA = {
       "per": 6.6,
       "eps": 15656.0,
       "dividendYield": 1.74,
-      "dollarVolume": 1616348800.0,
+      "dollarVolume": 1587293400.0,
       "revenueGrowth": 2.3,
       "netIncomeGrowth": 47.72,
       "cashFlowGrowth": -93.79,
@@ -2184,7 +2184,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 169.9,
       "week52RangePct": 5.5,
       "pressureScore": 0.5,
-      "stabilityScore": 1.2
+      "stabilityScore": 2.1
     },
     {
       "symbol": "008730.KS",
@@ -2198,7 +2198,7 @@ const KR_EXTRA_DATA = {
       "per": 100.0,
       "eps": 168.0,
       "dividendYield": 1.49,
-      "dollarVolume": 1029336000.0,
+      "dollarVolume": 976298400.0,
       "revenueGrowth": 6.19,
       "netIncomeGrowth": 148.83,
       "cashFlowGrowth": 225.55,
@@ -2207,7 +2207,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 136.4,
       "week52RangePct": 20.1,
       "pressureScore": 0.0,
-      "stabilityScore": 1.1
+      "stabilityScore": 2.0
     },
     {
       "symbol": "005420.KS",
@@ -2221,7 +2221,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -791.0,
       "dividendYield": 0.0,
-      "dollarVolume": 1274391840.0,
+      "dollarVolume": 1254595440.0,
       "revenueGrowth": -11.36,
       "netIncomeGrowth": 53.09,
       "cashFlowGrowth": 539.17,
@@ -2230,7 +2230,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 277.5,
       "week52RangePct": 28.4,
       "pressureScore": 1.4,
-      "stabilityScore": 1.2
+      "stabilityScore": 2.0
     },
     {
       "symbol": "002030.KS",
@@ -2244,7 +2244,7 @@ const KR_EXTRA_DATA = {
       "per": 11.46,
       "eps": 18725.0,
       "dividendYield": 2.61,
-      "dollarVolume": 1003002000.0,
+      "dollarVolume": 995065500.0,
       "revenueGrowth": -6.13,
       "netIncomeGrowth": -50.2,
       "cashFlowGrowth": -32.36,
@@ -2253,7 +2253,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 108.3,
       "week52RangePct": 23.2,
       "pressureScore": 3.3,
-      "stabilityScore": 1.2
+      "stabilityScore": 2.1
     },
     {
       "symbol": "323280.KQ",
@@ -2267,7 +2267,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -85.0,
       "dividendYield": 0.0,
-      "dollarVolume": 6003823400.0,
+      "dollarVolume": 6272781950.0,
       "revenueGrowth": -36.06,
       "netIncomeGrowth": -142.51,
       "cashFlowGrowth": -317.27,
@@ -2276,7 +2276,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 51.0,
       "week52RangePct": 37.3,
       "pressureScore": 3.0,
-      "stabilityScore": 1.2
+      "stabilityScore": 1.0
     },
     {
       "symbol": "030530.KQ",
@@ -2299,7 +2299,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 72.3,
       "week52RangePct": 24.9,
       "pressureScore": 0.0,
-      "stabilityScore": 2.0
+      "stabilityScore": 1.3
     },
     {
       "symbol": "241710.KQ",
@@ -2313,7 +2313,7 @@ const KR_EXTRA_DATA = {
       "per": 36.17,
       "eps": 4255.0,
       "dividendYield": 0.24,
-      "dollarVolume": 22143747600.0,
+      "dollarVolume": 22660082100.0,
       "revenueGrowth": 22.24,
       "netIncomeGrowth": 6.17,
       "cashFlowGrowth": -20.79,
@@ -2322,7 +2322,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 143.7,
       "week52RangePct": 100.0,
       "pressureScore": 9.8,
-      "stabilityScore": 2.3
+      "stabilityScore": 1.4
     },
     {
       "symbol": "096530.KQ",
@@ -2345,7 +2345,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 22.7,
       "week52RangePct": 99.3,
       "pressureScore": 6.9,
-      "stabilityScore": 1.5
+      "stabilityScore": 1.6
     },
     {
       "symbol": "089970.KQ",
@@ -2368,7 +2368,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 40.3,
       "week52RangePct": 41.8,
       "pressureScore": 3.2,
-      "stabilityScore": 1.0
+      "stabilityScore": 2.0
     },
     {
       "symbol": "039200.KQ",
@@ -2391,7 +2391,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 22.3,
       "week52RangePct": 22.0,
       "pressureScore": 3.0,
-      "stabilityScore": 2.4
+      "stabilityScore": 3.0
     },
     {
       "symbol": "082920.KQ",
@@ -2414,7 +2414,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 14.7,
       "week52RangePct": 27.6,
       "pressureScore": 3.1,
-      "stabilityScore": 2.8
+      "stabilityScore": 2.3
     },
     {
       "symbol": "420770.KQ",
@@ -2428,7 +2428,7 @@ const KR_EXTRA_DATA = {
       "per": 90.07,
       "eps": 1219.0,
       "dividendYield": 0.73,
-      "dollarVolume": 8390586600.0,
+      "dollarVolume": 8501155200.0,
       "revenueGrowth": 100.64,
       "netIncomeGrowth": 352.88,
       "cashFlowGrowth": 758.93,
@@ -2437,7 +2437,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 20.7,
       "week52RangePct": 46.7,
       "pressureScore": 3.8,
-      "stabilityScore": 1.8
+      "stabilityScore": 2.7
     },
     {
       "symbol": "475830.KQ",
@@ -2460,7 +2460,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 161.6,
       "week52RangePct": 33.7,
       "pressureScore": 0.0,
-      "stabilityScore": 2.0
+      "stabilityScore": 1.0
     },
     {
       "symbol": "035900.KQ",
@@ -2483,7 +2483,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 38.8,
       "week52RangePct": 3.9,
       "pressureScore": 3.0,
-      "stabilityScore": 1.2
+      "stabilityScore": 2.1
     },
     {
       "symbol": "043260.KQ",
@@ -2506,7 +2506,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 132.4,
       "week52RangePct": 25.1,
       "pressureScore": 1.1,
-      "stabilityScore": 2.0
+      "stabilityScore": 3.0
     },
     {
       "symbol": "078600.KQ",
@@ -2529,7 +2529,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 166.1,
       "week52RangePct": 26.4,
       "pressureScore": 3.0,
-      "stabilityScore": 1.3
+      "stabilityScore": 1.5
     },
     {
       "symbol": "290650.KQ",
@@ -2543,7 +2543,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -5810.0,
       "dividendYield": 0.09,
-      "dollarVolume": 11359957600.0,
+      "dollarVolume": 11959473300.0,
       "revenueGrowth": 18.66,
       "netIncomeGrowth": -197.58,
       "cashFlowGrowth": 246.67,
@@ -2552,7 +2552,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 125.2,
       "week52RangePct": 24.8,
       "pressureScore": 3.0,
-      "stabilityScore": 1.2
+      "stabilityScore": 1.0
     },
     {
       "symbol": "218410.KQ",
@@ -2566,7 +2566,7 @@ const KR_EXTRA_DATA = {
       "per": 41.38,
       "eps": 1131.0,
       "dividendYield": 0.85,
-      "dollarVolume": 11511255600.0,
+      "dollarVolume": 11826828000.0,
       "revenueGrowth": 61.74,
       "netIncomeGrowth": 11.68,
       "cashFlowGrowth": -9.01,
@@ -2575,7 +2575,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 39.4,
       "week52RangePct": 21.9,
       "pressureScore": 3.0,
-      "stabilityScore": 2.2
+      "stabilityScore": 1.9
     },
     {
       "symbol": "003380.KQ",
@@ -2598,7 +2598,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 320.2,
       "week52RangePct": 31.8,
       "pressureScore": 1.1,
-      "stabilityScore": 0.9
+      "stabilityScore": 1.1
     },
     {
       "symbol": "195940.KQ",
@@ -2612,7 +2612,7 @@ const KR_EXTRA_DATA = {
       "per": 16.34,
       "eps": 2672.0,
       "dividendYield": 0.94,
-      "dollarVolume": 3415525200.0,
+      "dollarVolume": 3518451900.0,
       "revenueGrowth": 18.5,
       "netIncomeGrowth": 22.93,
       "cashFlowGrowth": 53.01,
@@ -2621,7 +2621,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 54.6,
       "week52RangePct": 37.2,
       "pressureScore": 0.9,
-      "stabilityScore": 0.8
+      "stabilityScore": 1.4
     },
     {
       "symbol": "204270.KQ",
@@ -2644,7 +2644,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 138.7,
       "week52RangePct": 48.0,
       "pressureScore": 1.8,
-      "stabilityScore": 0.6
+      "stabilityScore": 1.0
     },
     {
       "symbol": "437730.KQ",
@@ -2658,7 +2658,7 @@ const KR_EXTRA_DATA = {
       "per": 104.72,
       "eps": 307.0,
       "dividendYield": 0.16,
-      "dollarVolume": 2491367800.0,
+      "dollarVolume": 2526636350.0,
       "revenueGrowth": -5.38,
       "netIncomeGrowth": 24.31,
       "cashFlowGrowth": -98.63,
@@ -2667,30 +2667,30 @@ const KR_EXTRA_DATA = {
       "debtRatio": 60.9,
       "week52RangePct": 28.5,
       "pressureScore": 0.0,
-      "stabilityScore": 2.4
+      "stabilityScore": 1.6
     },
     {
       "symbol": "166090.KQ",
       "name": "하나머티리얼즈",
       "exchange": "KOSDAQ",
-      "sector": "Industrials",
-      "sectorKo": "산업재",
+      "sector": "Information Technology",
+      "sectorKo": "기술",
       "currency": "KRW",
-      "marketCap": null,
-      "changePercent": null,
-      "per": null,
-      "eps": null,
-      "dividendYield": null,
-      "dollarVolume": null,
-      "revenueGrowth": null,
-      "netIncomeGrowth": null,
-      "cashFlowGrowth": null,
+      "marketCap": 1014625175200.0,
+      "changePercent": -1.5,
+      "per": 26.51,
+      "eps": 1984.0,
+      "dividendYield": 0.57,
+      "dollarVolume": 5454094000.0,
+      "revenueGrowth": 8.68,
+      "netIncomeGrowth": 20.84,
+      "cashFlowGrowth": -9.44,
       "operatingMargin": 22.8,
       "roe": 3.6,
       "debtRatio": 46.2,
       "week52RangePct": 43.2,
       "pressureScore": 3.0,
-      "stabilityScore": 2.3
+      "stabilityScore": 1.8
     },
     {
       "symbol": "036540.KQ",
@@ -2713,7 +2713,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 18.5,
       "week52RangePct": 28.2,
       "pressureScore": 3.0,
-      "stabilityScore": 1.1
+      "stabilityScore": 1.0
     },
     {
       "symbol": "101490.KQ",
@@ -2736,7 +2736,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 26.1,
       "week52RangePct": 12.2,
       "pressureScore": 0.7,
-      "stabilityScore": 1.6
+      "stabilityScore": 2.4
     },
     {
       "symbol": "232140.KQ",
@@ -2750,7 +2750,7 @@ const KR_EXTRA_DATA = {
       "per": 47.49,
       "eps": 239.0,
       "dividendYield": 0.0,
-      "dollarVolume": 36832429800.0,
+      "dollarVolume": 37383143150.0,
       "revenueGrowth": 29.06,
       "netIncomeGrowth": 74.89,
       "cashFlowGrowth": 274.9,
@@ -2759,7 +2759,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 40.6,
       "week52RangePct": 26.1,
       "pressureScore": 3.0,
-      "stabilityScore": 0.9
+      "stabilityScore": 1.4
     },
     {
       "symbol": "090710.KQ",
@@ -2782,7 +2782,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 56.2,
       "week52RangePct": 17.2,
       "pressureScore": 0.0,
-      "stabilityScore": 1.9
+      "stabilityScore": 1.0
     },
     {
       "symbol": "388720.KQ",
@@ -2796,7 +2796,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -2138.0,
       "dividendYield": 0.0,
-      "dollarVolume": 590538000.0,
+      "dollarVolume": 614122000.0,
       "revenueGrowth": 4.97,
       "netIncomeGrowth": -172.52,
       "cashFlowGrowth": -4688.38,
@@ -2805,7 +2805,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 16.2,
       "week52RangePct": 13.0,
       "pressureScore": 0.0,
-      "stabilityScore": 0.4
+      "stabilityScore": 1.0
     },
     {
       "symbol": "213420.KQ",
@@ -2819,7 +2819,7 @@ const KR_EXTRA_DATA = {
       "per": 14.87,
       "eps": 2165.0,
       "dividendYield": 0.0,
-      "dollarVolume": 3914425200.0,
+      "dollarVolume": 4071561200.0,
       "revenueGrowth": 62.22,
       "netIncomeGrowth": 16.23,
       "cashFlowGrowth": 2.94,
@@ -2828,7 +2828,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 51.8,
       "week52RangePct": 23.5,
       "pressureScore": 3.0,
-      "stabilityScore": 1.0
+      "stabilityScore": 1.9
     },
     {
       "symbol": "036830.KQ",
@@ -2851,7 +2851,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 40.1,
       "week52RangePct": 32.7,
       "pressureScore": 3.9,
-      "stabilityScore": 2.6
+      "stabilityScore": 3.0
     },
     {
       "symbol": "038500.KQ",
@@ -2874,7 +2874,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 83.6,
       "week52RangePct": 24.4,
       "pressureScore": 1.0,
-      "stabilityScore": 2.2
+      "stabilityScore": 1.3
     },
     {
       "symbol": "100790.KQ",
@@ -2897,7 +2897,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 177.3,
       "week52RangePct": 15.6,
       "pressureScore": 3.0,
-      "stabilityScore": 2.6
+      "stabilityScore": 1.7
     },
     {
       "symbol": "065350.KQ",
@@ -2920,7 +2920,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 251.6,
       "week52RangePct": 13.3,
       "pressureScore": 0.7,
-      "stabilityScore": 0.1
+      "stabilityScore": 1.1
     },
     {
       "symbol": "085660.KQ",
@@ -2943,7 +2943,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 343.5,
       "week52RangePct": 3.4,
       "pressureScore": 0.8,
-      "stabilityScore": 0.3
+      "stabilityScore": 1.0
     },
     {
       "symbol": "090360.KQ",
@@ -2964,9 +2964,9 @@ const KR_EXTRA_DATA = {
       "operatingMargin": 0.3,
       "roe": 1.1,
       "debtRatio": 27.0,
-      "week52RangePct": 35.0,
+      "week52RangePct": 34.8,
       "pressureScore": 3.0,
-      "stabilityScore": 1.7
+      "stabilityScore": 1.0
     },
     {
       "symbol": "099320.KQ",
@@ -3003,7 +3003,7 @@ const KR_EXTRA_DATA = {
       "per": 102.39,
       "eps": 117.0,
       "dividendYield": 0.25,
-      "dollarVolume": 2161443580.0,
+      "dollarVolume": 2219414800.0,
       "revenueGrowth": 1.81,
       "netIncomeGrowth": -63.16,
       "cashFlowGrowth": 1627.18,
@@ -3012,7 +3012,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 166.0,
       "week52RangePct": 14.3,
       "pressureScore": 0.4,
-      "stabilityScore": 0.8
+      "stabilityScore": 1.3
     },
     {
       "symbol": "124500.KQ",
@@ -3035,7 +3035,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 752.1,
       "week52RangePct": 40.3,
       "pressureScore": 6.0,
-      "stabilityScore": 1.9
+      "stabilityScore": 1.0
     },
     {
       "symbol": "293490.KQ",
@@ -3049,7 +3049,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -1198.0,
       "dividendYield": 0.0,
-      "dollarVolume": 1802232880.0,
+      "dollarVolume": 1860523700.0,
       "revenueGrowth": -25.86,
       "netIncomeGrowth": 8.15,
       "cashFlowGrowth": -261.63,
@@ -3058,7 +3058,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 130.9,
       "week52RangePct": 12.7,
       "pressureScore": 0.4,
-      "stabilityScore": 0.0
+      "stabilityScore": 1.0
     },
     {
       "symbol": "032190.KQ",
@@ -3081,7 +3081,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 5261.0,
       "week52RangePct": 28.4,
       "pressureScore": 3.2,
-      "stabilityScore": 0.8
+      "stabilityScore": 1.1
     },
     {
       "symbol": "033100.KQ",
@@ -3104,7 +3104,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 21.1,
       "week52RangePct": 26.6,
       "pressureScore": 0.0,
-      "stabilityScore": 2.4
+      "stabilityScore": 2.5
     },
     {
       "symbol": "251970.KQ",
@@ -3118,7 +3118,7 @@ const KR_EXTRA_DATA = {
       "per": 22.21,
       "eps": 2778.0,
       "dividendYield": 0.73,
-      "dollarVolume": 6330296600.0,
+      "dollarVolume": 6461038900.0,
       "revenueGrowth": 10.22,
       "netIncomeGrowth": 5.32,
       "cashFlowGrowth": 5.14,
@@ -3127,7 +3127,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 38.5,
       "week52RangePct": 78.1,
       "pressureScore": 7.0,
-      "stabilityScore": 1.0
+      "stabilityScore": 1.5
     },
     {
       "symbol": "445680.KQ",
@@ -3141,7 +3141,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -1645.0,
       "dividendYield": 0.0,
-      "dollarVolume": 6058009800.0,
+      "dollarVolume": 6334893600.0,
       "revenueGrowth": 12.29,
       "netIncomeGrowth": -235.97,
       "cashFlowGrowth": -14.55,
@@ -3150,7 +3150,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 50.3,
       "week52RangePct": 19.1,
       "pressureScore": 3.0,
-      "stabilityScore": 0.8
+      "stabilityScore": 1.0
     },
     {
       "symbol": "417200.KQ",
@@ -3164,7 +3164,7 @@ const KR_EXTRA_DATA = {
       "per": 1936.67,
       "eps": 6.0,
       "dividendYield": 0.19,
-      "dollarVolume": 3345746600.0,
+      "dollarVolume": 3389832880.0,
       "revenueGrowth": 8.1,
       "netIncomeGrowth": -92.33,
       "cashFlowGrowth": 151.66,
@@ -3173,7 +3173,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 41.8,
       "week52RangePct": 12.2,
       "pressureScore": 2.2,
-      "stabilityScore": 0.7
+      "stabilityScore": 1.0
     },
     {
       "symbol": "122870.KQ",
@@ -3196,7 +3196,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 41.6,
       "week52RangePct": 8.6,
       "pressureScore": 3.0,
-      "stabilityScore": 0.4
+      "stabilityScore": 1.4
     },
     {
       "symbol": "466100.KQ",
@@ -3219,7 +3219,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 15.4,
       "week52RangePct": 10.6,
       "pressureScore": 3.0,
-      "stabilityScore": 0.9
+      "stabilityScore": 1.0
     },
     {
       "symbol": "074600.KQ",
@@ -3265,7 +3265,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 150.5,
       "week52RangePct": 17.8,
       "pressureScore": 0.0,
-      "stabilityScore": 0.8
+      "stabilityScore": 1.6
     },
     {
       "symbol": "056190.KQ",
@@ -3288,7 +3288,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 83.4,
       "week52RangePct": 36.1,
       "pressureScore": 0.1,
-      "stabilityScore": 0.7
+      "stabilityScore": 1.2
     },
     {
       "symbol": "035760.KQ",
@@ -3311,7 +3311,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 181.8,
       "week52RangePct": 8.8,
       "pressureScore": 1.7,
-      "stabilityScore": 0.0
+      "stabilityScore": 1.0
     },
     {
       "symbol": "006730.KQ",
@@ -3334,7 +3334,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 176.7,
       "week52RangePct": 22.5,
       "pressureScore": 3.7,
-      "stabilityScore": 2.5
+      "stabilityScore": 2.8
     },
     {
       "symbol": "189300.KQ",
@@ -3348,7 +3348,7 @@ const KR_EXTRA_DATA = {
       "per": 88.12,
       "eps": 724.0,
       "dividendYield": 0.31,
-      "dollarVolume": 2824362200.0,
+      "dollarVolume": 3005426600.0,
       "revenueGrowth": 24.0,
       "netIncomeGrowth": 347.84,
       "cashFlowGrowth": -560.94,
@@ -3357,7 +3357,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 85.2,
       "week52RangePct": 17.6,
       "pressureScore": 3.0,
-      "stabilityScore": 1.0
+      "stabilityScore": 1.1
     },
     {
       "symbol": "048410.KQ",
@@ -3380,30 +3380,30 @@ const KR_EXTRA_DATA = {
       "debtRatio": 15.3,
       "week52RangePct": 11.7,
       "pressureScore": 0.0,
-      "stabilityScore": 0.5
+      "stabilityScore": 1.0
     },
     {
       "symbol": "253450.KQ",
       "name": "스튜디오드래곤",
       "exchange": "KOSDAQ",
-      "sector": "Industrials",
-      "sectorKo": "산업재",
+      "sector": "Communication Services",
+      "sectorKo": "커뮤니케이션",
       "currency": "KRW",
-      "marketCap": null,
-      "changePercent": null,
-      "per": null,
-      "eps": null,
-      "dividendYield": null,
-      "dollarVolume": null,
-      "revenueGrowth": null,
-      "netIncomeGrowth": null,
-      "cashFlowGrowth": null,
+      "marketCap": 661286956000.0,
+      "changePercent": 4.02,
+      "per": 64.14,
+      "eps": 343.0,
+      "dividendYield": 0.0,
+      "dollarVolume": 830610000.0,
+      "revenueGrowth": -3.53,
+      "netIncomeGrowth": -69.18,
+      "cashFlowGrowth": -105.46,
       "operatingMargin": 4.1,
       "roe": 0.9,
       "debtRatio": 27.7,
       "week52RangePct": 9.5,
       "pressureScore": 1.6,
-      "stabilityScore": 0.1
+      "stabilityScore": 1.1
     },
     {
       "symbol": "171090.KQ",
@@ -3426,7 +3426,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 152.3,
       "week52RangePct": 33.1,
       "pressureScore": 0.1,
-      "stabilityScore": 2.5
+      "stabilityScore": 2.1
     },
     {
       "symbol": "032500.KQ",
@@ -3449,7 +3449,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 77.1,
       "week52RangePct": 11.1,
       "pressureScore": 0.0,
-      "stabilityScore": 0.7
+      "stabilityScore": 1.0
     },
     {
       "symbol": "161580.KQ",
@@ -3472,7 +3472,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 184.6,
       "week52RangePct": 18.3,
       "pressureScore": 0.0,
-      "stabilityScore": 0.4
+      "stabilityScore": 1.0
     },
     {
       "symbol": "014620.KQ",
@@ -3495,7 +3495,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 8.1,
       "week52RangePct": 30.2,
       "pressureScore": 2.0,
-      "stabilityScore": 1.3
+      "stabilityScore": 1.8
     },
     {
       "symbol": "222080.KQ",
@@ -3509,7 +3509,7 @@ const KR_EXTRA_DATA = {
       "per": 21.46,
       "eps": 371.0,
       "dividendYield": 0.0,
-      "dollarVolume": 2718316120.0,
+      "dollarVolume": 2769817320.0,
       "revenueGrowth": -19.93,
       "netIncomeGrowth": -48.91,
       "cashFlowGrowth": 244.46,
@@ -3518,7 +3518,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 30.9,
       "week52RangePct": 16.0,
       "pressureScore": 0.0,
-      "stabilityScore": 1.1
+      "stabilityScore": 1.4
     },
     {
       "symbol": "328130.KQ",
@@ -3532,7 +3532,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -760.716919,
       "dividendYield": 0.0,
-      "dollarVolume": 2447814460.0,
+      "dollarVolume": 2566853770.0,
       "revenueGrowth": 53.43,
       "netIncomeGrowth": 42.69,
       "cashFlowGrowth": 16.01,
@@ -3541,7 +3541,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 212.4,
       "week52RangePct": 5.4,
       "pressureScore": 2.5,
-      "stabilityScore": 0.0
+      "stabilityScore": 1.0
     },
     {
       "symbol": "225570.KQ",
@@ -3564,7 +3564,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 63.2,
       "week52RangePct": 42.9,
       "pressureScore": 3.1,
-      "stabilityScore": 0.3
+      "stabilityScore": 1.0
     },
     {
       "symbol": "052400.KQ",
@@ -3587,7 +3587,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 102.1,
       "week52RangePct": 19.2,
       "pressureScore": 3.0,
-      "stabilityScore": 1.7
+      "stabilityScore": 2.4
     },
     {
       "symbol": "183300.KQ",
@@ -3601,7 +3601,7 @@ const KR_EXTRA_DATA = {
       "per": 25.73,
       "eps": 987.2,
       "dividendYield": 1.1,
-      "dollarVolume": 5380634400.0,
+      "dollarVolume": 5489321000.0,
       "revenueGrowth": 19.12,
       "netIncomeGrowth": -10.74,
       "cashFlowGrowth": -66.94,
@@ -3633,7 +3633,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 50.9,
       "week52RangePct": 27.4,
       "pressureScore": 3.0,
-      "stabilityScore": 0.5
+      "stabilityScore": 1.1
     },
     {
       "symbol": "050890.KQ",
@@ -3656,7 +3656,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 62.4,
       "week52RangePct": 19.0,
       "pressureScore": 1.4,
-      "stabilityScore": 1.6
+      "stabilityScore": 1.7
     },
     {
       "symbol": "025980.KQ",
@@ -3679,7 +3679,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 115.1,
       "week52RangePct": 28.9,
       "pressureScore": 2.7,
-      "stabilityScore": 0.0
+      "stabilityScore": 1.0
     },
     {
       "symbol": "060250.KQ",
@@ -3702,7 +3702,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 116.9,
       "week52RangePct": 36.0,
       "pressureScore": 2.8,
-      "stabilityScore": 0.9
+      "stabilityScore": 1.2
     },
     {
       "symbol": "009520.KQ",
@@ -3725,7 +3725,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 33.6,
       "week52RangePct": 32.4,
       "pressureScore": 2.4,
-      "stabilityScore": 0.5
+      "stabilityScore": 1.0
     },
     {
       "symbol": "295310.KQ",
@@ -3739,7 +3739,7 @@ const KR_EXTRA_DATA = {
       "per": 44.34,
       "eps": 1060.0,
       "dividendYield": 0.0,
-      "dollarVolume": 2675099000.0,
+      "dollarVolume": 2756268000.0,
       "revenueGrowth": 47.39,
       "netIncomeGrowth": 250.35,
       "cashFlowGrowth": 36.99,
@@ -3771,7 +3771,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 368.8,
       "week52RangePct": 30.3,
       "pressureScore": 5.2,
-      "stabilityScore": 0.8
+      "stabilityScore": 1.4
     },
     {
       "symbol": "399720.KQ",
@@ -3785,7 +3785,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -1239.0,
       "dividendYield": 0.0,
-      "dollarVolume": 2425606000.0,
+      "dollarVolume": 2518566500.0,
       "revenueGrowth": -29.0,
       "netIncomeGrowth": -290.81,
       "cashFlowGrowth": -107.86,
@@ -3794,7 +3794,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 201.2,
       "week52RangePct": 19.8,
       "pressureScore": 3.0,
-      "stabilityScore": 0.5
+      "stabilityScore": 1.0
     },
     {
       "symbol": "112040.KQ",
@@ -3817,7 +3817,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 250.8,
       "week52RangePct": 11.1,
       "pressureScore": 0.8,
-      "stabilityScore": 0.0
+      "stabilityScore": 1.0
     },
     {
       "symbol": "053800.KQ",
@@ -3840,7 +3840,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 37.3,
       "week52RangePct": 36.0,
       "pressureScore": 0.3,
-      "stabilityScore": 1.6
+      "stabilityScore": 2.2
     },
     {
       "symbol": "033500.KQ",
@@ -3863,7 +3863,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 85.2,
       "week52RangePct": 21.3,
       "pressureScore": 0.0,
-      "stabilityScore": 0.5
+      "stabilityScore": 1.4
     },
     {
       "symbol": "358570.KQ",
@@ -3877,7 +3877,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -604.0,
       "dividendYield": 0.0,
-      "dollarVolume": 1795599770.0,
+      "dollarVolume": 1835677630.0,
       "revenueGrowth": 23943.39,
       "netIncomeGrowth": 40.23,
       "cashFlowGrowth": 25.62,
@@ -3886,7 +3886,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 7.7,
       "week52RangePct": 11.1,
       "pressureScore": 0.0,
-      "stabilityScore": 0.0
+      "stabilityScore": 1.0
     },
     {
       "symbol": "015750.KQ",
@@ -3909,7 +3909,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 172.0,
       "week52RangePct": 16.6,
       "pressureScore": 0.2,
-      "stabilityScore": 0.7
+      "stabilityScore": 1.2
     },
     {
       "symbol": "036810.KQ",
@@ -3932,7 +3932,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 109.2,
       "week52RangePct": 26.8,
       "pressureScore": 0.2,
-      "stabilityScore": 0.6
+      "stabilityScore": 1.0
     },
     {
       "symbol": "041190.KQ",
@@ -3955,7 +3955,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 20.9,
       "week52RangePct": 29.4,
       "pressureScore": 4.1,
-      "stabilityScore": 2.1
+      "stabilityScore": 3.0
     },
     {
       "symbol": "253590.KQ",
@@ -3978,7 +3978,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 28.1,
       "week52RangePct": 28.6,
       "pressureScore": 0.0,
-      "stabilityScore": 1.3
+      "stabilityScore": 1.5
     },
     {
       "symbol": "056080.KQ",
@@ -4001,7 +4001,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 103.1,
       "week52RangePct": 7.2,
       "pressureScore": 3.0,
-      "stabilityScore": 0.7
+      "stabilityScore": 1.0
     },
     {
       "symbol": "082270.KQ",
@@ -4024,7 +4024,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 118.3,
       "week52RangePct": 4.7,
       "pressureScore": 3.0,
-      "stabilityScore": 0.0
+      "stabilityScore": 1.0
     },
     {
       "symbol": "214430.KQ",
@@ -4047,7 +4047,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 40.6,
       "week52RangePct": 11.9,
       "pressureScore": 0.0,
-      "stabilityScore": 1.0
+      "stabilityScore": 1.9
     },
     {
       "symbol": "278280.KQ",
@@ -4061,7 +4061,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -5752.0,
       "dividendYield": 0.0,
-      "dollarVolume": 2733177600.0,
+      "dollarVolume": 2781950400.0,
       "revenueGrowth": -7.63,
       "netIncomeGrowth": -110.87,
       "cashFlowGrowth": -64.27,
@@ -4070,7 +4070,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 82.7,
       "week52RangePct": 31.6,
       "pressureScore": 1.5,
-      "stabilityScore": 0.5
+      "stabilityScore": 1.0
     },
     {
       "symbol": "376300.KQ",
@@ -4084,7 +4084,7 @@ const KR_EXTRA_DATA = {
       "per": 24.09,
       "eps": 785.0,
       "dividendYield": 1.67,
-      "dollarVolume": 557391160.0,
+      "dollarVolume": 581123210.0,
       "revenueGrowth": 11.98,
       "netIncomeGrowth": -23.61,
       "cashFlowGrowth": 49.47,
@@ -4093,7 +4093,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 19.0,
       "week52RangePct": 3.6,
       "pressureScore": 3.0,
-      "stabilityScore": 1.3
+      "stabilityScore": 2.3
     },
     {
       "symbol": "018290.KQ",
@@ -4116,7 +4116,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 36.9,
       "week52RangePct": 12.3,
       "pressureScore": 1.7,
-      "stabilityScore": 0.8
+      "stabilityScore": 1.8
     },
     {
       "symbol": "125490.KQ",
@@ -4139,7 +4139,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 103.8,
       "week52RangePct": 28.1,
       "pressureScore": 0.0,
-      "stabilityScore": 1.7
+      "stabilityScore": 1.1
     },
     {
       "symbol": "030520.KQ",
@@ -4162,7 +4162,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 64.5,
       "week52RangePct": 26.0,
       "pressureScore": 0.7,
-      "stabilityScore": 0.8
+      "stabilityScore": 1.6
     },
     {
       "symbol": "067160.KQ",
@@ -4185,7 +4185,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 88.0,
       "week52RangePct": 6.0,
       "pressureScore": 0.0,
-      "stabilityScore": 1.2
+      "stabilityScore": 2.2
     },
     {
       "symbol": "042000.KQ",
@@ -4208,7 +4208,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 56.1,
       "week52RangePct": 7.3,
       "pressureScore": 0.6,
-      "stabilityScore": 0.7
+      "stabilityScore": 1.7
     },
     {
       "symbol": "348370.KQ",
@@ -4222,7 +4222,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -3154.0,
       "dividendYield": 0.0,
-      "dollarVolume": 6613977500.0,
+      "dollarVolume": 6729705000.0,
       "revenueGrowth": -14.47,
       "netIncomeGrowth": 87.81,
       "cashFlowGrowth": 101.64,
@@ -4231,7 +4231,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 131.1,
       "week52RangePct": 7.9,
       "pressureScore": 2.3,
-      "stabilityScore": 0.0
+      "stabilityScore": 1.0
     },
     {
       "symbol": "101730.KQ",
@@ -4254,7 +4254,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 22.8,
       "week52RangePct": 29.5,
       "pressureScore": 1.3,
-      "stabilityScore": 0.1
+      "stabilityScore": 1.0
     },
     {
       "symbol": "272290.KQ",
@@ -4268,7 +4268,7 @@ const KR_EXTRA_DATA = {
       "per": 6.83,
       "eps": 3080.0,
       "dividendYield": 1.66,
-      "dollarVolume": 791290550.0,
+      "dollarVolume": 828717450.0,
       "revenueGrowth": 3.98,
       "netIncomeGrowth": -17.94,
       "cashFlowGrowth": -35.98,
@@ -4277,7 +4277,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 126.9,
       "week52RangePct": 15.7,
       "pressureScore": 0.0,
-      "stabilityScore": 1.1
+      "stabilityScore": 1.8
     },
     {
       "symbol": "215200.KQ",
@@ -4300,7 +4300,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 94.9,
       "week52RangePct": 7.2,
       "pressureScore": 0.4,
-      "stabilityScore": 0.8
+      "stabilityScore": 1.6
     },
     {
       "symbol": "025320.KQ",
@@ -4323,7 +4323,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 50.5,
       "week52RangePct": 18.7,
       "pressureScore": 0.0,
-      "stabilityScore": 0.3
+      "stabilityScore": 1.2
     },
     {
       "symbol": "078340.KQ",
@@ -4346,7 +4346,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 52.5,
       "week52RangePct": 68.6,
       "pressureScore": 7.0,
-      "stabilityScore": 0.7
+      "stabilityScore": 1.3
     },
     {
       "symbol": "095660.KQ",
@@ -4369,7 +4369,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 19.1,
       "week52RangePct": 15.3,
       "pressureScore": 1.4,
-      "stabilityScore": 0.9
+      "stabilityScore": 1.7
     },
     {
       "symbol": "060280.KQ",
@@ -4392,7 +4392,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 6.1,
       "week52RangePct": 12.4,
       "pressureScore": 0.0,
-      "stabilityScore": 0.8
+      "stabilityScore": 1.2
     },
     {
       "symbol": "036620.KQ",
@@ -4415,7 +4415,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 34.7,
       "week52RangePct": 6.0,
       "pressureScore": 2.5,
-      "stabilityScore": 1.0
+      "stabilityScore": 1.8
     },
     {
       "symbol": "348210.KQ",
@@ -4429,7 +4429,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -240.0,
       "dividendYield": 1.58,
-      "dollarVolume": 1324687600.0,
+      "dollarVolume": 1389739800.0,
       "revenueGrowth": -41.16,
       "netIncomeGrowth": -106.41,
       "cashFlowGrowth": -125.98,
@@ -4438,7 +4438,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 68.4,
       "week52RangePct": 9.9,
       "pressureScore": 0.0,
-      "stabilityScore": 0.3
+      "stabilityScore": 1.0
     },
     {
       "symbol": "069080.KQ",
@@ -4461,7 +4461,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 15.7,
       "week52RangePct": 20.8,
       "pressureScore": 1.4,
-      "stabilityScore": 1.1
+      "stabilityScore": 1.8
     },
     {
       "symbol": "025900.KQ",
@@ -4484,7 +4484,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 176.3,
       "week52RangePct": 35.6,
       "pressureScore": 1.2,
-      "stabilityScore": 0.3
+      "stabilityScore": 1.0
     },
     {
       "symbol": "352480.KQ",
@@ -4498,7 +4498,7 @@ const KR_EXTRA_DATA = {
       "per": 17.76,
       "eps": 1329.0,
       "dividendYield": 0.0,
-      "dollarVolume": 699291600.0,
+      "dollarVolume": 705144400.0,
       "revenueGrowth": 1.98,
       "netIncomeGrowth": -55.96,
       "cashFlowGrowth": -39.54,
@@ -4507,7 +4507,7 @@ const KR_EXTRA_DATA = {
       "debtRatio": 19.6,
       "week52RangePct": 24.0,
       "pressureScore": 3.4,
-      "stabilityScore": 0.3
+      "stabilityScore": 1.3
     },
     {
       "symbol": "194480.KQ",
@@ -4530,9 +4530,9 @@ const KR_EXTRA_DATA = {
       "debtRatio": 91.2,
       "week52RangePct": 8.5,
       "pressureScore": 0.9,
-      "stabilityScore": 1.2
+      "stabilityScore": 2.2
     }
   ],
   "ratiosUpdatedAt": "2026-08-25T11:29:54Z",
-  "generatedAt": "2026-08-29T09:09:25Z"
+  "generatedAt": "2026-08-30T09:04:40Z"
 };
