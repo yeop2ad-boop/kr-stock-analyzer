@@ -693,10 +693,15 @@ function renderCompanyBubble(leaf, sectorColorValue) {
 
   const nameEl = document.createElement("span");
   nameEl.className = "company-tile-name";
-  // 잘리지 않는 최대 크기로 타일 폭을 꽉 채움 — 한글은 글자폭 1em, 영문/숫자는 약 0.62em으로 계산(finviz 방식)
-  let nameUnits = 0;
-  for (const ch of nameText) nameUnits += ch.charCodeAt(0) > 0x2e80 ? 1 : 0.62;
-  nameEl.style.fontSize = `${Math.max(8, Math.min(64, Math.min(h * 0.45, (w * 0.94) / Math.max(1.2, nameUnits))))}px`;
+  // 균등 모드: 예전처럼 은은한 작은 글씨(사용자 확정) / 시총 모드: 잘리지 않는 선에서 타일 폭을 꽉 채움
+  // (한글은 글자폭 1em, 영문/숫자는 약 0.62em으로 계산 — finviz 방식)
+  if (sizeMode === "equal") {
+    nameEl.style.fontSize = `${Math.max(8, Math.min(22, minDim * (isKrView ? 0.16 : 0.22)))}px`;
+  } else {
+    let nameUnits = 0;
+    for (const ch of nameText) nameUnits += ch.charCodeAt(0) > 0x2e80 ? 1 : 0.62;
+    nameEl.style.fontSize = `${Math.max(8, Math.min(64, Math.min(h * 0.45, (w * 0.94) / Math.max(1.2, nameUnits))))}px`;
+  }
   nameEl.textContent = nameText;
   label.appendChild(nameEl);
 
