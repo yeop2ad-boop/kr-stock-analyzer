@@ -2130,6 +2130,10 @@ function showOnlyCarouselView(fn) {
 el("morePanelWatchlistBtn").addEventListener("click", () => {
   showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist")));
 });
+// 상단바 별 아이콘(지도 상단과 동일 위치) — 관심종목 화면으로 이동
+el("fhWatchlistBtn").addEventListener("click", () => {
+  showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist")));
+});
 el("morePanelValuationBtn").addEventListener("click", () => {
   showOnlyCarouselView(() => activateRankingGroup("disclosure"));
 });
@@ -3638,9 +3642,11 @@ window.addEventListener("popstate", () => {
 document.addEventListener("click", (e) => {
   const link = e.target.closest(".ticker-link");
   if (link && link.dataset.ticker) {
-    // 간편검색(위저드) 안의 종목을 눌렀을 때 위저드가 상세 화면을 가리지 않도록 먼저 닫음
+    // 간편검색(위저드)·시장 패널 안의 종목을 눌렀을 때 그 창이 상세 화면을 가리지 않도록 먼저 닫음
     const wiz = el("searchWizardPanel");
     if (wiz && wiz.classList.contains("open")) closeSearchWizard();
+    const mp = el("marketPanel");
+    if (mp && mp.classList.contains("open")) closeMarketPanel();
     navigateToTicker(link.dataset.ticker);
   }
 });
@@ -7968,15 +7974,10 @@ function indexRowHtml(item, snap, categoryKey) {
   const { label: clockLabel, cls: clockClass } = snapClockLabel(snap);
   const sub = `${clockLabel ? `<span class="${clockClass}">🕐 ${clockLabel}</span> | ` : ""}<span class="idx-ticker">${escapeHtml(item.ticker)}</span>`;
   const nameHtml = `${item.crypto ? cryptoLogoHtml(item.ticker) : ""}${escapeHtml(item.name)}`;
-  // 원자재/채권/외환은 종목이 아니므로 TradingView 차트 모달 대신 전용 상세페이지(개요+뉴스)로 연결
-  const isAssetDetail = categoryKey === "commodities" || categoryKey === "bonds" || categoryKey === "fx";
-  const clickable = isAssetDetail || !!item.chartSymbol;
-  const rowClass = `idx-row${isAssetDetail ? " asset-detail-link idx-row-clickable" : clickable ? " price-chart-link idx-row-clickable" : ""}`;
-  const rowAttrs = isAssetDetail
-    ? ` data-asset-cat="${escapeHtml(categoryKey)}" data-asset-ticker="${escapeHtml(item.ticker)}" role="button" tabindex="0"`
-    : clickable
-    ? ` data-chart-symbol="${escapeHtml(item.chartSymbol)}" role="button" tabindex="0"`
-    : "";
+  // 시장탭 행 클릭 정리(2026-08-30 사용자 요청): TradingView 차트·자산 상세 연결 전부 제거 —
+  // "주식" 카테고리만 종목 상세페이지로 이동(stockCardRowHtml의 ticker-link가 담당), 나머지 행은 표시 전용
+  const rowClass = "idx-row";
+  const rowAttrs = "";
 
   if (!snap || snap.price === null || snap.price === undefined) {
     return `<div class="${rowClass}"${rowAttrs}><div class="idx-left"><div class="idx-name">${nameHtml}</div><div class="idx-sub">${sub}</div></div><div class="idx-right"><div class="idx-price">N/A</div></div></div>`;
@@ -8213,8 +8214,9 @@ function mktWidgetCellHtml(ticker, snap, points) {
   const item = INDEX_ITEM_BY_TICKER.get(ticker);
   if (!item) return `<div class="mkt-widget-cell"></div>`;
   const num = (n, d = 2) => n.toLocaleString("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d });
-  const clickable = !!item.chartSymbol;
-  const cellAttrs = clickable ? ` data-chart-symbol="${escapeHtml(item.chartSymbol)}" role="button" tabindex="0"` : "";
+  // 위젯 카드도 TradingView 차트 연결 제거(2026-08-30 시장탭 링크 정리) — 표시 전용
+  const clickable = false;
+  const cellAttrs = "";
   const { label: clockLabel, cls: clockClass } = snapClockLabel(snap);
   const nameRow = `<div class="mkt-widget-cell-name-row">
       <span class="mkt-widget-cell-name">${escapeHtml(item.name)}</span>

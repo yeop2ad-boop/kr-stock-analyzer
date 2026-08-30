@@ -41,7 +41,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260830f" />
+<link rel="stylesheet" href="style.css?v=20260830g" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -61,7 +61,6 @@
   <header id="fixedHeader" class="fixed-header">
     <div class="fh-topline">
       <img src="logos/marketmap-logo.png" alt="marketmap.kr" class="fh-banner" />
-      <h2 id="carouselViewTitle" class="search-overlay-title carousel-view-title" data-i18n="tab.valuation">기업가치</h2>
       <div class="market-mode-toggle" id="marketModeToggle" role="group" aria-label="국내/해외 전환">
         <button type="button" class="market-mode-btn market-mode-btn-kr" id="marketModeKrBtn" data-mode="kr" data-i18n="market.kr">국내</button>
         <button type="button" class="market-mode-btn market-mode-btn-us active" id="marketModeUsBtn" data-mode="us" data-i18n="market.us">해외</button>
@@ -70,7 +69,13 @@
         <button type="button" id="searchOpenBtn" class="header-icon-btn" aria-label="검색">
           <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15.2" y2="15.2"/></svg>
         </button>
+        <button type="button" id="fhWatchlistBtn" class="header-icon-btn" aria-label="관심목록">
+          <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z"/></svg>
+        </button>
       </div>
+    </div>
+    <div class="fh-titleline">
+      <h2 id="carouselViewTitle" class="search-overlay-title carousel-view-title" data-i18n="tab.valuation">기업가치</h2>
     </div>
 
     <!-- 상단 탭바 — 관심목록/기업가치/시장동향/인사이트가 전부 더보기 패널로 이동해 숨김(버튼 자체는 JS가 참조하므로 DOM엔 유지) -->
@@ -684,6 +689,6 @@
   </footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js?v=20260830k"></script>
+  <script src="app.js?v=20260830l"></script>
 </body>
 </html>

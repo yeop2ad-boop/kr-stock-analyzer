@@ -2319,3 +2319,5 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 .about-rows span:first-child { color: var(--muted); }
 .about-links { font-size: 13px; margin: 0 0 6px; }
 .about-copy { color: var(--muted); font-size: 12px; margin-top: 14px; }
+/* 상단바 2줄 구성(2026-08-30) — 1줄: 로고·국내해외·돋보기·별(지도와 동일 배치), 2줄: 현재 화면 제목 */
+.fh-titleline { max-width: 860px; margin: 0 auto 6px; display: flex; align-items: center; min-height: 26px; }

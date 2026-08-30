@@ -393,8 +393,14 @@ function buildPackedRoot(data) {
 
   const root = d3.hierarchy({ name: "root", children }).sum((d) => d.value).sort((a, b) => b.value - a.value);
 
-  // finviz식 사각 트리맵 — 큰 종목부터 왼쪽 위에서 질서있게 채우고 타일이 정사각형에 가깝게(ratio 1).
-  // 원형(pack) 지도는 2026-08-30 사용자 확정으로 폐기(로고 모드 포함) — 복원 필요 시 git 히스토리 0a03a88 이전 참고.
+  // "원형" 모드 — 예전 버블맵(pack) 레이아웃 그대로(로고만 폐기, 텍스트 배지 표시)
+  if (shapeMode === "circle") {
+    d3.pack().size([WORLD_SIZE, WORLD_SIZE - MARKET_LABEL_STRIP]).padding((d) => (d.depth === 1 ? 30 : 2))(root);
+    for (const node of root.descendants()) node.y += MARKET_LABEL_STRIP;
+    return root;
+  }
+
+  // 기본 "사각" 모드 — finviz식 트리맵: 큰 종목부터 왼쪽 위에서 질서있게 채우고 타일이 정사각형에 가깝게(ratio 1)
   d3
     .treemap()
     .tile(d3.treemapSquarify.ratio(1))
@@ -504,6 +510,11 @@ const bubbleBySymbol = new Map(); // symbol -> .company-bubble 엘리먼트(지�
 let ACTIVE_MARKET = "overseas";
 let ACTIVE_DATA = coreDataFor(ACTIVE_MARKET);
 let sizeMode = "equal"; // 기본값 균등 — "시총" 버튼으로 "marketCap"과 토글(버튼 이름은 항상 "시총", 시총 모드일 때만 주황 강조)
+// 지도 모양: 기본 사각(트리맵) — "원형" 버튼으로 버블맵과 토글, 선택은 localStorage로 유지(2026-08-30 두 버전 병행 운영)
+let shapeMode = "square";
+try {
+  if (localStorage.getItem("map_shape_mode") === "circle") shapeMode = "circle";
+} catch (e) {}
 
 // 섹터 이름표를 "로고 하나"처럼 취급 — 섹터 원 맨 위 가장자리에 딱 붙여 고정하고,
 // d3-force로 (1) 종목 원끼리 절대 안 겹치게(사이즈별 최소 간격), (2) 이름표(알약 모양 사각형)와도 안 겹치게 풀어낸다.
@@ -624,6 +635,7 @@ function renderSectorNameTile(sectorNode) {
 }
 
 function renderMap(root) {
+  if (shapeMode === "circle") return renderMapCircle(root);
   const frag = document.createDocumentFragment();
 
   frag.appendChild(renderMarketIndexLabels());
@@ -660,6 +672,63 @@ function renderMap(root) {
   }
 
   mapWorld.appendChild(frag);
+}
+
+// ---------- "원형" 모드 렌더러 — 예전 버블맵 그대로(로고 이미지만 폐기, 텍스트 배지 사용) ----------
+function renderMapCircle(root) {
+  const frag = document.createDocumentFragment();
+  frag.appendChild(renderMarketIndexLabels());
+  for (const sectorNode of root.children) {
+    const color = sectorColor(sectorNode.data.name);
+    const bubble = document.createElement("div");
+    bubble.className = "sector-bubble";
+    bubble.dataset.sector = sectorNode.data.name;
+    bubble.style.setProperty("--sc", color);
+    bubble.style.left = `${sectorNode.x - sectorNode.r}px`;
+    bubble.style.top = `${sectorNode.y - sectorNode.r}px`;
+    bubble.style.width = `${sectorNode.r * 2}px`;
+    bubble.style.height = `${sectorNode.r * 2}px`;
+    const changeEl = document.createElement("span");
+    changeEl.className = "sector-bubble-change";
+    changeEl.style.fontSize = `${Math.max(18, Math.min(72, sectorNode.r * 0.3))}px`;
+    bubble.appendChild(changeEl);
+    bubble.addEventListener("click", (e) => {
+      if (e.target !== bubble && e.target !== changeEl) return;
+      zoomToNode(sectorNode);
+    });
+    frag.appendChild(bubble);
+    const labelPos = layoutSectorLabel(sectorNode);
+    for (const leaf of sectorNode.children) frag.appendChild(renderCompanyBubbleCircle(leaf, color));
+    frag.appendChild(renderSectorNameBubble(sectorNode, labelPos, color));
+  }
+  mapWorld.appendChild(frag);
+}
+
+function renderCompanyBubbleCircle(leaf, sectorColorValue) {
+  const d = leaf.data;
+  const el = document.createElement("div");
+  el.className = "company-bubble";
+  el.style.setProperty("--sc", sectorColorValue);
+  const chg = changeColor(d.changePercent);
+  el.style.setProperty("--chg", chg.css);
+  el.style.left = `${leaf.x - leaf.r}px`;
+  el.style.top = `${leaf.y - leaf.r}px`;
+  el.style.width = `${leaf.r * 2}px`;
+  el.style.height = `${leaf.r * 2}px`;
+  el.dataset.r = leaf.r;
+  const isKrView = ACTIVE_MARKET === "domestic";
+  const badgeText = isKrView ? d.name : d.symbol;
+  const isBigCap = isKrView && (d.symbol === "005930.KS" || d.symbol === "000660.KS");
+  const bigCapScale = isBigCap ? 1.4 : 1;
+  const fallback = document.createElement("div");
+  fallback.className = "company-fallback-badge";
+  fallback.style.setProperty("--sc", sectorColorValue);
+  fallback.style.fontSize = `${Math.max(9, Math.min(22, leaf.r * (isKrView ? 0.2 : 0.32)) * bigCapScale)}px`;
+  fallback.textContent = badgeText;
+  el.appendChild(fallback);
+  el.addEventListener("click", () => openCompanySheet(d));
+  bubbleBySymbol.set(d.symbol, el);
+  return el;
 }
 
 // 타일 안 등락률 표기 공용 포맷 — refreshAllBubbleColors의 실시간 갱신에서도 같은 형식 사용
@@ -1073,7 +1142,7 @@ document.addEventListener("click", (e) => {
   if (btn) showToast(btn.dataset.toast);
 });
 
-document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#logoModeBtn):not(#watchFilterBtn)").forEach((btn) => {
+document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#shapeModeBtn):not(#watchFilterBtn)").forEach((btn) => {
   btn.addEventListener("click", () => {
     const group = btn.parentElement;
     group.querySelectorAll(".active").forEach((b) => b.classList.remove("active"));
@@ -1081,7 +1150,20 @@ document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#log
   });
 });
 
-// 로고 모드는 사각 히트맵 전환(2026-08-30)과 함께 폐기 — 타일에 항상 종목명+등락률 텍스트 표시
+// 로고 모드는 사각 히트맵 전환(2026-08-30)과 함께 폐기 — 사각: 종목명+등락률 텍스트, 원형: 텍스트 배지(color-only CSS 재사용)
+mapWorld.classList.add("color-only");
+
+// "원형" — 기본 사각(트리맵)과 예전 버블맵을 토글(원형일 때만 주황 강조), 선택은 다음 방문에도 유지
+const shapeModeBtn = document.getElementById("shapeModeBtn");
+shapeModeBtn.classList.toggle("active", shapeMode === "circle");
+shapeModeBtn.addEventListener("click", (e) => {
+  shapeMode = shapeMode === "circle" ? "square" : "circle";
+  e.currentTarget.classList.toggle("active", shapeMode === "circle");
+  try {
+    localStorage.setItem("map_shape_mode", shapeMode);
+  } catch (err) {}
+  rerenderMap(true);
+});
 
 // "관심" — 버튼 이름은 그대로, 누르면 주황 배경/흰 글씨로 강조되며 내 관심종목만 남김
 document.getElementById("watchFilterBtn").addEventListener("click", (e) => {
