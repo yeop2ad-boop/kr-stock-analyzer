@@ -1035,12 +1035,3 @@ body {
 }
 .company-tile-name { max-width: 100%; overflow: hidden; word-break: keep-all; }
 .company-tile-chg { font-weight: 700; opacity: 0.85; }
-/* 섹터 헤더 풀폭 바 + 섹터 배경 틴트 — 섹터 구분 강화(2026-08-30) */
-.sector-bubble.shape-square { background: color-mix(in srgb, var(--sc, #888) 10%, transparent); border-width: 2px; }
-.sector-name-bubble.shape-square {
-  border-radius: 7px;
-  padding: 0 8px;
-  justify-content: flex-start;
-  background: color-mix(in srgb, var(--sc, #888) 82%, #14161c);
-  box-shadow: none;
-}

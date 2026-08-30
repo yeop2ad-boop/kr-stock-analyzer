@@ -400,8 +400,8 @@ function buildPackedRoot(data) {
     .tile(d3.treemapSquarify.ratio(1))
     .size([WORLD_SIZE, WORLD_SIZE - MARKET_LABEL_STRIP])
     .paddingOuter(5)
-    .paddingTop((d) => (d.depth === 1 ? 30 : 0)) // 섹터 타일 상단 풀폭 헤더 바 자리
-    .paddingInner((d) => (d.depth === 0 ? 14 : 1.5)) // 섹터 사이는 넓게 띄워 경계가 또렷하게
+    .paddingTop((d) => (d.depth === 1 ? 30 : 0)) // 섹터 타일 상단 이름표 자리
+    .paddingInner((d) => (d.depth === 0 ? 7 : 1.5))
     .round(true)(root);
 
   // 상단 시장 라벨 띠만큼 전체를 아래로 내리고, zoomToNode 등 기존 좌표 규약(x/y/r)용 합성 프로퍼티를 붙임
@@ -607,16 +607,16 @@ function renderSectorNameBubble(sectorNode, pos, color) {
   return el;
 }
 
-// 섹터 사각 타일 상단 풀폭 헤더 바(paddingTop 30px 안에 들어감) — 섹터 구분 + 큰 탭 타깃(누르면 그 섹터로 줌인)
+// 섹터 사각 타일 상단 이름표(paddingTop 30px 안에 들어감) — 누르면 그 섹터로 줌인
+// (풀폭 색 헤더 바는 '너무 알록달록하다'는 사용자 피드백으로 하루 만에 원복 — 작은 알약으로 유지)
 function renderSectorNameTile(sectorNode) {
   const el = document.createElement("div");
   el.className = "sector-name-bubble shape-square";
-  el.style.setProperty("--sc", sectorColor(sectorNode.data.name));
   const w = sectorNode.x1 - sectorNode.x0;
-  el.style.left = `${sectorNode.x0 + 2}px`;
-  el.style.top = `${sectorNode.y0 + 3}px`;
-  el.style.width = `${Math.max(0, w - 4)}px`;
-  el.style.height = `24px`;
+  el.style.left = `${sectorNode.x0 + 5}px`;
+  el.style.top = `${sectorNode.y0 + 4}px`;
+  el.style.height = `21px`;
+  el.style.maxWidth = `${Math.max(0, w - 10)}px`;
   el.style.fontSize = `${Math.max(11, Math.min(16, w * 0.055))}px`;
   el.textContent = `${sectorNode.data.sectorKo} · ${sectorNode.children.length}`;
   el.addEventListener("click", () => zoomToNode(sectorNode));
@@ -774,7 +774,8 @@ function fitToViewport(animate) {
   // (전체보기 줌인은 도입했다가 사용자 요청으로 원복 — 항상 전체가 다 보이는 fitK 유지)
   const expanded = UNIVERSE_EXPANDED[ACTIVE_MARKET];
   const isKr = ACTIVE_MARKET === "domestic";
-  const upShift = expanded ? (isKr ? 0 : 20) : (isKr ? 40 : 50);
+  // 해외 전체보기 20px 위 이동은 S&P500 등락 표시가 상단에 가려져 제거(사용자 요청)
+  const upShift = expanded ? 0 : (isKr ? 40 : 50);
   view.k = fitK;
   view.x = (vw - RIGHT_CONTROLS_RESERVE - WORLD_SIZE * view.k) / 2;
   const topReserve = expanded ? 0 : TOP_CONTROLS_RESERVE;
