@@ -291,7 +291,8 @@
         <section class="flush-section">
           <div class="section-heading-row">
             <h2>매출액 &amp; 주당순이익(EPS)</h2>
-            <button type="button" id="groundOpenBtn" class="ground-open-btn">투자 그라운드</button>
+            <!-- 투자 그라운드 — 2026-08-30 사용자 요청으로 기능 숨김(버튼 DOM은 JS가 참조하므로 display:none으로만 제거) -->
+            <button type="button" id="groundOpenBtn" class="ground-open-btn" style="display:none;">투자 그라운드</button>
           </div>
           <div id="financialsSection" class="section-body"></div>
           <div id="peersSection" class="section-body peers-inline" style="display:none;"></div>
