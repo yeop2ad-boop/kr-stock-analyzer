@@ -1010,3 +1010,15 @@ body {
   .app-shell { margin-top: 16px; height: calc(100dvh - 32px); border-radius: 20px; overflow: hidden; }
 }
 
+
+/* ---------- 칩 바텀시트 한 줄 설명 + 배점 안내 모달 ---------- */
+.range-sheet-desc { display: flex; align-items: center; gap: 8px; padding: 2px 18px 6px; font-size: 12px; color: var(--muted, #8a94a6); line-height: 1.5; }
+.range-sheet-desc:empty { display: none; }
+#rangeSheetDetailBtn { flex: none; border: 1px solid #5b8def; background: transparent; color: #5b8def; border-radius: 999px; font-size: 11px; font-weight: 700; padding: 2px 10px; cursor: pointer; }
+.score-info-modal { position: fixed; inset: 0; z-index: 80; display: flex; align-items: center; justify-content: center; }
+.score-info-backdrop { position: absolute; inset: 0; background: rgba(10, 15, 30, 0.45); }
+.score-info-card { position: relative; width: min(92vw, 420px); max-height: 76vh; overflow-y: auto; background: var(--sheet-bg, #fff); color: var(--text, #1c2333); border-radius: 16px; padding: 16px 18px 18px; box-shadow: 0 18px 50px rgba(10, 15, 40, 0.35); }
+.score-info-header { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 14px; margin-bottom: 10px; }
+#scoreInfoCloseBtn { border: none; background: transparent; color: inherit; font-size: 16px; cursor: pointer; }
+.score-info-body p { margin: 0 0 10px; font-size: 13px; line-height: 1.55; }
+.score-info-note { color: var(--muted, #8a94a6); font-size: 11px !important; }

@@ -1377,12 +1377,48 @@ const quickSliderCtrl = createSliderController(
   }
 );
 
+// 칩 바텀시트에 표시할 지표 한 줄 설명 — 상승압력/투자안정은 "+자세히"로 배점 방식(본체 +자세히와 동일 공식)까지 안내
+const METRIC_DESCS = {
+  changePct: "전일 종가 대비 오늘 주가가 얼마나 움직였는지예요.",
+  popularStocks: "오늘 거래대금(사고판 금액) 순위 — 상위일수록 돈이 몰린 종목이에요.",
+  pressureScore: "거래대금·매출성장·3개월 모멘텀을 합친 자체 점수(10점 만점)예요.",
+  stabilityScore: "재무안정·시장대비 모멘텀·순이익률·시가총액을 합친 자체 점수(10점 만점)예요.",
+  per: "주가 ÷ 주당순이익 — 낮을수록 이익 대비 저렴한 편이에요.",
+  dividendYield: "현재 주가 대비 최근 1년 배당금 비율이에요.",
+  week52RangePct: "52주 최저~최고 사이에서 지금 주가의 위치(0%=최저점 부근)예요.",
+  revenueGrowth: "최근 분기 매출이 1년 전 같은 분기보다 얼마나 늘었는지예요.",
+  netIncomeGrowth: "최근 분기 순이익이 1년 전 같은 분기보다 얼마나 늘었는지예요.",
+  debtRatio: "자기자본 대비 부채 비율 — 낮을수록 빚 부담이 적어요.",
+  cashFlowGrowth: "영업활동 현금흐름이 1년 전보다 얼마나 늘었는지예요.",
+};
+const SCORE_INFO_CONTENT = {
+  pressureScore: {
+    title: "📈 상승 압력 배점 방식 (10점 만점)",
+    html: `
+      <p><b>① 총 거래대금 (3점)</b><br>최근 5거래일 평균 거래대금 ÷ 1년 평균 — 2배 이상 만점, 0.5배 이하 0점</p>
+      <p><b>② 매출 성장성 (3점)</b><br>최근 분기 매출의 전년 동기 대비 성장률 — 30% 이상 만점, 0% 이하 0점</p>
+      <p><b>③ 상승 모멘텀 (4점)</b><br>최근 3개월 수익률 — 25% 이상 만점, 0% 이하 0점</p>
+      <p class="score-info-note">높을수록 단기 상승 여력이 크다고 보는 참고용 지표이며, 투자 자문이 아닙니다.</p>`,
+  },
+  stabilityScore: {
+    title: "🛡️ 투자 안정 배점 방식 (10점 만점)",
+    html: `
+      <p><b>① 재무안정 (4점)</b><br>채무 상환능력·수익 안정성·시장 신인도를 종합한 자체 신용 평가</p>
+      <p><b>② 시장 대비 모멘텀 (2점)</b><br>대표 지수와의 1년 수익률 차이 — 차이가 작을수록 만점</p>
+      <p><b>③ 순이익률 (2점)</b><br>순이익 ÷ 매출 — 50% 이상 만점, 적자 0점</p>
+      <p><b>④ 시가총액 가점 (2점)</b><br>전체 시장에서 차지하는 시가총액 비중이 클수록 가점</p>
+      <p class="score-info-note">높을수록 1년 후 하락 가능성이 낮다고 보는 참고용 지표이며, 투자 자문이 아닙니다.</p>`,
+  },
+};
+
 function openRangeSheet(key) {
   closeCompanySheet();
   closeAllFiltersPanel();
   closeWatchlistSheet();
   quickSheetKey = key;
   rangeSheetTitle.textContent = METRICS[key].label;
+  document.getElementById("rangeSheetDescText").textContent = METRIC_DESCS[key] || "";
+  document.getElementById("rangeSheetDetailBtn").style.display = SCORE_INFO_CONTENT[key] ? "" : "none";
   quickSliderCtrl.refresh();
   rangeSheet.classList.add("open");
 }
@@ -1390,6 +1426,21 @@ function openRangeSheet(key) {
 function closeRangeSheet() {
   rangeSheet.classList.remove("open");
 }
+
+// "+자세히" — 상승압력/투자안정 배점 방식 안내 모달
+document.getElementById("rangeSheetDetailBtn").addEventListener("click", () => {
+  const info = SCORE_INFO_CONTENT[quickSheetKey];
+  if (!info) return;
+  document.getElementById("scoreInfoTitle").textContent = info.title;
+  document.getElementById("scoreInfoBody").innerHTML = info.html;
+  document.getElementById("scoreInfoModal").style.display = "flex";
+});
+document.getElementById("scoreInfoCloseBtn").addEventListener("click", () => {
+  document.getElementById("scoreInfoModal").style.display = "none";
+});
+document.getElementById("scoreInfoBackdrop").addEventListener("click", () => {
+  document.getElementById("scoreInfoModal").style.display = "none";
+});
 
 // 핸들을 살짝만 아래로 끌어도(낮은 임계값) 시트가 닫히는 드래그 제스처
 function enableSheetDragToClose(sheetEl, handleEl, closeFn) {

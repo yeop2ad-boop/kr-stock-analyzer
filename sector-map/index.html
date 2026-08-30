@@ -20,7 +20,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="굴려볼까" />
-<link rel="stylesheet" href="style.css?v=20260830h" />
+<link rel="stylesheet" href="style.css?v=20260830i" />
 <!-- 지도가 떠 있는 동안 본체 파일을 미리 받아둠 — 간편검색/시장/더보기로 처음 넘어갈 때 로딩 체감 단축 -->
 <link rel="prefetch" href="../app.js?v=20260830k" />
 <link rel="prefetch" href="../style.css?v=20260830f" />
@@ -165,6 +165,7 @@
       <span id="rangeSheetTitle">시가총액</span>
       <button type="button" id="rangeSheetResetBtn">전체</button>
     </div>
+    <div class="range-sheet-desc"><span id="rangeSheetDescText"></span><button type="button" id="rangeSheetDetailBtn" style="display:none;">+자세히</button></div>
     <div class="range-sheet-value" id="rangeSheetValue">전체</div>
     <div class="range-slider" id="rangeSlider">
       <div class="range-slider-track"></div>
@@ -174,6 +175,14 @@
     </div>
     <div class="range-slider-labels" id="rangeSliderLabels"></div>
     <div class="range-sheet-note" id="rangeSheetNote">데이터 준비중입니다</div>
+  </div>
+
+  <div class="score-info-modal" id="scoreInfoModal" style="display:none;">
+    <div class="score-info-backdrop" id="scoreInfoBackdrop"></div>
+    <div class="score-info-card">
+      <div class="score-info-header"><span id="scoreInfoTitle"></span><button type="button" id="scoreInfoCloseBtn" aria-label="닫기">✕</button></div>
+      <div class="score-info-body" id="scoreInfoBody"></div>
+    </div>
   </div>
 
   <nav class="bottom-nav">
@@ -201,6 +210,6 @@
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script src="data/sp500-data-core.js"></script>
 <script src="data/kr-data-core.js" onerror="window.KR_CORE_DATA = { companies: [] };"></script>
-<script src="app.js?v=20260830l"></script>
+<script src="app.js?v=20260830m"></script>
 </body>
 </html>
