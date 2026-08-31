@@ -14,6 +14,7 @@ const MAP_I18N = {
   "market.kr": { ko: "국내", en: "KR" },
   "market.us": { ko: "해외", en: "US" },
   "nav.map": { ko: "지도", en: "Map" },
+  "nav.ranking": { ko: "랭킹", en: "Ranking" },
   "tab.search": { ko: "간편검색", en: "Search" },
   "map.watchlist": { ko: "관심목록", en: "Watchlist" },
   "nav.marketBtn": { ko: "시장", en: "Market" },
@@ -2522,6 +2523,7 @@ function goToMainSite(openPanel) {
   window.location.href = openPanel ? `../index.html?open=${openPanel}` : "../index.html";
 }
 document.getElementById("mapSearchBtn").addEventListener("click", () => goToMainSite("search"));
+document.getElementById("bottomNavRankingBtn2").addEventListener("click", () => goToMainSite("ranking"));
 document.getElementById("bottomNavSearchBtn2").addEventListener("click", () => goToMainSite("wizard"));
 document.getElementById("bottomNavMarketBtn2").addEventListener("click", () => goToMainSite("market"));
 document.getElementById("bottomNavMoreBtn2").addEventListener("click", () => goToMainSite("more"));

@@ -22,7 +22,7 @@
 <meta name="apple-mobile-web-app-title" content="굴려볼까" />
 <link rel="stylesheet" href="style.css?v=20260831g" />
 <!-- 지도가 떠 있는 동안 본체 파일을 미리 받아둠 — 간편검색/시장/더보기로 처음 넘어갈 때 로딩 체감 단축 -->
-<link rel="prefetch" href="../app.js?v=20260831f" />
+<link rel="prefetch" href="../app.js?v=20260831h" />
 <link rel="prefetch" href="../style.css?v=20260831e" />
 <link rel="prefetch" href="../index.html" />
 </head>
@@ -198,6 +198,10 @@
       <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z" fill="currentColor"/><circle cx="12" cy="9.5" r="2.6" fill="#fff"/></svg>
       <span data-i18n="nav.map">지도</span>
     </button>
+    <button type="button" class="bottom-nav-btn" id="bottomNavRankingBtn2" aria-label="랭킹">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v4a5 5 0 0 1-10 0V4Z"/><path d="M7 6H4v1a3 3 0 0 0 3 3"/><path d="M17 6h3v1a3 3 0 0 1-3 3"/><path d="M12 13v5"/><path d="M8 21h8"/></svg>
+      <span data-i18n="nav.ranking">랭킹</span>
+    </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavSearchBtn2" aria-label="간편검색">
       <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2.4"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
       <span data-i18n="tab.search">간편검색</span>
@@ -218,6 +222,6 @@
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script src="data/sp500-data-core.js?v=20260831e"></script>
 <script src="data/kr-data-core.js?v=20260831e" onerror="window.KR_CORE_DATA = { companies: [] };"></script>
-<script src="app.js?v=20260831g"></script>
+<script src="app.js?v=20260831h"></script>
 </body>
 </html>

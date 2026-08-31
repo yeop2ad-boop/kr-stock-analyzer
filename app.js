@@ -1926,9 +1926,12 @@ function ensureTabLoaded(key) {
 }
 
 // ---------- 가로 스와이프(포인터 드래그로 손가락을 따라 화면이 끌려오는 캐로셀) ----------
+// 2026-08-31 사용자 요청: 관심종목~인사이트 화면을 좌우 스와이프로 넘기는 동작 비활성화 — 상단 4탭 버튼으로만 전환
+const CAROUSEL_SWIPE_ENABLED = false;
 let dragState = null;
 
 carouselViewport.addEventListener("pointerdown", (e) => {
+  if (!CAROUSEL_SWIPE_ENABLED) return;
   if (e.pointerType === "mouse" && e.button !== 0) return;
   const now = performance.now();
   dragState = {
@@ -2100,6 +2103,7 @@ document.addEventListener("click", (e) => {
 // ---------- 하단 고정 네비게이션(지도/간편검색/시장/더보기) — 홈은 지도(섹터맵)가 대신함 ----------
 const bottomNavButtons = {
   map: el("bottomNavMapBtn"),
+  ranking: el("bottomNavRankingBtn"),
   search: el("bottomNavSearchBtn"),
   market: el("bottomNavMarketBtn"),
   more: el("bottomNavMoreBtn"),
@@ -2252,6 +2256,7 @@ const I18N = {
   "tab.trend": { ko: "시장동향", en: "Trends" },
   "tab.insight": { ko: "인사이트", en: "Insight" },
   "nav.map": { ko: "지도", en: "Map" },
+  "nav.ranking": { ko: "랭킹", en: "Ranking" },
   "nav.home": { ko: "홈", en: "Home" },
   "nav.calendar": { ko: "캘린더", en: "Calendar" },
   "nav.marketBtn": { ko: "시장", en: "Market" },
@@ -2354,6 +2359,11 @@ bottomNavButtons.map.addEventListener("click", () => {
   const market = getWatchlistActiveMarket() === "KR" ? "domestic" : "overseas";
   window.location.href = `sector-map/index.html?market=${market}`;
 });
+// 랭킹(트로피) — 기업가치 랭킹 화면으로 바로 이동(2026-08-31 신설)
+bottomNavButtons.ranking.addEventListener("click", () => {
+  setBottomNavActive("ranking");
+  showOnlyCarouselView(() => activateRankingGroup("disclosure"));
+});
 bottomNavButtons.search.addEventListener("click", () => {
   closeCompanyPanel();
   openSearchWizard();
@@ -2387,6 +2397,7 @@ bottomNavButtons.more.addEventListener("click", () => {
       more: () => bottomNavButtons.more.click(),
       search: () => searchOpenBtn.click(), // 지도 상단 돋보기 → 티커 검색 오버레이
       wizard: () => bottomNavButtons.search.click(), // 지도 하단 간편검색 → 검색 위저드
+      ranking: () => bottomNavButtons.ranking.click(), // 지도 하단 랭킹 → 기업가치 랭킹
     };
     const fn = actions[openParam];
     if (fn) fn();
