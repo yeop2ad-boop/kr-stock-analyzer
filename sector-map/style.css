@@ -1057,8 +1057,9 @@ body {
   padding: 1px 2px;
   cursor: pointer;
 }
-/* 하단 네비 5버튼 전부 아이콘 없이 글자만(2026-08-31 사용자 확정) — 기존 국내/해외(16.5px)보다 살짝 크게 */
-.bottom-nav-market-btn { justify-content: center; gap: 0; }
+/* 하단 네비 5버튼 전부 아이콘 없이 글자만(2026-08-31 사용자 확정) — 기존 국내/해외(16.5px)보다 살짝 크게.
+   min-height 45px = 아이콘 시절 콘텐츠 높이(svg 26 + gap 6 + 라벨 ~13)와 동일 — 툴바 상하 크기 유지 */
+.bottom-nav-market-btn { justify-content: center; gap: 0; min-height: 45px; }
 .bottom-nav-market-label { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; line-height: 1;
 }
 .bottom-nav-btn svg { width: 26px; height: 26px; position: relative; top: 3px; }

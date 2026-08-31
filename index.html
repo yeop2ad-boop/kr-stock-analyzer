@@ -41,7 +41,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260831n" />
+<link rel="stylesheet" href="style.css?v=20260831p" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -61,6 +61,8 @@
   <header id="fixedHeader" class="fixed-header">
     <div class="fh-topline">
       <img src="logos/marketmap-logo.png" alt="marketmap.kr" class="fh-banner" />
+      <!-- 로고 옆 현재 시장 표시(2026-08-31): 국내 모드면 "국내", 해외 모드면 "해외" — syncMarketModeUI가 갱신 -->
+      <span id="fhMarketLabel" class="fh-market-label">해외</span>
       <!-- 상단 국내/해외 토글은 하단 네비 국내/해외 버튼으로 이동(2026-08-31) — JS(setAppMarketMode 등)가 참조하므로 DOM은 숨김 유지 -->
       <div class="market-mode-toggle" id="marketModeToggle" role="group" aria-label="국내/해외 전환" style="display:none;">
         <button type="button" class="market-mode-btn market-mode-btn-kr" id="marketModeKrBtn" data-mode="kr" data-i18n="market.kr">국내</button>
@@ -712,6 +714,6 @@
   </footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js?v=20260831l"></script>
+  <script src="app.js?v=20260831p"></script>
 </body>
 </html>

@@ -3714,6 +3714,9 @@ function syncMarketModeUI() {
   document.body.dataset.marketMode = isKr ? "kr" : "us";
   marketModeKrBtn.classList.toggle("active", isKr);
   marketModeUsBtn.classList.toggle("active", !isKr);
+  // 로고 오른쪽 현재 시장 표시(2026-08-31, 상단 토글 숨김 대체)
+  const fhMarketLabel = el("fhMarketLabel");
+  if (fhMarketLabel) fhMarketLabel.textContent = isKr ? "국내" : "해외";
   syncFirmsTabForMarket();
   syncDartTabForMarket();
   document.dispatchEvent(new CustomEvent("marketmodechange"));
