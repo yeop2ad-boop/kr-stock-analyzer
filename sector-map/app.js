@@ -256,11 +256,17 @@ function fmtWonTrillionOnly(n) {
 // 해외: core=시가총액 상위 200개, extra=나머지(약 300개) / 국내: core=코스피 상위 100개+코스닥 상위 50개, extra=나머지(약 197개)
 // 지도 보기(2026-08-31 개편): 국내/해외 토글+전체보기 버튼 대신 좌상단 드롭다운으로 4가지 보기 중 하나를 선택.
 // 코스피 200 = KR core+extra 중 .KS / 코스닥 150 = .KQ / S&P200 = US core만 / S&P500 = US core+extra
+// 나스닥 100 구성종목(2026-08-31, 네이버 지수 API .NDX 기준 102개 — GOOGL/GOOG 듀얼클래스 포함).
+// S&P500과 겹치는 86개는 기존 core/extra 데이터를 그대로 쓰고, 비편입 15개(ASML·MELI·PDD 등)는
+// data/ndx-extra.js(NDX_EXTRA_DATA, fetch-ndx-extra.ps1로 생성)를 나스닥 보기에서만 동적 로드해 합침
+const NDX100_SET = new Set("NVDA,AAPL,MSFT,AMZN,GOOGL,SPCX,GOOG,AVGO,META,TSLA,MU,WMT,AMD,ASML,INTC,PLTR,CSCO,COST,LRCX,AMAT,NFLX,PANW,ARM,TXN,AMGN,KLAC,LIN,CRWD,SNDK,SHOP,TMUS,PEP,MRVL,STX,GILD,ADI,QCOM,WDC,BKNG,VRTX,ISRG,SBUX,PDD,FTNT,ADBE,ADP,ABNB,APP,DASH,MELI,CEG,INTU,CMCSA,CSX,CDNS,MNST,MAR,DDOG,SNPS,REGN,CTAS,LITE,MDLZ,ROST,WBD,ORLY,HON,AEP,PCAR,BKR,MPWR,FAST,NBIS,NXPI,TER,FANG,ADSK,HONA,ALAB,WDAY,MSTR,AXON,CCEP,XEL,CRWV,TRI,PYPL,EXC,PAYX,TTWO,KDP,IDXX,FER,ROP,ODFL,MCHP,RKLB,DXCM,GEHC,ALNY,CPRT,KHC".split(","));
+
 const MAP_VIEWS = {
   kospi200: { label: "코스피 200", market: "domestic", needExtra: true, filter: (c) => c.symbol.endsWith(".KS") },
   kosdaq150: { label: "코스닥 150", market: "domestic", needExtra: true, filter: (c) => c.symbol.endsWith(".KQ") },
   sp200: { label: "S&P200", market: "overseas", needExtra: false, filter: null },
   sp500: { label: "S&P500", market: "overseas", needExtra: true, filter: null },
+  ndx100: { label: "나스닥 100", market: "overseas", needExtra: true, needNdx: true, filter: (c) => NDX100_SET.has(c.symbol) },
 };
 let ACTIVE_VIEW = "sp200";
 const extraDataLoadPromises = {};
@@ -286,6 +292,20 @@ function ensureExtraDataLoaded(market) {
     });
   return extraDataLoadPromises[market];
 }
+// 나스닥 100 전용 추가 데이터(S&P500 비편입 15종목) — 나스닥 보기를 처음 선택할 때만 동적 로드
+let ndxDataLoadPromise = null;
+function ensureNdxDataLoaded() {
+  if (ndxDataLoadPromise) return ndxDataLoadPromise;
+  const src = "data/ndx-extra.js?v=20260831m";
+  ndxDataLoadPromise = loadScriptOnce(src)
+    .catch(() => new Promise((res) => setTimeout(res, 600)).then(() => loadScriptOnce(src)))
+    .catch((err) => {
+      ndxDataLoadPromise = null;
+      throw err;
+    });
+  return ndxDataLoadPromise;
+}
+
 function coreDataFor(market) {
   return market === "domestic"
     ? typeof KR_CORE_DATA !== "undefined"
@@ -306,6 +326,10 @@ function updateActiveDataForUniverseState() {
   if (v.needExtra) {
     const extra = extraDataFor(ACTIVE_MARKET);
     if (extra) companies = [...companies, ...extra.companies];
+  }
+  // 나스닥 100 보기: S&P500 비편입 15종목(ndx-extra.js)을 합친 뒤 나스닥 구성종목으로만 필터
+  if (v.needNdx && typeof NDX_EXTRA_DATA !== "undefined" && NDX_EXTRA_DATA.companies) {
+    companies = [...companies, ...NDX_EXTRA_DATA.companies];
   }
   if (v.filter) companies = companies.filter(v.filter);
   ACTIVE_DATA = { ...core, companies };
@@ -2494,11 +2518,16 @@ async function setMapView(viewKey, animate) {
     showToast("국내 섹터맵 데이터를 아직 못 불러왔어요");
     return;
   }
-  if (v.needExtra && !extraDataFor(v.market)) {
+  const needExtraLoad = v.needExtra && !extraDataFor(v.market);
+  const needNdxLoad = v.needNdx && typeof NDX_EXTRA_DATA === "undefined";
+  if (needExtraLoad || needNdxLoad) {
     const label = document.getElementById("mapViewBtnLabel");
     if (label) label.textContent = "불러오는 중...";
     try {
-      await ensureExtraDataLoaded(v.market);
+      await Promise.all([
+        needExtraLoad ? ensureExtraDataLoaded(v.market) : Promise.resolve(),
+        needNdxLoad ? ensureNdxDataLoaded() : Promise.resolve(),
+      ]);
     } catch {
       showToast("전체 목록을 불러오지 못했어요. 다시 시도해주세요");
       syncMapViewUi();
