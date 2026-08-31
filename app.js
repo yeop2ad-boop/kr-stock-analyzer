@@ -1646,10 +1646,21 @@ function fmtPct(num, digits = 1) {
   return `${sign}${num.toFixed(digits)}%`;
 }
 
-// 가격 표시: 미국은 "$" 접두사, 한국은 원화 관행대로 "원" 접미사(₩ 기호 대신) — 예: "271,000원" / "$271.45"
+// 가격 표시: 미국은 "$" 접두사, 한국은 만원 단위 축약(2026-08-31 사용자 확정) —
+// 1만원 이상은 "100.2만원"(만원 단위 소수 1자리), 1만원 미만은 "9,850원"처럼 원 단위 그대로
 function fmtPrice(value, currency) {
-  const str = (value ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 });
-  return currency === "KRW" ? `${str}원` : `$${str}`;
+  if (currency === "KRW") {
+    const v = value ?? 0;
+    if (Math.abs(v) < 10000) return `${Math.round(v).toLocaleString()}원`;
+    const man = Math.round(v / 1000) / 10;
+    return `${man.toLocaleString(undefined, { maximumFractionDigits: 1 })}만원`;
+  }
+  return `$${(value ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+}
+// EPS(주당순이익)는 값 자체의 정밀도가 중요해 만원 축약 없이 원 단위 그대로 표시
+function fmtEpsValue(value, currency) {
+  if (currency === "KRW") return `${Math.round(value).toLocaleString()}원`;
+  return `$${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
 }
 
 // 최근 5거래일 중 하루라도 ±10% 이상 급등/급락한 종목에 붙일 이모지(급등 🔥, 급락 ⚠️, 해당 없으면 빈 문자열)
@@ -4864,7 +4875,7 @@ async function renderFinancials(ticker, quoteCurrency) {
         <td>${escapeHtml(year)}</td>
         <td>${fmtCompactCurrency(cur.revenue, quoteCurrency)}</td>
         <td>${revDelta}</td>
-        <td>${cur.eps !== null && cur.eps !== undefined ? fmtPrice(cur.eps, quoteCurrency) : "N/A"}</td>
+        <td>${cur.eps !== null && cur.eps !== undefined ? fmtEpsValue(cur.eps, quoteCurrency) : "N/A"}</td>
         <td>${epsDelta}</td>
         <td>${netIncomeCell}</td>
       </tr>
@@ -6143,7 +6154,7 @@ async function runValueEps() {
   await runValueScreenFromSP500(valuationButtons.eps, "EPS", {
     sortFn: (a, b) => (b.eps ?? -Infinity) - (a.eps ?? -Infinity),
     metricHeaderHtml: "주당순이익(EPS)",
-    metricCellFn: (r) => (r.eps === null || r.eps === undefined ? "N/A" : fmtPrice(r.eps, r.currency)),
+    metricCellFn: (r) => (r.eps === null || r.eps === undefined ? "N/A" : fmtEpsValue(r.eps, r.currency)),
     noteHtml: VALUE_DISCLAIMER,
   });
 }
@@ -8889,17 +8900,26 @@ async function runTrendDividendStaged(initialCount, ensureYields, universeLabel,
         }
       };
       setProgress(isFullScan ? `전체 검색 중(약 1분 소요될 수 있어요)...` : `${universeLabel} 배당률을 계산하는 중...`);
-      const [{ items: raw, total }, nameMap] = await Promise.all([
-        ensureYields(targetCount, (done, target) => {
-          setProgress(`${done}/${target} 종목 배당률 확인 중...`);
-        }),
-        getNameMap ? getNameMap() : Promise.resolve(null),
-      ]);
+      const nameMapPromise = getNameMap ? getNameMap() : Promise.resolve(null);
+      const progressCb = (done, target) => setProgress(`${done}/${target} 종목 배당률 확인 중...`);
+      let scanned = targetCount;
+      let { items: raw, total } = await ensureYields(scanned, progressCb);
+      // 무배당 종목은 순위에서 제외되므로 상위 30개만 스캔하면 30등까지 못 채우는 경우가 있음(국내 26개 등) —
+      // 첫 화면에서는 배당 종목이 30개 찰 때까지 스캔 범위를 15개씩 자동 확장(최대 90개까지, 2026-08-31)
+      if (!isFullScan) {
+        while (raw.length < 30 && scanned < Math.min(total, 90)) {
+          scanned = Math.min(scanned + 15, total, 90);
+          ({ items: raw, total } = await ensureYields(scanned, progressCb));
+        }
+      } else {
+        scanned = Math.min(targetCount, total);
+      }
+      const nameMap = await nameMapPromise;
       if (raw.length === 0) throw new Error("배당률 데이터를 가져오지 못했습니다.");
 
       const ranked = raw.slice().sort((a, b) => b.yieldPct - a.yieldPct);
       const top50 = ranked.slice(0, 50);
-      const hasMore = targetCount < total;
+      const hasMore = scanned < total;
 
       // 투자안정 점수는 재무제표까지 조회해야 해 배당률 스캔보다 무거우므로, 이미 추려낸 상위 50개에 대해서만 추가로 조회
       setProgress(`상위 ${top50.length}개 종목의 투자 안정 점수를 계산하는 중...`);
@@ -8915,13 +8935,13 @@ async function runTrendDividendStaged(initialCount, ensureYields, universeLabel,
 
       trendResults.innerHTML = `
         <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 배당률은 최근 1년간 지급된 배당금 합계 ÷ 현재가 기준(${universeLabel} 대상)이며, 실제 배당 정책은 변경될 수 있습니다. <span class="dividend-warn">⚠️컷</span>은 직전 지급액보다 20% 넘게 줄어든 경우, <span class="dividend-warn">⚠️지연</span>은 평소 지급 주기보다 오래 지급이 없는 경우를 뜻합니다. 투자 자문이 아닙니다.</p>
-        ${topCapNoteHtml(targetCount, total, hasMore)}
+        ${topCapNoteHtml(scanned, total, hasMore)}
         <p class="muted" style="font-size:12px;">시가총액 상위 ${top50.length}개 확인</p>
         <table class="top30-table">
           <thead><tr><th>순위</th><th>기업명</th><th>현재가</th><th>배당률</th><th>투자<br>안정</th></tr></thead>
           <tbody>${top50.map((r, i) => dividendRowHtml(r, i, nameMap)).join("")}</tbody>
         </table>
-        ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${total}">전체보기 (나머지 ${total - targetCount}개 · 전체 검색 시 약 1분 소요)</button>` : ""}
+        ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${total}">전체보기 (나머지 ${total - scanned}개 · 전체 검색 시 약 1분 소요)</button>` : ""}
       `;
       const newMoreBtn = trendResults.querySelector(".load-more-btn");
       if (newMoreBtn) {

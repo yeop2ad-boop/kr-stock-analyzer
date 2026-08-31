@@ -1071,10 +1071,14 @@ async function fetchLiveQuoteForSheet(symbol) {
 // 지금 시트가 보고 있는 종목과 같은 경우에만 시트 숫자도 같이 근신화하기 위해 기억해둠
 let currentSheetSymbol = null;
 
-// 상세시트의 현재가 표시용 — 마켓캡처럼 억/조 단위로 뭉치지 않고 실제 주당 가격 그대로(KRW는 원 단위, 그 외는 $ + 소수 2자리)
+// 상세시트의 현재가 표시용 — 본체와 동일한 한국 주가 만원 축약(2026-08-31): 1만원 이상 "100.2만원"/미만 "9,850원", 그 외 통화는 $ + 소수 2자리
 function fmtSheetPrice(price, currency) {
   if (price === null || price === undefined) return "정보 없음";
-  if (currency === "KRW") return `${Math.round(price).toLocaleString()}원`;
+  if (currency === "KRW") {
+    if (Math.abs(price) < 10000) return `${Math.round(price).toLocaleString()}원`;
+    const man = Math.round(price / 1000) / 10;
+    return `${man.toLocaleString(undefined, { maximumFractionDigits: 1 })}만원`;
+  }
   return `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
