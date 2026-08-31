@@ -2347,6 +2347,15 @@ table.top30-table th, table.popular-table th { white-space: nowrap; }
 body[data-market-mode="kr"] .fh-tab { color: rgba(255, 255, 255, 0.55); }
 body[data-market-mode="kr"] .fh-tab.active { color: #fff; }
 .fh-title-actions { margin-left: auto; display: flex; align-items: center; gap: 2px; flex: none; }
+/* 랭킹 캡션 옆 실시간 새로고침(제목줄에서 이동, 2026-08-31) — 작고 둥근 아이콘 버튼 */
+.rank-refresh-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; margin-left: 4px; vertical-align: middle;
+  border: 1px solid var(--border); border-radius: 50%;
+  background: var(--white, #fff); color: var(--text); cursor: pointer; padding: 0;
+}
+.rank-refresh-btn:active { background: var(--border); }
+
 /* 52주최저 랭킹 % 아래 위치 안내 — "(0%: 최저)" / "(100%: 최고)" */
 .week52-pos-hint { font-size: 10.5px; color: var(--muted); font-weight: 600; white-space: nowrap; }
 

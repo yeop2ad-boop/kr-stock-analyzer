@@ -2178,11 +2178,19 @@ document.querySelectorAll(".fh-tab").forEach((btn) => {
     else showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("insight")));
   });
 });
-// 제목줄 우측: 실시간 업데이트(현재 화면 재실행)
-el("fhRefreshBtn").addEventListener("click", () => {
-  const active = document.querySelector(".fh-tab.active");
-  if (active) active.click();
-  showToast("화면을 새로고침했습니다.");
+// 랭킹 캡션("시가총액 상위 N개 확인") 옆 새로고침 — 제목줄 버튼에서 이동(2026-08-31, 관심종목·인사이트엔 없음).
+// 스캔 캐시를 전부 비우고 현재 선택된 랭킹 항목을 현시간 기준으로 다시 검색함
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest(".rank-refresh-btn");
+  if (!btn) return;
+  if (document.querySelector('[data-scanning="1"]')) {
+    showToast("검색 중입니다. 잠시만 기다려주세요");
+    return;
+  }
+  RANK_SCAN_RESETTERS.forEach((reset) => { try { reset(); } catch {} });
+  dividendRiskMetricsCache.clear();
+  showToast("실시간 데이터로 다시 검색합니다");
+  runRankingEntry(topRankingActiveIdx);
 });
 // 상위 30개 안내문 옆 "+더보기"(주황) — 제목줄 "전체" 버튼 삭제(2026-08-31) 대신 안내문 자리에서 바로
 // 그 랭킹의 전체보기(load-more-btn)를 실행해 모든 종목을 이어서 검색
@@ -5777,7 +5785,7 @@ async function renderValueRanking(
       resultsEl.innerHTML = `
         ${noteHtml || ""}
         ${topCapNoteHtml(cursor, tickers.length, hasMore)}
-        <p class="muted" style="font-size:12px;">시가총액 상위 ${ranked.length}개 확인</p>
+        ${rankScanCaptionHtml(ranked.length)}
         <table class="top30-table">
           <thead><tr><th>순위</th><th>기업명</th><th>현재가</th><th>${metricHeaderHtml}</th>${showGrade ? `<th>투자<br>안정</th>` : ""}</tr></thead>
           <tbody>${rows}</tbody>
@@ -5837,6 +5845,12 @@ function guardRankingScan(resultsEl) {
   return true;
 }
 
+// "시가총액 상위 N개 확인" 캡션 + 실시간 새로고침 버튼(2026-08-31: 제목줄 새로고침 버튼을 랭킹 결과 안 이 자리로 이동) —
+// 버튼을 누르면 스캔 캐시를 비우고 현재 선택된 랭킹을 현시간 기준으로 다시 검색함
+function rankScanCaptionHtml(count) {
+  return `<p class="muted rank-scan-caption" style="font-size:12px;">시가총액 상위 ${count}개 확인 <button type="button" class="rank-refresh-btn" aria-label="실시간 새로고침"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><polyline points="20 4 20 9 15 9"/></svg></button></p>`;
+}
+
 // 랭킹 결과가 전체 종목이 아니라 시가총액 상위 일부만 스캔한 상태일 때, 공지 바로 밑에 주황색으로 표시하는 주의문.
 // canLoadMore=true면 "더보기"로 전체를 마저 확인할 수 있는 경우(단계적 스캔), false면 이 화면에서는 더 볼 방법이 없는 경우(상위 30개 고정)
 function topCapNoteHtml(shown, total, canLoadMore) {
@@ -5848,8 +5862,16 @@ function topCapNoteHtml(shown, total, canLoadMore) {
 // 접속 직후엔 시가총액 상위 30개까지만 스캔해서 빠르게 보여주고, "전체보기"를 눌러야 그때 나머지를 이어서
 // 스캔함. getTickers()가 반환하는 순서가 이미 시가총액 내림차순이어야 함
 // (KR: getKrUniverseTickers = KODEX 200/코스닥150 ETF 편입 비중순, US: getSP500PriorityOrder = 시가총액순).
+// 랭킹 새로고침(실시간 재검색)용 — 각 단계적 스캔 캐시를 비우는 리셋 함수 모음(rank-refresh-btn 클릭 시 전부 실행)
+const RANK_SCAN_RESETTERS = [];
 function makeIncrementalScan(getTickers, worker, concurrency) {
   const state = { tickers: null, items: [], cursor: 0, inflight: null };
+  RANK_SCAN_RESETTERS.push(() => {
+    if (state.inflight) return; // 조회가 진행 중이면 건드리지 않음(스캔 가드가 재실행 자체를 막고 있음)
+    state.tickers = null;
+    state.items = [];
+    state.cursor = 0;
+  });
   return async function ensure(targetCount, onProgress) {
     if (!state.tickers) state.tickers = await getTickers();
     const total = state.tickers.length;
@@ -6054,7 +6076,7 @@ async function renderKrRankingStaged(label, statusEl, resultsEl, { mapFn = (list
       resultsEl.innerHTML = `
         ${noteHtml || ""}
         ${topCapNoteHtml(targetCount, total, hasMore)}
-        <p class="muted" style="font-size:12px;">시가총액 상위 ${ranked.length}개 확인</p>
+        ${rankScanCaptionHtml(ranked.length)}
         <table class="top30-table">
           <thead><tr><th>순위</th><th>기업명</th><th>현재가</th><th>${metricHeaderHtml}</th>${showGrade ? `<th>투자<br>안정</th>` : ""}</tr></thead>
           <tbody>${rows}</tbody>
@@ -8937,7 +8959,7 @@ async function runTrendDividendStaged(initialCount, ensureYields, universeLabel,
       trendResults.innerHTML = `
         <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 배당률은 최근 1년간 지급된 배당금 합계 ÷ 현재가 기준(${universeLabel} 대상)이며, 실제 배당 정책은 변경될 수 있습니다. <span class="dividend-warn">⚠️컷</span>은 직전 지급액보다 20% 넘게 줄어든 경우, <span class="dividend-warn">⚠️지연</span>은 평소 지급 주기보다 오래 지급이 없는 경우를 뜻합니다. 투자 자문이 아닙니다.</p>
         ${topCapNoteHtml(scanned, total, hasMore)}
-        <p class="muted" style="font-size:12px;">시가총액 상위 ${top50.length}개 확인</p>
+        ${rankScanCaptionHtml(top50.length)}
         <table class="top30-table">
           <thead><tr><th>순위</th><th>기업명</th><th>현재가</th><th>배당률</th><th>투자<br>안정</th></tr></thead>
           <tbody>${top50.map((r, i) => dividendRowHtml(r, i, nameMap)).join("")}</tbody>

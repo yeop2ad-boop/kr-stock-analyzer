@@ -41,7 +41,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260831e" />
+<link rel="stylesheet" href="style.css?v=20260831k" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -82,11 +82,8 @@
         <button type="button" class="fh-tab" data-fhtab="tab.trend" data-i18n="tab.trend">시장동향</button>
         <button type="button" class="fh-tab" data-fhtab="tab.insight" data-i18n="tab.insight">인사이트</button>
       </div>
-      <div class="fh-title-actions">
-        <button type="button" id="fhRefreshBtn" class="header-icon-btn" aria-label="실시간 업데이트">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><polyline points="20 4 20 9 15 9"/></svg>
-        </button>
-      </div>
+      <!-- 제목줄 새로고침 버튼은 랭킹 결과의 "시가총액 상위 N개 확인" 옆으로 이동(2026-08-31) -->
+      <div class="fh-title-actions"></div>
     </div>
 
     <!-- 상단 탭바 — 관심목록/기업가치/시장동향/인사이트가 전부 더보기 패널로 이동해 숨김(버튼 자체는 JS가 참조하므로 DOM엔 유지) -->
@@ -712,6 +709,6 @@
   </footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js?v=20260831j"></script>
+  <script src="app.js?v=20260831k"></script>
 </body>
 </html>
