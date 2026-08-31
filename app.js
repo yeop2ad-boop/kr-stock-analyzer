@@ -2370,10 +2370,11 @@ bottomNavButtons.map.addEventListener("click", () => {
   const market = getWatchlistActiveMarket() === "KR" ? "domestic" : "overseas";
   window.location.href = `sector-map/index.html?market=${market}`;
 });
-// 랭킹(트로피) — 기업가치 랭킹 화면으로 바로 이동(2026-08-31 신설)
+// 랭킹(시상대) — 기업가치 랭킹 화면으로 바로 이동(2026-08-31 신설)
 bottomNavButtons.ranking.addEventListener("click", () => {
-  setBottomNavActive("ranking");
   showOnlyCarouselView(() => activateRankingGroup("disclosure"));
+  // showOnlyCarouselView가 내부에서 active를 전부 해제(setBottomNavActive(""))하므로, 그 뒤에 랭킹을 켜야 검정 활성 표시가 남음
+  setBottomNavActive("ranking");
 });
 bottomNavButtons.search.addEventListener("click", () => {
   closeCompanyPanel();
