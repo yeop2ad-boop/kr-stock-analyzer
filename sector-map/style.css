@@ -293,7 +293,8 @@ body {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  gap: 220px;
+  /* 카드 4개(코스피·코스닥·S&P500·나스닥 종합)가 2000px 띠 안에 들어가도록 간격 축소(2026-08-31) */
+  gap: 48px;
   pointer-events: none;
   z-index: 2;
   /* 지도 중심의 좌측 치우침(우측 버튼 공간)을 보정해 화면 기준 정중앙 정렬 — 값은 fitToViewport가 계산 */
@@ -306,23 +307,46 @@ body {
   gap: 8px;
   white-space: nowrap;
 }
+.market-index-name-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+/* 카드가 2개→4개가 되면서 글자 크기를 한 단계씩 줄여 4개가 한 줄에 들어가게 함(2026-08-31) */
 .market-index-name {
-  font-size: 52px;
+  font-size: 40px;
   font-weight: 800;
   letter-spacing: -0.5px;
   color: var(--badge-text);
 }
+/* 본체 시장탭 위젯처럼 지수 데이터 자체의 시각을 이름 옆에 표시 */
+.market-index-clock {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-mid);
+}
 .market-index-value {
-  font-size: 112px;
+  font-size: 70px;
   font-weight: 900;
-  letter-spacing: -2.5px;
+  letter-spacing: -1.8px;
   line-height: 1;
   color: var(--badge-text);
 }
 .market-index-chg {
-  font-size: 54px;
+  font-size: 38px;
   font-weight: 800;
   color: var(--text-mid);
+}
+/* 본체 시장탭 위젯의 오늘 지수 미니 그래프를 지도 카드에도 동일하게 표시 */
+.market-index-spark-wrap {
+  width: 100%;
+  min-width: 300px;
+  margin-top: 6px;
+}
+.market-index-spark {
+  display: block;
+  width: 100%;
+  height: 72px;
 }
 
 /* sector cluster bubble */

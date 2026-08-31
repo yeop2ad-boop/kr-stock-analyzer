@@ -2157,16 +2157,17 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 
 .qbar-dates { font-size: 12px; margin: 10px 0 2px; }
 
+/* 2026-08-31 개편: 매출액 별도 컬럼을 없애고(막대 안으로 이동) 기업명 | 막대 | 시가총액 | 상승압력 4컬럼 */
 .peer-row {
   display: grid;
-  grid-template-columns: 120px 1fr 80px 65px 55px;
+  grid-template-columns: 120px 1fr 78px 46px;
   align-items: center;
   gap: 10px;
   font-size: 13px;
 }
 .peer-table-header {
   display: grid;
-  grid-template-columns: 120px 1fr 80px 65px 55px;
+  grid-template-columns: 120px 1fr 78px 46px;
   gap: 10px;
   font-size: 11px;
   color: var(--muted);
@@ -2174,19 +2175,29 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
   padding: 0 0 4px;
 }
 .peer-table-header span:nth-child(3),
-.peer-table-header span:nth-child(4),
-.peer-table-header span:nth-child(5) { text-align: right; }
+.peer-table-header span:nth-child(4) { text-align: right; }
 .peer-price, .peer-score { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
 .peer-table-header + .bar-chart { margin-top: 6px; }
 .bar-label.self { font-weight: 800; }
+/* 매출액 막대(보라) + 순이익 오버레이(빨강) — 본체 "매출액 & 순수익" 그래프와 같은 조합의 색 계열 */
+.bar-fill.peer-rev { background: #7c3aed; }
+.bar-fill-profit.peer-net { background: #ef4444; }
+/* 막대 안 왼쪽 순수익률 라벨 — 보라/빨강 어느 배경 위에서도 읽히게 흰 글씨 + 어두운 그림자 */
+.peer-net-label {
+  position: absolute; top: 50%; left: 8px; transform: translateY(-50%);
+  z-index: 2; color: #fff; font-weight: 700; font-size: 11px;
+  white-space: nowrap; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+}
 
 @media (max-width: 480px) {
   .peer-row, .peer-table-header {
-    grid-template-columns: 46px 1fr 46px 42px 32px;
+    grid-template-columns: 62px 1fr 52px 30px;
     gap: 5px;
     font-size: 10.5px;
   }
   .bar-label { overflow-wrap: break-word; }
+  .peer-net-label { font-size: 9.5px; left: 5px; }
+  .bar-revenue-label { font-size: 10px; right: 5px; }
 }
 
 .news-item { padding: 12px 0; border-bottom: 1px solid var(--border); }

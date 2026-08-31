@@ -5229,6 +5229,8 @@ async function renderPeers(ticker, selfMetricsPromise, sector, industry) {
   }
 
   const maxRev = Math.max(...all.map((d) => d.revenue || 0), 1);
+  // 2026-08-31 개편: 티커 대신 한글 기업명(있으면), 막대 하나에 매출액(보라)+순이익(빨강 오버레이)을 같이 그리고
+  // 막대 안 왼쪽에 순수익률(%), 오른쪽에 매출액을 표시. 우측 컬럼은 시가총액·상승압력 수치만 남김
   const rows = all
     .sort((a, b) => (b.revenue || 0) - (a.revenue || 0))
     .map((d) => {
@@ -5236,21 +5238,29 @@ async function renderPeers(ticker, selfMetricsPromise, sector, industry) {
       const score = computeAttractivenessScore(d);
       const isIPO = isRecentIPO(d.firstTradeDate);
       const scoreHtml = isIPO ? "IPO" : scoreRankColorHtml(score.total, score.total);
+      const name = TICKER_TO_KOREAN_NAME[d.symbol] || d.symbol;
+      const hasNet = d.netIncome !== null && d.netIncome !== undefined;
+      const netPct = hasNet && d.revenue ? (d.netIncome / d.revenue) * 100 : null;
+      const netBarPct = hasNet && d.netIncome > 0 ? clamp((d.netIncome / maxRev) * 100, 0, 100) : 0;
       return `
       <div class="peer-row">
-        <span class="bar-label${d.self ? " self" : ""}">${escapeHtml(d.symbol)}</span>
-        <div class="bar-track"><div class="bar-fill ${d.self ? "self" : ""}" style="width:${pct}%"></div></div>
-        <span class="bar-value">${fmtCompactCurrency(d.revenue, d.currency)}</span>
-        <span class="peer-price">${fmtCompactCurrency(d.marketCap, d.currency)}</span>
+        <span class="bar-label${d.self ? " self" : ""}">${escapeHtml(name)}</span>
+        <div class="bar-track">
+          <div class="bar-fill peer-rev" style="width:${pct}%"></div>
+          ${netBarPct > 0 ? `<div class="bar-fill-profit peer-net" style="width:${netBarPct}%"></div>` : ""}
+          ${netPct !== null ? `<span class="peer-net-label">순수익 ${netPct.toFixed(1)}%</span>` : ""}
+          <span class="bar-revenue-label">${fmtAmountUnified(d.revenue, d.currency)}</span>
+        </div>
+        <span class="peer-price">${fmtAmountUnified(d.marketCap, d.currency)}</span>
         <span class="peer-score">${scoreHtml}</span>
       </div>`;
     })
     .join("");
 
   el("peersSection").innerHTML = `
-    <p class="muted">최근 회계연도 매출액 기준 비교 (${bySector ? `동일 ${byIndustry ? "업종" : "섹터"} 시가총액 TOP3 + 시총 유사 종목 1개` : "자동 감지된 관련 종목"})</p>
+    <p class="muted">최근 회계연도 매출액·순이익 기준 비교 (${bySector ? `동일 ${byIndustry ? "업종" : "섹터"} 시가총액 TOP3 + 시총 유사 종목 1개` : "자동 감지된 관련 종목"})</p>
     <div class="peer-table-header">
-      <span></span><span></span><span>매출액</span><span>시가총액</span><span>상승 압력</span>
+      <span></span><span></span><span>시가총액</span><span>상승<br>압력</span>
     </div>
     <div class="bar-chart">${rows}</div>
   `;

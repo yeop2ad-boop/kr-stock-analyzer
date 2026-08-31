@@ -349,41 +349,92 @@ document.getElementById("universeToggleBtn").addEventListener("click", async () 
 // 부족하면 전체보기+시총 모드에서 맨 위 섹터 원이 지수 제목과 겹침
 const MARKET_LABEL_STRIP = 340;
 
-// 지도 상단에 보여줄 실제 지수들 — 구성종목 평균이 아니라 지수 자체(^KS11 등)를 야후에서 조회
-// 실제 종합지수 그대로 — 축소/전체보기 구분 없이 항상 코스피(^KS11)/코스닥(^KQ11)/S&P500(^GSPC)
-const MARKET_INDEX_DEFS = {
-  domestic: [
-    { symbol: "^KS11", name: "코스피", flag: "🇰🇷" },
-    { symbol: "^KQ11", name: "코스닥", flag: "🇰🇷" },
-  ],
-  overseas: [{ symbol: "^GSPC", name: "S&P500", flag: "🇺🇸" }],
-};
-const INDEX_QUOTE_CACHE = {}; // symbol -> { price, change, pct }
+// 지도 상단에 보여줄 실제 지수들 — 구성종목 평균이 아니라 지수 자체(^KS11 등)를 야후에서 조회.
+// 2026-08-31 사용자 요청: 국내/해외 어느 지도에서든 코스피·코스닥·S&P500 전부 + S&P500 오른쪽에 나스닥 종합까지 항상 표시
+const MARKET_INDEX_DEFS = [
+  { symbol: "^KS11", name: "코스피", flag: "🇰🇷" },
+  { symbol: "^KQ11", name: "코스닥", flag: "🇰🇷" },
+  { symbol: "^GSPC", name: "S&P500", flag: "🇺🇸" },
+  { symbol: "^IXIC", name: "나스닥 종합", flag: "🇺🇸" },
+];
+const INDEX_QUOTE_CACHE = {}; // symbol -> { price, change, pct, time(초 단위 unix), spark }
 
 function currentIndexDefs() {
-  return MARKET_INDEX_DEFS[ACTIVE_MARKET] || [];
+  return MARKET_INDEX_DEFS;
 }
 
 async function fetchIndexQuote(symbol) {
+  // 본체 시장탭의 yahooSnapshot()과 완전히 동일한 계산 — meta.chartPreviousClose는 KR 지수에서 깨진 값이
+  // 오는 경우가 있어(등락률 불일치 원인, 2026-08-31), 5d/1d 차트의 "직전 거래일 종가"를 직접 골라서 계산
   try {
     const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=5d&interval=1d`;
     const data = await proxyFetchJson(url);
-    const meta = data && data.chart && data.chart.result && data.chart.result[0] && data.chart.result[0].meta;
-    const price = meta && meta.regularMarketPrice;
-    const prev = meta && meta.chartPreviousClose;
+    const result = data && data.chart && data.chart.result && data.chart.result[0];
+    if (!result) return null;
+    const meta = result.meta || {};
+    const timestamps = result.timestamp || [];
+    const closes = (result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
+    const pairs = timestamps.map((t, i) => ({ t, c: closes[i] })).filter((p) => p.c !== null && p.c !== undefined);
+    pairs.sort((a, b) => a.t - b.t);
+    if (pairs.length < 1) return null;
+    const latest = pairs[pairs.length - 1];
+    const prev = pairs.length >= 2 ? pairs[pairs.length - 2].c : (meta.chartPreviousClose ?? null);
+    const price = meta.regularMarketPrice ?? latest.c;
     if (typeof price !== "number" || typeof prev !== "number" || prev === 0) return null;
-    return { price, change: price - prev, pct: ((price - prev) / prev) * 100 };
+    const time = typeof meta.regularMarketTime === "number" ? meta.regularMarketTime : latest.t;
+    return { price, change: price - prev, pct: ((price - prev) / prev) * 100, time };
   } catch {
     return null;
   }
+}
+
+// 지수 카드 미니 그래프 — 본체 시장탭 위젯의 fetchTodaySparkPoints/sparklineSvg와 같은 데이터(1d/5m)·같은 방식
+// (정규장 시작~종료 구간에 실제 시각을 매핑, 시가 높이에 점선)으로 그려 "시장에 있는 지수 그래프 그대로"를 지도에도 표시
+async function fetchIndexSpark(symbol) {
+  try {
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=1d&interval=5m`;
+    const data = await proxyFetchJson(url);
+    const result = data && data.chart && data.chart.result && data.chart.result[0];
+    const timestamps = (result && result.timestamp) || [];
+    const closes = (result && result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
+    const points = timestamps.map((t, i) => ({ t, c: closes[i] })).filter((p) => p.c !== null && p.c !== undefined);
+    const regular = result && result.meta && result.meta.currentTradingPeriod && result.meta.currentTradingPeriod.regular;
+    const sessionStart = (regular && regular.start) || (points[0] && points[0].t) || null;
+    const sessionEnd = (regular && regular.end) || (points[points.length - 1] && points[points.length - 1].t) || null;
+    return { points, sessionStart, sessionEnd };
+  } catch {
+    return { points: [], sessionStart: null, sessionEnd: null };
+  }
+}
+
+function indexSparkSvg(spark, isUp) {
+  const points = (spark && spark.points) || [];
+  if (points.length < 2) return "";
+  const closes = points.map((p) => p.c);
+  const min = Math.min(...closes);
+  const max = Math.max(...closes);
+  const span = max - min || 1;
+  const sessionStart = spark.sessionStart ?? points[0].t;
+  const sessionEnd = spark.sessionEnd ?? points[points.length - 1].t;
+  const tSpan = sessionEnd - sessionStart || 1;
+  const xFn = (t) => Math.min(100, Math.max(0, ((t - sessionStart) / tSpan) * 100));
+  const yFn = (c) => 26 - ((c - min) / span) * 24;
+  const d = points.map((p, i) => `${i === 0 ? "M" : "L"}${xFn(p.t).toFixed(1)},${yFn(p.c).toFixed(1)}`).join(" ");
+  const rgb = isUp ? CHG_POS_MAX : CHG_NEG_MAX;
+  const color = `rgb(${rgb.join(",")})`;
+  const openY = yFn(points[0].c).toFixed(1);
+  return `<svg class="market-index-spark" viewBox="0 0 100 28" preserveAspectRatio="none">
+    <line x1="0" y1="${openY}" x2="100" y2="${openY}" stroke="${color}" stroke-width="1" stroke-dasharray="2,2" opacity="0.5" />
+    <path d="${d}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>`;
 }
 
 // 활성 시장·유니버스 상태의 지수 시세를 받아와 캐시하고 상단 카드 갱신 — 로드/전체보기/5분 주기 갱신에서 호출
 async function refreshIndexQuotes() {
   await Promise.all(
     currentIndexDefs().map(async (d) => {
-      const q = await fetchIndexQuote(d.symbol);
-      if (q) INDEX_QUOTE_CACHE[d.symbol] = q;
+      const [q, spark] = await Promise.all([fetchIndexQuote(d.symbol), fetchIndexSpark(d.symbol)]);
+      if (q) INDEX_QUOTE_CACHE[d.symbol] = { ...q, spark };
     })
   );
   refreshMarketIndexLabels();
@@ -473,9 +524,17 @@ function renderMarketIndexLabels() {
     card.className = "market-index-label";
     card.dataset.symbol = def.symbol;
 
+    const nameRow = document.createElement("div");
+    nameRow.className = "market-index-name-row";
     const nameEl = document.createElement("div");
     nameEl.className = "market-index-name";
     nameEl.textContent = `${def.flag} ${def.name}`;
+    // 본체 시장탭 위젯처럼 "이 값이 몇 시 기준인지"(지수 데이터 자체의 시각)를 이름 옆에 표시
+    const clockEl = document.createElement("div");
+    clockEl.className = "market-index-clock";
+    clockEl.textContent = "";
+    nameRow.appendChild(nameEl);
+    nameRow.appendChild(clockEl);
 
     const valueEl = document.createElement("div");
     valueEl.className = "market-index-value";
@@ -485,9 +544,13 @@ function renderMarketIndexLabels() {
     chgEl.className = "market-index-chg";
     chgEl.textContent = "";
 
-    card.appendChild(nameEl);
+    const sparkEl = document.createElement("div");
+    sparkEl.className = "market-index-spark-wrap";
+
+    card.appendChild(nameRow);
     card.appendChild(valueEl);
     card.appendChild(chgEl);
+    card.appendChild(sparkEl);
     wrap.appendChild(card);
   }
   // 캐시에 이미 값이 있으면 즉시 채우고, 없으면 조회가 끝나는 대로 refreshMarketIndexLabels가 채움
@@ -509,6 +572,16 @@ function refreshMarketIndexLabels() {
     const chgEl = card.querySelector(".market-index-chg");
     chgEl.textContent = `${q.change >= 0 ? "+" : ""}${q.change.toFixed(2)} (${q.pct >= 0 ? "+" : ""}${q.pct.toFixed(2)}%)`;
     chgEl.style.color = solidChangeColor(q.pct);
+    // 시각 표시(한국시간) — 본체 시장탭과 같은 규칙: 오늘 데이터면 시:분:초, 지난 거래일이면 월/일
+    const clockEl = card.querySelector(".market-index-clock");
+    if (clockEl && typeof q.time === "number") {
+      const p = fmtKstParts(new Date(q.time * 1000));
+      const nowP = fmtKstParts(new Date());
+      const isToday = p.year === nowP.year && p.month === nowP.month && p.day === nowP.day;
+      clockEl.textContent = `🕐 ${isToday ? `${p.hour}:${p.minute}:${p.second}` : `${p.month}/${p.day}`}`;
+    }
+    const sparkWrap = card.querySelector(".market-index-spark-wrap");
+    if (sparkWrap) sparkWrap.innerHTML = indexSparkSvg(q.spark, q.change >= 0);
   });
 }
 
@@ -999,13 +1072,20 @@ async function fetchLiveQuoteForSheet(symbol) {
   // 있어서, 이미 검증된(fetch-kr-data.ps1 등에서 쓰는) range=5d&interval=1d 패턴을 그대로 사용
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=5d&interval=1d`;
   const data = await proxyFetchJson(url);
-  const meta = data && data.chart && data.chart.result && data.chart.result[0] && data.chart.result[0].meta;
+  const result = data && data.chart && data.chart.result && data.chart.result[0];
+  const meta = result && result.meta;
   if (!meta) return null;
-  const prevClose = meta.chartPreviousClose ?? null;
+  // 전일종가는 meta.chartPreviousClose가 KR 티커에서 깨진 값(당일가와 동일 등)이 오는 경우가 있어,
+  // 본체 시장탭 yahooSnapshot()처럼 5d/1d 차트에서 "마지막 직전 거래일 종가"를 직접 골라 씀(등락률 통일, 2026-08-31)
+  const timestamps = (result && result.timestamp) || [];
+  const closes = (result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
+  const pairs = timestamps.map((t, i) => ({ t, c: closes[i] })).filter((p) => p.c !== null && p.c !== undefined);
+  pairs.sort((a, b) => a.t - b.t);
+  const prevClose = pairs.length >= 2 ? pairs[pairs.length - 2].c : (meta.chartPreviousClose ?? null);
   // regularMarketOpen은 Yahoo가 아예 안 채워주는 경우가 흔해서(장중이 아니면 특히), 없으면 전일종가를 시가 대용으로 사용
   const open = meta.regularMarketOpen ?? prevClose;
   return {
-    price: meta.regularMarketPrice ?? null,
+    price: meta.regularMarketPrice ?? (pairs.length ? pairs[pairs.length - 1].c : null),
     open,
     high: meta.regularMarketDayHigh ?? null,
     low: meta.regularMarketDayLow ?? null,
@@ -1995,19 +2075,20 @@ let lastColorRefreshAt = null;
 // 실제 데이터 자체의 시각(해외: S&P500 지수 ^GSPC, 국내: 코스피 지수 ^KS11의 실제 regularMarketTime) — 지도 시계를
 // "지금 몇 시니까 아마 이쯤이겠지" 식 추정이 아니라 본체 시장 위젯이 보여주는 지수와 동일한 시점으로 맞추는 데 씀
 let lastDataAsOfTime = null;
-const CLOCK_DELAY_MS = 20 * 60 * 1000; // 실제 데이터는 20분 지연 제공이므로, 지수의 실제 시각에서 20분을 빼서 "지금 보이는 색상이 몇 시 기준인지"를 보여줌
+// 본체 시장탭이 보여주는 시각(지수 데이터의 regularMarketTime)을 그대로 사용 — 예전에 여기서 20분을 더 빼서
+// 지도 시계만 본체보다 뒤처져 보이던 문제(사용자 보고: "지도가 50분 지연") 해결(2026-08-31)
 async function fetchIndexAsOfTime(indexSymbol) {
   try {
     const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(indexSymbol)}?range=5d&interval=1d`;
     const data = await proxyFetchJson(url);
     const meta = data && data.chart && data.chart.result && data.chart.result[0] && data.chart.result[0].meta;
     if (!meta || typeof meta.regularMarketTime !== "number") return null;
-    return new Date(meta.regularMarketTime * 1000 - CLOCK_DELAY_MS);
+    return new Date(meta.regularMarketTime * 1000);
   } catch {
     return null;
   }
 }
-// 실제 데이터는 20분 지연이므로 "지금 몇 시"가 아니라 "지금 보이는 색상이 몇 시 기준인지"(=지금-20분)를 보여줌.
+// 지수 시각 조회 실패 시 폴백 — 장중이면 현재 시각, 장 마감 후에는 마감 시각에 고정(본체 시장탭 표기와 동일 기준).
 // 장이 이미 끝났으면 그 이후로는 데이터가 더 안 들어오니 마감 시각에 고정하고 더 흘러가지 않게 함
 function computeDelayedAsOfTime() {
   const isKr = ACTIVE_MARKET === "domestic";
@@ -2019,8 +2100,8 @@ function computeDelayedAsOfTime() {
   const isWeekend = local.getDay() === 0 || local.getDay() === 6;
   const marketOpenNow = !isWeekend && nowMin >= openMin && nowMin <= closeMin;
   if (marketOpenNow) {
-    // "지금"은 시간대와 무관한 절대 순간이므로 tz 보정 없이 그대로 20분만 빼면 됨
-    return { time: new Date(Date.now() - 20 * 60 * 1000), isToday: true };
+    // 지수 시각 조회가 실패했을 때의 폴백 — 본체 시장탭과 표기를 맞추기 위해 임의 지연 보정 없이 현재 시각 그대로
+    return { time: new Date(), isToday: true };
   }
   // 장 시작 전(프리마켓)이거나 마감 후, 주말이면 가장 근근 마감 시각에 고정 — 그 이후로는 새 데이터가 없으므로 시간이 흐를 필요 없음.
   // 그 마감 시각이 오늘이 아니라 어제(이전 거래일)라면 시:분:초 대신 날짜로 보여줌(renderAiFabTimestamp에서 처리)
