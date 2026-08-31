@@ -2163,14 +2163,19 @@ document.querySelectorAll(".fh-tab").forEach((btn) => {
     else showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("insight")));
   });
 });
-// 제목줄 우측: 실시간 업데이트(현재 화면 재실행) + 전체(현재 랭킹의 "전체보기 더보기" 버튼 실행)
+// 제목줄 우측: 실시간 업데이트(현재 화면 재실행)
 el("fhRefreshBtn").addEventListener("click", () => {
   const active = document.querySelector(".fh-tab.active");
   if (active) active.click();
   showToast("화면을 새로고침했습니다.");
 });
-el("fhLoadAllBtn").addEventListener("click", () => {
-  const moreBtn = document.querySelector(".carousel-panel .load-more-btn");
+// 상위 30개 안내문 옆 "+더보기"(주황) — 제목줄 "전체" 버튼 삭제(2026-08-31) 대신 안내문 자리에서 바로
+// 그 랭킹의 전체보기(load-more-btn)를 실행해 모든 종목을 이어서 검색
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest(".scope-more-btn");
+  if (!btn) return;
+  const scope = btn.closest(".carousel-panel") || document;
+  const moreBtn = scope.querySelector(".load-more-btn");
   if (moreBtn) moreBtn.click();
   else showToast("이 화면에는 전체보기가 없습니다.");
 });
@@ -5786,7 +5791,7 @@ const KR_VALUE_DISCLAIMER = `<p class="disclaimer tab-note"><span style="filter:
 // canLoadMore=true면 "더보기"로 전체를 마저 확인할 수 있는 경우(단계적 스캔), false면 이 화면에서는 더 볼 방법이 없는 경우(상위 30개 고정)
 function topCapNoteHtml(shown, total, canLoadMore) {
   if (!(total > shown)) return ""; // 이미 전체를 다 봤으면(더보기를 끝까지 눌렀거나 원래 전체가 30개 이하면) 표시하지 않음
-  return `<p class="top30-scope-note">⚠️ 지금 결과는 전체 ${total}종목이 아닌 시가총액 상위 ${shown}개까지만 반영된 것입니다.${canLoadMore ? " '더보기'를 누르면 전체를 확인할 수 있어요." : ""}</p>`;
+  return `<p class="top30-scope-note">⚠️ 지금 결과는 전체 ${total}종목이 아닌 시가총액 상위 ${shown}개까지만 반영된 것입니다.${canLoadMore ? ` '더보기'를 누르면 전체를 확인할 수 있어요. <button type="button" class="scope-more-btn">+더보기</button>` : ""}</p>`;
 }
 
 // ---------- 랭킹 공용 인프라: 종목 목록을 시가총액 우선순으로 필요한 만큼만 스캔하는 단계적 캐시 ----------

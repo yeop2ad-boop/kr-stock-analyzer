@@ -45,11 +45,21 @@ function Get-LatestValue($series) {
 $now = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
 $fiveYearsAgo = $now - 5 * 365 * 24 * 3600
 
+# 직전 수집본 로드 — 재시도 후에도 실패한 종목은 null로 비우지 않고 마지막 성공값을 유지
+# (2026-08-31: 단일 시도+null 폴백 구조 때문에 48종목이 marketCap null이 되어 지도에서 통째로 빠졌던 문제 재발 방지)
+$prevMap = @{}
+try {
+  $prevData = Get-Content "$PSScriptRoot\..\data\kr-sectors.json" -Raw -Encoding UTF8 | ConvertFrom-Json
+  foreach ($p in $prevData.companies) { $prevMap[$p.symbol] = $p }
+} catch {}
+
 $result = @()
 $done = 0
 $failed = 0
 foreach ($t in $tickers) {
   $sym = $t.symbol
+  $entry = $null
+  for ($attempt = 1; $attempt -le 3; $attempt++) {
   try {
     # (1) 가격/거래량
     $chart = Invoke-RestMethod -Uri "https://query1.finance.yahoo.com/v8/finance/chart/$sym`?range=5d&interval=1d" -Headers $headers -TimeoutSec 15
@@ -103,7 +113,8 @@ foreach ($t in $tickers) {
     $per = $null
     if ($price -and $eps -and $eps -gt 0) { $per = [math]::Round($price / $eps, 2) }
 
-    $result += [PSCustomObject]@{
+    if ($null -eq $marketCap) { throw "marketCap null (발행주식수 조회 실패)" }
+    $entry = [PSCustomObject]@{
       symbol         = $sym
       name           = $t.name
       exchange       = $t.exchange
@@ -120,7 +131,18 @@ foreach ($t in $tickers) {
       netIncomeGrowth = Get-LatestYoyGrowth $niSeries
       cashFlowGrowth = Get-LatestYoyGrowth $cfSeries
     }
+    break
   } catch {
+    Start-Sleep -Milliseconds (500 * $attempt)
+  }
+  } # 재시도 루프 끝
+  if ($entry) {
+    $result += $entry
+  } elseif ($prevMap[$sym]) {
+    # 3회 재시도 후에도 실패 — 직전 수집본의 마지막 성공값을 그대로 유지(지도에서 종목이 사라지는 것 방지)
+    $failed++
+    $result += $prevMap[$sym]
+  } else {
     $failed++
     $result += [PSCustomObject]@{
       symbol = $sym; name = $t.name; exchange = $t.exchange

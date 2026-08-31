@@ -253,7 +253,15 @@ function fmtWonTrillionOnly(n) {
 // 초기 로딩을 가볍게 하려고 상위 종목(core)만 <script>로 즉시 불러오고, 나머지(extra)는 실제로 "+전체보기"를
 // 누르는 순간에만 별도 파일을 동적으로 불러온다(한 번 불러오면 캐시해서 다음 토글부터는 재요청하지 않음).
 // 해외: core=시가총액 상위 200개, extra=나머지(약 300개) / 국내: core=코스피 상위 100개+코스닥 상위 50개, extra=나머지(약 197개)
-const UNIVERSE_EXPANDED = { domestic: false, overseas: false };
+// 지도 보기(2026-08-31 개편): 국내/해외 토글+전체보기 버튼 대신 좌상단 드롭다운으로 4가지 보기 중 하나를 선택.
+// 코스피 200 = KR core+extra 중 .KS / 코스닥 150 = .KQ / S&P200 = US core만 / S&P500 = US core+extra
+const MAP_VIEWS = {
+  kospi200: { label: "코스피 200", market: "domestic", needExtra: true, filter: (c) => c.symbol.endsWith(".KS") },
+  kosdaq150: { label: "코스닥 150", market: "domestic", needExtra: true, filter: (c) => c.symbol.endsWith(".KQ") },
+  sp200: { label: "S&P200", market: "overseas", needExtra: false, filter: null },
+  sp500: { label: "S&P500", market: "overseas", needExtra: true, filter: null },
+};
+let ACTIVE_VIEW = "sp200";
 const extraDataLoadPromises = {};
 function loadScriptOnce(src) {
   return new Promise((resolve, reject) => {
@@ -287,80 +295,49 @@ function extraDataFor(market) {
   if (market === "domestic") return typeof KR_EXTRA_DATA !== "undefined" ? KR_EXTRA_DATA : null;
   return typeof SP500_EXTRA_DATA !== "undefined" ? SP500_EXTRA_DATA : null;
 }
-// UNIVERSE_EXPANDED/ACTIVE_MARKET 상태에 맞게 ACTIVE_DATA를 다시 계산 — extra가 아직 안 불러와진 상태에서
-// 펼침으로 표시돼 있으면(로딩 실패 등) core만이라도 보여줌
+// 현재 선택된 보기(ACTIVE_VIEW)에 맞게 ACTIVE_DATA를 다시 계산 — extra가 아직 안 불러와진 상태면(로딩 실패 등)
+// core에 있는 종목만이라도 보여줌
 function updateActiveDataForUniverseState() {
+  const v = MAP_VIEWS[ACTIVE_VIEW];
   const core = coreDataFor(ACTIVE_MARKET);
-  if (!UNIVERSE_EXPANDED[ACTIVE_MARKET]) {
-    ACTIVE_DATA = core;
-    return;
+  let companies = core.companies;
+  if (v.needExtra) {
+    const extra = extraDataFor(ACTIVE_MARKET);
+    if (extra) companies = [...companies, ...extra.companies];
   }
-  const extra = extraDataFor(ACTIVE_MARKET);
-  ACTIVE_DATA = extra ? { ...core, companies: [...core.companies, ...extra.companies] } : core;
+  if (v.filter) companies = companies.filter(v.filter);
+  ACTIVE_DATA = { ...core, companies };
 }
-// 시장/전체보기 상태에 맞는 버튼 라벨을 그림("불러오는 중"은 extra 파일을 처음 받아오는 동안만 잠깐 표시)
-// 라벨은 지수명으로(2026-08-31 사용자 확정): 국내 +KOSPI200 ↔ -KOSDAQ150, 해외 +S&P200 ↔ -S&P500, 펼침 상태는 하이라이트
-function updateUniverseToggleBtn(loading) {
-  const btn = document.getElementById("universeToggleBtn");
-  if (!btn) return;
-  if (loading) {
-    btn.textContent = "불러오는 중...";
-    return;
-  }
-  const expanded = UNIVERSE_EXPANDED[ACTIVE_MARKET];
-  const isKr = ACTIVE_MARKET === "domestic";
-  btn.textContent = expanded ? (isKr ? "-KOSDAQ150" : "-S&P500") : (isKr ? "+KOSPI200" : "+S&P200");
-  btn.classList.toggle("active", expanded);
+// 드롭다운 버튼 라벨·메뉴 활성 표시를 현재 보기에 맞춤
+function syncMapViewUi() {
+  const label = document.getElementById("mapViewBtnLabel");
+  if (label) label.textContent = MAP_VIEWS[ACTIVE_VIEW].label;
+  document.querySelectorAll("#mapViewMenu .map-view-item").forEach((b) => {
+    b.classList.toggle("active", b.dataset.view === ACTIVE_VIEW);
+  });
 }
-document.getElementById("universeToggleBtn").addEventListener("click", async () => {
-  // await(extra 로딩) 중에 국내↔해외를 바꾸면 ACTIVE_MARKET이 달라져 엉뚱한 시장이 펼쳐지는 경쟁 조건 방지 —
-  // 클릭 시점의 시장을 고정해서 그 시장에만 적용하고, 도중에 시장이 바뀌었으면 화면은 건드리지 않음
-  const market = ACTIVE_MARKET;
-  const nextExpanded = !UNIVERSE_EXPANDED[market];
-  if (nextExpanded && !extraDataFor(market)) {
-    updateUniverseToggleBtn(true);
-    try {
-      await ensureExtraDataLoaded(market);
-    } catch {
-      showToast("전체 목록을 불러오지 못했어요. 다시 시도해주세요");
-      updateUniverseToggleBtn();
-      return;
-    }
-  }
-  if (market !== ACTIVE_MARKET) return; // 로딩 사이 시장이 바뀜 — 원래 시장 상태/화면 그대로 둠
-  UNIVERSE_EXPANDED[market] = nextExpanded;
-  updateActiveDataForUniverseState();
-  updateUniverseToggleBtn();
-  // 종목 구성이 바뀌었으니 거래대금 순위표부터 즉시 재계산 — 안 하면 새로 추가된 종목들이 "순위 없음" 상태라
-  // 슬라이더를 한 칸만 좁혀도(상위 99% 등) 전부 필터에 탈락해 절반이 사라져 보임
-  if (METRICS.popularStocks && METRICS.popularStocks.refreshRank) METRICS.popularStocks.refreshRank();
-  // 전체보기/접기로 종목 수가 바뀌면 캐시된 지표 범위(m.domain)도 낡음 — 전부 무효화하고 다시 계산
-  for (const key of Object.keys(METRICS)) delete METRICS[key].domain;
-  activeFilters.clear();
-  rerenderMap(true);
-  quickSliderCtrl.refresh();
-  panelControllers.forEach((ctrl) => ctrl.refresh());
-  // 해외 extra 배치 데이터엔 거래대금이 없어 실시간 조회로 채움(등락 색상·순위 재계산도 내부에서 함께 처리)
-  refreshActiveMarketLiveData({ silent: true }).catch(() => {});
-});
 
-// 지도 맨 위에 실제 지수 카드(국기·이름/지수값/등락)가 들어갈 띠 높이(월드 좌표) — 섹터 원들은 이 아래로 배치됨.
-// 카드 실높이(~190) + 전체보기/해외에서 카드를 아래로 내리는 오프셋(근대 95)까지 감안해 넉넉하게 —
-// 부족하면 전체보기+시총 모드에서 맨 위 섹터 원이 지수 제목과 겹침
-const MARKET_LABEL_STRIP = 340;
+// 지도 맨 위에 실제 지수 카드(국기·이름/지수값/등락/미니그래프)가 들어갈 띠 높이(월드 좌표) — 섹터 원들은 이 아래로 배치됨.
+// 카드 실높이(~330, 스파크라인 포함) + 전체보기/해외에서 카드를 아래로 내리는 오프셋(최대 80)까지 감안해 넉넉하게 —
+// 부족하면 전체보기+시총 모드에서 맨 위 섹터 원이 지수 카드와 겹침
+const MARKET_LABEL_STRIP = 420;
 
 // 지도 상단에 보여줄 실제 지수들 — 구성종목 평균이 아니라 지수 자체(^KS11 등)를 야후에서 조회.
-// 2026-08-31 사용자 요청: 국내/해외 어느 지도에서든 코스피·코스닥·S&P500 전부 + S&P500 오른쪽에 나스닥 종합까지 항상 표시
-const MARKET_INDEX_DEFS = [
-  { symbol: "^KS11", name: "코스피", flag: "🇰🇷" },
-  { symbol: "^KQ11", name: "코스닥", flag: "🇰🇷" },
-  { symbol: "^GSPC", name: "S&P500", flag: "🇺🇸" },
-  { symbol: "^IXIC", name: "나스닥 종합", flag: "🇺🇸" },
-];
+// 2026-08-31 사용자 확정: 국내 지도는 코스피·코스닥만, 해외 지도는 S&P500·나스닥 종합만(4개 상시 표시는 하루 만에 철회)
+const MARKET_INDEX_DEFS = {
+  domestic: [
+    { symbol: "^KS11", name: "코스피", flag: "🇰🇷" },
+    { symbol: "^KQ11", name: "코스닥", flag: "🇰🇷" },
+  ],
+  overseas: [
+    { symbol: "^GSPC", name: "S&P500", flag: "🇺🇸" },
+    { symbol: "^IXIC", name: "나스닥 종합", flag: "🇺🇸" },
+  ],
+};
 const INDEX_QUOTE_CACHE = {}; // symbol -> { price, change, pct, time(초 단위 unix), spark }
 
 function currentIndexDefs() {
-  return MARKET_INDEX_DEFS;
+  return MARKET_INDEX_DEFS[ACTIVE_MARKET] || [];
 }
 
 async function fetchIndexQuote(symbol) {
@@ -514,10 +491,8 @@ function renderMarketIndexLabels() {
   const wrap = document.createElement("div");
   wrap.className = "market-index-labels";
   wrap.style.height = `${MARKET_LABEL_STRIP}px`;
-  // 전체보기에선 지도 중심을 안 내리는 대신 라벨만 아래로 내려 전체보기 버튼과 안 겹치게 함.
-  // 해외 S&P500 카드 위치(2026-08-30 사용자 조정): 축소 45(기존 50에서 5 위) / 전체보기 45+35=80(기존 95에서 15 위)
-  const expandedNow = UNIVERSE_EXPANDED[ACTIVE_MARKET];
-  const labelTop = (expandedNow ? 45 : 0) + (ACTIVE_MARKET === "overseas" ? (expandedNow ? 35 : 45) : 0);
+  // 전체보기 버튼 폐기(드롭다운 개편, 2026-08-31)로 보기별 오프셋 분기 없이 고정 — 해외만 45px 아래(2026-08-30 사용자 조정값)
+  const labelTop = ACTIVE_MARKET === "overseas" ? 45 : 0;
   wrap.style.top = `${labelTop}px`;
   for (const def of currentIndexDefs()) {
     const card = document.createElement("div");
@@ -922,16 +897,12 @@ function fitToViewport(animate) {
   const vh = mapViewport.clientHeight;
   fitK = Math.min(vw, vh) / WORLD_SIZE;
   minK = fitK * 0.55;
-  // 시장·보기 상태별 초기 세로 위치(사용자 지정): 국내 축소 40px 위 / 해외 축소 50px 위 / 해외 전체보기 20px 위
-  // (전체보기 줌인은 도입했다가 사용자 요청으로 원복 — 항상 전체가 다 보이는 fitK 유지)
-  const expanded = UNIVERSE_EXPANDED[ACTIVE_MARKET];
+  // 시장별 초기 세로 위치(사용자 지정): 국내 40px 위 / 해외 50px 위 — 전체보기 버튼 폐기(드롭다운 개편)로 보기 분기 없음
   const isKr = ACTIVE_MARKET === "domestic";
-  // 해외 전체보기 20px 위 이동은 S&P500 등락 표시가 상단에 가려져 제거(사용자 요청)
-  const upShift = expanded ? 0 : (isKr ? 40 : 50);
+  const upShift = isKr ? 40 : 50;
   view.k = fitK;
   view.x = (vw - RIGHT_CONTROLS_RESERVE - WORLD_SIZE * view.k) / 2;
-  const topReserve = expanded ? 0 : TOP_CONTROLS_RESERVE;
-  view.y = (vh + topReserve - WORLD_SIZE * view.k) / 2 - upShift;
+  view.y = (vh + TOP_CONTROLS_RESERVE - WORLD_SIZE * view.k) / 2 - upShift;
   // 지도 중심이 우측 버튼 공간(RIGHT_CONTROLS_RESERVE)만큼 왼쪽으로 밀리므로,
   // 상단 지수 카드는 그만큼 오른쪽으로 보정해 화면 기준 정중앙에 오도록 함
   document.documentElement.style.setProperty(
@@ -2472,7 +2443,7 @@ function loadMarket(mode, animate) {
   METRICS = buildMetrics(mode);
   activeFilters.clear(); // 시장이 바뀌면 종목 구성 자체가 달라지므로 필터는 초기화
   document.querySelector(".top-bar").classList.toggle("is-overseas", mode === "overseas");
-  updateUniverseToggleBtn();
+  syncMapViewUi();
 
   rerenderMap(animate);
   applyChangeModeToSectorBubbles(); // rerenderMap이 섹터 원을 새로 만들므로 등락 모드가 켜져 있었다면 채색도 다시 적용
@@ -2491,18 +2462,46 @@ setInterval(() => {
 // AI 버튼 시각 표시는 매초 새로고침(장중 HH:MM:SS가 실시간으로 흐르는 것처럼 보이게)
 setInterval(renderAiFabTimestamp, 1000);
 
-document.getElementById("marketTogglePill").addEventListener("click", (e) => {
-  const btn = e.target.closest(".toggle-btn");
-  if (!btn) return;
-  const mode = btn.dataset.market;
-  if (mode === ACTIVE_MARKET) return;
-  if (mode === "domestic" && (typeof KR_CORE_DATA === "undefined" || !KR_CORE_DATA.companies || !KR_CORE_DATA.companies.length)) {
+// ---------- 지도 보기 드롭다운(2026-08-31 개편) ----------
+// 좌상단 버튼을 누르면 4가지 보기 메뉴(코스피 200/코스닥 150/S&P200/S&P500)가 열리고, 선택하면 해당 지도로 전환.
+// 코스피/코스닥/S&P500은 extra 데이터 파일이 필요하므로 처음 선택 시 동적으로 불러온 뒤 전환한다.
+async function setMapView(viewKey, animate) {
+  const v = MAP_VIEWS[viewKey];
+  if (!v) return;
+  if (v.market === "domestic" && (typeof KR_CORE_DATA === "undefined" || !KR_CORE_DATA.companies || !KR_CORE_DATA.companies.length)) {
     showToast("국내 섹터맵 데이터를 아직 못 불러왔어요");
     return;
   }
-  document.querySelectorAll("#marketTogglePill .toggle-btn").forEach((b) => b.classList.remove("active"));
-  btn.classList.add("active");
-  loadMarket(mode, true);
+  if (v.needExtra && !extraDataFor(v.market)) {
+    const label = document.getElementById("mapViewBtnLabel");
+    if (label) label.textContent = "불러오는 중...";
+    try {
+      await ensureExtraDataLoaded(v.market);
+    } catch {
+      showToast("전체 목록을 불러오지 못했어요. 다시 시도해주세요");
+      syncMapViewUi();
+      return;
+    }
+  }
+  ACTIVE_VIEW = viewKey;
+  loadMarket(v.market, animate); // 내부에서 updateActiveDataForUniverseState + syncMapViewUi 호출
+}
+
+const mapViewSelectEl = document.getElementById("mapViewSelect");
+document.getElementById("mapViewBtn").addEventListener("click", (e) => {
+  e.stopPropagation();
+  mapViewSelectEl.classList.toggle("open");
+});
+document.getElementById("mapViewMenu").addEventListener("click", (e) => {
+  const item = e.target.closest(".map-view-item");
+  if (!item) return;
+  mapViewSelectEl.classList.remove("open");
+  if (item.dataset.view === ACTIVE_VIEW) return;
+  setMapView(item.dataset.view, true);
+});
+// 메뉴 밖 아무 곳이나 누르면 닫힘
+document.addEventListener("click", (e) => {
+  if (!mapViewSelectEl.contains(e.target)) mapViewSelectEl.classList.remove("open");
 });
 
 // 본체(내투자닷컴)로 돌아가기 — 세션 동안은 다시 섹터맵으로 안 튕기도록 플래그를 남김
@@ -2520,22 +2519,20 @@ document.getElementById("bottomNavMoreBtn2").addEventListener("click", () => goT
 // ---------- 초기화 ----------
 window.addEventListener("resize", () => fitToViewport(false));
 
-// 내투자닷컴 첫 화면에서 넘어온 경우 ?market=domestic 으로 국내를 기본값으로 염(데이터 없으면 해외로 대체)
+// 내투자닷컴 첫 화면에서 넘어온 경우 ?market=domestic 이면 코스피 200 보기를, 아니면 S&P200 보기를 기본값으로 염
 const requestedMarket = new URLSearchParams(window.location.search).get("market");
-const initialMarket =
+const initialView =
   requestedMarket === "domestic" && typeof KR_CORE_DATA !== "undefined" && KR_CORE_DATA.companies && KR_CORE_DATA.companies.length
-    ? "domestic"
-    : "overseas";
-document.querySelectorAll("#marketTogglePill .toggle-btn").forEach((b) => {
-  b.classList.toggle("active", b.dataset.market === initialMarket);
+    ? "kospi200"
+    : "sp200";
+setMapView(initialView, false).finally(() => {
+  renderTickerTape().catch(() => {});
+  loadingIndicator.classList.add("hidden");
+  // 지도 자체 첫 렌더(타일 배치까지)가 끝났으므로 본체 첫 화면과 같은 전체화면 스플래시를 내림 —
+  // 실시간 시세/색상은 loadMarket 내부에서 이어서 비동기로 불러오지만, 스플래시까지 그걸 기다리진 않음(본체와 동일한 패턴)
+  const mapLoadingSplashEl = document.getElementById("mapLoadingSplash");
+  if (mapLoadingSplashEl) mapLoadingSplashEl.style.display = "none";
 });
-loadMarket(initialMarket, false);
-renderTickerTape().catch(() => {});
-loadingIndicator.classList.add("hidden");
-// 지도 자체 첫 렌더(원 배치까지)가 끝났으므로 본체 첫 화면과 같은 전체화면 스플래시를 내림 —
-// 실시간 시세/색상은 loadMarket 내부에서 이어서 비동기로 불러오지만, 스플래시까지 그걸 기다리진 않음(본체와 동일한 패턴)
-const mapLoadingSplashEl = document.getElementById("mapLoadingSplash");
-if (mapLoadingSplashEl) mapLoadingSplashEl.style.display = "none";
 
 // 국내/해외 전환 시 로고가 다시 느리게 뜨지 않도록 반대쪽 시장 로고를 미리 캐시에 받아둔다.
 // 예전엔 접속 즉시 양쪽 시장 850개를 전부 한꺼번에 요청해서, 지금 보고 있는 시장(각 종목 <img loading="lazy">가

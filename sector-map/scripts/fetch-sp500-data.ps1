@@ -79,6 +79,13 @@ foreach ($key in $sectorMap.Keys) {
 }
 
 Write-Host "3) 매칭 및 병합 중..."
+# 직전 수집본 로드 — 스크리너에 안 잡힌 종목(AZO/TTD 등)은 null로 비우지 않고 마지막 성공값을 유지
+# (marketCap null이면 지도 buildPackedRoot에서 통째로 제외되어 종목이 사라짐, 2026-08-31)
+$prevMap = @{}
+try {
+  $prevData = Get-Content "$PSScriptRoot\..\data\sp500-sectors.json" -Raw -Encoding UTF8 | ConvertFrom-Json
+  foreach ($p in $prevData.companies) { $prevMap[$p.symbol] = $p }
+} catch {}
 $result = @()
 $unmatched = @()
 foreach ($c in $companies) {
@@ -90,13 +97,21 @@ foreach ($c in $companies) {
     $cap = $capBySymbol[$altSym]
     if ($null -ne $cap) { $lookupSym = $altSym }
   }
-  if ($null -eq $cap) {
-    $unmatched += $sym
-  }
   $chg = $chgBySymbol[$lookupSym]
   $pe = $peBySymbol[$lookupSym]
   $eps = $epsBySymbol[$lookupSym]
   $div = $divBySymbol[$lookupSym]
+  if ($null -eq $cap) {
+    $unmatched += $sym
+    $prev = $prevMap[$sym]
+    if ($prev -and $null -ne $prev.marketCap) {
+      $cap = $prev.marketCap
+      if ($null -eq $chg) { $chg = $prev.changePercent }
+      if ($null -eq $pe) { $pe = $prev.per }
+      if ($null -eq $eps) { $eps = $prev.eps }
+      if ($null -eq $div) { $div = $prev.dividendYield }
+    }
+  }
   $sectorInfo = $sectorMap[$c.sector]
   $sectorKo = if ($sectorInfo) { $sectorInfo.ko } else { $c.sector }
   $result += [PSCustomObject]@{
