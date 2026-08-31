@@ -282,7 +282,7 @@ function loadScriptOnce(src) {
 function ensureExtraDataLoaded(market) {
   if (extraDataLoadPromises[market]) return extraDataLoadPromises[market];
   // 데이터 파일에도 캐시버전 부착 — 배포 직후 옛 데이터(결측 종목 포함)가 캐시로 서빙되던 문제 방지(2026-08-31)
-  const src = market === "domestic" ? "data/kr-data-extra.js?v=20260831e" : "data/sp500-data-extra.js?v=20260831e";
+  const src = market === "domestic" ? "data/kr-data-extra.js?v=20260831r" : "data/sp500-data-extra.js?v=20260831r";
   // 모바일/인앱 브라우저에서 간헐적 네트워크 실패가 잦아 한 번은 자동 재시도(600ms 후) — 그래도 실패하면 토스트
   extraDataLoadPromises[market] = loadScriptOnce(src)
     .catch(() => new Promise((res) => setTimeout(res, 600)).then(() => loadScriptOnce(src)))
@@ -296,7 +296,7 @@ function ensureExtraDataLoaded(market) {
 let ndxDataLoadPromise = null;
 function ensureNdxDataLoaded() {
   if (ndxDataLoadPromise) return ndxDataLoadPromise;
-  const src = "data/ndx-extra.js?v=20260831m";
+  const src = "data/ndx-extra.js?v=20260831r";
   ndxDataLoadPromise = loadScriptOnce(src)
     .catch(() => new Promise((res) => setTimeout(res, 600)).then(() => loadScriptOnce(src)))
     .catch((err) => {
