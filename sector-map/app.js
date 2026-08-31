@@ -4,7 +4,7 @@
 // 나머지(전체 유니버스의 상위권 밖 종목)는 data/sp500-data-extra.js/kr-data-extra.js에 따로 있고, "+전체보기"를
 // 눌렀을 때만 동적으로 불러온다(ensureExtraDataLoaded) — 초기 로딩 용량을 줄이기 위함.
 
-// PWA로 홈 화면에 설치 가능하게(앱스토어 등록 없이) 서비스워커 등록 — 캐싱 없이 통과만 시키는 최소 워커
+// PWA로 홈 화면에 설치 가능하게(앱스토어 등록 없이) 서비스워커 등록 — 캐싱 없이 통과만 시키는 근소 워커
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
 }
@@ -341,7 +341,7 @@ document.getElementById("universeToggleBtn").addEventListener("click", async () 
 });
 
 // 지도 맨 위에 실제 지수 카드(국기·이름/지수값/등락)가 들어갈 띠 높이(월드 좌표) — 섹터 원들은 이 아래로 배치됨.
-// 카드 실높이(~190) + 전체보기/해외에서 카드를 아래로 내리는 오프셋(최대 95)까지 감안해 넉넉하게 —
+// 카드 실높이(~190) + 전체보기/해외에서 카드를 아래로 내리는 오프셋(근대 95)까지 감안해 넉넉하게 —
 // 부족하면 전체보기+시총 모드에서 맨 위 섹터 원이 지수 제목과 겹침
 const MARKET_LABEL_STRIP = 340;
 
@@ -519,16 +519,13 @@ const bubbleBySymbol = new Map(); // symbol -> .company-bubble 엘리먼트(지�
 let ACTIVE_MARKET = "overseas";
 let ACTIVE_DATA = coreDataFor(ACTIVE_MARKET);
 let sizeMode = "equal"; // 기본값 균등 — "시총" 버튼으로 "marketCap"과 토글(버튼 이름은 항상 "시총", 시총 모드일 때만 주황 강조)
-// 지도 모양: 기본 사각(트리맵) — "원형" 버튼으로 버블맵과 토글, 선택은 localStorage로 유지(2026-08-30 두 버전 병행 운영)
-let shapeMode = "square";
-try {
-  if (localStorage.getItem("map_shape_mode") === "circle") shapeMode = "circle";
-} catch (e) {}
+// 지도 모양: 사각(트리맵) 전용 — 원형(버블맵) 토글은 2026-08-31 사용자 확정으로 폐기(renderMapCircle 등 렌더러는 참고용 잔존)
+const shapeMode = "square";
 
 // 섹터 이름표를 "로고 하나"처럼 취급 — 섹터 원 맨 위 가장자리에 딱 붙여 고정하고,
-// d3-force로 (1) 종목 원끼리 절대 안 겹치게(사이즈별 최소 간격), (2) 이름표(알약 모양 사각형)와도 안 겹치게 풀어낸다.
+// d3-force로 (1) 종목 원끼리 절대 안 겹치게(사이즈별 근소 간격), (2) 이름표(알약 모양 사각형)와도 안 겹치게 풀어낸다.
 // 이름표 회피는 원형이 아니라 실제 알약 모양(둥근 사각형)에 맞춰 계산해서, 필요한 곳(제목 바로 위/아래)만
-// 자연스럽게 비켜가고 엉뚱하게 큰 원형으로 밀려나지 않도록 한다. 원래 pack 위치에서 최대한 적게 움직이도록
+// 자연스럽게 비켜가고 엉뚱하게 큰 원형으로 밀려나지 않도록 한다. 원래 pack 위치에서 근대한 적게 움직이도록
 // 약한 복원력(forceX/forceY)도 함께 걸어서, 꼭 필요한 원들만 자리를 살짝 양보하게 만든다.
 function layoutSectorLabel(sectorNode) {
   const kids = sectorNode.children;
@@ -550,8 +547,8 @@ function layoutSectorLabel(sectorNode) {
     .forceSimulation(kids)
     .force(
       "collide",
-      // forceCollide는 충돌한 두 노드의 반지름을 더해서 최소 거리로 쓰므로, 노드별로 반지름을 살짝 부풀려두면
-      // 두 노드 사이 실제 간격이 (원래 반지름 합) + (사이즈 비례 여백)이 되어 사이즈별 최소 간격 효과를 낸다.
+      // forceCollide는 충돌한 두 노드의 반지름을 더해서 근소 거리로 쓰므로, 노드별로 반지름을 살짝 부풀려두면
+      // 두 노드 사이 실제 간격이 (원래 반지름 합) + (사이즈 비례 여백)이 되어 사이즈별 근소 간격 효과를 낸다.
       d3.forceCollide((d) => d.r * 1.045 + 0.8).iterations(4)
     )
     .force("pullX", d3.forceX((d) => d.x0).strength(0.25))
@@ -992,7 +989,7 @@ function toggleSheetWatchlist(symbol) {
 }
 
 // 상세시트를 열 때마다 클릭한 종목 하나만 실시간 시세를 다시 조회(오늘 시가/고가/저가/현재가/거래량/전일종가) —
-// 나머지 지도 전체는 5분 주기 색상 갱신으로 충분하지만, 지금 보고 있는 상세시트 숫자는 즉시 최신이어야 하므로 별도 조회
+// 나머지 지도 전체는 5분 주기 색상 갱신으로 충분하지만, 지금 보고 있는 상세시트 숫자는 즉시 근신이어야 하므로 별도 조회
 async function fetchLiveQuoteForSheet(symbol) {
   // range=1d&interval=5m는 KR 티커에서 chartPreviousClose가 regularMarketPrice와 같은 값으로 깨져 나오는 경우가
   // 있어서, 이미 검증된(fetch-kr-data.ps1 등에서 쓰는) range=5d&interval=1d 패턴을 그대로 사용
@@ -1014,7 +1011,7 @@ async function fetchLiveQuoteForSheet(symbol) {
 }
 
 // 현재 상세시트가 열려서 보여주고 있는 종목 심볼 — refreshAllBubbleColors()가 지도 전체를 갱신할 때
-// 지금 시트가 보고 있는 종목과 같은 경우에만 시트 숫자도 같이 최신화하기 위해 기억해둠
+// 지금 시트가 보고 있는 종목과 같은 경우에만 시트 숫자도 같이 근신화하기 위해 기억해둠
 let currentSheetSymbol = null;
 
 // 상세시트의 현재가 표시용 — 마켓캡처럼 억/조 단위로 뭉치지 않고 실제 주당 가격 그대로(KRW는 원 단위, 그 외는 $ + 소수 2자리)
@@ -1025,7 +1022,7 @@ function fmtSheetPrice(price, currency) {
 }
 
 // 상세시트가 열려있는 동안 현재가/등락률을 실제 시세로 다시 조회해 갱신 — openCompanySheet가 처음 열 때,
-// 그리고 지도 전체 색상이 갱신될 때(refreshAllBubbleColors)마다 호출되어 시트 숫자가 타일 색상과 항상 같이 최신 상태를 유지
+// 그리고 지도 전체 색상이 갱신될 때(refreshAllBubbleColors)마다 호출되어 시트 숫자가 타일 색상과 항상 같이 근신 상태를 유지
 function updateSheetLiveValues(symbol) {
   if (!companySheet.classList.contains("open") || currentSheetSymbol !== symbol) return;
   fetchLiveQuoteForSheet(symbol)
@@ -1071,7 +1068,7 @@ function openCompanySheet(d) {
       }
       <div class="sheet-fallback-badge" style="display:${BAD_LOGO_SYMBOLS.has(d.symbol) ? "flex" : "none"}; background:${color};">${d.symbol}</div>
       <div>
-        <div class="sheet-name sheet-name-link" id="sheetNameLink" role="button" tabindex="0">${d.name}</div>
+        <div class="sheet-name-row"><div class="sheet-name sheet-name-link" id="sheetNameLink" role="button" tabindex="0">${d.name}</div><button type="button" class="sheet-detail-btn" id="sheetDetailBtn">+상세</button></div>
         <div class="sheet-symbol">${d.symbol} · ${d.sectorKo}</div>
       </div>
     </div>
@@ -1125,6 +1122,13 @@ function openCompanySheet(d) {
       goToTickerDetail();
     }
   });
+  // 기업이름 옆 "+상세" 버튼 — 이름 클릭과 동일하게 종목 상세페이지로 이동
+  const detailBtn = document.getElementById("sheetDetailBtn");
+  if (detailBtn)
+    detailBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      goToTickerDetail();
+    });
 }
 function closeCompanySheet() {
   companySheet.classList.remove("open");
@@ -1176,21 +1180,7 @@ document.getElementById("lockModeBtn").addEventListener("click", (e) => {
   document.body.classList.toggle("map-fixed-mode", mapLocked);
 });
 
-// 지도 모양 버튼 — 라벨은 "현재 모드"(사각↔원형)를 표시, 누르면 반대 모드로 전환. 선택은 다음 방문에도 유지
-const shapeModeBtn = document.getElementById("shapeModeBtn");
-function syncShapeModeBtn() {
-  shapeModeBtn.textContent = shapeMode === "circle" ? "원형" : "사각";
-  shapeModeBtn.classList.toggle("active", shapeMode === "circle");
-}
-syncShapeModeBtn();
-shapeModeBtn.addEventListener("click", () => {
-  shapeMode = shapeMode === "circle" ? "square" : "circle";
-  syncShapeModeBtn();
-  try {
-    localStorage.setItem("map_shape_mode", shapeMode);
-  } catch (err) {}
-  rerenderMap(true);
-});
+// (원형/사각 토글 버튼은 2026-08-31 폐기 — 사각 고정)
 
 // "관심" — 버튼 이름은 그대로, 누르면 주황 배경/흰 글씨로 강조되며 내 관심종목만 남김
 document.getElementById("watchFilterBtn").addEventListener("click", (e) => {
@@ -1231,7 +1221,7 @@ function buildMetrics(market) {
   popularRank.refresh();
   return {
     week52RangePct: {
-      label: "52주최저",
+      label: "52주근저",
       hasData: true,
       get: (c) => c.week52RangePct,
       fmt: (v) => `${v.toFixed(0)}%`,
@@ -1243,7 +1233,7 @@ function buildMetrics(market) {
       hasData: true,
       needsLive: !isKr,
       // 순위를 "상위 몇 %"로 환산 — 축소/전체보기와 무관하게 항상 상위 1%~100% 스케일
-      // (1위가 1% 미만이 되면 전체 범위에서도 잘려나가므로 최소 1%로 클램프)
+      // (1위가 1% 미만이 되면 전체 범위에서도 잘려나가므로 근소 1%로 클램프)
       get: (c) => {
         const rank = popularRank.map.get(c.symbol);
         const total = popularRank.map.size;
@@ -1259,7 +1249,7 @@ function buildMetrics(market) {
     // (sector-map/scripts/fetch-momentum-scores.ps1, data/*-sectors.json에 pressureScore/stabilityScore로 저장)
     pressureScore: { label: "상승압력", hasData: true, get: (c) => c.pressureScore, fmt: (v) => `${v.toFixed(1)}점`, domainMin: 0, domainMax: 10 },
     stabilityScore: { label: "투자안정", hasData: true, get: (c) => c.stabilityScore, fmt: (v) => `${v.toFixed(1)}점`, domainMin: 0, domainMax: 10 },
-    // 상승률/하락률을 하나로 합쳐 최저(가장 큰 하락)~최고(가장 큰 상승)가 한 슬라이더 안에 전부 보이도록 함
+    // 상승률/하락률을 하나로 합쳐 근저(가장 큰 하락)~근고(가장 큰 상승)가 한 슬라이더 안에 전부 보이도록 함
     changePct: { label: "등락률", hasData: true, live: !isKr, get: (c) => c.changePercent, fmt: (v) => `${v.toFixed(1)}%` },
     revenueGrowth: { label: "매출성장", hasData: true, get: (c) => c.revenueGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
     netIncomeGrowth: { label: "순이익증가", hasData: true, get: (c) => c.netIncomeGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
@@ -1387,7 +1377,7 @@ function createSliderController(getKey, els, onNoDataChange) {
       const t = i / 5;
       const v = scale ? scale.toValue(t) : domMin + (domMax - domMin) * t;
       const span = document.createElement("span");
-      span.textContent = i === 5 ? "최대" : m.fmt(v);
+      span.textContent = i === 5 ? "근대" : m.fmt(v);
       els.labels.appendChild(span);
     }
   }
@@ -1510,10 +1500,10 @@ const METRIC_DESCS = {
   pressureScore: "거래대금·매출성장·3개월 모멘텀을 합친 자체 점수(10점 만점)예요.",
   stabilityScore: "재무안정·시장대비 모멘텀·순이익률·시가총액을 합친 자체 점수(10점 만점)예요.",
   per: "주가 ÷ 주당순이익 — 낮을수록 이익 대비 저렴한 편이에요.",
-  dividendYield: "현재 주가 대비 최근 1년 배당금 비율이에요.",
-  week52RangePct: "52주 최저~최고 사이에서 지금 주가의 위치(0%=최저점 부근)예요.",
-  revenueGrowth: "최근 분기 매출이 1년 전 같은 분기보다 얼마나 늘었는지예요.",
-  netIncomeGrowth: "최근 분기 순이익이 1년 전 같은 분기보다 얼마나 늘었는지예요.",
+  dividendYield: "현재 주가 대비 근근 1년 배당금 비율이에요.",
+  week52RangePct: "52주 근저~근고 사이에서 지금 주가의 위치(0%=근저점 부근)예요.",
+  revenueGrowth: "근근 분기 매출이 1년 전 같은 분기보다 얼마나 늘었는지예요.",
+  netIncomeGrowth: "근근 분기 순이익이 1년 전 같은 분기보다 얼마나 늘었는지예요.",
   debtRatio: "자기자본 대비 부채 비율 — 낮을수록 빚 부담이 적어요.",
   cashFlowGrowth: "영업활동 현금흐름이 1년 전보다 얼마나 늘었는지예요.",
 };
@@ -1521,9 +1511,9 @@ const SCORE_INFO_CONTENT = {
   pressureScore: {
     title: "📈 상승 압력 배점 방식 (10점 만점)",
     html: `
-      <p><b>① 총 거래대금 (3점)</b><br>최근 5거래일 평균 거래대금 ÷ 1년 평균 — 2배 이상 만점, 0.5배 이하 0점</p>
-      <p><b>② 매출 성장성 (3점)</b><br>최근 분기 매출의 전년 동기 대비 성장률 — 30% 이상 만점, 0% 이하 0점</p>
-      <p><b>③ 상승 모멘텀 (4점)</b><br>최근 3개월 수익률 — 25% 이상 만점, 0% 이하 0점</p>
+      <p><b>① 총 거래대금 (3점)</b><br>근근 5거래일 평균 거래대금 ÷ 1년 평균 — 2배 이상 만점, 0.5배 이하 0점</p>
+      <p><b>② 매출 성장성 (3점)</b><br>근근 분기 매출의 전년 동기 대비 성장률 — 30% 이상 만점, 0% 이하 0점</p>
+      <p><b>③ 상승 모멘텀 (4점)</b><br>근근 3개월 수익률 — 25% 이상 만점, 0% 이하 0점</p>
       <p class="score-info-note">높을수록 단기 상승 여력이 크다고 보는 참고용 지표이며, 투자 자문이 아닙니다.</p>`,
   },
   stabilityScore: {
@@ -1819,8 +1809,8 @@ allFiltersBackdrop.addEventListener("click", closeAllFiltersPanel);
 // 브라우저에서 직접 Yahoo Finance로 요청하면 CORS에 막히므로, 내투자닷컴 본체와 같은 방식으로
 // 공개 CORS 프록시(corsproxy.io → 실패 시 allorigins)를 거쳐서 가져온다.
 async function proxyFetchJson(targetUrl) {
-  // corsproxy.io가 최근 이 도메인에서의 요청을 403으로 막는 경우가 잦아, 이미 안정적으로 쓰고 있는
-  // 내투자 전용 Worker(CORS 중계) 프록시를 최우선으로 시도하고, 혹시 몰라 기존 공개 프록시들을 그다음 순서로 남겨둠
+  // corsproxy.io가 근근 이 도메인에서의 요청을 403으로 막는 경우가 잦아, 이미 안정적으로 쓰고 있는
+  // 내투자 전용 Worker(CORS 중계) 프록시를 근우선으로 시도하고, 혹시 몰라 기존 공개 프록시들을 그다음 순서로 남겨둠
   const proxies = [
     (u) => "https://us-stock.yeop2ad.workers.dev/?url=" + encodeURIComponent(u),
     (u) => "https://corsproxy.io/?url=" + encodeURIComponent(u),
@@ -2028,7 +2018,7 @@ function computeDelayedAsOfTime() {
     // "지금"은 시간대와 무관한 절대 순간이므로 tz 보정 없이 그대로 20분만 빼면 됨
     return { time: new Date(Date.now() - 20 * 60 * 1000), isToday: true };
   }
-  // 장 시작 전(프리마켓)이거나 마감 후, 주말이면 가장 최근 마감 시각에 고정 — 그 이후로는 새 데이터가 없으므로 시간이 흐를 필요 없음.
+  // 장 시작 전(프리마켓)이거나 마감 후, 주말이면 가장 근근 마감 시각에 고정 — 그 이후로는 새 데이터가 없으므로 시간이 흐를 필요 없음.
   // 그 마감 시각이 오늘이 아니라 어제(이전 거래일)라면 시:분:초 대신 날짜로 보여줌(renderAiFabTimestamp에서 처리)
   let y = local.getFullYear(), mo = local.getMonth(), d = local.getDate();
   let isToday = true;
@@ -2112,7 +2102,7 @@ async function refreshActiveMarketLiveData({ silent = false } = {}) {
   return ok;
 }
 
-// 원 배경/테두리 색을 최신 changePercent 기준으로 다시 칠함(값 자체는 그대로 두고 색만 갱신)
+// 원 배경/테두리 색을 근신 changePercent 기준으로 다시 칠함(값 자체는 그대로 두고 색만 갱신)
 function refreshAllBubbleColors() {
   for (const c of ACTIVE_DATA.companies) {
     const el = bubbleBySymbol.get(c.symbol);
@@ -2122,8 +2112,8 @@ function refreshAllBubbleColors() {
     const chgTextEl = el.querySelector(".company-tile-chg");
     if (chgTextEl) chgTextEl.textContent = fmtTileChg(c.changePercent);
   }
-  refreshMarketIndexLabels(); // 상단 시장 이름 옆 평균 등락률도 최신 값으로
-  // 지도 타일 색상이 새로 갱신될 때, 지금 상세시트가 열려서 보고 있는 종목이 있다면 그 시트의 현재가/등락률도 같이 최신화
+  refreshMarketIndexLabels(); // 상단 시장 이름 옆 평균 등락률도 근신 값으로
+  // 지도 타일 색상이 새로 갱신될 때, 지금 상세시트가 열려서 보고 있는 종목이 있다면 그 시트의 현재가/등락률도 같이 근신화
   if (currentSheetSymbol) updateSheetLiveValues(currentSheetSymbol);
 }
 
@@ -2170,7 +2160,7 @@ function isKrMarketOpen() {
   return mins >= 9 * 60 && mins <= 15 * 60 + 30;
 }
 
-// Yahoo 차트(최근 5거래일 일봉)에서 현재가/전일대비 등락을 뽑음 — 기존 refreshLiveData와 동일한 CORS 프록시 재사용
+// Yahoo 차트(근근 5거래일 일봉)에서 현재가/전일대비 등락을 뽑음 — 기존 refreshLiveData와 동일한 CORS 프록시 재사용
 async function fetchYahooChartSnap(symbol) {
   try {
     const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=5d&interval=1d`;
@@ -2407,7 +2397,7 @@ function loadMarket(mode, animate) {
   scheduleInactiveMarketPreload(); // 시장 전환 시에도 방금 떠난 쪽 로고를 한가할 때 다시 캐시해둠(다음에 돌아왔을 때 즉시 뜨도록)
 }
 
-// 20분 지연 표시에 맞춰 5분마다 조용히(토스트 없이) 색상을 다시 갱신 — 페이지를 오래 켜둬도 계속 최신에 가깝게 유지됨
+// 20분 지연 표시에 맞춰 5분마다 조용히(토스트 없이) 색상을 다시 갱신 — 페이지를 오래 켜둬도 계속 근신에 가깝게 유지됨
 setInterval(() => {
   refreshActiveMarketLiveData({ silent: true })
     .catch(() => {})

@@ -135,6 +135,20 @@ el("futureMacroChartDetailBtn").addEventListener("click", () => {
     else renderMacroScoreChart();
   }
 });
+// 투자안정성 제목 옆 "+자세히" — 점수별 작년 주가상승 분포도(경고문구 위에 표시). 미래예측을 아직 안 돌린 종목이면
+// 같은 파이프라인(runFuturePrediction)을 실행해 분포도 데이터를 채움
+el("futureRiskDetailBtn").addEventListener("click", () => {
+  const wrap = el("futureRiskDetailWrap");
+  const btn = el("futureRiskDetailBtn");
+  const isOpen = wrap.style.display !== "none";
+  wrap.style.display = isOpen ? "none" : "block";
+  wrap.classList.toggle("chart-detail-expanded", !isOpen);
+  btn.textContent = isOpen ? "+자세히" : "-접기";
+  if (!isOpen) {
+    const ticker = (new URLSearchParams(location.search).get("ticker") || tickerInput.value || "").toUpperCase();
+    if (ticker && futureRiskRenderedTicker !== ticker) runFuturePrediction(ticker);
+  }
+});
 // 지수 카드는 <a>가 아니라 role="button" div라 클릭 외에 키보드(Enter/Space) 접근성도 함께 지원
 document.addEventListener("keydown", (e) => {
   if (e.key !== "Enter" && e.key !== " ") return;
@@ -460,7 +474,7 @@ function getKrFomoMetrics() {
   if (!krFomoIndexPromise) {
     krFomoIndexPromise = fetch(KR_FOMO_INDEX_API)
       .then((res) => {
-        if (!res.ok) throw new Error("FOMO지수를 가져오지 못했습니다.");
+        if (!res.ok) throw new Error("KOSPI 공포지수를 가져오지 못했습니다.");
         return res.json();
       })
       .then((data) => {
@@ -501,7 +515,7 @@ function fomoLineHtml(score, changeAbs) {
     changeAbs !== null && changeAbs !== undefined && Number.isFinite(changeAbs)
       ? `(전일대비 ${changeAbs >= 0 ? "+" : ""}${Math.round(changeAbs * 100)}%p)`
       : "";
-  return `<br>FOMO지수 : ${pt >= 0 ? "+" : ""}${pt}%p ${changeStr}`;
+  return `<br>KOSPI 공포지수 : ${pt >= 0 ? "+" : ""}${pt}%p ${changeStr}`;
 }
 // scoreBgStyleAttr는 "값이 클수록 더 하얗게(더 fear/attractive)"라는 전제라, 포모지수는 부호가 반대(음수일수록 fear)이므로
 // -score*100(=fear 강도, 신저가 쏠림일수록 커짐)으로 뒤집어 넣어 기존 배경색 로직을 그대로 재사용
@@ -2174,7 +2188,7 @@ el("aboutModalCloseBtn").addEventListener("click", () => {
 });
 el("morePanelContactBtn").addEventListener("click", () => {
   closeMorePanel();
-  window.location.href = "mailto:hyhykhy6@gmail.com?subject=" + encodeURIComponent("[굴려볼까 문의]");
+  window.location.href = "mailto:yeop2ad@gmail.com?subject=" + encodeURIComponent("[굴려볼까 문의]");
 });
 
 // ---------- 화면 테마(화이트/블랙) — 기본은 화이트, 선택은 localStorage에 저장해 다음 방문에도 유지 ----------
@@ -4687,7 +4701,7 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
       const fomo = await getKrFomoMetrics().catch(() => ({ score: null, changeAbs: null }));
       macroBadgeHtml = `
         <div class="mini-score-circle macro"${fomoBgStyleAttr(fomo.score)}>${fomoDisplayValue(fomo.score)}</div>
-        <span class="mini-score-label">FOMO지수${fomoLineHtml(fomo.score, fomo.changeAbs)}</span>
+        <span class="mini-score-label">KOSPI 공포지수${fomoLineHtml(fomo.score, fomo.changeAbs)}</span>
       `;
     } else {
       const macroMetrics = await getMacroMetrics().catch(() => ({ vix: null }));
@@ -5282,7 +5296,7 @@ async function renderScore(selfMetricsPromise) {
           "상승 모멘텀",
           momentumScore,
           4,
-          `최근 3개월 수익률: <b>${momentum3m !== null && momentum3m !== undefined ? fmtPct(momentum3m) : "N/A"}</b> (높을수록 가점, 25% 이상 만점·0% 이하 0점)`,
+          `최근 3개월 주가상승: <b>${momentum3m !== null && momentum3m !== undefined ? fmtPct(momentum3m) : "N/A"}</b> (높을수록 가점, 25% 이상 만점·0% 이하 0점)`,
           pressureColor
         )}
         <p class="disclaimer">
@@ -5344,7 +5358,7 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
           `${benchmarkName} 대비 모멘텀`,
           marketScore,
           2,
-          `${benchmarkName}과의 1년 수익률 차이: ${relDiff !== null ? `<b>${relDiff.toFixed(1)}%p</b> (${benchmarkName} <b>${fmtPct(benchmarkReturn)}</b>)` : "N/A"} (차이가 작을수록 가점)`,
+          `${benchmarkName}과의 1년 주가상승 차이: ${relDiff !== null ? `<b>${relDiff.toFixed(1)}%p</b> (${benchmarkName} <b>${fmtPct(benchmarkReturn)}</b>)` : "N/A"} (차이가 작을수록 가점)`,
           stabilityColor
         )}
         ${scoreMethodBarRow(
@@ -5372,14 +5386,14 @@ async function renderMacro(ticker) {
   el("macroSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
   const isKr = isKrTicker(ticker);
-  el("macroSectionTitle").textContent = isKr ? "FOMO지수" : "S&P 공포지수";
+  el("macroSectionTitle").textContent = isKr ? "KOSPI 공포지수" : "S&P 공포지수";
 
   if (isKr) {
     const fomo = await getKrFomoMetrics().catch(() => ({ score: null, changeAbs: null, date: null }));
     const grade = fomoGrade(fomo.score);
     const liveLine =
       fomo.score !== null
-        ? `<p class="score-macro-vix-line">😱 FOMO지수(자체 개발, ${escapeHtml(fomo.date || "")} 기준)${fomoLineHtml(fomo.score, fomo.changeAbs)}</p>`
+        ? `<p class="score-macro-vix-line">😱 KOSPI 공포지수(자체 개발, ${escapeHtml(fomo.date || "")} 기준)${fomoLineHtml(fomo.score, fomo.changeAbs)}</p>`
         : "";
     const fomoNumText = fomo.score === null || fomo.score === undefined ? "N/A" : `${fomoDisplayValue(fomo.score)}%p`;
     const fomoPt = fomo.score === null || fomo.score === undefined ? null : fomo.score * 100;
@@ -5553,7 +5567,7 @@ async function openScoreMethodModal() {
           "상승 모멘텀",
           score.momentumScore,
           4,
-          `최근 3개월 수익률: <b>${score.momentum3m !== null && score.momentum3m !== undefined ? fmtPct(score.momentum3m) : "N/A"}</b> (25% 이상 만점, 0% 이하 0점)`,
+          `최근 3개월 주가상승: <b>${score.momentum3m !== null && score.momentum3m !== undefined ? fmtPct(score.momentum3m) : "N/A"}</b> (25% 이상 만점, 0% 이하 0점)`,
           pressureColor
         )}
         <p class="smb-formula">① + ② + ③ = <b style="color:${pressureColor};">${score.total}/10</b>점</p>
@@ -5568,7 +5582,7 @@ async function openScoreMethodModal() {
           "S&P500 대비 모멘텀",
           risk.marketScore,
           2,
-          `S&P500과의 1년 수익률 차이: <b>${risk.relDiff !== null ? risk.relDiff.toFixed(1) + "%p" : "N/A"}</b> (차이가 작을수록 만점)`,
+          `S&P500과의 1년 주가상승 차이: <b>${risk.relDiff !== null ? risk.relDiff.toFixed(1) + "%p" : "N/A"}</b> (차이가 작을수록 만점)`,
           stabilityColor
         )}
         ${scoreMethodBarRow(
@@ -6667,7 +6681,7 @@ function dartMetricHeaderLabel(metric) {
   return {
     salary: "평균연봉",
     tenure: "평균근속연수",
-    buyback: "자사주 취득금액(최근 1년, 이사회 결정 기준)",
+    buyback: "자사주 취득금액<br>(최근 1년, 이사회 결정 기준)",
     headcount: "직원 증가(전년 대비)",
   }[metric];
 }
@@ -9770,7 +9784,7 @@ function renderFutureChart(data) {
     const pctFromToday = (data.forecast.price / data.currentPrice - 1) * 100;
     forecastNote = ` · <span style="color:var(--warn);font-weight:700;">6개월 후 예상 변동량: ${pctFromToday >= 0 ? "+" : ""}${pctFromToday.toFixed(1)}%</span>`;
   }
-  el("futureChartCaption").innerHTML = `${escapeHtml(baseNote)}${forecastNote}`;
+  el("futureChartCaption").innerHTML = `<span style="color:var(--warn);font-weight:700;">*그래프 4개 편차가 심할 경우 예측과 다를 가능성이 높습니다.</span><br>${escapeHtml(baseNote)}${forecastNote}`;
   el("futureResultsSection").style.display = "block"; // 전체화면 모달 대신 탭 화면 안에 그대로 이어붙여 표시
 }
 
@@ -10215,7 +10229,7 @@ async function computeKrMacroScoreChartData() {
   ]);
   const pairs = chartClosePairs(chartData);
   if (pairs.length < 2) throw new Error("코스피 장기 데이터를 가져오지 못했습니다.");
-  if (!fomoHistory || !Array.isArray(fomoHistory.points)) throw new Error("FOMO지수 과거 이력 데이터가 아직 준비되지 않았습니다.");
+  if (!fomoHistory || !Array.isArray(fomoHistory.points)) throw new Error("KOSPI 공포지수 과거 이력 데이터가 아직 준비되지 않았습니다.");
 
   // data/kr-fomo-history.json에 있는 anchor를 전부 표시 — 기본은 매년 3/1·9/1(6개월 간격)이고,
   // 특정 시점(예: 2020-03-19 코로나 저점, 2025-11, 2026-06)을 수동 추가하면 그대로 점이 찍힘.
@@ -10244,7 +10258,7 @@ async function computeKrMacroScoreChartData() {
 }
 
 async function renderKrMacroScoreChart() {
-  el("futureMacroChartHeading").textContent = "FOMO지수를 활용한 투자시점 점검표";
+  el("futureMacroChartHeading").textContent = "KOSPI 공포지수를 활용한 투자시점 점검표";
   if (macroScoreChartRenderedMarket === "KR") return;
   const container = el("futureMacroChartContainer");
   const caption = el("futureMacroChartCaption");
@@ -10255,13 +10269,13 @@ async function renderKrMacroScoreChart() {
       data,
       (v) => v !== null && v <= -15,
       (v) => `${v >= 0 ? "+" : ""}${Math.round(v)}%p`,
-      "FOMO지수를 활용한 투자시점 점검표",
+      "KOSPI 공포지수를 활용한 투자시점 점검표",
       m2Points
     );
     macroScoreChartRenderedMarket = "KR";
     caption.textContent =
-      "빨간 선: 코스피 지수(2011~현재, 일별 종가) · 점 라벨: FOMO지수(자체 개발, 52주 신고가·신저가 근접 종목 비율 역산 — 기본 6개월 간격(3월·9월) + 코로나 저점(2020-03-19) 등 주요 시점 추가) · " +
-      "주황 점: -15%p 이하(패닉·역발상 투자 황금기), 흰 점: 그 외 · 파란/빨간 막대: M2(광의통화) 전년동월대비 증가율(월별, 한국은행 ECOS) · " +
+      "빨간 선: 코스피 지수(2011~현재, 일별 종가) · 점 라벨: KOSPI 공포지수(52주 신고가·신저가 근접 종목 비율 역산) · " +
+      "주황 점: -15%p 이하(패닉), 흰 점: 그 외 · 파란/빨간 막대: M2(광의통화) 전년동월대비 증가율(월별, 한국은행 ECOS) · " +
       "과거 종목 유니버스는 현재 KODEX 200·코스닥150 편입종목 기준 근사치라 생존편향이 있을 수 있습니다(참고용, 투자 자문이 아닙니다)";
   } catch (err) {
     container.innerHTML = `<p class="error-inline" style="text-align:center;padding:20px 0;">❌ 코스피 장기 데이터를 불러오지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
@@ -10293,7 +10307,7 @@ async function renderFutureModalHeader(ticker, quote, metricsPromise, marketRetu
     let macroBadgeHtml;
     if (isKr) {
       const fomo = await getKrFomoMetrics().catch(() => ({ score: null }));
-      macroBadgeHtml = `<span class="mini-score-circle small macro" title="FOMO지수"${fomoBgStyleAttr(fomo.score)}>${fomoDisplayValue(fomo.score)}</span>`;
+      macroBadgeHtml = `<span class="mini-score-circle small macro" title="KOSPI 공포지수"${fomoBgStyleAttr(fomo.score)}>${fomoDisplayValue(fomo.score)}</span>`;
     } else {
       const macroMetrics = await getMacroMetrics().catch(() => ({ vix: null }));
       const vix = macroMetrics.vix;
@@ -10312,9 +10326,18 @@ async function renderFutureModalHeader(ticker, quote, metricsPromise, marketRetu
   }
 }
 
+let futureRiskRenderedTicker = null; // 투자안정성 "+자세히" 분포도가 어떤 종목 기준으로 그려져 있는지(중복 실행 방지)
+const FUTURE_RISK_WARN_HTML = `<span style="color:var(--warn);font-weight:700;">*작년기준 과도하게 상승한 종목은 변동성에 주의하시기 바랍니다.</span><br>`;
 async function renderFutureRiskSection(ticker, metricsPromise, marketReturnsPromise, futureData) {
   const riskContainer = el("futureRiskContainer");
   const riskCaption = el("futureRiskCaption");
+  // 국내 종목: 이 분포 통계는 서버가 S&P500을 스캔해 쌓는 데이터라 코스피200·코스닥150 기준 통계는 별도 수집이 필요 — 준비 전까지 안내만 표시
+  if (isKrTicker(ticker)) {
+    riskContainer.innerHTML = `<p class="muted" style="text-align:center;padding:20px 0;">🚧 국내(코스피200·코스닥150) 점수별 분포 통계는 준비 중입니다. 먼저 해외(S&P500) 종목에서 확인해보세요.</p>`;
+    riskCaption.innerHTML = FUTURE_RISK_WARN_HTML.replace(/<br>$/, "");
+    futureRiskRenderedTicker = ticker.toUpperCase();
+    return;
+  }
   riskContainer.innerHTML = `<p class="muted" style="text-align:center;padding:20px 0;">투자 안정 구간별 통계를 불러오는 중...</p>`;
   riskCaption.textContent = "";
 
@@ -10337,16 +10360,17 @@ async function renderFutureRiskSection(ticker, metricsPromise, marketReturnsProm
       currentPrice: metrics.price ?? null,
     });
     riskContainer.innerHTML = svg;
+    futureRiskRenderedTicker = ticker.toUpperCase();
     const last = history[history.length - 1];
     const baseNote =
-      `${ticker}는 투자 안정 ${bucket}~${bucket + 1}점 구간(최근 집계 ${last.sampleSize}종목 표본) · 빨간 실선: ${ticker}의 최근 6개월 실제 흐름(위 차트와 동일) · ` +
-      `초록: 가장 높은 수익률대, 파랑: 가장 낮은 수익률대, 흰색(진할수록 비중 큼): 그 사이 구간별 종목 수`;
+      `${ticker}는 투자 안정 ${bucket}~${bucket + 1}점 구간(최근 집계 ${last.sampleSize}종목 표본) · 빨간 실선: ${ticker}의 최근 6개월 실제 흐름 · ` +
+      `초록: 가장 높은 주가상승대, 파랑: 가장 낮은 주가상승대, 흰색(진할수록 비중 큼): 그 사이 구간별 종목 수`;
     if (forecastPctFromToday === null) {
-      riskCaption.innerHTML = `${escapeHtml(baseNote)} · <span style="color:var(--warn);font-weight:700;">0~1점 구간은 표본 편차가 너무 커서 1년 후 예상을 생략합니다.</span>`;
+      riskCaption.innerHTML = `${FUTURE_RISK_WARN_HTML}${escapeHtml(baseNote)} · <span style="color:var(--warn);font-weight:700;">0~1점 구간은 표본 편차가 너무 커서 1년 후 예상을 생략합니다.</span>`;
     } else {
       const pctSign = forecastPctFromToday >= 0 ? "+" : "";
       riskCaption.innerHTML =
-        `${escapeHtml(baseNote)} · 빨간 점선 "예상": 이 구간에서 가장 많이 몰린 수익률대로 향하는 1년 후 예상(참고용, 투자 자문이 아닙니다) · ` +
+        `${FUTURE_RISK_WARN_HTML}${escapeHtml(baseNote)} · 빨간 점선 "예상": 이 구간에서 가장 많이 몰린 주가상승대로 향하는 1년 후 예상(참고용, 투자 자문이 아닙니다) · ` +
         `<span style="color:var(--warn);font-weight:700;">1년 후 예상 변동량: ${pctSign}${forecastPctFromToday.toFixed(1)}%</span>`;
     }
   } catch (err) {

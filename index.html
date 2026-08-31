@@ -41,7 +41,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260830h" />
+<link rel="stylesheet" href="style.css?v=20260831a" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -273,11 +273,8 @@
             <div class="future-chart-body">
               <h3 class="future-chart-subheading">📈 4년 평균주기 예측 - 6개월후 주가예상</h3>
               <div id="futureChartContainer" class="future-chart-container"></div>
+              <p class="chart-scroll-hint">&lt; 좌우 스크롤 &gt;</p>
               <p id="futureChartCaption" class="future-chart-caption"></p>
-              <hr class="future-chart-divider" />
-              <h3 class="future-chart-subheading">📊 투자 안정 구간별 분포도 예측 - 1년후 주가 예상</h3>
-              <div id="futureRiskContainer" class="future-chart-container"></div>
-              <p id="futureRiskCaption" class="future-chart-caption"></p>
             </div>
           </div>
         </section>
@@ -316,7 +313,16 @@
         </section>
 
         <section class="flush-section">
-          <h2 class="invest-score-h2">투자안정성</h2>
+          <div class="section-heading-row">
+            <h2 class="invest-score-h2">투자안정성</h2>
+            <button type="button" id="futureRiskDetailBtn" class="score-method-detail-btn">+자세히</button>
+          </div>
+          <div id="futureRiskDetailWrap" class="chart-detail-wrap" style="display:none;">
+            <h3 class="future-chart-subheading">📊 투자안정성 점수별 작년 주가상승 분포도</h3>
+            <div id="futureRiskContainer" class="future-chart-container"></div>
+            <p class="chart-scroll-hint">&lt; 좌우 스크롤 &gt;</p>
+            <p id="futureRiskCaption" class="future-chart-caption"></p>
+          </div>
           <div id="riskSection" class="section-body"></div>
         </section>
 
@@ -325,12 +331,13 @@
             <h2 class="invest-score-h2" id="macroSectionTitle">S&P 공포지수</h2>
             <button type="button" id="futureMacroChartDetailBtn" class="score-method-detail-btn">+자세히</button>
           </div>
-          <div id="macroSection" class="section-body"></div>
           <div id="futureMacroChartDetailWrap" class="chart-detail-wrap" style="display:none;">
             <h3 class="future-chart-subheading" id="futureMacroChartHeading">VIX지수를 활용한 투자시점 점검표</h3>
             <div id="futureMacroChartContainer" class="future-chart-container future-macro-chart"></div>
+            <p class="chart-scroll-hint">&lt; 좌우 스크롤 &gt;</p>
             <p id="futureMacroChartCaption" class="future-chart-caption"></p>
           </div>
+          <div id="macroSection" class="section-body"></div>
         </section>
         </div>
 
@@ -583,7 +590,7 @@
           <span class="more-panel-item-label" data-i18n="tab.valuation">기업가치</span>
         </button>
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelTrendBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 5" /><polyline points="15 5 21 5 21 11" /></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="4" height="8" rx="1"/><line x1="6" y1="5" x2="6" y2="9"/><line x1="6" y1="17" x2="6" y2="20"/><rect x="14" y="5" width="4" height="9" rx="1"/><line x1="16" y1="2.5" x2="16" y2="5"/><line x1="16" y1="14" x2="16" y2="18"/></svg>
           <span class="more-panel-item-label" data-i18n="tab.trend">시장동향</span>
         </button>
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelInsightBtn">
@@ -673,7 +680,7 @@
         <div><span>버전</span><span>1.0.0</span></div>
         <div><span>개발</span><span>Marketmap Lab</span></div>
         <div><span>웹사이트</span><span>marketmap.kr</span></div>
-        <div><span>문의</span><span>hyhykhy6@gmail.com</span></div>
+        <div><span>문의</span><span>yeop2ad@gmail.com</span></div>
         <div><span>데이터</span><span>DART·미국 SEC 공시 · 매일 갱신</span></div>
       </div>
       <p class="about-links"><a href="terms.html">이용약관</a> · <a href="privacy.html">개인정보처리방침</a></p>
@@ -684,12 +691,12 @@
 
   <footer class="site-footer">
     <p class="site-footer-disclaimer">본 서비스가 제공하는 모든 정보(시세·재무·점수·순위 등)는 투자 참고용이며 투자자문이나 매수·매도 추천이 아닙니다. 데이터는 지연되거나 오류가 있을 수 있으며, 투자의 최종 판단과 책임은 이용자 본인에게 있습니다.</p>
-    <p class="site-footer-sources">데이터 출처: 금융감독원 DART · 금융위원회 · 한국은행 ECOS · FRED · TradingView 등 | 문의: hyhykhy6@gmail.com</p>
+    <p class="site-footer-sources">데이터 출처: 금융감독원 DART · 금융위원회 · 한국은행 ECOS · FRED · TradingView 등 | 문의: yeop2ad@gmail.com</p>
     <p class="site-footer-links"><a href="terms.html">이용약관</a> · <a href="privacy.html">개인정보처리방침</a></p>
     <p class="site-footer-sources">© 2026 Marketmap Lab. All rights reserved.</p>
   </footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js?v=20260830o"></script>
+  <script src="app.js?v=20260831a"></script>
 </body>
 </html>
