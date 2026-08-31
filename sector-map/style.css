@@ -1057,14 +1057,11 @@ body {
   padding: 1px 2px;
   cursor: pointer;
 }
-/* 하단 국내/해외 — 이모지 없이 큰 글씨만(2026-08-31, 랭킹 버튼 대체, 본체와 동일) */
+/* 하단 네비 5버튼 전부 아이콘 없이 글자만(2026-08-31 사용자 확정) — 기존 국내/해외(16.5px)보다 살짝 크게 */
 .bottom-nav-market-btn { justify-content: center; gap: 0; }
-.bottom-nav-market-label { font-size: 16.5px; font-weight: 800; letter-spacing: -0.3px; line-height: 1;
+.bottom-nav-market-label { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; line-height: 1;
 }
 .bottom-nav-btn svg { width: 26px; height: 26px; position: relative; top: 3px; }
-#bottomNavMoreBtn2 svg { width: 29px; height: 29px; top: 3px; }
-#bottomNavMoreBtn2 { position: relative; top: -2px; }
-#bottomNavMarketBtn2 svg { top: 5px; }
 .bottom-nav-btn.active { color: var(--text-dark); }
 .bottom-nav-btn.active svg { color: var(--text-dark); }
 
