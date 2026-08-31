@@ -41,7 +41,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260831k" />
+<link rel="stylesheet" href="style.css?v=20260831l" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -61,7 +61,8 @@
   <header id="fixedHeader" class="fixed-header">
     <div class="fh-topline">
       <img src="logos/marketmap-logo.png" alt="marketmap.kr" class="fh-banner" />
-      <div class="market-mode-toggle" id="marketModeToggle" role="group" aria-label="국내/해외 전환">
+      <!-- 상단 국내/해외 토글은 하단 네비 국내/해외 버튼으로 이동(2026-08-31) — JS(setAppMarketMode 등)가 참조하므로 DOM은 숨김 유지 -->
+      <div class="market-mode-toggle" id="marketModeToggle" role="group" aria-label="국내/해외 전환" style="display:none;">
         <button type="button" class="market-mode-btn market-mode-btn-kr" id="marketModeKrBtn" data-mode="kr" data-i18n="market.kr">국내</button>
         <button type="button" class="market-mode-btn market-mode-btn-us active" id="marketModeUsBtn" data-mode="us" data-i18n="market.us">해외</button>
       </div>
@@ -374,9 +375,9 @@
         </div>
       </div>
       <div class="top30-sub-nav">
+        <button type="button" class="cat-btn" id="indexCatStocksBtn"><span class="btn-icon" data-icon="flame"></span> 주식</button>
         <button type="button" class="cat-btn" id="indexCatUsMarketsBtn"><span class="btn-icon" data-icon="star"></span> 주요</button>
         <button type="button" class="cat-btn" id="indexCatIndicesBtn"><span class="btn-icon" data-icon="trending-up"></span> 지수</button>
-        <button type="button" class="cat-btn" id="indexCatStocksBtn"><span class="btn-icon" data-icon="flame"></span> 주식</button>
         <button type="button" class="cat-btn" id="indexCatCommoditiesBtn"><span class="btn-icon" data-icon="barrel"></span> 원자재</button>
         <button type="button" class="cat-btn" id="indexCatFxBtn"><span class="btn-icon" data-icon="exchange"></span> 외환</button>
         <button type="button" class="cat-btn" id="indexCatCryptoBtn"><span class="btn-icon" data-icon="coin"></span> 암호화폐</button>
@@ -569,13 +570,12 @@
       <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z" fill="currentColor"/><circle cx="12" cy="9.5" r="2.6" fill="#fff"/></svg>
       <span data-i18n="nav.map">지도</span>
     </button>
-    <button type="button" class="bottom-nav-btn" id="bottomNavRankingBtn" aria-label="랭킹">
-      <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="6" width="6" height="14" rx="1" fill="currentColor"/><rect x="2.5" y="14" width="6" height="6" rx="1" fill="currentColor"/><rect x="15.5" y="11" width="6" height="9" rx="1" fill="currentColor"/></svg>
-      <span data-i18n="nav.ranking">랭킹</span>
+    <!-- 국내/해외(2026-08-31): 랭킹 버튼 대체 — 이모지 없이 큰 글씨, 누르면 해당 시장으로 전환 + 랭킹(기업가치) 표시 -->
+    <button type="button" class="bottom-nav-btn bottom-nav-market-btn" id="bottomNavKrBtn" aria-label="국내 랭킹">
+      <span class="bottom-nav-market-label" data-i18n="market.kr">국내</span>
     </button>
-    <button type="button" class="bottom-nav-btn" id="bottomNavSearchBtn" aria-label="간편검색">
-      <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2.4"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
-      <span data-i18n="tab.search">간편검색</span>
+    <button type="button" class="bottom-nav-btn bottom-nav-market-btn" id="bottomNavUsBtn" aria-label="해외 랭킹">
+      <span class="bottom-nav-market-label" data-i18n="market.us">해외</span>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavMarketBtn" aria-label="시장">
       <svg viewBox="0 0 24 24" fill="none"><polyline points="3 17 9 11 13 15 21 5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><polyline points="15 5 21 5 21 11" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -608,6 +608,11 @@
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelInsightBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6.5 6.5 0 0 0-3.7 11.8c.7.5 1.2 1.3 1.2 2.2h5c0-.9.5-1.7 1.2-2.2A6.5 6.5 0 0 0 12 3Z" /></svg>
           <span class="more-panel-item-label" data-i18n="tab.insight">인사이트</span>
+        </button>
+        <!-- 간편검색: 하단 네비에서 더보기로 이동(2026-08-31) -->
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelWizardBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span class="more-panel-item-label" data-i18n="tab.search">간편검색</span>
         </button>
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelCalendarOverlayBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.3" y="5.5" width="17.4" height="15" rx="2" /><line x1="3.3" y1="10" x2="20.7" y2="10" /><line x1="7.2" y1="2.8" x2="7.2" y2="7.4" /><line x1="14.8" y1="2.8" x2="14.8" y2="7.4" /></svg>
@@ -709,6 +714,6 @@
   </footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js?v=20260831k"></script>
+  <script src="app.js?v=20260831l"></script>
 </body>
 </html>

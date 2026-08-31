@@ -20,10 +20,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="굴려볼까" />
-<link rel="stylesheet" href="style.css?v=20260831g" />
+<link rel="stylesheet" href="style.css?v=20260831l" />
 <!-- 지도가 떠 있는 동안 본체 파일을 미리 받아둠 — 간편검색/시장/더보기로 처음 넘어갈 때 로딩 체감 단축 -->
-<link rel="prefetch" href="../app.js?v=20260831k" />
-<link rel="prefetch" href="../style.css?v=20260831k" />
+<link rel="prefetch" href="../app.js?v=20260831l" />
+<link rel="prefetch" href="../style.css?v=20260831l" />
 <link rel="prefetch" href="../index.html" />
 </head>
 <body>
@@ -198,13 +198,12 @@
       <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z" fill="currentColor"/><circle cx="12" cy="9.5" r="2.6" fill="#fff"/></svg>
       <span data-i18n="nav.map">지도</span>
     </button>
-    <button type="button" class="bottom-nav-btn" id="bottomNavRankingBtn2" aria-label="랭킹">
-      <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="6" width="6" height="14" rx="1" fill="currentColor"/><rect x="2.5" y="14" width="6" height="6" rx="1" fill="currentColor"/><rect x="15.5" y="11" width="6" height="9" rx="1" fill="currentColor"/></svg>
-      <span data-i18n="nav.ranking">랭킹</span>
+    <!-- 국내/해외(2026-08-31): 랭킹 버튼 대체 — 누르면 본체 해당 시장 랭킹으로 이동 -->
+    <button type="button" class="bottom-nav-btn bottom-nav-market-btn" id="bottomNavKrBtn2" aria-label="국내 랭킹">
+      <span class="bottom-nav-market-label" data-i18n="market.kr">국내</span>
     </button>
-    <button type="button" class="bottom-nav-btn" id="bottomNavSearchBtn2" aria-label="간편검색">
-      <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2.4"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
-      <span data-i18n="tab.search">간편검색</span>
+    <button type="button" class="bottom-nav-btn bottom-nav-market-btn" id="bottomNavUsBtn2" aria-label="해외 랭킹">
+      <span class="bottom-nav-market-label" data-i18n="market.us">해외</span>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavMarketBtn2" aria-label="시장">
       <svg viewBox="0 0 24 24" fill="none"><polyline points="3 17 9 11 13 15 21 5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><polyline points="15 5 21 5 21 11" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -222,6 +221,6 @@
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script src="data/sp500-data-core.js?v=20260831e"></script>
 <script src="data/kr-data-core.js?v=20260831e" onerror="window.KR_CORE_DATA = { companies: [] };"></script>
-<script src="app.js?v=20260831k"></script>
+<script src="app.js?v=20260831l"></script>
 </body>
 </html>

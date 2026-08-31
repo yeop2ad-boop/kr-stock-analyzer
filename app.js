@@ -2114,11 +2114,19 @@ document.addEventListener("click", (e) => {
 // ---------- 하단 고정 네비게이션(지도/간편검색/시장/더보기) — 홈은 지도(섹터맵)가 대신함 ----------
 const bottomNavButtons = {
   map: el("bottomNavMapBtn"),
-  ranking: el("bottomNavRankingBtn"),
-  search: el("bottomNavSearchBtn"),
   market: el("bottomNavMarketBtn"),
   more: el("bottomNavMoreBtn"),
 };
+// 하단 국내/해외(2026-08-31, 랭킹 버튼 대체 + 상단 토글 숨김) — 시장 표시등을 겸하므로
+// bottomNavButtons(setBottomNavActive가 일괄 해제하는 그룹)에 넣지 않고 별도로 active를 관리
+const bottomNavKrBtn = el("bottomNavKrBtn");
+const bottomNavUsBtn = el("bottomNavUsBtn");
+function syncBottomNavMarket() {
+  const isKr = getWatchlistActiveMarket() === "KR";
+  bottomNavKrBtn.classList.toggle("active", isKr);
+  bottomNavUsBtn.classList.toggle("active", !isKr);
+}
+document.addEventListener("marketmodechange", syncBottomNavMarket);
 function setBottomNavActive(key) {
   Object.entries(bottomNavButtons).forEach(([k, btn]) => btn.classList.toggle("active", k === key));
 }
@@ -2378,13 +2386,20 @@ bottomNavButtons.map.addEventListener("click", () => {
   const market = getWatchlistActiveMarket() === "KR" ? "domestic" : "overseas";
   window.location.href = `sector-map/index.html?market=${market}`;
 });
-// 랭킹(시상대) — 기업가치 랭킹 화면으로 바로 이동(2026-08-31 신설)
-bottomNavButtons.ranking.addEventListener("click", () => {
+// 하단 국내/해외 — 해당 시장으로 전환하고 랭킹(기업가치) 화면을 보여줌(2026-08-31, 랭킹 버튼 대체)
+bottomNavKrBtn.addEventListener("click", () => {
+  setAppMarketMode("kr");
   showOnlyCarouselView(() => activateRankingGroup("disclosure"));
-  // showOnlyCarouselView가 내부에서 active를 전부 해제(setBottomNavActive(""))하므로, 그 뒤에 랭킹을 켜야 검정 활성 표시가 남음
-  setBottomNavActive("ranking");
+  syncBottomNavMarket();
 });
-bottomNavButtons.search.addEventListener("click", () => {
+bottomNavUsBtn.addEventListener("click", () => {
+  setAppMarketMode("us");
+  showOnlyCarouselView(() => activateRankingGroup("disclosure"));
+  syncBottomNavMarket();
+});
+// 간편검색은 하단 네비에서 더보기 패널 항목으로 이동(2026-08-31)
+el("morePanelWizardBtn").addEventListener("click", () => {
+  closeMorePanel();
   closeCompanyPanel();
   openSearchWizard();
 });
@@ -2416,8 +2431,15 @@ bottomNavButtons.more.addEventListener("click", () => {
       },
       more: () => bottomNavButtons.more.click(),
       search: () => searchOpenBtn.click(), // 지도 상단 돋보기 → 티커 검색 오버레이
-      wizard: () => bottomNavButtons.search.click(), // 지도 하단 간편검색 → 검색 위저드
-      ranking: () => bottomNavButtons.ranking.click(), // 지도 하단 랭킹 → 기업가치 랭킹
+      wizard: () => {
+        // 간편검색 딥링크 — 하단 버튼이 더보기로 이동(2026-08-31)해 직접 위저드를 염
+        closeCompanyPanel();
+        openSearchWizard();
+      },
+      // 지도 하단 국내/해외 → 해당 시장으로 전환 + 기업가치 랭킹(ranking은 현재 모드 그대로 — 구버전 호환)
+      "ranking-kr": () => bottomNavKrBtn.click(),
+      "ranking-us": () => bottomNavUsBtn.click(),
+      ranking: () => (getWatchlistActiveMarket() === "KR" ? bottomNavKrBtn : bottomNavUsBtn).click(),
     };
     const fn = actions[openParam];
     if (fn) fn();
@@ -8522,7 +8544,7 @@ el("mktWidgetEditBody").addEventListener("click", (e) => {
 });
 
 // 현재 선택된 카테고리·"더보기"로 펼친 카테고리 목록은 새로고침·자동갱신(20초)에도 유지되도록 모듈 스코프에 둠
-let indexActiveCategory = "usMarkets"; // "usMarkets" | "indices" | "crypto" | "commodities" | "bonds"
+let indexActiveCategory = "stocks"; // 기본 카테고리 = 주식(2026-08-31 사용자 요청, 칩 순서도 주식이 맨 앞)
 const indexExpandedCategories = new Set(); // "더보기"를 눌러 전체를 펼친 카테고리 key 모음
 
 const indexCategoryButtons = {

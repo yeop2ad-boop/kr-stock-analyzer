@@ -2459,6 +2459,13 @@ function loadMarket(mode, animate) {
   activeFilters.clear(); // 시장이 바뀌면 종목 구성 자체가 달라지므로 필터는 초기화
   document.querySelector(".top-bar").classList.toggle("is-overseas", mode === "overseas");
   syncMapViewUi();
+  // 하단 국내/해외 버튼도 현재 지도 시장에 맞춰 강조(2026-08-31)
+  const krNavBtn = document.getElementById("bottomNavKrBtn2");
+  const usNavBtn = document.getElementById("bottomNavUsBtn2");
+  if (krNavBtn && usNavBtn) {
+    krNavBtn.classList.toggle("active", mode === "domestic");
+    usNavBtn.classList.toggle("active", mode === "overseas");
+  }
 
   rerenderMap(animate);
   applyChangeModeToSectorBubbles(); // rerenderMap이 섹터 원을 새로 만들므로 등락 모드가 켜져 있었다면 채색도 다시 적용
@@ -2527,8 +2534,8 @@ function goToMainSite(openPanel) {
   window.location.href = openPanel ? `../index.html?open=${openPanel}` : "../index.html";
 }
 document.getElementById("mapSearchBtn").addEventListener("click", () => goToMainSite("search"));
-document.getElementById("bottomNavRankingBtn2").addEventListener("click", () => goToMainSite("ranking"));
-document.getElementById("bottomNavSearchBtn2").addEventListener("click", () => goToMainSite("wizard"));
+document.getElementById("bottomNavKrBtn2").addEventListener("click", () => goToMainSite("ranking-kr"));
+document.getElementById("bottomNavUsBtn2").addEventListener("click", () => goToMainSite("ranking-us"));
 document.getElementById("bottomNavMarketBtn2").addEventListener("click", () => goToMainSite("market"));
 document.getElementById("bottomNavMoreBtn2").addEventListener("click", () => goToMainSite("more"));
 
