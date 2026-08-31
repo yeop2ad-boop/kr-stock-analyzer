@@ -1,4 +1,4 @@
-﻿/* 기본(메인) 테마 = 화이트. 설정(더보기 패널)에서 블랙 버전으로 전환 가능 — :root[data-theme="dark"]가 아래서 덮어씀 */
+/* 기본(메인) 테마 = 화이트. 설정(더보기 패널)에서 블랙 버전으로 전환 가능 — :root[data-theme="dark"]가 아래서 덮어씀 */
 :root {
   --navy: #1b2a4a; /* 마켓맵 기준색(다크 네이비) — 지도(섹터맵)와 동일, 모든 강조색의 기준 */
   --navy-deep: #0d1730;
@@ -2325,3 +2325,15 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 table.top30-table th, table.popular-table th { white-space: nowrap; }
 /* 검은 그래프 아래 좌우 스크롤 안내(2026-08-31) */
 .chart-scroll-hint { text-align: center; font-size: 11px; color: var(--muted); margin: 4px 0 6px; letter-spacing: 1px; }
+/* 제목줄 4탭(관심종목/기업가치/시장동향/인사이트) + 우측 새로고침·전체 버튼(2026-08-31) */
+.fh-titleline { display: flex; align-items: center; gap: 8px; }
+.fh-tabs { display: flex; gap: 10px; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.fh-tabs::-webkit-scrollbar { display: none; }
+.fh-tab { flex: none; background: none; border: none; padding: 2px 0 6px; font-size: 15.5px; font-weight: 800; letter-spacing: -0.3px; color: var(--muted); border-bottom: 2.5px solid transparent; white-space: nowrap; cursor: pointer; }
+.fh-tab.active { color: var(--text); border-bottom-color: currentColor; }
+body[data-market-mode="kr"] .fh-tab { color: rgba(255, 255, 255, 0.55); }
+body[data-market-mode="kr"] .fh-tab.active { color: #fff; }
+.fh-title-actions { margin-left: auto; display: flex; align-items: center; gap: 2px; flex: none; }
+.fh-loadall-btn { border: 1px solid var(--border); background: none; color: var(--muted); border-radius: 999px; font-size: 11px; font-weight: 700; padding: 3px 9px; cursor: pointer; }
+body[data-market-mode="kr"] .fh-loadall-btn { color: #fff; border-color: rgba(255, 255, 255, 0.4); }
+body[data-market-mode="kr"] .fh-title-actions .header-icon-btn { color: #fff; }

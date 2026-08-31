@@ -1048,3 +1048,5 @@ body.map-fixed-mode .bottom-left-controls { opacity: 0; pointer-events: none; }
 /* 상세시트 기업이름 옆 +상세 버튼(2026-08-31) */
 .sheet-name-row { display: flex; align-items: center; gap: 8px; }
 .sheet-detail-btn { flex: none; border: 1px solid #5b8def; color: #5b8def; background: transparent; border-radius: 999px; font-size: 11px; font-weight: 700; padding: 2px 9px; cursor: pointer; }
+/* 전체보기 버튼(지수명 라벨) — 펼침 상태 하이라이트(2026-08-31) */
+.universe-toggle-btn.active { background: #1b2a4a; color: #fff; border-color: #1b2a4a; }

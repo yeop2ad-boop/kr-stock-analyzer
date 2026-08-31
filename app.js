@@ -1878,6 +1878,8 @@ function setCarouselViewTitle(i18nKey) {
   titleEl.setAttribute("data-i18n", i18nKey);
   const dict = I18N[i18nKey];
   if (dict) titleEl.textContent = document.documentElement.lang === "en" ? dict.en : dict.ko;
+  // 제목줄이 4탭(관심종목/기업가치/시장동향/인사이트)으로 바뀜(2026-08-31) — 현재 화면에 맞춰 활성 탭 표시
+  document.querySelectorAll(".fh-tab").forEach((b) => b.classList.toggle("active", b.dataset.fhtab === i18nKey));
 }
 
 function switchTab(index) {
@@ -2150,6 +2152,27 @@ el("morePanelWatchlistBtn").addEventListener("click", () => {
 // 상단바 별 아이콘(지도 상단과 동일 위치) — 관심종목 화면으로 이동
 el("fhWatchlistBtn").addEventListener("click", () => {
   showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist")));
+});
+// 제목줄 4탭 — 관심종목/기업가치/시장동향/인사이트 화면 전환(더보기 항목과 동일 동작)
+document.querySelectorAll(".fh-tab").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const key = btn.dataset.fhtab;
+    if (key === "tab.watchlist") showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist")));
+    else if (key === "tab.valuation") showOnlyCarouselView(() => activateRankingGroup("disclosure"));
+    else if (key === "tab.trend") showOnlyCarouselView(() => activateRankingGroup("market"));
+    else showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("insight")));
+  });
+});
+// 제목줄 우측: 실시간 업데이트(현재 화면 재실행) + 전체(현재 랭킹의 "전체보기 더보기" 버튼 실행)
+el("fhRefreshBtn").addEventListener("click", () => {
+  const active = document.querySelector(".fh-tab.active");
+  if (active) active.click();
+  showToast("화면을 새로고침했습니다.");
+});
+el("fhLoadAllBtn").addEventListener("click", () => {
+  const moreBtn = document.querySelector(".carousel-panel .load-more-btn");
+  if (moreBtn) moreBtn.click();
+  else showToast("이 화면에는 전체보기가 없습니다.");
 });
 el("morePanelValuationBtn").addEventListener("click", () => {
   showOnlyCarouselView(() => activateRankingGroup("disclosure"));
@@ -4900,80 +4923,84 @@ const QBAR_REVENUE_COLOR = "#2f6fed";
 const QBAR_EPS_COLOR = "#94a3b8";
 const QBAR_PRED_COLOR = "#d97706";
 
-// 분기별 매출/주당순이익 듀얼축 막대그래프(참조 이미지 스타일) — 왼쪽 축은 매출, 오른쪽 축은 EPS.
-// 각 분기마다 "그 분기 이전 데이터만으로 계산했다면 나왔을 예측치"(predRevenue/predEps)를 선으로 실제 막대 위에 겹쳐 비교하고,
-// 아직 발표되지 않은 마지막 분기는 revenue/eps가 null이라 실제 막대 없이 예측선만 표시됨
-function buildRevenueEpsChartSvg(quarters, quoteCurrency) {
+// 금액 표기 통일(2026-08-31 사용자 규칙): 원화는 1조 이상 → "000.0조", 그 미만 → "0000억"(소수점 없음). 그 외 통화는 기존 축약 표기
+function fmtAmountUnified(v, currency) {
+  if (v === null || v === undefined || !Number.isFinite(v)) return "N/A";
+  if (currency === "KRW") {
+    const abs = Math.abs(v);
+    if (abs >= 1e12) return `${(v / 1e12).toFixed(1)}조`;
+    return `${Math.round(v / 1e8).toLocaleString()}억`;
+  }
+  return fmtCompactCurrency(v, currency);
+}
+
+// 분기별 매출액/영업이익/순이익 3막대 그래프(같은 통화라 단일 왼쪽 축) — 2026-08-31 EPS 듀얼축에서 개편.
+// 각 분기마다 "그 분기 이전 데이터만으로 계산했다면 나왔을 예측치"(pred*)를 노란 선으로 실제 막대 위에 겹쳐 비교하고,
+// 아직 발표되지 않은 마지막 분기는 실제 막대 없이 예측선만 표시됨. 음수(적자) 분기는 0 기준선 자리에 2px 막대로만 표시.
+function buildRevenueProfitChartSvg(quarters, quoteCurrency) {
   const W = 780,
     H = 380;
-  const ML = 66,
-    MR = 66,
+  const ML = 78,
+    MR = 16,
     MT = 40,
     MB = 46;
   const PW = W - ML - MR;
   const PH = H - MT - MB;
   const N = quarters.length;
 
-  const maxRev = Math.max(...quarters.map((q) => Math.max(q.revenue || 0, q.predRevenue || 0)), 1);
-  const maxEps = Math.max(...quarters.map((q) => Math.max(q.eps || 0, q.predEps || 0)), 1);
-  const revStep = niceStepGeneric(maxRev / 5);
-  const epsStep = niceStepGeneric(maxEps / 5);
-  const revTop = Math.ceil(maxRev / revStep) * revStep || 1;
-  const epsTop = Math.ceil(maxEps / epsStep) * epsStep || 1;
+  const series = [
+    { val: "revenue", pred: "predRevenue", color: QBAR_REVENUE_COLOR, label: "매출액" },
+    { val: "op", pred: "predOp", color: "#e08a2c", label: "영업이익" },
+    { val: "net", pred: "predNet", color: QBAR_EPS_COLOR, label: "순이익" },
+  ];
+  const maxV = Math.max(1, ...quarters.flatMap((q) => series.flatMap((s) => [q[s.val] || 0, q[s.pred] || 0])));
+  const step = niceStepGeneric(maxV / 5);
+  const top = Math.ceil(maxV / step) * step || 1;
 
   const groupW = PW / N;
-  const barW = groupW * 0.3;
-  const gap = groupW * 0.06;
+  const barW = groupW * 0.19;
+  const gap = groupW * 0.045;
 
   let gridSvg = "";
   for (let i = 0; i <= 5; i++) {
-    const v = (revTop / 5) * i;
-    const epsV = (epsTop / 5) * i;
-    const y = MT + PH - (v / revTop) * PH;
+    const v = (top / 5) * i;
+    const y = MT + PH - (v / top) * PH;
     gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${(ML + PW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${chartGrid()}" stroke-width="1" />`;
-    gridSvg += `<text x="${(ML - 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="10" fill="${chartAxisText()}">${fmtCompactCurrency(v, quoteCurrency)}</text>`;
-    gridSvg += `<text x="${(ML + PW + 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" font-size="10" fill="${chartAxisText()}">${epsV.toFixed(2)}</text>`;
+    gridSvg += `<text x="${(ML - 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="10" fill="${chartAxisText()}">${fmtAmountUnified(v, quoteCurrency)}</text>`;
   }
 
   let barsSvg = "";
   let labelsSvg = "";
+  const totalW = series.length * barW + (series.length - 1) * gap;
   quarters.forEach((q, i) => {
     const cx = ML + groupW * i + groupW / 2;
-    const revX = cx - barW - gap / 2;
-    const epsX = cx + gap / 2;
-
-    const hasRevenue = q.revenue !== null && q.revenue !== undefined;
-    const hasEps = q.eps !== null && q.eps !== undefined;
-    if (hasRevenue) {
-      const revH = Math.max((q.revenue / revTop) * PH, 2);
-      const revY = MT + PH - revH;
-      barsSvg += `<rect x="${revX.toFixed(1)}" y="${revY.toFixed(1)}" width="${barW.toFixed(1)}" height="${revH.toFixed(1)}" fill="${QBAR_REVENUE_COLOR}" rx="2" />`;
-    }
-    if (hasEps) {
-      const epsH = Math.max((q.eps / epsTop) * PH, 2);
-      const epsY = MT + PH - epsH;
-      barsSvg += `<rect x="${epsX.toFixed(1)}" y="${epsY.toFixed(1)}" width="${barW.toFixed(1)}" height="${epsH.toFixed(1)}" fill="${QBAR_EPS_COLOR}" rx="2" />`;
-    }
-    // 예측선: 그 분기 이전 데이터 기준 예측치(마지막 미발표 분기는 이 선만 보임)
-    if (q.predRevenue !== null && q.predRevenue !== undefined) {
-      const predY = MT + PH - Math.max((q.predRevenue / revTop) * PH, 2);
-      barsSvg += `<line x1="${revX.toFixed(1)}" y1="${predY.toFixed(1)}" x2="${(revX + barW).toFixed(1)}" y2="${predY.toFixed(1)}" stroke="${QBAR_PRED_COLOR}" stroke-width="3" stroke-linecap="round" />`;
-    }
-    if (q.predEps !== null && q.predEps !== undefined) {
-      const predEpsY = MT + PH - Math.max((q.predEps / epsTop) * PH, 2);
-      barsSvg += `<line x1="${epsX.toFixed(1)}" y1="${predEpsY.toFixed(1)}" x2="${(epsX + barW).toFixed(1)}" y2="${predEpsY.toFixed(1)}" stroke="${QBAR_PRED_COLOR}" stroke-width="3" stroke-linecap="round" />`;
-    }
+    series.forEach((s, si) => {
+      const x = cx - totalW / 2 + si * (barW + gap);
+      const v = q[s.val];
+      if (v !== null && v !== undefined) {
+        const h = Math.max((Math.max(v, 0) / top) * PH, 2);
+        const y = MT + PH - h;
+        barsSvg += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${h.toFixed(1)}" fill="${s.color}" rx="2" />`;
+      }
+      const pv = q[s.pred];
+      if (pv !== null && pv !== undefined) {
+        const py = MT + PH - Math.max((Math.max(pv, 0) / top) * PH, 2);
+        barsSvg += `<line x1="${x.toFixed(1)}" y1="${py.toFixed(1)}" x2="${(x + barW).toFixed(1)}" y2="${py.toFixed(1)}" stroke="${QBAR_PRED_COLOR}" stroke-width="3" stroke-linecap="round" />`;
+      }
+    });
     labelsSvg += `<text x="${cx.toFixed(1)}" y="${(MT + PH + 20).toFixed(1)}" text-anchor="middle" font-size="11" fill="${chartAxisText()}">${escapeHtml(q.label)}</text>`;
   });
 
   const legendY = 20;
-  const legend = `
-    <circle cx="${ML}" cy="${legendY}" r="4" fill="${QBAR_REVENUE_COLOR}" /><text x="${ML + 10}" y="${legendY + 4}" font-size="11" fill="${chartAxisText()}">매출</text>
-    <circle cx="${ML + 70}" cy="${legendY}" r="4" fill="${QBAR_EPS_COLOR}" /><text x="${ML + 80}" y="${legendY + 4}" font-size="11" fill="${chartAxisText()}">주당순이익</text>
-    <line x1="${ML + 184}" y1="${legendY}" x2="${ML + 196}" y2="${legendY}" stroke="${QBAR_PRED_COLOR}" stroke-width="3" stroke-linecap="round" /><text x="${ML + 200}" y="${legendY + 4}" font-size="11" fill="${chartAxisText()}">예측선</text>
-  `;
+  let legend = "";
+  let lx = ML;
+  series.forEach((s) => {
+    legend += `<circle cx="${lx}" cy="${legendY}" r="4" fill="${s.color}" /><text x="${lx + 10}" y="${legendY + 4}" font-size="11" fill="${chartAxisText()}">${s.label}</text>`;
+    lx += 10 + s.label.length * 12 + 24;
+  });
+  legend += `<line x1="${lx}" y1="${legendY}" x2="${lx + 12}" y2="${legendY}" stroke="${QBAR_PRED_COLOR}" stroke-width="3" stroke-linecap="round" /><text x="${lx + 16}" y="${legendY + 4}" font-size="11" fill="${chartAxisText()}">예측선</text>`;
 
-  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="분기별 매출/주당순이익 차트">
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="분기별 매출액/영업이익/순이익 차트">
     <rect x="0" y="0" width="${W}" height="${H}" fill="${chartBg()}" />
     ${legend}
     ${gridSvg}
@@ -4985,34 +5012,34 @@ function buildRevenueEpsChartSvg(quarters, quoteCurrency) {
 async function renderQuarterlyEarnings(ticker, quoteCurrency) {
   el("quarterlyEarningsSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
-  const data = await yahooFundamentals(ticker, "quarterlyTotalRevenue,quarterlyBasicEPS");
+  const data = await yahooFundamentals(ticker, "quarterlyTotalRevenue,quarterlyOperatingIncome,quarterlyNetIncome");
   const resultArr = data && data.timeseries && data.timeseries.result;
   if (!resultArr || resultArr.length === 0) {
     el("quarterlyEarningsSection").innerHTML = `<p class="muted">분기 실적 데이터를 찾을 수 없습니다.</p>`;
     return;
   }
 
-  const reportCurrency = findReportCurrency(resultArr, ["quarterlyTotalRevenue", "quarterlyBasicEPS"]);
+  const reportCurrency = findReportCurrency(resultArr, ["quarterlyTotalRevenue", "quarterlyOperatingIncome", "quarterlyNetIncome"]);
   const fxRate =
     reportCurrency && quoteCurrency && reportCurrency !== quoteCurrency ? await getFxRate(reportCurrency, quoteCurrency) : 1;
   const convert = (raw) => (raw === null || raw === undefined ? null : fxRate !== null ? raw * fxRate : null);
 
   const byDate = {};
-  for (const block of resultArr) {
-    for (const item of block.quarterlyTotalRevenue || []) {
-      if (!item || !item.asOfDate) continue;
-      byDate[item.asOfDate] = byDate[item.asOfDate] || {};
-      byDate[item.asOfDate].revenue = convert(item.reportedValue?.raw);
+  const collect = (blockKey, outKey) => {
+    for (const block of resultArr) {
+      for (const item of block[blockKey] || []) {
+        if (!item || !item.asOfDate) continue;
+        byDate[item.asOfDate] = byDate[item.asOfDate] || {};
+        byDate[item.asOfDate][outKey] = convert(item.reportedValue?.raw);
+      }
     }
-    for (const item of block.quarterlyBasicEPS || []) {
-      if (!item || !item.asOfDate) continue;
-      byDate[item.asOfDate] = byDate[item.asOfDate] || {};
-      byDate[item.asOfDate].eps = convert(item.reportedValue?.raw);
-    }
-  }
+  };
+  collect("quarterlyTotalRevenue", "revenue");
+  collect("quarterlyOperatingIncome", "op");
+  collect("quarterlyNetIncome", "net");
 
   const dates = Object.keys(byDate).sort();
-  const recent = dates.slice(-4).map((d) => ({ date: d, revenue: byDate[d].revenue, eps: byDate[d].eps }));
+  const recent = dates.slice(-4).map((d) => ({ date: d, revenue: byDate[d].revenue, op: byDate[d].op, net: byDate[d].net }));
 
   if (recent.length === 0) {
     el("quarterlyEarningsSection").innerHTML = `<p class="muted">분기 실적 데이터를 찾을 수 없습니다.</p>`;
@@ -5026,7 +5053,8 @@ async function renderQuarterlyEarnings(ticker, quoteCurrency) {
     return {
       ...q,
       predRevenue: priorQuarters.length ? projectNextQuarter(priorQuarters, "revenue") : null,
-      predEps: priorQuarters.length ? projectNextQuarter(priorQuarters, "eps") : null,
+      predOp: priorQuarters.length ? projectNextQuarter(priorQuarters, "op") : null,
+      predNet: priorQuarters.length ? projectNextQuarter(priorQuarters, "net") : null,
     };
   });
 
@@ -5035,7 +5063,8 @@ async function renderQuarterlyEarnings(ticker, quoteCurrency) {
   const nextDateLabel = `${nextDate.getFullYear()}-${String(nextDate.getMonth() + 1).padStart(2, "0")}`;
   const guidance = {
     revenue: projectNextQuarter(recent, "revenue"),
-    eps: projectNextQuarter(recent, "eps"),
+    op: projectNextQuarter(recent, "op"),
+    net: projectNextQuarter(recent, "net"),
   };
 
   // 실제 발표일 데이터는 이 앱의 무인증 프록시로는 가져올 수 없어(estimateNextEarningsDate 참고),
@@ -5055,19 +5084,28 @@ async function renderQuarterlyEarnings(ticker, quoteCurrency) {
     return `${String(dt.getMonth() + 1).padStart(2, "0")}/${dt.getFullYear()}`;
   };
   const chartQuarters = [
-    ...recentWithPred.map((q) => ({ label: quarterLabel(q.date), revenue: q.revenue, eps: q.eps, predRevenue: q.predRevenue, predEps: q.predEps })),
-    { label: `${nextDateLabel}(예측)`, revenue: null, eps: null, predRevenue: guidance.revenue, predEps: guidance.eps },
+    ...recentWithPred.map((q) => ({
+      label: quarterLabel(q.date),
+      revenue: q.revenue,
+      op: q.op,
+      net: q.net,
+      predRevenue: q.predRevenue,
+      predOp: q.predOp,
+      predNet: q.predNet,
+    })),
+    { label: `${nextDateLabel}(예측)`, revenue: null, op: null, net: null, predRevenue: guidance.revenue, predOp: guidance.op, predNet: guidance.net },
   ];
 
-  const epsCell = (v) => (v !== null && v !== undefined ? fmtPrice(v, quoteCurrency) : "N/A");
+  const amtCell = (v) => fmtAmountUnified(v, quoteCurrency);
   const quarterTableRows =
     recentWithPred
       .map(
         (q) => `
       <tr>
         <td>${quarterLabel(q.date)}</td>
-        <td>${fmtCompactCurrency(q.revenue, quoteCurrency)}</td>
-        <td>${epsCell(q.eps)}</td>
+        <td>${amtCell(q.revenue)}</td>
+        <td>${amtCell(q.op)}</td>
+        <td>${amtCell(q.net)}</td>
         <td class="muted">실적</td>
       </tr>`
       )
@@ -5075,16 +5113,17 @@ async function renderQuarterlyEarnings(ticker, quoteCurrency) {
     `
       <tr>
         <td>${escapeHtml(nextDateLabel)}</td>
-        <td>${fmtCompactCurrency(guidance.revenue, quoteCurrency)}</td>
-        <td>${epsCell(guidance.eps)}</td>
+        <td>${amtCell(guidance.revenue)}</td>
+        <td>${amtCell(guidance.op)}</td>
+        <td>${amtCell(guidance.net)}</td>
         <td><span class="net-income-cell" style="background:var(--warn-soft);color:var(--warn);">예측</span></td>
       </tr>`;
 
   el("quarterlyEarningsSection").innerHTML = `
     <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 노란 선은 해당 분기 이전 데이터만으로 계산했다면 나왔을 추세 기반 예측치이며, 가장 오른쪽 분기는 아직 발표 전이라 예측선만 표시됩니다. 실제 기업 발표 가이던스나 애널리스트 컨센서스가 아닙니다.</p>
-    <div class="future-chart-container">${buildRevenueEpsChartSvg(chartQuarters, quoteCurrency)}</div>
+    <div class="future-chart-container">${buildRevenueProfitChartSvg(chartQuarters, quoteCurrency)}</div>
     <table class="fin-table">
-      <thead><tr><th>분기</th><th>매출액</th><th>EPS</th><th>구분</th></tr></thead>
+      <thead><tr><th>분기</th><th>매출액</th><th>영업이익</th><th>순이익</th><th>구분</th></tr></thead>
       <tbody>${quarterTableRows}</tbody>
     </table>
     <p class="qbar-dates"><b>다음 발표일(추정):</b> ${escapeHtml(estReportDateLabel)} <span class="muted">(실제 발표일이 아닌 근사 추정치)</span></p>

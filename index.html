@@ -41,7 +41,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260831a" />
+<link rel="stylesheet" href="style.css?v=20260831b" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -75,7 +75,19 @@
       </div>
     </div>
     <div class="fh-titleline">
-      <h2 id="carouselViewTitle" class="search-overlay-title carousel-view-title" data-i18n="tab.valuation">기업가치</h2>
+      <h2 id="carouselViewTitle" class="search-overlay-title carousel-view-title" data-i18n="tab.valuation" style="display:none;">기업가치</h2>
+      <div class="fh-tabs" id="fhTabs">
+        <button type="button" class="fh-tab" data-fhtab="tab.watchlist" data-i18n="tab.watchlist">관심종목</button>
+        <button type="button" class="fh-tab active" data-fhtab="tab.valuation" data-i18n="tab.valuation">기업가치</button>
+        <button type="button" class="fh-tab" data-fhtab="tab.trend" data-i18n="tab.trend">시장동향</button>
+        <button type="button" class="fh-tab" data-fhtab="tab.insight" data-i18n="tab.insight">인사이트</button>
+      </div>
+      <div class="fh-title-actions">
+        <button type="button" id="fhRefreshBtn" class="header-icon-btn" aria-label="실시간 업데이트">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><polyline points="20 4 20 9 15 9"/></svg>
+        </button>
+        <button type="button" id="fhLoadAllBtn" class="fh-loadall-btn">전체</button>
+      </div>
     </div>
 
     <!-- 상단 탭바 — 관심목록/기업가치/시장동향/인사이트가 전부 더보기 패널로 이동해 숨김(버튼 자체는 JS가 참조하므로 DOM엔 유지) -->
@@ -287,7 +299,7 @@
         <div class="summary-subtab-panel" data-summary-subtabpanel="revenue">
         <section class="flush-section">
           <div class="section-heading-row">
-            <h2>매출액 &amp; 주당순이익(EPS)</h2>
+            <h2>매출액 &amp; 순수익</h2>
             <!-- 투자 그라운드 — 2026-08-30 사용자 요청으로 기능 숨김(버튼 DOM은 JS가 참조하므로 display:none으로만 제거) -->
             <button type="button" id="groundOpenBtn" class="ground-open-btn" style="display:none;">투자 그라운드</button>
           </div>
@@ -697,6 +709,6 @@
   </footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js?v=20260831a"></script>
+  <script src="app.js?v=20260831b"></script>
 </body>
 </html>
