@@ -2350,7 +2350,9 @@ colorSchemeKrBtn.addEventListener("click", () => setColorScheme("kr"));
 colorSchemeGlobalBtn.addEventListener("click", () => setColorScheme("global"));
 
 bottomNavButtons.map.addEventListener("click", () => {
-  window.location.href = "sector-map/index.html";
+  // 본체에서 보던 시장 그대로 지도 보기 연동(2026-08-31): 국내 모드 → 코스피 200, 해외 모드 → S&P200
+  const market = getWatchlistActiveMarket() === "KR" ? "domestic" : "overseas";
+  window.location.href = `sector-map/index.html?market=${market}`;
 });
 bottomNavButtons.search.addEventListener("click", () => {
   closeCompanyPanel();
@@ -5683,6 +5685,7 @@ async function renderValueRanking(
     showGrade = true,
   }
 ) {
+  if (!guardRankingScan(resultsEl)) return; // 이미 이 결과영역에서 검색이 도는 중이면 재실행 금지
   buttons.forEach((btn) => (btn.disabled = true));
   resultsEl.innerHTML = "";
   statusEl.style.display = "block";
@@ -5764,12 +5767,8 @@ async function renderValueRanking(
   }
 
   resultsEl._loadMore = (count) => {
-    const moreBtn = resultsEl.querySelector(".load-more-btn");
-    if (moreBtn) {
-      moreBtn.disabled = true;
-      moreBtn.textContent = "전체 검색 중...";
-    }
-    scoreUpTo(count);
+    if (!beginLoadMoreScan(resultsEl, statusEl)) return; // 스캔 중 재클릭 무시 + 표 접고 진행 현황 맨 위 표시
+    scoreUpTo(count).finally(() => endLoadMoreScan(resultsEl));
   };
   if (!resultsEl.dataset.moreBound) {
     resultsEl.addEventListener("click", (e) => {
@@ -5780,12 +5779,40 @@ async function renderValueRanking(
     resultsEl.dataset.moreBound = "1";
   }
 
-  await scoreUpTo(initialCount);
-  buttons.forEach((btn) => (btn.disabled = false));
+  resultsEl.dataset.scanning = "1";
+  try {
+    await scoreUpTo(initialCount);
+  } finally {
+    endLoadMoreScan(resultsEl);
+    buttons.forEach((btn) => (btn.disabled = false));
+  }
 }
 
 const VALUE_DISCLAIMER = `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> S&amp;P500 편입 종목 전체를 대상으로 계산한 순위이며 투자 자문이 아닙니다.</p>`;
 const KR_VALUE_DISCLAIMER = `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 코스피200+코스닥150(약 350종목) 전체를 대상으로 계산한 순위이며 투자 자문이 아닙니다.</p>`;
+
+// 모든 랭킹 "더보기/전체보기" 공통 동작(2026-08-31 사용자 요청): 스캔 중 재클릭 방지 + 기존 상위 30개 표를 접고
+// 진행 현황이 맨 위(statusEl)에 보이게 함. 시작에 성공하면 true, 이미 스캔 중이라 무시해야 하면 false를 반환
+function beginLoadMoreScan(resultsEl, statusEl) {
+  if (resultsEl.dataset.scanning === "1") return false;
+  resultsEl.dataset.scanning = "1";
+  resultsEl.innerHTML = "";
+  statusEl.style.display = "block";
+  statusEl.textContent = "전체 검색 준비 중...";
+  statusEl.scrollIntoView({ block: "center", behavior: "smooth" });
+  return true;
+}
+function endLoadMoreScan(resultsEl) {
+  delete resultsEl.dataset.scanning;
+}
+// 랭킹 서브버튼 재클릭용 가드 — 이미 그 결과영역에서 스캔이 돌고 있으면 토스트만 띄우고 무시
+function guardRankingScan(resultsEl) {
+  if (resultsEl.dataset.scanning === "1") {
+    showToast("검색 중입니다. 잠시만 기다려주세요");
+    return false;
+  }
+  return true;
+}
 
 // 랭킹 결과가 전체 종목이 아니라 시가총액 상위 일부만 스캔한 상태일 때, 공지 바로 밑에 주황색으로 표시하는 주의문.
 // canLoadMore=true면 "더보기"로 전체를 마저 확인할 수 있는 경우(단계적 스캔), false면 이 화면에서는 더 볼 방법이 없는 경우(상위 30개 고정)
@@ -6017,12 +6044,8 @@ async function renderKrRankingStaged(label, statusEl, resultsEl, { mapFn = (list
   }
 
   resultsEl._loadMore = (count) => {
-    const moreBtn = resultsEl.querySelector(".load-more-btn");
-    if (moreBtn) {
-      moreBtn.disabled = true;
-      moreBtn.textContent = "전체 검색 중...";
-    }
-    paintUpTo(count);
+    if (!beginLoadMoreScan(resultsEl, statusEl)) return; // 스캔 중 재클릭 무시 + 표 접고 진행 현황 맨 위 표시
+    paintUpTo(count).finally(() => endLoadMoreScan(resultsEl));
   };
   if (!resultsEl.dataset.moreBound) {
     resultsEl.addEventListener("click", (e) => {
@@ -6033,7 +6056,13 @@ async function renderKrRankingStaged(label, statusEl, resultsEl, { mapFn = (list
     resultsEl.dataset.moreBound = "1";
   }
 
-  await paintUpTo(initialCount);
+  if (!guardRankingScan(resultsEl)) return; // 이미 이 결과영역에서 검색이 도는 중이면 재실행 금지
+  resultsEl.dataset.scanning = "1";
+  try {
+    await paintUpTo(initialCount);
+  } finally {
+    endLoadMoreScan(resultsEl);
+  }
 }
 
 // 가치평가 서브내비에서 현재 선택된 버튼만 활성 표시
@@ -7740,16 +7769,21 @@ async function runHistoricalMoversKr(period, direction, initialCount) {
       if (moreBtn) {
         moreBtn.addEventListener("click", (e) => {
           e.stopPropagation();
-          moreBtn.disabled = true;
-          moreBtn.textContent = "전체 검색 중...";
-          paintUpTo(Number(moreBtn.dataset.nextCount));
+          if (!beginLoadMoreScan(historicalResults, historicalStatus)) return; // 스캔 중 재클릭 무시 + 표 접고 진행 현황 맨 위 표시
+          paintUpTo(Number(moreBtn.dataset.nextCount)).finally(() => endLoadMoreScan(historicalResults));
         });
       }
     } catch (err) {
       historicalStatus.textContent = `❌ ${err.message || "과거분석 데이터를 가져오지 못했습니다."}`;
     }
   }
-  await paintUpTo(initialCount);
+  if (!guardRankingScan(historicalResults)) return; // 이미 검색이 도는 중이면 재실행 금지
+  historicalResults.dataset.scanning = "1";
+  try {
+    await paintUpTo(initialCount);
+  } finally {
+    endLoadMoreScan(historicalResults);
+  }
 }
 
 // period: "month"(한달 전) | "year"(1년 전), direction: "up"(상승) | "down"(하락)
@@ -7872,19 +7906,26 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
 
   // 같은 결과영역(TOP30)을 급등주·급락주 등 여러 목록이 공유하므로, 더보기 클릭은 항상 "가장 최근" 렌더의 핸들러를 호출해야 함
   // → 리스너는 한 번만 부착하되 실제 동작은 resultsEl._loadMore(최신 scoreUpTo)로 위임(오래된 클로저 호출 방지)
-  resultsEl._loadMore = (count) => scoreUpTo(count);
+  resultsEl._loadMore = (count) => {
+    if (!beginLoadMoreScan(resultsEl, statusEl)) return; // 스캔 중 재클릭 무시 + 표 접고 진행 현황 맨 위 표시
+    scoreUpTo(count).finally(() => endLoadMoreScan(resultsEl));
+  };
   if (!resultsEl.dataset.moreBound) {
     resultsEl.addEventListener("click", (e) => {
       const moreBtn = e.target.closest(".load-more-btn");
       if (!moreBtn) return;
-      moreBtn.disabled = true;
-      moreBtn.textContent = "불러오는 중...";
       resultsEl._loadMore(Number(moreBtn.dataset.nextCount));
     });
     resultsEl.dataset.moreBound = "1";
   }
 
-  await scoreUpTo(initialCount);
+  if (!guardRankingScan(resultsEl)) return; // 이미 이 결과영역에서 검색이 도는 중이면 재실행 금지
+  resultsEl.dataset.scanning = "1";
+  try {
+    await scoreUpTo(initialCount);
+  } finally {
+    endLoadMoreScan(resultsEl);
+  }
 }
 
 // ---------- 지수: 환율·주요 지수·원자재·가상자산·국채를 이미지 스타일 카드로 표시 ----------
@@ -8875,16 +8916,21 @@ async function runTrendDividendStaged(initialCount, ensureYields, universeLabel,
       if (newMoreBtn) {
         newMoreBtn.addEventListener("click", (e) => {
           e.stopPropagation();
-          newMoreBtn.disabled = true;
-          newMoreBtn.textContent = "전체 검색 중...";
-          paintUpTo(Number(newMoreBtn.dataset.nextCount));
+          if (!beginLoadMoreScan(trendResults, trendStatus)) return; // 스캔 중 재클릭 무시 + 표 접고 진행 현황 맨 위 표시
+          paintUpTo(Number(newMoreBtn.dataset.nextCount)).finally(() => endLoadMoreScan(trendResults));
         });
       }
     } catch (err) {
       trendStatus.textContent = `❌ ${err.message || "배당률을 가져오지 못했습니다."}`;
     }
   }
-  await paintUpTo(initialCount);
+  if (!guardRankingScan(trendResults)) return; // 이미 검색이 도는 중이면 재실행 금지
+  trendResults.dataset.scanning = "1";
+  try {
+    await paintUpTo(initialCount);
+  } finally {
+    endLoadMoreScan(trendResults);
+  }
 }
 
 async function runTrendDividend() {
