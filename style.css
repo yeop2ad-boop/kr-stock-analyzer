@@ -1929,6 +1929,9 @@ table.insight-holdings-table td span, table.insight-holdings-table td b { max-wi
   white-space: nowrap;
 }
 .summary-action-btn.active { color: var(--text); border-color: var(--text); font-weight: 800; }
+/* s리포트 버튼 주황 강조(2026-08-31 사용자 요청) */
+#tickerSReportToggleBtn { color: #e04600; border-color: #e04600; }
+#tickerSReportToggleBtn.active { background: #e04600; border-color: #e04600; color: #fff; }
 #tickerHistoricalRow { margin-top: 14px; }
 
 table.fin-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 13px; }
@@ -1975,11 +1978,10 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 .fh-market-label { font-size: 17px; font-weight: 800; letter-spacing: -0.3px; color: var(--text); }
 body[data-market-mode="kr"] .fh-market-label { color: #fff; }
 
-/* 하단 네비 5버튼 전부 아이콘 없이 글자만(2026-08-31 사용자 확정) — 기존 국내/해외(16.5px)보다 살짝 크게.
-   min-height 45px = 아이콘 시절 콘텐츠 높이(svg 26 + gap 6 + 라벨 ~13)와 동일 — 툴바 상하 크기 유지 */
-.bottom-nav-market-btn { justify-content: center; gap: 0; min-height: 45px; }
-.bottom-nav-market-label { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; line-height: 1; }
-.bottom-nav-market-btn.active .bottom-nav-market-label { color: var(--text); }
+/* 하단 네비 아이콘 버전 복귀(2026-08-31 사용자 확정) — 더보기/시장 아이콘 미세 정렬 */
+#bottomNavMoreBtn svg { width: 29px; height: 29px; top: 3px; }
+#bottomNavMoreBtn { position: relative; top: -2px; }
+#bottomNavMarketBtn svg { top: 5px; }
 .bottom-nav-btn:active,
 .bottom-nav-btn:focus,
 .bottom-nav-btn:focus-visible { background: none; outline: none; }

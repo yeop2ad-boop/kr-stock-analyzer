@@ -120,6 +120,17 @@ document.addEventListener("click", (e) => {
 el("scoreMethodModalCloseBtn").addEventListener("click", () => {
   el("scoreMethodModal").style.display = "none";
 });
+// 검은 가로 스크롤 차트(미래예측/투자안정 분포/공포지수)는 열 때 가장 최근 데이터(오른쪽 끝)부터 보이게(2026-08-31 사용자 요청).
+// 펼침 애니메이션·후속 렌더로 레이아웃이 늦게 잡히는 경우가 있어 rAF 직후와 잠시 뒤 두 번 더 재시도
+function scrollChartToRight(container) {
+  if (!container) return;
+  const go = () => {
+    container.scrollLeft = container.scrollWidth;
+  };
+  requestAnimationFrame(go);
+  setTimeout(go, 150);
+  setTimeout(go, 450);
+}
 // 공포지수(S&P)/FOMO지수(국내) 제목 옆 "+자세히" — 기본으로 접혀 있다가 눌러야 VIX/FOMO 차트가 펼쳐짐(주황 반투명 박스로 표시).
 // 종목과 무관한 시장 전체 차트라 같은 시장 내에서는 최초 1회만 그리고 이후 검색부터는 캐시된 결과를 재사용(renderMacroScoreChart 내부에서 처리)
 el("futureMacroChartDetailBtn").addEventListener("click", () => {
@@ -133,6 +144,7 @@ el("futureMacroChartDetailBtn").addEventListener("click", () => {
     const ticker = new URLSearchParams(location.search).get("ticker") || tickerInput.value;
     if (isKrTicker(ticker)) renderKrMacroScoreChart();
     else renderMacroScoreChart();
+    scrollChartToRight(el("futureMacroChartContainer")); // 이미 그려져 있던(캐시) 경우에도 오른쪽 끝부터
   }
 });
 // 투자안정성 제목 옆 "+자세히" — 점수별 작년 주가상승 분포도(경고문구 위에 표시). 미래예측을 아직 안 돌린 종목이면
@@ -147,6 +159,7 @@ el("futureRiskDetailBtn").addEventListener("click", () => {
   if (!isOpen) {
     const ticker = (new URLSearchParams(location.search).get("ticker") || tickerInput.value || "").toUpperCase();
     if (ticker && futureRiskRenderedTicker !== ticker) runFuturePrediction(ticker);
+    scrollChartToRight(el("futureRiskContainer")); // 이미 그려져 있던 경우에도 오른쪽 끝부터
   }
 });
 // 지수 카드는 <a>가 아니라 role="button" div라 클릭 외에 키보드(Enter/Space) 접근성도 함께 지원
@@ -2112,21 +2125,16 @@ document.addEventListener("click", (e) => {
 });
 
 // ---------- 하단 고정 네비게이션(지도/간편검색/시장/더보기) — 홈은 지도(섹터맵)가 대신함 ----------
+// 국내/해외도 일반 네비 버튼처럼 취급(2026-08-31 사용자 확정: 시장 등 다른 화면이 활성일 땐 국내/해외 불이 꺼져야 함)
 const bottomNavButtons = {
   map: el("bottomNavMapBtn"),
+  kr: el("bottomNavKrBtn"),
+  us: el("bottomNavUsBtn"),
   market: el("bottomNavMarketBtn"),
   more: el("bottomNavMoreBtn"),
 };
-// 하단 국내/해외(2026-08-31, 랭킹 버튼 대체 + 상단 토글 숨김) — 시장 표시등을 겸하므로
-// bottomNavButtons(setBottomNavActive가 일괄 해제하는 그룹)에 넣지 않고 별도로 active를 관리
-const bottomNavKrBtn = el("bottomNavKrBtn");
-const bottomNavUsBtn = el("bottomNavUsBtn");
-function syncBottomNavMarket() {
-  const isKr = getWatchlistActiveMarket() === "KR";
-  bottomNavKrBtn.classList.toggle("active", isKr);
-  bottomNavUsBtn.classList.toggle("active", !isKr);
-}
-document.addEventListener("marketmodechange", syncBottomNavMarket);
+const bottomNavKrBtn = bottomNavButtons.kr;
+const bottomNavUsBtn = bottomNavButtons.us;
 function setBottomNavActive(key) {
   Object.entries(bottomNavButtons).forEach(([k, btn]) => btn.classList.toggle("active", k === key));
 }
@@ -2386,16 +2394,17 @@ bottomNavButtons.map.addEventListener("click", () => {
   const market = getWatchlistActiveMarket() === "KR" ? "domestic" : "overseas";
   window.location.href = `sector-map/index.html?market=${market}`;
 });
-// 하단 국내/해외 — 해당 시장으로 전환하고 랭킹(기업가치) 화면을 보여줌(2026-08-31, 랭킹 버튼 대체)
+// 하단 국내/해외 — 해당 시장으로 전환하고 랭킹(기업가치) 화면을 보여줌(2026-08-31, 랭킹 버튼 대체).
+// showOnlyCarouselView가 active를 전부 해제하므로 그 뒤에 켬 — 다른 버튼(시장 등)을 누르면 자연히 꺼짐
 bottomNavKrBtn.addEventListener("click", () => {
   setAppMarketMode("kr");
   showOnlyCarouselView(() => activateRankingGroup("disclosure"));
-  syncBottomNavMarket();
+  setBottomNavActive("kr");
 });
 bottomNavUsBtn.addEventListener("click", () => {
   setAppMarketMode("us");
   showOnlyCarouselView(() => activateRankingGroup("disclosure"));
-  syncBottomNavMarket();
+  setBottomNavActive("us");
 });
 // 간편검색은 하단 네비에서 더보기 패널 항목으로 이동(2026-08-31)
 el("morePanelWizardBtn").addEventListener("click", () => {
@@ -4494,7 +4503,7 @@ function getSReportUniverse(isKr) {
 const S_REPORT_METRICS = [
   { key: "revenueGrowth", label: "매출성장", unit: "pct", better: "high" },
   { key: "netIncomeGrowth", label: "순이익증가", unit: "pct", better: "high" },
-  { key: "dividendYield", label: "배당률", unit: "pct2", better: "high", usOnly: true },
+  { key: "dividendYield", label: "배당률", unit: "pct2", better: "high" },
   { key: "debtRatio", label: "부채비율", unit: "levelPct", better: "low" },
   { key: "cashFlowGrowth", label: "현금흐름 증가", unit: "pct", better: "high" },
   { key: "marketCap", label: "시가총액", unit: "currency", better: "high" },
@@ -4541,7 +4550,7 @@ function sReportRowHtml(r) {
   if (r.na) {
     return `<tr><td>${labelHtml}</td><td colspan="2" class="muted">${escapeHtml(r.naReason || "데이터 없음")}</td></tr>`;
   }
-  const valueHtml = sReportFmtValue(r.unit, r.value, r.currency);
+  const valueHtml = sReportFmtValue(r.unit, r.value, r.currency) + (r.warnHtml || "");
   let rankHtml = `<span class="muted">순위 준비중</span>`;
   if (r.rankInfo) {
     const pct = (r.rankInfo.rank / r.rankInfo.total) * 100;
@@ -4568,7 +4577,12 @@ async function runSReport(symbol, selfMetricsPromise) {
   const isKr = isKrTicker(symbol);
   sReportInlineWrap.innerHTML = `<p class="muted" style="padding:12px 0;">⏳ S리포트를 계산하는 중...</p>`;
 
-  const [universe, selfMetrics] = await Promise.all([getSReportUniverse(isKr), selfMetricsPromise.catch(() => null)]);
+  // 배당컷/지연 경고는 유니버스 스냅샷에 없어서 이 종목 하나만 배당 이력을 조회해 랭킹 표와 동일한 "⚠️컷/⚠️지연"을 붙임(2026-08-31)
+  const [universe, selfMetrics, divInfo] = await Promise.all([
+    getSReportUniverse(isKr),
+    selfMetricsPromise.catch(() => null),
+    getDividendYieldInfo(symbol).catch(() => null),
+  ]);
 
   if (!universe || !Array.isArray(universe.companies)) {
     sReportInlineWrap.innerHTML = `<p class="muted" style="padding:12px 0;">🚧 S리포트 데이터를 가져오지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
@@ -4584,14 +4598,17 @@ async function runSReport(symbol, selfMetricsPromise) {
 
   const currency = isKr ? "KRW" : "USD";
   const rows = S_REPORT_METRICS.map((m) => {
-    if (m.usOnly && isKr) {
-      return { ...m, na: true, naReason: "국내 종목은 배당률 데이터를 제공하지 않습니다." };
-    }
     if (m.key === "dollarVolume" && !isKr) {
       return { ...m, value: selfMetrics ? selfMetrics.recentDollarVolume : null, rankInfo: null, currency };
     }
     const rankInfo = computeUniverseRank(companies, symbol, (c) => c[m.key], m.better);
-    return { ...m, value: self[m.key], rankInfo, currency };
+    const row = { ...m, value: self[m.key], rankInfo, currency };
+    if (m.key === "dividendYield") {
+      // 배치 스냅샷에 배당률이 비어 있으면 방금 조회한 실시간 값으로 대체하고, 랭킹 표와 동일한 컷/지연 경고를 붙임
+      if ((row.value === null || row.value === undefined) && divInfo) row.value = divInfo.yieldPct;
+      if (divInfo) row.warnHtml = dividendWarningHtml(divInfo);
+    }
+    return row;
   });
 
   const validRanks = rows.filter((r) => r.rankInfo);
@@ -4722,6 +4739,7 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     futureInlineWrap.style.display = "block";
     futureInlineWrap.classList.add("section-expanded");
     futureToggleBtn.classList.add("active");
+    scrollChartToRight(el("futureChartContainer")); // 이미 그려져 있던 경우에도 오른쪽 끝부터
     if (!futureLoaded) {
       futureLoaded = true;
       await runFuturePrediction(symbol, selfMetricsPromise, marketReturnsPromise);
@@ -9959,6 +9977,7 @@ function buildFutureChartSvg(data) {
 
 function renderFutureChart(data) {
   el("futureChartContainer").innerHTML = buildFutureChartSvg(data);
+  scrollChartToRight(el("futureChartContainer")); // 처음 열 때 가장 최근(오른쪽 끝)부터 보이게
   const yearsNote = data.historicalBuckets.length
     ? `흰색: 과거 ${data.historicalBuckets.length}개년(전후 6개월) 계절성 흐름 · `
     : `과거 데이터가 부족해 계절성 비교 없이 최근 추세만 표시했습니다 · `;
@@ -10345,6 +10364,7 @@ async function renderMacroScoreChart() {
   try {
     const data = await getMacroScoreChartData();
     container.innerHTML = buildMacroScoreChartSvg(data);
+    scrollChartToRight(container); // 처음 열 때 가장 최근(오른쪽 끝)부터 보이게
     macroScoreChartRenderedMarket = "US";
     caption.textContent =
       "빨간 선: S&P500 지수(1996~현재, 주간 종가) · 점 라벨: 1년 간격(매년 1월 1일 기준) VIX(FRED VIXCLS) 수치 그대로 · " +
@@ -10456,6 +10476,7 @@ async function renderKrMacroScoreChart() {
       "KOSPI 공포지수를 활용한 투자시점 점검표",
       m2Points
     );
+    scrollChartToRight(container); // 처음 열 때 가장 최근(오른쪽 끝)부터 보이게
     macroScoreChartRenderedMarket = "KR";
     caption.textContent =
       "빨간 선: 코스피 지수(2011~현재, 일별 종가) · 점 라벨: KOSPI 공포지수(52주 신고가·신저가 근접 종목 비율 역산) · " +
@@ -10544,6 +10565,7 @@ async function renderFutureRiskSection(ticker, metricsPromise, marketReturnsProm
       currentPrice: metrics.price ?? null,
     });
     riskContainer.innerHTML = svg;
+    scrollChartToRight(riskContainer); // 처음 열 때 가장 최근(오른쪽 끝)부터 보이게
     futureRiskRenderedTicker = ticker.toUpperCase();
     const last = history[history.length - 1];
     const baseNote =
