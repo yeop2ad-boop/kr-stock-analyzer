@@ -1248,6 +1248,7 @@ document.getElementById("watchFilterBtn").addEventListener("click", (e) => {
 
 document.getElementById("resetViewBtn").addEventListener("click", () => {
   resetAllFilters(); // 걸려있는 모든 지표 필터를 "전체"로
+  document.querySelectorAll(".metric-chip.boot-active").forEach((b) => b.classList.remove("boot-active")); // 첫 접속용 눌림 표시도 함께 해제
   closeRangeSheet();
   fitToViewport(true); // 지도 확대/이동 상태도 초기 화면으로
 });
@@ -1763,6 +1764,7 @@ document.getElementById("watchlistSheetCloseBtn").addEventListener("click", clos
 
 document.querySelectorAll(".metric-chip").forEach((btn) => {
   btn.addEventListener("click", () => {
+    btn.classList.remove("boot-active"); // 첫 접속용 눌림 표시는 칩을 실제로 만지는 순간 걷힘(이후엔 실제 필터 상태만 따름)
     const key = btn.dataset.metric;
     if (quickSheetKey === key && rangeSheet.classList.contains("open")) {
       closeRangeSheet();
@@ -1777,6 +1779,13 @@ document.querySelectorAll(".metric-chip").forEach((btn) => {
     }
   });
 });
+
+// 첫 접속 시 등락률·거래대금 칩만 눌린 모양(남색 배경+흰 글씨)으로 표시(2026-08-31 사용자 요청) —
+// 실제 필터는 걸지 않아 구간은 전체 그대로이고, 해당 칩을 처음 누르는 순간 표시가 걷히며 실제 상태로 복귀
+for (const bootKey of ["changePct", "popularStocks"]) {
+  const bootChip = document.querySelector(`.metric-chip[data-metric="${bootKey}"]`);
+  if (bootChip) bootChip.classList.add("boot-active");
+}
 
 // 칩마다 붙는 작은 ✕ — 필터가 걸려있을 때만 보이고, 누르면 그 지표 하나만 "전체"로 초기화(시트는 열지 않음)
 document.querySelectorAll(".chip-reset").forEach((el) => {

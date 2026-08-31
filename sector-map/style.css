@@ -252,6 +252,13 @@ body {
   color: #ffffff;
   background: var(--navy);
 }
+/* 첫 접속 시 등락률·거래대금 칩을 눌린 모양으로(필터는 전체 구간 그대로) — 칩을 만지면 걷힘(2026-08-31) */
+.filter-chip.boot-active {
+  border-color: var(--navy);
+  color: #ffffff;
+  background: var(--navy);
+}
+.filter-chip.boot-active .chip-chevron { opacity: 0.85; }
 /* 필터가 걸린 칩에만 나타나는 작은 X — 누르면 그 지표만 초기화(전체 초기화 버튼과 별개) */
 .chip-reset {
   display: none;
