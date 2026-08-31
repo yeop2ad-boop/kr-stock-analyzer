@@ -6174,7 +6174,12 @@ async function runValueWeek52Low() {
   await runValueScreenFromSP500(valuationButtons.week52Low, "52주최저", {
     sortFn: (a, b) => (a.week52RangePct ?? Infinity) - (b.week52RangePct ?? Infinity),
     metricHeaderHtml: "52주 구간 위치",
-    metricCellFn: (r) => (r.week52RangePct === null || r.week52RangePct === undefined ? "N/A" : `${r.week52RangePct.toFixed(0)}%`),
+    // % 아래에 이 값이 어느 끝에 가까운지 안내(2026-08-31 사용자 요청): 50% 미만 "(0%: 최저)", 50% 이상 "(100%: 최고)"
+    metricCellFn: (r) => {
+      if (r.week52RangePct === null || r.week52RangePct === undefined) return "N/A";
+      const hint = r.week52RangePct >= 50 ? "(100%: 최고)" : "(0%: 최저)";
+      return `${r.week52RangePct.toFixed(0)}%<br><span class="week52-pos-hint">${hint}</span>`;
+    },
     noteHtml: WEEK52_LOW_NOTE,
   });
 }
