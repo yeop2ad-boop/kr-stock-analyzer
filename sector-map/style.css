@@ -1135,8 +1135,15 @@ body.map-fixed-mode .bottom-left-controls { opacity: 0; pointer-events: none; }
 .sheet-detail-btn { flex: none; border: 1px solid #5b8def; color: #5b8def; background: transparent; border-radius: 999px; font-size: 11px; font-weight: 700; padding: 2px 9px; cursor: pointer; }
 /* 전체보기 버튼(지수명 라벨) — 펼침 상태 하이라이트(2026-08-31) */
 .universe-toggle-btn.active { background: #1b2a4a; color: #fff; border-color: #1b2a4a; }
-/* ---------- ETF200/비트코인50 보기(2026-09-01): 상단 필터 칩을 52주최저~투자안정 6개만 노출 ---------- */
+/* ---------- ETF200/비트코인100 보기(2026-09-01, 09-02 보강): 상단 필터 칩을 52주최저~투자안정 6개만 노출 ----------
+   매출성장·배당률·부채비율 등 주식 전용 칩과 전체 설정 버튼은 이 보기에서 전부 숨김(2026-09-02 사용자 요청) */
 body:not([data-map-view-kind="asset"]) .asset-only-chip { display: none; }
 body[data-map-view-kind="asset"] #allFiltersBtn,
 body[data-map-view-kind="asset"] .metric-chip[data-metric="per"],
-body[data-map-view-kind="asset"] .metric-chip[data-metric="changePct"]:not(.asset-only-chip) { display: none; }
+body[data-map-view-kind="asset"] .metric-chip[data-metric="dividendYield"],
+body[data-map-view-kind="asset"] .metric-chip[data-metric="revenueGrowth"],
+body[data-map-view-kind="asset"] .metric-chip[data-metric="netIncomeGrowth"],
+body[data-map-view-kind="asset"] .metric-chip[data-metric="debtRatio"],
+body[data-map-view-kind="asset"] .metric-chip[data-metric="cashFlowGrowth"],
+body[data-map-view-kind="asset"] .metric-chip[data-metric="changePct"]:not(.asset-only-chip),
+body[data-map-view-kind="asset"] .metric-chip[data-metric="week52RangePct"]:not(.asset-only-chip) { display: none; }
