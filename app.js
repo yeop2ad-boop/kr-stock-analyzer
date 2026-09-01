@@ -4156,10 +4156,16 @@ document.addEventListener("click", (e) => {
 // ---------- 초기 부팅: 기본 화면은 "기업가치"(로그인 불필요) — ?ticker=가 있을 때만 기업 패널을 함께 염 ----------
 (function initApp() {
   switchTab(TAB_ORDER.indexOf("topranking"));
-  // entry.run()이 참조하는 일부 const(예: VALUE_DISCLAIMER)가 이 시점엔 아직 선언 전(TDZ)이라
-  // 스크립트 전체 실행이 끝난 다음 틱으로 미룸(companyPanel 딥링크 크래시와 동일한 원인/해법)
-  // 단, 지도에서 ?open=watchlist/etf/crypto로 넘어온 경우엔 기본 화면(기업가치)이 그 화면을 덮어쓰지 않게 건너뜀(2026-09-01)
-  setTimeout(() => { if (!["watchlist", "etf", "crypto"].includes(window.__deepLinkOpen)) activateRankingGroup("disclosure"); }, 0);
+  // 필요한 일부 const가 이 시점엔 아직 선언 전(TDZ)이라 스크립트 전체 실행이 끝난 다음 틱으로 미룸
+  // 시작화면(2026-09-01 사용자 확정): 한국주식 섹션의 인기종목 — 단, 화면을 직접 여는 딥링크로 들어온 경우엔 덮어쓰지 않음
+  setTimeout(() => {
+    if (["watchlist", "etf", "crypto", "ranking-kr", "ranking-us", "ranking"].includes(window.__deepLinkOpen)) return;
+    appSectionMode = "stocks";
+    setAppMarketMode("kr");
+    openPopularStocks();
+    setBottomNavActive("kr");
+    syncSectionHeader();
+  }, 0);
 
   const params = new URLSearchParams(location.search);
   const initialTicker = params.get("ticker");

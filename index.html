@@ -2,15 +2,8 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
-<script>
-  // 첫 진입은 섹터맵(국내)을 메인 화면으로 — 로그인 없이 누구나 바로 진입.
-  // 섹터맵에서 본체로 돌아온 경우(세션당 1회, ntj_skip_map_redirect)는 안 튕겨냄.
-  try {
-    if (!sessionStorage.getItem("ntj_skip_map_redirect")) {
-      location.replace("sector-map/index.html?market=domestic");
-    }
-  } catch (e) {}
-</script>
+<!-- 첫 진입 섹터맵 리다이렉트 폐지(2026-09-01 사용자 확정) — 시작화면은 본체 한국주식 인기종목(initApp 참고) -->
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>굴려볼까 - 실적비교, 내주식분석, 마켓맵</title>
 <meta name="description" content="AI 데이터 기반, 실시간 상승압력도 & 투자 안정성 리포트" />
@@ -742,6 +735,6 @@
   </footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js?v=20260901n"></script>
+  <script src="app.js?v=20260901o"></script>
 </body>
 </html>
