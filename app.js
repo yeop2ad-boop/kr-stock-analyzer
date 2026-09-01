@@ -2207,6 +2207,9 @@ function switchTab(index) {
   // 관심종목 화면에선 상단 별(관심종목 이동 버튼)이 자기 자신이라 숨김(사용자 요청)
   const fhStar = el("fhWatchlistBtn");
   if (fhStar) fhStar.style.display = switchKey === "watchlist" ? "none" : "";
+  // 관심종목 화면이면 상단 제목을 "관심종목"+별 아이콘으로, 벗어나면 섹션 표시로 복귀(2026-09-01)
+  window.__onWatchlistView = switchKey === "watchlist";
+  syncSectionHeader();
   // topranking은 기업가치/시장동향 중 어느 쪽인지 activateRankingGroup/goToRankingEntry가 정함
   activeTabIndex = index;
   TAB_ORDER.forEach((key) => panels[key].classList.add("snapping"));
@@ -2343,8 +2346,8 @@ function searchResultRowHtml(symbol) {
       <button type="button" class="search-result-left" data-symbol="${escapeHtml(symbol)}">
         ${tickerLogoHtml(symbol)}
         <span class="search-result-text">
-          <span class="search-result-name">${escapeHtml(displayName)}</span>
-          <span class="search-result-sub">${escapeHtml(symbol)} · 주식</span>
+          <span class="search-result-name">${escapeHtml(displayName)}${sectionMarkHtml(symbol)}</span>
+          <span class="search-result-sub">${escapeHtml(symbol)}</span>
         </span>
       </button>
       <button type="button" class="search-watch-btn${watchlisted ? " active" : ""} ${isKrTicker(symbol) ? "market-kr" : "market-us"}" data-watch-symbol="${escapeHtml(symbol)}" aria-label="관심종목 추가">
@@ -2484,6 +2487,7 @@ document.querySelectorAll(".fh-tab").forEach((btn) => {
   btn.addEventListener("click", () => {
     const key = btn.dataset.fhtab;
     if (key === "tab.popular") showOnlyCarouselView(() => openPopularStocks());
+    else if (key === "tab.watchlist") showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist")));
     else if (key === "tab.valuation") showOnlyCarouselView(() => activateRankingGroup("disclosure"));
     else if (key === "tab.trend")
       showOnlyCarouselView(() => (appSectionMode === "etf" ? openEtfTrend() : appSectionMode === "crypto" ? openCryptoTrend() : activateRankingGroup("market")));
@@ -2690,6 +2694,20 @@ applyColorScheme(__savedScheme || detectDefaultColorScheme());
 colorSchemeKrBtn.addEventListener("click", () => setColorScheme("kr"));
 colorSchemeGlobalBtn.addEventListener("click", () => setColorScheme("global"));
 
+// ---------- 상단 배경색 반전(2026-09-01 사용자 확정): 한국주식/미국주식/ETF/비트코인 중 다른 투자종목으로
+// 넘어갈 때마다 남색↔흰색이 무조건 번갈아 바뀜(어느 섹션이냐가 아니라 "전환 횟수"로 결정). 시작은 남색.
+let currentNavSection = null;
+function setHeaderToneForSection(section) {
+  if (section === currentNavSection) return;
+  const isFirst = currentNavSection === null;
+  currentNavSection = section;
+  if (isFirst) {
+    document.body.dataset.headerTone = "dark"; // 시작화면(한국주식)은 남색
+    return;
+  }
+  document.body.dataset.headerTone = document.body.dataset.headerTone === "dark" ? "light" : "dark";
+}
+
 // 지도는 하단 네비에서 더보기 패널 항목으로 이동(2026-09-01) — 본체에서 보던 시장 그대로 지도 보기 연동
 el("morePanelMapBtn").addEventListener("click", () => {
   const market = getWatchlistActiveMarket() === "KR" ? "domestic" : "overseas";
@@ -2701,6 +2719,7 @@ el("morePanelMapBtn").addEventListener("click", () => {
 bottomNavKrBtn.addEventListener("click", () => {
   appSectionMode = "stocks";
   setAppMarketMode("kr");
+  setHeaderToneForSection("kr");
   showOnlyCarouselView(() => activateRankingGroup("disclosure"));
   setBottomNavActive("kr");
   syncSectionHeader();
@@ -2708,6 +2727,7 @@ bottomNavKrBtn.addEventListener("click", () => {
 bottomNavUsBtn.addEventListener("click", () => {
   appSectionMode = "stocks";
   setAppMarketMode("us");
+  setHeaderToneForSection("us");
   showOnlyCarouselView(() => activateRankingGroup("disclosure"));
   setBottomNavActive("us");
   syncSectionHeader();
@@ -2716,12 +2736,14 @@ bottomNavUsBtn.addEventListener("click", () => {
 bottomNavButtons.etf.addEventListener("click", () => {
   appSectionMode = "etf";
   etfPopularRegion = getWatchlistActiveMarket() === "KR" ? "kr" : "us";
+  setHeaderToneForSection("etf");
   showOnlyCarouselView(() => openPopularStocks());
   setBottomNavActive("etf");
   syncSectionHeader();
 });
 bottomNavButtons.crypto.addEventListener("click", () => {
   appSectionMode = "crypto";
+  setHeaderToneForSection("crypto");
   showOnlyCarouselView(() => openPopularStocks());
   setBottomNavActive("crypto");
   syncSectionHeader();
@@ -4163,10 +4185,17 @@ function sectionMarkHtml(symbol, quoteType) {
   return `<span class="section-mark" title="${label}" aria-label="${label}">${svg}</span>`;
 }
 
+const ICON_SVG_WATCHLIST = `<svg viewBox="0 0 21 14" width="21" height="14"><path d="M10.5 1.2l2.1 4.2 4.7.6-3.5 3.2 1 4.6-4.3-2.5-4.3 2.5 1-4.6L3.7 6l4.7-.6z" fill="#f6b301"/></svg>`;
 function syncSectionHeader() {
   const label = el("fhMarketLabel");
   const flag = el("fhMarketFlag");
   const isKr = getWatchlistActiveMarket() === "KR";
+  // 관심종목 화면에선 섹션 대신 "관심종목" 제목 + 별 아이콘(2026-09-01 사용자 요청)
+  if (window.__onWatchlistView && label && flag) {
+    label.textContent = "관심종목";
+    flag.innerHTML = ICON_SVG_WATCHLIST;
+    return;
+  }
   if (label && flag) {
     if (appSectionMode === "etf") {
       label.textContent = "ETF";
@@ -4237,6 +4266,7 @@ document.addEventListener("click", (e) => {
     if (["watchlist", "etf", "crypto", "ranking-kr", "ranking-us", "ranking"].includes(window.__deepLinkOpen)) return;
     appSectionMode = "stocks";
     setAppMarketMode("kr");
+    setHeaderToneForSection("kr"); // 시작은 남색
     openPopularStocks();
     setBottomNavActive("kr");
     syncSectionHeader();
@@ -4562,7 +4592,7 @@ function attachTickerSearchBar(inputEl, suggestEl, analyzeBtnEl, { onBeforeNavig
         const displayName = TICKER_TO_KOREAN_NAME[it.symbol] || it.name || it.symbol;
         return `<div class="chat-ticker-option" data-symbol="${escapeHtml(it.symbol)}">
             ${tickerLogoHtml(it.symbol)}
-            <span class="chat-ticker-option-name">${escapeHtml(displayName)}</span>
+            <span class="chat-ticker-option-name">${escapeHtml(displayName)}${sectionMarkHtml(it.symbol, it.quoteType)}</span>
             <span class="chat-ticker-option-sub">${escapeHtml(it.symbol)}${it.exchange ? ` · ${escapeHtml(it.exchange)}` : ""}</span>
           </div>`;
       })
@@ -4596,7 +4626,7 @@ function attachTickerSearchBar(inputEl, suggestEl, analyzeBtnEl, { onBeforeNavig
         const data = await yahooSearch(q);
         englishMatches = ((data && data.quotes) || [])
           .filter((qt) => qt.symbol)
-          .map((qt) => ({ symbol: qt.symbol, name: qt.shortname || qt.longname || "", exchange: normalizeExchange(qt) }));
+          .map((qt) => ({ symbol: qt.symbol, name: qt.shortname || qt.longname || "", exchange: normalizeExchange(qt), quoteType: qt.quoteType }));
       } catch {
         // 검색 실패 시 한국어 매칭 결과만이라도 유지
       }
@@ -7230,60 +7260,69 @@ function combinedRankTableHtml(rows, universeLabel, rowNameHtmlFn, priceStrFn) {
 // ETF 전체 스캔(2026-09-01): 시총 상위 목록(미국 100·한국 100) 전 종목을 종목당 차트 1회 조회로
 // 상승압력·투자안정(각 ETF 전용 배점)과 시장동향용 지표(52주 위치·거래대금·당일 등락률)까지 한 번에 계산해
 // 지역별로 세션 내 캐시 — 인기종목(합산 TOP30)과 시장동향(6개 랭킹)이 이 데이터를 공유함
-const etfScanRowsPromiseCache = new Map(); // region("us"|"kr") -> Promise<rows>
-function getEtfScanRows(region, statusEl) {
-  if (!etfScanRowsPromiseCache.has(region)) {
-    etfScanRowsPromiseCache.set(
-      region,
-      (async () => {
-        const isKr = region === "kr";
-        const baseList = isKr ? await getKrEtfTop100() : US_ETF_TOP100.map((x) => ({ symbol: x.t, name: x.n }));
-        const { sp500Return } = await getMarketReturnsCached();
-        const capMapKr = isKr ? new Map(baseList.map((it) => [it.symbol, it.marketSum])) : null;
-        const results = await mapWithConcurrency(
-          baseList,
-          6,
-          async (it) => {
-            try {
-              const m = await computeChartDerivedMetrics(it.symbol);
-              if (!m) return null;
-              const cap = isKr ? capMapKr.get(it.symbol) : await getUsEtfNetAssets(it.symbol);
-              const pressure = computeEtfAttractivenessScore(m).total;
-              const risk = computeEtfRiskScore({
-                volatility: m.volatility,
-                oneYearReturn: m.oneYearReturn,
-                sp500Return,
-                isKr,
-                marketSumEok: isKr ? cap : null,
-                netAssetsUsd: isKr ? null : cap,
-              }).total;
-              return {
-                symbol: it.symbol,
-                name: it.name,
-                price: m.price,
-                currency: m.currency || (isKr ? "KRW" : "USD"),
-                changePct: m.changePct,
-                pressure,
-                risk,
-                recentDollarVolume: m.recentDollarVolume,
-                week52RangePct: m.week52RangePct,
-              };
-            } catch {
-              return null;
-            }
-          },
-          (done, total) => {
-            if (statusEl) statusEl.textContent = `시가총액 상위 ${total}개 ETF의 점수를 계산하는 중... (${done}/${total})`;
-          }
-        );
-        return results.filter(Boolean);
-      })().catch((e) => {
-        etfScanRowsPromiseCache.delete(region); // 실패는 캐시하지 않음
-        throw e;
-      })
+// 시총순 base 목록의 앞에서부터 targetCount개까지만 증분 스캔 — 이미 스캔한 구간은 캐시 재사용.
+// 시장동향(처음 20개 → 더보기 시 전체)과 인기종목(전체)이 같은 캐시를 이어서 사용한다(2026-09-01 단계식 개편)
+const etfScanStateByRegion = new Map(); // region("us"|"kr") -> { rows, scanned, chain(Promise 직렬화) }
+function ensureEtfScanRows(region, targetCount, statusEl) {
+  if (!etfScanStateByRegion.has(region)) etfScanStateByRegion.set(region, { rows: [], scanned: 0, chain: Promise.resolve() });
+  const state = etfScanStateByRegion.get(region);
+  // 같은 지역에 대한 스캔 요청을 직렬화 — 20개 스캔 중 더보기(100개)를 눌러도 중복 조회 없이 이어서 진행
+  const run = state.chain.then(async () => {
+    const isKr = region === "kr";
+    const baseList = isKr ? await getKrEtfTop100() : US_ETF_TOP100.map((x) => ({ symbol: x.t, name: x.n }));
+    const total = baseList.length;
+    const target = Math.min(targetCount, total);
+    if (state.scanned >= target) return { rows: state.rows, scanned: state.scanned, total };
+    const { sp500Return } = await getMarketReturnsCached();
+    const capMapKr = isKr ? new Map(baseList.map((it) => [it.symbol, it.marketSum])) : null;
+    const startFrom = state.scanned;
+    const pending = baseList.slice(startFrom, target);
+    const results = await mapWithConcurrency(
+      pending,
+      6,
+      async (it) => {
+        try {
+          const m = await computeChartDerivedMetrics(it.symbol);
+          if (!m) return null;
+          const cap = isKr ? capMapKr.get(it.symbol) : await getUsEtfNetAssets(it.symbol);
+          const pressure = computeEtfAttractivenessScore(m).total;
+          const risk = computeEtfRiskScore({
+            volatility: m.volatility,
+            oneYearReturn: m.oneYearReturn,
+            sp500Return,
+            isKr,
+            marketSumEok: isKr ? cap : null,
+            netAssetsUsd: isKr ? null : cap,
+          }).total;
+          return {
+            symbol: it.symbol,
+            name: it.name,
+            price: m.price,
+            currency: m.currency || (isKr ? "KRW" : "USD"),
+            changePct: m.changePct,
+            pressure,
+            risk,
+            recentDollarVolume: m.recentDollarVolume,
+            week52RangePct: m.week52RangePct,
+          };
+        } catch {
+          return null;
+        }
+      },
+      (done) => {
+        if (statusEl) statusEl.textContent = `시가총액 상위 ${target}개 ETF의 점수를 계산하는 중... (${startFrom + done}/${target})`;
+      }
     );
-  }
-  return etfScanRowsPromiseCache.get(region);
+    state.rows.push(...results.filter(Boolean));
+    state.scanned = target;
+    return { rows: state.rows, scanned: state.scanned, total };
+  });
+  state.chain = run.catch(() => {}); // 실패해도 다음 요청이 이어갈 수 있게 체인은 항상 정상 상태 유지
+  return run;
+}
+// 인기종목(합산 TOP30)용 — 전체(100개) 스캔을 보장하고 rows만 반환(기존 호출부 호환)
+function getEtfScanRows(region, statusEl) {
+  return ensureEtfScanRows(region, 100, statusEl).then((r) => r.rows);
 }
 
 function etfRegionNavHtml(attr) {
@@ -7349,66 +7388,73 @@ function getCryptoTop50() {
 }
 // 코인 전체 스캔(2026-09-01): 시총 TOP50 전 코인을 종목당 차트 1회 조회로 상승압력·투자안정(코인 전용 배점)과
 // 시장동향용 지표까지 한 번에 계산해 세션 내 캐시 — 인기종목(합산 TOP30)과 시장동향(6개 랭킹)이 공유
-let cryptoScanRowsPromise = null;
-function getCryptoScanRows(statusEl) {
-  if (!cryptoScanRowsPromise) {
-    cryptoScanRowsPromise = (async () => {
-      const all = await getCryptoTop50();
-      if (all.length === 0) throw new Error("암호화폐 목록을 가져오지 못했습니다.");
-      // 실제 야후 심볼("TON11419-USD" 등)이 확정되는 시점에 한글명·검색 별칭을 자동 등록 —
-      // 이후 상세 헤더/관심종목/검색창(한글·영문)에서 50개 코인이 전부 한글명으로 잡힘
-      all.forEach((q) => {
-        const ko = CRYPTO_KO_BY_TICKER[cryptoBaseTicker(q.symbol)];
-        if (ko) {
-          TICKER_TO_KOREAN_NAME[q.symbol] = ko;
-          if (!KOREAN_COMPANY_NAMES[ko]) KOREAN_COMPANY_NAMES[ko] = q.symbol;
-        }
-      });
-      const btcReturn = await getBtcOneYearReturn();
-      const n = all.length;
-      const items = all.map((q, i) => ({ q, i }));
-      const results = await mapWithConcurrency(
-        items,
-        6,
-        async ({ q, i }) => {
-          try {
-            const m = await computeChartDerivedMetrics(q.symbol);
-            if (!m) return null;
-            const capPercentile = ((n - 1 - i) / Math.max(1, n - 1)) * 100;
-            const pressure = computeCryptoAttractivenessScore(m).total;
-            const risk = computeCryptoRiskScore({
-              volatility: m.volatility,
-              oneYearReturn: m.oneYearReturn,
-              btcReturn,
-              capPercentile,
-              capRank: i + 1,
-            }).total;
-            return {
-              symbol: q.symbol,
-              name: cryptoKoName(q.symbol, q.shortName || q.longName || q.symbol),
-              price: m.price,
-              currency: "USD",
-              changePct: m.changePct,
-              pressure,
-              risk,
-              recentDollarVolume: m.recentDollarVolume,
-              week52RangePct: m.week52RangePct,
-            };
-          } catch {
-            return null;
-          }
-        },
-        (done, total) => {
-          if (statusEl) statusEl.textContent = `시가총액 상위 ${total}개 코인의 점수를 계산하는 중... (${done}/${total})`;
-        }
-      );
-      return results.filter(Boolean);
-    })().catch((e) => {
-      cryptoScanRowsPromise = null; // 실패는 캐시하지 않음
-      throw e;
+// 시총순 TOP50의 앞에서부터 targetCount개까지만 증분 스캔(2026-09-01 단계식 개편) — 시장동향(20개 먼저)과
+// 인기종목(전체 50개)이 같은 캐시를 이어서 사용
+const cryptoScanState = { rows: [], scanned: 0, chain: Promise.resolve() };
+function ensureCryptoScanRows(targetCount, statusEl) {
+  const run = cryptoScanState.chain.then(async () => {
+    const all = await getCryptoTop50();
+    if (all.length === 0) throw new Error("암호화폐 목록을 가져오지 못했습니다.");
+    // 실제 야후 심볼("TON11419-USD" 등)이 확정되는 시점에 한글명·검색 별칭을 자동 등록 —
+    // 이후 상세 헤더/관심종목/검색창(한글·영문)에서 50개 코인이 전부 한글명으로 잡힘
+    all.forEach((q) => {
+      const ko = CRYPTO_KO_BY_TICKER[cryptoBaseTicker(q.symbol)];
+      if (ko) {
+        TICKER_TO_KOREAN_NAME[q.symbol] = ko;
+        if (!KOREAN_COMPANY_NAMES[ko]) KOREAN_COMPANY_NAMES[ko] = q.symbol;
+      }
     });
-  }
-  return cryptoScanRowsPromise;
+    const total = all.length;
+    const target = Math.min(targetCount, total);
+    if (cryptoScanState.scanned >= target) return { rows: cryptoScanState.rows, scanned: cryptoScanState.scanned, total };
+    const btcReturn = await getBtcOneYearReturn();
+    const startFrom = cryptoScanState.scanned;
+    const items = all.map((q, i) => ({ q, i })).slice(startFrom, target);
+    const results = await mapWithConcurrency(
+      items,
+      6,
+      async ({ q, i }) => {
+        try {
+          const m = await computeChartDerivedMetrics(q.symbol);
+          if (!m) return null;
+          const capPercentile = ((total - 1 - i) / Math.max(1, total - 1)) * 100;
+          const pressure = computeCryptoAttractivenessScore(m).total;
+          const risk = computeCryptoRiskScore({
+            volatility: m.volatility,
+            oneYearReturn: m.oneYearReturn,
+            btcReturn,
+            capPercentile,
+            capRank: i + 1,
+          }).total;
+          return {
+            symbol: q.symbol,
+            name: cryptoKoName(q.symbol, q.shortName || q.longName || q.symbol),
+            price: m.price,
+            currency: "USD",
+            changePct: m.changePct,
+            pressure,
+            risk,
+            recentDollarVolume: m.recentDollarVolume,
+            week52RangePct: m.week52RangePct,
+          };
+        } catch {
+          return null;
+        }
+      },
+      (done) => {
+        if (statusEl) statusEl.textContent = `시가총액 상위 ${target}개 코인의 점수를 계산하는 중... (${startFrom + done}/${target})`;
+      }
+    );
+    cryptoScanState.rows.push(...results.filter(Boolean));
+    cryptoScanState.scanned = target;
+    return { rows: cryptoScanState.rows, scanned: cryptoScanState.scanned, total };
+  });
+  cryptoScanState.chain = run.catch(() => {});
+  return run;
+}
+// 인기종목(합산 TOP30)용 — 전체(50개) 스캔을 보장하고 rows만 반환(기존 호출부 호환)
+function getCryptoScanRows(statusEl) {
+  return ensureCryptoScanRows(50, statusEl).then((r) => r.rows);
 }
 function cryptoRowNameHtml(r) {
   return `${cryptoLogoHtml(cryptoBaseTicker(r.symbol))}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.name)}</b>`;
@@ -7534,9 +7580,9 @@ el("topRankingSubNav").addEventListener("click", (e) => {
 });
 
 // 주식 랭킹 표와 동일한 5열 구성(순위/이름/현재가(등락률)/지표/투자안정)
-function assetTrendTableHtml(rows, metricKey, universeLabel, rowNameHtmlFn, priceStrFn) {
+function assetTrendTableHtml(rows, metricKey, universeLabel, rowNameHtmlFn, priceStrFn, limit = 30) {
   const m = ASSET_TREND_METRICS[metricKey];
-  const sorted = [...rows].sort(m.sort).slice(0, 30);
+  const sorted = [...rows].sort(m.sort).slice(0, limit);
   const showRisk = !m.noRiskCol;
   const body = sorted
     .map(
@@ -7561,6 +7607,9 @@ function assetTrendTableHtml(rows, metricKey, universeLabel, rowNameHtmlFn, pric
     </table>`;
 }
 
+// ETF 시장동향 단계식 로딩(2026-09-01): 처음엔 시총 상위 20개만 스캔해 20개 표시,
+// '더보기'를 누르면 전체(100개)를 마저 스캔해 상위 50개까지 표시(국내 랭킹과 동일한 UX)
+const etfTrendExpanded = new Set(); // '더보기'를 누른 지역("us"/"kr")
 async function runEtfTrend() {
   const statusEl = trendStatus;
   const resultsEl = trendResults;
@@ -7570,18 +7619,31 @@ async function runEtfTrend() {
   const region = etfPopularRegion;
   try {
     const isKr = region === "kr";
-    const rows = await getEtfScanRows(region, statusEl);
+    const expanded = etfTrendExpanded.has(region);
+    const { rows, scanned, total } = await ensureEtfScanRows(region, expanded ? 100 : 20, statusEl);
     if (etfPopularRegion !== region || appSectionMode !== "etf") return;
     statusEl.style.display = "none";
+    const showCount = expanded ? 50 : Math.min(20, scanned);
+    const universeLabel = isKr ? "국내 상장 ETF 시가총액 상위" : "미국 상장 ETF 순자산 상위";
     resultsEl.innerHTML =
       etfRegionNavHtml("data-etf-trend-region") +
+      (expanded ? "" : topCapNoteHtml(scanned, total, true)) +
       assetTrendTableHtml(
         rows,
         assetTrendMetric,
-        isKr ? "국내 상장 ETF 시가총액 상위 100개" : "미국 상장 ETF 순자산 상위 100개",
+        expanded ? `${universeLabel} ${total}개 (상위 50개 표시)` : `${universeLabel} ${scanned}개`,
         (r) => etfRowNameHtml(r, isKr),
-        (r) => priceChartLink(r.symbol, fmtPrice(r.price, r.currency))
-      );
+        (r) => priceChartLink(r.symbol, fmtPrice(r.price, r.currency)),
+        showCount
+      ) +
+      (expanded ? "" : `<button type="button" class="cat-btn load-more-btn">${scanned < total ? `더보기 (전체 ${total}개 검색 · 약 1분 소요)` : "더보기 (상위 50개 보기)"}</button>`);
+    const moreBtn = resultsEl.querySelector(".load-more-btn");
+    if (moreBtn) {
+      moreBtn.addEventListener("click", () => {
+        etfTrendExpanded.add(region);
+        runEtfTrend();
+      });
+    }
   } catch (e) {
     statusEl.style.display = "block";
     statusEl.textContent = `❌ ${e.message || "ETF 데이터를 가져오지 못했습니다."}`;
@@ -7594,6 +7656,9 @@ trendResults.addEventListener("click", (e) => {
   runEtfTrend();
 });
 
+// 코인 시장동향 단계식 로딩(2026-09-01): 처음엔 시총 상위 20개만 스캔해 20개 표시,
+// '더보기'를 누르면 전체(50개)를 마저 스캔해 상위 30개까지 표시
+let cryptoTrendExpanded = false;
 async function runCryptoTrend() {
   const statusEl = trendStatus;
   const resultsEl = trendResults;
@@ -7601,10 +7666,29 @@ async function runCryptoTrend() {
   statusEl.style.display = "block";
   statusEl.textContent = "암호화폐 목록을 불러오는 중...";
   try {
-    const rows = await getCryptoScanRows(statusEl);
+    const expanded = cryptoTrendExpanded;
+    const { rows, scanned, total } = await ensureCryptoScanRows(expanded ? 50 : 20, statusEl);
     if (appSectionMode !== "crypto") return;
     statusEl.style.display = "none";
-    resultsEl.innerHTML = assetTrendTableHtml(rows, assetTrendMetric, "암호화폐 시가총액 상위 50개", cryptoRowNameHtml, cryptoPriceStr);
+    const showCount = expanded ? 30 : Math.min(20, scanned);
+    resultsEl.innerHTML =
+      (expanded ? "" : topCapNoteHtml(scanned, total, true)) +
+      assetTrendTableHtml(
+        rows,
+        assetTrendMetric,
+        expanded ? `암호화폐 시가총액 상위 ${total}개 (상위 30개 표시)` : `암호화폐 시가총액 상위 ${scanned}개`,
+        cryptoRowNameHtml,
+        cryptoPriceStr,
+        showCount
+      ) +
+      (expanded ? "" : `<button type="button" class="cat-btn load-more-btn">${scanned < total ? `더보기 (전체 ${total}개 검색 · 약 30초 소요)` : "더보기 (상위 30개 보기)"}</button>`);
+    const moreBtn = resultsEl.querySelector(".load-more-btn");
+    if (moreBtn) {
+      moreBtn.addEventListener("click", () => {
+        cryptoTrendExpanded = true;
+        runCryptoTrend();
+      });
+    }
   } catch (e) {
     statusEl.style.display = "block";
     statusEl.textContent = `❌ ${e.message || "암호화폐 시세를 가져오지 못했습니다."}`;
