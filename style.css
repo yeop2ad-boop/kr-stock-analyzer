@@ -1986,6 +1986,9 @@ body[data-header-tone="dark"] .fh-market-label { color: #fff; }
 /* 시장 표시 옆 네모 국기(2026-09-01) — 국내=태극기, 해외=성조기 */
 .fh-market-flag { display: inline-flex; align-items: center; margin-left: 5px; }
 .fh-market-flag svg { display: block; }
+/* 좌상단 로고 — 누르면 한국주식 인기종목으로 복귀(2026-09-02) */
+.fh-banner { cursor: pointer; }
+
 /* 관심종목 일괄 삭제 모드(2026-09-01) — 행 앞 체크박스 + 선택 강조 + 확인/취소 바 */
 .wl-del-check-wrap { display: flex; align-items: center; margin-right: 8px; flex: none; }
 .wl-del-check { width: 20px; height: 20px; accent-color: #e5484d; pointer-events: none; }

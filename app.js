@@ -2487,7 +2487,6 @@ document.querySelectorAll(".fh-tab").forEach((btn) => {
   btn.addEventListener("click", () => {
     const key = btn.dataset.fhtab;
     if (key === "tab.popular") showOnlyCarouselView(() => openPopularStocks());
-    else if (key === "tab.watchlist") showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist")));
     else if (key === "tab.valuation") showOnlyCarouselView(() => activateRankingGroup("disclosure"));
     else if (key === "tab.trend")
       showOnlyCarouselView(() => (appSectionMode === "etf" ? openEtfTrend() : appSectionMode === "crypto" ? openCryptoTrend() : activateRankingGroup("market")));
@@ -2707,6 +2706,16 @@ function setHeaderToneForSection(section) {
   }
   document.body.dataset.headerTone = document.body.dataset.headerTone === "dark" ? "light" : "dark";
 }
+
+// 좌상단 로고(2026-09-02 사용자 요청): 누르면 시작화면(한국주식 인기종목)으로 복귀
+document.querySelector(".fh-banner").addEventListener("click", () => {
+  appSectionMode = "stocks";
+  setAppMarketMode("kr");
+  setHeaderToneForSection("kr");
+  showOnlyCarouselView(() => openPopularStocks());
+  setBottomNavActive("kr");
+  syncSectionHeader();
+});
 
 // 지도는 하단 네비에서 더보기 패널 항목으로 이동(2026-09-01) — 본체에서 보던 시장 그대로 지도 보기 연동
 el("morePanelMapBtn").addEventListener("click", () => {

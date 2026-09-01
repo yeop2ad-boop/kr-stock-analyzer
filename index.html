@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260901j" />
+<link rel="stylesheet" href="style.css?v=20260902a" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -81,8 +81,8 @@
         <button type="button" class="fh-tab active" data-fhtab="tab.valuation" data-i18n="tab.valuation">기업가치</button>
         <button type="button" class="fh-tab" data-fhtab="tab.trend" data-i18n="tab.trend">시장동향</button>
         <button type="button" class="fh-tab" data-fhtab="tab.insight" data-i18n="tab.insight">인사이트</button>
-        <!-- 관심종목 별도 탭(2026-09-01 부활) — 별 버튼/하단 관심종목과 같은 화면, 활성 표시용 -->
-        <button type="button" class="fh-tab" data-fhtab="tab.watchlist" data-i18n="tab.watchlist">관심종목</button>
+        <!-- 관심종목은 별도 탭 없이 상단 제목("관심종목"+별)으로만 표시(2026-09-02 사용자 확정) -->
+
       </div>
       <!-- 제목줄 새로고침 버튼은 랭킹 결과의 "시가총액 상위 N개 확인" 옆으로 이동(2026-08-31) -->
       <div class="fh-title-actions"></div>
@@ -743,6 +743,6 @@
   </footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js?v=20260902a"></script>
+  <script src="app.js?v=20260902b"></script>
 </body>
 </html>
