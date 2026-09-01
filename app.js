@@ -1135,40 +1135,28 @@ async function getEtfDailyVolatility30d(symbol) {
   return recent.reduce((a, b) => a + b, 0) / recent.length;
 }
 
-// 미국 ETF 순자산(AUM) — 야후 top_etfs_us 스크리너 풀(250개, netAssets 실시간)을 우선 쓰고,
-// 그 풀에 빠져 있는 대형 ETF는 수동 큐레이션 근사치($B, 2026-09 기준)로 보완(투자안정 ③번 구간 판정용)
-let usEtfNetAssetsMapPromise = null;
-function getUsEtfNetAssetsMap() {
-  if (!usEtfNetAssetsMapPromise) {
-    usEtfNetAssetsMapPromise = yahooScreener("top_etfs_us", 250)
-      .then((data) => {
-        const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
-        const map = new Map();
-        quotes.forEach((q) => {
-          if (q && q.symbol && q.netAssets) map.set(q.symbol, q.netAssets);
-        });
-        return map;
+// ---------- ETF 시가총액(순자산) DB(2026-09-01 사용자 요청): ETF 시총은 자주 안 바뀌어 실시간 API 대신
+// data/etf-marketcap.json(scripts/fetch-etf-marketcap.ps1로 생성·갱신)으로 관리 — 한국 전체 1100여 개(억원),
+// 미국 330여 개(달러). 한국 ETF TOP100 목록·ETF 투자안정 ③(시가총액)이 모두 이 DB를 사용한다 ----------
+let etfMarketCapDbPromise = null;
+function getEtfMarketCapDb() {
+  if (!etfMarketCapDbPromise) {
+    etfMarketCapDbPromise = fetch("data/etf-marketcap.json", { cache: "no-store" })
+      .then((r) => {
+        if (!r.ok) throw new Error("ETF 시총 DB를 불러오지 못했습니다.");
+        return r.json();
       })
-      .catch(() => new Map());
+      .catch((e) => {
+        etfMarketCapDbPromise = null; // 실패는 캐시하지 않음
+        throw e;
+      });
   }
-  return usEtfNetAssetsMapPromise;
+  return etfMarketCapDbPromise;
 }
-const US_ETF_AUM_APPROX_B = {
-  SPY: 630, IVV: 640, VOO: 700, VTI: 490, VUG: 180, IEFA: 145, BND: 130, AGG: 130, IWF: 120, IBIT: 80,
-  SPLG: 75, IJH: 100, IEMG: 100, VXUS: 105, VWO: 110, VIG: 110, IJR: 90, SCHD: 70, ITOT: 70, RSP: 75,
-  IVW: 65, SGOV: 45, IWM: 80, QQQM: 60, BIL: 35, VO: 85, SCHX: 60, TLT: 50, IWD: 65, VYM: 65,
-  EFA: 55, JEPI: 40, VB: 65, DIA: 40, QUAL: 50, VT: 45, JEPQ: 30, SCHG: 45, LQD: 30, VCIT: 55,
-  MUB: 40, JPST: 30, DGRO: 30, XLF: 50, VCSH: 45, MBB: 35, GOVT: 27, IEF: 35, USMV: 25, SCHF: 45,
-  SCHB: 35, DFAC: 35, VTEB: 35, XLV: 40, IXUS: 40, VNQ: 35, IUSB: 35, SHY: 25, BSV: 35, COWZ: 25,
-  VGIT: 30, AVUV: 20, IWB: 40, IWR: 35, MGK: 25, SHV: 20, BIV: 20, EMB: 15, VOOG: 15, SPYG: 25,
-  SPYV: 25, USFR: 15, PFF: 15, MDY: 20, VHT: 18, FBTC: 20, GLDM: 15, VDC: 12, ACWI: 20, EWJ: 15,
-  VV: 15, DVY: 20, FTEC: 12, VBR: 30, SDY: 20, NOBL: 12,
-};
 async function getUsEtfNetAssets(symbol) {
-  const map = await getUsEtfNetAssetsMap();
-  if (map.has(symbol)) return map.get(symbol);
-  const approxB = US_ETF_AUM_APPROX_B[symbol];
-  return approxB ? approxB * 1e9 : null;
+  const db = await getEtfMarketCapDb();
+  const hit = (db.us || []).find((x) => x && x.s === symbol);
+  return hit ? hit.a : null;
 }
 
 // ETF 투자안정 점수 계산(입력 수집 포함) — 상세 페이지와 개요 미니 배지가 공유하도록 심볼별로 캐시
@@ -7040,17 +7028,17 @@ const US_ETF_TOP100 = [
 
 let etfPopularRegion = "us";
 let krEtfFullListPromise = null;
-// 네이버 ETF 목록 전체(1100여 개, 시총순 정렬) — TOP100 표시와 투자안정 ③(시가총액) 조회가 공유
+// 한국 ETF 목록 전체(시총순, data/etf-marketcap.json DB 기반 — 2026-09-01 네이버 실시간 조회에서 전환)
+// TOP100 표시와 ETF 투자안정 ③(시가총액) 조회가 공유. 시세·등락률은 어차피 차트 스캔에서 실시간으로 계산함
 function getKrEtfFullList() {
   if (!krEtfFullListPromise) {
-    krEtfFullListPromise = proxyFetchJson("https://finance.naver.com/api/sise/etfItemList.nhn")
-      .then((data) => {
-        const items = (data && data.result && data.result.etfItemList) || [];
-        return items
-          .filter((it) => it && it.itemcode)
-          .sort((a, b) => (b.marketSum || 0) - (a.marketSum || 0))
-          .map((it) => ({ symbol: `${it.itemcode}.KS`, name: it.itemname, marketSum: it.marketSum, price: it.nowVal, changePct: it.changeRate }));
-      })
+    krEtfFullListPromise = getEtfMarketCapDb()
+      .then((db) =>
+        (db.kr || [])
+          .filter((it) => it && it.s)
+          .sort((a, b) => (b.m || 0) - (a.m || 0))
+          .map((it) => ({ symbol: it.s, name: it.n, marketSum: it.m }))
+      )
       .then((list) => {
         // 섹션 마크·ETF 상세 판별(sectionOfSymbol)이 국내 전체 ETF를 ETF로 인식하도록 등록
         list.forEach((it) => knownEtfSet().add(it.symbol));
