@@ -1064,6 +1064,8 @@ body {
 .bottom-nav-btn.active svg.bottom-nav-flag { filter: none; }
 /* 하단 네비 아이콘 버전 복귀(2026-08-31 사용자 확정) — 더보기/시장 아이콘 미세 정렬 */
 #bottomNavMoreBtn2 svg { width: 29px; height: 29px; margin: 2.5px 0 -1.5px; }
+/* 라벨(한국주식~더보기)을 살짝 위로(2026-09-01, 본체와 동일) */
+.bottom-nav-btn span { margin-top: -3px; }
 #bottomNavMarketBtn2 svg { top: 5px; }
 .bottom-nav-btn.active { color: var(--text-dark); }
 .bottom-nav-btn.active svg { color: var(--text-dark); }

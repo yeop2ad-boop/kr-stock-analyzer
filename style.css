@@ -2011,6 +2011,8 @@ body[data-market-mode="kr"] .fh-market-label { color: #fff; }
 
 /* 더보기 아이콘은 살짝 크게 유지하되 흐름 높이는 동일(2.5+29-1.5=30) — 라벨 줄 정렬 유지 */
 #bottomNavMoreBtn svg { width: 29px; height: 29px; margin: 2.5px 0 -1.5px; }
+/* 라벨(한국주식~더보기)을 살짝 위로(2026-09-01 사용자 요청) — 정렬은 유지한 채 전체를 같이 올림 */
+.bottom-nav-btn span { margin-top: -3px; }
 .bottom-nav-btn:active,
 .bottom-nav-btn:focus,
 .bottom-nav-btn:focus-visible { background: none; outline: none; }
