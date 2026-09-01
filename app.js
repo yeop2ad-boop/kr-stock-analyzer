@@ -2631,8 +2631,8 @@ companyPanelAlertBtn.addEventListener("click", () => alert("가격 알림 기능
 // 헤더의 종목이름/가격/등락률 표시 — 검정 배경 전체화면 상세 헤더용
 function renderCompanyIdentity(ticker, quote, meta, changePct) {
   let displayName = TICKER_TO_KOREAN_NAME[ticker] || quote.longname || quote.shortname || meta.longName || ticker;
-  // 암호화폐는 "Cardano USD"처럼 통화쌍 표기로 내려와 " USD"를 떼고 표시(2026-09-01)
-  if (sectionOfSymbol(ticker, quote.quoteType) === "crypto") displayName = displayName.replace(/\s+USD$/i, "");
+  // 암호화폐는 한글명(비트코인·페페 등)을 우선 표시, 없으면 "Cardano USD"의 " USD"만 떼고 표시(2026-09-01)
+  if (sectionOfSymbol(ticker, quote.quoteType) === "crypto") displayName = cryptoKoName(ticker, displayName);
   const price = meta.regularMarketPrice;
   el("companyPanelLogoWrap").innerHTML = tickerLogoHtml(ticker);
   el("companyPanelName").textContent = displayName;
@@ -4454,7 +4454,7 @@ async function runAnalysis(ticker) {
     const newsQueryName = isKrTicker(ticker)
       ? TICKER_TO_KOREAN_NAME[ticker] || quote.longname || quote.shortname || ticker
       : isCryptoDetail
-      ? TICKER_TO_KOREAN_NAME[ticker] || (quote.shortname || quote.longname || ticker).replace(/\s+USD$/i, "")
+      ? cryptoKoName(ticker, quote.shortname || quote.longname || ticker)
       : null;
     const newsDataPromise = newsQueryName
       ? fetchKrCompanyNews(newsQueryName)
@@ -6555,35 +6555,185 @@ async function runPopularStocks() {
   }
 }
 
-// ---------- ETF 섹션 인기종목(2026-09-01): 기존 US/KR ETF 랭킹 인프라(fetchEtfMetrics·etfRankingHtml)를
-// 인기종목 결과영역에 재사용 — 상단에 미국/한국 ETF 전환 칩을 추가로 얹음 ----------
+// ---------- ETF 섹션 인기종목(2026-09-01 개편): 시가총액(순자산) 상위 — 한국 TOP100 + 미국 TOP100, 총 200개 ----------
+// 한국: 네이버 ETF 목록 API(전체 1100여 개, 시총·현재가·등락률 포함)를 시총순 정렬해 상위 100개 사용(실시간).
+// 미국: 공개 API로는 순자산 정렬이 불가(야후 커스텀 스크리너는 crumb 인증 필요, top_etfs_us 풀엔 SPY·VOO 등 대형이 빠짐)해서
+//       순자산(AUM) 순 큐레이션 목록(2026-09 기준, 수동 갱신 필요)을 쓰고 시세는 차트에서 실시간 조회.
+const US_ETF_TOP100 = [
+  { t: "VOO", n: "Vanguard S&P 500" }, { t: "IVV", n: "iShares Core S&P 500" }, { t: "SPY", n: "SPDR S&P 500" },
+  { t: "VTI", n: "Vanguard Total Stock Market" }, { t: "QQQ", n: "Invesco QQQ Trust" }, { t: "VUG", n: "Vanguard Growth" },
+  { t: "VEA", n: "Vanguard FTSE Developed Markets" }, { t: "IEFA", n: "iShares Core MSCI EAFE" }, { t: "GLD", n: "SPDR Gold Shares" },
+  { t: "VTV", n: "Vanguard Value" }, { t: "BND", n: "Vanguard Total Bond Market" }, { t: "AGG", n: "iShares Core U.S. Aggregate Bond" },
+  { t: "IWF", n: "iShares Russell 1000 Growth" }, { t: "IBIT", n: "iShares Bitcoin Trust" }, { t: "SPLG", n: "SPDR Portfolio S&P 500" },
+  { t: "IJH", n: "iShares Core S&P Mid-Cap" }, { t: "VGT", n: "Vanguard Information Technology" }, { t: "IEMG", n: "iShares Core MSCI Emerging Markets" },
+  { t: "VXUS", n: "Vanguard Total International Stock" }, { t: "VWO", n: "Vanguard FTSE Emerging Markets" }, { t: "VIG", n: "Vanguard Dividend Appreciation" },
+  { t: "XLK", n: "Technology Select Sector SPDR" }, { t: "IJR", n: "iShares Core S&P Small-Cap" }, { t: "SCHD", n: "Schwab U.S. Dividend Equity" },
+  { t: "ITOT", n: "iShares Core S&P Total Market" }, { t: "RSP", n: "Invesco S&P 500 Equal Weight" }, { t: "IVW", n: "iShares S&P 500 Growth" },
+  { t: "SGOV", n: "iShares 0-3 Month Treasury Bond" }, { t: "IWM", n: "iShares Russell 2000" }, { t: "QQQM", n: "Invesco NASDAQ 100" },
+  { t: "BIL", n: "SPDR 1-3 Month T-Bill" }, { t: "VO", n: "Vanguard Mid-Cap" }, { t: "SCHX", n: "Schwab U.S. Large-Cap" },
+  { t: "SMH", n: "VanEck Semiconductor" }, { t: "TLT", n: "iShares 20+ Year Treasury Bond" }, { t: "IWD", n: "iShares Russell 1000 Value" },
+  { t: "VYM", n: "Vanguard High Dividend Yield" }, { t: "EFA", n: "iShares MSCI EAFE" }, { t: "JEPI", n: "JPMorgan Equity Premium Income" },
+  { t: "VB", n: "Vanguard Small-Cap" }, { t: "IAU", n: "iShares Gold Trust" }, { t: "DIA", n: "SPDR Dow Jones Industrial Average" },
+  { t: "QUAL", n: "iShares MSCI USA Quality Factor" }, { t: "VT", n: "Vanguard Total World Stock" }, { t: "JEPQ", n: "JPMorgan Nasdaq Equity Premium Income" },
+  { t: "SCHG", n: "Schwab U.S. Large-Cap Growth" }, { t: "LQD", n: "iShares iBoxx $ IG Corporate Bond" }, { t: "VCIT", n: "Vanguard Intermediate-Term Corporate Bond" },
+  { t: "MUB", n: "iShares National Muni Bond" }, { t: "JPST", n: "JPMorgan Ultra-Short Income" }, { t: "DGRO", n: "iShares Core Dividend Growth" },
+  { t: "XLF", n: "Financial Select Sector SPDR" }, { t: "VCSH", n: "Vanguard Short-Term Corporate Bond" }, { t: "MBB", n: "iShares MBS" },
+  { t: "GOVT", n: "iShares U.S. Treasury Bond" }, { t: "IEF", n: "iShares 7-10 Year Treasury Bond" }, { t: "USMV", n: "iShares MSCI USA Min Vol Factor" },
+  { t: "SCHF", n: "Schwab International Equity" }, { t: "SCHB", n: "Schwab U.S. Broad Market" }, { t: "DFAC", n: "Dimensional U.S. Core Equity 2" },
+  { t: "VTEB", n: "Vanguard Tax-Exempt Bond" }, { t: "XLV", n: "Health Care Select Sector SPDR" }, { t: "IXUS", n: "iShares Core MSCI Total International" },
+  { t: "VNQ", n: "Vanguard Real Estate" }, { t: "IUSB", n: "iShares Core Total USD Bond Market" }, { t: "SHY", n: "iShares 1-3 Year Treasury Bond" },
+  { t: "BSV", n: "Vanguard Short-Term Bond" }, { t: "COWZ", n: "Pacer US Cash Cows 100" }, { t: "VGIT", n: "Vanguard Intermediate-Term Treasury" },
+  { t: "AVUV", n: "Avantis U.S. Small Cap Value" }, { t: "IWB", n: "iShares Russell 1000" }, { t: "IWR", n: "iShares Russell Mid-Cap" },
+  { t: "MGK", n: "Vanguard Mega Cap Growth" }, { t: "SOXX", n: "iShares Semiconductor" }, { t: "XLE", n: "Energy Select Sector SPDR" },
+  { t: "SHV", n: "iShares Short Treasury Bond" }, { t: "BIV", n: "Vanguard Intermediate-Term Bond" }, { t: "EMB", n: "iShares J.P. Morgan USD EM Bond" },
+  { t: "VOOG", n: "Vanguard S&P 500 Growth" }, { t: "SPYG", n: "SPDR Portfolio S&P 500 Growth" }, { t: "SPYV", n: "SPDR Portfolio S&P 500 Value" },
+  { t: "USFR", n: "WisdomTree Floating Rate Treasury" }, { t: "PFF", n: "iShares Preferred & Income Securities" }, { t: "MDY", n: "SPDR S&P MidCap 400" },
+  { t: "XLY", n: "Consumer Discretionary Select SPDR" }, { t: "XLI", n: "Industrial Select Sector SPDR" }, { t: "VHT", n: "Vanguard Health Care" },
+  { t: "FBTC", n: "Fidelity Wise Origin Bitcoin" }, { t: "GLDM", n: "SPDR Gold MiniShares" }, { t: "VDC", n: "Vanguard Consumer Staples" },
+  { t: "ACWI", n: "iShares MSCI ACWI" }, { t: "EWJ", n: "iShares MSCI Japan" }, { t: "VV", n: "Vanguard Large-Cap" },
+  { t: "DVY", n: "iShares Select Dividend" }, { t: "FTEC", n: "Fidelity MSCI Information Technology" }, { t: "VBR", n: "Vanguard Small-Cap Value" },
+  { t: "TQQQ", n: "ProShares UltraPro QQQ" }, { t: "SDY", n: "SPDR S&P Dividend" }, { t: "NOBL", n: "ProShares S&P 500 Dividend Aristocrats" },
+  { t: "MOAT", n: "VanEck Morningstar Wide Moat" },
+];
+
 let etfPopularRegion = "us";
-let etfPopularMetric = "volume";
-function etfPopularHtml() {
-  const regionNav = `
-    <div class="top30-sub-nav" style="margin-bottom:6px;">
-      <button type="button" class="cat-btn${etfPopularRegion === "us" ? " active" : ""}" data-etf-popular-region="us">미국 ETF</button>
-      <button type="button" class="cat-btn${etfPopularRegion === "kr" ? " active" : ""}" data-etf-popular-region="kr">한국 ETF</button>
+let krEtfTop100Promise = null;
+function getKrEtfTop100() {
+  if (!krEtfTop100Promise) {
+    krEtfTop100Promise = proxyFetchJson("https://finance.naver.com/api/sise/etfItemList.nhn")
+      .then((data) => {
+        const items = (data && data.result && data.result.etfItemList) || [];
+        return items
+          .filter((it) => it && it.itemcode)
+          .sort((a, b) => (b.marketSum || 0) - (a.marketSum || 0))
+          .slice(0, 100)
+          .map((it) => ({ symbol: `${it.itemcode}.KS`, name: it.itemname, marketSum: it.marketSum, price: it.nowVal, changePct: it.changeRate }));
+      })
+      .catch((e) => {
+        krEtfTop100Promise = null; // 실패는 캐시하지 않음
+        throw e;
+      });
+  }
+  return krEtfTop100Promise;
+}
+// 네이버 marketSum은 억원 단위 — 1조 이상이면 조원으로 표기
+function fmtKrEtfMarketSum(marketSumEok) {
+  if (!marketSumEok) return "N/A";
+  return marketSumEok >= 10000 ? `${(marketSumEok / 10000).toFixed(1)}조원` : `${Math.round(marketSumEok).toLocaleString("ko-KR")}억원`;
+}
+const KR_ETF_BRAND_BADGE_POPULAR = { KODEX: "KX", TIGER: "TG", KBSTAR: "KB", KOSEF: "KS", RISE: "RS", SOL: "SL", ACE: "AC", PLUS: "PL", HANARO: "HN" };
+function etfRankRowHtml(rank, { symbol, name, sub, priceStr, pct }) {
+  const cls = pct !== undefined && pct !== null && pct >= 0 ? "delta-up" : "delta-down";
+  const pctStr = pct !== undefined && pct !== null ? `${pct >= 0 ? "+" : ""}${Number(pct).toFixed(2)}%` : "";
+  const badge = KR_ETF_BRAND_BADGE_POPULAR[(name || "").split(" ")[0]];
+  return `
+    <div class="idx-row stock-card-row ticker-link idx-row-clickable" data-ticker="${escapeHtml(symbol)}">
+      <div class="idx-left">
+        <div class="idx-name"><span class="crypto-rank">${rank + 1}</span>${tickerLogoHtml(symbol, badge)}${escapeHtml(name)}</div>
+        <div class="idx-sub">${sub}</div>
+      </div>
+      <div class="idx-right">
+        <div class="idx-price">${priceStr}</div>
+        <div class="idx-delta ${cls}">${pctStr}</div>
+      </div>
     </div>`;
-  return regionNav + etfRankingHtml(etfMetricsCache[etfPopularRegion], etfPopularRegion, etfPopularMetric);
 }
 async function runEtfPopular() {
   const statusEl = el("popularStatus");
   const resultsEl = el("popularResults");
   resultsEl.innerHTML = "";
   statusEl.style.display = "block";
-  statusEl.textContent = "ETF 데이터를 불러오는 중...";
+  statusEl.textContent = "ETF 시가총액 순위를 불러오는 중...";
+  const region = etfPopularRegion;
+  const regionNav = () => `
+    <div class="top30-sub-nav" style="margin-bottom:6px;">
+      <button type="button" class="cat-btn${etfPopularRegion === "us" ? " active" : ""}" data-etf-popular-region="us">미국 ETF</button>
+      <button type="button" class="cat-btn${etfPopularRegion === "kr" ? " active" : ""}" data-etf-popular-region="kr">한국 ETF</button>
+    </div>`;
   try {
-    const region = etfPopularRegion;
-    if (!etfMetricsCache[region]) {
-      const nameMap = region === "kr" ? Object.fromEntries(KR_ETF_LIST.map((x) => [x.t, x.name])) : null;
-      const tickers = region === "us" ? US_ETF_TICKERS : KR_ETF_LIST.map((x) => x.t);
-      etfMetricsCache[region] = await fetchEtfMetrics(tickers, nameMap);
+    if (region === "kr") {
+      const list = await getKrEtfTop100();
+      if (etfPopularRegion !== "kr") return; // 조회 중 미국 칩으로 전환했으면 그쪽 렌더에 맡김
+      statusEl.style.display = "none";
+      let shown = Math.min(10, list.length);
+      const render = () => {
+        const hasMore = shown < list.length;
+        resultsEl.innerHTML = `
+          ${regionNav()}
+          <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 국내 상장 전체 ETF 중 시가총액 상위 ${list.length}개(네이버 금융 기준)입니다. 투자 자문이 아닙니다.</p>
+          <div class="idx-list">${list
+            .slice(0, shown)
+            .map((it, i) =>
+              etfRankRowHtml(i, {
+                symbol: it.symbol,
+                name: it.name,
+                sub: `<span class="idx-ticker">${escapeHtml(it.symbol.replace(".KS", ""))}</span> | 시총 ${fmtKrEtfMarketSum(it.marketSum)}`,
+                priceStr: it.price !== undefined && it.price !== null ? `${Number(it.price).toLocaleString("ko-KR")}원` : "N/A",
+                pct: it.changePct,
+              })
+            )
+            .join("")}</div>
+          ${hasMore ? `<button type="button" class="cat-btn load-more-btn">더보기 (${shown}/${list.length})</button>` : ""}
+        `;
+        const moreBtn = resultsEl.querySelector(".load-more-btn");
+        if (moreBtn) moreBtn.addEventListener("click", () => { shown = Math.min(shown + 20, list.length); render(); });
+      };
+      render();
+      return;
     }
-    if (region !== etfPopularRegion) return; // 조회 중 다른 지역 칩을 눌렀으면 그쪽 렌더에 맡김
+
+    // 미국 ETF: 큐레이션 목록 순서대로, 화면에 보이는 종목만 차트에서 실시간 시세 조회(더보기 시 추가분만)
     statusEl.style.display = "none";
-    resultsEl.innerHTML = etfPopularHtml();
+    const snapCache = new Map();
+    let shown = Math.min(10, US_ETF_TOP100.length);
+    const render = () => {
+      const hasMore = shown < US_ETF_TOP100.length;
+      resultsEl.innerHTML = `
+        ${regionNav()}
+        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 미국 상장 ETF 중 순자산(AUM) 상위 ${US_ETF_TOP100.length}개입니다(순위는 주기적으로 수동 갱신되는 근사치). 투자 자문이 아닙니다.</p>
+        <div class="idx-list">${US_ETF_TOP100.slice(0, shown)
+          .map((it, i) => {
+            const snap = snapCache.get(it.t);
+            return etfRankRowHtml(i, {
+              symbol: it.t,
+              name: it.t,
+              sub: `<span class="idx-ticker">${escapeHtml(it.n)}</span>`,
+              priceStr:
+                snap && snap.price !== null && snap.price !== undefined
+                  ? "$" + Number(snap.price).toLocaleString("en-US", { maximumFractionDigits: 2 })
+                  : "...",
+              pct: snap ? snap.changePct : null,
+            });
+          })
+          .join("")}</div>
+        ${hasMore ? `<button type="button" class="cat-btn load-more-btn">더보기 (${shown}/${US_ETF_TOP100.length})</button>` : ""}
+      `;
+      const moreBtn = resultsEl.querySelector(".load-more-btn");
+      if (moreBtn) {
+        moreBtn.addEventListener("click", async () => {
+          shown = Math.min(shown + 20, US_ETF_TOP100.length);
+          render();
+          await fetchSnapsUpTo(shown);
+          if (etfPopularRegion === "us") render();
+        });
+      }
+    };
+    const fetchSnapsUpTo = async (count) => {
+      const pending = US_ETF_TOP100.slice(0, count).filter((it) => !snapCache.has(it.t));
+      if (!pending.length) return;
+      await mapWithConcurrency(pending, 6, async (it) => {
+        try {
+          snapCache.set(it.t, yahooSnapshot(await yahooChart(it.t, "5d")));
+        } catch {
+          snapCache.set(it.t, null);
+        }
+      });
+    };
+    render();
+    await fetchSnapsUpTo(shown);
+    if (etfPopularRegion === "us") render();
   } catch (e) {
+    statusEl.style.display = "block";
     statusEl.textContent = `❌ ${e.message || "ETF 데이터를 가져오지 못했습니다."}`;
   }
 }
@@ -6593,8 +6743,8 @@ async function runEtfPopular() {
 let cryptoTop50CachePromise = null;
 function cryptoRankRowHtml(q, rank, snap) {
   const sym = q.symbol;
-  const ticker = sym.replace(/-USD$/, "");
-  const name = TICKER_TO_KOREAN_NAME[sym] || (q.shortName || q.longName || sym).replace(/\s+USD$/i, "");
+  const ticker = cryptoBaseTicker(sym); // "PEPE24478-USD" 같은 심볼도 "PEPE"로 깔끔하게 표시
+  const name = cryptoKoName(sym, q.shortName || q.longName || sym);
   // 스크리너 시세는 지연될 수 있어, 차트에서 받은 실시간 스냅샷(snap)이 있으면 그걸 우선 사용(상세 페이지 가격과 일치)
   const price = snap && snap.price !== null && snap.price !== undefined ? snap.price : q.regularMarketPrice;
   const pct = snap && snap.changePct !== null && snap.changePct !== undefined ? snap.changePct : q.regularMarketChangePercent;
@@ -6635,6 +6785,15 @@ async function runCryptoPopular() {
     }
     const all = (await cryptoTop50CachePromise).slice(0, 50);
     if (all.length === 0) throw new Error("암호화폐 시세를 가져오지 못했습니다.");
+    // 실제 야후 심볼("TON11419-USD" 등)이 확정되는 시점에 한글명·검색 별칭을 자동 등록 —
+    // 이후 상세 헤더/관심종목/검색창(한글·영문)에서 50개 코인이 전부 한글명으로 잡힘
+    all.forEach((q) => {
+      const ko = CRYPTO_KO_BY_TICKER[cryptoBaseTicker(q.symbol)];
+      if (ko) {
+        TICKER_TO_KOREAN_NAME[q.symbol] = ko;
+        if (!KOREAN_COMPANY_NAMES[ko]) KOREAN_COMPANY_NAMES[ko] = q.symbol;
+      }
+    });
     statusEl.style.display = "none";
 
     // 화면에 보이는 코인만 차트 기준 실시간 시세를 추가 조회(스크리너 지연 시세 보정) — 더보기 시 추가분만 마저 조회
@@ -6676,19 +6835,12 @@ async function runCryptoPopular() {
   }
 }
 
-// 인기종목(ETF) 결과영역의 미국/한국 ETF 칩·거래대금/상승률 칩 클릭 처리
+// 인기종목(ETF) 결과영역의 미국/한국 ETF 전환 칩 클릭 처리
 el("popularResults").addEventListener("click", (e) => {
   const regionBtn = e.target.closest("[data-etf-popular-region]");
-  if (regionBtn) {
-    etfPopularRegion = regionBtn.dataset.etfPopularRegion;
-    runEtfPopular();
-    return;
-  }
-  const metricBtn = e.target.closest("[data-etf-metric]");
-  if (metricBtn && appSectionMode === "etf" && etfMetricsCache[etfPopularRegion]) {
-    etfPopularMetric = metricBtn.dataset.etfMetric;
-    el("popularResults").innerHTML = etfPopularHtml();
-  }
+  if (!regionBtn) return;
+  etfPopularRegion = regionBtn.dataset.etfPopularRegion;
+  runEtfPopular();
 });
 
 // 인기종목 화면 진입 — topranking 패널을 빌려 쓰되 서브내비(랭킹 칩)는 비우고 제목줄 탭만 활성화.
@@ -6705,6 +6857,7 @@ function openPopularStocks() {
   else runPopularStocks();
 }
 
+// (참고) 기존 거래대금·상승률 기준 ETF 랭킹(fetchEtfMetrics·etfRankingHtml)은 아래 ETF 시장동향에서 계속 사용됨
 // ETF 섹션의 시장동향(2026-09-01): 주식 시장동향에 있던 US ETF/KR ETF 랭킹을 이쪽 서브내비 칩 2개로 옮김
 function openEtfTrend() {
   switchTab(TAB_ORDER.indexOf("topranking"));
@@ -8604,10 +8757,49 @@ const INDEX_CATEGORIES = {
   },
 };
 
-// 암호화폐 한글명을 종목명 맵에 등록 — 코인 상세 헤더·비트코인 섹션 인기종목에서 "비트코인"처럼 표시(2026-09-01)
+// ---------- 암호화폐 한글명(2026-09-01 사용자 요청: 시총 상위 50개 전부 한글 + 한글/영문 검색 지원) ----------
+// 야후 크립토 심볼은 "PEPE24478-USD"처럼 CoinMarketCap id가 붙는 경우가 있어, "-USD"와 끝의 숫자를 뗀
+// 기본 티커(BTC, PEPE 등)를 키로 매칭한다. 이름의 괄호 별칭("엑스알피(리플)")은 검색 부분일치로 함께 잡힘.
+const CRYPTO_KO_BY_TICKER = {
+  BTC: "비트코인", ETH: "이더리움", USDT: "테더", XRP: "엑스알피(리플)", BNB: "비엔비(BNB)", SOL: "솔라나",
+  USDC: "유에스디코인(USDC)", DOGE: "도지코인", ADA: "에이다(카르다노)", TRX: "트론", LINK: "체인링크",
+  AVAX: "아발란체", XLM: "스텔라루멘", SUI: "수이", SHIB: "시바이누", HBAR: "헤데라", TON: "톤코인",
+  DOT: "폴카닷", LTC: "라이트코인", BCH: "비트코인캐시", UNI: "유니스왑", PEPE: "페페", NEAR: "니어프로토콜",
+  APT: "앱토스", ICP: "인터넷컴퓨터", AAVE: "아베", ETC: "이더리움클래식", POL: "폴리곤(POL)", MATIC: "폴리곤(MATIC)",
+  RENDER: "렌더", VET: "비체인", ARB: "아비트럼", OP: "옵티미즘", FIL: "파일코인", ATOM: "코스모스",
+  KAS: "카스파", INJ: "인젝티브", SEI: "세이", MNT: "맨틀", CRO: "크로노스", IMX: "이뮤터블엑스",
+  TAO: "비텐서(TAO)", WLD: "월드코인", GRT: "더그래프", ONDO: "온도파이낸스", STX: "스택스", ALGO: "알고랜드",
+  JUP: "주피터", FLOKI: "플로키", BONK: "봉크", HYPE: "하이퍼리퀴드", ENA: "에테나", FET: "페치(FET)",
+  TIA: "셀레스티아", OKB: "오케이비(OKB)", LEO: "레오토큰", WBTC: "랩트비트코인", STETH: "리도스테이킹이더",
+  WSTETH: "랩트스테이킹이더", WBETH: "랩트비콘이더", DAI: "다이", USDE: "에테나달러(USDe)", XMR: "모네로",
+  BGB: "비트겟토큰", TRUMP: "트럼프코인", PENGU: "펭구", PUMP: "펌프펀", XAUT: "테더골드", PAXG: "팍스골드",
+  S: "소닉(S)", DEXE: "덱스이(DeXe)", GALA: "갈라", SAND: "샌드박스", MANA: "디센트럴랜드", THETA: "쎄타토큰",
+  EOS: "이오스", XTZ: "테조스", FLOW: "플로우", NEO: "네오", IOTA: "아이오타", ZEC: "지캐시", DASH: "대시",
+  // 래핑·스테이블 계열 등 시총 상위권의 나머지(2026-09-01 실측 top50 기준 전부 한글화)
+  WETH: "랩트이더리움(WETH)", CBBTC: "코인베이스 랩트비트코인", BTCB: "비트코인 BEP2(BTCB)", WEETH: "랩트 eETH(weETH)",
+  AETHWETH: "아베 랩트이더(aWETH)", AETHUSDT: "아베 테더(aUSDT)", USDS: "스카이달러(USDS)", USDG: "글로벌달러(USDG)",
+  PYUSD: "페이팔달러(PYUSD)", RAIN: "레인(RAIN)", GRAM: "그램(구 톤코인)", DEL: "데시멀(DEL)", CC: "캔톤(CC)",
+  USD: "월드리버티달러(USD1)", M: "밈코어(M)",
+};
+function cryptoBaseTicker(sym) {
+  return (sym || "").toUpperCase().replace(/-USD$/, "").replace(/\d+$/, "");
+}
+function cryptoKoName(sym, fallbackName) {
+  return CRYPTO_KO_BY_TICKER[cryptoBaseTicker(sym)] || TICKER_TO_KOREAN_NAME[sym] || (fallbackName || sym).replace(/\s+USD$/i, "");
+}
+// 시장 화면 암호화폐 카테고리의 9개 코인 + 심볼이 단순한 주요 코인은 시작 시점부터 한글 검색 별칭 등록
+// (심볼에 숫자가 붙는 코인은 비트코인 섹션 목록을 한 번 불러올 때 실제 심볼로 자동 등록됨 — runCryptoPopular 참고)
 INDEX_CATEGORIES.crypto.items.forEach((it) => {
-  if (!TICKER_TO_KOREAN_NAME[it.symbol]) TICKER_TO_KOREAN_NAME[it.symbol] = it.name;
+  const ko = cryptoKoName(it.symbol, it.name);
+  TICKER_TO_KOREAN_NAME[it.symbol] = ko;
+  if (!KOREAN_COMPANY_NAMES[ko]) KOREAN_COMPANY_NAMES[ko] = it.symbol;
 });
+for (const base of ["BTC", "ETH", "USDT", "XRP", "BNB", "SOL", "USDC", "DOGE", "ADA", "TRX", "LINK", "AVAX", "XLM", "SHIB", "HBAR", "DOT", "LTC", "BCH", "UNI", "NEAR", "ICP", "AAVE", "ETC", "VET", "FIL", "ATOM", "ALGO", "CRO", "XMR", "DAI", "EOS", "XTZ", "NEO", "ZEC", "DASH"]) {
+  const ko = CRYPTO_KO_BY_TICKER[base];
+  const symbol = `${base}-USD`;
+  if (ko && !KOREAN_COMPANY_NAMES[ko]) KOREAN_COMPANY_NAMES[ko] = symbol;
+  if (!TICKER_TO_KOREAN_NAME[symbol]) TICKER_TO_KOREAN_NAME[symbol] = ko;
+}
 
 // 야후 차트 → { price, change(전일종가 대비 변동량), changePct, date }
 function yahooSnapshot(chart) {
