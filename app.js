@@ -2630,7 +2630,9 @@ companyPanelAlertBtn.addEventListener("click", () => alert("가격 알림 기능
 
 // 헤더의 종목이름/가격/등락률 표시 — 검정 배경 전체화면 상세 헤더용
 function renderCompanyIdentity(ticker, quote, meta, changePct) {
-  const displayName = TICKER_TO_KOREAN_NAME[ticker] || quote.longname || quote.shortname || meta.longName || ticker;
+  let displayName = TICKER_TO_KOREAN_NAME[ticker] || quote.longname || quote.shortname || meta.longName || ticker;
+  // 암호화폐는 "Cardano USD"처럼 통화쌍 표기로 내려와 " USD"를 떼고 표시(2026-09-01)
+  if (sectionOfSymbol(ticker, quote.quoteType) === "crypto") displayName = displayName.replace(/\s+USD$/i, "");
   const price = meta.regularMarketPrice;
   el("companyPanelLogoWrap").innerHTML = tickerLogoHtml(ticker);
   el("companyPanelName").textContent = displayName;
@@ -4416,6 +4418,11 @@ async function runAnalysis(ticker) {
     renderCompanyIdentity(ticker, quote, meta, getDailyChangePercent(chartData));
     el("summaryChartExpandBtn").dataset.chartSymbol = ticker;
 
+    // 암호화폐 상세(2026-09-01 사용자 요청): 개요(차트+요약)와 주요 뉴스만 표시 —
+    // 주식 전용 섹션(매출액/invest점수/과거분석·미래예측·s리포트 버튼 등)은 CSS로 숨기고 데이터 조회도 생략
+    const isCryptoDetail = sectionOfSymbol(ticker, quote.quoteType) === "crypto";
+    el("companyPanel").classList.toggle("crypto-detail", isCryptoDetail);
+
     // 나스닥·다우존스·S&P500 1년 수익률과, 분석 대상 자신의 지표(차트+재무제표)는
     // 경쟁사 비교(3)·상승압력도(5)·투자 안정성(6)·미래예측(요약 탭의 🔮 토글) 섹션이 각자 다시 조회하지 않고 공유해서
     // 프록시 요청 수를 줄이고(속도·안정성 향상) 값도 서로 어긋나지 않도록 함
@@ -4426,24 +4433,31 @@ async function runAnalysis(ticker) {
       el("summarySection").innerHTML = `<p class="error-inline">사업 요약을 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
-    renderFinancials(ticker, meta.currency).catch((e) => {
-      el("financialsSection").innerHTML = `<p class="error-inline">실적 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
-    });
+    if (!isCryptoDetail) {
+      renderFinancials(ticker, meta.currency).catch((e) => {
+        el("financialsSection").innerHTML = `<p class="error-inline">실적 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
+      });
 
-    renderQuarterlyEarnings(ticker, meta.currency).catch((e) => {
-      el("quarterlyEarningsSection").innerHTML = `<p class="error-inline">분기 실적 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
-    });
+      renderQuarterlyEarnings(ticker, meta.currency).catch((e) => {
+        el("quarterlyEarningsSection").innerHTML = `<p class="error-inline">분기 실적 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
+      });
 
-    renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise);
+      renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise);
 
-    renderPeers(ticker, selfMetricsPromise, quote.sector || quote.sectorDisp, quote.industryDisp || quote.industry).catch((e) => {
-      el("peersSection").innerHTML = `<p class="error-inline">경쟁사 비교 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
-    });
+      renderPeers(ticker, selfMetricsPromise, quote.sector || quote.sectorDisp, quote.industryDisp || quote.industry).catch((e) => {
+        el("peersSection").innerHTML = `<p class="error-inline">경쟁사 비교 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
+      });
+    }
 
-    // 국내 종목은 Yahoo 뉴스가 해당 기업과 무관한 기사를 자주 섞어 내보내(2026-09-01 사용자 확인),
-    // 한글 회사명으로 구글 뉴스 RSS를 검색해 대체하고 실패 시에만 Yahoo 뉴스로 폴백
-    const newsDataPromise = isKrTicker(ticker)
-      ? fetchKrCompanyNews(TICKER_TO_KOREAN_NAME[ticker] || quote.longname || quote.shortname || ticker)
+    // 국내 종목·암호화폐는 Yahoo 뉴스가 해당 종목과 무관한 기사를 자주 섞어 내보내(2026-09-01 사용자 확인),
+    // 한글 이름(코인은 "비트코인" 등, 없으면 "Cardano"처럼 영문명)으로 구글/Bing 뉴스 RSS를 검색해 대체하고 실패 시에만 Yahoo 뉴스로 폴백
+    const newsQueryName = isKrTicker(ticker)
+      ? TICKER_TO_KOREAN_NAME[ticker] || quote.longname || quote.shortname || ticker
+      : isCryptoDetail
+      ? TICKER_TO_KOREAN_NAME[ticker] || (quote.shortname || quote.longname || ticker).replace(/\s+USD$/i, "")
+      : null;
+    const newsDataPromise = newsQueryName
+      ? fetchKrCompanyNews(newsQueryName)
           .then((news) => (news.length ? { news } : searchData))
           .catch(() => searchData)
       : Promise.resolve(searchData);
@@ -4451,17 +4465,19 @@ async function runAnalysis(ticker) {
       el("newsSection").innerHTML = `<p class="error-inline">뉴스를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
-    renderScore(selfMetricsPromise).catch((e) => {
-      el("scoreSection").innerHTML = `<p class="error-inline">상승 압력 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
-    });
+    if (!isCryptoDetail) {
+      renderScore(selfMetricsPromise).catch((e) => {
+        el("scoreSection").innerHTML = `<p class="error-inline">상승 압력 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
+      });
 
-    renderRisk(marketReturnsPromise, selfMetricsPromise).catch((e) => {
-      el("riskSection").innerHTML = `<p class="error-inline">투자 안정성 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
-    });
+      renderRisk(marketReturnsPromise, selfMetricsPromise).catch((e) => {
+        el("riskSection").innerHTML = `<p class="error-inline">투자 안정성 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
+      });
 
-    renderMacro(ticker).catch((e) => {
-      el("macroSection").innerHTML = `<p class="error-inline">거시경제 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
-    });
+      renderMacro(ticker).catch((e) => {
+        el("macroSection").innerHTML = `<p class="error-inline">거시경제 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
+      });
+    }
 
     setStatus(null, null);
   } catch (err) {
@@ -4816,7 +4832,10 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   futureInlineWrap.style.display = "none";
   sReportInlineWrap.style.display = "none";
 
-  const companyName = quote.longname || quote.shortname || meta.longName || meta.symbol;
+  const rawCompanyName = quote.longname || quote.shortname || meta.longName || meta.symbol;
+  // 암호화폐는 "Bitcoin USD"처럼 통화쌍 표기라 위키 검색·표시용 이름에서 " USD"를 떼어냄(2026-09-01)
+  const companyName =
+    sectionOfSymbol(meta.symbol || quote.symbol || "", quote.quoteType) === "crypto" ? rawCompanyName.replace(/\s+USD$/i, "") : rawCompanyName;
   let oneLiner = "사업 개요 정보를 찾을 수 없습니다.";
   try {
     oneLiner = await getBusinessSummaryKo(companyName);
@@ -6569,21 +6588,89 @@ async function runEtfPopular() {
   }
 }
 
-// ---------- 비트코인 섹션 인기종목(2026-09-01): 시장 화면 암호화폐 카테고리와 동일한 시세 카드 목록 ----------
+// ---------- 비트코인 섹션 인기종목(2026-09-01): Yahoo 암호화폐 스크리너로 시가총액 상위 50개 표시 ----------
+// 행 클릭 시 코인 상세(개요+주요 뉴스만 표시)로 이동. 목록은 세션 내 캐시(재진입 시 즉시 표시)
+let cryptoTop50CachePromise = null;
+function cryptoRankRowHtml(q, rank, snap) {
+  const sym = q.symbol;
+  const ticker = sym.replace(/-USD$/, "");
+  const name = TICKER_TO_KOREAN_NAME[sym] || (q.shortName || q.longName || sym).replace(/\s+USD$/i, "");
+  // 스크리너 시세는 지연될 수 있어, 차트에서 받은 실시간 스냅샷(snap)이 있으면 그걸 우선 사용(상세 페이지 가격과 일치)
+  const price = snap && snap.price !== null && snap.price !== undefined ? snap.price : q.regularMarketPrice;
+  const pct = snap && snap.changePct !== null && snap.changePct !== undefined ? snap.changePct : q.regularMarketChangePercent;
+  const cls = pct !== undefined && pct !== null && pct >= 0 ? "delta-up" : "delta-down";
+  const priceStr =
+    price !== undefined && price !== null ? "$" + Number(price).toLocaleString("en-US", { maximumFractionDigits: price >= 1 ? 2 : 6 }) : "N/A";
+  const pctStr = pct !== undefined && pct !== null ? `${pct >= 0 ? "+" : ""}${pct.toFixed(2)}%` : "";
+  const mcapStr = q.marketCap ? fmtCompactCurrency(q.marketCap, "USD") : "N/A";
+  return `
+    <div class="idx-row stock-card-row ticker-link idx-row-clickable" data-ticker="${escapeHtml(sym)}">
+      <div class="idx-left">
+        <div class="idx-name"><span class="crypto-rank">${rank + 1}</span>${cryptoLogoHtml(ticker)}${escapeHtml(name)}</div>
+        <div class="idx-sub"><span class="idx-ticker">${escapeHtml(ticker)}</span> | 시총 ${mcapStr}</div>
+      </div>
+      <div class="idx-right">
+        <div class="idx-price">${priceStr}</div>
+        <div class="idx-delta ${cls}">${pctStr}</div>
+      </div>
+    </div>`;
+}
 async function runCryptoPopular() {
   const statusEl = el("popularStatus");
   const resultsEl = el("popularResults");
   resultsEl.innerHTML = "";
   statusEl.style.display = "block";
-  statusEl.textContent = "암호화폐 시세를 불러오는 중...";
+  statusEl.textContent = "암호화폐 시가총액 순위를 불러오는 중...";
   try {
-    const items = INDEX_CATEGORIES.crypto.items;
-    const snaps = await mapWithConcurrency(items, 6, fetchOneIndexSnap);
+    if (!cryptoTop50CachePromise) {
+      cryptoTop50CachePromise = yahooScreener("all_cryptocurrencies_us", 50)
+        .then((data) => {
+          const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
+          return quotes.filter((q) => q && q.symbol);
+        })
+        .catch((e) => {
+          cryptoTop50CachePromise = null; // 실패는 캐시하지 않음(다음 진입 시 재시도)
+          throw e;
+        });
+    }
+    const all = (await cryptoTop50CachePromise).slice(0, 50);
+    if (all.length === 0) throw new Error("암호화폐 시세를 가져오지 못했습니다.");
     statusEl.style.display = "none";
-    resultsEl.innerHTML = `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 암호화폐 시세는 전일 종가 대비이며 상승은 빨강·하락은 파랑입니다. 투자 자문이 아닙니다.</p>
-      <div class="idx-list">${items.map((item, i) => indexRowHtml(item, snaps[i], "crypto")).join("")}</div>
-    `;
+
+    // 화면에 보이는 코인만 차트 기준 실시간 시세를 추가 조회(스크리너 지연 시세 보정) — 더보기 시 추가분만 마저 조회
+    const snapCache = new Map();
+    let shown = Math.min(10, all.length);
+    const render = () => {
+      const hasMore = shown < all.length;
+      resultsEl.innerHTML = `
+        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 시가총액 상위 ${all.length}개 암호화폐(달러 기준)이며 상승은 빨강·하락은 파랑입니다. 투자 자문이 아닙니다.</p>
+        <div class="idx-list">${all.slice(0, shown).map((q, i) => cryptoRankRowHtml(q, i, snapCache.get(q.symbol))).join("")}</div>
+        ${hasMore ? `<button type="button" class="cat-btn load-more-btn">더보기 (${shown}/${all.length})</button>` : ""}
+      `;
+      const moreBtn = resultsEl.querySelector(".load-more-btn");
+      if (moreBtn) {
+        moreBtn.addEventListener("click", async () => {
+          shown = Math.min(shown + 20, all.length);
+          render();
+          await fetchSnapsUpTo(shown);
+          render();
+        });
+      }
+    };
+    const fetchSnapsUpTo = async (count) => {
+      const pending = all.slice(0, count).filter((q) => !snapCache.has(q.symbol));
+      if (!pending.length) return;
+      await mapWithConcurrency(pending, 6, async (q) => {
+        try {
+          snapCache.set(q.symbol, yahooSnapshot(await yahooChart(q.symbol, "5d")));
+        } catch {
+          snapCache.set(q.symbol, null);
+        }
+      });
+    };
+    render();
+    await fetchSnapsUpTo(shown);
+    render();
   } catch (e) {
     statusEl.textContent = `❌ ${e.message || "암호화폐 시세를 가져오지 못했습니다."}`;
   }
@@ -8516,6 +8603,11 @@ const INDEX_CATEGORIES = {
     ],
   },
 };
+
+// 암호화폐 한글명을 종목명 맵에 등록 — 코인 상세 헤더·비트코인 섹션 인기종목에서 "비트코인"처럼 표시(2026-09-01)
+INDEX_CATEGORIES.crypto.items.forEach((it) => {
+  if (!TICKER_TO_KOREAN_NAME[it.symbol]) TICKER_TO_KOREAN_NAME[it.symbol] = it.name;
+});
 
 // 야후 차트 → { price, change(전일종가 대비 변동량), changePct, date }
 function yahooSnapshot(chart) {

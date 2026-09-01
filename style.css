@@ -1986,6 +1986,16 @@ body[data-market-mode="kr"] .fh-market-label { color: #fff; }
 /* 섹션 마크(2026-09-01) — 검색상세 제목 옆·관심종목 종목 옆에 붙는 작은 소속 아이콘(한국주식/미국주식/ETF/비트코인) */
 .section-mark { display: inline-flex; align-items: center; margin-left: 5px; vertical-align: middle; flex: none; }
 .section-mark svg { width: 17px; height: 11px; display: block; }
+/* 비트코인 섹션 인기종목 — 시가총액 순위 숫자 */
+.crypto-rank { display: inline-block; min-width: 20px; margin-right: 4px; font-weight: 800; color: var(--muted); font-size: 13px; text-align: center; flex: none; }
+/* 암호화폐 상세(2026-09-01): 개요와 주요 뉴스만 — 주식 전용 탭·섹션·버튼 숨김 */
+.company-panel.crypto-detail #summarySubtabRevenueBtn,
+.company-panel.crypto-detail #summarySubtabScoreBtn,
+.company-panel.crypto-detail .summary-subtab-panel[data-summary-subtabpanel="revenue"],
+.company-panel.crypto-detail .summary-subtab-panel[data-summary-subtabpanel="investscore"],
+.company-panel.crypto-detail #summaryScoreRow,
+.company-panel.crypto-detail .summary-action-row,
+.company-panel.crypto-detail .company-meta span:nth-child(-n+3) { display: none !important; }
 
 /* 하단 네비 아이콘 버전 복귀(2026-08-31 사용자 확정) — 더보기/시장 아이콘 미세 정렬 */
 #bottomNavMoreBtn svg { width: 29px; height: 29px; top: 3px; }
