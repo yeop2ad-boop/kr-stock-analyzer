@@ -11,8 +11,8 @@ if ("serviceWorker" in navigator) {
 
 // 언어(한국어/영문) — 더보기 패널(본체)과 공유하는 localStorage 키("app_lang")를 읽어 지도 상단바/하단 네비 등 정적 텍스트만 번역
 const MAP_I18N = {
-  "market.kr": { ko: "국내", en: "KR" },
-  "market.us": { ko: "해외", en: "US" },
+  "market.kr": { ko: "한국주식", en: "KR" },
+  "market.us": { ko: "미국주식", en: "US" },
   "nav.map": { ko: "지도", en: "Map" },
   "nav.ranking": { ko: "랭킹", en: "Ranking" },
   "tab.search": { ko: "간편검색", en: "Search" },

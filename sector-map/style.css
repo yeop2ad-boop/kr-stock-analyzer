@@ -1058,6 +1058,9 @@ body {
   cursor: pointer;
 }
 .bottom-nav-btn svg { width: 26px; height: 26px; position: relative; top: 3px; }
+/* 국내/해외 컬러 네모 국기(2026-09-01, 본체와 통일) — 지도에선 두 버튼 다 비활성이라 흑백, 본체 이동 시 컬러 활성 */
+.bottom-nav-btn svg.bottom-nav-flag { width: 27px; height: 18px; top: 7px; filter: grayscale(1) opacity(0.55); }
+.bottom-nav-btn.active svg.bottom-nav-flag { filter: none; }
 /* 하단 네비 아이콘 버전 복귀(2026-08-31 사용자 확정) — 더보기/시장 아이콘 미세 정렬 */
 #bottomNavMoreBtn2 svg { width: 29px; height: 29px; top: 3px; }
 #bottomNavMoreBtn2 { position: relative; top: -2px; }

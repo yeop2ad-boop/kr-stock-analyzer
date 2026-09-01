@@ -281,26 +281,62 @@ async function proxyFetchText(targetUrl) {
 }
 
 // 국내 종목 주요 뉴스 — Yahoo search의 뉴스는 국내 티커(005930.KS 등)에서 해당 기업과 무관한 기사가 섞여
-// 나오는 문제가 있어(2026-09-01 사용자 확인), 한글 회사명으로 구글 뉴스 RSS를 검색해 그 기업 기사만 가져온다
-async function fetchKrCompanyNews(koName) {
+// 나오는 문제가 있어(2026-09-01 사용자 확인), 한글 회사명으로 뉴스 RSS를 검색해 그 기업 기사만 가져온다.
+// 1순위 구글 뉴스(기사 수·품질 최상이지만 Cloudflare 워커 IP를 구글이 차단하는 경우가 있음) → 2순위 Bing 뉴스 폴백
+function rssItemText(it, tag) {
+  const n = it.querySelector(tag);
+  return n ? n.textContent.trim() : "";
+}
+function rssPubTime(it) {
+  const pub = new Date(rssItemText(it, "pubDate"));
+  return isNaN(pub.getTime()) ? null : Math.floor(pub.getTime() / 1000);
+}
+async function fetchGoogleNewsRss(koName) {
   const url = `https://news.google.com/rss/search?q=${encodeURIComponent(`"${koName}"`)}&hl=ko&gl=KR&ceid=KR:ko`;
   const xml = await proxyFetchText(url);
   const doc = new DOMParser().parseFromString(xml, "text/xml");
   return [...doc.querySelectorAll("item")].map((it) => {
-    const get = (tag) => { const n = it.querySelector(tag); return n ? n.textContent.trim() : ""; };
-    const publisher = get("source");
-    let title = get("title");
+    const publisher = rssItemText(it, "source");
+    let title = rssItemText(it, "title");
     // 구글 뉴스 제목은 "기사제목 - 언론사" 형태라 언론사 접미사는 출처 줄과 겹쳐 잘라냄(간혹 두 번 붙는 기사도 있음)
     while (publisher && title.endsWith(` - ${publisher}`)) title = title.slice(0, -(publisher.length + 3));
-    const pub = new Date(get("pubDate"));
     return {
       title,
-      link: get("link"),
-      providerPublishTime: isNaN(pub.getTime()) ? null : Math.floor(pub.getTime() / 1000),
+      link: rssItemText(it, "link"),
+      providerPublishTime: rssPubTime(it),
       publisher,
       isKorean: true, // renderNews에서 자동번역·원문 표기를 건너뛰기 위한 표시
     };
   });
+}
+async function fetchBingNewsRss(koName) {
+  // 따옴표를 붙이면 결과가 2~3건으로 확 줄어 미사용(구글과 달리 회사명 단독 검색도 관련 기사 위주로 나옴)
+  const url = `https://www.bing.com/news/search?q=${encodeURIComponent(koName)}&format=RSS&mkt=ko-KR&setlang=ko`;
+  const xml = await proxyFetchText(url);
+  const doc = new DOMParser().parseFromString(xml, "text/xml");
+  return [...doc.querySelectorAll("item")].map((it) => {
+    const link = rssItemText(it, "link");
+    // Bing RSS엔 언론사 태그가 없어, 리다이렉트 링크(url 파라미터)의 원문 도메인을 출처로 표시
+    let publisher = "";
+    try {
+      const inner = new URL(link).searchParams.get("url");
+      if (inner) publisher = new URL(inner).hostname.replace(/^www\./, "");
+    } catch {}
+    return {
+      title: rssItemText(it, "title"),
+      link,
+      providerPublishTime: rssPubTime(it),
+      publisher,
+      isKorean: true,
+    };
+  });
+}
+async function fetchKrCompanyNews(koName) {
+  try {
+    const items = await fetchGoogleNewsRss(koName);
+    if (items.length) return items;
+  } catch {}
+  return fetchBingNewsRss(koName);
 }
 
 // ---------- Yahoo Finance 헬퍼 ----------
@@ -2323,8 +2359,8 @@ themeDarkBtn.addEventListener("click", () => setTheme("dark"));
 
 // ---------- 언어(한국어/영문) — 접속 지역(타임존/브라우저 언어)에 따라 기본값 추정, 명시적으로 고른 뒤에만 저장 ----------
 const I18N = {
-  "market.kr": { ko: "국내", en: "KR" },
-  "market.us": { ko: "해외", en: "US" },
+  "market.kr": { ko: "한국주식", en: "KR" },
+  "market.us": { ko: "미국주식", en: "US" },
   "tab.watchlist": { ko: "관심종목", en: "Watchlist" },
   "tab.popular": { ko: "인기종목", en: "Popular" },
   "tab.search": { ko: "간편검색", en: "Search" },
@@ -3778,9 +3814,9 @@ function syncMarketModeUI() {
   document.body.dataset.marketMode = isKr ? "kr" : "us";
   marketModeKrBtn.classList.toggle("active", isKr);
   marketModeUsBtn.classList.toggle("active", !isKr);
-  // 로고 오른쪽 현재 시장 표시(2026-08-31, 상단 토글 숨김 대체) + 네모 국기(2026-09-01)
+  // 로고 오른쪽 현재 시장 표시(2026-08-31, 상단 토글 숨김 대체) + 네모 국기(2026-09-01) — 이름은 한국주식/미국주식(2026-09-01 변경)
   const fhMarketLabel = el("fhMarketLabel");
-  if (fhMarketLabel) fhMarketLabel.textContent = isKr ? "국내" : "해외";
+  if (fhMarketLabel) fhMarketLabel.textContent = isKr ? "한국주식" : "미국주식";
   const fhMarketFlag = el("fhMarketFlag");
   if (fhMarketFlag) fhMarketFlag.innerHTML = isKr ? FLAG_SVG_KR : FLAG_SVG_US;
   syncFirmsTabForMarket();

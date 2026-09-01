@@ -7,6 +7,7 @@ const ALLOWED_HOSTS = [
   "query2.finance.yahoo.com",
   "fred.stlouisfed.org",
   "news.google.com", // 국내 종목 주요뉴스(구글 뉴스 RSS 검색, 2026-09-01) — 응답은 XML이지만 그대로 스트리밍 중계됨
+  "www.bing.com", // 국내 종목 주요뉴스 2순위(Bing 뉴스 RSS) — 구글이 Cloudflare 워커 IP를 차단(503)할 때 폴백(2026-09-01)
 ];
 
 const CORS_HEADERS = {

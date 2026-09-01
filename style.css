@@ -1974,6 +1974,9 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 .bottom-nav-btn svg { width: 26px; height: 26px; position: relative; top: 3px; }
 .bottom-nav-btn.active { color: var(--text); }
 .bottom-nav-btn.active svg { color: var(--text); }
+/* 국내/해외 컬러 네모 국기(2026-09-01, 상단 시장 표시와 통일) — 비활성일 땐 흑백으로 꺼진 느낌, 활성 시 컬러 */
+.bottom-nav-btn svg.bottom-nav-flag { width: 27px; height: 18px; top: 7px; filter: grayscale(1) opacity(0.55); }
+.bottom-nav-btn.active svg.bottom-nav-flag { filter: none; }
 /* 로고 오른쪽 현재 시장 표시(국내/해외) — 국내 모드의 남색 상단바에선 흰 글씨 */
 .fh-market-label { font-size: 17px; font-weight: 800; letter-spacing: -0.3px; color: var(--text); }
 body[data-market-mode="kr"] .fh-market-label { color: #fff; }

@@ -20,10 +20,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="굴려볼까" />
-<link rel="stylesheet" href="style.css?v=20260831q" />
+<link rel="stylesheet" href="style.css?v=20260901a" />
 <!-- 지도가 떠 있는 동안 본체 파일을 미리 받아둠 — 간편검색/시장/더보기로 처음 넘어갈 때 로딩 체감 단축 -->
-<link rel="prefetch" href="../app.js?v=20260901b" />
-<link rel="prefetch" href="../style.css?v=20260901a" />
+<link rel="prefetch" href="../app.js?v=20260901c" />
+<link rel="prefetch" href="../style.css?v=20260901b" />
 <link rel="prefetch" href="../index.html" />
 </head>
 <body>
@@ -196,13 +196,14 @@
 
   <nav class="bottom-nav">
     <!-- 하단 네비(2026-09-01 개편): 국내-해외-시장-관심종목-더보기, 지도 버튼은 본체 더보기 패널로 이동 -->
-    <button type="button" class="bottom-nav-btn" id="bottomNavKrBtn2" aria-label="국내 랭킹">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V3.5"/><path d="M5 4h14v10H5"/><circle cx="12.5" cy="9" r="2.4"/></svg>
-      <span data-i18n="market.kr">국내</span>
+    <!-- 국내/해외 아이콘: 본체 상단 시장 표시와 동일한 컬러 네모 국기로 통일(2026-09-01) — 비활성 시 CSS로 흑백 처리 -->
+    <button type="button" class="bottom-nav-btn" id="bottomNavKrBtn2" aria-label="한국주식 랭킹">
+      <svg class="bottom-nav-flag" viewBox="0 0 21 14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#fff" stroke="rgba(0,0,0,0.25)"/><g transform="translate(10.5,7) rotate(-15)"><path d="M-3.7 0 A3.7 3.7 0 0 1 3.7 0 Z" fill="#cd2e3a"/><path d="M-3.7 0 A3.7 3.7 0 0 0 3.7 0 Z" fill="#0047a0"/><circle cx="-1.85" cy="0" r="1.85" fill="#cd2e3a"/><circle cx="1.85" cy="0" r="1.85" fill="#0047a0"/></g></svg>
+      <span data-i18n="market.kr">한국주식</span>
     </button>
-    <button type="button" class="bottom-nav-btn" id="bottomNavUsBtn2" aria-label="해외 랭킹">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V3.5"/><path d="M5 4h14v10H5"/><path d="M11 7.3h8M5 10.6h14"/><rect x="5" y="4" width="6" height="3.4" fill="currentColor" stroke="none"/></svg>
-      <span data-i18n="market.us">해외</span>
+    <button type="button" class="bottom-nav-btn" id="bottomNavUsBtn2" aria-label="미국주식 랭킹">
+      <svg class="bottom-nav-flag" viewBox="0 0 21 14"><defs><clipPath id="navUsFlagClip2"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5"/></clipPath></defs><g clip-path="url(#navUsFlagClip2)"><rect x="0" y="0" width="21" height="14" fill="#fff"/><rect x="0" y="0.5" width="21" height="1.9" fill="#b22234"/><rect x="0" y="4.3" width="21" height="1.9" fill="#b22234"/><rect x="0" y="8.1" width="21" height="1.9" fill="#b22234"/><rect x="0" y="11.9" width="21" height="1.9" fill="#b22234"/><rect x="0" y="0" width="9.5" height="6.2" fill="#3c3b6e"/><g fill="#fff"><circle cx="2.4" cy="1.8" r="0.55"/><circle cx="4.8" cy="1.8" r="0.55"/><circle cx="7.2" cy="1.8" r="0.55"/><circle cx="2.4" cy="4.2" r="0.55"/><circle cx="4.8" cy="4.2" r="0.55"/><circle cx="7.2" cy="4.2" r="0.55"/></g></g><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="none" stroke="rgba(0,0,0,0.25)"/></svg>
+      <span data-i18n="market.us">미국주식</span>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavMarketBtn2" aria-label="시장">
       <svg viewBox="0 0 24 24" fill="none"><polyline points="3 17 9 11 13 15 21 5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><polyline points="15 5 21 5 21 11" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -224,6 +225,6 @@
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script src="data/sp500-data-core.js?v=20260901a"></script>
 <script src="data/kr-data-core.js?v=20260901a" onerror="window.KR_CORE_DATA = { companies: [] };"></script>
-<script src="app.js?v=20260901a"></script>
+<script src="app.js?v=20260901b"></script>
 </body>
 </html>
