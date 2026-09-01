@@ -2018,8 +2018,8 @@ body[data-header-tone="dark"] .fh-market-label { color: #fff; }
 /* 암호화폐 상세(2026-09-01): 개요·invest점수(상승압력)·주요 뉴스만 — 매출액 등 주식 전용 탭·버튼 숨김 */
 .company-panel.crypto-detail #summarySubtabRevenueBtn,
 .company-panel.crypto-detail .summary-subtab-panel[data-summary-subtabpanel="revenue"],
-.company-panel.crypto-detail .summary-action-row,
 .company-panel.crypto-detail .company-meta span:nth-child(-n+3) { display: none !important; }
+/* 코인 상세에도 과거분석·미래예측·S리포트 3버튼은 표시(2026-09-02 — 코인 전용 렌더러 연결) */
 
 /* 더보기 아이콘은 살짝 크게 유지하되 흐름 높이는 동일(2.5+29-1.5=30) — 라벨 줄 정렬 유지 */
 #bottomNavMoreBtn svg { width: 29px; height: 29px; margin: 2.5px 0 -1.5px; }

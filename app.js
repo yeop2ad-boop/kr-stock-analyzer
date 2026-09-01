@@ -5182,9 +5182,11 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   sReportInlineWrap.style.display = "none";
 
   const rawCompanyName = quote.longname || quote.shortname || meta.longName || meta.symbol;
+  // kr/us/etf/crypto — 이름 표기 외에 과거분석·미래예측·S리포트 버튼의 자산별 분기(2026-09-02)에도 사용
+  const summaryAssetSection = sectionOfSymbol(meta.symbol || quote.symbol || "", quote.quoteType);
+  const isAssetDetail = summaryAssetSection === "etf" || summaryAssetSection === "crypto";
   // 암호화폐는 "Bitcoin USD"처럼 통화쌍 표기라 위키 검색·표시용 이름에서 " USD"를 떼어냄(2026-09-01)
-  const companyName =
-    sectionOfSymbol(meta.symbol || quote.symbol || "", quote.quoteType) === "crypto" ? rawCompanyName.replace(/\s+USD$/i, "") : rawCompanyName;
+  const companyName = summaryAssetSection === "crypto" ? rawCompanyName.replace(/\s+USD$/i, "") : rawCompanyName;
   let oneLiner = "사업 개요 정보를 찾을 수 없습니다.";
   try {
     oneLiner = await getBusinessSummaryKo(companyName);
@@ -5271,7 +5273,8 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     toggleBtn.classList.add("active");
     if (!tickerHistoricalLoaded) {
       tickerHistoricalLoaded = true;
-      await runTickerHistorical(symbol, row);
+      // ETF·코인(2026-09-02)은 재무제표 기반 주식 비교표 대신 "1년 전 가격 + 그 시점의 전용 배점 점수"를 보여줌
+      await (isAssetDetail ? runAssetTickerHistorical(symbol, row, summaryAssetSection) : runTickerHistorical(symbol, row));
     }
   });
 
@@ -5291,7 +5294,8 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     scrollChartToRight(el("futureChartContainer")); // 이미 그려져 있던 경우에도 오른쪽 끝부터
     if (!futureLoaded) {
       futureLoaded = true;
-      await runFuturePrediction(symbol, selfMetricsPromise, marketReturnsPromise);
+      // ETF·코인(2026-09-02)은 주식 배점 점수 배지·투자안정 분포 통계 없이 4년 주기 예측 그래프만 표시
+      await runFuturePrediction(symbol, selfMetricsPromise, marketReturnsPromise, { chartOnly: isAssetDetail });
     }
   });
 
@@ -5310,7 +5314,8 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     sReportToggleBtn.classList.add("active");
     if (!sReportLoaded) {
       sReportLoaded = true;
-      await runSReport(symbol, selfMetricsPromise);
+      // ETF·코인(2026-09-02)은 기업가치 항목 없이 6개 항목(52주최저~투자안정)의 유니버스 내 순위만 표시
+      await (isAssetDetail ? runAssetSReport(symbol, summaryAssetSection) : runSReport(symbol, selfMetricsPromise));
     }
   });
 
@@ -5336,6 +5341,198 @@ async function runTickerHistorical(ticker, container) {
     container.innerHTML = historicalTableHtml(rows, "순위");
   } catch (err) {
     container.innerHTML = `<p class="error-inline">과거분석 데이터를 가져오지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
+  }
+}
+
+// ---------- ETF·코인 전용 과거분석(2026-09-02): 1년 전 가격 + 그 시점까지의 데이터로 계산한 전용 배점 점수 ----------
+function closestIdxOfPairs(pairs, targetT) {
+  let idx = -1;
+  let best = Infinity;
+  for (let i = 0; i < pairs.length; i++) {
+    const d = Math.abs(pairs[i].t - targetT);
+    if (d < best) {
+      best = d;
+      idx = i;
+    }
+  }
+  return idx;
+}
+// 2년 차트에서 idx 시점까지의 데이터만으로 computeChartDerivedMetrics와 같은 입력 지표를 재현
+function chartDerivedMetricsAsOf(pairs, idx) {
+  const upTo = pairs.slice(0, idx + 1);
+  const asOf = upTo[upTo.length - 1];
+  const avgOf = (arr) => (arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null);
+  const dvs = upTo.map((p) => p.c * p.v);
+  const recentDollarVolume = avgOf(dvs.slice(-5));
+  const avgDollarVolume1y = avgOf(dvs.slice(-252));
+  const i3 = closestIdxOfPairs(upTo, asOf.t - 91 * 86400);
+  const momentum3m = i3 >= 0 && upTo[i3].c ? ((asOf.c - upTo[i3].c) / upTo[i3].c) * 100 : null;
+  const i1y = closestIdxOfPairs(upTo, asOf.t - 365 * 86400);
+  const oneYearReturn =
+    i1y >= 0 && upTo[i1y].c && Math.abs(upTo[i1y].t - (asOf.t - 365 * 86400)) < 30 * 86400 ? ((asOf.c - upTo[i1y].c) / upTo[i1y].c) * 100 : null;
+  const rets = [];
+  for (let i = 1; i < upTo.length; i++) {
+    if (upTo[i - 1].c) rets.push(Math.abs((upTo[i].c - upTo[i - 1].c) / upTo[i - 1].c) * 100);
+  }
+  const volatility = avgOf(rets.slice(-30));
+  return { t: asOf.t, price: asOf.c, recentDollarVolume, avgDollarVolume1y, momentum3m, oneYearReturn, volatility };
+}
+async function runAssetTickerHistorical(ticker, container, assetType) {
+  container.innerHTML = `<p class="muted">불러오는 중...</p>`;
+  try {
+    const isEtf = assetType === "etf";
+    const isKr = isKrTicker(ticker);
+    const [chart, benchChart] = await Promise.all([yahooChart(ticker, "2y", "1d"), yahooChart(isEtf ? "^GSPC" : "BTC-USD", "2y", "1d")]);
+    const pairs = chartCloseVolumePairs(chart);
+    if (pairs.length < 30) throw new Error("과거 데이터가 부족합니다.");
+    const last = pairs[pairs.length - 1];
+    const idx = closestIdxOfPairs(pairs, last.t - 365 * 86400);
+    if (idx < 5 || Math.abs(pairs[idx].t - (last.t - 365 * 86400)) > 20 * 86400)
+      throw new Error("1년 전 데이터가 없습니다(상장·거래 1년 미만일 수 있어요).");
+    const asOfM = chartDerivedMetricsAsOf(pairs, idx);
+
+    // 벤치마크(ETF는 S&P500, 코인은 비트코인)의 "1년 전 시점 기준 1년 수익률" — 투자안정 ②번 입력
+    const bPairs = chartClosePairs(benchChart);
+    const bNow = closestIdxOfPairs(bPairs, asOfM.t);
+    const bBase = closestIdxOfPairs(bPairs, asOfM.t - 365 * 86400);
+    const benchReturnAsOf = bNow >= 0 && bBase >= 0 && bPairs[bBase].c ? ((bPairs[bNow].c - bPairs[bBase].c) / bPairs[bBase].c) * 100 : null;
+
+    let pressureAsOf;
+    let riskAsOf;
+    let capNote;
+    if (isEtf) {
+      pressureAsOf = computeEtfAttractivenessScore(asOfM).total;
+      const cap = isKr ? await getKrEtfMarketSum(ticker).catch(() => null) : await getUsEtfNetAssets(ticker).catch(() => null);
+      riskAsOf = computeEtfRiskScore({
+        volatility: asOfM.volatility,
+        oneYearReturn: asOfM.oneYearReturn,
+        sp500Return: benchReturnAsOf,
+        isKr,
+        marketSumEok: isKr ? cap : null,
+        netAssetsUsd: isKr ? null : cap,
+      }).total;
+      capNote = "시가총액 배점은 현재 시총 기준";
+    } else {
+      pressureAsOf = computeCryptoAttractivenessScore(asOfM).total;
+      const top = await getCryptoTop100().catch(() => []);
+      const rank = top.findIndex((q) => q && q.symbol === ticker);
+      const capPercentile = rank >= 0 ? ((top.length - 1 - rank) / Math.max(1, top.length - 1)) * 100 : null;
+      riskAsOf = computeCryptoRiskScore({
+        volatility: asOfM.volatility,
+        oneYearReturn: asOfM.oneYearReturn,
+        btcReturn: benchReturnAsOf,
+        capPercentile,
+        capRank: rank >= 0 ? rank + 1 : null,
+      }).total;
+      capNote = "시총 순위 배점은 현재 순위 기준";
+    }
+
+    const chartMeta = (chart.chart.result[0] && chart.chart.result[0].meta) || {};
+    const currency = chartMeta.currency || (isKr ? "KRW" : "USD");
+    const nowPrice = chartMeta.regularMarketPrice !== undefined && chartMeta.regularMarketPrice !== null ? chartMeta.regularMarketPrice : last.c;
+    const chgSince = asOfM.price ? ((nowPrice - asOfM.price) / asOfM.price) * 100 : null;
+    // 코인은 1달러 미만(밈코인 등)도 많아 소수 6자리까지 표시
+    const fmtAssetPrice = (v) => (isEtf ? fmtPrice(v, currency) : "$" + Number(v).toLocaleString("en-US", { maximumFractionDigits: v >= 1 ? 2 : 6 }));
+    const dateStr = new Date(asOfM.t * 1000).toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric" });
+    container.innerHTML = `
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 1년 전(${dateStr}) 종가와 그 시점까지의 데이터로 계산한 ${isEtf ? "ETF" : "코인"} 전용 배점 점수입니다(${capNote}). 투자 자문이 아닙니다.</p>
+      <table class="top30-table">
+        <thead><tr><th>1년 전 가격</th><th>현재가<br>(1년 변화)</th><th>1년 전<br>상승 압력</th><th>1년 전<br>투자 안정</th></tr></thead>
+        <tbody><tr>
+          <td>${fmtAssetPrice(asOfM.price)}</td>
+          <td>${fmtAssetPrice(nowPrice)}${
+      chgSince !== null ? `<br><span class="${chgSince >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(chgSince)})</span>` : ""
+    }</td>
+          <td>${scoreRankColorHtml(pressureAsOf, pressureAsOf)}</td>
+          <td>${scoreRankColorHtml(riskAsOf, riskAsOf)}</td>
+        </tr></tbody>
+      </table>`;
+  } catch (err) {
+    container.innerHTML = `<p class="error-inline">과거분석 데이터를 가져오지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
+  }
+}
+
+// ---------- ETF·코인 전용 S리포트(2026-09-02): 6개 항목 값 + 유니버스(각 시총 상위 100개) 내 순위 ----------
+async function runAssetSReport(ticker, assetType) {
+  const wrap = sReportInlineWrap;
+  wrap.innerHTML = "";
+  const statusEl = document.createElement("p");
+  statusEl.className = "muted";
+  statusEl.style.padding = "10px 0";
+  statusEl.textContent = "유니버스 종목들의 지표를 계산하는 중...";
+  wrap.appendChild(statusEl);
+  try {
+    const isEtf = assetType === "etf";
+    const isKr = isKrTicker(ticker);
+    // 인기종목·시장동향과 같은 스캔 캐시를 공유 — 이미 스캔했으면 즉시, 아니면 여기서 100개 스캔
+    const { rows } = isEtf ? await ensureEtfScanRows(isKr ? "kr" : "us", 100, statusEl) : await ensureCryptoScanRows(100, statusEl);
+    if (!rows || rows.length === 0) throw new Error("유니버스 데이터를 가져오지 못했습니다.");
+
+    let self = rows.find((r) => r.symbol === ticker);
+    let outsideUniverse = false;
+    if (!self) {
+      // 시총 상위 100 밖 종목 — 본인 지표만 실시간 계산해 100개 목록에 끼워 넣은 근사 순위
+      outsideUniverse = true;
+      statusEl.textContent = "이 종목의 지표를 계산하는 중...";
+      const m = await computeChartDerivedMetrics(ticker);
+      if (!m) throw new Error("이 종목의 지표를 계산하지 못했습니다.");
+      let pressure;
+      let risk;
+      if (isEtf) {
+        pressure = computeEtfAttractivenessScore(m).total;
+        const { sp500Return } = await getMarketReturnsCached();
+        const cap = isKr ? await getKrEtfMarketSum(ticker).catch(() => null) : await getUsEtfNetAssets(ticker).catch(() => null);
+        risk = computeEtfRiskScore({
+          volatility: m.volatility,
+          oneYearReturn: m.oneYearReturn,
+          sp500Return,
+          isKr,
+          marketSumEok: isKr ? cap : null,
+          netAssetsUsd: isKr ? null : cap,
+        }).total;
+      } else {
+        pressure = computeCryptoAttractivenessScore(m).total;
+        risk = (await getCryptoRiskScore(ticker, m.oneYearReturn)).total;
+      }
+      self = {
+        symbol: ticker,
+        price: m.price,
+        currency: m.currency || (isKr ? "KRW" : "USD"),
+        changePct: m.changePct,
+        pressure,
+        risk,
+        recentDollarVolume: m.recentDollarVolume,
+        week52RangePct: m.week52RangePct,
+      };
+    }
+
+    const universe = outsideUniverse ? [...rows, self] : rows;
+    const totalCount = universe.length;
+    const metricRank = (key) => {
+      const sorted = [...universe].sort(ASSET_TREND_METRICS[key].sort);
+      const i = sorted.indexOf(self);
+      return i >= 0 ? i + 1 : null;
+    };
+    const uniLabel = isEtf ? (isKr ? "한국 ETF 시가총액 상위 100개" : "미국 ETF 상위 100개") : "암호화폐 시가총액 상위 100개";
+    const body = ["week52", "volume", "surge", "plunge", "pressure", "risk"]
+      .map((key) => {
+        const m = ASSET_TREND_METRICS[key];
+        const rank = metricRank(key);
+        return `<tr><td>${m.label}</td><td>${m.cell(self)}</td><td>${
+          rank ? `<b>${rank}위</b> <span class="muted" style="font-size:11px;">/ ${totalCount}개</span>` : "N/A"
+        }</td></tr>`;
+      })
+      .join("");
+    wrap.innerHTML = `
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${uniLabel} 기준 6개 항목별 순위입니다${
+      outsideUniverse ? " (이 종목은 시총 상위 100위 밖이라 100개+본인을 합친 근사 순위예요)" : ""
+    }. 투자 자문이 아닙니다.</p>
+      <table class="top30-table">
+        <thead><tr><th>항목</th><th>값</th><th>순위</th></tr></thead>
+        <tbody>${body}</tbody>
+      </table>`;
+  } catch (err) {
+    wrap.innerHTML = `<p class="error-inline">S리포트를 계산하지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
   }
 }
 
@@ -7616,8 +7813,8 @@ function assetTrendTableHtml(rows, metricKey, universeLabel, rowNameHtmlFn, pric
     </table>`;
 }
 
-// ETF 시장동향 단계식 로딩(2026-09-01): 처음엔 시총 상위 20개만 스캔해 20개 표시,
-// '더보기'를 누르면 전체(100개)를 마저 스캔해 상위 50개까지 표시(국내 랭킹과 동일한 UX)
+// ETF 시장동향 단계식 로딩: 처음엔 시총 상위 30개만 스캔해 30개 표시,
+// '더보기'를 누르면 전체(100개)를 마저 스캔해 100개 전체 표시(국내 랭킹과 동일한 UX, 2026-09-02 30→100 개편)
 const etfTrendExpanded = new Set(); // '더보기'를 누른 지역("us"/"kr")
 async function runEtfTrend() {
   const statusEl = trendStatus;
@@ -7629,10 +7826,10 @@ async function runEtfTrend() {
   try {
     const isKr = region === "kr";
     const expanded = etfTrendExpanded.has(region);
-    const { rows, scanned, total } = await ensureEtfScanRows(region, expanded ? 100 : 20, statusEl);
+    const { rows, scanned, total } = await ensureEtfScanRows(region, expanded ? 100 : 30, statusEl);
     if (etfPopularRegion !== region || appSectionMode !== "etf") return;
     statusEl.style.display = "none";
-    const showCount = expanded ? 50 : Math.min(20, scanned);
+    const showCount = expanded ? total : Math.min(30, scanned);
     const universeLabel = isKr ? "국내 상장 ETF 시가총액 상위" : "미국 상장 ETF 순자산 상위";
     resultsEl.innerHTML =
       etfRegionNavHtml("data-etf-trend-region") +
@@ -7640,12 +7837,12 @@ async function runEtfTrend() {
       assetTrendTableHtml(
         rows,
         assetTrendMetric,
-        expanded ? `${universeLabel} ${total}개 (상위 50개 표시)` : `${universeLabel} ${scanned}개`,
+        expanded ? `${universeLabel} ${total}개 전체` : `${universeLabel} ${scanned}개`,
         (r) => etfRowNameHtml(r, isKr),
         (r) => priceChartLink(r.symbol, fmtPrice(r.price, r.currency)),
         showCount
       ) +
-      (expanded ? "" : `<button type="button" class="cat-btn load-more-btn">${scanned < total ? `더보기 (전체 ${total}개 검색 · 약 1분 소요)` : "더보기 (상위 50개 보기)"}</button>`);
+      (expanded ? "" : `<button type="button" class="cat-btn load-more-btn">${scanned < total ? `더보기 (전체 ${total}개 검색 · 약 1분 소요)` : `더보기 (전체 ${total}개 보기)`}</button>`);
     const moreBtn = resultsEl.querySelector(".load-more-btn");
     if (moreBtn) {
       moreBtn.addEventListener("click", () => {
@@ -7665,8 +7862,8 @@ trendResults.addEventListener("click", (e) => {
   runEtfTrend();
 });
 
-// 코인 시장동향 단계식 로딩(2026-09-01): 처음엔 시총 상위 20개만 스캔해 20개 표시,
-// '더보기'를 누르면 전체(50개)를 마저 스캔해 상위 30개까지 표시
+// 코인 시장동향 단계식 로딩: 처음엔 시총 상위 30개만 스캔해 30개 표시,
+// '더보기'를 누르면 전체(100개)를 마저 스캔해 100개 전체 표시(2026-09-02 30→100 개편)
 let cryptoTrendExpanded = false;
 async function runCryptoTrend() {
   const statusEl = trendStatus;
@@ -7676,21 +7873,21 @@ async function runCryptoTrend() {
   statusEl.textContent = "암호화폐 목록을 불러오는 중...";
   try {
     const expanded = cryptoTrendExpanded;
-    const { rows, scanned, total } = await ensureCryptoScanRows(expanded ? 100 : 20, statusEl);
+    const { rows, scanned, total } = await ensureCryptoScanRows(expanded ? 100 : 30, statusEl);
     if (appSectionMode !== "crypto") return;
     statusEl.style.display = "none";
-    const showCount = expanded ? 30 : Math.min(20, scanned);
+    const showCount = expanded ? total : Math.min(30, scanned);
     resultsEl.innerHTML =
       (expanded ? "" : topCapNoteHtml(scanned, total, true)) +
       assetTrendTableHtml(
         rows,
         assetTrendMetric,
-        expanded ? `암호화폐 시가총액 상위 ${total}개 (상위 30개 표시)` : `암호화폐 시가총액 상위 ${scanned}개`,
+        expanded ? `암호화폐 시가총액 상위 ${total}개 전체` : `암호화폐 시가총액 상위 ${scanned}개`,
         cryptoRowNameHtml,
         cryptoPriceStr,
         showCount
       ) +
-      (expanded ? "" : `<button type="button" class="cat-btn load-more-btn">${scanned < total ? `더보기 (전체 ${total}개 검색 · 약 1분 소요)` : "더보기 (상위 30개 보기)"}</button>`);
+      (expanded ? "" : `<button type="button" class="cat-btn load-more-btn">${scanned < total ? `더보기 (전체 ${total}개 검색 · 약 1분 소요)` : `더보기 (전체 ${total}개 보기)`}</button>`);
     const moreBtn = resultsEl.querySelector(".load-more-btn");
     if (moreBtn) {
       moreBtn.addEventListener("click", () => {
@@ -12127,7 +12324,7 @@ async function renderFutureRiskSection(ticker, metricsPromise, marketReturnsProm
 // 기업검색 요약 페이지의 "🔮 미래예측" 토글에서 현재 보고 있는 종목으로 바로 실행(별도 티커 입력 불필요)
 // metricsPromise/marketReturnsPromise를 넘겨받으면 요약 탭의 상승압력도·투자 안정성 점수와 동일한 fetch를 재사용해
 // 두 화면의 점수가 서로 어긋나지 않게 함(넘겨받지 못한 경우에만 이 함수가 직접 새로 fetch)
-async function runFuturePrediction(ticker, metricsPromise, marketReturnsPromise) {
+async function runFuturePrediction(ticker, metricsPromise, marketReturnsPromise, opts = {}) {
   setFutureStatus("loading", `${ticker} 데이터를 불러오는 중입니다...`);
 
   try {
@@ -12142,6 +12339,25 @@ async function runFuturePrediction(ticker, metricsPromise, marketReturnsPromise)
     }
     const data = await computeFuturePrediction(ticker);
     renderFutureChart(data);
+
+    // ETF·코인(2026-09-02): 점수 배지(주식 배점)와 투자안정 분포 통계(S&P500 주식 전용)는 생략하고
+    // 4년 주기 예측 그래프 + 종목 식별 헤더만 표시
+    if (opts.chartOnly) {
+      const koName = (TICKER_TO_KOREAN_NAME[ticker] || (quote && (quote.longname || quote.shortname)) || ticker).replace(/\s+USD$/i, "");
+      const isCoin = ticker.toUpperCase().includes("-USD");
+      el("futureChartModalTitle").innerHTML = `
+        <span class="future-modal-identity">
+          ${isCoin ? cryptoLogoHtml(cryptoBaseTicker(ticker)) : tickerLogoHtml(ticker)}
+          <span class="future-modal-name">${escapeHtml(koName)}</span>
+          <span class="future-modal-ticker">${escapeHtml(ticker)}</span>
+        </span>`;
+      const rc = el("futureRiskContainer");
+      if (rc) rc.innerHTML = `<p class="muted" style="text-align:center;padding:20px 0;">투자 안정 점수별 분포 통계는 주식 전용이라 ETF·코인에서는 제공하지 않습니다.</p>`;
+      const cap = el("futureRiskCaption");
+      if (cap) cap.textContent = "";
+      setFutureStatus(null, null);
+      return;
+    }
 
     const sharedMetricsPromise = metricsPromise || getFullMetrics(ticker);
     const sharedMarketReturnsPromise = marketReturnsPromise || getMarketReturns();

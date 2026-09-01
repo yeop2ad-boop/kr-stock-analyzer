@@ -75,6 +75,29 @@ const SECTOR_COLOR_VAR = {
   "US ETF": "--sector-communication",
   "KR ETF": "--sector-healthcare",
   Crypto: "--sector-energy",
+  // ETF200 카테고리(2026-09-02): 지역 대신 투자 대상별 섹터
+  미국지수: "--sector-technology",
+  한국지수: "--sector-financials",
+  글로벌지수: "--sector-communication",
+  "반도체·테크": "--sector-consumer-discretionary",
+  "섹터·테마": "--sector-industrials",
+  "배당·인컴": "--sector-consumer-staples",
+  "채권·금리": "--sector-utilities",
+  원자재: "--sector-materials",
+  "레버리지·인버스": "--sector-energy",
+  // 비트코인100 카테고리(2026-09-02): 코인 사용 목적별 분류
+  가치저장: "--sector-technology",
+  "플랫폼·스마트컨트랙트": "--sector-communication",
+  스테이블코인: "--sector-consumer-staples",
+  "결제·송금": "--sector-financials",
+  금융서비스: "--sector-healthcare",
+  "스테이킹·랩드": "--sector-utilities",
+  "AI·데이터": "--sector-consumer-discretionary",
+  프라이버시: "--sector-real-estate",
+  "밈·커뮤니티": "--sector-energy",
+  "게임·메타버스": "--sector-industrials",
+  NFT: "--sector-materials",
+  기타: "--sector-real-estate",
   "Information Technology": "--sector-technology",
   "Health Care": "--sector-healthcare",
   Financials: "--sector-financials",
@@ -341,17 +364,90 @@ function extraDataFor(market) {
   if (market === "domestic") return typeof KR_EXTRA_DATA !== "undefined" ? KR_EXTRA_DATA : null;
   return typeof SP500_EXTRA_DATA !== "undefined" ? SP500_EXTRA_DATA : null;
 }
+// ---------- ETF200·비트코인100 카테고리 분류(2026-09-02 사용자 요청) ----------
+// ETF는 지역(미국/한국 ETF) 대신 투자 대상별 섹터로, 코인은 사용 목적별 분류로 버블을 묶는다.
+// 미국 ETF는 큐레이션 심볼→카테고리 표, 한국 ETF는 상품명 키워드 규칙(위에서부터 첫 일치)으로 분류
+const US_ETF_CATEGORY = (() => {
+  const m = {};
+  const put = (cat, syms) => syms.split(" ").forEach((s) => (m[s] = cat));
+  put(
+    "미국지수",
+    "VOO IVV SPY VTI QQQ QQQM VUG VTV IWF IWD IWM IJH IJR ITOT RSP IVW IVE VO VB VV VBR IWB IWR MGK MDY VOOG SPYG SPYV SCHX SCHG SCHB DFAC USMV QUAL MOAT COWZ AVUV DIA SPLG"
+  );
+  put("글로벌지수", "VEA IEFA IEMG VXUS VWO EFA SCHF IXUS ACWI EWJ VT EEM");
+  put("배당·인컴", "SCHD VIG VYM JEPI JEPQ DGRO DVY SDY NOBL PFF SPYD SPHD HDV QYLD XYLD");
+  put("채권·금리", "BND AGG TLT LQD VCIT VCSH MUB JPST MBB GOVT IEF SHY BSV VGIT VTEB IUSB SHV BIV EMB USFR BIL SGOV TIP VTIP TFLO HYG JNK");
+  put("원자재", "GLD IAU GLDM SLV SGOL USO GDX GDXJ PDBC DBC");
+  put("반도체·테크", "XLK VGT SMH SOXX FTEC IGV SKYY IYW ARKK");
+  put("섹터·테마", "XLF XLV XLE XLY XLI XLP XLU XLB XLC XLRE VNQ VHT VDC VFH VDE VPU IBIT FBTC XBI IBB ITA JETS KRE XOP");
+  put("레버리지·인버스", "TQQQ SQQQ SOXL SOXS UPRO SPXU TMF TZA TNA QLD SSO");
+  return m;
+})();
+function classifyEtfCompany(c) {
+  if (!/\.KS$/i.test(c.symbol || "")) return US_ETF_CATEGORY[c.symbol] || "기타";
+  const n = c.name || "";
+  if (/(레버리지|인버스|곱버스)/.test(n)) return "레버리지·인버스";
+  if (/(커버드콜|배당|리츠)/.test(n)) return "배당·인컴";
+  if (/(채권|금리|머니마켓|KOFR|국채|통안채|금융채|단기채|크레딧|캐리)/.test(n)) return "채권·금리";
+  if (/(금현물|골드|은현물|원유|원자재|구리|WTI)/.test(n)) return "원자재";
+  if (/(반도체|HBM)/.test(n)) return "반도체·테크";
+  if (/미국.*(S&P|나스닥|다우|500)/.test(n)) return "미국지수";
+  if (/(테크|IT|AI|인공지능|로봇|우주|빅테크|전력|소프트웨어|인터넷)/.test(n)) return "반도체·테크";
+  if (/(코스피|코스닥|코리아|KRX|Korea|밸류업|그룹|Top5|TOP10|(^|\s)200|(^|\s)100)/.test(n)) return "한국지수";
+  if (/(2차전지|조선|방산|바이오|헬스케어|자동차|은행|금융|증권|철강|화학|건설|엔터|게임|여행|화장품|음식료|보험|에너지|수소|태양광|풍력|원자력|인프라|배터리)/.test(n)) return "섹터·테마";
+  if (/(글로벌|중국|일본|인도|베트남|유럽|신흥국|차이나|항셍|닛케이|아시아)/.test(n)) return "글로벌지수";
+  return "기타";
+}
+const CRYPTO_PURPOSE = (() => {
+  const m = {};
+  const put = (cat, bases) => bases.split(" ").forEach((b) => (m[b] = cat));
+  put("가치저장", "BTC WBTC CBBTC BTCB LBTC BTCT BTW XAUT PAXG GRAM");
+  put("결제·송금", "XRP XLM LTC BCH DASH");
+  put(
+    "스테이블코인",
+    "USDT USDC USDS DAI USDE USD USD1 USDT0 USDG PYUSD RLUSD USDY USDD BFUSD SUSDE USDGO USDF USDCE AETHUSDT SYRUPUSDC M TUSD FDUSD"
+  );
+  put("플랫폼·스마트컨트랙트", "ETH SOL ADA TRX AVAX DOT NEAR SUI TON ICP ETC HBAR ALGO ATOM MNT POL KAS XTZ EGLD SEI APT ARB OP PI");
+  put("금융서비스", "BNB LEO CRO OKB BGB GT KCS HTX UNI AAVE SKY MKR ONDO ENA MORPHO JLP JST HYPE KHYPE ASTER WLFI LDO INJ COMP CRV SNX CAKE RAY JUP");
+  put("스테이킹·랩드", "STETH WSTETH WBETH WEETH RSETH RETH LSETH JITOSOL BNSOL WETH AETHWETH WBNB WTRX");
+  put("AI·데이터", "LINK TAO VVV WLD FET GRT RENDER RNDR FIL AR THETA");
+  put("프라이버시", "XMR ZEC");
+  put("밈·커뮤니티", "DOGE SHIB PEPE PUMP BONK WIF FLOKI TRUMP FARTCOIN BRETT");
+  put("게임·메타버스", "SAND MANA AXS IMX GALA ENJ RON BEAM");
+  put("NFT", "APE BLUR");
+  return m;
+})();
+function classifyCryptoCompany(c) {
+  // "PEPE24478-USD"처럼 야후가 붙인 뒤 숫자 id와 -USD를 떼어 기본 티커로 매칭
+  const base = String(c.symbol || "").replace(/-USD$/i, "").replace(/\d+$/, "");
+  const cat = CRYPTO_PURPOSE[base];
+  if (cat) return cat;
+  if (/USD/i.test(base)) return "스테이블코인"; // 표에 없는 신규 달러연동 코인 대비
+  return "기타";
+}
+// 지도 데이터(companies)의 sector/sectorKo를 카테고리로 바꿔치기 — 한 번만 수행(플래그 캐시)
+function categorizeAssetMapData(data, kind) {
+  if (!data || data.__categorized) return data;
+  (data.companies || []).forEach((c) => {
+    const cat = kind === "etf" ? classifyEtfCompany(c) : classifyCryptoCompany(c);
+    c.sector = cat;
+    c.sectorKo = cat;
+  });
+  data.__categorized = true;
+  return data;
+}
+
 // 현재 선택된 보기(ACTIVE_VIEW)에 맞게 ACTIVE_DATA를 다시 계산 — extra가 아직 안 불러와진 상태면(로딩 실패 등)
 // core에 있는 종목만이라도 보여줌
 function updateActiveDataForUniverseState() {
   const v = MAP_VIEWS[ACTIVE_VIEW];
-  // ETF200/비트코인50: 전용 배치 데이터 사용(주식 core/extra와 무관)
+  // ETF200/비트코인100: 전용 배치 데이터 사용(주식 core/extra와 무관) — 표시 전 카테고리 분류(2026-09-02)
   if (v.custom === "etf") {
-    ACTIVE_DATA = typeof ETF_MAP_DATA !== "undefined" ? ETF_MAP_DATA : { companies: [] };
+    ACTIVE_DATA = typeof ETF_MAP_DATA !== "undefined" ? categorizeAssetMapData(ETF_MAP_DATA, "etf") : { companies: [] };
     return;
   }
   if (v.custom === "crypto") {
-    ACTIVE_DATA = typeof CRYPTO_MAP_DATA !== "undefined" ? CRYPTO_MAP_DATA : { companies: [] };
+    ACTIVE_DATA = typeof CRYPTO_MAP_DATA !== "undefined" ? categorizeAssetMapData(CRYPTO_MAP_DATA, "crypto") : { companies: [] };
     return;
   }
   const core = coreDataFor(ACTIVE_MARKET);
