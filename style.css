@@ -1988,12 +1988,9 @@ body[data-market-mode="kr"] .fh-market-label { color: #fff; }
 .section-mark svg { width: 17px; height: 11px; display: block; }
 /* 비트코인 섹션 인기종목 — 시가총액 순위 숫자 */
 .crypto-rank { display: inline-block; min-width: 20px; margin-right: 4px; font-weight: 800; color: var(--muted); font-size: 13px; text-align: center; flex: none; }
-/* 암호화폐 상세(2026-09-01): 개요와 주요 뉴스만 — 주식 전용 탭·섹션·버튼 숨김 */
+/* 암호화폐 상세(2026-09-01): 개요·invest점수(상승압력)·주요 뉴스만 — 매출액 등 주식 전용 탭·버튼 숨김 */
 .company-panel.crypto-detail #summarySubtabRevenueBtn,
-.company-panel.crypto-detail #summarySubtabScoreBtn,
 .company-panel.crypto-detail .summary-subtab-panel[data-summary-subtabpanel="revenue"],
-.company-panel.crypto-detail .summary-subtab-panel[data-summary-subtabpanel="investscore"],
-.company-panel.crypto-detail #summaryScoreRow,
 .company-panel.crypto-detail .summary-action-row,
 .company-panel.crypto-detail .company-meta span:nth-child(-n+3) { display: none !important; }
 

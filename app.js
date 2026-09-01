@@ -999,6 +999,34 @@ function computeEtfAttractivenessScore(metrics) {
   return { total, volumeScore, volumeRatio, momentumScore, momentum3m, yearScore, oneYearReturn };
 }
 
+// 암호화폐(코인) 전용 상승압력 배점 — 2026-09-01 사용자 지정(총 10점):
+// ① 총 거래대금 0~3점: 최근 5거래일 평균÷1년 평균이 2배 이상 만점, 1배 1점, 0.5배 이하 0점(선형)
+// ② 상승 모멘텀 0~3점: 최근 3개월 상승률 40% 이상 만점, 0% 이하 0점(선형)
+// ③ 1년 상승률 0~4점: 최근 1년 상승률 200% 이상 만점, 0% 이하 0점(선형)
+function computeCryptoAttractivenessScore(metrics) {
+  const { recentDollarVolume, avgDollarVolume1y, momentum3m, oneYearReturn } = metrics;
+
+  let volumeScore = 1.5; // 데이터 부족 시 중립값
+  let volumeRatio = null;
+  if (recentDollarVolume !== undefined && recentDollarVolume !== null && avgDollarVolume1y) {
+    volumeRatio = recentDollarVolume / avgDollarVolume1y;
+    volumeScore = clamp(2 * (volumeRatio - 0.5), 0, 3);
+  }
+
+  let momentumScore = 0;
+  if (momentum3m !== undefined && momentum3m !== null) {
+    momentumScore = clamp((momentum3m / 40) * 3, 0, 3);
+  }
+
+  let yearScore = 0;
+  if (oneYearReturn !== undefined && oneYearReturn !== null) {
+    yearScore = clamp((oneYearReturn / 200) * 4, 0, 4);
+  }
+
+  const total = Math.round(clamp(volumeScore + momentumScore + yearScore, 0, 10) * 10) / 10;
+  return { total, volumeScore, volumeRatio, momentumScore, momentum3m, yearScore, oneYearReturn };
+}
+
 // ETF 전용 투자안정 배점 — 2026-09-01 사용자 지정(총 10점):
 // ① 일평균 변동성 0~3점: 최근 30거래일 일평균 |등락률|이 1% 이하 만점, 5% 이상 0점(선형)
 // ② SPY 대비 모멘텀 0~3점: 1년 상승률이 S&P500과 10%p 미만 차이면 만점, 100%p 이상 차이면 0점(선형)
@@ -4563,6 +4591,10 @@ async function runAnalysis(ticker) {
     const isEtfDetail = !isCryptoDetail && sectionOfSymbol(ticker, quote.quoteType) === "etf";
     const riskDetailBtn = el("futureRiskDetailBtn");
     if (riskDetailBtn) riskDetailBtn.style.display = isEtfDetail ? "none" : "";
+    // 코인 상세(2026-09-01): invest점수 탭을 다시 노출하되 상승압력(코인 전용 배점)만 — 투자안정성 섹션은 코인에선 숨김
+    const riskSectionWrap = el("riskSection").closest("section");
+    if (riskSectionWrap) riskSectionWrap.style.display = isCryptoDetail ? "none" : "";
+    const scoreMode = isCryptoDetail ? "crypto" : isEtfDetail ? "etf" : "stock";
 
     // 나스닥·다우존스·S&P500 1년 수익률과, 분석 대상 자신의 지표(차트+재무제표)는
     // 경쟁사 비교(3)·상승압력도(5)·투자 안정성(6)·미래예측(요약 탭의 🔮 토글) 섹션이 각자 다시 조회하지 않고 공유해서
@@ -4582,8 +4614,6 @@ async function runAnalysis(ticker) {
       renderQuarterlyEarnings(ticker, meta.currency).catch((e) => {
         el("quarterlyEarningsSection").innerHTML = `<p class="error-inline">분기 실적 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
       });
-
-      renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise, isEtfDetail);
 
       renderPeers(ticker, selfMetricsPromise, quote.sector || quote.sectorDisp, quote.industryDisp || quote.industry).catch((e) => {
         el("peersSection").innerHTML = `<p class="error-inline">경쟁사 비교 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
@@ -4606,20 +4636,23 @@ async function runAnalysis(ticker) {
       el("newsSection").innerHTML = `<p class="error-inline">뉴스를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
-    if (!isCryptoDetail) {
-      // ETF는 전용 상승압력 배점(renderEtfScore), 주식은 기존 배점(renderScore)
-      (isEtfDetail ? renderEtfScore(selfMetricsPromise) : renderScore(selfMetricsPromise)).catch((e) => {
-        el("scoreSection").innerHTML = `<p class="error-inline">상승 압력 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
-      });
+    // 개요 미니 배지(상승압력/투자안정/공포지수) — 코인·ETF·주식 각자의 배점으로 계산
+    renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise, scoreMode);
 
+    // 상승압력: 코인/ETF/주식 각자의 전용 배점
+    (isCryptoDetail ? renderCryptoScore(selfMetricsPromise) : isEtfDetail ? renderEtfScore(selfMetricsPromise) : renderScore(selfMetricsPromise)).catch((e) => {
+      el("scoreSection").innerHTML = `<p class="error-inline">상승 압력 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
+    });
+
+    if (!isCryptoDetail) {
       (isEtfDetail ? renderEtfRisk(marketReturnsPromise, selfMetricsPromise) : renderRisk(marketReturnsPromise, selfMetricsPromise)).catch((e) => {
         el("riskSection").innerHTML = `<p class="error-inline">투자 안정성 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
       });
-
-      renderMacro(ticker).catch((e) => {
-        el("macroSection").innerHTML = `<p class="error-inline">거시경제 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
-      });
     }
+
+    renderMacro(ticker).catch((e) => {
+      el("macroSection").innerHTML = `<p class="error-inline">거시경제 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
+    });
 
     setStatus(null, null);
   } catch (err) {
@@ -5133,14 +5166,20 @@ async function runTickerHistorical(ticker, container) {
 }
 
 // 요약 카드 아래에 상승압력도·투자 안정성·거시경제 점수를 한눈에 보는 작은 원형 배지로 가로 배치(상세 근거는 5·6·7번 섹션 참고)
-async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise, isEtf = false) {
+async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise, scoreMode = "stock") {
   const rowEl = el("summaryScoreRow");
   try {
     const [metrics, { sp500Return, kospi200Return }] = await Promise.all([selfMetricsPromise, marketReturnsPromise, krCreditRatingReady]);
     const isKr = isKrTicker(metrics.symbol);
-    // ETF는 전용 상승압력·투자안정 배점(2026-09-01)을 사용
-    const attractiveness = isEtf ? computeEtfAttractivenessScore(metrics) : computeAttractivenessScore(metrics);
-    const risk = isEtf ? await getEtfRiskScore(metrics.symbol, metrics.oneYearReturn, sp500Return) : computeRiskScore(metrics, sp500Return, kospi200Return);
+    // ETF·코인은 각자의 전용 상승압력 배점(2026-09-01)을 사용, 투자안정 배지는 주식·ETF만(코인은 미정의라 숨김)
+    const attractiveness =
+      scoreMode === "etf" ? computeEtfAttractivenessScore(metrics) : scoreMode === "crypto" ? computeCryptoAttractivenessScore(metrics) : computeAttractivenessScore(metrics);
+    const risk =
+      scoreMode === "etf"
+        ? await getEtfRiskScore(metrics.symbol, metrics.oneYearReturn, sp500Return)
+        : scoreMode === "crypto"
+        ? null
+        : computeRiskScore(metrics, sp500Return, kospi200Return);
     const isIPO = isRecentIPO(metrics.firstTradeDate);
 
     let macroBadgeHtml;
@@ -5825,6 +5864,54 @@ async function renderEtfScore(selfMetricsPromise) {
         )}
         <p class="disclaimer">
           ⚠️ ETF 전용 배점(거래대금·모멘텀·1년 상승률)으로 계산한 <b>단순 참고용 정량 지표</b>이며,
+          투자 자문이나 매수/매도 추천이 아닙니다.
+        </p>
+      </div>
+    </div>
+  `;
+}
+
+// ---------- 5-2. 코인 전용 상승압력도(2026-09-01 사용자 배점): 총 거래대금 + 상승 모멘텀(40% 만점) + 1년 상승률(200% 만점) ----------
+async function renderCryptoScore(selfMetricsPromise) {
+  el("scoreSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
+
+  const metrics = await selfMetricsPromise;
+  const { total, volumeScore, volumeRatio, momentumScore, momentum3m, yearScore, oneYearReturn } = computeCryptoAttractivenessScore(metrics);
+
+  const pressureColor = SCORE_COLOR_FAMILY.pressure;
+  el("scoreSection").innerHTML = `
+    <div class="score-wrap">
+      <div class="score-badge">
+        <div class="score-num">${total}</div>
+        <div class="score-den">/ 10</div>
+      </div>
+      <div class="score-details">
+        ${scoreMethodBarRow(
+          "①",
+          "총 거래대금",
+          volumeScore,
+          3,
+          `최근 5거래일 평균, 1년 평균 대비: <b>${volumeRatio !== null ? volumeRatio.toFixed(2) + "배" : "N/A"}</b> (2배 이상 만점, 1배 1점, 0.5배 이하 0점)`,
+          pressureColor
+        )}
+        ${scoreMethodBarRow(
+          "②",
+          "상승 모멘텀",
+          momentumScore,
+          3,
+          `최근 3개월 가격상승: <b>${momentum3m !== null && momentum3m !== undefined ? fmtPct(momentum3m) : "N/A"}</b> (40% 이상 만점·0% 이하 0점)`,
+          pressureColor
+        )}
+        ${scoreMethodBarRow(
+          "③",
+          "1년 상승률",
+          yearScore,
+          4,
+          `최근 1년 가격상승: <b>${oneYearReturn !== null && oneYearReturn !== undefined ? fmtPct(oneYearReturn) : "N/A"}</b> (200% 이상 만점·0% 이하 0점)`,
+          pressureColor
+        )}
+        <p class="disclaimer">
+          ⚠️ 코인 전용 배점(거래대금·모멘텀·1년 상승률)으로 계산한 <b>단순 참고용 정량 지표</b>이며,
           투자 자문이나 매수/매도 추천이 아닙니다.
         </p>
       </div>
