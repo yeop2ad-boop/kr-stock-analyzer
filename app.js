@@ -3768,14 +3768,21 @@ function syncFirmsTabForMarket() {
   const labelEl = el("insightCatFirmsLabel");
   if (labelEl) labelEl.textContent = isKr ? "기관&자산운용사" : "자산&투자사";
 }
+// 시장 표시 옆 네모 국기 SVG(2026-09-01 사용자 요청) — 작게 그려도 깔끔하도록 태극기는 태극 문양만,
+// 성조기는 줄무늬+파란 캔튼+별점 6개로 단순화한 컬러 아이콘
+const FLAG_SVG_KR = `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#fff" stroke="rgba(0,0,0,0.22)"/><g transform="translate(10.5,7) rotate(-15)"><path d="M-3.7 0 A3.7 3.7 0 0 1 3.7 0 Z" fill="#cd2e3a"/><path d="M-3.7 0 A3.7 3.7 0 0 0 3.7 0 Z" fill="#0047a0"/><circle cx="-1.85" cy="0" r="1.85" fill="#cd2e3a"/><circle cx="1.85" cy="0" r="1.85" fill="#0047a0"/></g></svg>`;
+const FLAG_SVG_US = `<svg viewBox="0 0 21 14" width="21" height="14"><defs><clipPath id="fhUsFlagClip"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5"/></clipPath></defs><g clip-path="url(#fhUsFlagClip)"><rect x="0" y="0" width="21" height="14" fill="#fff"/><rect x="0" y="0.5" width="21" height="1.9" fill="#b22234"/><rect x="0" y="4.3" width="21" height="1.9" fill="#b22234"/><rect x="0" y="8.1" width="21" height="1.9" fill="#b22234"/><rect x="0" y="11.9" width="21" height="1.9" fill="#b22234"/><rect x="0" y="0" width="9.5" height="6.2" fill="#3c3b6e"/><g fill="#fff"><circle cx="2.4" cy="1.8" r="0.55"/><circle cx="4.8" cy="1.8" r="0.55"/><circle cx="7.2" cy="1.8" r="0.55"/><circle cx="2.4" cy="4.2" r="0.55"/><circle cx="4.8" cy="4.2" r="0.55"/><circle cx="7.2" cy="4.2" r="0.55"/></g></g><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="none" stroke="rgba(0,0,0,0.22)"/></svg>`;
+
 function syncMarketModeUI() {
   const isKr = getWatchlistActiveMarket() === "KR";
   document.body.dataset.marketMode = isKr ? "kr" : "us";
   marketModeKrBtn.classList.toggle("active", isKr);
   marketModeUsBtn.classList.toggle("active", !isKr);
-  // 로고 오른쪽 현재 시장 표시(2026-08-31, 상단 토글 숨김 대체)
+  // 로고 오른쪽 현재 시장 표시(2026-08-31, 상단 토글 숨김 대체) + 네모 국기(2026-09-01)
   const fhMarketLabel = el("fhMarketLabel");
   if (fhMarketLabel) fhMarketLabel.textContent = isKr ? "국내" : "해외";
+  const fhMarketFlag = el("fhMarketFlag");
+  if (fhMarketFlag) fhMarketFlag.innerHTML = isKr ? FLAG_SVG_KR : FLAG_SVG_US;
   syncFirmsTabForMarket();
   syncDartTabForMarket();
   document.dispatchEvent(new CustomEvent("marketmodechange"));
@@ -6331,40 +6338,38 @@ async function runPopularStocks() {
     statusEl.textContent = "인기종목을 불러오는 중...";
     const isKr = getWatchlistActiveMarket() === "KR";
     const universe = await getSReportUniverse(isKr);
+    // 시총 상위 50위권 전체를 합산점수순으로 들고 있다가, 처음엔 30개만 보여주고 "더보기"로 나머지 20개를 이어서 표시
     const scored = (((universe && universe.companies) || [])
       .filter((c) => c.marketCap && c.pressureScore !== null && c.pressureScore !== undefined && c.stabilityScore !== null && c.stabilityScore !== undefined)
       .sort((a, b) => b.marketCap - a.marketCap)
       .slice(0, 50))
-      .sort((a, b) => b.pressureScore + b.stabilityScore - (a.pressureScore + a.stabilityScore))
-      .slice(0, 30);
+      .sort((a, b) => b.pressureScore + b.stabilityScore - (a.pressureScore + a.stabilityScore));
     if (scored.length === 0) throw new Error("인기종목 데이터를 아직 준비 중입니다. 잠시 후 다시 확인해주세요.");
 
-    statusEl.textContent = "인기종목 시세를 확인하는 중...";
-    const snaps = await mapWithConcurrency(scored, 6, async (c) => {
+    // 시세는 화면에 실제로 보이는 종목만 그때그때 조회(더보기를 누르면 추가분만 마저 조회)
+    const snapCache = new Array(scored.length).fill(undefined);
+    const fetchSnap = async (c) => {
       try {
         const chart = await yahooChart(c.symbol, "5d");
         const snap = yahooSnapshot(chart);
         const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
-        return snap && { ...snap, currency: (meta && meta.currency) || (isKr ? "KRW" : "USD") };
+        return (snap && { ...snap, currency: (meta && meta.currency) || (isKr ? "KRW" : "USD") }) || null;
       } catch {
         return null;
       }
-    });
-    statusEl.style.display = "none";
+    };
 
-    const rows = scored
-      .map((c, i) => {
-        const snap = snaps[i];
-        const name = TICKER_TO_KOREAN_NAME[c.symbol] || c.name || c.symbol;
-        const priceCell =
-          snap && snap.price !== null && snap.price !== undefined
-            ? `${priceChartLink(c.symbol, fmtPrice(snap.price, snap.currency))}${
-                snap.changePct !== null && snap.changePct !== undefined
-                  ? `<br><span class="${snap.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(snap.changePct)})</span>`
-                  : ""
-              }`
-            : "N/A";
-        return `
+    const rowHtml = (c, snap, i) => {
+      const name = TICKER_TO_KOREAN_NAME[c.symbol] || c.name || c.symbol;
+      const priceCell =
+        snap && snap.price !== null && snap.price !== undefined
+          ? `${priceChartLink(c.symbol, fmtPrice(snap.price, snap.currency))}${
+              snap.changePct !== null && snap.changePct !== undefined
+                ? `<br><span class="${snap.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(snap.changePct)})</span>`
+                : ""
+            }`
+          : "N/A";
+      return `
         <tr>
           <td>${i + 1}</td>
           <td><span class="ticker-cell">${tickerLogoHtml(c.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(c.symbol)}">${escapeHtml(name)}</b></span></td>
@@ -6372,16 +6377,41 @@ async function runPopularStocks() {
           <td>${scoreRankColorHtml(c.pressureScore, c.pressureScore)}</td>
           <td>${scoreRankColorHtml(c.stabilityScore, c.stabilityScore)}</td>
         </tr>`;
-      })
-      .join("");
+    };
 
-    resultsEl.innerHTML = `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${isKr ? "코스피200+코스닥150" : "S&P500"} 시가총액 상위 50위권 중 상승 압력+투자 안정 합산이 높은 순 30개입니다. 점수는 매일 자동 갱신되는 스냅샷 기준이며 투자 자문이 아닙니다.</p>
-      <table class="top30-table">
-        <thead><tr><th>순위</th><th>기업명</th><th>현재가<br>(등락률)</th><th>상승<br>압력</th><th>투자<br>안정</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    `;
+    async function paintUpTo(count) {
+      count = Math.min(count, scored.length);
+      const pending = scored.slice(0, count).map((c, i) => ({ c, i })).filter(({ i }) => snapCache[i] === undefined);
+      if (pending.length) {
+        statusEl.style.display = "block";
+        statusEl.textContent = "인기종목 시세를 확인하는 중...";
+        await mapWithConcurrency(pending, 6, async ({ c, i }) => {
+          snapCache[i] = await fetchSnap(c);
+        });
+      }
+      statusEl.style.display = "none";
+
+      const rows = scored.slice(0, count).map((c, i) => rowHtml(c, snapCache[i], i)).join("");
+      const hasMore = count < scored.length;
+      resultsEl.innerHTML = `
+        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${isKr ? "코스피200+코스닥150" : "S&P500"} 시가총액 상위 50위권 중 상승 압력+투자 안정 합산이 높은 순입니다. 점수는 매일 자동 갱신되는 스냅샷 기준이며 투자 자문이 아닙니다.</p>
+        <table class="top30-table">
+          <thead><tr><th>순위</th><th>기업명</th><th>현재가<br>(등락률)</th><th>상승<br>압력</th><th>투자<br>안정</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        ${hasMore ? `<button type="button" class="cat-btn load-more-btn">더보기 (${count}/${scored.length})</button>` : ""}
+      `;
+      const moreBtn = resultsEl.querySelector(".load-more-btn");
+      if (moreBtn) {
+        moreBtn.addEventListener("click", () => {
+          moreBtn.disabled = true;
+          moreBtn.textContent = "불러오는 중...";
+          paintUpTo(scored.length);
+        });
+      }
+    }
+
+    await paintUpTo(30);
   } catch (err) {
     statusEl.style.display = "block";
     statusEl.textContent = `❌ ${err.message || "인기종목을 가져오지 못했습니다."}`;

@@ -1977,6 +1977,9 @@ table.fin-table th:first-child, table.fin-table td:first-child { text-align: lef
 /* 로고 오른쪽 현재 시장 표시(국내/해외) — 국내 모드의 남색 상단바에선 흰 글씨 */
 .fh-market-label { font-size: 17px; font-weight: 800; letter-spacing: -0.3px; color: var(--text); }
 body[data-market-mode="kr"] .fh-market-label { color: #fff; }
+/* 시장 표시 옆 네모 국기(2026-09-01) — 국내=태극기, 해외=성조기 */
+.fh-market-flag { display: inline-flex; align-items: center; margin-left: 5px; }
+.fh-market-flag svg { display: block; }
 
 /* 하단 네비 아이콘 버전 복귀(2026-08-31 사용자 확정) — 더보기/시장 아이콘 미세 정렬 */
 #bottomNavMoreBtn svg { width: 29px; height: 29px; top: 3px; }

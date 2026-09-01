@@ -172,10 +172,12 @@ function Get-RiskScore($symbol, $oneYearReturn, $netIncome, $revenue, $marketCap
   if ($isKr) {
     $krSymbol = if ($KR_PREFERRED_SHARE_MAP.ContainsKey($symbol)) { $KR_PREFERRED_SHARE_MAP[$symbol] } else { $symbol }
     if ($KR_CREDIT_RATING_MAP.ContainsKey($krSymbol)) {
-      $rating = $KR_CREDIT_RATING_MAP[$krSymbol]
+      # ⚠️ kr-credit-rating.json의 ratings 항목은 {name, rating, ...} 객체라 .rating을 꺼내야 함 —
+      # 객체 자체를 문자열과 비교하면 전부 불일치해 등급 보유 종목이 모조리 0점 처리되는 버그가 있었음(2026-09-01 수정)
+      $rating = $KR_CREDIT_RATING_MAP[$krSymbol].rating
       if ($rating -eq "회사채없음") { $creditScore = 4 }
       elseif ($rating -eq "미평가") { $creditScore = 0 }
-      elseif ($CREDIT_RATING_SCORE.ContainsKey($rating)) { $creditScore = $CREDIT_RATING_SCORE[$rating] }
+      elseif ($null -ne $rating -and $CREDIT_RATING_SCORE.ContainsKey($rating)) { $creditScore = $CREDIT_RATING_SCORE[$rating] }
       else { $creditScore = 0 }
     }
   } else {
@@ -290,8 +292,9 @@ $sp500Return = Get-1yReturn $sp500Chart
 $kospi200Return = Get-1yReturn $kospi200Chart
 Write-Host "   S&P500 1y수익률=$sp500Return, KOSPI200 1y수익률=$kospi200Return"
 
-Update-MomentumScores "$PSScriptRoot\..\data\sp500-sectors.json" $sp500Return $kospi200Return
-Update-MomentumScores "$PSScriptRoot\..\data\kr-sectors.json" $sp500Return $kospi200Return
+# ONLY 환경변수로 한쪽만 재계산 가능(us | kr) — 미지정 시 둘 다
+if ($env:ONLY -ne "kr") { Update-MomentumScores "$PSScriptRoot\..\data\sp500-sectors.json" $sp500Return $kospi200Return }
+if ($env:ONLY -ne "us") { Update-MomentumScores "$PSScriptRoot\..\data\kr-sectors.json" $sp500Return $kospi200Return }
 
 Write-Host "ALL_DONE"
 
