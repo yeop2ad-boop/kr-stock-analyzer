@@ -2589,7 +2589,7 @@ const I18N = {
   "tab.valuation": { ko: "기업가치", en: "Value" },
   "tab.trend": { ko: "시장동향", en: "Trends" },
   "tab.insight": { ko: "인사이트", en: "Insight" },
-  "nav.map": { ko: "지도", en: "Map" },
+  "nav.map": { ko: "섹터맵", en: "Sector Map" },
   "nav.ranking": { ko: "랭킹", en: "Ranking" },
   "nav.home": { ko: "홈", en: "Home" },
   "nav.calendar": { ko: "캘린더", en: "Calendar" },

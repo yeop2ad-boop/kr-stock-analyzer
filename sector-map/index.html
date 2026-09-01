@@ -20,10 +20,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="굴려볼까" />
-<link rel="stylesheet" href="style.css?v=20260901a" />
+<link rel="stylesheet" href="style.css?v=20260901b" />
 <!-- 지도가 떠 있는 동안 본체 파일을 미리 받아둠 — 간편검색/시장/더보기로 처음 넘어갈 때 로딩 체감 단축 -->
-<link rel="prefetch" href="../app.js?v=20260901m" />
-<link rel="prefetch" href="../style.css?v=20260901e" />
+<link rel="prefetch" href="../app.js?v=20260901n" />
+<link rel="prefetch" href="../style.css?v=20260901f" />
 <link rel="prefetch" href="../index.html" />
 </head>
 <body>
@@ -49,6 +49,8 @@
           <button type="button" class="map-view-item" data-view="sp200">S&P200</button>
           <button type="button" class="map-view-item" data-view="sp500">S&P500</button>
           <button type="button" class="map-view-item" data-view="ndx100">나스닥 100</button>
+          <button type="button" class="map-view-item" data-view="etf200">ETF200</button>
+          <button type="button" class="map-view-item" data-view="crypto50">비트코인50</button>
         </div>
       </div>
 
@@ -69,12 +71,18 @@
       <button type="button" class="filter-icon-btn" id="resetViewBtn" aria-label="전체 초기화">
         <svg viewBox="0 0 24 24" fill="none"><path d="M20 12a8 8 0 1 1-2.34-5.66" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polyline points="20 4 20 9 15 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
+      <!-- ETF200/비트코인50 보기 전용(asset-only-chip) — 주식 보기에선 CSS로 숨김(2026-09-01) -->
+      <button type="button" class="filter-chip metric-chip asset-only-chip" data-metric="week52RangePct">
+        52주최저<span class="chip-reset" data-metric="week52RangePct" role="button" aria-label="52주최저 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
       <button type="button" class="filter-chip metric-chip" data-metric="changePct">
         등락률<span class="chip-reset" data-metric="changePct" role="button" aria-label="등락률 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button type="button" class="filter-chip metric-chip" data-metric="popularStocks">
         거래대금<span class="chip-reset" data-metric="popularStocks" role="button" aria-label="거래대금 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
+      <button type="button" class="filter-chip chg-half-chip asset-only-chip" data-chg-half="up">상승률</button>
+      <button type="button" class="filter-chip chg-half-chip asset-only-chip" data-chg-half="down">하락률</button>
       <button type="button" class="filter-chip metric-chip" data-metric="pressureScore">
         상승압력<span class="chip-reset" data-metric="pressureScore" role="button" aria-label="상승압력 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
@@ -226,6 +234,6 @@
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script src="data/sp500-data-core.js?v=20260901a"></script>
 <script src="data/kr-data-core.js?v=20260901a" onerror="window.KR_CORE_DATA = { companies: [] };"></script>
-<script src="app.js?v=20260901d"></script>
+<script src="app.js?v=20260901e"></script>
 </body>
 </html>

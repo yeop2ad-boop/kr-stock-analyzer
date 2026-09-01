@@ -72,6 +72,9 @@ function detectDefaultMapLang() {
 const WORLD_SIZE = 2000; // .map-world 의 world-space 좌표 크기(px, CSS와 동일해야 함)
 
 const SECTOR_COLOR_VAR = {
+  "US ETF": "--sector-communication",
+  "KR ETF": "--sector-healthcare",
+  Crypto: "--sector-energy",
   "Information Technology": "--sector-technology",
   "Health Care": "--sector-healthcare",
   Financials: "--sector-financials",
@@ -270,6 +273,10 @@ const MAP_VIEWS = {
   sp200: { label: "S&P200", market: "overseas", needExtra: false, filter: null },
   sp500: { label: "S&P500", market: "overseas", needExtra: true, filter: null },
   ndx100: { label: "나스닥 100", market: "overseas", needExtra: true, needNdx: true, filter: (c) => NDX100_SET.has(c.symbol) },
+  // ETF200(미국 100+한국 100)·비트코인50(2026-09-01 신설) — 데이터는 배치 생성 파일(etf-crypto-map.js)에서,
+  // 상단 필터 칩은 52주최저~투자안정 6개만 노출(custom="asset" 계열)
+  etf200: { label: "ETF200", market: "overseas", custom: "etf" },
+  crypto50: { label: "비트코인50", market: "overseas", custom: "crypto" },
 };
 let ACTIVE_VIEW = "sp200";
 const extraDataLoadPromises = {};
@@ -295,6 +302,20 @@ function ensureExtraDataLoaded(market) {
     });
   return extraDataLoadPromises[market];
 }
+// ETF200·비트코인50 전용 데이터(etf-crypto-map.js, fetch-etf-crypto-map.ps1로 생성) — 처음 선택 시 동적 로드
+let etfCryptoDataLoadPromise = null;
+function ensureEtfCryptoDataLoaded() {
+  if (etfCryptoDataLoadPromise) return etfCryptoDataLoadPromise;
+  const src = "data/etf-crypto-map.js?v=20260901a";
+  etfCryptoDataLoadPromise = loadScriptOnce(src)
+    .catch(() => new Promise((res) => setTimeout(res, 600)).then(() => loadScriptOnce(src)))
+    .catch((err) => {
+      etfCryptoDataLoadPromise = null;
+      throw err;
+    });
+  return etfCryptoDataLoadPromise;
+}
+
 // 나스닥 100 전용 추가 데이터(S&P500 비편입 15종목) — 나스닥 보기를 처음 선택할 때만 동적 로드
 let ndxDataLoadPromise = null;
 function ensureNdxDataLoaded() {
@@ -324,6 +345,15 @@ function extraDataFor(market) {
 // core에 있는 종목만이라도 보여줌
 function updateActiveDataForUniverseState() {
   const v = MAP_VIEWS[ACTIVE_VIEW];
+  // ETF200/비트코인50: 전용 배치 데이터 사용(주식 core/extra와 무관)
+  if (v.custom === "etf") {
+    ACTIVE_DATA = typeof ETF_MAP_DATA !== "undefined" ? ETF_MAP_DATA : { companies: [] };
+    return;
+  }
+  if (v.custom === "crypto") {
+    ACTIVE_DATA = typeof CRYPTO_MAP_DATA !== "undefined" ? CRYPTO_MAP_DATA : { companies: [] };
+    return;
+  }
   const core = coreDataFor(ACTIVE_MARKET);
   let companies = core.companies;
   if (v.needExtra) {
@@ -349,7 +379,8 @@ function syncMapViewUi() {
 // 지도 맨 위에 실제 지수 카드(국기·이름/지수값/등락/미니그래프)가 들어갈 띠 높이(월드 좌표) — 섹터 원들은 이 아래로 배치됨.
 // 카드 실높이(~330, 스파크라인 포함) + 전체보기/해외에서 카드를 아래로 내리는 오프셋(최대 80)까지 감안해 넉넉하게 —
 // 부족하면 전체보기+시총 모드에서 맨 위 섹터 원이 지수 카드와 겹침
-const MARKET_LABEL_STRIP = 420;
+// 상단 지수 카드(코스피/코스닥/S&P500/나스닥)는 2026-09-01 사용자 요청으로 전부 삭제 — 띠 높이도 0으로 회수
+const MARKET_LABEL_STRIP = 0;
 
 // 지도 상단에 보여줄 실제 지수들 — 구성종목 평균이 아니라 지수 자체(^KS11 등)를 야후에서 조회.
 // 2026-08-31 사용자 확정: 국내 지도는 코스피·코스닥만, 해외 지도는 S&P500·나스닥 종합만(4개 상시 표시는 하루 만에 철회)
@@ -517,6 +548,9 @@ function solidChangeColor(pct) {
 }
 
 function renderMarketIndexLabels() {
+  // 지수 카드 삭제(2026-09-01 사용자 요청) — 빈 프래그먼트만 반환(호출부 구조는 유지)
+  return document.createDocumentFragment();
+  /* eslint-disable no-unreachable */
   const wrap = document.createElement("div");
   wrap.className = "market-index-labels";
   wrap.style.height = `${MARKET_LABEL_STRIP}px`;
@@ -600,8 +634,8 @@ const bubbleBySymbol = new Map(); // symbol -> .company-bubble 엘리먼트(지�
 let ACTIVE_MARKET = "overseas";
 let ACTIVE_DATA = coreDataFor(ACTIVE_MARKET);
 let sizeMode = "equal"; // 기본값 균등 — "시총" 버튼으로 "marketCap"과 토글(버튼 이름은 항상 "시총", 시총 모드일 때만 주황 강조)
-// 지도 모양: 사각(트리맵) 전용 — 원형(버블맵) 토글은 2026-08-31 사용자 확정으로 폐기(renderMapCircle 등 렌더러는 참고용 잔존)
-const shapeMode = "square";
+// 지도 모양: 원형(버블맵) 전용 — 2026-09-01 사용자 확정으로 사각(트리맵)에서 원형으로 전환(rect 렌더러는 참고용 잔존)
+const shapeMode = "circle";
 
 // 섹터 이름표를 "로고 하나"처럼 취급 — 섹터 원 맨 위 가장자리에 딱 붙여 고정하고,
 // d3-force로 (1) 종목 원끼리 절대 안 겹치게(사이즈별 근소 간격), (2) 이름표(알약 모양 사각형)와도 안 겹치게 풀어낸다.
@@ -804,7 +838,8 @@ function renderCompanyBubbleCircle(leaf, sectorColorValue) {
   el.style.height = `${leaf.r * 2}px`;
   el.dataset.r = leaf.r;
   const isKrView = ACTIVE_MARKET === "domestic";
-  const badgeText = isKrView ? d.name : d.symbol;
+  // ETF200/코인 보기는 배치 데이터의 표시명(한국 ETF는 한글명, 코인은 BTC 등 기본 티커) 사용
+  const badgeText = d.displayName || (isKrView ? d.name : d.symbol);
   const isBigCap = isKrView && (d.symbol === "005930.KS" || d.symbol === "000660.KS");
   const bigCapScale = isBigCap ? 1.4 : 1;
   const fallback = document.createElement("div");
@@ -1106,6 +1141,7 @@ async function fetchLiveQuoteForSheet(symbol) {
 // 현재 상세시트가 열려서 보여주고 있는 종목 심볼 — refreshAllBubbleColors()가 지도 전체를 갱신할 때
 // 지금 시트가 보고 있는 종목과 같은 경우에만 시트 숫자도 같이 근신화하기 위해 기억해둠
 let currentSheetSymbol = null;
+let currentSheetCurrency = null;
 
 // 상세시트의 현재가 표시용 — 본체와 동일한 한국 주가 만원 축약(2026-08-31): 1만원 이상 "100.2만원"/미만 "9,850원", 그 외 통화는 $ + 소수 2자리
 function fmtSheetPrice(price, currency) {
@@ -1129,7 +1165,8 @@ function updateSheetLiveValues(symbol) {
       const prevClose = live.prevClose;
       const priceEl = document.getElementById("sheetPriceValue");
       if (priceEl && price !== null && price !== undefined) {
-        const currency = ACTIVE_MARKET === "domestic" ? "KRW" : "USD";
+        // ETF200 보기처럼 한 지도에 원화·달러 종목이 섞일 수 있어 종목 자체의 통화를 우선 사용(2026-09-01)
+        const currency = currentSheetCurrency || (ACTIVE_MARKET === "domestic" ? "KRW" : "USD");
         priceEl.textContent = fmtSheetPrice(price, currency);
       }
       if (price === null || prevClose === null || !prevClose) return;
@@ -1144,6 +1181,7 @@ function updateSheetLiveValues(symbol) {
 
 function openCompanySheet(d) {
   currentSheetSymbol = d.symbol;
+  currentSheetCurrency = d.currency || (ACTIVE_MARKET === "domestic" ? "KRW" : "USD");
   const color = sectorColor(d.sector);
   const chgTextColor = changeColorForText(d.changePercent);
   const chgText =
@@ -1172,7 +1210,7 @@ function openCompanySheet(d) {
     <div class="sheet-stats">
       <div>
         <div class="sheet-stat-label">시가총액</div>
-        <div class="sheet-stat-value">${d.currency === "KRW" ? fmtWonCompact(d.marketCap) : fmtMarketCap(d.marketCap)}</div>
+        <div class="sheet-stat-value">${d.currency === "KRW" ? fmtWonCompact(d.marketCapKrw || d.marketCap) : fmtMarketCap(d.marketCap)}</div>
       </div>
       <div>
         <div class="sheet-stat-label">현재가</div>
@@ -1295,6 +1333,21 @@ document.getElementById("resetViewBtn").addEventListener("click", () => {
 });
 document.getElementById("fitAllBtn").addEventListener("click", () => fitToViewport(true));
 
+// ETF200/비트코인50 보기 전용 상승률/하락률 원탭 토글(2026-09-01) — 등락률(changePct)을 0 기준 위/아래 범위로 필터
+document.querySelectorAll(".chg-half-chip").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    btn.classList.remove("boot-active");
+    const isUp = btn.dataset.chgHalf === "up";
+    const [min, max] = getMetricDomain("changePct");
+    const cur = activeFilters.get("changePct");
+    const alreadyThis = !!cur && (isUp ? cur[0] >= 0 : cur[1] <= 0);
+    if (alreadyThis) activeFilters.delete("changePct");
+    else activeFilters.set("changePct", isUp ? [0, Math.max(0.01, max)] : [Math.min(-0.01, min), 0]);
+    closeRangeSheet();
+    applyAllFilters();
+  });
+});
+
 // ---------- 6) 상단 10개 지표 버튼 → 범위 지정 바텀시트(실시간 필터) ----------
 // 해외(S&P500): 매출액·현금흐름·순이익 증가율/EPS/PER/시가총액/배당률은 하루 1회 배치, 상승률·하락률·인기종목은
 // 페이지가 열릴 때마다 Yahoo에서 실시간으로 새로 받아온다(refreshLiveData). 국내(KOSPI200+KOSDAQ150)는 섹터 스크리너가
@@ -1319,7 +1372,7 @@ function buildMetrics(market) {
   popularRank.refresh();
   return {
     week52RangePct: {
-      label: "52주근저",
+      label: "52주최저",
       hasData: true,
       get: (c) => c.week52RangePct,
       fmt: (v) => `${v.toFixed(0)}%`,
@@ -1427,6 +1480,12 @@ function applyAllFilters() {
     el.classList.toggle("filtered-out", !pass);
   }
   syncMetricChipActive();
+  // ETF200/비트코인50 보기의 상승률/하락률 토글 칩 상태 동기화(초기화 버튼 등으로 필터가 풀렸을 때도 함께 꺼지게)
+  const chgRange = activeFilters.get("changePct");
+  document.querySelectorAll(".chg-half-chip").forEach((b) => {
+    const isUp = b.dataset.chgHalf === "up";
+    b.classList.toggle("active", !!chgRange && (isUp ? chgRange[0] >= 0 : chgRange[1] <= 0));
+  });
 }
 
 function setFilterRange(key, range) {
@@ -2194,7 +2253,11 @@ document.getElementById("aiFabTime").addEventListener("click", async () => {
 
 // 국내/해외 어느 쪽이 활성인지에 맞춰 알맞은 실시간 갱신 함수를 호출하고, 성공 시 AI 버튼의 갱신 시각을 함께 업데이트
 async function refreshActiveMarketLiveData({ silent = false } = {}) {
-  refreshIndexQuotes().catch(() => {}); // 상단 지수 카드(코스피/코스닥/S&P500)도 함께 갱신
+  // ETF200/비트코인50 보기는 배치 스냅샷 기반이라 주식용 실시간 갱신(스크리너/국내 워커)이 적용되지 않음 — 건너뜀
+  if (MAP_VIEWS[ACTIVE_VIEW] && MAP_VIEWS[ACTIVE_VIEW].custom) {
+    renderAiFabTimestamp();
+    return false;
+  }
   const ok = ACTIVE_MARKET === "domestic" ? await refreshDomesticLiveData() : await refreshLiveData();
   if (ok) {
     lastColorRefreshAt = Date.now();
@@ -2520,13 +2583,15 @@ async function setMapView(viewKey, animate) {
   }
   const needExtraLoad = v.needExtra && !extraDataFor(v.market);
   const needNdxLoad = v.needNdx && typeof NDX_EXTRA_DATA === "undefined";
-  if (needExtraLoad || needNdxLoad) {
+  const needAssetLoad = v.custom && typeof ETF_MAP_DATA === "undefined";
+  if (needExtraLoad || needNdxLoad || needAssetLoad) {
     const label = document.getElementById("mapViewBtnLabel");
     if (label) label.textContent = "불러오는 중...";
     try {
       await Promise.all([
         needExtraLoad ? ensureExtraDataLoaded(v.market) : Promise.resolve(),
         needNdxLoad ? ensureNdxDataLoaded() : Promise.resolve(),
+        needAssetLoad ? ensureEtfCryptoDataLoaded() : Promise.resolve(),
       ]);
     } catch {
       showToast("전체 목록을 불러오지 못했어요. 다시 시도해주세요");
@@ -2535,6 +2600,8 @@ async function setMapView(viewKey, animate) {
     }
   }
   ACTIVE_VIEW = viewKey;
+  // ETF200/비트코인50은 상단 필터 칩을 52주최저~투자안정 6개만 노출(CSS가 body[data-map-view-kind]로 전환)
+  document.body.dataset.mapViewKind = v.custom ? "asset" : "stock";
   loadMarket(v.market, animate); // 내부에서 updateActiveDataForUniverseState + syncMapViewUi 호출
 }
 

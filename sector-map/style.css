@@ -1057,13 +1057,13 @@ body {
   padding: 1px 2px;
   cursor: pointer;
 }
-.bottom-nav-btn svg { width: 26px; height: 26px; position: relative; top: 3px; }
+/* 하단 네비 아이콘 정렬 통일(2026-09-01, 본체와 동일): 아이콘 흐름 높이 30px로 라벨 가로줄 맞춤 */
+.bottom-nav-btn svg { width: 26px; height: 26px; position: static; margin: 4px 0 0; }
 /* 국내/해외 컬러 네모 국기(2026-09-01, 본체와 통일) — 지도에선 두 버튼 다 비활성이라 흑백, 본체 이동 시 컬러 활성 */
-.bottom-nav-btn svg.bottom-nav-flag { width: 27px; height: 18px; top: 7px; filter: grayscale(1) opacity(0.55); }
+.bottom-nav-btn svg.bottom-nav-flag { width: 27px; height: 18px; margin: 8px 0 4px; filter: grayscale(1) opacity(0.55); }
 .bottom-nav-btn.active svg.bottom-nav-flag { filter: none; }
 /* 하단 네비 아이콘 버전 복귀(2026-08-31 사용자 확정) — 더보기/시장 아이콘 미세 정렬 */
-#bottomNavMoreBtn2 svg { width: 29px; height: 29px; top: 3px; }
-#bottomNavMoreBtn2 { position: relative; top: -2px; }
+#bottomNavMoreBtn2 svg { width: 29px; height: 29px; margin: 2.5px 0 -1.5px; }
 #bottomNavMarketBtn2 svg { top: 5px; }
 .bottom-nav-btn.active { color: var(--text-dark); }
 .bottom-nav-btn.active svg { color: var(--text-dark); }
@@ -1133,3 +1133,8 @@ body.map-fixed-mode .bottom-left-controls { opacity: 0; pointer-events: none; }
 .sheet-detail-btn { flex: none; border: 1px solid #5b8def; color: #5b8def; background: transparent; border-radius: 999px; font-size: 11px; font-weight: 700; padding: 2px 9px; cursor: pointer; }
 /* 전체보기 버튼(지수명 라벨) — 펼침 상태 하이라이트(2026-08-31) */
 .universe-toggle-btn.active { background: #1b2a4a; color: #fff; border-color: #1b2a4a; }
+/* ---------- ETF200/비트코인50 보기(2026-09-01): 상단 필터 칩을 52주최저~투자안정 6개만 노출 ---------- */
+body:not([data-map-view-kind="asset"]) .asset-only-chip { display: none; }
+body[data-map-view-kind="asset"] #allFiltersBtn,
+body[data-map-view-kind="asset"] .metric-chip[data-metric="per"],
+body[data-map-view-kind="asset"] .metric-chip[data-metric="changePct"]:not(.asset-only-chip) { display: none; }
