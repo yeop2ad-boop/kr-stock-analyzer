@@ -1030,7 +1030,7 @@ function computeCryptoAttractivenessScore(metrics) {
 // 암호화폐(코인) 전용 투자안정 배점 — 2026-09-01 사용자 지정(총 10점):
 // ① 일평균 변동성 0~3점: 최근 30거래일 일평균 |등락률|이 2% 이하 만점, 10% 이상 0점(선형)
 // ② 비트코인 대비 모멘텀 0~3점: 1년 상승률이 비트코인과 10%p 미만 차이면 만점, 100%p 이상 차이면 0점(선형)
-// ③ 시가총액 0~4점: 시총 TOP50 안에서의 순위 백분위(1위=100%, 50위=0%)로 선형 배점 — TOP50 밖이면 0점
+// ③ 시가총액 0~4점: 시총 TOP100 안에서의 순위 백분위(1위=100%, 100위=0%)로 선형 배점 — TOP100 밖이면 0점(2026-09-02 100개 확장)
 function computeCryptoRiskScore({ volatility, oneYearReturn, btcReturn, capPercentile, capRank }) {
   let volScore = 1.5; // 데이터 부족 시 중립값
   if (volatility !== null && volatility !== undefined) {
@@ -1078,7 +1078,7 @@ function getCryptoRiskScore(symbol, oneYearReturn) {
         const [volatility, btcReturn, top50] = await Promise.all([
           getEtfDailyVolatility30d(symbol).catch(() => null), // 일평균 변동성 계산은 자산 종류와 무관한 범용 로직이라 재사용
           getBtcOneYearReturn(),
-          getCryptoTop50().catch(() => []),
+          getCryptoTop100().catch(() => []),
         ]);
         const idx = top50.findIndex((q) => q && q.symbol === symbol);
         const capRank = idx >= 0 ? idx + 1 : null;
@@ -6120,7 +6120,7 @@ async function renderCryptoRisk(selfMetricsPromise) {
           "시가총액",
           s.capScore,
           4,
-          `시총 TOP50 내 위치: <b>${s.capRank ? `${s.capRank}위 (상위 백분위 ${s.capPercentile.toFixed(0)}%)` : "TOP50 밖"}</b> (백분위 100% 만점, 0% 0점)`,
+          `시총 TOP100 내 위치: <b>${s.capRank ? `${s.capRank}위 (상위 백분위 ${s.capPercentile.toFixed(0)}%)` : "TOP100 밖"}</b> (백분위 100% 만점, 0% 0점)`,
           stabilityColor
         )}
         <p class="disclaimer">
@@ -7372,12 +7372,12 @@ async function runEtfPopular() {
 // ---------- 비트코인 섹션 인기종목(2026-09-01): Yahoo 암호화폐 스크리너로 시가총액 상위 50개 표시 ----------
 // 행 클릭 시 코인 상세로 이동. 목록은 세션 내 캐시(재진입 시 즉시 표시) — 코인 투자안정 ③(시총 순위)도 이 목록을 공유
 let cryptoTop50CachePromise = null;
-function getCryptoTop50() {
+function getCryptoTop100() {
   if (!cryptoTop50CachePromise) {
-    cryptoTop50CachePromise = yahooScreener("all_cryptocurrencies_us", 50)
+    cryptoTop50CachePromise = yahooScreener("all_cryptocurrencies_us", 100)
       .then((data) => {
         const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
-        return quotes.filter((q) => q && q.symbol).slice(0, 50);
+        return quotes.filter((q) => q && q.symbol).slice(0, 100);
       })
       .catch((e) => {
         cryptoTop50CachePromise = null; // 실패는 캐시하지 않음(다음 진입 시 재시도)
@@ -7393,7 +7393,7 @@ function getCryptoTop50() {
 const cryptoScanState = { rows: [], scanned: 0, chain: Promise.resolve() };
 function ensureCryptoScanRows(targetCount, statusEl) {
   const run = cryptoScanState.chain.then(async () => {
-    const all = await getCryptoTop50();
+    const all = await getCryptoTop100();
     if (all.length === 0) throw new Error("암호화폐 목록을 가져오지 못했습니다.");
     // 실제 야후 심볼("TON11419-USD" 등)이 확정되는 시점에 한글명·검색 별칭을 자동 등록 —
     // 이후 상세 헤더/관심종목/검색창(한글·영문)에서 50개 코인이 전부 한글명으로 잡힘
@@ -7452,9 +7452,9 @@ function ensureCryptoScanRows(targetCount, statusEl) {
   cryptoScanState.chain = run.catch(() => {});
   return run;
 }
-// 인기종목(합산 TOP30)용 — 전체(50개) 스캔을 보장하고 rows만 반환(기존 호출부 호환)
+// 인기종목(합산 TOP30)용 — 전체(100개) 스캔을 보장하고 rows만 반환(기존 호출부 호환)
 function getCryptoScanRows(statusEl) {
-  return ensureCryptoScanRows(50, statusEl).then((r) => r.rows);
+  return ensureCryptoScanRows(100, statusEl).then((r) => r.rows);
 }
 function cryptoRowNameHtml(r) {
   return `${cryptoLogoHtml(cryptoBaseTicker(r.symbol))}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.name)}</b>`;
@@ -7477,7 +7477,7 @@ async function runCryptoPopular() {
     const scored = [...rows].sort((a, b) => b.pressure + b.risk - (a.pressure + a.risk)).slice(0, 30);
     if (scored.length === 0) throw new Error("코인 점수를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.");
     statusEl.style.display = "none";
-    resultsEl.innerHTML = combinedRankTableHtml(scored, "암호화폐 시가총액 상위 50개", cryptoRowNameHtml, cryptoPriceStr);
+    resultsEl.innerHTML = combinedRankTableHtml(scored, "암호화폐 시가총액 상위 100개", cryptoRowNameHtml, cryptoPriceStr);
   } catch (e) {
     statusEl.style.display = "block";
     statusEl.textContent = `❌ ${e.message || "암호화폐 시세를 가져오지 못했습니다."}`;
@@ -7667,7 +7667,7 @@ async function runCryptoTrend() {
   statusEl.textContent = "암호화폐 목록을 불러오는 중...";
   try {
     const expanded = cryptoTrendExpanded;
-    const { rows, scanned, total } = await ensureCryptoScanRows(expanded ? 50 : 20, statusEl);
+    const { rows, scanned, total } = await ensureCryptoScanRows(expanded ? 100 : 20, statusEl);
     if (appSectionMode !== "crypto") return;
     statusEl.style.display = "none";
     const showCount = expanded ? 30 : Math.min(20, scanned);
@@ -7681,7 +7681,7 @@ async function runCryptoTrend() {
         cryptoPriceStr,
         showCount
       ) +
-      (expanded ? "" : `<button type="button" class="cat-btn load-more-btn">${scanned < total ? `더보기 (전체 ${total}개 검색 · 약 30초 소요)` : "더보기 (상위 30개 보기)"}</button>`);
+      (expanded ? "" : `<button type="button" class="cat-btn load-more-btn">${scanned < total ? `더보기 (전체 ${total}개 검색 · 약 1분 소요)` : "더보기 (상위 30개 보기)"}</button>`);
     const moreBtn = resultsEl.querySelector(".load-more-btn");
     if (moreBtn) {
       moreBtn.addEventListener("click", () => {
@@ -9617,6 +9617,19 @@ const CRYPTO_KO_BY_TICKER = {
   AETHWETH: "아베 랩트이더(aWETH)", AETHUSDT: "아베 테더(aUSDT)", USDS: "스카이달러(USDS)", USDG: "글로벌달러(USDG)",
   PYUSD: "페이팔달러(PYUSD)", RAIN: "레인(RAIN)", GRAM: "그램(구 톤코인)", DEL: "데시멀(DEL)", CC: "캔톤(CC)",
   USD: "월드리버티달러(USD1)", M: "밈코어(M)",
+  // 시총 51~100위권(2026-09-02 TOP100 확장에 맞춰 추가)
+  FLR: "플레어", XDC: "XDC네트워크", QNT: "퀀트", NEXO: "넥소", GT: "게이트토큰(GT)", KCS: "쿠코인토큰(KCS)",
+  CAKE: "팬케이크스왑", CRV: "커브다오", LDO: "리도다오", AR: "알위브", ENS: "이더리움네임서비스", BSV: "비트코인SV",
+  MKR: "메이커", SKY: "스카이(SKY)", RON: "로닌", EGLD: "멀티버스X(EGLD)", AXS: "엑시인피니티", CFX: "콘플럭스",
+  MINA: "미나", GNO: "노시스", ETHFI: "이더파이", PENDLE: "펜들", RAY: "레이디움", WIF: "도그위프햇",
+  POPCAT: "팝캣", NOT: "낫코인", JASMY: "재스미코인", BTT: "비트토렌트", TWT: "트러스트월렛토큰", USDD: "트론달러(USDD)",
+  TUSD: "트루USD", FDUSD: "퍼스트디지털USD", USDT0: "테더제로(USDT0)", SOLVBTC: "솔브BTC", LBTC: "롬바드BTC",
+  RSETH: "카이토 rsETH", RETH: "로켓풀 ETH(rETH)", METH: "맨틀 mETH", EZETH: "렌조 ezETH", JITOSOL: "지토솔(JitoSOL)",
+  MSOL: "마리네이드솔(mSOL)", BNSOL: "바이낸스솔(BNSOL)", JLP: "주피터LP(JLP)", VIRTUAL: "버추얼프로토콜",
+  SPX: "SPX6900", FARTCOIN: "파트코인", MOG: "모그코인", BRETT: "브렛", AERO: "에어로드롬", MORPHO: "모르포",
+  ENA2: "에테나(ENA)", STRK: "스타크넷", ZK: "지케이싱크(ZK)", W: "웜홀(W)", ONDO2: "온도(ONDO)",
+  SYRUPUSDC: "시럽USDC", HTX: "에이치티엑스(HTX)", BFUSD: "바이낸스 BFUSD", SUSDE: "스테이킹 에테나달러(sUSDe)",
+  WTRX: "랩트트론(WTRX)", BTCT: "비트코인 TRC20",
 };
 function cryptoBaseTicker(sym) {
   return (sym || "").toUpperCase().replace(/-USD$/, "").replace(/\d+$/, "");

@@ -62,6 +62,16 @@ $CRYPTO_KO = @{
   BTCB="비트코인 BEP2(BTCB)"; WEETH="랩트 eETH(weETH)"; AETHWETH="아베 랩트이더(aWETH)"; AETHUSDT="아베 테더(aUSDT)"
   USDS="스카이달러(USDS)"; USDG="글로벌달러(USDG)"; PYUSD="페이팔달러(PYUSD)"; RAIN="레인(RAIN)"; GRAM="그램(구 톤코인)"
   DEL="데시멀(DEL)"; CC="캔톤(CC)"; USD="월드리버티달러(USD1)"; M="밈코어(M)"
+  # 시총 51~100위권(2026-09-02 TOP100 확장)
+  FLR="플레어"; XDC="XDC네트워크"; QNT="퀀트"; NEXO="넥소"; GT="게이트토큰(GT)"; KCS="쿠코인토큰(KCS)"
+  CAKE="팬케이크스왑"; CRV="커브다오"; LDO="리도다오"; AR="알위브"; ENS="이더리움네임서비스"; BSV="비트코인SV"
+  MKR="메이커"; SKY="스카이(SKY)"; RON="로닌"; EGLD="멀티버스X(EGLD)"; AXS="엑시인피니티"; CFX="콘플럭스"
+  MINA="미나"; GNO="노시스"; ETHFI="이더파이"; PENDLE="펜들"; RAY="레이디움"; WIF="도그위프햇"
+  POPCAT="팝캣"; NOT="낫코인"; JASMY="재스미코인"; BTT="비트토렌트"; TWT="트러스트월렛토큰"; USDD="트론달러(USDD)"
+  TUSD="트루USD"; FDUSD="퍼스트디지털USD"; USDT0="테더제로(USDT0)"; SOLVBTC="솔브BTC"; LBTC="롬바드BTC"
+  RETH="로켓풀 ETH(rETH)"; METH="맨틀 mETH"; EZETH="렌조 ezETH"; JITOSOL="지토솔(JitoSOL)"; MSOL="마리네이드솔(mSOL)"
+  BNSOL="바이낸스솔(BNSOL)"; JLP="주피터LP(JLP)"; VIRTUAL="버추얼프로토콜"; SPX="SPX6900"; FARTCOIN="파트코인"
+  MOG="모그코인"; BRETT="브렛"; AERO="에어로드롬"; MORPHO="모르포"; STRK="스타크넷"; ZK="지케이싱크(ZK)"; W="웜홀(W)"
 }
 
 function Clamp($v, $min, $max) { if ($v -lt $min) { return $min }; if ($v -gt $max) { return $max }; return $v }
@@ -217,9 +227,9 @@ foreach ($e in $krEtfTop100) {
 }
 Write-Host "   -> ETF $($etfCompanies.Count)개"
 
-# ---------- 코인 50 스캔 ----------
-Write-Host "암호화폐 TOP50 목록 조회 중..."
-$scr = Invoke-RestMethod -Uri 'https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?formatted=false&lang=en-US&region=US&scrIds=all_cryptocurrencies_us&count=50' -TimeoutSec 20 -Headers $headers
+# ---------- 코인 100 스캔 (2026-09-02 TOP50 → TOP100 확장) ----------
+Write-Host "암호화폐 TOP100 목록 조회 중..."
+$scr = Invoke-RestMethod -Uri 'https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?formatted=false&lang=en-US&region=US&scrIds=all_cryptocurrencies_us&count=100' -TimeoutSec 20 -Headers $headers
 $coins = @($scr.finance.result[0].quotes | Where-Object { $_.symbol })
 $cryptoCompanies = @()
 $n = $coins.Count

@@ -276,7 +276,7 @@ const MAP_VIEWS = {
   // ETF200(미국 100+한국 100)·비트코인50(2026-09-01 신설) — 데이터는 배치 생성 파일(etf-crypto-map.js)에서,
   // 상단 필터 칩은 52주최저~투자안정 6개만 노출(custom="asset" 계열)
   etf200: { label: "ETF200", market: "overseas", custom: "etf" },
-  crypto50: { label: "비트코인50", market: "overseas", custom: "crypto" },
+  crypto100: { label: "비트코인100", market: "overseas", custom: "crypto" }, // 2026-09-02 TOP50 → TOP100 확장
 };
 let ACTIVE_VIEW = "sp200";
 const extraDataLoadPromises = {};
@@ -306,7 +306,7 @@ function ensureExtraDataLoaded(market) {
 let etfCryptoDataLoadPromise = null;
 function ensureEtfCryptoDataLoaded() {
   if (etfCryptoDataLoadPromise) return etfCryptoDataLoadPromise;
-  const src = "data/etf-crypto-map.js?v=20260901a";
+  const src = "data/etf-crypto-map.js?v=20260902a";
   etfCryptoDataLoadPromise = loadScriptOnce(src)
     .catch(() => new Promise((res) => setTimeout(res, 600)).then(() => loadScriptOnce(src)))
     .catch((err) => {
