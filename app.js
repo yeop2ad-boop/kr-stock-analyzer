@@ -973,8 +973,8 @@ function computeAttractivenessScore(metrics) {
 
 // ETF 전용 상승압력(invest점수) 배점 — 2026-09-01 사용자 지정. ETF는 매출이 없어 성장성 대신 1년 상승률을 사용:
 // ① 총 거래대금 0~3점: 최근 5거래일 평균÷1년 평균이 2배 이상 만점, 1배 1점, 0.5배 이하 0점(선형)
-// ② 상승 모멘텀 0~3점: 최근 3개월 상승률 40% 이상 만점, 0% 이하 0점(선형)
-// ③ 1년 상승률 0~4점: 최근 1년 상승률 200% 이상 만점, 0% 이하 0점(선형)
+// ② 상승 모멘텀 0~3점: 최근 3개월 상승률 20% 이상 만점, 0% 이하 0점(선형) — 2026-09-01 사용자 조정(40%→20%)
+// ③ 1년 상승률 0~4점: 최근 1년 상승률 50% 이상 만점, 0% 이하 0점(선형) — 2026-09-01 사용자 조정(200%→50%)
 function computeEtfAttractivenessScore(metrics) {
   const { recentDollarVolume, avgDollarVolume1y, momentum3m, oneYearReturn } = metrics;
 
@@ -987,16 +987,123 @@ function computeEtfAttractivenessScore(metrics) {
 
   let momentumScore = 0;
   if (momentum3m !== undefined && momentum3m !== null) {
-    momentumScore = clamp((momentum3m / 40) * 3, 0, 3);
+    momentumScore = clamp((momentum3m / 20) * 3, 0, 3);
   }
 
   let yearScore = 0;
   if (oneYearReturn !== undefined && oneYearReturn !== null) {
-    yearScore = clamp((oneYearReturn / 200) * 4, 0, 4);
+    yearScore = clamp((oneYearReturn / 50) * 4, 0, 4);
   }
 
   const total = Math.round(clamp(volumeScore + momentumScore + yearScore, 0, 10) * 10) / 10;
   return { total, volumeScore, volumeRatio, momentumScore, momentum3m, yearScore, oneYearReturn };
+}
+
+// ETF 전용 투자안정 배점 — 2026-09-01 사용자 지정(총 10점):
+// ① 일평균 변동성 0~3점: 최근 30거래일 일평균 |등락률|이 1% 이하 만점, 5% 이상 0점(선형)
+// ② SPY 대비 모멘텀 0~3점: 1년 상승률이 S&P500과 10%p 미만 차이면 만점, 100%p 이상 차이면 0점(선형)
+// ③ 시가총액(순자산) 0~4점: 한국 ETF 10조원 이상 만점·1조원 미만 0점, 미국 ETF 1000억달러 이상 만점·100억달러 미만 0점(선형)
+function computeEtfRiskScore({ volatility, oneYearReturn, sp500Return, isKr, marketSumEok, netAssetsUsd }) {
+  let volScore = 1.5; // 데이터 부족 시 중립값
+  if (volatility !== null && volatility !== undefined) {
+    volScore = clamp((3 * (5 - volatility)) / 4, 0, 3);
+  }
+
+  let marketScore = 1.5;
+  let relDiff = null;
+  if (oneYearReturn !== null && oneYearReturn !== undefined && sp500Return !== null && sp500Return !== undefined) {
+    relDiff = Math.abs(oneYearReturn - sp500Return);
+    marketScore = clamp((3 * (100 - relDiff)) / 90, 0, 3);
+  }
+
+  let capScore = 0.1; // 시총 정보를 못 구한 경우
+  let capText = null;
+  if (isKr && marketSumEok) {
+    capScore = clamp((4 * (marketSumEok - 10000)) / 90000, 0, 4); // 1조(1만억)→0점, 10조(10만억)→만점
+    capText = marketSumEok >= 10000 ? `${(marketSumEok / 10000).toFixed(1)}조원` : `${Math.round(marketSumEok).toLocaleString("ko-KR")}억원`;
+  } else if (!isKr && netAssetsUsd) {
+    const billions = netAssetsUsd / 1e9;
+    capScore = clamp((4 * (billions - 10)) / 90, 0, 4); // $100억→0점, $1000억→만점
+    capText = `$${billions >= 100 ? Math.round(billions).toLocaleString("en-US") : billions.toFixed(1)}B`;
+  }
+
+  const total = Math.round(clamp(volScore + marketScore + capScore, 0, 10) * 10) / 10;
+  return { total, volScore, volatility, marketScore, relDiff, capScore, capText };
+}
+
+// 최근 30거래일 일평균 변동성(전일 대비 |등락률|의 평균, %) — ETF 투자안정 ①번 입력
+async function getEtfDailyVolatility30d(symbol) {
+  const chart = await yahooChart(symbol, "3mo");
+  const pairs = chartClosePairs(chart);
+  const rets = [];
+  for (let i = 1; i < pairs.length; i++) {
+    if (pairs[i - 1].c) rets.push(Math.abs((pairs[i].c - pairs[i - 1].c) / pairs[i - 1].c) * 100);
+  }
+  const recent = rets.slice(-30);
+  if (!recent.length) return null;
+  return recent.reduce((a, b) => a + b, 0) / recent.length;
+}
+
+// 미국 ETF 순자산(AUM) — 야후 top_etfs_us 스크리너 풀(250개, netAssets 실시간)을 우선 쓰고,
+// 그 풀에 빠져 있는 대형 ETF는 수동 큐레이션 근사치($B, 2026-09 기준)로 보완(투자안정 ③번 구간 판정용)
+let usEtfNetAssetsMapPromise = null;
+function getUsEtfNetAssetsMap() {
+  if (!usEtfNetAssetsMapPromise) {
+    usEtfNetAssetsMapPromise = yahooScreener("top_etfs_us", 250)
+      .then((data) => {
+        const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
+        const map = new Map();
+        quotes.forEach((q) => {
+          if (q && q.symbol && q.netAssets) map.set(q.symbol, q.netAssets);
+        });
+        return map;
+      })
+      .catch(() => new Map());
+  }
+  return usEtfNetAssetsMapPromise;
+}
+const US_ETF_AUM_APPROX_B = {
+  SPY: 630, IVV: 640, VOO: 700, VTI: 490, VUG: 180, IEFA: 145, BND: 130, AGG: 130, IWF: 120, IBIT: 80,
+  SPLG: 75, IJH: 100, IEMG: 100, VXUS: 105, VWO: 110, VIG: 110, IJR: 90, SCHD: 70, ITOT: 70, RSP: 75,
+  IVW: 65, SGOV: 45, IWM: 80, QQQM: 60, BIL: 35, VO: 85, SCHX: 60, TLT: 50, IWD: 65, VYM: 65,
+  EFA: 55, JEPI: 40, VB: 65, DIA: 40, QUAL: 50, VT: 45, JEPQ: 30, SCHG: 45, LQD: 30, VCIT: 55,
+  MUB: 40, JPST: 30, DGRO: 30, XLF: 50, VCSH: 45, MBB: 35, GOVT: 27, IEF: 35, USMV: 25, SCHF: 45,
+  SCHB: 35, DFAC: 35, VTEB: 35, XLV: 40, IXUS: 40, VNQ: 35, IUSB: 35, SHY: 25, BSV: 35, COWZ: 25,
+  VGIT: 30, AVUV: 20, IWB: 40, IWR: 35, MGK: 25, SHV: 20, BIV: 20, EMB: 15, VOOG: 15, SPYG: 25,
+  SPYV: 25, USFR: 15, PFF: 15, MDY: 20, VHT: 18, FBTC: 20, GLDM: 15, VDC: 12, ACWI: 20, EWJ: 15,
+  VV: 15, DVY: 20, FTEC: 12, VBR: 30, SDY: 20, NOBL: 12,
+};
+async function getUsEtfNetAssets(symbol) {
+  const map = await getUsEtfNetAssetsMap();
+  if (map.has(symbol)) return map.get(symbol);
+  const approxB = US_ETF_AUM_APPROX_B[symbol];
+  return approxB ? approxB * 1e9 : null;
+}
+
+// ETF 투자안정 점수 계산(입력 수집 포함) — 상세 페이지와 개요 미니 배지가 공유하도록 심볼별로 캐시
+const etfRiskScorePromiseCache = new Map();
+function getEtfRiskScore(symbol, oneYearReturn, sp500Return) {
+  if (!etfRiskScorePromiseCache.has(symbol)) {
+    etfRiskScorePromiseCache.set(
+      symbol,
+      (async () => {
+        const isKr = isKrTicker(symbol);
+        const [volatility, cap] = await Promise.all([
+          getEtfDailyVolatility30d(symbol).catch(() => null),
+          (isKr ? getKrEtfMarketSum(symbol) : getUsEtfNetAssets(symbol)).catch(() => null),
+        ]);
+        return computeEtfRiskScore({
+          volatility,
+          oneYearReturn,
+          sp500Return,
+          isKr,
+          marketSumEok: isKr ? cap : null,
+          netAssetsUsd: isKr ? null : cap,
+        });
+      })()
+    );
+  }
+  return etfRiskScorePromiseCache.get(symbol);
 }
 
 // 통화쌍 환율(세션 내 캐시) — 재무제표가 시세와 다른 현지 통화로 내려오는 해외 상장 종목(TSM·SKHY 등) 환산용
@@ -4451,11 +4558,11 @@ async function runAnalysis(ticker) {
     const isCryptoDetail = sectionOfSymbol(ticker, quote.quoteType) === "crypto";
     el("companyPanel").classList.toggle("crypto-detail", isCryptoDetail);
 
-    // ETF 상세(2026-09-01): invest점수 탭의 상승압력은 ETF 전용 배점(거래대금·모멘텀·1년 상승률)으로 계산하고,
-    // 신용등급·순이익률 기반이라 ETF에 무의미한 투자안정성 섹션은 숨김
+    // ETF 상세(2026-09-01): invest점수 탭의 상승압력·투자안정을 ETF 전용 배점으로 계산.
+    // 개별주식 투자안정 분포도(+자세히)는 주식 전용이라 ETF에선 버튼만 숨김
     const isEtfDetail = !isCryptoDetail && sectionOfSymbol(ticker, quote.quoteType) === "etf";
-    const riskSectionWrap = el("riskSection").closest("section");
-    if (riskSectionWrap) riskSectionWrap.style.display = isEtfDetail ? "none" : "";
+    const riskDetailBtn = el("futureRiskDetailBtn");
+    if (riskDetailBtn) riskDetailBtn.style.display = isEtfDetail ? "none" : "";
 
     // 나스닥·다우존스·S&P500 1년 수익률과, 분석 대상 자신의 지표(차트+재무제표)는
     // 경쟁사 비교(3)·상승압력도(5)·투자 안정성(6)·미래예측(요약 탭의 🔮 토글) 섹션이 각자 다시 조회하지 않고 공유해서
@@ -4505,11 +4612,9 @@ async function runAnalysis(ticker) {
         el("scoreSection").innerHTML = `<p class="error-inline">상승 압력 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
       });
 
-      if (!isEtfDetail) {
-        renderRisk(marketReturnsPromise, selfMetricsPromise).catch((e) => {
-          el("riskSection").innerHTML = `<p class="error-inline">투자 안정성 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
-        });
-      }
+      (isEtfDetail ? renderEtfRisk(marketReturnsPromise, selfMetricsPromise) : renderRisk(marketReturnsPromise, selfMetricsPromise)).catch((e) => {
+        el("riskSection").innerHTML = `<p class="error-inline">투자 안정성 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
+      });
 
       renderMacro(ticker).catch((e) => {
         el("macroSection").innerHTML = `<p class="error-inline">거시경제 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
@@ -5033,9 +5138,9 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise, i
   try {
     const [metrics, { sp500Return, kospi200Return }] = await Promise.all([selfMetricsPromise, marketReturnsPromise, krCreditRatingReady]);
     const isKr = isKrTicker(metrics.symbol);
-    // ETF는 전용 상승압력 배점(2026-09-01)을 쓰고, 투자안정 배지는 표시하지 않음(신용등급·순이익률 기반이라 무의미)
+    // ETF는 전용 상승압력·투자안정 배점(2026-09-01)을 사용
     const attractiveness = isEtf ? computeEtfAttractivenessScore(metrics) : computeAttractivenessScore(metrics);
-    const risk = isEtf ? null : computeRiskScore(metrics, sp500Return, kospi200Return);
+    const risk = isEtf ? await getEtfRiskScore(metrics.symbol, metrics.oneYearReturn, sp500Return) : computeRiskScore(metrics, sp500Return, kospi200Return);
     const isIPO = isRecentIPO(metrics.firstTradeDate);
 
     let macroBadgeHtml;
@@ -5707,7 +5812,7 @@ async function renderEtfScore(selfMetricsPromise) {
           "상승 모멘텀",
           momentumScore,
           3,
-          `최근 3개월 주가상승: <b>${momentum3m !== null && momentum3m !== undefined ? fmtPct(momentum3m) : "N/A"}</b> (40% 이상 만점·0% 이하 0점)`,
+          `최근 3개월 주가상승: <b>${momentum3m !== null && momentum3m !== undefined ? fmtPct(momentum3m) : "N/A"}</b> (20% 이상 만점·0% 이하 0점)`,
           pressureColor
         )}
         ${scoreMethodBarRow(
@@ -5715,11 +5820,60 @@ async function renderEtfScore(selfMetricsPromise) {
           "1년 상승률",
           yearScore,
           4,
-          `최근 1년 주가상승: <b>${oneYearReturn !== null && oneYearReturn !== undefined ? fmtPct(oneYearReturn) : "N/A"}</b> (200% 이상 만점·0% 이하 0점)`,
+          `최근 1년 주가상승: <b>${oneYearReturn !== null && oneYearReturn !== undefined ? fmtPct(oneYearReturn) : "N/A"}</b> (50% 이상 만점·0% 이하 0점)`,
           pressureColor
         )}
         <p class="disclaimer">
           ⚠️ ETF 전용 배점(거래대금·모멘텀·1년 상승률)으로 계산한 <b>단순 참고용 정량 지표</b>이며,
+          투자 자문이나 매수/매도 추천이 아닙니다.
+        </p>
+      </div>
+    </div>
+  `;
+}
+
+// ---------- 6-1. ETF 전용 투자안정성(2026-09-01 사용자 배점): 일평균 변동성 + SPY 대비 모멘텀 + 시가총액 ----------
+async function renderEtfRisk(marketReturnsPromise, selfMetricsPromise) {
+  el("riskSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
+
+  const [metrics, { sp500Return }] = await Promise.all([selfMetricsPromise, marketReturnsPromise]);
+  const s = await getEtfRiskScore(metrics.symbol, metrics.oneYearReturn, sp500Return);
+  const isKr = isKrTicker(metrics.symbol);
+
+  const stabilityColor = SCORE_COLOR_FAMILY.stability;
+  el("riskSection").innerHTML = `
+    <div class="score-wrap">
+      <div class="score-badge">
+        <div class="score-num">${s.total}</div>
+        <div class="score-den">/ 10</div>
+      </div>
+      <div class="score-details">
+        ${scoreMethodBarRow(
+          "①",
+          "일평균 변동성",
+          s.volScore,
+          3,
+          `최근 30거래일 일평균 등락폭: <b>${s.volatility !== null && s.volatility !== undefined ? s.volatility.toFixed(2) + "%" : "N/A"}</b> (1% 이하 만점, 5% 이상 0점)`,
+          stabilityColor
+        )}
+        ${scoreMethodBarRow(
+          "②",
+          "SPY 대비 모멘텀",
+          s.marketScore,
+          3,
+          `1년 상승률과 S&amp;P500(SPY)의 차이: <b>${s.relDiff !== null && s.relDiff !== undefined ? s.relDiff.toFixed(1) + "%p" : "N/A"}</b> (10%p 미만 만점, 100%p 이상 0점)`,
+          stabilityColor
+        )}
+        ${scoreMethodBarRow(
+          "③",
+          "시가총액",
+          s.capScore,
+          4,
+          `순자산·시가총액: <b>${s.capText || "N/A"}</b> (${isKr ? "10조원 이상 만점, 1조원 미만 0점" : "1,000억달러 이상 만점, 100억달러 미만 0점"})`,
+          stabilityColor
+        )}
+        <p class="disclaimer">
+          ⚠️ ETF 전용 배점(변동성·SPY 대비 모멘텀·시가총액)으로 계산한 <b>단순 참고용 정량 지표</b>이며,
           투자 자문이나 매수/매도 추천이 아닙니다.
         </p>
       </div>
@@ -6684,29 +6838,37 @@ const US_ETF_TOP100 = [
 ];
 
 let etfPopularRegion = "us";
-let krEtfTop100Promise = null;
-function getKrEtfTop100() {
-  if (!krEtfTop100Promise) {
-    krEtfTop100Promise = proxyFetchJson("https://finance.naver.com/api/sise/etfItemList.nhn")
+let krEtfFullListPromise = null;
+// 네이버 ETF 목록 전체(1100여 개, 시총순 정렬) — TOP100 표시와 투자안정 ③(시가총액) 조회가 공유
+function getKrEtfFullList() {
+  if (!krEtfFullListPromise) {
+    krEtfFullListPromise = proxyFetchJson("https://finance.naver.com/api/sise/etfItemList.nhn")
       .then((data) => {
         const items = (data && data.result && data.result.etfItemList) || [];
         return items
           .filter((it) => it && it.itemcode)
           .sort((a, b) => (b.marketSum || 0) - (a.marketSum || 0))
-          .slice(0, 100)
           .map((it) => ({ symbol: `${it.itemcode}.KS`, name: it.itemname, marketSum: it.marketSum, price: it.nowVal, changePct: it.changeRate }));
       })
       .then((list) => {
-        // 섹션 마크·ETF 상세 판별(sectionOfSymbol)이 한국 ETF TOP100도 ETF로 인식하도록 등록
+        // 섹션 마크·ETF 상세 판별(sectionOfSymbol)이 국내 전체 ETF를 ETF로 인식하도록 등록
         list.forEach((it) => knownEtfSet().add(it.symbol));
         return list;
       })
       .catch((e) => {
-        krEtfTop100Promise = null; // 실패는 캐시하지 않음
+        krEtfFullListPromise = null; // 실패는 캐시하지 않음
         throw e;
       });
   }
-  return krEtfTop100Promise;
+  return krEtfFullListPromise;
+}
+function getKrEtfTop100() {
+  return getKrEtfFullList().then((list) => list.slice(0, 100));
+}
+async function getKrEtfMarketSum(symbol) {
+  const list = await getKrEtfFullList();
+  const hit = list.find((it) => it.symbol === symbol);
+  return hit ? hit.marketSum : null;
 }
 // 네이버 marketSum은 억원 단위 — 1조 이상이면 조원으로 표기
 function fmtKrEtfMarketSum(marketSumEok) {
