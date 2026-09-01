@@ -2203,13 +2203,13 @@ document.addEventListener("click", (e) => {
   if (row) navigateToTicker(row.dataset.symbol);
 });
 
-// ---------- 하단 고정 네비게이션(국내/해외/시장/관심종목/더보기) — 지도는 더보기 패널로 이동(2026-09-01) ----------
-// 국내/해외도 일반 네비 버튼처럼 취급(2026-08-31 사용자 확정: 시장 등 다른 화면이 활성일 땐 국내/해외 불이 꺼져야 함)
+// ---------- 하단 고정 네비게이션(한국주식/미국주식/ETF/비트코인/더보기) — 지도·시장·관심종목은 더보기 패널로 이동(2026-09-01) ----------
+// 한국/미국주식도 일반 네비 버튼처럼 취급(2026-08-31 사용자 확정: 다른 화면이 활성일 땐 불이 꺼져야 함)
 const bottomNavButtons = {
   kr: el("bottomNavKrBtn"),
   us: el("bottomNavUsBtn"),
-  market: el("bottomNavMarketBtn"),
-  watchlist: el("bottomNavWatchlistBtn"),
+  etf: el("bottomNavEtfBtn"),
+  crypto: el("bottomNavCryptoBtn"),
   more: el("bottomNavMoreBtn"),
 };
 const bottomNavKrBtn = bottomNavButtons.kr;
@@ -2257,16 +2257,21 @@ function showOnlyCarouselView(fn) {
   fn();
 }
 el("morePanelWatchlistBtn").addEventListener("click", () => {
+  appSectionMode = "stocks"; // 관심종목은 주식 섹션 화면이라 ETF/비트코인 모드 해제(2026-09-01)
+  showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist")));
+  syncSectionHeader();
+});
+// 우측 상단 별 아이콘(2026-09-01 부활) — 어느 섹션에서든 통합 관심종목 화면으로 이동(지도의 별과 동일한 역할)
+el("fhWatchlistBtn").addEventListener("click", () => {
   showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist")));
 });
-// 우측 상단 별 아이콘은 삭제(2026-09-01 사용자 요청) — 관심종목 이동은 하단 네비 버튼이 담당
 // 제목줄 4탭 — 인기종목/기업가치/시장동향/인사이트 화면 전환(관심종목 탭은 하단 네비로 이동, 2026-09-01)
 document.querySelectorAll(".fh-tab").forEach((btn) => {
   btn.addEventListener("click", () => {
     const key = btn.dataset.fhtab;
     if (key === "tab.popular") showOnlyCarouselView(() => openPopularStocks());
     else if (key === "tab.valuation") showOnlyCarouselView(() => activateRankingGroup("disclosure"));
-    else if (key === "tab.trend") showOnlyCarouselView(() => activateRankingGroup("market"));
+    else if (key === "tab.trend") showOnlyCarouselView(() => (appSectionMode === "etf" ? openEtfTrend() : activateRankingGroup("market")));
     else showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("insight")));
   });
 });
@@ -2295,7 +2300,9 @@ document.addEventListener("click", (e) => {
   else showToast("이 화면에는 전체보기가 없습니다.");
 });
 el("morePanelValuationBtn").addEventListener("click", () => {
+  appSectionMode = "stocks"; // 기업가치는 주식 전용 화면이라 ETF/비트코인 모드 해제(2026-09-01)
   showOnlyCarouselView(() => activateRankingGroup("disclosure"));
+  syncSectionHeader();
 });
 el("morePanelTrendBtn").addEventListener("click", () => {
   showOnlyCarouselView(() => activateRankingGroup("market"));
@@ -2372,6 +2379,8 @@ const I18N = {
   "nav.home": { ko: "홈", en: "Home" },
   "nav.calendar": { ko: "캘린더", en: "Calendar" },
   "nav.marketBtn": { ko: "시장", en: "Market" },
+  "nav.etf": { ko: "ETF", en: "ETF" },
+  "nav.crypto": { ko: "비트코인", en: "Bitcoin" },
   "nav.more": { ko: "더보기", en: "More" },
   "more.theme": { ko: "화면 테마", en: "Theme" },
   "more.theme.light": { ko: "화이트", en: "White" },
@@ -2471,22 +2480,36 @@ el("morePanelMapBtn").addEventListener("click", () => {
   const market = getWatchlistActiveMarket() === "KR" ? "domestic" : "overseas";
   window.location.href = `sector-map/index.html?market=${market}`;
 });
-// 하단 관심종목 — 관심종목 화면으로 이동(구 상단 별 아이콘 대체)
-bottomNavButtons.watchlist.addEventListener("click", () => {
-  showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist")));
-  setBottomNavActive("watchlist");
-});
-// 하단 국내/해외 — 해당 시장으로 전환하고 랭킹(기업가치) 화면을 보여줌(2026-08-31, 랭킹 버튼 대체).
-// showOnlyCarouselView가 active를 전부 해제하므로 그 뒤에 켬 — 다른 버튼(시장 등)을 누르면 자연히 꺼짐
+// 관심종목은 하단 네비에서 더보기 패널 항목으로 복귀(2026-09-01, ETF·비트코인 버튼 신설로 자리 이동)
+// 하단 한국주식/미국주식 — 해당 시장으로 전환하고 랭킹(기업가치) 화면을 보여줌(2026-08-31, 랭킹 버튼 대체).
+// showOnlyCarouselView가 active를 전부 해제하므로 그 뒤에 켬 — 다른 버튼을 누르면 자연히 꺼짐
 bottomNavKrBtn.addEventListener("click", () => {
+  appSectionMode = "stocks";
   setAppMarketMode("kr");
   showOnlyCarouselView(() => activateRankingGroup("disclosure"));
   setBottomNavActive("kr");
+  syncSectionHeader();
 });
 bottomNavUsBtn.addEventListener("click", () => {
+  appSectionMode = "stocks";
   setAppMarketMode("us");
   showOnlyCarouselView(() => activateRankingGroup("disclosure"));
   setBottomNavActive("us");
+  syncSectionHeader();
+});
+// 하단 ETF/비트코인(2026-09-01 신설) — 각자 섹션 모드로 전환하고 인기종목 화면부터 보여줌
+bottomNavButtons.etf.addEventListener("click", () => {
+  appSectionMode = "etf";
+  etfPopularRegion = getWatchlistActiveMarket() === "KR" ? "kr" : "us";
+  showOnlyCarouselView(() => openPopularStocks());
+  setBottomNavActive("etf");
+  syncSectionHeader();
+});
+bottomNavButtons.crypto.addEventListener("click", () => {
+  appSectionMode = "crypto";
+  showOnlyCarouselView(() => openPopularStocks());
+  setBottomNavActive("crypto");
+  syncSectionHeader();
 });
 // 간편검색은 하단 네비에서 더보기 패널 항목으로 이동(2026-08-31)
 el("morePanelWizardBtn").addEventListener("click", () => {
@@ -2494,11 +2517,14 @@ el("morePanelWizardBtn").addEventListener("click", () => {
   closeCompanyPanel();
   openSearchWizard();
 });
-bottomNavButtons.market.addEventListener("click", () => {
-  setBottomNavActive("market");
+// 시장은 하단 네비에서 더보기 패널 항목으로 이동(2026-09-01)
+function openMarketFromNav() {
+  setBottomNavActive("");
+  closeMorePanel();
   closeCompanyPanel();
   openMarketPanel();
-});
+}
+el("morePanelMarketBtn").addEventListener("click", openMarketFromNav);
 bottomNavButtons.more.addEventListener("click", () => {
   openMorePanel();
 });
@@ -2516,7 +2542,9 @@ bottomNavButtons.more.addEventListener("click", () => {
   // 지금 바로 실행하면 TDZ 오류가 나 패널이 안 열림 — 스크립트 전체 실행이 끝난 다음 틱으로 미룸
   setTimeout(() => {
     const actions = {
-      market: () => bottomNavButtons.market.click(),
+      market: () => openMarketFromNav(),
+      etf: () => bottomNavButtons.etf.click(),
+      crypto: () => bottomNavButtons.crypto.click(),
       calendar: () => {
         closeCompanyPanel();
         openCalendarPanel();
@@ -2532,7 +2560,7 @@ bottomNavButtons.more.addEventListener("click", () => {
       "ranking-kr": () => bottomNavKrBtn.click(),
       "ranking-us": () => bottomNavUsBtn.click(),
       ranking: () => (getWatchlistActiveMarket() === "KR" ? bottomNavKrBtn : bottomNavUsBtn).click(),
-      watchlist: () => bottomNavButtons.watchlist.click(), // 지도 하단 관심종목 버튼(2026-09-01)
+      watchlist: () => showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist"))), // 구버전 지도 딥링크 호환
     };
     const fn = actions[openParam];
     if (fn) fn();
@@ -2606,6 +2634,9 @@ function renderCompanyIdentity(ticker, quote, meta, changePct) {
   const price = meta.regularMarketPrice;
   el("companyPanelLogoWrap").innerHTML = tickerLogoHtml(ticker);
   el("companyPanelName").textContent = displayName;
+  // 제목 옆 섹션 마크(한국주식/미국주식/ETF/비트코인, 2026-09-01) — Yahoo quoteType이 있으면 그걸 우선 사용
+  const sectionMarkEl = el("companyPanelSectionMark");
+  if (sectionMarkEl) sectionMarkEl.outerHTML = sectionMarkHtml(ticker, quote && quote.quoteType).replace('class="section-mark"', 'class="section-mark" id="companyPanelSectionMark"');
   el("companyPanelPrice").textContent = price !== undefined && price !== null ? fmtPrice(price, meta.currency) : "";
   const pctEl = el("companyPanelChangePct");
   if (changePct !== null && changePct !== undefined) {
@@ -2621,15 +2652,15 @@ function renderCompanyIdentity(ticker, quote, meta, changePct) {
 }
 
 // ---------- 관심종목 (localStorage 기반 — Firestore 등 서버 저장소가 없어 기기별로만 유지됨) ----------
-// 미국/한국 종목을 완전히 별도 저장공간(키 자체가 다름)으로 분리 — 목록·그룹·정렬·활성그룹 전부 시장별로 독립.
-// watchlistActiveMarket("US"|"KR")은 관심종목 탭 상단의 시장 토글이 어느 쪽을 보고 있는지를 나타내며,
-// groupId 없이는 시장을 알 수 없는 그룹/정렬/활성그룹 함수들이 기본값으로 참조한다.
+// 2026-09-01 사용자 요청으로 국내/해외 분리 저장을 폐지하고 하나로 통합 관리 — 목록·그룹·정렬·활성그룹 전부 단일 저장공간.
+// watchlistActiveMarket("US"|"KR")은 이제 관심종목 저장과는 무관하게, 앱 전체의 시장 모드(한국주식/미국주식 화면)만 나타낸다.
 const WATCHLIST_ALL_GROUP_ID = "__all__";
 const WATCHLIST_DEFAULT_GROUP_ID = "default";
 const WATCHLIST_ACTIVE_MARKET_KEY = "watchlist_active_market_v1";
 
-function wlKey(base, market) {
-  return `${base}_${market === "KR" ? "kr" : "us"}`;
+// market 인자는 과거 시장별 분리 시절의 호출부 호환용으로만 남김 — 항상 통합 저장공간(_all)을 사용
+function wlKey(base) {
+  return `${base}_all`;
 }
 function watchlistMarketOf(symbol) {
   return isKrTicker(symbol) ? "KR" : "US";
@@ -2641,30 +2672,37 @@ function setWatchlistActiveMarket(market) {
   localStorage.setItem(WATCHLIST_ACTIVE_MARKET_KEY, market === "KR" ? "KR" : "US");
 }
 
-// 예전(시장 분리 이전) 단일 저장공간에 있던 데이터를 1회만 미국/한국으로 나눠 이관 — 이후엔 건드리지 않음
-(function migrateWatchlistToPerMarketStorage() {
-  const MIGRATION_FLAG = "watchlist_migrated_per_market_v1";
-  if (localStorage.getItem(MIGRATION_FLAG)) return;
+// 시장별(_us/_kr) 분리 저장 시절의 데이터를 1회만 통합 저장공간(_all)으로 합쳐 이관(2026-09-01) — 이후엔 건드리지 않음
+(function migrateWatchlistToUnifiedStorage() {
+  const FLAG = "watchlist_migrated_unified_v1";
+  if (localStorage.getItem(FLAG)) return;
   try {
-    const oldList = JSON.parse(localStorage.getItem("watchlist_v1"));
-    if (Array.isArray(oldList) && oldList.length) {
-      const usItems = oldList.filter((w) => watchlistMarketOf(w.symbol) === "US");
-      const krItems = oldList.filter((w) => watchlistMarketOf(w.symbol) === "KR");
-      if (usItems.length) localStorage.setItem(wlKey("watchlist_v1", "US"), JSON.stringify(usItems));
-      if (krItems.length) localStorage.setItem(wlKey("watchlist_v1", "KR"), JSON.stringify(krItems));
-    }
-    const oldGroups = localStorage.getItem("watchlist_groups_v1");
-    if (oldGroups) localStorage.setItem(wlKey("watchlist_groups_v1", "US"), oldGroups);
-    const oldActiveGroup = localStorage.getItem("watchlist_active_group_v1");
-    if (oldActiveGroup) localStorage.setItem(wlKey("watchlist_active_group_v1", "US"), oldActiveGroup);
-    const oldSort = localStorage.getItem("watchlist_sort_v1");
-    if (oldSort) localStorage.setItem(wlKey("watchlist_sort_v1", "US"), oldSort);
-  } catch {
-    // 이관 실패해도 새 빈 상태로 시작할 뿐 치명적이지 않음
-  } finally {
-    localStorage.setItem(MIGRATION_FLAG, "1");
-  }
+    const read = (k) => {
+      try {
+        const v = JSON.parse(localStorage.getItem(k));
+        return Array.isArray(v) ? v : [];
+      } catch {
+        return [];
+      }
+    };
+    // 시장 분리 시절(_us/_kr)과 그 이전 단일 키 시절(watchlist_v1)의 데이터를 모두 합쳐 통합 키로 이관
+    const seen = new Set();
+    // 지도(sector-map)가 먼저 통합 키에 저장해뒀을 수도 있으므로 기존 _all 내용을 맨 앞에 두고 합침
+    const merged = [...read("watchlist_v1_all"), ...read("watchlist_v1_us"), ...read("watchlist_v1_kr"), ...read("watchlist_v1")].filter((w) => w && w.symbol && !seen.has(w.symbol) && seen.add(w.symbol));
+    if (merged.length) localStorage.setItem("watchlist_v1_all", JSON.stringify(merged));
+    // 그룹은 전부 이어붙이되 같은 id("기본" 등)는 한 번만 유지 — 종목의 groupId 참조가 그대로 살아있게 함
+    const gSeen = new Set();
+    const groups = [...read("watchlist_groups_v1_us"), ...read("watchlist_groups_v1_kr"), ...read("watchlist_groups_v1")].filter((g) => g && g.id && !gSeen.has(g.id) && gSeen.add(g.id));
+    if (groups.length) localStorage.setItem("watchlist_groups_v1_all", JSON.stringify(groups));
+    const sort = localStorage.getItem("watchlist_sort_v1_us") || localStorage.getItem("watchlist_sort_v1_kr") || localStorage.getItem("watchlist_sort_v1");
+    if (sort) localStorage.setItem("watchlist_sort_v1_all", sort);
+    const activeGroup = localStorage.getItem("watchlist_active_group_v1_us") || localStorage.getItem("watchlist_active_group_v1");
+    if (activeGroup) localStorage.setItem("watchlist_active_group_v1_all", activeGroup);
+  } catch {}
+  localStorage.setItem(FLAG, "1");
 })();
+
+// (구버전 "시장별 분리 이관"은 위 통합 이관이 단일 키·시장별 키를 전부 흡수하므로 제거됨 — 2026-09-01)
 
 function getWatchlist(market = getWatchlistActiveMarket()) {
   try {
@@ -3287,7 +3325,7 @@ async function renderWatchlistList() {
     statusEl.style.display = "none";
     const sorted = sortWatchlistRows(rows);
     listEl.innerHTML = sorted.length
-      ? `<div class="idx-list">${sorted.map((r) => stockCardRowHtml(r)).join("")}</div>`
+      ? `<div class="idx-list">${sorted.map((r) => stockCardRowHtml(r, { sectionMark: true })).join("")}</div>`
       : `<p class="muted" style="padding:12px 0;">종목 정보를 불러오지 못했습니다.</p>`;
   } catch (e) {
     statusEl.style.display = "block";
@@ -3424,8 +3462,7 @@ const RANKING_ENTRIES = [
   { icon: "thumbsup", label: "거래대금", tab: "trend", group: "market", run: () => runTrendVolume() },
   { icon: "trending-up", label: "상승률", tab: "trend", group: "market", run: () => runMovers("surge") },
   { icon: "trending-down", label: "하락률", tab: "trend", group: "market", run: () => runMovers("plunge") },
-  { icon: "basket", label: "KR ETF", tab: "trend", group: "market", run: () => runTrendKrEtf() },
-  { icon: "basket", label: "US ETF", tab: "trend", group: "market", run: () => runTrendUsEtf() },
+  // KR ETF/US ETF는 하단 ETF 섹션의 시장동향으로 이동(2026-09-01 사용자 요청) — openEtfTrend 참고
   { icon: "rocket", label: "상승 압력", tab: "trend", group: "market", run: () => runTrendPressure(), orange: true },
   { icon: "medal", label: "투자 안정", tab: "valuation", group: "market", run: () => runValueStability(), orange: true },
 ];
@@ -3809,16 +3846,59 @@ function syncFirmsTabForMarket() {
 const FLAG_SVG_KR = `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#fff" stroke="rgba(0,0,0,0.22)"/><g transform="translate(10.5,7) rotate(-15)"><path d="M-3.7 0 A3.7 3.7 0 0 1 3.7 0 Z" fill="#cd2e3a"/><path d="M-3.7 0 A3.7 3.7 0 0 0 3.7 0 Z" fill="#0047a0"/><circle cx="-1.85" cy="0" r="1.85" fill="#cd2e3a"/><circle cx="1.85" cy="0" r="1.85" fill="#0047a0"/></g></svg>`;
 const FLAG_SVG_US = `<svg viewBox="0 0 21 14" width="21" height="14"><defs><clipPath id="fhUsFlagClip"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5"/></clipPath></defs><g clip-path="url(#fhUsFlagClip)"><rect x="0" y="0" width="21" height="14" fill="#fff"/><rect x="0" y="0.5" width="21" height="1.9" fill="#b22234"/><rect x="0" y="4.3" width="21" height="1.9" fill="#b22234"/><rect x="0" y="8.1" width="21" height="1.9" fill="#b22234"/><rect x="0" y="11.9" width="21" height="1.9" fill="#b22234"/><rect x="0" y="0" width="9.5" height="6.2" fill="#3c3b6e"/><g fill="#fff"><circle cx="2.4" cy="1.8" r="0.55"/><circle cx="4.8" cy="1.8" r="0.55"/><circle cx="7.2" cy="1.8" r="0.55"/><circle cx="2.4" cy="4.2" r="0.55"/><circle cx="4.8" cy="4.2" r="0.55"/><circle cx="7.2" cy="4.2" r="0.55"/></g></g><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="none" stroke="rgba(0,0,0,0.22)"/></svg>`;
 
+// ---------- 앱 섹션 모드(2026-09-01): 하단 네비의 한국주식/미국주식 = "stocks", ETF = "etf", 비트코인 = "crypto" ----------
+// ETF·비트코인 섹션은 상단 제목줄에 자기 이름+로고를 표시하고, 탭은 인기종목/시장동향/인사이트 3개만 사용(기업가치 숨김)
+let appSectionMode = "stocks";
+const ICON_SVG_ETF = `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#2f6bd8" stroke="rgba(0,0,0,0.15)"/><text x="10.5" y="10" text-anchor="middle" font-size="7" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif" letter-spacing="0.3">ETF</text></svg>`;
+const ICON_SVG_BTC = `<svg viewBox="0 0 21 14" width="21" height="14"><circle cx="10.5" cy="7" r="6.6" fill="#f7931a"/><text x="10.6" y="9.9" text-anchor="middle" font-size="9" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif">₿</text></svg>`;
+// ---------- 섹션 마크(2026-09-01): 종목이 한국주식/미국주식/ETF/비트코인 중 어디 소속인지 작은 아이콘으로 표시 ----------
+// 검색상세 상단 제목 옆·관심종목 목록의 종목 옆에 붙음. ETF 판별은 Yahoo quoteType(상세 화면) 또는 앱 내 ETF 목록 기준
+let knownEtfSetCache = null;
+function knownEtfSet() {
+  if (!knownEtfSetCache) knownEtfSetCache = new Set([...US_ETF_TICKERS, ...KR_ETF_LIST.map((x) => x.t)]);
+  return knownEtfSetCache;
+}
+function sectionOfSymbol(symbol, quoteType) {
+  const sym = (symbol || "").toUpperCase();
+  if (quoteType === "CRYPTOCURRENCY" || /-(USD|KRW)$/.test(sym)) return "crypto";
+  if (quoteType === "ETF" || knownEtfSet().has(sym)) return "etf";
+  return isKrTicker(sym) ? "kr" : "us";
+}
+function sectionMarkHtml(symbol, quoteType) {
+  const section = sectionOfSymbol(symbol, quoteType);
+  const svg = section === "crypto" ? ICON_SVG_BTC : section === "etf" ? ICON_SVG_ETF : section === "kr" ? FLAG_SVG_KR : FLAG_SVG_US;
+  const label = section === "crypto" ? "비트코인" : section === "etf" ? "ETF" : section === "kr" ? "한국주식" : "미국주식";
+  return `<span class="section-mark" title="${label}" aria-label="${label}">${svg}</span>`;
+}
+
+function syncSectionHeader() {
+  const label = el("fhMarketLabel");
+  const flag = el("fhMarketFlag");
+  const isKr = getWatchlistActiveMarket() === "KR";
+  if (label && flag) {
+    if (appSectionMode === "etf") {
+      label.textContent = "ETF";
+      flag.innerHTML = ICON_SVG_ETF;
+    } else if (appSectionMode === "crypto") {
+      label.textContent = "비트코인";
+      flag.innerHTML = ICON_SVG_BTC;
+    } else {
+      label.textContent = isKr ? "한국주식" : "미국주식";
+      flag.innerHTML = isKr ? FLAG_SVG_KR : FLAG_SVG_US;
+    }
+  }
+  // ETF·비트코인 섹션에선 제목줄 탭을 인기종목/시장동향/인사이트 3개만 노출(기업가치는 주식 전용)
+  const valuationTab = document.querySelector('.fh-tab[data-fhtab="tab.valuation"]');
+  if (valuationTab) valuationTab.style.display = appSectionMode === "stocks" ? "" : "none";
+}
+
 function syncMarketModeUI() {
   const isKr = getWatchlistActiveMarket() === "KR";
   document.body.dataset.marketMode = isKr ? "kr" : "us";
   marketModeKrBtn.classList.toggle("active", isKr);
   marketModeUsBtn.classList.toggle("active", !isKr);
-  // 로고 오른쪽 현재 시장 표시(2026-08-31, 상단 토글 숨김 대체) + 네모 국기(2026-09-01) — 이름은 한국주식/미국주식(2026-09-01 변경)
-  const fhMarketLabel = el("fhMarketLabel");
-  if (fhMarketLabel) fhMarketLabel.textContent = isKr ? "한국주식" : "미국주식";
-  const fhMarketFlag = el("fhMarketFlag");
-  if (fhMarketFlag) fhMarketFlag.innerHTML = isKr ? FLAG_SVG_KR : FLAG_SVG_US;
+  // 로고 오른쪽 현재 섹션 표시(한국주식/미국주식/ETF/비트코인) + 아이콘 — syncSectionHeader가 담당(2026-09-01)
+  syncSectionHeader();
   syncFirmsTabForMarket();
   syncDartTabForMarket();
   document.dispatchEvent(new CustomEvent("marketmodechange"));
@@ -3861,8 +3941,8 @@ document.addEventListener("click", (e) => {
   switchTab(TAB_ORDER.indexOf("topranking"));
   // entry.run()이 참조하는 일부 const(예: VALUE_DISCLAIMER)가 이 시점엔 아직 선언 전(TDZ)이라
   // 스크립트 전체 실행이 끝난 다음 틱으로 미룸(companyPanel 딥링크 크래시와 동일한 원인/해법)
-  // 단, 지도에서 ?open=watchlist(관심종목)로 넘어온 경우엔 기본 화면(기업가치)이 그 화면을 덮어쓰지 않게 건너뜀(2026-09-01)
-  setTimeout(() => { if (window.__deepLinkOpen !== "watchlist") activateRankingGroup("disclosure"); }, 0);
+  // 단, 지도에서 ?open=watchlist/etf/crypto로 넘어온 경우엔 기본 화면(기업가치)이 그 화면을 덮어쓰지 않게 건너뜀(2026-09-01)
+  setTimeout(() => { if (!["watchlist", "etf", "crypto"].includes(window.__deepLinkOpen)) activateRankingGroup("disclosure"); }, 0);
 
   const params = new URLSearchParams(location.search);
   const initialTicker = params.get("ticker");
@@ -6456,7 +6536,76 @@ async function runPopularStocks() {
   }
 }
 
-// 인기종목 화면 진입 — topranking 패널을 빌려 쓰되 서브내비(랭킹 칩)는 비우고 제목줄 탭만 활성화
+// ---------- ETF 섹션 인기종목(2026-09-01): 기존 US/KR ETF 랭킹 인프라(fetchEtfMetrics·etfRankingHtml)를
+// 인기종목 결과영역에 재사용 — 상단에 미국/한국 ETF 전환 칩을 추가로 얹음 ----------
+let etfPopularRegion = "us";
+let etfPopularMetric = "volume";
+function etfPopularHtml() {
+  const regionNav = `
+    <div class="top30-sub-nav" style="margin-bottom:6px;">
+      <button type="button" class="cat-btn${etfPopularRegion === "us" ? " active" : ""}" data-etf-popular-region="us">미국 ETF</button>
+      <button type="button" class="cat-btn${etfPopularRegion === "kr" ? " active" : ""}" data-etf-popular-region="kr">한국 ETF</button>
+    </div>`;
+  return regionNav + etfRankingHtml(etfMetricsCache[etfPopularRegion], etfPopularRegion, etfPopularMetric);
+}
+async function runEtfPopular() {
+  const statusEl = el("popularStatus");
+  const resultsEl = el("popularResults");
+  resultsEl.innerHTML = "";
+  statusEl.style.display = "block";
+  statusEl.textContent = "ETF 데이터를 불러오는 중...";
+  try {
+    const region = etfPopularRegion;
+    if (!etfMetricsCache[region]) {
+      const nameMap = region === "kr" ? Object.fromEntries(KR_ETF_LIST.map((x) => [x.t, x.name])) : null;
+      const tickers = region === "us" ? US_ETF_TICKERS : KR_ETF_LIST.map((x) => x.t);
+      etfMetricsCache[region] = await fetchEtfMetrics(tickers, nameMap);
+    }
+    if (region !== etfPopularRegion) return; // 조회 중 다른 지역 칩을 눌렀으면 그쪽 렌더에 맡김
+    statusEl.style.display = "none";
+    resultsEl.innerHTML = etfPopularHtml();
+  } catch (e) {
+    statusEl.textContent = `❌ ${e.message || "ETF 데이터를 가져오지 못했습니다."}`;
+  }
+}
+
+// ---------- 비트코인 섹션 인기종목(2026-09-01): 시장 화면 암호화폐 카테고리와 동일한 시세 카드 목록 ----------
+async function runCryptoPopular() {
+  const statusEl = el("popularStatus");
+  const resultsEl = el("popularResults");
+  resultsEl.innerHTML = "";
+  statusEl.style.display = "block";
+  statusEl.textContent = "암호화폐 시세를 불러오는 중...";
+  try {
+    const items = INDEX_CATEGORIES.crypto.items;
+    const snaps = await mapWithConcurrency(items, 6, fetchOneIndexSnap);
+    statusEl.style.display = "none";
+    resultsEl.innerHTML = `
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 암호화폐 시세는 전일 종가 대비이며 상승은 빨강·하락은 파랑입니다. 투자 자문이 아닙니다.</p>
+      <div class="idx-list">${items.map((item, i) => indexRowHtml(item, snaps[i], "crypto")).join("")}</div>
+    `;
+  } catch (e) {
+    statusEl.textContent = `❌ ${e.message || "암호화폐 시세를 가져오지 못했습니다."}`;
+  }
+}
+
+// 인기종목(ETF) 결과영역의 미국/한국 ETF 칩·거래대금/상승률 칩 클릭 처리
+el("popularResults").addEventListener("click", (e) => {
+  const regionBtn = e.target.closest("[data-etf-popular-region]");
+  if (regionBtn) {
+    etfPopularRegion = regionBtn.dataset.etfPopularRegion;
+    runEtfPopular();
+    return;
+  }
+  const metricBtn = e.target.closest("[data-etf-metric]");
+  if (metricBtn && appSectionMode === "etf" && etfMetricsCache[etfPopularRegion]) {
+    etfPopularMetric = metricBtn.dataset.etfMetric;
+    el("popularResults").innerHTML = etfPopularHtml();
+  }
+});
+
+// 인기종목 화면 진입 — topranking 패널을 빌려 쓰되 서브내비(랭킹 칩)는 비우고 제목줄 탭만 활성화.
+// 섹션 모드에 따라 주식(상승압력+투자안정 TOP30)/ETF 랭킹/암호화폐 시세로 내용이 달라짐(2026-09-01)
 function openPopularStocks() {
   switchTab(TAB_ORDER.indexOf("topranking"));
   el("tabValuationBtn").classList.remove("active");
@@ -6464,8 +6613,30 @@ function openPopularStocks() {
   setCarouselViewTitle("tab.popular");
   el("topRankingSubNav").innerHTML = "";
   showRankingGroup("popular");
-  runPopularStocks();
+  if (appSectionMode === "etf") runEtfPopular();
+  else if (appSectionMode === "crypto") runCryptoPopular();
+  else runPopularStocks();
 }
+
+// ETF 섹션의 시장동향(2026-09-01): 주식 시장동향에 있던 US ETF/KR ETF 랭킹을 이쪽 서브내비 칩 2개로 옮김
+function openEtfTrend() {
+  switchTab(TAB_ORDER.indexOf("topranking"));
+  el("tabValuationBtn").classList.remove("active");
+  tabTrendBtn.classList.remove("active");
+  setCarouselViewTitle("tab.trend");
+  showRankingGroup("trend");
+  el("topRankingSubNav").innerHTML = `
+    <button type="button" class="cat-btn top-ranking-tab active" data-etf-trend-region="us">${iconHtml("basket")}<span>US ETF</span></button>
+    <button type="button" class="cat-btn top-ranking-tab" data-etf-trend-region="kr">${iconHtml("basket")}<span>KR ETF</span></button>
+  `;
+  runTrendEtf("us");
+}
+el("topRankingSubNav").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-etf-trend-region]");
+  if (!btn) return;
+  el("topRankingSubNav").querySelectorAll(".top-ranking-tab").forEach((b) => b.classList.toggle("active", b === btn));
+  runTrendEtf(btn.dataset.etfTrendRegion);
+});
 
 const OPERATING_MARGIN_NOTE = `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 영업이익률 = 직전 분기 영업이익 ÷ 직전 분기 매출액(같은 분기 기준). 투자 자문이 아닙니다.</p>`;
 async function runValueOperatingMargin() {
@@ -9384,7 +9555,7 @@ bindTrend(trendButtons.dividend, runTrendDividend);
 bindTrend(trendButtons.pressure, runTrendPressure);
 
 // US Markets 탭의 "주식" 카테고리 전용 카드 행 — 지수 카드(idx-row)와 동일한 스타일(로고+이름/티커, 가격/등락)
-function stockCardRowHtml(r) {
+function stockCardRowHtml(r, { sectionMark = false } = {}) {
   const displayName = TICKER_TO_KOREAN_NAME[r.symbol] || r.name;
   const priceStr = fmtPrice(r.price, r.currency);
   const sign = (n) => (n >= 0 ? "+" : "");
@@ -9411,7 +9582,7 @@ function stockCardRowHtml(r) {
   return `
     <div class="idx-row stock-card-row ticker-link idx-row-clickable" data-ticker="${escapeHtml(r.symbol)}">
       <div class="idx-left">
-        <div class="idx-name">${tickerLogoHtml(r.symbol)}${escapeHtml(displayName)}</div>
+        <div class="idx-name">${tickerLogoHtml(r.symbol)}${escapeHtml(displayName)}${sectionMark ? sectionMarkHtml(r.symbol) : ""}</div>
         <div class="idx-sub">${clockLabel ? `<span class="${clockClass}">🕐 ${clockLabel}</span> | ` : ""}<span class="idx-ticker">${escapeHtml(r.symbol)}</span></div>
       </div>
       <div class="stock-card-right">

@@ -19,6 +19,8 @@ const MAP_I18N = {
   "map.watchlist": { ko: "관심목록", en: "Watchlist" },
   "tab.watchlist": { ko: "관심종목", en: "Watchlist" },
   "nav.marketBtn": { ko: "시장", en: "Market" },
+  "nav.etf": { ko: "ETF", en: "ETF" },
+  "nav.crypto": { ko: "비트코인", en: "Bitcoin" },
   "nav.more": { ko: "더보기", en: "More" },
 };
 function detectDefaultMapLang() {
@@ -1046,20 +1048,29 @@ mapViewport.addEventListener("pointerleave", (e) => {
 const companySheet = document.getElementById("companySheet");
 const companySheetBody = document.getElementById("companySheetBody");
 
-// "관심" 필터와 같은 저장공간(watchlist_v1_kr/us)에 이 종목을 추가/제거 — 본체 검색화면의 별 버튼과 동일한 스키마
+// "관심" 필터와 같은 통합 저장공간(watchlist_v1_all, 2026-09-01 국내/해외 통합)에 이 종목을 추가/제거 —
+// 본체 검색화면의 별 버튼과 동일한 스키마. 본체가 아직 통합 이관(migrateWatchlistToUnifiedStorage)을 안 돌린
+// 기기에서도 목록이 비어 보이지 않게, 읽을 땐 구 시장별 키(_us/_kr)까지 합쳐서 본다
+function readUnifiedWatchlist() {
+  const read = (k) => {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(k));
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  };
+  const seen = new Set();
+  return [...read("watchlist_v1_all"), ...read("watchlist_v1_us"), ...read("watchlist_v1_kr")].filter(
+    (w) => w && w.symbol && !seen.has(w.symbol) && seen.add(w.symbol)
+  );
+}
 function toggleSheetWatchlist(symbol) {
-  const key = ACTIVE_MARKET === "domestic" ? "watchlist_v1_kr" : "watchlist_v1_us";
-  let list = [];
-  try {
-    const parsed = JSON.parse(localStorage.getItem(key));
-    if (Array.isArray(parsed)) list = parsed;
-  } catch {
-    list = [];
-  }
+  const list = readUnifiedWatchlist();
   const idx = list.findIndex((w) => w.symbol === symbol);
   if (idx >= 0) list.splice(idx, 1);
   else list.push({ symbol, addedAt: Date.now(), groupId: "default" });
-  localStorage.setItem(key, JSON.stringify(list));
+  localStorage.setItem("watchlist_v1_all", JSON.stringify(list));
   return idx < 0;
 }
 
@@ -1375,14 +1386,9 @@ let liveDataLoaded = false; // 상승률/하락률/인기종목이 실시간 데
 
 // "관심" 버튼 — 본체(내투자닷컴)와 같은 origin이라 localStorage(watchlist_v1_us/kr)를 그대로 읽을 수 있다
 let watchOnlyMode = false;
+// 통합 관심종목(2026-09-01) — 시장 구분 없이 저장된 전체 목록을 읽음(지도에선 현재 보는 시장의 종목만 자연히 매칭됨)
 function getWatchlistSymbols() {
-  const key = ACTIVE_MARKET === "domestic" ? "watchlist_v1_kr" : "watchlist_v1_us";
-  try {
-    const list = JSON.parse(localStorage.getItem(key));
-    return new Set(Array.isArray(list) ? list.map((w) => w.symbol) : []);
-  } catch {
-    return new Set();
-  }
+  return new Set(readUnifiedWatchlist().map((w) => w.symbol));
 }
 
 function isFullRange(key, range) {
@@ -2559,8 +2565,8 @@ function goToMainSite(openPanel) {
 document.getElementById("mapSearchBtn").addEventListener("click", () => goToMainSite("search"));
 document.getElementById("bottomNavKrBtn2").addEventListener("click", () => goToMainSite("ranking-kr"));
 document.getElementById("bottomNavUsBtn2").addEventListener("click", () => goToMainSite("ranking-us"));
-document.getElementById("bottomNavMarketBtn2").addEventListener("click", () => goToMainSite("market"));
-document.getElementById("bottomNavWatchlistBtn2").addEventListener("click", () => goToMainSite("watchlist"));
+document.getElementById("bottomNavEtfBtn2").addEventListener("click", () => goToMainSite("etf"));
+document.getElementById("bottomNavCryptoBtn2").addEventListener("click", () => goToMainSite("crypto"));
 document.getElementById("bottomNavMoreBtn2").addEventListener("click", () => goToMainSite("more"));
 
 // ---------- 초기화 ----------

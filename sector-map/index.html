@@ -22,8 +22,8 @@
 <meta name="apple-mobile-web-app-title" content="굴려볼까" />
 <link rel="stylesheet" href="style.css?v=20260901a" />
 <!-- 지도가 떠 있는 동안 본체 파일을 미리 받아둠 — 간편검색/시장/더보기로 처음 넘어갈 때 로딩 체감 단축 -->
-<link rel="prefetch" href="../app.js?v=20260901c" />
-<link rel="prefetch" href="../style.css?v=20260901b" />
+<link rel="prefetch" href="../app.js?v=20260901e" />
+<link rel="prefetch" href="../style.css?v=20260901c" />
 <link rel="prefetch" href="../index.html" />
 </head>
 <body>
@@ -205,13 +205,14 @@
       <svg class="bottom-nav-flag" viewBox="0 0 21 14"><defs><clipPath id="navUsFlagClip2"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5"/></clipPath></defs><g clip-path="url(#navUsFlagClip2)"><rect x="0" y="0" width="21" height="14" fill="#fff"/><rect x="0" y="0.5" width="21" height="1.9" fill="#b22234"/><rect x="0" y="4.3" width="21" height="1.9" fill="#b22234"/><rect x="0" y="8.1" width="21" height="1.9" fill="#b22234"/><rect x="0" y="11.9" width="21" height="1.9" fill="#b22234"/><rect x="0" y="0" width="9.5" height="6.2" fill="#3c3b6e"/><g fill="#fff"><circle cx="2.4" cy="1.8" r="0.55"/><circle cx="4.8" cy="1.8" r="0.55"/><circle cx="7.2" cy="1.8" r="0.55"/><circle cx="2.4" cy="4.2" r="0.55"/><circle cx="4.8" cy="4.2" r="0.55"/><circle cx="7.2" cy="4.2" r="0.55"/></g></g><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="none" stroke="rgba(0,0,0,0.25)"/></svg>
       <span data-i18n="market.us">미국주식</span>
     </button>
-    <button type="button" class="bottom-nav-btn" id="bottomNavMarketBtn2" aria-label="시장">
-      <svg viewBox="0 0 24 24" fill="none"><polyline points="3 17 9 11 13 15 21 5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><polyline points="15 5 21 5 21 11" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span data-i18n="nav.marketBtn">시장</span>
+    <!-- 시장·관심종목은 본체 더보기 패널로 이동, 그 자리에 ETF·비트코인 섹션 버튼 신설(2026-09-01) -->
+    <button type="button" class="bottom-nav-btn" id="bottomNavEtfBtn2" aria-label="ETF">
+      <svg class="bottom-nav-flag" viewBox="0 0 21 14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#2f6bd8" stroke="rgba(0,0,0,0.15)"/><text x="10.5" y="10" text-anchor="middle" font-size="7" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif" letter-spacing="0.3">ETF</text></svg>
+      <span data-i18n="nav.etf">ETF</span>
     </button>
-    <button type="button" class="bottom-nav-btn" id="bottomNavWatchlistBtn2" aria-label="관심종목">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z"/></svg>
-      <span data-i18n="tab.watchlist">관심종목</span>
+    <button type="button" class="bottom-nav-btn" id="bottomNavCryptoBtn2" aria-label="비트코인">
+      <svg class="bottom-nav-flag" viewBox="0 0 21 14"><circle cx="10.5" cy="7" r="6.6" fill="#f7931a"/><text x="10.6" y="9.9" text-anchor="middle" font-size="9" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif">₿</text></svg>
+      <span data-i18n="nav.crypto">비트코인</span>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavMoreBtn2" aria-label="더보기">
       <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="3" rx="1.5" fill="currentColor"/><rect x="4" y="10.5" width="16" height="3" rx="1.5" fill="currentColor"/><rect x="4" y="15" width="16" height="3" rx="1.5" fill="currentColor"/></svg>
@@ -225,6 +226,6 @@
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script src="data/sp500-data-core.js?v=20260901a"></script>
 <script src="data/kr-data-core.js?v=20260901a" onerror="window.KR_CORE_DATA = { companies: [] };"></script>
-<script src="app.js?v=20260901b"></script>
+<script src="app.js?v=20260901d"></script>
 </body>
 </html>

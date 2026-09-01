@@ -1983,6 +1983,9 @@ body[data-market-mode="kr"] .fh-market-label { color: #fff; }
 /* 시장 표시 옆 네모 국기(2026-09-01) — 국내=태극기, 해외=성조기 */
 .fh-market-flag { display: inline-flex; align-items: center; margin-left: 5px; }
 .fh-market-flag svg { display: block; }
+/* 섹션 마크(2026-09-01) — 검색상세 제목 옆·관심종목 종목 옆에 붙는 작은 소속 아이콘(한국주식/미국주식/ETF/비트코인) */
+.section-mark { display: inline-flex; align-items: center; margin-left: 5px; vertical-align: middle; flex: none; }
+.section-mark svg { width: 17px; height: 11px; display: block; }
 
 /* 하단 네비 아이콘 버전 복귀(2026-08-31 사용자 확정) — 더보기/시장 아이콘 미세 정렬 */
 #bottomNavMoreBtn svg { width: 29px; height: 29px; top: 3px; }
