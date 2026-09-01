@@ -1985,6 +1985,14 @@ body[data-market-mode="kr"] .fh-market-label { color: #fff; }
 /* 시장 표시 옆 네모 국기(2026-09-01) — 국내=태극기, 해외=성조기 */
 .fh-market-flag { display: inline-flex; align-items: center; margin-left: 5px; }
 .fh-market-flag svg { display: block; }
+/* 관심종목 일괄 삭제 모드(2026-09-01) — 행 앞 체크박스 + 선택 강조 + 확인/취소 바 */
+.wl-del-check-wrap { display: flex; align-items: center; margin-right: 8px; flex: none; }
+.wl-del-check { width: 20px; height: 20px; accent-color: #e5484d; pointer-events: none; }
+.stock-card-row.wl-del-selected { outline: 2px solid #e5484d; outline-offset: -2px; border-radius: 12px; }
+.wl-delete-bar { display: flex; gap: 8px; margin: 8px 0 2px; }
+.wl-delete-confirm-btn { flex: 1; border: none; background: #e5484d; color: #fff; font-weight: 800; font-size: 14px; border-radius: 10px; padding: 10px; cursor: pointer; }
+#wlDeleteBtn.active { background: #e5484d; color: #fff; border-color: transparent; }
+
 /* 더보기 섹터맵 항목 오른쪽 Pro 배지(2026-09-01) — 주황 강조 */
 .more-panel-pro-badge {
   margin-left: auto;

@@ -2991,6 +2991,7 @@ const WATCHLIST_SORT_OPTIONS = [
   { id: "name", label: "이름순" },
   { id: "changePct", label: "등락률순" },
   { id: "price", label: "현재가순" },
+  { id: "section", label: "투자종류순" }, // 한국주식→미국주식→ETF→비트코인 순(2026-09-01)
 ];
 function getWatchlistSort(market = getWatchlistActiveMarket()) {
   const id = localStorage.getItem(wlKey("watchlist_sort_v1", market));
@@ -3008,6 +3009,15 @@ function sortWatchlistRows(rows) {
     arr.sort((a, b) => (b.changePct ?? -Infinity) - (a.changePct ?? -Infinity));
   } else if (mode === "price") {
     arr.sort((a, b) => (b.price ?? -Infinity) - (a.price ?? -Infinity));
+  } else if (mode === "section") {
+    // 투자종류순(2026-09-01): 한국주식 → 미국주식 → ETF → 비트코인, 같은 종류 안에선 이름순
+    const order = { kr: 0, us: 1, etf: 2, crypto: 3 };
+    arr.sort((a, b) => {
+      const sa = order[sectionOfSymbol(a.symbol)] ?? 9;
+      const sb = order[sectionOfSymbol(b.symbol)] ?? 9;
+      if (sa !== sb) return sa - sb;
+      return (TICKER_TO_KOREAN_NAME[a.symbol] || a.name || a.symbol).localeCompare(TICKER_TO_KOREAN_NAME[b.symbol] || b.name || b.symbol, "ko");
+    });
   }
   // manual(직접설정순)은 저장된(추가된) 순서를 그대로 유지하므로 별도 정렬 없음
   return arr;
@@ -3218,6 +3228,70 @@ document.addEventListener("click", (e) => {
 
 // ---------- 관심종목 종목추가·공유 버튼 ----------
 el("wlAddStockBtn").addEventListener("click", () => openSearchOverlay());
+
+// ---------- 관심종목 일괄 삭제 모드(2026-09-01): "-종목삭제" 토글 → 행마다 체크박스 → 선택 삭제 ----------
+let wlDeleteMode = false;
+function updateWlDeleteBar() {
+  const count = el("watchlistList").querySelectorAll(".wl-del-check:checked").length;
+  el("wlDeleteConfirmBtn").textContent = `선택한 ${count}개 삭제`;
+}
+function setWlDeleteMode(on) {
+  wlDeleteMode = on;
+  el("wlDeleteBtn").classList.toggle("active", on);
+  const listEl = el("watchlistList");
+  listEl.classList.toggle("wl-delete-mode", on);
+  listEl.querySelectorAll(".wl-del-check-wrap").forEach((n) => n.remove());
+  listEl.querySelectorAll(".wl-del-selected").forEach((n) => n.classList.remove("wl-del-selected"));
+  if (on) {
+    listEl.querySelectorAll(".stock-card-row").forEach((row) => {
+      const wrap = document.createElement("span");
+      wrap.className = "wl-del-check-wrap";
+      wrap.innerHTML = `<input type="checkbox" class="wl-del-check" tabindex="-1" aria-label="삭제 선택" />`;
+      row.prepend(wrap);
+    });
+  }
+  el("wlDeleteBar").style.display = on ? "flex" : "none";
+  updateWlDeleteBar();
+}
+el("wlDeleteBtn").addEventListener("click", () => {
+  if (!wlDeleteMode && !el("watchlistList").querySelector(".stock-card-row")) {
+    showToast("삭제할 관심종목이 없습니다.");
+    return;
+  }
+  setWlDeleteMode(!wlDeleteMode);
+});
+el("wlDeleteCancelBtn").addEventListener("click", () => setWlDeleteMode(false));
+// 삭제 모드에선 행 클릭이 상세 이동 대신 체크 토글이 되도록 캡처 단계에서 가로챔(전역 ticker-link 위임보다 먼저 실행됨)
+el("watchlistList").addEventListener(
+  "click",
+  (e) => {
+    if (!wlDeleteMode) return;
+    const row = e.target.closest(".stock-card-row");
+    if (!row) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const cb = row.querySelector(".wl-del-check");
+    if (!cb) return;
+    if (e.target !== cb) cb.checked = !cb.checked; // 체크박스 자체를 눌렀을 땐 브라우저가 이미 토글함
+    row.classList.toggle("wl-del-selected", cb.checked);
+    updateWlDeleteBar();
+  },
+  true
+);
+el("wlDeleteConfirmBtn").addEventListener("click", () => {
+  const symbols = [...el("watchlistList").querySelectorAll(".wl-del-check:checked")].map((cb) => cb.closest(".stock-card-row").dataset.ticker);
+  if (!symbols.length) {
+    showToast("삭제할 종목을 선택해주세요.");
+    return;
+  }
+  const removeSet = new Set(symbols);
+  saveWatchlist(getWatchlist().filter((w) => !removeSet.has(w.symbol)));
+  wlDeleteMode = false;
+  el("wlDeleteBar").style.display = "none";
+  el("wlDeleteBtn").classList.remove("active");
+  renderWatchlistList();
+  showToast(`${symbols.length}개 종목을 삭제했습니다.`);
+});
 
 async function shareWatchlist() {
   const groups = getWatchlistGroups();
@@ -3493,6 +3567,7 @@ function renderSelfTestResult() {
 async function renderWatchlistList() {
   const statusEl = el("watchlistStatus");
   const listEl = el("watchlistList");
+  if (wlDeleteMode) setWlDeleteMode(false); // 목록을 다시 그리면 삭제 모드는 해제
 
   renderPinnedSelfTestBar();
   syncMarketModeUI();
