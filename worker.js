@@ -6,6 +6,7 @@ const ALLOWED_HOSTS = [
   "query1.finance.yahoo.com",
   "query2.finance.yahoo.com",
   "fred.stlouisfed.org",
+  "news.google.com", // 국내 종목 주요뉴스(구글 뉴스 RSS 검색, 2026-09-01) — 응답은 XML이지만 그대로 스트리밍 중계됨
 ];
 
 const CORS_HEADERS = {

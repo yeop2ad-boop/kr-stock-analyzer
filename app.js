@@ -260,6 +260,49 @@ async function proxyFetchJson(targetUrl, retries = 1) {
   throw new Error("데이터 소스에 연결하지 못했습니다. 잠시 후 다시 시도해주세요. (" + (lastErr?.message || "") + ")");
 }
 
+// JSON이 아닌 원문 텍스트(RSS/XML 등)를 프록시로 받아오는 헬퍼 — 국내 종목 뉴스(구글 뉴스 RSS)용
+async function proxyFetchText(targetUrl) {
+  const attempts = [
+    () => fetch("https://us-stock.yeop2ad.workers.dev/?url=" + encodeURIComponent(targetUrl), { signal: AbortSignal.timeout(PROXY_TIMEOUT_MS) }),
+    () => fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(targetUrl), { signal: AbortSignal.timeout(PROXY_TIMEOUT_MS) }),
+    () => fetch("https://corsproxy.io/?url=" + encodeURIComponent(targetUrl), { signal: AbortSignal.timeout(PROXY_TIMEOUT_MS) }),
+  ];
+  let lastErr;
+  for (const attempt of attempts) {
+    try {
+      const res = await attempt();
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.text();
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  throw new Error("데이터 소스에 연결하지 못했습니다. (" + (lastErr?.message || "") + ")");
+}
+
+// 국내 종목 주요 뉴스 — Yahoo search의 뉴스는 국내 티커(005930.KS 등)에서 해당 기업과 무관한 기사가 섞여
+// 나오는 문제가 있어(2026-09-01 사용자 확인), 한글 회사명으로 구글 뉴스 RSS를 검색해 그 기업 기사만 가져온다
+async function fetchKrCompanyNews(koName) {
+  const url = `https://news.google.com/rss/search?q=${encodeURIComponent(`"${koName}"`)}&hl=ko&gl=KR&ceid=KR:ko`;
+  const xml = await proxyFetchText(url);
+  const doc = new DOMParser().parseFromString(xml, "text/xml");
+  return [...doc.querySelectorAll("item")].map((it) => {
+    const get = (tag) => { const n = it.querySelector(tag); return n ? n.textContent.trim() : ""; };
+    const publisher = get("source");
+    let title = get("title");
+    // 구글 뉴스 제목은 "기사제목 - 언론사" 형태라 언론사 접미사는 출처 줄과 겹쳐 잘라냄(간혹 두 번 붙는 기사도 있음)
+    while (publisher && title.endsWith(` - ${publisher}`)) title = title.slice(0, -(publisher.length + 3));
+    const pub = new Date(get("pubDate"));
+    return {
+      title,
+      link: get("link"),
+      providerPublishTime: isNaN(pub.getTime()) ? null : Math.floor(pub.getTime() / 1000),
+      publisher,
+      isKorean: true, // renderNews에서 자동번역·원문 표기를 건너뛰기 위한 표시
+    };
+  });
+}
+
 // ---------- Yahoo Finance 헬퍼 ----------
 async function yahooSearch(ticker) {
   const url = `https://query1.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(ticker)}&newsCount=20&quotesCount=1`;
@@ -2124,19 +2167,19 @@ document.addEventListener("click", (e) => {
   if (row) navigateToTicker(row.dataset.symbol);
 });
 
-// ---------- 하단 고정 네비게이션(지도/간편검색/시장/더보기) — 홈은 지도(섹터맵)가 대신함 ----------
+// ---------- 하단 고정 네비게이션(국내/해외/시장/관심종목/더보기) — 지도는 더보기 패널로 이동(2026-09-01) ----------
 // 국내/해외도 일반 네비 버튼처럼 취급(2026-08-31 사용자 확정: 시장 등 다른 화면이 활성일 땐 국내/해외 불이 꺼져야 함)
 const bottomNavButtons = {
-  map: el("bottomNavMapBtn"),
   kr: el("bottomNavKrBtn"),
   us: el("bottomNavUsBtn"),
   market: el("bottomNavMarketBtn"),
+  watchlist: el("bottomNavWatchlistBtn"),
   more: el("bottomNavMoreBtn"),
 };
 const bottomNavKrBtn = bottomNavButtons.kr;
 const bottomNavUsBtn = bottomNavButtons.us;
 function setBottomNavActive(key) {
-  Object.entries(bottomNavButtons).forEach(([k, btn]) => btn.classList.toggle("active", k === key));
+  Object.entries(bottomNavButtons).forEach(([k, btn]) => btn && btn.classList.toggle("active", k === key));
 }
 
 // ---------- 더보기 패널: 전체화면이 아니라 오른쪽에서 최대 75%까지만 슬라이드인하는 드로어 ----------
@@ -2180,15 +2223,12 @@ function showOnlyCarouselView(fn) {
 el("morePanelWatchlistBtn").addEventListener("click", () => {
   showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist")));
 });
-// 상단바 별 아이콘(지도 상단과 동일 위치) — 관심종목 화면으로 이동
-el("fhWatchlistBtn").addEventListener("click", () => {
-  showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist")));
-});
-// 제목줄 4탭 — 관심종목/기업가치/시장동향/인사이트 화면 전환(더보기 항목과 동일 동작)
+// 우측 상단 별 아이콘은 삭제(2026-09-01 사용자 요청) — 관심종목 이동은 하단 네비 버튼이 담당
+// 제목줄 4탭 — 인기종목/기업가치/시장동향/인사이트 화면 전환(관심종목 탭은 하단 네비로 이동, 2026-09-01)
 document.querySelectorAll(".fh-tab").forEach((btn) => {
   btn.addEventListener("click", () => {
     const key = btn.dataset.fhtab;
-    if (key === "tab.watchlist") showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist")));
+    if (key === "tab.popular") showOnlyCarouselView(() => openPopularStocks());
     else if (key === "tab.valuation") showOnlyCarouselView(() => activateRankingGroup("disclosure"));
     else if (key === "tab.trend") showOnlyCarouselView(() => activateRankingGroup("market"));
     else showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("insight")));
@@ -2286,6 +2326,7 @@ const I18N = {
   "market.kr": { ko: "국내", en: "KR" },
   "market.us": { ko: "해외", en: "US" },
   "tab.watchlist": { ko: "관심종목", en: "Watchlist" },
+  "tab.popular": { ko: "인기종목", en: "Popular" },
   "tab.search": { ko: "간편검색", en: "Search" },
   "tab.valuation": { ko: "기업가치", en: "Value" },
   "tab.trend": { ko: "시장동향", en: "Trends" },
@@ -2389,10 +2430,15 @@ applyColorScheme(__savedScheme || detectDefaultColorScheme());
 colorSchemeKrBtn.addEventListener("click", () => setColorScheme("kr"));
 colorSchemeGlobalBtn.addEventListener("click", () => setColorScheme("global"));
 
-bottomNavButtons.map.addEventListener("click", () => {
-  // 본체에서 보던 시장 그대로 지도 보기 연동(2026-08-31): 국내 모드 → 코스피 200, 해외 모드 → S&P200
+// 지도는 하단 네비에서 더보기 패널 항목으로 이동(2026-09-01) — 본체에서 보던 시장 그대로 지도 보기 연동
+el("morePanelMapBtn").addEventListener("click", () => {
   const market = getWatchlistActiveMarket() === "KR" ? "domestic" : "overseas";
   window.location.href = `sector-map/index.html?market=${market}`;
+});
+// 하단 관심종목 — 관심종목 화면으로 이동(구 상단 별 아이콘 대체)
+bottomNavButtons.watchlist.addEventListener("click", () => {
+  showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist")));
+  setBottomNavActive("watchlist");
 });
 // 하단 국내/해외 — 해당 시장으로 전환하고 랭킹(기업가치) 화면을 보여줌(2026-08-31, 랭킹 버튼 대체).
 // showOnlyCarouselView가 active를 전부 해제하므로 그 뒤에 켬 — 다른 버튼(시장 등)을 누르면 자연히 꺼짐
@@ -2427,6 +2473,7 @@ bottomNavButtons.more.addEventListener("click", () => {
 (() => {
   const openParam = new URLSearchParams(window.location.search).get("open");
   if (!openParam) return;
+  window.__deepLinkOpen = openParam; // initApp의 기본 화면(기업가치) 부팅이 딥링크 화면을 덮어쓰지 않도록 표시
   loadingSplash.style.display = "none";
   history.replaceState(null, "", window.location.pathname); // 새로고침 시 다시 안 열리도록 쿼리스트링 제거
   // 이 아래 스크립트에 아직 초기화되지 않은 const(companyPanel 등)를 클릭 핸들러가 참조하므로,
@@ -2449,6 +2496,7 @@ bottomNavButtons.more.addEventListener("click", () => {
       "ranking-kr": () => bottomNavKrBtn.click(),
       "ranking-us": () => bottomNavUsBtn.click(),
       ranking: () => (getWatchlistActiveMarket() === "KR" ? bottomNavKrBtn : bottomNavUsBtn).click(),
+      watchlist: () => bottomNavButtons.watchlist.click(), // 지도 하단 관심종목 버튼(2026-09-01)
     };
     const fn = actions[openParam];
     if (fn) fn();
@@ -3350,6 +3398,8 @@ const RANKING_ENTRIES = [
 function showRankingGroup(tabKey) {
   el("valuationGroup").style.display = tabKey === "valuation" ? "block" : "none";
   el("trendGroup").style.display = tabKey === "trend" ? "block" : "none";
+  const popularGroup = el("popularGroup");
+  if (popularGroup) popularGroup.style.display = tabKey === "popular" ? "block" : "none";
 }
 
 let topRankingActiveIdx = 0;
@@ -3768,7 +3818,8 @@ document.addEventListener("click", (e) => {
   switchTab(TAB_ORDER.indexOf("topranking"));
   // entry.run()이 참조하는 일부 const(예: VALUE_DISCLAIMER)가 이 시점엔 아직 선언 전(TDZ)이라
   // 스크립트 전체 실행이 끝난 다음 틱으로 미룸(companyPanel 딥링크 크래시와 동일한 원인/해법)
-  setTimeout(() => activateRankingGroup("disclosure"), 0);
+  // 단, 지도에서 ?open=watchlist(관심종목)로 넘어온 경우엔 기본 화면(기업가치)이 그 화면을 덮어쓰지 않게 건너뜀(2026-09-01)
+  setTimeout(() => { if (window.__deepLinkOpen !== "watchlist") activateRankingGroup("disclosure"); }, 0);
 
   const params = new URLSearchParams(location.search);
   const initialTicker = params.get("ticker");
@@ -4266,7 +4317,14 @@ async function runAnalysis(ticker) {
       el("peersSection").innerHTML = `<p class="error-inline">경쟁사 비교 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
-    renderNews(searchData).catch((e) => {
+    // 국내 종목은 Yahoo 뉴스가 해당 기업과 무관한 기사를 자주 섞어 내보내(2026-09-01 사용자 확인),
+    // 한글 회사명으로 구글 뉴스 RSS를 검색해 대체하고 실패 시에만 Yahoo 뉴스로 폴백
+    const newsDataPromise = isKrTicker(ticker)
+      ? fetchKrCompanyNews(TICKER_TO_KOREAN_NAME[ticker] || quote.longname || quote.shortname || ticker)
+          .then((news) => (news.length ? { news } : searchData))
+          .catch(() => searchData)
+      : Promise.resolve(searchData);
+    newsDataPromise.then((d) => renderNews(d)).catch((e) => {
       el("newsSection").innerHTML = `<p class="error-inline">뉴스를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
@@ -5363,8 +5421,9 @@ async function renderNews(searchData, containerEl = el("newsSection")) {
     return;
   }
 
+  // 국내 기사(isKorean, 구글 뉴스 RSS)는 이미 한국어라 자동번역·"원문" 줄을 건너뜀
   const translatedTitles = await Promise.all(
-    news.map((n) => translateToKorean(n.title || "").catch(() => n.title || ""))
+    news.map((n) => (n.isKorean ? Promise.resolve(n.title || "") : translateToKorean(n.title || "").catch(() => n.title || "")))
   );
 
   const items = news
@@ -5375,15 +5434,16 @@ async function renderNews(searchData, containerEl = el("newsSection")) {
       <div class="news-item">
         <div class="news-title"><a href="${escapeHtml(n.link || "#")}" target="_blank" rel="noopener">${escapeHtml(koTitle)}</a></div>
         <div class="news-meta">${escapeHtml(date)}</div>
-        <div class="news-original">원문: ${escapeHtml(n.title || "")}</div>
+        ${n.isKorean ? "" : `<div class="news-original">원문: ${escapeHtml(n.title || "")}</div>`}
         <div class="news-source">출처: ${escapeHtml(n.publisher || "알 수 없음")}</div>
       </div>`;
     })
     .join("");
 
+  const isAllKorean = news.every((n) => n.isKorean);
   containerEl.innerHTML = `
     ${items}
-    <p class="muted" style="font-size:12px;margin-top:8px;">※ 제목은 자동 번역되었으며, 본문 요약은 제공되지 않습니다. 최근 1개월 이내 기사 최대 10건입니다.</p>
+    <p class="muted" style="font-size:12px;margin-top:8px;">${isAllKorean ? "※ 구글 뉴스에서 해당 기업명으로 검색된 국내 기사입니다." : "※ 제목은 자동 번역되었으며, 본문 요약은 제공되지 않습니다."} 최근 1개월 이내 기사 최대 10건입니다.</p>
   `;
 }
 
@@ -6254,6 +6314,91 @@ async function runValueMarketCap() {
     metricCellFn: (r) => (r.marketCap ? fmtCompactCurrency(r.marketCap, r.currency) : "N/A"),
     noteHtml: VALUE_DISCLAIMER,
   });
+}
+
+// ---------- 인기종목(제목줄 첫 탭, 2026-09-01 사용자 요청): 시가총액 상위 50위권에서
+// 상승압력+투자안정 합산 높은 순 30개 — 국내는 코스피200+코스닥150, 해외는 S&P500에서 각각 찾음.
+// 점수는 지도(sector-map)가 매일 배치로 계산해둔 스냅샷(kr/sp500-sectors.json의 pressureScore·stabilityScore)을
+// 그대로 재사용해 접속 즉시 순위를 보여주고, 현재가·등락률만 30개 종목에 대해 실시간으로 조회함
+async function runPopularStocks() {
+  const statusEl = el("popularStatus");
+  const resultsEl = el("popularResults");
+  if (!guardRankingScan(resultsEl)) return;
+  resultsEl.dataset.scanning = "1";
+  try {
+    resultsEl.innerHTML = "";
+    statusEl.style.display = "block";
+    statusEl.textContent = "인기종목을 불러오는 중...";
+    const isKr = getWatchlistActiveMarket() === "KR";
+    const universe = await getSReportUniverse(isKr);
+    const scored = (((universe && universe.companies) || [])
+      .filter((c) => c.marketCap && c.pressureScore !== null && c.pressureScore !== undefined && c.stabilityScore !== null && c.stabilityScore !== undefined)
+      .sort((a, b) => b.marketCap - a.marketCap)
+      .slice(0, 50))
+      .sort((a, b) => b.pressureScore + b.stabilityScore - (a.pressureScore + a.stabilityScore))
+      .slice(0, 30);
+    if (scored.length === 0) throw new Error("인기종목 데이터를 아직 준비 중입니다. 잠시 후 다시 확인해주세요.");
+
+    statusEl.textContent = "인기종목 시세를 확인하는 중...";
+    const snaps = await mapWithConcurrency(scored, 6, async (c) => {
+      try {
+        const chart = await yahooChart(c.symbol, "5d");
+        const snap = yahooSnapshot(chart);
+        const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
+        return snap && { ...snap, currency: (meta && meta.currency) || (isKr ? "KRW" : "USD") };
+      } catch {
+        return null;
+      }
+    });
+    statusEl.style.display = "none";
+
+    const rows = scored
+      .map((c, i) => {
+        const snap = snaps[i];
+        const name = TICKER_TO_KOREAN_NAME[c.symbol] || c.name || c.symbol;
+        const priceCell =
+          snap && snap.price !== null && snap.price !== undefined
+            ? `${priceChartLink(c.symbol, fmtPrice(snap.price, snap.currency))}${
+                snap.changePct !== null && snap.changePct !== undefined
+                  ? `<br><span class="${snap.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(snap.changePct)})</span>`
+                  : ""
+              }`
+            : "N/A";
+        return `
+        <tr>
+          <td>${i + 1}</td>
+          <td><span class="ticker-cell">${tickerLogoHtml(c.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(c.symbol)}">${escapeHtml(name)}</b></span></td>
+          <td>${priceCell}</td>
+          <td>${scoreRankColorHtml(c.pressureScore, c.pressureScore)}</td>
+          <td>${scoreRankColorHtml(c.stabilityScore, c.stabilityScore)}</td>
+        </tr>`;
+      })
+      .join("");
+
+    resultsEl.innerHTML = `
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${isKr ? "코스피200+코스닥150" : "S&P500"} 시가총액 상위 50위권 중 상승 압력+투자 안정 합산이 높은 순 30개입니다. 점수는 매일 자동 갱신되는 스냅샷 기준이며 투자 자문이 아닙니다.</p>
+      <table class="top30-table">
+        <thead><tr><th>순위</th><th>기업명</th><th>현재가<br>(등락률)</th><th>상승<br>압력</th><th>투자<br>안정</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+  } catch (err) {
+    statusEl.style.display = "block";
+    statusEl.textContent = `❌ ${err.message || "인기종목을 가져오지 못했습니다."}`;
+  } finally {
+    endLoadMoreScan(resultsEl);
+  }
+}
+
+// 인기종목 화면 진입 — topranking 패널을 빌려 쓰되 서브내비(랭킹 칩)는 비우고 제목줄 탭만 활성화
+function openPopularStocks() {
+  switchTab(TAB_ORDER.indexOf("topranking"));
+  el("tabValuationBtn").classList.remove("active");
+  tabTrendBtn.classList.remove("active");
+  setCarouselViewTitle("tab.popular");
+  el("topRankingSubNav").innerHTML = "";
+  showRankingGroup("popular");
+  runPopularStocks();
 }
 
 const OPERATING_MARGIN_NOTE = `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 영업이익률 = 직전 분기 영업이익 ÷ 직전 분기 매출액(같은 분기 기준). 투자 자문이 아닙니다.</p>`;
@@ -8026,7 +8171,7 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
 const INDEX_CATEGORY_PAGE_SIZE = 10;
 const INDEX_CATEGORIES = {
   usMarkets: {
-    label: "주요",
+    label: "미국주요",
     items: [
       { src: "yahoo", symbol: "^GSPC", name: "🇺🇸 S&P 500", ticker: "SPX", chartSymbol: "SP:SPX" },
       { src: "yahoo", symbol: "^DJI", name: "🇺🇸 다우 종합", ticker: "DJI", chartSymbol: "DJ:DJI" },
@@ -8036,6 +8181,20 @@ const INDEX_CATEGORIES = {
       { src: "yahoo", symbol: "GC=F", name: "🟨 금(Gold)", ticker: "GOLD", chartSymbol: "TVC:GOLD" },
       { src: "yahoo", symbol: "BTC-USD", name: "₿ 비트코인", ticker: "BTC", chartSymbol: "COINBASE:BTCUSD", crypto: true },
       { src: "yahoo", symbol: "CL=F", name: "🛢️ WTI 원유", ticker: "WTI", chartSymbol: "TVC:USOIL" },
+    ],
+  },
+  // 한국주요(2026-09-01 사용자 요청): 코스피·코스닥·삼성전자·SK하이닉스·원달러 환율·비트코인·금·WTI원유까지만
+  krMarkets: {
+    label: "한국주요",
+    items: [
+      { src: "yahoo", symbol: "^KS11", name: "🇰🇷 코스피", ticker: "KOSPI", chartSymbol: "KRX:KOSPI" },
+      { src: "yahoo", symbol: "^KQ11", name: "🇰🇷 코스닥", ticker: "KOSDAQ", chartSymbol: "KRX:KOSDAQ" },
+      { src: "yahoo", symbol: "005930.KS", name: "🇰🇷 삼성전자", ticker: "005930", chartSymbol: "KRX:005930" },
+      { src: "yahoo", symbol: "000660.KS", name: "🇰🇷 SK하이닉스", ticker: "000660", chartSymbol: "KRX:000660" },
+      { src: "yahoo", symbol: "KRW=X", name: "🇰🇷 달러/원 환율", ticker: "USD/KRW", chartSymbol: "FX:USDKRW", wikiQuery: "South Korean won" },
+      { src: "yahoo", symbol: "BTC-USD", name: "₿ 비트코인", ticker: "BTC", chartSymbol: "COINBASE:BTCUSD", crypto: true },
+      { src: "yahoo", symbol: "GC=F", name: "🟨 금(Gold)", ticker: "GOLD", chartSymbol: "TVC:GOLD", wikiQuery: "Gold" },
+      { src: "yahoo", symbol: "CL=F", name: "🛢️ WTI 원유", ticker: "WTI", chartSymbol: "TVC:USOIL", wikiQuery: "West Texas Intermediate" },
     ],
   },
   indices: {
@@ -8570,6 +8729,7 @@ const indexExpandedCategories = new Set(); // "더보기"를 눌러 전체를 �
 
 const indexCategoryButtons = {
   usMarkets: el("indexCatUsMarketsBtn"),
+  krMarkets: el("indexCatKrMarketsBtn"),
   indices: el("indexCatIndicesBtn"),
   stocks: el("indexCatStocksBtn"),
   crypto: el("indexCatCryptoBtn"),

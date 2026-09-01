@@ -17,6 +17,7 @@ const MAP_I18N = {
   "nav.ranking": { ko: "랭킹", en: "Ranking" },
   "tab.search": { ko: "간편검색", en: "Search" },
   "map.watchlist": { ko: "관심목록", en: "Watchlist" },
+  "tab.watchlist": { ko: "관심종목", en: "Watchlist" },
   "nav.marketBtn": { ko: "시장", en: "Market" },
   "nav.more": { ko: "더보기", en: "More" },
 };
@@ -2559,6 +2560,7 @@ document.getElementById("mapSearchBtn").addEventListener("click", () => goToMain
 document.getElementById("bottomNavKrBtn2").addEventListener("click", () => goToMainSite("ranking-kr"));
 document.getElementById("bottomNavUsBtn2").addEventListener("click", () => goToMainSite("ranking-us"));
 document.getElementById("bottomNavMarketBtn2").addEventListener("click", () => goToMainSite("market"));
+document.getElementById("bottomNavWatchlistBtn2").addEventListener("click", () => goToMainSite("watchlist"));
 document.getElementById("bottomNavMoreBtn2").addEventListener("click", () => goToMainSite("more"));
 
 // ---------- 초기화 ----------

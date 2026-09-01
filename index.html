@@ -72,15 +72,14 @@
         <button type="button" id="searchOpenBtn" class="header-icon-btn" aria-label="검색">
           <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15.2" y2="15.2"/></svg>
         </button>
-        <button type="button" id="fhWatchlistBtn" class="header-icon-btn" aria-label="관심목록">
-          <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z"/></svg>
-        </button>
+        <!-- 우측 상단 별(관심종목 이동) 버튼 삭제(2026-09-01 사용자 요청) — 관심종목은 하단 네비 버튼으로 이동 -->
       </div>
     </div>
     <div class="fh-titleline">
       <h2 id="carouselViewTitle" class="search-overlay-title carousel-view-title" data-i18n="tab.valuation" style="display:none;">기업가치</h2>
       <div class="fh-tabs" id="fhTabs">
-        <button type="button" class="fh-tab" data-fhtab="tab.watchlist" data-i18n="tab.watchlist">관심종목</button>
+        <!-- 관심종목 탭은 하단 네비로 이동(2026-09-01) — 그 자리엔 인기종목(시총 상위 50위권 중 상승압력+투자안정 상위 30개) -->
+        <button type="button" class="fh-tab" data-fhtab="tab.popular" data-i18n="tab.popular">인기종목</button>
         <button type="button" class="fh-tab active" data-fhtab="tab.valuation" data-i18n="tab.valuation">기업가치</button>
         <button type="button" class="fh-tab" data-fhtab="tab.trend" data-i18n="tab.trend">시장동향</button>
         <button type="button" class="fh-tab" data-fhtab="tab.insight" data-i18n="tab.insight">인사이트</button>
@@ -377,8 +376,9 @@
         </div>
       </div>
       <div class="top30-sub-nav">
-        <button type="button" class="cat-btn" id="indexCatStocksBtn"><span class="btn-icon" data-icon="flame"></span> 주식</button>
-        <button type="button" class="cat-btn" id="indexCatUsMarketsBtn"><span class="btn-icon" data-icon="star"></span> 주요</button>
+        <button type="button" class="cat-btn" id="indexCatStocksBtn"><span class="btn-icon" data-icon="flame"></span> 인기종목</button>
+        <button type="button" class="cat-btn" id="indexCatUsMarketsBtn"><span class="btn-icon" data-icon="star"></span> 미국주요</button>
+        <button type="button" class="cat-btn" id="indexCatKrMarketsBtn"><span class="btn-icon" data-icon="star"></span> 한국주요</button>
         <button type="button" class="cat-btn" id="indexCatIndicesBtn"><span class="btn-icon" data-icon="trending-up"></span> 지수</button>
         <button type="button" class="cat-btn" id="indexCatCommoditiesBtn"><span class="btn-icon" data-icon="barrel"></span> 원자재</button>
         <button type="button" class="cat-btn" id="indexCatFxBtn"><span class="btn-icon" data-icon="exchange"></span> 외환</button>
@@ -544,6 +544,12 @@
           <div id="valuationResults"></div>
         </div>
 
+        <!-- 인기종목(2026-09-01): 기업가치·시장동향 스캔과 결과영역을 공유하면 진행 중 가드에 막히므로 전용 영역 분리 -->
+        <div id="popularGroup" style="display:none;">
+          <p id="popularStatus" class="muted top30-status" style="display:none;"></p>
+          <div id="popularResults"></div>
+        </div>
+
         <div id="trendGroup">
           <!-- 기존 투자동향 서브내비도 마찬가지로 숨김만 처리(렌더 함수들이 참조) -->
           <div class="top30-sub-nav" style="display:none;">
@@ -568,11 +574,7 @@
   </div>
 
   <nav id="bottomNav" class="bottom-nav">
-    <!-- 하단 네비: 아이콘+라벨 버전 복귀(2026-08-31 사용자 확정) — 국내/해외는 단색 국기 아이콘 -->
-    <button type="button" class="bottom-nav-btn" id="bottomNavMapBtn" aria-label="섹터맵">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z" fill="currentColor"/><circle cx="12" cy="9.5" r="2.6" fill="#fff"/></svg>
-      <span data-i18n="nav.map">지도</span>
-    </button>
+    <!-- 하단 네비(2026-09-01 개편): 국내-해외-시장-관심종목-더보기, 지도 버튼은 더보기 패널로 이동 -->
     <button type="button" class="bottom-nav-btn" id="bottomNavKrBtn" aria-label="국내 랭킹">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V3.5"/><path d="M5 4h14v10H5"/><circle cx="12.5" cy="9" r="2.4"/></svg>
       <span data-i18n="market.kr">국내</span>
@@ -584,6 +586,10 @@
     <button type="button" class="bottom-nav-btn" id="bottomNavMarketBtn" aria-label="시장">
       <svg viewBox="0 0 24 24" fill="none"><polyline points="3 17 9 11 13 15 21 5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><polyline points="15 5 21 5 21 11" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span data-i18n="nav.marketBtn">시장</span>
+    </button>
+    <button type="button" class="bottom-nav-btn" id="bottomNavWatchlistBtn" aria-label="관심종목">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z"/></svg>
+      <span data-i18n="tab.watchlist">관심종목</span>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavMoreBtn" aria-label="더보기">
       <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="3" rx="1.5" fill="currentColor"/><rect x="4" y="10.5" width="16" height="3" rx="1.5" fill="currentColor"/><rect x="4" y="15" width="16" height="3" rx="1.5" fill="currentColor"/></svg>
@@ -597,6 +603,11 @@
       <button type="button" class="more-panel-close" id="morePanelCloseBtn" aria-label="닫기">✕</button>
       <h2 class="search-overlay-title more-panel-title" data-i18n="nav.more">더보기</h2>
       <div class="more-panel-list">
+        <!-- 지도: 하단 네비에서 더보기로 이동(2026-09-01) -->
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelMapBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.6"/></svg>
+          <span class="more-panel-item-label" data-i18n="nav.map">지도</span>
+        </button>
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelWatchlistBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" /></svg>
           <span class="more-panel-item-label" data-i18n="tab.watchlist">관심종목</span>
@@ -718,6 +729,6 @@
   </footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js?v=20260831q"></script>
+  <script src="app.js?v=20260901a"></script>
 </body>
 </html>
