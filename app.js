@@ -971,6 +971,34 @@ function computeAttractivenessScore(metrics) {
   return { total, volumeScore, volumeRatio, growthScore, revenueGrowthYoY, momentumScore, momentum3m };
 }
 
+// ETF 전용 상승압력(invest점수) 배점 — 2026-09-01 사용자 지정. ETF는 매출이 없어 성장성 대신 1년 상승률을 사용:
+// ① 총 거래대금 0~3점: 최근 5거래일 평균÷1년 평균이 2배 이상 만점, 1배 1점, 0.5배 이하 0점(선형)
+// ② 상승 모멘텀 0~3점: 최근 3개월 상승률 40% 이상 만점, 0% 이하 0점(선형)
+// ③ 1년 상승률 0~4점: 최근 1년 상승률 200% 이상 만점, 0% 이하 0점(선형)
+function computeEtfAttractivenessScore(metrics) {
+  const { recentDollarVolume, avgDollarVolume1y, momentum3m, oneYearReturn } = metrics;
+
+  let volumeScore = 1.5; // 데이터 부족 시 중립값(개별주식 배점과 동일한 처리)
+  let volumeRatio = null;
+  if (recentDollarVolume !== undefined && recentDollarVolume !== null && avgDollarVolume1y) {
+    volumeRatio = recentDollarVolume / avgDollarVolume1y;
+    volumeScore = clamp(2 * (volumeRatio - 0.5), 0, 3);
+  }
+
+  let momentumScore = 0;
+  if (momentum3m !== undefined && momentum3m !== null) {
+    momentumScore = clamp((momentum3m / 40) * 3, 0, 3);
+  }
+
+  let yearScore = 0;
+  if (oneYearReturn !== undefined && oneYearReturn !== null) {
+    yearScore = clamp((oneYearReturn / 200) * 4, 0, 4);
+  }
+
+  const total = Math.round(clamp(volumeScore + momentumScore + yearScore, 0, 10) * 10) / 10;
+  return { total, volumeScore, volumeRatio, momentumScore, momentum3m, yearScore, oneYearReturn };
+}
+
 // 통화쌍 환율(세션 내 캐시) — 재무제표가 시세와 다른 현지 통화로 내려오는 해외 상장 종목(TSM·SKHY 등) 환산용
 const fxRateCache = new Map();
 async function getFxRate(fromCurrency, toCurrency) {
@@ -3857,7 +3885,7 @@ const ICON_SVG_BTC = `<svg viewBox="0 0 21 14" width="21" height="14"><circle cx
 // 검색상세 상단 제목 옆·관심종목 목록의 종목 옆에 붙음. ETF 판별은 Yahoo quoteType(상세 화면) 또는 앱 내 ETF 목록 기준
 let knownEtfSetCache = null;
 function knownEtfSet() {
-  if (!knownEtfSetCache) knownEtfSetCache = new Set([...US_ETF_TICKERS, ...KR_ETF_LIST.map((x) => x.t)]);
+  if (!knownEtfSetCache) knownEtfSetCache = new Set([...US_ETF_TICKERS, ...KR_ETF_LIST.map((x) => x.t), ...US_ETF_TOP100.map((x) => x.t)]);
   return knownEtfSetCache;
 }
 function sectionOfSymbol(symbol, quoteType) {
@@ -4423,6 +4451,12 @@ async function runAnalysis(ticker) {
     const isCryptoDetail = sectionOfSymbol(ticker, quote.quoteType) === "crypto";
     el("companyPanel").classList.toggle("crypto-detail", isCryptoDetail);
 
+    // ETF 상세(2026-09-01): invest점수 탭의 상승압력은 ETF 전용 배점(거래대금·모멘텀·1년 상승률)으로 계산하고,
+    // 신용등급·순이익률 기반이라 ETF에 무의미한 투자안정성 섹션은 숨김
+    const isEtfDetail = !isCryptoDetail && sectionOfSymbol(ticker, quote.quoteType) === "etf";
+    const riskSectionWrap = el("riskSection").closest("section");
+    if (riskSectionWrap) riskSectionWrap.style.display = isEtfDetail ? "none" : "";
+
     // 나스닥·다우존스·S&P500 1년 수익률과, 분석 대상 자신의 지표(차트+재무제표)는
     // 경쟁사 비교(3)·상승압력도(5)·투자 안정성(6)·미래예측(요약 탭의 🔮 토글) 섹션이 각자 다시 조회하지 않고 공유해서
     // 프록시 요청 수를 줄이고(속도·안정성 향상) 값도 서로 어긋나지 않도록 함
@@ -4442,7 +4476,7 @@ async function runAnalysis(ticker) {
         el("quarterlyEarningsSection").innerHTML = `<p class="error-inline">분기 실적 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
       });
 
-      renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise);
+      renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise, isEtfDetail);
 
       renderPeers(ticker, selfMetricsPromise, quote.sector || quote.sectorDisp, quote.industryDisp || quote.industry).catch((e) => {
         el("peersSection").innerHTML = `<p class="error-inline">경쟁사 비교 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
@@ -4466,13 +4500,16 @@ async function runAnalysis(ticker) {
     });
 
     if (!isCryptoDetail) {
-      renderScore(selfMetricsPromise).catch((e) => {
+      // ETF는 전용 상승압력 배점(renderEtfScore), 주식은 기존 배점(renderScore)
+      (isEtfDetail ? renderEtfScore(selfMetricsPromise) : renderScore(selfMetricsPromise)).catch((e) => {
         el("scoreSection").innerHTML = `<p class="error-inline">상승 압력 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
       });
 
-      renderRisk(marketReturnsPromise, selfMetricsPromise).catch((e) => {
-        el("riskSection").innerHTML = `<p class="error-inline">투자 안정성 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
-      });
+      if (!isEtfDetail) {
+        renderRisk(marketReturnsPromise, selfMetricsPromise).catch((e) => {
+          el("riskSection").innerHTML = `<p class="error-inline">투자 안정성 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
+        });
+      }
 
       renderMacro(ticker).catch((e) => {
         el("macroSection").innerHTML = `<p class="error-inline">거시경제 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
@@ -4991,13 +5028,14 @@ async function runTickerHistorical(ticker, container) {
 }
 
 // 요약 카드 아래에 상승압력도·투자 안정성·거시경제 점수를 한눈에 보는 작은 원형 배지로 가로 배치(상세 근거는 5·6·7번 섹션 참고)
-async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
+async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise, isEtf = false) {
   const rowEl = el("summaryScoreRow");
   try {
     const [metrics, { sp500Return, kospi200Return }] = await Promise.all([selfMetricsPromise, marketReturnsPromise, krCreditRatingReady]);
     const isKr = isKrTicker(metrics.symbol);
-    const attractiveness = computeAttractivenessScore(metrics);
-    const risk = computeRiskScore(metrics, sp500Return, kospi200Return);
+    // ETF는 전용 상승압력 배점(2026-09-01)을 쓰고, 투자안정 배지는 표시하지 않음(신용등급·순이익률 기반이라 무의미)
+    const attractiveness = isEtf ? computeEtfAttractivenessScore(metrics) : computeAttractivenessScore(metrics);
+    const risk = isEtf ? null : computeRiskScore(metrics, sp500Return, kospi200Return);
     const isIPO = isRecentIPO(metrics.firstTradeDate);
 
     let macroBadgeHtml;
@@ -5022,10 +5060,11 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise) {
         <div class="mini-score-circle">${isIPO ? "IPO" : attractiveness.total}</div>
         <span class="mini-score-label">상승 압력</span>
       </div>
+      ${risk ? `
       <div class="mini-score">
         <div class="mini-score-circle risk">${isIPO ? "IPO" : risk.total}</div>
         <span class="mini-score-label">투자 안정</span>
-      </div>
+      </div>` : ""}
       <div class="mini-score">
         ${macroBadgeHtml}
       </div>
@@ -5634,6 +5673,54 @@ async function renderScore(selfMetricsPromise) {
         <p class="disclaimer">
           ⚠️ 이 점수는 거래대금, 매출 성장성, 상승 모멘텀을 조합한 <b>단순 참고용 정량 지표</b>이며,
           투자 자문이나 매수/매도 추천이 아닙니다. 실제 투자 판단은 재무제표 전체와 다른 정보를 종합해 본인 책임 하에 내려야 합니다.
+        </p>
+      </div>
+    </div>
+  `;
+}
+
+// ---------- 5-1. ETF 전용 상승압력도(invest점수, 2026-09-01 사용자 배점): 총 거래대금 + 상승 모멘텀 + 1년 상승률 ----------
+async function renderEtfScore(selfMetricsPromise) {
+  el("scoreSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
+
+  const metrics = await selfMetricsPromise;
+  const { total, volumeScore, volumeRatio, momentumScore, momentum3m, yearScore, oneYearReturn } = computeEtfAttractivenessScore(metrics);
+
+  const pressureColor = SCORE_COLOR_FAMILY.pressure;
+  el("scoreSection").innerHTML = `
+    <div class="score-wrap">
+      <div class="score-badge">
+        <div class="score-num">${total}</div>
+        <div class="score-den">/ 10</div>
+      </div>
+      <div class="score-details">
+        ${scoreMethodBarRow(
+          "①",
+          "총 거래대금",
+          volumeScore,
+          3,
+          `최근 5거래일 평균, 1년 평균 대비: <b>${volumeRatio !== null ? volumeRatio.toFixed(2) + "배" : "N/A"}</b> (2배 이상 만점, 1배 1점, 0.5배 이하 0점)`,
+          pressureColor
+        )}
+        ${scoreMethodBarRow(
+          "②",
+          "상승 모멘텀",
+          momentumScore,
+          3,
+          `최근 3개월 주가상승: <b>${momentum3m !== null && momentum3m !== undefined ? fmtPct(momentum3m) : "N/A"}</b> (40% 이상 만점·0% 이하 0점)`,
+          pressureColor
+        )}
+        ${scoreMethodBarRow(
+          "③",
+          "1년 상승률",
+          yearScore,
+          4,
+          `최근 1년 주가상승: <b>${oneYearReturn !== null && oneYearReturn !== undefined ? fmtPct(oneYearReturn) : "N/A"}</b> (200% 이상 만점·0% 이하 0점)`,
+          pressureColor
+        )}
+        <p class="disclaimer">
+          ⚠️ ETF 전용 배점(거래대금·모멘텀·1년 상승률)으로 계산한 <b>단순 참고용 정량 지표</b>이며,
+          투자 자문이나 매수/매도 추천이 아닙니다.
         </p>
       </div>
     </div>
@@ -6608,6 +6695,11 @@ function getKrEtfTop100() {
           .sort((a, b) => (b.marketSum || 0) - (a.marketSum || 0))
           .slice(0, 100)
           .map((it) => ({ symbol: `${it.itemcode}.KS`, name: it.itemname, marketSum: it.marketSum, price: it.nowVal, changePct: it.changeRate }));
+      })
+      .then((list) => {
+        // 섹션 마크·ETF 상세 판별(sectionOfSymbol)이 한국 ETF TOP100도 ETF로 인식하도록 등록
+        list.forEach((it) => knownEtfSet().add(it.symbol));
+        return list;
       })
       .catch((e) => {
         krEtfTop100Promise = null; // 실패는 캐시하지 않음
