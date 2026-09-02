@@ -144,7 +144,8 @@ function Get-EtfRisk($m, $spyReturn, $isKr, $capKrEok, $capUsd) {
   $mkt = 1.5; if ($null -ne $m.oneYearReturn -and $null -ne $spyReturn) { $mkt = Clamp ((3 * (100 - [math]::Abs($m.oneYearReturn - $spyReturn))) / 90) 0 3 }
   $cap = 0.1
   if ($isKr -and $capKrEok) { $cap = Clamp ((4 * ($capKrEok - 10000)) / 90000) 0 4 }
-  elseif ((-not $isKr) -and $capUsd) { $cap = Clamp ((4 * ($capUsd / 1e9 - 10)) / 90) 0 4 }
+  # 미국 ETF: $500B 이상 만점, $50B 이하 0점(2026-09-02 사용자 변경, 기존 $100B/$10B) — app.js computeEtfRiskScore와 동일해야 함
+  elseif ((-not $isKr) -and $capUsd) { $cap = Clamp ((4 * ($capUsd / 1e9 - 50)) / 450) 0 4 }
   return Round1 (Clamp ($vol + $mkt + $cap) 0 10)
 }
 function Get-CryptoPressure($m) {
@@ -260,6 +261,30 @@ for ($i = 0; $i -lt $n; $i++) {
 Write-Host "   -> 코인 $($cryptoCompanies.Count)개"
 
 $generatedAt = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+
+# 승률점수·주간RSI 재병합(2026-09-02): 이 스크립트는 파일을 처음부터 다시 만들기 때문에, fetch-winrate-scores.ps1이
+# 병합해둔 winRateScore/rsiWeekly가 여기서 사라지지 않도록 기존 DB(data/winrate-scores-us.json)에서 다시 붙여준다
+$wrPath = Join-Path (Join-Path $root "data") "winrate-scores-us.json"
+if (Test-Path $wrPath) {
+  $wr = Get-Content -Path $wrPath -Raw -Encoding UTF8 | ConvertFrom-Json
+  $mergeWr = {
+    param($companies, $scoreMap)
+    $n = 0
+    foreach ($c in $companies) {
+      $e = if ($scoreMap) { $scoreMap.($c.symbol) } else { $null }
+      if ($e) {
+        $c["winRateScore"] = $e.score
+        $c["rsiWeekly"] = $e.rsi
+        $n++
+      }
+    }
+    return $n
+  }
+  $ne = & $mergeWr $etfCompanies $wr.scoresEtf
+  $nc = & $mergeWr $cryptoCompanies $wr.scoresCrypto
+  Write-Host "   승률/RSI 재병합: ETF $ne 건, 코인 $nc 건"
+}
+
 $etfJson = @{ generatedAt = $generatedAt; companies = $etfCompanies } | ConvertTo-Json -Depth 4 -Compress
 $cryptoJson = @{ generatedAt = $generatedAt; companies = $cryptoCompanies } | ConvertTo-Json -Depth 4 -Compress
 $js = "const ETF_MAP_DATA = $etfJson;`nconst CRYPTO_MAP_DATA = $cryptoJson;`n"

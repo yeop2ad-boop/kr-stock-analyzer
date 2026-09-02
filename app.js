@@ -1093,7 +1093,8 @@ function getCryptoRiskScore(symbol, oneYearReturn) {
 // ETF 전용 투자안정 배점 — 2026-09-01 사용자 지정(총 10점):
 // ① 일평균 변동성 0~3점: 최근 30거래일 일평균 |등락률|이 1% 이하 만점, 5% 이상 0점(선형)
 // ② SPY 대비 모멘텀 0~3점: 1년 상승률이 S&P500과 10%p 미만 차이면 만점, 100%p 이상 차이면 0점(선형)
-// ③ 시가총액(순자산) 0~4점: 한국 ETF 10조원 이상 만점·1조원 미만 0점, 미국 ETF 1000억달러 이상 만점·100억달러 미만 0점(선형)
+// ③ 시가총액(순자산) 0~4점: 한국 ETF 10조원 이상 만점·1조원 미만 0점,
+//    미국 ETF $500B(5,000억달러) 이상 만점·$50B(500억달러) 이하 0점(선형) — 2026-09-02 사용자 변경(기존 $100B/$10B)
 function computeEtfRiskScore({ volatility, oneYearReturn, sp500Return, isKr, marketSumEok, netAssetsUsd }) {
   let volScore = 1.5; // 데이터 부족 시 중립값
   if (volatility !== null && volatility !== undefined) {
@@ -1114,7 +1115,7 @@ function computeEtfRiskScore({ volatility, oneYearReturn, sp500Return, isKr, mar
     capText = marketSumEok >= 10000 ? `${(marketSumEok / 10000).toFixed(1)}조원` : `${Math.round(marketSumEok).toLocaleString("ko-KR")}억원`;
   } else if (!isKr && netAssetsUsd) {
     const billions = netAssetsUsd / 1e9;
-    capScore = clamp((4 * (billions - 10)) / 90, 0, 4); // $100억→0점, $1000억→만점
+    capScore = clamp((4 * (billions - 50)) / 450, 0, 4); // $50B→0점, $500B→만점 (2026-09-02 사용자 변경)
     capText = `$${billions >= 100 ? Math.round(billions).toLocaleString("en-US") : billions.toFixed(1)}B`;
   }
 
@@ -6534,7 +6535,7 @@ async function renderEtfRisk(marketReturnsPromise, selfMetricsPromise) {
           "시가총액",
           s.capScore,
           4,
-          `순자산·시가총액: <b>${s.capText || "N/A"}</b> (${isKr ? "10조원 이상 만점, 1조원 미만 0점" : "1,000억달러 이상 만점, 100억달러 미만 0점"})`,
+          `순자산·시가총액: <b>${s.capText || "N/A"}</b> (${isKr ? "10조원 이상 만점, 1조원 미만 0점" : "$500B(5,000억달러) 이상 만점, $50B 이하 0점"})`,
           stabilityColor
         )}
         <p class="disclaimer">
