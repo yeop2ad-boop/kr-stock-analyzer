@@ -4828,6 +4828,15 @@ async function runAnalysis(ticker) {
       el("macroSection").innerHTML = `<p class="error-inline">거시경제 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
+    // 승률점수(2026-09-02): S&P500 미국주식 전용 — DB에 없는 종목(국내 주식·ETF·코인)은 renderWinRate가 섹션째 숨김
+    if (!isCryptoDetail && !isEtfDetail) {
+      renderWinRate(ticker).catch(() => {
+        el("winRateFlushSection").style.display = "none";
+      });
+    } else {
+      el("winRateFlushSection").style.display = "none";
+    }
+
     setStatus(null, null);
   } catch (err) {
     setStatus("error", `❌ ${escapeHtml(err.message || "알 수 없는 오류가 발생했습니다.")}`);
@@ -6458,6 +6467,59 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
       </div>
     </div>
   `;
+}
+
+// ---------- 6-3. 승률점수(2026-09-02 사용자 요청): 최근 10년(최대 120개월) 월봉 종가 기준 상승 개월수/총 개월수*100 ----------
+// 데이터는 sector-map/scripts/fetch-winrate-scores.ps1이 생성한 정적 DB(data/winrate-scores-us.json, S&P500 전용).
+// DB에 없는 종목(국내 주식·ETF·코인 등)은 섹션째 숨긴다. 상장 10년 미만 종목은 상장(데이터 시작) 후 개월수만으로 계산돼 있음.
+let winRateDbPromise = null;
+function getWinRateDb() {
+  if (!winRateDbPromise) {
+    winRateDbPromise = fetch("data/winrate-scores-us.json", { cache: "no-store" })
+      .then((r) => {
+        if (!r.ok) throw new Error("winrate db http " + r.status);
+        return r.json();
+      })
+      .catch(() => null);
+  }
+  return winRateDbPromise;
+}
+
+async function renderWinRate(ticker) {
+  const section = el("winRateFlushSection");
+  if (!section) return;
+  section.style.display = "none";
+  const db = await getWinRateDb();
+  const entry = db && db.scores && db.scores[ticker];
+  if (!entry || entry.score === null || entry.score === undefined) return;
+
+  const color = "#8b5cf6"; // 승률점수 - 보라(기존 파랑/초록/주황 3계열과 구분)
+  const isPartial = entry.total < 120;
+  el("winRateSection").innerHTML = `
+    <div class="score-wrap">
+      <div class="score-badge">
+        <div class="score-num">${entry.score}</div>
+        <div class="score-den">/ 100</div>
+      </div>
+      <div class="score-details">
+        <div class="smb-row">
+          <div class="smb-row-top">
+            <span class="smb-label">월간 승률</span>
+            <span class="smb-value" style="color:${color};">${entry.up}승 ${entry.total - entry.up}패</span>
+          </div>
+          <div class="smb-track"><div class="smb-fill" style="width:${clamp(entry.score, 0, 100)}%;background:${color};"></div></div>
+          <p class="smb-desc">최근 10년(${entry.from} ~ ${entry.to}) 월봉 종가 기준, 전월보다 상승 마감한 달이 <b>총 ${entry.total}개월 중 ${entry.up}개월</b> = <b>${entry.score}점</b>${
+            isPartial ? ` (상장 10년 미만이라 상장 후 ${entry.total}개월만 집계)` : ""
+          }</p>
+        </div>
+        <p class="disclaimer">
+          ⚠️ 승률점수는 과거 10년간 매월 상승 마감한 비율을 나타낸 <b>단순 참고용 정량 지표</b>이며,
+          미래 수익률을 보장하지 않고 투자 자문이나 매수/매도 추천이 아닙니다.
+        </p>
+      </div>
+    </div>
+  `;
+  section.style.display = "";
 }
 
 // ---------- 7. 투자황금기 점수(공포지수연동) — VIX(CBOE 변동성지수)가 높을수록(시장 패닉) 역발상 매수 기회로 보고 점수를 올림, 종목과 무관 ----------
