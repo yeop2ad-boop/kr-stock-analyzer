@@ -3801,7 +3801,7 @@ const RANKING_ENTRIES = [
   // RSI 순위·승률 순위(2026-09-02 사용자 요청): S&P500 전용 — RSI는 낮은 순(과매도부터), 승률은 높은 순.
   // 마지막 열은 투자안정 대신 서로의 점수(RSI순위→승률점수, 승률순위→RSI점수)를 표시
   { icon: "scale", label: "RSI 순위", tab: "trend", group: "market", run: () => runTrendRsiWinRate("rsi"), orange: true },
-  { icon: "medal", label: "승률 순위", tab: "trend", group: "market", run: () => runTrendRsiWinRate("winrate"), orange: true },
+  { icon: "medal", label: "우상향점수", tab: "trend", group: "market", run: () => runTrendRsiWinRate("winrate"), orange: true },
 ];
 // ---------- Top랭킹 탭 — 기업가치·투자동향을 통합한 화면. RANKING_ENTRIES를 그대로 재사용해 14개 항목을
 // 가로 스크롤 서브내비로 보여주고, 클릭하면 valuationGroup/trendGroup 중 해당하는 쪽만 보이게 전환함 ----------
@@ -6679,7 +6679,7 @@ async function renderWinRate(ticker, mode) {
           }</p>
         </div>
         <p class="disclaimer">
-          ⚠️ 승률점수는 과거 10년간 매월 상승 마감한 비율을 나타낸 <b>단순 참고용 정량 지표</b>이며,
+          ⚠️ 장기 우상향 점수는 과거 10년간 매월 상승 마감한 비율을 나타낸 <b>단순 참고용 정량 지표</b>이며,
           미래 수익률을 보장하지 않고 투자 자문이나 매수/매도 추천이 아닙니다.
         </p>
       </div>
@@ -8100,17 +8100,17 @@ const ASSET_TREND_METRICS = {
     cell: (r) => rsiRankCellHtml(r.rsi),
     note: `주간 RSI(14)가 낮은 순(과매도부터 1등) 순위입니다. <b style="color:#22a866;">30 미만 과매도(초록)</b>·<b style="color:#ef4444;">70 이상 과매수(빨강)</b>, 참고용 기술적 지표입니다.`,
     noRiskCol: true,
-    gradeHeader: "승률<br>점수",
+    gradeHeader: "우상향<br>점수",
     gradeCell: (r) => (r.winRate === null || r.winRate === undefined ? "N/A" : `${r.winRate}점`),
   },
   winrate: {
     icon: "medal",
-    label: "승률 순위",
-    header: "승률 점수",
+    label: "우상향점수",
+    header: "우상향점수",
     orange: true,
     sort: (a, b) => (b.winRate ?? -1) - (a.winRate ?? -1),
     cell: (r) => (r.winRate === null || r.winRate === undefined ? "N/A" : `<b>${r.winRate}점</b>`),
-    note: "승률점수(최근 10년 월봉 기준 상승 개월수/총 개월수×100, 상장 10년 미만은 상장 후부터)가 높은 순 순위입니다.",
+    note: "우상향점수(최근 10년 월봉 기준 상승 개월수/총 개월수×100, 상장 10년 미만은 상장 후부터)가 높은 순 순위입니다.",
     noRiskCol: true,
     gradeHeader: "RSI<br>점수",
     gradeCell: (r) => rsiRankCellHtml(r.rsi),
@@ -11337,7 +11337,7 @@ function rsiRankCellHtml(rsi) {
 }
 async function runTrendRsiWinRate(mode) {
   const isRsi = mode === "rsi";
-  const label = isRsi ? "RSI 순위" : "승률 순위";
+  const label = isRsi ? "RSI 순위" : "우상향점수";
   const statusEl = trendStatus;
   const resultsEl = trendResults;
   // 국내 모드(2026-09-02 확장): 코스피200+코스닥150 유니버스(scoresKr)로 동일하게 동작
@@ -11351,7 +11351,7 @@ async function runTrendRsiWinRate(mode) {
   const db = await getWinRateDb();
   const scoreMap = db && (isKr ? db.scoresKr : db.scores);
   if (!scoreMap) {
-    statusEl.textContent = "❌ 승률 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.";
+    statusEl.textContent = "❌ 우상향점수 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.";
     return;
   }
   const dbSymbols = Object.keys(scoreMap);
@@ -11427,12 +11427,12 @@ async function runTrendRsiWinRate(mode) {
         ${
           isRsi
             ? `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — 주간 RSI(14)가 낮은 순(과매도부터 1등) 순위입니다. <b style="color:#22a866;">30 미만 과매도(초록)</b>·<b style="color:#ef4444;">70 이상 과매수(빨강)</b>, 참고용 기술적 지표이며 투자 자문이 아닙니다.</p>`
-            : `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — 승률점수(최근 10년 월봉 기준 상승 개월수/총 개월수×100, 상장 10년 미만은 상장 후부터)가 높은 순 순위입니다. 참고용 지표이며 투자 자문이 아닙니다.</p>`
+            : `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — 우상향점수(최근 10년 월봉 기준 상승 개월수/총 개월수×100, 상장 10년 미만은 상장 후부터)가 높은 순 순위입니다. 참고용 지표이며 투자 자문이 아닙니다.</p>`
         }
         ${topCapNoteHtml(cursor, tickers.length, hasMore)}
         ${rankScanCaptionHtml(ranked.length)}
         <table class="top30-table">
-          <thead><tr><th>순위</th><th>기업명</th><th>현재가</th><th>${isRsi ? "RSI 점수" : "승률 점수"}</th><th>${isRsi ? "승률<br>점수" : "RSI<br>점수"}</th></tr></thead>
+          <thead><tr><th>순위</th><th>기업명</th><th>현재가</th><th>${isRsi ? "RSI 점수" : "우상향점수"}</th><th>${isRsi ? "우상향<br>점수" : "RSI<br>점수"}</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
         ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${tickers.length}">전체보기 (나머지 ${tickers.length - cursor}개 · ${tickers.length}개 전부 검색 시 약 1분 소요)</button>` : ""}

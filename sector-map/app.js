@@ -1498,7 +1498,7 @@ function buildMetrics(market) {
     stabilityScore: { label: "투자안정", hasData: true, get: (c) => c.stabilityScore, fmt: (v) => `${v.toFixed(1)}점`, domainMin: 0, domainMax: 10 },
     // 10년승률·주간RSI(2026-09-02, 같은 날 국내·ETF·코인 확장): 본체 승률점수와 같은 배치(fetch-winrate-scores.ps1)가
     // sp500-sectors.json/kr-sectors.json/etf-crypto-map.js에 winRateScore/rsiWeekly로 병합 — 나스닥100 보기만 칩 숨김
-    winRateScore: { label: "10년승률", hasData: true, get: (c) => c.winRateScore, fmt: (v) => `${v.toFixed(1)}점`, domainMin: 0, domainMax: 100 },
+    winRateScore: { label: "우상향점수", hasData: true, get: (c) => c.winRateScore, fmt: (v) => `${v.toFixed(1)}점`, domainMin: 0, domainMax: 100 },
     rsiWeekly: { label: "RSI", hasData: true, get: (c) => c.rsiWeekly, fmt: (v) => `${v.toFixed(1)}`, domainMin: 0, domainMax: 100 },
     // 상승률/하락률을 하나로 합쳐 근저(가장 큰 하락)~근고(가장 큰 상승)가 한 슬라이더 안에 전부 보이도록 함
     changePct: { label: "등락률", hasData: true, live: !isKr, get: (c) => c.changePercent, fmt: (v) => `${v.toFixed(1)}%` },
