@@ -315,7 +315,7 @@ function loadScriptOnce(src) {
 function ensureExtraDataLoaded(market) {
   if (extraDataLoadPromises[market]) return extraDataLoadPromises[market];
   // 데이터 파일에도 캐시버전 부착 — 배포 직후 옛 데이터(결측 종목 포함)가 캐시로 서빙되던 문제 방지(2026-08-31)
-  const src = market === "domestic" ? "data/kr-data-extra.js?v=20260901a" : "data/sp500-data-extra.js?v=20260901a";
+  const src = market === "domestic" ? "data/kr-data-extra.js?v=20260901a" : "data/sp500-data-extra.js?v=20260902a";
   // 모바일/인앱 브라우저에서 간헐적 네트워크 실패가 잦아 한 번은 자동 재시도(600ms 후) — 그래도 실패하면 토스트
   extraDataLoadPromises[market] = loadScriptOnce(src)
     .catch(() => new Promise((res) => setTimeout(res, 600)).then(() => loadScriptOnce(src)))
@@ -1496,6 +1496,10 @@ function buildMetrics(market) {
     // (sector-map/scripts/fetch-momentum-scores.ps1, data/*-sectors.json에 pressureScore/stabilityScore로 저장)
     pressureScore: { label: "상승압력", hasData: true, get: (c) => c.pressureScore, fmt: (v) => `${v.toFixed(1)}점`, domainMin: 0, domainMax: 10 },
     stabilityScore: { label: "투자안정", hasData: true, get: (c) => c.stabilityScore, fmt: (v) => `${v.toFixed(1)}점`, domainMin: 0, domainMax: 10 },
+    // 10년승률·주간RSI(2026-09-02): 본체 승률점수와 같은 배치(fetch-winrate-scores.ps1)가 sp500-sectors.json에
+    // winRateScore/rsiWeekly로 병합 — S&P500 전용이라 국내 보기에선 칩 자체를 숨김(us-stock-only-chip)
+    winRateScore: { label: "10년승률", hasData: !isKr, get: (c) => c.winRateScore, fmt: (v) => `${v.toFixed(1)}점`, domainMin: 0, domainMax: 100 },
+    rsiWeekly: { label: "RSI", hasData: !isKr, get: (c) => c.rsiWeekly, fmt: (v) => `${v.toFixed(1)}`, domainMin: 0, domainMax: 100 },
     // 상승률/하락률을 하나로 합쳐 근저(가장 큰 하락)~근고(가장 큰 상승)가 한 슬라이더 안에 전부 보이도록 함
     changePct: { label: "등락률", hasData: true, live: !isKr, get: (c) => c.changePercent, fmt: (v) => `${v.toFixed(1)}%` },
     revenueGrowth: { label: "매출성장", hasData: true, get: (c) => c.revenueGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
@@ -1754,6 +1758,8 @@ const METRIC_DESCS = {
   netIncomeGrowth: "근근 분기 순이익이 1년 전 같은 분기보다 얼마나 늘었는지예요.",
   debtRatio: "자기자본 대비 부채 비율 — 낮을수록 빚 부담이 적어요.",
   cashFlowGrowth: "영업활동 현금흐름이 1년 전보다 얼마나 늘었는지예요.",
+  winRateScore: "최근 10년(최대 120개월) 중 전월보다 상승 마감한 달의 비율이에요(상장 10년 미만은 상장 후부터).",
+  rsiWeekly: "주간 RSI(14) 현재값 — 30 미만은 과매도, 70 이상은 과매수 신호로 봐요.",
 };
 const SCORE_INFO_CONTENT = {
   pressureScore: {
@@ -2698,6 +2704,8 @@ async function setMapView(viewKey, animate) {
   ACTIVE_VIEW = viewKey;
   // ETF200/비트코인50은 상단 필터 칩을 52주최저~투자안정 6개만 노출(CSS가 body[data-map-view-kind]로 전환)
   document.body.dataset.mapViewKind = v.custom ? "asset" : "stock";
+  // 10년승률·RSI 칩은 S&P200/S&P500 보기 전용(us-stock-only-chip) — CSS가 body[data-map-view]로 전환(2026-09-02)
+  document.body.dataset.mapView = viewKey;
   loadMarket(v.market, animate); // 내부에서 updateActiveDataForUniverseState + syncMapViewUi 호출
 }
 

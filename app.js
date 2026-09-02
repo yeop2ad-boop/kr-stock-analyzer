@@ -3788,6 +3788,10 @@ const RANKING_ENTRIES = [
   // KR ETF/US ETF는 하단 ETF 섹션의 시장동향으로 이동(2026-09-01 사용자 요청) — openEtfTrend 참고
   { icon: "rocket", label: "상승 압력", tab: "trend", group: "market", run: () => runTrendPressure(), orange: true },
   { icon: "medal", label: "투자 안정", tab: "valuation", group: "market", run: () => runValueStability(), orange: true },
+  // RSI 순위·승률 순위(2026-09-02 사용자 요청): S&P500 전용 — RSI는 낮은 순(과매도부터), 승률은 높은 순.
+  // 마지막 열은 투자안정 대신 서로의 점수(RSI순위→승률점수, 승률순위→RSI점수)를 표시
+  { icon: "scale", label: "RSI 순위", tab: "trend", group: "market", run: () => runTrendRsiWinRate("rsi"), orange: true },
+  { icon: "medal", label: "승률 순위", tab: "trend", group: "market", run: () => runTrendRsiWinRate("winrate"), orange: true },
 ];
 // ---------- Top랭킹 탭 — 기업가치·투자동향을 통합한 화면. RANKING_ENTRIES를 그대로 재사용해 14개 항목을
 // 가로 스크롤 서브내비로 보여주고, 클릭하면 valuationGroup/trendGroup 중 해당하는 쪽만 보이게 전환함 ----------
@@ -11018,6 +11022,161 @@ async function runTrendPressure() {
     ...pressureOpts,
     noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 상승 압력 점수(10점 만점, 높을수록 단기 상승 여력 참고치가 큼)는 거래대금·모멘텀·매출 성장성을 종합한 참고용 지표이며 투자 자문이 아닙니다.</p>`,
   });
+}
+
+// ---------- 시장동향: RSI 순위·승률 순위(2026-09-02 사용자 요청) — S&P500 미국주식 전용 ----------
+// 다른 랭킹과 동일한 표 구성이지만 마지막 열이 투자안정 대신 서로의 점수: RSI 순위(주간 RSI 낮은 순 = 과매도 1등)는
+// 승률점수를, 승률 순위(승률점수 높은 순)는 RSI 점수를 표시. 승률은 정적 DB(winrate-scores-us.json)에서 바로 읽고,
+// RSI는 상세 페이지와 동일하게 주봉 3년치로 실시간 계산(computeWilderRsi) — 종목당 차트 1회, 세션 캐시로 두 순위가 공유.
+const weeklyRsiSnapCache = new Map();
+RANK_SCAN_RESETTERS.push(() => weeklyRsiSnapCache.clear());
+async function getWeeklyRsiSnapshot(symbol) {
+  if (weeklyRsiSnapCache.has(symbol)) return weeklyRsiSnapCache.get(symbol);
+  const chart = await yahooChart(symbol, "3y", "1wk");
+  const meta = (chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta) || {};
+  const closes = chartClosePairs(chart).map((p) => p.c);
+  const rsi = computeWilderRsi(closes, 14);
+  const snap = {
+    symbol,
+    name: meta.shortName || meta.longName || "",
+    price: closes.length ? closes[closes.length - 1] : null,
+    rsi: rsi === null || rsi === undefined ? null : Math.round(rsi * 10) / 10,
+  };
+  weeklyRsiSnapCache.set(symbol, snap);
+  return snap;
+}
+// 상세 페이지 RSI 점수와 동일한 색 규칙(30 미만 초록/70 이상 빨강/중립 기본색)
+function rsiRankCellHtml(rsi) {
+  if (rsi === null || rsi === undefined) return "N/A";
+  const color = rsi < 30 ? "#22a866" : rsi >= 70 ? "#ef4444" : "var(--text)";
+  return `<b style="color:${color};">${rsi}</b>`;
+}
+async function runTrendRsiWinRate(mode) {
+  const isRsi = mode === "rsi";
+  const label = isRsi ? "RSI 순위" : "승률 순위";
+  const statusEl = trendStatus;
+  const resultsEl = trendResults;
+
+  // 승률·RSI 데이터가 S&P500 전용이라 국내 모드에선 안내만 표시
+  if (getWatchlistActiveMarket() === "KR") {
+    statusEl.style.display = "none";
+    resultsEl.innerHTML = `<p class="muted" style="padding:14px 0;">${label}는 미국주식(S&amp;P500) 전용 순위입니다. 하단 '해외' 버튼으로 전환하면 확인할 수 있어요.</p>`;
+    return;
+  }
+  if (!guardRankingScan(resultsEl)) return;
+  resultsEl.innerHTML = "";
+  statusEl.style.display = "block";
+  statusEl.textContent = `${label} 대상 종목을 불러오는 중...`;
+
+  const db = await getWinRateDb();
+  if (!db || !db.scores) {
+    statusEl.textContent = "❌ 승률 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.";
+    return;
+  }
+  const scoreMap = db.scores;
+  const dbSymbols = Object.keys(scoreMap);
+  // 다른 랭킹과 동일하게 시가총액 우선순으로 처음 30개만 먼저 스캔 — DB(S&P500 구성종목)에 있는 티커만 대상
+  let tickers;
+  const order = await getSP500PriorityOrder().catch(() => null);
+  if (order) {
+    const inDb = new Set(dbSymbols);
+    tickers = order.filter((t) => inDb.has(t));
+    const inOrder = new Set(tickers);
+    for (const t of dbSymbols) if (!inOrder.has(t)) tickers.push(t);
+  } else {
+    tickers = dbSymbols;
+  }
+
+  let cursor = 0;
+  let rawScored = [];
+  const initialCount = 30;
+
+  async function scoreUpTo(targetCursor) {
+    targetCursor = Math.min(targetCursor, tickers.length);
+    const moreBtn = resultsEl.querySelector(".load-more-btn");
+    const setProgress = (text) => {
+      if (moreBtn) {
+        moreBtn.disabled = true;
+        moreBtn.textContent = text;
+      } else {
+        statusEl.style.display = "block";
+        statusEl.textContent = text;
+      }
+    };
+    try {
+      const pending = tickers.slice(cursor, targetCursor);
+      if (pending.length > 0) {
+        const startCursor = cursor;
+        const isFullScan = targetCursor - cursor > initialCount;
+        const label2 = isFullScan ? "전체 검색 중(약 1분 소요될 수 있어요)" : `${label} 확인 중`;
+        setProgress(`${startCursor}/${targetCursor} 종목 ${label2}...`);
+        const snaps = await mapWithConcurrency(pending, 5, getWeeklyRsiSnapshot, (completed) => {
+          setProgress(`${startCursor + completed}/${targetCursor} 종목 ${label2}...`);
+        });
+        rawScored = rawScored.concat(snaps.filter(Boolean));
+        cursor = targetCursor;
+      }
+      statusEl.style.display = "none";
+      if (rawScored.length === 0) {
+        resultsEl.innerHTML = `<p class="muted">순위를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
+        return;
+      }
+
+      const ranked = rawScored.map((r) => ({ ...r, winRate: scoreMap[r.symbol] ? scoreMap[r.symbol].score : null }));
+      ranked.sort(isRsi ? (a, b) => (a.rsi ?? Infinity) - (b.rsi ?? Infinity) : (a, b) => (b.winRate ?? -1) - (a.winRate ?? -1));
+      const hasMore = cursor < tickers.length;
+
+      const rows = ranked
+        .map(
+          (r, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(TICKER_TO_KOREAN_NAME[r.symbol] || r.name || "")}</span></td>
+          <td>${r.price !== undefined && r.price !== null ? priceChartLink(r.symbol, "$" + r.price.toFixed(2)) : "N/A"}</td>
+          <td>${isRsi ? rsiRankCellHtml(r.rsi) : r.winRate === null ? "N/A" : `<b>${r.winRate}점</b>`}</td>
+          <td>${isRsi ? (r.winRate === null ? "N/A" : `${r.winRate}점`) : rsiRankCellHtml(r.rsi)}</td>
+        </tr>`
+        )
+        .join("");
+
+      resultsEl.innerHTML = `
+        ${
+          isRsi
+            ? `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 주간 RSI(14)가 낮은 순(과매도부터 1등) 순위입니다. <b style="color:#22a866;">30 미만 과매도(초록)</b>·<b style="color:#ef4444;">70 이상 과매수(빨강)</b>, 참고용 기술적 지표이며 투자 자문이 아닙니다.</p>`
+            : `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 승률점수(최근 10년 월봉 기준 상승 개월수/총 개월수×100, 상장 10년 미만은 상장 후부터)가 높은 순 순위입니다. 참고용 지표이며 투자 자문이 아닙니다.</p>`
+        }
+        ${topCapNoteHtml(cursor, tickers.length, hasMore)}
+        ${rankScanCaptionHtml(ranked.length)}
+        <table class="top30-table">
+          <thead><tr><th>순위</th><th>기업명</th><th>현재가</th><th>${isRsi ? "RSI 점수" : "승률 점수"}</th><th>${isRsi ? "승률<br>점수" : "RSI<br>점수"}</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${tickers.length}">전체보기 (나머지 ${tickers.length - cursor}개 · 500개 전부 검색 시 약 1분 소요)</button>` : ""}
+      `;
+    } catch (err) {
+      statusEl.textContent = `❌ ${err.message || "분석 중 오류가 발생했습니다."}`;
+    }
+  }
+
+  resultsEl._loadMore = (count) => {
+    if (!beginLoadMoreScan(resultsEl, statusEl)) return;
+    scoreUpTo(count).finally(() => endLoadMoreScan(resultsEl));
+  };
+  if (!resultsEl.dataset.moreBound) {
+    resultsEl.addEventListener("click", (e) => {
+      const moreBtn2 = e.target.closest(".load-more-btn");
+      if (!moreBtn2) return;
+      resultsEl._loadMore(Number(moreBtn2.dataset.nextCount));
+    });
+    resultsEl.dataset.moreBound = "1";
+  }
+
+  resultsEl.dataset.scanning = "1";
+  try {
+    await scoreUpTo(initialCount);
+  } finally {
+    endLoadMoreScan(resultsEl);
+  }
 }
 
 bindTrend(trendButtons.volume, runTrendVolume);

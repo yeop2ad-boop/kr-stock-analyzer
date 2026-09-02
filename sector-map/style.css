@@ -1147,3 +1147,5 @@ body[data-map-view-kind="asset"] .metric-chip[data-metric="debtRatio"],
 body[data-map-view-kind="asset"] .metric-chip[data-metric="cashFlowGrowth"],
 body[data-map-view-kind="asset"] .metric-chip[data-metric="changePct"]:not(.asset-only-chip),
 body[data-map-view-kind="asset"] .metric-chip[data-metric="week52RangePct"]:not(.asset-only-chip) { display: none; }
+/* 10년승률·RSI 칩(2026-09-02) — 데이터가 S&P500 배치 전용이라 S&P200/S&P500 보기에서만 노출 */
+body:not([data-map-view="sp200"]):not([data-map-view="sp500"]) .us-stock-only-chip { display: none; }

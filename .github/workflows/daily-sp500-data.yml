@@ -41,6 +41,11 @@ jobs:
         working-directory: sector-map
         run: ./scripts/fetch-momentum-scores.ps1
 
+      - name: 승률점수/주간RSI 갱신(해외 S&P500 — 본체 DB + 지도 병합)
+        shell: pwsh
+        working-directory: sector-map
+        run: ./scripts/fetch-winrate-scores.ps1
+
       - name: 지도가 실제 로드하는 core/extra 데이터 파일에 병합
         shell: pwsh
         working-directory: sector-map
@@ -50,7 +55,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add sector-map/data/sp500-sectors.json sector-map/data/kr-sectors.json sector-map/data/sp500-data-core.js sector-map/data/sp500-data-extra.js sector-map/data/kr-data-core.js sector-map/data/kr-data-extra.js
+          git add sector-map/data/sp500-sectors.json sector-map/data/kr-sectors.json sector-map/data/sp500-data-core.js sector-map/data/sp500-data-extra.js sector-map/data/kr-data-core.js sector-map/data/kr-data-extra.js data/winrate-scores-us.json
           if git diff --cached --quiet; then
             echo "변경된 데이터 없음"
           else

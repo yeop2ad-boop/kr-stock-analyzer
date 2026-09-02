@@ -19,7 +19,9 @@
                           "debtRatio":  2640.7,
                           "week52RangePct":  59.4,
                           "pressureScore":  4.5,
-                          "stabilityScore":  2.8
+                          "stabilityScore":  2.8,
+                          "winRateScore":  60,
+                          "rsiWeekly":  59.9
                       },
                       {
                           "symbol":  "NKE",
@@ -39,7 +41,9 @@
                           "debtRatio":  158.4,
                           "week52RangePct":  2.3,
                           "pressureScore":  1.5,
-                          "stabilityScore":  3.9
+                          "stabilityScore":  3.9,
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  31.6
                       },
                       {
                           "symbol":  "PSA",
@@ -59,7 +63,9 @@
                           "debtRatio":  117.9,
                           "week52RangePct":  63.9,
                           "pressureScore":  1.6,
-                          "stabilityScore":  5.0
+                          "stabilityScore":  5.0,
+                          "winRateScore":  51.7,
+                          "rsiWeekly":  46.1
                       },
                       {
                           "symbol":  "MET",
@@ -79,7 +85,9 @@
                           "debtRatio":  2665.4,
                           "week52RangePct":  82.9,
                           "pressureScore":  4.3,
-                          "stabilityScore":  3.5
+                          "stabilityScore":  3.5,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  62.6
                       },
                       {
                           "symbol":  "O",
@@ -99,7 +107,9 @@
                           "debtRatio":  87.3,
                           "week52RangePct":  44.9,
                           "pressureScore":  1.8,
-                          "stabilityScore":  3.8
+                          "stabilityScore":  3.8,
+                          "winRateScore":  55,
+                          "rsiWeekly":  46.1
                       },
                       {
                           "symbol":  "FANG",
@@ -119,7 +129,9 @@
                           "debtRatio":  69.2,
                           "week52RangePct":  80.1,
                           "pressureScore":  4.2,
-                          "stabilityScore":  2.6
+                          "stabilityScore":  2.6,
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  56.4
                       },
                       {
                           "symbol":  "TEL",
@@ -139,7 +151,9 @@
                           "debtRatio":  95.7,
                           "week52RangePct":  24.0,
                           "pressureScore":  1.9,
-                          "stabilityScore":  3.5
+                          "stabilityScore":  3.5,
+                          "winRateScore":  61.7,
+                          "rsiWeekly":  49
                       },
                       {
                           "symbol":  "OKE",
@@ -159,7 +173,9 @@
                           "debtRatio":  198.2,
                           "week52RangePct":  94.4,
                           "pressureScore":  6.0,
-                          "stabilityScore":  2.6
+                          "stabilityScore":  2.6,
+                          "winRateScore":  60.8,
+                          "rsiWeekly":  58
                       },
                       {
                           "symbol":  "FAST",
@@ -179,7 +195,9 @@
                           "debtRatio":  30.1,
                           "week52RangePct":  74.1,
                           "pressureScore":  4.0,
-                          "stabilityScore":  4.7
+                          "stabilityScore":  4.7,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  54.6
                       },
                       {
                           "symbol":  "TER",
@@ -199,7 +217,9 @@
                           "debtRatio":  42.3,
                           "week52RangePct":  63.5,
                           "pressureScore":  3.5,
-                          "stabilityScore":  3.2
+                          "stabilityScore":  3.2,
+                          "winRateScore":  64.2,
+                          "rsiWeekly":  48.6
                       },
                       {
                           "symbol":  "D",
@@ -219,7 +239,9 @@
                           "debtRatio":  305.2,
                           "week52RangePct":  59.3,
                           "pressureScore":  2.7,
-                          "stabilityScore":  3.4
+                          "stabilityScore":  3.4,
+                          "winRateScore":  55,
+                          "rsiWeekly":  50.4
                       },
                       {
                           "symbol":  "FIX",
@@ -239,7 +261,9 @@
                           "debtRatio":  163.8,
                           "week52RangePct":  62.4,
                           "pressureScore":  4.1,
-                          "stabilityScore":  3.7
+                          "stabilityScore":  3.7,
+                          "winRateScore":  63.3,
+                          "rsiWeekly":  46.1
                       },
                       {
                           "symbol":  "AFL",
@@ -259,7 +283,9 @@
                           "debtRatio":  282.6,
                           "week52RangePct":  43.8,
                           "pressureScore":  1.4,
-                          "stabilityScore":  4.0
+                          "stabilityScore":  4.0,
+                          "winRateScore":  64.2,
+                          "rsiWeekly":  47.7
                       },
                       {
                           "symbol":  "MRNA",
@@ -279,7 +305,9 @@
                           "debtRatio":  62.1,
                           "week52RangePct":  76.5,
                           "pressureScore":  7.4,
-                          "stabilityScore":  2.0
+                          "stabilityScore":  2.0,
+                          "winRateScore":  52.7,
+                          "rsiWeekly":  80.3
                       },
                       {
                           "symbol":  "F",
@@ -299,7 +327,9 @@
                           "debtRatio":  699.3,
                           "week52RangePct":  42.4,
                           "pressureScore":  0.2,
-                          "stabilityScore":  2.0
+                          "stabilityScore":  2.0,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  50.3
                       },
                       {
                           "symbol":  "NXPI",
@@ -319,7 +349,9 @@
                           "debtRatio":  130.7,
                           "week52RangePct":  26.5,
                           "pressureScore":  2.4,
-                          "stabilityScore":  3.2
+                          "stabilityScore":  3.2,
+                          "winRateScore":  51.7,
+                          "rsiWeekly":  41.4
                       },
                       {
                           "symbol":  "GRMN",
@@ -339,7 +371,9 @@
                           "debtRatio":  26.5,
                           "week52RangePct":  76.4,
                           "pressureScore":  6.0,
-                          "stabilityScore":  5.1
+                          "stabilityScore":  5.1,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  56.8
                       },
                       {
                           "symbol":  "COHR",
@@ -359,7 +393,9 @@
                           "debtRatio":  58.7,
                           "week52RangePct":  54.2,
                           "pressureScore":  3.0,
-                          "stabilityScore":  0.8
+                          "stabilityScore":  0.8,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  45.9
                       },
                       {
                           "symbol":  "CIEN",
@@ -379,7 +415,9 @@
                           "debtRatio":  108.8,
                           "week52RangePct":  53.5,
                           "pressureScore":  3.2,
-                          "stabilityScore":  0.4
+                          "stabilityScore":  0.4,
+                          "winRateScore":  60.8,
+                          "rsiWeekly":  44.3
                       },
                       {
                           "symbol":  "NUE",
@@ -399,7 +437,9 @@
                           "debtRatio":  61.0,
                           "week52RangePct":  79.5,
                           "pressureScore":  3.0,
-                          "stabilityScore":  3.0
+                          "stabilityScore":  3.0,
+                          "winRateScore":  51.7,
+                          "rsiWeekly":  59.4
                       },
                       {
                           "symbol":  "AME",
@@ -419,7 +459,9 @@
                           "debtRatio":  47.4,
                           "week52RangePct":  68.3,
                           "pressureScore":  3.6,
-                          "stabilityScore":  3.4
+                          "stabilityScore":  3.4,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  49.2
                       },
                       {
                           "symbol":  "NDAQ",
@@ -439,7 +481,9 @@
                           "debtRatio":  128.0,
                           "week52RangePct":  87.4,
                           "pressureScore":  3.6,
-                          "stabilityScore":  3.4
+                          "stabilityScore":  3.4,
+                          "winRateScore":  60.8,
+                          "rsiWeekly":  59.4
                       },
                       {
                           "symbol":  "CTVA",
@@ -459,7 +503,9 @@
                           "debtRatio":  74.3,
                           "week52RangePct":  79.2,
                           "pressureScore":  4.3,
-                          "stabilityScore":  3.5
+                          "stabilityScore":  3.5,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  61.3
                       },
                       {
                           "symbol":  "SRE",
@@ -479,7 +525,9 @@
                           "debtRatio":  220.1,
                           "week52RangePct":  12.4,
                           "pressureScore":  1.0,
-                          "stabilityScore":  3.1
+                          "stabilityScore":  3.1,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  41.3
                       },
                       {
                           "symbol":  "DAL",
@@ -499,7 +547,9 @@
                           "debtRatio":  295.7,
                           "week52RangePct":  56.5,
                           "pressureScore":  2.3,
-                          "stabilityScore":  2.5
+                          "stabilityScore":  2.5,
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  46.9
                       },
                       {
                           "symbol":  "DVN",
@@ -519,7 +569,9 @@
                           "debtRatio":  69.8,
                           "week52RangePct":  80.2,
                           "pressureScore":  4.3,
-                          "stabilityScore":  3.2
+                          "stabilityScore":  3.2,
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  58.5
                       },
                       {
                           "symbol":  "KEYS",
@@ -539,7 +591,9 @@
                           "debtRatio":  85.4,
                           "week52RangePct":  75.8,
                           "pressureScore":  4.3,
-                          "stabilityScore":  2.1
+                          "stabilityScore":  2.1,
+                          "winRateScore":  62.5,
+                          "rsiWeekly":  52.1
                       },
                       {
                           "symbol":  "ADSK",
@@ -559,7 +613,9 @@
                           "debtRatio":  274.2,
                           "week52RangePct":  50.9,
                           "pressureScore":  3.7,
-                          "stabilityScore":  3.0
+                          "stabilityScore":  3.0,
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  52.8
                       },
                       {
                           "symbol":  "CAH",
@@ -579,7 +635,9 @@
                           "debtRatio":  -2096.1,
                           "week52RangePct":  78.9,
                           "pressureScore":  4.9,
-                          "stabilityScore":  2.0
+                          "stabilityScore":  2.0,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  62.8
                       },
                       {
                           "symbol":  "PYPL",
@@ -599,7 +657,9 @@
                           "debtRatio":  317.4,
                           "week52RangePct":  34.9,
                           "pressureScore":  4.2,
-                          "stabilityScore":  2.9
+                          "stabilityScore":  2.9,
+                          "winRateScore":  55,
+                          "rsiWeekly":  50.4
                       },
                       {
                           "symbol":  "BDX",
@@ -619,7 +679,9 @@
                           "debtRatio":  107.8,
                           "week52RangePct":  92.4,
                           "pressureScore":  5.0,
-                          "stabilityScore":  2.5
+                          "stabilityScore":  2.5,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  67.2
                       },
                       {
                           "symbol":  "HONA",
@@ -659,7 +721,9 @@
                           "debtRatio":  29.6,
                           "week52RangePct":  76.9,
                           "pressureScore":  2.3,
-                          "stabilityScore":  2.9
+                          "stabilityScore":  2.9,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  56.9
                       },
                       {
                           "symbol":  "STT",
@@ -679,7 +743,9 @@
                           "debtRatio":  1380.1,
                           "week52RangePct":  95.0,
                           "pressureScore":  5.6,
-                          "stabilityScore":  4.1
+                          "stabilityScore":  4.1,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  72.8
                       },
                       {
                           "symbol":  "AXON",
@@ -699,7 +765,9 @@
                           "debtRatio":  103.6,
                           "week52RangePct":  50.2,
                           "pressureScore":  6.6,
-                          "stabilityScore":  2.1
+                          "stabilityScore":  2.1,
+                          "winRateScore":  60,
+                          "rsiWeekly":  49.5
                       },
                       {
                           "symbol":  "WAB",
@@ -719,7 +787,9 @@
                           "debtRatio":  106.0,
                           "week52RangePct":  83.1,
                           "pressureScore":  4.5,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  60,
+                          "rsiWeekly":  55.8
                       },
                       {
                           "symbol":  "CARR",
@@ -739,7 +809,9 @@
                           "debtRatio":  181.8,
                           "week52RangePct":  30.1,
                           "pressureScore":  1.1,
-                          "stabilityScore":  2.8
+                          "stabilityScore":  2.8,
+                          "winRateScore":  55.3,
+                          "rsiWeekly":  39
                       },
                       {
                           "symbol":  "FITB",
@@ -759,7 +831,9 @@
                           "debtRatio":  770.5,
                           "week52RangePct":  70.5,
                           "pressureScore":  4.9,
-                          "stabilityScore":  3.8
+                          "stabilityScore":  3.8,
+                          "winRateScore":  60,
+                          "rsiWeekly":  50.1
                       },
                       {
                           "symbol":  "LHX",
@@ -779,7 +853,9 @@
                           "debtRatio":  105.9,
                           "week52RangePct":  6.4,
                           "pressureScore":  2.1,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  36.6
                       },
                       {
                           "symbol":  "WDAY",
@@ -799,7 +875,9 @@
                           "debtRatio":  140.8,
                           "week52RangePct":  62.4,
                           "pressureScore":  6.8,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  51.7,
+                          "rsiWeekly":  64.4
                       },
                       {
                           "symbol":  "XYZ",
@@ -819,7 +897,9 @@
                           "debtRatio":  77.8,
                           "week52RangePct":  87.3,
                           "pressureScore":  2.8,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  53.6
                       },
                       {
                           "symbol":  "COIN",
@@ -839,7 +919,9 @@
                           "debtRatio":  102.3,
                           "week52RangePct":  18.6,
                           "pressureScore":  1.1,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  52.4,
+                          "rsiWeekly":  49
                       },
                       {
                           "symbol":  "AMP",
@@ -859,7 +941,9 @@
                           "debtRatio":  3008.2,
                           "week52RangePct":  87.0,
                           "pressureScore":  5.3,
-                          "stabilityScore":  3.9
+                          "stabilityScore":  3.9,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  62.2
                       },
                       {
                           "symbol":  "ETR",
@@ -879,7 +963,9 @@
                           "debtRatio":  336.5,
                           "week52RangePct":  62.1,
                           "pressureScore":  1.7,
-                          "stabilityScore":  3.3
+                          "stabilityScore":  3.3,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  48.1
                       },
                       {
                           "symbol":  "ROK",
@@ -899,7 +985,9 @@
                           "debtRatio":  217.4,
                           "week52RangePct":  55.7,
                           "pressureScore":  1.4,
-                          "stabilityScore":  3.6
+                          "stabilityScore":  3.6,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  44.5
                       },
                       {
                           "symbol":  "AZO",
@@ -919,7 +1007,9 @@
                           "debtRatio":  -851.2,
                           "week52RangePct":  6.0,
                           "pressureScore":  2.2,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  39
                       },
                       {
                           "symbol":  "VTR",
@@ -939,7 +1029,9 @@
                           "debtRatio":  102.1,
                           "week52RangePct":  70.4,
                           "pressureScore":  4.8,
-                          "stabilityScore":  2.9
+                          "stabilityScore":  2.9,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  56
                       },
                       {
                           "symbol":  "XEL",
@@ -959,7 +1051,9 @@
                           "debtRatio":  262.3,
                           "week52RangePct":  34.0,
                           "pressureScore":  0.9,
-                          "stabilityScore":  3.2
+                          "stabilityScore":  3.2,
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  43.9
                       },
                       {
                           "symbol":  "FERG",
@@ -979,7 +1073,9 @@
                           "debtRatio":  202.8,
                           "week52RangePct":  26.4,
                           "pressureScore":  1.4,
-                          "stabilityScore":  2.8
+                          "stabilityScore":  2.8,
+                          "winRateScore":  60,
+                          "rsiWeekly":  41.5
                       },
                       {
                           "symbol":  "CMG",
@@ -999,7 +1095,9 @@
                           "debtRatio":  303.0,
                           "week52RangePct":  67.6,
                           "pressureScore":  5.4,
-                          "stabilityScore":  4.5
+                          "stabilityScore":  4.5,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  55.7
                       },
                       {
                           "symbol":  "ARES",
@@ -1019,7 +1117,9 @@
                           "debtRatio":  530.0,
                           "week52RangePct":  52.0,
                           "pressureScore":  2.8,
-                          "stabilityScore":  2.8
+                          "stabilityScore":  2.8,
+                          "winRateScore":  65,
+                          "rsiWeekly":  55.4
                       },
                       {
                           "symbol":  "EBAY",
@@ -1039,7 +1139,9 @@
                           "debtRatio":  284.4,
                           "week52RangePct":  61.8,
                           "pressureScore":  2.1,
-                          "stabilityScore":  3.4
+                          "stabilityScore":  3.4,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  50.8
                       },
                       {
                           "symbol":  "VST",
@@ -1059,7 +1161,9 @@
                           "debtRatio":  676.9,
                           "week52RangePct":  5.4,
                           "pressureScore":  0.2,
-                          "stabilityScore":  2.1
+                          "stabilityScore":  2.1,
+                          "winRateScore":  56.4,
+                          "rsiWeekly":  42
                       },
                       {
                           "symbol":  "HUM",
@@ -1079,7 +1183,9 @@
                           "debtRatio":  197.4,
                           "week52RangePct":  82.8,
                           "pressureScore":  6.1,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  48.3,
+                          "rsiWeekly":  67.1
                       },
                       {
                           "symbol":  "EXC",
@@ -1099,7 +1205,9 @@
                           "debtRatio":  305.8,
                           "week52RangePct":  14.1,
                           "pressureScore":  1.5,
-                          "stabilityScore":  3.5
+                          "stabilityScore":  3.5,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  41.5
                       },
                       {
                           "symbol":  "A",
@@ -1119,7 +1227,9 @@
                           "debtRatio":  83.4,
                           "week52RangePct":  81.6,
                           "pressureScore":  5.5,
-                          "stabilityScore":  3.4
+                          "stabilityScore":  3.4,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  61.1
                       },
                       {
                           "symbol":  "TTWO",
@@ -1139,7 +1249,9 @@
                           "debtRatio":  151.2,
                           "week52RangePct":  41.0,
                           "pressureScore":  2.6,
-                          "stabilityScore":  1.7
+                          "stabilityScore":  1.7,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  43.8
                       },
                       {
                           "symbol":  "PAYX",
@@ -1159,7 +1271,9 @@
                           "debtRatio":  333.0,
                           "week52RangePct":  78.1,
                           "pressureScore":  5.5,
-                          "stabilityScore":  3.5
+                          "stabilityScore":  3.5,
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  71.5
                       },
                       {
                           "symbol":  "CBRE",
@@ -1179,7 +1293,9 @@
                           "debtRatio":  253.6,
                           "week52RangePct":  45.9,
                           "pressureScore":  4.6,
-                          "stabilityScore":  2.7
+                          "stabilityScore":  2.7,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  50.6
                       },
                       {
                           "symbol":  "IDXX",
@@ -1199,7 +1315,9 @@
                           "debtRatio":  113.5,
                           "week52RangePct":  15.2,
                           "pressureScore":  1.4,
-                          "stabilityScore":  3.8
+                          "stabilityScore":  3.8,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  42.8
                       },
                       {
                           "symbol":  "KDP",
@@ -1219,7 +1337,9 @@
                           "debtRatio":  174.0,
                           "week52RangePct":  78.1,
                           "pressureScore":  2.1,
-                          "stabilityScore":  2.7
+                          "stabilityScore":  2.7,
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  56.9
                       },
                       {
                           "symbol":  "ODFL",
@@ -1239,7 +1359,9 @@
                           "debtRatio":  26.1,
                           "week52RangePct":  58.7,
                           "pressureScore":  1.5,
-                          "stabilityScore":  4.8
+                          "stabilityScore":  4.8,
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  40.6
                       },
                       {
                           "symbol":  "IQV",
@@ -1259,7 +1381,9 @@
                           "debtRatio":  382.1,
                           "week52RangePct":  96.3,
                           "pressureScore":  5.8,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  70.8
                       },
                       {
                           "symbol":  "LYV",
@@ -1279,7 +1403,9 @@
                           "debtRatio":  32019.5,
                           "week52RangePct":  85.4,
                           "pressureScore":  2.3,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  55.4
                       },
                       {
                           "symbol":  "PRU",
@@ -1299,7 +1425,9 @@
                           "debtRatio":  2371.9,
                           "week52RangePct":  71.8,
                           "pressureScore":  5.2,
-                          "stabilityScore":  3.9
+                          "stabilityScore":  3.9,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  57.3
                       },
                       {
                           "symbol":  "YUM",
@@ -1319,7 +1447,9 @@
                           "debtRatio":  -222.2,
                           "week52RangePct":  48.7,
                           "pressureScore":  2.9,
-                          "stabilityScore":  2.8
+                          "stabilityScore":  2.8,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  48.5
                       },
                       {
                           "symbol":  "DHI",
@@ -1339,7 +1469,9 @@
                           "debtRatio":  50.8,
                           "week52RangePct":  24.3,
                           "pressureScore":  0.2,
-                          "stabilityScore":  2.8
+                          "stabilityScore":  2.8,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  44.1
                       },
                       {
                           "symbol":  "MCHP",
@@ -1359,7 +1491,9 @@
                           "debtRatio":  123.3,
                           "week52RangePct":  43.4,
                           "pressureScore":  3.5,
-                          "stabilityScore":  3.5
+                          "stabilityScore":  3.5,
+                          "winRateScore":  51.7,
+                          "rsiWeekly":  42.9
                       },
                       {
                           "symbol":  "MSCI",
@@ -1379,7 +1513,9 @@
                           "debtRatio":  -308.3,
                           "week52RangePct":  48.4,
                           "pressureScore":  1.4,
-                          "stabilityScore":  3.5
+                          "stabilityScore":  3.5,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  47.5
                       },
                       {
                           "symbol":  "FLEX",
@@ -1399,7 +1535,9 @@
                           "debtRatio":  328.8,
                           "week52RangePct":  49.9,
                           "pressureScore":  2.0,
-                          "stabilityScore":  1.6
+                          "stabilityScore":  1.6,
+                          "winRateScore":  64.2,
+                          "rsiWeekly":  47.6
                       },
                       {
                           "symbol":  "ROP",
@@ -1419,7 +1557,9 @@
                           "debtRatio":  88.1,
                           "week52RangePct":  53.0,
                           "pressureScore":  4.9,
-                          "stabilityScore":  3.1
+                          "stabilityScore":  3.1,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  63.7
                       },
                       {
                           "symbol":  "WAT",
@@ -1439,7 +1579,9 @@
                           "debtRatio":  60.4,
                           "week52RangePct":  91.9,
                           "pressureScore":  5.2,
-                          "stabilityScore":  2.8
+                          "stabilityScore":  2.8,
+                          "winRateScore":  55,
+                          "rsiWeekly":  60.4
                       },
                       {
                           "symbol":  "VEEV",
@@ -1459,7 +1601,9 @@
                           "debtRatio":  25.0,
                           "week52RangePct":  84.7,
                           "pressureScore":  8.2,
-                          "stabilityScore":  5.2
+                          "stabilityScore":  5.2,
+                          "winRateScore":  55,
+                          "rsiWeekly":  72.3
                       },
                       {
                           "symbol":  "SYY",
@@ -1479,7 +1623,9 @@
                           "debtRatio":  1118.2,
                           "week52RangePct":  54.5,
                           "pressureScore":  2.2,
-                          "stabilityScore":  2.2
+                          "stabilityScore":  2.2,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  52.6
                       },
                       {
                           "symbol":  "AIG",
@@ -1499,7 +1645,9 @@
                           "debtRatio":  302.5,
                           "week52RangePct":  31.9,
                           "pressureScore":  1.1,
-                          "stabilityScore":  3.5
+                          "stabilityScore":  3.5,
+                          "winRateScore":  55,
+                          "rsiWeekly":  46.2
                       },
                       {
                           "symbol":  "ED",
@@ -1519,7 +1667,9 @@
                           "debtRatio":  197.3,
                           "week52RangePct":  56.7,
                           "pressureScore":  2.8,
-                          "stabilityScore":  3.6
+                          "stabilityScore":  3.6,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  48.7
                       },
                       {
                           "symbol":  "PCG",
@@ -1539,7 +1689,9 @@
                           "debtRatio":  327.2,
                           "week52RangePct":  3.0,
                           "pressureScore":  3.0,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  32.2
                       },
                       {
                           "symbol":  "ADM",
@@ -1559,7 +1711,9 @@
                           "debtRatio":  125.8,
                           "week52RangePct":  78.2,
                           "pressureScore":  2.0,
-                          "stabilityScore":  3.8
+                          "stabilityScore":  3.8,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  61.1
                       },
                       {
                           "symbol":  "EXPE",
@@ -1579,7 +1733,9 @@
                           "debtRatio":  2199.3,
                           "week52RangePct":  84.1,
                           "pressureScore":  6.2,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  55,
+                          "rsiWeekly":  60.9
                       },
                       {
                           "symbol":  "NTAP",
@@ -1599,7 +1755,9 @@
                           "debtRatio":  695.3,
                           "week52RangePct":  79.4,
                           "pressureScore":  3.3,
-                          "stabilityScore":  3.1
+                          "stabilityScore":  3.1,
+                          "winRateScore":  55,
+                          "rsiWeekly":  63.8
                       },
                       {
                           "symbol":  "HSY",
@@ -1619,7 +1777,9 @@
                           "debtRatio":  206.2,
                           "week52RangePct":  18.9,
                           "pressureScore":  null,
-                          "stabilityScore":  null
+                          "stabilityScore":  null,
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  42.9
                       },
                       {
                           "symbol":  "KVUE",
@@ -1639,7 +1799,9 @@
                           "debtRatio":  153.3,
                           "week52RangePct":  71.5,
                           "pressureScore":  2.1,
-                          "stabilityScore":  3.9
+                          "stabilityScore":  3.9,
+                          "winRateScore":  47.4,
+                          "rsiWeekly":  52.3
                       },
                       {
                           "symbol":  "EL",
@@ -1659,7 +1821,9 @@
                           "debtRatio":  392.5,
                           "week52RangePct":  65.1,
                           "pressureScore":  4.9,
-                          "stabilityScore":  3.3
+                          "stabilityScore":  3.3,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  58.1
                       },
                       {
                           "symbol":  "HIG",
@@ -1679,7 +1843,9 @@
                           "debtRatio":  348.1,
                           "week52RangePct":  66.2,
                           "pressureScore":  2.7,
-                          "stabilityScore":  3.6
+                          "stabilityScore":  3.6,
+                          "winRateScore":  60,
+                          "rsiWeekly":  51.3
                       },
                       {
                           "symbol":  "UAL",
@@ -1699,7 +1865,9 @@
                           "debtRatio":  406.5,
                           "week52RangePct":  43.1,
                           "pressureScore":  1.7,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  45.7
                       },
                       {
                           "symbol":  "TKO",
@@ -1719,7 +1887,9 @@
                           "debtRatio":  232.6,
                           "week52RangePct":  13.0,
                           "pressureScore":  2.5,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  61.7,
+                          "rsiWeekly":  44.3
                       },
                       {
                           "symbol":  "KMB",
@@ -1739,7 +1909,9 @@
                           "debtRatio":  953.1,
                           "week52RangePct":  39.7,
                           "pressureScore":  2.2,
-                          "stabilityScore":  3.9
+                          "stabilityScore":  3.9,
+                          "winRateScore":  44.2,
+                          "rsiWeekly":  50.8
                       },
                       {
                           "symbol":  "IRM",
@@ -1759,7 +1931,9 @@
                           "debtRatio":  -1783.7,
                           "week52RangePct":  66.0,
                           "pressureScore":  2.8,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  55,
+                          "rsiWeekly":  46.6
                       },
                       {
                           "symbol":  "PEG",
@@ -1779,7 +1953,9 @@
                           "debtRatio":  239.4,
                           "week52RangePct":  5.3,
                           "pressureScore":  0.7,
-                          "stabilityScore":  3.1
+                          "stabilityScore":  3.1,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  37.4
                       },
                       {
                           "symbol":  "VMC",
@@ -1799,7 +1975,9 @@
                           "debtRatio":  94.0,
                           "week52RangePct":  21.9,
                           "pressureScore":  0.8,
-                          "stabilityScore":  3.0
+                          "stabilityScore":  3.0,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  39.7
                       },
                       {
                           "symbol":  "KR",
@@ -1819,7 +1997,9 @@
                           "debtRatio":  677.0,
                           "week52RangePct":  15.1,
                           "pressureScore":  0.7,
-                          "stabilityScore":  2.0
+                          "stabilityScore":  2.0,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  41.8
                       },
                       {
                           "symbol":  "CCL",
@@ -1839,7 +2019,9 @@
                           "debtRatio":  302.7,
                           "week52RangePct":  4.2,
                           "pressureScore":  1.1,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  38.5
                       },
                       {
                           "symbol":  "DXCM",
@@ -1859,7 +2041,9 @@
                           "debtRatio":  146.3,
                           "week52RangePct":  96.0,
                           "pressureScore":  5.5,
-                          "stabilityScore":  3.9
+                          "stabilityScore":  3.9,
+                          "winRateScore":  51.7,
+                          "rsiWeekly":  67.2
                       },
                       {
                           "symbol":  "MTB",
@@ -1879,7 +2063,9 @@
                           "debtRatio":  684.6,
                           "week52RangePct":  72.9,
                           "pressureScore":  2.9,
-                          "stabilityScore":  3.8
+                          "stabilityScore":  3.8,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  51.5
                       },
                       {
                           "symbol":  "WEC",
@@ -1899,7 +2085,9 @@
                           "debtRatio":  269.5,
                           "week52RangePct":  19.0,
                           "pressureScore":  1.0,
-                          "stabilityScore":  3.7
+                          "stabilityScore":  3.7,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  41.5
                       },
                       {
                           "symbol":  "HBAN",
@@ -1919,7 +2107,9 @@
                           "debtRatio":  770.4,
                           "week52RangePct":  39.3,
                           "pressureScore":  4.3,
-                          "stabilityScore":  3.5
+                          "stabilityScore":  3.5,
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  45.6
                       },
                       {
                           "symbol":  "RMD",
@@ -1939,7 +2129,9 @@
                           "debtRatio":  35.3,
                           "week52RangePct":  57.2,
                           "pressureScore":  6.7,
-                          "stabilityScore":  3.9
+                          "stabilityScore":  3.9,
+                          "winRateScore":  60,
+                          "rsiWeekly":  56.5
                       },
                       {
                           "symbol":  "ACGL",
@@ -1959,7 +2151,9 @@
                           "debtRatio":  254.5,
                           "week52RangePct":  63.4,
                           "pressureScore":  2.5,
-                          "stabilityScore":  4.5
+                          "stabilityScore":  4.5,
+                          "winRateScore":  61.7,
+                          "rsiWeekly":  53.2
                       },
                       {
                           "symbol":  "GEHC",
@@ -1979,7 +2173,9 @@
                           "debtRatio":  237.2,
                           "week52RangePct":  40.2,
                           "pressureScore":  3.0,
-                          "stabilityScore":  2.5
+                          "stabilityScore":  2.5,
+                          "winRateScore":  51.2,
+                          "rsiWeekly":  51.3
                       },
                       {
                           "symbol":  "RJF",
@@ -1999,7 +2195,9 @@
                           "debtRatio":  641.4,
                           "week52RangePct":  89.6,
                           "pressureScore":  5.8,
-                          "stabilityScore":  3.7
+                          "stabilityScore":  3.7,
+                          "winRateScore":  60,
+                          "rsiWeekly":  59.6
                       },
                       {
                           "symbol":  "NTRS",
@@ -2019,7 +2217,9 @@
                           "debtRatio":  1237.9,
                           "week52RangePct":  86.3,
                           "pressureScore":  5.7,
-                          "stabilityScore":  4.8
+                          "stabilityScore":  4.8,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  63.2
                       },
                       {
                           "symbol":  "EQT",
@@ -2039,7 +2239,9 @@
                           "debtRatio":  49.3,
                           "week52RangePct":  30.7,
                           "pressureScore":  0.7,
-                          "stabilityScore":  3.0
+                          "stabilityScore":  3.0,
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  52.2
                       },
                       {
                           "symbol":  "EME",
@@ -2059,7 +2261,9 @@
                           "debtRatio":  149.0,
                           "week52RangePct":  43.8,
                           "pressureScore":  2.9,
-                          "stabilityScore":  2.6
+                          "stabilityScore":  2.6,
+                          "winRateScore":  60.8,
+                          "rsiWeekly":  43.6
                       },
                       {
                           "symbol":  "CCI",
@@ -2079,7 +2283,9 @@
                           "debtRatio":  -757.9,
                           "week52RangePct":  20.9,
                           "pressureScore":  0.2,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  39.7
                       },
                       {
                           "symbol":  "JBL",
@@ -2099,7 +2305,9 @@
                           "debtRatio":  1700.1,
                           "week52RangePct":  48.3,
                           "pressureScore":  1.7,
-                          "stabilityScore":  2.1
+                          "stabilityScore":  2.1,
+                          "winRateScore":  63.3,
+                          "rsiWeekly":  46.3
                       },
                       {
                           "symbol":  "STLD",
@@ -2119,7 +2327,9 @@
                           "debtRatio":  82.3,
                           "week52RangePct":  65.3,
                           "pressureScore":  4.4,
-                          "stabilityScore":  2.0
+                          "stabilityScore":  2.0,
+                          "winRateScore":  61.7,
+                          "rsiWeekly":  52.5
                       },
                       {
                           "symbol":  "EXR",
@@ -2139,7 +2349,9 @@
                           "debtRatio":  111.7,
                           "week52RangePct":  46.4,
                           "pressureScore":  1.1,
-                          "stabilityScore":  3.6
+                          "stabilityScore":  3.6,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  44.7
                       },
                       {
                           "symbol":  "MLM",
@@ -2159,7 +2371,9 @@
                           "debtRatio":  84.5,
                           "week52RangePct":  0.5,
                           "pressureScore":  3.1,
-                          "stabilityScore":  3.1
+                          "stabilityScore":  3.1,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  34.3
                       },
                       {
                           "symbol":  "ZTS",
@@ -2179,7 +2393,9 @@
                           "debtRatio":  378.9,
                           "week52RangePct":  7.2,
                           "pressureScore":  0.2,
-                          "stabilityScore":  3.1
+                          "stabilityScore":  3.1,
+                          "winRateScore":  60,
+                          "rsiWeekly":  35.9
                       },
                       {
                           "symbol":  "CNC",
@@ -2199,7 +2415,9 @@
                           "debtRatio":  267.5,
                           "week52RangePct":  87.8,
                           "pressureScore":  2.6,
-                          "stabilityScore":  1.0
+                          "stabilityScore":  1.0,
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  62.6
                       },
                       {
                           "symbol":  "BIIB",
@@ -2219,7 +2437,9 @@
                           "debtRatio":  70.2,
                           "week52RangePct":  93.1,
                           "pressureScore":  2.4,
-                          "stabilityScore":  2.9
+                          "stabilityScore":  2.9,
+                          "winRateScore":  44.2,
+                          "rsiWeekly":  62.3
                       },
                       {
                           "symbol":  "WTW",
@@ -2239,7 +2459,9 @@
                           "debtRatio":  296.4,
                           "week52RangePct":  87.3,
                           "pressureScore":  5.5,
-                          "stabilityScore":  3.2
+                          "stabilityScore":  3.2,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  61.9
                       },
                       {
                           "symbol":  "CPRT",
@@ -2259,7 +2481,9 @@
                           "debtRatio":  9.8,
                           "week52RangePct":  26.5,
                           "pressureScore":  1.1,
-                          "stabilityScore":  4.9
+                          "stabilityScore":  4.9,
+                          "winRateScore":  62.5,
+                          "rsiWeekly":  49
                       },
                       {
                           "symbol":  "IR",
@@ -2279,7 +2503,9 @@
                           "debtRatio":  78.1,
                           "week52RangePct":  27.3,
                           "pressureScore":  2.8,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  55.5,
+                          "rsiWeekly":  41.7
                       },
                       {
                           "symbol":  "CASY",
@@ -2299,7 +2525,9 @@
                           "debtRatio":  126.1,
                           "week52RangePct":  59.8,
                           "pressureScore":  2.2,
-                          "stabilityScore":  2.2
+                          "stabilityScore":  2.2,
+                          "winRateScore":  61.7,
+                          "rsiWeekly":  48.4
                       },
                       {
                           "symbol":  "LVS",
@@ -2319,7 +2547,9 @@
                           "debtRatio":  3272.3,
                           "week52RangePct":  0.8,
                           "pressureScore":  0.6,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  36.2
                       },
                       {
                           "symbol":  "KHC",
@@ -2339,7 +2569,9 @@
                           "debtRatio":  102.6,
                           "week52RangePct":  65.7,
                           "pressureScore":  2.8,
-                          "stabilityScore":  1.8
+                          "stabilityScore":  1.8,
+                          "winRateScore":  47.5,
+                          "rsiWeekly":  57
                       },
                       {
                           "symbol":  "RDDT",
@@ -2359,7 +2591,9 @@
                           "debtRatio":  10.7,
                           "week52RangePct":  17.4,
                           "pressureScore":  3.1,
-                          "stabilityScore":  4.6
+                          "stabilityScore":  4.6,
+                          "winRateScore":  60.7,
+                          "rsiWeekly":  44.2
                       },
                       {
                           "symbol":  "TDY",
@@ -2379,7 +2613,9 @@
                           "debtRatio":  39.9,
                           "week52RangePct":  60.5,
                           "pressureScore":  1.6,
-                          "stabilityScore":  2.8
+                          "stabilityScore":  2.8,
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  45.6
                       },
                       {
                           "symbol":  "HAL",
@@ -2399,7 +2635,9 @@
                           "debtRatio":  134.2,
                           "week52RangePct":  69.6,
                           "pressureScore":  1.5,
-                          "stabilityScore":  2.6
+                          "stabilityScore":  2.6,
+                          "winRateScore":  50,
+                          "rsiWeekly":  54.9
                       },
                       {
                           "symbol":  "CFG",
@@ -2419,7 +2657,9 @@
                           "debtRatio":  793.1,
                           "week52RangePct":  76.4,
                           "pressureScore":  3.6,
-                          "stabilityScore":  3.4
+                          "stabilityScore":  3.4,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  53.3
                       },
                       {
                           "symbol":  "AEE",
@@ -2439,7 +2679,9 @@
                           "debtRatio":  266.8,
                           "week52RangePct":  43.4,
                           "pressureScore":  0.8,
-                          "stabilityScore":  3.4
+                          "stabilityScore":  3.4,
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  44.9
                       },
                       {
                           "symbol":  "VICI",
@@ -2459,7 +2701,9 @@
                           "debtRatio":  64.0,
                           "week52RangePct":  0.5,
                           "pressureScore":  1.1,
-                          "stabilityScore":  3.6
+                          "stabilityScore":  3.6,
+                          "winRateScore":  49,
+                          "rsiWeekly":  37.8
                       },
                       {
                           "symbol":  "FOXA",
@@ -2479,7 +2723,9 @@
                           "debtRatio":  91.7,
                           "week52RangePct":  67.8,
                           "pressureScore":  4.6,
-                          "stabilityScore":  2.6
+                          "stabilityScore":  2.6,
+                          "winRateScore":  55.7,
+                          "rsiWeekly":  55.3
                       },
                       {
                           "symbol":  "ON",
@@ -2499,7 +2745,9 @@
                           "debtRatio":  86.5,
                           "week52RangePct":  32.7,
                           "pressureScore":  1.1,
-                          "stabilityScore":  2.1
+                          "stabilityScore":  2.1,
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  40.6
                       },
                       {
                           "symbol":  "ATO",
@@ -2519,7 +2767,9 @@
                           "debtRatio":  107.0,
                           "week52RangePct":  18.6,
                           "pressureScore":  1.0,
-                          "stabilityScore":  4.0
+                          "stabilityScore":  4.0,
+                          "winRateScore":  60,
+                          "rsiWeekly":  40.8
                       },
                       {
                           "symbol":  "DTE",
@@ -2539,7 +2789,9 @@
                           "debtRatio":  347.2,
                           "week52RangePct":  31.8,
                           "pressureScore":  2.4,
-                          "stabilityScore":  3.0
+                          "stabilityScore":  3.0,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  40.1
                       },
                       {
                           "symbol":  "WSM",
@@ -2559,7 +2811,9 @@
                           "debtRatio":  170.6,
                           "week52RangePct":  70.2,
                           "pressureScore":  4.9,
-                          "stabilityScore":  4.8
+                          "stabilityScore":  4.8,
+                          "winRateScore":  51.7,
+                          "rsiWeekly":  52.4
                       },
                       {
                           "symbol":  "FISV",
@@ -2579,7 +2833,9 @@
                           "debtRatio":  200.6,
                           "week52RangePct":  6.8,
                           "pressureScore":  0.0,
-                          "stabilityScore":  2.1
+                          "stabilityScore":  2.1,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  38.5
                       },
                       {
                           "symbol":  "MTD",
@@ -2599,7 +2855,9 @@
                           "debtRatio":  28527.8,
                           "week52RangePct":  76.1,
                           "pressureScore":  4.4,
-                          "stabilityScore":  4.0
+                          "stabilityScore":  4.0,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  56.5
                       },
                       {
                           "symbol":  "CTSH",
@@ -2619,7 +2877,9 @@
                           "debtRatio":  44.0,
                           "week52RangePct":  55.1,
                           "pressureScore":  3.4,
-                          "stabilityScore":  3.4
+                          "stabilityScore":  3.4,
+                          "winRateScore":  55,
+                          "rsiWeekly":  58.4
                       },
                       {
                           "symbol":  "EIX",
@@ -2639,7 +2899,9 @@
                           "debtRatio":  439.7,
                           "week52RangePct":  6.7,
                           "pressureScore":  3.0,
-                          "stabilityScore":  2.9
+                          "stabilityScore":  2.9,
+                          "winRateScore":  60,
+                          "rsiWeekly":  35.3
                       },
                       {
                           "symbol":  "CPAY",
@@ -2659,7 +2921,9 @@
                           "debtRatio":  649.6,
                           "week52RangePct":  87.5,
                           "pressureScore":  5.2,
-                          "stabilityScore":  3.1
+                          "stabilityScore":  3.1,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  64.3
                       },
                       {
                           "symbol":  "LH",
@@ -2679,7 +2943,9 @@
                           "debtRatio":  115.1,
                           "week52RangePct":  90.6,
                           "pressureScore":  6.0,
-                          "stabilityScore":  2.5
+                          "stabilityScore":  2.5,
+                          "winRateScore":  60,
+                          "rsiWeekly":  68.1
                       },
                       {
                           "symbol":  "DG",
@@ -2699,7 +2965,9 @@
                           "debtRatio":  258.5,
                           "week52RangePct":  50.1,
                           "pressureScore":  4.0,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  50,
+                          "rsiWeekly":  57.4
                       },
                       {
                           "symbol":  "OTIS",
@@ -2719,7 +2987,9 @@
                           "debtRatio":  -289.0,
                           "week52RangePct":  7.8,
                           "pressureScore":  1.8,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  56.6,
+                          "rsiWeekly":  35.4
                       },
                       {
                           "symbol":  "DOV",
@@ -2739,7 +3009,9 @@
                           "debtRatio":  77.8,
                           "week52RangePct":  44.9,
                           "pressureScore":  1.7,
-                          "stabilityScore":  3.2
+                          "stabilityScore":  3.2,
+                          "winRateScore":  60.8,
+                          "rsiWeekly":  36.6
                       },
                       {
                           "symbol":  "HPQ",
@@ -2759,7 +3031,9 @@
                           "debtRatio":  -29916.7,
                           "week52RangePct":  85.2,
                           "pressureScore":  3.7,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  70
                       },
                       {
                           "symbol":  "DGX",
@@ -2779,7 +3053,9 @@
                           "debtRatio":  120.3,
                           "week52RangePct":  90.9,
                           "pressureScore":  6.4,
-                          "stabilityScore":  3.0
+                          "stabilityScore":  3.0,
+                          "winRateScore":  60.8,
+                          "rsiWeekly":  64.5
                       },
                       {
                           "symbol":  "Q",
@@ -2799,7 +3075,9 @@
                           "debtRatio":  93.4,
                           "week52RangePct":  45.8,
                           "pressureScore":  2.6,
-                          "stabilityScore":  1.8
+                          "stabilityScore":  1.8,
+                          "winRateScore":  66.7,
+                          "rsiWeekly":  40.9
                       },
                       {
                           "symbol":  "AWK",
@@ -2819,7 +3097,9 @@
                           "debtRatio":  212.5,
                           "week52RangePct":  70.4,
                           "pressureScore":  4.2,
-                          "stabilityScore":  4.3
+                          "stabilityScore":  4.3,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  57.5
                       },
                       {
                           "symbol":  "FE",
@@ -2839,7 +3119,9 @@
                           "debtRatio":  338.6,
                           "week52RangePct":  31.6,
                           "pressureScore":  1.7,
-                          "stabilityScore":  2.9
+                          "stabilityScore":  2.9,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  44.8
                       },
                       {
                           "symbol":  "XYL",
@@ -2859,7 +3141,9 @@
                           "debtRatio":  64.1,
                           "week52RangePct":  9.8,
                           "pressureScore":  1.3,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  35
                       },
                       {
                           "symbol":  "TPL",
@@ -2879,7 +3163,9 @@
                           "debtRatio":  11.2,
                           "week52RangePct":  37.8,
                           "pressureScore":  3.6,
-                          "stabilityScore":  6.0
+                          "stabilityScore":  6.0,
+                          "winRateScore":  55,
+                          "rsiWeekly":  45.8
                       },
                       {
                           "symbol":  "ES",
@@ -2899,7 +3185,9 @@
                           "debtRatio":  290.5,
                           "week52RangePct":  54.5,
                           "pressureScore":  2.3,
-                          "stabilityScore":  3.2
+                          "stabilityScore":  3.2,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  48.6
                       },
                       {
                           "symbol":  "FOX",
@@ -2919,7 +3207,9 @@
                           "debtRatio":  91.7,
                           "week52RangePct":  67.0,
                           "pressureScore":  3.4,
-                          "stabilityScore":  2.6
+                          "stabilityScore":  2.6,
+                          "winRateScore":  56.8,
+                          "rsiWeekly":  55.4
                       },
                       {
                           "symbol":  "TPR",
@@ -2939,7 +3229,9 @@
                           "debtRatio":  847.6,
                           "week52RangePct":  42.3,
                           "pressureScore":  3.9,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  40.9
                       },
                       {
                           "symbol":  "RF",
@@ -2959,7 +3251,9 @@
                           "debtRatio":  755.8,
                           "week52RangePct":  73.5,
                           "pressureScore":  1.7,
-                          "stabilityScore":  3.7
+                          "stabilityScore":  3.7,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  50.1
                       },
                       {
                           "symbol":  "INCY",
@@ -2979,7 +3273,9 @@
                           "debtRatio":  24.1,
                           "week52RangePct":  81.8,
                           "pressureScore":  7.3,
-                          "stabilityScore":  4.9
+                          "stabilityScore":  4.9,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  67.6
                       },
                       {
                           "symbol":  "SW",
@@ -2999,7 +3295,9 @@
                           "debtRatio":  150.5,
                           "week52RangePct":  71.1,
                           "pressureScore":  3.3,
-                          "stabilityScore":  2.2
+                          "stabilityScore":  2.2,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  51.7
                       },
                       {
                           "symbol":  "PPL",
@@ -3019,7 +3317,9 @@
                           "debtRatio":  208.3,
                           "week52RangePct":  13.8,
                           "pressureScore":  2.0,
-                          "stabilityScore":  3.5
+                          "stabilityScore":  3.5,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  41.6
                       },
                       {
                           "symbol":  "JBHT",
@@ -3039,7 +3339,9 @@
                           "debtRatio":  117.2,
                           "week52RangePct":  79.8,
                           "pressureScore":  2.6,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  50.1
                       },
                       {
                           "symbol":  "SYF",
@@ -3059,7 +3361,9 @@
                           "debtRatio":  621.6,
                           "week52RangePct":  54.5,
                           "pressureScore":  2.8,
-                          "stabilityScore":  3.0
+                          "stabilityScore":  3.0,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  52.4
                       },
                       {
                           "symbol":  "CINF",
@@ -3079,7 +3383,9 @@
                           "debtRatio":  162.3,
                           "week52RangePct":  44.4,
                           "pressureScore":  2.9,
-                          "stabilityScore":  4.9
+                          "stabilityScore":  4.9,
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  49.8
                       },
                       {
                           "symbol":  "CNP",
@@ -3099,7 +3405,9 @@
                           "debtRatio":  311.7,
                           "week52RangePct":  34.6,
                           "pressureScore":  2.2,
-                          "stabilityScore":  3.1
+                          "stabilityScore":  3.1,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  40.8
                       },
                       {
                           "symbol":  "VRSN",
@@ -3119,7 +3427,9 @@
                           "debtRatio":  -180.0,
                           "week52RangePct":  76.6,
                           "pressureScore":  1.3,
-                          "stabilityScore":  3.9
+                          "stabilityScore":  3.9,
+                          "winRateScore":  61.7,
+                          "rsiWeekly":  56.1
                       },
                       {
                           "symbol":  "WRB",
@@ -3139,7 +3449,9 @@
                           "debtRatio":  364.4,
                           "week52RangePct":  29.1,
                           "pressureScore":  1.3,
-                          "stabilityScore":  3.5
+                          "stabilityScore":  3.5,
+                          "winRateScore":  61.7,
+                          "rsiWeekly":  45.3
                       },
                       {
                           "symbol":  "FICO",
@@ -3159,7 +3471,9 @@
                           "debtRatio":  -149.7,
                           "week52RangePct":  24.6,
                           "pressureScore":  2.7,
-                          "stabilityScore":  3.0
+                          "stabilityScore":  3.0,
+                          "winRateScore":  60,
+                          "rsiWeekly":  43.9
                       },
                       {
                           "symbol":  "DLTR",
@@ -3179,7 +3493,9 @@
                           "debtRatio":  294.2,
                           "week52RangePct":  72.6,
                           "pressureScore":  4.2,
-                          "stabilityScore":  2.5
+                          "stabilityScore":  2.5,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  60
                       },
                       {
                           "symbol":  "PPG",
@@ -3199,7 +3515,9 @@
                           "debtRatio":  165.2,
                           "week52RangePct":  46.9,
                           "pressureScore":  1.0,
-                          "stabilityScore":  3.0
+                          "stabilityScore":  3.0,
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  46.3
                       },
                       {
                           "symbol":  "ECHO",
@@ -3219,7 +3537,9 @@
                           "debtRatio":  178.2,
                           "week52RangePct":  30.0,
                           "pressureScore":  0.0,
-                          "stabilityScore":  1.9
+                          "stabilityScore":  1.9,
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  39.4
                       },
                       {
                           "symbol":  "DRI",
@@ -3239,7 +3559,9 @@
                           "debtRatio":  482.7,
                           "week52RangePct":  74.5,
                           "pressureScore":  2.7,
-                          "stabilityScore":  2.5
+                          "stabilityScore":  2.5,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  56
                       },
                       {
                           "symbol":  "WST",
@@ -3259,7 +3581,9 @@
                           "debtRatio":  36.3,
                           "week52RangePct":  72.3,
                           "pressureScore":  3.0,
-                          "stabilityScore":  4.7
+                          "stabilityScore":  4.7,
+                          "winRateScore":  60,
+                          "rsiWeekly":  56.4
                       },
                       {
                           "symbol":  "HUBB",
@@ -3279,7 +3603,9 @@
                           "debtRatio":  202.5,
                           "week52RangePct":  30.4,
                           "pressureScore":  1.9,
-                          "stabilityScore":  3.2
+                          "stabilityScore":  3.2,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  40
                       },
                       {
                           "symbol":  "GPN",
@@ -3299,7 +3625,9 @@
                           "debtRatio":  171.4,
                           "week52RangePct":  86.1,
                           "pressureScore":  7.6,
-                          "stabilityScore":  2.8
+                          "stabilityScore":  2.8,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  62.3
                       },
                       {
                           "symbol":  "PHM",
@@ -3319,7 +3647,9 @@
                           "debtRatio":  40.3,
                           "week52RangePct":  49.5,
                           "pressureScore":  1.4,
-                          "stabilityScore":  3.0
+                          "stabilityScore":  3.0,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  47.5
                       },
                       {
                           "symbol":  "EXPD",
@@ -3339,7 +3669,9 @@
                           "debtRatio":  142.2,
                           "week52RangePct":  96.7,
                           "pressureScore":  6.5,
-                          "stabilityScore":  4.2
+                          "stabilityScore":  4.2,
+                          "winRateScore":  60.8,
+                          "rsiWeekly":  66.3
                       },
                       {
                           "symbol":  "VRSK",
@@ -3359,7 +3691,9 @@
                           "debtRatio":  -478.1,
                           "week52RangePct":  32.1,
                           "pressureScore":  1.5,
-                          "stabilityScore":  2.9
+                          "stabilityScore":  2.9,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  51.4
                       },
                       {
                           "symbol":  "BRO",
@@ -3379,7 +3713,9 @@
                           "debtRatio":  137.3,
                           "week52RangePct":  42.4,
                           "pressureScore":  7.1,
-                          "stabilityScore":  2.5
+                          "stabilityScore":  2.5,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  55.4
                       },
                       {
                           "symbol":  "SMCI",
@@ -3399,7 +3735,9 @@
                           "debtRatio":  209.6,
                           "week52RangePct":  45.3,
                           "pressureScore":  4.0,
-                          "stabilityScore":  3.2
+                          "stabilityScore":  3.2,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  54.4
                       },
                       {
                           "symbol":  "VLTO",
@@ -3419,7 +3757,9 @@
                           "debtRatio":  176.3,
                           "week52RangePct":  62.2,
                           "pressureScore":  4.4,
-                          "stabilityScore":  2.7
+                          "stabilityScore":  2.7,
+                          "winRateScore":  51.5,
+                          "rsiWeekly":  57
                       },
                       {
                           "symbol":  "OMC",
@@ -3439,7 +3779,9 @@
                           "debtRatio":  406.9,
                           "week52RangePct":  91.2,
                           "pressureScore":  5.6,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  50,
+                          "rsiWeekly":  59.5
                       },
                       {
                           "symbol":  "TROW",
@@ -3459,7 +3801,9 @@
                           "debtRatio":  28.9,
                           "week52RangePct":  70.9,
                           "pressureScore":  null,
-                          "stabilityScore":  null
+                          "stabilityScore":  null,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  51.9
                       },
                       {
                           "symbol":  "NRG",
@@ -3479,7 +3823,9 @@
                           "debtRatio":  722.7,
                           "week52RangePct":  1.9,
                           "pressureScore":  1.9,
-                          "stabilityScore":  2.0
+                          "stabilityScore":  2.0,
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  37.8
                       },
                       {
                           "symbol":  "PFG",
@@ -3499,7 +3845,9 @@
                           "debtRatio":  2798.9,
                           "week52RangePct":  83.3,
                           "pressureScore":  2.5,
-                          "stabilityScore":  3.4
+                          "stabilityScore":  3.4,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  57.4
                       },
                       {
                           "symbol":  "CHD",
@@ -3519,7 +3867,9 @@
                           "debtRatio":  115.2,
                           "week52RangePct":  74.7,
                           "pressureScore":  1.6,
-                          "stabilityScore":  3.1
+                          "stabilityScore":  3.1,
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  53.3
                       },
                       {
                           "symbol":  "DOW",
@@ -3539,7 +3889,9 @@
                           "debtRatio":  278.8,
                           "week52RangePct":  44.7,
                           "pressureScore":  2.4,
-                          "stabilityScore":  2.0
+                          "stabilityScore":  2.0,
+                          "winRateScore":  47.7,
+                          "rsiWeekly":  46.9
                       },
                       {
                           "symbol":  "KEY",
@@ -3559,7 +3911,9 @@
                           "debtRatio":  843.9,
                           "week52RangePct":  67.6,
                           "pressureScore":  1.8,
-                          "stabilityScore":  3.1
+                          "stabilityScore":  3.1,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  45.4
                       },
                       {
                           "symbol":  "STE",
@@ -3579,7 +3933,9 @@
                           "debtRatio":  48.8,
                           "week52RangePct":  50.5,
                           "pressureScore":  3.1,
-                          "stabilityScore":  2.5
+                          "stabilityScore":  2.5,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  52.2
                       },
                       {
                           "symbol":  "STZ",
@@ -3599,7 +3955,9 @@
                           "debtRatio":  164.2,
                           "week52RangePct":  9.9,
                           "pressureScore":  0.3,
-                          "stabilityScore":  2.6
+                          "stabilityScore":  2.6,
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  40.9
                       },
                       {
                           "symbol":  "FSLR",
@@ -3619,7 +3977,9 @@
                           "debtRatio":  29.7,
                           "week52RangePct":  13.7,
                           "pressureScore":  0.4,
-                          "stabilityScore":  5.2
+                          "stabilityScore":  5.2,
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  43.3
                       },
                       {
                           "symbol":  "EFX",
@@ -3639,7 +3999,9 @@
                           "debtRatio":  170.4,
                           "week52RangePct":  31.7,
                           "pressureScore":  2.6,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  52.1
                       },
                       {
                           "symbol":  "PKG",
@@ -3659,7 +4021,9 @@
                           "debtRatio":  136.3,
                           "week52RangePct":  62.0,
                           "pressureScore":  2.8,
-                          "stabilityScore":  2.5
+                          "stabilityScore":  2.5,
+                          "winRateScore":  61.7,
+                          "rsiWeekly":  48.4
                       },
                       {
                           "symbol":  "AMCR",
@@ -3679,7 +4043,9 @@
                           "debtRatio":  222.5,
                           "week52RangePct":  65.6,
                           "pressureScore":  7.2,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  46.7,
+                          "rsiWeekly":  55.3
                       },
                       {
                           "symbol":  "L",
@@ -3699,7 +4065,9 @@
                           "debtRatio":  351.5,
                           "week52RangePct":  50.9,
                           "pressureScore":  1.8,
-                          "stabilityScore":  4.1
+                          "stabilityScore":  4.1,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  47.5
                       },
                       {
                           "symbol":  "ULTA",
@@ -3719,7 +4087,9 @@
                           "debtRatio":  167.2,
                           "week52RangePct":  34.5,
                           "pressureScore":  3.8,
-                          "stabilityScore":  2.5
+                          "stabilityScore":  2.5,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  53.9
                       },
                       {
                           "symbol":  "EXE",
@@ -3739,7 +4109,9 @@
                           "debtRatio":  44.4,
                           "week52RangePct":  31.6,
                           "pressureScore":  1.4,
-                          "stabilityScore":  2.6
+                          "stabilityScore":  2.6,
+                          "winRateScore":  58.5,
+                          "rsiWeekly":  55.3
                       },
                       {
                           "symbol":  "RL",
@@ -3759,7 +4131,9 @@
                           "debtRatio":  181.4,
                           "week52RangePct":  42.0,
                           "pressureScore":  2.4,
-                          "stabilityScore":  3.6
+                          "stabilityScore":  3.6,
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  41.7
                       },
                       {
                           "symbol":  "IP",
@@ -3779,7 +4153,9 @@
                           "debtRatio":  152.7,
                           "week52RangePct":  41.3,
                           "pressureScore":  2.4,
-                          "stabilityScore":  1.6
+                          "stabilityScore":  1.6,
+                          "winRateScore":  51.7,
+                          "rsiWeekly":  45.1
                       },
                       {
                           "symbol":  "LYB",
@@ -3799,7 +4175,9 @@
                           "debtRatio":  222.0,
                           "week52RangePct":  55.5,
                           "pressureScore":  2.2,
-                          "stabilityScore":  2.0
+                          "stabilityScore":  2.0,
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  53.2
                       },
                       {
                           "symbol":  "FFIV",
@@ -3819,7 +4197,9 @@
                           "debtRatio":  77.1,
                           "week52RangePct":  86.8,
                           "pressureScore":  2.1,
-                          "stabilityScore":  5.0
+                          "stabilityScore":  5.0,
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  58.1
                       },
                       {
                           "symbol":  "BG",
@@ -3839,7 +4219,9 @@
                           "debtRatio":  184.1,
                           "week52RangePct":  68.3,
                           "pressureScore":  4.3,
-                          "stabilityScore":  3.2
+                          "stabilityScore":  3.2,
+                          "winRateScore":  47.5,
+                          "rsiWeekly":  55.3
                       },
                       {
                           "symbol":  "IFF",
@@ -3859,7 +4241,9 @@
                           "debtRatio":  79.7,
                           "week52RangePct":  90.1,
                           "pressureScore":  3.7,
-                          "stabilityScore":  1.9
+                          "stabilityScore":  1.9,
+                          "winRateScore":  49.2,
+                          "rsiWeekly":  59.4
                       },
                       {
                           "symbol":  "CMS",
@@ -3879,7 +4263,9 @@
                           "debtRatio":  312.1,
                           "week52RangePct":  4.6,
                           "pressureScore":  0.8,
-                          "stabilityScore":  3.0
+                          "stabilityScore":  3.0,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  37.2
                       },
                       {
                           "symbol":  "GIS",
@@ -3899,7 +4285,9 @@
                           "debtRatio":  307.2,
                           "week52RangePct":  48.3,
                           "pressureScore":  4.8,
-                          "stabilityScore":  1.6
+                          "stabilityScore":  1.6,
+                          "winRateScore":  44.2,
+                          "rsiWeekly":  58.5
                       },
                       {
                           "symbol":  "FIS",
@@ -3919,7 +4307,9 @@
                           "debtRatio":  175.0,
                           "week52RangePct":  10.2,
                           "pressureScore":  3.7,
-                          "stabilityScore":  1.9
+                          "stabilityScore":  1.9,
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  38.6
                       },
                       {
                           "symbol":  "LEN",
@@ -3939,7 +4329,9 @@
                           "debtRatio":  55.2,
                           "week52RangePct":  6.6,
                           "pressureScore":  0.0,
-                          "stabilityScore":  2.0
+                          "stabilityScore":  2.0,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  38.5
                       },
                       {
                           "symbol":  "BR",
@@ -3959,7 +4351,9 @@
                           "debtRatio":  214.9,
                           "week52RangePct":  39.5,
                           "pressureScore":  4.0,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  58.8
                       },
                       {
                           "symbol":  "TSN",
@@ -3979,7 +4373,9 @@
                           "debtRatio":  96.4,
                           "week52RangePct":  24.2,
                           "pressureScore":  0.5,
-                          "stabilityScore":  2.1
+                          "stabilityScore":  2.1,
+                          "winRateScore":  46.7,
+                          "rsiWeekly":  37.9
                       },
                       {
                           "symbol":  "FDXF",
@@ -4019,7 +4415,9 @@
                           "debtRatio":  42.6,
                           "week52RangePct":  64.6,
                           "pressureScore":  1.9,
-                          "stabilityScore":  4.0
+                          "stabilityScore":  4.0,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  47.4
                       },
                       {
                           "symbol":  "CHTR",
@@ -4039,7 +4437,9 @@
                           "debtRatio":  788.8,
                           "week52RangePct":  23.5,
                           "pressureScore":  1.7,
-                          "stabilityScore":  2.0
+                          "stabilityScore":  2.0,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  41.9
                       },
                       {
                           "symbol":  "ESS",
@@ -4059,7 +4459,9 @@
                           "debtRatio":  138.7,
                           "week52RangePct":  68.6,
                           "pressureScore":  2.2,
-                          "stabilityScore":  3.9
+                          "stabilityScore":  3.9,
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  51.3
                       },
                       {
                           "symbol":  "LUV",
@@ -4079,7 +4481,9 @@
                           "debtRatio":  325.3,
                           "week52RangePct":  35.9,
                           "pressureScore":  1.8,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  40.5
                       },
                       {
                           "symbol":  "CF",
@@ -4099,7 +4503,9 @@
                           "debtRatio":  107.5,
                           "week52RangePct":  82.1,
                           "pressureScore":  4.9,
-                          "stabilityScore":  2.7
+                          "stabilityScore":  2.7,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  62.8
                       },
                       {
                           "symbol":  "NI",
@@ -4119,7 +4525,9 @@
                           "debtRatio":  267.9,
                           "week52RangePct":  23.0,
                           "pressureScore":  1.6,
-                          "stabilityScore":  3.1
+                          "stabilityScore":  3.1,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  34.5
                       },
                       {
                           "symbol":  "SBAC",
@@ -4139,7 +4547,9 @@
                           "debtRatio":  -351.8,
                           "week52RangePct":  43.9,
                           "pressureScore":  0.6,
-                          "stabilityScore":  3.3
+                          "stabilityScore":  3.3,
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  47.8
                       },
                       {
                           "symbol":  "ZBH",
@@ -4159,7 +4569,9 @@
                           "debtRatio":  80.5,
                           "week52RangePct":  75.4,
                           "pressureScore":  4.2,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  47.5,
+                          "rsiWeekly":  60.1
                       },
                       {
                           "symbol":  "NWS",
@@ -4179,7 +4591,9 @@
                           "debtRatio":  74.0,
                           "week52RangePct":  86.9,
                           "pressureScore":  4.0,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  55,
+                          "rsiWeekly":  62.1
                       },
                       {
                           "symbol":  "VTRS",
@@ -4199,7 +4613,9 @@
                           "debtRatio":  145.7,
                           "week52RangePct":  79.0,
                           "pressureScore":  2.1,
-                          "stabilityScore":  1.6
+                          "stabilityScore":  1.6,
+                          "winRateScore":  47.5,
+                          "rsiWeekly":  57.1
                       },
                       {
                           "symbol":  "DD",
@@ -4219,7 +4635,9 @@
                           "debtRatio":  52.1,
                           "week52RangePct":  64.3,
                           "pressureScore":  0.9,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  55,
+                          "rsiWeekly":  45
                       },
                       {
                           "symbol":  "EVRG",
@@ -4239,7 +4657,9 @@
                           "debtRatio":  245.3,
                           "week52RangePct":  58.2,
                           "pressureScore":  1.8,
-                          "stabilityScore":  3.3
+                          "stabilityScore":  3.3,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  48.1
                       },
                       {
                           "symbol":  "NDSN",
@@ -4259,7 +4679,9 @@
                           "debtRatio":  86.3,
                           "week52RangePct":  85.4,
                           "pressureScore":  4.5,
-                          "stabilityScore":  2.7
+                          "stabilityScore":  2.7,
+                          "winRateScore":  61.7,
+                          "rsiWeekly":  61.5
                       },
                       {
                           "symbol":  "GPC",
@@ -4279,7 +4701,9 @@
                           "debtRatio":  364.9,
                           "week52RangePct":  73.8,
                           "pressureScore":  5.5,
-                          "stabilityScore":  2.1
+                          "stabilityScore":  2.1,
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  61.2
                       },
                       {
                           "symbol":  "TSCO",
@@ -4299,7 +4723,9 @@
                           "debtRatio":  362.2,
                           "week52RangePct":  19.3,
                           "pressureScore":  2.4,
-                          "stabilityScore":  1.9
+                          "stabilityScore":  1.9,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  43.6
                       },
                       {
                           "symbol":  "FTV",
@@ -4319,7 +4745,9 @@
                           "debtRatio":  91.5,
                           "week52RangePct":  68.3,
                           "pressureScore":  1.2,
-                          "stabilityScore":  2.8
+                          "stabilityScore":  2.8,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  43.3
                       },
                       {
                           "symbol":  "BBY",
@@ -4339,7 +4767,9 @@
                           "debtRatio":  383.0,
                           "week52RangePct":  69.3,
                           "pressureScore":  3.6,
-                          "stabilityScore":  2.8
+                          "stabilityScore":  2.8,
+                          "winRateScore":  50,
+                          "rsiWeekly":  57.7
                       },
                       {
                           "symbol":  "INVH",
@@ -4359,7 +4789,9 @@
                           "debtRatio":  103.3,
                           "week52RangePct":  70.8,
                           "pressureScore":  1.6,
-                          "stabilityScore":  2.8
+                          "stabilityScore":  2.8,
+                          "winRateScore":  50.9,
+                          "rsiWeekly":  50.8
                       },
                       {
                           "symbol":  "ROL",
@@ -4379,7 +4811,9 @@
                           "debtRatio":  134.7,
                           "week52RangePct":  0.9,
                           "pressureScore":  1.7,
-                          "stabilityScore":  2.2
+                          "stabilityScore":  2.2,
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  23.1
                       },
                       {
                           "symbol":  "LDOS",
@@ -4399,7 +4833,9 @@
                           "debtRatio":  194.9,
                           "week52RangePct":  38.7,
                           "pressureScore":  2.9,
-                          "stabilityScore":  2.2
+                          "stabilityScore":  2.2,
+                          "winRateScore":  60.8,
+                          "rsiWeekly":  51.4
                       },
                       {
                           "symbol":  "WY",
@@ -4419,7 +4855,9 @@
                           "debtRatio":  74.6,
                           "week52RangePct":  33.5,
                           "pressureScore":  0.5,
-                          "stabilityScore":  2.2
+                          "stabilityScore":  2.2,
+                          "winRateScore":  45,
+                          "rsiWeekly":  44.5
                       },
                       {
                           "symbol":  "LNT",
@@ -4439,7 +4877,9 @@
                           "debtRatio":  234.3,
                           "week52RangePct":  30.3,
                           "pressureScore":  1.0,
-                          "stabilityScore":  3.3
+                          "stabilityScore":  3.3,
+                          "winRateScore":  55,
+                          "rsiWeekly":  41.3
                       },
                       {
                           "symbol":  "J",
@@ -4459,7 +4899,9 @@
                           "debtRatio":  260.2,
                           "week52RangePct":  69.1,
                           "pressureScore":  7.4,
-                          "stabilityScore":  2.2
+                          "stabilityScore":  2.2,
+                          "winRateScore":  60,
+                          "rsiWeekly":  61
                       },
                       {
                           "symbol":  "ZBRA",
@@ -4479,7 +4921,9 @@
                           "debtRatio":  151.4,
                           "week52RangePct":  82.5,
                           "pressureScore":  7.0,
-                          "stabilityScore":  2.6
+                          "stabilityScore":  2.6,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  65.2
                       },
                       {
                           "symbol":  "BEN",
@@ -4499,7 +4943,9 @@
                           "debtRatio":  186.1,
                           "week52RangePct":  86.0,
                           "pressureScore":  3.5,
-                          "stabilityScore":  3.9
+                          "stabilityScore":  3.9,
+                          "winRateScore":  48.3,
+                          "rsiWeekly":  60.4
                       },
                       {
                           "symbol":  "GEN",
@@ -4519,7 +4965,9 @@
                           "debtRatio":  489.0,
                           "week52RangePct":  97.9,
                           "pressureScore":  4.3,
-                          "stabilityScore":  2.8
+                          "stabilityScore":  2.8,
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  64.7
                       },
                       {
                           "symbol":  "IEX",
@@ -4539,7 +4987,9 @@
                           "debtRatio":  72.9,
                           "week52RangePct":  82.3,
                           "pressureScore":  2.9,
-                          "stabilityScore":  3.1
+                          "stabilityScore":  3.1,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  54.9
                       },
                       {
                           "symbol":  "CDW",
@@ -4559,7 +5009,9 @@
                           "debtRatio":  606.6,
                           "week52RangePct":  73.2,
                           "pressureScore":  3.3,
-                          "stabilityScore":  2.2
+                          "stabilityScore":  2.2,
+                          "winRateScore":  60.8,
+                          "rsiWeekly":  58.7
                       },
                       {
                           "symbol":  "NVR",
@@ -4579,7 +5031,9 @@
                           "debtRatio":  61.3,
                           "week52RangePct":  26.1,
                           "pressureScore":  1.8,
-                          "stabilityScore":  2.8
+                          "stabilityScore":  2.8,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  43.8
                       },
                       {
                           "symbol":  "ALB",
@@ -4599,7 +5053,9 @@
                           "debtRatio":  52.3,
                           "week52RangePct":  42.6,
                           "pressureScore":  3.3,
-                          "stabilityScore":  1.5
+                          "stabilityScore":  1.5,
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  45.8
                       },
                       {
                           "symbol":  "BALL",
@@ -4619,7 +5075,9 @@
                           "debtRatio":  249.6,
                           "week52RangePct":  77.3,
                           "pressureScore":  5.1,
-                          "stabilityScore":  2.5
+                          "stabilityScore":  2.5,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  54.9
                       },
                       {
                           "symbol":  "PTC",
@@ -4639,7 +5097,9 @@
                           "debtRatio":  87.7,
                           "week52RangePct":  44.2,
                           "pressureScore":  2.2,
-                          "stabilityScore":  2.8
+                          "stabilityScore":  2.8,
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  55.8
                       },
                       {
                           "symbol":  "NWSA",
@@ -4659,7 +5119,9 @@
                           "debtRatio":  74.0,
                           "week52RangePct":  90.0,
                           "pressureScore":  4.5,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  55,
+                          "rsiWeekly":  65.7
                       },
                       {
                           "symbol":  "CHRW",
@@ -4679,7 +5141,9 @@
                           "debtRatio":  207.2,
                           "week52RangePct":  30.0,
                           "pressureScore":  0.3,
-                          "stabilityScore":  2.9
+                          "stabilityScore":  2.9,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  41.7
                       },
                       {
                           "symbol":  "HST",
@@ -4699,7 +5163,9 @@
                           "debtRatio":  103.9,
                           "week52RangePct":  62.6,
                           "pressureScore":  1.4,
-                          "stabilityScore":  2.7
+                          "stabilityScore":  2.7,
+                          "winRateScore":  50,
+                          "rsiWeekly":  46.6
                       },
                       {
                           "symbol":  "KIM",
@@ -4719,7 +5185,9 @@
                           "debtRatio":  93.6,
                           "week52RangePct":  57.3,
                           "pressureScore":  1.4,
-                          "stabilityScore":  4.1
+                          "stabilityScore":  4.1,
+                          "winRateScore":  48.3,
+                          "rsiWeekly":  50.5
                       },
                       {
                           "symbol":  "AKAM",
@@ -4739,7 +5207,9 @@
                           "debtRatio":  217.4,
                           "week52RangePct":  39.9,
                           "pressureScore":  1.0,
-                          "stabilityScore":  2.5
+                          "stabilityScore":  2.5,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  45.6
                       },
                       {
                           "symbol":  "MAA",
@@ -4759,7 +5229,9 @@
                           "debtRatio":  117.2,
                           "week52RangePct":  32.7,
                           "pressureScore":  0.7,
-                          "stabilityScore":  3.7
+                          "stabilityScore":  3.7,
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  45.3
                       },
                       {
                           "symbol":  "SOLV",
@@ -4779,7 +5251,9 @@
                           "debtRatio":  196.8,
                           "week52RangePct":  94.6,
                           "pressureScore":  4.3,
-                          "stabilityScore":  2.9
+                          "stabilityScore":  2.9,
+                          "winRateScore":  53.6,
+                          "rsiWeekly":  65
                       },
                       {
                           "symbol":  "APA",
@@ -4799,7 +5273,9 @@
                           "debtRatio":  142.8,
                           "week52RangePct":  89.6,
                           "pressureScore":  4.1,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  67.9
                       },
                       {
                           "symbol":  "DOC",
@@ -4819,7 +5295,9 @@
                           "debtRatio":  155.3,
                           "week52RangePct":  70.6,
                           "pressureScore":  2.9,
-                          "stabilityScore":  2.9
+                          "stabilityScore":  2.9,
+                          "winRateScore":  46.7,
+                          "rsiWeekly":  55.2
                       },
                       {
                           "symbol":  "SWK",
@@ -4839,7 +5317,9 @@
                           "debtRatio":  124.3,
                           "week52RangePct":  80.6,
                           "pressureScore":  4.6,
-                          "stabilityScore":  2.8
+                          "stabilityScore":  2.8,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  58
                       },
                       {
                           "symbol":  "MKC",
@@ -4859,7 +5339,9 @@
                           "debtRatio":  127.3,
                           "week52RangePct":  34.1,
                           "pressureScore":  4.6,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  50.1
                       },
                       {
                           "symbol":  "COO",
@@ -4879,7 +5361,9 @@
                           "debtRatio":  51.5,
                           "week52RangePct":  36.2,
                           "pressureScore":  3.7,
-                          "stabilityScore":  3.5
+                          "stabilityScore":  3.5,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  46.4
                       },
                       {
                           "symbol":  "MAS",
@@ -4899,7 +5383,9 @@
                           "debtRatio":  -1508.2,
                           "week52RangePct":  54.9,
                           "pressureScore":  1.1,
-                          "stabilityScore":  2.5
+                          "stabilityScore":  2.5,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  47.3
                       },
                       {
                           "symbol":  "TYL",
@@ -4919,7 +5405,9 @@
                           "debtRatio":  91.4,
                           "week52RangePct":  34.3,
                           "pressureScore":  5.9,
-                          "stabilityScore":  3.3
+                          "stabilityScore":  3.3,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  59.4
                       },
                       {
                           "symbol":  "TXT",
@@ -4939,7 +5427,9 @@
                           "debtRatio":  125.2,
                           "week52RangePct":  10.4,
                           "pressureScore":  0.9,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  55,
+                          "rsiWeekly":  38
                       },
                       {
                           "symbol":  "REG",
@@ -4959,7 +5449,9 @@
                           "debtRatio":  85.3,
                           "week52RangePct":  47.1,
                           "pressureScore":  1.3,
-                          "stabilityScore":  4.3
+                          "stabilityScore":  4.3,
+                          "winRateScore":  46.7,
+                          "rsiWeekly":  46.5
                       },
                       {
                           "symbol":  "CRL",
@@ -4979,7 +5471,9 @@
                           "debtRatio":  163.5,
                           "week52RangePct":  90.5,
                           "pressureScore":  6.3,
-                          "stabilityScore":  1.4
+                          "stabilityScore":  1.4,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  70.4
                       },
                       {
                           "symbol":  "EG",
@@ -4999,7 +5493,9 @@
                           "debtRatio":  302.9,
                           "week52RangePct":  73.2,
                           "pressureScore":  3.1,
-                          "stabilityScore":  3.0
+                          "stabilityScore":  3.0,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  61.9
                       },
                       {
                           "symbol":  "IVZ",
@@ -5019,7 +5515,9 @@
                           "debtRatio":  112.3,
                           "week52RangePct":  93.2,
                           "pressureScore":  5.6,
-                          "stabilityScore":  2.2
+                          "stabilityScore":  2.2,
+                          "winRateScore":  50,
+                          "rsiWeekly":  63.5
                       },
                       {
                           "symbol":  "TRMB",
@@ -5039,7 +5537,9 @@
                           "debtRatio":  59.5,
                           "week52RangePct":  32.9,
                           "pressureScore":  4.7,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  48.1
                       },
                       {
                           "symbol":  "AIZ",
@@ -5059,7 +5559,9 @@
                           "debtRatio":  491.7,
                           "week52RangePct":  77.7,
                           "pressureScore":  3.8,
-                          "stabilityScore":  2.5
+                          "stabilityScore":  2.5,
+                          "winRateScore":  61.7,
+                          "rsiWeekly":  66.3
                       },
                       {
                           "symbol":  "LII",
@@ -5079,7 +5581,9 @@
                           "debtRatio":  250.4,
                           "week52RangePct":  0.4,
                           "pressureScore":  0.9,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  31.8
                       },
                       {
                           "symbol":  "AVY",
@@ -5099,7 +5603,9 @@
                           "debtRatio":  296.6,
                           "week52RangePct":  46.0,
                           "pressureScore":  6.0,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  52.3
                       },
                       {
                           "symbol":  "RVTY",
@@ -5119,7 +5625,9 @@
                           "debtRatio":  67.0,
                           "week52RangePct":  97.1,
                           "pressureScore":  6.4,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  67.5
                       },
                       {
                           "symbol":  "UDR",
@@ -5139,7 +5647,9 @@
                           "debtRatio":  218.7,
                           "week52RangePct":  44.3,
                           "pressureScore":  0.8,
-                          "stabilityScore":  3.3
+                          "stabilityScore":  3.3,
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  45.2
                       },
                       {
                           "symbol":  "ERIE",
@@ -5159,7 +5669,9 @@
                           "debtRatio":  44.2,
                           "week52RangePct":  33.8,
                           "pressureScore":  6.5,
-                          "stabilityScore":  4.3
+                          "stabilityScore":  4.3,
+                          "winRateScore":  49.2,
+                          "rsiWeekly":  52.5
                       },
                       {
                           "symbol":  "ALLE",
@@ -5179,7 +5691,9 @@
                           "debtRatio":  153.0,
                           "week52RangePct":  52.1,
                           "pressureScore":  7.3,
-                          "stabilityScore":  2.6
+                          "stabilityScore":  2.6,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  51.6
                       },
                       {
                           "symbol":  "LULU",
@@ -5199,7 +5713,9 @@
                           "debtRatio":  76.8,
                           "week52RangePct":  13.0,
                           "pressureScore":  1.6,
-                          "stabilityScore":  2.2
+                          "stabilityScore":  2.2,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  39.4
                       },
                       {
                           "symbol":  "BAX",
@@ -5219,7 +5735,9 @@
                           "debtRatio":  219.3,
                           "week52RangePct":  72.0,
                           "pressureScore":  5.0,
-                          "stabilityScore":  1.9
+                          "stabilityScore":  1.9,
+                          "winRateScore":  51.7,
+                          "rsiWeekly":  62.4
                       },
                       {
                           "symbol":  "SJM",
@@ -5239,7 +5757,9 @@
                           "debtRatio":  192.6,
                           "week52RangePct":  90.1,
                           "pressureScore":  6.1,
-                          "stabilityScore":  2.0
+                          "stabilityScore":  2.0,
+                          "winRateScore":  50,
+                          "rsiWeekly":  72.7
                       },
                       {
                           "symbol":  "HAS",
@@ -5259,7 +5779,9 @@
                           "debtRatio":  752.5,
                           "week52RangePct":  65.6,
                           "pressureScore":  3.9,
-                          "stabilityScore":  2.0
+                          "stabilityScore":  2.0,
+                          "winRateScore":  55,
+                          "rsiWeekly":  55.8
                       },
                       {
                           "symbol":  "GL",
@@ -5279,7 +5801,9 @@
                           "debtRatio":  408.9,
                           "week52RangePct":  70.4,
                           "pressureScore":  3.7,
-                          "stabilityScore":  4.4
+                          "stabilityScore":  4.4,
+                          "winRateScore":  55,
+                          "rsiWeekly":  56.2
                       },
                       {
                           "symbol":  "HRL",
@@ -5299,7 +5823,9 @@
                           "debtRatio":  67.7,
                           "week52RangePct":  31.2,
                           "pressureScore":  2.7,
-                          "stabilityScore":  3.1
+                          "stabilityScore":  3.1,
+                          "winRateScore":  49.2,
+                          "rsiWeekly":  42.2
                       },
                       {
                           "symbol":  "CSGP",
@@ -5319,7 +5845,9 @@
                           "debtRatio":  27.7,
                           "week52RangePct":  9.4,
                           "pressureScore":  3.3,
-                          "stabilityScore":  2.5
+                          "stabilityScore":  2.5,
+                          "winRateScore":  50,
+                          "rsiWeekly":  39.4
                       },
                       {
                           "symbol":  "BF-B",
@@ -5339,7 +5867,9 @@
                           "debtRatio":  96.4,
                           "week52RangePct":  42.5,
                           "pressureScore":  1.1,
-                          "stabilityScore":  3.7
+                          "stabilityScore":  3.7,
+                          "winRateScore":  51.7,
+                          "rsiWeekly":  46.3
                       },
                       {
                           "symbol":  "CLX",
@@ -5359,7 +5889,9 @@
                           "debtRatio":  8380.0,
                           "week52RangePct":  29.4,
                           "pressureScore":  3.7,
-                          "stabilityScore":  2.7
+                          "stabilityScore":  2.7,
+                          "winRateScore":  47.5,
+                          "rsiWeekly":  42.6
                       },
                       {
                           "symbol":  "DECK",
@@ -5379,7 +5911,9 @@
                           "debtRatio":  68.1,
                           "week52RangePct":  17.6,
                           "pressureScore":  1.5,
-                          "stabilityScore":  4.5
+                          "stabilityScore":  4.5,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  35.3
                       },
                       {
                           "symbol":  "IT",
@@ -5399,7 +5933,9 @@
                           "debtRatio":  -4398.7,
                           "week52RangePct":  52.2,
                           "pressureScore":  2.6,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  57.2
                       },
                       {
                           "symbol":  "GDDY",
@@ -5419,7 +5955,9 @@
                           "debtRatio":  119252.2,
                           "week52RangePct":  33.3,
                           "pressureScore":  2.2,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  56.4
                       },
                       {
                           "symbol":  "BXP",
@@ -5439,7 +5977,9 @@
                           "debtRatio":  337.7,
                           "week52RangePct":  61.7,
                           "pressureScore":  3.2,
-                          "stabilityScore":  3.3
+                          "stabilityScore":  3.3,
+                          "winRateScore":  48.3,
+                          "rsiWeekly":  53.4
                       },
                       {
                           "symbol":  "GNRC",
@@ -5459,7 +5999,9 @@
                           "debtRatio":  100.6,
                           "week52RangePct":  31.3,
                           "pressureScore":  2.1,
-                          "stabilityScore":  2.3
+                          "stabilityScore":  2.3,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  37.9
                       },
                       {
                           "symbol":  "JKHY",
@@ -5479,7 +6021,9 @@
                           "debtRatio":  42.9,
                           "week52RangePct":  64.8,
                           "pressureScore":  4.9,
-                          "stabilityScore":  4.8
+                          "stabilityScore":  4.8,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  60.7
                       },
                       {
                           "symbol":  "PNW",
@@ -5499,7 +6043,9 @@
                           "debtRatio":  362.5,
                           "week52RangePct":  47.7,
                           "pressureScore":  1.3,
-                          "stabilityScore":  3.1
+                          "stabilityScore":  3.1,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  43.6
                       },
                       {
                           "symbol":  "HII",
@@ -5519,7 +6065,9 @@
                           "debtRatio":  138.7,
                           "week52RangePct":  14.0,
                           "pressureScore":  1.3,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  51.7,
+                          "rsiWeekly":  41.8
                       },
                       {
                           "symbol":  "PSKY",
@@ -5539,7 +6087,9 @@
                           "debtRatio":  268.5,
                           "week52RangePct":  24.8,
                           "pressureScore":  0.6,
-                          "stabilityScore":  2.6
+                          "stabilityScore":  2.6,
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  51.1
                       },
                       {
                           "symbol":  "ALGN",
@@ -5559,7 +6109,9 @@
                           "debtRatio":  51.6,
                           "week52RangePct":  48.2,
                           "pressureScore":  0.9,
-                          "stabilityScore":  4.6
+                          "stabilityScore":  4.6,
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  41.6
                       },
                       {
                           "symbol":  "DPZ",
@@ -5579,7 +6131,9 @@
                           "debtRatio":  -144.3,
                           "week52RangePct":  32.1,
                           "pressureScore":  3.5,
-                          "stabilityScore":  3.3
+                          "stabilityScore":  3.3,
+                          "winRateScore":  51.7,
+                          "rsiWeekly":  48.3
                       },
                       {
                           "symbol":  "TECH",
@@ -5599,7 +6153,9 @@
                           "debtRatio":  22.3,
                           "week52RangePct":  98.9,
                           "pressureScore":  4.5,
-                          "stabilityScore":  3.7
+                          "stabilityScore":  3.7,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  65.1
                       },
                       {
                           "symbol":  "MGM",
@@ -5619,7 +6175,9 @@
                           "debtRatio":  1450.9,
                           "week52RangePct":  54.3,
                           "pressureScore":  0.1,
-                          "stabilityScore":  3.2
+                          "stabilityScore":  3.2,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  45.7
                       },
                       {
                           "symbol":  "DVA",
@@ -5639,7 +6197,9 @@
                           "debtRatio":  -2173.6,
                           "week52RangePct":  51.2,
                           "pressureScore":  1.2,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  45.6
                       },
                       {
                           "symbol":  "CPT",
@@ -5659,7 +6219,9 @@
                           "debtRatio":  123.0,
                           "week52RangePct":  39.8,
                           "pressureScore":  0.4,
-                          "stabilityScore":  3.9
+                          "stabilityScore":  3.9,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  45.2
                       },
                       {
                           "symbol":  "FDS",
@@ -5679,7 +6241,9 @@
                           "debtRatio":  106.3,
                           "week52RangePct":  66.9,
                           "pressureScore":  5.0,
-                          "stabilityScore":  3.8
+                          "stabilityScore":  3.8,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  65.3
                       },
                       {
                           "symbol":  "AES",
@@ -5699,7 +6263,9 @@
                           "debtRatio":  899.8,
                           "week52RangePct":  45.3,
                           "pressureScore":  2.9,
-                          "stabilityScore":  2.5
+                          "stabilityScore":  2.5,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  53.8
                       },
                       {
                           "symbol":  "UHS",
@@ -5719,7 +6285,9 @@
                           "debtRatio":  110.2,
                           "week52RangePct":  28.5,
                           "pressureScore":  4.0,
-                          "stabilityScore":  3.4
+                          "stabilityScore":  3.4,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  49.7
                       },
                       {
                           "symbol":  "WYNN",
@@ -5739,7 +6307,9 @@
                           "debtRatio":  -8300.9,
                           "week52RangePct":  0.9,
                           "pressureScore":  1.6,
-                          "stabilityScore":  2.0
+                          "stabilityScore":  2.0,
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  37.2
                       },
                       {
                           "symbol":  "PNR",
@@ -5759,7 +6329,9 @@
                           "debtRatio":  79.0,
                           "week52RangePct":  5.1,
                           "pressureScore":  3.0,
-                          "stabilityScore":  3.2
+                          "stabilityScore":  3.2,
+                          "winRateScore":  55,
+                          "rsiWeekly":  29.1
                       },
                       {
                           "symbol":  "FRT",
@@ -5779,7 +6351,9 @@
                           "debtRatio":  161.7,
                           "week52RangePct":  68.1,
                           "pressureScore":  1.3,
-                          "stabilityScore":  4.4
+                          "stabilityScore":  4.4,
+                          "winRateScore":  49.2,
+                          "rsiWeekly":  51.3
                       },
                       {
                           "symbol":  "SWKS",
@@ -5799,7 +6373,9 @@
                           "debtRatio":  29.4,
                           "week52RangePct":  38.7,
                           "pressureScore":  2.6,
-                          "stabilityScore":  3.4
+                          "stabilityScore":  3.4,
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  51.8
                       },
                       {
                           "symbol":  "APTV",
@@ -5819,7 +6395,9 @@
                           "debtRatio":  105.6,
                           "week52RangePct":  0.5,
                           "pressureScore":  3.2,
-                          "stabilityScore":  2.7
+                          "stabilityScore":  2.7,
+                          "winRateScore":  50,
+                          "rsiWeekly":  27.6
                       },
                       {
                           "symbol":  "PODD",
@@ -5839,7 +6417,9 @@
                           "debtRatio":  122.5,
                           "week52RangePct":  9.7,
                           "pressureScore":  4.6,
-                          "stabilityScore":  2.9
+                          "stabilityScore":  2.9,
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  35.1
                       },
                       {
                           "symbol":  "HSIC",
@@ -5859,7 +6439,9 @@
                           "debtRatio":  210.9,
                           "week52RangePct":  92.1,
                           "pressureScore":  3.9,
-                          "stabilityScore":  3.3
+                          "stabilityScore":  3.3,
+                          "winRateScore":  50,
+                          "rsiWeekly":  61.5
                       },
                       {
                           "symbol":  "ARE",
@@ -5879,7 +6461,9 @@
                           "debtRatio":  null,
                           "week52RangePct":  null,
                           "pressureScore":  1.7,
-                          "stabilityScore":  2.4
+                          "stabilityScore":  2.4,
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  50.2
                       },
                       {
                           "symbol":  "AOS",
@@ -5899,7 +6483,9 @@
                           "debtRatio":  97.9,
                           "week52RangePct":  17.9,
                           "pressureScore":  1.7,
-                          "stabilityScore":  3.5
+                          "stabilityScore":  3.5,
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  41.6
                       },
                       {
                           "symbol":  "TAP",
@@ -5919,7 +6505,9 @@
                           "debtRatio":  137.9,
                           "week52RangePct":  10.3,
                           "pressureScore":  0.9,
-                          "stabilityScore":  2.6
+                          "stabilityScore":  2.6,
+                          "winRateScore":  48.3,
+                          "rsiWeekly":  41.8
                       },
                       {
                           "symbol":  "NCLH",
@@ -5939,7 +6527,9 @@
                           "debtRatio":  833.3,
                           "week52RangePct":  12.7,
                           "pressureScore":  0.6,
-                          "stabilityScore":  2.9
+                          "stabilityScore":  2.9,
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  35.6
                       },
                       {
                           "symbol":  "MOS",
@@ -5959,7 +6549,9 @@
                           "debtRatio":  113.5,
                           "week52RangePct":  25.1,
                           "pressureScore":  1.2,
-                          "stabilityScore":  3.0
+                          "stabilityScore":  3.0,
+                          "winRateScore":  55,
+                          "rsiWeekly":  53.4
                       },
                       {
                           "symbol":  "BLDR",
@@ -5979,7 +6571,9 @@
                           "debtRatio":  182.7,
                           "week52RangePct":  1.5,
                           "pressureScore":  0.3,
-                          "stabilityScore":  2.7
+                          "stabilityScore":  2.7,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  35.3
                       },
                       {
                           "symbol":  "TTD",
@@ -5999,7 +6593,9 @@
                           "debtRatio":  123.9,
                           "week52RangePct":  2.0,
                           "pressureScore":  0.3,
-                          "stabilityScore":  2.9
+                          "stabilityScore":  2.9,
+                          "winRateScore":  55.1,
+                          "rsiWeekly":  28.9
                       },
                       {
                           "symbol":  "VMRK",
@@ -6019,7 +6615,9 @@
                           "debtRatio":  83.8,
                           "week52RangePct":  54.3,
                           "pressureScore":  3.2,
-                          "stabilityScore":  4.3
+                          "stabilityScore":  4.3,
+                          "winRateScore":  49.2,
+                          "rsiWeekly":  49.1
                       }
                   ],
     "ratiosUpdatedAt":  "2026-08-25T11:26:13Z",
