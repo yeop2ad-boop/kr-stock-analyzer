@@ -9,6 +9,7 @@ const ALLOWED_HOSTS = [
   "news.google.com", // 국내 종목 주요뉴스(구글 뉴스 RSS 검색, 2026-09-01) — 응답은 XML이지만 그대로 스트리밍 중계됨
   "www.bing.com", // 국내 종목 주요뉴스 2순위(Bing 뉴스 RSS) — 구글이 Cloudflare 워커 IP를 차단(503)할 때 폴백(2026-09-01)
   "finance.naver.com", // ETF 섹션 한국 ETF 시총 TOP100(네이버 ETF 목록 API, 2026-09-01)
+  "m.stock.naver.com", // 국내 종목 분기 실적+애널리스트 컨센서스(finance/quarter API, 2026-09-02) — 대시보드 재배포 필요
 ];
 
 const CORS_HEADERS = {
