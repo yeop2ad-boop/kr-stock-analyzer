@@ -5192,6 +5192,7 @@ async function runSReport(symbol, selfMetricsPromise) {
   const universeLabel = isKr ? "코스피200+코스닥150" : "S&P500";
   sReportInlineWrap.innerHTML = `
     <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} ${companies.length}개 종목 기준 순위입니다(거래대금은 미국 종목의 경우 배치 데이터가 없어 순위 없이 실시간 값만 표시). 참고용 지표이며 투자 자문이 아닙니다.</p>
+    <p class="muted" style="font-size:11px;margin:0 0 4px;opacity:0.65;">🔥 해당 항목 상위 10% 이내 · ⚠️ 하위 10% (${universeLabel} 내 순위 기준)</p>
     <table class="s-report-table">
       <thead><tr><th>항목</th><th>수치</th><th>순위</th></tr></thead>
       <tbody>${rows.map(sReportRowHtml).join("")}</tbody>
