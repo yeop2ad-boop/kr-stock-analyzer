@@ -7084,7 +7084,9 @@ async function renderValueRanking(
   if (!resultsEl.dataset.moreBound) {
     resultsEl.addEventListener("click", (e) => {
       const moreBtn = e.target.closest(".load-more-btn");
-      if (!moreBtn) return;
+      // ETF·코인 시장동향의 전체보기 버튼(자체 클릭 리스너 사용, data-next-count 없음)은 무시 —
+      // 같은 결과영역(trendResults)을 공유해서 가드 없이는 두 핸들러가 경합함(2026-09-02 버그 수정)
+      if (!moreBtn || !moreBtn.dataset.nextCount) return;
       resultsEl._loadMore(Number(moreBtn.dataset.nextCount));
     });
     resultsEl.dataset.moreBound = "1";
@@ -7375,7 +7377,9 @@ async function renderKrRankingStaged(label, statusEl, resultsEl, { mapFn = (list
   if (!resultsEl.dataset.moreBound) {
     resultsEl.addEventListener("click", (e) => {
       const moreBtn = e.target.closest(".load-more-btn");
-      if (!moreBtn) return;
+      // ETF·코인 시장동향의 전체보기 버튼(자체 클릭 리스너 사용, data-next-count 없음)은 무시 —
+      // 같은 결과영역(trendResults)을 공유해서 가드 없이는 두 핸들러가 경합함(2026-09-02 버그 수정)
+      if (!moreBtn || !moreBtn.dataset.nextCount) return;
       resultsEl._loadMore(Number(moreBtn.dataset.nextCount));
     });
     resultsEl.dataset.moreBound = "1";
@@ -8154,7 +8158,10 @@ function assetTrendTableHtml(rows, metricKey, universeLabel, rowNameHtmlFn, pric
     </table>`;
 }
 
-// ETF 시장동향(2026-09-02 사용자 요청): 시총 상위 30개만 대상으로 30위까지 표시 — 100개 확장('더보기') 폐지
+// ETF 시장동향(2026-09-02 사용자 요청): 시총 상위 30개만 대상으로 30위까지 표시 — 100개 확장('더보기') 폐지.
+// 단 RSI 순위·승률 순위 2개는 국내 랭킹처럼 "상위 30개 안내(+더보기)"를 맨 위에 두고, 누르면 전체(100개)를
+// 다시 검색해 전체 기준 순위로 표시(같은 날 후속 요청) — 확장 상태는 두 순위가 공유
+const etfTrendWrExpanded = new Set(); // 전체 검색을 누른 지역("us"/"kr")
 async function runEtfTrend() {
   const statusEl = trendStatus;
   const resultsEl = trendResults;
@@ -8164,21 +8171,32 @@ async function runEtfTrend() {
   const region = etfPopularRegion;
   try {
     const isKr = region === "kr";
-    const { rows, scanned } = await ensureEtfScanRows(region, 30, statusEl);
+    const isWrMetric = assetTrendMetric === "rsi" || assetTrendMetric === "winrate";
+    const expanded = isWrMetric && etfTrendWrExpanded.has(region);
+    const { rows, scanned, total } = await ensureEtfScanRows(region, expanded ? 100 : 30, statusEl);
     if (etfPopularRegion !== region || appSectionMode !== "etf") return;
     await attachWinRateRsiToRows(rows, "scoresEtf"); // RSI·승률 순위용(2026-09-02)
     statusEl.style.display = "none";
     const universeLabel = isKr ? "국내 상장 ETF 시가총액 상위" : "미국 상장 ETF 순자산 상위";
     resultsEl.innerHTML =
       etfRegionNavHtml("data-etf-trend-region") +
+      (isWrMetric && !expanded ? topCapNoteHtml(Math.min(30, scanned), total, true) : "") +
       assetTrendTableHtml(
         rows,
         assetTrendMetric,
-        `${universeLabel} ${Math.min(30, scanned)}개`,
+        expanded ? `${universeLabel} ${total}개 전체` : `${universeLabel} ${Math.min(30, scanned)}개`,
         (r) => etfRowNameHtml(r, isKr),
         (r) => priceChartLink(r.symbol, fmtPrice(r.price, r.currency)),
-        30
-      );
+        expanded ? total : 30
+      ) +
+      (isWrMetric && !expanded ? `<button type="button" class="cat-btn load-more-btn">전체보기 (전체 ${total}개 검색 · 약 1분 소요)</button>` : "");
+    const moreBtn = resultsEl.querySelector(".load-more-btn");
+    if (moreBtn) {
+      moreBtn.addEventListener("click", () => {
+        etfTrendWrExpanded.add(region);
+        runEtfTrend();
+      });
+    }
   } catch (e) {
     statusEl.style.display = "block";
     statusEl.textContent = `❌ ${e.message || "ETF 데이터를 가져오지 못했습니다."}`;
@@ -8191,7 +8209,10 @@ trendResults.addEventListener("click", (e) => {
   runEtfTrend();
 });
 
-// 코인 시장동향(2026-09-02 사용자 요청): 시총 상위 30개만 대상으로 30위까지 표시 — 100개 확장('더보기') 폐지
+// 코인 시장동향(2026-09-02 사용자 요청): 시총 상위 30개만 대상으로 30위까지 표시 — 100개 확장('더보기') 폐지.
+// 단 RSI 순위·승률 순위 2개는 국내 랭킹처럼 "상위 30개 안내(+더보기)"를 맨 위에 두고, 누르면 전체(100개)를
+// 다시 검색해 전체 기준 순위로 표시(같은 날 후속 요청) — 확장 상태는 두 순위가 공유
+let cryptoTrendWrExpanded = false;
 async function runCryptoTrend() {
   const statusEl = trendStatus;
   const resultsEl = trendResults;
@@ -8199,18 +8220,30 @@ async function runCryptoTrend() {
   statusEl.style.display = "block";
   statusEl.textContent = "암호화폐 목록을 불러오는 중...";
   try {
-    const { rows, scanned } = await ensureCryptoScanRows(30, statusEl);
+    const isWrMetric = assetTrendMetric === "rsi" || assetTrendMetric === "winrate";
+    const expanded = isWrMetric && cryptoTrendWrExpanded;
+    const { rows, scanned, total } = await ensureCryptoScanRows(expanded ? 100 : 30, statusEl);
     if (appSectionMode !== "crypto") return;
     await attachWinRateRsiToRows(rows, "scoresCrypto"); // RSI·승률 순위용(2026-09-02)
     statusEl.style.display = "none";
-    resultsEl.innerHTML = assetTrendTableHtml(
-      rows,
-      assetTrendMetric,
-      `암호화폐 시가총액 상위 ${Math.min(30, scanned)}개`,
-      cryptoRowNameHtml,
-      cryptoPriceStr,
-      30
-    );
+    resultsEl.innerHTML =
+      (isWrMetric && !expanded ? topCapNoteHtml(Math.min(30, scanned), total, true) : "") +
+      assetTrendTableHtml(
+        rows,
+        assetTrendMetric,
+        expanded ? `암호화폐 시가총액 상위 ${total}개 전체` : `암호화폐 시가총액 상위 ${Math.min(30, scanned)}개`,
+        cryptoRowNameHtml,
+        cryptoPriceStr,
+        expanded ? total : 30
+      ) +
+      (isWrMetric && !expanded ? `<button type="button" class="cat-btn load-more-btn">전체보기 (전체 ${total}개 검색 · 약 1분 소요)</button>` : "");
+    const moreBtn = resultsEl.querySelector(".load-more-btn");
+    if (moreBtn) {
+      moreBtn.addEventListener("click", () => {
+        cryptoTrendWrExpanded = true;
+        runCryptoTrend();
+      });
+    }
   } catch (e) {
     statusEl.style.display = "block";
     statusEl.textContent = `❌ ${e.message || "암호화폐 시세를 가져오지 못했습니다."}`;
@@ -10037,7 +10070,9 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
   if (!resultsEl.dataset.moreBound) {
     resultsEl.addEventListener("click", (e) => {
       const moreBtn = e.target.closest(".load-more-btn");
-      if (!moreBtn) return;
+      // ETF·코인 시장동향의 전체보기 버튼(자체 클릭 리스너 사용, data-next-count 없음)은 무시 —
+      // 같은 결과영역(trendResults)을 공유해서 가드 없이는 두 핸들러가 경합함(2026-09-02 버그 수정)
+      if (!moreBtn || !moreBtn.dataset.nextCount) return;
       resultsEl._loadMore(Number(moreBtn.dataset.nextCount));
     });
     resultsEl.dataset.moreBound = "1";
@@ -11400,7 +11435,7 @@ async function runTrendRsiWinRate(mode) {
   if (!resultsEl.dataset.moreBound) {
     resultsEl.addEventListener("click", (e) => {
       const moreBtn2 = e.target.closest(".load-more-btn");
-      if (!moreBtn2) return;
+      if (!moreBtn2 || !moreBtn2.dataset.nextCount) return; // ETF·코인 전체보기(자체 리스너)와의 경합 방지(2026-09-02)
       resultsEl._loadMore(Number(moreBtn2.dataset.nextCount));
     });
     resultsEl.dataset.moreBound = "1";
@@ -11522,7 +11557,7 @@ async function renderVolumeRanking(candidatesPromise, { statusEl, resultsEl, ini
     if (!resultsEl.dataset.moreBound) {
       resultsEl.addEventListener("click", (e) => {
         const moreBtn = e.target.closest(".load-more-btn");
-        if (!moreBtn) return;
+        if (!moreBtn || !moreBtn.dataset.nextCount) return; // ETF·코인 전체보기(자체 리스너)와의 경합 방지(2026-09-02)
         resultsEl._loadMore(Number(moreBtn.dataset.nextCount));
       });
       resultsEl.dataset.moreBound = "1";

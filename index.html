@@ -493,7 +493,9 @@
                active 상태를 계속 참조하므로 DOM에서 지우지 않고 숨김만 처리(more-panel의 신규 항목이 대신 트리거) -->
           <button type="button" class="cat-btn" id="insightCatCalendarBtn" style="display:none;"><span class="btn-icon" data-icon="calendar"></span> 실적&amp;공시 일정</button>
           <button type="button" class="cat-btn" id="insightCatNewsBtn" style="display:none;"><span class="btn-icon" data-icon="newspaper"></span> 뉴스</button>
-          <button type="button" class="cat-btn" id="insightCatFutureIndustryBtn"><span class="btn-icon" data-icon="rocket"></span> 미래산업 성장성</button>
+          <!-- 미래산업 성장성은 법적(콘텐츠 재게시) 리스크 우려로 사용자 요청에 따라 완전 숨김(2026-09-02) —
+               insightCategoryButtons가 이 버튼을 참조하므로 DOM에서 지우지 않고 display:none만(캘린더/뉴스와 동일 관례) -->
+          <button type="button" class="cat-btn" id="insightCatFutureIndustryBtn" style="display:none;"><span class="btn-icon" data-icon="rocket"></span> 미래산업 성장성</button>
         </div>
         <div class="top30-sub-nav insight-firms-nav" id="insightFirmsNav">
           <div class="insight-firms-row">
@@ -755,6 +757,6 @@
   </footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js?v=20260902h"></script>
+  <script src="app.js?v=20260902j"></script>
 </body>
 </html>
