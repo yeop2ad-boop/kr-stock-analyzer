@@ -4832,18 +4832,14 @@ async function runAnalysis(ticker) {
       el("macroSection").innerHTML = `<p class="error-inline">거시경제 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
-    // 승률점수·RSI 점수(2026-09-02): S&P500 미국주식 전용 — DB에 없는 종목(국내 주식·ETF·코인)은 각 렌더러가 섹션째 숨김
-    if (!isCryptoDetail && !isEtfDetail) {
-      renderWinRate(ticker).catch(() => {
-        el("winRateFlushSection").style.display = "none";
-      });
-      renderRsi(ticker).catch(() => {
-        el("rsiFlushSection").style.display = "none";
-      });
-    } else {
+    // 승률점수·RSI 점수(2026-09-02, 같은 날 국내주식·ETF·코인 확장): 섹션별 DB 맵(scores/scoresKr/scoresEtf/scoresCrypto)에서
+    // 조회 — 어느 맵에도 없는 종목(유니버스 밖)은 각 렌더러가 섹션째 숨김
+    renderWinRate(ticker, scoreMode).catch(() => {
       el("winRateFlushSection").style.display = "none";
+    });
+    renderRsi(ticker, scoreMode).catch(() => {
       el("rsiFlushSection").style.display = "none";
-    }
+    });
 
     setStatus(null, null);
   } catch (err) {
@@ -6492,13 +6488,22 @@ function getWinRateDb() {
   }
   return winRateDbPromise;
 }
+// 섹션(주식 US/KR·ETF·코인)에 맞는 승률 DB 맵 선택 — scores=미국 S&P500(구성종목 판별에도 사용),
+// scoresKr=코스피200+코스닥150, scoresEtf=ETF200(미국+국내), scoresCrypto=코인100 (2026-09-02 확장)
+function winRateMapForMode(db, ticker, mode) {
+  if (!db) return null;
+  if (mode === "crypto") return db.scoresCrypto || null;
+  if (mode === "etf") return db.scoresEtf || null;
+  return isKrTicker(ticker) ? db.scoresKr || null : db.scores || null;
+}
 
-async function renderWinRate(ticker) {
+async function renderWinRate(ticker, mode) {
   const section = el("winRateFlushSection");
   if (!section) return;
   section.style.display = "none";
   const db = await getWinRateDb();
-  const entry = db && db.scores && db.scores[ticker];
+  const map = winRateMapForMode(db, ticker, mode);
+  const entry = map && map[ticker];
   if (!entry || entry.score === null || entry.score === undefined) return;
 
   const color = "#8b5cf6"; // 승률점수 - 보라(기존 파랑/초록/주황 3계열과 구분)
@@ -6553,12 +6558,13 @@ function computeWilderRsi(closes, period = 14) {
   return 100 - 100 / (1 + avgGain / avgLoss);
 }
 
-async function renderRsi(ticker) {
+async function renderRsi(ticker, mode) {
   const section = el("rsiFlushSection");
   if (!section) return;
   section.style.display = "none";
-  const db = await getWinRateDb(); // S&P500 구성종목 여부 판별용
-  if (!db || !db.scores || !db.scores[ticker]) return;
+  const db = await getWinRateDb(); // 각 섹션 유니버스(S&P500/코스피200+코스닥150/ETF200/코인100) 소속 여부 판별용
+  const map = winRateMapForMode(db, ticker, mode);
+  if (!map || !map[ticker]) return;
 
   el("rsiSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
   section.style.display = "";
@@ -7902,7 +7908,43 @@ const ASSET_TREND_METRICS = {
     note: "투자 안정 점수(전용 배점, 10점 만점) 순위입니다.",
     noRiskCol: true,
   },
+  // RSI·승률 순위(2026-09-02 확장): 주식 시장동향과 동일 컨셉 — 값은 배치 DB(winrate-scores-us.json의
+  // scoresEtf/scoresCrypto, attachWinRateRsiToRows가 행에 부착)에서 읽음. 마지막 열은 투자안정 대신 서로의 점수
+  rsi: {
+    icon: "scale",
+    label: "RSI 순위",
+    header: "RSI 점수",
+    orange: true,
+    sort: (a, b) => (a.rsi ?? Infinity) - (b.rsi ?? Infinity),
+    cell: (r) => rsiRankCellHtml(r.rsi),
+    note: `주간 RSI(14)가 낮은 순(과매도부터 1등) 순위입니다. <b style="color:#22a866;">30 미만 과매도(초록)</b>·<b style="color:#ef4444;">70 이상 과매수(빨강)</b>, 참고용 기술적 지표입니다.`,
+    noRiskCol: true,
+    gradeHeader: "승률<br>점수",
+    gradeCell: (r) => (r.winRate === null || r.winRate === undefined ? "N/A" : `${r.winRate}점`),
+  },
+  winrate: {
+    icon: "medal",
+    label: "승률 순위",
+    header: "승률 점수",
+    orange: true,
+    sort: (a, b) => (b.winRate ?? -1) - (a.winRate ?? -1),
+    cell: (r) => (r.winRate === null || r.winRate === undefined ? "N/A" : `<b>${r.winRate}점</b>`),
+    note: "승률점수(최근 10년 월봉 기준 상승 개월수/총 개월수×100, 상장 10년 미만은 상장 후부터)가 높은 순 순위입니다.",
+    noRiskCol: true,
+    gradeHeader: "RSI<br>점수",
+    gradeCell: (r) => rsiRankCellHtml(r.rsi),
+  },
 };
+// ETF/코인 스캔 행에 승률·RSI(배치 DB 값)를 부착 — mapKey: "scoresEtf" | "scoresCrypto"
+async function attachWinRateRsiToRows(rows, mapKey) {
+  const db = await getWinRateDb();
+  const map = (db && db[mapKey]) || {};
+  rows.forEach((r) => {
+    const e = map[r.symbol];
+    r.winRate = e && e.score !== null && e.score !== undefined ? e.score : null;
+    r.rsi = e && e.rsi !== null && e.rsi !== undefined ? e.rsi : null;
+  });
+}
 let assetTrendMetric = "week52";
 function renderAssetTrendSubnav() {
   el("topRankingSubNav").innerHTML = Object.entries(ASSET_TREND_METRICS)
@@ -7937,14 +7979,14 @@ function assetTrendTableHtml(rows, metricKey, universeLabel, rowNameHtmlFn, pric
           ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
           : ""
       }</td>
-        <td>${m.cell(r)}</td>${showRisk ? `<td>${scoreRankColorHtml(r.risk, r.risk)}</td>` : ""}
+        <td>${m.cell(r)}</td>${showRisk ? `<td>${scoreRankColorHtml(r.risk, r.risk)}</td>` : ""}${m.gradeCell ? `<td>${m.gradeCell(r)}</td>` : ""}
       </tr>`
     )
     .join("");
   return `
     <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — ${m.note} 투자 자문이 아닙니다.</p>
     <table class="top30-table">
-      <thead><tr><th>순위</th><th>이름</th><th>현재가<br>(등락률)</th><th>${m.header}</th>${showRisk ? "<th>투자<br>안정</th>" : ""}</tr></thead>
+      <thead><tr><th>순위</th><th>이름</th><th>현재가<br>(등락률)</th><th>${m.header}</th>${showRisk ? "<th>투자<br>안정</th>" : ""}${m.gradeCell ? `<th>${m.gradeHeader}</th>` : ""}</tr></thead>
       <tbody>${body}</tbody>
     </table>`;
 }
@@ -7964,6 +8006,7 @@ async function runEtfTrend() {
     const expanded = etfTrendExpanded.has(region);
     const { rows, scanned, total } = await ensureEtfScanRows(region, expanded ? 100 : 30, statusEl);
     if (etfPopularRegion !== region || appSectionMode !== "etf") return;
+    await attachWinRateRsiToRows(rows, "scoresEtf"); // RSI·승률 순위용(2026-09-02)
     statusEl.style.display = "none";
     const showCount = expanded ? total : Math.min(30, scanned);
     const universeLabel = isKr ? "국내 상장 ETF 시가총액 상위" : "미국 상장 ETF 순자산 상위";
@@ -8011,6 +8054,7 @@ async function runCryptoTrend() {
     const expanded = cryptoTrendExpanded;
     const { rows, scanned, total } = await ensureCryptoScanRows(expanded ? 100 : 30, statusEl);
     if (appSectionMode !== "crypto") return;
+    await attachWinRateRsiToRows(rows, "scoresCrypto"); // RSI·승률 순위용(2026-09-02)
     statusEl.style.display = "none";
     const showCount = expanded ? total : Math.min(30, scanned);
     resultsEl.innerHTML =
@@ -11056,28 +11100,25 @@ async function runTrendRsiWinRate(mode) {
   const label = isRsi ? "RSI 순위" : "승률 순위";
   const statusEl = trendStatus;
   const resultsEl = trendResults;
+  // 국내 모드(2026-09-02 확장): 코스피200+코스닥150 유니버스(scoresKr)로 동일하게 동작
+  const isKr = getWatchlistActiveMarket() === "KR";
 
-  // 승률·RSI 데이터가 S&P500 전용이라 국내 모드에선 안내만 표시
-  if (getWatchlistActiveMarket() === "KR") {
-    statusEl.style.display = "none";
-    resultsEl.innerHTML = `<p class="muted" style="padding:14px 0;">${label}는 미국주식(S&amp;P500) 전용 순위입니다. 하단 '해외' 버튼으로 전환하면 확인할 수 있어요.</p>`;
-    return;
-  }
   if (!guardRankingScan(resultsEl)) return;
   resultsEl.innerHTML = "";
   statusEl.style.display = "block";
   statusEl.textContent = `${label} 대상 종목을 불러오는 중...`;
 
   const db = await getWinRateDb();
-  if (!db || !db.scores) {
+  const scoreMap = db && (isKr ? db.scoresKr : db.scores);
+  if (!scoreMap) {
     statusEl.textContent = "❌ 승률 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.";
     return;
   }
-  const scoreMap = db.scores;
   const dbSymbols = Object.keys(scoreMap);
-  // 다른 랭킹과 동일하게 시가총액 우선순으로 처음 30개만 먼저 스캔 — DB(S&P500 구성종목)에 있는 티커만 대상
+  const krNameMap = isKr ? await getKrSymbolNameMap().catch(() => new Map()) : null;
+  // 다른 랭킹과 동일하게 시가총액(국내는 지수 편입 비중) 우선순으로 처음 30개만 먼저 스캔 — DB에 있는 티커만 대상
   let tickers;
-  const order = await getSP500PriorityOrder().catch(() => null);
+  const order = await (isKr ? getKrUniverseTickers() : getSP500PriorityOrder()).catch(() => null);
   if (order) {
     const inDb = new Set(dbSymbols);
     tickers = order.filter((t) => inDb.has(t));
@@ -11127,23 +11168,26 @@ async function runTrendRsiWinRate(mode) {
       const hasMore = cursor < tickers.length;
 
       const rows = ranked
-        .map(
-          (r, i) => `
+        .map((r, i) => {
+          const mainName = isKr ? (krNameMap && krNameMap.get(r.symbol)) || TICKER_TO_KOREAN_NAME[r.symbol] || r.name || r.symbol : r.symbol;
+          const subName = isKr ? r.symbol : TICKER_TO_KOREAN_NAME[r.symbol] || r.name || "";
+          return `
         <tr>
           <td>${i + 1}</td>
-          <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(TICKER_TO_KOREAN_NAME[r.symbol] || r.name || "")}</span></td>
-          <td>${r.price !== undefined && r.price !== null ? priceChartLink(r.symbol, "$" + r.price.toFixed(2)) : "N/A"}</td>
+          <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(mainName)}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(subName)}</span></td>
+          <td>${r.price !== undefined && r.price !== null ? priceChartLink(r.symbol, fmtPrice(r.price, isKr ? "KRW" : "USD")) : "N/A"}</td>
           <td>${isRsi ? rsiRankCellHtml(r.rsi) : r.winRate === null ? "N/A" : `<b>${r.winRate}점</b>`}</td>
           <td>${isRsi ? (r.winRate === null ? "N/A" : `${r.winRate}점`) : rsiRankCellHtml(r.rsi)}</td>
-        </tr>`
-        )
+        </tr>`;
+        })
         .join("");
 
+      const universeLabel = isKr ? "코스피200+코스닥150" : "S&P500";
       resultsEl.innerHTML = `
         ${
           isRsi
-            ? `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 주간 RSI(14)가 낮은 순(과매도부터 1등) 순위입니다. <b style="color:#22a866;">30 미만 과매도(초록)</b>·<b style="color:#ef4444;">70 이상 과매수(빨강)</b>, 참고용 기술적 지표이며 투자 자문이 아닙니다.</p>`
-            : `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 승률점수(최근 10년 월봉 기준 상승 개월수/총 개월수×100, 상장 10년 미만은 상장 후부터)가 높은 순 순위입니다. 참고용 지표이며 투자 자문이 아닙니다.</p>`
+            ? `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — 주간 RSI(14)가 낮은 순(과매도부터 1등) 순위입니다. <b style="color:#22a866;">30 미만 과매도(초록)</b>·<b style="color:#ef4444;">70 이상 과매수(빨강)</b>, 참고용 기술적 지표이며 투자 자문이 아닙니다.</p>`
+            : `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — 승률점수(최근 10년 월봉 기준 상승 개월수/총 개월수×100, 상장 10년 미만은 상장 후부터)가 높은 순 순위입니다. 참고용 지표이며 투자 자문이 아닙니다.</p>`
         }
         ${topCapNoteHtml(cursor, tickers.length, hasMore)}
         ${rankScanCaptionHtml(ranked.length)}
@@ -11151,7 +11195,7 @@ async function runTrendRsiWinRate(mode) {
           <thead><tr><th>순위</th><th>기업명</th><th>현재가</th><th>${isRsi ? "RSI 점수" : "승률 점수"}</th><th>${isRsi ? "승률<br>점수" : "RSI<br>점수"}</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
-        ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${tickers.length}">전체보기 (나머지 ${tickers.length - cursor}개 · 500개 전부 검색 시 약 1분 소요)</button>` : ""}
+        ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${tickers.length}">전체보기 (나머지 ${tickers.length - cursor}개 · ${tickers.length}개 전부 검색 시 약 1분 소요)</button>` : ""}
       `;
     } catch (err) {
       statusEl.textContent = `❌ ${err.message || "분석 중 오류가 발생했습니다."}`;

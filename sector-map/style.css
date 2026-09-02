@@ -1147,5 +1147,6 @@ body[data-map-view-kind="asset"] .metric-chip[data-metric="debtRatio"],
 body[data-map-view-kind="asset"] .metric-chip[data-metric="cashFlowGrowth"],
 body[data-map-view-kind="asset"] .metric-chip[data-metric="changePct"]:not(.asset-only-chip),
 body[data-map-view-kind="asset"] .metric-chip[data-metric="week52RangePct"]:not(.asset-only-chip) { display: none; }
-/* 10년승률·RSI 칩(2026-09-02) — 데이터가 S&P500 배치 전용이라 S&P200/S&P500 보기에서만 노출 */
-body:not([data-map-view="sp200"]):not([data-map-view="sp500"]) .us-stock-only-chip { display: none; }
+/* 10년승률·RSI 칩(2026-09-02, 같은 날 국내·ETF·코인 확장) — 배치 데이터가 없는 나스닥100 보기에서만 숨김
+   (S&P 비편입 15종목의 winRateScore/rsiWeekly가 비어 필터가 그 종목들을 통째로 지워버리는 혼란 방지) */
+body[data-map-view="ndx100"] .us-stock-only-chip { display: none; }
