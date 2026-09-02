@@ -4828,13 +4828,17 @@ async function runAnalysis(ticker) {
       el("macroSection").innerHTML = `<p class="error-inline">거시경제 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
-    // 승률점수(2026-09-02): S&P500 미국주식 전용 — DB에 없는 종목(국내 주식·ETF·코인)은 renderWinRate가 섹션째 숨김
+    // 승률점수·RSI 점수(2026-09-02): S&P500 미국주식 전용 — DB에 없는 종목(국내 주식·ETF·코인)은 각 렌더러가 섹션째 숨김
     if (!isCryptoDetail && !isEtfDetail) {
       renderWinRate(ticker).catch(() => {
         el("winRateFlushSection").style.display = "none";
       });
+      renderRsi(ticker).catch(() => {
+        el("rsiFlushSection").style.display = "none";
+      });
     } else {
       el("winRateFlushSection").style.display = "none";
+      el("rsiFlushSection").style.display = "none";
     }
 
     setStatus(null, null);
@@ -6520,6 +6524,72 @@ async function renderWinRate(ticker) {
     </div>
   `;
   section.style.display = "";
+}
+
+// ---------- 6-4. RSI 점수(2026-09-02 사용자 요청): 주간 RSI(14) 현재값을 그대로 표시 — S&P500 미국주식 전용 ----------
+// "S&P500 종목만" 조건은 승률점수 DB(S&P500 구성종목 목록)를 재사용해 판별. 30 미만(과매도)=초록, 70 이상(과매수)=빨강.
+// 주간봉 3년치(약 156개)로 와일더 방식 RSI(14)를 계산 — 첫 14주 단순평균 후 지수평활, 진행 중인 이번 주 봉 포함(인베스팅닷컴과 동일 관례).
+function computeWilderRsi(closes, period = 14) {
+  if (!closes || closes.length < period + 1) return null;
+  let gain = 0;
+  let loss = 0;
+  for (let i = 1; i <= period; i++) {
+    const d = closes[i] - closes[i - 1];
+    if (d > 0) gain += d;
+    else loss -= d;
+  }
+  let avgGain = gain / period;
+  let avgLoss = loss / period;
+  for (let i = period + 1; i < closes.length; i++) {
+    const d = closes[i] - closes[i - 1];
+    avgGain = (avgGain * (period - 1) + (d > 0 ? d : 0)) / period;
+    avgLoss = (avgLoss * (period - 1) + (d < 0 ? -d : 0)) / period;
+  }
+  if (avgLoss === 0) return 100;
+  return 100 - 100 / (1 + avgGain / avgLoss);
+}
+
+async function renderRsi(ticker) {
+  const section = el("rsiFlushSection");
+  if (!section) return;
+  section.style.display = "none";
+  const db = await getWinRateDb(); // S&P500 구성종목 여부 판별용
+  if (!db || !db.scores || !db.scores[ticker]) return;
+
+  el("rsiSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
+  section.style.display = "";
+  const chart = await yahooChart(ticker, "3y", "1wk");
+  const closes = chartClosePairs(chart).map((p) => p.c);
+  const rsi = computeWilderRsi(closes, 14);
+  if (rsi === null || rsi === undefined) {
+    section.style.display = "none";
+    return;
+  }
+  const val = Math.round(rsi * 10) / 10;
+  const color = val < 30 ? "#22a866" : val >= 70 ? "#ef4444" : "var(--text)";
+  const zone = val < 30 ? "과매도 구간 (30 미만)" : val >= 70 ? "과매수 구간 (70 이상)" : "중립 구간 (30~70)";
+  el("rsiSection").innerHTML = `
+    <div class="score-wrap">
+      <div class="score-badge">
+        <div class="score-num" style="color:${color};">${val}</div>
+        <div class="score-den">/ 100</div>
+      </div>
+      <div class="score-details">
+        <div class="smb-row">
+          <div class="smb-row-top">
+            <span class="smb-label">주간 RSI(14)</span>
+            <span class="smb-value" style="color:${color};">${val}점 · ${zone}</span>
+          </div>
+          <div class="smb-track"><div class="smb-fill" style="width:${clamp(val, 0, 100)}%;background:${color === "var(--text)" ? "#5b8def" : color};"></div></div>
+          <p class="smb-desc">주봉 종가 기준 최근 14주 상대강도지수(RSI)의 현재값입니다. <b style="color:#22a866;">30 미만은 과매도(초록)</b>, <b style="color:#ef4444;">70 이상은 과매수(빨강)</b>로 표시됩니다.</p>
+        </div>
+        <p class="disclaimer">
+          ⚠️ RSI 점수는 주가의 단기 과열/침체를 나타내는 <b>단순 참고용 기술적 지표</b>이며,
+          투자 자문이나 매수/매도 추천이 아닙니다.
+        </p>
+      </div>
+    </div>
+  `;
 }
 
 // ---------- 7. 투자황금기 점수(공포지수연동) — VIX(CBOE 변동성지수)가 높을수록(시장 패닉) 역발상 매수 기회로 보고 점수를 올림, 종목과 무관 ----------
