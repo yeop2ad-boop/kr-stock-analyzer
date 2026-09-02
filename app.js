@@ -5331,6 +5331,11 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
 
   let sReportLoaded = false;
   sReportToggleBtn.addEventListener("click", async () => {
+    // 굴려볼까 Pro 게이트(2026-09-02): S리포트는 Pro 전용(웹·v1 앱에선 게이트 비활성 — proBlocked 참고)
+    if (proBlocked()) {
+      openProSheet();
+      return;
+    }
     const isOpen = sReportInlineWrap.style.display !== "none";
     if (isOpen) {
       sReportInlineWrap.style.display = "none";
@@ -7109,6 +7114,13 @@ const KR_VALUE_DISCLAIMER = `<p class="disclaimer tab-note"><span style="filter:
 // 모든 랭킹 "더보기/전체보기" 공통 동작(2026-08-31 사용자 요청): 스캔 중 재클릭 방지 + 기존 상위 30개 표를 접고
 // 진행 현황이 맨 위(statusEl)에 보이게 함. 시작에 성공하면 true, 이미 스캔 중이라 무시해야 하면 false를 반환
 function beginLoadMoreScan(resultsEl, statusEl) {
+  // 굴려볼까 Pro 게이트(2026-09-02): 한국·미국주식 전체보기(상단 +더보기·하단 전체보기)는 미구독자 하루 5회 무료,
+  // 초과분부터 Pro 안내 — 이 함수는 주식 전체 스캔 6곳(기업가치/시장동향/RSI·승률/과거분석 KR 등)의 유일한 진입점.
+  // 게이트는 Play Billing이 있는 앱(v1.1)에서만 활성(proBlocked 참고), 웹·v1에선 항상 통과.
+  if (proBlocked() && proLoadMoreQuotaExceeded()) {
+    openProSheet();
+    return false;
+  }
   if (resultsEl.dataset.scanning === "1") return false;
   resultsEl.dataset.scanning = "1";
   resultsEl.innerHTML = "";
@@ -12929,5 +12941,188 @@ async function runFuturePrediction(ticker, metricsPromise, marketReturnsPromise,
     setFutureStatus(null, null);
   } catch (err) {
     setFutureStatus("error", `❌ ${escapeHtml(err.message || "예측 차트를 불러오지 못했습니다.")}`);
+  }
+}
+
+// ---------- 굴려볼까 Pro (부분유료, 2026-09-02 사용자 확정: 광고 없음 + 인앱 구독) ----------
+// Pro 전용: ①섹터맵(지도, B 맛보기 — 지도 쪽 오버레이는 sector-map/app.js) ②S리포트
+//          ③한국·미국주식 랭킹 전체보기(상단 +더보기·하단 전체보기 = beginLoadMoreScan 경유 전체 스캔)
+// 게이트는 Play Billing이 포함된 앱(v1.1 TWA, Digital Goods API 사용 가능)에서만 활성화 —
+// 웹 브라우저·결제 미포함 v1 앱에서는 API가 없어 게이트가 꺼진 채 전부 무료로 동작(안전한 점진 배포).
+// 구독 상태는 구글 계정에 묶여 자체 로그인 불필요(기기 변경에도 유지).
+// 개발 테스트: localStorage pro_gate_test=1 → 브라우저에서도 게이트 강제 활성, pro_dev=1 → 구독자 취급.
+// ⚠️ v1.1 출시 전 확인: Play Console 구독 상품 ID는 아래 PRO_PRODUCT_ID와 동일해야 함.
+//    라이선스 테스터 실결제 테스트에서 구매 승인(acknowledge)이 자동 처리되는지 확인할 것(미승인 시 3일 후 자동 환불됨).
+const PRO_PRODUCT_ID = "pro_monthly";
+const PRO_STATE = { gateActive: false, entitled: false, priceText: null };
+
+function proLocalFlag(name) {
+  try {
+    return localStorage.getItem(name) === "1";
+  } catch {
+    return false;
+  }
+}
+
+async function getPlayBillingService() {
+  if (!("getDigitalGoodsService" in window)) return null;
+  try {
+    return await window.getDigitalGoodsService("https://play.google.com/billing");
+  } catch {
+    return null;
+  }
+}
+
+function formatProPrice(price) {
+  // Digital Goods API의 ItemDetails.price = { currency, value }
+  if (!price || !price.value) return null;
+  const n = Number(price.value);
+  if (!Number.isFinite(n)) return null;
+  if (price.currency === "KRW") return `월 ${Math.round(n).toLocaleString("ko-KR")}원`;
+  return `월 ${n} ${price.currency}`;
+}
+
+async function initProState() {
+  if (proLocalFlag("pro_dev")) {
+    PRO_STATE.gateActive = proLocalFlag("pro_gate_test");
+    PRO_STATE.entitled = true;
+    return;
+  }
+  const service = await getPlayBillingService();
+  if (!service) {
+    PRO_STATE.gateActive = proLocalFlag("pro_gate_test"); // 브라우저 테스트용
+    PRO_STATE.entitled = false;
+    return;
+  }
+  PRO_STATE.gateActive = true;
+  try {
+    const purchases = await service.listPurchases();
+    PRO_STATE.entitled = (purchases || []).some((p) => p && p.itemId === PRO_PRODUCT_ID);
+  } catch {
+    PRO_STATE.entitled = false;
+  }
+  try {
+    const details = await service.getDetails([PRO_PRODUCT_ID]);
+    if (details && details[0]) PRO_STATE.priceText = formatProPrice(details[0].price);
+  } catch {}
+}
+initProState();
+
+// 게이트 판정 — 활성 상태에서 미구독이면 true(잠김)
+function proBlocked() {
+  return PRO_STATE.gateActive && !PRO_STATE.entitled;
+}
+
+// 전체보기(더보기)는 미구독자도 하루 5회까지 무료(2026-09-02 사용자 확정) — 기기 localStorage 기준 일별 카운트.
+// 호출 시 오늘 카운트를 1 올리고, 이미 5회를 다 썼으면 true(초과)를 반환. 구독자/게이트 비활성 환경에선 호출 안 됨.
+const PRO_FREE_LOADMORE_PER_DAY = 5;
+function proLoadMoreQuotaExceeded() {
+  try {
+    const now = new Date();
+    const today = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+    const raw = JSON.parse(localStorage.getItem("pro_loadmore_quota_v1") || "{}");
+    if (raw.date !== today) {
+      raw.date = today;
+      raw.count = 0;
+    }
+    if (raw.count >= PRO_FREE_LOADMORE_PER_DAY) return true;
+    raw.count++;
+    localStorage.setItem("pro_loadmore_quota_v1", JSON.stringify(raw));
+    if (raw.count === PRO_FREE_LOADMORE_PER_DAY) showToast(`오늘 무료 전체보기 ${PRO_FREE_LOADMORE_PER_DAY}회를 모두 사용했어요`);
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+// ---------- Pro 구독 안내 시트 ----------
+let proSheetBuilt = false;
+function buildProSheet() {
+  if (proSheetBuilt) return;
+  proSheetBuilt = true;
+  const wrap = document.createElement("div");
+  wrap.id = "proSheet";
+  wrap.className = "pro-sheet";
+  wrap.style.display = "none";
+  wrap.innerHTML = `
+    <div class="pro-sheet-backdrop" id="proSheetBackdrop"></div>
+    <div class="pro-sheet-body">
+      <button type="button" class="pro-sheet-close" id="proSheetCloseBtn" aria-label="닫기">✕</button>
+      <p class="pro-sheet-badge">PRO</p>
+      <h2 class="pro-sheet-title">굴려볼까 Pro</h2>
+      <p class="pro-sheet-sub"><span id="proSheetPrice">월 13,000원</span> 구독</p>
+      <ul class="pro-sheet-list">
+        <li>🗺️ <b>섹터맵</b> — 시장 전체를 한눈에 보는 지도</li>
+        <li>📄 <b>S리포트</b> — 종목 핵심 지표 순위 리포트</li>
+        <li>🔓 <b>전체 순위 보기</b> — 한국·미국주식 랭킹 전 종목 검색</li>
+      </ul>
+      <button type="button" class="pro-sheet-cta" id="proSheetCtaBtn">Pro 시작하기</button>
+      <button type="button" class="pro-sheet-restore" id="proSheetRestoreBtn">이미 구독 중이신가요? 구독 복원</button>
+      <p class="pro-sheet-note">구독은 Google Play 계정으로 관리되며 언제든 해지할 수 있습니다.</p>
+    </div>`;
+  document.body.appendChild(wrap);
+  el("proSheetBackdrop").addEventListener("click", closeProSheet);
+  el("proSheetCloseBtn").addEventListener("click", closeProSheet);
+  el("proSheetCtaBtn").addEventListener("click", startProPurchase);
+  el("proSheetRestoreBtn").addEventListener("click", restoreProPurchase);
+}
+
+function openProSheet() {
+  buildProSheet();
+  const sheet = el("proSheet");
+  if (PRO_STATE.priceText) el("proSheetPrice").textContent = PRO_STATE.priceText;
+  // 결제 불가 환경(웹 테스트 등)에서는 CTA를 앱 안내로 대체
+  const cta = el("proSheetCtaBtn");
+  if (!("getDigitalGoodsService" in window)) {
+    cta.textContent = "구글 플레이 굴려볼까 앱에서 구독할 수 있어요";
+    cta.disabled = true;
+  }
+  sheet.style.display = "block";
+  requestAnimationFrame(() => sheet.classList.add("open"));
+}
+function closeProSheet() {
+  const sheet = el("proSheet");
+  if (!sheet) return;
+  sheet.classList.remove("open");
+  setTimeout(() => {
+    sheet.style.display = "none";
+  }, 250);
+}
+
+async function startProPurchase() {
+  const service = await getPlayBillingService();
+  if (!service) {
+    showToast("이 환경에서는 결제할 수 없어요. 구글 플레이 앱에서 이용해주세요.");
+    return;
+  }
+  try {
+    const request = new PaymentRequest(
+      [{ supportedMethods: "https://play.google.com/billing", data: { sku: PRO_PRODUCT_ID } }],
+      { total: { label: "굴려볼까 Pro", amount: { currency: "KRW", value: "0" } } }
+    );
+    const response = await request.show();
+    await response.complete("success");
+    await initProState();
+    if (PRO_STATE.entitled) {
+      closeProSheet();
+      showToast("🎉 Pro 구독이 시작되었습니다!");
+      const overlay = document.getElementById("proMapOverlay");
+      if (overlay) overlay.remove();
+    } else {
+      showToast("구독 확인에 실패했어요. 잠시 후 '구독 복원'을 눌러주세요.");
+    }
+  } catch (e) {
+    // 사용자가 결제창을 닫은 경우 포함 — 조용히 무시하되 그 외 오류는 토스트
+    if (e && e.name !== "AbortError") showToast("결제를 완료하지 못했어요. 잠시 후 다시 시도해주세요.");
+  }
+}
+
+async function restoreProPurchase() {
+  await initProState();
+  if (PRO_STATE.entitled) {
+    closeProSheet();
+    showToast("구독이 확인되었습니다!");
+  } else {
+    showToast("이 구글 계정에서 활성 구독을 찾지 못했어요.");
   }
 }

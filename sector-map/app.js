@@ -2797,3 +2797,64 @@ function scheduleInactiveMarketPreload() {
   }
 }
 // loadMarket()이 초기 로드 + 시장 전환 시마다 이 함수를 호출하므로 여기서 별도로 또 부르지 않음
+
+// ---------- 굴려볼까 Pro — 섹터맵 맛보기 게이트(2026-09-02 사용자 확정: B안) ----------
+// 지도는 Pro 전용이지만 완전 잠금 대신 "맛보기": 지도가 흐릿하게 보이는 위에 구독 안내 카드를 띄움.
+// 게이트는 Play Billing이 포함된 앱(v1.1, Digital Goods API)에서만 활성 — 웹·v1 앱에선 꺼져서 전부 무료.
+// 개발 테스트: localStorage pro_gate_test=1(게이트 강제 활성), pro_dev=1(구독자 취급). 본체 app.js Pro 모듈과 동일 규칙.
+const PRO_PRODUCT_ID = "pro_monthly";
+function proLocalFlag(name) { try { return localStorage.getItem(name) === "1"; } catch (e) { return false; } }
+async function getPlayBillingService() {
+  if (!("getDigitalGoodsService" in window)) return null;
+  try { return await window.getDigitalGoodsService("https://play.google.com/billing"); } catch (e) { return null; }
+}
+async function mapProBlocked() {
+  if (proLocalFlag("pro_dev")) return false;
+  const service = await getPlayBillingService();
+  if (!service) return proLocalFlag("pro_gate_test");
+  try {
+    const purchases = await service.listPurchases();
+    return !(purchases || []).some((p) => p && p.itemId === PRO_PRODUCT_ID);
+  } catch (e) {
+    return true;
+  }
+}
+async function startMapProPurchase() {
+  const service = await getPlayBillingService();
+  if (!service) {
+    alert("이 환경에서는 결제할 수 없어요. 구글 플레이 굴려볼까 앱에서 구독해주세요.");
+    return;
+  }
+  try {
+    const request = new PaymentRequest(
+      [{ supportedMethods: "https://play.google.com/billing", data: { sku: PRO_PRODUCT_ID } }],
+      { total: { label: "굴려볼까 Pro", amount: { currency: "KRW", value: "0" } } }
+    );
+    const response = await request.show();
+    await response.complete("success");
+    if (!(await mapProBlocked())) {
+      const ov = document.getElementById("proMapOverlay");
+      if (ov) ov.remove();
+    }
+  } catch (e) {}
+}
+function showProMapOverlay() {
+  if (document.getElementById("proMapOverlay")) return;
+  const ov = document.createElement("div");
+  ov.id = "proMapOverlay";
+  ov.innerHTML = `
+    <div class="pro-map-card">
+      <p class="pro-map-badge">PRO</p>
+      <h2>섹터맵은 Pro 전용이에요</h2>
+      <p class="pro-map-desc">지금 보이는 화면은 미리보기입니다.<br>Pro를 시작하면 시장 전체 지도를 자유롭게 탐색할 수 있어요.</p>
+      <button type="button" class="pro-map-cta" id="proMapCtaBtn">Pro 시작하기 · 월 13,000원</button>
+      <button type="button" class="pro-map-restore" id="proMapRestoreBtn">이미 구독 중이신가요? 구독 복원</button>
+    </div>`;
+  document.body.appendChild(ov);
+  document.getElementById("proMapCtaBtn").addEventListener("click", startMapProPurchase);
+  document.getElementById("proMapRestoreBtn").addEventListener("click", async () => {
+    if (!(await mapProBlocked())) { ov.remove(); alert("구독이 확인되었습니다!"); }
+    else alert("이 구글 계정에서 활성 구독을 찾지 못했어요.");
+  });
+}
+(async () => { if (await mapProBlocked()) showProMapOverlay(); })();

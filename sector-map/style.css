@@ -1150,3 +1150,23 @@ body[data-map-view-kind="asset"] .metric-chip[data-metric="week52RangePct"]:not(
 /* 10년승률·RSI 칩(2026-09-02, 같은 날 국내·ETF·코인 확장) — 배치 데이터가 없는 나스닥100 보기에서만 숨김
    (S&P 비편입 15종목의 winRateScore/rsiWeekly가 비어 필터가 그 종목들을 통째로 지워버리는 혼란 방지) */
 body[data-map-view="ndx100"] .us-stock-only-chip { display: none; }
+
+/* ---------- 굴려볼까 Pro — 섹터맵 맛보기 오버레이(2026-09-02): 지도는 흐릿하게 보이고 카드만 또렷하게.
+   하단 네비(z 60)보다 아래(z 55)라 한국주식/미국주식 등으로 이동은 자유로움 ---------- */
+#proMapOverlay {
+  position: fixed; inset: 0; bottom: var(--bottom-nav-h, 64px); z-index: 55;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(240, 243, 250, 0.35);
+  -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
+  padding: 24px;
+}
+:root[data-theme="dark"] #proMapOverlay { background: rgba(10, 14, 30, 0.45); }
+.pro-map-card {
+  background: var(--white, #fff); border-radius: 20px; padding: 26px 24px; max-width: 330px; width: 100%;
+  text-align: center; box-shadow: 0 16px 48px rgba(10, 14, 30, 0.3);
+}
+.pro-map-badge { display: inline-block; margin: 0 0 8px; padding: 4px 14px; border-radius: 999px; background: linear-gradient(135deg, #ffb347, #e04600); color: #fff; font-size: 13px; font-weight: 800; letter-spacing: 1px; }
+.pro-map-card h2 { margin: 0 0 8px; font-size: 20px; font-weight: 800; }
+.pro-map-desc { margin: 0 0 18px; font-size: 13.5px; color: var(--muted, #667); line-height: 1.55; }
+.pro-map-cta { display: block; width: 100%; padding: 14px 0; border: none; border-radius: 13px; background: #e04600; color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; margin-bottom: 10px; }
+.pro-map-restore { display: block; margin: 0 auto; border: none; background: none; color: var(--muted, #667); font-size: 12.5px; text-decoration: underline; cursor: pointer; }
