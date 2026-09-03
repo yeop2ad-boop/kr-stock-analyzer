@@ -179,20 +179,21 @@ function Get-CryptoPressure($m, $rsi) {
   $rsiScore = 2; if ($null -ne $rsi) { $rsiScore = Clamp ((4 * ($rsi - 30)) / 40) 0 4 }
   return Round1 (Clamp ($vol + $mon + $rsiScore) 0 10)
 }
-# 코인 투자안정: ①업력(3, 10년↑ 만점·3년↓ 0점) ②우상향(4, 승률 60↑ 만점·40↓ 0점) ③BTC 대비 모멘텀(3, 40%p 미만 만점·100%p↑ 0점)
+# 코인 투자안정(2026-09-03 재개편, 총 7점 — 본체 app.js computeCryptoRiskScore와 동일 공식):
+# ①업력 가점(2, 10년↑ 만점·3년↓ 0점) ②우상향(3, 승률 60↑ 만점·40↓ 0점) ③BTC 대비 모멘텀(2, 40%p 미만 만점·100%p↑ 0점)
 function Get-CryptoRisk($m, $winRate, $btcReturn) {
-  $age = 1.5
+  $age = 1
   if ($m.firstTrade) {
     $years = ((Get-Date -UFormat %s) - $m.firstTrade) / (365.25 * 86400)
-    $age = Clamp ((3 * ($years - 3)) / 7) 0 3
+    $age = Clamp ((2 * ($years - 3)) / 7) 0 2
   }
-  $win = 2; if ($null -ne $winRate) { $win = Clamp ((4 * ($winRate - 40)) / 20) 0 4 }
-  $mkt = 1.5
+  $win = 1.5; if ($null -ne $winRate) { $win = Clamp ((3 * ($winRate - 40)) / 20) 0 3 }
+  $mkt = 1
   if ($null -ne $m.oneYearReturn -and $null -ne $btcReturn) {
     $relDiff = [math]::Abs($m.oneYearReturn - $btcReturn)
-    if ($relDiff -lt 40) { $mkt = 3 } else { $mkt = Clamp ((3 * (100 - $relDiff)) / 60) 0 3 }
+    if ($relDiff -lt 40) { $mkt = 2 } else { $mkt = Clamp ((2 * (100 - $relDiff)) / 60) 0 2 }
   }
-  return Round1 (Clamp ($age + $win + $mkt) 0 10)
+  return Round1 (Clamp ($age + $win + $mkt) 0 7)
 }
 
 # ---------- 기준 데이터 ----------

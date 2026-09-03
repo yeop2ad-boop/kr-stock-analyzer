@@ -1035,31 +1035,31 @@ function computeCryptoAttractivenessScore(metrics) {
   return { total, volumeScore, volumeRatio, monthScore, monthReturn, rsiScore, rsiWeekly };
 }
 
-// 암호화폐(코인) 전용 투자안정 배점 — 2026-09-03 사용자 개편(총 10점):
-// ① 업력 0~3점: 상장(거래 시작)부터 10년 이상 만점, 3년 이하 0점(선형)
-// ② 우상향 점수 0~4점: 10년 승률(장기 우상향 점수)이 60% 이상 만점, 40% 이하 0점(선형) — 값은 배치 DB
-// ③ 비트코인 대비 모멘텀 0~3점: 1년 상승률이 비트코인과 40%p 미만 차이면 만점, 100%p 이상 0점(선형)
+// 암호화폐(코인) 전용 투자안정 배점 — 2026-09-03 사용자 재개편(총 7점, 기존 10점에서 항목별 1점씩 축소):
+// ① 업력 가점 0~2점: 상장(거래 시작)부터 10년 이상 만점, 3년 이하 0점(선형)
+// ② 우상향 점수 0~3점: 10년 승률(장기 우상향 점수)이 60% 이상 만점, 40% 이하 0점(선형) — 값은 배치 DB
+// ③ 비트코인 대비 모멘텀 0~2점: 1년 상승률이 비트코인과 40%p 미만 차이면 만점, 100%p 이상 0점(선형)
 function computeCryptoRiskScore({ firstTradeDate, winRate, oneYearReturn, btcReturn }) {
-  let ageScore = 1.5; // 데이터 부족 시 중립값
+  let ageScore = 1; // 데이터 부족 시 중립값
   let ageYears = null;
   if (firstTradeDate) {
     ageYears = (Date.now() / 1000 - firstTradeDate) / (365.25 * 86400);
-    ageScore = clamp((3 * (ageYears - 3)) / 7, 0, 3);
+    ageScore = clamp((2 * (ageYears - 3)) / 7, 0, 2);
   }
 
-  let winScore = 2;
+  let winScore = 1.5;
   if (winRate !== null && winRate !== undefined) {
-    winScore = clamp((4 * (winRate - 40)) / 20, 0, 4);
+    winScore = clamp((3 * (winRate - 40)) / 20, 0, 3);
   }
 
-  let marketScore = 1.5;
+  let marketScore = 1;
   let relDiff = null;
   if (oneYearReturn !== null && oneYearReturn !== undefined && btcReturn !== null && btcReturn !== undefined) {
     relDiff = Math.abs(oneYearReturn - btcReturn);
-    marketScore = relDiff < 40 ? 3 : clamp((3 * (100 - relDiff)) / 60, 0, 3);
+    marketScore = relDiff < 40 ? 2 : clamp((2 * (100 - relDiff)) / 60, 0, 2);
   }
 
-  const total = Math.round(clamp(ageScore + winScore + marketScore, 0, 10) * 10) / 10;
+  const total = Math.round(clamp(ageScore + winScore + marketScore, 0, 7) * 10) / 10;
   return { total, ageScore, ageYears, winScore, winRate, marketScore, relDiff };
 }
 
@@ -3715,16 +3715,48 @@ function wizardUserName() {
 function renderSearchWizardStep() {
   const renderers = {
     root: renderWizardRoot,
+    menu: renderWizardMenu,
     branchA: renderWizardBranchA,
     branchB1: renderWizardBranchB1,
     branchB2: renderWizardBranchB2,
     branchB3: renderWizardBranchB3,
     branchBResult: renderWizardBranchBResult,
+    branchBNA: renderWizardBranchBNA,
     branchC: renderWizardBranchC,
     branchCStyle: renderWizardBranchCStyle,
     branchCResult: renderWizardBranchCResult,
   };
   el("searchWizardBody").innerHTML = renderers[searchWizardStep]();
+}
+
+// 위저드에서 고른 투자처(2026-09-03 개편: 첫 질문) — kr/us/etf/crypto, 미선택 시 현재 시장 토글 기준
+function wizardMarket() {
+  return searchWizardAnswers.market || (getWatchlistActiveMarket() === "KR" ? "kr" : "us");
+}
+const WIZARD_MARKET_LABEL = { kr: "한국주식", us: "미국주식", etf: "ETF", crypto: "비트코인" };
+// 랭킹 화면으로 이동하며 하단 네비·헤더도 해당 투자처로 전환(주식용)
+function wizardGoStockRanking(idx) {
+  const market = wizardMarket() === "kr" ? "kr" : "us";
+  closeSearchWizard();
+  appSectionMode = "stocks";
+  setAppMarketMode(market);
+  setHeaderToneForSection(market);
+  goToRankingEntry(idx);
+  setBottomNavActive(market);
+  syncSectionHeader();
+}
+// ETF/코인 증시동향 랭킹으로 이동(해당 항목 지표를 미리 선택)
+function wizardGoAssetRanking(metricKey) {
+  const market = wizardMarket(); // "etf" | "crypto"
+  closeSearchWizard();
+  appSectionMode = market;
+  if (market === "etf") etfPopularRegion = getWatchlistActiveMarket() === "KR" ? "kr" : "us";
+  setHeaderToneForSection(market);
+  assetTrendMetric = metricKey;
+  if (market === "crypto") openCryptoTrend();
+  else openEtfTrend();
+  setBottomNavActive(market);
+  syncSectionHeader();
 }
 
 // 패널 오픈 시가 아니라 스크립트 로딩 시 1회만 위임 리스너를 붙여서, innerHTML 교체마다 재바인딩할 필요가 없게 함
@@ -3735,19 +3767,30 @@ el("searchWizardBody").addEventListener("click", (e) => {
   if (action === "back") {
     searchWizardStep = btn.dataset.wizardBackStep;
     renderSearchWizardStep();
+  } else if (action === "market-pick") {
+    searchWizardAnswers = { market: btn.dataset.market };
+    searchWizardStep = "menu";
+    renderSearchWizardStep();
   } else if (action === "root-a") {
     searchWizardStep = "branchA";
     renderSearchWizardStep();
   } else if (action === "root-b") {
+    // 선택찾기(섹터 기반)는 S&P500 섹터 스크리너 기반이라 미국주식에서만 제공(2026-09-03 투자처 개편)
+    if (wizardMarket() !== "us") {
+      searchWizardStep = "branchBNA";
+      renderSearchWizardStep();
+      return;
+    }
     searchWizardStep = "branchB1";
-    searchWizardAnswers = { sectors: [] };
+    searchWizardAnswers = { market: searchWizardAnswers.market, sectors: [] };
     renderSearchWizardStep();
   } else if (action === "root-c") {
     searchWizardStep = "branchC";
     renderSearchWizardStep();
   } else if (action === "rank-nav") {
-    closeSearchWizard();
-    goToRankingEntry(Number(btn.dataset.rankIdx));
+    wizardGoStockRanking(Number(btn.dataset.rankIdx));
+  } else if (action === "asset-rank-nav") {
+    wizardGoAssetRanking(btn.dataset.metric);
   } else if (action === "sector-toggle") {
     const sector = btn.dataset.sector;
     const set = new Set(searchWizardAnswers.sectors);
@@ -3779,11 +3822,9 @@ el("searchWizardBody").addEventListener("click", (e) => {
     searchWizardStep = "branchCStyle";
     renderSearchWizardStep();
   } else if (action === "branchC-style-short") {
-    closeSearchWizard();
-    goToRankingEntry(RANKING_ENTRIES.findIndex((e) => e.label === "상승 압력"));
+    wizardGoStockRanking(RANKING_ENTRIES.findIndex((e) => e.label === "상승 압력"));
   } else if (action === "branchC-style-long") {
-    closeSearchWizard();
-    goToRankingEntry(RANKING_ENTRIES.findIndex((e) => e.label === "투자 안정"));
+    wizardGoStockRanking(RANKING_ENTRIES.findIndex((e) => e.label === "투자 안정"));
   } else if (action === "share") {
     shareWizardResult(wizardShareTitle, wizardShareText);
   } else if (action === "share-self") {
@@ -3791,15 +3832,30 @@ el("searchWizardBody").addEventListener("click", (e) => {
   }
 });
 
+// 1단계(2026-09-03 개편): 관심 있는 투자처 선택 — 한국주식/미국주식/ETF/비트코인
 function renderWizardRoot() {
   const name = wizardUserName();
   return `
-    <p class="wizard-question">${escapeHtml(name)}님, 투자할 기업을 찾고 계신가요?</p>
+    <p class="wizard-question">${escapeHtml(name)}님, 관심 있는 투자처를 선택해주세요.</p>
     <div class="wizard-root-options">
-      <button type="button" class="wizard-root-option" data-wizard-action="root-a"><b>🏆 A. [랭킹찾기]</b> 각 부문별 랭킹으로 볼래요.</button>
-      <button type="button" class="wizard-root-option" data-wizard-action="root-b"><b>🎯 B. [선택찾기]</b> 내가 좋아하는 분야가 있어요.</button>
-      <button type="button" class="wizard-root-option" data-wizard-action="root-c"><b>🤖 C. [자동찾기]</b> 잘모르겠어요. 알아서 찾아주세요.</button>
+      <button type="button" class="wizard-root-option" data-wizard-action="market-pick" data-market="kr"><b>1. 한국주식</b> 코스피200+코스닥150</button>
+      <button type="button" class="wizard-root-option" data-wizard-action="market-pick" data-market="us"><b>2. 미국주식</b> S&amp;P500</button>
+      <button type="button" class="wizard-root-option" data-wizard-action="market-pick" data-market="etf"><b>3. ETF</b> 미국·한국 상장지수펀드</button>
+      <button type="button" class="wizard-root-option" data-wizard-action="market-pick" data-market="crypto"><b>4. 비트코인</b> 암호화폐 시총 상위</button>
     </div>
+  `;
+}
+// 2단계: 기존 A/B/C 메뉴(투자처별 동일)
+function renderWizardMenu() {
+  const label = WIZARD_MARKET_LABEL[wizardMarket()];
+  return `
+    <p class="wizard-question">[${escapeHtml(label)}] 종목을 어떻게 찾아드릴까요?</p>
+    <div class="wizard-root-options">
+      <button type="button" class="wizard-root-option" data-wizard-action="root-a"><b>🏆 1. [랭킹찾기]</b> 각 부문별 랭킹으로 볼래요.</button>
+      <button type="button" class="wizard-root-option" data-wizard-action="root-b"><b>🎯 2. [선택찾기]</b> 내가 좋아하는 분야가 있어요.</button>
+      <button type="button" class="wizard-root-option" data-wizard-action="root-c"><b>🤖 3. [자동찾기]</b> 잘모르겠어요. 알아서 찾아주세요.</button>
+    </div>
+    <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="root">← 뒤로</button>
   `;
 }
 
@@ -3891,14 +3947,36 @@ el("tabValuationBtn").addEventListener("click", () => activateRankingGroup("disc
 tabTrendBtn.addEventListener("click", () => activateRankingGroup("market"));
 
 function renderWizardBranchA() {
-  const items = RANKING_ENTRIES.map(
-    (entry, i) =>
-      `<button type="button" class="wizard-option-btn${entry.orange ? " wizard-option-btn-orange" : ""}" data-wizard-action="rank-nav" data-rank-idx="${i}">${iconHtml(entry.icon)} ${entry.label}</button>`
-  ).join("");
+  const market = wizardMarket();
+  let items;
+  if (market === "etf" || market === "crypto") {
+    // ETF·비트코인은 증시동향 8개 지표 랭킹만 제공(2026-09-03 투자처 개편: 선택 가능한 항목만 노출)
+    items = Object.entries(ASSET_TREND_METRICS)
+      .map(
+        ([key, m]) =>
+          `<button type="button" class="wizard-option-btn${m.orange ? " wizard-option-btn-orange" : ""}" data-wizard-action="asset-rank-nav" data-metric="${key}">${iconHtml(m.icon)} ${m.label}</button>`
+      )
+      .join("");
+  } else {
+    // 한국주식은 S&P500 전용 항목(RSI 순위·우상향점수) 제외
+    const krExcluded = new Set(["RSI 순위", "우상향점수"]);
+    items = RANKING_ENTRIES.map((entry, i) =>
+      market === "kr" && krExcluded.has(entry.label)
+        ? ""
+        : `<button type="button" class="wizard-option-btn${entry.orange ? " wizard-option-btn-orange" : ""}" data-wizard-action="rank-nav" data-rank-idx="${i}">${iconHtml(entry.icon)} ${entry.label}</button>`
+    ).join("");
+  }
   return `
-    <p class="wizard-question">[랭킹찾기]에서 찾으실 항목을 선택해주세요.</p>
+    <p class="wizard-question">[${escapeHtml(WIZARD_MARKET_LABEL[market])} · 랭킹찾기]에서 찾으실 항목을 선택해주세요.</p>
     <div class="wizard-option-grid">${items}</div>
-    <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="root">← 뒤로</button>
+    <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="menu">← 뒤로</button>
+  `;
+}
+// 선택찾기 미제공 투자처 안내(섹터 스크리너가 S&P500 전용)
+function renderWizardBranchBNA() {
+  return `
+    <p class="wizard-question">🎯 [선택찾기]는 섹터(분야) 데이터가 있는 <b>미국주식</b>에서만 제공됩니다.<br>대신 [랭킹찾기]나 [자동찾기]를 이용해보세요.</p>
+    <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="menu">← 뒤로</button>
   `;
 }
 
@@ -3928,7 +4006,7 @@ function renderWizardBranchB1() {
     <p class="wizard-question">1순위 · 분야(섹터)를 선택해주세요. (여러 개 선택 가능)</p>
     <div class="wizard-sector-checklist">${items}</div>
     <button type="button" class="wizard-confirm-btn" data-wizard-action="sector-next">다음</button>
-    <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="root">← 뒤로</button>
+    <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="menu">← 뒤로</button>
   `;
 }
 function renderWizardBranchB2() {
@@ -4048,14 +4126,26 @@ async function runBranchBPipeline() {
   }
 }
 
+// 자동찾기 안내 — 투자처별 대상 유니버스 문구(2026-09-03 개편: 해당 투자처에서 상승압력+투자안정 합계순)
+const WIZARD_AUTO_UNIVERSE_LABEL = {
+  kr: "코스피200+코스닥150 전체",
+  us: "S&P500 전체",
+  etf: "미국·한국 ETF 시가총액 상위",
+  crypto: "암호화폐 시가총액 상위",
+};
 function renderWizardBranchC() {
+  const market = wizardMarket();
+  const otherBtn =
+    market === "kr" || market === "us"
+      ? `<button type="button" class="wizard-root-option" data-wizard-action="branchC-other"><b>B. [다른방법]</b></button>`
+      : "";
   return `
-    <p class="wizard-question">S&amp;P500 전체에서 상승 압력 + 투자 안정 합계 순서로 30위까지 찾아 보겠습니다.</p>
+    <p class="wizard-question">${escapeHtml(WIZARD_AUTO_UNIVERSE_LABEL[market])}에서 상승 압력 + 투자 안정 합계 순서로 30위까지 찾아 보겠습니다.</p>
     <div class="wizard-root-options">
       <button type="button" class="wizard-root-option" data-wizard-action="branchC-confirm"><b>A. [확인]</b></button>
-      <button type="button" class="wizard-root-option" data-wizard-action="branchC-other"><b>B. [다른방법]</b></button>
+      ${otherBtn}
     </div>
-    <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="root">← 뒤로</button>
+    <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="menu">← 뒤로</button>
   `;
 }
 function renderWizardBranchCStyle() {
@@ -4074,31 +4164,73 @@ function renderWizardBranchCStyle() {
 }
 function renderWizardBranchCResult() {
   return `
-    <p class="wizard-question">S&amp;P500 전체 스캔 결과입니다.</p>
+    <p class="wizard-question">${escapeHtml(WIZARD_AUTO_UNIVERSE_LABEL[wizardMarket()])} 스캔 결과입니다.</p>
     <div id="wizardBranchCResultBody"><p class="muted">불러오는 중...</p></div>
     <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="root">← 처음으로</button>
   `;
 }
+// 자동찾기 상위 30개의 현재가·등락률만 가볍게 보충 조회(5일 차트 1회) — 실패한 행은 가격만 N/A로 표시
+async function wizardAttachPrices(rows) {
+  await mapWithConcurrency(rows, 5, async (r) => {
+    try {
+      const chart = await yahooChart(r.symbol, "5d");
+      const meta = (chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta) || {};
+      r.price = meta.regularMarketPrice ?? null;
+      r.currency = r.currency || meta.currency || "USD";
+      r.changePct = getDailyChangePercent(chart);
+    } catch {
+      r.price = null;
+    }
+    return r;
+  });
+  return rows;
+}
+// 자동찾기(2026-09-03 개편): 투자처별로 상승압력+투자안정 합계 상위 30 —
+// 주식은 지도 배치 스냅샷 점수(매일 갱신, 인기종목과 동일 기준)를 쓰고 가격만 실시간 보충, ETF/코인은 기존 스캔 재사용
 async function runBranchCConfirm() {
   const bodyEl = el("wizardBranchCResultBody");
-  bodyEl.innerHTML = `<p class="muted" id="wizardBranchCProgress">S&amp;P500 전체 종목을 확인하는 중... (최대 1분 정도 소요될 수 있어요)</p>`;
+  const market = wizardMarket();
+  bodyEl.innerHTML = `<p class="muted" id="wizardBranchCProgress">${escapeHtml(WIZARD_AUTO_UNIVERSE_LABEL[market])} 종목을 확인하는 중...</p>`;
   try {
-    const [tickers, { sp500Return }] = await Promise.all([getSP500Tickers(), getMarketReturnsCached()]);
-    const progressEl = el("wizardBranchCProgress");
-    const metricsList = await mapWithConcurrency(tickers, 5, getFullMetrics, (completed) => {
-      if (progressEl) progressEl.textContent = `${completed}/${tickers.length} 종목 확인 중...`;
-    });
-    const scored = metricsList.filter(Boolean).map((m) => ({
-      ...m,
-      combinedTotal: Math.round((computeAttractivenessScore(m).total + computeRiskScore(m, sp500Return).total) * 10) / 10,
-    }));
-    scored.sort((a, b) => b.combinedTotal - a.combinedTotal);
-    const top30 = scored.slice(0, 30);
+    let top30;
+    let maxTotal;
+    if (market === "etf") {
+      const [us, kr] = await Promise.all([getEtfScanRows("us", null), getEtfScanRows("kr", null)]);
+      const rows = [...us, ...kr].filter((r) => r.pressure !== null && r.pressure !== undefined && r.risk !== null && r.risk !== undefined);
+      rows.forEach((r) => (r.combinedTotal = Math.round((r.pressure + r.risk) * 10) / 10));
+      rows.sort((a, b) => b.combinedTotal - a.combinedTotal);
+      top30 = rows.slice(0, 30).map((r) => ({ ...r, displayName: r.name || r.symbol }));
+      maxTotal = 20;
+    } else if (market === "crypto") {
+      const rows = (await getCryptoScanRows(null)).filter((r) => r.pressure !== null && r.pressure !== undefined && r.risk !== null && r.risk !== undefined);
+      rows.forEach((r) => (r.combinedTotal = Math.round((r.pressure + r.risk) * 10) / 10));
+      rows.sort((a, b) => b.combinedTotal - a.combinedTotal);
+      top30 = rows.slice(0, 30).map((r) => ({ ...r, displayName: r.name || r.symbol }));
+      maxTotal = 17; // 코인 투자안정은 7점 만점(2026-09-03 재개편)
+    } else {
+      const isKr = market === "kr";
+      const universe = await getSReportUniverse(isKr);
+      const companies = ((universe && universe.companies) || []).filter(
+        (c) => c.pressureScore !== null && c.pressureScore !== undefined && c.stabilityScore !== null && c.stabilityScore !== undefined
+      );
+      if (!companies.length) throw new Error("점수 스냅샷 데이터를 가져오지 못했습니다.");
+      companies.forEach((c) => (c.combinedTotal = Math.round((c.pressureScore + c.stabilityScore) * 10) / 10));
+      companies.sort((a, b) => b.combinedTotal - a.combinedTotal);
+      top30 = companies.slice(0, 30).map((c) => ({
+        symbol: c.symbol,
+        displayName: isKr ? c.name || c.symbol : c.symbol,
+        currency: isKr ? "KRW" : "USD",
+        combinedTotal: c.combinedTotal,
+      }));
+      await wizardAttachPrices(top30);
+      maxTotal = 20;
+    }
+    const marketLabel = WIZARD_MARKET_LABEL[market];
     const table = wizardResultTableHtml(top30, "상승 압력+투자 안정 합계", (r) => `<b>${r.combinedTotal}</b>`);
-    wizardShareTitle = "기업검색 결과 (자동찾기)";
+    wizardShareTitle = `기업검색 결과 (자동찾기 · ${marketLabel})`;
     wizardShareText =
-      `[자동찾기] S&P500 상승 압력+투자 안정 합계 TOP30\n` +
-      top30.map((r, i) => `${i + 1}. ${r.symbol} (${r.combinedTotal}/20)`).join("\n") +
+      `[자동찾기] ${marketLabel} 상승 압력+투자 안정 합계 TOP30\n` +
+      top30.map((r, i) => `${i + 1}. ${r.displayName || r.symbol} (${r.combinedTotal}/${maxTotal})`).join("\n") +
       `\n\nmarketmap.kr`;
     bodyEl.innerHTML = `
       ${table}
@@ -4119,8 +4251,8 @@ function wizardResultTableHtml(rows, metricLabel, metricCellFn) {
       (r, i) => `
     <tr>
       <td>${i + 1}${surgeWarningEmoji(r.fiveDayExtremes)}</td>
-      <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></td>
-      <td>${r.price !== undefined && r.price !== null ? priceChartLink(r.symbol, "$" + r.price.toFixed(2)) : "N/A"}</td>
+      <td><b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.displayName || r.symbol)}</b></td>
+      <td>${r.price !== undefined && r.price !== null ? priceChartLink(r.symbol, fmtPrice(r.price, r.currency || "USD")) : "N/A"}</td>
       <td>${metricCellFn(r)}</td>
     </tr>`
     )
@@ -4805,6 +4937,11 @@ async function runAnalysis(ticker) {
     // ETF 상세(2026-09-01): invest점수 탭의 상승압력·투자안정을 ETF 전용 배점으로 계산.
     // 개별주식 투자안정 분포도(+자세히)는 주식 전용이라 ETF에선 버튼만 숨김
     const isEtfDetail = !isCryptoDetail && sectionOfSymbol(ticker, quote.quoteType) === "etf";
+    // ETF 상세(2026-09-03 사용자 요청): 코인처럼 매출액 서브탭 숨김(펀드라 매출 개념이 없음) — CSS .etf-detail 참조
+    el("companyPanel").classList.toggle("etf-detail", isEtfDetail);
+    // 코인 투자안정성은 7점 만점(2026-09-03 재개편) — 제목 옆에 만점 안내 표기(사용자 요청 문구)
+    const riskMaxNote = el("riskMaxNote");
+    if (riskMaxNote) riskMaxNote.textContent = isCryptoDetail ? "(최대 7점: 변동성 특수)" : "";
     // 개별주식 투자안정 분포도(+자세히)는 주식 전용이라 ETF·코인에선 버튼만 숨김
     const riskDetailBtn = el("futureRiskDetailBtn");
     if (riskDetailBtn) riskDetailBtn.style.display = isEtfDetail || isCryptoDetail ? "none" : "";
@@ -4820,7 +4957,7 @@ async function runAnalysis(ticker) {
       el("summarySection").innerHTML = `<p class="error-inline">사업 요약을 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
-    if (!isCryptoDetail) {
+    if (!isCryptoDetail && !isEtfDetail) {
       renderFinancials(ticker, meta.currency).catch((e) => {
         el("financialsSection").innerHTML = `<p class="error-inline">실적 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
       });
@@ -5116,7 +5253,7 @@ const S_REPORT_METRICS = [
   { key: "pressureScore", label: "상승 압력", unit: "score", better: "high" },
   { key: "stabilityScore", label: "투자 안정", unit: "score", better: "high" },
   // 장기 우상향·RSI(2026-09-03 사용자 요청) — 값은 지도 배치가 스냅샷에 병합해둔 winRateScore/rsiWeekly
-  { key: "winRateScore", label: "장기 우상향", unit: "score", better: "high" },
+  { key: "winRateScore", label: "장기 우상향 (승률)", unit: "score", better: "high" },
   { key: "rsiWeekly", label: "RSI 점수", unit: "score", better: "low", rankNote: "낮은 순" },
 ];
 
@@ -5246,13 +5383,21 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   currentDetailSymbol = meta.symbol || quote.symbol || "";
   // 암호화폐는 "Bitcoin USD"처럼 통화쌍 표기라 위키 검색·표시용 이름에서 " USD"를 떼어냄(2026-09-01)
   const companyName = summaryAssetSection === "crypto" ? rawCompanyName.replace(/\s+USD$/i, "") : rawCompanyName;
+  // 개요 한 줄 설명(2026-09-03 사용자 요청): 코인·ETF는 위키 자동 매칭이 엉뚱한 문서를 자주 잡아
+  // 직접 관리하는 정적 설명·템플릿(cryptoDescriptionOf/etfDescriptionOf)으로 대체, 주식만 기존 위키 요약 유지
   let oneLiner = "사업 개요 정보를 찾을 수 없습니다.";
-  try {
-    oneLiner = await getBusinessSummaryKo(companyName);
-    if (oneLiner.length > 220) oneLiner = oneLiner.slice(0, 217) + "...";
-  } catch {
-    // 위키백과 매칭 실패 시 안내 문구 유지
+  if (summaryAssetSection === "crypto") {
+    oneLiner = cryptoDescriptionOf(cryptoBaseTicker(meta.symbol || quote.symbol || ""), companyName);
+  } else if (summaryAssetSection === "etf") {
+    oneLiner = etfDescriptionOf(meta.symbol || quote.symbol || "", companyName);
+  } else {
+    try {
+      oneLiner = await getBusinessSummaryKo(companyName);
+    } catch {
+      // 위키백과 매칭 실패 시 안내 문구 유지
+    }
   }
+  if (oneLiner.length > 220) oneLiner = oneLiner.slice(0, 217) + "...";
 
   const industryEn = quote.industryDisp || quote.industry || "";
   const sectorEn = quote.sectorDisp || quote.sector || "";
@@ -5262,13 +5407,29 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   const symbol = meta.symbol || quote.symbol || "";
 
   // 지정 로고(override)가 있으면 그걸 쓰고, 없으면 기존 자동 소스(logo.dev/FMP) 사용
-  const _logoOv = LOGO_OVERRIDE[symbol];
+  // 코인은 자체 호스팅 로고 DB, 한국 ETF는 브랜드 → 운용사 그룹 CI를 우선 적용(2026-09-03)
+  if (summaryAssetSection === "etf" && isKrTicker(symbol)) ensureKrEtfLogoOverride(symbol, TICKER_TO_KOREAN_NAME[symbol] || companyName);
+  const _cryptoLogoSrc = summaryAssetSection === "crypto" ? cryptoLogoSrc(cryptoBaseTicker(symbol)) : null;
+  const _logoOv = LOGO_OVERRIDE[symbol] || (_cryptoLogoSrc ? { src: _cryptoLogoSrc } : null);
   const _logoSrc = logoSources(symbol, 128);
   const _logoBg = logoBg(symbol);
   const summaryLogoWrapStyle = _logoBg ? ` style="background:${_logoBg}"` : "";
   const summaryLogoImg = _logoOv
     ? `<img class="summary-ticker-logo" src="${_logoOv.src}" alt="${escapeHtml(symbol)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />`
     : `<img class="summary-ticker-logo" src="${_logoSrc.primary}" alt="${escapeHtml(symbol)}" ${_logoSrc.useFallback ? `data-fallback="${_logoSrc.fmp}"` : ""} onerror="${LOGO_ONERROR}" />`;
+
+  // 현재가 옆 등락 표기 — 암호화폐(2026-09-03 사용자 요청)는 오늘 등락금액+등락률을 함께, 그 외는 기존처럼 등락률만
+  let summaryChangeHtml = "";
+  if (changePct !== null && changePct !== undefined) {
+    const cls = changePct >= 0 ? "delta-up" : "delta-down";
+    const price = meta.regularMarketPrice ?? 0;
+    if (summaryAssetSection === "crypto" && price && changePct > -100) {
+      const diff = price - price / (1 + changePct / 100); // 전일 종가 역산으로 오늘 등락금액 계산
+      summaryChangeHtml = `<span class="${cls}">(${diff >= 0 ? "+" : "-"}${fmtPrice(Math.abs(diff), meta.currency)} / ${fmtPct(changePct)})</span>`;
+    } else {
+      summaryChangeHtml = `<span class="${cls}">(${fmtPct(changePct)})</span>`;
+    }
+  }
 
   el("summarySection").innerHTML = `
     <div class="summary-main">
@@ -5280,10 +5441,13 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
         <b>${escapeHtml(companyName)}</b> — ${escapeHtml(oneLiner)}
       </p>
       <div class="company-meta">
-        <span>업종: <b>${escapeHtml(industryKo || "N/A")}</b></span>
+        ${summaryAssetSection === "crypto"
+          ? `<span>섹터: <b>${escapeHtml(cryptoSectorOf(cryptoBaseTicker(symbol)))}</b></span>
+        <span>상장 거래소: <b>${escapeHtml(cryptoExchangesOf(cryptoBaseTicker(symbol)))}</b></span>`
+          : `<span>업종: <b>${escapeHtml(industryKo || "N/A")}</b></span>
         <span>섹터: <b>${escapeHtml(sectorKo || "N/A")}</b></span>
-        <span>거래소: <b>${escapeHtml(krExchangeName(symbol) || quote.exchDisp || meta.fullExchangeName || "N/A")}</b></span>
-        <span>현재가: <b>${fmtPrice(meta.regularMarketPrice ?? 0, meta.currency)}</b> ${changePct !== null && changePct !== undefined ? `<span class="${changePct >= 0 ? "delta-up" : "delta-down"}">(${fmtPct(changePct)})</span>` : ""}<a class="chart-link-btn" href="#" data-chart-symbol="${escapeHtml(symbol)}">📈 차트보기</a></span>
+        <span>거래소: <b>${escapeHtml(krExchangeName(symbol) || quote.exchDisp || meta.fullExchangeName || "N/A")}</b></span>`}
+        <span>현재가: <b>${fmtPrice(meta.regularMarketPrice ?? 0, meta.currency)}</b> ${summaryChangeHtml}<a class="chart-link-btn" href="#" data-chart-symbol="${escapeHtml(symbol)}">📈 차트보기</a></span>
       </div>
       <div class="summary-action-row">
         <button type="button" class="summary-action-btn" id="tickerHistoricalToggleBtn" data-ticker="${escapeHtml(symbol)}">🕰️ 과거분석</button>
@@ -5580,16 +5744,22 @@ async function runAssetSReport(ticker, assetType) {
       .map((key) => {
         const m = ASSET_TREND_METRICS[key];
         const rank = metricRank(key);
-        const rowLabel = key === "winrate" ? "장기 우상향" : key === "rsi" ? "RSI 점수" : m.label;
-        return `<tr><td>${rowLabel}</td><td>${m.cell(self)}</td><td>${
-          rank ? `<b>${rank}위</b> <span class="muted" style="font-size:11px;">/ ${totalCount}개</span>` : "N/A"
-        }</td></tr>`;
+        const rowLabel = key === "winrate" ? "장기 우상향 (승률)" : key === "rsi" ? "RSI 점수" : m.label;
+        // 국내주식 S리포트와 동일한 순위 표기(2026-09-03 사용자 요청): 상위 % + 상위 10% 🔥 / 하위 10% ⚠️
+        let rankHtml = "N/A";
+        if (rank) {
+          const pct = (rank / totalCount) * 100;
+          const extreme = pct <= 10 ? " 🔥" : pct >= 90 ? " ⚠️" : "";
+          rankHtml = `${rank}위 / ${totalCount} <span class="muted" style="font-size:11px;">(상위 ${pct.toFixed(0)}%)</span>${extreme}`;
+        }
+        return `<tr><td>${rowLabel}</td><td>${m.cell(self)}</td><td>${rankHtml}</td></tr>`;
       })
       .join("");
     wrap.innerHTML = `
       <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${uniLabel} 기준 8개 항목별 순위입니다${
       outsideUniverse ? " (이 종목은 시총 상위 100위 밖이라 100개+본인을 합친 근사 순위예요)" : ""
     }. 투자 자문이 아닙니다.</p>
+      <p class="muted" style="font-size:11px;margin:0 0 4px;opacity:0.65;">🔥 해당 항목 상위 10% 이내 · ⚠️ 하위 10% (${uniLabel} 내 순위 기준)</p>
       <table class="top30-table">
         <thead><tr><th>항목</th><th>값</th><th>순위</th></tr></thead>
         <tbody>${body}</tbody>
@@ -5639,7 +5809,7 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise, s
       </div>` : ""}
       <div class="mini-score">
         <div class="mini-score-circle winrate">${winRateVal !== null ? winRateVal : "—"}</div>
-        <span class="mini-score-label">장기 우상향</span>
+        <span class="mini-score-label">장기 우상향 (승률)</span>
       </div>
       <div class="mini-score">
         <div class="mini-score-circle rsi">${rsiVal !== null ? rsiVal : "—"}</div>
@@ -6497,14 +6667,14 @@ async function renderCryptoRisk(selfMetricsPromise) {
     <div class="score-wrap">
       <div class="score-badge">
         <div class="score-num">${s.total}</div>
-        <div class="score-den">/ 10</div>
+        <div class="score-den">/ 7</div>
       </div>
       <div class="score-details">
         ${scoreMethodBarRow(
           "①",
-          "업력",
+          "업력 가점",
           s.ageScore,
-          3,
+          2,
           `거래 시작 후 경과: <b>${s.ageYears !== null && s.ageYears !== undefined ? s.ageYears.toFixed(1) + "년" : "N/A"}</b> (10년 이상 만점, 3년 이하 0점)`,
           stabilityColor
         )}
@@ -6512,15 +6682,15 @@ async function renderCryptoRisk(selfMetricsPromise) {
           "②",
           "우상향 점수",
           s.winScore,
-          4,
-          `10년 월간 승률(장기 우상향 점수): <b>${s.winRate !== null && s.winRate !== undefined ? s.winRate + "점" : "N/A(중립 2점)"}</b> (60 이상 만점, 40 이하 0점)`,
+          3,
+          `10년 월간 승률(장기 우상향 점수): <b>${s.winRate !== null && s.winRate !== undefined ? s.winRate + "점" : "N/A(중립 1.5점)"}</b> (60 이상 만점, 40 이하 0점)`,
           stabilityColor
         )}
         ${scoreMethodBarRow(
           "③",
           "비트코인 대비 모멘텀",
           s.marketScore,
-          3,
+          2,
           `1년 상승률과 비트코인의 차이: <b>${s.relDiff !== null && s.relDiff !== undefined ? s.relDiff.toFixed(1) + "%p" : "N/A"}</b> (40%p 미만 만점, 100%p 이상 0점)`,
           stabilityColor
         )}
@@ -8231,6 +8401,7 @@ function etfRegionNavHtml(attr) {
 }
 function etfRowNameHtml(r, isKr) {
   const badge = isKr ? KR_ETF_BRAND_BADGE_POPULAR[(r.name || "").split(" ")[0]] : undefined;
+  if (isKr) ensureKrEtfLogoOverride(r.symbol, r.name); // 브랜드 → 운용사 그룹 CI(2026-09-03)
   return `${tickerLogoHtml(r.symbol, badge)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(isKr ? r.name : r.symbol)}</b>${
     isKr ? "" : `</span><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}`
   }`;
@@ -8463,7 +8634,7 @@ const ASSET_TREND_METRICS = {
     orange: true,
     sort: (a, b) => (b.risk ?? -Infinity) - (a.risk ?? -Infinity),
     cell: (r) => scoreRankColorHtml(r.risk, r.risk),
-    note: "투자 안정 점수(전용 배점, 10점 만점) 순위입니다.",
+    note: "투자 안정 점수(전용 배점, ETF 10점·코인 7점 만점) 순위입니다.",
     noRiskCol: true,
   },
   // RSI·승률 순위(2026-09-02 확장): 주식 시장동향과 동일 컨셉 — 값은 배치 DB(winrate-scores-us.json의
@@ -10082,9 +10253,37 @@ const LOGO_OVERRIDE = {
   // 한화그룹·한화오션(2026-09-03 사용자 요청): 자동 소스 로고가 부정확해 위키미디어 공식 로고로 교체(자체 호스팅)
   "000880.KS": { src: "logos/hanwha.png", bg: "#ffffff" },
   "042660.KS": { src: "logos/hanwha-ocean.png", bg: "#ffffff" },
+  // 효성중공업(298040, 2026-09-03 사용자 요청): 위키미디어 공식 HYOSUNG 워드마크를 정사각 패딩해 자체 호스팅
+  "298040.KS": { src: "logos/hyosung-heavy.png", bg: "#ffffff" },
   // FMP에 로고가 없는(404) 종목들 — 브랜드평판순 목록 131개 전수 점검 후 확인된 것만 추가(나머지는 정상 로드됨)
   LGEIY: { src: "logos/lg.svg", bg: "#ffffff" }, // LG전자 미국 OTC ADR — Wikimedia Commons(자유 이용) LG 로고
 };
+
+// 한국 ETF 로고(2026-09-03 사용자 요청): 숫자 티커라 FMP 로고가 없어 브랜드(첫 단어) → 운용사 그룹 CI로 표시.
+// 그룹 CI는 이미 FMP에 있는 상장 계열사 로고를 재사용(삼성전자=삼성, 미래에셋증권=미래에셋 등), 한화 계열은 자체 호스팅 로고
+const KR_ETF_BRAND_LOGO_SRC = {
+  KODEX: "https://financialmodelingprep.com/image-stock/005930.KS.png",
+  KoAct: "https://financialmodelingprep.com/image-stock/005930.KS.png",
+  TIGER: "https://financialmodelingprep.com/image-stock/006800.KS.png",
+  RISE: "https://financialmodelingprep.com/image-stock/105560.KS.png",
+  KBSTAR: "https://financialmodelingprep.com/image-stock/105560.KS.png",
+  SOL: "https://financialmodelingprep.com/image-stock/055550.KS.png",
+  ACE: "https://financialmodelingprep.com/image-stock/071050.KS.png",
+  PLUS: "logos/hanwha.png",
+  ARIRANG: "logos/hanwha.png",
+  HANARO: "https://financialmodelingprep.com/image-stock/005940.KS.png",
+  KIWOOM: "https://financialmodelingprep.com/image-stock/039490.KS.png",
+  KOSEF: "https://financialmodelingprep.com/image-stock/039490.KS.png",
+  "1Q": "https://financialmodelingprep.com/image-stock/086790.KS.png",
+  WON: "https://financialmodelingprep.com/image-stock/316140.KS.png",
+  IBK: "https://financialmodelingprep.com/image-stock/024110.KS.png",
+};
+// 상품명으로 브랜드를 찾아 그 심볼의 LOGO_OVERRIDE를 등록 — ETF 목록·상세 렌더 직전에 호출(로드 실패 시 기존 배지 폴백 유지)
+function ensureKrEtfLogoOverride(symbol, name) {
+  if (!symbol || LOGO_OVERRIDE[symbol]) return;
+  const src = KR_ETF_BRAND_LOGO_SRC[(name || "").split(" ")[0]];
+  if (src) LOGO_OVERRIDE[symbol] = { src, bg: "#ffffff" };
+}
 
 // FMP 로고가 순백색이라 흰 원 배경에서 안 보이는 종목들(506개 전수 픽셀 분석 결과 61개) — 어두운 배경을 깔아 흰 로고가 보이게 함
 const WHITE_LOGO_BG = "#14161c";
@@ -10106,6 +10305,13 @@ function logoBg(symbol) {
 function tickerLogoHtml(symbol, badgeLabel) {
   const s = escapeHtml(symbol);
   const badge = escapeHtml(badgeLabel || symbol.slice(0, 2));
+  // 암호화폐 심볼(BTC-USD 등)은 자체 호스팅 코인 로고 DB를 우선 사용(2026-09-03) — FMP엔 코인 로고가 없음
+  if (/-USD/i.test(symbol)) {
+    const cryptoSrc = cryptoLogoSrc(cryptoBaseTicker(symbol));
+    if (cryptoSrc) {
+      return `<span class="ticker-logo-wrap"><img class="ticker-logo" src="${cryptoSrc}" alt="${s}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><span class="ticker-logo-badge" style="display:none;">${badge}</span></span>`;
+    }
+  }
   const ov = LOGO_OVERRIDE[symbol];
   const bg = logoBg(symbol);
   const wrapStyle = bg ? ` style="background:${bg}"` : "";
@@ -10643,6 +10849,263 @@ function cryptoBaseTicker(sym) {
 function cryptoKoName(sym, fallbackName) {
   return CRYPTO_KO_BY_TICKER[cryptoBaseTicker(sym)] || TICKER_TO_KOREAN_NAME[sym] || (fallbackName || sym).replace(/\s+USD$/i, "");
 }
+
+// ---------- 암호화폐 섹터·대표 상장 거래소(2026-09-03 사용자 요청: 검색상세 요약 카드 표시용) ----------
+// 섹터는 코인게코/코인마켓캡에서 통용되는 분류를 한글화한 정적 데이터 — 맵에 없는 코인은 "암호화폐(기타)"
+const CRYPTO_SECTOR_BY_TICKER = {};
+for (const [sectorKo, tickers] of Object.entries({
+  "결제/가치저장(레이어1)": ["BTC"],
+  "스마트컨트랙트 플랫폼(레이어1)": ["ETH", "SOL", "ADA", "TRX", "AVAX", "TON", "DOT", "NEAR", "APT", "SUI", "ICP", "HBAR", "ATOM", "ALGO", "XTZ", "EOS", "NEO", "FLOW", "EGLD", "CFX", "MINA", "SEI", "INJ", "KAS", "S", "FLR", "XDC", "ETC", "GRAM", "CC"],
+  "레이어2(확장 네트워크)": ["ARB", "OP", "POL", "MATIC", "STRK", "ZK", "MNT", "IMX", "RON", "STX"],
+  "결제/송금": ["XRP", "XLM", "LTC", "BCH", "DASH"],
+  "프라이버시 코인": ["XMR", "ZEC"],
+  "스테이블코인": ["USDT", "USDC", "DAI", "USDE", "USDS", "USDD", "TUSD", "FDUSD", "PYUSD", "USDG", "USD", "USDT0", "BFUSD", "SUSDE", "SYRUPUSDC"],
+  "밈코인": ["DOGE", "SHIB", "PEPE", "FLOKI", "BONK", "WIF", "POPCAT", "NOT", "TRUMP", "PENGU", "MOG", "BRETT", "FARTCOIN", "SPX", "PUMP", "M"],
+  "디파이(탈중앙 금융)": ["UNI", "AAVE", "CRV", "LDO", "MKR", "CAKE", "PENDLE", "RAY", "JUP", "AERO", "MORPHO", "ETHFI", "ENA", "ENA2", "HYPE", "DEXE", "NEXO", "SKY", "GNO", "JLP", "ONDO", "ONDO2"],
+  "오라클/미들웨어": ["LINK", "GRT", "W", "QNT", "TIA", "ENS"],
+  "AI/컴퓨팅": ["TAO", "FET", "RENDER", "WLD", "VIRTUAL"],
+  "스토리지/인프라": ["FIL", "AR", "BTT", "VET", "IOTA", "JASMY", "THETA", "TWT"],
+  "거래소 토큰": ["BNB", "OKB", "LEO", "BGB", "GT", "KCS", "HTX", "CRO"],
+  "게임/메타버스": ["GALA", "SAND", "MANA", "AXS"],
+  "랩트/스테이킹 파생": ["WBTC", "WETH", "STETH", "WSTETH", "WBETH", "CBBTC", "BTCB", "WEETH", "RETH", "METH", "EZETH", "JITOSOL", "MSOL", "BNSOL", "LBTC", "SOLVBTC", "RSETH", "WTRX", "BTCT", "AETHWETH", "AETHUSDT"],
+  "금 연동 토큰": ["XAUT", "PAXG"],
+})) for (const t of tickers) CRYPTO_SECTOR_BY_TICKER[t] = sectorKo;
+// 대표 상장 거래소 5곳 — 국내(업비트·빗썸) 상장이 드문 계열(스테이블·랩트·금 연동)은 해외 대표 5곳으로,
+// 거래소 토큰은 실제 발행·주력 거래소 위주로 표시
+const CRYPTO_EXCHANGES_DEFAULT5 = "업비트 · 바이낸스 · 빗썸 · 코인베이스 · 크라켄";
+const CRYPTO_EXCHANGES_GLOBAL5 = "바이낸스 · 코인베이스 · 크라켄 · OKX · 바이비트";
+const CRYPTO_EXCHANGE_BY_TICKER = {
+  BNB: "바이낸스 · OKX · 바이비트 · 게이트 · MEXC",
+  OKB: "OKX · 게이트 · 비트겟 · MEXC · 코인엑스",
+  LEO: "비트파이넥스 · 게이트 · MEXC · 비트마트 · 코인엑스",
+  BGB: "비트겟 · 게이트 · MEXC · 비트파이넥스 · 코인엑스",
+  GT: "게이트 · MEXC · 비트겟 · 비트마트 · 코인엑스",
+  KCS: "쿠코인 · 게이트 · MEXC · 비트마트 · 코인엑스",
+  HTX: "HTX · 게이트 · MEXC · 비트마트 · 코인엑스",
+  CRO: "크립토닷컴 · 업비트 · 코인베이스 · OKX · 게이트",
+};
+const CRYPTO_GLOBAL_ONLY_SECTORS = new Set(["스테이블코인", "랩트/스테이킹 파생", "금 연동 토큰"]);
+function cryptoSectorOf(base) {
+  return CRYPTO_SECTOR_BY_TICKER[base] || "암호화폐(기타)";
+}
+function cryptoExchangesOf(base) {
+  if (CRYPTO_EXCHANGE_BY_TICKER[base]) return CRYPTO_EXCHANGE_BY_TICKER[base];
+  return CRYPTO_GLOBAL_ONLY_SECTORS.has(cryptoSectorOf(base)) ? CRYPTO_EXCHANGES_GLOBAL5 : CRYPTO_EXCHANGES_DEFAULT5;
+}
+
+// ---------- 코인·ETF 개요 한 줄 설명(2026-09-03 사용자 요청: 위키 자동 매칭이 엉뚱한 문서를 잡는 문제 대응) ----------
+// 주요 코인은 직접 쓴 정적 설명을, 그 외 코인은 섹터 기반 템플릿을, ETF는 운용사+상품명 템플릿을 사용
+const CRYPTO_DESC_BY_TICKER = {
+  BTC: "2009년 등장한 최초의 암호화폐로, 총발행량이 2,100만 개로 고정되어 '디지털 금'으로 불립니다. 시가총액 1위를 유지하고 있는 대표 가치저장 자산입니다.",
+  ETH: "스마트 컨트랙트를 처음 도입한 시가총액 2위 블록체인 플랫폼으로, 디파이·NFT·스테이블코인 등 대부분의 온체인 생태계가 이더리움 위에서 돌아갑니다.",
+  USDT: "테더사가 발행하는 달러 연동 스테이블코인으로, 1코인=1달러 가치를 목표로 하며 암호화폐 거래의 기축통화 역할을 합니다.",
+  XRP: "리플사가 국경 간 송금·결제용으로 만든 코인으로, 은행 간 송금을 몇 초 만에 처리하는 것을 목표로 합니다.",
+  BNB: "세계 최대 거래소 바이낸스의 자체 코인으로, 거래 수수료 할인과 BNB체인 생태계의 기축 자산으로 쓰입니다.",
+  SOL: "빠른 속도와 낮은 수수료를 앞세운 고성능 블록체인 플랫폼으로, 밈코인·디파이·NFT 생태계가 활발합니다.",
+  USDC: "서클사가 발행하는 달러 연동 스테이블코인으로, 규제 준수와 투명한 준비금 공시를 강점으로 내세웁니다.",
+  DOGE: "장난으로 시작된 최초의 밈코인이지만, 일론 머스크의 지지 등으로 시가총액 상위권에 자리잡은 결제 겸용 코인입니다.",
+  ADA: "학술 연구 기반으로 개발되는 지분증명 블록체인 플랫폼으로, 창시자는 이더리움 공동창업자 찰스 호스킨슨입니다.",
+  TRX: "저스틴 선이 만든 블록체인 플랫폼으로, 낮은 수수료 덕분에 테더(USDT) 전송 네트워크로 가장 많이 쓰입니다.",
+  LINK: "블록체인 밖의 현실 데이터(가격·날씨 등)를 스마트 컨트랙트에 공급하는 대표 오라클 네트워크입니다.",
+  AVAX: "빠른 완결성과 서브넷(맞춤형 체인) 구조가 특징인 스마트 컨트랙트 플랫폼입니다.",
+  XLM: "리플 공동창업자가 만든 국경 간 송금 특화 블록체인으로, 저렴하고 빠른 소액 송금을 목표로 합니다.",
+  SUI: "메타(구 페이스북) 출신 개발진이 만든 고성능 레이어1 블록체인으로, Move 언어 기반 병렬 처리가 특징입니다.",
+  SHIB: "도지코인을 잇는 대표 밈코인으로, 이더리움 기반이며 자체 거래소·레이어2 등 생태계 확장을 시도하고 있습니다.",
+  HBAR: "해시그래프라는 독자 합의 기술을 쓰는 기업용 분산원장으로, 구글·IBM 등이 운영위원회에 참여했습니다.",
+  TON: "텔레그램에서 출발한 블록체인으로, 텔레그램 메신저 내 결제·미니앱 생태계와 연동되는 것이 강점입니다.",
+  DOT: "서로 다른 블록체인을 연결하는 것을 목표로 하는 폴카닷 네트워크의 코인으로, 이더리움 공동창업자 개빈 우드가 만들었습니다.",
+  LTC: "비트코인 코드를 기반으로 2011년 만들어진 결제 코인으로, 블록 생성이 빨라 '비트코인의 은'으로 불립니다.",
+  BCH: "2017년 비트코인에서 하드포크로 갈라져 나온 결제 특화 코인으로, 더 큰 블록으로 저렴한 결제를 지향합니다.",
+  UNI: "이더리움 최대 탈중앙 거래소(DEX) 유니스왑의 거버넌스 코인으로, 중개자 없이 코인끼리 교환하는 프로토콜입니다.",
+  PEPE: "개구리 페페 캐릭터를 내세운 이더리움 기반 밈코인으로, 2023년 등장 후 밈코인 열풍을 주도했습니다.",
+  NEAR: "사용 편의성과 확장성에 집중한 지분증명 레이어1 플랫폼으로, AI 관련 프로젝트 유치에도 적극적입니다.",
+  APT: "메타의 디엠(Diem) 프로젝트 출신 팀이 만든 Move 언어 기반 고성능 레이어1 블록체인입니다.",
+  ICP: "인터넷 자체를 탈중앙화하겠다는 목표로 웹 서비스를 통째로 온체인에 올리는 것을 지향하는 플랫폼입니다.",
+  AAVE: "대표적인 탈중앙 예치·대출(랜딩) 프로토콜로, 담보를 맡기고 코인을 빌리는 디파이 서비스의 표준격입니다.",
+  ETC: "2016년 더다오 해킹 사태 때 이더리움에서 갈라져 나와 원래 체인을 유지한 작업증명 블록체인입니다.",
+  POL: "이더리움 확장(레이어2) 대표 주자 폴리곤의 코인으로, 기존 MATIC에서 리브랜딩됐습니다.",
+  MATIC: "이더리움 확장(레이어2) 대표 주자 폴리곤의 구 코인으로, 현재는 POL로 전환이 진행 중입니다.",
+  RENDER: "유휴 GPU를 연결해 3D 렌더링·AI 연산을 분산 처리하는 네트워크의 코인입니다.",
+  VET: "상품 이력 추적 등 기업 공급망 관리에 특화된 블록체인 비체인의 코인입니다.",
+  ARB: "이더리움 최대 레이어2(옵티미스틱 롤업) 아비트럼의 거버넌스 코인입니다.",
+  OP: "이더리움 레이어2 옵티미즘의 거버넌스 코인으로, 코인베이스의 베이스 체인도 같은 기술(OP스택)을 씁니다.",
+  FIL: "남는 저장공간을 빌려주고 보상받는 탈중앙 클라우드 스토리지 네트워크 파일코인의 코인입니다.",
+  ATOM: "블록체인 간 통신(IBC) 표준을 만든 코스모스 생태계의 중심 코인입니다.",
+  KAS: "작업증명에 블록DAG 구조를 접목해 초당 여러 블록을 처리하는 고속 레이어1입니다.",
+  INJ: "파생상품 거래에 특화된 금융 전문 레이어1 블록체인 인젝티브의 코인입니다.",
+  SEI: "거래소급 속도를 목표로 하는 트레이딩 특화 레이어1 블록체인입니다.",
+  MNT: "이더리움 레이어2 맨틀 네트워크의 코인으로, 대형 DAO 트레저리를 기반으로 성장했습니다.",
+  CRO: "크립토닷컴 거래소·체인 생태계의 기축 코인으로, 카드 결제 등 실생활 사용처 확대에 적극적입니다.",
+  IMX: "NFT·웹3 게임에 특화된 이더리움 레이어2 이뮤터블의 코인입니다.",
+  TAO: "누구나 AI 모델을 올리고 기여도에 따라 보상받는 탈중앙 머신러닝 네트워크 비텐서의 코인입니다.",
+  WLD: "오픈AI CEO 샘 올트먼이 공동 창업한 프로젝트로, 홍채 인식으로 '사람임을 증명'하는 신원 네트워크입니다.",
+  GRT: "블록체인 데이터를 검색하기 쉽게 색인해 앱에 제공하는 '웹3의 구글'격 인덱싱 프로토콜입니다.",
+  ONDO: "미국 국채 등 전통 금융자산을 토큰화해 온체인으로 가져오는 RWA(실물자산) 대표 프로젝트입니다.",
+  STX: "비트코인 위에서 스마트 컨트랙트를 구현하는 비트코인 레이어2 프로젝트 스택스의 코인입니다.",
+  ALGO: "튜링상 수상자 실비오 미칼리가 만든 순수 지분증명 레이어1 블록체인입니다.",
+  JUP: "솔라나 대표 DEX 애그리게이터 주피터의 거버넌스 코인입니다.",
+  FLOKI: "일론 머스크의 반려견 이름에서 딴 밈코인으로, 게임·교육 등 유틸리티 확장을 시도합니다.",
+  BONK: "솔라나 생태계 대표 밈코인으로, 솔라나 커뮤니티에 대량 에어드롭되며 시작됐습니다.",
+  HYPE: "탈중앙 무기한 선물 거래소 하이퍼리퀴드의 코인으로, 자체 레이어1 위에서 오더북 거래를 제공합니다.",
+  ENA: "달러 연동 합성 스테이블코인 USDe를 발행하는 에테나 프로토콜의 거버넌스 코인입니다.",
+  FET: "AI 에이전트 경제를 지향하는 페치의 코인으로, 오션프로토콜 등과 AI 연합(ASI)을 결성했습니다.",
+  TIA: "데이터 가용성 레이어를 분리한 모듈러 블록체인의 선구자 셀레스티아의 코인입니다.",
+  XMR: "거래 내역을 암호화해 송금인·수신인·금액을 감추는 대표 프라이버시 코인입니다.",
+  ZEC: "영지식증명(zk-SNARK) 기술로 거래를 은닉할 수 있는 프라이버시 코인입니다.",
+  DASH: "빠른 결제(인스턴트센드)와 익명 전송 기능을 갖춘 결제 특화 코인입니다.",
+  EOS: "2018년 사상 최대 ICO로 출발한 위임지분증명 블록체인 플랫폼입니다.",
+  XTZ: "온체인 투표로 프로토콜을 스스로 업그레이드하는 자체 수정형 블록체인 테조스의 코인입니다.",
+  NEO: "'중국의 이더리움'으로 불렸던 스마트 컨트랙트 플랫폼입니다.",
+  IOTA: "사물인터넷(IoT) 기기 간 수수료 없는 데이터·가치 전송을 위해 만들어진 분산원장입니다.",
+  FLOW: "NBA 톱샷을 만든 대퍼랩스가 개발한 NFT·게임 특화 블록체인입니다.",
+  GALA: "블록체인 게임 플랫폼 갈라게임즈의 코인으로, 게임 아이템 거래와 노드 보상에 쓰입니다.",
+  SAND: "이용자가 직접 게임·아이템을 만들어 수익화하는 메타버스 플랫폼 샌드박스의 코인입니다.",
+  MANA: "가상 부동산(LAND)을 사고파는 메타버스 플랫폼 디센트럴랜드의 코인입니다.",
+  AXS: "'플레이 투 언' 열풍을 일으킨 블록체인 게임 엑시인피니티의 거버넌스 코인입니다.",
+  THETA: "탈중앙 영상 스트리밍·엣지 컴퓨팅 네트워크 쎄타의 코인입니다.",
+  CRV: "스테이블코인 교환에 특화된 대표 DEX 커브파이낸스의 거버넌스 코인입니다.",
+  LDO: "이더리움 최대 유동성 스테이킹 프로토콜 리도의 거버넌스 코인입니다.",
+  MKR: "최초의 탈중앙 스테이블코인 DAI를 발행하는 메이커다오의 거버넌스 코인입니다.",
+  CAKE: "BNB체인 최대 DEX 팬케이크스왑의 코인입니다.",
+  PENDLE: "미래 수익률을 쪼개 사고파는 이자 파생 디파이 프로토콜 펜들의 코인입니다.",
+  AR: "한 번 저장하면 영구 보관되는 탈중앙 스토리지 네트워크 알위브의 코인입니다.",
+  ENS: "0x 주소를 사람이 읽는 이름(.eth)으로 바꿔주는 이더리움 네임서비스의 거버넌스 코인입니다.",
+  QNT: "서로 다른 블록체인과 기업 시스템을 연결하는 상호운용성 프로젝트 퀀트의 코인입니다.",
+  WIF: "털모자를 쓴 강아지 밈으로 유명한 솔라나 기반 밈코인입니다.",
+  TRUMP: "도널드 트럼프 미국 대통령이 2025년 1월 취임 직전 발행한 공식 밈코인입니다.",
+  PENGU: "인기 NFT 컬렉션 퍼지펭귄이 발행한 솔라나 기반 밈코인입니다.",
+  XAUT: "테더가 발행하는 금 1온스 연동 토큰으로, 실물 금괴가 준비금으로 보관됩니다.",
+  PAXG: "팍소스가 발행하는 금 연동 토큰으로, 런던 금고의 실물 금에 대한 소유권을 나타냅니다.",
+  WBTC: "비트코인을 이더리움에서 쓸 수 있게 1:1로 감싼 랩트 토큰입니다.",
+  STETH: "리도에 이더리움을 스테이킹하고 받는 이자 축적형 토큰입니다.",
+  DAI: "메이커다오가 발행하는 담보 기반 탈중앙 스테이블코인으로, 1달러 가치를 목표로 합니다.",
+  USDE: "에테나가 발행하는 합성 달러 스테이블코인으로, 현물 보유+선물 매도 헤지로 가치를 고정합니다.",
+  OKB: "글로벌 거래소 OKX의 자체 코인으로, 수수료 할인 등에 쓰입니다.",
+  LEO: "비트파이넥스 운영사 아이파이넥스가 발행한 거래소 코인입니다.",
+  BGB: "글로벌 거래소 비트겟의 자체 코인입니다.",
+  NEXO: "암호화폐 담보 대출·이자 서비스를 제공하는 넥소 플랫폼의 코인입니다.",
+  ETHFI: "이더리움 리스테이킹 프로토콜 이더파이의 거버넌스 코인입니다.",
+  VIRTUAL: "AI 에이전트를 만들고 토큰화하는 버추얼프로토콜의 코인으로, AI 에이전트 열풍의 중심에 있습니다.",
+};
+// KR ETF 브랜드 → 운용사(개요 설명용) — 브랜드는 상품명 맨 앞 단어
+const KR_ETF_ISSUER_BY_BRAND = {
+  KODEX: "삼성자산운용", TIGER: "미래에셋자산운용", RISE: "KB자산운용", ACE: "한국투자신탁운용",
+  SOL: "신한자산운용", PLUS: "한화자산운용", HANARO: "NH-Amundi자산운용", KIWOOM: "키움투자자산운용",
+  "1Q": "하나자산운용", WON: "우리자산운용", TIME: "타임폴리오자산운용", KoAct: "삼성액티브자산운용",
+  KOSEF: "키움투자자산운용", ARIRANG: "한화자산운용", KBSTAR: "KB자산운용", IBK: "IBK자산운용",
+  HK: "흥국자산운용", BNK: "BNK자산운용", MIDAS: "마이다스에셋자산운용", UNICORN: "현대자산운용",
+  파워: "교보악사자산운용", 마이티: "DB자산운용",
+};
+// 미국 주요 ETF 직접 작성 설명(시총 상위권+유명 상품) — 없는 티커는 운용사 키워드 템플릿으로 폴백
+const US_ETF_DESC_BY_TICKER = {
+  SPY: "세계 최초이자 최대 규모의 S&P500 추종 ETF(스테이트스트리트 SPDR)로, 미국 대형주 500개에 분산 투자합니다.",
+  VOO: "뱅가드의 S&P500 추종 ETF로, 초저비용(연 0.03%)으로 미국 대형주 500개에 투자합니다.",
+  IVV: "블랙록 iShares의 S&P500 추종 ETF로, SPY보다 낮은 보수가 강점입니다.",
+  VTI: "미국 주식시장 전체(대·중·소형 약 3,500개 종목)를 한 번에 담는 뱅가드의 대표 ETF입니다.",
+  QQQ: "나스닥100 지수를 추종하는 인베스코의 대표 기술주 ETF로, 애플·엔비디아·마이크로소프트 등 비중이 큽니다.",
+  QQQM: "QQQ와 같은 나스닥100을 더 낮은 보수로 추종하는 장기투자용 버전입니다.",
+  VTV: "미국 대형 가치주에 투자하는 뱅가드 ETF입니다.",
+  VUG: "미국 대형 성장주에 투자하는 뱅가드 ETF입니다.",
+  IEFA: "미국을 제외한 유럽·일본 등 선진국 주식에 투자하는 iShares 코어 ETF입니다.",
+  GLD: "금 현물 가격을 추종하는 세계 최대 금 ETF로, 실물 금괴를 보관해 가치를 뒷받침합니다.",
+  IAU: "iShares의 금 현물 ETF로, GLD보다 보수가 낮아 장기 보유에 적합합니다.",
+  AGG: "미국 투자등급 채권 전체를 담는 iShares의 대표 종합채권 ETF입니다.",
+  BND: "뱅가드의 미국 종합채권 ETF로, 국채·회사채·MBS를 폭넓게 담습니다.",
+  IWF: "러셀1000 성장주 지수를 추종하는 iShares ETF입니다.",
+  IWD: "러셀1000 가치주 지수를 추종하는 iShares ETF입니다.",
+  IWM: "미국 소형주 2,000개(러셀2000)에 투자하는 대표 소형주 ETF입니다.",
+  IWB: "미국 대형주 1,000개(러셀1000)에 투자하는 iShares ETF입니다.",
+  VIG: "10년 이상 연속 배당을 늘린 미국 배당성장주에 투자하는 뱅가드 ETF입니다.",
+  VYM: "배당수익률이 높은 미국 대형주에 투자하는 뱅가드 고배당 ETF입니다.",
+  SCHD: "재무 우량 고배당주 100개(다우존스 미국 배당100)를 담는 찰스슈왑의 인기 배당 ETF입니다.",
+  DGRO: "5년 이상 배당을 늘린 미국 기업에 투자하는 iShares 배당성장 ETF입니다.",
+  VWO: "중국·인도·브라질 등 신흥국 주식에 투자하는 뱅가드 ETF입니다.",
+  IEMG: "신흥국 주식에 폭넓게 투자하는 iShares 코어 ETF입니다.",
+  EEM: "MSCI 신흥국 지수를 추종하는 iShares의 대표 신흥국 ETF입니다.",
+  VXUS: "미국을 제외한 전 세계 주식에 투자하는 뱅가드 ETF입니다.",
+  IXUS: "미국 제외 전 세계 주식에 투자하는 iShares ETF입니다.",
+  VT: "미국 포함 전 세계 주식시장 전체에 한 번에 투자하는 뱅가드 ETF입니다.",
+  IJH: "미국 중형주(S&P 미드캡400)에 투자하는 iShares ETF입니다.",
+  IJR: "미국 소형주(S&P 스몰캡600)에 투자하는 iShares ETF입니다.",
+  VO: "미국 중형주에 투자하는 뱅가드 ETF입니다.",
+  VB: "미국 소형주에 투자하는 뱅가드 ETF입니다.",
+  IVW: "S&P500 중 성장주만 골라 담는 iShares ETF입니다.",
+  ITOT: "미국 주식시장 전체를 담는 iShares 코어 ETF입니다.",
+  SCHX: "미국 대형주에 저비용으로 투자하는 찰스슈왑 ETF입니다.",
+  SCHB: "미국 주식시장 전체에 투자하는 찰스슈왑 ETF입니다.",
+  SCHF: "미국 제외 선진국 주식에 투자하는 찰스슈왑 ETF입니다.",
+  SCHG: "미국 대형 성장주에 투자하는 찰스슈왑 ETF입니다.",
+  SPLG: "S&P500을 SPY보다 낮은 보수로 추종하는 SPDR 포트폴리오 ETF입니다.",
+  RSP: "S&P500 500개 종목을 동일 비중으로 담아 대형주 쏠림을 줄인 인베스코 ETF입니다.",
+  XLK: "S&P500 기술 섹터(애플·마이크로소프트 등)에 투자하는 SPDR 섹터 ETF입니다.",
+  XLF: "S&P500 금융 섹터(버크셔·JP모건 등)에 투자하는 SPDR 섹터 ETF입니다.",
+  XLV: "S&P500 헬스케어 섹터에 투자하는 SPDR 섹터 ETF입니다.",
+  XLE: "S&P500 에너지 섹터(엑슨모빌·셰브론 등)에 투자하는 SPDR 섹터 ETF입니다.",
+  XLY: "S&P500 임의소비재 섹터(아마존·테슬라 등)에 투자하는 SPDR 섹터 ETF입니다.",
+  XLI: "S&P500 산업재 섹터에 투자하는 SPDR 섹터 ETF입니다.",
+  XLU: "S&P500 유틸리티 섹터에 투자하는 SPDR 섹터 ETF입니다.",
+  XLP: "S&P500 필수소비재 섹터에 투자하는 SPDR 섹터 ETF입니다.",
+  TLT: "만기 20년 이상 미국 장기국채에 투자하는 대표 장기채 ETF로, 금리 하락기에 주목받습니다.",
+  IEF: "만기 7~10년 미국 중기국채에 투자하는 iShares ETF입니다.",
+  SGOV: "만기 3개월 이하 초단기 미국 국채에 투자하는 현금성 ETF입니다.",
+  BIL: "만기 1~3개월 미국 단기국채에 투자하는 현금성 SPDR ETF입니다.",
+  VCIT: "미국 중기 회사채에 투자하는 뱅가드 ETF입니다.",
+  VCSH: "미국 단기 회사채에 투자하는 뱅가드 ETF입니다.",
+  LQD: "미국 투자등급 회사채에 투자하는 iShares의 대표 회사채 ETF입니다.",
+  HYG: "신용등급이 낮은 대신 이자가 높은 미국 하이일드 채권에 투자하는 iShares ETF입니다.",
+  MUB: "미국 지방채(비과세)에 투자하는 iShares ETF입니다.",
+  VTEB: "미국 비과세 지방채에 투자하는 뱅가드 ETF입니다.",
+  MBB: "미국 주택저당증권(MBS)에 투자하는 iShares ETF입니다.",
+  VTIP: "물가에 연동되는 미국 단기 물가연동국채(TIPS)에 투자하는 뱅가드 ETF입니다.",
+  BIV: "미국 중기 채권 전반에 투자하는 뱅가드 ETF입니다.",
+  VGIT: "미국 중기 국채에 투자하는 뱅가드 ETF입니다.",
+  IUSB: "미국 채권시장 전체(투자등급+일부 하이일드)에 투자하는 iShares ETF입니다.",
+  QUAL: "재무 건전성이 높은 미국 우량 기업을 골라 담는 iShares 퀄리티 팩터 ETF입니다.",
+  DIA: "다우존스 산업평균 30개 종목에 투자하는 SPDR ETF입니다.",
+  JEPI: "S&P500 우량주에 커버드콜 전략을 더해 매달 배당을 주는 JP모건의 인기 인컴 ETF입니다.",
+  JEPQ: "나스닥100에 커버드콜 전략을 더해 매달 배당을 주는 JP모건 인컴 ETF입니다.",
+  IBIT: "블랙록이 운용하는 비트코인 현물 ETF로, 2024년 출시 후 가장 많은 자금이 몰린 상품입니다.",
+  FBTC: "피델리티가 운용하는 비트코인 현물 ETF입니다.",
+  ETHA: "블랙록이 운용하는 이더리움 현물 ETF입니다.",
+  BITO: "비트코인 선물에 투자하는 프로셰어즈 ETF로, 미국 최초의 비트코인 관련 ETF입니다.",
+  SMH: "엔비디아·TSMC 등 글로벌 반도체 기업에 투자하는 반에크의 대표 반도체 ETF입니다.",
+  SOXL: "필라델피아 반도체 지수 일간 수익률의 3배를 추구하는 고위험 레버리지 ETF입니다.",
+  TQQQ: "나스닥100 일간 수익률의 3배를 추구하는 고위험 레버리지 ETF입니다.",
+  SQQQ: "나스닥100 일간 수익률의 -3배를 추구하는 고위험 인버스 ETF입니다.",
+  ARKK: "캐시 우드의 아크인베스트가 운용하는 파괴적 혁신 기업 액티브 ETF입니다.",
+  VNQ: "미국 부동산 리츠(REITs)에 투자하는 뱅가드의 대표 리츠 ETF입니다.",
+  EFA: "미국·캐나다 제외 선진국(EAFE) 주식에 투자하는 iShares ETF입니다.",
+};
+const US_ETF_ISSUER_KEYWORDS = [
+  ["ISHARES", "블랙록(iShares)"], ["VANGUARD", "뱅가드"], ["SPDR", "스테이트스트리트(SPDR)"], ["INVESCO", "인베스코"],
+  ["SCHWAB", "찰스슈왑"], ["ARK ", "아크인베스트"], ["PROSHARES", "프로셰어즈"], ["DIREXION", "디렉시온"],
+  ["FIDELITY", "피델리티"], ["JPMORGAN", "JP모건"], ["VANECK", "반에크"], ["WISDOMTREE", "위즈덤트리"],
+  ["GLOBAL X", "글로벌X(미래에셋)"], ["GRAYSCALE", "그레이스케일"], ["DIMENSIONAL", "디멘셔널"], ["PACER", "페이서"],
+];
+function cryptoDescriptionOf(base, koName) {
+  if (CRYPTO_DESC_BY_TICKER[base]) return CRYPTO_DESC_BY_TICKER[base];
+  const sector = CRYPTO_SECTOR_BY_TICKER[base];
+  return `${koName}은(는) ${sector ? `${sector} 계열의 ` : ""}암호화폐로, 시가총액 상위권에 올라 주요 글로벌 거래소에서 거래되고 있습니다.`;
+}
+function etfDescriptionOf(symbol, rawName) {
+  const name = TICKER_TO_KOREAN_NAME[symbol] || rawName || "";
+  if (isKrTicker(symbol)) {
+    // 상품명 안에서 아는 브랜드 토큰을 찾아 운용사·테마 분리(야후가 영문명을 줄 때도 브랜드는 대개 살아 있음)
+    for (const [brand, issuer] of Object.entries(KR_ETF_ISSUER_BY_BRAND)) {
+      const idx = name.toUpperCase().indexOf(brand.toUpperCase());
+      if (idx === -1) continue;
+      let theme = name.slice(idx + brand.length).replace(/증권상장지수투자신탁.*$/, "").trim();
+      if (/^200/.test(theme)) theme = `코스피${theme}`; // "KODEX 200" 류는 '코스피200'으로 읽히게
+      return `${issuer}이 운용하는 한국거래소 상장 ETF(상장지수펀드)로, ${theme ? `'${theme}' 관련 지수·자산의 성과를 추종합니다.` : "지수·자산의 성과를 추종합니다."}`;
+    }
+    return `한국거래소에 상장된 ETF(상장지수펀드)로, '${name}' 상품입니다.`;
+  }
+  const base = symbol.toUpperCase();
+  if (US_ETF_DESC_BY_TICKER[base]) return US_ETF_DESC_BY_TICKER[base];
+  const upper = name.toUpperCase();
+  const hit = US_ETF_ISSUER_KEYWORDS.find(([kw]) => upper.includes(kw));
+  return `${hit ? `${hit[1]}이 운용하는 ` : ""}미국 증시 상장 ETF(상장지수펀드)입니다${name ? ` — ${name}` : ""}.`;
+}
 // 시장 화면 암호화폐 카테고리의 9개 코인 + 심볼이 단순한 주요 코인은 시작 시점부터 한글 검색 별칭 등록
 // (심볼에 숫자가 붙는 코인은 비트코인 섹션 목록을 한 번 불러올 때 실제 심볼로 자동 등록됨 — runCryptoPopular 참고)
 INDEX_CATEGORIES.crypto.items.forEach((it) => {
@@ -10688,11 +11151,18 @@ function fredSnapshot(points) {
   return { price, change, changePct, date: new Date(latest[0]) };
 }
 
-// 암호화폐 로고 — jsDelivr에 호스팅된 spothq/cryptocurrency-icons 세트를 티커(소문자)로 조회, 실패 시 🪙 배지로 폴백(추가 네트워크 호출 없음)
+// 암호화폐 로고 — 자체 호스팅 DB(logos/crypto/, data/logo-db.js의 CRYPTO_LOGO_DB — 2026-09-03 사용자 요청)를 우선 쓰고,
+// 없으면 jsDelivr의 spothq/cryptocurrency-icons 세트로, 그것도 실패하면 🪙 배지로 폴백
+const CRYPTO_LOGO_ONERROR = "var f=this.dataset.fallback; if(f){this.removeAttribute('data-fallback');this.src=f;}else{this.style.display='none'; this.nextElementSibling.style.display='inline';}";
+function cryptoLogoSrc(base) {
+  return typeof CRYPTO_LOGO_DB !== "undefined" && CRYPTO_LOGO_DB.has(base) ? `logos/crypto/${base}.png` : null;
+}
 function cryptoLogoHtml(ticker) {
-  const sym = ticker.toLowerCase();
-  const src = `https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/${encodeURIComponent(sym)}.png`;
-  return `<span class="crypto-logo-wrap"><img class="crypto-logo" src="${src}" alt="" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';" /><span class="crypto-logo-badge" style="display:none;">🪙</span></span>`;
+  const base = ticker.toUpperCase();
+  const cdn = `https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/128/color/${encodeURIComponent(ticker.toLowerCase())}.png`;
+  const local = cryptoLogoSrc(base);
+  const fb = local ? ` data-fallback="${cdn}"` : "";
+  return `<span class="crypto-logo-wrap"><img class="crypto-logo" src="${local || cdn}" alt="" loading="lazy"${fb} onerror="${CRYPTO_LOGO_ONERROR}" /><span class="crypto-logo-badge" style="display:none;">🪙</span></span>`;
 }
 
 // snap.date를 "몇 시 기준 가격인지" 보여줄 라벨로 변환 — 오늘이면 시:분:초(강조), 아니면 월/일(회색)
@@ -12058,6 +12528,7 @@ function etfRankingHtml(all, region, metric) {
   const KR_ETF_BRAND_BADGE = { KODEX: "KX", TIGER: "TG", KBSTAR: "KB", KOSEF: "KS" };
   const badgeFor = (r) => {
     if (region !== "kr") return undefined;
+    ensureKrEtfLogoOverride(r.symbol, r.name); // 브랜드 → 운용사 그룹 CI(2026-09-03)
     const brand = r.name.split(" ")[0];
     return KR_ETF_BRAND_BADGE[brand];
   };

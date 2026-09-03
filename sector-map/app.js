@@ -329,7 +329,7 @@ function ensureExtraDataLoaded(market) {
 let etfCryptoDataLoadPromise = null;
 function ensureEtfCryptoDataLoaded() {
   if (etfCryptoDataLoadPromise) return etfCryptoDataLoadPromise;
-  const src = "data/etf-crypto-map.js?v=20260902c";
+  const src = "data/etf-crypto-map.js?v=20260903g";
   etfCryptoDataLoadPromise = loadScriptOnce(src)
     .catch(() => new Promise((res) => setTimeout(res, 600)).then(() => loadScriptOnce(src)))
     .catch((err) => {
