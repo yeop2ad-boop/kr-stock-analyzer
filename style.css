@@ -1429,8 +1429,18 @@ table.top30-table th, table.top30-table td { padding: 8px 6px; border-bottom: 1p
 .dividend-warn { display: inline-block; font-size: 10.5px; font-weight: 700; color: var(--warn); white-space: nowrap; cursor: help; }
 table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: var(--gold); font-weight: 800; }
 /* 인기종목 상단 월별 스냅샷 표(2026-09-03): 375px 화면에서도 -5M~-1M·RSI·승률이 다 들어가게 촘촘히 */
-table.popular-snap-table { font-size: 12px; }
+table.popular-snap-table { font-size: 12px; margin-top: 0; }
 table.popular-snap-table th, table.popular-snap-table td { padding: 8px 2px; }
+/* 스냅샷 표를 회색 라운드 박스로 감싸고, 위 서브내비 여백(높이 2px+아래 12px)을 상쇄해 최대한 상단에 붙임(2026-09-03 사용자 요청) */
+#popularSnapshot { margin-top: -14px; }
+.popular-snap-box { background: var(--subtle-fill); border: 1px solid var(--border); border-radius: 10px; padding: 0 6px; margin: 0 0 12px; overflow-x: auto; }
+.popular-snap-box tr:last-child td { border-bottom: none; }
+/* 아주 좁은 화면에서도 박스 안에 다 들어가게 한 단계 더 축소(넘치면 박스 내부 가로 스크롤) */
+@media (max-width: 420px) {
+  .popular-snap-box { padding: 0 4px; }
+  table.popular-snap-table { font-size: 11px; }
+  table.popular-snap-table th, table.popular-snap-table td { padding: 8px 1px; }
+}
 
 table.s-report-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
 table.s-report-table th, table.s-report-table td { padding: 8px 6px; border-bottom: 1px solid var(--border); text-align: center; }

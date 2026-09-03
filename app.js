@@ -7756,7 +7756,7 @@ async function runValueMarketCap() {
 const POPULAR_SNAPSHOT_SYMBOLS = {
   kr: { mapKey: "scoresKr", items: [["005930.KS", "삼성전자"], ["000660.KS", "SK하이닉스"]] },
   us: { mapKey: "scores", items: [["NVDA", "엔비디아"], ["AAPL", "애플"]] },
-  etf: { mapKey: "scoresEtf", items: [["SPY", "SPY"], ["069500.KS", "코스피200"]] },
+  etf: { mapKey: "scoresEtf", items: [["SPY", "S&P500"], ["069500.KS", "코스피200"]] },
   crypto: { mapKey: "scoresCrypto", items: [["BTC-USD", "비트코인"], ["ETH-USD", "이더리움"]] },
 };
 const popularSnapshotHtmlCache = new Map(); // sectionKey -> Promise<html>
@@ -7821,10 +7821,12 @@ function renderPopularSnapshot(sectionKey) {
           })
           .join("");
         return `
-          <table class="top30-table popular-snap-table" style="margin:8px 0 12px;">
-            <thead><tr><th>종목</th>${head}<th>RSI</th><th>승률</th></tr></thead>
-            <tbody>${body}</tbody>
-          </table>`;
+          <div class="popular-snap-box">
+            <table class="top30-table popular-snap-table">
+              <thead><tr><th>종목</th>${head}<th>RSI</th><th>승률</th></tr></thead>
+              <tbody>${body}</tbody>
+            </table>
+          </div>`;
       })().catch((e) => {
         popularSnapshotHtmlCache.delete(sectionKey);
         throw e;
