@@ -82,22 +82,29 @@ function Get-Chart($symbol, $range) {
   return Invoke-RestMethod -Uri $uri -Headers $headers -TimeoutSec 15
 }
 
-# 1y 차트에서 지표 일괄 계산 — 본체 computeChartDerivedMetrics와 동일 로직
-function Get-DerivedMetrics($symbol) {
-  $chart = Get-Chart $symbol "1y"
+# 차트에서 지표 일괄 계산 — 본체 computeChartDerivedMetrics와 동일 로직.
+# $fiveYear 스위치를 켜면 5y 차트로 조회해 5년 CAGR(ETF 투자안정 ③)까지 계산하되,
+# 나머지 지표는 본체처럼 "최근 1년 구간"만 슬라이스해서 계산한다(2026-09-03 배점 개편)
+function Get-DerivedMetrics($symbol, $fiveYear) {
+  $range = "1y"; if ($fiveYear) { $range = "5y" }
+  $chart = Get-Chart $symbol $range
   $result = $chart.chart.result[0]
   if (-not $result) { return $null }
   $ts = $result.timestamp
   $q = $result.indicators.quote[0]
-  $pairs = @()
+  $allPairs = @()
   for ($i = 0; $i -lt $ts.Count; $i++) {
     if ($null -ne $q.close[$i]) {
       $v = 0; if ($null -ne $q.volume[$i]) { $v = [double]$q.volume[$i] }
-      $pairs += [PSCustomObject]@{ t = $ts[$i]; c = [double]$q.close[$i]; v = $v }
+      $allPairs += [PSCustomObject]@{ t = $ts[$i]; c = [double]$q.close[$i]; v = $v }
     }
   }
+  if ($allPairs.Count -lt 10) { return $null }
+  $allPairs = $allPairs | Sort-Object t
+  $lastAll = $allPairs[$allPairs.Count - 1]
+  $pairs = $allPairs
+  if ($fiveYear) { $pairs = @($allPairs | Where-Object { $_.t -ge $lastAll.t - 365 * 86400 }) }
   if ($pairs.Count -lt 10) { return $null }
-  $pairs = $pairs | Sort-Object t
   $last = $pairs[$pairs.Count - 1]
   $prev = $pairs[$pairs.Count - 2]
 
@@ -105,12 +112,20 @@ function Get-DerivedMetrics($symbol) {
   $recent = $dvs[[Math]::Max(0, $dvs.Count - 5)..($dvs.Count - 1)]
   $recentDv = ($recent | Measure-Object -Average).Average
   $avgDv = ($dvs | Measure-Object -Average).Average
+  # 최근 3개월 평균 거래대금(코인 상승압력 ①)
+  $dv3mArr = @($pairs | Where-Object { $_.t -ge $last.t - 91 * 86400 } | ForEach-Object { $_.c * $_.v })
+  $avgDv3m = $null; if ($dv3mArr.Count) { $avgDv3m = ($dv3mArr | Measure-Object -Average).Average }
 
   $target3m = $last.t - 91 * 86400
   $base3m = $null; $minDiff = [double]::MaxValue
   foreach ($p in $pairs) { $d = [math]::Abs($p.t - $target3m); if ($d -lt $minDiff) { $minDiff = $d; $base3m = $p } }
   $momentum3m = $null; if ($base3m -and $base3m.c) { $momentum3m = (($last.c - $base3m.c) / $base3m.c) * 100 }
   $oneYearReturn = $null; if ($pairs[0].c) { $oneYearReturn = (($last.c - $pairs[0].c) / $pairs[0].c) * 100 }
+  # 한달 수익률(코인 상승압력 ②)
+  $target1m = $last.t - 30 * 86400
+  $base1m = $null; $minDiff1m = [double]::MaxValue
+  foreach ($p in $pairs) { $d = [math]::Abs($p.t - $target1m); if ($d -lt $minDiff1m) { $minDiff1m = $d; $base1m = $p } }
+  $monthReturn = $null; if ($base1m -and $base1m.c) { $monthReturn = (($last.c - $base1m.c) / $base1m.c) * 100 }
 
   $rets = @()
   for ($i = 1; $i -lt $pairs.Count; $i++) { if ($pairs[$i - 1].c) { $rets += [math]::Abs(($pairs[$i].c - $pairs[$i - 1].c) / $pairs[$i - 1].c) * 100 } }
@@ -126,39 +141,58 @@ function Get-DerivedMetrics($symbol) {
   $low = ($closes | Measure-Object -Minimum).Minimum
   $week52 = $null; if ($high -gt $low) { $week52 = Clamp ((($price - $low) / ($high - $low)) * 100) 0 100 }
 
+  # 5년 CAGR(ETF 투자안정 ③) — 5년 미만 상장이면 상장 후부터, 1년 미만은 N/A
+  $fiveYearCagr = $null
+  if ($fiveYear -and $allPairs[0].c) {
+    $spanYears = ($lastAll.t - $allPairs[0].t) / (365.25 * 86400)
+    if ($spanYears -ge 1) { $fiveYearCagr = ([math]::Pow($lastAll.c / $allPairs[0].c, 1 / $spanYears) - 1) * 100 }
+  }
+  $firstTrade = $allPairs[0].t; if ($null -ne $meta.firstTradeDate) { $firstTrade = [double]$meta.firstTradeDate }
+
   return [PSCustomObject]@{
-    price = $price; changePct = $changePct; recentDv = $recentDv; avgDv = $avgDv
-    momentum3m = $momentum3m; oneYearReturn = $oneYearReturn; volatility = $volatility; week52 = $week52
+    price = $price; changePct = $changePct; recentDv = $recentDv; avgDv = $avgDv; avgDv3m = $avgDv3m
+    momentum3m = $momentum3m; monthReturn = $monthReturn; oneYearReturn = $oneYearReturn; volatility = $volatility
+    week52 = $week52; fiveYearCagr = $fiveYearCagr; firstTrade = $firstTrade
   }
 }
 
-# ---------- 배점(본체 app.js와 동일 공식) ----------
-function Get-EtfPressure($m) {
-  $vol = 1.5; if ($m.recentDv -and $m.avgDv) { $vol = Clamp (2 * ($m.recentDv / $m.avgDv - 0.5)) 0 3 }
-  $mom = 0; if ($null -ne $m.momentum3m) { $mom = Clamp (($m.momentum3m / 20) * 3) 0 3 }
-  $yr = 0; if ($null -ne $m.oneYearReturn) { $yr = Clamp (($m.oneYearReturn / 50) * 4) 0 4 }
-  return Round1 (Clamp ($vol + $mom + $yr) 0 10)
+# ---------- 배점(본체 app.js와 동일 공식 — 2026-09-03 사용자 개편) ----------
+# ETF 상승압력: ①모멘텀(3, 3개월 25%↑ 만점) ②거래량(3, 5일/1년 2배↑ 만점·0.5배↓ 0점) ③RSI(4, 70↑ 만점·30↓ 0점)
+function Get-EtfPressure($m, $rsi) {
+  $mom = 0; if ($null -ne $m.momentum3m) { $mom = Clamp (($m.momentum3m / 25) * 3) 0 3 }
+  $vol = 1.5; if ($m.recentDv -and $m.avgDv) { $vol = Clamp ((3 * ($m.recentDv / $m.avgDv - 0.5)) / 1.5) 0 3 }
+  $rsiScore = 2; if ($null -ne $rsi) { $rsiScore = Clamp ((4 * ($rsi - 30)) / 40) 0 4 }
+  return Round1 (Clamp ($mom + $vol + $rsiScore) 0 10)
 }
-function Get-EtfRisk($m, $spyReturn, $isKr, $capKrEok, $capUsd) {
-  $vol = 1.5; if ($null -ne $m.volatility) { $vol = Clamp ((3 * (5 - $m.volatility)) / 4) 0 3 }
-  $mkt = 1.5; if ($null -ne $m.oneYearReturn -and $null -ne $spyReturn) { $mkt = Clamp ((3 * (100 - [math]::Abs($m.oneYearReturn - $spyReturn))) / 90) 0 3 }
-  $cap = 0.1
-  if ($isKr -and $capKrEok) { $cap = Clamp ((4 * ($capKrEok - 10000)) / 90000) 0 4 }
-  # 미국 ETF: $500B 이상 만점, $50B 이하 0점(2026-09-02 사용자 변경, 기존 $100B/$10B) — app.js computeEtfRiskScore와 동일해야 함
-  elseif ((-not $isKr) -and $capUsd) { $cap = Clamp ((4 * ($capUsd / 1e9 - 50)) / 450) 0 4 }
-  return Round1 (Clamp ($vol + $mkt + $cap) 0 10)
+# ETF 투자안정: ①우상향(4, 승률 60↑ 만점·40↓ 0점) ②변동성(3, 0.5%↓ 만점·3%↑ 0점) ③5년 CAGR(3, 15%↑ 만점·0%↓ 0점)
+function Get-EtfRisk($m, $winRate) {
+  $win = 2; if ($null -ne $winRate) { $win = Clamp ((4 * ($winRate - 40)) / 20) 0 4 }
+  $vol = 1.5; if ($null -ne $m.volatility) { $vol = Clamp ((3 * (3 - $m.volatility)) / 2.5) 0 3 }
+  $gro = 1.5; if ($null -ne $m.fiveYearCagr) { $gro = Clamp ((3 * $m.fiveYearCagr) / 15) 0 3 }
+  return Round1 (Clamp ($win + $vol + $gro) 0 10)
 }
-function Get-CryptoPressure($m) {
-  $vol = 1.5; if ($m.recentDv -and $m.avgDv) { $vol = Clamp (2 * ($m.recentDv / $m.avgDv - 0.5)) 0 3 }
-  $mom = 0; if ($null -ne $m.momentum3m) { $mom = Clamp (($m.momentum3m / 40) * 3) 0 3 }
-  $yr = 0; if ($null -ne $m.oneYearReturn) { $yr = Clamp (($m.oneYearReturn / 200) * 4) 0 4 }
-  return Round1 (Clamp ($vol + $mom + $yr) 0 10)
+# 코인 상승압력: ①거래량(3, 5일/3개월 3배↑ 만점·0.5배↓ 0점) ②한달상승(3, 50%↑ 만점·0%↓ 0점) ③RSI(4, 70↑ 만점·30↓ 0점)
+function Get-CryptoPressure($m, $rsi) {
+  $baseDv = $m.avgDv3m; if (-not $baseDv) { $baseDv = $m.avgDv }
+  $vol = 1.5; if ($m.recentDv -and $baseDv) { $vol = Clamp ((3 * ($m.recentDv / $baseDv - 0.5)) / 2.5) 0 3 }
+  $mon = 0; if ($null -ne $m.monthReturn) { $mon = Clamp (($m.monthReturn / 50) * 3) 0 3 }
+  $rsiScore = 2; if ($null -ne $rsi) { $rsiScore = Clamp ((4 * ($rsi - 30)) / 40) 0 4 }
+  return Round1 (Clamp ($vol + $mon + $rsiScore) 0 10)
 }
-function Get-CryptoRisk($m, $btcReturn, $capPercentile) {
-  $vol = 1.5; if ($null -ne $m.volatility) { $vol = Clamp ((3 * (10 - $m.volatility)) / 8) 0 3 }
-  $mkt = 1.5; if ($null -ne $m.oneYearReturn -and $null -ne $btcReturn) { $mkt = Clamp ((3 * (100 - [math]::Abs($m.oneYearReturn - $btcReturn))) / 90) 0 3 }
-  $cap = 0.1; if ($null -ne $capPercentile) { $cap = Clamp ((4 * $capPercentile) / 100) 0 4 }
-  return Round1 (Clamp ($vol + $mkt + $cap) 0 10)
+# 코인 투자안정: ①업력(3, 10년↑ 만점·3년↓ 0점) ②우상향(4, 승률 60↑ 만점·40↓ 0점) ③BTC 대비 모멘텀(3, 40%p 미만 만점·100%p↑ 0점)
+function Get-CryptoRisk($m, $winRate, $btcReturn) {
+  $age = 1.5
+  if ($m.firstTrade) {
+    $years = ((Get-Date -UFormat %s) - $m.firstTrade) / (365.25 * 86400)
+    $age = Clamp ((3 * ($years - 3)) / 7) 0 3
+  }
+  $win = 2; if ($null -ne $winRate) { $win = Clamp ((4 * ($winRate - 40)) / 20) 0 4 }
+  $mkt = 1.5
+  if ($null -ne $m.oneYearReturn -and $null -ne $btcReturn) {
+    $relDiff = [math]::Abs($m.oneYearReturn - $btcReturn)
+    if ($relDiff -lt 40) { $mkt = 3 } else { $mkt = Clamp ((3 * (100 - $relDiff)) / 60) 0 3 }
+  }
+  return Round1 (Clamp ($age + $win + $mkt) 0 10)
 }
 
 # ---------- 기준 데이터 ----------
@@ -176,11 +210,26 @@ function Get-1yReturnOf($symbol) {
     return (($closes[-1] - $closes[0]) / $closes[0]) * 100
   } catch { return $null }
 }
-$spyReturn = Get-1yReturnOf "^GSPC"
 $btcReturn = Get-1yReturnOf "BTC-USD"
 $usdkrw = 1350.0
 try { $fx = Get-Chart "KRW=X" "5d"; $usdkrw = [double]$fx.chart.result[0].meta.regularMarketPrice } catch {}
-Write-Host "   S&P500 1y=$spyReturn / BTC 1y=$btcReturn / USDKRW=$usdkrw"
+Write-Host "   BTC 1y=$btcReturn / USDKRW=$usdkrw"
+
+# 승률·주간 RSI DB(새 배점 입력, 2026-09-03) — fetch-winrate-scores.ps1이 만들어둔 데이터를 그대로 사용
+$wrPath = Join-Path (Join-Path $root "data") "winrate-scores-us.json"
+$wrEtfMap = $null; $wrCryptoMap = $null
+if (Test-Path $wrPath) {
+  $wrDb = Get-Content -Path $wrPath -Raw -Encoding UTF8 | ConvertFrom-Json
+  $wrEtfMap = $wrDb.scoresEtf
+  $wrCryptoMap = $wrDb.scoresCrypto
+  Write-Host "   승률/RSI DB 로드 완료"
+} else {
+  Write-Host "   경고: winrate-scores-us.json 없음 — RSI·우상향 항목은 중립값으로 계산됨"
+}
+function Get-WrEntry($map, $symbol) {
+  if (-not $map) { return $null }
+  return $map.$symbol
+}
 
 # ---------- ETF 200 스캔 ----------
 $etfCompanies = @()
@@ -188,17 +237,18 @@ $done = 0
 foreach ($e in $US_ETF_TOP100) {
   $sym = $e[0]; $name = $e[1]
   try {
-    $m = Get-DerivedMetrics $sym
+    $m = Get-DerivedMetrics $sym $true
     if ($m) {
       $capUsd = $usCapMap[$sym]
+      $wrE = Get-WrEntry $wrEtfMap $sym
       $etfCompanies += [ordered]@{
         symbol = $sym; name = $name; displayName = $sym; sector = "US ETF"; sectorKo = "미국 ETF"; currency = "USD"
         marketCap = if ($capUsd) { [math]::Round($capUsd) } else { 1e10 }
         changePercent = if ($null -ne $m.changePct) { [math]::Round($m.changePct, 2) } else { $null }
         dollarVolume = [math]::Round($m.recentDv)
         week52RangePct = if ($null -ne $m.week52) { [math]::Round($m.week52, 1) } else { $null }
-        pressureScore = Get-EtfPressure $m
-        stabilityScore = Get-EtfRisk $m $spyReturn $false $null $capUsd
+        pressureScore = Get-EtfPressure $m ($(if ($wrE) { $wrE.rsi } else { $null }))
+        stabilityScore = Get-EtfRisk $m ($(if ($wrE) { $wrE.score } else { $null }))
       }
     }
   } catch {}
@@ -209,8 +259,9 @@ $done = 0
 foreach ($e in $krEtfTop100) {
   $sym = $e.s; $name = $e.n; $capEok = [double]$e.m
   try {
-    $m = Get-DerivedMetrics $sym
+    $m = Get-DerivedMetrics $sym $true
     if ($m) {
+      $wrE = Get-WrEntry $wrEtfMap $sym
       $etfCompanies += [ordered]@{
         symbol = $sym; name = $name; displayName = $name; sector = "KR ETF"; sectorKo = "한국 ETF"; currency = "KRW"
         marketCap = [math]::Round($capEok * 1e8 / $usdkrw) # 미국 ETF와 크기 비교 가능하게 USD 환산(원 크기용)
@@ -218,8 +269,8 @@ foreach ($e in $krEtfTop100) {
         changePercent = if ($null -ne $m.changePct) { [math]::Round($m.changePct, 2) } else { $null }
         dollarVolume = [math]::Round($m.recentDv / $usdkrw) # USD 환산(거래대금 순위 혼합용)
         week52RangePct = if ($null -ne $m.week52) { [math]::Round($m.week52, 1) } else { $null }
-        pressureScore = Get-EtfPressure $m
-        stabilityScore = Get-EtfRisk $m $spyReturn $true $capEok $null
+        pressureScore = Get-EtfPressure $m ($(if ($wrE) { $wrE.rsi } else { $null }))
+        stabilityScore = Get-EtfRisk $m ($(if ($wrE) { $wrE.score } else { $null }))
       }
     }
   } catch {}
@@ -241,17 +292,17 @@ for ($i = 0; $i -lt $n; $i++) {
   $ko = $CRYPTO_KO[$base]
   $name = if ($ko) { $ko } else { ("$($qq.shortName)" -replace '\s+USD$', '') }
   try {
-    $m = Get-DerivedMetrics $sym
+    $m = Get-DerivedMetrics $sym $false
     if ($m) {
-      $pct = (($n - 1 - $i) / [Math]::Max(1, $n - 1)) * 100
+      $wrE = Get-WrEntry $wrCryptoMap $sym
       $cryptoCompanies += [ordered]@{
         symbol = $sym; name = $name; displayName = $base; sector = "Crypto"; sectorKo = "암호화폐"; currency = "USD"
         marketCap = if ($qq.marketCap) { [double]$qq.marketCap } else { 1e9 }
         changePercent = if ($null -ne $m.changePct) { [math]::Round($m.changePct, 2) } else { $null }
         dollarVolume = [math]::Round($m.recentDv)
         week52RangePct = if ($null -ne $m.week52) { [math]::Round($m.week52, 1) } else { $null }
-        pressureScore = Get-CryptoPressure $m
-        stabilityScore = Get-CryptoRisk $m $btcReturn $pct
+        pressureScore = Get-CryptoPressure $m ($(if ($wrE) { $wrE.rsi } else { $null }))
+        stabilityScore = Get-CryptoRisk $m ($(if ($wrE) { $wrE.score } else { $null })) $btcReturn
       }
     }
   } catch {}

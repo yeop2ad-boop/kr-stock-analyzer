@@ -98,13 +98,20 @@ const valuationResults = el("valuationResults");
 const trendStatus = el("trendStatus");
 const trendResults = el("trendResults");
 const futureStatus = el("futureStatus");
-// 가격/차트보기 링크 클릭 시 새 탭 대신 앱 내 전체화면 모달로 TradingView 차트를 띄움(요약 카드·순위표 등 여러 곳에서 동적으로 삽입되므로 이벤트 위임 사용)
+// 차트보기 버튼 클릭 시 새 탭 대신 앱 내 전체화면 모달로 TradingView 차트를 띄움(여러 곳에서 동적으로 삽입되므로 이벤트 위임 사용)
 el("chartModalCloseBtn").addEventListener("click", closeChartModal);
 document.addEventListener("click", (e) => {
-  const linkEl = e.target.closest(".price-chart-link, .chart-link-btn");
+  const linkEl = e.target.closest(".chart-link-btn");
   if (!linkEl) return;
   e.preventDefault();
   openChartModal(linkEl.dataset.chartSymbol);
+});
+// 순위표의 가격(price-chart-link) 클릭은 TradingView 모달 대신 종목 검색상세로 바로 이동(2026-09-03 사용자 요청)
+document.addEventListener("click", (e) => {
+  const linkEl = e.target.closest(".price-chart-link");
+  if (!linkEl) return;
+  e.preventDefault();
+  navigateToTicker(linkEl.dataset.chartSymbol);
 });
 // 원자재/채권/외환 행(.asset-detail-link) — 종목이 아니므로 차트 모달 대신 전용 상세페이지(개요+뉴스)로 이동
 document.addEventListener("click", (e) => {
@@ -971,86 +978,89 @@ function computeAttractivenessScore(metrics) {
   return { total, volumeScore, volumeRatio, growthScore, revenueGrowthYoY, momentumScore, momentum3m };
 }
 
-// ETF 전용 상승압력(invest점수) 배점 — 2026-09-01 사용자 지정. ETF는 매출이 없어 성장성 대신 1년 상승률을 사용:
-// ① 총 거래대금 0~3점: 최근 5거래일 평균÷1년 평균이 2배 이상 만점, 1배 1점, 0.5배 이하 0점(선형)
-// ② 상승 모멘텀 0~3점: 최근 3개월 상승률 20% 이상 만점, 0% 이하 0점(선형) — 2026-09-01 사용자 조정(40%→20%)
-// ③ 1년 상승률 0~4점: 최근 1년 상승률 50% 이상 만점, 0% 이하 0점(선형) — 2026-09-01 사용자 조정(200%→50%)
+// ETF 전용 상승압력(invest점수) 배점 — 2026-09-03 사용자 개편(총 10점):
+// ① 상승 모멘텀 0~3점: 최근 3개월 상승률 25% 이상 만점, 0% 이하 0점(선형)
+// ② 거래량 0~3점: 최근 5거래일 평균 거래대금÷1년 평균이 2배 이상 만점, 0.5배 이하 0점(선형)
+// ③ RSI 점수 0~4점: 주간 RSI(14)가 70 이상 만점, 30 이하 0점(선형) — 값은 배치 DB(winrate-scores-us.json)
 function computeEtfAttractivenessScore(metrics) {
-  const { recentDollarVolume, avgDollarVolume1y, momentum3m, oneYearReturn } = metrics;
+  const { recentDollarVolume, avgDollarVolume1y, momentum3m, rsiWeekly } = metrics;
+
+  let momentumScore = 0;
+  if (momentum3m !== undefined && momentum3m !== null) {
+    momentumScore = clamp((momentum3m / 25) * 3, 0, 3);
+  }
 
   let volumeScore = 1.5; // 데이터 부족 시 중립값(개별주식 배점과 동일한 처리)
   let volumeRatio = null;
   if (recentDollarVolume !== undefined && recentDollarVolume !== null && avgDollarVolume1y) {
     volumeRatio = recentDollarVolume / avgDollarVolume1y;
-    volumeScore = clamp(2 * (volumeRatio - 0.5), 0, 3);
+    volumeScore = clamp((3 * (volumeRatio - 0.5)) / 1.5, 0, 3);
   }
 
-  let momentumScore = 0;
-  if (momentum3m !== undefined && momentum3m !== null) {
-    momentumScore = clamp((momentum3m / 20) * 3, 0, 3);
+  let rsiScore = 2; // RSI 데이터 없는 종목은 중립값
+  if (rsiWeekly !== undefined && rsiWeekly !== null) {
+    rsiScore = clamp((4 * (rsiWeekly - 30)) / 40, 0, 4);
   }
 
-  let yearScore = 0;
-  if (oneYearReturn !== undefined && oneYearReturn !== null) {
-    yearScore = clamp((oneYearReturn / 50) * 4, 0, 4);
-  }
-
-  const total = Math.round(clamp(volumeScore + momentumScore + yearScore, 0, 10) * 10) / 10;
-  return { total, volumeScore, volumeRatio, momentumScore, momentum3m, yearScore, oneYearReturn };
+  const total = Math.round(clamp(momentumScore + volumeScore + rsiScore, 0, 10) * 10) / 10;
+  return { total, momentumScore, momentum3m, volumeScore, volumeRatio, rsiScore, rsiWeekly };
 }
 
-// 암호화폐(코인) 전용 상승압력 배점 — 2026-09-01 사용자 지정(총 10점):
-// ① 총 거래대금 0~3점: 최근 5거래일 평균÷1년 평균이 2배 이상 만점, 1배 1점, 0.5배 이하 0점(선형)
-// ② 상승 모멘텀 0~3점: 최근 3개월 상승률 40% 이상 만점, 0% 이하 0점(선형)
-// ③ 1년 상승률 0~4점: 최근 1년 상승률 200% 이상 만점, 0% 이하 0점(선형)
+// 암호화폐(코인) 전용 상승압력 배점 — 2026-09-03 사용자 개편(총 10점):
+// ① 거래량 0~3점: 최근 5거래일 평균 거래대금÷최근 3개월 평균이 3배 이상 만점, 0.5배 이하 0점(선형)
+// ② 한달상승 0~3점: 최근 1개월 상승률 50% 이상 만점, 0% 이하 0점(선형)
+// ③ RSI 과매도점수 0~4점: 주간 RSI(14)가 70 이상 만점, 30 이하 0점(선형) — 값은 배치 DB
 function computeCryptoAttractivenessScore(metrics) {
-  const { recentDollarVolume, avgDollarVolume1y, momentum3m, oneYearReturn } = metrics;
+  const { recentDollarVolume, avgDollarVolume3m, avgDollarVolume1y, monthReturn, rsiWeekly } = metrics;
 
   let volumeScore = 1.5; // 데이터 부족 시 중립값
   let volumeRatio = null;
-  if (recentDollarVolume !== undefined && recentDollarVolume !== null && avgDollarVolume1y) {
-    volumeRatio = recentDollarVolume / avgDollarVolume1y;
-    volumeScore = clamp(2 * (volumeRatio - 0.5), 0, 3);
+  const baseDv = avgDollarVolume3m !== undefined && avgDollarVolume3m !== null && avgDollarVolume3m > 0 ? avgDollarVolume3m : avgDollarVolume1y;
+  if (recentDollarVolume !== undefined && recentDollarVolume !== null && baseDv) {
+    volumeRatio = recentDollarVolume / baseDv;
+    volumeScore = clamp((3 * (volumeRatio - 0.5)) / 2.5, 0, 3);
   }
 
-  let momentumScore = 0;
-  if (momentum3m !== undefined && momentum3m !== null) {
-    momentumScore = clamp((momentum3m / 40) * 3, 0, 3);
+  let monthScore = 0;
+  if (monthReturn !== undefined && monthReturn !== null) {
+    monthScore = clamp((monthReturn / 50) * 3, 0, 3);
   }
 
-  let yearScore = 0;
-  if (oneYearReturn !== undefined && oneYearReturn !== null) {
-    yearScore = clamp((oneYearReturn / 200) * 4, 0, 4);
+  let rsiScore = 2; // RSI 데이터 없는 종목은 중립값
+  if (rsiWeekly !== undefined && rsiWeekly !== null) {
+    rsiScore = clamp((4 * (rsiWeekly - 30)) / 40, 0, 4);
   }
 
-  const total = Math.round(clamp(volumeScore + momentumScore + yearScore, 0, 10) * 10) / 10;
-  return { total, volumeScore, volumeRatio, momentumScore, momentum3m, yearScore, oneYearReturn };
+  const total = Math.round(clamp(volumeScore + monthScore + rsiScore, 0, 10) * 10) / 10;
+  return { total, volumeScore, volumeRatio, monthScore, monthReturn, rsiScore, rsiWeekly };
 }
 
-// 암호화폐(코인) 전용 투자안정 배점 — 2026-09-01 사용자 지정(총 10점):
-// ① 일평균 변동성 0~3점: 최근 30거래일 일평균 |등락률|이 2% 이하 만점, 10% 이상 0점(선형)
-// ② 비트코인 대비 모멘텀 0~3점: 1년 상승률이 비트코인과 10%p 미만 차이면 만점, 100%p 이상 차이면 0점(선형)
-// ③ 시가총액 0~4점: 시총 TOP100 안에서의 순위 백분위(1위=100%, 100위=0%)로 선형 배점 — TOP100 밖이면 0점(2026-09-02 100개 확장)
-function computeCryptoRiskScore({ volatility, oneYearReturn, btcReturn, capPercentile, capRank }) {
-  let volScore = 1.5; // 데이터 부족 시 중립값
-  if (volatility !== null && volatility !== undefined) {
-    volScore = clamp((3 * (10 - volatility)) / 8, 0, 3);
+// 암호화폐(코인) 전용 투자안정 배점 — 2026-09-03 사용자 개편(총 10점):
+// ① 업력 0~3점: 상장(거래 시작)부터 10년 이상 만점, 3년 이하 0점(선형)
+// ② 우상향 점수 0~4점: 10년 승률(장기 우상향 점수)이 60% 이상 만점, 40% 이하 0점(선형) — 값은 배치 DB
+// ③ 비트코인 대비 모멘텀 0~3점: 1년 상승률이 비트코인과 40%p 미만 차이면 만점, 100%p 이상 0점(선형)
+function computeCryptoRiskScore({ firstTradeDate, winRate, oneYearReturn, btcReturn }) {
+  let ageScore = 1.5; // 데이터 부족 시 중립값
+  let ageYears = null;
+  if (firstTradeDate) {
+    ageYears = (Date.now() / 1000 - firstTradeDate) / (365.25 * 86400);
+    ageScore = clamp((3 * (ageYears - 3)) / 7, 0, 3);
+  }
+
+  let winScore = 2;
+  if (winRate !== null && winRate !== undefined) {
+    winScore = clamp((4 * (winRate - 40)) / 20, 0, 4);
   }
 
   let marketScore = 1.5;
   let relDiff = null;
   if (oneYearReturn !== null && oneYearReturn !== undefined && btcReturn !== null && btcReturn !== undefined) {
     relDiff = Math.abs(oneYearReturn - btcReturn);
-    marketScore = clamp((3 * (100 - relDiff)) / 90, 0, 3);
+    marketScore = relDiff < 40 ? 3 : clamp((3 * (100 - relDiff)) / 60, 0, 3);
   }
 
-  let capScore = 0.1; // 순위 정보를 못 구한 경우
-  if (capPercentile !== null && capPercentile !== undefined) {
-    capScore = clamp((4 * capPercentile) / 100, 0, 4);
-  }
-
-  const total = Math.round(clamp(volScore + marketScore + capScore, 0, 10) * 10) / 10;
-  return { total, volScore, volatility, marketScore, relDiff, capScore, capPercentile, capRank };
+  const total = Math.round(clamp(ageScore + winScore + marketScore, 0, 10) * 10) / 10;
+  return { total, ageScore, ageYears, winScore, winRate, marketScore, relDiff };
 }
 
 // 비트코인 1년 상승률(코인 투자안정 ②번 벤치마크) — 세션 내 캐시
@@ -1068,59 +1078,82 @@ function getBtcOneYearReturn() {
   return btcOneYearReturnPromise;
 }
 
+// ETF·코인 배점 입력 통합 조회(2026-09-03 개편): 차트 파생 지표(ETF는 5년 차트로 CAGR 포함)에
+// 배치 DB(winrate-scores-us.json)의 승률(winRate)·주간 RSI(rsiWeekly)를 얹어 심볼별 캐시 —
+// 상세 페이지(상승압력·투자안정·미니 배지)가 같은 입력을 공유해 재조회·값 불일치를 막는다
+const assetScoreInputsCache = new Map();
+function getAssetScoreInputs(symbol, type) {
+  const key = `${type}:${symbol}`;
+  if (!assetScoreInputsCache.has(key)) {
+    assetScoreInputsCache.set(
+      key,
+      (async () => {
+        const [m, db] = await Promise.all([
+          computeChartDerivedMetrics(symbol, { fiveYear: type === "etf" }),
+          getWinRateDb().catch(() => null),
+        ]);
+        if (!m) throw new Error("지표 계산에 필요한 차트 데이터를 가져오지 못했습니다.");
+        const map = db ? (type === "etf" ? db.scoresEtf : db.scoresCrypto) : null;
+        const e = (map && map[symbol]) || null;
+        return {
+          ...m,
+          winRate: e && e.score !== null && e.score !== undefined ? e.score : null,
+          rsiWeekly: e && e.rsi !== null && e.rsi !== undefined ? e.rsi : null,
+        };
+      })().catch((err) => {
+        assetScoreInputsCache.delete(key); // 실패는 캐시하지 않음
+        throw err;
+      })
+    );
+  }
+  return assetScoreInputsCache.get(key);
+}
+
 // 코인 투자안정 점수 계산(입력 수집 포함) — 상세 페이지와 개요 미니 배지가 공유하도록 심볼별로 캐시
 const cryptoRiskScorePromiseCache = new Map();
-function getCryptoRiskScore(symbol, oneYearReturn) {
+function getCryptoRiskScore(symbol) {
   if (!cryptoRiskScorePromiseCache.has(symbol)) {
     cryptoRiskScorePromiseCache.set(
       symbol,
       (async () => {
-        const [volatility, btcReturn, top50] = await Promise.all([
-          getEtfDailyVolatility30d(symbol).catch(() => null), // 일평균 변동성 계산은 자산 종류와 무관한 범용 로직이라 재사용
-          getBtcOneYearReturn(),
-          getCryptoTop100().catch(() => []),
-        ]);
-        const idx = top50.findIndex((q) => q && q.symbol === symbol);
-        const capRank = idx >= 0 ? idx + 1 : null;
-        const capPercentile = idx >= 0 ? ((top50.length - 1 - idx) / Math.max(1, top50.length - 1)) * 100 : top50.length ? 0 : null;
-        return computeCryptoRiskScore({ volatility, oneYearReturn, btcReturn, capPercentile, capRank });
-      })()
+        const [inputs, btcReturn] = await Promise.all([getAssetScoreInputs(symbol, "crypto"), getBtcOneYearReturn()]);
+        return computeCryptoRiskScore({
+          firstTradeDate: inputs.firstTradeDate,
+          winRate: inputs.winRate,
+          oneYearReturn: inputs.oneYearReturn,
+          btcReturn,
+        });
+      })().catch((err) => {
+        cryptoRiskScorePromiseCache.delete(symbol);
+        throw err;
+      })
     );
   }
   return cryptoRiskScorePromiseCache.get(symbol);
 }
 
-// ETF 전용 투자안정 배점 — 2026-09-01 사용자 지정(총 10점):
-// ① 일평균 변동성 0~3점: 최근 30거래일 일평균 |등락률|이 1% 이하 만점, 5% 이상 0점(선형)
-// ② SPY 대비 모멘텀 0~3점: 1년 상승률이 S&P500과 10%p 미만 차이면 만점, 100%p 이상 차이면 0점(선형)
-// ③ 시가총액(순자산) 0~4점: 한국 ETF 10조원 이상 만점·1조원 미만 0점,
-//    미국 ETF $500B(5,000억달러) 이상 만점·$50B(500억달러) 이하 0점(선형) — 2026-09-02 사용자 변경(기존 $100B/$10B)
-function computeEtfRiskScore({ volatility, oneYearReturn, sp500Return, isKr, marketSumEok, netAssetsUsd }) {
-  let volScore = 1.5; // 데이터 부족 시 중립값
+// ETF 전용 투자안정 배점 — 2026-09-03 사용자 개편(총 10점):
+// ① 우상향 점수 0~4점: 10년 승률(장기 우상향 점수)이 60% 이상 만점, 40% 이하 0점(선형) — 값은 배치 DB
+// ② 변동성 점수 0~3점: 최근 30거래일 일평균 |등락률|이 0.5% 미만 만점, 3% 이상 0점(선형)
+// ③ 5년 평균 성장률 0~3점: 연평균(CAGR) 15% 이상 만점, 0% 이하 0점(선형) — 5년 차트 기준(짧으면 상장 후부터)
+function computeEtfRiskScore({ winRate, volatility, fiveYearCagr }) {
+  let winScore = 2; // 데이터 부족 시 중립값
+  if (winRate !== null && winRate !== undefined) {
+    winScore = clamp((4 * (winRate - 40)) / 20, 0, 4);
+  }
+
+  let volScore = 1.5;
   if (volatility !== null && volatility !== undefined) {
-    volScore = clamp((3 * (5 - volatility)) / 4, 0, 3);
+    volScore = clamp((3 * (3 - volatility)) / 2.5, 0, 3);
   }
 
-  let marketScore = 1.5;
-  let relDiff = null;
-  if (oneYearReturn !== null && oneYearReturn !== undefined && sp500Return !== null && sp500Return !== undefined) {
-    relDiff = Math.abs(oneYearReturn - sp500Return);
-    marketScore = clamp((3 * (100 - relDiff)) / 90, 0, 3);
+  let growthScore = 1.5;
+  if (fiveYearCagr !== null && fiveYearCagr !== undefined) {
+    growthScore = clamp((3 * fiveYearCagr) / 15, 0, 3);
   }
 
-  let capScore = 0.1; // 시총 정보를 못 구한 경우
-  let capText = null;
-  if (isKr && marketSumEok) {
-    capScore = clamp((4 * (marketSumEok - 10000)) / 90000, 0, 4); // 1조(1만억)→0점, 10조(10만억)→만점
-    capText = marketSumEok >= 10000 ? `${(marketSumEok / 10000).toFixed(1)}조원` : `${Math.round(marketSumEok).toLocaleString("ko-KR")}억원`;
-  } else if (!isKr && netAssetsUsd) {
-    const billions = netAssetsUsd / 1e9;
-    capScore = clamp((4 * (billions - 50)) / 450, 0, 4); // $50B→0점, $500B→만점 (2026-09-02 사용자 변경)
-    capText = `$${billions >= 100 ? Math.round(billions).toLocaleString("en-US") : billions.toFixed(1)}B`;
-  }
-
-  const total = Math.round(clamp(volScore + marketScore + capScore, 0, 10) * 10) / 10;
-  return { total, volScore, volatility, marketScore, relDiff, capScore, capText };
+  const total = Math.round(clamp(winScore + volScore + growthScore, 0, 10) * 10) / 10;
+  return { total, winScore, winRate, volScore, volatility, growthScore, fiveYearCagr };
 }
 
 // 최근 30거래일 일평균 변동성(전일 대비 |등락률|의 평균, %) — ETF 투자안정 ①번 입력
@@ -1162,25 +1195,17 @@ async function getUsEtfNetAssets(symbol) {
 
 // ETF 투자안정 점수 계산(입력 수집 포함) — 상세 페이지와 개요 미니 배지가 공유하도록 심볼별로 캐시
 const etfRiskScorePromiseCache = new Map();
-function getEtfRiskScore(symbol, oneYearReturn, sp500Return) {
+function getEtfRiskScore(symbol) {
   if (!etfRiskScorePromiseCache.has(symbol)) {
     etfRiskScorePromiseCache.set(
       symbol,
       (async () => {
-        const isKr = isKrTicker(symbol);
-        const [volatility, cap] = await Promise.all([
-          getEtfDailyVolatility30d(symbol).catch(() => null),
-          (isKr ? getKrEtfMarketSum(symbol) : getUsEtfNetAssets(symbol)).catch(() => null),
-        ]);
-        return computeEtfRiskScore({
-          volatility,
-          oneYearReturn,
-          sp500Return,
-          isKr,
-          marketSumEok: isKr ? cap : null,
-          netAssetsUsd: isKr ? null : cap,
-        });
-      })()
+        const inputs = await getAssetScoreInputs(symbol, "etf");
+        return computeEtfRiskScore({ winRate: inputs.winRate, volatility: inputs.volatility, fiveYearCagr: inputs.fiveYearCagr });
+      })().catch((err) => {
+        etfRiskScorePromiseCache.delete(symbol);
+        throw err;
+      })
     );
   }
   return etfRiskScorePromiseCache.get(symbol);
@@ -2599,8 +2624,8 @@ const I18N = {
   "tab.watchlist": { ko: "관심종목", en: "Watchlist" },
   "tab.popular": { ko: "인기종목", en: "Popular" },
   "tab.search": { ko: "간편검색", en: "Search" },
-  "tab.valuation": { ko: "기업가치", en: "Value" },
-  "tab.trend": { ko: "시장동향", en: "Trends" },
+  "tab.valuation": { ko: "실적비교", en: "Value" },
+  "tab.trend": { ko: "증시동향", en: "Trends" },
   "tab.insight": { ko: "인사이트", en: "Insight" },
   "nav.map": { ko: "섹터맵", en: "Sector Map" },
   "nav.ranking": { ko: "랭킹", en: "Ranking" },
@@ -4180,7 +4205,7 @@ function syncFirmsTabForMarket() {
 }
 // 시장 표시 옆 네모 국기 SVG(2026-09-01 사용자 요청) — 작게 그려도 깔끔하도록 태극기는 태극 문양만,
 // 성조기는 줄무늬+파란 캔튼+별점 6개로 단순화한 컬러 아이콘
-const FLAG_SVG_KR = `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#fff" stroke="rgba(0,0,0,0.22)"/><g transform="translate(10.5,7) rotate(-15)"><path d="M-3.7 0 A3.7 3.7 0 0 1 3.7 0 Z" fill="#cd2e3a"/><path d="M-3.7 0 A3.7 3.7 0 0 0 3.7 0 Z" fill="#0047a0"/><circle cx="-1.85" cy="0" r="1.85" fill="#cd2e3a"/><circle cx="1.85" cy="0" r="1.85" fill="#0047a0"/></g></svg>`;
+const FLAG_SVG_KR = `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#fff" stroke="rgba(0,0,0,0.22)"/><g transform="translate(10.5,7) rotate(-15)"><path d="M-5.2 0 A5.2 5.2 0 0 1 5.2 0 Z" fill="#cd2e3a"/><path d="M-5.2 0 A5.2 5.2 0 0 0 5.2 0 Z" fill="#0047a0"/><circle cx="-2.6" cy="0" r="2.6" fill="#cd2e3a"/><circle cx="2.6" cy="0" r="2.6" fill="#0047a0"/></g></svg>`;
 const FLAG_SVG_US = `<svg viewBox="0 0 21 14" width="21" height="14"><defs><clipPath id="fhUsFlagClip"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5"/></clipPath></defs><g clip-path="url(#fhUsFlagClip)"><rect x="0" y="0" width="21" height="14" fill="#fff"/><rect x="0" y="0.5" width="21" height="1.9" fill="#b22234"/><rect x="0" y="4.3" width="21" height="1.9" fill="#b22234"/><rect x="0" y="8.1" width="21" height="1.9" fill="#b22234"/><rect x="0" y="11.9" width="21" height="1.9" fill="#b22234"/><rect x="0" y="0" width="9.5" height="6.2" fill="#3c3b6e"/><g fill="#fff"><circle cx="2.4" cy="1.8" r="0.55"/><circle cx="4.8" cy="1.8" r="0.55"/><circle cx="7.2" cy="1.8" r="0.55"/><circle cx="2.4" cy="4.2" r="0.55"/><circle cx="4.8" cy="4.2" r="0.55"/><circle cx="7.2" cy="4.2" r="0.55"/></g></g><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="none" stroke="rgba(0,0,0,0.22)"/></svg>`;
 
 // ---------- 앱 섹션 모드(2026-09-01): 하단 네비의 한국주식/미국주식 = "stocks", ETF = "etf", 비트코인 = "crypto" ----------
@@ -5089,6 +5114,9 @@ const S_REPORT_METRICS = [
   { key: "changePercent", label: "하락률", unit: "pct", better: "low", rankNote: "하락 기준" },
   { key: "pressureScore", label: "상승 압력", unit: "score", better: "high" },
   { key: "stabilityScore", label: "투자 안정", unit: "score", better: "high" },
+  // 장기 우상향·RSI(2026-09-03 사용자 요청) — 값은 지도 배치가 스냅샷에 병합해둔 winRateScore/rsiWeekly
+  { key: "winRateScore", label: "장기 우상향", unit: "score", better: "high" },
+  { key: "rsiWeekly", label: "RSI 점수", unit: "score", better: "low", rankNote: "낮은 순" },
 ];
 
 // 유니버스 전체(companies)에서 symbol의 순위를 계산 — better:"high"면 값이 클수록 1위, "low"면 값이 작을수록 1위.
@@ -5410,7 +5438,12 @@ function chartDerivedMetricsAsOf(pairs, idx) {
     if (upTo[i - 1].c) rets.push(Math.abs((upTo[i].c - upTo[i - 1].c) / upTo[i - 1].c) * 100);
   }
   const volatility = avgOf(rets.slice(-30));
-  return { t: asOf.t, price: asOf.c, recentDollarVolume, avgDollarVolume1y, momentum3m, oneYearReturn, volatility };
+  // 한달 수익률·3개월 평균 거래대금(2026-09-03 코인 배점 개편 입력)
+  const i1m = closestIdxOfPairs(upTo, asOf.t - 30 * 86400);
+  const monthReturn = i1m >= 0 && upTo[i1m].c ? ((asOf.c - upTo[i1m].c) / upTo[i1m].c) * 100 : null;
+  const dv3mArr = upTo.filter((p) => p.t >= asOf.t - 91 * 86400).map((p) => p.c * p.v);
+  const avgDollarVolume3m = avgOf(dv3mArr);
+  return { t: asOf.t, price: asOf.c, recentDollarVolume, avgDollarVolume1y, avgDollarVolume3m, momentum3m, monthReturn, oneYearReturn, volatility };
 }
 async function runAssetTickerHistorical(ticker, container, assetType) {
   container.innerHTML = `<p class="muted">불러오는 중...</p>`;
@@ -5432,34 +5465,33 @@ async function runAssetTickerHistorical(ticker, container, assetType) {
     const bBase = closestIdxOfPairs(bPairs, asOfM.t - 365 * 86400);
     const benchReturnAsOf = bNow >= 0 && bBase >= 0 && bPairs[bBase].c ? ((bPairs[bNow].c - bPairs[bBase].c) / bPairs[bBase].c) * 100 : null;
 
+    // 승률(장기 우상향)·RSI는 배치 DB의 현재 값으로 근사(승률은 10년 누적이라 1년 전과 큰 차이 없음, RSI는 과거값이 없어 중립 처리)
+    const wrDb = await getWinRateDb().catch(() => null);
+    const wrMapHist = wrDb ? (isEtf ? wrDb.scoresEtf : wrDb.scoresCrypto) : null;
+    const wrEntryHist = (wrMapHist && wrMapHist[ticker]) || null;
+    const winRateNow = wrEntryHist && wrEntryHist.score !== null && wrEntryHist.score !== undefined ? wrEntryHist.score : null;
+
     let pressureAsOf;
     let riskAsOf;
     let capNote;
     if (isEtf) {
-      pressureAsOf = computeEtfAttractivenessScore(asOfM).total;
-      const cap = isKr ? await getKrEtfMarketSum(ticker).catch(() => null) : await getUsEtfNetAssets(ticker).catch(() => null);
+      pressureAsOf = computeEtfAttractivenessScore(asOfM).total; // RSI는 과거값이 없어 중립(2점) 처리
       riskAsOf = computeEtfRiskScore({
+        winRate: winRateNow,
         volatility: asOfM.volatility,
-        oneYearReturn: asOfM.oneYearReturn,
-        sp500Return: benchReturnAsOf,
-        isKr,
-        marketSumEok: isKr ? cap : null,
-        netAssetsUsd: isKr ? null : cap,
+        fiveYearCagr: null, // 1년 전 시점의 5년 성장률은 조회하지 않아 중립(1.5점) 처리
       }).total;
-      capNote = "시가총액 배점은 현재 시총 기준";
+      capNote = "우상향 점수는 현재 DB 기준, RSI·5년 성장률은 중립 처리";
     } else {
-      pressureAsOf = computeCryptoAttractivenessScore(asOfM).total;
-      const top = await getCryptoTop100().catch(() => []);
-      const rank = top.findIndex((q) => q && q.symbol === ticker);
-      const capPercentile = rank >= 0 ? ((top.length - 1 - rank) / Math.max(1, top.length - 1)) * 100 : null;
+      pressureAsOf = computeCryptoAttractivenessScore(asOfM).total; // RSI는 과거값이 없어 중립(2점) 처리
+      const chartMetaHist = (chart.chart.result[0] && chart.chart.result[0].meta) || {};
       riskAsOf = computeCryptoRiskScore({
-        volatility: asOfM.volatility,
+        firstTradeDate: chartMetaHist.firstTradeDate ?? null,
+        winRate: winRateNow,
         oneYearReturn: asOfM.oneYearReturn,
         btcReturn: benchReturnAsOf,
-        capPercentile,
-        capRank: rank >= 0 ? rank + 1 : null,
       }).total;
-      capNote = "시총 순위 배점은 현재 순위 기준";
+      capNote = "우상향 점수는 현재 DB 기준, RSI는 중립 처리";
     }
 
     const chartMeta = (chart.chart.result[0] && chart.chart.result[0].meta) || {};
@@ -5513,21 +5545,13 @@ async function runAssetSReport(ticker, assetType) {
       if (!m) throw new Error("이 종목의 지표를 계산하지 못했습니다.");
       let pressure;
       let risk;
+      const inputs = await getAssetScoreInputs(ticker, isEtf ? "etf" : "crypto").catch(() => m);
       if (isEtf) {
-        pressure = computeEtfAttractivenessScore(m).total;
-        const { sp500Return } = await getMarketReturnsCached();
-        const cap = isKr ? await getKrEtfMarketSum(ticker).catch(() => null) : await getUsEtfNetAssets(ticker).catch(() => null);
-        risk = computeEtfRiskScore({
-          volatility: m.volatility,
-          oneYearReturn: m.oneYearReturn,
-          sp500Return,
-          isKr,
-          marketSumEok: isKr ? cap : null,
-          netAssetsUsd: isKr ? null : cap,
-        }).total;
+        pressure = computeEtfAttractivenessScore(inputs).total;
+        risk = computeEtfRiskScore({ winRate: inputs.winRate, volatility: inputs.volatility, fiveYearCagr: inputs.fiveYearCagr }).total;
       } else {
-        pressure = computeCryptoAttractivenessScore(m).total;
-        risk = (await getCryptoRiskScore(ticker, m.oneYearReturn)).total;
+        pressure = computeCryptoAttractivenessScore(inputs).total;
+        risk = (await getCryptoRiskScore(ticker)).total;
       }
       self = {
         symbol: ticker,
@@ -5542,6 +5566,8 @@ async function runAssetSReport(ticker, assetType) {
     }
 
     const universe = outsideUniverse ? [...rows, self] : rows;
+    // 장기 우상향·RSI(2026-09-03): 배치 DB 값을 행에 부착해 8개 항목으로 확장 — 본인(self)도 포함
+    await attachWinRateRsiToRows(universe, isEtf ? "scoresEtf" : "scoresCrypto");
     const totalCount = universe.length;
     const metricRank = (key) => {
       const sorted = [...universe].sort(ASSET_TREND_METRICS[key].sort);
@@ -5549,17 +5575,18 @@ async function runAssetSReport(ticker, assetType) {
       return i >= 0 ? i + 1 : null;
     };
     const uniLabel = isEtf ? (isKr ? "한국 ETF 시가총액 상위 100개" : "미국 ETF 상위 100개") : "암호화폐 시가총액 상위 100개";
-    const body = ["week52", "volume", "surge", "plunge", "pressure", "risk"]
+    const body = ["week52", "volume", "surge", "plunge", "pressure", "risk", "winrate", "rsi"]
       .map((key) => {
         const m = ASSET_TREND_METRICS[key];
         const rank = metricRank(key);
-        return `<tr><td>${m.label}</td><td>${m.cell(self)}</td><td>${
+        const rowLabel = key === "winrate" ? "장기 우상향" : key === "rsi" ? "RSI 점수" : m.label;
+        return `<tr><td>${rowLabel}</td><td>${m.cell(self)}</td><td>${
           rank ? `<b>${rank}위</b> <span class="muted" style="font-size:11px;">/ ${totalCount}개</span>` : "N/A"
         }</td></tr>`;
       })
       .join("");
     wrap.innerHTML = `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${uniLabel} 기준 6개 항목별 순위입니다${
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${uniLabel} 기준 8개 항목별 순위입니다${
       outsideUniverse ? " (이 종목은 시총 상위 100위 밖이라 100개+본인을 합친 근사 순위예요)" : ""
     }. 투자 자문이 아닙니다.</p>
       <table class="top30-table">
@@ -5571,39 +5598,33 @@ async function runAssetSReport(ticker, assetType) {
   }
 }
 
-// 요약 카드 아래에 상승압력도·투자 안정성·거시경제 점수를 한눈에 보는 작은 원형 배지로 가로 배치(상세 근거는 5·6·7번 섹션 참고)
+// 요약 카드 아래 4점수 미니 배지(2026-09-03 사용자 요청): 상승 압력(파랑)·투자 안정(초록)·장기 우상향(보라)·RSI 점수(빨강)
+// — 한국주식~비트코인 모든 검색 요약페이지 공통, VIX/공포점수 배지는 제거. 우상향·RSI는 배치 DB(winrate-scores-us.json)에서 읽음
 async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise, scoreMode = "stock") {
   const rowEl = el("summaryScoreRow");
   try {
     const [metrics, { sp500Return, kospi200Return }] = await Promise.all([selfMetricsPromise, marketReturnsPromise, krCreditRatingReady]);
-    const isKr = isKrTicker(metrics.symbol);
-    // ETF·코인은 각자의 전용 상승압력·투자안정 배점(2026-09-01)을 사용
+    // ETF·코인은 각자의 전용 상승압력·투자안정 배점(2026-09-03 개편)을 사용 — 입력은 통합 캐시(getAssetScoreInputs) 공유
     const attractiveness =
-      scoreMode === "etf" ? computeEtfAttractivenessScore(metrics) : scoreMode === "crypto" ? computeCryptoAttractivenessScore(metrics) : computeAttractivenessScore(metrics);
+      scoreMode === "etf"
+        ? computeEtfAttractivenessScore(await getAssetScoreInputs(metrics.symbol, "etf"))
+        : scoreMode === "crypto"
+        ? computeCryptoAttractivenessScore(await getAssetScoreInputs(metrics.symbol, "crypto"))
+        : computeAttractivenessScore(metrics);
     const risk =
       scoreMode === "etf"
-        ? await getEtfRiskScore(metrics.symbol, metrics.oneYearReturn, sp500Return)
+        ? await getEtfRiskScore(metrics.symbol)
         : scoreMode === "crypto"
-        ? await getCryptoRiskScore(metrics.symbol, metrics.oneYearReturn)
+        ? await getCryptoRiskScore(metrics.symbol)
         : computeRiskScore(metrics, sp500Return, kospi200Return);
     const isIPO = isRecentIPO(metrics.firstTradeDate);
 
-    let macroBadgeHtml;
-    if (isKr) {
-      const fomo = await getKrFomoMetrics().catch(() => ({ score: null, changeAbs: null }));
-      macroBadgeHtml = `
-        <div class="mini-score-circle macro"${fomoBgStyleAttr(fomo.score)}>${fomoDisplayValue(fomo.score)}</div>
-        <span class="mini-score-label">KOSPI 공포지수${fomoLineHtml(fomo.score, fomo.changeAbs)}</span>
-      `;
-    } else {
-      const macroMetrics = await getMacroMetrics().catch(() => ({ vix: null }));
-      const vix = macroMetrics.vix;
-      const vixGradeShortLabel = vixGrade(vix).label.replace(/\s*\(.*\)$/, ""); // 원판 안엔 "패닉 (투자 황금기)" 대신 짧은 등급명("안심"/"경계"/"공포"/"패닉")만
-      macroBadgeHtml = `
-        <div class="mini-score-circle macro"${scoreBgStyleAttr(vix, 10, 50, "fear")}>${vixGradeShortLabel}</div>
-        <span class="mini-score-label">S&amp;P 공포지수${vixLineHtml(macroMetrics, "VIX")}</span>
-      `;
-    }
+    // 장기 우상향(승률)·주간 RSI — DB에 없는 종목(S&P500 밖 미국주식 등)은 "—"로 표시
+    const db = await getWinRateDb().catch(() => null);
+    const wrMap = winRateMapForMode(db, metrics.symbol, scoreMode);
+    const wrEntry = (wrMap && wrMap[metrics.symbol]) || null;
+    const winRateVal = wrEntry && wrEntry.score !== null && wrEntry.score !== undefined ? wrEntry.score : null;
+    const rsiVal = wrEntry && wrEntry.rsi !== null && wrEntry.rsi !== undefined ? Math.round(wrEntry.rsi * 10) / 10 : null;
 
     rowEl.innerHTML = `
       <div class="mini-score">
@@ -5616,7 +5637,12 @@ async function renderSummaryScoreRow(selfMetricsPromise, marketReturnsPromise, s
         <span class="mini-score-label">투자 안정</span>
       </div>` : ""}
       <div class="mini-score">
-        ${macroBadgeHtml}
+        <div class="mini-score-circle winrate">${winRateVal !== null ? winRateVal : "—"}</div>
+        <span class="mini-score-label">장기 우상향</span>
+      </div>
+      <div class="mini-score">
+        <div class="mini-score-circle rsi">${rsiVal !== null ? rsiVal : "—"}</div>
+        <span class="mini-score-label">RSI 점수</span>
       </div>
     `;
   } catch {
@@ -6360,12 +6386,13 @@ async function renderScore(selfMetricsPromise) {
   `;
 }
 
-// ---------- 5-1. ETF 전용 상승압력도(invest점수, 2026-09-01 사용자 배점): 총 거래대금 + 상승 모멘텀 + 1년 상승률 ----------
+// ---------- 5-1. ETF 전용 상승압력도(2026-09-03 사용자 개편): 상승 모멘텀 + 거래량 + RSI ----------
 async function renderEtfScore(selfMetricsPromise) {
   el("scoreSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
   const metrics = await selfMetricsPromise;
-  const { total, volumeScore, volumeRatio, momentumScore, momentum3m, yearScore, oneYearReturn } = computeEtfAttractivenessScore(metrics);
+  const inputs = await getAssetScoreInputs(metrics.symbol, "etf");
+  const { total, momentumScore, momentum3m, volumeScore, volumeRatio, rsiScore, rsiWeekly } = computeEtfAttractivenessScore(inputs);
 
   const pressureColor = SCORE_COLOR_FAMILY.pressure;
   el("scoreSection").innerHTML = `
@@ -6377,30 +6404,30 @@ async function renderEtfScore(selfMetricsPromise) {
       <div class="score-details">
         ${scoreMethodBarRow(
           "①",
-          "총 거래대금",
-          volumeScore,
+          "상승 모멘텀",
+          momentumScore,
           3,
-          `최근 5거래일 평균, 1년 평균 대비: <b>${volumeRatio !== null ? volumeRatio.toFixed(2) + "배" : "N/A"}</b> (2배 이상 만점, 1배 1점, 0.5배 이하 0점)`,
+          `최근 3개월 주가상승: <b>${momentum3m !== null && momentum3m !== undefined ? fmtPct(momentum3m) : "N/A"}</b> (25% 이상 만점·0% 이하 0점)`,
           pressureColor
         )}
         ${scoreMethodBarRow(
           "②",
-          "상승 모멘텀",
-          momentumScore,
+          "거래량",
+          volumeScore,
           3,
-          `최근 3개월 주가상승: <b>${momentum3m !== null && momentum3m !== undefined ? fmtPct(momentum3m) : "N/A"}</b> (20% 이상 만점·0% 이하 0점)`,
+          `최근 5거래일 평균 거래대금, 1년 평균 대비: <b>${volumeRatio !== null ? volumeRatio.toFixed(2) + "배" : "N/A"}</b> (2배 이상 만점·0.5배 이하 0점)`,
           pressureColor
         )}
         ${scoreMethodBarRow(
           "③",
-          "1년 상승률",
-          yearScore,
+          "RSI 점수",
+          rsiScore,
           4,
-          `최근 1년 주가상승: <b>${oneYearReturn !== null && oneYearReturn !== undefined ? fmtPct(oneYearReturn) : "N/A"}</b> (50% 이상 만점·0% 이하 0점)`,
+          `주간 RSI(14): <b>${rsiWeekly !== null && rsiWeekly !== undefined ? rsiWeekly.toFixed(1) : "N/A(중립 2점)"}</b> (70 이상 만점·30 이하 0점)`,
           pressureColor
         )}
         <p class="disclaimer">
-          ⚠️ ETF 전용 배점(거래대금·모멘텀·1년 상승률)으로 계산한 <b>단순 참고용 정량 지표</b>이며,
+          ⚠️ ETF 전용 배점(모멘텀·거래량·RSI)으로 계산한 <b>단순 참고용 정량 지표</b>이며,
           투자 자문이나 매수/매도 추천이 아닙니다.
         </p>
       </div>
@@ -6408,12 +6435,13 @@ async function renderEtfScore(selfMetricsPromise) {
   `;
 }
 
-// ---------- 5-2. 코인 전용 상승압력도(2026-09-01 사용자 배점): 총 거래대금 + 상승 모멘텀(40% 만점) + 1년 상승률(200% 만점) ----------
+// ---------- 5-2. 코인 전용 상승압력도(2026-09-03 사용자 개편): 거래량(3개월 대비) + 한달상승 + RSI ----------
 async function renderCryptoScore(selfMetricsPromise) {
   el("scoreSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
   const metrics = await selfMetricsPromise;
-  const { total, volumeScore, volumeRatio, momentumScore, momentum3m, yearScore, oneYearReturn } = computeCryptoAttractivenessScore(metrics);
+  const inputs = await getAssetScoreInputs(metrics.symbol, "crypto");
+  const { total, volumeScore, volumeRatio, monthScore, monthReturn, rsiScore, rsiWeekly } = computeCryptoAttractivenessScore(inputs);
 
   const pressureColor = SCORE_COLOR_FAMILY.pressure;
   el("scoreSection").innerHTML = `
@@ -6425,30 +6453,30 @@ async function renderCryptoScore(selfMetricsPromise) {
       <div class="score-details">
         ${scoreMethodBarRow(
           "①",
-          "총 거래대금",
+          "거래량",
           volumeScore,
           3,
-          `최근 5거래일 평균, 1년 평균 대비: <b>${volumeRatio !== null ? volumeRatio.toFixed(2) + "배" : "N/A"}</b> (2배 이상 만점, 1배 1점, 0.5배 이하 0점)`,
+          `최근 5일 평균 거래대금, 3개월 평균 대비: <b>${volumeRatio !== null ? volumeRatio.toFixed(2) + "배" : "N/A"}</b> (3배 이상 만점·0.5배 이하 0점)`,
           pressureColor
         )}
         ${scoreMethodBarRow(
           "②",
-          "상승 모멘텀",
-          momentumScore,
+          "한달상승",
+          monthScore,
           3,
-          `최근 3개월 가격상승: <b>${momentum3m !== null && momentum3m !== undefined ? fmtPct(momentum3m) : "N/A"}</b> (40% 이상 만점·0% 이하 0점)`,
+          `최근 1개월 가격상승: <b>${monthReturn !== null && monthReturn !== undefined ? fmtPct(monthReturn) : "N/A"}</b> (50% 이상 만점·0% 이하 0점)`,
           pressureColor
         )}
         ${scoreMethodBarRow(
           "③",
-          "1년 상승률",
-          yearScore,
+          "RSI 과매도점수",
+          rsiScore,
           4,
-          `최근 1년 가격상승: <b>${oneYearReturn !== null && oneYearReturn !== undefined ? fmtPct(oneYearReturn) : "N/A"}</b> (200% 이상 만점·0% 이하 0점)`,
+          `주간 RSI(14): <b>${rsiWeekly !== null && rsiWeekly !== undefined ? rsiWeekly.toFixed(1) : "N/A(중립 2점)"}</b> (70 이상 만점·30 이하 0점)`,
           pressureColor
         )}
         <p class="disclaimer">
-          ⚠️ 코인 전용 배점(거래대금·모멘텀·1년 상승률)으로 계산한 <b>단순 참고용 정량 지표</b>이며,
+          ⚠️ 코인 전용 배점(거래량·한달상승·RSI)으로 계산한 <b>단순 참고용 정량 지표</b>이며,
           투자 자문이나 매수/매도 추천이 아닙니다.
         </p>
       </div>
@@ -6456,12 +6484,12 @@ async function renderCryptoScore(selfMetricsPromise) {
   `;
 }
 
-// ---------- 6-2. 코인 전용 투자안정성(2026-09-01 사용자 배점): 일평균 변동성 + 비트코인 대비 모멘텀 + 시총 TOP50 백분위 ----------
+// ---------- 6-2. 코인 전용 투자안정성(2026-09-03 사용자 개편): 업력 + 우상향 점수 + 비트코인 대비 모멘텀 ----------
 async function renderCryptoRisk(selfMetricsPromise) {
   el("riskSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
   const metrics = await selfMetricsPromise;
-  const s = await getCryptoRiskScore(metrics.symbol, metrics.oneYearReturn);
+  const s = await getCryptoRiskScore(metrics.symbol);
 
   const stabilityColor = SCORE_COLOR_FAMILY.stability;
   el("riskSection").innerHTML = `
@@ -6473,30 +6501,30 @@ async function renderCryptoRisk(selfMetricsPromise) {
       <div class="score-details">
         ${scoreMethodBarRow(
           "①",
-          "일평균 변동성",
-          s.volScore,
+          "업력",
+          s.ageScore,
           3,
-          `최근 30거래일 일평균 등락폭: <b>${s.volatility !== null && s.volatility !== undefined ? s.volatility.toFixed(2) + "%" : "N/A"}</b> (2% 이하 만점, 10% 이상 0점)`,
+          `거래 시작 후 경과: <b>${s.ageYears !== null && s.ageYears !== undefined ? s.ageYears.toFixed(1) + "년" : "N/A"}</b> (10년 이상 만점, 3년 이하 0점)`,
           stabilityColor
         )}
         ${scoreMethodBarRow(
           "②",
-          "비트코인 대비 모멘텀",
-          s.marketScore,
-          3,
-          `1년 상승률과 비트코인의 차이: <b>${s.relDiff !== null && s.relDiff !== undefined ? s.relDiff.toFixed(1) + "%p" : "N/A"}</b> (10%p 미만 만점, 100%p 이상 0점)`,
+          "우상향 점수",
+          s.winScore,
+          4,
+          `10년 월간 승률(장기 우상향 점수): <b>${s.winRate !== null && s.winRate !== undefined ? s.winRate + "점" : "N/A(중립 2점)"}</b> (60 이상 만점, 40 이하 0점)`,
           stabilityColor
         )}
         ${scoreMethodBarRow(
           "③",
-          "시가총액",
-          s.capScore,
-          4,
-          `시총 TOP100 내 위치: <b>${s.capRank ? `${s.capRank}위 (상위 백분위 ${s.capPercentile.toFixed(0)}%)` : "TOP100 밖"}</b> (백분위 100% 만점, 0% 0점)`,
+          "비트코인 대비 모멘텀",
+          s.marketScore,
+          3,
+          `1년 상승률과 비트코인의 차이: <b>${s.relDiff !== null && s.relDiff !== undefined ? s.relDiff.toFixed(1) + "%p" : "N/A"}</b> (40%p 미만 만점, 100%p 이상 0점)`,
           stabilityColor
         )}
         <p class="disclaimer">
-          ⚠️ 코인 전용 배점(변동성·비트코인 대비 모멘텀·시총 순위)으로 계산한 <b>단순 참고용 정량 지표</b>이며,
+          ⚠️ 코인 전용 배점(업력·우상향·비트코인 대비 모멘텀)으로 계산한 <b>단순 참고용 정량 지표</b>이며,
           투자 자문이나 매수/매도 추천이 아닙니다.
         </p>
       </div>
@@ -6504,13 +6532,12 @@ async function renderCryptoRisk(selfMetricsPromise) {
   `;
 }
 
-// ---------- 6-1. ETF 전용 투자안정성(2026-09-01 사용자 배점): 일평균 변동성 + SPY 대비 모멘텀 + 시가총액 ----------
+// ---------- 6-1. ETF 전용 투자안정성(2026-09-03 사용자 개편): 우상향 점수 + 변동성 + 5년 평균 성장률 ----------
 async function renderEtfRisk(marketReturnsPromise, selfMetricsPromise) {
   el("riskSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
-  const [metrics, { sp500Return }] = await Promise.all([selfMetricsPromise, marketReturnsPromise]);
-  const s = await getEtfRiskScore(metrics.symbol, metrics.oneYearReturn, sp500Return);
-  const isKr = isKrTicker(metrics.symbol);
+  const metrics = await selfMetricsPromise;
+  const s = await getEtfRiskScore(metrics.symbol);
 
   const stabilityColor = SCORE_COLOR_FAMILY.stability;
   el("riskSection").innerHTML = `
@@ -6522,30 +6549,30 @@ async function renderEtfRisk(marketReturnsPromise, selfMetricsPromise) {
       <div class="score-details">
         ${scoreMethodBarRow(
           "①",
-          "일평균 변동성",
-          s.volScore,
-          3,
-          `최근 30거래일 일평균 등락폭: <b>${s.volatility !== null && s.volatility !== undefined ? s.volatility.toFixed(2) + "%" : "N/A"}</b> (1% 이하 만점, 5% 이상 0점)`,
+          "우상향 점수",
+          s.winScore,
+          4,
+          `10년 월간 승률(장기 우상향 점수): <b>${s.winRate !== null && s.winRate !== undefined ? s.winRate + "점" : "N/A(중립 2점)"}</b> (60 이상 만점, 40 이하 0점)`,
           stabilityColor
         )}
         ${scoreMethodBarRow(
           "②",
-          "SPY 대비 모멘텀",
-          s.marketScore,
+          "변동성 점수",
+          s.volScore,
           3,
-          `1년 상승률과 S&amp;P500(SPY)의 차이: <b>${s.relDiff !== null && s.relDiff !== undefined ? s.relDiff.toFixed(1) + "%p" : "N/A"}</b> (10%p 미만 만점, 100%p 이상 0점)`,
+          `최근 30거래일 일평균 등락폭: <b>${s.volatility !== null && s.volatility !== undefined ? s.volatility.toFixed(2) + "%" : "N/A"}</b> (0.5% 미만 만점, 3% 이상 0점)`,
           stabilityColor
         )}
         ${scoreMethodBarRow(
           "③",
-          "시가총액",
-          s.capScore,
-          4,
-          `순자산·시가총액: <b>${s.capText || "N/A"}</b> (${isKr ? "10조원 이상 만점, 1조원 미만 0점" : "$500B(5,000억달러) 이상 만점, $50B 이하 0점"})`,
+          "5년 평균 성장률",
+          s.growthScore,
+          3,
+          `연평균 성장률(CAGR, 5년 미만 상장은 상장 후부터): <b>${s.fiveYearCagr !== null && s.fiveYearCagr !== undefined ? fmtPct(s.fiveYearCagr) : "N/A"}</b> (연 15% 이상 만점, 0% 이하 0점)`,
           stabilityColor
         )}
         <p class="disclaimer">
-          ⚠️ ETF 전용 배점(변동성·SPY 대비 모멘텀·시가총액)으로 계산한 <b>단순 참고용 정량 지표</b>이며,
+          ⚠️ ETF 전용 배점(우상향·변동성·5년 성장률)으로 계산한 <b>단순 참고용 정량 지표</b>이며,
           투자 자문이나 매수/매도 추천이 아닙니다.
         </p>
       </div>
@@ -6754,6 +6781,217 @@ async function renderRsi(ticker, mode) {
     </div>
   `;
 }
+
+// ---------- 6-4. 장기 우상향 점수 "+자세히"(2026-09-03 사용자 요청): 대표 자산 11종의 10년 월간 승률 벤치마크 ----------
+// 값은 2026-09-03에 야후(월봉 11y)·ECOS(서울 아파트 매매가격지수 901Y062/P63ACA, 한국부동산원)로 일괄 계산한 정적 스냅샷.
+// 승률은 10년 누적이라 천천히 변함 — 갱신 시 scratchpad의 winrate-benchmarks.ps1 재실행 후 이 표를 교체.
+const WINRATE_BENCHMARKS = [
+  { name: "서울 부동산", sub: "서울 아파트 지수", up: 94, down: 26, score: 78.3, color: "#8b5a2b" },
+  { name: "SPY", sub: "S&P500", up: 82, down: 38, score: 68.3, color: "#1f77b4" },
+  { name: "QQQ", sub: "나스닥100", up: 78, down: 42, score: 65.0, color: "#ff7f0e" },
+  { name: "필라델피아 반도체", sub: "SOX", up: 77, down: 43, score: 64.2, color: "#2ca02c" },
+  { name: "코스피200", sub: "KODEX200", up: 69, down: 51, score: 57.5, color: "#d62728" },
+  { name: "BTC", sub: "비트코인", up: 67, down: 53, score: 55.8, color: "#f7931a" },
+  { name: "코스닥150", sub: "KODEX코스닥150", up: 65, down: 55, score: 54.2, color: "#e377c2" },
+  { name: "금 GOLD", sub: "GLD", up: 63, down: 57, score: 52.5, color: "#d4af37" },
+  { name: "이더리움", sub: "ETH", up: 53, down: 52, score: 50.5, color: "#627eea" },
+  { name: "코스피 인버스x1", sub: "KODEX인버스", up: 48, down: 72, score: 40.0, color: "#17becf" },
+  { name: "나스닥 인버스x1", sub: "PSQ", up: 38, down: 82, score: 31.7, color: "#9467bd" },
+];
+let winRateBenchmarkBuilt = false;
+function renderWinRateBenchmarkDetail() {
+  if (winRateBenchmarkBuilt) return;
+  winRateBenchmarkBuilt = true;
+  const wrap = el("winRateDetailWrap");
+  const X0 = 44;
+  const X1 = 656;
+  const AXIS_Y = 118;
+  const xOf = (score) => X0 + (score / 100) * (X1 - X0);
+  // 점수가 몰려 있어 이름표를 위 3단·아래 2단으로 번갈아 배치(리더 선으로 연결)
+  const tierYs = [96, 68, 40, 148, 176];
+  const dots = WINRATE_BENCHMARKS.map((b, i) => {
+    const x = xOf(b.score);
+    const tier = tierYs[i % tierYs.length];
+    const above = tier < AXIS_Y;
+    const labelY = above ? tier : tier + 4;
+    return `
+      <line x1="${x}" y1="${AXIS_Y}" x2="${x}" y2="${above ? tier + 6 : tier - 8}" stroke="${b.color}" stroke-width="1" stroke-dasharray="2 2" opacity="0.75"/>
+      <circle cx="${x}" cy="${AXIS_Y}" r="5" fill="${b.color}" stroke="#fff" stroke-width="1.4"/>
+      <text x="${x}" y="${labelY}" text-anchor="middle" font-size="11" font-weight="700" fill="${b.color}">${escapeHtml(b.name)}</text>
+      <text x="${x}" y="${labelY + 12}" text-anchor="middle" font-size="10" fill="${b.color}">${b.score}점</text>`;
+  }).join("");
+  const svg = `
+    <svg viewBox="0 0 700 205" style="width:100%;height:auto;display:block;" role="img" aria-label="대표 자산 10년 승률 비교선">
+      <line x1="${X0}" y1="${AXIS_Y}" x2="${X1}" y2="${AXIS_Y}" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"/>
+      <line x1="${X0}" y1="${AXIS_Y - 5}" x2="${X0}" y2="${AXIS_Y + 5}" stroke="var(--muted)" stroke-width="2"/>
+      <line x1="${X1}" y1="${AXIS_Y - 5}" x2="${X1}" y2="${AXIS_Y + 5}" stroke="var(--muted)" stroke-width="2"/>
+      <text x="${X0}" y="${AXIS_Y + 20}" text-anchor="middle" font-size="12" font-weight="800" fill="var(--text)">0점</text>
+      <text x="${X1}" y="${AXIS_Y + 20}" text-anchor="middle" font-size="12" font-weight="800" fill="var(--text)">100점</text>
+      <text x="${X1}" y="${AXIS_Y + 34}" text-anchor="middle" font-size="10.5" fill="var(--muted)">(예금·적금)</text>
+      ${dots}
+    </svg>`;
+  const rows = WINRATE_BENCHMARKS.map(
+    (b, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${b.color};margin-right:5px;vertical-align:baseline;"></span><b>${escapeHtml(b.name)}</b><br><span class="muted" style="font-size:10.5px;">${escapeHtml(b.sub)}</span></td>
+        <td>${b.up}회</td>
+        <td>${b.down}회</td>
+        <td><b style="color:#8b5cf6;">${b.score}점</b></td>
+      </tr>`
+  ).join("");
+  wrap.innerHTML = `
+    <h3 class="future-chart-subheading">📐 대표 자산 11종의 10년 승률 비교 (2026-09 기준)</h3>
+    ${svg}
+    <table class="top30-table" style="margin-top:10px;">
+      <thead><tr><th>순위</th><th>이름</th><th>상승횟수</th><th>하락횟수</th><th>점수(승률)</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <p class="disclaimer" style="margin-top:8px;">
+      ⚠️ 최근 10년(120개월) 월봉 종가 기준으로 전월보다 상승 마감한 달의 비율입니다(이더리움은 상장 후부터,
+      서울 부동산은 한국부동산원 서울 아파트 매매가격지수 기준). 예금·적금은 매월 잔액이 늘어나므로 100점에 해당하는 비교 기준선입니다.
+      과거 데이터이며 미래 수익률을 보장하지 않고 투자 자문이 아닙니다.
+    </p>
+  `;
+}
+el("winRateDetailBtn").addEventListener("click", () => {
+  const wrap = el("winRateDetailWrap");
+  const btn = el("winRateDetailBtn");
+  const isOpen = wrap.style.display !== "none";
+  wrap.style.display = isOpen ? "none" : "block";
+  wrap.classList.toggle("chart-detail-expanded", !isOpen);
+  btn.textContent = isOpen ? "+자세히" : "-접기";
+  if (!isOpen) renderWinRateBenchmarkDetail();
+});
+
+// ---------- 6-5. RSI 점수 "+자세히"(2026-09-03 사용자 요청): SPY 5년 주봉 차트 + 주간 RSI(14) 흐름과 저점 2회 표시 ----------
+// computeWilderRsi(마지막 값만)와 같은 계산을 시계열 전체로 — i번째 값은 첫 14주 단순평균 후 지수평활을 이어간 RSI
+function computeWilderRsiSeries(closes, period = 14) {
+  if (!closes || closes.length < period + 1) return [];
+  const out = new Array(closes.length).fill(null);
+  let gain = 0;
+  let loss = 0;
+  for (let i = 1; i <= period; i++) {
+    const d = closes[i] - closes[i - 1];
+    if (d > 0) gain += d;
+    else loss -= d;
+  }
+  let avgGain = gain / period;
+  let avgLoss = loss / period;
+  out[period] = avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain / avgLoss);
+  for (let i = period + 1; i < closes.length; i++) {
+    const d = closes[i] - closes[i - 1];
+    avgGain = (avgGain * (period - 1) + (d > 0 ? d : 0)) / period;
+    avgLoss = (avgLoss * (period - 1) + (d < 0 ? -d : 0)) / period;
+    out[i] = avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain / avgLoss);
+  }
+  return out;
+}
+let rsiSpyDetailPromise = null;
+function renderRsiSpyDetail() {
+  const wrap = el("rsiDetailWrap");
+  if (!rsiSpyDetailPromise) {
+    rsiSpyDetailPromise = (async () => {
+      const chart = await yahooChart("SPY", "5y", "1wk");
+      const pairs = chartClosePairs(chart);
+      if (pairs.length < 30) throw new Error("SPY 주봉 데이터를 가져오지 못했습니다.");
+      const closes = pairs.map((p) => p.c);
+      const rsiSeries = computeWilderRsiSeries(closes, 14);
+
+      const W = 700;
+      const PX0 = 46;
+      const PX1 = 688;
+      const priceTop = 14;
+      const priceBottom = 128;
+      const rsiTop = 150;
+      const rsiBottom = 236;
+      const t0 = pairs[0].t;
+      const t1 = pairs[pairs.length - 1].t;
+      const xOf = (t) => PX0 + ((t - t0) / (t1 - t0)) * (PX1 - PX0);
+      const minC = Math.min(...closes);
+      const maxC = Math.max(...closes);
+      const yOfPrice = (c) => priceBottom - ((c - minC) / (maxC - minC)) * (priceBottom - priceTop);
+      const yOfRsi = (r) => rsiBottom - (r / 100) * (rsiBottom - rsiTop);
+
+      const pricePath = pairs.map((p, i) => `${i === 0 ? "M" : "L"}${xOf(p.t).toFixed(1)},${yOfPrice(p.c).toFixed(1)}`).join("");
+      const rsiPath = pairs
+        .map((p, i) => (rsiSeries[i] === null ? null : `${xOf(p.t).toFixed(1)},${yOfRsi(rsiSeries[i]).toFixed(1)}`))
+        .filter(Boolean)
+        .map((pt, i) => `${i === 0 ? "M" : "L"}${pt}`)
+        .join("");
+
+      // 두 차례 큰 하락 구간(2025년 4월·2026년 3월) 부근에서 RSI 최저점을 찾아 점으로 표시
+      const lowWindows = [
+        { label: "25년 4월", from: Date.UTC(2025, 2, 1) / 1000, to: Date.UTC(2025, 4, 31) / 1000 },
+        { label: "26년 3월", from: Date.UTC(2026, 1, 1) / 1000, to: Date.UTC(2026, 3, 30) / 1000 },
+      ];
+      const lowMarks = lowWindows
+        .map((w) => {
+          let best = null;
+          for (let i = 0; i < pairs.length; i++) {
+            if (rsiSeries[i] === null || pairs[i].t < w.from || pairs[i].t > w.to) continue;
+            if (!best || rsiSeries[i] < best.rsi) best = { t: pairs[i].t, rsi: rsiSeries[i], price: pairs[i].c };
+          }
+          return best ? { ...best, label: w.label } : null;
+        })
+        .filter(Boolean);
+      const lowMarkSvg = lowMarks
+        .map((mk) => {
+          const x = xOf(mk.t);
+          const y = yOfRsi(mk.rsi);
+          const anchor = x > (PX0 + PX1) / 2 ? "end" : "start";
+          const tx = anchor === "end" ? x - 8 : x + 8;
+          return `
+            <line x1="${x.toFixed(1)}" y1="${yOfPrice(mk.price).toFixed(1)}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#ef4444" stroke-width="1" stroke-dasharray="3 3" opacity="0.55"/>
+            <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="#ef4444" stroke="#fff" stroke-width="1.5"/>
+            <text x="${tx.toFixed(1)}" y="${(y - 9).toFixed(1)}" text-anchor="${anchor}" font-size="11.5" font-weight="800" fill="#ef4444">${mk.label} RSI ${mk.rsi.toFixed(1)}</text>`;
+        })
+        .join("");
+
+      const yearTicks = [];
+      for (let y = new Date(t0 * 1000).getUTCFullYear() + 1; y <= new Date(t1 * 1000).getUTCFullYear(); y++) {
+        const tt = Date.UTC(y, 0, 1) / 1000;
+        if (tt > t0 && tt < t1) yearTicks.push(`<line x1="${xOf(tt).toFixed(1)}" y1="${priceTop}" x2="${xOf(tt).toFixed(1)}" y2="${rsiBottom}" stroke="var(--border)" stroke-width="1" opacity="0.6"/><text x="${xOf(tt).toFixed(1)}" y="${rsiBottom + 14}" text-anchor="middle" font-size="10" fill="var(--muted)">${y}</text>`);
+      }
+
+      wrap.innerHTML = `
+        <h3 class="future-chart-subheading">📉 예시: SPY(S&amp;P500) 5년 주봉과 주간 RSI(14)</h3>
+        <svg viewBox="0 0 ${W} 258" style="width:100%;height:auto;display:block;" role="img" aria-label="SPY 5년 차트와 주간 RSI">
+          ${yearTicks.join("")}
+          <text x="${PX0}" y="${priceTop - 2}" font-size="10.5" fill="var(--muted)">SPY 주가(주봉 종가)</text>
+          <path d="${pricePath}" fill="none" stroke="#5b8def" stroke-width="2" stroke-linejoin="round"/>
+          <text x="${PX0}" y="${rsiTop - 5}" font-size="10.5" fill="var(--muted)">주간 RSI(14)</text>
+          <line x1="${PX0}" y1="${yOfRsi(70).toFixed(1)}" x2="${PX1}" y2="${yOfRsi(70).toFixed(1)}" stroke="#ef4444" stroke-width="1" stroke-dasharray="4 3" opacity="0.55"/>
+          <line x1="${PX0}" y1="${yOfRsi(30).toFixed(1)}" x2="${PX1}" y2="${yOfRsi(30).toFixed(1)}" stroke="#22a866" stroke-width="1" stroke-dasharray="4 3" opacity="0.55"/>
+          <text x="${PX1}" y="${(yOfRsi(70) - 3).toFixed(1)}" text-anchor="end" font-size="9.5" fill="#ef4444">70 과매수</text>
+          <text x="${PX1}" y="${(yOfRsi(30) + 11).toFixed(1)}" text-anchor="end" font-size="9.5" fill="#22a866">30 과매도</text>
+          <path d="${rsiPath}" fill="none" stroke="#8b5cf6" stroke-width="1.8" stroke-linejoin="round"/>
+          ${lowMarkSvg}
+        </svg>
+        <p class="disclaimer" style="margin-top:8px;">
+          💡 <b>RSI(상대강도지수)</b>는 최근 14주 동안 오른 폭과 내린 폭의 비율로 "지금 얼마나 과열/침체됐는지"를 0~100으로 나타내는
+          기술적 지표입니다. <b style="color:#22a866;">30 미만이면 과매도(많이 내려 침체)</b>,
+          <b style="color:#ef4444;">70 이상이면 과매수(많이 올라 과열)</b>로 봅니다. 위 SPY 예시처럼 큰 하락 구간(빨간 점)에서
+          주간 RSI가 30 부근까지 내려간 뒤 반등한 사례가 있지만, 항상 반복된다는 보장은 없으며 투자 자문이 아닙니다.
+        </p>
+      `;
+    })().catch((e) => {
+      rsiSpyDetailPromise = null;
+      wrap.innerHTML = `<p class="error-inline">SPY 예시 차트를 가져오지 못했습니다: ${escapeHtml(e.message || "")}</p>`;
+    });
+  }
+  return rsiSpyDetailPromise;
+}
+el("rsiDetailBtn").addEventListener("click", () => {
+  const wrap = el("rsiDetailWrap");
+  const btn = el("rsiDetailBtn");
+  const isOpen = wrap.style.display !== "none";
+  wrap.style.display = isOpen ? "none" : "block";
+  wrap.classList.toggle("chart-detail-expanded", !isOpen);
+  btn.textContent = isOpen ? "+자세히" : "-접기";
+  if (!isOpen && !wrap.innerHTML) wrap.innerHTML = `<p class="muted">불러오는 중...</p>`;
+  if (!isOpen) renderRsiSpyDetail();
+});
 
 // ---------- 7. 투자황금기 점수(공포지수연동) — VIX(CBOE 변동성지수)가 높을수록(시장 패닉) 역발상 매수 기회로 보고 점수를 올림, 종목과 무관 ----------
 async function renderMacro(ticker) {
@@ -7511,10 +7749,11 @@ async function runValueMarketCap() {
   });
 }
 
-// ---------- 인기종목(제목줄 첫 탭, 2026-09-01 사용자 요청): 시가총액 상위 50위권에서
-// 상승압력+투자안정 합산 높은 순 30개 — 국내는 코스피200+코스닥150, 해외는 S&P500에서 각각 찾음.
-// 점수는 지도(sector-map)가 매일 배치로 계산해둔 스냅샷(kr/sp500-sectors.json의 pressureScore·stabilityScore)을
-// 그대로 재사용해 접속 즉시 순위를 보여주고, 현재가·등락률만 30개 종목에 대해 실시간으로 조회함
+// ---------- 인기종목(제목줄 첫 탭): 시가총액 상위 50위권을 거래대금(최근 5일 평균) 큰 순으로 30개 표시
+// (2026-09-03 사용자 요청: 버튼 이름은 "인기종목" 유지, 순위 기준만 합산점수→거래대금 상위로 변경)
+// 국내는 코스피200+코스닥150, 해외는 S&P500. 상승압력·투자안정 점수 컬럼은 지도 배치 스냅샷
+// (kr/sp500-sectors.json의 pressureScore·stabilityScore)을 그대로 재사용하고,
+// 현재가·등락률·거래대금은 종목당 5일 차트 1회로 실시간 계산(정렬에 필요해 50개 전부 먼저 조회)
 async function runPopularStocks() {
   const statusEl = el("popularStatus");
   const resultsEl = el("popularResults");
@@ -7526,26 +7765,44 @@ async function runPopularStocks() {
     statusEl.textContent = "인기종목을 불러오는 중...";
     const isKr = getWatchlistActiveMarket() === "KR";
     const universe = await getSReportUniverse(isKr);
-    // 시총 상위 50위권 전체를 합산점수순으로 들고 있다가, 처음엔 30개만 보여주고 "더보기"로 나머지 20개를 이어서 표시
-    const scored = (((universe && universe.companies) || [])
+    const capTop = ((universe && universe.companies) || [])
       .filter((c) => c.marketCap && c.pressureScore !== null && c.pressureScore !== undefined && c.stabilityScore !== null && c.stabilityScore !== undefined)
       .sort((a, b) => b.marketCap - a.marketCap)
-      .slice(0, 50))
-      .sort((a, b) => b.pressureScore + b.stabilityScore - (a.pressureScore + a.stabilityScore));
-    if (scored.length === 0) throw new Error("인기종목 데이터를 아직 준비 중입니다. 잠시 후 다시 확인해주세요.");
+      .slice(0, 50);
+    if (capTop.length === 0) throw new Error("인기종목 데이터를 아직 준비 중입니다. 잠시 후 다시 확인해주세요.");
 
-    // 시세는 화면에 실제로 보이는 종목만 그때그때 조회(더보기를 누르면 추가분만 마저 조회)
-    const snapCache = new Array(scored.length).fill(undefined);
+    // 5일 차트 1회로 시세 + 최근 5일 평균 거래대금(종가×거래량)을 함께 계산 — 정렬 기준이라 50개 전부 선조회
     const fetchSnap = async (c) => {
       try {
         const chart = await yahooChart(c.symbol, "5d");
         const snap = yahooSnapshot(chart);
         const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
-        return (snap && { ...snap, currency: (meta && meta.currency) || (isKr ? "KRW" : "USD") }) || null;
+        const pairs = chartCloseVolumePairs(chart);
+        const dvs = pairs.map((p) => p.c * p.v).filter((v) => v > 0);
+        const avgDollarVolume = dvs.length ? dvs.reduce((a, b) => a + b, 0) / dvs.length : 0;
+        return (snap && { ...snap, currency: (meta && meta.currency) || (isKr ? "KRW" : "USD"), avgDollarVolume }) || null;
       } catch {
         return null;
       }
     };
+    statusEl.textContent = "인기종목 시세를 확인하는 중...";
+    const snaps = new Array(capTop.length).fill(null);
+    await mapWithConcurrency(
+      capTop.map((c, i) => ({ c, i })),
+      6,
+      async ({ c, i }) => {
+        snaps[i] = await fetchSnap(c);
+      },
+      (done) => {
+        statusEl.textContent = `인기종목 거래대금을 확인하는 중... (${done}/${capTop.length})`;
+      }
+    );
+    // 거래대금(최근 5일 평균) 큰 순으로 정렬 — 시세 조회에 실패한 종목은 맨 뒤
+    const scored = capTop
+      .map((c, i) => ({ c, snap: snaps[i] }))
+      .sort((a, b) => ((b.snap && b.snap.avgDollarVolume) || 0) - ((a.snap && a.snap.avgDollarVolume) || 0));
+    const snapCache = scored.map((x) => x.snap);
+    const scoredCompanies = scored.map((x) => x.c);
 
     const rowHtml = (c, snap, i) => {
       const name = TICKER_TO_KOREAN_NAME[c.symbol] || c.name || c.symbol;
@@ -7567,39 +7824,29 @@ async function runPopularStocks() {
         </tr>`;
     };
 
-    async function paintUpTo(count) {
-      count = Math.min(count, scored.length);
-      const pending = scored.slice(0, count).map((c, i) => ({ c, i })).filter(({ i }) => snapCache[i] === undefined);
-      if (pending.length) {
-        statusEl.style.display = "block";
-        statusEl.textContent = "인기종목 시세를 확인하는 중...";
-        await mapWithConcurrency(pending, 6, async ({ c, i }) => {
-          snapCache[i] = await fetchSnap(c);
-        });
-      }
+    function paintUpTo(count) {
+      count = Math.min(count, scoredCompanies.length);
       statusEl.style.display = "none";
 
-      const rows = scored.slice(0, count).map((c, i) => rowHtml(c, snapCache[i], i)).join("");
-      const hasMore = count < scored.length;
+      const rows = scoredCompanies.slice(0, count).map((c, i) => rowHtml(c, snapCache[i], i)).join("");
+      const hasMore = count < scoredCompanies.length;
       resultsEl.innerHTML = `
-        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${isKr ? "코스피200+코스닥150" : "S&P500"} 시가총액 상위 50위권 중 상승 압력+투자 안정 합산이 높은 순입니다. 점수는 매일 자동 갱신되는 스냅샷 기준이며 투자 자문이 아닙니다.</p>
+        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${isKr ? "코스피200+코스닥150" : "S&P500"} 시가총액 상위 50위권 중 거래대금(최근 5일 평균)이 큰 순입니다. 점수는 매일 자동 갱신되는 스냅샷 기준이며 투자 자문이 아닙니다.</p>
         <table class="top30-table">
           <thead><tr><th>순위</th><th>기업명</th><th>현재가<br>(등락률)</th><th>상승<br>압력</th><th>투자<br>안정</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
-        ${hasMore ? `<button type="button" class="cat-btn load-more-btn">더보기 (${count}/${scored.length})</button>` : ""}
+        ${hasMore ? `<button type="button" class="cat-btn load-more-btn">더보기 (${count}/${scoredCompanies.length})</button>` : ""}
       `;
       const moreBtn = resultsEl.querySelector(".load-more-btn");
       if (moreBtn) {
         moreBtn.addEventListener("click", () => {
-          moreBtn.disabled = true;
-          moreBtn.textContent = "불러오는 중...";
-          paintUpTo(scored.length);
+          paintUpTo(scoredCompanies.length);
         });
       }
     }
 
-    await paintUpTo(30);
+    paintUpTo(30);
   } catch (err) {
     statusEl.style.display = "block";
     statusEl.textContent = `❌ ${err.message || "인기종목을 가져오지 못했습니다."}`;
@@ -7699,9 +7946,16 @@ function chartCloseVolumePairs(chart) {
   pairs.sort((a, b) => a.t - b.t);
   return pairs;
 }
-async function computeChartDerivedMetrics(symbol) {
-  const chart = await yahooChart(symbol, "1y", "1d");
-  const pairs = chartCloseVolumePairs(chart);
+// opts.fiveYear: 5년 차트로 조회해 5년 평균 성장률(CAGR)까지 계산(ETF 투자안정 ③, 2026-09-03) —
+// 이때도 거래대금·모멘텀·변동성·52주 위치 등 나머지 지표는 기존과 동일하게 "최근 1년 구간"만으로 계산한다
+async function computeChartDerivedMetrics(symbol, opts) {
+  const fiveYear = !!(opts && opts.fiveYear);
+  const chart = await yahooChart(symbol, fiveYear ? "5y" : "1y", "1d");
+  const allPairs = chartCloseVolumePairs(chart);
+  if (allPairs.length < 10) return null;
+  const lastAll = allPairs[allPairs.length - 1];
+  // 최근 1년 구간(5년 조회 시 슬라이스) — 기존 1y 조회와 동일한 계산 창
+  const pairs = fiveYear ? allPairs.filter((p) => p.t >= lastAll.t - 365 * 86400) : allPairs;
   if (pairs.length < 10) return null;
   const last = pairs[pairs.length - 1];
   const prev = pairs[pairs.length - 2];
@@ -7710,6 +7964,9 @@ async function computeChartDerivedMetrics(symbol) {
   const recent = dvs.slice(-5);
   const recentDollarVolume = recent.reduce((a, b) => a + b, 0) / recent.length;
   const avgDollarVolume1y = dvs.reduce((a, b) => a + b, 0) / dvs.length;
+  // 최근 3개월 평균 거래대금(코인 상승압력 ①, 2026-09-03)
+  const dv3mArr = pairs.filter((p) => p.t >= last.t - 91 * 86400).map((p) => p.c * p.v);
+  const avgDollarVolume3m = dv3mArr.length ? dv3mArr.reduce((a, b) => a + b, 0) / dv3mArr.length : null;
 
   const target3m = last.t - 91 * 86400;
   let base3m = null;
@@ -7723,7 +7980,7 @@ async function computeChartDerivedMetrics(symbol) {
   }
   const momentum3m = base3m && base3m.c ? ((last.c - base3m.c) / base3m.c) * 100 : null;
   const oneYearReturn = pairs[0].c ? ((last.c - pairs[0].c) / pairs[0].c) * 100 : null;
-  // 한달 수익률(2026-09-02) — ETF·코인 과거분석(한달상승/하락)용, 30일 전에 가장 가까운 종가 기준
+  // 한달 수익률(2026-09-02) — ETF·코인 과거분석(한달상승/하락)·코인 상승압력 ②용, 30일 전에 가장 가까운 종가 기준
   const target1m = last.t - 30 * 86400;
   let base1m = null;
   let minDiff1m = Infinity;
@@ -7753,7 +8010,29 @@ async function computeChartDerivedMetrics(symbol) {
   const low52 = Math.min(...closes);
   const week52RangePct = high52 > low52 ? clamp(((price - low52) / (high52 - low52)) * 100, 0, 100) : null;
 
-  return { symbol, price, currency: meta.currency, changePct, recentDollarVolume, avgDollarVolume1y, momentum3m, monthReturn, oneYearReturn, volatility, week52RangePct };
+  // 5년 평균 성장률(CAGR, ETF 투자안정 ③) — 5년 미만 상장이면 상장 후 구간으로 계산(1년 미만은 N/A)
+  let fiveYearCagr = null;
+  if (fiveYear && allPairs[0].c) {
+    const spanYears = (lastAll.t - allPairs[0].t) / (365.25 * 86400);
+    if (spanYears >= 1) fiveYearCagr = (Math.pow(lastAll.c / allPairs[0].c, 1 / spanYears) - 1) * 100;
+  }
+
+  return {
+    symbol,
+    price,
+    currency: meta.currency,
+    changePct,
+    recentDollarVolume,
+    avgDollarVolume1y,
+    avgDollarVolume3m,
+    momentum3m,
+    monthReturn,
+    oneYearReturn,
+    volatility,
+    week52RangePct,
+    fiveYearCagr,
+    firstTradeDate: meta.firstTradeDate ?? allPairs[0].t ?? null,
+  };
 }
 
 // 인기종목 공용 표(순위/이름/현재가/상승압력/투자안정) — 주식 인기종목과 동일한 5열 top30 표
@@ -7775,7 +8054,7 @@ function combinedRankTableHtml(rows, universeLabel, rowNameHtmlFn, priceStrFn) {
     )
     .join("");
   return `
-    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 중 상승 압력+투자 안정 합산이 높은 순 30개입니다(각자 전용 배점). 투자 자문이 아닙니다.</p>
+    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 중 거래대금(최근 5일 평균)이 큰 순 30개입니다. 점수는 각자 전용 배점 기준이며 투자 자문이 아닙니다.</p>
     <table class="top30-table">
       <thead><tr><th>순위</th><th>이름</th><th>현재가<br>(등락률)</th><th>상승<br>압력</th><th>투자<br>안정</th></tr></thead>
       <tbody>${body}</tbody>
@@ -7797,8 +8076,9 @@ function ensureEtfScanRows(region, targetCount, statusEl) {
     const total = baseList.length;
     const target = Math.min(targetCount, total);
     if (state.scanned >= target) return { rows: state.rows, scanned: state.scanned, total };
-    const { sp500Return } = await getMarketReturnsCached();
-    const capMapKr = isKr ? new Map(baseList.map((it) => [it.symbol, it.marketSum])) : null;
+    // 새 배점(2026-09-03) 입력: 승률·주간 RSI는 배치 DB에서 한 번만 읽어 전 종목에 재사용
+    const wrDb = await getWinRateDb().catch(() => null);
+    const wrMap = (wrDb && wrDb.scoresEtf) || {};
     const startFrom = state.scanned;
     const pending = baseList.slice(startFrom, target);
     const results = await mapWithConcurrency(
@@ -7806,18 +8086,13 @@ function ensureEtfScanRows(region, targetCount, statusEl) {
       6,
       async (it) => {
         try {
-          const m = await computeChartDerivedMetrics(it.symbol);
+          const m = await computeChartDerivedMetrics(it.symbol, { fiveYear: true });
           if (!m) return null;
-          const cap = isKr ? capMapKr.get(it.symbol) : await getUsEtfNetAssets(it.symbol);
-          const pressure = computeEtfAttractivenessScore(m).total;
-          const risk = computeEtfRiskScore({
-            volatility: m.volatility,
-            oneYearReturn: m.oneYearReturn,
-            sp500Return,
-            isKr,
-            marketSumEok: isKr ? cap : null,
-            netAssetsUsd: isKr ? null : cap,
-          }).total;
+          const wrEntry = wrMap[it.symbol] || null;
+          const rsiWeekly = wrEntry && wrEntry.rsi !== null && wrEntry.rsi !== undefined ? wrEntry.rsi : null;
+          const winRate = wrEntry && wrEntry.score !== null && wrEntry.score !== undefined ? wrEntry.score : null;
+          const pressure = computeEtfAttractivenessScore({ ...m, rsiWeekly }).total;
+          const risk = computeEtfRiskScore({ winRate, volatility: m.volatility, fiveYearCagr: m.fiveYearCagr }).total;
           return {
             symbol: it.symbol,
             name: it.name,
@@ -7865,7 +8140,7 @@ function etfRowNameHtml(r, isKr) {
   }`;
 }
 
-// ETF 인기종목: 상승압력+투자안정 합산 TOP30 (2026-09-01 사용자 요청)
+// ETF 인기종목: 거래대금(최근 5일 평균) 상위 30 (2026-09-03 사용자 요청, 버튼 이름은 인기종목 유지)
 async function runEtfPopular() {
   const statusEl = el("popularStatus");
   const resultsEl = el("popularResults");
@@ -7877,7 +8152,7 @@ async function runEtfPopular() {
     const isKr = region === "kr";
     const rows = await getEtfScanRows(region, statusEl);
     if (etfPopularRegion !== region) return; // 조회 중 다른 지역 칩으로 전환했으면 그쪽 렌더에 맡김
-    const scored = [...rows].sort((a, b) => b.pressure + b.risk - (a.pressure + a.risk)).slice(0, 30);
+    const scored = [...rows].sort((a, b) => (b.recentDollarVolume || 0) - (a.recentDollarVolume || 0)).slice(0, 30);
     if (scored.length === 0) throw new Error("ETF 점수를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.");
     statusEl.style.display = "none";
 
@@ -7934,6 +8209,9 @@ function ensureCryptoScanRows(targetCount, statusEl) {
     const target = Math.min(targetCount, total);
     if (cryptoScanState.scanned >= target) return { rows: cryptoScanState.rows, scanned: cryptoScanState.scanned, total };
     const btcReturn = await getBtcOneYearReturn();
+    // 새 배점(2026-09-03) 입력: 승률·주간 RSI는 배치 DB에서 한 번만 읽어 전 종목에 재사용
+    const wrDb = await getWinRateDb().catch(() => null);
+    const wrMap = (wrDb && wrDb.scoresCrypto) || {};
     const startFrom = cryptoScanState.scanned;
     const items = all.map((q, i) => ({ q, i })).slice(startFrom, target);
     const results = await mapWithConcurrency(
@@ -7943,14 +8221,15 @@ function ensureCryptoScanRows(targetCount, statusEl) {
         try {
           const m = await computeChartDerivedMetrics(q.symbol);
           if (!m) return null;
-          const capPercentile = ((total - 1 - i) / Math.max(1, total - 1)) * 100;
-          const pressure = computeCryptoAttractivenessScore(m).total;
+          const wrEntry = wrMap[q.symbol] || null;
+          const rsiWeekly = wrEntry && wrEntry.rsi !== null && wrEntry.rsi !== undefined ? wrEntry.rsi : null;
+          const winRate = wrEntry && wrEntry.score !== null && wrEntry.score !== undefined ? wrEntry.score : null;
+          const pressure = computeCryptoAttractivenessScore({ ...m, rsiWeekly }).total;
           const risk = computeCryptoRiskScore({
-            volatility: m.volatility,
+            firstTradeDate: m.firstTradeDate,
+            winRate,
             oneYearReturn: m.oneYearReturn,
             btcReturn,
-            capPercentile,
-            capRank: i + 1,
           }).total;
           return {
             symbol: q.symbol,
@@ -7994,7 +8273,7 @@ function cryptoPriceStr(r) {
     : "N/A";
 }
 
-// 코인 인기종목: 상승압력+투자안정 합산 TOP30 (2026-09-01 사용자 요청)
+// 코인 인기종목: 거래대금(최근 5일 평균) 상위 30 (2026-09-03 사용자 요청, 버튼 이름은 인기종목 유지)
 async function runCryptoPopular() {
   const statusEl = el("popularStatus");
   const resultsEl = el("popularResults");
@@ -8003,7 +8282,7 @@ async function runCryptoPopular() {
   statusEl.textContent = "암호화폐 목록을 불러오는 중...";
   try {
     const rows = await getCryptoScanRows(statusEl);
-    const scored = [...rows].sort((a, b) => b.pressure + b.risk - (a.pressure + a.risk)).slice(0, 30);
+    const scored = [...rows].sort((a, b) => (b.recentDollarVolume || 0) - (a.recentDollarVolume || 0)).slice(0, 30);
     if (scored.length === 0) throw new Error("코인 점수를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.");
     statusEl.style.display = "none";
     resultsEl.innerHTML = combinedRankTableHtml(scored, "암호화폐 시가총액 상위 30개", cryptoRowNameHtml, cryptoPriceStr);
@@ -9702,6 +9981,9 @@ const LOGO_OVERRIDE = {
   SKHY: SKHYNIX_LOGO, // SK하이닉스 나스닥 ADR(2026-07 상장)
   SKHYV: SKHYNIX_LOGO, // 상장 초기 임시 심볼
   "000660.KS": SKHYNIX_LOGO, // 한국거래소 원주
+  // 한화그룹·한화오션(2026-09-03 사용자 요청): 자동 소스 로고가 부정확해 위키미디어 공식 로고로 교체(자체 호스팅)
+  "000880.KS": { src: "logos/hanwha.png", bg: "#ffffff" },
+  "042660.KS": { src: "logos/hanwha-ocean.png", bg: "#ffffff" },
   // FMP에 로고가 없는(404) 종목들 — 브랜드평판순 목록 131개 전수 점검 후 확인된 것만 추가(나머지는 정상 로드됨)
   LGEIY: { src: "logos/lg.svg", bg: "#ffffff" }, // LG전자 미국 OTC ADR — Wikimedia Commons(자유 이용) LG 로고
 };

@@ -22,7 +22,7 @@
 <meta name="apple-mobile-web-app-title" content="굴려볼까" />
 <link rel="stylesheet" href="style.css?v=20260902d" />
 <!-- 지도가 떠 있는 동안 본체 파일을 미리 받아둠 — 간편검색/시장/더보기로 처음 넘어갈 때 로딩 체감 단축 -->
-<link rel="prefetch" href="../app.js?v=20260903a" />
+<link rel="prefetch" href="../app.js?v=20260903b" />
 <link rel="prefetch" href="../style.css?v=20260902c" />
 <link rel="prefetch" href="../index.html" />
 </head>
@@ -213,7 +213,7 @@
     <!-- 하단 네비(2026-09-01 개편): 국내-해외-시장-관심종목-더보기, 지도 버튼은 본체 더보기 패널로 이동 -->
     <!-- 국내/해외 아이콘: 본체 상단 시장 표시와 동일한 컬러 네모 국기로 통일(2026-09-01) — 비활성 시 CSS로 흑백 처리 -->
     <button type="button" class="bottom-nav-btn" id="bottomNavKrBtn2" aria-label="한국주식 랭킹">
-      <svg class="bottom-nav-flag" viewBox="0 0 21 14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#fff" stroke="rgba(0,0,0,0.25)"/><g transform="translate(10.5,7) rotate(-15)"><path d="M-3.7 0 A3.7 3.7 0 0 1 3.7 0 Z" fill="#cd2e3a"/><path d="M-3.7 0 A3.7 3.7 0 0 0 3.7 0 Z" fill="#0047a0"/><circle cx="-1.85" cy="0" r="1.85" fill="#cd2e3a"/><circle cx="1.85" cy="0" r="1.85" fill="#0047a0"/></g></svg>
+      <svg class="bottom-nav-flag" viewBox="0 0 21 14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#fff" stroke="rgba(0,0,0,0.25)"/><g transform="translate(10.5,7) rotate(-15)"><path d="M-5.2 0 A5.2 5.2 0 0 1 5.2 0 Z" fill="#cd2e3a"/><path d="M-5.2 0 A5.2 5.2 0 0 0 5.2 0 Z" fill="#0047a0"/><circle cx="-2.6" cy="0" r="2.6" fill="#cd2e3a"/><circle cx="2.6" cy="0" r="2.6" fill="#0047a0"/></g></svg>
       <span data-i18n="market.kr">한국주식</span>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavUsBtn2" aria-label="미국주식 랭킹">
@@ -241,6 +241,6 @@
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script src="data/sp500-data-core.js?v=20260902b"></script>
 <script src="data/kr-data-core.js?v=20260902a" onerror="window.KR_CORE_DATA = { companies: [] };"></script>
-<script src="app.js?v=20260903a"></script>
+<script src="app.js?v=20260903b"></script>
 </body>
 </html>

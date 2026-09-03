@@ -1340,6 +1340,7 @@ function openCompanySheet(d) {
   const goToTickerDetail = () => {
     try {
       sessionStorage.setItem("ntj_skip_map_redirect", "1");
+      saveMapRestoreState(); // 상세에서 뒤로가기로 돌아오면 보던 지도 보기를 그대로 복원(2026-09-03)
     } catch {}
     window.location.href = `../index.html?ticker=${encodeURIComponent(d.symbol)}`;
   };
@@ -2726,10 +2727,19 @@ document.addEventListener("click", (e) => {
   if (!mapViewSelectEl.contains(e.target)) mapViewSelectEl.classList.remove("open");
 });
 
+// 지도를 떠날 때 현재 보기(코스피200/S&P500/ETF200 등)를 저장 — 뒤로가기로 돌아오면(브라우저가 페이지를
+// 새로 로드하는 경우에도) 기본 보기 대신 보던 보기로 복원(2026-09-03 사용자 요청). bfcache로 돌아오면
+// 페이지 상태(줌·필터 포함)가 통째로 유지되므로 이 저장값은 새로 로드될 때만 쓰인다
+function saveMapRestoreState() {
+  try {
+    sessionStorage.setItem("map_restore_view_v1", JSON.stringify({ view: ACTIVE_VIEW, t: Date.now() }));
+  } catch {}
+}
 // 본체(내투자닷컴)로 돌아가기 — 세션 동안은 다시 섹터맵으로 안 튕기도록 플래그를 남김
 function goToMainSite(openPanel) {
   try {
     sessionStorage.setItem("ntj_skip_map_redirect", "1");
+    saveMapRestoreState();
   } catch {}
   window.location.href = openPanel ? `../index.html?open=${openPanel}` : "../index.html";
 }
@@ -2745,10 +2755,22 @@ window.addEventListener("resize", () => fitToViewport(false));
 
 // 내투자닷컴 첫 화면에서 넘어온 경우 ?market=domestic 이면 코스피 200 보기를, 아니면 S&P200 보기를 기본값으로 염
 const requestedMarket = new URLSearchParams(window.location.search).get("market");
+// 뒤로가기 복원(2026-09-03): 지도→상세로 떠나기 직전에 저장한 보기가 있으면(30분 이내) 그 보기로 복원.
+// 저장값은 1회 소비(제거) — 본체에서 새로 들어오는 정상 딥링크가 옛 보기로 오염되지 않도록 함
+let restoredView = null;
+try {
+  const raw = sessionStorage.getItem("map_restore_view_v1");
+  if (raw) {
+    sessionStorage.removeItem("map_restore_view_v1");
+    const saved = JSON.parse(raw);
+    if (saved && MAP_VIEWS[saved.view] && Date.now() - (saved.t || 0) < 30 * 60 * 1000) restoredView = saved.view;
+  }
+} catch {}
 const initialView =
-  requestedMarket === "domestic" && typeof KR_CORE_DATA !== "undefined" && KR_CORE_DATA.companies && KR_CORE_DATA.companies.length
+  restoredView ||
+  (requestedMarket === "domestic" && typeof KR_CORE_DATA !== "undefined" && KR_CORE_DATA.companies && KR_CORE_DATA.companies.length
     ? "kospi200"
-    : "sp200";
+    : "sp200");
 setMapView(initialView, false).finally(() => {
   renderTickerTape().catch(() => {});
   loadingIndicator.classList.add("hidden");
