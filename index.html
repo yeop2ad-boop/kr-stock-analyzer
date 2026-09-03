@@ -53,8 +53,7 @@
 
   <header id="fixedHeader" class="fixed-header">
     <div class="fh-topline">
-      <!-- 좌상단 동글이 로고 숨김(2026-09-03 사용자 요청) — app.js가 클릭 리스너를 걸어 참조하므로 DOM은 유지하고 display:none만 -->
-      <img src="logos/marketmap-logo.png" alt="marketmap.kr" class="fh-banner" style="display:none;" />
+      <img src="logos/marketmap-logo.png" alt="marketmap.kr" class="fh-banner" />
       <!-- 로고 옆 현재 시장 표시(2026-08-31): 국내 모드면 "국내", 해외 모드면 "해외" — syncMarketModeUI가 갱신 -->
       <span id="fhMarketLabel" class="fh-market-label">해외</span>
       <!-- 시장 표시 옆 네모 국기(2026-09-01 사용자 요청): 국내=태극기, 해외=성조기 — syncMarketModeUI가 채움 -->
@@ -577,6 +576,8 @@
 
         <!-- 인기종목(2026-09-01): 기업가치·시장동향 스캔과 결과영역을 공유하면 진행 중 가드에 막히므로 전용 영역 분리 -->
         <div id="popularGroup" style="display:none;">
+          <!-- 대표 2종목 월별 스냅샷(2026-09-03 사용자 요청): 직전 5개월 변동률 + RSI + 10년 승률 — renderPopularSnapshot이 섹션별로 채움 -->
+          <div id="popularSnapshot"></div>
           <p id="popularStatus" class="muted top30-status" style="display:none;"></p>
           <div id="popularResults"></div>
         </div>
@@ -771,6 +772,6 @@
   </footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js?v=20260903c"></script>
+  <script src="app.js?v=20260903d"></script>
 </body>
 </html>

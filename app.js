@@ -7750,6 +7750,97 @@ async function runValueMarketCap() {
   });
 }
 
+// ---------- 인기종목 상단 대표 2종목 월별 스냅샷(2026-09-03 사용자 요청) ----------
+// 직전 5개월(완료된 달) 월별 상승·하락률(4M 5M... 형식) + 주간 RSI + 10년 승률을 섹션별 고정 2종목으로 표시
+const POPULAR_SNAPSHOT_SYMBOLS = {
+  kr: { mapKey: "scoresKr", items: [["005930.KS", "삼성전자"], ["000660.KS", "SK하이닉스"]] },
+  us: { mapKey: "scores", items: [["NVDA", "엔비디아"], ["AAPL", "애플"]] },
+  etf: { mapKey: "scoresEtf", items: [["SPY", "SPY"], ["069500.KS", "코스피200"]] },
+  crypto: { mapKey: "scoresCrypto", items: [["BTC-USD", "비트코인"], ["ETH-USD", "이더리움"]] },
+};
+const popularSnapshotHtmlCache = new Map(); // sectionKey -> Promise<html>
+// 월봉 차트에서 "완료된 달"의 월말 종가를 뽑아 직전 5개월 변동률을 계산(진행 중인 이번 달 바는 제외)
+async function fetchMonthlyChanges(symbol) {
+  const chart = await yahooChart(symbol, "1y", "1mo");
+  const pairs = chartClosePairs(chart);
+  // 바 시작 시각이 거래소 시간대에 따라 전월 말로 밀릴 수 있어 +4일 버퍼 후 월을 판정
+  const byMonth = new Map();
+  for (const p of pairs) {
+    const d = new Date((p.t + 4 * 86400) * 1000);
+    byMonth.set(d.getUTCFullYear() * 100 + (d.getUTCMonth() + 1), p.c);
+  }
+  const now = new Date();
+  const currentYm = now.getUTCFullYear() * 100 + (now.getUTCMonth() + 1);
+  byMonth.delete(currentYm); // 진행 중인 달 제외
+  const yms = [...byMonth.keys()].sort((a, b) => a - b).slice(-6);
+  const changes = [];
+  for (let i = 1; i < yms.length; i++) {
+    const prev = byMonth.get(yms[i - 1]);
+    const cur = byMonth.get(yms[i]);
+    changes.push({ month: yms[i] % 100, pct: prev ? ((cur - prev) / prev) * 100 : null });
+  }
+  return changes; // 최대 5개(오래된 달 → 최근 달 순)
+}
+function renderPopularSnapshot(sectionKey) {
+  const box = el("popularSnapshot");
+  if (!box) return;
+  box.dataset.section = sectionKey;
+  if (!popularSnapshotHtmlCache.has(sectionKey)) {
+    popularSnapshotHtmlCache.set(
+      sectionKey,
+      (async () => {
+        const cfg = POPULAR_SNAPSHOT_SYMBOLS[sectionKey];
+        const db = await getWinRateDb().catch(() => null);
+        const wrMap = (db && db[cfg.mapKey]) || {};
+        const rows = await Promise.all(
+          cfg.items.map(async ([sym, name]) => {
+            const changes = await fetchMonthlyChanges(sym).catch(() => []);
+            const e = wrMap[sym] || null;
+            return { sym, name, changes, rsi: e && e.rsi !== null && e.rsi !== undefined ? Math.round(e.rsi * 10) / 10 : null, win: e && e.score !== null && e.score !== undefined ? e.score : null };
+          })
+        );
+        const months = (rows.find((r) => r.changes.length) || { changes: [] }).changes.map((c) => c.month);
+        if (!months.length) throw new Error("월별 데이터 없음");
+        const head = months.map((m) => `<th>${m}M</th>`).join("");
+        const body = rows
+          .map((r) => {
+            const cells = months
+              .map((m, i) => {
+                const c = r.changes[i];
+                if (!c || c.pct === null || c.pct === undefined) return `<td>N/A</td>`;
+                return `<td><span class="${c.pct >= 0 ? "delta-up" : "delta-down"}">${c.pct >= 0 ? "+" : ""}${c.pct.toFixed(1)}%</span></td>`;
+              })
+              .join("");
+            return `<tr>
+              <td style="white-space:nowrap;"><b class="ticker-link" data-ticker="${escapeHtml(r.sym)}">${escapeHtml(r.name)}</b></td>
+              ${cells}
+              <td><b style="color:#ef4444;">${r.rsi !== null ? r.rsi : "N/A"}</b></td>
+              <td><b style="color:#8b5cf6;">${r.win !== null ? r.win : "N/A"}</b></td>
+            </tr>`;
+          })
+          .join("");
+        return `
+          <table class="top30-table" style="margin:8px 0 12px;">
+            <thead><tr><th>종목</th>${head}<th>RSI<br>점수</th><th>10년<br>승률</th></tr></thead>
+            <tbody>${body}</tbody>
+          </table>`;
+      })().catch((e) => {
+        popularSnapshotHtmlCache.delete(sectionKey);
+        throw e;
+      })
+    );
+  }
+  box.innerHTML = "";
+  popularSnapshotHtmlCache
+    .get(sectionKey)
+    .then((html) => {
+      if (box.dataset.section === sectionKey) box.innerHTML = html; // 그 사이 다른 섹션으로 전환했으면 무시
+    })
+    .catch(() => {
+      if (box.dataset.section === sectionKey) box.innerHTML = "";
+    });
+}
+
 // ---------- 인기종목(제목줄 첫 탭): 시가총액 상위 50위권을 거래대금(최근 5일 평균) 큰 순으로 30개 표시
 // (2026-09-03 사용자 요청: 버튼 이름은 "인기종목" 유지, 순위 기준만 합산점수→거래대금 상위로 변경)
 // 국내는 코스피200+코스닥150, 해외는 S&P500. 상승압력·투자안정 점수 컬럼은 지도 배치 스냅샷
@@ -7765,6 +7856,7 @@ async function runPopularStocks() {
     statusEl.style.display = "block";
     statusEl.textContent = "인기종목을 불러오는 중...";
     const isKr = getWatchlistActiveMarket() === "KR";
+    renderPopularSnapshot(isKr ? "kr" : "us"); // 상단 대표 2종목 월별 스냅샷(비동기, 랭킹과 병행)
     const universe = await getSReportUniverse(isKr);
     const capTop = ((universe && universe.companies) || [])
       .filter((c) => c.marketCap && c.pressureScore !== null && c.pressureScore !== undefined && c.stabilityScore !== null && c.stabilityScore !== undefined)
@@ -8148,6 +8240,7 @@ async function runEtfPopular() {
   resultsEl.innerHTML = "";
   statusEl.style.display = "block";
   statusEl.textContent = "ETF 목록을 불러오는 중...";
+  renderPopularSnapshot("etf"); // 상단 대표 2종목 월별 스냅샷(SPY·코스피200)
   const region = etfPopularRegion;
   try {
     const isKr = region === "kr";
@@ -8281,6 +8374,7 @@ async function runCryptoPopular() {
   resultsEl.innerHTML = "";
   statusEl.style.display = "block";
   statusEl.textContent = "암호화폐 목록을 불러오는 중...";
+  renderPopularSnapshot("crypto"); // 상단 대표 2종목 월별 스냅샷(비트코인·이더리움)
   try {
     const rows = await getCryptoScanRows(statusEl);
     const scored = [...rows].sort((a, b) => (b.recentDollarVolume || 0) - (a.recentDollarVolume || 0)).slice(0, 30);
