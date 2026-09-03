@@ -53,7 +53,8 @@
 
   <header id="fixedHeader" class="fixed-header">
     <div class="fh-topline">
-      <img src="logos/marketmap-logo.png" alt="marketmap.kr" class="fh-banner" />
+      <!-- 좌상단 동글이 로고 숨김(2026-09-03 사용자 요청) — app.js가 클릭 리스너를 걸어 참조하므로 DOM은 유지하고 display:none만 -->
+      <img src="logos/marketmap-logo.png" alt="marketmap.kr" class="fh-banner" style="display:none;" />
       <!-- 로고 옆 현재 시장 표시(2026-08-31): 국내 모드면 "국내", 해외 모드면 "해외" — syncMarketModeUI가 갱신 -->
       <span id="fhMarketLabel" class="fh-market-label">해외</span>
       <!-- 시장 표시 옆 네모 국기(2026-09-01 사용자 요청): 국내=태극기, 해외=성조기 — syncMarketModeUI가 채움 -->
