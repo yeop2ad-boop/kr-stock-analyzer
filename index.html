@@ -607,7 +607,8 @@
     <!-- 하단 네비(2026-09-01 개편): 국내-해외-시장-관심종목-더보기, 지도 버튼은 더보기 패널로 이동 -->
     <!-- 국내/해외 아이콘: 상단 시장 표시와 동일한 컬러 네모 국기로 통일(2026-09-01) — 비활성 시 CSS로 흑백 처리 -->
     <button type="button" class="bottom-nav-btn" id="bottomNavKrBtn" aria-label="한국주식 랭킹">
-      <svg class="bottom-nav-flag" viewBox="0 0 21 14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#fff" stroke="rgba(0,0,0,0.25)"/><g transform="translate(10.5,7) rotate(-15)"><path d="M-5.2 0 A5.2 5.2 0 0 1 5.2 0 Z" fill="#cd2e3a"/><path d="M-5.2 0 A5.2 5.2 0 0 0 5.2 0 Z" fill="#0047a0"/><circle cx="-2.6" cy="0" r="2.6" fill="#cd2e3a"/><circle cx="2.6" cy="0" r="2.6" fill="#0047a0"/></g></svg>
+      <!-- 태극기: 공식 국기 작도 그대로(태극 33.69° S자 + 건곤감리 4괘, 2026-09-03 사용자 요청) -->
+      <svg class="bottom-nav-flag" viewBox="0 0 21 14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#fff" stroke="rgba(0,0,0,0.25)"/><g transform="translate(10.5,7) scale(0.155)"><g stroke="#000" stroke-width="4" fill="none"><path transform="rotate(33.69)" d="M-50-12v24m6 0v-24m6 0v24m76 0V1m0-2v-11m6 0v11m0 2v11m6 0V1m0-2v-11"/><path transform="rotate(-33.69)" d="M-50-12v24m6 0V1m0-2v-11m6 0v24m76 0V1m0-2v-11m6 0v24m6 0V1m0-2v-11"/></g><g transform="rotate(33.69)"><path fill="#cd2e3a" d="M12 0a18 18 0 11-36 0 24 24 0 1148 0"/><path fill="#0047a0" d="M-24 0a24 24 0 1048 0A12 12 0 100 0a12 12 0 11-24 0"/></g></g></svg>
       <span data-i18n="market.kr">한국주식</span>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavUsBtn" aria-label="미국주식 랭킹">
@@ -769,6 +770,6 @@
   </footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js?v=20260903b"></script>
+  <script src="app.js?v=20260903c"></script>
 </body>
 </html>
