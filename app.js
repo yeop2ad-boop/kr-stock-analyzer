@@ -3958,12 +3958,10 @@ function renderWizardBranchA() {
       )
       .join("");
   } else {
-    // 한국주식은 S&P500 전용 항목(RSI 순위·우상향점수) 제외
-    const krExcluded = new Set(["RSI 순위", "우상향점수"]);
-    items = RANKING_ENTRIES.map((entry, i) =>
-      market === "kr" && krExcluded.has(entry.label)
-        ? ""
-        : `<button type="button" class="wizard-option-btn${entry.orange ? " wizard-option-btn-orange" : ""}" data-wizard-action="rank-nav" data-rank-idx="${i}">${iconHtml(entry.icon)} ${entry.label}</button>`
+    // RSI 순위·우상향점수는 2026-09-02 확장으로 국내(scoresKr)도 지원 — 한국·미국 모두 전체 항목 노출
+    items = RANKING_ENTRIES.map(
+      (entry, i) =>
+        `<button type="button" class="wizard-option-btn${entry.orange ? " wizard-option-btn-orange" : ""}" data-wizard-action="rank-nav" data-rank-idx="${i}">${iconHtml(entry.icon)} ${entry.label}</button>`
     ).join("");
   }
   return `
@@ -8720,9 +8718,9 @@ function assetTrendTableHtml(rows, metricKey, universeLabel, rowNameHtmlFn, pric
     </table>`;
 }
 
-// ETF 시장동향(2026-09-02 사용자 요청): 시총 상위 30개만 대상으로 30위까지 표시 — 100개 확장('더보기') 폐지.
-// 단 RSI 순위·승률 순위 2개는 국내 랭킹처럼 "상위 30개 안내(+더보기)"를 맨 위에 두고, 누르면 전체(100개)를
-// 다시 검색해 전체 기준 순위로 표시(같은 날 후속 요청) — 확장 상태는 두 순위가 공유
+// ETF 시장동향(2026-09-02 사용자 요청): 시총 상위 30개만 대상으로 30위까지 표시.
+// "상위 30개 안내(+더보기)"는 처음엔 RSI·승률 순위에만 있었으나 2026-09-03 사용자 요청으로 8개 항목 전체에 확대
+// (인기종목 탭은 제외) — 누르면 전체(100개)를 다시 검색해 전체 기준 순위로 표시, 확장 상태는 지역별로 전 항목이 공유
 const etfTrendWrExpanded = new Set(); // 전체 검색을 누른 지역("us"/"kr")
 async function runEtfTrend() {
   const statusEl = trendStatus;
@@ -8733,8 +8731,7 @@ async function runEtfTrend() {
   const region = etfPopularRegion;
   try {
     const isKr = region === "kr";
-    const isWrMetric = assetTrendMetric === "rsi" || assetTrendMetric === "winrate";
-    const expanded = isWrMetric && etfTrendWrExpanded.has(region);
+    const expanded = etfTrendWrExpanded.has(region);
     const { rows, scanned, total } = await ensureEtfScanRows(region, expanded ? 100 : 30, statusEl);
     if (etfPopularRegion !== region || appSectionMode !== "etf") return;
     await attachWinRateRsiToRows(rows, "scoresEtf"); // RSI·승률 순위용(2026-09-02)
@@ -8742,7 +8739,7 @@ async function runEtfTrend() {
     const universeLabel = isKr ? "국내 상장 ETF 시가총액 상위" : "미국 상장 ETF 순자산 상위";
     resultsEl.innerHTML =
       etfRegionNavHtml("data-etf-trend-region") +
-      (isWrMetric && !expanded ? topCapNoteHtml(Math.min(30, scanned), total, true) : "") +
+      (!expanded ? topCapNoteHtml(Math.min(30, scanned), total, true) : "") +
       assetTrendTableHtml(
         rows,
         assetTrendMetric,
@@ -8751,7 +8748,7 @@ async function runEtfTrend() {
         (r) => priceChartLink(r.symbol, fmtPrice(r.price, r.currency)),
         expanded ? total : 30
       ) +
-      (isWrMetric && !expanded ? `<button type="button" class="cat-btn load-more-btn">전체보기 (전체 ${total}개 검색 · 약 1분 소요)</button>` : "");
+      (!expanded ? `<button type="button" class="cat-btn load-more-btn">전체보기 (전체 ${total}개 검색 · 약 1분 소요)</button>` : "");
     const moreBtn = resultsEl.querySelector(".load-more-btn");
     if (moreBtn) {
       moreBtn.addEventListener("click", () => {
@@ -8771,9 +8768,9 @@ trendResults.addEventListener("click", (e) => {
   runEtfTrend();
 });
 
-// 코인 시장동향(2026-09-02 사용자 요청): 시총 상위 30개만 대상으로 30위까지 표시 — 100개 확장('더보기') 폐지.
-// 단 RSI 순위·승률 순위 2개는 국내 랭킹처럼 "상위 30개 안내(+더보기)"를 맨 위에 두고, 누르면 전체(100개)를
-// 다시 검색해 전체 기준 순위로 표시(같은 날 후속 요청) — 확장 상태는 두 순위가 공유
+// 코인 시장동향(2026-09-02 사용자 요청): 시총 상위 30개만 대상으로 30위까지 표시.
+// "상위 30개 안내(+더보기)"는 처음엔 RSI·승률 순위에만 있었으나 2026-09-03 사용자 요청으로 8개 항목 전체에 확대
+// (인기종목 탭은 제외) — 누르면 전체(100개)를 다시 검색해 전체 기준 순위로 표시, 확장 상태는 전 항목이 공유
 let cryptoTrendWrExpanded = false;
 async function runCryptoTrend() {
   const statusEl = trendStatus;
@@ -8782,14 +8779,13 @@ async function runCryptoTrend() {
   statusEl.style.display = "block";
   statusEl.textContent = "암호화폐 목록을 불러오는 중...";
   try {
-    const isWrMetric = assetTrendMetric === "rsi" || assetTrendMetric === "winrate";
-    const expanded = isWrMetric && cryptoTrendWrExpanded;
+    const expanded = cryptoTrendWrExpanded;
     const { rows, scanned, total } = await ensureCryptoScanRows(expanded ? 100 : 30, statusEl);
     if (appSectionMode !== "crypto") return;
     await attachWinRateRsiToRows(rows, "scoresCrypto"); // RSI·승률 순위용(2026-09-02)
     statusEl.style.display = "none";
     resultsEl.innerHTML =
-      (isWrMetric && !expanded ? topCapNoteHtml(Math.min(30, scanned), total, true) : "") +
+      (!expanded ? topCapNoteHtml(Math.min(30, scanned), total, true) : "") +
       assetTrendTableHtml(
         rows,
         assetTrendMetric,
@@ -8798,7 +8794,7 @@ async function runCryptoTrend() {
         cryptoPriceStr,
         expanded ? total : 30
       ) +
-      (isWrMetric && !expanded ? `<button type="button" class="cat-btn load-more-btn">전체보기 (전체 ${total}개 검색 · 약 1분 소요)</button>` : "");
+      (!expanded ? `<button type="button" class="cat-btn load-more-btn">전체보기 (전체 ${total}개 검색 · 약 1분 소요)</button>` : "");
     const moreBtn = resultsEl.querySelector(".load-more-btn");
     if (moreBtn) {
       moreBtn.addEventListener("click", () => {
@@ -10619,7 +10615,7 @@ function moversTableHtml(scored, rankNote) {
 // 후보 목록(가벼운 조회로 얻은 심볼/현재가/등락률)에 대해 상승압력도·투자 안정성 점수를 매겨 표 HTML까지 완성
 // marketReturnsPromise는 후보 목록을 모으는 동안 미리 병렬로 시작해둔 getMarketReturns() 호출을 전달받음
 // initialCount만큼만 먼저 스코어링해 빠르게 보여주고, "더보기" 클릭 시 fullCount까지 나머지를 추가로 스코어링(이미 계산한 항목은 재요청하지 않음)
-async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl, resultsEl, rankNote, initialCount, fullCount }) {
+async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl, resultsEl, rankNote, initialCount, fullCount, capTotal }) {
   initialCount = initialCount || candidates.length;
   fullCount = Math.min(fullCount || candidates.length, candidates.length);
 
@@ -10655,6 +10651,8 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
     const hasMore = scored.length < fullCount;
     const nextCount = Math.min(scored.length + initialCount, fullCount);
     resultsEl.innerHTML =
+      // 상위 일부만 반영됐다는 주황 경고(2026-09-03 사용자 요청: RSI·우상향 외 나머지 항목에도 동일 표기, 인기종목 제외)
+      (capTotal ? topCapNoteHtml(fullCount, capTotal, false) : "") +
       moversTableHtml(scored, rankNote) +
       (hasMore
         ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${nextCount}">더보기 (${scored.length}/${fullCount})</button>`
@@ -11822,6 +11820,7 @@ async function runMovers(direction) {
       rankNote: `순위는 전일 대비 등락률(${direction === "surge" ? "상승률 높은" : "하락률 큰"} 순) 기준이며, S&P500 편입 종목 중 상위 50개입니다.`,
       initialCount: 10,
       fullCount: 50,
+      capTotal: candidates.length, // 전체 S&P500 대비 상위 50개만 표시 중이라는 경고(2026-09-03)
     });
   } catch (err) {
     trendStatus.textContent = `❌ ${err.message || `${label}을 가져오지 못했습니다.`}`;
@@ -12116,6 +12115,7 @@ async function runTrendVolume() {
       rankNote: "순위는 당일 거래대금(거래량 × 현재가 추정) 기준입니다.",
       initialCount: 10,
       fullCount: 20,
+      capTotal: quotes.length, // 거래활발 상위 목록 중 20개만 표시 중이라는 경고(2026-09-03)
     });
   } catch (err) {
     trendStatus.textContent = `❌ ${err.message || "인기종목을 가져오지 못했습니다."}`;
