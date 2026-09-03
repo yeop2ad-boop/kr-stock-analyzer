@@ -1428,6 +1428,9 @@ table.top30-table { width: 100%; border-collapse: collapse; margin-top: 14px; fo
 table.top30-table th, table.top30-table td { padding: 8px 6px; border-bottom: 1px solid var(--border); text-align: center; }
 .dividend-warn { display: inline-block; font-size: 10.5px; font-weight: 700; color: var(--warn); white-space: nowrap; cursor: help; }
 table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: var(--gold); font-weight: 800; }
+/* 인기종목 상단 월별 스냅샷 표(2026-09-03): 375px 화면에서도 -5M~-1M·RSI·승률이 다 들어가게 촘촘히 */
+table.popular-snap-table { font-size: 12px; }
+table.popular-snap-table th, table.popular-snap-table td { padding: 8px 2px; }
 
 table.s-report-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
 table.s-report-table th, table.s-report-table td { padding: 8px 6px; border-bottom: 1px solid var(--border); text-align: center; }

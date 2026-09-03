@@ -7751,7 +7751,8 @@ async function runValueMarketCap() {
 }
 
 // ---------- 인기종목 상단 대표 2종목 월별 스냅샷(2026-09-03 사용자 요청) ----------
-// 직전 5개월(완료된 달) 월별 상승·하락률(4M 5M... 형식) + 주간 RSI + 10년 승률을 섹션별 고정 2종목으로 표시
+// 직전 5개월(완료된 달) 월별 상승·하락률(-5M ~ -1M 상대 표기) + 주간 RSI + 10년 승률을 섹션별 고정 2종목으로 표시
+// 2026-09-03 사용자 요청: 좁은 화면에 다 들어가도록 소수점 없이 정수 표기
 const POPULAR_SNAPSHOT_SYMBOLS = {
   kr: { mapKey: "scoresKr", items: [["005930.KS", "삼성전자"], ["000660.KS", "SK하이닉스"]] },
   us: { mapKey: "scores", items: [["NVDA", "엔비디아"], ["AAPL", "애플"]] },
@@ -7796,19 +7797,19 @@ function renderPopularSnapshot(sectionKey) {
           cfg.items.map(async ([sym, name]) => {
             const changes = await fetchMonthlyChanges(sym).catch(() => []);
             const e = wrMap[sym] || null;
-            return { sym, name, changes, rsi: e && e.rsi !== null && e.rsi !== undefined ? Math.round(e.rsi * 10) / 10 : null, win: e && e.score !== null && e.score !== undefined ? e.score : null };
+            return { sym, name, changes, rsi: e && e.rsi !== null && e.rsi !== undefined ? Math.round(e.rsi) : null, win: e && e.score !== null && e.score !== undefined ? Math.round(e.score) : null };
           })
         );
         const months = (rows.find((r) => r.changes.length) || { changes: [] }).changes.map((c) => c.month);
         if (!months.length) throw new Error("월별 데이터 없음");
-        const head = months.map((m) => `<th>${m}M</th>`).join("");
+        const head = months.map((m, i) => `<th>-${months.length - i}M</th>`).join(""); // 최근 달이 -1M
         const body = rows
           .map((r) => {
             const cells = months
               .map((m, i) => {
                 const c = r.changes[i];
                 if (!c || c.pct === null || c.pct === undefined) return `<td>N/A</td>`;
-                return `<td><span class="${c.pct >= 0 ? "delta-up" : "delta-down"}">${c.pct >= 0 ? "+" : ""}${c.pct.toFixed(1)}%</span></td>`;
+                return `<td><span class="${c.pct >= 0 ? "delta-up" : "delta-down"}">${c.pct >= 0 ? "+" : ""}${Math.round(c.pct)}%</span></td>`;
               })
               .join("");
             return `<tr>
@@ -7820,8 +7821,8 @@ function renderPopularSnapshot(sectionKey) {
           })
           .join("");
         return `
-          <table class="top30-table" style="margin:8px 0 12px;">
-            <thead><tr><th>종목</th>${head}<th>RSI<br>점수</th><th>10년<br>승률</th></tr></thead>
+          <table class="top30-table popular-snap-table" style="margin:8px 0 12px;">
+            <thead><tr><th>종목</th>${head}<th>RSI</th><th>승률</th></tr></thead>
             <tbody>${body}</tbody>
           </table>`;
       })().catch((e) => {
