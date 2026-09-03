@@ -106,7 +106,7 @@ function Get-3MonthReturn($chart) {
 
 function Get-DollarVolumeStats($chart) {
   $pairs = Get-DollarVolumePairs $chart
-  if ($pairs.Count -eq 0) { return @{ recent5dAvg = $null; avg1y = $null } }
+  if ($pairs.Count -eq 0) { return @{ recent5dAvg = $null; avg1y = $null; avg3m = $null } }
   $latest = $pairs[$pairs.Count - 1]
   $latestIndex = $pairs.Count - 1
   $startIdx = [math]::Max(0, $latestIndex - 4)
@@ -115,7 +115,22 @@ function Get-DollarVolumeStats($chart) {
   $target = $latest.t - $YEAR_SECONDS
   $windowValues = $pairs | Where-Object { $_.t -le $latest.t -and $_.t -ge ($target - $HISTORY_TOLERANCE_SECONDS) }
   $avg1y = if ($windowValues.Count -gt 0) { ($windowValues | Measure-Object -Property dv -Average).Average } else { $null }
-  return @{ recent5dAvg = $recent5dAvg; avg1y = $avg1y }
+  # 최근 3개월 평균 거래대금 — 상승압력 공통 배점 ①(2026-09-03 통일) 입력
+  $window3m = $pairs | Where-Object { $_.t -ge ($latest.t - 91 * 24 * 3600) }
+  $avg3m = if ($window3m.Count -gt 0) { ($window3m | Measure-Object -Property dv -Average).Average } else { $null }
+  return @{ recent5dAvg = $recent5dAvg; avg1y = $avg1y; avg3m = $avg3m }
+}
+
+# 최근 1개월 수익률 — 상승압력 공통 배점 ②(한달상승) 입력
+function Get-1MonthReturn($chart) {
+  $pairs = Get-ClosePairs $chart
+  if ($pairs.Count -lt 2) { return $null }
+  $latest = $pairs[$pairs.Count - 1]
+  $target = $latest.t - 30 * 24 * 3600
+  if ($pairs[0].t -gt ($target + $MOMENTUM_TOLERANCE_SECONDS)) { return $null }
+  $base = Get-ClosestPair $pairs $target
+  if (-not $base -or -not $base.c) { return $null }
+  return (($latest.c - $base.c) / $base.c) * 100
 }
 
 # ---------- 재무제표 헬퍼 ----------
@@ -148,16 +163,20 @@ function Get-LatestQuarterYoY($series) {
 }
 
 # ---------- 점수 계산 (app.js와 동일 공식) ----------
-function Get-AttractivenessScore($recentDollarVolume, $avgDollarVolume1y, $momentum3m, $revenueGrowthYoY) {
+# 상승압력 공통 배점(2026-09-03 사용자 통일 — app.js computeAttractivenessScore와 동일, 주식·ETF·코인 공통):
+# ①거래량(0~3): 5거래일 평균 거래대금÷3개월 평균 3배 만점·0.5배 0점(3개월 평균 없으면 1년 평균 대체)
+# ②한달상승(0~3): 최근 1개월 상승률 50% 만점·0% 0점 ③RSI(0~4): 주간 RSI 70 만점·30 0점(없으면 중립 2점)
+function Get-AttractivenessScore($recentDollarVolume, $avgDollarVolume3m, $avgDollarVolume1y, $monthReturn, $rsiWeekly) {
   $volumeScore = 1.5
-  if ($null -ne $recentDollarVolume -and $avgDollarVolume1y) {
-    $volumeScore = Clamp (2 * ($recentDollarVolume / $avgDollarVolume1y - 0.5)) 0 3
+  $baseDv = if ($null -ne $avgDollarVolume3m -and $avgDollarVolume3m -gt 0) { $avgDollarVolume3m } else { $avgDollarVolume1y }
+  if ($null -ne $recentDollarVolume -and $baseDv) {
+    $volumeScore = Clamp ((3 * ($recentDollarVolume / $baseDv - 0.5)) / 2.5) 0 3
   }
-  $growthScore = 0
-  if ($null -ne $revenueGrowthYoY) { $growthScore = Clamp ($revenueGrowthYoY / 10) 0 3 }
-  $momentumScore = 0
-  if ($null -ne $momentum3m) { $momentumScore = Clamp (($momentum3m / 25) * 4) 0 4 }
-  return [math]::Round((Clamp ($volumeScore + $growthScore + $momentumScore) 0 10), 1)
+  $monthScore = 0
+  if ($null -ne $monthReturn) { $monthScore = Clamp (($monthReturn / 50) * 3) 0 3 }
+  $rsiScore = 2
+  if ($null -ne $rsiWeekly) { $rsiScore = Clamp ((4 * ($rsiWeekly - 30)) / 40) 0 4 }
+  return [math]::Round((Clamp ($volumeScore + $monthScore + $rsiScore) 0 10), 1)
 }
 
 function Is-KrTicker($symbol) {
@@ -246,20 +265,19 @@ function Update-MomentumScores($dataPath, $sp500Return, $kospi200Return) {
     try {
       $chart = Get-Chart $sym "1y"
       $oneYearReturn = Get-1yReturn $chart
-      $momentum3m = Get-3MonthReturn $chart
+      $monthReturn = Get-1MonthReturn $chart
       $dvStats = Get-DollarVolumeStats $chart
 
       Start-Sleep -Milliseconds 60
       $fund = Get-Fundamentals $sym
       $blocks = $fund.timeseries.result
-      $revQSeries = Get-FundamentalSeries $blocks "quarterlyTotalRevenue"
       $revASeries = Get-FundamentalSeries $blocks "annualTotalRevenue"
       $niASeries = Get-FundamentalSeries $blocks "annualNetIncome"
-      $revenueGrowthYoY = Get-LatestQuarterYoY $revQSeries
       $revenue = Get-LastVal $revASeries
       $netIncome = Get-LastVal $niASeries
 
-      $pressureScore = Get-AttractivenessScore $dvStats.recent5dAvg $dvStats.avg1y $momentum3m $revenueGrowthYoY
+      # RSI는 스냅샷에 이미 병합돼 있는 주간 RSI(fetch-winrate-scores.ps1 산출)를 그대로 사용
+      $pressureScore = Get-AttractivenessScore $dvStats.recent5dAvg $dvStats.avg3m $dvStats.avg1y $monthReturn $c.rsiWeekly
       $stabilityScore = Get-RiskScore $sym $oneYearReturn $netIncome $revenue $c.marketCap $sp500Return $kospi200Return
 
       $c | Add-Member -NotePropertyName pressureScore -NotePropertyValue $pressureScore -Force

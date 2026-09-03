@@ -1428,6 +1428,16 @@ table.top30-table { width: 100%; border-collapse: collapse; margin-top: 14px; fo
 table.top30-table th, table.top30-table td { padding: 8px 6px; border-bottom: 1px solid var(--border); text-align: center; }
 .dividend-warn { display: inline-block; font-size: 10.5px; font-weight: 700; color: var(--warn); white-space: nowrap; cursor: help; }
 table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: var(--gold); font-weight: 800; }
+/* 투자안정 백테스트 그래프(검색상세 +자세히, 2026-09-03): 상승/하락 그룹의 당시 점수 평균 가로 막대 */
+.sb-graph { display: flex; flex-direction: column; gap: 12px; margin: 10px 0 6px; }
+.sb-row { display: flex; align-items: center; gap: 10px; }
+.sb-label { flex: 0 0 128px; font-size: 12px; line-height: 1.4; color: var(--muted); }
+.sb-track { flex: 1; height: 16px; background: var(--subtle-fill); border-radius: 8px; overflow: hidden; }
+.sb-fill { display: block; height: 100%; border-radius: 8px; transition: width 0.4s ease; }
+.sb-fill.sb-up { background: var(--pos); }
+.sb-fill.sb-down { background: var(--neg); }
+.sb-value { flex: 0 0 46px; text-align: right; font-size: 13px; }
+
 /* 인기종목 상단 월별 스냅샷 표(2026-09-03): 375px 화면에서도 -5M~-1M·RSI·승률이 다 들어가게 촘촘히 */
 table.popular-snap-table { font-size: 12px; margin-top: 0; }
 table.popular-snap-table th, table.popular-snap-table td { padding: 8px 2px; }

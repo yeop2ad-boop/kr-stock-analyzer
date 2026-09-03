@@ -157,12 +157,9 @@ function Get-DerivedMetrics($symbol, $fiveYear) {
 }
 
 # ---------- 배점(본체 app.js와 동일 공식 — 2026-09-03 사용자 개편) ----------
-# ETF 상승압력: ①모멘텀(3, 3개월 25%↑ 만점) ②거래량(3, 5일/1년 2배↑ 만점·0.5배↓ 0점) ③RSI(4, 70↑ 만점·30↓ 0점)
+# ETF 상승압력(2026-09-03 사용자 통일): 코인과 동일한 공통 배점 — ①거래량(5일/3개월) ②한달상승 ③RSI
 function Get-EtfPressure($m, $rsi) {
-  $mom = 0; if ($null -ne $m.momentum3m) { $mom = Clamp (($m.momentum3m / 25) * 3) 0 3 }
-  $vol = 1.5; if ($m.recentDv -and $m.avgDv) { $vol = Clamp ((3 * ($m.recentDv / $m.avgDv - 0.5)) / 1.5) 0 3 }
-  $rsiScore = 2; if ($null -ne $rsi) { $rsiScore = Clamp ((4 * ($rsi - 30)) / 40) 0 4 }
-  return Round1 (Clamp ($mom + $vol + $rsiScore) 0 10)
+  return Get-CryptoPressure $m $rsi
 }
 # ETF 투자안정: ①우상향(4, 승률 60↑ 만점·40↓ 0점) ②변동성(3, 0.5%↓ 만점·3%↑ 0점) ③5년 CAGR(3, 15%↑ 만점·0%↓ 0점)
 function Get-EtfRisk($m, $winRate) {

@@ -1,0 +1,6 @@
+{
+  "generatedAt": "2026-09-03T15:03:53.233Z",
+  "kr": { "upAvg": 2.5, "downAvg": 2, "asOf": "2026-09-03" },
+  "etf": { "upAvg": 7, "downAvg": 6, "asOf": "2026-09-03" },
+  "crypto": { "upAvg": 3, "downAvg": 1.1, "asOf": "2026-09-03" }
+}

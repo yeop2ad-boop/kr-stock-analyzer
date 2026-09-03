@@ -199,22 +199,25 @@ function latestAnnualRevenueYoY(revenueAnnualSeries) {
 }
 
 // ---------- 점수 계산식 (app.js computeAttractivenessScore / computeRiskScore 그대로 이식) ----------
+// 상승압력 공통 배점(2026-09-03 사용자 통일 — 주식·ETF·코인 동일): ①거래량(5일/3개월, 3배 만점·0.5배 0점,
+// 3개월 평균 없으면 1년 평균 대체) ②한달상승(50% 만점·0% 0점) ③RSI(70 만점·30 0점, 과거 시점엔 값이 없어 중립 2점)
 function computeAttractivenessScore(metrics) {
-  const { recentDollarVolume, avgDollarVolume1y, momentum3m, revenueGrowthYoY } = metrics;
+  const { recentDollarVolume, avgDollarVolume3m, avgDollarVolume1y, monthReturn, rsiWeekly } = metrics;
   let volumeScore = 1.5;
-  if (recentDollarVolume !== undefined && recentDollarVolume !== null && avgDollarVolume1y) {
-    const volumeRatio = recentDollarVolume / avgDollarVolume1y;
-    volumeScore = clamp(2 * (volumeRatio - 0.5), 0, 3);
+  const baseDv = avgDollarVolume3m !== undefined && avgDollarVolume3m !== null && avgDollarVolume3m > 0 ? avgDollarVolume3m : avgDollarVolume1y;
+  if (recentDollarVolume !== undefined && recentDollarVolume !== null && baseDv) {
+    const volumeRatio = recentDollarVolume / baseDv;
+    volumeScore = clamp((3 * (volumeRatio - 0.5)) / 2.5, 0, 3);
   }
-  let growthScore = 0;
-  if (revenueGrowthYoY !== undefined && revenueGrowthYoY !== null) {
-    growthScore = clamp(revenueGrowthYoY / 10, 0, 3);
+  let monthScore = 0;
+  if (monthReturn !== undefined && monthReturn !== null) {
+    monthScore = clamp((monthReturn / 50) * 3, 0, 3);
   }
-  let momentumScore = 0;
-  if (momentum3m !== undefined && momentum3m !== null) {
-    momentumScore = clamp((momentum3m / 25) * 4, 0, 4);
+  let rsiScore = 2;
+  if (rsiWeekly !== undefined && rsiWeekly !== null) {
+    rsiScore = clamp((4 * (rsiWeekly - 30)) / 40, 0, 4);
   }
-  const total = Math.round(clamp(volumeScore + growthScore + momentumScore, 0, 10) * 10) / 10;
+  const total = Math.round(clamp(volumeScore + monthScore + rsiScore, 0, 10) * 10) / 10;
   return { total };
 }
 
@@ -444,6 +447,10 @@ async function scanTicker(symbol, sp500Pairs, refDates) {
 
     const momentum3mAsOf = returnOverWindowEndingAt(pairs, asOfPair.t, THREE_MONTH_SECONDS, MOMENTUM_TOLERANCE_SECONDS);
     const { recent5dAvg: recentDollarVolumeAsOf, avg1y: avgDollarVolume1yAsOf } = dollarVolumeStatsEndingAt(dollarVolumePairs, asOfPair.t);
+    // 상승압력 공통 배점(2026-09-03 통일) 입력의 당시 값 — 한달 수익률·3개월 평균 거래대금(RSI는 과거값이 없어 중립)
+    const monthReturnAsOf = returnOverWindowEndingAt(pairs, asOfPair.t, 30 * 24 * 3600, MOMENTUM_TOLERANCE_SECONDS);
+    const dv3mAsOf = dollarVolumePairs.filter((p) => p.t <= asOfPair.t && p.t >= asOfPair.t - 91 * 24 * 3600).map((p) => p.dv);
+    const avgDollarVolume3mAsOf = dv3mAsOf.length ? dv3mAsOf.reduce((a, b) => a + b, 0) / dv3mAsOf.length : null;
 
     const asOfDate = new Date(asOfPair.t * 1000);
     const revenueSeriesAsOf = revenueSeries.filter((it) => new Date(it.date) <= asOfDate);
@@ -464,6 +471,8 @@ async function scanTicker(symbol, sp500Pairs, refDates) {
       momentum3m: momentum3mAsOf,
       recentDollarVolume: recentDollarVolumeAsOf,
       avgDollarVolume1y: avgDollarVolume1yAsOf,
+      monthReturn: monthReturnAsOf,
+      avgDollarVolume3m: avgDollarVolume3mAsOf,
       revenueGrowthYoY: revenueGrowthYoYAsOf,
       oneYearReturn: oneYearReturnAsOf,
       netIncome: netIncomeAsOf,

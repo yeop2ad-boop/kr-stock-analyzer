@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260903g" />
+<link rel="stylesheet" href="style.css?v=20260904a" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -328,10 +328,15 @@
             <button type="button" id="futureRiskDetailBtn" class="score-method-detail-btn">+자세히</button>
           </div>
           <div id="futureRiskDetailWrap" class="chart-detail-wrap" style="display:none;">
-            <h3 class="future-chart-subheading">📊 투자안정성 점수별 작년 주가상승 분포도</h3>
-            <div id="futureRiskContainer" class="future-chart-container"></div>
-            <p class="chart-scroll-hint">&lt; 좌우 스크롤 &gt;</p>
-            <p id="futureRiskCaption" class="future-chart-caption"></p>
+            <!-- 투자안정 백테스트(2026-09-03 사용자 요청): 1년간 상승/하락 상위 종목의 "1년 전 당시" 투자안정 점수 평균 — 전 섹션 공통 -->
+            <div id="stabilityBacktestBox"></div>
+            <!-- 점수별 분포도는 주식 전용 — ETF/코인 상세에서는 JS가 이 블록을 숨김 -->
+            <div id="futureRiskStockOnly">
+              <h3 class="future-chart-subheading">📊 투자안정성 점수별 작년 주가상승 분포도</h3>
+              <div id="futureRiskContainer" class="future-chart-container"></div>
+              <p class="chart-scroll-hint">&lt; 좌우 스크롤 &gt;</p>
+              <p id="futureRiskCaption" class="future-chart-caption"></p>
+            </div>
           </div>
           <div id="riskSection" class="section-body"></div>
         </section>
@@ -773,6 +778,6 @@
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="data/logo-db.js?v=20260903g"></script>
-  <script src="app.js?v=20260903h"></script>
+  <script src="app.js?v=20260904a"></script>
 </body>
 </html>
