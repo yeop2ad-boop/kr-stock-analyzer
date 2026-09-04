@@ -315,7 +315,7 @@ function loadScriptOnce(src) {
 function ensureExtraDataLoaded(market) {
   if (extraDataLoadPromises[market]) return extraDataLoadPromises[market];
   // 데이터 파일에도 캐시버전 부착 — 배포 직후 옛 데이터(결측 종목 포함)가 캐시로 서빙되던 문제 방지(2026-08-31)
-  const src = market === "domestic" ? "data/kr-data-extra.js?v=20260904e" : "data/sp500-data-extra.js?v=20260904e";
+  const src = market === "domestic" ? "data/kr-data-extra.js?v=20260904f" : "data/sp500-data-extra.js?v=20260904f";
   // 모바일/인앱 브라우저에서 간헐적 네트워크 실패가 잦아 한 번은 자동 재시도(600ms 후) — 그래도 실패하면 토스트
   extraDataLoadPromises[market] = loadScriptOnce(src)
     .catch(() => new Promise((res) => setTimeout(res, 600)).then(() => loadScriptOnce(src)))
@@ -329,7 +329,7 @@ function ensureExtraDataLoaded(market) {
 let etfCryptoDataLoadPromise = null;
 function ensureEtfCryptoDataLoaded() {
   if (etfCryptoDataLoadPromise) return etfCryptoDataLoadPromise;
-  const src = "data/etf-crypto-map.js?v=20260904e";
+  const src = "data/etf-crypto-map.js?v=20260904f";
   etfCryptoDataLoadPromise = loadScriptOnce(src)
     .catch(() => new Promise((res) => setTimeout(res, 600)).then(() => loadScriptOnce(src)))
     .catch((err) => {
@@ -1750,7 +1750,7 @@ const quickSliderCtrl = createSliderController(
 const METRIC_DESCS = {
   changePct: "전일 종가 대비 오늘 주가가 얼마나 움직였는지예요.",
   popularStocks: "오늘 거래대금(사고판 금액) 순위 — 상위일수록 돈이 몰린 종목이에요.",
-  ret10yAvg: "최근 10년 전체 상승률을 10으로 나눈 연간 상승률이에요(상장 10년 미만은 상장 후 전체 상승률 ÷ 10).",
+  ret10yAvg: "최근 10년 연복리 수익률(CAGR)이에요 — 매년 몇 %씩 오른 셈인지(상장 10년 미만은 상장 후 기간 기준).",
   per: "주가 ÷ 주당순이익 — 낮을수록 이익 대비 저렴한 편이에요.",
   dividendYield: "현재 주가 대비 근근 1년 배당금 비율이에요.",
   week52RangePct: "52주 근저~근고 사이에서 지금 주가의 위치(0%=근저점 부근)예요.",
