@@ -4,7 +4,7 @@
 # [승률점수] 최근 10년(최대 120개월) 동안 월봉 종가가 전월 대비 상승한 개월 수 / 총 개월 수 * 100 (소수 1자리)
 #   상장 10년 미만 종목은 상장(데이터 시작) 이후 개월만으로 계산. 진행 중인 이번 달(미완성 월봉)은 제외.
 # [RSI] 주봉 11년치(약 570개)로 와일더 방식 RSI(14) 롤링 시리즈 — 현재값(rsi) + 520주 평균(rsi10y) + 직전 52주 평균(rsi1y).
-# [추가 지표(2026-09-04)] wr1y=직전12개월 승률%, ret10y=10년 연복리 수익률%(CAGR, 상장 10년 미만은 상장 후 기간으로 연율화), ret1y=직전12개월 상승률%,
+# [추가 지표(2026-09-04)] wr1y=직전12개월 승률%, ret10y=연평균 상승률%(전체 상승률 ÷ 상장연수, 최대 10년 — 단순 나눗셈), ret1y=직전12개월 상승률%,
 #   m12=최근 12개월 월간 등락% 배열(과거→최신). 검색상세 개요 9칸 표 + 12개월 승패(OX) 표에 사용.
 # 유니버스 4개: 미국 S&P500(sp500-sectors.json) / 국내 코스피200+코스닥150(kr-sectors.json) /
 #               ETF 200(etf-crypto-map.js ETF_MAP_DATA) / 코인 100(etf-crypto-map.js CRYPTO_MAP_DATA)
@@ -132,9 +132,9 @@ function Get-UniverseScores($symbols, $label) {
         $base1y = $sorted[$sorted.Count - 1 - $tail].c
         if ($base1y -ne 0) { $ret1y = [Math]::Round(($sorted[$sorted.Count - 1].c / $base1y - 1.0) * 100.0, 1) }
         if ($sorted[0].c -gt 0 -and $total -ge 12) {
-          # 2026-09-04 사용자 최종 확정: 연복리 수익률(CAGR) — "매년 몇 %씩 오른 셈인가"(상장 10년 미만은 상장 후 기간으로 연율화)
-          $ratio = $sorted[$sorted.Count - 1].c / $sorted[0].c
-          if ($ratio -gt 0) { $ret10y = [Math]::Round(([Math]::Pow($ratio, 12.0 / $total) - 1.0) * 100.0, 1) }
+          # 2026-09-04 사용자 최종 확정(3차): 전체 상승률 ÷ 상장 연수(단순 연평균, 최대 10년) — "상장일부터 지금까지 년도로 나눠줘"
+          $totalRet = ($sorted[$sorted.Count - 1].c / $sorted[0].c - 1.0) * 100.0
+          $ret10y = [Math]::Round($totalRet / ($total / 12.0), 1)
         }
 
         # ---------- 주간 RSI(14) (주봉 11년 롤링 시리즈: 현재값 + 520주 평균 + 52주 평균) ----------
@@ -235,7 +235,7 @@ $crypto = Get-UniverseScores $cryptoSymbols "코인"
 $allFailed = @($us.failed + $kr.failed + $etf.failed + $crypto.failed)
 $out = [ordered]@{
   generatedAt  = $nowUtc.ToString("yyyy-MM-ddTHH:mm:ssZ")
-  description  = "승률점수: 최근 10년(최대 120개월) 월봉 종가 기준 상승개월수/총개월수*100(상장 10년 미만은 데이터 시작 이후만). rsi: 주간 RSI(14, 주봉 11년 롤링) 현재값, rsi10y=520주 평균, rsi1y=직전 52주 평균. wr1y=직전 12개월 승률%, ret10y=10년 연복리 수익률%(CAGR, 10년 미만은 상장 후 기간 연율화), ret1y=직전 12개월 상승률%, m12=최근 12개월 월간 등락%(과거->최신). scores=미국 S&P500, scoresKr=코스피200+코스닥150, scoresEtf=ETF200(미국+국내), scoresCrypto=코인100."
+  description  = "승률점수: 최근 10년(최대 120개월) 월봉 종가 기준 상승개월수/총개월수*100(상장 10년 미만은 데이터 시작 이후만). rsi: 주간 RSI(14, 주봉 11년 롤링) 현재값, rsi10y=520주 평균, rsi1y=직전 52주 평균. wr1y=직전 12개월 승률%, ret10y=연평균 상승률%(전체 상승률/상장연수, 최대 10년), ret1y=직전 12개월 상승률%, m12=최근 12개월 월간 등락%(과거->최신). scores=미국 S&P500, scoresKr=코스피200+코스닥150, scoresEtf=ETF200(미국+국내), scoresCrypto=코인100."
   count        = $us.scores.Count + $kr.scores.Count + $etf.scores.Count + $crypto.scores.Count
   failed       = @($allFailed | ForEach-Object { $_.symbol })
   scores       = $us.scores
