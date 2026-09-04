@@ -1424,7 +1424,7 @@
                           "pressureScore":  3.2,
                           "stabilityScore":  3.8,
                           "winRateScore":  62.5,
-                          "rsiWeekly":  28.3,
+                          "rsiWeekly":  59.2,
                           "ret10yAvg":  26.1
                       },
                       {
