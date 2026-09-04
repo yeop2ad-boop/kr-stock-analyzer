@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260904b" />
+<link rel="stylesheet" href="style.css?v=20260904d" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -78,6 +78,8 @@
       <div class="fh-tabs" id="fhTabs">
         <!-- 관심종목 탭은 하단 네비로 이동(2026-09-01) — 그 자리엔 인기종목(시총 상위 50위권 중 상승압력+투자안정 상위 30개) -->
         <button type="button" class="fh-tab" data-fhtab="tab.popular" data-i18n="tab.popular">인기종목</button>
+        <!-- 자동추적(2026-09-04 사용자 요청): 승률 DB 전 종목을 10년승률순으로 신호등과 함께 표시 — 전 투자처 공통 -->
+        <button type="button" class="fh-tab" data-fhtab="tab.autotrack" data-i18n="tab.autotrack">자동추적</button>
         <button type="button" class="fh-tab active" data-fhtab="tab.valuation" data-i18n="tab.valuation">실적비교</button>
         <button type="button" class="fh-tab" data-fhtab="tab.trend" data-i18n="tab.trend">증시동향</button>
         <button type="button" class="fh-tab" data-fhtab="tab.insight" data-i18n="tab.insight">인사이트</button>
@@ -564,6 +566,12 @@
           <div id="popularResults"></div>
         </div>
 
+        <!-- 자동추적(2026-09-04): 승률 DB 전 종목 표(10년승률/RSI/내년 승률 + 신호등) — renderAutoTrack이 채움 -->
+        <div id="autoTrackGroup" style="display:none;">
+          <p id="autoTrackStatus" class="muted top30-status" style="display:none;"></p>
+          <div id="autoTrackResults"></div>
+        </div>
+
         <div id="trendGroup">
           <!-- 기존 투자동향 서브내비도 마찬가지로 숨김만 처리(렌더 함수들이 참조) -->
           <div class="top30-sub-nav" style="display:none;">
@@ -781,6 +789,6 @@
 
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="data/logo-db.js?v=20260903g"></script>
-  <script src="app.js?v=20260904c"></script>
+  <script src="app.js?v=20260904d"></script>
 </body>
 </html>

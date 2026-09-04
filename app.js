@@ -2661,6 +2661,7 @@ document.querySelectorAll(".fh-tab").forEach((btn) => {
   btn.addEventListener("click", () => {
     const key = btn.dataset.fhtab;
     if (key === "tab.popular") showOnlyCarouselView(() => openPopularStocks());
+    else if (key === "tab.autotrack") showOnlyCarouselView(() => openAutoTrack());
     else if (key === "tab.valuation") showOnlyCarouselView(() => activateRankingGroup("disclosure"));
     else if (key === "tab.trend")
       showOnlyCarouselView(() => (appSectionMode === "etf" ? openEtfTrend() : appSectionMode === "crypto" ? openCryptoTrend() : activateRankingGroup("market")));
@@ -2763,6 +2764,7 @@ const I18N = {
   "market.us": { ko: "미국주식", en: "US" },
   "tab.watchlist": { ko: "관심종목", en: "Watchlist" },
   "tab.popular": { ko: "인기종목", en: "Popular" },
+  "tab.autotrack": { ko: "자동추적", en: "Auto Track" },
   "tab.search": { ko: "간편검색", en: "Search" },
   "tab.valuation": { ko: "실적비교", en: "Value" },
   "tab.trend": { ko: "증시동향", en: "Trends" },
@@ -3770,6 +3772,96 @@ function renderSelfTestResult() {
   el("selfTestRetryBtn").addEventListener("click", openSelfTestModal);
 }
 
+// ---------- 관심종목 매수 상세입력 + 3색 신호등(2026-09-04 사용자 요청) ----------
+// 종목별로 "+상세입력"으로 매수가·매수시각을 기록하면 카드 아래 3개 신호등 표시(평소 초록, 조건 충족 시 빨강):
+// ①수익률10%: 매수가 대비 현재가 수익률 +10% 이상  ②RSI 70점: 현재 주간 RSI(배치 DB) 70 이상  ③한달종료: 매수시각에서 1달 경과
+const WL_BUY_DETAIL_KEY = "watchlist_buy_detail_v1";
+function getWlBuyDetails() {
+  try {
+    const v = JSON.parse(localStorage.getItem(WL_BUY_DETAIL_KEY));
+    return v && typeof v === "object" ? v : {};
+  } catch {
+    return {};
+  }
+}
+function setWlBuyDetail(symbol, detail) {
+  const all = getWlBuyDetails();
+  if (detail) all[symbol] = detail;
+  else delete all[symbol];
+  localStorage.setItem(WL_BUY_DETAIL_KEY, JSON.stringify(all));
+}
+// 승률 DB 4개 맵(미국/국내/ETF/코인) 어디에 있든 심볼로 엔트리 조회
+function wlAnyWrEntry(db, symbol) {
+  if (!db) return null;
+  return (
+    (db.scores && db.scores[symbol]) ||
+    (db.scoresKr && db.scoresKr[symbol]) ||
+    (db.scoresEtf && db.scoresEtf[symbol]) ||
+    (db.scoresCrypto && db.scoresCrypto[symbol]) ||
+    null
+  );
+}
+// datetime-local 입력용 로컬 시각 문자열(YYYY-MM-DDTHH:mm)
+function wlLocalDatetimeValue(d) {
+  const p = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+function wlBuyDetailStripHtml(r, db) {
+  const sym = r.symbol;
+  const detail = getWlBuyDetails()[sym];
+  if (!detail) {
+    return `<div class="wl-detail-strip"><button type="button" class="cat-btn wl-detail-add-btn" data-wl-detail-add="${escapeHtml(sym)}">+상세입력</button></div>`;
+  }
+  const buyPrice = Number(detail.price);
+  const buyAt = new Date(detail.at);
+  // ① 수익률 10% 이상이면 빨간불
+  let retPct = null;
+  if (Number.isFinite(buyPrice) && buyPrice > 0 && r.price !== null && r.price !== undefined) {
+    retPct = (r.price / buyPrice - 1) * 100;
+  }
+  const light1Red = retPct !== null && retPct >= 10;
+  // ② 현재 주간 RSI 70 이상이면 빨간불 (배치 DB, 없으면 ⚪)
+  const wrEntry = wlAnyWrEntry(db, sym);
+  const rsiNow = wrEntry && Number.isFinite(wrEntry.rsi) ? wrEntry.rsi : null;
+  const light2 = rsiNow === null ? "⚪" : rsiNow >= 70 ? "🔴" : "🟢";
+  // ③ 매수시각에서 1달(달력 기준) 지났으면 빨간불
+  const monthEnd = new Date(buyAt);
+  monthEnd.setMonth(monthEnd.getMonth() + 1);
+  const light3Red = !isNaN(buyAt.getTime()) && Date.now() >= monthEnd.getTime();
+
+  const p = (n) => String(n).padStart(2, "0");
+  const buyAtLabel = isNaN(buyAt.getTime()) ? "-" : `${buyAt.getFullYear()}.${p(buyAt.getMonth() + 1)}.${p(buyAt.getDate())} ${p(buyAt.getHours())}:${p(buyAt.getMinutes())}`;
+  const retLabel = retPct === null ? "" : ` · <b class="${retPct >= 0 ? "delta-up" : "delta-down"}">${retPct >= 0 ? "+" : ""}${retPct.toFixed(1)}%</b>`;
+  return `
+    <div class="wl-detail-strip">
+      <div class="wl-lights">
+        <span class="wl-light" title="매수가 대비 수익률 ${retPct === null ? "N/A" : retPct.toFixed(1) + "%"} — +10% 이상이면 빨간불">${light1Red ? "🔴" : "🟢"} 수익률10%</span>
+        <span class="wl-light" title="현재 주간 RSI ${rsiNow === null ? "데이터 없음" : rsiNow} — 70 이상이면 빨간불">${light2} RSI 70점</span>
+        <span class="wl-light" title="매수시각(${buyAtLabel})에서 1달 경과 시 빨간불">${light3Red ? "🔴" : "🟢"} 한달종료</span>
+      </div>
+      <div class="wl-detail-meta">
+        <span class="muted">매수 ${fmtPrice(buyPrice, r.currency)} · ${buyAtLabel}${retLabel}</span>
+        <button type="button" class="wl-detail-edit-btn" data-wl-detail-edit="${escapeHtml(sym)}">수정</button>
+      </div>
+    </div>`;
+}
+// +상세입력/수정 클릭 시 그 자리에 입력 폼 표시 — currency는 카드에 실린 통화 그대로
+function wlBuyDetailFormHtml(sym, currency) {
+  const detail = getWlBuyDetails()[sym];
+  const priceVal = detail && Number.isFinite(Number(detail.price)) ? detail.price : "";
+  const atVal = detail && detail.at ? wlLocalDatetimeValue(new Date(detail.at)) : wlLocalDatetimeValue(new Date());
+  return `
+    <div class="wl-detail-form" data-wl-form="${escapeHtml(sym)}">
+      <label>매수가(${escapeHtml(currency || "USD")}) <input type="number" step="any" min="0" class="wl-form-price" value="${escapeHtml(String(priceVal))}" placeholder="예: 152.3" /></label>
+      <label>매수시각 <input type="datetime-local" class="wl-form-at" value="${atVal}" /></label>
+      <div class="wl-form-btns">
+        <button type="button" class="cat-btn" data-wl-detail-save="${escapeHtml(sym)}">저장</button>
+        ${detail ? `<button type="button" class="cat-btn" data-wl-detail-delete="${escapeHtml(sym)}">삭제</button>` : ""}
+        <button type="button" class="cat-btn" data-wl-detail-cancel="1">취소</button>
+      </div>
+    </div>`;
+}
+
 async function renderWatchlistList() {
   const statusEl = el("watchlistStatus");
   const listEl = el("watchlistList");
@@ -3822,14 +3914,72 @@ async function renderWatchlistList() {
     ).filter(Boolean);
     statusEl.style.display = "none";
     const sorted = sortWatchlistRows(rows);
+    // 매수 상세입력 신호등(2026-09-04): 주간 RSI는 배치 DB에서 — 카드 아래 스트립을 붙이기 위해 행별 통화/현재가를 저장
+    const wrDbForWl = await getWinRateDb().catch(() => null);
+    wlLastRowsBySymbol = new Map(sorted.map((r) => [r.symbol, r]));
+    wlWrDbCache = wrDbForWl;
     listEl.innerHTML = sorted.length
-      ? `<div class="idx-list">${sorted.map((r) => stockCardRowHtml(r, { sectionMark: true })).join("")}</div>`
+      ? `<div class="idx-list">${sorted.map((r) => `<div class="wl-card-wrap">${stockCardRowHtml(r, { sectionMark: true })}${wlBuyDetailStripHtml(r, wrDbForWl)}</div>`).join("")}</div>`
       : `<p class="muted" style="padding:12px 0;">종목 정보를 불러오지 못했습니다.</p>`;
   } catch (e) {
     statusEl.style.display = "block";
     statusEl.textContent = `❌ ${e.message || "관심종목을 불러오지 못했습니다."}`;
   }
 }
+
+// 관심종목 상세입력 스트립 위임 리스너 — innerHTML 재렌더와 무관하게 1회만 바인딩
+let wlLastRowsBySymbol = new Map();
+let wlWrDbCache = null;
+el("watchlistList").addEventListener("click", (e) => {
+  const addBtn = e.target.closest("[data-wl-detail-add], [data-wl-detail-edit]");
+  if (addBtn) {
+    e.stopPropagation();
+    const sym = addBtn.dataset.wlDetailAdd || addBtn.dataset.wlDetailEdit;
+    const strip = addBtn.closest(".wl-detail-strip");
+    const row = wlLastRowsBySymbol.get(sym);
+    if (strip) strip.outerHTML = wlBuyDetailFormHtml(sym, row ? row.currency : "USD");
+    return;
+  }
+  const saveBtn = e.target.closest("[data-wl-detail-save]");
+  if (saveBtn) {
+    e.stopPropagation();
+    const sym = saveBtn.dataset.wlDetailSave;
+    const form = saveBtn.closest(".wl-detail-form");
+    const price = Number(form.querySelector(".wl-form-price").value);
+    const atRaw = form.querySelector(".wl-form-at").value;
+    if (!Number.isFinite(price) || price <= 0) {
+      showToast("매수가를 숫자로 입력해주세요.");
+      return;
+    }
+    const at = atRaw ? new Date(atRaw) : new Date();
+    if (isNaN(at.getTime())) {
+      showToast("매수시각을 확인해주세요.");
+      return;
+    }
+    setWlBuyDetail(sym, { price, at: at.toISOString() });
+    const row = wlLastRowsBySymbol.get(sym) || { symbol: sym, price: null, currency: "USD" };
+    form.outerHTML = wlBuyDetailStripHtml(row, wlWrDbCache);
+    return;
+  }
+  const delBtn = e.target.closest("[data-wl-detail-delete]");
+  if (delBtn) {
+    e.stopPropagation();
+    const sym = delBtn.dataset.wlDetailDelete;
+    setWlBuyDetail(sym, null);
+    const form = delBtn.closest(".wl-detail-form");
+    const row = wlLastRowsBySymbol.get(sym) || { symbol: sym, price: null, currency: "USD" };
+    form.outerHTML = wlBuyDetailStripHtml(row, wlWrDbCache);
+    return;
+  }
+  const cancelBtn = e.target.closest("[data-wl-detail-cancel]");
+  if (cancelBtn) {
+    e.stopPropagation();
+    const form = cancelBtn.closest(".wl-detail-form");
+    const sym = form.dataset.wlForm;
+    const row = wlLastRowsBySymbol.get(sym) || { symbol: sym, price: null, currency: "USD" };
+    form.outerHTML = wlBuyDetailStripHtml(row, wlWrDbCache);
+  }
+});
 
 // ---------- 기업검색 위저드 (챗봇처럼 단계별로 질문 → 선택 → 다음 질문으로 넘어가는 검색 보드) ----------
 let searchWizardStep = "root";
@@ -4029,6 +4179,8 @@ function showRankingGroup(tabKey) {
   el("trendGroup").style.display = tabKey === "trend" ? "block" : "none";
   const popularGroup = el("popularGroup");
   if (popularGroup) popularGroup.style.display = tabKey === "popular" ? "block" : "none";
+  const autoTrackGroup = el("autoTrackGroup");
+  if (autoTrackGroup) autoTrackGroup.style.display = tabKey === "autotrack" ? "block" : "none";
 }
 
 let topRankingActiveIdx = 0;
@@ -8643,6 +8795,108 @@ function openPopularStocks() {
   if (appSectionMode === "etf") runEtfPopular();
   else if (appSectionMode === "crypto") runCryptoPopular();
   else runPopularStocks();
+}
+
+// ---------- 자동추적(2026-09-04 사용자 요청): 승률 DB의 현 투자처 전 종목을 10년승률 높은 순으로 표시 ----------
+// 표 4열: 종목명(로고) / 10년승률(60%↑🟢 55~60🟠 55↓🔴) / RSI 점수(내년RSI-현재RSI 차이 30↑🟢 20~30🟡 20↓🔴)
+// / 내년 승률(=10년승률×2-작년승률, 70%↑🟢 60~70🟡 60↓🔴). 값은 전부 배치 DB — 실시간 스캔 없이 즉시 표시, 100개씩 노출.
+function openAutoTrack() {
+  switchTab(TAB_ORDER.indexOf("topranking"));
+  el("tabValuationBtn").classList.remove("active");
+  tabTrendBtn.classList.remove("active");
+  setCarouselViewTitle("tab.autotrack");
+  el("topRankingSubNav").innerHTML = "";
+  showRankingGroup("autotrack");
+  renderAutoTrack();
+}
+
+async function renderAutoTrack() {
+  const statusEl = el("autoTrackStatus");
+  const resultsEl = el("autoTrackResults");
+  resultsEl.innerHTML = "";
+  statusEl.style.display = "block";
+  statusEl.textContent = "자동추적 데이터를 불러오는 중...";
+  try {
+    const mode = appSectionMode === "etf" ? "etf" : appSectionMode === "crypto" ? "crypto" : getWatchlistActiveMarket() === "KR" ? "kr" : "us";
+    const db = await getWinRateDb();
+    const map = db && (mode === "etf" ? db.scoresEtf : mode === "crypto" ? db.scoresCrypto : mode === "kr" ? db.scoresKr : db.scores);
+    if (!map) throw new Error("자동추적 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.");
+
+    // 종목 이름 맵(투자처별) — 실패해도 심볼로 폴백
+    let nameOf = (sym) => TICKER_TO_KOREAN_NAME[sym] || sym;
+    if (mode === "kr") {
+      const m = await getKrSymbolNameMap().catch(() => new Map());
+      nameOf = (sym) => m.get(sym) || TICKER_TO_KOREAN_NAME[sym] || sym;
+    } else if (mode === "etf") {
+      const usMap = new Map(US_ETF_TOP100.map((x) => [x.t, x.n]));
+      let krMap = new Map();
+      try {
+        krMap = new Map((await getKrEtfTop100()).map((x) => [x.symbol, x.name]));
+      } catch {}
+      nameOf = (sym) => krMap.get(sym) || usMap.get(sym) || TICKER_TO_KOREAN_NAME[sym] || sym;
+    } else if (mode === "crypto") {
+      nameOf = (sym) => cryptoKoName(sym, TICKER_TO_KOREAN_NAME[sym] || sym.replace(/-USD$/, ""));
+    }
+
+    const num = (v) => (Number.isFinite(v) ? v : null);
+    const rows = Object.entries(map)
+      .map(([sym, e]) => {
+        const score = num(e.score);
+        const wr1y = num(e.wr1y);
+        const wrNext = score !== null && wr1y !== null ? Math.round((2 * score - wr1y) * 10) / 10 : null;
+        const rsi = num(e.rsi);
+        const rsi10y = num(e.rsi10y);
+        const rsi1y = num(e.rsi1y);
+        const rsiNext = rsi10y !== null && rsi1y !== null ? Math.round((2 * rsi10y - rsi1y) * 10) / 10 : null;
+        const rsiGap = rsiNext !== null && rsi !== null ? Math.round((rsiNext - rsi) * 10) / 10 : null;
+        return { sym, score, wrNext, rsi, rsiGap, total: num(e.total) };
+      })
+      .filter((r) => r.score !== null);
+    rows.sort((a, b) => b.score - a.score);
+
+    const scoreEmoji = (s) => (s >= 60 ? "🟢" : s >= 55 ? "🟠" : "🔴");
+    const gapEmoji = (g) => (g === null ? "⚪" : g >= 30 ? "🟢" : g >= 20 ? "🟡" : "🔴");
+    const nextEmoji = (w) => (w === null ? "⚪" : w >= 70 ? "🟢" : w >= 60 ? "🟡" : "🔴");
+    const universeLabel =
+      mode === "kr" ? "한국주식(코스피200+코스닥150)" : mode === "us" ? "미국주식(S&P500)" : mode === "etf" ? "ETF(미국+한국)" : "비트코인(암호화폐 시총 상위)";
+
+    let shown = Math.min(100, rows.length);
+    const render = () => {
+      const body = rows
+        .slice(0, shown)
+        .map((r) => {
+          const partialMark = r.total !== null && r.total < 120 ? `<span class="nine-partial-mark" title="상장 10년 미만 — 상장 후 ${r.total}개월만 집계">❗</span>` : "";
+          return `
+        <tr>
+          <td style="text-align:left;"><span class="ticker-cell">${tickerLogoHtml(r.sym)}<b class="ticker-link" data-ticker="${escapeHtml(r.sym)}">${escapeHtml(nameOf(r.sym))}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(r.sym)}</span></td>
+          <td><span class="at-emoji">${scoreEmoji(r.score)}</span><b>${r.score}%</b>${partialMark}</td>
+          <td><span class="at-emoji">${gapEmoji(r.rsiGap)}</span><b>${r.rsiGap === null ? "N/A" : `${r.rsiGap > 0 ? "+" : ""}${r.rsiGap}`}</b><br><span class="muted" style="font-size:10.5px;">RSI ${r.rsi === null ? "N/A" : r.rsi}</span></td>
+          <td><span class="at-emoji">${nextEmoji(r.wrNext)}</span><b>${r.wrNext === null ? "N/A" : r.wrNext + "%"}</b></td>
+        </tr>`;
+        })
+        .join("");
+      resultsEl.innerHTML = `
+        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 전체 ${rows.length}개 종목 — 10년승률(최근 10년 월간 상승 마감 비율, 60%↑🟢 55~60%🟠 55%↓🔴) 높은 순.
+        RSI 점수는 내년RSI(10년평균×2−작년) − 현재 주간 RSI 차이(30↑🟢 20~30🟡 20↓🔴), 내년 승률은 10년승률×2−작년승률(70%↑🟢 60~70%🟡 60%↓🔴).
+        매일 자동 갱신되는 배치 DB 기준이며 투자 자문이 아닙니다.</p>
+        <table class="top30-table autotrack-table">
+          <thead><tr><th>종목명</th><th>10년승률</th><th>RSI 점수</th><th>내년 승률</th></tr></thead>
+          <tbody>${body}</tbody>
+        </table>
+        ${shown < rows.length ? `<button type="button" class="cat-btn" id="autoTrackMoreBtn">전체보기 (${shown}/${rows.length})</button>` : ""}`;
+      const moreBtn = el("autoTrackMoreBtn");
+      if (moreBtn)
+        moreBtn.addEventListener("click", () => {
+          shown = rows.length;
+          render();
+        });
+    };
+    statusEl.style.display = "none";
+    render();
+  } catch (e) {
+    statusEl.style.display = "block";
+    statusEl.textContent = `❌ ${e.message || "자동추적 데이터를 불러오지 못했습니다."}`;
+  }
 }
 
 // ---------- ETF·코인 시장동향(2026-09-01 개편): 주식 시장동향과 동일한 6개 랭킹(52주최저/거래대금/상승률/하락률/상승압력/투자안정) ----------
