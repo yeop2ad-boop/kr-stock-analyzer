@@ -18,10 +18,11 @@
                           "roe":  25.0,
                           "debtRatio":  2640.7,
                           "week52RangePct":  59.4,
-                          "pressureScore":  4.5,
+                          "pressureScore":  4.0,
                           "stabilityScore":  2.8,
-                          "winRateScore":  60,
-                          "rsiWeekly":  59.9
+                          "winRateScore":  60.8,
+                          "rsiWeekly":  62,
+                          "ret10yAvg":  31.6
                       },
                       {
                           "symbol":  "NKE",
@@ -40,10 +41,11 @@
                           "roe":  7.2,
                           "debtRatio":  158.4,
                           "week52RangePct":  2.3,
-                          "pressureScore":  1.5,
+                          "pressureScore":  0.5,
                           "stabilityScore":  3.9,
                           "winRateScore":  50.8,
-                          "rsiWeekly":  31.6
+                          "rsiWeekly":  32.6,
+                          "ret10yAvg":  -2.7
                       },
                       {
                           "symbol":  "PSA",
@@ -62,10 +64,11 @@
                           "roe":  5.4,
                           "debtRatio":  117.9,
                           "week52RangePct":  63.9,
-                          "pressureScore":  1.6,
-                          "stabilityScore":  5.0,
+                          "pressureScore":  2.0,
+                          "stabilityScore":  4.9,
                           "winRateScore":  51.7,
-                          "rsiWeekly":  46.1
+                          "rsiWeekly":  47.4,
+                          "ret10yAvg":  3.5
                       },
                       {
                           "symbol":  "MET",
@@ -84,10 +87,11 @@
                           "roe":  2.7,
                           "debtRatio":  2665.4,
                           "week52RangePct":  82.9,
-                          "pressureScore":  4.3,
+                          "pressureScore":  3.6,
                           "stabilityScore":  3.5,
                           "winRateScore":  58.3,
-                          "rsiWeekly":  62.6
+                          "rsiWeekly":  70.2,
+                          "ret10yAvg":  14.3
                       },
                       {
                           "symbol":  "O",
@@ -106,10 +110,11 @@
                           "roe":  0.9,
                           "debtRatio":  87.3,
                           "week52RangePct":  44.9,
-                          "pressureScore":  1.8,
+                          "pressureScore":  2.0,
                           "stabilityScore":  3.8,
                           "winRateScore":  55,
-                          "rsiWeekly":  46.1
+                          "rsiWeekly":  47.3,
+                          "ret10yAvg":  -0.5
                       },
                       {
                           "symbol":  "FANG",
@@ -128,10 +133,11 @@
                           "roe":  5.0,
                           "debtRatio":  69.2,
                           "week52RangePct":  80.1,
-                          "pressureScore":  4.2,
-                          "stabilityScore":  2.6,
+                          "pressureScore":  3.5,
+                          "stabilityScore":  2.5,
                           "winRateScore":  53.3,
-                          "rsiWeekly":  56.4
+                          "rsiWeekly":  56.1,
+                          "ret10yAvg":  11.1
                       },
                       {
                           "symbol":  "TEL",
@@ -150,10 +156,11 @@
                           "roe":  5.6,
                           "debtRatio":  95.7,
                           "week52RangePct":  24.0,
-                          "pressureScore":  1.9,
+                          "pressureScore":  2.3,
                           "stabilityScore":  3.5,
-                          "winRateScore":  61.7,
-                          "rsiWeekly":  49
+                          "winRateScore":  60.8,
+                          "rsiWeekly":  49.8,
+                          "ret10yAvg":  21.4
                       },
                       {
                           "symbol":  "OKE",
@@ -172,10 +179,11 @@
                           "roe":  4.2,
                           "debtRatio":  198.2,
                           "week52RangePct":  94.4,
-                          "pressureScore":  6.0,
+                          "pressureScore":  3.9,
                           "stabilityScore":  2.6,
-                          "winRateScore":  60.8,
-                          "rsiWeekly":  58
+                          "winRateScore":  60,
+                          "rsiWeekly":  58,
+                          "ret10yAvg":  8.7
                       },
                       {
                           "symbol":  "FAST",
@@ -194,10 +202,11 @@
                           "roe":  9.4,
                           "debtRatio":  30.1,
                           "week52RangePct":  74.1,
-                          "pressureScore":  4.0,
+                          "pressureScore":  2.7,
                           "stabilityScore":  4.7,
                           "winRateScore":  57.5,
-                          "rsiWeekly":  54.6
+                          "rsiWeekly":  56.4,
+                          "ret10yAvg":  35.9
                       },
                       {
                           "symbol":  "TER",
@@ -216,10 +225,11 @@
                           "roe":  10.9,
                           "debtRatio":  42.3,
                           "week52RangePct":  63.5,
-                          "pressureScore":  3.5,
-                          "stabilityScore":  3.2,
-                          "winRateScore":  64.2,
-                          "rsiWeekly":  48.6
+                          "pressureScore":  1.9,
+                          "stabilityScore":  3.3,
+                          "winRateScore":  63.3,
+                          "rsiWeekly":  49,
+                          "ret10yAvg":  148.3
                       },
                       {
                           "symbol":  "D",
@@ -238,10 +248,11 @@
                           "roe":  1.2,
                           "debtRatio":  305.2,
                           "week52RangePct":  59.3,
-                          "pressureScore":  2.7,
+                          "pressureScore":  2.5,
                           "stabilityScore":  3.4,
                           "winRateScore":  55,
-                          "rsiWeekly":  50.4
+                          "rsiWeekly":  51.7,
+                          "ret10yAvg":  -1.1
                       },
                       {
                           "symbol":  "FIX",
@@ -260,10 +271,11 @@
                           "roe":  13.7,
                           "debtRatio":  163.8,
                           "week52RangePct":  62.4,
-                          "pressureScore":  4.1,
+                          "pressureScore":  1.7,
                           "stabilityScore":  3.7,
                           "winRateScore":  63.3,
-                          "rsiWeekly":  46.1
+                          "rsiWeekly":  48.1,
+                          "ret10yAvg":  522.3
                       },
                       {
                           "symbol":  "AFL",
@@ -282,10 +294,11 @@
                           "roe":  2.7,
                           "debtRatio":  282.6,
                           "week52RangePct":  43.8,
-                          "pressureScore":  1.4,
+                          "pressureScore":  2.3,
                           "stabilityScore":  4.0,
-                          "winRateScore":  64.2,
-                          "rsiWeekly":  47.7
+                          "winRateScore":  65,
+                          "rsiWeekly":  51.4,
+                          "ret10yAvg":  22.6
                       },
                       {
                           "symbol":  "MRNA",
@@ -304,10 +317,11 @@
                           "roe":  -11.6,
                           "debtRatio":  62.1,
                           "week52RangePct":  76.5,
-                          "pressureScore":  7.4,
-                          "stabilityScore":  2.0,
-                          "winRateScore":  52.7,
-                          "rsiWeekly":  80.3
+                          "pressureScore":  8.2,
+                          "stabilityScore":  2,
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  79.5,
+                          "ret10yAvg":  105.5
                       },
                       {
                           "symbol":  "F",
@@ -326,10 +340,11 @@
                           "roe":  -3.7,
                           "debtRatio":  699.3,
                           "week52RangePct":  42.4,
-                          "pressureScore":  0.2,
+                          "pressureScore":  2.5,
                           "stabilityScore":  2.0,
-                          "winRateScore":  54.2,
-                          "rsiWeekly":  50.3
+                          "winRateScore":  55,
+                          "rsiWeekly":  53.9,
+                          "ret10yAvg":  1.7
                       },
                       {
                           "symbol":  "NXPI",
@@ -348,10 +363,11 @@
                           "roe":  6.7,
                           "debtRatio":  130.7,
                           "week52RangePct":  26.5,
-                          "pressureScore":  2.4,
+                          "pressureScore":  1.2,
                           "stabilityScore":  3.2,
                           "winRateScore":  51.7,
-                          "rsiWeekly":  41.4
+                          "rsiWeekly":  42.2,
+                          "ret10yAvg":  12.4
                       },
                       {
                           "symbol":  "GRMN",
@@ -370,10 +386,11 @@
                           "roe":  6.0,
                           "debtRatio":  26.5,
                           "week52RangePct":  76.4,
-                          "pressureScore":  6.0,
+                          "pressureScore":  3.1,
                           "stabilityScore":  5.1,
                           "winRateScore":  57.5,
-                          "rsiWeekly":  56.8
+                          "rsiWeekly":  57.7,
+                          "ret10yAvg":  47.4
                       },
                       {
                           "symbol":  "COHR",
@@ -392,10 +409,11 @@
                           "roe":  1.8,
                           "debtRatio":  58.7,
                           "week52RangePct":  54.2,
-                          "pressureScore":  3.0,
-                          "stabilityScore":  0.8,
-                          "winRateScore":  54.2,
-                          "rsiWeekly":  45.9
+                          "pressureScore":  1.7,
+                          "stabilityScore":  0.9,
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  44.9,
+                          "ret10yAvg":  100.4
                       },
                       {
                           "symbol":  "CIEN",
@@ -414,10 +432,11 @@
                           "roe":  7.5,
                           "debtRatio":  108.8,
                           "week52RangePct":  53.5,
-                          "pressureScore":  3.2,
+                          "pressureScore":  1.7,
                           "stabilityScore":  0.4,
-                          "winRateScore":  60.8,
-                          "rsiWeekly":  44.3
+                          "winRateScore":  60,
+                          "rsiWeekly":  40.1,
+                          "ret10yAvg":  152.5
                       },
                       {
                           "symbol":  "NUE",
@@ -436,10 +455,11 @@
                           "roe":  3.5,
                           "debtRatio":  61.0,
                           "week52RangePct":  79.5,
-                          "pressureScore":  3.0,
-                          "stabilityScore":  3.0,
+                          "pressureScore":  3.1,
+                          "stabilityScore":  2.9,
                           "winRateScore":  51.7,
-                          "rsiWeekly":  59.4
+                          "rsiWeekly":  62.5,
+                          "ret10yAvg":  43.4
                       },
                       {
                           "symbol":  "AME",
@@ -458,10 +478,11 @@
                           "roe":  3.6,
                           "debtRatio":  47.4,
                           "week52RangePct":  68.3,
-                          "pressureScore":  3.6,
-                          "stabilityScore":  3.4,
+                          "pressureScore":  2.5,
+                          "stabilityScore":  3.5,
                           "winRateScore":  57.5,
-                          "rsiWeekly":  49.2
+                          "rsiWeekly":  51.8,
+                          "ret10yAvg":  38.8
                       },
                       {
                           "symbol":  "NDAQ",
@@ -480,10 +501,11 @@
                           "roe":  4.2,
                           "debtRatio":  128.0,
                           "week52RangePct":  87.4,
-                          "pressureScore":  3.6,
+                          "pressureScore":  3.5,
                           "stabilityScore":  3.4,
                           "winRateScore":  60.8,
-                          "rsiWeekly":  59.4
+                          "rsiWeekly":  61.4,
+                          "ret10yAvg":  32.5
                       },
                       {
                           "symbol":  "CTVA",
@@ -502,10 +524,11 @@
                           "roe":  3.0,
                           "debtRatio":  74.3,
                           "week52RangePct":  79.2,
-                          "pressureScore":  4.3,
+                          "pressureScore":  4.8,
                           "stabilityScore":  3.5,
-                          "winRateScore":  55.8,
-                          "rsiWeekly":  61.3
+                          "winRateScore":  56.3,
+                          "rsiWeekly":  62.2,
+                          "ret10yAvg":  28.2
                       },
                       {
                           "symbol":  "SRE",
@@ -524,10 +547,11 @@
                           "roe":  2.4,
                           "debtRatio":  220.1,
                           "week52RangePct":  12.4,
-                          "pressureScore":  1.0,
+                          "pressureScore":  2.0,
                           "stabilityScore":  3.1,
                           "winRateScore":  58.3,
-                          "rsiWeekly":  41.3
+                          "rsiWeekly":  41.6,
+                          "ret10yAvg":  5.6
                       },
                       {
                           "symbol":  "DAL",
@@ -546,10 +570,11 @@
                           "roe":  7.4,
                           "debtRatio":  295.7,
                           "week52RangePct":  56.5,
-                          "pressureScore":  2.3,
+                          "pressureScore":  1.9,
                           "stabilityScore":  2.5,
                           "winRateScore":  53.3,
-                          "rsiWeekly":  46.9
+                          "rsiWeekly":  49.5,
+                          "ret10yAvg":  9.9
                       },
                       {
                           "symbol":  "DVN",
@@ -568,10 +593,11 @@
                           "roe":  4.6,
                           "debtRatio":  69.8,
                           "week52RangePct":  80.2,
-                          "pressureScore":  4.3,
+                          "pressureScore":  3.8,
                           "stabilityScore":  3.2,
                           "winRateScore":  52.5,
-                          "rsiWeekly":  58.5
+                          "rsiWeekly":  58.2,
+                          "ret10yAvg":  1.1
                       },
                       {
                           "symbol":  "KEYS",
@@ -590,10 +616,11 @@
                           "roe":  5.5,
                           "debtRatio":  85.4,
                           "week52RangePct":  75.8,
-                          "pressureScore":  4.3,
+                          "pressureScore":  2.3,
                           "stabilityScore":  2.1,
-                          "winRateScore":  62.5,
-                          "rsiWeekly":  52.1
+                          "winRateScore":  61.7,
+                          "rsiWeekly":  53.3,
+                          "ret10yAvg":  91.5
                       },
                       {
                           "symbol":  "ADSK",
@@ -612,10 +639,11 @@
                           "roe":  15.4,
                           "debtRatio":  274.2,
                           "week52RangePct":  50.9,
-                          "pressureScore":  3.7,
-                          "stabilityScore":  3.0,
-                          "winRateScore":  59.2,
-                          "rsiWeekly":  52.8
+                          "pressureScore":  2.9,
+                          "stabilityScore":  2.9,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  49.6,
+                          "ret10yAvg":  23.4
                       },
                       {
                           "symbol":  "CAH",
@@ -634,10 +662,11 @@
                           "roe":  -14.1,
                           "debtRatio":  -2096.1,
                           "week52RangePct":  78.9,
-                          "pressureScore":  4.9,
-                          "stabilityScore":  2.0,
-                          "winRateScore":  54.2,
-                          "rsiWeekly":  62.8
+                          "pressureScore":  3.7,
+                          "stabilityScore":  1.9,
+                          "winRateScore":  55,
+                          "rsiWeekly":  66.7,
+                          "ret10yAvg":  21.6
                       },
                       {
                           "symbol":  "PYPL",
@@ -656,10 +685,11 @@
                           "roe":  5.6,
                           "debtRatio":  317.4,
                           "week52RangePct":  34.9,
-                          "pressureScore":  4.2,
-                          "stabilityScore":  2.9,
+                          "pressureScore":  2.8,
+                          "stabilityScore":  3.0,
                           "winRateScore":  55,
-                          "rsiWeekly":  50.4
+                          "rsiWeekly":  56.9,
+                          "ret10yAvg":  3.3
                       },
                       {
                           "symbol":  "BDX",
@@ -678,10 +708,11 @@
                           "roe":  1.5,
                           "debtRatio":  107.8,
                           "week52RangePct":  92.4,
-                          "pressureScore":  5.0,
-                          "stabilityScore":  2.5,
-                          "winRateScore":  54.2,
-                          "rsiWeekly":  67.2
+                          "pressureScore":  4.6,
+                          "stabilityScore":  2.6,
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  67.6,
+                          "ret10yAvg":  3.6
                       },
                       {
                           "symbol":  "HONA",
@@ -700,7 +731,7 @@
                           "roe":  -4.3,
                           "debtRatio":  -438.7,
                           "week52RangePct":  5.5,
-                          "pressureScore":  0.6,
+                          "pressureScore":  2.2,
                           "stabilityScore":  2.2
                       },
                       {
@@ -720,10 +751,11 @@
                           "roe":  2.3,
                           "debtRatio":  29.6,
                           "week52RangePct":  76.9,
-                          "pressureScore":  2.3,
+                          "pressureScore":  2.8,
                           "stabilityScore":  2.9,
                           "winRateScore":  58.3,
-                          "rsiWeekly":  56.9
+                          "rsiWeekly":  55.5,
+                          "ret10yAvg":  12.6
                       },
                       {
                           "symbol":  "STT",
@@ -742,10 +774,11 @@
                           "roe":  3.8,
                           "debtRatio":  1380.1,
                           "week52RangePct":  95.0,
-                          "pressureScore":  5.6,
-                          "stabilityScore":  4.1,
+                          "pressureScore":  4.3,
+                          "stabilityScore":  4.0,
                           "winRateScore":  54.2,
-                          "rsiWeekly":  72.8
+                          "rsiWeekly":  81.7,
+                          "ret10yAvg":  17.3
                       },
                       {
                           "symbol":  "AXON",
@@ -764,10 +797,11 @@
                           "roe":  0.8,
                           "debtRatio":  103.6,
                           "week52RangePct":  50.2,
-                          "pressureScore":  6.6,
-                          "stabilityScore":  2.1,
-                          "winRateScore":  60,
-                          "rsiWeekly":  49.5
+                          "pressureScore":  2.4,
+                          "stabilityScore":  2.0,
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  51.4,
+                          "ret10yAvg":  167.2
                       },
                       {
                           "symbol":  "WAB",
@@ -786,10 +820,11 @@
                           "roe":  3.5,
                           "debtRatio":  106.0,
                           "week52RangePct":  83.1,
-                          "pressureScore":  4.5,
+                          "pressureScore":  2.9,
                           "stabilityScore":  2.4,
-                          "winRateScore":  60,
-                          "rsiWeekly":  55.8
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  56.5,
+                          "ret10yAvg":  24.3
                       },
                       {
                           "symbol":  "CARR",
@@ -808,10 +843,11 @@
                           "roe":  3.8,
                           "debtRatio":  181.8,
                           "week52RangePct":  30.1,
-                          "pressureScore":  1.1,
+                          "pressureScore":  1,
                           "stabilityScore":  2.8,
-                          "winRateScore":  55.3,
-                          "rsiWeekly":  39
+                          "winRateScore":  54.5,
+                          "rsiWeekly":  41.7,
+                          "ret10yAvg":  35.1
                       },
                       {
                           "symbol":  "FITB",
@@ -830,10 +866,11 @@
                           "roe":  2.3,
                           "debtRatio":  770.5,
                           "week52RangePct":  70.5,
-                          "pressureScore":  4.9,
+                          "pressureScore":  2.1,
                           "stabilityScore":  3.8,
                           "winRateScore":  60,
-                          "rsiWeekly":  50.1
+                          "rsiWeekly":  55.4,
+                          "ret10yAvg":  16.6
                       },
                       {
                           "symbol":  "LHX",
@@ -852,10 +889,11 @@
                           "roe":  2.8,
                           "debtRatio":  105.9,
                           "week52RangePct":  6.4,
-                          "pressureScore":  2.1,
+                          "pressureScore":  1.1,
                           "stabilityScore":  2.4,
                           "winRateScore":  52.5,
-                          "rsiWeekly":  36.6
+                          "rsiWeekly":  35.9,
+                          "ret10yAvg":  18.5
                       },
                       {
                           "symbol":  "WDAY",
@@ -874,10 +912,11 @@
                           "roe":  3.3,
                           "debtRatio":  140.8,
                           "week52RangePct":  62.4,
-                          "pressureScore":  6.8,
+                          "pressureScore":  5.3,
                           "stabilityScore":  2.3,
                           "winRateScore":  51.7,
-                          "rsiWeekly":  64.4
+                          "rsiWeekly":  67.8,
+                          "ret10yAvg":  11.9
                       },
                       {
                           "symbol":  "XYZ",
@@ -896,10 +935,11 @@
                           "roe":  0.4,
                           "debtRatio":  77.8,
                           "week52RangePct":  87.3,
-                          "pressureScore":  2.8,
+                          "pressureScore":  2.9,
                           "stabilityScore":  2.4,
-                          "winRateScore":  58.3,
-                          "rsiWeekly":  53.6
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  61.1,
+                          "ret10yAvg":  60.7
                       },
                       {
                           "symbol":  "COIN",
@@ -918,10 +958,11 @@
                           "roe":  -2.7,
                           "debtRatio":  102.3,
                           "week52RangePct":  18.6,
-                          "pressureScore":  1.1,
+                          "pressureScore":  4.2,
                           "stabilityScore":  2.4,
-                          "winRateScore":  52.4,
-                          "rsiWeekly":  49
+                          "winRateScore":  51.6,
+                          "rsiWeekly":  53.6,
+                          "ret10yAvg":  -4.9
                       },
                       {
                           "symbol":  "AMP",
@@ -940,10 +981,11 @@
                           "roe":  17.5,
                           "debtRatio":  3008.2,
                           "week52RangePct":  87.0,
-                          "pressureScore":  5.3,
+                          "pressureScore":  3.5,
                           "stabilityScore":  3.9,
                           "winRateScore":  57.5,
-                          "rsiWeekly":  62.2
+                          "rsiWeekly":  69.4,
+                          "ret10yAvg":  45.3
                       },
                       {
                           "symbol":  "ETR",
@@ -962,10 +1004,11 @@
                           "roe":  2.3,
                           "debtRatio":  336.5,
                           "week52RangePct":  62.1,
-                          "pressureScore":  1.7,
+                          "pressureScore":  2.1,
                           "stabilityScore":  3.3,
-                          "winRateScore":  56.7,
-                          "rsiWeekly":  48.1
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  49.4,
+                          "ret10yAvg":  17.8
                       },
                       {
                           "symbol":  "ROK",
@@ -984,10 +1027,11 @@
                           "roe":  11.7,
                           "debtRatio":  217.4,
                           "week52RangePct":  55.7,
-                          "pressureScore":  1.4,
+                          "pressureScore":  1.8,
                           "stabilityScore":  3.6,
                           "winRateScore":  54.2,
-                          "rsiWeekly":  44.5
+                          "rsiWeekly":  47.7,
+                          "ret10yAvg":  24.8
                       },
                       {
                           "symbol":  "AZO",
@@ -1006,10 +1050,11 @@
                           "roe":  -23.0,
                           "debtRatio":  -851.2,
                           "week52RangePct":  6.0,
-                          "pressureScore":  2.2,
+                          "pressureScore":  1.2,
                           "stabilityScore":  2.3,
-                          "winRateScore":  57.5,
-                          "rsiWeekly":  39
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  38.5,
+                          "ret10yAvg":  28.2
                       },
                       {
                           "symbol":  "VTR",
@@ -1028,10 +1073,11 @@
                           "roe":  0.5,
                           "debtRatio":  102.1,
                           "week52RangePct":  70.4,
-                          "pressureScore":  4.8,
-                          "stabilityScore":  2.9,
-                          "winRateScore":  55.8,
-                          "rsiWeekly":  56
+                          "pressureScore":  3.0,
+                          "stabilityScore":  2.8,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  56.1,
+                          "ret10yAvg":  3
                       },
                       {
                           "symbol":  "XEL",
@@ -1050,10 +1096,11 @@
                           "roe":  2.4,
                           "debtRatio":  262.3,
                           "week52RangePct":  34.0,
-                          "pressureScore":  0.9,
+                          "pressureScore":  1.9,
                           "stabilityScore":  3.2,
                           "winRateScore":  59.2,
-                          "rsiWeekly":  43.9
+                          "rsiWeekly":  44.5,
+                          "ret10yAvg":  8.4
                       },
                       {
                           "symbol":  "FERG",
@@ -1072,10 +1119,11 @@
                           "roe":  7.0,
                           "debtRatio":  202.8,
                           "week52RangePct":  26.4,
-                          "pressureScore":  1.4,
+                          "pressureScore":  1.2,
                           "stabilityScore":  2.8,
-                          "winRateScore":  60,
-                          "rsiWeekly":  41.5
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  43.3,
+                          "ret10yAvg":  26.3
                       },
                       {
                           "symbol":  "CMG",
@@ -1094,10 +1142,11 @@
                           "roe":  18.3,
                           "debtRatio":  303.0,
                           "week52RangePct":  67.6,
-                          "pressureScore":  5.4,
+                          "pressureScore":  3.4,
                           "stabilityScore":  4.5,
                           "winRateScore":  57.5,
-                          "rsiWeekly":  55.7
+                          "rsiWeekly":  55.4,
+                          "ret10yAvg":  35.5
                       },
                       {
                           "symbol":  "ARES",
@@ -1119,7 +1168,8 @@
                           "pressureScore":  2.8,
                           "stabilityScore":  2.8,
                           "winRateScore":  65,
-                          "rsiWeekly":  55.4
+                          "rsiWeekly":  57.3,
+                          "ret10yAvg":  69.3
                       },
                       {
                           "symbol":  "EBAY",
@@ -1138,10 +1188,11 @@
                           "roe":  11.8,
                           "debtRatio":  284.4,
                           "week52RangePct":  61.8,
-                          "pressureScore":  2.1,
-                          "stabilityScore":  3.4,
+                          "pressureScore":  2.6,
+                          "stabilityScore":  3.5,
                           "winRateScore":  54.2,
-                          "rsiWeekly":  50.8
+                          "rsiWeekly":  51.6,
+                          "ret10yAvg":  22.4
                       },
                       {
                           "symbol":  "VST",
@@ -1160,10 +1211,11 @@
                           "roe":  5.6,
                           "debtRatio":  676.9,
                           "week52RangePct":  5.4,
-                          "pressureScore":  0.2,
+                          "pressureScore":  1.6,
                           "stabilityScore":  2.1,
-                          "winRateScore":  56.4,
-                          "rsiWeekly":  42
+                          "winRateScore":  56.8,
+                          "rsiWeekly":  45.4,
+                          "ret10yAvg":  94.4
                       },
                       {
                           "symbol":  "HUM",
@@ -1182,10 +1234,11 @@
                           "roe":  3.6,
                           "debtRatio":  197.4,
                           "week52RangePct":  82.8,
-                          "pressureScore":  6.1,
+                          "pressureScore":  4.7,
                           "stabilityScore":  2.3,
-                          "winRateScore":  48.3,
-                          "rsiWeekly":  67.1
+                          "winRateScore":  49.2,
+                          "rsiWeekly":  69,
+                          "ret10yAvg":  12.7
                       },
                       {
                           "symbol":  "EXC",
@@ -1204,10 +1257,11 @@
                           "roe":  1.3,
                           "debtRatio":  305.8,
                           "week52RangePct":  14.1,
-                          "pressureScore":  1.5,
-                          "stabilityScore":  3.5,
-                          "winRateScore":  55.8,
-                          "rsiWeekly":  41.5
+                          "pressureScore":  1.6,
+                          "stabilityScore":  3.6,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  44.5,
+                          "ret10yAvg":  8.5
                       },
                       {
                           "symbol":  "A",
@@ -1226,10 +1280,11 @@
                           "roe":  4.8,
                           "debtRatio":  83.4,
                           "week52RangePct":  81.6,
-                          "pressureScore":  5.5,
-                          "stabilityScore":  3.4,
-                          "winRateScore":  58.3,
-                          "rsiWeekly":  61.1
+                          "pressureScore":  4.4,
+                          "stabilityScore":  3.5,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  61.4,
+                          "ret10yAvg":  22.1
                       },
                       {
                           "symbol":  "TTWO",
@@ -1248,10 +1303,11 @@
                           "roe":  -0.9,
                           "debtRatio":  151.2,
                           "week52RangePct":  41.0,
-                          "pressureScore":  2.6,
+                          "pressureScore":  2.4,
                           "stabilityScore":  1.7,
-                          "winRateScore":  55.8,
-                          "rsiWeekly":  43.8
+                          "winRateScore":  55,
+                          "rsiWeekly":  42.8,
+                          "ret10yAvg":  37.9
                       },
                       {
                           "symbol":  "PAYX",
@@ -1270,10 +1326,11 @@
                           "roe":  11.3,
                           "debtRatio":  333.0,
                           "week52RangePct":  78.1,
-                          "pressureScore":  5.5,
+                          "pressureScore":  4.6,
                           "stabilityScore":  3.5,
                           "winRateScore":  59.2,
-                          "rsiWeekly":  71.5
+                          "rsiWeekly":  69.9,
+                          "ret10yAvg":  11.4
                       },
                       {
                           "symbol":  "CBRE",
@@ -1292,10 +1349,11 @@
                           "roe":  2.4,
                           "debtRatio":  253.6,
                           "week52RangePct":  45.9,
-                          "pressureScore":  4.6,
+                          "pressureScore":  2.6,
                           "stabilityScore":  2.7,
                           "winRateScore":  57.5,
-                          "rsiWeekly":  50.6
+                          "rsiWeekly":  54.4,
+                          "ret10yAvg":  40.8
                       },
                       {
                           "symbol":  "IDXX",
@@ -1314,10 +1372,11 @@
                           "roe":  21.0,
                           "debtRatio":  113.5,
                           "week52RangePct":  15.2,
-                          "pressureScore":  1.4,
+                          "pressureScore":  1.5,
                           "stabilityScore":  3.8,
-                          "winRateScore":  56.7,
-                          "rsiWeekly":  42.8
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  39.5,
+                          "ret10yAvg":  37.8
                       },
                       {
                           "symbol":  "KDP",
@@ -1336,10 +1395,11 @@
                           "roe":  1.1,
                           "debtRatio":  174.0,
                           "week52RangePct":  78.1,
-                          "pressureScore":  2.1,
+                          "pressureScore":  3.1,
                           "stabilityScore":  2.7,
-                          "winRateScore":  50.8,
-                          "rsiWeekly":  56.9
+                          "winRateScore":  51.7,
+                          "rsiWeekly":  60.4,
+                          "ret10yAvg":  -6.4
                       },
                       {
                           "symbol":  "ODFL",
@@ -1359,9 +1419,10 @@
                           "debtRatio":  26.1,
                           "week52RangePct":  58.7,
                           "pressureScore":  1.5,
-                          "stabilityScore":  4.8,
+                          "stabilityScore":  4.9,
                           "winRateScore":  59.2,
-                          "rsiWeekly":  40.6
+                          "rsiWeekly":  40.2,
+                          "ret10yAvg":  72
                       },
                       {
                           "symbol":  "IQV",
@@ -1380,10 +1441,11 @@
                           "roe":  4.1,
                           "debtRatio":  382.1,
                           "week52RangePct":  96.3,
-                          "pressureScore":  5.8,
+                          "pressureScore":  5.5,
                           "stabilityScore":  2.4,
                           "winRateScore":  53.3,
-                          "rsiWeekly":  70.8
+                          "rsiWeekly":  75.1,
+                          "ret10yAvg":  22.5
                       },
                       {
                           "symbol":  "LYV",
@@ -1402,10 +1464,11 @@
                           "roe":  357.6,
                           "debtRatio":  32019.5,
                           "week52RangePct":  85.4,
-                          "pressureScore":  2.3,
+                          "pressureScore":  2.8,
                           "stabilityScore":  2.3,
-                          "winRateScore":  56.7,
-                          "rsiWeekly":  55.4
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  55.5,
+                          "ret10yAvg":  55.4
                       },
                       {
                           "symbol":  "PRU",
@@ -1424,10 +1487,11 @@
                           "roe":  3.1,
                           "debtRatio":  2371.9,
                           "week52RangePct":  71.8,
-                          "pressureScore":  5.2,
-                          "stabilityScore":  3.9,
+                          "pressureScore":  3.1,
+                          "stabilityScore":  4.0,
                           "winRateScore":  58.3,
-                          "rsiWeekly":  57.3
+                          "rsiWeekly":  64.8,
+                          "ret10yAvg":  4.7
                       },
                       {
                           "symbol":  "YUM",
@@ -1446,10 +1510,11 @@
                           "roe":  -12.0,
                           "debtRatio":  -222.2,
                           "week52RangePct":  48.7,
-                          "pressureScore":  2.9,
+                          "pressureScore":  2.1,
                           "stabilityScore":  2.8,
-                          "winRateScore":  56.7,
-                          "rsiWeekly":  48.5
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  48.7,
+                          "ret10yAvg":  13.2
                       },
                       {
                           "symbol":  "DHI",
@@ -1468,10 +1533,11 @@
                           "roe":  3.8,
                           "debtRatio":  50.8,
                           "week52RangePct":  24.3,
-                          "pressureScore":  0.2,
+                          "pressureScore":  1.7,
                           "stabilityScore":  2.8,
                           "winRateScore":  58.3,
-                          "rsiWeekly":  44.1
+                          "rsiWeekly":  46,
+                          "ret10yAvg":  37.1
                       },
                       {
                           "symbol":  "MCHP",
@@ -1490,10 +1556,11 @@
                           "roe":  3.6,
                           "debtRatio":  123.3,
                           "week52RangePct":  43.4,
-                          "pressureScore":  3.5,
+                          "pressureScore":  1.4,
                           "stabilityScore":  3.5,
-                          "winRateScore":  51.7,
-                          "rsiWeekly":  42.9
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  44.1,
+                          "ret10yAvg":  13.4
                       },
                       {
                           "symbol":  "MSCI",
@@ -1512,10 +1579,11 @@
                           "roe":  -12.7,
                           "debtRatio":  -308.3,
                           "week52RangePct":  48.4,
-                          "pressureScore":  1.4,
+                          "pressureScore":  1.8,
                           "stabilityScore":  3.5,
                           "winRateScore":  56.7,
-                          "rsiWeekly":  47.5
+                          "rsiWeekly":  49.7,
+                          "ret10yAvg":  56.8
                       },
                       {
                           "symbol":  "FLEX",
@@ -1534,10 +1602,11 @@
                           "roe":  4.9,
                           "debtRatio":  328.8,
                           "week52RangePct":  49.9,
-                          "pressureScore":  2.0,
-                          "stabilityScore":  1.6,
-                          "winRateScore":  64.2,
-                          "rsiWeekly":  47.6
+                          "pressureScore":  1.8,
+                          "stabilityScore":  1.7,
+                          "winRateScore":  63.3,
+                          "rsiWeekly":  48.1,
+                          "ret10yAvg":  93.2
                       },
                       {
                           "symbol":  "ROP",
@@ -1556,10 +1625,11 @@
                           "roe":  6.2,
                           "debtRatio":  88.1,
                           "week52RangePct":  53.0,
-                          "pressureScore":  4.9,
+                          "pressureScore":  4.0,
                           "stabilityScore":  3.1,
-                          "winRateScore":  57.5,
-                          "rsiWeekly":  63.7
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  64.8,
+                          "ret10yAvg":  12.8
                       },
                       {
                           "symbol":  "WAT",
@@ -1578,10 +1648,11 @@
                           "roe":  -0.5,
                           "debtRatio":  60.4,
                           "week52RangePct":  91.9,
-                          "pressureScore":  5.2,
+                          "pressureScore":  3.5,
                           "stabilityScore":  2.8,
-                          "winRateScore":  55,
-                          "rsiWeekly":  60.4
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  64.4,
+                          "ret10yAvg":  16
                       },
                       {
                           "symbol":  "VEEV",
@@ -1600,10 +1671,11 @@
                           "roe":  3.6,
                           "debtRatio":  25.0,
                           "week52RangePct":  84.7,
-                          "pressureScore":  8.2,
-                          "stabilityScore":  5.2,
-                          "winRateScore":  55,
-                          "rsiWeekly":  72.3
+                          "pressureScore":  7.3,
+                          "stabilityScore":  5.1,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  74,
+                          "ret10yAvg":  58
                       },
                       {
                           "symbol":  "SYY",
@@ -1622,10 +1694,11 @@
                           "roe":  14.8,
                           "debtRatio":  1118.2,
                           "week52RangePct":  54.5,
-                          "pressureScore":  2.2,
+                          "pressureScore":  2.4,
                           "stabilityScore":  2.2,
-                          "winRateScore":  55.8,
-                          "rsiWeekly":  52.6
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  50.6,
+                          "ret10yAvg":  6.7
                       },
                       {
                           "symbol":  "AIG",
@@ -1644,10 +1717,11 @@
                           "roe":  2.3,
                           "debtRatio":  302.5,
                           "week52RangePct":  31.9,
-                          "pressureScore":  1.1,
+                          "pressureScore":  2.2,
                           "stabilityScore":  3.5,
                           "winRateScore":  55,
-                          "rsiWeekly":  46.2
+                          "rsiWeekly":  48.6,
+                          "ret10yAvg":  2.8
                       },
                       {
                           "symbol":  "ED",
@@ -1666,10 +1740,11 @@
                           "roe":  1.2,
                           "debtRatio":  197.3,
                           "week52RangePct":  56.7,
-                          "pressureScore":  2.8,
-                          "stabilityScore":  3.6,
+                          "pressureScore":  2.2,
+                          "stabilityScore":  3.7,
                           "winRateScore":  55.8,
-                          "rsiWeekly":  48.7
+                          "rsiWeekly":  50.5,
+                          "ret10yAvg":  4.3
                       },
                       {
                           "symbol":  "PCG",
@@ -1688,10 +1763,11 @@
                           "roe":  2.2,
                           "debtRatio":  327.2,
                           "week52RangePct":  3.0,
-                          "pressureScore":  3.0,
+                          "pressureScore":  3.2,
                           "stabilityScore":  2.4,
-                          "winRateScore":  56.7,
-                          "rsiWeekly":  32.2
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  31.8,
+                          "ret10yAvg":  -7.8
                       },
                       {
                           "symbol":  "ADM",
@@ -1710,10 +1786,11 @@
                           "roe":  3.9,
                           "debtRatio":  125.8,
                           "week52RangePct":  78.2,
-                          "pressureScore":  2.0,
-                          "stabilityScore":  3.8,
-                          "winRateScore":  55.8,
-                          "rsiWeekly":  61.1
+                          "pressureScore":  4.0,
+                          "stabilityScore":  3.7,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  61.4,
+                          "ret10yAvg":  10.2
                       },
                       {
                           "symbol":  "EXPE",
@@ -1732,10 +1809,11 @@
                           "roe":  72.6,
                           "debtRatio":  2199.3,
                           "week52RangePct":  84.1,
-                          "pressureScore":  6.2,
-                          "stabilityScore":  2.3,
-                          "winRateScore":  55,
-                          "rsiWeekly":  60.9
+                          "pressureScore":  3.7,
+                          "stabilityScore":  2.4,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  59.5,
+                          "ret10yAvg":  16.4
                       },
                       {
                           "symbol":  "NTAP",
@@ -1754,10 +1832,11 @@
                           "roe":  29.9,
                           "debtRatio":  695.3,
                           "week52RangePct":  79.4,
-                          "pressureScore":  3.3,
+                          "pressureScore":  4.1,
                           "stabilityScore":  3.1,
-                          "winRateScore":  55,
-                          "rsiWeekly":  63.8
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  65.3,
+                          "ret10yAvg":  40.5
                       },
                       {
                           "symbol":  "HSY",
@@ -1776,10 +1855,11 @@
                           "roe":  10.0,
                           "debtRatio":  206.2,
                           "week52RangePct":  18.9,
-                          "pressureScore":  null,
-                          "stabilityScore":  null,
-                          "winRateScore":  52.5,
-                          "rsiWeekly":  42.9
+                          "pressureScore":  1.4,
+                          "stabilityScore":  3.8,
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  42.5,
+                          "ret10yAvg":  8.6
                       },
                       {
                           "symbol":  "KVUE",
@@ -1798,10 +1878,11 @@
                           "roe":  4.3,
                           "debtRatio":  153.3,
                           "week52RangePct":  71.5,
-                          "pressureScore":  2.1,
+                          "pressureScore":  2.7,
                           "stabilityScore":  3.9,
-                          "winRateScore":  47.4,
-                          "rsiWeekly":  52.3
+                          "winRateScore":  48.7,
+                          "rsiWeekly":  54.7,
+                          "ret10yAvg":  -8.5
                       },
                       {
                           "symbol":  "EL",
@@ -1820,10 +1901,11 @@
                           "roe":  2.2,
                           "debtRatio":  392.5,
                           "week52RangePct":  65.1,
-                          "pressureScore":  4.9,
+                          "pressureScore":  4.5,
                           "stabilityScore":  3.3,
                           "winRateScore":  58.3,
-                          "rsiWeekly":  58.1
+                          "rsiWeekly":  59.8,
+                          "ret10yAvg":  1.4
                       },
                       {
                           "symbol":  "HIG",
@@ -1842,10 +1924,11 @@
                           "roe":  6.6,
                           "debtRatio":  348.1,
                           "week52RangePct":  66.2,
-                          "pressureScore":  2.7,
-                          "stabilityScore":  3.6,
-                          "winRateScore":  60,
-                          "rsiWeekly":  51.3
+                          "pressureScore":  2.4,
+                          "stabilityScore":  3.7,
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  55,
+                          "ret10yAvg":  22
                       },
                       {
                           "symbol":  "UAL",
@@ -1864,10 +1947,11 @@
                           "roe":  4.8,
                           "debtRatio":  406.5,
                           "week52RangePct":  43.1,
-                          "pressureScore":  1.7,
+                          "pressureScore":  1.8,
                           "stabilityScore":  2.4,
                           "winRateScore":  52.5,
-                          "rsiWeekly":  45.7
+                          "rsiWeekly":  47.8,
+                          "ret10yAvg":  10.6
                       },
                       {
                           "symbol":  "TKO",
@@ -1886,10 +1970,11 @@
                           "roe":  3.0,
                           "debtRatio":  232.6,
                           "week52RangePct":  13.0,
-                          "pressureScore":  2.5,
+                          "pressureScore":  1.5,
                           "stabilityScore":  2.3,
                           "winRateScore":  61.7,
-                          "rsiWeekly":  44.3
+                          "rsiWeekly":  48.1,
+                          "ret10yAvg":  79.1
                       },
                       {
                           "symbol":  "KMB",
@@ -1908,10 +1993,11 @@
                           "roe":  19.7,
                           "debtRatio":  953.1,
                           "week52RangePct":  39.7,
-                          "pressureScore":  2.2,
+                          "pressureScore":  2.5,
                           "stabilityScore":  3.9,
-                          "winRateScore":  44.2,
-                          "rsiWeekly":  50.8
+                          "winRateScore":  45,
+                          "rsiWeekly":  52.4,
+                          "ret10yAvg":  -1.3
                       },
                       {
                           "symbol":  "IRM",
@@ -1930,10 +2016,11 @@
                           "roe":  -7.9,
                           "debtRatio":  -1783.7,
                           "week52RangePct":  66.0,
-                          "pressureScore":  2.8,
+                          "pressureScore":  2.2,
                           "stabilityScore":  2.3,
                           "winRateScore":  55,
-                          "rsiWeekly":  46.6
+                          "rsiWeekly":  47.4,
+                          "ret10yAvg":  19.8
                       },
                       {
                           "symbol":  "PEG",
@@ -1952,10 +2039,11 @@
                           "roe":  1.9,
                           "debtRatio":  239.4,
                           "week52RangePct":  5.3,
-                          "pressureScore":  0.7,
+                          "pressureScore":  1.5,
                           "stabilityScore":  3.1,
                           "winRateScore":  58.3,
-                          "rsiWeekly":  37.4
+                          "rsiWeekly":  38.4,
+                          "ret10yAvg":  7.5
                       },
                       {
                           "symbol":  "VMC",
@@ -1974,10 +2062,11 @@
                           "roe":  3.8,
                           "debtRatio":  94.0,
                           "week52RangePct":  21.9,
-                          "pressureScore":  0.8,
+                          "pressureScore":  1.5,
                           "stabilityScore":  3.0,
                           "winRateScore":  56.7,
-                          "rsiWeekly":  39.7
+                          "rsiWeekly":  39.9,
+                          "ret10yAvg":  13.2
                       },
                       {
                           "symbol":  "KR",
@@ -1996,10 +2085,11 @@
                           "roe":  14.0,
                           "debtRatio":  677.0,
                           "week52RangePct":  15.1,
-                          "pressureScore":  0.7,
+                          "pressureScore":  1.5,
                           "stabilityScore":  2.0,
-                          "winRateScore":  55.8,
-                          "rsiWeekly":  41.8
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  42.6,
+                          "ret10yAvg":  9.6
                       },
                       {
                           "symbol":  "CCL",
@@ -2018,10 +2108,11 @@
                           "roe":  4.1,
                           "debtRatio":  302.7,
                           "week52RangePct":  4.2,
-                          "pressureScore":  1.1,
-                          "stabilityScore":  2.3,
-                          "winRateScore":  52.5,
-                          "rsiWeekly":  38.5
+                          "pressureScore":  1.3,
+                          "stabilityScore":  2.2,
+                          "winRateScore":  51.7,
+                          "rsiWeekly":  39,
+                          "ret10yAvg":  -5.1
                       },
                       {
                           "symbol":  "DXCM",
@@ -2040,10 +2131,11 @@
                           "roe":  9.5,
                           "debtRatio":  146.3,
                           "week52RangePct":  96.0,
-                          "pressureScore":  5.5,
+                          "pressureScore":  3.9,
                           "stabilityScore":  3.9,
                           "winRateScore":  51.7,
-                          "rsiWeekly":  67.2
+                          "rsiWeekly":  67,
+                          "ret10yAvg":  30.9
                       },
                       {
                           "symbol":  "MTB",
@@ -2062,10 +2154,11 @@
                           "roe":  2.9,
                           "debtRatio":  684.6,
                           "week52RangePct":  72.9,
-                          "pressureScore":  2.9,
+                          "pressureScore":  2.6,
                           "stabilityScore":  3.8,
-                          "winRateScore":  57.5,
-                          "rsiWeekly":  51.5
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  57,
+                          "ret10yAvg":  10.3
                       },
                       {
                           "symbol":  "WEC",
@@ -2084,10 +2177,11 @@
                           "roe":  2.1,
                           "debtRatio":  269.5,
                           "week52RangePct":  19.0,
-                          "pressureScore":  1.0,
+                          "pressureScore":  1.4,
                           "stabilityScore":  3.7,
                           "winRateScore":  55.8,
-                          "rsiWeekly":  41.5
+                          "rsiWeekly":  42.4,
+                          "ret10yAvg":  7.7
                       },
                       {
                           "symbol":  "HBAN",
@@ -2106,10 +2200,11 @@
                           "roe":  2.2,
                           "debtRatio":  770.4,
                           "week52RangePct":  39.3,
-                          "pressureScore":  4.3,
+                          "pressureScore":  1.9,
                           "stabilityScore":  3.5,
-                          "winRateScore":  53.3,
-                          "rsiWeekly":  45.6
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  50.1,
+                          "ret10yAvg":  7.1
                       },
                       {
                           "symbol":  "RMD",
@@ -2128,10 +2223,11 @@
                           "roe":  6.1,
                           "debtRatio":  35.3,
                           "week52RangePct":  57.2,
-                          "pressureScore":  6.7,
+                          "pressureScore":  3.2,
                           "stabilityScore":  3.9,
                           "winRateScore":  60,
-                          "rsiWeekly":  56.5
+                          "rsiWeekly":  54.7,
+                          "ret10yAvg":  25.6
                       },
                       {
                           "symbol":  "ACGL",
@@ -2150,10 +2246,11 @@
                           "roe":  4.4,
                           "debtRatio":  254.5,
                           "week52RangePct":  63.4,
-                          "pressureScore":  2.5,
+                          "pressureScore":  3.4,
                           "stabilityScore":  4.5,
-                          "winRateScore":  61.7,
-                          "rsiWeekly":  53.2
+                          "winRateScore":  62.5,
+                          "rsiWeekly":  55.5,
+                          "ret10yAvg":  27.2
                       },
                       {
                           "symbol":  "GEHC",
@@ -2172,10 +2269,11 @@
                           "roe":  5.1,
                           "debtRatio":  237.2,
                           "week52RangePct":  40.2,
-                          "pressureScore":  3.0,
-                          "stabilityScore":  2.5,
-                          "winRateScore":  51.2,
-                          "rsiWeekly":  51.3
+                          "pressureScore":  2.2,
+                          "stabilityScore":  2.4,
+                          "winRateScore":  50,
+                          "rsiWeekly":  50.4,
+                          "ret10yAvg":  0.4
                       },
                       {
                           "symbol":  "RJF",
@@ -2194,10 +2292,11 @@
                           "roe":  4.7,
                           "debtRatio":  641.4,
                           "week52RangePct":  89.6,
-                          "pressureScore":  5.8,
+                          "pressureScore":  3.4,
                           "stabilityScore":  3.7,
-                          "winRateScore":  60,
-                          "rsiWeekly":  59.6
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  66,
+                          "ret10yAvg":  35.3
                       },
                       {
                           "symbol":  "NTRS",
@@ -2216,10 +2315,11 @@
                           "roe":  5.9,
                           "debtRatio":  1237.9,
                           "week52RangePct":  86.3,
-                          "pressureScore":  5.7,
+                          "pressureScore":  3.7,
                           "stabilityScore":  4.8,
                           "winRateScore":  55.8,
-                          "rsiWeekly":  63.2
+                          "rsiWeekly":  68.7,
+                          "ret10yAvg":  17.1
                       },
                       {
                           "symbol":  "EQT",
@@ -2238,10 +2338,11 @@
                           "roe":  0.8,
                           "debtRatio":  49.3,
                           "week52RangePct":  30.7,
-                          "pressureScore":  0.7,
+                          "pressureScore":  2.9,
                           "stabilityScore":  3.0,
                           "winRateScore":  50.8,
-                          "rsiWeekly":  52.2
+                          "rsiWeekly":  52.3,
+                          "ret10yAvg":  4.1
                       },
                       {
                           "symbol":  "EME",
@@ -2260,10 +2361,11 @@
                           "roe":  9.9,
                           "debtRatio":  149.0,
                           "week52RangePct":  43.8,
-                          "pressureScore":  2.9,
+                          "pressureScore":  1.7,
                           "stabilityScore":  2.6,
-                          "winRateScore":  60.8,
-                          "rsiWeekly":  43.6
+                          "winRateScore":  60,
+                          "rsiWeekly":  44.7,
+                          "ret10yAvg":  113.2
                       },
                       {
                           "symbol":  "CCI",
@@ -2282,10 +2384,11 @@
                           "roe":  -2.9,
                           "debtRatio":  -757.9,
                           "week52RangePct":  20.9,
-                          "pressureScore":  0.2,
+                          "pressureScore":  1.1,
                           "stabilityScore":  2.3,
                           "winRateScore":  54.2,
-                          "rsiWeekly":  39.7
+                          "rsiWeekly":  41.8,
+                          "ret10yAvg":  -2
                       },
                       {
                           "symbol":  "JBL",
@@ -2304,10 +2407,11 @@
                           "roe":  20.8,
                           "debtRatio":  1700.1,
                           "week52RangePct":  48.3,
-                          "pressureScore":  1.7,
+                          "pressureScore":  1.8,
                           "stabilityScore":  2.1,
-                          "winRateScore":  63.3,
-                          "rsiWeekly":  46.3
+                          "winRateScore":  62.5,
+                          "rsiWeekly":  48,
+                          "ret10yAvg":  127.2
                       },
                       {
                           "symbol":  "STLD",
@@ -2326,10 +2430,11 @@
                           "roe":  5.7,
                           "debtRatio":  82.3,
                           "week52RangePct":  65.3,
-                          "pressureScore":  4.4,
-                          "stabilityScore":  2.0,
+                          "pressureScore":  2.4,
+                          "stabilityScore":  1.8,
                           "winRateScore":  61.7,
-                          "rsiWeekly":  52.5
+                          "rsiWeekly":  56.3,
+                          "ret10yAvg":  89.1
                       },
                       {
                           "symbol":  "EXR",
@@ -2348,10 +2453,11 @@
                           "roe":  1.8,
                           "debtRatio":  111.7,
                           "week52RangePct":  46.4,
-                          "pressureScore":  1.1,
+                          "pressureScore":  1.9,
                           "stabilityScore":  3.6,
                           "winRateScore":  54.2,
-                          "rsiWeekly":  44.7
+                          "rsiWeekly":  45.6,
+                          "ret10yAvg":  7.6
                       },
                       {
                           "symbol":  "MLM",
@@ -2370,10 +2476,11 @@
                           "roe":  2.2,
                           "debtRatio":  84.5,
                           "week52RangePct":  0.5,
-                          "pressureScore":  3.1,
+                          "pressureScore":  1.1,
                           "stabilityScore":  3.1,
                           "winRateScore":  58.3,
-                          "rsiWeekly":  34.3
+                          "rsiWeekly":  34.9,
+                          "ret10yAvg":  18.9
                       },
                       {
                           "symbol":  "ZTS",
@@ -2392,10 +2499,11 @@
                           "roe":  22.0,
                           "debtRatio":  378.9,
                           "week52RangePct":  7.2,
-                          "pressureScore":  0.2,
+                          "pressureScore":  0.7,
                           "stabilityScore":  3.1,
-                          "winRateScore":  60,
-                          "rsiWeekly":  35.9
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  33.4,
+                          "ret10yAvg":  4.6
                       },
                       {
                           "symbol":  "CNC",
@@ -2414,10 +2522,11 @@
                           "roe":  4.8,
                           "debtRatio":  267.5,
                           "week52RangePct":  87.8,
-                          "pressureScore":  2.6,
-                          "stabilityScore":  1.0,
-                          "winRateScore":  53.3,
-                          "rsiWeekly":  62.6
+                          "pressureScore":  4.2,
+                          "stabilityScore":  0.9,
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  65.6,
+                          "ret10yAvg":  10.1
                       },
                       {
                           "symbol":  "BIIB",
@@ -2436,10 +2545,11 @@
                           "roe":  0.5,
                           "debtRatio":  70.2,
                           "week52RangePct":  93.1,
-                          "pressureScore":  2.4,
+                          "pressureScore":  3.9,
                           "stabilityScore":  2.9,
                           "winRateScore":  44.2,
-                          "rsiWeekly":  62.3
+                          "rsiWeekly":  68.8,
+                          "ret10yAvg":  -2.9
                       },
                       {
                           "symbol":  "WTW",
@@ -2458,10 +2568,11 @@
                           "roe":  3.0,
                           "debtRatio":  296.4,
                           "week52RangePct":  87.3,
-                          "pressureScore":  5.5,
+                          "pressureScore":  3.4,
                           "stabilityScore":  3.2,
-                          "winRateScore":  57.5,
-                          "rsiWeekly":  61.9
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  65,
+                          "ret10yAvg":  15.4
                       },
                       {
                           "symbol":  "CPRT",
@@ -2480,10 +2591,11 @@
                           "roe":  4.6,
                           "debtRatio":  9.8,
                           "week52RangePct":  26.5,
-                          "pressureScore":  1.1,
-                          "stabilityScore":  4.9,
-                          "winRateScore":  62.5,
-                          "rsiWeekly":  49
+                          "pressureScore":  2.8,
+                          "stabilityScore":  5.0,
+                          "winRateScore":  61.7,
+                          "rsiWeekly":  52.8,
+                          "ret10yAvg":  38
                       },
                       {
                           "symbol":  "IR",
@@ -2502,10 +2614,11 @@
                           "roe":  2.5,
                           "debtRatio":  78.1,
                           "week52RangePct":  27.3,
-                          "pressureScore":  2.8,
+                          "pressureScore":  1.3,
                           "stabilityScore":  2.4,
-                          "winRateScore":  55.5,
-                          "rsiWeekly":  41.7
+                          "winRateScore":  55,
+                          "rsiWeekly":  42.6,
+                          "ret10yAvg":  26.7
                       },
                       {
                           "symbol":  "CASY",
@@ -2524,10 +2637,11 @@
                           "roe":  4.1,
                           "debtRatio":  126.1,
                           "week52RangePct":  59.8,
-                          "pressureScore":  2.2,
+                          "pressureScore":  2.1,
                           "stabilityScore":  2.2,
-                          "winRateScore":  61.7,
-                          "rsiWeekly":  48.4
+                          "winRateScore":  62.5,
+                          "rsiWeekly":  47.4,
+                          "ret10yAvg":  52.7
                       },
                       {
                           "symbol":  "LVS",
@@ -2546,10 +2660,11 @@
                           "roe":  59.6,
                           "debtRatio":  3272.3,
                           "week52RangePct":  0.8,
-                          "pressureScore":  0.6,
-                          "stabilityScore":  2.3,
+                          "pressureScore":  1.3,
+                          "stabilityScore":  2.4,
                           "winRateScore":  50.8,
-                          "rsiWeekly":  36.2
+                          "rsiWeekly":  37.2,
+                          "ret10yAvg":  -2.3
                       },
                       {
                           "symbol":  "KHC",
@@ -2568,10 +2683,11 @@
                           "roe":  -15.2,
                           "debtRatio":  102.6,
                           "week52RangePct":  65.7,
-                          "pressureScore":  2.8,
+                          "pressureScore":  3.4,
                           "stabilityScore":  1.8,
                           "winRateScore":  47.5,
-                          "rsiWeekly":  57
+                          "rsiWeekly":  54.8,
+                          "ret10yAvg":  -7.1
                       },
                       {
                           "symbol":  "RDDT",
@@ -2590,10 +2706,11 @@
                           "roe":  7.7,
                           "debtRatio":  10.7,
                           "week52RangePct":  17.4,
-                          "pressureScore":  3.1,
+                          "pressureScore":  1.5,
                           "stabilityScore":  4.6,
-                          "winRateScore":  60.7,
-                          "rsiWeekly":  44.2
+                          "winRateScore":  62.1,
+                          "rsiWeekly":  47,
+                          "ret10yAvg":  105.8
                       },
                       {
                           "symbol":  "TDY",
@@ -2612,10 +2729,11 @@
                           "roe":  2.3,
                           "debtRatio":  39.9,
                           "week52RangePct":  60.5,
-                          "pressureScore":  1.6,
-                          "stabilityScore":  2.8,
-                          "winRateScore":  59.2,
-                          "rsiWeekly":  45.6
+                          "pressureScore":  1.7,
+                          "stabilityScore":  2.7,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  45.2,
+                          "ret10yAvg":  46.2
                       },
                       {
                           "symbol":  "HAL",
@@ -2634,10 +2752,11 @@
                           "roe":  4.9,
                           "debtRatio":  134.2,
                           "week52RangePct":  69.6,
-                          "pressureScore":  1.5,
-                          "stabilityScore":  2.6,
+                          "pressureScore":  4.0,
+                          "stabilityScore":  2.5,
                           "winRateScore":  50,
-                          "rsiWeekly":  54.9
+                          "rsiWeekly":  56.1,
+                          "ret10yAvg":  -1.6
                       },
                       {
                           "symbol":  "CFG",
@@ -2656,10 +2775,11 @@
                           "roe":  2.2,
                           "debtRatio":  793.1,
                           "week52RangePct":  76.4,
-                          "pressureScore":  3.6,
+                          "pressureScore":  2.7,
                           "stabilityScore":  3.4,
-                          "winRateScore":  56.7,
-                          "rsiWeekly":  53.3
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  59.5,
+                          "ret10yAvg":  18.2
                       },
                       {
                           "symbol":  "AEE",
@@ -2678,10 +2798,11 @@
                           "roe":  2.6,
                           "debtRatio":  266.8,
                           "week52RangePct":  43.4,
-                          "pressureScore":  0.8,
+                          "pressureScore":  1.6,
                           "stabilityScore":  3.4,
                           "winRateScore":  53.3,
-                          "rsiWeekly":  44.9
+                          "rsiWeekly":  45.4,
+                          "ret10yAvg":  11.5
                       },
                       {
                           "symbol":  "VICI",
@@ -2702,8 +2823,9 @@
                           "week52RangePct":  0.5,
                           "pressureScore":  1.1,
                           "stabilityScore":  3.6,
-                          "winRateScore":  49,
-                          "rsiWeekly":  37.8
+                          "winRateScore":  48.5,
+                          "rsiWeekly":  38.3,
+                          "ret10yAvg":  3.6
                       },
                       {
                           "symbol":  "FOXA",
@@ -2722,10 +2844,11 @@
                           "roe":  5.9,
                           "debtRatio":  91.7,
                           "week52RangePct":  67.8,
-                          "pressureScore":  4.6,
+                          "pressureScore":  3.7,
                           "stabilityScore":  2.6,
-                          "winRateScore":  55.7,
-                          "rsiWeekly":  55.3
+                          "winRateScore":  56.2,
+                          "rsiWeekly":  57.8,
+                          "ret10yAvg":  9.9
                       },
                       {
                           "symbol":  "ON",
@@ -2746,8 +2869,9 @@
                           "week52RangePct":  32.7,
                           "pressureScore":  1.1,
                           "stabilityScore":  2.1,
-                          "winRateScore":  59.2,
-                          "rsiWeekly":  40.6
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  41.5,
+                          "ret10yAvg":  48.7
                       },
                       {
                           "symbol":  "ATO",
@@ -2766,10 +2890,11 @@
                           "roe":  1.6,
                           "debtRatio":  107.0,
                           "week52RangePct":  18.6,
-                          "pressureScore":  1.0,
+                          "pressureScore":  1.2,
                           "stabilityScore":  4.0,
                           "winRateScore":  60,
-                          "rsiWeekly":  40.8
+                          "rsiWeekly":  43.2,
+                          "ret10yAvg":  12.5
                       },
                       {
                           "symbol":  "DTE",
@@ -2788,10 +2913,11 @@
                           "roe":  2.0,
                           "debtRatio":  347.2,
                           "week52RangePct":  31.8,
-                          "pressureScore":  2.4,
+                          "pressureScore":  1.3,
                           "stabilityScore":  3.0,
                           "winRateScore":  57.5,
-                          "rsiWeekly":  40.1
+                          "rsiWeekly":  41.7,
+                          "ret10yAvg":  7.1
                       },
                       {
                           "symbol":  "WSM",
@@ -2810,10 +2936,11 @@
                           "roe":  12.4,
                           "debtRatio":  170.6,
                           "week52RangePct":  70.2,
-                          "pressureScore":  4.9,
+                          "pressureScore":  3.0,
                           "stabilityScore":  4.8,
                           "winRateScore":  51.7,
-                          "rsiWeekly":  52.4
+                          "rsiWeekly":  52.9,
+                          "ret10yAvg":  76.8
                       },
                       {
                           "symbol":  "FISV",
@@ -2832,10 +2959,11 @@
                           "roe":  2.3,
                           "debtRatio":  200.6,
                           "week52RangePct":  6.8,
-                          "pressureScore":  0.0,
+                          "pressureScore":  1.1,
                           "stabilityScore":  2.1,
                           "winRateScore":  54.2,
-                          "rsiWeekly":  38.5
+                          "rsiWeekly":  40.2,
+                          "ret10yAvg":  0.5
                       },
                       {
                           "symbol":  "MTD",
@@ -2854,10 +2982,11 @@
                           "roe":  1816.3,
                           "debtRatio":  28527.8,
                           "week52RangePct":  76.1,
-                          "pressureScore":  4.4,
-                          "stabilityScore":  4.0,
-                          "winRateScore":  54.2,
-                          "rsiWeekly":  56.5
+                          "pressureScore":  3.1,
+                          "stabilityScore":  3.9,
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  54.7,
+                          "ret10yAvg":  22.6
                       },
                       {
                           "symbol":  "CTSH",
@@ -2876,10 +3005,11 @@
                           "roe":  4.4,
                           "debtRatio":  44.0,
                           "week52RangePct":  55.1,
-                          "pressureScore":  3.4,
+                          "pressureScore":  3.8,
                           "stabilityScore":  3.4,
                           "winRateScore":  55,
-                          "rsiWeekly":  58.4
+                          "rsiWeekly":  59.8,
+                          "ret10yAvg":  3.3
                       },
                       {
                           "symbol":  "EIX",
@@ -2898,10 +3028,11 @@
                           "roe":  3.2,
                           "debtRatio":  439.7,
                           "week52RangePct":  6.7,
-                          "pressureScore":  3.0,
-                          "stabilityScore":  2.9,
-                          "winRateScore":  60,
-                          "rsiWeekly":  35.3
+                          "pressureScore":  3.5,
+                          "stabilityScore":  3.0,
+                          "winRateScore":  60.8,
+                          "rsiWeekly":  32,
+                          "ret10yAvg":  -2.4
                       },
                       {
                           "symbol":  "CPAY",
@@ -2920,10 +3051,11 @@
                           "roe":  10.0,
                           "debtRatio":  649.6,
                           "week52RangePct":  87.5,
-                          "pressureScore":  5.2,
-                          "stabilityScore":  3.1,
+                          "pressureScore":  3.9,
+                          "stabilityScore":  3.0,
                           "winRateScore":  56.7,
-                          "rsiWeekly":  64.3
+                          "rsiWeekly":  67.9,
+                          "ret10yAvg":  14
                       },
                       {
                           "symbol":  "LH",
@@ -2942,10 +3074,11 @@
                           "roe":  3.5,
                           "debtRatio":  115.1,
                           "week52RangePct":  90.6,
-                          "pressureScore":  6.0,
+                          "pressureScore":  4.8,
                           "stabilityScore":  2.5,
-                          "winRateScore":  60,
-                          "rsiWeekly":  68.1
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  70.7,
+                          "ret10yAvg":  18.1
                       },
                       {
                           "symbol":  "DG",
@@ -2964,10 +3097,11 @@
                           "roe":  5.0,
                           "debtRatio":  258.5,
                           "week52RangePct":  50.1,
-                          "pressureScore":  4.0,
-                          "stabilityScore":  2.4,
-                          "winRateScore":  50,
-                          "rsiWeekly":  57.4
+                          "pressureScore":  4.1,
+                          "stabilityScore":  2.5,
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  57.5,
+                          "ret10yAvg":  8.7
                       },
                       {
                           "symbol":  "OTIS",
@@ -2986,10 +3120,11 @@
                           "roe":  -7.4,
                           "debtRatio":  -289.0,
                           "week52RangePct":  7.8,
-                          "pressureScore":  1.8,
+                          "pressureScore":  1.1,
                           "stabilityScore":  2.3,
-                          "winRateScore":  56.6,
-                          "rsiWeekly":  35.4
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  37.4,
+                          "ret10yAvg":  6.1
                       },
                       {
                           "symbol":  "DOV",
@@ -3008,10 +3143,11 @@
                           "roe":  4.1,
                           "debtRatio":  77.8,
                           "week52RangePct":  44.9,
-                          "pressureScore":  1.7,
+                          "pressureScore":  1.2,
                           "stabilityScore":  3.2,
-                          "winRateScore":  60.8,
-                          "rsiWeekly":  36.6
+                          "winRateScore":  60,
+                          "rsiWeekly":  37.3,
+                          "ret10yAvg":  21.8
                       },
                       {
                           "symbol":  "HPQ",
@@ -3030,10 +3166,11 @@
                           "roe":  -312.5,
                           "debtRatio":  -29916.7,
                           "week52RangePct":  85.2,
-                          "pressureScore":  3.7,
-                          "stabilityScore":  2.3,
+                          "pressureScore":  5.8,
+                          "stabilityScore":  2.4,
                           "winRateScore":  52.5,
-                          "rsiWeekly":  70
+                          "rsiWeekly":  71.2,
+                          "ret10yAvg":  10.6
                       },
                       {
                           "symbol":  "DGX",
@@ -3052,10 +3189,11 @@
                           "roe":  4.3,
                           "debtRatio":  120.3,
                           "week52RangePct":  90.9,
-                          "pressureScore":  6.4,
+                          "pressureScore":  4.2,
                           "stabilityScore":  3.0,
                           "winRateScore":  60.8,
-                          "rsiWeekly":  64.5
+                          "rsiWeekly":  67.2,
+                          "ret10yAvg":  18.5
                       },
                       {
                           "symbol":  "Q",
@@ -3074,10 +3212,11 @@
                           "roe":  1.7,
                           "debtRatio":  93.4,
                           "week52RangePct":  45.8,
-                          "pressureScore":  2.6,
+                          "pressureScore":  1.3,
                           "stabilityScore":  1.8,
-                          "winRateScore":  66.7,
-                          "rsiWeekly":  40.9
+                          "winRateScore":  60,
+                          "rsiWeekly":  42.3,
+                          "ret10yAvg":  null
                       },
                       {
                           "symbol":  "AWK",
@@ -3096,10 +3235,11 @@
                           "roe":  2.7,
                           "debtRatio":  212.5,
                           "week52RangePct":  70.4,
-                          "pressureScore":  4.2,
-                          "stabilityScore":  4.3,
+                          "pressureScore":  3.4,
+                          "stabilityScore":  4.4,
                           "winRateScore":  56.7,
-                          "rsiWeekly":  57.5
+                          "rsiWeekly":  61.6,
+                          "ret10yAvg":  8.6
                       },
                       {
                           "symbol":  "FE",
@@ -3118,10 +3258,11 @@
                           "roe":  2.2,
                           "debtRatio":  338.6,
                           "week52RangePct":  31.6,
-                          "pressureScore":  1.7,
+                          "pressureScore":  1.9,
                           "stabilityScore":  2.9,
                           "winRateScore":  57.5,
-                          "rsiWeekly":  44.8
+                          "rsiWeekly":  48.6,
+                          "ret10yAvg":  4
                       },
                       {
                           "symbol":  "XYL",
@@ -3140,10 +3281,11 @@
                           "roe":  2.5,
                           "debtRatio":  64.1,
                           "week52RangePct":  9.8,
-                          "pressureScore":  1.3,
+                          "pressureScore":  0.9,
                           "stabilityScore":  2.3,
-                          "winRateScore":  55.8,
-                          "rsiWeekly":  35
+                          "winRateScore":  55,
+                          "rsiWeekly":  36,
+                          "ret10yAvg":  10.4
                       },
                       {
                           "symbol":  "TPL",
@@ -3162,10 +3304,11 @@
                           "roe":  9.2,
                           "debtRatio":  11.2,
                           "week52RangePct":  37.8,
-                          "pressureScore":  3.6,
+                          "pressureScore":  1.8,
                           "stabilityScore":  6.0,
-                          "winRateScore":  55,
-                          "rsiWeekly":  45.8
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  45.3,
+                          "ret10yAvg":  128.1
                       },
                       {
                           "symbol":  "ES",
@@ -3184,10 +3327,11 @@
                           "roe":  3.7,
                           "debtRatio":  290.5,
                           "week52RangePct":  54.5,
-                          "pressureScore":  2.3,
+                          "pressureScore":  2.1,
                           "stabilityScore":  3.2,
                           "winRateScore":  57.5,
-                          "rsiWeekly":  48.6
+                          "rsiWeekly":  51,
+                          "ret10yAvg":  3
                       },
                       {
                           "symbol":  "FOX",
@@ -3206,10 +3350,11 @@
                           "roe":  5.9,
                           "debtRatio":  91.7,
                           "week52RangePct":  67.0,
-                          "pressureScore":  3.4,
+                          "pressureScore":  3.8,
                           "stabilityScore":  2.6,
-                          "winRateScore":  56.8,
-                          "rsiWeekly":  55.4
+                          "winRateScore":  57.3,
+                          "rsiWeekly":  57.8,
+                          "ret10yAvg":  7.6
                       },
                       {
                           "symbol":  "TPR",
@@ -3228,10 +3373,11 @@
                           "roe":  50.4,
                           "debtRatio":  847.6,
                           "week52RangePct":  42.3,
-                          "pressureScore":  3.9,
+                          "pressureScore":  1.5,
                           "stabilityScore":  2.4,
                           "winRateScore":  55.8,
-                          "rsiWeekly":  40.9
+                          "rsiWeekly":  41,
+                          "ret10yAvg":  23.7
                       },
                       {
                           "symbol":  "RF",
@@ -3250,10 +3396,11 @@
                           "roe":  3.0,
                           "debtRatio":  755.8,
                           "week52RangePct":  73.5,
-                          "pressureScore":  1.7,
+                          "pressureScore":  2.2,
                           "stabilityScore":  3.7,
-                          "winRateScore":  57.5,
-                          "rsiWeekly":  50.1
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  56.5,
+                          "ret10yAvg":  20.3
                       },
                       {
                           "symbol":  "INCY",
@@ -3272,10 +3419,11 @@
                           "roe":  9.2,
                           "debtRatio":  24.1,
                           "week52RangePct":  81.8,
-                          "pressureScore":  7.3,
+                          "pressureScore":  4.4,
                           "stabilityScore":  4.9,
                           "winRateScore":  54.2,
-                          "rsiWeekly":  67.6
+                          "rsiWeekly":  69.5,
+                          "ret10yAvg":  3.7
                       },
                       {
                           "symbol":  "SW",
@@ -3294,10 +3442,11 @@
                           "roe":  0.5,
                           "debtRatio":  150.5,
                           "week52RangePct":  71.1,
-                          "pressureScore":  3.3,
+                          "pressureScore":  2.7,
                           "stabilityScore":  2.2,
-                          "winRateScore":  55.8,
-                          "rsiWeekly":  51.7
+                          "winRateScore":  55,
+                          "rsiWeekly":  51.4,
+                          "ret10yAvg":  7.3
                       },
                       {
                           "symbol":  "PPL",
@@ -3316,10 +3465,11 @@
                           "roe":  3.0,
                           "debtRatio":  208.3,
                           "week52RangePct":  13.8,
-                          "pressureScore":  2.0,
+                          "pressureScore":  1.4,
                           "stabilityScore":  3.5,
-                          "winRateScore":  54.2,
-                          "rsiWeekly":  41.6
+                          "winRateScore":  55,
+                          "rsiWeekly":  45.6,
+                          "ret10yAvg":  0
                       },
                       {
                           "symbol":  "JBHT",
@@ -3338,10 +3488,11 @@
                           "roe":  5.0,
                           "debtRatio":  117.2,
                           "week52RangePct":  79.8,
-                          "pressureScore":  2.6,
+                          "pressureScore":  2.2,
                           "stabilityScore":  2.4,
-                          "winRateScore":  55.8,
-                          "rsiWeekly":  50.1
+                          "winRateScore":  55,
+                          "rsiWeekly":  54.3,
+                          "ret10yAvg":  22.1
                       },
                       {
                           "symbol":  "SYF",
@@ -3360,10 +3511,11 @@
                           "roe":  5.2,
                           "debtRatio":  621.6,
                           "week52RangePct":  54.5,
-                          "pressureScore":  2.8,
+                          "pressureScore":  2.6,
                           "stabilityScore":  3.0,
                           "winRateScore":  57.5,
-                          "rsiWeekly":  52.4
+                          "rsiWeekly":  58,
+                          "ret10yAvg":  18
                       },
                       {
                           "symbol":  "CINF",
@@ -3382,10 +3534,11 @@
                           "roe":  1.7,
                           "debtRatio":  162.3,
                           "week52RangePct":  44.4,
-                          "pressureScore":  2.9,
+                          "pressureScore":  2.1,
                           "stabilityScore":  4.9,
-                          "winRateScore":  52.5,
-                          "rsiWeekly":  49.8
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  53.4,
+                          "ret10yAvg":  12.8
                       },
                       {
                           "symbol":  "CNP",
@@ -3404,10 +3557,11 @@
                           "roe":  2.1,
                           "debtRatio":  311.7,
                           "week52RangePct":  34.6,
-                          "pressureScore":  2.2,
+                          "pressureScore":  1.4,
                           "stabilityScore":  3.1,
-                          "winRateScore":  58.3,
-                          "rsiWeekly":  40.8
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  43.1,
+                          "ret10yAvg":  7
                       },
                       {
                           "symbol":  "VRSN",
@@ -3426,10 +3580,11 @@
                           "roe":  -9.6,
                           "debtRatio":  -180.0,
                           "week52RangePct":  76.6,
-                          "pressureScore":  1.3,
+                          "pressureScore":  3.0,
                           "stabilityScore":  3.9,
                           "winRateScore":  61.7,
-                          "rsiWeekly":  56.1
+                          "rsiWeekly":  58.8,
+                          "ret10yAvg":  27.1
                       },
                       {
                           "symbol":  "WRB",
@@ -3448,10 +3603,11 @@
                           "roe":  4.6,
                           "debtRatio":  364.4,
                           "week52RangePct":  29.1,
-                          "pressureScore":  1.3,
+                          "pressureScore":  1.8,
                           "stabilityScore":  3.5,
-                          "winRateScore":  61.7,
-                          "rsiWeekly":  45.3
+                          "winRateScore":  62.5,
+                          "rsiWeekly":  49.6,
+                          "ret10yAvg":  29.8
                       },
                       {
                           "symbol":  "FICO",
@@ -3470,10 +3626,11 @@
                           "roe":  -5.8,
                           "debtRatio":  -149.7,
                           "week52RangePct":  24.6,
-                          "pressureScore":  2.7,
+                          "pressureScore":  1.9,
                           "stabilityScore":  3.0,
                           "winRateScore":  60,
-                          "rsiWeekly":  43.9
+                          "rsiWeekly":  44.6,
+                          "ret10yAvg":  78.2
                       },
                       {
                           "symbol":  "DLTR",
@@ -3492,10 +3649,11 @@
                           "roe":  9.9,
                           "debtRatio":  294.2,
                           "week52RangePct":  72.6,
-                          "pressureScore":  4.2,
+                          "pressureScore":  3.5,
                           "stabilityScore":  2.5,
-                          "winRateScore":  54.2,
-                          "rsiWeekly":  60
+                          "winRateScore":  55,
+                          "rsiWeekly":  59.9,
+                          "ret10yAvg":  6.7
                       },
                       {
                           "symbol":  "PPG",
@@ -3514,10 +3672,11 @@
                           "roe":  5.2,
                           "debtRatio":  165.2,
                           "week52RangePct":  46.9,
-                          "pressureScore":  1.0,
+                          "pressureScore":  1.7,
                           "stabilityScore":  3.0,
                           "winRateScore":  53.3,
-                          "rsiWeekly":  46.3
+                          "rsiWeekly":  47.3,
+                          "ret10yAvg":  0.8
                       },
                       {
                           "symbol":  "ECHO",
@@ -3536,10 +3695,11 @@
                           "roe":  59.8,
                           "debtRatio":  178.2,
                           "week52RangePct":  30.0,
-                          "pressureScore":  0.0,
-                          "stabilityScore":  1.9,
+                          "pressureScore":  0.9,
+                          "stabilityScore":  1.8,
                           "winRateScore":  50.8,
-                          "rsiWeekly":  39.4
+                          "rsiWeekly":  42.4,
+                          "ret10yAvg":  14.4
                       },
                       {
                           "symbol":  "DRI",
@@ -3558,10 +3718,11 @@
                           "roe":  18.3,
                           "debtRatio":  482.7,
                           "week52RangePct":  74.5,
-                          "pressureScore":  2.7,
+                          "pressureScore":  3.2,
                           "stabilityScore":  2.5,
-                          "winRateScore":  55.8,
-                          "rsiWeekly":  56
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  57.9,
+                          "ret10yAvg":  25.9
                       },
                       {
                           "symbol":  "WST",
@@ -3580,10 +3741,11 @@
                           "roe":  5.2,
                           "debtRatio":  36.3,
                           "week52RangePct":  72.3,
-                          "pressureScore":  3.0,
+                          "pressureScore":  2.7,
                           "stabilityScore":  4.7,
-                          "winRateScore":  60,
-                          "rsiWeekly":  56.4
+                          "winRateScore":  60.8,
+                          "rsiWeekly":  57.6,
+                          "ret10yAvg":  36
                       },
                       {
                           "symbol":  "HUBB",
@@ -3602,10 +3764,11 @@
                           "roe":  6.1,
                           "debtRatio":  202.5,
                           "week52RangePct":  30.4,
-                          "pressureScore":  1.9,
+                          "pressureScore":  1.1,
                           "stabilityScore":  3.2,
                           "winRateScore":  57.5,
-                          "rsiWeekly":  40
+                          "rsiWeekly":  43.4,
+                          "ret10yAvg":  31.8
                       },
                       {
                           "symbol":  "GPN",
@@ -3624,10 +3787,11 @@
                           "roe":  0.1,
                           "debtRatio":  171.4,
                           "week52RangePct":  86.1,
-                          "pressureScore":  7.6,
+                          "pressureScore":  3.7,
                           "stabilityScore":  2.8,
                           "winRateScore":  55.8,
-                          "rsiWeekly":  62.3
+                          "rsiWeekly":  64.8,
+                          "ret10yAvg":  2.1
                       },
                       {
                           "symbol":  "PHM",
@@ -3646,10 +3810,11 @@
                           "roe":  3.6,
                           "debtRatio":  40.3,
                           "week52RangePct":  49.5,
-                          "pressureScore":  1.4,
+                          "pressureScore":  2.0,
                           "stabilityScore":  3.0,
                           "winRateScore":  54.2,
-                          "rsiWeekly":  47.5
+                          "rsiWeekly":  48.4,
+                          "ret10yAvg":  51.7
                       },
                       {
                           "symbol":  "EXPD",
@@ -3668,10 +3833,11 @@
                           "roe":  12.6,
                           "debtRatio":  142.2,
                           "week52RangePct":  96.7,
-                          "pressureScore":  6.5,
+                          "pressureScore":  4.0,
                           "stabilityScore":  4.2,
-                          "winRateScore":  60.8,
-                          "rsiWeekly":  66.3
+                          "winRateScore":  60,
+                          "rsiWeekly":  65.6,
+                          "ret10yAvg":  26.1
                       },
                       {
                           "symbol":  "VRSK",
@@ -3690,10 +3856,11 @@
                           "roe":  -19.2,
                           "debtRatio":  -478.1,
                           "week52RangePct":  32.1,
-                          "pressureScore":  1.5,
-                          "stabilityScore":  2.9,
+                          "pressureScore":  2.1,
+                          "stabilityScore":  2.8,
                           "winRateScore":  56.7,
-                          "rsiWeekly":  51.4
+                          "rsiWeekly":  49.3,
+                          "ret10yAvg":  13.1
                       },
                       {
                           "symbol":  "BRO",
@@ -3712,10 +3879,11 @@
                           "roe":  2.3,
                           "debtRatio":  137.3,
                           "week52RangePct":  42.4,
-                          "pressureScore":  7.1,
+                          "pressureScore":  2.7,
                           "stabilityScore":  2.5,
-                          "winRateScore":  58.3,
-                          "rsiWeekly":  55.4
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  56.2,
+                          "ret10yAvg":  28.2
                       },
                       {
                           "symbol":  "SMCI",
@@ -3734,10 +3902,11 @@
                           "roe":  6.4,
                           "debtRatio":  209.6,
                           "week52RangePct":  45.3,
-                          "pressureScore":  4.0,
-                          "stabilityScore":  3.2,
-                          "winRateScore":  54.2,
-                          "rsiWeekly":  54.4
+                          "pressureScore":  3.4,
+                          "stabilityScore":  3.3,
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  55.6,
+                          "ret10yAvg":  148.3
                       },
                       {
                           "symbol":  "VLTO",
@@ -3756,10 +3925,11 @@
                           "roe":  7.8,
                           "debtRatio":  176.3,
                           "week52RangePct":  62.2,
-                          "pressureScore":  4.4,
-                          "stabilityScore":  2.7,
-                          "winRateScore":  51.5,
-                          "rsiWeekly":  57
+                          "pressureScore":  3.2,
+                          "stabilityScore":  2.6,
+                          "winRateScore":  50,
+                          "rsiWeekly":  58.7,
+                          "ret10yAvg":  9.1
                       },
                       {
                           "symbol":  "OMC",
@@ -3778,10 +3948,11 @@
                           "roe":  6.1,
                           "debtRatio":  406.9,
                           "week52RangePct":  91.2,
-                          "pressureScore":  5.6,
+                          "pressureScore":  3.3,
                           "stabilityScore":  2.4,
                           "winRateScore":  50,
-                          "rsiWeekly":  59.5
+                          "rsiWeekly":  57,
+                          "ret10yAvg":  -0.4
                       },
                       {
                           "symbol":  "TROW",
@@ -3800,10 +3971,11 @@
                           "roe":  5.7,
                           "debtRatio":  28.9,
                           "week52RangePct":  70.9,
-                          "pressureScore":  null,
-                          "stabilityScore":  null,
+                          "pressureScore":  2.3,
+                          "stabilityScore":  5.1,
                           "winRateScore":  57.5,
-                          "rsiWeekly":  51.9
+                          "rsiWeekly":  55.4,
+                          "ret10yAvg":  6.4
                       },
                       {
                           "symbol":  "NRG",
@@ -3822,10 +3994,11 @@
                           "roe":  10.4,
                           "debtRatio":  722.7,
                           "week52RangePct":  1.9,
-                          "pressureScore":  1.9,
+                          "pressureScore":  1.0,
                           "stabilityScore":  2.0,
-                          "winRateScore":  59.2,
-                          "rsiWeekly":  37.8
+                          "winRateScore":  60,
+                          "rsiWeekly":  38.6,
+                          "ret10yAvg":  89.1
                       },
                       {
                           "symbol":  "PFG",
@@ -3844,10 +4017,11 @@
                           "roe":  3.3,
                           "debtRatio":  2798.9,
                           "week52RangePct":  83.3,
-                          "pressureScore":  2.5,
-                          "stabilityScore":  3.4,
+                          "pressureScore":  3.5,
+                          "stabilityScore":  3.3,
                           "winRateScore":  58.3,
-                          "rsiWeekly":  57.4
+                          "rsiWeekly":  69.5,
+                          "ret10yAvg":  11.6
                       },
                       {
                           "symbol":  "CHD",
@@ -3866,10 +4040,11 @@
                           "roe":  5.2,
                           "debtRatio":  115.2,
                           "week52RangePct":  74.7,
-                          "pressureScore":  1.6,
+                          "pressureScore":  2.8,
                           "stabilityScore":  3.1,
                           "winRateScore":  52.5,
-                          "rsiWeekly":  53.3
+                          "rsiWeekly":  52.1,
+                          "ret10yAvg":  10.7
                       },
                       {
                           "symbol":  "DOW",
@@ -3888,10 +4063,11 @@
                           "roe":  4.5,
                           "debtRatio":  278.8,
                           "week52RangePct":  44.7,
-                          "pressureScore":  2.4,
-                          "stabilityScore":  2.0,
-                          "winRateScore":  47.7,
-                          "rsiWeekly":  46.9
+                          "pressureScore":  1.9,
+                          "stabilityScore":  1.9,
+                          "winRateScore":  48.3,
+                          "rsiWeekly":  46.6,
+                          "ret10yAvg":  -6
                       },
                       {
                           "symbol":  "KEY",
@@ -3912,8 +4088,9 @@
                           "week52RangePct":  67.6,
                           "pressureScore":  1.8,
                           "stabilityScore":  3.1,
-                          "winRateScore":  54.2,
-                          "rsiWeekly":  45.4
+                          "winRateScore":  55,
+                          "rsiWeekly":  51.7,
+                          "ret10yAvg":  7.9
                       },
                       {
                           "symbol":  "STE",
@@ -3932,10 +4109,11 @@
                           "roe":  2.8,
                           "debtRatio":  48.8,
                           "week52RangePct":  50.5,
-                          "pressureScore":  3.1,
+                          "pressureScore":  2.5,
                           "stabilityScore":  2.5,
-                          "winRateScore":  56.7,
-                          "rsiWeekly":  52.2
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  50.3,
+                          "ret10yAvg":  21.5
                       },
                       {
                           "symbol":  "STZ",
@@ -3954,10 +4132,11 @@
                           "roe":  7.9,
                           "debtRatio":  164.2,
                           "week52RangePct":  9.9,
-                          "pressureScore":  0.3,
+                          "pressureScore":  1.5,
                           "stabilityScore":  2.6,
-                          "winRateScore":  52.5,
-                          "rsiWeekly":  40.9
+                          "winRateScore":  51.7,
+                          "rsiWeekly":  40,
+                          "ret10yAvg":  -2.2
                       },
                       {
                           "symbol":  "FSLR",
@@ -3976,10 +4155,11 @@
                           "roe":  4.1,
                           "debtRatio":  29.7,
                           "week52RangePct":  13.7,
-                          "pressureScore":  0.4,
-                          "stabilityScore":  5.2,
+                          "pressureScore":  1.5,
+                          "stabilityScore":  5.1,
                           "winRateScore":  52.5,
-                          "rsiWeekly":  43.3
+                          "rsiWeekly":  45.3,
+                          "ret10yAvg":  41.3
                       },
                       {
                           "symbol":  "EFX",
@@ -3998,10 +4178,11 @@
                           "roe":  4.2,
                           "debtRatio":  170.4,
                           "week52RangePct":  31.7,
-                          "pressureScore":  2.6,
+                          "pressureScore":  2.5,
                           "stabilityScore":  2.3,
-                          "winRateScore":  56.7,
-                          "rsiWeekly":  52.1
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  53.4,
+                          "ret10yAvg":  3.8
                       },
                       {
                           "symbol":  "PKG",
@@ -4020,10 +4201,11 @@
                           "roe":  4.1,
                           "debtRatio":  136.3,
                           "week52RangePct":  62.0,
-                          "pressureScore":  2.8,
+                          "pressureScore":  2.2,
                           "stabilityScore":  2.5,
-                          "winRateScore":  61.7,
-                          "rsiWeekly":  48.4
+                          "winRateScore":  60.8,
+                          "rsiWeekly":  51.2,
+                          "ret10yAvg":  18.7
                       },
                       {
                           "symbol":  "AMCR",
@@ -4042,10 +4224,11 @@
                           "roe":  2.4,
                           "debtRatio":  222.5,
                           "week52RangePct":  65.6,
-                          "pressureScore":  7.2,
+                          "pressureScore":  2.9,
                           "stabilityScore":  2.4,
-                          "winRateScore":  46.7,
-                          "rsiWeekly":  55.3
+                          "winRateScore":  47.5,
+                          "rsiWeekly":  55.5,
+                          "ret10yAvg":  -2
                       },
                       {
                           "symbol":  "L",
@@ -4064,10 +4247,11 @@
                           "roe":  2.3,
                           "debtRatio":  351.5,
                           "week52RangePct":  50.9,
-                          "pressureScore":  1.8,
+                          "pressureScore":  2.3,
                           "stabilityScore":  4.1,
-                          "winRateScore":  55.8,
-                          "rsiWeekly":  47.5
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  49.8,
+                          "ret10yAvg":  16.5
                       },
                       {
                           "symbol":  "ULTA",
@@ -4086,10 +4270,11 @@
                           "roe":  13.2,
                           "debtRatio":  167.2,
                           "week52RangePct":  34.5,
-                          "pressureScore":  3.8,
+                          "pressureScore":  3.5,
                           "stabilityScore":  2.5,
-                          "winRateScore":  58.3,
-                          "rsiWeekly":  53.9
+                          "winRateScore":  59.2,
+                          "rsiWeekly":  55.6,
+                          "ret10yAvg":  13.2
                       },
                       {
                           "symbol":  "EXE",
@@ -4108,10 +4293,11 @@
                           "roe":  2.7,
                           "debtRatio":  44.4,
                           "week52RangePct":  31.6,
-                          "pressureScore":  1.4,
-                          "stabilityScore":  2.6,
-                          "winRateScore":  58.5,
-                          "rsiWeekly":  55.3
+                          "pressureScore":  3.0,
+                          "stabilityScore":  2.7,
+                          "winRateScore":  59.1,
+                          "rsiWeekly":  54,
+                          "ret10yAvg":  23.4
                       },
                       {
                           "symbol":  "RL",
@@ -4130,10 +4316,11 @@
                           "roe":  9.6,
                           "debtRatio":  181.4,
                           "week52RangePct":  42.0,
-                          "pressureScore":  2.4,
+                          "pressureScore":  1.7,
                           "stabilityScore":  3.6,
                           "winRateScore":  50.8,
-                          "rsiWeekly":  41.7
+                          "rsiWeekly":  42.4,
+                          "ret10yAvg":  23.3
                       },
                       {
                           "symbol":  "IP",
@@ -4152,10 +4339,11 @@
                           "roe":  -0.1,
                           "debtRatio":  152.7,
                           "week52RangePct":  41.3,
-                          "pressureScore":  2.4,
+                          "pressureScore":  1.9,
                           "stabilityScore":  1.6,
                           "winRateScore":  51.7,
-                          "rsiWeekly":  45.1
+                          "rsiWeekly":  45.1,
+                          "ret10yAvg":  -2
                       },
                       {
                           "symbol":  "LYB",
@@ -4174,10 +4362,11 @@
                           "roe":  5.2,
                           "debtRatio":  222.0,
                           "week52RangePct":  55.5,
-                          "pressureScore":  2.2,
+                          "pressureScore":  2.9,
                           "stabilityScore":  2.0,
                           "winRateScore":  50.8,
-                          "rsiWeekly":  53.2
+                          "rsiWeekly":  52.8,
+                          "ret10yAvg":  -1.7
                       },
                       {
                           "symbol":  "FFIV",
@@ -4196,10 +4385,11 @@
                           "roe":  5.4,
                           "debtRatio":  77.1,
                           "week52RangePct":  86.8,
-                          "pressureScore":  2.1,
+                          "pressureScore":  3.1,
                           "stabilityScore":  5.0,
-                          "winRateScore":  53.3,
-                          "rsiWeekly":  58.1
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  58.7,
+                          "ret10yAvg":  21.4
                       },
                       {
                           "symbol":  "BG",
@@ -4218,10 +4408,11 @@
                           "roe":  4.2,
                           "debtRatio":  184.1,
                           "week52RangePct":  68.3,
-                          "pressureScore":  4.3,
-                          "stabilityScore":  3.2,
-                          "winRateScore":  47.5,
-                          "rsiWeekly":  55.3
+                          "pressureScore":  4.0,
+                          "stabilityScore":  3.1,
+                          "winRateScore":  48.3,
+                          "rsiWeekly":  54.7,
+                          "ret10yAvg":  10.7
                       },
                       {
                           "symbol":  "IFF",
@@ -4243,7 +4434,8 @@
                           "pressureScore":  3.7,
                           "stabilityScore":  1.9,
                           "winRateScore":  49.2,
-                          "rsiWeekly":  59.4
+                          "rsiWeekly":  59.8,
+                          "ret10yAvg":  -3.9
                       },
                       {
                           "symbol":  "CMS",
@@ -4264,8 +4456,9 @@
                           "week52RangePct":  4.6,
                           "pressureScore":  0.8,
                           "stabilityScore":  3.0,
-                          "winRateScore":  56.7,
-                          "rsiWeekly":  37.2
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  38.8,
+                          "ret10yAvg":  6.2
                       },
                       {
                           "symbol":  "GIS",
@@ -4284,10 +4477,11 @@
                           "roe":  -27.3,
                           "debtRatio":  307.2,
                           "week52RangePct":  48.3,
-                          "pressureScore":  4.8,
+                          "pressureScore":  3.8,
                           "stabilityScore":  1.6,
                           "winRateScore":  44.2,
-                          "rsiWeekly":  58.5
+                          "rsiWeekly":  52.2,
+                          "ret10yAvg":  -3.6
                       },
                       {
                           "symbol":  "FIS",
@@ -4306,10 +4500,11 @@
                           "roe":  1.4,
                           "debtRatio":  175.0,
                           "week52RangePct":  10.2,
-                          "pressureScore":  3.7,
+                          "pressureScore":  1.2,
                           "stabilityScore":  1.9,
-                          "winRateScore":  52.5,
-                          "rsiWeekly":  38.6
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  42,
+                          "ret10yAvg":  -4.6
                       },
                       {
                           "symbol":  "LEN",
@@ -4328,10 +4523,11 @@
                           "roe":  1.4,
                           "debtRatio":  55.2,
                           "week52RangePct":  6.6,
-                          "pressureScore":  0.0,
+                          "pressureScore":  1.2,
                           "stabilityScore":  2.0,
                           "winRateScore":  56.7,
-                          "rsiWeekly":  38.5
+                          "rsiWeekly":  40.1,
+                          "ret10yAvg":  10.7
                       },
                       {
                           "symbol":  "BR",
@@ -4350,10 +4546,11 @@
                           "roe":  14.0,
                           "debtRatio":  214.9,
                           "week52RangePct":  39.5,
-                          "pressureScore":  4.0,
+                          "pressureScore":  3.5,
                           "stabilityScore":  2.4,
                           "winRateScore":  57.5,
-                          "rsiWeekly":  58.8
+                          "rsiWeekly":  57.5,
+                          "ret10yAvg":  16.3
                       },
                       {
                           "symbol":  "TSN",
@@ -4372,10 +4569,11 @@
                           "roe":  1.0,
                           "debtRatio":  96.4,
                           "week52RangePct":  24.2,
-                          "pressureScore":  0.5,
+                          "pressureScore":  1.1,
                           "stabilityScore":  2.1,
-                          "winRateScore":  46.7,
-                          "rsiWeekly":  37.9
+                          "winRateScore":  47.5,
+                          "rsiWeekly":  32,
+                          "ret10yAvg":  -2.5
                       },
                       {
                           "symbol":  "FDXF",
@@ -4394,7 +4592,7 @@
                           "roe":  3.3,
                           "debtRatio":  73.1,
                           "week52RangePct":  8.4,
-                          "pressureScore":  0.3,
+                          "pressureScore":  2.1,
                           "stabilityScore":  1.6
                       },
                       {
@@ -4417,7 +4615,8 @@
                           "pressureScore":  1.9,
                           "stabilityScore":  4.0,
                           "winRateScore":  54.2,
-                          "rsiWeekly":  47.4
+                          "rsiWeekly":  48.7,
+                          "ret10yAvg":  15
                       },
                       {
                           "symbol":  "CHTR",
@@ -4436,10 +4635,11 @@
                           "roe":  7.6,
                           "debtRatio":  788.8,
                           "week52RangePct":  23.5,
-                          "pressureScore":  1.7,
+                          "pressureScore":  1.5,
                           "stabilityScore":  2.0,
                           "winRateScore":  57.5,
-                          "rsiWeekly":  41.9
+                          "rsiWeekly":  44,
+                          "ret10yAvg":  -4.1
                       },
                       {
                           "symbol":  "ESS",
@@ -4458,10 +4658,11 @@
                           "roe":  1.2,
                           "debtRatio":  138.7,
                           "week52RangePct":  68.6,
-                          "pressureScore":  2.2,
+                          "pressureScore":  3.0,
                           "stabilityScore":  3.9,
                           "winRateScore":  52.5,
-                          "rsiWeekly":  51.3
+                          "rsiWeekly":  50.9,
+                          "ret10yAvg":  2.5
                       },
                       {
                           "symbol":  "LUV",
@@ -4480,10 +4681,11 @@
                           "roe":  3.3,
                           "debtRatio":  325.3,
                           "week52RangePct":  35.9,
-                          "pressureScore":  1.8,
+                          "pressureScore":  1.1,
                           "stabilityScore":  2.4,
                           "winRateScore":  54.2,
-                          "rsiWeekly":  40.5
+                          "rsiWeekly":  42,
+                          "ret10yAvg":  -0.1
                       },
                       {
                           "symbol":  "CF",
@@ -4502,10 +4704,11 @@
                           "roe":  12.6,
                           "debtRatio":  107.5,
                           "week52RangePct":  82.1,
-                          "pressureScore":  4.9,
-                          "stabilityScore":  2.7,
-                          "winRateScore":  56.7,
-                          "rsiWeekly":  62.8
+                          "pressureScore":  5.2,
+                          "stabilityScore":  2.6,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  63.8,
+                          "ret10yAvg":  47.2
                       },
                       {
                           "symbol":  "NI",
@@ -4524,10 +4727,11 @@
                           "roe":  0.5,
                           "debtRatio":  267.9,
                           "week52RangePct":  23.0,
-                          "pressureScore":  1.6,
+                          "pressureScore":  0.9,
                           "stabilityScore":  3.1,
                           "winRateScore":  56.7,
-                          "rsiWeekly":  34.5
+                          "rsiWeekly":  38,
+                          "ret10yAvg":  7.1
                       },
                       {
                           "symbol":  "SBAC",
@@ -4546,10 +4750,11 @@
                           "roe":  -4.3,
                           "debtRatio":  -351.8,
                           "week52RangePct":  43.9,
-                          "pressureScore":  0.6,
-                          "stabilityScore":  3.3,
+                          "pressureScore":  2.1,
+                          "stabilityScore":  3.4,
                           "winRateScore":  53.3,
-                          "rsiWeekly":  47.8
+                          "rsiWeekly":  49.4,
+                          "ret10yAvg":  6.6
                       },
                       {
                           "symbol":  "ZBH",
@@ -4568,10 +4773,11 @@
                           "roe":  1.6,
                           "debtRatio":  80.5,
                           "week52RangePct":  75.4,
-                          "pressureScore":  4.2,
+                          "pressureScore":  3.3,
                           "stabilityScore":  2.4,
-                          "winRateScore":  47.5,
-                          "rsiWeekly":  60.1
+                          "winRateScore":  46.7,
+                          "rsiWeekly":  59,
+                          "ret10yAvg":  -2.1
                       },
                       {
                           "symbol":  "NWS",
@@ -4593,7 +4799,8 @@
                           "pressureScore":  4.0,
                           "stabilityScore":  2.4,
                           "winRateScore":  55,
-                          "rsiWeekly":  62.1
+                          "rsiWeekly":  65.6,
+                          "ret10yAvg":  14.2
                       },
                       {
                           "symbol":  "VTRS",
@@ -4612,10 +4819,11 @@
                           "roe":  -0.8,
                           "debtRatio":  145.7,
                           "week52RangePct":  79.0,
-                          "pressureScore":  2.1,
+                          "pressureScore":  3.0,
                           "stabilityScore":  1.6,
-                          "winRateScore":  47.5,
-                          "rsiWeekly":  57.1
+                          "winRateScore":  48.3,
+                          "rsiWeekly":  59.8,
+                          "ret10yAvg":  -5.5
                       },
                       {
                           "symbol":  "DD",
@@ -4634,10 +4842,11 @@
                           "roe":  1.0,
                           "debtRatio":  52.1,
                           "week52RangePct":  64.3,
-                          "pressureScore":  0.9,
+                          "pressureScore":  1.7,
                           "stabilityScore":  2.3,
                           "winRateScore":  55,
-                          "rsiWeekly":  45
+                          "rsiWeekly":  44.2,
+                          "ret10yAvg":  4.4
                       },
                       {
                           "symbol":  "EVRG",
@@ -4656,10 +4865,11 @@
                           "roe":  2.1,
                           "debtRatio":  245.3,
                           "week52RangePct":  58.2,
-                          "pressureScore":  1.8,
+                          "pressureScore":  2.5,
                           "stabilityScore":  3.3,
-                          "winRateScore":  55.8,
-                          "rsiWeekly":  48.1
+                          "winRateScore":  55,
+                          "rsiWeekly":  49.2,
+                          "ret10yAvg":  4.2
                       },
                       {
                           "symbol":  "NDSN",
@@ -4678,10 +4888,11 @@
                           "roe":  3.7,
                           "debtRatio":  86.3,
                           "week52RangePct":  85.4,
-                          "pressureScore":  4.5,
+                          "pressureScore":  3.6,
                           "stabilityScore":  2.7,
-                          "winRateScore":  61.7,
-                          "rsiWeekly":  61.5
+                          "winRateScore":  60.8,
+                          "rsiWeekly":  63.7,
+                          "ret10yAvg":  21.8
                       },
                       {
                           "symbol":  "GPC",
@@ -4700,10 +4911,11 @@
                           "roe":  5.0,
                           "debtRatio":  364.9,
                           "week52RangePct":  73.8,
-                          "pressureScore":  5.5,
+                          "pressureScore":  3.3,
                           "stabilityScore":  2.1,
-                          "winRateScore":  53.3,
-                          "rsiWeekly":  61.2
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  63.7,
+                          "ret10yAvg":  3.7
                       },
                       {
                           "symbol":  "TSCO",
@@ -4722,10 +4934,11 @@
                           "roe":  13.7,
                           "debtRatio":  362.2,
                           "week52RangePct":  19.3,
-                          "pressureScore":  2.4,
-                          "stabilityScore":  1.9,
+                          "pressureScore":  1.8,
+                          "stabilityScore":  2.0,
                           "winRateScore":  58.3,
-                          "rsiWeekly":  43.6
+                          "rsiWeekly":  43.4,
+                          "ret10yAvg":  15.9
                       },
                       {
                           "symbol":  "FTV",
@@ -4744,10 +4957,11 @@
                           "roe":  2.6,
                           "debtRatio":  91.5,
                           "week52RangePct":  68.3,
-                          "pressureScore":  1.2,
+                          "pressureScore":  1.8,
                           "stabilityScore":  2.8,
                           "winRateScore":  58.3,
-                          "rsiWeekly":  43.3
+                          "rsiWeekly":  45.1,
+                          "ret10yAvg":  7.6
                       },
                       {
                           "symbol":  "BBY",
@@ -4766,10 +4980,11 @@
                           "roe":  9.0,
                           "debtRatio":  383.0,
                           "week52RangePct":  69.3,
-                          "pressureScore":  3.6,
-                          "stabilityScore":  2.8,
-                          "winRateScore":  50,
-                          "rsiWeekly":  57.7
+                          "pressureScore":  4.0,
+                          "stabilityScore":  2.9,
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  62.1,
+                          "ret10yAvg":  12.8
                       },
                       {
                           "symbol":  "INVH",
@@ -4788,10 +5003,11 @@
                           "roe":  2.4,
                           "debtRatio":  103.3,
                           "week52RangePct":  70.8,
-                          "pressureScore":  1.6,
+                          "pressureScore":  2.5,
                           "stabilityScore":  2.8,
-                          "winRateScore":  50.9,
-                          "rsiWeekly":  50.8
+                          "winRateScore":  50.4,
+                          "rsiWeekly":  46.8,
+                          "ret10yAvg":  3.4
                       },
                       {
                           "symbol":  "ROL",
@@ -4810,10 +5026,11 @@
                           "roe":  10.1,
                           "debtRatio":  134.7,
                           "week52RangePct":  0.9,
-                          "pressureScore":  1.7,
+                          "pressureScore":  0.1,
                           "stabilityScore":  2.2,
-                          "winRateScore":  59.2,
-                          "rsiWeekly":  23.1
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  21.8,
+                          "ret10yAvg":  17.4
                       },
                       {
                           "symbol":  "LDOS",
@@ -4832,10 +5049,11 @@
                           "roe":  6.7,
                           "debtRatio":  194.9,
                           "week52RangePct":  38.7,
-                          "pressureScore":  2.9,
+                          "pressureScore":  2.5,
                           "stabilityScore":  2.2,
-                          "winRateScore":  60.8,
-                          "rsiWeekly":  51.4
+                          "winRateScore":  60,
+                          "rsiWeekly":  47.1,
+                          "ret10yAvg":  20.9
                       },
                       {
                           "symbol":  "WY",
@@ -4854,10 +5072,11 @@
                           "roe":  1.7,
                           "debtRatio":  74.6,
                           "week52RangePct":  33.5,
-                          "pressureScore":  0.5,
+                          "pressureScore":  1.8,
                           "stabilityScore":  2.2,
-                          "winRateScore":  45,
-                          "rsiWeekly":  44.5
+                          "winRateScore":  44.2,
+                          "rsiWeekly":  43,
+                          "ret10yAvg":  -2.7
                       },
                       {
                           "symbol":  "LNT",
@@ -4876,10 +5095,11 @@
                           "roe":  3.0,
                           "debtRatio":  234.3,
                           "week52RangePct":  30.3,
-                          "pressureScore":  1.0,
+                          "pressureScore":  1.4,
                           "stabilityScore":  3.3,
-                          "winRateScore":  55,
-                          "rsiWeekly":  41.3
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  41.4,
+                          "ret10yAvg":  7.7
                       },
                       {
                           "symbol":  "J",
@@ -4898,10 +5118,11 @@
                           "roe":  4.2,
                           "debtRatio":  260.2,
                           "week52RangePct":  69.1,
-                          "pressureScore":  7.4,
+                          "pressureScore":  3.7,
                           "stabilityScore":  2.2,
                           "winRateScore":  60,
-                          "rsiWeekly":  61
+                          "rsiWeekly":  61.7,
+                          "ret10yAvg":  24.4
                       },
                       {
                           "symbol":  "ZBRA",
@@ -4920,10 +5141,11 @@
                           "roe":  6.8,
                           "debtRatio":  151.4,
                           "week52RangePct":  82.5,
-                          "pressureScore":  7.0,
+                          "pressureScore":  3.7,
                           "stabilityScore":  2.6,
                           "winRateScore":  57.5,
-                          "rsiWeekly":  65.2
+                          "rsiWeekly":  69.9,
+                          "ret10yAvg":  40.4
                       },
                       {
                           "symbol":  "BEN",
@@ -4942,10 +5164,11 @@
                           "roe":  1.5,
                           "debtRatio":  186.1,
                           "week52RangePct":  86.0,
-                          "pressureScore":  3.5,
+                          "pressureScore":  3.2,
                           "stabilityScore":  3.9,
                           "winRateScore":  48.3,
-                          "rsiWeekly":  60.4
+                          "rsiWeekly":  63.6,
+                          "ret10yAvg":  -0.7
                       },
                       {
                           "symbol":  "GEN",
@@ -4964,10 +5187,11 @@
                           "roe":  8.1,
                           "debtRatio":  489.0,
                           "week52RangePct":  97.9,
-                          "pressureScore":  4.3,
+                          "pressureScore":  4.8,
                           "stabilityScore":  2.8,
-                          "winRateScore":  53.3,
-                          "rsiWeekly":  64.7
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  68.7,
+                          "ret10yAvg":  2.2
                       },
                       {
                           "symbol":  "IEX",
@@ -4986,10 +5210,11 @@
                           "roe":  3.6,
                           "debtRatio":  72.9,
                           "week52RangePct":  82.3,
-                          "pressureScore":  2.9,
+                          "pressureScore":  2.8,
                           "stabilityScore":  3.1,
-                          "winRateScore":  55.8,
-                          "rsiWeekly":  54.9
+                          "winRateScore":  55,
+                          "rsiWeekly":  55.3,
+                          "ret10yAvg":  14
                       },
                       {
                           "symbol":  "CDW",
@@ -5010,8 +5235,9 @@
                           "week52RangePct":  73.2,
                           "pressureScore":  3.3,
                           "stabilityScore":  2.2,
-                          "winRateScore":  60.8,
-                          "rsiWeekly":  58.7
+                          "winRateScore":  60,
+                          "rsiWeekly":  60.3,
+                          "ret10yAvg":  22.5
                       },
                       {
                           "symbol":  "NVR",
@@ -5030,10 +5256,11 @@
                           "roe":  7.0,
                           "debtRatio":  61.3,
                           "week52RangePct":  26.1,
-                          "pressureScore":  1.8,
-                          "stabilityScore":  2.8,
-                          "winRateScore":  56.7,
-                          "rsiWeekly":  43.8
+                          "pressureScore":  2.2,
+                          "stabilityScore":  2.9,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  45.8,
+                          "ret10yAvg":  28.6
                       },
                       {
                           "symbol":  "ALB",
@@ -5052,10 +5279,11 @@
                           "roe":  4.7,
                           "debtRatio":  52.3,
                           "week52RangePct":  42.6,
-                          "pressureScore":  3.3,
+                          "pressureScore":  2.6,
                           "stabilityScore":  1.5,
                           "winRateScore":  53.3,
-                          "rsiWeekly":  45.8
+                          "rsiWeekly":  44.5,
+                          "ret10yAvg":  6.1
                       },
                       {
                           "symbol":  "BALL",
@@ -5074,10 +5302,11 @@
                           "roe":  3.8,
                           "debtRatio":  249.6,
                           "week52RangePct":  77.3,
-                          "pressureScore":  5.1,
+                          "pressureScore":  2.7,
                           "stabilityScore":  2.5,
                           "winRateScore":  54.2,
-                          "rsiWeekly":  54.9
+                          "rsiWeekly":  55.1,
+                          "ret10yAvg":  5.4
                       },
                       {
                           "symbol":  "PTC",
@@ -5096,10 +5325,11 @@
                           "roe":  3.4,
                           "debtRatio":  87.7,
                           "week52RangePct":  44.2,
-                          "pressureScore":  2.2,
+                          "pressureScore":  3.2,
                           "stabilityScore":  2.8,
-                          "winRateScore":  59.2,
-                          "rsiWeekly":  55.8
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  54.3,
+                          "ret10yAvg":  23.7
                       },
                       {
                           "symbol":  "NWSA",
@@ -5121,7 +5351,8 @@
                           "pressureScore":  4.5,
                           "stabilityScore":  2.4,
                           "winRateScore":  55,
-                          "rsiWeekly":  65.7
+                          "rsiWeekly":  68.5,
+                          "ret10yAvg":  11.9
                       },
                       {
                           "symbol":  "CHRW",
@@ -5140,10 +5371,11 @@
                           "roe":  8.6,
                           "debtRatio":  207.2,
                           "week52RangePct":  30.0,
-                          "pressureScore":  0.3,
+                          "pressureScore":  1.2,
                           "stabilityScore":  2.9,
-                          "winRateScore":  55.8,
-                          "rsiWeekly":  41.7
+                          "winRateScore":  55,
+                          "rsiWeekly":  41.2,
+                          "ret10yAvg":  10.6
                       },
                       {
                           "symbol":  "HST",
@@ -5162,10 +5394,11 @@
                           "roe":  3.7,
                           "debtRatio":  103.9,
                           "week52RangePct":  62.6,
-                          "pressureScore":  1.4,
+                          "pressureScore":  1.7,
                           "stabilityScore":  2.7,
-                          "winRateScore":  50,
-                          "rsiWeekly":  46.6
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  48.5,
+                          "ret10yAvg":  4.2
                       },
                       {
                           "symbol":  "KIM",
@@ -5184,10 +5417,11 @@
                           "roe":  1.5,
                           "debtRatio":  93.6,
                           "week52RangePct":  57.3,
-                          "pressureScore":  1.4,
+                          "pressureScore":  2.8,
                           "stabilityScore":  4.1,
-                          "winRateScore":  48.3,
-                          "rsiWeekly":  50.5
+                          "winRateScore":  49.2,
+                          "rsiWeekly":  49.3,
+                          "ret10yAvg":  -1.7
                       },
                       {
                           "symbol":  "AKAM",
@@ -5206,10 +5440,11 @@
                           "roe":  1.7,
                           "debtRatio":  217.4,
                           "week52RangePct":  39.9,
-                          "pressureScore":  1.0,
+                          "pressureScore":  1.6,
                           "stabilityScore":  2.5,
                           "winRateScore":  57.5,
-                          "rsiWeekly":  45.6
+                          "rsiWeekly":  45.7,
+                          "ret10yAvg":  9.8
                       },
                       {
                           "symbol":  "MAA",
@@ -5228,10 +5463,11 @@
                           "roe":  2.2,
                           "debtRatio":  117.2,
                           "week52RangePct":  32.7,
-                          "pressureScore":  0.7,
+                          "pressureScore":  1.8,
                           "stabilityScore":  3.7,
                           "winRateScore":  50.8,
-                          "rsiWeekly":  45.3
+                          "rsiWeekly":  44.2,
+                          "ret10yAvg":  3.7
                       },
                       {
                           "symbol":  "SOLV",
@@ -5250,10 +5486,11 @@
                           "roe":  1.9,
                           "debtRatio":  196.8,
                           "week52RangePct":  94.6,
-                          "pressureScore":  4.3,
+                          "pressureScore":  4.0,
                           "stabilityScore":  2.9,
-                          "winRateScore":  53.6,
-                          "rsiWeekly":  65
+                          "winRateScore":  55.2,
+                          "rsiWeekly":  66.2,
+                          "ret10yAvg":  17.1
                       },
                       {
                           "symbol":  "APA",
@@ -5272,10 +5509,11 @@
                           "roe":  10.6,
                           "debtRatio":  142.8,
                           "week52RangePct":  89.6,
-                          "pressureScore":  4.1,
-                          "stabilityScore":  2.3,
+                          "pressureScore":  5.6,
+                          "stabilityScore":  2.1,
                           "winRateScore":  50.8,
-                          "rsiWeekly":  67.9
+                          "rsiWeekly":  68,
+                          "ret10yAvg":  -3
                       },
                       {
                           "symbol":  "DOC",
@@ -5294,10 +5532,11 @@
                           "roe":  0.7,
                           "debtRatio":  155.3,
                           "week52RangePct":  70.6,
-                          "pressureScore":  2.9,
+                          "pressureScore":  2.7,
                           "stabilityScore":  2.9,
-                          "winRateScore":  46.7,
-                          "rsiWeekly":  55.2
+                          "winRateScore":  47.5,
+                          "rsiWeekly":  56.7,
+                          "ret10yAvg":  -3.9
                       },
                       {
                           "symbol":  "SWK",
@@ -5316,10 +5555,11 @@
                           "roe":  3.9,
                           "debtRatio":  124.3,
                           "week52RangePct":  80.6,
-                          "pressureScore":  4.6,
+                          "pressureScore":  3.1,
                           "stabilityScore":  2.8,
-                          "winRateScore":  54.2,
-                          "rsiWeekly":  58
+                          "winRateScore":  55,
+                          "rsiWeekly":  60.9,
+                          "ret10yAvg":  -2.1
                       },
                       {
                           "symbol":  "MKC",
@@ -5338,10 +5578,11 @@
                           "roe":  2.1,
                           "debtRatio":  127.3,
                           "week52RangePct":  34.1,
-                          "pressureScore":  4.6,
+                          "pressureScore":  2.2,
                           "stabilityScore":  2.3,
                           "winRateScore":  52.5,
-                          "rsiWeekly":  50.1
+                          "rsiWeekly":  46.8,
+                          "ret10yAvg":  0.8
                       },
                       {
                           "symbol":  "COO",
@@ -5360,10 +5601,11 @@
                           "roe":  -0.9,
                           "debtRatio":  51.5,
                           "week52RangePct":  36.2,
-                          "pressureScore":  3.7,
+                          "pressureScore":  1.8,
                           "stabilityScore":  3.5,
                           "winRateScore":  55.8,
-                          "rsiWeekly":  46.4
+                          "rsiWeekly":  48.5,
+                          "ret10yAvg":  5.6
                       },
                       {
                           "symbol":  "MAS",
@@ -5382,10 +5624,11 @@
                           "roe":  -86.9,
                           "debtRatio":  -1508.2,
                           "week52RangePct":  54.9,
-                          "pressureScore":  1.1,
+                          "pressureScore":  1.9,
                           "stabilityScore":  2.5,
                           "winRateScore":  55.8,
-                          "rsiWeekly":  47.3
+                          "rsiWeekly":  48.6,
+                          "ret10yAvg":  10.7
                       },
                       {
                           "symbol":  "TYL",
@@ -5404,10 +5647,11 @@
                           "roe":  3.1,
                           "debtRatio":  91.4,
                           "week52RangePct":  34.3,
-                          "pressureScore":  5.9,
+                          "pressureScore":  6.2,
                           "stabilityScore":  3.3,
                           "winRateScore":  56.7,
-                          "rsiWeekly":  59.4
+                          "rsiWeekly":  59.9,
+                          "ret10yAvg":  11.9
                       },
                       {
                           "symbol":  "TXT",
@@ -5426,10 +5670,11 @@
                           "roe":  3.1,
                           "debtRatio":  125.2,
                           "week52RangePct":  10.4,
-                          "pressureScore":  0.9,
-                          "stabilityScore":  2.4,
+                          "pressureScore":  1.1,
+                          "stabilityScore":  2.3,
                           "winRateScore":  55,
-                          "rsiWeekly":  38
+                          "rsiWeekly":  37.7,
+                          "ret10yAvg":  9.9
                       },
                       {
                           "symbol":  "REG",
@@ -5448,10 +5693,11 @@
                           "roe":  1.9,
                           "debtRatio":  85.3,
                           "week52RangePct":  47.1,
-                          "pressureScore":  1.3,
+                          "pressureScore":  1.9,
                           "stabilityScore":  4.3,
-                          "winRateScore":  46.7,
-                          "rsiWeekly":  46.5
+                          "winRateScore":  47.5,
+                          "rsiWeekly":  46.2,
+                          "ret10yAvg":  -0.2
                       },
                       {
                           "symbol":  "CRL",
@@ -5470,10 +5716,11 @@
                           "roe":  -0.1,
                           "debtRatio":  163.5,
                           "week52RangePct":  90.5,
-                          "pressureScore":  6.3,
+                          "pressureScore":  6.0,
                           "stabilityScore":  1.4,
                           "winRateScore":  55.8,
-                          "rsiWeekly":  70.4
+                          "rsiWeekly":  75.6,
+                          "ret10yAvg":  25
                       },
                       {
                           "symbol":  "EG",
@@ -5492,10 +5739,11 @@
                           "roe":  3.6,
                           "debtRatio":  302.9,
                           "week52RangePct":  73.2,
-                          "pressureScore":  3.1,
-                          "stabilityScore":  3.0,
-                          "winRateScore":  56.7,
-                          "rsiWeekly":  61.9
+                          "pressureScore":  3.8,
+                          "stabilityScore":  3.1,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  64.8,
+                          "ret10yAvg":  9.9
                       },
                       {
                           "symbol":  "IVZ",
@@ -5514,10 +5762,11 @@
                           "roe":  3.1,
                           "debtRatio":  112.3,
                           "week52RangePct":  93.2,
-                          "pressureScore":  5.6,
+                          "pressureScore":  3.7,
                           "stabilityScore":  2.2,
-                          "winRateScore":  50,
-                          "rsiWeekly":  63.5
+                          "winRateScore":  49.2,
+                          "rsiWeekly":  68.4,
+                          "ret10yAvg":  0.1
                       },
                       {
                           "symbol":  "TRMB",
@@ -5536,10 +5785,11 @@
                           "roe":  1.8,
                           "debtRatio":  59.5,
                           "week52RangePct":  32.9,
-                          "pressureScore":  4.7,
+                          "pressureScore":  4.0,
                           "stabilityScore":  2.3,
-                          "winRateScore":  55.8,
-                          "rsiWeekly":  48.1
+                          "winRateScore":  55,
+                          "rsiWeekly":  50.1,
+                          "ret10yAvg":  10.7
                       },
                       {
                           "symbol":  "AIZ",
@@ -5559,9 +5809,10 @@
                           "debtRatio":  491.7,
                           "week52RangePct":  77.7,
                           "pressureScore":  3.8,
-                          "stabilityScore":  2.5,
+                          "stabilityScore":  2.4,
                           "winRateScore":  61.7,
-                          "rsiWeekly":  66.3
+                          "rsiWeekly":  72.3,
+                          "ret10yAvg":  20.8
                       },
                       {
                           "symbol":  "LII",
@@ -5580,10 +5831,11 @@
                           "roe":  20.7,
                           "debtRatio":  250.4,
                           "week52RangePct":  0.4,
-                          "pressureScore":  0.9,
+                          "pressureScore":  0.4,
                           "stabilityScore":  2.4,
                           "winRateScore":  54.2,
-                          "rsiWeekly":  31.8
+                          "rsiWeekly":  32.7,
+                          "ret10yAvg":  13.8
                       },
                       {
                           "symbol":  "AVY",
@@ -5602,10 +5854,11 @@
                           "roe":  8.8,
                           "debtRatio":  296.6,
                           "week52RangePct":  46.0,
-                          "pressureScore":  6.0,
+                          "pressureScore":  4.4,
                           "stabilityScore":  2.4,
                           "winRateScore":  55.8,
-                          "rsiWeekly":  52.3
+                          "rsiWeekly":  52.3,
+                          "ret10yAvg":  12.4
                       },
                       {
                           "symbol":  "RVTY",
@@ -5624,10 +5877,11 @@
                           "roe":  0.6,
                           "debtRatio":  67.0,
                           "week52RangePct":  97.1,
-                          "pressureScore":  6.4,
-                          "stabilityScore":  2.4,
+                          "pressureScore":  5.8,
+                          "stabilityScore":  2.3,
                           "winRateScore":  56.7,
-                          "rsiWeekly":  67.5
+                          "rsiWeekly":  72,
+                          "ret10yAvg":  13.3
                       },
                       {
                           "symbol":  "UDR",
@@ -5646,10 +5900,11 @@
                           "roe":  2.3,
                           "debtRatio":  218.7,
                           "week52RangePct":  44.3,
-                          "pressureScore":  0.8,
+                          "pressureScore":  1.6,
                           "stabilityScore":  3.3,
                           "winRateScore":  52.5,
-                          "rsiWeekly":  45.2
+                          "rsiWeekly":  43.2,
+                          "ret10yAvg":  0.2
                       },
                       {
                           "symbol":  "ERIE",
@@ -5668,10 +5923,11 @@
                           "roe":  7.3,
                           "debtRatio":  44.2,
                           "week52RangePct":  33.8,
-                          "pressureScore":  6.5,
-                          "stabilityScore":  4.3,
+                          "pressureScore":  4.4,
+                          "stabilityScore":  4.4,
                           "winRateScore":  49.2,
-                          "rsiWeekly":  52.5
+                          "rsiWeekly":  53.4,
+                          "ret10yAvg":  15.3
                       },
                       {
                           "symbol":  "ALLE",
@@ -5690,10 +5946,11 @@
                           "roe":  8.7,
                           "debtRatio":  153.0,
                           "week52RangePct":  52.1,
-                          "pressureScore":  7.3,
+                          "pressureScore":  3.6,
                           "stabilityScore":  2.6,
                           "winRateScore":  54.2,
-                          "rsiWeekly":  51.6
+                          "rsiWeekly":  54.9,
+                          "ret10yAvg":  12.5
                       },
                       {
                           "symbol":  "LULU",
@@ -5712,10 +5969,11 @@
                           "roe":  4.0,
                           "debtRatio":  76.8,
                           "week52RangePct":  13.0,
-                          "pressureScore":  1.6,
+                          "pressureScore":  2.2,
                           "stabilityScore":  2.2,
                           "winRateScore":  54.2,
-                          "rsiWeekly":  39.4
+                          "rsiWeekly":  41.4,
+                          "ret10yAvg":  9.7
                       },
                       {
                           "symbol":  "BAX",
@@ -5734,10 +5992,11 @@
                           "roe":  2.0,
                           "debtRatio":  219.3,
                           "week52RangePct":  72.0,
-                          "pressureScore":  5.0,
+                          "pressureScore":  3.4,
                           "stabilityScore":  1.9,
-                          "winRateScore":  51.7,
-                          "rsiWeekly":  62.4
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  62.8,
+                          "ret10yAvg":  -4.6
                       },
                       {
                           "symbol":  "SJM",
@@ -5756,10 +6015,11 @@
                           "roe":  7.0,
                           "debtRatio":  192.6,
                           "week52RangePct":  90.1,
-                          "pressureScore":  6.1,
-                          "stabilityScore":  2.0,
-                          "winRateScore":  50,
-                          "rsiWeekly":  72.7
+                          "pressureScore":  5.0,
+                          "stabilityScore":  1.9,
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  67.6,
+                          "ret10yAvg":  -0.3
                       },
                       {
                           "symbol":  "HAS",
@@ -5778,10 +6038,11 @@
                           "roe":  22.8,
                           "debtRatio":  752.5,
                           "week52RangePct":  65.6,
-                          "pressureScore":  3.9,
+                          "pressureScore":  2.7,
                           "stabilityScore":  2.0,
                           "winRateScore":  55,
-                          "rsiWeekly":  55.8
+                          "rsiWeekly":  55.5,
+                          "ret10yAvg":  1.8
                       },
                       {
                           "symbol":  "GL",
@@ -5800,10 +6061,11 @@
                           "roe":  4.4,
                           "debtRatio":  408.9,
                           "week52RangePct":  70.4,
-                          "pressureScore":  3.7,
+                          "pressureScore":  2.7,
                           "stabilityScore":  4.4,
-                          "winRateScore":  55,
-                          "rsiWeekly":  56.2
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  60.1,
+                          "ret10yAvg":  17.1
                       },
                       {
                           "symbol":  "HRL",
@@ -5822,10 +6084,11 @@
                           "roe":  2.0,
                           "debtRatio":  67.7,
                           "week52RangePct":  31.2,
-                          "pressureScore":  2.7,
+                          "pressureScore":  2.5,
                           "stabilityScore":  3.1,
-                          "winRateScore":  49.2,
-                          "rsiWeekly":  42.2
+                          "winRateScore":  50,
+                          "rsiWeekly":  40.1,
+                          "ret10yAvg":  -4.2
                       },
                       {
                           "symbol":  "CSGP",
@@ -5844,10 +6107,11 @@
                           "roe":  0.7,
                           "debtRatio":  27.7,
                           "week52RangePct":  9.4,
-                          "pressureScore":  3.3,
+                          "pressureScore":  2.4,
                           "stabilityScore":  2.5,
-                          "winRateScore":  50,
-                          "rsiWeekly":  39.4
+                          "winRateScore":  49.2,
+                          "rsiWeekly":  38.2,
+                          "ret10yAvg":  4.4
                       },
                       {
                           "symbol":  "BF-B",
@@ -5866,10 +6130,11 @@
                           "roe":  1.3,
                           "debtRatio":  96.4,
                           "week52RangePct":  42.5,
-                          "pressureScore":  1.1,
+                          "pressureScore":  2.1,
                           "stabilityScore":  3.7,
-                          "winRateScore":  51.7,
-                          "rsiWeekly":  46.3
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  50.6,
+                          "ret10yAvg":  -2.8
                       },
                       {
                           "symbol":  "CLX",
@@ -5888,10 +6153,11 @@
                           "roe":  181.1,
                           "debtRatio":  8380.0,
                           "week52RangePct":  29.4,
-                          "pressureScore":  3.7,
+                          "pressureScore":  2.6,
                           "stabilityScore":  2.7,
                           "winRateScore":  47.5,
-                          "rsiWeekly":  42.6
+                          "rsiWeekly":  42,
+                          "ret10yAvg":  -2.5
                       },
                       {
                           "symbol":  "DECK",
@@ -5910,10 +6176,11 @@
                           "roe":  5.6,
                           "debtRatio":  68.1,
                           "week52RangePct":  17.6,
-                          "pressureScore":  1.5,
-                          "stabilityScore":  4.5,
+                          "pressureScore":  1.0,
+                          "stabilityScore":  4.4,
                           "winRateScore":  56.7,
-                          "rsiWeekly":  35.3
+                          "rsiWeekly":  35.2,
+                          "ret10yAvg":  74.4
                       },
                       {
                           "symbol":  "IT",
@@ -5932,10 +6199,11 @@
                           "roe":  -164.6,
                           "debtRatio":  -4398.7,
                           "week52RangePct":  52.2,
-                          "pressureScore":  2.6,
+                          "pressureScore":  3.0,
                           "stabilityScore":  2.3,
                           "winRateScore":  59.2,
-                          "rsiWeekly":  57.2
+                          "rsiWeekly":  59.4,
+                          "ret10yAvg":  11.1
                       },
                       {
                           "symbol":  "GDDY",
@@ -5954,10 +6222,11 @@
                           "roe":  3583.6,
                           "debtRatio":  119252.2,
                           "week52RangePct":  33.3,
-                          "pressureScore":  2.2,
+                          "pressureScore":  3.9,
                           "stabilityScore":  2.4,
                           "winRateScore":  56.7,
-                          "rsiWeekly":  56.4
+                          "rsiWeekly":  58.6,
+                          "ret10yAvg":  19.5
                       },
                       {
                           "symbol":  "BXP",
@@ -5976,10 +6245,11 @@
                           "roe":  1.3,
                           "debtRatio":  337.7,
                           "week52RangePct":  61.7,
-                          "pressureScore":  3.2,
+                          "pressureScore":  2.6,
                           "stabilityScore":  3.3,
                           "winRateScore":  48.3,
-                          "rsiWeekly":  53.4
+                          "rsiWeekly":  56.6,
+                          "ret10yAvg":  -5.1
                       },
                       {
                           "symbol":  "GNRC",
@@ -5998,10 +6268,11 @@
                           "roe":  5.0,
                           "debtRatio":  100.6,
                           "week52RangePct":  31.3,
-                          "pressureScore":  2.1,
+                          "pressureScore":  1.2,
                           "stabilityScore":  2.3,
                           "winRateScore":  55.8,
-                          "rsiWeekly":  37.9
+                          "rsiWeekly":  38.6,
+                          "ret10yAvg":  39.8
                       },
                       {
                           "symbol":  "JKHY",
@@ -6020,10 +6291,11 @@
                           "roe":  5.8,
                           "debtRatio":  42.9,
                           "week52RangePct":  64.8,
-                          "pressureScore":  4.9,
+                          "pressureScore":  3.6,
                           "stabilityScore":  4.8,
                           "winRateScore":  56.7,
-                          "rsiWeekly":  60.7
+                          "rsiWeekly":  60.9,
+                          "ret10yAvg":  9.5
                       },
                       {
                           "symbol":  "PNW",
@@ -6042,10 +6314,11 @@
                           "roe":  2.5,
                           "debtRatio":  362.5,
                           "week52RangePct":  47.7,
-                          "pressureScore":  1.3,
+                          "pressureScore":  1.5,
                           "stabilityScore":  3.1,
-                          "winRateScore":  54.2,
-                          "rsiWeekly":  43.6
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  44.3,
+                          "ret10yAvg":  2.8
                       },
                       {
                           "symbol":  "HII",
@@ -6067,7 +6340,8 @@
                           "pressureScore":  1.3,
                           "stabilityScore":  2.4,
                           "winRateScore":  51.7,
-                          "rsiWeekly":  41.8
+                          "rsiWeekly":  41.4,
+                          "ret10yAvg":  8.8
                       },
                       {
                           "symbol":  "PSKY",
@@ -6086,10 +6360,11 @@
                           "roe":  0.3,
                           "debtRatio":  268.5,
                           "week52RangePct":  24.8,
-                          "pressureScore":  0.6,
-                          "stabilityScore":  2.6,
+                          "pressureScore":  4.4,
+                          "stabilityScore":  2.5,
                           "winRateScore":  52.5,
-                          "rsiWeekly":  51.1
+                          "rsiWeekly":  53.9,
+                          "ret10yAvg":  -8
                       },
                       {
                           "symbol":  "ALGN",
@@ -6108,10 +6383,11 @@
                           "roe":  2.6,
                           "debtRatio":  51.6,
                           "week52RangePct":  48.2,
-                          "pressureScore":  0.9,
-                          "stabilityScore":  4.6,
-                          "winRateScore":  59.2,
-                          "rsiWeekly":  41.6
+                          "pressureScore":  1.4,
+                          "stabilityScore":  4.7,
+                          "winRateScore":  58.3,
+                          "rsiWeekly":  44.1,
+                          "ret10yAvg":  7
                       },
                       {
                           "symbol":  "DPZ",
@@ -6130,10 +6406,11 @@
                           "roe":  -3.4,
                           "debtRatio":  -144.3,
                           "week52RangePct":  32.1,
-                          "pressureScore":  3.5,
+                          "pressureScore":  2.5,
                           "stabilityScore":  3.3,
                           "winRateScore":  51.7,
-                          "rsiWeekly":  48.3
+                          "rsiWeekly":  50,
+                          "ret10yAvg":  12.8
                       },
                       {
                           "symbol":  "TECH",
@@ -6152,10 +6429,11 @@
                           "roe":  2.4,
                           "debtRatio":  22.3,
                           "week52RangePct":  98.9,
-                          "pressureScore":  4.5,
+                          "pressureScore":  3.5,
                           "stabilityScore":  3.7,
-                          "winRateScore":  56.7,
-                          "rsiWeekly":  65.1
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  65.7,
+                          "ret10yAvg":  16.4
                       },
                       {
                           "symbol":  "MGM",
@@ -6174,10 +6452,11 @@
                           "roe":  11.6,
                           "debtRatio":  1450.9,
                           "week52RangePct":  54.3,
-                          "pressureScore":  0.1,
-                          "stabilityScore":  3.2,
+                          "pressureScore":  1.6,
+                          "stabilityScore":  3.3,
                           "winRateScore":  54.2,
-                          "rsiWeekly":  45.7
+                          "rsiWeekly":  46.7,
+                          "ret10yAvg":  5.9
                       },
                       {
                           "symbol":  "DVA",
@@ -6196,10 +6475,11 @@
                           "roe":  -34.7,
                           "debtRatio":  -2173.6,
                           "week52RangePct":  51.2,
-                          "pressureScore":  1.2,
+                          "pressureScore":  1.6,
                           "stabilityScore":  2.4,
                           "winRateScore":  56.7,
-                          "rsiWeekly":  45.6
+                          "rsiWeekly":  47.9,
+                          "ret10yAvg":  17.2
                       },
                       {
                           "symbol":  "CPT",
@@ -6218,10 +6498,11 @@
                           "roe":  1.1,
                           "debtRatio":  123.0,
                           "week52RangePct":  39.8,
-                          "pressureScore":  0.4,
+                          "pressureScore":  1.8,
                           "stabilityScore":  3.9,
                           "winRateScore":  56.7,
-                          "rsiWeekly":  45.2
+                          "rsiWeekly":  44.6,
+                          "ret10yAvg":  2.6
                       },
                       {
                           "symbol":  "FDS",
@@ -6240,10 +6521,11 @@
                           "roe":  6.2,
                           "debtRatio":  106.3,
                           "week52RangePct":  66.9,
-                          "pressureScore":  5.0,
+                          "pressureScore":  4.8,
                           "stabilityScore":  3.8,
                           "winRateScore":  58.3,
-                          "rsiWeekly":  65.3
+                          "rsiWeekly":  66.8,
+                          "ret10yAvg":  8.9
                       },
                       {
                           "symbol":  "AES",
@@ -6265,7 +6547,8 @@
                           "pressureScore":  2.9,
                           "stabilityScore":  2.5,
                           "winRateScore":  57.5,
-                          "rsiWeekly":  53.8
+                          "rsiWeekly":  54,
+                          "ret10yAvg":  1.5
                       },
                       {
                           "symbol":  "UHS",
@@ -6284,10 +6567,11 @@
                           "roe":  4.8,
                           "debtRatio":  110.2,
                           "week52RangePct":  28.5,
-                          "pressureScore":  4.0,
+                          "pressureScore":  2.3,
                           "stabilityScore":  3.4,
-                          "winRateScore":  54.2,
-                          "rsiWeekly":  49.7
+                          "winRateScore":  53.3,
+                          "rsiWeekly":  48.8,
+                          "ret10yAvg":  3.6
                       },
                       {
                           "symbol":  "WYNN",
@@ -6306,10 +6590,11 @@
                           "roe":  -82.7,
                           "debtRatio":  -8300.9,
                           "week52RangePct":  0.9,
-                          "pressureScore":  1.6,
+                          "pressureScore":  1.4,
                           "stabilityScore":  2.0,
                           "winRateScore":  52.5,
-                          "rsiWeekly":  37.2
+                          "rsiWeekly":  37.9,
+                          "ret10yAvg":  -0.6
                       },
                       {
                           "symbol":  "PNR",
@@ -6328,10 +6613,11 @@
                           "roe":  3.4,
                           "debtRatio":  79.0,
                           "week52RangePct":  5.1,
-                          "pressureScore":  3.0,
+                          "pressureScore":  1.7,
                           "stabilityScore":  3.2,
-                          "winRateScore":  55,
-                          "rsiWeekly":  29.1
+                          "winRateScore":  54.2,
+                          "rsiWeekly":  28.8,
+                          "ret10yAvg":  3.9
                       },
                       {
                           "symbol":  "FRT",
@@ -6350,10 +6636,11 @@
                           "roe":  2.5,
                           "debtRatio":  161.7,
                           "week52RangePct":  68.1,
-                          "pressureScore":  1.3,
+                          "pressureScore":  2.3,
                           "stabilityScore":  4.4,
-                          "winRateScore":  49.2,
-                          "rsiWeekly":  51.3
+                          "winRateScore":  50,
+                          "rsiWeekly":  51.5,
+                          "ret10yAvg":  -2.3
                       },
                       {
                           "symbol":  "SWKS",
@@ -6372,10 +6659,11 @@
                           "roe":  0.6,
                           "debtRatio":  29.4,
                           "week52RangePct":  38.7,
-                          "pressureScore":  2.6,
-                          "stabilityScore":  3.4,
+                          "pressureScore":  3.7,
+                          "stabilityScore":  3.5,
                           "winRateScore":  50.8,
-                          "rsiWeekly":  51.8
+                          "rsiWeekly":  56.3,
+                          "ret10yAvg":  -0.6
                       },
                       {
                           "symbol":  "APTV",
@@ -6394,10 +6682,11 @@
                           "roe":  2.8,
                           "debtRatio":  105.6,
                           "week52RangePct":  0.5,
-                          "pressureScore":  3.2,
+                          "pressureScore":  1.3,
                           "stabilityScore":  2.7,
                           "winRateScore":  50,
-                          "rsiWeekly":  27.6
+                          "rsiWeekly":  30,
+                          "ret10yAvg":  -2.5
                       },
                       {
                           "symbol":  "PODD",
@@ -6416,10 +6705,11 @@
                           "roe":  6.7,
                           "debtRatio":  122.5,
                           "week52RangePct":  9.7,
-                          "pressureScore":  4.6,
+                          "pressureScore":  1.4,
                           "stabilityScore":  2.9,
                           "winRateScore":  50.8,
-                          "rsiWeekly":  35.1
+                          "rsiWeekly":  36,
+                          "ret10yAvg":  26.2
                       },
                       {
                           "symbol":  "HSIC",
@@ -6438,10 +6728,11 @@
                           "roe":  3.0,
                           "debtRatio":  210.9,
                           "week52RangePct":  92.1,
-                          "pressureScore":  3.9,
+                          "pressureScore":  3.3,
                           "stabilityScore":  3.3,
-                          "winRateScore":  50,
-                          "rsiWeekly":  61.5
+                          "winRateScore":  50.8,
+                          "rsiWeekly":  66.3,
+                          "ret10yAvg":  4.1
                       },
                       {
                           "symbol":  "ARE",
@@ -6460,10 +6751,11 @@
                           "roe":  null,
                           "debtRatio":  null,
                           "week52RangePct":  null,
-                          "pressureScore":  1.7,
-                          "stabilityScore":  2.4,
-                          "winRateScore":  50.8,
-                          "rsiWeekly":  50.2
+                          "pressureScore":  2.8,
+                          "stabilityScore":  2.5,
+                          "winRateScore":  51.7,
+                          "rsiWeekly":  51.8,
+                          "ret10yAvg":  -5.2
                       },
                       {
                           "symbol":  "AOS",
@@ -6482,10 +6774,11 @@
                           "roe":  6.8,
                           "debtRatio":  97.9,
                           "week52RangePct":  17.9,
-                          "pressureScore":  1.7,
+                          "pressureScore":  1.3,
                           "stabilityScore":  3.5,
                           "winRateScore":  50.8,
-                          "rsiWeekly":  41.6
+                          "rsiWeekly":  45.5,
+                          "ret10yAvg":  2
                       },
                       {
                           "symbol":  "TAP",
@@ -6504,10 +6797,11 @@
                           "roe":  2.3,
                           "debtRatio":  137.9,
                           "week52RangePct":  10.3,
-                          "pressureScore":  0.9,
+                          "pressureScore":  1.6,
                           "stabilityScore":  2.6,
                           "winRateScore":  48.3,
-                          "rsiWeekly":  41.8
+                          "rsiWeekly":  43.7,
+                          "ret10yAvg":  -6.3
                       },
                       {
                           "symbol":  "NCLH",
@@ -6526,10 +6820,11 @@
                           "roe":  8.7,
                           "debtRatio":  833.3,
                           "week52RangePct":  12.7,
-                          "pressureScore":  0.6,
+                          "pressureScore":  0.8,
                           "stabilityScore":  2.9,
-                          "winRateScore":  50.8,
-                          "rsiWeekly":  35.6
+                          "winRateScore":  50,
+                          "rsiWeekly":  36.1,
+                          "ret10yAvg":  -5.9
                       },
                       {
                           "symbol":  "MOS",
@@ -6548,10 +6843,11 @@
                           "roe":  -2.4,
                           "debtRatio":  113.5,
                           "week52RangePct":  25.1,
-                          "pressureScore":  1.2,
-                          "stabilityScore":  3.0,
-                          "winRateScore":  55,
-                          "rsiWeekly":  53.4
+                          "pressureScore":  3.5,
+                          "stabilityScore":  3.1,
+                          "winRateScore":  55.8,
+                          "rsiWeekly":  55.5,
+                          "ret10yAvg":  0.5
                       },
                       {
                           "symbol":  "BLDR",
@@ -6570,10 +6866,11 @@
                           "roe":  -0.1,
                           "debtRatio":  182.7,
                           "week52RangePct":  1.5,
-                          "pressureScore":  0.3,
+                          "pressureScore":  1.0,
                           "stabilityScore":  2.7,
                           "winRateScore":  57.5,
-                          "rsiWeekly":  35.3
+                          "rsiWeekly":  36,
+                          "ret10yAvg":  44.8
                       },
                       {
                           "symbol":  "TTD",
@@ -6592,10 +6889,11 @@
                           "roe":  2.5,
                           "debtRatio":  123.9,
                           "week52RangePct":  2.0,
-                          "pressureScore":  0.3,
+                          "pressureScore":  0.2,
                           "stabilityScore":  2.9,
-                          "winRateScore":  55.1,
-                          "rsiWeekly":  28.9
+                          "winRateScore":  55.5,
+                          "rsiWeekly":  33.6,
+                          "ret10yAvg":  48.2
                       },
                       {
                           "symbol":  "VMRK",
@@ -6614,10 +6912,11 @@
                           "roe":  1.3,
                           "debtRatio":  83.8,
                           "week52RangePct":  54.3,
-                          "pressureScore":  3.2,
+                          "pressureScore":  2.6,
                           "stabilityScore":  4.3,
                           "winRateScore":  49.2,
-                          "rsiWeekly":  49.1
+                          "rsiWeekly":  48.2,
+                          "ret10yAvg":  0.1
                       }
                   ],
     "ratiosUpdatedAt":  "2026-08-25T11:26:13Z",

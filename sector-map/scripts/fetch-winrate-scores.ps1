@@ -1,8 +1,11 @@
 ﻿# 승률점수(월간 승률) + 주간 RSI(14) 배치 수집 스크립트
-# (2026-09-02 신설 → 같은 날 RSI·지도 병합 확장 → 같은 날 국내주식/ETF/코인 유니버스 확장)
+# (2026-09-02 신설 → 같은 날 RSI·지도 병합 확장 → 같은 날 국내주식/ETF/코인 유니버스 확장
+#  → 2026-09-04 검색상세 9개 지표 표 개편: 작년승률/상승률/RSI 평균 + 최근 12개월 월간 등락 추가)
 # [승률점수] 최근 10년(최대 120개월) 동안 월봉 종가가 전월 대비 상승한 개월 수 / 총 개월 수 * 100 (소수 1자리)
 #   상장 10년 미만 종목은 상장(데이터 시작) 이후 개월만으로 계산. 진행 중인 이번 달(미완성 월봉)은 제외.
-# [RSI] 주봉 3년치(약 156개)로 와일더 방식 RSI(14) — 본체 app.js computeWilderRsi와 동일 공식, 진행 중인 주봉 포함.
+# [RSI] 주봉 11년치(약 570개)로 와일더 방식 RSI(14) 롤링 시리즈 — 현재값(rsi) + 520주 평균(rsi10y) + 직전 52주 평균(rsi1y).
+# [추가 지표(2026-09-04)] wr1y=직전12개월 승률%, ret10y=연평균 상승률%(전체 상승% ÷ 보유연수), ret1y=직전12개월 상승률%,
+#   m12=최근 12개월 월간 등락% 배열(과거→최신). 검색상세 개요 9칸 표 + 12개월 승패(OX) 표에 사용.
 # 유니버스 4개: 미국 S&P500(sp500-sectors.json) / 국내 코스피200+코스닥150(kr-sectors.json) /
 #               ETF 200(etf-crypto-map.js ETF_MAP_DATA) / 코인 100(etf-crypto-map.js CRYPTO_MAP_DATA)
 # 결과 1: data/winrate-scores-us.json — scores(미국주식, S&P500 구성 판별용으로도 사용)·scoresKr·scoresEtf·scoresCrypto 4개 맵
@@ -35,6 +38,37 @@ function Compute-WilderRsi($closes, $period) {
   }
   if ($avgLoss -eq 0) { return 100.0 }
   return 100.0 - 100.0 / (1.0 + $avgGain / $avgLoss)
+}
+
+# 와일더 RSI(14) 롤링 시리즈 — 첫 period개 단순평균으로 시딩 후 매 봉마다 RSI 값을 산출해 배열로 반환
+function Compute-WilderRsiSeries($closes, $period) {
+  if (-not $closes -or $closes.Count -lt ($period + 2)) { return $null }
+  $series = New-Object System.Collections.Generic.List[double]
+  $gain = 0.0; $loss = 0.0
+  for ($i = 1; $i -le $period; $i++) {
+    $d = $closes[$i] - $closes[$i - 1]
+    if ($d -gt 0) { $gain += $d } else { $loss -= $d }
+  }
+  $avgGain = $gain / $period
+  $avgLoss = $loss / $period
+  if ($avgLoss -eq 0) { $series.Add(100.0) } else { $series.Add(100.0 - 100.0 / (1.0 + $avgGain / $avgLoss)) }
+  for ($i = $period + 1; $i -lt $closes.Count; $i++) {
+    $d = $closes[$i] - $closes[$i - 1]
+    $g = 0.0; $l = 0.0
+    if ($d -gt 0) { $g = $d } else { $l = -$d }
+    $avgGain = ($avgGain * ($period - 1) + $g) / $period
+    $avgLoss = ($avgLoss * ($period - 1) + $l) / $period
+    if ($avgLoss -eq 0) { $series.Add(100.0) } else { $series.Add(100.0 - 100.0 / (1.0 + $avgGain / $avgLoss)) }
+  }
+  return $series
+}
+
+function Get-TailAverage($list, $n) {
+  if (-not $list -or $list.Count -eq 0) { return $null }
+  $take = [Math]::Min($n, $list.Count)
+  $sum = 0.0
+  for ($i = $list.Count - $take; $i -lt $list.Count; $i++) { $sum += $list[$i] }
+  return [Math]::Round($sum / $take, 1)
 }
 
 function Get-SortedClosePairs($resp) {
@@ -79,25 +113,58 @@ function Get-UniverseScores($symbols, $label) {
         $total = $sorted.Count - 1
         if ($total -lt 6) { throw "월봉 데이터 부족(total=$total)" }  # 상장 6개월 미만은 점수 무의미 -> 제외
 
-        # ---------- 주간 RSI(14) (주봉 3년) ----------
-        $rsi = $null
+        # ---------- 추가 지표(2026-09-04): 작년승률·연평균/작년 상승률·최근 12개월 등락 ----------
+        $m12 = @()      # 최근 최대 12개월 월간 등락%(과거→최신, 소수 1자리)
+        $wr1y = $null   # 직전 12개월 승률%
+        $ret1y = $null  # 직전 12개월 상승률%
+        $ret10y = $null # 연평균 상승률% = 전체 기간 상승% ÷ 보유 연수(총개월/12)
+        $tail = [Math]::Min(12, $total)
+        $upRecent = 0
+        for ($i = $sorted.Count - $tail; $i -lt $sorted.Count; $i++) {
+          $prev = $sorted[$i - 1].c
+          if ($prev -ne 0) {
+            $chg = ($sorted[$i].c / $prev - 1.0) * 100.0
+            $m12 += [Math]::Round($chg, 1)
+            if ($chg -gt 0) { $upRecent++ }
+          }
+        }
+        if ($m12.Count -gt 0) { $wr1y = [Math]::Round($upRecent / $m12.Count * 100, 1) }
+        $base1y = $sorted[$sorted.Count - 1 - $tail].c
+        if ($base1y -ne 0) { $ret1y = [Math]::Round(($sorted[$sorted.Count - 1].c / $base1y - 1.0) * 100.0, 1) }
+        if ($sorted[0].c -ne 0 -and $total -ge 12) {
+          $totalRet = ($sorted[$sorted.Count - 1].c / $sorted[0].c - 1.0) * 100.0
+          $ret10y = [Math]::Round($totalRet / ($total / 12.0), 1)
+        }
+
+        # ---------- 주간 RSI(14) (주봉 11년 롤링 시리즈: 현재값 + 520주 평균 + 52주 평균) ----------
+        $rsi = $null; $rsi10y = $null; $rsi1y = $null
         try {
           Start-Sleep -Milliseconds 250
-          $urlWk = "https://query1.finance.yahoo.com/v8/finance/chart/$([uri]::EscapeDataString($sym))?range=3y&interval=1wk"
+          $urlWk = "https://query1.finance.yahoo.com/v8/finance/chart/$([uri]::EscapeDataString($sym))?range=11y&interval=1wk"
           $respWk = Invoke-RestMethod -Uri $urlWk -Headers $headers -TimeoutSec 30
           $wkPairs = Get-SortedClosePairs $respWk
           $wkCloses = @($wkPairs | ForEach-Object { $_.c })
-          $rsiRaw = Compute-WilderRsi $wkCloses 14
-          if ($null -ne $rsiRaw) { $rsi = [Math]::Round($rsiRaw, 1) }
+          $rsiSeries = Compute-WilderRsiSeries $wkCloses 14
+          if ($rsiSeries -and $rsiSeries.Count -gt 0) {
+            $rsi = [Math]::Round($rsiSeries[$rsiSeries.Count - 1], 1)
+            $rsi10y = Get-TailAverage $rsiSeries 520
+            $rsi1y = Get-TailAverage $rsiSeries 52
+          }
         } catch { $rsi = $null }  # RSI만 실패해도 승률점수는 저장
 
         $scores[$sym] = [ordered]@{
-          score = [Math]::Round($up / $total * 100, 1)
-          up    = $up
-          total = $total
-          from  = [DateTimeOffset]::FromUnixTimeSeconds($sorted[0].t).ToString("yyyy-MM")
-          to    = [DateTimeOffset]::FromUnixTimeSeconds($sorted[$sorted.Count - 1].t).ToString("yyyy-MM")
-          rsi   = $rsi
+          score  = [Math]::Round($up / $total * 100, 1)
+          up     = $up
+          total  = $total
+          from   = [DateTimeOffset]::FromUnixTimeSeconds($sorted[0].t).ToString("yyyy-MM")
+          to     = [DateTimeOffset]::FromUnixTimeSeconds($sorted[$sorted.Count - 1].t).ToString("yyyy-MM")
+          rsi    = $rsi
+          wr1y   = $wr1y
+          ret10y = $ret10y
+          ret1y  = $ret1y
+          rsi10y = $rsi10y
+          rsi1y  = $rsi1y
+          m12    = $m12
         }
         break
       } catch {
@@ -121,6 +188,7 @@ function Merge-IntoSectors($sectorsPath, $scoreMap) {
     if ($entry) {
       $c | Add-Member -NotePropertyName "winRateScore" -NotePropertyValue $entry.score -Force
       $c | Add-Member -NotePropertyName "rsiWeekly" -NotePropertyValue $entry.rsi -Force
+      $c | Add-Member -NotePropertyName "ret10yAvg" -NotePropertyValue $entry.ret10y -Force
       $merged++
     }
   }
@@ -166,7 +234,7 @@ $crypto = Get-UniverseScores $cryptoSymbols "코인"
 $allFailed = @($us.failed + $kr.failed + $etf.failed + $crypto.failed)
 $out = [ordered]@{
   generatedAt  = $nowUtc.ToString("yyyy-MM-ddTHH:mm:ssZ")
-  description  = "승률점수: 최근 10년(최대 120개월) 월봉 종가 기준 상승개월수/총개월수*100(상장 10년 미만은 데이터 시작 이후만). rsi: 주간 RSI(14) 와일더 방식. scores=미국 S&P500, scoresKr=코스피200+코스닥150, scoresEtf=ETF200(미국+국내), scoresCrypto=코인100."
+  description  = "승률점수: 최근 10년(최대 120개월) 월봉 종가 기준 상승개월수/총개월수*100(상장 10년 미만은 데이터 시작 이후만). rsi: 주간 RSI(14, 주봉 11년 롤링) 현재값, rsi10y=520주 평균, rsi1y=직전 52주 평균. wr1y=직전 12개월 승률%, ret10y=연평균 상승률%(전체 상승% / 보유연수), ret1y=직전 12개월 상승률%, m12=최근 12개월 월간 등락%(과거->최신). scores=미국 S&P500, scoresKr=코스피200+코스닥150, scoresEtf=ETF200(미국+국내), scoresCrypto=코인100."
   count        = $us.scores.Count + $kr.scores.Count + $etf.scores.Count + $crypto.scores.Count
   failed       = @($allFailed | ForEach-Object { $_.symbol })
   scores       = $us.scores
@@ -190,6 +258,7 @@ foreach ($c in $etfData.companies) {
   if ($entry) {
     $c | Add-Member -NotePropertyName "winRateScore" -NotePropertyValue $entry.score -Force
     $c | Add-Member -NotePropertyName "rsiWeekly" -NotePropertyValue $entry.rsi -Force
+    $c | Add-Member -NotePropertyName "ret10yAvg" -NotePropertyValue $entry.ret10y -Force
     $em++
   }
 }
@@ -199,6 +268,7 @@ foreach ($c in $cryptoData.companies) {
   if ($entry) {
     $c | Add-Member -NotePropertyName "winRateScore" -NotePropertyValue $entry.score -Force
     $c | Add-Member -NotePropertyName "rsiWeekly" -NotePropertyValue $entry.rsi -Force
+    $c | Add-Member -NotePropertyName "ret10yAvg" -NotePropertyValue $entry.ret10y -Force
     $cm++
   }
 }

@@ -315,7 +315,7 @@ function loadScriptOnce(src) {
 function ensureExtraDataLoaded(market) {
   if (extraDataLoadPromises[market]) return extraDataLoadPromises[market];
   // 데이터 파일에도 캐시버전 부착 — 배포 직후 옛 데이터(결측 종목 포함)가 캐시로 서빙되던 문제 방지(2026-08-31)
-  const src = market === "domestic" ? "data/kr-data-extra.js?v=20260902a" : "data/sp500-data-extra.js?v=20260902b";
+  const src = market === "domestic" ? "data/kr-data-extra.js?v=20260904b" : "data/sp500-data-extra.js?v=20260904b";
   // 모바일/인앱 브라우저에서 간헐적 네트워크 실패가 잦아 한 번은 자동 재시도(600ms 후) — 그래도 실패하면 토스트
   extraDataLoadPromises[market] = loadScriptOnce(src)
     .catch(() => new Promise((res) => setTimeout(res, 600)).then(() => loadScriptOnce(src)))
@@ -329,7 +329,7 @@ function ensureExtraDataLoaded(market) {
 let etfCryptoDataLoadPromise = null;
 function ensureEtfCryptoDataLoaded() {
   if (etfCryptoDataLoadPromise) return etfCryptoDataLoadPromise;
-  const src = "data/etf-crypto-map.js?v=20260904a";
+  const src = "data/etf-crypto-map.js?v=20260904b";
   etfCryptoDataLoadPromise = loadScriptOnce(src)
     .catch(() => new Promise((res) => setTimeout(res, 600)).then(() => loadScriptOnce(src)))
     .catch((err) => {
@@ -1495,11 +1495,11 @@ function buildMetrics(market) {
     },
     // 본체(app.js)의 computeAttractivenessScore·computeRiskScore와 동일 공식으로 배치 계산해둔 값
     // (sector-map/scripts/fetch-momentum-scores.ps1, data/*-sectors.json에 pressureScore/stabilityScore로 저장)
-    pressureScore: { label: "상승압력", hasData: true, get: (c) => c.pressureScore, fmt: (v) => `${v.toFixed(1)}점`, domainMin: 0, domainMax: 10 },
-    stabilityScore: { label: "투자안정", hasData: true, get: (c) => c.stabilityScore, fmt: (v) => `${v.toFixed(1)}점`, domainMin: 0, domainMax: 10 },
+    // 2026-09-04 개편: 상승압력 → 10년상승(fetch-winrate-scores.ps1이 ret10yAvg로 병합), 투자안정 삭제(10년승률로 대체)
+    ret10yAvg: { label: "10년상승", hasData: true, get: (c) => c.ret10yAvg, fmt: (v) => `${v > 0 ? "+" : ""}${v.toFixed(1)}%`, domainMin: -20, domainMax: 80 },
     // 10년승률·주간RSI(2026-09-02, 같은 날 국내·ETF·코인 확장): 본체 승률점수와 같은 배치(fetch-winrate-scores.ps1)가
     // sp500-sectors.json/kr-sectors.json/etf-crypto-map.js에 winRateScore/rsiWeekly로 병합 — 나스닥100 보기만 칩 숨김
-    winRateScore: { label: "우상향점수", hasData: true, get: (c) => c.winRateScore, fmt: (v) => `${v.toFixed(1)}점`, domainMin: 0, domainMax: 100 },
+    winRateScore: { label: "10년승률", hasData: true, get: (c) => c.winRateScore, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 100 },
     rsiWeekly: { label: "RSI", hasData: true, get: (c) => c.rsiWeekly, fmt: (v) => `${v.toFixed(1)}`, domainMin: 0, domainMax: 100 },
     // 상승률/하락률을 하나로 합쳐 근저(가장 큰 하락)~근고(가장 큰 상승)가 한 슬라이더 안에 전부 보이도록 함
     changePct: { label: "등락률", hasData: true, live: !isKr, get: (c) => c.changePercent, fmt: (v) => `${v.toFixed(1)}%` },
@@ -1750,8 +1750,7 @@ const quickSliderCtrl = createSliderController(
 const METRIC_DESCS = {
   changePct: "전일 종가 대비 오늘 주가가 얼마나 움직였는지예요.",
   popularStocks: "오늘 거래대금(사고판 금액) 순위 — 상위일수록 돈이 몰린 종목이에요.",
-  pressureScore: "거래대금·매출성장·3개월 모멘텀을 합친 자체 점수(10점 만점)예요.",
-  stabilityScore: "재무안정·시장대비 모멘텀·순이익률·시가총액을 합친 자체 점수(10점 만점)예요.",
+  ret10yAvg: "최근 10년 전체 상승률을 보유 연수로 나눈 연평균 상승률이에요(상장 10년 미만은 상장 후부터).",
   per: "주가 ÷ 주당순이익 — 낮을수록 이익 대비 저렴한 편이에요.",
   dividendYield: "현재 주가 대비 근근 1년 배당금 비율이에요.",
   week52RangePct: "52주 근저~근고 사이에서 지금 주가의 위치(0%=근저점 부근)예요.",
@@ -1762,25 +1761,8 @@ const METRIC_DESCS = {
   winRateScore: "최근 10년(최대 120개월) 중 전월보다 상승 마감한 달의 비율이에요(상장 10년 미만은 상장 후부터).",
   rsiWeekly: "주간 RSI(14) 현재값 — 30 미만은 과매도, 70 이상은 과매수 신호로 봐요.",
 };
-const SCORE_INFO_CONTENT = {
-  pressureScore: {
-    title: "📈 상승 압력 배점 방식 (10점 만점)",
-    html: `
-      <p><b>① 총 거래대금 (3점)</b><br>근근 5거래일 평균 거래대금 ÷ 1년 평균 — 2배 이상 만점, 0.5배 이하 0점</p>
-      <p><b>② 매출 성장성 (3점)</b><br>근근 분기 매출의 전년 동기 대비 성장률 — 30% 이상 만점, 0% 이하 0점</p>
-      <p><b>③ 상승 모멘텀 (4점)</b><br>근근 3개월 수익률 — 25% 이상 만점, 0% 이하 0점</p>
-      <p class="score-info-note">높을수록 단기 상승 여력이 크다고 보는 참고용 지표이며, 투자 자문이 아닙니다.</p>`,
-  },
-  stabilityScore: {
-    title: "🛡️ 투자 안정 배점 방식 (10점 만점)",
-    html: `
-      <p><b>① 재무안정 (4점)</b><br>채무 상환능력·수익 안정성·시장 신인도를 종합한 자체 신용 평가</p>
-      <p><b>② 시장 대비 모멘텀 (2점)</b><br>대표 지수와의 1년 수익률 차이 — 차이가 작을수록 만점</p>
-      <p><b>③ 순이익률 (2점)</b><br>순이익 ÷ 매출 — 50% 이상 만점, 적자 0점</p>
-      <p><b>④ 시가총액 가점 (2점)</b><br>전체 시장에서 차지하는 시가총액 비중이 클수록 가점</p>
-      <p class="score-info-note">높을수록 1년 후 하락 가능성이 낮다고 보는 참고용 지표이며, 투자 자문이 아닙니다.</p>`,
-  },
-};
+// 2026-09-04 개편: 상승압력·투자안정 삭제로 +자세히 배점 안내가 필요한 지표가 없어짐(버튼은 자동 숨김)
+const SCORE_INFO_CONTENT = {};
 
 function openRangeSheet(key) {
   closeCompanySheet();

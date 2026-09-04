@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260904a" />
+<link rel="stylesheet" href="style.css?v=20260904b" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -258,7 +258,7 @@
             </button>
           </div>
           <div id="summarySection" class="section-body"></div>
-          <div id="summaryScoreRow" class="mini-score-row"></div>
+          <div id="summaryScoreRow"></div>
         </section>
 
         <section class="flush-section" id="historicalInlineWrap" style="display:none;">
@@ -316,35 +316,12 @@
 
         <div class="summary-subtab-panel" data-summary-subtabpanel="investscore">
         <p class="invest-score-label">INVEST점수</p>
-
-        <section class="flush-section">
-          <h2 class="invest-score-h2">상승압력도</h2>
-          <div id="scoreSection" class="section-body"></div>
-        </section>
-
-        <section class="flush-section">
-          <div class="section-heading-row">
-            <h2 class="invest-score-h2">투자안정성 <span id="riskMaxNote" class="muted" style="font-size:12px;font-weight:500;"></span></h2>
-            <button type="button" id="futureRiskDetailBtn" class="score-method-detail-btn">+자세히</button>
-          </div>
-          <div id="futureRiskDetailWrap" class="chart-detail-wrap" style="display:none;">
-            <!-- 투자안정 백테스트(2026-09-03 사용자 요청): 1년간 상승/하락 상위 종목의 "1년 전 당시" 투자안정 점수 평균 — 전 섹션 공통 -->
-            <div id="stabilityBacktestBox"></div>
-            <!-- 점수별 분포도는 주식 전용 — ETF/코인 상세에서는 JS가 이 블록을 숨김 -->
-            <div id="futureRiskStockOnly">
-              <h3 class="future-chart-subheading">📊 투자안정성 점수별 작년 주가상승 분포도</h3>
-              <div id="futureRiskContainer" class="future-chart-container"></div>
-              <p class="chart-scroll-hint">&lt; 좌우 스크롤 &gt;</p>
-              <p id="futureRiskCaption" class="future-chart-caption"></p>
-            </div>
-          </div>
-          <div id="riskSection" class="section-body"></div>
-        </section>
+        <!-- 상승압력도·투자안정성 섹션은 2026-09-04 사용자 요청으로 삭제 — 개요의 9칸 지표 표(10년 승률/상승률/RSI)로 대체 -->
 
         <!-- 승률점수(2026-09-02): 최근 10년 월간 상승 개월수/총 개월수*100 — S&P500 미국주식 전용(DB에 없는 종목은 섹션째 숨김) -->
         <section class="flush-section" id="winRateFlushSection" style="display:none;">
           <div class="section-heading-row">
-            <h2 class="invest-score-h2">장기 우상향 점수</h2>
+            <h2 class="invest-score-h2">10년 승률</h2>
             <button type="button" id="winRateDetailBtn" class="score-method-detail-btn">+자세히</button>
           </div>
           <!-- +자세히(2026-09-03): 대표 자산 11종의 10년 승률 벤치마크(0~100 가로선+점 + 순위표) — renderWinRateBenchmarkDetail이 채움 -->
@@ -709,6 +686,11 @@
             <button type="button" class="theme-toggle-btn" id="colorSchemeGlobalBtn" data-scheme-choice="global" data-i18n="more.color.global">초록·빨강</button>
           </div>
         </div>
+        <!-- 접속자 관리(2026-09-04): 관리자(yeop2ad@gmail.com)로 로그인했을 때만 JS가 표시 -->
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelAuthAdminBtn" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M3.5 20c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M16 11l2 2 4-4"/></svg>
+          <span class="more-panel-item-label">접속자 관리</span>
+        </button>
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelNoticeBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h13l3 3-3 3H4V5Z" /><path d="M7 5v15" /></svg>
           <span class="more-panel-item-label" data-i18n="more.notice">공지사항</span>
@@ -777,7 +759,28 @@
   </footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
+  <!-- 구글 로그인 접근 게이트(2026-09-04 사용자 요청): 로그인 + 관리자 승인 전까지 전체 화면을 덮음 -->
+  <div id="authGate" class="auth-gate" style="display:none;">
+    <div class="auth-gate-card">
+      <img src="logos/marketmap-192.png" class="auth-gate-logo" alt="굴려볼까" />
+      <h2 class="auth-gate-title">굴려볼까</h2>
+      <p class="auth-gate-desc" id="authGateDesc">이 서비스는 구글 로그인 후<br>관리자 승인을 받은 계정만 이용할 수 있습니다.</p>
+      <div id="googleSignInBtn" class="auth-gate-google"></div>
+      <p class="auth-gate-status" id="authGateStatus"></p>
+    </div>
+  </div>
+
+  <!-- 관리자 접속자 관리 모달(더보기 > 접속자 관리) — 공지사항과 같은 chart-modal 패턴 -->
+  <div id="authAdminModal" class="chart-modal" style="display:none;">
+    <div class="chart-modal-header">
+      <span class="chart-modal-title">접속자 관리</span>
+      <button id="authAdminCloseBtn" class="chart-modal-close" type="button" aria-label="닫기">✕</button>
+    </div>
+    <div class="info-modal-body" id="authAdminBody"><p class="muted">불러오는 중...</p></div>
+  </div>
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="data/logo-db.js?v=20260903g"></script>
-  <script src="app.js?v=20260904a"></script>
+  <script src="app.js?v=20260904b"></script>
 </body>
 </html>

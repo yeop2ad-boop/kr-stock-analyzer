@@ -1027,6 +1027,158 @@ async function handleNaverAuth(request, env) {
   }
 }
 
+// ---------- 구글 로그인 접근 게이트(2026-09-04 사용자 요청) ----------
+// 사이트는 구글 로그인 + 관리자(yeop2ad@gmail.com) 승인이 있어야 이용 가능.
+// - POST /auth/google {credential}: 구글 ID 토큰(GIS)을 tokeninfo로 검증 → 관리자/승인 목록이면 세션 토큰 발급,
+//   아니면 대기 목록(auth_pending)에 기록하고 {status:"pending"} 반환
+// - POST /auth/session {sessionToken}: 세션 유효성 확인(+접속 기록) — 프론트가 부팅 때마다 호출
+// - POST /auth/admin {sessionToken, action, email}: 관리자 전용 — list(대기/승인/접속자 목록)·approve·revoke
+// 저장은 기존 CHAT_KV 재사용: auth_approved(승인 맵)·auth_pending(대기 맵)·auth_visits(접속 기록 맵)·sess_<token>(세션, TTL 30일)
+// 필요 환경변수: GOOGLE_CLIENT_ID (구글 클라우드 콘솔 OAuth 웹 클라이언트 ID — 프론트 GOOGLE_CLIENT_ID와 동일 값)
+const AUTH_ADMIN_EMAIL = "yeop2ad@gmail.com";
+const AUTH_SESSION_TTL_SEC = 30 * 24 * 60 * 60; // 30일
+
+async function kvGetJson(env, key, fallback) {
+  try {
+    const raw = await env.CHAT_KV.get(key);
+    if (!raw) return fallback;
+    const v = JSON.parse(raw);
+    return v && typeof v === "object" ? v : fallback;
+  } catch {
+    return fallback;
+  }
+}
+async function kvPutJson(env, key, value, opts) {
+  await env.CHAT_KV.put(key, JSON.stringify(value), opts);
+}
+
+async function recordVisit(env, email, name) {
+  const visits = await kvGetJson(env, "auth_visits", {});
+  const prev = visits[email] || { count: 0 };
+  visits[email] = { name: name || prev.name || null, count: (prev.count || 0) + 1, lastAt: Date.now(), firstAt: prev.firstAt || Date.now() };
+  await kvPutJson(env, "auth_visits", visits);
+}
+
+async function createSession(env, email, name) {
+  const token = crypto.randomUUID().replace(/-/g, "") + crypto.randomUUID().replace(/-/g, "");
+  await kvPutJson(env, "sess_" + token, { email, name: name || null, createdAt: Date.now() }, { expirationTtl: AUTH_SESSION_TTL_SEC });
+  return token;
+}
+
+async function getSession(env, sessionToken) {
+  if (!sessionToken || typeof sessionToken !== "string" || sessionToken.length > 200) return null;
+  return await kvGetJson(env, "sess_" + sessionToken, null);
+}
+
+async function isApprovedEmail(env, email) {
+  if (!email) return false;
+  if (email === AUTH_ADMIN_EMAIL) return true;
+  const approved = await kvGetJson(env, "auth_approved", {});
+  return !!approved[email];
+}
+
+async function handleGoogleAuth(request, env) {
+  if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
+  if (!env.GOOGLE_CLIENT_ID) return jsonResponse({ error: "GOOGLE_CLIENT_ID 환경변수가 설정되지 않았습니다." }, 500);
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonResponse({ error: "잘못된 요청입니다." }, 400);
+  }
+  const credential = body && body.credential;
+  if (!credential || typeof credential !== "string") return jsonResponse({ error: "credential이 필요합니다." }, 400);
+
+  // 구글 tokeninfo로 ID 토큰 검증(서명·만료 포함) — aud가 우리 클라이언트 ID인지 반드시 확인
+  const infoRes = await fetch("https://oauth2.googleapis.com/tokeninfo?id_token=" + encodeURIComponent(credential));
+  const info = await infoRes.json().catch(() => null);
+  if (!infoRes.ok || !info || info.aud !== env.GOOGLE_CLIENT_ID || info.email_verified !== "true" || !info.email) {
+    return jsonResponse({ error: "구글 인증에 실패했습니다." }, 401);
+  }
+  const email = String(info.email).toLowerCase();
+  const name = info.name || null;
+
+  if (await isApprovedEmail(env, email)) {
+    const sessionToken = await createSession(env, email, name);
+    await recordVisit(env, email, name);
+    // 승인된 뒤에는 대기 목록에서 제거
+    const pending = await kvGetJson(env, "auth_pending", {});
+    if (pending[email]) {
+      delete pending[email];
+      await kvPutJson(env, "auth_pending", pending);
+    }
+    return jsonResponse({ status: "ok", sessionToken, email, name, isAdmin: email === AUTH_ADMIN_EMAIL }, 200);
+  }
+
+  // 미승인 — 대기 목록에 기록(관리자가 더보기 > 접속자 관리에서 승인)
+  const pending = await kvGetJson(env, "auth_pending", {});
+  const prev = pending[email] || {};
+  pending[email] = { name: name || prev.name || null, firstAt: prev.firstAt || Date.now(), lastAt: Date.now() };
+  await kvPutJson(env, "auth_pending", pending);
+  return jsonResponse({ status: "pending", email, name }, 200);
+}
+
+async function handleSessionCheck(request, env) {
+  if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonResponse({ error: "잘못된 요청입니다." }, 400);
+  }
+  const sess = await getSession(env, body && body.sessionToken);
+  if (!sess) return jsonResponse({ status: "invalid" }, 200);
+  // 승인 취소된 계정은 세션이 남아 있어도 차단
+  if (!(await isApprovedEmail(env, sess.email))) {
+    await env.CHAT_KV.delete("sess_" + body.sessionToken);
+    return jsonResponse({ status: "invalid" }, 200);
+  }
+  await recordVisit(env, sess.email, sess.name);
+  return jsonResponse({ status: "ok", email: sess.email, name: sess.name, isAdmin: sess.email === AUTH_ADMIN_EMAIL }, 200);
+}
+
+async function handleAuthAdmin(request, env) {
+  if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonResponse({ error: "잘못된 요청입니다." }, 400);
+  }
+  const sess = await getSession(env, body && body.sessionToken);
+  if (!sess || sess.email !== AUTH_ADMIN_EMAIL) return jsonResponse({ error: "관리자만 사용할 수 있습니다." }, 403);
+
+  const action = body.action;
+  const targetEmail = typeof body.email === "string" ? body.email.toLowerCase() : null;
+
+  if (action === "approve" && targetEmail) {
+    const approved = await kvGetJson(env, "auth_approved", {});
+    const pending = await kvGetJson(env, "auth_pending", {});
+    approved[targetEmail] = { name: (pending[targetEmail] && pending[targetEmail].name) || null, approvedAt: Date.now() };
+    delete pending[targetEmail];
+    await kvPutJson(env, "auth_approved", approved);
+    await kvPutJson(env, "auth_pending", pending);
+  } else if (action === "revoke" && targetEmail) {
+    if (targetEmail === AUTH_ADMIN_EMAIL) return jsonResponse({ error: "관리자 계정은 차단할 수 없습니다." }, 400);
+    const approved = await kvGetJson(env, "auth_approved", {});
+    delete approved[targetEmail];
+    await kvPutJson(env, "auth_approved", approved);
+  } else if (action === "reject" && targetEmail) {
+    const pending = await kvGetJson(env, "auth_pending", {});
+    delete pending[targetEmail];
+    await kvPutJson(env, "auth_pending", pending);
+  } else if (action !== "list") {
+    return jsonResponse({ error: "지원하지 않는 action입니다." }, 400);
+  }
+
+  const [approved, pending, visits] = await Promise.all([
+    kvGetJson(env, "auth_approved", {}),
+    kvGetJson(env, "auth_pending", {}),
+    kvGetJson(env, "auth_visits", {}),
+  ]);
+  return jsonResponse({ status: "ok", approved, pending, visits, adminEmail: AUTH_ADMIN_EMAIL }, 200);
+}
+
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") {
@@ -1034,6 +1186,18 @@ export default {
     }
 
     const requestUrl = new URL(request.url);
+
+    if (requestUrl.pathname === "/auth/google" && request.method === "POST") {
+      return handleGoogleAuth(request, env);
+    }
+
+    if (requestUrl.pathname === "/auth/session" && request.method === "POST") {
+      return handleSessionCheck(request, env);
+    }
+
+    if (requestUrl.pathname === "/auth/admin" && request.method === "POST") {
+      return handleAuthAdmin(request, env);
+    }
 
     if (requestUrl.pathname === "/chat") {
       return handleChat(request, env);
