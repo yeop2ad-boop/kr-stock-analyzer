@@ -173,7 +173,7 @@ const AUTH_ORIGIN = "https://us-stock.yeop2ad.workers.dev";
 // ⚠️ 배포 전 준비: 구글 클라우드 콘솔에서 OAuth 웹 클라이언트 ID를 만들고(승인된 자바스크립트 출처에
 //   https://marketmap.kr 추가) 아래 GOOGLE_CLIENT_ID와 Worker 환경변수 GOOGLE_CLIENT_ID에 같은 값을 넣을 것.
 // 로컬 미리보기(localhost)는 GIS 출처 제한 때문에 게이트를 건너뜀(정적 사이트라 게이트는 화면 차단용).
-const GOOGLE_CLIENT_ID = "REPLACE_WITH_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = "1089794582807-3v9s9dol75rckgd27f7p32h2c9c27b5f.apps.googleusercontent.com";
 const AUTH_SESSION_KEY = "mm_session_token";
 const AUTH_STATE = { email: null, name: null, isAdmin: false };
 
