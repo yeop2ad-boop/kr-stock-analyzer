@@ -2149,7 +2149,7 @@ function surgeWarningEmoji(fiveDayExtremes) {
 const SURGE_WARNING_LEGEND = `
   <p class="muted" style="font-size:11px;margin:0 0 4px;opacity:0.65;">🔥 급등 · ⚠️ 급락 — ${SURGE_WARNING_TITLE}</p>
   <p class="muted" style="font-size:11px;margin:0 0 2px;opacity:0.65;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-    <span>📈 10년 상승 — 최근 10년 전체 상승률 ÷ 보유 연수(연평균 상승률)<br>🛡️ 10년 승률 — 최근 10년 매월 상승 마감한 비율(❗=상장 10년 미만)</span>
+    <span>📈 10년 상승 — 최근 10년 전체 상승률 ÷ 10(연간 상승률)<br>🛡️ 10년 승률 — 최근 10년 매월 상승 마감한 비율(❗=상장 10년 미만)</span>
   </p>
 `;
 
@@ -4167,7 +4167,7 @@ const RANKING_ENTRIES = [
   { icon: "trending-up", label: "상승률", tab: "trend", group: "market", run: () => runMovers("surge") },
   { icon: "trending-down", label: "하락률", tab: "trend", group: "market", run: () => runMovers("plunge") },
   // KR ETF/US ETF는 하단 ETF 섹션의 시장동향으로 이동(2026-09-01 사용자 요청) — openEtfTrend 참고
-  // 2026-09-04 개편: 상승 압력 → 10년 상승(연평균 상승률), 투자 안정 → 10년 승률(구 우상향점수와 통합, 명칭 통일)
+  // 2026-09-04 개편: 상승 압력 → 10년 상승(연간 상승률(전체 상승률÷10)), 투자 안정 → 10년 승률(구 우상향점수와 통합, 명칭 통일)
   { icon: "rocket", label: "10년 상승", tab: "trend", group: "market", run: () => runTrendRsiWinRate("ret"), orange: true },
   { icon: "medal", label: "10년 승률", tab: "trend", group: "market", run: () => runTrendRsiWinRate("winrate"), orange: true },
   { icon: "scale", label: "RSI 순위", tab: "trend", group: "market", run: () => runTrendRsiWinRate("rsi"), orange: true },
@@ -4445,7 +4445,7 @@ function renderWizardBranchCStyle() {
     <p class="wizard-question">자신의 투자스타일 중 한 가지를 선택해주세요.</p>
     <div class="wizard-root-options">
       <button type="button" class="wizard-root-option" data-wizard-action="branchC-style-short">
-        <b>A. 단기적인 수익을 원함(▲600%~▼60%)</b><br><span class="wizard-option-sub">(10년 연평균 상승률 높은 주식) — S&amp;P 500중 10년 상승 높은순위 30위까지</span>
+        <b>A. 단기적인 수익을 원함(▲600%~▼60%)</b><br><span class="wizard-option-sub">(10년 전체 상승률÷10이 높은 주식) — S&amp;P 500중 10년 상승 높은순위 30위까지</span>
       </button>
       <button type="button" class="wizard-root-option" data-wizard-action="branchC-style-long">
         <b>B. 장기적으로 안정적인 상승을 원함(▲60%~▼30%)</b><br><span class="wizard-option-sub">(10년간 매월 상승 마감 비율 높은 주식) — S&amp;P 500중 10년 승률 높은순위 30위까지</span>
@@ -4477,7 +4477,7 @@ async function wizardAttachPrices(rows) {
   });
   return rows;
 }
-// 자동찾기(2026-09-04 개편): 투자처별로 10년 상승(연평균 상승률)+10년 승률 합계 상위 30 —
+// 자동찾기(2026-09-04 개편): 투자처별로 10년 상승(연간 상승률(전체 상승률÷10))+10년 승률 합계 상위 30 —
 // 값은 전부 배치 DB(winrate-scores-us.json의 유니버스별 맵)에서 조회, 가격만 실시간 보충
 async function runBranchCConfirm() {
   const bodyEl = el("wizardBranchCResultBody");
@@ -8532,7 +8532,7 @@ function combinedRankTableHtml(rows, universeLabel, rowNameHtmlFn, priceStrFn) {
     )
     .join("");
   return `
-    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 중 거래대금(최근 5일 평균)이 큰 순 30개입니다. 10년 상승(연평균 상승률)·10년 승률은 매일 자동 갱신되는 배치 DB 기준이며 투자 자문이 아닙니다.</p>
+    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 중 거래대금(최근 5일 평균)이 큰 순 30개입니다. 10년 상승(연간 상승률(전체 상승률÷10))·10년 승률은 매일 자동 갱신되는 배치 DB 기준이며 투자 자문이 아닙니다.</p>
     <table class="top30-table">
       <thead><tr><th>순위</th><th>이름</th><th>현재가<br>(등락률)</th><th>10년<br>상승</th><th>10년<br>승률</th></tr></thead>
       <tbody>${body}</tbody>
@@ -8934,15 +8934,15 @@ const ASSET_TREND_METRICS = {
     cell: (r) => (r.changePct === null || r.changePct === undefined ? "N/A" : `<span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}">${fmtPct(r.changePct)}</span>`),
     note: "전일 종가 대비 당일 등락률 기준입니다.",
   },
-  // 2026-09-04 개편: 상승 압력 → 10년 상승(연평균 상승률), 투자 안정 → 삭제(10년 승률로 대체, winrate 항목과 통합)
+  // 2026-09-04 개편: 상승 압력 → 10년 상승(연간 상승률(전체 상승률÷10)), 투자 안정 → 삭제(10년 승률로 대체, winrate 항목과 통합)
   pressure: {
     icon: "rocket",
     label: "10년 상승",
-    header: "10년 상승<br>(연평균)",
+    header: "10년 상승<br>(전체÷10)",
     orange: true,
     sort: (a, b) => (b.ret10y ?? -Infinity) - (a.ret10y ?? -Infinity),
     cell: (r) => (r.ret10y === null || r.ret10y === undefined ? "N/A" : `<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>`),
-    note: "10년 상승(최근 10년 전체 상승률 ÷ 보유 연수 = 연평균 상승률, 상장 10년 미만은 상장 후부터)이 높은 순 순위입니다.",
+    note: "10년 상승(최근 10년 전체 상승률 ÷ 10 = 연간 상승률, 상장 10년 미만은 상장 후 전체 상승률 ÷ 10)이 높은 순 순위입니다.",
     noRiskCol: true,
     gradeHeader: "10년<br>승률",
     gradeCell: (r) => (r.winRate === null || r.winRate === undefined ? "N/A" : `${r.winRate}%`),
@@ -10661,7 +10661,7 @@ function historicalTableHtml(rows, rankColumnLabel, periodLabel = "1년전") {
     .join("");
 
   return `
-    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 10년 상승(최근 10년 연평균 상승률)·10년 승률(10년 월간 상승 마감 비율)은 매일 갱신되는 배치 DB의 현재값 기준 참고용 지표입니다. 투자 자문이 아닙니다.</p>
+    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 10년 상승(최근 10년 연간 상승률(전체 상승률÷10))·10년 승률(10년 월간 상승 마감 비율)은 매일 갱신되는 배치 DB의 현재값 기준 참고용 지표입니다. 투자 자문이 아닙니다.</p>
     <table class="top30-table">
       <thead>
         <tr><th>${rankColumnLabel}</th><th>기업명</th><th>현재가<br>(등락률)</th><th>10년<br>상승</th><th>10년<br>승률</th></tr>
@@ -10926,7 +10926,7 @@ async function runHistoricalMoversKr(period, direction, initialCount) {
       historicalStatus.style.display = "none";
 
       historicalResults.innerHTML = `
-        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${periodLabel}(코스피200+코스닥150 대상) 대비 ${rankLabel} 기준이며, 10년 상승(연평균 상승률)·10년 승률은 매일 갱신되는 배치 DB 기준입니다. 투자 자문이 아닙니다.</p>
+        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${periodLabel}(코스피200+코스닥150 대상) 대비 ${rankLabel} 기준이며, 10년 상승(연간 상승률(전체 상승률÷10))·10년 승률은 매일 갱신되는 배치 DB 기준입니다. 투자 자문이 아닙니다.</p>
         <p class="muted" style="font-size:12px;">시가총액 상위 ${top50.length}개 확인</p>
         <table class="top30-table">
           <thead><tr><th>${rankLabel}<br>순위</th><th>기업명</th><th>현재가<br>(등락률)</th><th>10년<br>상승</th><th>10년<br>승률</th></tr></thead>
@@ -10982,7 +10982,7 @@ async function runHistoricalMoversAsset(section, period, direction) {
     await attachWinRateRsiToRows(ranked, isEtf ? "scoresEtf" : "scoresCrypto"); // 10년 상승·10년 승률 열(2026-09-04)
     historicalStatus.style.display = "none";
     historicalResults.innerHTML = `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 ${periodLabel} 대비 ${rankLabel} 순위이며, 10년 상승(연평균 상승률)·10년 승률은 매일 갱신되는 배치 DB 기준입니다. 투자 자문이 아닙니다.</p>
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 ${periodLabel} 대비 ${rankLabel} 순위이며, 10년 상승(연간 상승률(전체 상승률÷10))·10년 승률은 매일 갱신되는 배치 DB 기준입니다. 투자 자문이 아닙니다.</p>
       <table class="top30-table">
         <thead><tr><th>${rankLabel}<br>순위</th><th>이름</th><th>현재가<br>(${periodLabel} 대비)</th><th>10년<br>상승</th><th>10년<br>승률</th></tr></thead>
         <tbody>${ranked
@@ -11070,7 +11070,7 @@ function moversTableHtml(scored, rankNote) {
     .join("");
 
   return `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${rankNote} 10년 상승(연평균 상승률)·10년 승률은 매일 갱신되는 배치 DB 기준이며 투자 자문이 아닙니다.</p>
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${rankNote} 10년 상승(연간 상승률(전체 상승률÷10))·10년 승률은 매일 갱신되는 배치 DB 기준이며 투자 자문이 아닙니다.</p>
       ${SURGE_WARNING_LEGEND}
       <div class="popular-table-wrap">
         <table class="top30-table popular-table">
@@ -12647,7 +12647,7 @@ function rsiRankCellHtml(rsi) {
 }
 async function runTrendRsiWinRate(mode) {
   const isRsi = mode === "rsi";
-  const isRet = mode === "ret"; // 10년 상승(연평균 상승률) 순위 — 2026-09-04 상승압력 대체
+  const isRet = mode === "ret"; // 10년 상승(연간 상승률(전체 상승률÷10)) 순위 — 2026-09-04 상승압력 대체
   const label = isRsi ? "RSI 순위" : isRet ? "10년 상승" : "10년 승률";
   const statusEl = trendStatus;
   const resultsEl = trendResults;
@@ -12759,7 +12759,7 @@ async function runTrendRsiWinRate(mode) {
           isRsi
             ? `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — 주간 RSI(14)가 낮은 순(과매도부터 1등) 순위입니다. <b style="color:#22a866;">30 미만 과매도(초록)</b>·<b style="color:#ef4444;">70 이상 과매수(빨강)</b>, 참고용 기술적 지표이며 투자 자문이 아닙니다.</p>`
             : isRet
-            ? `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — 10년 상승(최근 10년 전체 상승률 ÷ 보유 연수 = 연평균 상승률, 상장 10년 미만은 상장 후부터)이 높은 순 순위입니다. 참고용 지표이며 투자 자문이 아닙니다.</p>`
+            ? `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — 10년 상승(최근 10년 전체 상승률 ÷ 10 = 연간 상승률, 상장 10년 미만은 상장 후 전체 상승률 ÷ 10)이 높은 순 순위입니다. 참고용 지표이며 투자 자문이 아닙니다.</p>`
             : `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — 10년 승률(최근 10년 월봉 기준 상승 개월수/총 개월수×100, 상장 10년 미만은 상장 후부터 집계·❗ 표시)이 높은 순 순위입니다. 참고용 지표이며 투자 자문이 아닙니다.</p>`
         }
         ${topCapNoteHtml(cursor, tickers.length, hasMore)}
@@ -14169,7 +14169,7 @@ async function renderFutureModalHeader(ticker, quote, metricsPromise, marketRetu
     const scoresEl = el("futureModalScores");
     if (scoresEl) {
       scoresEl.innerHTML = `
-        <span class="mini-score-circle small" title="10년 상승(연평균 상승률)">${ret10}</span>
+        <span class="mini-score-circle small" title="10년 상승(연간 상승률(전체 상승률÷10))">${ret10}</span>
         <span class="mini-score-circle small risk" title="10년 승률">${wr10}</span>
         ${macroBadgeHtml}
       `;

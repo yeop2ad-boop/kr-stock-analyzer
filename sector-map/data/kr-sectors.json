@@ -78,7 +78,7 @@
                           "stabilityScore":  7.2,
                           "winRateScore":  59.6,
                           "rsiWeekly":  50.9,
-                          "ret10yAvg":  290
+                          "ret10yAvg":  137.8
                       },
                       {
                           "symbol":  "009150.KS",
@@ -520,7 +520,7 @@
                           "stabilityScore":  6.2,
                           "winRateScore":  57.8,
                           "rsiWeekly":  53,
-                          "ret10yAvg":  20.3
+                          "ret10yAvg":  15.2
                       },
                       {
                           "symbol":  "034730.KS",
@@ -598,7 +598,7 @@
                           "stabilityScore":  3.5,
                           "winRateScore":  41.8,
                           "rsiWeekly":  46.9,
-                          "ret10yAvg":  -2.8
+                          "ret10yAvg":  -1.3
                       },
                       {
                           "symbol":  "267260.KS",
@@ -624,7 +624,7 @@
                           "stabilityScore":  4.4,
                           "winRateScore":  51.4,
                           "rsiWeekly":  42.3,
-                          "ret10yAvg":  111
+                          "ret10yAvg":  102.7
                       },
                       {
                           "symbol":  "009540.KS",
@@ -676,7 +676,7 @@
                           "stabilityScore":  5.5,
                           "winRateScore":  56.4,
                           "rsiWeekly":  45,
-                          "ret10yAvg":  55.7
+                          "ret10yAvg":  54.3
                       },
                       {
                           "symbol":  "010120.KS",
@@ -728,7 +728,7 @@
                           "stabilityScore":  3.3,
                           "winRateScore":  52.5,
                           "rsiWeekly":  36.8,
-                          "ret10yAvg":  55.3
+                          "ret10yAvg":  27.2
                       },
                       {
                           "symbol":  "033780.KS",
@@ -832,7 +832,7 @@
                           "stabilityScore":  3.7,
                           "winRateScore":  57.7,
                           "rsiWeekly":  47.6,
-                          "ret10yAvg":  557.1
+                          "ret10yAvg":  450.3
                       },
                       {
                           "symbol":  "035720.KS",
@@ -1040,7 +1040,7 @@
                           "stabilityScore":  3.6,
                           "winRateScore":  52.3,
                           "rsiWeekly":  52.7,
-                          "ret10yAvg":  19
+                          "ret10yAvg":  17.6
                       },
                       {
                           "symbol":  "003550.KS",
@@ -1196,7 +1196,7 @@
                           "stabilityScore":  2.6,
                           "winRateScore":  70,
                           "rsiWeekly":  53.6,
-                          "ret10yAvg":  284.8
+                          "ret10yAvg":  71.2
                       },
                       {
                           "symbol":  "010130.KS",
@@ -1482,7 +1482,7 @@
                           "stabilityScore":  5.6,
                           "winRateScore":  41.7,
                           "rsiWeekly":  46,
-                          "ret10yAvg":  -13.6
+                          "ret10yAvg":  -6.8
                       },
                       {
                           "symbol":  "011200.KS",
@@ -1560,7 +1560,7 @@
                           "stabilityScore":  1.4,
                           "winRateScore":  45,
                           "rsiWeekly":  38.7,
-                          "ret10yAvg":  -11.3
+                          "ret10yAvg":  -5.6
                       },
                       {
                           "symbol":  "010950.KS",
@@ -1768,7 +1768,7 @@
                           "stabilityScore":  3.6,
                           "winRateScore":  60.5,
                           "rsiWeekly":  41.4,
-                          "ret10yAvg":  94.8
+                          "ret10yAvg":  64.0
                       },
                       {
                           "symbol":  "006260.KS",
@@ -2106,7 +2106,7 @@
                           "stabilityScore":  3.8,
                           "winRateScore":  55.6,
                           "rsiWeekly":  51,
-                          "ret10yAvg":  25.8
+                          "ret10yAvg":  5.8
                       },
                       {
                           "symbol":  "010060.KS",
@@ -2210,7 +2210,7 @@
                           "stabilityScore":  4.0,
                           "winRateScore":  50,
                           "rsiWeekly":  50.1,
-                          "ret10yAvg":  32
+                          "ret10yAvg":  4.8
                       },
                       {
                           "symbol":  "267270.KS",
@@ -2236,7 +2236,7 @@
                           "stabilityScore":  2.6,
                           "winRateScore":  52.3,
                           "rsiWeekly":  52.2,
-                          "ret10yAvg":  6.8
+                          "ret10yAvg":  6.3
                       },
                       {
                           "symbol":  "326030.KS",
@@ -2262,7 +2262,7 @@
                           "stabilityScore":  2.3,
                           "winRateScore":  50.7,
                           "rsiWeekly":  44,
-                          "ret10yAvg":  -7.8
+                          "ret10yAvg":  -4.7
                       },
                       {
                           "symbol":  "001440.KS",
@@ -2366,7 +2366,7 @@
                           "stabilityScore":  3.4,
                           "winRateScore":  51.3,
                           "rsiWeekly":  49.3,
-                          "ret10yAvg":  7.7
+                          "ret10yAvg":  7.5
                       },
                       {
                           "symbol":  "034220.KS",
@@ -2418,7 +2418,7 @@
                           "stabilityScore":  3.0,
                           "winRateScore":  52,
                           "rsiWeekly":  50.7,
-                          "ret10yAvg":  181.5
+                          "ret10yAvg":  37.8
                       },
                       {
                           "symbol":  "000990.KS",
@@ -2496,7 +2496,7 @@
                           "stabilityScore":  4.5,
                           "winRateScore":  51.7,
                           "rsiWeekly":  45.1,
-                          "ret10yAvg":  53.1
+                          "ret10yAvg":  39.4
                       },
                       {
                           "symbol":  "271560.KS",
@@ -2522,7 +2522,7 @@
                           "stabilityScore":  1.3,
                           "winRateScore":  50.5,
                           "rsiWeekly":  46.5,
-                          "ret10yAvg":  5.3
+                          "ret10yAvg":  4.8
                       },
                       {
                           "symbol":  "051900.KS",
@@ -2626,7 +2626,7 @@
                           "stabilityScore":  0.6,
                           "winRateScore":  47.1,
                           "rsiWeekly":  43,
-                          "ret10yAvg":  -10.1
+                          "ret10yAvg":  -2.9
                       },
                       {
                           "symbol":  "047050.KS",
@@ -2782,7 +2782,7 @@
                           "stabilityScore":  1.6,
                           "winRateScore":  40,
                           "rsiWeekly":  47.1,
-                          "ret10yAvg":  -2.6
+                          "ret10yAvg":  -0.3
                       },
                       {
                           "symbol":  "011790.KS",
@@ -2860,7 +2860,7 @@
                           "stabilityScore":  3.9,
                           "winRateScore":  55.2,
                           "rsiWeekly":  54.6,
-                          "ret10yAvg":  5.5
+                          "ret10yAvg":  3.1
                       },
                       {
                           "symbol":  "192820.KS",
@@ -3146,7 +3146,7 @@
                           "stabilityScore":  0.6,
                           "winRateScore":  40.4,
                           "rsiWeekly":  50.2,
-                          "ret10yAvg":  -15.6
+                          "ret10yAvg":  -7.4
                       },
                       {
                           "symbol":  "111770.KS",
@@ -3302,7 +3302,7 @@
                           "stabilityScore":  0.6,
                           "winRateScore":  39.4,
                           "rsiWeekly":  37.8,
-                          "ret10yAvg":  -29.6
+                          "ret10yAvg":  -8.1
                       },
                       {
                           "symbol":  "036460.KS",
@@ -3458,7 +3458,7 @@
                           "stabilityScore":  1.0,
                           "winRateScore":  48.7,
                           "rsiWeekly":  43.1,
-                          "ret10yAvg":  -24.8
+                          "ret10yAvg":  -8.1
                       },
                       {
                           "symbol":  "008930.KS",
@@ -3510,7 +3510,7 @@
                           "stabilityScore":  1.0,
                           "winRateScore":  45.2,
                           "rsiWeekly":  60.3,
-                          "ret10yAvg":  -3.6
+                          "ret10yAvg":  -3.1
                       },
                       {
                           "symbol":  "081660.KS",
@@ -3666,7 +3666,7 @@
                           "stabilityScore":  2.6,
                           "winRateScore":  42.3,
                           "rsiWeekly":  35.3,
-                          "ret10yAvg":  -8.3
+                          "ret10yAvg":  -7.7
                       },
                       {
                           "symbol":  "120110.KS",
@@ -3822,7 +3822,7 @@
                           "stabilityScore":  0.3,
                           "winRateScore":  38.5,
                           "rsiWeekly":  44.8,
-                          "ret10yAvg":  -13.9
+                          "ret10yAvg":  -7.5
                       },
                       {
                           "symbol":  "023530.KS",
@@ -3978,7 +3978,7 @@
                           "stabilityScore":  1.7,
                           "winRateScore":  47.6,
                           "rsiWeekly":  45.5,
-                          "ret10yAvg":  -7.8
+                          "ret10yAvg":  -4.1
                       },
                       {
                           "symbol":  "005850.KS",
@@ -4030,7 +4030,7 @@
                           "stabilityScore":  3.1,
                           "winRateScore":  50.5,
                           "rsiWeekly":  51.3,
-                          "ret10yAvg":  10.7
+                          "ret10yAvg":  8.6
                       },
                       {
                           "symbol":  "073240.KS",
@@ -4394,7 +4394,7 @@
                           "stabilityScore":  1.1,
                           "winRateScore":  42.9,
                           "rsiWeekly":  43.7,
-                          "ret10yAvg":  -17.4
+                          "ret10yAvg":  -9.1
                       },
                       {
                           "symbol":  "185750.KS",
@@ -4524,7 +4524,7 @@
                           "stabilityScore":  2.5,
                           "winRateScore":  42.7,
                           "rsiWeekly":  57,
-                          "ret10yAvg":  -2.8
+                          "ret10yAvg":  -2.4
                       },
                       {
                           "symbol":  "000080.KS",
@@ -4654,7 +4654,7 @@
                           "stabilityScore":  1.0,
                           "winRateScore":  48.7,
                           "rsiWeekly":  44.1,
-                          "ret10yAvg":  -10.7
+                          "ret10yAvg":  -3.5
                       },
                       {
                           "symbol":  "280360.KS",
@@ -4758,7 +4758,7 @@
                           "stabilityScore":  0.4,
                           "winRateScore":  59.8,
                           "rsiWeekly":  44.5,
-                          "ret10yAvg":  1.2
+                          "ret10yAvg":  1.0
                       },
                       {
                           "symbol":  "005300.KS",
@@ -4810,7 +4810,7 @@
                           "stabilityScore":  2.7,
                           "winRateScore":  53.1,
                           "rsiWeekly":  56.3,
-                          "ret10yAvg":  1.6
+                          "ret10yAvg":  1.3
                       },
                       {
                           "symbol":  "003090.KS",
@@ -4940,7 +4940,7 @@
                           "stabilityScore":  0.1,
                           "winRateScore":  32.8,
                           "rsiWeekly":  38.2,
-                          "ret10yAvg":  -17.2
+                          "ret10yAvg":  -8.7
                       },
                       {
                           "symbol":  "071320.KS",
@@ -5148,7 +5148,7 @@
                           "stabilityScore":  1.1,
                           "winRateScore":  50.5,
                           "rsiWeekly":  57.1,
-                          "ret10yAvg":  12.2
+                          "ret10yAvg":  11.3
                       },
                       {
                           "symbol":  "000880.KS",
@@ -5252,7 +5252,7 @@
                           "stabilityScore":  1.5,
                           "winRateScore":  50.6,
                           "rsiWeekly":  37,
-                          "ret10yAvg":  80.3
+                          "ret10yAvg":  59.6
                       },
                       {
                           "symbol":  "036930.KQ",
@@ -5382,7 +5382,7 @@
                           "stabilityScore":  1.3,
                           "winRateScore":  57.6,
                           "rsiWeekly":  43.7,
-                          "ret10yAvg":  328.4
+                          "ret10yAvg":  180.6
                       },
                       {
                           "symbol":  "039030.KQ",
@@ -5460,7 +5460,7 @@
                           "stabilityScore":  0.2,
                           "winRateScore":  46.7,
                           "rsiWeekly":  34,
-                          "ret10yAvg":  39.1
+                          "ret10yAvg":  30.0
                       },
                       {
                           "symbol":  "403870.KQ",
@@ -5486,7 +5486,7 @@
                           "stabilityScore":  3.4,
                           "winRateScore":  49,
                           "rsiWeekly":  54.8,
-                          "ret10yAvg":  49.1
+                          "ret10yAvg":  20.0
                       },
                       {
                           "symbol":  "108490.KQ",
@@ -5512,7 +5512,7 @@
                           "stabilityScore":  2.7,
                           "winRateScore":  52.1,
                           "rsiWeekly":  58.5,
-                          "ret10yAvg":  178.3
+                          "ret10yAvg":  139.7
                       },
                       {
                           "symbol":  "222800.KQ",
@@ -5694,7 +5694,7 @@
                           "stabilityScore":  0.7,
                           "winRateScore":  66.7,
                           "rsiWeekly":  40.3,
-                          "ret10yAvg":  246.4
+                          "ret10yAvg":  55.4
                       },
                       {
                           "symbol":  "032820.KQ",
@@ -5746,7 +5746,7 @@
                           "stabilityScore":  1.2,
                           "winRateScore":  51.3,
                           "rsiWeekly":  39.5,
-                          "ret10yAvg":  26.5
+                          "ret10yAvg":  25.0
                       },
                       {
                           "symbol":  "084370.KQ",
@@ -5798,7 +5798,7 @@
                           "stabilityScore":  0.7,
                           "winRateScore":  62,
                           "rsiWeekly":  42.5,
-                          "ret10yAvg":  88.4
+                          "ret10yAvg":  36.8
                       },
                       {
                           "symbol":  "226950.KQ",
@@ -5824,7 +5824,7 @@
                           "stabilityScore":  0.7,
                           "winRateScore":  52.6,
                           "rsiWeekly":  41.4,
-                          "ret10yAvg":  28.9
+                          "ret10yAvg":  23.4
                       },
                       {
                           "symbol":  "067310.KQ",
@@ -5928,7 +5928,7 @@
                           "stabilityScore":  1.5,
                           "winRateScore":  50.8,
                           "rsiWeekly":  58.4,
-                          "ret10yAvg":  282.4
+                          "ret10yAvg":  138.8
                       },
                       {
                           "symbol":  "098460.KQ",
@@ -6032,7 +6032,7 @@
                           "stabilityScore":  1.3,
                           "winRateScore":  54.2,
                           "rsiWeekly":  44.7,
-                          "ret10yAvg":  82.9
+                          "ret10yAvg":  66.3
                       },
                       {
                           "symbol":  "058610.KQ",
@@ -6136,7 +6136,7 @@
                           "stabilityScore":  1.6,
                           "winRateScore":  51.4,
                           "rsiWeekly":  47.5,
-                          "ret10yAvg":  7.9
+                          "ret10yAvg":  4.7
                       },
                       {
                           "symbol":  "131290.KQ",
@@ -6188,7 +6188,7 @@
                           "stabilityScore":  1.3,
                           "winRateScore":  48.3,
                           "rsiWeekly":  45.5,
-                          "ret10yAvg":  125.8
+                          "ret10yAvg":  91.2
                       },
                       {
                           "symbol":  "475830.KQ",
@@ -6214,7 +6214,7 @@
                           "stabilityScore":  1.4,
                           "winRateScore":  60,
                           "rsiWeekly":  43.7,
-                          "ret10yAvg":  149.8
+                          "ret10yAvg":  18.7
                       },
                       {
                           "symbol":  "039200.KQ",
@@ -6370,7 +6370,7 @@
                           "stabilityScore":  1.4,
                           "winRateScore":  52.3,
                           "rsiWeekly":  44,
-                          "ret10yAvg":  0.6
+                          "ret10yAvg":  0.5
                       },
                       {
                           "symbol":  "323280.KQ",
@@ -6396,7 +6396,7 @@
                           "stabilityScore":  1.2,
                           "winRateScore":  46.5,
                           "rsiWeekly":  47.1,
-                          "ret10yAvg":  266.1
+                          "ret10yAvg":  190.7
                       },
                       {
                           "symbol":  "035900.KQ",
@@ -6448,7 +6448,7 @@
                           "stabilityScore":  1.2,
                           "winRateScore":  50,
                           "rsiWeekly":  39,
-                          "ret10yAvg":  86
+                          "ret10yAvg":  67.4
                       },
                       {
                           "symbol":  "041510.KQ",
@@ -6682,7 +6682,7 @@
                           "stabilityScore":  2.9,
                           "winRateScore":  52.9,
                           "rsiWeekly":  59.3,
-                          "ret10yAvg":  184.5
+                          "ret10yAvg":  133.8
                       },
                       {
                           "symbol":  "241710.KQ",
@@ -6708,7 +6708,7 @@
                           "stabilityScore":  2.3,
                           "winRateScore":  45.8,
                           "rsiWeekly":  67.2,
-                          "ret10yAvg":  42.6
+                          "ret10yAvg":  41.9
                       },
                       {
                           "symbol":  "218410.KQ",
@@ -6812,7 +6812,7 @@
                           "stabilityScore":  0.7,
                           "winRateScore":  59.1,
                           "rsiWeekly":  37.4,
-                          "ret10yAvg":  104.5
+                          "ret10yAvg":  19.2
                       },
                       {
                           "symbol":  "101490.KQ",
@@ -6864,7 +6864,7 @@
                           "stabilityScore":  0.6,
                           "winRateScore":  61.1,
                           "rsiWeekly":  41.9,
-                          "ret10yAvg":  3.4
+                          "ret10yAvg":  1.0
                       },
                       {
                           "symbol":  "043260.KQ",
@@ -6942,7 +6942,7 @@
                           "stabilityScore":  0,
                           "winRateScore":  42.9,
                           "rsiWeekly":  33.1,
-                          "ret10yAvg":  0.9
+                          "ret10yAvg":  0.4
                       },
                       {
                           "symbol":  "420770.KQ",
@@ -6968,7 +6968,7 @@
                           "stabilityScore":  2.3,
                           "winRateScore":  38.5,
                           "rsiWeekly":  46.4,
-                          "ret10yAvg":  1.9
+                          "ret10yAvg":  0.6
                       },
                       {
                           "symbol":  "195940.KQ",
@@ -6994,7 +6994,7 @@
                           "stabilityScore":  0.8,
                           "winRateScore":  51.7,
                           "rsiWeekly":  46.4,
-                          "ret10yAvg":  -4
+                          "ret10yAvg":  -2
                       },
                       {
                           "symbol":  "183300.KQ",
@@ -7020,7 +7020,7 @@
                           "stabilityScore":  1.6,
                           "winRateScore":  53.1,
                           "rsiWeekly":  46.7,
-                          "ret10yAvg":  61.3
+                          "ret10yAvg":  57.7
                       },
                       {
                           "symbol":  "166090.KQ",
@@ -7046,7 +7046,7 @@
                           "stabilityScore":  2.2,
                           "winRateScore":  50.9,
                           "rsiWeekly":  42.7,
-                          "ret10yAvg":  49.3
+                          "ret10yAvg":  46.0
                       },
                       {
                           "symbol":  "085660.KQ",
@@ -7176,7 +7176,7 @@
                           "stabilityScore":  1.0,
                           "winRateScore":  53.4,
                           "rsiWeekly":  40.2,
-                          "ret10yAvg":  29.5
+                          "ret10yAvg":  29.0
                       },
                       {
                           "symbol":  "065350.KQ",
@@ -7228,7 +7228,7 @@
                           "stabilityScore":  0,
                           "winRateScore":  48.8,
                           "rsiWeekly":  37.8,
-                          "ret10yAvg":  -4.1
+                          "ret10yAvg":  -1.4
                       },
                       {
                           "symbol":  "090360.KQ",
@@ -7384,7 +7384,7 @@
                           "stabilityScore":  0.4,
                           "winRateScore":  50.9,
                           "rsiWeekly":  37.4,
-                          "ret10yAvg":  6.9
+                          "ret10yAvg":  6.3
                       },
                       {
                           "symbol":  "003380.KQ",
@@ -7436,7 +7436,7 @@
                           "stabilityScore":  0.7,
                           "winRateScore":  52.9,
                           "rsiWeekly":  36.5,
-                          "ret10yAvg":  52.2
+                          "ret10yAvg":  45.2
                       },
                       {
                           "symbol":  "032500.KQ",
@@ -7514,7 +7514,7 @@
                           "stabilityScore":  0.6,
                           "winRateScore":  43.8,
                           "rsiWeekly":  40.8,
-                          "ret10yAvg":  -24.8
+                          "ret10yAvg":  -6.6
                       },
                       {
                           "symbol":  "074600.KQ",
@@ -7618,7 +7618,7 @@
                           "stabilityScore":  0,
                           "winRateScore":  41.4,
                           "rsiWeekly":  37.3,
-                          "ret10yAvg":  -16.7
+                          "ret10yAvg":  -8.1
                       },
                       {
                           "symbol":  "232140.KQ",
@@ -7670,7 +7670,7 @@
                           "stabilityScore":  0.1,
                           "winRateScore":  38,
                           "rsiWeekly":  42.8,
-                          "ret10yAvg":  -13.6
+                          "ret10yAvg":  -8.0
                       },
                       {
                           "symbol":  "437730.KQ",
@@ -7696,7 +7696,7 @@
                           "stabilityScore":  2.1,
                           "winRateScore":  55.2,
                           "rsiWeekly":  42.9,
-                          "ret10yAvg":  72.7
+                          "ret10yAvg":  17.6
                       },
                       {
                           "symbol":  "222080.KQ",
@@ -7748,7 +7748,7 @@
                           "stabilityScore":  0.4,
                           "winRateScore":  49.1,
                           "rsiWeekly":  40.9,
-                          "ret10yAvg":  38.5
+                          "ret10yAvg":  17.0
                       },
                       {
                           "symbol":  "014620.KQ",
@@ -7826,7 +7826,7 @@
                           "stabilityScore":  2.2,
                           "winRateScore":  56,
                           "rsiWeekly":  44.2,
-                          "ret10yAvg":  90.2
+                          "ret10yAvg":  18.8
                       },
                       {
                           "symbol":  "035760.KQ",
@@ -7904,7 +7904,7 @@
                           "stabilityScore":  0.6,
                           "winRateScore":  48.1,
                           "rsiWeekly":  52,
-                          "ret10yAvg":  11.9
+                          "ret10yAvg":  7.6
                       },
                       {
                           "symbol":  "082270.KQ",
@@ -7982,7 +7982,7 @@
                           "stabilityScore":  2.5,
                           "winRateScore":  43.9,
                           "rsiWeekly":  47.6,
-                          "ret10yAvg":  24.8
+                          "ret10yAvg":  22.1
                       },
                       {
                           "symbol":  "025320.KQ",
@@ -8112,7 +8112,7 @@
                           "stabilityScore":  1.2,
                           "winRateScore":  40.2,
                           "rsiWeekly":  32.5,
-                          "ret10yAvg":  -8.8
+                          "ret10yAvg":  -7.5
                       },
                       {
                           "symbol":  "033500.KQ",
@@ -8216,7 +8216,7 @@
                           "stabilityScore":  0.1,
                           "winRateScore":  42.9,
                           "rsiWeekly":  36.3,
-                          "ret10yAvg":  -7.7
+                          "ret10yAvg":  -6.7
                       },
                       {
                           "symbol":  "399720.KQ",
@@ -8242,7 +8242,7 @@
                           "stabilityScore":  0.4,
                           "winRateScore":  47.1,
                           "rsiWeekly":  43.7,
-                          "ret10yAvg":  11.7
+                          "ret10yAvg":  5.0
                       },
                       {
                           "symbol":  "067160.KQ",
@@ -8372,7 +8372,7 @@
                           "stabilityScore":  2.7,
                           "winRateScore":  57.6,
                           "rsiWeekly":  41.1,
-                          "ret10yAvg":  50.9
+                          "ret10yAvg":  14.0
                       },
                       {
                           "symbol":  "015750.KQ",
@@ -8450,7 +8450,7 @@
                           "stabilityScore":  1.8,
                           "winRateScore":  50,
                           "rsiWeekly":  47.9,
-                          "ret10yAvg":  23.4
+                          "ret10yAvg":  2.3
                       },
                       {
                           "symbol":  "030520.KQ",
@@ -8502,7 +8502,7 @@
                           "stabilityScore":  0.2,
                           "winRateScore":  42.9,
                           "rsiWeekly":  32.5,
-                          "ret10yAvg":  -1.9
+                          "ret10yAvg":  -1.1
                       },
                       {
                           "symbol":  "251970.KQ",
@@ -8528,7 +8528,7 @@
                           "stabilityScore":  1.0,
                           "winRateScore":  49.4,
                           "rsiWeekly":  59.2,
-                          "ret10yAvg":  34.8
+                          "ret10yAvg":  24.6
                       },
                       {
                           "symbol":  "060280.KQ",
@@ -8632,7 +8632,7 @@
                           "stabilityScore":  1.1,
                           "winRateScore":  50.5,
                           "rsiWeekly":  39.7,
-                          "ret10yAvg":  -4.3
+                          "ret10yAvg":  -3.9
                       },
                       {
                           "symbol":  "009520.KQ",
@@ -8710,7 +8710,7 @@
                           "stabilityScore":  0.5,
                           "winRateScore":  48.9,
                           "rsiWeekly":  46.1,
-                          "ret10yAvg":  -5.8
+                          "ret10yAvg":  -4.4
                       },
                       {
                           "symbol":  "036620.KQ",
@@ -8814,7 +8814,7 @@
                           "stabilityScore":  1.3,
                           "winRateScore":  35.1,
                           "rsiWeekly":  31.9,
-                          "ret10yAvg":  -16.5
+                          "ret10yAvg":  -7.8
                       },
                       {
                           "symbol":  "253590.KQ",
@@ -8840,7 +8840,7 @@
                           "stabilityScore":  1.5,
                           "winRateScore":  49,
                           "rsiWeekly":  46.5,
-                          "ret10yAvg":  52.9
+                          "ret10yAvg":  44.1
                       },
                       {
                           "symbol":  "095660.KQ",
@@ -9048,7 +9048,7 @@
                           "stabilityScore":  0.3,
                           "winRateScore":  49.2,
                           "rsiWeekly":  44.9,
-                          "ret10yAvg":  -5.6
+                          "ret10yAvg":  -2.9
                       }
                   ],
     "ratiosUpdatedAt":  "2026-09-01T09:17:08Z",
