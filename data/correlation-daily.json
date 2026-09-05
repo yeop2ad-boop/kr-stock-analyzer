@@ -1,0 +1,544 @@
+{
+    "generatedAt":  "2026-09-05T04:00:47Z",
+    "dateKst":  "2026-09-05",
+    "us":  {
+               "month":  [
+                             {
+                                 "key":  "per",
+                                 "n":  474,
+                                 "top":  19,
+                                 "bot":  19,
+                                 "tot":  38,
+                                 "exp":  10.5
+                             },
+                             {
+                                 "key":  "prevMonthUp",
+                                 "n":  500,
+                                 "top":  18,
+                                 "bot":  16,
+                                 "tot":  34,
+                                 "exp":  10
+                             },
+                             {
+                                 "key":  "operatingMargin",
+                                 "n":  448,
+                                 "top":  13,
+                                 "bot":  17,
+                                 "tot":  30,
+                                 "exp":  11.2
+                             },
+                             {
+                                 "key":  "cashFlowGrowth",
+                                 "n":  499,
+                                 "top":  15,
+                                 "bot":  13,
+                                 "tot":  28,
+                                 "exp":  10
+                             },
+                             {
+                                 "key":  "marketCap",
+                                 "n":  500,
+                                 "top":  12,
+                                 "bot":  14,
+                                 "tot":  26,
+                                 "exp":  10
+                             },
+                             {
+                                 "key":  "netIncomeGrowth",
+                                 "n":  498,
+                                 "top":  12,
+                                 "bot":  13,
+                                 "tot":  25,
+                                 "exp":  10
+                             },
+                             {
+                                 "key":  "creditRating",
+                                 "n":  434,
+                                 "top":  8,
+                                 "bot":  17,
+                                 "tot":  25,
+                                 "exp":  11.5
+                             },
+                             {
+                                 "key":  "week52Low",
+                                 "n":  500,
+                                 "top":  14,
+                                 "bot":  9,
+                                 "tot":  23,
+                                 "exp":  10
+                             },
+                             {
+                                 "key":  "roe",
+                                 "n":  495,
+                                 "top":  10,
+                                 "bot":  11,
+                                 "tot":  21,
+                                 "exp":  10.1
+                             },
+                             {
+                                 "key":  "debtRatio",
+                                 "n":  495,
+                                 "top":  13,
+                                 "bot":  7,
+                                 "tot":  20,
+                                 "exp":  10.1
+                             },
+                             {
+                                 "key":  "dollarVolume",
+                                 "n":  500,
+                                 "top":  13,
+                                 "bot":  7,
+                                 "tot":  20,
+                                 "exp":  10
+                             },
+                             {
+                                 "key":  "rsi",
+                                 "n":  500,
+                                 "top":  8,
+                                 "bot":  11,
+                                 "tot":  19,
+                                 "exp":  10
+                             },
+                             {
+                                 "key":  "revenueGrowth",
+                                 "n":  500,
+                                 "top":  12,
+                                 "bot":  7,
+                                 "tot":  19,
+                                 "exp":  10
+                             },
+                             {
+                                 "key":  "week52High",
+                                 "n":  500,
+                                 "top":  9,
+                                 "bot":  9,
+                                 "tot":  18,
+                                 "exp":  10
+                             },
+                             {
+                                 "key":  "winRate10y",
+                                 "n":  500,
+                                 "top":  6,
+                                 "bot":  12,
+                                 "tot":  18,
+                                 "exp":  10
+                             },
+                             {
+                                 "key":  "dividendYield",
+                                 "n":  403,
+                                 "top":  7,
+                                 "bot":  11,
+                                 "tot":  18,
+                                 "exp":  12.4
+                             },
+                             {
+                                 "key":  "prevMonthDown",
+                                 "n":  500,
+                                 "top":  10,
+                                 "bot":  6,
+                                 "tot":  16,
+                                 "exp":  10
+                             }
+                         ],
+               "year":  [
+                            {
+                                "key":  "per",
+                                "n":  474,
+                                "top":  31,
+                                "bot":  36,
+                                "tot":  67,
+                                "exp":  21.1
+                            },
+                            {
+                                "key":  "rsi",
+                                "n":  499,
+                                "top":  30,
+                                "bot":  31,
+                                "tot":  61,
+                                "exp":  20
+                            },
+                            {
+                                "key":  "week52High",
+                                "n":  499,
+                                "top":  29,
+                                "bot":  31,
+                                "tot":  60,
+                                "exp":  20
+                            },
+                            {
+                                "key":  "prevMonthUp",
+                                "n":  499,
+                                "top":  29,
+                                "bot":  28,
+                                "tot":  57,
+                                "exp":  20
+                            },
+                            {
+                                "key":  "netIncomeGrowth",
+                                "n":  498,
+                                "top":  30,
+                                "bot":  27,
+                                "tot":  57,
+                                "exp":  20.1
+                            },
+                            {
+                                "key":  "winRate10y",
+                                "n":  500,
+                                "top":  32,
+                                "bot":  25,
+                                "tot":  57,
+                                "exp":  20
+                            },
+                            {
+                                "key":  "cashFlowGrowth",
+                                "n":  499,
+                                "top":  33,
+                                "bot":  23,
+                                "tot":  56,
+                                "exp":  20
+                            },
+                            {
+                                "key":  "revenueGrowth",
+                                "n":  500,
+                                "top":  34,
+                                "bot":  21,
+                                "tot":  55,
+                                "exp":  20
+                            },
+                            {
+                                "key":  "roe",
+                                "n":  495,
+                                "top":  30,
+                                "bot":  24,
+                                "tot":  54,
+                                "exp":  20.2
+                            },
+                            {
+                                "key":  "marketCap",
+                                "n":  500,
+                                "top":  28,
+                                "bot":  18,
+                                "tot":  46,
+                                "exp":  20
+                            },
+                            {
+                                "key":  "dollarVolume",
+                                "n":  500,
+                                "top":  33,
+                                "bot":  12,
+                                "tot":  45,
+                                "exp":  20
+                            },
+                            {
+                                "key":  "debtRatio",
+                                "n":  495,
+                                "top":  28,
+                                "bot":  16,
+                                "tot":  44,
+                                "exp":  20.2
+                            },
+                            {
+                                "key":  "operatingMargin",
+                                "n":  448,
+                                "top":  27,
+                                "bot":  17,
+                                "tot":  44,
+                                "exp":  22.3
+                            },
+                            {
+                                "key":  "prevMonthDown",
+                                "n":  499,
+                                "top":  24,
+                                "bot":  15,
+                                "tot":  39,
+                                "exp":  20
+                            },
+                            {
+                                "key":  "creditRating",
+                                "n":  434,
+                                "top":  19,
+                                "bot":  19,
+                                "tot":  38,
+                                "exp":  23
+                            },
+                            {
+                                "key":  "dividendYield",
+                                "n":  403,
+                                "top":  12,
+                                "bot":  22,
+                                "tot":  34,
+                                "exp":  24.8
+                            },
+                            {
+                                "key":  "week52Low",
+                                "n":  499,
+                                "top":  12,
+                                "bot":  16,
+                                "tot":  28,
+                                "exp":  20
+                            }
+                        ]
+           },
+    "kr":  {
+               "month":  [
+                             {
+                                 "key":  "roe",
+                                 "n":  341,
+                                 "top":  20,
+                                 "bot":  16,
+                                 "tot":  36,
+                                 "exp":  14.7
+                             },
+                             {
+                                 "key":  "prevMonthDown",
+                                 "n":  348,
+                                 "top":  16,
+                                 "bot":  18,
+                                 "tot":  34,
+                                 "exp":  14.4
+                             },
+                             {
+                                 "key":  "operatingMargin",
+                                 "n":  319,
+                                 "top":  15,
+                                 "bot":  19,
+                                 "tot":  34,
+                                 "exp":  15.7
+                             },
+                             {
+                                 "key":  "cashFlowGrowth",
+                                 "n":  348,
+                                 "top":  18,
+                                 "bot":  15,
+                                 "tot":  33,
+                                 "exp":  14.4
+                             },
+                             {
+                                 "key":  "prevMonthUp",
+                                 "n":  348,
+                                 "top":  15,
+                                 "bot":  17,
+                                 "tot":  32,
+                                 "exp":  14.4
+                             },
+                             {
+                                 "key":  "week52Low",
+                                 "n":  348,
+                                 "top":  15,
+                                 "bot":  17,
+                                 "tot":  32,
+                                 "exp":  14.4
+                             },
+                             {
+                                 "key":  "marketCap",
+                                 "n":  348,
+                                 "top":  12,
+                                 "bot":  18,
+                                 "tot":  30,
+                                 "exp":  14.4
+                             },
+                             {
+                                 "key":  "rsi",
+                                 "n":  348,
+                                 "top":  16,
+                                 "bot":  13,
+                                 "tot":  29,
+                                 "exp":  14.4
+                             },
+                             {
+                                 "key":  "week52High",
+                                 "n":  348,
+                                 "top":  17,
+                                 "bot":  11,
+                                 "tot":  28,
+                                 "exp":  14.4
+                             },
+                             {
+                                 "key":  "winRate10y",
+                                 "n":  348,
+                                 "top":  12,
+                                 "bot":  16,
+                                 "tot":  28,
+                                 "exp":  14.4
+                             },
+                             {
+                                 "key":  "debtRatio",
+                                 "n":  341,
+                                 "top":  14,
+                                 "bot":  13,
+                                 "tot":  27,
+                                 "exp":  14.7
+                             },
+                             {
+                                 "key":  "netIncomeGrowth",
+                                 "n":  347,
+                                 "top":  12,
+                                 "bot":  15,
+                                 "tot":  27,
+                                 "exp":  14.4
+                             },
+                             {
+                                 "key":  "per",
+                                 "n":  278,
+                                 "top":  12,
+                                 "bot":  15,
+                                 "tot":  27,
+                                 "exp":  18
+                             },
+                             {
+                                 "key":  "revenueGrowth",
+                                 "n":  347,
+                                 "top":  18,
+                                 "bot":  8,
+                                 "tot":  26,
+                                 "exp":  14.4
+                             },
+                             {
+                                 "key":  "dividendYield",
+                                 "n":  344,
+                                 "top":  7,
+                                 "bot":  19,
+                                 "tot":  26,
+                                 "exp":  14.5
+                             },
+                             {
+                                 "key":  "dollarVolume",
+                                 "n":  348,
+                                 "top":  12,
+                                 "bot":  12,
+                                 "tot":  24,
+                                 "exp":  14.4
+                             }
+                         ],
+               "year":  [
+                            {
+                                "key":  "winRate10y",
+                                "n":  348,
+                                "top":  44,
+                                "bot":  48,
+                                "tot":  92,
+                                "exp":  28.7
+                            },
+                            {
+                                "key":  "roe",
+                                "n":  341,
+                                "top":  39,
+                                "bot":  35,
+                                "tot":  74,
+                                "exp":  29.3
+                            },
+                            {
+                                "key":  "dollarVolume",
+                                "n":  348,
+                                "top":  39,
+                                "bot":  34,
+                                "tot":  73,
+                                "exp":  28.7
+                            },
+                            {
+                                "key":  "operatingMargin",
+                                "n":  319,
+                                "top":  35,
+                                "bot":  36,
+                                "tot":  71,
+                                "exp":  31.3
+                            },
+                            {
+                                "key":  "rsi",
+                                "n":  345,
+                                "top":  27,
+                                "bot":  39,
+                                "tot":  66,
+                                "exp":  29
+                            },
+                            {
+                                "key":  "per",
+                                "n":  278,
+                                "top":  32,
+                                "bot":  33,
+                                "tot":  65,
+                                "exp":  36
+                            },
+                            {
+                                "key":  "week52High",
+                                "n":  348,
+                                "top":  30,
+                                "bot":  34,
+                                "tot":  64,
+                                "exp":  28.7
+                            },
+                            {
+                                "key":  "netIncomeGrowth",
+                                "n":  347,
+                                "top":  30,
+                                "bot":  34,
+                                "tot":  64,
+                                "exp":  28.8
+                            },
+                            {
+                                "key":  "dividendYield",
+                                "n":  344,
+                                "top":  26,
+                                "bot":  38,
+                                "tot":  64,
+                                "exp":  29.1
+                            },
+                            {
+                                "key":  "prevMonthUp",
+                                "n":  348,
+                                "top":  39,
+                                "bot":  24,
+                                "tot":  63,
+                                "exp":  28.7
+                            },
+                            {
+                                "key":  "marketCap",
+                                "n":  348,
+                                "top":  32,
+                                "bot":  31,
+                                "tot":  63,
+                                "exp":  28.7
+                            },
+                            {
+                                "key":  "prevMonthDown",
+                                "n":  348,
+                                "top":  31,
+                                "bot":  30,
+                                "tot":  61,
+                                "exp":  28.7
+                            },
+                            {
+                                "key":  "revenueGrowth",
+                                "n":  347,
+                                "top":  29,
+                                "bot":  28,
+                                "tot":  57,
+                                "exp":  28.8
+                            },
+                            {
+                                "key":  "week52Low",
+                                "n":  348,
+                                "top":  24,
+                                "bot":  31,
+                                "tot":  55,
+                                "exp":  28.7
+                            },
+                            {
+                                "key":  "cashFlowGrowth",
+                                "n":  348,
+                                "top":  25,
+                                "bot":  28,
+                                "tot":  53,
+                                "exp":  28.7
+                            },
+                            {
+                                "key":  "debtRatio",
+                                "n":  341,
+                                "top":  26,
+                                "bot":  24,
+                                "tot":  50,
+                                "exp":  29.3
+                            }
+                        ]
+           }
+}

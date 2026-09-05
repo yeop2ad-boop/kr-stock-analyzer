@@ -2325,6 +2325,7 @@ const insightCategoryButtons = {
   brand: el("insightCatBrandBtn"),
   tech: el("insightCatTechBtn"),
   rankup: el("insightCatRankUpBtn"), // 순위상승(2026-09-04): 시총 순위 급상승 TOP50 — 한국·미국·비트코인(ETF 제외)
+  corr: el("insightCatCorrBtn"), // 상관관계도(2026-09-05): 17개 랭킹의 과거 상·하위 100 적중 수 — 매일 07시 배치, 하루 고정
   calendar: el("insightCatCalendarBtn"),
   news: el("insightCatNewsBtn"),
   futureIndustry: el("insightCatFutureIndustryBtn"),
@@ -9231,14 +9232,15 @@ function updateFirmsNavVisibility() {
   insightKrFirmsNav.style.display = showFirms && isKr ? "" : "none";
 }
 function switchInsightCategory(key) {
-  // 순위상승은 투자처(한국/미국/코인) 전환 후 재클릭 시 새 유니버스로 다시 계산해야 하므로 조기 반환 제외(2026-09-04)
-  if (insightActiveCategory === key && key !== "rankup") return;
+  // 순위상승·상관관계도는 투자처 전환 후 재클릭 시 새 유니버스로 다시 그려야 하므로 조기 반환 제외(2026-09-04/05)
+  if (insightActiveCategory === key && key !== "rankup" && key !== "corr") return;
   insightActiveCategory = key;
   setInsightCategoryActive(key);
   updateFirmsNavVisibility();
   insightBrandNav.style.display = key === "brand" ? "" : "none";
   futureIndustryNav.style.display = key === "futureIndustry" ? "" : "none";
   el("rankUpNav").style.display = key === "rankup" ? "" : "none";
+  el("corrNav").style.display = key === "corr" ? "" : "none";
   if (key === "brand") {
     // 국내는 다트공시(4대 지표), 해외는 브랜드평판순(3개 기관) — 이전에 보던 항목이 지금 시장에 없는 종류면 기본값으로 리셋
     const isKr = getWatchlistActiveMarket() === "KR";
@@ -9261,10 +9263,110 @@ function runInsightCategory(key) {
     else runInsight(insightActiveInstitution);
   } else if (key === "brand") runInsightBrandTab(insightActiveBrandOrg);
   else if (key === "rankup") runInsightRankUp(insightRankUpPeriod);
+  else if (key === "corr") runInsightCorr(insightCorrPeriod);
   else if (key === "tech") runInsightTech();
   else if (key === "calendar") runInsightCalendar();
   else if (key === "news") runInsightNews();
   else if (key === "futureIndustry") runFutureIndustrySource(insightActiveFutureSource);
+}
+
+// ---------- 상관관계도(2026-09-05 사용자 요청): 17개 랭킹의 과거 상·하위 100 → 이후 상승·하락 그룹 적중 수 ----------
+// 데이터는 매일 오전 7시(KST) GitHub Actions 배치(scan-correlation-daily.ps1)가 correlation-daily.json으로 계산해
+// 커밋 — 하루 동안 표가 고정됨. 월간=한달 전 순위 vs 최근 1달 상승·하락 50 / 년간=1년 전 순위 vs 최근 1년 상승·하락 100.
+// 적중 합계(top+bot) 높은 순 정렬은 배치가 이미 해둠. 한국·미국주식 전용(재무 랭킹이 있는 유니버스만).
+const CORR_METRIC_LABELS = {
+  revenueGrowth: "매출성장",
+  netIncomeGrowth: "순이익증가",
+  dividendYield: "배당률",
+  debtRatio: "부채비율(낮은순)",
+  cashFlowGrowth: "현금흐름 증가",
+  marketCap: "시가총액",
+  operatingMargin: "영업이익률",
+  per: "PER(저평가순)",
+  roe: "ROE",
+  week52High: "52주 최고(근접순)",
+  week52Low: "52주 최저(근접순)",
+  dollarVolume: "거래대금",
+  prevMonthUp: "한달전 상승률",
+  prevMonthDown: "한달전 하락률",
+  winRate10y: "10년 승률",
+  rsi: "RSI 점수(높은순)",
+  creditRating: "투자등급(신용등급)",
+};
+let insightCorrPeriod = "month";
+let corrDbPromise = null;
+function getCorrDb() {
+  if (!corrDbPromise) {
+    corrDbPromise = fetch("data/correlation-daily.json", { cache: "no-store" })
+      .then((r) => {
+        if (!r.ok) throw new Error("correlation db http " + r.status);
+        return r.json();
+      })
+      .catch(() => null);
+  }
+  return corrDbPromise;
+}
+el("corrMonthBtn").addEventListener("click", () => {
+  insightCorrPeriod = "month";
+  el("corrMonthBtn").classList.add("active");
+  el("corrYearBtn").classList.remove("active");
+  runInsightCorr("month");
+});
+el("corrYearBtn").addEventListener("click", () => {
+  insightCorrPeriod = "year";
+  el("corrYearBtn").classList.add("active");
+  el("corrMonthBtn").classList.remove("active");
+  runInsightCorr("year");
+});
+async function runInsightCorr(period) {
+  const status = el("insightStatus");
+  const results = el("insightResults");
+  results.innerHTML = "";
+  if (appSectionMode === "etf" || appSectionMode === "crypto") {
+    status.style.display = "none";
+    results.innerHTML = `<p class="muted" style="padding:12px 0;">상관관계도는 재무 랭킹이 있는 한국주식·미국주식에서만 제공됩니다.</p>`;
+    return;
+  }
+  status.style.display = "block";
+  status.textContent = "상관관계도를 불러오는 중...";
+  try {
+    const db = await getCorrDb();
+    if (!db) throw new Error("상관관계 데이터가 아직 준비되지 않았습니다. 매일 오전 7시에 자동 생성됩니다.");
+    const isKr = getWatchlistActiveMarket() === "KR";
+    const list = (isKr ? db.kr : db.us)?.[period] || [];
+    if (!list.length) throw new Error("이 기간의 데이터가 없습니다. 다음 갱신(매일 오전 7시)을 기다려주세요.");
+    const topN = period === "year" ? 100 : 50;
+    const upLabel = period === "year" ? "1년 상승 100" : "1달 상승 50";
+    const dnLabel = period === "year" ? "1년 하락 100" : "1달 하락 50";
+    const agoLabel = period === "year" ? "1년 전" : "한달 전";
+    const universeLabel = isKr ? "코스피200+코스닥150" : "S&P500";
+    const trs = list
+      .map((m, i) => {
+        const label = CORR_METRIC_LABELS[m.key] || m.key;
+        const hot = m.tot >= Math.round(m.exp * 2 * 1.4); // 기대값 합(2×exp)보다 40% 이상 많으면 강조
+        return `
+      <tr>
+        <td>${i + 1}</td>
+        <td style="text-align:left;">${hot ? "🔥 " : ""}${escapeHtml(label)}</td>
+        <td>${m.top}개</td>
+        <td>${m.bot}개</td>
+        <td><b>${m.tot}</b> <span class="muted" style="font-size:10.5px;">(기대 ${Math.round(m.exp * 2)})</span></td>
+      </tr>`;
+      })
+      .join("");
+    status.style.display = "none";
+    results.innerHTML = `
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — 각 랭킹의 <b>${agoLabel} 당시 점수 기준</b> 상위 100·하위 100 종목이
+      현재까지의 <b>${upLabel} / ${dnLabel}</b>에 각각 몇 개 들어갔는지(적중 수)입니다. 합계가 기대값(무작위 수준)보다 높을수록 그 랭킹과 실제 등락의 상관관계가 큽니다.
+      매일 오전 7시에 자동 재계산되며 하루 동안 고정됩니다(기준일 ${escapeHtml(db.dateKst || "")}). 참고용 지표이며 투자 자문이 아닙니다.</p>
+      <table class="top30-table">
+        <thead><tr><th>순위</th><th>항목 (${agoLabel} 기준)</th><th>상위100<br>→${period === "year" ? "상승100" : "상승50"}</th><th>하위100<br>→${period === "year" ? "하락100" : "하락50"}</th><th>합계<br>(상관점수)</th></tr></thead>
+        <tbody>${trs}</tbody>
+      </table>`;
+  } catch (e) {
+    status.style.display = "block";
+    status.textContent = `❌ ${e.message || "상관관계도를 불러오지 못했습니다."}`;
+  }
 }
 
 // ---------- 순위상승(2026-09-04 사용자 요청): 시총 순위가 한달/1년 사이 많이 오른 TOP50 ----------
