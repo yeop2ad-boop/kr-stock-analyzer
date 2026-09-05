@@ -8818,6 +8818,83 @@ function openAutoTrack() {
   renderAutoTrack();
 }
 
+// 자동추적 주식(한국·미국) 개편(2026-09-05 사용자 요청): 월간 상관관계 상위 3개 항목 기준 3색 신호등 표.
+// 각 항목의 (한달 전 기준) 순위가 상위 100이면 🟢, 하위 100이면 🔴, 중간 🟡. 정렬은 2번불🟢 우선 → 3번불🟢 우선 →
+// 1번 항목 순위 오름차순 — 결과적으로 불 3개 다 켜진 종목이 맨 위. 데이터는 상관관계도와 같은 일일 배치(correlation-daily.json).
+async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
+  try {
+    const isKr = mode === "kr";
+    const corr = await getCorrDb();
+    const at = corr && (isKr ? corr.kr : corr.us) && (isKr ? corr.kr : corr.us).autotrack;
+    if (!at || !Array.isArray(at.keys) || at.keys.length < 3 || !at.ranks) {
+      throw new Error("자동추적 데이터가 아직 준비되지 않았습니다. 매일 오전 7시에 자동 생성됩니다.");
+    }
+    const keys = at.keys.slice(0, 3);
+    let nameOf = (sym) => TICKER_TO_KOREAN_NAME[sym] || sym;
+    if (isKr) {
+      const m = await getKrSymbolNameMap().catch(() => new Map());
+      nameOf = (sym) => m.get(sym) || TICKER_TO_KOREAN_NAME[sym] || sym;
+    }
+    const lightOf = (rank, key) => {
+      if (rank === null || rank === undefined) return "⚪";
+      const n = (at.n && at.n[key]) || 0;
+      if (rank <= 100) return "🟢";
+      if (n && rank > n - 100) return "🔴";
+      return "🟡";
+    };
+    const rows = Object.entries(at.ranks)
+      .map(([sym, r]) => ({
+        sym,
+        r1: r[keys[0]] ?? null,
+        r2: r[keys[1]] ?? null,
+        r3: r[keys[2]] ?? null,
+      }))
+      .filter((r) => r.r1 !== null)
+      .map((r) => ({ ...r, l1: lightOf(r.r1, keys[0]), l2: lightOf(r.r2, keys[1]), l3: lightOf(r.r3, keys[2]) }));
+    // 정렬: 2번 초록 우선 → 3번 초록 우선 → 1번 항목 순위 오름차순(상위부터) — 맨 위 = 불 3개 전부 초록
+    rows.sort((a, b) => (b.l2 === "🟢") - (a.l2 === "🟢") || (b.l3 === "🟢") - (a.l3 === "🟢") || a.r1 - b.r1);
+
+    const labels = keys.map((k) => CORR_METRIC_LABELS[k] || k);
+    const universeLabel = isKr ? "한국주식(코스피200+코스닥150)" : "미국주식(S&P500)";
+    let shown = Math.min(100, rows.length);
+    const render = () => {
+      const body = rows
+        .slice(0, shown)
+        .map(
+          (r, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td style="text-align:left;"><span class="ticker-cell">${tickerLogoHtml(r.sym)}<b class="ticker-link" data-ticker="${escapeHtml(r.sym)}">${escapeHtml(nameOf(r.sym))}</b></span>${isKr ? "" : `<br><span class="muted" style="font-size:11px;">${escapeHtml(r.sym)}</span>`}</td>
+          <td><span class="at-emoji">${r.l1}</span>${r.r1}위</td>
+          <td><span class="at-emoji">${r.l2}</span>${r.r2 === null ? "-" : r.r2 + "위"}</td>
+          <td><span class="at-emoji">${r.l3}</span>${r.r3 === null ? "-" : r.r3 + "위"}</td>
+        </tr>`
+        )
+        .join("");
+      resultsEl.innerHTML = `
+        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — 오늘의 <b>월간 상관관계 상위 3개 항목</b>(①${escapeHtml(labels[0])} ②${escapeHtml(labels[1])} ③${escapeHtml(labels[2])}) 순위 기준 신호등입니다.
+        각 항목 상위 100등 🟢 · 중간 🟡 · 하위 100등 🔴 — 불 3개가 모두 켜진 종목이 맨 위로 오도록 정렬했습니다(②🟢 우선 → ③🟢 우선 → ① 순위순).
+        상관관계도와 같은 배치로 매일 오전 7시 갱신되며 하루 동안 고정됩니다(기준일 ${escapeHtml(corr.dateKst || "")}). 참고용 지표이며 투자 자문이 아닙니다.</p>
+        <table class="top30-table autotrack-table">
+          <thead><tr><th>순위</th><th>종목명</th><th>①${escapeHtml(labels[0])}</th><th>②${escapeHtml(labels[1])}</th><th>③${escapeHtml(labels[2])}</th></tr></thead>
+          <tbody>${body}</tbody>
+        </table>
+        ${shown < rows.length ? `<button type="button" class="cat-btn" id="autoTrackMoreBtn">전체보기 (${shown}/${rows.length})</button>` : ""}`;
+      const moreBtn = el("autoTrackMoreBtn");
+      if (moreBtn)
+        moreBtn.addEventListener("click", () => {
+          shown = rows.length;
+          render();
+        });
+    };
+    statusEl.style.display = "none";
+    render();
+  } catch (e) {
+    statusEl.style.display = "block";
+    statusEl.textContent = `❌ ${e.message || "자동추적 데이터를 불러오지 못했습니다."}`;
+  }
+}
+
 async function renderAutoTrack() {
   const statusEl = el("autoTrackStatus");
   const resultsEl = el("autoTrackResults");
@@ -8826,6 +8903,8 @@ async function renderAutoTrack() {
   statusEl.textContent = "자동추적 데이터를 불러오는 중...";
   try {
     const mode = appSectionMode === "etf" ? "etf" : appSectionMode === "crypto" ? "crypto" : getWatchlistActiveMarket() === "KR" ? "kr" : "us";
+    // 한국·미국주식은 상관관계 상위 3개 항목 신호등 표(2026-09-05 개편), ETF·코인은 기존 10년승률 표 유지
+    if (mode === "kr" || mode === "us") return renderAutoTrackStocks(mode, statusEl, resultsEl);
     const db = await getWinRateDb();
     const map = db && (mode === "etf" ? db.scoresEtf : mode === "crypto" ? db.scoresCrypto : mode === "kr" ? db.scoresKr : db.scores);
     if (!map) throw new Error("자동추적 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.");

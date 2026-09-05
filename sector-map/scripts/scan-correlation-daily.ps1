@@ -118,16 +118,8 @@ function BuildRows($sectorsPath, $isKr, $wrMap, $ratingFn) {
   return $rows
 }
 
-function Evaluate($rows, $period) {
-  $retF = "mret"; $topN = 50
-  if ($period -eq "year") { $retF = "yret"; $topN = 100 }
-  $withRet = @($rows | Where-Object { $null -ne $_.$retF })
-  $byRet = @($withRet | Sort-Object $retF -Descending)
-  if ($byRet.Count -lt ($topN * 3)) { return @() }
-  $upSet = @{}; foreach ($x in $byRet[0..($topN-1)]) { $upSet[$x.sym] = 1 }
-  $dnSet = @{}; foreach ($x in $byRet[($byRet.Count-$topN)..($byRet.Count-1)]) { $dnSet[$x.sym] = 1 }
-  $suffix = "_m"; if ($period -eq "year") { $suffix = "_y" }
-  $metrics = @(
+function MetricDefs($suffix) {
+  return @(
     @{ key = "revenueGrowth";   f = "revG";            dir = "desc" },
     @{ key = "netIncomeGrowth"; f = "netG";            dir = "desc" },
     @{ key = "dividendYield";   f = "div$suffix";      dir = "desc" },
@@ -146,6 +138,18 @@ function Evaluate($rows, $period) {
     @{ key = "rsi";             f = "rsi$suffix";      dir = "desc" },
     @{ key = "creditRating";    f = "rate";            dir = "desc" }
   )
+}
+
+function Evaluate($rows, $period) {
+  $retF = "mret"; $topN = 50
+  if ($period -eq "year") { $retF = "yret"; $topN = 100 }
+  $withRet = @($rows | Where-Object { $null -ne $_.$retF })
+  $byRet = @($withRet | Sort-Object $retF -Descending)
+  if ($byRet.Count -lt ($topN * 3)) { return @() }
+  $upSet = @{}; foreach ($x in $byRet[0..($topN-1)]) { $upSet[$x.sym] = 1 }
+  $dnSet = @{}; foreach ($x in $byRet[($byRet.Count-$topN)..($byRet.Count-1)]) { $dnSet[$x.sym] = 1 }
+  $suffix = "_m"; if ($period -eq "year") { $suffix = "_y" }
+  $metrics = MetricDefs $suffix
   $out = @()
   foreach ($m in $metrics) {
     $f = $m.f
@@ -162,6 +166,28 @@ function Evaluate($rows, $period) {
   return @($out | Sort-Object tot -Descending)
 }
 
+# Auto-track support (2026-09-05): per-symbol ranks for the top-3 monthly-correlation metrics (as-of 1 month ago values)
+function AutotrackRanks($rows, $monthEval) {
+  $defs = MetricDefs "_m"
+  $keys = @($monthEval | Select-Object -First 3 | ForEach-Object { $_.key })
+  $out = [ordered]@{ keys = $keys; n = [ordered]@{}; ranks = [ordered]@{} }
+  foreach ($k in $keys) {
+    $def = $defs | Where-Object { $_.key -eq $k } | Select-Object -First 1
+    if (-not $def) { continue }
+    $f = $def.f
+    $valid = @($rows | Where-Object { $null -ne $_.$f })
+    $sorted = $null
+    if ($def.dir -eq "desc") { $sorted = @($valid | Sort-Object $f -Descending) } else { $sorted = @($valid | Sort-Object $f) }
+    $out.n[$k] = $valid.Count
+    for ($i = 0; $i -lt $sorted.Count; $i++) {
+      $s = $sorted[$i].sym
+      if (-not $out.ranks.Contains($s)) { $out.ranks[$s] = [ordered]@{} }
+      $out.ranks[$s][$k] = $i + 1
+    }
+  }
+  return $out
+}
+
 Write-Host "US universe..."
 $usRateFn = { param($sym) RatingScore $usRatings.$sym }
 $usRows = BuildRows (Join-Path $dataDir "sp500-sectors.json") $false $wrDb.scores $usRateFn
@@ -170,12 +196,14 @@ $krRateFn = { param($sym) $e = $krRatingsDoc.ratings.$sym; if ($e) { RatingScore
 $krRows = BuildRows (Join-Path $dataDir "kr-sectors.json") $true $wrDb.scoresKr $krRateFn
 
 $kst = [DateTimeOffset]::UtcNow.ToOffset([TimeSpan]::FromHours(9))
+$usMonth = Evaluate $usRows "month"; $usYear = Evaluate $usRows "year"
+$krMonth = Evaluate $krRows "month"; $krYear = Evaluate $krRows "year"
 $outDoc = [ordered]@{
   generatedAt = [DateTimeOffset]::UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
   dateKst = $kst.ToString("yyyy-MM-dd")
-  us = [ordered]@{ month = (Evaluate $usRows "month"); year = (Evaluate $usRows "year") }
-  kr = [ordered]@{ month = (Evaluate $krRows "month"); year = (Evaluate $krRows "year") }
+  us = [ordered]@{ month = $usMonth; year = $usYear; autotrack = (AutotrackRanks $usRows $usMonth) }
+  kr = [ordered]@{ month = $krMonth; year = $krYear; autotrack = (AutotrackRanks $krRows $krMonth) }
 }
 $outPath = Join-Path $rootData "correlation-daily.json"
-[IO.File]::WriteAllText($outPath, ($outDoc | ConvertTo-Json -Depth 5), (New-Object System.Text.UTF8Encoding $false))
+[IO.File]::WriteAllText($outPath, ($outDoc | ConvertTo-Json -Depth 6), (New-Object System.Text.UTF8Encoding $false))
 Write-Host "DONE_MARKER us=$($usRows.Count) kr=$($krRows.Count) -> $outPath"
