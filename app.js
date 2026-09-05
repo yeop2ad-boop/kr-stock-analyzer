@@ -8821,11 +8821,26 @@ function openAutoTrack() {
 // 자동추적 주식(한국·미국) 개편(2026-09-05 사용자 요청): 월간 상관관계 상위 3개 항목 기준 3색 신호등 표.
 // 각 항목의 (한달 전 기준) 순위가 상위 100이면 🟢, 하위 100이면 🔴, 중간 🟡. 정렬은 2번불🟢 우선 → 3번불🟢 우선 →
 // 1번 항목 순위 오름차순 — 결과적으로 불 3개 다 켜진 종목이 맨 위. 데이터는 상관관계도와 같은 일일 배치(correlation-daily.json).
+let autoTrackPeriod = "month"; // 월간/년간(2026-09-05): 년간 = 1년 전 상관관계 상위 3개 항목 + 1년 전 기준 순위
+el("autoTrackMonthBtn").addEventListener("click", () => {
+  autoTrackPeriod = "month";
+  el("autoTrackMonthBtn").classList.add("active");
+  el("autoTrackYearBtn").classList.remove("active");
+  renderAutoTrack();
+});
+el("autoTrackYearBtn").addEventListener("click", () => {
+  autoTrackPeriod = "year";
+  el("autoTrackYearBtn").classList.add("active");
+  el("autoTrackMonthBtn").classList.remove("active");
+  renderAutoTrack();
+});
 async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
   try {
     const isKr = mode === "kr";
+    const isYear = autoTrackPeriod === "year";
     const corr = await getCorrDb();
-    const at = corr && (isKr ? corr.kr : corr.us) && (isKr ? corr.kr : corr.us).autotrack;
+    const side = corr && (isKr ? corr.kr : corr.us);
+    const at = side && (isYear ? side.autotrackYear : side.autotrack);
     if (!at || !Array.isArray(at.keys) || at.keys.length < 3 || !at.ranks) {
       throw new Error("자동추적 데이터가 아직 준비되지 않았습니다. 매일 오전 7시에 자동 생성됩니다.");
     }
@@ -8842,41 +8857,61 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
       if (n && rank > n - 100) return "🔴";
       return "🟡";
     };
+    // 배치 v2 형식: ranks[sym][key] = { r: 순위, v: 실제 값 }
+    const cellOf = (entry, key) => {
+      if (!entry || entry.r === null || entry.r === undefined) return null;
+      return { r: entry.r, v: entry.v, light: lightOf(entry.r, key) };
+    };
+    const RATING_LETTERS = { 21: "AAA", 20: "AA+", 19: "AA", 18: "AA-", 17: "A+", 16: "A", 15: "A-", 14: "BBB+", 13: "BBB", 12: "BBB-", 11: "BB+", 10: "BB", 9: "BB-", 8: "B+", 7: "B", 6: "B-", 5: "CCC+", 4: "CCC", 3: "CCC-", 2: "CC", 1: "C", 0: "D" };
+    const valFmt = (key, v) => {
+      if (v === null || v === undefined || !Number.isFinite(Number(v))) return "-";
+      const n = Number(v);
+      if (key === "per") return `${n.toFixed(1)}배`;
+      if (key === "marketCap" || key === "dollarVolume") return fmtCompactCurrency(n, isKr ? "KRW" : "USD");
+      if (key === "rsi") return `${Math.round(n * 10) / 10}점`;
+      if (key === "creditRating") return RATING_LETTERS[Math.round(n)] || String(n);
+      return `${Math.round(n * 10) / 10}%`;
+    };
     const rows = Object.entries(at.ranks)
-      .map(([sym, r]) => ({
-        sym,
-        r1: r[keys[0]] ?? null,
-        r2: r[keys[1]] ?? null,
-        r3: r[keys[2]] ?? null,
-      }))
-      .filter((r) => r.r1 !== null)
-      .map((r) => ({ ...r, l1: lightOf(r.r1, keys[0]), l2: lightOf(r.r2, keys[1]), l3: lightOf(r.r3, keys[2]) }));
-    // 정렬: 2번 초록 우선 → 3번 초록 우선 → 1번 항목 순위 오름차순(상위부터) — 맨 위 = 불 3개 전부 초록
-    rows.sort((a, b) => (b.l2 === "🟢") - (a.l2 === "🟢") || (b.l3 === "🟢") - (a.l3 === "🟢") || a.r1 - b.r1);
+      .map(([sym, r]) => ({ sym, c1: cellOf(r[keys[0]], keys[0]), c2: cellOf(r[keys[1]], keys[1]), c3: cellOf(r[keys[2]], keys[2]) }))
+      .filter((r) => r.c1 !== null);
+    // 정렬(2026-09-05 확정): 불 3개 전부 초록인 종목 먼저, 그다음 1번 항목 1등부터
+    const allGreen = (r) => r.c1.light === "🟢" && r.c2 && r.c2.light === "🟢" && r.c3 && r.c3.light === "🟢";
+    rows.sort((a, b) => allGreen(b) - allGreen(a) || a.c1.r - b.c1.r);
 
     const labels = keys.map((k) => CORR_METRIC_LABELS[k] || k);
     const universeLabel = isKr ? "한국주식(코스피200+코스닥150)" : "미국주식(S&P500)";
+    const periodLabel = isYear ? "년간" : "월간";
+    const agoLabel = isYear ? "1년 전" : "한달 전";
+    const pctOf = (c, key) => {
+      const n = (at.n && at.n[key]) || 0;
+      return n ? Math.max(1, Math.round((c.r / n) * 100)) : null;
+    };
+    const cellHtml = (c, key) => {
+      if (!c) return `<td><span class="at-emoji">⚪</span><span class="muted">-</span></td>`;
+      const pct = pctOf(c, key);
+      return `<td><span class="at-emoji">${c.light}</span><b>${valFmt(key, c.v)}</b><br><span class="muted at-pct">(상위 ${pct === null ? "-" : pct + "%"})</span></td>`;
+    };
     let shown = Math.min(100, rows.length);
     const render = () => {
       const body = rows
         .slice(0, shown)
         .map(
-          (r, i) => `
+          (r) => `
         <tr>
-          <td>${i + 1}</td>
-          <td style="text-align:left;"><span class="ticker-cell">${tickerLogoHtml(r.sym)}<b class="ticker-link" data-ticker="${escapeHtml(r.sym)}">${escapeHtml(nameOf(r.sym))}</b></span>${isKr ? "" : `<br><span class="muted" style="font-size:11px;">${escapeHtml(r.sym)}</span>`}</td>
-          <td><span class="at-emoji">${r.l1}</span>${r.r1}위</td>
-          <td><span class="at-emoji">${r.l2}</span>${r.r2 === null ? "-" : r.r2 + "위"}</td>
-          <td><span class="at-emoji">${r.l3}</span>${r.r3 === null ? "-" : r.r3 + "위"}</td>
+          <td class="at-name"><span class="ticker-cell">${tickerLogoHtml(r.sym)}<b class="ticker-link" data-ticker="${escapeHtml(r.sym)}">${escapeHtml(isKr ? nameOf(r.sym) : r.sym)}</b></span></td>
+          ${cellHtml(r.c1, keys[0])}
+          ${cellHtml(r.c2, keys[1])}
+          ${cellHtml(r.c3, keys[2])}
         </tr>`
         )
         .join("");
       resultsEl.innerHTML = `
-        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — 오늘의 <b>월간 상관관계 상위 3개 항목</b>(①${escapeHtml(labels[0])} ②${escapeHtml(labels[1])} ③${escapeHtml(labels[2])}) 순위 기준 신호등입니다.
+        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — 오늘의 <b>${periodLabel} 상관관계 상위 3개 항목</b>(①${escapeHtml(labels[0])} ②${escapeHtml(labels[1])} ③${escapeHtml(labels[2])}, ${agoLabel} 기준 순위) 신호등입니다.
         각 항목 상위 100등 🟢 · 중간 🟡 · 하위 100등 🔴 — 불 3개가 모두 켜진 종목이 맨 위로 오도록 정렬했습니다(②🟢 우선 → ③🟢 우선 → ① 순위순).
         상관관계도와 같은 배치로 매일 오전 7시 갱신되며 하루 동안 고정됩니다(기준일 ${escapeHtml(corr.dateKst || "")}). 참고용 지표이며 투자 자문이 아닙니다.</p>
-        <table class="top30-table autotrack-table">
-          <thead><tr><th>순위</th><th>종목명</th><th>①${escapeHtml(labels[0])}</th><th>②${escapeHtml(labels[1])}</th><th>③${escapeHtml(labels[2])}</th></tr></thead>
+        <table class="top30-table autotrack-table autotrack-lights-table">
+          <thead><tr><th class="at-name">종목명</th><th>①${escapeHtml(labels[0])}</th><th>②${escapeHtml(labels[1])}</th><th>③${escapeHtml(labels[2])}</th></tr></thead>
           <tbody>${body}</tbody>
         </table>
         ${shown < rows.length ? `<button type="button" class="cat-btn" id="autoTrackMoreBtn">전체보기 (${shown}/${rows.length})</button>` : ""}`;
@@ -8903,7 +8938,8 @@ async function renderAutoTrack() {
   statusEl.textContent = "자동추적 데이터를 불러오는 중...";
   try {
     const mode = appSectionMode === "etf" ? "etf" : appSectionMode === "crypto" ? "crypto" : getWatchlistActiveMarket() === "KR" ? "kr" : "us";
-    // 한국·미국주식은 상관관계 상위 3개 항목 신호등 표(2026-09-05 개편), ETF·코인은 기존 10년승률 표 유지
+    // 한국·미국주식은 상관관계 상위 3개 항목 신호등 표(2026-09-05 개편, 월간/년간 토글), ETF·코인은 기존 10년승률 표 유지
+    el("autoTrackNav").style.display = mode === "kr" || mode === "us" ? "" : "none";
     if (mode === "kr" || mode === "us") return renderAutoTrackStocks(mode, statusEl, resultsEl);
     const db = await getWinRateDb();
     const map = db && (mode === "etf" ? db.scoresEtf : mode === "crypto" ? db.scoresCrypto : mode === "kr" ? db.scoresKr : db.scores);

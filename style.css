@@ -2440,6 +2440,15 @@ body[data-header-tone="dark"] .fh-market-label { color: #fff; }
 .autotrack-table td { vertical-align: middle; }
 .at-emoji { display: block; font-size: 13px; line-height: 1.2; }
 
+/* 자동추적 신호등 표(2026-09-05 개편): 폰에서 좌우 스크롤 없이 4열 고정 */
+.autotrack-lights-table { table-layout: fixed; width: 100%; }
+.autotrack-lights-table th, .autotrack-lights-table td { padding: 6px 2px; font-size: 11px; word-break: keep-all; overflow: hidden; }
+.autotrack-lights-table th.at-name, .autotrack-lights-table td.at-name { width: 27%; text-align: left; }
+.autotrack-lights-table td.at-name .ticker-cell { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.autotrack-lights-table td.at-name b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11.5px; }
+.autotrack-lights-table td b { font-size: 11.5px; }
+.autotrack-lights-table .at-pct { font-size: 9.5px; }
+
 /* 구글 로그인 접근 게이트(2026-09-04): 로그인+승인 전까지 전체 화면을 덮는 오버레이 */
 .auth-gate {
   position: fixed;

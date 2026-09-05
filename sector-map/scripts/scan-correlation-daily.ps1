@@ -166,10 +166,11 @@ function Evaluate($rows, $period) {
   return @($out | Sort-Object tot -Descending)
 }
 
-# Auto-track support (2026-09-05): per-symbol ranks for the top-3 monthly-correlation metrics (as-of 1 month ago values)
-function AutotrackRanks($rows, $monthEval) {
-  $defs = MetricDefs "_m"
-  $keys = @($monthEval | Select-Object -First 3 | ForEach-Object { $_.key })
+# Auto-track support (2026-09-05): per-symbol ranks for the top-3 correlation metrics
+# suffix "_m" = monthly (as-of 1 month ago values), "_y" = yearly (as-of 1 year ago values)
+function AutotrackRanks($rows, $evalList, $suffix) {
+  $defs = MetricDefs $suffix
+  $keys = @($evalList | Select-Object -First 3 | ForEach-Object { $_.key })
   $out = [ordered]@{ keys = $keys; n = [ordered]@{}; ranks = [ordered]@{} }
   foreach ($k in $keys) {
     $def = $defs | Where-Object { $_.key -eq $k } | Select-Object -First 1
@@ -182,7 +183,10 @@ function AutotrackRanks($rows, $monthEval) {
     for ($i = 0; $i -lt $sorted.Count; $i++) {
       $s = $sorted[$i].sym
       if (-not $out.ranks.Contains($s)) { $out.ranks[$s] = [ordered]@{} }
-      $out.ranks[$s][$k] = $i + 1
+      # r=순위, v=실제 값(표에 % / 배 등으로 표시) — 시총·거래대금은 정수, 나머지 소수 2자리
+      $val = $sorted[$i].$f
+      if ($k -eq "marketCap" -or $k -eq "dollarVolume") { $val = [Math]::Round([double]$val, 0) } else { $val = [Math]::Round([double]$val, 2) }
+      $out.ranks[$s][$k] = [ordered]@{ r = ($i + 1); v = $val }
     }
   }
   return $out
@@ -201,8 +205,8 @@ $krMonth = Evaluate $krRows "month"; $krYear = Evaluate $krRows "year"
 $outDoc = [ordered]@{
   generatedAt = [DateTimeOffset]::UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
   dateKst = $kst.ToString("yyyy-MM-dd")
-  us = [ordered]@{ month = $usMonth; year = $usYear; autotrack = (AutotrackRanks $usRows $usMonth) }
-  kr = [ordered]@{ month = $krMonth; year = $krYear; autotrack = (AutotrackRanks $krRows $krMonth) }
+  us = [ordered]@{ month = $usMonth; year = $usYear; autotrack = (AutotrackRanks $usRows $usMonth "_m"); autotrackYear = (AutotrackRanks $usRows $usYear "_y") }
+  kr = [ordered]@{ month = $krMonth; year = $krYear; autotrack = (AutotrackRanks $krRows $krMonth "_m"); autotrackYear = (AutotrackRanks $krRows $krYear "_y") }
 }
 $outPath = Join-Path $rootData "correlation-daily.json"
 [IO.File]::WriteAllText($outPath, ($outDoc | ConvertTo-Json -Depth 6), (New-Object System.Text.UTF8Encoding $false))
