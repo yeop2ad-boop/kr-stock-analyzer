@@ -8849,11 +8849,13 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
       const m = await getKrSymbolNameMap().catch(() => new Map());
       nameOf = (sym) => m.get(sym) || TICKER_TO_KOREAN_NAME[sym] || sym;
     }
+    // 한국주식은 상위/하위 20%(사용자 지정), 미국주식은 상위/하위 100등(=500종목의 20%) 기준
     const lightOf = (rank, key) => {
       if (rank === null || rank === undefined) return "⚪";
       const n = (at.n && at.n[key]) || 0;
-      if (rank <= 100) return "🟢";
-      if (n && rank > n - 100) return "🔴";
+      const cut = isKr ? Math.max(1, Math.round(n * 0.2)) : 100;
+      if (rank <= cut) return "🟢";
+      if (n && rank > n - cut) return "🔴";
       return "🟡";
     };
     // 배치 v2 형식: ranks[sym][key] = { r: 순위, v: 실제 값 }
@@ -8907,7 +8909,7 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
         .join("");
       resultsEl.innerHTML = `
         <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — 오늘의 <b>${periodLabel} 상관관계 상위 3개 항목</b>(①${escapeHtml(labels[0])} ②${escapeHtml(labels[1])} ③${escapeHtml(labels[2])})을 <b>현재 시점 점수</b>로 다시 순위 매긴 신호등입니다.
-        각 항목 상위 100등 🟢 · 중간 🟡 · 하위 100등 🔴 — 불 3개가 모두 켜진 종목이 맨 위로 오도록 정렬했습니다(②🟢 우선 → ③🟢 우선 → ① 순위순).
+        각 항목 ${isKr ? "상위 20% 🟢 · 중간 🟡 · 하위 20% 🔴" : "상위 100등 🟢 · 중간 🟡 · 하위 100등 🔴"} — 불 3개가 모두 켜진 종목이 맨 위로 오도록 정렬했습니다(②🟢 우선 → ③🟢 우선 → ① 순위순).
         상관관계도와 같은 배치로 매일 오전 7시 갱신되며 하루 동안 고정됩니다(기준일 ${escapeHtml(corr.dateKst || "")}). 참고용 지표이며 투자 자문이 아닙니다.</p>
         <table class="top30-table autotrack-table autotrack-lights-table">
           <thead><tr><th class="at-name">종목명</th><th>①${escapeHtml(labels[0])}</th><th>②${escapeHtml(labels[1])}</th><th>③${escapeHtml(labels[2])}</th></tr></thead>
@@ -9386,7 +9388,7 @@ function runInsightCategory(key) {
 
 // ---------- 상관관계도(2026-09-05 사용자 요청): 17개 랭킹의 과거 상·하위 100 → 이후 상승·하락 그룹 적중 수 ----------
 // 데이터는 매일 오전 7시(KST) GitHub Actions 배치(scan-correlation-daily.ps1)가 correlation-daily.json으로 계산해
-// 커밋 — 하루 동안 표가 고정됨. 월간=한달 전 순위 vs 최근 1달 상승·하락 50 / 년간=1년 전 순위 vs 최근 1년 상승·하락 100.
+// 커밋 — 하루 동안 표가 고정됨. 주간/월간/년간 모두 = 과거 시점 순위 vs 이후 상승·하락 50.
 // 적중 합계(top+bot) 높은 순 정렬은 배치가 이미 해둠. 한국·미국주식 전용(재무 랭킹이 있는 유니버스만).
 const CORR_METRIC_LABELS = {
   revenueGrowth: "매출성장",
@@ -9453,8 +9455,8 @@ async function runInsightCorr(period) {
     const isKr = getWatchlistActiveMarket() === "KR";
     const list = (isKr ? db.kr : db.us)?.[period] || [];
     if (!list.length) throw new Error("이 기간의 데이터가 없습니다. 다음 갱신(매일 오전 7시)을 기다려주세요.");
-    const upLabel = period === "year" ? "1년 상승 100" : period === "week" ? "1주 상승 50" : "1달 상승 50";
-    const dnLabel = period === "year" ? "1년 하락 100" : period === "week" ? "1주 하락 50" : "1달 하락 50";
+    const upLabel = period === "year" ? "1년 상승 50" : period === "week" ? "1주 상승 50" : "1달 상승 50";
+    const dnLabel = period === "year" ? "1년 하락 50" : period === "week" ? "1주 하락 50" : "1달 하락 50";
     const agoLabel = period === "year" ? "1년 전" : period === "week" ? "한주 전" : "한달 전";
     const universeLabel = isKr ? "코스피200+코스닥150" : "S&P500";
     const trs = list
@@ -9477,7 +9479,7 @@ async function runInsightCorr(period) {
       현재까지의 <b>${upLabel} / ${dnLabel}</b>에 각각 몇 개 들어갔는지(적중 수)입니다. 합계가 기대값(무작위 수준)보다 높을수록 그 랭킹과 실제 등락의 상관관계가 큽니다.
       매일 오전 7시에 자동 재계산되며 하루 동안 고정됩니다(기준일 ${escapeHtml(db.dateKst || "")}). 참고용 지표이며 투자 자문이 아닙니다.</p>
       <table class="top30-table">
-        <thead><tr><th>순위</th><th>항목 (${agoLabel} 기준)</th><th>상위100<br>→${period === "year" ? "상승100" : "상승50"}</th><th>하위100<br>→${period === "year" ? "하락100" : "하락50"}</th><th>합계<br>(상관점수)</th></tr></thead>
+        <thead><tr><th>순위</th><th>항목 (${agoLabel} 기준)</th><th>상위100<br>→상승50</th><th>하위100<br>→하락50</th><th>합계<br>(상관점수)</th></tr></thead>
         <tbody>${trs}</tbody>
       </table>`;
   } catch (e) {

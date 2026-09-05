@@ -1,7 +1,7 @@
 # Correlation board daily batch (2026-09-05, user request "sanggwangwangyedo")
 # For US(S&P500) and KR(KOSPI200+KOSDAQ150), computes for 17 ranking metrics:
 #  - month mode: metric ranks AS OF 1 month ago (top100/bottom100) vs last-1-month gainers top50 / losers top50
-#  - year  mode: metric ranks AS OF 1 year  ago (top100/bottom100) vs last-1-year  gainers top100 / losers top100
+#  - year  mode: metric ranks AS OF 1 year  ago (top100/bottom100) vs last-1-year  gainers top50 / losers top50
 # Fundamentals (quarterly data) use current snapshot values as the as-of approximation; price-scaled ones
 # (PER / marketCap / dividendYield) are rescaled by the price ratio; 52w position / volume / RSI / momentum
 # are computed from the 2y daily series truncated at the as-of date.
@@ -157,7 +157,7 @@ function MetricDefs($suffix) {
 
 function Evaluate($rows, $period) {
   $retF = "mret"; $topN = 50
-  if ($period -eq "year") { $retF = "yret"; $topN = 100 }
+  if ($period -eq "year") { $retF = "yret"; $topN = 50 }
   if ($period -eq "week") { $retF = "wret"; $topN = 50 }
   $withRet = @($rows | Where-Object { $null -ne $_.$retF })
   $byRet = @($withRet | Sort-Object $retF -Descending)
