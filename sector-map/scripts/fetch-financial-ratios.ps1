@@ -3,7 +3,8 @@
 # 종목별로 (1)차트 meta(52주 고저+현재가) (2)fundamentals-timeseries(직전분기 영업이익/매출/순이익/자기자본/부채총계)를
 # 조회해 4개 필드를 계산 후 덧붙여 다시 저장한다. 종목당 2회 호출 x 약 850종목이라 시간이 꽤 걸림(백그라운드 실행 권장).
 # 완료 후 sp500-data.js / kr-data.js를 "const X_DATA = " + 최신 JSON으로 재생성해야 지도에 반영됨(수동 단계).
-
+# -Market us|kr 로 한쪽만 갱신 가능(2026-09-05, 아침 미국/저녁 한국 분리 배치용). 기본 all = 양쪽.
+param([string]$Market = "all")
 $ProgressPreference = 'SilentlyContinue'
 $headers = @{ "User-Agent" = "Mozilla/5.0" }
 $now = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
@@ -72,7 +73,7 @@ function Update-Ratios($dataPath) {
   Write-Host "   -> 완료: $done 건, 실패: $failed 건. $dataPath 저장됨"
 }
 
-Update-Ratios "$PSScriptRoot\..\data\sp500-sectors.json"
-Update-Ratios "$PSScriptRoot\..\data\kr-sectors.json"
+if ($Market -eq "all" -or $Market -eq "us") { Update-Ratios "$PSScriptRoot\..\data\sp500-sectors.json" }
+if ($Market -eq "all" -or $Market -eq "kr") { Update-Ratios "$PSScriptRoot\..\data\kr-sectors.json" }
 
 Write-Host "ALL_DONE"

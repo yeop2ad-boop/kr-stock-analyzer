@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260905f" />
+<link rel="stylesheet" href="style.css?v=20260905g" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -540,6 +540,7 @@
           <button type="button" class="cat-btn" id="rankUpYearBtn">년간</button>
         </div>
         <div class="top30-sub-nav" id="corrNav" style="display:none;">
+          <button type="button" class="cat-btn" id="corrDayBtn">일간</button>
           <button type="button" class="cat-btn" id="corrWeekBtn">주간</button>
           <button type="button" class="cat-btn active" id="corrMonthBtn">월간</button>
           <button type="button" class="cat-btn" id="corrYearBtn">년간</button>
@@ -582,6 +583,7 @@
         <!-- 자동추적(2026-09-04, 2026-09-05 개편): 한국·미국주식은 상관관계 상위 3개 항목 신호등 표(월간/년간), ETF·코인은 승률 표 -->
         <div id="autoTrackGroup" style="display:none;">
           <div class="top30-sub-nav" id="autoTrackNav" style="display:none;">
+            <button type="button" class="cat-btn" id="autoTrackDayBtn">일간</button>
             <button type="button" class="cat-btn" id="autoTrackWeekBtn">주간</button>
             <button type="button" class="cat-btn active" id="autoTrackMonthBtn">월간</button>
             <button type="button" class="cat-btn" id="autoTrackYearBtn">년간</button>
@@ -807,6 +809,6 @@
 
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="data/logo-db.js?v=20260903g"></script>
-  <script src="app.js?v=20260905f"></script>
+  <script src="app.js?v=20260905g"></script>
 </body>
 </html>

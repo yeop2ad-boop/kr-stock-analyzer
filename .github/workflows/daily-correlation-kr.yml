@@ -1,0 +1,51 @@
+name: 한국 저녁 배치(스냅샷 → 상관관계도·자동추적, 오후 5시 KST)
+
+on:
+  schedule:
+    # 08:00 UTC = 한국시간(KST) 오후 5시 — 한국장 마감(15:30) 이후.
+    # 순서: ①한국 재무 스냅샷(가격/시총/PER/배당률/분기TTM 증가율 → 영업이익률/ROE/부채비율) ②상관관계+자동추적 계산
+    - cron: "0 8 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: 한국 스냅샷 1) 코스피200/코스닥150 (가격/시총/PER/배당률/분기 TTM 증가율)
+        shell: pwsh
+        working-directory: sector-map
+        run: ./scripts/fetch-kr-data.ps1
+
+      - name: 한국 스냅샷 2) 영업이익률/ROE/부채비율/52주위치
+        shell: pwsh
+        working-directory: sector-map
+        run: ./scripts/fetch-financial-ratios.ps1 -Market kr
+
+      - name: 지도 core/extra 데이터 재생성
+        shell: pwsh
+        working-directory: sector-map
+        run: ./scripts/regenerate-core-extra.ps1
+
+      - name: 한국 상관관계도 + 자동추적 계산(스냅샷 이후 순차 실행)
+        shell: pwsh
+        working-directory: sector-map
+        run: ./scripts/scan-correlation-daily.ps1 -Market kr
+
+      - name: 변경사항 커밋 및 푸시
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add sector-map/data/kr-sectors.json sector-map/data/sp500-data-core.js sector-map/data/sp500-data-extra.js sector-map/data/kr-data-core.js sector-map/data/kr-data-extra.js data/correlation-daily.json
+          if git diff --cached --quiet; then
+            echo "변경된 데이터 없음"
+          else
+            git commit -m "한국 저녁 배치: 스냅샷+상관관계 갱신 ($(date -u -d '+9 hours' +%Y-%m-%d) KST)"
+            git pull --rebase origin main
+            git push
+          fi

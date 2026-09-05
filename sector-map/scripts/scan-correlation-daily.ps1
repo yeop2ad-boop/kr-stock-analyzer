@@ -6,7 +6,9 @@
 # (PER / marketCap / dividendYield) are rescaled by the price ratio; 52w position / volume / RSI / momentum
 # are computed from the 2y daily series truncated at the as-of date.
 # Output: ../../data/correlation-daily.json  { generatedAt, dateKst, us:{month,year}, kr:{month,year} }
-# Runs daily at 07:00 KST via .github/workflows/daily-correlation.yml so the table stays fixed for the day.
+# Split schedule (2026-09-05 user request): US runs 07:00 KST (after fresh US snapshot), KR runs 17:00 KST
+# (after fresh KR snapshot). -Market us|kr updates only that section of correlation-daily.json (other kept).
+param([string]$Market = "all")
 $ProgressPreference = 'SilentlyContinue'
 $H = @{ "User-Agent" = "Mozilla/5.0" }
 $dataDir = Join-Path $PSScriptRoot "..\data"
@@ -61,6 +63,9 @@ function AsOfStats($cl, $endIdx) {
 
 function BuildRows($sectorsPath, $isKr, $wrMap, $ratingFn) {
   $sec = Get-Content $sectorsPath -Raw -Encoding UTF8 | ConvertFrom-Json
+  # snapshot time of per/marketCap/dividend in the sectors file - used to price-correct those fields
+  $snapT = $null
+  try { $snapT = ([DateTimeOffset]::Parse([string]$sec.generatedAt)).ToUnixTimeSeconds() } catch {}
   $rows = New-Object System.Collections.Generic.List[object]
   $i = 0
   foreach ($c in $sec.companies) {
@@ -79,35 +84,50 @@ function BuildRows($sectorsPath, $isKr, $wrMap, $ratingFn) {
         }
         if ($cl.Count -lt 80) { throw "short" }
         $last = $cl[$cl.Count - 1]
+        $i1d = [Math]::Max(0, $cl.Count - 2)   # previous trading day
+        $i2d = [Math]::Max(0, $cl.Count - 3)
         $i1w = ClosestIdx $cl ($last.t - 7 * 86400)
         $i2w = ClosestIdx $cl ($last.t - 14 * 86400)
         $i1m = ClosestIdx $cl ($last.t - 30 * 86400)
         $i2m = ClosestIdx $cl ($last.t - 60 * 86400)
         $i1y = ClosestIdx $cl ($last.t - 365 * 86400)
         $i13m = ClosestIdx $cl ($last.t - 395 * 86400)
-        $p1w = $cl[$i1w].c; $p1m = $cl[$i1m].c; $p1y = $cl[$i1y].c
+        $p1d = $cl[$i1d].c; $p1w = $cl[$i1w].c; $p1m = $cl[$i1m].c; $p1y = $cl[$i1y].c
+        $dret = $null; if ($p1d -gt 0 -and $i1d -lt ($cl.Count - 1)) { $dret = ($last.c / $p1d - 1) * 100 }
+        $prevD = $null; if ($cl[$i2d].c -gt 0 -and $i2d -lt $i1d) { $prevD = ($p1d / $cl[$i2d].c - 1) * 100 }
         $wret = $null; if ($p1w -gt 0 -and $i1w -lt ($cl.Count - 1)) { $wret = ($last.c / $p1w - 1) * 100 }
         $mret = $null; if ($p1m -gt 0) { $mret = ($last.c / $p1m - 1) * 100 }
         $yret = $null; if ($p1y -gt 0 -and ($last.t - $cl[$i1y].t) -gt 300 * 86400) { $yret = ($last.c / $p1y - 1) * 100 }
         $prevW = $null; if ($cl[$i2w].c -gt 0 -and $i2w -lt $i1w) { $prevW = ($p1w / $cl[$i2w].c - 1) * 100 }
         $prevM = $null; if ($cl[$i2m].c -gt 0) { $prevM = ($p1m / $cl[$i2m].c - 1) * 100 }
         $prevY = $null; if ($cl[$i13m].c -gt 0 -and $i13m -lt $i1y) { $prevY = ($p1y / $cl[$i13m].c - 1) * 100 }
+        $ad = AsOfStats $cl $i1d
         $aw = AsOfStats $cl $i1w
         $am = AsOfStats $cl $i1m
         $ay = AsOfStats $cl $i1y
-        $an = AsOfStats $cl ($cl.Count - 1)  # 현재 기준(자동추적용): 오늘의 52주 위치·5일 거래대금·주간 RSI
-        $rw = 0; if ($last.c -gt 0) { $rw = $p1w / $last.c }
-        $rm = 0; if ($last.c -gt 0) { $rm = $p1m / $last.c }
-        $ry = 0; if ($last.c -gt 0) { $ry = $p1y / $last.c }
+        $an = AsOfStats $cl ($cl.Count - 1)  # current (for autotrack): today's 52w position / 5d dollar volume / weekly RSI
+        # price-correct per/marketCap/dividend: snapshot values correspond to the close at snapshot time,
+        # so all ratios are taken against that snapshot price (not blindly against the latest close)
+        $ps = $last.c
+        if ($null -ne $snapT) { $ips = ClosestIdx $cl $snapT; if ($cl[$ips].c -gt 0) { $ps = $cl[$ips].c } }
+        $rd = 0; if ($ps -gt 0) { $rd = $p1d / $ps }
+        $rw = 0; if ($ps -gt 0) { $rw = $p1w / $ps }
+        $rm = 0; if ($ps -gt 0) { $rm = $p1m / $ps }
+        $ry = 0; if ($ps -gt 0) { $ry = $p1y / $ps }
+        $rn = 1.0; if ($ps -gt 0) { $rn = $last.c / $ps }
         $rows.Add([PSCustomObject]@{
-          sym = $sym; wret = $wret; mret = $mret; yret = $yret
+          sym = $sym; dret = $dret; wret = $wret; mret = $mret; yret = $yret
+          div_d = $(if ($null -ne $c.dividendYield -and $rd -gt 0) { $c.dividendYield / $rd } else { $null })
+          per_d = $(if ($null -ne $c.per -and $c.per -gt 0 -and $rd -gt 0) { $c.per * $rd } else { $null })
+          mcap_d = $(if ($c.marketCap) { $c.marketCap * $rd } else { $null })
+          w52_d = $ad.w52; dv5_d = $ad.dv5; rsi_d = $ad.rsi; prev_d = $prevD
           div_w = $(if ($null -ne $c.dividendYield -and $rw -gt 0) { $c.dividendYield / $rw } else { $null })
           per_w = $(if ($null -ne $c.per -and $c.per -gt 0 -and $rw -gt 0) { $c.per * $rw } else { $null })
           mcap_w = $(if ($c.marketCap) { $c.marketCap * $rw } else { $null })
           w52_w = $aw.w52; dv5_w = $aw.dv5; rsi_w = $aw.rsi; prev_w = $prevW
-          div_now = $c.dividendYield
-          per_now = $(if ($null -ne $c.per -and $c.per -gt 0) { $c.per } else { $null })
-          mcap_now = $c.marketCap
+          div_now = $(if ($null -ne $c.dividendYield -and $rn -gt 0) { $c.dividendYield / $rn } else { $null })
+          per_now = $(if ($null -ne $c.per -and $c.per -gt 0) { $c.per * $rn } else { $null })
+          mcap_now = $(if ($c.marketCap) { $c.marketCap * $rn } else { $null })
           w52_now = $an.w52; dv5_now = $an.dv5; rsi_now = $an.rsi
           revG = $c.revenueGrowth; netG = $c.netIncomeGrowth; cashG = $c.cashFlowGrowth
           debt = $c.debtRatio; opm = $c.operatingMargin; roe = $c.roe
@@ -125,7 +145,7 @@ function BuildRows($sectorsPath, $isKr, $wrMap, $ratingFn) {
           rate = (& $ratingFn $sym)
         })
         break
-      } catch { if ($attempt -eq 2) { Write-Host "fail $sym" } else { Start-Sleep -Seconds 2 } }
+      } catch { if ($attempt -eq 2) { Write-Host "fail $sym : $($_.Exception.Message) (line $($_.InvocationInfo.ScriptLineNumber))" } else { Start-Sleep -Seconds 2 } }
     }
     Start-Sleep -Milliseconds 120
     if ($i % 100 -eq 0) { Write-Host "  progress $i ok=$($rows.Count)" }
@@ -159,12 +179,13 @@ function Evaluate($rows, $period) {
   $retF = "mret"; $topN = 50
   if ($period -eq "year") { $retF = "yret"; $topN = 50 }
   if ($period -eq "week") { $retF = "wret"; $topN = 50 }
+  if ($period -eq "day") { $retF = "dret"; $topN = 50 }
   $withRet = @($rows | Where-Object { $null -ne $_.$retF })
   $byRet = @($withRet | Sort-Object $retF -Descending)
   if ($byRet.Count -lt ($topN * 3)) { return @() }
   $upSet = @{}; foreach ($x in $byRet[0..($topN-1)]) { $upSet[$x.sym] = 1 }
   $dnSet = @{}; foreach ($x in $byRet[($byRet.Count-$topN)..($byRet.Count-1)]) { $dnSet[$x.sym] = 1 }
-  $suffix = "_m"; if ($period -eq "year") { $suffix = "_y" }; if ($period -eq "week") { $suffix = "_w" }
+  $suffix = "_m"; if ($period -eq "year") { $suffix = "_y" }; if ($period -eq "week") { $suffix = "_w" }; if ($period -eq "day") { $suffix = "_d" }
   $metrics = MetricDefs $suffix
   $out = @()
   foreach ($m in $metrics) {
@@ -185,7 +206,7 @@ function Evaluate($rows, $period) {
 # Auto-track support (2026-09-05, revised per user: use CURRENT values/ranks): the top-3 metric KEYS come from
 # each period's correlation eval, but ranks/values shown are TODAY's scores (suffix only selects the momentum window).
 function MetricDefsNow($suffix) {
-  $prevF = "mret"; if ($suffix -eq "_w") { $prevF = "wret" }
+  $prevF = "mret"; if ($suffix -eq "_w") { $prevF = "wret" }; if ($suffix -eq "_d") { $prevF = "dret" }
   return @(
     @{ key = "revenueGrowth";   f = "revG";      dir = "desc" },
     @{ key = "netIncomeGrowth"; f = "netG";      dir = "desc" },
@@ -221,7 +242,7 @@ function AutotrackRanks($rows, $evalList, $suffix) {
     for ($i = 0; $i -lt $sorted.Count; $i++) {
       $s = $sorted[$i].sym
       if (-not $out.ranks.Contains($s)) { $out.ranks[$s] = [ordered]@{} }
-      # r=순위, v=실제 값(표에 % / 배 등으로 표시) — 시총·거래대금은 정수, 나머지 소수 2자리
+      # r=rank, v=actual value (shown as % / x etc.) - mcap/dollarVolume integer, others 2 decimals
       $val = $sorted[$i].$f
       if ($k -eq "marketCap" -or $k -eq "dollarVolume") { $val = [Math]::Round([double]$val, 0) } else { $val = [Math]::Round([double]$val, 2) }
       $out.ranks[$s][$k] = [ordered]@{ r = ($i + 1); v = $val }
@@ -230,22 +251,49 @@ function AutotrackRanks($rows, $evalList, $suffix) {
   return $out
 }
 
-Write-Host "US universe..."
-$usRateFn = { param($sym) RatingScore $usRatings.$sym }
-$usRows = BuildRows (Join-Path $dataDir "sp500-sectors.json") $false $wrDb.scores $usRateFn
-Write-Host "KR universe..."
-$krRateFn = { param($sym) $e = $krRatingsDoc.ratings.$sym; if ($e) { RatingScore $e.rating } else { $null } }
-$krRows = BuildRows (Join-Path $dataDir "kr-sectors.json") $true $wrDb.scoresKr $krRateFn
+function BuildSide($rows, $dateKst) {
+  $d = Evaluate $rows "day"; $w = Evaluate $rows "week"; $m = Evaluate $rows "month"; $y = Evaluate $rows "year"
+  return [ordered]@{
+    dateKst = $dateKst
+    day = $d; week = $w; month = $m; year = $y
+    autotrackDay = (AutotrackRanks $rows $d "_d"); autotrackWeek = (AutotrackRanks $rows $w "_w"); autotrack = (AutotrackRanks $rows $m "_m"); autotrackYear = (AutotrackRanks $rows $y "_y")
+  }
+}
 
 $kst = [DateTimeOffset]::UtcNow.ToOffset([TimeSpan]::FromHours(9))
-$usWeek = Evaluate $usRows "week"; $usMonth = Evaluate $usRows "month"; $usYear = Evaluate $usRows "year"
-$krWeek = Evaluate $krRows "week"; $krMonth = Evaluate $krRows "month"; $krYear = Evaluate $krRows "year"
+$dateKst = $kst.ToString("yyyy-MM-dd")
+$outPath = Join-Path $rootData "correlation-daily.json"
+
+# start from the existing file so a single-market run keeps the other market's section
+$prev = $null
+try { $prev = Get-Content $outPath -Raw -Encoding UTF8 | ConvertFrom-Json } catch {}
+$usSide = $null; $krSide = $null
+if ($prev) {
+  if ($prev.us) { $usSide = $prev.us }
+  if ($prev.kr) { $krSide = $prev.kr }
+}
+
+$usCount = 0; $krCount = 0
+if ($Market -eq "all" -or $Market -eq "us") {
+  Write-Host "US universe..."
+  $usRateFn = { param($sym) RatingScore $usRatings.$sym }
+  $usRows = BuildRows (Join-Path $dataDir "sp500-sectors.json") $false $wrDb.scores $usRateFn
+  $usCount = $usRows.Count
+  $usSide = BuildSide $usRows $dateKst
+}
+if ($Market -eq "all" -or $Market -eq "kr") {
+  Write-Host "KR universe..."
+  $krRateFn = { param($sym) $e = $krRatingsDoc.ratings.$sym; if ($e) { RatingScore $e.rating } else { $null } }
+  $krRows = BuildRows (Join-Path $dataDir "kr-sectors.json") $true $wrDb.scoresKr $krRateFn
+  $krCount = $krRows.Count
+  $krSide = BuildSide $krRows $dateKst
+}
+
 $outDoc = [ordered]@{
   generatedAt = [DateTimeOffset]::UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
-  dateKst = $kst.ToString("yyyy-MM-dd")
-  us = [ordered]@{ week = $usWeek; month = $usMonth; year = $usYear; autotrackWeek = (AutotrackRanks $usRows $usWeek "_w"); autotrack = (AutotrackRanks $usRows $usMonth "_m"); autotrackYear = (AutotrackRanks $usRows $usYear "_y") }
-  kr = [ordered]@{ week = $krWeek; month = $krMonth; year = $krYear; autotrackWeek = (AutotrackRanks $krRows $krWeek "_w"); autotrack = (AutotrackRanks $krRows $krMonth "_m"); autotrackYear = (AutotrackRanks $krRows $krYear "_y") }
+  dateKst = $dateKst
+  us = $usSide
+  kr = $krSide
 }
-$outPath = Join-Path $rootData "correlation-daily.json"
 [IO.File]::WriteAllText($outPath, ($outDoc | ConvertTo-Json -Depth 6), (New-Object System.Text.UTF8Encoding $false))
-Write-Host "DONE_MARKER us=$($usRows.Count) kr=$($krRows.Count) -> $outPath"
+Write-Host "DONE_MARKER market=$Market us=$usCount kr=$krCount -> $outPath"

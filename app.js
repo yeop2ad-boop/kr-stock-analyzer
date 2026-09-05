@@ -8824,11 +8824,13 @@ function openAutoTrack() {
 let autoTrackPeriod = "month"; // 주간/월간/년간(2026-09-05): 각 기간의 상관관계 상위 3개 항목 + 해당 시점 기준 순위
 function setAutoTrackPeriod(period) {
   autoTrackPeriod = period;
+  el("autoTrackDayBtn").classList.toggle("active", period === "day");
   el("autoTrackWeekBtn").classList.toggle("active", period === "week");
   el("autoTrackMonthBtn").classList.toggle("active", period === "month");
   el("autoTrackYearBtn").classList.toggle("active", period === "year");
   renderAutoTrack();
 }
+el("autoTrackDayBtn").addEventListener("click", () => setAutoTrackPeriod("day"));
 el("autoTrackWeekBtn").addEventListener("click", () => setAutoTrackPeriod("week"));
 el("autoTrackMonthBtn").addEventListener("click", () => setAutoTrackPeriod("month"));
 el("autoTrackYearBtn").addEventListener("click", () => setAutoTrackPeriod("year"));
@@ -8837,11 +8839,12 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
     const isKr = mode === "kr";
     const isYear = autoTrackPeriod === "year";
     const isWeek = autoTrackPeriod === "week";
+    const isDay = autoTrackPeriod === "day";
     const corr = await getCorrDb();
     const side = corr && (isKr ? corr.kr : corr.us);
-    const at = side && (isYear ? side.autotrackYear : isWeek ? side.autotrackWeek : side.autotrack);
+    const at = side && (isYear ? side.autotrackYear : isWeek ? side.autotrackWeek : isDay ? side.autotrackDay : side.autotrack);
     if (!at || !Array.isArray(at.keys) || at.keys.length < 3 || !at.ranks) {
-      throw new Error("자동추적 데이터가 아직 준비되지 않았습니다. 매일 오전 7시에 자동 생성됩니다.");
+      throw new Error(`자동추적 데이터가 아직 준비되지 않았습니다. ${isKr ? "매일 오후 5시" : "매일 오전 7시"}에 자동 생성됩니다.`);
     }
     const keys = at.keys.slice(0, 3);
     let nameOf = (sym) => TICKER_TO_KOREAN_NAME[sym] || sym;
@@ -8882,7 +8885,7 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
 
     const labels = keys.map((k) => corrLabelOf(k, autoTrackPeriod));
     const universeLabel = isKr ? "한국주식(코스피200+코스닥150)" : "미국주식(S&P500)";
-    const periodLabel = isYear ? "년간" : isWeek ? "주간" : "월간";
+    const periodLabel = isYear ? "년간" : isWeek ? "주간" : isDay ? "일간" : "월간";
     const agoLabel = isYear ? "1년 전" : isWeek ? "한주 전" : "한달 전";
     const pctOf = (c, key) => {
       const n = (at.n && at.n[key]) || 0;
@@ -8910,7 +8913,7 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
       resultsEl.innerHTML = `
         <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — 오늘의 <b>${periodLabel} 상관관계 상위 3개 항목</b>(①${escapeHtml(labels[0])} ②${escapeHtml(labels[1])} ③${escapeHtml(labels[2])})을 <b>현재 시점 점수</b>로 다시 순위 매긴 신호등입니다.
         각 항목 ${isKr ? "상위 20% 🟢 · 중간 🟡 · 하위 20% 🔴" : "상위 100등 🟢 · 중간 🟡 · 하위 100등 🔴"} — 불 3개가 모두 켜진 종목이 맨 위로 오도록 정렬했습니다(②🟢 우선 → ③🟢 우선 → ① 순위순).
-        상관관계도와 같은 배치로 매일 오전 7시 갱신되며 하루 동안 고정됩니다(기준일 ${escapeHtml(corr.dateKst || "")}). 참고용 지표이며 투자 자문이 아닙니다.</p>
+        상관관계도와 같은 배치로 ${isKr ? "매일 오후 5시(한국장 마감 후 최신 재무 스냅샷 반영)" : "매일 오전 7시(미국장 마감 후 최신 재무 스냅샷 반영)"} 갱신되며 다음 갱신까지 고정됩니다(기준일 ${escapeHtml(side.dateKst || corr.dateKst || "")}). 참고용 지표이며 투자 자문이 아닙니다.</p>
         <table class="top30-table autotrack-table autotrack-lights-table">
           <thead><tr><th class="at-name">종목명</th><th>①${escapeHtml(labels[0])}</th><th>②${escapeHtml(labels[1])}</th><th>③${escapeHtml(labels[2])}</th></tr></thead>
           <tbody>${body}</tbody>
@@ -9424,18 +9427,20 @@ function getCorrDb() {
 }
 function setCorrPeriod(period) {
   insightCorrPeriod = period;
+  el("corrDayBtn").classList.toggle("active", period === "day");
   el("corrWeekBtn").classList.toggle("active", period === "week");
   el("corrMonthBtn").classList.toggle("active", period === "month");
   el("corrYearBtn").classList.toggle("active", period === "year");
   runInsightCorr(period);
 }
+el("corrDayBtn").addEventListener("click", () => setCorrPeriod("day"));
 el("corrWeekBtn").addEventListener("click", () => setCorrPeriod("week"));
 el("corrMonthBtn").addEventListener("click", () => setCorrPeriod("month"));
 el("corrYearBtn").addEventListener("click", () => setCorrPeriod("year"));
-// 주간/월간/년간별 라벨 보정 — 모멘텀 항목은 기간에 따라 이름이 달라짐(주간=한주전, 그 외=한달전)
+// 일간/주간/월간/년간별 라벨 보정 — 모멘텀 항목은 기간에 따라 이름이 달라짐(일간=하루전, 주간=한주전, 그 외=한달전)
 function corrLabelOf(key, period) {
-  if (key === "prevMonthUp") return period === "week" ? "한주전 상승률" : "한달전 상승률";
-  if (key === "prevMonthDown") return period === "week" ? "한주전 하락률" : "한달전 하락률";
+  if (key === "prevMonthUp") return period === "day" ? "하루전 상승률" : period === "week" ? "한주전 상승률" : "한달전 상승률";
+  if (key === "prevMonthDown") return period === "day" ? "하루전 하락률" : period === "week" ? "한주전 하락률" : "한달전 하락률";
   return CORR_METRIC_LABELS[key] || key;
 }
 async function runInsightCorr(period) {
@@ -9453,11 +9458,12 @@ async function runInsightCorr(period) {
     const db = await getCorrDb();
     if (!db) throw new Error("상관관계 데이터가 아직 준비되지 않았습니다. 매일 오전 7시에 자동 생성됩니다.");
     const isKr = getWatchlistActiveMarket() === "KR";
-    const list = (isKr ? db.kr : db.us)?.[period] || [];
-    if (!list.length) throw new Error("이 기간의 데이터가 없습니다. 다음 갱신(매일 오전 7시)을 기다려주세요.");
-    const upLabel = period === "year" ? "1년 상승 50" : period === "week" ? "1주 상승 50" : "1달 상승 50";
-    const dnLabel = period === "year" ? "1년 하락 50" : period === "week" ? "1주 하락 50" : "1달 하락 50";
-    const agoLabel = period === "year" ? "1년 전" : period === "week" ? "한주 전" : "한달 전";
+    const side = isKr ? db.kr : db.us;
+    const list = side?.[period] || [];
+    if (!list.length) throw new Error(`이 기간의 데이터가 없습니다. 다음 갱신(${isKr ? "매일 오후 5시" : "매일 오전 7시"})을 기다려주세요.`);
+    const upLabel = period === "year" ? "1년 상승 50" : period === "week" ? "1주 상승 50" : period === "day" ? "1일 상승 50" : "1달 상승 50";
+    const dnLabel = period === "year" ? "1년 하락 50" : period === "week" ? "1주 하락 50" : period === "day" ? "1일 하락 50" : "1달 하락 50";
+    const agoLabel = period === "year" ? "1년 전" : period === "week" ? "한주 전" : period === "day" ? "하루 전" : "한달 전";
     const universeLabel = isKr ? "코스피200+코스닥150" : "S&P500";
     const trs = list
       .map((m, i) => {
@@ -9477,7 +9483,7 @@ async function runInsightCorr(period) {
     results.innerHTML = `
       <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — 각 랭킹의 <b>${agoLabel} 당시 점수 기준</b> 상위 100·하위 100 종목이
       현재까지의 <b>${upLabel} / ${dnLabel}</b>에 각각 몇 개 들어갔는지(적중 수)입니다. 합계가 기대값(무작위 수준)보다 높을수록 그 랭킹과 실제 등락의 상관관계가 큽니다.
-      매일 오전 7시에 자동 재계산되며 하루 동안 고정됩니다(기준일 ${escapeHtml(db.dateKst || "")}). 참고용 지표이며 투자 자문이 아닙니다.</p>
+      ${isKr ? "매일 오후 5시(한국장 마감 후 최신 재무 스냅샷 반영)" : "매일 오전 7시(미국장 마감 후 최신 재무 스냅샷 반영)"}에 자동 재계산되며 다음 갱신까지 고정됩니다(기준일 ${escapeHtml(side?.dateKst || db.dateKst || "")}). 참고용 지표이며 투자 자문이 아닙니다.</p>
       <table class="top30-table">
         <thead><tr><th>순위</th><th>항목 (${agoLabel} 기준)</th><th>상위100<br>→상승50</th><th>하위100<br>→하락50</th><th>합계<br>(상관점수)</th></tr></thead>
         <tbody>${trs}</tbody>

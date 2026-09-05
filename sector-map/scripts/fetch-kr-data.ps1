@@ -41,6 +41,18 @@ function Get-LatestValue($series) {
   $sorted = $series | Sort-Object asOfDate
   return $sorted[-1].reportedValue.raw
 }
+# 분기 YoY 증가율(2026-09-05): 최신 분기 vs 전년 동기(4분기 전) — 야후가 분기 데이터를 5개까지만 주므로
+# TTM 합산 대신 이 방식. 분기 5개 미만이면 연간 YoY 폴백.
+function Get-TtmGrowth($qSeries, $aSeries) {
+  $q = @()
+  if ($qSeries) { $q = @($qSeries | Where-Object { $null -ne $_.reportedValue.raw } | Sort-Object asOfDate) }
+  if ($q.Count -ge 5) {
+    $lastV = [double]$q[$q.Count - 1].reportedValue.raw
+    $prevV = [double]$q[$q.Count - 5].reportedValue.raw
+    if ($prevV -ne 0) { return [math]::Round((($lastV - $prevV) / [math]::Abs($prevV)) * 100, 2) }
+  }
+  return Get-LatestYoyGrowth $aSeries
+}
 
 $now = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
 $fiveYearsAgo = $now - 5 * 365 * 24 * 3600
@@ -98,11 +110,14 @@ foreach ($t in $tickers) {
     $sectorKo = if ($sectorInfo) { $sectorInfo.ko } else { "산업재" }
 
     # (3) 재무제표(매출/순이익/영업현금흐름/발행주식수/EPS)
-    $fund = Invoke-RestMethod -Uri "https://query2.finance.yahoo.com/ws/fundamentals-timeseries/v1/finance/timeseries/$sym`?type=annualTotalRevenue,annualNetIncome,annualOperatingCashFlow,annualShareIssued,annualBasicEPS&period1=$fiveYearsAgo&period2=$now&merge=false&lang=en-US&region=US" -Headers $headers -TimeoutSec 15
+    $fund = Invoke-RestMethod -Uri "https://query2.finance.yahoo.com/ws/fundamentals-timeseries/v1/finance/timeseries/$sym`?type=quarterlyTotalRevenue,quarterlyNetIncome,quarterlyOperatingCashFlow,annualTotalRevenue,annualNetIncome,annualOperatingCashFlow,annualShareIssued,annualBasicEPS&period1=$fiveYearsAgo&period2=$now&merge=false&lang=en-US&region=US" -Headers $headers -TimeoutSec 15
     $blocks = $fund.timeseries.result
     $revSeries = ($blocks | Where-Object { $_.annualTotalRevenue }).annualTotalRevenue
     $niSeries = ($blocks | Where-Object { $_.annualNetIncome }).annualNetIncome
     $cfSeries = ($blocks | Where-Object { $_.annualOperatingCashFlow }).annualOperatingCashFlow
+    $revQ = ($blocks | Where-Object { $_.quarterlyTotalRevenue }).quarterlyTotalRevenue
+    $niQ = ($blocks | Where-Object { $_.quarterlyNetIncome }).quarterlyNetIncome
+    $cfQ = ($blocks | Where-Object { $_.quarterlyOperatingCashFlow }).quarterlyOperatingCashFlow
     $shareSeries = ($blocks | Where-Object { $_.annualShareIssued }).annualShareIssued
     $epsSeries = ($blocks | Where-Object { $_.annualBasicEPS }).annualBasicEPS
 
@@ -127,9 +142,9 @@ foreach ($t in $tickers) {
       eps            = $eps
       dividendYield  = $dividendYield
       dollarVolume   = $(if ($price -and $volume) { $price * $volume } else { $null })
-      revenueGrowth  = Get-LatestYoyGrowth $revSeries
-      netIncomeGrowth = Get-LatestYoyGrowth $niSeries
-      cashFlowGrowth = Get-LatestYoyGrowth $cfSeries
+      revenueGrowth  = Get-TtmGrowth $revQ $revSeries
+      netIncomeGrowth = Get-TtmGrowth $niQ $niSeries
+      cashFlowGrowth = Get-TtmGrowth $cfQ $cfSeries
     }
     break
   } catch {
