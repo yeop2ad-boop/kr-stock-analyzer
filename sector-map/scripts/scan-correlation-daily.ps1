@@ -79,21 +79,36 @@ function BuildRows($sectorsPath, $isKr, $wrMap, $ratingFn) {
         }
         if ($cl.Count -lt 80) { throw "short" }
         $last = $cl[$cl.Count - 1]
+        $i1w = ClosestIdx $cl ($last.t - 7 * 86400)
+        $i2w = ClosestIdx $cl ($last.t - 14 * 86400)
         $i1m = ClosestIdx $cl ($last.t - 30 * 86400)
         $i2m = ClosestIdx $cl ($last.t - 60 * 86400)
         $i1y = ClosestIdx $cl ($last.t - 365 * 86400)
         $i13m = ClosestIdx $cl ($last.t - 395 * 86400)
-        $p1m = $cl[$i1m].c; $p1y = $cl[$i1y].c
+        $p1w = $cl[$i1w].c; $p1m = $cl[$i1m].c; $p1y = $cl[$i1y].c
+        $wret = $null; if ($p1w -gt 0 -and $i1w -lt ($cl.Count - 1)) { $wret = ($last.c / $p1w - 1) * 100 }
         $mret = $null; if ($p1m -gt 0) { $mret = ($last.c / $p1m - 1) * 100 }
         $yret = $null; if ($p1y -gt 0 -and ($last.t - $cl[$i1y].t) -gt 300 * 86400) { $yret = ($last.c / $p1y - 1) * 100 }
+        $prevW = $null; if ($cl[$i2w].c -gt 0 -and $i2w -lt $i1w) { $prevW = ($p1w / $cl[$i2w].c - 1) * 100 }
         $prevM = $null; if ($cl[$i2m].c -gt 0) { $prevM = ($p1m / $cl[$i2m].c - 1) * 100 }
         $prevY = $null; if ($cl[$i13m].c -gt 0 -and $i13m -lt $i1y) { $prevY = ($p1y / $cl[$i13m].c - 1) * 100 }
+        $aw = AsOfStats $cl $i1w
         $am = AsOfStats $cl $i1m
         $ay = AsOfStats $cl $i1y
+        $an = AsOfStats $cl ($cl.Count - 1)  # 현재 기준(자동추적용): 오늘의 52주 위치·5일 거래대금·주간 RSI
+        $rw = 0; if ($last.c -gt 0) { $rw = $p1w / $last.c }
         $rm = 0; if ($last.c -gt 0) { $rm = $p1m / $last.c }
         $ry = 0; if ($last.c -gt 0) { $ry = $p1y / $last.c }
         $rows.Add([PSCustomObject]@{
-          sym = $sym; mret = $mret; yret = $yret
+          sym = $sym; wret = $wret; mret = $mret; yret = $yret
+          div_w = $(if ($null -ne $c.dividendYield -and $rw -gt 0) { $c.dividendYield / $rw } else { $null })
+          per_w = $(if ($null -ne $c.per -and $c.per -gt 0 -and $rw -gt 0) { $c.per * $rw } else { $null })
+          mcap_w = $(if ($c.marketCap) { $c.marketCap * $rw } else { $null })
+          w52_w = $aw.w52; dv5_w = $aw.dv5; rsi_w = $aw.rsi; prev_w = $prevW
+          div_now = $c.dividendYield
+          per_now = $(if ($null -ne $c.per -and $c.per -gt 0) { $c.per } else { $null })
+          mcap_now = $c.marketCap
+          w52_now = $an.w52; dv5_now = $an.dv5; rsi_now = $an.rsi
           revG = $c.revenueGrowth; netG = $c.netIncomeGrowth; cashG = $c.cashFlowGrowth
           debt = $c.debtRatio; opm = $c.operatingMargin; roe = $c.roe
           div_m = $(if ($null -ne $c.dividendYield -and $rm -gt 0) { $c.dividendYield / $rm } else { $null })
@@ -143,12 +158,13 @@ function MetricDefs($suffix) {
 function Evaluate($rows, $period) {
   $retF = "mret"; $topN = 50
   if ($period -eq "year") { $retF = "yret"; $topN = 100 }
+  if ($period -eq "week") { $retF = "wret"; $topN = 50 }
   $withRet = @($rows | Where-Object { $null -ne $_.$retF })
   $byRet = @($withRet | Sort-Object $retF -Descending)
   if ($byRet.Count -lt ($topN * 3)) { return @() }
   $upSet = @{}; foreach ($x in $byRet[0..($topN-1)]) { $upSet[$x.sym] = 1 }
   $dnSet = @{}; foreach ($x in $byRet[($byRet.Count-$topN)..($byRet.Count-1)]) { $dnSet[$x.sym] = 1 }
-  $suffix = "_m"; if ($period -eq "year") { $suffix = "_y" }
+  $suffix = "_m"; if ($period -eq "year") { $suffix = "_y" }; if ($period -eq "week") { $suffix = "_w" }
   $metrics = MetricDefs $suffix
   $out = @()
   foreach ($m in $metrics) {
@@ -166,10 +182,32 @@ function Evaluate($rows, $period) {
   return @($out | Sort-Object tot -Descending)
 }
 
-# Auto-track support (2026-09-05): per-symbol ranks for the top-3 correlation metrics
-# suffix "_m" = monthly (as-of 1 month ago values), "_y" = yearly (as-of 1 year ago values)
+# Auto-track support (2026-09-05, revised per user: use CURRENT values/ranks): the top-3 metric KEYS come from
+# each period's correlation eval, but ranks/values shown are TODAY's scores (suffix only selects the momentum window).
+function MetricDefsNow($suffix) {
+  $prevF = "mret"; if ($suffix -eq "_w") { $prevF = "wret" }
+  return @(
+    @{ key = "revenueGrowth";   f = "revG";      dir = "desc" },
+    @{ key = "netIncomeGrowth"; f = "netG";      dir = "desc" },
+    @{ key = "dividendYield";   f = "div_now";   dir = "desc" },
+    @{ key = "debtRatio";       f = "debt";      dir = "asc"  },
+    @{ key = "cashFlowGrowth";  f = "cashG";     dir = "desc" },
+    @{ key = "marketCap";       f = "mcap_now";  dir = "desc" },
+    @{ key = "operatingMargin"; f = "opm";       dir = "desc" },
+    @{ key = "per";             f = "per_now";   dir = "asc"  },
+    @{ key = "roe";             f = "roe";       dir = "desc" },
+    @{ key = "week52High";      f = "w52_now";   dir = "desc" },
+    @{ key = "week52Low";       f = "w52_now";   dir = "asc"  },
+    @{ key = "dollarVolume";    f = "dv5_now";   dir = "desc" },
+    @{ key = "prevMonthUp";     f = $prevF;      dir = "desc" },
+    @{ key = "prevMonthDown";   f = $prevF;      dir = "asc"  },
+    @{ key = "winRate10y";      f = "score";     dir = "desc" },
+    @{ key = "rsi";             f = "rsi_now";   dir = "desc" },
+    @{ key = "creditRating";    f = "rate";      dir = "desc" }
+  )
+}
 function AutotrackRanks($rows, $evalList, $suffix) {
-  $defs = MetricDefs $suffix
+  $defs = MetricDefsNow $suffix
   $keys = @($evalList | Select-Object -First 3 | ForEach-Object { $_.key })
   $out = [ordered]@{ keys = $keys; n = [ordered]@{}; ranks = [ordered]@{} }
   foreach ($k in $keys) {
@@ -200,13 +238,13 @@ $krRateFn = { param($sym) $e = $krRatingsDoc.ratings.$sym; if ($e) { RatingScore
 $krRows = BuildRows (Join-Path $dataDir "kr-sectors.json") $true $wrDb.scoresKr $krRateFn
 
 $kst = [DateTimeOffset]::UtcNow.ToOffset([TimeSpan]::FromHours(9))
-$usMonth = Evaluate $usRows "month"; $usYear = Evaluate $usRows "year"
-$krMonth = Evaluate $krRows "month"; $krYear = Evaluate $krRows "year"
+$usWeek = Evaluate $usRows "week"; $usMonth = Evaluate $usRows "month"; $usYear = Evaluate $usRows "year"
+$krWeek = Evaluate $krRows "week"; $krMonth = Evaluate $krRows "month"; $krYear = Evaluate $krRows "year"
 $outDoc = [ordered]@{
   generatedAt = [DateTimeOffset]::UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
   dateKst = $kst.ToString("yyyy-MM-dd")
-  us = [ordered]@{ month = $usMonth; year = $usYear; autotrack = (AutotrackRanks $usRows $usMonth "_m"); autotrackYear = (AutotrackRanks $usRows $usYear "_y") }
-  kr = [ordered]@{ month = $krMonth; year = $krYear; autotrack = (AutotrackRanks $krRows $krMonth "_m"); autotrackYear = (AutotrackRanks $krRows $krYear "_y") }
+  us = [ordered]@{ week = $usWeek; month = $usMonth; year = $usYear; autotrackWeek = (AutotrackRanks $usRows $usWeek "_w"); autotrack = (AutotrackRanks $usRows $usMonth "_m"); autotrackYear = (AutotrackRanks $usRows $usYear "_y") }
+  kr = [ordered]@{ week = $krWeek; month = $krMonth; year = $krYear; autotrackWeek = (AutotrackRanks $krRows $krWeek "_w"); autotrack = (AutotrackRanks $krRows $krMonth "_m"); autotrackYear = (AutotrackRanks $krRows $krYear "_y") }
 }
 $outPath = Join-Path $rootData "correlation-daily.json"
 [IO.File]::WriteAllText($outPath, ($outDoc | ConvertTo-Json -Depth 6), (New-Object System.Text.UTF8Encoding $false))
