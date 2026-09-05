@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260904h" />
+<link rel="stylesheet" href="style.css?v=20260904i" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -483,6 +483,8 @@
           <button type="button" class="cat-btn" id="insightCatFirmsBtn"><span class="btn-icon" data-icon="bank"></span> <span id="insightCatFirmsLabel">자산&amp;투자사</span></button>
           <button type="button" class="cat-btn" id="insightCatBrandBtn"><span class="btn-icon" id="insightCatBrandIcon"></span> <span id="insightCatBrandLabel">브랜드평판순</span></button>
           <button type="button" class="cat-btn" id="insightCatTechBtn"><span class="btn-icon" data-icon="flask"></span> 신기술</button>
+          <!-- 순위상승(2026-09-04 사용자 요청): 시총 순위가 한달/1년 사이 급상승한 TOP50 — 한국·미국주식·비트코인 3개 투자처(ETF 제외) -->
+          <button type="button" class="cat-btn" id="insightCatRankUpBtn"><span class="btn-icon" data-icon="trending-up"></span> 순위상승</button>
           <!-- 실적&공시 일정/뉴스는 더보기 메뉴로 이동 — 렌더 함수(runInsightCalendar/runInsightNews)가 이 버튼의
                active 상태를 계속 참조하므로 DOM에서 지우지 않고 숨김만 처리(more-panel의 신규 항목이 대신 트리거) -->
           <button type="button" class="cat-btn" id="insightCatCalendarBtn" style="display:none;"><span class="btn-icon" data-icon="calendar"></span> 실적&amp;공시 일정</button>
@@ -530,6 +532,10 @@
           <button type="button" class="cat-btn dart-metric-btn" id="insightDartTenureBtn" style="display:none;">평균근속</button>
           <button type="button" class="cat-btn dart-metric-btn" id="insightDartBuybackBtn" style="display:none;">자사주 취득</button>
           <button type="button" class="cat-btn dart-metric-btn" id="insightDartHeadcountBtn" style="display:none;">직원증가</button>
+        </div>
+        <div class="top30-sub-nav" id="rankUpNav" style="display:none;">
+          <button type="button" class="cat-btn active" id="rankUpMonthBtn">월간</button>
+          <button type="button" class="cat-btn" id="rankUpYearBtn">년간</button>
         </div>
         <p id="insightStatus" class="muted top30-status" style="display:none;"></p>
         <div id="insightResults"></div>
@@ -789,6 +795,6 @@
 
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="data/logo-db.js?v=20260903g"></script>
-  <script src="app.js?v=20260904h"></script>
+  <script src="app.js?v=20260904i"></script>
 </body>
 </html>

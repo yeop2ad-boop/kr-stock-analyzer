@@ -2324,6 +2324,7 @@ const insightCategoryButtons = {
   firms: el("insightCatFirmsBtn"),
   brand: el("insightCatBrandBtn"),
   tech: el("insightCatTechBtn"),
+  rankup: el("insightCatRankUpBtn"), // 순위상승(2026-09-04): 시총 순위 급상승 TOP50 — 한국·미국·비트코인(ETF 제외)
   calendar: el("insightCatCalendarBtn"),
   news: el("insightCatNewsBtn"),
   futureIndustry: el("insightCatFutureIndustryBtn"),
@@ -9230,12 +9231,14 @@ function updateFirmsNavVisibility() {
   insightKrFirmsNav.style.display = showFirms && isKr ? "" : "none";
 }
 function switchInsightCategory(key) {
-  if (insightActiveCategory === key) return;
+  // 순위상승은 투자처(한국/미국/코인) 전환 후 재클릭 시 새 유니버스로 다시 계산해야 하므로 조기 반환 제외(2026-09-04)
+  if (insightActiveCategory === key && key !== "rankup") return;
   insightActiveCategory = key;
   setInsightCategoryActive(key);
   updateFirmsNavVisibility();
   insightBrandNav.style.display = key === "brand" ? "" : "none";
   futureIndustryNav.style.display = key === "futureIndustry" ? "" : "none";
+  el("rankUpNav").style.display = key === "rankup" ? "" : "none";
   if (key === "brand") {
     // 국내는 다트공시(4대 지표), 해외는 브랜드평판순(3개 기관) — 이전에 보던 항목이 지금 시장에 없는 종류면 기본값으로 리셋
     const isKr = getWatchlistActiveMarket() === "KR";
@@ -9257,10 +9260,109 @@ function runInsightCategory(key) {
     if (getWatchlistActiveMarket() === "KR") runInsightKr(insightActiveKrInstitution);
     else runInsight(insightActiveInstitution);
   } else if (key === "brand") runInsightBrandTab(insightActiveBrandOrg);
+  else if (key === "rankup") runInsightRankUp(insightRankUpPeriod);
   else if (key === "tech") runInsightTech();
   else if (key === "calendar") runInsightCalendar();
   else if (key === "news") runInsightNews();
   else if (key === "futureIndustry") runFutureIndustrySource(insightActiveFutureSource);
+}
+
+// ---------- 순위상승(2026-09-04 사용자 요청): 시총 순위가 한달/1년 사이 많이 오른 TOP50 ----------
+// 한국주식(코스피200+코스닥150)·미국주식(S&P500)·비트코인(시총 상위 100) 3개 투자처, ETF는 제외.
+// 과거 시총 = 현재 시총 ÷ (1+기간수익률) 역산(주식수 변동 무시한 근사) — 수익률은 배치 DB(m12 마지막 완성월 / ret1y).
+let insightRankUpPeriod = "month";
+el("rankUpMonthBtn").addEventListener("click", () => {
+  insightRankUpPeriod = "month";
+  el("rankUpMonthBtn").classList.add("active");
+  el("rankUpYearBtn").classList.remove("active");
+  runInsightRankUp("month");
+});
+el("rankUpYearBtn").addEventListener("click", () => {
+  insightRankUpPeriod = "year";
+  el("rankUpYearBtn").classList.add("active");
+  el("rankUpMonthBtn").classList.remove("active");
+  runInsightRankUp("year");
+});
+async function runInsightRankUp(period) {
+  const status = el("insightStatus");
+  const results = el("insightResults");
+  results.innerHTML = "";
+  if (appSectionMode === "etf") {
+    status.style.display = "none";
+    results.innerHTML = `<p class="muted" style="padding:12px 0;">순위상승은 한국주식·미국주식·비트코인에서만 제공됩니다(ETF 제외).</p>`;
+    return;
+  }
+  status.style.display = "block";
+  status.textContent = "시총 순위 변화를 계산하는 중...";
+  try {
+    const isCrypto = appSectionMode === "crypto";
+    const isKr = !isCrypto && getWatchlistActiveMarket() === "KR";
+    const db = await getWinRateDb();
+    const wrMap = isCrypto ? db.scoresCrypto : isKr ? db.scoresKr : db.scores;
+    if (!wrMap) throw new Error("배치 DB를 불러오지 못했습니다.");
+
+    // 유니버스(심볼·시총·이름) 구성
+    let items = [];
+    if (isCrypto) {
+      const quotes = await getCryptoTop100();
+      items = quotes
+        .filter((q) => q.marketCap)
+        .map((q) => ({ symbol: q.symbol, name: cryptoKoName(q.symbol, q.shortname || q.symbol), mcap: q.marketCap }));
+    } else {
+      const universe = await getSReportUniverse(isKr);
+      items = (((universe && universe.companies) || []))
+        .filter((c) => c.marketCap)
+        .map((c) => ({ symbol: c.symbol, name: isKr ? c.name || c.symbol : TICKER_TO_KOREAN_NAME[c.symbol] || c.symbol, mcap: c.marketCap }));
+    }
+
+    // 기간 수익률: month=마지막 완성월 등락(m12 끝값), year=직전 12개월(ret1y)
+    const rows = items
+      .map((it) => {
+        const e = wrMap[it.symbol];
+        let ret = null;
+        if (e) {
+          if (period === "year") ret = Number.isFinite(e.ret1y) ? e.ret1y : null;
+          else if (Array.isArray(e.m12) && e.m12.length) ret = e.m12[e.m12.length - 1];
+        }
+        return ret === null || ret <= -100 ? null : { ...it, ret, mcapAgo: it.mcap / (1 + ret / 100) };
+      })
+      .filter(Boolean);
+    if (rows.length < 10) throw new Error("데이터가 부족합니다.");
+
+    const rankNow = new Map();
+    [...rows].sort((a, b) => b.mcap - a.mcap).forEach((r, i) => rankNow.set(r.symbol, i + 1));
+    const rankAgo = new Map();
+    [...rows].sort((a, b) => b.mcapAgo - a.mcapAgo).forEach((r, i) => rankAgo.set(r.symbol, i + 1));
+    const ranked = rows
+      .map((r) => ({ ...r, now: rankNow.get(r.symbol), ago: rankAgo.get(r.symbol), delta: rankAgo.get(r.symbol) - rankNow.get(r.symbol) }))
+      .sort((a, b) => b.delta - a.delta || a.now - b.now)
+      .slice(0, 50);
+
+    const periodLabel = period === "year" ? "1년(직전 12개월)" : "한달(최근 완성월)";
+    const universeLabel = isCrypto ? "암호화폐 시총 상위" : isKr ? "코스피200+코스닥150" : "S&P500";
+    const currency = isKr ? "KRW" : "USD";
+    const trs = ranked
+      .map(
+        (r, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td><span class="ticker-cell">${isCrypto ? cryptoLogoHtml(cryptoBaseTicker(r.symbol)) : tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.name)}</b></span>${isKr || isCrypto ? "" : `<br><span class="muted" style="font-size:11px;">${escapeHtml(r.symbol)}</span>`}</td>
+        <td><b>${r.ago}위 → ${r.now}위</b><br><span class="delta-up" style="font-size:11px;">▲${r.delta}계단</span></td>
+        <td><span class="${r.ret >= 0 ? "delta-up" : "delta-down"}">${r.ret >= 0 ? "+" : ""}${Math.round(r.ret * 10) / 10}%</span></td>
+      </tr>`
+      )
+      .join("");
+    status.style.display = "none";
+    results.innerHTML = `
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — ${periodLabel} 수익률로 역산한 시가총액 순위가 많이 오른 순 TOP${ranked.length}입니다(주식수 변동 미반영 근사, 매일 자동 갱신되는 배치 DB 기준). 참고용 지표이며 투자 자문이 아닙니다.</p>
+      <table class="top30-table">
+        <thead><tr><th>순위</th><th>${isCrypto ? "코인" : "기업명"}</th><th>시총 순위 변화</th><th>${period === "year" ? "1년" : "한달"} 수익률</th></tr></thead>
+        <tbody>${trs}</tbody>
+      </table>`;
+  } catch (e) {
+    status.style.display = "block";
+    status.textContent = `❌ ${e.message || "순위상승을 계산하지 못했습니다."}`;
+  }
 }
 
 // 인사이트 서브내비(거대기업 13F 보유종목)에서 현재 선택된 버튼만 활성 표시
