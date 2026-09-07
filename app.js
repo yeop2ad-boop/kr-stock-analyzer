@@ -9827,7 +9827,12 @@ async function runInsightSectorWin() {
       all.n += g.n;
       for (const k of ["wr1m", "wr1y", "wr10", "r1m", "r1y", "r10"]) all[k].push(...g[k]);
     }
-    const allRow = { sec: "전체", n: all.n, wr1m: avg(all.wr1m), wr1y: avg(all.wr1y), wr10: avg(all.wr10), r1m: avg(all.r1m), r1y: avg(all.r1y), r10: avg(all.r10), r1yMed: median(all.r1y) };
+    const allRow = { sec: "전체", n: all.n, wr1m: avg(all.wr1m), wr1y: avg(all.wr1y), wr10: avg(all.wr10), r1m: avg(all.r1m), r1y: avg(all.r1y), r10: avg(all.r10), r1yMed: median(all.r1y), wr10Med: median(all.wr10) };
+    // 지수 자체의 10년 승률(사용자 질문 2026-09-07): 종목 평균(미국 56%)과 지수(SPY 68%)가 다른 이유를 표에서 바로 설명 — 지수는 분산·시총 가중이라 더 높음
+    const benchSym = isCrypto ? "BTC-USD" : isKr ? "069500.KS" : "SPY";
+    const benchName = isCrypto ? "비트코인" : isKr ? "코스피200(KODEX200)" : "S&P500 지수(SPY)";
+    const benchEntry = isCrypto ? db.scoresCrypto && db.scoresCrypto[benchSym] : db.scoresEtf && db.scoresEtf[benchSym];
+    const benchScore = benchEntry && Number.isFinite(benchEntry.score) ? benchEntry.score : null;
     if (!rows.length) throw new Error("섹터별로 집계할 종목이 없습니다.");
 
     // 마지막 완성월 라벨: DB 생성 시각의 전월
@@ -9842,7 +9847,7 @@ async function runInsightSectorWin() {
     const tr = (r, isAll) => `
       <tr${isAll ? ' class="sector-win-all"' : ""}>
         <td style="text-align:left;"><b>${escapeHtml(r.sec)}</b><br><span class="muted" style="font-size:10px;">${r.n}종목${r.n <= 3 ? " ⚠️" : ""}</span></td>
-        <td>${pct(r.wr1m)}</td><td>${pct(r.wr1y)}</td><td>${wrCell(r.wr10)}</td>
+        <td>${pct(r.wr1m)}</td><td>${pct(r.wr1y)}</td><td>${wrCell(r.wr10)}${isAll && r.wr10Med !== null ? `<br><span class="muted" style="font-size:9.5px;">중앙값 ${r.wr10Med}%</span>` : ""}</td>
         <td>${signed(r.r1m)}</td><td>${signed(r.r1y)}</td><td>${signed(r.r10)}</td>
       </tr>`;
     status.style.display = "none";
@@ -9850,6 +9855,8 @@ async function runInsightSectorWin() {
       <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — 섹터별 <b>승률 평균(1달 · 1년 · 10년)</b>과 <b>상승률 평균(1달 · 1년 · 10년)</b>입니다(10년 승률 높은 순).
       1달 승률은 지난달(${monthLabel}) 상승 마감한 종목 비율, 1달 상승률은 그 달의 등락 평균입니다. 1년·10년 승률은 종목별 월간 승률의 평균, 1년 상승률은 최근 12개월 상승률 평균,
       10년 상승률은 연복리(매년 몇 %씩 오른 셈) 평균입니다. 승률 DB(${escapeHtml(dbDate)} 생성) 기준이며 매일 갱신됩니다. 투자 자문이 아닙니다.</p>
+      ${benchScore !== null && !isCrypto ? `<p class="top30-scope-note" style="color:var(--accent);">ⓘ 여기 10년 승률은 <b>종목 하나하나의 승률을 평균</b>한 값(전체 ${allRow.wr10 === null ? "-" : allRow.wr10 + "%"}, 중앙값 ${allRow.wr10Med === null ? "-" : allRow.wr10Med + "%"})이고, <b>${benchName} 자체의 10년 승률은 ${benchScore}%</b>입니다. 지수는 오르는 종목과 내리는 종목이 상쇄되고 대형주 비중이 커서 개별 종목 평균보다 승률이 높습니다. "지수에 투자하면 ${benchScore}%, 종목 하나를 고르면 평균 ${allRow.wr10 === null ? "-" : allRow.wr10 + "%"}"로 읽으세요.</p>` : ""}
+      ${benchScore !== null && isCrypto ? `<p class="top30-scope-note" style="color:var(--accent);">ⓘ 비트코인 자체의 10년 승률은 ${benchScore}%이고, 위 값은 코인 ${allRow.n}개 각각의 승률 평균(중앙값 ${allRow.wr10Med === null ? "-" : allRow.wr10Med + "%"})입니다.</p>` : ""}
       ${isCrypto ? `<p class="top30-scope-note">⚠️ 코인은 섹터 분류가 없어 한 묶음입니다. 1년 상승률 평균은 몇몇 신규 코인의 폭등이 끌어올린 값이라 중앙값(${allRow.r1yMed === null ? "N/A" : allRow.r1yMed + "%"})을 함께 보세요.</p>` : `<p class="top30-scope-note">⚠️ 종목이 3개 이하인 섹터는 평균의 의미가 약합니다. 상장 10년 미만 종목은 상장 이후 기간만으로 계산된 값이 섞여 있습니다.</p>`}
       <div class="sector-win-scroll">
       <table class="top30-table sector-win-table">
