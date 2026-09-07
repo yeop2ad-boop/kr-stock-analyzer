@@ -8952,6 +8952,11 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
       const pct = pctOf(c, key);
       return `<td><span class="at-emoji">${c.light}</span><b>${valFmt(key, c.v)}</b><br><span class="muted at-pct">(상위 ${pct === null ? "-" : pct + "%"})</span></td>`;
     };
+    // ①②③ 머리글 아래 상관 점수·등급(2026-09-07 사용자 요청): 같은 기간 상관관계도 목록(side[period])의 적중 합계를 환산
+    const corrList = (side && side[isYear ? "year" : isWeek ? "week" : isDay ? "day" : "month"]) || [];
+    const headCells = keys
+      .map((k, i) => `<th>${["①", "②", "③"][i]}${escapeHtml(labels[i])}${corrHitSubHtml(corrList.find((m) => m.key === k))}</th>`)
+      .join("");
     let shown = Math.min(100, rows.length);
     const render = () => {
       const body = rows
@@ -8966,15 +8971,19 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
         </tr>`
         )
         .join("");
+      parkAutoTrackCorr();
       resultsEl.innerHTML = `
         <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — 오늘의 <b>${periodLabel} 상관관계 상위 3개 항목</b>(①${escapeHtml(labels[0])} ②${escapeHtml(labels[1])} ③${escapeHtml(labels[2])})을 <b>현재 시점 점수</b>로 다시 순위 매긴 신호등입니다.
         각 항목 ${isKr ? "상위 20% 🟢 · 중간 🟡 · 하위 20% 🔴" : "상위 100등 🟢 · 중간 🟡 · 하위 100등 🔴"} — 불 3개가 모두 켜진 종목이 맨 위로 오도록 정렬했습니다(②🟢 우선 → ③🟢 우선 → ① 순위순).
+        항목 아래 <b>적중 점수</b>는 상관관계도의 적중 합계(최대 100, 무작위 기대 약 20)이고, 옆의 -1~1 값·등급은 이를 상관 척도로 환산한 것입니다.
         상관관계도와 같은 배치로 ${isKr ? "매일 오후 5시(한국장 마감 후 최신 재무 스냅샷 반영)" : "매일 오전 7시(미국장 마감 후 최신 재무 스냅샷 반영)"} 갱신되며 다음 갱신까지 고정됩니다(기준일 ${escapeHtml(side.dateKst || corr.dateKst || "")}). 참고용 지표이며 투자 자문이 아닙니다.</p>
+        <div id="autoTrackCorrSlot"></div>
         <table class="top30-table autotrack-table autotrack-lights-table">
-          <thead><tr><th class="at-name">종목명</th><th>①${escapeHtml(labels[0])}</th><th>②${escapeHtml(labels[1])}</th><th>③${escapeHtml(labels[2])}</th></tr></thead>
+          <thead><tr><th class="at-name">종목명</th>${headCells}</tr></thead>
           <tbody>${body}</tbody>
         </table>
         ${shown < rows.length ? `<button type="button" class="cat-btn" id="autoTrackMoreBtn">전체보기 (${shown}/${rows.length})</button>` : ""}`;
+      mountAutoTrackCorr(resultsEl);
       const moreBtn = el("autoTrackMoreBtn");
       if (moreBtn)
         moreBtn.addEventListener("click", () => {
@@ -8987,6 +8996,7 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
   } catch (e) {
     statusEl.style.display = "block";
     statusEl.textContent = `❌ ${e.message || "자동추적 데이터를 불러오지 못했습니다."}`;
+    mountAutoTrackCorr(resultsEl); // 데이터가 없어도 상관관계 점수표는 볼 수 있게
   }
 }
 
@@ -9020,15 +9030,18 @@ function renderAutoTrackEtf(map, nameOf, resultsEl) {
         </tr>`;
       })
       .join("");
+    parkAutoTrackCorr();
     resultsEl.innerHTML = `
       <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ETF(미국+한국) 전체 ${rows.length}개 — <b>10년 상승</b>(연복리 수익률, 매년 몇 %씩 오른 셈) 높은 순으로 미국·한국을 합쳐 매긴 순위입니다.
       10년 승률은 최근 10년 월간 상승 마감 비율(60%↑🟢 55~60%🟠 55%↓🔴). 매일 자동 갱신되는 배치 DB 기준이며 투자 자문이 아닙니다.</p>
       <p class="top30-scope-note">❗ 표시 = 상장 10년 미만 ETF(${partialCount}개). 상장 후 기간만으로 연율화한 값이라 짧은 기간의 급등·급락이 과장될 수 있으니 10년을 채운 종목과 같은 눈으로 보지 마세요.</p>
+      <div id="autoTrackCorrSlot"></div>
       <table class="top30-table autotrack-table autotrack-etf-table">
         <thead><tr><th>순위</th><th>종목명</th><th>10년<br>상승</th><th>10년<br>승률</th></tr></thead>
         <tbody>${body}</tbody>
       </table>
       ${shown < rows.length ? `<button type="button" class="cat-btn" id="autoTrackMoreBtn">전체보기 (${shown}/${rows.length})</button>` : ""}`;
+    mountAutoTrackCorr(resultsEl);
     const moreBtn = el("autoTrackMoreBtn");
     if (moreBtn)
       moreBtn.addEventListener("click", () => {
@@ -9148,6 +9161,43 @@ async function getAutoTrackCorrelations() {
   }
   return out;
 }
+// "+자세히" 줄·펼침 영역을 표 바로 위로 옮기는 헬퍼(2026-09-07 사용자 확정): 렌더 전 parkAutoTrackCorr()로 홀더에 되돌려
+// innerHTML 교체에 지워지지 않게 하고, 렌더 후 mountAutoTrackCorr(resultsEl)로 #autoTrackCorrSlot(없으면 결과 영역 끝)에 붙임.
+function parkAutoTrackCorr() {
+  const holder = el("autoTrackCorrHolder");
+  const head = document.querySelector(".autotrack-head-row");
+  const wrap = el("autoTrackCorrWrap");
+  if (holder && head && wrap) {
+    holder.appendChild(head);
+    holder.appendChild(wrap);
+  }
+}
+function mountAutoTrackCorr(resultsEl) {
+  const head = document.querySelector(".autotrack-head-row");
+  const wrap = el("autoTrackCorrWrap");
+  if (!head || !wrap) return;
+  let slot = resultsEl.querySelector("#autoTrackCorrSlot");
+  if (!slot) {
+    slot = document.createElement("div");
+    slot.id = "autoTrackCorrSlot";
+    resultsEl.appendChild(slot);
+  }
+  slot.appendChild(head);
+  slot.appendChild(wrap);
+}
+// 상관관계도 적중 합계(tot, 최대 100 = 상승50+하락50, 무작위 기대 2×exp)를 -1~1 상관 척도로 환산 — 자동추적 ①②③ 머리글 아래 점수·등급 표시용
+function corrHitScore(m) {
+  const chance = 2 * (m.exp || 0);
+  const denom = m.tot >= chance ? 100 - chance : chance;
+  if (!denom) return 0;
+  return Math.max(-1, Math.min(1, (m.tot - chance) / denom));
+}
+function corrHitSubHtml(m) {
+  if (!m) return "";
+  const s = corrHitScore(m);
+  const g = corrGradeOf(s);
+  return `<br><span class="at-head-sub">적중 ${m.tot}점 · <b style="color:${g.color};">${s.toFixed(2)} ${escapeHtml(g.label)}</b></span>`;
+}
 let autoTrackCorrRendering = false;
 async function renderAutoTrackCorrDetail(wrap) {
   if (wrap.dataset.built === "1" || autoTrackCorrRendering) return;
@@ -9163,41 +9213,64 @@ async function renderAutoTrackCorrDetail(wrap) {
     const v = (data.values && data.values[p.sym]) || { r: p.fallback, live: false };
     return { ...p, idx: i + 1, r: v.r, n: v.n, from: v.from, to: v.to, live: !!v.live, grade: corrGradeOf(v.r) };
   });
-  // 가로 막대 그래프: 가운데 0, 왼쪽 -1.0(완전 반대), 오른쪽 +1.0(완전 일치)
+  // 10년 승률 비교선과 같은 형식(2026-09-07 사용자 확정): 가로선 하나(-1.0 ~ +1.0)에 등급 구간을 색띠로 칠하고
+  // 12개 조합을 점으로 찍음. 점수가 0.5~1.0에 몰려 있어 값 순서대로 이름표를 위 3단·아래 2단으로 번갈아 배치(리더 선 연결).
   const W = 700;
-  const LABEL_W = 150;
-  const ROW_H = 24;
-  const TOP = 30;
-  const x0 = LABEL_W;
-  const x1 = W - 46;
-  const xc = (x0 + x1) / 2;
-  const xOf = (r) => xc + (r * (x1 - x0)) / 2;
-  const H = TOP + rows.length * ROW_H + 28;
-  const ticks = [-1, -0.5, 0, 0.5, 1]
+  const X0 = 44;
+  const X1 = 656;
+  const AXIS_Y = 132;
+  const xOf = (r) => X0 + ((r + 1) / 2) * (X1 - X0);
+  const H = 262;
+  // 등급 색띠: 구간 경계 [-1, -0.5, 0, 0.1, 0.2, 0.4, 0.7, 1]
+  const bands = CORR_GRADES.map((g, i) => {
+    const lo = Math.max(-1, g.min);
+    const hi = i === 0 ? 1 : CORR_GRADES[i - 1].min;
+    return `<rect x="${xOf(lo)}" y="${AXIS_Y - 5}" width="${xOf(hi) - xOf(lo)}" height="10" fill="${g.color}" opacity="0.28"/>`;
+  }).join("");
+  // 구간 경계 눈금 + 등급 이름(좁은 구간은 이름 생략, 범례로 대체)
+  const boundaries = [-1, -0.5, 0, 0.1, 0.2, 0.4, 0.7, 1];
+  const boundaryTicks = boundaries
     .map(
-      (t) =>
-        `<line x1="${xOf(t)}" y1="${TOP - 8}" x2="${xOf(t)}" y2="${H - 24}" stroke="${t === 0 ? "var(--muted)" : "var(--border)"}" stroke-width="${t === 0 ? 1.5 : 1}" ${t === 0 ? "" : 'stroke-dasharray="3 3"'}/>
-         <text x="${xOf(t)}" y="${H - 8}" text-anchor="middle" font-size="10.5" fill="var(--muted)">${t > 0 ? "+" + t.toFixed(1) : t.toFixed(1)}</text>`
+      (b) =>
+        `<line x1="${xOf(b)}" y1="${AXIS_Y - 7}" x2="${xOf(b)}" y2="${AXIS_Y + 7}" stroke="var(--muted)" stroke-width="1.2"/>
+         <text x="${xOf(b)}" y="${AXIS_Y + 20}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--text)">${b > 0 ? "+" + b.toFixed(1) : b.toFixed(1)}</text>`
     )
     .join("");
-  const bars = rows
+  const zoneNames = [
+    { lo: -1, hi: -0.5, label: "반대 일치" },
+    { lo: -0.5, hi: 0, label: "약한 반대" },
+    { lo: 0, hi: 0.4, label: "무관·약한·보통" },
+    { lo: 0.4, hi: 0.7, label: "강한 상관" },
+    { lo: 0.7, hi: 1, label: "거의 일치" },
+  ]
+    .map((z) => `<text x="${(xOf(z.lo) + xOf(z.hi)) / 2}" y="${AXIS_Y + 34}" text-anchor="middle" font-size="10" fill="var(--muted)">${z.label}</text>`)
+    .join("");
+  // 이름표 배치: 값이 가까운 점끼리 겹치지 않도록 점수 순으로 정렬해 5단을 돌아가며 배정
+  const tierYs = [104, 76, 48, 168, 196, 224]; // 위 3단·아래 3단 — 같은 단에 오는 이웃끼리 6칸 떨어져 이름표가 안 겹침
+  const ordered = rows.slice().sort((a, b) => a.r - b.r);
+  const dots = ordered
     .map((row, i) => {
-      const y = TOP + i * ROW_H;
-      const bx = Math.min(xc, xOf(row.r));
-      const bw = Math.abs(xOf(row.r) - xc);
-      const pos = row.r >= 0;
+      const x = xOf(row.r);
+      const tier = tierYs[i % tierYs.length];
+      const above = tier < AXIS_Y;
+      const labelY = above ? tier : tier + 4;
+      const anchor = x < X0 + 40 ? "start" : x > X1 - 40 ? "end" : "middle";
       return `
-      <text x="${x0 - 8}" y="${y + 15}" text-anchor="end" font-size="11" font-weight="700" fill="var(--text)">${row.idx}. ${escapeHtml(row.name)}</text>
-      <rect x="${bx}" y="${y + 4}" width="${Math.max(1.5, bw)}" height="14" rx="3" fill="${row.grade.color}" opacity="0.92"/>
-      <text x="${pos ? xOf(row.r) + 5 : xc + 5}" y="${y + 15}" text-anchor="start" font-size="11" font-weight="800" fill="${row.grade.color}">${row.r.toFixed(2)}</text>`;
+      <line x1="${x}" y1="${AXIS_Y}" x2="${x}" y2="${above ? tier + 6 : tier - 8}" stroke="${row.grade.color}" stroke-width="1" stroke-dasharray="2 2" opacity="0.8"/>
+      <circle cx="${x}" cy="${AXIS_Y}" r="5" fill="${row.grade.color}" stroke="#fff" stroke-width="1.4"/>
+      <text x="${x}" y="${labelY}" text-anchor="${anchor}" font-size="11" font-weight="700" fill="${row.grade.color}">${row.idx}. ${escapeHtml(row.name)}</text>
+      <text x="${x}" y="${labelY + 12}" text-anchor="${anchor}" font-size="10" fill="${row.grade.color}">${row.r.toFixed(2)}</text>`;
     })
     .join("");
   const svg = `
-    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" role="img" aria-label="SPY 대비 상관관계 막대 그래프">
-      <text x="${x0}" y="${TOP - 14}" text-anchor="start" font-size="10.5" font-weight="700" fill="#dc2626">← 완전 반대(-1.0)</text>
-      <text x="${x1}" y="${TOP - 14}" text-anchor="end" font-size="10.5" font-weight="700" fill="#16a34a">완전 일치(+1.0) →</text>
-      ${ticks}
-      ${bars}
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" role="img" aria-label="SPY 대비 상관관계 비교선">
+      <text x="${X0}" y="14" text-anchor="start" font-size="10.5" font-weight="700" fill="#dc2626">← 완전 반대(-1.0)</text>
+      <text x="${X1}" y="14" text-anchor="end" font-size="10.5" font-weight="700" fill="#16a34a">완전 일치(+1.0) →</text>
+      ${bands}
+      <line x1="${X0}" y1="${AXIS_Y}" x2="${X1}" y2="${AXIS_Y}" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"/>
+      ${boundaryTicks}
+      ${zoneNames}
+      ${dots}
     </svg>`;
   const badge = (g) => `<span class="corr-grade-badge" style="background:${g.color};">${escapeHtml(g.label)}</span>`;
   const tableRows = rows
@@ -9248,6 +9321,7 @@ el("autoTrackCorrBtn").addEventListener("click", () => {
 async function renderAutoTrack() {
   const statusEl = el("autoTrackStatus");
   const resultsEl = el("autoTrackResults");
+  parkAutoTrackCorr();
   resultsEl.innerHTML = "";
   statusEl.style.display = "block";
   statusEl.textContent = "자동추적 데이터를 불러오는 중...";
@@ -9319,15 +9393,18 @@ async function renderAutoTrack() {
         </tr>`;
         })
         .join("");
+      parkAutoTrackCorr();
       resultsEl.innerHTML = `
         <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 전체 ${rows.length}개 종목 — 10년승률(최근 10년 월간 상승 마감 비율, 60%↑🟢 55~60%🟠 55%↓🔴) 높은 순.
         RSI 점수는 내년RSI(10년평균×2−작년) − 현재 주간 RSI 차이(30↑🟢 20~30🟡 20↓🔴), 내년 승률은 10년승률×2−작년승률(70%↑🟢 60~70%🟡 60%↓🔴).
         매일 자동 갱신되는 배치 DB 기준이며 투자 자문이 아닙니다.</p>
+        <div id="autoTrackCorrSlot"></div>
         <table class="top30-table autotrack-table">
           <thead><tr><th>종목명</th><th>10년승률</th><th>RSI 점수</th><th>내년 승률</th></tr></thead>
           <tbody>${body}</tbody>
         </table>
         ${shown < rows.length ? `<button type="button" class="cat-btn" id="autoTrackMoreBtn">전체보기 (${shown}/${rows.length})</button>` : ""}`;
+      mountAutoTrackCorr(resultsEl);
       const moreBtn = el("autoTrackMoreBtn");
       if (moreBtn)
         moreBtn.addEventListener("click", () => {
@@ -9340,6 +9417,7 @@ async function renderAutoTrack() {
   } catch (e) {
     statusEl.style.display = "block";
     statusEl.textContent = `❌ ${e.message || "자동추적 데이터를 불러오지 못했습니다."}`;
+    mountAutoTrackCorr(resultsEl); // 데이터가 없어도 상관관계 점수표는 볼 수 있게
   }
 }
 

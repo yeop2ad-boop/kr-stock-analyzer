@@ -2598,3 +2598,6 @@ body[data-header-tone="dark"] .fh-title-actions .header-icon-btn { color: #fff; 
 .corr-legend { display: flex; flex-wrap: wrap; gap: 6px 10px; margin: 6px 0 10px; }
 .corr-legend span { font-size: 10.5px; color: var(--muted); }
 .corr-table td, .corr-table th { font-size: 11.5px; }
+.at-head-sub { display: block; font-size: 9.5px; font-weight: 600; color: var(--muted); margin-top: 2px; white-space: nowrap; }
+#autoTrackCorrSlot .autotrack-head-row { margin: 4px 0 6px; }
+#autoTrackCorrSlot .chart-detail-wrap { margin-bottom: 10px; }
