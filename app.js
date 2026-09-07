@@ -2326,6 +2326,7 @@ const insightCategoryButtons = {
   tech: el("insightCatTechBtn"),
   rankup: el("insightCatRankUpBtn"), // 순위상승(2026-09-04): 시총 순위 급상승 TOP50 — 한국·미국·비트코인(ETF 제외)
   corr: el("insightCatCorrBtn"), // 상관관계도(2026-09-05): 17개 랭킹의 과거 상·하위 100 적중 수 — 매일 07시 배치, 하루 고정
+  sectorWin: el("insightCatSectorWinBtn"), // 섹터 승률(2026-09-07): 섹터별 승률·상승률 평균(1달/1년/10년) — 승률 DB로 접속 시 계산
   calendar: el("insightCatCalendarBtn"),
   news: el("insightCatNewsBtn"),
   futureIndustry: el("insightCatFutureIndustryBtn"),
@@ -9723,7 +9724,7 @@ function updateFirmsNavVisibility() {
 }
 function switchInsightCategory(key) {
   // 순위상승·상관관계도는 투자처 전환 후 재클릭 시 새 유니버스로 다시 그려야 하므로 조기 반환 제외(2026-09-04/05)
-  if (insightActiveCategory === key && key !== "rankup" && key !== "corr") return;
+  if (insightActiveCategory === key && key !== "rankup" && key !== "corr" && key !== "sectorWin") return;
   insightActiveCategory = key;
   setInsightCategoryActive(key);
   updateFirmsNavVisibility();
@@ -9754,10 +9755,115 @@ function runInsightCategory(key) {
   } else if (key === "brand") runInsightBrandTab(insightActiveBrandOrg);
   else if (key === "rankup") runInsightRankUp(insightRankUpPeriod);
   else if (key === "corr") runInsightCorr(insightCorrPeriod);
+  else if (key === "sectorWin") runInsightSectorWin();
   else if (key === "tech") runInsightTech();
   else if (key === "calendar") runInsightCalendar();
   else if (key === "news") runInsightNews();
   else if (key === "futureIndustry") runFutureIndustrySource(insightActiveFutureSource);
+}
+
+// ---------- 섹터 승률(2026-09-07 사용자 요청): 투자처별 섹터 평균 — 승률(1달·1년·10년) / 상승률(1달·1년·10년) ----------
+// 값은 승률 DB(winrate-scores-us.json: score=10년 승률, wr1y=1년 승률, m12=최근 12개월 월간 등락, ret1y=1년 상승률,
+// ret10y=10년 연복리)와 섹터 파일(sp500/kr-sectors.json의 sectorKo)을 접속 시 합쳐 계산. 1달 승률은 종목별 승률이 없으므로
+// "지난달(마지막 완성월) 상승 마감 종목 비율", 1달 상승률은 그 달의 등락 평균. 코인은 섹터 분류가 없어 한 묶음, ETF는 미제공.
+async function runInsightSectorWin() {
+  const status = el("insightStatus");
+  const results = el("insightResults");
+  results.innerHTML = "";
+  if (appSectionMode === "etf") {
+    status.style.display = "none";
+    results.innerHTML = `<p class="muted" style="padding:12px 0;">섹터 승률은 한국주식·미국주식·비트코인에서 제공됩니다(ETF 제외).</p>`;
+    return;
+  }
+  status.style.display = "block";
+  status.textContent = "섹터별 승률·상승률 평균을 계산하는 중...";
+  try {
+    const isCrypto = appSectionMode === "crypto";
+    const isKr = !isCrypto && getWatchlistActiveMarket() === "KR";
+    const db = await getWinRateDb();
+    const scores = db && (isCrypto ? db.scoresCrypto : isKr ? db.scoresKr : db.scores);
+    if (!scores) throw new Error("승률 DB를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.");
+    // 섹터 매핑: 주식은 섹터 파일, 코인은 전부 "암호화폐" 한 묶음
+    let sectorOf;
+    if (isCrypto) sectorOf = () => "암호화폐";
+    else {
+      const universe = await getSReportUniverse(isKr);
+      const m = new Map(((universe && universe.companies) || []).map((c) => [c.symbol, c.sectorKo || c.sector || "기타"]));
+      sectorOf = (sym) => m.get(sym) || null;
+    }
+    const num = (v) => (typeof v === "number" && Number.isFinite(v) ? v : null);
+    const groups = new Map();
+    for (const [sym, e] of Object.entries(scores)) {
+      const sec = sectorOf(sym);
+      const s10 = num(e.score);
+      if (!sec || s10 === null) continue;
+      if (!groups.has(sec)) groups.set(sec, { sec, n: 0, wr1m: [], wr1y: [], wr10: [], r1m: [], r1y: [], r10: [] });
+      const g = groups.get(sec);
+      g.n++;
+      const m12 = Array.isArray(e.m12) ? e.m12 : [];
+      const lastFull = m12.length >= 2 ? num(m12[m12.length - 2]) : null; // 마지막 원소는 진행 중인 이번 달 → 그 앞이 마지막 완성월
+      if (lastFull !== null) {
+        g.r1m.push(lastFull);
+        g.wr1m.push(lastFull > 0 ? 100 : 0);
+      }
+      if (num(e.wr1y) !== null) g.wr1y.push(e.wr1y);
+      g.wr10.push(s10);
+      if (num(e.ret1y) !== null) g.r1y.push(e.ret1y);
+      if (num(e.ret10y) !== null) g.r10.push(e.ret10y);
+    }
+    const avg = (arr) => (arr.length ? Math.round((arr.reduce((a, b) => a + b, 0) / arr.length) * 10) / 10 : null);
+    const median = (arr) => {
+      if (!arr.length) return null;
+      const s = arr.slice().sort((a, b) => a - b);
+      const mid = Math.floor(s.length / 2);
+      return Math.round((s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2) * 10) / 10;
+    };
+    const rows = [...groups.values()].map((g) => ({
+      sec: g.sec, n: g.n, wr1m: avg(g.wr1m), wr1y: avg(g.wr1y), wr10: avg(g.wr10), r1m: avg(g.r1m), r1y: avg(g.r1y), r10: avg(g.r10), r1yMed: median(g.r1y),
+    }));
+    rows.sort((a, b) => (b.wr10 || 0) - (a.wr10 || 0));
+    const all = { sec: "전체", n: 0, wr1m: [], wr1y: [], wr10: [], r1m: [], r1y: [], r10: [] };
+    for (const g of groups.values()) {
+      all.n += g.n;
+      for (const k of ["wr1m", "wr1y", "wr10", "r1m", "r1y", "r10"]) all[k].push(...g[k]);
+    }
+    const allRow = { sec: "전체", n: all.n, wr1m: avg(all.wr1m), wr1y: avg(all.wr1y), wr10: avg(all.wr10), r1m: avg(all.r1m), r1y: avg(all.r1y), r10: avg(all.r10), r1yMed: median(all.r1y) };
+    if (!rows.length) throw new Error("섹터별로 집계할 종목이 없습니다.");
+
+    // 마지막 완성월 라벨: DB 생성 시각의 전월
+    const gen = db.generatedAt ? new Date(db.generatedAt) : new Date();
+    const prevMonth = new Date(gen.getFullYear(), gen.getMonth() - 1, 1);
+    const monthLabel = `${prevMonth.getFullYear()}년 ${prevMonth.getMonth() + 1}월`;
+    const dbDate = db.generatedAt ? String(db.generatedAt).slice(0, 10) : "";
+    const universeLabel = isCrypto ? "암호화폐 시총 상위 100" : isKr ? "코스피200+코스닥150" : "S&P500";
+    const pct = (v) => (v === null ? "N/A" : `${v}%`);
+    const signed = (v) => (v === null ? "N/A" : `<span class="${v >= 0 ? "delta-up" : "delta-down"}">${v > 0 ? "+" : ""}${v}%</span>`);
+    const wrCell = (v) => (v === null ? "N/A" : `<b style="color:${v >= 55 ? "var(--pos)" : v < 45 ? "var(--neg)" : "inherit"};">${v}%</b>`);
+    const tr = (r, isAll) => `
+      <tr${isAll ? ' class="sector-win-all"' : ""}>
+        <td style="text-align:left;"><b>${escapeHtml(r.sec)}</b><br><span class="muted" style="font-size:10px;">${r.n}종목${r.n <= 3 ? " ⚠️" : ""}</span></td>
+        <td>${pct(r.wr1m)}</td><td>${pct(r.wr1y)}</td><td>${wrCell(r.wr10)}</td>
+        <td>${signed(r.r1m)}</td><td>${signed(r.r1y)}</td><td>${signed(r.r10)}</td>
+      </tr>`;
+    status.style.display = "none";
+    results.innerHTML = `
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — 섹터별 <b>승률 평균(1달 · 1년 · 10년)</b>과 <b>상승률 평균(1달 · 1년 · 10년)</b>입니다(10년 승률 높은 순).
+      1달 승률은 지난달(${monthLabel}) 상승 마감한 종목 비율, 1달 상승률은 그 달의 등락 평균입니다. 1년·10년 승률은 종목별 월간 승률의 평균, 1년 상승률은 최근 12개월 상승률 평균,
+      10년 상승률은 연복리(매년 몇 %씩 오른 셈) 평균입니다. 승률 DB(${escapeHtml(dbDate)} 생성) 기준이며 매일 갱신됩니다. 투자 자문이 아닙니다.</p>
+      ${isCrypto ? `<p class="top30-scope-note">⚠️ 코인은 섹터 분류가 없어 한 묶음입니다. 1년 상승률 평균은 몇몇 신규 코인의 폭등이 끌어올린 값이라 중앙값(${allRow.r1yMed === null ? "N/A" : allRow.r1yMed + "%"})을 함께 보세요.</p>` : `<p class="top30-scope-note">⚠️ 종목이 3개 이하인 섹터는 평균의 의미가 약합니다. 상장 10년 미만 종목은 상장 이후 기간만으로 계산된 값이 섞여 있습니다.</p>`}
+      <div class="sector-win-scroll">
+      <table class="top30-table sector-win-table">
+        <thead>
+          <tr><th rowspan="2" style="text-align:left;">섹터</th><th colspan="3">승률 평균</th><th colspan="3">상승률 평균</th></tr>
+          <tr><th>1달</th><th>1년</th><th>10년</th><th>1달</th><th>1년</th><th>10년<br>(연복리)</th></tr>
+        </thead>
+        <tbody>${rows.map((r) => tr(r, false)).join("")}${tr(allRow, true)}</tbody>
+      </table>
+      </div>`;
+  } catch (e) {
+    status.style.display = "block";
+    status.textContent = `❌ ${e.message || "섹터 승률을 계산하지 못했습니다."}`;
+  }
 }
 
 // ---------- 상관관계도(2026-09-05 사용자 요청): 17개 랭킹의 과거 상·하위 100 → 이후 상승·하락 그룹 적중 수 ----------
