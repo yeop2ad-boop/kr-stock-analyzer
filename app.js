@@ -9196,7 +9196,8 @@ function corrHitSubHtml(m) {
   if (!m) return "";
   const s = corrHitScore(m);
   const g = corrGradeOf(s);
-  return `<br><span class="at-head-sub">적중 ${m.tot}점 · <b style="color:${g.color};">${s.toFixed(2)} ${escapeHtml(g.label)}</b></span>`;
+  // 두 줄로 표시(2026-09-07 사용자 요청): 1줄 "적중 47점", 2줄 "0.34 보통 상관" — 모바일 좁은 머리글에서도 잘리지 않게
+  return `<br><span class="at-head-sub">적중 ${m.tot}점</span><span class="at-head-grade" style="color:${g.color};">${s.toFixed(2)} ${escapeHtml(g.label)}</span>`;
 }
 let autoTrackCorrRendering = false;
 async function renderAutoTrackCorrDetail(wrap) {

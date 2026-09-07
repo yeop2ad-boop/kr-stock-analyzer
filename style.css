@@ -2598,6 +2598,9 @@ body[data-header-tone="dark"] .fh-title-actions .header-icon-btn { color: #fff; 
 .corr-legend { display: flex; flex-wrap: wrap; gap: 6px 10px; margin: 6px 0 10px; }
 .corr-legend span { font-size: 10.5px; color: var(--muted); }
 .corr-table td, .corr-table th { font-size: 11.5px; }
-.at-head-sub { display: block; font-size: 9.5px; font-weight: 600; color: var(--muted); margin-top: 2px; white-space: nowrap; }
+.at-head-sub { display: block; font-size: 9.5px; font-weight: 600; color: var(--muted); margin-top: 3px; white-space: nowrap; }
+.at-head-grade { display: block; font-size: 10px; font-weight: 800; margin-top: 1px; white-space: nowrap; line-height: 1.2; }
 #autoTrackCorrSlot .autotrack-head-row { margin: 4px 0 6px; }
 #autoTrackCorrSlot .chart-detail-wrap { margin-bottom: 10px; }
+/* 자동추적 신호등 표 머리글: 항목 이름이 모바일 폭에서 잘리지 않게 줄바꿈 허용(점수·등급 줄은 각자 nowrap 유지) */
+table.autotrack-lights-table th { white-space: normal; overflow-wrap: anywhere; line-height: 1.25; }
