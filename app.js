@@ -8248,6 +8248,8 @@ async function runPopularStocks() {
   // 직전 성공 결과(2026-09-07 사용자 요청): 휴장·장 마감·시세 조회 실패여도 마지막 인기종목을 먼저 띄우고 그 위에서 갱신
   const popularCached = readPopularCache(isKr);
   let popularCapTop = [];
+  // 10년 상승·승률(2026-09-07): 스냅샷(sectors.json)에 없으면 승률 DB(winrate-scores-us.json)에서 직접 읽음 — 아침 배치가 스냅샷을 새로 만들며 이 필드를 비우는 경우 대비
+  let wrMap = null;
   try {
     resultsEl.innerHTML = "";
     statusEl.style.display = "block";
@@ -8256,11 +8258,16 @@ async function runPopularStocks() {
     renderPopularSnapshot(isKr ? "kr" : "us"); // 상단 대표 2종목 월별 스냅샷(비동기, 랭킹과 병행)
     const universe = await getSReportUniverse(isKr);
     popularCapTop = ((universe && universe.companies) || [])
-      .filter((c) => c.marketCap && c.pressureScore !== null && c.pressureScore !== undefined && c.stabilityScore !== null && c.stabilityScore !== undefined)
+      // 2026-09-07 수정: 상승압력·투자안정 점수는 표에 쓰지 않는데도 필수 조건이라, 야간 배치가 그 필드를 안 실으면(2026-09-06부터) 미국 0개·한국 7개만 남아 "준비 중" 오류가 났음 — 시가총액만 있으면 포함
+      .filter((c) => c.marketCap)
       .sort((a, b) => b.marketCap - a.marketCap)
       .slice(0, 50);
     const capTop = popularCapTop;
     if (capTop.length === 0) throw new Error("인기종목 데이터를 아직 준비 중입니다. 잠시 후 다시 확인해주세요.");
+    try {
+      const wr = await getWinRateDb();
+      wrMap = wr && (isKr ? wr.scoresKr : wr.scores);
+    } catch {}
 
     // 5일 차트 1회로 시세 + 최근 5일 평균 거래대금(종가×거래량)을 함께 계산 — 정렬 기준이라 50개 전부 선조회
     const fetchSnap = async (c) => {
@@ -8301,8 +8308,8 @@ async function runPopularStocks() {
       price: snap && snap.price !== null && snap.price !== undefined ? snap.price : null,
       currency: (snap && snap.currency) || (isKr ? "KRW" : "USD"),
       changePct: snap && snap.changePct !== null && snap.changePct !== undefined ? snap.changePct : null,
-      ret10yAvg: Number.isFinite(c.ret10yAvg) ? c.ret10yAvg : null,
-      winRateScore: Number.isFinite(c.winRateScore) ? c.winRateScore : null,
+      ret10yAvg: popularRet10y(c, wrMap),
+      winRateScore: popularWinRate(c, wrMap),
     }));
     statusEl.style.display = "none";
     paintPopularRows(resultsEl, isKr, plainRows, "");
@@ -8320,8 +8327,8 @@ async function runPopularStocks() {
         price: null,
         currency: isKr ? "KRW" : "USD",
         changePct: null,
-        ret10yAvg: Number.isFinite(c.ret10yAvg) ? c.ret10yAvg : null,
-        winRateScore: Number.isFinite(c.winRateScore) ? c.winRateScore : null,
+        ret10yAvg: popularRet10y(c, wrMap),
+        winRateScore: popularWinRate(c, wrMap),
       }));
       paintPopularRows(resultsEl, isKr, rows, `<p class="top30-scope-note">🕒 실시간 시세를 받아오지 못해(${escapeHtml(err.message || "")}) 시가총액 순으로만 보여드립니다. 장이 열리면 거래대금 순으로 다시 정렬됩니다.</p>`);
     } else {
@@ -8333,6 +8340,17 @@ async function runPopularStocks() {
   }
 }
 
+// 인기종목 표의 10년 상승(CAGR)·10년 승률: 스냅샷 필드 우선, 없으면 승률 DB(ret10y/score)
+function popularRet10y(c, wrMap) {
+  if (Number.isFinite(c.ret10yAvg)) return c.ret10yAvg;
+  const e = wrMap && wrMap[c.symbol];
+  return e && Number.isFinite(e.ret10y) ? e.ret10y : null;
+}
+function popularWinRate(c, wrMap) {
+  if (Number.isFinite(c.winRateScore)) return c.winRateScore;
+  const e = wrMap && wrMap[c.symbol];
+  return e && Number.isFinite(e.score) ? e.score : null;
+}
 // ---------- 인기종목 직전 결과 캐시(2026-09-07 사용자 요청): 휴장·장 마감·시세 장애 때도 마지막 인기종목을 그대로 보여줌 ----------
 function popularCacheKey(isKr) {
   return `popular_last_v1_${isKr ? "kr" : "us"}`;
