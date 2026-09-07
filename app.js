@@ -2735,7 +2735,7 @@ el("aboutModalCloseBtn").addEventListener("click", () => {
 });
 el("morePanelContactBtn").addEventListener("click", () => {
   closeMorePanel();
-  window.location.href = "mailto:yeop2ad@gmail.com?subject=" + encodeURIComponent("[굴려볼까 문의]");
+  window.location.href = "mailto:yeop2ad@gmail.com?subject=" + encodeURIComponent("[마켓맵 문의]");
 });
 
 // ---------- 화면 테마(화이트/블랙) — 기본은 화이트, 선택은 localStorage에 저장해 다음 방문에도 유지 ----------
@@ -2820,7 +2820,7 @@ function applyLang(lang) {
   // 종목 상세(예: "AAPL 분석 - 굴려볼까" / "AAPL Analysis - Marketmap")를 보고 있는 중이 아닐 때만 앱 이름/슬로건 타이틀을 언어에 맞춰 갱신
   // (새 슬로건 자체에 " - "가 들어가므로 "분석 - "/"Analysis - " 패턴으로만 종목 상세를 판별)
   if (!/분석 - |Analysis - /.test(document.title)) {
-    document.title = isEn ? "Marketmap - Compare, Analyze, Map Stocks" : "굴려볼까 - 실적비교, 내주식분석, 마켓맵";
+    document.title = isEn ? "MarketMap - Investing map by 10-year win rate" : "마켓맵 - 10년 승률로 보는 투자 지도";
   }
 }
 function setLang(lang) {
@@ -3047,7 +3047,7 @@ function closeCompanyPanel({ push = true } = {}) {
   }, 280);
   if (push && new URLSearchParams(location.search).get("ticker")) {
     history.pushState(null, "", location.pathname);
-    document.title = document.documentElement.lang === "en" ? "Marketmap - Compare, Analyze, Map Stocks" : "굴려볼까 - 실적비교, 내주식분석, 마켓맵";
+    document.title = document.documentElement.lang === "en" ? "MarketMap - Investing map by 10-year win rate" : "마켓맵 - 10년 승률로 보는 투자 지도";
   }
 }
 companyPanelCloseBtn.addEventListener("click", () => closeCompanyPanel());
@@ -4605,7 +4605,7 @@ function navigateToTicker(ticker, { push = true } = {}) {
     history.pushState({ ticker }, "", "?ticker=" + encodeURIComponent(ticker));
   }
   tickerInput.value = ticker;
-  document.title = document.documentElement.lang === "en" ? `${ticker} Analysis - Marketmap` : `${ticker} 분석 - 굴려볼까`;
+  document.title = document.documentElement.lang === "en" ? `${ticker} Analysis - MarketMap` : `${ticker} 분석 - 마켓맵`;
   addRecentSearch(ticker);
   logSearchEvent(ticker);
   if (searchOverlay.style.display !== "none") closeSearchOverlay();
@@ -15211,7 +15211,7 @@ function buildProSheet() {
     <div class="pro-sheet-body">
       <button type="button" class="pro-sheet-close" id="proSheetCloseBtn" aria-label="닫기">✕</button>
       <p class="pro-sheet-badge">PRO</p>
-      <h2 class="pro-sheet-title">굴려볼까 Pro</h2>
+      <h2 class="pro-sheet-title">마켓맵 Pro</h2>
       <p class="pro-sheet-sub"><span id="proSheetPrice">월 13,000원</span> 구독</p>
       <ul class="pro-sheet-list">
         <li>🗺️ <b>섹터맵</b> — 시장 전체를 한눈에 보는 지도</li>
@@ -15236,7 +15236,7 @@ function openProSheet() {
   // 결제 불가 환경(웹 테스트 등)에서는 CTA를 앱 안내로 대체
   const cta = el("proSheetCtaBtn");
   if (!("getDigitalGoodsService" in window)) {
-    cta.textContent = "구글 플레이 굴려볼까 앱에서 구독할 수 있어요";
+    cta.textContent = "구글 플레이 마켓맵 앱에서 구독할 수 있어요";
     cta.disabled = true;
   }
   sheet.style.display = "block";

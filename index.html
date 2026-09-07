@@ -5,30 +5,30 @@
 <!-- 첫 진입 섹터맵 리다이렉트 폐지(2026-09-01 사용자 확정) — 시작화면은 본체 한국주식 인기종목(initApp 참고) -->
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>굴려볼까 - 실적비교, 내주식분석, 마켓맵</title>
-<meta name="description" content="AI 데이터 기반, 실시간 상승압력도 & 투자 안정성 리포트" />
+<title>마켓맵 - 10년 승률로 보는 투자 지도</title>
+<meta name="description" content="한국·미국주식, ETF, 코인을 10년 승률 하나로 비교하는 투자 지도. 인기종목·자동추적·상관관계·섹터맵" />
 
 <meta property="og:type" content="website" />
-<meta property="og:site_name" content="굴려볼까 - 실적비교, 내주식분석, 마켓맵" />
-<meta property="og:title" content="굴려볼까 - 실적비교, 내주식분석, 마켓맵" />
-<meta property="og:description" content="AI 데이터 기반, 실시간 상승압력도 & 투자 안정성 리포트" />
+<meta property="og:site_name" content="마켓맵 (MarketMap)" />
+<meta property="og:title" content="마켓맵 - 10년 승률로 보는 투자 지도" />
+<meta property="og:description" content="한국·미국주식, ETF, 코인을 10년 승률 하나로 비교하는 투자 지도. 인기종목·자동추적·상관관계·섹터맵" />
 <meta property="og:url" content="https://marketmap.kr/" />
 <meta property="og:image" content="https://marketmap.kr/og-image.png" />
 <meta property="og:image:width" content="1024" />
 <meta property="og:image:height" content="1024" />
 <meta property="og:locale" content="ko_KR" />
 
-<link rel="icon" type="image/png" sizes="512x512" href="logos/marketmap-512.png" />
-<link rel="icon" type="image/png" sizes="180x180" href="logos/marketmap-180.png" />
-<link rel="apple-touch-icon" href="logos/marketmap-180.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="logos/marketmap-512.png?v=20260908" />
+<link rel="icon" type="image/png" sizes="180x180" href="logos/marketmap-180.png?v=20260908" />
+<link rel="apple-touch-icon" href="logos/marketmap-180.png?v=20260908" />
 <link rel="manifest" href="manifest.json" />
 <meta name="theme-color" content="#2563eb" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-<meta name="apple-mobile-web-app-title" content="굴려볼까" />
+<meta name="apple-mobile-web-app-title" content="마켓맵" />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="굴려볼까 - 실적비교, 내주식분석, 마켓맵" />
+<meta name="twitter:title" content="마켓맵 - 10년 승률로 보는 투자 지도" />
 <meta name="twitter:description" content="AI 데이터 기반, 실시간 상승압력도 & 투자 안정성 리포트" />
 <meta name="twitter:image" content="https://marketmap.kr/og-image.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -47,13 +47,14 @@
 </head>
 <body>
   <div id="loadingSplash" class="loading-splash">
-    <img src="logos/marketmap-logo.png" alt="marketmap.kr" class="loading-splash-logo" />
+    <img src="logos/marketmap-logo.png?v=20260908" alt="마켓맵" class="loading-splash-logo" />
     <p class="loading-splash-caption">DART·미국 SEC 공시 기반 · 850개 기업 점수는 매일 갱신됩니다.</p>
   </div>
 
   <header id="fixedHeader" class="fixed-header">
     <div class="fh-topline">
-      <img src="logos/marketmap-logo.png" alt="marketmap.kr" class="fh-banner" />
+      <!-- 헤더는 남색 배경이라 흰 링을 두른 전용 마크(2026-09-08 로고 교체) -->
+      <img src="logos/marketmap-header.png?v=20260908" alt="마켓맵" class="fh-banner" />
       <!-- 로고 옆 현재 시장 표시(2026-08-31): 국내 모드면 "국내", 해외 모드면 "해외" — syncMarketModeUI가 갱신 -->
       <span id="fhMarketLabel" class="fh-market-label">해외</span>
       <!-- 시장 표시 옆 네모 국기(2026-09-01 사용자 요청): 국내=태극기, 해외=성조기 — syncMarketModeUI가 채움 -->
@@ -755,12 +756,12 @@
       <p class="info-modal-date">2026.08.30</p>
       <div class="info-notice-item">
         <b>📱 구글 플레이 앱 출시 준비</b>
-        <p>굴려볼까가 곧 구글 플레이 스토어에 정식 등록됩니다. 홈 화면에서 앱으로 만나보세요.</p>
+        <p>마켓맵이 곧 구글 플레이 스토어에 정식 등록됩니다. 홈 화면에서 앱으로 만나보세요.</p>
       </div>
       <div class="info-notice-item">
         <b>✨ 주요 변경사항</b>
         <ul>
-          <li>서비스 이름이 <b>굴려볼까</b>로 새단장했습니다 (주소: marketmap.kr)</li>
+          <li>서비스 이름과 로고가 <b>마켓맵(MarketMap)</b>으로 새단장했습니다 (주소: marketmap.kr)</li>
           <li>시장 지도 첫 화면이 개선되었습니다 — 중심 위치와 확대 수준 조정</li>
           <li>더보기 메뉴가 정리되고 <b>문의하기</b>가 열렸습니다</li>
         </ul>
@@ -774,9 +775,9 @@
       <button id="aboutModalCloseBtn" class="chart-modal-close" type="button" aria-label="닫기">✕</button>
     </div>
     <div class="info-modal-body about-body">
-      <img src="logos/marketmap-192.png" class="about-logo" alt="굴려볼까" />
-      <h3 class="about-name">굴려볼까</h3>
-      <p class="about-slogan">실적비교 · 내주식분석 · 마켓맵</p>
+      <img src="logos/marketmap-192.png?v=20260908" class="about-logo" alt="마켓맵" />
+      <h3 class="about-name">마켓맵</h3>
+      <p class="about-slogan">10년 승률로 보는 투자 지도</p>
       <div class="about-rows">
         <div><span>버전</span><span>1.0.0</span></div>
         <div><span>개발</span><span>Marketmap Lab</span></div>
@@ -801,8 +802,8 @@
   <!-- 구글 로그인 접근 게이트(2026-09-04 사용자 요청): 로그인 + 관리자 승인 전까지 전체 화면을 덮음 -->
   <div id="authGate" class="auth-gate" style="display:none;">
     <div class="auth-gate-card">
-      <img src="logos/marketmap-192.png" class="auth-gate-logo" alt="굴려볼까" />
-      <h2 class="auth-gate-title">굴려볼까</h2>
+      <img src="logos/marketmap-192.png?v=20260908" class="auth-gate-logo" alt="마켓맵" />
+      <h2 class="auth-gate-title">마켓맵</h2>
       <p class="auth-gate-desc" id="authGateDesc">이 서비스는 구글 로그인 후<br>관리자 승인을 받은 계정만 이용할 수 있습니다.</p>
       <div id="googleSignInBtn" class="auth-gate-google"></div>
       <p class="auth-gate-status" id="authGateStatus"></p>

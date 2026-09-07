@@ -1,10 +1,18 @@
-<svg width="480" height="110" viewBox="0 0 480 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="yeopinvest.com">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 160" width="760" height="160" role="img" aria-label="MARKETMAP 마켓맵">
+  <!-- 마켓맵 워드마크(밝은 배경용, 2026-09-08): 마크 + MARKETMAP + 한글·태그라인 -->
   <defs>
     <style>
-      .wm { font-family: "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, Arial, sans-serif; font-weight: 800; letter-spacing: -0.5px; }
+      .wm { font-family: "Pretendard", "Inter", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif; }
     </style>
   </defs>
-  <polyline points="22,70 38,50 52,58 72,28" fill="none" stroke="#f5a623" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
-  <polygon points="72,28 62,30 70,38" fill="#f5a623" />
-  <text x="90" y="78" class="wm" font-size="46" fill="#1c1f26">yeop<tspan fill="#2f6fed">invest</tspan><tspan font-weight="600" letter-spacing="0" fill="#8a94a6" font-size="26">.com</tspan></text>
+  <g transform="translate(16,16) scale(0.25)">
+    <rect width="512" height="512" rx="112" fill="#14213D"/>
+    <rect x="96" y="96" width="148" height="148" rx="30" fill="#3E4C6E"/>
+    <rect x="96" y="268" width="148" height="148" rx="30" fill="#3E4C6E"/>
+    <rect x="268" y="268" width="148" height="148" rx="30" fill="#3E4C6E"/>
+    <rect x="268" y="96" width="148" height="148" rx="30" fill="#22C55E"/>
+    <path d="M342 208 V132 M342 132 L310 164 M342 132 L374 164" fill="none" stroke="#FFFFFF" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="166" y="88" class="wm" font-size="66" font-weight="800" letter-spacing="-1.5" fill="#14213D">MARKET<tspan fill="#22C55E">MAP</tspan></text>
+  <text x="168" y="128" class="wm" font-size="24" font-weight="600" letter-spacing="0.5" fill="#5B6478">마켓맵 · 10년 승률로 보는 투자 지도</text>
 </svg>
