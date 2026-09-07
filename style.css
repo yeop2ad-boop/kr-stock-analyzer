@@ -2588,3 +2588,13 @@ body[data-header-tone="dark"] .fh-title-actions .header-icon-btn { color: #fff; 
 .pro-sheet-cta:disabled { background: #b9c0cf; cursor: default; }
 .pro-sheet-restore { display: block; margin: 0 auto 8px; border: none; background: none; color: var(--muted); font-size: 13px; text-decoration: underline; cursor: pointer; }
 .pro-sheet-note { margin: 0; font-size: 11.5px; color: var(--muted); opacity: 0.8; }
+
+/* 자동추적 "+자세히" 상관관계 점수표 + ETF 10년 미만 경고(2026-09-07 사용자 요청) */
+.autotrack-head-row { justify-content: space-between; margin-bottom: 8px; }
+.autotrack-head-note { font-size: 11px; }
+.at-warn { margin-right: 3px; font-size: 12px; }
+.at-partial-row td { background: rgba(233, 85, 0, 0.05); }
+.corr-grade-badge { display: inline-block; padding: 1px 7px; border-radius: 999px; font-size: 10.5px; font-weight: 800; color: #fff; white-space: nowrap; }
+.corr-legend { display: flex; flex-wrap: wrap; gap: 6px 10px; margin: 6px 0 10px; }
+.corr-legend span { font-size: 10.5px; color: var(--muted); }
+.corr-table td, .corr-table th { font-size: 11.5px; }

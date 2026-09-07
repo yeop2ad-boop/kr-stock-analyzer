@@ -8244,17 +8244,22 @@ async function runPopularStocks() {
   const resultsEl = el("popularResults");
   if (!guardRankingScan(resultsEl)) return;
   resultsEl.dataset.scanning = "1";
+  const isKr = getWatchlistActiveMarket() === "KR";
+  // 직전 성공 결과(2026-09-07 사용자 요청): 휴장·장 마감·시세 조회 실패여도 마지막 인기종목을 먼저 띄우고 그 위에서 갱신
+  const popularCached = readPopularCache(isKr);
+  let popularCapTop = [];
   try {
     resultsEl.innerHTML = "";
     statusEl.style.display = "block";
     statusEl.textContent = "인기종목을 불러오는 중...";
-    const isKr = getWatchlistActiveMarket() === "KR";
+    if (popularCached) paintPopularRows(resultsEl, isKr, popularCached.rows, popularCacheNote(popularCached, "실시간 갱신 중"));
     renderPopularSnapshot(isKr ? "kr" : "us"); // 상단 대표 2종목 월별 스냅샷(비동기, 랭킹과 병행)
     const universe = await getSReportUniverse(isKr);
-    const capTop = ((universe && universe.companies) || [])
+    popularCapTop = ((universe && universe.companies) || [])
       .filter((c) => c.marketCap && c.pressureScore !== null && c.pressureScore !== undefined && c.stabilityScore !== null && c.stabilityScore !== undefined)
       .sort((a, b) => b.marketCap - a.marketCap)
       .slice(0, 50);
+    const capTop = popularCapTop;
     if (capTop.length === 0) throw new Error("인기종목 데이터를 아직 준비 중입니다. 잠시 후 다시 확인해주세요.");
 
     // 5일 차트 1회로 시세 + 최근 5일 평균 거래대금(종가×거래량)을 함께 계산 — 정렬 기준이라 50개 전부 선조회
@@ -8283,62 +8288,113 @@ async function runPopularStocks() {
         statusEl.textContent = `인기종목 거래대금을 확인하는 중... (${done}/${capTop.length})`;
       }
     );
+    // 시세를 하나도 못 받았으면(프록시·야후 장애) 거래대금 정렬이 무의미 — 직전 성공 결과로 폴백
+    const okCount = snaps.filter((s) => s && s.price !== null && s.price !== undefined).length;
+    if (okCount === 0) throw new Error("실시간 시세를 받아오지 못했습니다");
     // 거래대금(최근 5일 평균) 큰 순으로 정렬 — 시세 조회에 실패한 종목은 맨 뒤
     const scored = capTop
       .map((c, i) => ({ c, snap: snaps[i] }))
       .sort((a, b) => ((b.snap && b.snap.avgDollarVolume) || 0) - ((a.snap && a.snap.avgDollarVolume) || 0));
-    const snapCache = scored.map((x) => x.snap);
-    const scoredCompanies = scored.map((x) => x.c);
-
-    const rowHtml = (c, snap, i) => {
-      const name = TICKER_TO_KOREAN_NAME[c.symbol] || c.name || c.symbol;
-      const priceCell =
-        snap && snap.price !== null && snap.price !== undefined
-          ? `${priceChartLink(c.symbol, fmtPrice(snap.price, snap.currency))}${
-              snap.changePct !== null && snap.changePct !== undefined
-                ? `<br><span class="${snap.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(snap.changePct)})</span>`
-                : ""
-            }`
-          : "N/A";
-      return `
-        <tr>
-          <td>${i + 1}</td>
-          <td><span class="ticker-cell">${tickerLogoHtml(c.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(c.symbol)}">${escapeHtml(name)}</b></span></td>
-          <td>${priceCell}</td>
-          <td>${Number.isFinite(c.ret10yAvg) ? `<b>${c.ret10yAvg > 0 ? "+" : ""}${Math.round(c.ret10yAvg * 10) / 10}%</b>` : "N/A"}</td>
-          <td>${Number.isFinite(c.winRateScore) ? `${c.winRateScore}%` : "N/A"}</td>
-        </tr>`;
-    };
-
-    function paintUpTo(count) {
-      count = Math.min(count, scoredCompanies.length);
-      statusEl.style.display = "none";
-
-      const rows = scoredCompanies.slice(0, count).map((c, i) => rowHtml(c, snapCache[i], i)).join("");
-      const hasMore = count < scoredCompanies.length;
-      resultsEl.innerHTML = `
-        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${isKr ? "코스피200+코스닥150" : "S&P500"} 시가총액 상위 50위권 중 거래대금(최근 5일 평균)이 큰 순입니다. 점수는 매일 자동 갱신되는 스냅샷 기준이며 투자 자문이 아닙니다.</p>
-        <table class="top30-table">
-          <thead><tr><th>순위</th><th>기업명</th><th>현재가<br>(등락률)</th><th>10년<br>상승</th><th>10년<br>승률</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
-        ${hasMore ? `<button type="button" class="cat-btn load-more-btn">더보기 (${count}/${scoredCompanies.length})</button>` : ""}
-      `;
-      const moreBtn = resultsEl.querySelector(".load-more-btn");
-      if (moreBtn) {
-        moreBtn.addEventListener("click", () => {
-          paintUpTo(scoredCompanies.length);
-        });
-      }
-    }
-
-    paintUpTo(30);
+    const plainRows = scored.map(({ c, snap }) => ({
+      symbol: c.symbol,
+      name: TICKER_TO_KOREAN_NAME[c.symbol] || c.name || c.symbol,
+      price: snap && snap.price !== null && snap.price !== undefined ? snap.price : null,
+      currency: (snap && snap.currency) || (isKr ? "KRW" : "USD"),
+      changePct: snap && snap.changePct !== null && snap.changePct !== undefined ? snap.changePct : null,
+      ret10yAvg: Number.isFinite(c.ret10yAvg) ? c.ret10yAvg : null,
+      winRateScore: Number.isFinite(c.winRateScore) ? c.winRateScore : null,
+    }));
+    statusEl.style.display = "none";
+    paintPopularRows(resultsEl, isKr, plainRows, "");
+    savePopularCache(isKr, plainRows);
   } catch (err) {
-    statusEl.style.display = "block";
-    statusEl.textContent = `❌ ${err.message || "인기종목을 가져오지 못했습니다."}`;
+    // 실패 시(휴장·장 마감 중 시세 장애 포함) 직전 성공 결과 → 없으면 시가총액 순(시세 없음) → 그것도 없으면 오류만
+    if (popularCached) {
+      statusEl.style.display = "none";
+      paintPopularRows(resultsEl, isKr, popularCached.rows, popularCacheNote(popularCached, `실시간 조회 실패(${escapeHtml(err.message || "")})`));
+    } else if (popularCapTop.length) {
+      statusEl.style.display = "none";
+      const rows = popularCapTop.map((c) => ({
+        symbol: c.symbol,
+        name: TICKER_TO_KOREAN_NAME[c.symbol] || c.name || c.symbol,
+        price: null,
+        currency: isKr ? "KRW" : "USD",
+        changePct: null,
+        ret10yAvg: Number.isFinite(c.ret10yAvg) ? c.ret10yAvg : null,
+        winRateScore: Number.isFinite(c.winRateScore) ? c.winRateScore : null,
+      }));
+      paintPopularRows(resultsEl, isKr, rows, `<p class="top30-scope-note">🕒 실시간 시세를 받아오지 못해(${escapeHtml(err.message || "")}) 시가총액 순으로만 보여드립니다. 장이 열리면 거래대금 순으로 다시 정렬됩니다.</p>`);
+    } else {
+      statusEl.style.display = "block";
+      statusEl.textContent = `❌ ${err.message || "인기종목을 가져오지 못했습니다."}`;
+    }
   } finally {
     endLoadMoreScan(resultsEl);
   }
+}
+
+// ---------- 인기종목 직전 결과 캐시(2026-09-07 사용자 요청): 휴장·장 마감·시세 장애 때도 마지막 인기종목을 그대로 보여줌 ----------
+function popularCacheKey(isKr) {
+  return `popular_last_v1_${isKr ? "kr" : "us"}`;
+}
+function readPopularCache(isKr) {
+  try {
+    const c = JSON.parse(localStorage.getItem(popularCacheKey(isKr)) || "null");
+    return c && Array.isArray(c.rows) && c.rows.length ? c : null;
+  } catch {
+    return null;
+  }
+}
+function savePopularCache(isKr, rows) {
+  try {
+    localStorage.setItem(popularCacheKey(isKr), JSON.stringify({ savedAt: Date.now(), rows }));
+  } catch {}
+}
+function popularCacheNote(cached, reason) {
+  const when = cached && cached.savedAt ? new Date(cached.savedAt) : null;
+  const stamp = when ? `${when.getMonth() + 1}/${when.getDate()} ${String(when.getHours()).padStart(2, "0")}:${String(when.getMinutes()).padStart(2, "0")}` : "-";
+  return `<p class="top30-scope-note">🕒 ${reason} — 마지막으로 불러온 인기종목(${stamp} 기준)입니다. 휴장이거나 장이 끝난 뒤에도 이 목록은 그대로 볼 수 있어요.</p>`;
+}
+// 인기종목 표 그리기(실시간 결과·캐시·시총순 폴백 공용): 30개 먼저, "더보기"로 전체
+function paintPopularRows(resultsEl, isKr, rows, extraNoteHtml) {
+  const rowHtml = (r, i) => {
+    const priceCell =
+      r.price !== null && r.price !== undefined
+        ? `${priceChartLink(r.symbol, fmtPrice(r.price, r.currency))}${
+            r.changePct !== null && r.changePct !== undefined
+              ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
+              : ""
+          }`
+        : "N/A";
+    return `
+        <tr>
+          <td>${i + 1}</td>
+          <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.name || r.symbol)}</b></span></td>
+          <td>${priceCell}</td>
+          <td>${Number.isFinite(r.ret10yAvg) ? `<b>${r.ret10yAvg > 0 ? "+" : ""}${Math.round(r.ret10yAvg * 10) / 10}%</b>` : "N/A"}</td>
+          <td>${Number.isFinite(r.winRateScore) ? `${r.winRateScore}%` : "N/A"}</td>
+        </tr>`;
+  };
+  let shown = Math.min(30, rows.length);
+  const paint = () => {
+    const body = rows.slice(0, shown).map(rowHtml).join("");
+    resultsEl.innerHTML = `
+        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${isKr ? "코스피200+코스닥150" : "S&P500"} 시가총액 상위 50위권 중 거래대금(최근 5일 평균)이 큰 순입니다. 점수는 매일 자동 갱신되는 스냅샷 기준이며 투자 자문이 아닙니다.</p>
+        ${extraNoteHtml || ""}
+        <table class="top30-table">
+          <thead><tr><th>순위</th><th>기업명</th><th>현재가<br>(등락률)</th><th>10년<br>상승</th><th>10년<br>승률</th></tr></thead>
+          <tbody>${body}</tbody>
+        </table>
+        ${shown < rows.length ? `<button type="button" class="cat-btn load-more-btn">더보기 (${shown}/${rows.length})</button>` : ""}
+      `;
+    const moreBtn = resultsEl.querySelector(".load-more-btn");
+    if (moreBtn)
+      moreBtn.addEventListener("click", () => {
+        shown = rows.length;
+        paint();
+      });
+  };
+  paint();
 }
 
 // ---------- ETF 섹션 인기종목(2026-09-01 개편): 시가총액(순자산) 상위 — 한국 TOP100 + 미국 TOP100, 총 200개 ----------
@@ -8934,6 +8990,261 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
   }
 }
 
+// ---------- ETF 자동추적(2026-09-07 사용자 요청): 미국+한국 ETF 200개를 10년 상승(연복리 CAGR) 높은 순으로 합산 순위 ----------
+// 열: 순위 / 종목명 / 10년 상승 / 10년 승률. 상장 10년(120개월) 미만은 상장 후 기간만 연율화한 값이라 이름 앞에 ❗ 경고를 붙이고
+// 표 위에 짧은 설명을 둠. 값은 전부 배치 DB(winrate-scores-us.json scoresEtf의 ret10y/score/total/from).
+function renderAutoTrackEtf(map, nameOf, resultsEl) {
+  const num = (v) => (Number.isFinite(v) ? v : null);
+  const rows = Object.entries(map)
+    .map(([sym, e]) => ({ sym, ret10y: num(e.ret10y), score: num(e.score), total: num(e.total), from: e.from || "" }))
+    .filter((r) => r.ret10y !== null);
+  rows.sort((a, b) => b.ret10y - a.ret10y || (b.score || 0) - (a.score || 0));
+  const isPartial = (r) => r.total !== null && r.total < 120;
+  const partialCount = rows.filter(isPartial).length;
+  const flagOf = (sym) => (/\.(KS|KQ)$/.test(sym) ? "🇰🇷" : "🇺🇸");
+  const scoreEmoji = (s) => (s === null ? "⚪" : s >= 60 ? "🟢" : s >= 55 ? "🟠" : "🔴");
+  let shown = Math.min(100, rows.length);
+  const render = () => {
+    const body = rows
+      .slice(0, shown)
+      .map((r, i) => {
+        const partial = isPartial(r);
+        const warn = partial ? `<span class="nine-partial-mark at-warn" title="상장 10년 미만 — 상장(${escapeHtml(r.from)}) 후 ${r.total}개월만 집계">❗</span>` : "";
+        const ret = `${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%`;
+        return `
+        <tr${partial ? ' class="at-partial-row"' : ""}>
+          <td>${i + 1}</td>
+          <td style="text-align:left;"><span class="ticker-cell">${warn}${tickerLogoHtml(r.sym)}<b class="ticker-link" data-ticker="${escapeHtml(r.sym)}">${escapeHtml(nameOf(r.sym))}</b></span><br><span class="muted" style="font-size:11px;">${flagOf(r.sym)} ${escapeHtml(r.sym)}${partial ? ` · 상장 ${r.total}개월` : ""}</span></td>
+          <td><b class="${r.ret10y >= 0 ? "delta-up" : "delta-down"}">${ret}</b></td>
+          <td><span class="at-emoji">${scoreEmoji(r.score)}</span><b>${r.score === null ? "N/A" : r.score + "%"}</b></td>
+        </tr>`;
+      })
+      .join("");
+    resultsEl.innerHTML = `
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ETF(미국+한국) 전체 ${rows.length}개 — <b>10년 상승</b>(연복리 수익률, 매년 몇 %씩 오른 셈) 높은 순으로 미국·한국을 합쳐 매긴 순위입니다.
+      10년 승률은 최근 10년 월간 상승 마감 비율(60%↑🟢 55~60%🟠 55%↓🔴). 매일 자동 갱신되는 배치 DB 기준이며 투자 자문이 아닙니다.</p>
+      <p class="top30-scope-note">❗ 표시 = 상장 10년 미만 ETF(${partialCount}개). 상장 후 기간만으로 연율화한 값이라 짧은 기간의 급등·급락이 과장될 수 있으니 10년을 채운 종목과 같은 눈으로 보지 마세요.</p>
+      <table class="top30-table autotrack-table autotrack-etf-table">
+        <thead><tr><th>순위</th><th>종목명</th><th>10년<br>상승</th><th>10년<br>승률</th></tr></thead>
+        <tbody>${body}</tbody>
+      </table>
+      ${shown < rows.length ? `<button type="button" class="cat-btn" id="autoTrackMoreBtn">전체보기 (${shown}/${rows.length})</button>` : ""}`;
+    const moreBtn = el("autoTrackMoreBtn");
+    if (moreBtn)
+      moreBtn.addEventListener("click", () => {
+        shown = rows.length;
+        render();
+      });
+  };
+  render();
+}
+
+// ---------- 자동추적 "+자세히"(2026-09-07 사용자 요청): SPY 대비 12개 자산의 상관관계 점수표 ----------
+// 점수 = 최근 10년 월간 수익률의 피어슨 상관계수(1.0 완전 일치 ~ -1.0 완전 반대). 야후 월봉(10y/1mo) 13개를 받아 같은 달(YYYY-MM)끼리
+// 맞춰 계산하고 하루 캐시(localStorage). 조회에 실패한 조합은 2026-09-07 계산 스냅샷(fallback)으로 대체하고 표에 표시.
+// 코스피200은 야후 지수(^KS200)가 2023년에 끊겨 KODEX200(069500.KS), 코스닥150은 KODEX코스닥150(229200.KS)으로 계산.
+const AUTOTRACK_CORR_PAIRS = [
+  { sym: "^GSPC", name: "S&P500", sub: "지수", fallback: 0.999 },
+  { sym: "QQQ", name: "QQQ", sub: "나스닥100", fallback: 0.914 },
+  { sym: "GLD", name: "GOLD", sub: "금(GLD)", fallback: 0.131 },
+  { sym: "069500.KS", name: "코스피200", sub: "KODEX200", fallback: 0.548 },
+  { sym: "229200.KS", name: "코스닥150", sub: "KODEX코스닥150", fallback: 0.498 },
+  { sym: "BTC-USD", name: "비트코인", sub: "BTC", fallback: 0.338 },
+  { sym: "^SOX", name: "필라델피아 반도체", sub: "SOX", fallback: 0.762 },
+  { sym: "IWM", name: "러셀2000", sub: "IWM", fallback: 0.862 },
+  { sym: "SH", name: "SH", sub: "S&P 인버스", fallback: -0.981 },
+  { sym: "AAPL", name: "AAPL", sub: "애플", fallback: 0.651 },
+  { sym: "GOOGL", name: "GOOGL", sub: "구글", fallback: 0.646 },
+  { sym: "NVDA", name: "NVDA", sub: "엔비디아", fallback: 0.603 },
+];
+// 등급 구간(사용자 지정): 거의 일치 0.7~1.0 / 강한 0.4~0.7 / 보통 0.2~0.4 / 약한 0.1~0.2 / 무관 0~0.1 / 반대 일치 -0.5~-1.0 (0~-0.5는 "약한 반대"로 보충)
+const CORR_GRADES = [
+  { min: 0.7, label: "거의 일치", range: "0.7 ~ 1.0", color: "#16a34a" },
+  { min: 0.4, label: "강한 상관", range: "0.4 ~ 0.7", color: "#65a30d" },
+  { min: 0.2, label: "보통 상관", range: "0.2 ~ 0.4", color: "#ca8a04" },
+  { min: 0.1, label: "약한 상관", range: "0.1 ~ 0.2", color: "#f59e0b" },
+  { min: 0, label: "무관", range: "0 ~ 0.1", color: "#9ca3af" },
+  { min: -0.5, label: "약한 반대", range: "-0.5 ~ 0", color: "#f97316" },
+  { min: -1.01, label: "반대 일치", range: "-1.0 ~ -0.5", color: "#dc2626" },
+];
+function corrGradeOf(r) {
+  return CORR_GRADES.find((g) => r >= g.min) || CORR_GRADES[CORR_GRADES.length - 1];
+}
+// 야후 월봉 차트 → Map("YYYY-MM" → 종가). 타임스탬프에 거래소 오프셋을 더해 현지 날짜 기준 달로 묶음(UTC로 바꾸면 전달 말일로 밀릴 수 있음)
+function monthlyCloseMap(chart) {
+  const r = chart && chart.chart && chart.chart.result && chart.chart.result[0];
+  if (!r) return null;
+  const off = Number((r.meta && r.meta.gmtoffset) || 0);
+  const ts = r.timestamp || [];
+  const closes = (r.indicators && r.indicators.quote && r.indicators.quote[0] && r.indicators.quote[0].close) || [];
+  const m = new Map();
+  ts.forEach((t, i) => {
+    const c = closes[i];
+    if (c === null || c === undefined || !Number.isFinite(c) || c <= 0) return;
+    const d = new Date((t + off) * 1000);
+    m.set(`${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`, c);
+  });
+  return m.size ? m : null;
+}
+function monthlyReturnMap(m) {
+  const keys = [...m.keys()].sort();
+  const out = new Map();
+  for (let i = 1; i < keys.length; i++) out.set(keys[i], m.get(keys[i]) / m.get(keys[i - 1]) - 1);
+  return out;
+}
+// 두 자산의 월간 수익률 피어슨 상관계수 — 양쪽 다 있는 달만 사용, 진행 중인 이번 달(excludeKey)은 제외
+function pearsonOfMonthly(baseMap, otherMap, excludeKey) {
+  const a = monthlyReturnMap(baseMap);
+  const b = monthlyReturnMap(otherMap);
+  const keys = [...a.keys()].filter((k) => b.has(k) && k !== excludeKey).sort();
+  const n = keys.length;
+  if (n < 2) return null;
+  const xs = keys.map((k) => a.get(k));
+  const ys = keys.map((k) => b.get(k));
+  const mx = xs.reduce((s, v) => s + v, 0) / n;
+  const my = ys.reduce((s, v) => s + v, 0) / n;
+  let sxy = 0;
+  let sxx = 0;
+  let syy = 0;
+  for (let i = 0; i < n; i++) {
+    const dx = xs[i] - mx;
+    const dy = ys[i] - my;
+    sxy += dx * dy;
+    sxx += dx * dx;
+    syy += dy * dy;
+  }
+  if (!sxx || !syy) return null;
+  return { r: sxy / Math.sqrt(sxx * syy), n, from: keys[0], to: keys[n - 1] };
+}
+async function getAutoTrackCorrelations() {
+  const d = new Date();
+  const dayKey = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+  const CACHE_KEY = "autotrack_corr_v1";
+  try {
+    const c = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
+    if (c && c.day === dayKey && c.values) return c;
+  } catch {}
+  const curMonth = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+  const charts = {};
+  await mapWithConcurrency(["SPY", ...AUTOTRACK_CORR_PAIRS.map((p) => p.sym)], 4, async (sym) => {
+    try {
+      charts[sym] = monthlyCloseMap(await yahooChart(sym, "10y", "1mo"));
+    } catch {
+      charts[sym] = null;
+    }
+  });
+  const values = {};
+  const base = charts.SPY;
+  for (const p of AUTOTRACK_CORR_PAIRS) {
+    const res = base && charts[p.sym] ? pearsonOfMonthly(base, charts[p.sym], curMonth) : null;
+    values[p.sym] =
+      res && res.n >= 24 ? { r: Math.round(res.r * 1000) / 1000, n: res.n, from: res.from, to: res.to, live: true } : { r: p.fallback, n: null, live: false };
+  }
+  const out = { day: dayKey, values, liveCount: Object.values(values).filter((v) => v.live).length };
+  if (out.liveCount === AUTOTRACK_CORR_PAIRS.length) {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(out));
+    } catch {}
+  }
+  return out;
+}
+let autoTrackCorrRendering = false;
+async function renderAutoTrackCorrDetail(wrap) {
+  if (wrap.dataset.built === "1" || autoTrackCorrRendering) return;
+  autoTrackCorrRendering = true;
+  wrap.innerHTML = `<p class="muted top30-status" style="display:block;">상관관계를 계산하는 중... (SPY 외 12개 자산의 10년 월봉)</p>`;
+  let data;
+  try {
+    data = await getAutoTrackCorrelations();
+  } catch {
+    data = { values: {}, liveCount: 0 };
+  }
+  const rows = AUTOTRACK_CORR_PAIRS.map((p, i) => {
+    const v = (data.values && data.values[p.sym]) || { r: p.fallback, live: false };
+    return { ...p, idx: i + 1, r: v.r, n: v.n, from: v.from, to: v.to, live: !!v.live, grade: corrGradeOf(v.r) };
+  });
+  // 가로 막대 그래프: 가운데 0, 왼쪽 -1.0(완전 반대), 오른쪽 +1.0(완전 일치)
+  const W = 700;
+  const LABEL_W = 150;
+  const ROW_H = 24;
+  const TOP = 30;
+  const x0 = LABEL_W;
+  const x1 = W - 46;
+  const xc = (x0 + x1) / 2;
+  const xOf = (r) => xc + (r * (x1 - x0)) / 2;
+  const H = TOP + rows.length * ROW_H + 28;
+  const ticks = [-1, -0.5, 0, 0.5, 1]
+    .map(
+      (t) =>
+        `<line x1="${xOf(t)}" y1="${TOP - 8}" x2="${xOf(t)}" y2="${H - 24}" stroke="${t === 0 ? "var(--muted)" : "var(--border)"}" stroke-width="${t === 0 ? 1.5 : 1}" ${t === 0 ? "" : 'stroke-dasharray="3 3"'}/>
+         <text x="${xOf(t)}" y="${H - 8}" text-anchor="middle" font-size="10.5" fill="var(--muted)">${t > 0 ? "+" + t.toFixed(1) : t.toFixed(1)}</text>`
+    )
+    .join("");
+  const bars = rows
+    .map((row, i) => {
+      const y = TOP + i * ROW_H;
+      const bx = Math.min(xc, xOf(row.r));
+      const bw = Math.abs(xOf(row.r) - xc);
+      const pos = row.r >= 0;
+      return `
+      <text x="${x0 - 8}" y="${y + 15}" text-anchor="end" font-size="11" font-weight="700" fill="var(--text)">${row.idx}. ${escapeHtml(row.name)}</text>
+      <rect x="${bx}" y="${y + 4}" width="${Math.max(1.5, bw)}" height="14" rx="3" fill="${row.grade.color}" opacity="0.92"/>
+      <text x="${pos ? xOf(row.r) + 5 : xc + 5}" y="${y + 15}" text-anchor="start" font-size="11" font-weight="800" fill="${row.grade.color}">${row.r.toFixed(2)}</text>`;
+    })
+    .join("");
+  const svg = `
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" role="img" aria-label="SPY 대비 상관관계 막대 그래프">
+      <text x="${x0}" y="${TOP - 14}" text-anchor="start" font-size="10.5" font-weight="700" fill="#dc2626">← 완전 반대(-1.0)</text>
+      <text x="${x1}" y="${TOP - 14}" text-anchor="end" font-size="10.5" font-weight="700" fill="#16a34a">완전 일치(+1.0) →</text>
+      ${ticks}
+      ${bars}
+    </svg>`;
+  const badge = (g) => `<span class="corr-grade-badge" style="background:${g.color};">${escapeHtml(g.label)}</span>`;
+  const tableRows = rows
+    .map(
+      (row) => `
+      <tr>
+        <td>${row.idx}</td>
+        <td style="text-align:left;"><b>SPY - ${escapeHtml(row.name)}</b><br><span class="muted" style="font-size:10.5px;">${escapeHtml(row.sub)}${row.live ? "" : " · 스냅샷"}</span></td>
+        <td><b style="color:${row.grade.color};">${row.r.toFixed(3)}</b></td>
+        <td>${badge(row.grade)}</td>
+        <td><span class="muted" style="font-size:10.5px;">${row.n ? `${row.n}개월` : "2026-09 계산"}</span></td>
+      </tr>`
+    )
+    .join("");
+  const legend = CORR_GRADES.map((g) => `<span>${badge(g)} ${escapeHtml(g.range)}</span>`).join("");
+  const liveNote =
+    data.liveCount === AUTOTRACK_CORR_PAIRS.length
+      ? "오늘 실시간 계산값(하루 고정)"
+      : data.liveCount > 0
+        ? `${data.liveCount}개는 오늘 실시간 계산, 나머지는 2026-09-07 계산 스냅샷(· 스냅샷 표시)`
+        : "실시간 조회에 실패해 2026-09-07 계산 스냅샷을 표시";
+  wrap.innerHTML = `
+    <h3 class="future-chart-subheading">📐 SPY 기준 상관관계 점수표 (최근 10년 월간 수익률)</h3>
+    <p class="disclaimer" style="margin:0 0 8px;">1.0 = 완전 일치(같이 오르고 같이 내림) · 0 = 무관 · -1.0 = 완전 반대(SPY가 오르면 내림). ${liveNote}.</p>
+    <div class="corr-legend">${legend}</div>
+    ${svg}
+    <table class="top30-table corr-table" style="margin-top:10px;">
+      <thead><tr><th>번호</th><th>조합</th><th>점수</th><th>등급</th><th>비교 기간</th></tr></thead>
+      <tbody>${tableRows}</tbody>
+    </table>
+    <p class="disclaimer" style="margin-top:8px;">
+      ⚠️ 야후 월봉(10년) 기준으로 두 자산의 월간 등락률이 얼마나 같은 방향으로 움직였는지를 피어슨 상관계수로 계산했습니다(진행 중인 이번 달 제외).
+      코스피200은 KODEX200, 코스닥150은 KODEX코스닥150, 금은 GLD로 계산했습니다. 과거 데이터이며 미래 수익률을 보장하지 않고 투자 자문이 아닙니다.
+    </p>`;
+  wrap.dataset.built = "1";
+  autoTrackCorrRendering = false;
+}
+el("autoTrackCorrBtn").addEventListener("click", () => {
+  const wrap = el("autoTrackCorrWrap");
+  const btn = el("autoTrackCorrBtn");
+  const isOpen = wrap.style.display !== "none";
+  wrap.style.display = isOpen ? "none" : "block";
+  wrap.classList.toggle("chart-detail-expanded", !isOpen);
+  btn.textContent = isOpen ? "+자세히" : "-접기";
+  if (!isOpen) renderAutoTrackCorrDetail(wrap);
+});
+
 async function renderAutoTrack() {
   const statusEl = el("autoTrackStatus");
   const resultsEl = el("autoTrackResults");
@@ -8963,6 +9274,12 @@ async function renderAutoTrack() {
       nameOf = (sym) => krMap.get(sym) || usMap.get(sym) || TICKER_TO_KOREAN_NAME[sym] || sym;
     } else if (mode === "crypto") {
       nameOf = (sym) => cryptoKoName(sym, TICKER_TO_KOREAN_NAME[sym] || sym.replace(/-USD$/, ""));
+    }
+
+    // ETF(2026-09-07 사용자 요청): 신호등 3개 대신 10년 상승(연복리) 순 정렬 + 10년 승률, 미국·한국 합산 순위, 10년 미만 ❗ 경고
+    if (mode === "etf") {
+      statusEl.style.display = "none";
+      return renderAutoTrackEtf(map, nameOf, resultsEl);
     }
 
     const num = (v) => (Number.isFinite(v) ? v : null);

@@ -582,6 +582,12 @@
 
         <!-- 자동추적(2026-09-04, 2026-09-05 개편): 한국·미국주식은 상관관계 상위 3개 항목 신호등 표(월간/년간), ETF·코인은 승률 표 -->
         <div id="autoTrackGroup" style="display:none;">
+          <!-- 상관관계 점수표 "+자세히"(2026-09-07 사용자 요청): 오른쪽 위 버튼 — SPY 대비 12개 자산의 10년 월간 상관계수(-1.0~1.0) 표+그래프 -->
+          <div class="section-heading-row autotrack-head-row">
+            <span class="muted autotrack-head-note">SPY 기준 상관관계 점수표(1.0 완전 일치 · -1.0 완전 반대)</span>
+            <button type="button" id="autoTrackCorrBtn" class="score-method-detail-btn">+자세히</button>
+          </div>
+          <div id="autoTrackCorrWrap" class="chart-detail-wrap" style="display:none;"></div>
           <div class="top30-sub-nav" id="autoTrackNav" style="display:none;">
             <button type="button" class="cat-btn" id="autoTrackDayBtn">일간</button>
             <button type="button" class="cat-btn" id="autoTrackWeekBtn">주간</button>
