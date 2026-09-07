@@ -1,18 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 160" width="760" height="160" role="img" aria-label="MARKETMAP 마켓맵">
-  <!-- 마켓맵 워드마크(밝은 배경용, 2026-09-08): 마크 + MARKETMAP + 한글·태그라인 -->
+  <!-- 마켓맵 워드마크(2026-09-08 사용자 확정, C안: 상승 막대 4개 + 흰 추세선 + 분석 포인트) + MARKETMAP(MAP만 초록) + 한글 태그라인 -->
   <defs>
-    <style>
-      .wm { font-family: "Pretendard", "Inter", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif; }
-    </style>
+    <style>.wm{font-family:"Pretendard","Inter","Segoe UI","Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;}</style>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b2a4a"/><stop offset="1" stop-color="#0d1730"/></linearGradient>
   </defs>
   <g transform="translate(16,16) scale(0.25)">
-    <rect width="512" height="512" rx="112" fill="#14213D"/>
-    <rect x="96" y="96" width="148" height="148" rx="30" fill="#3E4C6E"/>
-    <rect x="96" y="268" width="148" height="148" rx="30" fill="#3E4C6E"/>
-    <rect x="268" y="268" width="148" height="148" rx="30" fill="#3E4C6E"/>
-    <rect x="268" y="96" width="148" height="148" rx="30" fill="#22C55E"/>
-    <path d="M342 208 V132 M342 132 L310 164 M342 132 L374 164" fill="none" stroke="#FFFFFF" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+    <rect x="92" y="300" width="64" height="120" rx="12" fill="#3e4c6e"/>
+    <rect x="180" y="250" width="64" height="170" rx="12" fill="#55648a"/>
+    <rect x="268" y="200" width="64" height="220" rx="12" fill="#2f9e5a"/>
+    <rect x="356" y="130" width="64" height="290" rx="12" fill="#16a34a"/>
+    <path d="M110 268 L200 224 L296 176 L388 112" fill="none" stroke="#ffffff" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="388" cy="112" r="24" fill="#ffffff"/>
+    <circle cx="388" cy="112" r="11" fill="#16a34a"/>
   </g>
-  <text x="166" y="88" class="wm" font-size="66" font-weight="800" letter-spacing="-1.5" fill="#14213D">MARKET<tspan fill="#22C55E">MAP</tspan></text>
+  <text x="166" y="88" class="wm" font-size="66" font-weight="800" letter-spacing="-1.5" fill="#1b2a4a">MARKET<tspan fill="#16a34a">MAP</tspan></text>
   <text x="168" y="128" class="wm" font-size="24" font-weight="600" letter-spacing="0.5" fill="#5B6478">마켓맵 · 10년 승률로 보는 투자 지도</text>
 </svg>
