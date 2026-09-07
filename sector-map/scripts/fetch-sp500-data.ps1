@@ -129,6 +129,23 @@ foreach ($c in $companies) {
 
 Write-Host "   -> 매칭 실패: $($unmatched.Count)개 ($($unmatched -join ', '))"
 
+# 다른 배치가 병합해 두는 점수 필드 이어받기(2026-09-07): 이 스크립트가 파일을 처음부터 다시 만들 때 승률·주간RSI·10년상승·
+# 상승압력·투자안정 필드가 사라져 본체 인기종목이 비던 문제(아침 배치 신설 후 발생). 직전 수집본에 있던 값은 그대로 유지하고,
+# 저녁 배치(fetch-momentum-scores / fetch-winrate-scores)가 돌 때 최신값으로 다시 덮어쓴다.
+$carryKeys = @("winRateScore", "rsiWeekly", "ret10yAvg", "pressureScore", "stabilityScore")
+$carried = 0
+foreach ($r in $result) {
+  $prev = $prevMap[$r.symbol]
+  if (-not $prev) { continue }
+  foreach ($k in $carryKeys) {
+    if ($null -eq $r.PSObject.Properties[$k] -and $null -ne $prev.PSObject.Properties[$k]) {
+      $r | Add-Member -NotePropertyName $k -NotePropertyValue $prev.$k -Force
+      $carried++
+    }
+  }
+}
+Write-Host "   -> 점수 필드 이어받기: $carried 개 값(직전 수집본 기준)"
+
 Write-Host "4) JSON 저장 중..."
 $output = [PSCustomObject]@{
   generatedAt = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
