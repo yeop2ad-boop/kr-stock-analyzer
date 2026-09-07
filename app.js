@@ -8911,11 +8911,12 @@ el("autoTrackYearBtn").addEventListener("click", () => setAutoTrackPeriod("year"
 async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
   try {
     const isKr = mode === "kr";
+    const isCrypto = mode === "crypto"; // 비트코인(2026-09-07 사용자 요청): 재무 항목 없이 시세·거래대금·RSI·승률·시총 항목만으로 같은 신호등 표
     const isYear = autoTrackPeriod === "year";
     const isWeek = autoTrackPeriod === "week";
     const isDay = autoTrackPeriod === "day";
     const corr = await getCorrDb();
-    const side = corr && (isKr ? corr.kr : corr.us);
+    const side = corr && (isKr ? corr.kr : isCrypto ? corr.crypto : corr.us);
     const at = side && (isYear ? side.autotrackYear : isWeek ? side.autotrackWeek : isDay ? side.autotrackDay : side.autotrack);
     if (!at || !Array.isArray(at.keys) || at.keys.length < 3 || !at.ranks) {
       throw new Error(`자동추적 데이터가 아직 준비되지 않았습니다. ${isKr ? "매일 오후 5시" : "매일 오전 7시"}에 자동 생성됩니다.`);
@@ -8925,12 +8926,15 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
     if (isKr) {
       const m = await getKrSymbolNameMap().catch(() => new Map());
       nameOf = (sym) => m.get(sym) || TICKER_TO_KOREAN_NAME[sym] || sym;
+    } else if (isCrypto) {
+      // 야후 코인 심볼의 숫자 꼬리(WLFI33251-USD 등)는 떼고 표시
+      nameOf = (sym) => cryptoKoName(sym, TICKER_TO_KOREAN_NAME[sym] || sym.replace(/-USD$/, "").replace(/\d{4,}$/, ""));
     }
-    // 한국주식은 상위/하위 20%(사용자 지정), 미국주식은 상위/하위 100등(=500종목의 20%) 기준
+    // 한국주식·코인은 상위/하위 20%(사용자 지정), 미국주식은 상위/하위 100등(=500종목의 20%) 기준
     const lightOf = (rank, key) => {
       if (rank === null || rank === undefined) return "⚪";
       const n = (at.n && at.n[key]) || 0;
-      const cut = isKr ? Math.max(1, Math.round(n * 0.2)) : 100;
+      const cut = isKr || isCrypto ? Math.max(1, Math.round(n * 0.2)) : 100;
       if (rank <= cut) return "🟢";
       if (n && rank > n - cut) return "🔴";
       return "🟡";
@@ -8958,7 +8962,7 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
     rows.sort((a, b) => allGreen(b) - allGreen(a) || a.c1.r - b.c1.r);
 
     const labels = keys.map((k) => corrLabelOf(k, autoTrackPeriod));
-    const universeLabel = isKr ? "한국주식(코스피200+코스닥150)" : "미국주식(S&P500)";
+    const universeLabel = isKr ? "한국주식(코스피200+코스닥150)" : isCrypto ? "비트코인(암호화폐 시총 상위 100)" : "미국주식(S&P500)";
     const periodLabel = isYear ? "년간" : isWeek ? "주간" : isDay ? "일간" : "월간";
     const agoLabel = isYear ? "1년 전" : isWeek ? "한주 전" : "한달 전";
     const pctOf = (c, key) => {
@@ -8972,6 +8976,8 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
     };
     // ①②③ 머리글 아래 상관 점수·등급(2026-09-07 사용자 요청): 같은 기간 상관관계도 목록(side[period])의 적중 합계를 환산
     const corrList = (side && side[isYear ? "year" : isWeek ? "week" : isDay ? "day" : "month"]) || [];
+    const corrMaxTot = (corrList[0] && corrList[0].max) || 100; // 주식 100, 코인 40
+    const corrChanceTot = corrList[0] ? Math.round(corrList[0].exp * 2) : 20;
     const headCells = keys
       .map((k, i) => `<th>${["①", "②", "③"][i]}${escapeHtml(labels[i])}${corrHitSubHtml(corrList.find((m) => m.key === k))}</th>`)
       .join("");
@@ -8992,9 +8998,9 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
       parkAutoTrackCorr();
       resultsEl.innerHTML = `
         <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — 오늘의 <b>${periodLabel} 상관관계 상위 3개 항목</b>(①${escapeHtml(labels[0])} ②${escapeHtml(labels[1])} ③${escapeHtml(labels[2])})을 <b>현재 시점 점수</b>로 다시 순위 매긴 신호등입니다.
-        각 항목 ${isKr ? "상위 20% 🟢 · 중간 🟡 · 하위 20% 🔴" : "상위 100등 🟢 · 중간 🟡 · 하위 100등 🔴"} — 불 3개가 모두 켜진 종목이 맨 위로 오도록 정렬했습니다(②🟢 우선 → ③🟢 우선 → ① 순위순).
-        항목 아래 <b>적중 점수</b>는 상관관계도의 적중 합계(최대 100, 무작위 기대 약 20)이고, 옆의 -1~1 값·등급은 이를 상관 척도로 환산한 것입니다.
-        상관관계도와 같은 배치로 ${isKr ? "매일 오후 5시(한국장 마감 후 최신 재무 스냅샷 반영)" : "매일 오전 7시(미국장 마감 후 최신 재무 스냅샷 반영)"} 갱신되며 다음 갱신까지 고정됩니다(기준일 ${escapeHtml(side.dateKst || corr.dateKst || "")}). 참고용 지표이며 투자 자문이 아닙니다.</p>
+        각 항목 ${isKr || isCrypto ? "상위 20% 🟢 · 중간 🟡 · 하위 20% 🔴" : "상위 100등 🟢 · 중간 🟡 · 하위 100등 🔴"} — 불 3개가 모두 켜진 종목이 맨 위로 오도록 정렬했습니다(②🟢 우선 → ③🟢 우선 → ① 순위순).
+        항목 아래 <b>적중 점수</b>는 상관관계도의 적중 합계(최대 ${corrMaxTot}, 무작위 기대 약 ${corrChanceTot})이고, 옆의 -1~1 값·등급은 이를 상관 척도로 환산한 것입니다.
+        상관관계도와 같은 배치로 ${corrBatchTimeLabel(isKr, isCrypto)} 갱신되며 다음 갱신까지 고정됩니다(기준일 ${escapeHtml(side.dateKst || corr.dateKst || "")}). 참고용 지표이며 투자 자문이 아닙니다.</p>
         <div id="autoTrackCorrSlot"></div>
         <table class="top30-table autotrack-table autotrack-lights-table">
           <thead><tr><th class="at-name">종목명</th>${headCells}</tr></thead>
@@ -9206,7 +9212,8 @@ function mountAutoTrackCorr(resultsEl) {
 // 상관관계도 적중 합계(tot, 최대 100 = 상승50+하락50, 무작위 기대 2×exp)를 -1~1 상관 척도로 환산 — 자동추적 ①②③ 머리글 아래 점수·등급 표시용
 function corrHitScore(m) {
   const chance = 2 * (m.exp || 0);
-  const denom = m.tot >= chance ? 100 - chance : chance;
+  const maxTot = m.max || 100; // 주식 100(상승50+하락50), 코인 40(20+20) — 배치가 max를 실어줌
+  const denom = m.tot >= chance ? maxTot - chance : chance;
   if (!denom) return 0;
   return Math.max(-1, Math.min(1, (m.tot - chance) / denom));
 }
@@ -9232,71 +9239,14 @@ async function renderAutoTrackCorrDetail(wrap) {
     const v = (data.values && data.values[p.sym]) || { r: p.fallback, live: false };
     return { ...p, idx: i + 1, r: v.r, n: v.n, from: v.from, to: v.to, live: !!v.live, grade: corrGradeOf(v.r) };
   });
-  // 10년 승률 비교선과 같은 형식(2026-09-07 사용자 확정): 가로선 하나(-1.0 ~ +1.0)에 등급 구간을 색띠로 칠하고
-  // 12개 조합을 점으로 찍음. 점수가 0.5~1.0에 몰려 있어 값 순서대로 이름표를 위 3단·아래 2단으로 번갈아 배치(리더 선 연결).
-  const W = 700;
-  const X0 = 44;
-  const X1 = 656;
-  const AXIS_Y = 132;
-  const xOf = (r) => X0 + ((r + 1) / 2) * (X1 - X0);
-  const H = 262;
-  // 등급 색띠: 구간 경계 [-1, -0.5, 0, 0.1, 0.2, 0.4, 0.7, 1]
-  const bands = CORR_GRADES.map((g, i) => {
-    const lo = Math.max(-1, g.min);
-    const hi = i === 0 ? 1 : CORR_GRADES[i - 1].min;
-    return `<rect x="${xOf(lo)}" y="${AXIS_Y - 5}" width="${xOf(hi) - xOf(lo)}" height="10" fill="${g.color}" opacity="0.28"/>`;
-  }).join("");
-  // 구간 경계 눈금 + 등급 이름(좁은 구간은 이름 생략, 범례로 대체)
-  const boundaries = [-1, -0.5, 0, 0.1, 0.2, 0.4, 0.7, 1];
-  const boundaryTicks = boundaries
-    .map(
-      (b) =>
-        `<line x1="${xOf(b)}" y1="${AXIS_Y - 7}" x2="${xOf(b)}" y2="${AXIS_Y + 7}" stroke="var(--muted)" stroke-width="1.2"/>
-         <text x="${xOf(b)}" y="${AXIS_Y + 20}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--text)">${b > 0 ? "+" + b.toFixed(1) : b.toFixed(1)}</text>`
-    )
-    .join("");
-  const zoneNames = [
-    { lo: -1, hi: -0.5, label: "반대 일치" },
-    { lo: -0.5, hi: 0, label: "약한 반대" },
-    { lo: 0, hi: 0.4, label: "무관·약한·보통" },
-    { lo: 0.4, hi: 0.7, label: "강한 상관" },
-    { lo: 0.7, hi: 1, label: "거의 일치" },
-  ]
-    .map((z) => `<text x="${(xOf(z.lo) + xOf(z.hi)) / 2}" y="${AXIS_Y + 34}" text-anchor="middle" font-size="10" fill="var(--muted)">${z.label}</text>`)
-    .join("");
-  // 이름표 배치: 값이 가까운 점끼리 겹치지 않도록 점수 순으로 정렬해 5단을 돌아가며 배정
-  const tierYs = [104, 76, 48, 168, 196, 224]; // 위 3단·아래 3단 — 같은 단에 오는 이웃끼리 6칸 떨어져 이름표가 안 겹침
-  const ordered = rows.slice().sort((a, b) => a.r - b.r);
-  const dots = ordered
-    .map((row, i) => {
-      const x = xOf(row.r);
-      const tier = tierYs[i % tierYs.length];
-      const above = tier < AXIS_Y;
-      const labelY = above ? tier : tier + 4;
-      const anchor = x < X0 + 40 ? "start" : x > X1 - 40 ? "end" : "middle";
-      return `
-      <line x1="${x}" y1="${AXIS_Y}" x2="${x}" y2="${above ? tier + 6 : tier - 8}" stroke="${row.grade.color}" stroke-width="1" stroke-dasharray="2 2" opacity="0.8"/>
-      <circle cx="${x}" cy="${AXIS_Y}" r="5" fill="${row.grade.color}" stroke="#fff" stroke-width="1.4"/>
-      <text x="${x}" y="${labelY}" text-anchor="${anchor}" font-size="11" font-weight="700" fill="${row.grade.color}">${row.idx}. ${escapeHtml(row.name)}</text>
-      <text x="${x}" y="${labelY + 12}" text-anchor="${anchor}" font-size="10" fill="${row.grade.color}">${row.r.toFixed(2)}</text>`;
-    })
-    .join("");
-  const svg = `
-    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" role="img" aria-label="SPY 대비 상관관계 비교선">
-      <text x="${X0}" y="14" text-anchor="start" font-size="10.5" font-weight="700" fill="#dc2626">← 완전 반대(-1.0)</text>
-      <text x="${X1}" y="14" text-anchor="end" font-size="10.5" font-weight="700" fill="#16a34a">완전 일치(+1.0) →</text>
-      ${bands}
-      <line x1="${X0}" y1="${AXIS_Y}" x2="${X1}" y2="${AXIS_Y}" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"/>
-      ${boundaryTicks}
-      ${zoneNames}
-      ${dots}
-    </svg>`;
+  // 그래프는 2026-09-07 사용자 요청으로 제거 — 표만 상관관계 높은 순으로 1~12번 정렬
   const badge = (g) => `<span class="corr-grade-badge" style="background:${g.color};">${escapeHtml(g.label)}</span>`;
-  const tableRows = rows
+  const sortedRows = rows.slice().sort((a, b) => b.r - a.r);
+  const tableRows = sortedRows
     .map(
-      (row) => `
+      (row, i) => `
       <tr>
-        <td>${row.idx}</td>
+        <td>${i + 1}</td>
         <td style="text-align:left;"><b>SPY - ${escapeHtml(row.name)}</b><br><span class="muted" style="font-size:10.5px;">${escapeHtml(row.sub)}${row.live ? "" : " · 스냅샷"}</span></td>
         <td><b style="color:${row.grade.color};">${row.r.toFixed(3)}</b></td>
         <td>${badge(row.grade)}</td>
@@ -9315,9 +9265,8 @@ async function renderAutoTrackCorrDetail(wrap) {
     <h3 class="future-chart-subheading">📐 SPY 기준 상관관계 점수표 (최근 10년 월간 수익률)</h3>
     <p class="disclaimer" style="margin:0 0 8px;">1.0 = 완전 일치(같이 오르고 같이 내림) · 0 = 무관 · -1.0 = 완전 반대(SPY가 오르면 내림). ${liveNote}.</p>
     <div class="corr-legend">${legend}</div>
-    ${svg}
     <table class="top30-table corr-table" style="margin-top:10px;">
-      <thead><tr><th>번호</th><th>조합</th><th>점수</th><th>등급</th><th>비교 기간</th></tr></thead>
+      <thead><tr><th>순위</th><th>조합</th><th>점수</th><th>등급</th><th>비교 기간</th></tr></thead>
       <tbody>${tableRows}</tbody>
     </table>
     <p class="disclaimer" style="margin-top:8px;">
@@ -9347,8 +9296,16 @@ async function renderAutoTrack() {
   try {
     const mode = appSectionMode === "etf" ? "etf" : appSectionMode === "crypto" ? "crypto" : getWatchlistActiveMarket() === "KR" ? "kr" : "us";
     // 한국·미국주식은 상관관계 상위 3개 항목 신호등 표(2026-09-05 개편, 월간/년간 토글), ETF·코인은 기존 10년승률 표 유지
-    el("autoTrackNav").style.display = mode === "kr" || mode === "us" ? "" : "none";
-    if (mode === "kr" || mode === "us") return renderAutoTrackStocks(mode, statusEl, resultsEl);
+    // 비트코인(2026-09-07 사용자 요청): 코인 상관관계 배치(correlation-daily.json의 crypto)가 있으면 주식과 같은 신호등 표, 없으면 기존 승률 표로 폴백
+    let cryptoCorrReady = false;
+    if (mode === "crypto") {
+      const corr = await getCorrDb().catch(() => null);
+      const at = corr && corr.crypto && corr.crypto.autotrack;
+      cryptoCorrReady = !!(at && Array.isArray(at.keys) && at.keys.length >= 3 && at.ranks);
+    }
+    const lightsMode = mode === "kr" || mode === "us" || (mode === "crypto" && cryptoCorrReady);
+    el("autoTrackNav").style.display = lightsMode ? "" : "none";
+    if (lightsMode) return renderAutoTrackStocks(mode, statusEl, resultsEl);
     const db = await getWinRateDb();
     const map = db && (mode === "etf" ? db.scoresEtf : mode === "crypto" ? db.scoresCrypto : mode === "kr" ? db.scoresKr : db.scores);
     if (!map) throw new Error("자동추적 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.");
@@ -9852,6 +9809,11 @@ el("corrWeekBtn").addEventListener("click", () => setCorrPeriod("week"));
 el("corrMonthBtn").addEventListener("click", () => setCorrPeriod("month"));
 el("corrYearBtn").addEventListener("click", () => setCorrPeriod("year"));
 // 일간/주간/월간/년간별 라벨 보정 — 모멘텀 항목은 기간에 따라 이름이 달라짐(일간=하루전, 주간=한주전, 그 외=한달전)
+// 상관관계도·자동추적 배치 시각 문구(투자처별) — 코인은 미국 아침 배치와 같은 시각에 계산
+function corrBatchTimeLabel(isKr, isCrypto) {
+  if (isCrypto) return "매일 오전 7시(코인은 24시간 거래라 그 시각 시세 기준)";
+  return isKr ? "매일 오후 5시(한국장 마감 후 최신 재무 스냅샷 반영)" : "매일 오전 7시(미국장 마감 후 최신 재무 스냅샷 반영)";
+}
 function corrLabelOf(key, period) {
   if (key === "prevMonthUp") return period === "day" ? "하루전 상승률" : period === "week" ? "한주전 상승률" : "한달전 상승률";
   if (key === "prevMonthDown") return period === "day" ? "하루전 하락률" : period === "week" ? "한주전 하락률" : "한달전 하락률";
@@ -9861,9 +9823,10 @@ async function runInsightCorr(period) {
   const status = el("insightStatus");
   const results = el("insightResults");
   results.innerHTML = "";
-  if (appSectionMode === "etf" || appSectionMode === "crypto") {
+  // 비트코인(2026-09-07 사용자 요청): 코인도 상관관계도 제공(재무 항목 제외, 배치 crypto 섹션). ETF만 미제공.
+  if (appSectionMode === "etf") {
     status.style.display = "none";
-    results.innerHTML = `<p class="muted" style="padding:12px 0;">상관관계도는 재무 랭킹이 있는 한국주식·미국주식에서만 제공됩니다.</p>`;
+    results.innerHTML = `<p class="muted" style="padding:12px 0;">상관관계도는 한국주식·미국주식·비트코인에서 제공됩니다(ETF 제외).</p>`;
     return;
   }
   status.style.display = "block";
@@ -9871,14 +9834,19 @@ async function runInsightCorr(period) {
   try {
     const db = await getCorrDb();
     if (!db) throw new Error("상관관계 데이터가 아직 준비되지 않았습니다. 매일 오전 7시에 자동 생성됩니다.");
-    const isKr = getWatchlistActiveMarket() === "KR";
-    const side = isKr ? db.kr : db.us;
+    const isCrypto = appSectionMode === "crypto";
+    const isKr = !isCrypto && getWatchlistActiveMarket() === "KR";
+    const side = isCrypto ? db.crypto : isKr ? db.kr : db.us;
     const list = side?.[period] || [];
     if (!list.length) throw new Error(`이 기간의 데이터가 없습니다. 다음 갱신(${isKr ? "매일 오후 5시" : "매일 오전 7시"})을 기다려주세요.`);
-    const upLabel = period === "year" ? "1년 상승 50" : period === "week" ? "1주 상승 50" : period === "day" ? "1일 상승 50" : "1달 상승 50";
-    const dnLabel = period === "year" ? "1년 하락 50" : period === "week" ? "1주 하락 50" : period === "day" ? "1일 하락 50" : "1달 하락 50";
+    // 상승/하락 목록 크기(topN)·상위/하위 순위 집합 크기(rankN)는 배치가 항목마다 실어줌 — 주식 50/100, 코인 20/20(없으면 주식 기본값)
+    const topN = (list[0] && list[0].topN) || 50;
+    const rankN = (list[0] && list[0].rankN) || 100;
+    const periodWord = period === "year" ? "1년" : period === "week" ? "1주" : period === "day" ? "1일" : "1달";
+    const upLabel = `${periodWord} 상승 ${topN}`;
+    const dnLabel = `${periodWord} 하락 ${topN}`;
     const agoLabel = period === "year" ? "1년 전" : period === "week" ? "한주 전" : period === "day" ? "하루 전" : "한달 전";
-    const universeLabel = isKr ? "코스피200+코스닥150" : "S&P500";
+    const universeLabel = isKr ? "코스피200+코스닥150" : isCrypto ? "암호화폐 시총 상위 100(재무 항목 제외)" : "S&P500";
     const trs = list
       .map((m, i) => {
         const label = corrLabelOf(m.key, period);
@@ -9895,11 +9863,11 @@ async function runInsightCorr(period) {
       .join("");
     status.style.display = "none";
     results.innerHTML = `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — 각 랭킹의 <b>${agoLabel} 당시 점수 기준</b> 상위 100·하위 100 종목이
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — 각 랭킹의 <b>${agoLabel} 당시 점수 기준</b> 상위 ${rankN}·하위 ${rankN} 종목이
       현재까지의 <b>${upLabel} / ${dnLabel}</b>에 각각 몇 개 들어갔는지(적중 수)입니다. 합계가 기대값(무작위 수준)보다 높을수록 그 랭킹과 실제 등락의 상관관계가 큽니다.
-      ${isKr ? "매일 오후 5시(한국장 마감 후 최신 재무 스냅샷 반영)" : "매일 오전 7시(미국장 마감 후 최신 재무 스냅샷 반영)"}에 자동 재계산되며 다음 갱신까지 고정됩니다(기준일 ${escapeHtml(side?.dateKst || db.dateKst || "")}). 참고용 지표이며 투자 자문이 아닙니다.</p>
+      ${corrBatchTimeLabel(isKr, isCrypto)}에 자동 재계산되며 다음 갱신까지 고정됩니다(기준일 ${escapeHtml(side?.dateKst || db.dateKst || "")}). 참고용 지표이며 투자 자문이 아닙니다.</p>
       <table class="top30-table">
-        <thead><tr><th>순위</th><th>항목 (${agoLabel} 기준)</th><th>상위100<br>→상승50</th><th>하위100<br>→하락50</th><th>합계<br>(상관점수)</th></tr></thead>
+        <thead><tr><th>순위</th><th>항목 (${agoLabel} 기준)</th><th>상위${rankN}<br>→상승${topN}</th><th>하위${rankN}<br>→하락${topN}</th><th>합계<br>(상관점수)</th></tr></thead>
         <tbody>${trs}</tbody>
       </table>`;
   } catch (e) {

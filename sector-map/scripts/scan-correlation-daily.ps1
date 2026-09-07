@@ -25,6 +25,18 @@ $usRatings = Get-Content (Join-Path $PSScriptRoot "us-credit-ratings.json") -Raw
 $krRatingsDoc = Get-Content (Join-Path $rootData "kr-credit-rating.json") -Raw -Encoding UTF8 | ConvertFrom-Json
 $wrDb = Get-Content (Join-Path $rootData "winrate-scores-us.json") -Raw -Encoding UTF8 | ConvertFrom-Json
 
+# Crypto universe (2026-09-07 user request): top-100 coins from etf-crypto-map.js (CRYPTO_MAP_DATA). Coins have no
+# financials, so only price/volume/RSI/winrate/marketCap metrics survive the min-valid filter (financial keys drop out).
+# Ranks use top/bottom 20 of ~100 (20%) and gainers/losers top 20 — see BuildSide params. -Market crypto updates only that section.
+function LoadCryptoUniverse() {
+  $p = Join-Path $dataDir "etf-crypto-map.js"
+  $line = @(Get-Content $p -Encoding UTF8 | Where-Object { $_ -like "const CRYPTO_MAP_DATA = *" })[0]
+  if (-not $line) { throw "CRYPTO_MAP_DATA not found in etf-crypto-map.js" }
+  $json = $line -replace "^const CRYPTO_MAP_DATA = ", "" -replace ";\s*$", ""
+  $doc = $json | ConvertFrom-Json
+  return [PSCustomObject]@{ generatedAt = $null; companies = $doc.companies }
+}
+
 function WkRsi($closes) {
   if ($closes.Count -lt 20) { return $null }
   $g = 0.0; $l = 0.0
@@ -61,8 +73,8 @@ function AsOfStats($cl, $endIdx) {
   return @{ w52 = $w52; dv5 = $dv5; rsi = $rsi }
 }
 
-function BuildRows($sectorsPath, $isKr, $wrMap, $ratingFn) {
-  $sec = Get-Content $sectorsPath -Raw -Encoding UTF8 | ConvertFrom-Json
+function BuildRows($sec, $isKr, $wrMap, $ratingFn) {
+  # $sec = parsed sectors document ({ generatedAt, companies[] }); crypto passes an in-memory doc built from etf-crypto-map.js
   # snapshot time of per/marketCap/dividend in the sectors file - used to price-correct those fields
   $snapT = $null
   try { $snapT = ([DateTimeOffset]::Parse([string]$sec.generatedAt)).ToUnixTimeSeconds() } catch {}
@@ -175,11 +187,13 @@ function MetricDefs($suffix) {
   )
 }
 
-function Evaluate($rows, $period) {
-  $retF = "mret"; $topN = 50
-  if ($period -eq "year") { $retF = "yret"; $topN = 50 }
-  if ($period -eq "week") { $retF = "wret"; $topN = 50 }
-  if ($period -eq "day") { $retF = "dret"; $topN = 50 }
+# topN = gainers/losers list size, rankN = top/bottom rank set size, minValid = min symbols with a value for the metric
+# (stocks: 50/100/150 over ~500; crypto: 20/20/60 over ~100). Each entry also carries max (=2*topN), topN, rankN for the UI.
+function Evaluate($rows, $period, $topN = 50, $rankN = 100, $minValid = 150) {
+  $retF = "mret"
+  if ($period -eq "year") { $retF = "yret" }
+  if ($period -eq "week") { $retF = "wret" }
+  if ($period -eq "day") { $retF = "dret" }
   $withRet = @($rows | Where-Object { $null -ne $_.$retF })
   $byRet = @($withRet | Sort-Object $retF -Descending)
   if ($byRet.Count -lt ($topN * 3)) { return @() }
@@ -191,14 +205,14 @@ function Evaluate($rows, $period) {
   foreach ($m in $metrics) {
     $f = $m.f
     $valid = @($withRet | Where-Object { $null -ne $_.$f })
-    if ($valid.Count -lt 150) { continue }
+    if ($valid.Count -lt $minValid) { continue }
     $sorted = $null
     if ($m.dir -eq "desc") { $sorted = @($valid | Sort-Object $f -Descending) } else { $sorted = @($valid | Sort-Object $f) }
-    $top = @($sorted[0..([Math]::Min(99, $sorted.Count-1))] | ForEach-Object { $_.sym })
-    $bot = @($sorted[([Math]::Max(0, $sorted.Count-100))..($sorted.Count-1)] | ForEach-Object { $_.sym })
+    $top = @($sorted[0..([Math]::Min($rankN - 1, $sorted.Count-1))] | ForEach-Object { $_.sym })
+    $bot = @($sorted[([Math]::Max(0, $sorted.Count-$rankN))..($sorted.Count-1)] | ForEach-Object { $_.sym })
     $a = 0; foreach ($s in $top) { if ($upSet.ContainsKey($s)) { $a++ } }
     $b = 0; foreach ($s in $bot) { if ($dnSet.ContainsKey($s)) { $b++ } }
-    $out += [PSCustomObject]@{ key = $m.key; n = $valid.Count; top = $a; bot = $b; tot = ($a + $b); exp = [Math]::Round($topN * 100.0 / $valid.Count, 1) }
+    $out += [PSCustomObject]@{ key = $m.key; n = $valid.Count; top = $a; bot = $b; tot = ($a + $b); exp = [Math]::Round($topN * [double]$rankN / $valid.Count, 1); max = (2 * $topN); topN = $topN; rankN = $rankN }
   }
   return @($out | Sort-Object tot -Descending)
 }
@@ -251,8 +265,9 @@ function AutotrackRanks($rows, $evalList, $suffix) {
   return $out
 }
 
-function BuildSide($rows, $dateKst) {
-  $d = Evaluate $rows "day"; $w = Evaluate $rows "week"; $m = Evaluate $rows "month"; $y = Evaluate $rows "year"
+function BuildSide($rows, $dateKst, $topN = 50, $rankN = 100, $minValid = 150) {
+  $d = Evaluate $rows "day" $topN $rankN $minValid; $w = Evaluate $rows "week" $topN $rankN $minValid
+  $m = Evaluate $rows "month" $topN $rankN $minValid; $y = Evaluate $rows "year" $topN $rankN $minValid
   return [ordered]@{
     dateKst = $dateKst
     day = $d; week = $w; month = $m; year = $y
@@ -267,26 +282,35 @@ $outPath = Join-Path $rootData "correlation-daily.json"
 # start from the existing file so a single-market run keeps the other market's section
 $prev = $null
 try { $prev = Get-Content $outPath -Raw -Encoding UTF8 | ConvertFrom-Json } catch {}
-$usSide = $null; $krSide = $null
+$usSide = $null; $krSide = $null; $cryptoSide = $null
 if ($prev) {
   if ($prev.us) { $usSide = $prev.us }
   if ($prev.kr) { $krSide = $prev.kr }
+  if ($prev.crypto) { $cryptoSide = $prev.crypto }
 }
 
-$usCount = 0; $krCount = 0
+$usCount = 0; $krCount = 0; $cryptoCount = 0
 if ($Market -eq "all" -or $Market -eq "us") {
   Write-Host "US universe..."
   $usRateFn = { param($sym) RatingScore $usRatings.$sym }
-  $usRows = BuildRows (Join-Path $dataDir "sp500-sectors.json") $false $wrDb.scores $usRateFn
+  $usRows = BuildRows (Get-Content (Join-Path $dataDir "sp500-sectors.json") -Raw -Encoding UTF8 | ConvertFrom-Json) $false $wrDb.scores $usRateFn
   $usCount = $usRows.Count
   $usSide = BuildSide $usRows $dateKst
 }
 if ($Market -eq "all" -or $Market -eq "kr") {
   Write-Host "KR universe..."
   $krRateFn = { param($sym) $e = $krRatingsDoc.ratings.$sym; if ($e) { RatingScore $e.rating } else { $null } }
-  $krRows = BuildRows (Join-Path $dataDir "kr-sectors.json") $true $wrDb.scoresKr $krRateFn
+  $krRows = BuildRows (Get-Content (Join-Path $dataDir "kr-sectors.json") -Raw -Encoding UTF8 | ConvertFrom-Json) $true $wrDb.scoresKr $krRateFn
   $krCount = $krRows.Count
   $krSide = BuildSide $krRows $dateKst
+}
+if ($Market -eq "all" -or $Market -eq "crypto") {
+  Write-Host "Crypto universe..."
+  $noRate = { param($sym) $null }
+  $cryptoRows = BuildRows (LoadCryptoUniverse) $false $wrDb.scoresCrypto $noRate
+  $cryptoCount = $cryptoRows.Count
+  # ~100 coins: gainers/losers top 20, rank sets top/bottom 20 (20%), metric needs >= 60 valid coins
+  $cryptoSide = BuildSide $cryptoRows $dateKst 20 20 60
 }
 
 $outDoc = [ordered]@{
@@ -294,6 +318,7 @@ $outDoc = [ordered]@{
   dateKst = $dateKst
   us = $usSide
   kr = $krSide
+  crypto = $cryptoSide
 }
 [IO.File]::WriteAllText($outPath, ($outDoc | ConvertTo-Json -Depth 6), (New-Object System.Text.UTF8Encoding $false))
-Write-Host "DONE_MARKER market=$Market us=$usCount kr=$krCount -> $outPath"
+Write-Host "DONE_MARKER market=$Market us=$usCount kr=$krCount crypto=$cryptoCount -> $outPath"

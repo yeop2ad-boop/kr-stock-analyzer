@@ -42,6 +42,11 @@ jobs:
         working-directory: sector-map
         run: ./scripts/scan-correlation-daily.ps1 -Market us
 
+      - name: 비트코인(코인 시총 상위 100) 상관관계도 + 자동추적 계산(2026-09-07 사용자 요청)
+        shell: pwsh
+        working-directory: sector-map
+        run: ./scripts/scan-correlation-daily.ps1 -Market crypto
+
       - name: 변경사항 커밋 및 푸시
         run: |
           git config user.name "github-actions[bot]"
