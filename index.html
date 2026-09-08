@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <!-- 첫 진입 섹터맵 리다이렉트 폐지(2026-09-01 사용자 확정) — 시작화면은 본체 한국주식 인기종목(initApp 참고) -->
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>마켓맵 - 10년 승률로 보는 투자 지도</title>
 <meta name="description" content="한국·미국주식, ETF, 코인을 10년 승률 하나로 비교하는 투자 지도. 인기종목·자동추적·상관관계·마켓맵 지도" />
 
@@ -22,7 +22,7 @@
 <link rel="icon" type="image/png" sizes="180x180" href="logos/marketmap-180.png?v=20260908b" />
 <link rel="apple-touch-icon" href="logos/marketmap-180.png?v=20260908b" />
 <link rel="manifest" href="manifest.json" />
-<meta name="theme-color" content="#2563eb" />
+<meta name="theme-color" content="#1b2a4a" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="마켓맵" />
@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260908f" />
+<link rel="stylesheet" href="style.css?v=20260908g" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -829,8 +829,8 @@
     <div class="info-modal-body" id="authAdminBody"><p class="muted">불러오는 중...</p></div>
   </div>
 
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- 구글 로그인(GSI) 스크립트는 로그인 기능 제거(2026-09-08 사용자 확정)로 내림 — 게이트 코드는 app.js에 보존 -->
   <script src="data/logo-db.js?v=20260903g"></script>
-  <script src="app.js?v=20260908f"></script>
+  <script src="app.js?v=20260908g"></script>
 </body>
 </html>

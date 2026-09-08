@@ -21,6 +21,16 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "logos/marketmap-512-maskable.png?v=20260908b",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
+  ],
+  "id": "/",
+  "categories": [
+    "finance"
   ]
 }

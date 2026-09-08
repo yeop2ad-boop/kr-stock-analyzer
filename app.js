@@ -177,7 +177,10 @@ const GOOGLE_CLIENT_ID = "1089794582807-3v9s9dol75rckgd27f7p32h2c9c27b5f.apps.go
 const AUTH_SESSION_KEY = "mm_session_token";
 const AUTH_STATE = { email: null, name: null, isAdmin: false };
 
+// 2026-09-08 사용자 확정: 플레이스토어 출시 기준으로 로그인 없이 이용 — 게이트는 항상 건너뜀(코드는 보존, 필요 시 아래 return true만 제거)
+const AUTH_GATE_DISABLED = true;
 function authGateSkip() {
+  if (AUTH_GATE_DISABLED) return true;
   const h = location.hostname;
   return h === "localhost" || h === "127.0.0.1" || GOOGLE_CLIENT_ID.startsWith("REPLACE_");
 }
