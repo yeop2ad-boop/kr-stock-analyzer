@@ -2841,7 +2841,7 @@ function applyLang(lang) {
   // 종목 상세(예: "AAPL 분석 - 굴려볼까" / "AAPL Analysis - Marketmap")를 보고 있는 중이 아닐 때만 앱 이름/슬로건 타이틀을 언어에 맞춰 갱신
   // (새 슬로건 자체에 " - "가 들어가므로 "분석 - "/"Analysis - " 패턴으로만 종목 상세를 판별)
   if (!/분석 - |Analysis - /.test(document.title)) {
-    document.title = isEn ? "MarketMap - Investing map by 10-year win rate" : "마켓맵 - 10년 승률로 보는 투자 지도";
+    document.title = isEn ? "MarketMap - Investing map by 10-year win rate" : "마켓맵: 10년 승률로 보는 투자 지도(한국주식,미국주식,ETF,비트코인)";
   }
 }
 function setLang(lang) {
@@ -3072,7 +3072,7 @@ function closeCompanyPanel({ push = true } = {}) {
   }, 280);
   if (push && new URLSearchParams(location.search).get("ticker")) {
     history.pushState(null, "", location.pathname);
-    document.title = document.documentElement.lang === "en" ? "MarketMap - Investing map by 10-year win rate" : "마켓맵 - 10년 승률로 보는 투자 지도";
+    document.title = document.documentElement.lang === "en" ? "MarketMap - Investing map by 10-year win rate" : "마켓맵: 10년 승률로 보는 투자 지도(한국주식,미국주식,ETF,비트코인)";
   }
 }
 companyPanelCloseBtn.addEventListener("click", () => closeCompanyPanel());
