@@ -2596,8 +2596,7 @@ const bottomNavButtons = {
   us: el("bottomNavUsBtn"),
   etf: el("bottomNavEtfBtn"),
   crypto: el("bottomNavCryptoBtn"),
-  more: el("bottomNavMoreBtn"), // 2026-09-08: 하단에서 상단 헤더(별 오른쪽 ≡ 아이콘)로 이동 — id는 유지
-  map: el("bottomNavMapBtn"), // 마켓맵(지도) 버튼을 하단 맨 앞에 신설(2026-09-08 사용자 요청)
+  more: el("bottomNavMoreBtn"),
 };
 const bottomNavKrBtn = bottomNavButtons.kr;
 const bottomNavUsBtn = bottomNavButtons.us;
@@ -2918,10 +2917,6 @@ document.querySelector(".fh-banner").addEventListener("click", () => {
 
 // 지도는 하단 네비에서 더보기 패널 항목으로 이동(2026-09-01) — 본체에서 보던 시장 그대로 지도 보기 연동
 el("morePanelMapBtn").addEventListener("click", () => {
-  const market = getWatchlistActiveMarket() === "KR" ? "domestic" : "overseas";
-  window.location.href = `sector-map/index.html?market=${market}`;
-});
-el("bottomNavMapBtn").addEventListener("click", () => {
   const market = getWatchlistActiveMarket() === "KR" ? "domestic" : "overseas";
   window.location.href = `sector-map/index.html?market=${market}`;
 });

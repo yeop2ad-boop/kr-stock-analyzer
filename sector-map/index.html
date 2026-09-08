@@ -211,12 +211,6 @@
   <nav class="bottom-nav">
     <!-- 하단 네비(2026-09-01 개편): 국내-해외-시장-관심종목-더보기, 지도 버튼은 본체 더보기 패널로 이동 -->
     <!-- 국내/해외 아이콘: 본체 상단 시장 표시와 동일한 컬러 네모 국기로 통일(2026-09-01) — 비활성 시 CSS로 흑백 처리 -->
-    <!-- 마켓맵 버튼(2026-09-08): 지도 화면 자체라 항상 켜진 상태 -->
-    <button type="button" class="bottom-nav-btn active" id="bottomNavMapBtn2" aria-label="마켓맵">
-      <!-- 기존 지도 핀 아이콘 사용(2026-09-08 사용자 요청) -->
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.6"/></svg>
-      <span data-i18n="nav.map">마켓맵</span>
-    </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavKrBtn2" aria-label="한국주식 랭킹">
       <svg class="bottom-nav-flag" viewBox="0 0 21 14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#fff" stroke="rgba(0,0,0,0.25)"/><g transform="translate(10.5,7) scale(0.155)"><g stroke="#000" stroke-width="4" fill="none"><path transform="rotate(33.69)" d="M-50-12v24m6 0v-24m6 0v24m76 0V1m0-2v-11m6 0v11m0 2v11m6 0V1m0-2v-11"/><path transform="rotate(-33.69)" d="M-50-12v24m6 0V1m0-2v-11m6 0v24m76 0V1m0-2v-11m6 0v24m6 0V1m0-2v-11"/></g><g transform="rotate(33.69)"><path fill="#cd2e3a" d="M12 0a18 18 0 11-36 0 24 24 0 1148 0"/><path fill="#0047a0" d="M-24 0a24 24 0 1048 0A12 12 0 100 0a12 12 0 11-24 0"/></g></g></svg>
       <span data-i18n="market.kr">한국주식</span>
@@ -234,7 +228,10 @@
       <svg class="bottom-nav-flag" viewBox="0 0 21 14"><circle cx="10.5" cy="7" r="6.6" fill="#f7931a"/><text x="10.6" y="9.9" text-anchor="middle" font-size="9" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif">₿</text></svg>
       <span data-i18n="nav.crypto">비트코인</span>
     </button>
-    <!-- 더보기 버튼은 본체 상단 헤더로 이동(2026-09-08) -->
+    <button type="button" class="bottom-nav-btn" id="bottomNavMoreBtn2" aria-label="더보기">
+      <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="3" rx="1.5" fill="currentColor"/><rect x="4" y="10.5" width="16" height="3" rx="1.5" fill="currentColor"/><rect x="4" y="15" width="16" height="3" rx="1.5" fill="currentColor"/></svg>
+      <span data-i18n="nav.more">더보기</span>
+    </button>
   </nav>
 
   <div class="toast" id="toast"></div>
