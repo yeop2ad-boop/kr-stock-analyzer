@@ -13,7 +13,7 @@ if ("serviceWorker" in navigator) {
 const MAP_I18N = {
   "market.kr": { ko: "한국주식", en: "KR" },
   "market.us": { ko: "미국주식", en: "US" },
-  "nav.map": { ko: "지도", en: "Map" },
+  "nav.map": { ko: "마켓맵", en: "MarketMap" }, // 2026-09-08: 하단 버튼 이름 본체와 통일
   "nav.ranking": { ko: "랭킹", en: "Ranking" },
   "tab.search": { ko: "간편검색", en: "Search" },
   "map.watchlist": { ko: "관심목록", en: "Watchlist" },
