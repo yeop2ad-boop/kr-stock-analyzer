@@ -2606,7 +2606,11 @@ body[data-header-tone="dark"] .fh-title-actions .header-icon-btn { color: #fff; 
 table.autotrack-lights-table th { white-space: normal; overflow-wrap: anywhere; line-height: 1.25; }
 /* 인사이트 섹터 승률(2026-09-07): 7열 표 — 모바일에선 가로 스크롤, 전체 행 강조 */
 .sector-win-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.sector-win-table { min-width: 520px; }
+.sector-win-table { min-width: 0; } /* 2026-09-08: 1년/10년 4열로 줄여 모바일에서 한눈에 */
 .sector-win-table th, .sector-win-table td { padding: 6px 4px; font-size: 11px; white-space: nowrap; }
 .sector-win-table thead tr:first-child th { border-bottom: none; font-size: 11.5px; }
 .sector-win-table tr.sector-win-all td { background: var(--accent-soft); font-weight: 700; }
+
+/* 하단 네비 마켓맵(지도) 버튼 아이콘(2026-09-08): 새 로고 마크, 비활성 시 국기와 같은 흑백 처리 */
+.bottom-nav-btn img.bottom-nav-logo { width: 22px; height: 22px; border-radius: 6px; margin: 6px 0 4px; display: block; filter: grayscale(1) opacity(0.55); }
+.bottom-nav-btn.active img.bottom-nav-logo { filter: none; }

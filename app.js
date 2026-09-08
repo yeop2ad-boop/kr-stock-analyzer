@@ -2596,7 +2596,8 @@ const bottomNavButtons = {
   us: el("bottomNavUsBtn"),
   etf: el("bottomNavEtfBtn"),
   crypto: el("bottomNavCryptoBtn"),
-  more: el("bottomNavMoreBtn"),
+  more: el("bottomNavMoreBtn"), // 2026-09-08: 하단에서 상단 헤더(별 오른쪽 ≡ 아이콘)로 이동 — id는 유지
+  map: el("bottomNavMapBtn"), // 마켓맵(지도) 버튼을 하단 맨 앞에 신설(2026-09-08 사용자 요청)
 };
 const bottomNavKrBtn = bottomNavButtons.kr;
 const bottomNavUsBtn = bottomNavButtons.us;
@@ -2691,8 +2692,15 @@ document.addEventListener("click", (e) => {
 document.addEventListener("click", (e) => {
   const btn = e.target.closest(".scope-more-btn");
   if (!btn) return;
-  const scope = btn.closest(".carousel-panel") || document;
-  const moreBtn = scope.querySelector(".load-more-btn");
+  // 2026-09-08 수정: 패널 전체에서 첫 .load-more-btn을 찾으면 숨겨진 다른 그룹(인기종목 등)의 버튼을 눌러 ETF·비트코인 화면에서
+  // 아무 반응이 없던 문제 — 안내문에서 위로 올라가며 가장 가까운 컨테이너의 전체보기 버튼을 찾는다
+  let node = btn.parentElement;
+  let moreBtn = null;
+  while (node && node !== document.body) {
+    moreBtn = node.querySelector(".load-more-btn");
+    if (moreBtn) break;
+    node = node.parentElement;
+  }
   if (moreBtn) moreBtn.click();
   else showToast("이 화면에는 전체보기가 없습니다.");
 });
@@ -2717,6 +2725,17 @@ el("morePanelNewsInsightBtn").addEventListener("click", () => {
   closeMorePanel();
   switchTab(TAB_ORDER.indexOf("insight"));
   switchInsightCategory("news");
+});
+// 다트공시/브랜드평판순·신기술은 인사이트 카테고리 줄에서 더보기 패널로 이동(2026-09-08 사용자 요청) — 버튼은 숨기고 여기서 연다
+el("morePanelBrandBtn").addEventListener("click", () => {
+  closeMorePanel();
+  switchTab(TAB_ORDER.indexOf("insight"));
+  switchInsightCategory("brand");
+});
+el("morePanelTechBtn").addEventListener("click", () => {
+  closeMorePanel();
+  switchTab(TAB_ORDER.indexOf("insight"));
+  switchInsightCategory("tech");
 });
 // 공지사항/앱 정보 모달 + 문의하기(메일 앱 연결)
 el("morePanelNoticeBtn").addEventListener("click", () => {
@@ -2769,10 +2788,10 @@ const I18N = {
   "tab.popular": { ko: "인기종목", en: "Popular" },
   "tab.autotrack": { ko: "자동추적", en: "Auto Track" },
   "tab.search": { ko: "간편검색", en: "Search" },
-  "tab.valuation": { ko: "실적비교", en: "Value" },
-  "tab.trend": { ko: "증시동향", en: "Trends" },
+  "tab.valuation": { ko: "실적", en: "Value" }, // 2026-09-08 사용자 요청: 실적비교→실적
+  "tab.trend": { ko: "추세", en: "Trends" }, // 2026-09-08 사용자 요청: 증시동향→추세
   "tab.insight": { ko: "인사이트", en: "Insight" },
-  "nav.map": { ko: "섹터맵", en: "Sector Map" },
+  "nav.map": { ko: "마켓맵", en: "MarketMap" }, // 2026-09-08: 섹터맵→마켓맵
   "nav.ranking": { ko: "랭킹", en: "Ranking" },
   "nav.home": { ko: "홈", en: "Home" },
   "nav.calendar": { ko: "캘린더", en: "Calendar" },
@@ -2899,6 +2918,10 @@ document.querySelector(".fh-banner").addEventListener("click", () => {
 
 // 지도는 하단 네비에서 더보기 패널 항목으로 이동(2026-09-01) — 본체에서 보던 시장 그대로 지도 보기 연동
 el("morePanelMapBtn").addEventListener("click", () => {
+  const market = getWatchlistActiveMarket() === "KR" ? "domestic" : "overseas";
+  window.location.href = `sector-map/index.html?market=${market}`;
+});
+el("bottomNavMapBtn").addEventListener("click", () => {
   const market = getWatchlistActiveMarket() === "KR" ? "domestic" : "overseas";
   window.location.href = `sector-map/index.html?market=${market}`;
 });
@@ -4131,10 +4154,10 @@ function renderWizardRoot() {
   return `
     <p class="wizard-question">${escapeHtml(name)}님, 관심 있는 투자처를 선택해주세요.</p>
     <div class="wizard-root-options">
-      <button type="button" class="wizard-root-option" data-wizard-action="market-pick" data-market="kr"><b>1. 한국주식</b> 코스피200+코스닥150</button>
-      <button type="button" class="wizard-root-option" data-wizard-action="market-pick" data-market="us"><b>2. 미국주식</b> S&amp;P500</button>
-      <button type="button" class="wizard-root-option" data-wizard-action="market-pick" data-market="etf"><b>3. ETF</b> 미국·한국 상장지수펀드</button>
-      <button type="button" class="wizard-root-option" data-wizard-action="market-pick" data-market="crypto"><b>4. 비트코인</b> 암호화폐 시총 상위</button>
+      <button type="button" class="wizard-root-option" data-wizard-action="market-pick" data-market="kr"><b>🇰🇷 1. 한국주식</b> 코스피200+코스닥150</button>
+      <button type="button" class="wizard-root-option" data-wizard-action="market-pick" data-market="us"><b>🇺🇸 2. 미국주식</b> S&amp;P500</button>
+      <button type="button" class="wizard-root-option" data-wizard-action="market-pick" data-market="etf"><b>📊 3. ETF</b> 미국·한국 상장지수펀드</button>
+      <button type="button" class="wizard-root-option" data-wizard-action="market-pick" data-market="crypto"><b>₿ 4. 비트코인</b> 암호화폐 시총 상위</button>
     </div>
   `;
 }
@@ -4627,6 +4650,8 @@ function syncDartTabForMarket() {
   const labelEl = el("insightCatBrandLabel");
   if (iconEl) iconEl.innerHTML = iconHtml(isKr ? "dart" : "trophy");
   if (labelEl) labelEl.textContent = isKr ? "다트공시" : "브랜드평판순";
+  const moreLabel = el("morePanelBrandLabel"); // 더보기 패널 항목 이름도 시장에 맞춤(2026-09-08)
+  if (moreLabel) moreLabel.textContent = isKr ? "다트공시" : "브랜드평판순";
   document.querySelectorAll(".brand-org-btn").forEach((b) => (b.style.display = isKr ? "none" : ""));
   document.querySelectorAll(".dart-metric-btn").forEach((b) => (b.style.display = isKr ? "" : "none"));
 }
@@ -4646,6 +4671,12 @@ const FLAG_SVG_US = `<svg viewBox="0 0 21 14" width="21" height="14"><defs><clip
 // ---------- 앱 섹션 모드(2026-09-01): 하단 네비의 한국주식/미국주식 = "stocks", ETF = "etf", 비트코인 = "crypto" ----------
 // ETF·비트코인 섹션은 상단 제목줄에 자기 이름+로고를 표시하고, 탭은 인기종목/시장동향/인사이트 3개만 사용(기업가치 숨김)
 let appSectionMode = "stocks";
+// 순위상승 버튼 이름을 투자처별로(2026-09-08 사용자 요청): 코스피 순위상승 / S&P 순위상승 / 코인 순위상승
+function syncRankUpLabel() {
+  const labelEl = el("insightCatRankUpLabel");
+  if (!labelEl) return;
+  labelEl.textContent = appSectionMode === "crypto" ? "코인 순위상승" : appSectionMode === "etf" ? "순위상승" : getWatchlistActiveMarket() === "KR" ? "코스피 순위상승" : "S&P 순위상승";
+}
 // 지금 열려 있는 종목 상세의 자산 구분(kr/us/etf/crypto)과 심볼 — 과거분석 버튼(한달/1년 상승·하락)이
 // 주식/ETF/코인 어느 기준으로 순위를 낼지 판단하는 데 사용(2026-09-02, renderSummary가 갱신)
 let currentDetailSection = "us";
@@ -4674,6 +4705,7 @@ function sectionMarkHtml(symbol, quoteType) {
 
 const ICON_SVG_WATCHLIST = `<svg viewBox="0 0 21 14" width="21" height="14"><path d="M10.5 1.2l2.1 4.2 4.7.6-3.5 3.2 1 4.6-4.3-2.5-4.3 2.5 1-4.6L3.7 6l4.7-.6z" fill="#f6b301"/></svg>`;
 function syncSectionHeader() {
+  syncRankUpLabel();
   const label = el("fhMarketLabel");
   const flag = el("fhMarketFlag");
   const isKr = getWatchlistActiveMarket() === "KR";
@@ -7793,7 +7825,7 @@ function rankScanCaptionHtml(count) {
 // canLoadMore=true면 "더보기"로 전체를 마저 확인할 수 있는 경우(단계적 스캔), false면 이 화면에서는 더 볼 방법이 없는 경우(상위 30개 고정)
 function topCapNoteHtml(shown, total, canLoadMore) {
   if (!(total > shown)) return ""; // 이미 전체를 다 봤으면(더보기를 끝까지 눌렀거나 원래 전체가 30개 이하면) 표시하지 않음
-  return `<p class="top30-scope-note">⚠️ 지금 결과는 전체 ${total}종목이 아닌 시가총액 상위 ${shown}개까지만 반영된 것입니다.${canLoadMore ? ` '더보기'를 누르면 전체를 확인할 수 있어요. <button type="button" class="scope-more-btn">+더보기</button>` : ""}</p>`;
+  return `<p class="top30-scope-note">⚠️ 지금 결과는 전체 ${total}종목이 아닌 시가총액 상위 ${shown}개까지만 반영된 것입니다.${canLoadMore ? ` '전체보기'를 누르면 전체를 확인할 수 있어요. <button type="button" class="scope-more-btn">+전체보기</button>` : ""}</p>`;
 }
 
 // ---------- 랭킹 공용 인프라: 종목 목록을 시가총액 우선순으로 필요한 만큼만 스캔하는 단계적 캐시 ----------
@@ -8896,7 +8928,7 @@ function openAutoTrack() {
 // 자동추적 주식(한국·미국) 개편(2026-09-05 사용자 요청): 월간 상관관계 상위 3개 항목 기준 3색 신호등 표.
 // 각 항목의 (한달 전 기준) 순위가 상위 100이면 🟢, 하위 100이면 🔴, 중간 🟡. 정렬은 2번불🟢 우선 → 3번불🟢 우선 →
 // 1번 항목 순위 오름차순 — 결과적으로 불 3개 다 켜진 종목이 맨 위. 데이터는 상관관계도와 같은 일일 배치(correlation-daily.json).
-let autoTrackPeriod = "month"; // 주간/월간/년간(2026-09-05): 각 기간의 상관관계 상위 3개 항목 + 해당 시점 기준 순위
+let autoTrackPeriod = "year"; // 2026-09-08 사용자 요청: 년간만 제공(기간 버튼 숨김) // 주간/월간/년간(2026-09-05): 각 기간의 상관관계 상위 3개 항목 + 해당 시점 기준 순위
 function setAutoTrackPeriod(period) {
   autoTrackPeriod = period;
   el("autoTrackDayBtn").classList.toggle("active", period === "day");
@@ -9242,7 +9274,12 @@ async function renderAutoTrackCorrDetail(wrap) {
   });
   // 그래프는 2026-09-07 사용자 요청으로 제거 — 표만 상관관계 높은 순으로 1~12번 정렬
   const badge = (g) => `<span class="corr-grade-badge" style="background:${g.color};">${escapeHtml(g.label)}</span>`;
-  const sortedRows = rows.slice().sort((a, b) => b.r - a.r);
+  // 등급마다 대표 1개만(2026-09-08 사용자 요청): 상관관계 높은 순으로 훑으며 처음 나오는 등급만 남김 → 최대 7행
+  const seenGrade = new Set();
+  const sortedRows = rows
+    .slice()
+    .sort((a, b) => b.r - a.r)
+    .filter((r) => (seenGrade.has(r.grade.label) ? false : (seenGrade.add(r.grade.label), true)));
   const tableRows = sortedRows
     .map(
       (row, i) => `
@@ -9305,7 +9342,7 @@ async function renderAutoTrack() {
       cryptoCorrReady = !!(at && Array.isArray(at.keys) && at.keys.length >= 3 && at.ranks);
     }
     const lightsMode = mode === "kr" || mode === "us" || (mode === "crypto" && cryptoCorrReady);
-    el("autoTrackNav").style.display = lightsMode ? "" : "none";
+    el("autoTrackNav").style.display = "none"; // 년간만 제공(2026-09-08) — 일간/주간/월간 버튼 숨김
     if (lightsMode) return renderAutoTrackStocks(mode, statusEl, resultsEl);
     const db = await getWinRateDb();
     const map = db && (mode === "etf" ? db.scoresEtf : mode === "crypto" ? db.scoresCrypto : mode === "kr" ? db.scoresKr : db.scores);
@@ -9730,8 +9767,8 @@ function switchInsightCategory(key) {
   updateFirmsNavVisibility();
   insightBrandNav.style.display = key === "brand" ? "" : "none";
   futureIndustryNav.style.display = key === "futureIndustry" ? "" : "none";
-  el("rankUpNav").style.display = key === "rankup" ? "" : "none";
-  el("corrNav").style.display = key === "corr" ? "" : "none";
+  el("rankUpNav").style.display = "none"; // 년간만 제공(2026-09-08 사용자 요청) — 월간/일간/주간 버튼 숨김
+  el("corrNav").style.display = "none";
   if (key === "brand") {
     // 국내는 다트공시(4대 지표), 해외는 브랜드평판순(3개 기관) — 이전에 보던 항목이 지금 시장에 없는 종류면 기본값으로 리셋
     const isKr = getWatchlistActiveMarket() === "KR";
@@ -9847,13 +9884,12 @@ async function runInsightSectorWin() {
     const tr = (r, isAll) => `
       <tr${isAll ? ' class="sector-win-all"' : ""}>
         <td style="text-align:left;"><b>${escapeHtml(r.sec)}</b><br><span class="muted" style="font-size:10px;">${r.n}종목${r.n <= 3 ? " ⚠️" : ""}</span></td>
-        <td>${pct(r.wr1m)}</td><td>${pct(r.wr1y)}</td><td>${wrCell(r.wr10)}${isAll && r.wr10Med !== null ? `<br><span class="muted" style="font-size:9.5px;">중앙값 ${r.wr10Med}%</span>` : ""}</td>
-        <td>${signed(r.r1m)}</td><td>${signed(r.r1y)}</td><td>${signed(r.r10)}</td>
+        <td>${signed(r.r1y)}</td><td>${pct(r.wr1y)}</td>
+        <td>${signed(r.r10)}</td><td>${wrCell(r.wr10)}${isAll && r.wr10Med !== null ? `<br><span class="muted" style="font-size:9.5px;">중앙값 ${r.wr10Med}%</span>` : ""}</td>
       </tr>`;
     status.style.display = "none";
     results.innerHTML = `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — 섹터별 <b>승률 평균(1달 · 1년 · 10년)</b>과 <b>상승률 평균(1달 · 1년 · 10년)</b>입니다(10년 승률 높은 순).
-      1달 승률은 지난달(${monthLabel}) 상승 마감한 종목 비율, 1달 상승률은 그 달의 등락 평균입니다. 1년·10년 승률은 종목별 월간 승률의 평균, 1년 상승률은 최근 12개월 상승률 평균,
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — 섹터별 <b>1년 상승률·승률</b>과 <b>10년 상승률·승률</b> 평균입니다(10년 승률 높은 순). 1년·10년 승률은 종목별 월간 승률의 평균, 1년 상승률은 최근 12개월 상승률 평균,
       10년 상승률은 연복리(매년 몇 %씩 오른 셈) 평균입니다. 승률 DB(${escapeHtml(dbDate)} 생성) 기준이며 매일 갱신됩니다. 투자 자문이 아닙니다.</p>
       ${benchScore !== null && !isCrypto ? `<p class="top30-scope-note" style="color:var(--accent);">ⓘ 여기 10년 승률은 <b>종목 하나하나의 승률을 평균</b>한 값(전체 ${allRow.wr10 === null ? "-" : allRow.wr10 + "%"}, 중앙값 ${allRow.wr10Med === null ? "-" : allRow.wr10Med + "%"})이고, <b>${benchName} 자체의 10년 승률은 ${benchScore}%</b>입니다. 지수는 오르는 종목과 내리는 종목이 상쇄되고 대형주 비중이 커서 개별 종목 평균보다 승률이 높습니다. "지수에 투자하면 ${benchScore}%, 종목 하나를 고르면 평균 ${allRow.wr10 === null ? "-" : allRow.wr10 + "%"}"로 읽으세요.</p>` : ""}
       ${benchScore !== null && isCrypto ? `<p class="top30-scope-note" style="color:var(--accent);">ⓘ 비트코인 자체의 10년 승률은 ${benchScore}%이고, 위 값은 코인 ${allRow.n}개 각각의 승률 평균(중앙값 ${allRow.wr10Med === null ? "-" : allRow.wr10Med + "%"})입니다.</p>` : ""}
@@ -9861,8 +9897,8 @@ async function runInsightSectorWin() {
       <div class="sector-win-scroll">
       <table class="top30-table sector-win-table">
         <thead>
-          <tr><th rowspan="2" style="text-align:left;">섹터</th><th colspan="3">승률 평균</th><th colspan="3">상승률 평균</th></tr>
-          <tr><th>1달</th><th>1년</th><th>10년</th><th>1달</th><th>1년</th><th>10년<br>(연복리)</th></tr>
+          <tr><th rowspan="2" style="text-align:left;">섹터</th><th colspan="2">1년</th><th colspan="2">10년</th></tr>
+          <tr><th>상승률</th><th>승률</th><th>상승률<br>(연복리)</th><th>승률</th></tr>
         </thead>
         <tbody>${rows.map((r) => tr(r, false)).join("")}${tr(allRow, true)}</tbody>
       </table>
@@ -9896,7 +9932,7 @@ const CORR_METRIC_LABELS = {
   rsi: "RSI 점수(높은순)",
   creditRating: "투자등급(신용등급)",
 };
-let insightCorrPeriod = "month";
+let insightCorrPeriod = "year"; // 2026-09-08 사용자 요청: 년간만
 let corrDbPromise = null;
 function getCorrDb() {
   if (!corrDbPromise) {
@@ -9992,7 +10028,7 @@ async function runInsightCorr(period) {
 // ---------- 순위상승(2026-09-04 사용자 요청): 시총 순위가 한달/1년 사이 많이 오른 TOP50 ----------
 // 한국주식(코스피200+코스닥150)·미국주식(S&P500)·비트코인(시총 상위 100) 3개 투자처, ETF는 제외.
 // 과거 시총 = 현재 시총 ÷ (1+기간수익률) 역산(주식수 변동 무시한 근사) — 수익률은 배치 DB(m12 마지막 완성월 / ret1y).
-let insightRankUpPeriod = "month";
+let insightRankUpPeriod = "year"; // 2026-09-08 사용자 요청: 년간만
 el("rankUpMonthBtn").addEventListener("click", () => {
   insightRankUpPeriod = "month";
   el("rankUpMonthBtn").classList.add("active");
@@ -15214,7 +15250,7 @@ function buildProSheet() {
       <h2 class="pro-sheet-title">마켓맵 Pro</h2>
       <p class="pro-sheet-sub"><span id="proSheetPrice">월 13,000원</span> 구독</p>
       <ul class="pro-sheet-list">
-        <li>🗺️ <b>섹터맵</b> — 시장 전체를 한눈에 보는 지도</li>
+        <li>🗺️ <b>마켓맵</b> — 시장 전체를 한눈에 보는 지도</li>
         <li>📄 <b>S리포트</b> — 종목 핵심 지표 순위 리포트</li>
         <li>🔓 <b>전체 순위 보기</b> — 한국·미국주식 랭킹 전 종목 검색</li>
       </ul>

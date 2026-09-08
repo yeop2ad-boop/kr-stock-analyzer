@@ -1149,7 +1149,7 @@ body[data-map-view-kind="asset"] .metric-chip[data-metric="changePct"]:not(.asse
 body[data-map-view-kind="asset"] .metric-chip[data-metric="week52RangePct"]:not(.asset-only-chip) { display: none; }
 /* 10년승률·RSI 칩(2026-09-02, 같은 날 국내·ETF·코인 확장) — 배치 데이터가 없는 나스닥100 보기에서만 숨김
    (S&P 비편입 15종목의 winRateScore/rsiWeekly가 비어 필터가 그 종목들을 통째로 지워버리는 혼란 방지) */
-body[data-map-view="ndx100"] .us-stock-only-chip { display: none; }
+/* 2026-09-08: 나스닥100 추가 종목도 승률 배치에 포함돼 칩 숨김 해제 */
 
 /* ---------- 굴려볼까 Pro — 섹터맵 맛보기 오버레이(2026-09-02): 지도는 흐릿하게 보이고 카드만 또렷하게.
    하단 네비(z 60)보다 아래(z 55)라 한국주식/미국주식 등으로 이동은 자유로움 ---------- */
@@ -1170,3 +1170,7 @@ body[data-map-view="ndx100"] .us-stock-only-chip { display: none; }
 .pro-map-desc { margin: 0 0 18px; font-size: 13.5px; color: var(--muted, #667); line-height: 1.55; }
 .pro-map-cta { display: block; width: 100%; padding: 14px 0; border: none; border-radius: 13px; background: #e04600; color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; margin-bottom: 10px; }
 .pro-map-restore { display: block; margin: 0 auto; border: none; background: none; color: var(--muted, #667); font-size: 12.5px; text-decoration: underline; cursor: pointer; }
+
+/* 하단 네비 마켓맵 버튼 아이콘(2026-09-08) */
+.bottom-nav-btn img.bottom-nav-logo { width: 22px; height: 22px; border-radius: 6px; margin: 6px 0 4px; display: block; filter: grayscale(1) opacity(0.55); }
+.bottom-nav-btn.active img.bottom-nav-logo { filter: none; }

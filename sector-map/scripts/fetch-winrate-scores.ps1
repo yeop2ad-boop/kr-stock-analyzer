@@ -202,6 +202,18 @@ $spPath = Join-Path $dataDir "sp500-sectors.json"
 $krPath = Join-Path $dataDir "kr-sectors.json"
 $usSymbols = @((Get-Content -Path $spPath -Raw -Encoding UTF8 | ConvertFrom-Json).companies | ForEach-Object { $_.symbol } | Where-Object { $_ } | Sort-Object -Unique)
 $krSymbols = @((Get-Content -Path $krPath -Raw -Encoding UTF8 | ConvertFrom-Json).companies | ForEach-Object { $_.symbol } | Where-Object { $_ } | Sort-Object -Unique)
+# 나스닥100 추가 종목(S&P500 비편입 15개, data/ndx-extra.js) — 지도 나스닥100 보기에도 10년승률·RSI가 나오도록 미국 유니버스에 합침(2026-09-08 사용자 요청)
+$ndxPath = Join-Path $dataDir "ndx-extra.js"
+$ndxData = $null
+try {
+  $ndxText = (Get-Content -Path $ndxPath -Raw -Encoding UTF8).TrimStart([char]0xFEFF).Trim()
+  $ndxJson = $ndxText.Substring($ndxText.IndexOf("=") + 1).Trim()
+  if ($ndxJson.EndsWith(";")) { $ndxJson = $ndxJson.Substring(0, $ndxJson.Length - 1) }
+  $ndxData = $ndxJson | ConvertFrom-Json
+  $ndxSymbols = @($ndxData.companies | ForEach-Object { $_.symbol } | Where-Object { $_ })
+  $usSymbols = @(($usSymbols + $ndxSymbols) | Sort-Object -Unique)
+  Write-Output ("나스닥100 추가 종목 {0}개를 미국 유니버스에 합침" -f $ndxSymbols.Count)
+} catch { Write-Output "ndx-extra.js 로드 실패(건너뜀): $($_.Exception.Message)" }
 
 # etf-crypto-map.js — "const ETF_MAP_DATA = {...};\nconst CRYPTO_MAP_DATA = {...};" 형태의 JS에서 두 JSON을 추출
 $etfMapPath = Join-Path $dataDir "etf-crypto-map.js"
@@ -251,6 +263,21 @@ Write-Output ("본체 DB 저장: 미국 {0}/국내 {1}/ETF {2}/코인 {3}, 실�
 $m1 = Merge-IntoSectors $spPath $us.scores
 $m2 = Merge-IntoSectors $krPath $kr.scores
 Write-Output ("지도 병합: sp500-sectors {0}건, kr-sectors {1}건" -f $m1, $m2)
+# ndx-extra.js에도 병합(나스닥100 보기용)
+if ($ndxData) {
+  $nm = 0
+  foreach ($c in $ndxData.companies) {
+    $entry = $us.scores[$c.symbol]
+    if ($entry) {
+      $c | Add-Member -NotePropertyName "winRateScore" -NotePropertyValue $entry.score -Force
+      $c | Add-Member -NotePropertyName "rsiWeekly" -NotePropertyValue $entry.rsi -Force
+      $c | Add-Member -NotePropertyName "ret10yAvg" -NotePropertyValue $entry.ret10y -Force
+      $nm++
+    }
+  }
+  [IO.File]::WriteAllText($ndxPath, ("const NDX_EXTRA_DATA = " + ($ndxData | ConvertTo-Json -Depth 5) + ";"), (New-Object System.Text.UTF8Encoding $false))
+  Write-Output ("ndx-extra.js 병합: {0}건" -f $nm)
+}
 
 # etf-crypto-map.js — 두 companies 배열에 병합 후 JS 파일 재작성
 $em = 0

@@ -55,7 +55,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add sector-map/data/sp500-sectors.json sector-map/data/kr-sectors.json sector-map/data/sp500-data-core.js sector-map/data/sp500-data-extra.js sector-map/data/kr-data-core.js sector-map/data/kr-data-extra.js data/winrate-scores-us.json
+          git add sector-map/data/sp500-sectors.json sector-map/data/kr-sectors.json sector-map/data/sp500-data-core.js sector-map/data/sp500-data-extra.js sector-map/data/kr-data-core.js sector-map/data/kr-data-extra.js sector-map/data/ndx-extra.js data/winrate-scores-us.json
           if git diff --cached --quiet; then
             echo "변경된 데이터 없음"
           else

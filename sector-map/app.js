@@ -1962,7 +1962,7 @@ document.querySelectorAll(".metric-chip").forEach((btn) => {
 
 // 첫 접속 시 등락률·거래대금 칩만 눌린 모양(남색 배경+흰 글씨)으로 표시(2026-08-31 사용자 요청) —
 // 실제 필터는 걸지 않아 구간은 전체 그대로이고, 해당 칩을 처음 누르는 순간 표시가 걷히며 실제 상태로 복귀
-for (const bootKey of ["changePct", "popularStocks"]) {
+for (const bootKey of ["winRateScore"]) { // 2026-09-08 사용자 요청: 첫 접속엔 10년승률 칩 1개만 눌린 표시
   const bootChip = document.querySelector(`.metric-chip[data-metric="${bootKey}"]`);
   if (bootChip) bootChip.classList.add("boot-active");
 }
@@ -2663,7 +2663,7 @@ async function setMapView(viewKey, animate) {
   const v = MAP_VIEWS[viewKey];
   if (!v) return;
   if (v.market === "domestic" && (typeof KR_CORE_DATA === "undefined" || !KR_CORE_DATA.companies || !KR_CORE_DATA.companies.length)) {
-    showToast("국내 섹터맵 데이터를 아직 못 불러왔어요");
+    showToast("국내 마켓맵 데이터를 아직 못 불러왔어요");
     return;
   }
   const needExtraLoad = v.needExtra && !extraDataFor(v.market);
@@ -2730,7 +2730,9 @@ document.getElementById("bottomNavKrBtn2").addEventListener("click", () => goToM
 document.getElementById("bottomNavUsBtn2").addEventListener("click", () => goToMainSite("ranking-us"));
 document.getElementById("bottomNavEtfBtn2").addEventListener("click", () => goToMainSite("etf"));
 document.getElementById("bottomNavCryptoBtn2").addEventListener("click", () => goToMainSite("crypto"));
-document.getElementById("bottomNavMoreBtn2").addEventListener("click", () => goToMainSite("more"));
+// 더보기 버튼은 본체 상단으로 이동(2026-09-08) — 지도 하단에서는 제거
+const _moreBtn2 = document.getElementById("bottomNavMoreBtn2");
+if (_moreBtn2) _moreBtn2.addEventListener("click", () => goToMainSite("more"));
 
 // ---------- 초기화 ----------
 window.addEventListener("resize", () => fitToViewport(false));
@@ -2849,7 +2851,7 @@ function showProMapOverlay() {
   ov.innerHTML = `
     <div class="pro-map-card">
       <p class="pro-map-badge">PRO</p>
-      <h2>섹터맵은 Pro 전용이에요</h2>
+      <h2>마켓맵은 Pro 전용이에요</h2>
       <p class="pro-map-desc">지금 보이는 화면은 미리보기입니다.<br>Pro를 시작하면 시장 전체 지도를 자유롭게 탐색할 수 있어요.</p>
       <button type="button" class="pro-map-cta" id="proMapCtaBtn">Pro 시작하기 · 월 13,000원</button>
       <button type="button" class="pro-map-restore" id="proMapRestoreBtn">이미 구독 중이신가요? 구독 복원</button>

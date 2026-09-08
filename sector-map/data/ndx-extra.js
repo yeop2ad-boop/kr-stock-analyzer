@@ -1,4 +1,4 @@
-﻿const NDX_EXTRA_DATA = {
+const NDX_EXTRA_DATA = {
     "generatedAt":  "2026-08-31T12:44:05Z",
     "count":  15,
     "companies":  [
@@ -22,7 +22,10 @@
                           "changePercent":  -3.83,
                           "per":  68.59,
                           "eps":  24.73,
-                          "dividendYield":  null
+                          "dividendYield":  null,
+                          "winRateScore":  62.5,
+                          "rsiWeekly":  55.8,
+                          "ret10yAvg":  31.7
                       },
                       {
                           "symbol":  "ARM",
@@ -33,7 +36,10 @@
                           "changePercent":  -1.75,
                           "per":  281.24,
                           "eps":  0.85,
-                          "dividendYield":  null
+                          "dividendYield":  null,
+                          "winRateScore":  54.3,
+                          "rsiWeekly":  50.5,
+                          "ret10yAvg":  75
                       },
                       {
                           "symbol":  "SHOP",
@@ -44,7 +50,10 @@
                           "changePercent":  2.45,
                           "per":  161.96,
                           "eps":  0.944088,
-                          "dividendYield":  null
+                          "dividendYield":  null,
+                          "winRateScore":  60.8,
+                          "rsiWeekly":  57.5,
+                          "ret10yAvg":  42.2
                       },
                       {
                           "symbol":  "PDD",
@@ -55,7 +64,10 @@
                           "changePercent":  -3.04,
                           "per":  1.22,
                           "eps":  70.0,
-                          "dividendYield":  null
+                          "dividendYield":  null,
+                          "winRateScore":  49.5,
+                          "rsiWeekly":  40.4,
+                          "ret10yAvg":  19.6
                       },
                       {
                           "symbol":  "MELI",
@@ -66,7 +78,10 @@
                           "changePercent":  2.26,
                           "per":  49.90,
                           "eps":  39.4,
-                          "dividendYield":  null
+                          "dividendYield":  null,
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  58.9,
+                          "ret10yAvg":  26.7
                       },
                       {
                           "symbol":  "NBIS",
@@ -77,7 +92,10 @@
                           "changePercent":  -4.54,
                           "per":  615.24,
                           "eps":  0.34,
-                          "dividendYield":  null
+                          "dividendYield":  null,
+                          "winRateScore":  72.7,
+                          "rsiWeekly":  56.3,
+                          "ret10yAvg":  256.7
                       },
                       {
                           "symbol":  "ALAB",
@@ -88,7 +106,10 @@
                           "changePercent":  1.58,
                           "per":  219.30,
                           "eps":  1.32,
-                          "dividendYield":  null
+                          "dividendYield":  null,
+                          "winRateScore":  48.3,
+                          "rsiWeekly":  54.8,
+                          "ret10yAvg":  71.1
                       },
                       {
                           "symbol":  "MSTR",
@@ -99,7 +120,10 @@
                           "changePercent":  6.76,
                           "per":  null,
                           "eps":  -15.23,
-                          "dividendYield":  null
+                          "dividendYield":  null,
+                          "winRateScore":  51.7,
+                          "rsiWeekly":  53.4,
+                          "ret10yAvg":  23.9
                       },
                       {
                           "symbol":  "CCEP",
@@ -110,7 +134,10 @@
                           "changePercent":  1.02,
                           "per":  25.61,
                           "eps":  4.26,
-                          "dividendYield":  null
+                          "dividendYield":  null,
+                          "winRateScore":  57.5,
+                          "rsiWeekly":  56.8,
+                          "ret10yAvg":  10.2
                       },
                       {
                           "symbol":  "CRWV",
@@ -121,7 +148,10 @@
                           "changePercent":  -4.12,
                           "per":  null,
                           "eps":  -2.75,
-                          "dividendYield":  null
+                          "dividendYield":  null,
+                          "winRateScore":  41.2,
+                          "rsiWeekly":  49,
+                          "ret10yAvg":  72.4
                       },
                       {
                           "symbol":  "TRI",
@@ -132,7 +162,10 @@
                           "changePercent":  0.66,
                           "per":  31.31,
                           "eps":  3.392378,
-                          "dividendYield":  null
+                          "dividendYield":  null,
+                          "winRateScore":  56.7,
+                          "rsiWeekly":  55.5,
+                          "ret10yAvg":  9.4
                       },
                       {
                           "symbol":  "FER",
@@ -143,7 +176,10 @@
                           "changePercent":  -6.53,
                           "per":  47.36,
                           "eps":  1.24,
-                          "dividendYield":  null
+                          "dividendYield":  null,
+                          "winRateScore":  60.8,
+                          "rsiWeekly":  34.6,
+                          "ret10yAvg":  10.6
                       },
                       {
                           "symbol":  "RKLB",
@@ -154,7 +190,10 @@
                           "changePercent":  -11.27,
                           "per":  null,
                           "eps":  -0.37,
-                          "dividendYield":  null
+                          "dividendYield":  null,
+                          "winRateScore":  49.3,
+                          "rsiWeekly":  43.3,
+                          "ret10yAvg":  37.9
                       },
                       {
                           "symbol":  "ALNY",
@@ -165,7 +204,10 @@
                           "changePercent":  0.37,
                           "per":  99.21,
                           "eps":  2.39,
-                          "dividendYield":  null
+                          "dividendYield":  null,
+                          "winRateScore":  52.5,
+                          "rsiWeekly":  45.1,
+                          "ret10yAvg":  14.7
                       }
                   ]
 };
