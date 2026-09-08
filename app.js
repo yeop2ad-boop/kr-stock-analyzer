@@ -15235,8 +15235,11 @@ async function runFuturePrediction(ticker, metricsPromise, marketReturnsPromise,
 // 상품(2026-09-08 사용자 확정): 1일 이용권 1,000원 / 7일 이용권 4,900원(일회성·소모형) / 한 달 정기구독 9,900원(자동 갱신).
 // Play Console에 아래 id로 인앱 상품(1일·7일 = 소모성 상품, 월 = 구독)을 같은 이름으로 등록해야 결제가 동작함.
 const PRO_PRODUCTS = [
-  { id: "pro_day_1", label: "1일 이용권", days: 1, price: 1000, kind: "onetime", note: "보관함에 보관 · 원할 때 사용" },
-  { id: "pro_week_7", label: "7일 이용권", days: 7, price: 4900, kind: "onetime", note: "보관함에 보관 · 원할 때 사용" },
+  { id: "pro_day_1", label: "1일 이용권", days: 1, qty: 1, price: 1000, kind: "onetime", note: "보관함에 보관 · 원할 때 사용" },
+  { id: "pro_day_2", label: "1일 이용권 2장", days: 1, qty: 2, price: 1900, kind: "onetime", note: "장당 950원 · 5% 할인" },
+  { id: "pro_day_3", label: "1일 이용권 3장", days: 1, qty: 3, price: 2700, kind: "onetime", note: "장당 900원 · 10% 할인" },
+  { id: "pro_day_5", label: "1일 이용권 5장", days: 1, qty: 5, price: 4500, kind: "onetime", note: "장당 900원 · 10% 할인" },
+  { id: "pro_week_7", label: "7일 이용권", days: 7, qty: 1, price: 4900, kind: "onetime", note: "보관함에 보관 · 원할 때 사용" },
   { id: "pro_monthly", label: "한 달 정기구독", days: 30, price: 9900, kind: "subscription", note: "매달 자동 갱신 · 언제든 해지" },
 ];
 const PRO_PRODUCT_ID = "pro_monthly"; // 정기구독 상품 ID(지도 sector-map/app.js와 공용)
@@ -15322,9 +15325,10 @@ function proAddVoucher(days, source, extra) {
   const free = proIsFreeSource(source);
   const id = "v" + at.toString(36) + Math.random().toString(36).slice(2, 6);
   const expires = at + (free ? 30 : 365 * 5) * 86400000;
-  w.push({ id, days, source, at, expires });
+  const qty = Math.max(1, Number(extra.qty) || 1);
+  for (let i = 0; i < qty; i++) w.push({ id: qty === 1 ? id : `${id}-${i + 1}`, packId: id, days, source, at, expires });
   proWriteWallet(w);
-  proLogHistory({ at, kind: free ? "free" : "buy", voucherId: id, days, source, label: extra.label || (free ? proFreeLabel(source, days) : proSourceLabel(source)), price: free ? 0 : extra.price || (PRO_PRODUCTS.find((p) => p.id === source) || {}).price || 0, expires });
+  proLogHistory({ at, kind: free ? "free" : "buy", voucherId: id, qty, days, source, label: extra.label || (free ? proFreeLabel(source, days) : proSourceLabel(source)), price: free ? 0 : extra.price || (PRO_PRODUCTS.find((p) => p.id === source) || {}).price || 0, expires });
   return id;
 }
 // 보관함에서 이용권 1장을 꺼내 사용 — 남은 기간이 있으면 그 끝에 이어 붙임(겹쳐 사라지지 않게) + 사용 내역 기록
@@ -15421,7 +15425,7 @@ async function initProState() {
         if (prod && p.purchaseToken) {
           try {
             await service.consume(p.purchaseToken);
-            proAddVoucher(prod.days, prod.id, { price: prod.price });
+            proAddVoucher(prod.days, prod.id, { price: prod.price, qty: prod.qty });
           } catch {}
         }
       }
@@ -15609,8 +15613,11 @@ function renderProSheetState() {
 function proRenderBuyTab(w) {
   const canBuy = "getDigitalGoodsService" in window;
   const hint = PRO_STATE.featureHint ? `<p class="pro-page-hint">"${escapeHtml(PRO_STATE.featureHint)}"은(는) Pro 멤버십 기능이에요. 이용권을 사용하거나 구매해 주세요.</p>` : "";
+  const byDays = {};
+  for (const v of w) byDays[v.days] = (byDays[v.days] || 0) + 1;
+  const chips = Object.keys(byDays).sort((a, b) => a - b).map((d) => `<span class="pro-wallet-chip">${d}일권 <b>${byDays[d]}</b></span>`).join("");
   const walletRow = w.length
-    ? `<div class="pro-row pro-row-use"><span class="pro-row-label">🎟️ 보유 이용권 ${w.length}장 · ${escapeHtml(proWalletSummary().replace("보유 이용권: ", ""))}</span><button type="button" class="pro-green-btn" data-pro-use="1">지금 사용</button></div>`
+    ? `<div class="pro-wallet-bar"><div class="pro-wallet-info"><span class="pro-wallet-title">🎟️ 보유 이용권 <b>${w.length}장</b></span><span class="pro-wallet-chips">${chips}</span></div><button type="button" class="pro-green-btn pro-green-btn-sm" data-pro-use="1">지금 사용</button></div>`
     : "";
   const rows = PRO_PRODUCTS.map((p) => {
     const sub = p.kind === "subscription";
@@ -15634,17 +15641,17 @@ function proRenderBuyTab(w) {
     </ul>`;
 }
 function proRenderHistoryTab(w) {
-  const walletIds = new Set(w.map((v) => v.id));
+  const remainOf = (h) => w.filter((v) => v.id === h.voucherId || v.packId === h.voucherId).length;
   let list = proReadHistory().filter((h) => h.kind === "buy");
-  if (proHistoryFilter === "unused") list = list.filter((h) => walletIds.has(h.voucherId));
+  if (proHistoryFilter === "unused") list = list.filter((h) => remainOf(h) > 0);
   const items = list.length
     ? list.map((h) => {
         const sub = h.source === PRO_PRODUCT_ID;
-        const remain = sub ? (PRO_STATE.subscribed ? "이용 중" : "종료") : `${walletIds.has(h.voucherId) ? 1 : 0}장`;
+        const remain = sub ? (PRO_STATE.subscribed ? "이용 중" : "종료") : `${remainOf(h)}장${h.qty > 1 ? ` / ${h.qty}장` : ""}`;
         return `<div class="pro-item">
           <p class="pro-item-date">${proFmtDate(h.at)}</p>
           <dl class="pro-item-dl">
-            <dt>구매</dt><dd>${escapeHtml(h.label || proSourceLabel(h.source))}</dd>
+            <dt>구매</dt><dd>${escapeHtml(h.label || proSourceLabel(h.source))}${h.qty > 1 && !/장$/.test(h.label || "") ? ` ${h.qty}장` : ""}</dd>
             <dt>잔여</dt><dd>${remain}</dd>
             <dt>금액</dt><dd>${proFmtWon(h.price)} (Google Play)</dd>
             ${sub ? "" : `<dt class="muted">유효기간</dt><dd class="muted">${proFmtDateLong(h.expires)}</dd>`}
@@ -15658,7 +15665,7 @@ function proRenderHistoryTab(w) {
     <ul class="pro-page-notes"><li>구매한 이용권은 구매일로부터 5년간 유효하며, 사용 전에는 보관됩니다.</li><li>정기구독 결제 내역은 Google Play › 결제 및 정기결제에서도 확인할 수 있습니다.</li></ul>`;
 }
 function proRenderFreeTab(w) {
-  const walletIds = new Set(w.map((v) => v.id));
+  const walletIds = new Set(w.map((v) => v.id).concat(w.map((v) => v.packId)));
   const reviewDone = proLocalFlag("pro_review_reward_v1");
   const list = proReadHistory().filter((h) => h.kind === "free");
   const items = list.length
@@ -15812,7 +15819,7 @@ async function startProPurchase(productId) {
           await service.consume(token);
         } catch {}
       }
-      proAddVoucher(prod.days, prod.id, { price: prod.price });
+      proAddVoucher(prod.days, prod.id, { price: prod.price, qty: prod.qty });
       showToast(`🎉 ${prod.label}이 보관함에 들어왔어요. 원할 때 '지금 사용'을 눌러주세요`);
     } else {
       await initProState();
