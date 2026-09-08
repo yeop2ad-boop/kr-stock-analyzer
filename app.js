@@ -5534,13 +5534,25 @@ peersToggleBtn.addEventListener("click", () => {
 // 예외로, 이 스냅샷엔 미국 종목의 dollarVolume이 없어서(비공식 API 배치 비용 문제) 미국은 순위 없이 본인의
 // 실시간 값(selfMetrics.recentDollarVolume)만 보여준다.
 const sReportUniverseCache = { us: null, kr: null };
+let lastDataLoadError = ""; // 마지막 데이터 파일 로드 실패 사유(오류 문구에 표시해 원인 파악용, 2026-09-08)
 function getSReportUniverse(isKr) {
   const key = isKr ? "kr" : "us";
   if (!sReportUniverseCache[key]) {
     const path = isKr ? "sector-map/data/kr-sectors.json" : "sector-map/data/sp500-sectors.json";
-    sReportUniverseCache[key] = fetch(path, { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
-      .catch(() => null);
+    // 2026-09-08: 앱 시작 때(인기종목) 한 번 실패하면 세션 내내 null이 캐시돼 섹터승률·순위상승 등이 전부 "데이터 부족"이 되던 문제 —
+    // 실패는 캐시하지 않고 1.5초 뒤 한 번 더 시도, 그래도 실패하면 다음 호출에서 재시도
+    const fetchOnce = () =>
+      fetch(path, { cache: "no-store" }).then((r) => {
+        if (!r.ok) throw new Error("http " + r.status);
+        return r.json();
+      });
+    sReportUniverseCache[key] = fetchOnce()
+      .catch(() => sleep(1500).then(fetchOnce))
+      .catch((e) => {
+        lastDataLoadError = `${path}: ${(e && e.message) || e}`;
+        sReportUniverseCache[key] = null;
+        return null;
+      });
   }
   return sReportUniverseCache[key];
 }
@@ -7070,12 +7082,19 @@ async function renderRisk(marketReturnsPromise, selfMetricsPromise) {
 let winRateDbPromise = null;
 function getWinRateDb() {
   if (!winRateDbPromise) {
-    winRateDbPromise = fetch("data/winrate-scores-us.json", { cache: "no-store" })
-      .then((r) => {
-        if (!r.ok) throw new Error("winrate db http " + r.status);
+    const fetchOnce = () =>
+      fetch("data/winrate-scores-us.json", { cache: "no-store" }).then((r) => {
+        if (!r.ok) throw new Error("http " + r.status);
         return r.json();
-      })
-      .catch(() => null);
+      });
+    // 2026-09-08: 실패 캐시 금지 + 1회 재시도(유니버스 로더와 동일)
+    winRateDbPromise = fetchOnce()
+      .catch(() => sleep(1500).then(fetchOnce))
+      .catch((e) => {
+        lastDataLoadError = `winrate-scores-us.json: ${(e && e.message) || e}`;
+        winRateDbPromise = null;
+        return null;
+      });
   }
   return winRateDbPromise;
 }
@@ -9819,12 +9838,14 @@ async function runInsightSectorWin() {
     const isKr = !isCrypto && getWatchlistActiveMarket() === "KR";
     const db = await getWinRateDb();
     const scores = db && (isCrypto ? db.scoresCrypto : isKr ? db.scoresKr : db.scores);
-    if (!scores) throw new Error("승률 DB를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.");
+    if (!db) throw new Error(`승률 DB를 내려받지 못했습니다(${lastDataLoadError || "네트워크"}). 다시 시도해주세요.`);
+    if (!scores) throw new Error("승률 DB에 이 투자처 데이터가 없습니다.");
     // 섹터 매핑: 주식은 섹터 파일, 코인은 전부 "암호화폐" 한 묶음
     let sectorOf;
     if (isCrypto) sectorOf = () => "암호화폐";
     else {
       const universe = await getSReportUniverse(isKr);
+      if (!universe) throw new Error(`종목 스냅샷을 내려받지 못했습니다(${lastDataLoadError || "네트워크"}). 다시 시도해주세요.`);
       const m = new Map(((universe && universe.companies) || []).map((c) => [c.symbol, c.sectorKo || c.sector || "기타"]));
       sectorOf = (sym) => m.get(sym) || null;
     }
@@ -9905,7 +9926,9 @@ async function runInsightSectorWin() {
       </div>`;
   } catch (e) {
     status.style.display = "block";
-    status.textContent = `❌ ${e.message || "섹터 승률을 계산하지 못했습니다."}`;
+    status.innerHTML = `❌ ${escapeHtml(e.message || "섹터 승률을 계산하지 못했습니다.")} <button type="button" class="cat-btn corr-retry-btn" style="margin-left:6px;">다시 시도</button>`;
+    const retry = status.querySelector(".corr-retry-btn");
+    if (retry) retry.addEventListener("click", () => runInsightSectorWin());
   }
 }
 
@@ -9944,8 +9967,9 @@ function getCorrDb() {
     // 2026-09-08: 모바일에서 간헐적으로 실패 보고 — 1.5초 뒤 한 번 더 시도
     corrDbPromise = fetchOnce()
       .catch(() => sleep(1500).then(fetchOnce))
-      .catch(() => {
+      .catch((e) => {
         // 2026-09-08: 1MB짜리 파일이라 모바일에서 한 번 실패하면 세션 내내 "준비되지 않았습니다"가 뜨던 문제 — 실패는 캐시하지 않고 다음 호출 때 재시도
+        lastDataLoadError = `correlation-daily.json: ${(e && e.message) || e}`;
         corrDbPromise = null;
         return null;
       });
@@ -10050,6 +10074,28 @@ el("rankUpYearBtn").addEventListener("click", () => {
   el("rankUpMonthBtn").classList.remove("active");
   runInsightRankUp("year");
 });
+// 코인 시총 스냅샷 폴백: sector-map/data/etf-crypto-map.js에서 CRYPTO_MAP_DATA만 추출(매일 갱신은 아니지만 순위 계산엔 충분)
+let cryptoMapSnapshotPromise = null;
+function getCryptoMapSnapshot() {
+  if (!cryptoMapSnapshotPromise) {
+    cryptoMapSnapshotPromise = fetch("sector-map/data/etf-crypto-map.js", { cache: "no-store" })
+      .then((r) => (r.ok ? r.text() : ""))
+      .then((txt) => {
+        const line = txt.split(/\r?\n/).find((l) => l.startsWith("const CRYPTO_MAP_DATA = "));
+        if (!line) return [];
+        const json = line.replace(/^const CRYPTO_MAP_DATA = /, "").replace(/;\s*$/, "");
+        const doc = JSON.parse(json);
+        return (doc.companies || [])
+          .filter((c) => c.marketCap)
+          .map((c) => ({ symbol: c.symbol, name: cryptoKoName(c.symbol, c.name || c.symbol), mcap: c.marketCap }));
+      })
+      .catch(() => {
+        cryptoMapSnapshotPromise = null;
+        return [];
+      });
+  }
+  return cryptoMapSnapshotPromise;
+}
 async function runInsightRankUp(period) {
   const status = el("insightStatus");
   const results = el("insightResults");
@@ -10065,18 +10111,31 @@ async function runInsightRankUp(period) {
     const isCrypto = appSectionMode === "crypto";
     const isKr = !isCrypto && getWatchlistActiveMarket() === "KR";
     const db = await getWinRateDb();
+    if (!db) throw new Error(`승률 DB를 내려받지 못했습니다(${lastDataLoadError || "네트워크"}). 다시 시도해주세요.`);
     const wrMap = isCrypto ? db.scoresCrypto : isKr ? db.scoresKr : db.scores;
-    if (!wrMap) throw new Error("배치 DB를 불러오지 못했습니다.");
+    if (!wrMap) throw new Error("배치 DB에 이 투자처 데이터가 없습니다.");
 
     // 유니버스(심볼·시총·이름) 구성
     let items = [];
     if (isCrypto) {
-      const quotes = await getCryptoTop100();
-      items = quotes
+      // 코인 시총 상위 100은 실시간 API(야후 스크리너) — 실패하거나 비면 지도용 스냅샷(etf-crypto-map.js의 CRYPTO_MAP_DATA)으로 대체(2026-09-08 사용자 보고 "코인 순위상승 데이터 없음")
+      let quotes = [];
+      try {
+        quotes = await getCryptoTop100();
+      } catch (e) {
+        lastDataLoadError = `crypto top100: ${(e && e.message) || e}`;
+      }
+      items = (quotes || [])
         .filter((q) => q.marketCap)
         .map((q) => ({ symbol: q.symbol, name: cryptoKoName(q.symbol, q.shortname || q.symbol), mcap: q.marketCap }));
+      if (items.length < 10) {
+        const snap = await getCryptoMapSnapshot();
+        if (snap.length) items = snap;
+      }
+      if (items.length < 10) throw new Error(`코인 시총 목록을 받아오지 못했습니다(${lastDataLoadError || "네트워크"}). 다시 시도해주세요.`);
     } else {
       const universe = await getSReportUniverse(isKr);
+      if (!universe) throw new Error(`종목 스냅샷을 내려받지 못했습니다(${lastDataLoadError || "네트워크"}). 다시 시도해주세요.`);
       items = (((universe && universe.companies) || []))
         .filter((c) => c.marketCap)
         .map((c) => ({ symbol: c.symbol, name: isKr ? c.name || c.symbol : TICKER_TO_KOREAN_NAME[c.symbol] || c.symbol, mcap: c.marketCap }));
@@ -10094,7 +10153,7 @@ async function runInsightRankUp(period) {
         return ret === null || ret <= -100 ? null : { ...it, ret, mcapAgo: it.mcap / (1 + ret / 100) };
       })
       .filter(Boolean);
-    if (rows.length < 10) throw new Error("데이터가 부족합니다.");
+    if (rows.length < 10) throw new Error(`데이터가 부족합니다(종목 ${items.length}개 중 수익률 있는 종목 ${rows.length}개).`);
 
     const rankNow = new Map();
     [...rows].sort((a, b) => b.mcap - a.mcap).forEach((r, i) => rankNow.set(r.symbol, i + 1));
@@ -10128,7 +10187,9 @@ async function runInsightRankUp(period) {
       </table>`;
   } catch (e) {
     status.style.display = "block";
-    status.textContent = `❌ ${e.message || "순위상승을 계산하지 못했습니다."}`;
+    status.innerHTML = `❌ ${escapeHtml(e.message || "순위상승을 계산하지 못했습니다.")} <button type="button" class="cat-btn corr-retry-btn" style="margin-left:6px;">다시 시도</button>`;
+    const retry = status.querySelector(".corr-retry-btn");
+    if (retry) retry.addEventListener("click", () => runInsightRankUp(period));
   }
 }
 

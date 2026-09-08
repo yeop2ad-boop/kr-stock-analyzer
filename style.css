@@ -767,6 +767,8 @@ body[data-header-tone="light"] .carousel-panel .cat-btn.active:not(.top-ranking-
   top: 0;
   left: 0;
   width: 100%;
+  /* 2026-09-08 사용자 보고: 이웃 패널(예: 코인 인기종목의 넓은 표)이 폭을 넘치면 translateX(-100%) 뒤에서 현재 패널 왼쪽으로 글자가 비쳐 보임 — 패널 안에서 가로 넘침 차단 */
+  overflow-x: hidden;
 }
 .carousel-panel.snapping { transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
 
@@ -2614,3 +2616,12 @@ table.autotrack-lights-table th { white-space: normal; overflow-wrap: anywhere; 
 /* 하단 네비 마켓맵(지도) 버튼 아이콘(2026-09-08): 새 로고 마크, 비활성 시 국기와 같은 흑백 처리 */
 .bottom-nav-btn img.bottom-nav-logo { width: 22px; height: 22px; border-radius: 6px; margin: 6px 0 4px; display: block; filter: grayscale(1) opacity(0.55); }
 .bottom-nav-btn.active img.bottom-nav-logo { filter: none; }
+
+/* 결과 영역이 패널보다 넓은 표(코인 인기종목 등)는 잘리지 않고 가로 스크롤(2026-09-08) */
+#popularResults, #trendResults, #valuationResults, #insightResults { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* 모바일(<=480px) 랭킹 표: 머리글 줄바꿈 허용 + 여백 축소로 5열 표가 화면 폭에 들어가게(2026-09-08 사용자 보고: 실적 표 오른쪽 열 잘림) */
+@media (max-width: 480px) {
+  table.top30-table th { white-space: normal; line-height: 1.25; }
+  table.top30-table th, table.top30-table td { padding: 8px 4px; }
+}
