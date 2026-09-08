@@ -2625,3 +2625,41 @@ table.autotrack-lights-table th { white-space: normal; overflow-wrap: anywhere; 
   table.top30-table th { white-space: normal; line-height: 1.25; }
   table.top30-table th, table.top30-table td { padding: 8px 4px; }
 }
+
+/* Pro 멤버십 시트 상품 버튼(2026-09-08) */
+.pro-sheet-feature-hint { margin: -6px auto 12px; max-width: 340px; font-size: 13px; color: #e04600; font-weight: 700; }
+.pro-products { display: flex; flex-direction: column; gap: 8px; max-width: 340px; margin: 0 auto 12px; }
+.pro-product-btn { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "label price" "note note"; align-items: center; text-align: left; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 14px; background: var(--card-bg, #fff); color: var(--text); cursor: pointer; }
+.pro-product-btn.pro-product-sub { border-color: #e04600; background: rgba(224, 70, 0, 0.06); }
+.pro-product-label { grid-area: label; font-size: 15px; font-weight: 800; }
+.pro-product-tag { display: inline-block; margin-left: 4px; padding: 1px 7px; border-radius: 999px; background: #e04600; color: #fff; font-size: 10.5px; font-weight: 800; vertical-align: middle; }
+.pro-product-price { grid-area: price; font-size: 16px; font-weight: 800; color: #e04600; }
+.pro-product-note { grid-area: note; margin-top: 2px; font-size: 11.5px; color: var(--muted); }
+.pro-sheet-review { display: block; width: 100%; max-width: 340px; margin: 0 auto 8px; padding: 12px 0; border: 1.5px dashed #f5a623; border-radius: 14px; background: rgba(245, 166, 35, 0.1); color: var(--text); font-size: 14px; font-weight: 800; cursor: pointer; }
+.pro-sheet-review:disabled { opacity: 0.6; cursor: default; }
+.pro-sheet-webnote { margin: 4px 0 0; font-size: 12px; color: var(--muted); }
+.pro-sheet-webnote a { color: #e04600; font-weight: 700; }
+
+/* Pro 혜택 카드(2026-09-08 사용자 요청 "고급지게"): 남색 그라데이션 카드 + 금색 아이콘 원 */
+.pro-perks-title { margin: -4px 0 10px; font-size: 13px; font-weight: 700; color: var(--muted); letter-spacing: -0.2px; }
+.pro-perks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-width: 340px; margin: 0 auto 16px; }
+.pro-perk { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; padding: 12px 12px 11px; border-radius: 14px; background: linear-gradient(145deg, #1b2a4a 0%, #0d1730 100%); color: #fff; text-align: left; box-shadow: 0 6px 16px rgba(13, 23, 48, 0.25); overflow: hidden; }
+.pro-perk::after { content: ""; position: absolute; right: -18px; top: -18px; width: 64px; height: 64px; border-radius: 50%; background: radial-gradient(circle, rgba(245, 192, 74, 0.35), rgba(245, 192, 74, 0) 70%); pointer-events: none; }
+.pro-perk-wide { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 10px; flex-wrap: wrap; }
+.pro-perk-wide b { flex: none; }
+.pro-perk-wide span:last-child { flex: 1 1 100%; }
+.pro-perk-icon { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #f7d774, #e0a020); font-size: 16px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25); margin-bottom: 4px; }
+.pro-perk b { font-size: 14px; font-weight: 800; letter-spacing: -0.2px; }
+.pro-perk span:last-child { font-size: 11.5px; color: rgba(255, 255, 255, 0.72); line-height: 1.35; }
+.pro-sheet-badge { background: linear-gradient(135deg, #f7d774, #c98a10); color: #1b2a4a; }
+/* 이용권 지갑 + 사용 확인창(2026-09-08 사용자 요청: 바로 적용하지 않고 물어봄) */
+.pro-wallet { max-width: 340px; margin: 0 auto 12px; }
+.pro-wallet-card { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: 12px; border: 1.5px solid #e0a020; background: rgba(245, 192, 74, 0.12); font-size: 13.5px; font-weight: 700; color: var(--text); text-align: left; }
+.pro-wallet-use { flex: none; padding: 7px 12px; border: none; border-radius: 999px; background: #1b2a4a; color: #fff; font-size: 12.5px; font-weight: 800; cursor: pointer; }
+.pro-confirm { position: fixed; inset: 0; z-index: 640; display: none; }
+.pro-confirm-backdrop { position: absolute; inset: 0; background: rgba(10, 14, 30, 0.55); opacity: 0; transition: opacity 0.2s; }
+.pro-confirm-card { position: absolute; left: 50%; top: 50%; width: min(92vw, 360px); transform: translate(-50%, -46%); opacity: 0; transition: transform 0.2s, opacity 0.2s; background: var(--card-bg, #fff); border-radius: 18px; padding: 22px 18px 16px; text-align: center; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3); }
+.pro-confirm.open .pro-confirm-backdrop { opacity: 1; }
+.pro-confirm.open .pro-confirm-card { opacity: 1; transform: translate(-50%, -50%); }
+.pro-confirm-card h3 { margin: 6px 0 8px; font-size: 18px; font-weight: 800; color: var(--text); }
+.pro-confirm-desc { margin: 0 0 14px; font-size: 13.5px; line-height: 1.55; color: var(--text); }

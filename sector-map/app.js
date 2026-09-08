@@ -2814,10 +2814,18 @@ async function getPlayBillingService() {
   if (!("getDigitalGoodsService" in window)) return null;
   try { return await window.getDigitalGoodsService("https://play.google.com/billing"); } catch (e) { return null; }
 }
+// 본체와 같은 이용권 키(pro_entitlement_v1: 첫 방문 1일 무료·리뷰 선물·1일/7일권)를 먼저 확인(2026-09-08 멤버십 모델)
+function mapProPassActive() {
+  try {
+    const e = JSON.parse(localStorage.getItem("pro_entitlement_v1") || "null");
+    return !!(e && Number.isFinite(e.until) && e.until > Date.now());
+  } catch (e) { return false; }
+}
 async function mapProBlocked() {
   if (proLocalFlag("pro_dev")) return false;
+  if (mapProPassActive()) return false;
   const service = await getPlayBillingService();
-  if (!service) return proLocalFlag("pro_gate_test");
+  if (!service) return true; // 웹: 이용권 없으면 잠김(구매는 본체 더보기 › Pro 멤버십 안내)
   try {
     const purchases = await service.listPurchases();
     return !(purchases || []).some((p) => p && p.itemId === PRO_PRODUCT_ID);
@@ -2834,7 +2842,7 @@ async function startMapProPurchase() {
   try {
     const request = new PaymentRequest(
       [{ supportedMethods: "https://play.google.com/billing", data: { sku: PRO_PRODUCT_ID } }],
-      { total: { label: "마켓맵 Pro", amount: { currency: "KRW", value: "0" } } }
+      { total: { label: "마켓맵 Pro 한 달 정기구독", amount: { currency: "KRW", value: "9900" } } }
     );
     const response = await request.show();
     await response.complete("success");
@@ -2853,7 +2861,8 @@ function showProMapOverlay() {
       <p class="pro-map-badge">PRO</p>
       <h2>마켓맵은 Pro 전용이에요</h2>
       <p class="pro-map-desc">지금 보이는 화면은 미리보기입니다.<br>Pro를 시작하면 시장 전체 지도를 자유롭게 탐색할 수 있어요.</p>
-      <button type="button" class="pro-map-cta" id="proMapCtaBtn">Pro 시작하기 · 월 13,000원</button>
+      <button type="button" class="pro-map-cta" id="proMapCtaBtn">한 달 정기구독 · 월 9,900원</button>
+      <p class="pro-map-desc" style="margin-top:8px;">1일 1,000원 · 7일 4,900원 이용권과 리뷰 선물(1일 무료)은 본체 더보기 › Pro 멤버십에서 받을 수 있어요.</p>
       <button type="button" class="pro-map-restore" id="proMapRestoreBtn">이미 구독 중이신가요? 구독 복원</button>
     </div>`;
   document.body.appendChild(ov);

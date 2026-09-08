@@ -2919,6 +2919,10 @@ document.querySelector(".fh-banner").addEventListener("click", () => {
 });
 
 // 지도는 하단 네비에서 더보기 패널 항목으로 이동(2026-09-01) — 본체에서 보던 시장 그대로 지도 보기 연동
+el("morePanelProBtn").addEventListener("click", () => {
+  closeMorePanel();
+  openProSheet("");
+});
 el("morePanelMapBtn").addEventListener("click", () => {
   const market = getWatchlistActiveMarket() === "KR" ? "domestic" : "overseas";
   window.location.href = `sector-map/index.html?market=${market}`;
@@ -7808,7 +7812,7 @@ function beginLoadMoreScan(resultsEl, statusEl) {
   // 굴려볼까 Pro 게이트(2026-09-02): 한국·미국주식 전체보기(상단 +더보기·하단 전체보기)는 미구독자 하루 5회 무료,
   // 초과분부터 Pro 안내 — 이 함수는 주식 전체 스캔 6곳(기업가치/시장동향/RSI·승률/과거분석 KR 등)의 유일한 진입점.
   // 게이트는 Play Billing이 있는 앱(v1.1)에서만 활성(proBlocked 참고), 웹·v1에선 항상 통과.
-  if (proBlocked() && proLoadMoreQuotaExceeded()) {
+  if (proBlocked()) { // 멤버십 모델(2026-09-08): 전체보기는 Pro 전용(무료 5회 폐지)
     openProSheet();
     return false;
   }
@@ -15215,7 +15219,7 @@ async function runFuturePrediction(ticker, metricsPromise, marketReturnsPromise,
   }
 }
 
-// ---------- 굴려볼까 Pro (부분유료, 2026-09-02 사용자 확정: 광고 없음 + 인앱 구독) ----------
+// ---------- 마켓맵 Pro 멤버십(2026-09-08 사용자 확정: 첫 방문 1일 무료 · 리뷰 1일 선물 · 1일/7일 이용권 · 월 정기구독) ----------
 // Pro 전용: ①섹터맵(지도, B 맛보기 — 지도 쪽 오버레이는 sector-map/app.js) ②S리포트
 //          ③한국·미국주식 랭킹 전체보기(상단 +더보기·하단 전체보기 = beginLoadMoreScan 경유 전체 스캔)
 // 게이트는 Play Billing이 포함된 앱(v1.1 TWA, Digital Goods API 사용 가능)에서만 활성화 —
@@ -15224,8 +15228,24 @@ async function runFuturePrediction(ticker, metricsPromise, marketReturnsPromise,
 // 개발 테스트: localStorage pro_gate_test=1 → 브라우저에서도 게이트 강제 활성, pro_dev=1 → 구독자 취급.
 // ⚠️ v1.1 출시 전 확인: Play Console 구독 상품 ID는 아래 PRO_PRODUCT_ID와 동일해야 함.
 //    라이선스 테스터 실결제 테스트에서 구매 승인(acknowledge)이 자동 처리되는지 확인할 것(미승인 시 3일 후 자동 환불됨).
-const PRO_PRODUCT_ID = "pro_monthly";
-const PRO_STATE = { gateActive: false, entitled: false, priceText: null };
+// 상품(2026-09-08 사용자 확정): 1일 이용권 1,000원 / 7일 이용권 4,900원(일회성·소모형) / 한 달 정기구독 9,900원(자동 갱신).
+// Play Console에 아래 id로 인앱 상품(1일·7일 = 소모성 상품, 월 = 구독)을 같은 이름으로 등록해야 결제가 동작함.
+// 상품(2026-09-08 사용자 확정): 1일 이용권 1,000원 / 7일 이용권 4,900원(일회성·소모형) / 한 달 정기구독 9,900원(자동 갱신).
+// Play Console에 아래 id로 인앱 상품(1일·7일 = 소모성 상품, 월 = 구독)을 같은 이름으로 등록해야 결제가 동작함.
+// 상품(2026-09-08 사용자 확정): 1일 이용권 1,000원 / 7일 이용권 4,900원(일회성·소모형) / 한 달 정기구독 9,900원(자동 갱신).
+// Play Console에 아래 id로 인앱 상품(1일·7일 = 소모성 상품, 월 = 구독)을 같은 이름으로 등록해야 결제가 동작함.
+const PRO_PRODUCTS = [
+  { id: "pro_day_1", label: "1일 이용권", days: 1, price: 1000, kind: "onetime", note: "지갑에 보관 · 원할 때 사용" },
+  { id: "pro_week_7", label: "7일 이용권", days: 7, price: 4900, kind: "onetime", note: "지갑에 보관 · 원할 때 사용" },
+  { id: "pro_monthly", label: "한 달 정기구독", days: 30, price: 9900, kind: "subscription", note: "매달 자동 갱신 · 언제든 해지" },
+];
+const PRO_PRODUCT_ID = "pro_monthly"; // 정기구독 상품 ID(지도 sector-map/app.js와 공용)
+const PRO_STORE_URL = "https://play.google.com/store/apps/details?id=kr.marketmap.app";
+const PRO_ENT_KEY = "pro_entitlement_v1"; // 사용 중인 이용 기간 { until: ms, source } — 지도(sector-map)도 같은 키를 읽음
+const PRO_WALLET_KEY = "pro_vouchers_v1"; // 아직 사용하지 않은 이용권 지갑 [{ days, source, at }]
+// 게이트는 항상 활성(멤버십 모델, 2026-09-08 사용자 확정). 이용권은 바로 적용하지 않고 지갑에 보관했다가
+// "지금 사용하시겠습니까?" 확인 후 사용(사용자 요청). 웹에서는 구매 대신 플레이스토어 안내.
+const PRO_STATE = { gateActive: true, entitled: false, subscribed: false, until: null, source: null, prices: {}, trialJustGranted: false };
 
 function proLocalFlag(name) {
   try {
@@ -15233,6 +15253,84 @@ function proLocalFlag(name) {
   } catch {
     return false;
   }
+}
+function proReadEntitlement() {
+  try {
+    const e = JSON.parse(localStorage.getItem(PRO_ENT_KEY) || "null");
+    return e && Number.isFinite(e.until) ? e : null;
+  } catch {
+    return null;
+  }
+}
+function proReadWallet() {
+  try {
+    const w = JSON.parse(localStorage.getItem(PRO_WALLET_KEY) || "[]");
+    return Array.isArray(w) ? w.filter((v) => v && Number.isFinite(v.days) && v.days > 0) : [];
+  } catch {
+    return [];
+  }
+}
+function proWriteWallet(list) {
+  try {
+    localStorage.setItem(PRO_WALLET_KEY, JSON.stringify(list));
+  } catch {}
+}
+// 이용권을 지갑에 넣기(첫 방문 선물·리뷰 선물·구매한 1일/7일권)
+function proAddVoucher(days, source) {
+  const w = proReadWallet();
+  w.push({ days, source, at: Date.now() });
+  proWriteWallet(w);
+}
+// 지갑에서 이용권 1장을 꺼내 사용 — 남은 기간이 있으면 그 끝에 이어 붙임(겹쳐 사라지지 않게)
+function proUseVoucher(index) {
+  const w = proReadWallet();
+  const v = w[index];
+  if (!v) return false;
+  w.splice(index, 1);
+  proWriteWallet(w);
+  proGrantDays(v.days, v.source);
+  return true;
+}
+function proGrantDays(days, source) {
+  const now = Date.now();
+  const cur = proReadEntitlement();
+  const base = cur && cur.until > now ? cur.until : now;
+  const until = base + days * 86400000;
+  try {
+    localStorage.setItem(PRO_ENT_KEY, JSON.stringify({ until, source }));
+  } catch {}
+  proRecompute();
+  return until;
+}
+function proRecompute() {
+  const e = proReadEntitlement();
+  const active = !!(e && e.until > Date.now());
+  PRO_STATE.until = e ? e.until : null;
+  PRO_STATE.source = e ? e.source : null;
+  PRO_STATE.entitled = PRO_STATE.subscribed || active || proLocalFlag("pro_dev");
+}
+function proSourceLabel(source) {
+  if (source === "trial") return "첫 방문 선물";
+  if (source === "review") return "리뷰 선물";
+  const prod = PRO_PRODUCTS.find((p) => p.id === source);
+  return prod ? prod.label : "이용권";
+}
+function proRemainingText() {
+  if (PRO_STATE.subscribed) return "정기구독 이용 중 (매달 자동 갱신)";
+  if (proLocalFlag("pro_dev")) return "개발자 모드 (Pro 취급)";
+  if (!PRO_STATE.until || PRO_STATE.until <= Date.now()) return "사용 중인 이용권 없음";
+  const ms = PRO_STATE.until - Date.now();
+  const d = Math.floor(ms / 86400000);
+  const h = Math.floor((ms % 86400000) / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  return `남은 이용 기간 ${d > 0 ? d + "일 " : ""}${h}시간 ${m}분 · ${proSourceLabel(PRO_STATE.source)}`;
+}
+function proWalletSummary() {
+  const w = proReadWallet();
+  if (!w.length) return "보유 이용권 없음";
+  const byDays = {};
+  for (const v of w) byDays[v.days] = (byDays[v.days] || 0) + 1;
+  return "보유 이용권: " + Object.keys(byDays).sort((a, b) => a - b).map((d) => `${d}일권 ${byDays[d]}장`).join(" · ");
 }
 
 async function getPlayBillingService() {
@@ -15243,70 +15341,138 @@ async function getPlayBillingService() {
     return null;
   }
 }
-
-function formatProPrice(price) {
-  // Digital Goods API의 ItemDetails.price = { currency, value }
-  if (!price || !price.value) return null;
-  const n = Number(price.value);
-  if (!Number.isFinite(n)) return null;
-  if (price.currency === "KRW") return `월 ${Math.round(n).toLocaleString("ko-KR")}원`;
-  return `월 ${n} ${price.currency}`;
+function proPriceText(prod) {
+  const p = PRO_STATE.prices[prod.id];
+  if (p && p.value && Number.isFinite(Number(p.value))) {
+    const n = Number(p.value);
+    return p.currency === "KRW" ? `${Math.round(n).toLocaleString("ko-KR")}원` : `${n} ${p.currency}`;
+  }
+  return `${prod.price.toLocaleString("ko-KR")}원`;
 }
 
 async function initProState() {
-  if (proLocalFlag("pro_dev")) {
-    PRO_STATE.gateActive = proLocalFlag("pro_gate_test");
-    PRO_STATE.entitled = true;
-    return;
-  }
-  const service = await getPlayBillingService();
-  if (!service) {
-    PRO_STATE.gateActive = proLocalFlag("pro_gate_test"); // 브라우저 테스트용
-    PRO_STATE.entitled = false;
-    return;
-  }
-  PRO_STATE.gateActive = true;
+  // 최초 1회 접속 → 1일 무료 이용권을 지갑에(2026-09-08 사용자 확정: 바로 쓰지 않고 사용 여부를 물어봄). 기기(브라우저) 기준 1회.
   try {
-    const purchases = await service.listPurchases();
-    PRO_STATE.entitled = (purchases || []).some((p) => p && p.itemId === PRO_PRODUCT_ID);
-  } catch {
-    PRO_STATE.entitled = false;
-  }
-  try {
-    const details = await service.getDetails([PRO_PRODUCT_ID]);
-    if (details && details[0]) PRO_STATE.priceText = formatProPrice(details[0].price);
+    if (!localStorage.getItem("pro_trial_v1")) {
+      localStorage.setItem("pro_trial_v1", String(Date.now()));
+      proAddVoucher(1, "trial");
+      PRO_STATE.trialJustGranted = true;
+    }
   } catch {}
+  const service = await getPlayBillingService();
+  if (service) {
+    try {
+      const purchases = (await service.listPurchases()) || [];
+      PRO_STATE.subscribed = purchases.some((p) => p && p.itemId === PRO_PRODUCT_ID);
+      // 아직 소비(consume)되지 않은 1일·7일권이 있으면 소비하고 지갑에 넣음 — 결제 직후 앱이 꺼졌던 경우 등
+      for (const p of purchases) {
+        const prod = PRO_PRODUCTS.find((x) => x.id === (p && p.itemId) && x.kind === "onetime");
+        if (prod && p.purchaseToken) {
+          try {
+            await service.consume(p.purchaseToken);
+            proAddVoucher(prod.days, prod.id);
+          } catch {}
+        }
+      }
+    } catch {}
+    try {
+      const details = (await service.getDetails(PRO_PRODUCTS.map((p) => p.id))) || [];
+      for (const d of details) if (d && d.itemId) PRO_STATE.prices[d.itemId] = d.price;
+    } catch {}
+  }
+  proRecompute();
+  if (PRO_STATE.trialJustGranted) setTimeout(() => showToast("🎁 첫 방문 선물: Pro 1일 무료 이용권이 지갑에 들어왔어요"), 1200);
 }
 initProState();
 
-// 게이트 판정 — 활성 상태에서 미구독이면 true(잠김)
+// 게이트 판정 — 사용 중인 이용권·구독 없으면 true(잠김). 만료를 매 판정마다 반영
 function proBlocked() {
+  proRecompute();
   return PRO_STATE.gateActive && !PRO_STATE.entitled;
 }
 
-// 전체보기(더보기)는 미구독자도 하루 5회까지 무료(2026-09-02 사용자 확정) — 기기 localStorage 기준 일별 카운트.
-// 호출 시 오늘 카운트를 1 올리고, 이미 5회를 다 썼으면 true(초과)를 반환. 구독자/게이트 비활성 환경에선 호출 안 됨.
-const PRO_FREE_LOADMORE_PER_DAY = 5;
+// Pro 전용 기능 진입점을 한곳에서 가로챔(2026-09-08): 모든 +전체보기/+더보기, 미래예측, 과거분석, 마켓맵(지도).
+// S리포트는 renderSReport 안에서 proBlocked()로 별도 처리. capture 단계라 각 버튼의 기존 핸들러보다 먼저 실행됨.
+// 지갑에 이용권이 있으면 "지금 사용하시겠습니까?"를 먼저 묻고, 사용하면 원래 버튼 동작을 이어서 실행.
+const PRO_GATED_SELECTOR = ".load-more-btn, .scope-more-btn, #tickerHistoricalToggleBtn, #tickerFutureToggleBtn, #morePanelMapBtn";
+const PRO_FEATURE_NAME = {
+  "load-more-btn": "전체보기",
+  "scope-more-btn": "전체보기",
+  tickerHistoricalToggleBtn: "과거분석",
+  tickerFutureToggleBtn: "미래예측",
+  morePanelMapBtn: "마켓맵 지도",
+};
+document.addEventListener(
+  "click",
+  (e) => {
+    const t = e.target.closest(PRO_GATED_SELECTOR);
+    if (!t || !proBlocked()) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    const key = t.id || [...t.classList].find((c) => PRO_FEATURE_NAME[c]) || "";
+    const feature = PRO_FEATURE_NAME[key] || "";
+    if (proReadWallet().length) {
+      proAskUseVoucher(feature, () => {
+        if (!proBlocked()) t.click(); // 이용권 적용 후 원래 동작 재실행(게이트는 이제 통과)
+      });
+    } else openProSheet(feature);
+  },
+  true
+);
+
+// (구) 전체보기 하루 5회 무료 카운트 — 멤버십 모델 전환(2026-09-08)으로 미사용, 호출부 호환용으로만 남김
+const PRO_FREE_LOADMORE_PER_DAY = 0;
 function proLoadMoreQuotaExceeded() {
-  try {
-    const now = new Date();
-    const today = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
-    const raw = JSON.parse(localStorage.getItem("pro_loadmore_quota_v1") || "{}");
-    if (raw.date !== today) {
-      raw.date = today;
-      raw.count = 0;
-    }
-    if (raw.count >= PRO_FREE_LOADMORE_PER_DAY) return true;
-    raw.count++;
-    localStorage.setItem("pro_loadmore_quota_v1", JSON.stringify(raw));
-    if (raw.count === PRO_FREE_LOADMORE_PER_DAY) showToast(`오늘 무료 전체보기 ${PRO_FREE_LOADMORE_PER_DAY}회를 모두 사용했어요`);
-    return false;
-  } catch {
-    return false;
-  }
+  return true;
 }
 
-// ---------- Pro 구독 안내 시트 ----------
+// ---------- 이용권 사용 확인창 ----------
+function proAskUseVoucher(feature, onUsed) {
+  const w = proReadWallet();
+  if (!w.length) {
+    openProSheet(feature);
+    return;
+  }
+  // 가장 짧은 이용권부터 제안(1일권 → 7일권)
+  const idx = w.reduce((best, v, i) => (v.days < w[best].days ? i : best), 0);
+  const v = w[idx];
+  let box = el("proConfirm");
+  if (!box) {
+    box = document.createElement("div");
+    box.id = "proConfirm";
+    box.className = "pro-confirm";
+    document.body.appendChild(box);
+  }
+  box.innerHTML = `
+    <div class="pro-confirm-backdrop"></div>
+    <div class="pro-confirm-card">
+      <p class="pro-sheet-badge">PRO</p>
+      <h3>${escapeHtml(v.days)}일 이용권을 지금 사용하시겠습니까?</h3>
+      <p class="pro-confirm-desc">${feature ? `"${escapeHtml(feature)}" 기능은 Pro 멤버십 전용이에요.<br>` : ""}사용하면 지금부터 <b>${escapeHtml(v.days)}일(${v.days * 24}시간)</b> 동안 모든 Pro 기능을 쓸 수 있어요.<br><span class="muted">${escapeHtml(proSourceLabel(v.source))} · ${escapeHtml(proWalletSummary())}</span></p>
+      <button type="button" class="pro-sheet-cta" id="proConfirmUseBtn">지금 사용하기</button>
+      <button type="button" class="pro-sheet-restore" id="proConfirmLaterBtn">나중에 사용 (이용권 보관)</button>
+    </div>`;
+  box.style.display = "block";
+  requestAnimationFrame(() => box.classList.add("open"));
+  const close = () => {
+    box.classList.remove("open");
+    setTimeout(() => {
+      box.style.display = "none";
+    }, 200);
+  };
+  box.querySelector(".pro-confirm-backdrop").addEventListener("click", close);
+  el("proConfirmLaterBtn").addEventListener("click", close);
+  el("proConfirmUseBtn").addEventListener("click", () => {
+    if (proUseVoucher(idx)) {
+      close();
+      showToast(`✅ ${v.days}일 이용권 사용 시작 — ${proRemainingText()}`);
+      if (proSheetBuilt && el("proSheet").classList.contains("open")) renderProSheetState();
+      if (typeof onUsed === "function") setTimeout(onUsed, 250);
+    }
+  });
+}
+
+// ---------- Pro 안내·구매 시트 ----------
 let proSheetBuilt = false;
 function buildProSheet() {
   if (proSheetBuilt) return;
@@ -15320,34 +15486,66 @@ function buildProSheet() {
     <div class="pro-sheet-body">
       <button type="button" class="pro-sheet-close" id="proSheetCloseBtn" aria-label="닫기">✕</button>
       <p class="pro-sheet-badge">PRO</p>
-      <h2 class="pro-sheet-title">마켓맵 Pro</h2>
-      <p class="pro-sheet-sub"><span id="proSheetPrice">월 13,000원</span> 구독</p>
-      <ul class="pro-sheet-list">
-        <li>🗺️ <b>마켓맵</b> — 시장 전체를 한눈에 보는 지도</li>
-        <li>📄 <b>S리포트</b> — 종목 핵심 지표 순위 리포트</li>
-        <li>🔓 <b>전체 순위 보기</b> — 한국·미국주식 랭킹 전 종목 검색</li>
-      </ul>
-      <button type="button" class="pro-sheet-cta" id="proSheetCtaBtn">Pro 시작하기</button>
-      <button type="button" class="pro-sheet-restore" id="proSheetRestoreBtn">이미 구독 중이신가요? 구독 복원</button>
-      <p class="pro-sheet-note">구독은 Google Play 계정으로 관리되며 언제든 해지할 수 있습니다.</p>
+      <h2 class="pro-sheet-title">마켓맵 Pro 멤버십</h2>
+      <p class="pro-sheet-sub" id="proSheetStatus">사용 중인 이용권 없음</p>
+      <p class="pro-sheet-feature-hint" id="proSheetFeatureHint" style="display:none;"></p>
+      <div class="pro-wallet" id="proWallet"></div>
+      <p class="pro-perks-title">10년 승률 투자의 모든 기능을 제한 없이</p>
+      <div class="pro-perks">
+        <div class="pro-perk"><span class="pro-perk-icon">🔓</span><b>전체보기 · 더보기</b><span>모든 랭킹을 전 종목까지</span></div>
+        <div class="pro-perk"><span class="pro-perk-icon">📄</span><b>S리포트</b><span>핵심 지표 순위 리포트</span></div>
+        <div class="pro-perk"><span class="pro-perk-icon">🔮</span><b>미래예측</b><span>과거 패턴으로 그리는 예측 차트</span></div>
+        <div class="pro-perk"><span class="pro-perk-icon">🕰️</span><b>과거분석</b><span>한달·1년 상승 하락 복기</span></div>
+        <div class="pro-perk pro-perk-wide"><span class="pro-perk-icon">🗺️</span><b>마켓맵 지도</b><span>코스피·S&amp;P·나스닥·ETF·코인, 시장 전체를 한 장의 지도로</span></div>
+      </div>
+      <div class="pro-products" id="proProducts"></div>
+      <button type="button" class="pro-sheet-review" id="proSheetReviewBtn">⭐ 리뷰 남기고 1일 무료 이용권 받기</button>
+      <button type="button" class="pro-sheet-restore" id="proSheetRestoreBtn">이미 구매하셨나요? 구매 복원</button>
+      <p class="pro-sheet-note">이용권은 지갑에 보관되며 사용 시 남은 기간 뒤에 이어집니다. 정기구독은 매달 자동 갱신되며 Google Play › 구독 관리에서 언제든 해지할 수 있습니다. 결제는 Google Play 계정으로 처리되며 별도 로그인이 없습니다.</p>
     </div>`;
   document.body.appendChild(wrap);
   el("proSheetBackdrop").addEventListener("click", closeProSheet);
   el("proSheetCloseBtn").addEventListener("click", closeProSheet);
-  el("proSheetCtaBtn").addEventListener("click", startProPurchase);
   el("proSheetRestoreBtn").addEventListener("click", restoreProPurchase);
+  el("proSheetReviewBtn").addEventListener("click", proClaimReviewReward);
+  el("proProducts").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-pro-product]");
+    if (b) startProPurchase(b.dataset.proProduct);
+  });
+  el("proWallet").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-pro-use]");
+    if (b) proAskUseVoucher("", () => renderProSheetState());
+  });
 }
-
-function openProSheet() {
+function renderProSheetState() {
+  proRecompute();
+  el("proSheetStatus").textContent = proRemainingText();
+  const w = proReadWallet();
+  el("proWallet").innerHTML = w.length
+    ? `<div class="pro-wallet-card"><span>🎟️ ${escapeHtml(proWalletSummary())}</span><button type="button" class="pro-wallet-use" data-pro-use="1">지금 사용</button></div>`
+    : "";
+  const canBuy = "getDigitalGoodsService" in window;
+  el("proProducts").innerHTML = PRO_PRODUCTS.map(
+    (p) => `
+      <button type="button" class="pro-product-btn${p.kind === "subscription" ? " pro-product-sub" : ""}" data-pro-product="${p.id}">
+        <span class="pro-product-label">${escapeHtml(p.label)}${p.kind === "subscription" ? ' <span class="pro-product-tag">자동 갱신</span>' : ""}</span>
+        <span class="pro-product-price">${proPriceText(p)}</span>
+        <span class="pro-product-note">${escapeHtml(p.note)}</span>
+      </button>`
+  ).join("") + (canBuy ? "" : `<p class="pro-sheet-webnote">웹에서는 결제할 수 없어요. <a href="${PRO_STORE_URL}" target="_blank" rel="noopener">구글 플레이 마켓맵 앱</a>에서 구매하면 같은 기기에서 바로 적용됩니다.</p>`);
+  const rv = el("proSheetReviewBtn");
+  rv.disabled = proLocalFlag("pro_review_reward_v1");
+  rv.textContent = rv.disabled ? "⭐ 리뷰 선물 1일 이용권을 이미 받았어요" : "⭐ 리뷰 남기고 1일 무료 이용권 받기";
+}
+function openProSheet(featureName) {
   buildProSheet();
+  renderProSheetState();
+  const hint = el("proSheetFeatureHint");
+  if (featureName) {
+    hint.textContent = `"${featureName}"은(는) Pro 멤버십 기능이에요. 이용권을 사용하거나 구매해 주세요.`;
+    hint.style.display = "";
+  } else hint.style.display = "none";
   const sheet = el("proSheet");
-  if (PRO_STATE.priceText) el("proSheetPrice").textContent = PRO_STATE.priceText;
-  // 결제 불가 환경(웹 테스트 등)에서는 CTA를 앱 안내로 대체
-  const cta = el("proSheetCtaBtn");
-  if (!("getDigitalGoodsService" in window)) {
-    cta.textContent = "구글 플레이 마켓맵 앱에서 구독할 수 있어요";
-    cta.disabled = true;
-  }
   sheet.style.display = "block";
   requestAnimationFrame(() => sheet.classList.add("open"));
 }
@@ -15360,40 +15558,76 @@ function closeProSheet() {
   }, 250);
 }
 
-async function startProPurchase() {
+// 리뷰 보상(2026-09-08 사용자 확정): 플레이스토어 리뷰 페이지를 열고 기기당 1회 1일 이용권을 지갑에 지급.
+// 스토어는 앱에 리뷰 작성 여부를 알려주지 않으므로(정책상 리뷰 대가 강요 금지) "리뷰 남겨주세요" 안내 후 신뢰 기반으로 지급.
+function proClaimReviewReward() {
+  if (proLocalFlag("pro_review_reward_v1")) {
+    showToast("리뷰 선물은 기기당 1회만 받을 수 있어요");
+    return;
+  }
+  try {
+    window.open(PRO_STORE_URL, "_blank", "noopener");
+  } catch {}
+  try {
+    localStorage.setItem("pro_review_reward_v1", "1");
+  } catch {}
+  proAddVoucher(1, "review");
+  renderProSheetState();
+  showToast("⭐ 리뷰 감사합니다! Pro 1일 이용권이 지갑에 들어왔어요");
+}
+
+async function startProPurchase(productId) {
+  const prod = PRO_PRODUCTS.find((p) => p.id === productId);
+  if (!prod) return;
   const service = await getPlayBillingService();
   if (!service) {
-    showToast("이 환경에서는 결제할 수 없어요. 구글 플레이 앱에서 이용해주세요.");
+    showToast("웹에서는 결제할 수 없어요. 구글 플레이 마켓맵 앱에서 구매해주세요.");
+    try {
+      window.open(PRO_STORE_URL, "_blank", "noopener");
+    } catch {}
     return;
   }
   try {
     const request = new PaymentRequest(
-      [{ supportedMethods: "https://play.google.com/billing", data: { sku: PRO_PRODUCT_ID } }],
-      { total: { label: "마켓맵 Pro", amount: { currency: "KRW", value: "0" } } }
+      [{ supportedMethods: "https://play.google.com/billing", data: { sku: prod.id } }],
+      { total: { label: `마켓맵 Pro ${prod.label}`, amount: { currency: "KRW", value: String(prod.price) } } }
     );
     const response = await request.show();
+    const token = response && response.details && (response.details.purchaseToken || response.details.token);
     await response.complete("success");
-    await initProState();
-    if (PRO_STATE.entitled) {
+    if (prod.kind === "onetime") {
+      // 소모형: 즉시 소비 처리 후 지갑에 보관(사용은 사용자가 원할 때)
+      if (token) {
+        try {
+          await service.consume(token);
+        } catch {}
+      }
+      proAddVoucher(prod.days, prod.id);
+      showToast(`🎉 ${prod.label}이 지갑에 들어왔어요. 원할 때 '지금 사용'을 눌러주세요`);
+    } else {
+      await initProState();
+      if (PRO_STATE.subscribed) showToast("🎉 Pro 정기구독이 시작되었습니다!");
+      else showToast("구독 확인에 실패했어요. 잠시 후 '구매 복원'을 눌러주세요.");
+    }
+    renderProSheetState();
+    if (!proBlocked()) {
       closeProSheet();
-      showToast("🎉 Pro 구독이 시작되었습니다!");
       const overlay = document.getElementById("proMapOverlay");
       if (overlay) overlay.remove();
-    } else {
-      showToast("구독 확인에 실패했어요. 잠시 후 '구독 복원'을 눌러주세요.");
     }
   } catch (e) {
-    // 사용자가 결제창을 닫은 경우 포함 — 조용히 무시하되 그 외 오류는 토스트
+    // 사용자가 결제창을 닫은 경우(AbortError)는 조용히 무시
     if (e && e.name !== "AbortError") showToast("결제를 완료하지 못했어요. 잠시 후 다시 시도해주세요.");
   }
 }
 
 async function restoreProPurchase() {
   await initProState();
-  if (PRO_STATE.entitled) {
+  renderProSheetState();
+  if (!proBlocked()) {
     closeProSheet();
-    showToast("구독이 확인되었습니다!");
+    showToast("이용 상태가 확인되었습니다!");
   } else {
-    showToast("이 구글 계정에서 활성 구독을 찾지 못했어요.");
+    showToast(proReadWallet().length ? "보유 이용권을 확인했어요. '지금 사용'으로 시작할 수 있어요" : "이 구글 계정·기기에서 활성 이용권이나 구독을 찾지 못했어요.");
   }
 }

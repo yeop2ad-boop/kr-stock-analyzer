@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260908g" />
+<link rel="stylesheet" href="style.css?v=20260908h" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -661,6 +661,12 @@
       <button type="button" class="more-panel-close" id="morePanelCloseBtn" aria-label="닫기">✕</button>
       <h2 class="search-overlay-title more-panel-title" data-i18n="nav.more">더보기</h2>
       <div class="more-panel-list">
+        <!-- Pro 멤버십(2026-09-08 사용자 확정): 이용권 구매·리뷰 선물·남은 기간 확인 -->
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelProBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l4 4 5-7 5 7 4-4-2 12H5L3 8Z"/></svg>
+          <span class="more-panel-item-label">Pro 멤버십</span>
+          <span class="more-panel-pro-badge">Pro</span>
+        </button>
         <!-- 지도: 하단 네비에서 더보기로 이동(2026-09-01) -->
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelMapBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.6"/></svg>
@@ -831,6 +837,6 @@
 
   <!-- 구글 로그인(GSI) 스크립트는 로그인 기능 제거(2026-09-08 사용자 확정)로 내림 — 게이트 코드는 app.js에 보존 -->
   <script src="data/logo-db.js?v=20260903g"></script>
-  <script src="app.js?v=20260908g"></script>
+  <script src="app.js?v=20260908h"></script>
 </body>
 </html>
