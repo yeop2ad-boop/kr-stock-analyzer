@@ -15260,7 +15260,7 @@ async function startProPurchase() {
   try {
     const request = new PaymentRequest(
       [{ supportedMethods: "https://play.google.com/billing", data: { sku: PRO_PRODUCT_ID } }],
-      { total: { label: "굴려볼까 Pro", amount: { currency: "KRW", value: "0" } } }
+      { total: { label: "마켓맵 Pro", amount: { currency: "KRW", value: "0" } } }
     );
     const response = await request.show();
     await response.complete("success");

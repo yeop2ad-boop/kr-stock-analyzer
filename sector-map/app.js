@@ -2826,13 +2826,13 @@ async function mapProBlocked() {
 async function startMapProPurchase() {
   const service = await getPlayBillingService();
   if (!service) {
-    alert("이 환경에서는 결제할 수 없어요. 구글 플레이 굴려볼까 앱에서 구독해주세요.");
+    alert("이 환경에서는 결제할 수 없어요. 구글 플레이 마켓맵 앱에서 구독해주세요.");
     return;
   }
   try {
     const request = new PaymentRequest(
       [{ supportedMethods: "https://play.google.com/billing", data: { sku: PRO_PRODUCT_ID } }],
-      { total: { label: "굴려볼까 Pro", amount: { currency: "KRW", value: "0" } } }
+      { total: { label: "마켓맵 Pro", amount: { currency: "KRW", value: "0" } } }
     );
     const response = await request.show();
     await response.complete("success");
