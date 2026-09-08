@@ -9048,7 +9048,9 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
     render();
   } catch (e) {
     statusEl.style.display = "block";
-    statusEl.textContent = `❌ ${e.message || "자동추적 데이터를 불러오지 못했습니다."}`;
+    statusEl.innerHTML = `❌ ${escapeHtml(e.message || "자동추적 데이터를 불러오지 못했습니다.")} <button type="button" class="cat-btn corr-retry-btn" style="margin-left:6px;">다시 시도</button>`;
+    const retry = statusEl.querySelector(".corr-retry-btn");
+    if (retry) retry.addEventListener("click", () => renderAutoTrack());
     mountAutoTrackCorr(resultsEl); // 데이터가 없어도 상관관계 점수표는 볼 수 있게
   }
 }
@@ -9426,7 +9428,9 @@ async function renderAutoTrack() {
     render();
   } catch (e) {
     statusEl.style.display = "block";
-    statusEl.textContent = `❌ ${e.message || "자동추적 데이터를 불러오지 못했습니다."}`;
+    statusEl.innerHTML = `❌ ${escapeHtml(e.message || "자동추적 데이터를 불러오지 못했습니다.")} <button type="button" class="cat-btn corr-retry-btn" style="margin-left:6px;">다시 시도</button>`;
+    const retry = statusEl.querySelector(".corr-retry-btn");
+    if (retry) retry.addEventListener("click", () => renderAutoTrack());
     mountAutoTrackCorr(resultsEl); // 데이터가 없어도 상관관계 점수표는 볼 수 있게
   }
 }
@@ -9932,11 +9936,14 @@ let insightCorrPeriod = "year"; // 2026-09-08 사용자 요청: 년간만
 let corrDbPromise = null;
 function getCorrDb() {
   if (!corrDbPromise) {
-    corrDbPromise = fetch("data/correlation-daily.json", { cache: "no-store" })
-      .then((r) => {
+    const fetchOnce = () =>
+      fetch("data/correlation-daily.json", { cache: "no-store" }).then((r) => {
         if (!r.ok) throw new Error("correlation db http " + r.status);
         return r.json();
-      })
+      });
+    // 2026-09-08: 모바일에서 간헐적으로 실패 보고 — 1.5초 뒤 한 번 더 시도
+    corrDbPromise = fetchOnce()
+      .catch(() => sleep(1500).then(fetchOnce))
       .catch(() => {
         // 2026-09-08: 1MB짜리 파일이라 모바일에서 한 번 실패하면 세션 내내 "준비되지 않았습니다"가 뜨던 문제 — 실패는 캐시하지 않고 다음 호출 때 재시도
         corrDbPromise = null;
@@ -9982,7 +9989,7 @@ async function runInsightCorr(period) {
   status.textContent = "상관관계도를 불러오는 중...";
   try {
     const db = await getCorrDb();
-    if (!db) throw new Error("상관관계 데이터가 아직 준비되지 않았습니다. 매일 오전 7시에 자동 생성됩니다.");
+    if (!db) throw new Error("상관관계 데이터(약 1MB)를 내려받지 못했습니다. 네트워크를 확인하고 다시 시도해주세요.");
     const isCrypto = appSectionMode === "crypto";
     const isKr = !isCrypto && getWatchlistActiveMarket() === "KR";
     const side = isCrypto ? db.crypto : isKr ? db.kr : db.us;
@@ -10021,7 +10028,9 @@ async function runInsightCorr(period) {
       </table>`;
   } catch (e) {
     status.style.display = "block";
-    status.textContent = `❌ ${e.message || "상관관계도를 불러오지 못했습니다."}`;
+    status.innerHTML = `❌ ${escapeHtml(e.message || "상관관계도를 불러오지 못했습니다.")} <button type="button" class="cat-btn corr-retry-btn" style="margin-left:6px;">다시 시도</button>`;
+    const retry = status.querySelector(".corr-retry-btn");
+    if (retry) retry.addEventListener("click", () => runInsightCorr(period));
   }
 }
 
