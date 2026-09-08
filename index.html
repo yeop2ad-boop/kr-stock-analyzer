@@ -637,7 +637,8 @@
     <!-- 국내/해외 아이콘: 상단 시장 표시와 동일한 컬러 네모 국기로 통일(2026-09-01) — 비활성 시 CSS로 흑백 처리 -->
     <!-- 마켓맵(지도) 버튼(2026-09-08 사용자 요청): 하단 맨 앞 — 새 로고 마크를 아이콘으로 사용 -->
     <button type="button" class="bottom-nav-btn" id="bottomNavMapBtn" aria-label="마켓맵">
-      <img src="logos/marketmap-192.png?v=20260908b" alt="" class="bottom-nav-logo" />
+      <!-- 기존 지도 핀 아이콘 사용(2026-09-08 사용자 요청) -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.6"/></svg>
       <span data-i18n="nav.map">마켓맵</span>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavKrBtn" aria-label="한국주식 랭킹">
