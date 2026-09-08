@@ -8944,6 +8944,7 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
     const isWeek = autoTrackPeriod === "week";
     const isDay = autoTrackPeriod === "day";
     const corr = await getCorrDb();
+    if (!corr) throw new Error("상관관계 데이터(약 1MB)를 내려받지 못했습니다. 네트워크를 확인하고 자동추적 탭을 다시 눌러주세요.");
     const side = corr && (isKr ? corr.kr : isCrypto ? corr.crypto : corr.us);
     const at = side && (isYear ? side.autotrackYear : isWeek ? side.autotrackWeek : isDay ? side.autotrackDay : side.autotrack);
     if (!at || !Array.isArray(at.keys) || at.keys.length < 3 || !at.ranks) {
@@ -9936,7 +9937,11 @@ function getCorrDb() {
         if (!r.ok) throw new Error("correlation db http " + r.status);
         return r.json();
       })
-      .catch(() => null);
+      .catch(() => {
+        // 2026-09-08: 1MB짜리 파일이라 모바일에서 한 번 실패하면 세션 내내 "준비되지 않았습니다"가 뜨던 문제 — 실패는 캐시하지 않고 다음 호출 때 재시도
+        corrDbPromise = null;
+        return null;
+      });
   }
   return corrDbPromise;
 }
