@@ -1,4 +1,4 @@
-# Correlation board daily batch (2026-09-05, user request "sanggwangwangyedo")
+﻿# Correlation board daily batch (2026-09-05, user request "sanggwangwangyedo")
 # For US(S&P500) and KR(KOSPI200+KOSDAQ150), computes for 17 ranking metrics:
 #  - month mode: metric ranks AS OF 1 month ago (top100/bottom100) vs last-1-month gainers top50 / losers top50
 #  - year  mode: metric ranks AS OF 1 year  ago (top100/bottom100) vs last-1-year  gainers top50 / losers top50
@@ -154,6 +154,7 @@ function BuildRows($sec, $isKr, $wrMap, $ratingFn) {
           rsi_m = $am.rsi; rsi_y = $ay.rsi
           prev_m = $prevM; prev_y = $prevY
           score = $(if ($wrMap.$sym) { $wrMap.$sym.score } else { $null })
+          ret10y = $(if ($wrMap.$sym) { $wrMap.$sym.ret10y } else { $null })
           rate = (& $ratingFn $sym)
         })
         break
@@ -237,13 +238,15 @@ function MetricDefsNow($suffix) {
     @{ key = "prevMonthUp";     f = $prevF;      dir = "desc" },
     @{ key = "prevMonthDown";   f = $prevF;      dir = "asc"  },
     @{ key = "winRate10y";      f = "score";     dir = "desc" },
+    @{ key = "ret10y";          f = "ret10y";    dir = "desc" },
     @{ key = "rsi";             f = "rsi_now";   dir = "desc" },
     @{ key = "creditRating";    f = "rate";      dir = "desc" }
   )
 }
-function AutotrackRanks($rows, $evalList, $suffix) {
+# $fixedKeys를 주면 상관관계 상위 3개 대신 그 키들로 ranks를 만든다(2026-09-10 사용자 확정: 년간 자동추적 항목 고정).
+function AutotrackRanks($rows, $evalList, $suffix, $fixedKeys = $null) {
   $defs = MetricDefsNow $suffix
-  $keys = @($evalList | Select-Object -First 3 | ForEach-Object { $_.key })
+  $keys = $(if ($fixedKeys) { @($fixedKeys) } else { @($evalList | Select-Object -First 3 | ForEach-Object { $_.key }) })
   $out = [ordered]@{ keys = $keys; n = [ordered]@{}; ranks = [ordered]@{} }
   foreach ($k in $keys) {
     $def = $defs | Where-Object { $_.key -eq $k } | Select-Object -First 1
@@ -265,13 +268,13 @@ function AutotrackRanks($rows, $evalList, $suffix) {
   return $out
 }
 
-function BuildSide($rows, $dateKst, $topN = 50, $rankN = 100, $minValid = 150) {
+function BuildSide($rows, $dateKst, $topN = 50, $rankN = 100, $minValid = 150, $yearKeys = @("revenueGrowth", "netIncomeGrowth", "winRate10y")) {
   $d = Evaluate $rows "day" $topN $rankN $minValid; $w = Evaluate $rows "week" $topN $rankN $minValid
   $m = Evaluate $rows "month" $topN $rankN $minValid; $y = Evaluate $rows "year" $topN $rankN $minValid
   return [ordered]@{
     dateKst = $dateKst
     day = $d; week = $w; month = $m; year = $y
-    autotrackDay = (AutotrackRanks $rows $d "_d"); autotrackWeek = (AutotrackRanks $rows $w "_w"); autotrack = (AutotrackRanks $rows $m "_m"); autotrackYear = (AutotrackRanks $rows $y "_y")
+    autotrackDay = (AutotrackRanks $rows $d "_d"); autotrackWeek = (AutotrackRanks $rows $w "_w"); autotrack = (AutotrackRanks $rows $m "_m"); autotrackYear = (AutotrackRanks $rows $y "_y" $yearKeys)
   }
 }
 
@@ -310,7 +313,7 @@ if ($Market -eq "all" -or $Market -eq "crypto") {
   $cryptoRows = BuildRows (LoadCryptoUniverse) $false $wrDb.scoresCrypto $noRate
   $cryptoCount = $cryptoRows.Count
   # ~100 coins: gainers/losers top 20, rank sets top/bottom 20 (20%), metric needs >= 60 valid coins
-  $cryptoSide = BuildSide $cryptoRows $dateKst 20 20 60
+  $cryptoSide = BuildSide $cryptoRows $dateKst 20 20 60 @("winRate10y", "ret10y")
 }
 
 $outDoc = [ordered]@{

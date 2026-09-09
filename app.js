@@ -9010,6 +9010,9 @@ function openAutoTrack() {
 // 자동추적 주식(한국·미국) 개편(2026-09-05 사용자 요청): 월간 상관관계 상위 3개 항목 기준 3색 신호등 표.
 // 각 항목의 (한달 전 기준) 순위가 상위 100이면 🟢, 하위 100이면 🔴, 중간 🟡. 정렬은 2번불🟢 우선 → 3번불🟢 우선 →
 // 1번 항목 순위 오름차순 — 결과적으로 불 3개 다 켜진 종목이 맨 위. 데이터는 상관관계도와 같은 일일 배치(correlation-daily.json).
+// 자동추적 신호등 항목(2026-09-10 사용자 확정) — 배치의 상관관계 상위 3개가 아니라 아래로 고정
+const AUTOTRACK_KEYS_STOCK = ["revenueGrowth", "netIncomeGrowth", "winRate10y"];
+const AUTOTRACK_KEYS_CRYPTO = ["winRate10y", "ret10y"];
 let autoTrackPeriod = "year"; // 2026-09-08 사용자 요청: 년간만 제공(기간 버튼 숨김) // 주간/월간/년간(2026-09-05): 각 기간의 상관관계 상위 3개 항목 + 해당 시점 기준 순위
 function setAutoTrackPeriod(period) {
   autoTrackPeriod = period;
@@ -9034,10 +9037,13 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
     if (!corr) throw new Error("상관관계 데이터(약 1MB)를 내려받지 못했습니다. 네트워크를 확인하고 자동추적 탭을 다시 눌러주세요.");
     const side = corr && (isKr ? corr.kr : isCrypto ? corr.crypto : corr.us);
     const at = side && (isYear ? side.autotrackYear : isWeek ? side.autotrackWeek : isDay ? side.autotrackDay : side.autotrack);
-    if (!at || !Array.isArray(at.keys) || at.keys.length < 3 || !at.ranks) {
+    if (!at || !at.ranks || !Object.keys(at.ranks).length) { // 코인은 항목 2개라 개수 조건을 두지 않음(2026-09-10)
       throw new Error(`자동추적 데이터가 아직 준비되지 않았습니다. ${isKr ? "매일 오후 5시" : "매일 오전 7시"}에 자동 생성됩니다.`);
     }
-    const keys = at.keys.slice(0, 3);
+    // 2026-09-10 사용자 확정: 상관관계 상위 3개를 그때그때 쓰지 않고 아래 항목으로 고정.
+    //   주식(한국·미국) 매출액 증가 · 순이익 증가 · 10년 승률 / 비트코인 10년 승률 · 10년 상승(2개)
+    // 배치(scan-correlation-daily.ps1)도 같은 키로 ranks를 만들므로 at.keys와 일치한다.
+    const keys = isCrypto ? AUTOTRACK_KEYS_CRYPTO : AUTOTRACK_KEYS_STOCK;
     let nameOf = (sym) => TICKER_TO_KOREAN_NAME[sym] || sym;
     if (isKr) {
       const m = await getKrSymbolNameMap().catch(() => new Map());
@@ -9077,8 +9083,12 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
       .map(([sym, r]) => ({ sym, c1: cellOf(r[keys[0]], keys[0]), c2: cellOf(r[keys[1]], keys[1]), c3: cellOf(r[keys[2]], keys[2]), winTotal: wrMapAt[sym] && Number.isFinite(wrMapAt[sym].total) ? wrMapAt[sym].total : null }))
       .filter((r) => r.c1 !== null);
     // 정렬(2026-09-05 확정): 불 3개 전부 초록인 종목 먼저, 그다음 1번 항목 1등부터
-    const allGreen = (r) => r.c1.light === "🟢" && r.c2 && r.c2.light === "🟢" && r.c3 && r.c3.light === "🟢";
-    rows.sort((a, b) => allGreen(b) - allGreen(a) || a.c1.r - b.c1.r);
+    if (isCrypto) {
+      rows.sort((a, b) => a.c1.r - b.c1.r); // 코인은 10년 승률 높은 순(사용자 지정)
+    } else {
+      const allGreen = (r) => r.c1.light === "🟢" && r.c2 && r.c2.light === "🟢" && r.c3 && r.c3.light === "🟢";
+      rows.sort((a, b) => allGreen(b) - allGreen(a) || a.c1.r - b.c1.r);
+    }
 
     const labels = keys.map((k) => corrLabelOf(k, autoTrackPeriod));
     const universeLabel = isKr ? "한국주식(코스피200+코스닥150)" : isCrypto ? "비트코인(암호화폐 시총 상위 100)" : "미국주식(S&P500)";
@@ -9111,13 +9121,13 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
           <td class="at-name"><span class="ticker-cell">${tickerLogoHtml(r.sym)}<b class="ticker-link" data-ticker="${escapeHtml(r.sym)}">${escapeHtml(nameOf(r.sym))}</b></span></td>
           ${cellHtml(r.c1, keys[0], r.winTotal)}
           ${cellHtml(r.c2, keys[1], r.winTotal)}
-          ${cellHtml(r.c3, keys[2], r.winTotal)}
+          ${keys[2] ? cellHtml(r.c3, keys[2], r.winTotal) : ""}
         </tr>`
         )
         .join("");
       parkAutoTrackCorr();
       resultsEl.innerHTML = `
-        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — 오늘기준 1년동안 상승/하락한 종목이 과거의 1년전 어떤 데이터와 상관관계가 있는지 <b>상위 3개 항목</b>(①${escapeHtml(labels[0])} ②${escapeHtml(labels[1])} ③${escapeHtml(labels[2])})을 <b>현재 시점 점수</b>로 다시 순위 매긴 신호등입니다.<br>
+        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — ${keys.map((k, i) => `${["①", "②", "③"][i]}${escapeHtml(labels[i])}`).join(" ")}을 <b>현재 시점 점수</b>로 순위 매긴 신호등${isCrypto ? "이며, 10년 승률이 높은 순입니다" : "입니다"}.<br>
         * ${isKr || isCrypto ? "상위 20% 🟢 · 중간 🟡 · 하위 20% 🔴" : "상위 100등 🟢 · 중간 🟡 · 하위 100등 🔴"}${keys.includes("winRate10y") ? " · 승률의 ❗는 상장 10년 미만" : ""}<br>
         <span class="muted">항목 아래 적중 점수는 상관관계도의 적중 합계(최대 ${corrMaxTot}, 무작위 기대 약 ${corrChanceTot}), 옆의 -1~1 값·등급은 이를 상관 척도로 환산한 값. ${corrBatchTimeLabel(isKr, isCrypto)} 갱신(기준일 ${escapeHtml(side.dateKst || corr.dateKst || "")}). 참고용 지표이며 투자 자문이 아닙니다.</span></p>
         <div id="autoTrackCorrSlot"></div>
@@ -10008,8 +10018,8 @@ async function runInsightSectorWin() {
 // 커밋 — 하루 동안 표가 고정됨. 주간/월간/년간 모두 = 과거 시점 순위 vs 이후 상승·하락 50.
 // 적중 합계(top+bot) 높은 순 정렬은 배치가 이미 해둠. 한국·미국주식 전용(재무 랭킹이 있는 유니버스만).
 const CORR_METRIC_LABELS = {
-  revenueGrowth: "매출성장",
-  netIncomeGrowth: "순이익증가",
+  revenueGrowth: "매출액 증가",
+  netIncomeGrowth: "순이익 증가",
   dividendYield: "배당률",
   debtRatio: "부채비율(낮은순)",
   cashFlowGrowth: "현금흐름 증가",
@@ -10023,6 +10033,7 @@ const CORR_METRIC_LABELS = {
   prevMonthUp: "한달전 상승률",
   prevMonthDown: "한달전 하락률",
   winRate10y: "10년 승률",
+  ret10y: "10년 상승",
   rsi: "RSI 점수(높은순)",
   creditRating: "투자등급(신용등급)",
 };
