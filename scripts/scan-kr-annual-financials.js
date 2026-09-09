@@ -15,8 +15,10 @@ const UNIVERSE_FILE = path.join(DATA_DIR, "kr-universe-kospi200-kosdaq150.json")
 const CORPCODE_FILE = path.join(DATA_DIR, "dart-corpcode-map.json"); // scan-dart-financials.js가 만들어 둔 종목코드→corp_code 맵
 const API_KEY = process.env.DART_API_KEY;
 const YEARS_BACK = 10;
-const GAP_MS = 120;
-const CONCURRENCY = 3;
+// DART는 짧은 시간에 요청이 몰리면 IP를 일시 차단한다(2026-09-10 로컬 4스레드/0.12초로 확인 — 연결 자체가 거부됨).
+// 종목당 10회 × 348종목 = 약 3,480회라 아래 속도면 15~20분 정도 걸리지만 안전하다.
+const GAP_MS = 200;
+const CONCURRENCY = 2;
 
 if (!API_KEY) {
   console.error("DART_API_KEY 환경변수가 필요합니다. (opendart.fss.or.kr에서 무료 발급)");

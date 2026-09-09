@@ -55,7 +55,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add sector-map/data/sp500-sectors.json sector-map/data/kr-sectors.json sector-map/data/sp500-data-core.js sector-map/data/sp500-data-extra.js sector-map/data/kr-data-core.js sector-map/data/kr-data-extra.js sector-map/data/ndx-extra.js data/winrate-scores-us.json
+          # sector-map/data 전체를 스테이징 — 개별 나열 시 스크립트가 새로 쓰는 파일(2026-09-05부터 etf-crypto-map.js)이
+          # 빠져 작업트리가 더러운 채로 남고, 그러면 아래 git pull --rebase 가 fatal(exit 128)로 죽어 5일간 푸시가 막혔음
+          git add -A sector-map/data data/winrate-scores-us.json
           if git diff --cached --quiet; then
             echo "변경된 데이터 없음"
           else
