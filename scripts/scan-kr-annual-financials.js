@@ -75,13 +75,19 @@ async function scanOne(symbol, corpCode, years) {
   return out;
 }
 
+// data/kr-universe-kospi200-kosdaq150.json은 PowerShell이 다시 쓰면서 UTF-8 BOM이 붙어 있다(2026-08-31 90afc9d).
+// Node의 JSON.parse는 BOM을 못 걷어내고 SyntaxError를 던지므로(이것 때문에 다트공시 배치가 매일 실패했음) 여기서 제거한다.
+function readJsonFile(p) {
+  return JSON.parse(fs.readFileSync(p, "utf8").replace(/^\uFEFF/, ""));
+}
+
 async function main() {
-  const universe = JSON.parse(fs.readFileSync(UNIVERSE_FILE, "utf8"));
+  const universe = readJsonFile(UNIVERSE_FILE);
   const entries = [...(universe.kospi200 || []), ...(universe.kosdaq150 || [])];
-  const corpMap = JSON.parse(fs.readFileSync(CORPCODE_FILE, "utf8"));
+  const corpMap = readJsonFile(CORPCODE_FILE);
   let prev = {};
   try {
-    prev = JSON.parse(fs.readFileSync(OUT_FILE, "utf8")).items || {};
+    prev = readJsonFile(OUT_FILE).items || {};
   } catch {}
   const now = new Date();
   // 사업보고서는 이듬해 3월 말 제출 → 3월이 지나야 직전 연도가 확정

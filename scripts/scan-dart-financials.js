@@ -72,7 +72,7 @@ function extractSingleFileZip(buf) {
 async function getCorpCodeMap(tickers) {
   if (fs.existsSync(CORPCODE_CACHE_FILE)) {
     try {
-      const cached = JSON.parse(fs.readFileSync(CORPCODE_CACHE_FILE, "utf8"));
+      const cached = readJsonFile(CORPCODE_CACHE_FILE);
       if (tickers.every((t) => cached[t])) {
         console.log("corp_code 캐시 재사용");
         return cached;
@@ -207,8 +207,14 @@ async function mapWithConcurrency(items, limit, worker) {
   return results;
 }
 
+// data/kr-universe-kospi200-kosdaq150.json은 PowerShell이 다시 쓰면서 UTF-8 BOM이 붙어 있다(2026-08-31 90afc9d).
+// Node의 JSON.parse는 BOM을 못 걷어내고 SyntaxError를 던지므로(이것 때문에 다트공시 배치가 매일 실패했음) 여기서 제거한다.
+function readJsonFile(p) {
+  return JSON.parse(fs.readFileSync(p, "utf8").replace(/^\uFEFF/, ""));
+}
+
 async function main() {
-  const universe = JSON.parse(fs.readFileSync(UNIVERSE_FILE, "utf8"));
+  const universe = readJsonFile(UNIVERSE_FILE);
   const entries = [...(universe.kospi200 || []), ...(universe.kosdaq150 || [])];
   const tickers = entries.map((e) => e.symbol.split(".")[0]);
   const corpCodeMap = await getCorpCodeMap(tickers);
