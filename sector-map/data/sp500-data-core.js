@@ -8,11 +8,11 @@ const SP500_CORE_DATA = {
       "name": "Nvidia",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 5450701996032,
-      "changePercent": -2.0099,
-      "per": 28.573418,
+      "marketCap": 5400959123456,
+      "changePercent": -0.9125936,
+      "per": 28.312658,
       "eps": 7.9,
-      "dividendYield": 0.43,
+      "dividendYield": 0.44,
       "winRateScore": 65.8,
       "rsiWeekly": 61.7,
       "ret10yAvg": 63.3,
@@ -22,7 +22,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 66.2,
       "roe": 26.1,
       "debtRatio": 39.9,
-      "week52RangePct": 85.0
+      "week52RangePct": 82.2
     },
     {
       "pressureScore": 3.8,
@@ -31,10 +31,10 @@ const SP500_CORE_DATA = {
       "name": "Apple Inc.",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 4614971719680,
-      "changePercent": -1.17198,
-      "per": 36.18078,
-      "eps": 8.74,
+      "marketCap": 4602128760832,
+      "changePercent": -0.2782888,
+      "per": 36.12142,
+      "eps": 8.73,
       "dividendYield": 0.34,
       "winRateScore": 60,
       "rsiWeekly": 60.1,
@@ -45,7 +45,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 32.6,
       "roe": 27.7,
       "debtRatio": 256.5,
-      "week52RangePct": 76.1
+      "week52RangePct": 75.4
     },
     {
       "pressureScore": 2.1,
@@ -54,10 +54,10 @@ const SP500_CORE_DATA = {
       "name": "Alphabet Inc.",
       "sector": "Communication Services",
       "sectorKo": "커뮤니케이션",
-      "marketCap": 4138120773632,
-      "changePercent": -0.0295474,
-      "per": 16.968906,
-      "eps": 19.94,
+      "marketCap": 4043827838976,
+      "changePercent": -2.2786357,
+      "per": 16.590567,
+      "eps": 19.93,
       "dividendYield": 0.26,
       "winRateScore": 62.5,
       "rsiWeekly": 49.3,
@@ -68,7 +68,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 34.0,
       "roe": 17.5,
       "debtRatio": 44.0,
-      "week52RangePct": 59.9
+      "week52RangePct": 54.9
     },
     {
       "pressureScore": 3.7,
@@ -77,11 +77,11 @@ const SP500_CORE_DATA = {
       "name": "Microsoft",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 3667848331264,
-      "changePercent": -1.15069,
-      "per": 27.533445,
-      "eps": 17.94,
-      "dividendYield": 0.73,
+      "marketCap": 3650769387520,
+      "changePercent": -0.46563786,
+      "per": 27.420523,
+      "eps": 17.93,
+      "dividendYield": 0.74,
       "winRateScore": 61.7,
       "rsiWeekly": 62.2,
       "ret10yAvg": 24.1,
@@ -91,7 +91,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 45.1,
       "roe": 8.1,
       "debtRatio": 71.4,
-      "week52RangePct": 70.8
+      "week52RangePct": 69.7
     },
     {
       "pressureScore": 2.5,
@@ -114,7 +114,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 13.1,
       "roe": 6.8,
       "debtRatio": 107.4,
-      "week52RangePct": 66.9
+      "week52RangePct": 61.8
     },
     {
       "pressureScore": 2.3,
@@ -123,11 +123,11 @@ const SP500_CORE_DATA = {
       "name": "Broadcom",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 1753453821952,
-      "changePercent": 2.97993,
-      "per": 47.010204,
-      "eps": 7.84,
-      "dividendYield": 0.73,
+      "marketCap": 1733567184896,
+      "changePercent": -1.1341417,
+      "per": 46.417835,
+      "eps": 7.85,
+      "dividendYield": 0.71,
       "winRateScore": 64.2,
       "rsiWeekly": 46.4,
       "ret10yAvg": 35.4,
@@ -137,7 +137,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 48.9,
       "roe": 10.6,
       "debtRatio": 104.3,
-      "week52RangePct": 38.3
+      "week52RangePct": 36.3
     },
     {
       "pressureScore": 3.1,
@@ -160,7 +160,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 1.4,
       "roe": 1.3,
       "debtRatio": 70.2,
-      "week52RangePct": 35.1
+      "week52RangePct": 35.0
     },
     {
       "pressureScore": 2.2,
@@ -169,10 +169,10 @@ const SP500_CORE_DATA = {
       "name": "Meta Platforms",
       "sector": "Communication Services",
       "sectorKo": "커뮤니케이션",
-      "marketCap": 1562844069888,
-      "changePercent": -0.53343,
-      "per": 23.132729,
-      "eps": 26.52,
+      "marketCap": 1665279328256,
+      "changePercent": 6.5544143,
+      "per": 24.611822,
+      "eps": 26.56,
       "dividendYield": 0.34,
       "winRateScore": 58.3,
       "rsiWeekly": 51.2,
@@ -183,7 +183,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 30.9,
       "roe": 6.1,
       "debtRatio": 72.3,
-      "week52RangePct": 34.5
+      "week52RangePct": 49.3
     },
     {
       "pressureScore": 3.1,
@@ -192,11 +192,11 @@ const SP500_CORE_DATA = {
       "name": "Eli Lilly and Company",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 1002237067264,
-      "changePercent": -2.21427,
-      "per": 37.75311,
-      "eps": 29.77,
-      "dividendYield": 0.6,
+      "marketCap": 1002504519680,
+      "changePercent": 0.026686,
+      "per": 37.7505,
+      "eps": 29.78,
+      "dividendYield": 0.62,
       "winRateScore": 60,
       "rsiWeekly": 54.4,
       "ret10yAvg": 30.5,
@@ -206,7 +206,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 54.2,
       "roe": 20.9,
       "debtRatio": 320.0,
-      "week52RangePct": 70.9
+      "week52RangePct": 71.0
     },
     {
       "pressureScore": 3.4,
@@ -215,10 +215,10 @@ const SP500_CORE_DATA = {
       "name": "Micron Technology",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 1129686761472,
-      "changePercent": -1.60635,
-      "per": 22.62008,
-      "eps": 44.22,
+      "marketCap": 1160756461568,
+      "changePercent": 2.7502859,
+      "per": 23.247456,
+      "eps": 44.21,
       "dividendYield": 0.05,
       "winRateScore": 56.7,
       "rsiWeekly": 63.6,
@@ -229,7 +229,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 80.4,
       "roe": 28.0,
       "debtRatio": 33.1,
-      "week52RangePct": 77.3
+      "week52RangePct": 79.7
     },
     {
       "pressureScore": 2.8,
@@ -238,10 +238,10 @@ const SP500_CORE_DATA = {
       "name": "Berkshire Hathaway",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 1082835206144,
-      "changePercent": -0.0395258,
-      "per": 12.7188835,
-      "eps": 39.77,
+      "marketCap": 1084740468736,
+      "changePercent": 0.175951,
+      "per": 12.744468,
+      "eps": 39.76,
       "dividendYield": null,
       "winRateScore": 56.7,
       "rsiWeekly": 55,
@@ -252,7 +252,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 3.4,
       "debtRatio": 68.6,
-      "week52RangePct": 56.7
+      "week52RangePct": 57.9
     },
     {
       "pressureScore": 3.7,
@@ -261,11 +261,11 @@ const SP500_CORE_DATA = {
       "name": "JPMorgan Chase",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 939695472640,
-      "changePercent": -1.43041,
-      "per": 15.139615,
-      "eps": 23.35,
-      "dividendYield": 1.67,
+      "marketCap": 942885240832,
+      "changePercent": 0.339448,
+      "per": 15.204029,
+      "eps": 23.33,
+      "dividendYield": 1.7,
       "winRateScore": 57.5,
       "rsiWeekly": 66.6,
       "ret10yAvg": 18.3,
@@ -275,7 +275,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 5.6,
       "debtRatio": 1238.8,
-      "week52RangePct": 85.1
+      "week52RangePct": 86.5
     },
     {
       "pressureScore": 1.4,
@@ -284,21 +284,21 @@ const SP500_CORE_DATA = {
       "name": "Walmart",
       "sector": "Consumer Staples",
       "sectorKo": "필수소비재",
-      "marketCap": 843954323456,
-      "changePercent": -1.01736,
-      "per": 38.423916,
+      "marketCap": 842203529216,
+      "changePercent": -0.20745045,
+      "per": 38.344204,
       "eps": 2.76,
-      "dividendYield": 0.92,
+      "dividendYield": 0.93,
       "winRateScore": 60,
       "rsiWeekly": 41.6,
       "ret10yAvg": 16.1,
-      "revenueGrowth": 5.94,
-      "netIncomeGrowth": -9.39,
-      "cashFlowGrowth": 15.69,
+      "revenueGrowth": null,
+      "netIncomeGrowth": null,
+      "cashFlowGrowth": null,
       "operatingMargin": 5.0,
       "roe": 6.5,
       "debtRatio": 192.5,
-      "week52RangePct": 19.8
+      "week52RangePct": 19.2
     },
     {
       "pressureScore": 2.5,
@@ -307,10 +307,10 @@ const SP500_CORE_DATA = {
       "name": "AMD",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 825607913472,
-      "changePercent": 5.89861,
-      "per": 129.0153,
-      "eps": 3.92,
+      "marketCap": 850674515968,
+      "changePercent": 3.0361412,
+      "per": 132.2576,
+      "eps": 3.94,
       "dividendYield": null,
       "winRateScore": 52.5,
       "rsiWeekly": 57.5,
@@ -321,7 +321,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 17.3,
       "roe": 3.4,
       "debtRatio": 25.6,
-      "week52RangePct": 81.8
+      "week52RangePct": 85.4
     },
     {
       "pressureScore": 3.8,
@@ -330,11 +330,11 @@ const SP500_CORE_DATA = {
       "name": "Visa Inc.",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 688268312576,
-      "changePercent": -1.71434,
-      "per": 31.400343,
-      "eps": 11.74,
-      "dividendYield": 0.71,
+      "marketCap": 685934510080,
+      "changePercent": -0.339084,
+      "per": 31.240646,
+      "eps": 11.76,
+      "dividendYield": 0.73,
       "winRateScore": 60,
       "rsiWeekly": 64.7,
       "ret10yAvg": 16.3,
@@ -344,7 +344,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 61.3,
       "roe": 16.0,
       "debtRatio": 168.9,
-      "week52RangePct": 81.5
+      "week52RangePct": 80.2
     },
     {
       "pressureScore": 3.9,
@@ -367,7 +367,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 15.9,
       "roe": 5.6,
       "debtRatio": 76.5,
-      "week52RangePct": 76.1
+      "week52RangePct": 81.6
     },
     {
       "pressureScore": 4.4,
@@ -376,11 +376,11 @@ const SP500_CORE_DATA = {
       "name": "Johnson & Johnson",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 648551858176,
-      "changePercent": -2.21997,
-      "per": 31.25668,
+      "marketCap": 643635675136,
+      "changePercent": -0.758029,
+      "per": 31.019745,
       "eps": 8.61,
-      "dividendYield": 1.95,
+      "dividendYield": 1.99,
       "winRateScore": 56.7,
       "rsiWeekly": 66.9,
       "ret10yAvg": 8.8,
@@ -390,7 +390,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 28.3,
       "roe": 6.5,
       "debtRatio": 136.6,
-      "week52RangePct": 88.9
+      "week52RangePct": 87.0
     },
     {
       "pressureScore": 3.9,
@@ -399,11 +399,11 @@ const SP500_CORE_DATA = {
       "name": "Mastercard",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 500105314304,
-      "changePercent": -1.43644,
-      "per": 31.384827,
-      "eps": 18.19,
-      "dividendYield": 0.6,
+      "marketCap": 497135616000,
+      "changePercent": -0.593812,
+      "per": 31.267218,
+      "eps": 18.15,
+      "dividendYield": 0.61,
       "winRateScore": 64.2,
       "rsiWeekly": 62.4,
       "ret10yAvg": 19,
@@ -413,7 +413,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 61.7,
       "roe": 78.2,
       "debtRatio": 928.3,
-      "week52RangePct": 77.6
+      "week52RangePct": 75.1
     },
     {
       "pressureScore": 2.0,
@@ -422,8 +422,8 @@ const SP500_CORE_DATA = {
       "name": "Intel",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 552239431680,
-      "changePercent": 9.0501,
+      "marketCap": 561595809792,
+      "changePercent": 1.6942631,
       "per": null,
       "eps": -2.09,
       "dividendYield": null,
@@ -436,7 +436,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 12.2,
       "roe": -12.6,
       "debtRatio": 113.4,
-      "week52RangePct": 68.0
+      "week52RangePct": 69.5
     },
     {
       "pressureScore": 3.6,
@@ -445,11 +445,11 @@ const SP500_CORE_DATA = {
       "name": "AbbVie",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 439623450624,
-      "changePercent": -2.99462,
-      "per": 70.27684,
-      "eps": 3.54,
-      "dividendYield": 2.7,
+      "marketCap": 443387412480,
+      "changePercent": 0.85618,
+      "per": 71.07932,
+      "eps": 3.53,
+      "dividendYield": 2.78,
       "winRateScore": 60.8,
       "rsiWeekly": 59.6,
       "ret10yAvg": 15.1,
@@ -459,7 +459,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 39.6,
       "roe": -60.9,
       "debtRatio": -2375.8,
-      "week52RangePct": 75.6
+      "week52RangePct": 78.4
     },
     {
       "pressureScore": 2.5,
@@ -468,9 +468,9 @@ const SP500_CORE_DATA = {
       "name": "Cisco",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 430412201984,
-      "changePercent": -0.0274714,
-      "per": 32.783783,
+      "marketCap": 431437283328,
+      "changePercent": 0.23816262,
+      "per": 32.861862,
       "eps": 3.33,
       "dividendYield": 1.54,
       "winRateScore": 56.7,
@@ -482,7 +482,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 27.7,
       "roe": 7.7,
       "debtRatio": 157.8,
-      "week52RangePct": 67.0
+      "week52RangePct": 67.4
     },
     {
       "pressureScore": 4.2,
@@ -491,10 +491,10 @@ const SP500_CORE_DATA = {
       "name": "Palantir Technologies",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 409240862720,
-      "changePercent": -2.31171,
-      "per": 145.55556,
-      "eps": 1.17,
+      "marketCap": 407390486528,
+      "changePercent": -0.45214579,
+      "per": 143.6695,
+      "eps": 1.18,
       "dividendYield": null,
       "winRateScore": 54.9,
       "rsiWeekly": 59.1,
@@ -505,7 +505,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 47.1,
       "roe": 10.9,
       "debtRatio": 18.4,
-      "week52RangePct": 63.2
+      "week52RangePct": 62.4
     },
     {
       "pressureScore": 3.9,
@@ -514,11 +514,11 @@ const SP500_CORE_DATA = {
       "name": "Bank of America",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 436277575680,
-      "changePercent": -0.462669,
-      "per": 14.408776,
+      "marketCap": 438235529216,
+      "changePercent": 0.448788,
+      "per": 14.473441,
       "eps": 4.33,
-      "dividendYield": 2.04,
+      "dividendYield": 2.05,
       "winRateScore": 57.5,
       "rsiWeekly": 65.6,
       "ret10yAvg": 14.9,
@@ -528,7 +528,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 2.9,
       "debtRatio": 1062.8,
-      "week52RangePct": 85.1
+      "week52RangePct": 86.6
     },
     {
       "pressureScore": 1.7,
@@ -537,11 +537,11 @@ const SP500_CORE_DATA = {
       "name": "Oracle Corporation",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 468134166528,
-      "changePercent": 2.35546,
-      "per": 27.876501,
+      "marketCap": 465570562048,
+      "changePercent": -0.547625,
+      "per": 27.723843,
       "eps": 5.83,
-      "dividendYield": 1.26,
+      "dividendYield": 1.23,
       "winRateScore": 54.2,
       "rsiWeekly": 49,
       "ret10yAvg": 15,
@@ -551,7 +551,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 36.3,
       "roe": 10.1,
       "debtRatio": 514.5,
-      "week52RangePct": 20.8
+      "week52RangePct": 20.4
     },
     {
       "pressureScore": 1.9,
@@ -560,11 +560,11 @@ const SP500_CORE_DATA = {
       "name": "Costco",
       "sector": "Consumer Staples",
       "sectorKo": "필수소비재",
-      "marketCap": 403645530112,
-      "changePercent": -0.607159,
-      "per": 45.80674,
-      "eps": 19.87,
-      "dividendYield": 0.64,
+      "marketCap": 400283959296,
+      "changePercent": -0.8328042,
+      "per": 45.49395,
+      "eps": 19.84,
+      "dividendYield": 0.65,
       "winRateScore": 62.5,
       "rsiWeekly": 40.8,
       "ret10yAvg": 19.6,
@@ -574,7 +574,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 4.0,
       "roe": 6.5,
       "debtRatio": 157.9,
-      "week52RangePct": 26.2
+      "week52RangePct": 23.2
     },
     {
       "pressureScore": 4.6,
@@ -597,7 +597,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 21.2,
       "roe": 6.4,
       "debtRatio": 70.9,
-      "week52RangePct": 92.8
+      "week52RangePct": 97.9
     },
     {
       "pressureScore": 2.0,
@@ -606,11 +606,11 @@ const SP500_CORE_DATA = {
       "name": "Lam Research",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 400948264960,
-      "changePercent": 4.15083,
-      "per": 55.72522,
-      "eps": 5.75,
-      "dividendYield": 0.43,
+      "marketCap": 395217207296,
+      "changePercent": -1.4293792,
+      "per": 54.7383,
+      "eps": 5.77,
+      "dividendYield": 0.41,
       "winRateScore": 60.8,
       "rsiWeekly": 53.7,
       "ret10yAvg": 41.6,
@@ -620,7 +620,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 37.4,
       "roe": 18.3,
       "debtRatio": 88.7,
-      "week52RangePct": 64.7
+      "week52RangePct": 63.3
     },
     {
       "pressureScore": 3.9,
@@ -629,11 +629,11 @@ const SP500_CORE_DATA = {
       "name": "The Coca-Cola Company",
       "sector": "Consumer Staples",
       "sectorKo": "필수소비재",
-      "marketCap": 380173221888,
-      "changePercent": 0.329285,
-      "per": 26.534534,
+      "marketCap": 376688181248,
+      "changePercent": -0.916702,
+      "per": 26.291292,
       "eps": 3.33,
-      "dividendYield": 2.41,
+      "dividendYield": 2.4,
       "winRateScore": 61.7,
       "rsiWeekly": 62.6,
       "ret10yAvg": 7.6,
@@ -643,7 +643,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 35.1,
       "roe": 12.2,
       "debtRatio": 192.6,
-      "week52RangePct": 84.8
+      "week52RangePct": 81.8
     },
     {
       "pressureScore": 1.7,
@@ -652,11 +652,11 @@ const SP500_CORE_DATA = {
       "name": "Applied Materials",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 375204937728,
-      "changePercent": 3.97616,
-      "per": 40.75776,
-      "eps": 11.6,
-      "dividendYield": 0.47,
+      "marketCap": 372078149632,
+      "changePercent": -0.83335143,
+      "per": 40.48791,
+      "eps": 11.58,
+      "dividendYield": 0.45,
       "winRateScore": 60,
       "rsiWeekly": 48.6,
       "ret10yAvg": 31.2,
@@ -666,7 +666,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 33.7,
       "roe": 9.9,
       "debtRatio": 69.8,
-      "week52RangePct": 53.8
+      "week52RangePct": 53.1
     },
     {
       "pressureScore": 1.6,
@@ -675,11 +675,11 @@ const SP500_CORE_DATA = {
       "name": "Caterpillar Inc.",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 378073382912,
-      "changePercent": 1.04921,
-      "per": 35.45172,
-      "eps": 23.2,
-      "dividendYield": 0.8,
+      "marketCap": 374892429312,
+      "changePercent": -0.841356,
+      "per": 35.168606,
+      "eps": 23.19,
+      "dividendYield": 0.79,
       "winRateScore": 60,
       "rsiWeekly": 48.8,
       "ret10yAvg": 24.8,
@@ -689,7 +689,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 20.9,
       "roe": 18.5,
       "debtRatio": 429.1,
-      "week52RangePct": 61.8
+      "week52RangePct": 60.6
     },
     {
       "pressureScore": 5.5,
@@ -698,11 +698,11 @@ const SP500_CORE_DATA = {
       "name": "Merck & Co.",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 366276313088,
-      "changePercent": -1.24393,
-      "per": 118.768005,
+      "marketCap": 363981832192,
+      "changePercent": -0.626437,
+      "per": 118.024,
       "eps": 1.25,
-      "dividendYield": 2.26,
+      "dividendYield": 2.29,
       "winRateScore": 55,
       "rsiWeekly": 70.5,
       "ret10yAvg": 9.7,
@@ -712,7 +712,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": -2.6,
       "roe": -3.2,
       "debtRatio": 209.4,
-      "week52RangePct": 89.3
+      "week52RangePct": 88.2
     },
     {
       "pressureScore": 2.2,
@@ -721,10 +721,10 @@ const SP500_CORE_DATA = {
       "name": "GE Aerospace",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 347490058240,
-      "changePercent": -0.65555,
-      "per": 39.401176,
-      "eps": 8.5,
+      "marketCap": 337643601920,
+      "changePercent": -2.83359,
+      "per": 38.420307,
+      "eps": 8.47,
       "dividendYield": 0.56,
       "winRateScore": 54.2,
       "rsiWeekly": 51,
@@ -735,7 +735,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 19.2,
       "roe": 13.4,
       "debtRatio": 622.5,
-      "week52RangePct": 55.0
+      "week52RangePct": 47.1
     },
     {
       "pressureScore": 2.7,
@@ -744,11 +744,11 @@ const SP500_CORE_DATA = {
       "name": "UnitedHealth Group",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 359791919104,
-      "changePercent": 0.931657,
-      "per": 25.74438,
-      "eps": 15.57,
-      "dividendYield": 2.34,
+      "marketCap": 352808632320,
+      "changePercent": -1.94092,
+      "per": 25.27717,
+      "eps": 15.55,
+      "dividendYield": 2.32,
       "winRateScore": 55.8,
       "rsiWeekly": 56,
       "ret10yAvg": 11,
@@ -758,7 +758,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 7.1,
       "roe": 5.6,
       "debtRatio": 207.0,
-      "week52RangePct": 70.4
+      "week52RangePct": 66.7
     },
     {
       "pressureScore": 2.9,
@@ -767,11 +767,11 @@ const SP500_CORE_DATA = {
       "name": "Morgan Stanley",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 339619250176,
-      "changePercent": -0.67977,
-      "per": 17.452784,
+      "marketCap": 338221465600,
+      "changePercent": -0.411579,
+      "per": 17.380953,
       "eps": 12.39,
-      "dividendYield": 2.11,
+      "dividendYield": 2.13,
       "winRateScore": 62.5,
       "rsiWeekly": 63.4,
       "ret10yAvg": 21.1,
@@ -781,7 +781,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 4.8,
       "debtRatio": 1339.0,
-      "week52RangePct": 80.9
+      "week52RangePct": 79.1
     },
     {
       "pressureScore": 2.2,
@@ -790,11 +790,11 @@ const SP500_CORE_DATA = {
       "name": "Procter & Gamble",
       "sector": "Consumer Staples",
       "sectorKo": "필수소비재",
-      "marketCap": 338134663168,
-      "changePercent": -0.587272,
-      "per": 21.990936,
+      "marketCap": 331305975808,
+      "changePercent": -2.01951,
+      "per": 21.546827,
       "eps": 6.62,
-      "dividendYield": 2.97,
+      "dividendYield": 2.99,
       "winRateScore": 57.5,
       "rsiWeekly": 48.4,
       "ret10yAvg": 5,
@@ -804,7 +804,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 18.6,
       "roe": 5.6,
       "debtRatio": 133.5,
-      "week52RangePct": 26.9
+      "week52RangePct": 16.9
     },
     {
       "pressureScore": 1.5,
@@ -827,7 +827,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 14.3,
       "roe": 28.7,
       "debtRatio": 558.3,
-      "week52RangePct": 17.9
+      "week52RangePct": 15.5
     },
     {
       "pressureScore": 2.5,
@@ -836,9 +836,9 @@ const SP500_CORE_DATA = {
       "name": "Netflix, Inc.",
       "sector": "Communication Services",
       "sectorKo": "커뮤니케이션",
-      "marketCap": 319665635328,
-      "changePercent": -1.89138,
-      "per": 24.141508,
+      "marketCap": 316584329216,
+      "changePercent": -0.9639154,
+      "per": 23.908804,
       "eps": 3.18,
       "dividendYield": null,
       "winRateScore": 59.2,
@@ -850,7 +850,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 33.4,
       "roe": 11.3,
       "debtRatio": 93.9,
-      "week52RangePct": 19.0
+      "week52RangePct": 17.8
     },
     {
       "pressureScore": 2.5,
@@ -859,10 +859,10 @@ const SP500_CORE_DATA = {
       "name": "Goldman Sachs",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 301807894528,
-      "changePercent": -0.200263,
-      "per": 15.993366,
-      "eps": 64.81,
+      "marketCap": 299551326208,
+      "changePercent": -0.747687,
+      "per": 15.881137,
+      "eps": 64.78,
       "dividendYield": 1.93,
       "winRateScore": 59.2,
       "rsiWeekly": 59.9,
@@ -873,7 +873,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 5.4,
       "debtRatio": 1633.5,
-      "week52RangePct": 71.7
+      "week52RangePct": 69.8
     },
     {
       "pressureScore": 2.8,
@@ -882,11 +882,11 @@ const SP500_CORE_DATA = {
       "name": "Philip Morris International",
       "sector": "Consumer Staples",
       "sectorKo": "필수소비재",
-      "marketCap": 287922651136,
-      "changePercent": 1.20528,
-      "per": 25.374998,
+      "marketCap": 289450098688,
+      "changePercent": 0.53051,
+      "per": 25.509615,
       "eps": 7.28,
-      "dividendYield": 3.22,
+      "dividendYield": 3.18,
       "winRateScore": 55.8,
       "rsiWeekly": 51.4,
       "ret10yAvg": 6.5,
@@ -896,7 +896,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 40.5,
       "roe": -32.8,
       "debtRatio": -873.0,
-      "week52RangePct": 64.9
+      "week52RangePct": 66.4
     },
     {
       "pressureScore": 4.4,
@@ -905,10 +905,10 @@ const SP500_CORE_DATA = {
       "name": "Palo Alto Networks",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 274638716928,
-      "changePercent": 1.11625,
-      "per": 288.01712,
-      "eps": 1.17,
+      "marketCap": 273106501632,
+      "changePercent": -0.55789804,
+      "per": 291.39133,
+      "eps": 1.15,
       "dividendYield": null,
       "winRateScore": 59.2,
       "rsiWeekly": 58.8,
@@ -919,7 +919,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": -6.1,
       "roe": -0.6,
       "debtRatio": 67.2,
-      "week52RangePct": 76.1
+      "week52RangePct": 75.4
     },
     {
       "pressureScore": 5.5,
@@ -928,21 +928,21 @@ const SP500_CORE_DATA = {
       "name": "Dell Technologies",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 344962498560,
-      "changePercent": 1.85828,
-      "per": 31.05759,
+      "marketCap": 345847726080,
+      "changePercent": 0.256611,
+      "per": 31.13729,
       "eps": 17.19,
-      "dividendYield": 0.48,
+      "dividendYield": 0.47,
       "winRateScore": 65.8,
       "rsiWeekly": 72,
       "ret10yAvg": 44.3,
-      "revenueGrowth": 87.54,
-      "netIncomeGrowth": 256.27,
-      "cashFlowGrowth": 45.96,
-      "operatingMargin": 8.6,
-      "roe": -244.9,
-      "debtRatio": -8284.7,
-      "week52RangePct": 98.9
+      "revenueGrowth": 57.75,
+      "netIncomeGrowth": 255.07,
+      "cashFlowGrowth": -12.5,
+      "operatingMargin": 11.6,
+      "roe": -289.6,
+      "debtRatio": -9027.3,
+      "week52RangePct": 93.9
     },
     {
       "pressureScore": 2.7,
@@ -951,11 +951,11 @@ const SP500_CORE_DATA = {
       "name": "RTX Corporation",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 267947786240,
-      "changePercent": -0.986103,
-      "per": 35.001762,
-      "eps": 5.68,
-      "dividendYield": 1.45,
+      "marketCap": 266249617408,
+      "changePercent": -0.633768,
+      "per": 34.718803,
+      "eps": 5.69,
+      "dividendYield": 1.47,
       "winRateScore": 60,
       "rsiWeekly": 52.3,
       "ret10yAvg": 12.1,
@@ -965,7 +965,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 11.4,
       "roe": 3.2,
       "debtRatio": 159.4,
-      "week52RangePct": 63.2
+      "week52RangePct": 61.0
     },
     {
       "pressureScore": 1.8,
@@ -974,10 +974,10 @@ const SP500_CORE_DATA = {
       "name": "GE Vernova",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 258692464640,
-      "changePercent": 3.11694,
-      "per": 27.871162,
-      "eps": 34.85,
+      "marketCap": 253293887488,
+      "changePercent": -2.08687,
+      "per": 27.273874,
+      "eps": 34.87,
       "dividendYield": 0.21,
       "winRateScore": 65.5,
       "rsiWeekly": 49.1,
@@ -988,7 +988,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 5.9,
       "roe": 5.6,
       "debtRatio": 566.1,
-      "week52RangePct": 66.3
+      "week52RangePct": 63.2
     },
     {
       "pressureScore": 3.2,
@@ -997,11 +997,11 @@ const SP500_CORE_DATA = {
       "name": "Wells Fargo",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 265990963200,
-      "changePercent": -2.23408,
-      "per": 12.7848835,
+      "marketCap": 271161999360,
+      "changePercent": 1.94406,
+      "per": 13.03343,
       "eps": 6.88,
-      "dividendYield": 2.22,
+      "dividendYield": 2.27,
       "winRateScore": 55.8,
       "rsiWeekly": 58.7,
       "ret10yAvg": 7.3,
@@ -1011,7 +1011,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 3.6,
       "debtRatio": 1165.4,
-      "week52RangePct": 60.8
+      "week52RangePct": 67.6
     },
     {
       "pressureScore": 1.7,
@@ -1020,11 +1020,11 @@ const SP500_CORE_DATA = {
       "name": "Texas Instruments",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 236458098688,
-      "changePercent": 0.185734,
-      "per": 39.289833,
-      "eps": 6.59,
-      "dividendYield": 2.2,
+      "marketCap": 238896463872,
+      "changePercent": 1.0311999,
+      "per": 39.755318,
+      "eps": 6.58,
+      "dividendYield": 2.19,
       "winRateScore": 57.5,
       "rsiWeekly": 48.3,
       "ret10yAvg": 13.9,
@@ -1034,7 +1034,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 42.6,
       "roe": 11.0,
       "debtRatio": 99.3,
-      "week52RangePct": 58.6
+      "week52RangePct": 60.0
     },
     {
       "pressureScore": 1.4,
@@ -1043,11 +1043,11 @@ const SP500_CORE_DATA = {
       "name": "KLA Corporation",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 246911205376,
-      "changePercent": 1.82112,
-      "per": 51.633877,
-      "eps": 3.66,
-      "dividendYield": 0.5,
+      "marketCap": 238980481024,
+      "changePercent": -3.2119758,
+      "per": 49.839237,
+      "eps": 3.67,
+      "dividendYield": 0.49,
       "winRateScore": 62.5,
       "rsiWeekly": 49.1,
       "ret10yAvg": 38.8,
@@ -1057,7 +1057,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 42.5,
       "roe": 21.5,
       "debtRatio": 182.7,
-      "week52RangePct": 45.3
+      "week52RangePct": 42.3
     },
     {
       "pressureScore": 2.9,
@@ -1066,9 +1066,9 @@ const SP500_CORE_DATA = {
       "name": "Arista Networks",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 245888368640,
-      "changePercent": 0.608942,
-      "per": 61.6962,
+      "marketCap": 243328073728,
+      "changePercent": -1.04125,
+      "per": 61.053795,
       "eps": 3.16,
       "dividendYield": null,
       "winRateScore": 65.8,
@@ -1080,7 +1080,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 45.4,
       "roe": 8.2,
       "debtRatio": 60.3,
-      "week52RangePct": 80.1
+      "week52RangePct": 78.1
     },
     {
       "pressureScore": 5.1,
@@ -1089,11 +1089,11 @@ const SP500_CORE_DATA = {
       "name": "Amgen",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 212560297984,
-      "changePercent": -10.0771,
-      "per": 24.435675,
-      "eps": 16.09,
-      "dividendYield": 2.31,
+      "marketCap": 211533070336,
+      "changePercent": -0.4832577,
+      "per": 24.33271,
+      "eps": 16.08,
+      "dividendYield": 2.56,
       "winRateScore": 55.8,
       "rsiWeekly": 72.1,
       "ret10yAvg": 10.1,
@@ -1103,7 +1103,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 35.0,
       "roe": 20.3,
       "debtRatio": 718.3,
-      "week52RangePct": 69.6
+      "week52RangePct": 68.5
     },
     {
       "pressureScore": 3.3,
@@ -1112,10 +1112,10 @@ const SP500_CORE_DATA = {
       "name": "Sandisk",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 254474764288,
-      "changePercent": -0.115518,
-      "per": 23.556385,
-      "eps": 73.78,
+      "marketCap": 258308030464,
+      "changePercent": 1.5063409,
+      "per": 23.940426,
+      "eps": 73.69,
       "dividendYield": null,
       "winRateScore": 77.8,
       "rsiWeekly": 59,
@@ -1126,7 +1126,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 78.5,
       "roe": 43.9,
       "debtRatio": 43.0,
-      "week52RangePct": 73.0
+      "week52RangePct": 74.1
     },
     {
       "pressureScore": 4.0,
@@ -1135,10 +1135,10 @@ const SP500_CORE_DATA = {
       "name": "Thermo Fisher Scientific",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 222965022720,
-      "changePercent": -1.75307,
-      "per": 32.42043,
-      "eps": 18.6,
+      "marketCap": 223952240640,
+      "changePercent": 0.442769,
+      "per": 32.616585,
+      "eps": 18.57,
       "dividendYield": 0.31,
       "winRateScore": 59.2,
       "rsiWeekly": 66.1,
@@ -1149,7 +1149,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 18.2,
       "roe": 3.3,
       "debtRatio": 114.6,
-      "week52RangePct": 79.2
+      "week52RangePct": 80.5
     },
     {
       "pressureScore": 1.8,
@@ -1158,9 +1158,9 @@ const SP500_CORE_DATA = {
       "name": "American Express",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 220218540032,
-      "changePercent": -0.0183951,
-      "per": 19.799637,
+      "marketCap": 217314689024,
+      "changePercent": -1.31862,
+      "per": 19.538555,
       "eps": 16.47,
       "dividendYield": 1.17,
       "winRateScore": 59.2,
@@ -1172,7 +1172,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 9.1,
       "debtRatio": 799.1,
-      "week52RangePct": 36.4
+      "week52RangePct": 31.9
     },
     {
       "pressureScore": 1.9,
@@ -1181,11 +1181,11 @@ const SP500_CORE_DATA = {
       "name": "Linde plc",
       "sector": "Materials",
       "sectorKo": "소재",
-      "marketCap": 215913889792,
-      "changePercent": -1.92433,
-      "per": 30.179123,
-      "eps": 15.52,
-      "dividendYield": 1.34,
+      "marketCap": 215116382208,
+      "changePercent": -0.36936057,
+      "per": 30.106451,
+      "eps": 15.5,
+      "dividendYield": 1.37,
       "winRateScore": 60,
       "rsiWeekly": 44.5,
       "ret10yAvg": 14.7,
@@ -1195,7 +1195,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 27.3,
       "roe": 4.9,
       "debtRatio": 122.1,
-      "week52RangePct": 50.2
+      "week52RangePct": 49.2
     },
     {
       "pressureScore": 1.5,
@@ -1204,11 +1204,11 @@ const SP500_CORE_DATA = {
       "name": "IBM",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 218659962880,
-      "changePercent": -1.19205,
-      "per": 20.630222,
-      "eps": 11.25,
-      "dividendYield": 2.88,
+      "marketCap": 226055733248,
+      "changePercent": 3.38231,
+      "per": 21.30906,
+      "eps": 11.26,
+      "dividendYield": 2.91,
       "winRateScore": 53.3,
       "rsiWeekly": 45.6,
       "ret10yAvg": 4.5,
@@ -1218,7 +1218,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 16.6,
       "roe": 6.3,
       "debtRatio": 341.2,
-      "week52RangePct": 24.7
+      "week52RangePct": 30.6
     },
     {
       "pressureScore": 2.6,
@@ -1227,11 +1227,11 @@ const SP500_CORE_DATA = {
       "name": "Citigroup",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 229372723200,
-      "changePercent": -0.711586,
-      "per": 14.734915,
+      "marketCap": 231150796800,
+      "changePercent": 0.775192,
+      "per": 14.849138,
       "eps": 9.28,
-      "dividendYield": 1.95,
+      "dividendYield": 1.96,
       "winRateScore": 52.5,
       "rsiWeekly": 58.9,
       "ret10yAvg": 11.3,
@@ -1241,7 +1241,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 2.8,
       "debtRatio": 1264.2,
-      "week52RangePct": 79.3
+      "week52RangePct": 81.3
     },
     {
       "pressureScore": 2.5,
@@ -1250,9 +1250,9 @@ const SP500_CORE_DATA = {
       "name": "Marvell Technology",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 202577018880,
-      "changePercent": 0.832029,
-      "per": 74.63908,
+      "marketCap": 211204571136,
+      "changePercent": 4.258902,
+      "per": 77.81788,
       "eps": 3.02,
       "dividendYield": 0.11,
       "winRateScore": 57.5,
@@ -1264,7 +1264,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 16.7,
       "roe": 1.7,
       "debtRatio": 48.7,
-      "week52RangePct": 60.5
+      "week52RangePct": 64.0
     },
     {
       "pressureScore": 3.7,
@@ -1273,11 +1273,11 @@ const SP500_CORE_DATA = {
       "name": "Verizon",
       "sector": "Communication Services",
       "sectorKo": "커뮤니케이션",
-      "marketCap": 209442226176,
-      "changePercent": 0.538493,
-      "per": 13.1276045,
+      "marketCap": 206658535424,
+      "changePercent": -1.3291,
+      "per": 12.953126,
       "eps": 3.84,
-      "dividendYield": 5.64,
+      "dividendYield": 5.61,
       "winRateScore": 49.2,
       "rsiWeekly": 60.4,
       "ret10yAvg": -0.4,
@@ -1287,7 +1287,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 21.0,
       "roe": 3.7,
       "debtRatio": 293.5,
-      "week52RangePct": 90.4
+      "week52RangePct": 85.4
     },
     {
       "pressureScore": 3.0,
@@ -1296,11 +1296,11 @@ const SP500_CORE_DATA = {
       "name": "Abbott Laboratories",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 182590046208,
-      "changePercent": -2.59393,
-      "per": 34.14887,
+      "marketCap": 182088253440,
+      "changePercent": -0.274823,
+      "per": 34.05502,
       "eps": 3.09,
-      "dividendYield": 2.33,
+      "dividendYield": 2.39,
       "winRateScore": 56.7,
       "rsiWeekly": 55.1,
       "ret10yAvg": 9.9,
@@ -1310,7 +1310,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 12.0,
       "roe": 2.1,
       "debtRatio": 110.9,
-      "week52RangePct": 42.4
+      "week52RangePct": 41.9
     },
     {
       "pressureScore": 2.2,
@@ -1319,10 +1319,10 @@ const SP500_CORE_DATA = {
       "name": "T-Mobile US",
       "sector": "Communication Services",
       "sectorKo": "커뮤니케이션",
-      "marketCap": 194893709312,
-      "changePercent": 0.0936526,
-      "per": 18.985373,
-      "eps": 9.57,
+      "marketCap": 190227578880,
+      "changePercent": -2.3941913,
+      "per": 18.550207,
+      "eps": 9.56,
       "dividendYield": 2.25,
       "winRateScore": 60,
       "rsiWeekly": 44.3,
@@ -1333,7 +1333,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 24.1,
       "roe": 5.8,
       "debtRatio": 279.5,
-      "week52RangePct": 20.4
+      "week52RangePct": 14.9
     },
     {
       "pressureScore": 1.5,
@@ -1342,11 +1342,11 @@ const SP500_CORE_DATA = {
       "name": "PepsiCo",
       "sector": "Consumer Staples",
       "sectorKo": "필수소비재",
-      "marketCap": 189122691072,
-      "changePercent": 0.595794,
-      "per": 18.16929,
-      "eps": 7.62,
-      "dividendYield": 4.3,
+      "marketCap": 186718535680,
+      "changePercent": -1.2712132,
+      "per": 17.91481,
+      "eps": 7.63,
+      "dividendYield": 4.28,
       "winRateScore": 52.5,
       "rsiWeekly": 40.5,
       "ret10yAvg": 2.4,
@@ -1356,7 +1356,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 16.6,
       "roe": 13.5,
       "debtRatio": 406.9,
-      "week52RangePct": 12.5
+      "week52RangePct": 7.8
     },
     {
       "pressureScore": 4.6,
@@ -1365,9 +1365,9 @@ const SP500_CORE_DATA = {
       "name": "CrowdStrike",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 215046799360,
-      "changePercent": -1.44533,
-      "per": 5250.5,
+      "marketCap": 212773666816,
+      "changePercent": -1.0570427,
+      "per": 5195.0,
       "eps": 0.04,
       "dividendYield": null,
       "winRateScore": 60.5,
@@ -1379,7 +1379,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": -2.3,
       "roe": 0.1,
       "debtRatio": 135.0,
-      "week52RangePct": 83.9
+      "week52RangePct": 82.4
     },
     {
       "pressureScore": 3.9,
@@ -1388,11 +1388,11 @@ const SP500_CORE_DATA = {
       "name": "Charles Schwab Corporation",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 184814108672,
-      "changePercent": -2.21429,
-      "per": 19.466303,
+      "marketCap": 184243421184,
+      "changePercent": -0.308788,
+      "per": 19.406195,
       "eps": 5.49,
-      "dividendYield": 1.17,
+      "dividendYield": 1.2,
       "winRateScore": 50,
       "rsiWeekly": 65.9,
       "ret10yAvg": 13.2,
@@ -1402,7 +1402,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 5.6,
       "debtRatio": 931.5,
-      "week52RangePct": 74.9
+      "week52RangePct": 73.9
     },
     {
       "pressureScore": 3.2,
@@ -1411,11 +1411,11 @@ const SP500_CORE_DATA = {
       "name": "Amphenol",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 201617457152,
-      "changePercent": -1.23218,
-      "per": 40.88,
+      "marketCap": 200581726208,
+      "changePercent": -0.513706,
+      "per": 40.67,
       "eps": 2.0,
-      "dividendYield": 1.21,
+      "dividendYield": 0.61,
       "winRateScore": 62.5,
       "rsiWeekly": 58.7,
       "ret10yAvg": 26.1,
@@ -1425,7 +1425,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 25.6,
       "roe": 6.7,
       "debtRatio": 200.6,
-      "week52RangePct": 77.9
+      "week52RangePct": 74.4
     },
     {
       "pressureScore": 2.5,
@@ -1434,11 +1434,11 @@ const SP500_CORE_DATA = {
       "name": "Seagate Technology",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 204972769280,
-      "changePercent": 6.48785,
-      "per": 64.92319,
+      "marketCap": 200788901888,
+      "changePercent": -2.04118,
+      "per": 63.59799,
       "eps": 13.93,
-      "dividendYield": 0.35,
+      "dividendYield": 0.33,
       "winRateScore": 59.2,
       "rsiWeekly": 56.5,
       "ret10yAvg": 36.2,
@@ -1448,7 +1448,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 43.1,
       "roe": 59.7,
       "debtRatio": 360.2,
-      "week52RangePct": 74.9
+      "week52RangePct": 72.9
     },
     {
       "pressureScore": 1,
@@ -1471,7 +1471,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 46.5,
       "roe": -231.1,
       "debtRatio": -5963.1,
-      "week52RangePct": 1.7
+      "week52RangePct": 0.2
     },
     {
       "pressureScore": 3.1,
@@ -1480,11 +1480,11 @@ const SP500_CORE_DATA = {
       "name": "BlackRock",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 177971544064,
-      "changePercent": -1.8978,
-      "per": 26.236406,
-      "eps": 41.75,
-      "dividendYield": 2.04,
+      "marketCap": 174179352576,
+      "changePercent": -2.13078,
+      "per": 25.689672,
+      "eps": 41.73,
+      "dividendYield": 2.09,
       "winRateScore": 58.3,
       "rsiWeekly": 55.6,
       "ret10yAvg": 12,
@@ -1494,7 +1494,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 34.9,
       "roe": 3.3,
       "debtRatio": 193.2,
-      "week52RangePct": 58.8
+      "week52RangePct": 51.1
     },
     {
       "pressureScore": 3.3,
@@ -1503,11 +1503,11 @@ const SP500_CORE_DATA = {
       "name": "The Walt Disney Company",
       "sector": "Communication Services",
       "sectorKo": "커뮤니케이션",
-      "marketCap": 181405712384,
-      "changePercent": -0.237394,
-      "per": 21.661856,
+      "marketCap": 179886243840,
+      "changePercent": -0.837614,
+      "per": 21.480413,
       "eps": 4.85,
-      "dividendYield": 1.42,
+      "dividendYield": 1.43,
       "winRateScore": 44.2,
       "rsiWeekly": 53.1,
       "ret10yAvg": 1.3,
@@ -1517,7 +1517,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 18.9,
       "roe": 2.4,
       "debtRatio": 79.9,
-      "week52RangePct": 47.9
+      "week52RangePct": 47.4
     },
     {
       "pressureScore": 3.1,
@@ -1526,11 +1526,11 @@ const SP500_CORE_DATA = {
       "name": "Union Pacific Corporation",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 171361091584,
-      "changePercent": -0.403972,
-      "per": 23.375204,
-      "eps": 12.34,
-      "dividendYield": 1.96,
+      "marketCap": 169157050368,
+      "changePercent": -1.28619,
+      "per": 23.055868,
+      "eps": 12.35,
+      "dividendYield": 1.97,
       "winRateScore": 53.3,
       "rsiWeekly": 56.5,
       "ret10yAvg": 11.5,
@@ -1540,7 +1540,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 40.3,
       "roe": 9.6,
       "debtRatio": 244.5,
-      "week52RangePct": 73.8
+      "week52RangePct": 70.3
     },
     {
       "pressureScore": 1.8,
@@ -1549,10 +1549,10 @@ const SP500_CORE_DATA = {
       "name": "Analog Devices",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 175994191872,
-      "changePercent": 0.262253,
-      "per": 43.2381,
-      "eps": 8.4,
+      "marketCap": 176900325376,
+      "changePercent": 0.5148665,
+      "per": 43.30605,
+      "eps": 8.43,
       "dividendYield": 1.21,
       "winRateScore": 54.2,
       "rsiWeekly": 48.6,
@@ -1563,7 +1563,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 39.5,
       "roe": 4.0,
       "debtRatio": 44.3,
-      "week52RangePct": 62.8
+      "week52RangePct": 63.7
     },
     {
       "pressureScore": 4.5,
@@ -1572,11 +1572,11 @@ const SP500_CORE_DATA = {
       "name": "Gilead Sciences",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 181827026944,
-      "changePercent": -2.8842,
+      "marketCap": 180599472128,
+      "changePercent": -0.6751265,
       "per": null,
-      "eps": -2.66,
-      "dividendYield": 2.17,
+      "eps": -2.65,
+      "dividendYield": 2.24,
       "winRateScore": 47.5,
       "rsiWeekly": 67.4,
       "ret10yAvg": 6.7,
@@ -1586,7 +1586,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 32.5,
       "roe": -88.7,
       "debtRatio": 318.0,
-      "week52RangePct": 78.2
+      "week52RangePct": 76.2
     },
     {
       "pressureScore": 5.0,
@@ -1595,11 +1595,11 @@ const SP500_CORE_DATA = {
       "name": "John Deere",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 183542104064,
-      "changePercent": -1.84564,
-      "per": 37.90256,
-      "eps": 17.96,
-      "dividendYield": 0.93,
+      "marketCap": 182593028096,
+      "changePercent": -0.517086,
+      "per": 37.68559,
+      "eps": 17.97,
+      "dividendYield": 0.95,
       "winRateScore": 56.7,
       "rsiWeekly": 65.5,
       "ret10yAvg": 23.3,
@@ -1609,7 +1609,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 18.9,
       "roe": 4.9,
       "debtRatio": 284.3,
-      "week52RangePct": 90.8
+      "week52RangePct": 89.5
     },
     {
       "pressureScore": 1.5,
@@ -1618,11 +1618,11 @@ const SP500_CORE_DATA = {
       "name": "NextEra Energy",
       "sector": "Utilities",
       "sectorKo": "유틸리티",
-      "marketCap": 174867562496,
-      "changePercent": 0.479446,
-      "per": 18.838203,
+      "marketCap": 172406112256,
+      "changePercent": -1.40761,
+      "per": 18.573034,
       "eps": 4.45,
-      "dividendYield": 2.99,
+      "dividendYield": 2.97,
       "winRateScore": 62.5,
       "rsiWeekly": 42.4,
       "ret10yAvg": 10.6,
@@ -1632,7 +1632,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 30.2,
       "roe": 5.5,
       "debtRatio": 288.2,
-      "week52RangePct": 49.2
+      "week52RangePct": 45.2
     },
     {
       "pressureScore": 3.3,
@@ -1641,11 +1641,11 @@ const SP500_CORE_DATA = {
       "name": "AT&T",
       "sector": "Communication Services",
       "sectorKo": "커뮤니케이션",
-      "marketCap": 175421079552,
-      "changePercent": -0.311526,
-      "per": 8.448845,
+      "marketCap": 172337496064,
+      "changePercent": -1.75782,
+      "per": 8.30033,
       "eps": 3.03,
-      "dividendYield": 4.32,
+      "dividendYield": 4.34,
       "winRateScore": 49.2,
       "rsiWeekly": 54.5,
       "ret10yAvg": -1.8,
@@ -1655,7 +1655,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 23.2,
       "roe": 4.2,
       "debtRatio": 271.6,
-      "week52RangePct": 57.7
+      "week52RangePct": 53.1
     },
     {
       "pressureScore": 4.0,
@@ -1664,11 +1664,11 @@ const SP500_CORE_DATA = {
       "name": "Welltower",
       "sector": "Real Estate",
       "sectorKo": "부동산",
-      "marketCap": 170955718656,
-      "changePercent": 0.457298,
-      "per": 106.86937,
-      "eps": 2.22,
-      "dividendYield": 1.44,
+      "marketCap": 169982935040,
+      "changePercent": -0.569023,
+      "per": 105.78475,
+      "eps": 2.23,
+      "dividendYield": 1.43,
       "winRateScore": 59.2,
       "rsiWeekly": 59.5,
       "ret10yAvg": 12.2,
@@ -1678,7 +1678,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 16.9,
       "roe": 1.7,
       "debtRatio": 50.9,
-      "week52RangePct": 80.4
+      "week52RangePct": 78.9
     },
     {
       "pressureScore": 2.7,
@@ -1687,11 +1687,11 @@ const SP500_CORE_DATA = {
       "name": "Blackstone Inc.",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 160134053888,
-      "changePercent": -1.60117,
-      "per": 29.970919,
+      "marketCap": 154277101568,
+      "changePercent": -3.65753,
+      "per": 28.874723,
       "eps": 4.47,
-      "dividendYield": 3.84,
+      "dividendYield": 3.9,
       "winRateScore": 60.8,
       "rsiWeekly": 54.7,
       "ret10yAvg": 18.2,
@@ -1701,7 +1701,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 13.6,
       "debtRatio": 304.6,
-      "week52RangePct": 36.5
+      "week52RangePct": 30.9
     },
     {
       "pressureScore": 7.7,
@@ -1710,11 +1710,11 @@ const SP500_CORE_DATA = {
       "name": "Salesforce",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 205025755136,
-      "changePercent": -3.90002,
-      "per": 22.834097,
+      "marketCap": 200943681536,
+      "changePercent": -1.991,
+      "per": 22.379469,
       "eps": 10.91,
-      "dividendYield": 0.68,
+      "dividendYield": 0.71,
       "winRateScore": 57.5,
       "rsiWeekly": 70.4,
       "ret10yAvg": 13.8,
@@ -1724,7 +1724,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 21.4,
       "roe": 9.2,
       "debtRatio": 185.6,
-      "week52RangePct": 83.7
+      "week52RangePct": 79.7
     },
     {
       "pressureScore": 1.7,
@@ -1733,9 +1733,9 @@ const SP500_CORE_DATA = {
       "name": "Boeing",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 166554681344,
-      "changePercent": -0.716139,
-      "per": 75.802155,
+      "marketCap": 163148185600,
+      "changePercent": -2.04527,
+      "per": 74.2518,
       "eps": 2.78,
       "dividendYield": null,
       "winRateScore": 52.5,
@@ -1747,7 +1747,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 2.0,
       "roe": -0.1,
       "debtRatio": 2652.4,
-      "week52RangePct": 43.8
+      "week52RangePct": 38.2
     },
     {
       "pressureScore": 2.0,
@@ -1756,11 +1756,11 @@ const SP500_CORE_DATA = {
       "name": "Qualcomm",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 185938640896,
-      "changePercent": 3.17055,
-      "per": 19.873287,
+      "marketCap": 188405858304,
+      "changePercent": 1.3268985,
+      "per": 20.136986,
       "eps": 8.76,
-      "dividendYield": 2.18,
+      "dividendYield": 2.11,
       "winRateScore": 46.7,
       "rsiWeekly": 48.5,
       "ret10yAvg": 9.4,
@@ -1770,7 +1770,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 16.3,
       "roe": 7.2,
       "debtRatio": 107.4,
-      "week52RangePct": 37.8
+      "week52RangePct": 39.4
     },
     {
       "pressureScore": 2.0,
@@ -1779,10 +1779,10 @@ const SP500_CORE_DATA = {
       "name": "Western Digital",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 172086181888,
-      "changePercent": 2.13777,
-      "per": 17.723728,
-      "eps": 26.93,
+      "marketCap": 173881671680,
+      "changePercent": 1.0433713,
+      "per": 17.915304,
+      "eps": 26.92,
       "dividendYield": 0.13,
       "winRateScore": 56.7,
       "rsiWeekly": 51.8,
@@ -1793,7 +1793,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 42.9,
       "roe": 34.6,
       "debtRatio": 56.4,
-      "week52RangePct": 54.4
+      "week52RangePct": 55.0
     },
     {
       "pressureScore": 1.9,
@@ -1802,11 +1802,11 @@ const SP500_CORE_DATA = {
       "name": "Eaton Corporation",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 163955294208,
-      "changePercent": 2.74553,
-      "per": 42.986763,
-      "eps": 9.82,
-      "dividendYield": 1.07,
+      "marketCap": 161271447552,
+      "changePercent": -1.63694,
+      "per": 42.197155,
+      "eps": 9.84,
+      "dividendYield": 1.04,
       "winRateScore": 60.8,
       "rsiWeekly": 52.9,
       "ret10yAvg": 20.1,
@@ -1816,7 +1816,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 16.3,
       "roe": 4.1,
       "debtRatio": 177.2,
-      "week52RangePct": 66.4
+      "week52RangePct": 62.2
     },
     {
       "pressureScore": 4.9,
@@ -1839,7 +1839,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 31.2,
       "roe": 6.0,
       "debtRatio": 90.1,
-      "week52RangePct": 95.3
+      "week52RangePct": 97.4
     },
     {
       "pressureScore": 2.5,
@@ -1848,9 +1848,9 @@ const SP500_CORE_DATA = {
       "name": "Uber",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 149372420096,
-      "changePercent": -3.4715,
-      "per": 16.037281,
+      "marketCap": 145185177600,
+      "changePercent": -2.80322,
+      "per": 15.58772,
       "eps": 4.56,
       "dividendYield": null,
       "winRateScore": 47.1,
@@ -1862,7 +1862,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 13.3,
       "roe": 8.8,
       "debtRatio": 136.9,
-      "week52RangePct": 21.1
+      "week52RangePct": 15.5
     },
     {
       "pressureScore": 4.7,
@@ -1871,11 +1871,11 @@ const SP500_CORE_DATA = {
       "name": "Pfizer",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 158393942016,
-      "changePercent": -2.31986,
-      "per": 36.565792,
+      "marketCap": 158336942080,
+      "changePercent": -0.035985,
+      "per": 36.55263,
       "eps": 0.76,
-      "dividendYield": 6.05,
+      "dividendYield": 6.19,
       "winRateScore": 44.2,
       "rsiWeekly": 64.5,
       "ret10yAvg": -1.2,
@@ -1885,7 +1885,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 23.5,
       "roe": -0.3,
       "debtRatio": 135.7,
-      "week52RangePct": 74.8
+      "week52RangePct": 74.6
     },
     {
       "pressureScore": 3.3,
@@ -1894,9 +1894,9 @@ const SP500_CORE_DATA = {
       "name": "Interactive Brokers",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 154996097024,
-      "changePercent": -1.78147,
-      "per": 36.09921,
+      "marketCap": 153820463104,
+      "changePercent": -0.7584945,
+      "per": 35.825397,
       "eps": 2.52,
       "dividendYield": 0.38,
       "winRateScore": 57.5,
@@ -1908,7 +1908,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 85.6,
       "roe": 5.3,
       "debtRatio": 3812.0,
-      "week52RangePct": 80.5
+      "week52RangePct": 78.7
     },
     {
       "pressureScore": 2.7,
@@ -1931,7 +1931,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 34.0,
       "roe": -18.1,
       "debtRatio": -375.3,
-      "week52RangePct": 40.3
+      "week52RangePct": 31.1
     },
     {
       "pressureScore": 1,
@@ -1954,7 +1954,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 13.1,
       "roe": 14.3,
       "debtRatio": 248.5,
-      "week52RangePct": 1.3
+      "week52RangePct": 0.7
     },
     {
       "pressureScore": 3.0,
@@ -1963,11 +1963,11 @@ const SP500_CORE_DATA = {
       "name": "Danaher Corporation",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 144273817600,
-      "changePercent": -1.17019,
-      "per": 36.582886,
-      "eps": 5.61,
-      "dividendYield": 0.77,
+      "marketCap": 144006692864,
+      "changePercent": -0.185153,
+      "per": 36.58036,
+      "eps": 5.6,
+      "dividendYield": 0.78,
       "winRateScore": 55,
       "rsiWeekly": 55,
       "ret10yAvg": 11.6,
@@ -1977,7 +1977,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 18.0,
       "roe": 1.7,
       "debtRatio": 75.6,
-      "week52RangePct": 54.1
+      "week52RangePct": 53.6
     },
     {
       "pressureScore": 5.1,
@@ -1986,10 +1986,10 @@ const SP500_CORE_DATA = {
       "name": "Vertex Pharmaceuticals",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 134055493632,
-      "changePercent": -3.15315,
-      "per": 30.839653,
-      "eps": 17.15,
+      "marketCap": 132083556352,
+      "changePercent": -1.4709829,
+      "per": 30.315298,
+      "eps": 17.19,
       "dividendYield": null,
       "winRateScore": 60,
       "rsiWeekly": 67.7,
@@ -2000,7 +2000,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 38.1,
       "roe": 5.4,
       "debtRatio": 35.4,
-      "week52RangePct": 83.2
+      "week52RangePct": 79.0
     },
     {
       "pressureScore": 5.6,
@@ -2009,11 +2009,11 @@ const SP500_CORE_DATA = {
       "name": "Newmont",
       "sector": "Materials",
       "sectorKo": "소재",
-      "marketCap": 133913747456,
-      "changePercent": -0.780701,
-      "per": 16.026482,
+      "marketCap": 135620739072,
+      "changePercent": 1.2747,
+      "per": 16.23077,
       "eps": 7.93,
-      "dividendYield": 0.81,
+      "dividendYield": 0.82,
       "winRateScore": 55.8,
       "rsiWeekly": 62.9,
       "ret10yAvg": 12.5,
@@ -2023,7 +2023,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 51.6,
       "roe": 6.2,
       "debtRatio": 63.1,
-      "week52RangePct": 86.3
+      "week52RangePct": 88.9
     },
     {
       "pressureScore": 2.1,
@@ -2032,11 +2032,11 @@ const SP500_CORE_DATA = {
       "name": "Prologis",
       "sector": "Real Estate",
       "sectorKo": "부동산",
-      "marketCap": 134615212032,
-      "changePercent": 0.830056,
-      "per": 30.841871,
+      "marketCap": 131873923072,
+      "changePercent": -2.03639,
+      "per": 30.21381,
       "eps": 4.49,
-      "dividendYield": 3.12,
+      "dividendYield": 3.09,
       "winRateScore": 60.8,
       "rsiWeekly": 47,
       "ret10yAvg": 9.9,
@@ -2046,7 +2046,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 39.6,
       "roe": 2.0,
       "debtRatio": 79.8,
-      "week52RangePct": 65.2
+      "week52RangePct": 58.6
     },
     {
       "pressureScore": 4.1,
@@ -2055,11 +2055,11 @@ const SP500_CORE_DATA = {
       "name": "Bristol Myers Squibb",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 132143210496,
-      "changePercent": -3.18766,
-      "per": 14.248899,
+      "marketCap": 131571253248,
+      "changePercent": -0.432832,
+      "per": 14.187225,
       "eps": 4.54,
-      "dividendYield": 3.77,
+      "dividendYield": 3.9,
       "winRateScore": 52.5,
       "rsiWeekly": 66.8,
       "ret10yAvg": 2.2,
@@ -2069,7 +2069,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 31.0,
       "roe": 14.9,
       "debtRatio": 292.6,
-      "week52RangePct": 84.9
+      "week52RangePct": 83.8
     },
     {
       "pressureScore": 0.9,
@@ -2078,10 +2078,10 @@ const SP500_CORE_DATA = {
       "name": "Intuitive Surgical",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 125454639104,
-      "changePercent": -4.5105,
-      "per": 40.109966,
-      "eps": 8.73,
+      "marketCap": 126558134272,
+      "changePercent": 0.879594,
+      "per": 40.50917,
+      "eps": 8.72,
       "dividendYield": null,
       "winRateScore": 54.2,
       "rsiWeekly": 37.9,
@@ -2092,7 +2092,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 33.6,
       "roe": 4.5,
       "debtRatio": 14.2,
-      "week52RangePct": 7.8
+      "week52RangePct": 9.0
     },
     {
       "pressureScore": 2.6,
@@ -2101,11 +2101,11 @@ const SP500_CORE_DATA = {
       "name": "Capital One",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 131261227008,
-      "changePercent": -2.56831,
-      "per": 11.781939,
-      "eps": 18.16,
-      "dividendYield": 1.46,
+      "marketCap": 129359421440,
+      "changePercent": -1.44887,
+      "per": 11.624036,
+      "eps": 18.14,
+      "dividendYield": 1.5,
       "winRateScore": 61.7,
       "rsiWeekly": 58.3,
       "ret10yAvg": 11.8,
@@ -2115,7 +2115,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 2.7,
       "debtRatio": 492.2,
-      "week52RangePct": 46.5
+      "week52RangePct": 42.9
     },
     {
       "pressureScore": 5.3,
@@ -2124,9 +2124,9 @@ const SP500_CORE_DATA = {
       "name": "ServiceNow",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 138754621440,
-      "changePercent": -4.99079,
-      "per": 83.881256,
+      "marketCap": 135549648896,
+      "changePercent": -2.30982,
+      "per": 81.94375,
       "eps": 1.6,
       "dividendYield": null,
       "winRateScore": 57.5,
@@ -2138,7 +2138,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 4.1,
       "roe": 2.4,
       "debtRatio": 153.0,
-      "week52RangePct": 46.7
+      "week52RangePct": 43.9
     },
     {
       "pressureScore": 2.5,
@@ -2147,11 +2147,11 @@ const SP500_CORE_DATA = {
       "name": "Chubb Limited",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 129875673088,
-      "changePercent": -1.4491,
-      "per": 11.929129,
-      "eps": 28.22,
-      "dividendYield": 1.19,
+      "marketCap": 130253750272,
+      "changePercent": 0.291106,
+      "per": 11.968097,
+      "eps": 28.21,
+      "dividendYield": 1.21,
       "winRateScore": 59.2,
       "rsiWeekly": 54.4,
       "ret10yAvg": 10.5,
@@ -2161,7 +2161,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 3.8,
       "debtRatio": 266.0,
-      "week52RangePct": 70.9
+      "week52RangePct": 71.9
     },
     {
       "pressureScore": 2.1,
@@ -2170,11 +2170,11 @@ const SP500_CORE_DATA = {
       "name": "Lockheed Martin",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 123738464256,
-      "changePercent": 2.06937,
-      "per": 19.784134,
-      "eps": 27.1,
-      "dividendYield": 2.63,
+      "marketCap": 121040519168,
+      "changePercent": -2.18036,
+      "per": 19.33137,
+      "eps": 27.13,
+      "dividendYield": 2.57,
       "winRateScore": 51.7,
       "rsiWeekly": 44.8,
       "ret10yAvg": 8.2,
@@ -2184,7 +2184,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 12.4,
       "roe": 20.9,
       "debtRatio": 612.2,
-      "week52RangePct": 38.8
+      "week52RangePct": 34.2
     },
     {
       "pressureScore": 1.6,
@@ -2193,11 +2193,11 @@ const SP500_CORE_DATA = {
       "name": "Corning Inc.",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 142956019712,
-      "changePercent": 7.55671,
-      "per": 76.12844,
-      "eps": 2.18,
-      "dividendYield": 0.73,
+      "marketCap": 145109483520,
+      "changePercent": 1.50639,
+      "per": 77.63134,
+      "eps": 2.17,
+      "dividendYield": 0.67,
       "winRateScore": 57.5,
       "rsiWeekly": 49.3,
       "ret10yAvg": 20.6,
@@ -2207,7 +2207,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 15.5,
       "roe": 4.5,
       "debtRatio": 157.9,
-      "week52RangePct": 47.1
+      "week52RangePct": 48.1
     },
     {
       "pressureScore": 2.9,
@@ -2216,11 +2216,11 @@ const SP500_CORE_DATA = {
       "name": "Progressive Corporation",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 124878389248,
-      "changePercent": -1.84974,
-      "per": 10.788153,
+      "marketCap": 125227057152,
+      "changePercent": 0.279202,
+      "per": 10.818273,
       "eps": 19.92,
-      "dividendYield": 0.18,
+      "dividendYield": 0.19,
       "winRateScore": 60.8,
       "rsiWeekly": 53.9,
       "ret10yAvg": 21.4,
@@ -2230,7 +2230,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 9.6,
       "debtRatio": 263.9,
-      "week52RangePct": 42.5
+      "week52RangePct": 43.5
     },
     {
       "pressureScore": 3.5,
@@ -2239,11 +2239,11 @@ const SP500_CORE_DATA = {
       "name": "S&P Global",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 126560583680,
-      "changePercent": -3.20173,
-      "per": 26.161488,
-      "eps": 16.41,
-      "dividendYield": 0.87,
+      "marketCap": 123332526080,
+      "changePercent": -2.55061,
+      "per": 25.447687,
+      "eps": 16.44,
+      "dividendYield": 0.9,
       "winRateScore": 61.7,
       "rsiWeekly": 55.7,
       "ret10yAvg": 14,
@@ -2253,7 +2253,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 43.4,
       "roe": 3.9,
       "debtRatio": 83.4,
-      "week52RangePct": 42.3
+      "week52RangePct": 35.5
     },
     {
       "pressureScore": 1.7,
@@ -2262,11 +2262,11 @@ const SP500_CORE_DATA = {
       "name": "Stryker Corporation",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 106031095808,
-      "changePercent": -8.80811,
-      "per": 28.67531,
-      "eps": 9.64,
-      "dividendYield": 1.16,
+      "marketCap": 105632186368,
+      "changePercent": -0.376218,
+      "per": 28.537827,
+      "eps": 9.65,
+      "dividendYield": 1.27,
       "winRateScore": 57.5,
       "rsiWeekly": 40,
       "ret10yAvg": 10,
@@ -2276,7 +2276,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 25.2,
       "roe": 5.3,
       "debtRatio": 99.8,
-      "week52RangePct": 1.1
+      "week52RangePct": 3.4
     },
     {
       "pressureScore": 2.5,
@@ -2285,11 +2285,11 @@ const SP500_CORE_DATA = {
       "name": "Parker Hannifin",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 120484995072,
-      "changePercent": -0.69812,
-      "per": 33.55107,
-      "eps": 28.49,
-      "dividendYield": 0.83,
+      "marketCap": 119678287872,
+      "changePercent": -0.66955,
+      "per": 33.33813,
+      "eps": 28.48,
+      "dividendYield": 0.84,
       "winRateScore": 60,
       "rsiWeekly": 51.7,
       "ret10yAvg": 22.6,
@@ -2299,7 +2299,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 23.9,
       "roe": 7.1,
       "debtRatio": 100.4,
-      "week52RangePct": 62.5
+      "week52RangePct": 60.9
     },
     {
       "pressureScore": 3.0,
@@ -2322,7 +2322,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 12.9,
       "roe": -13.6,
       "debtRatio": -468.6,
-      "week52RangePct": 73.9
+      "week52RangePct": 67.8
     },
     {
       "pressureScore": 1.1,
@@ -2345,7 +2345,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 13.7,
       "roe": -32.3,
       "debtRatio": -851.4,
-      "week52RangePct": 1.6
+      "week52RangePct": 1.5
     },
     {
       "pressureScore": 4.2,
@@ -2354,21 +2354,21 @@ const SP500_CORE_DATA = {
       "name": "Medtronic",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 118179553280,
-      "changePercent": -1.8902,
-      "per": 22.756157,
+      "marketCap": 117539979264,
+      "changePercent": -0.541184,
+      "per": 22.633005,
       "eps": 4.06,
-      "dividendYield": 3.06,
+      "dividendYield": 3.12,
       "winRateScore": 53.3,
       "rsiWeekly": 62.3,
       "ret10yAvg": 0.9,
       "revenueGrowth": 13.73,
       "netIncomeGrowth": 41.35,
       "cashFlowGrowth": 64.8,
-      "operatingMargin": 18.8,
-      "roe": 2.9,
-      "debtRatio": 84.5,
-      "week52RangePct": 57.8
+      "operatingMargin": null,
+      "roe": null,
+      "debtRatio": null,
+      "week52RangePct": null
     },
     {
       "pressureScore": 2.8,
@@ -2377,11 +2377,11 @@ const SP500_CORE_DATA = {
       "name": "CVS Health",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 122870685696,
-      "changePercent": -0.692576,
-      "per": 25.348286,
+      "marketCap": 121988186112,
+      "changePercent": -0.718229,
+      "per": 25.166227,
       "eps": 3.79,
-      "dividendYield": 2.75,
+      "dividendYield": 2.77,
       "winRateScore": 50,
       "rsiWeekly": 54.7,
       "ret10yAvg": 0.8,
@@ -2391,7 +2391,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 4.4,
       "roe": 3.7,
       "debtRatio": 218.1,
-      "week52RangePct": 64.5
+      "week52RangePct": 62.8
     },
     {
       "pressureScore": 3.0,
@@ -2400,11 +2400,11 @@ const SP500_CORE_DATA = {
       "name": "Accenture",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 109555990528,
-      "changePercent": -4.11847,
-      "per": 14.288109,
-      "eps": 12.53,
-      "dividendYield": 3.49,
+      "marketCap": 107579416576,
+      "changePercent": -1.80416,
+      "per": 14.052758,
+      "eps": 12.51,
+      "dividendYield": 3.64,
       "winRateScore": 55.8,
       "rsiWeekly": 52.1,
       "ret10yAvg": 4.3,
@@ -2414,7 +2414,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 17.0,
       "roe": 7.3,
       "debtRatio": 110.7,
-      "week52RangePct": 35.2
+      "week52RangePct": 33.3
     },
     {
       "pressureScore": 4.2,
@@ -2423,9 +2423,9 @@ const SP500_CORE_DATA = {
       "name": "Fortinet",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 115537895424,
-      "changePercent": 0.755012,
-      "per": 55.643112,
+      "marketCap": 115354460160,
+      "changePercent": -0.1587604,
+      "per": 55.55477,
       "eps": 2.83,
       "dividendYield": null,
       "winRateScore": 61.7,
@@ -2437,7 +2437,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 33.7,
       "roe": 39.1,
       "debtRatio": 600.1,
-      "week52RangePct": 83.6
+      "week52RangePct": 83.4
     },
     {
       "pressureScore": 6.2,
@@ -2460,7 +2460,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 21.0,
       "roe": 10.5,
       "debtRatio": 268.7,
-      "week52RangePct": 77.1
+      "week52RangePct": 71.2
     },
     {
       "pressureScore": 4.4,
@@ -2469,11 +2469,11 @@ const SP500_CORE_DATA = {
       "name": "ADP (company)",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 106450526208,
-      "changePercent": -3.47958,
-      "per": 24.4936,
-      "eps": 10.94,
-      "dividendYield": 2.45,
+      "marketCap": 105362030592,
+      "changePercent": -1.022537,
+      "per": 24.265324,
+      "eps": 10.93,
+      "dividendYield": 2.54,
       "winRateScore": 60,
       "rsiWeekly": 64.5,
       "ret10yAvg": 12.1,
@@ -2483,7 +2483,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 23.0,
       "roe": 16.2,
       "debtRatio": 947.8,
-      "week52RangePct": 71.9
+      "week52RangePct": 69.4
     },
     {
       "pressureScore": 2.7,
@@ -2492,11 +2492,11 @@ const SP500_CORE_DATA = {
       "name": "Altria",
       "sector": "Consumer Staples",
       "sectorKo": "필수소비재",
-      "marketCap": 113826439168,
-      "changePercent": -1.03078,
-      "per": 14.351579,
+      "marketCap": 113358913536,
+      "changePercent": -0.410736,
+      "per": 14.292631,
       "eps": 4.75,
-      "dividendYield": 6.45,
+      "dividendYield": 6.51,
       "winRateScore": 54.2,
       "rsiWeekly": 50.5,
       "ret10yAvg": 0.9,
@@ -2506,7 +2506,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 58.9,
       "roe": -86.1,
       "debtRatio": -1349.0,
-      "week52RangePct": 60.2
+      "week52RangePct": 59.0
     },
     {
       "pressureScore": 3.8,
@@ -2515,11 +2515,11 @@ const SP500_CORE_DATA = {
       "name": "Freeport-McMoRan",
       "sector": "Materials",
       "sectorKo": "소재",
-      "marketCap": 110027669504,
-      "changePercent": 5.34855,
-      "per": 37.558826,
+      "marketCap": 109467623424,
+      "changePercent": -0.509005,
+      "per": 37.36765,
       "eps": 2.04,
-      "dividendYield": 0.82,
+      "dividendYield": 0.78,
       "winRateScore": 50,
       "rsiWeekly": 59.5,
       "ret10yAvg": 20.9,
@@ -2529,7 +2529,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 28.2,
       "roe": 4.9,
       "debtRatio": 136.8,
-      "week52RangePct": 92.0
+      "week52RangePct": 91.1
     },
     {
       "pressureScore": 3.9,
@@ -2538,10 +2538,10 @@ const SP500_CORE_DATA = {
       "name": "Adobe Inc.",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 102260850688,
-      "changePercent": -3.47079,
-      "per": 14.717392,
-      "eps": 17.48,
+      "marketCap": 101306851328,
+      "changePercent": -0.9329119,
+      "per": 14.588438,
+      "eps": 17.47,
       "dividendYield": null,
       "winRateScore": 55.8,
       "rsiWeekly": 52.5,
@@ -2552,7 +2552,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 33.8,
       "roe": 14.9,
       "debtRatio": 159.9,
-      "week52RangePct": 37.1
+      "week52RangePct": 35.8
     },
     {
       "pressureScore": 3,
@@ -2561,11 +2561,11 @@ const SP500_CORE_DATA = {
       "name": "Howmet Aerospace",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 92334489600,
-      "changePercent": -10.6993,
-      "per": 49.89871,
-      "eps": 4.64,
-      "dividendYield": 0.22,
+      "marketCap": 92769181696,
+      "changePercent": 0.47078,
+      "per": 50.241898,
+      "eps": 4.63,
+      "dividendYield": 0.24,
       "winRateScore": 59.3,
       "rsiWeekly": 50,
       "ret10yAvg": 33.8,
@@ -2575,7 +2575,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 27.9,
       "roe": 9.3,
       "debtRatio": 131.2,
-      "week52RangePct": 41.3
+      "week52RangePct": 40.7
     },
     {
       "pressureScore": 4.8,
@@ -2584,11 +2584,11 @@ const SP500_CORE_DATA = {
       "name": "BNY",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 110494400512,
-      "changePercent": -1.20723,
-      "per": 19.002335,
+      "marketCap": 110263705600,
+      "changePercent": -0.208788,
+      "per": 18.96266,
       "eps": 8.57,
-      "dividendYield": 1.35,
+      "dividendYield": 1.36,
       "winRateScore": 60.8,
       "rsiWeekly": 76.4,
       "ret10yAvg": 15.2,
@@ -2598,7 +2598,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 3.6,
       "debtRatio": 1152.7,
-      "week52RangePct": 95.3
+      "week52RangePct": 94.7
     },
     {
       "pressureScore": 2.5,
@@ -2607,11 +2607,11 @@ const SP500_CORE_DATA = {
       "name": "Equinix",
       "sector": "Real Estate",
       "sectorKo": "부동산",
-      "marketCap": 102737944576,
-      "changePercent": 0.504834,
-      "per": 67.00193,
-      "eps": 15.54,
-      "dividendYield": 1.99,
+      "marketCap": 102920495104,
+      "changePercent": 0.17768727,
+      "per": 67.25081,
+      "eps": 15.51,
+      "dividendYield": 1.98,
       "winRateScore": 59.2,
       "rsiWeekly": 51.7,
       "ret10yAvg": 11.1,
@@ -2621,7 +2621,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 26.4,
       "roe": 3.3,
       "debtRatio": 185.5,
-      "week52RangePct": 78.6
+      "week52RangePct": 79.0
     },
     {
       "pressureScore": 2.8,
@@ -2644,7 +2644,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 9.2,
       "roe": 7.7,
       "debtRatio": 233.7,
-      "week52RangePct": 47.2
+      "week52RangePct": 44.1
     },
     {
       "pressureScore": 2.7,
@@ -2653,11 +2653,11 @@ const SP500_CORE_DATA = {
       "name": "General Dynamics",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 96475275264,
-      "changePercent": -0.781888,
-      "per": 21.755949,
-      "eps": 16.39,
-      "dividendYield": 1.77,
+      "marketCap": 95417409536,
+      "changePercent": -1.09652,
+      "per": 21.50427,
+      "eps": 16.4,
+      "dividendYield": 1.78,
       "winRateScore": 54.2,
       "rsiWeekly": 48.7,
       "ret10yAvg": 8.8,
@@ -2667,7 +2667,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 10.4,
       "roe": 4.3,
       "debtRatio": 124.3,
-      "week52RangePct": 53.4
+      "week52RangePct": 49.2
     },
     {
       "pressureScore": 0.6,
@@ -2676,9 +2676,9 @@ const SP500_CORE_DATA = {
       "name": "AppLovin",
       "sector": "Communication Services",
       "sectorKo": "커뮤니케이션",
-      "marketCap": 104816492544,
-      "changePercent": -2.6672,
-      "per": 23.98232,
+      "marketCap": 102481707008,
+      "changePercent": -2.2274966,
+      "per": 23.448116,
       "eps": 13.01,
       "dividendYield": null,
       "winRateScore": 56.2,
@@ -2690,7 +2690,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 77.7,
       "roe": 40.0,
       "debtRatio": 161.4,
-      "week52RangePct": 3.2
+      "week52RangePct": 1.7
     },
     {
       "pressureScore": 1.3,
@@ -2699,11 +2699,11 @@ const SP500_CORE_DATA = {
       "name": "Southern Company",
       "sector": "Utilities",
       "sectorKo": "유틸리티",
-      "marketCap": 102370803712,
-      "changePercent": 0.998748,
-      "per": 21.443373,
+      "marketCap": 101623062528,
+      "changePercent": -0.730421,
+      "per": 21.286745,
       "eps": 4.15,
-      "dividendYield": 3.45,
+      "dividendYield": 3.42,
       "winRateScore": 60.8,
       "rsiWeekly": 38.9,
       "ret10yAvg": 5.6,
@@ -2713,7 +2713,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 25.5,
       "roe": 3.0,
       "debtRatio": 302.5,
-      "week52RangePct": 30.5
+      "week52RangePct": 26.6
     },
     {
       "pressureScore": 6.5,
@@ -2736,7 +2736,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 13.4,
       "roe": 26.9,
       "debtRatio": 359.5,
-      "week52RangePct": 99.2
+      "week52RangePct": 99.0
     },
     {
       "pressureScore": 1.7,
@@ -2745,10 +2745,10 @@ const SP500_CORE_DATA = {
       "name": "Vertiv",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 111966101504,
-      "changePercent": 3.67162,
-      "per": 65.650116,
-      "eps": 4.43,
+      "marketCap": 101209546752,
+      "changePercent": -9.60698,
+      "per": 59.47738,
+      "eps": 4.42,
       "dividendYield": 0.09,
       "winRateScore": 65.6,
       "rsiWeekly": 51.1,
@@ -2759,7 +2759,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 19.5,
       "roe": 10.5,
       "debtRatio": 234.2,
-      "week52RangePct": 65.6
+      "week52RangePct": 52.7
     },
     {
       "pressureScore": 5.9,
@@ -2782,7 +2782,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 11.7,
       "roe": 14.9,
       "debtRatio": 145.6,
-      "week52RangePct": 99.4
+      "week52RangePct": 99.9
     },
     {
       "pressureScore": 2.3,
@@ -2791,11 +2791,11 @@ const SP500_CORE_DATA = {
       "name": "Intuit",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 87239147520,
-      "changePercent": -4.13887,
-      "per": 19.3643,
-      "eps": 16.47,
-      "dividendYield": 1.66,
+      "marketCap": 85874204672,
+      "changePercent": -1.5646037,
+      "per": 19.072905,
+      "eps": 16.46,
+      "dividendYield": 1.73,
       "winRateScore": 56.7,
       "rsiWeekly": 43.1,
       "ret10yAvg": 11.7,
@@ -2805,7 +2805,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 47.0,
       "roe": 14.9,
       "debtRatio": 90.7,
-      "week52RangePct": 14.6
+      "week52RangePct": 13.5
     },
     {
       "pressureScore": 2.6,
@@ -2814,11 +2814,11 @@ const SP500_CORE_DATA = {
       "name": "Kohlberg Kravis Roberts",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 97651228672,
-      "changePercent": -1.85649,
-      "per": 33.779552,
+      "marketCap": 96136536064,
+      "changePercent": -1.55113,
+      "per": 33.25559,
       "eps": 3.13,
-      "dividendYield": 0.72,
+      "dividendYield": 0.74,
       "winRateScore": 60,
       "rsiWeekly": 54.5,
       "ret10yAvg": 22.4,
@@ -2828,7 +2828,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 5.8,
       "roe": 2.3,
       "debtRatio": 1075.8,
-      "week52RangePct": 33.2
+      "week52RangePct": 30.9
     },
     {
       "pressureScore": 4.5,
@@ -2837,11 +2837,11 @@ const SP500_CORE_DATA = {
       "name": "McKesson Corporation",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 103662821376,
-      "changePercent": -2.07822,
-      "per": 23.824223,
-      "eps": 37.32,
-      "dividendYield": 0.41,
+      "marketCap": 103961288704,
+      "changePercent": 0.287925,
+      "per": 23.937717,
+      "eps": 37.25,
+      "dividendYield": 0.42,
       "winRateScore": 59.2,
       "rsiWeekly": 63.3,
       "ret10yAvg": 18.5,
@@ -2851,7 +2851,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 1.3,
       "roe": -14.5,
       "debtRatio": -2113.9,
-      "week52RangePct": 64.7
+      "week52RangePct": 65.5
     },
     {
       "pressureScore": 1.5,
@@ -2860,10 +2860,10 @@ const SP500_CORE_DATA = {
       "name": "Trane Technologies",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 98130337792,
-      "changePercent": -0.4242,
-      "per": 33.184525,
-      "eps": 13.44,
+      "marketCap": 97727700992,
+      "changePercent": -0.410311,
+      "per": 33.09762,
+      "eps": 13.42,
       "dividendYield": 0.94,
       "winRateScore": 62.5,
       "rsiWeekly": 46.7,
@@ -2874,7 +2874,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 19.3,
       "roe": 10.7,
       "debtRatio": 177.2,
-      "week52RangePct": 62.1
+      "week52RangePct": 60.9
     },
     {
       "pressureScore": 3.4,
@@ -2883,11 +2883,11 @@ const SP500_CORE_DATA = {
       "name": "CME Group",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 100045742080,
-      "changePercent": -1.08784,
-      "per": 23.598814,
-      "eps": 11.79,
-      "dividendYield": 1.85,
+      "marketCap": 98776424448,
+      "changePercent": -1.268734,
+      "per": 23.279661,
+      "eps": 11.8,
+      "dividendYield": 1.87,
       "winRateScore": 53.3,
       "rsiWeekly": 54.1,
       "ret10yAvg": 10.4,
@@ -2897,7 +2897,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 64.9,
       "roe": 3.9,
       "debtRatio": 634.1,
-      "week52RangePct": 54.1
+      "week52RangePct": 50.9
     },
     {
       "pressureScore": 4.3,
@@ -2920,7 +2920,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 3.5,
       "roe": 2.0,
       "debtRatio": 97.1,
-      "week52RangePct": 40.2
+      "week52RangePct": 37.9
     },
     {
       "pressureScore": 6.4,
@@ -2943,7 +2943,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 8.4,
       "roe": 12.2,
       "debtRatio": 155.9,
-      "week52RangePct": 98.7
+      "week52RangePct": 97.9
     },
     {
       "pressureScore": 4.8,
@@ -2952,9 +2952,9 @@ const SP500_CORE_DATA = {
       "name": "Robinhood Markets",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 105498312704,
-      "changePercent": -3.90632,
-      "per": 51.920353,
+      "marketCap": 103646208000,
+      "changePercent": -1.7555801,
+      "per": 51.00885,
       "eps": 2.26,
       "dividendYield": null,
       "winRateScore": 50.8,
@@ -2966,7 +2966,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 43.9,
       "roe": 5.9,
       "debtRatio": 495.9,
-      "week52RangePct": 59.6
+      "week52RangePct": 57.3
     },
     {
       "pressureScore": 2.4,
@@ -2975,11 +2975,11 @@ const SP500_CORE_DATA = {
       "name": "PNC Financial Services",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 96907411456,
-      "changePercent": -1.09528,
-      "per": 13.3834715,
-      "eps": 18.15,
-      "dividendYield": 3.26,
+      "marketCap": 96021757952,
+      "changePercent": -0.913919,
+      "per": 13.24656,
+      "eps": 18.17,
+      "dividendYield": 3.29,
       "winRateScore": 56.7,
       "rsiWeekly": 58.5,
       "ret10yAvg": 10.5,
@@ -2989,7 +2989,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 3.2,
       "debtRatio": 862.4,
-      "week52RangePct": 80.4
+      "week52RangePct": 77.7
     },
     {
       "pressureScore": 2.7,
@@ -2998,10 +2998,10 @@ const SP500_CORE_DATA = {
       "name": "Constellation Energy",
       "sector": "Utilities",
       "sectorKo": "유틸리티",
-      "marketCap": 105955622912,
-      "changePercent": 0.0301031,
-      "per": 29.26125,
-      "eps": 10.22,
+      "marketCap": 104132714496,
+      "changePercent": -1.7204444,
+      "per": 28.729717,
+      "eps": 10.23,
       "dividendYield": 0.57,
       "winRateScore": 65.5,
       "rsiWeekly": 54.6,
@@ -3012,7 +3012,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": -0.6,
       "roe": 1.6,
       "debtRatio": 206.2,
-      "week52RangePct": 38.3
+      "week52RangePct": 35.5
     },
     {
       "pressureScore": 2.9,
@@ -3021,11 +3021,11 @@ const SP500_CORE_DATA = {
       "name": "U.S. Bancorp",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 97362640896,
-      "changePercent": -1.38867,
-      "per": 12.473054,
+      "marketCap": 96770580480,
+      "changePercent": -0.608099,
+      "per": 12.397205,
       "eps": 5.01,
-      "dividendYield": 3.28,
+      "dividendYield": 3.33,
       "winRateScore": 52.5,
       "rsiWeekly": 61.8,
       "ret10yAvg": 4,
@@ -3035,7 +3035,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 3.2,
       "debtRatio": 975.8,
-      "week52RangePct": 83.0
+      "week52RangePct": 81.1
     },
     {
       "pressureScore": 1.8,
@@ -3044,10 +3044,10 @@ const SP500_CORE_DATA = {
       "name": "Quanta Services",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 96076939264,
-      "changePercent": 2.34462,
-      "per": 73.11785,
-      "eps": 8.74,
+      "marketCap": 94262296576,
+      "changePercent": -1.88874,
+      "per": 71.654854,
+      "eps": 8.75,
       "dividendYield": 0.07,
       "winRateScore": 65,
       "rsiWeekly": 49.3,
@@ -3058,7 +3058,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 7.2,
       "roe": 4.7,
       "debtRatio": 192.5,
-      "week52RangePct": 64.2
+      "week52RangePct": 61.1
     },
     {
       "pressureScore": 3.0,
@@ -3067,11 +3067,11 @@ const SP500_CORE_DATA = {
       "name": "CSX Corporation",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 90771267584,
-      "changePercent": -0.829791,
-      "per": 28.48837,
+      "marketCap": 89604210688,
+      "changePercent": -1.2857164,
+      "per": 28.122091,
       "eps": 1.72,
-      "dividendYield": 1.13,
+      "dividendYield": 1.14,
       "winRateScore": 60,
       "rsiWeekly": 59.1,
       "ret10yAvg": 17.1,
@@ -3081,7 +3081,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 38.3,
       "roe": 7.1,
       "debtRatio": 217.6,
-      "week52RangePct": 78.9
+      "week52RangePct": 76.0
     },
     {
       "pressureScore": 2.7,
@@ -3090,11 +3090,11 @@ const SP500_CORE_DATA = {
       "name": "Comcast",
       "sector": "Communication Services",
       "sectorKo": "커뮤니케이션",
-      "marketCap": 93435600896,
-      "changePercent": -0.604001,
-      "per": 8.439103,
+      "marketCap": 87260979200,
+      "changePercent": -6.6084304,
+      "per": 7.8814106,
       "eps": 3.12,
-      "dividendYield": 4.98,
+      "dividendYield": 5.01,
       "winRateScore": 54.2,
       "rsiWeekly": 52.3,
       "ret10yAvg": -1.6,
@@ -3104,7 +3104,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 17.2,
       "roe": 3.9,
       "debtRatio": 186.7,
-      "week52RangePct": 43.6
+      "week52RangePct": 28.6
     },
     {
       "pressureScore": 0.9,
@@ -3113,9 +3113,9 @@ const SP500_CORE_DATA = {
       "name": "Monster Beverage",
       "sector": "Consumer Staples",
       "sectorKo": "필수소비재",
-      "marketCap": 84533084160,
-      "changePercent": -1.52898,
-      "per": 39.953705,
+      "marketCap": 83925778432,
+      "changePercent": -0.71842724,
+      "per": 39.666664,
       "eps": 1.08,
       "dividendYield": null,
       "winRateScore": 55,
@@ -3127,7 +3127,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 29.2,
       "roe": 6.2,
       "debtRatio": 21.6,
-      "week52RangePct": 62.9
+      "week52RangePct": 61.3
     },
     {
       "pressureScore": 1.6,
@@ -3136,11 +3136,11 @@ const SP500_CORE_DATA = {
       "name": "Duke Energy",
       "sector": "Utilities",
       "sectorKo": "유틸리티",
-      "marketCap": 94531092480,
-      "changePercent": 0.848442,
-      "per": 18.259037,
+      "marketCap": 93899538432,
+      "changePercent": -0.668094,
+      "per": 18.137049,
       "eps": 6.64,
-      "dividendYield": 3.61,
+      "dividendYield": 3.58,
       "winRateScore": 59.2,
       "rsiWeekly": 42.7,
       "ret10yAvg": 4.2,
@@ -3150,7 +3150,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 27.5,
       "roe": 2.0,
       "debtRatio": 263.4,
-      "week52RangePct": 35.6
+      "week52RangePct": 31.7
     },
     {
       "pressureScore": 1.4,
@@ -3173,7 +3173,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 17.2,
       "roe": -16.9,
       "debtRatio": -720.7,
-      "week52RangePct": 46.7
+      "week52RangePct": 48.5
     },
     {
       "pressureScore": 2.2,
@@ -3182,11 +3182,11 @@ const SP500_CORE_DATA = {
       "name": "HCA Healthcare",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 87037935616,
-      "changePercent": -0.735805,
-      "per": 13.486078,
-      "eps": 29.81,
-      "dividendYield": 0.77,
+      "marketCap": 91326824448,
+      "changePercent": 4.92762,
+      "per": 14.141132,
+      "eps": 29.83,
+      "dividendYield": 0.78,
       "winRateScore": 55,
       "rsiWeekly": 46,
       "ret10yAvg": 18.3,
@@ -3196,7 +3196,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 15.2,
       "roe": -25.6,
       "debtRatio": -1000.6,
-      "week52RangePct": 23.7
+      "week52RangePct": 33.5
     },
     {
       "pressureScore": 2.7,
@@ -3205,11 +3205,11 @@ const SP500_CORE_DATA = {
       "name": "3M",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 86393823232,
-      "changePercent": -0.616987,
-      "per": 29.754885,
+      "marketCap": 84784766976,
+      "changePercent": -1.86247,
+      "per": 29.200708,
       "eps": 5.63,
-      "dividendYield": 1.85,
+      "dividendYield": 1.86,
       "winRateScore": 54.2,
       "rsiWeekly": 54,
       "ret10yAvg": 1.4,
@@ -3219,7 +3219,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 20.3,
       "roe": 31.6,
       "debtRatio": 1081.3,
-      "week52RangePct": 61.9
+      "week52RangePct": 55.0
     },
     {
       "pressureScore": 3.1,
@@ -3228,11 +3228,11 @@ const SP500_CORE_DATA = {
       "name": "Marsh McLennan",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 86146179072,
-      "changePercent": -2.81038,
-      "per": 22.041515,
-      "eps": 8.19,
-      "dividendYield": 2.13,
+      "marketCap": 84390035456,
+      "changePercent": -2.03856,
+      "per": 21.565853,
+      "eps": 8.2,
+      "dividendYield": 2.19,
       "winRateScore": 62.5,
       "rsiWeekly": 54.4,
       "ret10yAvg": 10.7,
@@ -3242,7 +3242,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 25.6,
       "roe": 8.3,
       "debtRatio": 291.4,
-      "week52RangePct": 46.7
+      "week52RangePct": 39.5
     },
     {
       "pressureScore": 3.5,
@@ -3251,11 +3251,11 @@ const SP500_CORE_DATA = {
       "name": "Intercontinental Exchange",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 88565596160,
-      "changePercent": -2.17041,
-      "per": 22.219717,
-      "eps": 7.1,
-      "dividendYield": 1.29,
+      "marketCap": 87858241536,
+      "changePercent": -0.798678,
+      "per": 22.10452,
+      "eps": 7.08,
+      "dividendYield": 1.32,
       "winRateScore": 56.7,
       "rsiWeekly": 58.1,
       "ret10yAvg": 11.6,
@@ -3265,7 +3265,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 38.9,
       "roe": 3.2,
       "debtRatio": 489.3,
-      "week52RangePct": 65.6
+      "week52RangePct": 63.3
     },
     {
       "pressureScore": 2.1,
@@ -3274,11 +3274,11 @@ const SP500_CORE_DATA = {
       "name": "Waste Management, Inc.",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 87049977856,
-      "changePercent": -0.55254,
-      "per": 30.803394,
-      "eps": 7.07,
-      "dividendYield": 1.73,
+      "marketCap": 86514360320,
+      "changePercent": -0.615298,
+      "per": 30.570621,
+      "eps": 7.08,
+      "dividendYield": 1.74,
       "winRateScore": 60.8,
       "rsiWeekly": 44.7,
       "ret10yAvg": 13.1,
@@ -3288,7 +3288,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 19.0,
       "roe": 7.9,
       "debtRatio": 367.9,
-      "week52RangePct": 43.8
+      "week52RangePct": 41.3
     },
     {
       "pressureScore": 1.7,
@@ -3297,9 +3297,9 @@ const SP500_CORE_DATA = {
       "name": "Cadence Design Systems",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 78241898496,
-      "changePercent": -2.93475,
-      "per": 56.483097,
+      "marketCap": 78376845312,
+      "changePercent": 0.17247573,
+      "per": 56.580517,
       "eps": 5.03,
       "dividendYield": null,
       "winRateScore": 60.8,
@@ -3311,7 +3311,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 28.4,
       "roe": 5.4,
       "debtRatio": 76.2,
-      "week52RangePct": 13.9
+      "week52RangePct": 14.2
     },
     {
       "pressureScore": 2.4,
@@ -3320,11 +3320,11 @@ const SP500_CORE_DATA = {
       "name": "Emerson Electric",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 84869267456,
-      "changePercent": -0.438433,
-      "per": 33.293213,
-      "eps": 4.57,
-      "dividendYield": 1.45,
+      "marketCap": 83859652608,
+      "changePercent": -1.18961,
+      "per": 32.9693,
+      "eps": 4.56,
+      "dividendYield": 1.46,
       "winRateScore": 55,
       "rsiWeekly": 55.6,
       "ret10yAvg": 10.9,
@@ -3334,7 +3334,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 22.7,
       "roe": 3.5,
       "debtRatio": 107.0,
-      "week52RangePct": 67.5
+      "week52RangePct": 63.4
     },
     {
       "pressureScore": 3.0,
@@ -3343,11 +3343,11 @@ const SP500_CORE_DATA = {
       "name": "Moody's Corporation",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 83343351808,
-      "changePercent": -2.49215,
-      "per": 30.574968,
+      "marketCap": 82186502144,
+      "changePercent": -1.38805,
+      "per": 30.150572,
       "eps": 15.74,
-      "dividendYield": 0.83,
+      "dividendYield": 0.86,
       "winRateScore": 62.5,
       "rsiWeekly": 54.7,
       "ret10yAvg": 16.4,
@@ -3357,7 +3357,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 49.3,
       "roe": 29.0,
       "debtRatio": 380.5,
-      "week52RangePct": 54.6
+      "week52RangePct": 50.0
     },
     {
       "pressureScore": 3.5,
@@ -3366,11 +3366,11 @@ const SP500_CORE_DATA = {
       "name": "Elevance Health",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 87168442368,
-      "changePercent": -1.36442,
-      "per": 17.76923,
-      "eps": 22.62,
-      "dividendYield": 1.69,
+      "marketCap": 86075424768,
+      "changePercent": -1.25392,
+      "per": 17.538666,
+      "eps": 22.63,
+      "dividendYield": 1.71,
       "winRateScore": 58.3,
       "rsiWeekly": 59.7,
       "ret10yAvg": 12.5,
@@ -3380,7 +3380,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 3.3,
       "debtRatio": 181.4,
-      "week52RangePct": 78.7
+      "week52RangePct": 75.6
     },
     {
       "pressureScore": 1.8,
@@ -3389,11 +3389,11 @@ const SP500_CORE_DATA = {
       "name": "United Parcel Service",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 85486534656,
-      "changePercent": -1.76948,
-      "per": 18.67658,
+      "marketCap": 84414545920,
+      "changePercent": -1.25398,
+      "per": 18.442379,
       "eps": 5.38,
-      "dividendYield": 6.41,
+      "dividendYield": 6.53,
       "winRateScore": 53.3,
       "rsiWeekly": 46,
       "ret10yAvg": -0.7,
@@ -3403,7 +3403,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 4.1,
       "roe": 4.0,
       "debtRatio": 372.8,
-      "week52RangePct": 45.7
+      "week52RangePct": 42.6
     },
     {
       "pressureScore": 2.0,
@@ -3412,11 +3412,11 @@ const SP500_CORE_DATA = {
       "name": "Johnson Controls",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 88662368256,
-      "changePercent": 0.98661,
-      "per": 41.230984,
-      "eps": 3.55,
-      "dividendYield": 1.1,
+      "marketCap": 87784046592,
+      "changePercent": -0.990638,
+      "per": 40.707867,
+      "eps": 3.56,
+      "dividendYield": 1.09,
       "winRateScore": 60.8,
       "rsiWeekly": 54.9,
       "ret10yAvg": 12,
@@ -3426,7 +3426,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 16.1,
       "roe": 5.6,
       "debtRatio": 187.2,
-      "week52RangePct": 79.7
+      "week52RangePct": 76.9
     },
     {
       "pressureScore": 3.7,
@@ -3449,7 +3449,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 38.3,
       "roe": 6.3,
       "debtRatio": 343.0,
-      "week52RangePct": 82.2
+      "week52RangePct": 79.4
     },
     {
       "pressureScore": 4.6,
@@ -3458,11 +3458,11 @@ const SP500_CORE_DATA = {
       "name": "Regeneron Pharmaceuticals",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 83425460224,
-      "changePercent": -2.10336,
-      "per": 20.062145,
-      "eps": 40.39,
-      "dividendYield": 0.45,
+      "marketCap": 83151601664,
+      "changePercent": -0.3282661,
+      "per": 19.976503,
+      "eps": 40.43,
+      "dividendYield": 0.46,
       "winRateScore": 54.2,
       "rsiWeekly": 64.3,
       "ret10yAvg": 7.5,
@@ -3472,7 +3472,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 33.1,
       "roe": 4.1,
       "debtRatio": 31.6,
-      "week52RangePct": 84.6
+      "week52RangePct": 83.8
     },
     {
       "pressureScore": 2.7,
@@ -3481,10 +3481,10 @@ const SP500_CORE_DATA = {
       "name": "Datadog",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 75488337920,
-      "changePercent": -1.26802,
-      "per": 429.0408,
-      "eps": 0.49,
+      "marketCap": 80888832000,
+      "changePercent": 7.1540737,
+      "per": 450.54,
+      "eps": 0.5,
       "dividendYield": null,
       "winRateScore": 53,
       "rsiWeekly": 50.7,
@@ -3495,7 +3495,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 0.7,
       "roe": 1.0,
       "debtRatio": 72.8,
-      "week52RangePct": 57.6
+      "week52RangePct": 65.4
     },
     {
       "pressureScore": 1.9,
@@ -3504,11 +3504,11 @@ const SP500_CORE_DATA = {
       "name": "Sherwin-Williams",
       "sector": "Materials",
       "sectorKo": "소재",
-      "marketCap": 79160999936,
-      "changePercent": -2.28342,
-      "per": 30.054377,
-      "eps": 10.85,
-      "dividendYield": 0.96,
+      "marketCap": 77837975552,
+      "changePercent": -1.67131,
+      "per": 29.60665,
+      "eps": 10.83,
+      "dividendYield": 0.98,
       "winRateScore": 56.7,
       "rsiWeekly": 49.2,
       "ret10yAvg": 13.7,
@@ -3518,7 +3518,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 18.1,
       "roe": 21.9,
       "debtRatio": 599.2,
-      "week52RangePct": 41.2
+      "week52RangePct": 35.0
     },
     {
       "pressureScore": 2.3,
@@ -3527,11 +3527,11 @@ const SP500_CORE_DATA = {
       "name": "Simon Property Group",
       "sector": "Real Estate",
       "sectorKo": "부동산",
-      "marketCap": 80434626560,
-      "changePercent": 1.16501,
-      "per": 14.942172,
-      "eps": 14.18,
-      "dividendYield": 4.25,
+      "marketCap": 77644390400,
+      "changePercent": -2.43286,
+      "per": 14.434015,
+      "eps": 14.17,
+      "dividendYield": 4.2,
       "winRateScore": 55,
       "rsiWeekly": 49,
       "ret10yAvg": 0.1,
@@ -3541,7 +3541,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 46.0,
       "roe": 10.9,
       "debtRatio": 763.6,
-      "week52RangePct": 59.9
+      "week52RangePct": 48.8
     },
     {
       "pressureScore": 2.4,
@@ -3550,11 +3550,11 @@ const SP500_CORE_DATA = {
       "name": "Mondelez International",
       "sector": "Consumer Staples",
       "sectorKo": "필수소비재",
-      "marketCap": 78658871296,
-      "changePercent": 0.571153,
-      "per": 22.575092,
+      "marketCap": 79667150848,
+      "changePercent": 1.2818385,
+      "per": 22.864468,
       "eps": 2.73,
-      "dividendYield": 3.39,
+      "dividendYield": 3.37,
       "winRateScore": 48.3,
       "rsiWeekly": 50.8,
       "ret10yAvg": 3.4,
@@ -3564,7 +3564,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 8.5,
       "roe": 2.2,
       "debtRatio": 176.0,
-      "week52RangePct": 67.5
+      "week52RangePct": 72.6
     },
     {
       "pressureScore": 2.2,
@@ -3573,10 +3573,10 @@ const SP500_CORE_DATA = {
       "name": "American Tower",
       "sector": "Real Estate",
       "sectorKo": "부동산",
-      "marketCap": 81883160576,
-      "changePercent": -0.0682459,
-      "per": 24.205233,
-      "eps": 7.26,
+      "marketCap": 81743372288,
+      "changePercent": -0.170718,
+      "per": 24.097527,
+      "eps": 7.28,
       "dividendYield": 3.97,
       "winRateScore": 58.3,
       "rsiWeekly": 48.6,
@@ -3587,7 +3587,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 46.2,
       "roe": 23.3,
       "debtRatio": 1426.1,
-      "week52RangePct": 40.1
+      "week52RangePct": 39.3
     },
     {
       "pressureScore": 3.0,
@@ -3596,9 +3596,9 @@ const SP500_CORE_DATA = {
       "name": "Cintas",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 80233996288,
-      "changePercent": 0.0149642,
-      "per": 40.835033,
+      "marketCap": 80049913856,
+      "changePercent": -0.22942978,
+      "per": 40.741344,
       "eps": 4.91,
       "dividendYield": 1.04,
       "winRateScore": 64.2,
@@ -3610,7 +3610,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 23.7,
       "roe": 9.9,
       "debtRatio": 104.9,
-      "week52RangePct": 67.8
+      "week52RangePct": 67.0
     },
     {
       "pressureScore": 1.3,
@@ -3619,10 +3619,10 @@ const SP500_CORE_DATA = {
       "name": "Cummins",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 77305487360,
-      "changePercent": 0.142664,
-      "per": 28.69443,
-      "eps": 19.57,
+      "marketCap": 76370747392,
+      "changePercent": -1.20915,
+      "per": 28.390991,
+      "eps": 19.54,
       "dividendYield": 1.57,
       "winRateScore": 57.5,
       "rsiWeekly": 40.5,
@@ -3633,7 +3633,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 11.9,
       "roe": 7.3,
       "debtRatio": 169.1,
-      "week52RangePct": 49.3
+      "week52RangePct": 46.5
     },
     {
       "pressureScore": 2.2,
@@ -3642,11 +3642,11 @@ const SP500_CORE_DATA = {
       "name": "Illinois Tool Works",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 76522913792,
-      "changePercent": -0.529392,
-      "per": 24.315836,
-      "eps": 11.05,
-      "dividendYield": 2.55,
+      "marketCap": 75184349184,
+      "changePercent": -1.74923,
+      "per": 23.912136,
+      "eps": 11.04,
+      "dividendYield": 2.56,
       "winRateScore": 55.8,
       "rsiWeekly": 49.2,
       "ret10yAvg": 8.5,
@@ -3656,7 +3656,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 26.7,
       "roe": 28.2,
       "debtRatio": 469.9,
-      "week52RangePct": 46.4
+      "week52RangePct": 39.1
     },
     {
       "pressureScore": 3.5,
@@ -3679,7 +3679,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 40.6,
       "roe": 8.5,
       "debtRatio": 71.9,
-      "week52RangePct": 84.0
+      "week52RangePct": 87.2
     },
     {
       "pressureScore": 5.1,
@@ -3702,7 +3702,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 12.7,
       "roe": 3.0,
       "debtRatio": 108.5,
-      "week52RangePct": 88.3
+      "week52RangePct": 88.2
     },
     {
       "pressureScore": 3.2,
@@ -3725,7 +3725,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 3.0,
       "roe": 2.1,
       "debtRatio": 353.4,
-      "week52RangePct": 83.8
+      "week52RangePct": 78.4
     },
     {
       "pressureScore": 4.8,
@@ -3734,11 +3734,11 @@ const SP500_CORE_DATA = {
       "name": "Motorola Solutions",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 76620316672,
-      "changePercent": -1.08321,
-      "per": 36.51262,
-      "eps": 12.68,
-      "dividendYield": 1.03,
+      "marketCap": 76108939264,
+      "changePercent": -0.667415,
+      "per": 36.24035,
+      "eps": 12.69,
+      "dividendYield": 1.05,
       "winRateScore": 60,
       "rsiWeekly": 60.4,
       "ret10yAvg": 19.9,
@@ -3748,7 +3748,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 26.4,
       "roe": 20.8,
       "debtRatio": 619.5,
-      "week52RangePct": 76.5
+      "week52RangePct": 74.2
     },
     {
       "pressureScore": 2.8,
@@ -3757,10 +3757,10 @@ const SP500_CORE_DATA = {
       "name": "Ecolab",
       "sector": "Materials",
       "sectorKo": "소재",
-      "marketCap": 77962182656,
-      "changePercent": -0.418939,
-      "per": 37.28016,
-      "eps": 7.46,
+      "marketCap": 76308250624,
+      "changePercent": -2.12146,
+      "per": 36.538254,
+      "eps": 7.45,
       "dividendYield": 1.05,
       "winRateScore": 55.8,
       "rsiWeekly": 53.3,
@@ -3771,7 +3771,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 18.2,
       "roe": 5.3,
       "debtRatio": 197.3,
-      "week52RangePct": 52.9
+      "week52RangePct": 44.0
     },
     {
       "pressureScore": 3.1,
@@ -3780,11 +3780,11 @@ const SP500_CORE_DATA = {
       "name": "Norfolk Southern Railway",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 73653575680,
-      "changePercent": -0.467425,
-      "per": 27.955671,
-      "eps": 11.73,
-      "dividendYield": 1.64,
+      "marketCap": 72615878656,
+      "changePercent": -1.40889,
+      "per": 27.608881,
+      "eps": 11.71,
+      "dividendYield": 1.65,
       "winRateScore": 56.7,
       "rsiWeekly": 54.1,
       "ret10yAvg": 13,
@@ -3794,7 +3794,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 36.5,
       "roe": 4.5,
       "debtRatio": 177.6,
-      "week52RangePct": 66.1
+      "week52RangePct": 60.9
     },
     {
       "pressureScore": 2.3,
@@ -3803,11 +3803,11 @@ const SP500_CORE_DATA = {
       "name": "Apollo Global Management",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 77839491072,
-      "changePercent": -1.39149,
-      "per": 46.907475,
+      "marketCap": 77349339136,
+      "changePercent": -0.629696,
+      "per": 46.6121,
       "eps": 2.81,
-      "dividendYield": 1.68,
+      "dividendYield": 1.71,
       "winRateScore": 60,
       "rsiWeekly": 54.7,
       "ret10yAvg": 22.2,
@@ -3817,7 +3817,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 25.6,
       "roe": 6.5,
       "debtRatio": 2154.5,
-      "week52RangePct": 60.0
+      "week52RangePct": 58.5
     },
     {
       "pressureScore": 1.4,
@@ -3826,11 +3826,11 @@ const SP500_CORE_DATA = {
       "name": "Northrop Grumman",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 73671049216,
-      "changePercent": 0.699063,
-      "per": 16.478552,
-      "eps": 31.47,
-      "dividendYield": 1.92,
+      "marketCap": 73243435008,
+      "changePercent": -0.580433,
+      "per": 16.3777,
+      "eps": 31.48,
+      "dividendYield": 1.91,
       "winRateScore": 51.7,
       "rsiWeekly": 39.6,
       "ret10yAvg": 9.2,
@@ -3840,7 +3840,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 10.1,
       "roe": 6.1,
       "debtRatio": 183.8,
-      "week52RangePct": 13.4
+      "week52RangePct": 12.4
     },
     {
       "pressureScore": 1.5,
@@ -3863,7 +3863,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 27.1,
       "roe": 11.0,
       "debtRatio": 333.9,
-      "week52RangePct": 26.1
+      "week52RangePct": 22.3
     },
     {
       "pressureScore": 2.8,
@@ -3872,10 +3872,10 @@ const SP500_CORE_DATA = {
       "name": "Lumentum",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 87774584832,
-      "changePercent": 11.0388,
+      "marketCap": 88711503872,
+      "changePercent": 1.0674127,
       "per": null,
-      "eps": -92.97,
+      "eps": -92.96,
       "dividendYield": null,
       "winRateScore": 53.3,
       "rsiWeekly": 57.6,
@@ -3886,7 +3886,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 28.0,
       "roe": -154.2,
       "debtRatio": 57.4,
-      "week52RangePct": 88.6
+      "week52RangePct": 89.7
     },
     {
       "pressureScore": 3.2,
@@ -3895,11 +3895,11 @@ const SP500_CORE_DATA = {
       "name": "FedEx",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 74345283584,
-      "changePercent": -2.60138,
-      "per": 16.943365,
-      "eps": 18.54,
-      "dividendYield": 1.51,
+      "marketCap": 73176129536,
+      "changePercent": -1.5726,
+      "per": 16.649973,
+      "eps": 18.57,
+      "dividendYield": 1.55,
       "winRateScore": 57.5,
       "rsiWeekly": 57,
       "ret10yAvg": 8.6,
@@ -3909,7 +3909,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 8.4,
       "roe": 5.0,
       "debtRatio": 212.6,
-      "week52RangePct": 81.2
+      "week52RangePct": 78.2
     },
     {
       "pressureScore": 2.5,
@@ -3932,7 +3932,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 17.6,
       "roe": 12.6,
       "debtRatio": 137.0,
-      "week52RangePct": 75.6
+      "week52RangePct": 72.1
     },
     {
       "pressureScore": 2.5,
@@ -3941,10 +3941,10 @@ const SP500_CORE_DATA = {
       "name": "Synopsys",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 75127308288,
-      "changePercent": -0.459577,
-      "per": 68.65674,
-      "eps": 5.71,
+      "marketCap": 75355357184,
+      "changePercent": 0.30354884,
+      "per": 68.74476,
+      "eps": 5.72,
       "dividendYield": null,
       "winRateScore": 57.5,
       "rsiWeekly": 43.4,
@@ -3955,7 +3955,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 14.5,
       "roe": 1.8,
       "debtRatio": 53.2,
-      "week52RangePct": 10.5
+      "week52RangePct": 15.7
     },
     {
       "pressureScore": 3.5,
@@ -3964,11 +3964,11 @@ const SP500_CORE_DATA = {
       "name": "The Travelers Companies",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 76267544576,
-      "changePercent": -0.999053,
-      "per": 9.832213,
-      "eps": 37.19,
-      "dividendYield": 1.35,
+      "marketCap": 76515745792,
+      "changePercent": 0.32544,
+      "per": 9.85626,
+      "eps": 37.22,
+      "dividendYield": 1.37,
       "winRateScore": 62.5,
       "rsiWeekly": 64.8,
       "ret10yAvg": 12.4,
@@ -3978,7 +3978,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 6.7,
       "debtRatio": 333.5,
-      "week52RangePct": 77.4
+      "week52RangePct": 78.3
     },
     {
       "pressureScore": 2.0,
@@ -3987,11 +3987,11 @@ const SP500_CORE_DATA = {
       "name": "Aon (company)",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 66987094016,
-      "changePercent": -2.25943,
-      "per": 17.418093,
+      "marketCap": 64632500224,
+      "changePercent": -3.515,
+      "per": 16.805847,
       "eps": 18.13,
-      "dividendYield": 1.02,
+      "dividendYield": 1.04,
       "winRateScore": 57.5,
       "rsiWeekly": 41.9,
       "ret10yAvg": 11.1,
@@ -4001,7 +4001,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 23.8,
       "roe": 5.7,
       "debtRatio": 454.6,
-      "week52RangePct": 14.4
+      "week52RangePct": 1.4
     },
     {
       "pressureScore": 5.1,
@@ -4010,11 +4010,11 @@ const SP500_CORE_DATA = {
       "name": "Target Corporation",
       "sector": "Consumer Staples",
       "sectorKo": "필수소비재",
-      "marketCap": 73918627840,
-      "changePercent": -1.05205,
-      "per": 16.878632,
-      "eps": 9.64,
-      "dividendYield": 2.82,
+      "marketCap": 71560822784,
+      "changePercent": -3.18973,
+      "per": 16.357218,
+      "eps": 9.63,
+      "dividendYield": 2.85,
       "winRateScore": 55.8,
       "rsiWeekly": 72.6,
       "ret10yAvg": 9.1,
@@ -4024,7 +4024,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 9.6,
       "roe": 10.5,
       "debtRatio": 243.2,
-      "week52RangePct": 90.8
+      "week52RangePct": 84.8
     },
     {
       "pressureScore": 1.7,
@@ -4047,7 +4047,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 25.7,
       "roe": -7.6,
       "debtRatio": -368.0,
-      "week52RangePct": 48.8
+      "week52RangePct": 51.2
     },
     {
       "pressureScore": 2.5,
@@ -4056,11 +4056,11 @@ const SP500_CORE_DATA = {
       "name": "Cigna",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 72885444608,
-      "changePercent": -1.82588,
-      "per": 11.407361,
-      "eps": 24.18,
-      "dividendYield": 2.21,
+      "marketCap": 73503776768,
+      "changePercent": 0.848358,
+      "per": 11.49938,
+      "eps": 24.19,
+      "dividendYield": 2.26,
       "winRateScore": 55.8,
       "rsiWeekly": 50.1,
       "ret10yAvg": 8,
@@ -4070,7 +4070,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 3.4,
       "roe": 3.9,
       "debtRatio": 267.9,
-      "week52RangePct": 47.8
+      "week52RangePct": 50.9
     },
     {
       "pressureScore": 1.0,
@@ -4079,9 +4079,9 @@ const SP500_CORE_DATA = {
       "name": "Boston Scientific",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 65186344960,
-      "changePercent": -5.89958,
-      "per": 18.210526,
+      "marketCap": 65157361664,
+      "changePercent": -0.0444652,
+      "per": 18.202429,
       "eps": 2.47,
       "dividendYield": null,
       "winRateScore": 58.3,
@@ -4093,7 +4093,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 22.9,
       "roe": 3.6,
       "debtRatio": 80.4,
-      "week52RangePct": 4.1
+      "week52RangePct": 4.2
     },
     {
       "pressureScore": 2.3,
@@ -4102,11 +4102,11 @@ const SP500_CORE_DATA = {
       "name": "Colgate-Palmolive",
       "sector": "Consumer Staples",
       "sectorKo": "필수소비재",
-      "marketCap": 70478053376,
-      "changePercent": -0.405535,
-      "per": 34.807087,
+      "marketCap": 70175121408,
+      "changePercent": -0.429821,
+      "per": 34.657482,
       "eps": 2.54,
-      "dividendYield": 2.39,
+      "dividendYield": 2.4,
       "winRateScore": 53.3,
       "rsiWeekly": 47.6,
       "ret10yAvg": 1.8,
@@ -4116,7 +4116,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 19.0,
       "roe": 293.6,
       "debtRatio": 6874.6,
-      "week52RangePct": 55.9
+      "week52RangePct": 54.4
     },
     {
       "pressureScore": 1.7,
@@ -4139,7 +4139,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 20.2,
       "roe": -39.0,
       "debtRatio": -1047.3,
-      "week52RangePct": 12.6
+      "week52RangePct": 13.4
     },
     {
       "pressureScore": 2.2,
@@ -4148,11 +4148,11 @@ const SP500_CORE_DATA = {
       "name": "Digital Realty",
       "sector": "Real Estate",
       "sectorKo": "부동산",
-      "marketCap": 71567269888,
-      "changePercent": 0.589204,
-      "per": 92.439026,
+      "marketCap": 71408656384,
+      "changePercent": -0.221635,
+      "per": 92.234146,
       "eps": 2.05,
-      "dividendYield": 2.59,
+      "dividendYield": 2.58,
       "winRateScore": 55.8,
       "rsiWeekly": 51.5,
       "ret10yAvg": 6.9,
@@ -4162,7 +4162,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 17.3,
       "roe": 0.8,
       "debtRatio": 100.4,
-      "week52RangePct": 69.9
+      "week52RangePct": 69.2
     },
     {
       "pressureScore": 4.0,
@@ -4171,8 +4171,8 @@ const SP500_CORE_DATA = {
       "name": "Warner Bros. Discovery",
       "sector": "Communication Services",
       "sectorKo": "커뮤니케이션",
-      "marketCap": 70500687872,
-      "changePercent": -0.460174,
+      "marketCap": 69974188032,
+      "changePercent": -0.7468029,
       "per": null,
       "eps": -1.28,
       "dividendYield": null,
@@ -4185,7 +4185,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 4.3,
       "roe": 0.5,
       "debtRatio": 192.6,
-      "week52RangePct": 89.6
+      "week52RangePct": 88.4
     },
     {
       "pressureScore": 4.5,
@@ -4194,11 +4194,11 @@ const SP500_CORE_DATA = {
       "name": "Hewlett Packard Enterprise",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 74377854976,
-      "changePercent": 7.75,
-      "per": 28.881441,
+      "marketCap": 78187683840,
+      "changePercent": 5.12226,
+      "per": 30.360825,
       "eps": 1.94,
-      "dividendYield": 1.1,
+      "dividendYield": 1.02,
       "winRateScore": 55,
       "rsiWeekly": 65.4,
       "ret10yAvg": 14.7,
@@ -4208,7 +4208,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 12.0,
       "roe": 5.8,
       "debtRatio": 215.1,
-      "week52RangePct": 81.5
+      "week52RangePct": 88.0
     },
     {
       "pressureScore": 2.7,
@@ -4231,7 +4231,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 30.1,
       "roe": 2.7,
       "debtRatio": 130.2,
-      "week52RangePct": 69.3
+      "week52RangePct": 63.1
     },
     {
       "pressureScore": 2.2,
@@ -4240,11 +4240,11 @@ const SP500_CORE_DATA = {
       "name": "Paccar",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 64479707136,
-      "changePercent": -1.76423,
-      "per": 25.789474,
+      "marketCap": 64153358336,
+      "changePercent": -0.5061247,
+      "per": 25.658947,
       "eps": 4.75,
-      "dividendYield": 1.12,
+      "dividendYield": 1.14,
       "winRateScore": 55,
       "rsiWeekly": 53.5,
       "ret10yAvg": 12.3,
@@ -4254,7 +4254,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 11.7,
       "roe": 3.7,
       "debtRatio": 116.4,
-      "week52RangePct": 64.4
+      "week52RangePct": 63.1
     },
     {
       "pressureScore": 1.1,
@@ -4263,9 +4263,9 @@ const SP500_CORE_DATA = {
       "name": "Honeywell",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 65999589376,
-      "changePercent": -0.653592,
-      "per": 8.006151,
+      "marketCap": 64950513664,
+      "changePercent": -1.5895182,
+      "per": 7.8788924,
       "eps": 26.01,
       "dividendYield": 1.34,
       "winRateScore": 52.5,
@@ -4277,7 +4277,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 18.4,
       "roe": 30.7,
       "debtRatio": 315.5,
-      "week52RangePct": 19.2
+      "week52RangePct": 14.1
     },
     {
       "pressureScore": 2.1,
@@ -4286,10 +4286,10 @@ const SP500_CORE_DATA = {
       "name": "United Rentals",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 63186706432,
-      "changePercent": 0.525815,
-      "per": 24.397259,
-      "eps": 41.61,
+      "marketCap": 64033206272,
+      "changePercent": 1.33968,
+      "per": 24.777699,
+      "eps": 41.52,
       "dividendYield": 0.78,
       "winRateScore": 57.5,
       "rsiWeekly": 50,
@@ -4300,7 +4300,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 25.9,
       "roe": 8.2,
       "debtRatio": 239.5,
-      "week52RangePct": 65.7
+      "week52RangePct": 68.5
     },
     {
       "pressureScore": 3.3,
@@ -4309,11 +4309,11 @@ const SP500_CORE_DATA = {
       "name": "Air Products",
       "sector": "Materials",
       "sectorKo": "소재",
-      "marketCap": 66295709696,
-      "changePercent": -1.18166,
+      "marketCap": 65745674240,
+      "changePercent": -0.829667,
       "per": null,
       "eps": -0.21,
-      "dividendYield": 2.4,
+      "dividendYield": 2.43,
       "winRateScore": 55.8,
       "rsiWeekly": 54.8,
       "ret10yAvg": 8,
@@ -4323,7 +4323,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 25.6,
       "roe": -10.4,
       "debtRatio": 171.8,
-      "week52RangePct": 80.0
+      "week52RangePct": 77.1
     },
     {
       "pressureScore": 4.1,
@@ -4332,11 +4332,11 @@ const SP500_CORE_DATA = {
       "name": "Arthur J. Gallagher & Co.",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 64456941568,
-      "changePercent": -4.02305,
-      "per": 41.630795,
-      "eps": 6.04,
-      "dividendYield": 1.07,
+      "marketCap": 62618976256,
+      "changePercent": -2.85146,
+      "per": 40.510777,
+      "eps": 6.03,
+      "dividendYield": 1.11,
       "winRateScore": 62.5,
       "rsiWeekly": 62.1,
       "ret10yAvg": 17.8,
@@ -4346,7 +4346,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 14.7,
       "roe": 1.4,
       "debtRatio": 244.8,
-      "week52RangePct": 49.4
+      "week52RangePct": 43.6
     },
     {
       "pressureScore": 3.8,
@@ -4355,11 +4355,11 @@ const SP500_CORE_DATA = {
       "name": "Republic Services",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 67865985024,
-      "changePercent": -0.484936,
-      "per": 31.392353,
-      "eps": 7.06,
-      "dividendYield": 1.2,
+      "marketCap": 68123205632,
+      "changePercent": 0.379008,
+      "per": 31.46676,
+      "eps": 7.07,
+      "dividendYield": 1.21,
       "winRateScore": 64.2,
       "rsiWeekly": 56.3,
       "ret10yAvg": 16,
@@ -4369,7 +4369,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 20.4,
       "roe": 4.7,
       "debtRatio": 192.2,
-      "week52RangePct": 68.1
+      "week52RangePct": 70.4
     },
     {
       "pressureScore": 1.3,
@@ -4378,10 +4378,10 @@ const SP500_CORE_DATA = {
       "name": "TransDigm Group",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 63299358720,
-      "changePercent": -1.45519,
-      "per": 34.701214,
-      "eps": 33.0,
+      "marketCap": 62223679488,
+      "changePercent": -1.69935,
+      "per": 34.132202,
+      "eps": 32.98,
       "dividendYield": null,
       "winRateScore": 61.7,
       "rsiWeekly": 41.5,
@@ -4392,7 +4392,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 45.5,
       "roe": -5.5,
       "debtRatio": -371.8,
-      "week52RangePct": 6.3
+      "week52RangePct": 0.6
     },
     {
       "pressureScore": 1.5,
@@ -4401,11 +4401,11 @@ const SP500_CORE_DATA = {
       "name": "American Electric Power",
       "sector": "Utilities",
       "sectorKo": "유틸리티",
-      "marketCap": 68278317056,
-      "changePercent": 0.738954,
-      "per": 21.774303,
-      "eps": 5.76,
-      "dividendYield": 3.05,
+      "marketCap": 67870019584,
+      "changePercent": -0.59799075,
+      "per": 21.606586,
+      "eps": 5.77,
+      "dividendYield": 3.03,
       "winRateScore": 62.5,
       "rsiWeekly": 46.1,
       "ret10yAvg": 6.8,
@@ -4415,7 +4415,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 22.9,
       "roe": 2.2,
       "debtRatio": 275.2,
-      "week52RangePct": 56.5
+      "week52RangePct": 54.4
     },
     {
       "pressureScore": 1.4,
@@ -4424,11 +4424,11 @@ const SP500_CORE_DATA = {
       "name": "Monolithic Power Systems",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 59880747008,
-      "changePercent": -0.437957,
-      "per": 74.29878,
-      "eps": 16.4,
-      "dividendYield": 0.65,
+      "marketCap": 59155886080,
+      "changePercent": -1.2105047,
+      "per": 73.176285,
+      "eps": 16.45,
+      "dividendYield": 0.66,
       "winRateScore": 59.2,
       "rsiWeekly": 43.7,
       "ret10yAvg": 31.3,
@@ -4438,7 +4438,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 31.0,
       "roe": 6.6,
       "debtRatio": 20.3,
-      "week52RangePct": 43.9
+      "week52RangePct": 42.3
     },
     {
       "pressureScore": 3.9,
@@ -4447,11 +4447,11 @@ const SP500_CORE_DATA = {
       "name": "Allstate",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 64089378816,
-      "changePercent": -2.35389,
-      "per": 5.0752907,
-      "eps": 49.94,
-      "dividendYield": 1.66,
+      "marketCap": 64119717888,
+      "changePercent": 0.0473428,
+      "per": 5.07871,
+      "eps": 49.93,
+      "dividendYield": 1.7,
       "winRateScore": 57.5,
       "rsiWeekly": 66.3,
       "ret10yAvg": 14.1,
@@ -4461,7 +4461,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 9.7,
       "debtRatio": 270.3,
-      "week52RangePct": 73.3
+      "week52RangePct": 73.5
     },
     {
       "pressureScore": 4.5,
@@ -4484,7 +4484,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 27.8,
       "roe": 20.9,
       "debtRatio": 676.0,
-      "week52RangePct": 91.7
+      "week52RangePct": 89.9
     },
     {
       "pressureScore": 1.1,
@@ -4493,11 +4493,11 @@ const SP500_CORE_DATA = {
       "name": "CRH plc",
       "sector": "Materials",
       "sectorKo": "소재",
-      "marketCap": 60281425920,
-      "changePercent": -3.87227,
-      "per": 16.008835,
+      "marketCap": 59443167232,
+      "changePercent": -1.39058,
+      "per": 15.78622,
       "eps": 5.66,
-      "dividendYield": 1.65,
+      "dividendYield": 1.72,
       "winRateScore": 55,
       "rsiWeekly": 38.1,
       "ret10yAvg": 11,
@@ -4507,7 +4507,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 18.8,
       "roe": 6.2,
       "debtRatio": 137.4,
-      "week52RangePct": 1.0
+      "week52RangePct": 0.2
     },
     {
       "pressureScore": 3.3,
@@ -4530,7 +4530,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 12.8,
       "roe": 3.4,
       "debtRatio": 163.4,
-      "week52RangePct": 75.5
+      "week52RangePct": 74.4
     },
     {
       "pressureScore": 2.9,
@@ -4539,11 +4539,11 @@ const SP500_CORE_DATA = {
       "name": "W. W. Grainger",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 60721127424,
-      "changePercent": -2.66668,
-      "per": 32.88699,
-      "eps": 39.2,
-      "dividendYield": 0.75,
+      "marketCap": 60234096640,
+      "changePercent": -0.802073,
+      "per": 32.63154,
+      "eps": 39.19,
+      "dividendYield": 0.77,
       "winRateScore": 59.2,
       "rsiWeekly": 58.5,
       "ret10yAvg": 19.4,
@@ -4553,7 +4553,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": 16.1,
       "roe": 13.8,
       "debtRatio": 123.6,
-      "week52RangePct": 74.5
+      "week52RangePct": 72.5
     },
     {
       "pressureScore": 2.0,
@@ -4562,11 +4562,11 @@ const SP500_CORE_DATA = {
       "name": "Truist Financial",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 61753204736,
-      "changePercent": -2.12972,
-      "per": 11.620689,
+      "marketCap": 61264556032,
+      "changePercent": -0.791291,
+      "per": 11.528736,
       "eps": 4.35,
-      "dividendYield": 4.03,
+      "dividendYield": 4.11,
       "winRateScore": 55,
       "rsiWeekly": 54.6,
       "ret10yAvg": 3.2,
@@ -4576,7 +4576,7 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 2.3,
       "debtRatio": 754.9,
-      "week52RangePct": 63.4
+      "week52RangePct": 60.8
     },
     {
       "pressureScore": 3.9,
@@ -4599,9 +4599,9 @@ const SP500_CORE_DATA = {
       "operatingMargin": 45.4,
       "roe": 7.1,
       "debtRatio": 91.0,
-      "week52RangePct": 76.3
+      "week52RangePct": 78.5
     }
   ],
   "ratiosUpdatedAt": "2026-08-25T11:26:13Z",
-  "generatedAt": "2026-09-08T23:50:13Z"
+  "generatedAt": "2026-09-09T23:49:49Z"
 };
