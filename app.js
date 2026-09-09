@@ -15441,8 +15441,9 @@ function mergeFinSeries(revS, niS) {
 }
 async function loadFutureCompareData(ticker, metricsPromise, chartOnly) {
   const isKr = isKrTicker(ticker);
+  const nowSecCmp = Math.floor(Date.now() / 1000);
   const [chart, metrics, db] = await Promise.all([
-    yahooChart(ticker, "10y", "1mo"),
+    yahooChartRange(ticker, nowSecCmp - Math.floor(11.4 * 365.25 * 86400), nowSecCmp + 86400, "1mo"),
     chartOnly ? Promise.resolve(null) : (metricsPromise || getFullMetrics(ticker)).catch(() => null),
     chartOnly ? Promise.resolve(null) : getAnnualFinDb(isKr),
   ]);
@@ -15454,6 +15455,7 @@ async function loadFutureCompareData(ticker, metricsPromise, chartOnly) {
 
   let annual = [];
   let source = "Yahoo";
+  let hasAnnualDb = false;
   const dbItem = db && db.items && db.items[ticker];
   if (dbItem && dbItem.years) {
     annual = Object.entries(dbItem.years)
@@ -15461,6 +15463,7 @@ async function loadFutureCompareData(ticker, metricsPromise, chartOnly) {
       .filter((x) => x.t !== null && (x.rev !== null || x.ni !== null))
       .sort((a, b) => a.t - b.t);
     source = isKr ? "DART 전자공시" : "SEC 공시(XBRL)";
+    hasAnnualDb = annual.length > 0;
   }
   if (metrics) {
     const yahooAnnual = mergeFinSeries(metrics.revenueAnnualSeries, metrics.netIncomeAnnualSeries);
@@ -15474,15 +15477,19 @@ async function loadFutureCompareData(ticker, metricsPromise, chartOnly) {
     }
   }
   let quarterly = metrics ? mergeFinSeries(metrics.revenueQuarterlySeries, metrics.netIncomeQuarterlySeries) : [];
+  let quarterSource = "Yahoo";
   if (isKr && !chartOnly) {
     // 국내는 네이버 분기 실적이 최신 분기까지 정확(분기 실적 표와 같은 소스)
     try {
       const nav = await fetchNaverQuarterlyFinance(ticker);
       const acts = nav.filter((q) => !q.isConsensus && (q.revenue !== null || q.net !== null));
-      if (acts.length) quarterly = acts.map((q) => ({ t: isoDateToSec(naverQuarterKeyToIso(q.key)), rev: q.revenue, ni: q.net })).filter((x) => x.t !== null);
+      if (acts.length) {
+        quarterly = acts.map((q) => ({ t: isoDateToSec(naverQuarterKeyToIso(q.key)), rev: q.revenue, ni: q.net })).filter((x) => x.t !== null);
+        quarterSource = "네이버 증권"; // 발표 전 분기(애널리스트 컨센서스)는 제외하고 실적 확정분만 사용
+      }
     } catch {}
   }
-  return { ticker, isKr, chartOnly, currency: meta.currency || (isKr ? "KRW" : "USD"), price, annual, quarterly, source };
+  return { ticker, isKr, chartOnly, currency: meta.currency || (isKr ? "KRW" : "USD"), price, annual, quarterly, source, quarterSource, hasAnnualDb };
 }
 function futureCmpSeriesPct(points, key) {
   const pts = points.filter((p) => Number.isFinite(p[key]));
@@ -15562,12 +15569,28 @@ function buildFutureCompareSvg(d, span) {
     ${g}${ax}${lines}
   </svg>`;
   const endPct = (pts) => (pts.length ? pts[pts.length - 1].pct : null);
+  const firstV = (pts) => (pts.length ? pts[0].v : null);
+  const lastV = (pts) => (pts.length ? pts[pts.length - 1].v : null);
+  // 재무 구간 중 최저점(씨게이트처럼 중간에 급감 후 회복한 종목은 "시작 대비 %"만으로는 최근 급증이 안 보임)
+  const troughOf = (pts) => {
+    if (pts.length < 3) return null;
+    let min = pts[0];
+    for (const p of pts) if (p.v < min.v) min = p;
+    return min === pts[0] || min === pts[pts.length - 1] ? null : min;
+  };
   return {
     svg,
     startT: Math.min(pricePts[0].t, ...(fin.length ? [fin[0].t] : [])),
     price: endPct(pricePts),
     rev: endPct(rev.pts),
     ni: endPct(ni.pts),
+    priceFrom: firstV(pricePts),
+    priceTo: lastV(pricePts),
+    revFrom: firstV(rev.pts),
+    revTo: lastV(rev.pts),
+    niFrom: firstV(ni.pts),
+    niTo: lastV(ni.pts),
+    revTrough: troughOf(rev.pts),
     revNote: rev.note,
     niNote: ni.note,
     finCount: fin.length,
@@ -15586,17 +15609,31 @@ function renderFutureCompare() {
   document.querySelectorAll("#futureCmpTabs .future-cmp-tab").forEach((b) => b.classList.toggle("active", b.dataset.futureSpan === futureCmpSpan));
   const fmtEnd = (v) => (v === null ? "—" : `${v > 0 ? "+" : ""}${Math.round(v)}%`);
   const startStr = new Date(r.startT * 1000).toLocaleDateString("ko-KR", { year: "numeric", month: "long" });
+  // 퍼센트 옆에 실제 금액(시작 → 현재)을 같이 보여줌 — 시작 시점이 높았던 종목(씨게이트 등)에서
+  // "매출이 크게 늘었는데 +13%"처럼 보이는 혼동을 막기 위함(2026-09-09 사용자 보고)
+  const amt = (v) => fmtAmountUnified(v, d.currency);
+  const pair = (from, to, fmt) => (from === null || to === null ? "" : ` <span class="future-cmp-abs">(${fmt(from)} → ${fmt(to)})</span>`);
   const legend = `<span class="future-cmp-legend">
-      <span style="color:${FUTURE_CMP_COLORS.price};">주가 ${fmtEnd(r.price)}</span>
-      ${d.chartOnly ? "" : `<span style="color:${FUTURE_CMP_COLORS.rev};">매출액 ${fmtEnd(r.rev)}</span><span style="color:${FUTURE_CMP_COLORS.ni};">순이익 ${fmtEnd(r.ni)}</span>`}
+      <span style="color:${FUTURE_CMP_COLORS.price};">주가 ${fmtEnd(r.price)}${pair(r.priceFrom, r.priceTo, (v) => fmtPrice(v, d.currency))}</span>
+      ${d.chartOnly ? "" : `<span style="color:${FUTURE_CMP_COLORS.rev};">매출액 ${fmtEnd(r.rev)}${pair(r.revFrom, r.revTo, amt)}</span><span style="color:${FUTURE_CMP_COLORS.ni};">순이익 ${fmtEnd(r.ni)}${pair(r.niFrom, r.niTo, amt)}</span>`}
     </span>`;
   const notes = [];
   if (d.chartOnly) notes.push("ETF·코인은 매출액·순이익이 없어 주가 흐름만 표시합니다.");
   else {
-    notes.push(`매출액·순이익은 ${r.isQuarter ? "분기 실적(최근 " + r.finCount + "개 분기)" : "회계연도 실적(" + r.finCount + "개년, 회계연도 말 기준)"} · 출처 ${escapeHtml(d.source)}${r.isQuarter ? "/Yahoo" : ""}, 주가는 월봉 종가.`);
+    notes.push(`매출액·순이익은 ${r.isQuarter ? "분기 실적(최근 " + r.finCount + "개 분기)" : "회계연도 실적(" + r.finCount + "개년, 회계연도 말 기준)"} · 출처 ${escapeHtml(r.isQuarter ? d.quarterSource : d.source)}, 주가는 월봉 종가.`);
     // 회계연도는 당해년도가 아직 안 끝나 10년 창에 10개년(FY t-10 ~ t-1)이 정상 — 그보다 적을 때만 경고
-    if (!r.isQuarter && r.finCount < spec.years) notes.push(`⚠️ 이 종목은 재무 데이터가 ${r.finCount}개년만 있어 그만큼만 그렸습니다(상장 ${spec.label} 미만이거나 공시 누락).`);
+    if (!r.isQuarter && r.finCount < spec.years) {
+      notes.push(
+        d.hasAnnualDb
+          ? `⚠️ 이 종목은 재무 데이터가 ${r.finCount}개년만 있어 그만큼만 그렸습니다(상장 ${spec.label} 미만이거나 공시 누락).`
+          : `⚠️ 이 종목은 아직 10년 재무 배치에 없어 Yahoo가 제공하는 최근 ${r.finCount}개년만 그렸습니다(배치가 갱신되면 자동으로 늘어납니다).`
+      );
+    }
     if (r.isQuarter && r.finCount < 3) notes.push(`⚠️ 분기 실적이 ${r.finCount}개뿐이라 그만큼만 그렸습니다.`);
+    if (r.revTrough) {
+      const tStr = new Date(r.revTrough.t * 1000).toLocaleDateString("ko-KR", { year: "numeric", month: "long" });
+      notes.push(`매출액은 중간에 ${tStr} ${fmtAmountUnified(r.revTrough.v, d.currency)}까지 줄었다가 회복했습니다 — 저점 대비로는 ${Math.round((r.revTo / r.revTrough.v - 1) * 100)}% 늘었고, 위 %는 어디까지나 시작 시점 대비입니다.`);
+    }
     if (r.revNote) notes.push(`매출액 선 생략: ${r.revNote}.`);
     if (r.niNote) notes.push(`순이익 선 생략: ${r.niNote}.`);
   }

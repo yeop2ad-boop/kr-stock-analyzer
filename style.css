@@ -2558,3 +2558,4 @@ body[data-header-tone="dark"] .fh-title-actions .header-icon-btn { color: #fff; 
 .future-cmp-legend span::before { content: ""; display: inline-block; width: 18px; height: 3px; border-radius: 2px; margin-right: 5px; vertical-align: middle; background: currentColor; }
 a.more-panel-item { text-decoration: none; color: inherit; }
 .more-panel-apk-sub { display: block; font-size: 11px; font-weight: 500; color: var(--muted); margin-top: 2px; }
+.future-cmp-abs { font-weight: 600; font-size: 11px; opacity: 0.85; }
