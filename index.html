@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260909d" />
+<link rel="stylesheet" href="style.css?v=20260910a" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -742,11 +742,10 @@
             <button type="button" class="theme-toggle-btn" id="colorSchemeGlobalBtn" data-scheme-choice="global" data-i18n="more.color.global">초록·빨강</button>
           </div>
         </div>
-        <!-- 앱 다운로드(2026-09-09 사용자 요청): 플레이스토어 대신 APK 직접 배포 — 앱(TWA) 안에서는 JS가 숨김.
-             설치 후에도 구글 로그인 + 관리자 승인이 있어야 이용 가능(비공개 운영) -->
+        <!-- 앱 다운로드(2026-09-09 사용자 요청): APK 직접 배포 — 앱(TWA) 안에서는 JS가 숨김 -->
         <a class="more-panel-item more-panel-item-active more-panel-apk" id="morePanelApkBtn" href="app/marketmap.apk" download="marketmap.apk" style="display:none;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-          <span class="more-panel-item-label">앱 다운로드 <span class="more-panel-apk-sub">안드로이드 APK · 설치 후 로그인 → 관리자 승인</span></span>
+          <span class="more-panel-item-label">앱 다운로드 <span class="more-panel-apk-sub">안드로이드 APK · 설치 후 바로 사용</span></span>
         </a>
         <!-- 접속자 관리(2026-09-04): 관리자(yeop2ad@gmail.com)로 로그인했을 때만 JS가 표시 -->
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelAuthAdminBtn" style="display:none;">
@@ -841,9 +840,8 @@
     <div class="info-modal-body" id="authAdminBody"><p class="muted">불러오는 중...</p></div>
   </div>
 
-  <!-- 구글 로그인(GSI): 2026-09-09 비공개·승인제 운영 결정으로 복구 -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- 구글 로그인(GSI) 스크립트는 공개 운영 전환(2026-09-10)으로 다시 내림 — 게이트 코드는 app.js에 보존 -->
   <script src="data/logo-db.js?v=20260903g"></script>
-  <script src="app.js?v=20260909d"></script>
+  <script src="app.js?v=20260910a"></script>
 </body>
 </html>

@@ -177,8 +177,9 @@ const GOOGLE_CLIENT_ID = "1089794582807-3v9s9dol75rckgd27f7p32h2c9c27b5f.apps.go
 const AUTH_SESSION_KEY = "mm_session_token";
 const AUTH_STATE = { email: null, name: null, isAdmin: false };
 
-// 2026-09-09 사용자 확정: 플레이스토어 출시 취소 → 비공개 운영. 구글 로그인 + 관리자 승인(더보기 › 접속자 관리) 게이트를 다시 켬
-const AUTH_GATE_DISABLED = false;
+// 2026-09-10 사용자 확정: 다시 공개 운영(애드센스 신청·스토어 출시 준비). 로그인 없이 누구나 이용 —
+// 게이트 코드는 그대로 보존하니, 다시 비공개로 돌리려면 아래 true를 false로만 바꾸면 됨.
+const AUTH_GATE_DISABLED = true;
 function authGateSkip() {
   if (AUTH_GATE_DISABLED) return true;
   const h = location.hostname;
@@ -15379,7 +15380,7 @@ setTimeout(() => {
 }, 0);
 
 // ---------- 앱 다운로드(2026-09-09 사용자 요청): 웹에서만 더보기에 APK 다운로드 항목 표시 ----------
-// 앱(TWA) 안에서는 referrer가 android-app://이거나 standalone 표시 모드라 숨김. 설치해도 로그인 + 관리자 승인이 있어야 이용 가능.
+// 앱(TWA) 안에서는 referrer가 android-app://이거나 standalone 표시 모드라 숨김.
 (function () {
   const btn = el("morePanelApkBtn");
   if (!btn) return;
@@ -15391,7 +15392,7 @@ setTimeout(() => {
   btn.style.display = "";
   btn.addEventListener("click", () => {
     closeMorePanel();
-    showToast("APK를 내려받는 중 — 설치 후 구글 로그인하면 관리자 승인 뒤 이용할 수 있어요");
+    showToast("APK를 내려받는 중이에요. 설치 후 바로 사용할 수 있어요");
   });
 })();
 

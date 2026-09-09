@@ -3,23 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <script>
-  // 접속 게이트(2026-09-09 비공개·승인제): 본체(app.js)의 구글 로그인 세션(mm_session_token)이 없거나 무효면 본체 로그인 화면으로.
-  // 지도 페이지가 직접 URL로도 열리므로 본체와 같은 Worker /auth/session으로 확인. 로컬 미리보기는 건너뜀.
-  (function () {
-    var h = location.hostname;
-    if (h === "localhost" || h === "127.0.0.1") return;
-    var t = null;
-    try { t = localStorage.getItem("mm_session_token"); } catch (e) {}
-    if (!t) { location.replace("../index.html"); return; }
-    fetch("https://us-stock.yeop2ad.workers.dev/auth/session", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionToken: t }) })
-      .then(function (r) { return r.json(); })
-      .then(function (r) {
-        if (r && r.status === "ok") return;
-        try { localStorage.removeItem("mm_session_token"); } catch (e) {}
-        location.replace("../index.html");
-      })
-      .catch(function () {}); // 서버 장애 시에는 그대로 둠(본체가 다음 부팅 때 다시 확인)
-  })();
+  // 접속 게이트(구글 로그인 세션 확인)는 공개 운영 전환(2026-09-10)으로 제거 — 본체 app.js의 AUTH_GATE_DISABLED 참고
   // 저장된 화면 테마(화이트/블랙, 본체 더보기 패널과 공유하는 localStorage "theme")를 CSS 적용 전에 미리 심어 첫 렌더 색 튐(FOUC) 방지
   (function () {
     try {
@@ -37,10 +21,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="마켓맵" />
-<link rel="stylesheet" href="style.css?v=20260908h" />
+<link rel="stylesheet" href="style.css?v=20260910a" />
 <!-- 지도가 떠 있는 동안 본체 파일을 미리 받아둠 — 간편검색/시장/더보기로 처음 넘어갈 때 로딩 체감 단축 -->
-<link rel="prefetch" href="../app.js?v=20260908h" />
-<link rel="prefetch" href="../style.css?v=20260908h" />
+<link rel="prefetch" href="../app.js?v=20260910a" />
+<link rel="prefetch" href="../style.css?v=20260910a" />
 <link rel="prefetch" href="../index.html" />
 </head>
 <body>
@@ -257,6 +241,6 @@
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script src="data/sp500-data-core.js?v=20260904h"></script>
 <script src="data/kr-data-core.js?v=20260904h" onerror="window.KR_CORE_DATA = { companies: [] };"></script>
-<script src="app.js?v=20260908h"></script>
+<script src="app.js?v=20260910a"></script>
 </body>
 </html>
