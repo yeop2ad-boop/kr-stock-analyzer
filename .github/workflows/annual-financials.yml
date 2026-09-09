@@ -1,0 +1,47 @@
+name: 연간 재무(매출·순이익 10년) 갱신
+
+# 미래예측 "매출액 vs 주가 vs 순이익" 그래프용 — 미국(SEC XBRL)·국내(DART) 연간 재무를 월 1회 갱신.
+# 스크립트가 바뀌어 푸시되면 바로 한 번 실행(최초 생성용).
+on:
+  schedule:
+    - cron: "0 10 5 * *" # 매월 5일 10:00 UTC (KST 19:00)
+  workflow_dispatch: {}
+  push:
+    paths:
+      - "scripts/scan-us-annual-financials.js"
+      - "scripts/scan-kr-annual-financials.js"
+      - ".github/workflows/annual-financials.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: 미국 연간 재무(SEC)
+        run: node scripts/scan-us-annual-financials.js
+
+      - name: 국내 연간 재무(DART)
+        env:
+          DART_API_KEY: ${{ secrets.DART_API_KEY }}
+        run: node scripts/scan-kr-annual-financials.js
+
+      - name: 변경사항 커밋 및 푸시
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/us-annual-financials.json data/kr-annual-financials.json
+          if git diff --cached --quiet; then
+            echo "변경된 데이터 없음"
+          else
+            git commit -m "연간 재무(매출·순이익 10년): 자동 갱신 ($(date -u +%Y-%m-%d))"
+            git pull --rebase origin main
+            git push
+          fi

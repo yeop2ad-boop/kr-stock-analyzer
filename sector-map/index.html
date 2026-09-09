@@ -3,6 +3,23 @@
 <head>
 <meta charset="UTF-8" />
 <script>
+  // 접속 게이트(2026-09-09 비공개·승인제): 본체(app.js)의 구글 로그인 세션(mm_session_token)이 없거나 무효면 본체 로그인 화면으로.
+  // 지도 페이지가 직접 URL로도 열리므로 본체와 같은 Worker /auth/session으로 확인. 로컬 미리보기는 건너뜀.
+  (function () {
+    var h = location.hostname;
+    if (h === "localhost" || h === "127.0.0.1") return;
+    var t = null;
+    try { t = localStorage.getItem("mm_session_token"); } catch (e) {}
+    if (!t) { location.replace("../index.html"); return; }
+    fetch("https://us-stock.yeop2ad.workers.dev/auth/session", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionToken: t }) })
+      .then(function (r) { return r.json(); })
+      .then(function (r) {
+        if (r && r.status === "ok") return;
+        try { localStorage.removeItem("mm_session_token"); } catch (e) {}
+        location.replace("../index.html");
+      })
+      .catch(function () {}); // 서버 장애 시에는 그대로 둠(본체가 다음 부팅 때 다시 확인)
+  })();
   // 저장된 화면 테마(화이트/블랙, 본체 더보기 패널과 공유하는 localStorage "theme")를 CSS 적용 전에 미리 심어 첫 렌더 색 튐(FOUC) 방지
   (function () {
     try {

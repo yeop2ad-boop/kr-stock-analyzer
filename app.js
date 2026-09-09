@@ -177,8 +177,8 @@ const GOOGLE_CLIENT_ID = "1089794582807-3v9s9dol75rckgd27f7p32h2c9c27b5f.apps.go
 const AUTH_SESSION_KEY = "mm_session_token";
 const AUTH_STATE = { email: null, name: null, isAdmin: false };
 
-// 2026-09-08 사용자 확정: 플레이스토어 출시 기준으로 로그인 없이 이용 — 게이트는 항상 건너뜀(코드는 보존, 필요 시 아래 return true만 제거)
-const AUTH_GATE_DISABLED = true;
+// 2026-09-09 사용자 확정: 플레이스토어 출시 취소 → 비공개 운영. 구글 로그인 + 관리자 승인(더보기 › 접속자 관리) 게이트를 다시 켬
+const AUTH_GATE_DISABLED = false;
 function authGateSkip() {
   if (AUTH_GATE_DISABLED) return true;
   const h = location.hostname;
@@ -971,10 +971,17 @@ function get3MonthReturn(chartResult) {
   return returnOverWindowEndingAt(pairs, latest.t, THREE_MONTH_SECONDS, MOMENTUM_TOLERANCE_SECONDS);
 }
 
-// 최근 거래일 대비 등락률(요약 카드의 현재가 옆 괄호 표시용) — 일봉 마지막 두 종가를 비교
+// 최근 거래일 대비 등락률(요약 카드의 현재가 옆 괄호 표시용)
+// 2026-09-09 사용자 보고(일라이릴리 실제 -2.2%인데 -0.8%로 표시): 일봉 마지막 봉의 종가가 실시간가(meta.regularMarketPrice)보다
+// 늦게 갱신되거나 장 전에는 당일 봉 자체가 없어 "마지막 두 종가" 비교가 어긋남 → 실시간가와 같은 스냅샷인
+// meta.regularMarketChangePercent를 우선 쓰고, 없으면 실시간가 vs 직전 거래일 종가(당일 봉 제외)로 계산
 function getDailyChangePercent(chartResult) {
   const result = chartResult && chartResult.chart && chartResult.chart.result && chartResult.chart.result[0];
   if (!result) return null;
+  const meta = result.meta || {};
+  if (Number.isFinite(meta.regularMarketChangePercent)) return meta.regularMarketChangePercent;
+  const live = metaPrevCloseChangePct(result);
+  if (live !== null) return live;
   const timestamps = result.timestamp || [];
   const closes = (result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
   const pairs = timestamps.map((t, i) => ({ t, c: closes[i] })).filter((p) => p.c !== null && p.c !== undefined);
@@ -986,6 +993,31 @@ function getDailyChangePercent(chartResult) {
   return ((latest - prevClose) / prevClose) * 100;
 }
 
+// 실시간가 vs 직전 거래일 종가: 마지막 봉이 "오늘"(regularMarketTime과 같은 거래소 날짜)이면 그 앞 봉을 직전 종가로 사용
+function metaPrevCloseChangePct(result) {
+  const meta = (result && result.meta) || {};
+  const price = meta.regularMarketPrice;
+  if (!Number.isFinite(price)) return null;
+  if (Number.isFinite(meta.previousClose) && meta.previousClose > 0) return ((price - meta.previousClose) / meta.previousClose) * 100;
+  const timestamps = result.timestamp || [];
+  const closes = (result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
+  const pairs = timestamps.map((t, i) => ({ t, c: closes[i] })).filter((p) => Number.isFinite(p.c));
+  if (!pairs.length) return null;
+  pairs.sort((a, b) => a.t - b.t);
+  const tz = meta.exchangeTimezoneName || "UTC";
+  const dayKey = (t) => {
+    try {
+      return new Date(t * 1000).toLocaleDateString("en-CA", { timeZone: tz });
+    } catch {
+      return new Date(t * 1000).toISOString().slice(0, 10);
+    }
+  };
+  const today = Number.isFinite(meta.regularMarketTime) ? dayKey(meta.regularMarketTime) : null;
+  const prior = today ? pairs.filter((p) => dayKey(p.t) < today) : pairs.slice(0, -1);
+  const prev = prior.length ? prior[prior.length - 1] : null;
+  if (!prev || !prev.c) return null;
+  return ((price - prev.c) / prev.c) * 100;
+}
 
 // 최근 5거래일 중 하루라도 ±10% 이상 급등/급락한 날이 있었는지(급등락 이모지 표시용) — 누적 5일 수익률이 아닌 일별 등락률 각각을 확인
 function get5dExtremeMoves(chartResult) {
@@ -1528,6 +1560,11 @@ async function getFullMetrics(symbol) {
     avgDollarVolume3m,
     rsiWeekly,
     firstTradeDate: meta.firstTradeDate ?? null,
+    // 미래예측(매출액 vs 주가 vs 순이익, 2026-09-09)용 원시 시계열
+    revenueQuarterlySeries,
+    netIncomeQuarterlySeries,
+    revenueAnnualSeries,
+    netIncomeAnnualSeries,
   };
 }
 
@@ -2919,10 +2956,6 @@ document.querySelector(".fh-banner").addEventListener("click", () => {
 });
 
 // 지도는 하단 네비에서 더보기 패널 항목으로 이동(2026-09-01) — 본체에서 보던 시장 그대로 지도 보기 연동
-el("morePanelProBtn").addEventListener("click", () => {
-  closeMorePanel();
-  openProSheet("");
-});
 el("morePanelMapBtn").addEventListener("click", () => {
   const market = getWatchlistActiveMarket() === "KR" ? "domestic" : "overseas";
   window.location.href = `sector-map/index.html?market=${market}`;
@@ -3071,7 +3104,10 @@ function closeCompanyPanel({ push = true } = {}) {
     companyPanel.style.display = "none";
   }, 280);
   if (push && new URLSearchParams(location.search).get("ticker")) {
-    history.pushState(null, "", location.pathname);
+    // 2026-09-09 뒤로가기 개편: 앱 안에서 연 상세(fromApp)는 history.back()으로 그 항목을 걷어내고(popstate가 다시 닫기 처리),
+    // 주소로 바로 들어온 상세는 항목을 새로 쌓지 않고 주소만 바꿈 — 뒤로가기를 눌렀을 때 닫았던 상세가 다시 열리지 않게
+    if (history.state && history.state.ticker && history.state.fromApp) history.back();
+    else history.replaceState(history.state, "", location.pathname);
     document.title = document.documentElement.lang === "en" ? "MarketMap - Investing map by 10-year win rate" : "마켓맵: 10년 승률로 보는 투자 지도(한국주식,미국주식,ETF,비트코인)";
   }
 }
@@ -4304,9 +4340,9 @@ const WIZARD_CRITERIA = [
   { key: "netIncome", icon: "dollar", label: "순이익 증가", dir: "desc", get: (m) => m.netIncomeGrowthAnnual, fmt: (m) => fmtGrowthCell(m.netIncomeGrowthAnnual) },
   { key: "roe", icon: "medal", label: "ROE", dir: "desc", get: (m) => m.roeQuarterly, fmt: (m) => (m.roeQuarterly === null || m.roeQuarterly === undefined ? "N/A" : `${m.roeQuarterly.toFixed(1)}%`) },
   { key: "per", icon: "scale", label: "PER", dir: "asc", get: (m) => m.per, fmt: (m) => (m.per === null || m.per === undefined ? "N/A" : `${m.per.toFixed(1)}배`) },
-  { key: "stability", icon: "medal", label: "10년 승률", dir: "desc", get: (m) => m.winRate10y, fmt: (m) => (m.winRate10y === null || m.winRate10y === undefined ? "N/A" : `<b>${m.winRate10y}%</b>`) },
+  { key: "stability", icon: "medal", label: "10년 승률", dir: "desc", get: (m) => m.winRate10y, fmt: (m) => (m.winRate10y === null || m.winRate10y === undefined ? "N/A" : `<b>${m.winRate10y}%</b>${partialMarkHtml(m.winTotal)}`) },
   { key: "marketCap", icon: "building", label: "시가총액", dir: "desc", get: (m) => m.marketCap, fmt: (m) => (m.marketCap ? fmtCompactCurrency(m.marketCap) : "N/A") },
-  { key: "pressure", icon: "rocket", label: "10년 상승", dir: "desc", get: (m) => m.ret10yAvg, fmt: (m) => (m.ret10yAvg === null || m.ret10yAvg === undefined ? "N/A" : `<b>${m.ret10yAvg > 0 ? "+" : ""}${Math.round(m.ret10yAvg * 10) / 10}%</b>`) },
+  { key: "pressure", icon: "rocket", label: "10년 상승", dir: "desc", get: (m) => m.ret10yAvg, fmt: (m) => (m.ret10yAvg === null || m.ret10yAvg === undefined ? "N/A" : `<b>${m.ret10yAvg > 0 ? "+" : ""}${Math.round(m.ret10yAvg * 10) / 10}%</b>${partialMarkHtml(m.winTotal)}`) },
   { key: "surge", icon: "trending-up", label: "상승률(등락률)", dir: "desc", get: (m) => m.changePct, fmt: (m) => (m.changePct === null || m.changePct === undefined ? "N/A" : `${m.changePct >= 0 ? "+" : ""}${m.changePct.toFixed(2)}%`), needsDaily: true },
   { key: "plunge", icon: "trending-down", label: "하락률(등락률)", dir: "asc", get: (m) => m.changePct, fmt: (m) => (m.changePct === null || m.changePct === undefined ? "N/A" : `${m.changePct >= 0 ? "+" : ""}${m.changePct.toFixed(2)}%`), needsDaily: true },
 ];
@@ -4408,6 +4444,7 @@ async function runBranchBPipeline() {
         ...m,
         winRate10y: e && e.score !== null && e.score !== undefined ? e.score : null,
         ret10yAvg: e && Number.isFinite(e.ret10y) ? e.ret10y : null,
+        winTotal: e && Number.isFinite(e.total) ? e.total : null,
       };
     });
     const c2 = WIZARD_CRITERIA.find((c) => c.key === searchWizardAnswers.criterion2);
@@ -4528,6 +4565,7 @@ async function runBranchCConfirm() {
       return {
         winRate10y: e && e.score !== null && e.score !== undefined ? e.score : null,
         ret10yAvg: e && Number.isFinite(e.ret10y) ? e.ret10y : null,
+        winTotal: e && Number.isFinite(e.total) ? e.total : null,
       };
     };
     if (market === "etf" || market === "crypto") {
@@ -4553,7 +4591,7 @@ async function runBranchCConfirm() {
       await wizardAttachPrices(top30);
     }
     const marketLabel = WIZARD_MARKET_LABEL[market];
-    const table = wizardResultTableHtml(top30, "10년 상승+10년 승률 합계", (r) => `<b>${r.combinedTotal}</b>`);
+    const table = wizardResultTableHtml(top30, "10년 상승+10년 승률 합계", (r) => `<b>${r.combinedTotal}</b>${partialMarkHtml(r.winTotal)}`);
     wizardShareTitle = `기업검색 결과 (자동찾기 · ${marketLabel})`;
     wizardShareText =
       `[자동찾기] ${marketLabel} 10년 상승+10년 승률 합계 TOP30\n` +
@@ -4627,7 +4665,8 @@ async function copyWizardResultToSelf(text) {
 function navigateToTicker(ticker, { push = true } = {}) {
   ticker = ticker.toUpperCase();
   if (push) {
-    history.pushState({ ticker }, "", "?ticker=" + encodeURIComponent(ticker));
+    history.pushState({ ticker, fromApp: true }, "", "?ticker=" + encodeURIComponent(ticker));
+    backTrackHistory(); // 뒤로가기 모듈이 "지금 머문 항목"을 알게 함(위에 뜬 창을 닫을 때 이 항목을 다시 얹음)
   }
   tickerInput.value = ticker;
   document.title = document.documentElement.lang === "en" ? `${ticker} Analysis - MarketMap` : `${ticker} 분석 - 마켓맵`;
@@ -4759,11 +4798,8 @@ marketModeKrBtn.addEventListener("click", () => setAppMarketMode("kr"));
 marketModeUsBtn.addEventListener("click", () => setAppMarketMode("us"));
 syncMarketModeUI();
 
-window.addEventListener("popstate", () => {
-  const ticker = new URLSearchParams(location.search).get("ticker");
-  if (ticker) navigateToTicker(ticker, { push: false });
-  else closeCompanyPanel({ push: false });
-});
+// popstate(뒤로/앞으로가기)는 아래 "뒤로가기 처리" 모듈(handleBackNavigation)이 한 곳에서 처리 — 열린 창 닫기 → 상세 열기/닫기 → 종료 확인 순
+window.addEventListener("popstate", () => handleBackNavigation());
 
 // 종목 심볼 클릭 시 기업 패널을 열며 해당 종목 분석으로 이동(TOP10·인기종목 표에 이벤트 위임으로 공통 적용)
 document.addEventListener("click", (e) => {
@@ -5218,6 +5254,26 @@ attachTickerSearchBar(el("wizardTickerInput"), el("wizardTickerSuggest"), el("wi
 });
 let currentGroundData = null; // 투자 그라운드(52주 신고가~신저가 5등분)에 쓸 현재 종목의 데이터
 
+// 야후 검색(v1/finance/search)이 quotes를 비워 보낼 때의 폴백 — 차트 meta(longName/shortName/instrumentType/exchangeName)로 검색 결과와 같은 모양을 만듦
+async function quoteFromChartMeta(ticker) {
+  try {
+    const c = await yahooChart(ticker, "5d", "1d");
+    const meta = c && c.chart && c.chart.result && c.chart.result[0] && c.chart.result[0].meta;
+    if (!meta || !Number.isFinite(meta.regularMarketPrice)) return null;
+    return {
+      symbol: meta.symbol || ticker,
+      longname: meta.longName || meta.shortName || ticker,
+      shortname: meta.shortName || meta.longName || ticker,
+      quoteType: meta.instrumentType || "EQUITY",
+      exchange: meta.exchangeName || "",
+      exchDisp: meta.fullExchangeName || meta.exchangeName || "",
+      sector: "",
+      industry: "",
+    };
+  } catch {
+    return null;
+  }
+}
 async function runAnalysis(ticker) {
   analyzeBtn.disabled = true;
   results.style.display = "none";
@@ -5226,7 +5282,9 @@ async function runAnalysis(ticker) {
   try {
     await krCreditRatingReady; // 한글 종목명 표시가 필요하므로 KR 신용등급/종목명 맵 로딩을 먼저 보장
     const searchData = await yahooSearch(ticker);
-    const quote = searchData && searchData.quotes && searchData.quotes[0];
+    let quote = searchData && searchData.quotes && searchData.quotes[0];
+    // 2026-09-09: 야후 검색이 간헐적으로 quotes를 비워 보내는 종목(LLY 등)이 있어 차트 meta로 최소 정보를 만들어 진행
+    if (!quote) quote = await quoteFromChartMeta(ticker);
 
     if (!quote) {
       throw new Error(
@@ -5850,18 +5908,13 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     scrollChartToRight(el("futureChartContainer")); // 이미 그려져 있던 경우에도 오른쪽 끝부터
     if (!futureLoaded) {
       futureLoaded = true;
-      // ETF·코인(2026-09-02)은 주식 배점 점수 배지·투자안정 분포 통계 없이 4년 주기 예측 그래프만 표시
-      await runFuturePrediction(symbol, selfMetricsPromise, marketReturnsPromise, { chartOnly: isAssetDetail });
+      // 2026-09-09 사용자 요청: 매출액 vs 주가 vs 순이익(1년·5년·10년) 3장 — ETF·코인은 재무가 없어 주가만
+      await runFutureCompare(symbol, selfMetricsPromise, marketReturnsPromise, { chartOnly: isAssetDetail });
     }
   });
 
   let sReportLoaded = false;
   sReportToggleBtn.addEventListener("click", async () => {
-    // 굴려볼까 Pro 게이트(2026-09-02): S리포트는 Pro 전용(웹·v1 앱에선 게이트 비활성 — proBlocked 참고)
-    if (proBlocked()) {
-      openProSheet();
-      return;
-    }
     const isOpen = sReportInlineWrap.style.display !== "none";
     if (isOpen) {
       sReportInlineWrap.style.display = "none";
@@ -5988,8 +6041,8 @@ async function runAssetTickerHistorical(ticker, container, assetType) {
           <td>${fmtAssetPrice(nowPrice)}${
       chgSince !== null ? `<br><span class="${chgSince >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(chgSince)})</span>` : ""
     }</td>
-          <td>${ret10yNow === null ? "N/A" : `<b>${ret10yNow > 0 ? "+" : ""}${Math.round(ret10yNow * 10) / 10}%</b>`}</td>
-          <td>${winRateNow === null ? "N/A" : `<b>${winRateNow}%</b>`}</td>
+          <td>${ret10yNow === null ? "N/A" : `<b>${ret10yNow > 0 ? "+" : ""}${Math.round(ret10yNow * 10) / 10}%</b>${partialMarkHtml(wrEntryHist && wrEntryHist.total)}`}</td>
+          <td>${winRateNow === null ? "N/A" : `<b>${winRateNow}%</b>${partialMarkHtml(wrEntryHist && wrEntryHist.total)}`}</td>
         </tr></tbody>
       </table>`;
   } catch (err) {
@@ -6133,7 +6186,7 @@ async function renderSummaryScoreRow(ticker, scoreMode = "stock") {
         ${cell("green", `10년평균승률${partialMark}`, nineFmtPct(wr10, false))}
         ${cell("green", "작년승률<br>(직전12개월)", nineFmtPct(wr1y, false))}
         ${cell("green", "내년 승률<br>(12개월 예측)", nineFmtPct(wrNext, true))}
-        ${cell("blue", "10년평균상승률", nineFmtPct(ret10, false))}
+        ${cell("blue", `10년평균상승률${partialMark}`, nineFmtPct(ret10, false))}
         ${cell("blue", "작년상승률<br>(직전12개월)", nineFmtPct(ret1y, false))}
         ${cell("blue", "내년 상승률<br>(12개월 예측)", nineFmtPct(retNext, true))}
         ${cell("orange", "10년 RSI평균<br>(520주)", nineFmtNum(rsi10, false))}
@@ -7137,7 +7190,13 @@ function stockRet10CellHtml(symbol) {
   const e = stockWrEntryOf(symbol);
   if (!e || !Number.isFinite(e.ret10y)) return "N/A";
   const v = Math.round(e.ret10y * 10) / 10;
-  return `${v > 0 ? "+" : ""}${v}%`;
+  return `${v > 0 ? "+" : ""}${v}%${partialMarkHtml(e.total)}`;
+}
+// 상장 10년 미만(승률 DB total<120개월) ❗ — 10년 승률·10년 상승 표시 공통(2026-09-09 사용자 요청: 10년 상승에도 표시).
+// 10년 상승은 상장 후 기간만 연율화한 값이라(예: 센디스크 18개월 36배 → 연 1,001%) 10년치가 아님을 알리는 용도
+function partialMarkHtml(total, cls) {
+  if (!Number.isFinite(total) || total >= 120) return "";
+  return `<span class="nine-partial-mark${cls ? " " + cls : ""}" title="상장 10년 미만 — 상장 후 ${total}개월만 집계(연율화)">❗</span>`;
 }
 
 async function renderWinRate(ticker, mode) {
@@ -7809,13 +7868,7 @@ const KR_VALUE_DISCLAIMER = `<p class="disclaimer tab-note"><span style="filter:
 // 모든 랭킹 "더보기/전체보기" 공통 동작(2026-08-31 사용자 요청): 스캔 중 재클릭 방지 + 기존 상위 30개 표를 접고
 // 진행 현황이 맨 위(statusEl)에 보이게 함. 시작에 성공하면 true, 이미 스캔 중이라 무시해야 하면 false를 반환
 function beginLoadMoreScan(resultsEl, statusEl) {
-  // 굴려볼까 Pro 게이트(2026-09-02): 한국·미국주식 전체보기(상단 +더보기·하단 전체보기)는 미구독자 하루 5회 무료,
-  // 초과분부터 Pro 안내 — 이 함수는 주식 전체 스캔 6곳(기업가치/시장동향/RSI·승률/과거분석 KR 등)의 유일한 진입점.
-  // 게이트는 Play Billing이 있는 앱(v1.1)에서만 활성(proBlocked 참고), 웹·v1에선 항상 통과.
-  if (proBlocked()) { // 멤버십 모델(2026-09-08): 전체보기는 Pro 전용(무료 5회 폐지)
-    openProSheet();
-    return false;
-  }
+  // Pro 멤버십 게이트는 2026-09-09 사용자 결정(비공개·로그인 승인제 운영)으로 완전히 제거 — 승인된 계정은 전부 무료
   if (resultsEl.dataset.scanning === "1") return false;
   resultsEl.dataset.scanning = "1";
   resultsEl.innerHTML = "";
@@ -8364,6 +8417,7 @@ async function runPopularStocks() {
       changePct: snap && snap.changePct !== null && snap.changePct !== undefined ? snap.changePct : null,
       ret10yAvg: popularRet10y(c, wrMap),
       winRateScore: popularWinRate(c, wrMap),
+      winTotal: popularWinTotal(c, wrMap),
     }));
     statusEl.style.display = "none";
     paintPopularRows(resultsEl, isKr, plainRows, "");
@@ -8383,6 +8437,7 @@ async function runPopularStocks() {
         changePct: null,
         ret10yAvg: popularRet10y(c, wrMap),
         winRateScore: popularWinRate(c, wrMap),
+        winTotal: popularWinTotal(c, wrMap),
       }));
       paintPopularRows(resultsEl, isKr, rows, `<p class="top30-scope-note">🕒 실시간 시세를 받아오지 못해(${escapeHtml(err.message || "")}) 시가총액 순으로만 보여드립니다. 장이 열리면 거래대금 순으로 다시 정렬됩니다.</p>`);
     } else {
@@ -8395,6 +8450,10 @@ async function runPopularStocks() {
 }
 
 // 인기종목 표의 10년 상승(CAGR)·10년 승률: 스냅샷 필드 우선, 없으면 승률 DB(ret10y/score)
+function popularWinTotal(c, wrMap) {
+  const e = wrMap && wrMap[c.symbol];
+  return e && Number.isFinite(e.total) ? e.total : null;
+}
 function popularRet10y(c, wrMap) {
   if (Number.isFinite(c.ret10yAvg)) return c.ret10yAvg;
   const e = wrMap && wrMap[c.symbol];
@@ -8443,8 +8502,8 @@ function paintPopularRows(resultsEl, isKr, rows, extraNoteHtml) {
           <td>${i + 1}</td>
           <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.name || r.symbol)}</b></span></td>
           <td>${priceCell}</td>
-          <td>${Number.isFinite(r.ret10yAvg) ? `<b>${r.ret10yAvg > 0 ? "+" : ""}${Math.round(r.ret10yAvg * 10) / 10}%</b>` : "N/A"}</td>
-          <td>${Number.isFinite(r.winRateScore) ? `${r.winRateScore}%` : "N/A"}</td>
+          <td>${Number.isFinite(r.ret10yAvg) ? `<b>${r.ret10yAvg > 0 ? "+" : ""}${Math.round(r.ret10yAvg * 10) / 10}%</b>${partialMarkHtml(r.winTotal)}` : "N/A"}</td>
+          <td>${Number.isFinite(r.winRateScore) ? `${r.winRateScore}%${partialMarkHtml(r.winTotal)}` : "N/A"}</td>
         </tr>`;
   };
   let shown = Math.min(30, rows.length);
@@ -8616,7 +8675,8 @@ async function computeChartDerivedMetrics(symbol, opts) {
 
   const meta = chart.chart.result[0].meta || {};
   const price = meta.regularMarketPrice !== undefined && meta.regularMarketPrice !== null ? meta.regularMarketPrice : last.c;
-  const changePct = prev && prev.c ? ((price - prev.c) / prev.c) * 100 : null;
+  // 2026-09-09: 인기종목·랭킹 등락률도 검색상세와 같은 기준(야후 당일 등락률 우선)으로 통일
+  const changePct = getDailyChangePercent(chart) ?? (prev && prev.c ? ((price - prev.c) / prev.c) * 100 : null);
 
   // 52주(1년 차트) 종가 최고~최저 구간에서 현재가의 위치(0%=최저, 100%=최고) — 시장동향 "52주최저" 랭킹용
   const closes = pairs.map((p) => p.c);
@@ -9009,8 +9069,11 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
       if (key === "creditRating") return RATING_LETTERS[Math.round(n)] || String(n);
       return `${Math.round(n * 10) / 10}%`;
     };
+    // 승률 항목(winRate10y)은 상장 10년 미만 종목에 ❗(2026-09-09 사용자 요청) — 승률 DB의 total(집계 개월수)로 판정
+    const wrDbAt = keys.includes("winRate10y") ? await getWinRateDb().catch(() => null) : null;
+    const wrMapAt = wrDbAt ? (isKr ? wrDbAt.scoresKr : isCrypto ? wrDbAt.scoresCrypto : wrDbAt.scores) || {} : {};
     const rows = Object.entries(at.ranks)
-      .map(([sym, r]) => ({ sym, c1: cellOf(r[keys[0]], keys[0]), c2: cellOf(r[keys[1]], keys[1]), c3: cellOf(r[keys[2]], keys[2]) }))
+      .map(([sym, r]) => ({ sym, c1: cellOf(r[keys[0]], keys[0]), c2: cellOf(r[keys[1]], keys[1]), c3: cellOf(r[keys[2]], keys[2]), winTotal: wrMapAt[sym] && Number.isFinite(wrMapAt[sym].total) ? wrMapAt[sym].total : null }))
       .filter((r) => r.c1 !== null);
     // 정렬(2026-09-05 확정): 불 3개 전부 초록인 종목 먼저, 그다음 1번 항목 1등부터
     const allGreen = (r) => r.c1.light === "🟢" && r.c2 && r.c2.light === "🟢" && r.c3 && r.c3.light === "🟢";
@@ -9024,10 +9087,11 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
       const n = (at.n && at.n[key]) || 0;
       return n ? Math.max(1, Math.round((c.r / n) * 100)) : null;
     };
-    const cellHtml = (c, key) => {
+    const cellHtml = (c, key, winTotal) => {
       if (!c) return `<td><span class="at-emoji">⚪</span><span class="muted">-</span></td>`;
       const pct = pctOf(c, key);
-      return `<td><span class="at-emoji">${c.light}</span><b>${valFmt(key, c.v)}</b><br><span class="muted at-pct">(상위 ${pct === null ? "-" : pct + "%"})</span></td>`;
+      const mark = key === "winRate10y" ? partialMarkHtml(winTotal) : "";
+      return `<td><span class="at-emoji">${c.light}</span><b>${valFmt(key, c.v)}</b>${mark}<br><span class="muted at-pct">(상위 ${pct === null ? "-" : pct + "%"})</span></td>`;
     };
     // ①②③ 머리글 아래 상관 점수·등급(2026-09-07 사용자 요청): 같은 기간 상관관계도 목록(side[period])의 적중 합계를 환산
     const corrList = (side && side[isYear ? "year" : isWeek ? "week" : isDay ? "day" : "month"]) || [];
@@ -9044,18 +9108,17 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
           (r) => `
         <tr>
           <td class="at-name"><span class="ticker-cell">${tickerLogoHtml(r.sym)}<b class="ticker-link" data-ticker="${escapeHtml(r.sym)}">${escapeHtml(nameOf(r.sym))}</b></span></td>
-          ${cellHtml(r.c1, keys[0])}
-          ${cellHtml(r.c2, keys[1])}
-          ${cellHtml(r.c3, keys[2])}
+          ${cellHtml(r.c1, keys[0], r.winTotal)}
+          ${cellHtml(r.c2, keys[1], r.winTotal)}
+          ${cellHtml(r.c3, keys[2], r.winTotal)}
         </tr>`
         )
         .join("");
       parkAutoTrackCorr();
       resultsEl.innerHTML = `
-        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — 오늘의 <b>${periodLabel} 상관관계 상위 3개 항목</b>(①${escapeHtml(labels[0])} ②${escapeHtml(labels[1])} ③${escapeHtml(labels[2])})을 <b>현재 시점 점수</b>로 다시 순위 매긴 신호등입니다.
-        각 항목 ${isKr || isCrypto ? "상위 20% 🟢 · 중간 🟡 · 하위 20% 🔴" : "상위 100등 🟢 · 중간 🟡 · 하위 100등 🔴"} — 불 3개가 모두 켜진 종목이 맨 위로 오도록 정렬했습니다(②🟢 우선 → ③🟢 우선 → ① 순위순).
-        항목 아래 <b>적중 점수</b>는 상관관계도의 적중 합계(최대 ${corrMaxTot}, 무작위 기대 약 ${corrChanceTot})이고, 옆의 -1~1 값·등급은 이를 상관 척도로 환산한 것입니다.
-        상관관계도와 같은 배치로 ${corrBatchTimeLabel(isKr, isCrypto)} 갱신되며 다음 갱신까지 고정됩니다(기준일 ${escapeHtml(side.dateKst || corr.dateKst || "")}). 참고용 지표이며 투자 자문이 아닙니다.</p>
+        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — 오늘기준 1년동안 상승/하락한 종목이 과거의 1년전 어떤 데이터와 상관관계가 있는지 <b>상위 3개 항목</b>(①${escapeHtml(labels[0])} ②${escapeHtml(labels[1])} ③${escapeHtml(labels[2])})을 <b>현재 시점 점수</b>로 다시 순위 매긴 신호등입니다.<br>
+        * ${isKr || isCrypto ? "상위 20% 🟢 · 중간 🟡 · 하위 20% 🔴" : "상위 100등 🟢 · 중간 🟡 · 하위 100등 🔴"}${keys.includes("winRate10y") ? " · 승률의 ❗는 상장 10년 미만" : ""}<br>
+        <span class="muted">항목 아래 적중 점수는 상관관계도의 적중 합계(최대 ${corrMaxTot}, 무작위 기대 약 ${corrChanceTot}), 옆의 -1~1 값·등급은 이를 상관 척도로 환산한 값. ${corrBatchTimeLabel(isKr, isCrypto)} 갱신(기준일 ${escapeHtml(side.dateKst || corr.dateKst || "")}). 참고용 지표이며 투자 자문이 아닙니다.</span></p>
         <div id="autoTrackCorrSlot"></div>
         <table class="top30-table autotrack-table autotrack-lights-table">
           <thead><tr><th class="at-name">종목명</th>${headCells}</tr></thead>
@@ -9503,11 +9566,11 @@ const ASSET_TREND_METRICS = {
     header: "10년 상승<br>(연복리)",
     orange: true,
     sort: (a, b) => (b.ret10y ?? -Infinity) - (a.ret10y ?? -Infinity),
-    cell: (r) => (r.ret10y === null || r.ret10y === undefined ? "N/A" : `<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>`),
-    note: "10년 상승(최근 10년 연복리 수익률 CAGR — 매년 몇 %씩 오른 셈인지, 상장 10년 미만은 상장 후 기간으로 연율화)이 높은 순 순위입니다.",
+    cell: (r) => (r.ret10y === null || r.ret10y === undefined ? "N/A" : `<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>${partialMarkHtml(r.winTotal)}`),
+    note: "10년 상승(최근 10년 연복리 수익률 CAGR — 매년 몇 %씩 오른 셈인지, 상장 10년 미만은 상장 후 기간으로 연율화 — ❗ 표시)이 높은 순 순위입니다.",
     noRiskCol: true,
     gradeHeader: "10년<br>승률",
-    gradeCell: (r) => (r.winRate === null || r.winRate === undefined ? "N/A" : `${r.winRate}%`),
+    gradeCell: (r) => (r.winRate === null || r.winRate === undefined ? "N/A" : `${r.winRate}%${partialMarkHtml(r.winTotal)}`),
   },
   // RSI·승률 순위(2026-09-02 확장): 주식 시장동향과 동일 컨셉 — 값은 배치 DB(winrate-scores-us.json의
   // scoresEtf/scoresCrypto, attachWinRateRsiToRows가 행에 부착)에서 읽음. 마지막 열은 서로의 점수
@@ -9574,7 +9637,7 @@ function assetTrendTableHtml(rows, metricKey, universeLabel, rowNameHtmlFn, pric
   const m = ASSET_TREND_METRICS[metricKey];
   const sorted = [...rows].sort(m.sort).slice(0, limit);
   const showWinRate = !m.noRiskCol;
-  const winRateColCell = (r) => (r.winRate === null || r.winRate === undefined ? "N/A" : `${r.winRate}%`);
+  const winRateColCell = (r) => (r.winRate === null || r.winRate === undefined ? "N/A" : `${r.winRate}%${partialMarkHtml(r.winTotal)}`);
   const body = sorted
     .map(
       (r, i) => `
@@ -11936,8 +11999,8 @@ async function runHistoricalMoversAsset(section, period, direction) {
             <td>${i + 1}</td>
             <td><span class="ticker-cell">${isEtf ? etfRowNameHtml(r, isKrEtf) : cryptoRowNameHtml(r)}</span></td>
             <td>${isEtf ? priceChartLink(r.symbol, fmtPrice(r.price, r.currency)) : cryptoPriceStr(r)}<br><span class="${chg >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(chg)})</span></td>
-            <td>${Number.isFinite(r.ret10y) ? `<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>` : "N/A"}</td>
-            <td>${Number.isFinite(r.winRate) ? `${r.winRate}%` : "N/A"}</td>
+            <td>${Number.isFinite(r.ret10y) ? `<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>${partialMarkHtml(r.winTotal)}` : "N/A"}</td>
+            <td>${Number.isFinite(r.winRate) ? `${r.winRate}%${partialMarkHtml(r.winTotal)}` : "N/A"}</td>
           </tr>`;
           })
           .join("")}</tbody>
@@ -13679,7 +13742,7 @@ async function runTrendRsiWinRate(mode) {
         r.winRate === null
           ? "N/A"
           : `<b>${r.winRate}%</b>${r.winTotal !== null && r.winTotal < 120 ? `<span class="nine-partial-mark" title="상장 10년 미만 — 상장 후 ${r.winTotal}개월만 집계">❗</span>` : ""}`;
-      const retCell = (r) => (r.ret10y === null ? "N/A" : `<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>`);
+      const retCell = (r) => (r.ret10y === null ? "N/A" : `<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>${partialMarkHtml(r.winTotal)}`);
 
       const rows = ranked
         .map((r, i) => {
@@ -13691,7 +13754,7 @@ async function runTrendRsiWinRate(mode) {
           <td><span class="ticker-cell">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(mainName)}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(subName)}</span></td>
           <td>${r.price !== undefined && r.price !== null ? priceChartLink(r.symbol, fmtPrice(r.price, isKr ? "KRW" : "USD")) : "N/A"}</td>
           <td>${isRsi ? rsiRankCellHtml(r.rsi) : isRet ? retCell(r) : winRateCell(r)}</td>
-          <td>${isRsi ? (r.winRate === null ? "N/A" : `${r.winRate}%`) : isRet ? (r.winRate === null ? "N/A" : `${r.winRate}%`) : rsiRankCellHtml(r.rsi)}</td>
+          <td>${isRsi ? (r.winRate === null ? "N/A" : `${r.winRate}%${partialMarkHtml(r.winTotal)}`) : isRet ? (r.winRate === null ? "N/A" : `${r.winRate}%${partialMarkHtml(r.winTotal)}`) : rsiRankCellHtml(r.rsi)}</td>
         </tr>`;
         })
         .join("");
@@ -15098,8 +15161,9 @@ async function renderFutureModalHeader(ticker, quote, metricsPromise, marketRetu
     const db = await getWinRateDb().catch(() => null);
     const wrMap = winRateMapForMode(db, ticker, "stock");
     const wrEntry = (wrMap && wrMap[ticker]) || null;
-    const ret10 = wrEntry && Number.isFinite(wrEntry.ret10y) ? `${Math.round(wrEntry.ret10y)}%` : "—";
-    const wr10 = wrEntry && Number.isFinite(wrEntry.score) ? `${Math.round(wrEntry.score)}%` : "—";
+    const partialSfx = wrEntry && Number.isFinite(wrEntry.total) && wrEntry.total < 120 ? "❗" : "";
+    const ret10 = wrEntry && Number.isFinite(wrEntry.ret10y) ? `${Math.round(wrEntry.ret10y)}%${partialSfx}` : "—";
+    const wr10 = wrEntry && Number.isFinite(wrEntry.score) ? `${Math.round(wrEntry.score)}%${partialSfx}` : "—";
     let macroBadgeHtml;
     if (isKr) {
       const fomo = await getKrFomoMetrics().catch(() => ({ score: null }));
@@ -15219,635 +15283,358 @@ async function runFuturePrediction(ticker, metricsPromise, marketReturnsPromise,
   }
 }
 
-// ---------- 마켓맵 Pro 멤버십(2026-09-08 사용자 확정: 첫 방문 1일 무료 · 리뷰 1일 선물 · 1일/7일 이용권 · 월 정기구독) ----------
-// Pro 전용: ①섹터맵(지도, B 맛보기 — 지도 쪽 오버레이는 sector-map/app.js) ②S리포트
-//          ③한국·미국주식 랭킹 전체보기(상단 +더보기·하단 전체보기 = beginLoadMoreScan 경유 전체 스캔)
-// 게이트는 Play Billing이 포함된 앱(v1.1 TWA, Digital Goods API 사용 가능)에서만 활성화 —
-// 웹 브라우저·결제 미포함 v1 앱에서는 API가 없어 게이트가 꺼진 채 전부 무료로 동작(안전한 점진 배포).
-// 구독 상태는 구글 계정에 묶여 자체 로그인 불필요(기기 변경에도 유지).
-// 개발 테스트: localStorage pro_gate_test=1 → 브라우저에서도 게이트 강제 활성, pro_dev=1 → 구독자 취급.
-// ⚠️ v1.1 출시 전 확인: Play Console 구독 상품 ID는 아래 PRO_PRODUCT_ID와 동일해야 함.
-//    라이선스 테스터 실결제 테스트에서 구매 승인(acknowledge)이 자동 처리되는지 확인할 것(미승인 시 3일 후 자동 환불됨).
-// 상품(2026-09-08 사용자 확정): 1일 이용권 1,000원 / 7일 이용권 4,900원(일회성·소모형) / 한 달 정기구독 9,900원(자동 갱신).
-// Play Console에 아래 id로 인앱 상품(1일·7일 = 소모성 상품, 월 = 구독)을 같은 이름으로 등록해야 결제가 동작함.
-// 상품(2026-09-08 사용자 확정): 1일 이용권 1,000원 / 7일 이용권 4,900원(일회성·소모형) / 한 달 정기구독 9,900원(자동 갱신).
-// Play Console에 아래 id로 인앱 상품(1일·7일 = 소모성 상품, 월 = 구독)을 같은 이름으로 등록해야 결제가 동작함.
-// 상품(2026-09-08 사용자 확정): 1일 이용권 1,000원 / 7일 이용권 4,900원(일회성·소모형) / 한 달 정기구독 9,900원(자동 갱신).
-// Play Console에 아래 id로 인앱 상품(1일·7일 = 소모성 상품, 월 = 구독)을 같은 이름으로 등록해야 결제가 동작함.
-const PRO_PRODUCTS = [
-  { id: "pro_day_1", label: "1일 이용권", days: 1, qty: 1, price: 1000, kind: "onetime", note: "보관함에 보관 · 원할 때 사용" },
-  { id: "pro_day_2", label: "1일 이용권 2장", days: 1, qty: 2, price: 1900, kind: "onetime", note: "장당 950원 · 5% 할인" },
-  { id: "pro_day_3", label: "1일 이용권 3장", days: 1, qty: 3, price: 2700, kind: "onetime", note: "장당 900원 · 10% 할인" },
-  { id: "pro_day_5", label: "1일 이용권 5장", days: 1, qty: 5, price: 4500, kind: "onetime", note: "장당 900원 · 10% 할인" },
-  { id: "pro_week_7", label: "7일 이용권", days: 7, qty: 1, price: 4900, kind: "onetime", note: "보관함에 보관 · 원할 때 사용" },
-  { id: "pro_monthly", label: "한 달 정기구독", days: 30, price: 9900, kind: "subscription", note: "매달 자동 갱신 · 언제든 해지" },
+// ---------- 뒤로가기 처리(2026-09-09 사용자 요청: 앱에서 뒤로가기를 누르면 앱이 바로 꺼지던 문제) ----------
+// 원리: 부팅 때 히스토리에 "가드" 항목을 하나 얹어 둔다. 뒤로가기(popstate)가 오면
+//  ① 열려 있는 모달·시트·패널이 있으면 맨 위 것 하나만 닫고, 방금 떠난 항목을 다시 얹어(가드 유지) 다음 뒤로가기도 받는다.
+//  ② 주소에 ?ticker=가 있으면 그 상세를 연다(앞으로가기 포함). 없으면 열린 상세를 닫는다.
+//  ③ 열린 게 하나도 없고 맨 처음 항목까지 왔으면 "한 번 더 누르면 종료" 토스트를 띄우고 가드를 다시 얹는다.
+//     2초 안에 다시 누르면 history.back()으로 실제 종료(앱은 닫히고, 브라우저는 이전 사이트로).
+const BACK_OVERLAYS = [
+  // 위에 뜨는 것부터 — 열려 있는 첫 항목 하나만 닫음
+  { id: "chartModal", close: () => closeChartModal() },
+  { id: "wlGroupModal", close: () => closeWlGroupModal() },
+  { id: "selfTestModal", close: () => closeSelfTestModal() },
+  { id: "groundModal", close: () => closeGroundModal() },
+  { id: "shareSheet", close: () => closeShareSheet() },
+  { id: "calendarDayModal", close: () => closeCalendarDayModal() },
+  { id: "mktWidgetEditModal", close: () => closeMktWidgetEditModal() },
+  { id: "authAdminModal", close: () => (el("authAdminModal").style.display = "none") },
+  { id: "searchOverlay", close: () => closeSearchOverlay() },
+  { id: "morePanel", close: () => closeMorePanel() },
+  { id: "searchWizardPanel", close: () => closeSearchWizard() },
+  { id: "assetDetailPanel", close: () => closeAssetDetailPanel() },
+  { id: "marketPanel", close: () => closeMarketPanel() },
+  { id: "calendarPanel", close: () => closeCalendarPanel() },
 ];
-const PRO_PRODUCT_ID = "pro_monthly"; // 정기구독 상품 ID(지도 sector-map/app.js와 공용)
-const PRO_STORE_URL = "https://play.google.com/store/apps/details?id=kr.marketmap.app";
-const PRO_ENT_KEY = "pro_entitlement_v1"; // 사용 중인 이용 기간 { until: ms, source } — 지도(sector-map)도 같은 키를 읽음
-const PRO_WALLET_KEY = "pro_vouchers_v1"; // 아직 사용하지 않은 이용권 지갑 [{ days, source, at }]
-// 게이트는 항상 활성(멤버십 모델, 2026-09-08 사용자 확정). 이용권은 바로 적용하지 않고 지갑에 보관했다가
-// "지금 사용하시겠습니까?" 확인 후 사용(사용자 요청). 웹에서는 구매 대신 플레이스토어 안내.
-const PRO_STATE = { gateActive: true, entitled: false, subscribed: false, until: null, source: null, prices: {}, trialJustGranted: false };
-
-function proLocalFlag(name) {
+let backHistCur = { state: null, url: location.href }; // 마지막으로 머물던 히스토리 항목(닫기 뒤 다시 얹기 위해)
+function backTrackHistory() {
   try {
-    return localStorage.getItem(name) === "1";
-  } catch {
-    return false;
-  }
-}
-function proReadEntitlement() {
-  try {
-    const e = JSON.parse(localStorage.getItem(PRO_ENT_KEY) || "null");
-    return e && Number.isFinite(e.until) ? e : null;
-  } catch {
-    return null;
-  }
-}
-const PRO_HISTORY_KEY = "pro_history_v1"; // 구매·무료·사용 내역 [{kind:"buy"|"free"|"use", at, voucherId, days, source, label, price, expires, from, until}]
-function proReadHistory() {
-  try {
-    const h = JSON.parse(localStorage.getItem(PRO_HISTORY_KEY) || "[]");
-    return Array.isArray(h) ? h.filter((x) => x && x.kind).sort((a, b) => (b.at || 0) - (a.at || 0)) : [];
-  } catch {
-    return [];
-  }
-}
-function proLogHistory(entry) {
-  const h = proReadHistory();
-  h.unshift(Object.assign({ at: Date.now() }, entry));
-  try {
-    localStorage.setItem(PRO_HISTORY_KEY, JSON.stringify(h.slice(0, 300)));
+    backHistCur = { state: history.state, url: location.href };
   } catch {}
 }
-function proIsFreeSource(source) {
-  return source === "trial" || source === "review" || source === "coupon";
+let backExitArmedAt = 0;
+function backOverlayOpen(id) {
+  const e = document.getElementById(id);
+  if (!e) return false;
+  if (e.classList.contains("open")) return true;
+  const d = e.style.display;
+  return d !== "" && d !== "none" && !e.classList.contains("closing");
 }
-function proFreeLabel(source, days) {
-  if (source === "trial") return `오직 당신만을 위한 선물! 첫 방문 무료 ${days}일 이용권`;
-  if (source === "review") return `리뷰 감사 선물! 무료 ${days}일 이용권`;
-  return `쿠폰 선물! 무료 ${days}일 이용권`;
+function backTopOverlay() {
+  for (const o of BACK_OVERLAYS) if (backOverlayOpen(o.id)) return o;
+  // 목록에 없는 모달(공지사항·앱 정보 등 .chart-modal 계열)도 뒤로가기로 닫히게 — 화면에 보이는 것 중 첫 번째
+  const anyModal = [...document.querySelectorAll(".chart-modal")].find((m) => m.style.display && m.style.display !== "none");
+  if (anyModal) return { id: anyModal.id, close: () => (anyModal.style.display = "none") };
+  return null;
 }
-// 보관 중인 이용권 — 유효기간(무료 30일·구매 5년)이 지난 것은 자동 소멸. 예전(id 없는) 항목은 여기서 보정
-function proReadWallet() {
-  let w = [];
-  try {
-    w = JSON.parse(localStorage.getItem(PRO_WALLET_KEY) || "[]");
-  } catch {}
-  if (!Array.isArray(w)) w = [];
-  w = w.filter((v) => v && Number.isFinite(v.days) && v.days > 0);
-  let changed = false;
-  const now = Date.now();
-  for (const v of w) {
-    if (!v.id) {
-      v.id = "v" + (v.at || now).toString(36) + Math.random().toString(36).slice(2, 6);
-      v.expires = (v.at || now) + (proIsFreeSource(v.source) ? 30 : 365 * 5) * 86400000;
-      changed = true;
-      proLogHistory({ at: v.at || now, kind: proIsFreeSource(v.source) ? "free" : "buy", voucherId: v.id, days: v.days, source: v.source, label: proIsFreeSource(v.source) ? proFreeLabel(v.source, v.days) : proSourceLabel(v.source), price: proIsFreeSource(v.source) ? 0 : (PRO_PRODUCTS.find((p) => p.id === v.source) || {}).price || 0, expires: v.expires });
-    }
-  }
-  const alive = w.filter((v) => !v.expires || v.expires > now);
-  if (alive.length !== w.length) changed = true;
-  if (changed) proWriteWallet(alive);
-  return alive;
+function backPushGuard() {
+  history.pushState({ mmGuard: true }, "", location.href);
+  backHistCur = { state: history.state, url: location.href };
 }
-function proWriteWallet(list) {
-  try {
-    localStorage.setItem(PRO_WALLET_KEY, JSON.stringify(list));
-  } catch {}
-}
-// 이용권을 보관함에 넣기(첫 방문 선물·리뷰 선물·쿠폰·구매한 1일/7일권) + 구매/무료 내역 기록
-function proAddVoucher(days, source, extra) {
-  extra = extra || {};
-  const w = proReadWallet();
-  const at = Date.now();
-  const free = proIsFreeSource(source);
-  const id = "v" + at.toString(36) + Math.random().toString(36).slice(2, 6);
-  const expires = at + (free ? 30 : 365 * 5) * 86400000;
-  const qty = Math.max(1, Number(extra.qty) || 1);
-  for (let i = 0; i < qty; i++) w.push({ id: qty === 1 ? id : `${id}-${i + 1}`, packId: id, days, source, at, expires });
-  proWriteWallet(w);
-  proLogHistory({ at, kind: free ? "free" : "buy", voucherId: id, qty, days, source, label: extra.label || (free ? proFreeLabel(source, days) : proSourceLabel(source)), price: free ? 0 : extra.price || (PRO_PRODUCTS.find((p) => p.id === source) || {}).price || 0, expires });
-  return id;
-}
-// 보관함에서 이용권 1장을 꺼내 사용 — 남은 기간이 있으면 그 끝에 이어 붙임(겹쳐 사라지지 않게) + 사용 내역 기록
-function proUseVoucher(index) {
-  const w = proReadWallet();
-  const v = w[index];
-  if (!v) return false;
-  w.splice(index, 1);
-  proWriteWallet(w);
-  const now = Date.now();
-  const cur = proReadEntitlement();
-  const from = cur && cur.until > now ? cur.until : now;
-  const until = proGrantDays(v.days, v.source);
-  proLogHistory({ at: now, kind: "use", voucherId: v.id, days: v.days, source: v.source, label: proSourceLabel(v.source), from, until });
-  return true;
-}
-function proGrantDays(days, source) {
-  const now = Date.now();
-  const cur = proReadEntitlement();
-  const base = cur && cur.until > now ? cur.until : now;
-  const until = base + days * 86400000;
-  try {
-    localStorage.setItem(PRO_ENT_KEY, JSON.stringify({ until, source }));
-  } catch {}
-  proRecompute();
-  return until;
-}
-function proRecompute() {
-  const e = proReadEntitlement();
-  const active = !!(e && e.until > Date.now());
-  PRO_STATE.until = e ? e.until : null;
-  PRO_STATE.source = e ? e.source : null;
-  PRO_STATE.entitled = PRO_STATE.subscribed || active || proLocalFlag("pro_dev");
-}
-function proSourceLabel(source) {
-  if (source === "trial") return "첫 방문 선물";
-  if (source === "review") return "리뷰 선물";
-  if (source === "coupon") return "쿠폰 선물";
-  const prod = PRO_PRODUCTS.find((p) => p.id === source);
-  return prod ? prod.label : "이용권";
-}
-function proRemainingText() {
-  if (PRO_STATE.subscribed) return "정기구독 이용 중 (매달 자동 갱신)";
-  if (proLocalFlag("pro_dev")) return "개발자 모드 (Pro 취급)";
-  if (!PRO_STATE.until || PRO_STATE.until <= Date.now()) return "사용 중인 이용권 없음";
-  const ms = PRO_STATE.until - Date.now();
-  const d = Math.floor(ms / 86400000);
-  const h = Math.floor((ms % 86400000) / 3600000);
-  const m = Math.floor((ms % 3600000) / 60000);
-  return `남은 이용 기간 ${d > 0 ? d + "일 " : ""}${h}시간 ${m}분 · ${proSourceLabel(PRO_STATE.source)}`;
-}
-function proWalletSummary() {
-  const w = proReadWallet();
-  if (!w.length) return "보유 이용권 없음";
-  const byDays = {};
-  for (const v of w) byDays[v.days] = (byDays[v.days] || 0) + 1;
-  return "보유 이용권: " + Object.keys(byDays).sort((a, b) => a - b).map((d) => `${d}일권 ${byDays[d]}장`).join(" · ");
-}
-
-async function getPlayBillingService() {
-  if (!("getDigitalGoodsService" in window)) return null;
-  try {
-    return await window.getDigitalGoodsService("https://play.google.com/billing");
-  } catch {
-    return null;
-  }
-}
-function proPriceText(prod) {
-  const p = PRO_STATE.prices[prod.id];
-  if (p && p.value && Number.isFinite(Number(p.value))) {
-    const n = Number(p.value);
-    return p.currency === "KRW" ? `${Math.round(n).toLocaleString("ko-KR")}원` : `${n} ${p.currency}`;
-  }
-  return `${prod.price.toLocaleString("ko-KR")}원`;
-}
-
-async function initProState() {
-  // 최초 1회 접속 → 1일 무료 이용권을 지갑에(2026-09-08 사용자 확정: 바로 쓰지 않고 사용 여부를 물어봄). 기기(브라우저) 기준 1회.
-  try {
-    if (!localStorage.getItem("pro_trial_v1")) {
-      localStorage.setItem("pro_trial_v1", String(Date.now()));
-      proAddVoucher(1, "trial");
-      PRO_STATE.trialJustGranted = true;
-    }
-  } catch {}
-  const service = await getPlayBillingService();
-  if (service) {
+function handleBackNavigation() {
+  const left = backHistCur; // 방금 떠난 항목
+  const top = backTopOverlay();
+  if (top) {
     try {
-      const purchases = (await service.listPurchases()) || [];
-      PRO_STATE.subscribed = purchases.some((p) => p && p.itemId === PRO_PRODUCT_ID);
-      // 아직 소비(consume)되지 않은 1일·7일권이 있으면 소비하고 지갑에 넣음 — 결제 직후 앱이 꺼졌던 경우 등
-      for (const p of purchases) {
-        const prod = PRO_PRODUCTS.find((x) => x.id === (p && p.itemId) && x.kind === "onetime");
-        if (prod && p.purchaseToken) {
-          try {
-            await service.consume(p.purchaseToken);
-            proAddVoucher(prod.days, prod.id, { price: prod.price, qty: prod.qty });
-          } catch {}
-        }
-      }
+      top.close();
     } catch {}
-    try {
-      const details = (await service.getDetails(PRO_PRODUCTS.map((p) => p.id))) || [];
-      for (const d of details) if (d && d.itemId) PRO_STATE.prices[d.itemId] = d.price;
-    } catch {}
+    // 떠난 항목을 그대로 다시 얹어 상세(?ticker=)·가드가 유지되게
+    history.pushState(left.state, "", left.url);
+    backHistCur = { state: history.state, url: location.href };
+    return;
   }
-  proRecompute();
-  if (PRO_STATE.trialJustGranted) setTimeout(() => showToast("🎁 첫 방문 선물: Pro 1일 무료 이용권이 보관함에 들어왔어요"), 1200);
+  const ticker = new URLSearchParams(location.search).get("ticker");
+  if (ticker) {
+    const panelOpen = companyPanel.style.display !== "none" && companyPanel.style.display !== "";
+    if (!(panelOpen && currentDetailSymbol && currentDetailSymbol.toUpperCase() === ticker.toUpperCase())) navigateToTicker(ticker, { push: false });
+    backHistCur = { state: history.state, url: location.href };
+    return;
+  }
+  if (companyPanel.style.display !== "none" && companyPanel.style.display !== "") {
+    closeCompanyPanel({ push: false });
+    backHistCur = { state: history.state, url: location.href };
+    if (!(history.state && history.state.mmGuard)) backPushGuard();
+    return;
+  }
+  // 여기까지 왔으면 화면에 열린 게 없음 — 맨 처음 항목이면 종료 확인
+  if (!(history.state && history.state.mmGuard)) {
+    if (Date.now() - backExitArmedAt < 2000) {
+      // 두 번째 뒤로가기: 실제로 나감(가드 없이 한 항목 더 뒤로)
+      history.back();
+      return;
+    }
+    backExitArmedAt = Date.now();
+    showToast("한 번 더 누르면 종료됩니다");
+    backPushGuard();
+    return;
+  }
+  backHistCur = { state: history.state, url: location.href };
 }
-initProState();
+// 부팅: 현재 항목을 "시작"으로 표시하고 그 위에 가드를 얹음(딥링크 ?ticker=·?open= 처리 뒤 주소 기준)
+setTimeout(() => {
+  try {
+    history.replaceState(Object.assign({}, history.state || {}, { mmRoot: true }), "", location.href);
+    backPushGuard();
+  } catch {}
+}, 0);
 
-// 게이트 판정 — 사용 중인 이용권·구독 없으면 true(잠김). 만료를 매 판정마다 반영
-function proBlocked() {
-  proRecompute();
-  return PRO_STATE.gateActive && !PRO_STATE.entitled;
+// ---------- 앱 다운로드(2026-09-09 사용자 요청): 웹에서만 더보기에 APK 다운로드 항목 표시 ----------
+// 앱(TWA) 안에서는 referrer가 android-app://이거나 standalone 표시 모드라 숨김. 설치해도 로그인 + 관리자 승인이 있어야 이용 가능.
+(function () {
+  const btn = el("morePanelApkBtn");
+  if (!btn) return;
+  const inApp =
+    (document.referrer || "").startsWith("android-app://") ||
+    (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) ||
+    window.navigator.standalone === true;
+  if (inApp) return;
+  btn.style.display = "";
+  btn.addEventListener("click", () => {
+    closeMorePanel();
+    showToast("APK를 내려받는 중 — 설치 후 구글 로그인하면 관리자 승인 뒤 이용할 수 있어요");
+  });
+})();
+
+// ---------- 미래예측(2026-09-09 사용자 요청): 매출액 vs 주가 vs 순이익 — 1년·5년·10년 3장(한 번에 한 장) ----------
+// 세 시리즈 모두 "시작점 = 0%"로 맞춘 선형(퍼센트 변화) 그래프. 주가는 월봉 종가, 매출액·순이익은 1년은 분기 실적(최근 5개 분기),
+// 5년·10년은 연간(회계연도) 실적. 연간 10년치는 배치 파일(data/us-annual-financials.json = SEC XBRL, data/kr-annual-financials.json = DART)에서
+// 읽고, 없으면 Yahoo fundamentals(최근 4년)로 폴백. ETF·코인은 재무가 없어 주가만 그림.
+const FUTURE_CMP_SPANS = { "1y": { label: "1년", years: 1 }, "5y": { label: "5년", years: 5 }, "10y": { label: "10년", years: 10 } };
+const FUTURE_CMP_COLORS = { price: "#e5342f", rev: "#2f6fed", ni: "#16a34a" };
+let futureCmpData = null;
+let futureCmpSpan = "1y";
+const annualFinDbCache = {};
+function getAnnualFinDb(isKr) {
+  const key = isKr ? "kr" : "us";
+  if (!annualFinDbCache[key]) {
+    annualFinDbCache[key] = fetch(`data/${key}-annual-financials.json`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+  }
+  return annualFinDbCache[key];
 }
+function isoDateToSec(d) {
+  const t = new Date(String(d).slice(0, 10) + "T00:00:00Z").getTime();
+  return Number.isFinite(t) ? Math.floor(t / 1000) : null;
+}
+// 네이버 분기 키("202606") → 그 달 말일 ISO
+function naverQuarterKeyToIso(key) {
+  const y = Number(String(key).slice(0, 4));
+  const m = Number(String(key).slice(4, 6));
+  const last = new Date(Date.UTC(y, m, 0));
+  return last.toISOString().slice(0, 10);
+}
+// {date,value}[] 두 시계열을 날짜로 합쳐 [{t, rev, ni}]
+function mergeFinSeries(revS, niS) {
+  const map = new Map();
+  (revS || []).forEach((it) => {
+    const t = isoDateToSec(it.date);
+    if (t === null) return;
+    map.set(t, Object.assign(map.get(t) || { t, rev: null, ni: null }, { rev: Number.isFinite(it.value) ? it.value : null }));
+  });
+  (niS || []).forEach((it) => {
+    const t = isoDateToSec(it.date);
+    if (t === null) return;
+    map.set(t, Object.assign(map.get(t) || { t, rev: null, ni: null }, { ni: Number.isFinite(it.value) ? it.value : null }));
+  });
+  return [...map.values()].filter((x) => x.rev !== null || x.ni !== null).sort((a, b) => a.t - b.t);
+}
+async function loadFutureCompareData(ticker, metricsPromise, chartOnly) {
+  const isKr = isKrTicker(ticker);
+  const [chart, metrics, db] = await Promise.all([
+    yahooChart(ticker, "10y", "1mo"),
+    chartOnly ? Promise.resolve(null) : (metricsPromise || getFullMetrics(ticker)).catch(() => null),
+    chartOnly ? Promise.resolve(null) : getAnnualFinDb(isKr),
+  ]);
+  const price = chartClosePairs(chart);
+  if (price.length < 2) throw new Error(`'${ticker}'의 월봉 시세를 가져오지 못했습니다.`);
+  const meta = (chart.chart.result[0] && chart.chart.result[0].meta) || {};
+  // 마지막 월봉은 진행 중인 달 — 종가를 실시간가로 맞춤
+  if (Number.isFinite(meta.regularMarketPrice)) price[price.length - 1].c = meta.regularMarketPrice;
 
-// Pro 전용 기능 진입점을 한곳에서 가로챔(2026-09-08): 모든 +전체보기/+더보기, 미래예측, 과거분석, 마켓맵(지도).
-// S리포트는 renderSReport 안에서 proBlocked()로 별도 처리. capture 단계라 각 버튼의 기존 핸들러보다 먼저 실행됨.
-// 지갑에 이용권이 있으면 "지금 사용하시겠습니까?"를 먼저 묻고, 사용하면 원래 버튼 동작을 이어서 실행.
-const PRO_GATED_SELECTOR = ".load-more-btn, .scope-more-btn, #tickerHistoricalToggleBtn, #tickerFutureToggleBtn, #morePanelMapBtn";
-const PRO_FEATURE_NAME = {
-  "load-more-btn": "전체보기",
-  "scope-more-btn": "전체보기",
-  tickerHistoricalToggleBtn: "과거분석",
-  tickerFutureToggleBtn: "미래예측",
-  morePanelMapBtn: "마켓맵 지도",
-};
-document.addEventListener(
-  "click",
-  (e) => {
-    const t = e.target.closest(PRO_GATED_SELECTOR);
-    if (!t || !proBlocked()) return;
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    const key = t.id || [...t.classList].find((c) => PRO_FEATURE_NAME[c]) || "";
-    const feature = PRO_FEATURE_NAME[key] || "";
-    if (proReadWallet().length) {
-      proAskUseVoucher(feature, () => {
-        if (!proBlocked()) t.click(); // 이용권 적용 후 원래 동작 재실행(게이트는 이제 통과)
+  let annual = [];
+  let source = "Yahoo";
+  const dbItem = db && db.items && db.items[ticker];
+  if (dbItem && dbItem.years) {
+    annual = Object.entries(dbItem.years)
+      .map(([y, v]) => ({ t: isoDateToSec(v.end || `${y}-12-31`), rev: Number.isFinite(v.rev) ? v.rev : null, ni: Number.isFinite(v.ni) ? v.ni : null }))
+      .filter((x) => x.t !== null && (x.rev !== null || x.ni !== null))
+      .sort((a, b) => a.t - b.t);
+    source = isKr ? "DART 전자공시" : "SEC 공시(XBRL)";
+  }
+  if (metrics) {
+    const yahooAnnual = mergeFinSeries(metrics.revenueAnnualSeries, metrics.netIncomeAnnualSeries);
+    if (!annual.length) annual = yahooAnnual;
+    else {
+      // 배치에 아직 없는 최신 연도만 보충(같은 회계연도 ±60일은 중복으로 봄)
+      yahooAnnual.forEach((y) => {
+        if (!annual.some((x) => Math.abs(x.t - y.t) < 60 * 86400)) annual.push(y);
       });
-    } else openProSheet(feature);
-  },
-  true
-);
-
-// (구) 전체보기 하루 5회 무료 카운트 — 멤버십 모델 전환(2026-09-08)으로 미사용, 호출부 호환용으로만 남김
-const PRO_FREE_LOADMORE_PER_DAY = 0;
-function proLoadMoreQuotaExceeded() {
-  return true;
-}
-
-// ---------- 이용권 사용 확인창 ----------
-function proAskUseVoucher(feature, onUsed) {
-  const w = proReadWallet();
-  if (!w.length) {
-    openProSheet(feature);
-    return;
-  }
-  // 가장 짧은 이용권부터 제안(1일권 → 7일권)
-  const idx = w.reduce((best, v, i) => (v.days < w[best].days ? i : best), 0);
-  const v = w[idx];
-  let box = el("proConfirm");
-  if (!box) {
-    box = document.createElement("div");
-    box.id = "proConfirm";
-    box.className = "pro-confirm";
-    document.body.appendChild(box);
-  }
-  box.innerHTML = `
-    <div class="pro-confirm-backdrop"></div>
-    <div class="pro-confirm-card">
-      <p class="pro-sheet-badge">PRO</p>
-      <h3>${escapeHtml(v.days)}일 이용권을 지금 사용하시겠습니까?</h3>
-      <p class="pro-confirm-desc">${feature ? `"${escapeHtml(feature)}" 기능은 Pro 멤버십 전용이에요.<br>` : ""}사용하면 지금부터 <b>${escapeHtml(v.days)}일(${v.days * 24}시간)</b> 동안 모든 Pro 기능을 쓸 수 있어요.<br><span class="muted">${escapeHtml(proSourceLabel(v.source))} · ${escapeHtml(proWalletSummary())}</span></p>
-      <button type="button" class="pro-sheet-cta" id="proConfirmUseBtn">지금 사용하기</button>
-      <button type="button" class="pro-sheet-restore" id="proConfirmLaterBtn">나중에 사용 (이용권 보관)</button>
-    </div>`;
-  box.style.display = "block";
-  requestAnimationFrame(() => box.classList.add("open"));
-  const close = () => {
-    box.classList.remove("open");
-    setTimeout(() => {
-      box.style.display = "none";
-    }, 200);
-  };
-  box.querySelector(".pro-confirm-backdrop").addEventListener("click", close);
-  el("proConfirmLaterBtn").addEventListener("click", close);
-  el("proConfirmUseBtn").addEventListener("click", () => {
-    if (proUseVoucher(idx)) {
-      close();
-      showToast(`✅ ${v.days}일 이용권 사용 시작 — ${proRemainingText()}`);
-      if (proSheetBuilt && el("proSheet").classList.contains("open")) renderProSheetState();
-      if (typeof onUsed === "function") setTimeout(onUsed, 250);
+      annual.sort((a, b) => a.t - b.t);
     }
-  });
-}
-
-// ---------- Pro 멤버십 화면(2026-09-09 사용자 요청: 네이버웹툰 쿠키샵처럼 4개 탭) ----------
-// 1. 이용권구매  2. 구매내역  3. 무료이용권(쿠폰 등록 + 리뷰 선물)  4. 사용내역
-const PRO_TABS = [
-  { key: "buy", label: "이용권구매" },
-  { key: "history", label: "구매내역" },
-  { key: "free", label: "무료이용권" },
-  { key: "used", label: "사용내역" },
-];
-let proSheetBuilt = false;
-let proSheetTab = "buy";
-let proHistoryFilter = "all";
-function proFmtDate(ms, withTime) {
-  const d = new Date(ms);
-  const p = (n) => String(n).padStart(2, "0");
-  const base = `${String(d.getFullYear()).slice(2)}.${p(d.getMonth() + 1)}.${p(d.getDate())}`;
-  return withTime ? `${base} ${p(d.getHours())}:${p(d.getMinutes())}` : base;
-}
-function proFmtDateLong(ms) {
-  const d = new Date(ms);
-  const p = (n) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
-}
-function proFmtWon(n) {
-  return `${Number(n || 0).toLocaleString("ko-KR")}원`;
-}
-function buildProSheet() {
-  if (proSheetBuilt) return;
-  proSheetBuilt = true;
-  const wrap = document.createElement("div");
-  wrap.id = "proSheet";
-  wrap.className = "pro-sheet";
-  wrap.style.display = "none";
-  wrap.innerHTML = `
-    <div class="pro-sheet-backdrop" id="proSheetBackdrop"></div>
-    <div class="pro-page">
-      <div class="pro-page-head">
-        <button type="button" class="pro-page-back" id="proSheetCloseBtn" aria-label="닫기">‹</button>
-        <h2>Pro 멤버십</h2>
-      </div>
-      <div class="pro-page-tabs" id="proPageTabs">
-        ${PRO_TABS.map((t) => `<button type="button" class="pro-page-tab" data-pro-tab="${t.key}">${t.label}</button>`).join("")}
-      </div>
-      <div class="pro-page-own" id="proPageOwn"></div>
-      <div class="pro-page-body" id="proPageBody"></div>
-    </div>`;
-  document.body.appendChild(wrap);
-  el("proSheetBackdrop").addEventListener("click", closeProSheet);
-  el("proSheetCloseBtn").addEventListener("click", closeProSheet);
-  el("proPageTabs").addEventListener("click", (e) => {
-    const b = e.target.closest("[data-pro-tab]");
-    if (!b) return;
-    proSheetTab = b.dataset.proTab;
-    renderProSheetState();
-  });
-  el("proPageBody").addEventListener("click", (e) => {
-    const buy = e.target.closest("[data-pro-product]");
-    if (buy) return startProPurchase(buy.dataset.proProduct);
-    if (e.target.closest("[data-pro-use]")) return proAskUseVoucher("", () => renderProSheetState());
-    if (e.target.closest("#proSheetRestoreBtn")) return restoreProPurchase();
-    if (e.target.closest("#proSheetReviewBtn")) return proClaimReviewReward();
-    if (e.target.closest("#proCouponBtn")) return proRedeemCoupon();
-    const f = e.target.closest("[data-pro-filter]");
-    if (f) {
-      proHistoryFilter = f.dataset.proFilter;
-      renderProSheetState();
-    }
-  });
-  el("proPageBody").addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && e.target && e.target.id === "proCouponInput") proRedeemCoupon();
-  });
-}
-function renderProSheetState() {
-  proRecompute();
-  const w = proReadWallet();
-  document.querySelectorAll("#proPageTabs .pro-page-tab").forEach((b) => b.classList.toggle("active", b.dataset.proTab === proSheetTab));
-  el("proPageOwn").innerHTML = `<span class="pro-own-icon">🎟️</span> 현재 보유한 이용권 <b>${w.length}장</b><span class="pro-own-status">${escapeHtml(proRemainingText())}</span>`;
-  const body = el("proPageBody");
-  if (proSheetTab === "buy") body.innerHTML = proRenderBuyTab(w);
-  else if (proSheetTab === "history") body.innerHTML = proRenderHistoryTab(w);
-  else if (proSheetTab === "free") body.innerHTML = proRenderFreeTab(w);
-  else body.innerHTML = proRenderUsedTab();
-  body.scrollTop = 0;
-}
-function proRenderBuyTab(w) {
-  const canBuy = "getDigitalGoodsService" in window;
-  const hint = PRO_STATE.featureHint ? `<p class="pro-page-hint">"${escapeHtml(PRO_STATE.featureHint)}"은(는) Pro 멤버십 기능이에요. 이용권을 사용하거나 구매해 주세요.</p>` : "";
-  const byDays = {};
-  for (const v of w) byDays[v.days] = (byDays[v.days] || 0) + 1;
-  const chips = Object.keys(byDays).sort((a, b) => a - b).map((d) => `<span class="pro-wallet-chip">${d}일권 <b>${byDays[d]}</b></span>`).join("");
-  const walletRow = w.length
-    ? `<div class="pro-wallet-bar"><div class="pro-wallet-info"><span class="pro-wallet-title">🎟️ 보유 이용권 <b>${w.length}장</b></span><span class="pro-wallet-chips">${chips}</span></div><button type="button" class="pro-green-btn pro-green-btn-sm" data-pro-use="1">지금 사용</button></div>`
-    : "";
-  const rows = PRO_PRODUCTS.map((p) => {
-    const sub = p.kind === "subscription";
-    const active = sub && PRO_STATE.subscribed;
-    return `<div class="pro-row${sub ? " pro-row-sub" : ""}">
-      <span class="pro-row-label"><span class="pro-row-icon">${sub ? "🔁" : "🎟️"}</span>${escapeHtml(p.label)}${sub ? '<span class="pro-row-tag">자동 갱신</span>' : ""}<span class="pro-row-note">${escapeHtml(p.note)}</span></span>
-      <button type="button" class="pro-green-btn${active ? " pro-green-btn-off" : ""}" data-pro-product="${p.id}" ${active ? "disabled" : ""}>${active ? "이용 중" : proPriceText(p)}</button>
-    </div>`;
-  }).join("");
-  return `${hint}
-    <div class="pro-banner"><div class="pro-banner-text"><b>Pro 멤버십으로 전체 기능 열기!</b><span>전체보기 · 미래예측 · 과거분석 · S리포트 · 마켓맵 지도</span></div><span class="pro-banner-art">🗺️</span></div>
-    ${walletRow}
-    <div class="pro-rows">${rows}</div>
-    ${canBuy ? "" : `<p class="pro-page-webnote">웹에서는 결제할 수 없어요. <a href="${PRO_STORE_URL}" target="_blank" rel="noopener">구글 플레이 마켓맵 앱</a>에서 구매하면 같은 기기에서 바로 적용됩니다.</p>`}
-    <button type="button" class="pro-page-link" id="proSheetRestoreBtn">이미 구매하셨나요? 구매 복원</button>
-    <ul class="pro-page-notes">
-      <li>이용권은 구매 즉시 적용되지 않고 보관되며, 원할 때 '지금 사용'으로 시작합니다.</li>
-      <li>사용 중인 기간이 남아 있으면 새 이용권은 그 뒤에 이어집니다.</li>
-      <li>정기구독은 매달 자동 갱신되며 Google Play › 구독 관리에서 언제든 해지할 수 있습니다.</li>
-      <li>결제는 Google Play 계정으로 처리되며 별도 로그인이 없습니다.</li>
-    </ul>`;
-}
-function proRenderHistoryTab(w) {
-  const remainOf = (h) => w.filter((v) => v.id === h.voucherId || v.packId === h.voucherId).length;
-  let list = proReadHistory().filter((h) => h.kind === "buy");
-  if (proHistoryFilter === "unused") list = list.filter((h) => remainOf(h) > 0);
-  const items = list.length
-    ? list.map((h) => {
-        const sub = h.source === PRO_PRODUCT_ID;
-        const remain = sub ? (PRO_STATE.subscribed ? "이용 중" : "종료") : `${remainOf(h)}장${h.qty > 1 ? ` / ${h.qty}장` : ""}`;
-        return `<div class="pro-item">
-          <p class="pro-item-date">${proFmtDate(h.at)}</p>
-          <dl class="pro-item-dl">
-            <dt>구매</dt><dd>${escapeHtml(h.label || proSourceLabel(h.source))}${h.qty > 1 && !/장$/.test(h.label || "") ? ` ${h.qty}장` : ""}</dd>
-            <dt>잔여</dt><dd>${remain}</dd>
-            <dt>금액</dt><dd>${proFmtWon(h.price)} (Google Play)</dd>
-            ${sub ? "" : `<dt class="muted">유효기간</dt><dd class="muted">${proFmtDateLong(h.expires)}</dd>`}
-          </dl>
-          <span class="pro-item-side">취소불가</span>
-        </div>`;
-      }).join("")
-    : `<p class="pro-empty">구매 내역이 없어요.<br><span class="muted">이용권구매 탭에서 1일·7일 이용권이나 정기구독을 구매할 수 있어요.</span></p>`;
-  return `<div class="pro-filter"><button type="button" class="${proHistoryFilter === "all" ? "active" : ""}" data-pro-filter="all">전체</button><span>|</span><button type="button" class="${proHistoryFilter === "unused" ? "active" : ""}" data-pro-filter="unused">미사용</button></div>
-    ${items}
-    <ul class="pro-page-notes"><li>구매한 이용권은 구매일로부터 5년간 유효하며, 사용 전에는 보관됩니다.</li><li>정기구독 결제 내역은 Google Play › 결제 및 정기결제에서도 확인할 수 있습니다.</li></ul>`;
-}
-function proRenderFreeTab(w) {
-  const walletIds = new Set(w.map((v) => v.id).concat(w.map((v) => v.packId)));
-  const reviewDone = proLocalFlag("pro_review_reward_v1");
-  const list = proReadHistory().filter((h) => h.kind === "free");
-  const items = list.length
-    ? list.map((h) => {
-        const inWallet = walletIds.has(h.voucherId);
-        const expired = !inWallet && h.expires < Date.now() && !proReadHistory().some((u) => u.kind === "use" && u.voucherId === h.voucherId);
-        return `<div class="pro-item">
-          <p class="pro-item-date">${proFmtDate(h.at)}</p>
-          <p class="pro-item-title">${escapeHtml(h.label)}</p>
-          <dl class="pro-item-dl">
-            <dt>잔여</dt><dd>${inWallet ? 1 : 0}장${expired ? ' <span class="muted">(기간 만료)</span>' : ""}</dd>
-            <dt class="muted">유효기간</dt><dd class="pro-green-text">${proFmtDateLong(h.expires)}</dd>
-          </dl>
-        </div>`;
-      }).join("")
-    : `<p class="pro-empty">받은 무료 이용권이 없어요.</p>`;
-  return `<div class="pro-coupon">
-      <p class="pro-coupon-title">쿠폰번호 등록</p>
-      <div class="pro-coupon-row"><input type="text" id="proCouponInput" class="pro-coupon-input" placeholder="쿠폰번호를 입력하세요." autocomplete="off" autocapitalize="characters" spellcheck="false" /><button type="button" class="pro-green-btn" id="proCouponBtn">이용권 받기</button></div>
-    </div>
-    <div class="pro-row pro-row-review">
-      <span class="pro-row-label"><span class="pro-row-icon">⭐</span>리뷰 남기고 1일 이용권 받기<span class="pro-row-note">${reviewDone ? "리뷰 선물은 이미 받았어요 (기기당 1회)" : "플레이스토어에 리뷰를 남기면 1일 무료 이용권을 드려요"}</span></span>
-      <button type="button" class="pro-green-btn${reviewDone ? " pro-green-btn-off" : ""}" id="proSheetReviewBtn" ${reviewDone ? "disabled" : ""}>${reviewDone ? "받음" : "받기"}</button>
-    </div>
-    ${items}
-    <ul class="pro-page-notes"><li>무료 이용권은 받은 날로부터 30일 안에 사용해야 하며, 지나면 자동 소멸됩니다.</li><li>쿠폰으로 받은 이용권은 이 탭에서 확인할 수 있습니다.</li></ul>`;
-}
-function proRenderUsedTab() {
-  const list = proReadHistory().filter((h) => h.kind === "use");
-  const items = list.length
-    ? list.map(
-        (h) => `<div class="pro-item">
-          <p class="pro-item-date">${proFmtDate(h.at)}</p>
-          <p class="pro-item-title">마켓맵 Pro 멤버십 ${h.days}일 이용</p>
-          <dl class="pro-item-dl">
-            <dt>사용</dt><dd class="pro-green-text">${escapeHtml(h.label || proSourceLabel(h.source))}</dd>
-            <dt class="muted">이용기간</dt><dd class="muted">${proFmtDate(h.from, true)} ~ ${proFmtDate(h.until, true)}</dd>
-          </dl>
-        </div>`
-      ).join("")
-    : `<p class="pro-empty">사용 내역이 없어요.</p>`;
-  return `${items}<p class="pro-page-foot">최근 3개월까지의 내역만 제공합니다.</p>`;
-}
-function openProSheet(featureName) {
-  buildProSheet();
-  PRO_STATE.featureHint = featureName || "";
-  proSheetTab = "buy";
-  renderProSheetState();
-  const sheet = el("proSheet");
-  sheet.style.display = "block";
-  requestAnimationFrame(() => sheet.classList.add("open"));
-}
-function closeProSheet() {
-  const sheet = el("proSheet");
-  if (!sheet) return;
-  sheet.classList.remove("open");
-  setTimeout(() => {
-    sheet.style.display = "none";
-  }, 250);
-}
-
-// ---------- 쿠폰(2026-09-09): 서버 없이 검사 — 형식 MM + 일수(1~2자리) + 무작위 4자 + 검사 2자 ----------
-// 생성은 sector-map/scripts/make-pro-coupon.ps1 (같은 해시). 같은 쿠폰은 기기당 1회만 등록됨.
-const PRO_COUPON_SECRET = "marketmap-pro-2026-gullyeobolkka";
-const PRO_COUPON_USED_KEY = "pro_coupons_used_v1";
-function proCouponHash(s) {
-  let h = 5381;
-  for (let i = 0; i < s.length; i++) h = ((h * 33) ^ s.charCodeAt(i)) >>> 0;
-  return h.toString(36).toUpperCase().padStart(4, "0").slice(-2);
-}
-function proParseCoupon(raw) {
-  const code = String(raw || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
-  const m = /^MM(\d{1,2})([A-Z0-9]{4})([A-Z0-9]{2})$/.exec(code);
-  if (!m) return null;
-  const days = Number(m[1]);
-  if (!days) return null;
-  if (proCouponHash(PRO_COUPON_SECRET + "MM" + m[1] + m[2]) !== m[3]) return null;
-  return { code, days };
-}
-function proRedeemCoupon() {
-  const input = el("proCouponInput");
-  const raw = input ? input.value.trim() : "";
-  if (!raw) {
-    showToast("쿠폰번호를 입력해주세요");
-    return;
   }
-  const c = proParseCoupon(raw);
-  if (!c) {
-    showToast("❌ 유효하지 않은 쿠폰번호예요. 다시 확인해주세요");
-    return;
-  }
-  let used = [];
-  try {
-    used = JSON.parse(localStorage.getItem(PRO_COUPON_USED_KEY) || "[]");
-  } catch {}
-  if (used.includes(c.code)) {
-    showToast("이미 등록한 쿠폰이에요");
-    return;
-  }
-  used.push(c.code);
-  try {
-    localStorage.setItem(PRO_COUPON_USED_KEY, JSON.stringify(used));
-  } catch {}
-  proAddVoucher(c.days, "coupon", { label: `쿠폰 선물! 무료 ${c.days}일 이용권` });
-  if (input) input.value = "";
-  renderProSheetState();
-  showToast(`🎁 쿠폰 등록 완료! ${c.days}일 이용권이 보관함에 들어왔어요`);
-}
-
-// 리뷰 보상(2026-09-08 사용자 확정): 플레이스토어 리뷰 페이지를 열고 기기당 1회 1일 이용권을 지갑에 지급.
-// 스토어는 앱에 리뷰 작성 여부를 알려주지 않으므로(정책상 리뷰 대가 강요 금지) "리뷰 남겨주세요" 안내 후 신뢰 기반으로 지급.
-function proClaimReviewReward() {
-  if (proLocalFlag("pro_review_reward_v1")) {
-    showToast("리뷰 선물은 기기당 1회만 받을 수 있어요");
-    return;
-  }
-  try {
-    window.open(PRO_STORE_URL, "_blank", "noopener");
-  } catch {}
-  try {
-    localStorage.setItem("pro_review_reward_v1", "1");
-  } catch {}
-  proAddVoucher(1, "review");
-  renderProSheetState();
-  showToast("⭐ 리뷰 감사합니다! Pro 1일 이용권이 보관함에 들어왔어요");
-}
-
-async function startProPurchase(productId) {
-  const prod = PRO_PRODUCTS.find((p) => p.id === productId);
-  if (!prod) return;
-  const service = await getPlayBillingService();
-  if (!service) {
-    showToast("웹에서는 결제할 수 없어요. 구글 플레이 마켓맵 앱에서 구매해주세요.");
+  let quarterly = metrics ? mergeFinSeries(metrics.revenueQuarterlySeries, metrics.netIncomeQuarterlySeries) : [];
+  if (isKr && !chartOnly) {
+    // 국내는 네이버 분기 실적이 최신 분기까지 정확(분기 실적 표와 같은 소스)
     try {
-      window.open(PRO_STORE_URL, "_blank", "noopener");
+      const nav = await fetchNaverQuarterlyFinance(ticker);
+      const acts = nav.filter((q) => !q.isConsensus && (q.revenue !== null || q.net !== null));
+      if (acts.length) quarterly = acts.map((q) => ({ t: isoDateToSec(naverQuarterKeyToIso(q.key)), rev: q.revenue, ni: q.net })).filter((x) => x.t !== null);
     } catch {}
-    return;
   }
-  try {
-    const request = new PaymentRequest(
-      [{ supportedMethods: "https://play.google.com/billing", data: { sku: prod.id } }],
-      { total: { label: `마켓맵 Pro ${prod.label}`, amount: { currency: "KRW", value: String(prod.price) } } }
-    );
-    const response = await request.show();
-    const token = response && response.details && (response.details.purchaseToken || response.details.token);
-    await response.complete("success");
-    if (prod.kind === "onetime") {
-      // 소모형: 즉시 소비 처리 후 지갑에 보관(사용은 사용자가 원할 때)
-      if (token) {
-        try {
-          await service.consume(token);
-        } catch {}
-      }
-      proAddVoucher(prod.days, prod.id, { price: prod.price, qty: prod.qty });
-      showToast(`🎉 ${prod.label}이 보관함에 들어왔어요. 원할 때 '지금 사용'을 눌러주세요`);
-    } else {
-      await initProState();
-      if (PRO_STATE.subscribed) {
-        proLogHistory({ kind: "buy", voucherId: "sub", days: prod.days, source: prod.id, label: prod.label, price: prod.price, expires: Date.now() + 30 * 86400000 });
-        showToast("🎉 Pro 정기구독이 시작되었습니다!");
-      }
-      else showToast("구독 확인에 실패했어요. 잠시 후 '구매 복원'을 눌러주세요.");
-    }
-    renderProSheetState();
-    if (!proBlocked()) {
-      closeProSheet();
-      const overlay = document.getElementById("proMapOverlay");
-      if (overlay) overlay.remove();
-    }
-  } catch (e) {
-    // 사용자가 결제창을 닫은 경우(AbortError)는 조용히 무시
-    if (e && e.name !== "AbortError") showToast("결제를 완료하지 못했어요. 잠시 후 다시 시도해주세요.");
-  }
+  return { ticker, isKr, chartOnly, currency: meta.currency || (isKr ? "KRW" : "USD"), price, annual, quarterly, source };
 }
+function futureCmpSeriesPct(points, key) {
+  const pts = points.filter((p) => Number.isFinite(p[key]));
+  if (pts.length < 2) return { pts: [], note: pts.length ? "값이 1개뿐" : "데이터 없음" };
+  const base = pts[0][key];
+  if (base <= 0) return { pts: [], note: "시작 시점 값이 0 이하(적자)라 % 변화를 그릴 수 없음" };
+  return { pts: pts.map((p) => ({ t: p.t, pct: (p[key] / base - 1) * 100, v: p[key] })), note: "" };
+}
+function buildFutureCompareSvg(d, span) {
+  const spec = FUTURE_CMP_SPANS[span];
+  const isQuarter = span === "1y";
+  let fin = d.chartOnly ? [] : isQuarter ? d.quarterly.slice(-5) : d.annual.slice(-(spec.years + 1));
+  const nowT = d.price[d.price.length - 1].t;
+  const wantStart = nowT - spec.years * 365.25 * 86400;
+  // 재무 데이터가 있으면 그 첫 시점을 시작점으로, 없으면 기간 시작. 상장 전 재무는 잘라냄
+  const firstPriceT = d.price[0].t;
+  fin = fin.filter((f) => f.t >= firstPriceT - 45 * 86400);
+  let startT = fin.length ? fin[0].t : wantStart;
+  if (startT < firstPriceT) startT = firstPriceT;
+  let priceWin = d.price.filter((p) => p.t >= startT - 20 * 86400);
+  if (priceWin.length < 2) priceWin = d.price.slice(-2);
+  const priceBase = priceWin[0].c;
+  const pricePts = priceWin.map((p) => ({ t: p.t, pct: (p.c / priceBase - 1) * 100, v: p.c }));
+  const rev = futureCmpSeriesPct(fin, "rev");
+  const ni = futureCmpSeriesPct(fin, "ni");
+  const x0 = Math.min(startT, pricePts[0].t);
+  const x1 = Math.max(nowT, ...(fin.length ? [fin[fin.length - 1].t] : []));
+  const allPct = [0, ...pricePts.map((p) => p.pct), ...rev.pts.map((p) => p.pct), ...ni.pts.map((p) => p.pct)];
+  const { lo, hi, step } = niceAxisBounds(Math.min(...allPct), Math.max(...allPct));
 
-async function restoreProPurchase() {
-  await initProState();
-  renderProSheetState();
-  if (!proBlocked()) {
-    closeProSheet();
-    showToast("이용 상태가 확인되었습니다!");
-  } else {
-    showToast(proReadWallet().length ? "보유 이용권을 확인했어요. '지금 사용'으로 시작할 수 있어요" : "이 구글 계정·기기에서 활성 이용권이나 구독을 찾지 못했어요.");
+  const W = 780, H = 420, ML = 56, MR = 96, MT = 20, MB = 44;
+  const PW = W - ML - MR, PH = H - MT - MB;
+  const xFn = (t) => ML + ((t - x0) / Math.max(1, x1 - x0)) * PW;
+  const yFn = (v) => MT + (1 - (v - lo) / (hi - lo || 1)) * PH;
+  const axisText = chartAxisText();
+  const grid = chartGrid();
+  let g = "";
+  for (let v = Math.ceil(lo / step) * step; v <= hi + 0.001; v += step) {
+    const y = yFn(v);
+    const zero = Math.abs(v) < 0.001;
+    g += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${ML + PW}" y2="${y.toFixed(1)}" stroke="${zero ? "#8a90a3" : grid}" stroke-width="${zero ? 1.4 : 1}" />`;
+    g += `<text x="${ML - 8}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="${axisText}">${v > 0 ? "+" : ""}${Math.round(v)}%</text>`;
+  }
+  // x축 라벨: 재무 시점(연도 또는 분기) + 현재
+  let ax = "";
+  const labelOf = (t) => {
+    const dt = new Date(t * 1000);
+    return isQuarter ? `${String(dt.getUTCFullYear()).slice(2)}.${String(dt.getUTCMonth() + 1).padStart(2, "0")}` : String(dt.getUTCFullYear());
+  };
+  const ticks = fin.length ? fin.map((f) => f.t) : (() => {
+    const arr = [];
+    for (let k = spec.years; k >= 0; k--) arr.push(nowT - k * 365.25 * 86400);
+    return arr;
+  })();
+  ticks.forEach((t) => {
+    const x = xFn(t);
+    ax += `<line x1="${x.toFixed(1)}" y1="${MT}" x2="${x.toFixed(1)}" y2="${MT + PH}" stroke="${grid}" stroke-width="1" stroke-dasharray="3,4" />`;
+    ax += `<text x="${x.toFixed(1)}" y="${(MT + PH + 16).toFixed(1)}" text-anchor="middle" font-size="11" fill="${axisText}">${labelOf(t)}</text>`;
+  });
+  ax += `<line x1="${xFn(nowT).toFixed(1)}" y1="${MT}" x2="${xFn(nowT).toFixed(1)}" y2="${MT + PH}" stroke="#f5a623" stroke-width="1.4" />`;
+  ax += `<text x="${xFn(nowT).toFixed(1)}" y="${(MT + PH + 32).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="#f5a623">현재</text>`;
+
+  const line = (pts, color, width, dots) => {
+    if (!pts.length) return "";
+    let s = `<path d="${pts.map((p, i) => `${i ? "L" : "M"}${xFn(p.t).toFixed(1)} ${yFn(p.pct).toFixed(1)}`).join(" ")}" fill="none" stroke="${color}" stroke-width="${width}" stroke-linejoin="round" stroke-linecap="round" />`;
+    if (dots) pts.forEach((p) => (s += `<circle cx="${xFn(p.t).toFixed(1)}" cy="${yFn(p.pct).toFixed(1)}" r="3.4" fill="${color}" />`));
+    const last = pts[pts.length - 1];
+    s += `<text x="${(xFn(last.t) + 7).toFixed(1)}" y="${(yFn(last.pct) + 4).toFixed(1)}" font-size="12" font-weight="800" fill="${color}">${last.pct > 0 ? "+" : ""}${Math.round(last.pct)}%</text>`;
+    return s;
+  };
+  let lines = line(rev.pts, FUTURE_CMP_COLORS.rev, 2.4, true) + line(ni.pts, FUTURE_CMP_COLORS.ni, 2.4, true) + line(pricePts, FUTURE_CMP_COLORS.price, 2.8, false);
+  // 시작점(0%) 공통 표시
+  lines += `<circle cx="${xFn(Math.min(...[pricePts[0].t, ...(rev.pts[0] ? [rev.pts[0].t] : []), ...(ni.pts[0] ? [ni.pts[0].t] : [])])).toFixed(1)}" cy="${yFn(0).toFixed(1)}" r="4.5" fill="none" stroke="#f5a623" stroke-width="2" />`;
+
+  const svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHtml(d.ticker)} ${spec.label} 매출액 vs 주가 vs 순이익">
+    <rect x="0" y="0" width="${W}" height="${H}" fill="${chartBg()}" />
+    ${g}${ax}${lines}
+  </svg>`;
+  const endPct = (pts) => (pts.length ? pts[pts.length - 1].pct : null);
+  return {
+    svg,
+    startT: Math.min(pricePts[0].t, ...(fin.length ? [fin[0].t] : [])),
+    price: endPct(pricePts),
+    rev: endPct(rev.pts),
+    ni: endPct(ni.pts),
+    revNote: rev.note,
+    niNote: ni.note,
+    finCount: fin.length,
+    isQuarter,
+  };
+}
+function renderFutureCompare() {
+  const d = futureCmpData;
+  if (!d) return;
+  const spec = FUTURE_CMP_SPANS[futureCmpSpan];
+  const r = buildFutureCompareSvg(d, futureCmpSpan);
+  el("futureChartContainer").innerHTML = r.svg;
+  scrollChartToRight(el("futureChartContainer"));
+  const heading = el("futureCmpHeading");
+  if (heading) heading.textContent = `📈 ${spec.label} — 매출액 vs 주가 vs 순이익`;
+  document.querySelectorAll("#futureCmpTabs .future-cmp-tab").forEach((b) => b.classList.toggle("active", b.dataset.futureSpan === futureCmpSpan));
+  const fmtEnd = (v) => (v === null ? "—" : `${v > 0 ? "+" : ""}${Math.round(v)}%`);
+  const startStr = new Date(r.startT * 1000).toLocaleDateString("ko-KR", { year: "numeric", month: "long" });
+  const legend = `<span class="future-cmp-legend">
+      <span style="color:${FUTURE_CMP_COLORS.price};">주가 ${fmtEnd(r.price)}</span>
+      ${d.chartOnly ? "" : `<span style="color:${FUTURE_CMP_COLORS.rev};">매출액 ${fmtEnd(r.rev)}</span><span style="color:${FUTURE_CMP_COLORS.ni};">순이익 ${fmtEnd(r.ni)}</span>`}
+    </span>`;
+  const notes = [];
+  if (d.chartOnly) notes.push("ETF·코인은 매출액·순이익이 없어 주가 흐름만 표시합니다.");
+  else {
+    notes.push(`매출액·순이익은 ${r.isQuarter ? "분기 실적(최근 " + r.finCount + "개 분기)" : "회계연도 실적(" + r.finCount + "개년, 회계연도 말 기준)"} · 출처 ${escapeHtml(d.source)}${r.isQuarter ? "/Yahoo" : ""}, 주가는 월봉 종가.`);
+    // 회계연도는 당해년도가 아직 안 끝나 10년 창에 10개년(FY t-10 ~ t-1)이 정상 — 그보다 적을 때만 경고
+    if (!r.isQuarter && r.finCount < spec.years) notes.push(`⚠️ 이 종목은 재무 데이터가 ${r.finCount}개년만 있어 그만큼만 그렸습니다(상장 ${spec.label} 미만이거나 공시 누락).`);
+    if (r.isQuarter && r.finCount < 3) notes.push(`⚠️ 분기 실적이 ${r.finCount}개뿐이라 그만큼만 그렸습니다.`);
+    if (r.revNote) notes.push(`매출액 선 생략: ${r.revNote}.`);
+    if (r.niNote) notes.push(`순이익 선 생략: ${r.niNote}.`);
+  }
+  el("futureChartCaption").innerHTML = `${legend}<span style="color:var(--warn);font-weight:700;">*시작점(${escapeHtml(startStr)})을 0%로 맞춘 선형 변화율 그래프 — 세 선의 출발점이 같습니다.</span><br>${notes.map(escapeHtml).join(" ")}<br>참고용이며 투자 자문이 아닙니다.`;
+  el("futureResultsSection").style.display = "block";
+}
+(function bindFutureCmpTabs() {
+  const tabs = el("futureCmpTabs");
+  if (!tabs) return;
+  tabs.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-future-span]");
+    if (!b || !FUTURE_CMP_SPANS[b.dataset.futureSpan]) return;
+    futureCmpSpan = b.dataset.futureSpan;
+    renderFutureCompare();
+  });
+})();
+async function runFutureCompare(ticker, metricsPromise, marketReturnsPromise, opts = {}) {
+  setFutureStatus("loading", `${ticker} 매출액·주가·순이익 데이터를 불러오는 중입니다...`);
+  try {
+    const searchData = await yahooSearch(ticker).catch(() => null);
+    const quote = (searchData && searchData.quotes && searchData.quotes[0]) || null;
+    if (opts.chartOnly) {
+      const koName = (TICKER_TO_KOREAN_NAME[ticker] || (quote && (quote.longname || quote.shortname)) || ticker).replace(/\s+USD$/i, "");
+      const isCoin = ticker.toUpperCase().includes("-USD");
+      el("futureChartModalTitle").innerHTML = `
+        <span class="future-modal-identity">
+          ${isCoin ? cryptoLogoHtml(cryptoBaseTicker(ticker)) : tickerLogoHtml(ticker)}
+          <span class="future-modal-name">${escapeHtml(koName)}</span>
+          <span class="future-modal-ticker">${escapeHtml(ticker)}</span>
+        </span>`;
+    } else {
+      renderFutureModalHeader(ticker, quote, metricsPromise || getFullMetrics(ticker), marketReturnsPromise || getMarketReturns());
+    }
+    futureCmpData = await loadFutureCompareData(ticker, metricsPromise, !!opts.chartOnly);
+    futureCmpSpan = "1y";
+    renderFutureCompare();
+    setFutureStatus(null, null);
+  } catch (err) {
+    setFutureStatus("error", `❌ ${escapeHtml(err.message || "그래프를 불러오지 못했습니다.")}`);
   }
 }

@@ -2022,18 +2022,6 @@ body[data-header-tone="dark"] .fh-market-label { color: #fff; }
 .wl-delete-confirm-btn { flex: 1; border: none; background: #e5484d; color: #fff; font-weight: 800; font-size: 14px; border-radius: 10px; padding: 10px; cursor: pointer; }
 #wlDeleteBtn.active { background: #e5484d; color: #fff; border-color: transparent; }
 
-/* 더보기 섹터맵 항목 오른쪽 Pro 배지(2026-09-01) — 주황 강조 */
-.more-panel-pro-badge {
-  margin-left: auto;
-  flex: none;
-  font-size: 11.5px;
-  font-weight: 800;
-  color: #fff;
-  background: #f60;
-  border-radius: 999px;
-  padding: 2.5px 9px;
-  letter-spacing: 0.2px;
-}
 
 /* 섹션 마크(2026-09-01) — 검색상세 제목 옆·관심종목 종목 옆에 붙는 작은 소속 아이콘(한국주식/미국주식/ETF/비트코인) */
 .section-mark { display: inline-flex; align-items: center; margin-left: 5px; vertical-align: middle; flex: none; }
@@ -2132,13 +2120,6 @@ body[data-header-tone="dark"] .fh-market-label { color: #fff; }
   border-radius: 999px;
   background: var(--subtle-fill-2);
   color: var(--muted);
-}
-.more-panel-pro-badge {
-  display: inline-block;
-  margin-left: 4px;
-  font-size: 11px;
-  font-weight: 800;
-  color: var(--navy);
 }
 
 /* 더보기 패널 맨 아래 "시스템" — 지금 앱에 있는 기능을 텍스트로 나열(참조용, 클릭 동작 없음) */
@@ -2568,165 +2549,12 @@ body[data-header-tone="dark"] .fh-tab.active { color: #fff; }
 .scope-more-btn { border: none; background: #e04600; color: #fff; border-radius: 999px; font-size: 11.5px; font-weight: 800; padding: 4px 11px; margin-left: 6px; cursor: pointer; vertical-align: middle; }
 .scope-more-btn:active { background: #b93a00; }
 body[data-header-tone="dark"] .fh-title-actions .header-icon-btn { color: #fff; }
-/* ---------- 굴려볼까 Pro 구독 시트(2026-09-02, 부분유료) — JS(buildProSheet)가 동적 생성 ---------- */
-.pro-sheet { position: fixed; inset: 0; z-index: 620; } /* 종목상세(350)·더보기(490)·검색(480)보다 위 — 어디서 열려도 최상위 */
-.pro-sheet-backdrop { position: absolute; inset: 0; background: rgba(10, 14, 30, 0.55); opacity: 0; transition: opacity 0.25s; }
-.pro-sheet.open .pro-sheet-backdrop { opacity: 1; }
-.pro-sheet-body {
-  position: absolute; left: 0; right: 0; bottom: 0;
-  background: var(--card-bg, #fff); border-radius: 22px 22px 0 0;
-  padding: 26px 22px calc(24px + env(safe-area-inset-bottom, 0px));
-  transform: translateY(100%); transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-  box-shadow: 0 -12px 40px rgba(10, 14, 30, 0.25); text-align: center;
-}
-.pro-sheet.open .pro-sheet-body { transform: translateY(0); }
-.pro-sheet-close { position: absolute; top: 14px; right: 14px; width: 34px; height: 34px; border: none; border-radius: 50%; background: var(--chip-bg, #f0f2f8); color: var(--muted); font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.pro-sheet-badge { display: inline-block; margin: 0 auto 6px; padding: 4px 14px; border-radius: 999px; background: linear-gradient(135deg, #ffb347, #e04600); color: #fff; font-size: 13px; font-weight: 800; letter-spacing: 1px; }
-.pro-sheet-title { margin: 0 0 4px; font-size: 24px; font-weight: 800; color: var(--text); }
-.pro-sheet-sub { margin: 0 0 16px; font-size: 15px; color: var(--muted); }
-.pro-sheet-sub span { color: #e04600; font-weight: 800; }
-.pro-sheet-list { list-style: none; margin: 0 auto 18px; padding: 14px 16px; max-width: 340px; text-align: left; background: var(--chip-bg, #f6f7fb); border-radius: 14px; display: flex; flex-direction: column; gap: 10px; font-size: 14.5px; color: var(--text); }
-.pro-sheet-cta { display: block; width: 100%; max-width: 340px; margin: 0 auto 10px; padding: 15px 0; border: none; border-radius: 14px; background: #e04600; color: #fff; font-size: 17px; font-weight: 800; cursor: pointer; }
-.pro-sheet-cta:disabled { background: #b9c0cf; cursor: default; }
-.pro-sheet-restore { display: block; margin: 0 auto 8px; border: none; background: none; color: var(--muted); font-size: 13px; text-decoration: underline; cursor: pointer; }
-.pro-sheet-note { margin: 0; font-size: 11.5px; color: var(--muted); opacity: 0.8; }
+/* Pro 멤버십 관련 CSS는 2026-09-09 비공개·승인제 운영 결정으로 제거 */
 
-/* 자동추적 "+자세히" 상관관계 점수표 + ETF 10년 미만 경고(2026-09-07 사용자 요청) */
-.autotrack-head-row { justify-content: space-between; margin-bottom: 8px; }
-.autotrack-head-note { font-size: 11px; }
-.at-warn { margin-right: 3px; font-size: 12px; }
-.at-partial-row td { background: rgba(233, 85, 0, 0.05); }
-.corr-grade-badge { display: inline-block; padding: 1px 7px; border-radius: 999px; font-size: 10.5px; font-weight: 800; color: #fff; white-space: nowrap; }
-.corr-legend { display: flex; flex-wrap: wrap; gap: 6px 10px; margin: 6px 0 10px; }
-.corr-legend span { font-size: 10.5px; color: var(--muted); }
-.corr-table td, .corr-table th { font-size: 11.5px; }
-.at-head-sub { display: block; font-size: 9.5px; font-weight: 600; color: var(--muted); margin-top: 3px; white-space: nowrap; }
-.at-head-grade { display: block; font-size: 10px; font-weight: 800; margin-top: 1px; white-space: nowrap; line-height: 1.2; }
-#autoTrackCorrSlot .autotrack-head-row { margin: 4px 0 6px; }
-#autoTrackCorrSlot .chart-detail-wrap { margin-bottom: 10px; }
-/* 자동추적 신호등 표 머리글: 항목 이름이 모바일 폭에서 잘리지 않게 줄바꿈 허용(점수·등급 줄은 각자 nowrap 유지) */
-table.autotrack-lights-table th { white-space: normal; overflow-wrap: anywhere; line-height: 1.25; }
-/* 인사이트 섹터 승률(2026-09-07): 7열 표 — 모바일에선 가로 스크롤, 전체 행 강조 */
-.sector-win-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.sector-win-table { min-width: 0; } /* 2026-09-08: 1년/10년 4열로 줄여 모바일에서 한눈에 */
-.sector-win-table th, .sector-win-table td { padding: 6px 4px; font-size: 11px; white-space: nowrap; }
-.sector-win-table thead tr:first-child th { border-bottom: none; font-size: 11.5px; }
-.sector-win-table tr.sector-win-all td { background: var(--accent-soft); font-weight: 700; }
-
-/* 하단 네비 마켓맵(지도) 버튼 아이콘(2026-09-08): 새 로고 마크, 비활성 시 국기와 같은 흑백 처리 */
-.bottom-nav-btn img.bottom-nav-logo { width: 22px; height: 22px; border-radius: 6px; margin: 6px 0 4px; display: block; filter: grayscale(1) opacity(0.55); }
-.bottom-nav-btn.active img.bottom-nav-logo { filter: none; }
-
-/* 결과 영역이 패널보다 넓은 표(코인 인기종목 등)는 잘리지 않고 가로 스크롤(2026-09-08) */
-#popularResults, #trendResults, #valuationResults, #insightResults { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-
-/* 모바일(<=480px) 랭킹 표: 머리글 줄바꿈 허용 + 여백 축소로 5열 표가 화면 폭에 들어가게(2026-09-08 사용자 보고: 실적 표 오른쪽 열 잘림) */
-@media (max-width: 480px) {
-  table.top30-table th { white-space: normal; line-height: 1.25; }
-  table.top30-table th, table.top30-table td { padding: 8px 4px; }
-}
-
-/* Pro 멤버십 시트 상품 버튼(2026-09-08) */
-.pro-sheet-feature-hint { margin: -6px auto 12px; max-width: 340px; font-size: 13px; color: #e04600; font-weight: 700; }
-.pro-products { display: flex; flex-direction: column; gap: 8px; max-width: 340px; margin: 0 auto 12px; }
-.pro-product-btn { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "label price" "note note"; align-items: center; text-align: left; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 14px; background: var(--card-bg, #fff); color: var(--text); cursor: pointer; }
-.pro-product-btn.pro-product-sub { border-color: #e04600; background: rgba(224, 70, 0, 0.06); }
-.pro-product-label { grid-area: label; font-size: 15px; font-weight: 800; }
-.pro-product-tag { display: inline-block; margin-left: 4px; padding: 1px 7px; border-radius: 999px; background: #e04600; color: #fff; font-size: 10.5px; font-weight: 800; vertical-align: middle; }
-.pro-product-price { grid-area: price; font-size: 16px; font-weight: 800; color: #e04600; }
-.pro-product-note { grid-area: note; margin-top: 2px; font-size: 11.5px; color: var(--muted); }
-.pro-sheet-review { display: block; width: 100%; max-width: 340px; margin: 0 auto 8px; padding: 12px 0; border: 1.5px dashed #f5a623; border-radius: 14px; background: rgba(245, 166, 35, 0.1); color: var(--text); font-size: 14px; font-weight: 800; cursor: pointer; }
-.pro-sheet-review:disabled { opacity: 0.6; cursor: default; }
-.pro-sheet-webnote { margin: 4px 0 0; font-size: 12px; color: var(--muted); }
-.pro-sheet-webnote a { color: #e04600; font-weight: 700; }
-
-/* Pro 혜택 카드(2026-09-08 사용자 요청 "고급지게"): 남색 그라데이션 카드 + 금색 아이콘 원 */
-.pro-perks-title { margin: -4px 0 10px; font-size: 13px; font-weight: 700; color: var(--muted); letter-spacing: -0.2px; }
-.pro-perks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-width: 340px; margin: 0 auto 16px; }
-.pro-perk { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; padding: 12px 12px 11px; border-radius: 14px; background: linear-gradient(145deg, #1b2a4a 0%, #0d1730 100%); color: #fff; text-align: left; box-shadow: 0 6px 16px rgba(13, 23, 48, 0.25); overflow: hidden; }
-.pro-perk::after { content: ""; position: absolute; right: -18px; top: -18px; width: 64px; height: 64px; border-radius: 50%; background: radial-gradient(circle, rgba(245, 192, 74, 0.35), rgba(245, 192, 74, 0) 70%); pointer-events: none; }
-.pro-perk-wide { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 10px; flex-wrap: wrap; }
-.pro-perk-wide b { flex: none; }
-.pro-perk-wide span:last-child { flex: 1 1 100%; }
-.pro-perk-icon { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #f7d774, #e0a020); font-size: 16px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25); margin-bottom: 4px; }
-.pro-perk b { font-size: 14px; font-weight: 800; letter-spacing: -0.2px; }
-.pro-perk span:last-child { font-size: 11.5px; color: rgba(255, 255, 255, 0.72); line-height: 1.35; }
-.pro-sheet-badge { background: linear-gradient(135deg, #f7d774, #c98a10); color: #1b2a4a; }
-/* 이용권 지갑 + 사용 확인창(2026-09-08 사용자 요청: 바로 적용하지 않고 물어봄) */
-.pro-wallet { max-width: 340px; margin: 0 auto 12px; }
-.pro-wallet-card { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: 12px; border: 1.5px solid #e0a020; background: rgba(245, 192, 74, 0.12); font-size: 13.5px; font-weight: 700; color: var(--text); text-align: left; }
-.pro-wallet-use { flex: none; padding: 7px 12px; border: none; border-radius: 999px; background: #1b2a4a; color: #fff; font-size: 12.5px; font-weight: 800; cursor: pointer; }
-.pro-confirm { position: fixed; inset: 0; z-index: 640; display: none; }
-.pro-confirm-backdrop { position: absolute; inset: 0; background: rgba(10, 14, 30, 0.55); opacity: 0; transition: opacity 0.2s; }
-.pro-confirm-card { position: absolute; left: 50%; top: 50%; width: min(92vw, 360px); transform: translate(-50%, -46%); opacity: 0; transition: transform 0.2s, opacity 0.2s; background: var(--card-bg, #fff); border-radius: 18px; padding: 22px 18px 16px; text-align: center; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3); }
-.pro-confirm.open .pro-confirm-backdrop { opacity: 1; }
-.pro-confirm.open .pro-confirm-card { opacity: 1; transform: translate(-50%, -50%); }
-.pro-confirm-card h3 { margin: 6px 0 8px; font-size: 18px; font-weight: 800; color: var(--text); }
-.pro-confirm-desc { margin: 0 0 14px; font-size: 13.5px; line-height: 1.55; color: var(--text); }
-
-/* Pro 멤버십 4탭 화면(2026-09-09 사용자 요청: 웹툰 쿠키샵 구조 — 이용권구매·구매내역·무료이용권·사용내역) */
-.pro-page { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--bg, #f6f7fb); color: var(--text); transform: translateY(100%); transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1); }
-.pro-sheet.open .pro-page { transform: translateY(0); }
-.pro-page-head { display: flex; align-items: center; gap: 4px; padding: calc(8px + env(safe-area-inset-top, 0px)) 10px 8px; background: var(--card-bg, #fff); border-bottom: 1px solid var(--border, #e5e7eb); }
-.pro-page-head h2 { margin: 0; font-size: 20px; font-weight: 800; }
-.pro-page-back { width: 40px; height: 40px; border: none; background: none; font-size: 30px; line-height: 1; color: var(--text); cursor: pointer; }
-.pro-page-tabs { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--card-bg, #fff); border-bottom: 1px solid var(--border, #e5e7eb); }
-.pro-page-tab { padding: 13px 0 11px; border: none; border-bottom: 3px solid transparent; background: none; font-size: 15px; font-weight: 700; color: var(--text); cursor: pointer; }
-.pro-page-tab.active { color: #16a34a; border-bottom-color: #16a34a; }
-.pro-page-own { display: flex; align-items: center; gap: 6px; padding: 14px 16px; background: var(--card-bg, #fff); border-bottom: 8px solid var(--bg, #f0f2f6); font-size: 16px; font-weight: 700; }
-.pro-page-own b { color: #16a34a; font-weight: 800; }
-.pro-own-icon { font-size: 18px; }
-.pro-own-status { margin-left: auto; font-size: 11.5px; font-weight: 600; color: var(--muted); text-align: right; max-width: 45%; }
-.pro-page-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
-.pro-page-hint { margin: 0; padding: 10px 16px; background: rgba(224, 70, 0, 0.08); color: #e04600; font-size: 13px; font-weight: 700; }
-.pro-banner { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 12px 16px; padding: 16px 18px; border-radius: 12px; background: linear-gradient(120deg, #fff7d6, #fff1bf); color: #4a3200; }
-.pro-banner-text { display: flex; flex-direction: column; gap: 4px; }
-.pro-banner-text b { font-size: 17px; font-weight: 800; color: #c2410c; letter-spacing: -0.3px; }
-.pro-banner-text span { font-size: 12.5px; color: #6b5a2a; }
-.pro-banner-art { font-size: 40px; flex: none; }
-.pro-rows { background: var(--card-bg, #fff); }
-.pro-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 16px; background: var(--card-bg, #fff); border-bottom: 1px solid var(--border, #eceef2); }
-.pro-row-use { margin-bottom: 8px; border-top: 1px solid var(--border, #eceef2); }
-.pro-row-label { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 16px; font-weight: 700; line-height: 1.3; }
-.pro-row-icon { font-size: 18px; }
-.pro-row-note { flex: 1 1 100%; font-size: 11.5px; font-weight: 500; color: var(--muted); }
-.pro-row-tag { padding: 1px 7px; border-radius: 999px; background: #e04600; color: #fff; font-size: 10.5px; font-weight: 700; }
-.pro-green-btn { flex: none; min-width: 96px; padding: 11px 14px; border: none; border-radius: 6px; background: #22c55e; color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; white-space: nowrap; }
-.pro-green-btn:active { filter: brightness(0.93); }
-.pro-green-btn-off, .pro-green-btn:disabled { background: #b9c0cf; cursor: default; }
-.pro-green-text { color: #16a34a !important; font-weight: 700; }
-.pro-page-webnote { margin: 10px 16px 0; font-size: 12px; color: var(--muted); }
-.pro-page-webnote a { color: #16a34a; font-weight: 700; }
-.pro-page-link { display: block; margin: 14px auto 4px; border: none; background: none; color: var(--muted); font-size: 13px; text-decoration: underline; cursor: pointer; }
-.pro-page-notes { margin: 8px 16px 0; padding: 0 0 0 4px; list-style: none; font-size: 12px; line-height: 1.55; color: var(--muted); }
-.pro-page-notes li::before { content: "· "; }
-.pro-page-foot { margin: 18px 16px; text-align: center; font-size: 12.5px; color: var(--muted); }
-.pro-filter { display: flex; align-items: center; gap: 10px; padding: 12px 16px 4px; font-size: 15px; color: var(--muted); }
-.pro-filter button { border: none; background: none; padding: 0; font-size: 15px; font-weight: 600; color: var(--muted); cursor: pointer; }
-.pro-filter button.active { color: var(--text); font-weight: 800; }
-.pro-item { position: relative; padding: 14px 16px 16px; background: var(--card-bg, #fff); border-bottom: 1px solid var(--border, #eceef2); }
-.pro-item-date { margin: 0 0 6px; font-size: 13px; color: var(--muted); }
-.pro-item-title { margin: 0 0 6px; font-size: 16px; font-weight: 700; line-height: 1.35; }
-.pro-item-dl { display: grid; grid-template-columns: 62px 1fr; row-gap: 5px; margin: 0; font-size: 15px; }
-.pro-item-dl dt { color: var(--muted); font-weight: 500; }
-.pro-item-dl dd { margin: 0; font-weight: 700; }
-.pro-item-dl dd.muted, .pro-item-dl dt.muted { color: var(--muted); font-weight: 500; }
-.pro-item-side { position: absolute; right: 16px; bottom: 18px; font-size: 14px; color: var(--muted); }
-.pro-empty { margin: 0; padding: 40px 16px; text-align: center; font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.6; }
-.pro-empty .muted { font-size: 12.5px; font-weight: 500; }
-.pro-coupon { padding: 16px 16px 14px; background: var(--card-bg, #fff); border-bottom: 8px solid var(--bg, #f0f2f6); }
-.pro-coupon-title { margin: 0 0 10px; font-size: 16px; font-weight: 800; }
-.pro-coupon-row { display: flex; gap: 8px; }
-.pro-coupon-input { flex: 1; min-width: 0; padding: 12px 12px; border: 1px solid var(--border, #d7dbe3); border-radius: 6px; background: var(--card-bg, #fff); color: var(--text); font-size: 15px; letter-spacing: 0.5px; }
-.pro-coupon-input:focus { outline: none; border-color: #22c55e; }
-.pro-row-review { margin-bottom: 8px; border-top: 1px solid var(--border, #eceef2); }
-
-/* 보유 이용권 바(2026-09-09 사용자 요청: 깔끔하게) */
-.pro-wallet-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 16px 12px; padding: 12px 14px; border-radius: 12px; background: var(--card-bg, #fff); border: 1.5px solid #22c55e; }
-.pro-wallet-info { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.pro-wallet-title { font-size: 15px; font-weight: 700; }
-.pro-wallet-title b { color: #16a34a; font-weight: 800; }
-.pro-wallet-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.pro-wallet-chip { padding: 2px 9px; border-radius: 999px; background: rgba(34, 197, 94, 0.12); color: #15803d; font-size: 12px; font-weight: 700; }
-.pro-wallet-chip b { font-weight: 800; }
-.pro-green-btn-sm { min-width: 0; padding: 9px 14px; font-size: 14px; border-radius: 999px; }
+/* ---------- 미래예측 3장(1년·5년·10년) 탭 + 앱 다운로드 항목(2026-09-09) ---------- */
+.future-cmp-tabs { display: flex; gap: 6px; margin: 0 0 8px; }
+.future-cmp-tab.active { background: var(--text); color: var(--white, #fff); border-color: transparent; }
+.future-cmp-legend { display: flex; flex-wrap: wrap; gap: 10px 14px; margin: 6px 0 2px; font-size: 12px; font-weight: 700; }
+.future-cmp-legend span::before { content: ""; display: inline-block; width: 18px; height: 3px; border-radius: 2px; margin-right: 5px; vertical-align: middle; background: currentColor; }
+a.more-panel-item { text-decoration: none; color: inherit; }
+.more-panel-apk-sub { display: block; font-size: 11px; font-weight: 500; color: var(--muted); margin-top: 2px; }

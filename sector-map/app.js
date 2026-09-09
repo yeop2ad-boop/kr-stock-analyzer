@@ -2804,72 +2804,29 @@ function scheduleInactiveMarketPreload() {
 }
 // loadMarket()이 초기 로드 + 시장 전환 시마다 이 함수를 호출하므로 여기서 별도로 또 부르지 않음
 
-// ---------- 굴려볼까 Pro — 섹터맵 맛보기 게이트(2026-09-02 사용자 확정: B안) ----------
-// 지도는 Pro 전용이지만 완전 잠금 대신 "맛보기": 지도가 흐릿하게 보이는 위에 구독 안내 카드를 띄움.
-// 게이트는 Play Billing이 포함된 앱(v1.1, Digital Goods API)에서만 활성 — 웹·v1 앱에선 꺼져서 전부 무료.
-// 개발 테스트: localStorage pro_gate_test=1(게이트 강제 활성), pro_dev=1(구독자 취급). 본체 app.js Pro 모듈과 동일 규칙.
-const PRO_PRODUCT_ID = "pro_monthly";
-function proLocalFlag(name) { try { return localStorage.getItem(name) === "1"; } catch (e) { return false; } }
-async function getPlayBillingService() {
-  if (!("getDigitalGoodsService" in window)) return null;
-  try { return await window.getDigitalGoodsService("https://play.google.com/billing"); } catch (e) { return null; }
-}
-// 본체와 같은 이용권 키(pro_entitlement_v1: 첫 방문 1일 무료·리뷰 선물·1일/7일권)를 먼저 확인(2026-09-08 멤버십 모델)
-function mapProPassActive() {
-  try {
-    const e = JSON.parse(localStorage.getItem("pro_entitlement_v1") || "null");
-    return !!(e && Number.isFinite(e.until) && e.until > Date.now());
-  } catch (e) { return false; }
-}
-async function mapProBlocked() {
-  if (proLocalFlag("pro_dev")) return false;
-  if (mapProPassActive()) return false;
-  const service = await getPlayBillingService();
-  if (!service) return true; // 웹: 이용권 없으면 잠김(구매는 본체 더보기 › Pro 멤버십 안내)
-  try {
-    const purchases = await service.listPurchases();
-    return !(purchases || []).some((p) => p && p.itemId === PRO_PRODUCT_ID);
-  } catch (e) {
-    return true;
-  }
-}
-async function startMapProPurchase() {
-  const service = await getPlayBillingService();
-  if (!service) {
-    alert("이 환경에서는 결제할 수 없어요. 구글 플레이 마켓맵 앱에서 구독해주세요.");
-    return;
-  }
-  try {
-    const request = new PaymentRequest(
-      [{ supportedMethods: "https://play.google.com/billing", data: { sku: PRO_PRODUCT_ID } }],
-      { total: { label: "마켓맵 Pro 한 달 정기구독", amount: { currency: "KRW", value: "9900" } } }
-    );
-    const response = await request.show();
-    await response.complete("success");
-    if (!(await mapProBlocked())) {
-      const ov = document.getElementById("proMapOverlay");
-      if (ov) ov.remove();
+// ---------- 뒤로가기(2026-09-09 사용자 요청): 열린 시트·패널부터 닫고, 아무것도 없으면 본체로 돌아감 ----------
+// 페이지 진입 시 히스토리 항목(가드)을 하나 얹어 두고, 뒤로가기(popstate)가 오면 열린 시트를 닫은 뒤 가드를 다시 얹는다.
+(function () {
+  const isOpen = (elm) => !!elm && (elm.classList.contains("open") || (elm.style && elm.style.display && elm.style.display !== "none" && elm.id === "scoreInfoModal"));
+  const closers = [
+    () => { const s = document.getElementById("scoreInfoModal"); if (s && s.style.display !== "none" && s.style.display !== "") { s.style.display = "none"; return true; } return false; },
+    () => { if (isOpen(companySheet)) { closeCompanySheet(); return true; } return false; },
+    () => { if (isOpen(rangeSheet)) { closeRangeSheet(); return true; } return false; },
+    () => { if (isOpen(watchlistSheet)) { closeWatchlistSheet(); return true; } return false; },
+    () => { if (isOpen(allFiltersSheet)) { closeAllFiltersPanel(); return true; } return false; },
+  ];
+  const pushGuard = () => {
+    try { history.pushState({ mapGuard: true }, "", location.href); } catch (e) {}
+  };
+  try { history.replaceState({ mapRoot: true }, "", location.href); } catch (e) {}
+  pushGuard();
+  window.addEventListener("popstate", () => {
+    let closed = false;
+    for (const c of closers) {
+      try { if (c()) { closed = true; break; } } catch (e) {}
     }
-  } catch (e) {}
-}
-function showProMapOverlay() {
-  if (document.getElementById("proMapOverlay")) return;
-  const ov = document.createElement("div");
-  ov.id = "proMapOverlay";
-  ov.innerHTML = `
-    <div class="pro-map-card">
-      <p class="pro-map-badge">PRO</p>
-      <h2>마켓맵은 Pro 전용이에요</h2>
-      <p class="pro-map-desc">지금 보이는 화면은 미리보기입니다.<br>Pro를 시작하면 시장 전체 지도를 자유롭게 탐색할 수 있어요.</p>
-      <button type="button" class="pro-map-cta" id="proMapCtaBtn">한 달 정기구독 · 월 9,900원</button>
-      <p class="pro-map-desc" style="margin-top:8px;">1일 1,000원 · 7일 4,900원 이용권과 리뷰 선물(1일 무료)은 본체 더보기 › Pro 멤버십에서 받을 수 있어요.</p>
-      <button type="button" class="pro-map-restore" id="proMapRestoreBtn">이미 구독 중이신가요? 구독 복원</button>
-    </div>`;
-  document.body.appendChild(ov);
-  document.getElementById("proMapCtaBtn").addEventListener("click", startMapProPurchase);
-  document.getElementById("proMapRestoreBtn").addEventListener("click", async () => {
-    if (!(await mapProBlocked())) { ov.remove(); alert("구독이 확인되었습니다!"); }
-    else alert("이 구글 계정에서 활성 구독을 찾지 못했어요.");
+    if (closed) { pushGuard(); return; }
+    // 열린 게 없으면 본체(이전 페이지)로 — 항목이 더 없으면 그대로 종료
+    if (history.state && history.state.mapRoot) history.back();
   });
-}
-(async () => { if (await mapProBlocked()) showProMapOverlay(); })();
+})();

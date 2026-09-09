@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260909b" />
+<link rel="stylesheet" href="style.css?v=20260909c" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -284,7 +284,13 @@
               <span id="futureChartModalTitle" class="chart-modal-title"></span>
             </div>
             <div class="future-chart-body">
-              <h3 class="future-chart-subheading">📈 4년 평균주기 예측 - 6개월후 주가예상</h3>
+              <!-- 2026-09-09 사용자 요청: 매출액 vs 주가 vs 순이익을 1년·5년·10년 3장으로(한 번에 한 장), 시작점을 0%로 맞춘 선형 그래프 -->
+              <div class="future-cmp-tabs" id="futureCmpTabs">
+                <button type="button" class="cat-btn future-cmp-tab active" data-future-span="1y">1년</button>
+                <button type="button" class="cat-btn future-cmp-tab" data-future-span="5y">5년</button>
+                <button type="button" class="cat-btn future-cmp-tab" data-future-span="10y">10년</button>
+              </div>
+              <h3 class="future-chart-subheading" id="futureCmpHeading">📈 1년 — 매출액 vs 주가 vs 순이익</h3>
               <div id="futureChartContainer" class="future-chart-container"></div>
               <p class="chart-scroll-hint">&lt; 좌우 스크롤 &gt;</p>
               <p id="futureChartCaption" class="future-chart-caption"></p>
@@ -661,17 +667,11 @@
       <button type="button" class="more-panel-close" id="morePanelCloseBtn" aria-label="닫기">✕</button>
       <h2 class="search-overlay-title more-panel-title" data-i18n="nav.more">더보기</h2>
       <div class="more-panel-list">
-        <!-- Pro 멤버십(2026-09-08 사용자 확정): 이용권 구매·리뷰 선물·남은 기간 확인 -->
-        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelProBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l4 4 5-7 5 7 4-4-2 12H5L3 8Z"/></svg>
-          <span class="more-panel-item-label">Pro 멤버십</span>
-          <span class="more-panel-pro-badge">Pro</span>
-        </button>
+        <!-- Pro 멤버십은 2026-09-09 사용자 결정(비공개·승인제 운영)으로 제거 -->
         <!-- 지도: 하단 네비에서 더보기로 이동(2026-09-01) -->
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelMapBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.6"/></svg>
           <span class="more-panel-item-label" data-i18n="nav.map">마켓맵</span>
-          <span class="more-panel-pro-badge">Pro</span>
         </button>
         <!-- 시장: 하단 네비에서 더보기로 이동(2026-09-01) -->
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelMarketBtn">
@@ -742,6 +742,12 @@
             <button type="button" class="theme-toggle-btn" id="colorSchemeGlobalBtn" data-scheme-choice="global" data-i18n="more.color.global">초록·빨강</button>
           </div>
         </div>
+        <!-- 앱 다운로드(2026-09-09 사용자 요청): 플레이스토어 대신 APK 직접 배포 — 앱(TWA) 안에서는 JS가 숨김.
+             설치 후에도 구글 로그인 + 관리자 승인이 있어야 이용 가능(비공개 운영) -->
+        <a class="more-panel-item more-panel-item-active more-panel-apk" id="morePanelApkBtn" href="app/marketmap.apk" download="marketmap.apk" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+          <span class="more-panel-item-label">앱 다운로드 <span class="more-panel-apk-sub">안드로이드 APK · 설치 후 로그인 → 관리자 승인</span></span>
+        </a>
         <!-- 접속자 관리(2026-09-04): 관리자(yeop2ad@gmail.com)로 로그인했을 때만 JS가 표시 -->
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelAuthAdminBtn" style="display:none;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M3.5 20c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M16 11l2 2 4-4"/></svg>
@@ -835,8 +841,9 @@
     <div class="info-modal-body" id="authAdminBody"><p class="muted">불러오는 중...</p></div>
   </div>
 
-  <!-- 구글 로그인(GSI) 스크립트는 로그인 기능 제거(2026-09-08 사용자 확정)로 내림 — 게이트 코드는 app.js에 보존 -->
+  <!-- 구글 로그인(GSI): 2026-09-09 비공개·승인제 운영 결정으로 복구 -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="data/logo-db.js?v=20260903g"></script>
-  <script src="app.js?v=20260909b"></script>
+  <script src="app.js?v=20260909c"></script>
 </body>
 </html>
