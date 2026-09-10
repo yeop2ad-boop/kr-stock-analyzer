@@ -5875,11 +5875,14 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     <div id="tickerHistoricalRow" style="display:none;"></div>
   `;
 
-  // S리포트는 누른 버튼 바로 아래에서 열리도록(2026-09-04 사용자 요청) 정적 섹션(#sReportInlineWrap)을 요약 영역 안으로 이동
+  // 세 버튼(과거분석·미래예측·S리포트) 모두 누른 자리 바로 아래에서 열리도록 정적 섹션을 요약 영역 안으로 이동
   // — innerHTML 재렌더로 DOM에서 떨어져 나가도 상단 const 참조가 노드를 붙잡고 있어 매 렌더마다 다시 붙임(내용·리스너 유지)
-  sReportInlineWrap.style.display = "none";
-  sReportInlineWrap.classList.remove("section-expanded");
-  el("summarySection").appendChild(sReportInlineWrap);
+  // (S리포트는 2026-09-04, 과거분석·미래예측은 2026-09-10 사용자 요청으로 같은 방식 적용 — 이전엔 화면 한참 아래에서 열렸음)
+  [historicalInlineWrap, futureInlineWrap, sReportInlineWrap].forEach((wrap) => {
+    wrap.style.display = "none";
+    wrap.classList.remove("section-expanded");
+    el("summarySection").appendChild(wrap);
+  });
 
   const toggleBtn = el("tickerHistoricalToggleBtn");
   const futureToggleBtn = el("tickerFutureToggleBtn");
@@ -5941,7 +5944,8 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     if (!futureLoaded) {
       futureLoaded = true;
       // 2026-09-09 사용자 요청: 매출액 vs 주가 vs 순이익(1년·5년·10년) 3장 — ETF·코인은 재무가 없어 주가만
-      await runFutureCompare(symbol, selfMetricsPromise, marketReturnsPromise, { chartOnly: isAssetDetail });
+      // 2026-09-10 사용자 요청: 매출액vs주가vs순이익 3장 → 예전 "과거 4개년 계절성 + 기울기 예측" 그래프로 복귀
+      await runFuturePrediction(symbol, selfMetricsPromise, marketReturnsPromise, { chartOnly: isAssetDetail });
     }
   });
 
@@ -6213,17 +6217,12 @@ async function renderSummaryScoreRow(ticker, scoreMode = "stock") {
         <span class="nine-score-label">${label}</span>
       </div>`;
 
+    // 2026-09-10 사용자 요청: 9칸 → 핵심 3칸(10년 승률 / 연평균 상승 / 현재 RSI 점수)만 남김
     const gridHtml = `
-      <div class="nine-score-grid">
-        ${cell("green", `10년평균승률${partialMark}`, nineFmtPct(wr10, false))}
-        ${cell("green", "작년승률<br>(직전12개월)", nineFmtPct(wr1y, false))}
-        ${cell("green", "내년 승률<br>(12개월 예측)", nineFmtPct(wrNext, true))}
-        ${cell("blue", `10년평균상승률${partialMark}`, nineFmtPct(ret10, false))}
-        ${cell("blue", "작년상승률<br>(직전12개월)", nineFmtPct(ret1y, false))}
-        ${cell("blue", "내년 상승률<br>(12개월 예측)", nineFmtPct(retNext, true))}
-        ${cell("orange", "10년 RSI평균<br>(520주)", nineFmtNum(rsi10, false))}
-        ${cell("orange", "작년RSI<br>(직전52주)", nineFmtNum(rsi1y, false))}
-        ${cell("orange", "내년RSI<br>(52주 예측)", nineFmtNum(rsiNext, true))}
+      <div class="nine-score-grid nine-score-grid-3">
+        ${cell("green", `10년 승률${partialMark}`, nineFmtPct(wr10, false))}
+        ${cell("blue", `연평균 상승${partialMark}`, nineFmtPct(ret10, true))}
+        ${cell("orange", "현재 RSI 점수", nineFmtNum(num(e.rsi), false))}
       </div>`;
 
     // 최근 12개월 승패(OX) 표 — m12(과거→최신 월간 등락%)가 있는 종목만
@@ -11835,6 +11834,13 @@ const LOGO_OVERRIDE = {
   "112610.KS": { src: "logos/cswind.png", bg: "#ffffff" }, // 씨에스윈드(공장 항공사진 → CS WIND 로고)
   "003030.KS": { src: "logos/seah-steel.png", bg: "#ffffff" }, // 세아제강지주
   "003550.KS": { src: "logos/lg.svg", bg: "#ffffff" }, // LG(트윈타워 사진 → LG 로고, 이미 있던 파일 재사용)
+  // 2026-09-10 2차(사용자 요청 "에스원처럼 사람 얼굴 들어간 로고도"): 전체 316개를 눈으로 다시 훑어
+  // 사람·캐릭터 얼굴이나 홍보 사진이 쓰이던 종목도 로고 마크로 교체
+  "012750.KS": { src: "logos/s1-corp.png", bg: "#ffffff" }, // 에스원(안내사원 캐릭터 → 에스원 CI)
+  "251270.KS": { src: "logos/netmarble.png", bg: "#ffffff" }, // 넷마블(캐릭터 얼굴 → netmarble 워드마크)
+  "010120.KS": { src: "logos/ls-electric.png", bg: "#ffffff" }, // LS ELECTRIC(홍보 배너 → LS ELECTRIC 로고)
+  "011210.KS": { src: "logos/hyundai-wia.png", bg: "#ffffff" }, // 현대위아(흑백 공장 사진 → HYUNDAI WIA 로고)
+  "069620.KS": { src: "logos/daewoong.png", bg: "#ffffff" }, // 대웅제약(흐릿한 사진 → 대웅 심볼)
 };
 
 // 한국 ETF 로고(2026-09-03 사용자 요청): 숫자 티커라 FMP 로고가 없어 브랜드(첫 단어) → 운용사 그룹 CI로 표시.
@@ -14350,7 +14356,8 @@ bindTrend(trendButtons.krEtf, runTrendKrEtf);
 // 과거 4개년의 "창 중간→끝" 구간 변화폭 평균(=4년 평균 기울기)을 오늘 시점 값에 더해 점선으로 이어 그린다.
 const FUTURE_YEARS_BACK = 4;
 const FUTURE_MONTH_NAMES_KO = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
-const FUTURE_LINE_COLORS = ["#eceef2", "#c7cbd6", "#a7acbc", "#888fa3"];
+// 흰 배경(2026-09-10 사용자 요청)에서 보이도록 과거 연도 선은 옅은 회색 → 중간 회색 계열로
+const FUTURE_LINE_COLORS = ["#aeb5c4", "#8f97a9", "#727b8f", "#575f73"];
 
 function addMonths(date, months) {
   const d = new Date(date.getTime());
@@ -14429,6 +14436,7 @@ async function computeFuturePrediction(ticker) {
 
   return {
     ticker,
+    currency: (chartData.chart.result[0].meta && chartData.chart.result[0].meta.currency) || (isKrTicker(ticker) ? "KRW" : "USD"),
     historicalBuckets,
     currentBucket,
     currentPrice,
@@ -14829,8 +14837,8 @@ function buildFutureChartSvg(data) {
   for (let v = Math.ceil(lo / step) * step; v <= hi + 0.001; v += step) {
     const y = yFn(v);
     const emphasize = Math.abs(v) < 0.001;
-    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${ML + PW}" y2="${y.toFixed(1)}" stroke="${emphasize ? "#555b6b" : "#23262f"}" stroke-width="${emphasize ? 1.4 : 1}" />`;
-    gridSvg += `<text x="${ML - 8}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="#8a90a3">${v > 0 ? "+" : ""}${Math.round(v)}%</text>`;
+    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${ML + PW}" y2="${y.toFixed(1)}" stroke="${emphasize ? "#9aa1b2" : "#e6e8ee"}" stroke-width="${emphasize ? 1.4 : 1}" />`;
+    gridSvg += `<text x="${ML - 8}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="#6b7280">${v > 0 ? "+" : ""}${Math.round(v)}%</text>`;
   }
 
   let axisSvg = "";
@@ -14839,12 +14847,12 @@ function buildFutureChartSvg(data) {
     const x = xFn(frac);
     const labelDate = addMonths(data.axisMonthStart, m);
     const isNow = m === 6;
-    axisSvg += `<line x1="${x.toFixed(1)}" y1="${MT}" x2="${x.toFixed(1)}" y2="${MT + PH}" stroke="${isNow ? "#f5a623" : "#20232b"}" stroke-width="${isNow ? 1.6 : 1}" ${isNow ? "" : 'stroke-dasharray="2,3"'} />`;
-    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 16).toFixed(1)}" text-anchor="middle" font-size="11" fill="${isNow ? "#f5a623" : "#8a90a3"}" font-weight="${isNow ? "700" : "400"}">${FUTURE_MONTH_NAMES_KO[labelDate.getMonth()]}</text>`;
+    axisSvg += `<line x1="${x.toFixed(1)}" y1="${MT}" x2="${x.toFixed(1)}" y2="${MT + PH}" stroke="${isNow ? "#e08a00" : "#eceef3"}" stroke-width="${isNow ? 1.6 : 1}" ${isNow ? "" : 'stroke-dasharray="2,3"'} />`;
+    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 16).toFixed(1)}" text-anchor="middle" font-size="11" fill="${isNow ? "#e08a00" : "#6b7280"}" font-weight="${isNow ? "700" : "400"}">${FUTURE_MONTH_NAMES_KO[labelDate.getMonth()]}</text>`;
   }
-  axisSvg += `<text x="${xFn(0.5).toFixed(1)}" y="${(MT + PH + 32).toFixed(1)}" text-anchor="middle" font-size="11" fill="#f5a623" font-weight="700">(현재)</text>`;
+  axisSvg += `<text x="${xFn(0.5).toFixed(1)}" y="${(MT + PH + 32).toFixed(1)}" text-anchor="middle" font-size="11" fill="#e08a00" font-weight="700">(현재)</text>`;
   if (data.currentPrice !== null && data.currentPrice !== undefined) {
-    axisSvg += `<text x="${xFn(0.5).toFixed(1)}" y="${(MT + PH + 48).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="#f5a623">$${data.currentPrice.toFixed(2)}</text>`;
+    axisSvg += `<text x="${xFn(0.5).toFixed(1)}" y="${(MT + PH + 48).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="#e08a00">${escapeHtml(fmtPrice(data.currentPrice, data.currency))}</text>`;
   }
 
   let linesSvg = "";
@@ -14871,11 +14879,11 @@ function buildFutureChartSvg(data) {
     // 달러 표기($XX.XX)와 퍼센트가 서로 어긋나 보이지 않음(예: 오늘보다 비싸졌는데 마이너스로 보이는 문제 방지)
     const pctFromToday = data.currentPrice ? (data.forecast.price / data.currentPrice - 1) * 100 : data.forecast.endPct;
     const pctSign = pctFromToday >= 0 ? "+" : "";
-    linesSvg += `<text x="${(fx1 + 6).toFixed(1)}" y="${(fy1 + 18).toFixed(1)}" font-size="11" font-weight="700" fill="#e5342f">$${data.forecast.price.toFixed(2)}(${pctSign}${pctFromToday.toFixed(1)}%)</text>`;
+    linesSvg += `<text x="${(fx1 + 6).toFixed(1)}" y="${(fy1 + 18).toFixed(1)}" font-size="11" font-weight="700" fill="#e5342f">${escapeHtml(fmtPrice(data.forecast.price, data.currency))}(${pctSign}${pctFromToday.toFixed(1)}%)</text>`;
   }
 
   return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHtml(data.ticker)} 미래예측 차트">
-    <rect x="0" y="0" width="${W}" height="${H}" fill="#000" />
+    <rect x="0" y="0" width="${W}" height="${H}" fill="#fff" />
     ${gridSvg}
     ${axisSvg}
     ${linesSvg}
@@ -14883,10 +14891,15 @@ function buildFutureChartSvg(data) {
 }
 
 function renderFutureChart(data) {
+  // 비교 그래프(매출액vs주가vs순이익)용 1년·5년·10년 탭과 제목은 이 그래프에선 쓰지 않으므로 숨김(2026-09-10)
+  const cmpTabs = el("futureCmpTabs");
+  if (cmpTabs) cmpTabs.style.display = "none";
+  const cmpHeading = el("futureCmpHeading");
+  if (cmpHeading) cmpHeading.style.display = "none";
   el("futureChartContainer").innerHTML = buildFutureChartSvg(data);
   scrollChartToRight(el("futureChartContainer")); // 처음 열 때 가장 최근(오른쪽 끝)부터 보이게
   const yearsNote = data.historicalBuckets.length
-    ? `흰색: 과거 ${data.historicalBuckets.length}개년(전후 6개월) 계절성 흐름 · `
+    ? `회색: 과거 ${data.historicalBuckets.length}개년(전후 6개월) 계절성 흐름 · `
     : `과거 데이터가 부족해 계절성 비교 없이 최근 추세만 표시했습니다 · `;
   const baseNote = `${data.ticker} · ${yearsNote}빨간 실선: 최근 6개월 실제 흐름 · 빨간 점선: ${data.hasForwardData ? "과거 흐름의 평균 기울기로 추정한 " : ""}향후 6개월 예상(참고용, 실제와 다를 수 있습니다)`;
   let forecastNote = "";
