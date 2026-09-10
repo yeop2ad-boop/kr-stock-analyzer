@@ -17,7 +17,13 @@ const SEC_HEADERS = { "User-Agent": "netuja.com contact@netuja.com" };
 const INSTITUTIONS = {
   berkshire: { cik: "1067983", filerName: "Berkshire Hathaway Inc" },
   blackrock: { cik: "2012383", filerName: "BlackRock, Inc." },
-  vanguard: { cik: "102909", filerName: "Vanguard Group Inc" },
+  // 2026년부터 Vanguard Group Inc(102909)는 13F-NT(면제 통지)만 내고, 실제 보유종목은 아래 자회사들이
+  // 나눠서 13F-HR로 제출한다(2026-09-10 확인: 그래서 앱이 2025-12-31 분기에 멈춰 있었음) —
+  // 같은 분기 공시를 CUSIP 기준으로 합쳐야 예전의 "뱅가드 전체" 포트폴리오에 가까워진다
+  vanguard: {
+    ciks: ["2100119", "2100121", "933478", "947529", "1680208"],
+    filerName: "Vanguard Group (Capital·Portfolio Management 등 자회사 합산)",
+  },
   // 주의: 키를 "state"로 지으면 output이 data/insight-state.json이 되어, 이 스크립트 자신의 갱신 이력을
   // 저장하는 STATE_FILE(같은 경로)과 충돌해 서로 덮어씀 — 그래서 "stateStreet"로 키를 분리함
   stateStreet: { cik: "93751", filerName: "State Street Corp" },
@@ -157,26 +163,78 @@ function fmtBigUSD(usd) {
   return `$${abs.toLocaleString()}`;
 }
 
-async function buildInstitutionData(key, { cik, filerName }) {
-  const { filings } = await getLatestTwo13F(cik);
-  if (filings.length < 1) return null;
-  const [curFiling, prevFiling] = filings;
-
-  const curText = await fetchInfoTable(cik, curFiling.accession);
-  const cur = parseInfoTable(curText);
-
-  const cover = await fetchCoverPageTotals(cik, curFiling.accession);
-  if (cover.entryTotal > 0 && cur.rowCount < cover.entryTotal * 0.5) {
-    throw new Error(
-      `표지 요약(${cover.entryTotal}개 종목)과 실제 첨부 테이블(${cur.rowCount}개)이 크게 어긋남 — 손상된 제출로 판단해 건너뜀`
-    );
+// 기관이 여러 CIK로 나눠 제출하면(뱅가드) 전부, 아니면 그 하나만
+function cikListOf(info) {
+  return info.ciks && info.ciks.length ? info.ciks : [info.cik];
+}
+// 상태 파일(중복 처리 방지)의 키 — 합산 기관은 CIK별 최신 접수번호를 이어 붙인 값
+async function latestAccessionKeyOf(info) {
+  const parts = [];
+  for (const c of cikListOf(info)) {
+    try {
+      const { filings } = await getLatestTwo13F(c);
+      if (filings[0]) parts.push(filings[0].accession);
+    } catch {}
   }
+  return parts.join("+");
+}
 
-  let prev = { list: [], total: 0 };
-  if (prevFiling) {
-    const prevText = await fetchInfoTable(cik, prevFiling.accession);
-    prev = parseInfoTable(prevText);
+async function buildInstitutionData(key, info) {
+  const filerName = info.filerName;
+  // CIK별 최신 13F-HR 2건을 모은 뒤, 같은 분기(reportDate)끼리 CUSIP 기준으로 합산
+  const per = [];
+  for (const c of cikListOf(info)) {
+    try {
+      const { filings } = await getLatestTwo13F(c);
+      if (filings.length) per.push({ cik: c, filings });
+    } catch (e) {
+      console.error(`  [${key}] CIK ${c} 조회 실패: ${e.message}`);
+    }
   }
+  if (!per.length) return null;
+  const quarters = [...new Set(per.flatMap((x) => x.filings.map((f) => f.reportDate)))].sort().reverse();
+  const curQuarter = quarters[0];
+  const prevQuarter = quarters[1] || null;
+
+  const collectQuarter = async (quarter) => {
+    if (!quarter) return { list: [], total: 0, rowCount: 0, filedDate: null, accessions: [] };
+    const agg = new Map();
+    let total = 0;
+    let rowCount = 0;
+    let filedDate = null;
+    const accessions = [];
+    for (const x of per) {
+      const f = x.filings.find((g) => g.reportDate === quarter);
+      if (!f) continue;
+      const parsed = parseInfoTable(await fetchInfoTable(x.cik, f.accession));
+      // 표지 요약과 첨부 테이블이 크게 어긋나면(잘려 올라온 공시) 그 분기 전체를 건너뜀
+      const cover = await fetchCoverPageTotals(x.cik, f.accession);
+      if (cover.entryTotal > 0 && parsed.rowCount < cover.entryTotal * 0.5) {
+        throw new Error(
+          `표지 요약(${cover.entryTotal}개 종목)과 실제 첨부 테이블(${parsed.rowCount}개)이 크게 어긋남 — 손상된 제출로 판단해 건너뜀`
+        );
+      }
+      for (const h of parsed.list) {
+        if (!agg.has(h.cusip)) agg.set(h.cusip, { ...h });
+        else {
+          const a = agg.get(h.cusip);
+          a.value += h.value;
+          a.shares += h.shares;
+        }
+      }
+      total += parsed.total;
+      rowCount += parsed.rowCount;
+      if (!filedDate || f.filedDate > filedDate) filedDate = f.filedDate;
+      accessions.push(f.accession);
+    }
+    return { list: [...agg.values()].sort((a, b) => b.value - a.value), total, rowCount, filedDate, accessions };
+  };
+
+  const cur = await collectQuarter(curQuarter);
+  if (!cur.list.length) return null;
+  const prev = await collectQuarter(prevQuarter);
+  const curFiling = { reportDate: curQuarter, filedDate: cur.filedDate, accession: cur.accessions.join("+") };
+  const prevFiling = prevQuarter ? { reportDate: prevQuarter, filedDate: prev.filedDate } : null;
   const prevByCusip = new Map(prev.list.map((x) => [x.cusip, x]));
 
   const holdings = cur.list.slice(0, 20).map((x) => {
@@ -219,8 +277,7 @@ async function main() {
   let anyUpdated = false;
   for (const [key, info] of Object.entries(INSTITUTIONS)) {
     try {
-      const { filings } = await getLatestTwo13F(info.cik);
-      const latestAccession = filings[0] && filings[0].accession;
+      const latestAccession = await latestAccessionKeyOf(info);
       if (!latestAccession) {
         console.log(`[${key}] 13F-HR 공시를 찾지 못함 — 건너뜀`);
         continue;

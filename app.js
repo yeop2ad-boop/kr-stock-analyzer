@@ -7235,7 +7235,7 @@ function partialMarkHtml(total, cls) {
 // 신호등(🟢🟡🔴)·느낌표(❗)·배당 경고(⚠️컷/지연)·급등락(🔥⚠️)·10년 승률 원판을 누르면 바로 아래 줄에
 // 짧은 설명이 펼쳐지고, 다시 누르면 닫힘(한 번에 하나만). 설명 문구는 data-explain 또는 title에서 가져옴 —
 // 마우스가 없는 휴대폰에서는 title 툴팁을 볼 수 없어서 만든 장치
-const EXPLAIN_MARK_SELECTOR = ".nine-partial-mark, .dividend-warn, .at-emoji, .wr-disc, .surge-warn-mark, [data-explain]";
+const EXPLAIN_MARK_SELECTOR = ".nine-partial-mark, .dividend-warn, .at-emoji, .wr-pct, .surge-warn-mark, [data-explain]";
 function closeAllExplainNotes(except) {
   document.querySelectorAll(".explain-row, .explain-inline").forEach((n) => {
     if (n !== except) n.remove();
@@ -7270,12 +7270,12 @@ document.addEventListener(
 );
 
 // ---------- 10년 승률 공용 셀(2026-09-10 사용자 요청) ----------
-// 어디에 있어도 "승률"로 읽히도록 앱 전체에서 같은 작은 초록 원판(.wr-disc)에 반올림한 정수로 표시.
-// (2026-09-10 1차: 보라 글씨 → 2차 요청으로 초록 원판으로 통일)
-const WIN_RATE_COLOR = "#22a866";
+// 순위 표 안에서는 어디서나 같은 보라색 글씨 + 소수점 반올림(한 줄 정렬), 검색상세 카드만 초록 원판으로 강조.
+const WIN_RATE_COLOR = "#8b5cf6"; // 순위 표 10년 승률 — 보라
+const WIN_RATE_DISC_COLOR = "#17915c"; // 검색상세 원판 — 초록
 function winRatePctCellHtml(v, total) {
   if (!Number.isFinite(v)) return "N/A";
-  return `<span class="wr-disc" title="10년 승률 ${Math.round(v)}% — 최근 10년(최대 120개월) 동안 전달보다 오르며 마감한 달의 비율입니다. 높을수록 꾸준히 우상향했다는 뜻이며, 수익률의 크기가 아니라 이긴 횟수입니다.">${Math.round(v)}</span>${partialMarkHtml(total)}`;
+  return `<b class="wr-pct" title="10년 승률 ${Math.round(v)}% — 최근 10년(최대 120개월) 동안 전달보다 오르며 마감한 달의 비율입니다. 높을수록 꾸준히 우상향했다는 뜻이며, 수익률의 크기가 아니라 이긴 횟수입니다.">${Math.round(v)}%</b>${partialMarkHtml(total)}`;
 }
 // 표 머리글의 둘째 줄 작은 기준 안내(예: 매출 증가율 / (YoY))
 const THEAD_SUB = (t) => `<span class="th-sub">(${t})</span>`;
@@ -7289,12 +7289,12 @@ async function renderWinRate(ticker, mode) {
   const entry = map && map[ticker];
   if (!entry || entry.score === null || entry.score === undefined) return;
 
-  const color = WIN_RATE_COLOR; // 10년 승률 - 앱 전체 공통 초록(2026-09-10 사용자 요청)
+  const color = WIN_RATE_DISC_COLOR; // 10년 승률 카드 - 초록 원판(2026-09-10 사용자 요청)
   const isPartial = entry.total < 120;
   el("winRateSection").innerHTML = `
     <div class="score-wrap">
-      <div class="score-badge">
-        <div class="score-num">${entry.score}%</div>
+      <div class="score-badge score-badge-winrate">
+        <div class="score-num">${Math.round(entry.score)}%</div>
         <div class="score-den">10년 승률</div>
       </div>
       <div class="score-details">
@@ -8325,7 +8325,7 @@ async function runValueMarketCap() {
 }
 
 // ---------- 인기종목 표 렌더러(2026-09-10 사용자 요청) ----------
-// 회색 박스 + 7열: 로고+종목 / -5M~-1M 직전 5개월 등락 / 10년 승률(앱 공통 초록 원판).
+// 회색 박스 + 7열: 로고+종목 / -5M~-1M 직전 5개월 등락 / 10년 승률(순위 표 공통 보라 글씨).
 // 좁은 화면에서도 한 줄에 들어가도록 종목명은 7글자까지만 남기고 뒤는 ".."로 줄임.
 // 2026-09-10 추가 요청: 기업명 앞에 큰 로고를 넣는 대신 연평균 상승 열은 삭제(자리 확보),
 // 상단에 있던 대표 2종목 예시 표(삼성전자·SK하이닉스 / 엔비디아·애플 등)도 삭제
@@ -10027,6 +10027,26 @@ el("insightResults").addEventListener("click", (e) => {
   runInsightVolatility();
 });
 
+// ---------- 인사이트 기준시점 줄(2026-09-10 사용자 요청) ----------
+// 표 위에는 "언제 기준인지"만 한 줄로 크게 보여주고, 계산 방식 같은 긴 설명은 오른쪽 "+자세히"를 눌러야 펼쳐짐
+function insightBasisHtml(basisText, detailHtml) {
+  return `
+    <div class="insight-basis-row">
+      <span class="insight-basis">📅 ${escapeHtml(basisText)}</span>
+      <button type="button" class="score-method-detail-btn insight-detail-btn">+자세히</button>
+    </div>
+    <div class="insight-detail-note" style="display:none;">${detailHtml}</div>`;
+}
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest(".insight-detail-btn");
+  if (!btn) return;
+  const note = btn.closest(".insight-basis-row") && btn.closest(".insight-basis-row").nextElementSibling;
+  if (!note || !note.classList.contains("insight-detail-note")) return;
+  const open = note.style.display === "none";
+  note.style.display = open ? "" : "none";
+  btn.textContent = open ? "−접기" : "+자세히";
+});
+
 // ---------- 섹터 승률(2026-09-07 사용자 요청): 투자처별 섹터 평균 — 승률(1달·1년·10년) / 상승률(1달·1년·10년) ----------
 // 값은 승률 DB(winrate-scores-us.json: score=10년 승률, wr1y=1년 승률, m12=최근 12개월 월간 등락, ret1y=1년 상승률,
 // ret10y=10년 연복리)와 섹터 파일(sp500/kr-sectors.json의 sectorKo)을 접속 시 합쳐 계산. 1달 승률은 종목별 승률이 없으므로
@@ -10122,11 +10142,14 @@ async function runInsightSectorWin() {
       </tr>`;
     status.style.display = "none";
     results.innerHTML = `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — 섹터별 <b>1년 상승률·승률</b>과 <b>연평균 상승률·승률</b> 평균입니다(10년 승률 높은 순). 1년·10년 승률은 종목별 월간 승률의 평균, 1년 상승률은 최근 12개월 상승률 평균,
-      연평균 상승률은 연복리(매년 몇 %씩 오른 셈) 평균입니다. 승률 DB(${escapeHtml(dbDate)} 생성) 기준이며 매일 갱신됩니다. 투자 자문이 아닙니다.</p>
-      ${benchScore !== null && !isCrypto ? `<p class="top30-scope-note" style="color:var(--accent);">ⓘ 여기 10년 승률은 <b>종목 하나하나의 승률을 평균</b>한 값(전체 ${allRow.wr10 === null ? "-" : allRow.wr10 + "%"}, 중앙값 ${allRow.wr10Med === null ? "-" : allRow.wr10Med + "%"})이고, <b>${benchName} 자체의 10년 승률은 ${benchScore}%</b>입니다. 지수는 오르는 종목과 내리는 종목이 상쇄되고 대형주 비중이 커서 개별 종목 평균보다 승률이 높습니다. "지수에 투자하면 ${benchScore}%, 종목 하나를 고르면 평균 ${allRow.wr10 === null ? "-" : allRow.wr10 + "%"}"로 읽으세요.</p>` : ""}
-      ${benchScore !== null && isCrypto ? `<p class="top30-scope-note" style="color:var(--accent);">ⓘ 비트코인 자체의 10년 승률은 ${benchScore}%이고, 위 값은 코인 ${allRow.n}개 각각의 승률 평균(중앙값 ${allRow.wr10Med === null ? "-" : allRow.wr10Med + "%"})입니다.</p>` : ""}
-      ${isCrypto ? `<p class="top30-scope-note">⚠️ 코인 섹터는 코인게코·코인마켓캡에서 통용되는 분류(레이어1·레이어2·디파이·밈코인·스테이블코인 등)를 따릅니다. 종목이 3개 이하인 섹터는 평균의 의미가 약하고, 1년 상승률 평균은 몇몇 신규 코인의 폭등이 끌어올린 값이라 중앙값(${allRow.r1yMed === null ? "N/A" : allRow.r1yMed + "%"})을 함께 보세요.</p>` : `<p class="top30-scope-note">⚠️ 종목이 3개 이하인 섹터는 평균의 의미가 약합니다. 상장 10년 미만 종목은 상장 이후 기간만으로 계산된 값이 섞여 있습니다.</p>`}
+      ${insightBasisHtml(
+        `${escapeHtml(dbDate)} 기준 · 매일 갱신 (${universeLabel})`,
+        `<p>${universeLabel} — 섹터별 <b>1년 상승률·승률</b>과 <b>연평균 상승률·승률</b> 평균입니다(10년 승률 높은 순). 1년·10년 승률은 종목별 월간 승률의 평균, 1년 상승률은 최근 12개월 상승률 평균,
+        연평균 상승률은 연복리(매년 몇 %씩 오른 셈) 평균입니다. 투자 자문이 아닙니다.</p>
+        ${benchScore !== null && !isCrypto ? `<p>ⓘ 여기 10년 승률은 <b>종목 하나하나의 승률을 평균</b>한 값(전체 ${allRow.wr10 === null ? "-" : allRow.wr10 + "%"}, 중앙값 ${allRow.wr10Med === null ? "-" : allRow.wr10Med + "%"})이고, <b>${benchName} 자체의 10년 승률은 ${benchScore}%</b>입니다. 지수는 오르는 종목과 내리는 종목이 상쇄되고 대형주 비중이 커서 개별 종목 평균보다 승률이 높습니다. "지수에 투자하면 ${benchScore}%, 종목 하나를 고르면 평균 ${allRow.wr10 === null ? "-" : allRow.wr10 + "%"}"로 읽으세요.</p>` : ""}
+        ${benchScore !== null && isCrypto ? `<p>ⓘ 비트코인 자체의 10년 승률은 ${benchScore}%이고, 위 값은 코인 ${allRow.n}개 각각의 승률 평균(중앙값 ${allRow.wr10Med === null ? "-" : allRow.wr10Med + "%"})입니다.</p>` : ""}
+        ${isCrypto ? `<p>⚠️ 코인 섹터는 코인게코·코인마켓캡에서 통용되는 분류(레이어1·레이어2·디파이·밈코인·스테이블코인 등)를 따릅니다. 종목이 3개 이하인 섹터는 평균의 의미가 약하고, 1년 상승률 평균은 몇몇 신규 코인의 폭등이 끌어올린 값이라 중앙값(${allRow.r1yMed === null ? "N/A" : allRow.r1yMed + "%"})을 함께 보세요.</p>` : `<p>⚠️ 종목이 3개 이하인 섹터는 평균의 의미가 약합니다. 상장 10년 미만 종목은 상장 이후 기간만으로 계산된 값이 섞여 있습니다.</p>`}`
+      )}
       <div class="sector-win-scroll">
       <table class="top30-table sector-win-table">
         <thead>
@@ -10256,9 +10279,12 @@ async function runInsightCorr(period) {
       .join("");
     status.style.display = "none";
     results.innerHTML = `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — 각 랭킹의 <b>${agoLabel} 당시 점수 기준</b> 상위 ${rankN}·하위 ${rankN} 종목이
-      현재까지의 <b>${upLabel} / ${dnLabel}</b>에 각각 몇 개 들어갔는지(적중 수)입니다. 합계가 기대값(무작위 수준)보다 높을수록 그 랭킹과 실제 등락의 상관관계가 큽니다.
-      ${corrBatchTimeLabel(isKr, isCrypto)}에 자동 재계산되며 다음 갱신까지 고정됩니다(기준일 ${escapeHtml(side?.dateKst || db.dateKst || "")}). 참고용 지표이며 투자 자문이 아닙니다.</p>
+      ${insightBasisHtml(
+        `${side?.dateKst || db.dateKst || "-"} 기준 · ${isKr ? "매일 오후 5시" : "매일 오전 7시"} 갱신`,
+        `<p>${universeLabel} 대상 — 각 랭킹의 <b>${agoLabel} 당시 점수 기준</b> 상위 ${rankN}·하위 ${rankN} 종목이
+        현재까지의 <b>${upLabel} / ${dnLabel}</b>에 각각 몇 개 들어갔는지(적중 수)입니다. 합계가 기대값(무작위 수준)보다 높을수록 그 랭킹과 실제 등락의 상관관계가 큽니다.
+        ${corrBatchTimeLabel(isKr, isCrypto)}에 자동 재계산되며 다음 갱신까지 고정됩니다. 참고용 지표이며 투자 자문이 아닙니다.</p>`
+      )}
       <table class="top30-table">
         <thead><tr><th>순위</th><th>항목 (${agoLabel} 기준)</th><th>상위${rankN}<br>→상승${topN}</th><th>하위${rankN}<br>→하락${topN}</th><th>합계<br>(상관점수)</th></tr></thead>
         <tbody>${trs}</tbody>
@@ -10392,8 +10418,12 @@ async function runInsightRankUp(period) {
       )
       .join("");
     status.style.display = "none";
+    const rankUpBasis = `${db.generatedAt ? String(db.generatedAt).slice(0, 10) : "-"} 기준 · ${periodLabel} 수익률`;
     results.innerHTML = `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — ${periodLabel} 수익률로 역산한 시가총액 순위가 많이 오른 순 TOP${ranked.length}입니다(주식수 변동 미반영 근사, 매일 자동 갱신되는 배치 DB 기준). 참고용 지표이며 투자 자문이 아닙니다.</p>
+      ${insightBasisHtml(
+        rankUpBasis,
+        `<p>${universeLabel} 대상 — ${periodLabel} 수익률로 역산한 시가총액 순위가 많이 오른 순 TOP${ranked.length}입니다. 과거 시총 = 현재 시총 ÷ (1+기간 수익률)로 되돌린 근사치라 그 사이 주식수(증자·자사주 소각 등) 변동은 반영되지 않습니다. 값은 매일 자동 갱신되는 배치 DB 기준이며, 참고용 지표일 뿐 투자 자문이 아닙니다.</p>`
+      )}
       <table class="top30-table">
         <thead><tr><th>순위</th><th>${isCrypto ? "코인" : "기업명"}</th><th>시총 순위 변화</th><th>${period === "year" ? "1년" : "한달"} 수익률</th></tr></thead>
         <tbody>${trs}</tbody>
