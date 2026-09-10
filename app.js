@@ -9397,18 +9397,9 @@ async function renderAutoTrackCorrDetail(wrap) {
       </tr>`
     )
     .join("");
-  const legend = CORR_GRADES.map((g) => `<span>${badge(g)} ${escapeHtml(g.range)}</span>`).join("");
-  const liveNote =
-    data.liveCount === AUTOTRACK_CORR_PAIRS.length
-      ? "오늘 실시간 계산값(하루 고정)"
-      : data.liveCount > 0
-        ? `${data.liveCount}개는 오늘 실시간 계산, 나머지는 2026-09-07 계산 스냅샷(· 스냅샷 표시)`
-        : "실시간 조회에 실패해 2026-09-07 계산 스냅샷을 표시";
+  // 표 위 제목·설명·등급 범례는 2026-09-10 사용자 요청으로 제거 — 표만 남김
   wrap.innerHTML = `
-    <h3 class="future-chart-subheading">📐 SPY 기준 상관관계 점수표 (최근 10년 월간 수익률)</h3>
-    <p class="disclaimer" style="margin:0 0 8px;">1.0 = 완전 일치(같이 오르고 같이 내림) · 0 = 무관 · -1.0 = 완전 반대(SPY가 오르면 내림). ${liveNote}.</p>
-    <div class="corr-legend">${legend}</div>
-    <table class="top30-table corr-table" style="margin-top:10px;">
+    <table class="top30-table corr-table" style="margin-top:6px;">
       <thead><tr><th>순위</th><th>조합</th><th>점수</th><th>등급</th><th>비교 기간</th></tr></thead>
       <tbody>${tableRows}</tbody>
     </table>
