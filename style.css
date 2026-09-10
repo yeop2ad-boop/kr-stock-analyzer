@@ -1440,14 +1440,12 @@ table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: var(--gold);
 .sb-fill.sb-down { background: var(--neg); }
 .sb-value { flex: 0 0 46px; text-align: right; font-size: 13px; }
 
-/* 인기종목 상단 월별 스냅샷 표(2026-09-03): 375px 화면에서도 -5M~-1M·RSI·승률이 다 들어가게 촘촘히 */
+/* 인기종목 표(2026-09-03 신설 → 2026-09-10 목록 표로 통합): 375px 화면에서도 -5M~-1M·연평균 상승·승률이 다 들어가게 촘촘히 */
 table.popular-snap-table { font-size: 12px; margin-top: 0; }
 table.popular-snap-table th, table.popular-snap-table td { padding: 8px 2px; }
-/* 스냅샷 표를 회색 라운드 박스로 감싸고, 위 서브내비 여백(높이 2px+아래 12px)을 상쇄해 최대한 상단에 붙임(2026-09-03 사용자 요청) */
-#popularSnapshot { margin-top: -14px; }
+/* 표를 회색 라운드 박스로 감쌈(2026-09-03 사용자 요청) */
 .popular-snap-box { background: var(--subtle-fill); border: 1px solid var(--border); border-radius: 10px; padding: 0 6px; margin: 0 0 12px; overflow-x: auto; }
 .popular-snap-box tr:last-child td { border-bottom: none; }
-/* 인기종목 목록(50개)도 같은 회색 박스·같은 표(2026-09-10 사용자 요청) — 위 스냅샷과 달리 여백만 정상 적용 */
 .popular-snap-box-list { margin-top: 10px; }
 .popular-snap-box-list tr:last-child td { border-bottom: none; }
 /* 무조건 한 줄: 종목명은 7글자+".."로 잘라 넣고, 어떤 열도 줄바꿈하지 않음(머리글의 <br>만 예외) */

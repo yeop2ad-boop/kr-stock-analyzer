@@ -8283,46 +8283,13 @@ async function runValueMarketCap() {
   });
 }
 
-// ---------- 인기종목 상단 대표 2종목 월별 스냅샷(2026-09-03 사용자 요청) ----------
-// 직전 5개월(완료된 달) 월별 상승·하락률(-5M ~ -1M 상대 표기) + 연평균 상승 + 10년 승률을 섹션별 고정 2종목으로 표시
-// 2026-09-03 사용자 요청: 좁은 화면에 다 들어가도록 소수점 없이 정수 표기
-// 2026-09-10 사용자 요청: RSI 열 → 연평균 상승으로 교체(아래 인기종목 목록 표와 구성·디자인 통일)
-const POPULAR_SNAPSHOT_SYMBOLS = {
-  kr: { mapKey: "scoresKr", items: [["005930.KS", "삼성전자"], ["000660.KS", "SK하이닉스"]] },
-  us: { mapKey: "scores", items: [["NVDA", "엔비디아"], ["AAPL", "애플"]] },
-  etf: { mapKey: "scoresEtf", items: [["SPY", "S&P500"], ["069500.KS", "코스피200"]] },
-  crypto: { mapKey: "scoresCrypto", items: [["BTC-USD", "비트코인"], ["ETH-USD", "이더리움"]] },
-};
-const popularSnapshotHtmlCache = new Map(); // sectionKey -> Promise<html>
-// 월봉 차트에서 "완료된 달"의 월말 종가를 뽑아 직전 5개월 변동률을 계산(진행 중인 이번 달 바는 제외)
-async function fetchMonthlyChanges(symbol) {
-  const chart = await yahooChart(symbol, "1y", "1mo");
-  const pairs = chartClosePairs(chart);
-  // 바 시작 시각이 거래소 시간대에 따라 전월 말로 밀릴 수 있어 +4일 버퍼 후 월을 판정
-  const byMonth = new Map();
-  for (const p of pairs) {
-    const d = new Date((p.t + 4 * 86400) * 1000);
-    byMonth.set(d.getUTCFullYear() * 100 + (d.getUTCMonth() + 1), p.c);
-  }
-  const now = new Date();
-  const currentYm = now.getUTCFullYear() * 100 + (now.getUTCMonth() + 1);
-  byMonth.delete(currentYm); // 진행 중인 달 제외
-  const yms = [...byMonth.keys()].sort((a, b) => a - b).slice(-6);
-  const changes = [];
-  for (let i = 1; i < yms.length; i++) {
-    const prev = byMonth.get(yms[i - 1]);
-    const cur = byMonth.get(yms[i]);
-    changes.push({ month: yms[i] % 100, pct: prev ? ((cur - prev) / prev) * 100 : null });
-  }
-  return changes; // 최대 5개(오래된 달 → 최근 달 순)
-}
-// ---------- 인기종목 표 공용 렌더러(2026-09-10 사용자 요청) ----------
-// 상단 대표 2종목 표와 아래 인기종목 목록을 같은 디자인·구성으로 통일: 회색 박스 + 8열
-// (종목 / -5M~-1M 직전 5개월 등락 / 연평균 상승(빨강) / 10년 승률(보라, 둘 다 % 없이 숫자만)).
+// ---------- 인기종목 표 렌더러(2026-09-10 사용자 요청) ----------
+// 회색 박스 + 8열: 종목 / -5M~-1M 직전 5개월 등락 / 연평균 상승(주황) / 10년 승률(보라, 둘 다 % 없이 숫자만).
 // 좁은 화면에서도 한 줄에 들어가도록 종목명은 7글자까지만 남기고 뒤는 ".."로 줄임.
+// (상단에 있던 대표 2종목 예시 표(삼성전자·SK하이닉스 / 엔비디아·애플 등)는 2026-09-10 사용자 요청으로 삭제)
 const POPULAR_SNAP_MONTHS = 5;
 const POPULAR_SNAP_NAME_MAX = 7;
-const POPULAR_SNAP_RET_COLOR = "#ef4444"; // 연평균 상승 = 빨강(기존 RSI 열 색상 유지)
+const POPULAR_SNAP_RET_COLOR = "#f97316"; // 연평균 상승 = 주황(2026-09-10 사용자 요청, 빨강에서 변경)
 const POPULAR_SNAP_WIN_COLOR = "#8b5cf6"; // 10년 승률 = 보라
 function popularSnapName(name) {
   const t = String(name || "");
@@ -8366,52 +8333,6 @@ function popularSnapTableHtml(rows) {
     </table>`;
 }
 
-function renderPopularSnapshot(sectionKey) {
-  const box = el("popularSnapshot");
-  if (!box) return;
-  box.dataset.section = sectionKey;
-  if (!popularSnapshotHtmlCache.has(sectionKey)) {
-    popularSnapshotHtmlCache.set(
-      sectionKey,
-      (async () => {
-        const cfg = POPULAR_SNAPSHOT_SYMBOLS[sectionKey];
-        const db = await getWinRateDb().catch(() => null);
-        const wrMap = (db && db[cfg.mapKey]) || {};
-        const rows = await Promise.all(
-          cfg.items.map(async ([sym, name]) => {
-            const live = await fetchMonthlyChanges(sym).catch(() => []);
-            const e = wrMap[sym] || null;
-            // 실시간 월봉 조회 실패 시엔 승률 DB의 m12로 대체(아래 목록 표와 같은 소스)
-            const changes = live.length ? live.map((c) => c.pct) : monthlyFromM12(e);
-            return {
-              symbol: sym,
-              name,
-              changes,
-              ret10y: e && Number.isFinite(e.ret10y) ? e.ret10y : null,
-              winRate: e && Number.isFinite(e.score) ? e.score : null,
-              winTotal: e && Number.isFinite(e.total) ? e.total : null,
-            };
-          })
-        );
-        if (!rows.some((r) => r.changes.length)) throw new Error("월별 데이터 없음");
-        return `<div class="popular-snap-box">${popularSnapTableHtml(rows)}</div>`;
-      })().catch((e) => {
-        popularSnapshotHtmlCache.delete(sectionKey);
-        throw e;
-      })
-    );
-  }
-  box.innerHTML = "";
-  popularSnapshotHtmlCache
-    .get(sectionKey)
-    .then((html) => {
-      if (box.dataset.section === sectionKey) box.innerHTML = html; // 그 사이 다른 섹션으로 전환했으면 무시
-    })
-    .catch(() => {
-      if (box.dataset.section === sectionKey) box.innerHTML = "";
-    });
-}
-
 // ---------- 인기종목(제목줄 첫 탭): 시가총액 상위 50위권을 거래대금(최근 5일 평균) 큰 순으로 30개 표시
 // (2026-09-03 사용자 요청: 버튼 이름은 "인기종목" 유지, 순위 기준만 합산점수→거래대금 상위로 변경)
 // 국내는 코스피200+코스닥150, 해외는 S&P500. 상승압력·투자안정 점수 컬럼은 지도 배치 스냅샷
@@ -8433,7 +8354,6 @@ async function runPopularStocks() {
     statusEl.style.display = "block";
     statusEl.textContent = "인기종목을 불러오는 중...";
     if (popularCached) paintPopularRows(resultsEl, isKr, popularCached.rows, popularCacheNote(popularCached, "실시간 갱신 중"));
-    renderPopularSnapshot(isKr ? "kr" : "us"); // 상단 대표 2종목 월별 스냅샷(비동기, 랭킹과 병행)
     const universe = await getSReportUniverse(isKr);
     popularCapTop = ((universe && universe.companies) || [])
       // 2026-09-07 수정: 상승압력·투자안정 점수는 표에 쓰지 않는데도 필수 조건이라, 야간 배치가 그 필드를 안 실으면(2026-09-06부터) 미국 0개·한국 7개만 남아 "준비 중" 오류가 났음 — 시가총액만 있으면 포함
@@ -8899,7 +8819,6 @@ async function runEtfPopular() {
   resultsEl.innerHTML = "";
   statusEl.style.display = "block";
   statusEl.textContent = "ETF 목록을 불러오는 중...";
-  renderPopularSnapshot("etf"); // 상단 대표 2종목 월별 스냅샷(SPY·코스피200)
   const region = etfPopularRegion;
   try {
     const isKr = region === "kr";
@@ -9034,7 +8953,6 @@ async function runCryptoPopular() {
   resultsEl.innerHTML = "";
   statusEl.style.display = "block";
   statusEl.textContent = "암호화폐 목록을 불러오는 중...";
-  renderPopularSnapshot("crypto"); // 상단 대표 2종목 월별 스냅샷(비트코인·이더리움)
   try {
     const rows = await getCryptoScanRows(statusEl);
     const scored = [...rows].sort((a, b) => (b.recentDollarVolume || 0) - (a.recentDollarVolume || 0)).slice(0, 30);

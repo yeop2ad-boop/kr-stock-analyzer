@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260910i" />
+<link rel="stylesheet" href="style.css?v=20260910j" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -587,9 +587,8 @@
 
         <!-- 인기종목(2026-09-01): 기업가치·시장동향 스캔과 결과영역을 공유하면 진행 중 가드에 막히므로 전용 영역 분리 -->
         <div id="popularGroup" style="display:none;">
-          <!-- 대표 2종목 월별 스냅샷(2026-09-03 사용자 요청): 직전 5개월 변동률 + 연평균 상승 + 10년 승률 — renderPopularSnapshot이 섹션별로 채움
-               (2026-09-10 사용자 요청: RSI 열 → 연평균 상승, 아래 인기종목 목록도 같은 표로 통일) -->
-          <div id="popularSnapshot"></div>
+          <!-- 상단 대표 2종목 예시 표(삼성전자·SK하이닉스 / 엔비디아·애플 등)는 2026-09-10 사용자 요청으로 삭제 —
+               인기종목 목록 표가 같은 구성이라 중복이었음 -->
           <p id="popularStatus" class="muted top30-status" style="display:none;"></p>
           <div id="popularResults"></div>
         </div>
@@ -856,6 +855,6 @@
 
   <!-- 구글 로그인(GSI) 스크립트는 공개 운영 전환(2026-09-10)으로 다시 내림 — 게이트 코드는 app.js에 보존 -->
   <script src="data/logo-db.js?v=20260903g"></script>
-  <script src="app.js?v=20260910i"></script>
+  <script src="app.js?v=20260910j"></script>
 </body>
 </html>
