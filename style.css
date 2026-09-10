@@ -2434,7 +2434,7 @@ body[data-header-tone="dark"] .fh-market-label { color: #fff; }
 .autotrack-lights-table th .at-head-grade { font-size: 11.5px; font-weight: 800; margin-top: 1px; }
 /* 좁은 화면(3열)에서는 등급 줄이 옆 칸과 붙어 보여 한 단계 줄임 */
 @media (max-width: 460px) {
-  .autotrack-lights-table th .at-head-grade { font-size: 10px; }
+  .autotrack-lights-table th .at-head-grade { font-size: 10.5px; }
   .autotrack-lights-table th .at-head-sub { font-size: 10px; }
 }
 .autotrack-lights-table td.at-name .ticker-cell { display: flex; align-items: center; gap: 4px; min-width: 0; }
