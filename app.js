@@ -8011,7 +8011,7 @@ function guardRankingScan(resultsEl) {
 // "시가총액 상위 N개 확인" 캡션 + 실시간 새로고침 버튼(2026-08-31: 제목줄 새로고침 버튼을 랭킹 결과 안 이 자리로 이동) —
 // 버튼을 누르면 스캔 캐시를 비우고 현재 선택된 랭킹을 현시간 기준으로 다시 검색함
 function rankScanCaptionHtml(count, canLoadMore) {
-  return `<p class="muted rank-scan-caption" style="font-size:12px;">실시간 시가총액 상위 ${count}개 재확인 <button type="button" class="rank-refresh-btn" aria-label="실시간 새로고침"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><polyline points="20 4 20 9 15 9"/></svg></button>${canLoadMore ? ` <button type="button" class="scope-more-btn">+전체보기</button>` : ""}</p>`;
+  return `<p class="muted rank-scan-caption" style="font-size:12px;">시가총액 상위 ${count}개만 우선검색 <button type="button" class="rank-refresh-btn" aria-label="실시간 새로고침"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><polyline points="20 4 20 9 15 9"/></svg></button>${canLoadMore ? ` <button type="button" class="scope-more-btn">+전체보기(약 1분소요)</button>` : ""}</p>`;
 }
 
 // 랭킹 결과가 전체 종목이 아니라 시가총액 상위 일부만 스캔한 상태일 때, 공지 바로 밑에 주황색으로 표시하는 주의문.
@@ -8020,7 +8020,7 @@ function rankScanCaptionHtml(count, canLoadMore) {
 // "시가총액 상위 N개 확인" 캡션 + "+전체보기" 버튼만 남김(rankScanCaptionHtml이 없는 화면에서 이걸 사용)
 function topCapNoteHtml(shown, total, canLoadMore) {
   if (!(total > shown) || !canLoadMore) return "";
-  return `<p class="muted rank-scan-caption" style="font-size:12px;">실시간 시가총액 상위 ${shown}개 재확인 <button type="button" class="scope-more-btn">+전체보기</button></p>`;
+  return `<p class="muted rank-scan-caption" style="font-size:12px;">시가총액 상위 ${shown}개만 우선검색 <button type="button" class="scope-more-btn">+전체보기(약 1분소요)</button></p>`;
 }
 
 // ---------- 랭킹 공용 인프라: 종목 목록을 시가총액 우선순으로 필요한 만큼만 스캔하는 단계적 캐시 ----------
@@ -8139,7 +8139,7 @@ async function renderKrRanking(dataPromiseFn, label, statusEl, resultsEl, { mapF
       const visible = top50.slice(0, initialCount);
       const rest = top50.slice(initialCount);
       resultsEl.innerHTML = `
-        <p class="muted rank-scan-caption" style="font-size:12px;">실시간 시가총액 상위 ${visible.length}개 재확인</p>
+        <p class="muted rank-scan-caption" style="font-size:12px;">시가총액 상위 ${visible.length}개만 우선검색</p>
         ${TAP_HINT_HTML}
         <table class="top30-table">
           <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}<th${metricExplain ? ` data-explain="${escapeHtml(metricExplain)}"` : ""}>${metricHeaderHtml}</th>${showGrade ? RANK_TH_WINRATE : ""}</tr></thead>
