@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260910d" />
+<link rel="stylesheet" href="style.css?v=20260910g" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -596,7 +596,6 @@
           <!-- 버튼 줄과 펼침 영역은 표 바로 위(①②③ 머리글 위)로 옮겨 붙임(2026-09-07 사용자 확정) — 렌더마다 mountAutoTrackCorr가 #autoTrackCorrSlot으로 이동, 재렌더 전엔 여기(홀더)로 되돌림 -->
           <div id="autoTrackCorrHolder" style="display:none;">
             <div class="section-heading-row autotrack-head-row">
-              <span class="muted autotrack-head-note">SPY 기준 상관관계 점수표(1.0 완전 일치 · -1.0 완전 반대)</span>
               <button type="button" id="autoTrackCorrBtn" class="score-method-detail-btn">+자세히</button>
             </div>
             <div id="autoTrackCorrWrap" class="chart-detail-wrap" style="display:none;"></div>
@@ -842,6 +841,6 @@
 
   <!-- 구글 로그인(GSI) 스크립트는 공개 운영 전환(2026-09-10)으로 다시 내림 — 게이트 코드는 app.js에 보존 -->
   <script src="data/logo-db.js?v=20260903g"></script>
-  <script src="app.js?v=20260910d"></script>
+  <script src="app.js?v=20260910g"></script>
 </body>
 </html>

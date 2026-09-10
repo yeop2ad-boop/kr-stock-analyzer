@@ -9083,11 +9083,18 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
       .map(([sym, r]) => ({ sym, c1: cellOf(r[keys[0]], keys[0]), c2: cellOf(r[keys[1]], keys[1]), c3: cellOf(r[keys[2]], keys[2]), winTotal: wrMapAt[sym] && Number.isFinite(wrMapAt[sym].total) ? wrMapAt[sym].total : null }))
       .filter((r) => r.c1 !== null);
     // 정렬(2026-09-05 확정): 불 3개 전부 초록인 종목 먼저, 그다음 1번 항목 1등부터
+    // 정렬(2026-09-10 사용자 지정): 불이 모두 초록인 종목을 맨 위로, 그다음은 10년 승률 높은 순.
+    // 코인은 항목이 2개(10년 승률·10년 상승)라 그냥 10년 승률 높은 순.
+    const wrRankOf = (r) => {
+      const i = keys.indexOf("winRate10y");
+      const c = i === 0 ? r.c1 : i === 1 ? r.c2 : r.c3;
+      return c ? c.r : Number.MAX_SAFE_INTEGER;
+    };
     if (isCrypto) {
-      rows.sort((a, b) => a.c1.r - b.c1.r); // 코인은 10년 승률 높은 순(사용자 지정)
+      rows.sort((a, b) => wrRankOf(a) - wrRankOf(b));
     } else {
       const allGreen = (r) => r.c1.light === "🟢" && r.c2 && r.c2.light === "🟢" && r.c3 && r.c3.light === "🟢";
-      rows.sort((a, b) => allGreen(b) - allGreen(a) || a.c1.r - b.c1.r);
+      rows.sort((a, b) => allGreen(b) - allGreen(a) || wrRankOf(a) - wrRankOf(b));
     }
 
     const labels = keys.map((k) => corrLabelOf(k, autoTrackPeriod));
@@ -9106,8 +9113,6 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
     };
     // ①②③ 머리글 아래 상관 점수·등급(2026-09-07 사용자 요청): 같은 기간 상관관계도 목록(side[period])의 적중 합계를 환산
     const corrList = (side && side[isYear ? "year" : isWeek ? "week" : isDay ? "day" : "month"]) || [];
-    const corrMaxTot = (corrList[0] && corrList[0].max) || 100; // 주식 100, 코인 40
-    const corrChanceTot = corrList[0] ? Math.round(corrList[0].exp * 2) : 20;
     const headCells = keys
       .map((k, i) => `<th>${["①", "②", "③"][i]}${escapeHtml(labels[i])}${corrHitSubHtml(corrList.find((m) => m.key === k))}</th>`)
       .join("");
@@ -9127,9 +9132,8 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
         .join("");
       parkAutoTrackCorr();
       resultsEl.innerHTML = `
-        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — ${keys.map((k, i) => `${["①", "②", "③"][i]}${escapeHtml(labels[i])}`).join(" ")}을 <b>현재 시점 점수</b>로 순위 매긴 신호등${isCrypto ? "이며, 10년 승률이 높은 순입니다" : "입니다"}.<br>
-        * ${isKr || isCrypto ? "상위 20% 🟢 · 중간 🟡 · 하위 20% 🔴" : "상위 100등 🟢 · 중간 🟡 · 하위 100등 🔴"}${keys.includes("winRate10y") ? " · 승률의 ❗는 상장 10년 미만" : ""}<br>
-        <span class="muted">항목 아래 적중 점수는 상관관계도의 적중 합계(최대 ${corrMaxTot}, 무작위 기대 약 ${corrChanceTot}), 옆의 -1~1 값·등급은 이를 상관 척도로 환산한 값. ${corrBatchTimeLabel(isKr, isCrypto)} 갱신(기준일 ${escapeHtml(side.dateKst || corr.dateKst || "")}). 참고용 지표이며 투자 자문이 아닙니다.</span></p>
+        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — ${keys.map((k, i) => `${["①", "②", "③"][i]}${escapeHtml(labels[i])}`).join(" ")}을 <b>현재 시점 점수</b>로 순위 매긴 신호등${isCrypto ? "이며, 10년 승률이 높은 순입니다" : "이며, 불이 모두 초록인 종목을 맨 위로 두고 10년 승률이 높은 순입니다"}.<br>
+        * ${isKr || isCrypto ? "상위 20% 🟢 · 중간 🟡 · 하위 20% 🔴" : "상위 100등 🟢 · 중간 🟡 · 하위 100등 🔴"}${keys.includes("winRate10y") ? " · 승률의 ❗는 상장 10년 미만" : ""} <span id="autoTrackCorrBtnSlot"></span></p>
         <div id="autoTrackCorrSlot"></div>
         <table class="top30-table autotrack-table autotrack-lights-table">
           <thead><tr><th class="at-name">종목명</th>${headCells}</tr></thead>
@@ -9337,7 +9341,9 @@ function mountAutoTrackCorr(resultsEl) {
     slot.id = "autoTrackCorrSlot";
     resultsEl.appendChild(slot);
   }
-  slot.appendChild(head);
+  // +자세히 버튼은 안내 문구("… 상장 10년 미만") 바로 옆으로, 펼쳐지는 상세 패널만 아래 슬롯에(2026-09-10 사용자 요청)
+  const btnSlot = resultsEl.querySelector("#autoTrackCorrBtnSlot");
+  (btnSlot || slot).appendChild(head);
   slot.appendChild(wrap);
 }
 // 상관관계도 적중 합계(tot, 최대 100 = 상승50+하락50, 무작위 기대 2×exp)를 -1~1 상관 척도로 환산 — 자동추적 ①②③ 머리글 아래 점수·등급 표시용
@@ -9352,8 +9358,9 @@ function corrHitSubHtml(m) {
   if (!m) return "";
   const s = corrHitScore(m);
   const g = corrGradeOf(s);
-  // 두 줄로 표시(2026-09-10 사용자 지정): 1줄 "적중 47점 (0.34)", 2줄 "보통 상관" — 점수는 적중 옆, 등급은 아랫줄
-  return `<br><span class="at-head-sub">적중 ${m.tot}점 (${s.toFixed(2)})</span><span class="at-head-grade" style="color:${g.color};">${escapeHtml(g.label)}</span>`;
+  // 두 줄로 표시(2026-09-10 사용자 지정): 1줄 "적중 0.34점", 2줄 "보통 상관".
+  // 원시 적중 합계(47점 같은 값)는 최대치가 유니버스마다 달라 헷갈린다는 사용자 의견으로 표시하지 않음.
+  return `<br><span class="at-head-sub">적중 ${s.toFixed(2)}점</span><span class="at-head-grade" style="color:${g.color};">${escapeHtml(g.label)}</span>`;
 }
 let autoTrackCorrRendering = false;
 async function renderAutoTrackCorrDetail(wrap) {

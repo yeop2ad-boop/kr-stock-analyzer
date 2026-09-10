@@ -2431,6 +2431,10 @@ body[data-header-tone="dark"] .fh-market-label { color: #fff; }
 .autotrack-lights-table th .at-head-sub,
 .autotrack-lights-table th .at-head-grade { display: block; line-height: 1.5; white-space: nowrap; }
 .autotrack-lights-table th .at-head-sub { font-size: 10.5px; font-weight: 600; color: var(--muted); margin-top: 3px; }
+/* +자세히 버튼을 안내 문구 옆에 인라인 작은 크기로(2026-09-10 사용자 요청) */
+#autoTrackCorrBtnSlot { display: inline; }
+#autoTrackCorrBtnSlot .autotrack-head-row { display: inline; margin: 0; }
+#autoTrackCorrBtnSlot .score-method-detail-btn { padding: 1px 7px; font-size: 10px; vertical-align: 1px; }
 .autotrack-lights-table th .at-head-grade { font-size: 11.5px; font-weight: 800; margin-top: 1px; }
 /* 좁은 화면(3열)에서는 등급 줄이 옆 칸과 붙어 보여 한 단계 줄임 */
 @media (max-width: 460px) {
