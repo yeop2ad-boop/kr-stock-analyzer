@@ -1459,8 +1459,14 @@ table.top30-table td:has(.wr-pct) { white-space: nowrap; }
 .insight-detail-note p:last-child { margin-bottom: 0; }
 /* "시가총액 상위 N개 확인" 옆 +전체보기 버튼(긴 경고 문구 대체) */
 .rank-scan-caption .scope-more-btn { margin-left: 6px; vertical-align: middle; }
-/* 이모지 표시를 눌렀을 때 바로 아래 펼쳐지는 짧은 설명 */
+/* 표 맨 위 안내 — 항목을 눌러 설명을 볼 수 있다는 힌트(2026-09-10 사용자 요청) */
+.tap-hint { margin: 2px 0 6px; font-size: 11.5px; color: var(--muted); opacity: 0.85; }
+/* 이모지·머리글을 눌렀을 때 바로 아래 펼쳐지는 짧은 설명 */
 .nine-partial-mark, .dividend-warn, .at-emoji, .surge-warn-mark, [data-explain] { cursor: pointer; }
+/* 머리글은 눌러볼 수 있다는 걸 알 수 있게 점선 밑줄 */
+table.top30-table th[data-explain] { text-decoration: underline dotted var(--border); text-underline-offset: 3px; }
+/* 상장 10년 미만 경고 설명은 경고 색으로 */
+tr.explain-row.explain-row-warn td { color: var(--warn); background: rgba(245, 158, 11, 0.1); }
 tr.explain-row td {
   text-align: left !important;
   background: var(--subtle-fill);
