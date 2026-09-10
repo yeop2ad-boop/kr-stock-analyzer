@@ -1526,11 +1526,9 @@ async function getFullMetrics(symbol) {
   const wrRsiEntry = wrDbForRsi ? ((isKrTicker(symbol) ? wrDbForRsi.scoresKr : wrDbForRsi.scores) || {})[symbol] : null;
   const rsiWeekly = wrRsiEntry && wrRsiEntry.rsi !== null && wrRsiEntry.rsi !== undefined ? wrRsiEntry.rsi : null;
 
-  const prevClose = meta.chartPreviousClose ?? null;
-  const changePct =
-    meta.regularMarketPrice !== undefined && meta.regularMarketPrice !== null && prevClose
-      ? ((meta.regularMarketPrice - prevClose) / prevClose) * 100
-      : null;
+  // 2026-09-10 수정: 1년치 일봉 차트의 chartPreviousClose는 "1년 전 종가"라 등락률이 1년 변동률로 나왔음
+  // (예: SK스퀘어 +551%) — 검색상세·인기종목과 동일하게 오늘(전 거래일 종가 대비) 등락률로 통일
+  const changePct = getDailyChangePercent(chartData);
 
   return {
     symbol,
@@ -7245,7 +7243,7 @@ const TAP_HINT_HTML = `<p class="tap-hint">* 모든 항목은 눌러서 자세�
 // 순위 표에서 반복되는 머리글 3종 — 누르면 설명이 나오도록 data-explain을 붙여 공용화
 const RANK_TH_NAME = `<th data-explain="기업명 — 누르면 그 종목의 분석 화면(개요·매출액·invest점수·뉴스)으로 이동합니다. 앞의 동그란 그림은 회사 로고입니다.">기업명</th>`;
 const RANK_TH_NAME_ETF = `<th data-explain="이름 — 누르면 그 종목의 상세 화면으로 이동합니다.">이름</th>`;
-const RANK_TH_PRICE = `<th data-explain="현재가입니다. 괄호 안은 전일 종가 대비 당일 등락률이며, 시세는 최대 20분 지연될 수 있습니다. 숫자를 누르면 차트가 열립니다.">현재가</th>`;
+const RANK_TH_PRICE = `<th data-explain="현재가입니다. 괄호 안은 전일 종가 대비 오늘 등락률이며, 시세는 최대 20분 지연될 수 있습니다. 숫자를 누르면 차트가 열립니다.">현재가<br>(등락률)</th>`;
 const RANK_TH_PRICE_CHG = `<th data-explain="현재가와 전일 종가 대비 당일 등락률입니다. 시세는 최대 20분 지연될 수 있고, 숫자를 누르면 차트가 열립니다.">현재가<br>(등락률)</th>`;
 const RANK_TH_WINRATE = `<th data-explain="10년 승률 — 최근 10년(최대 120개월) 동안 전달보다 오르며 마감한 달의 비율입니다. 수익률의 크기가 아니라 이긴 횟수라, 높을수록 꾸준히 우상향했다는 뜻입니다. ❗는 상장 10년 미만이라는 경고입니다.">10년<br>승률</th>`;
 const RANK_TH_RET10 = `<th data-explain="연평균 상승 — 최근 10년 연복리 수익률(CAGR)입니다. 매년 몇 %씩 오른 셈인지를 뜻하며, 상장 10년 미만이면 상장 후 기간만 연율화한 값이라 ❗가 붙습니다.">연평균<br>상승</th>`;
@@ -7931,7 +7929,15 @@ async function renderValueRanking(
           (r, i) => `
         <tr>
           <td><span class="ticker-cell rank-logo">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b>${surgeWarningEmoji(r.fiveDayExtremes)}</span><br><span class="muted" style="font-size:11px;">${escapeHtml(TICKER_TO_KOREAN_NAME[r.symbol] || r.name || "")}</span></td>
-          <td>${r.price !== undefined && r.price !== null ? priceChartLink(r.symbol, "$" + r.price.toFixed(2)) : "N/A"}</td>
+          <td>${
+            r.price !== undefined && r.price !== null
+              ? `${priceChartLink(r.symbol, "$" + r.price.toFixed(2))}${
+                  r.changePct !== null && r.changePct !== undefined
+                    ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
+                    : ""
+                }`
+              : "N/A"
+          }</td>
           <td>${metricCellFn(r)}</td>${showGrade ? `<td>${gradeCellHtml(r)}</td>` : ""}
         </tr>`
         )
@@ -8005,7 +8011,7 @@ function guardRankingScan(resultsEl) {
 // "시가총액 상위 N개 확인" 캡션 + 실시간 새로고침 버튼(2026-08-31: 제목줄 새로고침 버튼을 랭킹 결과 안 이 자리로 이동) —
 // 버튼을 누르면 스캔 캐시를 비우고 현재 선택된 랭킹을 현시간 기준으로 다시 검색함
 function rankScanCaptionHtml(count, canLoadMore) {
-  return `<p class="muted rank-scan-caption" style="font-size:12px;">시가총액 상위 ${count}개 확인 <button type="button" class="rank-refresh-btn" aria-label="실시간 새로고침"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><polyline points="20 4 20 9 15 9"/></svg></button>${canLoadMore ? ` <button type="button" class="scope-more-btn">+전체보기</button>` : ""}</p>`;
+  return `<p class="muted rank-scan-caption" style="font-size:12px;">실시간 시가총액 상위 ${count}개 재확인 <button type="button" class="rank-refresh-btn" aria-label="실시간 새로고침"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><polyline points="20 4 20 9 15 9"/></svg></button>${canLoadMore ? ` <button type="button" class="scope-more-btn">+전체보기</button>` : ""}</p>`;
 }
 
 // 랭킹 결과가 전체 종목이 아니라 시가총액 상위 일부만 스캔한 상태일 때, 공지 바로 밑에 주황색으로 표시하는 주의문.
@@ -8014,7 +8020,7 @@ function rankScanCaptionHtml(count, canLoadMore) {
 // "시가총액 상위 N개 확인" 캡션 + "+전체보기" 버튼만 남김(rankScanCaptionHtml이 없는 화면에서 이걸 사용)
 function topCapNoteHtml(shown, total, canLoadMore) {
   if (!(total > shown) || !canLoadMore) return "";
-  return `<p class="muted rank-scan-caption" style="font-size:12px;">시가총액 상위 ${shown}개 확인 <button type="button" class="scope-more-btn">+전체보기</button></p>`;
+  return `<p class="muted rank-scan-caption" style="font-size:12px;">실시간 시가총액 상위 ${shown}개 재확인 <button type="button" class="scope-more-btn">+전체보기</button></p>`;
 }
 
 // ---------- 랭킹 공용 인프라: 종목 목록을 시가총액 우선순으로 필요한 만큼만 스캔하는 단계적 캐시 ----------
@@ -8133,7 +8139,7 @@ async function renderKrRanking(dataPromiseFn, label, statusEl, resultsEl, { mapF
       const visible = top50.slice(0, initialCount);
       const rest = top50.slice(initialCount);
       resultsEl.innerHTML = `
-        <p class="muted rank-scan-caption" style="font-size:12px;">시가총액 상위 ${visible.length}개 확인</p>
+        <p class="muted rank-scan-caption" style="font-size:12px;">실시간 시가총액 상위 ${visible.length}개 재확인</p>
         ${TAP_HINT_HTML}
         <table class="top30-table">
           <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}<th${metricExplain ? ` data-explain="${escapeHtml(metricExplain)}"` : ""}>${metricHeaderHtml}</th>${showGrade ? RANK_TH_WINRATE : ""}</tr></thead>
@@ -8816,7 +8822,7 @@ function combinedRankTableHtml(rows, universeLabel, rowNameHtmlFn, priceStrFn) {
   return `
     ${TAP_HINT_HTML}
     <table class="top30-table">
-      <thead><tr><th>순위</th><th data-explain="이름 — 누르면 그 ETF의 상세 화면으로 이동합니다.">이름</th><th data-explain="현재가와 전일 종가 대비 당일 등락률입니다. 시세는 최대 20분 지연될 수 있습니다.">현재가<br>(등락률)</th><th data-explain="연평균 상승 — 최근 10년 연복리 수익률(CAGR). 매년 몇 %씩 오른 셈인지를 뜻하며, 상장 10년 미만이면 상장 후 기간만 연율화한 값입니다.">연평균<br>상승</th><th data-explain="10년 승률 — 최근 10년 동안 전달보다 오르며 마감한 달의 비율입니다(수익률 크기가 아니라 이긴 횟수).">10년<br>승률</th></tr></thead>
+      <thead><tr><th data-explain="이름 — 누르면 그 ETF의 상세 화면으로 이동합니다.">이름</th><th data-explain="현재가와 전일 종가 대비 당일 등락률입니다. 시세는 최대 20분 지연될 수 있습니다.">현재가<br>(등락률)</th><th data-explain="연평균 상승 — 최근 10년 연복리 수익률(CAGR). 매년 몇 %씩 오른 셈인지를 뜻하며, 상장 10년 미만이면 상장 후 기간만 연율화한 값입니다.">연평균<br>상승</th><th data-explain="10년 승률 — 최근 10년 동안 전달보다 오르며 마감한 달의 비율입니다(수익률 크기가 아니라 이긴 횟수).">10년<br>승률</th></tr></thead>
       <tbody>${body}</tbody>
     </table>
     <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 중 거래대금(최근 5일 평균)이 큰 순 30개입니다. 연평균 상승(연복리 수익률(CAGR))·10년 승률은 매일 자동 갱신되는 배치 DB 기준이며 투자 자문이 아닙니다.</p>`;
@@ -9695,8 +9701,9 @@ const ASSET_TREND_METRICS = {
     cell: (r) => winRatePctCellHtml(r.winRate, r.winTotal),
     note: "10년 승률(최근 10년 월봉 기준 상승 개월수/총 개월수×100, 상장 10년 미만은 상장 후부터 집계·❗ 표시)이 높은 순 순위입니다.",
     noRiskCol: true,
-    gradeHeader: "RSI<br>점수",
-    gradeCell: (r) => rsiRankCellHtml(r.rsi),
+    // 2026-09-10 사용자 요청: 마지막 열을 RSI 점수 대신 연평균 상승으로
+    gradeHeader: "연평균<br>상승",
+    gradeCell: (r) => (r.ret10y === null || r.ret10y === undefined ? "N/A" : `<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>${partialMarkHtml(r.winTotal)}`),
   },
 };
 // ETF/코인 스캔 행에 승률·RSI·연평균 상승(배치 DB 값)을 부착 — mapKey: "scoresEtf" | "scoresCrypto"
@@ -9743,8 +9750,7 @@ function assetTrendTableHtml(rows, metricKey, universeLabel, rowNameHtmlFn, pric
     .map(
       (r, i) => `
       <tr>
-        <td>${i + 1}</td>
-        <td><span class="ticker-cell">${rowNameHtmlFn(r)}</span></td>
+        <td><span class="ticker-cell rank-logo">${rowNameHtmlFn(r)}</span></td>
         <td>${priceStrFn(r)}${
         r.changePct !== null && r.changePct !== undefined
           ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
@@ -9757,7 +9763,7 @@ function assetTrendTableHtml(rows, metricKey, universeLabel, rowNameHtmlFn, pric
   return `
     ${TAP_HINT_HTML}
     <table class="top30-table">
-      <thead><tr>${RANK_TH_NAME_ETF}${RANK_TH_PRICE_CHG}<th data-explain="${escapeHtml(stripTags(m.note))}">${m.header}</th>${showWinRate ? RANK_TH_WINRATE : ""}${m.gradeCell ? (m.gradeHeader.indexOf("승률") >= 0 ? RANK_TH_WINRATE : RANK_TH_RSI) : ""}</tr></thead>
+      <thead><tr>${RANK_TH_NAME_ETF}${RANK_TH_PRICE_CHG}<th data-explain="${escapeHtml(stripTags(m.note))}">${m.header}</th>${showWinRate ? RANK_TH_WINRATE : ""}${m.gradeCell ? (m.gradeHeader.indexOf("승률") >= 0 ? RANK_TH_WINRATE : m.gradeHeader.indexOf("연평균") >= 0 ? RANK_TH_RET10 : RANK_TH_RSI) : ""}</tr></thead>
       <tbody>${body}</tbody>
     </table>
     <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — ${m.note} 투자 자문이 아닙니다.</p>`;
@@ -13883,7 +13889,9 @@ async function getWeeklyRsiSnapshot(symbol) {
   const snap = {
     symbol,
     name: meta.shortName || meta.longName || "",
-    price: closes.length ? closes[closes.length - 1] : null,
+    // 2026-09-10: 주봉 마지막 종가가 아니라 현재가를 쓰고, 오늘 등락률도 같이 담음(주봉 차트 meta에도 실시간 시세가 들어옴)
+    price: Number.isFinite(meta.regularMarketPrice) ? meta.regularMarketPrice : closes.length ? closes[closes.length - 1] : null,
+    changePct: Number.isFinite(meta.regularMarketChangePercent) ? meta.regularMarketChangePercent : null,
     rsi: rsi === null || rsi === undefined ? null : Math.round(rsi * 10) / 10,
   };
   weeklyRsiSnapCache.set(symbol, snap);
@@ -13992,9 +14000,17 @@ async function runTrendRsiWinRate(mode) {
           return `
         <tr>
           <td><span class="ticker-cell rank-logo">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(mainName)}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(subName)}</span></td>
-          <td>${r.price !== undefined && r.price !== null ? priceChartLink(r.symbol, fmtPrice(r.price, isKr ? "KRW" : "USD")) : "N/A"}</td>
+          <td>${
+            r.price !== undefined && r.price !== null
+              ? `${priceChartLink(r.symbol, fmtPrice(r.price, isKr ? "KRW" : "USD"))}${
+                  r.changePct !== null && r.changePct !== undefined
+                    ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
+                    : ""
+                }`
+              : "N/A"
+          }</td>
           <td>${isRsi ? rsiRankCellHtml(r.rsi) : isRet ? retCell(r) : winRateCell(r)}</td>
-          <td>${isRsi || isRet ? winRateCell(r) : rsiRankCellHtml(r.rsi)}</td>
+          <td>${isRsi || isRet ? winRateCell(r) : retCell(r)}</td>
         </tr>`;
         })
         .join("");
@@ -14009,7 +14025,7 @@ async function runTrendRsiWinRate(mode) {
         ${rankScanCaptionHtml(ranked.length, hasMore)}
         ${TAP_HINT_HTML}
         <table class="top30-table">
-          <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}${isRsi ? RANK_TH_RSI : isRet ? RANK_TH_RET10 : RANK_TH_WINRATE}${isRsi || isRet ? RANK_TH_WINRATE : RANK_TH_RSI}</tr></thead>
+          <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}${isRsi ? RANK_TH_RSI : isRet ? RANK_TH_RET10 : RANK_TH_WINRATE}${isRsi ? RANK_TH_WINRATE : isRet ? RANK_TH_WINRATE : RANK_TH_RET10}</tr></thead>
           <tbody>${rows}</tbody>
         </table>
         ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${tickers.length}">전체보기 (나머지 ${tickers.length - cursor}개 · ${tickers.length}개 전부 검색 시 약 1분 소요)</button>` : ""}
