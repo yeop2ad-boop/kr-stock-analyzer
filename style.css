@@ -1468,6 +1468,9 @@ tr.explain-row td {
   line-height: 1.5;
   color: var(--muted);
   padding: 8px 10px !important;
+  /* 표 셀의 nowrap 규칙을 덮어써서 옆으로 늘어지지 않고 그 자리에서 줄바꿈되게(2026-09-10 사용자 요청) */
+  white-space: normal !important;
+  word-break: break-word;
 }
 .explain-inline {
   background: var(--subtle-fill);

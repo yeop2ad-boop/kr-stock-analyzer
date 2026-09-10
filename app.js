@@ -7275,7 +7275,7 @@ const WIN_RATE_COLOR = "#8b5cf6"; // 순위 표 10년 승률 — 보라
 // noPct: 인기종목 표처럼 열 폭이 좁은 곳에서는 % 없이 숫자만(2026-09-10 사용자 요청)
 function winRatePctCellHtml(v, total, noPct) {
   if (!Number.isFinite(v)) return "N/A";
-  return `<b class="wr-pct" title="10년 승률 ${Math.round(v)}% — 최근 10년(최대 120개월) 동안 전달보다 오르며 마감한 달의 비율입니다. 높을수록 꾸준히 우상향했다는 뜻이며, 수익률의 크기가 아니라 이긴 횟수입니다.">${Math.round(v)}${noPct ? "" : "%"}</b>${partialMarkHtml(total)}`;
+  return `<b class="wr-pct" title="10년 승률 ${Math.round(v)}% — 최근 10년간 전달보다 오르며 마감한 달의 비율(수익률 크기가 아니라 이긴 횟수)">${Math.round(v)}${noPct ? "" : "%"}</b>${partialMarkHtml(total)}`;
 }
 // 표 머리글의 둘째 줄 작은 기준 안내(예: 매출 증가율 / (YoY))
 const THEAD_SUB = (t) => `<span class="th-sub">(${t})</span>`;
