@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260910h" />
+<link rel="stylesheet" href="style.css?v=20260910i" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -79,10 +79,11 @@
       <div class="fh-tabs" id="fhTabs">
         <!-- 관심종목 탭은 하단 네비로 이동(2026-09-01) — 그 자리엔 인기종목(시총 상위 50위권 중 상승압력+투자안정 상위 30개) -->
         <button type="button" class="fh-tab" data-fhtab="tab.popular" data-i18n="tab.popular">인기종목</button>
-        <!-- 자동추적(2026-09-04 사용자 요청): 승률 DB 전 종목을 10년승률순으로 신호등과 함께 표시 — 전 투자처 공통 -->
-        <button type="button" class="fh-tab" data-fhtab="tab.autotrack" data-i18n="tab.autotrack">자동추적</button>
-        <button type="button" class="fh-tab active" data-fhtab="tab.valuation" data-i18n="tab.valuation">실적</button>
-        <button type="button" class="fh-tab" data-fhtab="tab.trend" data-i18n="tab.trend">추세</button>
+        <!-- 자동추적: 상단 4탭(인기종목/기업가치/미래예측/인사이트)만 남기고 더보기 패널로 이동(2026-09-10 사용자 요청) —
+             JS(openAutoTrack·setCarouselViewTitle)가 이 버튼을 참조하므로 DOM은 유지하고 숨김만 -->
+        <button type="button" class="fh-tab" data-fhtab="tab.autotrack" data-i18n="tab.autotrack" style="display:none;">자동추적</button>
+        <button type="button" class="fh-tab active" data-fhtab="tab.valuation" data-i18n="tab.valuation">기업가치</button>
+        <button type="button" class="fh-tab" data-fhtab="tab.trend" data-i18n="tab.trend">미래예측</button>
         <button type="button" class="fh-tab" data-fhtab="tab.insight" data-i18n="tab.insight">인사이트</button>
         <!-- 관심종목은 별도 탭 없이 상단 제목("관심종목"+별)으로만 표시(2026-09-02 사용자 확정) -->
 
@@ -497,6 +498,8 @@
           <button type="button" class="cat-btn" id="insightCatCorrBtn"><span class="btn-icon" data-icon="scale"></span> 상관관계도</button>
           <!-- 섹터 승률(2026-09-07 사용자 요청): 투자처별 섹터 평균 — 승률(1달·1년·10년)·상승률(1달·1년·10년), 승률 DB에서 접속 시 계산 -->
           <button type="button" class="cat-btn" id="insightCatSectorWinBtn"><span class="btn-icon" data-icon="basket"></span> 섹터 승률</button>
+          <!-- 변동성 순위(2026-09-10 사용자 요청): ETF 섹션 전용 — 최근 3개월 하루 변동량(|일간 등락률|) 평균이 낮은 순 -->
+          <button type="button" class="cat-btn" id="insightCatVolatilityBtn" style="display:none;"><span class="btn-icon" data-icon="scale"></span> 변동성 순위</button>
           <!-- 실적&공시 일정/뉴스는 더보기 메뉴로 이동 — 렌더 함수(runInsightCalendar/runInsightNews)가 이 버튼의
                active 상태를 계속 참조하므로 DOM에서 지우지 않고 숨김만 처리(more-panel의 신규 항목이 대신 트리거) -->
           <button type="button" class="cat-btn" id="insightCatCalendarBtn" style="display:none;"><span class="btn-icon" data-icon="calendar"></span> 실적&amp;공시 일정</button>
@@ -584,7 +587,8 @@
 
         <!-- 인기종목(2026-09-01): 기업가치·시장동향 스캔과 결과영역을 공유하면 진행 중 가드에 막히므로 전용 영역 분리 -->
         <div id="popularGroup" style="display:none;">
-          <!-- 대표 2종목 월별 스냅샷(2026-09-03 사용자 요청): 직전 5개월 변동률 + RSI + 10년 승률 — renderPopularSnapshot이 섹션별로 채움 -->
+          <!-- 대표 2종목 월별 스냅샷(2026-09-03 사용자 요청): 직전 5개월 변동률 + 연평균 상승 + 10년 승률 — renderPopularSnapshot이 섹션별로 채움
+               (2026-09-10 사용자 요청: RSI 열 → 연평균 상승, 아래 인기종목 목록도 같은 표로 통일) -->
           <div id="popularSnapshot"></div>
           <p id="popularStatus" class="muted top30-status" style="display:none;"></p>
           <div id="popularResults"></div>
@@ -700,6 +704,17 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <span class="more-panel-item-label" data-i18n="tab.search">간편검색</span>
         </button>
+        <!-- 자동추적: 상단 탭에서 더보기로 이동(2026-09-10 사용자 요청) — 누르면 투자처(한국주식/미국주식/ETF/비트코인)를 고르는 줄이 펼쳐짐 -->
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelAutoTrackBtn" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M11 7.5V11l2.4 1.6"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span class="more-panel-item-label" data-i18n="tab.autotrack">자동추적</span>
+        </button>
+        <div class="more-panel-subnav" id="morePanelAutoTrackNav" style="display:none;">
+          <button type="button" class="cat-btn" data-autotrack-section="kr">한국주식</button>
+          <button type="button" class="cat-btn" data-autotrack-section="us">미국주식</button>
+          <button type="button" class="cat-btn" data-autotrack-section="etf">ETF</button>
+          <button type="button" class="cat-btn" data-autotrack-section="crypto">비트코인</button>
+        </div>
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelCalendarOverlayBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.3" y="5.5" width="17.4" height="15" rx="2" /><line x1="3.3" y1="10" x2="20.7" y2="10" /><line x1="7.2" y1="2.8" x2="7.2" y2="7.4" /><line x1="14.8" y1="2.8" x2="14.8" y2="7.4" /></svg>
           <span class="more-panel-item-label" data-i18n="nav.calendar">캘린더</span>
@@ -841,6 +856,6 @@
 
   <!-- 구글 로그인(GSI) 스크립트는 공개 운영 전환(2026-09-10)으로 다시 내림 — 게이트 코드는 app.js에 보존 -->
   <script src="data/logo-db.js?v=20260903g"></script>
-  <script src="app.js?v=20260910h"></script>
+  <script src="app.js?v=20260910i"></script>
 </body>
 </html>

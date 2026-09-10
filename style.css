@@ -1447,6 +1447,12 @@ table.popular-snap-table th, table.popular-snap-table td { padding: 8px 2px; }
 #popularSnapshot { margin-top: -14px; }
 .popular-snap-box { background: var(--subtle-fill); border: 1px solid var(--border); border-radius: 10px; padding: 0 6px; margin: 0 0 12px; overflow-x: auto; }
 .popular-snap-box tr:last-child td { border-bottom: none; }
+/* 인기종목 목록(50개)도 같은 회색 박스·같은 표(2026-09-10 사용자 요청) — 위 스냅샷과 달리 여백만 정상 적용 */
+.popular-snap-box-list { margin-top: 10px; }
+.popular-snap-box-list tr:last-child td { border-bottom: none; }
+/* 무조건 한 줄: 종목명은 7글자+".."로 잘라 넣고, 어떤 열도 줄바꿈하지 않음(머리글의 <br>만 예외) */
+table.popular-snap-table td, table.popular-snap-table th { white-space: nowrap; }
+table.popular-snap-table td.popular-snap-name { text-align: left; padding-left: 4px; }
 /* 아주 좁은 화면에서도 박스 안에 다 들어가게 한 단계 더 축소(넘치면 박스 내부 가로 스크롤) */
 @media (max-width: 420px) {
   .popular-snap-box { padding: 0 4px; }
@@ -2571,5 +2577,8 @@ body[data-header-tone="dark"] .fh-title-actions .header-icon-btn { color: #fff; 
 .future-cmp-legend { display: flex; flex-wrap: wrap; gap: 10px 14px; margin: 6px 0 2px; font-size: 12px; font-weight: 700; }
 .future-cmp-legend span::before { content: ""; display: inline-block; width: 18px; height: 3px; border-radius: 2px; margin-right: 5px; vertical-align: middle; background: currentColor; }
 a.more-panel-item { text-decoration: none; color: inherit; }
+/* 더보기 > 자동추적: 누르면 펼쳐지는 투자처 선택 줄(2026-09-10) */
+.more-panel-subnav { display: flex; gap: 5px; padding: 0 8px 10px 20px; flex-wrap: wrap; }
+.more-panel-subnav .cat-btn { flex: 0 0 auto; padding: 7px 9px; font-size: 12px; white-space: nowrap; }
 .more-panel-apk-sub { display: block; font-size: 11px; font-weight: 500; color: var(--muted); margin-top: 2px; }
 .future-cmp-abs { font-weight: 600; font-size: 11px; opacity: 0.85; }
