@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-08-24T21:58:58.042Z",
+  "updatedAt": "2026-09-10T13:18:53.910Z",
   "dataYear": 2025,
   "buybackPeriod": {
-    "from": "20250824",
-    "to": "20260824"
+    "from": "20250910",
+    "to": "20260910"
   },
   "source": "DART Open API(opendart.fss.or.kr) — 사업보고서 임직원 현황(empSttus), 자기주식취득결정(tsstkAqDecsn)",
   "items": [
@@ -155,7 +155,7 @@
       "headcount": 1565,
       "headcountPrevYear": 1494,
       "headcountChange": 71,
-      "buybackAmount": 300000234900
+      "buybackAmount": 400000263700
     },
     {
       "symbol": "035420.KS",
@@ -425,7 +425,7 @@
       "headcount": 1346,
       "headcountPrevYear": 1406,
       "headcountChange": -60,
-      "buybackAmount": 480100000000
+      "buybackAmount": 400000000000
     },
     {
       "symbol": "042700.KS",
@@ -1988,6 +1988,16 @@
       "buybackAmount": 4242000000
     },
     {
+      "symbol": "000880.KS",
+      "corpName": "한화",
+      "avgSalary": 92454028.92561984,
+      "avgTenureYears": 8.299896694214874,
+      "headcount": 1936,
+      "headcountPrevYear": 2122,
+      "headcountChange": -186,
+      "buybackAmount": 14151246300
+    },
+    {
       "symbol": "196170.KQ",
       "corpName": "알테오젠",
       "avgSalary": 149111840.54037267,
@@ -3355,7 +3365,7 @@
       "headcount": 99,
       "headcountPrevYear": 84,
       "headcountChange": 15,
-      "buybackAmount": 6200000000
+      "buybackAmount": 4500000000
     },
     {
       "symbol": "056080.KQ",
