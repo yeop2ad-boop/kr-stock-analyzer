@@ -7272,10 +7272,10 @@ document.addEventListener(
 // ---------- 10년 승률 공용 셀(2026-09-10 사용자 요청) ----------
 // 순위 표 안에서는 어디서나 같은 보라색 글씨 + 소수점 반올림(한 줄 정렬), 검색상세 카드만 초록 원판으로 강조.
 const WIN_RATE_COLOR = "#8b5cf6"; // 순위 표 10년 승률 — 보라
-const WIN_RATE_DISC_COLOR = "#17915c"; // 검색상세 원판 — 초록
-function winRatePctCellHtml(v, total) {
+// noPct: 인기종목 표처럼 열 폭이 좁은 곳에서는 % 없이 숫자만(2026-09-10 사용자 요청)
+function winRatePctCellHtml(v, total, noPct) {
   if (!Number.isFinite(v)) return "N/A";
-  return `<b class="wr-pct" title="10년 승률 ${Math.round(v)}% — 최근 10년(최대 120개월) 동안 전달보다 오르며 마감한 달의 비율입니다. 높을수록 꾸준히 우상향했다는 뜻이며, 수익률의 크기가 아니라 이긴 횟수입니다.">${Math.round(v)}%</b>${partialMarkHtml(total)}`;
+  return `<b class="wr-pct" title="10년 승률 ${Math.round(v)}% — 최근 10년(최대 120개월) 동안 전달보다 오르며 마감한 달의 비율입니다. 높을수록 꾸준히 우상향했다는 뜻이며, 수익률의 크기가 아니라 이긴 횟수입니다.">${Math.round(v)}${noPct ? "" : "%"}</b>${partialMarkHtml(total)}`;
 }
 // 표 머리글의 둘째 줄 작은 기준 안내(예: 매출 증가율 / (YoY))
 const THEAD_SUB = (t) => `<span class="th-sub">(${t})</span>`;
@@ -7289,12 +7289,12 @@ async function renderWinRate(ticker, mode) {
   const entry = map && map[ticker];
   if (!entry || entry.score === null || entry.score === undefined) return;
 
-  const color = WIN_RATE_DISC_COLOR; // 10년 승률 카드 - 초록 원판(2026-09-10 사용자 요청)
+  const color = "#8b5cf6"; // 승률점수 - 보라(기존 파랑/초록/주황 3계열과 구분)
   const isPartial = entry.total < 120;
   el("winRateSection").innerHTML = `
     <div class="score-wrap">
-      <div class="score-badge score-badge-winrate">
-        <div class="score-num">${Math.round(entry.score)}%</div>
+      <div class="score-badge">
+        <div class="score-num">${entry.score}%</div>
         <div class="score-den">10년 승률</div>
       </div>
       <div class="score-details">
@@ -8360,7 +8360,7 @@ function popularSnapTableHtml(rows, logoFn) {
         popularSnapName(r.name || r.symbol)
       )}</b></span></td>
           ${cells}
-          <td>${winRatePctCellHtml(r.winRate, r.winTotal)}</td>
+          <td>${winRatePctCellHtml(r.winRate, r.winTotal, true)}</td>
         </tr>`;
     })
     .join("");

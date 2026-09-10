@@ -2362,15 +2362,7 @@ body[data-header-tone="dark"] .fh-market-label { color: #fff; }
 .score-badge.risk .score-num { color: var(--good); }
 .score-badge.macro .score-num { font-size: 26px; color: inherit; }
 .score-badge.macro .score-den { font-size: 10px; text-align: center; line-height: 1.2; padding: 0 6px; color: inherit; opacity: 0.75; }
-/* 검색상세 10년 승률 카드(2026-09-10 사용자 요청): 초록 그라데이션 원판 + 흰 숫자 */
-.score-badge.score-badge-winrate {
-  background: linear-gradient(145deg, #2ec27e 0%, #12885a 100%);
-  border: none;
-  box-shadow: 0 8px 18px rgba(18, 136, 90, 0.3);
-}
-.score-badge.score-badge-winrate .score-num { color: #fff; letter-spacing: -0.5px; }
-.score-badge.score-badge-winrate .score-den { color: rgba(255, 255, 255, 0.9); font-weight: 700; }
-/* 원판과 옆 설명이 같은 높이에서 시작하도록 일자로 정렬 */
+/* 검색상세 10년 승률 원판은 기존 스타일 그대로 유지(2026-09-10 사용자 확정) — 옆 설명과 일자 정렬만 적용 */
 #winRateSection .score-wrap { align-items: center; }
 #winRateSection .score-details { flex: 1 1 240px; min-width: 0; }
 .score-macro-vix-line { margin: -6px 0 14px; font-size: 11.5px; color: var(--muted); }
