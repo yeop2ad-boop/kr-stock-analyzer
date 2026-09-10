@@ -1447,7 +1447,11 @@ table.top30-table td:has(> .rank-logo) { text-align: left; }
 /* 지표 열 머리글 둘째 줄(작은 기준 안내) — 열 폭을 잡아먹지 않게 작게 */
 .th-sub { display: block; font-size: 9.5px; font-weight: 600; color: var(--muted); margin-top: 1px; }
 /* 10년 승률 공용 표기: 순위 표에서는 보라 글씨(2026-09-10 사용자 확정) */
-.wr-pct { color: #8b5cf6; cursor: pointer; }
+/* 10년 승률 보라 — 파란색(하락/링크)과 확실히 구분되게 진하게(2026-09-11 사용자 요청).
+   블랙 테마에선 그대로 두면 어두워서 안 보이므로 밝은 보라로 되돌림 — 검색상세 승률 카드도 이 변수를 씀 */
+:root { --winrate: #6d28d9; }
+:root[data-theme="dark"] { --winrate: #a78bfa; }
+.wr-pct { color: var(--winrate); cursor: pointer; font-weight: 800; }
 /* 한 행이 2줄 안에 들어오도록: 이름 칸만 줄바꿈 허용하고 현재가·승률 칸은 한 줄 유지(2026-09-10 사용자 요청) */
 table.top30-table td:has(.price-chart-link),
 table.top30-table td:has(.wr-pct) { white-space: nowrap; }
@@ -2403,7 +2407,7 @@ body[data-header-tone="dark"] .fh-market-label { color: #fff; }
 }
 .mini-score-circle.risk { background: var(--good-soft); border-color: var(--good); color: var(--good); }
 /* 요약 4점수(2026-09-03): 장기 우상향(보라)·RSI 점수(빨강) — 상승압력 파랑·투자안정 초록과 한 세트 */
-.mini-score-circle.winrate { background: rgba(139, 92, 246, 0.12); border-color: #8b5cf6; color: #8b5cf6; }
+.mini-score-circle.winrate { background: rgba(109, 40, 217, 0.12); border-color: var(--winrate); color: var(--winrate); }
 .mini-score-circle.rsi { background: rgba(239, 68, 68, 0.1); border-color: #ef4444; color: #ef4444; }
 .mini-score-label { font-size: 11px; color: var(--muted); white-space: nowrap; text-align: center; }
 

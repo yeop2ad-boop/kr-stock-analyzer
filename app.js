@@ -7300,7 +7300,7 @@ document.addEventListener(
 
 // ---------- 10년 승률 공용 셀(2026-09-10 사용자 요청) ----------
 // 순위 표 안에서는 어디서나 같은 보라색 글씨 + 소수점 반올림(한 줄 정렬), 검색상세 카드만 초록 원판으로 강조.
-const WIN_RATE_COLOR = "#8b5cf6"; // 순위 표 10년 승률 — 보라
+const WIN_RATE_COLOR = "var(--winrate)"; // 10년 승률 보라 — style.css의 --winrate(라이트 #6d28d9 / 다크 #a78bfa)
 // noPct: 인기종목 표처럼 열 폭이 좁은 곳에서는 % 없이 숫자만(2026-09-10 사용자 요청)
 function winRatePctCellHtml(v, total, noPct) {
   if (!Number.isFinite(v)) return "N/A";
@@ -7318,7 +7318,7 @@ async function renderWinRate(ticker, mode) {
   const entry = map && map[ticker];
   if (!entry || entry.score === null || entry.score === undefined) return;
 
-  const color = "#8b5cf6"; // 승률점수 - 보라(기존 파랑/초록/주황 3계열과 구분)
+  const color = WIN_RATE_COLOR; // 승률점수 - 진한 보라(기존 파랑/초록/주황 3계열과 구분)
   const isPartial = entry.total < 120;
   el("winRateSection").innerHTML = `
     <div class="score-wrap">
@@ -7597,7 +7597,7 @@ function renderRsiSpyDetail() {
           <line x1="${PX0}" y1="${yOfRsi(30).toFixed(1)}" x2="${PX1}" y2="${yOfRsi(30).toFixed(1)}" stroke="#22a866" stroke-width="1" stroke-dasharray="4 3" opacity="0.55"/>
           <text x="${PX1}" y="${(yOfRsi(70) - 3).toFixed(1)}" text-anchor="end" font-size="9.5" fill="#ef4444">70 과매수</text>
           <text x="${PX1}" y="${(yOfRsi(30) + 11).toFixed(1)}" text-anchor="end" font-size="9.5" fill="#22a866">30 과매도</text>
-          <path d="${rsiPath}" fill="none" stroke="#8b5cf6" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="${rsiPath}" fill="none" stroke="#6d28d9" stroke-width="1.8" stroke-linejoin="round"/>
           ${lowMarkSvg}
         </svg>
         <p class="disclaimer" style="margin-top:8px;">
@@ -8010,7 +8010,7 @@ function guardRankingScan(resultsEl) {
 // "시가총액 상위 N개 확인" 캡션 + 실시간 새로고침 버튼(2026-08-31: 제목줄 새로고침 버튼을 랭킹 결과 안 이 자리로 이동) —
 // 버튼을 누르면 스캔 캐시를 비우고 현재 선택된 랭킹을 현시간 기준으로 다시 검색함
 function rankScanCaptionHtml(count, canLoadMore) {
-  return `<p class="muted rank-scan-caption" style="font-size:12px;">시가총액 상위 ${count}개만 우선검색 <button type="button" class="rank-refresh-btn" aria-label="실시간 새로고침"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><polyline points="20 4 20 9 15 9"/></svg></button>${canLoadMore ? ` <button type="button" class="scope-more-btn">+전체보기(약 1분소요)</button>` : ""}</p>`;
+  return `<p class="muted rank-scan-caption" style="font-size:12px;">시가총액 ${count}위까지 검색됨 <button type="button" class="rank-refresh-btn" aria-label="실시간 새로고침"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><polyline points="20 4 20 9 15 9"/></svg></button>${canLoadMore ? ` <button type="button" class="scope-more-btn">+전체보기</button>` : ""}</p>`;
 }
 
 // 랭킹 결과가 전체 종목이 아니라 시가총액 상위 일부만 스캔한 상태일 때, 공지 바로 밑에 주황색으로 표시하는 주의문.
@@ -8019,7 +8019,7 @@ function rankScanCaptionHtml(count, canLoadMore) {
 // "시가총액 상위 N개 확인" 캡션 + "+전체보기" 버튼만 남김(rankScanCaptionHtml이 없는 화면에서 이걸 사용)
 function topCapNoteHtml(shown, total, canLoadMore) {
   if (!(total > shown) || !canLoadMore) return "";
-  return `<p class="muted rank-scan-caption" style="font-size:12px;">시가총액 상위 ${shown}개만 우선검색 <button type="button" class="scope-more-btn">+전체보기(약 1분소요)</button></p>`;
+  return `<p class="muted rank-scan-caption" style="font-size:12px;">시가총액 ${shown}위까지 검색됨 <button type="button" class="scope-more-btn">+전체보기</button></p>`;
 }
 
 // ---------- 랭킹 공용 인프라: 종목 목록을 시가총액 우선순으로 필요한 만큼만 스캔하는 단계적 캐시 ----------
@@ -8138,7 +8138,7 @@ async function renderKrRanking(dataPromiseFn, label, statusEl, resultsEl, { mapF
       const visible = top50.slice(0, initialCount);
       const rest = top50.slice(initialCount);
       resultsEl.innerHTML = `
-        <p class="muted rank-scan-caption" style="font-size:12px;">시가총액 상위 ${visible.length}개만 우선검색</p>
+        <p class="muted rank-scan-caption" style="font-size:12px;">시가총액 ${visible.length}위까지 검색됨</p>
         ${TAP_HINT_HTML}
         <table class="top30-table">
           <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}<th${metricExplain ? ` data-explain="${escapeHtml(metricExplain)}"` : ""}>${metricHeaderHtml}</th>${showGrade ? RANK_TH_WINRATE : ""}</tr></thead>
