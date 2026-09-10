@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260910j" />
+<link rel="stylesheet" href="style.css?v=20260910k" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -488,25 +488,25 @@
 
       <div class="carousel-panel" data-panel="insight" id="panelInsight">
         <div class="top30-sub-nav">
-          <button type="button" class="cat-btn" id="insightCatFirmsBtn"><span class="btn-icon" data-icon="bank"></span> <span id="insightCatFirmsLabel">자산&amp;투자사</span></button>
+          <button type="button" class="cat-btn" id="insightCatFirmsBtn"><span id="insightCatFirmsLabel">자산&amp;투자사</span></button>
           <!-- 다트공시/브랜드평판순·신기술은 더보기 패널로 이동(2026-09-08 사용자 요청) — JS가 참조하므로 숨김만 -->
-          <button type="button" class="cat-btn" id="insightCatBrandBtn" style="display:none;"><span class="btn-icon" id="insightCatBrandIcon"></span> <span id="insightCatBrandLabel">브랜드평판순</span></button>
-          <button type="button" class="cat-btn" id="insightCatTechBtn" style="display:none;"><span class="btn-icon" data-icon="flask"></span> 신기술</button>
+          <button type="button" class="cat-btn" id="insightCatBrandBtn" style="display:none;"><span id="insightCatBrandLabel">브랜드평판순</span></button>
+          <button type="button" class="cat-btn" id="insightCatTechBtn" style="display:none;">신기술</button>
           <!-- 순위상승(2026-09-04 사용자 요청): 시총 순위가 한달/1년 사이 급상승한 TOP50 — 한국·미국주식·비트코인 3개 투자처(ETF 제외) -->
-          <button type="button" class="cat-btn" id="insightCatRankUpBtn"><span class="btn-icon" data-icon="trending-up"></span> <span id="insightCatRankUpLabel">순위상승</span></button>
+          <button type="button" class="cat-btn" id="insightCatRankUpBtn"><span id="insightCatRankUpLabel">순위상승</span></button>
           <!-- 상관관계도(2026-09-05 사용자 요청): 17개 랭킹의 과거 상위/하위 100 → 이후 상승/하락 그룹 적중 수 — 매일 오전 7시 배치로 갱신·하루 고정 -->
-          <button type="button" class="cat-btn" id="insightCatCorrBtn"><span class="btn-icon" data-icon="scale"></span> 상관관계도</button>
+          <button type="button" class="cat-btn" id="insightCatCorrBtn">상관관계도</button>
           <!-- 섹터 승률(2026-09-07 사용자 요청): 투자처별 섹터 평균 — 승률(1달·1년·10년)·상승률(1달·1년·10년), 승률 DB에서 접속 시 계산 -->
-          <button type="button" class="cat-btn" id="insightCatSectorWinBtn"><span class="btn-icon" data-icon="basket"></span> 섹터 승률</button>
+          <button type="button" class="cat-btn" id="insightCatSectorWinBtn">섹터 승률</button>
           <!-- 변동성 순위(2026-09-10 사용자 요청): ETF 섹션 전용 — 최근 3개월 하루 변동량(|일간 등락률|) 평균이 낮은 순 -->
-          <button type="button" class="cat-btn" id="insightCatVolatilityBtn" style="display:none;"><span class="btn-icon" data-icon="scale"></span> 변동성 순위</button>
+          <button type="button" class="cat-btn" id="insightCatVolatilityBtn" style="display:none;">변동성 순위</button>
           <!-- 실적&공시 일정/뉴스는 더보기 메뉴로 이동 — 렌더 함수(runInsightCalendar/runInsightNews)가 이 버튼의
                active 상태를 계속 참조하므로 DOM에서 지우지 않고 숨김만 처리(more-panel의 신규 항목이 대신 트리거) -->
-          <button type="button" class="cat-btn" id="insightCatCalendarBtn" style="display:none;"><span class="btn-icon" data-icon="calendar"></span> 실적&amp;공시 일정</button>
-          <button type="button" class="cat-btn" id="insightCatNewsBtn" style="display:none;"><span class="btn-icon" data-icon="newspaper"></span> 뉴스</button>
+          <button type="button" class="cat-btn" id="insightCatCalendarBtn" style="display:none;">실적&amp;공시 일정</button>
+          <button type="button" class="cat-btn" id="insightCatNewsBtn" style="display:none;">뉴스</button>
           <!-- 미래산업 성장성은 법적(콘텐츠 재게시) 리스크 우려로 사용자 요청에 따라 완전 숨김(2026-09-02) —
                insightCategoryButtons가 이 버튼을 참조하므로 DOM에서 지우지 않고 display:none만(캘린더/뉴스와 동일 관례) -->
-          <button type="button" class="cat-btn" id="insightCatFutureIndustryBtn" style="display:none;"><span class="btn-icon" data-icon="rocket"></span> 미래산업 성장성</button>
+          <button type="button" class="cat-btn" id="insightCatFutureIndustryBtn" style="display:none;">미래산업 성장성</button>
         </div>
         <div class="top30-sub-nav insight-firms-nav" id="insightFirmsNav">
           <div class="insight-firms-row">
@@ -855,6 +855,6 @@
 
   <!-- 구글 로그인(GSI) 스크립트는 공개 운영 전환(2026-09-10)으로 다시 내림 — 게이트 코드는 app.js에 보존 -->
   <script src="data/logo-db.js?v=20260903g"></script>
-  <script src="app.js?v=20260910j"></script>
+  <script src="app.js?v=20260910k"></script>
 </body>
 </html>

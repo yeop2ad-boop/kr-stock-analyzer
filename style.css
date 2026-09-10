@@ -613,10 +613,14 @@ body[data-header-tone="dark"] .tab-bar {
 body[data-header-tone="light"] .carousel-panel .cat-btn:not(.top-ranking-tab-orange) { border-color: rgba(27, 42, 74, 0.45); }
 body[data-header-tone="light"] .carousel-panel .cat-btn.active:not(.top-ranking-tab-orange) { border-color: var(--navy); }
 
-/* Top랭킹 탭 — 기업가치+투자동향을 합친 14개 서브버튼. 마지막 2개(상승 압력·투자 안정)만 주황으로 구분 */
+/* Top랭킹 탭 — 기업가치·미래예측 서브버튼. 2026-09-10 사용자 요청: 아이콘(이모지) 없이 글자만, 크기 확대 */
 .top-ranking-sub-nav { padding-bottom: 2px; }
 .top-ranking-tab { display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
 .top-ranking-tab .btn-icon-svg { display: block; flex: none; }
+/* 기업가치·미래예측·인사이트 서브내비 글자 확대(2026-09-10 사용자 요청) */
+#topRankingSubNav .cat-btn,
+#panelInsight .top30-sub-nav .cat-btn { font-size: 13.5px; padding: 9px 13px; }
+#panelInsight .insight-firms-row-label { font-size: 12.5px; }
 .top-ranking-tab-orange { border-color: rgba(27, 42, 74, 0.5); color: var(--navy); }
 .top-ranking-tab-orange.active { color: var(--navy); border-color: var(--navy); background: rgba(27, 42, 74, 0.08); }
 
@@ -1451,6 +1455,12 @@ table.popular-snap-table th, table.popular-snap-table td { padding: 8px 2px; }
 /* 무조건 한 줄: 종목명은 7글자+".."로 잘라 넣고, 어떤 열도 줄바꿈하지 않음(머리글의 <br>만 예외) */
 table.popular-snap-table td, table.popular-snap-table th { white-space: nowrap; }
 table.popular-snap-table td.popular-snap-name { text-align: left; padding-left: 4px; }
+/* 인기종목 기업명 앞 로고를 크게(2026-09-10 사용자 요청) — 연평균 상승 열을 빼서 확보한 자리 */
+.popular-snap-logo { gap: 7px; }
+.popular-snap-logo .ticker-logo-wrap { width: 28px; height: 28px; }
+.popular-snap-logo .crypto-logo-wrap { width: 26px; height: 26px; margin-right: 0; vertical-align: middle; }
+.popular-snap-logo .crypto-logo { width: 26px; height: 26px; }
+.popular-snap-logo .crypto-logo-badge { font-size: 20px; }
 /* 아주 좁은 화면에서도 박스 안에 다 들어가게 한 단계 더 축소(넘치면 박스 내부 가로 스크롤) */
 @media (max-width: 420px) {
   .popular-snap-box { padding: 0 4px; }
