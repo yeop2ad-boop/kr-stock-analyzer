@@ -7065,7 +7065,7 @@ const RANK_TH_RSI = `<th data-explain="RSI 점수 — 주간 RSI(14) 현재값�
 // 신호등(🟢🟡🔴)·느낌표(❗)·배당 경고(⚠️컷/지연)·급등락(🔥⚠️)·10년 승률 원판을 누르면 바로 아래 줄에
 // 짧은 설명이 펼쳐지고, 다시 누르면 닫힘(한 번에 하나만). 설명 문구는 data-explain 또는 title에서 가져옴 —
 // 마우스가 없는 휴대폰에서는 title 툴팁을 볼 수 없어서 만든 장치
-const EXPLAIN_MARK_SELECTOR = ".nine-partial-mark, .dividend-warn, .at-emoji, .wr-pct, .surge-warn-mark, [data-explain]";
+const EXPLAIN_MARK_SELECTOR = ".nine-partial-mark, .dividend-warn, .at-emoji, .wr-pct, .surge-warn-mark, .corr-grade, [data-explain]";
 function closeAllExplainNotes(except) {
   document.querySelectorAll(".explain-row, .explain-inline").forEach((n) => {
     if (n !== except) n.remove();
@@ -9315,13 +9315,22 @@ function corrHitScore(m) {
   if (!denom) return 0;
   return Math.max(-1, Math.min(1, (m.tot - chance) / denom));
 }
+// 합계 칸 아래 줄에 상관 강도를 글자로(2026-09-11 사용자 요청) — 숫자만 보고 강한지 약한지 몰랐던 문제
+function corrGradeLineHtml(m) {
+  if (!m) return "";
+  const sc = corrHitScore(m);
+  const g = corrGradeOf(sc);
+  const tip = `적중 ${sc.toFixed(2)}점 — 무작위로 골랐을 때 기대되는 적중 수(${Math.round((m.exp || 0) * 2)}개)보다 얼마나 더 많이 맞혔는지를 -1~1로 환산한 값입니다. 1에 가까울수록 그 랭킹이 실제 등락을 잘 설명했다는 뜻(${g.label})입니다.`;
+  return `<br><span class="corr-grade" style="color:${g.color};" data-explain="${escapeHtml(tip)}">${escapeHtml(g.label)}</span>`;
+}
 function corrHitSubHtml(m) {
   if (!m) return "";
   const s = corrHitScore(m);
   const g = corrGradeOf(s);
   // 두 줄로 표시(2026-09-10 사용자 지정): 1줄 "적중 0.34점", 2줄 "보통 상관".
   // 원시 적중 합계(47점 같은 값)는 최대치가 유니버스마다 달라 헷갈린다는 사용자 의견으로 표시하지 않음.
-  return `<br><span class="at-head-sub">적중 ${s.toFixed(2)}점</span><span class="at-head-grade" style="color:${g.color};">${escapeHtml(g.label)}</span>`;
+  const tip = `적중 ${s.toFixed(2)}점(${g.label}) — 무작위로 골랐을 때 기대되는 적중 수보다 얼마나 더 맞혔는지를 -1~1로 환산한 값입니다. 1에 가까울수록 이 항목이 실제 등락을 잘 설명했다는 뜻입니다.`;
+  return `<br><span class="at-head-sub" data-explain="${escapeHtml(tip)}">적중 ${s.toFixed(2)}점</span><span class="at-head-grade" style="color:${g.color};" data-explain="${escapeHtml(tip)}">${escapeHtml(g.label)}</span>`;
 }
 let autoTrackCorrRendering = false;
 async function renderAutoTrackCorrDetail(wrap) {
@@ -9897,6 +9906,37 @@ function runInsightCategory(key) {
   else if (key === "futureIndustry") runFutureIndustrySource(insightActiveFutureSource);
 }
 
+// 섹터 승률 표에서 섹터 이름을 눌렀을 때 펼칠 종목 목록(2026-09-11 사용자 요청)
+let sectorWinMembers = new Map();
+let sectorWinIsCrypto = false;
+let sectorWinKrNameMap = null;
+el("insightResults").addEventListener("click", (e) => {
+  const nameEl = e.target.closest(".sector-win-name");
+  if (!nameEl) return;
+  const sec = nameEl.dataset.sectorName;
+  const row = nameEl.closest("tr");
+  if (!row) return;
+  const next = row.nextElementSibling;
+  if (next && next.classList.contains("sector-members-row")) {
+    next.remove();
+    return;
+  }
+  document.querySelectorAll(".sector-members-row").forEach((n) => n.remove());
+  const syms = sectorWinMembers.get(sec) || [];
+  const chips = syms
+    .map((sym) => {
+      const logo = sectorWinIsCrypto ? cryptoLogoHtml(cryptoBaseTicker(sym)) : tickerLogoHtml(sym);
+      const name = sectorWinIsCrypto ? cryptoKoName(sym, sym) : (sectorWinKrNameMap && sectorWinKrNameMap.get(sym)) || TICKER_TO_KOREAN_NAME[sym] || sym;
+      return `<span class="sector-member-chip ticker-link" data-ticker="${escapeHtml(sym)}">${logo}<b>${escapeHtml(name)}</b></span>`;
+    })
+    .join("");
+  const cols = row.children.length || 1;
+  row.insertAdjacentHTML(
+    "afterend",
+    `<tr class="sector-members-row"><td colspan="${cols}"><div class="sector-members-wrap"><span class="sector-members-title">${escapeHtml(sec)} · ${syms.length}종목</span>${chips}</div></td></tr>`
+  );
+});
+
 // ---------- 투자방법 비교(2026-09-11 사용자 요청) ----------
 // 지금부터 딱 10년을 1년씩 끊어, 7가지 투자 방법을 매년 새로 골라 1년씩 들고 갔다면 어떻게 됐을지 비교한다.
 // 값은 배치(sector-map/scripts/fetch-strategy-compare.ps1)가 미리 계산해둔 data/strategy-compare.json.
@@ -10228,6 +10268,20 @@ async function runInsightSectorWin() {
       const mid = Math.floor(s.length / 2);
       return Math.round((s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2) * 10) / 10;
     };
+    // 섹터 이름을 누르면 펼칠 종목 목록(2026-09-11) — 코인은 로고+한글명, 주식은 로고+이름
+    sectorWinMembers = new Map();
+    for (const [sym, e] of Object.entries(scores)) {
+      const sec = sectorOf(sym);
+      if (!sec || !Number.isFinite(e.score)) continue;
+      if (!sectorWinMembers.has(sec)) sectorWinMembers.set(sec, []);
+      sectorWinMembers.get(sec).push(sym);
+    }
+    sectorWinIsCrypto = isCrypto;
+    sectorWinKrNameMap = null;
+    if (!isCrypto) {
+      const uni = await getSReportUniverse(isKr).catch(() => null);
+      if (uni && uni.companies) sectorWinKrNameMap = new Map(uni.companies.map((c) => [c.symbol, c.name || c.symbol]));
+    }
     const rows = [...groups.values()].map((g) => ({
       sec: g.sec, n: g.n, wr1m: avg(g.wr1m), wr1y: avg(g.wr1y), wr10: avg(g.wr10), r1m: avg(g.r1m), r1y: avg(g.r1y), r10: avg(g.r10), r1yMed: median(g.r1y),
     }));
@@ -10254,9 +10308,14 @@ async function runInsightSectorWin() {
     const pct = (v) => (v === null ? "N/A" : `${v}%`);
     const signed = (v) => (v === null ? "N/A" : `<span class="${v >= 0 ? "delta-up" : "delta-down"}">${v > 0 ? "+" : ""}${v}%</span>`);
     const wrCell = (v) => winRatePctCellHtml(v, null); // 10년 승률은 앱 전체 공통 초록 원판(2026-09-10 사용자 요청)
+    // 2026-09-11 사용자 요청: ⚠️는 눌러서 설명, 섹터 이름은 눌러서 그 섹터에 어떤 종목이 있는지 펼쳐보기
+    const warnMark = (n) =>
+      n <= 3
+        ? ` <span class="nine-partial-mark" title="⚠️ 주의 — 이 섹터에 포함된 종목이 ${n}개뿐입니다. 종목 수가 적으면 한두 종목의 급등락이 평균을 통째로 흔들어, 섹터 전체의 성적으로 읽기 어렵습니다.">⚠️</span>`
+        : "";
     const tr = (r, isAll) => `
       <tr${isAll ? ' class="sector-win-all"' : ""}>
-        <td style="text-align:left;"><b>${escapeHtml(r.sec)}</b><br><span class="muted" style="font-size:10px;">${r.n}종목${r.n <= 3 ? " ⚠️" : ""}</span></td>
+        <td style="text-align:left;"><b class="${isAll ? "" : "sector-win-name"}"${isAll ? "" : ` data-sector-name="${escapeHtml(r.sec)}"`}>${escapeHtml(r.sec)}</b><br><span class="muted" style="font-size:10px;">${r.n}종목${warnMark(r.n)}</span></td>
         <td>${signed(r.r1y)}</td><td>${pct(r.wr1y)}</td>
         <td>${signed(r.r10)}</td><td>${wrCell(r.wr10)}${isAll && r.wr10Med !== null ? `<br><span class="muted" style="font-size:9.5px;">중앙값 ${r.wr10Med}%</span>` : ""}</td>
       </tr>`;
@@ -10393,7 +10452,7 @@ async function runInsightCorr(period) {
         <td style="text-align:left;">${hot ? "🔥 " : ""}${escapeHtml(label)}</td>
         <td>${m.top}개</td>
         <td>${m.bot}개</td>
-        <td><b>${m.tot}</b> <span class="muted" style="font-size:10.5px;">(기대 ${Math.round(m.exp * 2)})</span></td>
+        <td><b>${m.tot}</b> <span class="muted" style="font-size:10.5px;">(기대 ${Math.round(m.exp * 2)})</span>${corrGradeLineHtml(m)}</td>
       </tr>`;
       })
       .join("");

@@ -2739,3 +2739,18 @@ table.strategy-table th, table.strategy-table td { padding: 8px 6px; white-space
 table.strategy-table td.strategy-name { text-align: left; font-weight: 700; display: flex; align-items: center; gap: 6px; }
 table.strategy-table .strategy-name-th { text-align: left; }
 table.strategy-table td.strategy-total { font-weight: 800; background: var(--subtle-fill); }
+
+
+/* ---------- 상관 강도·섹터 종목 펼치기(2026-09-11 사용자 요청) ---------- */
+.corr-grade { display: inline-block; font-size: 10.5px; font-weight: 800; cursor: pointer; }
+.sector-win-name { cursor: pointer; text-decoration: underline dotted var(--border); text-underline-offset: 3px; }
+tr.sector-members-row td { background: var(--subtle-fill); padding: 10px !important; text-align: left !important; }
+.sector-members-wrap { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.sector-members-title { font-size: 11px; font-weight: 800; color: var(--muted); width: 100%; margin-bottom: 2px; }
+.sector-member-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 999px;
+  padding: 4px 10px 4px 5px; font-size: 11.5px; cursor: pointer;
+}
+.sector-member-chip .ticker-logo-wrap, .sector-member-chip .crypto-logo-wrap { width: 18px; height: 18px; margin-right: 0; }
+.sector-member-chip .crypto-logo { width: 18px; height: 18px; }
