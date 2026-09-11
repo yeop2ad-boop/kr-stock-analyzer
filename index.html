@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260911n" />
+<link rel="stylesheet" href="style.css?v=20260911o" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -83,6 +83,11 @@
              JS(openAutoTrack·setCarouselViewTitle)가 이 버튼을 참조하므로 DOM은 유지하고 숨김만 -->
         <button type="button" class="fh-tab" data-fhtab="tab.autotrack" data-i18n="tab.autotrack" style="display:none;">자동추적</button>
         <button type="button" class="fh-tab active" data-fhtab="tab.valuation" data-i18n="tab.valuation">기업가치</button>
+        <button type="button" class="fh-tab" data-fhtab="tab.etfWinrate" data-i18n="tab.etfWinrate" style="display:none;">승률</button>
+        <button type="button" class="fh-tab" data-fhtab="tab.etfReturn" data-i18n="tab.etfReturn" style="display:none;">수익률</button>
+        <button type="button" class="fh-tab" data-fhtab="tab.etfVolatility" data-i18n="tab.etfVolatility" style="display:none;">변동성</button>
+        <button type="button" class="fh-tab" data-fhtab="tab.etfDividend" data-i18n="tab.etfDividend" style="display:none;">배당률</button>
+        <button type="button" class="fh-tab" data-fhtab="tab.etfFee" data-i18n="tab.etfFee" style="display:none;">운용보수</button>
         <button type="button" class="fh-tab" data-fhtab="tab.trend" data-i18n="tab.trend">미래예측</button>
         <!-- IPO(2026-09-11 사용자 요청): 최근 5년 미국 신규 상장 종목을 시간순으로 — 주식 섹션 전용 -->
         <button type="button" class="fh-tab" data-fhtab="tab.ipo" data-i18n="tab.ipo">IPO</button>
@@ -889,6 +894,7 @@
   <!-- 구글 로그인(GSI) 스크립트는 공개 운영 전환(2026-09-10)으로 다시 내림 — 게이트 코드는 app.js에 보존 -->
   <script src="data/ko-company-names.js?v=20260911e"></script>
   <script src="data/logo-db.js?v=20260903g"></script>
-  <script src="app.js?v=20260911n"></script>
+  <script src="data/etf-meta.js?v=20260911o"></script>
+  <script src="app.js?v=20260911o"></script>
 </body>
 </html>

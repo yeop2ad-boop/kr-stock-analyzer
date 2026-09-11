@@ -2754,3 +2754,97 @@ tr.sector-members-row td { background: var(--subtle-fill); padding: 10px !import
 }
 .sector-member-chip .ticker-logo-wrap, .sector-member-chip .crypto-logo-wrap { width: 18px; height: 18px; margin-right: 0; }
 .sector-member-chip .crypto-logo { width: 18px; height: 18px; }
+
+/* ---------- ETF 이모지 로고(2026-09-11 사용자 요청) ----------
+   운용사 CI가 전부 비슷해 목록에서 구분이 안 된다고 해서, 추종 대상을 나타내는 이모지를 로고 자리에 넣는다.
+   레버리지·인버스는 오른쪽 아래 배지(X2·X3)로 표시하고 색은 상승색/하락색을 그대로 쓴다 —
+   사용자가 상승·하락 색상을 초록·빨강으로 바꾸면 배지 색도 같이 바뀐다. */
+.etf-emoji-logo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--subtle-fill);
+  overflow: visible;
+}
+.etf-emoji-logo .etf-emoji {
+  font-size: 15px;
+  line-height: 1;
+  /* 이모지 폰트는 OS마다 크기가 달라 원판 안에 정확히 가운데로 */
+  display: block;
+  transform: translateY(0.5px);
+}
+.rank-logo .etf-emoji-logo .etf-emoji { font-size: 16px; }
+/* 국기 테마는 이모지 대신 인라인 SVG(윈도우 크롬이 국기 이모지를 글자로 그려서) */
+.etf-emoji-logo .etf-flag { display: block; line-height: 0; }
+.etf-emoji-logo .etf-flag svg { width: 19px; height: 13px; display: block; }
+.summary-etf-emoji .etf-flag svg { width: 32px; height: 21px; }
+.summary-etf-emoji .etf-emoji { font-size: 26px; line-height: 1; }
+.etf-mult-badge {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  min-width: 15px;
+  height: 13px;
+  padding: 0 2px;
+  border-radius: 7px;
+  font-size: 9px;
+  font-weight: 900;
+  line-height: 13px;
+  text-align: center;
+  color: #fff;
+  letter-spacing: -0.2px;
+  box-shadow: 0 0 0 1.5px var(--card-bg);
+}
+.etf-mult-long { background: var(--pos); }
+.etf-mult-short { background: var(--neg); }
+/* 검색상세 헤더의 큰 로고 자리 */
+.summary-etf-emoji {
+  font-size: 26px;
+  line-height: 1;
+  display: block;
+}
+
+/* ---------- ETF 검색상세 보유 종목(2026-09-11 사용자 요청) ---------- */
+.etf-holdings-block {
+  margin: 10px 0 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--subtle-fill);
+}
+.etf-holdings-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.etf-holdings-head b { font-size: 14px; }
+.etf-holdings-table { margin: 0; }
+.etf-holdings-table td, .etf-holdings-table th { padding: 5px 6px; }
+.etf-holdings-table .etf-hold-no { width: 28px; color: var(--muted); font-size: 12px; }
+.etf-holdings-table .etf-hold-weight { width: 62px; text-align: right; }
+/* 종목코드가 없어 링크를 못 거는 해외 구성종목 — 로고 자리 없이 이름만 */
+.etf-hold-plain { font-weight: 700; }
+.etf-holdings-more-btn { margin-top: 6px; width: 100%; }
+.etf-holdings-more { margin-top: 8px; }
+.etf-portion-block { margin-bottom: 6px; }
+.etf-portion-title {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--muted);
+  margin-bottom: 3px;
+}
+.etf-portion-chip {
+  display: inline-block;
+  margin: 0 4px 4px 0;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  font-size: 11px;
+}
+/* ETF 전용 상단 탭 표의 순위 열 */
+.etf-rank-no { font-weight: 800; color: var(--muted); font-size: 12px; }

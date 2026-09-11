@@ -2721,7 +2721,8 @@ function bottomNavKeyForSection() {
 document.querySelectorAll(".fh-tab").forEach((btn) => {
   btn.addEventListener("click", () => {
     const key = btn.dataset.fhtab;
-    if (key === "tab.ipo") showOnlyCarouselView(() => openIpoList());
+    if (key.startsWith("tab.etf")) showOnlyCarouselView(() => openEtfMetricTab(key.slice("tab.etf".length).toLowerCase()));
+    else if (key === "tab.ipo") showOnlyCarouselView(() => openIpoList());
     else if (key === "tab.popular") showOnlyCarouselView(() => openPopularStocks());
     else if (key === "tab.autotrack") showOnlyCarouselView(() => openAutoTrack());
     else if (key === "tab.valuation") showOnlyCarouselView(() => activateRankingGroup("disclosure"));
@@ -2880,6 +2881,12 @@ const I18N = {
   "tab.valuation": { ko: "기업가치", en: "Value" }, // 2026-09-10 사용자 요청: 실적→기업가치
   "tab.trend": { ko: "시장분석", en: "Market" }, // 2026-09-11 사용자 요청: 미래예측→시장분석
   "tab.ipo": { ko: "IPO", en: "IPO" }, // 2026-09-11: 최근 5년 신규 상장
+  // ETF 전용 상단 탭(2026-09-11 사용자 요청) — 시장분석·인사이트를 빼고 그 안에 있던 항목들을 위로 올림
+  "tab.etfWinrate": { ko: "승률", en: "Win rate" },
+  "tab.etfReturn": { ko: "수익률", en: "Return" },
+  "tab.etfVolatility": { ko: "변동성", en: "Volatility" },
+  "tab.etfDividend": { ko: "배당률", en: "Dividend" },
+  "tab.etfFee": { ko: "운용보수", en: "Expense" },
   "tab.insight": { ko: "인사이트", en: "Insight" },
   "nav.map": { ko: "마켓맵", en: "MarketMap" }, // 2026-09-08: 섹터맵→마켓맵
   "nav.ranking": { ko: "랭킹", en: "Ranking" },
@@ -3170,7 +3177,10 @@ companyPanelAlertBtn.addEventListener("click", () => alert("가격 알림 기능
 function renderCompanyIdentity(ticker, quote, meta, changePct) {
   let displayName = TICKER_TO_KOREAN_NAME[ticker] || quote.longname || quote.shortname || meta.longName || ticker;
   // 암호화폐는 한글명(비트코인·페페 등)을 우선 표시, 없으면 "Cardano USD"의 " USD"만 떼고 표시(2026-09-01)
-  if (sectionOfSymbol(ticker, quote.quoteType) === "crypto") displayName = cryptoKoName(ticker, displayName);
+  const identitySection = sectionOfSymbol(ticker, quote.quoteType);
+  if (identitySection === "crypto") displayName = cryptoKoName(ticker, displayName);
+  // ETF면 로고가 테마 이모지로 잡히도록 상품명을 먼저 등록(2026-09-11) — renderSummary보다 이 함수가 먼저 돈다
+  if (identitySection === "etf") registerEtfName(ticker, displayName);
   const price = meta.regularMarketPrice;
   el("companyPanelLogoWrap").innerHTML = tickerLogoHtml(ticker);
   el("companyPanelName").textContent = displayName;
@@ -4209,6 +4219,9 @@ function wizardGoAssetRanking(metricKey) {
   setHeaderToneForSection(market);
   assetTrendMetric = metricKey;
   if (market === "crypto") openCryptoTrend();
+  // ETF는 상단 탭이 항목별로 나뉘어(2026-09-11) 해당 탭으로 바로 보냄 — 없는 지표만 기존 시장동향 화면 사용
+  else if (metricKey === "winrate") openEtfMetricTab("winrate");
+  else if (metricKey === "pressure") openEtfMetricTab("return");
   else openEtfTrend();
   setBottomNavActive(market);
   syncSectionHeader();
@@ -4827,6 +4840,81 @@ function syncRankUpLabel() {
 // 주식/ETF/코인 어느 기준으로 순위를 낼지 판단하는 데 사용(2026-09-02, renderSummary가 갱신)
 let currentDetailSection = "us";
 let currentDetailSymbol = "";
+// ---------- ETF 이모지 로고(2026-09-11 사용자 요청) ----------
+// 운용사 CI가 전부 비슷해 목록에서 구분이 안 된다는 지적에 따라, 상품명으로 추종 대상을 알아내
+// 대표 이모지를 로고 자리에 넣는다(분류 규칙은 data/etf-meta.js). 레버리지·인버스는 X2·X3 배지를 덧붙이고
+// 색은 레버리지=상승색(var(--pos)) / 인버스=하락색(var(--neg))이라 상승·하락 색상 설정을 그대로 따라간다.
+const ETF_NAME_BY_SYMBOL = new Map(); // 심볼 -> 상품명. US_ETF_TOP100·국내 ETF 목록이 로드되는 대로 채워짐
+function registerEtfName(symbol, name) {
+  if (symbol && name && !ETF_NAME_BY_SYMBOL.has(symbol)) ETF_NAME_BY_SYMBOL.set(symbol, name);
+}
+// 국기 이모지(🇰🇷·🇺🇸 등)는 윈도우 크롬에서 "KR"·"US" 글자 두 개로 깨진다 —
+// 국기 테마만 인라인 SVG로 그린다(한국·미국은 섹션 마크에 쓰던 것을 재사용).
+const ETF_FLAG_SVG = {
+  kr: FLAG_SVG_KR,
+  us: FLAG_SVG_US,
+  japan: `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#fff" stroke="rgba(0,0,0,0.22)"/><circle cx="10.5" cy="7" r="3.6" fill="#bc002d"/></svg>`,
+  china: `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#de2910" stroke="rgba(0,0,0,0.22)"/><path fill="#ffde00" d="M5.4 3.1l.62 1.9-1.62-1.18h2l-1.62 1.18z"/><circle cx="8.6" cy="2.4" r="0.5" fill="#ffde00"/><circle cx="9.8" cy="3.7" r="0.5" fill="#ffde00"/><circle cx="9.8" cy="5.5" r="0.5" fill="#ffde00"/><circle cx="8.6" cy="6.8" r="0.5" fill="#ffde00"/></svg>`,
+  india: `<svg viewBox="0 0 21 14" width="21" height="14"><defs><clipPath id="fhInFlagClip"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5"/></clipPath></defs><g clip-path="url(#fhInFlagClip)"><rect x="0" y="0" width="21" height="4.7" fill="#ff9933"/><rect x="0" y="4.7" width="21" height="4.6" fill="#fff"/><rect x="0" y="9.3" width="21" height="4.7" fill="#138808"/><circle cx="10.5" cy="7" r="1.7" fill="none" stroke="#000080" stroke-width="0.7"/></g><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="none" stroke="rgba(0,0,0,0.22)"/></svg>`,
+  europe: `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#003399" stroke="rgba(0,0,0,0.22)"/><circle cx="10.5" cy="7" r="3.4" fill="none" stroke="#ffcc00" stroke-width="1.2" stroke-dasharray="0.9 1.3"/></svg>`,
+};
+function etfThemeOf(name, symbol) {
+  const rules = window.ETF_THEME_RULES || [];
+  for (const r of rules) if (r.test.test(name)) return r;
+  // 이름만으로 못 맞히면 국내는 태극기(코스피200 계열이 대부분), 그 외는 지수 차트
+  if (symbol && isKrTicker(symbol)) return window.ETF_THEME_FALLBACK_KR || { emoji: "🇰🇷", label: "한국" };
+  return window.ETF_THEME_FALLBACK || { emoji: "📊", label: "지수·기타" };
+}
+function etfLeverageOf(name) {
+  const rules = window.ETF_LEVERAGE_RULES || [];
+  for (const r of rules) if (r.test.test(name)) return r;
+  return null;
+}
+// 테마 표시 한 조각 — 국기 테마는 SVG, 나머지는 이모지
+function etfThemeMarkHtml(theme) {
+  const svg = ETF_FLAG_SVG[theme.key];
+  return svg ? `<span class="etf-flag">${svg}</span>` : `<span class="etf-emoji">${theme.emoji}</span>`;
+}
+// ETF 로고 = 테마 이모지 원판 + (있으면) 배수 배지. 이름을 모르면 null을 돌려줘 호출부가 기존 로고를 쓰게 함
+function etfEmojiLogoHtml(symbol, name) {
+  const label = name || ETF_NAME_BY_SYMBOL.get(symbol) || "";
+  if (!label) return null;
+  const theme = etfThemeOf(label, symbol);
+  const lev = etfLeverageOf(label);
+  // 인버스 1배는 배수를 안 붙이고 "I"(인버스)로만 표시 — X1은 오해 소지가 있음
+  const badge = lev ? (lev.dir === "short" && lev.mult === 1 ? "I" : `X${lev.mult}`) : "";
+  const badgeCls = lev ? (lev.dir === "short" ? "etf-mult-short" : "etf-mult-long") : "";
+  const title = `${theme.label}${lev ? (lev.dir === "short" ? " · 인버스" : " · 레버리지") + (lev.mult > 1 ? ` ${lev.mult}배` : "") : ""}`;
+  return `<span class="ticker-logo-wrap etf-emoji-logo" title="${escapeHtml(title)}" aria-label="${escapeHtml(title)}">${etfThemeMarkHtml(theme)}${
+    badge ? `<span class="etf-mult-badge ${badgeCls}">${badge}</span>` : ""
+  }</span>`;
+}
+
+// ---------- ETF 운용보수·보유종목 DB(2026-09-11) ----------
+// data/etf-info.json — 배치(sector-map/scripts/fetch-etf-info.ps1)가 미국은 야후 fundProfile/topHoldings,
+// 국내는 네이버 etfAnalysis에서 모아둔 것. 야후 quoteSummary는 브라우저에서 부르면 401이라 미리 받아둔다.
+// 300KB쯤 되니 ETF 화면에 들어올 때만 지연 로드.
+let etfInfoDbPromise = null;
+function getEtfInfoDb() {
+  if (!etfInfoDbPromise) {
+    etfInfoDbPromise = fetch("data/etf-info.json", { cache: "no-store" })
+      .then((r) => {
+        if (!r.ok) throw new Error("http " + r.status);
+        return r.json();
+      })
+      .catch((e) => {
+        etfInfoDbPromise = null; // 실패는 캐시하지 않음
+        throw e;
+      });
+  }
+  return etfInfoDbPromise;
+}
+// 미국은 티커 그대로("VOO"), 국내는 야후 심볼 그대로("069500.KS")가 키
+function etfInfoOf(db, symbol) {
+  if (!db || !symbol) return null;
+  return (db.us && db.us[symbol]) || (db.kr && db.kr[symbol]) || null;
+}
+
 const ICON_SVG_ETF = `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#2f6bd8" stroke="rgba(0,0,0,0.15)"/><text x="10.5" y="10" text-anchor="middle" font-size="7" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif" letter-spacing="0.3">ETF</text></svg>`;
 const ICON_SVG_BTC = `<svg viewBox="0 0 21 14" width="21" height="14"><circle cx="10.5" cy="7" r="6.6" fill="#f7931a"/><text x="10.6" y="9.9" text-anchor="middle" font-size="9" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif">₿</text></svg>`;
 // ---------- 섹션 마크(2026-09-01): 종목이 한국주식/미국주식/ETF/비트코인 중 어디 소속인지 작은 아이콘으로 표시 ----------
@@ -4878,6 +4966,16 @@ function syncSectionHeader() {
   if (valuationTab) valuationTab.style.display = appSectionMode === "stocks" ? "" : "none";
   const ipoTab = document.querySelector('.fh-tab[data-fhtab="tab.ipo"]');
   if (ipoTab) ipoTab.style.display = appSectionMode === "stocks" ? "" : "none"; // IPO는 미국 신규 상장 전용(2026-09-11)
+  // ETF 섹션은 상단 탭 구성을 통째로 바꾼다(2026-09-11 사용자 요청):
+  // 인기종목 - 승률 - 수익률 - 변동성 - 배당률 - 운용보수. 시장분석·인사이트는 빼고 그 안 항목을 위로 올린 것.
+  const isEtfMode = appSectionMode === "etf";
+  document.querySelectorAll('.fh-tab[data-fhtab^="tab.etf"]').forEach((b) => {
+    b.style.display = isEtfMode ? "" : "none";
+  });
+  const trendTabEl = document.querySelector('.fh-tab[data-fhtab="tab.trend"]');
+  if (trendTabEl) trendTabEl.style.display = isEtfMode ? "none" : "";
+  const insightTabEl = document.querySelector('.fh-tab[data-fhtab="tab.insight"]');
+  if (insightTabEl) insightTabEl.style.display = isEtfMode ? "none" : "";
   // 인사이트 하위 보기도 투자처마다 다름(ETF=변동성 순위만, 비트코인=자산&투자사 제외) — 이 시점엔 인사이트
   // 상태 변수들이 아직 선언 전(TDZ)이라 syncDartTabForMarket과 같은 방식으로 커스텀 이벤트로 느슨하게 연결
   document.dispatchEvent(new CustomEvent("appsectionchange"));
@@ -5645,12 +5743,17 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   // 지정 로고(override)가 있으면 그걸 쓰고, 없으면 기존 자동 소스(logo.dev/FMP) 사용
   // 코인은 자체 호스팅 로고 DB, 한국 ETF는 브랜드 → 운용사 그룹 CI를 우선 적용(2026-09-03)
   if (summaryAssetSection === "etf" && isKrTicker(symbol)) ensureKrEtfLogoOverride(symbol, TICKER_TO_KOREAN_NAME[symbol] || companyName);
+  if (summaryAssetSection === "etf") registerEtfName(symbol, TICKER_TO_KOREAN_NAME[symbol] || companyName);
   const _cryptoLogoSrc = summaryAssetSection === "crypto" ? cryptoLogoSrc(cryptoBaseTicker(symbol)) : null;
   const _logoOv = LOGO_OVERRIDE[symbol] || (_cryptoLogoSrc ? { src: _cryptoLogoSrc } : null);
   const _logoSrc = logoSources(symbol, 128);
   const _logoBg = logoBg(symbol);
   const summaryLogoWrapStyle = _logoBg ? ` style="background:${_logoBg}"` : "";
-  const summaryLogoImg = _logoOv
+  // ETF는 상세 헤더도 테마 이모지(2026-09-11) — 목록과 같은 로고를 써야 같은 종목으로 알아본다
+  const _etfEmoji = summaryAssetSection === "etf" ? etfThemeOf(TICKER_TO_KOREAN_NAME[symbol] || companyName || "", symbol) : null;
+  const summaryLogoImg = _etfEmoji
+    ? `<span class="summary-etf-emoji">${etfThemeMarkHtml(_etfEmoji)}</span>`
+    : _logoOv
     ? `<img class="summary-ticker-logo" src="${_logoOv.src}" alt="${escapeHtml(symbol)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />`
     : `<img class="summary-ticker-logo" src="${_logoSrc.primary}" alt="${escapeHtml(symbol)}" ${_logoSrc.useFallback ? `data-fallback="${_logoSrc.fmp}"` : ""} onerror="${LOGO_ONERROR}" />`;
 
@@ -5691,8 +5794,12 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
         <button type="button" class="summary-action-btn" id="tickerSReportToggleBtn">📄 s리포트</button>
       </div>
     </div>
+    <div id="etfHoldingsBlock" class="etf-holdings-block" style="display:none;"></div>
     <div id="tickerHistoricalRow" style="display:none;"></div>
   `;
+  // ETF면 개요 맨 위에 보유 종목 TOP10(2026-09-11 사용자 요청) — 데이터는 지연 로드라 렌더를 기다리지 않음
+  etfHoldingsShowMore = false;
+  if (summaryAssetSection === "etf") renderEtfHoldingsBlock(symbol, isKrTicker(symbol));
 
   // 세 버튼(과거분석·미래예측·S리포트) 모두 누른 자리 바로 아래에서 열리도록 정적 섹션을 요약 영역 안으로 이동
   // — innerHTML 재렌더로 DOM에서 떨어져 나가도 상단 const 참조가 노드를 붙잡고 있어 매 렌더마다 다시 붙임(내용·리스너 유지)
@@ -8519,6 +8626,7 @@ const US_ETF_TOP100 = [
   { t: "TQQQ", n: "ProShares UltraPro QQQ" }, { t: "SDY", n: "SPDR S&P Dividend" }, { t: "NOBL", n: "ProShares S&P 500 Dividend Aristocrats" },
   { t: "MOAT", n: "VanEck Morningstar Wide Moat" },
 ];
+US_ETF_TOP100.forEach((x) => registerEtfName(x.t, x.n)); // 이모지 로고용 이름 등록(2026-09-11)
 
 let etfPopularRegion = "us";
 let krEtfFullListPromise = null;
@@ -8535,7 +8643,10 @@ function getKrEtfFullList() {
       )
       .then((list) => {
         // 섹션 마크·ETF 상세 판별(sectionOfSymbol)이 국내 전체 ETF를 ETF로 인식하도록 등록
-        list.forEach((it) => knownEtfSet().add(it.symbol));
+        list.forEach((it) => {
+          knownEtfSet().add(it.symbol);
+          registerEtfName(it.symbol, it.name); // 이모지 로고용 상품명(2026-09-11)
+        });
         return list;
       })
       .catch((e) => {
@@ -9842,6 +9953,295 @@ async function runCryptoTrend() {
     statusEl.textContent = `❌ ${e.message || "암호화폐 시세를 가져오지 못했습니다."}`;
   }
 }
+
+// ---------- ETF 검색상세 "보유 종목"(2026-09-11 사용자 요청) ----------
+// 상세 화면 맨 위에 비중 순으로 보유 종목을 깔아준다. TOP10을 먼저 보여주고 나머지는 "더보기".
+// 다만 공개 출처(미국=야후 topHoldings, 한국=네이버 etfAnalysis)가 둘 다 상위 10종목까지만 공시해서,
+// 더보기로 펼쳐지는 건 11위 이하 종목이 아니라 업종·자산·국가 비중이다 — 문구에 그대로 밝혀둔다.
+const ETF_SECTOR_KO = {
+  // 네이버(국내)
+  IT: "IT", INDUSTRIALS: "산업재", FINANCIALS: "금융", CONSUMER_DISCRETIONARY: "경기소비재",
+  CONSUMER_STAPLES: "필수소비재", COMMUNICATION: "커뮤니케이션", MATERIALS: "소재", HEALTH_CARE: "헬스케어",
+  ENERGY: "에너지", UTILITIES: "유틸리티", REAL_ESTATE: "부동산", ETC: "기타",
+  // 야후(미국)
+  technology: "IT", financial_services: "금융", healthcare: "헬스케어", consumer_cyclical: "경기소비재",
+  consumer_defensive: "필수소비재", communication_services: "커뮤니케이션", industrials: "산업재",
+  basic_materials: "소재", energy: "에너지", utilities: "유틸리티", realestate: "부동산",
+  // 자산 구분(국내)
+  EQUITY: "주식", CASH: "현금", BOND: "채권", DERIVATIVES: "파생", OTHERS: "기타",
+  // 국가 코드(네이버 countryPortfolioList)와 미분류 표기
+  KR: "한국", US: "미국", CN: "중국", JP: "일본", HK: "홍콩", TW: "대만", IN: "인도",
+  GB: "영국", DE: "독일", FR: "프랑스", CA: "캐나다", AU: "호주", NL: "네덜란드",
+  MISC: "기타", UNCLASSIFIED: "미분류",
+};
+function etfPortionKo(code) {
+  return ETF_SECTOR_KO[code] || ETF_SECTOR_KO[(code || "").toUpperCase()] || code || "기타";
+}
+function etfPortionListHtml(title, list) {
+  if (!list || !list.length) return "";
+  const sorted = [...list].sort((a, b) => (b.w || 0) - (a.w || 0));
+  return `<div class="etf-portion-block"><span class="etf-portion-title">${escapeHtml(title)}</span>${sorted
+    .map((p) => `<span class="etf-portion-chip">${escapeHtml(etfPortionKo(p.k))} <b>${(p.w || 0).toFixed(1)}%</b></span>`)
+    .join("")}</div>`;
+}
+let etfHoldingsShowMore = false;
+async function renderEtfHoldingsBlock(symbol, isKr) {
+  const box = el("etfHoldingsBlock");
+  if (!box) return;
+  box.innerHTML = `<p class="muted" style="font-size:12px;margin:0;">보유 종목을 불러오는 중...</p>`;
+  let info = null;
+  try {
+    info = etfInfoOf(await getEtfInfoDb(), symbol);
+  } catch {
+    // 데이터 파일을 못 읽으면 블록 자체를 숨김
+  }
+  if (!info || !info.holdings || !info.holdings.length) {
+    box.innerHTML = "";
+    box.style.display = "none";
+    return;
+  }
+  const paint = () => {
+    const top = info.holdings.slice(0, 10);
+    const rows = top
+      .map((h, i) => {
+        // 국내는 6자리 종목코드라 야후 심볼(.KS)로 바꿔야 상세로 넘어간다.
+        // 다만 해외 지수를 추종하는 국내 ETF는 네이버가 종목코드를 비워 줘서(이름·주식수만 옴) 링크를 걸 수 없다 —
+        // 이 경우 로고·링크 없이 이름만 두고, 비중 대신 보유 주식수를 보여준다.
+        const linkSym = h.s ? (isKr ? `${h.s}.KS` : h.s) : "";
+        const nameCell = linkSym
+          ? `<span class="ticker-cell rank-logo">${tickerLogoHtml(linkSym, (h.n || h.s).slice(0, 2))}<b class="ticker-link" data-ticker="${escapeHtml(
+              linkSym
+            )}">${escapeHtml(h.n || h.s)}</b></span>`
+          : `<span class="etf-hold-plain">${escapeHtml(h.n || "")}</span>`;
+        const weightCell = Number.isFinite(h.w)
+          ? `<b>${h.w.toFixed(2)}%</b>`
+          : h.c
+          ? `<span class="muted" style="font-size:11px;">${Number(h.c).toLocaleString()}주</span>`
+          : "—";
+        return `
+        <tr>
+          <td class="etf-hold-no">${i + 1}</td>
+          <td>${nameCell}</td>
+          <td class="etf-hold-weight">${weightCell}</td>
+        </tr>`;
+      })
+      .join("");
+    // 비중이 전부 비면(해외 구성종목) 열 제목도 "보유 주식수"로 바꿔야 말이 된다
+    const weightHeader = top.some((h) => Number.isFinite(h.w)) ? "비중" : "보유<br>주식수";
+    const portions =
+      etfPortionListHtml("업종 비중", info.sectors) + etfPortionListHtml("자산 비중", info.assets) + etfPortionListHtml("국가 비중", info.countries);
+    const extra = etfHoldingsShowMore
+      ? `<div class="etf-holdings-more">
+          ${portions}
+          <p class="muted" style="font-size:11px;margin:6px 0 0;">11위 이하 보유 종목은 공개 자료에 없습니다 — 운용사가 매일 공시하는 건 비중 상위 10종목까지라서, ${
+            portions ? "대신 전체 구성 비중을 보여드립니다." : "이 상품은 추가로 보여드릴 구성 정보도 공시되지 않았습니다."
+          }</p>
+        </div>`
+      : "";
+    box.innerHTML = `
+      <div class="etf-holdings-head">
+        <b>보유 종목</b>
+        <span class="muted" style="font-size:11px;">비중 순 · ${info.index ? escapeHtml(info.index) + " 추종" : escapeHtml(info.category || "")}${
+      Number.isFinite(info.fee) ? ` · 운용보수 연 ${info.fee}%` : ""
+    }</span>
+      </div>
+      <table class="top30-table etf-holdings-table">
+        <thead><tr><th>순위</th><th>종목</th><th>${weightHeader}</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      ${extra}
+      <button type="button" class="cat-btn etf-holdings-more-btn">${etfHoldingsShowMore ? "접기" : "더보기"}</button>`;
+    const btn = box.querySelector(".etf-holdings-more-btn");
+    if (btn)
+      btn.addEventListener("click", () => {
+        etfHoldingsShowMore = !etfHoldingsShowMore;
+        paint();
+      });
+  };
+  box.style.display = "block";
+  paint();
+}
+
+// ---------- ETF 전용 상단 탭(2026-09-11 사용자 요청) ----------
+// 인기종목 - 승률 - 수익률 - 변동성 - 배당률 - 운용보수.
+// 표는 전부 "이름 / 가운데 값 / 오른쪽 값" 3열이고, 탭마다 가운데·오른쪽에 무엇을 놓을지가 다르다.
+//  · 승률   : 현재가(등락률) / 10년 승률
+//  · 수익률 : 현재가(등락률) / 연평균 상승      (연평균상승과 같은 내용)
+//  · 변동성 : 변동성(현재가 자리)  / 연평균 상승
+//  · 배당률 : 배당률(⚠️컷·지연)    / 10년 승률
+//  · 운용보수: 운용보수(싼 순)     / 연평균 상승
+// 값은 ETF 스캔 캐시(ensureEtfScanRows)와 배치 DB(winrate-scores-us.json / etf-info.json)를 재사용한다.
+const ETF_METRIC_TABS = {
+  winrate: {
+    title: "tab.etfWinrate",
+    midHeader: RANK_TH_PRICE_CHG,
+    midCell: (r) => `${priceChartLink(r.symbol, fmtPrice(r.price, r.currency))}${
+      r.changePct !== null && r.changePct !== undefined
+        ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
+        : ""
+    }`,
+    rightHeader: RANK_TH_WINRATE,
+    rightCell: (r) => winRatePctCellHtml(r.winRate, r.winTotal),
+    sort: (a, b) => (b.winRate ?? -1) - (a.winRate ?? -1),
+    note: "10년 승률(최근 10년 월봉 기준 전달보다 오르며 마감한 달의 비율)이 높은 순입니다.",
+  },
+  return: {
+    title: "tab.etfReturn",
+    midHeader: RANK_TH_PRICE_CHG,
+    midCell: (r) => `${priceChartLink(r.symbol, fmtPrice(r.price, r.currency))}${
+      r.changePct !== null && r.changePct !== undefined
+        ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
+        : ""
+    }`,
+    rightHeader: RANK_TH_RET10,
+    rightCell: (r) => etfRet10CellHtml(r),
+    sort: (a, b) => (b.ret10y ?? -Infinity) - (a.ret10y ?? -Infinity),
+    note: "연평균 상승(최근 10년 연복리 수익률 CAGR — 매년 몇 %씩 오른 셈인지)이 높은 순입니다.",
+  },
+  volatility: {
+    title: "tab.etfVolatility",
+    // 사용자 요청: 변동성 탭은 현재가 자리에 변동성을 넣는다
+    midHeader: `<th data-explain="최근 3개월 하루 변동폭(고가-저가)을 종가로 나눈 값의 평균입니다. 낮을수록 하루하루 덜 흔들렸다는 뜻이고, 수익률이 좋다는 뜻은 아닙니다.">변동성<br>(3개월)</th>`,
+    midCell: (r) => (Number.isFinite(r.volatility3m) ? `<b>${r.volatility3m.toFixed(2)}%</b>` : "N/A"),
+    rightHeader: RANK_TH_RET10,
+    rightCell: (r) => etfRet10CellHtml(r),
+    sort: (a, b) => (Number.isFinite(a.volatility3m) ? a.volatility3m : Infinity) - (Number.isFinite(b.volatility3m) ? b.volatility3m : Infinity),
+    note: "최근 3개월 일평균 변동폭이 <b>작은 순</b>입니다. 변동성이 낮다고 수익이 보장되는 것은 아닙니다.",
+  },
+  dividend: {
+    title: "tab.etfDividend",
+    needsDividend: true,
+    midHeader: `<th data-explain="현재가 기준 배당률 — 최근 1년간 실제 지급된 분배금 합계를 지금 가격으로 나눈 값입니다. ⚠️컷은 직전보다 분배금이 20% 넘게 줄었다는, ⚠️지연은 평소 주기보다 지급이 밀렸다는 경고입니다.">배당률<br>(현재가 기준)</th>`,
+    midCell: (r) => (Number.isFinite(r.dividendYield) ? `<b>${r.dividendYield.toFixed(2)}%</b>${dividendWarningHtml(r)}` : "N/A"),
+    rightHeader: RANK_TH_WINRATE,
+    rightCell: (r) => winRatePctCellHtml(r.winRate, r.winTotal),
+    sort: (a, b) => (b.dividendYield ?? -1) - (a.dividendYield ?? -1),
+    filter: (r) => Number.isFinite(r.dividendYield),
+    note: "현재가 기준 배당률(최근 1년 분배금 합계 ÷ 현재가)이 높은 순입니다. 분배금이 없는 ETF는 빠집니다.",
+  },
+  fee: {
+    title: "tab.etfFee",
+    needsInfo: true,
+    midHeader: `<th data-explain="연간 총보수 — ETF를 1년 들고 있으면 자산에서 자동으로 빠져나가는 비용 비율입니다. 따로 청구되는 게 아니라 매일 조금씩 가격에 반영됩니다. 낮을수록 유리합니다.">운용보수<br>(연간)</th>`,
+    midCell: (r) => (Number.isFinite(r.fee) ? `<b>${r.fee.toFixed(3).replace(/0+$/, "").replace(/\.$/, "")}%</b>` : "N/A"),
+    rightHeader: RANK_TH_RET10,
+    rightCell: (r) => etfRet10CellHtml(r),
+    sort: (a, b) => (Number.isFinite(a.fee) ? a.fee : Infinity) - (Number.isFinite(b.fee) ? b.fee : Infinity),
+    filter: (r) => Number.isFinite(r.fee),
+    note: "연간 총보수가 <b>싼 순</b>입니다. 미국은 야후 공시(annualReportExpenseRatio), 국내는 네이버 총보수 기준이며 실부담비용률과는 다를 수 있습니다.",
+  },
+};
+function etfRet10CellHtml(r) {
+  if (r.ret10y === null || r.ret10y === undefined) return "N/A";
+  return `<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>${partialMarkHtml(r.winTotal)}`;
+}
+
+let etfMetricTab = "winrate";
+const etfMetricExpanded = new Set(); // 전체보기를 누른 지역("us"/"kr")
+function openEtfMetricTab(key) {
+  if (!ETF_METRIC_TABS[key]) key = "winrate";
+  etfMetricTab = key;
+  switchTab(TAB_ORDER.indexOf("topranking"));
+  el("tabValuationBtn").classList.remove("active");
+  tabTrendBtn.classList.remove("active");
+  setCarouselViewTitle(ETF_METRIC_TABS[key].title);
+  el("topRankingSubNav").innerHTML = ""; // ETF는 상단 탭이 곧 항목이라 서브내비를 쓰지 않음
+  showRankingGroup("trend");
+  runEtfMetricTab();
+}
+// 배당률 탭 전용 — 종목별 분배금 조회는 느려서(종목당 차트 1회) 심볼 단위로 캐시
+const etfDividendCache = new Map();
+async function attachEtfDividends(rows, statusEl) {
+  const pending = rows.filter((r) => !etfDividendCache.has(r.symbol));
+  if (pending.length) {
+    await mapWithConcurrency(
+      pending,
+      6,
+      async (r) => {
+        const info = await getDividendYieldInfo(r.symbol).catch(() => null);
+        etfDividendCache.set(r.symbol, info);
+      },
+      (done) => {
+        if (statusEl) statusEl.textContent = `배당률을 계산하는 중... (${done}/${pending.length})`;
+      }
+    );
+  }
+  rows.forEach((r) => {
+    const info = etfDividendCache.get(r.symbol);
+    r.dividendYield = info && Number.isFinite(info.yieldPct) ? info.yieldPct : null;
+    r.dividendWarning = info ? info.dividendWarning : null;
+  });
+}
+async function runEtfMetricTab() {
+  const conf = ETF_METRIC_TABS[etfMetricTab];
+  const statusEl = trendStatus;
+  const resultsEl = trendResults;
+  resultsEl.innerHTML = "";
+  statusEl.style.display = "block";
+  statusEl.textContent = "ETF 목록을 불러오는 중...";
+  const region = etfPopularRegion;
+  const tabAtStart = etfMetricTab;
+  try {
+    const isKr = region === "kr";
+    const expanded = etfMetricExpanded.has(region);
+    const { rows, scanned, total } = await ensureEtfScanRows(region, expanded ? 100 : 30, statusEl);
+    if (etfPopularRegion !== region || appSectionMode !== "etf" || etfMetricTab !== tabAtStart) return;
+    await attachWinRateRsiToRows(rows, "scoresEtf"); // 10년 승률·연평균 상승
+    if (conf.needsInfo) {
+      const db = await getEtfInfoDb().catch(() => null);
+      rows.forEach((r) => {
+        const info = etfInfoOf(db, r.symbol);
+        r.fee = info && Number.isFinite(info.fee) ? info.fee : null;
+      });
+    }
+    if (conf.needsDividend) await attachEtfDividends(rows.slice(0, expanded ? total : 30), statusEl);
+    if (etfPopularRegion !== region || appSectionMode !== "etf" || etfMetricTab !== tabAtStart) return;
+    statusEl.style.display = "none";
+
+    const universeLabel = isKr ? "국내 상장 ETF 시가총액 상위" : "미국 상장 ETF 순자산 상위";
+    const limit = expanded ? total : 30;
+    const listed = (conf.filter ? rows.filter(conf.filter) : rows.slice()).sort(conf.sort).slice(0, limit);
+    const body = listed
+      .map(
+        (r, i) => `
+      <tr>
+        <td><span class="etf-rank-no">${i + 1}</span></td>
+        <td><span class="ticker-cell rank-logo">${etfRowNameHtml(r, isKr)}</span></td>
+        <td>${conf.midCell(r)}</td>
+        <td>${conf.rightCell(r)}</td>
+      </tr>`
+      )
+      .join("");
+    resultsEl.innerHTML =
+      etfRegionNavHtml("data-etf-metric-region") +
+      (!expanded ? topCapNoteHtml(Math.min(30, scanned), total, true) : "") +
+      `${TAP_HINT_HTML}
+      <table class="top30-table">
+        <thead><tr><th data-explain="순위 — 이 표의 기준값으로 매긴 등수입니다.">순위</th>${RANK_TH_NAME_ETF}${conf.midHeader}${conf.rightHeader}</tr></thead>
+        <tbody>${body}</tbody>
+      </table>
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} ${
+        expanded ? `${total}개 전체` : `${Math.min(30, scanned)}개`
+      } 대상 — ${conf.note} 투자 자문이 아닙니다.</p>` +
+      (!expanded ? `<button type="button" class="cat-btn load-more-btn">전체보기 (전체 ${total}개 검색 · 약 1분 소요)</button>` : "");
+    const moreBtn = resultsEl.querySelector(".load-more-btn");
+    if (moreBtn) {
+      moreBtn.addEventListener("click", () => {
+        etfMetricExpanded.add(region);
+        runEtfMetricTab();
+      });
+    }
+  } catch (e) {
+    statusEl.style.display = "block";
+    statusEl.textContent = `❌ ${e.message || "ETF 데이터를 가져오지 못했습니다."}`;
+  }
+}
+trendResults.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-etf-metric-region]");
+  if (!btn) return;
+  etfPopularRegion = btn.dataset.etfMetricRegion;
+  runEtfMetricTab();
+});
 
 // ETF·코인 시장동향 진입 — topranking 패널을 빌려 쓰되 서브내비는 6개 랭킹 칩으로 구성
 function openEtfTrend() {
@@ -12133,10 +12533,10 @@ const KR_ETF_BRAND_LOGO_SRC = {
   IBK: "https://financialmodelingprep.com/image-stock/024110.KS.png",
 };
 // 상품명으로 브랜드를 찾아 그 심볼의 LOGO_OVERRIDE를 등록 — ETF 목록·상세 렌더 직전에 호출(로드 실패 시 기존 배지 폴백 유지)
+// 2026-09-11: ETF 로고를 테마 이모지로 바꾸면서 운용사 CI 등록은 중단(이모지가 먼저 잡히도록) —
+// 상품명만 등록해 etfEmojiLogoHtml이 테마를 판별할 수 있게 한다. 함수 이름은 호출부가 많아 그대로 둠.
 function ensureKrEtfLogoOverride(symbol, name) {
-  if (!symbol || LOGO_OVERRIDE[symbol]) return;
-  const src = KR_ETF_BRAND_LOGO_SRC[(name || "").split(" ")[0]];
-  if (src) LOGO_OVERRIDE[symbol] = { src, bg: "#ffffff" };
+  registerEtfName(symbol, name);
 }
 
 // FMP 로고가 순백색이라 흰 원 배경에서 안 보이는 종목들(506개 전수 픽셀 분석 결과 61개) — 어두운 배경을 깔아 흰 로고가 보이게 함
@@ -12165,6 +12565,11 @@ function tickerLogoHtml(symbol, badgeLabel) {
     if (cryptoSrc) {
       return `<span class="ticker-logo-wrap"><img class="ticker-logo" src="${cryptoSrc}" alt="${s}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><span class="ticker-logo-badge" style="display:none;">${badge}</span></span>`;
     }
+  }
+  // ETF는 운용사 CI 대신 테마 이모지(2026-09-11 사용자 요청) — 이름을 아는 ETF만 해당
+  if (ETF_NAME_BY_SYMBOL.has(symbol)) {
+    const emojiLogo = etfEmojiLogoHtml(symbol);
+    if (emojiLogo) return emojiLogo;
   }
   const ov = LOGO_OVERRIDE[symbol];
   const bg = logoBg(symbol);
