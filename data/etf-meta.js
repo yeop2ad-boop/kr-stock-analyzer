@@ -21,7 +21,7 @@ window.ETF_THEME_RULES = [
   { key: "money", emoji: "💵", label: "금리·현금성", test: /머니마켓|CD금리|KOFR|초단기|단기통안|금리액티브|T-?Bill|Ultra-?Short|Floating Rate|0-3 Month/i },
   { key: "bond", emoji: "🏛️", label: "채권", test: /채권|국채|국고채|통안채|물가채|회사채|크레딧|금융채|Bond|Treasury|Muni|Aggregate|Corporate|MBS|Preferred/i },
   { key: "space", emoji: "🚀", label: "우주·방산", test: /우주|방산|항공우주|K-?방산|Aerospace|Defense|Space/i },
-  { key: "semi", emoji: "🔲", label: "반도체", test: /반도체|HBM|소부장|Semiconductor|필라델피아/i },
+  { key: "semi", emoji: "💠", label: "반도체", test: /반도체|HBM|소부장|Semiconductor|필라델피아/i },
   { key: "ai", emoji: "🤖", label: "AI·로봇", test: /\bAI\b|인공지능|로봇|Robot|머신러닝/i },
   { key: "battery", emoji: "🔋", label: "2차전지", test: /2차전지|이차전지|배터리|Battery|리튬|Lithium/i },
   { key: "ship", emoji: "🚢", label: "조선·해운", test: /조선|해운|Shipping/i },
