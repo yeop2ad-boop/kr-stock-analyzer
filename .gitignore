@@ -10,3 +10,4 @@ sector-map/scripts/corp-ticker-map.json
 sector-map/scripts/dart-institutions-result.json
 sector-map/scripts/ticker-price-map.json
 .demo-preview/
+sector-map/scripts/strategy-series-cache.json

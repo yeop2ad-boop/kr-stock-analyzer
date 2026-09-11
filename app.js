@@ -2367,6 +2367,7 @@ const insightCategoryButtons = {
   corr: el("insightCatCorrBtn"), // 상관관계도(2026-09-05): 17개 랭킹의 과거 상·하위 100 적중 수 — 매일 07시 배치, 하루 고정
   sectorWin: el("insightCatSectorWinBtn"), // 섹터 승률(2026-09-07): 섹터별 승률·상승률 평균(1달/1년/10년) — 승률 DB로 접속 시 계산
   volatility: el("insightCatVolatilityBtn"), // 변동성 순위(2026-09-10): ETF 전용 — 최근 3개월 일평균 변동이 낮은 순
+  strategy: el("insightCatStrategyBtn"), // 투자방법 비교(2026-09-11): 10년치 7개 전략 누적 수익률
   calendar: el("insightCatCalendarBtn"),
   news: el("insightCatNewsBtn"),
   futureIndustry: el("insightCatFutureIndustryBtn"),
@@ -9809,11 +9810,11 @@ function updateFirmsNavVisibility() {
 // - 비트코인: "자산&투자사" 제외(코인엔 13F·5%룰 지분 공시가 없음)
 // - 한국·미국주식: 기존대로 자산&투자사 / 순위상승 / 상관관계도 / 섹터 승률
 const INSIGHT_SECTION_CATEGORIES = {
-  stocks: ["firms", "rankup", "corr", "sectorWin"],
-  etf: ["volatility"],
-  crypto: ["rankup", "corr", "sectorWin"],
+  stocks: ["firms", "rankup", "corr", "sectorWin", "strategy"],
+  etf: ["volatility", "strategy"],
+  crypto: ["rankup", "corr", "sectorWin", "strategy"],
 };
-const INSIGHT_SECTION_TOGGLE_KEYS = ["firms", "rankup", "corr", "sectorWin", "volatility"]; // 나머지(브랜드·신기술·캘린더·뉴스)는 원래 더보기로 빠져 계속 숨김
+const INSIGHT_SECTION_TOGGLE_KEYS = ["firms", "rankup", "corr", "sectorWin", "volatility", "strategy"]; // 나머지(브랜드·신기술·캘린더·뉴스)는 원래 더보기로 빠져 계속 숨김
 function syncInsightCategoryVisibility() {
   const allowed = INSIGHT_SECTION_CATEGORIES[appSectionMode] || INSIGHT_SECTION_CATEGORIES.stocks;
   INSIGHT_SECTION_TOGGLE_KEYS.forEach((k) => {
@@ -9833,7 +9834,7 @@ document.addEventListener("appsectionchange", syncInsightCategoryVisibility);
 
 function switchInsightCategory(key) {
   // 순위상승·상관관계도는 투자처 전환 후 재클릭 시 새 유니버스로 다시 그려야 하므로 조기 반환 제외(2026-09-04/05)
-  if (insightActiveCategory === key && key !== "rankup" && key !== "corr" && key !== "sectorWin" && key !== "volatility") return;
+  if (insightActiveCategory === key && key !== "rankup" && key !== "corr" && key !== "sectorWin" && key !== "volatility" && key !== "strategy") return;
   insightActiveCategory = key;
   setInsightCategoryActive(key);
   updateFirmsNavVisibility();
@@ -9866,10 +9867,138 @@ function runInsightCategory(key) {
   else if (key === "corr") runInsightCorr(insightCorrPeriod);
   else if (key === "sectorWin") runInsightSectorWin();
   else if (key === "volatility") runInsightVolatility();
+  else if (key === "strategy") runInsightStrategyCompare();
   else if (key === "tech") runInsightTech();
   else if (key === "calendar") runInsightCalendar();
   else if (key === "news") runInsightNews();
   else if (key === "futureIndustry") runFutureIndustrySource(insightActiveFutureSource);
+}
+
+// ---------- 투자방법 비교(2026-09-11 사용자 요청) ----------
+// 지금부터 딱 10년을 1년씩 끊어, 7가지 투자 방법을 매년 새로 골라 1년씩 들고 갔다면 어떻게 됐을지 비교한다.
+// 값은 배치(sector-map/scripts/fetch-strategy-compare.ps1)가 미리 계산해둔 data/strategy-compare.json.
+// 세로축 = 누적 수익률(%), 가로축 = 1년 단위 10칸. 아래 표는 매년 변동과 마지막 최종 변동량.
+let strategyCompareDbPromise = null;
+function getStrategyCompareDb() {
+  if (!strategyCompareDbPromise) {
+    strategyCompareDbPromise = fetch("data/strategy-compare.json", { cache: "no-store" })
+      .then((r) => {
+        if (!r.ok) throw new Error("http " + r.status);
+        return r.json();
+      })
+      .catch((e) => {
+        strategyCompareDbPromise = null; // 실패는 캐시하지 않음
+        throw e;
+      });
+  }
+  return strategyCompareDbPromise;
+}
+// 7개 선을 한 좌표계에 그림 — 0% 기준선과 1년 단위 세로 격자, 오른쪽 끝에 최종값 라벨
+function buildStrategyCompareSvg(db) {
+  const W = 720,
+    H = 420,
+    ML = 52,
+    MR = 96,
+    MT = 18,
+    MB = 46;
+  const PW = W - ML - MR;
+  const PH = H - MT - MB;
+  const n = db.years.length;
+  const all = [0];
+  db.strategies.forEach((st) => st.cumulative.forEach((v) => Number.isFinite(v) && all.push(v)));
+  const { lo, hi, step } = niceAxisBounds(Math.min(...all), Math.max(...all));
+  const xFn = (i) => ML + (i / n) * PW; // i=0은 시작(0%), i=n은 마지막 해 끝
+  const yFn = (v) => MT + (1 - (v - lo) / (hi - lo)) * PH;
+
+  let grid = "";
+  for (let v = Math.ceil(lo / step) * step; v <= hi + 0.001; v += step) {
+    const y = yFn(v);
+    const zero = Math.abs(v) < 0.001;
+    grid += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${ML + PW}" y2="${y.toFixed(1)}" stroke="${zero ? "#9aa1b2" : "#e6e8ee"}" stroke-width="${zero ? 1.4 : 1}" />`;
+    grid += `<text x="${ML - 8}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="#6b7280">${v > 0 ? "+" : ""}${Math.round(v)}%</text>`;
+  }
+  for (let i = 0; i <= n; i++) {
+    const x = xFn(i);
+    grid += `<line x1="${x.toFixed(1)}" y1="${MT}" x2="${x.toFixed(1)}" y2="${MT + PH}" stroke="#eceef3" stroke-width="1" stroke-dasharray="2,3" />`;
+    const label = i === 0 ? `${n}년 전` : i === n ? "현재" : `${n - i}년 전`;
+    if (i === 0 || i === n || (n - i) % 2 === 0) {
+      grid += `<text x="${x.toFixed(1)}" y="${(MT + PH + 18).toFixed(1)}" text-anchor="middle" font-size="10.5" fill="#6b7280">${label}</text>`;
+    }
+  }
+
+  let lines = "";
+  db.strategies.forEach((st) => {
+    const pts = [{ x: xFn(0), y: yFn(0) }];
+    st.cumulative.forEach((v, i) => {
+      if (Number.isFinite(v)) pts.push({ x: xFn(i + 1), y: yFn(v) });
+    });
+    if (pts.length < 2) return;
+    const d = pts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
+    lines += `<path d="${d}" fill="none" stroke="${st.color}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" />`;
+    const last = pts[pts.length - 1];
+    lines += `<circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="3" fill="${st.color}" />`;
+    lines += `<text x="${(last.x + 6).toFixed(1)}" y="${(last.y + 4).toFixed(1)}" font-size="10.5" font-weight="800" fill="${st.color}">${
+      st.total > 0 ? "+" : ""
+    }${Math.round(st.total)}%</text>`;
+  });
+
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="투자방법 비교 10년 누적 수익률">
+    <rect x="0" y="0" width="${W}" height="${H}" fill="#fff" />
+    ${grid}
+    ${lines}
+  </svg>`;
+}
+async function runInsightStrategyCompare() {
+  const status = el("insightStatus");
+  const results = el("insightResults");
+  results.innerHTML = "";
+  status.style.display = "block";
+  status.textContent = "투자방법별 10년 성적을 불러오는 중...";
+  try {
+    const db = await getStrategyCompareDb();
+    if (!db || !Array.isArray(db.strategies) || !db.strategies.length) throw new Error("데이터가 비어 있습니다.");
+    status.style.display = "none";
+    const pct = (v) => (Number.isFinite(v) ? `<span class="${v >= 0 ? "delta-up" : "delta-down"}">${v > 0 ? "+" : ""}${Math.round(v)}%</span>` : "—");
+    const legend = db.strategies
+      .map((st) => `<span class="strategy-legend-item"><i style="background:${st.color};"></i>${escapeHtml(st.label)}</span>`)
+      .join("");
+    const head = db.years.map((y, i) => `<th>${db.years.length - i}년 전</th>`).join("");
+    const rows = db.strategies
+      .map(
+        (st) => `<tr>
+          <td class="strategy-name"><i style="background:${st.color};"></i>${escapeHtml(st.label)}</td>
+          ${st.yearly.map((v) => `<td>${pct(v)}</td>`).join("")}
+          <td class="strategy-total">${pct(st.total)}</td>
+        </tr>`
+      )
+      .join("");
+    const dateStr = db.generatedAt ? String(db.generatedAt).slice(0, 10) : "-";
+    results.innerHTML = `
+      ${insightBasisHtml(
+        `${dateStr} 기준 · 최근 10년(1년 단위)`,
+        `<p>지금부터 딱 10년을 1년씩 끊어, 매년 초에 그 방법대로 종목을 새로 골라 1년 들고 갔다면 어떻게 됐을지 계산한 결과입니다. 세로축은 시작을 0%로 둔 <b>누적 수익률</b>, 가로축은 1년 단위 10칸이고, 아래 표는 매년 변동과 마지막 열의 최종 변동량입니다.</p>
+        <p>· <b>10년 승률 매매</b> — 그해 시작 시점 기준 직전 10년 월간 승률 상위 ${db.topN}종목<br>
+        · <b>섹터 순환 매매</b> — 직전 1년 수익률 1위 섹터를 통째로 보유<br>
+        · <b>52주 저점/고점 매매</b> — 그 시점 52주 구간에서 가장 낮은/높은 위치 ${db.topN}종목<br>
+        · <b>S&P 장기투자</b> — SPY 보유 · <b>코스피 장기투자</b> — KODEX 200 보유<br>
+        · <b>IPO 매매</b> — 그 시점에 상장한 지 가장 얼마 안 된 ${db.topN}종목</p>
+        <p>⚠️ 코스피 장기투자만 국내(KODEX 200)이고 나머지는 전부 S&P500·미국 기준입니다. 종목 선정이 <b>오늘의 S&P500 구성종목</b> 안에서만 이뤄지므로, 그 사이 편입·퇴출된 기업이 빠진 생존편향이 있습니다. 수수료·세금·배당은 반영하지 않았습니다. 과거 성적이며 투자 자문이 아닙니다.</p>`
+      )}
+      <div class="strategy-legend">${legend}</div>
+      <div class="future-chart-container">${buildStrategyCompareSvg(db)}</div>
+      <p class="chart-scroll-hint">&lt; 좌우 스크롤 &gt;</p>
+      <div class="sector-win-scroll">
+        <table class="top30-table strategy-table">
+          <thead><tr><th class="strategy-name-th">투자 방법</th>${head}<th>최종</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  } catch (e) {
+    status.style.display = "block";
+    status.innerHTML = `❌ ${escapeHtml(e.message || "투자방법 비교 데이터를 불러오지 못했습니다.")} <button type="button" class="cat-btn corr-retry-btn" style="margin-left:6px;">다시 시도</button>`;
+    const retry = status.querySelector(".corr-retry-btn");
+    if (retry) retry.addEventListener("click", () => runInsightStrategyCompare());
+  }
 }
 
 // ---------- 변동성 순위(2026-09-10 사용자 요청, ETF 인사이트 전용) ----------

@@ -46,6 +46,12 @@ jobs:
         working-directory: sector-map
         run: ./scripts/fetch-winrate-scores.ps1
 
+      - name: 투자방법 비교(10년 백테스트) 갱신 — 인사이트 화면용
+        shell: pwsh
+        working-directory: sector-map
+        continue-on-error: true
+        run: ./scripts/fetch-strategy-compare.ps1
+
       - name: 지도가 실제 로드하는 core/extra 데이터 파일에 병합
         shell: pwsh
         working-directory: sector-map

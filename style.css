@@ -2720,3 +2720,14 @@ a.more-panel-item { text-decoration: none; color: inherit; }
 .more-panel-subnav .cat-btn { flex: 0 0 auto; padding: 7px 9px; font-size: 12px; white-space: nowrap; }
 .more-panel-apk-sub { display: block; font-size: 11px; font-weight: 500; color: var(--muted); margin-top: 2px; }
 .future-cmp-abs { font-weight: 600; font-size: 11px; opacity: 0.85; }
+
+
+/* ---------- 투자방법 비교(2026-09-11 사용자 요청) ---------- */
+.strategy-legend { display: flex; flex-wrap: wrap; gap: 6px 12px; margin: 4px 0 8px; }
+.strategy-legend-item { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 700; color: var(--text); }
+.strategy-legend-item i, .strategy-name i { width: 10px; height: 10px; border-radius: 3px; flex: none; display: inline-block; }
+table.strategy-table { font-size: 12px; }
+table.strategy-table th, table.strategy-table td { padding: 8px 6px; white-space: nowrap; }
+table.strategy-table td.strategy-name { text-align: left; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+table.strategy-table .strategy-name-th { text-align: left; }
+table.strategy-table td.strategy-total { font-weight: 800; background: var(--subtle-fill); }
