@@ -2796,6 +2796,8 @@ tr.sector-members-row td { background: var(--subtle-fill); padding: 10px !import
   letter-spacing: -0.2px;
   box-shadow: 0 0 0 1.5px var(--card-bg);
 }
+/* 실제 로고 위에도 배수 배지가 원 밖으로 나올 수 있게 */
+.etf-real-logo { position: relative; overflow: visible; }
 .etf-mult-long { background: var(--pos); }
 .etf-mult-short { background: var(--neg); }
 /* 검색상세 헤더의 큰 로고 자리 */

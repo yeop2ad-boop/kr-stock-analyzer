@@ -4875,7 +4875,16 @@ function etfThemeMarkHtml(theme) {
   const svg = ETF_FLAG_SVG[theme.key];
   return svg ? `<span class="etf-flag">${svg}</span>` : `<span class="etf-emoji">${theme.emoji}</span>`;
 }
-// ETF 로고 = 테마 이모지 원판 + (있으면) 배수 배지. 이름을 모르면 null을 돌려줘 호출부가 기존 로고를 쓰게 함
+// ETF 배수 배지(X2·X3) HTML — 실제 로고 위에도, 이모지 위에도 똑같이 얹는다
+function etfMultBadgeHtml(name) {
+  const lev = etfLeverageOf(name || "");
+  if (!lev) return "";
+  // 인버스 1배는 배수를 안 붙이고 "I"(인버스)로만 표시 — X1은 오해 소지가 있음
+  const badge = lev.dir === "short" && lev.mult === 1 ? "I" : `X${lev.mult}`;
+  const cls = lev.dir === "short" ? "etf-mult-short" : "etf-mult-long";
+  return `<span class="etf-mult-badge ${cls}">${badge}</span>`;
+}
+// 실제 로고를 못 구한 ETF용 폴백 — 테마 이모지 원판 + (있으면) 배수 배지
 function etfEmojiLogoHtml(symbol, name) {
   const label = name || ETF_NAME_BY_SYMBOL.get(symbol) || "";
   if (!label) return null;
@@ -5749,8 +5758,9 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   const _logoSrc = logoSources(symbol, 128);
   const _logoBg = logoBg(symbol);
   const summaryLogoWrapStyle = _logoBg ? ` style="background:${_logoBg}"` : "";
-  // ETF는 상세 헤더도 테마 이모지(2026-09-11) — 목록과 같은 로고를 써야 같은 종목으로 알아본다
-  const _etfEmoji = summaryAssetSection === "etf" ? etfThemeOf(TICKER_TO_KOREAN_NAME[symbol] || companyName || "", symbol) : null;
+  // ETF 상세 헤더도 목록과 같은 로고를 써야 같은 종목으로 알아본다 — 실제 로고가 없을 때만 테마 이모지(2026-09-11)
+  const _etfEmoji =
+    summaryAssetSection === "etf" && !hasRealEtfLogo(symbol) ? etfThemeOf(TICKER_TO_KOREAN_NAME[symbol] || companyName || "", symbol) : null;
   const summaryLogoImg = _etfEmoji
     ? `<span class="summary-etf-emoji">${etfThemeMarkHtml(_etfEmoji)}</span>`
     : _logoOv
@@ -12515,29 +12525,53 @@ const LOGO_OVERRIDE = {
 
 // 한국 ETF 로고(2026-09-03 사용자 요청): 숫자 티커라 FMP 로고가 없어 브랜드(첫 단어) → 운용사 그룹 CI로 표시.
 // 그룹 CI는 이미 FMP에 있는 상장 계열사 로고를 재사용(삼성전자=삼성, 미래에셋증권=미래에셋 등), 한화 계열은 자체 호스팅 로고
+// 국내 ETF 브랜드 마크(2026-09-11 사용자 요청 "하나하나 찾아서 진짜 로고로") —
+// 전에는 브랜드의 모회사 CI(KODEX에 삼성전자 로고 식)를 썼는데, 그건 운용사 로고도 아니고 다 똑같아 보였다.
+// 지금은 KODEX·TIGER·RISE 같은 ETF 브랜드 자체의 마크를 자체 호스팅한다. 상품명 첫 단어로 매칭하므로
+// 브랜드당 파일 하나로 그 브랜드의 전 종목(KODEX만 241개)을 덮는다.
+// 여기 없는 브랜드(SOL·HANARO·1Q·KoAct·TIMEFOLIO·WON 등)는 공개된 로고 파일을 못 구해서,
+// 화면에서는 추종 대상 테마 이모지로 떨어진다.
 const KR_ETF_BRAND_LOGO_SRC = {
-  KODEX: "https://financialmodelingprep.com/image-stock/005930.KS.png",
-  KoAct: "https://financialmodelingprep.com/image-stock/005930.KS.png",
-  TIGER: "https://financialmodelingprep.com/image-stock/006800.KS.png",
-  RISE: "https://financialmodelingprep.com/image-stock/105560.KS.png",
-  KBSTAR: "https://financialmodelingprep.com/image-stock/105560.KS.png",
-  SOL: "https://financialmodelingprep.com/image-stock/055550.KS.png",
-  ACE: "https://financialmodelingprep.com/image-stock/071050.KS.png",
-  PLUS: "logos/hanwha.png",
-  ARIRANG: "logos/hanwha.png",
-  HANARO: "https://financialmodelingprep.com/image-stock/005940.KS.png",
-  KIWOOM: "https://financialmodelingprep.com/image-stock/039490.KS.png",
-  KOSEF: "https://financialmodelingprep.com/image-stock/039490.KS.png",
-  "1Q": "https://financialmodelingprep.com/image-stock/086790.KS.png",
-  WON: "https://financialmodelingprep.com/image-stock/316140.KS.png",
-  IBK: "https://financialmodelingprep.com/image-stock/024110.KS.png",
+  KODEX: "logos/etf/kodex.png",
+  TIGER: "logos/etf/tiger.png",
+  RISE: "logos/etf/rise.png",
+  KBSTAR: "logos/etf/rise.png", // KBSTAR가 RISE로 브랜드 변경(2026)
+  ACE: "logos/etf/ace.png",
+  PLUS: "logos/etf/plus.png",
+  ARIRANG: "logos/etf/plus.png", // ARIRANG -> PLUS로 브랜드 변경
+  KIWOOM: "logos/etf/kiwoom.png",
+  KOSEF: "logos/etf/kiwoom.png", // KOSEF도 키움자산운용
+  FOCUS: "logos/etf/focus.png",
+  TREX: "logos/etf/trex.png",
+  "파워": "logos/etf/power.png",
 };
 // 상품명으로 브랜드를 찾아 그 심볼의 LOGO_OVERRIDE를 등록 — ETF 목록·상세 렌더 직전에 호출(로드 실패 시 기존 배지 폴백 유지)
-// 2026-09-11: ETF 로고를 테마 이모지로 바꾸면서 운용사 CI 등록은 중단(이모지가 먼저 잡히도록) —
-// 상품명만 등록해 etfEmojiLogoHtml이 테마를 판별할 수 있게 한다. 함수 이름은 호출부가 많아 그대로 둠.
+// 상품명으로 브랜드를 찾아 그 심볼의 LOGO_OVERRIDE를 등록 — ETF 목록·상세 렌더 직전에 호출.
+// 상품명도 같이 등록해둬야, 브랜드 로고가 없는 종목이 테마 이모지로 떨어질 때 무엇을 추종하는지 판별할 수 있다.
 function ensureKrEtfLogoOverride(symbol, name) {
   registerEtfName(symbol, name);
+  if (!symbol || LOGO_OVERRIDE[symbol]) return;
+  const src = KR_ETF_BRAND_LOGO_SRC[(name || "").split(" ")[0]];
+  if (src) LOGO_OVERRIDE[symbol] = { src, bg: "#ffffff" };
 }
+
+// 미국 ETF 로고 보정(2026-09-11) — 100종목 로고를 전부 받아 픽셀로 점검한 결과 고칠 것 세 가지.
+//  ① 검은 "i" 한 글자로만 오는 iShares 11종목: 같은 iShares인데도 파란 정사각 마크로 오는 종목과 섞여
+//     목록이 들쭉날쭉해서, 알아보기 쉬운 파란 마크로 통일한다.
+//  ② XLE·XLF: Select Sector SPDR인데 엉뚱하게 S&P Global 로고가 온다 -> SPDR 마크로 교체.
+//  ③ RSP: 운용사가 인베스코로 바뀐 지 오래인데 옛 Guggenheim 로고가 온다 -> 인베스코로 교체.
+// (QQQ·SMH는 로고가 순백색이라 빈 원으로 보였는데, 아래 WHITE_LOGO_TICKERS 방식으로 어두운 배경을 깔아 해결)
+const ETF_LOGO_ISHARES = { src: "logos/etf/ishares.png", bg: "#ffffff" };
+const ETF_LOGO_SPDR = { src: "logos/etf/spdr.png", bg: "#ffffff" };
+const ETF_LOGO_VANECK = { src: "logos/etf/vaneck.png", bg: "#ffffff" };
+["ACWI", "AGG", "DVY", "EFA", "IEF", "IEMG", "IVV", "IXUS", "MBB", "PFF", "SHY"].forEach((t) => {
+  LOGO_OVERRIDE[t] = ETF_LOGO_ISHARES;
+});
+["XLE", "XLF"].forEach((t) => {
+  LOGO_OVERRIDE[t] = ETF_LOGO_SPDR;
+});
+LOGO_OVERRIDE.SMH = ETF_LOGO_VANECK; // 흰 VanEck 로고 -> 짙은 워드마크로
+LOGO_OVERRIDE.RSP = { src: "logos/etf/invesco.png", bg: "#14161c" }; // 흰 인베스코 로고라 어두운 배경
 
 // FMP 로고가 순백색이라 흰 원 배경에서 안 보이는 종목들(506개 전수 픽셀 분석 결과 61개) — 어두운 배경을 깔아 흰 로고가 보이게 함
 const WHITE_LOGO_BG = "#14161c";
@@ -12545,6 +12579,7 @@ const WHITE_LOGO_TICKERS = new Set([
   "ABBV","ADI","ADSK","AIG","ALB","ALL","AMP","ANET","APP","AVB","AWK","AXON","BA","BAX","BLK","CDNS","CEG","CRL","CSX","CTAS",
   "DD","DGX","DHI","DIS","DXCM","EQIX","ETN","FAST","HSY","IBM","JBL","KMI","KR","LCID","LEN","LI","LITE","LMT","LRCX","MAS",
   "MRVL","NIO","NKE","NTAP","NXPI","ON","RBLX","RCL","REGN","STT","SYY","TPR","UBER","ULTA","UNH","V","VRTX","WAT","WSM","WYNN","XPEV",
+  "QQQ", // 인베스코 QQQ 로고가 순백색(2026-09-11 ETF 로고 전수 점검)
 ]);
 // 로고 원 배경색 결정: 지정 override.bg > 흰색 로고면 어두운 배경 > 기본(CSS 흰색)
 function logoBg(symbol) {
@@ -12556,6 +12591,28 @@ function logoBg(symbol) {
 
 // badgeLabel: 로고 이미지를 못 찾았을 때 대신 보여줄 배지 문구(기본은 티커 앞 2글자) — 한국 ETF처럼
 // 티커가 숫자라 의미 없는 경우, 호출부에서 운용사 브랜드명 약자(KODEX·TIGER 등)를 넘겨 대체
+// 이 ETF에 "진짜 로고"가 있는가 — 자체 호스팅 지정 로고가 있거나(국내 브랜드·미국 보정),
+// 미국 티커라 FMP 로고를 기대할 수 있는 경우. 국내는 브랜드 표에 없으면 로고가 없다.
+function hasRealEtfLogo(symbol) {
+  if (LOGO_OVERRIDE[symbol]) return true;
+  return !isKrTicker(symbol);
+}
+// 지정/자동 로고 <img>에 배수 배지까지 얹어서 렌더(ETF 전용)
+function realLogoHtml(symbol, badgeLabel, multBadgeHtml) {
+  const s = escapeHtml(symbol);
+  const badge = escapeHtml(badgeLabel || symbol.slice(0, 2));
+  const ov = LOGO_OVERRIDE[symbol];
+  const bg = logoBg(symbol);
+  const wrapStyle = bg ? ` style="background:${bg}"` : "";
+  const img = ov
+    ? `<img class="ticker-logo" src="${ov.src}" alt="${s}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />`
+    : (() => {
+        const { primary, fmp, useFallback } = logoSources(symbol, 80);
+        return `<img class="ticker-logo" src="${primary}" alt="${s}" loading="lazy"${useFallback ? ` data-fallback="${fmp}"` : ""} onerror="${LOGO_ONERROR}" />`;
+      })();
+  return `<span class="ticker-logo-wrap etf-real-logo"${wrapStyle}>${img}<span class="ticker-logo-badge" style="display:none;">${badge}</span>${multBadgeHtml || ""}</span>`;
+}
+
 function tickerLogoHtml(symbol, badgeLabel) {
   const s = escapeHtml(symbol);
   const badge = escapeHtml(badgeLabel || symbol.slice(0, 2));
@@ -12566,8 +12623,12 @@ function tickerLogoHtml(symbol, badgeLabel) {
       return `<span class="ticker-logo-wrap"><img class="ticker-logo" src="${cryptoSrc}" alt="${s}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><span class="ticker-logo-badge" style="display:none;">${badge}</span></span>`;
     }
   }
-  // ETF는 운용사 CI 대신 테마 이모지(2026-09-11 사용자 요청) — 이름을 아는 ETF만 해당
-  if (ETF_NAME_BY_SYMBOL.has(symbol)) {
+  // ETF(2026-09-11 사용자 요청 "진짜 로고로"): 실제 운용사·브랜드 로고를 먼저 쓰고,
+  // 그런 로고가 없는 종목만 추종 대상 테마 이모지로 떨어뜨린다. 레버리지·인버스 배지는 양쪽 다 붙는다.
+  const etfName = ETF_NAME_BY_SYMBOL.get(symbol);
+  if (etfName) {
+    const mult = etfMultBadgeHtml(etfName);
+    if (hasRealEtfLogo(symbol)) return realLogoHtml(symbol, badgeLabel, mult);
     const emojiLogo = etfEmojiLogoHtml(symbol);
     if (emojiLogo) return emojiLogo;
   }
