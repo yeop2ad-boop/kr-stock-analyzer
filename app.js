@@ -3345,9 +3345,52 @@ function removeFromWatchlist(symbol) {
   const market = watchlistMarketOf(sym);
   saveWatchlist(getWatchlist(market).filter((w) => w.symbol !== sym), market);
 }
+// ---------- 관심종목 그룹 선택 시트(2026-09-11 사용자 요청) ----------
+// 그룹이 2개 이상일 때 별을 누르면 "어느 목록에 넣을지" 고르는 작은 시트를 아래에서 띄움(1개면 바로 추가)
+let wlGroupPickTarget = null;
+function openWlGroupPickSheet(symbol) {
+  const market = watchlistMarketOf(symbol);
+  const groups = getWatchlistGroups(market);
+  wlGroupPickTarget = symbol;
+  const active = getActiveWatchlistGroup(market);
+  const defaultId = active === WATCHLIST_ALL_GROUP_ID ? groups[0].id : active;
+  el("wlGroupPickList").innerHTML = groups
+    .map(
+      (g) => `<button type="button" class="wl-group-pick-item${g.id === defaultId ? " checked" : ""}" data-pick-group="${escapeHtml(g.id)}">
+        <span class="wl-group-pick-check">✓</span><span class="wl-group-pick-name">${escapeHtml(g.name)}</span>
+      </button>`
+    )
+    .join("");
+  el("wlGroupPickSheet").style.display = "flex";
+}
+function closeWlGroupPickSheet() {
+  el("wlGroupPickSheet").style.display = "none";
+  wlGroupPickTarget = null;
+}
+el("wlGroupPickBackdrop").addEventListener("click", closeWlGroupPickSheet);
+el("wlGroupPickCloseBtn").addEventListener("click", closeWlGroupPickSheet);
+el("wlGroupPickList").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-pick-group]");
+  if (!btn || !wlGroupPickTarget) return;
+  const symbol = wlGroupPickTarget;
+  addToWatchlist(symbol, btn.dataset.pickGroup);
+  closeWlGroupPickSheet();
+  updateCompanyPanelWatchlistBtn(symbol);
+  showToast(`관심종목에 추가했습니다`);
+});
+
 function toggleWatchlist(symbol) {
-  if (isWatchlisted(symbol)) removeFromWatchlist(symbol);
-  else addToWatchlist(symbol);
+  if (isWatchlisted(symbol)) {
+    removeFromWatchlist(symbol);
+    updateCompanyPanelWatchlistBtn(symbol);
+    return;
+  }
+  // 그룹이 2개 이상이면 어디에 넣을지 먼저 물어봄(2026-09-11 사용자 요청)
+  if (getWatchlistGroups(watchlistMarketOf(symbol)).length > 1) {
+    openWlGroupPickSheet(symbol);
+    return;
+  }
+  addToWatchlist(symbol);
   updateCompanyPanelWatchlistBtn(symbol);
 }
 const companyPanelWatchlistBtn = el("companyPanelWatchlistBtn");
@@ -3394,7 +3437,10 @@ function startInlineTabRename(tabBtn) {
   const input = el("wlGroupTabs").querySelector(".wl-group-tab-rename-input");
   input.focus();
   input.select();
+  let committed = false;
   const commit = () => {
+    if (committed) return;
+    committed = true;
     const name = input.value.trim();
     if (name) renameWatchlistGroup(groupId, name);
     renderWatchlistList();
@@ -3416,7 +3462,11 @@ function startInlineNewGroup() {
   </span>`;
   const input = el("wlGroupNewInlineInput");
   input.focus();
+  // 2026-09-11 수정: 확인(✓) 클릭과 입력창 blur가 각각 commit을 불러 그룹이 2개씩 만들어지던 문제 — 한 번만 실행
+  let committed = false;
   const commit = () => {
+    if (committed) return;
+    committed = true;
     const id = addWatchlistGroup(input.value.trim());
     if (id) setActiveWatchlistGroup(id);
     renderWatchlistList();
@@ -15606,6 +15656,7 @@ const BACK_OVERLAYS = [
   // 위에 뜨는 것부터 — 열려 있는 첫 항목 하나만 닫음
   { id: "chartModal", close: () => closeChartModal() },
   { id: "wlGroupModal", close: () => closeWlGroupModal() },
+  { id: "wlGroupPickSheet", close: () => closeWlGroupPickSheet() },
   { id: "selfTestModal", close: () => closeSelfTestModal() },
   { id: "groundModal", close: () => closeGroundModal() },
   { id: "shareSheet", close: () => closeShareSheet() },

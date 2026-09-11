@@ -1855,17 +1855,68 @@ table.insight-holdings-table td span, table.insight-holdings-table td b { max-wi
 }
 .wl-group-tab-rename-confirm {
   flex: none;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   border: none;
   background: var(--accent);
   color: #fff;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   line-height: 1;
   cursor: pointer;
+  /* 2026-09-11 수정: ✓ 글리프가 원 안에서 위로 치우쳐 보이던 문제 — 플렉스로 정확히 가운데 정렬 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
+
+/* 관심종목 그룹 선택 시트(2026-09-11 사용자 요청) */
+.wl-group-pick-sheet { position: fixed; inset: 0; z-index: 260; display: flex; align-items: flex-end; justify-content: center; }
+.wl-group-pick-backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.45); }
+.wl-group-pick-panel {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  background: var(--bg);
+  border-radius: 16px 16px 0 0;
+  padding: 14px 16px calc(18px + env(safe-area-inset-bottom));
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.18);
+}
+.wl-group-pick-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.wl-group-pick-title { font-size: 14px; font-weight: 800; color: var(--text); }
+.wl-group-pick-list { display: flex; flex-direction: column; gap: 6px; max-height: 46vh; overflow-y: auto; }
+.wl-group-pick-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+}
+.wl-group-pick-check {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  color: transparent;
+  font-size: 12px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.wl-group-pick-item.checked { border-color: var(--accent); }
+.wl-group-pick-item.checked .wl-group-pick-check { background: var(--accent); border-color: var(--accent); color: #fff; }
 .wl-group-manage-btn {
   flex: none;
   width: 28px;
