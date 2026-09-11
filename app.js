@@ -5595,6 +5595,47 @@ function getSReportUniverse(isKr) {
   return sReportUniverseCache[key];
 }
 
+// ---------- S리포트 IPO 비교군(2026-09-11 사용자 요청) ----------
+// 신규 상장주를 S&P500·코스피200과 나란히 세우면 시총·거래대금이 통째로 하위권이라 순위가 의미가 없다.
+// 그래서 최근 5년 신규 상장 종목이면 "같은 IPO 종목들" 안에서만 순위를 매긴다.
+// 데이터는 지도가 쓰는 것과 같은 sector-map/data/ipo-map.js — 같은 파일을 두 벌로 두지 않으려고
+// 스크립트 태그 대신 fetch로 읽어 앞뒤 선언부만 떼고 파싱한다(파일 형식은 fetch-ipo-map.ps1이 고정 생성).
+let ipoUniversePromise = null;
+function getIpoUniverse() {
+  if (!ipoUniversePromise) {
+    ipoUniversePromise = fetch("sector-map/data/ipo-map.js", { cache: "no-store" })
+      .then((r) => {
+        if (!r.ok) throw new Error("http " + r.status);
+        return r.text();
+      })
+      .then((t) =>
+        JSON.parse(
+          t
+            .trim()
+            .replace(/^const\s+IPO_MAP_DATA\s*=\s*/, "")
+            .replace(/;\s*$/, "")
+            // 배치가 야후의 무한대 값을 그대로 흘리면 JSON이 아니게 된다 — 파싱이 통째로 죽지 않도록 걸러둠
+            .replace(/:\s*-?Infinity\b/g, ":null")
+            .replace(/:\s*NaN\b/g, ":null")
+        )
+      )
+      .catch(() => {
+        ipoUniversePromise = null; // 실패는 캐시하지 않음
+        return null;
+      });
+  }
+  return ipoUniversePromise;
+}
+// 이 종목이 IPO 비교군에 속하면 { companies, label }을 돌려준다
+async function getIpoSReportUniverse(symbol, isKr) {
+  const db = await getIpoUniverse();
+  if (!db) return null;
+  const side = isKr ? "kr" : "us";
+  const companies = (db[side] && db[side].companies) || [];
+  if (!companies.some((c) => c.symbol === symbol)) return null;
+  return { companies, label: isKr ? "최근 5년 국내 신규 상장" : "최근 5년 미국 신규 상장" };
+}
+
 const S_REPORT_METRICS = [
   { key: "revenueGrowth", label: "매출성장", unit: "pct", better: "high" },
   { key: "netIncomeGrowth", label: "순이익증가", unit: "pct", better: "high" },
@@ -5675,11 +5716,14 @@ async function runSReport(symbol, selfMetricsPromise) {
   sReportInlineWrap.innerHTML = `<p class="muted" style="padding:12px 0;">⏳ S리포트를 계산하는 중...</p>`;
 
   // 배당컷/지연 경고는 유니버스 스냅샷에 없어서 이 종목 하나만 배당 이력을 조회해 랭킹 표와 동일한 "⚠️컷/⚠️지연"을 붙임(2026-08-31)
-  const [universe, selfMetrics, divInfo] = await Promise.all([
+  const [baseUniverse, selfMetrics, divInfo, ipoUniverse] = await Promise.all([
     getSReportUniverse(isKr),
     selfMetricsPromise.catch(() => null),
     getDividendYieldInfo(symbol).catch(() => null),
+    getIpoSReportUniverse(symbol, isKr).catch(() => null),
   ]);
+  // 신규 상장주는 IPO 종목끼리 비교 — 지수 편입 대형주와 섞으면 순위가 의미를 잃는다(2026-09-11)
+  const universe = ipoUniverse || baseUniverse;
 
   if (!universe || !Array.isArray(universe.companies)) {
     sReportInlineWrap.innerHTML = `<p class="muted" style="padding:12px 0;">🚧 S리포트 데이터를 가져오지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
@@ -5688,7 +5732,7 @@ async function runSReport(symbol, selfMetricsPromise) {
   const companies = universe.companies;
   const self = companies.find((c) => c.symbol === symbol);
   if (!self) {
-    const universeLabel = isKr ? "코스피200+코스닥150" : "S&P500";
+    const universeLabel = ipoUniverse ? ipoUniverse.label : isKr ? "코스피200+코스닥150" : "S&P500";
     sReportInlineWrap.innerHTML = `<p class="muted" style="padding:12px 0;">이 종목은 S리포트 비교 대상 유니버스(${universeLabel})에 포함되지 않아 순위를 계산할 수 없습니다.</p>`;
     return;
   }
@@ -5727,7 +5771,8 @@ async function runSReport(symbol, selfMetricsPromise) {
     ? validRanks.reduce((sum, r) => sum + (r.rankInfo.rank / r.rankInfo.total) * 100, 0) / validRanks.length
     : null;
 
-  const universeLabel = isKr ? "코스피200+코스닥150" : "S&P500";
+  // 신규 상장주는 IPO 종목끼리 비교하므로 안내 문구도 그 비교군으로 바꾼다(2026-09-11)
+  const universeLabel = ipoUniverse ? ipoUniverse.label : isKr ? "코스피200+코스닥150" : "S&P500";
   sReportInlineWrap.innerHTML = `
     <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} ${companies.length}개 종목 기준 순위입니다. 값은 매일 자동 갱신되는 스냅샷 기준이며, 휴장 등으로 그날 값이 없으면 직전 거래일 값을 씁니다. 참고용 지표이며 투자 자문이 아닙니다.</p>
     <p class="muted" style="font-size:11px;margin:0 0 4px;opacity:0.65;">🔥 해당 항목 상위 10% 이내 · ⚠️ 하위 10% (${universeLabel} 내 순위 기준)</p>

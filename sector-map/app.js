@@ -331,6 +331,11 @@ const MAP_VIEWS = {
   // 상단 필터 칩은 52주최저~투자안정 6개만 노출(custom="asset" 계열)
   etf200: { label: "ETF200", market: "overseas", custom: "etf" },
   crypto100: { label: "비트코인100", market: "overseas", custom: "crypto" }, // 2026-09-02 TOP50 → TOP100 확장
+  // 최근 5년 신규 상장(IPO) 전용 보기(2026-09-11 사용자 요청) — 스팩·이전상장을 뺀 실제 신규 상장사만.
+  // 데이터는 data/ipo-map.js(fetch-ipo-map.ps1)로, 12개 지표를 주식 지도와 같은 공식으로 채워두었기 때문에
+  // custom(ETF·코인)과 달리 필터 칩은 주식 보기 그대로 전부 쓴다.
+  krIpo: { label: "한국 IPO", market: "domestic", ipo: "kr" },
+  usIpo: { label: "미국 IPO", market: "overseas", ipo: "us" },
 };
 let ACTIVE_VIEW = "sp200";
 const extraDataLoadPromises = {};
@@ -368,6 +373,20 @@ function ensureEtfCryptoDataLoaded() {
       throw err;
     });
   return etfCryptoDataLoadPromise;
+}
+
+// IPO 보기 전용 데이터(ipo-map.js, fetch-ipo-map.ps1로 생성) — 처음 선택 시 동적 로드
+let ipoMapDataLoadPromise = null;
+function ensureIpoMapDataLoaded() {
+  if (ipoMapDataLoadPromise) return ipoMapDataLoadPromise;
+  const src = "data/ipo-map.js?v=20260911a";
+  ipoMapDataLoadPromise = loadScriptOnce(src)
+    .catch(() => new Promise((res) => setTimeout(res, 600)).then(() => loadScriptOnce(src)))
+    .catch((err) => {
+      ipoMapDataLoadPromise = null;
+      throw err;
+    });
+  return ipoMapDataLoadPromise;
 }
 
 // 나스닥 100 전용 추가 데이터(S&P500 비편입 15종목) — 나스닥 보기를 처음 선택할 때만 동적 로드
@@ -479,6 +498,12 @@ function updateActiveDataForUniverseState() {
   }
   if (v.custom === "crypto") {
     ACTIVE_DATA = typeof CRYPTO_MAP_DATA !== "undefined" ? categorizeAssetMapData(CRYPTO_MAP_DATA, "crypto") : { companies: [] };
+    return;
+  }
+  // IPO 보기: 신규 상장 전용 데이터. 섹터는 배치가 이미 한글로 넣어둬서 추가 분류가 필요 없다
+  if (v.ipo) {
+    const src = typeof IPO_MAP_DATA !== "undefined" ? IPO_MAP_DATA[v.ipo] : null;
+    ACTIVE_DATA = { companies: (src && src.companies) || [] };
     return;
   }
   const core = coreDataFor(ACTIVE_MARKET);
@@ -2709,14 +2734,16 @@ setInterval(renderAiFabTimestamp, 1000);
 async function setMapView(viewKey, animate) {
   const v = MAP_VIEWS[viewKey];
   if (!v) return;
-  if (v.market === "domestic" && (typeof KR_CORE_DATA === "undefined" || !KR_CORE_DATA.companies || !KR_CORE_DATA.companies.length)) {
+  // IPO 보기는 전용 데이터를 쓰므로 국내 core 데이터가 없어도 열 수 있다
+  if (!v.ipo && v.market === "domestic" && (typeof KR_CORE_DATA === "undefined" || !KR_CORE_DATA.companies || !KR_CORE_DATA.companies.length)) {
     showToast("국내 마켓맵 데이터를 아직 못 불러왔어요");
     return;
   }
   const needExtraLoad = v.needExtra && !extraDataFor(v.market);
   const needNdxLoad = v.needNdx && typeof NDX_EXTRA_DATA === "undefined";
   const needAssetLoad = v.custom && typeof ETF_MAP_DATA === "undefined";
-  if (needExtraLoad || needNdxLoad || needAssetLoad) {
+  const needIpoLoad = v.ipo && typeof IPO_MAP_DATA === "undefined";
+  if (needExtraLoad || needNdxLoad || needAssetLoad || needIpoLoad) {
     const label = document.getElementById("mapViewBtnLabel");
     if (label) label.textContent = "불러오는 중...";
     try {
@@ -2724,6 +2751,7 @@ async function setMapView(viewKey, animate) {
         needExtraLoad ? ensureExtraDataLoaded(v.market) : Promise.resolve(),
         needNdxLoad ? ensureNdxDataLoaded() : Promise.resolve(),
         needAssetLoad ? ensureEtfCryptoDataLoaded() : Promise.resolve(),
+        needIpoLoad ? ensureIpoMapDataLoaded() : Promise.resolve(),
       ]);
     } catch {
       showToast("전체 목록을 불러오지 못했어요. 다시 시도해주세요");
