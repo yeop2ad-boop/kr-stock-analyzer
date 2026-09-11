@@ -21,13 +21,29 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="마켓맵" />
-<link rel="stylesheet" href="style.css?v=20260910h" />
+<link rel="stylesheet" href="style.css?v=20260911f" />
 <!-- 지도가 떠 있는 동안 본체 파일을 미리 받아둠 — 간편검색/시장/더보기로 처음 넘어갈 때 로딩 체감 단축 -->
-<link rel="prefetch" href="../app.js?v=20260910h" />
+<link rel="prefetch" href="../app.js?v=20260911f" />
 <link rel="prefetch" href="../style.css?v=20260910h" />
 <link rel="prefetch" href="../index.html" />
 </head>
 <body>
+<!-- 첫 방문 사용법 안내(2026-09-11 사용자 요청) — 5단계, 한 번 보면 다시 뜨지 않고 "다시 보기"로만 열림 -->
+<div id="mapTutorial" class="map-tutorial" style="display:none;">
+  <div class="map-tutorial-backdrop" id="mapTutorialBackdrop"></div>
+  <div class="map-tutorial-card">
+    <div class="map-tutorial-step" id="mapTutorialStep">1 / 5</div>
+    <div class="map-tutorial-emoji" id="mapTutorialEmoji">🗺️</div>
+    <h2 class="map-tutorial-title" id="mapTutorialTitle"></h2>
+    <p class="map-tutorial-desc" id="mapTutorialDesc"></p>
+    <div class="map-tutorial-dots" id="mapTutorialDots"></div>
+    <div class="map-tutorial-actions">
+      <button type="button" class="map-tutorial-skip" id="mapTutorialSkipBtn">건너뛰기</button>
+      <button type="button" class="map-tutorial-next" id="mapTutorialNextBtn">다음</button>
+    </div>
+  </div>
+</div>
+
 <div id="mapLoadingSplash" class="loading-splash">
   <img src="../logos/marketmap-logo.png?v=20260908b" alt="마켓맵" class="loading-splash-logo" />
   <p class="loading-splash-caption">DART·미국 SEC 공시 기반 · 850개 기업 점수는 매일 갱신됩니다.</p>
@@ -239,8 +255,9 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="../data/ko-company-names.js?v=20260911e"></script>
 <script src="data/sp500-data-core.js?v=20260904h"></script>
 <script src="data/kr-data-core.js?v=20260904h" onerror="window.KR_CORE_DATA = { companies: [] };"></script>
-<script src="app.js?v=20260910h"></script>
+<script src="app.js?v=20260911f"></script>
 </body>
 </html>

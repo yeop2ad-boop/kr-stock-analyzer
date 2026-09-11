@@ -237,6 +237,37 @@ const BAD_LOGO_SYMBOLS = new Set([
 // 혹시 못 받아둔 심볼만 그때그때 외부 URL로 폴백한다(logo-failed 클래스가 붙기 전 마지막 시도).
 // 로컬 캐시는 저(low)/중(mid) 2단계만 두며, 현재는 둘 다 동일한 이미지(중화질 기준)를 가리킴 —
 // 화질 차등이 다시 필요해지면 low만 별도로 축소하면 됨. 고화질(high) 티어는 더 이상 사용하지 않음
+// 티커 → 한글 회사명(2026-09-11): 지도에서 미국 종목이 전부 영어로 나오던 문제 — 본체와 같은 별칭표를 공유해서 사용
+const TICKER_TO_KO_NAME = (() => {
+  const map = {};
+  const src = (typeof window !== "undefined" && window.KOREAN_COMPANY_NAMES) || {};
+  for (const [ko, tk] of Object.entries(src)) if (!map[tk]) map[tk] = ko;
+  return map;
+})();
+// 별칭표에 없으면 페이지에 이미 로드된 데이터셋(국내·S&P500·ETF·코인)에서 이름을 찾음 —
+// 지금 보고 있는 지도와 다른 시장의 종목(관심목록 등)도 이름이 제대로 나오게
+let ALL_DATASET_NAMES = null;
+function datasetNameOf(symbol) {
+  if (!ALL_DATASET_NAMES) {
+    ALL_DATASET_NAMES = new Map();
+    const sets = [
+      typeof KR_CORE_DATA !== "undefined" ? KR_CORE_DATA : null,
+      typeof SP500_CORE_DATA !== "undefined" ? SP500_CORE_DATA : null,
+      typeof ETF_MAP_DATA !== "undefined" ? ETF_MAP_DATA : null,
+      typeof CRYPTO_MAP_DATA !== "undefined" ? CRYPTO_MAP_DATA : null,
+    ];
+    for (const set of sets) {
+      for (const c of (set && set.companies) || []) {
+        if (c && c.symbol && !ALL_DATASET_NAMES.has(c.symbol)) ALL_DATASET_NAMES.set(c.symbol, c.name);
+      }
+    }
+  }
+  return ALL_DATASET_NAMES.get(symbol) || null;
+}
+function koNameOf(symbol, fallback) {
+  return TICKER_TO_KO_NAME[symbol] || (fallback && fallback !== symbol ? fallback : null) || datasetNameOf(symbol) || symbol;
+}
+
 function logoUrl(symbol, tier) {
   return `logos/${tier || "low"}/${encodeURIComponent(symbol)}.png`;
 }
@@ -1870,13 +1901,21 @@ function openWatchlistSheet() {
       row.type = "button";
       row.className = "watchlist-sheet-row";
 
-      if (c && !BAD_LOGO_SYMBOLS.has(symbol)) {
+      // 2026-09-11 수정: 지금 보고 있는 지도(ACTIVE_DATA)에 없는 종목(예: 국내 지도에서 본 미국 주식)은
+      // c가 없어 로고를 아예 안 그렸음 — 로고는 심볼만 있으면 되므로 항상 그리고, 실패 시 FMP로 한 번 더 시도
+      if (!BAD_LOGO_SYMBOLS.has(symbol)) {
         const img = document.createElement("img");
         img.className = "watchlist-sheet-row-logo";
         img.loading = "lazy";
         img.alt = symbol;
         img.src = logoUrl(symbol, "low");
+        let triedFallback = false;
         img.addEventListener("error", () => {
+          if (!triedFallback) {
+            triedFallback = true;
+            img.src = logoUrlFallback(symbol);
+            return;
+          }
           img.style.display = "none";
         });
         row.appendChild(img);
@@ -1885,7 +1924,7 @@ function openWatchlistSheet() {
       const nameWrap = document.createElement("div");
       nameWrap.className = "watchlist-sheet-row-name";
       const nameEl = document.createElement("b");
-      nameEl.textContent = c ? c.name : symbol;
+      nameEl.textContent = koNameOf(symbol, c ? c.name : symbol);
       const symEl = document.createElement("span");
       symEl.textContent = symbol;
       nameWrap.appendChild(nameEl);
@@ -1900,14 +1939,18 @@ function openWatchlistSheet() {
       priceEl.textContent = "…";
       const chgEl = document.createElement("span");
       chgEl.className = "watchlist-sheet-row-chg";
-      const pct = c ? c.changePercent : null;
-      if (pct === null || pct === undefined || Number.isNaN(pct)) {
-        chgEl.textContent = "-";
-        chgEl.style.color = "var(--text-mid)";
-      } else {
+      const setChg = (pct) => {
+        if (pct === null || pct === undefined || Number.isNaN(pct)) {
+          chgEl.textContent = "-";
+          chgEl.style.color = "var(--text-mid)";
+          return false;
+        }
         chgEl.textContent = `${pct >= 0 ? "+" : ""}${pct.toFixed(2)}%`;
         chgEl.style.color = changeColorForText(pct);
-      }
+        return true;
+      };
+      // 스냅샷에 등락률이 없으면(다른 시장 종목·휴장 등) 아래 실시간 조회에서 직전 거래일 종가 대비로 채움
+      const hasSnapshotChg = setChg(c ? c.changePercent : null);
       rightWrap.appendChild(priceEl);
       rightWrap.appendChild(chgEl);
       row.appendChild(rightWrap);
@@ -1916,6 +1959,9 @@ function openWatchlistSheet() {
       fetchLiveQuoteForSheet(symbol)
         .then((q) => {
           priceEl.textContent = q && q.price !== null ? fmtSheetPrice(q.price, currency) : "-";
+          if (!hasSnapshotChg && q && q.price !== null && q.prevClose) {
+            setChg(((q.price - q.prevClose) / q.prevClose) * 100); // 직전 거래일 종가 대비
+          }
         })
         .catch(() => {
           priceEl.textContent = "-";
@@ -2829,4 +2875,79 @@ function scheduleInactiveMarketPreload() {
     // 열린 게 없으면 본체(이전 페이지)로 — 항목이 더 없으면 그대로 종료
     if (history.state && history.state.mapRoot) history.back();
   });
+})();
+
+
+// ---------- 첫 방문 사용법 안내(2026-09-11 사용자 요청) ----------
+// 지도를 처음 열면 5단계로 사용법을 보여주고, 한 번 보면 다시 뜨지 않는다(localStorage).
+const MAP_TUTORIAL_KEY = "map_tutorial_seen_v1";
+const MAP_TUTORIAL_STEPS = [
+  {
+    emoji: "🗂️",
+    title: "1. 볼 시장을 고르세요",
+    desc: "왼쪽 위 버튼으로 코스피200·코스닥150·S&P200·S&P500·나스닥100·ETF200·비트코인100 중에서 보고 싶은 시장을 고를 수 있습니다.",
+  },
+  {
+    emoji: "🛡️",
+    title: "2. 10년 승률을 선택하세요",
+    desc: "아래 기준 칩에서 10년 승률을 고르면, 최근 10년 동안 매달 오르며 마감한 비율로 지도 색이 칠해집니다. 연평균 상승·PER 등 다른 기준으로도 바꿀 수 있어요.",
+  },
+  {
+    emoji: "🎚️",
+    title: "3. 드래그로 범위를 조절하세요",
+    desc: "기준 칩을 누르면 나오는 막대를 좌우로 끌어 원하는 구간만 남길 수 있습니다. 조건에 맞는 기업만 지도에 남습니다.",
+  },
+  {
+    emoji: "🔍",
+    title: "4. 지도는 확대·이동이 됩니다",
+    desc: "두 손가락으로 벌리면 확대, 끌면 이동합니다. 가까이 갈수록 기업 로고와 이름이 크게 보입니다.",
+  },
+  {
+    emoji: "🏢",
+    title: "5. 기업을 누르면 자세히 볼 수 있어요",
+    desc: "지도에서 기업을 누르면 현재가·등락률·점수와 함께 상세 화면으로 이동할 수 있습니다. ★을 누르면 관심목록에 담깁니다.",
+  },
+];
+let mapTutorialIdx = 0;
+function renderMapTutorial() {
+  const st = MAP_TUTORIAL_STEPS[mapTutorialIdx];
+  if (!st) return;
+  document.getElementById("mapTutorialStep").textContent = `${mapTutorialIdx + 1} / ${MAP_TUTORIAL_STEPS.length}`;
+  document.getElementById("mapTutorialEmoji").textContent = st.emoji;
+  document.getElementById("mapTutorialTitle").textContent = st.title;
+  document.getElementById("mapTutorialDesc").textContent = st.desc;
+  document.getElementById("mapTutorialDots").innerHTML = MAP_TUTORIAL_STEPS.map(
+    (_, i) => `<span class="map-tutorial-dot${i === mapTutorialIdx ? " active" : ""}"></span>`
+  ).join("");
+  document.getElementById("mapTutorialNextBtn").textContent = mapTutorialIdx === MAP_TUTORIAL_STEPS.length - 1 ? "시작하기" : "다음";
+}
+function openMapTutorial() {
+  mapTutorialIdx = 0;
+  renderMapTutorial();
+  document.getElementById("mapTutorial").style.display = "flex";
+}
+function closeMapTutorial() {
+  document.getElementById("mapTutorial").style.display = "none";
+  try {
+    localStorage.setItem(MAP_TUTORIAL_KEY, "1");
+  } catch (e) {}
+}
+(function bindMapTutorial() {
+  const wrap = document.getElementById("mapTutorial");
+  if (!wrap) return;
+  document.getElementById("mapTutorialSkipBtn").addEventListener("click", closeMapTutorial);
+  document.getElementById("mapTutorialBackdrop").addEventListener("click", closeMapTutorial);
+  document.getElementById("mapTutorialNextBtn").addEventListener("click", () => {
+    if (mapTutorialIdx >= MAP_TUTORIAL_STEPS.length - 1) {
+      closeMapTutorial();
+      return;
+    }
+    mapTutorialIdx += 1;
+    renderMapTutorial();
+  });
+  let seen = false;
+  try {
+    seen = localStorage.getItem(MAP_TUTORIAL_KEY) === "1";
+  } catch (e) {}
+  if (!seen) window.setTimeout(openMapTutorial, 700); // 로딩 스플래시가 걷힌 뒤에
 })();
