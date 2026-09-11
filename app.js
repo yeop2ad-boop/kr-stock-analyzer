@@ -2390,7 +2390,17 @@ function syncCarouselHeight() {
 }
 const carouselResizeObserver = new ResizeObserver(syncCarouselHeight);
 TAB_ORDER.forEach((key) => carouselResizeObserver.observe(panels[key]));
-window.addEventListener("resize", syncCarouselHeight);
+// 2026-09-11 사용자 보고(옆 화면이 겹쳐 보임): 화면 폭·방향이 바뀌면 패널 위치(translateX)를 항상 다시 계산해
+// 혹시라도 중간 위치에 남아 있던 패널이 제자리로 돌아오게 함 — 높이 동기화만으로는 가로 위치가 안 고쳐짐
+function resyncCarousel() {
+  layoutPanels(0);
+  syncCarouselHeight();
+}
+window.addEventListener("resize", resyncCarousel);
+window.addEventListener("orientationchange", resyncCarousel);
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) resyncCarousel();
+});
 
 function updateTabBarActive() {
   const activeKey = TAB_ORDER[activeTabIndex];
