@@ -1,1 +1,12 @@
 .claude/
+
+# 배치 스크립트가 만드는 작업 파일(로그·중간 산출물) — 저장소에 올리지 않음(2026-09-11)
+sector-map/scripts/*.log
+sector-map/scripts/*.txt
+sector-map/scripts/corpCode.zip
+sector-map/scripts/corpCode_extracted/
+sector-map/scripts/audit-sectors-result.csv
+sector-map/scripts/corp-ticker-map.json
+sector-map/scripts/dart-institutions-result.json
+sector-map/scripts/ticker-price-map.json
+.demo-preview/
