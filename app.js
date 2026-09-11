@@ -2721,7 +2721,8 @@ function bottomNavKeyForSection() {
 document.querySelectorAll(".fh-tab").forEach((btn) => {
   btn.addEventListener("click", () => {
     const key = btn.dataset.fhtab;
-    if (key === "tab.popular") showOnlyCarouselView(() => openPopularStocks());
+    if (key === "tab.ipo") showOnlyCarouselView(() => openIpoList());
+    else if (key === "tab.popular") showOnlyCarouselView(() => openPopularStocks());
     else if (key === "tab.autotrack") showOnlyCarouselView(() => openAutoTrack());
     else if (key === "tab.valuation") showOnlyCarouselView(() => activateRankingGroup("disclosure"));
     else if (key === "tab.trend")
@@ -2878,6 +2879,7 @@ const I18N = {
   "tab.search": { ko: "간편검색", en: "Search" },
   "tab.valuation": { ko: "기업가치", en: "Value" }, // 2026-09-10 사용자 요청: 실적→기업가치
   "tab.trend": { ko: "시장분석", en: "Market" }, // 2026-09-11 사용자 요청: 미래예측→시장분석
+  "tab.ipo": { ko: "IPO", en: "IPO" }, // 2026-09-11: 최근 5년 신규 상장
   "tab.insight": { ko: "인사이트", en: "Insight" },
   "nav.map": { ko: "마켓맵", en: "MarketMap" }, // 2026-09-08: 섹터맵→마켓맵
   "nav.ranking": { ko: "랭킹", en: "Ranking" },
@@ -4347,6 +4349,8 @@ function showRankingGroup(tabKey) {
   if (popularGroup) popularGroup.style.display = tabKey === "popular" ? "block" : "none";
   const autoTrackGroup = el("autoTrackGroup");
   if (autoTrackGroup) autoTrackGroup.style.display = tabKey === "autotrack" ? "block" : "none";
+  const ipoGroup = el("ipoGroup");
+  if (ipoGroup) ipoGroup.style.display = tabKey === "ipo" ? "block" : "none";
 }
 
 let topRankingActiveIdx = 0;
@@ -4872,6 +4876,8 @@ function syncSectionHeader() {
   // ETF·비트코인 섹션에선 제목줄 탭을 인기종목/미래예측/인사이트 3개만 노출(기업가치는 주식 전용 — 2026-09-10 사용자 재확인)
   const valuationTab = document.querySelector('.fh-tab[data-fhtab="tab.valuation"]');
   if (valuationTab) valuationTab.style.display = appSectionMode === "stocks" ? "" : "none";
+  const ipoTab = document.querySelector('.fh-tab[data-fhtab="tab.ipo"]');
+  if (ipoTab) ipoTab.style.display = appSectionMode === "stocks" ? "" : "none"; // IPO는 미국 신규 상장 전용(2026-09-11)
   // 인사이트 하위 보기도 투자처마다 다름(ETF=변동성 순위만, 비트코인=자산&투자사 제외) — 이 시점엔 인사이트
   // 상태 변수들이 아직 선언 전(TDZ)이라 syncDartTabForMarket과 같은 방식으로 커스텀 이벤트로 느슨하게 연결
   document.dispatchEvent(new CustomEvent("appsectionchange"));
@@ -8950,6 +8956,108 @@ function openPopularStocks() {
   if (appSectionMode === "etf") runEtfPopular();
   else if (appSectionMode === "crypto") runCryptoPopular();
   else runPopularStocks();
+}
+
+// ---------- IPO(2026-09-11 사용자 요청): 최근 5년 미국 신규 상장 종목 ----------
+// 값은 배치(sector-map/scripts/fetch-ipo-list.ps1)가 나스닥 IPO 캘린더 + 야후 월봉으로 만들어둔 data/ipo-list.json.
+// 열: 기업명(상장 시기) / 상장 시총 / 현재 시총(등락률) / 투자 승률. 등락률은 "상장 첫날 종가 대비"다.
+let ipoListDbPromise = null;
+function getIpoListDb() {
+  if (!ipoListDbPromise) {
+    ipoListDbPromise = fetch("data/ipo-list.json", { cache: "no-store" })
+      .then((r) => {
+        if (!r.ok) throw new Error("http " + r.status);
+        return r.json();
+      })
+      .catch((e) => {
+        ipoListDbPromise = null;
+        throw e;
+      });
+  }
+  return ipoListDbPromise;
+}
+// IPO 기업명은 영문 정식 사명이라 7글자로 자르면 못 알아봄 — 접미어를 떼고 18글자까지 보여줌
+function ipoShortName(name) {
+  const t = String(name || "")
+    .replace(/\s*(Inc\.?|Corp\.?|Corporation|Ltd\.?|Limited|Holdings?|Company|Co\.?|plc|S\.A\.|N\.V\.)\s*$/i, "")
+    .trim();
+  return t.length > 18 ? t.slice(0, 18) + ".." : t;
+}
+let ipoShown = 50;
+function openIpoList() {
+  switchTab(TAB_ORDER.indexOf("topranking"));
+  el("tabValuationBtn").classList.remove("active");
+  tabTrendBtn.classList.remove("active");
+  setCarouselViewTitle("tab.ipo");
+  el("topRankingSubNav").innerHTML = "";
+  showRankingGroup("ipo");
+  ipoShown = 50;
+  runIpoList();
+}
+async function runIpoList() {
+  const status = el("ipoStatus");
+  const results = el("ipoResults");
+  results.innerHTML = "";
+  status.style.display = "block";
+  status.textContent = "최근 5년 신규 상장 종목을 불러오는 중...";
+  try {
+    const db = await getIpoListDb();
+    const rows = (db && db.rows) || [];
+    if (!rows.length) throw new Error("IPO 목록이 비어 있습니다.");
+    status.style.display = "none";
+    const paint = () => {
+      const visible = rows.slice(0, ipoShown);
+      const body = visible
+        .map((r) => {
+          const cap = Number.isFinite(r.marketCap) ? fmtCompactCurrency(r.marketCap, "USD") : "—";
+          const ipoCap = Number.isFinite(r.ipoMarketCap) ? fmtCompactCurrency(r.ipoMarketCap, "USD") : "—";
+          const chg =
+            Number.isFinite(r.changePct)
+              ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
+              : "";
+          return `
+        <tr>
+          <td class="popular-snap-name"><span class="ticker-cell rank-logo">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(
+            r.symbol
+          )}">${escapeHtml(ipoShortName(r.name || r.symbol))}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(r.pricedDate)} · ${escapeHtml(
+            r.symbol
+          )}</span></td>
+          <td>${ipoCap}</td>
+          <td>${cap}${chg}</td>
+          <td>${winRatePctCellHtml(r.winRate, r.months)}</td>
+        </tr>`;
+        })
+        .join("");
+      results.innerHTML = `
+        <p class="muted rank-scan-caption" style="font-size:12px;">최근 5년 신규 상장 ${rows.length}종목 중 ${visible.length}개 표시(최신순)</p>
+        ${TAP_HINT_HTML}
+        <table class="top30-table">
+          <thead><tr>
+            <th data-explain="기업명과 상장일(공모가 확정일)입니다. 누르면 그 종목의 분석 화면으로 이동합니다.">기업명<br>(상장 시기)</th>
+            <th data-explain="상장 당시 시가총액(근사) — 지금 주식수가 그대로였다고 보고 상장 첫날 종가로 환산한 값입니다. 그 사이 증자·감자가 있었다면 실제와 다를 수 있습니다.">상장<br>시총</th>
+            <th data-explain="현재 시가총액이고, 괄호는 상장 첫날 종가 대비 현재가 등락률입니다(공모가가 아니라 첫날 종가 기준).">현재 시총<br>(등락률)</th>
+            <th data-explain="투자 승률 — 상장 이후 월 단위로 오르며 마감한 달의 비율입니다. 상장한 지 얼마 안 돼 집계 개월이 6개월 미만이면 표시하지 않습니다.">투자<br>승률</th>
+          </tr></thead>
+          <tbody>${body}</tbody>
+        </table>
+        ${visible.length < rows.length ? `<button type="button" class="cat-btn load-more-btn">더보기 (${visible.length}/${rows.length})</button>` : ""}
+        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 나스닥 IPO 캘린더에 공모가가 확정(priced)된 것으로 올라온 미국 신규 상장 종목입니다(${escapeHtml(
+          String(db.generatedAt || "").slice(0, 10)
+        )} 수집). 등락률은 공모가가 아니라 <b>상장 첫날 종가</b> 기준이고, 상장 폐지·시세가 없는 종목은 빠져 있습니다. SPAC(기업인수목적회사)도 함께 포함됩니다. 투자 자문이 아닙니다.</p>`;
+      const more = results.querySelector(".load-more-btn");
+      if (more)
+        more.addEventListener("click", () => {
+          ipoShown += 100;
+          paint();
+        });
+    };
+    paint();
+  } catch (e) {
+    status.style.display = "block";
+    status.innerHTML = `❌ ${escapeHtml(e.message || "IPO 목록을 불러오지 못했습니다.")} <button type="button" class="cat-btn corr-retry-btn" style="margin-left:6px;">다시 시도</button>`;
+    const retry = status.querySelector(".corr-retry-btn");
+    if (retry) retry.addEventListener("click", () => runIpoList());
+  }
 }
 
 // ---------- 자동추적(2026-09-04 사용자 요청): 승률 DB의 현 투자처 전 종목을 10년승률 높은 순으로 표시 ----------

@@ -10,7 +10,7 @@
 #   4 high52    52주 고점 매매  : 반대로 가장 높은 위치인 20종목을 1년 보유
 #   5 spy       S&P 장기투자    : SPY 보유
 #   6 kospi     코스피 장기투자 : KODEX 200(069500.KS) 보유
-#   7 ipo       IPO 매매        : 시작 시점 기준 상장한 지 가장 얼마 안 된 20종목을 1년 보유
+#   7 ipo        IPO 매매        : 그 해에 새로 상장한 종목 20개를 '상장 첫날 종가'에 사서 1년 보유
 #
 # 데이터: S&P500 구성종목(sp500-sectors.json)의 22년 월봉 종가 1회 조회 + SPY/KODEX200.
 #   (10년 전 시점에서도 "직전 10년 승률"을 계산하려면 20년치가 필요해 22년을 받는다.)
@@ -140,6 +140,24 @@ foreach ($c in $universe) {
 }
 Write-Host ("   -> 시세 확보 {0}종목" -f $series.Count)
 
+# IPO 전략용 유니버스(2026-09-11): S&P500 현재 구성종목만 쓰면 해마다 신규 상장이 0~7개뿐이라
+# 한 종목이 그 해를 통째로 대표해 버린다 — fetch-ipo-list.ps1이 만든 실제 IPO 목록(나스닥 캘린더)을 사용한다.
+$ipoUniverse = @()
+$ipoSeries = @{}
+$ipoCachePath = Join-Path $scriptDir "ipo-universe-cache.json"
+if (Test-Path $ipoCachePath) {
+  try {
+    $ic = Get-Content $ipoCachePath -Raw -Encoding UTF8 | ConvertFrom-Json
+    $ipoUniverse = @($ic.ipos)
+    foreach ($p in $ic.series.PSObject.Properties) {
+      $ipoSeries[$p.Name] = @($p.Value | ForEach-Object { [PSCustomObject]@{ t = [int64]$_.t; c = [double]$_.c } })
+    }
+    Write-Host ("   -> IPO 유니버스 {0}종목(캐시)" -f $ipoUniverse.Count)
+  } catch { Write-Host "   -> IPO 유니버스 캐시 읽기 실패 — IPO 전략은 비워둠" }
+} else {
+  Write-Host "   -> IPO 유니버스 캐시 없음(fetch-ipo-list.ps1을 먼저 실행) — IPO 전략은 비워둠"
+}
+
 Write-Host "3) 지수(SPY·KODEX200) 수집..."
 $spy = Get-MonthlyCloses "SPY"
 $kospi = Get-MonthlyCloses "069500.KS"
@@ -176,6 +194,7 @@ Write-Host ("   -> 계산 대상 {0}종목" -f $symbolList.Count)
 Write-Host "4) 전략별 연도 수익률 계산..."
 $stratYearly = @{ winrate = @(); sector = @(); low52 = @(); high52 = @(); spy = @(); kospi = @(); ipo = @() }
 $stratPicks = @{ winrate = @(); sector = @(); low52 = @(); high52 = @(); spy = @(); kospi = @(); ipo = @() }
+$ipoCounts = @() # 해마다 실제로 계산에 들어간 IPO 종목 수(표본 크기 표시용)
 
 for ($i = 0; $i -lt $YEAR_COUNT; $i++) {
   $t0 = $bounds[$i].ToUnixTimeSeconds()
@@ -239,16 +258,28 @@ for ($i = 0; $i -lt $YEAR_COUNT; $i++) {
   $stratYearly.kospi += $kospiR
   $stratPicks.kospi += , @("069500.KS")
 
-  # 7) IPO — 그 시점 기준 상장한 지 가장 얼마 안 된 20종목(상장 3년 이내만 후보)
-  $ipoCand = @()
-  foreach ($s in $symbolList) {
-    if (-not $firstTrade.ContainsKey($s)) { continue }
-    $age = $t0 - $firstTrade[$s]
-    if ($age -gt 0 -and $age -lt (3 * 365 * 86400)) { $ipoCand += [PSCustomObject]@{ s = $s; v = $age } }
+  # 7) IPO — 2026-09-11 사용자 지정: 공모가가 아니라 "상장 첫날 종가"에 사서 1년 보유.
+  #    그 해 구간([t0, t1))에 새로 상장한 종목 중 공모 규모가 큰 순으로 20개를 고르고,
+  #    각 종목은 상장 첫 월봉 종가 → 1년 뒤 수익률로 계산한다(보유 시작 시점이 종목마다 다름).
+  $y0 = $bounds[$i].ToString("yyyy-MM-dd")
+  $y1 = $bounds[$i + 1].ToString("yyyy-MM-dd")
+  $ipoCand = @($ipoUniverse | Where-Object { $_.pricedDate -ge $y0 -and $_.pricedDate -lt $y1 -and $ipoSeries.ContainsKey($_.symbol) })
+  $ipoPickRows = @($ipoCand | Sort-Object -Property { [double]$_.offerValue } -Descending | Select-Object -First $TOP_N)
+  $ipoPick = @($ipoPickRows | ForEach-Object { $_.symbol })
+  $ipoRets = @()
+  foreach ($row in $ipoPickRows) {
+    $pairs = $ipoSeries[$row.symbol]
+    if (-not $pairs -or $pairs.Count -lt 2) { continue }
+    $buy = $pairs[0] # 상장 첫 월봉 종가 ≈ 상장 첫날 종가
+    if ($buy.c -le 0) { continue }
+    $sell = Close-At $pairs ($buy.t + (365 * 86400))
+    if ($null -eq $sell) { continue }
+    $ipoRets += ($sell / $buy.c - 1.0) * 100.0
   }
-  $ipoPick = @($ipoCand | Sort-Object -Property v | Select-Object -First $TOP_N | ForEach-Object { $_.s })
-  $stratYearly.ipo += (Avg-Return $ipoPick $t0 $t1)
+  # 표본이 5종목 미만이면 한 종목이 그 해를 통째로 대표해 버려 평균이 의미 없음 — 값을 비움
+  if ($ipoRets.Count -ge 5) { $stratYearly.ipo += (($ipoRets | Measure-Object -Average).Average) } else { $stratYearly.ipo += $null }
   $stratPicks.ipo += , $ipoPick
+  $ipoCounts += $ipoRets.Count
 
   Write-Host ("   {0}: 승률 {1} / 섹터 {2}({3}) / 저점 {4} / 고점 {5} / SPY {6} / 코스피 {7} / IPO {8}" -f `
       $yearRows[$i].label,
@@ -279,7 +310,7 @@ foreach ($k in @("winrate", "sector", "low52", "high52", "spy", "kospi", "ipo"))
     $factor = $factor * (1.0 + [double]$v / 100.0)
     $cum += [Math]::Round((($factor - 1.0) * 100.0), 1)
   }
-  $strategies += [ordered]@{
+  $row = [ordered]@{
     key         = $k
     label       = $meta[$k].label
     color       = $meta[$k].color
@@ -288,6 +319,8 @@ foreach ($k in @("winrate", "sector", "low52", "high52", "spy", "kospi", "ipo"))
     total       = $cum[$cum.Count - 1]
     picksByYear = $stratPicks[$k]
   }
+  if ($k -eq "ipo") { $row["sampleByYear"] = $ipoCounts }
+  $strategies += $row
 }
 
 $out = [ordered]@{

@@ -11,3 +11,5 @@ sector-map/scripts/dart-institutions-result.json
 sector-map/scripts/ticker-price-map.json
 .demo-preview/
 sector-map/scripts/strategy-series-cache.json
+sector-map/scripts/ipo-universe-cache.json
+sector-map/scripts/ipo-raw.json
