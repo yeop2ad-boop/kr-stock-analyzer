@@ -5767,7 +5767,7 @@ function sReportRowHtml(r) {
     return `<tr><td>${labelHtml}</td><td colspan="2" class="muted">${escapeHtml(r.naReason || "데이터 없음")}</td></tr>`;
   }
   const valueHtml = sReportFmtValue(r.unit, r.value, r.currency) + (r.warnHtml || "");
-  let rankHtml = `<span class="muted">순위 준비중</span>`;
+  let rankHtml = `<span class="muted">비교 데이터 없음</span>`;
   if (r.rankInfo) {
     const pct = (r.rankInfo.rank / r.rankInfo.total) * 100;
     const extreme = pct <= 10 ? " 🔥" : pct >= 90 ? " ⚠️" : "";
@@ -5813,17 +5813,31 @@ async function runSReport(symbol, selfMetricsPromise) {
   }
 
   const currency = isKr ? "KRW" : "USD";
+  // 2026-09-11 사용자 보고("배당률·거래대금이 왜 준비중이야"): 스냅샷에 이 종목 값만 비어 있어도 순위를 못 내
+  // "순위 준비중"이 떴다 — 실시간으로 받은 값을 끼워 넣어 같은 유니버스 안에서 순위를 계산한다.
+  const rankWithFallback = (key, better, liveValue) => {
+    const direct = computeUniverseRank(companies, symbol, (c) => c[key], better);
+    if (direct) return direct;
+    if (!Number.isFinite(liveValue)) return null;
+    const others = companies.filter((c) => c.symbol !== symbol && Number.isFinite(c[key])).map((c) => c[key]);
+    if (!others.length) return null;
+    const ahead = others.filter((v) => (better === "high" ? v > liveValue : v < liveValue)).length;
+    return { rank: ahead + 1, total: others.length + 1, value: liveValue };
+  };
   const rows = S_REPORT_METRICS.map((m) => {
-    if (m.key === "dollarVolume" && !isKr) {
-      return { ...m, value: selfMetrics ? selfMetrics.recentDollarVolume : null, rankInfo: null, currency };
-    }
-    const rankInfo = computeUniverseRank(companies, symbol, (c) => c[m.key], m.better);
-    const row = { ...m, value: self[m.key], rankInfo, currency };
+    const row = { ...m, value: self[m.key], rankInfo: null, currency };
     if (m.key === "dividendYield") {
       // 배치 스냅샷에 배당률이 비어 있으면 방금 조회한 실시간 값으로 대체하고, 랭킹 표와 동일한 컷/지연 경고를 붙임
-      if ((row.value === null || row.value === undefined) && divInfo) row.value = divInfo.yieldPct;
+      if ((row.value === null || row.value === undefined) && divInfo && Number.isFinite(divInfo.yieldPct)) row.value = divInfo.yieldPct;
       if (divInfo) row.warnHtml = dividendWarningHtml(divInfo);
     }
+    if (m.key === "dollarVolume") {
+      // 미국 스냅샷은 2026-09-11 배치부터 거래대금을 담는다 — 그 전 스냅샷이면 실시간 값으로 보완
+      if ((row.value === null || row.value === undefined) && selfMetrics && Number.isFinite(selfMetrics.recentDollarVolume)) {
+        row.value = selfMetrics.recentDollarVolume;
+      }
+    }
+    row.rankInfo = rankWithFallback(m.key, m.better, row.value);
     return row;
   });
 
@@ -5834,7 +5848,7 @@ async function runSReport(symbol, selfMetricsPromise) {
 
   const universeLabel = isKr ? "코스피200+코스닥150" : "S&P500";
   sReportInlineWrap.innerHTML = `
-    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} ${companies.length}개 종목 기준 순위입니다(거래대금은 미국 종목의 경우 배치 데이터가 없어 순위 없이 실시간 값만 표시). 참고용 지표이며 투자 자문이 아닙니다.</p>
+    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} ${companies.length}개 종목 기준 순위입니다. 값은 매일 자동 갱신되는 스냅샷 기준이며, 휴장 등으로 그날 값이 없으면 직전 거래일 값을 씁니다. 참고용 지표이며 투자 자문이 아닙니다.</p>
     <p class="muted" style="font-size:11px;margin:0 0 4px;opacity:0.65;">🔥 해당 항목 상위 10% 이내 · ⚠️ 하위 10% (${universeLabel} 내 순위 기준)</p>
     <table class="s-report-table">
       <thead><tr><th>항목</th><th>수치</th><th>순위</th></tr></thead>

@@ -55,6 +55,8 @@ $chgBySymbol = @{}
 $peBySymbol = @{}
 $epsBySymbol = @{}
 $divBySymbol = @{}
+# 거래대금(현재가x거래량) — S리포트 "거래대금" 순위가 미국만 비어 있던 원인(2026-09-11 사용자 보고)
+$dvBySymbol = @{}
 foreach ($key in $sectorMap.Keys) {
   $scrId = $sectorMap[$key].scr
   try {
@@ -69,6 +71,9 @@ foreach ($key in $sectorMap.Keys) {
         if ($null -ne $q.trailingPE) { $peBySymbol[$q.symbol] = $q.trailingPE }
         if ($null -ne $q.epsTrailingTwelveMonths) { $epsBySymbol[$q.symbol] = $q.epsTrailingTwelveMonths }
         if ($null -ne $q.dividendYield) { $divBySymbol[$q.symbol] = $q.dividendYield }
+        if ($null -ne $q.regularMarketPrice -and $null -ne $q.regularMarketVolume) {
+          $dvBySymbol[$q.symbol] = $q.regularMarketPrice * $q.regularMarketVolume
+        }
       }
     }
     Write-Host "   - $scrId : $($quotes.Count)건 (전체 $($resp.finance.result[0].total))"
@@ -101,6 +106,7 @@ foreach ($c in $companies) {
   $pe = $peBySymbol[$lookupSym]
   $eps = $epsBySymbol[$lookupSym]
   $div = $divBySymbol[$lookupSym]
+  $dv = $dvBySymbol[$lookupSym]
   if ($null -eq $cap) {
     $unmatched += $sym
     $prev = $prevMap[$sym]
@@ -110,8 +116,14 @@ foreach ($c in $companies) {
       if ($null -eq $pe) { $pe = $prev.per }
       if ($null -eq $eps) { $eps = $prev.eps }
       if ($null -eq $div) { $div = $prev.dividendYield }
+      if ($null -eq $dv) { $dv = $prev.dollarVolume }
     }
   }
+  # 휴장·수집 누락으로 오늘 값이 비면 직전 수집본(=직전 거래일)을 그대로 씀(2026-09-11 사용자 요청)
+  $prevRow = $prevMap[$sym]
+  if ($null -eq $dv -and $prevRow) { $dv = $prevRow.dollarVolume }
+  if ($null -eq $div -and $prevRow) { $div = $prevRow.dividendYield }
+  if ($null -eq $chg -and $prevRow) { $chg = $prevRow.changePercent }
   $sectorInfo = $sectorMap[$c.sector]
   $sectorKo = if ($sectorInfo) { $sectorInfo.ko } else { $c.sector }
   $result += [PSCustomObject]@{
@@ -124,6 +136,7 @@ foreach ($c in $companies) {
     per           = $pe
     eps           = $eps
     dividendYield = $div
+    dollarVolume  = $dv
   }
 }
 
