@@ -2735,6 +2735,17 @@ document.querySelectorAll(".fh-tab").forEach((btn) => {
 document.addEventListener("click", (e) => {
   const btn = e.target.closest(".rank-refresh-btn");
   if (!btn) return;
+  // 인기종목 화면의 새로고침(2026-09-11 사용자 요청) — 랭킹 항목이 아니라 인기종목을 다시 검색
+  if (btn.classList.contains("popular-refresh-btn")) {
+    if (document.querySelector('[data-scanning="1"]')) {
+      showToast("검색 중입니다. 잠시만 기다려주세요");
+      return;
+    }
+    popularSnapshotResetCaches();
+    showToast("실시간 데이터로 다시 검색합니다");
+    openPopularStocks();
+    return;
+  }
   if (document.querySelector('[data-scanning="1"]')) {
     showToast("검색 중입니다. 잠시만 기다려주세요");
     return;
@@ -8378,6 +8389,16 @@ function popularCacheNote(cached, reason) {
   const stamp = when ? `${when.getMonth() + 1}/${when.getDate()} ${String(when.getHours()).padStart(2, "0")}:${String(when.getMinutes()).padStart(2, "0")}` : "-";
   return `<p class="top30-scope-note">🕒 ${reason} — 마지막으로 불러온 인기종목(${stamp} 기준)입니다. 휴장이거나 장이 끝난 뒤에도 이 목록은 그대로 볼 수 있어요.</p>`;
 }
+// 인기종목 새로고침용 — 직전 결과 캐시를 비워 실시간으로 다시 받게 함(2026-09-11)
+function popularSnapshotResetCaches() {
+  try {
+    localStorage.removeItem(popularCacheKey(true));
+    localStorage.removeItem(popularCacheKey(false));
+  } catch {}
+  etfScanStateByRegion.clear();
+  cryptoScanState.rows = [];
+  cryptoScanState.scanned = 0;
+}
 // 인기종목 표 그리기(실시간 결과·캐시·시총순 폴백 공용): 30개 먼저, "더보기"로 전체
 // 2026-09-10 사용자 요청: 상단 대표 2종목 표와 완전히 같은 구성·디자인(회색 박스 + 직전 5개월 등락 + 연평균 상승·10년 승률)
 // 2026-09-11 사용자 요청: 기본 화면은 기업명/현재가(등락률)/10년 승률만 깔끔하게,
@@ -8426,6 +8447,7 @@ function paintPopularRows(resultsEl, isKr, rows, extraNoteHtml) {
       ? `${isKr ? "코스피200+코스닥150" : "S&P500"} 시가총액 상위 50위권 중 거래대금(최근 5일 평균)이 큰 순입니다. -5M~-1M은 직전 5개월 월별 등락률, 10년 승률은 매일 자동 갱신되는 배치 DB 기준이며 투자 자문이 아닙니다.`
       : `${isKr ? "코스피200+코스닥150" : "S&P500"} 시가총액 상위 50위권 중 거래대금(최근 5일 평균)이 큰 순입니다. 오른쪽 위 <b>+등락표</b>를 누르면 직전 5개월 월별 등락률을 볼 수 있습니다. 투자 자문이 아닙니다.`;
     resultsEl.innerHTML = `
+        <p class="muted rank-scan-caption" style="font-size:12px;">거래대금 ${Math.min(shown, rows.length)}위까지 검색됨 <button type="button" class="rank-refresh-btn popular-refresh-btn" aria-label="실시간 새로고침"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><polyline points="20 4 20 9 15 9"/></svg></button></p>
         <div class="popular-head-row">
           <span class="tap-hint">* 모든 항목은 눌러서 자세한 설명을 볼 수 있습니다.</span>
           <button type="button" class="score-method-detail-btn popular-delta-btn">${popularShowDeltaTable ? "−등락표 닫기" : "+등락표"}</button>
@@ -9811,8 +9833,9 @@ function updateFirmsNavVisibility() {
 // - 한국·미국주식: 기존대로 자산&투자사 / 순위상승 / 상관관계도 / 섹터 승률
 const INSIGHT_SECTION_CATEGORIES = {
   stocks: ["firms", "rankup", "corr", "sectorWin", "strategy"],
-  etf: ["volatility", "strategy"],
-  crypto: ["rankup", "corr", "sectorWin", "strategy"],
+  // 2026-09-11 사용자 요청: ETF·비트코인 인사이트에는 투자방법 비교를 두지 않음(주식 기준 백테스트라)
+  etf: ["volatility"],
+  crypto: ["rankup", "corr", "sectorWin"],
 };
 const INSIGHT_SECTION_TOGGLE_KEYS = ["firms", "rankup", "corr", "sectorWin", "volatility", "strategy"]; // 나머지(브랜드·신기술·캘린더·뉴스)는 원래 더보기로 빠져 계속 숨김
 function syncInsightCategoryVisibility() {
@@ -9910,16 +9933,52 @@ function buildStrategyCompareSvg(db) {
   const shown = db.strategies.filter((st) => !strategyHidden.has(st.key));
   const all = [0];
   (shown.length ? shown : db.strategies).forEach((st) => st.cumulative.forEach((v) => Number.isFinite(v) && all.push(v)));
-  const { lo, hi, step } = niceAxisBounds(Math.min(...all), Math.max(...all));
   const xFn = (i) => ML + (i / n) * PW; // i=0은 시작(0%), i=n은 마지막 해 끝
-  const yFn = (v) => MT + (1 - (v - lo) / (hi - lo)) * PH;
+
+  // 2026-09-11 사용자 요청: IPO 매매만 +5,000%대라 나머지가 바닥에 깔려 안 보임 —
+  // 600%까지는 평소대로(아래 78% 높이), 600%~최대는 위 22%에 눌러 담는 "압축 축"으로 그린다.
+  const BREAK = 600;
+  const rawMax = Math.max(...all);
+  // 아래 구간의 눈금·하한은 600% 이하 값만으로 정해야 -1500% 같은 빈 공간이 생기지 않음
+  const lowVals = all.filter((v) => v <= BREAK);
+  const lowB = niceAxisBounds(Math.min(...lowVals), Math.max(...lowVals));
+  const compressed = rawMax > BREAK;
+  const lo = compressed ? lowB.lo : niceAxisBounds(Math.min(...all), rawMax).lo;
+  const hi = compressed ? rawMax : niceAxisBounds(Math.min(...all), rawMax).hi;
+  const step = compressed ? lowB.step : niceAxisBounds(Math.min(...all), rawMax).step;
+  const LOWER_FRAC = 0.78; // 600% 이하가 차지할 세로 비율
+  const yFn = (v) => {
+    if (!compressed) return MT + (1 - (v - lo) / (hi - lo)) * PH;
+    if (v <= BREAK) {
+      const t = (v - lo) / (BREAK - lo); // 0~1
+      return MT + PH - t * PH * LOWER_FRAC;
+    }
+    const t = (v - BREAK) / (hi - BREAK);
+    return MT + PH * (1 - LOWER_FRAC) - t * PH * (1 - LOWER_FRAC);
+  };
 
   let grid = "";
-  for (let v = Math.ceil(lo / step) * step; v <= hi + 0.001; v += step) {
+  const ticks = [];
+  for (let v = Math.ceil(lo / step) * step; v <= (compressed ? BREAK : hi) + 0.001; v += step) ticks.push(v);
+  if (compressed) {
+    // 압축 구간은 눈금을 성기게(600% 위는 4칸 정도만)
+    const upStep = niceStep(hi - BREAK) * 2;
+    for (let v = BREAK + upStep; v <= hi + 0.001; v += upStep) ticks.push(v);
+    if (ticks[ticks.length - 1] < hi - upStep * 0.4) ticks.push(hi);
+  }
+  ticks.forEach((v) => {
     const y = yFn(v);
     const zero = Math.abs(v) < 0.001;
     grid += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${ML + PW}" y2="${y.toFixed(1)}" stroke="${zero ? "#9aa1b2" : "#e6e8ee"}" stroke-width="${zero ? 1.4 : 1}" />`;
     grid += `<text x="${ML - 8}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="#6b7280">${v > 0 ? "+" : ""}${Math.round(v)}%</text>`;
+  });
+  if (compressed) {
+    // 축이 눌린 지점을 물결선으로 표시
+    const yb = yFn(BREAK);
+    let zig = `M${ML},${yb.toFixed(1)}`;
+    for (let x = ML; x < ML + PW; x += 12) zig += ` l6,-4 l6,4`;
+    grid += `<path d="${zig}" fill="none" stroke="#c4c9d4" stroke-width="1.4" stroke-dasharray="0" />`;
+    grid += `<text x="${ML + 4}" y="${(yb - 7).toFixed(1)}" font-size="10" fill="#9aa1b2">↑ 여기부터 축을 눌러 그렸습니다</text>`;
   }
   for (let i = 0; i <= n; i++) {
     const x = xFn(i);
@@ -9998,7 +10057,7 @@ async function runInsightStrategyCompare() {
       <div class="strategy-legend" id="strategyLegend">${legendHtml()}</div>
       <div class="future-chart-container" id="strategyChartWrap">${buildStrategyCompareSvg(db)}</div>
       <p class="chart-scroll-hint">&lt; 좌우 스크롤 &gt;</p>
-      <div class="sector-win-scroll">
+      <div class="sector-win-scroll strategy-table-scroll">
         <table class="top30-table strategy-table">
           <thead><tr><th class="strategy-name-th">투자 방법</th>${head}<th>최종</th></tr></thead>
           <tbody>${rows}</tbody>

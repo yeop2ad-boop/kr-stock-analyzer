@@ -2731,6 +2731,9 @@ a.more-panel-item { text-decoration: none; color: inherit; }
 }
 .strategy-legend-item.off { opacity: 0.35; text-decoration: line-through; }
 .strategy-legend-item i, .strategy-name i { width: 10px; height: 10px; border-radius: 3px; flex: none; display: inline-block; }
+/* 표가 화면보다 넓어 잘려 보이던 문제(2026-09-11 사용자 보고) — 표만 따로 좌우 스크롤 */
+.strategy-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.strategy-table-scroll table.strategy-table { min-width: 640px; }
 table.strategy-table { font-size: 12px; }
 table.strategy-table th, table.strategy-table td { padding: 8px 6px; white-space: nowrap; }
 table.strategy-table td.strategy-name { text-align: left; font-weight: 700; display: flex; align-items: center; gap: 6px; }

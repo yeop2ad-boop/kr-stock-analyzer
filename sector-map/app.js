@@ -1661,7 +1661,7 @@ function createSliderController(getKey, els, onNoDataChange) {
       const t = i / 5;
       const v = scale ? scale.toValue(t) : domMin + (domMax - domMin) * t;
       const span = document.createElement("span");
-      span.textContent = i === 5 ? "근대" : m.fmt(v);
+      span.textContent = i === 5 ? "최대" : m.fmt(v); // 2026-09-11 사용자 요청: "근대" 오타 수정
       els.labels.appendChild(span);
     }
   }
@@ -1789,7 +1789,8 @@ const METRIC_DESCS = {
   netIncomeGrowth: "근근 분기 순이익이 1년 전 같은 분기보다 얼마나 늘었는지예요.",
   debtRatio: "자기자본 대비 부채 비율 — 낮을수록 빚 부담이 적어요.",
   cashFlowGrowth: "영업활동 현금흐름이 1년 전보다 얼마나 늘었는지예요.",
-  winRateScore: "최근 10년(최대 120개월) 중 전월보다 상승 마감한 달의 비율이에요(상장 10년 미만은 상장 후부터).",
+  winRateScore:
+    "한 달을 기준으로 상승했는지 하락했는지를 1개의 승/패로 표시하여, 최근 120개월(10년) 동안의 승률입니다. 수익률의 크기가 아니라 이긴 횟수라, 높을수록 꾸준히 우상향했다는 의미예요.",
   rsiWeekly: "주간 RSI(14) 현재값 — 30 미만은 과매도, 70 이상은 과매수 신호로 봐요.",
 };
 // 2026-09-04 개편: 상승압력·투자안정 삭제로 +자세히 배점 안내가 필요한 지표가 없어짐(버튼은 자동 숨김)
