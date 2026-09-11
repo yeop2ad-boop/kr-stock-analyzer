@@ -2809,21 +2809,21 @@ el("morePanelCalendarOverlayBtn").addEventListener("click", () => {
   closeMarketPanel();
   openCalendarPanel();
 });
+// 2026-09-11 사용자 요청: 뉴스·브랜드평판순(다트공시)·신기술은 인사이트 화면 안이 아니라 캘린더처럼 별도 창으로 띄움
 el("morePanelNewsInsightBtn").addEventListener("click", () => {
   closeMorePanel();
-  switchTab(TAB_ORDER.indexOf("insight"));
-  switchInsightCategory("news");
+  closeCompanyPanel();
+  openInsightOverlay("news", "뉴스");
 });
-// 다트공시/브랜드평판순·신기술은 인사이트 카테고리 줄에서 더보기 패널로 이동(2026-09-08 사용자 요청) — 버튼은 숨기고 여기서 연다
 el("morePanelBrandBtn").addEventListener("click", () => {
   closeMorePanel();
-  switchTab(TAB_ORDER.indexOf("insight"));
-  switchInsightCategory("brand");
+  closeCompanyPanel();
+  openInsightOverlay("brand", getWatchlistActiveMarket() === "KR" ? "다트공시" : "브랜드평판순");
 });
 el("morePanelTechBtn").addEventListener("click", () => {
   closeMorePanel();
-  switchTab(TAB_ORDER.indexOf("insight"));
-  switchInsightCategory("tech");
+  closeCompanyPanel();
+  openInsightOverlay("tech", "신기술");
 });
 // 공지사항/앱 정보 모달 + 문의하기(메일 앱 연결)
 el("morePanelNoticeBtn").addEventListener("click", () => {
@@ -9937,6 +9937,43 @@ el("insightResults").addEventListener("click", (e) => {
   );
 });
 
+// ---------- 더보기 전용 인사이트 창(2026-09-11 사용자 요청) ----------
+// 뉴스·브랜드평판순(다트공시)·신기술은 렌더 함수가 #insightStatus/#insightResults에 직접 그리므로,
+// 창을 열 때 그 노드들을 이 창 안으로 옮겼다가 닫을 때 원래 자리로 돌려놓는다(S리포트 섹션 이동과 같은 방식).
+const insightOverlayHomes = new Map();
+let insightOverlayPrevCategory = null;
+function openInsightOverlay(category, title) {
+  const panel = el("insightOverlayPanel");
+  const body = el("insightOverlayBody");
+  el("insightOverlayTitle").textContent = title;
+  insightOverlayPrevCategory = insightActiveCategory;
+  [el("insightBrandNav"), el("insightStatus"), el("insightResults")].forEach((n) => {
+    if (!n) return;
+    if (!insightOverlayHomes.has(n)) insightOverlayHomes.set(n, { parent: n.parentNode, next: n.nextSibling });
+    body.appendChild(n);
+  });
+  panel.style.display = "flex";
+  requestAnimationFrame(() => panel.classList.add("open"));
+  switchInsightCategory(category);
+}
+function closeInsightOverlay() {
+  const panel = el("insightOverlayPanel");
+  panel.classList.remove("open");
+  window.setTimeout(() => {
+    panel.style.display = "none";
+    insightOverlayHomes.forEach((home, n) => home.parent.insertBefore(n, home.next));
+    insightOverlayHomes.clear();
+    // 인사이트 화면은 원래 보던 카테고리로 되돌리고, 다음 진입 때 다시 그리게 표시
+    if (insightOverlayPrevCategory) {
+      insightActiveCategory = insightOverlayPrevCategory;
+      setInsightCategoryActive(insightActiveCategory);
+      updateFirmsNavVisibility();
+      insightDirty = true;
+    }
+  }, 280);
+}
+el("insightOverlayCloseBtn").addEventListener("click", closeInsightOverlay);
+
 // ---------- 투자방법 비교(2026-09-11 사용자 요청) ----------
 // 지금부터 딱 10년을 1년씩 끊어, 7가지 투자 방법을 매년 새로 골라 1년씩 들고 갔다면 어떻게 됐을지 비교한다.
 // 값은 배치(sector-map/scripts/fetch-strategy-compare.ps1)가 미리 계산해둔 data/strategy-compare.json.
@@ -10709,7 +10746,11 @@ function insightTableHtml(data) {
     ? `<p class="disclaimer" style="color:#f5a623;">⚠️ ${escapeHtml(data.dataNote)}</p>`
     : "";
   return `
-    <p class="disclaimer tab-note">📢 <b>${escapeHtml(data.filerName)}</b> SEC 13F 공시 기준(${data.asOf} 보유 기준, ${data.filedDate} 제출) 보유종목 TOP20 · 총 신고 가치 ${fmtBigUSD(data.totalValueUSD)} · 직전 제출(${data.prevFiledDate}) 대비 비중·금액 변동 표시. 13F는 매수/매도 시점이 아닌 분기말 스냅샷이라 최대 45일 지연될 수 있으며, 투자 자문이 아닙니다.</p>
+    ${insightBasisHtml(
+      `${data.asOf} 분기말 보유 기준 · ${data.filedDate} 제출`,
+      `<p><b>${escapeHtml(data.filerName)}</b>의 SEC 13F 공시 기준 보유종목 TOP20입니다. 총 신고 가치 ${fmtBigUSD(data.totalValueUSD)}이며, 직전 제출(${data.prevFiledDate}) 대비 비중·금액 변동을 함께 표시합니다.</p>
+      <p>⚠️ 13F는 매수·매도 시점이 아니라 <b>분기말 스냅샷</b>이고, 분기 종료 후 최대 45일 안에 제출됩니다. 그래서 다음 분기 공시가 나오기 전까지는 이 화면이 같은 값으로 유지되는 게 정상입니다(예: 6월 말 기준 공시는 8월 중순에 올라오고, 9월 말 기준은 11월에 올라옵니다). 투자 자문이 아닙니다.</p>`
+    )}
     ${noteHtml}
     <table class="top30-table insight-holdings-table">
       <colgroup>
@@ -10824,7 +10865,14 @@ async function runInsightKr(institution) {
     return;
   }
   status.style.display = "none";
-  results.innerHTML = krInstitutionTableHtml(inst);
+  // 2026-09-11: 국내 기관도 "언제 기준인지"를 표 위에 명시(최신화가 안 된 것처럼 보인다는 제보 대응)
+  const basis = data.updatedAt ? `${escapeHtml(String(data.updatedAt).slice(0, 10))} 수집 · 주 1회 갱신` : "DART 5%룰 공시 기준";
+  results.innerHTML =
+    insightBasisHtml(
+      basis,
+      `<p><b>${escapeHtml(INSIGHT_KR_INSTITUTION_LABELS[institution])}</b>이(가) 금융감독원 전자공시(DART)에 낸 <b>5%룰(대량보유 상황보고)</b> 원문을 모은 것입니다. 종목 옆 날짜는 그 종목의 <b>최근 공시일</b>입니다.</p>
+      <p>⚠️ 5%룰은 지분이 5%를 넘거나 1%p 이상 변동했을 때만 공시 의무가 생깁니다. 그래서 목록이 며칠·몇 달째 그대로인 것은 정상이며, 실제 운용 자산 전체가 아니라 <b>공시 의무가 생긴 종목만</b> 보입니다. 투자 자문이 아닙니다.</p>`
+    ) + krInstitutionTableHtml(inst);
 }
 Object.entries(insightKrButtons).forEach(([key, btn]) => {
   if (!btn) return;
@@ -15667,6 +15715,7 @@ const BACK_OVERLAYS = [
   { id: "chartModal", close: () => closeChartModal() },
   { id: "wlGroupModal", close: () => closeWlGroupModal() },
   { id: "wlGroupPickSheet", close: () => closeWlGroupPickSheet() },
+  { id: "insightOverlayPanel", close: () => closeInsightOverlay() },
   { id: "selfTestModal", close: () => closeSelfTestModal() },
   { id: "groundModal", close: () => closeGroundModal() },
   { id: "shareSheet", close: () => closeShareSheet() },

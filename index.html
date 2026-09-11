@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260911j" />
+<link rel="stylesheet" href="style.css?v=20260911m" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -450,6 +450,16 @@
       <p id="calendarPanelStatus" class="muted top30-status" style="display:none;"></p>
       <div id="calendarPanelResults"></div>
     </div>
+  </div>
+
+  <!-- 더보기 > 뉴스·브랜드평판순(다트공시)·신기술 전용 창(2026-09-11 사용자 요청) — 캘린더·시장처럼 별도 화면으로 뜬다.
+       인사이트 화면의 결과 영역(#insightStatus/#insightResults/#insightBrandNav)을 열 때 이 안으로 옮겨 쓰고, 닫으면 제자리로 돌려놓는다. -->
+  <div id="insightOverlayPanel" class="company-panel" style="display:none;">
+    <div class="company-panel-bar">
+      <button type="button" id="insightOverlayCloseBtn" class="search-overlay-back" aria-label="닫기"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="20" y1="12" x2="5" y2="12"/><polyline points="11 5 4 12 11 19"/></svg></button>
+      <h2 class="search-overlay-title" id="insightOverlayTitle">뉴스</h2>
+    </div>
+    <div class="company-panel-body" id="insightOverlayBody"></div>
   </div>
 
   <div class="container" id="mainContainer">
@@ -871,6 +881,6 @@
   <!-- 구글 로그인(GSI) 스크립트는 공개 운영 전환(2026-09-10)으로 다시 내림 — 게이트 코드는 app.js에 보존 -->
   <script src="data/ko-company-names.js?v=20260911e"></script>
   <script src="data/logo-db.js?v=20260903g"></script>
-  <script src="app.js?v=20260911j"></script>
+  <script src="app.js?v=20260911m"></script>
 </body>
 </html>
