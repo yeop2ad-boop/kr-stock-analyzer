@@ -12,7 +12,8 @@
 #   6 kospi     코스피 장기투자 : KODEX 200(069500.KS) 보유
 #   7 ipo       IPO 매매        : 시작 시점 기준 상장한 지 가장 얼마 안 된 20종목을 1년 보유
 #
-# 데이터: S&P500 구성종목(sp500-sectors.json)의 11년 월봉 종가 1회 조회 + SPY/KODEX200.
+# 데이터: S&P500 구성종목(sp500-sectors.json)의 22년 월봉 종가 1회 조회 + SPY/KODEX200.
+#   (10년 전 시점에서도 "직전 10년 승률"을 계산하려면 20년치가 필요해 22년을 받는다.)
 # 주의(표시에도 명시): 오늘의 S&P500 구성종목으로 과거를 계산하므로 생존편향이 있다.
 
 $ProgressPreference = 'SilentlyContinue'
@@ -27,7 +28,7 @@ $YEAR_COUNT = 10
 function Get-MonthlyCloses($symbol) {
   for ($attempt = 1; $attempt -le 3; $attempt++) {
     try {
-      $url = "https://query1.finance.yahoo.com/v8/finance/chart/$([uri]::EscapeDataString($symbol))?range=12y&interval=1mo"
+      $url = "https://query1.finance.yahoo.com/v8/finance/chart/$([uri]::EscapeDataString($symbol))?range=22y&interval=1mo"
       $resp = Invoke-RestMethod -Uri $url -Headers $headers -TimeoutSec 40
       $res = $resp.chart.result[0]
       if (-not $res) { return $null }
@@ -166,6 +167,12 @@ function Avg-Return($symbols, [int64]$t0, [int64]$t1) {
   return ($rs | Measure-Object -Average).Average
 }
 
+# 주의: $series.Keys는 쓰지 말 것 — S&P500에 "KEYS"(키사이트) 티커가 있어 해시테이블 키 목록 대신
+# 그 종목의 값이 반환된다(2026-09-11에 이 함정으로 4개 전략이 전부 빈 값이 됐음).
+$symbolList = @()
+foreach ($c in $universe) { if ($series.ContainsKey($c.symbol)) { $symbolList += $c.symbol } }
+Write-Host ("   -> 계산 대상 {0}종목" -f $symbolList.Count)
+
 Write-Host "4) 전략별 연도 수익률 계산..."
 $stratYearly = @{ winrate = @(); sector = @(); low52 = @(); high52 = @(); spy = @(); kospi = @(); ipo = @() }
 $stratPicks = @{ winrate = @(); sector = @(); low52 = @(); high52 = @(); spy = @(); kospi = @(); ipo = @() }
@@ -176,7 +183,7 @@ for ($i = 0; $i -lt $YEAR_COUNT; $i++) {
 
   # 1) 10년 승률 상위 20
   $scored = @()
-  foreach ($s in $series.Keys) {
+  foreach ($s in $symbolList) {
     $w = WinRate-At $series[$s] $t0 120
     if ($null -ne $w) { $scored += [PSCustomObject]@{ s = $s; v = $w } }
   }
@@ -211,7 +218,7 @@ for ($i = 0; $i -lt $YEAR_COUNT; $i++) {
 
   # 3·4) 52주 저점·고점 20
   $pos = @()
-  foreach ($s in $series.Keys) {
+  foreach ($s in $symbolList) {
     $p = Range52-At $series[$s] $t0
     if ($null -ne $p) { $pos += [PSCustomObject]@{ s = $s; v = $p } }
   }
@@ -234,7 +241,7 @@ for ($i = 0; $i -lt $YEAR_COUNT; $i++) {
 
   # 7) IPO — 그 시점 기준 상장한 지 가장 얼마 안 된 20종목(상장 3년 이내만 후보)
   $ipoCand = @()
-  foreach ($s in $series.Keys) {
+  foreach ($s in $symbolList) {
     if (-not $firstTrade.ContainsKey($s)) { continue }
     $age = $t0 - $firstTrade[$s]
     if ($age -gt 0 -and $age -lt (3 * 365 * 86400)) { $ipoCand += [PSCustomObject]@{ s = $s; v = $age } }

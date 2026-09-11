@@ -2724,7 +2724,12 @@ a.more-panel-item { text-decoration: none; color: inherit; }
 
 /* ---------- 투자방법 비교(2026-09-11 사용자 요청) ---------- */
 .strategy-legend { display: flex; flex-wrap: wrap; gap: 6px 12px; margin: 4px 0 8px; }
-.strategy-legend-item { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 700; color: var(--text); }
+.strategy-legend-item {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11.5px; font-weight: 700; color: var(--text);
+  background: none; border: none; padding: 3px 2px; cursor: pointer;
+}
+.strategy-legend-item.off { opacity: 0.35; text-decoration: line-through; }
 .strategy-legend-item i, .strategy-name i { width: 10px; height: 10px; border-radius: 3px; flex: none; display: inline-block; }
 table.strategy-table { font-size: 12px; }
 table.strategy-table th, table.strategy-table td { padding: 8px 6px; white-space: nowrap; }

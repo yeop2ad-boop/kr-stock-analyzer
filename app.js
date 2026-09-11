@@ -9893,6 +9893,9 @@ function getStrategyCompareDb() {
   }
   return strategyCompareDbPromise;
 }
+// 범례에서 끈 전략(2026-09-11): IPO 매매처럼 수익률이 압도적인 선이 있으면 나머지가 바닥에 깔려 안 보여
+// 범례를 눌러 선을 켜고 끌 수 있게 했고, 세로축은 "켜져 있는 선"만으로 다시 잡는다.
+const strategyHidden = new Set();
 // 7개 선을 한 좌표계에 그림 — 0% 기준선과 1년 단위 세로 격자, 오른쪽 끝에 최종값 라벨
 function buildStrategyCompareSvg(db) {
   const W = 720,
@@ -9904,8 +9907,9 @@ function buildStrategyCompareSvg(db) {
   const PW = W - ML - MR;
   const PH = H - MT - MB;
   const n = db.years.length;
+  const shown = db.strategies.filter((st) => !strategyHidden.has(st.key));
   const all = [0];
-  db.strategies.forEach((st) => st.cumulative.forEach((v) => Number.isFinite(v) && all.push(v)));
+  (shown.length ? shown : db.strategies).forEach((st) => st.cumulative.forEach((v) => Number.isFinite(v) && all.push(v)));
   const { lo, hi, step } = niceAxisBounds(Math.min(...all), Math.max(...all));
   const xFn = (i) => ML + (i / n) * PW; // i=0은 시작(0%), i=n은 마지막 해 끝
   const yFn = (v) => MT + (1 - (v - lo) / (hi - lo)) * PH;
@@ -9927,7 +9931,7 @@ function buildStrategyCompareSvg(db) {
   }
 
   let lines = "";
-  db.strategies.forEach((st) => {
+  shown.forEach((st) => {
     const pts = [{ x: xFn(0), y: yFn(0) }];
     st.cumulative.forEach((v, i) => {
       if (Number.isFinite(v)) pts.push({ x: xFn(i + 1), y: yFn(v) });
@@ -9959,9 +9963,15 @@ async function runInsightStrategyCompare() {
     if (!db || !Array.isArray(db.strategies) || !db.strategies.length) throw new Error("데이터가 비어 있습니다.");
     status.style.display = "none";
     const pct = (v) => (Number.isFinite(v) ? `<span class="${v >= 0 ? "delta-up" : "delta-down"}">${v > 0 ? "+" : ""}${Math.round(v)}%</span>` : "—");
-    const legend = db.strategies
-      .map((st) => `<span class="strategy-legend-item"><i style="background:${st.color};"></i>${escapeHtml(st.label)}</span>`)
-      .join("");
+    const legendHtml = () =>
+      db.strategies
+        .map(
+          (st) =>
+            `<button type="button" class="strategy-legend-item${strategyHidden.has(st.key) ? " off" : ""}" data-strategy-key="${escapeHtml(st.key)}">
+              <i style="background:${st.color};"></i>${escapeHtml(st.label)}
+            </button>`
+        )
+        .join("");
     const head = db.years.map((y, i) => `<th>${db.years.length - i}년 전</th>`).join("");
     const rows = db.strategies
       .map(
@@ -9984,8 +9994,9 @@ async function runInsightStrategyCompare() {
         · <b>IPO 매매</b> — 그 시점에 상장한 지 가장 얼마 안 된 ${db.topN}종목</p>
         <p>⚠️ 코스피 장기투자만 국내(KODEX 200)이고 나머지는 전부 S&P500·미국 기준입니다. 종목 선정이 <b>오늘의 S&P500 구성종목</b> 안에서만 이뤄지므로, 그 사이 편입·퇴출된 기업이 빠진 생존편향이 있습니다. 수수료·세금·배당은 반영하지 않았습니다. 과거 성적이며 투자 자문이 아닙니다.</p>`
       )}
-      <div class="strategy-legend">${legend}</div>
-      <div class="future-chart-container">${buildStrategyCompareSvg(db)}</div>
+      <p class="tap-hint">* 아래 이름을 누르면 그 선을 끄고 켤 수 있습니다(끄면 남은 선에 맞춰 그래프가 다시 그려집니다).</p>
+      <div class="strategy-legend" id="strategyLegend">${legendHtml()}</div>
+      <div class="future-chart-container" id="strategyChartWrap">${buildStrategyCompareSvg(db)}</div>
       <p class="chart-scroll-hint">&lt; 좌우 스크롤 &gt;</p>
       <div class="sector-win-scroll">
         <table class="top30-table strategy-table">
@@ -9993,6 +10004,17 @@ async function runInsightStrategyCompare() {
           <tbody>${rows}</tbody>
         </table>
       </div>`;
+    const legendEl = el("strategyLegend");
+    if (legendEl)
+      legendEl.addEventListener("click", (ev) => {
+        const btn = ev.target.closest("[data-strategy-key]");
+        if (!btn) return;
+        const k = btn.dataset.strategyKey;
+        if (strategyHidden.has(k)) strategyHidden.delete(k);
+        else if (strategyHidden.size < db.strategies.length - 1) strategyHidden.add(k); // 최소 1개는 남김
+        legendEl.innerHTML = legendHtml();
+        el("strategyChartWrap").innerHTML = buildStrategyCompareSvg(db);
+      });
   } catch (e) {
     status.style.display = "block";
     status.innerHTML = `❌ ${escapeHtml(e.message || "투자방법 비교 데이터를 불러오지 못했습니다.")} <button type="button" class="cat-btn corr-retry-btn" style="margin-left:6px;">다시 시도</button>`;
