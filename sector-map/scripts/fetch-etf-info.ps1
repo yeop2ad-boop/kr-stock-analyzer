@@ -77,6 +77,30 @@ if (-not $SkipUs) {
         $w = Get-Pct $pair[1]
         if ($null -ne $w -and $w -gt 0) { $assets += [ordered]@{ k = $pair[0]; w = $w } }
       }
+      # 야후 topHoldings는 10종목까지만 준다. 화면에서 "더보기 = 20위까지"를 채우려면 더 긴 목록이 필요해
+      # stockanalysis.com의 보유종목 표(25행)를 같이 읽어, 더 길게 나오면 그쪽으로 교체한다.
+      try {
+        $saUrl = "https://stockanalysis.com/etf/$($sym.ToLower())/holdings/"
+        $sa = Invoke-WebRequest $saUrl -Headers @{ "User-Agent" = $UA; "Accept" = "text/html" } -TimeoutSec 25 -UseBasicParsing
+        $tbl = [regex]::Match($sa.Content, '(?s)<table[^>]*>.*?</table>')
+        if ($tbl.Success) {
+          $more = @()
+          foreach ($tr in [regex]::Matches($tbl.Value, '(?s)<tr[^>]*>(.*?)</tr>')) {
+            $cells = @([regex]::Matches($tr.Groups[1].Value, '(?s)<td[^>]*>(.*?)</td>') | ForEach-Object {
+                ($_.Groups[1].Value -replace '<[^>]+>', '' -replace '&amp;', '&' -replace '\s+', ' ').Trim()
+              })
+            # 열 구성: 순번 / 티커 / 종목명 / 비중% / 주식수
+            if ($cells.Count -ge 4 -and $cells[1] -match '^[A-Z.\-]{1,6}$') {
+              $wv = 0.0
+              [void][double]::TryParse((($cells[3] + "") -replace '[^0-9.\-]', ''), [ref]$wv)
+              $more += [ordered]@{ s = $cells[1]; n = $cells[2]; w = [Math]::Round($wv, 4) }
+            }
+          }
+          if ($more.Count -gt $holdings.Count) { $holdings = @($more | Select-Object -First 20) }
+        }
+      } catch { }
+      Start-Sleep -Milliseconds 200
+
       $usOut[$sym] = [ordered]@{
         fee      = $fee
         family   = ($r.fundProfile.family + "")

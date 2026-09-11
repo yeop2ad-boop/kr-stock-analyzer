@@ -10011,7 +10011,8 @@ async function renderEtfHoldingsBlock(symbol, isKr) {
     return;
   }
   const paint = () => {
-    const top = info.holdings.slice(0, 10);
+    // 기본 10위까지, 더보기를 누르면 20위까지(2026-09-11 사용자 요청)
+    const top = info.holdings.slice(0, etfHoldingsShowMore ? 20 : 10);
     const rows = top
       .map((h, i) => {
         // 국내는 6자리 종목코드라 야후 심볼(.KS)로 바꿔야 상세로 넘어간다.
@@ -10040,11 +10041,17 @@ async function renderEtfHoldingsBlock(symbol, isKr) {
     const weightHeader = top.some((h) => Number.isFinite(h.w)) ? "비중" : "보유<br>주식수";
     const portions =
       etfPortionListHtml("업종 비중", info.sectors) + etfPortionListHtml("자산 비중", info.assets) + etfPortionListHtml("국가 비중", info.countries);
+    // 20위까지 못 채운 건 출처(국내=네이버)가 상위 10종목까지만 공시하기 때문 — 그 사정을 그대로 밝힌다
+    const shortOfTwenty = etfHoldingsShowMore && info.holdings.length < 20;
     const extra = etfHoldingsShowMore
       ? `<div class="etf-holdings-more">
           ${portions}
-          <p class="muted" style="font-size:11px;margin:6px 0 0;">11위 이하 보유 종목은 공개 자료에 없습니다 — 운용사가 매일 공시하는 건 비중 상위 10종목까지라서, ${
-            portions ? "대신 전체 구성 비중을 보여드립니다." : "이 상품은 추가로 보여드릴 구성 정보도 공시되지 않았습니다."
+          <p class="muted" style="font-size:11px;margin:6px 0 0;">${
+            shortOfTwenty
+              ? `이 ETF는 운용사가 비중 상위 ${info.holdings.length}종목까지만 공시해서 그 아래는 표시할 수 없습니다. ${
+                  portions ? "대신 전체 구성 비중을 함께 보여드립니다." : ""
+                }`
+              : "비중 상위 20종목입니다."
           }</p>
         </div>`
       : "";
@@ -12544,15 +12551,27 @@ const KR_ETF_BRAND_LOGO_SRC = {
   FOCUS: "logos/etf/focus.png",
   TREX: "logos/etf/trex.png",
   "파워": "logos/etf/power.png",
+  // 아래는 FMP에 없어서 각 브랜드 공식 사이트에서 직접 받아온 것(2026-09-11)
+  SOL: "logos/etf/sol.png",
+  HANARO: "logos/etf/hanaro.png",
+  "1Q": "logos/etf/oneq.svg",
+  KoAct: "logos/etf/koact.svg",
+  TIME: "logos/etf/time.png", // TIMEFOLIO — 상품명은 "TIME"으로 시작
+  TIMEFOLIO: "logos/etf/time.png",
+  WON: "logos/etf/won.png",
+  IBK: "logos/etf/ibk.svg",
 };
+// 로고가 흰색이라 흰 원 위에서 안 보이는 브랜드 — 어두운 배경을 깔아준다
+const KR_ETF_BRAND_DARK_BG = new Set(["IBK"]);
 // 상품명으로 브랜드를 찾아 그 심볼의 LOGO_OVERRIDE를 등록 — ETF 목록·상세 렌더 직전에 호출(로드 실패 시 기존 배지 폴백 유지)
 // 상품명으로 브랜드를 찾아 그 심볼의 LOGO_OVERRIDE를 등록 — ETF 목록·상세 렌더 직전에 호출.
 // 상품명도 같이 등록해둬야, 브랜드 로고가 없는 종목이 테마 이모지로 떨어질 때 무엇을 추종하는지 판별할 수 있다.
 function ensureKrEtfLogoOverride(symbol, name) {
   registerEtfName(symbol, name);
   if (!symbol || LOGO_OVERRIDE[symbol]) return;
-  const src = KR_ETF_BRAND_LOGO_SRC[(name || "").split(" ")[0]];
-  if (src) LOGO_OVERRIDE[symbol] = { src, bg: "#ffffff" };
+  const brand = (name || "").split(" ")[0];
+  const src = KR_ETF_BRAND_LOGO_SRC[brand];
+  if (src) LOGO_OVERRIDE[symbol] = { src, bg: KR_ETF_BRAND_DARK_BG.has(brand) ? WHITE_LOGO_BG : "#ffffff" };
 }
 
 // 미국 ETF 로고 보정(2026-09-11) — 100종목 로고를 전부 받아 픽셀로 점검한 결과 고칠 것 세 가지.
