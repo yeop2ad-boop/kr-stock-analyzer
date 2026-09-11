@@ -1,0 +1,39 @@
+name: 신규 상장(IPO) 목록 갱신 — 한국·미국
+
+# 2026-09-11 신설. IPO 화면(data/ipo-list.json)과 인사이트 "투자방법 비교"의 IPO 전략이 쓰는 데이터.
+# 미국은 나스닥 캘린더 126개월치 + 종목별 야후 시세라 한 시간 넘게 걸려서 매일이 아니라 주 1회만 돌린다.
+# (신규 상장은 주 단위로도 충분히 따라잡힌다)
+on:
+  schedule:
+    # 매주 토요일 18:00 UTC = 한국시간 일요일 새벽 3시
+    - cron: "0 18 * * 6"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: windows-latest
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: 신규 상장 목록 수집(미국 나스닥 캘린더 + 한국 거래소 상장법인목록)
+        shell: pwsh
+        working-directory: sector-map/scripts
+        run: ./fetch-ipo-list.ps1
+
+      - name: 변경사항 커밋 및 푸시
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ipo-list.json
+          if git diff --cached --quiet; then
+            echo "변경된 데이터 없음"
+          else
+            git commit -m "신규 상장(IPO) 목록 자동 갱신 ($(date -u +%Y-%m-%d))"
+            git pull --rebase origin main
+            git push
+          fi

@@ -1962,6 +1962,35 @@ function computeRiskScore(metrics, sp500Return, kospi200Return) {
 
 // ---------- Wikipedia 헬퍼 (프록시 불필요, 공식 CORS 지원) ----------
 // 한국어 위키백과 문서가 있으면 그대로 사용하고, 없으면 영문 요약을 번역해서 반환
+// ---------- 종목 개요 DB(2026-09-11) ----------
+// 위키백과 검색은 대기업만 잘 맞고 중소형주·신규 상장주는 문서가 없어 개요가 통째로 비었다(사용자 지적).
+// 그래서 회사가 직접 신고·공시한 자료로 만든 개요를 먼저 쓰고, 없을 때만 위키백과로 넘어간다.
+// (한국=거래소 상장법인목록의 업종·주요제품, 미국=야후 assetProfile 사업설명 — batch: fetch-company-overview.ps1)
+let companyOverviewDbPromise = null;
+function getCompanyOverviewDb() {
+  if (!companyOverviewDbPromise) {
+    companyOverviewDbPromise = fetch("data/company-overview.json", { cache: "no-store" })
+      .then((r) => {
+        if (!r.ok) throw new Error("http " + r.status);
+        return r.json();
+      })
+      .then((j) => (j && j.overviews) || {})
+      .catch(() => {
+        companyOverviewDbPromise = null; // 실패는 캐시하지 않음
+        return {};
+      });
+  }
+  return companyOverviewDbPromise;
+}
+// 코스피/코스닥 구분 없이 6자리 코드만 아는 경우가 있어 .KS/.KQ 양쪽을 다 찾아본다
+async function getCompanyOverview(symbol) {
+  if (!symbol) return null;
+  const db = await getCompanyOverviewDb();
+  if (db[symbol]) return db[symbol];
+  const bare = symbol.replace(/\.(KS|KQ)$/, "");
+  return db[`${bare}.KS`] || db[`${bare}.KQ`] || null;
+}
+
 async function getBusinessSummaryKo(companyName) {
   const searchRes = await fetch(
     `https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(companyName)}&limit=1&namespace=0&format=json&origin=*`
@@ -5734,10 +5763,16 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   } else if (summaryAssetSection === "etf") {
     oneLiner = etfDescriptionOf(meta.symbol || quote.symbol || "", companyName);
   } else {
-    try {
-      oneLiner = await getBusinessSummaryKo(companyName);
-    } catch {
-      // 위키백과 매칭 실패 시 안내 문구 유지
+    // 공시 기반 개요를 먼저 — 이름으로 검색하는 위키백과와 달리 엉뚱한 회사가 잡힐 일이 없다
+    const fromDb = await getCompanyOverview(meta.symbol || quote.symbol || "").catch(() => null);
+    if (fromDb) {
+      oneLiner = fromDb;
+    } else {
+      try {
+        oneLiner = await getBusinessSummaryKo(companyName);
+      } catch {
+        // 위키백과 매칭도 실패하면 안내 문구 유지
+      }
     }
   }
   if (oneLiner.length > 220) oneLiner = oneLiner.slice(0, 217) + "...";
@@ -9098,13 +9133,55 @@ function getIpoListDb() {
   return ipoListDbPromise;
 }
 // IPO 기업명은 영문 정식 사명이라 7글자로 자르면 못 알아봄 — 접미어를 떼고 18글자까지 보여줌
+// 미국 신규 상장사도 앱에 한글 별칭이 등록돼 있으면 그걸 쓴다(로블록스·코인베이스처럼 알려진 종목)
+function ipoDisplayName(r) {
+  return TICKER_TO_KOREAN_NAME[r.symbol] || r.name || r.symbol;
+}
 function ipoShortName(name) {
   const t = String(name || "")
-    .replace(/\s*(Inc\.?|Corp\.?|Corporation|Ltd\.?|Limited|Holdings?|Company|Co\.?|plc|S\.A\.|N\.V\.)\s*$/i, "")
+    // "Advasa Holdings, Inc." 처럼 법인격 앞에 쉼표가 붙는 표기가 많아 쉼표까지 같이 떼야 한다
+    .replace(/[,\s]*(Inc\.?|Corp\.?|Corporation|Ltd\.?|Limited|Holdings?|Company|Co\.?|plc|S\.A\.|N\.V\.)\s*$/i, "")
+    .replace(/[,\s]+$/, "")
     .trim();
   return t.length > 18 ? t.slice(0, 18) + ".." : t;
 }
 let ipoShown = 50;
+// 어느 쪽 신규상장을 보여줄지는 지금 보고 있는 시장(한국주식/미국주식)을 그대로 따라간다
+// (2026-09-11 사용자 요청: "한국주식에는 한국신규상장, 미국주식에는 미국 신규상장만")
+function ipoRegionOfMarket() {
+  return getWatchlistActiveMarket() === "KR" ? "kr" : "us";
+}
+let ipoShowSpac = false; // 스팩은 기본으로 감춤(아래 runIpoList 주석 참고)
+// 정렬 4가지(2026-09-11 사용자 지정). 마지막 열은 지금 고른 정렬 기준을 보여준다 —
+// 시가총액·상승률은 이미 현재 시총 열에 같이 나오므로 그때는 승률을 그대로 둔다.
+// 값이 없는 종목은 항상 맨 뒤로. -Infinity를 쓰면 둘 다 없을 때 뺄셈이 NaN이 되어 정렬이 통째로 깨진다.
+const IPO_MISSING = -1e18;
+function ipoDesc(field) {
+  return (a, b) => (Number.isFinite(b[field]) ? b[field] : IPO_MISSING) - (Number.isFinite(a[field]) ? a[field] : IPO_MISSING);
+}
+const IPO_SORTS = {
+  winrate: {
+    label: "10년 승률",
+    sort: ipoDesc("winRate"),
+    note: "상장 이후 월 단위로 오르며 마감한 달의 비율이 높은 순입니다.",
+  },
+  cap: {
+    label: "시가총액",
+    sort: ipoDesc("marketCap"),
+    note: "현재 시가총액이 큰 순입니다.",
+  },
+  revenue: {
+    label: "매출증가",
+    sort: ipoDesc("revenueGrowth"),
+    note: "직전 분기 매출의 전년 동기 대비 증가율이 높은 순입니다(야후 기준, 아직 실적 공시가 없는 종목은 맨 뒤).",
+  },
+  gain: {
+    label: "상승률",
+    sort: ipoDesc("changePct"),
+    note: "상장 첫날 종가 대비 현재가 상승률이 높은 순입니다.",
+  },
+};
+let ipoSort = "winrate";
 function openIpoList() {
   switchTab(TAB_ORDER.indexOf("topranking"));
   el("tabValuationBtn").classList.remove("active");
@@ -9115,61 +9192,125 @@ function openIpoList() {
   ipoShown = 50;
   runIpoList();
 }
+// 신규 상장사 로고: FMP → (없으면) 회사 홈페이지 파비콘 → (그래도 없으면) 기존 글자 배지.
+// 상장한 지 얼마 안 된 회사는 로고 DB에 없는 게 정상이라, 홈페이지 파비콘이 사실상 유일한 그림이다.
+function ipoLogoHtml(r) {
+  const sym = escapeHtml(r.symbol);
+  const badge = escapeHtml((r.name || r.symbol).slice(0, 2));
+  const { primary, fmp, useFallback } = logoSources(r.symbol, 80);
+  const favicon = r.site ? `https://www.google.com/s2/favicons?sz=128&domain=${encodeURIComponent(r.site)}` : "";
+  // onerror 체인은 data-fallback을 한 단계씩 소비한다 — FMP 다음에 파비콘을 오도록 순서대로 심는다
+  const chain = [useFallback ? fmp : null, favicon].filter(Boolean);
+  const fallbackAttr = chain.length ? ` data-fallback="${escapeHtml(chain[0])}"${chain[1] ? ` data-fallback2="${escapeHtml(chain[1])}"` : ""}` : "";
+  const onerror =
+    "var f=this.dataset.fallback; if(f){this.removeAttribute('data-fallback'); if(this.dataset.fallback2){this.dataset.fallback=this.dataset.fallback2; this.removeAttribute('data-fallback2');} this.src=f;}" +
+    "else{this.style.display='none'; this.nextElementSibling.style.display='flex';}";
+  return `<span class="ticker-logo-wrap"><img class="ticker-logo" src="${primary}" alt="${sym}" loading="lazy"${fallbackAttr} onerror="${onerror}" /><span class="ticker-logo-badge" style="display:none;">${badge}</span></span>`;
+}
+function ipoSortNavHtml() {
+  return `
+    <div class="top30-sub-nav" style="margin-bottom:6px;">
+      ${Object.entries(IPO_SORTS)
+        .map(([k, v]) => `<button type="button" class="cat-btn${ipoSort === k ? " active" : ""}" data-ipo-sort="${k}">${v.label}</button>`)
+        .join("")}
+    </div>`;
+}
 async function runIpoList() {
   const status = el("ipoStatus");
   const results = el("ipoResults");
   results.innerHTML = "";
   status.style.display = "block";
   status.textContent = "최근 5년 신규 상장 종목을 불러오는 중...";
+  const region = ipoRegionOfMarket();
   try {
     const db = await getIpoListDb();
-    const rows = (db && db.rows) || [];
-    if (!rows.length) throw new Error("IPO 목록이 비어 있습니다.");
+    if (ipoRegionOfMarket() !== region) return; // 조회 중 시장을 바꿨으면 그쪽 렌더에 맡김
+    const isKr = region === "kr";
+    const all = (db && db[region]) || [];
+    if (!all.length) throw new Error(isKr ? "국내 신규 상장 목록이 아직 준비되지 않았습니다." : "미국 신규 상장 목록이 비어 있습니다.");
+    // 두 부류를 걸러낸다(2026-09-11 사용자 지적).
+    // ① 스팩: 합병 전까지 사업도 실적도 없는 껍데기라 이름·로고·시총·승률이 전부 비어 나온다.
+    //    최근 상장분에 몰려 있어서 켜두면 목록 첫 화면이 통째로 빈칸처럼 보인다.
+    // ② 이전상장·재상장: 거래소가 주는 "상장일"은 지금 속한 시장에 상장한 날이라, 코스닥에서 코스피로
+    //    옮겼거나 분할 후 다시 상장한 종목도 최근 날짜로 찍힌다(비에이치는 2023년 코스피 이전상장인데 회사는 훨씬 오래됐다).
+    //    신규 상장이 아닌 데다 등락률도 "상장 후 수익률"이 아니게 되므로 목록에서 뺀다.
+    const realRows = all.filter((r) => !r.isSpac && !r.isRelisted);
+    const conf = IPO_SORTS[ipoSort] || IPO_SORTS.winrate;
+    const rows = (ipoShowSpac ? all.filter((r) => !r.isRelisted) : realRows).slice().sort(conf.sort);
+    const spacCount = all.filter((r) => r.isSpac && !r.isRelisted).length; // 토글을 켜도 버튼이 사라지지 않게 항상 "전체 스팩 수"로 센다
+    const currency = isKr ? "KRW" : "USD";
     status.style.display = "none";
     const paint = () => {
       const visible = rows.slice(0, ipoShown);
       const body = visible
         .map((r) => {
-          const cap = Number.isFinite(r.marketCap) ? fmtCompactCurrency(r.marketCap, "USD") : "—";
-          const ipoCap = Number.isFinite(r.ipoMarketCap) ? fmtCompactCurrency(r.ipoMarketCap, "USD") : "—";
-          const chg =
-            Number.isFinite(r.changePct)
-              ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
-              : "";
+          const cap = Number.isFinite(r.marketCap) ? fmtCompactCurrency(r.marketCap, currency) : "—";
+          const ipoCap = Number.isFinite(r.ipoMarketCap) ? fmtCompactCurrency(r.ipoMarketCap, currency) : "—";
+          const chg = Number.isFinite(r.changePct)
+            ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
+            : "";
+          // 마지막 열은 지금 고른 정렬 기준 — 매출증가로 정렬했을 때만 매출을, 그 외엔 승률을 보여준다
+          // 상장 6개월 미만이면 승률을 낼 수 없어서, 빈칸 대신 왜 없는지를 적는다
+          const wrCell =
+            ipoSort === "revenue"
+              ? Number.isFinite(r.revenueGrowth)
+                ? `<b class="${r.revenueGrowth >= 0 ? "delta-up" : "delta-down"}">${r.revenueGrowth > 0 ? "+" : ""}${Math.round(r.revenueGrowth)}%</b>`
+                : `<span class="muted" style="font-size:11px;">실적<br>없음</span>`
+              : r.winRate === null || r.winRate === undefined
+              ? `<span class="muted" style="font-size:11px;">상장<br>${r.months || 0}개월</span>`
+              : winRatePctCellHtml(r.winRate, r.months);
           return `
         <tr>
-          <td class="popular-snap-name"><span class="ticker-cell rank-logo">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(
+          <td class="popular-snap-name"><span class="ticker-cell rank-logo">${ipoLogoHtml(r)}<b class="ticker-link" data-ticker="${escapeHtml(
             r.symbol
-          )}">${escapeHtml(ipoShortName(r.name || r.symbol))}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(r.pricedDate)} · ${escapeHtml(
+          )}">${escapeHtml(ipoShortName(ipoDisplayName(r)))}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(r.pricedDate)} · ${escapeHtml(
             r.symbol
           )}</span></td>
           <td>${ipoCap}</td>
           <td>${cap}${chg}</td>
-          <td>${winRatePctCellHtml(r.winRate, r.months)}</td>
+          <td>${wrCell}</td>
         </tr>`;
         })
         .join("");
       results.innerHTML = `
-        <p class="muted rank-scan-caption" style="font-size:12px;">최근 5년 신규 상장 ${rows.length}종목 중 ${visible.length}개 표시(최신순)</p>
+        ${ipoSortNavHtml()}
+        <p class="muted rank-scan-caption" style="font-size:12px;">${isKr ? "국내" : "미국"} 최근 5년 신규 상장 ${rows.length}종목 중 ${
+        visible.length
+      }개 표시(${conf.label}순)${
+        spacCount ? ` <button type="button" class="cat-btn ipo-spac-btn${ipoShowSpac ? " active" : ""}">${ipoShowSpac ? "스팩 숨기기" : `+스팩 ${spacCount}개`}</button>` : ""
+      }</p>
         ${TAP_HINT_HTML}
         <table class="top30-table">
           <thead><tr>
-            <th data-explain="기업명과 상장일(공모가 확정일)입니다. 누르면 그 종목의 분석 화면으로 이동합니다.">기업명<br>(상장 시기)</th>
+            <th data-explain="기업명과 상장일입니다. 누르면 그 종목의 분석 화면으로 이동합니다.">기업명<br>(상장 시기)</th>
             <th data-explain="상장 당시 시가총액(근사) — 지금 주식수가 그대로였다고 보고 상장 첫날 종가로 환산한 값입니다. 그 사이 증자·감자가 있었다면 실제와 다를 수 있습니다.">상장<br>시총</th>
             <th data-explain="현재 시가총액이고, 괄호는 상장 첫날 종가 대비 현재가 등락률입니다(공모가가 아니라 첫날 종가 기준).">현재 시총<br>(등락률)</th>
-            <th data-explain="투자 승률 — 상장 이후 월 단위로 오르며 마감한 달의 비율입니다. 상장한 지 얼마 안 돼 집계 개월이 6개월 미만이면 표시하지 않습니다.">투자<br>승률</th>
+            ${
+              ipoSort === "revenue"
+                ? `<th data-explain="매출 증가 — 직전 분기 매출을 전년 같은 분기와 비교한 증가율입니다. 상장 직후라 실적 공시가 아직 없는 종목은 '실적 없음'으로 나옵니다.">매출<br>증가</th>`
+                : `<th data-explain="투자 승률 — 상장 이후 월 단위로 오르며 마감한 달의 비율입니다. 상장 6개월이 안 된 종목은 표본이 모자라 승률 대신 상장 개월수를 보여줍니다.">투자<br>승률</th>`
+            }
           </tr></thead>
           <tbody>${body}</tbody>
         </table>
         ${visible.length < rows.length ? `<button type="button" class="cat-btn load-more-btn">더보기 (${visible.length}/${rows.length})</button>` : ""}
-        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 나스닥 IPO 캘린더에 공모가가 확정(priced)된 것으로 올라온 미국 신규 상장 종목입니다(${escapeHtml(
-          String(db.generatedAt || "").slice(0, 10)
-        )} 수집). 등락률은 공모가가 아니라 <b>상장 첫날 종가</b> 기준이고, 상장 폐지·시세가 없는 종목은 빠져 있습니다. SPAC(기업인수목적회사)도 함께 포함됩니다. 투자 자문이 아닙니다.</p>`;
+        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${
+          isKr
+            ? "한국거래소 상장법인목록 기준 최근 5년 국내 신규 상장 종목입니다(코넥스 제외)"
+            : "나스닥 IPO 캘린더에 공모가가 확정(priced)된 것으로 올라온 미국 신규 상장 종목입니다"
+        }(${escapeHtml(String(db.generatedAt || "").slice(0, 10))} 수집). ${conf.note} 등락률은 공모가가 아니라 <b>상장 첫날 종가</b> 기준이고, 상장 폐지·시세가 없는 종목은 빠져 있습니다. 다른 시장에서 옮겨온 이전상장과 분할·합병 후 재상장은 신규 상장이 아니라 빼두었습니다. 스팩(기업인수목적회사)은 사업 실체가 없어 기본으로 제외했고, 위 버튼으로 켤 수 있습니다. 투자 자문이 아닙니다.</p>`;
       const more = results.querySelector(".load-more-btn");
       if (more)
         more.addEventListener("click", () => {
           ipoShown += 100;
           paint();
+        });
+      const spacBtn = results.querySelector(".ipo-spac-btn");
+      if (spacBtn)
+        spacBtn.addEventListener("click", () => {
+          ipoShowSpac = !ipoShowSpac;
+          ipoShown = 50;
+          runIpoList();
         });
     };
     paint();
@@ -9180,6 +9321,21 @@ async function runIpoList() {
     if (retry) retry.addEventListener("click", () => runIpoList());
   }
 }
+el("ipoResults").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-ipo-sort]");
+  if (!btn) return;
+  ipoSort = btn.dataset.ipoSort;
+  ipoShown = 50;
+  runIpoList();
+});
+// 한국주식 ↔ 미국주식을 바꾸면 보고 있던 IPO 목록도 그 시장으로 갈아끼운다
+document.addEventListener("marketmodechange", () => {
+  const group = el("ipoGroup");
+  if (group && group.style.display !== "none") {
+    ipoShown = 50;
+    runIpoList();
+  }
+});
 
 // ---------- 자동추적(2026-09-04 사용자 요청): 승률 DB의 현 투자처 전 종목을 10년승률 높은 순으로 표시 ----------
 // 표 4열: 종목명(로고) / 10년승률(60%↑🟢 55~60🟠 55↓🔴) / RSI 점수(내년RSI-현재RSI 차이 30↑🟢 20~30🟡 20↓🔴)
