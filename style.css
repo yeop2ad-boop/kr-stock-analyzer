@@ -1464,8 +1464,14 @@ table.top30-table td:has(.wr-pct) { white-space: nowrap; }
 /* "시가총액 상위 N개 확인" 옆 +전체보기 버튼(긴 경고 문구 대체) */
 /* 캡션 한 줄에 "시가총액 상위 N개만 우선검색 🔄 +전체보기(약 1분소요)"가 다 들어가게(2026-09-10) */
 .rank-scan-caption { display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; white-space: nowrap; }
-.rank-scan-caption .scope-more-btn { margin-left: auto; font-size: 10.5px; padding: 4px 8px; flex: 0 0 auto; }
+.rank-scan-caption .scope-more-btn { margin-left: 2px; font-size: 10.5px; padding: 4px 8px; flex: 0 0 auto; }
 .rank-scan-caption .rank-refresh-btn { flex: 0 0 auto; }
+/* 과거분석 4버튼(한달 상승/하락·1년 상승/하락): 좌우 스크롤 대신 2x2로 정렬(2026-09-11 사용자 요청) */
+.top30-sub-nav.historical-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; overflow-x: visible; flex-wrap: wrap; }
+.top30-sub-nav.historical-nav .cat-btn { width: 100%; justify-content: center; }
+/* 인기종목 머리줄: 왼쪽 안내 + 오른쪽 "+등락표" 토글(2026-09-11 사용자 요청) */
+.popular-head-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 2px 0 4px; }
+.popular-head-row .tap-hint { margin: 0; }
 /* 표 맨 위 안내 — 항목을 눌러 설명을 볼 수 있다는 힌트(2026-09-10 사용자 요청) */
 .tap-hint { margin: 2px 0 6px; font-size: 11.5px; color: var(--muted); opacity: 0.85; }
 /* 이모지·머리글을 눌렀을 때 바로 아래 펼쳐지는 짧은 설명 */
@@ -2378,6 +2384,12 @@ body[data-header-tone="dark"] .fh-market-label { color: #fff; }
 .score-badge.risk .score-num { color: var(--good); }
 .score-badge.macro .score-num { font-size: 26px; color: inherit; }
 .score-badge.macro .score-den { font-size: 10px; text-align: center; line-height: 1.2; padding: 0 6px; color: inherit; opacity: 0.75; }
+/* invest점수 원판 색(2026-09-11 사용자 지정): 10년 승률=보라, RSI 점수=노랑 */
+.score-badge.score-badge-winrate { background: rgba(109, 40, 217, 0.1); border-color: var(--winrate); }
+.score-badge.score-badge-winrate .score-num { color: var(--winrate); }
+.score-badge.score-badge-rsi { background: rgba(234, 179, 8, 0.14); border-color: #eab308; }
+.score-badge.score-badge-rsi .score-num { color: #b58900; }
+:root[data-theme="dark"] .score-badge.score-badge-rsi .score-num { color: #facc15; }
 /* 검색상세 10년 승률 원판은 기존 스타일 그대로 유지(2026-09-10 사용자 확정) — 옆 설명과 일자 정렬만 적용 */
 #winRateSection .score-wrap { align-items: center; }
 #winRateSection .score-details { flex: 1 1 240px; min-width: 0; }
@@ -2434,6 +2446,10 @@ body[data-header-tone="dark"] .fh-market-label { color: #fff; }
 .nine-green { background: var(--good-soft); border: 2px solid var(--good); color: var(--good); }
 .nine-blue { background: var(--accent-soft); border: 2px solid var(--accent); color: var(--accent); }
 .nine-orange { background: rgba(245, 158, 11, 0.12); border: 2px solid #f59e0b; color: #d97706; }
+/* 2026-09-11 사용자 지정: 승률=보라 / 상승=파랑 / RSI=노랑 — invest점수 원판과 색을 맞춤 */
+.nine-purple { background: rgba(109, 40, 217, 0.1); border: 2px solid var(--winrate); color: var(--winrate); }
+.nine-yellow { background: rgba(234, 179, 8, 0.14); border: 2px solid #eab308; color: #b58900; }
+:root[data-theme="dark"] .nine-yellow { color: #facc15; }
 .nine-score-label { font-size: 10.5px; color: var(--muted); text-align: center; line-height: 1.3; }
 .nine-partial-mark { cursor: help; }
 

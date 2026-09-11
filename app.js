@@ -825,7 +825,7 @@ function macroGaugeHtml(value, min, max, zones) {
 const SCORE_COLOR_FAMILY = {
   pressure: "#5b8def", // 상승압력 - 파랑
   stability: "#22a866", // 투자안정 - 초록
-  fear: "#e08a2c", // 공포지수(VIX) - 주황
+  fear: "#ee5f27", // 공포지수(VIX) - 주황과 빨강 사이(2026-09-11 사용자 지정)
 };
 // 원형판 안쪽은 다른 점수 배지(상승압력=accent-soft, 투자안정=good-soft)와 통일성 있게 계열별 연한 배경을
 // 사용 — 예전엔 값이 높을수록 하얗게/낮을수록 검게 보간했지만(다크 테마 전용 디자인) 화이트 테마 기본으로
@@ -2865,7 +2865,7 @@ const I18N = {
   "tab.autotrack": { ko: "자동추적", en: "Auto Track" },
   "tab.search": { ko: "간편검색", en: "Search" },
   "tab.valuation": { ko: "기업가치", en: "Value" }, // 2026-09-10 사용자 요청: 실적→기업가치
-  "tab.trend": { ko: "미래예측", en: "Forecast" }, // 2026-09-10 사용자 요청: 추세→미래예측
+  "tab.trend": { ko: "시장분석", en: "Market" }, // 2026-09-11 사용자 요청: 미래예측→시장분석
   "tab.insight": { ko: "인사이트", en: "Insight" },
   "nav.map": { ko: "마켓맵", en: "MarketMap" }, // 2026-09-08: 섹터맵→마켓맵
   "nav.ranking": { ko: "랭킹", en: "Ranking" },
@@ -6230,9 +6230,9 @@ async function renderSummaryScoreRow(ticker, scoreMode = "stock") {
     // 2026-09-10 사용자 요청: 9칸 → 핵심 3칸(10년 승률 / 연평균 상승 / 현재 RSI 점수)만 남김
     const gridHtml = `
       <div class="nine-score-grid nine-score-grid-3">
-        ${cell("green", `10년 승률${partialMark}`, nineFmtPct(wr10, false))}
+        ${cell("purple", `10년 승률${partialMark}`, nineFmtPct(wr10, false))}
         ${cell("blue", `연평균 상승${partialMark}`, nineFmtPct(ret10, true))}
-        ${cell("orange", "현재 RSI 점수", nineFmtNum(num(e.rsi), false))}
+        ${cell("yellow", "현재 RSI 점수", nineFmtNum(num(e.rsi), false))}
       </div>`;
 
     // 최근 12개월 승패(OX) 표 — m12(과거→최신 월간 등락%)가 있는 종목만
@@ -7332,7 +7332,7 @@ async function renderWinRate(ticker, mode) {
   const isPartial = entry.total < 120;
   el("winRateSection").innerHTML = `
     <div class="score-wrap">
-      <div class="score-badge">
+      <div class="score-badge score-badge-winrate">
         <div class="score-num">${entry.score}%</div>
         <div class="score-den">10년 승률</div>
       </div>
@@ -7402,7 +7402,7 @@ async function renderRsi(ticker, mode) {
   const zone = val < 30 ? "과매도 구간 (30 미만)" : val >= 70 ? "과매수 구간 (70 이상)" : "중립 구간 (30~70)";
   el("rsiSection").innerHTML = `
     <div class="score-wrap">
-      <div class="score-badge">
+      <div class="score-badge score-badge-rsi">
         <div class="score-num" style="color:${color};">${val}</div>
         <div class="score-den">/ 100</div>
       </div>
@@ -8588,27 +8588,71 @@ function popularCacheNote(cached, reason) {
 }
 // 인기종목 표 그리기(실시간 결과·캐시·시총순 폴백 공용): 30개 먼저, "더보기"로 전체
 // 2026-09-10 사용자 요청: 상단 대표 2종목 표와 완전히 같은 구성·디자인(회색 박스 + 직전 5개월 등락 + 연평균 상승·10년 승률)
+// 2026-09-11 사용자 요청: 기본 화면은 기업명/현재가(등락률)/10년 승률만 깔끔하게,
+// 우측 상단 "+등락표"를 누르면 직전 5개월 월별 등락표(기존 표)로 바뀜(다시 누르면 복귀)
+let popularShowDeltaTable = false;
+function popularSimpleTableHtml(rows, isKr) {
+  const body = rows
+    .map(
+      (r) => `
+      <tr>
+        <td class="popular-snap-name"><span class="ticker-cell rank-logo">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(
+        r.symbol
+      )}">${escapeHtml(popularSnapName(r.name || r.symbol))}</b></span></td>
+        <td>${
+          r.price !== null && r.price !== undefined
+            ? `${priceChartLink(r.symbol, fmtPrice(r.price, r.currency || (isKr ? "KRW" : "USD")))}${
+                r.changePct !== null && r.changePct !== undefined
+                  ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
+                  : ""
+              }`
+            : "N/A"
+        }</td>
+        <td>${winRatePctCellHtml(r.winRateScore, r.winTotal)}</td>
+      </tr>`
+    )
+    .join("");
+  return `
+    <table class="top30-table popular-snap-table">
+      <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}${RANK_TH_WINRATE}</tr></thead>
+      <tbody>${body}</tbody>
+    </table>`;
+}
 function paintPopularRows(resultsEl, isKr, rows, extraNoteHtml) {
   let shown = Math.min(30, rows.length);
   const paint = () => {
-    const snapRows = rows.slice(0, shown).map((r) => ({
+    const visible = rows.slice(0, shown);
+    const snapRows = visible.map((r) => ({
       symbol: r.symbol,
       name: r.name,
       changes: r.changes,
       winRate: r.winRateScore,
       winTotal: r.winTotal,
     }));
+    const tableHtml = popularShowDeltaTable ? popularSnapTableHtml(snapRows) : popularSimpleTableHtml(visible, isKr);
+    const noteHtml = popularShowDeltaTable
+      ? `${isKr ? "코스피200+코스닥150" : "S&P500"} 시가총액 상위 50위권 중 거래대금(최근 5일 평균)이 큰 순입니다. -5M~-1M은 직전 5개월 월별 등락률, 10년 승률은 매일 자동 갱신되는 배치 DB 기준이며 투자 자문이 아닙니다.`
+      : `${isKr ? "코스피200+코스닥150" : "S&P500"} 시가총액 상위 50위권 중 거래대금(최근 5일 평균)이 큰 순입니다. 오른쪽 위 <b>+등락표</b>를 누르면 직전 5개월 월별 등락률을 볼 수 있습니다. 투자 자문이 아닙니다.`;
     resultsEl.innerHTML = `
-        ${TAP_HINT_HTML}
+        <div class="popular-head-row">
+          <span class="tap-hint">* 모든 항목은 눌러서 자세한 설명을 볼 수 있습니다.</span>
+          <button type="button" class="score-method-detail-btn popular-delta-btn">${popularShowDeltaTable ? "−등락표 닫기" : "+등락표"}</button>
+        </div>
         ${extraNoteHtml || ""}
-        <div class="popular-snap-box popular-snap-box-list">${popularSnapTableHtml(snapRows)}</div>
+        <div class="popular-snap-box popular-snap-box-list">${tableHtml}</div>
         ${shown < rows.length ? `<button type="button" class="cat-btn load-more-btn">더보기 (${shown}/${rows.length})</button>` : ""}
-        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${isKr ? "코스피200+코스닥150" : "S&P500"} 시가총액 상위 50위권 중 거래대금(최근 5일 평균)이 큰 순입니다. -5M~-1M은 직전 5개월 월별 등락률, 10년 승률은 매일 자동 갱신되는 배치 DB 기준이며 투자 자문이 아닙니다.</p>
+        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${noteHtml}</p>
       `;
     const moreBtn = resultsEl.querySelector(".load-more-btn");
     if (moreBtn)
       moreBtn.addEventListener("click", () => {
         shown = rows.length;
+        paint();
+      });
+    const deltaBtn = resultsEl.querySelector(".popular-delta-btn");
+    if (deltaBtn)
+      deltaBtn.addEventListener("click", () => {
+        popularShowDeltaTable = !popularShowDeltaTable;
         paint();
       });
   };
@@ -15428,12 +15472,7 @@ async function renderFutureModalHeader(ticker, quote, metricsPromise, marketRetu
       <span class="future-modal-name">${escapeHtml(koName)}</span>
       <span class="future-modal-ticker">${escapeHtml(ticker)}</span>
     </span>
-    <span class="future-modal-scores" id="futureModalScores">
-      <span class="mini-score-circle small">·</span>
-      <span class="mini-score-circle small risk">·</span>
-      <span class="mini-score-circle small macro">·</span>
-    </span>
-  `;
+  `; // 2026-09-11 사용자 요청: 오른쪽 위 원판 3개(연평균 상승·10년 승률·공포지수) 삭제
   try {
     const isKr = isKrTicker(ticker);
     const db = await getWinRateDb().catch(() => null);
@@ -15451,14 +15490,10 @@ async function renderFutureModalHeader(ticker, quote, metricsPromise, marketRetu
       const vix = macroMetrics.vix;
       macroBadgeHtml = `<span class="mini-score-circle small macro" title="S&P500 VIX"${scoreBgStyleAttr(vix, 10, 50, "fear")}>${vix !== null && vix !== undefined ? Math.round(vix) : "N/A"}</span>`;
     }
-    const scoresEl = el("futureModalScores");
-    if (scoresEl) {
-      scoresEl.innerHTML = `
-        <span class="mini-score-circle small" title="연평균 상승(연복리 수익률(CAGR))">${ret10}</span>
-        <span class="mini-score-circle small risk" title="10년 승률">${wr10}</span>
-        ${macroBadgeHtml}
-      `;
-    }
+    // 원판 3개는 2026-09-11 사용자 요청으로 삭제 — 값 계산은 남겨두되(다른 곳에서 재사용 가능) 표시는 하지 않음
+    void ret10;
+    void wr10;
+    void macroBadgeHtml;
   } catch {
     // 점수 계산이 실패해도 로고·이름·티커는 그대로 유지
   }
