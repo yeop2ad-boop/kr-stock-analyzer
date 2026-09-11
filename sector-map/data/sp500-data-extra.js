@@ -22,7 +22,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 1.4,
       "roe": 25.0,
       "debtRatio": 2640.7,
-      "week52RangePct": 57.4
+      "week52RangePct": 57.4,
+      "dollarVolume": 372795942
     },
     {
       "symbol": "NKE",
@@ -45,7 +46,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 11.9,
       "roe": 7.2,
       "debtRatio": 158.4,
-      "week52RangePct": 0.2
+      "week52RangePct": 0.2,
+      "dollarVolume": 1082456183
     },
     {
       "symbol": "PSA",
@@ -68,7 +70,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 45.2,
       "roe": 5.4,
       "debtRatio": 117.9,
-      "week52RangePct": 48.2
+      "week52RangePct": 48.2,
+      "dollarVolume": 259868428
     },
     {
       "symbol": "MET",
@@ -91,7 +94,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 2.7,
       "debtRatio": 2665.4,
-      "week52RangePct": 87.6
+      "week52RangePct": 87.6,
+      "dollarVolume": 211432556
     },
     {
       "symbol": "O",
@@ -114,7 +118,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 42.4,
       "roe": 0.9,
       "debtRatio": 87.3,
-      "week52RangePct": 30.7
+      "week52RangePct": 30.7,
+      "dollarVolume": 354170933
     },
     {
       "symbol": "FANG",
@@ -137,7 +142,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 45.5,
       "roe": 5.0,
       "debtRatio": 69.2,
-      "week52RangePct": 86.1
+      "week52RangePct": 86.1,
+      "dollarVolume": 400020234
     },
     {
       "symbol": "TEL",
@@ -160,7 +166,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 20.8,
       "roe": 5.6,
       "debtRatio": 95.7,
-      "week52RangePct": 23.1
+      "week52RangePct": 23.1,
+      "dollarVolume": 340068458
     },
     {
       "symbol": "OKE",
@@ -183,7 +190,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 13.3,
       "roe": 4.2,
       "debtRatio": 198.2,
-      "week52RangePct": 88.5
+      "week52RangePct": 88.5,
+      "dollarVolume": 217888297
     },
     {
       "symbol": "FAST",
@@ -206,7 +214,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 21.0,
       "roe": 9.4,
       "debtRatio": 30.1,
-      "week52RangePct": 72.0
+      "week52RangePct": 72.0,
+      "dollarVolume": 353476832
     },
     {
       "symbol": "TER",
@@ -229,7 +238,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 33.2,
       "roe": 10.9,
       "debtRatio": 42.3,
-      "week52RangePct": 68.9
+      "week52RangePct": 68.9,
+      "dollarVolume": 854858666
     },
     {
       "symbol": "D",
@@ -252,7 +262,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 27.0,
       "roe": 2.1,
       "debtRatio": 291.2,
-      "week52RangePct": 53.7
+      "week52RangePct": 53.7,
+      "dollarVolume": 383475604
     },
     {
       "symbol": "FIX",
@@ -275,7 +286,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 17.1,
       "roe": 13.7,
       "debtRatio": 163.8,
-      "week52RangePct": 63.5
+      "week52RangePct": 63.5,
+      "dollarVolume": 338129847
     },
     {
       "symbol": "AFL",
@@ -298,7 +310,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 2.7,
       "debtRatio": 282.6,
-      "week52RangePct": 36.5
+      "week52RangePct": 36.5,
+      "dollarVolume": 219385990
     },
     {
       "symbol": "MRNA",
@@ -321,7 +334,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": -569.9,
       "roe": -11.6,
       "debtRatio": 62.1,
-      "week52RangePct": 74.1
+      "week52RangePct": 74.1,
+      "dollarVolume": 1072525337
     },
     {
       "symbol": "F",
@@ -344,7 +358,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 1.3,
       "roe": -3.7,
       "debtRatio": 699.3,
-      "week52RangePct": 41.5
+      "week52RangePct": 41.5,
+      "dollarVolume": 662415644
     },
     {
       "symbol": "NXPI",
@@ -367,7 +382,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 30.8,
       "roe": 6.7,
       "debtRatio": 130.7,
-      "week52RangePct": 27.7
+      "week52RangePct": 27.7,
+      "dollarVolume": 697025980
     },
     {
       "symbol": "GRMN",
@@ -390,7 +406,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 30.4,
       "roe": 6.0,
       "debtRatio": 26.5,
-      "week52RangePct": 67.0
+      "week52RangePct": 67.0,
+      "dollarVolume": 134687826
     },
     {
       "symbol": "COHR",
@@ -413,7 +430,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 14.9,
       "roe": 2.2,
       "debtRatio": 64.8,
-      "week52RangePct": 56.7
+      "week52RangePct": 56.7,
+      "dollarVolume": 1646331609
     },
     {
       "symbol": "CIEN",
@@ -436,7 +454,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 18.1,
       "roe": 8.7,
       "debtRatio": 161.6,
-      "week52RangePct": 40.3
+      "week52RangePct": 40.3,
+      "dollarVolume": 849578988
     },
     {
       "symbol": "NUE",
@@ -459,7 +478,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 15.7,
       "roe": 5.2,
       "debtRatio": 61.9,
-      "week52RangePct": 83.4
+      "week52RangePct": 83.4,
+      "dollarVolume": 232871971
     },
     {
       "symbol": "AME",
@@ -482,7 +502,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 25.8,
       "roe": 3.6,
       "debtRatio": 47.4,
-      "week52RangePct": 67.1
+      "week52RangePct": 67.1,
+      "dollarVolume": 279376877
     },
     {
       "symbol": "NDAQ",
@@ -505,7 +526,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 28.9,
       "roe": 4.2,
       "debtRatio": 128.0,
-      "week52RangePct": 61.3
+      "week52RangePct": 61.3,
+      "dollarVolume": 324201743
     },
     {
       "symbol": "CTVA",
@@ -528,7 +550,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 23.5,
       "roe": 3.0,
       "debtRatio": 74.3,
-      "week52RangePct": 78.7
+      "week52RangePct": 78.7,
+      "dollarVolume": 299469144
     },
     {
       "symbol": "SRE",
@@ -551,7 +574,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 27.8,
       "roe": 2.4,
       "debtRatio": 220.1,
-      "week52RangePct": 20.6
+      "week52RangePct": 20.6,
+      "dollarVolume": 212538564
     },
     {
       "symbol": "DAL",
@@ -574,7 +598,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 9.4,
       "roe": 7.4,
       "debtRatio": 295.7,
-      "week52RangePct": 57.1
+      "week52RangePct": 57.1,
+      "dollarVolume": 455204545
     },
     {
       "symbol": "DVN",
@@ -597,7 +622,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 34.3,
       "roe": 4.6,
       "debtRatio": 69.8,
-      "week52RangePct": 87.3
+      "week52RangePct": 87.3,
+      "dollarVolume": 788888279
     },
     {
       "symbol": "KEYS",
@@ -620,7 +646,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 25.0,
       "roe": 6.0,
       "debtRatio": 81.4,
-      "week52RangePct": 77.2
+      "week52RangePct": 77.2,
+      "dollarVolume": 226957208
     },
     {
       "symbol": "ADSK",
@@ -643,7 +670,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 29.2,
       "roe": 14.5,
       "debtRatio": 283.8,
-      "week52RangePct": 18.5
+      "week52RangePct": 18.5,
+      "dollarVolume": 474220338
     },
     {
       "symbol": "CAH",
@@ -666,7 +694,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 1.3,
       "roe": -13.8,
       "debtRatio": -2082.0,
-      "week52RangePct": 80.2
+      "week52RangePct": 80.2,
+      "dollarVolume": 285154172
     },
     {
       "symbol": "PYPL",
@@ -689,7 +718,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 17.7,
       "roe": 5.6,
       "debtRatio": 317.4,
-      "week52RangePct": 36.4
+      "week52RangePct": 36.4,
+      "dollarVolume": 604194323
     },
     {
       "symbol": "BDX",
@@ -712,7 +742,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 15.1,
       "roe": 1.5,
       "debtRatio": 107.8,
-      "week52RangePct": 74.6
+      "week52RangePct": 74.6,
+      "dollarVolume": 296381895
     },
     {
       "symbol": "HONA",
@@ -732,7 +763,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 14.9,
       "roe": -4.3,
       "debtRatio": -438.7,
-      "week52RangePct": 3.1
+      "week52RangePct": 3.1,
+      "dollarVolume": 484985002
     },
     {
       "symbol": "EW",
@@ -755,7 +787,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 31.2,
       "roe": 3.7,
       "debtRatio": 29.0,
-      "week52RangePct": 60.3
+      "week52RangePct": 60.3,
+      "dollarVolume": 200331799
     },
     {
       "symbol": "STT",
@@ -778,7 +811,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 3.8,
       "debtRatio": 1380.1,
-      "week52RangePct": 94.9
+      "week52RangePct": 94.9,
+      "dollarVolume": 221938799
     },
     {
       "symbol": "AXON",
@@ -801,7 +835,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 5.2,
       "roe": 0.8,
       "debtRatio": 103.6,
-      "week52RangePct": 30.9
+      "week52RangePct": 30.9,
+      "dollarVolume": 447391949
     },
     {
       "symbol": "WAB",
@@ -824,7 +859,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 18.9,
       "roe": 3.5,
       "debtRatio": 106.0,
-      "week52RangePct": 78.5
+      "week52RangePct": 78.5,
+      "dollarVolume": 201120911
     },
     {
       "symbol": "CARR",
@@ -847,7 +883,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 12.1,
       "roe": 3.8,
       "debtRatio": 181.8,
-      "week52RangePct": 24.1
+      "week52RangePct": 24.1,
+      "dollarVolume": 402407829
     },
     {
       "symbol": "FITB",
@@ -870,7 +907,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 0.5,
       "debtRatio": 770.9,
-      "week52RangePct": 73.9
+      "week52RangePct": 73.9,
+      "dollarVolume": 233242456
     },
     {
       "symbol": "LHX",
@@ -893,7 +931,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 11.3,
       "roe": 2.8,
       "debtRatio": 105.9,
-      "week52RangePct": 1.3
+      "week52RangePct": 1.3,
+      "dollarVolume": 415680477
     },
     {
       "symbol": "WDAY",
@@ -916,7 +955,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 11.8,
       "roe": 9.8,
       "debtRatio": 145.5,
-      "week52RangePct": 53.6
+      "week52RangePct": 53.6,
+      "dollarVolume": 446198499
     },
     {
       "symbol": "XYZ",
@@ -939,7 +979,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 15.6,
       "roe": 0.4,
       "debtRatio": 77.8,
-      "week52RangePct": 79.7
+      "week52RangePct": 79.7,
+      "dollarVolume": 255239937
     },
     {
       "symbol": "COIN",
@@ -962,7 +1003,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": -2.4,
       "roe": -2.7,
       "debtRatio": 102.3,
-      "week52RangePct": 12.6
+      "week52RangePct": 12.6,
+      "dollarVolume": 827342828
     },
     {
       "symbol": "AMP",
@@ -985,7 +1027,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 17.5,
       "debtRatio": 3008.2,
-      "week52RangePct": 87.3
+      "week52RangePct": 87.3,
+      "dollarVolume": 305587861
     },
     {
       "symbol": "ETR",
@@ -1008,7 +1051,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 18.5,
       "roe": 2.3,
       "debtRatio": 336.5,
-      "week52RangePct": 59.1
+      "week52RangePct": 59.1,
+      "dollarVolume": 211253086
     },
     {
       "symbol": "ROK",
@@ -1031,7 +1075,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 20.8,
       "roe": 11.7,
       "debtRatio": 217.4,
-      "week52RangePct": 53.8
+      "week52RangePct": 53.8,
+      "dollarVolume": 304624806
     },
     {
       "symbol": "AZO",
@@ -1054,7 +1099,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 19.1,
       "roe": -23.0,
       "debtRatio": -851.2,
-      "week52RangePct": 0.3
+      "week52RangePct": 0.3,
+      "dollarVolume": null
     },
     {
       "symbol": "VTR",
@@ -1077,7 +1123,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 13.4,
       "roe": 0.5,
       "debtRatio": 102.1,
-      "week52RangePct": 68.2
+      "week52RangePct": 68.2,
+      "dollarVolume": 253692340
     },
     {
       "symbol": "XEL",
@@ -1100,7 +1147,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 22.7,
       "roe": 2.4,
       "debtRatio": 262.3,
-      "week52RangePct": 31.5
+      "week52RangePct": 31.5,
+      "dollarVolume": 579511824
     },
     {
       "symbol": "FERG",
@@ -1123,7 +1171,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 10.2,
       "roe": 10.7,
       "debtRatio": 211.3,
-      "week52RangePct": 20.8
+      "week52RangePct": 20.8,
+      "dollarVolume": 227674893
     },
     {
       "symbol": "CMG",
@@ -1146,7 +1195,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 16.6,
       "roe": 18.3,
       "debtRatio": 303.0,
-      "week52RangePct": 54.7
+      "week52RangePct": 54.7,
+      "dollarVolume": 358747163
     },
     {
       "symbol": "ARES",
@@ -1169,7 +1219,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 17.4,
       "roe": 3.8,
       "debtRatio": 530.0,
-      "week52RangePct": 38.3
+      "week52RangePct": 38.3,
+      "dollarVolume": 347722691
     },
     {
       "symbol": "EBAY",
@@ -1192,7 +1243,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 21.6,
       "roe": 11.8,
       "debtRatio": 284.4,
-      "week52RangePct": 65.4
+      "week52RangePct": 65.4,
+      "dollarVolume": 372424722
     },
     {
       "symbol": "VST",
@@ -1215,7 +1267,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 13.8,
       "roe": 5.6,
       "debtRatio": 676.9,
-      "week52RangePct": 16.5
+      "week52RangePct": 16.5,
+      "dollarVolume": 657083073
     },
     {
       "symbol": "HUM",
@@ -1238,7 +1291,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 3.6,
       "debtRatio": 197.4,
-      "week52RangePct": 89.4
+      "week52RangePct": 89.4,
+      "dollarVolume": 369459034
     },
     {
       "symbol": "EXC",
@@ -1261,7 +1315,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 16.4,
       "roe": 1.3,
       "debtRatio": 305.8,
-      "week52RangePct": 10.0
+      "week52RangePct": 10.0,
+      "dollarVolume": 435346406
     },
     {
       "symbol": "A",
@@ -1284,7 +1339,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 23.6,
       "roe": 4.9,
       "debtRatio": 89.7,
-      "week52RangePct": 62.8
+      "week52RangePct": 62.8,
+      "dollarVolume": 217579325
     },
     {
       "symbol": "TTWO",
@@ -1307,7 +1363,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": -2.3,
       "roe": -0.9,
       "debtRatio": 151.2,
-      "week52RangePct": 37.5
+      "week52RangePct": 37.5,
+      "dollarVolume": 531961620
     },
     {
       "symbol": "PAYX",
@@ -1330,7 +1387,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 37.7,
       "roe": 11.3,
       "debtRatio": 333.0,
-      "week52RangePct": 58.8
+      "week52RangePct": 58.8,
+      "dollarVolume": 245865301
     },
     {
       "symbol": "CBRE",
@@ -1353,7 +1411,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 3.2,
       "roe": 2.4,
       "debtRatio": 253.6,
-      "week52RangePct": 31.0
+      "week52RangePct": 31.0,
+      "dollarVolume": 215968563
     },
     {
       "symbol": "IDXX",
@@ -1376,7 +1435,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 35.0,
       "roe": 21.0,
       "debtRatio": 113.5,
-      "week52RangePct": 0.6
+      "week52RangePct": 0.6,
+      "dollarVolume": 210933275
     },
     {
       "symbol": "KDP",
@@ -1399,7 +1459,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 8.6,
       "roe": 0.6,
       "debtRatio": 233.3,
-      "week52RangePct": 73.6
+      "week52RangePct": 73.6,
+      "dollarVolume": 317506306
     },
     {
       "symbol": "ODFL",
@@ -1422,7 +1483,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 29.9,
       "roe": 7.7,
       "debtRatio": 26.1,
-      "week52RangePct": 43.3
+      "week52RangePct": 43.3,
+      "dollarVolume": 204783421
     },
     {
       "symbol": "IQV",
@@ -1445,7 +1507,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 13.0,
       "roe": 4.1,
       "debtRatio": 382.1,
-      "week52RangePct": 87.6
+      "week52RangePct": 87.6,
+      "dollarVolume": 339453574
     },
     {
       "symbol": "LYV",
@@ -1468,7 +1531,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 6.7,
       "roe": 357.6,
       "debtRatio": 32019.5,
-      "week52RangePct": 70.0
+      "week52RangePct": 70.0,
+      "dollarVolume": 298172861
     },
     {
       "symbol": "PRU",
@@ -1491,7 +1555,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 3.1,
       "debtRatio": 2371.9,
-      "week52RangePct": 74.2
+      "week52RangePct": 74.2,
+      "dollarVolume": 181432215
     },
     {
       "symbol": "YUM",
@@ -1514,7 +1579,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 30.5,
       "roe": -12.0,
       "debtRatio": -222.2,
-      "week52RangePct": 20.0
+      "week52RangePct": 20.0,
+      "dollarVolume": 392922150
     },
     {
       "symbol": "DHI",
@@ -1537,7 +1603,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 12.5,
       "roe": 3.8,
       "debtRatio": 50.8,
-      "week52RangePct": 7.7
+      "week52RangePct": 7.7,
+      "dollarVolume": 506466338
     },
     {
       "symbol": "MCHP",
@@ -1560,7 +1627,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 24.0,
       "roe": 3.6,
       "debtRatio": 123.3,
-      "week52RangePct": 40.2
+      "week52RangePct": 40.2,
+      "dollarVolume": 543462847
     },
     {
       "symbol": "MSCI",
@@ -1583,7 +1651,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 56.2,
       "roe": -12.7,
       "debtRatio": -308.3,
-      "week52RangePct": 32.4
+      "week52RangePct": 32.4,
+      "dollarVolume": 270133818
     },
     {
       "symbol": "FLEX",
@@ -1606,7 +1675,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 5.3,
       "roe": 4.9,
       "debtRatio": 328.8,
-      "week52RangePct": 48.3
+      "week52RangePct": 48.3,
+      "dollarVolume": 405663418
     },
     {
       "symbol": "ROP",
@@ -1629,7 +1699,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 27.7,
       "roe": 6.2,
       "debtRatio": 88.1,
-      "week52RangePct": 38.4
+      "week52RangePct": 38.4,
+      "dollarVolume": 183796397
     },
     {
       "symbol": "WAT",
@@ -1652,7 +1723,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": -2.2,
       "roe": -0.9,
       "debtRatio": 62.9,
-      "week52RangePct": 82.9
+      "week52RangePct": 82.9,
+      "dollarVolume": 229887088
     },
     {
       "symbol": "VEEV",
@@ -1675,7 +1747,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 29.6,
       "roe": 3.7,
       "debtRatio": 21.9,
-      "week52RangePct": 69.5
+      "week52RangePct": 69.5,
+      "dollarVolume": 222417595
     },
     {
       "symbol": "SYY",
@@ -1698,7 +1771,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 4.4,
       "roe": 20.7,
       "debtRatio": 965.2,
-      "week52RangePct": 59.7
+      "week52RangePct": 59.7,
+      "dollarVolume": 350513266
     },
     {
       "symbol": "AIG",
@@ -1721,7 +1795,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 2.3,
       "debtRatio": 302.5,
-      "week52RangePct": 23.6
+      "week52RangePct": 23.6,
+      "dollarVolume": 359453349
     },
     {
       "symbol": "ED",
@@ -1744,7 +1819,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 14.2,
       "roe": 1.2,
       "debtRatio": 197.3,
-      "week52RangePct": 55.3
+      "week52RangePct": 55.3,
+      "dollarVolume": 189369438
     },
     {
       "symbol": "PCG",
@@ -1767,7 +1843,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 21.4,
       "roe": 2.2,
       "debtRatio": 327.2,
-      "week52RangePct": 21.9
+      "week52RangePct": 21.9,
+      "dollarVolume": 565215190
     },
     {
       "symbol": "ADM",
@@ -1790,7 +1867,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 4.0,
       "roe": 3.9,
       "debtRatio": 125.8,
-      "week52RangePct": 94.5
+      "week52RangePct": 94.5,
+      "dollarVolume": 318587638
     },
     {
       "symbol": "EXPE",
@@ -1813,7 +1891,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 19.0,
       "roe": 72.6,
       "debtRatio": 2199.3,
-      "week52RangePct": 58.4
+      "week52RangePct": 58.4,
+      "dollarVolume": 495384836
     },
     {
       "symbol": "NTAP",
@@ -1836,7 +1915,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 26.7,
       "roe": 25.1,
       "debtRatio": 632.8,
-      "week52RangePct": 77.9
+      "week52RangePct": 77.9,
+      "dollarVolume": 343601158
     },
     {
       "symbol": "HSY",
@@ -1859,7 +1939,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 23.1,
       "roe": 10.0,
       "debtRatio": 206.2,
-      "week52RangePct": 16.5
+      "week52RangePct": 16.5,
+      "dollarVolume": 232739890
     },
     {
       "symbol": "KVUE",
@@ -1882,7 +1963,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 19.2,
       "roe": 4.3,
       "debtRatio": 153.3,
-      "week52RangePct": 61.7
+      "week52RangePct": 61.7,
+      "dollarVolume": 1144910425
     },
     {
       "symbol": "EL",
@@ -1905,7 +1987,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 7.0,
       "roe": -3.0,
       "debtRatio": 419.2,
-      "week52RangePct": 54.6
+      "week52RangePct": 54.6,
+      "dollarVolume": 218456315
     },
     {
       "symbol": "HIG",
@@ -1928,7 +2011,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 6.6,
       "debtRatio": 348.1,
-      "week52RangePct": 64.0
+      "week52RangePct": 64.0,
+      "dollarVolume": 190724645
     },
     {
       "symbol": "UAL",
@@ -1951,7 +2035,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 5.4,
       "roe": 4.8,
       "debtRatio": 406.5,
-      "week52RangePct": 40.4
+      "week52RangePct": 40.4,
+      "dollarVolume": 400930271
     },
     {
       "symbol": "TKO",
@@ -1974,7 +2059,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 27.8,
       "roe": 3.0,
       "debtRatio": 232.6,
-      "week52RangePct": 26.8
+      "week52RangePct": 26.8,
+      "dollarVolume": 197476494
     },
     {
       "symbol": "KMB",
@@ -1997,7 +2083,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 15.1,
       "roe": 19.7,
       "debtRatio": 953.1,
-      "week52RangePct": 16.1
+      "week52RangePct": 16.1,
+      "dollarVolume": 970656992
     },
     {
       "symbol": "IRM",
@@ -2020,7 +2107,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 19.1,
       "roe": -7.9,
       "debtRatio": -1783.7,
-      "week52RangePct": 61.7
+      "week52RangePct": 61.7,
+      "dollarVolume": 138182036
     },
     {
       "symbol": "PEG",
@@ -2043,7 +2131,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 18.1,
       "roe": 1.9,
       "debtRatio": 239.4,
-      "week52RangePct": 2.6
+      "week52RangePct": 2.6,
+      "dollarVolume": 188881503
     },
     {
       "symbol": "VMC",
@@ -2066,7 +2155,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 21.7,
       "roe": 3.8,
       "debtRatio": 94.0,
-      "week52RangePct": 5.2
+      "week52RangePct": 5.2,
+      "dollarVolume": 251256071
     },
     {
       "symbol": "KR",
@@ -2089,7 +2179,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 3.1,
       "roe": 14.0,
       "debtRatio": 677.0,
-      "week52RangePct": 12.5
+      "week52RangePct": 12.5,
+      "dollarVolume": 436115070
     },
     {
       "symbol": "CCL",
@@ -2112,7 +2203,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 12.8,
       "roe": 4.1,
       "debtRatio": 302.7,
-      "week52RangePct": 1.6
+      "week52RangePct": 1.6,
+      "dollarVolume": 455840329
     },
     {
       "symbol": "DXCM",
@@ -2135,7 +2227,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 24.3,
       "roe": 9.5,
       "debtRatio": 146.3,
-      "week52RangePct": 79.0
+      "week52RangePct": 79.0,
+      "dollarVolume": 294833502
     },
     {
       "symbol": "MTB",
@@ -2158,7 +2251,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 2.9,
       "debtRatio": 684.6,
-      "week52RangePct": 79.1
+      "week52RangePct": 79.1,
+      "dollarVolume": 317761793
     },
     {
       "symbol": "WEC",
@@ -2181,7 +2275,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 21.0,
       "roe": 2.1,
       "debtRatio": 269.5,
-      "week52RangePct": 14.2
+      "week52RangePct": 14.2,
+      "dollarVolume": 246859913
     },
     {
       "symbol": "HBAN",
@@ -2204,7 +2299,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 2.2,
       "debtRatio": 770.4,
-      "week52RangePct": 40.3
+      "week52RangePct": 40.3,
+      "dollarVolume": 404016768
     },
     {
       "symbol": "RMD",
@@ -2227,7 +2323,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 30.7,
       "roe": 5.8,
       "debtRatio": 36.1,
-      "week52RangePct": 37.6
+      "week52RangePct": 37.6,
+      "dollarVolume": 181392623
     },
     {
       "symbol": "ACGL",
@@ -2250,7 +2347,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 4.4,
       "debtRatio": 254.5,
-      "week52RangePct": 55.8
+      "week52RangePct": 55.8,
+      "dollarVolume": 320948404
     },
     {
       "symbol": "GEHC",
@@ -2273,7 +2371,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 13.9,
       "roe": 5.1,
       "debtRatio": 237.2,
-      "week52RangePct": 17.7
+      "week52RangePct": 17.7,
+      "dollarVolume": 198539759
     },
     {
       "symbol": "RJF",
@@ -2296,7 +2395,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 4.7,
       "debtRatio": 641.4,
-      "week52RangePct": 79.0
+      "week52RangePct": 79.0,
+      "dollarVolume": 198696882
     },
     {
       "symbol": "NTRS",
@@ -2319,7 +2419,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 5.9,
       "debtRatio": 1237.9,
-      "week52RangePct": 88.5
+      "week52RangePct": 88.5,
+      "dollarVolume": 193023215
     },
     {
       "symbol": "EQT",
@@ -2342,7 +2443,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 20.3,
       "roe": 0.8,
       "debtRatio": 49.3,
-      "week52RangePct": 34.6
+      "week52RangePct": 34.6,
+      "dollarVolume": 315749377
     },
     {
       "symbol": "EME",
@@ -2365,7 +2467,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 10.6,
       "roe": 9.9,
       "debtRatio": 149.0,
-      "week52RangePct": 47.4
+      "week52RangePct": 47.4,
+      "dollarVolume": 172924845
     },
     {
       "symbol": "CCI",
@@ -2388,7 +2491,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 46.8,
       "roe": -2.9,
       "debtRatio": -757.9,
-      "week52RangePct": 13.5
+      "week52RangePct": 13.5,
+      "dollarVolume": 238478805
     },
     {
       "symbol": "JBL",
@@ -2411,7 +2515,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 5.2,
       "roe": 20.8,
       "debtRatio": 1700.1,
-      "week52RangePct": 47.3
+      "week52RangePct": 47.3,
+      "dollarVolume": 228428081
     },
     {
       "symbol": "STLD",
@@ -2434,7 +2539,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 12.4,
       "roe": 5.7,
       "debtRatio": 82.3,
-      "week52RangePct": 67.6
+      "week52RangePct": 67.6,
+      "dollarVolume": 159203487
     },
     {
       "symbol": "EXR",
@@ -2457,7 +2563,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 42.9,
       "roe": 1.8,
       "debtRatio": 111.7,
-      "week52RangePct": 32.4
+      "week52RangePct": 32.4,
+      "dollarVolume": 278641270
     },
     {
       "symbol": "MLM",
@@ -2480,7 +2587,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 20.0,
       "roe": 2.2,
       "debtRatio": 84.5,
-      "week52RangePct": 4.9
+      "week52RangePct": 4.9,
+      "dollarVolume": 416954128
     },
     {
       "symbol": "ZTS",
@@ -2503,7 +2611,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 40.5,
       "roe": 22.0,
       "debtRatio": 378.9,
-      "week52RangePct": 2.3
+      "week52RangePct": 2.3,
+      "dollarVolume": 393951324
     },
     {
       "symbol": "CNC",
@@ -2526,7 +2635,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 2.2,
       "roe": 4.8,
       "debtRatio": 267.5,
-      "week52RangePct": 89.5
+      "week52RangePct": 89.5,
+      "dollarVolume": 301861744
     },
     {
       "symbol": "BIIB",
@@ -2549,7 +2659,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 17.6,
       "roe": 0.5,
       "debtRatio": 70.2,
-      "week52RangePct": 88.5
+      "week52RangePct": 88.5,
+      "dollarVolume": 199920548
     },
     {
       "symbol": "WTW",
@@ -2572,7 +2683,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 17.2,
       "roe": 3.0,
       "debtRatio": 296.4,
-      "week52RangePct": 66.7
+      "week52RangePct": 66.7,
+      "dollarVolume": 95646190
     },
     {
       "symbol": "CPRT",
@@ -2595,7 +2707,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 37.5,
       "roe": 4.6,
       "debtRatio": 9.8,
-      "week52RangePct": 17.7
+      "week52RangePct": 17.7,
+      "dollarVolume": 462638424
     },
     {
       "symbol": "IR",
@@ -2618,7 +2731,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 17.5,
       "roe": 2.5,
       "debtRatio": 78.1,
-      "week52RangePct": 15.3
+      "week52RangePct": 15.3,
+      "dollarVolume": 281600348
     },
     {
       "symbol": "CASY",
@@ -2641,7 +2755,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 6.5,
       "roe": 6.7,
       "debtRatio": 122.8,
-      "week52RangePct": 30.3
+      "week52RangePct": 30.3,
+      "dollarVolume": 701876004
     },
     {
       "symbol": "LVS",
@@ -2664,7 +2779,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 19.8,
       "roe": 59.6,
       "debtRatio": 3272.3,
-      "week52RangePct": 1.7
+      "week52RangePct": 1.7,
+      "dollarVolume": 243972713
     },
     {
       "symbol": "KHC",
@@ -2687,7 +2803,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 14.7,
       "roe": -15.2,
       "debtRatio": 102.6,
-      "week52RangePct": 47.6
+      "week52RangePct": 47.6,
+      "dollarVolume": 579063648
     },
     {
       "symbol": "RDDT",
@@ -2710,7 +2827,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 28.8,
       "roe": 7.7,
       "debtRatio": 10.7,
-      "week52RangePct": 22.0
+      "week52RangePct": 22.0,
+      "dollarVolume": 898169356
     },
     {
       "symbol": "TDY",
@@ -2733,7 +2851,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 20.0,
       "roe": 2.3,
       "debtRatio": 39.9,
-      "week52RangePct": 52.9
+      "week52RangePct": 52.9,
+      "dollarVolume": 155354250
     },
     {
       "symbol": "HAL",
@@ -2756,7 +2875,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 12.0,
       "roe": 4.9,
       "debtRatio": 134.2,
-      "week52RangePct": 66.0
+      "week52RangePct": 66.0,
+      "dollarVolume": 310968596
     },
     {
       "symbol": "CFG",
@@ -2779,7 +2899,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 2.2,
       "debtRatio": 793.1,
-      "week52RangePct": 79.2
+      "week52RangePct": 79.2,
+      "dollarVolume": 280369930
     },
     {
       "symbol": "AEE",
@@ -2802,7 +2923,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 24.4,
       "roe": 2.6,
       "debtRatio": 266.8,
-      "week52RangePct": 38.5
+      "week52RangePct": 38.5,
+      "dollarVolume": 145667661
     },
     {
       "symbol": "VICI",
@@ -2825,7 +2947,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 70.4,
       "roe": 1.8,
       "debtRatio": 64.0,
-      "week52RangePct": 0.8
+      "week52RangePct": 0.8,
+      "dollarVolume": 255190972
     },
     {
       "symbol": "FOXA",
@@ -2848,7 +2971,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 25.7,
       "roe": 5.9,
       "debtRatio": 91.7,
-      "week52RangePct": 60.0
+      "week52RangePct": 60.0,
+      "dollarVolume": 300133759
     },
     {
       "symbol": "ON",
@@ -2871,7 +2995,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 18.7,
       "roe": 3.1,
       "debtRatio": 86.5,
-      "week52RangePct": 28.3
+      "week52RangePct": 28.3,
+      "dollarVolume": 546078798
     },
     {
       "symbol": "ATO",
@@ -2894,7 +3019,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 36.4,
       "roe": 1.6,
       "debtRatio": 107.0,
-      "week52RangePct": 14.5
+      "week52RangePct": 14.5,
+      "dollarVolume": 148071402
     },
     {
       "symbol": "DTE",
@@ -2917,7 +3043,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 8.1,
       "roe": 2.0,
       "debtRatio": 347.2,
-      "week52RangePct": 27.5
+      "week52RangePct": 27.5,
+      "dollarVolume": 196554735
     },
     {
       "symbol": "WSM",
@@ -2940,7 +3067,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 22.9,
       "roe": 15.8,
       "debtRatio": 157.2,
-      "week52RangePct": 65.1
+      "week52RangePct": 65.1,
+      "dollarVolume": 215020852
     },
     {
       "symbol": "FISV",
@@ -2963,7 +3091,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 19.1,
       "roe": 2.3,
       "debtRatio": 200.6,
-      "week52RangePct": 2.1
+      "week52RangePct": 2.1,
+      "dollarVolume": 270390312
     },
     {
       "symbol": "MTD",
@@ -2986,7 +3115,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 30.6,
       "roe": 1816.3,
       "debtRatio": 28527.8,
-      "week52RangePct": 51.3
+      "week52RangePct": 51.3,
+      "dollarVolume": 222540473
     },
     {
       "symbol": "CTSH",
@@ -3009,7 +3139,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 17.5,
       "roe": 4.4,
       "debtRatio": 44.0,
-      "week52RangePct": 42.5
+      "week52RangePct": 42.5,
+      "dollarVolume": 225418756
     },
     {
       "symbol": "EIX",
@@ -3032,7 +3163,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 25.1,
       "roe": 3.2,
       "debtRatio": 439.7,
-      "week52RangePct": 16.0
+      "week52RangePct": 16.0,
+      "dollarVolume": 293717740
     },
     {
       "symbol": "CPAY",
@@ -3055,7 +3187,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 35.2,
       "roe": 7.0,
       "debtRatio": 686.7,
-      "week52RangePct": 89.1
+      "week52RangePct": 89.1,
+      "dollarVolume": 184678682
     },
     {
       "symbol": "LH",
@@ -3078,7 +3211,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 12.2,
       "roe": 3.5,
       "debtRatio": 115.1,
-      "week52RangePct": 64.2
+      "week52RangePct": 64.2,
+      "dollarVolume": 386096744
     },
     {
       "symbol": "DG",
@@ -3101,7 +3235,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 6.8,
       "roe": 5.9,
       "debtRatio": 246.3,
-      "week52RangePct": 44.2
+      "week52RangePct": 44.2,
+      "dollarVolume": 259394519
     },
     {
       "symbol": "OTIS",
@@ -3124,7 +3259,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 14.9,
       "roe": -7.4,
       "debtRatio": -289.0,
-      "week52RangePct": 0.9
+      "week52RangePct": 0.9,
+      "dollarVolume": 233803520
     },
     {
       "symbol": "DOV",
@@ -3147,7 +3283,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 17.9,
       "roe": 4.1,
       "debtRatio": 77.8,
-      "week52RangePct": 36.1
+      "week52RangePct": 36.1,
+      "dollarVolume": 217723753
     },
     {
       "symbol": "HPQ",
@@ -3170,7 +3307,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 6.0,
       "roe": -718.5,
       "debtRatio": -49775.0,
-      "week52RangePct": 97.2
+      "week52RangePct": 97.2,
+      "dollarVolume": 463904415
     },
     {
       "symbol": "DGX",
@@ -3193,7 +3331,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 15.1,
       "roe": 4.3,
       "debtRatio": 120.3,
-      "week52RangePct": 78.9
+      "week52RangePct": 78.9,
+      "dollarVolume": 249633511
     },
     {
       "symbol": "Q",
@@ -3216,7 +3355,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 22.3,
       "roe": 1.7,
       "debtRatio": 93.4,
-      "week52RangePct": 49.5
+      "week52RangePct": 49.5,
+      "dollarVolume": 202652989
     },
     {
       "symbol": "AWK",
@@ -3239,7 +3379,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 40.0,
       "roe": 2.7,
       "debtRatio": 212.5,
-      "week52RangePct": 76.9
+      "week52RangePct": 76.9,
+      "dollarVolume": 275948789
     },
     {
       "symbol": "FE",
@@ -3262,7 +3403,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 12.3,
       "roe": 2.2,
       "debtRatio": 338.6,
-      "week52RangePct": 35.0
+      "week52RangePct": 35.0,
+      "dollarVolume": 199311739
     },
     {
       "symbol": "XYL",
@@ -3285,7 +3427,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 17.2,
       "roe": 2.5,
       "debtRatio": 64.1,
-      "week52RangePct": 2.6
+      "week52RangePct": 2.6,
+      "dollarVolume": 361276741
     },
     {
       "symbol": "TPL",
@@ -3308,7 +3451,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 78.0,
       "roe": 9.2,
       "debtRatio": 11.2,
-      "week52RangePct": 34.8
+      "week52RangePct": 34.8,
+      "dollarVolume": 111987427
     },
     {
       "symbol": "ES",
@@ -3331,7 +3475,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 23.9,
       "roe": 3.7,
       "debtRatio": 290.5,
-      "week52RangePct": 44.6
+      "week52RangePct": 44.6,
+      "dollarVolume": 139935384
     },
     {
       "symbol": "FOX",
@@ -3354,7 +3499,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 25.7,
       "roe": 5.9,
       "debtRatio": 91.7,
-      "week52RangePct": 58.0
+      "week52RangePct": 58.0,
+      "dollarVolume": 81017679
     },
     {
       "symbol": "TPR",
@@ -3377,7 +3523,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 23.6,
       "roe": 50.3,
       "debtRatio": 866.9,
-      "week52RangePct": 31.9
+      "week52RangePct": 31.9,
+      "dollarVolume": 352471905
     },
     {
       "symbol": "RF",
@@ -3400,7 +3547,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 3.0,
       "debtRatio": 755.8,
-      "week52RangePct": 74.2
+      "week52RangePct": 74.2,
+      "dollarVolume": 178803806
     },
     {
       "symbol": "INCY",
@@ -3423,7 +3571,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 41.8,
       "roe": 9.2,
       "debtRatio": 24.1,
-      "week52RangePct": 81.9
+      "week52RangePct": 81.9,
+      "dollarVolume": 179540307
     },
     {
       "symbol": "SW",
@@ -3446,7 +3595,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 5.3,
       "roe": 0.5,
       "debtRatio": 150.5,
-      "week52RangePct": 47.6
+      "week52RangePct": 47.6,
+      "dollarVolume": 112928465
     },
     {
       "symbol": "PPL",
@@ -3460,7 +3610,7 @@ const SP500_EXTRA_DATA = {
       "dividendYield": 3.3,
       "winRateScore": 55.0,
       "rsiWeekly": 43.1,
-      "ret10yAvg": -0.0,
+      "ret10yAvg": 0.0,
       "pressureScore": 2.0,
       "stabilityScore": 3.6,
       "revenueGrowth": 4.25,
@@ -3469,7 +3619,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 22.5,
       "roe": 1.5,
       "debtRatio": 207.8,
-      "week52RangePct": 15.0
+      "week52RangePct": 15.0,
+      "dollarVolume": 276367298
     },
     {
       "symbol": "JBHT",
@@ -3492,7 +3643,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 7.4,
       "roe": 5.0,
       "debtRatio": 117.2,
-      "week52RangePct": 81.2
+      "week52RangePct": 81.2,
+      "dollarVolume": 168475248
     },
     {
       "symbol": "SYF",
@@ -3515,7 +3667,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 5.2,
       "debtRatio": 621.6,
-      "week52RangePct": 48.1
+      "week52RangePct": 48.1,
+      "dollarVolume": 206170806
     },
     {
       "symbol": "CINF",
@@ -3538,7 +3691,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 1.7,
       "debtRatio": 162.3,
-      "week52RangePct": 43.7
+      "week52RangePct": 43.7,
+      "dollarVolume": 62644172
     },
     {
       "symbol": "CNP",
@@ -3561,7 +3715,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 24.8,
       "roe": 2.1,
       "debtRatio": 311.7,
-      "week52RangePct": 23.6
+      "week52RangePct": 23.6,
+      "dollarVolume": 339970287
     },
     {
       "symbol": "VRSN",
@@ -3584,7 +3739,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 68.2,
       "roe": -9.6,
       "debtRatio": -180.0,
-      "week52RangePct": 77.2
+      "week52RangePct": 77.2,
+      "dollarVolume": 167246172
     },
     {
       "symbol": "WRB",
@@ -3607,7 +3763,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 4.6,
       "debtRatio": 364.4,
-      "week52RangePct": 44.6
+      "week52RangePct": 44.6,
+      "dollarVolume": 251909397
     },
     {
       "symbol": "FICO",
@@ -3630,7 +3787,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 53.8,
       "roe": -5.8,
       "debtRatio": -149.7,
-      "week52RangePct": 8.0
+      "week52RangePct": 8.0,
+      "dollarVolume": 351008644
     },
     {
       "symbol": "DLTR",
@@ -3653,7 +3811,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 14.1,
       "roe": 15.0,
       "debtRatio": 309.6,
-      "week52RangePct": 58.8
+      "week52RangePct": 58.8,
+      "dollarVolume": 298276354
     },
     {
       "symbol": "PPG",
@@ -3676,7 +3835,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 14.1,
       "roe": 5.2,
       "debtRatio": 165.2,
-      "week52RangePct": 29.1
+      "week52RangePct": 29.1,
+      "dollarVolume": 239953739
     },
     {
       "symbol": "ECHO",
@@ -3699,7 +3859,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 14.3,
       "roe": 59.8,
       "debtRatio": 178.2,
-      "week52RangePct": 32.0
+      "week52RangePct": 32.0,
+      "dollarVolume": 248397670
     },
     {
       "symbol": "DRI",
@@ -3722,7 +3883,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 14.5,
       "roe": 18.3,
       "debtRatio": 482.7,
-      "week52RangePct": 63.4
+      "week52RangePct": 63.4,
+      "dollarVolume": 210147576
     },
     {
       "symbol": "WST",
@@ -3745,7 +3907,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 22.0,
       "roe": 5.2,
       "debtRatio": 36.3,
-      "week52RangePct": 74.3
+      "week52RangePct": 74.3,
+      "dollarVolume": 221670493
     },
     {
       "symbol": "HUBB",
@@ -3768,7 +3931,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 20.4,
       "roe": 6.1,
       "debtRatio": 202.5,
-      "week52RangePct": 30.1
+      "week52RangePct": 30.1,
+      "dollarVolume": 257819411
     },
     {
       "symbol": "GPN",
@@ -3791,7 +3955,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 10.2,
       "roe": 0.1,
       "debtRatio": 171.4,
-      "week52RangePct": 78.9
+      "week52RangePct": 78.9,
+      "dollarVolume": 146778975
     },
     {
       "symbol": "PHM",
@@ -3814,7 +3979,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 15.4,
       "roe": 3.6,
       "debtRatio": 40.3,
-      "week52RangePct": 22.0
+      "week52RangePct": 22.0,
+      "dollarVolume": 253917683
     },
     {
       "symbol": "EXPD",
@@ -3837,7 +4003,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 10.0,
       "roe": 12.6,
       "debtRatio": 142.2,
-      "week52RangePct": 96.3
+      "week52RangePct": 96.3,
+      "dollarVolume": 174361259
     },
     {
       "symbol": "VRSK",
@@ -3860,7 +4027,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 45.1,
       "roe": -19.2,
       "debtRatio": -478.1,
-      "week52RangePct": 17.9
+      "week52RangePct": 17.9,
+      "dollarVolume": 157782120
     },
     {
       "symbol": "BRO",
@@ -3883,7 +4051,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 25.2,
       "roe": 2.3,
       "debtRatio": 137.3,
-      "week52RangePct": 29.3
+      "week52RangePct": 29.3,
+      "dollarVolume": 113079052
     },
     {
       "symbol": "SMCI",
@@ -3906,7 +4075,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 13.4,
       "roe": 8.1,
       "debtRatio": 106.8,
-      "week52RangePct": 45.5
+      "week52RangePct": 45.5,
+      "dollarVolume": 981119028
     },
     {
       "symbol": "VLTO",
@@ -3929,7 +4099,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 21.4,
       "roe": 7.8,
       "debtRatio": 176.3,
-      "week52RangePct": 45.0
+      "week52RangePct": 45.0,
+      "dollarVolume": 102744724
     },
     {
       "symbol": "OMC",
@@ -3952,7 +4123,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 14.1,
       "roe": 6.1,
       "debtRatio": 406.9,
-      "week52RangePct": 56.5
+      "week52RangePct": 56.5,
+      "dollarVolume": 185659475
     },
     {
       "symbol": "TROW",
@@ -3975,7 +4147,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 29.6,
       "roe": 5.7,
       "debtRatio": 28.9,
-      "week52RangePct": 60.7
+      "week52RangePct": 60.7,
+      "dollarVolume": 116514723
     },
     {
       "symbol": "NRG",
@@ -3998,7 +4171,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 12.8,
       "roe": 10.4,
       "debtRatio": 722.7,
-      "week52RangePct": 4.1
+      "week52RangePct": 4.1,
+      "dollarVolume": 391834447
     },
     {
       "symbol": "PFG",
@@ -4021,7 +4195,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 3.3,
       "debtRatio": 2798.9,
-      "week52RangePct": 85.6
+      "week52RangePct": 85.6,
+      "dollarVolume": 167125974
     },
     {
       "symbol": "CHD",
@@ -4044,7 +4219,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 19.8,
       "roe": 5.2,
       "debtRatio": 115.2,
-      "week52RangePct": 51.0
+      "week52RangePct": 51.0,
+      "dollarVolume": 189526580
     },
     {
       "symbol": "DOW",
@@ -4067,7 +4243,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 11.5,
       "roe": 4.5,
       "debtRatio": 278.8,
-      "week52RangePct": 40.7
+      "week52RangePct": 40.7,
+      "dollarVolume": 217891880
     },
     {
       "symbol": "KEY",
@@ -4090,7 +4267,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 2.6,
       "debtRatio": 866.3,
-      "week52RangePct": 69.2
+      "week52RangePct": 69.2,
+      "dollarVolume": 365795345
     },
     {
       "symbol": "STE",
@@ -4113,7 +4291,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 19.2,
       "roe": 2.8,
       "debtRatio": 48.8,
-      "week52RangePct": 23.3
+      "week52RangePct": 23.3,
+      "dollarVolume": 141074236
     },
     {
       "symbol": "STZ",
@@ -4136,7 +4315,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 35.5,
       "roe": 7.9,
       "debtRatio": 164.2,
-      "week52RangePct": 7.4
+      "week52RangePct": 7.4,
+      "dollarVolume": 306038387
     },
     {
       "symbol": "FSLR",
@@ -4159,7 +4339,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 42.6,
       "roe": 4.1,
       "debtRatio": 29.7,
-      "week52RangePct": 17.5
+      "week52RangePct": 17.5,
+      "dollarVolume": 453377043
     },
     {
       "symbol": "EFX",
@@ -4182,7 +4363,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 18.5,
       "roe": 4.2,
       "debtRatio": 170.4,
-      "week52RangePct": 14.3
+      "week52RangePct": 14.3,
+      "dollarVolume": 198726289
     },
     {
       "symbol": "PKG",
@@ -4205,7 +4387,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 13.4,
       "roe": 4.1,
       "debtRatio": 136.3,
-      "week52RangePct": 59.7
+      "week52RangePct": 59.7,
+      "dollarVolume": 228460192
     },
     {
       "symbol": "AMCR",
@@ -4228,7 +4411,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 10.7,
       "roe": 3.3,
       "debtRatio": 214.5,
-      "week52RangePct": 45.9
+      "week52RangePct": 45.9,
+      "dollarVolume": 136495803
     },
     {
       "symbol": "L",
@@ -4251,7 +4435,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 2.3,
       "debtRatio": 351.5,
-      "week52RangePct": 52.8
+      "week52RangePct": 52.8,
+      "dollarVolume": 66731435
     },
     {
       "symbol": "ULTA",
@@ -4274,7 +4459,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 12.7,
       "roe": 10.7,
       "debtRatio": 163.4,
-      "week52RangePct": 33.9
+      "week52RangePct": 33.9,
+      "dollarVolume": 332295211
     },
     {
       "symbol": "EXE",
@@ -4297,7 +4483,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 24.4,
       "roe": 2.7,
       "debtRatio": 44.4,
-      "week52RangePct": 28.5
+      "week52RangePct": 28.5,
+      "dollarVolume": 213063434
     },
     {
       "symbol": "RL",
@@ -4320,7 +4507,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 18.7,
       "roe": 9.6,
       "debtRatio": 181.4,
-      "week52RangePct": 30.2
+      "week52RangePct": 30.2,
+      "dollarVolume": 326004294
     },
     {
       "symbol": "IP",
@@ -4343,7 +4531,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 0.7,
       "roe": -0.1,
       "debtRatio": 152.7,
-      "week52RangePct": 24.0
+      "week52RangePct": 24.0,
+      "dollarVolume": 186947743
     },
     {
       "symbol": "LYB",
@@ -4366,7 +4555,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 17.6,
       "roe": 5.2,
       "debtRatio": 222.0,
-      "week52RangePct": 53.6
+      "week52RangePct": 53.6,
+      "dollarVolume": 212323551
     },
     {
       "symbol": "FFIV",
@@ -4389,7 +4579,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 24.6,
       "roe": 5.4,
       "debtRatio": 77.1,
-      "week52RangePct": 82.7
+      "week52RangePct": 82.7,
+      "dollarVolume": 194910913
     },
     {
       "symbol": "BG",
@@ -4412,7 +4603,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 4.5,
       "roe": 4.2,
       "debtRatio": 184.1,
-      "week52RangePct": 82.5
+      "week52RangePct": 82.5,
+      "dollarVolume": 223263162
     },
     {
       "symbol": "IFF",
@@ -4435,7 +4627,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 8.4,
       "roe": 0.4,
       "debtRatio": 79.7,
-      "week52RangePct": 82.5
+      "week52RangePct": 82.5,
+      "dollarVolume": 154297813
     },
     {
       "symbol": "CMS",
@@ -4458,7 +4651,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 14.4,
       "roe": 1.2,
       "debtRatio": 312.1,
-      "week52RangePct": 3.7
+      "week52RangePct": 3.7,
+      "dollarVolume": 191122296
     },
     {
       "symbol": "GIS",
@@ -4481,7 +4675,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 15.5,
       "roe": -27.3,
       "debtRatio": 307.2,
-      "week52RangePct": 21.5
+      "week52RangePct": 21.5,
+      "dollarVolume": 347469505
     },
     {
       "symbol": "FIS",
@@ -4504,7 +4699,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 15.0,
       "roe": 1.4,
       "debtRatio": 175.0,
-      "week52RangePct": 3.5
+      "week52RangePct": 3.5,
+      "dollarVolume": 219256456
     },
     {
       "symbol": "LEN",
@@ -4527,7 +4723,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 5.3,
       "roe": 1.4,
       "debtRatio": 55.2,
-      "week52RangePct": 2.0
+      "week52RangePct": 2.0,
+      "dollarVolume": 382664353
     },
     {
       "symbol": "BR",
@@ -4550,7 +4747,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 24.6,
       "roe": 14.0,
       "debtRatio": 214.9,
-      "week52RangePct": 28.2
+      "week52RangePct": 28.2,
+      "dollarVolume": 149407046
     },
     {
       "symbol": "TSN",
@@ -4573,7 +4771,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 2.6,
       "roe": 1.0,
       "debtRatio": 96.4,
-      "week52RangePct": 10.0
+      "week52RangePct": 10.0,
+      "dollarVolume": 188050267
     },
     {
       "symbol": "FDXF",
@@ -4593,7 +4792,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 10.2,
       "roe": 3.3,
       "debtRatio": 73.1,
-      "week52RangePct": 2.0
+      "week52RangePct": 2.0,
+      "dollarVolume": 124786940
     },
     {
       "symbol": "SNA",
@@ -4616,7 +4816,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 25.2,
       "roe": 4.3,
       "debtRatio": 42.6,
-      "week52RangePct": 52.9
+      "week52RangePct": 52.9,
+      "dollarVolume": 82984738
     },
     {
       "symbol": "CHTR",
@@ -4639,7 +4840,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 23.0,
       "roe": 7.6,
       "debtRatio": 788.8,
-      "week52RangePct": 16.6
+      "week52RangePct": 16.6,
+      "dollarVolume": 491831669
     },
     {
       "symbol": "ESS",
@@ -4662,7 +4864,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 22.0,
       "roe": 1.2,
       "debtRatio": 138.7,
-      "week52RangePct": 50.7
+      "week52RangePct": 50.7,
+      "dollarVolume": 138376990
     },
     {
       "symbol": "LUV",
@@ -4685,7 +4888,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 3.4,
       "roe": 3.3,
       "debtRatio": 325.3,
-      "week52RangePct": 36.5
+      "week52RangePct": 36.5,
+      "dollarVolume": 177277077
     },
     {
       "symbol": "CF",
@@ -4708,7 +4912,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 49.6,
       "roe": 12.6,
       "debtRatio": 107.5,
-      "week52RangePct": 89.7
+      "week52RangePct": 89.7,
+      "dollarVolume": 383213979
     },
     {
       "symbol": "NI",
@@ -4731,7 +4936,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 17.0,
       "roe": 0.5,
       "debtRatio": 267.9,
-      "week52RangePct": 21.4
+      "week52RangePct": 21.4,
+      "dollarVolume": 219354935
     },
     {
       "symbol": "SBAC",
@@ -4754,7 +4960,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 53.2,
       "roe": -4.3,
       "debtRatio": -351.8,
-      "week52RangePct": 30.6
+      "week52RangePct": 30.6,
+      "dollarVolume": 258876180
     },
     {
       "symbol": "ZBH",
@@ -4777,7 +4984,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 17.2,
       "roe": 1.6,
       "debtRatio": 80.5,
-      "week52RangePct": 48.0
+      "week52RangePct": 48.0,
+      "dollarVolume": 126155734
     },
     {
       "symbol": "NWS",
@@ -4800,7 +5008,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 12.6,
       "roe": 2.1,
       "debtRatio": 74.0,
-      "week52RangePct": 71.0
+      "week52RangePct": 71.0,
+      "dollarVolume": 25629436
     },
     {
       "symbol": "VTRS",
@@ -4823,7 +5032,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 2.0,
       "roe": -0.8,
       "debtRatio": 145.7,
-      "week52RangePct": 77.6
+      "week52RangePct": 77.6,
+      "dollarVolume": 147558296
     },
     {
       "symbol": "DD",
@@ -4846,7 +5056,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 13.8,
       "roe": 1.1,
       "debtRatio": 51.4,
-      "week52RangePct": 53.2
+      "week52RangePct": 53.2,
+      "dollarVolume": 137157634
     },
     {
       "symbol": "EVRG",
@@ -4869,7 +5080,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 25.1,
       "roe": 2.1,
       "debtRatio": 245.3,
-      "week52RangePct": 58.3
+      "week52RangePct": 58.3,
+      "dollarVolume": 241329137
     },
     {
       "symbol": "NDSN",
@@ -4892,7 +5104,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 27.3,
       "roe": 4.7,
       "debtRatio": 81.9,
-      "week52RangePct": 73.3
+      "week52RangePct": 73.3,
+      "dollarVolume": 91449465
     },
     {
       "symbol": "GPC",
@@ -4915,7 +5128,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 6.2,
       "roe": 5.0,
       "debtRatio": 364.9,
-      "week52RangePct": 71.4
+      "week52RangePct": 71.4,
+      "dollarVolume": 126542664
     },
     {
       "symbol": "TSCO",
@@ -4938,7 +5152,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 11.7,
       "roe": 13.7,
       "debtRatio": 362.2,
-      "week52RangePct": 15.9
+      "week52RangePct": 15.9,
+      "dollarVolume": 288556183
     },
     {
       "symbol": "FTV",
@@ -4961,7 +5176,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 19.1,
       "roe": 2.6,
       "debtRatio": 91.5,
-      "week52RangePct": 41.7
+      "week52RangePct": 41.7,
+      "dollarVolume": 79929866
     },
     {
       "symbol": "BBY",
@@ -4984,7 +5200,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 4.2,
       "roe": 9.9,
       "debtRatio": 406.0,
-      "week52RangePct": 91.2
+      "week52RangePct": 91.2,
+      "dollarVolume": 238444743
     },
     {
       "symbol": "INVH",
@@ -5007,7 +5224,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 25.2,
       "roe": 2.4,
       "debtRatio": 103.3,
-      "week52RangePct": 49.8
+      "week52RangePct": 49.8,
+      "dollarVolume": 210468610
     },
     {
       "symbol": "ROL",
@@ -5030,7 +5248,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 18.7,
       "roe": 10.1,
       "debtRatio": 134.7,
-      "week52RangePct": 0.7
+      "week52RangePct": 0.7,
+      "dollarVolume": 180287528
     },
     {
       "symbol": "LDOS",
@@ -5053,7 +5272,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 11.7,
       "roe": 6.7,
       "debtRatio": 194.9,
-      "week52RangePct": 28.7
+      "week52RangePct": 28.7,
+      "dollarVolume": 143852838
     },
     {
       "symbol": "WY",
@@ -5076,7 +5296,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 8.8,
       "roe": 1.7,
       "debtRatio": 74.6,
-      "week52RangePct": 12.6
+      "week52RangePct": 12.6,
+      "dollarVolume": 118513016
     },
     {
       "symbol": "LNT",
@@ -5099,7 +5320,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 21.0,
       "roe": 3.0,
       "debtRatio": 234.3,
-      "week52RangePct": 25.6
+      "week52RangePct": 25.6,
+      "dollarVolume": 121621087
     },
     {
       "symbol": "J",
@@ -5122,7 +5344,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 7.0,
       "roe": 4.2,
       "debtRatio": 260.2,
-      "week52RangePct": 55.5
+      "week52RangePct": 55.5,
+      "dollarVolume": 80216491
     },
     {
       "symbol": "ZBRA",
@@ -5145,7 +5368,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 21.3,
       "roe": 6.8,
       "debtRatio": 151.4,
-      "week52RangePct": 77.4
+      "week52RangePct": 77.4,
+      "dollarVolume": 170662673
     },
     {
       "symbol": "BEN",
@@ -5168,7 +5392,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 15.9,
       "roe": 2.2,
       "debtRatio": 160.8,
-      "week52RangePct": 82.7
+      "week52RangePct": 82.7,
+      "dollarVolume": 85203120
     },
     {
       "symbol": "GEN",
@@ -5191,7 +5416,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 35.6,
       "roe": 8.1,
       "debtRatio": 489.0,
-      "week52RangePct": 87.9
+      "week52RangePct": 87.9,
+      "dollarVolume": 166576694
     },
     {
       "symbol": "IEX",
@@ -5214,7 +5440,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 22.0,
       "roe": 3.6,
       "debtRatio": 72.9,
-      "week52RangePct": 73.9
+      "week52RangePct": 73.9,
+      "dollarVolume": 159680854
     },
     {
       "symbol": "CDW",
@@ -5237,7 +5464,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 6.5,
       "roe": 11.2,
       "debtRatio": 606.6,
-      "week52RangePct": 61.1
+      "week52RangePct": 61.1,
+      "dollarVolume": 161003243
     },
     {
       "symbol": "NVR",
@@ -5260,7 +5488,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 13.4,
       "roe": 7.0,
       "debtRatio": 61.3,
-      "week52RangePct": 19.2
+      "week52RangePct": 19.2,
+      "dollarVolume": 302295279
     },
     {
       "symbol": "ALB",
@@ -5283,7 +5512,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 26.4,
       "roe": 4.7,
       "debtRatio": 52.3,
-      "week52RangePct": 34.0
+      "week52RangePct": 34.0,
+      "dollarVolume": 244654223
     },
     {
       "symbol": "BALL",
@@ -5306,7 +5536,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 9.2,
       "roe": 3.8,
       "debtRatio": 249.6,
-      "week52RangePct": 63.6
+      "week52RangePct": 63.6,
+      "dollarVolume": 89468775
     },
     {
       "symbol": "PTC",
@@ -5329,7 +5560,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 27.7,
       "roe": 3.4,
       "debtRatio": 87.7,
-      "week52RangePct": 20.2
+      "week52RangePct": 20.2,
+      "dollarVolume": 214958426
     },
     {
       "symbol": "NWSA",
@@ -5352,7 +5584,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 12.6,
       "roe": 2.1,
       "debtRatio": 74.0,
-      "week52RangePct": 75.9
+      "week52RangePct": 75.9,
+      "dollarVolume": 96587837
     },
     {
       "symbol": "CHRW",
@@ -5375,7 +5608,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 4.4,
       "roe": 8.6,
       "debtRatio": 207.2,
-      "week52RangePct": 33.2
+      "week52RangePct": 33.2,
+      "dollarVolume": 251788238
     },
     {
       "symbol": "HST",
@@ -5398,7 +5632,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 17.9,
       "roe": 3.7,
       "debtRatio": 103.9,
-      "week52RangePct": 64.7
+      "week52RangePct": 64.7,
+      "dollarVolume": 141781217
     },
     {
       "symbol": "KIM",
@@ -5421,7 +5656,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 36.6,
       "roe": 1.5,
       "debtRatio": 93.6,
-      "week52RangePct": 51.2
+      "week52RangePct": 51.2,
+      "dollarVolume": 125409127
     },
     {
       "symbol": "AKAM",
@@ -5444,7 +5680,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 7.6,
       "roe": 1.7,
       "debtRatio": 217.4,
-      "week52RangePct": 38.4
+      "week52RangePct": 38.4,
+      "dollarVolume": 312194282
     },
     {
       "symbol": "MAA",
@@ -5467,7 +5704,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 25.4,
       "roe": 2.2,
       "debtRatio": 117.2,
-      "week52RangePct": 17.2
+      "week52RangePct": 17.2,
+      "dollarVolume": 154864946
     },
     {
       "symbol": "SOLV",
@@ -5490,7 +5728,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 8.2,
       "roe": 1.9,
       "debtRatio": 196.8,
-      "week52RangePct": 79.5
+      "week52RangePct": 79.5,
+      "dollarVolume": 62097483
     },
     {
       "symbol": "APA",
@@ -5513,7 +5752,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 55.7,
       "roe": 10.6,
       "debtRatio": 142.8,
-      "week52RangePct": 93.6
+      "week52RangePct": 93.6,
+      "dollarVolume": 291373861
     },
     {
       "symbol": "DOC",
@@ -5536,7 +5776,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 17.2,
       "roe": 0.7,
       "debtRatio": 155.3,
-      "week52RangePct": 64.4
+      "week52RangePct": 64.4,
+      "dollarVolume": 78514719
     },
     {
       "symbol": "SWK",
@@ -5559,7 +5800,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 9.0,
       "roe": 3.9,
       "debtRatio": 124.3,
-      "week52RangePct": 63.9
+      "week52RangePct": 63.9,
+      "dollarVolume": 211417993
     },
     {
       "symbol": "MKC",
@@ -5582,7 +5824,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 17.4,
       "roe": 2.1,
       "debtRatio": 127.3,
-      "week52RangePct": 22.8
+      "week52RangePct": 22.8,
+      "dollarVolume": 149814469
     },
     {
       "symbol": "COO",
@@ -5605,7 +5848,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": -2.9,
       "roe": -0.9,
       "debtRatio": 51.5,
-      "week52RangePct": 8.1
+      "week52RangePct": 8.1,
+      "dollarVolume": 1010219689
     },
     {
       "symbol": "MAS",
@@ -5628,7 +5872,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 23.6,
       "roe": -86.9,
       "debtRatio": -1508.2,
-      "week52RangePct": 37.2
+      "week52RangePct": 37.2,
+      "dollarVolume": 204069474
     },
     {
       "symbol": "TYL",
@@ -5651,7 +5896,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 14.7,
       "roe": 3.1,
       "debtRatio": 91.4,
-      "week52RangePct": 22.7
+      "week52RangePct": 22.7,
+      "dollarVolume": 258716137
     },
     {
       "symbol": "TXT",
@@ -5674,7 +5920,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 7.0,
       "roe": 3.1,
       "debtRatio": 125.2,
-      "week52RangePct": 4.6
+      "week52RangePct": 4.6,
+      "dollarVolume": 134359236
     },
     {
       "symbol": "REG",
@@ -5697,7 +5944,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 37.5,
       "roe": 1.9,
       "debtRatio": 85.3,
-      "week52RangePct": 50.3
+      "week52RangePct": 50.3,
+      "dollarVolume": 130159855
     },
     {
       "symbol": "CRL",
@@ -5720,7 +5968,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 11.9,
       "roe": -0.1,
       "debtRatio": 163.5,
-      "week52RangePct": 80.9
+      "week52RangePct": 80.9,
+      "dollarVolume": 204953112
     },
     {
       "symbol": "EG",
@@ -5743,7 +5992,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 4.3,
       "debtRatio": null,
-      "week52RangePct": 69.5
+      "week52RangePct": 69.5,
+      "dollarVolume": 133574881
     },
     {
       "symbol": "IVZ",
@@ -5766,7 +6016,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 19.9,
       "roe": 3.1,
       "debtRatio": 112.3,
-      "week52RangePct": 86.7
+      "week52RangePct": 86.7,
+      "dollarVolume": 107926848
     },
     {
       "symbol": "TRMB",
@@ -5789,7 +6040,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 14.9,
       "roe": -9.2,
       "debtRatio": 67.1,
-      "week52RangePct": 24.4
+      "week52RangePct": 24.4,
+      "dollarVolume": 101932422
     },
     {
       "symbol": "AIZ",
@@ -5812,7 +6064,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 4.9,
       "debtRatio": 491.7,
-      "week52RangePct": 76.8
+      "week52RangePct": 76.8,
+      "dollarVolume": 67911292
     },
     {
       "symbol": "LII",
@@ -5835,7 +6088,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 23.1,
       "roe": 20.7,
       "debtRatio": 250.4,
-      "week52RangePct": 3.1
+      "week52RangePct": 3.1,
+      "dollarVolume": 172494368
     },
     {
       "symbol": "AVY",
@@ -5858,7 +6112,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 13.6,
       "roe": 8.8,
       "debtRatio": 296.6,
-      "week52RangePct": 34.7
+      "week52RangePct": 34.7,
+      "dollarVolume": 145370208
     },
     {
       "symbol": "RVTY",
@@ -5881,7 +6136,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 12.0,
       "roe": 0.7,
       "debtRatio": 66.6,
-      "week52RangePct": 76.7
+      "week52RangePct": 76.7,
+      "dollarVolume": 162429676
     },
     {
       "symbol": "UDR",
@@ -5904,7 +6160,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 19.6,
       "roe": 2.3,
       "debtRatio": 218.7,
-      "week52RangePct": 24.3
+      "week52RangePct": 24.3,
+      "dollarVolume": 162481175
     },
     {
       "symbol": "ERIE",
@@ -5927,7 +6184,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 7.3,
       "debtRatio": 44.2,
-      "week52RangePct": 26.1
+      "week52RangePct": 26.1,
+      "dollarVolume": 39090242
     },
     {
       "symbol": "ALLE",
@@ -5950,7 +6208,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 22.1,
       "roe": 8.7,
       "debtRatio": 153.0,
-      "week52RangePct": 45.2
+      "week52RangePct": 45.2,
+      "dollarVolume": 122784498
     },
     {
       "symbol": "LULU",
@@ -5973,7 +6232,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 18.8,
       "roe": 6.9,
       "debtRatio": 77.1,
-      "week52RangePct": 0.9
+      "week52RangePct": 0.9,
+      "dollarVolume": 756286842
     },
     {
       "symbol": "BAX",
@@ -5996,7 +6256,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 7.3,
       "roe": 2.0,
       "debtRatio": 219.3,
-      "week52RangePct": 59.2
+      "week52RangePct": 59.2,
+      "dollarVolume": 135951131
     },
     {
       "symbol": "SJM",
@@ -6019,7 +6280,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 23.1,
       "roe": 5.6,
       "debtRatio": 181.8,
-      "week52RangePct": 68.9
+      "week52RangePct": 68.9,
+      "dollarVolume": 163822844
     },
     {
       "symbol": "HAS",
@@ -6042,7 +6304,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 22.2,
       "roe": 22.8,
       "debtRatio": 752.5,
-      "week52RangePct": 55.1
+      "week52RangePct": 55.1,
+      "dollarVolume": 133294167
     },
     {
       "symbol": "GL",
@@ -6065,7 +6328,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": null,
       "roe": 4.7,
       "debtRatio": 412.7,
-      "week52RangePct": 67.4
+      "week52RangePct": 67.4,
+      "dollarVolume": 53056287
     },
     {
       "symbol": "HRL",
@@ -6088,7 +6352,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 5.0,
       "roe": 0.8,
       "debtRatio": 69.3,
-      "week52RangePct": 16.5
+      "week52RangePct": 16.5,
+      "dollarVolume": 85401049
     },
     {
       "symbol": "CSGP",
@@ -6111,7 +6376,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 8.2,
       "roe": 0.7,
       "debtRatio": 27.7,
-      "week52RangePct": 5.6
+      "week52RangePct": 5.6,
+      "dollarVolume": 213350684
     },
     {
       "symbol": "BF-B",
@@ -6134,7 +6400,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 27.7,
       "roe": 4.4,
       "debtRatio": 97.2,
-      "week52RangePct": 42.7
+      "week52RangePct": 42.7,
+      "dollarVolume": 51127199
     },
     {
       "symbol": "CLX",
@@ -6157,7 +6424,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 12.6,
       "roe": 181.1,
       "debtRatio": 8380.0,
-      "week52RangePct": 9.2
+      "week52RangePct": 9.2,
+      "dollarVolume": 238721882
     },
     {
       "symbol": "DECK",
@@ -6180,7 +6448,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 15.2,
       "roe": 5.6,
       "debtRatio": 68.1,
-      "week52RangePct": 2.2
+      "week52RangePct": 2.2,
+      "dollarVolume": 223789891
     },
     {
       "symbol": "IT",
@@ -6203,7 +6472,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 20.5,
       "roe": 350.8,
       "debtRatio": 11977.6,
-      "week52RangePct": 32.7
+      "week52RangePct": 32.7,
+      "dollarVolume": 172570357
     },
     {
       "symbol": "GDDY",
@@ -6226,7 +6496,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 27.1,
       "roe": 3583.6,
       "debtRatio": 119252.2,
-      "week52RangePct": 31.9
+      "week52RangePct": 31.9,
+      "dollarVolume": 174744348
     },
     {
       "symbol": "BXP",
@@ -6249,7 +6520,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 28.9,
       "roe": 1.3,
       "debtRatio": 337.7,
-      "week52RangePct": 47.3
+      "week52RangePct": 47.3,
+      "dollarVolume": 76639803
     },
     {
       "symbol": "GNRC",
@@ -6272,7 +6544,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 17.9,
       "roe": 5.0,
       "debtRatio": 100.6,
-      "week52RangePct": 29.0
+      "week52RangePct": 29.0,
+      "dollarVolume": 119171887
     },
     {
       "symbol": "JKHY",
@@ -6295,7 +6568,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 21.2,
       "roe": 5.4,
       "debtRatio": 53.3,
-      "week52RangePct": 55.8
+      "week52RangePct": 55.8,
+      "dollarVolume": 126911955
     },
     {
       "symbol": "PNW",
@@ -6318,7 +6592,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 21.0,
       "roe": 2.5,
       "debtRatio": 362.5,
-      "week52RangePct": 43.6
+      "week52RangePct": 43.6,
+      "dollarVolume": 69836212
     },
     {
       "symbol": "HII",
@@ -6341,7 +6616,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 5.5,
       "roe": 3.9,
       "debtRatio": 138.7,
-      "week52RangePct": 9.2
+      "week52RangePct": 9.2,
+      "dollarVolume": 113767358
     },
     {
       "symbol": "PSKY",
@@ -6364,7 +6640,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 9.6,
       "roe": 0.3,
       "debtRatio": 268.5,
-      "week52RangePct": 20.8
+      "week52RangePct": 20.8,
+      "dollarVolume": 132091136
     },
     {
       "symbol": "ALGN",
@@ -6387,7 +6664,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 18.2,
       "roe": 2.6,
       "debtRatio": 51.6,
-      "week52RangePct": 36.6
+      "week52RangePct": 36.6,
+      "dollarVolume": 125923546
     },
     {
       "symbol": "DPZ",
@@ -6410,7 +6688,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 19.1,
       "roe": -3.4,
       "debtRatio": -144.3,
-      "week52RangePct": 20.0
+      "week52RangePct": 20.0,
+      "dollarVolume": 176477183
     },
     {
       "symbol": "TECH",
@@ -6433,7 +6712,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 29.6,
       "roe": 2.6,
       "debtRatio": 22.7,
-      "week52RangePct": 98.2
+      "week52RangePct": 98.2,
+      "dollarVolume": 271564211
     },
     {
       "symbol": "MGM",
@@ -6456,7 +6736,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 6.8,
       "roe": 11.6,
       "debtRatio": 1450.9,
-      "week52RangePct": 51.5
+      "week52RangePct": 51.5,
+      "dollarVolume": 89201307
     },
     {
       "symbol": "DVA",
@@ -6479,7 +6760,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 13.9,
       "roe": -26.1,
       "debtRatio": -2177.5,
-      "week52RangePct": 54.8
+      "week52RangePct": 54.8,
+      "dollarVolume": 99702487
     },
     {
       "symbol": "CPT",
@@ -6502,7 +6784,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 19.3,
       "roe": 1.1,
       "debtRatio": 123.0,
-      "week52RangePct": 25.6
+      "week52RangePct": 25.6,
+      "dollarVolume": 80113180
     },
     {
       "symbol": "FDS",
@@ -6525,7 +6808,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 26.7,
       "roe": 6.2,
       "debtRatio": 106.3,
-      "week52RangePct": 41.9
+      "week52RangePct": 41.9,
+      "dollarVolume": 393334603
     },
     {
       "symbol": "AES",
@@ -6548,7 +6832,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 18.4,
       "roe": 8.6,
       "debtRatio": 899.8,
-      "week52RangePct": 46.4
+      "week52RangePct": 46.4,
+      "dollarVolume": 139793933
     },
     {
       "symbol": "UHS",
@@ -6571,7 +6856,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 11.1,
       "roe": 4.8,
       "debtRatio": 110.2,
-      "week52RangePct": 30.7
+      "week52RangePct": 30.7,
+      "dollarVolume": 112976152
     },
     {
       "symbol": "WYNN",
@@ -6594,7 +6880,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 16.5,
       "roe": -82.7,
       "debtRatio": -8300.9,
-      "week52RangePct": 0.3
+      "week52RangePct": 0.3,
+      "dollarVolume": 186759044
     },
     {
       "symbol": "PNR",
@@ -6617,7 +6904,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 17.9,
       "roe": 3.4,
       "debtRatio": 79.0,
-      "week52RangePct": 0.8
+      "week52RangePct": 0.8,
+      "dollarVolume": 145207299
     },
     {
       "symbol": "FRT",
@@ -6640,7 +6928,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 35.2,
       "roe": 2.5,
       "debtRatio": 161.7,
-      "week52RangePct": 65.0
+      "week52RangePct": 65.0,
+      "dollarVolume": 65850749
     },
     {
       "symbol": "SWKS",
@@ -6663,7 +6952,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 7.3,
       "roe": 0.6,
       "debtRatio": 29.4,
-      "week52RangePct": 82.4
+      "week52RangePct": 82.4,
+      "dollarVolume": 951355056
     },
     {
       "symbol": "APTV",
@@ -6686,7 +6976,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 11.9,
       "roe": 2.8,
       "debtRatio": 105.6,
-      "week52RangePct": 4.1
+      "week52RangePct": 4.1,
+      "dollarVolume": 175970603
     },
     {
       "symbol": "PODD",
@@ -6709,7 +7000,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 16.2,
       "roe": 6.7,
       "debtRatio": 122.5,
-      "week52RangePct": 3.6
+      "week52RangePct": 3.6,
+      "dollarVolume": 251316651
     },
     {
       "symbol": "HSIC",
@@ -6732,7 +7024,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 5.8,
       "roe": 3.0,
       "debtRatio": 210.9,
-      "week52RangePct": 83.9
+      "week52RangePct": 83.9,
+      "dollarVolume": 100324025
     },
     {
       "symbol": "ARE",
@@ -6755,7 +7048,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 14.7,
       "roe": -0.5,
       "debtRatio": 99.4,
-      "week52RangePct": 20.8
+      "week52RangePct": 20.8,
+      "dollarVolume": 68129736
     },
     {
       "symbol": "AOS",
@@ -6778,7 +7072,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 18.9,
       "roe": 6.8,
       "debtRatio": 97.9,
-      "week52RangePct": 9.2
+      "week52RangePct": 9.2,
+      "dollarVolume": 70662305
     },
     {
       "symbol": "TAP",
@@ -6801,7 +7096,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 11.1,
       "roe": 2.3,
       "debtRatio": 137.9,
-      "week52RangePct": 4.0
+      "week52RangePct": 4.0,
+      "dollarVolume": 116863328
     },
     {
       "symbol": "NCLH",
@@ -6824,7 +7120,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 13.8,
       "roe": 8.7,
       "debtRatio": 833.3,
-      "week52RangePct": 0.9
+      "week52RangePct": 0.9,
+      "dollarVolume": 275355939
     },
     {
       "symbol": "MOS",
@@ -6847,7 +7144,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": -1.0,
       "roe": -2.4,
       "debtRatio": 113.5,
-      "week52RangePct": 32.6
+      "week52RangePct": 32.6,
+      "dollarVolume": 197807250
     },
     {
       "symbol": "BLDR",
@@ -6870,7 +7168,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 3.3,
       "roe": -0.1,
       "debtRatio": 182.7,
-      "week52RangePct": 0.9
+      "week52RangePct": 0.9,
+      "dollarVolume": 201798112
     },
     {
       "symbol": "TTD",
@@ -6893,7 +7192,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 14.2,
       "roe": 2.5,
       "debtRatio": 123.9,
-      "week52RangePct": 2.6
+      "week52RangePct": 2.6,
+      "dollarVolume": null
     },
     {
       "symbol": "VMRK",
@@ -6916,7 +7216,8 @@ const SP500_EXTRA_DATA = {
       "operatingMargin": 29.8,
       "roe": 1.3,
       "debtRatio": 83.8,
-      "week52RangePct": 53.5
+      "week52RangePct": 53.5,
+      "dollarVolume": 537965207
     }
   ],
   "ratiosUpdatedAt": "2026-08-25T11:26:13Z",
