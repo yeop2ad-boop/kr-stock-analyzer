@@ -4035,9 +4035,8 @@ function wlLocalDatetimeValue(d) {
 function wlBuyDetailStripHtml(r, db) {
   const sym = r.symbol;
   const detail = getWlBuyDetails()[sym];
-  if (!detail) {
-    return `<div class="wl-detail-strip"><button type="button" class="cat-btn wl-detail-add-btn" data-wl-detail-add="${escapeHtml(sym)}">+상세입력</button></div>`;
-  }
+  // 상세입력이 없는 종목은 줄 자체를 없앰(2026-09-13 사용자 요청 — 목록을 증권사 앱처럼 촘촘하게)
+  if (!detail) return "";
   const buyPrice = Number(detail.price);
   const buyAt = new Date(detail.at);
   // ① 수익률 10% 이상이면 빨간불
