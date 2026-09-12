@@ -11551,7 +11551,7 @@ async function runInsightStrategyCompare() {
         `${dateStr} 기준 · 최근 10년(1년 단위)`,
         `<p>지금부터 딱 10년을 1년씩 끊어, 매년 초에 그 방법대로 종목을 새로 골라 1년 들고 갔다면 어떻게 됐을지 계산한 결과입니다. 세로축은 시작을 0%로 둔 <b>누적 수익률</b>, 가로축은 1년 단위 10칸이고, 아래 표는 매년 변동과 마지막 열의 최종 변동량입니다.</p>
         <p>· <b>10년평균 승률 매매</b> — 그해 시작 시점 기준 직전 10년 월간 승률 상위 ${db.topN}종목<br>
-        · <b>섹터 순환 매매</b> — 직전 1년 수익률 1위 섹터를 통째로 보유<br>
+        · <b>섹터 순환 매매</b> — 매달 갈아타며, 직전 한 달 상승률 1위 섹터를 통째로 한 달 보유<br>
         · <b>52주 저점/고점 매매</b> — 그 시점 52주 구간에서 가장 낮은/높은 위치 ${db.topN}종목<br>
         · <b>S&P 장기투자</b> — SPY 보유 · <b>코스피 장기투자</b> — KODEX 200 보유<br>
         · <b>IPO 매매</b> — 그 시점에 상장한 지 가장 얼마 안 된 ${db.topN}종목</p>
@@ -11838,14 +11838,18 @@ let insightCorrPeriod = "year"; // 2026-09-08 사용자 요청: 년간만
 let corrDbPromise = null;
 function getCorrDb() {
   if (!corrDbPromise) {
+    // 2026-09-12: cache "no-store"는 매번 1.1MB를 새로 받게 만들어, 모바일·불안정한 회선에서 자동추적이
+    // "내려받지 못했습니다"로 떨어지는 주된 원인이었다. "no-cache"는 서버에 변경 여부만 물어보고(If-None-Match)
+    // 안 바뀌었으면 304로 끝나므로, 매일 도는 배치의 최신본은 그대로 받으면서 재다운로드는 피한다.
     const fetchOnce = () =>
-      fetch("data/correlation-daily.json", { cache: "no-store" }).then((r) => {
+      fetch("data/correlation-daily.json", { cache: "no-cache" }).then((r) => {
         if (!r.ok) throw new Error("correlation db http " + r.status);
         return r.json();
       });
-    // 2026-09-08: 모바일에서 간헐적으로 실패 보고 — 1.5초 뒤 한 번 더 시도
+    // 2026-09-08: 모바일에서 간헐적으로 실패 보고 — 시간을 벌려가며 두 번 더 시도(2026-09-12에 1회 → 2회)
     corrDbPromise = fetchOnce()
       .catch(() => sleep(1500).then(fetchOnce))
+      .catch(() => sleep(3000).then(fetchOnce))
       .catch((e) => {
         // 2026-09-08: 1MB짜리 파일이라 모바일에서 한 번 실패하면 세션 내내 "준비되지 않았습니다"가 뜨던 문제 — 실패는 캐시하지 않고 다음 호출 때 재시도
         lastDataLoadError = `correlation-daily.json: ${(e && e.message) || e}`;

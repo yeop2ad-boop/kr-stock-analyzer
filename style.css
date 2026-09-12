@@ -2255,6 +2255,9 @@ body[data-header-tone="dark"] .fh-market-label { color: #fff; }
   border: 1px solid rgba(197, 160, 89, 0.4);
 }
 :root[data-theme="dark"] .more-panel-item-badge { color: #e0c176; background: rgba(224, 193, 118, 0.13); border-color: rgba(224, 193, 118, 0.38); }
+/* NEW 배지(2026-09-12) — "주요기능"(금색)과 구분되게 앱 강조색 계열로 */
+.more-panel-item-badge-new { color: #c2410c; background: rgba(234, 88, 12, 0.12); border-color: rgba(234, 88, 12, 0.4); letter-spacing: 0.5px; }
+:root[data-theme="dark"] .more-panel-item-badge-new { color: #fdba74; background: rgba(253, 186, 116, 0.14); border-color: rgba(253, 186, 116, 0.4); }
 .more-panel-badge {
   flex: none;
   font-size: 11px;

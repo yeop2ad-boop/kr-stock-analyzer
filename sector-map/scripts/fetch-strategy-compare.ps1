@@ -5,7 +5,9 @@
 #
 # 7가지(코스피 장기투자만 KOSPI200, 나머지는 전부 S&P500/미국)
 #   1 winrate   10년 승률 매매  : 해당 연도 시작 시점 기준 "직전 10년 월간 승률" 상위 20종목을 1년 보유
-#   2 sector    섹터 순환 매매  : 직전 1년 수익률 1위 섹터를 통째로 1년 보유(그 섹터 종목 평균)
+#   2 sector    섹터 순환 매매  : 매달 갈아탄다 — 직전 한 달 상승률 1위 섹터를 통째로 한 달 보유(그 섹터 종목 평균).
+#                                 한 해 성적은 그 12번의 월간 수익률을 복리로 이어 붙인 값(2026-09-12 사용자 요청으로
+#                                 "직전 1년 1위 섹터를 1년 보유" 방식에서 바꿈)
 #   3 low52     52주 저점 매매  : 시작 시점에 직전 52주 구간에서 가장 낮은 위치인 20종목을 1년 보유
 #   4 high52    52주 고점 매매  : 반대로 가장 높은 위치인 20종목을 1년 보유
 #   5 spy       S&P 장기투자    : SPY 보유
@@ -210,30 +212,49 @@ for ($i = 0; $i -lt $YEAR_COUNT; $i++) {
   $stratYearly.winrate += (Avg-Return $pick $t0 $t1)
   $stratPicks.winrate += , $pick
 
-  # 2) 섹터 순환 — 직전 1년 수익률 1위 섹터
-  $secRet = @{}
-  foreach ($c in $universe) {
-    if (-not $series.ContainsKey($c.symbol)) { continue }
-    $r = Return-Between $series[$c.symbol] ($bounds[$i].AddYears(-1).ToUnixTimeSeconds()) $t0
-    if ($null -eq $r) { continue }
-    $k = if ($c.sectorKo) { $c.sectorKo } else { $c.sector }
-    if (-not $secRet.ContainsKey($k)) { $secRet[$k] = @() }
-    $secRet[$k] += $r
+  # 2) 섹터 순환 — 매달 "직전 한 달 상승률 1위" 섹터를 통째로 한 달 보유(2026-09-12 사용자 요청).
+  #    한 해를 12칸으로 쪼개 매달 새로 고르고, 그 달 수익률을 복리로 이어 붙여 그 해 성적을 만든다.
+  $secFactor = 1.0
+  $secMonths = 0
+  $secPicked = @()
+  for ($mi = 0; $mi -lt 12; $mi++) {
+    $mStart = $bounds[$i].AddMonths($mi)
+    if ($mStart -ge $bounds[$i + 1]) { break }
+    $mEnd = $bounds[$i].AddMonths($mi + 1)
+    if ($mEnd -gt $bounds[$i + 1]) { $mEnd = $bounds[$i + 1] }
+
+    # 직전 한 달 섹터별 평균 상승률
+    $secRet = @{}
+    foreach ($c in $universe) {
+      if (-not $series.ContainsKey($c.symbol)) { continue }
+      $r = Return-Between $series[$c.symbol] ($mStart.AddMonths(-1).ToUnixTimeSeconds()) ($mStart.ToUnixTimeSeconds())
+      if ($null -eq $r) { continue }
+      $k = if ($c.sectorKo) { $c.sectorKo } else { $c.sector }
+      if (-not $secRet.ContainsKey($k)) { $secRet[$k] = @() }
+      $secRet[$k] += $r
+    }
+    $bestSector = $null; $bestAvg = -9999.0
+    foreach ($k in $secRet.Keys) {
+      if ($secRet[$k].Count -lt 3) { continue } # 종목이 3개도 안 되는 섹터는 평균이 튀어서 제외
+      $a = ($secRet[$k] | Measure-Object -Average).Average
+      if ($a -gt $bestAvg) { $bestAvg = $a; $bestSector = $k }
+    }
+    if ($null -eq $bestSector) { continue }
+
+    $secSyms = @()
+    foreach ($c in $universe) {
+      if (-not $series.ContainsKey($c.symbol)) { continue }
+      $ck = if ($c.sectorKo) { $c.sectorKo } else { $c.sector }
+      if ($ck -eq $bestSector) { $secSyms += $c.symbol }
+    }
+    $mr = Avg-Return $secSyms ($mStart.ToUnixTimeSeconds()) ($mEnd.ToUnixTimeSeconds())
+    if ($null -eq $mr) { continue }
+    $secFactor = $secFactor * (1.0 + [double]$mr / 100.0)
+    $secMonths++
+    if ($secPicked -notcontains $bestSector) { $secPicked += $bestSector }
   }
-  $bestSector = $null; $bestAvg = -9999.0
-  foreach ($k in $secRet.Keys) {
-    if ($secRet[$k].Count -lt 3) { continue }
-    $a = ($secRet[$k] | Measure-Object -Average).Average
-    if ($a -gt $bestAvg) { $bestAvg = $a; $bestSector = $k }
-  }
-  $secSyms = @()
-  foreach ($c in $universe) {
-    if (-not $series.ContainsKey($c.symbol)) { continue }
-    $ck = if ($c.sectorKo) { $c.sectorKo } else { $c.sector }
-    if ($ck -eq $bestSector) { $secSyms += $c.symbol }
-  }
-  $stratYearly.sector += (Avg-Return $secSyms $t0 $t1)
-  $stratPicks.sector += , @($bestSector)
+  if ($secMonths -eq 0) { $stratYearly.sector += $null } else { $stratYearly.sector += (($secFactor - 1.0) * 100.0) }
+  $stratPicks.sector += , @($secPicked)
 
   # 3·4) 52주 저점·고점 20
   $pos = @()
@@ -283,7 +304,7 @@ for ($i = 0; $i -lt $YEAR_COUNT; $i++) {
 
   Write-Host ("   {0}: 승률 {1} / 섹터 {2}({3}) / 저점 {4} / 고점 {5} / SPY {6} / 코스피 {7} / IPO {8}" -f `
       $yearRows[$i].label,
-    [Math]::Round(($stratYearly.winrate[$i]), 1), [Math]::Round(($stratYearly.sector[$i]), 1), $bestSector,
+    [Math]::Round(($stratYearly.winrate[$i]), 1), [Math]::Round(($stratYearly.sector[$i]), 1), ("섹터 " + $stratPicks.sector[$i].Count + "종"),
     [Math]::Round(($stratYearly.low52[$i]), 1), [Math]::Round(($stratYearly.high52[$i]), 1),
     [Math]::Round(($stratYearly.spy[$i]), 1), [Math]::Round(($stratYearly.kospi[$i]), 1), [Math]::Round(($stratYearly.ipo[$i]), 1))
 }
