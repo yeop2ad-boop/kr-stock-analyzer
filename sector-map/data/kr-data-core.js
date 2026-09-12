@@ -25,7 +25,7 @@ const KR_CORE_DATA = {
       "operatingMargin": 52.2,
       "roe": 12.6,
       "debtRatio": 31.9,
-      "week52RangePct": 61.7
+      "week52RangePct": 61.5
     },
     {
       "symbol": "000660.KS",
@@ -39,7 +39,7 @@ const KR_CORE_DATA = {
       "per": 29.21,
       "eps": 62044.0,
       "dividendYield": 0.17,
-      "dollarVolume": 5219400768000.0,
+      "dollarVolume": 4756798980000.0,
       "revenueGrowth": 256.78,
       "netIncomeGrowth": 1240.82,
       "cashFlowGrowth": 613.63,
@@ -51,7 +51,7 @@ const KR_CORE_DATA = {
       "operatingMargin": 76.3,
       "roe": 35.8,
       "debtRatio": 32.8,
-      "week52RangePct": 56.0
+      "week52RangePct": 55.9
     },
     {
       "symbol": "402340.KS",
@@ -77,7 +77,7 @@ const KR_CORE_DATA = {
       "operatingMargin": 98.1,
       "roe": 34.1,
       "debtRatio": 6.6,
-      "week52RangePct": 45.1
+      "week52RangePct": 44.9
     },
     {
       "symbol": "005380.KS",
@@ -207,7 +207,7 @@ const KR_CORE_DATA = {
       "operatingMargin": 8.7,
       "roe": 0.6,
       "debtRatio": 47.4,
-      "week52RangePct": 48.5
+      "week52RangePct": 48.3
     },
     {
       "symbol": "105560.KS",
@@ -299,7 +299,7 @@ const KR_CORE_DATA = {
       "per": 6.53,
       "eps": 19382.0,
       "dividendYield": 5.37,
-      "dollarVolume": 80810299200.0,
+      "dollarVolume": 67314359400.0,
       "revenueGrowth": 12.56,
       "netIncomeGrowth": 2.59,
       "cashFlowGrowth": 94.83,
@@ -467,7 +467,7 @@ const KR_CORE_DATA = {
       "operatingMargin": 5.4,
       "roe": 1.4,
       "debtRatio": 85.5,
-      "week52RangePct": 66.0
+      "week52RangePct": 65.9
     },
     {
       "symbol": "086790.KS",
@@ -637,7 +637,7 @@ const KR_CORE_DATA = {
       "per": 14.45,
       "eps": 47478.0,
       "dividendYield": 2.84,
-      "dollarVolume": 101617866000.0,
+      "dollarVolume": 94388798000.0,
       "revenueGrowth": 6.03,
       "netIncomeGrowth": 21.3,
       "cashFlowGrowth": 226.5,
@@ -767,7 +767,7 @@ const KR_CORE_DATA = {
       "per": 12.54,
       "eps": 2666.728658,
       "dividendYield": 0.9,
-      "dollarVolume": 35235360300.0,
+      "dollarVolume": 33501379200.0,
       "revenueGrowth": 342.88,
       "netIncomeGrowth": 370.11,
       "cashFlowGrowth": -294.92,
@@ -923,7 +923,7 @@ const KR_CORE_DATA = {
       "per": 10.69,
       "eps": 1951.0,
       "dividendYield": 3.36,
-      "dollarVolume": 15194416650.0,
+      "dollarVolume": 14200184400.0,
       "revenueGrowth": 29.71,
       "netIncomeGrowth": -12.75,
       "cashFlowGrowth": -3.74,
@@ -1105,7 +1105,7 @@ const KR_CORE_DATA = {
       "per": 23.54,
       "eps": 4780.0,
       "dividendYield": 3.64,
-      "dollarVolume": 31649850000.0,
+      "dollarVolume": 28431000000.0,
       "revenueGrowth": 19.02,
       "netIncomeGrowth": 127.63,
       "cashFlowGrowth": -43.78,
@@ -1157,7 +1157,7 @@ const KR_CORE_DATA = {
       "per": 98.75,
       "eps": 1519.0,
       "dividendYield": 0.75,
-      "dollarVolume": 78273600000.0,
+      "dollarVolume": 76330950000.0,
       "revenueGrowth": 40.94,
       "netIncomeGrowth": 870.54,
       "cashFlowGrowth": -110.72,
@@ -1261,7 +1261,7 @@ const KR_CORE_DATA = {
       "per": 320.57,
       "eps": 4230.0,
       "dividendYield": 0.44,
-      "dollarVolume": 133621596000.0,
+      "dollarVolume": 130174644000.0,
       "revenueGrowth": 4.78,
       "netIncomeGrowth": 351.91,
       "cashFlowGrowth": -209.6,
@@ -1339,7 +1339,7 @@ const KR_CORE_DATA = {
       "per": 3633.33,
       "eps": 51.0,
       "dividendYield": 0.13,
-      "dollarVolume": 39827826100.0,
+      "dollarVolume": 38292800900.0,
       "revenueGrowth": 2.8,
       "netIncomeGrowth": 165.06,
       "cashFlowGrowth": 461.0,
@@ -1417,7 +1417,7 @@ const KR_CORE_DATA = {
       "per": 37.65,
       "eps": 14421.0,
       "dividendYield": 0.35,
-      "dollarVolume": 91321197000.0,
+      "dollarVolume": 86183331000.0,
       "revenueGrowth": 40.48,
       "netIncomeGrowth": 2055.36,
       "cashFlowGrowth": -83.07,
@@ -1429,7 +1429,7 @@ const KR_CORE_DATA = {
       "operatingMargin": 4.4,
       "roe": 2.7,
       "debtRatio": 87.2,
-      "week52RangePct": 23.4
+      "week52RangePct": 23.2
     },
     {
       "symbol": "047810.KS",
@@ -1495,7 +1495,7 @@ const KR_CORE_DATA = {
       "per": 6.48,
       "eps": 29597.0,
       "dividendYield": 3.96,
-      "dollarVolume": 62156232900.0,
+      "dollarVolume": 58642947000.0,
       "revenueGrowth": 14.73,
       "netIncomeGrowth": 34.67,
       "cashFlowGrowth": 480.35,
@@ -1521,7 +1521,7 @@ const KR_CORE_DATA = {
       "per": 40.64,
       "eps": 3319.0,
       "dividendYield": 0.59,
-      "dollarVolume": 101138442100.0,
+      "dollarVolume": 97921481800.0,
       "revenueGrowth": -11.38,
       "netIncomeGrowth": 24.06,
       "cashFlowGrowth": 88.61,
@@ -1599,7 +1599,7 @@ const KR_CORE_DATA = {
       "per": 24.5,
       "eps": 52156.0,
       "dividendYield": 0.45,
-      "dollarVolume": 79376580000.0,
+      "dollarVolume": 77497920000.0,
       "revenueGrowth": 39.28,
       "netIncomeGrowth": 62.32,
       "cashFlowGrowth": -4.58,
@@ -1611,7 +1611,7 @@ const KR_CORE_DATA = {
       "operatingMargin": 22.9,
       "roe": 9.0,
       "debtRatio": 78.4,
-      "week52RangePct": 44.4
+      "week52RangePct": 47.4
     },
     {
       "symbol": "323410.KS",
@@ -1648,8 +1648,8 @@ const KR_CORE_DATA = {
       "currency": "KRW",
       "marketCap": 9638834698500.0,
       "changePercent": -4.7,
-      "per": 19.6,
-      "eps": 1760.224377,
+      "per": 30.86,
+      "eps": 1118.0,
       "dividendYield": 0.22,
       "dollarVolume": 40912963500.0,
       "revenueGrowth": 9.44,
@@ -1677,7 +1677,7 @@ const KR_CORE_DATA = {
       "per": 9.13,
       "eps": 2882.0,
       "dividendYield": 4.94,
-      "dollarVolume": 7809180100.0,
+      "dollarVolume": 7139345400.0,
       "revenueGrowth": 89.35,
       "netIncomeGrowth": 90.68,
       "cashFlowGrowth": -53.39,
@@ -1729,7 +1729,7 @@ const KR_CORE_DATA = {
       "per": 13.57,
       "eps": 2133.0,
       "dividendYield": 2.59,
-      "dollarVolume": 64149841800.0,
+      "dollarVolume": 62688851100.0,
       "revenueGrowth": 16.41,
       "netIncomeGrowth": -179.99,
       "cashFlowGrowth": -52.02,
@@ -1807,7 +1807,7 @@ const KR_CORE_DATA = {
       "per": 16.01,
       "eps": 3603.0,
       "dividendYield": 4.3,
-      "dollarVolume": 31724671700.0,
+      "dollarVolume": 33415858700.0,
       "revenueGrowth": 18.38,
       "netIncomeGrowth": 165.48,
       "cashFlowGrowth": -1.96,
@@ -1828,20 +1828,20 @@ const KR_CORE_DATA = {
       "sector": "Industrials",
       "sectorKo": "산업재",
       "currency": "KRW",
-      "marketCap": 8916771314500.0,
-      "changePercent": 10.1,
-      "per": 32.46,
+      "marketCap": 8861301508500.0,
+      "changePercent": 6.68,
+      "per": 32.26,
       "eps": 9903.0,
       "dividendYield": 0.78,
-      "dollarVolume": 53233005500.0,
+      "dollarVolume": 29339685000.0,
       "revenueGrowth": 40.35,
       "netIncomeGrowth": 88.08,
       "cashFlowGrowth": -499.78,
-      "pressureScore": 2.1,
-      "stabilityScore": 3.3,
       "winRateScore": 51.7,
       "rsiWeekly": 49.7,
       "ret10yAvg": 18.9,
+      "pressureScore": 2.1,
+      "stabilityScore": 3.3,
       "operatingMargin": 5.3,
       "roe": 3.6,
       "debtRatio": 412.1,
@@ -1911,7 +1911,7 @@ const KR_CORE_DATA = {
       "per": 7.75,
       "eps": 11279.0,
       "dividendYield": 4.58,
-      "dollarVolume": 26448813200.0,
+      "dollarVolume": 23676485200.0,
       "revenueGrowth": 80.33,
       "netIncomeGrowth": 108.07,
       "cashFlowGrowth": -1094.88,
@@ -1963,7 +1963,7 @@ const KR_CORE_DATA = {
       "per": 48.24,
       "eps": 2278.0,
       "dividendYield": 0.21,
-      "dollarVolume": 44721607000.0,
+      "dollarVolume": 42762309800.0,
       "revenueGrowth": 57.36,
       "netIncomeGrowth": 90.36,
       "cashFlowGrowth": 990.69,
@@ -1989,7 +1989,7 @@ const KR_CORE_DATA = {
       "per": null,
       "eps": -2220.0,
       "dividendYield": 0.0,
-      "dollarVolume": 154975023450.0,
+      "dollarVolume": 156734552520.0,
       "revenueGrowth": -10.11,
       "netIncomeGrowth": 484.08,
       "cashFlowGrowth": -1206.58,
@@ -2067,7 +2067,7 @@ const KR_CORE_DATA = {
       "per": 15.81,
       "eps": 4549.0,
       "dividendYield": 2.57,
-      "dollarVolume": 27520300200.0,
+      "dollarVolume": 28753529000.0,
       "revenueGrowth": 4.15,
       "netIncomeGrowth": 20.07,
       "cashFlowGrowth": -96.34,
@@ -2093,7 +2093,7 @@ const KR_CORE_DATA = {
       "per": 11.03,
       "eps": 8630.0,
       "dividendYield": 3.53,
-      "dollarVolume": 30123850400.0,
+      "dollarVolume": 29387002400.0,
       "revenueGrowth": 14.56,
       "netIncomeGrowth": 14.59,
       "cashFlowGrowth": -554.7,
@@ -2145,7 +2145,7 @@ const KR_CORE_DATA = {
       "per": null,
       "eps": -3461.593246,
       "dividendYield": 0.0,
-      "dollarVolume": 45674489800.0,
+      "dollarVolume": 44280207400.0,
       "revenueGrowth": 47.01,
       "netIncomeGrowth": 240.65,
       "cashFlowGrowth": 609.19,
@@ -2183,7 +2183,7 @@ const KR_CORE_DATA = {
       "operatingMargin": 28.1,
       "roe": 5.9,
       "debtRatio": 53.0,
-      "week52RangePct": 48.6
+      "week52RangePct": 48.3
     },
     {
       "symbol": "032640.KS",
@@ -2197,7 +2197,7 @@ const KR_CORE_DATA = {
       "per": 12.19,
       "eps": 1221.0,
       "dividendYield": 4.57,
-      "dollarVolume": 15713521230.0,
+      "dollarVolume": 14113933200.0,
       "revenueGrowth": -3.89,
       "netIncomeGrowth": 0.1,
       "cashFlowGrowth": -6.99,
@@ -2223,7 +2223,7 @@ const KR_CORE_DATA = {
       "per": 30.55,
       "eps": 2599.0,
       "dividendYield": 0.76,
-      "dollarVolume": 11812496800.0,
+      "dollarVolume": 10935365000.0,
       "revenueGrowth": 10.44,
       "netIncomeGrowth": 54.44,
       "cashFlowGrowth": 162.33,
@@ -2327,7 +2327,7 @@ const KR_CORE_DATA = {
       "per": 65.12,
       "eps": 453.0,
       "dividendYield": 0.0,
-      "dollarVolume": 36401525000.0,
+      "dollarVolume": 35813295000.0,
       "revenueGrowth": 30.81,
       "netIncomeGrowth": -266.08,
       "cashFlowGrowth": 5.14,
@@ -2353,7 +2353,7 @@ const KR_CORE_DATA = {
       "per": 40.52,
       "eps": 4901.0,
       "dividendYield": 0.63,
-      "dollarVolume": 47213773800.0,
+      "dollarVolume": 48107076600.0,
       "revenueGrowth": 28.01,
       "netIncomeGrowth": 44.15,
       "cashFlowGrowth": 4477.01,
@@ -2405,18 +2405,18 @@ const KR_CORE_DATA = {
       "per": null,
       "eps": -6994.0,
       "dividendYield": 0.46,
-      "dollarVolume": 30083954000.0,
-      "revenueGrowth": 1.52,
-      "netIncomeGrowth": 4252.58,
-      "cashFlowGrowth": 85.02,
+      "dollarVolume": 29383224500.0,
+      "revenueGrowth": 31.81,
+      "netIncomeGrowth": 162.98,
+      "cashFlowGrowth": -64.55,
       "winRateScore": 50.8,
       "rsiWeekly": 48.4,
       "ret10yAvg": 10.2,
       "pressureScore": 2.3,
       "stabilityScore": 1.9,
-      "operatingMargin": 8.1,
-      "roe": 2.5,
-      "debtRatio": 101.0,
+      "operatingMargin": 10.6,
+      "roe": 1.2,
+      "debtRatio": 86.7,
       "week52RangePct": 40.9
     },
     {
@@ -2457,7 +2457,7 @@ const KR_CORE_DATA = {
       "per": 7.52,
       "eps": 6053.0,
       "dividendYield": 6.15,
-      "dollarVolume": 2738463000.0,
+      "dollarVolume": 2581442500.0,
       "revenueGrowth": 5.8,
       "netIncomeGrowth": 1.99,
       "cashFlowGrowth": -9.54,
@@ -2483,7 +2483,7 @@ const KR_CORE_DATA = {
       "per": 19.65,
       "eps": 453.0,
       "dividendYield": 0.0,
-      "dollarVolume": 24049295200.0,
+      "dollarVolume": 22997457600.0,
       "revenueGrowth": 0.45,
       "netIncomeGrowth": -146.74,
       "cashFlowGrowth": -2.47,
@@ -2509,7 +2509,7 @@ const KR_CORE_DATA = {
       "per": 6.4,
       "eps": 936.0,
       "dividendYield": 0.0,
-      "dollarVolume": 28547980600.0,
+      "dollarVolume": 28878670530.0,
       "revenueGrowth": -3.02,
       "netIncomeGrowth": -2.8,
       "cashFlowGrowth": 212.35,
@@ -2535,7 +2535,7 @@ const KR_CORE_DATA = {
       "per": null,
       "eps": -5980.0,
       "dividendYield": 0.86,
-      "dollarVolume": 17589786000.0,
+      "dollarVolume": 19127721000.0,
       "revenueGrowth": 3.27,
       "netIncomeGrowth": 110.09,
       "cashFlowGrowth": 129.68,
@@ -2660,10 +2660,10 @@ const KR_CORE_DATA = {
       "sector": "Industrials",
       "sectorKo": "산업재",
       "currency": "KRW",
-      "marketCap": 10779561533700.0,
+      "marketCap": 10935954359500.0,
       "changePercent": 4.06,
-      "per": 273.7,
-      "eps": 403.0,
+      "per": 277.67,
+      "eps": 397.236778,
       "dividendYield": 0.09,
       "dollarVolume": 64684001100.0,
       "revenueGrowth": -26.04,
@@ -2769,7 +2769,7 @@ const KR_CORE_DATA = {
       "per": null,
       "eps": -1680.0,
       "dividendYield": 0.0,
-      "dollarVolume": 11670466000.0,
+      "dollarVolume": 12098657750.0,
       "revenueGrowth": 77.99,
       "netIncomeGrowth": -33.35,
       "cashFlowGrowth": -20.82,
@@ -2859,7 +2859,7 @@ const KR_CORE_DATA = {
       "operatingMargin": 37.2,
       "roe": 7.5,
       "debtRatio": 42.2,
-      "week52RangePct": 21.4
+      "week52RangePct": 22.9
     },
     {
       "symbol": "087010.KQ",
@@ -2925,7 +2925,7 @@ const KR_CORE_DATA = {
       "per": 711.06,
       "eps": 226.0,
       "dividendYield": 0.03,
-      "dollarVolume": 11819806400.0,
+      "dollarVolume": 12126100600.0,
       "revenueGrowth": 24.33,
       "netIncomeGrowth": 226.32,
       "cashFlowGrowth": 179.32,
@@ -2963,7 +2963,7 @@ const KR_CORE_DATA = {
       "operatingMargin": 12.2,
       "roe": 6.9,
       "debtRatio": 183.4,
-      "week52RangePct": 75.6
+      "week52RangePct": 75.3
     },
     {
       "symbol": "108490.KQ",
@@ -2989,7 +2989,7 @@ const KR_CORE_DATA = {
       "operatingMargin": 12.9,
       "roe": 0.7,
       "debtRatio": 3.0,
-      "week52RangePct": 61.5
+      "week52RangePct": 61.4
     },
     {
       "symbol": "403870.KQ",
@@ -3067,7 +3067,7 @@ const KR_CORE_DATA = {
       "operatingMargin": 30.0,
       "roe": 7.1,
       "debtRatio": 22.1,
-      "week52RangePct": 50.0
+      "week52RangePct": 49.8
     },
     {
       "symbol": "095340.KQ",
@@ -3093,7 +3093,7 @@ const KR_CORE_DATA = {
       "operatingMargin": 30.5,
       "roe": 3.3,
       "debtRatio": 12.0,
-      "week52RangePct": 54.5
+      "week52RangePct": 54.1
     },
     {
       "symbol": "310210.KQ",
@@ -3171,7 +3171,7 @@ const KR_CORE_DATA = {
       "operatingMargin": 14.9,
       "roe": 12.0,
       "debtRatio": 19.1,
-      "week52RangePct": 44.3
+      "week52RangePct": 43.3
     },
     {
       "symbol": "214370.KQ",
@@ -3301,7 +3301,7 @@ const KR_CORE_DATA = {
       "operatingMargin": 28.3,
       "roe": 4.3,
       "debtRatio": 9.7,
-      "week52RangePct": 59.1
+      "week52RangePct": 57.5
     },
     {
       "symbol": "067310.KQ",
@@ -3327,7 +3327,7 @@ const KR_CORE_DATA = {
       "operatingMargin": 20.8,
       "roe": 13.0,
       "debtRatio": 291.1,
-      "week52RangePct": 41.5
+      "week52RangePct": 40.8
     },
     {
       "symbol": "357780.KQ",
@@ -3379,7 +3379,7 @@ const KR_CORE_DATA = {
       "operatingMargin": 27.8,
       "roe": 7.8,
       "debtRatio": 43.8,
-      "week52RangePct": 79.0
+      "week52RangePct": 78.8
     },
     {
       "symbol": "347850.KQ",
@@ -3431,7 +3431,7 @@ const KR_CORE_DATA = {
       "operatingMargin": 21.0,
       "roe": 7.3,
       "debtRatio": 21.0,
-      "week52RangePct": 54.2
+      "week52RangePct": 53.7
     },
     {
       "symbol": "031980.KQ",
@@ -3445,7 +3445,7 @@ const KR_CORE_DATA = {
       "per": 36.92,
       "eps": 4252.0,
       "dividendYield": 0.69,
-      "dollarVolume": 25621301000.0,
+      "dollarVolume": 26479463000.0,
       "revenueGrowth": 36.55,
       "netIncomeGrowth": 40.29,
       "cashFlowGrowth": -28.75,
@@ -3523,7 +3523,7 @@ const KR_CORE_DATA = {
       "per": 21.17,
       "eps": 1927.0,
       "dividendYield": 1.59,
-      "dollarVolume": 10186495200.0,
+      "dollarVolume": 10450144800.0,
       "revenueGrowth": 17.49,
       "netIncomeGrowth": 1153.77,
       "cashFlowGrowth": 47.71,
@@ -3601,7 +3601,7 @@ const KR_CORE_DATA = {
       "per": 2927.08,
       "eps": 4.8,
       "dividendYield": 0.0,
-      "dollarVolume": 130863624850.0,
+      "dollarVolume": 131822410900.0,
       "revenueGrowth": -12.36,
       "netIncomeGrowth": 9.43,
       "cashFlowGrowth": -1753.09,
@@ -3809,7 +3809,7 @@ const KR_CORE_DATA = {
       "per": 5.54,
       "eps": 15166.0,
       "dividendYield": 1.93,
-      "dollarVolume": 14173656000.0,
+      "dollarVolume": 13625892000.0,
       "revenueGrowth": 15.43,
       "netIncomeGrowth": 0.6,
       "cashFlowGrowth": 63.39,
@@ -3835,7 +3835,7 @@ const KR_CORE_DATA = {
       "per": 150.23,
       "eps": 215.0,
       "dividendYield": 0.5,
-      "dollarVolume": 1886061600.0,
+      "dollarVolume": 1779891500.0,
       "revenueGrowth": 42.48,
       "netIncomeGrowth": 382.19,
       "cashFlowGrowth": 349.96,
@@ -3861,7 +3861,7 @@ const KR_CORE_DATA = {
       "per": null,
       "eps": -44.07,
       "dividendYield": 0.0,
-      "dollarVolume": 3326477900.0,
+      "dollarVolume": 3447083400.0,
       "revenueGrowth": -3.25,
       "netIncomeGrowth": 4.6,
       "cashFlowGrowth": -171.84,
@@ -3903,5 +3903,5 @@ const KR_CORE_DATA = {
     }
   ],
   "ratiosUpdatedAt": "2026-08-25T11:29:54Z",
-  "generatedAt": "2026-09-11T12:50:47Z"
+  "generatedAt": "2026-09-12T12:08:16Z"
 };
