@@ -7294,6 +7294,8 @@ const RANK_TH_NAME_ETF = `<th data-explain="이름 — 누르면 그 종목의 �
 const RANK_TH_PRICE = `<th data-explain="현재가입니다. 괄호 안은 전일 종가 대비 오늘 등락률이며, 시세는 최대 20분 지연될 수 있습니다. 숫자를 누르면 차트가 열립니다.">현재가<br>(등락률)</th>`;
 const RANK_TH_PRICE_CHG = `<th data-explain="현재가와 전일 종가 대비 당일 등락률입니다. 시세는 최대 20분 지연될 수 있고, 숫자를 누르면 차트가 열립니다.">현재가<br>(등락률)</th>`;
 const RANK_TH_WINRATE = `<th data-explain="10년 승률 — 최근 10년(최대 120개월) 동안 전달보다 오르며 마감한 달의 비율입니다. 수익률의 크기가 아니라 이긴 횟수라, 높을수록 꾸준히 우상향했다는 뜻입니다. ❗는 상장 10년 미만이라는 경고입니다.">10년<br>승률</th>`;
+// 1년 상승(2026-09-12 사용자 요청) — "수익률" 탭의 기준. 연평균(CAGR)이 아니라 1년 전 같은 시점 대비 실제 상승량
+const RANK_TH_RET1Y = `<th data-explain="1년 상승 — 1년 전 같은 시점의 가격과 비교해 지금까지 얼마나 올랐는지입니다. 매년 평균(연평균 상승)이 아니라 최근 1년치 실제 상승량이라, 작년 한 해 성적이 그대로 보입니다.">1년<br>상승</th>`;
 const RANK_TH_RET10 = `<th data-explain="연평균 상승 — 최근 10년 연복리 수익률(CAGR)입니다. 매년 몇 %씩 오른 셈인지를 뜻하며, 상장 10년 미만이면 상장 후 기간만 연율화한 값이라 ❗가 붙습니다.">연평균<br>상승</th>`;
 const RANK_TH_RSI = `<th data-explain="RSI 점수 — 주간 RSI(14) 현재값입니다. 30 미만은 과매도(초록), 70 이상은 과매수(빨강)로 보는 참고용 기술적 지표입니다.">RSI<br>점수</th>`;
 
@@ -7351,9 +7353,25 @@ document.addEventListener(
 // 순위 표 안에서는 어디서나 같은 보라색 글씨 + 소수점 반올림(한 줄 정렬), 검색상세 카드만 초록 원판으로 강조.
 const WIN_RATE_COLOR = "var(--winrate)"; // 10년 승률 보라 — style.css의 --winrate(라이트 #6d28d9 / 다크 #a78bfa)
 // noPct: 인기종목 표처럼 열 폭이 좁은 곳에서는 % 없이 숫자만(2026-09-10 사용자 요청)
+// 거래대금 배수(2026-09-12 사용자 요청) — 오늘 거래대금이 최근 3개월 평균의 몇 배인지.
+// 1배면 평소와 같고, 숫자가 클수록 오늘 유난히 돈이 몰렸다는 뜻이라 "지금 인기"를 그대로 보여준다.
+const RANK_TH_VOL_RATIO = `<th data-explain="거래대금 배수 — 오늘 거래대금(가격×거래량)이 최근 3개월 하루 평균 거래대금의 몇 배인지입니다. 1배면 평소와 같고, 2배면 평소의 두 배로 돈이 몰렸다는 뜻입니다. 장중에는 아직 하루가 안 끝나 낮게 나올 수 있습니다.">거래대금<br>배수</th>`;
+function volumeRatioCellHtml(v) {
+  if (!Number.isFinite(v) || v <= 0) return "N/A";
+  const x = v >= 10 ? Math.round(v) : Math.round(v * 10) / 10;
+  return `<b class="rank-hl">${x}배</b>`;
+}
+// 1년 상승률 셀 — 오르면 상승색, 내리면 하락색(앱의 상승률 랭킹과 같은 표기)
+function ret1yCellHtml(v) {
+  if (!Number.isFinite(v)) return "N/A";
+  const x = Math.round(v * 10) / 10;
+  return `<b class="rank-hl">${x > 0 ? "+" : ""}${x}%</b>`;
+}
 function winRatePctCellHtml(v, total, noPct) {
   if (!Number.isFinite(v)) return "N/A";
-  return `<b class="wr-pct" title="10년 승률 ${Math.round(v)}% — 최근 10년간 전달보다 오르며 마감한 달의 비율(수익률 크기가 아니라 이긴 횟수)">${Math.round(v)}${noPct ? "" : "%"}</b>${partialMarkHtml(total)}`;
+  // 2026-09-12 사용자 요청: 정수 반올림이면 55.4%와 55.6%가 똑같이 55%로 보여 순위가 뒤죽박죽 같아 보임 → 소수점 첫째 자리까지
+  const x = v.toFixed(1); // 60%와 59.2%가 섞이지 않게 항상 소수점 첫째 자리까지
+  return `<b class="wr-pct" title="10년 승률 ${x}% — 최근 10년간 전달보다 오르며 마감한 달의 비율(수익률 크기가 아니라 이긴 횟수)">${x}${noPct ? "" : "%"}</b>${partialMarkHtml(total)}`;
 }
 // 표 머리글의 둘째 줄 작은 기준 안내(예: 매출 증가율 / (YoY))
 const THEAD_SUB = (t) => `<span class="th-sub">(${t})</span>`;
@@ -8467,13 +8485,13 @@ function popularSnapTableHtml(rows, logoFn, nameFn) {
         nameFn ? nameFn(r) : popularSnapName(r.name || r.symbol)
       )}</b></span></td>
           ${cells}
-          <td>${winRatePctCellHtml(r.winRate, r.winTotal, true)}</td>
+          <td>${volumeRatioCellHtml(r.volumeRatio)}</td>
         </tr>`;
     })
     .join("");
   return `
     <table class="top30-table popular-snap-table">
-      <thead><tr><th data-explain="기업명 — 누르면 그 종목의 분석 화면(개요·매출액·invest점수·뉴스)으로 이동합니다. 이름이 길면 7글자까지만 보이고 뒤는 ..으로 줄였습니다.">기업명</th>${head}<th data-explain="10년 승률 — 최근 10년(최대 120개월) 동안 전달보다 오르며 마감한 달의 비율입니다. 수익률의 크기가 아니라 이긴 횟수라, 높을수록 꾸준히 우상향했다는 뜻입니다.">10년<br>승률</th></tr></thead>
+      <thead><tr><th data-explain="기업명 — 누르면 그 종목의 분석 화면(개요·매출액·invest점수·뉴스)으로 이동합니다. 이름이 길면 7글자까지만 보이고 뒤는 ..으로 줄였습니다.">기업명</th>${head}${RANK_TH_VOL_RATIO}</tr></thead>
       <tbody>${body}</tbody>
     </table>`;
 }
@@ -8512,21 +8530,25 @@ async function runPopularStocks() {
       wrMap = wr && (isKr ? wr.scoresKr : wr.scores);
     } catch {}
 
-    // 5일 차트 1회로 시세 + 최근 5일 평균 거래대금(종가×거래량)을 함께 계산 — 정렬 기준이라 50개 전부 선조회
+    // 3개월 차트 1회로 시세 + 오늘 거래대금 + 최근 3개월 하루 평균 거래대금(종가×거래량)을 함께 계산.
+    // 2026-09-12 사용자 요청으로 정렬 기준이 "거래대금 배수(오늘 ÷ 3개월 평균)"로 바뀌어 5일치로는 모자라다 —
+    // 배수가 정렬 기준이라 50개 전부 선조회한다.
     const fetchSnap = async (c) => {
       try {
-        const chart = await yahooChart(c.symbol, "5d");
+        const chart = await yahooChart(c.symbol, "3mo");
         const snap = yahooSnapshot(chart);
         const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
         const pairs = chartCloseVolumePairs(chart);
         const dvs = pairs.map((p) => p.c * p.v).filter((v) => v > 0);
-        const avgDollarVolume = dvs.length ? dvs.reduce((a, b) => a + b, 0) / dvs.length : 0;
-        return (snap && { ...snap, currency: (meta && meta.currency) || (isKr ? "KRW" : "USD"), avgDollarVolume }) || null;
+        const avgDollarVolume3m = dvs.length ? dvs.reduce((a, b) => a + b, 0) / dvs.length : 0;
+        const todayDollarVolume = dvs.length ? dvs[dvs.length - 1] : 0;
+        const volumeRatio = avgDollarVolume3m > 0 && todayDollarVolume > 0 ? todayDollarVolume / avgDollarVolume3m : null;
+        return (snap && { ...snap, currency: (meta && meta.currency) || (isKr ? "KRW" : "USD"), todayDollarVolume, avgDollarVolume3m, volumeRatio }) || null;
       } catch {
         return null;
       }
     };
-    statusEl.textContent = "인기종목 시세를 확인하는 중...";
+    statusEl.textContent = "인기종목 시세와 3개월 거래대금을 확인하는 중...";
     const snaps = new Array(capTop.length).fill(null);
     await mapWithConcurrency(
       capTop.map((c, i) => ({ c, i })),
@@ -8541,16 +8563,17 @@ async function runPopularStocks() {
     // 시세를 하나도 못 받았으면(프록시·야후 장애) 거래대금 정렬이 무의미 — 직전 성공 결과로 폴백
     const okCount = snaps.filter((s) => s && s.price !== null && s.price !== undefined).length;
     if (okCount === 0) throw new Error("실시간 시세를 받아오지 못했습니다");
-    // 거래대금(최근 5일 평균) 큰 순으로 정렬 — 시세 조회에 실패한 종목은 맨 뒤
+    // 거래대금 배수(오늘 ÷ 3개월 평균) 큰 순으로 정렬 — 조회에 실패한 종목은 맨 뒤
     const scored = capTop
       .map((c, i) => ({ c, snap: snaps[i] }))
-      .sort((a, b) => ((b.snap && b.snap.avgDollarVolume) || 0) - ((a.snap && a.snap.avgDollarVolume) || 0));
+      .sort((a, b) => ((b.snap && b.snap.volumeRatio) || 0) - ((a.snap && a.snap.volumeRatio) || 0));
     const plainRows = scored.map(({ c, snap }) => ({
       symbol: c.symbol,
       name: TICKER_TO_KOREAN_NAME[c.symbol] || c.name || c.symbol,
       price: snap && snap.price !== null && snap.price !== undefined ? snap.price : null,
       currency: (snap && snap.currency) || (isKr ? "KRW" : "USD"),
       changePct: snap && snap.changePct !== null && snap.changePct !== undefined ? snap.changePct : null,
+      volumeRatio: snap && Number.isFinite(snap.volumeRatio) ? snap.volumeRatio : null,
       changes: monthlyFromM12(wrMap && wrMap[c.symbol]), // 직전 5개월 월별 등락(2026-09-10) — 승률 DB의 m12 재사용(추가 조회 없음)
       ret10yAvg: popularRet10y(c, wrMap),
       winRateScore: popularWinRate(c, wrMap),
@@ -8574,6 +8597,7 @@ async function runPopularStocks() {
         price: null,
         currency: isKr ? "KRW" : "USD",
         changePct: null,
+        volumeRatio: null,
         changes: monthlyFromM12(wrMap && wrMap[c.symbol]),
         ret10yAvg: popularRet10y(c, wrMap),
         winRateScore: popularWinRate(c, wrMap),
@@ -8606,7 +8630,7 @@ function popularWinRate(c, wrMap) {
 }
 // ---------- 인기종목 직전 결과 캐시(2026-09-07 사용자 요청): 휴장·장 마감·시세 장애 때도 마지막 인기종목을 그대로 보여줌 ----------
 function popularCacheKey(isKr) {
-  return `popular_last_v1_${isKr ? "kr" : "us"}`;
+  return `popular_last_v2_${isKr ? "kr" : "us"}`; // v2(2026-09-12): 거래대금 배수 기준으로 정렬이 바뀌어 옛 캐시는 버림
 }
 function readPopularCache(isKr) {
   try {
@@ -8631,6 +8655,8 @@ function popularSnapshotResetCaches() {
   try {
     localStorage.removeItem(popularCacheKey(true));
     localStorage.removeItem(popularCacheKey(false));
+    localStorage.removeItem("popular_last_v1_kr");
+    localStorage.removeItem("popular_last_v1_us");
   } catch {}
   etfScanStateByRegion.clear();
   cryptoScanState.rows = [];
@@ -8641,16 +8667,21 @@ function popularSnapshotResetCaches() {
 // 2026-09-11 사용자 요청: 기본 화면은 기업명/현재가(등락률)/10년 승률만 깔끔하게,
 // 우측 상단 "+등락표"를 누르면 직전 5개월 월별 등락표(기존 표)로 바뀜(다시 누르면 복귀)
 let popularShowDeltaTable = false;
+// 2026-09-12 사용자 요청: 수익률·승률 표와 완전히 같은 구성으로 통일 — 회색 틀 없이, 같은 글씨 크기(top30-table),
+// 이름 아래 작은 회색 티커 줄까지. 국내는 "한글명 / 티커", 해외는 "티커 / 한글명" 순서(수익률 표와 동일).
 function popularSimpleTableHtml(rows, isKr, opts) {
   const logoFn = (opts && opts.logoFn) || ((r) => tickerLogoHtml(r.symbol));
-  const nameFn = (opts && opts.nameFn) || ((r) => popularSnapName(r.name || r.symbol));
+  const nameFn = (opts && opts.nameFn) || ((r) => (isKr ? r.name || r.symbol : r.symbol));
+  const subNameFn = opts && "subNameFn" in opts ? opts.subNameFn : (r) => (isKr ? r.symbol : r.name === r.symbol ? "" : r.name || "");
   const body = rows
     .map(
-      (r) => `
+      (r) => {
+        const sub = subNameFn ? subNameFn(r) : "";
+        return `
       <tr>
-        <td class="popular-snap-name"><span class="ticker-cell rank-logo">${logoFn(r)}<b class="ticker-link" data-ticker="${escapeHtml(
-        r.symbol
-      )}">${escapeHtml(nameFn(r))}</b></span></td>
+        <td><span class="ticker-cell rank-logo">${logoFn(r)}<b class="ticker-link" data-ticker="${escapeHtml(
+          r.symbol
+        )}">${escapeHtml(nameFn(r))}</b></span>${sub ? `<br><span class="muted" style="font-size:11px;">${escapeHtml(sub)}</span>` : ""}</td>
         <td>${
           r.price !== null && r.price !== undefined
             ? `${priceChartLink(r.symbol, fmtPrice(r.price, r.currency || (isKr ? "KRW" : "USD")))}${
@@ -8660,13 +8691,14 @@ function popularSimpleTableHtml(rows, isKr, opts) {
               }`
             : "N/A"
         }</td>
-        <td>${winRatePctCellHtml(r.winRateScore, r.winTotal)}</td>
-      </tr>`
+        <td>${volumeRatioCellHtml(r.volumeRatio)}</td>
+      </tr>`;
+      }
     )
     .join("");
   return `
-    <table class="top30-table popular-snap-table">
-      <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}${RANK_TH_WINRATE}</tr></thead>
+    <table class="top30-table">
+      <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}${RANK_TH_VOL_RATIO}</tr></thead>
       <tbody>${body}</tbody>
     </table>`;
 }
@@ -8681,24 +8713,23 @@ function paintPopularRows(resultsEl, isKr, rows, extraNoteHtml, opts) {
       symbol: r.symbol,
       name: r.name,
       changes: r.changes,
-      winRate: r.winRateScore,
-      winTotal: r.winTotal,
+      volumeRatio: r.volumeRatio,
     }));
     const tableHtml = popularShowDeltaTable
       ? popularSnapTableHtml(snapRows, o.logoFn, o.nameFn)
       : popularSimpleTableHtml(visible, isKr, o);
     const noteHtml = popularShowDeltaTable
-      ? `${universeLabel} 중 거래대금(최근 5일 평균)이 큰 순입니다. -5M~-1M은 직전 5개월 월별 등락률, 10년 승률은 매일 자동 갱신되는 배치 DB 기준이며 투자 자문이 아닙니다.`
-      : `${universeLabel} 중 거래대금(최근 5일 평균)이 큰 순입니다. 오른쪽 위 <b>+등락표</b>를 누르면 직전 5개월 월별 등락률을 볼 수 있습니다. 투자 자문이 아닙니다.`;
+      ? `${universeLabel} 중 <b>거래대금 배수</b>(오늘 거래대금 ÷ 최근 3개월 하루 평균 거래대금)가 큰 순입니다. -5M~-1M은 직전 5개월 월별 등락률(월봉 기준)이며 투자 자문이 아닙니다.`
+      : `${universeLabel} 중 <b>거래대금 배수</b>(오늘 거래대금 ÷ 최근 3개월 하루 평균 거래대금)가 큰 순입니다. 장중에는 하루가 아직 안 끝나 배수가 낮게 나올 수 있습니다. 오른쪽 위 <b>+등락표</b>를 누르면 직전 5개월 월별 등락률을 볼 수 있습니다. 투자 자문이 아닙니다.`;
     resultsEl.innerHTML = `
         ${o.prefixHtml || ""}
-        <p class="muted rank-scan-caption" style="font-size:12px;">거래대금 ${Math.min(shown, rows.length)}위까지 검색됨 <button type="button" class="rank-refresh-btn popular-refresh-btn" aria-label="실시간 새로고침"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><polyline points="20 4 20 9 15 9"/></svg></button></p>
+        <p class="muted rank-scan-caption" style="font-size:12px;">거래대금 배수 ${Math.min(shown, rows.length)}위까지 검색됨 <button type="button" class="rank-refresh-btn popular-refresh-btn" aria-label="실시간 새로고침"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><polyline points="20 4 20 9 15 9"/></svg></button></p>
         <div class="popular-head-row">
           <span class="tap-hint">* 모든 항목은 눌러서 자세한 설명을 볼 수 있습니다.</span>
           <button type="button" class="score-method-detail-btn popular-delta-btn">${popularShowDeltaTable ? "−등락표 닫기" : "+등락표"}</button>
         </div>
         ${extraNoteHtml || ""}
-        <div class="popular-snap-box popular-snap-box-list">${tableHtml}</div>
+        ${popularShowDeltaTable ? `<div class="popular-snap-box popular-snap-box-list">${tableHtml}</div>` : tableHtml}
         ${shown < rows.length ? `<button type="button" class="cat-btn load-more-btn">더보기 (${shown}/${rows.length})</button>` : ""}
         <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${noteHtml}</p>
       `;
@@ -8830,6 +8861,7 @@ async function computeChartDerivedMetrics(symbol, opts) {
   const dvs = pairs.map((p) => p.c * p.v);
   const recent = dvs.slice(-5);
   const recentDollarVolume = recent.reduce((a, b) => a + b, 0) / recent.length;
+  const todayDollarVolume = dvs.length ? dvs[dvs.length - 1] : null; // 오늘(마지막 봉) 거래대금 — 인기종목 "거래대금 배수"용(2026-09-12)
   const avgDollarVolume1y = dvs.reduce((a, b) => a + b, 0) / dvs.length;
   // 최근 3개월 평균 거래대금(코인 상승압력 ①, 2026-09-03)
   const dv3mArr = pairs.filter((p) => p.t >= last.t - 91 * 86400).map((p) => p.c * p.v);
@@ -8904,6 +8936,7 @@ async function computeChartDerivedMetrics(symbol, opts) {
     currency: meta.currency,
     changePct,
     recentDollarVolume,
+    todayDollarVolume,
     avgDollarVolume1y,
     avgDollarVolume3m,
     momentum3m,
@@ -8993,6 +9026,7 @@ function ensureEtfScanRows(region, targetCount, statusEl) {
             pressure,
             risk,
             recentDollarVolume: m.recentDollarVolume,
+            volumeRatio: m.avgDollarVolume3m > 0 && m.todayDollarVolume > 0 ? m.todayDollarVolume / m.avgDollarVolume3m : null, // 인기종목 거래대금 배수(2026-09-12)
             week52RangePct: m.week52RangePct,
             volatility3m: m.volatility3m, // ETF 인사이트 "변동성 순위"용(2026-09-10)
             monthReturn: m.monthReturn, // ETF 과거분석 한달상승/하락용(2026-09-02)
@@ -9045,7 +9079,7 @@ async function runEtfPopular() {
     const isKr = region === "kr";
     const rows = await getEtfScanRows(region, statusEl);
     if (etfPopularRegion !== region) return; // 조회 중 다른 지역 칩으로 전환했으면 그쪽 렌더에 맡김
-    const scored = [...rows].sort((a, b) => (b.recentDollarVolume || 0) - (a.recentDollarVolume || 0)).slice(0, 30);
+    const scored = [...rows].sort((a, b) => (b.volumeRatio || 0) - (a.volumeRatio || 0)).slice(0, 30); // 거래대금 배수 순(2026-09-12)
     if (scored.length === 0) throw new Error("ETF 점수를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.");
     await attachWinRateRsiToRows(scored, "scoresEtf"); // 연평균 상승·10년 승률 열(2026-09-04)
     statusEl.style.display = "none";
@@ -9059,6 +9093,7 @@ async function runEtfPopular() {
       price: r.price,
       currency: r.currency || (isKr ? "KRW" : "USD"),
       changePct: r.changePct,
+      volumeRatio: r.volumeRatio,
       changes: r.m12Changes,
       winRateScore: r.winRate,
       winTotal: r.winTotal,
@@ -9070,7 +9105,8 @@ async function runEtfPopular() {
         if (isKr) ensureKrEtfLogoOverride(r.symbol, r.name); // 브랜드 → 운용사 그룹 CI(2026-09-03)
         return tickerLogoHtml(r.symbol, isKr ? KR_ETF_BRAND_BADGE_POPULAR[(r.name || "").split(" ")[0]] : undefined);
       },
-      nameFn: (r) => (isKr ? (r.name || "").slice(0, 12) : r.symbol),
+      nameFn: (r) => (isKr ? r.name || r.symbol : r.symbol),
+      subNameFn: (r) => (isKr ? r.symbol : r.name || ""),
     });
   } catch (e) {
     statusEl.style.display = "block";
@@ -9148,6 +9184,7 @@ function ensureCryptoScanRows(targetCount, statusEl) {
             pressure,
             risk,
             recentDollarVolume: m.recentDollarVolume,
+            volumeRatio: m.avgDollarVolume3m > 0 && m.todayDollarVolume > 0 ? m.todayDollarVolume / m.avgDollarVolume3m : null, // 인기종목 거래대금 배수(2026-09-12)
             week52RangePct: m.week52RangePct,
             volatility3m: m.volatility3m, // 코인 "변동성" 탭(2026-09-12) — ETF와 같은 3개월 일평균 변동
             worstDayPct: m.worstDayPct, // 코인 "최대낙폭" 탭(2026-09-12) — 최근 1년 하루 최대 낙폭
@@ -9193,7 +9230,7 @@ async function runCryptoPopular() {
   statusEl.textContent = "암호화폐 목록을 불러오는 중...";
   try {
     const rows = await getCryptoScanRows(statusEl);
-    const scored = [...rows].sort((a, b) => (b.recentDollarVolume || 0) - (a.recentDollarVolume || 0)).slice(0, 30);
+    const scored = [...rows].sort((a, b) => (b.volumeRatio || 0) - (a.volumeRatio || 0)).slice(0, 30); // 거래대금 배수 순(2026-09-12)
     if (scored.length === 0) throw new Error("코인 점수를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.");
     await attachWinRateRsiToRows(scored, "scoresCrypto"); // 연평균 상승·10년 승률 열(2026-09-04)
     statusEl.style.display = "none";
@@ -9204,6 +9241,7 @@ async function runCryptoPopular() {
       price: r.price,
       currency: "USD",
       changePct: r.changePct,
+      volumeRatio: r.volumeRatio,
       changes: r.m12Changes,
       winRateScore: r.winRate,
       winTotal: r.winTotal,
@@ -9211,6 +9249,8 @@ async function runCryptoPopular() {
     paintPopularRows(resultsEl, false, cryptoRows, "", {
       universeLabel: "암호화폐 시가총액 상위 30개",
       logoFn: (r) => cryptoLogoHtml(cryptoBaseTicker(r.symbol)),
+      nameFn: (r) => r.name || r.symbol,
+      subNameFn: null, // 코인 승률·수익률 탭과 동일 — 이름만(티커가 "BTC-USD"라 줄을 두면 지저분함)
     });
   } catch (e) {
     statusEl.style.display = "block";
@@ -10056,9 +10096,20 @@ const ASSET_TREND_METRICS = {
     cell: (r) => winRatePctCellHtml(r.winRate, r.winTotal),
     note: "10년 승률(최근 10년 월봉 기준 상승 개월수/총 개월수×100, 상장 10년 미만은 상장 후부터 집계·❗ 표시)이 높은 순 순위입니다.",
     noRiskCol: true,
-    // 2026-09-10 사용자 요청: 마지막 열을 RSI 점수 대신 연평균 상승으로
-    gradeHeader: "연평균<br>상승",
-    gradeCell: (r) => (r.ret10y === null || r.ret10y === undefined ? "N/A" : `<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>${partialMarkHtml(r.winTotal)}`),
+    // 2026-09-12 사용자 요청: 딸림 열(연평균 상승)을 없애고 그 탭의 기준 하나만 보여준다
+  },
+  // 수익률 탭(2026-09-12 사용자 요청): 연평균 상승이 아니라 현시점 기준 1년 상승량 순.
+  // 기존 pressure(연평균 상승)는 미래예측·간편검색에서 계속 쓰므로 건드리지 않고 항목을 따로 둔다.
+  ret1y: {
+    hidden: true, // 상단 탭으로만 들어오는 항목이라 미래예측 서브내비·간편검색 목록에는 넣지 않음
+    icon: "rocket",
+    label: "1년 상승",
+    header: "1년<br>상승",
+    orange: true,
+    sort: (a, b) => (Number.isFinite(b.oneYearReturn) ? b.oneYearReturn : -Infinity) - (Number.isFinite(a.oneYearReturn) ? a.oneYearReturn : -Infinity),
+    cell: (r) => ret1yCellHtml(r.oneYearReturn),
+    note: "1년 상승률(1년 전 같은 시점 대비 현재가)이 높은 순입니다. 매년 평균이 아니라 최근 1년치 실제 상승량입니다.",
+    noRiskCol: true,
   },
   // ---------- 비트코인 상단 탭 전용 3종(2026-09-12 사용자 요청) ----------
   // 변동성은 ETF와 같은 기준(최근 3개월 하루 변동폭 평균)이고, 시가총액·최대낙폭은 코인 섹션에만 있다.
@@ -10069,11 +10120,9 @@ const ASSET_TREND_METRICS = {
     label: "변동성",
     header: "변동성<br>(3개월)",
     sort: (a, b) => (Number.isFinite(a.volatility3m) ? a.volatility3m : Infinity) - (Number.isFinite(b.volatility3m) ? b.volatility3m : Infinity),
-    cell: (r) => (Number.isFinite(r.volatility3m) ? `<b>${r.volatility3m.toFixed(2)}%</b>` : "N/A"),
+    cell: (r) => (Number.isFinite(r.volatility3m) ? `<b class="rank-hl">${r.volatility3m.toFixed(2)}%</b>` : "N/A"),
     note: "최근 3개월 하루 변동폭(|일간 등락률|) 평균이 <b>작은 순</b>입니다. 변동성이 낮다고 수익이 보장되는 것은 아닙니다.",
     noRiskCol: true,
-    gradeHeader: "연평균<br>상승",
-    gradeCell: (r) => (r.ret10y === null || r.ret10y === undefined ? "N/A" : `<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>${partialMarkHtml(r.winTotal)}`),
   },
   marketcap: {
     hidden: true,
@@ -10081,11 +10130,9 @@ const ASSET_TREND_METRICS = {
     label: "시가총액",
     header: "시가총액",
     sort: (a, b) => (Number.isFinite(b.marketCap) ? b.marketCap : -Infinity) - (Number.isFinite(a.marketCap) ? a.marketCap : -Infinity),
-    cell: (r) => (Number.isFinite(r.marketCap) ? `<b>${fmtCompactCurrency(r.marketCap, "USD")}</b>` : "N/A"),
+    cell: (r) => (Number.isFinite(r.marketCap) ? `<b class="rank-hl">${fmtCompactCurrency(r.marketCap, "USD")}</b>` : "N/A"),
     note: "시가총액(코인 가격 × 유통량, 달러 기준)이 큰 순입니다.",
     noRiskCol: true,
-    gradeHeader: "연평균<br>상승",
-    gradeCell: (r) => (r.ret10y === null || r.ret10y === undefined ? "N/A" : `<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>${partialMarkHtml(r.winTotal)}`),
   },
   drawdown: {
     hidden: true,
@@ -10093,11 +10140,9 @@ const ASSET_TREND_METRICS = {
     label: "최대낙폭",
     header: "하루<br>최대낙폭",
     sort: (a, b) => (Number.isFinite(a.worstDayPct) ? a.worstDayPct : Infinity) - (Number.isFinite(b.worstDayPct) ? b.worstDayPct : Infinity),
-    cell: (r) => (Number.isFinite(r.worstDayPct) ? `<b class="delta-down">${r.worstDayPct.toFixed(1)}%</b>` : "N/A"),
+    cell: (r) => (Number.isFinite(r.worstDayPct) ? `<b class="rank-hl">${r.worstDayPct.toFixed(1)}%</b>` : "N/A"),
     note: "최근 1년 중 <b>하루 만에 가장 크게 떨어진 날</b>의 낙폭이 큰 순입니다. 같은 일이 다시 일어날 수 있다는 뜻의 위험 참고치입니다.",
     noRiskCol: true,
-    gradeHeader: "연평균<br>상승",
-    gradeCell: (r) => (r.ret10y === null || r.ret10y === undefined ? "N/A" : `<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>${partialMarkHtml(r.winTotal)}`),
   },
 };
 // ETF/코인 스캔 행에 승률·RSI·연평균 상승(배치 DB 값)을 부착 — mapKey: "scoresEtf" | "scoresCrypto"
@@ -10377,15 +10422,17 @@ async function renderEtfHoldingsBlock(symbol, isKr) {
 //  · 배당률 : 배당률(⚠️컷·지연)    / 10년 승률
 //  · 운용보수: 운용보수(싼 순)     / 연평균 상승
 // 값은 ETF 스캔 캐시(ensureEtfScanRows)와 배치 DB(winrate-scores-us.json / etf-info.json)를 재사용한다.
+// 모든 ETF 탭이 공유하는 "현재가(등락률)" 칸 — 표는 순위 / 이름 / 현재가(등락률) / 그 탭의 기준 4열로 통일(2026-09-12)
+const ETF_MID_PRICE_CELL = (r) => `${priceChartLink(r.symbol, fmtPrice(r.price, r.currency))}${
+  r.changePct !== null && r.changePct !== undefined
+    ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
+    : ""
+}`;
 const ETF_METRIC_TABS = {
   winrate: {
     title: "tab.etfWinrate",
     midHeader: RANK_TH_PRICE_CHG,
-    midCell: (r) => `${priceChartLink(r.symbol, fmtPrice(r.price, r.currency))}${
-      r.changePct !== null && r.changePct !== undefined
-        ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
-        : ""
-    }`,
+    midCell: ETF_MID_PRICE_CELL,
     rightHeader: RANK_TH_WINRATE,
     rightCell: (r) => winRatePctCellHtml(r.winRate, r.winTotal),
     sort: (a, b) => (b.winRate ?? -1) - (a.winRate ?? -1),
@@ -10394,33 +10441,29 @@ const ETF_METRIC_TABS = {
   return: {
     title: "tab.etfReturn",
     midHeader: RANK_TH_PRICE_CHG,
-    midCell: (r) => `${priceChartLink(r.symbol, fmtPrice(r.price, r.currency))}${
-      r.changePct !== null && r.changePct !== undefined
-        ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
-        : ""
-    }`,
-    rightHeader: RANK_TH_RET10,
-    rightCell: (r) => etfRet10CellHtml(r),
-    sort: (a, b) => (b.ret10y ?? -Infinity) - (a.ret10y ?? -Infinity),
-    note: "연평균 상승(최근 10년 연복리 수익률 CAGR — 매년 몇 %씩 오른 셈인지)이 높은 순입니다.",
+    midCell: ETF_MID_PRICE_CELL,
+    // 2026-09-12 사용자 요청: 연평균(CAGR)이 아니라 현시점 기준 1년 상승량 순
+    rightHeader: RANK_TH_RET1Y,
+    rightCell: (r) => ret1yCellHtml(r.oneYearReturn),
+    sort: (a, b) => (Number.isFinite(b.oneYearReturn) ? b.oneYearReturn : -Infinity) - (Number.isFinite(a.oneYearReturn) ? a.oneYearReturn : -Infinity),
+    note: "1년 상승률(1년 전 같은 시점 대비 현재가)이 높은 순입니다. 매년 평균이 아니라 최근 1년치 실제 상승량입니다.",
   },
   volatility: {
     title: "tab.etfVolatility",
-    // 사용자 요청: 변동성 탭은 현재가 자리에 변동성을 넣는다
-    midHeader: `<th data-explain="최근 3개월 하루 변동폭(고가-저가)을 종가로 나눈 값의 평균입니다. 낮을수록 하루하루 덜 흔들렸다는 뜻이고, 수익률이 좋다는 뜻은 아닙니다.">변동성<br>(3개월)</th>`,
-    midCell: (r) => (Number.isFinite(r.volatility3m) ? `<b>${r.volatility3m.toFixed(2)}%</b>` : "N/A"),
-    rightHeader: RANK_TH_RET10,
-    rightCell: (r) => etfRet10CellHtml(r),
+    midHeader: RANK_TH_PRICE_CHG,
+    midCell: ETF_MID_PRICE_CELL,
+    rightHeader: `<th data-explain="최근 3개월 하루 변동폭(|일간 등락률|)의 평균입니다. 낮을수록 하루하루 덜 흔들렸다는 뜻이고, 수익률이 좋다는 뜻은 아닙니다.">변동성<br>(3개월)</th>`,
+    rightCell: (r) => (Number.isFinite(r.volatility3m) ? `<b class="rank-hl">${r.volatility3m.toFixed(2)}%</b>` : "N/A"),
     sort: (a, b) => (Number.isFinite(a.volatility3m) ? a.volatility3m : Infinity) - (Number.isFinite(b.volatility3m) ? b.volatility3m : Infinity),
     note: "최근 3개월 일평균 변동폭이 <b>작은 순</b>입니다. 변동성이 낮다고 수익이 보장되는 것은 아닙니다.",
   },
   dividend: {
     title: "tab.etfDividend",
     needsDividend: true,
-    midHeader: `<th data-explain="현재가 기준 배당률 — 최근 1년간 실제 지급된 분배금 합계를 지금 가격으로 나눈 값입니다. ⚠️컷은 직전보다 분배금이 20% 넘게 줄었다는, ⚠️지연은 평소 주기보다 지급이 밀렸다는 경고입니다.">배당률<br>(현재가 기준)</th>`,
-    midCell: (r) => (Number.isFinite(r.dividendYield) ? `<b>${r.dividendYield.toFixed(2)}%</b>${dividendWarningHtml(r)}` : "N/A"),
-    rightHeader: RANK_TH_WINRATE,
-    rightCell: (r) => winRatePctCellHtml(r.winRate, r.winTotal),
+    midHeader: RANK_TH_PRICE_CHG,
+    midCell: ETF_MID_PRICE_CELL,
+    rightHeader: `<th data-explain="현재가 기준 배당률 — 최근 1년간 실제 지급된 분배금 합계를 지금 가격으로 나눈 값입니다. ⚠️컷은 직전보다 분배금이 20% 넘게 줄었다는, ⚠️지연은 평소 주기보다 지급이 밀렸다는 경고입니다.">배당률<br>(현재 기준)</th>`,
+    rightCell: (r) => (Number.isFinite(r.dividendYield) ? `<b class="rank-hl">${r.dividendYield.toFixed(2)}%</b>${dividendWarningHtml(r)}` : "N/A"),
     sort: (a, b) => (b.dividendYield ?? -1) - (a.dividendYield ?? -1),
     filter: (r) => Number.isFinite(r.dividendYield),
     note: "현재가 기준 배당률(최근 1년 분배금 합계 ÷ 현재가)이 높은 순입니다. 분배금이 없는 ETF는 빠집니다.",
@@ -10428,10 +10471,10 @@ const ETF_METRIC_TABS = {
   fee: {
     title: "tab.etfFee",
     needsInfo: true,
-    midHeader: `<th data-explain="연간 총보수 — ETF를 1년 들고 있으면 자산에서 자동으로 빠져나가는 비용 비율입니다. 따로 청구되는 게 아니라 매일 조금씩 가격에 반영됩니다. 낮을수록 유리합니다.">운용보수<br>(연간)</th>`,
-    midCell: (r) => (Number.isFinite(r.fee) ? `<b>${r.fee.toFixed(3).replace(/0+$/, "").replace(/\.$/, "")}%</b>` : "N/A"),
-    rightHeader: RANK_TH_RET10,
-    rightCell: (r) => etfRet10CellHtml(r),
+    midHeader: RANK_TH_PRICE_CHG,
+    midCell: ETF_MID_PRICE_CELL,
+    rightHeader: `<th data-explain="연간 총보수 — ETF를 1년 들고 있으면 자산에서 자동으로 빠져나가는 비용 비율입니다. 따로 청구되는 게 아니라 매일 조금씩 가격에 반영됩니다. 낮을수록 유리합니다.">운용보수<br>(연간)</th>`,
+    rightCell: (r) => (Number.isFinite(r.fee) ? `<b class="rank-hl">${r.fee.toFixed(3).replace(/0+$/, "").replace(/\.$/, "")}%</b>` : "N/A"),
     sort: (a, b) => (Number.isFinite(a.fee) ? a.fee : Infinity) - (Number.isFinite(b.fee) ? b.fee : Infinity),
     filter: (r) => Number.isFinite(r.fee),
     note: "연간 총보수가 <b>싼 순</b>입니다. 미국은 야후 공시(annualReportExpenseRatio), 국내는 네이버 총보수 기준이며 실부담비용률과는 다를 수 있습니다.",
@@ -10574,7 +10617,7 @@ function openCryptoTrend() {
 // 값은 코인 시장동향과 같은 스캔 캐시(ensureCryptoScanRows)를 그대로 쓴다 — 서브내비만 없앤 형태.
 const CRYPTO_METRIC_TABS = {
   winrate: { metric: "winrate", title: "tab.etfWinrate" },
-  return: { metric: "pressure", title: "tab.etfReturn" },
+  return: { metric: "ret1y", title: "tab.etfReturn" },
   volatility: { metric: "volatility", title: "tab.etfVolatility" },
   marketcap: { metric: "marketcap", title: "tab.cryptoCap" },
   drawdown: { metric: "drawdown", title: "tab.cryptoDrawdown" },
@@ -10699,8 +10742,7 @@ async function runStockVolatility() {
               }`
             : "N/A"
         }</td>
-        <td><b>${r.volatility3m.toFixed(2)}%</b></td>
-        <td>${winRatePctCellHtml(r.winRate, r.winTotal)}</td>
+        <td><b class="rank-hl">${r.volatility3m.toFixed(2)}%</b></td>
       </tr>`;
       })
       .join("");
@@ -10708,7 +10750,7 @@ async function runStockVolatility() {
       ${rankScanCaptionHtml(rows.length, !expanded && total > target)}
       ${TAP_HINT_HTML}
       <table class="top30-table">
-        <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}<th data-explain="변동성 — 최근 3개월 하루 변동폭(|일간 등락률|)의 평균입니다. 낮을수록 하루하루 덜 흔들렸다는 뜻이고, 수익률이 좋다는 뜻은 아닙니다.">변동성<br>(3개월)</th>${RANK_TH_WINRATE}</tr></thead>
+        <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}<th data-explain="변동성 — 최근 3개월 하루 변동폭(|일간 등락률|)의 평균입니다. 낮을수록 하루하루 덜 흔들렸다는 뜻이고, 수익률이 좋다는 뜻은 아닙니다.">변동성<br>(3개월)</th></tr></thead>
         <tbody>${body}</tbody>
       </table>
       ${!expanded && total > target ? `<button type="button" class="cat-btn load-more-btn stock-vol-more-btn">전체보기 (전체 ${total}개 검색 · 약 1분 소요)</button>` : ""}
@@ -11971,8 +12013,11 @@ document.addEventListener("marketmodechange", () => {
       return;
     }
     window.setTimeout(() => {
+      // 지금 화면이 정말 그 상단 탭인지는 제목줄이 가리키는 키로 판단한다. trendGroup의 display만 보면
+      // 앱을 막 켰을 때(아직 어떤 화면도 안 그린 상태)도 조건에 걸려 승률 스캔이 헛돌았다(2026-09-12 수정).
       if (appSectionMode !== "stocks" || el("topRankingSubNav").innerHTML) return;
-      if (el("trendGroup").style.display === "none") return; // 인기종목·IPO 화면이면 각자 리스너가 처리
+      const nowKey = el("carouselViewTitle").getAttribute("data-i18n");
+      if (nowKey !== STOCK_METRIC_TABS[stockMetricTab].title) return; // 인기종목·IPO 화면이면 각자 리스너가 처리
       STOCK_METRIC_TABS[stockMetricTab].run();
     }, 0);
   } else if (activeKey === "insight" && insightActiveCategory && insightActiveCategory !== "brand" && insightActiveCategory !== "firms") {
@@ -14892,6 +14937,8 @@ async function getDividendYieldInfo(symbol) {
       price,
       currency: meta.currency,
       name: meta.shortName || meta.longName || symbol,
+      // 배당률 표의 현재가 옆 (등락률) — 2026-09-12 사용자 지적으로 추가. 이미 받아둔 일봉 차트에서 바로 계산한다
+      changePct: getDailyChangePercent(data),
       yieldPct: (trailingSum / price) * 100,
       dividendWarning: detectDividendWarning(divEvents),
     };
@@ -14924,9 +14971,9 @@ function dividendWarningHtml(r) {
 // 그 아래에 한글 별칭(없으면 영문 회사명)을 작게 덧붙임(moversTableHtml 등 다른 순위표와 같은 표기 방식)
 function dividendRowHtml(r, i, nameMap) {
   const krName = nameMap && nameMap.get(r.symbol);
-  const gradeCellHtml = stockWinRateCellHtml(r.symbol); // 10년 승률(2026-09-04 투자안정 대체)
+  // 2026-09-12 사용자 요청: 수익률 표와 통일 — 국내도 이름 아래에 작은 회색 티커 줄을 둔다
   const tickerCellHtml = krName
-    ? `<span class="ticker-cell rank-logo">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(krName)}</b></span>`
+    ? `<span class="ticker-cell rank-logo">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(krName)}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(r.symbol)}</span>`
     : `<span class="ticker-cell rank-logo">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b></span><br><span class="muted" style="font-size:11px;">${escapeHtml(TICKER_TO_KOREAN_NAME[r.symbol] || r.name || "")}</span>`;
   return `
     <tr>
@@ -14936,8 +14983,7 @@ function dividendRowHtml(r, i, nameMap) {
           ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
           : ""
       }</td>
-      <td>${r.yieldPct.toFixed(2)}%${dividendWarningHtml(r)}</td>
-      <td>${gradeCellHtml}</td>
+      <td><b class="rank-hl">${r.yieldPct.toFixed(2)}%</b>${dividendWarningHtml(r)}</td>
     </tr>`;
 }
 
@@ -14989,7 +15035,7 @@ async function runTrendDividendStaged(initialCount, ensureYields, universeLabel,
         ${rankScanCaptionHtml(top50.length, hasMore)}
         ${TAP_HINT_HTML}
         <table class="top30-table">
-          <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}<th data-explain="배당률 — 최근 1년간 지급된 배당금 합계 ÷ 현재가입니다. 실제 배당 정책은 바뀔 수 있고, ⚠️컷·⚠️지연 표시는 배당이 줄거나 늦어졌다는 뜻입니다.">배당률</th>${RANK_TH_WINRATE}</tr></thead>
+          <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}<th data-explain="배당률 — 최근 1년간 지급된 배당금 합계 ÷ 현재가입니다. 실제 배당 정책은 바뀔 수 있고, ⚠️컷·⚠️지연 표시는 배당이 줄거나 늦어졌다는 뜻입니다.">배당률</th></tr></thead>
           <tbody>${top50.map((r, i) => dividendRowHtml(r, i, nameMap)).join("")}</tbody>
         </table>
         ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${total}">전체보기 (나머지 ${total - scanned}개 · 전체 검색 시 약 1분 소요)</button>` : ""}
@@ -15148,14 +15194,34 @@ async function getWeeklyRsiSnapshot(symbol) {
   if (weeklyRsiSnapCache.has(symbol)) return weeklyRsiSnapCache.get(symbol);
   const chart = await yahooChart(symbol, "3y", "1wk");
   const meta = (chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta) || {};
-  const closes = chartClosePairs(chart).map((p) => p.c);
+  const pairs = chartClosePairs(chart);
+  const closes = pairs.map((p) => p.c);
   const rsi = computeWilderRsi(closes, 14);
+  const price = Number.isFinite(meta.regularMarketPrice) ? meta.regularMarketPrice : closes.length ? closes[closes.length - 1] : null;
+  // 1년 상승률(2026-09-12 사용자 요청, "수익률" 탭) — 1년 전에 가장 가까운 주봉 종가 대비 현재가.
+  // 이미 받아둔 3년 주봉을 그대로 쓰므로 추가 조회가 없다.
+  let oneYearReturn = null;
+  if (pairs.length >= 2 && Number.isFinite(price)) {
+    const target = pairs[pairs.length - 1].t - 365 * 86400;
+    let base = null;
+    let minDiff = Infinity;
+    for (const q of pairs) {
+      const d = Math.abs(q.t - target);
+      if (d < minDiff) {
+        minDiff = d;
+        base = q;
+      }
+    }
+    // 상장 1년이 안 돼 1년 전 봉이 없으면(가장 가까운 봉이 반년 넘게 어긋나면) 값을 내지 않는다
+    if (base && base.c > 0 && minDiff <= 183 * 86400) oneYearReturn = ((price - base.c) / base.c) * 100;
+  }
   const snap = {
     symbol,
     name: meta.shortName || meta.longName || "",
     // 2026-09-10: 주봉 마지막 종가가 아니라 현재가를 쓰고, 오늘 등락률도 같이 담음(주봉 차트 meta에도 실시간 시세가 들어옴)
-    price: Number.isFinite(meta.regularMarketPrice) ? meta.regularMarketPrice : closes.length ? closes[closes.length - 1] : null,
+    price,
     changePct: Number.isFinite(meta.regularMarketChangePercent) ? meta.regularMarketChangePercent : null,
+    oneYearReturn,
     rsi: rsi === null || rsi === undefined ? null : Math.round(rsi * 10) / 10,
   };
   weeklyRsiSnapCache.set(symbol, snap);
@@ -15170,7 +15236,7 @@ function rsiRankCellHtml(rsi) {
 async function runTrendRsiWinRate(mode) {
   const isRsi = mode === "rsi";
   const isRet = mode === "ret"; // 연평균 상승(연복리 수익률(CAGR)) 순위 — 2026-09-04 상승압력 대체
-  const label = isRsi ? "RSI 순위" : isRet ? "연평균 상승" : "10년 승률";
+  const label = isRsi ? "RSI 순위" : isRet ? "1년 상승" : "10년 승률";
   const statusEl = trendStatus;
   const resultsEl = trendResults;
   // 국내 모드(2026-09-02 확장): 코스피200+코스닥150 유니버스(scoresKr)로 동일하게 동작
@@ -15249,13 +15315,13 @@ async function runTrendRsiWinRate(mode) {
         isRsi
           ? (a, b) => (a.rsi ?? Infinity) - (b.rsi ?? Infinity)
           : isRet
-          ? (a, b) => (b.ret10y ?? -Infinity) - (a.ret10y ?? -Infinity)
+          ? // 2026-09-12 사용자 요청: 연평균(CAGR)이 아니라 현시점 기준 1년 상승량 순
+            (a, b) => (Number.isFinite(b.oneYearReturn) ? b.oneYearReturn : -Infinity) - (Number.isFinite(a.oneYearReturn) ? a.oneYearReturn : -Infinity)
           : (a, b) => (b.winRate ?? -1) - (a.winRate ?? -1)
       );
       const hasMore = cursor < tickers.length;
       // 상장 10년 미만(total<120) 느낌표(2026-09-04 사용자 요청) — 10년 승률 순위·검색상세 공통 표기
       const winRateCell = (r) => winRatePctCellHtml(r.winRate, r.winTotal);
-      const retCell = (r) => (r.ret10y === null ? "N/A" : `<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>${partialMarkHtml(r.winTotal)}`);
 
       const rows = ranked
         .map((r, i) => {
@@ -15273,8 +15339,11 @@ async function runTrendRsiWinRate(mode) {
                 }`
               : "N/A"
           }</td>
-          <td>${isRsi ? rsiRankCellHtml(r.rsi) : isRet ? retCell(r) : winRateCell(r)}</td>
-          <td>${isRsi || isRet ? winRateCell(r) : retCell(r)}</td>
+          <td>${isRsi ? rsiRankCellHtml(r.rsi) : isRet ? ret1yCellHtml(r.oneYearReturn) : winRateCell(r)}</td>${
+            // 2026-09-12 사용자 요청: 승률·수익률 탭은 딸림 열(연평균 상승·10년 승률)을 없애고 그 탭의 기준 하나만 보여준다.
+            // RSI 순위는 상단 탭이 아니라 간편검색으로만 들어오는 화면이라 기존대로 승률을 함께 둔다.
+            isRsi ? `<td>${winRateCell(r)}</td>` : ""
+          }
         </tr>`;
         })
         .join("");
@@ -15283,13 +15352,13 @@ async function runTrendRsiWinRate(mode) {
       const trendNoteHtml = isRsi
         ? `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — 주간 RSI(14)가 낮은 순(과매도부터 1등) 순위입니다. <b style="color:#22a866;">30 미만 과매도(초록)</b>·<b style="color:#ef4444;">70 이상 과매수(빨강)</b>, 참고용 기술적 지표이며 투자 자문이 아닙니다.</p>`
         : isRet
-        ? `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — 연평균 상승(최근 10년 연복리 수익률 CAGR — 매년 몇 %씩 오른 셈인지, 상장 10년 미만은 상장 후 기간으로 연율화)이 높은 순 순위입니다. 참고용 지표이며 투자 자문이 아닙니다.</p>`
+        ? `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — <b>1년 상승률</b>(1년 전 같은 시점의 주가 대비 현재가, 현시점 기준 실제 상승량)이 높은 순 순위입니다. 매년 평균이 아니라 최근 1년치 성적이며, 상장 1년이 안 된 종목은 값이 없어 맨 뒤로 갑니다. 참고용 지표이며 투자 자문이 아닙니다.</p>`
         : `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — 10년 승률(최근 10년 월봉 기준 상승 개월수/총 개월수×100, 상장 10년 미만은 상장 후부터 집계·❗ 표시)이 높은 순 순위입니다. 참고용 지표이며 투자 자문이 아닙니다.</p>`;
       resultsEl.innerHTML = `
         ${rankScanCaptionHtml(ranked.length, hasMore)}
         ${TAP_HINT_HTML}
         <table class="top30-table">
-          <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}${isRsi ? RANK_TH_RSI : isRet ? RANK_TH_RET10 : RANK_TH_WINRATE}${isRsi ? RANK_TH_WINRATE : isRet ? RANK_TH_WINRATE : RANK_TH_RET10}</tr></thead>
+          <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}${isRsi ? RANK_TH_RSI : isRet ? RANK_TH_RET1Y : RANK_TH_WINRATE}${isRsi ? RANK_TH_WINRATE : ""}</tr></thead>
           <tbody>${rows}</tbody>
         </table>
         ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${tickers.length}">전체보기 (나머지 ${tickers.length - cursor}개 · ${tickers.length}개 전부 검색 시 약 1분 소요)</button>` : ""}

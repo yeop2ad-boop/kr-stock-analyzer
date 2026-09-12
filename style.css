@@ -2854,3 +2854,7 @@ tr.sector-members-row td { background: var(--subtle-fill); padding: 10px !import
 /* 투자처별 인사이트 창 제목의 로고(2026-09-12) — "(로고) 인사이트"에서 국기·ETF·₿ 아이콘을 글자 높이에 맞춰 붙임 */
 .insight-overlay-mark { display: inline-flex; align-items: center; margin-right: 6px; vertical-align: -2px; }
 .insight-overlay-mark svg { display: block; }
+
+/* 랭킹 표 맨 오른쪽 기준값 강조(2026-09-12 사용자 요청) — 10년 승률과 같은 보라색으로 통일 */
+.rank-hl { color: var(--winrate); font-weight: 800; }
+table.top30-table td:has(.rank-hl) { white-space: nowrap; }
