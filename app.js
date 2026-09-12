@@ -7847,7 +7847,7 @@ function altSeasonDetailListHtml(idx) {
     </ul>`;
 }
 
-// ---------- 알트코인 시즌지수 "+자세히": 2017년~현재 비트코인·라이트코인 그래프 + 시즌 구간 띠(2026-09-12 사용자 요청) ----------
+// ---------- 알트코인 시즌지수 "+자세히": 최근 5년 비트코인·이더리움 그래프 + 시즌 구간 띠(2026-09-12 사용자 요청) ----------
 // 과거 이력은 매번 코인 100개의 주봉을 받아오면 30초씩 걸려서, 배치(sector-map/scripts/fetch-altseason-history.ps1)가
 // 미리 계산해둔 data/altseason-history.json을 그대로 쓴다(2026-09-12 사용자 요청: "그래프는 DB로 관리, 점수는 실시간").
 // 파일 구성: { generatedAt, altCount, weeks: [{ t, btc, ltc, score, sample }] } — score는 그 주의 지수(표본 5개 미만이면 null).
@@ -7871,8 +7871,9 @@ function getAltSeasonHistory() {
   return altSeasonHistoryPromise;
 }
 
-// 비트코인·라이트코인을 한 차트에 겹쳐 그린다. 둘의 가격대가 워낙 달라(수만 달러 vs 수천 달러) 같은 눈금에
-// 그대로 얹으면 한쪽이 바닥에 깔리므로, 시작점을 100으로 맞추고 로그 눈금을 쓴다(배수 비교가 목적이라 이게 정확하다).
+// 비트코인·이더리움을 한 차트에 겹쳐 그린다. 가격대가 달라(수만 달러 vs 수천 달러) 원값을 그대로 얹으면
+// 한쪽이 바닥에 깔리므로 둘 다 "5년 전 = ×1"로 맞춘다. 눈금은 로그가 아니라 같은 배율(선형)이다
+// (2026-09-12 사용자 요청 "배율은 동일하게" — 5년 구간은 배수 차이가 크지 않아 선형으로도 읽힌다).
 function buildAltSeasonHistorySvg(hist) {
   const W = 1180;
   const H = 340;
@@ -7882,27 +7883,31 @@ function buildAltSeasonHistorySvg(hist) {
   const MB = 42;
   const PW = W - ML - MR;
   const PH = H - MT - MB;
-  const pts = hist.points.filter((p) => Number.isFinite(p.btc));
+  // 배치 DB에는 2017년부터 들어 있지만 화면에는 최근 5년만 그린다 — 10년치(주봉 500개 이상)를 한 폭에
+  // 밀어 넣으면 선이 뭉개져 읽을 수가 없다(2026-09-12 사용자 요청).
+  const cutoff = Math.floor(Date.now() / 1000) - Math.round(5 * 365.25 * 86400);
+  const pts = hist.points.filter((p) => Number.isFinite(p.btc) && p.t >= cutoff);
   if (pts.length < 10) return `<p class="muted">그릴 수 있는 구간이 모자랍니다.</p>`;
   const baseBtc = pts.find((p) => Number.isFinite(p.btc)).btc;
-  const firstLtc = pts.find((p) => Number.isFinite(p.ltc));
-  const baseLtc = firstLtc ? firstLtc.ltc : null;
+  const firstEth = pts.find((p) => Number.isFinite(p.eth));
+  const baseEth = firstEth ? firstEth.eth : null;
   const normBtc = (p) => (Number.isFinite(p.btc) ? (p.btc / baseBtc) * 100 : null);
-  const normLtc = (p) => (Number.isFinite(p.ltc) && baseLtc ? (p.ltc / baseLtc) * 100 : null);
+  const normEth = (p) => (Number.isFinite(p.eth) && baseEth ? (p.eth / baseEth) * 100 : null);
   const vals = [];
   pts.forEach((p) => {
     const a = normBtc(p);
-    const b = normLtc(p);
+    const b = normEth(p);
     if (Number.isFinite(a) && a > 0) vals.push(a);
     if (Number.isFinite(b) && b > 0) vals.push(b);
   });
-  const lo = Math.max(1, Math.min(...vals));
-  const hi = Math.max(...vals);
-  const logLo = Math.log10(lo);
-  const logHi = Math.log10(hi);
-  const span = logHi - logLo || 1;
+  const rawLo = Math.min(...vals);
+  const rawHi = Math.max(...vals);
+  const pad = (rawHi - rawLo) * 0.08 || 10; // 선이 위아래 테두리에 딱 붙지 않게 여백
+  const lo = Math.max(0, rawLo - pad);
+  const hi = rawHi + pad;
+  const span = hi - lo || 1;
   const xFn = (i) => ML + (i / (pts.length - 1)) * PW;
-  const yFn = (v) => MT + PH - ((Math.log10(v) - logLo) / span) * PH;
+  const yFn = (v) => MT + PH - ((v - lo) / span) * PH;
 
   // 시즌 구간 띠 — 같은 시즌이 이어지는 구간을 하나의 박스로 묶어 선 뒤에 깐다
   let bands = "";
@@ -7926,13 +7931,15 @@ function buildAltSeasonHistorySvg(hist) {
   });
   flush(pts.length - 1);
 
-  // 가로 눈금(로그) + 연도 라벨
+  // 가로 눈금 + 연도 라벨. 눈금 값은 "5년 전 대비 몇 배"라 0.5배처럼 읽기 쉬운 간격을 고른다
   let grid = "";
-  for (let e = Math.ceil(logLo); e <= Math.floor(logHi); e++) {
-    const v = Math.pow(10, e);
-    const y = yFn(v);
+  const loMult = lo / 100;
+  const hiMult = hi / 100;
+  const stepMult = [0.25, 0.5, 1, 2, 5, 10, 20, 50].find((st) => (hiMult - loMult) / st <= 6) || 100;
+  for (let m = Math.ceil(loMult / stepMult) * stepMult; m <= hiMult + 1e-9; m += stepMult) {
+    const y = yFn(m * 100);
     grid += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${W - MR}" y2="${y.toFixed(1)}" stroke="#e5e7eb" stroke-width="1" />`;
-    grid += `<text x="${ML - 6}" y="${(y + 3.5).toFixed(1)}" text-anchor="end" font-size="10.5" fill="#6b7280">${v >= 1000 ? `${v / 1000}천` : v}</text>`;
+    grid += `<text x="${ML - 6}" y="${(y + 3.5).toFixed(1)}" text-anchor="end" font-size="10.5" fill="#6b7280">×${Math.round(m * 100) / 100}</text>`;
   }
   let lastYear = null;
   pts.forEach((p, i) => {
@@ -7944,28 +7951,40 @@ function buildAltSeasonHistorySvg(hist) {
     grid += `<text x="${x.toFixed(1)}" y="${(MT + PH + 16).toFixed(1)}" text-anchor="middle" font-size="10.5" fill="#6b7280">${year}</text>`;
   });
 
-  const pathOf = (fn, color) => {
+  const pathOf = (fn, color, width) => {
     let d = "";
     let started = false;
+    let last = null;
     pts.forEach((p, i) => {
       const v = fn(p);
       if (!Number.isFinite(v) || v <= 0) {
         started = false;
         return;
       }
-      d += `${started ? "L" : "M"}${xFn(i).toFixed(1)},${yFn(v).toFixed(1)} `;
+      const x = xFn(i);
+      const y = yFn(v);
+      d += `${started ? "L" : "M"}${x.toFixed(1)},${y.toFixed(1)} `;
       started = true;
+      last = { x, y, v };
     });
-    return d ? `<path d="${d.trim()}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />` : "";
+    if (!d) return "";
+    const mult = last ? Math.round((last.v / 100) * 10) / 10 : null;
+    return (
+      `<path d="${d.trim()}" fill="none" stroke="${color}" stroke-width="${width}" stroke-linejoin="round" stroke-linecap="round" />` +
+      (last
+        ? `<circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="3.2" fill="${color}" />` +
+          `<text x="${(last.x - 6).toFixed(1)}" y="${(last.y - 7).toFixed(1)}" text-anchor="end" font-size="11.5" font-weight="800" fill="${color}">×${mult}</text>`
+        : "")
+    );
   };
 
-  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="2017년 이후 비트코인·라이트코인 추이와 알트코인 시즌 구간">
+  return `<svg class="altseason-chart" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="최근 5년 비트코인·이더리움 추이와 알트코인 시즌 구간">
     <rect x="0" y="0" width="${W}" height="${H}" fill="#fff" />
     ${bands}
     ${grid}
-    ${pathOf(normLtc, "#2f6bd8")}
-    ${pathOf(normBtc, "#e11d48")}
-    <text x="${ML}" y="${MT - 10}" font-size="11" fill="#6b7280">2017년 초 = 100 (로그 눈금)</text>
+    ${pathOf(normBtc, "#e11d48", 2.4)}
+    ${pathOf(normEth, "#2f6bd8", 1.9)}
+    <text x="${ML}" y="${MT - 10}" font-size="11" fill="#6b7280">세로축 = 5년 전 대비 몇 배(두 선 같은 배율)</text>
   </svg>`;
 }
 
@@ -7974,7 +7993,7 @@ async function renderAltSeasonHistoryChart() {
   const container = el("futureMacroChartContainer");
   const heading = el("futureMacroChartHeading");
   const caption = el("futureMacroChartCaption");
-  if (heading) heading.textContent = "2017년 이후 비트코인·라이트코인과 알트코인 시즌 구간";
+  if (heading) heading.textContent = "최근 5년 비트코인·이더리움과 알트코인 시즌 구간";
   if (altSeasonChartDrawn) return;
   container.innerHTML = `<p class="muted" style="padding:12px;">불러오는 중...</p>`;
   if (caption) caption.textContent = "";
@@ -7983,8 +8002,8 @@ async function renderAltSeasonHistoryChart() {
     container.innerHTML = buildAltSeasonHistorySvg(hist);
     altSeasonChartDrawn = true;
     if (caption) {
-      caption.innerHTML = `<span style="color:#e11d48;font-weight:800;">빨간 선: 비트코인</span> · <span style="color:#2f6bd8;font-weight:800;">파란 선: 라이트코인</span>
-        (둘 다 2017년 초를 100으로 맞춘 로그 눈금 — 가격대가 달라 그대로 겹치면 한쪽이 안 보입니다) ·
+      caption.innerHTML = `<span style="color:#e11d48;font-weight:800;">빨간 선: 비트코인</span> · <span style="color:#2f6bd8;font-weight:800;">파란 선: 이더리움</span>
+        (둘 다 <b>5년 전</b>을 ×1로 맞춰 <b>같은 배율</b>로 겹쳐 그렸습니다 — 오른쪽 끝 ×숫자가 5년 동안 몇 배가 됐는지입니다) ·
         <span style="background:rgba(56,189,248,0.45);padding:0 4px;border-radius:3px;">하늘색 구간 = 알트코인 시즌(75점 이상)</span> ·
         <span style="background:rgba(247,147,26,0.45);padding:0 4px;border-radius:3px;">주황색 구간 = 비트코인 시즌(25점 미만)</span>.
         지수는 알트코인 ${hist.altCount}개의 주봉으로 매주 다시 계산한 값이며, 하루 한 번 배치로 갱신됩니다(90일 ≈ 13주 · ${escapeHtml(

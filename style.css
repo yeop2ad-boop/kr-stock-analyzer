@@ -2857,3 +2857,6 @@ tr.sector-members-row td { background: var(--subtle-fill); padding: 10px !import
 /* 랭킹 표 맨 오른쪽 기준값 강조(2026-09-12 사용자 요청) — 10년평균 승률과 같은 보라색으로 통일 */
 .rank-hl { color: var(--winrate); font-weight: 800; }
 table.top30-table td:has(.rank-hl) { white-space: nowrap; }
+
+/* 알트코인 시즌지수 차트(2026-09-12) — 507주(10년) 주봉이라 600px로 줄이면 선이 뭉개진다. 더 넓게 두고 좌우 스크롤 */
+.future-chart-container svg.altseason-chart { min-width: 900px; }

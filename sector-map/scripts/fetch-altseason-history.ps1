@@ -13,7 +13,7 @@
 #
 # 결과: data/altseason-history.json
 #   { generatedAt, altCount, weeks: [ { t, btc, ltc, score, sample }, ... ] }
-#   btc = 비트코인 종가, ltc = 라이트코인 종가(그래프의 파란 선), score = 그 주의 지수(표본 5개 미만이면 null)
+#   btc = 비트코인 종가, eth = 이더리움 종가(그래프의 파란 선), score = 그 주의 지수(표본 5개 미만이면 null)
 
 param(
   [int]$PoolCount = 250,   # 후보 풀(야후 스크리너 최대치)
@@ -85,11 +85,11 @@ $alts = @($pool | Where-Object { -not (Test-Excluded $_.symbol ($_.shortName)) }
 Write-Host ("   제외 후 대상 {0}종목" -f $alts.Count)
 if ($alts.Count -lt 20) { throw "대상 알트코인이 너무 적습니다($($alts.Count)개)." }
 
-Write-Host "비트코인·라이트코인 주봉..."
+Write-Host "비트코인·이더리움 주봉..."
 $btcMap = Get-WeeklyCloses "BTC-USD"
 if (-not $btcMap) { throw "비트코인 주봉을 가져오지 못했습니다." }
-$ltcMap = Get-WeeklyCloses "LTC-USD"
-if (-not $ltcMap) { $ltcMap = @{} }
+$ethMap = Get-WeeklyCloses "ETH-USD"
+if (-not $ethMap) { $ethMap = @{} }
 
 $weeks = @($btcMap.Keys | Sort-Object)
 Write-Host ("   주 {0}개 ({1} ~ {2})" -f $weeks.Count, ([datetimeoffset]::FromUnixTimeSeconds($weeks[0]).ToString("yyyy-MM-dd")), ([datetimeoffset]::FromUnixTimeSeconds($weeks[-1]).ToString("yyyy-MM-dd")))
@@ -111,7 +111,7 @@ $rows = New-Object System.Collections.Generic.List[object]
 for ($i = 0; $i -lt $weeks.Count; $i++) {
   $t = $weeks[$i]
   $btc = $btcMap[$t]
-  $ltc = if ($ltcMap.ContainsKey($t)) { [Math]::Round($ltcMap[$t], 4) } else { $null }
+  $eth = if ($ethMap.ContainsKey($t)) { [Math]::Round($ethMap[$t], 4) } else { $null }
   $score = $null
   $sample = 0
   if ($i -ge $WEEKS_90D) {
@@ -130,13 +130,13 @@ for ($i = 0; $i -lt $weeks.Count; $i++) {
       if ($sample -ge 5) { $score = [Math]::Round($beat / $sample * 100.0, 1) }
     }
   }
-  $rows.Add([ordered]@{ t = $t; btc = [Math]::Round($btc, 2); ltc = $ltc; score = $score; sample = $sample })
+  $rows.Add([ordered]@{ t = $t; btc = [Math]::Round($btc, 2); eth = $eth; score = $score; sample = $sample })
 }
 
 $outPath = Join-Path $rootDataDir "altseason-history.json"
 [ordered]@{
   generatedAt = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
-  description = "알트코인 시즌지수 주간 이력(2017~). score = 그 주 기준 90일(13주) 수익률이 비트코인보다 높은 알트코인 비율. btc/ltc는 그래프용 주간 종가."
+  description = "알트코인 시즌지수 주간 이력(2017~). score = 그 주 기준 90일(13주) 수익률이 비트코인보다 높은 알트코인 비율. btc/eth는 그래프용 주간 종가."
   altCount    = $altMaps.Count
   weeks       = $rows
 } | ConvertTo-Json -Depth 5 -Compress | Set-Content $outPath -Encoding UTF8
