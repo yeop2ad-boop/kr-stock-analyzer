@@ -1551,11 +1551,11 @@ function buildMetrics(market) {
     },
     // 본체(app.js)의 computeAttractivenessScore·computeRiskScore와 동일 공식으로 배치 계산해둔 값
     // (sector-map/scripts/fetch-momentum-scores.ps1, data/*-sectors.json에 pressureScore/stabilityScore로 저장)
-    // 2026-09-04 개편: 상승압력 → 연평균 상승(fetch-winrate-scores.ps1이 ret10yAvg로 병합), 투자안정 삭제(10년승률로 대체)
+    // 2026-09-04 개편: 상승압력 → 연평균 상승(fetch-winrate-scores.ps1이 ret10yAvg로 병합), 투자안정 삭제(10년평균승률로 대체)
     ret10yAvg: { label: "연평균 상승", hasData: true, get: (c) => c.ret10yAvg, fmt: (v) => `${v > 0 ? "+" : ""}${v.toFixed(1)}%`, domainMin: -20, domainMax: 80 },
-    // 10년승률·주간RSI(2026-09-02, 같은 날 국내·ETF·코인 확장): 본체 승률점수와 같은 배치(fetch-winrate-scores.ps1)가
+    // 10년평균승률·주간RSI(2026-09-02, 같은 날 국내·ETF·코인 확장): 본체 승률점수와 같은 배치(fetch-winrate-scores.ps1)가
     // sp500-sectors.json/kr-sectors.json/etf-crypto-map.js에 winRateScore/rsiWeekly로 병합 — 나스닥100 보기만 칩 숨김
-    winRateScore: { label: "10년승률", hasData: true, get: (c) => c.winRateScore, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 100 },
+    winRateScore: { label: "10년평균승률", hasData: true, get: (c) => c.winRateScore, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 100 },
     rsiWeekly: { label: "RSI", hasData: true, get: (c) => c.rsiWeekly, fmt: (v) => `${v.toFixed(1)}`, domainMin: 0, domainMax: 100 },
     // 상승률/하락률을 하나로 합쳐 근저(가장 큰 하락)~근고(가장 큰 상승)가 한 슬라이더 안에 전부 보이도록 함
     changePct: { label: "등락률", hasData: true, live: !isKr, get: (c) => c.changePercent, fmt: (v) => `${v.toFixed(1)}%` },
@@ -2034,7 +2034,7 @@ document.querySelectorAll(".metric-chip").forEach((btn) => {
 
 // 첫 접속 시 등락률·거래대금 칩만 눌린 모양(남색 배경+흰 글씨)으로 표시(2026-08-31 사용자 요청) —
 // 실제 필터는 걸지 않아 구간은 전체 그대로이고, 해당 칩을 처음 누르는 순간 표시가 걷히며 실제 상태로 복귀
-for (const bootKey of ["winRateScore"]) { // 2026-09-08 사용자 요청: 첫 접속엔 10년승률 칩 1개만 눌린 표시
+for (const bootKey of ["winRateScore"]) { // 2026-09-08 사용자 요청: 첫 접속엔 10년평균승률 칩 1개만 눌린 표시
   const bootChip = document.querySelector(`.metric-chip[data-metric="${bootKey}"]`);
   if (bootChip) bootChip.classList.add("boot-active");
 }
@@ -2762,7 +2762,7 @@ async function setMapView(viewKey, animate) {
   ACTIVE_VIEW = viewKey;
   // ETF200/비트코인50은 상단 필터 칩을 52주최저~투자안정 6개만 노출(CSS가 body[data-map-view-kind]로 전환)
   document.body.dataset.mapViewKind = v.custom ? "asset" : "stock";
-  // 10년승률·RSI 칩은 S&P200/S&P500 보기 전용(us-stock-only-chip) — CSS가 body[data-map-view]로 전환(2026-09-02)
+  // 10년평균승률·RSI 칩은 S&P200/S&P500 보기 전용(us-stock-only-chip) — CSS가 body[data-map-view]로 전환(2026-09-02)
   document.body.dataset.mapView = viewKey;
   loadMarket(v.market, animate); // 내부에서 updateActiveDataForUniverseState + syncMapViewUi 호출
 }

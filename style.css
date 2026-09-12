@@ -1446,8 +1446,8 @@ table.top30-table tbody tr:nth-child(-n+3) td:nth-child(1) { color: var(--gold);
 table.top30-table td:has(> .rank-logo) { text-align: left; }
 /* 지표 열 머리글 둘째 줄(작은 기준 안내) — 열 폭을 잡아먹지 않게 작게 */
 .th-sub { display: block; font-size: 9.5px; font-weight: 600; color: var(--muted); margin-top: 1px; }
-/* 10년 승률 공용 표기: 순위 표에서는 보라 글씨(2026-09-10 사용자 확정) */
-/* 10년 승률 보라 — 파란색(하락/링크)과 확실히 구분되게 진하게(2026-09-11 사용자 요청).
+/* 10년평균 승률 공용 표기: 순위 표에서는 보라 글씨(2026-09-10 사용자 확정) */
+/* 10년평균 승률 보라 — 파란색(하락/링크)과 확실히 구분되게 진하게(2026-09-11 사용자 요청).
    블랙 테마에선 그대로 두면 어두워서 안 보이므로 밝은 보라로 되돌림 — 검색상세 승률 카드도 이 변수를 씀 */
 :root { --winrate: #6d28d9; }
 :root[data-theme="dark"] { --winrate: #a78bfa; }
@@ -2435,13 +2435,13 @@ body[data-header-tone="dark"] .fh-market-label { color: #fff; }
 .score-badge.risk .score-num { color: var(--good); }
 .score-badge.macro .score-num { font-size: 26px; color: inherit; }
 .score-badge.macro .score-den { font-size: 10px; text-align: center; line-height: 1.2; padding: 0 6px; color: inherit; opacity: 0.75; }
-/* invest점수 원판 색(2026-09-11 사용자 지정): 10년 승률=보라, RSI 점수=노랑 */
+/* invest점수 원판 색(2026-09-11 사용자 지정): 10년평균 승률=보라, RSI 점수=노랑 */
 .score-badge.score-badge-winrate { background: rgba(109, 40, 217, 0.1); border-color: var(--winrate); }
 .score-badge.score-badge-winrate .score-num { color: var(--winrate); }
 .score-badge.score-badge-rsi { background: rgba(234, 179, 8, 0.14); border-color: #eab308; }
 .score-badge.score-badge-rsi .score-num { color: #b58900; }
 :root[data-theme="dark"] .score-badge.score-badge-rsi .score-num { color: #facc15; }
-/* 검색상세 10년 승률 원판은 기존 스타일 그대로 유지(2026-09-10 사용자 확정) — 옆 설명과 일자 정렬만 적용 */
+/* 검색상세 10년평균 승률 원판은 기존 스타일 그대로 유지(2026-09-10 사용자 확정) — 옆 설명과 일자 정렬만 적용 */
 #winRateSection .score-wrap { align-items: center; }
 #winRateSection .score-details { flex: 1 1 240px; min-width: 0; }
 .score-macro-vix-line { margin: -6px 0 14px; font-size: 11.5px; color: var(--muted); }
@@ -2855,6 +2855,6 @@ tr.sector-members-row td { background: var(--subtle-fill); padding: 10px !import
 .insight-overlay-mark { display: inline-flex; align-items: center; margin-right: 6px; vertical-align: -2px; }
 .insight-overlay-mark svg { display: block; }
 
-/* 랭킹 표 맨 오른쪽 기준값 강조(2026-09-12 사용자 요청) — 10년 승률과 같은 보라색으로 통일 */
+/* 랭킹 표 맨 오른쪽 기준값 강조(2026-09-12 사용자 요청) — 10년평균 승률과 같은 보라색으로 통일 */
 .rank-hl { color: var(--winrate); font-weight: 800; }
 table.top30-table td:has(.rank-hl) { white-space: nowrap; }

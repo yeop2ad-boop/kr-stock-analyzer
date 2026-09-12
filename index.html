@@ -6,12 +6,12 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>마켓맵 - 지도로 찾아주는 기업분석기</title>
-<meta name="description" content="한국·미국주식, ETF, 코인을 10년 승률 하나로 비교하는 투자 지도. 인기종목·자동추적·상관관계·마켓맵 지도" />
+<meta name="description" content="한국·미국주식, ETF, 코인을 10년평균 승률 하나로 비교하는 투자 지도. 인기종목·자동추적·상관관계·마켓맵 지도" />
 
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="마켓맵 (MarketMap)" />
 <meta property="og:title" content="마켓맵 - 지도로 찾아주는 기업분석기" />
-<meta property="og:description" content="한국·미국주식, ETF, 코인을 10년 승률 하나로 비교하는 투자 지도. 인기종목·자동추적·상관관계·마켓맵 지도" />
+<meta property="og:description" content="한국·미국주식, ETF, 코인을 10년평균 승률 하나로 비교하는 투자 지도. 인기종목·자동추적·상관관계·마켓맵 지도" />
 <meta property="og:url" content="https://marketmap.kr/" />
 <meta property="og:image" content="https://marketmap.kr/og-image.png?v=20260908b" />
 <meta property="og:image:width" content="1024" />
@@ -93,7 +93,7 @@
         <button type="button" class="fh-tab" data-fhtab="tab.cryptoCap" data-i18n="tab.cryptoCap" style="display:none;">시가총액</button>
         <button type="button" class="fh-tab" data-fhtab="tab.cryptoDrawdown" data-i18n="tab.cryptoDrawdown" style="display:none;">최대낙폭</button>
         <!-- 미래예측(시장동향)·인사이트는 상단 탭에서 내림(2026-09-12 사용자 요청) — 인사이트는 더보기로,
-             미래예측 항목(10년 승률·연평균 상승)은 승률·수익률 탭으로 올라갔다. JS가 참조하므로 DOM은 유지하고 숨김만 -->
+             미래예측 항목(10년평균 승률·연평균 상승)은 승률·수익률 탭으로 올라갔다. JS가 참조하므로 DOM은 유지하고 숨김만 -->
         <button type="button" class="fh-tab" data-fhtab="tab.trend" data-i18n="tab.trend" style="display:none;">미래예측</button>
         <!-- IPO(2026-09-11 사용자 요청): 최근 5년 신규 상장 종목 — 주식 섹션 전용 -->
         <button type="button" class="fh-tab" data-fhtab="tab.ipo" data-i18n="tab.ipo">IPO</button>
@@ -340,15 +340,15 @@
 
         <div class="summary-subtab-panel" data-summary-subtabpanel="investscore">
         <p class="invest-score-label">INVEST점수</p>
-        <!-- 상승압력도·투자안정성 섹션은 2026-09-04 사용자 요청으로 삭제 — 개요의 9칸 지표 표(10년 승률/상승률/RSI)로 대체 -->
+        <!-- 상승압력도·투자안정성 섹션은 2026-09-04 사용자 요청으로 삭제 — 개요의 9칸 지표 표(10년평균 승률/상승률/RSI)로 대체 -->
 
         <!-- 승률점수(2026-09-02): 최근 10년 월간 상승 개월수/총 개월수*100 — S&P500 미국주식 전용(DB에 없는 종목은 섹션째 숨김) -->
         <section class="flush-section" id="winRateFlushSection" style="display:none;">
           <div class="section-heading-row">
-            <h2 class="invest-score-h2">10년 승률</h2>
+            <h2 class="invest-score-h2">10년평균 승률</h2>
             <button type="button" id="winRateDetailBtn" class="score-method-detail-btn">+자세히</button>
           </div>
-          <!-- +자세히(2026-09-03): 대표 자산 11종의 10년 승률 벤치마크(0~100 가로선+점 + 순위표) — renderWinRateBenchmarkDetail이 채움 -->
+          <!-- +자세히(2026-09-03): 대표 자산 11종의 10년평균 승률 벤치마크(0~100 가로선+점 + 순위표) — renderWinRateBenchmarkDetail이 채움 -->
           <div id="winRateDetailWrap" class="chart-detail-wrap" style="display:none;"></div>
           <div id="winRateSection" class="section-body"></div>
         </section>

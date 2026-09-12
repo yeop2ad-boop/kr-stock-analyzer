@@ -78,9 +78,9 @@
       <button type="button" class="filter-chip metric-chip asset-only-chip" data-metric="week52RangePct">
         52주최저<span class="chip-reset" data-metric="week52RangePct" role="button" aria-label="52주최저 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <!-- 2026-09-08 사용자 요청: 10년승률·매출성장을 맨 앞으로, 첫 접속엔 10년승률 칩만 눌린 표시 -->
+      <!-- 2026-09-08 사용자 요청: 10년평균승률·매출성장을 맨 앞으로, 첫 접속엔 10년평균승률 칩만 눌린 표시 -->
       <button type="button" class="filter-chip metric-chip us-stock-only-chip" data-metric="winRateScore">
-        10년승률<span class="chip-reset" data-metric="winRateScore" role="button" aria-label="10년승률 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        10년평균승률<span class="chip-reset" data-metric="winRateScore" role="button" aria-label="10년평균승률 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button type="button" class="filter-chip metric-chip" data-metric="revenueGrowth">
         매출성장<span class="chip-reset" data-metric="revenueGrowth" role="button" aria-label="매출성장 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -93,11 +93,11 @@
       </button>
       <button type="button" class="filter-chip chg-half-chip asset-only-chip" data-chg-half="up">상승률</button>
       <button type="button" class="filter-chip chg-half-chip asset-only-chip" data-chg-half="down">하락률</button>
-      <!-- 2026-09-04 개편: 상승압력 → 연평균 상승(ret10yAvg), 투자안정 삭제(10년승률로 대체), 우상향점수 → 10년승률 -->
+      <!-- 2026-09-04 개편: 상승압력 → 연평균 상승(ret10yAvg), 투자안정 삭제(10년평균승률로 대체), 우상향점수 → 10년평균승률 -->
       <button type="button" class="filter-chip metric-chip us-stock-only-chip" data-metric="ret10yAvg">
         연평균 상승<span class="chip-reset" data-metric="ret10yAvg" role="button" aria-label="연평균 상승 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <!-- 10년승률·RSI(2026-09-02, 같은 날 국내·ETF·코인 확장) — 배치 데이터가 없는 나스닥100 보기만 CSS로 숨김(us-stock-only-chip) -->
+      <!-- 10년평균승률·RSI(2026-09-02, 같은 날 국내·ETF·코인 확장) — 배치 데이터가 없는 나스닥100 보기만 CSS로 숨김(us-stock-only-chip) -->
       <button type="button" class="filter-chip metric-chip us-stock-only-chip" data-metric="rsiWeekly">
         RSI<span class="chip-reset" data-metric="rsiWeekly" role="button" aria-label="RSI 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
