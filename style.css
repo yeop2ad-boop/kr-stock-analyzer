@@ -2427,12 +2427,13 @@ body[data-header-tone="dark"] .fh-market-label { color: #fff; }
   background: var(--accent-soft);
   border: 3px solid var(--accent);
 }
-.score-badge .score-num { font-size: 30px; font-weight: 800; color: var(--accent); }
-.score-badge .score-num.ipo-label { font-size: 19px; }
+/* 2026-09-12 사용자 요청: 원판 안 "숫자"만 한 단계 줄임("+62.5%"가 꽉 차 보였음) — 아래 라벨 크기는 그대로 */
+.score-badge .score-num { font-size: 25px; font-weight: 800; color: var(--accent); letter-spacing: -0.3px; }
+.score-badge .score-num.ipo-label { font-size: 17px; }
 .score-badge .score-den { font-size: 12px; color: var(--muted); }
 .score-badge.risk { background: var(--good-soft); border-color: var(--good); }
 .score-badge.risk .score-num { color: var(--good); }
-.score-badge.macro .score-num { font-size: 26px; color: inherit; }
+.score-badge.macro .score-num { font-size: 22px; color: inherit; }
 .score-badge.macro .score-den { font-size: 10px; text-align: center; line-height: 1.2; padding: 0 6px; color: inherit; opacity: 0.75; }
 /* invest점수 원판 색(2026-09-11 사용자 지정): 10년평균 승률=보라, RSI 점수=노랑 */
 .score-badge.score-badge-winrate { background: rgba(109, 40, 217, 0.1); border-color: var(--winrate); }
