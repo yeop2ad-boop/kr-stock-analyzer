@@ -4132,7 +4132,7 @@ async function renderWatchlistList() {
           const snap = yahooSnapshot(chart);
           const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
           const volume = meta && meta.regularMarketVolume !== undefined ? meta.regularMarketVolume : null;
-          return snap && { ...snap, symbol: w.symbol, name: w.symbol, time: snap.date, volume, currency: (meta && meta.currency) || "USD" };
+          return snap && { ...snap, symbol: w.symbol, name: w.symbol, time: snap.date, volume, currency: (meta && meta.currency) || "USD", exchange: (meta && meta.exchangeName) || "" };
         } catch {
           return null;
         }
@@ -4145,7 +4145,7 @@ async function renderWatchlistList() {
     wlLastRowsBySymbol = new Map(sorted.map((r) => [r.symbol, r]));
     wlWrDbCache = wrDbForWl;
     listEl.innerHTML = sorted.length
-      ? `<div class="idx-list">${sorted.map((r) => `<div class="wl-card-wrap">${stockCardRowHtml(r, { sectionMark: true })}${wlBuyDetailStripHtml(r, wrDbForWl)}</div>`).join("")}</div>`
+      ? `<div class="idx-list">${sorted.map((r) => `<div class="wl-card-wrap">${stockCardRowHtml(r)}${wlBuyDetailStripHtml(r, wrDbForWl)}</div>`).join("")}</div>`
       : `<p class="muted" style="padding:12px 0;">종목 정보를 불러오지 못했습니다.</p>`;
   } catch (e) {
     statusEl.style.display = "block";
@@ -15815,45 +15815,47 @@ bindTrend(trendButtons.dividend, runTrendDividend);
 bindTrend(trendButtons.pressure, runTrendPressure);
 
 // US Markets 탭의 "주식" 카테고리 전용 카드 행 — 지수 카드(idx-row)와 동일한 스타일(로고+이름/티커, 가격/등락)
-function stockCardRowHtml(r, { sectionMark = false } = {}) {
+// 관심종목 행(2026-09-13 사용자 요청): 증권사 앱 관심종목과 같은 3칸 2줄 —
+//  종목명/코드·시장 | 현재가▲▼/거래량 | 등락폭/등락률. 부호 없이 색·화살표로만 방향 표시, 가격은 만원 단위 대신 전체 숫자.
+const WL_EXCHANGE_LABEL = { KSC: "코스피", KOE: "코스닥", NMS: "나스닥", NGM: "나스닥", NCM: "나스닥", NYQ: "뉴욕", ASE: "아멕스", PCX: "아멕스", BTS: "아멕스", CCC: "코인" };
+function wlMarketLabel(r) {
+  if (WL_EXCHANGE_LABEL[r.exchange]) return WL_EXCHANGE_LABEL[r.exchange];
+  const sym = r.symbol || "";
+  if (/\.KS$/.test(sym)) return "코스피";
+  if (/\.KQ$/.test(sym)) return "코스닥";
+  if (/-(USD|KRW)$/.test(sym)) return "코인";
+  return "미국";
+}
+function wlNumStr(n, currency) {
+  if (n === null || n === undefined || !Number.isFinite(n)) return "N/A";
+  const abs = Math.abs(n);
+  const digits = currency === "KRW" ? 0 : abs !== 0 && abs < 1 ? 4 : 2;
+  return abs.toLocaleString("en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits });
+}
+function stockCardRowHtml(r) {
   const displayName = TICKER_TO_KOREAN_NAME[r.symbol] || r.name;
-  const priceStr = fmtPrice(r.price, r.currency);
-  const sign = (n) => (n >= 0 ? "+" : "");
-  let cls = "";
-  let changeAmtStr = "";
-  let pctStr = "";
-  if (r.changePct !== null && r.changePct !== undefined) {
-    cls = r.changePct >= 0 ? "delta-up" : "delta-down";
-    const arrow = r.changePct >= 0 ? "▲" : "▼";
-    changeAmtStr = r.change !== null && r.change !== undefined ? `${sign(r.change)}${r.change.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : "";
-    pctStr = `${arrow} ${Math.abs(r.changePct).toFixed(2)}%`;
-  }
-  const volumeStr = r.volume !== null && r.volume !== undefined ? r.volume.toLocaleString() : "N/A";
-
-  const now = new Date();
-  const isToday = !!r.time && r.time.getFullYear() === now.getFullYear() && r.time.getMonth() === now.getMonth() && r.time.getDate() === now.getDate();
-  const clockLabel = r.time
-    ? (isToday
-        ? `${String(r.time.getHours()).padStart(2, "0")}:${String(r.time.getMinutes()).padStart(2, "0")}:${String(r.time.getSeconds()).padStart(2, "0")}`
-        : `${String(r.time.getMonth() + 1).padStart(2, "0")}/${String(r.time.getDate()).padStart(2, "0")}`)
-    : "";
-  const clockClass = isToday ? "idx-clock idx-clock-live" : "idx-clock";
+  const hasPct = r.changePct !== null && r.changePct !== undefined;
+  const dir = !hasPct || r.changePct === 0 ? 0 : r.changePct > 0 ? 1 : -1;
+  const cls = dir > 0 ? "wl-up" : dir < 0 ? "wl-down" : "";
+  const arrow = dir > 0 ? "▲" : dir < 0 ? "▼" : "";
+  const changeAmtStr = r.change !== null && r.change !== undefined ? wlNumStr(r.change, r.currency) : "";
+  const pctStr = hasPct ? `${Math.abs(r.changePct).toFixed(2)}%` : "";
+  // 10자리 이상(코인 등)은 이름 칸이 사라지지 않게 억 단위로 줄임
+  const volumeStr = r.volume === null || r.volume === undefined ? "N/A" : r.volume >= 1e9 ? `${(r.volume / 1e8).toLocaleString("en-US", { maximumFractionDigits: 1 })}억` : r.volume.toLocaleString();
+  const code = (r.symbol || "").replace(/\.(KS|KQ)$/, "").replace(/-(USD|KRW)$/, "");
 
   return `
-    <div class="idx-row stock-card-row ticker-link idx-row-clickable" data-ticker="${escapeHtml(r.symbol)}">
-      <div class="idx-left">
-        <div class="idx-name">${tickerLogoHtml(r.symbol)}${escapeHtml(displayName)}${sectionMark ? sectionMarkHtml(r.symbol) : ""}</div>
-        <div class="idx-sub">${clockLabel ? `<span class="${clockClass}">🕐 ${clockLabel}</span> | ` : ""}<span class="idx-ticker">${escapeHtml(r.symbol)}</span></div>
-      </div>
-      <div class="stock-card-right">
-        <div class="stock-card-r1">
-          <span class="stock-card-price ${cls}">${priceStr}</span>
-          <span class="stock-card-change ${cls}">${changeAmtStr}</span>
-        </div>
-        <div class="stock-card-r2">
-          <span class="stock-card-volume">${volumeStr}</span>
-          <span class="stock-card-pct ${cls}">${pctStr}</span>
-        </div>
+    <div class="idx-row stock-card-row wl-row ticker-link idx-row-clickable" data-ticker="${escapeHtml(r.symbol)}">
+      <div class="wl-row-logo">${tickerLogoHtml(r.symbol)}</div>
+      <div class="wl-row-grid">
+        <div class="wl-name">${escapeHtml(displayName)}</div>
+        <div class="wl-price ${cls}">${wlNumStr(r.price, r.currency)}</div>
+        <div class="wl-arrow ${cls}">${arrow}</div>
+        <div class="wl-change ${cls}">${changeAmtStr}</div>
+        <div class="wl-sub">${escapeHtml(code)} ${wlMarketLabel(r)}</div>
+        <div class="wl-volume">${volumeStr}</div>
+        <div></div>
+        <div class="wl-pct ${cls}">${pctStr}</div>
       </div>
     </div>`;
 }
