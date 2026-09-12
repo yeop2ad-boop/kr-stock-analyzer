@@ -86,14 +86,24 @@ function Get-ListingQuote($symbol, $listedDate) {
     $win = 0; $tot = 0
     $from = [Math]::Max(1, $pairs.Count - 120)
     for ($i = $from; $i -lt $pairs.Count; $i++) { $tot++; if ($pairs[$i].c -gt $pairs[$i - 1].c) { $win++ } }
+
+    # 1년 수익률(2026-09-12 사용자 요청) — IPO 화면의 정렬 기준. 12개월 전 월봉 종가 대비 현재가.
+    # 상장 1년이 안 된 종목은 낼 수 없어서 $null이고, 화면에서는 상장 후 연평균 상승(CAGR)으로 대신 줄 세운다.
+    $oneYearReturn = $null
+    if ($pairs.Count -ge 13) {
+      $base1y = $pairs[$pairs.Count - 13].c
+      if ($base1y -gt 0) { $oneYearReturn = [Math]::Round(($price / $base1y - 1.0) * 100.0, 1) }
+    }
+
     return [PSCustomObject]@{
-      firstClose = [Math]::Round($firstClose, 4)
-      price      = [Math]::Round($price, 4)
-      changePct  = [Math]::Round(($price / $firstClose - 1.0) * 100.0, 1)
-      winRate    = if ($tot -ge 6) { [Math]::Round($win / $tot * 100.0, 1) } else { $null }
-      months     = $tot
-      currency   = $meta.currency
-      pairs      = $pairs
+      firstClose     = [Math]::Round($firstClose, 4)
+      price          = [Math]::Round($price, 4)
+      changePct      = [Math]::Round(($price / $firstClose - 1.0) * 100.0, 1)
+      oneYearReturn  = $oneYearReturn
+      winRate        = if ($tot -ge 6) { [Math]::Round($win / $tot * 100.0, 1) } else { $null }
+      months         = $tot
+      currency       = $meta.currency
+      pairs          = $pairs
     }
   } catch { return $null }
 }
@@ -166,6 +176,7 @@ if (-not $SkipUs) {
         symbol = $ipo.symbol; name = $ipo.name; exchange = $ipo.exchange
         pricedDate = $ipo.pricedDate.ToString("yyyy-MM-dd"); offerPrice = $ipo.offerPrice
         firstClose = $q.firstClose; price = $q.price; changePct = $q.changePct
+        oneYearReturn = $q.oneYearReturn
         winRate = $q.winRate; months = $q.months; currency = $q.currency
         isSpac = [bool](Test-Spac $ipo.name $ipo.symbol)
         isRelisted = [bool](Test-Relisted $ipo.pricedDate $q.months)
@@ -260,6 +271,7 @@ if (-not $SkipKr) {
         symbol = $sym; name = $it.name; exchange = $it.market
         pricedDate = $it.listedDate.ToString("yyyy-MM-dd"); offerPrice = $null
         firstClose = $q.firstClose; price = $q.price; changePct = $q.changePct
+        oneYearReturn = $q.oneYearReturn
         winRate = $q.winRate; months = $q.months; currency = "KRW"
         isSpac = [bool](Test-Spac $it.name $it.code)
         isRelisted = [bool](Test-Relisted $it.listedDate $q.months)
@@ -283,7 +295,7 @@ if (($SkipUs -or $SkipKr) -and (Test-Path $outPath)) {
 
 [ordered]@{
   generatedAt = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
-  description = "최근 5년 신규 상장 종목. 미국=나스닥 IPO 캘린더, 한국=거래소 상장법인목록. 상장 첫날 종가 대비 등락률, 상장 후 월간 승률, 현재/상장 시총. isSpac=true는 스팩(기업인수목적회사)."
+  description = "최근 5년 신규 상장 종목. 미국=나스닥 IPO 캘린더, 한국=거래소 상장법인목록. 상장 첫날 종가 대비 등락률, 1년 수익률(oneYearReturn), 상장 후 월간 승률, 현재/상장 시총. isSpac=true는 스팩(기업인수목적회사)."
   us          = @($usRows | Sort-Object pricedDate -Descending)
   kr          = @($krRows | Sort-Object pricedDate -Descending)
 } | ConvertTo-Json -Depth 5 -Compress | Set-Content $outPath -Encoding UTF8

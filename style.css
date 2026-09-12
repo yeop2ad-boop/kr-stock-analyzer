@@ -2850,3 +2850,7 @@ tr.sector-members-row td { background: var(--subtle-fill); padding: 10px !import
 }
 /* ETF 전용 상단 탭 표의 순위 열 */
 .etf-rank-no { font-weight: 800; color: var(--muted); font-size: 12px; }
+
+/* 투자처별 인사이트 창 제목의 로고(2026-09-12) — "(로고) 인사이트"에서 국기·ETF·₿ 아이콘을 글자 높이에 맞춰 붙임 */
+.insight-overlay-mark { display: inline-flex; align-items: center; margin-right: 6px; vertical-align: -2px; }
+.insight-overlay-mark svg { display: block; }

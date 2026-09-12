@@ -88,10 +88,16 @@
         <button type="button" class="fh-tab" data-fhtab="tab.etfVolatility" data-i18n="tab.etfVolatility" style="display:none;">변동성</button>
         <button type="button" class="fh-tab" data-fhtab="tab.etfDividend" data-i18n="tab.etfDividend" style="display:none;">배당률</button>
         <button type="button" class="fh-tab" data-fhtab="tab.etfFee" data-i18n="tab.etfFee" style="display:none;">운용보수</button>
-        <button type="button" class="fh-tab" data-fhtab="tab.trend" data-i18n="tab.trend">미래예측</button>
-        <!-- IPO(2026-09-11 사용자 요청): 최근 5년 미국 신규 상장 종목을 시간순으로 — 주식 섹션 전용 -->
+        <!-- 비트코인 전용: 최대낙폭 하나만(2026-09-12 사용자 재확정 — 시가총액 탭은 제외).
+             나머지 4개(인기종목/승률/수익률/변동성)는 주식·ETF와 공용. 시가총액 탭은 JS(CRYPTO_METRIC_TABS)가 참조하므로 DOM만 남겨 숨김 -->
+        <button type="button" class="fh-tab" data-fhtab="tab.cryptoCap" data-i18n="tab.cryptoCap" style="display:none;">시가총액</button>
+        <button type="button" class="fh-tab" data-fhtab="tab.cryptoDrawdown" data-i18n="tab.cryptoDrawdown" style="display:none;">최대낙폭</button>
+        <!-- 미래예측(시장동향)·인사이트는 상단 탭에서 내림(2026-09-12 사용자 요청) — 인사이트는 더보기로,
+             미래예측 항목(10년 승률·연평균 상승)은 승률·수익률 탭으로 올라갔다. JS가 참조하므로 DOM은 유지하고 숨김만 -->
+        <button type="button" class="fh-tab" data-fhtab="tab.trend" data-i18n="tab.trend" style="display:none;">미래예측</button>
+        <!-- IPO(2026-09-11 사용자 요청): 최근 5년 신규 상장 종목 — 주식 섹션 전용 -->
         <button type="button" class="fh-tab" data-fhtab="tab.ipo" data-i18n="tab.ipo">IPO</button>
-        <button type="button" class="fh-tab" data-fhtab="tab.insight" data-i18n="tab.insight">인사이트</button>
+        <button type="button" class="fh-tab" data-fhtab="tab.insight" data-i18n="tab.insight" style="display:none;">인사이트</button>
         <!-- 관심종목은 별도 탭 없이 상단 제목("관심종목"+별)으로만 표시(2026-09-02 사용자 확정) -->
 
       </div>
@@ -732,10 +738,18 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="4" height="8" rx="1"/><line x1="6" y1="5" x2="6" y2="9"/><line x1="6" y1="17" x2="6" y2="20"/><rect x="14" y="5" width="4" height="9" rx="1"/><line x1="16" y1="2.5" x2="16" y2="5"/><line x1="16" y1="14" x2="16" y2="18"/></svg>
           <span class="more-panel-item-label" data-i18n="tab.trend">증시동향</span>
         </button>
-        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelInsightBtn" style="display:none;">
+        <!-- 인사이트: 상단 탭에서 더보기로 이동(2026-09-12 사용자 요청) — 누르면 투자처 4개를 고르는 줄이 펼쳐지고,
+             고른 투자처의 인사이트가 "(로고) 인사이트" 제목의 별도 창으로 열린다(자동추적과 같은 방식) -->
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelInsightBtn" aria-expanded="false">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6.5 6.5 0 0 0-3.7 11.8c.7.5 1.2 1.3 1.2 2.2h5c0-.9.5-1.7 1.2-2.2A6.5 6.5 0 0 0 12 3Z" /></svg>
           <span class="more-panel-item-label" data-i18n="tab.insight">인사이트</span>
         </button>
+        <div class="more-panel-subnav" id="morePanelInsightNav" style="display:none;">
+          <button type="button" class="cat-btn" data-insight-section="kr">한국주식</button>
+          <button type="button" class="cat-btn" data-insight-section="us">미국주식</button>
+          <button type="button" class="cat-btn" data-insight-section="etf">ETF</button>
+          <button type="button" class="cat-btn" data-insight-section="crypto">비트코인</button>
+        </div>
         <!-- 간편검색: 하단 네비에서 더보기로 이동(2026-08-31) -->
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelWizardBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
