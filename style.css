@@ -2242,6 +2242,19 @@ body[data-header-tone="dark"] .fh-market-label { color: #fff; }
 .more-panel-item:active { background: var(--subtle-fill); }
 .more-panel-item svg { flex: none; width: 20px; height: 20px; color: var(--muted); }
 .more-panel-item-label { flex: 1; }
+/* 더보기 목록 오른쪽 배지(2026-09-12) — 마켓맵 "주요기능" 표시. 원색 대신 차분한 금색 계열로 */
+.more-panel-item-badge {
+  flex: none;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  color: #9a7b32;
+  background: rgba(197, 160, 89, 0.14);
+  border: 1px solid rgba(197, 160, 89, 0.4);
+}
+:root[data-theme="dark"] .more-panel-item-badge { color: #e0c176; background: rgba(224, 193, 118, 0.13); border-color: rgba(224, 193, 118, 0.38); }
 .more-panel-badge {
   flex: none;
   font-size: 11px;
