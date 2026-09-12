@@ -8616,7 +8616,7 @@ function popularWinRate(c, wrMap) {
 }
 // ---------- 인기종목 직전 결과 캐시(2026-09-07 사용자 요청): 휴장·장 마감·시세 장애 때도 마지막 인기종목을 그대로 보여줌 ----------
 function popularCacheKey(isKr) {
-  return `popular_last_v3_${isKr ? "kr" : "us"}`; // v3(2026-09-12): 정렬 기준이 거래대금 -> 배수 -> 다시 거래대금으로 오가 옛 캐시는 버림
+  return `popular_last_v4_${isKr ? "kr" : "us"}`; // v4(2026-09-12): 표 구성이 여러 번 바뀌어 옛 캐시는 버리고 새로 받는다
 }
 function readPopularCache(isKr) {
   try {
@@ -8641,7 +8641,7 @@ function popularSnapshotResetCaches() {
   try {
     localStorage.removeItem(popularCacheKey(true));
     localStorage.removeItem(popularCacheKey(false));
-    ["popular_last_v1_kr", "popular_last_v1_us", "popular_last_v2_kr", "popular_last_v2_us"].forEach((k) => localStorage.removeItem(k));
+    ["v1", "v2", "v3"].forEach((v) => ["kr", "us"].forEach((m) => localStorage.removeItem(`popular_last_${v}_${m}`)));
   } catch {}
   etfScanStateByRegion.clear();
   cryptoScanState.rows = [];
@@ -8979,13 +8979,15 @@ function ensureEtfScanRows(region, targetCount, statusEl) {
     const baseList = isKr ? await getKrEtfTop100() : US_ETF_TOP100.map((x) => ({ symbol: x.t, name: x.n }));
     const total = baseList.length;
     const target = Math.min(targetCount, total);
-    if (state.scanned >= target) return { rows: state.rows, scanned: state.scanned, total };
+    // 2026-09-12 사용자 지적("ETF 인기종목만 29위까지 검색됨"): 예전에는 앞에서 딱 target개만 조회하고 끝내서,
+    // 그중 시세를 못 받는 종목이 하나라도 있으면(310970.KS처럼 야후에 차트가 없는 ETF) 29개만 남았다.
+    // 이제는 실패한 만큼 목록 뒤에서 더 채워 target개를 맞춘다(목록이 바닥나면 그때 멈춤).
+    if (state.rows.length >= target || state.scanned >= total) return { rows: state.rows, scanned: state.scanned, total };
     // 새 배점(2026-09-03) 입력: 승률·주간 RSI는 배치 DB에서 한 번만 읽어 전 종목에 재사용
     const wrDb = await getWinRateDb().catch(() => null);
     const wrMap = (wrDb && wrDb.scoresEtf) || {};
-    const startFrom = state.scanned;
-    const pending = baseList.slice(startFrom, target);
-    const results = await mapWithConcurrency(
+    const scanChunk = (pending, startFrom) =>
+      mapWithConcurrency(
       pending,
       6,
       async (it) => {
@@ -9016,11 +9018,16 @@ function ensureEtfScanRows(region, targetCount, statusEl) {
         }
       },
       (done) => {
-        if (statusEl) statusEl.textContent = `시가총액 상위 ${target}개 ETF의 점수를 계산하는 중... (${startFrom + done}/${target})`;
+        if (statusEl) statusEl.textContent = `시가총액 상위 ${target}개 ETF의 점수를 계산하는 중... (${Math.min(startFrom + done, target)}/${target})`;
       }
     );
-    state.rows.push(...results.filter(Boolean));
-    state.scanned = target;
+    while (state.rows.length < target && state.scanned < total) {
+      const from = state.scanned;
+      const to = Math.min(total, from + (target - state.rows.length));
+      const results = await scanChunk(baseList.slice(from, to), from);
+      state.rows.push(...results.filter(Boolean));
+      state.scanned = to;
+    }
     return { rows: state.rows, scanned: state.scanned, total };
   });
   state.chain = run.catch(() => {}); // 실패해도 다음 요청이 이어갈 수 있게 체인은 항상 정상 상태 유지
@@ -9129,14 +9136,17 @@ function ensureCryptoScanRows(targetCount, statusEl) {
     });
     const total = all.length;
     const target = Math.min(targetCount, total);
-    if (cryptoScanState.scanned >= target) return { rows: cryptoScanState.rows, scanned: cryptoScanState.scanned, total };
+    // ETF와 같은 이유(2026-09-12 사용자 지적 "비트코인도 인기종목 29위까지 검색됨"): 앞에서 딱 target개만
+    // 조회하면 시세를 못 받는 코인이 하나라도 있을 때 29개만 남는다 → 실패한 만큼 목록 뒤에서 더 채운다.
+    if (cryptoScanState.rows.length >= target || cryptoScanState.scanned >= total) {
+      return { rows: cryptoScanState.rows, scanned: cryptoScanState.scanned, total };
+    }
     const btcReturn = await getBtcOneYearReturn();
     // 새 배점(2026-09-03) 입력: 승률·주간 RSI는 배치 DB에서 한 번만 읽어 전 종목에 재사용
     const wrDb = await getWinRateDb().catch(() => null);
     const wrMap = (wrDb && wrDb.scoresCrypto) || {};
-    const startFrom = cryptoScanState.scanned;
-    const items = all.map((q, i) => ({ q, i })).slice(startFrom, target);
-    const results = await mapWithConcurrency(
+    const scanChunk = (items, startFrom) =>
+      mapWithConcurrency(
       items,
       6,
       async ({ q, i }) => {
@@ -9174,11 +9184,16 @@ function ensureCryptoScanRows(targetCount, statusEl) {
         }
       },
       (done) => {
-        if (statusEl) statusEl.textContent = `시가총액 상위 ${target}개 코인의 점수를 계산하는 중... (${startFrom + done}/${target})`;
+        if (statusEl) statusEl.textContent = `시가총액 상위 ${target}개 코인의 점수를 계산하는 중... (${Math.min(startFrom + done, target)}/${target})`;
       }
     );
-    cryptoScanState.rows.push(...results.filter(Boolean));
-    cryptoScanState.scanned = target;
+    while (cryptoScanState.rows.length < target && cryptoScanState.scanned < total) {
+      const from = cryptoScanState.scanned;
+      const to = Math.min(total, from + (target - cryptoScanState.rows.length));
+      const results = await scanChunk(all.map((q, i) => ({ q, i })).slice(from, to), from);
+      cryptoScanState.rows.push(...results.filter(Boolean));
+      cryptoScanState.scanned = to;
+    }
     return { rows: cryptoScanState.rows, scanned: cryptoScanState.scanned, total };
   });
   cryptoScanState.chain = run.catch(() => {});
@@ -10079,7 +10094,7 @@ const ASSET_TREND_METRICS = {
   winrate: {
     icon: "medal",
     label: "10년평균 승률",
-    header: "10년평균 승률",
+    header: "10년평균<br>승률", // 한 줄이면 열이 넓어져서 두 줄로(2026-09-12 사용자 요청)
     orange: true,
     sort: (a, b) => (b.winRate ?? -1) - (a.winRate ?? -1),
     cell: (r) => winRatePctCellHtml(r.winRate, r.winTotal),
@@ -15013,7 +15028,10 @@ async function runTrendDividendStaged(initialCount, ensureYields, universeLabel,
       if (raw.length === 0) throw new Error("배당률 데이터를 가져오지 못했습니다.");
 
       const ranked = raw.slice().sort((a, b) => b.yieldPct - a.yieldPct);
-      const top50 = ranked.slice(0, 50);
+      // 2026-09-12 사용자 지적: 배당률만 "시가총액 38위까지 검색됨"으로 나오던 이유 —
+      // 무배당 종목이 순위에서 빠지다 보니 30개를 채우려고 스캔 범위를 15개씩 넓히는데,
+      // 그렇게 찾은 개수를 그대로 다 보여줬다. 다른 랭킹과 똑같이 상위 30개만 자른다.
+      const top50 = ranked.slice(0, 30);
       const hasMore = scanned < total;
 
       // 마지막 열: 10년평균 승률(2026-09-04 투자안정 대체) — 배치 DB라 추가 조회가 가벼움
