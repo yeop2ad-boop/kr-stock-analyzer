@@ -7486,7 +7486,8 @@ async function renderRsi(ticker, mode) {
   el("rsiSection").innerHTML = `
     <div class="score-wrap">
       <div class="score-badge score-badge-rsi">
-        <div class="score-num" style="color:${color};">${val}</div>
+        <!-- 2026-09-12 사용자 요청: 원판 숫자색은 테두리색과 통일(CSS) — 과매도 초록/과매수 빨강은 아래 설명줄에서 계속 표시 -->
+        <div class="score-num">${val}</div>
         <div class="score-den">/ 100</div>
       </div>
       <div class="score-details">

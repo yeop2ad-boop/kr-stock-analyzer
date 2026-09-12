@@ -2427,19 +2427,24 @@ body[data-header-tone="dark"] .fh-market-label { color: #fff; }
   background: var(--accent-soft);
   border: 3px solid var(--accent);
 }
-/* 2026-09-12 사용자 요청: 원판 안 "숫자"만 한 단계 줄임("+62.5%"가 꽉 차 보였음) — 아래 라벨 크기는 그대로 */
-.score-badge .score-num { font-size: 25px; font-weight: 800; color: var(--accent); letter-spacing: -0.3px; }
-.score-badge .score-num.ipo-label { font-size: 17px; }
+/* INVEST점수 원판(2026-09-12 사용자 요청): 네 원판의 숫자 크기·굵기·자간을 한 가지로 통일하고,
+   숫자 색은 항상 그 원판의 테두리 색과 같게 맞춘다. 크기는 "+62.5%"처럼 긴 값이 꽉 차 보여 30px에서 줄인 값.
+   라벨(score-den) 크기는 그대로. 자릿수가 흔들리지 않게 tabular-nums 사용 */
+.score-badge .score-num { font-size: 25px; font-weight: 800; color: var(--accent); letter-spacing: -0.3px; font-variant-numeric: tabular-nums; }
+.score-badge .score-num.ipo-label { font-size: 17px; } /* 숫자가 아니라 "신규상장" 같은 글자라 예외 */
 .score-badge .score-den { font-size: 12px; color: var(--muted); }
 .score-badge.risk { background: var(--good-soft); border-color: var(--good); }
 .score-badge.risk .score-num { color: var(--good); }
-.score-badge.macro .score-num { font-size: 22px; color: inherit; }
+/* 공포지수·알트코인 시즌지수 원판은 배경/테두리/글자색을 JS(scoreBgStyleAttr)가 같은 색으로 넣어줌 — 크기는 나머지와 동일 */
+.score-badge.macro .score-num { color: inherit; }
 .score-badge.macro .score-den { font-size: 10px; text-align: center; line-height: 1.2; padding: 0 6px; color: inherit; opacity: 0.75; }
 /* invest점수 원판 색(2026-09-11 사용자 지정): 10년평균 승률=보라, RSI 점수=노랑 */
 .score-badge.score-badge-winrate { background: rgba(109, 40, 217, 0.1); border-color: var(--winrate); }
 .score-badge.score-badge-winrate .score-num { color: var(--winrate); }
-.score-badge.score-badge-rsi { background: rgba(234, 179, 8, 0.14); border-color: #eab308; }
+/* RSI는 테두리(#eab308)와 숫자(#b58900) 색이 서로 달랐다 — 밝은 노랑은 흰 배경에서 안 읽히므로 둘 다 진한 쪽으로 통일 */
+.score-badge.score-badge-rsi { background: rgba(234, 179, 8, 0.14); border-color: #b58900; }
 .score-badge.score-badge-rsi .score-num { color: #b58900; }
+:root[data-theme="dark"] .score-badge.score-badge-rsi { border-color: #facc15; }
 :root[data-theme="dark"] .score-badge.score-badge-rsi .score-num { color: #facc15; }
 /* 검색상세 10년평균 승률 원판은 기존 스타일 그대로 유지(2026-09-10 사용자 확정) — 옆 설명과 일자 정렬만 적용 */
 #winRateSection .score-wrap { align-items: center; }
