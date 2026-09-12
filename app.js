@@ -149,7 +149,8 @@ el("futureMacroChartDetailBtn").addEventListener("click", () => {
   btn.textContent = isOpen ? "+자세히" : "-접기";
   if (!isOpen) {
     const ticker = new URLSearchParams(location.search).get("ticker") || tickerInput.value;
-    if (isKrTicker(ticker)) renderKrMacroScoreChart();
+    if (sectionOfSymbol(ticker) === "crypto") renderAltSeasonHistoryChart();
+    else if (isKrTicker(ticker)) renderKrMacroScoreChart();
     else renderMacroScoreChart();
     scrollChartToRight(el("futureMacroChartContainer")); // 이미 그려져 있던(캐시) 경우에도 오른쪽 끝부터
   }
@@ -5391,6 +5392,7 @@ async function runAnalysis(ticker) {
 
     // 승률점수·RSI 점수(2026-09-02, 같은 날 국내주식·ETF·코인 확장): 섹션별 DB 맵(scores/scoresKr/scoresEtf/scoresCrypto)에서
     // 조회 — 어느 맵에도 없는 종목(유니버스 밖)은 각 렌더러가 섹션째 숨김
+    renderRet10(ticker, scoreMode).catch(() => {});
     renderWinRate(ticker, scoreMode).catch(() => {
       el("winRateFlushSection").style.display = "none";
     });
@@ -7368,6 +7370,57 @@ function winRatePctCellHtml(v, total, noPct) {
 // 표 머리글의 둘째 줄 작은 기준 안내(예: 매출 증가율 / (YoY))
 const THEAD_SUB = (t) => `<span class="th-sub">(${t})</span>`;
 
+// ---------- 연평균 상승(2026-09-12 사용자 요청) — INVEST점수에서 빠져 있던 파란 원판 ----------
+// 10년평균 승률 섹션과 같은 틀(원판 + 막대 그래프 + 설명 + 주의문)로 맞췄다. 값은 같은 배치 DB(winrate-scores-us.json)의
+// ret10y(최근 10년 연복리 수익률 CAGR)이고, 상장 10년 미만이면 상장 후 기간만 연율화한 값이라 ❗를 붙인다.
+const RET10_BAR_MAX = 50; // 막대 눈금 상한(연 50%면 꽉 참) — 그 이상은 꽉 찬 상태로 표시
+async function renderRet10(ticker, mode) {
+  const section = el("ret10FlushSection");
+  if (!section) return;
+  section.style.display = "none";
+  const db = await getWinRateDb();
+  const map = winRateMapForMode(db, ticker, mode);
+  const entry = map && map[ticker];
+  if (!entry || !Number.isFinite(entry.ret10y)) return;
+
+  const color = "var(--accent)"; // 파랑 — 기본 score-badge 색 계열
+  const cagr = Math.round(entry.ret10y * 10) / 10;
+  const isPartial = Number.isFinite(entry.total) && entry.total < 120;
+  const years = Number.isFinite(entry.total) && entry.total > 0 ? entry.total / 12 : null;
+  // 연복리 수익률을 기간 전체 누적으로 되돌린 값 — "매년 X%면 그동안 총 Y% 오른 셈"을 같이 보여준다
+  const totalGain = years ? (Math.pow(1 + entry.ret10y / 100, years) - 1) * 100 : null;
+  const fillPct = clamp((cagr / RET10_BAR_MAX) * 100, 0, 100);
+  el("ret10Section").innerHTML = `
+    <div class="score-wrap">
+      <div class="score-badge">
+        <div class="score-num">${cagr > 0 ? "+" : ""}${cagr}%</div>
+        <div class="score-den">연평균 상승</div>
+      </div>
+      <div class="score-details">
+        <div class="smb-row">
+          <div class="smb-row-top">
+            <span class="smb-label">연복리 수익률(CAGR)</span>
+            <span class="smb-value" style="color:${color};">${cagr > 0 ? "+" : ""}${cagr}% / 년</span>
+          </div>
+          <div class="smb-track"><div class="smb-fill" style="width:${fillPct}%;background:${color};"></div></div>
+          <p class="smb-desc">최근 10년(${escapeHtml(entry.from || "")} ~ ${escapeHtml(entry.to || "")}) 월봉 종가 기준, ${
+            years ? `<b>${Math.round(years * 10) / 10}년</b> 동안 ` : ""
+          }${totalGain !== null ? `총 <b>${totalGain > 0 ? "+" : ""}${Math.round(totalGain)}%</b> 움직여 ` : ""}매년 <b>${
+            cagr > 0 ? "+" : ""
+          }${cagr}%</b>씩 오른 셈입니다${
+            isPartial ? ` <span class="nine-partial-mark" title="상장 10년 미만">❗</span>(상장 10년 미만이라 상장 후 ${entry.total}개월만 연율화)` : ""
+          }. 막대는 연 ${RET10_BAR_MAX}%를 가득 찬 것으로 본 눈금입니다.</p>
+        </div>
+        <p class="disclaimer">
+          ⚠️ 연평균 상승은 과거 주가가 매년 몇 %씩 오른 셈인지를 나타낸 <b>단순 참고용 정량 지표</b>이며,
+          중간의 큰 하락은 드러나지 않습니다. 미래 수익률을 보장하지 않고 투자 자문이나 매수/매도 추천이 아닙니다.
+        </p>
+      </div>
+    </div>
+  `;
+  section.style.display = "";
+}
+
 async function renderWinRate(ticker, mode) {
   const section = el("winRateFlushSection");
   if (!section) return;
@@ -7684,12 +7737,326 @@ el("rsiDetailBtn").addEventListener("click", () => {
   if (!isOpen) renderRsiSpyDetail();
 });
 
+// ---------- 알트코인 시즌지수(2026-09-12 사용자 요청) ----------
+// 비트코인·코인 상세의 "공포지수" 자리에는 원래 S&P500 VIX가 들어가 있었는데, 미국 주식 변동성 지표라
+// 코인과는 상관이 없어서 코인 전용 지표로 바꾼다. 계산 방식(사용자 지정):
+//   ① 시가총액 상위 100개 코인을 고르고
+//   ② 스테이블코인과 비트코인 연동(래핑) 자산 등 "가격이 스스로 움직이지 않는 것"을 뺀 뒤
+//   ③ 남은 알트코인 각각의 최근 90일 수익률을 비트코인의 90일 수익률과 비교해
+//   ④ 비트코인을 앞선 알트코인의 비율(0~100)을 점수로 삼는다.
+//   ⑤ 75 이상이면 알트코인 시즌, 25 미만이면 비트코인 시즌.
+// 예) 대상 100개 중 80개가 비트코인보다 많이 올랐으면 약 80점 = 알트코인 시즌.
+
+// 제외 대상 판별 — 규칙(이름·티커 패턴) + 안전망 목록. 야후 이름은 전부 뒤에 " USD"(호가 통화)가 붙어 오므로 먼저 떼어낸다.
+const ALTSEASON_EXCLUDE_BASES = new Set([
+  "WETH", "RETH", "STETH", "WSTETH", "WBETH", "WEETH", "RSETH", "AETHWETH", "AETHUSDT",
+  "JITOSOL", "BNSOL", "KHYPE", "WTRX", "WBNB", "XAUT", "PAXG",
+]);
+function altseasonExcluded(symbol, rawName) {
+  const base = cryptoBaseTicker(symbol);
+  if (!base) return true;
+  if (base === "BTC") return true; // 비교 기준 자신
+  if (base.includes("BTC")) return true; // WBTC·cbBTC·BTCB·BTCT·LBTC 등 비트코인 연동 자산
+  if (ALTSEASON_EXCLUDE_BASES.has(base)) return true;
+  if (/^USD|USD$/.test(base)) return true; // USDT·USDC·USDS·PYUSD·RLUSD·BFUSD 등
+  const name = String(rawName || "").replace(/\s+USD$/i, "").trim();
+  if (!name) return false;
+  if (/usd|tether|\bdai\b|stable|dollar|gold/i.test(name)) return true; // 스테이블코인·금 연동 토큰
+  if (/wrapped|restaked|\bstaked\b|^lido\b|rocket pool/i.test(name)) return true; // 래핑·스테이킹 파생(원본 코인과 가격이 같음)
+  return false;
+}
+
+// 최근 90일 수익률 — 3개월 일봉의 첫 종가 대비 현재가. 코인별로 세션 내 1회만 조회한다.
+const crypto90dCache = new Map();
+async function crypto90dReturn(symbol) {
+  if (crypto90dCache.has(symbol)) return crypto90dCache.get(symbol);
+  let ret = null;
+  try {
+    const chart = await yahooChart(symbol, "3mo");
+    const pairs = chartClosePairs(chart);
+    const meta = (chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta) || {};
+    const first = pairs.length ? pairs[0].c : null;
+    const last = Number.isFinite(meta.regularMarketPrice) ? meta.regularMarketPrice : pairs.length ? pairs[pairs.length - 1].c : null;
+    if (Number.isFinite(first) && first > 0 && Number.isFinite(last)) ret = ((last - first) / first) * 100;
+  } catch {
+    ret = null;
+  }
+  crypto90dCache.set(symbol, ret);
+  return ret;
+}
+
+// 대상은 "제외하고 남은 시총순 100개"라, 상위 100개만 받아오면 스테이블·래핑을 빼는 순간 60개도 안 남는다.
+// 그래서 후보를 시총 상위 250개(야후 스크리너 최대치)까지 넓혀 받고, 제외 후 앞에서 100개를 자른다(2026-09-12 사용자 확정).
+const ALTSEASON_POOL_COUNT = 250;
+const ALTSEASON_TARGET = 100;
+let cryptoAltPoolPromise = null;
+function getCryptoAltPool() {
+  if (!cryptoAltPoolPromise) {
+    cryptoAltPoolPromise = yahooScreener("all_cryptocurrencies_us", ALTSEASON_POOL_COUNT)
+      .then((data) => {
+        const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
+        return quotes.filter((q) => q && q.symbol);
+      })
+      .catch((e) => {
+        cryptoAltPoolPromise = null; // 실패는 캐시하지 않음
+        throw e;
+      });
+  }
+  return cryptoAltPoolPromise;
+}
+
+let altSeasonPromise = null;
+function getAltSeasonIndex() {
+  if (!altSeasonPromise) {
+    altSeasonPromise = (async () => {
+      const pool = await getCryptoAltPool();
+      if (!pool.length) throw new Error("암호화폐 목록을 가져오지 못했습니다.");
+      const btcQuote = pool.find((q) => cryptoBaseTicker(q.symbol) === "BTC");
+      const btcReturn = await crypto90dReturn(btcQuote ? btcQuote.symbol : "BTC-USD");
+      if (!Number.isFinite(btcReturn)) throw new Error("비트코인 90일 수익률을 계산하지 못했습니다.");
+      const alts = pool.filter((q) => !altseasonExcluded(q.symbol, q.shortName || q.longName || "")).slice(0, ALTSEASON_TARGET);
+      const scored = await mapWithConcurrency(alts, 6, async (q) => ({
+        symbol: q.symbol,
+        name: cryptoKoName(q.symbol, q.shortName || q.longName || q.symbol),
+        ret: await crypto90dReturn(q.symbol),
+      }));
+      const valid = scored.filter((r) => Number.isFinite(r.ret));
+      if (valid.length < 10) throw new Error("비교할 알트코인 수익률이 모자랍니다.");
+      const beat = valid.filter((r) => r.ret > btcReturn);
+      return {
+        score: (beat.length / valid.length) * 100,
+        beatCount: beat.length,
+        total: valid.length,
+        picked: alts.length,
+        poolSize: pool.length,
+        btcSymbol: btcQuote ? btcQuote.symbol : "BTC-USD",
+        altSymbols: alts.map((q) => q.symbol), // 과거 이력 차트가 같은 대상으로 계산하도록 그대로 넘김
+        btcReturn,
+        // 비트코인을 가장 크게 앞선 5개(화면 설명용)
+        leaders: valid.slice().sort((a, b) => b.ret - a.ret).slice(0, 5),
+      };
+    })().catch((e) => {
+      altSeasonPromise = null; // 실패는 캐시하지 않음
+      throw e;
+    });
+  }
+  return altSeasonPromise;
+}
+function altSeasonGrade(score) {
+  if (!Number.isFinite(score)) return { label: "N/A" };
+  if (score >= 75) return { label: "알트코인 시즌" };
+  if (score < 25) return { label: "비트코인 시즌" };
+  return { label: "중립" };
+}
+const ALTSEASON_ZONES = [
+  { to: 25, label: "비트코인 시즌", color: "#f7931a" },
+  { to: 75, label: "중립", color: "#6b7280" },
+  { to: 100, label: "알트코인 시즌", color: "#22a866" },
+];
+// 지표 설명(점수가 아직 안 나왔을 때도 똑같이 보여준다)
+function altSeasonDetailListHtml(idx) {
+  const pct = (v) => (Number.isFinite(v) ? `${v > 0 ? "+" : ""}${Math.round(v * 10) / 10}%` : "N/A");
+  return `
+    <ul>
+      <li>시가총액 순으로 <b>스테이블코인·비트코인 연동(래핑) 자산·스테이킹 파생</b>을 걸러낸 뒤
+        <b>상위 ${idx ? idx.picked : 100}개 알트코인</b>이 대상입니다${idx ? ` (후보 ${idx.poolSize}개 중 · 시세가 잡힌 ${idx.total}개로 계산)` : ""}</li>
+      <li>각 알트코인의 <b>최근 90일 수익률</b>을 비트코인의 90일 수익률${idx ? `(<b>${pct(idx.btcReturn)}</b>)` : ""}과 견줍니다</li>
+      <li>비트코인을 앞선 알트코인의 비율이 곧 점수입니다${idx ? ` — <b>${idx.beatCount}/${idx.total}개</b>` : ""}</li>
+      <li>75점 이상 <b>알트코인 시즌</b> · 25점 미만 <b>비트코인 시즌</b> · 그 사이는 <b>중립</b></li>
+    </ul>`;
+}
+
+// ---------- 알트코인 시즌지수 "+자세히": 2017년~현재 비트코인·라이트코인 그래프 + 시즌 구간 띠(2026-09-12 사용자 요청) ----------
+// 과거 이력은 매번 코인 100개의 주봉을 받아오면 30초씩 걸려서, 배치(sector-map/scripts/fetch-altseason-history.ps1)가
+// 미리 계산해둔 data/altseason-history.json을 그대로 쓴다(2026-09-12 사용자 요청: "그래프는 DB로 관리, 점수는 실시간").
+// 파일 구성: { generatedAt, altCount, weeks: [{ t, btc, ltc, score, sample }] } — score는 그 주의 지수(표본 5개 미만이면 null).
+let altSeasonHistoryPromise = null;
+function getAltSeasonHistory() {
+  if (!altSeasonHistoryPromise) {
+    altSeasonHistoryPromise = fetch("data/altseason-history.json", { cache: "no-store" })
+      .then((r) => {
+        if (!r.ok) throw new Error("http " + r.status);
+        return r.json();
+      })
+      .then((db) => {
+        if (!db || !Array.isArray(db.weeks) || !db.weeks.length) throw new Error("과거 이력 데이터가 비어 있습니다.");
+        return { points: db.weeks, altCount: db.altCount, generatedAt: db.generatedAt };
+      })
+      .catch((e) => {
+        altSeasonHistoryPromise = null; // 실패는 캐시하지 않음
+        throw e;
+      });
+  }
+  return altSeasonHistoryPromise;
+}
+
+// 비트코인·라이트코인을 한 차트에 겹쳐 그린다. 둘의 가격대가 워낙 달라(수만 달러 vs 수천 달러) 같은 눈금에
+// 그대로 얹으면 한쪽이 바닥에 깔리므로, 시작점을 100으로 맞추고 로그 눈금을 쓴다(배수 비교가 목적이라 이게 정확하다).
+function buildAltSeasonHistorySvg(hist) {
+  const W = 1180;
+  const H = 340;
+  const ML = 46;
+  const MR = 14;
+  const MT = 26;
+  const MB = 42;
+  const PW = W - ML - MR;
+  const PH = H - MT - MB;
+  const pts = hist.points.filter((p) => Number.isFinite(p.btc));
+  if (pts.length < 10) return `<p class="muted">그릴 수 있는 구간이 모자랍니다.</p>`;
+  const baseBtc = pts.find((p) => Number.isFinite(p.btc)).btc;
+  const firstLtc = pts.find((p) => Number.isFinite(p.ltc));
+  const baseLtc = firstLtc ? firstLtc.ltc : null;
+  const normBtc = (p) => (Number.isFinite(p.btc) ? (p.btc / baseBtc) * 100 : null);
+  const normLtc = (p) => (Number.isFinite(p.ltc) && baseLtc ? (p.ltc / baseLtc) * 100 : null);
+  const vals = [];
+  pts.forEach((p) => {
+    const a = normBtc(p);
+    const b = normLtc(p);
+    if (Number.isFinite(a) && a > 0) vals.push(a);
+    if (Number.isFinite(b) && b > 0) vals.push(b);
+  });
+  const lo = Math.max(1, Math.min(...vals));
+  const hi = Math.max(...vals);
+  const logLo = Math.log10(lo);
+  const logHi = Math.log10(hi);
+  const span = logHi - logLo || 1;
+  const xFn = (i) => ML + (i / (pts.length - 1)) * PW;
+  const yFn = (v) => MT + PH - ((Math.log10(v) - logLo) / span) * PH;
+
+  // 시즌 구간 띠 — 같은 시즌이 이어지는 구간을 하나의 박스로 묶어 선 뒤에 깐다
+  let bands = "";
+  const seasonOf = (p) => (p.score === null ? null : p.score >= 75 ? "alt" : p.score < 25 ? "btc" : null);
+  let runStart = null;
+  let runKind = null;
+  const flush = (endIdx) => {
+    if (runStart === null || runKind === null) return;
+    const x0 = xFn(runStart);
+    const x1 = xFn(endIdx);
+    const fill = runKind === "alt" ? "rgba(56,189,248,0.30)" : "rgba(247,147,26,0.30)";
+    bands += `<rect x="${x0.toFixed(1)}" y="${MT}" width="${Math.max(1.2, x1 - x0).toFixed(1)}" height="${PH}" fill="${fill}" />`;
+  };
+  pts.forEach((p, i) => {
+    const kind = seasonOf(p);
+    if (kind !== runKind) {
+      flush(i);
+      runKind = kind;
+      runStart = i;
+    }
+  });
+  flush(pts.length - 1);
+
+  // 가로 눈금(로그) + 연도 라벨
+  let grid = "";
+  for (let e = Math.ceil(logLo); e <= Math.floor(logHi); e++) {
+    const v = Math.pow(10, e);
+    const y = yFn(v);
+    grid += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${W - MR}" y2="${y.toFixed(1)}" stroke="#e5e7eb" stroke-width="1" />`;
+    grid += `<text x="${ML - 6}" y="${(y + 3.5).toFixed(1)}" text-anchor="end" font-size="10.5" fill="#6b7280">${v >= 1000 ? `${v / 1000}천` : v}</text>`;
+  }
+  let lastYear = null;
+  pts.forEach((p, i) => {
+    const year = new Date(p.t * 1000).getUTCFullYear();
+    if (year === lastYear) return;
+    lastYear = year;
+    const x = xFn(i);
+    grid += `<line x1="${x.toFixed(1)}" y1="${MT}" x2="${x.toFixed(1)}" y2="${MT + PH}" stroke="#eef1f4" stroke-width="1" />`;
+    grid += `<text x="${x.toFixed(1)}" y="${(MT + PH + 16).toFixed(1)}" text-anchor="middle" font-size="10.5" fill="#6b7280">${year}</text>`;
+  });
+
+  const pathOf = (fn, color) => {
+    let d = "";
+    let started = false;
+    pts.forEach((p, i) => {
+      const v = fn(p);
+      if (!Number.isFinite(v) || v <= 0) {
+        started = false;
+        return;
+      }
+      d += `${started ? "L" : "M"}${xFn(i).toFixed(1)},${yFn(v).toFixed(1)} `;
+      started = true;
+    });
+    return d ? `<path d="${d.trim()}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />` : "";
+  };
+
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="2017년 이후 비트코인·라이트코인 추이와 알트코인 시즌 구간">
+    <rect x="0" y="0" width="${W}" height="${H}" fill="#fff" />
+    ${bands}
+    ${grid}
+    ${pathOf(normLtc, "#2f6bd8")}
+    ${pathOf(normBtc, "#e11d48")}
+    <text x="${ML}" y="${MT - 10}" font-size="11" fill="#6b7280">2017년 초 = 100 (로그 눈금)</text>
+  </svg>`;
+}
+
+let altSeasonChartDrawn = false;
+async function renderAltSeasonHistoryChart() {
+  const container = el("futureMacroChartContainer");
+  const heading = el("futureMacroChartHeading");
+  const caption = el("futureMacroChartCaption");
+  if (heading) heading.textContent = "2017년 이후 비트코인·라이트코인과 알트코인 시즌 구간";
+  if (altSeasonChartDrawn) return;
+  container.innerHTML = `<p class="muted" style="padding:12px;">불러오는 중...</p>`;
+  if (caption) caption.textContent = "";
+  try {
+    const hist = await getAltSeasonHistory();
+    container.innerHTML = buildAltSeasonHistorySvg(hist);
+    altSeasonChartDrawn = true;
+    if (caption) {
+      caption.innerHTML = `<span style="color:#e11d48;font-weight:800;">빨간 선: 비트코인</span> · <span style="color:#2f6bd8;font-weight:800;">파란 선: 라이트코인</span>
+        (둘 다 2017년 초를 100으로 맞춘 로그 눈금 — 가격대가 달라 그대로 겹치면 한쪽이 안 보입니다) ·
+        <span style="background:rgba(56,189,248,0.45);padding:0 4px;border-radius:3px;">하늘색 구간 = 알트코인 시즌(75점 이상)</span> ·
+        <span style="background:rgba(247,147,26,0.45);padding:0 4px;border-radius:3px;">주황색 구간 = 비트코인 시즌(25점 미만)</span>.
+        지수는 알트코인 ${hist.altCount}개의 주봉으로 매주 다시 계산한 값이며, 하루 한 번 배치로 갱신됩니다(90일 ≈ 13주 · ${escapeHtml(
+          String(hist.generatedAt || "").slice(0, 10)
+        )} 기준). 위쪽 점수만 지금 시세로 실시간 계산합니다.
+        ⚠️ 대상이 <b>오늘의 시총 상위 100개</b>라 과거로 갈수록 그때 없던 코인이 빠진 생존편향이 있고, 초기 구간은 표본이 적습니다.`;
+    }
+  } catch (e) {
+    container.innerHTML = `<p class="muted" style="padding:12px;">❌ ${escapeHtml(e.message || "과거 이력을 불러오지 못했습니다.")}</p>`;
+  }
+}
+
 // ---------- 7. 투자황금기 점수(공포지수연동) — VIX(CBOE 변동성지수)가 높을수록(시장 패닉) 역발상 매수 기회로 보고 점수를 올림, 종목과 무관 ----------
 async function renderMacro(ticker) {
   el("macroSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
   const isKr = isKrTicker(ticker);
-  el("macroSectionTitle").textContent = isKr ? "KOSPI 공포지수" : "S&P 공포지수";
+  const isCrypto = sectionOfSymbol(ticker) === "crypto";
+  el("macroSectionTitle").textContent = isCrypto ? "알트코인 시즌지수" : isKr ? "KOSPI 공포지수" : "S&P 공포지수";
+  // 제목 옆 "+자세히"는 투자처마다 다른 차트를 편다 — 코인은 2017년 이후 비트코인·이더리움 추이 + 시즌 구간 띠
+
+  // 코인은 VIX(미국 주식 변동성) 대신 알트코인 시즌지수(2026-09-12 사용자 요청).
+  // 상위 100개 코인의 90일 수익률을 받아야 해서 몇 초 걸리므로, 박스를 먼저 그려두고 값이 오면 채운다.
+  if (isCrypto) {
+    const shell = (badgeNum, badgeLabel, bgAttr, gaugeHtml, idx, extraLine) => `
+      ${extraLine || ""}
+      <div class="score-wrap">
+        <div class="score-badge macro"${bgAttr}>
+          <div class="score-num">${badgeNum}</div>
+          <div class="score-den">${badgeLabel}</div>
+        </div>
+        <div class="score-details">
+          ${gaugeHtml}
+          ${altSeasonDetailListHtml(idx)}
+          <p class="disclaimer">
+            ⚠️ 특정 코인이 아니라 코인 시장 전체의 쏠림을 보는 지표입니다. 알트코인 시즌이라고 해서 모든 알트코인이 오르는 것도,
+            비트코인 시즌이라고 해서 알트코인이 반드시 내리는 것도 아닙니다. 투자 자문이나 매수/매도 추천이 아닙니다.
+          </p>
+        </div>
+      </div>`;
+    el("macroSection").innerHTML = shell("…", "계산 중", "", "", null, "");
+    getAltSeasonIndex()
+      .then((idx) => {
+        const score = Math.round(idx.score);
+        const grade = altSeasonGrade(idx.score);
+        const line = `<p class="score-macro-vix-line">🪙 알트코인 시즌지수(최근 90일 기준)<br>${idx.total}개 중 ${idx.beatCount}개가 비트코인보다 많이 올랐습니다</p>`;
+        el("macroSection").innerHTML = shell(score, grade.label, scoreBgStyleAttr(score, 0, 100, "fear"), macroGaugeHtml(score, 0, 100, ALTSEASON_ZONES), idx, line);
+      })
+      .catch((e) => {
+        el("macroSection").innerHTML = shell("N/A", "계산 실패", "", "", null, `<p class="score-macro-vix-line">🪙 알트코인 시즌지수 — ${escapeHtml(e.message || "계산하지 못했습니다.")}</p>`);
+      });
+    return;
+  }
 
   if (isKr) {
     const fomo = await getKrFomoMetrics().catch(() => ({ score: null, changeAbs: null, date: null }));

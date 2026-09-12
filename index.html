@@ -342,6 +342,15 @@
         <p class="invest-score-label">INVEST점수</p>
         <!-- 상승압력도·투자안정성 섹션은 2026-09-04 사용자 요청으로 삭제 — 개요의 9칸 지표 표(10년평균 승률/상승률/RSI)로 대체 -->
 
+        <!-- 연평균 상승(2026-09-12 사용자 요청): INVEST점수에서 빠져 있던 파란 원판 — 배치 DB의 ret10y(연복리 수익률).
+             10년평균 승률 섹션과 같은 틀이고, 대표 자산 비교 같은 "+자세히"는 두지 않는다(renderRet10이 채움) -->
+        <section class="flush-section" id="ret10FlushSection" style="display:none;">
+          <div class="section-heading-row">
+            <h2 class="invest-score-h2">연평균 상승</h2>
+          </div>
+          <div id="ret10Section" class="section-body"></div>
+        </section>
+
         <!-- 승률점수(2026-09-02): 최근 10년 월간 상승 개월수/총 개월수*100 — S&P500 미국주식 전용(DB에 없는 종목은 섹션째 숨김) -->
         <section class="flush-section" id="winRateFlushSection" style="display:none;">
           <div class="section-heading-row">
