@@ -2882,3 +2882,6 @@ table.top30-table td:has(.rank-hl) { white-space: nowrap; }
 
 /* 알트코인 시즌지수 차트(2026-09-12) — 507주(10년) 주봉이라 600px로 줄이면 선이 뭉개진다. 더 넓게 두고 좌우 스크롤 */
 .future-chart-container svg.altseason-chart { min-width: 900px; }
+
+/* 자동추적 ETF 표(2026-09-12) — 2배(레버리지) 상품은 맨 아래로 내리고 배경을 옅게 깔아 한눈에 구분되게 */
+.autotrack-etf-table tr.at-lev-row td { background: var(--warn-soft); }

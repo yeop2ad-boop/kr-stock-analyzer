@@ -9930,20 +9930,26 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
     const wrMapAt = wrDbAt ? (isKr ? wrDbAt.scoresKr : isCrypto ? wrDbAt.scoresCrypto : wrDbAt.scores) || {} : {};
     const rows = Object.entries(at.ranks)
       .map(([sym, r]) => ({ sym, c1: cellOf(r[keys[0]], keys[0]), c2: cellOf(r[keys[1]], keys[1]), c3: cellOf(r[keys[2]], keys[2]), winTotal: wrMapAt[sym] && Number.isFinite(wrMapAt[sym].total) ? wrMapAt[sym].total : null }))
-      .filter((r) => r.c1 !== null);
+      .filter((r) => r.c1 !== null)
+      // 비트코인은 상장 4년(48개월)이 안 된 코인을 아예 뺀다(2026-09-12 사용자 요청) —
+      // 갓 상장한 코인은 짧은 기간 급등만으로 승률이 부풀려져 위쪽을 차지한다
+      .filter((r) => !isCrypto || (Number.isFinite(r.winTotal) && r.winTotal >= 48));
     // 정렬(2026-09-05 확정): 불 3개 전부 초록인 종목 먼저, 그다음 1번 항목 1등부터
     // 정렬(2026-09-10 사용자 지정): 불이 모두 초록인 종목을 맨 위로, 그다음은 10년평균 승률 높은 순.
-    // 코인은 항목이 2개(10년평균 승률·연평균 상승)라 그냥 10년평균 승률 높은 순.
+    // 정렬(2026-09-12 사용자 요청): 여기에 "❗(상장 10년 미만) 종목은 아래로"를 추가 —
+    //   짧은 기간만으로 낸 승률이 10년을 채운 종목과 섞여 위쪽을 차지하던 문제.
+    // 코인은 항목이 2개(10년평균 승률·연평균 상승)라 그냥 10년평균 승률 높은 순(대부분 상장 10년 미만이라 ❗ 구분은 사실상 무의미).
     const wrRankOf = (r) => {
       const i = keys.indexOf("winRate10y");
       const c = i === 0 ? r.c1 : i === 1 ? r.c2 : r.c3;
       return c ? c.r : Number.MAX_SAFE_INTEGER;
     };
+    const isPartialRow = (r) => Number.isFinite(r.winTotal) && r.winTotal < 120;
     if (isCrypto) {
-      rows.sort((a, b) => wrRankOf(a) - wrRankOf(b));
+      rows.sort((a, b) => isPartialRow(a) - isPartialRow(b) || wrRankOf(a) - wrRankOf(b));
     } else {
       const allGreen = (r) => r.c1.light === "🟢" && r.c2 && r.c2.light === "🟢" && r.c3 && r.c3.light === "🟢";
-      rows.sort((a, b) => allGreen(b) - allGreen(a) || wrRankOf(a) - wrRankOf(b));
+      rows.sort((a, b) => allGreen(b) - allGreen(a) || isPartialRow(a) - isPartialRow(b) || wrRankOf(a) - wrRankOf(b));
     }
 
     const labels = keys.map((k) => corrLabelOf(k, autoTrackPeriod));
@@ -9984,7 +9990,11 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
         .join("");
       parkAutoTrackCorr();
       resultsEl.innerHTML = `
-        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — ${keys.map((k, i) => `${["①", "②", "③"][i]}${escapeHtml(labels[i])}`).join(" ")}을 <b>현재 시점 점수</b>로 순위 매긴 신호등${isCrypto ? "이며, 10년평균 승률이 높은 순입니다" : "이며, 불이 모두 초록인 종목을 맨 위로 두고 10년평균 승률이 높은 순입니다"}.<br>
+        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — ${keys.map((k, i) => `${["①", "②", "③"][i]}${escapeHtml(labels[i])}`).join(" ")}을 <b>현재 시점 점수</b>로 순위 매긴 신호등${
+          isCrypto
+            ? "이며, ❗(상장 10년 미만) 없는 코인을 위에 두고 10년평균 승률이 높은 순입니다. 상장 4년이 안 된 코인은 표본이 모자라 목록에서 뺐습니다"
+            : "이며, 불이 모두 초록인 종목을 맨 위로, ❗(상장 10년 미만)는 그 아래로 두고 10년평균 승률이 높은 순입니다"
+        }.<br>
         * ${isKr || isCrypto ? "상위 20% 🟢 · 중간 🟡 · 하위 20% 🔴" : "상위 100등 🟢 · 중간 🟡 · 하위 100등 🔴"}${keys.includes("winRate10y") ? " · 승률의 ❗는 상장 10년 미만" : ""} <span id="autoTrackCorrBtnSlot"></span></p>
         <div id="autoTrackCorrSlot"></div>
         <table class="top30-table autotrack-table autotrack-lights-table">
@@ -10014,14 +10024,38 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
 // ---------- ETF 자동추적(2026-09-07 사용자 요청): 미국+한국 ETF 200개를 연평균 상승(연복리 CAGR) 높은 순으로 합산 순위 ----------
 // 열: 순위 / 종목명 / 연평균 상승 / 10년평균 승률. 상장 10년(120개월) 미만은 상장 후 기간만 연율화한 값이라 이름 앞에 ❗ 경고를 붙이고
 // 표 위에 짧은 설명을 둠. 값은 전부 배치 DB(winrate-scores-us.json scoresEtf의 ret10y/score/total/from).
+// 2배(레버리지) ETF 판별(2026-09-12 사용자 요청) — 지수 수익률을 2·3배로 증폭하는 상품이라 "연평균 상승"
+// 순위 위쪽을 독차지한다. 국내는 상품명에 레버리지/2X가 들어가고, 미국은 이름이 티커로만 잡히는 경우가 많아
+// 대표 레버리지 티커 목록도 같이 본다(인버스2X·곱버스도 배수 상품이라 함께 내림).
+const ETF_LEVERAGED_TICKERS = new Set([
+  "TQQQ", "SQQQ", "SOXL", "SOXS", "UPRO", "SPXU", "SPXL", "SPXS", "UDOW", "SDOW", "TNA", "TZA",
+  "QLD", "QID", "SSO", "SDS", "DDM", "DXD", "UWM", "TWM", "TECL", "TECS", "FAS", "FAZ",
+  "LABU", "LABD", "NUGT", "DUST", "JNUG", "JDST", "YINN", "YANG", "ERX", "ERY", "DRN", "DRV",
+  "CURE", "RETL", "WEBL", "WEBS", "BULZ", "FNGU", "FNGD", "TSLL", "TSLQ", "NVDL", "NVDU",
+  "CONL", "MSTU", "MSTX", "BITX", "BITU", "ETHU",
+]);
+function isLeveragedEtf(sym, name) {
+  if (ETF_LEVERAGED_TICKERS.has(String(sym || "").toUpperCase())) return true;
+  return /레버리지|곱버스|[23]\s*배|(^|[^A-Za-z])[23]\s*X([^A-Za-z]|$)|leveraged|ultrapro/i.test(String(name || ""));
+}
 function renderAutoTrackEtf(map, nameOf, resultsEl) {
   const num = (v) => (Number.isFinite(v) ? v : null);
   const rows = Object.entries(map)
     .map(([sym, e]) => ({ sym, ret10y: num(e.ret10y), score: num(e.score), total: num(e.total), from: e.from || "" }))
     .filter((r) => r.ret10y !== null);
-  rows.sort((a, b) => b.ret10y - a.ret10y || (b.score || 0) - (a.score || 0));
   const isPartial = (r) => r.total !== null && r.total < 120;
+  // 정렬(2026-09-12 사용자 지정): ①2배(레버리지)는 제일 아래 → ②초록 승률(60%↑)부터 위로 →
+  // ③❗(상장 10년 미만)은 그 아래로 → ④그 안에서 연평균 상승 높은 순
+  const isGreen = (r) => r.score !== null && r.score >= 60;
+  const isLev = (r) => isLeveragedEtf(r.sym, nameOf(r.sym));
+  rows.forEach((r) => {
+    r.lev = isLev(r);
+  });
+  rows.sort(
+    (a, b) => a.lev - b.lev || isGreen(b) - isGreen(a) || isPartial(a) - isPartial(b) || b.ret10y - a.ret10y || (b.score || 0) - (a.score || 0)
+  );
   const partialCount = rows.filter(isPartial).length;
+  const levCount = rows.filter((r) => r.lev).length;
   const flagOf = (sym) => (/\.(KS|KQ)$/.test(sym) ? "🇰🇷" : "🇺🇸");
   const scoreEmoji = (s) => (s === null ? "⚪" : s >= 60 ? "🟢" : s >= 55 ? "🟠" : "🔴");
   let shown = Math.min(100, rows.length);
@@ -10033,9 +10067,11 @@ function renderAutoTrackEtf(map, nameOf, resultsEl) {
         const warn = partial ? `<span class="nine-partial-mark at-warn" title="상장 10년 미만 — 상장(${escapeHtml(r.from)}) 후 ${r.total}개월만 집계">❗</span>` : "";
         const ret = `${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%`;
         return `
-        <tr${partial ? ' class="at-partial-row"' : ""}>
+        <tr class="${partial ? "at-partial-row" : ""}${r.lev ? " at-lev-row" : ""}">
           <td>${i + 1}</td>
-          <td style="text-align:left;"><span class="ticker-cell">${warn}${tickerLogoHtml(r.sym)}<b class="ticker-link" data-ticker="${escapeHtml(r.sym)}">${escapeHtml(nameOf(r.sym))}</b></span><br><span class="muted" style="font-size:11px;">${flagOf(r.sym)} ${escapeHtml(r.sym)}${partial ? ` · 상장 ${r.total}개월` : ""}</span></td>
+          <td style="text-align:left;"><span class="ticker-cell">${warn}${tickerLogoHtml(r.sym)}<b class="ticker-link" data-ticker="${escapeHtml(r.sym)}">${escapeHtml(nameOf(r.sym))}</b></span><br><span class="muted" style="font-size:11px;">${flagOf(r.sym)} ${escapeHtml(r.sym)}${partial ? ` · 상장 ${r.total}개월` : ""}${
+          r.lev ? ` · <b style="color:var(--warn);">2배</b>` : ""
+        }</span></td>
           <td><b class="${r.ret10y >= 0 ? "delta-up" : "delta-down"}">${ret}</b></td>
           <td><span class="at-emoji" data-explain="10년평균 승률 신호등 — 60% 이상이면 초록, 55~60%는 주황, 55% 미만이면 빨강입니다.">${scoreEmoji(r.score)}</span>${winRatePctCellHtml(r.score, r.total)}</td>
         </tr>`;
@@ -10043,9 +10079,12 @@ function renderAutoTrackEtf(map, nameOf, resultsEl) {
       .join("");
     parkAutoTrackCorr();
     resultsEl.innerHTML = `
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ETF(미국+한국) 전체 ${rows.length}개 — <b>연평균 상승</b>(연복리 수익률, 매년 몇 %씩 오른 셈) 높은 순으로 미국·한국을 합쳐 매긴 순위입니다.
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ETF(미국+한국) 전체 ${rows.length}개를 미국·한국 합쳐 매긴 순위입니다. <b>승률 신호등이 초록(60%↑)인 ETF부터</b> 위에 두고,
+      그 안에서 <b>연평균 상승</b>(연복리 수익률, 매년 몇 %씩 오른 셈)이 높은 순입니다. ❗(상장 10년 미만)은 각 묶음의 아래로, <b>2배(레버리지) 상품은 맨 아래</b>로 내렸습니다.
       10년평균 승률은 최근 10년 월간 상승 마감 비율(60%↑🟢 55~60%🟠 55%↓🔴). 매일 자동 갱신되는 배치 DB 기준이며 투자 자문이 아닙니다.</p>
-      <p class="top30-scope-note">❗ 표시 = 상장 10년 미만 ETF(${partialCount}개). 상장 후 기간만으로 연율화한 값이라 짧은 기간의 급등·급락이 과장될 수 있으니 10년을 채운 종목과 같은 눈으로 보지 마세요.</p>
+      <p class="top30-scope-note">❗ 표시 = 상장 10년 미만 ETF(${partialCount}개). 상장 후 기간만으로 연율화한 값이라 짧은 기간의 급등·급락이 과장될 수 있으니 10년을 채운 종목과 같은 눈으로 보지 마세요.${
+        levCount ? ` · 2배(레버리지) ETF ${levCount}개는 지수 움직임을 증폭하는 상품이라 수익률이 과장되어 맨 아래에 모아뒀습니다.` : ""
+      }</p>
       <div id="autoTrackCorrSlot"></div>
       <table class="top30-table autotrack-table autotrack-etf-table">
         <thead><tr><th>순위</th><th>종목명</th><th>연평균<br>상승</th><th>10년평균<br>승률</th></tr></thead>
