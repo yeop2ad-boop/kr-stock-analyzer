@@ -5733,19 +5733,6 @@ function sReportRowHtml(r) {
   return `<tr><td>${labelHtml}</td><td>${valueHtml}</td><td>${rankHtml}</td></tr>`;
 }
 
-// 순위를 계산할 수 있었던 항목들의 평균 백분위(작을수록 상위권)를 기준으로 총평 한 줄을 생성.
-// 상업적 조언으로 읽히지 않도록 "투자 자문이 아님"을 항상 붙이고, 단정적 매수/매도 표현은 쓰지 않음.
-function sReportVerdict(avgPercentile) {
-  if (avgPercentile === null) return "";
-  if (avgPercentile <= 20) {
-    return `🏆 <b>종합 평가: 상위권</b> — 순위를 계산할 수 있었던 항목들의 평균이 상위 ${avgPercentile.toFixed(0)}%로, 비교 대상 전체 종목 중에서도 우수한 지표가 많은 편입니다. 참고용 지표이며 투자 자문이 아닙니다.`;
-  }
-  if (avgPercentile >= 80) {
-    return `⚠️ <b>종합 평가: 하위권</b> — 순위를 계산할 수 있었던 항목들의 평균이 하위 ${(100 - avgPercentile).toFixed(0)}%로, 비교 대상 전체 종목 대비 지표가 부진한 편입니다. 참고용 지표이며 투자 자문이 아니니 투자 판단은 다른 근거와 함께 신중히 내려주세요.`;
-  }
-  return `<b>종합 평가: 평균 수준</b> — 순위를 계산할 수 있었던 항목들의 평균이 상위 ${avgPercentile.toFixed(0)}% 수준으로, 비교 대상 전체 종목 대비 특별히 튀지 않는 평이한 지표 분포입니다. 참고용 지표이며 투자 자문이 아닙니다.`;
-}
-
 async function runSReport(symbol, selfMetricsPromise) {
   const isKr = isKrTicker(symbol);
   sReportInlineWrap.innerHTML = `<p class="muted" style="padding:12px 0;">⏳ S리포트를 계산하는 중...</p>`;
@@ -5801,11 +5788,6 @@ async function runSReport(symbol, selfMetricsPromise) {
     return row;
   });
 
-  const validRanks = rows.filter((r) => r.rankInfo);
-  const avgPercentile = validRanks.length
-    ? validRanks.reduce((sum, r) => sum + (r.rankInfo.rank / r.rankInfo.total) * 100, 0) / validRanks.length
-    : null;
-
   // 신규 상장주는 IPO 종목끼리 비교하므로 안내 문구도 그 비교군으로 바꾼다(2026-09-11)
   const universeLabel = ipoUniverse ? ipoUniverse.label : isKr ? "코스피200+코스닥150" : "S&P500";
   sReportInlineWrap.innerHTML = `
@@ -5815,7 +5797,6 @@ async function runSReport(symbol, selfMetricsPromise) {
       <thead><tr><th>항목</th><th>수치</th><th>순위</th></tr></thead>
       <tbody>${rows.map(sReportRowHtml).join("")}</tbody>
     </table>
-    ${sReportVerdict(avgPercentile) ? `<p class="s-report-verdict">${sReportVerdict(avgPercentile)}</p>` : ""}
   `;
 }
 
