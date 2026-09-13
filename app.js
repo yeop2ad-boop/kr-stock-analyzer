@@ -6259,7 +6259,8 @@ async function runAssetSReport(ticker, assetType) {
     const isEtf = assetType === "etf";
     const isKr = isKrTicker(ticker);
     // 인기종목·시장동향과 같은 스캔 캐시를 공유 — 이미 스캔했으면 즉시, 아니면 여기서 100개 스캔
-    const { rows } = isEtf ? await ensureEtfScanRows(isKr ? "kr" : "us", 100, statusEl) : await ensureCryptoScanRows(100, statusEl);
+    // 코인은 200개(야후 시총 100 + 업비트 100, 2026-09-14) 기준 순위
+    const { rows } = isEtf ? await ensureEtfScanRows(isKr ? "kr" : "us", 100, statusEl) : await ensureCryptoScanRows(200, statusEl);
     if (!rows || rows.length === 0) throw new Error("유니버스 데이터를 가져오지 못했습니다.");
 
     let self = rows.find((r) => r.symbol === ticker);
@@ -6316,7 +6317,7 @@ async function runAssetSReport(ticker, assetType) {
       const i = sorted.indexOf(self);
       return i >= 0 ? i + 1 : null;
     };
-    const uniLabel = isEtf ? (isKr ? "한국 ETF 시가총액 상위 100개" : "미국 ETF 상위 100개") : "암호화폐 시가총액 상위 100개";
+    const uniLabel = isEtf ? (isKr ? "한국 ETF 시가총액 상위 100개" : "미국 ETF 상위 100개") : "암호화폐 200개(시총 상위 100 + 업비트 100)";
     const keys = isEtf
       ? ["dividend", "fee", "volatility", "ret1y", "winrate", "week52", "volume", "surge", "plunge", "pressure", "rsi"]
       : ["week52", "volume", "surge", "plunge", "pressure", "winrate", "rsi"];
@@ -9801,12 +9802,32 @@ async function runEtfPopular() {
 // ---------- 비트코인 섹션 인기종목(2026-09-01): Yahoo 암호화폐 스크리너로 시가총액 상위 50개 표시 ----------
 // 행 클릭 시 코인 상세로 이동. 목록은 세션 내 캐시(재진입 시 즉시 표시) — 코인 투자안정 ③(시총 순위)도 이 목록을 공유
 let cryptoTop50CachePromise = null;
+// 코인 관리 대상 200개(2026-09-14 사용자 요청): 야후 시총 상위 100 + 업비트 KRW 마켓 중 그 100에 없는 코인을 시총순으로 100개
+// (data/crypto-extra-upbit.json — 기호·가격 일치 검증, 가격 단절 제외). 함수 이름은 호출부 호환 때문에 그대로 둠.
 function getCryptoTop100() {
   if (!cryptoTop50CachePromise) {
-    cryptoTop50CachePromise = yahooScreener("all_cryptocurrencies_us", 100)
-      .then((data) => {
-        const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
-        return quotes.filter((q) => q && q.symbol).slice(0, 100);
+    const extraPromise = fetch("data/crypto-extra-upbit.json", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+    cryptoTop50CachePromise = Promise.all([yahooScreener("all_cryptocurrencies_us", 100), extraPromise])
+      .then(([data, extra]) => {
+        const quotes = ((data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [])
+          .filter((q) => q && q.symbol)
+          .slice(0, 100);
+        const seen = new Set(quotes.map((q) => q.symbol));
+        const extras = ((extra && extra.coins) || [])
+          .filter((c) => c && c.symbol && !seen.has(c.symbol))
+          .map((c) => {
+            // 업비트 한글명으로 등록 — 상세·관심종목·검색에서 한글명으로 보이게
+            if (c.nameKo) {
+              TICKER_TO_KOREAN_NAME[c.symbol] = c.nameKo;
+              if (!KOREAN_COMPANY_NAMES[c.nameKo]) KOREAN_COMPANY_NAMES[c.nameKo] = c.symbol;
+            }
+            return { symbol: c.symbol, shortName: c.nameEn || c.base, marketCap: c.marketCapUsd || null, upbit: true };
+          });
+        // 기존 100에서 빠진 코인(가격 단절 영구 제외 등)만큼 업비트 여유분으로 채워 항상 200개
+        const base = quotes.filter((q) => !PRICE_BREAK_EXCLUDED.has(q.symbol));
+        return [...base, ...extras.filter((q) => !PRICE_BREAK_EXCLUDED.has(q.symbol))].slice(0, 200);
       })
       .catch((e) => {
         cryptoTop50CachePromise = null; // 실패는 캐시하지 않음(다음 진입 시 재시도)
@@ -11013,7 +11034,7 @@ async function runCryptoTrend() {
   statusEl.textContent = "암호화폐 목록을 불러오는 중...";
   try {
     const expanded = cryptoTrendWrExpanded;
-    const { rows, scanned, total } = await ensureCryptoScanRows(expanded ? 100 : 30, statusEl);
+    const { rows, scanned, total } = await ensureCryptoScanRows(expanded ? 200 : 30, statusEl); // 전체보기 = 200개(2026-09-14)
     if (appSectionMode !== "crypto") return;
     await attachWinRateRsiToRows(rows, "scoresCrypto"); // RSI·승률 순위용(2026-09-02)
     statusEl.style.display = "none";
@@ -11022,7 +11043,7 @@ async function runCryptoTrend() {
       assetTrendTableHtml(
         rows,
         assetTrendMetric,
-        expanded ? `암호화폐 시가총액 상위 ${total}개 전체` : `암호화폐 시가총액 상위 ${Math.min(30, scanned)}개`,
+        expanded ? `암호화폐 200개 전체(시총 상위 100 + 업비트 100)` : `암호화폐 시가총액 상위 ${Math.min(30, scanned)}개`,
         (r) => rankNameCellHtml(r.symbol, cryptoLogoHtml(cryptoBaseTicker(r.symbol)), r.name || r.symbol),
         () => "USD",
         expanded ? total : 30
@@ -14018,7 +14039,7 @@ const STABILITY_BACKTEST_META = {
   kr: { n: 50, maxScore: 10, universeLabel: "코스피200+코스닥150 약 350종목" },
   us: { n: 50, maxScore: 10, universeLabel: "S&P500 약 500종목" },
   etf: { n: 30, maxScore: 10, universeLabel: "미국+한국 ETF 시가총액 상위 200개" },
-  crypto: { n: 10, maxScore: 7, universeLabel: "암호화폐 시가총액 상위 100개" },
+  crypto: { n: 10, maxScore: 7, universeLabel: "암호화폐 200개(시총 상위 100 + 업비트 100)" },
 };
 let stabilityBacktestDbPromise = null;
 function getStabilityBacktestDb() {

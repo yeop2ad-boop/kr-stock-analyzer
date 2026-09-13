@@ -330,7 +330,7 @@ const MAP_VIEWS = {
   // ETF200(미국 100+한국 100)·비트코인50(2026-09-01 신설) — 데이터는 배치 생성 파일(etf-crypto-map.js)에서,
   // 상단 필터 칩은 52주최저~투자안정 6개만 노출(custom="asset" 계열)
   etf200: { label: "ETF200", market: "overseas", custom: "etf" },
-  crypto100: { label: "비트코인100", market: "overseas", custom: "crypto" }, // 2026-09-02 TOP50 → TOP100 확장
+  crypto100: { label: "비트코인200", market: "overseas", custom: "crypto" }, // 2026-09-02 TOP50 → TOP100, 2026-09-14 업비트 100 추가로 200(키 이름은 저장값 호환 위해 유지)
   // 최근 5년 신규 상장(IPO) 전용 보기(2026-09-11 사용자 요청) — 스팩·이전상장을 뺀 실제 신규 상장사만.
   // 데이터는 data/ipo-map.js(fetch-ipo-map.ps1)로, 12개 지표를 주식 지도와 같은 공식으로 채워두었기 때문에
   // custom(ETF·코인)과 달리 필터 칩은 주식 보기 그대로 전부 쓴다.

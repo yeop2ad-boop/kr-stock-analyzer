@@ -287,14 +287,32 @@ Write-Host "   -> ETF $($etfCompanies.Count)개"
 Write-Host "암호화폐 TOP100 목록 조회 중..."
 $scr = Invoke-RestMethod -Uri 'https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?formatted=false&lang=en-US&region=US&scrIds=all_cryptocurrencies_us&count=100' -TimeoutSec 20 -Headers $headers
 $coins = @($scr.finance.result[0].quotes | Where-Object { $_.symbol })
+# 관리 대상 200개(2026-09-14 사용자 요청): 야후 시총 상위 100 + 업비트 KRW 마켓 중 그 100에 없는 코인 시총순 100개
+# (data/crypto-extra-upbit.json). 업비트 한글명을 우선 사용한다.
+$extraKo = @{}
+$extraPath = Join-Path $root "data\crypto-extra-upbit.json"
+if (Test-Path $extraPath) {
+  $extra = (Get-Content $extraPath -Raw -Encoding UTF8) | ConvertFrom-Json
+  $coins = @($coins | Where-Object { @("GRAM-USD", "DEL-USD") -notcontains $_.symbol })
+  $haveSyms = @{}; $coins | ForEach-Object { $haveSyms[$_.symbol] = $true }
+  foreach ($c in $extra.coins) {
+    if ($coins.Count -ge 200) { break } # 여유분은 기존 100에서 빠진 만큼만 사용 — 항상 총 200
+    if (-not $haveSyms.ContainsKey($c.symbol)) {
+      $coins += [pscustomobject]@{ symbol = $c.symbol; shortName = $c.nameEn; marketCap = $c.marketCapUsd }
+      $extraKo[$c.symbol] = $c.nameKo
+    }
+  }
+}
 $cryptoCompanies = @()
 $n = $coins.Count
 for ($i = 0; $i -lt $n; $i++) {
   $qq = $coins[$i]
   $sym = $qq.symbol
+  # 가격 단절(액면 변경)이 확인돼 영구 제외한 코인(2026-09-13 사용자 요청) — 앱 PRICE_BREAK_EXCLUDED와 같은 목록
+  if (@("GRAM-USD", "DEL-USD") -contains $sym) { continue }
   $base = ($sym -replace '-USD$', '') -replace '\d+$', ''
   $ko = $CRYPTO_KO[$base]
-  $name = if ($ko) { $ko } else { ("$($qq.shortName)" -replace '\s+USD$', '') }
+  $name = if ($ko) { $ko } elseif ($extraKo.ContainsKey($sym)) { $extraKo[$sym] } else { ("$($qq.shortName)" -replace '\s+USD$', '') }
   try {
     $m = Get-DerivedMetrics $sym $false
     if ($m) {
