@@ -7340,8 +7340,8 @@ function rankCodeLabel(symbol) {
 function rankDisplayName(symbol, name, isKr) {
   return isKr ? name || symbol : TICKER_TO_KOREAN_NAME[symbol] || name || symbol;
 }
-function rankNameCellHtml(symbol, logoHtml, name, sub) {
-  return `<span class="ticker-cell rank-logo">${logoHtml}<span class="rk-name-box"><b class="ticker-link rk-name" data-ticker="${escapeHtml(symbol)}">${escapeHtml(
+function rankNameCellHtml(symbol, logoHtml, name, sub, extraCls) {
+  return `<span class="ticker-cell rank-logo">${logoHtml}<span class="rk-name-box${extraCls ? " " + extraCls : ""}"><b class="ticker-link rk-name" data-ticker="${escapeHtml(symbol)}">${escapeHtml(
     name
   )}</b><span class="rk-sub">${escapeHtml(sub === undefined ? rankCodeLabel(symbol) : sub)}</span></span></span>`;
 }
@@ -7353,7 +7353,8 @@ function rankPriceCellHtml(symbol, price, currency, changePct) {
   const shown = hasPct ? Math.round(changePct * 100) / 100 : 0; // 화면에 0.00%로 보이면 색·화살표도 없음
   const dir = shown === 0 ? 0 : shown > 0 ? 1 : -1;
   const cls = dir > 0 ? "wl-up" : dir < 0 ? "wl-down" : "";
-  return `<span class="rk-l1 ${cls}">${priceChartLink(symbol, wlNumStr(p, currency))}<span class="rk-arrow">${dir > 0 ? "▲" : dir < 0 ? "▼" : ""}</span></span><span class="rk-l2 ${cls}">${
+  const priceText = wlNumStr(p, currency);
+  return `<span class="rk-l1 ${cls}${priceText.length >= 9 ? " rk-long" : ""}">${priceChartLink(symbol, priceText)}<span class="rk-arrow">${dir > 0 ? "▲" : dir < 0 ? "▼" : ""}</span></span><span class="rk-l2 ${cls}">${
     hasPct ? `${Math.abs(changePct).toFixed(2)}%` : ""
   }</span>`;
 }
@@ -9136,7 +9137,7 @@ function popularSimpleTableHtml(rows, isKr, opts) {
     .map(
       (r) => `
       <tr>
-        <td>${rankNameCellHtml(r.symbol, logoFn(r), rankDisplayName(r.symbol, r.name, isKr))}</td>
+        <td>${opts && opts.etf ? etfRankNameCellHtml(r, isKr) : rankNameCellHtml(r.symbol, logoFn(r), rankDisplayName(r.symbol, r.name, isKr))}</td>
         <td>${rankPriceCellHtml(r.symbol, r.price, r.currency || (isKr ? "KRW" : "USD"), r.changePct)}</td>
         <td>${winRatePctCellHtml(r.winRateScore, r.winTotal, false, partialMonthsFor(r.symbol))}</td>
       </tr>`
@@ -9538,6 +9539,7 @@ async function runEtfPopular() {
     }));
     paintPopularRows(resultsEl, isKr, etfRows, "", {
       prefixHtml: etfRegionNavHtml("data-etf-popular-region"),
+      etf: true, // 이름 칸을 ETF 전용 표기(한국=상품명/브랜드, 미국=티커/상품명)로
       universeLabel: isKr ? "국내 상장 ETF 시가총액 상위 30개" : "미국 상장 ETF 순자산 상위 30개",
       logoFn: (r) => {
         if (isKr) ensureKrEtfLogoOverride(r.symbol, r.name); // 브랜드 → 운용사 그룹 CI(2026-09-03)
@@ -10911,10 +10913,24 @@ async function renderEtfHoldingsBlock(symbol, isKr) {
 // 모든 ETF 탭이 공유하는 "현재가(등락률)" 칸 — 표는 순위 / 이름 / 현재가(등락률) / 그 탭의 기준 4열로 통일(2026-09-12)
 const ETF_MID_PRICE_CELL = (r) => rankPriceCellHtml(r.symbol, r.price, r.currency, r.changePct);
 // ETF 이름 칸(3칸 틀) — 국내는 상품명, 미국은 한글명(없으면 영문 상품명) 위 + 코드·시장 아래
+// ETF 이름 칸(2026-09-13 사용자 요청):
+//  · 한국 ETF — 윗줄: 브랜드를 뗀 상품명("미국배당다우존스"), 아랫줄: 브랜드(KODEX·TIGER·ACE…). 이름은 조금 작게 해 10글자 안팎까지 보이게
+//  · 미국 ETF — 윗줄: 티커(SPY), 아랫줄: 한글명/영문 상품명(작은 글씨, 길면 …)
 function etfRankNameCellHtml(r, isKr) {
-  const badge = isKr ? KR_ETF_BRAND_BADGE_POPULAR[(r.name || "").split(" ")[0]] : undefined;
-  if (isKr) ensureKrEtfLogoOverride(r.symbol, r.name); // 브랜드 → 운용사 그룹 CI(2026-09-03)
-  return rankNameCellHtml(r.symbol, tickerLogoHtml(r.symbol, badge), rankDisplayName(r.symbol, r.name, isKr));
+  const name = String(r.name || "").trim();
+  if (isKr) {
+    const sp = name.indexOf(" ");
+    const brand = sp > 0 ? name.slice(0, sp) : "";
+    const badge = KR_ETF_BRAND_BADGE_POPULAR[brand];
+    ensureKrEtfLogoOverride(r.symbol, r.name); // 브랜드 → 운용사 그룹 CI(2026-09-03)
+    let main = sp > 0 ? name.slice(sp + 1).trim() : name || r.symbol;
+    // 브랜드만 떼면 뜻이 안 보이는 코스피200 추종 상품은 지수 이름을 붙여 줌(예: "KODEX 200" → "코스피200")
+    const KOSPI200_ALIAS = { "200": "코스피200", "레버리지": "코스피200 레버리지", "인버스": "코스피200 인버스", "200선물인버스2X": "코스피200 인버스2X" };
+    if (brand && KOSPI200_ALIAS[main]) main = KOSPI200_ALIAS[main];
+    return rankNameCellHtml(r.symbol, tickerLogoHtml(r.symbol, badge), main, brand || rankCodeLabel(r.symbol), "rk-etf-kr");
+  }
+  const sub = TICKER_TO_KOREAN_NAME[r.symbol] || (name && name !== r.symbol ? name : "");
+  return rankNameCellHtml(r.symbol, tickerLogoHtml(r.symbol), r.symbol, sub, "rk-etf-us");
 }
 const ETF_METRIC_TABS = {
   winrate: {

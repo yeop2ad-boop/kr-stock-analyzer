@@ -3030,3 +3030,13 @@ table.wr-bench-table tr.wr-bench-deposit .wr-pct { color: #0f766e; }
 
 /* 승률비교 맨 위 설명(2026-09-13 사용자 지정 문구) */
 .wr-bench-intro { margin: 0 0 10px; font-size: 13.5px; line-height: 1.6; color: var(--text); }
+
+/* ETF 이름 칸(2026-09-13 사용자 요청) — 한국 ETF는 상품명이 길어 이름 칸을 넓히고 글씨를 조금 줄여 10글자 안팎까지 보이게 */
+table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(2) { width: 27%; }
+table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
+.rk-table .rk-etf-kr .rk-name { font-size: 15px; letter-spacing: -0.6px; }
+.rk-table .rk-etf-kr .rk-sub, .rk-table .rk-etf-us .rk-sub { font-size: 12px; }
+/* 100만원 넘는 가격(예: 1,074,580)은 칸을 넘지 않게 한 단계 작게 */
+.rk-table .rk-l1.rk-long { font-size: 14.5px; letter-spacing: -0.3px; }
+.rk-table .rk-l1.rk-long .rk-arrow { width: 12px; }
+.rk-table .rk-l1.rk-long + .rk-l2 { padding-right: 12px; }
