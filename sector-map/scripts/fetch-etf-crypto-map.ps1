@@ -105,6 +105,12 @@ function Get-DerivedMetrics($symbol, $fiveYear) {
   $pairs = $allPairs
   if ($fiveYear) { $pairs = @($allPairs | Where-Object { $_.t -ge $lastAll.t - 365 * 86400 }) }
   if ($pairs.Count -lt 10) { return $null }
+  # 가격 단절 종목 제외(2026-09-13 사용자 요청): 최근 1년 중 하루에 20배 이상 뛰거나 1/20 이하로 떨어진 날이 있으면
+  # 실제 등락이 아니라 액면 변경·토큰 교환(예: 그램·데시멀 1,000:1)이라 순위·지도·승률 계산을 모두 왜곡 → 목록에서 뺀다
+  for ($i = 1; $i -lt $pairs.Count; $i++) {
+    $a = $pairs[$i - 1].c; $b = $pairs[$i].c
+    if ($a -gt 0 -and $b -gt 0 -and (($b / $a) -ge 20 -or ($a / $b) -ge 20)) { return $null }
+  }
   $last = $pairs[$pairs.Count - 1]
   $prev = $pairs[$pairs.Count - 2]
 

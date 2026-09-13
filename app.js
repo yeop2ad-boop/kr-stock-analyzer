@@ -9626,6 +9626,7 @@ async function computeChartDerivedMetrics(symbol, opts) {
     week52DrawdownPct,
     fiveYearCagr,
     firstTradeDate: meta.firstTradeDate ?? allPairs[0].t ?? null,
+    priceBreak, // 최근 1년 중 하루 20배↑·1/20↓ 가격 단절 여부 — 목록 스캔에서 제외 기준
   };
 }
 
@@ -9691,7 +9692,7 @@ function ensureEtfScanRows(region, targetCount, statusEl) {
       async (it) => {
         try {
           const m = await computeChartDerivedMetrics(it.symbol, { fiveYear: true });
-          if (!m) return null;
+          if (!m || m.priceBreak) return null; // 하루 20배↑·1/20↓ 가격 단절 종목 제외(2026-09-13)
           const wrEntry = wrMap[it.symbol] || null;
           const rsiWeekly = wrEntry && wrEntry.rsi !== null && wrEntry.rsi !== undefined ? wrEntry.rsi : null;
           const winRate = wrEntry && wrEntry.score !== null && wrEntry.score !== undefined ? wrEntry.score : null;
@@ -9819,6 +9820,9 @@ function getCryptoTop100() {
 // 시총순 TOP50의 앞에서부터 targetCount개까지만 증분 스캔(2026-09-01 단계식 개편) — 시장동향(20개 먼저)과
 // 인기종목(전체 50개)이 같은 캐시를 이어서 사용
 const cryptoScanState = { rows: [], scanned: 0, chain: Promise.resolve() };
+// 가격 단절(액면 변경·토큰 교환)이 확인돼 목록에서 뺀 코인(2026-09-13 사용자 요청) — 1년이 지나 자동 판별 창을 벗어나도 계속 제외.
+// 새로 생기는 단절은 computeChartDerivedMetrics의 priceBreak(하루 20배↑·1/20↓)로 자동 제외된다.
+const PRICE_BREAK_EXCLUDED = new Set(["GRAM-USD", "DEL-USD"]);
 function ensureCryptoScanRows(targetCount, statusEl) {
   const run = cryptoScanState.chain.then(async () => {
     const all = await getCryptoTop100();
@@ -9850,7 +9854,8 @@ function ensureCryptoScanRows(targetCount, statusEl) {
       async ({ q, i }) => {
         try {
           const m = await computeChartDerivedMetrics(q.symbol);
-          if (!m) return null;
+          // 최근 1년 중 하루 20배↑ 또는 1/20↓ 가격 단절(액면 변경·토큰 교환) 코인은 목록에서 뺀다(2026-09-13 사용자 요청)
+          if (!m || m.priceBreak || PRICE_BREAK_EXCLUDED.has(q.symbol)) return null;
           const wrEntry = wrMap[q.symbol] || null;
           const rsiWeekly = wrEntry && wrEntry.rsi !== null && wrEntry.rsi !== undefined ? wrEntry.rsi : null;
           const winRate = wrEntry && wrEntry.score !== null && wrEntry.score !== undefined ? wrEntry.score : null;
