@@ -5988,7 +5988,7 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
           : `<span>업종: <b>${escapeHtml(industryKo || "N/A")}</b></span>
         <span>섹터: <b>${escapeHtml(sectorKo || "N/A")}</b></span>
         <span>거래소: <b>${escapeHtml(krExchangeName(symbol) || quote.exchDisp || meta.fullExchangeName || "N/A")}</b></span>`}
-        <span>현재가: <b>${fmtPrice(meta.regularMarketPrice ?? 0, meta.currency)}</b> ${summaryChangeHtml}<a class="chart-link-btn" href="#" data-chart-symbol="${escapeHtml(symbol)}">📈 차트보기</a></span>
+        <span>현재가: <b>${fmtPrice(meta.regularMarketPrice ?? 0, meta.currency)}</b> ${summaryChangeHtml}</span>${/* 2026-09-13 사용자 요청: 차트보기 버튼 제거(위 차트로 충분) */ ""}
       </div>
       <div class="summary-action-row">
         <button type="button" class="summary-action-btn" id="tickerHistoricalToggleBtn" data-ticker="${escapeHtml(symbol)}">🕰️ 과거분석</button>
@@ -6238,7 +6238,7 @@ async function runAssetTickerHistorical(ticker, container, assetType) {
       chgSince !== null ? `<br><span class="${chgSince >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(chgSince)})</span>` : ""
     }</td>
           <td>${ret10yNow === null ? "N/A" : `${partialMarkHtml(wrEntryHist && wrEntryHist.total, "wr-mark-front")}<b>${ret10yNow > 0 ? "+" : ""}${Math.round(ret10yNow * 10) / 10}%</b>`}</td>
-          <td>${winRateNow === null ? "N/A" : `${partialMarkHtml(wrEntryHist && wrEntryHist.total, "wr-mark-front")}<b>${winRateNow}%</b>`}</td>
+          <td>${winRateNow === null ? "N/A" : winRatePctCellHtml(winRateNow, wrEntryHist && wrEntryHist.total, false, partialMonthsFor(ticker))}</td>
         </tr></tbody>
       </table>`;
   } catch (err) {
