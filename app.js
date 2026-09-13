@@ -9548,8 +9548,20 @@ async function computeChartDerivedMetrics(symbol, opts) {
       base3m = p;
     }
   }
-  const momentum3m = base3m && base3m.c ? ((last.c - base3m.c) / base3m.c) * 100 : null;
-  const oneYearReturn = pairs[0].c ? ((last.c - pairs[0].c) / pairs[0].c) * 100 : null;
+  const momentum3m_raw = base3m && base3m.c ? ((last.c - base3m.c) / base3m.c) * 100 : null;
+  // 1년 수익률 보정(2026-09-13 사용자 지적 "코인 수익률 1000% 넘는 종목"):
+  //  ① 상장 1년이 안 된 종목은 야후가 상장일부터만 줘서, 상장가 대비 상승률이 1년 수익률로 둔갑됐다(예: Bitway 6개월 +8,316%) → N/A
+  //  ② 하루에 20배 이상 뛰거나 1/20로 떨어진 가격 단절은 실제 등락이 아니라 액면 변경·토큰 교환(1,000:1 리디노미네이션 등)
+  //     (예: 그램·데시멀이 하루 만에 약 1,000배) → 그 구간을 잇는 수익률·변동성은 의미가 없어 N/A
+  const isBreakStep = (a, b) => a > 0 && b > 0 && (b / a >= 20 || a / b >= 20);
+  let lastBreakT = null; // 가장 최근 단절 시각 — 그 이전을 기준점으로 쓰는 수익률은 전부 무효
+  for (let i = 1; i < pairs.length; i++) {
+    if (isBreakStep(pairs[i - 1].c, pairs[i].c)) lastBreakT = pairs[i].t;
+  }
+  const priceBreak = lastBreakT !== null;
+  const momentum3m = momentum3m_raw !== null && !(priceBreak && base3m && lastBreakT > base3m.t) ? momentum3m_raw : null;
+  const hasFullYear = pairs[0].t <= last.t - 335 * 86400;
+  const oneYearReturn = !priceBreak && hasFullYear && pairs[0].c ? ((last.c - pairs[0].c) / pairs[0].c) * 100 : null;
   // 한달 수익률(2026-09-02) — ETF·코인 과거분석(한달상승/하락)·코인 상승압력 ②용, 30일 전에 가장 가까운 종가 기준
   const target1m = last.t - 30 * 86400;
   let base1m = null;
@@ -9561,18 +9573,18 @@ async function computeChartDerivedMetrics(symbol, opts) {
       base1m = p;
     }
   }
-  const monthReturn = base1m && base1m.c ? ((last.c - base1m.c) / base1m.c) * 100 : null;
+  const monthReturn = base1m && base1m.c && !(lastBreakT !== null && lastBreakT > base1m.t) ? ((last.c - base1m.c) / base1m.c) * 100 : null;
 
   const rets = [];
   for (let i = 1; i < pairs.length; i++) {
-    if (pairs[i - 1].c) rets.push(Math.abs((pairs[i].c - pairs[i - 1].c) / pairs[i - 1].c) * 100);
+    if (pairs[i - 1].c && !isBreakStep(pairs[i - 1].c, pairs[i].c)) rets.push(Math.abs((pairs[i].c - pairs[i - 1].c) / pairs[i - 1].c) * 100);
   }
   const r30 = rets.slice(-30);
   const volatility = r30.length ? r30.reduce((a, b) => a + b, 0) / r30.length : null;
   // 최근 3개월 일평균 변동(|일간 등락률| 평균) — ETF 인사이트 "변동성 순위"용(2026-09-10 사용자 요청)
   const rets3m = [];
   for (let i = 1; i < pairs.length; i++) {
-    if (pairs[i].t >= last.t - 91 * 86400 && pairs[i - 1].c) rets3m.push(Math.abs((pairs[i].c - pairs[i - 1].c) / pairs[i - 1].c) * 100);
+    if (pairs[i].t >= last.t - 91 * 86400 && pairs[i - 1].c && !isBreakStep(pairs[i - 1].c, pairs[i].c)) rets3m.push(Math.abs((pairs[i].c - pairs[i - 1].c) / pairs[i - 1].c) * 100);
   }
   const volatility3m = rets3m.length >= 20 ? rets3m.reduce((a, b) => a + b, 0) / rets3m.length : null;
 
