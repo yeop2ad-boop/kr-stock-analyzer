@@ -6366,7 +6366,7 @@ async function renderSummaryScoreRow(ticker, scoreMode = "stock") {
       // 2026-09-13 사용자 요청("더 깔끔하고 현대적으로"): O/X 격자 대신 카드 + 요약 칩 + 기준선 위아래로 뻗는 월별 막대.
       // 막대 길이는 12개월 중 가장 크게 움직인 달 기준 비율, 오르면 위(상승색)·내리면 아래(하락색), 값은 막대 끝에 작게.
       const maxAbs = Math.max(...m12.map((v) => Math.abs(v)), 1);
-      const fmtV = (v) => `${v > 0 ? "+" : ""}${Math.round(v)}`;
+      const fmtV = (v) => `${v > 0 ? "+" : ""}${Math.round(v)}%`; // 2026-09-13 사용자 요청: 숫자에 % 직접 표기
       const cols = m12
         .map((v, i) => {
           const mo = monthOf(i);
@@ -6375,7 +6375,7 @@ async function renderSummaryScoreRow(ticker, scoreMode = "stock") {
           const h = Math.max(3, Math.round((Math.abs(v) / maxAbs) * 30)); // px — 칸(44px)에서 값 글자(12px)를 뺀 30px가 최대
           const up = v > 0;
           const isLast = i === m12.length - 1;
-          return `<div class="oxb-col${isLast ? " oxb-last" : ""}" title="${moLabel} ${fmtV(v)}%">
+          return `<div class="oxb-col${isLast ? " oxb-last" : ""}" title="${moLabel} ${fmtV(v)}">
             <div class="oxb-half oxb-top">${up ? `<span class="oxb-val oxb-up">${fmtV(v)}</span><span class="oxb-bar oxb-up" style="height:${h}px"></span>` : ""}</div>
             <div class="oxb-half oxb-bottom">${up ? "" : `<span class="oxb-bar oxb-down" style="height:${h}px"></span><span class="oxb-val oxb-down">${fmtV(v)}</span>`}</div>
             <span class="oxb-month">${moLabel}</span>
@@ -6392,13 +6392,15 @@ async function renderSummaryScoreRow(ticker, scoreMode = "stock") {
               <span class="oxb-title">최근 ${m12.length}개월</span>
               ${rangeLabel ? `<span class="oxb-range">${rangeLabel}</span>` : ""}
             </div>
+            <div class="oxb-wr-big"><span>${m12.length}개월 승률:</span><b>${winPct}%</b></div>
+          </div>
+          <div class="oxb-subrow">
             <div class="oxb-chips">
-              <span class="oxb-chip"><b class="oxb-up">${winCount}승</b><b class="oxb-down">${m12.length - winCount}패</b><i>|</i><b class="oxb-wr">${winPct}%</b></span>
+              <span class="oxb-chip"><b class="oxb-up">${winCount}승</b><b class="oxb-down">${m12.length - winCount}패</b></span>
               <span class="oxb-chip">합계 <b class="${sum > 0 ? "oxb-up" : sum < 0 ? "oxb-down" : ""}">${sum > 0 ? "+" : ""}${sum}%</b></span>
             </div>
           </div>
           <div class="oxb-chart" style="grid-template-columns:repeat(${m12.length},1fr);">${cols}</div>
-          <p class="oxb-caption">막대 끝 숫자는 그달 등락률(%)</p>
         </div>`;
     }
 
