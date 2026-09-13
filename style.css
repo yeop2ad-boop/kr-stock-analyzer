@@ -3123,3 +3123,11 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .detail-identity-subrow { display: flex; align-items: center; gap: 5px; min-width: 0; }
 .detail-identity-subrow .section-mark { margin-left: 0; }
 .detail-identity-ticker { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: 0.2px; white-space: nowrap; }
+
+/* 승률이란 설명 글씨 한 단계 작게 + 핵심 문장 강조(2026-09-13) */
+.wr-intro-q { font-size: 15px; }
+.wr-intro-def { font-size: 13.5px; line-height: 1.65; }
+.wr-intro-note { font-size: 13px; line-height: 1.65; }
+.wr-intro .wr-intro-key { color: var(--text); font-weight: 800; background: linear-gradient(transparent 58%, rgba(109, 40, 217, 0.18) 58%); padding: 0 1px; }
+/* 12개월 카드가 버튼 아래 펼침 영역에 들어갈 때 위 여백 줄임 */
+#oxInlineWrap .oxb-card { margin-top: 10px; }

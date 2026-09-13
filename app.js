@@ -91,6 +91,10 @@ const historicalMonthDownBtn = el("historicalMonthDownBtn");
 const historicalInlineWrap = el("historicalInlineWrap");
 const futureInlineWrap = el("futureInlineWrap");
 const sReportInlineWrap = el("sReportInlineWrap");
+// 개요 "📊 12개월 승률" 버튼으로 여닫는 12개월 카드 자리(2026-09-13) — 다른 펼침 섹션처럼 요약 영역 안으로 옮겨 붙임
+const oxInlineWrap = document.createElement("div");
+oxInlineWrap.id = "oxInlineWrap";
+oxInlineWrap.style.display = "none";
 const indexStatus = el("indexStatus");
 const indexResults = el("indexResults");
 const valuationStatus = el("valuationStatus");
@@ -5990,6 +5994,8 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
         <button type="button" class="summary-action-btn" id="tickerHistoricalToggleBtn" data-ticker="${escapeHtml(symbol)}">🕰️ 과거분석</button>
         <button type="button" class="summary-action-btn" id="tickerFutureToggleBtn" data-ticker="${escapeHtml(symbol)}">🔮 미래예측</button>
         <button type="button" class="summary-action-btn" id="tickerSReportToggleBtn">📄 s리포트</button>
+        <button type="button" class="summary-action-btn" id="tickerOxToggleBtn">📊 12개월 승률</button>
+        ${summaryAssetSection === "etf" ? `<button type="button" class="summary-action-btn" id="tickerHoldingsToggleBtn">📦 보유 종목</button>` : ""}
       </div>
     </div>
     <div id="etfHoldingsBlock" class="etf-holdings-block" style="display:none;"></div>
@@ -6005,7 +6011,7 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   // 2026-09-13 사용자 요청: ETF는 버튼 아래에 보유종목 TOP10 블록이 있어 그 밑에서 열렸음 → 보유종목 블록 "앞"(버튼 바로 아래)에 끼움
   const holdingsAnchor = el("etfHoldingsBlock");
   if (holdingsAnchor) el("summarySection").insertBefore(el("tickerHistoricalRow"), holdingsAnchor);
-  [historicalInlineWrap, futureInlineWrap, sReportInlineWrap].forEach((wrap) => {
+  [historicalInlineWrap, futureInlineWrap, sReportInlineWrap, oxInlineWrap].forEach((wrap) => {
     wrap.style.display = "none";
     wrap.classList.remove("section-expanded");
     if (holdingsAnchor) el("summarySection").insertBefore(wrap, holdingsAnchor);
@@ -6015,13 +6021,39 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   const toggleBtn = el("tickerHistoricalToggleBtn");
   const futureToggleBtn = el("tickerFutureToggleBtn");
   const sReportToggleBtn = el("tickerSReportToggleBtn");
+  const oxToggleBtn = el("tickerOxToggleBtn");
+  const holdingsToggleBtn = el("tickerHoldingsToggleBtn");
   const row = el("tickerHistoricalRow");
 
   const sections = [
     { btn: toggleBtn, els: [row, historicalInlineWrap] },
     { btn: futureToggleBtn, els: [futureInlineWrap] },
     { btn: sReportToggleBtn, els: [sReportInlineWrap] },
+    { btn: oxToggleBtn, els: [oxInlineWrap] },
   ];
+  if (holdingsToggleBtn) sections.push({ btn: holdingsToggleBtn, els: [holdingsAnchor] });
+  // 12개월 승률·보유 종목(2026-09-13 사용자 요청: 개요가 난잡해서 버튼으로 접어 둠) — 누르면 버튼 바로 아래에 펼침
+  const bindSimpleToggle = (btn, wrap, onOpen) => {
+    if (!btn || !wrap) return;
+    btn.addEventListener("click", () => {
+      const isOpen = wrap.style.display !== "none";
+      closeAllSections(btn);
+      if (isOpen) {
+        wrap.style.display = "none";
+        btn.classList.remove("active");
+        return;
+      }
+      wrap.style.display = "block";
+      btn.classList.add("active");
+      if (onOpen) onOpen();
+    });
+  };
+  bindSimpleToggle(oxToggleBtn, oxInlineWrap, () => {
+    if (!oxInlineWrap.innerHTML.trim()) oxInlineWrap.innerHTML = `<p class="muted" style="padding:10px 2px;margin:0;">최근 12개월 승패 데이터가 아직 없습니다.</p>`;
+  });
+  bindSimpleToggle(holdingsToggleBtn, holdingsAnchor, () => {
+    if (!holdingsAnchor.innerHTML.trim()) holdingsAnchor.innerHTML = `<p class="muted" style="padding:10px 2px;margin:0;">보유 종목 정보가 없습니다.</p>`;
+  });
   function closeAllSections(exceptBtn) {
     sections.forEach(({ btn, els }) => {
       if (btn === exceptBtn) return;
@@ -6334,6 +6366,7 @@ function nineFmtNum(v, signed) {
 }
 async function renderSummaryScoreRow(ticker, scoreMode = "stock") {
   const rowEl = el("summaryScoreRow");
+  oxInlineWrap.innerHTML = ""; // 이전 종목 카드가 남지 않게
   try {
     const db = await getWinRateDb().catch(() => null);
     const wrMap = winRateMapForMode(db, ticker, scoreMode);
@@ -6427,9 +6460,12 @@ async function renderSummaryScoreRow(ticker, scoreMode = "stock") {
         </div>`;
     }
 
-    rowEl.innerHTML = gridHtml + oxHtml;
+    // 원판 3개는 그대로 보이고, 12개월 카드는 "📊 12개월 승률" 버튼 자리(oxInlineWrap)에 채워 둠(2026-09-13)
+    rowEl.innerHTML = gridHtml;
+    oxInlineWrap.innerHTML = oxHtml;
   } catch {
     rowEl.innerHTML = "";
+    oxInlineWrap.innerHTML = "";
   }
 }
 
@@ -7809,7 +7845,7 @@ function winRateBenchmarkHtml(svg, rows) {
     <div class="wr-intro">
       <p class="wr-intro-q">10년평균 승률이란?</p>
       <p class="wr-intro-def">최근 10년(최대 120개월) 동안 <b>전달보다 오르며 마감한 달의 비율</b>입니다.</p>
-      <p class="wr-intro-note">수익률의 크기가 아니라 <b>이긴 횟수</b>라, 높을수록 꾸준히 우상향했다는 뜻입니다.</p>
+      <p class="wr-intro-note">수익률의 크기가 아니라 <b>이긴 횟수</b>라, <b class="wr-intro-key">높을수록 꾸준히 우상향했다는 뜻</b>입니다.</p>
     </div>
     <h3 class="future-chart-subheading">📐 대표자산 10년평균 승률비교</h3>
     ${svg}
@@ -10969,6 +11005,8 @@ async function renderEtfHoldingsBlock(symbol, isKr) {
   if (!info || !info.holdings || !info.holdings.length) {
     box.innerHTML = "";
     box.style.display = "none";
+    const hb = el("tickerHoldingsToggleBtn"); // 보유 종목 공시가 없는 ETF는 버튼도 뺌
+    if (hb) hb.remove();
     return;
   }
   const paint = () => {
@@ -11036,7 +11074,7 @@ async function renderEtfHoldingsBlock(symbol, isKr) {
         paint();
       });
   };
-  box.style.display = "block";
+  // 2026-09-13: 보유 종목은 "📦 보유 종목" 버튼을 눌렀을 때만 보임 — 여기서는 내용만 채우고 표시 상태는 건드리지 않음
   paint();
 }
 
