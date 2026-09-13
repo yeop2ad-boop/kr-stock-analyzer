@@ -6364,13 +6364,77 @@ function nineFmtNum(v, signed) {
   const r = Math.round(v * 10) / 10;
   return `${signed && r > 0 ? "+" : ""}${r}`;
 }
+// 배치(fetch-winrate-scores.ps1)와 같은 공식: 월봉 11년에서 진행 중인 이번 달 제외 → 최근 최대 120개월 상승 비율(score),
+// 연복리 수익률(ret10y), 최근 12개월 월간 등락(m12, to=마지막 월), 주봉 RSI(14) 현재값
+const liveWinRateCache = new Map();
+function computeLiveWinRateEntry(ticker) {
+  if (!liveWinRateCache.has(ticker)) {
+    const p = (async () => {
+      const [mo, wk] = await Promise.all([yahooChart(ticker, "11y", "1mo"), yahooChart(ticker, "2y", "1wk").catch(() => null)]);
+      // 월봉 시각은 거래소 현지 1일 0시라 한국 종목은 UTC로 전달 말일로 찍힘 — 하루 더해 달을 판별
+      const monthOfT = (t) => new Date((t + 86400) * 1000);
+      let pairs = chartClosePairs(mo);
+      // 야후는 이번 달 월봉(1일자)에 더해 "지금 시각" 봉을 하나 더 붙여 줄 때가 있어, 이번 달에 속한 봉은 전부 뺀다
+      const now = new Date();
+      while (pairs.length) {
+        const last = monthOfT(pairs[pairs.length - 1].t);
+        if (last.getUTCFullYear() === now.getUTCFullYear() && last.getUTCMonth() === now.getUTCMonth()) pairs = pairs.slice(0, -1);
+        else break;
+      }
+      if (pairs.length > 121) pairs = pairs.slice(-121);
+      const total = pairs.length - 1;
+      if (total < 6) return null; // 배치와 같이 상장 6개월 미만은 제외
+      let up = 0;
+      for (let i = 1; i < pairs.length; i++) if (pairs[i].c > pairs[i - 1].c) up++;
+      const m12 = [];
+      for (let i = Math.max(1, pairs.length - 12); i < pairs.length; i++) {
+        if (pairs[i - 1].c) m12.push(Math.round((pairs[i].c / pairs[i - 1].c - 1) * 1000) / 10);
+      }
+      const ratio = pairs[0].c > 0 ? pairs[pairs.length - 1].c / pairs[0].c : null;
+      const ret10y = total >= 12 && ratio > 0 ? Math.round((Math.pow(ratio, 12 / total) - 1) * 1000) / 10 : null;
+      const lastD = monthOfT(pairs[pairs.length - 1].t);
+      const to = `${lastD.getUTCFullYear()}-${String(lastD.getUTCMonth() + 1).padStart(2, "0")}`;
+      let rsi = null;
+      const wp = wk ? chartClosePairs(wk).map((x) => x.c) : [];
+      if (wp.length > 15) {
+        let g = 0;
+        let l = 0;
+        for (let i = 1; i <= 14; i++) {
+          const d = wp[i] - wp[i - 1];
+          if (d > 0) g += d;
+          else l -= d;
+        }
+        g /= 14;
+        l /= 14;
+        for (let i = 15; i < wp.length; i++) {
+          const d = wp[i] - wp[i - 1];
+          g = (g * 13 + Math.max(d, 0)) / 14;
+          l = (l * 13 + Math.max(-d, 0)) / 14;
+        }
+        rsi = l === 0 ? 100 : Math.round((100 - 100 / (1 + g / l)) * 10) / 10;
+      }
+      return { score: Math.round((up / total) * 1000) / 10, up, total, to, ret10y, rsi, m12, live: true };
+    })().catch((err) => {
+      liveWinRateCache.delete(ticker);
+      throw err;
+    });
+    liveWinRateCache.set(ticker, p);
+  }
+  return liveWinRateCache.get(ticker);
+}
 async function renderSummaryScoreRow(ticker, scoreMode = "stock") {
   const rowEl = el("summaryScoreRow");
   oxInlineWrap.innerHTML = ""; // 이전 종목 카드가 남지 않게
   try {
     const db = await getWinRateDb().catch(() => null);
     const wrMap = winRateMapForMode(db, ticker, scoreMode);
-    const e = (wrMap && wrMap[ticker]) || null;
+    let e = (wrMap && wrMap[ticker]) || null;
+    // 배치 DB는 S&P500·코스피200+코스닥150·ETF200·코인100만 담고 있어서, 그 밖의 종목(BTSG 같은 최근 상장·중소형주)은
+    // 원판·12개월 카드가 통째로 비었다(2026-09-13 사용자 지적) — 야후 월봉/주봉으로 같은 공식을 즉석 계산해 채움
+    if (!e) {
+      e = await computeLiveWinRateEntry(ticker).catch(() => null);
+      if (e && wrMap) wrMap[ticker] = e; // 같은 세션의 INVEST점수 등 다른 화면도 이 값을 재사용
+    }
     if (!e) {
       rowEl.innerHTML = "";
       return;

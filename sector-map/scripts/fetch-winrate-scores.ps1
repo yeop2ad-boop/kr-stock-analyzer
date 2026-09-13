@@ -99,11 +99,16 @@ function Get-UniverseScores($symbols, $label) {
         $urlMo = "https://query1.finance.yahoo.com/v8/finance/chart/$([uri]::EscapeDataString($sym))?range=11y&interval=1mo"
         $respMo = Invoke-RestMethod -Uri $urlMo -Headers $headers -TimeoutSec 30
         $sorted = Get-SortedClosePairs $respMo
-        if ($sorted.Count -gt 0) {
-          $lastDate = [DateTimeOffset]::FromUnixTimeSeconds($sorted[$sorted.Count - 1].t)
-          if ($lastDate.Year -eq ([DateTimeOffset]::UtcNow).Year -and $lastDate.Month -eq ([DateTimeOffset]::UtcNow).Month) {
+        # 진행 중인 이번 달 봉은 전부 제외(2026-09-13 수정): 야후는 이번 달 1일자 월봉 + "지금 시각" 봉을 둘 다 줄 때가 있어
+        # 예전처럼 마지막 1개만 빼면 이번 달 미완성 봉이 남았다. 또 월봉 시각이 거래소 현지 1일 0시라 한국 종목은 UTC로
+        # 전달 말일(예: 08-31T15:00Z)로 찍혀 달 판별이 한 달 밀렸다 → 하루(+86400초) 더해서 달을 판별한다.
+        $nowUtc0 = [DateTimeOffset]::UtcNow
+        while ($sorted.Count -gt 0) {
+          $lastDate = [DateTimeOffset]::FromUnixTimeSeconds($sorted[$sorted.Count - 1].t + 86400)
+          if ($lastDate.Year -eq $nowUtc0.Year -and $lastDate.Month -eq $nowUtc0.Month) {
+            if ($sorted.Count -le 1) { $sorted = @(); break }
             $sorted = $sorted[0..($sorted.Count - 2)]
-          }
+          } else { break }
         }
         if ($sorted.Count -gt 121) { $sorted = $sorted[($sorted.Count - 121)..($sorted.Count - 1)] }
         $up = 0
@@ -157,8 +162,8 @@ function Get-UniverseScores($symbols, $label) {
           score  = [Math]::Round($up / $total * 100, 1)
           up     = $up
           total  = $total
-          from   = [DateTimeOffset]::FromUnixTimeSeconds($sorted[0].t).ToString("yyyy-MM")
-          to     = [DateTimeOffset]::FromUnixTimeSeconds($sorted[$sorted.Count - 1].t).ToString("yyyy-MM")
+          from   = [DateTimeOffset]::FromUnixTimeSeconds($sorted[0].t + 86400).ToString("yyyy-MM")
+          to     = [DateTimeOffset]::FromUnixTimeSeconds($sorted[$sorted.Count - 1].t + 86400).ToString("yyyy-MM")
           rsi    = $rsi
           wr1y   = $wr1y
           ret10y = $ret10y
