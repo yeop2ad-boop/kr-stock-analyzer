@@ -7844,8 +7844,7 @@ function winRateBenchmarkHtml(svg, rows) {
   return `
     <div class="wr-intro">
       <p class="wr-intro-q">10년평균 승률이란?</p>
-      <p class="wr-intro-def">최근 10년(최대 120개월) 동안 <b>전달보다 오르며 마감한 달의 비율</b>입니다.</p>
-      <p class="wr-intro-note">수익률의 크기가 아니라 <b>이긴 횟수</b>라, <b class="wr-intro-key">높을수록 꾸준히 우상향했다는 뜻</b>입니다.</p>
+      <p class="wr-intro-def">최근 10년(최대 120개월) 동안 <b>전달보다 오르며 마감한 달의 비율</b>입니다. 수익률의 크기가 아니라 <b>이긴 횟수</b>라, <b class="wr-intro-key">높을수록 꾸준히 우상향했다는 뜻입니다.</b></p>
     </div>
     <h3 class="future-chart-subheading">📐 대표자산 10년평균 승률비교</h3>
     ${svg}
