@@ -9800,6 +9800,11 @@ async function ensureIpoQuotes(rows, onProgress) {
     if (onProgress) onProgress(done, rows.length);
   });
 }
+// 상장일을 짧게 "21.11/29"(연.월/일) 형태로(2026-09-13 사용자 요청)
+function ipoMonthsLabel(r) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(r.pricedDate || ""));
+  return m ? `${m[1].slice(2)}.${m[2]}/${m[3]}` : "";
+}
 function ipoDollarVolumeOf(r) {
   const q = ipoQuoteCache.get(r.symbol);
   return q && Number.isFinite(q.dollarVolume) ? q.dollarVolume : -1;
@@ -9870,9 +9875,10 @@ async function runIpoList() {
         // 승률만 남기고 ⚠️는 뺀다(IPO는 전부 상장 10년 미만이라 표시가 의미 없음). 표본이 모자라면 상장 개월수
         const wrCell = Number.isFinite(r.winRate) ? winRatePctCellHtml(r.winRate, null) : `<span class="muted">상장 ${r.months || 0}개월</span>`;
         const code = String(r.symbol || "").replace(/\.(KS|KQ)$/, "");
+        // 상장 시기는 "21.11/29"처럼 짧게(2026-09-13 사용자 요청)
         return `
         <tr>
-          <td>${rankNameCellHtml(r.symbol, ipoLogoHtml(r), ipoShortName(ipoDisplayName(r)), `${code} · ${r.pricedDate || ""}`)}</td>
+          <td>${rankNameCellHtml(r.symbol, ipoLogoHtml(r), ipoShortName(ipoDisplayName(r)), `${code} · ${ipoMonthsLabel(r)}`)}</td>
           <td>${rankPriceCellHtml(r.symbol, q && Number.isFinite(q.price) ? q.price : r.price, currency, q ? q.changePct : null)}</td>
           <td>${wrCell}</td>
         </tr>`;
@@ -9885,7 +9891,7 @@ async function runIpoList() {
         ${TAP_HINT_HTML}
         <table class="top30-table rk-table">
           <thead><tr>
-            <th data-explain="기업명과 상장일입니다. 누르면 그 종목의 분석 화면으로 이동합니다.">기업명<br>(상장 시기)</th>
+            <th data-explain="기업명과 상장일(연.월/일)입니다. 누르면 그 종목의 분석 화면으로 이동합니다.">기업명<br>(상장 시기)</th>
             <th data-explain="현재가와 전일 종가 대비 오늘 등락률입니다. 최대 20분 지연될 수 있습니다. 숫자를 누르면 차트가 열립니다.">현재가<br>(등락률)</th>
             <th data-explain="10년평균 승률 — 상장 이후 월 단위로 오르며 마감한 달의 비율입니다. 상장 6개월이 안 된 종목은 표본이 모자라 승률 대신 상장 개월수를 보여줍니다.">10년평균<br>승률</th>
           </tr></thead>
