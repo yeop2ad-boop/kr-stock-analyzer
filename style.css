@@ -3108,3 +3108,6 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .oxb-wr-big span { font-size: 12.5px; font-weight: 700; color: var(--muted); }
 .oxb-wr-big b { font-size: 24px; font-weight: 900; color: var(--winrate); letter-spacing: -0.5px; line-height: 1; }
 .oxb-subrow { margin-bottom: 12px; }
+
+/* 관심종목 화면의 자기진단 배너·고정 막대 숨김(2026-09-13 사용자 요청) */
+#panelWatchlist #selfTestOpenBtn, #panelWatchlist #watchlistSelfTestPin { display: none !important; }

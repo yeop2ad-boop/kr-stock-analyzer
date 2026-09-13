@@ -4173,7 +4173,8 @@ async function renderWatchlistList() {
     wlLastRowsBySymbol = new Map(sorted.map((r) => [r.symbol, r]));
     wlWrDbCache = wrDbForWl;
     listEl.innerHTML = sorted.length
-      ? `<div class="idx-list">${sorted.map((r) => `<div class="wl-card-wrap">${stockCardRowHtml(r)}${wlBuyDetailStripHtml(r, wrDbForWl)}</div>`).join("")}</div>`
+      ? // 2026-09-13 사용자 요청: 매수가 상세입력(신호등 줄)은 전부 없앰 — 입력해 둔 종목도 더 이상 표시하지 않음
+        `<div class="idx-list">${sorted.map((r) => `<div class="wl-card-wrap">${stockCardRowHtml(r)}</div>`).join("")}</div>`
       : `<p class="muted" style="padding:12px 0;">종목 정보를 불러오지 못했습니다.</p>`;
   } catch (e) {
     statusEl.style.display = "block";
@@ -5916,7 +5917,11 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
 
   // 지정 로고(override)가 있으면 그걸 쓰고, 없으면 기존 자동 소스(logo.dev/FMP) 사용
   // 코인은 자체 호스팅 로고 DB, 한국 ETF는 브랜드 → 운용사 그룹 CI를 우선 적용(2026-09-03)
-  if (summaryAssetSection === "etf" && isKrTicker(symbol)) ensureKrEtfLogoOverride(symbol, TICKER_TO_KOREAN_NAME[symbol] || companyName);
+  // 국내 ETF는 야후 이름이 영문("Samsung KODEX ...")이라 브랜드를 못 찾던 문제 — 국내 ETF 한글 상품명 목록을 먼저 받아 그 이름으로 판별(2026-09-13)
+  if (summaryAssetSection === "etf" && isKrTicker(symbol)) {
+    await getKrEtfFullList().catch(() => null);
+    ensureKrEtfLogoOverride(symbol, ETF_NAME_BY_SYMBOL.get(symbol) || TICKER_TO_KOREAN_NAME[symbol] || companyName);
+  }
   if (summaryAssetSection === "etf") registerEtfName(symbol, TICKER_TO_KOREAN_NAME[symbol] || companyName);
   const _cryptoLogoSrc = summaryAssetSection === "crypto" ? cryptoLogoSrc(cryptoBaseTicker(symbol)) : null;
   const _logoOv = LOGO_OVERRIDE[symbol] || (_cryptoLogoSrc ? { src: _cryptoLogoSrc } : null);
@@ -5924,8 +5929,8 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   const _logoBg = logoBg(symbol);
   const summaryLogoWrapStyle = _logoBg ? ` style="background:${_logoBg}"` : "";
   // ETF 상세 헤더도 목록과 같은 로고를 써야 같은 종목으로 알아본다 — 실제 로고가 없을 때만 테마 이모지(2026-09-11)
-  const _etfEmoji =
-    summaryAssetSection === "etf" && !hasRealEtfLogo(symbol) ? etfThemeOf(TICKER_TO_KOREAN_NAME[symbol] || companyName || "", symbol) : null;
+  // 2026-09-13 사용자 요청: 이모지 로고는 쓰지 않음 — 로고가 없으면 이미지 실패 시 글자 배지로 떨어짐
+  const _etfEmoji = null;
   const summaryLogoImg = _etfEmoji
     ? `<span class="summary-etf-emoji">${etfThemeMarkHtml(_etfEmoji)}</span>`
     : _logoOv
@@ -13645,6 +13650,8 @@ const LOGO_ONERROR = "var f=this.dataset.fallback; if(f){this.removeAttribute('d
 // 특정 종목은 자체 호스팅한 지정 로고로 대체(자동 소스 화질/누락 문제 대응). bg로 원 배경색을 채워 로고가 잘리지 않게 함.
 const SKHYNIX_LOGO = { src: "logos/skhynix.png", bg: "#ffffff" };
 const LOGO_OVERRIDE = {
+  // 카카오뱅크(2026-09-13 사용자 요청): FMP 로고는 검은 B 글자만 와서, 실제 앱 아이콘처럼 노란 둥근 사각형 위 B로 합성해 자체 호스팅
+  "323410.KS": { src: "logos/kakaobank.png" },
   // 스페이스X(SPCX)는 기존 자동 로고 유지 — 전역 인셋(72%)으로 축소되어 잘리지 않음
   SKHY: SKHYNIX_LOGO, // SK하이닉스 나스닥 ADR(2026-07 상장)
   SKHYV: SKHYNIX_LOGO, // 상장 초기 임시 심볼
@@ -13794,10 +13801,13 @@ function tickerLogoHtml(symbol, badgeLabel) {
   // 그런 로고가 없는 종목만 추종 대상 테마 이모지로 떨어뜨린다. 레버리지·인버스 배지는 양쪽 다 붙는다.
   const etfName = ETF_NAME_BY_SYMBOL.get(symbol);
   if (etfName) {
+    // 2026-09-13 사용자 지적("ETF 중 아직 이모지 로고"): 브랜드 로고 등록은 ETF 탭 렌더 직전에만 해서,
+    // 관심종목·검색·상세처럼 그 경로를 안 거친 곳에선 KODEX도 이모지로 떨어졌다 — 여기서 항상 먼저 등록
+    if (isKrTicker(symbol)) ensureKrEtfLogoOverride(symbol, etfName);
     const mult = etfMultBadgeHtml(etfName);
     if (hasRealEtfLogo(symbol)) return realLogoHtml(symbol, badgeLabel, mult);
-    const emojiLogo = etfEmojiLogoHtml(symbol);
-    if (emojiLogo) return emojiLogo;
+    // 로고가 없는 소형 운용사(마이티·MIDAS 등)는 테마 이모지 대신 브랜드 글자 배지로(2026-09-13 사용자 요청: "이모지는 로고로")
+    return realLogoHtml(symbol, badgeLabel || etfName.split(" ")[0].slice(0, 2), mult);
   }
   const ov = LOGO_OVERRIDE[symbol];
   const bg = logoBg(symbol);
