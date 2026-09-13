@@ -3071,3 +3071,29 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 :root[data-theme="dark"] .summary-ticker-logo-wrap { background: #fff; border-radius: 8px; padding: 3px; box-sizing: border-box; }/* 로고를 키운 만큼 현재가·등락률이 두 줄로 밀리지 않게 한 줄 고정 */
 .detail-identity-priceline { flex-wrap: nowrap; white-space: nowrap; gap: 4px; }
 .detail-identity-logo .ticker-logo-wrap { width: 36px; height: 36px; }
+
+/* 최근 12개월 카드(2026-09-13 사용자 요청: 더 깔끔하고 현대적으로) — 요약 칩 + 기준선 위아래 월별 막대 */
+.oxb-card { margin-top: 16px; padding: 14px 12px 10px; border-radius: 16px; background: var(--subtle-fill); }
+.oxb-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.oxb-title-wrap { display: flex; align-items: baseline; gap: 6px; }
+.oxb-title { font-size: 15px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+.oxb-range { font-size: 11.5px; font-weight: 600; color: var(--muted); }
+.oxb-chips { display: flex; gap: 5px; }
+.oxb-chip { display: inline-flex; align-items: center; gap: 3px; padding: 4px 9px; border-radius: 999px; background: var(--bg); font-size: 11.5px; font-weight: 600; color: var(--muted); white-space: nowrap; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); }
+.oxb-chip b { font-weight: 800; color: var(--text); }
+.oxb-chip i { font-style: normal; color: var(--border); }
+.oxb-up { color: var(--pos) !important; }
+.oxb-down { color: var(--neg) !important; }
+.oxb-chart { display: grid; column-gap: 4px; position: relative; }
+.oxb-col { display: flex; flex-direction: column; align-items: stretch; min-width: 0; }
+.oxb-half { height: 44px; display: flex; flex-direction: column; align-items: center; }
+.oxb-top { justify-content: flex-end; border-bottom: 1px solid var(--border); }
+.oxb-bottom { justify-content: flex-start; }
+.oxb-bar { display: block; width: 100%; max-width: 16px; min-height: 3px; }
+.oxb-bar.oxb-up { background: var(--pos); border-radius: 5px 5px 1px 1px; }
+.oxb-bar.oxb-down { background: var(--neg); border-radius: 1px 1px 5px 5px; }
+.oxb-val { font-size: 9.5px; font-weight: 700; line-height: 12px; letter-spacing: -0.4px; white-space: nowrap; }
+.oxb-month { margin-top: 4px; text-align: center; font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: -0.4px; white-space: nowrap; }
+.oxb-last .oxb-month { color: var(--text); font-weight: 800; }
+.oxb-caption { margin: 8px 0 0; font-size: 10.5px; color: var(--muted); text-align: right; }
+@media (max-width: 360px) { .oxb-chip { padding: 3px 7px; font-size: 10.5px; } .oxb-val, .oxb-month { font-size: 9px; } }

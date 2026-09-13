@@ -6363,25 +6363,43 @@ async function renderSummaryScoreRow(ticker, scoreMode = "stock") {
         const d = new Date(Number(toMatch[1]), Number(toMatch[2]) - 1 - (m12.length - 1 - i), 1);
         return { y: d.getFullYear(), m: d.getMonth() + 1 };
       };
-      const cells = m12
+      // 2026-09-13 사용자 요청("더 깔끔하고 현대적으로"): O/X 격자 대신 카드 + 요약 칩 + 기준선 위아래로 뻗는 월별 막대.
+      // 막대 길이는 12개월 중 가장 크게 움직인 달 기준 비율, 오르면 위(상승색)·내리면 아래(하락색), 값은 막대 끝에 작게.
+      const maxAbs = Math.max(...m12.map((v) => Math.abs(v)), 1);
+      const fmtV = (v) => `${v > 0 ? "+" : ""}${Math.round(v)}`;
+      const cols = m12
         .map((v, i) => {
           const mo = monthOf(i);
           // 1월에는 연도를 붙여 해가 바뀌는 지점을 보여줌(예: 26.1)
           const moLabel = mo ? (mo.m === 1 ? `${String(mo.y).slice(2)}.1` : `${mo.m}월`) : "";
-          return `<div class="ox-cell ${v > 0 ? "ox-win" : "ox-loss"}">${moLabel ? `<span class="ox-month">${moLabel}</span>` : ""}<span class="ox-mark">${v > 0 ? "O" : "X"}</span><span class="ox-pct">${v > 0 ? "+" : ""}${Math.round(v)}</span></div>`;
+          const h = Math.max(3, Math.round((Math.abs(v) / maxAbs) * 30)); // px — 칸(44px)에서 값 글자(12px)를 뺀 30px가 최대
+          const up = v > 0;
+          const isLast = i === m12.length - 1;
+          return `<div class="oxb-col${isLast ? " oxb-last" : ""}" title="${moLabel} ${fmtV(v)}%">
+            <div class="oxb-half oxb-top">${up ? `<span class="oxb-val oxb-up">${fmtV(v)}</span><span class="oxb-bar oxb-up" style="height:${h}px"></span>` : ""}</div>
+            <div class="oxb-half oxb-bottom">${up ? "" : `<span class="oxb-bar oxb-down" style="height:${h}px"></span><span class="oxb-val oxb-down">${fmtV(v)}</span>`}</div>
+            <span class="oxb-month">${moLabel}</span>
+          </div>`;
         })
         .join("");
       const firstMo = monthOf(0);
       const lastMo = monthOf(m12.length - 1);
-      const rangeLabel = firstMo && lastMo ? ` <span class="ox-range">${String(firstMo.y).slice(2)}.${firstMo.m}~${String(lastMo.y).slice(2)}.${lastMo.m}</span>` : "";
+      const rangeLabel = firstMo && lastMo ? `${String(firstMo.y).slice(2)}.${firstMo.m} – ${String(lastMo.y).slice(2)}.${lastMo.m}` : "";
       oxHtml = `
-        <div class="ox-box">
-          <div class="ox-head">
-            <span class="ox-title">최근 ${m12.length}개월 승패${rangeLabel}</span>
-            <span class="ox-summary-line"><b class="ox-win">${winCount}승</b> <b class="ox-loss">${m12.length - winCount}패</b> (${winPct}%) · 합계 <b class="${sum > 0 ? "ox-win" : "ox-loss"}">${sum > 0 ? "+" : ""}${sum}%</b></span>
+        <div class="oxb-card">
+          <div class="oxb-head">
+            <div class="oxb-title-wrap">
+              <span class="oxb-title">최근 ${m12.length}개월</span>
+              ${rangeLabel ? `<span class="oxb-range">${rangeLabel}</span>` : ""}
+            </div>
+            <div class="oxb-chips">
+              <span class="oxb-chip"><b class="oxb-up">${winCount}승</b><i>·</i><b class="oxb-down">${m12.length - winCount}패</b></span>
+              <span class="oxb-chip">승률 <b>${winPct}%</b></span>
+              <span class="oxb-chip">합계 <b class="${sum > 0 ? "oxb-up" : sum < 0 ? "oxb-down" : ""}">${sum > 0 ? "+" : ""}${sum}%</b></span>
+            </div>
           </div>
-          <div class="ox-grid" style="grid-template-columns:repeat(${m12.length},1fr);">${cells}</div>
-          <p class="ox-strip-caption">숫자는 그달 등락률(%)</p>
+          <div class="oxb-chart" style="grid-template-columns:repeat(${m12.length},1fr);">${cols}</div>
+          <p class="oxb-caption">막대 끝 숫자는 그달 등락률(%)</p>
         </div>`;
     }
 
