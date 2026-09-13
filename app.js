@@ -9825,9 +9825,10 @@ function getCryptoTop100() {
             }
             return { symbol: c.symbol, shortName: c.nameEn || c.base, marketCap: c.marketCapUsd || null, upbit: true };
           });
-        // 기존 100에서 빠진 코인(가격 단절 영구 제외 등)만큼 업비트 여유분으로 채워 항상 200개
+        // 딱 200개(2026-09-14 사용자 요청): 목록은 여유분까지 넘겨 주고, 스캔(ensureCryptoScanRows)이 시세 실패·가격 단절로
+        // 빠진 만큼 뒤에서 이어 채워 결과를 정확히 200개로 맞춘다
         const base = quotes.filter((q) => !PRICE_BREAK_EXCLUDED.has(q.symbol));
-        return [...base, ...extras.filter((q) => !PRICE_BREAK_EXCLUDED.has(q.symbol))].slice(0, 200);
+        return [...base, ...extras.filter((q) => !PRICE_BREAK_EXCLUDED.has(q.symbol))];
       })
       .catch((e) => {
         cryptoTop50CachePromise = null; // 실패는 캐시하지 않음(다음 진입 시 재시도)
@@ -9844,6 +9845,7 @@ const cryptoScanState = { rows: [], scanned: 0, chain: Promise.resolve() };
 // 가격 단절(액면 변경·토큰 교환)이 확인돼 목록에서 뺀 코인(2026-09-13 사용자 요청) — 1년이 지나 자동 판별 창을 벗어나도 계속 제외.
 // 새로 생기는 단절은 computeChartDerivedMetrics의 priceBreak(하루 20배↑·1/20↓)로 자동 제외된다.
 const PRICE_BREAK_EXCLUDED = new Set(["GRAM-USD", "DEL-USD"]);
+const CRYPTO_UNIVERSE_SIZE = 200; // 코인 관리 대상 수(2026-09-14 사용자 요청: 딱 200개)
 function ensureCryptoScanRows(targetCount, statusEl) {
   const run = cryptoScanState.chain.then(async () => {
     const all = await getCryptoTop100();
@@ -9858,11 +9860,11 @@ function ensureCryptoScanRows(targetCount, statusEl) {
       }
     });
     const total = all.length;
-    const target = Math.min(targetCount, total);
+    const target = Math.min(targetCount, CRYPTO_UNIVERSE_SIZE, total); // 목록엔 여유분이 있어도 결과는 최대 200개
     // ETF와 같은 이유(2026-09-12 사용자 지적 "비트코인도 인기종목 29위까지 검색됨"): 앞에서 딱 target개만
     // 조회하면 시세를 못 받는 코인이 하나라도 있을 때 29개만 남는다 → 실패한 만큼 목록 뒤에서 더 채운다.
     if (cryptoScanState.rows.length >= target || cryptoScanState.scanned >= total) {
-      return { rows: cryptoScanState.rows, scanned: cryptoScanState.scanned, total };
+      return { rows: cryptoScanState.rows, scanned: cryptoScanState.scanned, total: Math.min(total, CRYPTO_UNIVERSE_SIZE) };
     }
     const btcReturn = await getBtcOneYearReturn();
     // 새 배점(2026-09-03) 입력: 승률·주간 RSI는 배치 DB에서 한 번만 읽어 전 종목에 재사용
@@ -9918,7 +9920,7 @@ function ensureCryptoScanRows(targetCount, statusEl) {
       cryptoScanState.rows.push(...results.filter(Boolean));
       cryptoScanState.scanned = to;
     }
-    return { rows: cryptoScanState.rows, scanned: cryptoScanState.scanned, total };
+    return { rows: cryptoScanState.rows, scanned: cryptoScanState.scanned, total: Math.min(total, CRYPTO_UNIVERSE_SIZE) }; // 여유분 포함 목록이라 표시용 전체 수는 200
   });
   cryptoScanState.chain = run.catch(() => {});
   return run;
@@ -12404,7 +12406,8 @@ async function runInsightRankUp(period) {
       }
       items = (quotes || [])
         .filter((q) => q.marketCap)
-        .map((q) => ({ symbol: q.symbol, name: cryptoKoName(q.symbol, q.shortname || q.symbol), mcap: q.marketCap }));
+        .map((q) => ({ symbol: q.symbol, name: cryptoKoName(q.symbol, q.shortname || q.symbol), mcap: q.marketCap }))
+        .slice(0, CRYPTO_UNIVERSE_SIZE); // 여유분 제외 딱 200개
       if (items.length < 10) {
         const snap = await getCryptoMapSnapshot();
         if (snap.length) items = snap;

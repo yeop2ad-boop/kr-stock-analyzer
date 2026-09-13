@@ -296,7 +296,6 @@ if (Test-Path $extraPath) {
   $coins = @($coins | Where-Object { @("GRAM-USD", "DEL-USD") -notcontains $_.symbol })
   $haveSyms = @{}; $coins | ForEach-Object { $haveSyms[$_.symbol] = $true }
   foreach ($c in $extra.coins) {
-    if ($coins.Count -ge 200) { break } # 여유분은 기존 100에서 빠진 만큼만 사용 — 항상 총 200
     if (-not $haveSyms.ContainsKey($c.symbol)) {
       $coins += [pscustomobject]@{ symbol = $c.symbol; shortName = $c.nameEn; marketCap = $c.marketCapUsd }
       $extraKo[$c.symbol] = $c.nameKo
@@ -306,6 +305,8 @@ if (Test-Path $extraPath) {
 $cryptoCompanies = @()
 $n = $coins.Count
 for ($i = 0; $i -lt $n; $i++) {
+  # 딱 200개(2026-09-14 사용자 요청): 시세를 못 받거나 제외된 코인만큼 업비트 여유분에서 이어서 채우고, 200개가 차면 멈춘다
+  if ($cryptoCompanies.Count -ge 200) { break }
   $qq = $coins[$i]
   $sym = $qq.symbol
   # 가격 단절(액면 변경)이 확인돼 영구 제외한 코인(2026-09-13 사용자 요청) — 앱 PRICE_BREAK_EXCLUDED와 같은 목록
