@@ -1900,7 +1900,8 @@ table.insight-holdings-table td span, table.insight-holdings-table td b { max-wi
 }
 
 /* 관심종목 그룹 선택 시트(2026-09-11 사용자 요청) */
-.wl-group-pick-sheet { position: fixed; inset: 0; z-index: 260; display: flex; align-items: flex-end; justify-content: center; }
+/* z-index: 검색창(480)·종목 상세(350)·더보기(490)·공유시트(520) 위에 떠야 어디서 별을 눌러도 보임(2026-09-13 수정 — 260이라 상세·검색 뒤에 숨어 추가가 안 되던 버그) */
+.wl-group-pick-sheet { position: fixed; inset: 0; z-index: 560; display: flex; align-items: flex-end; justify-content: center; }
 .wl-group-pick-backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.45); }
 .wl-group-pick-panel {
   position: relative;

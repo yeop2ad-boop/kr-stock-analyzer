@@ -2596,7 +2596,8 @@ function addRecentSearch(symbol) {
 }
 // 검색 오버레이의 최근/인기 검색 한 행 — 로고+이름/티커 왼쪽(누르면 종목 이동), 오른쪽은 가격 대신 관심종목 추가 별 버튼
 function searchResultRowHtml(symbol) {
-  const displayName = TICKER_TO_KOREAN_NAME[symbol] || symbol;
+  const etfParts = etfDisplayParts(symbol); // ETF는 한국=상품명 먼저, 미국=티커 먼저(2026-09-13)
+  const displayName = etfParts ? etfParts.main : TICKER_TO_KOREAN_NAME[symbol] || symbol;
   const watchlisted = isWatchlisted(symbol);
   return `
     <div class="search-result-row">
@@ -2604,7 +2605,7 @@ function searchResultRowHtml(symbol) {
         ${tickerLogoHtml(symbol)}
         <span class="search-result-text">
           <span class="search-result-name">${escapeHtml(displayName)}${sectionMarkHtml(symbol)}</span>
-          <span class="search-result-sub">${escapeHtml(symbol)}</span>
+          <span class="search-result-sub">${escapeHtml(etfParts ? (etfParts.isKr ? `${etfParts.sub} · ${symbol}` : etfParts.sub || symbol) : symbol)}</span>
         </span>
       </button>
       <button type="button" class="search-watch-btn${watchlisted ? " active" : ""} ${isKrTicker(symbol) ? "market-kr" : "market-us"}" data-watch-symbol="${escapeHtml(symbol)}" aria-label="관심종목 추가">
@@ -2653,6 +2654,15 @@ function openSearchOverlay() {
   renderRecentSearches();
   renderPopularSearches();
   tickerInput.focus();
+  // 국내 ETF 상품명 검색·표기용 목록을 미리 받아 둠(캐시) — 받아지면 최근/인기 검색 줄의 ETF 이름도 다시 그림
+  getKrEtfFullList()
+    .then(() => {
+      if (searchOverlay.style.display !== "none") {
+        renderRecentSearches();
+        renderPopularSearches();
+      }
+    })
+    .catch(() => {});
 }
 function closeSearchOverlay() {
   searchOverlay.classList.remove("open");
@@ -3450,7 +3460,7 @@ el("wlGroupPickList").addEventListener("click", (e) => {
   const symbol = wlGroupPickTarget;
   addToWatchlist(symbol, btn.dataset.pickGroup);
   closeWlGroupPickSheet();
-  updateCompanyPanelWatchlistBtn(symbol);
+  syncWatchStars(symbol);
   showToast(`관심종목에 추가했습니다`);
 });
 
@@ -3460,13 +3470,18 @@ function toggleWatchlist(symbol) {
     updateCompanyPanelWatchlistBtn(symbol);
     return;
   }
-  // 그룹이 2개 이상이면 어디에 넣을지 먼저 물어봄(2026-09-11 사용자 요청)
-  if (getWatchlistGroups(watchlistMarketOf(symbol)).length > 1) {
-    openWlGroupPickSheet(symbol);
-    return;
-  }
-  addToWatchlist(symbol);
+  // 별을 누르면 어디서든 항상 "어느 관심목록에 담을지" 아래 시트로 물어봄(2026-09-13 사용자 요청 — 예전엔 그룹 2개 이상일 때만)
+  openWlGroupPickSheet(symbol);
+}
+// 시트에서 고른 뒤 화면에 떠 있는 같은 종목의 별 버튼(상세·검색 결과)을 모두 갱신
+function syncWatchStars(symbol) {
   updateCompanyPanelWatchlistBtn(symbol);
+  const active = isWatchlisted(symbol);
+  document.querySelectorAll(`.search-watch-btn[data-watch-symbol="${CSS.escape(symbol)}"]`).forEach((b) => {
+    b.classList.toggle("active", active);
+    const svg = b.querySelector("svg");
+    if (svg) svg.setAttribute("fill", active ? "currentColor" : "none");
+  });
 }
 const companyPanelWatchlistBtn = el("companyPanelWatchlistBtn");
 function updateCompanyPanelWatchlistBtn(symbol) {
@@ -4124,6 +4139,8 @@ async function renderWatchlistList() {
   statusEl.style.display = "block";
   statusEl.textContent = "관심종목을 불러오는 중...";
   try {
+    // 국내 ETF 상품명(1,100여 개) 목록 — 관심종목에 담긴 국내 ETF 이름을 표시하려고 먼저 받아 둠(캐시, 실패해도 진행)
+    if (filtered.some((w) => isKrTicker(w.symbol))) await getKrEtfFullList().catch(() => null);
     const rows = (
       await mapWithConcurrency(filtered, 5, async (w) => {
         try {
@@ -4131,7 +4148,19 @@ async function renderWatchlistList() {
           const snap = yahooSnapshot(chart);
           const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
           const volume = meta && meta.regularMarketVolume !== undefined ? meta.regularMarketVolume : null;
-          return snap && { ...snap, symbol: w.symbol, name: w.symbol, time: snap.date, volume, currency: (meta && meta.currency) || "USD", exchange: (meta && meta.exchangeName) || "" };
+          return (
+            snap && {
+              ...snap,
+              symbol: w.symbol,
+              name: w.symbol,
+              longName: (meta && (meta.longName || meta.shortName)) || "", // ETF 상품명 표기용(국내 목록에 없을 때)
+              quoteType: (meta && meta.instrumentType) || "",
+              time: snap.date,
+              volume,
+              currency: (meta && meta.currency) || "USD",
+              exchange: (meta && meta.exchangeName) || "",
+            }
+          );
         } catch {
           return null;
         }
@@ -4902,6 +4931,27 @@ const ETF_NAME_BY_SYMBOL = new Map(); // 심볼 -> 상품명. US_ETF_TOP100·국
 function registerEtfName(symbol, name) {
   if (symbol && name && !ETF_NAME_BY_SYMBOL.has(symbol)) ETF_NAME_BY_SYMBOL.set(symbol, name);
 }
+// ETF 이름 표기 공통(2026-09-13 사용자 요청 — ETF 탭·관심종목·검색 모두 같은 규칙):
+//  · 한국 ETF → main: 브랜드를 뗀 상품명("미국배당다우존스"), sub: 브랜드(KODEX·TIGER…)
+//  · 미국 ETF → main: 티커(SPY), sub: 한글명/영문 상품명
+// ETF가 아니면 null. fallbackName은 야후 등에서 받은 이름(국내 ETF 목록이 아직 안 불러와졌을 때 대비)
+function etfDisplayParts(symbol, fallbackName, quoteType) {
+  const sym = String(symbol || "").toUpperCase();
+  if (sectionOfSymbol(sym, quoteType) !== "etf") return null;
+  const listed = ETF_NAME_BY_SYMBOL.get(sym) || (KR_ETF_LIST.find((x) => x.t === sym) || {}).name || (US_ETF_TOP100.find((x) => x.t === sym) || {}).n;
+  const name = String(listed || fallbackName || "").trim();
+  if (isKrTicker(sym)) {
+    const sp = name.indexOf(" ");
+    const brand = sp > 0 ? name.slice(0, sp) : "";
+    let main = sp > 0 ? name.slice(sp + 1).trim() : name && name !== sym ? name : sym;
+    // 브랜드만 떼면 뜻이 안 보이는 코스피200 추종 상품은 지수 이름을 붙여 줌(예: "KODEX 200" → "코스피200")
+    const KOSPI200_ALIAS = { "200": "코스피200", "레버리지": "코스피200 레버리지", "인버스": "코스피200 인버스", "200선물인버스2X": "코스피200 인버스2X" };
+    if (brand && KOSPI200_ALIAS[main]) main = KOSPI200_ALIAS[main];
+    return { isKr: true, brand, main, sub: brand || rankCodeLabel(sym) };
+  }
+  const sub = TICKER_TO_KOREAN_NAME[sym] || (name && name !== sym ? name : "");
+  return { isKr: false, brand: "", main: sym, sub };
+}
 // 국기 이모지(🇰🇷·🇺🇸 등)는 윈도우 크롬에서 "KR"·"US" 글자 두 개로 깨진다 —
 // 국기 테마만 인라인 SVG로 그린다(한국·미국은 섹션 마크에 쓰던 것을 재사용).
 const ETF_FLAG_SVG = {
@@ -5152,11 +5202,18 @@ function attachTickerSearchBar(inputEl, suggestEl, analyzeBtnEl, { onBeforeNavig
     }
     suggestEl.innerHTML = items
       .map((it) => {
-        const displayName = TICKER_TO_KOREAN_NAME[it.symbol] || it.name || it.symbol;
+        // ETF는 한국=상품명 먼저(아래 브랜드·티커), 미국=티커 먼저(아래 상품명) — 2026-09-13 사용자 요청
+        const etfParts = etfDisplayParts(it.symbol, it.name, it.quoteType);
+        const displayName = etfParts ? etfParts.main : TICKER_TO_KOREAN_NAME[it.symbol] || it.name || it.symbol;
+        const subText = etfParts
+          ? etfParts.isKr
+            ? `${etfParts.sub} · ${it.symbol}`
+            : etfParts.sub || it.symbol
+          : `${it.symbol}${it.exchange ? ` · ${it.exchange}` : ""}`;
         return `<div class="chat-ticker-option" data-symbol="${escapeHtml(it.symbol)}">
             ${tickerLogoHtml(it.symbol)}
             <span class="chat-ticker-option-name">${escapeHtml(displayName)}${sectionMarkHtml(it.symbol, it.quoteType)}</span>
-            <span class="chat-ticker-option-sub">${escapeHtml(it.symbol)}${it.exchange ? ` · ${escapeHtml(it.exchange)}` : ""}</span>
+            <span class="chat-ticker-option-sub">${escapeHtml(subText)}</span>
           </div>`;
       })
       .join("");
@@ -5180,6 +5237,19 @@ function attachTickerSearchBar(inputEl, suggestEl, analyzeBtnEl, { onBeforeNavig
       ...Object.entries(KR_NAME_TO_TICKER)
         .filter(([name]) => name.includes(q))
         .map(([name, symbol]) => ({ symbol, name, exchange: symbol.endsWith(".KQ") ? "코스닥" : "코스피" })),
+      // 국내 ETF 상품명(2026-09-13): 야후 검색은 "TIGER 미국배당" 같은 한글 상품명을 못 찾아서 관심종목에 못 담던 문제 —
+      // 국내 ETF 전체 목록(ETF_NAME_BY_SYMBOL)에서 띄어쓰기 무시·대소문자 무시 부분일치로 찾음
+      ...(() => {
+        const norm = (s) => String(s || "").replace(/\s+/g, "").toUpperCase();
+        // 한글로 부르는 브랜드(코덱스·타이거…)도 영문 상품명과 맞춰 봄
+        const BRAND_KO = { 코덱스: "KODEX", 타이거: "TIGER", 에이스: "ACE", 라이즈: "RISE", 쏠: "SOL", 플러스: "PLUS", 하나로: "HANARO", 아리랑: "ARIRANG", 킨덱스: "KINDEX", 코세프: "KOSEF" };
+        const nq = norm(Object.entries(BRAND_KO).reduce((s, [ko, en]) => s.replace(ko, en), q));
+        const out = [];
+        ETF_NAME_BY_SYMBOL.forEach((name, symbol) => {
+          if (isKrTicker(symbol) && norm(name).includes(nq)) out.push({ symbol, name, exchange: "ETF", quoteType: "ETF" });
+        });
+        return out.slice(0, 8);
+      })(),
     ];
     renderSuggest(koreanMatches.slice(0, 8));
 
@@ -10923,20 +10993,12 @@ const ETF_MID_PRICE_CELL = (r) => rankPriceCellHtml(r.symbol, r.price, r.currenc
 //  · 한국 ETF — 윗줄: 브랜드를 뗀 상품명("미국배당다우존스"), 아랫줄: 브랜드(KODEX·TIGER·ACE…). 이름은 조금 작게 해 10글자 안팎까지 보이게
 //  · 미국 ETF — 윗줄: 티커(SPY), 아랫줄: 한글명/영문 상품명(작은 글씨, 길면 …)
 function etfRankNameCellHtml(r, isKr) {
-  const name = String(r.name || "").trim();
+  const parts = etfDisplayParts(r.symbol, r.name, "ETF");
   if (isKr) {
-    const sp = name.indexOf(" ");
-    const brand = sp > 0 ? name.slice(0, sp) : "";
-    const badge = KR_ETF_BRAND_BADGE_POPULAR[brand];
     ensureKrEtfLogoOverride(r.symbol, r.name); // 브랜드 → 운용사 그룹 CI(2026-09-03)
-    let main = sp > 0 ? name.slice(sp + 1).trim() : name || r.symbol;
-    // 브랜드만 떼면 뜻이 안 보이는 코스피200 추종 상품은 지수 이름을 붙여 줌(예: "KODEX 200" → "코스피200")
-    const KOSPI200_ALIAS = { "200": "코스피200", "레버리지": "코스피200 레버리지", "인버스": "코스피200 인버스", "200선물인버스2X": "코스피200 인버스2X" };
-    if (brand && KOSPI200_ALIAS[main]) main = KOSPI200_ALIAS[main];
-    return rankNameCellHtml(r.symbol, tickerLogoHtml(r.symbol, badge), main, brand || rankCodeLabel(r.symbol), "rk-etf-kr");
+    return rankNameCellHtml(r.symbol, tickerLogoHtml(r.symbol, KR_ETF_BRAND_BADGE_POPULAR[parts.brand]), parts.main, parts.sub, "rk-etf-kr");
   }
-  const sub = TICKER_TO_KOREAN_NAME[r.symbol] || (name && name !== r.symbol ? name : "");
-  return rankNameCellHtml(r.symbol, tickerLogoHtml(r.symbol), r.symbol, sub, "rk-etf-us");
+  return rankNameCellHtml(r.symbol, tickerLogoHtml(r.symbol), parts.main, parts.sub, "rk-etf-us");
 }
 const ETF_METRIC_TABS = {
   winrate: {
@@ -15907,7 +15969,9 @@ function wlNumStr(n, currency) {
   return abs.toLocaleString("en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits });
 }
 function stockCardRowHtml(r) {
-  const displayName = TICKER_TO_KOREAN_NAME[r.symbol] || r.name;
+  // ETF는 ETF 탭과 같은 표기(한국=상품명/브랜드, 미국=티커/상품명, 2026-09-13)
+  const etfParts = etfDisplayParts(r.symbol, r.longName, r.quoteType);
+  const displayName = etfParts ? etfParts.main : TICKER_TO_KOREAN_NAME[r.symbol] || r.name;
   const hasPct = r.changePct !== null && r.changePct !== undefined;
   const shownPct = hasPct ? Math.round(r.changePct * 100) / 100 : 0;
   const dir = shownPct === 0 ? 0 : shownPct > 0 ? 1 : -1;
@@ -15926,7 +15990,7 @@ function stockCardRowHtml(r) {
         <div class="wl-name">${escapeHtml(displayName)}</div>
         <div class="wl-price ${cls}">${wlNumStr(r.price, r.currency)}</div>
         <div class="wl-change ${cls}">${arrow ? `<span class="wl-arrow">${arrow}</span>` : ""}${changeAmtStr}</div>
-        <div class="wl-sub">${escapeHtml(code)} ${wlMarketLabel(r)}</div>
+        <div class="wl-sub">${etfParts ? escapeHtml(etfParts.sub) : `${escapeHtml(code)} ${wlMarketLabel(r)}`}</div>
         <div class="wl-volume">${volumeStr}</div>
         <div class="wl-pct ${cls}">${pctStr}</div>
       </div>
