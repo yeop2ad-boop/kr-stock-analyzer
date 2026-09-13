@@ -6109,7 +6109,7 @@ async function runAssetTickerHistorical(ticker, container, assetType) {
       chgSince !== null ? `<br><span class="${chgSince >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(chgSince)})</span>` : ""
     }</td>
           <td>${ret10yNow === null ? "N/A" : `<b>${ret10yNow > 0 ? "+" : ""}${Math.round(ret10yNow * 10) / 10}%</b>${partialMarkHtml(wrEntryHist && wrEntryHist.total)}`}</td>
-          <td>${winRateNow === null ? "N/A" : `<b>${winRateNow}%</b>${partialMarkHtml(wrEntryHist && wrEntryHist.total)}`}</td>
+          <td>${winRateNow === null ? "N/A" : `${partialMarkHtml(wrEntryHist && wrEntryHist.total, "wr-mark-front")}<b>${winRateNow}%</b>`}</td>
         </tr></tbody>
       </table>`;
   } catch (err) {
@@ -7378,7 +7378,8 @@ function winRatePctCellHtml(v, total, noPct) {
   if (!Number.isFinite(v)) return "N/A";
   // 2026-09-12 사용자 요청: 정수 반올림이면 55.4%와 55.6%가 똑같이 55%로 보여 순위가 뒤죽박죽 같아 보임 → 소수점 첫째 자리까지
   const x = v.toFixed(1); // 60%와 59.2%가 섞이지 않게 항상 소수점 첫째 자리까지
-  return `<b class="wr-pct" title="10년평균 승률 ${x}% — 최근 10년간 전달보다 오르며 마감한 달의 비율(수익률 크기가 아니라 이긴 횟수)">${x}${noPct ? "" : "%"}</b>${partialMarkHtml(total)}`;
+  // ❗(상장 10년 미만)는 숫자 앞에(2026-09-13 사용자 요청) — 숫자 끝이 위아래 행과 맞게
+  return `${partialMarkHtml(total, "wr-mark-front")}<b class="wr-pct" title="10년평균 승률 ${x}% — 최근 10년간 전달보다 오르며 마감한 달의 비율(수익률 크기가 아니라 이긴 횟수)">${x}${noPct ? "" : "%"}</b>`;
 }
 // 표 머리글의 둘째 줄 작은 기준 안내(예: 매출 증가율 / (YoY))
 const THEAD_SUB = (t) => `<span class="th-sub">(${t})</span>`;
@@ -15837,11 +15838,9 @@ function stockCardRowHtml(r) {
       <div class="wl-row-grid">
         <div class="wl-name">${escapeHtml(displayName)}</div>
         <div class="wl-price ${cls}">${wlNumStr(r.price, r.currency)}</div>
-        <div class="wl-arrow ${cls}">${arrow}</div>
-        <div class="wl-change ${cls}">${changeAmtStr}</div>
+        <div class="wl-change ${cls}">${arrow ? `<span class="wl-arrow">${arrow}</span>` : ""}${changeAmtStr}</div>
         <div class="wl-sub">${escapeHtml(code)} ${wlMarketLabel(r)}</div>
         <div class="wl-volume">${volumeStr}</div>
-        <div></div>
         <div class="wl-pct ${cls}">${pctStr}</div>
       </div>
     </div>`;
