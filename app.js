@@ -3241,10 +3241,28 @@ function renderCompanyIdentity(ticker, quote, meta, changePct) {
   const identitySection = sectionOfSymbol(ticker, quote.quoteType);
   if (identitySection === "crypto") displayName = cryptoKoName(ticker, displayName);
   // ETF면 로고가 테마 이모지로 잡히도록 상품명을 먼저 등록(2026-09-11) — renderSummary보다 이 함수가 먼저 돈다
-  if (identitySection === "etf") registerEtfName(ticker, displayName);
+  // 국내 ETF는 야후 이름이 영문이라, 한글 상품명 목록(ETF_NAME_BY_SYMBOL)에 있으면 그걸 씀
+  if (identitySection === "etf" && ETF_NAME_BY_SYMBOL.has(ticker)) displayName = ETF_NAME_BY_SYMBOL.get(ticker);
+  if (identitySection === "etf" && !isKrTicker(ticker)) registerEtfName(ticker, displayName);
   const price = meta.regularMarketPrice;
   el("companyPanelLogoWrap").innerHTML = tickerLogoHtml(ticker);
   el("companyPanelName").textContent = displayName;
+  // ETF 상세는 이름 바로 아래에 티커(2026-09-13 사용자 요청) — 국내는 "069500", 미국은 "SPY"
+  //  이름 아래 국기/섹션 마크 줄에 나란히 붙여 헤더 높이는 그대로 둠
+  let tickerLineEl = el("companyPanelTickerLine");
+  if (!tickerLineEl) {
+    const mark = el("companyPanelSectionMark");
+    const subRow = document.createElement("span");
+    subRow.className = "detail-identity-subrow";
+    mark.insertAdjacentElement("beforebegin", subRow);
+    subRow.appendChild(mark);
+    tickerLineEl = document.createElement("span");
+    tickerLineEl.id = "companyPanelTickerLine";
+    tickerLineEl.className = "detail-identity-ticker";
+    subRow.appendChild(tickerLineEl);
+  }
+  tickerLineEl.textContent = identitySection === "etf" ? String(ticker).replace(/\.(KS|KQ)$/, "") : "";
+  tickerLineEl.style.display = identitySection === "etf" ? "" : "none";
   // 제목 옆 섹션 마크(한국주식/미국주식/ETF/비트코인, 2026-09-01) — Yahoo quoteType이 있으면 그걸 우선 사용
   const sectionMarkEl = el("companyPanelSectionMark");
   if (sectionMarkEl) sectionMarkEl.outerHTML = sectionMarkHtml(ticker, quote && quote.quoteType).replace('class="section-mark"', 'class="section-mark" id="companyPanelSectionMark"');
@@ -7788,7 +7806,11 @@ function buildWinRateBenchmarkHtml() {
 function winRateBenchmarkHtml(svg, rows) {
   // 문구는 2026-09-13 사용자 지정 — 맨 위 설명 한 줄, 맨 아래 안내 한 줄만
   return `
-    <p class="wr-bench-intro">최근 10년(최대 120개월) 동안 전달보다 오르며 마감한 달의 비율입니다. 수익률의 크기가 아니라 이긴 횟수라, 높을수록 꾸준히 우상향했다는 뜻입니다.</p>
+    <div class="wr-intro">
+      <p class="wr-intro-q">10년평균 승률이란?</p>
+      <p class="wr-intro-def">최근 10년(최대 120개월) 동안 <b>전달보다 오르며 마감한 달의 비율</b>입니다.</p>
+      <p class="wr-intro-note">수익률의 크기가 아니라 <b>이긴 횟수</b>라, 높을수록 꾸준히 우상향했다는 뜻입니다.</p>
+    </div>
     <h3 class="future-chart-subheading">📐 대표자산 10년평균 승률비교</h3>
     ${svg}
     <table class="top30-table wr-bench-table" style="margin-top:10px;">
@@ -9358,7 +9380,8 @@ function getKrEtfFullList() {
         // 섹션 마크·ETF 상세 판별(sectionOfSymbol)이 국내 전체 ETF를 ETF로 인식하도록 등록
         list.forEach((it) => {
           knownEtfSet().add(it.symbol);
-          registerEtfName(it.symbol, it.name); // 이모지 로고용 상품명(2026-09-11)
+          // 한글 상품명이 정답 — 먼저 등록된 야후 영문명이 있어도 덮어씀(2026-09-13)
+          if (it.symbol && it.name) ETF_NAME_BY_SYMBOL.set(it.symbol, it.name);
         });
         return list;
       })
