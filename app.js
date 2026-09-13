@@ -4514,7 +4514,7 @@ const WIZARD_CRITERIA = [
   { key: "per", icon: "scale", label: "PER", dir: "asc", get: (m) => m.per, fmt: (m) => (m.per === null || m.per === undefined ? "N/A" : `${m.per.toFixed(1)}배`) },
   { key: "stability", icon: "medal", label: "10년평균 승률", dir: "desc", get: (m) => m.winRate10y, fmt: (m) => winRatePctCellHtml(m.winRate10y, m.winTotal) },
   { key: "marketCap", icon: "building", label: "시가총액", dir: "desc", get: (m) => m.marketCap, fmt: (m) => (m.marketCap ? fmtCompactCurrency(m.marketCap) : "N/A") },
-  { key: "pressure", icon: "rocket", label: "연평균 상승", dir: "desc", get: (m) => m.ret10yAvg, fmt: (m) => (m.ret10yAvg === null || m.ret10yAvg === undefined ? "N/A" : `<b>${m.ret10yAvg > 0 ? "+" : ""}${Math.round(m.ret10yAvg * 10) / 10}%</b>${partialMarkHtml(m.winTotal)}`) },
+  { key: "pressure", icon: "rocket", label: "연평균 상승", dir: "desc", get: (m) => m.ret10yAvg, fmt: (m) => (m.ret10yAvg === null || m.ret10yAvg === undefined ? "N/A" : `${partialMarkHtml(m.winTotal, "wr-mark-front")}<b>${m.ret10yAvg > 0 ? "+" : ""}${Math.round(m.ret10yAvg * 10) / 10}%</b>`) },
   { key: "surge", icon: "trending-up", label: "상승률(등락률)", dir: "desc", get: (m) => m.changePct, fmt: (m) => (m.changePct === null || m.changePct === undefined ? "N/A" : `${m.changePct >= 0 ? "+" : ""}${m.changePct.toFixed(2)}%`), needsDaily: true },
   { key: "plunge", icon: "trending-down", label: "하락률(등락률)", dir: "asc", get: (m) => m.changePct, fmt: (m) => (m.changePct === null || m.changePct === undefined ? "N/A" : `${m.changePct >= 0 ? "+" : ""}${m.changePct.toFixed(2)}%`), needsDaily: true },
 ];
@@ -4763,7 +4763,7 @@ async function runBranchCConfirm() {
       await wizardAttachPrices(top30);
     }
     const marketLabel = WIZARD_MARKET_LABEL[market];
-    const table = wizardResultTableHtml(top30, "연평균 상승+10년평균 승률 합계", (r) => `<b>${r.combinedTotal}</b>${partialMarkHtml(r.winTotal)}`);
+    const table = wizardResultTableHtml(top30, "연평균 상승+10년평균 승률 합계", (r) => `${partialMarkHtml(r.winTotal, "wr-mark-front")}<b>${r.combinedTotal}</b>`);
     wizardShareTitle = `기업검색 결과 (자동찾기 · ${marketLabel})`;
     wizardShareText =
       `[자동찾기] ${marketLabel} 연평균 상승+10년평균 승률 합계 TOP30\n` +
@@ -6108,7 +6108,7 @@ async function runAssetTickerHistorical(ticker, container, assetType) {
           <td>${fmtAssetPrice(nowPrice)}${
       chgSince !== null ? `<br><span class="${chgSince >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(chgSince)})</span>` : ""
     }</td>
-          <td>${ret10yNow === null ? "N/A" : `<b>${ret10yNow > 0 ? "+" : ""}${Math.round(ret10yNow * 10) / 10}%</b>${partialMarkHtml(wrEntryHist && wrEntryHist.total)}`}</td>
+          <td>${ret10yNow === null ? "N/A" : `${partialMarkHtml(wrEntryHist && wrEntryHist.total, "wr-mark-front")}<b>${ret10yNow > 0 ? "+" : ""}${Math.round(ret10yNow * 10) / 10}%</b>`}</td>
           <td>${winRateNow === null ? "N/A" : `${partialMarkHtml(wrEntryHist && wrEntryHist.total, "wr-mark-front")}<b>${winRateNow}%</b>`}</td>
         </tr></tbody>
       </table>`;
@@ -6251,8 +6251,8 @@ async function renderSummaryScoreRow(ticker, scoreMode = "stock") {
     // 2026-09-10 사용자 요청: 9칸 → 핵심 3칸(10년평균 승률 / 연평균 상승 / 현재 RSI 점수)만 남김
     const gridHtml = `
       <div class="nine-score-grid nine-score-grid-3">
-        ${cell("purple", `10년평균 승률${partialMark}`, nineFmtPct(wr10, false))}
-        ${cell("blue", `연평균 상승${partialMark}`, nineFmtPct(ret10, true))}
+        ${cell("purple", `${partialMark}10년평균 승률`, nineFmtPct(wr10, false))}
+        ${cell("blue", `${partialMark}연평균 상승`, nineFmtPct(ret10, true))}
         ${cell("yellow", "현재 RSI 점수", nineFmtNum(num(e.rsi), false))}
       </div>`;
 
@@ -7255,7 +7255,7 @@ function stockRet10CellHtml(symbol) {
   const e = stockWrEntryOf(symbol);
   if (!e || !Number.isFinite(e.ret10y)) return "N/A";
   const v = Math.round(e.ret10y * 10) / 10;
-  return `${v > 0 ? "+" : ""}${v}%${partialMarkHtml(e.total)}`;
+  return `${partialMarkHtml(e.total, "wr-mark-front")}${v > 0 ? "+" : ""}${v}%`;
 }
 // 상장 10년 미만(승률 DB total<120개월) ⚠️ — 10년평균 승률·연평균 상승 표시 공통(2026-09-09 사용자 요청: 연평균 상승에도 표시).
 // 연평균 상승은 상장 후 기간만 연율화한 값이라(예: 센디스크 18개월 36배 → 연 1,001%) 10년치가 아님을 알리는 용도
@@ -7275,8 +7275,8 @@ const RANK_TH_NAME = `<th data-explain="기업명 — 누르면 그 종목의 �
 const RANK_TH_NAME_ETF = `<th data-explain="이름 — 누르면 그 종목의 상세 화면으로 이동합니다.">이름</th>`;
 const RANK_TH_PRICE = `<th data-explain="현재가입니다. 괄호 안은 전일 종가 대비 오늘 등락률이며, 시세는 최대 20분 지연될 수 있습니다. 숫자를 누르면 차트가 열립니다.">현재가<br>(등락률)</th>`;
 const RANK_TH_PRICE_CHG = `<th data-explain="현재가와 전일 종가 대비 당일 등락률입니다. 시세는 최대 20분 지연될 수 있고, 숫자를 누르면 차트가 열립니다.">현재가<br>(등락률)</th>`;
-const RANK_TH_WINRATE = `<th data-explain="10년평균 승률 — 최근 10년(최대 120개월) 동안 전달보다 오르며 마감한 달의 비율입니다. 수익률의 크기가 아니라 이긴 횟수라, 높을수록 꾸준히 우상향했다는 뜻입니다. ⚠️는 상장 10년 미만이라는 경고입니다." class="th-wr-pct">10년평균<br>승률(%)</th>`;
-// 2026-09-13 사용자 요청: 머리글에 (%)를 달고 칸 안 숫자의 %는 뺌 — 이 머리글이 있는 표에서만 .wr-unit을 숨긴다(style.css)
+const RANK_TH_WINRATE = `<th data-explain="10년평균 승률 — 최근 10년(최대 120개월) 동안 전달보다 오르며 마감한 달의 비율입니다. 수익률의 크기가 아니라 이긴 횟수라, 높을수록 꾸준히 우상향했다는 뜻입니다. ⚠️는 상장 10년 미만이라는 경고입니다.">10년평균<br>승률</th>`;
+// 2026-09-13 사용자 재요청: 머리글 (%) 대신 칸 안 숫자마다 %를 직접 적는다(한눈에 %인 걸 알아보도록)
 // 1년 수익률(2026-09-12 사용자 요청) — "수익률" 탭의 기준. 연평균(CAGR)이 아니라 1년 전 같은 시점 대비 실제 상승량
 const RANK_TH_RET1Y = `<th data-explain="1년 수익률 — 1년 전 같은 시점의 가격과 비교해 지금까지 얼마나 올랐는지입니다. 매년 평균(연평균 상승)이 아니라 최근 1년치 실제 성적이라, 작년 한 해 수익률이 그대로 보입니다.">1년<br>수익률</th>`;
 const RANK_TH_RET10 = `<th data-explain="연평균 상승 — 최근 10년 연복리 수익률(CAGR)입니다. 매년 몇 %씩 오른 셈인지를 뜻하며, 상장 10년 미만이면 상장 후 기간만 연율화한 값이라 ⚠️가 붙습니다.">연평균<br>상승</th>`;
@@ -7380,7 +7380,7 @@ function winRatePctCellHtml(v, total, noPct) {
   // 2026-09-12 사용자 요청: 정수 반올림이면 55.4%와 55.6%가 똑같이 55%로 보여 순위가 뒤죽박죽 같아 보임 → 소수점 첫째 자리까지
   const x = v.toFixed(1); // 60%와 59.2%가 섞이지 않게 항상 소수점 첫째 자리까지
   // ⚠️(상장 10년 미만)는 숫자 앞에(2026-09-13 사용자 요청) — 숫자 끝이 위아래 행과 맞게
-  return `${partialMarkHtml(total, "wr-mark-front")}<b class="wr-pct" title="10년평균 승률 ${x}% — 최근 10년간 전달보다 오르며 마감한 달의 비율(수익률 크기가 아니라 이긴 횟수)">${x}${noPct ? "" : `<span class="wr-unit">%</span>`}</b>`;
+  return `${partialMarkHtml(total, "wr-mark-front")}<b class="wr-pct" title="10년평균 승률 ${x}% — 최근 10년간 전달보다 오르며 마감한 달의 비율(수익률 크기가 아니라 이긴 횟수)">${x}${noPct ? "" : "%"}</b>`;
 }
 // 표 머리글의 둘째 줄 작은 기준 안내(예: 매출 증가율 / (YoY))
 const THEAD_SUB = (t) => `<span class="th-sub">(${t})</span>`;
@@ -7546,65 +7546,97 @@ async function renderRsi(ticker, mode) {
 // 값은 2026-09-03에 야후(월봉 11y)·ECOS(서울 아파트 매매가격지수 901Y062/P63ACA, 한국부동산원)로 일괄 계산한 정적 스냅샷.
 // 승률은 10년 누적이라 천천히 변함 — 갱신 시 scratchpad의 winrate-benchmarks.ps1 재실행 후 이 표를 교체.
 const WINRATE_BENCHMARKS = [
-  { name: "서울 부동산", sub: "서울 아파트 지수", up: 94, down: 26, score: 78.3, color: "#8b5a2b" },
-  { name: "SPY", sub: "S&P500", up: 82, down: 38, score: 68.3, color: "#1f77b4" },
-  { name: "QQQ", sub: "나스닥100", up: 78, down: 42, score: 65.0, color: "#ff7f0e" },
-  { name: "필라델피아 반도체", sub: "SOX", up: 77, down: 43, score: 64.2, color: "#2ca02c" },
-  { name: "코스피200", sub: "KODEX200", up: 69, down: 51, score: 57.5, color: "#d62728" },
-  { name: "BTC", sub: "비트코인", up: 67, down: 53, score: 55.8, color: "#f7931a" },
-  { name: "코스닥150", sub: "KODEX코스닥150", up: 65, down: 55, score: 54.2, color: "#e377c2" },
-  { name: "금 GOLD", sub: "GLD", up: 63, down: 57, score: 52.5, color: "#d4af37" },
-  { name: "이더리움", sub: "ETH", up: 53, down: 52, score: 50.5, color: "#627eea" },
-  { name: "코스피 인버스x1", sub: "KODEX인버스", up: 48, down: 72, score: 40.0, color: "#17becf" },
-  { name: "나스닥 인버스x1", sub: "PSQ", up: 38, down: 82, score: 31.7, color: "#9467bd" },
+  // short: 그래프 이름표용 짧은 이름(2026-09-13 그래프 확대 — 긴 이름은 서로 겹침)
+  { name: "서울 부동산", short: "서울부동산", sub: "서울 아파트 지수", up: 94, down: 26, score: 78.3, color: "#8b5a2b" },
+  { name: "SPY", short: "SPY", sub: "S&P500", up: 82, down: 38, score: 68.3, color: "#1f77b4" },
+  { name: "QQQ", short: "QQQ", sub: "나스닥100", up: 78, down: 42, score: 65.0, color: "#ff7f0e" },
+  { name: "필라델피아 반도체", short: "SOX", sub: "SOX", up: 77, down: 43, score: 64.2, color: "#2ca02c" },
+  { name: "코스피200", short: "코스피200", sub: "KODEX200", up: 69, down: 51, score: 57.5, color: "#d62728" },
+  { name: "BTC", short: "BTC", sub: "비트코인", up: 67, down: 53, score: 55.8, color: "#f7931a" },
+  { name: "코스닥150", short: "코스닥150", sub: "KODEX코스닥150", up: 65, down: 55, score: 54.2, color: "#e377c2" },
+  { name: "금 GOLD", short: "금", sub: "GLD", up: 63, down: 57, score: 52.5, color: "#d4af37" },
+  { name: "이더리움", short: "ETH", sub: "ETH", up: 53, down: 52, score: 50.5, color: "#627eea" },
+  { name: "코스피 인버스x1", short: "코스피인버스", sub: "KODEX인버스", up: 48, down: 72, score: 40.0, color: "#17becf" },
+  { name: "나스닥 인버스x1", short: "나스닥인버스", sub: "PSQ", up: 38, down: 82, score: 31.7, color: "#9467bd" },
 ];
 let winRateBenchmarkBuilt = false;
 function renderWinRateBenchmarkDetail() {
   if (winRateBenchmarkBuilt) return;
   winRateBenchmarkBuilt = true;
-  const wrap = el("winRateDetailWrap");
+  el("winRateDetailWrap").innerHTML = buildWinRateBenchmarkHtml();
+}
+function buildWinRateBenchmarkHtml() {
+  // 2026-09-13 사용자 요청: 휴대폰에서 글씨가 안 보여 확대 — 가로 700 → 380으로 좁혀 글자가 실제 크기에 가깝게 그려지고,
+  // 자산들이 몰려 있는 28~85% 구간을 넓게 그리고, 양 끝에 0%와 100%(예금·적금)를 물결(생략) 표시로 붙임
+  const X_ZERO = 16;
+  const X_HUNDRED = 350;
   const X0 = 44;
-  const X1 = 656;
-  const AXIS_Y = 118;
-  const xOf = (score) => X0 + (score / 100) * (X1 - X0);
+  const X1 = 318;
+  const MIN = 28;
+  const MAX = 85;
+  const AXIS_Y = 122;
+  const xOf = (score) => X0 + ((score - MIN) / (MAX - MIN)) * (X1 - X0);
+  const breakMark = (x) =>
+    `<line x1="${x - 5}" y1="${AXIS_Y + 5}" x2="${x - 1}" y2="${AXIS_Y - 5}" stroke="var(--muted)" stroke-width="1.4"/><line x1="${x + 1}" y1="${AXIS_Y + 5}" x2="${x + 5}" y2="${AXIS_Y - 5}" stroke="var(--muted)" stroke-width="1.4"/>`;
+  const DEPOSIT_COLOR = "#0f766e";
   // 점수가 몰려 있어 이름표를 위 3단·아래 2단으로 번갈아 배치(리더 선으로 연결)
-  const tierYs = [96, 68, 40, 148, 176];
+  const tierYs = [98, 64, 30, 154, 190];
   const dots = WINRATE_BENCHMARKS.map((b, i) => {
     const x = xOf(b.score);
     const tier = tierYs[i % tierYs.length];
     const above = tier < AXIS_Y;
     const labelY = above ? tier : tier + 4;
     return `
-      <line x1="${x}" y1="${AXIS_Y}" x2="${x}" y2="${above ? tier + 6 : tier - 8}" stroke="${b.color}" stroke-width="1" stroke-dasharray="2 2" opacity="0.75"/>
+      <line x1="${x}" y1="${AXIS_Y}" x2="${x}" y2="${above ? tier + 16 : tier - 12}" stroke="${b.color}" stroke-width="1" stroke-dasharray="2 2" opacity="0.8"/>
       <circle cx="${x}" cy="${AXIS_Y}" r="5" fill="${b.color}" stroke="#fff" stroke-width="1.4"/>
-      <text x="${x}" y="${labelY}" text-anchor="middle" font-size="11" font-weight="700" fill="${b.color}">${escapeHtml(b.name)}</text>
-      <text x="${x}" y="${labelY + 12}" text-anchor="middle" font-size="10" fill="${b.color}">${b.score}%</text>`;
+      <text x="${x}" y="${labelY}" text-anchor="middle" font-size="14.5" font-weight="800" fill="${b.color}">${escapeHtml(b.short || b.name)}</text>
+      <text x="${x}" y="${labelY + 15}" text-anchor="middle" font-size="13" font-weight="700" fill="${b.color}">${b.score}%</text>`;
   }).join("");
   const svg = `
-    <svg viewBox="0 0 700 205" style="width:100%;height:auto;display:block;" role="img" aria-label="대표 자산 10년평균 승률 비교선">
-      <line x1="${X0}" y1="${AXIS_Y}" x2="${X1}" y2="${AXIS_Y}" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"/>
-      <line x1="${X0}" y1="${AXIS_Y - 5}" x2="${X0}" y2="${AXIS_Y + 5}" stroke="var(--muted)" stroke-width="2"/>
-      <line x1="${X1}" y1="${AXIS_Y - 5}" x2="${X1}" y2="${AXIS_Y + 5}" stroke="var(--muted)" stroke-width="2"/>
-      <text x="${X0}" y="${AXIS_Y + 20}" text-anchor="middle" font-size="12" font-weight="800" fill="var(--text)">0%</text>
-      <text x="${X1}" y="${AXIS_Y + 20}" text-anchor="middle" font-size="12" font-weight="800" fill="var(--text)">100%</text>
-      <text x="${X1}" y="${AXIS_Y + 34}" text-anchor="middle" font-size="10.5" fill="var(--muted)">(예금·적금)</text>
+    <svg viewBox="0 0 380 212" style="width:100%;height:auto;display:block;" role="img" aria-label="대표 자산 10년평균 승률 비교선">
+      ${[
+        [X_ZERO, (X_ZERO + X0) / 2 - 4],
+        [(X_ZERO + X0) / 2 + 4, (X1 + X_HUNDRED) / 2 - 4],
+        [(X1 + X_HUNDRED) / 2 + 4, X_HUNDRED],
+      ].map(([a, b]) => `<line x1="${a}" y1="${AXIS_Y}" x2="${b}" y2="${AXIS_Y}" stroke="var(--muted)" stroke-width="2"/>`).join("")}
+      ${[30, 40, 50, 60, 70, 80].map((v) => `<line x1="${xOf(v)}" y1="${AXIS_Y - 3}" x2="${xOf(v)}" y2="${AXIS_Y + 3}" stroke="var(--muted)" stroke-width="1.2"/>`).join("")}
+      ${breakMark((X_ZERO + X0) / 2)}${breakMark((X1 + X_HUNDRED) / 2)}
+      <line x1="${X_ZERO}" y1="${AXIS_Y - 6}" x2="${X_ZERO}" y2="${AXIS_Y + 6}" stroke="var(--muted)" stroke-width="2"/>
+      <text x="${X_ZERO}" y="${AXIS_Y + 20}" text-anchor="middle" font-size="12.5" font-weight="800" fill="var(--text)">0%</text>
+      <text x="${X_HUNDRED}" y="${AXIS_Y + 20}" text-anchor="middle" font-size="12.5" font-weight="800" fill="var(--text)">100%</text>
+      <line x1="${X_HUNDRED}" y1="${AXIS_Y}" x2="${X_HUNDRED}" y2="${80}" stroke="${DEPOSIT_COLOR}" stroke-width="1" stroke-dasharray="2 2" opacity="0.8"/>
+      <circle cx="${X_HUNDRED}" cy="${AXIS_Y}" r="5" fill="${DEPOSIT_COLOR}" stroke="#fff" stroke-width="1.4"/>
+      <text x="376" y="64" text-anchor="end" font-size="14.5" font-weight="800" fill="${DEPOSIT_COLOR}">예금·적금</text>
+      <text x="376" y="79" text-anchor="end" font-size="13" font-weight="700" fill="${DEPOSIT_COLOR}">100%</text>
       ${dots}
     </svg>`;
   const rows = WINRATE_BENCHMARKS.map(
     (b, i) => `
       <tr>
         <td>${i + 1}</td>
-        <td><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${b.color};margin-right:5px;vertical-align:baseline;"></span><b>${escapeHtml(b.name)}</b><br><span class="muted" style="font-size:10.5px;">${escapeHtml(b.sub)}</span></td>
+        <td><span class="wr-bench-dot" style="background:${b.color};"></span><b>${escapeHtml(b.name)}</b></td>
         <td>${b.up}회</td>
         <td>${b.down}회</td>
         <td>${winRatePctCellHtml(b.score, null)}</td>
       </tr>`
-  ).join("");
-  wrap.innerHTML = `
-    <h3 class="future-chart-subheading">📐 대표 자산 11종의 10년평균 승률 비교 (2026-09 기준)</h3>
+  ).join("") + `
+      <tr class="wr-bench-deposit">
+        <td>기준</td>
+        <td><span class="wr-bench-dot" style="background:${DEPOSIT_COLOR};"></span><b>예금·적금</b></td>
+        <td>120회</td>
+        <td>0회</td>
+        <td><b class="wr-pct">100.0%</b></td>
+      </tr>`;
+  // 표는 한 행이 한 줄로 끝나게(2026-09-13 사용자 요청: 상하로 짧게) — 보조명(서울 아파트 지수 등) 줄은 뺌
+  return winRateBenchmarkHtml(svg, rows);
+}
+// INVEST점수 10년평균 승률 "+자세히"와 인기종목 "+승률이란"(2026-09-13)이 같은 내용을 쓴다
+function winRateBenchmarkHtml(svg, rows) {
+  return `
+    <h3 class="future-chart-subheading">📐 대표자산 10년평균 승률비교</h3>
     ${svg}
-    <table class="top30-table" style="margin-top:10px;">
-      <thead><tr><th>순위</th><th>이름</th><th>상승횟수</th><th>하락횟수</th><th>10년평균 승률</th></tr></thead>
+    <table class="top30-table wr-bench-table" style="margin-top:10px;">
+      <thead><tr><th>순위</th><th>이름</th><th>상승</th><th>하락</th><th>승률</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
     <p class="disclaimer" style="margin-top:8px;">
@@ -9053,7 +9085,7 @@ function popularSnapshotResetCaches() {
 // 2026-09-10 사용자 요청: 상단 대표 2종목 표와 완전히 같은 구성·디자인(회색 박스 + 직전 5개월 등락 + 연평균 상승·10년평균 승률)
 // 2026-09-11 사용자 요청: 기본 화면은 기업명/현재가(등락률)/10년평균 승률만 깔끔하게,
 // 우측 상단 "+등락표"를 누르면 직전 5개월 월별 등락표(기존 표)로 바뀜(다시 누르면 복귀)
-let popularShowDeltaTable = false;
+let popularShowWinRateInfo = false; // 인기종목 "+승률이란" 펼침 상태(2026-09-13, 옛 +등락표 자리)
 // 2026-09-12 사용자 요청: 수익률·승률 표와 완전히 같은 구성으로 통일 — 회색 틀 없이, 같은 글씨 크기(top30-table),
 // 이름 아래 작은 회색 티커 줄까지. 국내는 "한글명 / 티커", 해외는 "티커 / 한글명" 순서(수익률 표와 동일).
 function popularSimpleTableHtml(rows, isKr, opts) {
@@ -9082,28 +9114,20 @@ function paintPopularRows(resultsEl, isKr, rows, extraNoteHtml, opts) {
   let shown = Math.min(30, rows.length);
   const paint = () => {
     const visible = rows.slice(0, shown);
-    const snapRows = visible.map((r) => ({
-      symbol: r.symbol,
-      name: r.name,
-      changes: r.changes,
-      winRate: r.winRateScore,
-      winTotal: r.winTotal,
-    }));
-    const tableHtml = popularShowDeltaTable
-      ? popularSnapTableHtml(snapRows, o.logoFn, o.nameFn)
-      : popularSimpleTableHtml(visible, isKr, o);
-    const noteHtml = popularShowDeltaTable
-      ? `${universeLabel} 중 거래대금(최근 5일 평균)이 큰 순입니다. -5M~-1M은 직전 5개월 월별 등락률, 10년평균 승률은 매일 자동 갱신되는 배치 DB 기준이며 투자 자문이 아닙니다.`
-      : `${universeLabel} 중 거래대금(최근 5일 평균)이 큰 순입니다. 오른쪽 위 <b>+등락표</b>를 누르면 직전 5개월 월별 등락률을 볼 수 있습니다. 투자 자문이 아닙니다.`;
+    // 2026-09-13 사용자 요청: "+등락표"를 "+승률이란"으로 교체 — 누르면 INVEST점수 10년평균 승률 +자세히와 같은
+    // 대표자산 승률비교(그래프·표)를 표 위에 펼침. 월별 등락표(popularSnapTableHtml)는 더 이상 열지 않음.
+    const tableHtml = popularSimpleTableHtml(visible, isKr, o);
+    const noteHtml = `${universeLabel} 중 거래대금(최근 5일 평균)이 큰 순입니다. 오른쪽 위 <b>+승률이란</b>을 누르면 대표자산의 10년평균 승률을 비교해 볼 수 있습니다. 투자 자문이 아닙니다.`;
     resultsEl.innerHTML = `
         ${o.prefixHtml || ""}
         <p class="muted rank-scan-caption" style="font-size:12px;">거래대금 ${Math.min(shown, rows.length)}위까지 검색됨 <button type="button" class="rank-refresh-btn popular-refresh-btn" aria-label="실시간 새로고침"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><polyline points="20 4 20 9 15 9"/></svg></button></p>
         <div class="popular-head-row">
           <span class="tap-hint">* 모든 항목은 눌러서 자세한 설명을 볼 수 있습니다.</span>
-          <button type="button" class="score-method-detail-btn popular-delta-btn">${popularShowDeltaTable ? "−등락표 닫기" : "+등락표"}</button>
+          <button type="button" class="score-method-detail-btn popular-delta-btn">${popularShowWinRateInfo ? "−승률이란 닫기" : "+승률이란"}</button>
         </div>
+        ${popularShowWinRateInfo ? `<div class="chart-detail-wrap chart-detail-expanded popular-winrate-info">${buildWinRateBenchmarkHtml()}</div>` : ""}
         ${extraNoteHtml || ""}
-        ${popularShowDeltaTable ? `<div class="popular-snap-box popular-snap-box-list">${tableHtml}</div>` : tableHtml}
+        ${tableHtml}
         ${shown < rows.length ? `<button type="button" class="cat-btn load-more-btn">더보기 (${shown}/${rows.length})</button>` : ""}
         <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${noteHtml}</p>
       `;
@@ -9116,7 +9140,7 @@ function paintPopularRows(resultsEl, isKr, rows, extraNoteHtml, opts) {
     const deltaBtn = resultsEl.querySelector(".popular-delta-btn");
     if (deltaBtn)
       deltaBtn.addEventListener("click", () => {
-        popularShowDeltaTable = !popularShowDeltaTable;
+        popularShowWinRateInfo = !popularShowWinRateInfo;
         paint();
       });
   };
@@ -9339,7 +9363,7 @@ function combinedRankTableHtml(rows, universeLabel, rowNameHtmlFn, priceStrFn) {
           ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
           : ""
       }</td>
-        <td>${Number.isFinite(r.ret10y) ? `<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>${partialMarkHtml(r.winTotal)}` : "N/A"}</td>
+        <td>${Number.isFinite(r.ret10y) ? `${partialMarkHtml(r.winTotal, "wr-mark-front")}<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>` : "N/A"}</td>
         <td>${winRatePctCellHtml(r.winRate, r.winTotal)}</td>
       </tr>`
     )
@@ -9815,7 +9839,7 @@ async function runIpoList() {
           <thead><tr>
             <th data-explain="기업명과 상장일입니다. 누르면 그 종목의 분석 화면으로 이동합니다.">기업명<br>(상장 시기)</th>
             <th data-explain="현재가와 전일 종가 대비 오늘 등락률입니다. 목록이 뜬 뒤 시세를 따로 받아와 채우며, 최대 20분 지연될 수 있습니다. 숫자를 누르면 차트가 열립니다.">현재가<br>(등락률)</th>
-            <th><span data-explain="1년 수익률 — 1년 전 같은 시점의 주가와 비교해 지금까지 얼마나 올랐는지입니다. 상장한 지 1년이 안 된 종목은 낼 수 없어 상장 개월수를 대신 보여줍니다.">1년 수익률</span><br><span data-explain="10년평균 승률 — 상장 이후 월 단위로 오르며 마감한 달의 비율입니다. 상장 6개월이 안 된 종목은 표본이 모자라 승률 대신 상장 개월수를 보여줍니다. ⚠️는 상장 10년 미만이라는 경고입니다." class="th-wr-pct">10년 승률(%)</span></th>
+            <th><span data-explain="1년 수익률 — 1년 전 같은 시점의 주가와 비교해 지금까지 얼마나 올랐는지입니다. 상장한 지 1년이 안 된 종목은 낼 수 없어 상장 개월수를 대신 보여줍니다.">1년 수익률</span><br><span data-explain="10년평균 승률 — 상장 이후 월 단위로 오르며 마감한 달의 비율입니다. 상장 6개월이 안 된 종목은 표본이 모자라 승률 대신 상장 개월수를 보여줍니다. ⚠️는 상장 10년 미만이라는 경고입니다.">10년 승률</span></th>
           </tr></thead>
           <tbody>${body}</tbody>
         </table>
@@ -10492,7 +10516,7 @@ const ASSET_TREND_METRICS = {
     header: "연평균 상승<br>(연복리)",
     orange: true,
     sort: (a, b) => (b.ret10y ?? -Infinity) - (a.ret10y ?? -Infinity),
-    cell: (r) => (r.ret10y === null || r.ret10y === undefined ? "N/A" : `<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>${partialMarkHtml(r.winTotal)}`),
+    cell: (r) => (r.ret10y === null || r.ret10y === undefined ? "N/A" : `${partialMarkHtml(r.winTotal, "wr-mark-front")}<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>`),
     note: "연평균 상승(최근 10년 연복리 수익률 CAGR — 매년 몇 %씩 오른 셈인지, 상장 10년 미만은 상장 후 기간으로 연율화 — ⚠️ 표시)이 높은 순 순위입니다.",
     noRiskCol: true,
     gradeHeader: "10년평균<br>승률",
@@ -10906,7 +10930,7 @@ const ETF_METRIC_TABS = {
 };
 function etfRet10CellHtml(r) {
   if (r.ret10y === null || r.ret10y === undefined) return "N/A";
-  return `<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>${partialMarkHtml(r.winTotal)}`;
+  return `${partialMarkHtml(r.winTotal, "wr-mark-front")}<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>`;
 }
 
 let etfMetricTab = "winrate";
@@ -13977,7 +14001,7 @@ async function runHistoricalMoversAsset(section, period, direction) {
             <td>${i + 1}</td>
             <td><span class="ticker-cell">${isEtf ? etfRowNameHtml(r, isKrEtf) : cryptoRowNameHtml(r)}</span></td>
             <td>${isEtf ? priceChartLink(r.symbol, fmtPrice(r.price, r.currency)) : cryptoPriceStr(r)}<br><span class="${chg >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(chg)})</span></td>
-            <td>${Number.isFinite(r.ret10y) ? `<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>${partialMarkHtml(r.winTotal)}` : "N/A"}</td>
+            <td>${Number.isFinite(r.ret10y) ? `${partialMarkHtml(r.winTotal, "wr-mark-front")}<b>${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>` : "N/A"}</td>
             <td>${winRatePctCellHtml(r.winRate, r.winTotal)}</td>
           </tr>`;
           })
@@ -17159,8 +17183,8 @@ async function renderFutureModalHeader(ticker, quote, metricsPromise, marketRetu
     const wrMap = winRateMapForMode(db, ticker, "stock");
     const wrEntry = (wrMap && wrMap[ticker]) || null;
     const partialSfx = wrEntry && Number.isFinite(wrEntry.total) && wrEntry.total < 120 ? "⚠️" : "";
-    const ret10 = wrEntry && Number.isFinite(wrEntry.ret10y) ? `${Math.round(wrEntry.ret10y)}%${partialSfx}` : "—";
-    const wr10 = wrEntry && Number.isFinite(wrEntry.score) ? `${Math.round(wrEntry.score)}%${partialSfx}` : "—";
+    const ret10 = wrEntry && Number.isFinite(wrEntry.ret10y) ? `${partialSfx}${Math.round(wrEntry.ret10y)}%` : "—";
+    const wr10 = wrEntry && Number.isFinite(wrEntry.score) ? `${partialSfx}${Math.round(wrEntry.score)}%` : "—";
     let macroBadgeHtml;
     if (isKr) {
       const fomo = await getKrFomoMetrics().catch(() => ({ score: null }));
