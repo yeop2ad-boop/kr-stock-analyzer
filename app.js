@@ -2783,6 +2783,59 @@ document.querySelectorAll(".fh-tab").forEach((btn) => {
     setBottomNavActive(bottomNavKeyForSection());
   });
 });
+// ---------- 상단 탭 좌우 스와이프(2026-09-14 사용자 요청: 인기종목~IPO를 밀어서 넘기기) ----------
+// 목록 화면(#panelTopRanking)에서 옆으로 밀면 지금 보이는 상단 탭 순서대로 다음/이전 탭을 누른다.
+// 가로 스크롤이 되는 영역(탭 바·칩 줄·넓은 표) 안에서 시작한 제스처는 그 영역 스크롤에 양보한다.
+(function initTopTabSwipe() {
+  const panel = el("panelTopRanking");
+  if (!panel) return;
+  let start = null;
+  const canScrollX = (node) => {
+    for (let n = node; n && n !== panel; n = n.parentElement) {
+      if (n.scrollWidth > n.clientWidth + 2) {
+        const ox = getComputedStyle(n).overflowX;
+        if (ox === "auto" || ox === "scroll") return true;
+      }
+    }
+    return false;
+  };
+  panel.addEventListener(
+    "touchstart",
+    (e) => {
+      if (e.touches.length !== 1 || canScrollX(e.target) || e.target.closest("input, textarea, select, svg")) {
+        start = null;
+        return;
+      }
+      start = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now() };
+    },
+    { passive: true }
+  );
+  panel.addEventListener(
+    "touchend",
+    (e) => {
+      if (!start) return;
+      const tch = e.changedTouches[0];
+      const dx = tch.clientX - start.x;
+      const dy = tch.clientY - start.y;
+      const dt = Date.now() - start.t;
+      start = null;
+      // 가로로 충분히(60px) 밀었고 세로 이동보다 확실히 클 때만 — 스크롤 중 살짝 흔들린 건 무시
+      if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.6 || dt > 800) return;
+      const tabs = [...document.querySelectorAll("#fhTabs .fh-tab")].filter((b) => b.style.display !== "none" && getComputedStyle(b).display !== "none");
+      const cur = tabs.findIndex((b) => b.classList.contains("active"));
+      if (cur < 0) return;
+      const next = dx < 0 ? cur + 1 : cur - 1;
+      if (next < 0 || next >= tabs.length) return;
+      tabs[next].click();
+      tabs[next].scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+      panel.classList.remove("swipe-in-left", "swipe-in-right");
+      void panel.offsetWidth; // 애니메이션 재시작
+      panel.classList.add(dx < 0 ? "swipe-in-left" : "swipe-in-right");
+      setTimeout(() => panel.classList.remove("swipe-in-left", "swipe-in-right"), 320);
+    },
+    { passive: true }
+  );
+})();
 // 랭킹 캡션("시가총액 상위 N개 확인") 옆 새로고침 — 제목줄 버튼에서 이동(2026-08-31, 관심종목·인사이트엔 없음).
 // 스캔 캐시를 전부 비우고 현재 선택된 랭킹 항목을 현시간 기준으로 다시 검색함
 document.addEventListener("click", (e) => {

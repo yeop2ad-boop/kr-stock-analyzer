@@ -3131,3 +3131,9 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .wr-intro .wr-intro-key { color: var(--text); font-weight: 800; background: linear-gradient(transparent 58%, rgba(109, 40, 217, 0.18) 58%); padding: 0 1px; }
 /* 12개월 카드가 버튼 아래 펼침 영역에 들어갈 때 위 여백 줄임 */
 #oxInlineWrap .oxb-card { margin-top: 10px; }
+
+/* 상단 탭 스와이프 전환 애니메이션(2026-09-14) */
+@keyframes swipeInLeft { from { opacity: 0.35; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+@keyframes swipeInRight { from { opacity: 0.35; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
+#panelTopRanking.swipe-in-left { animation: swipeInLeft 0.28s ease-out; }
+#panelTopRanking.swipe-in-right { animation: swipeInRight 0.28s ease-out; }
