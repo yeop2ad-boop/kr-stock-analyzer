@@ -1252,13 +1252,70 @@ function readUnifiedWatchlist() {
     (w) => w && w.symbol && !seen.has(w.symbol) && seen.add(w.symbol)
   );
 }
-function toggleSheetWatchlist(symbol) {
+function isSheetWatchlisted(symbol) {
+  return readUnifiedWatchlist().some((w) => w.symbol === symbol);
+}
+function removeSheetWatchlist(symbol) {
+  localStorage.setItem("watchlist_v1_all", JSON.stringify(readUnifiedWatchlist().filter((w) => w.symbol !== symbol)));
+}
+function addSheetWatchlist(symbol, groupId) {
   const list = readUnifiedWatchlist();
-  const idx = list.findIndex((w) => w.symbol === symbol);
-  if (idx >= 0) list.splice(idx, 1);
-  else list.push({ symbol, addedAt: Date.now(), groupId: "default" });
+  if (list.some((w) => w.symbol === symbol)) return;
+  list.push({ symbol, addedAt: Date.now(), groupId: groupId || "default" });
   localStorage.setItem("watchlist_v1_all", JSON.stringify(list));
-  return idx < 0;
+}
+// 본체 관심종목 그룹(watchlist_groups_v1_all)과 마지막으로 보던 그룹(watchlist_active_group_v1_all)을 그대로 읽음
+function readWatchlistGroups() {
+  try {
+    const groups = JSON.parse(localStorage.getItem("watchlist_groups_v1_all"));
+    if (Array.isArray(groups) && groups.length) return groups.filter((g) => g && g.id);
+  } catch {}
+  return [{ id: "default", name: "기본" }];
+}
+
+// ---------- 관심목록 선택 시트(2026-09-13 사용자 요청: 본체와 동일) ----------
+// 별을 누르면 바로 담지 않고, 화면 아래에서 "어느 관심목록에 담을까요?"를 띄워 고른 그룹에 담는다
+function openMapGroupPickSheet(symbol, onAdded) {
+  const groups = readWatchlistGroups();
+  const active = localStorage.getItem("watchlist_active_group_v1_all");
+  const defaultId = groups.some((g) => g.id === active) ? active : groups[0].id;
+  let sheet = document.getElementById("mapGroupPickSheet");
+  if (!sheet) {
+    sheet = document.createElement("div");
+    sheet.id = "mapGroupPickSheet";
+    sheet.className = "map-group-pick-sheet";
+    document.body.appendChild(sheet);
+  }
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  sheet.innerHTML = `
+    <div class="map-group-pick-backdrop"></div>
+    <div class="map-group-pick-panel">
+      <div class="map-group-pick-head">
+        <span class="map-group-pick-title">어느 관심목록에 담을까요?</span>
+        <button type="button" class="map-group-pick-close" aria-label="닫기">✕</button>
+      </div>
+      <div class="map-group-pick-list">${groups
+        .map(
+          (g) => `<button type="button" class="map-group-pick-item${g.id === defaultId ? " checked" : ""}" data-pick-group="${esc(g.id)}">
+            <span class="map-group-pick-check">✓</span><span>${esc(g.name || "기본")}</span>
+          </button>`
+        )
+        .join("")}</div>
+    </div>`;
+  sheet.style.display = "flex";
+  const close = () => {
+    sheet.style.display = "none";
+  };
+  sheet.querySelector(".map-group-pick-backdrop").addEventListener("click", close);
+  sheet.querySelector(".map-group-pick-close").addEventListener("click", close);
+  sheet.querySelector(".map-group-pick-list").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-pick-group]");
+    if (!btn) return;
+    addSheetWatchlist(symbol, btn.dataset.pickGroup);
+    close();
+    if (onAdded) onAdded();
+    showToast("관심종목에 추가했습니다");
+  });
 }
 
 // 상세시트를 열 때마다 클릭한 종목 하나만 실시간 시세를 다시 조회(오늘 시가/고가/저가/현재가/거래량/전일종가) —
@@ -1387,9 +1444,16 @@ function openCompanySheet(d) {
   const watchBtn = document.getElementById("sheetWatchBtn");
   watchBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    const nowActive = toggleSheetWatchlist(d.symbol);
-    watchBtn.classList.toggle("active", nowActive);
-    watchBtn.querySelector("svg").setAttribute("fill", nowActive ? "currentColor" : "none");
+    const setActive = (on) => {
+      watchBtn.classList.toggle("active", on);
+      watchBtn.querySelector("svg").setAttribute("fill", on ? "currentColor" : "none");
+    };
+    if (isSheetWatchlisted(d.symbol)) {
+      removeSheetWatchlist(d.symbol);
+      setActive(false);
+      return;
+    }
+    openMapGroupPickSheet(d.symbol, () => setActive(true));
   });
   // 종목명을 누르면 본체(내투자닷컴)의 검색 상세 페이지로 이동 — 지도에선 요약 정보만 보여주므로 더 자세히 보려면 여기로
   const nameLink = document.getElementById("sheetNameLink");

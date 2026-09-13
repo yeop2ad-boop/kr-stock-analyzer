@@ -3041,3 +3041,33 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .rk-table .rk-l1.rk-long { font-size: 14.5px; letter-spacing: -0.3px; }
 .rk-table .rk-l1.rk-long .rk-arrow { width: 12px; }
 .rk-table .rk-l1.rk-long + .rk-l2 { padding-right: 12px; }
+
+/* 최근 12개월 승패(2026-09-13 사용자 요청): 스크롤 없이 화면 폭에 12칸 균등 — 위 한 줄 요약 */
+.ox-box { margin-top: 14px; }
+.ox-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.ox-title { font-size: 13px; font-weight: 800; color: var(--text); }
+.ox-summary-line { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.ox-summary-line b { font-weight: 800; }
+.ox-grid { display: grid; gap: 2px; }
+.ox-cell { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5px 0 4px; border-radius: 6px; min-width: 0; }
+.ox-cell.ox-win { background: rgba(21, 128, 61, 0.09); }
+.ox-cell.ox-loss { background: rgba(239, 68, 68, 0.09); }
+.ox-mark { font-size: 13px; font-weight: 800; line-height: 1.2; }
+.ox-pct { font-size: 10.5px; font-weight: 700; line-height: 1.2; letter-spacing: -0.4px; }
+.ox-win { color: var(--good); }
+.ox-loss { color: #ef4444; }
+@media (max-width: 360px) { .ox-pct { font-size: 9.5px; } .ox-mark { font-size: 12px; } }
+.ox-month { font-size: 9.5px; font-weight: 600; color: var(--muted); line-height: 1.2; margin-bottom: 1px; letter-spacing: -0.5px; white-space: nowrap; }
+.ox-range { font-size: 11px; font-weight: 600; color: var(--muted); margin-left: 3px; }
+
+/* 검색상세(종목 상세) 로고: 테두리·원형 자르기 없이 원래 모양 그대로, 크게(2026-09-13 사용자 요청 — 목록과 동일한 방식) */
+.detail-identity-logo .ticker-logo-wrap { width: 40px; height: 40px; border: none; border-radius: 0; background: transparent; overflow: visible; }
+.detail-identity-logo .ticker-logo { width: 100%; height: 100%; object-fit: contain; }
+.detail-identity-logo .ticker-logo-badge { border-radius: 8px; font-size: 12px; }
+.summary-ticker-logo-wrap { width: 60px; height: 60px; border: none; border-radius: 0; background: transparent; overflow: visible; }
+.summary-ticker-logo { width: 100%; height: 100%; }
+.summary-ticker-badge { border-radius: 10px; }
+:root[data-theme="dark"] .detail-identity-logo .ticker-logo-wrap,
+:root[data-theme="dark"] .summary-ticker-logo-wrap { background: #fff; border-radius: 8px; padding: 3px; box-sizing: border-box; }/* 로고를 키운 만큼 현재가·등락률이 두 줄로 밀리지 않게 한 줄 고정 */
+.detail-identity-priceline { flex-wrap: nowrap; white-space: nowrap; gap: 4px; }
+.detail-identity-logo .ticker-logo-wrap { width: 36px; height: 36px; }

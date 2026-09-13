@@ -6354,19 +6354,35 @@ async function renderSummaryScoreRow(ticker, scoreMode = "stock") {
     if (m12.length > 0) {
       const winCount = m12.filter((v) => v > 0).length;
       const sum = Math.round(m12.reduce((a, b) => a + b, 0));
-      const oxCells = m12.map((v) => `<td class="${v > 0 ? "ox-win" : "ox-loss"}">${v > 0 ? "O" : "X"}</td>`).join("");
-      const pctCells = m12.map((v) => `<td class="${v > 0 ? "ox-win" : "ox-loss"}">${v > 0 ? "+" : ""}${Math.round(v)}</td>`).join("");
       const winPct = Math.round((winCount / m12.length) * 100);
+      // 2026-09-13 사용자 요청: 좌우 스크롤 없이 한 화면에 — 요약(승패·합계)은 위 한 줄로 빼고, 12칸을 화면 폭에 맞춰 균등 배치
+      // 각 칸 위에 몇 월인지(2026-09-13 사용자 요청) — 배치 DB의 to(마지막 월봉 "YYYY-MM")에서 거꾸로 셈
+      const toMatch = /^(\d{4})-(\d{2})/.exec(String(e.to || ""));
+      const monthOf = (i) => {
+        if (!toMatch) return null;
+        const d = new Date(Number(toMatch[1]), Number(toMatch[2]) - 1 - (m12.length - 1 - i), 1);
+        return { y: d.getFullYear(), m: d.getMonth() + 1 };
+      };
+      const cells = m12
+        .map((v, i) => {
+          const mo = monthOf(i);
+          // 1월에는 연도를 붙여 해가 바뀌는 지점을 보여줌(예: 26.1)
+          const moLabel = mo ? (mo.m === 1 ? `${String(mo.y).slice(2)}.1` : `${mo.m}월`) : "";
+          return `<div class="ox-cell ${v > 0 ? "ox-win" : "ox-loss"}">${moLabel ? `<span class="ox-month">${moLabel}</span>` : ""}<span class="ox-mark">${v > 0 ? "O" : "X"}</span><span class="ox-pct">${v > 0 ? "+" : ""}${Math.round(v)}</span></div>`;
+        })
+        .join("");
+      const firstMo = monthOf(0);
+      const lastMo = monthOf(m12.length - 1);
+      const rangeLabel = firstMo && lastMo ? ` <span class="ox-range">${String(firstMo.y).slice(2)}.${firstMo.m}~${String(lastMo.y).slice(2)}.${lastMo.m}</span>` : "";
       oxHtml = `
-        <div class="ox-strip-scroll">
-          <table class="ox-strip-table">
-            <tbody>
-              <tr>${oxCells}<td class="ox-summary">${winCount}승 ${m12.length - winCount}패<br>(${winPct}%)</td></tr>
-              <tr>${pctCells}<td class="ox-summary">${sum > 0 ? "+" : ""}${sum}%</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="ox-strip-caption">최근 ${m12.length}개월 월간 승패(O/X)와 등락%(왼쪽이 과거) — 마지막 열은 승패 확률과 등락 합산</p>`;
+        <div class="ox-box">
+          <div class="ox-head">
+            <span class="ox-title">최근 ${m12.length}개월 승패${rangeLabel}</span>
+            <span class="ox-summary-line"><b class="ox-win">${winCount}승</b> <b class="ox-loss">${m12.length - winCount}패</b> (${winPct}%) · 합계 <b class="${sum > 0 ? "ox-win" : "ox-loss"}">${sum > 0 ? "+" : ""}${sum}%</b></span>
+          </div>
+          <div class="ox-grid" style="grid-template-columns:repeat(${m12.length},1fr);">${cells}</div>
+          <p class="ox-strip-caption">숫자는 그달 등락률(%)</p>
+        </div>`;
     }
 
     rowEl.innerHTML = gridHtml + oxHtml;
