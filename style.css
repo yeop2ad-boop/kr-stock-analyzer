@@ -3027,3 +3027,6 @@ table.wr-bench-table td:nth-child(2) { text-align: left; }
 table.wr-bench-table td:nth-child(2) { white-space: normal; word-break: keep-all; line-height: 1.35; }
 table.wr-bench-table tr.wr-bench-deposit td { color: #0f766e; border-top: 1px dashed var(--border); }
 table.wr-bench-table tr.wr-bench-deposit .wr-pct { color: #0f766e; }
+
+/* 승률비교 맨 위 설명(2026-09-13 사용자 지정 문구) */
+.wr-bench-intro { margin: 0 0 10px; font-size: 13.5px; line-height: 1.6; color: var(--text); }
