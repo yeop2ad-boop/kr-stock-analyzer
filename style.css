@@ -3096,4 +3096,7 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .oxb-month { margin-top: 4px; text-align: center; font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: -0.4px; white-space: nowrap; }
 .oxb-last .oxb-month { color: var(--text); font-weight: 800; }
 .oxb-caption { margin: 8px 0 0; font-size: 10.5px; color: var(--muted); text-align: right; }
-@media (max-width: 360px) { .oxb-chip { padding: 3px 7px; font-size: 10.5px; } .oxb-val, .oxb-month { font-size: 9px; } }
+@media (max-width: 360px) { .oxb-chip { padding: 3px 7px; font-size: 10.5px; } .oxb-val, .oxb-month { font-size: 9px; } }/* 승패+승률 한 칩(2026-09-13) — 승률은 앱 공통 승률 보라 */
+.oxb-chip .oxb-wr { color: var(--winrate) !important; }
+.oxb-chip { gap: 4px; }
+.oxb-chip i { margin: 0 1px; }

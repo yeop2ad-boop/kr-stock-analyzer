@@ -6393,8 +6393,7 @@ async function renderSummaryScoreRow(ticker, scoreMode = "stock") {
               ${rangeLabel ? `<span class="oxb-range">${rangeLabel}</span>` : ""}
             </div>
             <div class="oxb-chips">
-              <span class="oxb-chip"><b class="oxb-up">${winCount}승</b><i>·</i><b class="oxb-down">${m12.length - winCount}패</b></span>
-              <span class="oxb-chip">승률 <b>${winPct}%</b></span>
+              <span class="oxb-chip"><b class="oxb-up">${winCount}승</b><b class="oxb-down">${m12.length - winCount}패</b><i>|</i><b class="oxb-wr">${winPct}%</b></span>
               <span class="oxb-chip">합계 <b class="${sum > 0 ? "oxb-up" : sum < 0 ? "oxb-down" : ""}">${sum > 0 ? "+" : ""}${sum}%</b></span>
             </div>
           </div>
