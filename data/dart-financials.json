@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-12T12:32:39.265Z",
+  "updatedAt": "2026-09-13T13:34:01.582Z",
   "dataYear": 2025,
   "buybackPeriod": {
-    "from": "20250912",
-    "to": "20260912"
+    "from": "20250913",
+    "to": "20260913"
   },
   "source": "DART Open API(opendart.fss.or.kr) — 사업보고서 임직원 현황(empSttus), 자기주식취득결정(tsstkAqDecsn)",
   "items": [
