@@ -3132,8 +3132,8 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 /* 12개월 카드가 버튼 아래 펼침 영역에 들어갈 때 위 여백 줄임 */
 #oxInlineWrap .oxb-card { margin-top: 10px; }
 
-/* 상단 탭 스와이프 전환 애니메이션(2026-09-14) */
-@keyframes swipeInLeft { from { opacity: 0.35; transform: translateX(28px); } to { opacity: 1; transform: none; } }
-@keyframes swipeInRight { from { opacity: 0.35; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
-#panelTopRanking.swipe-in-left { animation: swipeInLeft 0.28s ease-out; }
-#panelTopRanking.swipe-in-right { animation: swipeInRight 0.28s ease-out; }
+/* 목록 화면 아래로 당겨 새로고침 안내(2026-09-14) — 헤더 바로 아래에 떠서 당긴 만큼 내려옴 */
+.pull-refresh.pull-refresh-fixed { position: fixed; left: 0; right: 0; top: 0; z-index: 95; }
+.pull-refresh.pull-refresh-fixed.pull-refresh-visible { margin-bottom: 0; }
+/* 좌우 스와이프 중 가로 이동은 JS가 직접 처리(세로 스크롤만 브라우저에 맡김) */
+#panelTopRanking { touch-action: pan-y; }

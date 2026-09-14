@@ -2203,6 +2203,11 @@ function fmtPrice(value, currency) {
   }
   return `$${(value ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
 }
+// 종목(검색) 상세 화면용 가격(2026-09-14 사용자 요청) — 원화도 만원 단위로 반올림하지 않고 "123,400원"처럼 전체 숫자
+function fmtPriceFull(value, currency) {
+  if (currency === "KRW") return `${Math.round(value ?? 0).toLocaleString()}원`;
+  return fmtPrice(value, currency);
+}
 // EPS(주당순이익)는 값 자체의 정밀도가 중요해 만원 축약 없이 원 단위 그대로 표시
 function fmtEpsValue(value, currency) {
   if (currency === "KRW") return `${Math.round(value).toLocaleString()}원`;
@@ -2783,13 +2788,42 @@ document.querySelectorAll(".fh-tab").forEach((btn) => {
     setBottomNavActive(bottomNavKeyForSection());
   });
 });
-// ---------- 상단 탭 좌우 스와이프(2026-09-14 사용자 요청: 인기종목~IPO를 밀어서 넘기기) ----------
-// 목록 화면(#panelTopRanking)에서 옆으로 밀면 지금 보이는 상단 탭 순서대로 다음/이전 탭을 누른다.
-// 가로 스크롤이 되는 영역(탭 바·칩 줄·넓은 표) 안에서 시작한 제스처는 그 영역 스크롤에 양보한다.
-(function initTopTabSwipe() {
+// ---------- 목록 화면 새로고침(2026-09-14 사용자 요청: 위쪽 새로고침 버튼 삭제 → 화면을 아래로 당기면 새로고침) ----------
+// 스캔 캐시를 전부 비우고 지금 보고 있는 화면(인기종목·승률·수익률·기업가치 서브항목·IPO 등)을 현시간 기준으로 다시 검색함
+function refreshTopRankingView() {
+  if (document.querySelector('[data-scanning="1"]')) {
+    showToast("검색 중입니다. 잠시만 기다려주세요");
+    return false;
+  }
+  RANK_SCAN_RESETTERS.forEach((reset) => { try { reset(); } catch {} });
+  dividendRiskMetricsCache.clear();
+  popularSnapshotResetCaches();
+  ipoListDbPromise = null;
+  showToast("실시간 데이터로 다시 검색합니다");
+  const tab = [...document.querySelectorAll("#fhTabs .fh-tab.active")][0];
+  const key = tab ? tab.dataset.fhtab : "";
+  // 기업가치·(주식)미래예측은 탭을 다시 누르면 첫 서브항목으로 돌아가므로, 보고 있던 서브항목을 그대로 다시 실행
+  if (key === "tab.valuation" || (key === "tab.trend" && appSectionMode === "stocks")) runRankingEntry(topRankingActiveIdx);
+  else if (tab) tab.click();
+  return true;
+}
+// ---------- 상단 탭 좌우 스와이프 + 아래로 당겨 새로고침(목록 화면 #panelTopRanking) ----------
+// 2026-09-14 사용자 요청: 스와이프가 끊기는 느낌 → 화면이 손가락을 따라 옆으로 밀리고, 화면 폭의 1/3 이상 밀었을 때만
+// 다음/이전 탭으로 넘어가며 새 화면이 반대쪽에서 밀려 들어옴(덜 밀면 제자리로 복귀).
+// 가로 스크롤이 되는 영역(칩 줄·넓은 표) 안에서 시작한 가로 제스처는 그 영역 스크롤에 양보한다.
+(function initTopRankingGestures() {
   const panel = el("panelTopRanking");
   if (!panel) return;
-  let start = null;
+  const PULL_THRESHOLD = 70;
+  const ptr = document.createElement("div");
+  ptr.className = "pull-refresh pull-refresh-fixed";
+  ptr.setAttribute("aria-hidden", "true");
+  ptr.innerHTML = '<span class="pull-refresh-text">↓ 당겨서 새로고침</span>';
+  document.body.appendChild(ptr);
+  const ptrText = ptr.querySelector(".pull-refresh-text");
+  let g = null; // 진행 중인 제스처
+  let animating = false;
+  const isActiveView = () => TAB_ORDER[activeTabIndex] === "topranking";
   const canScrollX = (node) => {
     for (let n = node; n && n !== panel; n = n.parentElement) {
       if (n.scrollWidth > n.clientWidth + 2) {
@@ -2799,85 +2833,121 @@ document.querySelectorAll(".fh-tab").forEach((btn) => {
     }
     return false;
   };
+  const visibleTabs = () => [...document.querySelectorAll("#fhTabs .fh-tab")].filter((b) => b.style.display !== "none" && getComputedStyle(b).display !== "none");
+  const setPanelX = (px, transition) => {
+    panel.style.transition = transition || "none";
+    panel.style.transform = `translateX(${px}px)`;
+  };
+  const restorePanel = () => {
+    panel.style.transition = "";
+    layoutPanels(0);
+  };
+  const hidePtr = () => {
+    ptr.classList.remove("pull-refresh-visible", "pull-refresh-ready");
+    ptr.style.transform = "";
+  };
+
   panel.addEventListener(
     "touchstart",
     (e) => {
-      if (e.touches.length !== 1 || canScrollX(e.target) || e.target.closest("input, textarea, select, svg")) {
-        start = null;
+      if (animating || e.touches.length !== 1 || !isActiveView()) {
+        g = null;
         return;
       }
-      start = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now() };
+      const t = e.touches[0];
+      g = {
+        x: t.clientX,
+        y: t.clientY,
+        axis: null, // "x" | "y"
+        swipeOk: !canScrollX(e.target) && !e.target.closest("input, textarea, select, svg"),
+        pullOk: (window.scrollY || document.documentElement.scrollTop) <= 0,
+        dx: 0,
+        pull: 0,
+        width: panel.clientWidth || window.innerWidth,
+      };
     },
     { passive: true }
   );
+
   panel.addEventListener(
-    "touchend",
+    "touchmove",
     (e) => {
-      if (!start) return;
-      const tch = e.changedTouches[0];
-      const dx = tch.clientX - start.x;
-      const dy = tch.clientY - start.y;
-      const dt = Date.now() - start.t;
-      start = null;
-      // 가로로 충분히(60px) 밀었고 세로 이동보다 확실히 클 때만 — 스크롤 중 살짝 흔들린 건 무시
-      if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.6 || dt > 800) return;
-      const tabs = [...document.querySelectorAll("#fhTabs .fh-tab")].filter((b) => b.style.display !== "none" && getComputedStyle(b).display !== "none");
-      const cur = tabs.findIndex((b) => b.classList.contains("active"));
-      if (cur < 0) return;
-      const next = dx < 0 ? cur + 1 : cur - 1;
-      if (next < 0 || next >= tabs.length) return;
-      tabs[next].click();
-      tabs[next].scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
-      panel.classList.remove("swipe-in-left", "swipe-in-right");
-      void panel.offsetWidth; // 애니메이션 재시작
-      panel.classList.add(dx < 0 ? "swipe-in-left" : "swipe-in-right");
-      setTimeout(() => panel.classList.remove("swipe-in-left", "swipe-in-right"), 320);
+      if (!g) return;
+      const t = e.touches[0];
+      const dx = t.clientX - g.x;
+      const dy = t.clientY - g.y;
+      if (!g.axis) {
+        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+        g.axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+        if (g.axis === "x" && !g.swipeOk) return (g = null);
+        if (g.axis === "y" && !(g.pullOk && dy > 0)) return (g = null);
+        if (g.axis === "y") ptr.style.top = `${Math.max(0, el("fixedHeader").getBoundingClientRect().bottom)}px`;
+      }
+      if (g.axis === "x") {
+        if (e.cancelable) e.preventDefault();
+        const tabs = visibleTabs();
+        const cur = tabs.findIndex((b) => b.classList.contains("active"));
+        const blocked = cur < 0 || (dx > 0 && cur === 0) || (dx < 0 && cur === tabs.length - 1);
+        g.dx = dx;
+        setPanelX(blocked ? dx * 0.25 : dx); // 첫/마지막 탭에서는 고무줄처럼 조금만 밀림
+      } else {
+        if (e.cancelable) e.preventDefault(); // 브라우저 기본 당겨서 새로고침(페이지 전체 재로딩) 대신 이 화면만 새로고침
+        g.pull = Math.min(Math.max(0, dy) * 0.55, PULL_THRESHOLD * 1.5);
+        ptr.classList.add("pull-refresh-visible");
+        ptr.classList.toggle("pull-refresh-ready", g.pull >= PULL_THRESHOLD);
+        ptr.style.transform = `translateY(${g.pull}px)`;
+        ptrText.textContent = g.pull >= PULL_THRESHOLD ? "↑ 놓으면 새로고침" : "↓ 당겨서 새로고침";
+      }
     },
-    { passive: true }
+    { passive: false }
   );
-})();
-// 랭킹 캡션("시가총액 상위 N개 확인") 옆 새로고침 — 제목줄 버튼에서 이동(2026-08-31, 관심종목·인사이트엔 없음).
-// 스캔 캐시를 전부 비우고 현재 선택된 랭킹 항목을 현시간 기준으로 다시 검색함
-document.addEventListener("click", (e) => {
-  const btn = e.target.closest(".rank-refresh-btn");
-  if (!btn) return;
-  // 인기종목 화면의 새로고침(2026-09-11 사용자 요청) — 랭킹 항목이 아니라 인기종목을 다시 검색
-  if (btn.classList.contains("popular-refresh-btn")) {
-    if (document.querySelector('[data-scanning="1"]')) {
-      showToast("검색 중입니다. 잠시만 기다려주세요");
+
+  const endGesture = () => {
+    if (!g) return;
+    const { axis, dx, pull, width } = g;
+    g = null;
+    if (axis === "y") {
+      if (pull >= PULL_THRESHOLD) {
+        ptrText.textContent = "🔄 새로고침 중...";
+        ptr.style.transform = `translateY(${PULL_THRESHOLD * 0.6}px)`;
+        refreshTopRankingView();
+        setTimeout(hidePtr, 900);
+      } else hidePtr();
       return;
     }
-    popularSnapshotResetCaches();
-    showToast("실시간 데이터로 다시 검색합니다");
-    openPopularStocks();
-    return;
-  }
-  if (document.querySelector('[data-scanning="1"]')) {
-    showToast("검색 중입니다. 잠시만 기다려주세요");
-    return;
-  }
-  RANK_SCAN_RESETTERS.forEach((reset) => { try { reset(); } catch {} });
-  dividendRiskMetricsCache.clear();
-  showToast("실시간 데이터로 다시 검색합니다");
-  runRankingEntry(topRankingActiveIdx);
-});
-// 상위 30개 안내문 옆 "+더보기"(주황) — 제목줄 "전체" 버튼 삭제(2026-08-31) 대신 안내문 자리에서 바로
-// 그 랭킹의 전체보기(load-more-btn)를 실행해 모든 종목을 이어서 검색
-document.addEventListener("click", (e) => {
-  const btn = e.target.closest(".scope-more-btn");
-  if (!btn) return;
-  // 2026-09-08 수정: 패널 전체에서 첫 .load-more-btn을 찾으면 숨겨진 다른 그룹(인기종목 등)의 버튼을 눌러 ETF·비트코인 화면에서
-  // 아무 반응이 없던 문제 — 안내문에서 위로 올라가며 가장 가까운 컨테이너의 전체보기 버튼을 찾는다
-  let node = btn.parentElement;
-  let moreBtn = null;
-  while (node && node !== document.body) {
-    moreBtn = node.querySelector(".load-more-btn");
-    if (moreBtn) break;
-    node = node.parentElement;
-  }
-  if (moreBtn) moreBtn.click();
-  else showToast("이 화면에는 전체보기가 없습니다.");
-});
+    if (axis !== "x") return;
+    const tabs = visibleTabs();
+    const cur = tabs.findIndex((b) => b.classList.contains("active"));
+    const next = dx < 0 ? cur + 1 : cur - 1;
+    const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
+    if (cur < 0 || Math.abs(dx) < width / 3 || next < 0 || next >= tabs.length) {
+      // 1/3 미만이면 제자리로 복귀
+      animating = true;
+      setPanelX(0, `transform 0.22s ${EASE}`);
+      setTimeout(() => {
+        restorePanel();
+        animating = false;
+      }, 240);
+      return;
+    }
+    const dir = dx < 0 ? -1 : 1;
+    animating = true;
+    setPanelX(dir * width, "transform 0.16s ease-in"); // 현재 화면을 끝까지 밀어냄
+    setTimeout(() => {
+      tabs[next].click(); // 새 화면 그리기(내부에서 switchTab이 transform을 되돌리므로 바로 아래에서 다시 지정)
+      tabs[next].scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+      setPanelX(-dir * width * 0.4);
+      void panel.offsetWidth; // 시작 위치를 먼저 확정해야 트랜지션이 걸림
+      setPanelX(0, `transform 0.26s ${EASE}`);
+      setTimeout(() => {
+        restorePanel();
+        animating = false;
+      }, 280);
+    }, 160);
+  };
+  panel.addEventListener("touchend", endGesture);
+  panel.addEventListener("touchcancel", endGesture);
+})();
 el("morePanelValuationBtn").addEventListener("click", () => {
   appSectionMode = "stocks"; // 기업가치는 주식 전용 화면이라 ETF/비트코인 모드 해제(2026-09-01)
   showOnlyCarouselView(() => activateRankingGroup("disclosure"));
@@ -3323,7 +3393,7 @@ function renderCompanyIdentity(ticker, quote, meta, changePct) {
   // 제목 옆 섹션 마크(한국주식/미국주식/ETF/비트코인, 2026-09-01) — Yahoo quoteType이 있으면 그걸 우선 사용
   const sectionMarkEl = el("companyPanelSectionMark");
   if (sectionMarkEl) sectionMarkEl.outerHTML = sectionMarkHtml(ticker, quote && quote.quoteType).replace('class="section-mark"', 'class="section-mark" id="companyPanelSectionMark"');
-  el("companyPanelPrice").textContent = price !== undefined && price !== null ? fmtPrice(price, meta.currency) : "";
+  el("companyPanelPrice").textContent = price !== undefined && price !== null ? fmtPriceFull(price, meta.currency) : "";
   const pctEl = el("companyPanelChangePct");
   if (changePct !== null && changePct !== undefined) {
     const isUp = changePct >= 0;
@@ -5556,7 +5626,7 @@ async function runAnalysis(ticker) {
 // ---------- 투자 그라운드: 52주 신고가~신저가를 머리~발끝 5등분해 졸라맨으로 표시(회사 로고를 머리에 얹음) ----------
 const GROUND_LANDMARKS = ["머리", "어깨", "배꼽", "무릎", "발"];
 function fmtGroundPrice(v, currency) {
-  return fmtPrice(v, currency);
+  return fmtPriceFull(v, currency);
 }
 function buildGroundSvg({ symbol, high, low, currency }) {
   const W = 320,
@@ -6019,7 +6089,7 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     const price = meta.regularMarketPrice ?? 0;
     if (summaryAssetSection === "crypto" && price && changePct > -100) {
       const diff = price - price / (1 + changePct / 100); // 전일 종가 역산으로 오늘 등락금액 계산
-      summaryChangeHtml = `<span class="${cls}">(${diff >= 0 ? "+" : "-"}${fmtPrice(Math.abs(diff), meta.currency)} / ${fmtPct(changePct)})</span>`;
+      summaryChangeHtml = `<span class="${cls}">(${diff >= 0 ? "+" : "-"}${fmtPriceFull(Math.abs(diff), meta.currency)} / ${fmtPct(changePct)})</span>`;
     } else {
       summaryChangeHtml = `<span class="${cls}">(${fmtPct(changePct)})</span>`;
     }
@@ -6041,7 +6111,7 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
           : `<span>업종: <b>${escapeHtml(industryKo || "N/A")}</b></span>
         <span>섹터: <b>${escapeHtml(sectorKo || "N/A")}</b></span>
         <span>거래소: <b>${escapeHtml(krExchangeName(symbol) || quote.exchDisp || meta.fullExchangeName || "N/A")}</b></span>`}
-        <span>현재가: <b>${fmtPrice(meta.regularMarketPrice ?? 0, meta.currency)}</b> ${summaryChangeHtml}</span>${/* 2026-09-13 사용자 요청: 차트보기 버튼 제거(위 차트로 충분) */ ""}
+        <span>현재가: <b>${fmtPriceFull(meta.regularMarketPrice ?? 0, meta.currency)}</b> ${summaryChangeHtml}</span>${/* 2026-09-13 사용자 요청: 차트보기 버튼 제거(위 차트로 충분) */ ""}
       </div>
       <div class="summary-action-row">
         <button type="button" class="summary-action-btn" id="tickerHistoricalToggleBtn" data-ticker="${escapeHtml(symbol)}">🕰️ 과거분석</button>
@@ -6279,7 +6349,7 @@ async function runAssetTickerHistorical(ticker, container, assetType) {
     const nowPrice = chartMeta.regularMarketPrice !== undefined && chartMeta.regularMarketPrice !== null ? chartMeta.regularMarketPrice : last.c;
     const chgSince = asOfM.price ? ((nowPrice - asOfM.price) / asOfM.price) * 100 : null;
     // 코인은 1달러 미만(밈코인 등)도 많아 소수 6자리까지 표시
-    const fmtAssetPrice = (v) => (isEtf ? fmtPrice(v, currency) : "$" + Number(v).toLocaleString("en-US", { maximumFractionDigits: v >= 1 ? 2 : 6 }));
+    const fmtAssetPrice = (v) => (isEtf ? fmtPriceFull(v, currency) : "$" + Number(v).toLocaleString("en-US", { maximumFractionDigits: v >= 1 ? 2 : 6 }));
     const dateStr = new Date(asOfM.t * 1000).toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric" });
     container.innerHTML = `
       <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 1년 전(${dateStr}) 종가와 그 시점까지의 데이터로 계산한 ${isEtf ? "ETF" : "코인"} 전용 배점 점수입니다(${capNote}). 투자 자문이 아닙니다.</p>
@@ -8829,24 +8899,26 @@ function guardRankingScan(resultsEl) {
 
 // "시가총액 상위 N개 확인" 캡션 + 실시간 새로고침 버튼(2026-08-31: 제목줄 새로고침 버튼을 랭킹 결과 안 이 자리로 이동) —
 // 버튼을 누르면 스캔 캐시를 비우고 현재 선택된 랭킹을 현시간 기준으로 다시 검색함
+// 2026-09-14 사용자 요청: "시가총액 N위까지 검색됨" 문구와 위쪽 새로고침·+전체보기 버튼을 모두 없애 공간 확보 —
+// 새로고침은 화면을 아래로 당기면(initPullToRefresh), 전체보기는 표 아래 버튼으로만 한다
 function rankScanCaptionHtml(count, canLoadMore) {
-  return `<p class="muted rank-scan-caption" style="font-size:12px;">시가총액 ${count}위까지 검색됨 <button type="button" class="rank-refresh-btn" aria-label="실시간 새로고침"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><polyline points="20 4 20 9 15 9"/></svg></button>${canLoadMore ? ` <button type="button" class="scope-more-btn">+전체보기</button>` : ""}</p>`;
+  return "";
 }
 
 // 랭킹 결과가 전체 종목이 아니라 시가총액 상위 일부만 스캔한 상태일 때, 공지 바로 밑에 주황색으로 표시하는 주의문.
 // canLoadMore=true면 "더보기"로 전체를 마저 확인할 수 있는 경우(단계적 스캔), false면 이 화면에서는 더 볼 방법이 없는 경우(상위 30개 고정)
 // 2026-09-10 사용자 요청: "지금 결과는 전체 N종목이 아닌 ..." 긴 경고 문구는 삭제하고
 // "시가총액 상위 N개 확인" 캡션 + "+전체보기" 버튼만 남김(rankScanCaptionHtml이 없는 화면에서 이걸 사용)
+// 2026-09-14 사용자 요청으로 문구·버튼 삭제(rankScanCaptionHtml 참고) — 호출부는 그대로 두고 빈 문자열만 반환
 function topCapNoteHtml(shown, total, canLoadMore) {
-  if (!(total > shown) || !canLoadMore) return "";
-  return `<p class="muted rank-scan-caption" style="font-size:12px;">시가총액 ${shown}위까지 검색됨 <button type="button" class="scope-more-btn">+전체보기</button></p>`;
+  return "";
 }
 
 // ---------- 랭킹 공용 인프라: 종목 목록을 시가총액 우선순으로 필요한 만큼만 스캔하는 단계적 캐시 ----------
 // 접속 직후엔 시가총액 상위 30개까지만 스캔해서 빠르게 보여주고, "전체보기"를 눌러야 그때 나머지를 이어서
 // 스캔함. getTickers()가 반환하는 순서가 이미 시가총액 내림차순이어야 함
 // (KR: getKrUniverseTickers = KODEX 200/코스닥150 ETF 편입 비중순, US: getSP500PriorityOrder = 시가총액순).
-// 랭킹 새로고침(실시간 재검색)용 — 각 단계적 스캔 캐시를 비우는 리셋 함수 모음(rank-refresh-btn 클릭 시 전부 실행)
+// 랭킹 새로고침(실시간 재검색)용 — 각 단계적 스캔 캐시를 비우는 리셋 함수 모음(아래로 당겨 새로고침 시 전부 실행 — refreshTopRankingView)
 const RANK_SCAN_RESETTERS = [];
 function makeIncrementalScan(getTickers, worker, concurrency) {
   const state = { tickers: null, items: [], cursor: 0, inflight: null };
@@ -8958,7 +9030,6 @@ async function renderKrRanking(dataPromiseFn, label, statusEl, resultsEl, { mapF
       const visible = top50.slice(0, initialCount);
       const rest = top50.slice(initialCount);
       resultsEl.innerHTML = `
-        <p class="muted rank-scan-caption" style="font-size:12px;">시가총액 ${visible.length}위까지 검색됨</p>
         ${TAP_HINT_HTML}
         <table class="top30-table">
           <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}<th${metricExplain ? ` data-explain="${escapeHtml(metricExplain)}"` : ""}>${metricHeaderHtml}</th>${showGrade ? RANK_TH_WINRATE : ""}</tr></thead>
@@ -9447,7 +9518,6 @@ function paintPopularRows(resultsEl, isKr, rows, extraNoteHtml, opts) {
     const noteHtml = `${universeLabel} 중 거래대금(최근 5일 평균)이 큰 순입니다. 오른쪽 위 <b>+승률이란</b>을 누르면 대표자산의 10년평균 승률을 비교해 볼 수 있습니다. 투자 자문이 아닙니다.`;
     resultsEl.innerHTML = `
         ${o.prefixHtml || ""}
-        <p class="muted rank-scan-caption" style="font-size:12px;">거래대금 ${Math.min(shown, rows.length)}위까지 검색됨 <button type="button" class="rank-refresh-btn popular-refresh-btn" aria-label="실시간 새로고침"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><polyline points="20 4 20 9 15 9"/></svg></button></p>
         <div class="popular-head-row">
           <span class="tap-hint">* 모든 항목은 눌러서 자세한 설명을 볼 수 있습니다.</span>
           <button type="button" class="score-method-detail-btn popular-delta-btn">${popularShowWinRateInfo ? "−승률이란 닫기" : "+승률이란"}</button>
@@ -16999,7 +17069,7 @@ function buildFutureChartSvg(data) {
   }
   axisSvg += `<text x="${xFn(0.5).toFixed(1)}" y="${(MT + PH + 32).toFixed(1)}" text-anchor="middle" font-size="11" fill="#e08a00" font-weight="700">(현재)</text>`;
   if (data.currentPrice !== null && data.currentPrice !== undefined) {
-    axisSvg += `<text x="${xFn(0.5).toFixed(1)}" y="${(MT + PH + 48).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="#e08a00">${escapeHtml(fmtPrice(data.currentPrice, data.currency))}</text>`;
+    axisSvg += `<text x="${xFn(0.5).toFixed(1)}" y="${(MT + PH + 48).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="#e08a00">${escapeHtml(fmtPriceFull(data.currentPrice, data.currency))}</text>`;
   }
 
   let linesSvg = "";
@@ -17026,7 +17096,7 @@ function buildFutureChartSvg(data) {
     // 달러 표기($XX.XX)와 퍼센트가 서로 어긋나 보이지 않음(예: 오늘보다 비싸졌는데 마이너스로 보이는 문제 방지)
     const pctFromToday = data.currentPrice ? (data.forecast.price / data.currentPrice - 1) * 100 : data.forecast.endPct;
     const pctSign = pctFromToday >= 0 ? "+" : "";
-    linesSvg += `<text x="${(fx1 + 6).toFixed(1)}" y="${(fy1 + 18).toFixed(1)}" font-size="11" font-weight="700" fill="#e5342f">${escapeHtml(fmtPrice(data.forecast.price, data.currency))}(${pctSign}${pctFromToday.toFixed(1)}%)</text>`;
+    linesSvg += `<text x="${(fx1 + 6).toFixed(1)}" y="${(fy1 + 18).toFixed(1)}" font-size="11" font-weight="700" fill="#e5342f">${escapeHtml(fmtPriceFull(data.forecast.price, data.currency))}(${pctSign}${pctFromToday.toFixed(1)}%)</text>`;
   }
 
   return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHtml(data.ticker)} 미래예측 차트">
@@ -18022,7 +18092,7 @@ function renderFutureCompare() {
   const amt = (v) => fmtAmountUnified(v, d.currency);
   const pair = (from, to, fmt) => (from === null || to === null ? "" : ` <span class="future-cmp-abs">(${fmt(from)} → ${fmt(to)})</span>`);
   const legend = `<span class="future-cmp-legend">
-      <span style="color:${FUTURE_CMP_COLORS.price};">주가 ${fmtEnd(r.price)}${pair(r.priceFrom, r.priceTo, (v) => fmtPrice(v, d.currency))}</span>
+      <span style="color:${FUTURE_CMP_COLORS.price};">주가 ${fmtEnd(r.price)}${pair(r.priceFrom, r.priceTo, (v) => fmtPriceFull(v, d.currency))}</span>
       ${d.chartOnly ? "" : `<span style="color:${FUTURE_CMP_COLORS.rev};">매출액 ${fmtEnd(r.rev)}${pair(r.revFrom, r.revTo, amt)}</span><span style="color:${FUTURE_CMP_COLORS.ni};">순이익 ${fmtEnd(r.ni)}${pair(r.niFrom, r.niTo, amt)}</span>`}
     </span>`;
   const notes = [];
