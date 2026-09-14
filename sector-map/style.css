@@ -177,6 +177,11 @@ body {
 }
 .map-view-item:active { background: rgba(0,0,0,0.06); }
 .map-view-item.active { background: var(--navy); color: #ffffff; }
+/* 보기 이름 앞 한국/미국/ETF/코인 마크(2026-09-14) */
+.map-view-item { display: flex; align-items: center; gap: 7px; }
+.map-view-mark, .map-view-mark-slot { display: inline-flex; align-items: center; flex: none; }
+.map-view-mark svg { width: 19px; height: 13px; display: block; }
+.map-view-mark-slot:empty { display: none; }
 
 .top-bar-icons {
   margin-left: auto;

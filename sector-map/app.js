@@ -322,21 +322,42 @@ function fmtWonTrillionOnly(n) {
 const NDX100_SET = new Set("NVDA,AAPL,MSFT,AMZN,GOOGL,SPCX,GOOG,AVGO,META,TSLA,MU,WMT,AMD,ASML,INTC,PLTR,CSCO,COST,LRCX,AMAT,NFLX,PANW,ARM,TXN,AMGN,KLAC,LIN,CRWD,SNDK,SHOP,TMUS,PEP,MRVL,STX,GILD,ADI,QCOM,WDC,BKNG,VRTX,ISRG,SBUX,PDD,FTNT,ADBE,ADP,ABNB,APP,DASH,MELI,CEG,INTU,CMCSA,CSX,CDNS,MNST,MAR,DDOG,SNPS,REGN,CTAS,LITE,MDLZ,ROST,WBD,ORLY,HON,AEP,PCAR,BKR,MPWR,FAST,NBIS,NXPI,TER,FANG,ADSK,HONA,ALAB,WDAY,MSTR,AXON,CCEP,XEL,CRWV,TRI,PYPL,EXC,PAYX,TTWO,KDP,IDXX,FER,ROP,ODFL,MCHP,RKLB,DXCM,GEHC,ALNY,CPRT,KHC".split(","));
 
 const MAP_VIEWS = {
-  kospi200: { label: "코스피 200", market: "domestic", needExtra: true, filter: (c) => c.symbol.endsWith(".KS") },
-  kosdaq150: { label: "코스닥 150", market: "domestic", needExtra: true, filter: (c) => c.symbol.endsWith(".KQ") },
-  sp200: { label: "S&P200", market: "overseas", needExtra: false, filter: null },
-  sp500: { label: "S&P500", market: "overseas", needExtra: true, filter: null },
-  ndx100: { label: "나스닥 100", market: "overseas", needExtra: true, needNdx: true, filter: (c) => NDX100_SET.has(c.symbol) },
+  kospi200: { label: "코스피 200", mark: "kr", market: "domestic", needExtra: true, filter: (c) => c.symbol.endsWith(".KS") },
+  kosdaq150: { label: "코스닥 150", mark: "kr", market: "domestic", needExtra: true, filter: (c) => c.symbol.endsWith(".KQ") },
+  sp200: { label: "S&P200", mark: "us", market: "overseas", needExtra: false, filter: null },
+  sp500: { label: "S&P500", mark: "us", market: "overseas", needExtra: true, filter: null },
+  ndx100: { label: "나스닥 100", mark: "us", market: "overseas", needExtra: true, needNdx: true, filter: (c) => NDX100_SET.has(c.symbol) },
   // ETF200(미국 100+한국 100)·비트코인50(2026-09-01 신설) — 데이터는 배치 생성 파일(etf-crypto-map.js)에서,
   // 상단 필터 칩은 52주최저~투자안정 6개만 노출(custom="asset" 계열)
-  etf200: { label: "ETF200", market: "overseas", custom: "etf" },
-  crypto100: { label: "비트코인200", market: "overseas", custom: "crypto" }, // 2026-09-02 TOP50 → TOP100, 2026-09-14 업비트 100 추가로 200(키 이름은 저장값 호환 위해 유지)
+  etf200: { label: "ETF200", mark: "etf", market: "overseas", custom: "etf" },
+  crypto100: { label: "비트코인200", mark: "crypto", market: "overseas", custom: "crypto" }, // 2026-09-02 TOP50 → TOP100, 2026-09-14 업비트 100 추가로 200(키 이름은 저장값 호환 위해 유지)
   // 최근 5년 신규 상장(IPO) 전용 보기(2026-09-11 사용자 요청) — 스팩·이전상장을 뺀 실제 신규 상장사만.
   // 데이터는 data/ipo-map.js(fetch-ipo-map.ps1)로, 12개 지표를 주식 지도와 같은 공식으로 채워두었기 때문에
   // custom(ETF·코인)과 달리 필터 칩은 주식 보기 그대로 전부 쓴다.
-  krIpo: { label: "한국 IPO", market: "domestic", ipo: "kr" },
-  usIpo: { label: "미국 IPO", market: "overseas", ipo: "us" },
+  // 2026-09-14 사용자 요청: IPO도 시가총액 상위 200개만(한국IPO200·미국IPO200) — IPO_VIEW_LIMIT 참고
+  krIpo: { label: "한국IPO200", mark: "kr", market: "domestic", ipo: "kr" },
+  usIpo: { label: "미국IPO200", mark: "us", market: "overseas", ipo: "us" },
 };
+// IPO 지도에 올릴 종목 수 — 데이터 파일(ipo-map.js)은 S리포트 IPO 비교군으로도 쓰여 전체를 그대로 두고, 지도에서만 시총 상위로 자름
+const IPO_VIEW_LIMIT = 200;
+// 보기 이름 앞 마크(2026-09-14 사용자 요청: 한국/미국/코인/ETF 구분) — 본체(app.js)의 섹션 마크와 같은 그림
+const VIEW_MARK_SVG = {
+  kr: `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#fff" stroke="rgba(0,0,0,0.22)"/><g transform="translate(10.5,7) scale(0.155)"><g stroke="#000" stroke-width="4" fill="none"><path transform="rotate(33.69)" d="M-50-12v24m6 0v-24m6 0v24m76 0V1m0-2v-11m6 0v11m0 2v11m6 0V1m0-2v-11"/><path transform="rotate(-33.69)" d="M-50-12v24m6 0V1m0-2v-11m6 0v24m76 0V1m0-2v-11m6 0v24m6 0V1m0-2v-11"/></g><g transform="rotate(33.69)"><path fill="#cd2e3a" d="M12 0a18 18 0 11-36 0 24 24 0 1148 0"/><path fill="#0047a0" d="M-24 0a24 24 0 1048 0A12 12 0 100 0a12 12 0 11-24 0"/></g></g></svg>`,
+  // 미국 국기는 clipPath 없이 그림(메뉴·버튼에 여러 번 들어가 id가 겹치지 않도록)
+  us: `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#fff"/><rect x="0.5" y="1" width="20" height="1.6" fill="#b22234"/><rect x="0.5" y="4.4" width="20" height="1.6" fill="#b22234"/><rect x="0.5" y="7.8" width="20" height="1.6" fill="#b22234"/><rect x="0.5" y="11.2" width="20" height="1.6" fill="#b22234"/><rect x="0.5" y="0.5" width="9" height="6.4" rx="1.5" fill="#3c3b6e"/><g fill="#fff"><circle cx="2.6" cy="2" r="0.55"/><circle cx="5" cy="2" r="0.55"/><circle cx="7.4" cy="2" r="0.55"/><circle cx="2.6" cy="4.4" r="0.55"/><circle cx="5" cy="4.4" r="0.55"/><circle cx="7.4" cy="4.4" r="0.55"/></g><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="none" stroke="rgba(0,0,0,0.22)"/></svg>`,
+  etf: `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#2f6bd8" stroke="rgba(0,0,0,0.15)"/><text x="10.5" y="10" text-anchor="middle" font-size="7" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif" letter-spacing="0.3">ETF</text></svg>`,
+  crypto: `<svg viewBox="0 0 21 14" width="21" height="14"><circle cx="10.5" cy="7" r="6.6" fill="#f7931a"/><text x="10.6" y="9.9" text-anchor="middle" font-size="9" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif">₿</text></svg>`,
+};
+function viewMarkHtml(viewKey) {
+  const v = MAP_VIEWS[viewKey];
+  return v && VIEW_MARK_SVG[v.mark] ? `<span class="map-view-mark">${VIEW_MARK_SVG[v.mark]}</span>` : "";
+}
+// 드롭다운 메뉴 항목 앞에 마크를 한 번만 붙임
+document.querySelectorAll("#mapViewMenu .map-view-item").forEach((b) => {
+  const v = MAP_VIEWS[b.dataset.view];
+  if (!v) return;
+  b.innerHTML = `${viewMarkHtml(b.dataset.view)}<span>${v.label}</span>`;
+});
 let ACTIVE_VIEW = "sp200";
 const extraDataLoadPromises = {};
 function loadScriptOnce(src) {
@@ -514,7 +535,11 @@ function updateActiveDataForUniverseState() {
   // IPO 보기: 신규 상장 전용 데이터. 섹터는 배치가 이미 한글로 넣어둬서 추가 분류가 필요 없다
   if (v.ipo) {
     const src = typeof IPO_MAP_DATA !== "undefined" ? IPO_MAP_DATA[v.ipo] : null;
-    ACTIVE_DATA = { companies: (src && src.companies) || [] };
+    const top = ((src && src.companies) || [])
+      .filter((c) => c.marketCap > 0)
+      .sort((a, b) => b.marketCap - a.marketCap)
+      .slice(0, IPO_VIEW_LIMIT);
+    ACTIVE_DATA = { companies: top };
     return;
   }
   const core = coreDataFor(ACTIVE_MARKET);
@@ -534,6 +559,8 @@ function updateActiveDataForUniverseState() {
 function syncMapViewUi() {
   const label = document.getElementById("mapViewBtnLabel");
   if (label) label.textContent = MAP_VIEWS[ACTIVE_VIEW].label;
+  const mark = document.getElementById("mapViewBtnMark");
+  if (mark) mark.innerHTML = viewMarkHtml(ACTIVE_VIEW);
   document.querySelectorAll("#mapViewMenu .map-view-item").forEach((b) => {
     b.classList.toggle("active", b.dataset.view === ACTIVE_VIEW);
   });
