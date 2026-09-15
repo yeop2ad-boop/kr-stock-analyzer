@@ -7300,36 +7300,37 @@ function fin2BodyHtml(data, period, currency) {
   const estBar = bars.find((b) => b.est) || null;
   const isAnnual = period === "annual";
 
-  // 요약(2026-09-15 사용자 요청 "간단하고 신뢰감 있게"): 회색 3칸 박스 대신 증권사 리포트식 —
-  // 큰 매출액 + 증감률 한 줄, 아래 얇은 구분선 뒤 핵심 2개(3년 연평균 성장·순이익률 / 분기는 다음 분기 전망·순이익률), 맨 아래 출처·기준
-  const signedPct = (g) => (Number.isFinite(g) ? `${g >= 0 ? "+" : "−"}${Math.abs(Math.round(g * 10) / 10).toFixed(1)}%` : "—");
+  // 요약(2026-09-15 사용자 요청 3차): 다시 회색 박스 한 줄 3칸 — 작년 매출 · 올해 매출 예상(+N%) · 3년 연평균 성장
+  //   분기 보기는 같은 틀로 최근 분기 매출 · 다음 분기 예상(+N%) · 전분기 대비
+  const signedPct = (g, digits = 1) => (Number.isFinite(g) ? `${g >= 0 ? "+" : "−"}${Math.abs(g).toFixed(digits)}%` : "—");
   const toneCls = (g) => (Number.isFinite(g) ? (g >= 0 ? "fin2-up" : "fin2-down") : "");
-  const lastMargin = Number.isFinite(last.ni) && last.rev > 0 ? (last.ni / last.rev) * 100 : null;
-  let kv1Label;
-  let kv1Value;
+  const amt = (v) => (Number.isFinite(v) ? escapeHtml(fmtAmountUnified(v, currency)) : "—");
+  let thirdLabel;
+  let thirdValue;
   if (isAnnual) {
     const first = actual.length >= 4 ? actual[actual.length - 4] : null;
-    const cagr = first && first.rev > 0 && last.rev > 0 ? (Math.pow(last.rev / first.rev, 1 / 3) - 1) * 100 : null;
-    kv1Label = first ? `3년 연평균 성장 <small>${escapeHtml(first.label)}~${escapeHtml(last.label)}</small>` : "3년 연평균 성장";
-    kv1Value = cagr;
+    thirdLabel = "3년 연평균 성장";
+    thirdValue = first && first.rev > 0 && last.rev > 0 ? (Math.pow(last.rev / first.rev, 1 / 3) - 1) * 100 : null;
   } else {
-    kv1Label = `다음 분기 ${estSource === "컨센서스" ? "컨센서스" : "예상"}${estBar ? ` <small>${escapeHtml(estBar.label)}</small>` : ""}`;
-    kv1Value = estBar ? estBar.growth : null;
+    thirdLabel = "전분기 대비";
+    thirdValue = last.growth;
   }
-  const basis = isAnnual ? `${actual[0].label}~${last.label} 회계연도` : `최근 ${actual.length}개 분기`;
   const summaryHtml = `
-    <div class="fin2-head">
-      <span class="fin2-head-label">${escapeHtml(isAnnual ? `${last.label}년 매출액` : `${last.label} 매출액`)}</span>
-      <div class="fin2-head-row">
-        <b class="fin2-head-amount">${escapeHtml(fmtAmountUnified(last.rev, currency))}</b>
-        <span class="fin2-head-delta ${toneCls(last.growth)}">${signedPct(last.growth)}</span>
-        <span class="fin2-head-cap">${isAnnual ? "작년 대비" : "전분기 대비"}</span>
+    <div class="fin2-strip">
+      <div class="fin2-strip-item">
+        <span class="fin2-strip-label">${isAnnual ? `작년 매출 <small>${escapeHtml(last.label)}</small>` : `최근 분기 <small>${escapeHtml(last.label)}</small>`}</span>
+        <b class="fin2-strip-value">${amt(last.rev)}</b>
       </div>
-      <div class="fin2-kv">
-        <div class="fin2-kv-item"><span>${kv1Label}</span><b class="${toneCls(kv1Value)}">${signedPct(kv1Value)}</b></div>
-        <div class="fin2-kv-item"><span>순이익률 <small>${escapeHtml(last.label)}${isAnnual ? "년" : ""}</small></span><b>${lastMargin === null ? "—" : `${(Math.round(lastMargin * 10) / 10).toFixed(1)}%`}</b></div>
+      <div class="fin2-strip-item">
+        <span class="fin2-strip-label">${isAnnual ? "올해 매출 예상" : "다음 분기 예상"}</span>
+        <b class="fin2-strip-value">${estBar ? amt(estBar.rev) : "—"}${
+    estBar && Number.isFinite(estBar.growth) ? `<em class="${toneCls(estBar.growth)}">${signedPct(estBar.growth, 0)}</em>` : ""
+  }</b>
       </div>
-      <p class="fin2-head-source">출처 ${escapeHtml(source)} · ${escapeHtml(basis)}</p>
+      <div class="fin2-strip-item">
+        <span class="fin2-strip-label">${thirdLabel}</span>
+        <b class="fin2-strip-value ${toneCls(thirdValue)}">${signedPct(thirdValue)}</b>
+      </div>
     </div>`;
 
   // 막대: 가장 큰 매출이 그림 영역의 78%가 되도록(위에 "00%상승"·말풍선 자리)
@@ -7375,7 +7376,7 @@ function fin2BodyHtml(data, period, currency) {
       <span><i class="fin2-dot fin2-dot-ni"></i>순이익 <em>(막대 안 % = 순이익률)</em></span>
     </div>
     <div class="fin2-chart" style="grid-template-columns:repeat(${bars.length},1fr)">${cols}</div>
-    <p class="fin2-caption">막대를 누르면 매출액이 보여요. 막대 위 %는 ${isAnnual ? "작년" : "전분기"} 대비 매출 증감입니다.${estNote}</p>`;
+    <p class="fin2-caption">막대를 누르면 매출액이 보여요. 막대 위 %는 ${isAnnual ? "작년" : "전분기"} 대비 매출 증감입니다.${estNote} 출처: ${escapeHtml(source)}.</p>`;
 }
 
 // ---------- 2+. 최근 분기 실적(최근 3개) + 다음 분기 가이던스(1개) ----------
