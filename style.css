@@ -3126,7 +3126,11 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .detail-identity-namerow .detail-identity-name { flex: 0 1 auto; min-width: 0; }
 .detail-identity-namerow .section-mark { margin-left: 0; flex: none; }
 .detail-identity-namerow .detail-identity-ticker { flex: none; }
-.detail-identity-priceline { overflow: hidden; }
+/* 알림 아이콘 숨김(2026-09-15 사용자 요청: 가격 변동률 %가 잘려서) — 버튼 DOM은 JS가 참조할 수 있어 남겨 둠 */
+#companyPanelAlertBtn { display: none !important; }
+.detail-identity-priceline { overflow: hidden; gap: 3px; }
+.detail-identity-priceline .detail-identity-price { font-size: 15px; letter-spacing: -0.3px; }
+.detail-identity-priceline .detail-identity-change { font-size: 12px; letter-spacing: -0.3px; }
 /* 가격 차트 길게 누르기(2026-09-15): 롱프레스 메뉴·텍스트 선택이 끼어들어 크로스헤어가 끊기지 않게 */
 #summaryChartContainer { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 .detail-identity-subrow .section-mark { margin-left: 0; }
@@ -3214,6 +3218,18 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .srf-line .srf-rank-warn { color: #c92a2a; }
 .srf-line .srf-rank b { font-weight: 800; }
 .srf-mark { font-style: normal; margin-left: 3px; }
+/* 등수 칸 정리(2026-09-15): "🔥 36위 /200" — 몇 위를 크게, 전체 수는 작게 */
+.srf-line { grid-template-columns: minmax(0, 1fr) auto minmax(84px, auto); }
+.srf-line .srf-name { font-size: 14.5px; }
+.srf-line .srf-val { font-size: 14px; font-weight: 700; color: var(--muted); }
+.srf-line .srf-rank { display: flex; align-items: baseline; justify-content: flex-end; gap: 1px; }
+.srf-line .srf-rank .srf-mark { margin: 0 3px 0 0; font-size: 12px; }
+.srf-rank-no { font-size: 16px; font-weight: 900; color: var(--text); letter-spacing: -0.4px; }
+.srf-rank-fire .srf-rank-no { color: #d9480f; }
+.srf-rank-warn .srf-rank-no { color: #1c7ed6; } /* 하위 10% 경고 등수는 파란 글씨(2026-09-15 사용자 요청) */
+.srf-rank-of { font-size: 11px; font-weight: 600; color: var(--muted); }
+.srf-grade { font-size: 16px; font-weight: 900; letter-spacing: -0.4px; } /* RSI 강한·약한 매수/매도 — 등수 숫자와 같은 크기(2026-09-15 사용자 요청) */
+.srf-line .srf-rank-sub { font-size: 11px; }
 .srt-rank-neutral { color: var(--text); }
 .srt-card .srf-list { margin-top: 6px; border-top: 1px solid var(--border); }
 .srt-card .srf-line:last-child { border-bottom: none; }

@@ -3,7 +3,8 @@
 비교군별 평균과 백분위 분포, 종목별 값을 매일 미리 계산해 둔다. 앱은 이 파일 하나만 읽고 즉시 그린다.
 
 비교군(사용자 지정):
-  kospi200  한국 주식 → 코스피200 종목 평균
+  kospi200  코스피 주식 → 코스피200 종목 평균(분할 신설회사 편입 등으로 일시적으로 200개를 넘을 수 있음)
+  kosdaq150 코스닥 주식 → 코스닥150 종목 평균
   sp200     미국 주식 → S&P500 중 시가총액 상위 200개 평균
   ipoKr100  한국 IPO(최근 5년 신규 상장) → 시총 상위 100개 평균
   ipoUs100  미국 IPO → 시총 상위 100개 평균
@@ -68,7 +69,7 @@ ipo = load_js_const(ROOT / "sector-map" / "data" / "ipo-map.js", "IPO_MAP_DATA")
 etf_map = load_js_const(ROOT / "sector-map" / "data" / "etf-crypto-map.js", "ETF_MAP_DATA")["companies"]
 crypto_map = load_js_const(ROOT / "sector-map" / "data" / "etf-crypto-map.js", "CRYPTO_MAP_DATA")["companies"]
 etf_info = load_json(ROOT / "data" / "etf-info.json")
-kospi200 = {x["symbol"] for x in load_json(ROOT / "data" / "kr-universe-kospi200-kosdaq150.json")["kospi200"]}
+kr_universe = load_json(ROOT / "data" / "kr-universe-kospi200-kosdaq150.json")
 prev = load_json(OUT) if OUT.exists() else {}
 
 STOCK_EXTRA = {"ni": "netIncomeGrowth", "om": "operatingMargin", "roe": "roe", "cf": "cashFlowGrowth", "debt": "debtRatio",
@@ -120,14 +121,21 @@ def put_member(symbol, group, values):
 CORE = ["win", "ret", "rev", "vol", "rsi"]
 STOCK_METRICS = CORE + list(STOCK_EXTRA.keys())
 
-# ---- 한국 주식: 코스피200 ----
-kr_rows = []
+# ---- 한국 주식: 코스피 종목 → 코스피200, 코스닥 종목 → 코스닥150 (2026-09-15 사용자 요청으로 분리) ----
+# 구성종목은 KODEX 200·코스닥150 보유종목 명단(kr-universe) 기준 — 지도 스냅샷(kr-sectors)에 아직 없는 신규 종목도 승률 DB 값으로 포함
+kr_row_by_symbol = {c["symbol"]: c for c in kr}
+for key, label in (("kospi200", "코스피200"), ("kosdaq150", "코스닥150")):
+    rows = []
+    for it in kr_universe.get(key, []):
+        sym = it["symbol"]
+        vals = stock_values(kr_row_by_symbol.get(sym, {}), (db.get("scoresKr") or {}).get(sym))
+        rows.append(vals)
+        put_member(sym, key, vals)
+    add_group(key, label, f"{label} 평균", rows, STOCK_METRICS)
+# 명단 밖이지만 스냅샷에 있는 한국 종목은 거래소 기준으로 배정
 for c in kr:
-    vals = stock_values(c, (db.get("scoresKr") or {}).get(c["symbol"]))
-    if c["symbol"] in kospi200:
-        kr_rows.append(vals)
-    put_member(c["symbol"], "kospi200", vals)
-add_group("kospi200", "코스피200", "코스피200 평균", kr_rows, STOCK_METRICS)
+    if c["symbol"] not in members:
+        put_member(c["symbol"], "kosdaq150" if c["symbol"].endswith(".KQ") else "kospi200", stock_values(c, (db.get("scoresKr") or {}).get(c["symbol"])))
 
 # ---- 미국 주식: S&P500 시총 상위 200 ----
 sp_sorted = sorted(sp, key=lambda c: num(c.get("marketCap")) or 0, reverse=True)

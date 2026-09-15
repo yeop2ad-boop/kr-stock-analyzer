@@ -3364,6 +3364,13 @@ companyPanelSearchBtn.addEventListener("click", openSearchOverlay);
 companyPanelAlertBtn.addEventListener("click", () => alert("가격 알림 기능은 준비 중입니다."));
 
 // 헤더의 종목이름/가격/등락률 표시 — 검정 배경 전체화면 상세 헤더용
+// 등락 금액 표기 — 원화는 정수 콤마(3,100), 그 외는 소수 2자리($1.25, 1달러 미만 코인은 유효숫자 넉넉히)
+function fmtPriceChangeAmount(v, currency) {
+  if (!Number.isFinite(v)) return "";
+  if (currency === "KRW") return Math.round(v).toLocaleString("ko-KR");
+  if (v >= 1) return v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return v === 0 ? "0" : v.toLocaleString("en-US", { maximumSignificantDigits: 3 }); // 1달러 미만(밈코인 등)은 유효숫자 3자리
+}
 function renderCompanyIdentity(ticker, quote, meta, changePct) {
   let displayName = TICKER_TO_KOREAN_NAME[ticker] || quote.longname || quote.shortname || meta.longName || ticker;
   // 암호화폐는 한글명(비트코인·페페 등)을 우선 표시, 없으면 "Cardano USD"의 " USD"만 떼고 표시(2026-09-01)
@@ -3403,7 +3410,10 @@ function renderCompanyIdentity(ticker, quote, meta, changePct) {
     const isUp = changePct >= 0;
     const arrow = isUp ? "▲" : "▼";
     const cls = isUp ? "delta-up" : "delta-down";
-    pctEl.textContent = `${arrow} (${isUp ? "+" : ""}${changePct.toFixed(2)}%)`;
+    // 2026-09-15 사용자 요청: 등락률 앞에 오르내린 금액도 — 전일 종가를 등락률로 역산(현재가 - 현재가/(1+등락률))
+    const diff = Number.isFinite(price) && changePct > -100 ? Math.abs(price - price / (1 + changePct / 100)) : null;
+    const diffText = diff === null ? "" : `${fmtPriceChangeAmount(diff, meta.currency)} `;
+    pctEl.textContent = `${arrow} ${diffText}(${isUp ? "+" : ""}${changePct.toFixed(2)}%)`;
     pctEl.className = `detail-identity-change ${cls}`;
   } else {
     pctEl.textContent = "";
@@ -6259,14 +6269,14 @@ function sReportLineHtml(it) {
   const markHtml = it.mark === "fire" ? `<i class="srf-mark">🔥</i>` : it.mark === "warn" ? `<i class="srf-mark">⚠️</i>` : "";
   let rankHtml;
   let shortHtml;
+  // 2026-09-15 사용자 요청: 등수 칸이 너무 넓음 — 가장 중요한 "몇 위"만 크게, 전체 수는 작게("36위 /200"), 상위 % 글자는 뺌
   if (it.isRsi) {
-    const avgTxt = Number.isFinite(it.avg) ? `1년 평균 ${Math.round(it.avg)} 대비 ` : "";
-    rankHtml = has ? `<span class="srf-rank-sub">${avgTxt}</span><b class="srt-rank-${tone}">${escapeHtml(it.judge.text)}</b>` : "—";
-    shortHtml = has ? `<b class="srt-rank-${tone}">${escapeHtml(it.judge.text)}</b>` : "—";
+    const avgTxt = Number.isFinite(it.avg) ? `평균 ${Math.round(it.avg)} · ` : "";
+    rankHtml = has ? `<span class="srf-rank-sub">${avgTxt}</span><b class="srf-grade srt-rank-${tone}">${escapeHtml(it.judge.text)}</b>` : "—";
+    shortHtml = has ? `<b class="srf-grade srt-rank-${tone}">${escapeHtml(it.judge.text)}</b>` : "—";
   } else if (it.rank) {
-    const pct = Math.max(1, Math.round(it.topPct));
-    rankHtml = `${it.rank}/${it.total}위 <span class="srf-rank-sub">(상위 ${pct}%)</span>${markHtml}`;
-    shortHtml = `${it.rank}/${it.total}위${markHtml}`;
+    rankHtml = `${markHtml}<b class="srf-rank-no">${it.rank}위</b><span class="srf-rank-of">/${it.total}</span>`;
+    shortHtml = rankHtml;
   } else {
     rankHtml = shortHtml = "—";
   }
@@ -6289,9 +6299,20 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
   const baseline = await getSReportBaseline();
   if (token !== sReportTopToken) return; // 그사이 다른 종목을 열었으면 버림
   const member = baseline && baseline.members ? baseline.members[ticker] : null;
-  const groupKey = member ? member.g : scoreMode === "crypto" ? "crypto200" : scoreMode === "etf" ? "etf" : isKrTicker(ticker) ? "kospi200" : "sp200";
+  // 코스닥 종목은 코스닥150 안에서 등수(2026-09-15 사용자 요청), 코스피는 코스피200
+  const groupKey = member
+    ? member.g
+    : scoreMode === "crypto"
+    ? "crypto200"
+    : scoreMode === "etf"
+    ? "etf"
+    : isKrTicker(ticker)
+    ? /\.KQ$/.test(ticker)
+      ? "kosdaq150"
+      : "kospi200"
+    : "sp200";
   const group = baseline && baseline.groups ? baseline.groups[groupKey] : null;
-  const currency = groupKey === "kospi200" || groupKey === "ipoKr100" ? "KRW" : "USD";
+  const currency = ["kospi200", "kosdaq150", "ipoKr100"].includes(groupKey) ? "KRW" : "USD";
   const self = { ...(member || {}) };
   const coreSpecs = sReportCoreSpecs(isAsset);
 
@@ -6493,7 +6514,8 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   if (changePct !== null && changePct !== undefined) {
     const cls = changePct >= 0 ? "delta-up" : "delta-down";
     const price = meta.regularMarketPrice ?? 0;
-    if (summaryAssetSection === "crypto" && price && changePct > -100) {
+    // 등락 금액 + 등락률(2026-09-15 사용자 요청: 코인뿐 아니라 모든 종목에 오르내린 금액도 표시)
+    if (price && changePct > -100) {
       const diff = price - price / (1 + changePct / 100); // 전일 종가 역산으로 오늘 등락금액 계산
       summaryChangeHtml = `<span class="${cls}">(${diff >= 0 ? "+" : "-"}${fmtPriceFull(Math.abs(diff), meta.currency)} / ${fmtPct(changePct)})</span>`;
     } else {
