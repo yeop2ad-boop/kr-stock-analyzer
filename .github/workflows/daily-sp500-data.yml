@@ -46,6 +46,10 @@ jobs:
         working-directory: sector-map
         run: ./scripts/fetch-winrate-scores.ps1
 
+      - name: S리포트 비교 기준 DB 갱신(코스피200·S&P500 상위200·IPO100·코인200 평균, ETF는 SPY) — 종목 상세가 즉시 뜨도록
+        continue-on-error: true
+        run: python3 sector-map/scripts/build-sreport-baseline.py
+
       - name: 투자방법 비교(10년 백테스트) 갱신 — 인사이트 화면용
         shell: pwsh
         working-directory: sector-map
@@ -69,7 +73,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           # sector-map/data 전체를 스테이징 — 개별 나열 시 스크립트가 새로 쓰는 파일(2026-09-05부터 etf-crypto-map.js)이
           # 빠져 작업트리가 더러운 채로 남고, 그러면 아래 git pull --rebase 가 fatal(exit 128)로 죽어 5일간 푸시가 막혔음
-          git add -A sector-map/data data/winrate-scores-us.json data/etf-info.json
+          git add -A sector-map/data data/winrate-scores-us.json data/etf-info.json data/sreport-baseline.json
           if git diff --cached --quiet; then
             echo "변경된 데이터 없음"
           else

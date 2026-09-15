@@ -71,18 +71,20 @@ function Get-TailAverage($list, $n) {
   return [Math]::Round($sum / $take, 1)
 }
 
-# 1년 변동성(2026-09-15 S리포트 '변동성' 비교용): 최근 52주 주간 수익률 표준편차 × √52 × 100(연환산 %) — fill-vol1y.py와 같은 공식
-function Get-Vol1y($closes) {
-  $cs = @($closes | Where-Object { $null -ne $_ -and $_ -gt 0 })
-  if ($cs.Count -lt 27) { return $null }
-  if ($cs.Count -gt 53) { $cs = $cs[($cs.Count - 53)..($cs.Count - 1)] }
-  $rets = @()
-  for ($i = 1; $i -lt $cs.Count; $i++) { $rets += ($cs[$i] / $cs[$i - 1] - 1.0) }
-  $mean = ($rets | Measure-Object -Average).Average
-  $var = 0.0
-  foreach ($r in $rets) { $var += ($r - $mean) * ($r - $mean) }
-  $var = $var / ($rets.Count - 1)
-  return [Math]::Round([Math]::Sqrt($var) * [Math]::Sqrt(52) * 100, 1)
+# 3개월 하루 변동량(2026-09-15 S리포트 '변동성' 비교용): 최근 91일 일간 등락률 절댓값 평균(%) — 앱 ETF·코인 "변동성(3개월)" 탭·fill-vol3m.py와 같은 공식.
+# 하루 20배↑·1/20↓ 가격 단절 구간은 빼고, 표본 20일 미만이면 null. $pairs = Get-SortedClosePairs 결과(일봉)
+function Get-Vol3m($pairs) {
+  if (-not $pairs -or $pairs.Count -lt 2) { return $null }
+  $lastT = $pairs[$pairs.Count - 1].t
+  $sum = 0.0; $n = 0
+  for ($i = 1; $i -lt $pairs.Count; $i++) {
+    if ($pairs[$i].t -lt $lastT - 91 * 86400 -or $pairs[$i - 1].c -eq 0) { continue }
+    $ratio = $pairs[$i].c / $pairs[$i - 1].c
+    if ($ratio -ge 20 -or $ratio -le 0.05) { continue }
+    $sum += [Math]::Abs($ratio - 1.0) * 100.0; $n++
+  }
+  if ($n -lt 20) { return $null }
+  return [Math]::Round($sum / $n, 2)
 }
 
 function Get-SortedClosePairs($resp) {
@@ -157,14 +159,18 @@ function Get-UniverseScores($symbols, $label) {
         }
 
         # ---------- 주간 RSI(14) (주봉 11년 롤링 시리즈: 현재값 + 520주 평균 + 52주 평균) ----------
-        $rsi = $null; $rsi10y = $null; $rsi1y = $null; $vol1y = $null
+        $rsi = $null; $rsi10y = $null; $rsi1y = $null; $vol3m = $null
+        try {
+          Start-Sleep -Milliseconds 200
+          $urlDay = "https://query1.finance.yahoo.com/v8/finance/chart/$([uri]::EscapeDataString($sym))?range=6mo&interval=1d"
+          $vol3m = Get-Vol3m (Get-SortedClosePairs (Invoke-RestMethod -Uri $urlDay -Headers $headers -TimeoutSec 30))
+        } catch { $vol3m = $null }  # 변동성만 실패해도 나머지는 저장
         try {
           Start-Sleep -Milliseconds 250
           $urlWk = "https://query1.finance.yahoo.com/v8/finance/chart/$([uri]::EscapeDataString($sym))?range=11y&interval=1wk"
           $respWk = Invoke-RestMethod -Uri $urlWk -Headers $headers -TimeoutSec 30
           $wkPairs = Get-SortedClosePairs $respWk
           $wkCloses = @($wkPairs | ForEach-Object { $_.c })
-          $vol1y = Get-Vol1y $wkCloses
           $rsiSeries = Compute-WilderRsiSeries $wkCloses 14
           if ($rsiSeries -and $rsiSeries.Count -gt 0) {
             $rsi = [Math]::Round($rsiSeries[$rsiSeries.Count - 1], 1)
@@ -185,7 +191,7 @@ function Get-UniverseScores($symbols, $label) {
           ret1y  = $ret1y
           rsi10y = $rsi10y
           rsi1y  = $rsi1y
-          vol1y  = $vol1y
+          vol3m  = $vol3m
           m12    = $m12
         }
         break
@@ -268,7 +274,7 @@ $crypto = Get-UniverseScores $cryptoSymbols "코인"
 $allFailed = @($us.failed + $kr.failed + $etf.failed + $crypto.failed)
 $out = [ordered]@{
   generatedAt  = $nowUtc.ToString("yyyy-MM-ddTHH:mm:ssZ")
-  description  = "승률점수: 최근 10년(최대 120개월) 월봉 종가 기준 상승개월수/총개월수*100(상장 10년 미만은 데이터 시작 이후만). rsi: 주간 RSI(14, 주봉 11년 롤링) 현재값, rsi10y=520주 평균, rsi1y=직전 52주 평균. wr1y=직전 12개월 승률%, ret10y=연복리 수익률%(CAGR, 10년 미만은 상장 후 기간 연율화), ret1y=직전 12개월 상승률%, vol1y=최근 52주 주간수익률 표준편차 연환산%, m12=최근 12개월 월간 등락%(과거->최신). scores=미국 S&P500, scoresKr=코스피200+코스닥150, scoresEtf=ETF200(미국+국내), scoresCrypto=코인100."
+  description  = "승률점수: 최근 10년(최대 120개월) 월봉 종가 기준 상승개월수/총개월수*100(상장 10년 미만은 데이터 시작 이후만). rsi: 주간 RSI(14, 주봉 11년 롤링) 현재값, rsi10y=520주 평균, rsi1y=직전 52주 평균. wr1y=직전 12개월 승률%, ret10y=연복리 수익률%(CAGR, 10년 미만은 상장 후 기간 연율화), ret1y=직전 12개월 상승률%, vol3m=최근 3개월 일간 등락률 절댓값 평균%, m12=최근 12개월 월간 등락%(과거->최신). scores=미국 S&P500, scoresKr=코스피200+코스닥150, scoresEtf=ETF200(미국+국내), scoresCrypto=코인100."
   count        = $us.scores.Count + $kr.scores.Count + $etf.scores.Count + $crypto.scores.Count
   failed       = @($allFailed | ForEach-Object { $_.symbol })
   scores       = $us.scores
