@@ -6071,13 +6071,17 @@ function sReportJudge(level, better) {
 }
 function sReportRsiJudge(rsi, refRsi) {
   if (!Number.isFinite(rsi)) return null;
+  // 과열 등급 5단계(2026-09-15 사용자 요청: "평균 이하" 대신 과열 등급) — 이 종목의 1년 평균 RSI와의 차이로 판정,
+  // 절대 기준 RSI 70 이상은 무조건 과열, 30 이하는 냉각
   if (rsi >= 70) return { text: "과열", tone: "bad" };
-  if (rsi <= 30) return { text: "과매도", tone: "same" };
-  // 이 종목의 1년 평균 RSI보다 높은지(2026-09-15 사용자 요청) — 평소보다 달아올랐으면 보통, 평소보다 식어 있으면 양호
-  const lv = sReportLevel(rsi, refRsi, 3);
-  if (lv === "high") return { text: "평균 이상", tone: "same" };
-  if (lv === "low") return { text: "평균 이하", tone: "good" };
-  return lv === "same" ? { text: "평균 수준", tone: "same" } : { text: "과열 아님", tone: "good" };
+  if (rsi <= 30) return { text: "냉각", tone: "good" };
+  if (!Number.isFinite(refRsi)) return { text: "보통", tone: "same" };
+  const diff = rsi - refRsi;
+  if (diff >= 15) return { text: "과열", tone: "bad" };
+  if (diff >= 5) return { text: "주의", tone: "bad" };
+  if (diff > -5) return { text: "보통", tone: "same" };
+  if (diff > -15) return { text: "안정", tone: "good" };
+  return { text: "냉각", tone: "good" };
 }
 const sPct = (v, d, signed) => `${signed && v > 0 ? "+" : ""}${d ? (Math.round(v * 10) / 10).toFixed(1) : Math.round(v)}%`;
 const sNum = (v, d) => (d ? (Math.round(v * 10) / 10).toFixed(1) : String(Math.round(v)));
@@ -6089,7 +6093,7 @@ const S_REPORT_EXPLAIN = {
   rev: "최근 발표 실적의 매출이 1년 전 같은 기간보다 몇 % 늘었는지입니다.\n높을수록 사업 규모가 빠르게 커지고 있다는 뜻이에요.",
   ret1y: "1년 전 같은 시점 가격과 비교해 지금 가격이 몇 % 올랐는지입니다.\n높을수록 최근 1년 성과가 좋았다는 뜻이에요.",
   vol: "최근 3개월 동안 하루에 가격이 평균 몇 % 움직였는지(일간 등락률 절댓값 평균)입니다.\n높을수록 하루하루 크게 흔들려 위험이 크다는 뜻이에요.",
-  rsi: "최근 14주 상승폭과 하락폭으로 계산한 주간 RSI(0~100)로, 이 종목의 최근 1년 평균 RSI와 비교합니다.\n평소보다 높으면 단기로 달아오른 상태이고, 70 이상은 과열·30 이하는 과매도로 봐요.",
+  rsi: "최근 14주 상승폭과 하락폭으로 계산한 주간 RSI(0~100)를 이 종목의 1년 평균 RSI와 비교한 과열 등급입니다.\n평균보다 15 이상 높거나 RSI 70 이상이면 과열, 5 이상 높으면 주의, ±5 안은 보통, 5 이상 낮으면 안정, 15 이상 낮거나 30 이하면 냉각이에요.",
   ni: "최근 회계연도 순이익이 전년보다 몇 % 늘었는지입니다.\n높을수록 회사가 실제로 남기는 이익이 빠르게 늘고 있다는 뜻이에요.",
   om: "매출에서 영업이익이 차지하는 비율(최근 분기)입니다.\n높을수록 본업에서 돈을 효율적으로 번다는 뜻이에요.",
   roe: "자기자본 대비 순이익 비율(최근 분기)입니다.\n높을수록 주주의 돈으로 이익을 잘 만들어 낸다는 뜻이에요.",
@@ -6113,7 +6117,7 @@ function sReportCoreSpecs(isAsset) {
       ? { key: "rev", label: "1년 수익률", explainKey: "ret1y", better: "high", band: 3, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true) }
       : { key: "rev", label: "매출액", sub: "작년 대비", better: "high", band: 3, rel: 0.2, signed: true, fmt: (v, d) => sPct(v, d, true) },
     { key: "vol", label: "변동성", sub: "3개월 하루", better: "low", band: 0.1, rel: 0.1, fmt: (v, d) => `${v.toFixed(d ? 2 : 1)}%` },
-    { key: "rsi", label: "RSI", sub: "과열성", better: "low", isRsi: true, fmt: (v, d) => sNum(v, d) },
+    { key: "rsi", label: "RSI(과열도)", better: "low", isRsi: true, fmt: (v, d) => sNum(v, d) },
   ];
 }
 // 전체 보기 추가 항목(배치 DB 키) — live: DB에 없는 주식은 실시간 지표(getFullMetrics)로 보충
