@@ -3439,7 +3439,7 @@ function renderCompanyIdentity(ticker, quote, meta, changePct) {
     const arrow = isUp ? "▲" : "▼";
     const cls = isUp ? "delta-up" : "delta-down";
     // 맨 위 헤더는 등락률만(2026-09-15 사용자 정정) — 오르내린 금액은 개요의 "현재가" 줄에 표시
-    pctEl.textContent = `${arrow} (${isUp ? "+" : ""}${changePct.toFixed(2)}%)`;
+    pctEl.textContent = `${arrow}(${isUp ? "+" : ""}${changePct.toFixed(2)}%)`; // 화살표와 %를 붙여서(2026-09-16 사용자 요청)
     pctEl.className = `detail-identity-change ${cls}`;
   } else {
     pctEl.textContent = "";
