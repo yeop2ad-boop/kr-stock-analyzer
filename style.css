@@ -3171,6 +3171,8 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .srt-rd-label { fill: var(--muted); font-size: 12px; font-weight: 600; }
 .srt-rd-value { fill: var(--text); font-size: 13px; font-weight: 800; }
 .srt-rd-dot.srt-tone-bad { fill: #e03131; }
+.srt-rd-avgdot { fill: #9aa2b1; stroke: var(--bg); stroke-width: 1; }
+.srt-rd-avgtxt { fill: var(--muted); font-size: 11px; font-weight: 600; }
 .srt-rd-value.srt-tone-good { fill: #0ca678; }
 .srt-rd-value.srt-tone-bad { fill: #e03131; }
 .srt-chips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-top: 6px; }
@@ -3228,7 +3230,8 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .srf-rank-fire .srf-rank-no { color: #d9480f; }
 .srf-rank-warn .srf-rank-no { color: #1c7ed6; } /* 하위 10% 경고 등수는 파란 글씨(2026-09-15 사용자 요청) */
 .srf-rank-of { font-size: 11px; font-weight: 600; color: var(--muted); }
-.srf-grade { font-size: 16px; font-weight: 900; letter-spacing: -0.4px; } /* RSI 강한·약한 매수/매도 — 등수 숫자와 같은 크기(2026-09-15 사용자 요청) */
+/* RSI 강한·약한 매수/매도 — 등수 숫자와 같은 크기·굵기, 색은 검정으로 통일(2026-09-15 사용자 요청) */
+.srf-grade, .srf-grade.srt-rank-good, .srf-grade.srt-rank-bad, .srf-grade.srt-rank-neutral { font-size: 16px; font-weight: 900; letter-spacing: -0.4px; color: var(--text); }
 .srf-line .srf-rank-sub { font-size: 11px; }
 .srt-rank-neutral { color: var(--text); }
 .srt-card .srf-list { margin-top: 6px; border-top: 1px solid var(--border); }

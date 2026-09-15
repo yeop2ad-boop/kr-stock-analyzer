@@ -6027,7 +6027,7 @@ async function runSReport(symbol, selfMetricsPromise) {
 
 // ---------- S리포트(2026-09-15 사용자 요청, 같은 날 3차 개편) ----------
 // 요약 카드: 핵심 5개(승률·상승률·매출액·변동성·RSI)를 오각형 레이더로 — 초록 실선 = 이 종목, 회색 점선 = 비교 기준.
-//   축 길이 = 비교군 안 백분위(유리할수록 바깥): 변동성·RSI는 낮을수록 바깥.
+//   축 길이 = 비교군 안 백분위(유리할수록 바깥): 변동성은 낮을수록, RSI는 높을수록 바깥.
 // 더보기: 5개를 포함한 S리포트 전 항목을 "종합 판정 + 비교표 + 백분위 5칸 막대(상위 N%)"로.
 // 비교 기준(사용자 지정): 한국 주식 = 코스피200 평균, 미국 주식 = S&P500 시총 상위 200 평균, IPO = 한국·미국 IPO 시총 상위 100 평균,
 //   코인 = 코인200 평균, ETF = SPY 값(백분위는 ETF 전체 안에서).
@@ -6084,13 +6084,15 @@ function sReportJudge(level, better) {
 function sReportRsiJudge(rsi, refRsi) {
   if (!Number.isFinite(rsi)) return null;
   // 매수·매도 5등급(2026-09-15 사용자 요청) — 이 종목의 1년 평균 RSI에서 멀어질수록 강한 등급:
-  // 평균보다 낮으면 매수 쪽(평소보다 식어 있음), 높으면 매도 쪽(평소보다 달아오름). ±5 안은 중립, 15 이상 벌어지면 강한
-  if (!Number.isFinite(refRsi)) return { text: "중립", tone: "neutral" };
+  // 2026-09-15 사용자 정정: 평균보다 높으면 매수 쪽(힘이 붙음), 낮으면 매도 쪽(힘이 빠짐) — 예) 1년 평균 70인데 지금 50이면 강한 매도.
+  // ±5 안은 중립, 15 이상 벌어지면 강한
+  // 낮은 쪽부터 강한 매도 · 약한 매도 · 평균 · 약한 매수 · 강한 매수(사용자 지정 명칭)
+  if (!Number.isFinite(refRsi)) return { text: "평균", tone: "neutral" };
   const diff = rsi - refRsi;
-  if (diff <= -15) return { text: "강한 매수", tone: "good" };
-  if (diff <= -5) return { text: "약한 매수", tone: "good" };
-  if (diff < 5) return { text: "중립", tone: "neutral" };
-  if (diff < 15) return { text: "약한 매도", tone: "bad" };
+  if (diff >= 15) return { text: "강한 매수", tone: "good" };
+  if (diff >= 5) return { text: "약한 매수", tone: "good" };
+  if (diff > -5) return { text: "평균", tone: "neutral" };
+  if (diff > -15) return { text: "약한 매도", tone: "bad" };
   return { text: "강한 매도", tone: "bad" };
 }
 const sPct = (v, d, signed) => `${signed && v > 0 ? "+" : ""}${d ? (Math.round(v * 10) / 10).toFixed(1) : Math.round(v)}%`;
@@ -6103,7 +6105,7 @@ const S_REPORT_EXPLAIN = {
   rev: "최근 발표 실적의 매출이 1년 전 같은 기간보다 몇 % 늘었는지입니다.\n높을수록 사업 규모가 빠르게 커지고 있다는 뜻이에요.",
   ret1y: "1년 전 같은 시점 가격과 비교해 지금 가격이 몇 % 올랐는지입니다.\n높을수록 최근 1년 성과가 좋았다는 뜻이에요.",
   vol: "최근 3개월 동안 하루에 가격이 평균 몇 % 움직였는지(일간 등락률 절댓값 평균)입니다.\n높을수록 하루하루 크게 흔들려 위험이 크다는 뜻이에요.",
-  rsi: "최근 14주 상승폭과 하락폭으로 계산한 주간 RSI(0~100)를 이 종목의 1년 평균 RSI와 비교한 등급입니다.\n평균보다 15 이상 낮으면 강한 매수, 5~15 낮으면 약한 매수, ±5 안은 중립, 5~15 높으면 약한 매도, 15 이상 높으면 강한 매도예요.",
+  rsi: "최근 14주 상승폭과 하락폭으로 계산한 주간 RSI(0~100)를 이 종목의 1년 평균 RSI와 비교한 등급입니다.\n평균보다 15 이상 낮으면 강한 매도, 5~15 낮으면 약한 매도, ±5 안은 평균, 5~15 높으면 약한 매수, 15 이상 높으면 강한 매수예요.",
   ni: "최근 회계연도 순이익이 전년보다 몇 % 늘었는지입니다.\n높을수록 회사가 실제로 남기는 이익이 빠르게 늘고 있다는 뜻이에요.",
   om: "매출에서 영업이익이 차지하는 비율(최근 분기)입니다.\n높을수록 본업에서 돈을 효율적으로 번다는 뜻이에요.",
   roe: "자기자본 대비 순이익 비율(최근 분기)입니다.\n높을수록 주주의 돈으로 이익을 잘 만들어 낸다는 뜻이에요.",
@@ -6127,7 +6129,8 @@ function sReportCoreSpecs(isAsset) {
       ? { key: "rev", label: "1년 수익률", explainKey: "ret1y", better: "high", band: 3, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true) }
       : { key: "rev", label: "매출액", sub: "작년 대비", better: "high", band: 3, rel: 0.2, signed: true, fmt: (v, d) => sPct(v, d, true) },
     { key: "vol", label: "변동성", sub: "3개월 하루", better: "low", band: 0.1, rel: 0.1, fmt: (v, d) => `${v.toFixed(d ? 2 : 1)}%` },
-    { key: "rsi", label: "RSI(과열도)", better: "low", isRsi: true, fmt: (v, d) => sNum(v, d) },
+    // RSI는 높을수록 매수 쪽이라 레이더에서도 높을수록 바깥(2026-09-15 사용자 정정)
+    { key: "rsi", label: "RSI(과열도)", better: "high", isRsi: true, fmt: (v, d) => sNum(v, d) },
   ];
 }
 // 전체 보기 추가 항목(배치 DB 키) — live: DB에 없는 주식은 실시간 지표(getFullMetrics)로 보충
@@ -6248,6 +6251,14 @@ function sReportRadarSvg(items) {
       return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.2" class="srt-rd-dot srt-tone-${it.judge ? it.judge.tone : "neutral"}" />`;
     })
     .join("");
+  // 평균(비교 기준) 꼭짓점에도 회색 점 — RSI처럼 평균이 중심 가까이 붙으면 점선만으로는 안 보였음(2026-09-15 사용자 지적)
+  const avgDots = items
+    .map((it, i) => {
+      if (!Number.isFinite(it.avgScore)) return "";
+      const [x, y] = pt(i, clampS(it.avgScore));
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.6" class="srt-rd-avgdot" />`;
+    })
+    .join("");
   const labels = items
     .map((it, i) => {
       const [x, y] = pt(i, 1.2);
@@ -6255,10 +6266,13 @@ function sReportRadarSvg(items) {
       const dy = y < cy - R * 0.9 ? -14 : y > cy + R * 0.5 ? 6 : -6;
       const val = it.value === null ? "N/A" : it.fmt(it.value, 0);
       return `<text x="${x.toFixed(1)}" y="${(y + dy).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-label">${escapeHtml(it.label)}</text>
-        <text x="${x.toFixed(1)}" y="${(y + dy + 15).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-value srt-tone-${it.judge ? it.judge.tone : "neutral"}">${escapeHtml(val)}</text>`;
+        <text x="${x.toFixed(1)}" y="${(y + dy + 15).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-value srt-tone-${it.judge ? it.judge.tone : "neutral"}">${escapeHtml(val)}${
+        // RSI는 비교 기준이 이 종목의 1년 평균이라 값 옆에 평균도 적어 줌
+        it.isRsi && Number.isFinite(it.avg) ? `<tspan class="srt-rd-avgtxt"> (평균 ${Math.round(it.avg)})</tspan>` : ""
+      }</text>`;
     })
     .join("");
-  return `<svg class="srt-radar" viewBox="0 0 ${W} ${H}" role="img" aria-label="S리포트 핵심 5개 지표 레이더 차트">${rings}${spokes}${avgPoly}${selfPoly}${dots}${labels}</svg>`;
+  return `<svg class="srt-radar" viewBox="0 0 ${W} ${H}" role="img" aria-label="S리포트 핵심 5개 지표 레이더 차트">${rings}${spokes}${avgPoly}${selfPoly}${avgDots}${dots}${labels}</svg>`;
 }
 
 // 한 줄 행(2026-09-15 사용자 요청): 항목 | 현재 값 | 등수 "12/200위 (상위 6%)" + 상위 10% 🔥 · 하위 10% ⚠️
