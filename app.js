@@ -7300,37 +7300,20 @@ function fin2BodyHtml(data, period, currency) {
   const estBar = bars.find((b) => b.est) || null;
   const isAnnual = period === "annual";
 
-  // 요약(2026-09-15 사용자 요청 3차): 다시 회색 박스 한 줄 3칸 — 작년 매출 · 올해 매출 예상(+N%) · 3년 연평균 성장
-  //   분기 보기는 같은 틀로 최근 분기 매출 · 다음 분기 예상(+N%) · 전분기 대비
-  const signedPct = (g, digits = 1) => (Number.isFinite(g) ? `${g >= 0 ? "+" : "−"}${Math.abs(g).toFixed(digits)}%` : "—");
+  // 요약(2026-09-15 사용자 요청 4차): 회색 박스 한 줄에 성장률 하나만 — 년간 "작년 대비 올해 예상 성장",
+  //   분기 "직전 분기 대비 다음 분기 컨센서스(예상) 성장" (금액·3년 연평균은 뺌)
+  const signedPct = (g) => (Number.isFinite(g) ? `${g >= 0 ? "+" : "−"}${Math.abs(g).toFixed(1)}%` : "—");
   const toneCls = (g) => (Number.isFinite(g) ? (g >= 0 ? "fin2-up" : "fin2-down") : "");
-  const amt = (v) => (Number.isFinite(v) ? escapeHtml(fmtAmountUnified(v, currency)) : "—");
-  let thirdLabel;
-  let thirdValue;
-  if (isAnnual) {
-    const first = actual.length >= 4 ? actual[actual.length - 4] : null;
-    thirdLabel = "3년 연평균 성장";
-    thirdValue = first && first.rev > 0 && last.rev > 0 ? (Math.pow(last.rev / first.rev, 1 / 3) - 1) * 100 : null;
-  } else {
-    thirdLabel = "전분기 대비";
-    thirdValue = last.growth;
-  }
+  const estGrowth = estBar && Number.isFinite(estBar.growth) ? estBar.growth : null;
+  const estKind = estSource === "컨센서스" ? "컨센서스" : "예상";
   const summaryHtml = `
-    <div class="fin2-strip">
-      <div class="fin2-strip-item">
-        <span class="fin2-strip-label">${isAnnual ? `작년 매출 <small>${escapeHtml(last.label)}</small>` : `최근 분기 <small>${escapeHtml(last.label)}</small>`}</span>
-        <b class="fin2-strip-value">${amt(last.rev)}</b>
-      </div>
-      <div class="fin2-strip-item">
-        <span class="fin2-strip-label">${isAnnual ? "올해 매출 예상" : "다음 분기 예상"}</span>
-        <b class="fin2-strip-value">${estBar ? amt(estBar.rev) : "—"}${
-    estBar && Number.isFinite(estBar.growth) ? `<em class="${toneCls(estBar.growth)}">${signedPct(estBar.growth, 0)}</em>` : ""
-  }</b>
-      </div>
-      <div class="fin2-strip-item">
-        <span class="fin2-strip-label">${thirdLabel}</span>
-        <b class="fin2-strip-value ${toneCls(thirdValue)}">${signedPct(thirdValue)}</b>
-      </div>
+    <div class="fin2-strip fin2-strip-one">
+      <span class="fin2-strip-label">${
+    isAnnual
+      ? `작년(${escapeHtml(last.label)}) 대비 올해${estBar ? `(${escapeHtml(estBar.label)})` : ""} ${estKind} 성장`
+      : `직전 분기(${escapeHtml(last.label)}) 대비 다음 분기${estBar ? `(${escapeHtml(estBar.label)})` : ""} ${estKind} 성장`
+  }</span>
+      <b class="fin2-strip-value ${toneCls(estGrowth)}">${estGrowth === null ? "—" : signedPct(estGrowth)}</b>
     </div>`;
 
   // 막대: 가장 큰 매출이 그림 영역의 78%가 되도록(위에 "00%상승"·말풍선 자리)
