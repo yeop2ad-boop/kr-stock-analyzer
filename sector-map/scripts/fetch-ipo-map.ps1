@@ -55,6 +55,29 @@ function Compute-WilderRsi($closes, $period) {
   if ($avgLoss -eq 0) { return 100.0 }
   return [Math]::Round(100.0 - 100.0 / (1.0 + $avgGain / $avgLoss), 1)
 }
+# 직전 52주 평균 RSI(2026-09-15 S리포트 "1년 평균 RSI 대비" 판정용) — fetch-winrate-scores.ps1의 rsi1y와 같은 롤링 시리즈 평균
+function Get-RsiAvg52($closes, $period) {
+  if (-not $closes -or $closes.Count -lt ($period + 2)) { return $null }
+  $gain = 0.0; $loss = 0.0
+  for ($i = 1; $i -le $period; $i++) {
+    $d = $closes[$i] - $closes[$i - 1]
+    if ($d -gt 0) { $gain += $d } else { $loss -= $d }
+  }
+  $avgGain = $gain / $period; $avgLoss = $loss / $period
+  $series = New-Object System.Collections.Generic.List[double]
+  if ($avgLoss -eq 0) { $series.Add(100.0) } else { $series.Add(100.0 - 100.0 / (1.0 + $avgGain / $avgLoss)) }
+  for ($i = $period + 1; $i -lt $closes.Count; $i++) {
+    $d = $closes[$i] - $closes[$i - 1]
+    $g = 0.0; $l = 0.0
+    if ($d -gt 0) { $g = $d } else { $l = -$d }
+    $avgGain = ($avgGain * ($period - 1) + $g) / $period
+    $avgLoss = ($avgLoss * ($period - 1) + $l) / $period
+    if ($avgLoss -eq 0) { $series.Add(100.0) } else { $series.Add(100.0 - 100.0 / (1.0 + $avgGain / $avgLoss)) }
+  }
+  $take = [Math]::Min(52, $series.Count); $sum = 0.0
+  for ($i = $series.Count - $take; $i -lt $series.Count; $i++) { $sum += $series[$i] }
+  return [Math]::Round($sum / $take, 1)
+}
 # 분기 YoY 증가율(분기 5개 미만이면 연간 YoY 폴백) — fetch-growth-metrics.ps1과 동일
 function Get-YoyGrowth($qSeries, $aSeries) {
   $q = @()
@@ -149,6 +172,8 @@ function Build-Company($row) {
     $closes = @((Get-SortedClosePairs $wk) | ForEach-Object { $_.c })
     $rsi = Compute-WilderRsi $closes 14
     if ($null -ne $rsi) { $c.rsiWeekly = $rsi }
+    $rsi1y = Get-RsiAvg52 $closes 14
+    if ($null -ne $rsi1y) { $c.rsi1y = $rsi1y }
   } catch { }
   Start-Sleep -Milliseconds 80
 

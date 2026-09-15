@@ -11,6 +11,7 @@
   etf       ETF → SPY 값 기준(분포는 ETF 전체)
 평균은 한두 종목의 극단값에 휘둘리지 않게 위아래 10%씩 뺀 평균.
 
+RSI만은 비교군 평균이 아니라 종목 자신의 직전 52주 평균 RSI(members의 rsiAvg)와 비교 — groups.ref.rsi는 참고용.
 지표 키: win=10년 월간 승률, ret=연평균 상승(CAGR), rev=작년 대비 매출 증가(ETF·코인은 1년 수익률), vol=3개월 하루 변동량(|일간 등락률| 평균), rsi=주간 RSI
   주식 추가: ni 순이익 증가, om 영업이익률, roe, cf 현금흐름 증가, debt 부채비율, per, div 배당률, mcap 시가총액, dv 거래대금, w52 52주 구간 위치
   ETF 추가: div 배당률(최근 1년 분배금 ÷ 현재가, 이 스크립트가 야후에서 조회), fee 운용보수, w52 / 코인 추가: mcap, w52
@@ -84,6 +85,8 @@ def core_from(entry, row, rev_value):
         "rev": num(rev_value),
         "vol": num(entry.get("vol3m")) if num(entry.get("vol3m")) is not None else num(row.get("vol3m")),
         "rsi": num(entry.get("rsi")) if num(entry.get("rsi")) is not None else num(row.get("rsiWeekly")),
+        # RSI는 비교군 평균이 아니라 이 종목 자신의 직전 52주 평균 RSI와 비교(2026-09-15 사용자 요청)
+        "rsiAvg": num(entry.get("rsi1y")) if num(entry.get("rsi1y")) is not None else num(row.get("rsi1y")),
     }
 
 
