@@ -3376,19 +3376,21 @@ function renderCompanyIdentity(ticker, quote, meta, changePct) {
   const price = meta.regularMarketPrice;
   el("companyPanelLogoWrap").innerHTML = tickerLogoHtml(ticker);
   el("companyPanelName").textContent = displayName;
-  // ETF 상세는 이름 바로 아래에 티커(2026-09-13 사용자 요청) — 국내는 "069500", 미국은 "SPY"
-  //  이름 아래 국기/섹션 마크 줄에 나란히 붙여 헤더 높이는 그대로 둠
+  // 2026-09-15 사용자 요청: 헤더는 무조건 2줄 — 1줄 = 기업명 + 바로 오른쪽 국기/섹션 마크(+ETF 티커), 2줄 = 가격(변동률)
+  //  (예전엔 이름 아래에 마크 줄이 따로 있어 3줄이었음) ETF 티커는 국내 "069500", 미국 "SPY"(2026-09-13)
   let tickerLineEl = el("companyPanelTickerLine");
   if (!tickerLineEl) {
+    const nameEl = el("companyPanelName");
     const mark = el("companyPanelSectionMark");
-    const subRow = document.createElement("span");
-    subRow.className = "detail-identity-subrow";
-    mark.insertAdjacentElement("beforebegin", subRow);
-    subRow.appendChild(mark);
+    const nameRow = document.createElement("span");
+    nameRow.className = "detail-identity-namerow";
+    nameEl.insertAdjacentElement("beforebegin", nameRow);
+    nameRow.appendChild(nameEl);
+    nameRow.appendChild(mark);
     tickerLineEl = document.createElement("span");
     tickerLineEl.id = "companyPanelTickerLine";
     tickerLineEl.className = "detail-identity-ticker";
-    subRow.appendChild(tickerLineEl);
+    nameRow.appendChild(tickerLineEl);
   }
   tickerLineEl.textContent = identitySection === "etf" ? String(ticker).replace(/\.(KS|KQ)$/, "") : "";
   tickerLineEl.style.display = identitySection === "etf" ? "" : "none";
@@ -17235,12 +17237,45 @@ function niceStepGeneric(rawStep) {
   else niceFrac = 10;
   return niceFrac * base;
 }
-// 최댓값이 그래프 맨 위에 거의 붙도록 위쪽 여백은 아주 작게, 아래쪽은 라벨이 안 잘릴 정도만 남김(둥근 step으로 반올림하지 않음)
+// 오른쪽 가격 눈금(2026-09-15 사용자 요청): 최저~최고를 딱 떨어지는 5칸으로 — 예) 30만~50만이면 50만·45만·40만·35만·30만.
+// 1·1.5·2·2.5·3·4·5·6·8 × 10ⁿ 간격 중 최저가 아래에서 시작해 4칸 안에 최고가가 들어가는 가장 작은 간격을 고름(눈금 5개 = lo + 0~4칸)
+// (1·2·5만 쓰면 한 단계 차이로 간격이 두 배가 돼 0원~400만원처럼 빈 공간이 커졌음)
 function priceAxisBounds(minVal, maxVal) {
-  const span = Math.max(maxVal - minVal, Math.abs(maxVal || 1) * 0.001);
-  const lo = minVal - span * 0.05;
-  const hi = maxVal + span * 0.03;
-  return { lo, hi };
+  if (!(maxVal > minVal)) {
+    const pad = Math.abs(maxVal || 1) * 0.01;
+    minVal -= pad;
+    maxVal += pad;
+  }
+  const raw = (maxVal - minVal) / 4;
+  const exp = Math.floor(Math.log10(raw));
+  for (let e = exp - 1; e <= exp + 2; e++) {
+    for (const b of [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8]) {
+      const step = b * Math.pow(10, e);
+      if (step < raw * 0.999) continue;
+      const lo = Math.floor(minVal / step + 1e-9) * step;
+      if (lo + 4 * step >= maxVal - step * 1e-9) return { lo, hi: lo + 4 * step, step };
+    }
+  }
+  return { lo: minVal, hi: maxVal, step: raw };
+}
+// 캔들이 너무 촘촘하지 않게 한 화면 약 20개로 묶음(2026-09-15 사용자 요청) — 묶음마다 시가=첫 봉, 종가=끝 봉, 고가·저가=최대·최소
+const SUMMARY_CANDLE_TARGET = 20;
+function aggregateCandles(pairs, target = SUMMARY_CANDLE_TARGET) {
+  if (pairs.length <= target * 1.5) return pairs;
+  const size = Math.ceil(pairs.length / target);
+  const out = [];
+  // 최신 봉이 온전한 묶음 끝에 오도록 뒤에서부터 자름
+  for (let end = pairs.length; end > 0; end -= size) {
+    const chunk = pairs.slice(Math.max(0, end - size), end);
+    out.unshift({
+      t: chunk[0].t,
+      o: chunk[0].o,
+      c: chunk[chunk.length - 1].c,
+      h: Math.max(...chunk.map((p) => p.h)),
+      l: Math.min(...chunk.map((p) => p.l)),
+    });
+  }
+  return out;
 }
 function fmtChartPrice(v, currency = "USD") {
   if (currency === "KRW") return v.toLocaleString(undefined, { maximumFractionDigits: 0 }) + "원";
@@ -17492,20 +17527,57 @@ function setupPriceChartCrosshair(containerEl, pairs, scalesFn = priceChartScale
     currentMarker.style.display = "";
   }
 
+  // 2026-09-15 사용자 보고("누르고 있으면 1초마다 끊겨 현재가로 돌아감"): 휴대폰에서 길게 누르면 브라우저가 롱프레스·스크롤 제스처로
+  // 판단해 pointercancel/pointerleave를 보내 크로스헤어가 꺼졌음 → 터치는 touch 이벤트로 직접 받고(preventDefault로 제스처 차단)
+  // 손가락을 뗄 때(touchend)만 현재가로 복귀. 마우스는 기존처럼 pointer 이벤트.
+  let touching = false;
+  hitArea.addEventListener(
+    "touchstart",
+    (e) => {
+      e.preventDefault();
+      touching = true;
+      showAt(indexFromClientX(e.touches[0].clientX));
+    },
+    { passive: false }
+  );
+  hitArea.addEventListener(
+    "touchmove",
+    (e) => {
+      e.preventDefault();
+      if (touching && e.touches.length) showAt(indexFromClientX(e.touches[0].clientX));
+    },
+    { passive: false }
+  );
+  hitArea.addEventListener("touchend", (e) => {
+    if (e.touches.length) return;
+    touching = false;
+    hide();
+  });
+  hitArea.addEventListener("touchcancel", () => {
+    touching = false;
+    hide();
+  });
+  hitArea.addEventListener("contextmenu", (e) => e.preventDefault());
+
+  let mouseDown = false;
   hitArea.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "touch") return;
     e.preventDefault();
+    mouseDown = true;
     showAt(indexFromClientX(e.clientX));
     hitArea.setPointerCapture(e.pointerId);
   });
   hitArea.addEventListener("pointermove", (e) => {
-    if (e.buttons !== 1) return;
+    if (e.pointerType === "touch" || !mouseDown) return;
     showAt(indexFromClientX(e.clientX));
   });
-  hitArea.addEventListener("pointerup", hide);
-  hitArea.addEventListener("pointercancel", hide);
-  hitArea.addEventListener("pointerleave", (e) => {
-    if (e.buttons !== 1) hide();
-  });
+  const mouseEnd = (e) => {
+    if (e.pointerType === "touch") return;
+    mouseDown = false;
+    hide();
+  };
+  hitArea.addEventListener("pointerup", mouseEnd);
+  hitArea.addEventListener("pointercancel", mouseEnd);
 }
 
 let summaryChartCurrentSymbol = null;
@@ -17516,8 +17588,9 @@ let summaryChartMode = "line"; // "line" | "candle"
 function renderSummaryChartPairs(pairs, period, symbol) {
   const containerEl = el("summaryChartContainer");
   if (summaryChartMode === "candle") {
-    containerEl.innerHTML = buildCandleChartSvg(pairs, period, symbol);
-    setupPriceChartCrosshair(containerEl, pairs, priceChartScalesOhlc, symbol);
+    const candles = aggregateCandles(pairs); // 한 화면 약 20개
+    containerEl.innerHTML = buildCandleChartSvg(candles, period, symbol);
+    setupPriceChartCrosshair(containerEl, candles, priceChartScalesOhlc, symbol);
   } else {
     containerEl.innerHTML = buildPriceChartSvg(pairs, period, symbol);
     setupPriceChartCrosshair(containerEl, pairs, priceChartScales, symbol);

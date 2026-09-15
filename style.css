@@ -3121,6 +3121,14 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .wr-intro b { font-weight: 800; color: var(--winrate); }
 /* ETF 상세 헤더: 이름 아래 줄(국기 마크 옆)에 티커(2026-09-13) */
 .detail-identity-subrow { display: flex; align-items: center; gap: 5px; min-width: 0; }
+/* 헤더 2줄 고정(2026-09-15): 1줄 = 기업명 + 마크(이름이 길면 이름만 말줄임), 2줄 = 가격(변동률) */
+.detail-identity-namerow { display: flex; align-items: center; gap: 5px; min-width: 0; white-space: nowrap; }
+.detail-identity-namerow .detail-identity-name { flex: 0 1 auto; min-width: 0; }
+.detail-identity-namerow .section-mark { margin-left: 0; flex: none; }
+.detail-identity-namerow .detail-identity-ticker { flex: none; }
+.detail-identity-priceline { overflow: hidden; }
+/* 가격 차트 길게 누르기(2026-09-15): 롱프레스 메뉴·텍스트 선택이 끼어들어 크로스헤어가 끊기지 않게 */
+#summaryChartContainer { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 .detail-identity-subrow .section-mark { margin-left: 0; }
 .detail-identity-ticker { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: 0.2px; white-space: nowrap; }
 
