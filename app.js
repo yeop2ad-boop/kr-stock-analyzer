@@ -91,7 +91,9 @@ const historicalMonthDownBtn = el("historicalMonthDownBtn");
 const historicalInlineWrap = el("historicalInlineWrap");
 const futureInlineWrap = el("futureInlineWrap");
 const sReportInlineWrap = el("sReportInlineWrap");
-// 개요 "📊 12개월 승률" 버튼으로 여닫는 12개월 카드 자리(2026-09-13) — 다른 펼침 섹션처럼 요약 영역 안으로 옮겨 붙임
+// 개요 "😱 공포지수"(코인은 알트시즌지수) 버튼으로 여닫는 자리(2026-09-15) — 옛 invest점수 탭의 공포지수 섹션
+const fearInlineWrap = el("fearInlineWrap");
+// 12개월 승률 카드 자리(2026-09-13) — 2026-09-15부터는 "🕰️ 과거분석" 버튼이 이 카드를 연다
 const oxInlineWrap = document.createElement("div");
 oxInlineWrap.id = "oxInlineWrap";
 oxInlineWrap.style.display = "none";
@@ -5567,13 +5569,18 @@ async function runAnalysis(ticker) {
       el("summarySection").innerHTML = `<p class="error-inline">사업 요약을 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
-    if (!isCryptoDetail && !isEtfDetail) {
+    // S리포트 요약 카드(2026-09-15): 승률·상승률·매출액·변동성·RSI 5개 + 평가 한 줄
+    renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise).catch((e) => {
+      el("sReportTopSection").innerHTML = `<p class="error-inline">S리포트를 계산하지 못했습니다: ${escapeHtml(e.message || "")}</p>`;
+    });
+
+    if (isCryptoDetail || isEtfDetail) {
+      FIN2_STATE.token++; // 매출액 탭이 없는 자산 — 앞서 연 주식의 늦게 도착한 차트가 숨은 영역에 그려지지 않게
+      el("financialsSection").innerHTML = "";
+    } else {
+      // 2026-09-15 사용자 요청: 년간/분기 세로 막대 차트 한 장으로 통합(분기 실적 섹션은 "분기" 버튼으로 이동, 영업이익 삭제)
       renderFinancials(ticker, meta.currency).catch((e) => {
         el("financialsSection").innerHTML = `<p class="error-inline">실적 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
-      });
-
-      renderQuarterlyEarnings(ticker, meta.currency).catch((e) => {
-        el("quarterlyEarningsSection").innerHTML = `<p class="error-inline">분기 실적 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
       });
 
       renderPeers(ticker, selfMetricsPromise, quote.sector || quote.sectorDisp, quote.industryDisp || quote.industry).catch((e) => {
@@ -5604,16 +5611,7 @@ async function runAnalysis(ticker) {
     renderMacro(ticker).catch((e) => {
       el("macroSection").innerHTML = `<p class="error-inline">거시경제 점수를 계산하지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
-
-    // 승률점수·RSI 점수(2026-09-02, 같은 날 국내주식·ETF·코인 확장): 섹션별 DB 맵(scores/scoresKr/scoresEtf/scoresCrypto)에서
-    // 조회 — 어느 맵에도 없는 종목(유니버스 밖)은 각 렌더러가 섹션째 숨김
-    renderRet10(ticker, scoreMode).catch(() => {});
-    renderWinRate(ticker, scoreMode).catch(() => {
-      el("winRateFlushSection").style.display = "none";
-    });
-    renderRsi(ticker, scoreMode).catch(() => {
-      el("rsiFlushSection").style.display = "none";
-    });
+    // 10년평균 승률·연평균 상승·RSI 점수 섹션(invest점수 탭)은 2026-09-15 사용자 요청으로 탭째 삭제 — S리포트 요약 카드가 대신함
 
     setStatus(null, null);
   } catch (err) {
@@ -5765,17 +5763,17 @@ shareInstaBtn.addEventListener("click", () => {
   shareOrDownloadGround("투자 그라운드 - 인스타그램에 공유해보세요");
 });
 
-// ---------- 기업검색 요약 페이지 4분할 서브탭(요약/매출액/invest점수/주요뉴스) ----------
+// ---------- 기업검색 요약 페이지 4분할 서브탭(개요/S리포트/매출액/뉴스 — 2026-09-15 invest점수 → S리포트) ----------
 const summarySubtabButtons = {
   summary: el("summarySubtabSummaryBtn"),
+  sreport: el("summarySubtabSReportBtn"),
   revenue: el("summarySubtabRevenueBtn"),
-  investscore: el("summarySubtabScoreBtn"),
   news: el("summarySubtabNewsBtn"),
 };
 const summarySubtabPanels = {
   summary: document.querySelector('[data-summary-subtabpanel="summary"]'),
+  sreport: document.querySelector('[data-summary-subtabpanel="sreport"]'),
   revenue: document.querySelector('[data-summary-subtabpanel="revenue"]'),
-  investscore: document.querySelector('[data-summary-subtabpanel="investscore"]'),
   news: document.querySelector('[data-summary-subtabpanel="news"]'),
 };
 // 개요 아래로 매출액/invest점수/주요뉴스가 한 화면에 이어져 있어(단일 스크롤), 탭 클릭은 숨기고 보여주는 대신
@@ -6015,13 +6013,270 @@ async function runSReport(symbol, selfMetricsPromise) {
   `;
 }
 
+// ---------- S리포트 요약 카드(2026-09-15 사용자 요청) ----------
+// 과거분석·미래예측·공포지수 버튼 아래에 핵심 5개(승률·상승률·매출액·변동성·RSI)를 한 줄씩 + 그 아래 평가 한 줄, "더보기"로 전체 S리포트 표.
+// 비교 기준 — 승률·매출액·변동성: 주식은 S&P500 / 코스피200 / 코스닥150 평균(최근 5년 신규 상장주는 한국·미국 IPO200 평균),
+//   ETF는 같은 나라 ETF 평균, 코인은 코인200 평균. 상승률은 같은 섹터 평균, RSI는 이 종목의 최근 1년 평균 RSI.
+// 평균은 한두 종목의 극단값(매출 +900% 같은)에 휘둘리지 않게 위아래 10%씩 뺀 평균을 쓴다.
+// 매출액은 IPO 비교군에 절대 매출 데이터가 없어 "작년 대비 매출 증가율"로 비교하고, 매출이 없는 ETF·코인은 그 자리에 1년 수익률을 둔다.
+function sReportTrimmedMean(values) {
+  const v = values.filter((x) => Number.isFinite(x)).sort((a, b) => a - b);
+  if (!v.length) return null;
+  const k = v.length >= 10 ? Math.floor(v.length * 0.1) : 0;
+  const s = v.slice(k, v.length - k);
+  return s.reduce((a, b) => a + b, 0) / s.length;
+}
+// "높은 / 낮은 / 비슷한" 판정 — band 안이면 비슷한 수준. relative=true면 band를 평균 대비 비율로 봄
+function sReportLevel(selfV, avgV, band, relative) {
+  if (!Number.isFinite(selfV) || !Number.isFinite(avgV)) return null;
+  const tol = relative ? Math.abs(avgV) * band : band;
+  if (selfV > avgV + tol) return "high";
+  if (selfV < avgV - tol) return "low";
+  return "same";
+}
+const S_REPORT_LEVEL_TEXT = { high: "높은 수준", low: "낮은 수준", same: "비슷한 수준" };
+const sReportSectorKey = (ko) => String(ko || "").split(" ")[0]; // "커뮤니케이션 서비스"(야후) = "커뮤니케이션"(지도 스냅샷)
+
+// 비교군 정리 → { label, peers:[{win, ret, rev, vol, ret1y, sectorKey}], self(스냅샷 행 또는 null), sectorOf }
+async function buildSReportTopBaseline(ticker, scoreMode) {
+  const isKr = isKrTicker(ticker);
+  const db = await getWinRateDb().catch(() => null);
+  if (scoreMode === "etf" || scoreMode === "crypto") {
+    const map = (db && (scoreMode === "crypto" ? db.scoresCrypto : db.scoresEtf)) || {};
+    const peers = Object.entries(map)
+      .filter(([s]) => scoreMode === "crypto" || isKrTicker(s) === isKr)
+      .map(([, e]) => ({ win: e.score, ret: e.ret10y, ret1y: e.ret1y, vol: e.vol1y }));
+    return { label: scoreMode === "crypto" ? "코인200" : isKr ? "한국 ETF" : "미국 ETF", peers, self: null, sectorPeers: null };
+  }
+  const volMap = (db && (isKr ? db.scoresKr : db.scores)) || {};
+  const ipo = await getIpoSReportUniverse(ticker, isKr).catch(() => null);
+  let companies;
+  let label;
+  if (ipo) {
+    // 마켓맵 IPO 보기와 같은 시총 상위 200개
+    companies = [...ipo.companies].sort((a, b) => (b.marketCap || 0) - (a.marketCap || 0)).slice(0, 200);
+    label = isKr ? "한국 IPO200" : "미국 IPO200";
+  } else {
+    const uni = await getSReportUniverse(isKr);
+    companies = (uni && uni.companies) || [];
+    if (isKr) {
+      const isKosdaq = /\.KQ$/.test(ticker);
+      label = isKosdaq ? "코스닥150" : "코스피200";
+      companies = companies.filter((c) => /\.KQ$/.test(c.symbol) === isKosdaq);
+    } else {
+      label = "S&P500";
+    }
+  }
+  const toPeer = (c) => ({
+    win: c.winRateScore,
+    ret: c.ret10yAvg,
+    rev: c.revenueGrowth,
+    vol: Number.isFinite(c.vol1y) ? c.vol1y : volMap[c.symbol] && volMap[c.symbol].vol1y,
+    sectorKey: sReportSectorKey(c.sectorKo),
+  });
+  const peers = companies.map(toPeer);
+  // 섹터 평균은 같은 시장 전체(한국은 코스피+코스닥)에서 — 한국 에너지·유틸리티처럼 종목이 몇 개 안 되는 섹터가 있어서
+  let sectorPool = peers;
+  let self = companies.find((c) => c.symbol === ticker) || null;
+  if (!ipo && isKr) {
+    const uni = await getSReportUniverse(true);
+    const all = (uni && uni.companies) || [];
+    sectorPool = all.map(toPeer);
+    if (!self) self = all.find((c) => c.symbol === ticker) || null;
+  } else if (ipo && !self) {
+    self = ipo.companies.find((c) => c.symbol === ticker) || null;
+  }
+  return { label, peers, self, sectorPool };
+}
+
+let sReportTopToken = 0;
+async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
+  const token = ++sReportTopToken;
+  const section = el("sReportTopSection");
+  section.innerHTML = `<p class="muted" style="padding:8px 0;">S리포트를 계산하는 중...</p>`;
+  sReportInlineWrap.style.display = "none";
+  sReportInlineWrap.innerHTML = "";
+
+  const isAsset = scoreMode === "etf" || scoreMode === "crypto";
+  const [entry, base, metrics] = await Promise.all([
+    getDetailWrEntry(ticker, scoreMode).catch(() => null),
+    buildSReportTopBaseline(ticker, scoreMode).catch(() => null),
+    isAsset ? Promise.resolve(null) : (selfMetricsPromise || Promise.resolve(null)).catch(() => null),
+  ]);
+  if (token !== sReportTopToken) return; // 그사이 다른 종목을 열었으면 버림
+  const e = entry || {};
+  const fin = (v) => (Number.isFinite(v) ? v : null);
+  const avgOf = (key, pool) => sReportTrimmedMean(((pool || (base && base.peers)) || []).map((p) => p[key]));
+  const uniLabel = base ? base.label : isKrTicker(ticker) ? "코스피200" : "S&P500";
+
+  // 표시값: full(소수 1자리)과 round(정수) 두 벌 — 한 줄에 안 들어가면 정수로 바꿈
+  const pctText = (v, signed, digits) => {
+    const r = digits ? Math.round(v * 10) / 10 : Math.round(v);
+    return `${signed && r > 0 ? "+" : ""}${digits ? r.toFixed(1) : r}%`;
+  };
+  const numText = (v, digits) => (digits ? (Math.round(v * 10) / 10).toFixed(1) : String(Math.round(v)));
+  const rows = [];
+  const addRow = ({ label, value, fmt, avg, level, evalFor, signed }) => {
+    const has = value !== null;
+    rows.push({
+      label,
+      full: has ? fmt(value, 1) : "N/A",
+      round: has ? fmt(value, 0) : "N/A",
+      valueCls: has && signed ? (value > 0 ? "delta-up" : value < 0 ? "delta-down" : "") : "",
+      evalFull: level ? evalFor(avg, 1, level) : has ? "비교할 평균 데이터가 아직 없어요" : "데이터가 없어요",
+      evalRound: level ? evalFor(avg, 0, level) : has ? "비교할 평균 데이터가 아직 없어요" : "데이터가 없어요",
+      evalShort: level ? evalFor(null, 0, level) : "",
+    });
+  };
+  const lvHtml = (level) => `<b class="srt-lv srt-lv-${level}">${S_REPORT_LEVEL_TEXT[level]}</b>`;
+  const againstText = (name, avgStr, level, word = "대비") => `${escapeHtml(name)} 평균${avgStr ? `(${avgStr})` : ""} ${word} ${lvHtml(level)}`;
+
+  // 1. 승률(10년평균)
+  const win = fin(e.score);
+  const winAvg = avgOf("win");
+  addRow({
+    label: "승률",
+    value: win,
+    fmt: (v, d) => pctText(v, false, d),
+    avg: winAvg,
+    level: sReportLevel(win, winAvg, 2),
+    evalFor: (a, d, lv) => againstText(uniLabel, a === null ? "" : pctText(a, false, d), lv),
+  });
+
+  // 2. 상승률(연평균) — 같은 섹터 평균
+  const ret = fin(e.ret10y);
+  let sectorName = uniLabel;
+  let sectorAvg = avgOf("ret");
+  if (!isAsset && base) {
+    const selfKey = sReportSectorKey((base.self && base.self.sectorKo) || SECTOR_KO[quote.sectorDisp || quote.sector] || "");
+    const pool = (base.sectorPool || base.peers).filter((p) => selfKey && selfKey !== "기타" && p.sectorKey === selfKey);
+    if (pool.length >= 5) {
+      sectorName = `${selfKey} 섹터`;
+      sectorAvg = avgOf("ret", pool);
+    }
+  }
+  addRow({
+    label: "상승률",
+    signed: true,
+    value: ret,
+    fmt: (v, d) => `연 ${pctText(v, true, d)}`,
+    avg: sectorAvg,
+    level: sReportLevel(ret, sectorAvg, Math.max(2, Math.abs(sectorAvg || 0) * 0.15)),
+    evalFor: (a, d, lv) => `${escapeHtml(sectorName)} 평균${a === null ? "" : `(${pctText(a, true, d)})`}${lv === "same" ? "과" : "보다"} ${lvHtml(lv)}`,
+  });
+
+  // 3. 매출액(작년 대비 증가율) — ETF·코인은 1년 수익률
+  if (isAsset) {
+    const r1 = fin(e.ret1y);
+    const r1Avg = avgOf("ret1y");
+    addRow({
+      label: "1년 수익률",
+      signed: true,
+      value: r1,
+      fmt: (v, d) => pctText(v, true, d),
+      avg: r1Avg,
+      level: sReportLevel(r1, r1Avg, Math.max(3, Math.abs(r1Avg || 0) * 0.15)),
+      evalFor: (a, d, lv) => againstText(uniLabel, a === null ? "" : pctText(a, true, d), lv),
+    });
+  } else {
+    const selfRev = base && base.self && Number.isFinite(base.self.revenueGrowth) ? base.self.revenueGrowth : metrics ? fin(metrics.revenueGrowthYoY) ?? fin(metrics.revenueGrowthAnnual) : null;
+    const revAvg = avgOf("rev");
+    addRow({
+      label: "매출액",
+      signed: true,
+      value: fin(selfRev),
+      fmt: (v, d) => `작년比 ${pctText(v, true, d)}`,
+      avg: revAvg,
+      level: sReportLevel(fin(selfRev), revAvg, Math.max(3, Math.abs(revAvg || 0) * 0.2)),
+      evalFor: (a, d, lv) => againstText(uniLabel, a === null ? "" : pctText(a, true, d), lv),
+    });
+  }
+
+  // 4. 변동성(1년, 연환산)
+  const vol = fin(e.vol1y);
+  const volAvg = avgOf("vol");
+  addRow({
+    label: "변동성",
+    value: vol,
+    fmt: (v, d) => pctText(v, false, d),
+    avg: volAvg,
+    level: sReportLevel(vol, volAvg, 0.1, true),
+    evalFor: (a, d, lv) => againstText(uniLabel, a === null ? "" : pctText(a, false, d), lv),
+  });
+
+  // 5. RSI(과열성) — 이 종목의 최근 1년 평균 RSI 대비
+  const rsi = fin(e.rsi);
+  const rsiAvg = fin(e.rsi1y);
+  addRow({
+    label: "RSI(과열성)",
+    value: rsi,
+    fmt: (v, d) => numText(v, d),
+    avg: rsiAvg,
+    level: sReportLevel(rsi, rsiAvg, 3),
+    evalFor: (a, d, lv) => `1년 평균 RSI${a === null ? "" : `(${numText(a, d)})`} 대비 ${lvHtml(lv)}`,
+  });
+
+  section.innerHTML = `
+    <div class="srt-card">
+      ${rows
+        .map(
+          (r, i) => `
+        <div class="srt-row">
+          <div class="srt-line"><span class="srt-num">${i + 1}</span><span class="srt-label">${escapeHtml(r.label)}</span><span class="srt-value ${r.valueCls}" data-round="${escapeHtml(r.round)}">${escapeHtml(r.full)}</span></div>
+          <p class="srt-eval" data-round="${escapeHtml(r.evalRound)}" data-short="${escapeHtml(r.evalShort)}">${r.evalFull}</p>
+        </div>`
+        )
+        .join("")}
+      <button type="button" class="srt-more-btn" id="sReportTopMoreBtn">더보기 <span aria-hidden="true">▾</span></button>
+    </div>
+    <p class="srt-note">평균은 위아래 10%를 뺀 평균 · 승률=10년 월간 승률, 상승률=연평균(복리), 변동성=1년 주간 등락 기준. 투자 자문이 아닙니다.</p>`;
+  section.appendChild(sReportInlineWrap);
+  fitSReportTopLines(section);
+
+  const moreBtn = el("sReportTopMoreBtn");
+  let loaded = false;
+  moreBtn.addEventListener("click", async () => {
+    const isOpen = sReportInlineWrap.style.display !== "none";
+    sReportInlineWrap.style.display = isOpen ? "none" : "block";
+    moreBtn.innerHTML = isOpen ? `더보기 <span aria-hidden="true">▾</span>` : `접기 <span aria-hidden="true">▴</span>`;
+    if (!isOpen && !loaded) {
+      loaded = true;
+      await (isAsset ? runAssetSReport(ticker, scoreMode) : runSReport(ticker, selfMetricsPromise || getFullMetrics(ticker)));
+    }
+  });
+}
+// 한 줄에 안 들어가면 소수점을 반올림(2026-09-15 사용자 요청) — 그래도 넘치면 평가 줄은 괄호 속 평균값을 뺀 짧은 문구로
+function fitSReportTopLines(root) {
+  const overflows = (node) => node.scrollWidth > node.clientWidth + 1;
+  root.querySelectorAll(".srt-line").forEach((line) => {
+    const v = line.querySelector(".srt-value");
+    if (v && overflows(line) && v.dataset.round) v.textContent = v.dataset.round;
+  });
+  root.querySelectorAll(".srt-eval").forEach((p) => {
+    if (!overflows(p)) return;
+    if (p.dataset.round) p.innerHTML = p.dataset.round;
+    if (overflows(p) && p.dataset.short) p.innerHTML = p.dataset.short;
+  });
+}
+window.addEventListener("resize", () => {
+  const section = el("sReportTopSection");
+  if (section && section.querySelector(".srt-card")) fitSReportTopLines(section);
+});
+
 // ---------- 1. 사업 요약 ----------
 async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketReturnsPromise) {
+  // 펼침 섹션들은 지난 렌더 때 #summarySection 안으로 옮겨져 있어, 아래 innerHTML로 지우면 문서에서 떨어져 나간다 —
+  // 그동안 renderMacro 등이 el("macroSection")을 못 찾아 오류가 났음(2026-09-15) → 지우기 전에 개요 패널로 잠시 옮겨 둠
+  const summaryPanelEl = document.querySelector('[data-summary-subtabpanel="summary"]');
+  [futureInlineWrap, oxInlineWrap, fearInlineWrap, sReportInlineWrap].forEach((wrap) => {
+    if (wrap && el("summarySection").contains(wrap)) summaryPanelEl.appendChild(wrap);
+  });
   el("summarySection").innerHTML = `<p class="muted">불러오는 중...</p>`;
   // 새 종목 검색 시 이전 종목의 과거분석/미래예측/s리포트 펼침 상태를 초기화(과거분석 3버튼 결과는 종목 무관이라 내용은 유지, 열림 상태만 접음)
   historicalInlineWrap.style.display = "none";
   futureInlineWrap.style.display = "none";
   sReportInlineWrap.style.display = "none";
+  fearInlineWrap.style.display = "none";
 
   const rawCompanyName = quote.longname || quote.shortname || meta.longName || meta.symbol;
   // kr/us/etf/crypto — 이름 표기 외에 과거분석·미래예측·S리포트 버튼의 자산별 분기(2026-09-02)에도 사용
@@ -6114,10 +6369,10 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
         <span>현재가: <b>${fmtPriceFull(meta.regularMarketPrice ?? 0, meta.currency)}</b> ${summaryChangeHtml}</span>${/* 2026-09-13 사용자 요청: 차트보기 버튼 제거(위 차트로 충분) */ ""}
       </div>
       <div class="summary-action-row">
+        ${/* 2026-09-15 사용자 요청: 버튼 = 과거분석(12개월 승률 카드) · 미래예측 · 공포지수(코인은 알트시즌지수). S리포트는 버튼 대신 아래 요약 카드로 펼쳐 둠 */ ""}
         <button type="button" class="summary-action-btn" id="tickerHistoricalToggleBtn" data-ticker="${escapeHtml(symbol)}">🕰️ 과거분석</button>
         <button type="button" class="summary-action-btn" id="tickerFutureToggleBtn" data-ticker="${escapeHtml(symbol)}">🔮 미래예측</button>
-        <button type="button" class="summary-action-btn" id="tickerSReportToggleBtn">📄 s리포트</button>
-        <button type="button" class="summary-action-btn" id="tickerOxToggleBtn">📊 12개월 승률</button>
+        <button type="button" class="summary-action-btn" id="tickerFearToggleBtn">${summaryAssetSection === "crypto" ? "🪙 알트시즌지수" : "😱 공포지수"}</button>
         ${summaryAssetSection === "etf" ? `<button type="button" class="summary-action-btn" id="tickerHoldingsToggleBtn">📦 보유 종목</button>` : ""}
       </div>
     </div>
@@ -6134,28 +6389,26 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   // 2026-09-13 사용자 요청: ETF는 버튼 아래에 보유종목 TOP10 블록이 있어 그 밑에서 열렸음 → 보유종목 블록 "앞"(버튼 바로 아래)에 끼움
   const holdingsAnchor = el("etfHoldingsBlock");
   if (holdingsAnchor) el("summarySection").insertBefore(el("tickerHistoricalRow"), holdingsAnchor);
-  [historicalInlineWrap, futureInlineWrap, sReportInlineWrap, oxInlineWrap].forEach((wrap) => {
+  [futureInlineWrap, oxInlineWrap, fearInlineWrap].forEach((wrap) => {
     wrap.style.display = "none";
     wrap.classList.remove("section-expanded");
     if (holdingsAnchor) el("summarySection").insertBefore(wrap, holdingsAnchor);
     else el("summarySection").appendChild(wrap);
   });
 
-  const toggleBtn = el("tickerHistoricalToggleBtn");
   const futureToggleBtn = el("tickerFutureToggleBtn");
-  const sReportToggleBtn = el("tickerSReportToggleBtn");
-  const oxToggleBtn = el("tickerOxToggleBtn");
+  const historicalToggleBtn = el("tickerHistoricalToggleBtn");
+  const fearToggleBtn = el("tickerFearToggleBtn");
   const holdingsToggleBtn = el("tickerHoldingsToggleBtn");
-  const row = el("tickerHistoricalRow");
 
   const sections = [
-    { btn: toggleBtn, els: [row, historicalInlineWrap] },
+    { btn: historicalToggleBtn, els: [oxInlineWrap] },
     { btn: futureToggleBtn, els: [futureInlineWrap] },
-    { btn: sReportToggleBtn, els: [sReportInlineWrap] },
-    { btn: oxToggleBtn, els: [oxInlineWrap] },
+    { btn: fearToggleBtn, els: [fearInlineWrap] },
   ];
   if (holdingsToggleBtn) sections.push({ btn: holdingsToggleBtn, els: [holdingsAnchor] });
-  // 12개월 승률·보유 종목(2026-09-13 사용자 요청: 개요가 난잡해서 버튼으로 접어 둠) — 누르면 버튼 바로 아래에 펼침
+  // 과거분석(=12개월 승률 카드)·공포지수·보유 종목 — 누르면 버튼 바로 아래에 펼침
+  // (2026-09-15 사용자 요청: 과거분석의 한달/1년 상승·하락 비교는 없애고 12개월 승률 카드로 대체)
   const bindSimpleToggle = (btn, wrap, onOpen) => {
     if (!btn || !wrap) return;
     btn.addEventListener("click", () => {
@@ -6171,9 +6424,10 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
       if (onOpen) onOpen();
     });
   };
-  bindSimpleToggle(oxToggleBtn, oxInlineWrap, () => {
+  bindSimpleToggle(historicalToggleBtn, oxInlineWrap, () => {
     if (!oxInlineWrap.innerHTML.trim()) oxInlineWrap.innerHTML = `<p class="muted" style="padding:10px 2px;margin:0;">최근 12개월 승패 데이터가 아직 없습니다.</p>`;
   });
+  bindSimpleToggle(fearToggleBtn, fearInlineWrap);
   bindSimpleToggle(holdingsToggleBtn, holdingsAnchor, () => {
     if (!holdingsAnchor.innerHTML.trim()) holdingsAnchor.innerHTML = `<p class="muted" style="padding:10px 2px;margin:0;">보유 종목 정보가 없습니다.</p>`;
   });
@@ -6187,28 +6441,6 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
       });
     });
   }
-
-  let tickerHistoricalLoaded = false;
-  toggleBtn.addEventListener("click", async () => {
-    const isOpen = row.style.display !== "none";
-    if (isOpen) {
-      row.style.display = "none";
-      historicalInlineWrap.style.display = "none";
-      historicalInlineWrap.classList.remove("section-expanded");
-      toggleBtn.classList.remove("active");
-      return;
-    }
-    closeAllSections(toggleBtn);
-    row.style.display = "block";
-    historicalInlineWrap.style.display = "block";
-    historicalInlineWrap.classList.add("section-expanded");
-    toggleBtn.classList.add("active");
-    if (!tickerHistoricalLoaded) {
-      tickerHistoricalLoaded = true;
-      // ETF·코인(2026-09-02)은 재무제표 기반 주식 비교표 대신 "1년 전 가격 + 그 시점의 전용 배점 점수"를 보여줌
-      await (isAssetDetail ? runAssetTickerHistorical(symbol, row, summaryAssetSection) : runTickerHistorical(symbol, row));
-    }
-  });
 
   let futureLoaded = false;
   futureToggleBtn.addEventListener("click", async () => {
@@ -6229,26 +6461,6 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
       // 2026-09-09 사용자 요청: 매출액 vs 주가 vs 순이익(1년·5년·10년) 3장 — ETF·코인은 재무가 없어 주가만
       // 2026-09-10 사용자 요청: 매출액vs주가vs순이익 3장 → 예전 "과거 4개년 계절성 + 기울기 예측" 그래프로 복귀
       await runFuturePrediction(symbol, selfMetricsPromise, marketReturnsPromise, { chartOnly: isAssetDetail });
-    }
-  });
-
-  let sReportLoaded = false;
-  sReportToggleBtn.addEventListener("click", async () => {
-    const isOpen = sReportInlineWrap.style.display !== "none";
-    if (isOpen) {
-      sReportInlineWrap.style.display = "none";
-      sReportInlineWrap.classList.remove("section-expanded");
-      sReportToggleBtn.classList.remove("active");
-      return;
-    }
-    closeAllSections(sReportToggleBtn);
-    sReportInlineWrap.style.display = "block";
-    sReportInlineWrap.classList.add("section-expanded");
-    sReportToggleBtn.classList.add("active");
-    if (!sReportLoaded) {
-      sReportLoaded = true;
-      // ETF·코인(2026-09-02)은 기업가치 항목 없이 6개 항목(52주최저~투자안정)의 유니버스 내 순위만 표시
-      await (isAssetDetail ? runAssetSReport(symbol, summaryAssetSection) : runSReport(symbol, selfMetricsPromise));
     }
   });
 
@@ -6519,6 +6731,7 @@ function computeLiveWinRateEntry(ticker) {
       const lastD = monthOfT(pairs[pairs.length - 1].t);
       const to = `${lastD.getUTCFullYear()}-${String(lastD.getUTCMonth() + 1).padStart(2, "0")}`;
       let rsi = null;
+      let rsi1y = null;
       const wp = wk ? chartClosePairs(wk).map((x) => x.c) : [];
       if (wp.length > 15) {
         let g = 0;
@@ -6530,14 +6743,29 @@ function computeLiveWinRateEntry(ticker) {
         }
         g /= 14;
         l /= 14;
+        const series = [l === 0 ? 100 : 100 - 100 / (1 + g / l)];
         for (let i = 15; i < wp.length; i++) {
           const d = wp[i] - wp[i - 1];
           g = (g * 13 + Math.max(d, 0)) / 14;
           l = (l * 13 + Math.max(-d, 0)) / 14;
+          series.push(l === 0 ? 100 : 100 - 100 / (1 + g / l));
         }
-        rsi = l === 0 ? 100 : Math.round((100 - 100 / (1 + g / l)) * 10) / 10;
+        rsi = Math.round(series[series.length - 1] * 10) / 10;
+        // 직전 52주 평균 RSI(배치 rsi1y와 같은 뜻) — S리포트 RSI 평가 기준(2026-09-15)
+        const tail = series.slice(-52);
+        rsi1y = Math.round((tail.reduce((a, b) => a + b, 0) / tail.length) * 10) / 10;
       }
-      return { score: Math.round((up / total) * 1000) / 10, up, total, to, ret10y, rsi, m12, live: true };
+      // 1년 변동성(배치 vol1y와 같은 공식: 최근 52주 주간 수익률 표준편차 × √52) — S리포트 변동성(2026-09-15)
+      let vol1y = null;
+      const vc = wp.filter((c) => c > 0).slice(-53);
+      if (vc.length >= 27) {
+        const rets = vc.slice(1).map((c, i) => c / vc[i] - 1);
+        const mean = rets.reduce((a, b) => a + b, 0) / rets.length;
+        const variance = rets.reduce((a, r) => a + (r - mean) * (r - mean), 0) / (rets.length - 1);
+        vol1y = Math.round(Math.sqrt(variance) * Math.sqrt(52) * 1000) / 10;
+      }
+      const ret1y = m12.length ? Math.round((m12.reduce((acc, v) => acc * (1 + v / 100), 1) - 1) * 1000) / 10 : null;
+      return { score: Math.round((up / total) * 1000) / 10, up, total, to, ret10y, ret1y, rsi, rsi1y, vol1y, m12, live: true };
     })().catch((err) => {
       liveWinRateCache.delete(ticker);
       throw err;
@@ -6546,52 +6774,32 @@ function computeLiveWinRateEntry(ticker) {
   }
   return liveWinRateCache.get(ticker);
 }
+// 종목 상세용 승률 DB 항목 — 배치 DB는 S&P500·코스피200+코스닥150·ETF200·코인200만 담고 있어서, 그 밖의 종목(BTSG 같은 최근 상장·중소형주)은
+// 12개월 카드·S리포트가 통째로 비었다(2026-09-13 사용자 지적) — 야후 월봉/주봉으로 같은 공식을 즉석 계산해 채움.
+// DB 항목에 vol1y(2026-09-15 추가)가 아직 없으면 그 값만 즉석 계산분으로 보충
+async function getDetailWrEntry(ticker, scoreMode) {
+  const db = await getWinRateDb().catch(() => null);
+  const wrMap = winRateMapForMode(db, ticker, scoreMode);
+  let e = (wrMap && wrMap[ticker]) || null;
+  if (!e) {
+    e = await computeLiveWinRateEntry(ticker).catch(() => null);
+    if (e && wrMap) wrMap[ticker] = e; // 같은 세션의 다른 화면도 이 값을 재사용
+  } else if (!Number.isFinite(e.vol1y) && !e.live) {
+    const live = await computeLiveWinRateEntry(ticker).catch(() => null);
+    if (live && Number.isFinite(live.vol1y)) e.vol1y = live.vol1y;
+  }
+  return e;
+}
 async function renderSummaryScoreRow(ticker, scoreMode = "stock") {
   const rowEl = el("summaryScoreRow");
   oxInlineWrap.innerHTML = ""; // 이전 종목 카드가 남지 않게
   try {
-    const db = await getWinRateDb().catch(() => null);
-    const wrMap = winRateMapForMode(db, ticker, scoreMode);
-    let e = (wrMap && wrMap[ticker]) || null;
-    // 배치 DB는 S&P500·코스피200+코스닥150·ETF200·코인100만 담고 있어서, 그 밖의 종목(BTSG 같은 최근 상장·중소형주)은
-    // 원판·12개월 카드가 통째로 비었다(2026-09-13 사용자 지적) — 야후 월봉/주봉으로 같은 공식을 즉석 계산해 채움
-    if (!e) {
-      e = await computeLiveWinRateEntry(ticker).catch(() => null);
-      if (e && wrMap) wrMap[ticker] = e; // 같은 세션의 INVEST점수 등 다른 화면도 이 값을 재사용
-    }
+    const e = await getDetailWrEntry(ticker, scoreMode);
     if (!e) {
       rowEl.innerHTML = "";
       return;
     }
-    const num = (v) => (v === null || v === undefined || !Number.isFinite(v) ? null : v);
-    const wr10 = num(e.score);
-    const wr1y = num(e.wr1y);
-    const wrNext = wr10 !== null && wr1y !== null ? wr10 * 2 - wr1y : null;
-    const ret10 = num(e.ret10y);
-    const ret1y = num(e.ret1y);
-    const retNext = ret10 !== null && ret1y !== null ? ret10 * 2 - ret1y : null;
-    const rsi10 = num(e.rsi10y);
-    const rsi1y = num(e.rsi1y);
-    const rsiNext = rsi10 !== null && rsi1y !== null ? rsi10 * 2 - rsi1y : null;
-    const isPartial = e.total !== null && e.total !== undefined && e.total < partialMonthsFor(ticker);
-    const partialMark = isPartial
-      ? `<span class="nine-partial-mark" title="상장 ${partialMonthsFor(ticker) >= 120 ? "10년 미만" : "7년 이하"} — 상장 후 ${e.total}개월만 집계">⚠️</span>`
-      : "";
-
-    const cell = (family, label, valueHtml) => `
-      <div class="nine-score-cell">
-        <div class="nine-score-circle nine-${family}">${valueHtml}</div>
-        <span class="nine-score-label">${label}</span>
-      </div>`;
-
-    // 2026-09-10 사용자 요청: 9칸 → 핵심 3칸(10년평균 승률 / 연평균 상승 / 현재 RSI 점수)만 남김
-    const gridHtml = `
-      <div class="nine-score-grid nine-score-grid-3">
-        ${cell("purple", `${partialMark}10년평균 승률`, nineFmtPct(wr10, false))}
-        ${cell("blue", `${partialMark}연평균 상승`, nineFmtPct(ret10, true))}
-        ${cell("yellow", "현재 RSI 점수", nineFmtNum(num(e.rsi), false))}
-      </div>`;
-
+    // (원판 3개 10년평균 승률·연평균 상승·RSI는 2026-09-15 사용자 요청으로 삭제 — S리포트 요약 카드가 대신함)
     // 최근 12개월 승패(OX) 표 — m12(과거→최신 월간 등락%)가 있는 종목만
     let oxHtml = "";
     const m12 = Array.isArray(e.m12) ? e.m12.filter((v) => Number.isFinite(v)) : [];
@@ -6648,8 +6856,8 @@ async function renderSummaryScoreRow(ticker, scoreMode = "stock") {
         </div>`;
     }
 
-    // 원판 3개는 그대로 보이고, 12개월 카드는 "📊 12개월 승률" 버튼 자리(oxInlineWrap)에 채워 둠(2026-09-13)
-    rowEl.innerHTML = gridHtml;
+    // 12개월 카드는 "🕰️ 과거분석" 버튼 자리(oxInlineWrap)에 채워 둠(2026-09-15)
+    rowEl.innerHTML = "";
     oxInlineWrap.innerHTML = oxHtml;
   } catch {
     rowEl.innerHTML = "";
@@ -6668,140 +6876,331 @@ function findReportCurrency(resultArr, keys) {
   return null;
 }
 
-// ---------- 2. 매출/EPS 3년 추이 ----------
+// ---------- 2. 재무정보: 년간/분기 세로 막대 차트(2026-09-15 사용자 요청 — 표·가로 막대·영업이익 삭제) ----------
+// 노란 막대 = 매출액, 그 안 아래쪽 주황 = 순이익(주황 칸의 % = 매출 대비 순이익률). 막대 위 "00%상승" = 년간은 작년 대비, 분기는 전분기 대비.
+// 막대를 누르면 검은 말풍선으로 매출액 금액. 마지막 점선 막대는 예상치(국내: 네이버 증권 컨센서스, 해외: 최근 추세 외삽 — 회사 공식 가이던스 아님).
+// 년간 = 최근 실적 4개년 + 다음 해 예상, 분기 = 최근 4분기 + 다음 분기 가이던스.
+// 연간 실적은 배치 DB(미국 SEC / 국내 DART) → 네이버 증권(국내 최신 연도) → Yahoo 순으로 빈 연도를 채움.
+const FIN2_STATE = { token: 0, ticker: null, currency: null, period: "annual", cache: {} };
+
 async function renderFinancials(ticker, quoteCurrency) {
-  el("financialsSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
+  const token = ++FIN2_STATE.token;
+  Object.assign(FIN2_STATE, { ticker, currency: quoteCurrency, period: "annual", cache: {} });
+  await renderFin2Period(token);
+}
 
-  const data = await yahooFundamentals(ticker, "annualTotalRevenue,annualBasicEPS,annualNetIncome");
-  const resultArr = data && data.timeseries && data.timeseries.result;
-  if (!resultArr || resultArr.length === 0) {
-    el("financialsSection").innerHTML = `<p class="muted">실적 데이터를 찾을 수 없습니다.</p>`;
-    return null;
+function fin2ToggleHtml(period) {
+  return `<div class="fin2-toggle" role="tablist">
+    <button type="button" class="fin2-toggle-btn${period === "annual" ? " active" : ""}" data-fin-period="annual">년간</button>
+    <button type="button" class="fin2-toggle-btn${period === "quarter" ? " active" : ""}" data-fin-period="quarter">분기</button>
+  </div>`;
+}
+
+async function renderFin2Period(token) {
+  const section = el("financialsSection");
+  const { ticker, currency, period } = FIN2_STATE;
+  const stale = () => token !== FIN2_STATE.token || period !== FIN2_STATE.period;
+  section.innerHTML = fin2ToggleHtml(period) + `<p class="muted" style="padding:10px 0;">불러오는 중...</p>`;
+  bindFin2Section(section);
+  try {
+    if (!FIN2_STATE.cache[period]) FIN2_STATE.cache[period] = period === "annual" ? loadFin2Annual(ticker, currency) : loadFin2Quarter(ticker, currency);
+    const data = await FIN2_STATE.cache[period];
+    if (stale()) return;
+    section.innerHTML = fin2ToggleHtml(period) + fin2BodyHtml(data, period, currency);
+  } catch (err) {
+    if (stale()) return;
+    FIN2_STATE.cache[period] = null; // 실패는 캐시하지 않음 — 버튼을 다시 누르면 재시도
+    section.innerHTML = fin2ToggleHtml(period) + `<p class="muted" style="padding:10px 0;">${period === "annual" ? "연간" : "분기"} 실적 데이터를 찾을 수 없습니다.</p>`;
+  }
+  bindFin2Section(section);
+}
+
+function bindFin2Section(section) {
+  section.querySelectorAll(".fin2-toggle-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (btn.dataset.finPeriod === FIN2_STATE.period) return;
+      FIN2_STATE.period = btn.dataset.finPeriod;
+      renderFin2Period(FIN2_STATE.token);
+    });
+  });
+  // 막대를 누르면 그 막대 위에 매출액 말풍선 — 다시 누르거나 다른 막대를 누르면 옮겨감
+  section.querySelectorAll(".fin2-col").forEach((col) => {
+    col.addEventListener("click", () => {
+      const wasActive = col.classList.contains("active");
+      section.querySelectorAll(".fin2-col.active").forEach((c) => c.classList.remove("active"));
+      if (!wasActive) col.classList.add("active");
+    });
+  });
+}
+
+// 네이버 증권 연간 재무(finance/annual) — 분기 API와 같은 형식(억원 문자열), 마지막 열이 다음 해 컨센서스
+async function fetchNaverAnnualFinance(ticker) {
+  const code = ticker.replace(/\.(KS|KQ)$/, "");
+  const data = await proxyFetchJson(`https://m.stock.naver.com/api/stock/${code}/finance/annual`);
+  const info = data && data.financeInfo;
+  if (!info || !Array.isArray(info.trTitleList) || !Array.isArray(info.rowList)) throw new Error("네이버 연간 재무 응답 형식이 다릅니다.");
+  const rowByTitle = {};
+  info.rowList.forEach((row) => {
+    rowByTitle[row.title] = row.columns || {};
+  });
+  const parseVal = (col) => {
+    const s = col && col.value;
+    if (s === null || s === undefined || s === "" || s === "-") return null;
+    const n = Number(String(s).replace(/,/g, ""));
+    return Number.isFinite(n) ? n * 1e8 : null;
+  };
+  return info.trTitleList.map((t) => ({
+    year: Number(String(t.key).slice(0, 4)),
+    isConsensus: t.isConsensus === "Y",
+    rev: parseVal((rowByTitle["매출액"] || {})[t.key]),
+    ni: parseVal((rowByTitle["당기순이익"] || {})[t.key]),
+  }));
+}
+
+// 성장률 목록 채우기 — 앞 항목 매출이 양수일 때만
+function fin2WithGrowth(items, prevRev) {
+  return items.map((it, i) => {
+    const base = i === 0 ? prevRev : items[i - 1].rev;
+    const growth = Number.isFinite(base) && base > 0 && Number.isFinite(it.rev) ? ((it.rev - base) / base) * 100 : null;
+    return { ...it, growth };
+  });
+}
+
+async function loadFin2Annual(ticker, currency) {
+  const isKr = isKrTicker(ticker);
+  const [db, yahoo, naver] = await Promise.all([
+    getAnnualFinDb(isKr).catch(() => null),
+    yahooFundamentals(ticker, "annualTotalRevenue,annualNetIncome").catch(() => null),
+    isKr ? fetchNaverAnnualFinance(ticker).catch(() => null) : Promise.resolve(null),
+  ]);
+
+  const byYear = new Map(); // 회계연도(결산일의 연도) → { rev, ni }
+  const fill = (year, rev, ni) => {
+    if (!Number.isFinite(year)) return;
+    const cur = byYear.get(year) || { rev: null, ni: null };
+    if (cur.rev === null && Number.isFinite(rev)) cur.rev = rev;
+    if (cur.ni === null && Number.isFinite(ni)) cur.ni = ni;
+    byYear.set(year, cur);
+  };
+
+  // Yahoo는 보고 통화가 시세 통화와 다를 수 있어(TSM 등) 환산 — 이런 종목은 SEC 배치 값의 통화를 믿기 어려워 배치를 건너뜀
+  const resultArr = yahoo && yahoo.timeseries && yahoo.timeseries.result;
+  const reportCurrency = resultArr ? findReportCurrency(resultArr, ["annualTotalRevenue", "annualNetIncome"]) : null;
+  const foreignReport = !!(reportCurrency && currency && reportCurrency !== currency);
+
+  let source = "Yahoo";
+  const dbItem = !foreignReport && db && db.items && db.items[ticker];
+  if (dbItem && dbItem.years) {
+    Object.entries(dbItem.years).forEach(([y, v]) => fill(Number(String(v.end || y).slice(0, 4)), v.rev, v.ni));
+    source = isKr ? "DART 전자공시" : "SEC 공시";
+  }
+  const naverActual = (naver || []).filter((n) => !n.isConsensus);
+  naverActual.forEach((n) => fill(n.year, n.rev, n.ni));
+  if (naverActual.length && !dbItem) source = "네이버 증권";
+  if (resultArr) {
+    const fxRate = foreignReport ? await getFxRate(reportCurrency, currency) : 1;
+    const conv = (raw) => (Number.isFinite(raw) && fxRate !== null ? raw * fxRate : null);
+    const yRev = new Map();
+    const yNi = new Map();
+    resultArr.forEach((block) => {
+      (block.annualTotalRevenue || []).forEach((it) => it && it.asOfDate && yRev.set(Number(it.asOfDate.slice(0, 4)), conv(it.reportedValue?.raw)));
+      (block.annualNetIncome || []).forEach((it) => it && it.asOfDate && yNi.set(Number(it.asOfDate.slice(0, 4)), conv(it.reportedValue?.raw)));
+    });
+    new Set([...yRev.keys(), ...yNi.keys()]).forEach((y) => fill(y, yRev.get(y), yNi.get(y)));
   }
 
-  // 재무제표가 시세와 다른 현지 통화로 내려오는 해외 상장 종목(예: TSM은 매출이 TWD로 내려옴)은
-  // 환율을 적용해 시세와 같은 통화로 환산 — 연도별로 동일한 보고 통화를 쓴다고 가정하고 환율은 한 번만 조회
-  const reportCurrency = findReportCurrency(resultArr, ["annualTotalRevenue", "annualBasicEPS", "annualNetIncome"]);
-  const fxRate =
-    reportCurrency && quoteCurrency && reportCurrency !== quoteCurrency ? await getFxRate(reportCurrency, quoteCurrency) : 1;
-  const convert = (raw) => (raw === null || raw === undefined ? null : fxRate !== null ? raw * fxRate : null);
+  const years = [...byYear.keys()].filter((y) => Number.isFinite(byYear.get(y).rev)).sort((a, b) => a - b);
+  if (!years.length) throw new Error("연간 실적 없음");
+  const shownYears = years.slice(-4);
+  const prevYear = years[years.length - shownYears.length - 1];
+  const actual = fin2WithGrowth(
+    shownYears.map((y) => ({ label: String(y), rev: byYear.get(y).rev, ni: byYear.get(y).ni, est: false })),
+    prevYear !== undefined ? byYear.get(prevYear).rev : null
+  );
 
-  const byYear = {};
-  for (const block of resultArr) {
-    const revItems = block.annualTotalRevenue || [];
-    const epsItems = block.annualBasicEPS || [];
-    const netIncomeItems = block.annualNetIncome || [];
-    for (const item of revItems) {
-      if (!item || !item.asOfDate) continue;
-      const year = item.asOfDate.slice(0, 4);
-      byYear[year] = byYear[year] || {};
-      byYear[year].revenue = convert(item.reportedValue?.raw);
-    }
-    for (const item of epsItems) {
-      if (!item || !item.asOfDate) continue;
-      const year = item.asOfDate.slice(0, 4);
-      byYear[year] = byYear[year] || {};
-      byYear[year].eps = convert(item.reportedValue?.raw);
-    }
-    for (const item of netIncomeItems) {
-      if (!item || !item.asOfDate) continue;
-      const year = item.asOfDate.slice(0, 4);
-      byYear[year] = byYear[year] || {};
-      byYear[year].netIncome = convert(item.reportedValue?.raw);
+  // 다음 해 예상: 국내는 네이버 컨센서스, 없거나 해외면 최근 실적 추세 외삽
+  const lastYear = shownYears[shownYears.length - 1];
+  const consensus = (naver || []).find((n) => n.isConsensus && n.year === lastYear + 1 && Number.isFinite(n.rev));
+  let estSource = null;
+  let est = null;
+  if (consensus) {
+    est = { label: String(lastYear + 1), rev: consensus.rev, ni: consensus.ni, est: true };
+    estSource = "컨센서스";
+  } else if (actual.length >= 2) {
+    const rev = projectNextQuarter(actual, "rev");
+    if (Number.isFinite(rev) && rev > 0) {
+      est = { label: String(lastYear + 1), rev, ni: projectNextQuarter(actual, "ni"), est: true };
+      estSource = "추세 예상";
     }
   }
+  const bars = est ? [...actual, ...fin2WithGrowth([est], actual[actual.length - 1].rev)] : actual;
+  return { bars, source, estSource };
+}
 
-  const years = Object.keys(byYear).sort();
-  const recentYears = years.slice(-4);
+function fin2QuarterLabel(year, month) {
+  return `${String(year).slice(2)}.${Math.ceil(month / 3)}Q`;
+}
 
-  if (recentYears.length === 0) {
-    el("financialsSection").innerHTML = `<p class="muted">실적 데이터를 찾을 수 없습니다.</p>`;
-    return null;
-  }
-
-  let rows = "";
-  for (let i = 0; i < recentYears.length; i++) {
-    const year = recentYears[i];
-    const cur = byYear[year];
-    const prevYear = recentYears[i - 1];
-    const prev = prevYear ? byYear[prevYear] : null;
-
-    let revDelta = "-";
-    let epsDelta = "-";
-    if (prev) {
-      if (prev.revenue && cur.revenue !== null && cur.revenue !== undefined) {
-        const revChange = ((cur.revenue - prev.revenue) / Math.abs(prev.revenue)) * 100;
-        revDelta = `<span class="${revChange >= 0 ? "delta-up" : "delta-down"}">${fmtPct(revChange)}</span>`;
-      }
-      if (prev.eps && cur.eps !== null && cur.eps !== undefined) {
-        const epsChange = ((cur.eps - prev.eps) / Math.abs(prev.eps)) * 100;
-        epsDelta = `<span class="${epsChange >= 0 ? "delta-up" : "delta-down"}">${fmtPct(epsChange)}</span>`;
-      }
-    }
-
-    const netIncomeCell =
-      cur.netIncome === null || cur.netIncome === undefined
-        ? "N/A"
-        : `<span class="net-income-cell ${cur.netIncome >= 0 ? "positive" : "negative"}">${fmtCompactCurrency(cur.netIncome, quoteCurrency)}</span>`;
-
-    rows += `
-      <tr>
-        <td>${escapeHtml(year)}</td>
-        <td>${fmtCompactCurrency(cur.revenue, quoteCurrency)}</td>
-        <td>${revDelta}</td>
-        <td>${cur.eps !== null && cur.eps !== undefined ? fmtEpsValue(cur.eps, quoteCurrency) : "N/A"}</td>
-        <td>${epsDelta}</td>
-        <td>${netIncomeCell}</td>
-      </tr>
-    `;
-  }
-
-  const maxRevenue = Math.max(...recentYears.map((y) => byYear[y].revenue || 0), 1);
-  const revBars = recentYears
-    .map((y) => {
-      const rev = byYear[y].revenue;
-      const netIncome = byYear[y].netIncome;
-      const pct = clamp(((rev || 0) / maxRevenue) * 100, 2, 100);
-
-      let lossZoneContent = "";
-      let profitOverlay = "";
-      if (netIncome !== null && netIncome !== undefined && rev) {
-        const marginPct = (netIncome / rev) * 100;
-        if (netIncome > 0) {
-          const profitPct = clamp((netIncome / maxRevenue) * 100, 0, pct);
-          profitOverlay = `<div class="bar-fill-profit" style="width:${profitPct}%"><span class="profit-label">+${marginPct.toFixed(0)}%</span></div>`;
-        } else if (netIncome < 0) {
-          // 순손실 비율(매출 대비, 절대값)이 100% 이상이면 그래프 최대, 0%에 가까울수록 작아짐
-          const lossPct = clamp(Math.abs(marginPct), 2, 100);
-          lossZoneContent = `<div class="bar-loss" style="width:${lossPct}%"></div><span class="loss-label">-${Math.abs(marginPct).toFixed(0)}%</span>`;
+async function loadFin2Quarter(ticker, currency) {
+  // 국내: 네이버 증권 분기 재무(최신 분기 실적 + 다음 분기 애널리스트 컨센서스) — 실패하면 Yahoo
+  if (isKrTicker(ticker)) {
+    try {
+      const all = await fetchNaverQuarterlyFinance(ticker);
+      const actuals = all.filter((q) => !q.isConsensus && Number.isFinite(q.revenue));
+      if (actuals.length) {
+        const shown = actuals.slice(-4);
+        const prev = actuals[actuals.length - shown.length - 1];
+        const toBar = (q, isEst) => ({ label: fin2QuarterLabel(Number(q.key.slice(0, 4)), Number(q.key.slice(4, 6))), rev: q.revenue, ni: q.net, est: isEst });
+        const actual = fin2WithGrowth(shown.map((q) => toBar(q, false)), prev ? prev.revenue : null);
+        const lastKey = shown[shown.length - 1].key;
+        const consensus = all.find((q) => q.isConsensus && q.key > lastKey && Number.isFinite(q.revenue));
+        let est = consensus ? toBar(consensus, true) : null;
+        let estSource = consensus ? "컨센서스" : null;
+        if (!est && actual.length >= 2) {
+          const y = Number(lastKey.slice(0, 4));
+          const m = Number(lastKey.slice(4, 6)) + 3;
+          est = { label: fin2QuarterLabel(m > 12 ? y + 1 : y, m > 12 ? m - 12 : m), rev: projectNextQuarter(actual, "rev"), ni: projectNextQuarter(actual, "ni"), est: true };
+          estSource = "추세 예상";
         }
+        const bars = est && Number.isFinite(est.rev) ? [...actual, ...fin2WithGrowth([est], actual[actual.length - 1].rev)] : actual;
+        return { bars, source: "네이버 증권", estSource };
       }
+    } catch {
+      // Yahoo로 폴백
+    }
+  }
 
+  const data = await yahooFundamentals(ticker, "quarterlyTotalRevenue,quarterlyNetIncome");
+  const resultArr = data && data.timeseries && data.timeseries.result;
+  if (!resultArr || !resultArr.length) throw new Error("분기 실적 없음");
+  const reportCurrency = findReportCurrency(resultArr, ["quarterlyTotalRevenue", "quarterlyNetIncome"]);
+  const fxRate = reportCurrency && currency && reportCurrency !== currency ? await getFxRate(reportCurrency, currency) : 1;
+  const conv = (raw) => (Number.isFinite(raw) && fxRate !== null ? raw * fxRate : null);
+  const byDate = {};
+  resultArr.forEach((block) => {
+    (block.quarterlyTotalRevenue || []).forEach((it) => {
+      if (it && it.asOfDate) (byDate[it.asOfDate] = byDate[it.asOfDate] || {}).rev = conv(it.reportedValue?.raw);
+    });
+    (block.quarterlyNetIncome || []).forEach((it) => {
+      if (it && it.asOfDate) (byDate[it.asOfDate] = byDate[it.asOfDate] || {}).ni = conv(it.reportedValue?.raw);
+    });
+  });
+  const dates = Object.keys(byDate)
+    .filter((d) => Number.isFinite(byDate[d].rev))
+    .sort();
+  if (!dates.length) throw new Error("분기 실적 없음");
+  const shown = dates.slice(-4);
+  const prevDate = dates[dates.length - shown.length - 1];
+  const toLabel = (d) => fin2QuarterLabel(Number(d.slice(0, 4)), Number(d.slice(5, 7)));
+  const actual = fin2WithGrowth(
+    shown.map((d) => ({ label: toLabel(d), rev: byDate[d].rev, ni: Number.isFinite(byDate[d].ni) ? byDate[d].ni : null, est: false })),
+    prevDate ? byDate[prevDate].rev : null
+  );
+  let bars = actual;
+  if (actual.length >= 2) {
+    const nextDate = addMonths(new Date(shown[shown.length - 1] + "T00:00:00"), 3);
+    const rev = projectNextQuarter(actual, "rev");
+    if (Number.isFinite(rev) && rev > 0) {
+      const est = { label: fin2QuarterLabel(nextDate.getFullYear(), nextDate.getMonth() + 1), rev, ni: projectNextQuarter(actual, "ni"), est: true };
+      bars = [...actual, ...fin2WithGrowth([est], actual[actual.length - 1].rev)];
+    }
+  }
+  return { bars, source: "Yahoo Finance", estSource: bars.length > actual.length ? "추세 예상" : null };
+}
+
+function fin2GrowthText(g) {
+  if (!Number.isFinite(g)) return "";
+  const r = Math.round(Math.abs(g));
+  return g >= 0 ? `${r}%상승` : `${r}%하락`;
+}
+function fin2BadgeHtml(g) {
+  if (!Number.isFinite(g)) return `<b class="fin2-sum-val">—</b>`;
+  const up = g >= 0;
+  return `<b class="fin2-sum-val ${up ? "fin2-up" : "fin2-down"}">${up ? "▲" : "▼"} ${Math.abs(Math.round(g * 10) / 10).toFixed(1)}%</b>`;
+}
+
+function fin2BodyHtml(data, period, currency) {
+  const { bars, source, estSource } = data;
+  const actual = bars.filter((b) => !b.est);
+  const last = actual[actual.length - 1];
+  const estBar = bars.find((b) => b.est) || null;
+  const isAnnual = period === "annual";
+
+  // 요약 박스: 최근 매출 · 작년(전분기) 대비 · 3년 평균(분기는 다음 분기 예상)
+  let thirdLabel;
+  let thirdSub = "";
+  let thirdHtml;
+  if (isAnnual) {
+    const first = actual.length >= 4 ? actual[actual.length - 4] : null;
+    const cagr = first && first.rev > 0 && last.rev > 0 ? (Math.pow(last.rev / first.rev, 1 / 3) - 1) * 100 : null;
+    thirdLabel = "3년 평균";
+    thirdSub = first ? `${first.label}~${last.label}, 연` : "";
+    thirdHtml = fin2BadgeHtml(cagr);
+  } else {
+    thirdLabel = estSource === "컨센서스" ? "다음 분기 컨센서스" : "다음 분기 예상";
+    thirdSub = estBar ? estBar.label : "";
+    thirdHtml = fin2BadgeHtml(estBar ? estBar.growth : null);
+  }
+  const summaryHtml = `
+    <div class="fin2-summary">
+      <div class="fin2-sum-item">
+        <span class="fin2-sum-label">최근(${escapeHtml(isAnnual ? `${last.label}년` : last.label)})</span>
+        <b class="fin2-sum-amount">${escapeHtml(fmtAmountUnified(last.rev, currency))}</b>
+      </div>
+      <div class="fin2-sum-item">
+        <span class="fin2-sum-label">${isAnnual ? "작년 대비" : "전분기 대비"}</span>
+        ${fin2BadgeHtml(last.growth)}
+      </div>
+      <div class="fin2-sum-item">
+        <span class="fin2-sum-label">${thirdLabel}${thirdSub ? `<small>(${escapeHtml(thirdSub)})</small>` : ""}</span>
+        ${thirdHtml}
+      </div>
+    </div>`;
+
+  // 막대: 가장 큰 매출이 그림 영역의 78%가 되도록(위에 "00%상승"·말풍선 자리)
+  const PLOT_H = 190;
+  const maxRev = Math.max(...bars.map((b) => (Number.isFinite(b.rev) ? b.rev : 0)), 1);
+  const cols = bars
+    .map((b) => {
+      const barPx = Number.isFinite(b.rev) && b.rev > 0 ? Math.max(4, (b.rev / maxRev) * PLOT_H * 0.78) : 4;
+      const margin = Number.isFinite(b.ni) && Number.isFinite(b.rev) && b.rev > 0 ? (b.ni / b.rev) * 100 : null;
+      const niPx = margin !== null && margin > 0 ? Math.min(barPx, (barPx * margin) / 100) : 0;
+      let marginHtml = "";
+      if (margin !== null) {
+        const txt = `${Math.round(margin)}%`;
+        if (margin <= 0) marginHtml = `<span class="fin2-margin fin2-margin-loss" style="bottom:3px">${txt}</span>`;
+        else if (niPx >= 17) marginHtml = `<span class="fin2-margin fin2-margin-in" style="bottom:${Math.max(2, niPx - 16).toFixed(0)}px">${txt}</span>`;
+        else if (barPx - niPx >= 17) marginHtml = `<span class="fin2-margin fin2-margin-out" style="bottom:${(niPx + 1).toFixed(0)}px">${txt}</span>`;
+      }
+      const growthTxt = fin2GrowthText(b.growth);
       return `
-      <div class="bar-row">
-        <span class="bar-label">${escapeHtml(y)}</span>
-        <div class="bar-loss-zone">${lossZoneContent}</div>
-        <div class="bar-track">
-          <div class="bar-fill self" style="width:${pct}%"></div>
-          ${profitOverlay}
-          <span class="bar-revenue-label">${fmtCompactCurrency(rev, quoteCurrency)}</span>
-        </div>
-      </div>`;
+        <div class="fin2-col${b.est ? " est" : ""}" title="${escapeHtml(`${b.label}${b.est ? " 예상" : ""} 매출 ${fmtAmountUnified(b.rev, currency)}`)}">
+          <div class="fin2-plot" style="height:${PLOT_H}px">
+            <div class="fin2-bar" style="height:${barPx.toFixed(1)}px">
+              ${growthTxt ? `<span class="fin2-growth ${b.growth >= 0 ? "fin2-up" : "fin2-down"}">${growthTxt}</span>` : ""}
+              <span class="fin2-tip">${escapeHtml(fmtAmountUnified(b.rev, currency))}</span>
+              ${niPx > 0 ? `<div class="fin2-ni" style="height:${niPx.toFixed(1)}px"></div>` : ""}
+              ${marginHtml}
+            </div>
+          </div>
+          <span class="fin2-xlabel">${escapeHtml(b.label)}${b.est ? `<small>${estSource === "컨센서스" ? "컨센서스" : "예상"}</small>` : ""}</span>
+        </div>`;
     })
     .join("");
 
-  el("financialsSection").innerHTML = `
-    <table class="fin-table">
-      <thead>
-        <tr><th>연도</th><th>매출액</th><th>YoY</th><th>EPS</th><th>YoY</th><th>순이익</th></tr>
-      </thead>
-      <tbody>${rows}</tbody>
-    </table>
-    <div class="bar-chart">${revBars}</div>
-  `;
-
-  const lastYear = recentYears[recentYears.length - 1];
-  return byYear[lastYear]?.eps ?? null;
+  const estNote = estBar
+    ? estSource === "컨센서스"
+      ? ` 점선 막대는 증권사 컨센서스(전망 평균)입니다.`
+      : ` 점선 막대는 최근 실적 추세로 계산한 예상치이며 회사 공식 가이던스가 아닙니다.`
+    : "";
+  return `
+    ${summaryHtml}
+    <div class="fin2-legend">
+      <span><i class="fin2-dot fin2-dot-rev"></i>매출액</span>
+      <span><i class="fin2-dot fin2-dot-ni"></i>순이익 <em>(막대 안 % = 순이익률)</em></span>
+    </div>
+    <div class="fin2-chart" style="grid-template-columns:repeat(${bars.length},1fr)">${cols}</div>
+    <p class="fin2-caption">막대를 누르면 매출액이 보여요. 막대 위 %는 ${isAnnual ? "작년" : "전분기"} 대비 매출 증감입니다.${estNote} 출처: ${escapeHtml(source)}.</p>`;
 }
 
 // ---------- 2+. 최근 분기 실적(최근 3개) + 다음 분기 가이던스(1개) ----------
@@ -8486,7 +8885,8 @@ async function renderMacro(ticker) {
 
   const isKr = isKrTicker(ticker);
   const isCrypto = sectionOfSymbol(ticker) === "crypto";
-  el("macroSectionTitle").textContent = isCrypto ? "알트코인 시즌지수" : isKr ? "KOSPI 공포지수" : "S&P 공포지수";
+  // 2026-09-15 사용자 요청: 공포지수 버튼 안 제목 — 한국=코스피 공포지수, 미국=VIX 지수, 코인=알트시즌지수
+  el("macroSectionTitle").textContent = isCrypto ? "알트시즌지수" : isKr ? "코스피 공포지수" : "VIX 지수";
   // 제목 옆 "+자세히"는 투자처마다 다른 차트를 편다 — 코인은 2017년 이후 비트코인·이더리움 추이 + 시즌 구간 띠
 
   // 코인은 VIX(미국 주식 변동성) 대신 알트코인 시즌지수(2026-09-12 사용자 요청).

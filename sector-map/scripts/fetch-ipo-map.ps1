@@ -149,6 +149,17 @@ function Build-Company($row) {
     $closes = @((Get-SortedClosePairs $wk) | ForEach-Object { $_.c })
     $rsi = Compute-WilderRsi $closes 14
     if ($null -ne $rsi) { $c.rsiWeekly = $rsi }
+    # 1년 변동성(2026-09-15 S리포트 'IPO 평균 대비 변동성'용): 최근 52주 주간 수익률 표준편차 × √52 × 100
+    $cs = @($closes | Where-Object { $null -ne $_ -and $_ -gt 0 })
+    if ($cs.Count -ge 27) {
+      if ($cs.Count -gt 53) { $cs = $cs[($cs.Count - 53)..($cs.Count - 1)] }
+      $rets = @()
+      for ($i = 1; $i -lt $cs.Count; $i++) { $rets += ($cs[$i] / $cs[$i - 1] - 1.0) }
+      $mean = ($rets | Measure-Object -Average).Average
+      $var = 0.0
+      foreach ($x in $rets) { $var += ($x - $mean) * ($x - $mean) }
+      $c.vol1y = [Math]::Round([Math]::Sqrt($var / ($rets.Count - 1)) * [Math]::Sqrt(52) * 100, 1)
+    }
   } catch { }
   Start-Sleep -Milliseconds 80
 

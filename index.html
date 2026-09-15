@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260914e" />
+<link rel="stylesheet" href="style.css?v=20260915a" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -249,9 +249,10 @@
       <div id="results" class="results" style="display:none;">
         <div class="detail-subtabs" id="summarySubtabNav">
           <button type="button" class="cat-btn active" id="summarySubtabSummaryBtn" data-summary-subtab="summary"><span class="tab-label">개요</span></button>
+          <!-- 2026-09-15 사용자 요청: 하위 보기 = 개요 - S리포트 - 매출액 - 뉴스 (invest점수 탭 삭제) -->
+          <button type="button" class="cat-btn" id="summarySubtabSReportBtn" data-summary-subtab="sreport"><span class="tab-label">S리포트</span></button>
           <button type="button" class="cat-btn" id="summarySubtabRevenueBtn" data-summary-subtab="revenue"><span class="tab-label">매출액</span></button>
-          <button type="button" class="cat-btn" id="summarySubtabScoreBtn" data-summary-subtab="investscore"><span class="tab-label">invest점수</span></button>
-          <button type="button" class="cat-btn" id="summarySubtabNewsBtn" data-summary-subtab="news"><span class="tab-label">주요 뉴스</span></button>
+          <button type="button" class="cat-btn" id="summarySubtabNewsBtn" data-summary-subtab="news"><span class="tab-label">뉴스</span></button>
         </div>
 
         <div class="summary-subtab-panel" data-summary-subtabpanel="summary">
@@ -313,33 +314,51 @@
           </div>
         </section>
 
-        <section class="flush-section" id="sReportInlineWrap" style="display:none;">
-          <p class="muted" style="padding:12px 0;">🚧 s리포트는 준비 중입니다.</p>
+        <!-- 전체 S리포트 표 — 2026-09-15부터는 S리포트 요약 카드의 "더보기"를 누르면 그 카드 아래에 펼쳐짐(runSReport/runAssetSReport가 채움) -->
+        <section class="flush-section" id="sReportInlineWrap" style="display:none;"></section>
+
+        <!-- 공포지수(2026-09-15 사용자 요청): 한국=코스피 공포지수, 미국=VIX, 코인=알트시즌지수 — invest점수 탭에 있던 섹션을 버튼으로 옮김 -->
+        <section class="flush-section" id="fearInlineWrap" style="display:none;">
+          <div class="section-heading-row">
+            <h2 class="invest-score-h2" id="macroSectionTitle">S&P 공포지수</h2>
+            <button type="button" id="futureMacroChartDetailBtn" class="score-method-detail-btn">+자세히</button>
+          </div>
+          <div id="futureMacroChartDetailWrap" class="chart-detail-wrap" style="display:none;">
+            <h3 class="future-chart-subheading" id="futureMacroChartHeading">VIX지수를 활용한 투자시점 점검표</h3>
+            <div id="futureMacroChartContainer" class="future-chart-container future-macro-chart"></div>
+            <p class="chart-scroll-hint">&lt; 좌우 스크롤 &gt;</p>
+            <p id="futureMacroChartCaption" class="future-chart-caption"></p>
+          </div>
+          <div id="macroSection" class="section-body"></div>
+        </section>
+        </div>
+
+        <!-- S리포트 요약(2026-09-15 사용자 요청): 과거분석·미래예측·공포지수 버튼 바로 아래 — 승률·상승률·매출액·변동성·RSI 5개 + 평가 한 줄, 더보기로 전체 -->
+        <div class="summary-subtab-panel" data-summary-subtabpanel="sreport">
+        <section class="flush-section">
+          <div class="section-heading-row">
+            <h2>S리포트</h2>
+          </div>
+          <div id="sReportTopSection" class="section-body"></div>
         </section>
         </div>
 
         <div class="summary-subtab-panel" data-summary-subtabpanel="revenue">
         <section class="flush-section">
           <div class="section-heading-row">
-            <h2>매출액 &amp; 순수익</h2>
+            <h2>재무정보</h2>
             <!-- 투자 그라운드 — 2026-08-30 사용자 요청으로 기능 숨김(버튼 DOM은 JS가 참조하므로 display:none으로만 제거) -->
             <button type="button" id="groundOpenBtn" class="ground-open-btn" style="display:none;">투자 그라운드</button>
+            <button type="button" id="peersToggleBtn" class="ground-open-btn">📊 경쟁사 매출 비교</button>
           </div>
+          <!-- 2026-09-15 사용자 요청: 표·가로 막대 대신 년간/분기 세로 막대 차트 한 장(노랑=매출액, 주황=순이익) — renderFinancials가 채움 -->
           <div id="financialsSection" class="section-body"></div>
           <div id="peersSection" class="section-body peers-inline" style="display:none;"></div>
         </section>
-
-        <section class="flush-section">
-          <div class="section-heading-row">
-            <h2>분기 실적 &amp; 예측</h2>
-            <button type="button" id="peersToggleBtn" class="ground-open-btn">📊 경쟁사 매출 비교</button>
-          </div>
-          <div id="quarterlyEarningsSection" class="section-body"></div>
-        </section>
         </div>
 
-        <div class="summary-subtab-panel" data-summary-subtabpanel="investscore">
-        <p class="invest-score-label">INVEST점수</p>
+        <!-- invest점수 탭은 2026-09-15 사용자 요청으로 삭제 — 아래 섹션은 다른 코드가 요소를 참조해서 DOM만 숨겨 둠 -->
+        <div class="summary-subtab-panel" data-summary-subtabpanel="investscore" style="display:none;">
         <!-- 상승압력도·투자안정성 섹션은 2026-09-04 사용자 요청으로 삭제 — 개요의 9칸 지표 표(10년평균 승률/상승률/RSI)로 대체 -->
 
         <!-- 승률점수(2026-09-02): 최근 10년 월간 상승 개월수/총 개월수*100 — S&P500 미국주식 전용(DB에 없는 종목은 섹션째 숨김) -->
@@ -373,19 +392,6 @@
           <div id="rsiSection" class="section-body"></div>
         </section>
 
-        <section class="flush-section">
-          <div class="section-heading-row">
-            <h2 class="invest-score-h2" id="macroSectionTitle">S&P 공포지수</h2>
-            <button type="button" id="futureMacroChartDetailBtn" class="score-method-detail-btn">+자세히</button>
-          </div>
-          <div id="futureMacroChartDetailWrap" class="chart-detail-wrap" style="display:none;">
-            <h3 class="future-chart-subheading" id="futureMacroChartHeading">VIX지수를 활용한 투자시점 점검표</h3>
-            <div id="futureMacroChartContainer" class="future-chart-container future-macro-chart"></div>
-            <p class="chart-scroll-hint">&lt; 좌우 스크롤 &gt;</p>
-            <p id="futureMacroChartCaption" class="future-chart-caption"></p>
-          </div>
-          <div id="macroSection" class="section-body"></div>
-        </section>
         </div>
 
         <div class="summary-subtab-panel" data-summary-subtabpanel="news">
@@ -922,6 +928,6 @@
   <script src="data/ko-company-names.js?v=20260911e"></script>
   <script src="data/logo-db.js?v=20260903g"></script>
   <script src="data/etf-meta.js?v=20260912a"></script>
-  <script src="app.js?v=20260914e"></script>
+  <script src="app.js?v=20260915a"></script>
 </body>
 </html>
