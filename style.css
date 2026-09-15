@@ -3128,6 +3128,8 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .detail-identity-namerow .detail-identity-ticker { flex: none; }
 /* 알림 아이콘 숨김(2026-09-15 사용자 요청: 가격 변동률 %가 잘려서) — 버튼 DOM은 JS가 참조할 수 있어 남겨 둠 */
 #companyPanelAlertBtn { display: none !important; }
+/* 재무정보의 "경쟁사 매출 비교" 버튼·영역 숨김(2026-09-15 사용자 요청) — renderPeers 호출도 뺐음 */
+#peersToggleBtn, #peersSection { display: none !important; }
 .detail-identity-priceline { overflow: hidden; gap: 3px; }
 .detail-identity-priceline .detail-identity-price { font-size: 15px; letter-spacing: -0.3px; }
 .detail-identity-priceline .detail-identity-change { font-size: 12px; letter-spacing: -0.3px; }
@@ -3172,7 +3174,7 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .srt-rd-value { fill: var(--text); font-size: 13px; font-weight: 800; }
 .srt-rd-dot.srt-tone-bad { fill: #e03131; }
 .srt-rd-avgdot { fill: #9aa2b1; stroke: var(--bg); stroke-width: 1; }
-.srt-rd-avgtxt { fill: var(--muted); font-size: 11px; font-weight: 600; }
+.srt-rd-avgtxt { fill: var(--muted); font-size: 12px; font-weight: 700; }
 .srt-rd-value.srt-tone-good { fill: #0ca678; }
 .srt-rd-value.srt-tone-bad { fill: #e03131; }
 .srt-chips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-top: 6px; }
@@ -3335,6 +3337,10 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .fin2-margin-in { color: #fff; }
 .fin2-margin-out { color: #8a5a00; }
 .fin2-margin-loss { color: #e03131; }
+/* 순손실 막대: 기준선 아래(연도 쪽)로 — 적자 연도가 있으면 연도 라벨을 그만큼 내림(2026-09-15) */
+.fin2-ni-neg { position: absolute; left: 0; right: 0; top: calc(100% + 2px); background: #f59f00; border-radius: 0 0 4px 4px; }
+.fin2-col.est .fin2-ni-neg { background: rgba(245, 159, 0, 0.35); }
+.fin2-chart.has-neg .fin2-xlabel { margin-top: var(--fin2-neg-space, 30px); }
 .fin2-tip { display: none; position: absolute; left: 50%; bottom: calc(100% + 4px); transform: translateX(-50%); padding: 5px 9px; border-radius: 8px; background: rgba(34, 34, 34, 0.92); color: #fff; font-size: 12px; font-weight: 800; white-space: nowrap; z-index: 3; }
 .fin2-col.active .fin2-tip { display: block; }
 .fin2-col.active .fin2-growth { visibility: hidden; }

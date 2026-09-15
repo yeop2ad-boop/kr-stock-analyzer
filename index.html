@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260915s" />
+<link rel="stylesheet" href="style.css?v=20260915x" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -349,7 +349,8 @@
             <h2>재무정보</h2>
             <!-- 투자 그라운드 — 2026-08-30 사용자 요청으로 기능 숨김(버튼 DOM은 JS가 참조하므로 display:none으로만 제거) -->
             <button type="button" id="groundOpenBtn" class="ground-open-btn" style="display:none;">투자 그라운드</button>
-            <button type="button" id="peersToggleBtn" class="ground-open-btn">📊 경쟁사 매출 비교</button>
+            <!-- 경쟁사 매출 비교 — 2026-09-15 사용자 요청으로 버튼 숨김(JS가 요소를 참조해서 DOM은 남김, style.css에서도 숨김) -->
+            <button type="button" id="peersToggleBtn" class="ground-open-btn" style="display:none;">📊 경쟁사 매출 비교</button>
           </div>
           <!-- 2026-09-15 사용자 요청: 표·가로 막대 대신 년간/분기 세로 막대 차트 한 장(노랑=매출액, 주황=순이익) — renderFinancials가 채움 -->
           <div id="financialsSection" class="section-body"></div>
@@ -928,6 +929,6 @@
   <script src="data/ko-company-names.js?v=20260911e"></script>
   <script src="data/logo-db.js?v=20260903g"></script>
   <script src="data/etf-meta.js?v=20260912a"></script>
-  <script src="app.js?v=20260915s"></script>
+  <script src="app.js?v=20260915x"></script>
 </body>
 </html>

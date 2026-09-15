@@ -1027,6 +1027,34 @@ function metaPrevCloseChangePct(result) {
   return ((price - prev.c) / prev.c) * 100;
 }
 
+// 오늘 등락 금액(현재가 − 직전 거래일 종가) — 2026-09-15 사용자 지적("6,992원이 말이 안 됨"):
+// 야후 regularMarketChangePercent는 소수 3자리로 반올림돼 와서(-0.412%) 거기서 역산하면 7,000원이 6,992원이 됐음 → 실제 직전 종가로 계산
+function getDailyChangeAmount(chartResult) {
+  const result = chartResult && chartResult.chart && chartResult.chart.result && chartResult.chart.result[0];
+  if (!result) return null;
+  const meta = result.meta || {};
+  const price = meta.regularMarketPrice;
+  if (!Number.isFinite(price)) return null;
+  if (Number.isFinite(meta.regularMarketChange)) return meta.regularMarketChange;
+  if (Number.isFinite(meta.previousClose) && meta.previousClose > 0) return price - meta.previousClose;
+  const timestamps = result.timestamp || [];
+  const closes = (result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
+  const pairs = timestamps.map((t, i) => ({ t, c: closes[i] })).filter((p) => Number.isFinite(p.c)).sort((a, b) => a.t - b.t);
+  if (pairs.length < 2) return null;
+  const tz = meta.exchangeTimezoneName || "UTC";
+  const dayKey = (t) => {
+    try {
+      return new Date(t * 1000).toLocaleDateString("en-CA", { timeZone: tz });
+    } catch {
+      return new Date(t * 1000).toISOString().slice(0, 10);
+    }
+  };
+  const today = Number.isFinite(meta.regularMarketTime) ? dayKey(meta.regularMarketTime) : null;
+  const prior = today ? pairs.filter((p) => dayKey(p.t) < today) : pairs.slice(0, -1);
+  const prev = prior.length ? prior[prior.length - 1] : null;
+  return prev && prev.c ? price - prev.c : null;
+}
+
 // 최근 5거래일 중 하루라도 ±10% 이상 급등/급락한 날이 있었는지(급등락 이모지 표시용) — 누적 5일 수익률이 아닌 일별 등락률 각각을 확인
 function get5dExtremeMoves(chartResult) {
   const result = chartResult && chartResult.chart && chartResult.chart.result && chartResult.chart.result[0];
@@ -3410,10 +3438,8 @@ function renderCompanyIdentity(ticker, quote, meta, changePct) {
     const isUp = changePct >= 0;
     const arrow = isUp ? "▲" : "▼";
     const cls = isUp ? "delta-up" : "delta-down";
-    // 2026-09-15 사용자 요청: 등락률 앞에 오르내린 금액도 — 전일 종가를 등락률로 역산(현재가 - 현재가/(1+등락률))
-    const diff = Number.isFinite(price) && changePct > -100 ? Math.abs(price - price / (1 + changePct / 100)) : null;
-    const diffText = diff === null ? "" : `${fmtPriceChangeAmount(diff, meta.currency)} `;
-    pctEl.textContent = `${arrow} ${diffText}(${isUp ? "+" : ""}${changePct.toFixed(2)}%)`;
+    // 맨 위 헤더는 등락률만(2026-09-15 사용자 정정) — 오르내린 금액은 개요의 "현재가" 줄에 표시
+    pctEl.textContent = `${arrow} (${isUp ? "+" : ""}${changePct.toFixed(2)}%)`;
     pctEl.className = `detail-identity-change ${cls}`;
   } else {
     pctEl.textContent = "";
@@ -5577,7 +5603,7 @@ async function runAnalysis(ticker) {
     const marketReturnsPromise = getMarketReturns();
     const selfMetricsPromise = getFullMetrics(ticker);
 
-    renderSummary(quote, meta, getDailyChangePercent(chartData), selfMetricsPromise, marketReturnsPromise).catch((e) => {
+    renderSummary(quote, meta, getDailyChangePercent(chartData), selfMetricsPromise, marketReturnsPromise, getDailyChangeAmount(chartData)).catch((e) => {
       el("summarySection").innerHTML = `<p class="error-inline">사업 요약을 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
     });
 
@@ -5594,10 +5620,7 @@ async function runAnalysis(ticker) {
       renderFinancials(ticker, meta.currency).catch((e) => {
         el("financialsSection").innerHTML = `<p class="error-inline">실적 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
       });
-
-      renderPeers(ticker, selfMetricsPromise, quote.sector || quote.sectorDisp, quote.industryDisp || quote.industry).catch((e) => {
-        el("peersSection").innerHTML = `<p class="error-inline">경쟁사 비교 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
-      });
+      // 경쟁사 매출 비교(renderPeers)는 2026-09-15 사용자 요청으로 버튼째 숨겨 불러오지 않음(요청 수 절약)
     }
 
     // 국내 종목·암호화폐는 Yahoo 뉴스가 해당 종목과 무관한 기사를 자주 섞어 내보내(2026-09-01 사용자 확인),
@@ -6130,7 +6153,7 @@ function sReportCoreSpecs(isAsset) {
       : { key: "rev", label: "매출액", sub: "작년 대비", better: "high", band: 3, rel: 0.2, signed: true, fmt: (v, d) => sPct(v, d, true) },
     { key: "vol", label: "변동성", sub: "3개월 하루", better: "low", band: 0.1, rel: 0.1, fmt: (v, d) => `${v.toFixed(d ? 2 : 1)}%` },
     // RSI는 높을수록 매수 쪽이라 레이더에서도 높을수록 바깥(2026-09-15 사용자 정정)
-    { key: "rsi", label: "RSI(과열도)", better: "high", isRsi: true, fmt: (v, d) => sNum(v, d) },
+    { key: "rsi", label: "과열도(RSI)", better: "high", isRsi: true, fmt: (v, d) => sNum(v, d) },
   ];
 }
 // 전체 보기 추가 항목(배치 DB 키) — live: DB에 없는 주식은 실시간 지표(getFullMetrics)로 보충
@@ -6267,8 +6290,8 @@ function sReportRadarSvg(items) {
       const val = it.value === null ? "N/A" : it.fmt(it.value, 0);
       return `<text x="${x.toFixed(1)}" y="${(y + dy).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-label">${escapeHtml(it.label)}</text>
         <text x="${x.toFixed(1)}" y="${(y + dy + 15).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-value srt-tone-${it.judge ? it.judge.tone : "neutral"}">${escapeHtml(val)}${
-        // RSI는 비교 기준이 이 종목의 1년 평균이라 값 옆에 평균도 적어 줌
-        it.isRsi && Number.isFinite(it.avg) ? `<tspan class="srt-rd-avgtxt"> (평균 ${Math.round(it.avg)})</tspan>` : ""
+        // RSI는 비교 기준이 이 종목의 1년 평균이라 "현재/1년 평균"으로 간단히(예: 55/72, 2026-09-15 사용자 요청)
+        it.isRsi && Number.isFinite(it.avg) ? `<tspan class="srt-rd-avgtxt">/${Math.round(it.avg)}</tspan>` : ""
       }</text>`;
     })
     .join("");
@@ -6450,7 +6473,7 @@ window.addEventListener("resize", () => {
 });
 
 // ---------- 1. 사업 요약 ----------
-async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketReturnsPromise) {
+async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketReturnsPromise, changeAmount = null) {
   // 펼침 섹션들은 지난 렌더 때 #summarySection 안으로 옮겨져 있어, 아래 innerHTML로 지우면 문서에서 떨어져 나간다 —
   // 그동안 renderMacro 등이 el("macroSection")을 못 찾아 오류가 났음(2026-09-15) → 지우기 전에 개요 패널로 잠시 옮겨 둠
   const summaryPanelEl = document.querySelector('[data-summary-subtabpanel="summary"]');
@@ -6528,10 +6551,11 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   if (changePct !== null && changePct !== undefined) {
     const cls = changePct >= 0 ? "delta-up" : "delta-down";
     const price = meta.regularMarketPrice ?? 0;
-    // 등락 금액 + 등락률(2026-09-15 사용자 요청: 코인뿐 아니라 모든 종목에 오르내린 금액도 표시)
+    // 현재가 줄: "▼ 6,992 (-0.41%)" — 화살표 + 오르내린 금액 + 등락률(2026-09-15 사용자 요청, 모든 종목)
     if (price && changePct > -100) {
-      const diff = price - price / (1 + changePct / 100); // 전일 종가 역산으로 오늘 등락금액 계산
-      summaryChangeHtml = `<span class="${cls}">(${diff >= 0 ? "+" : "-"}${fmtPriceFull(Math.abs(diff), meta.currency)} / ${fmtPct(changePct)})</span>`;
+      // 실제 직전 종가 기준 금액(getDailyChangeAmount) 우선, 없을 때만 등락률로 역산
+      const diff = Math.abs(Number.isFinite(changeAmount) ? changeAmount : price - price / (1 + changePct / 100));
+      summaryChangeHtml = `<span class="${cls}">${changePct >= 0 ? "▲" : "▼"} ${fmtPriceChangeAmount(diff, meta.currency)} (${changePct >= 0 ? "+" : ""}${changePct.toFixed(2)}%)</span>`;
     } else {
       summaryChangeHtml = `<span class="${cls}">(${fmtPct(changePct)})</span>`;
     }
@@ -7300,34 +7324,51 @@ function fin2BodyHtml(data, period, currency) {
   const estBar = bars.find((b) => b.est) || null;
   const isAnnual = period === "annual";
 
-  // 요약(2026-09-15 사용자 요청 4차): 회색 박스 한 줄에 성장률 하나만 — 년간 "작년 대비 올해 예상 성장",
-  //   분기 "직전 분기 대비 다음 분기 컨센서스(예상) 성장" (금액·3년 연평균은 뺌)
+  // 요약(2026-09-15 사용자 요청 5차): 회색 한 줄 3칸 — 작년 매출 · 올해 매출 예상 · 작년 대비 올해 증가 %
+  //   분기 보기는 최근 분기 매출 · 다음 분기 예상 · 직전 분기 대비 증가 %(컨센서스 또는 추세 예상 기준)
   const signedPct = (g) => (Number.isFinite(g) ? `${g >= 0 ? "+" : "−"}${Math.abs(g).toFixed(1)}%` : "—");
   const toneCls = (g) => (Number.isFinite(g) ? (g >= 0 ? "fin2-up" : "fin2-down") : "");
+  const amt = (v) => (Number.isFinite(v) ? escapeHtml(fmtAmountUnified(v, currency)) : "—");
   const estGrowth = estBar && Number.isFinite(estBar.growth) ? estBar.growth : null;
-  const estKind = estSource === "컨센서스" ? "컨센서스" : "예상";
   const summaryHtml = `
-    <div class="fin2-strip fin2-strip-one">
-      <span class="fin2-strip-label">${
-    isAnnual
-      ? `작년(${escapeHtml(last.label)}) 대비 올해${estBar ? `(${escapeHtml(estBar.label)})` : ""} ${estKind} 성장`
-      : `직전 분기(${escapeHtml(last.label)}) 대비 다음 분기${estBar ? `(${escapeHtml(estBar.label)})` : ""} ${estKind} 성장`
-  }</span>
-      <b class="fin2-strip-value ${toneCls(estGrowth)}">${estGrowth === null ? "—" : signedPct(estGrowth)}</b>
+    <div class="fin2-strip">
+      <div class="fin2-strip-item">
+        <span class="fin2-strip-label">${isAnnual ? `작년 매출 <small>${escapeHtml(last.label)}</small>` : `최근 분기 <small>${escapeHtml(last.label)}</small>`}</span>
+        <b class="fin2-strip-value">${amt(last.rev)}</b>
+      </div>
+      <div class="fin2-strip-item">
+        <span class="fin2-strip-label">${isAnnual ? "올해 매출 예상" : "다음 분기 예상"}</span>
+        <b class="fin2-strip-value">${estBar ? amt(estBar.rev) : "—"}</b>
+      </div>
+      <div class="fin2-strip-item">
+        <span class="fin2-strip-label">${isAnnual ? "작년 대비 올해" : "직전 분기 대비"}</span>
+        <b class="fin2-strip-value ${toneCls(estGrowth)}">${signedPct(estGrowth)}</b>
+      </div>
     </div>`;
 
   // 막대: 가장 큰 매출이 그림 영역의 78%가 되도록(위에 "00%상승"·말풍선 자리)
   const PLOT_H = 190;
   const maxRev = Math.max(...bars.map((b) => (Number.isFinite(b.rev) ? b.rev : 0)), 1);
+  // 순손실(2026-09-15 사용자 요청): 주황 막대를 기준선 아래(연도 쪽)로 살짝 그림 — 손실률에 비례(손실률 1%p당 0.5px, 6~24px)
+  //   매출 막대 높이에 곱하면 매출이 작은 해는 3px처럼 안 보여서 손실률만으로 길이를 정함
+  const NEG_MAX_PX = 24;
+  let hasNeg = false;
+  let maxNegPx = 0;
   const cols = bars
     .map((b) => {
       const barPx = Number.isFinite(b.rev) && b.rev > 0 ? Math.max(4, (b.rev / maxRev) * PLOT_H * 0.78) : 4;
       const margin = Number.isFinite(b.ni) && Number.isFinite(b.rev) && b.rev > 0 ? (b.ni / b.rev) * 100 : null;
       const niPx = margin !== null && margin > 0 ? Math.min(barPx, (barPx * margin) / 100) : 0;
+      const negPx = margin !== null && margin < 0 ? Math.max(6, Math.min(NEG_MAX_PX, -margin * 0.5)) : 0;
+      if (negPx) {
+        hasNeg = true;
+        maxNegPx = Math.max(maxNegPx, negPx);
+      }
       let marginHtml = "";
       if (margin !== null) {
         const txt = `${Math.round(margin)}%`;
-        if (margin <= 0) marginHtml = `<span class="fin2-margin fin2-margin-loss" style="bottom:3px">${txt}</span>`;
+        if (margin < 0) marginHtml = `<span class="fin2-margin fin2-margin-loss" style="bottom:3px">${txt}</span><div class="fin2-ni-neg" style="height:${negPx.toFixed(1)}px"></div>`;
+        else if (margin === 0) marginHtml = `<span class="fin2-margin fin2-margin-loss" style="bottom:3px">${txt}</span>`;
         else if (niPx >= 17) marginHtml = `<span class="fin2-margin fin2-margin-in" style="bottom:${Math.max(2, niPx - 16).toFixed(0)}px">${txt}</span>`;
         else if (barPx - niPx >= 17) marginHtml = `<span class="fin2-margin fin2-margin-out" style="bottom:${(niPx + 1).toFixed(0)}px">${txt}</span>`;
       }
@@ -7358,7 +7399,7 @@ function fin2BodyHtml(data, period, currency) {
       <span><i class="fin2-dot fin2-dot-rev"></i>매출액</span>
       <span><i class="fin2-dot fin2-dot-ni"></i>순이익 <em>(막대 안 % = 순이익률)</em></span>
     </div>
-    <div class="fin2-chart" style="grid-template-columns:repeat(${bars.length},1fr)">${cols}</div>
+    <div class="fin2-chart${hasNeg ? " has-neg" : ""}" style="grid-template-columns:repeat(${bars.length},1fr);--fin2-neg-space:${Math.round(maxNegPx + 8)}px">${cols}</div>
     <p class="fin2-caption">막대를 누르면 매출액이 보여요. 막대 위 %는 ${isAnnual ? "작년" : "전분기"} 대비 매출 증감입니다.${estNote} 출처: ${escapeHtml(source)}.</p>`;
 }
 
