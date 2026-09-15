@@ -6013,11 +6013,12 @@ async function runSReport(symbol, selfMetricsPromise) {
   `;
 }
 
-// ---------- S리포트 요약 카드(2026-09-15 사용자 요청) ----------
-// 과거분석·미래예측·공포지수 버튼 아래에 핵심 5개(승률·상승률·매출액·변동성·RSI)를 한 줄씩 + 그 아래 평가 한 줄, "더보기"로 전체 S리포트 표.
-// 비교 기준 — 승률·매출액·변동성: 주식은 S&P500 / 코스피200 / 코스닥150 평균(최근 5년 신규 상장주는 한국·미국 IPO200 평균),
-//   ETF는 같은 나라 ETF 평균, 코인은 코인200 평균. 상승률은 같은 섹터 평균, RSI는 이 종목의 최근 1년 평균 RSI.
-// 평균은 한두 종목의 극단값(매출 +900% 같은)에 휘둘리지 않게 위아래 10%씩 뺀 평균을 쓴다.
+// ---------- S리포트(2026-09-15 사용자 요청, 같은 날 2차 개편) ----------
+// 요약 카드: 핵심 5개(승률·상승률·매출액·변동성·RSI)를 오각형 레이더로 — 초록 실선 = 이 종목, 회색 점선 = 비교 평균.
+//   축 값은 비교군 안에서의 위치(유리할수록 바깥): 변동성은 낮을수록, RSI는 낮을수록(과열 여유) 바깥.
+// 더보기: 5개를 포함한 S리포트 전 항목을 "종합 판정 + 비교표"로 — 행마다 이 종목 값 · 비교 평균 · 판정(양호/보통/주의) + 평균선 막대.
+// 비교 기준 — 주식은 S&P500 / 코스피200 / 코스닥150 평균(최근 5년 신규 상장주는 한국·미국 IPO200), ETF는 같은 나라 ETF, 코인은 코인200.
+//   상승률만 같은 섹터 평균, RSI는 이 종목의 최근 1년 평균. 평균은 한두 종목의 극단값에 휘둘리지 않게 위아래 10%씩 뺀 평균.
 // 매출액은 IPO 비교군에 절대 매출 데이터가 없어 "작년 대비 매출 증가율"로 비교하고, 매출이 없는 ETF·코인은 그 자리에 1년 수익률을 둔다.
 function sReportTrimmedMean(values) {
   const v = values.filter((x) => Number.isFinite(x)).sort((a, b) => a - b);
@@ -6026,18 +6027,45 @@ function sReportTrimmedMean(values) {
   const s = v.slice(k, v.length - k);
   return s.reduce((a, b) => a + b, 0) / s.length;
 }
-// "높은 / 낮은 / 비슷한" 판정 — band 안이면 비슷한 수준. relative=true면 band를 평균 대비 비율로 봄
-function sReportLevel(selfV, avgV, band, relative) {
+// "높음 / 낮음 / 비슷" — 차이가 tol(= max(band, |평균|×rel)) 안이면 비슷
+function sReportLevel(selfV, avgV, band, rel = 0) {
   if (!Number.isFinite(selfV) || !Number.isFinite(avgV)) return null;
-  const tol = relative ? Math.abs(avgV) * band : band;
+  const tol = Math.max(band || 0, Math.abs(avgV) * rel);
   if (selfV > avgV + tol) return "high";
   if (selfV < avgV - tol) return "low";
   return "same";
 }
-const S_REPORT_LEVEL_TEXT = { high: "높은 수준", low: "낮은 수준", same: "비슷한 수준" };
+// 비교군 안 위치(0~1, 유리한 쪽이 1) — better:"low"면 작을수록 유리
+function sReportPercentile(values, v, better) {
+  const arr = values.filter((x) => Number.isFinite(x));
+  if (!arr.length || !Number.isFinite(v)) return null;
+  let worse = 0;
+  let tie = 0;
+  arr.forEach((x) => {
+    if (x === v) tie++;
+    else if (better === "low" ? x > v : x < v) worse++;
+  });
+  return Math.min(1, Math.max(0, (worse + tie / 2) / arr.length));
+}
+// 판정: 좋은 방향이 있는 항목은 양호/보통/주의, 크기만 비교하는 항목(시가총액·거래대금 등)은 평균 이상/이하/수준
+function sReportJudge(level, better) {
+  if (!level) return null;
+  if (better === "neutral") return { text: level === "high" ? "평균 이상" : level === "low" ? "평균 이하" : "평균 수준", tone: "neutral" };
+  if (level === "same") return { text: "보통", tone: "same" };
+  const good = better === "low" ? level === "low" : level === "high";
+  return good ? { text: "양호", tone: "good" } : { text: "주의", tone: "bad" };
+}
+function sReportRsiJudge(rsi, rsiAvg) {
+  if (!Number.isFinite(rsi)) return null;
+  if (rsi >= 70) return { text: "과열", tone: "bad" };
+  if (rsi <= 30) return { text: "과매도", tone: "same" };
+  return sReportLevel(rsi, rsiAvg, 3) === "high" ? { text: "보통", tone: "same" } : { text: "과열 아님", tone: "good" };
+}
+const sReportRsiScore = (v) => (Number.isFinite(v) ? Math.min(1, Math.max(0, (80 - v) / 60)) : null); // RSI 20 이하=1, 80 이상=0
 const sReportSectorKey = (ko) => String(ko || "").split(" ")[0]; // "커뮤니케이션 서비스"(야후) = "커뮤니케이션"(지도 스냅샷)
+const sPct = (v, d, signed) => `${signed && v > 0 ? "+" : ""}${d ? (Math.round(v * 10) / 10).toFixed(1) : Math.round(v)}%`;
 
-// 비교군 정리 → { label, peers:[{win, ret, rev, vol, ret1y, sectorKey}], self(스냅샷 행 또는 null), sectorOf }
+// 비교군 정리 → { label, companies(원본 행), peers, self(스냅샷 행 또는 null), sectorPool }
 async function buildSReportTopBaseline(ticker, scoreMode) {
   const isKr = isKrTicker(ticker);
   const db = await getWinRateDb().catch(() => null);
@@ -6046,7 +6074,7 @@ async function buildSReportTopBaseline(ticker, scoreMode) {
     const peers = Object.entries(map)
       .filter(([s]) => scoreMode === "crypto" || isKrTicker(s) === isKr)
       .map(([, e]) => ({ win: e.score, ret: e.ret10y, ret1y: e.ret1y, vol: e.vol1y }));
-    return { label: scoreMode === "crypto" ? "코인200" : isKr ? "한국 ETF" : "미국 ETF", peers, self: null, sectorPeers: null };
+    return { label: scoreMode === "crypto" ? "코인200" : isKr ? "한국 ETF" : "미국 ETF", companies: [], peers, self: null, sectorPool: null };
   }
   const volMap = (db && (isKr ? db.scoresKr : db.scores)) || {};
   const ipo = await getIpoSReportUniverse(ticker, isKr).catch(() => null);
@@ -6086,7 +6114,103 @@ async function buildSReportTopBaseline(ticker, scoreMode) {
   } else if (ipo && !self) {
     self = ipo.companies.find((c) => c.symbol === ticker) || null;
   }
-  return { label, peers, self, sectorPool };
+  return { label, companies, peers, self, sectorPool };
+}
+
+// 핵심 5개 항목 계산 — 레이더와 더보기 표가 같이 씀
+function buildSReportCoreItems(ticker, scoreMode, quote, e, base, metrics) {
+  const isAsset = scoreMode === "etf" || scoreMode === "crypto";
+  const fin = (v) => (Number.isFinite(v) ? v : null);
+  const uniLabel = base ? base.label : isKrTicker(ticker) ? "코스피200" : "S&P500";
+  const peers = (base && base.peers) || [];
+  const col = (pool, key) => pool.map((p) => p[key]);
+  const item = (o) => {
+    const avg = sReportTrimmedMean(col(o.pool, o.key));
+    const judge = sReportJudge(sReportLevel(o.value, avg, o.band, o.rel), o.better);
+    return {
+      ...o,
+      avg,
+      judge,
+      score: sReportPercentile(col(o.pool, o.key), o.value, o.better),
+      avgScore: sReportPercentile(col(o.pool, o.key), avg, o.better),
+    };
+  };
+  const items = [];
+  items.push(item({ key: "win", label: "승률", value: fin(e.score), pool: peers, better: "high", band: 2, avgName: uniLabel, fmt: (v, d) => sPct(v, d) }));
+
+  let sectorName = uniLabel;
+  let sectorPool = peers;
+  if (!isAsset && base) {
+    const selfKey = sReportSectorKey((base.self && base.self.sectorKo) || SECTOR_KO[quote.sectorDisp || quote.sector] || "");
+    const pool = (base.sectorPool || peers).filter((p) => selfKey && selfKey !== "기타" && p.sectorKey === selfKey);
+    if (pool.length >= 5) {
+      sectorName = `${selfKey} 섹터`;
+      sectorPool = pool;
+    }
+  }
+  items.push(item({ key: "ret", label: "상승률", sub: "연평균", value: fin(e.ret10y), pool: sectorPool, better: "high", band: 2, rel: 0.15, avgName: sectorName, signed: true, fmt: (v, d) => sPct(v, d, true) }));
+
+  if (isAsset) {
+    items.push(item({ key: "ret1y", label: "1년 수익률", value: fin(e.ret1y), pool: peers, better: "high", band: 3, rel: 0.15, avgName: uniLabel, signed: true, fmt: (v, d) => sPct(v, d, true) }));
+  } else {
+    const selfRev = base && base.self && Number.isFinite(base.self.revenueGrowth) ? base.self.revenueGrowth : metrics ? fin(metrics.revenueGrowthYoY) ?? fin(metrics.revenueGrowthAnnual) : null;
+    items.push(item({ key: "rev", label: "매출액", sub: "작년 대비", value: fin(selfRev), pool: peers, better: "high", band: 3, rel: 0.2, avgName: uniLabel, signed: true, fmt: (v, d) => sPct(v, d, true) }));
+  }
+
+  items.push(item({ key: "vol", label: "변동성", sub: "1년", value: fin(e.vol1y), pool: peers, better: "low", band: 0, rel: 0.1, avgName: uniLabel, fmt: (v, d) => sPct(v, d) }));
+
+  const rsi = fin(e.rsi);
+  const rsiAvg = fin(e.rsi1y);
+  items.push({
+    key: "rsi",
+    label: "RSI",
+    sub: "과열성",
+    value: rsi,
+    avg: rsiAvg,
+    avgName: "1년 평균",
+    fmt: (v, d) => (d ? (Math.round(v * 10) / 10).toFixed(1) : String(Math.round(v))),
+    judge: sReportRsiJudge(rsi, rsiAvg),
+    score: sReportRsiScore(rsi),
+    avgScore: sReportRsiScore(rsiAvg),
+    isRsi: true,
+  });
+  return items;
+}
+
+function sReportRadarSvg(items) {
+  const W = 330;
+  const H = 250;
+  const cx = W / 2;
+  const cy = 128;
+  const R = 80;
+  const n = items.length;
+  const pt = (i, s) => {
+    const a = -Math.PI / 2 + (i * 2 * Math.PI) / n;
+    return [cx + Math.cos(a) * R * s, cy + Math.sin(a) * R * s];
+  };
+  const poly = (fn) => items.map((it, i) => pt(i, fn(it)).map((v) => v.toFixed(1)).join(",")).join(" ");
+  const rings = [0.25, 0.5, 0.75, 1].map((s) => `<polygon points="${poly(() => s)}" class="srt-rd-ring" />`).join("");
+  const spokes = items.map((_, i) => `<line x1="${cx}" y1="${cy}" x2="${pt(i, 1)[0].toFixed(1)}" y2="${pt(i, 1)[1].toFixed(1)}" class="srt-rd-ring" />`).join("");
+  const clampS = (s) => (Number.isFinite(s) ? Math.max(0.04, s) : 0.04);
+  const avgPoly = `<polygon points="${poly((it) => clampS(Number.isFinite(it.avgScore) ? it.avgScore : 0.5))}" class="srt-rd-avg" />`;
+  const selfPoly = `<polygon points="${poly((it) => clampS(it.score))}" class="srt-rd-self" />`;
+  const dots = items
+    .map((it, i) => {
+      const [x, y] = pt(i, clampS(it.score));
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.2" class="srt-rd-dot srt-tone-${it.judge ? it.judge.tone : "neutral"}" />`;
+    })
+    .join("");
+  const labels = items
+    .map((it, i) => {
+      const [x, y] = pt(i, 1.2);
+      const anchor = x < cx - 6 ? "end" : x > cx + 6 ? "start" : "middle";
+      const dy = y < cy - R * 0.9 ? -14 : y > cy + R * 0.5 ? 6 : -6;
+      const val = it.value === null ? "N/A" : it.fmt(it.value, 0);
+      return `<text x="${x.toFixed(1)}" y="${(y + dy).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-label">${escapeHtml(it.label)}</text>
+        <text x="${x.toFixed(1)}" y="${(y + dy + 15).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-value srt-tone-${it.judge ? it.judge.tone : "neutral"}">${escapeHtml(val)}</text>`;
+    })
+    .join("");
+  return `<svg class="srt-radar" viewBox="0 0 ${W} ${H}" role="img" aria-label="S리포트 핵심 5개 지표 레이더 차트">${rings}${spokes}${avgPoly}${selfPoly}${dots}${labels}</svg>`;
 }
 
 let sReportTopToken = 0;
@@ -6104,163 +6228,284 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
     isAsset ? Promise.resolve(null) : (selfMetricsPromise || Promise.resolve(null)).catch(() => null),
   ]);
   if (token !== sReportTopToken) return; // 그사이 다른 종목을 열었으면 버림
-  const e = entry || {};
-  const fin = (v) => (Number.isFinite(v) ? v : null);
-  const avgOf = (key, pool) => sReportTrimmedMean(((pool || (base && base.peers)) || []).map((p) => p[key]));
-  const uniLabel = base ? base.label : isKrTicker(ticker) ? "코스피200" : "S&P500";
+  const items = buildSReportCoreItems(ticker, scoreMode, quote, entry || {}, base, metrics);
+  const uniLabel = base ? base.label : "";
 
-  // 표시값: full(소수 1자리)과 round(정수) 두 벌 — 한 줄에 안 들어가면 정수로 바꿈
-  const pctText = (v, signed, digits) => {
-    const r = digits ? Math.round(v * 10) / 10 : Math.round(v);
-    return `${signed && r > 0 ? "+" : ""}${digits ? r.toFixed(1) : r}%`;
-  };
-  const numText = (v, digits) => (digits ? (Math.round(v * 10) / 10).toFixed(1) : String(Math.round(v)));
-  const rows = [];
-  const addRow = ({ label, value, fmt, avg, level, evalFor, signed }) => {
-    const has = value !== null;
-    rows.push({
-      label,
-      full: has ? fmt(value, 1) : "N/A",
-      round: has ? fmt(value, 0) : "N/A",
-      valueCls: has && signed ? (value > 0 ? "delta-up" : value < 0 ? "delta-down" : "") : "",
-      evalFull: level ? evalFor(avg, 1, level) : has ? "비교할 평균 데이터가 아직 없어요" : "데이터가 없어요",
-      evalRound: level ? evalFor(avg, 0, level) : has ? "비교할 평균 데이터가 아직 없어요" : "데이터가 없어요",
-      evalShort: level ? evalFor(null, 0, level) : "",
-    });
-  };
-  const lvHtml = (level) => `<b class="srt-lv srt-lv-${level}">${S_REPORT_LEVEL_TEXT[level]}</b>`;
-  const againstText = (name, avgStr, level, word = "대비") => `${escapeHtml(name)} 평균${avgStr ? `(${avgStr})` : ""} ${word} ${lvHtml(level)}`;
-
-  // 1. 승률(10년평균)
-  const win = fin(e.score);
-  const winAvg = avgOf("win");
-  addRow({
-    label: "승률",
-    value: win,
-    fmt: (v, d) => pctText(v, false, d),
-    avg: winAvg,
-    level: sReportLevel(win, winAvg, 2),
-    evalFor: (a, d, lv) => againstText(uniLabel, a === null ? "" : pctText(a, false, d), lv),
-  });
-
-  // 2. 상승률(연평균) — 같은 섹터 평균
-  const ret = fin(e.ret10y);
-  let sectorName = uniLabel;
-  let sectorAvg = avgOf("ret");
-  if (!isAsset && base) {
-    const selfKey = sReportSectorKey((base.self && base.self.sectorKo) || SECTOR_KO[quote.sectorDisp || quote.sector] || "");
-    const pool = (base.sectorPool || base.peers).filter((p) => selfKey && selfKey !== "기타" && p.sectorKey === selfKey);
-    if (pool.length >= 5) {
-      sectorName = `${selfKey} 섹터`;
-      sectorAvg = avgOf("ret", pool);
-    }
-  }
-  addRow({
-    label: "상승률",
-    signed: true,
-    value: ret,
-    fmt: (v, d) => `연 ${pctText(v, true, d)}`,
-    avg: sectorAvg,
-    level: sReportLevel(ret, sectorAvg, Math.max(2, Math.abs(sectorAvg || 0) * 0.15)),
-    evalFor: (a, d, lv) => `${escapeHtml(sectorName)} 평균${a === null ? "" : `(${pctText(a, true, d)})`}${lv === "same" ? "과" : "보다"} ${lvHtml(lv)}`,
-  });
-
-  // 3. 매출액(작년 대비 증가율) — ETF·코인은 1년 수익률
-  if (isAsset) {
-    const r1 = fin(e.ret1y);
-    const r1Avg = avgOf("ret1y");
-    addRow({
-      label: "1년 수익률",
-      signed: true,
-      value: r1,
-      fmt: (v, d) => pctText(v, true, d),
-      avg: r1Avg,
-      level: sReportLevel(r1, r1Avg, Math.max(3, Math.abs(r1Avg || 0) * 0.15)),
-      evalFor: (a, d, lv) => againstText(uniLabel, a === null ? "" : pctText(a, true, d), lv),
-    });
-  } else {
-    const selfRev = base && base.self && Number.isFinite(base.self.revenueGrowth) ? base.self.revenueGrowth : metrics ? fin(metrics.revenueGrowthYoY) ?? fin(metrics.revenueGrowthAnnual) : null;
-    const revAvg = avgOf("rev");
-    addRow({
-      label: "매출액",
-      signed: true,
-      value: fin(selfRev),
-      fmt: (v, d) => `작년比 ${pctText(v, true, d)}`,
-      avg: revAvg,
-      level: sReportLevel(fin(selfRev), revAvg, Math.max(3, Math.abs(revAvg || 0) * 0.2)),
-      evalFor: (a, d, lv) => againstText(uniLabel, a === null ? "" : pctText(a, true, d), lv),
-    });
-  }
-
-  // 4. 변동성(1년, 연환산)
-  const vol = fin(e.vol1y);
-  const volAvg = avgOf("vol");
-  addRow({
-    label: "변동성",
-    value: vol,
-    fmt: (v, d) => pctText(v, false, d),
-    avg: volAvg,
-    level: sReportLevel(vol, volAvg, 0.1, true),
-    evalFor: (a, d, lv) => againstText(uniLabel, a === null ? "" : pctText(a, false, d), lv),
-  });
-
-  // 5. RSI(과열성) — 이 종목의 최근 1년 평균 RSI 대비
-  const rsi = fin(e.rsi);
-  const rsiAvg = fin(e.rsi1y);
-  addRow({
-    label: "RSI(과열성)",
-    value: rsi,
-    fmt: (v, d) => numText(v, d),
-    avg: rsiAvg,
-    level: sReportLevel(rsi, rsiAvg, 3),
-    evalFor: (a, d, lv) => `1년 평균 RSI${a === null ? "" : `(${numText(a, d)})`} 대비 ${lvHtml(lv)}`,
-  });
-
+  const chips = items
+    .map((it) => {
+      const tone = it.judge ? it.judge.tone : "neutral";
+      const val = it.value === null ? "N/A" : it.fmt(it.value, 1);
+      return `<div class="srt-chip">
+        <span class="srt-chip-name">${escapeHtml(it.label)}</span>
+        <b class="srt-chip-val" data-round="${escapeHtml(it.value === null ? "N/A" : it.fmt(it.value, 0))}">${escapeHtml(val)}</b>
+        <span class="srt-pill srt-pill-${tone}">${escapeHtml(it.judge ? it.judge.text : "—")}</span>
+      </div>`;
+    })
+    .join("");
   section.innerHTML = `
     <div class="srt-card">
-      ${rows
-        .map(
-          (r, i) => `
-        <div class="srt-row">
-          <div class="srt-line"><span class="srt-num">${i + 1}</span><span class="srt-label">${escapeHtml(r.label)}</span><span class="srt-value ${r.valueCls}" data-round="${escapeHtml(r.round)}">${escapeHtml(r.full)}</span></div>
-          <p class="srt-eval" data-round="${escapeHtml(r.evalRound)}" data-short="${escapeHtml(r.evalShort)}">${r.evalFull}</p>
-        </div>`
-        )
-        .join("")}
-      <button type="button" class="srt-more-btn" id="sReportTopMoreBtn">더보기 <span aria-hidden="true">▾</span></button>
+      <div class="srt-radar-head">
+        <span class="srt-radar-title">핵심 5개 지표</span>
+        <span class="srt-legend"><i class="srt-lg-self"></i>이 종목 <i class="srt-lg-avg"></i>${escapeHtml(uniLabel || "비교")} 평균</span>
+      </div>
+      ${sReportRadarSvg(items)}
+      <div class="srt-chips">${chips}</div>
+      <button type="button" class="srt-more-btn" id="sReportTopMoreBtn">S리포트 전체 보기 <span aria-hidden="true">▾</span></button>
     </div>
-    <p class="srt-note">평균은 위아래 10%를 뺀 평균 · 승률=10년 월간 승률, 상승률=연평균(복리), 변동성=1년 주간 등락 기준. 투자 자문이 아닙니다.</p>`;
+    <p class="srt-note">바깥으로 갈수록 유리해요(변동성은 낮을수록, RSI는 과열에서 멀수록 바깥). 상승률은 같은 섹터 평균, RSI는 이 종목의 1년 평균과 비교합니다. 투자 자문이 아닙니다.</p>`;
   section.appendChild(sReportInlineWrap);
-  fitSReportTopLines(section);
+  fitSReportRoundCells(section);
 
   const moreBtn = el("sReportTopMoreBtn");
   let loaded = false;
   moreBtn.addEventListener("click", async () => {
     const isOpen = sReportInlineWrap.style.display !== "none";
     sReportInlineWrap.style.display = isOpen ? "none" : "block";
-    moreBtn.innerHTML = isOpen ? `더보기 <span aria-hidden="true">▾</span>` : `접기 <span aria-hidden="true">▴</span>`;
+    moreBtn.innerHTML = isOpen ? `S리포트 전체 보기 <span aria-hidden="true">▾</span>` : `접기 <span aria-hidden="true">▴</span>`;
     if (!isOpen && !loaded) {
       loaded = true;
-      await (isAsset ? runAssetSReport(ticker, scoreMode) : runSReport(ticker, selfMetricsPromise || getFullMetrics(ticker)));
+      await renderSReportFull(ticker, scoreMode, items, base, metrics, token);
     }
   });
 }
-// 한 줄에 안 들어가면 소수점을 반올림(2026-09-15 사용자 요청) — 그래도 넘치면 평가 줄은 괄호 속 평균값을 뺀 짧은 문구로
-function fitSReportTopLines(root) {
-  const overflows = (node) => node.scrollWidth > node.clientWidth + 1;
-  root.querySelectorAll(".srt-line").forEach((line) => {
-    const v = line.querySelector(".srt-value");
-    if (v && overflows(line) && v.dataset.round) v.textContent = v.dataset.round;
+
+// ---------- S리포트 전체(더보기) ----------
+const S_FULL_STOCK_GROUPS = [
+  {
+    title: "수익성 · 재무",
+    specs: [
+      { key: "netIncomeGrowth", label: "순이익 증가", better: "high", band: 5, rel: 0.2, signed: true, live: (m) => m.netIncomeGrowthAnnual },
+      { key: "operatingMargin", label: "영업이익률", better: "high", band: 2, rel: 0.15, live: (m) => m.operatingMarginQuarterly },
+      { key: "roe", label: "ROE", better: "high", band: 2, rel: 0.15, live: (m) => m.roeQuarterly },
+      { key: "cashFlowGrowth", label: "현금흐름 증가", better: "high", band: 5, rel: 0.2, signed: true, live: (m) => m.operatingCashFlowGrowthAnnual },
+      { key: "debtRatio", label: "부채비율", better: "low", band: 5, rel: 0.15, live: (m) => m.debtRatioQuarterly },
+    ],
+  },
+  {
+    title: "가치 · 배당",
+    specs: [
+      { key: "per", label: "PER", better: "low", band: 0, rel: 0.15, unit: "times", positiveOnly: true, live: (m) => m.per },
+      { key: "dividendYield", label: "배당률", better: "high", band: 0.2, rel: 0.15, digits: 2 },
+    ],
+  },
+  {
+    title: "시장",
+    specs: [
+      { key: "marketCap", label: "시가총액", better: "neutral", rel: 0.2, unit: "amount", live: (m) => m.marketCap },
+      { key: "dollarVolume", label: "거래대금", better: "neutral", rel: 0.2, unit: "amount", live: (m) => m.recentDollarVolume },
+      { key: "week52RangePct", label: "52주 구간 위치", better: "neutral", band: 5, live: (m) => m.week52RangePct },
+      { key: "changePercent", label: "오늘 등락률", better: "neutral", band: 0.5, signed: true, preferLive: true, live: (m) => m.changePct },
+    ],
+  },
+];
+const S_FULL_ASSET_GROUPS = {
+  etf: [
+    {
+      title: "비용 · 배당",
+      specs: [
+        { key: "dividendYield", label: "배당률", better: "high", band: 0.2, rel: 0.15, digits: 2 },
+        { key: "fee", label: "운용보수", better: "low", band: 0.02, rel: 0.15, digits: 3 },
+      ],
+    },
+    {
+      title: "시장",
+      specs: [
+        { key: "recentDollarVolume", label: "거래대금", better: "neutral", rel: 0.2, unit: "amount" },
+        { key: "week52RangePct", label: "52주 구간 위치", better: "neutral", band: 5 },
+        { key: "changePct", label: "오늘 등락률", better: "neutral", band: 0.5, signed: true },
+      ],
+    },
+  ],
+  crypto: [
+    {
+      title: "시장",
+      specs: [
+        // 코인 거래대금은 야후 값이 이미 달러 거래액인데 가격을 한 번 더 곱해져 비정상(BTC $1,903조)이라 뺌
+        { key: "marketCap", label: "시가총액", better: "neutral", rel: 0.2, unit: "amount" },
+        { key: "week52RangePct", label: "52주 구간 위치", better: "neutral", band: 5 },
+        { key: "changePct", label: "오늘 등락률", better: "neutral", band: 0.5, signed: true },
+      ],
+    },
+  ],
+};
+
+// ETF·코인 비교군 행(인기종목·시장동향과 같은 스캔 캐시 공유) — 시총 상위 밖 종목은 본인 지표만 계산해 끼워 넣음
+async function getAssetSReportRows(ticker, assetType, statusEl) {
+  const isEtf = assetType === "etf";
+  const isKr = isKrTicker(ticker);
+  const { rows } = isEtf ? await ensureEtfScanRows(isKr ? "kr" : "us", 100, statusEl) : await ensureCryptoScanRows(200, statusEl);
+  if (!rows || !rows.length) throw new Error("비교군 데이터를 가져오지 못했습니다.");
+  let self = rows.find((r) => r.symbol === ticker);
+  let universe = rows;
+  if (!self) {
+    const m = await computeChartDerivedMetrics(ticker);
+    if (!m) throw new Error("이 종목의 지표를 계산하지 못했습니다.");
+    self = {
+      symbol: ticker,
+      currency: m.currency || (isKr ? "KRW" : "USD"),
+      changePct: m.changePct,
+      recentDollarVolume: m.recentDollarVolume,
+      week52RangePct: m.week52RangePct,
+      marketCap: m.marketCap,
+    };
+    universe = [...rows, self];
+  }
+  if (isEtf) {
+    const infoDb = await getEtfInfoDb().catch(() => null);
+    universe.forEach((r) => {
+      const info = etfInfoOf(infoDb, r.symbol);
+      r.fee = info && Number.isFinite(info.fee) ? info.fee : null;
+    });
+    await attachEtfDividends(universe, statusEl);
+  }
+  return { universe, self };
+}
+
+async function renderSReportFull(ticker, scoreMode, coreItems, base, metrics, token) {
+  const wrap = sReportInlineWrap;
+  const isAsset = scoreMode === "etf" || scoreMode === "crypto";
+  wrap.innerHTML = `<p class="muted srf-status" style="padding:10px 2px;">S리포트 전체 항목을 계산하는 중...</p>`;
+  const statusEl = wrap.querySelector(".srf-status");
+  const uniLabel = base ? base.label : "";
+  const groups = [{ title: "핵심 지표", items: coreItems }];
+  try {
+    let rows;
+    let selfRow;
+    let divInfo = null;
+    let currency = isKrTicker(ticker) ? "KRW" : "USD";
+    if (isAsset) {
+      const res = await getAssetSReportRows(ticker, scoreMode, statusEl);
+      rows = res.universe;
+      selfRow = res.self;
+      currency = selfRow.currency || currency;
+    } else {
+      rows = (base && base.companies) || [];
+      selfRow = (base && base.self) || {};
+      divInfo = await getDividendYieldInfo(ticker).catch(() => null);
+    }
+    if (token !== sReportTopToken) return;
+    const specGroups = isAsset ? S_FULL_ASSET_GROUPS[scoreMode] : S_FULL_STOCK_GROUPS;
+    specGroups.forEach((g) => {
+      const items = g.specs.map((s) => {
+        const ok = (v) => Number.isFinite(v) && (!s.positiveOnly || v > 0);
+        // 오늘 등락률은 하루 한 번 찍는 스냅샷이 아니라 지금 받은 실시간 값 우선
+        const liveV = !isAsset && metrics && s.live && ok(s.live(metrics)) ? s.live(metrics) : null;
+        let value = s.preferLive && liveV !== null ? liveV : ok(selfRow[s.key]) ? selfRow[s.key] : null;
+        if (value === null) value = liveV;
+        if (value === null && s.key === "dividendYield" && divInfo && Number.isFinite(divInfo.yieldPct)) value = divInfo.yieldPct;
+        const pool = rows.filter((r) => r !== selfRow).map((r) => r[s.key]).filter(ok);
+        if (value !== null) pool.push(value);
+        const avg = sReportTrimmedMean(pool);
+        const fmt =
+          s.unit === "amount"
+            ? (v) => fmtAmountUnified(v, currency)
+            : s.unit === "times"
+            ? (v, d) => `${d ? (Math.round(v * 10) / 10).toFixed(1) : Math.round(v)}배`
+            : s.digits
+            ? (v, d) => `${v.toFixed(d ? s.digits : Math.max(1, s.digits - 1))}%`
+            : (v, d) => sPct(v, d, s.signed);
+        return {
+          key: s.key,
+          label: s.label,
+          value,
+          avg,
+          avgName: uniLabel || "비교군",
+          fmt,
+          signed: s.signed,
+          judge: sReportJudge(sReportLevel(value, avg, s.band, s.rel), s.better),
+          score: sReportPercentile(pool, value, s.better === "low" ? "low" : "high"),
+          avgScore: sReportPercentile(pool, avg, s.better === "low" ? "low" : "high"),
+          warnHtml: s.key === "dividendYield" && divInfo ? dividendWarningHtml(divInfo) : "",
+        };
+      });
+      groups.push({ title: g.title, items });
+    });
+  } catch (err) {
+    if (token !== sReportTopToken) return;
+    wrap.innerHTML = `<p class="error-inline">S리포트 전체 항목을 계산하지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
+    return;
+  }
+
+  // 종합 판정 — 좋고 나쁨이 있는 항목만 셈(시가총액·거래대금 같은 크기 비교는 제외)
+  const all = groups.flatMap((g) => g.items);
+  const judged = all.filter((it) => it.judge && it.judge.tone !== "neutral");
+  const goodItems = judged.filter((it) => it.judge.tone === "good");
+  const badItems = judged.filter((it) => it.judge.tone === "bad");
+  const ratio = judged.length ? goodItems.length / judged.length : 0;
+  const headTone = ratio >= 0.6 ? "good" : badItems.length > goodItems.length ? "bad" : "same";
+  const best = goodItems.filter((it) => Number.isFinite(it.score) && !it.isRsi).sort((a, b) => b.score - a.score)[0];
+  const lines = [];
+  if (best) lines.push(`돋보이는 항목: <b>${escapeHtml(best.label)}</b> (${escapeHtml(best.avgName)} 상위 ${Math.max(1, Math.round((1 - best.score) * 100))}%)`);
+  if (badItems.length) lines.push(`주의할 항목: <b>${badItems.map((it) => escapeHtml(it.label)).join(", ")}</b>`);
+  else if (judged.length) lines.push("주의할 항목이 없어요");
+
+  const rowHtml = (it) => {
+    const tone = it.judge ? it.judge.tone : "neutral";
+    const has = it.value !== null;
+    // 백분위 순위(2026-09-15 사용자 선택 D안): 5칸 막대(하위→상위)에 위치 점 + 오른쪽 "상위 N%" — RSI는 0~100 구간 위치
+    const pos = it.isRsi ? (has ? Math.min(100, Math.max(0, it.value)) : null) : Number.isFinite(it.score) ? it.score * 100 : null;
+    const rank = it.isRsi
+      ? has
+        ? it.value >= 70
+          ? "과열 구간"
+          : it.value <= 30
+          ? "과매도 구간"
+          : "중립 구간"
+        : "—"
+      : Number.isFinite(it.score)
+      ? `상위 ${Math.max(1, Math.round((1 - it.score) * 100))}%`
+      : "—";
+    const segs = [0, 1, 2, 3, 4]
+      .map((k) => `<i class="srf-seg${pos !== null && !it.isRsi && k <= Math.min(4, Math.floor(pos / 20)) ? ` srt-fill-${tone}` : ""}"></i>`)
+      .join("");
+    return `
+      <div class="srf-row">
+        <div class="srf-cells">
+          <span class="srf-name">${escapeHtml(it.label)}${it.sub ? `<small>${escapeHtml(it.sub)}</small>` : ""}</span>
+          <b class="srf-val" data-round="${escapeHtml(has ? it.fmt(it.value, 0) : "N/A")}">${escapeHtml(has ? it.fmt(it.value, 1) : "N/A")}</b>${it.warnHtml || ""}
+          <span class="srf-avg"><span data-round="${escapeHtml(Number.isFinite(it.avg) ? it.fmt(it.avg, 0) : "—")}">${escapeHtml(Number.isFinite(it.avg) ? it.fmt(it.avg, 1) : "—")}</span><small>${escapeHtml(it.avgName)}</small></span>
+          <span class="srt-pill srt-pill-${tone}">${escapeHtml(it.judge ? it.judge.text : "—")}</span>
+        </div>
+        <div class="srf-bar-row">
+          <div class="srf-segs${it.isRsi ? " srf-segs-rsi" : ""}">${segs}${pos !== null ? `<i class="srf-dot srt-dot-${tone}" style="left:${pos.toFixed(1)}%"></i>` : ""}</div>
+          <b class="srf-rank srt-rank-${tone}">${escapeHtml(rank)}</b>
+        </div>
+      </div>`;
+  };
+
+  wrap.innerHTML = `
+    <div class="srf">
+      <div class="srf-head">
+        <div class="srf-score srt-pill-${headTone}">${goodItems.length}<small>/${judged.length}</small></div>
+        <div class="srf-head-text">
+          <b class="srf-title">${judged.length}개 항목 중 양호 ${goodItems.length} · 주의 ${badItems.length}</b>
+          ${lines.map((l) => `<p class="srf-sub">${l}</p>`).join("")}
+        </div>
+      </div>
+      <div class="srf-colhead"><span>항목</span><span>이 종목</span><span>비교 평균</span><span>판정</span></div>
+      ${groups.map((g) => `<p class="srf-group">${escapeHtml(g.title)}</p>${g.items.map(rowHtml).join("")}`).join("")}
+      <p class="srt-note">막대 = 비교군 안 백분위(왼쪽 하위 → 오른쪽 상위, 유리한 쪽이 상위 — 시가총액·거래대금·52주 위치·등락률은 클수록 상위). RSI는 0~100 구간에서의 위치(왼쪽 과매도 · 가운데 중립 · 오른쪽 과열)입니다. 평균은 위아래 10%를 뺀 평균입니다.</p>
+    </div>`;
+  fitSReportRoundCells(wrap);
+}
+
+// 한 줄에 안 들어가면 소수점을 반올림(2026-09-15 사용자 요청)
+function fitSReportRoundCells(root) {
+  // 요약 칩은 한 칸이라도 넘치면 5개 모두 반올림 — 칸마다 자릿수가 달라 보이지 않게
+  root.querySelectorAll(".srt-chips").forEach((grid) => {
+    const chips = [...grid.querySelectorAll(".srt-chip")];
+    if (chips.some((c) => c.scrollWidth > c.clientWidth + 1)) grid.querySelectorAll("[data-round]").forEach((n) => (n.textContent = n.dataset.round));
   });
-  root.querySelectorAll(".srt-eval").forEach((p) => {
-    if (!overflows(p)) return;
-    if (p.dataset.round) p.innerHTML = p.dataset.round;
-    if (overflows(p) && p.dataset.short) p.innerHTML = p.dataset.short;
+  root.querySelectorAll(".srf-cells [data-round]").forEach((node) => {
+    const box = node.closest(".srt-chip, .srf-cells") || node.parentElement;
+    if (box && box.scrollWidth > box.clientWidth + 1) node.textContent = node.dataset.round;
   });
 }
 window.addEventListener("resize", () => {
-  const section = el("sReportTopSection");
-  if (section && section.querySelector(".srt-card")) fitSReportTopLines(section);
+  ["sReportTopSection", "sReportInlineWrap"].forEach((id) => {
+    const node = el(id);
+    if (node) fitSReportRoundCells(node);
+  });
 });
 
 // ---------- 1. 사업 요약 ----------

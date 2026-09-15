@@ -3144,22 +3144,78 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .oxb-card .oxb-bar.oxb-up { background: #f08c00; }
 .oxb-card .oxb-bar.oxb-down { background: #e03131; }
 
-/* S리포트 요약 카드(2026-09-15): 5개 항목 한 줄씩 + 평가 한 줄 + 더보기 */
-.srt-card { border-radius: 16px; background: var(--subtle-fill); padding: 4px 14px 10px; }
-.srt-row { padding: 11px 0 10px; border-bottom: 1px solid var(--border); }
-.srt-row:last-of-type { border-bottom: none; }
-.srt-line { display: flex; align-items: baseline; gap: 8px; white-space: nowrap; overflow: hidden; }
-.srt-num { flex: 0 0 auto; width: 18px; height: 18px; border-radius: 50%; background: var(--text); color: var(--bg); font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; align-self: center; }
-.srt-label { flex: 0 0 auto; font-size: 15px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
-.srt-value { flex: 0 0 auto; margin-left: auto; font-size: 17px; font-weight: 800; color: var(--text); letter-spacing: -0.4px; white-space: nowrap; }
-.srt-eval { margin: 4px 0 0 26px; font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; letter-spacing: -0.3px; }
-.srt-lv { font-weight: 800; }
-.srt-lv-high { color: #e8590c; }
-.srt-lv-low { color: #1c7ed6; }
-.srt-lv-same { color: var(--text); }
-.srt-more-btn { display: block; width: 100%; margin-top: 6px; padding: 10px 0; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); color: var(--text); font-size: 14px; font-weight: 700; cursor: pointer; }
+/* S리포트(2026-09-15 2차): 핵심 5개 = 오각형 레이더, 더보기 = 종합 판정 + 비교표(평균선 막대) */
+.srt-card { border-radius: 16px; background: var(--subtle-fill); padding: 14px 14px 12px; }
+.srt-radar-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.srt-radar-title { font-size: 15px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+.srt-legend { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.srt-lg-self { display: inline-block; width: 14px; height: 3px; border-radius: 2px; background: #0ca678; }
+.srt-lg-avg { display: inline-block; width: 14px; border-top: 2px dashed #9aa2b1; margin-left: 6px; }
+.srt-radar { display: block; width: 100%; max-width: 360px; height: auto; margin: 4px auto 2px; }
+.srt-rd-ring { fill: none; stroke: var(--border); stroke-width: 1; }
+.srt-rd-avg { fill: none; stroke: #9aa2b1; stroke-width: 1.5; stroke-dasharray: 4 3; }
+.srt-rd-self { fill: rgba(12, 166, 120, 0.18); stroke: #0ca678; stroke-width: 2.2; stroke-linejoin: round; }
+.srt-rd-dot { fill: #0ca678; stroke: var(--bg); stroke-width: 1.5; }
+.srt-rd-label { fill: var(--muted); font-size: 12px; font-weight: 600; }
+.srt-rd-value { fill: var(--text); font-size: 13px; font-weight: 800; }
+.srt-rd-dot.srt-tone-bad { fill: #e03131; }
+.srt-rd-value.srt-tone-good { fill: #0ca678; }
+.srt-rd-value.srt-tone-bad { fill: #e03131; }
+.srt-chips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-top: 6px; }
+.srt-chip { display: flex; align-items: center; gap: 6px; min-width: 0; padding: 8px 10px; border-radius: 10px; background: var(--bg); white-space: nowrap; overflow: hidden; }
+.srt-chip:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.srt-chip-name { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.srt-chip-val { margin-left: auto; font-size: 14px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+.srt-pill { flex: 0 0 auto; display: inline-block; padding: 2px 7px; border-radius: 6px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.srt-pill-good { background: rgba(12, 166, 120, 0.14); color: #087f5b; }
+.srt-pill-same { background: var(--subtle-fill-2); color: var(--muted); }
+.srt-pill-bad { background: rgba(224, 49, 49, 0.12); color: #c92a2a; }
+.srt-pill-neutral { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 1px 6px; }
+.srt-more-btn { display: block; width: 100%; margin-top: 10px; padding: 11px 0; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); color: var(--text); font-size: 14px; font-weight: 700; cursor: pointer; }
 .srt-note { margin: 6px 2px 0; font-size: 10.5px; color: var(--muted); line-height: 1.5; }
-#sReportTopSection #sReportInlineWrap { margin-top: 8px; }
+#sReportTopSection #sReportInlineWrap { margin-top: 10px; }
+.srf { border-radius: 16px; border: 1px solid var(--border); padding: 14px 14px 10px; background: var(--bg); }
+.srf-head { display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.srf-score { flex: 0 0 auto; width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; padding: 0; border: none; }
+.srf-score small { font-size: 12px; font-weight: 700; opacity: 0.8; }
+.srf-head-text { min-width: 0; }
+.srf-title { display: block; font-size: 14.5px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+.srf-sub { margin: 3px 0 0; font-size: 12px; color: var(--muted); line-height: 1.45; }
+.srf-sub b { color: var(--text); font-weight: 700; }
+.srf-colhead, .srf-cells { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr) 62px; align-items: center; column-gap: 6px; }
+.srf-colhead { padding: 10px 0 2px; font-size: 10.5px; font-weight: 600; color: var(--muted); }
+.srf-colhead span:nth-child(n+2), .srf-cells > :nth-child(n+2) { text-align: right; justify-self: end; }
+.srf-group { margin: 12px 0 0; padding: 4px 0; font-size: 11.5px; font-weight: 800; color: var(--text); border-bottom: 1px solid var(--text); letter-spacing: -0.2px; }
+.srf-row { padding: 9px 0 8px; border-bottom: 1px solid var(--border); }
+.srf-cells { white-space: nowrap; overflow: hidden; }
+.srf-name { font-size: 13.5px; font-weight: 700; color: var(--text); overflow: hidden; text-overflow: ellipsis; }
+.srf-name small { display: block; font-size: 10px; font-weight: 500; color: var(--muted); }
+.srf-val { font-size: 14px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+.srf-avg { font-size: 12.5px; font-weight: 600; color: var(--muted); line-height: 1.2; }
+.srf-avg small { display: block; font-size: 9.5px; font-weight: 500; }
+.srf-bar-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.srf-bar { position: relative; flex: 1 1 auto; height: 6px; border-radius: 3px; background: var(--subtle-fill-2); }
+.srf-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; }
+.srt-fill-good { background: #0ca678; }
+.srt-fill-same, .srt-fill-neutral { background: #9aa2b1; }
+.srt-fill-bad { background: #e03131; }
+.srf-tick { position: absolute; top: -4px; width: 2px; height: 14px; margin-left: -1px; border-radius: 1px; background: var(--text); }
+.srf-rank { flex: 0 0 64px; text-align: right; font-size: 12.5px; font-weight: 800; color: var(--muted); white-space: nowrap; letter-spacing: -0.3px; }
+.srt-rank-good { color: #087f5b; }
+.srt-rank-bad { color: #c92a2a; }
+.srt-rank-same, .srt-rank-neutral { color: var(--text); }
+/* 백분위 5칸 막대(D안) — 채운 칸 + 위치 점 */
+.srf-segs { position: relative; flex: 1 1 auto; display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; height: 7px; }
+.srf-seg { display: block; border-radius: 2px; background: var(--subtle-fill-2); }
+.srf-seg.srt-fill-good { background: rgba(12, 166, 120, 0.55); }
+.srf-seg.srt-fill-same, .srf-seg.srt-fill-neutral { background: rgba(154, 162, 177, 0.6); }
+.srf-seg.srt-fill-bad { background: rgba(224, 49, 49, 0.5); }
+.srf-segs-rsi .srf-seg:nth-child(1) { background: rgba(28, 126, 214, 0.18); }
+.srf-segs-rsi .srf-seg:nth-child(5) { background: rgba(224, 49, 49, 0.2); }
+.srf-dot { position: absolute; top: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; border: 2px solid var(--bg); background: #6b7280; box-sizing: border-box; }
+.srt-dot-good { background: #0ca678; }
+.srt-dot-bad { background: #e03131; }
+.srt-dot-same, .srt-dot-neutral { background: #495057; }
 
 /* 재무정보 년간/분기 세로 막대(2026-09-15): 노랑=매출액, 주황=순이익 */
 .fin2-toggle { display: flex; gap: 8px; margin: 2px 0 12px; }
