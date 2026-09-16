@@ -4801,6 +4801,7 @@ function runRankingEntry(idx) {
 // "기업가치"/"시장동향" 상단탭은 같은 topranking 패널을 공유하며, 지금 보여줄 그룹(group)의 항목만
 // 한 줄 가로스크롤 서브내비로 그림
 function renderGroupSubNav(groupKey, extraIdx = -1) {
+  el("topRankingSubNav").classList.remove("sr-rank-nav");
   el("topRankingSubNav").innerHTML = RANKING_ENTRIES.map((entry, i) =>
     entry.group !== groupKey || (entry.hidden && i !== extraIdx)
       ? ""
@@ -5436,8 +5437,6 @@ function syncSectionHeader() {
   showTab("tab.etfFee", isEtfMode); // 운용보수는 ETF 전용
   showTab("tab.cryptoCap", false); // 시가총액 탭은 빼기로 확정(2026-09-12 사용자 재요청) — 최대낙폭만 남김
   showTab("tab.cryptoDrawdown", isCryptoMode);
-  // 핵심지표 "+순위"로 들어온 묶음 보기면 상단 탭을 그 5개로 갈아끼움(2026-09-16) — 정적 탭을 켠 뒤에 불러야 함
-  if (typeof applySrRankTabs === "function") applySrRankTabs();
   // 인사이트 하위 보기도 투자처마다 다름(ETF=변동성 순위만, 비트코인=자산&투자사 제외) — 이 시점엔 인사이트
   // 상태 변수들이 아직 선언 전(TDZ)이라 syncDartTabForMarket과 같은 방식으로 커스텀 이벤트로 느슨하게 연결
   document.dispatchEvent(new CustomEvent("appsectionchange"));
@@ -6545,6 +6544,9 @@ const SR_ASSET_RANK = {
   },
 };
 // 간편검색 목록에 쓰는 항목 이름 — ETF·코인은 매출이 없어 3번 자리가 1년 수익률이라 이름이 다르다
+// 더보기에서 고른 보기의 제목(2026-09-16 사용자 요청: "인사이트" 대신 그 보기 이름)
+const MORE_INSIGHT_LABELS = { firms: "기관 · 자산운용사", rankup: "상승종목", corr: "상관관계", sectorWin: "섹터승률", strategy: "투자방법" };
+
 const SR_ASSET_ITEM_ORDER = {
   etf: ["win", "ret", "rev", "vol", "rsi", "div", "fee", "w52"],
   crypto: ["win", "ret", "rev", "vol", "rsi", "mcap", "w52"],
@@ -6556,35 +6558,18 @@ const SR_ASSET_ITEM_LABEL = {
 
 // var로 둔 이유: 앱 부팅 때 syncSectionHeader가 이 파일 위쪽에서 먼저 불리는데, let이면 아직 TDZ라 참조 오류가 난다
 var srRankActive = null; // {group, k} — 목록 화면 상단 탭을 이 묶음 5개로 갈아끼운 상태(아니면 null)
-// 상단 탭 줄을 묶음 5개로 교체하거나 원래대로 되돌림 — syncSectionHeader가 정적 탭을 켠 "뒤"에 불린다
+// 묶음 5개를 목록 위 하위 버튼 줄(#topRankingSubNav)에 그린다 — 상단 탭(인기종목·승률…)은 그대로 둔다
 function applySrRankTabs() {
-  const host = el("fhTabs");
-  if (!host) return;
-  const box = el("fhSrTabs");
+  const nav = el("topRankingSubNav");
   const group = srRankActive ? SR_RANK_GROUPS.find((g) => g.key === srRankActive.group) : null;
-  if (!group) {
-    if (box) box.remove();
-    host.classList.remove("fh-tabs-sr");
-    return;
-  }
-  host.querySelectorAll(":scope > .fh-tab").forEach((b) => (b.style.display = "none"));
-  host.classList.add("fh-tabs-sr");
-  const node = box || document.createElement("div");
-  if (!box) {
-    node.id = "fhSrTabs";
-    node.className = "fh-sr-tabs";
-    host.appendChild(node);
-  }
-  node.innerHTML = group.items
-    .map((it) => `<button type="button" class="fh-sr-tab${it.k === srRankActive.k ? " active" : ""}" data-sr-tab="${escapeHtml(it.k)}">${escapeHtml(it.label)}</button>`)
+  if (!nav || !group) return;
+  nav.classList.add("sr-rank-nav"); // 5개가 좌우 스크롤 없이 한 줄에 들어가게
+  nav.innerHTML = group.items
+    .map((it) => `<button type="button" class="cat-btn${it.k === srRankActive.k ? " active" : ""}" data-sr-tab="${escapeHtml(it.k)}">${escapeHtml(it.label)}</button>`)
     .join("");
 }
 function clearSrRankTabs() {
   srRankActive = null;
-  const box = el("fhSrTabs");
-  if (box) box.remove();
-  const host = el("fhTabs");
-  if (host) host.classList.remove("fh-tabs-sr");
 }
 // 항목 하나의 순위 화면 열기 — section이 etf/crypto면 묶음 없이 그 항목 랭킹으로 바로
 function openSReportRank(itemKey, section, market) {
@@ -6619,16 +6604,15 @@ function openSReportRank(itemKey, section, market) {
   switchTab(TAB_ORDER.indexOf("topranking"));
   el("tabValuationBtn").classList.remove("active");
   tabTrendBtn.classList.remove("active");
-  el("topRankingSubNav").innerHTML = "";
   showRankingGroup(item.tab);
   item.run();
   setBottomNavActive(bottomNavKeyForSection());
   syncSectionHeader();
-  applySrRankTabs();
+  applySrRankTabs(); // 결과 위 하위 버튼 줄에 묶음 5개
 }
 // 묶음 안에서 다른 항목으로 갈아타기
 document.addEventListener("click", (e) => {
-  const btn = e.target.closest(".fh-sr-tab");
+  const btn = e.target.closest("[data-sr-tab]");
   if (!btn) return;
   openSReportRank(btn.dataset.srTab, "stocks", getWatchlistActiveMarket() === "KR" ? "kr" : "us");
 });
@@ -9876,16 +9860,8 @@ async function renderValueRanking(
         .map(
           (r, i) => `
         <tr>
-          <td><span class="ticker-cell rank-logo">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b>${surgeWarningEmoji(r.fiveDayExtremes)}</span><br><span class="muted" style="font-size:11px;">${escapeHtml(TICKER_TO_KOREAN_NAME[r.symbol] || r.name || "")}</span></td>
-          <td>${
-            r.price !== undefined && r.price !== null
-              ? `${priceChartLink(r.symbol, "$" + r.price.toFixed(2))}${
-                  r.changePct !== null && r.changePct !== undefined
-                    ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
-                    : ""
-                }`
-              : "N/A"
-          }</td>
+          <td>${rankNameCellHtml(r.symbol, tickerLogoHtml(r.symbol), rankDisplayName(r.symbol, r.name, false))}${surgeWarningEmoji(r.fiveDayExtremes)}</td>
+          <td>${rankPriceCellHtml(r.symbol, r.price, "USD", r.changePct)}</td>
           <td>${metricCellFn(r)}</td>${showGrade ? `<td>${gradeCellHtml(r)}</td>` : ""}
         </tr>`
         )
@@ -9893,7 +9869,7 @@ async function renderValueRanking(
       resultsEl.innerHTML = `
         ${rankScanCaptionHtml(ranked.length, hasMore)}
         ${TAP_HINT_HTML}
-        <table class="top30-table">
+        <table class="top30-table rk-table">
           <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}<th${metricExplain ? ` data-explain="${escapeHtml(metricExplain)}"` : ""}>${metricHeaderHtml}</th>${showGrade ? RANK_TH_WINRATE : ""}</tr></thead>
           <tbody>${rows}</tbody>
         </table>
@@ -10072,14 +10048,10 @@ async function renderKrRanking(dataPromiseFn, label, statusEl, resultsEl, { mapF
 
     const rowHtml = (r, i) => `
       <tr>
-        <td><span class="ticker-cell rank-logo">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(nameMap.get(r.symbol) || r.symbol)}</b>${r.fiveDayExtremes ? surgeWarningEmoji(r.fiveDayExtremes) : ""}</span></td>
+        <td>${rankNameCellHtml(r.symbol, tickerLogoHtml(r.symbol), nameMap.get(r.symbol) || r.symbol)}${r.fiveDayExtremes ? surgeWarningEmoji(r.fiveDayExtremes) : ""}</td>
         <td>${
           r.price !== undefined && r.price !== null
-            ? `${priceChartLink(r.symbol, fmtPrice(r.price, r.currency))}${
-                r.changePct !== undefined && r.changePct !== null
-                  ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
-                  : ""
-              }`
+            ? rankPriceCellHtml(r.symbol, r.price, r.currency, r.changePct)
             : "N/A"
         }</td>
         <td>${metricCellFn(r)}</td>${showGrade ? `<td>${gradeCellHtml(r)}</td>` : ""}
@@ -10090,7 +10062,7 @@ async function renderKrRanking(dataPromiseFn, label, statusEl, resultsEl, { mapF
       const rest = top50.slice(initialCount);
       resultsEl.innerHTML = `
         ${TAP_HINT_HTML}
-        <table class="top30-table">
+        <table class="top30-table rk-table">
           <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}<th${metricExplain ? ` data-explain="${escapeHtml(metricExplain)}"` : ""}>${metricHeaderHtml}</th>${showGrade ? RANK_TH_WINRATE : ""}</tr></thead>
           <tbody>${visible.map(rowHtml).join("")}</tbody>
         </table>
@@ -10159,14 +10131,10 @@ async function renderKrRankingStaged(label, statusEl, resultsEl, { mapFn = (list
         .map(
           (r, i) => `
         <tr>
-          <td><span class="ticker-cell rank-logo">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(nameMap.get(r.symbol) || r.symbol)}</b>${r.fiveDayExtremes ? surgeWarningEmoji(r.fiveDayExtremes) : ""}</span></td>
+          <td>${rankNameCellHtml(r.symbol, tickerLogoHtml(r.symbol), nameMap.get(r.symbol) || r.symbol)}${r.fiveDayExtremes ? surgeWarningEmoji(r.fiveDayExtremes) : ""}</td>
           <td>${
           r.price !== undefined && r.price !== null
-            ? `${priceChartLink(r.symbol, fmtPrice(r.price, r.currency))}${
-                r.changePct !== undefined && r.changePct !== null
-                  ? `<br><span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}" style="font-size:11px;">(${fmtPct(r.changePct)})</span>`
-                  : ""
-              }`
+            ? rankPriceCellHtml(r.symbol, r.price, r.currency, r.changePct)
             : "N/A"
         }</td>
           <td>${metricCellFn(r)}</td>${showGrade ? `<td>${gradeCellHtml(r)}</td>` : ""}
@@ -10176,7 +10144,7 @@ async function renderKrRankingStaged(label, statusEl, resultsEl, { mapFn = (list
       resultsEl.innerHTML = `
         ${rankScanCaptionHtml(ranked.length, hasMore)}
         ${TAP_HINT_HTML}
-        <table class="top30-table">
+        <table class="top30-table rk-table">
           <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}<th${metricExplain ? ` data-explain="${escapeHtml(metricExplain)}"` : ""}>${metricHeaderHtml}</th>${showGrade ? RANK_TH_WINRATE : ""}</tr></thead>
           <tbody>${rows}</tbody>
         </table>
@@ -10316,7 +10284,7 @@ async function runValueMarketCap() {
     sortFn: (a, b) => (b.marketCap || 0) - (a.marketCap || 0),
     metricHeaderHtml: "시가총액",
     metricExplain: "시가총액 — 현재가 × 발행 주식 수, 즉 회사 전체의 시장 가격입니다.",
-    metricCellFn: (r) => (r.marketCap ? fmtCompactCurrency(r.marketCap, r.currency) : "N/A"),
+    metricCellFn: (r) => (r.marketCap ? `<b class="rank-hl">${fmtAmountUnified(r.marketCap, r.currency)}</b>` : "N/A"),
     noteHtml: VALUE_DISCLAIMER,
   });
 }
@@ -12459,6 +12427,7 @@ function openEtfMetricTab(key) {
   el("tabValuationBtn").classList.remove("active");
   tabTrendBtn.classList.remove("active");
   setCarouselViewTitle(ETF_METRIC_TABS[key].title);
+  el("topRankingSubNav").classList.remove("sr-rank-nav");
   el("topRankingSubNav").innerHTML = ""; // ETF는 상단 탭이 곧 항목이라 서브내비를 쓰지 않음
   showRankingGroup("trend");
   runEtfMetricTab();
@@ -12596,6 +12565,7 @@ function openCryptoMetricTab(key) {
   el("tabValuationBtn").classList.remove("active");
   tabTrendBtn.classList.remove("active");
   setCarouselViewTitle(conf.title);
+  el("topRankingSubNav").classList.remove("sr-rank-nav");
   el("topRankingSubNav").innerHTML = ""; // 상단 탭이 곧 항목이라 서브내비를 쓰지 않음
   showRankingGroup("trend");
   runCryptoTrend();
@@ -12619,6 +12589,7 @@ function openStockMetricTab(key) {
   el("tabValuationBtn").classList.remove("active");
   tabTrendBtn.classList.remove("active");
   setCarouselViewTitle(STOCK_METRIC_TABS[key].title);
+  el("topRankingSubNav").classList.remove("sr-rank-nav");
   el("topRankingSubNav").innerHTML = "";
   showRankingGroup("trend");
   STOCK_METRIC_TABS[key].run();
@@ -12933,7 +12904,10 @@ function closeInsightOverlay() {
   panel.classList.remove("open");
   window.setTimeout(() => {
     panel.style.display = "none";
-    insightOverlayHomes.forEach((home, n) => home.parent.insertBefore(n, home.next));
+    insightOverlayHomes.forEach((home, n) => {
+      if (n.classList && n.classList.contains("top30-sub-nav")) n.style.display = ""; // 감춰둔 카테고리 칩 줄 복구
+      home.parent.insertBefore(n, home.next);
+    });
     insightOverlayHomes.clear();
     // 인사이트 화면은 원래 보던 카테고리로 되돌리고, 다음 진입 때 다시 그리게 표시
     if (insightOverlayPrevCategory) {
@@ -12969,13 +12943,17 @@ function openInsightSectionOverlay(section, category) {
   appSectionMode = section === "etf" ? "etf" : section === "crypto" ? "crypto" : "stocks";
   if (section === "kr" || section === "us") setAppMarketMode(section); // 내부에서 syncSectionHeader까지 돈다
   else syncSectionHeader();
-  el("insightOverlayTitle").innerHTML = `<span class="insight-overlay-mark">${insightSectionIconHtml(section)}</span> 인사이트`;
+  const catLabel = category ? MORE_INSIGHT_LABELS[category] : null;
+  el("insightOverlayTitle").innerHTML = `<span class="insight-overlay-mark">${insightSectionIconHtml(section)}</span> ${escapeHtml(catLabel || "인사이트")}`;
   Array.from(el("panelInsight").children).forEach((n) => {
     if (!insightOverlayHomes.has(n)) insightOverlayHomes.set(n, { parent: n.parentNode, next: n.nextSibling });
     body.appendChild(n);
   });
   panel.style.display = "flex";
   requestAnimationFrame(() => panel.classList.add("open"));
+  // 고른 보기 하나만 보여주므로 카테고리 칩 줄은 감춘다(닫을 때 원래대로)
+  const catNav = body.querySelector(".top30-sub-nav");
+  if (catNav) catNav.style.display = catLabel ? "none" : "";
   syncInsightCategoryVisibility(); // 이 투자처에 없는 하위 보기는 감추고, 지금 카테고리가 빠졌으면 첫 항목으로
   setInsightCategoryActive(insightActiveCategory);
   updateFirmsNavVisibility();
@@ -15593,11 +15571,10 @@ function moversTableHtml(scored, rankNote, metric) {
   const m = metric || { header: "연평균<br>상승", cell: (r) => stockRet10CellHtml(r.symbol) };
   const rows = scored
     .map((r, i) => {
-      const changeClass = r.changePct >= 0 ? "delta-up" : "delta-down";
       return `
       <tr>
-        <td><span class="ticker-cell rank-logo">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b>${surgeWarningEmoji(r.fiveDayExtremes)}</span><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
-        <td>${priceChartLink(r.symbol, "$" + r.price.toFixed(2))}<br><span class="${changeClass}" style="font-size:11px;">(${fmtPct(r.changePct)})</span></td>
+        <td>${rankNameCellHtml(r.symbol, tickerLogoHtml(r.symbol), rankDisplayName(r.symbol, r.name, false))}${surgeWarningEmoji(r.fiveDayExtremes)}</td>
+        <td>${rankPriceCellHtml(r.symbol, r.price, "USD", r.changePct)}</td>
         <td>${m.cell(r)}</td>
       </tr>`;
     })
@@ -15605,10 +15582,8 @@ function moversTableHtml(scored, rankNote, metric) {
 
   return `
       <div class="popular-table-wrap">
-        <table class="top30-table popular-table">
-          <thead>
-            <tr><th>기업명</th><th>현재가<br>(등락률)</th><th>${m.header}</th></tr>
-          </thead>
+        <table class="top30-table rk-table">
+          <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}<th>${m.header}</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
       </div>

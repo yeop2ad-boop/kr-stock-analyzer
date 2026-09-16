@@ -615,6 +615,9 @@ body[data-header-tone="light"] .carousel-panel .cat-btn.active:not(.top-ranking-
 
 /* Top랭킹 탭 — 기업가치·미래예측 서브버튼. 2026-09-10 사용자 요청: 아이콘(이모지) 없이 글자만, 크기 확대 */
 .top-ranking-sub-nav { padding-bottom: 2px; }
+/* 핵심지표 "+순위" 묶음 5개 — 좌우 스크롤 없이 한 줄(2026-09-16 사용자 요청) */
+.top30-sub-nav.sr-rank-nav { display: flex; gap: 4px; overflow-x: visible; }
+.sr-rank-nav .cat-btn { flex: 1 1 0; min-width: 0; padding: 7px 2px; font-size: 12.5px; letter-spacing: -0.6px; white-space: nowrap; }
 .top-ranking-tab { display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
 .top-ranking-tab .btn-icon-svg { display: block; flex: none; }
 /* 기업가치·미래예측·인사이트 서브내비 글자 확대(2026-09-10 사용자 요청) */
@@ -1567,7 +1570,6 @@ table.s-report-table td:first-child { text-align: left; font-weight: 600; }
 .wizard-option-sub { display: block; margin-top: 4px; font-size: 12px; font-weight: 400; color: var(--muted); }
 /* 간편검색(2026-09-16 개편): 투자처 = 하단 네비와 같은 마크 + 이름 + 한 줄 설명 */
 /* 더보기 > 인사이트 5개(2026-09-16): 항목 앞 이모지, 하위 투자처 버튼에는 앱 마크 */
-.more-insight-emoji { flex: none; width: 24px; text-align: center; font-size: 16px; line-height: 1; }
 /* 하위 투자처는 글씨만, 한 줄에 나란히(2026-09-16 사용자 요청) */
 .more-insight-nav { flex-wrap: nowrap; }
 
@@ -2762,14 +2764,6 @@ table.top30-table th, table.popular-table th { white-space: nowrap; }
 .fh-tab.active::after { content: ""; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 50%; height: 3px; border-radius: 99px; background: currentColor; }
 body[data-header-tone="dark"] .fh-tab { color: rgba(255, 255, 255, 0.55); }
 body[data-header-tone="dark"] .fh-tab.active { color: #fff; }
-/* 핵심지표 "+순위" 묶음 보기(2026-09-16): 상단 탭 자리에 5개가 좌우 스크롤 없이 한 줄로 딱 떨어지게 */
-.fh-tabs-sr { flex: 1 1 auto; width: 100%; gap: 0; }
-.fh-sr-tabs { display: flex; flex: 1 1 auto; width: 100%; min-width: 0; justify-content: space-between; gap: 2px; }
-.fh-sr-tab { position: relative; flex: 1 1 0; min-width: 0; background: none; border: none; padding: 2px 0 8px; font-size: 14.5px; font-weight: 800; letter-spacing: -0.6px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
-.fh-sr-tab.active { color: var(--text); }
-.fh-sr-tab.active::after { content: ""; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 60%; height: 3px; border-radius: 99px; background: currentColor; }
-body[data-header-tone="dark"] .fh-sr-tab { color: rgba(255, 255, 255, 0.55); }
-body[data-header-tone="dark"] .fh-sr-tab.active { color: #fff; }
 
 .fh-title-actions { margin-left: auto; display: flex; align-items: center; gap: 2px; flex: none; }
 /* 랭킹 캡션 옆 실시간 새로고침(제목줄에서 이동, 2026-08-31) — 작고 둥근 아이콘 버튼 */
@@ -3257,22 +3251,21 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .srf-line .srf-rank { flex: none; font-size: 12px; font-weight: 600; text-align: right; }
 .srf-line .srt-pill { justify-self: end; }
 /* 등수 칸(2026-09-15 4차): 판정 알약 대신 "12/200위 (상위 6%)🔥" — 값 | 등수 2칸 */
-.srf-line { grid-template-columns: minmax(0, 1fr) auto auto; column-gap: 10px; }
-.srf-line .srf-rank { font-size: 12.5px; font-weight: 700; color: var(--text); text-align: right; white-space: nowrap; }
+.srf-line { column-gap: 8px; }
+.srf-line .srf-rank { min-width: 0; overflow: hidden; font-size: 12.5px; font-weight: 700; color: var(--text); text-align: right; white-space: nowrap; }
 .srf-line .srf-rank-sub { font-weight: 500; color: var(--muted); }
-.srf-line .srf-rank-fire { color: #d9480f; }
-.srf-line .srf-rank-warn { color: #c92a2a; }
+/* 등수 글씨 색은 모든 항목 동일 — 상위·하위 10%는 🔥⚠️ 마크로만 구분(2026-09-16 사용자 요청) */
 .srf-line .srf-rank b { font-weight: 800; }
 .srf-mark { font-style: normal; margin-left: 3px; }
 /* 등수 칸 정리(2026-09-15): "🔥 36위 /200" — 몇 위를 크게, 전체 수는 작게 */
-.srf-line { grid-template-columns: minmax(0, 1fr) auto minmax(84px, auto); }
+/* 2026-09-16 사용자 요청: 행마다 칸 폭이 달라 세로 정렬이 어긋나 보여 값·등수 칸을 고정 폭으로 */
+.srf-line { grid-template-columns: minmax(0, 1fr) minmax(0, 76px) minmax(0, 88px); }
 .srf-line .srf-name { font-size: 14.5px; }
 .srf-line .srf-val { font-size: 14px; font-weight: 700; color: var(--muted); }
 .srf-line .srf-rank { display: flex; align-items: baseline; justify-content: flex-end; gap: 1px; }
 .srf-line .srf-rank .srf-mark { margin: 0 3px 0 0; font-size: 12px; }
 .srf-rank-no { font-size: 16px; font-weight: 900; color: var(--text); letter-spacing: -0.4px; }
-.srf-rank-fire .srf-rank-no { color: #d9480f; }
-.srf-rank-warn .srf-rank-no { color: #1c7ed6; } /* 하위 10% 경고 등수는 파란 글씨(2026-09-15 사용자 요청) */
+
 .srf-rank-of { font-size: 11px; font-weight: 600; color: var(--muted); }
 /* RSI 강한·약한 매수/매도 — 등수 숫자와 같은 크기·굵기, 색은 검정으로 통일(2026-09-15 사용자 요청) */
 .srf-grade, .srf-grade.srt-rank-good, .srf-grade.srt-rank-bad, .srf-grade.srt-rank-neutral { font-size: 16px; font-weight: 900; letter-spacing: -0.4px; color: var(--text); }
