@@ -2217,10 +2217,9 @@ body[data-header-tone="dark"] .fh-market-label { color: #fff; }
 /* 암호화폐 상세(2026-09-01): 개요·invest점수(상승압력)·주요 뉴스만 — 매출액 등 주식 전용 탭·버튼 숨김 */
 /* 매출액 서브탭 숨김: 코인(2026-09-01) + ETF(2026-09-03 사용자 요청 — 펀드라 매출 개념 없음).
    코인 요약 메타(업종/거래소) 숨김 규칙은 2026-09-03 섹터·상장거래소 전용 표기로 대체되어 제거 */
+/* 2026-09-16 사용자 요청: ETF는 이 자리를 "보유종목" 탭으로 쓰므로 코인에서만 숨긴다 */
 .company-panel.crypto-detail #summarySubtabRevenueBtn,
-.company-panel.crypto-detail .summary-subtab-panel[data-summary-subtabpanel="revenue"],
-.company-panel.etf-detail #summarySubtabRevenueBtn,
-.company-panel.etf-detail .summary-subtab-panel[data-summary-subtabpanel="revenue"] { display: none !important; }
+.company-panel.crypto-detail .summary-subtab-panel[data-summary-subtabpanel="revenue"] { display: none !important; }
 /* 코인 상세에도 과거분석·미래예측·S리포트 3버튼은 표시(2026-09-02 — 코인 전용 렌더러 연결) */
 
 /* 더보기 아이콘은 살짝 크게 유지하되 흐름 높이는 동일(2.5+29-1.5=30) — 라벨 줄 정렬 유지 */

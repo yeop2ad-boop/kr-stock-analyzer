@@ -5746,12 +5746,14 @@ async function runAnalysis(ticker) {
       el("sReportTopSection").innerHTML = `<p class="error-inline">핵심지표를 계산하지 못했습니다: ${escapeHtml(e.message || "")}</p>`;
     });
 
-    // 매출액(재무정보) 탭은 주식 전용 — ETF·코인은 매출이 없어 탭째 감춘다.
-    // ETF의 보유 종목은 renderSummary가 핵심지표 카드 아래에 붙인다(2026-09-16 사용자 요청)
-    el("summarySubtabRevenueBtn").style.display = isCryptoDetail || isEtfDetail ? "none" : "";
+    // 하위 탭 3번째 자리: 주식은 매출액(재무정보), ETF는 보유종목, 코인은 아예 감춤(2026-09-16 사용자 요청)
+    el("summarySubtabRevenueBtn").querySelector(".tab-label").textContent = isEtfDetail ? "보유종목" : "매출액";
+    el("financialsHeading").textContent = isEtfDetail ? "보유 종목" : "재무정보";
+    el("summarySubtabRevenueBtn").style.display = isCryptoDetail ? "none" : "";
     if (isCryptoDetail || isEtfDetail) {
       FIN2_STATE.token++; // 매출액 차트가 없는 자산 — 앞서 연 주식의 늦게 도착한 차트가 숨은 영역에 그려지지 않게
-      el("financialsSection").innerHTML = "";
+      // ETF는 renderSummary가 이 자리에 보유 종목을 넣으므로 비우지 않는다(비우면 늦게 끝난 쪽이 상대를 지움)
+      if (!isEtfDetail) el("financialsSection").innerHTML = "";
     } else {
       // 2026-09-15 사용자 요청: 년간/분기 세로 막대 차트 한 장으로 통합(분기 실적 섹션은 "분기" 버튼으로 이동, 영업이익 삭제)
       renderFinancials(ticker, meta.currency).catch((e) => {
@@ -7006,11 +7008,12 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     else el("summarySection").appendChild(wrap);
   });
 
-  // ETF 보유 종목은 핵심지표 카드 바로 아래에 상시 표시 — 2026-09-16 사용자 요청(버튼·매출액 탭 대신)
+  // ETF 보유 종목은 하위 탭 "보유종목"(주식의 매출액 자리)에만 표시 — 2026-09-16 사용자 요청
   if (summaryAssetSection === "etf" && holdingsAnchor) {
     holdingsAnchor.style.display = "block";
-    const sReportSection = el("sReportTopSection").parentNode; // 핵심지표 패널의 <section>
-    sReportSection.appendChild(holdingsAnchor);
+    const finSection = el("financialsSection");
+    finSection.innerHTML = "";
+    finSection.appendChild(holdingsAnchor);
     renderEtfHoldingsBlock(meta.symbol || quote.symbol || "", isKrTicker(meta.symbol || quote.symbol || ""));
   }
 
@@ -11985,7 +11988,7 @@ const ASSET_TREND_METRICS = {
     label: "52주최저",
     header: "52주 구간 위치",
     sort: (a, b) => (a.week52RangePct ?? Infinity) - (b.week52RangePct ?? Infinity),
-    cell: (r) => (r.week52RangePct === null || r.week52RangePct === undefined ? "N/A" : `${r.week52RangePct.toFixed(1)}%`),
+    cell: (r) => (r.week52RangePct === null || r.week52RangePct === undefined ? "N/A" : `<b class="rank-hl">${r.week52RangePct.toFixed(1)}%</b>`),
     note: "52주 구간 위치(0%=52주 최저, 100%=52주 최고) — 낮을수록 저점에 가깝습니다.",
   },
   volume: {
@@ -11994,7 +11997,7 @@ const ASSET_TREND_METRICS = {
     label: "거래대금",
     header: "거래대금<br>(5일 평균)",
     sort: (a, b) => (b.recentDollarVolume || 0) - (a.recentDollarVolume || 0),
-    cell: (r) => (r.recentDollarVolume ? fmtCompactCurrency(r.recentDollarVolume, r.currency) : "N/A"),
+    cell: (r) => (r.recentDollarVolume ? `<b class="rank-hl">${fmtCompactCurrency(r.recentDollarVolume, r.currency)}</b>` : "N/A"),
     note: "최근 5거래일 평균 거래대금(종가×거래량) 기준입니다.",
   },
   surge: {
@@ -12003,7 +12006,7 @@ const ASSET_TREND_METRICS = {
     label: "상승률",
     header: "당일 등락률",
     sort: (a, b) => (b.changePct ?? -Infinity) - (a.changePct ?? -Infinity),
-    cell: (r) => (r.changePct === null || r.changePct === undefined ? "N/A" : `<span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}">${fmtPct(r.changePct)}</span>`),
+    cell: (r) => (r.changePct === null || r.changePct === undefined ? "N/A" : `<b class="${r.changePct >= 0 ? "delta-up" : "delta-down"}">${fmtPct(r.changePct)}</b>`),
     note: "전일 종가 대비 당일 등락률 기준입니다.",
   },
   plunge: {
@@ -12012,7 +12015,7 @@ const ASSET_TREND_METRICS = {
     label: "하락률",
     header: "당일 등락률",
     sort: (a, b) => (a.changePct ?? Infinity) - (b.changePct ?? Infinity),
-    cell: (r) => (r.changePct === null || r.changePct === undefined ? "N/A" : `<span class="${r.changePct >= 0 ? "delta-up" : "delta-down"}">${fmtPct(r.changePct)}</span>`),
+    cell: (r) => (r.changePct === null || r.changePct === undefined ? "N/A" : `<b class="${r.changePct >= 0 ? "delta-up" : "delta-down"}">${fmtPct(r.changePct)}</b>`),
     note: "전일 종가 대비 당일 등락률 기준입니다.",
   },
   // 2026-09-04 개편: 상승 압력 → 연평균 상승(연복리 수익률(CAGR)), 투자 안정 → 삭제(10년평균 승률로 대체, winrate 항목과 통합)
