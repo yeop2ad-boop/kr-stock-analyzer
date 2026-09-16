@@ -9975,6 +9975,20 @@ function makeIncrementalScan(getTickers, worker, concurrency) {
 const ensureKrFullMetrics = makeIncrementalScan(getKrUniverseTickers, (symbol) => getFullMetrics(symbol).catch(() => null), 5);
 
 let krDailyChangesPromise = null;
+// 거래대금이 어느 날 기준인지 한 줄로 — 행들이 쓴 거래일 중 가장 흔한 날짜(2026-09-16 사용자 요청)
+function volumeDateNoteHtml(rows) {
+  const counts = new Map();
+  (rows || []).forEach((r) => {
+    if (!Number.isFinite(r.dollarVolumeAt)) return;
+    const d = new Date(r.dollarVolumeAt * 1000);
+    const key = `${d.getMonth() + 1}월 ${d.getDate()}일`;
+    counts.set(key, (counts.get(key) || 0) + 1);
+  });
+  if (!counts.size) return "";
+  const [label] = [...counts.entries()].sort((a, b) => b[1] - a[1])[0];
+  return `<p class="rank-asof-note">거래대금 ${escapeHtml(label)} 기준</p>`;
+}
+
 function getKrDailyChanges() {
   if (!krDailyChangesPromise) {
     krDailyChangesPromise = (async () => {
@@ -9985,6 +9999,24 @@ function getKrDailyChanges() {
         const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
         if (changePct === null || !meta || meta.regularMarketPrice === undefined) return null;
         const volume = meta.regularMarketVolume !== undefined ? meta.regularMarketVolume : null;
+        // 거래대금(2026-09-16 사용자 요청): 오늘 거래가 아직 없거나 장이 끝나 값이 비면 바로 전 거래일 값을 쓰고,
+        // 어느 날 기준인지(dollarVolumeAt)도 같이 넘긴다. 5일 일봉에서 거래량이 잡힌 마지막 날을 고른다.
+        const res = chart.chart.result[0];
+        const q = res.indicators && res.indicators.quote && res.indicators.quote[0];
+        let dollarVolume = null;
+        let dollarVolumeAt = null;
+        if (q && Array.isArray(res.timestamp)) {
+          for (let i = res.timestamp.length - 1; i >= 0; i--) {
+            const v = q.volume ? q.volume[i] : null;
+            const c = q.close ? q.close[i] : null;
+            if (Number.isFinite(v) && v > 0 && Number.isFinite(c)) {
+              dollarVolume = c * v;
+              dollarVolumeAt = res.timestamp[i];
+              break;
+            }
+          }
+        }
+        if (dollarVolume === null && volume) dollarVolume = meta.regularMarketPrice * volume;
         return {
           symbol,
           name: meta.shortName || meta.longName || symbol,
@@ -9992,7 +10024,8 @@ function getKrDailyChanges() {
           currency: meta.currency,
           changePct,
           volume,
-          dollarVolume: volume !== null ? meta.regularMarketPrice * volume : null,
+          dollarVolume,
+          dollarVolumeAt,
         };
       });
       return results.filter(Boolean);
@@ -10007,7 +10040,7 @@ function getKrDailyChanges() {
 // dataPromiseFn: getKrDailyChanges(가벼운 스캔, 상승률·하락률·인기종목용) — 무거운 스캔(기업가치·상승압력)은
 // 이제 renderKrRankingStaged가 ensureKrFullMetrics로 단계적으로 처리함
 // showGrade: 투자안정 점수를 별도 열로 덧붙일지(투자안정 랭킹 자체는 그 점수가 이미 metricCellFn에 있으므로 false)
-async function renderKrRanking(dataPromiseFn, label, statusEl, resultsEl, { mapFn = (list) => list, sortFn, metricHeaderHtml, metricExplain, metricCellFn, noteHtml, showGrade = false }) {
+async function renderKrRanking(dataPromiseFn, label, statusEl, resultsEl, { mapFn = (list) => list, sortFn, metricHeaderHtml, metricExplain, metricCellFn, noteHtml, showGrade = false, prefixHtml }) {
   resultsEl.innerHTML = "";
   statusEl.style.display = "block";
   statusEl.textContent = `코스피200+코스닥150 - ${label} 계산 중(약 1분 소요될 수 있어요)...`;
@@ -10041,6 +10074,7 @@ async function renderKrRanking(dataPromiseFn, label, statusEl, resultsEl, { mapF
       const visible = top50.slice(0, initialCount);
       const rest = top50.slice(initialCount);
       resultsEl.innerHTML = `
+        ${typeof prefixHtml === "function" ? prefixHtml(top50) : prefixHtml || ""}
         ${TAP_HINT_HTML}
         <table class="top30-table rk-table">
           <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}<th${metricExplain ? ` data-explain="${escapeHtml(metricExplain)}"` : ""}>${metricHeaderHtml}</th>${showGrade ? RANK_TH_WINRATE : ""}</tr></thead>
@@ -10241,7 +10275,7 @@ async function runValuePer() {
     sortFn: (a, b) => (a.per ?? Infinity) - (b.per ?? Infinity),
     metricHeaderHtml: `PER${THEAD_SUB("현재가")}`,
     metricExplain: "PER — 현재가를 주당순이익(EPS)으로 나눈 배수입니다. 지금 이익 수준이 유지된다면 원금 회수에 몇 년이 걸리는지로 읽고, 낮을수록 저평가로 봅니다.",
-    metricCellFn: (r) => (r.per === null || r.per === undefined ? "N/A" : `${r.per.toFixed(1)}배`),
+    metricCellFn: (r) => (r.per === null || r.per === undefined ? "N/A" : `<b class="rank-hl">${r.per.toFixed(1)}배</b>`),
     noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> PER = 현재가 ÷ 최근 회계연도 EPS(낮을수록 저평가), 적자 기업은 N/A 처리되어 순위에서 제외됩니다. 투자 자문이 아닙니다.</p>`,
   });
 }
@@ -12697,7 +12731,7 @@ async function runValueOperatingMargin() {
     sortFn: (a, b) => (b.operatingMarginQuarterly ?? -Infinity) - (a.operatingMarginQuarterly ?? -Infinity),
     metricHeaderHtml: `영업이익률${THEAD_SUB("직전분기")}`,
     metricExplain: "영업이익률 — 직전 분기 영업이익 ÷ 같은 분기 매출액입니다. 팔아서 남기는 비율이라 높을수록 본업 수익성이 좋습니다.",
-    metricCellFn: (r) => (r.operatingMarginQuarterly === null || r.operatingMarginQuarterly === undefined ? "N/A" : `${r.operatingMarginQuarterly.toFixed(1)}%`),
+    metricCellFn: (r) => (r.operatingMarginQuarterly === null || r.operatingMarginQuarterly === undefined ? "N/A" : `<b class="rank-hl">${r.operatingMarginQuarterly.toFixed(1)}%</b>`),
     noteHtml: OPERATING_MARGIN_NOTE,
   });
 }
@@ -12708,7 +12742,7 @@ async function runValueRoe() {
     sortFn: (a, b) => (b.roeQuarterly ?? -Infinity) - (a.roeQuarterly ?? -Infinity),
     metricHeaderHtml: `ROE${THEAD_SUB("직전분기")}`,
     metricExplain: "ROE — 직전 분기 순이익 ÷ 직전 분기말 자기자본입니다(연환산하지 않은 분기 기준). 주주 돈으로 얼마를 벌었는지를 뜻합니다.",
-    metricCellFn: (r) => (r.roeQuarterly === null || r.roeQuarterly === undefined ? "N/A" : `${r.roeQuarterly.toFixed(1)}%`),
+    metricCellFn: (r) => (r.roeQuarterly === null || r.roeQuarterly === undefined ? "N/A" : `<b class="rank-hl">${r.roeQuarterly.toFixed(1)}%</b>`),
     noteHtml: ROE_NOTE,
   });
 }
@@ -12719,7 +12753,7 @@ async function runValueDebtRatio() {
     sortFn: (a, b) => (a.debtRatioQuarterly ?? Infinity) - (b.debtRatioQuarterly ?? Infinity),
     metricHeaderHtml: `부채비율${THEAD_SUB("직전분기")}`,
     metricExplain: "부채비율 — 직전 분기말 총부채 ÷ 자기자본입니다. 낮을수록 빚 부담이 적고, 업종에 따라 적정 수준이 다릅니다.",
-    metricCellFn: (r) => (r.debtRatioQuarterly === null || r.debtRatioQuarterly === undefined ? "N/A" : `${r.debtRatioQuarterly.toFixed(1)}%`),
+    metricCellFn: (r) => (r.debtRatioQuarterly === null || r.debtRatioQuarterly === undefined ? "N/A" : `<b class="rank-hl">${r.debtRatioQuarterly.toFixed(1)}%</b>`),
     noteHtml: DEBT_RATIO_NOTE,
   });
 }
@@ -12734,7 +12768,7 @@ async function runValueWeek52Low() {
     metricCellFn: (r) => {
       if (r.week52RangePct === null || r.week52RangePct === undefined) return "N/A";
       const hint = r.week52RangePct >= 50 ? "(100%: 최고)" : "(0%: 최저)";
-      return `${r.week52RangePct.toFixed(0)}%<br><span class="week52-pos-hint">${hint}</span>`;
+      return `<b class="rank-hl">${r.week52RangePct.toFixed(0)}%</b><br><span class="week52-pos-hint">${hint}</span>`;
     },
     noteHtml: WEEK52_LOW_NOTE,
   });
@@ -15610,7 +15644,7 @@ function moversTableHtml(scored, rankNote, metric) {
 // 후보 목록(가벼운 조회로 얻은 심볼/현재가/등락률)에 5일 급등락 경고만 붙여 표 HTML까지 완성
 // (2026-09-04 개편: 상승압력·투자안정 점수 계산 삭제 — 표의 연평균 상승·10년평균 승률은 배치 DB에서 조회)
 // initialCount만큼만 먼저 스코어링해 빠르게 보여주고, "더보기" 클릭 시 fullCount까지 나머지를 추가로 스코어링(이미 계산한 항목은 재요청하지 않음)
-async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl, resultsEl, rankNote, initialCount, fullCount, capTotal, metric }) {
+async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl, resultsEl, rankNote, initialCount, fullCount, capTotal, metric, prefixHtml }) {
   initialCount = initialCount || candidates.length;
   fullCount = Math.min(fullCount || candidates.length, candidates.length);
 
@@ -15645,6 +15679,7 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
     resultsEl.innerHTML =
       // 상위 일부만 반영됐다는 주황 경고(2026-09-03 사용자 요청: RSI·우상향 외 나머지 항목에도 동일 표기, 인기종목 제외)
       (capTotal ? topCapNoteHtml(fullCount, capTotal, false) : "") +
+      (prefixHtml || "") +
       moversTableHtml(scored, rankNote, metric) +
       (hasMore
         ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${nextCount}">더보기 (${scored.length}/${fullCount})</button>`
@@ -17048,8 +17083,9 @@ async function runTrendVolume() {
     await renderKrRanking(getKrDailyChanges, "거래량", trendStatus, trendResults, {
       mapFn: (list) => list.slice().sort((a, b) => (b.dollarVolume ?? 0) - (a.dollarVolume ?? 0)).slice(0, 30),
       sortFn: (a, b) => (b.dollarVolume ?? 0) - (a.dollarVolume ?? 0),
-      metricHeaderHtml: `거래대금${THEAD_SUB("당일")}`,
+      metricHeaderHtml: `거래대금${THEAD_SUB("하루")}`,
       metricCellFn: (r) => (Number.isFinite(r.dollarVolume) ? `<b class="rank-hl">${fmtAmountUnified(r.dollarVolume, "KRW")}</b>` : "N/A"),
+      prefixHtml: (rows) => volumeDateNoteHtml(rows),
       noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 순위는 당일 거래대금(거래량 × 현재가) 기준이며, 코스피200+코스닥150(약 350종목) 중 상위 30개입니다. 투자 자문이 아닙니다.</p>`,
     });
     return;
@@ -17073,6 +17109,7 @@ async function runTrendVolume() {
         changePct: q.regularMarketChangePercent,
         volume: q.regularMarketVolume,
         dollarVolume: (q.regularMarketPrice || 0) * (q.regularMarketVolume || 0),
+        dollarVolumeAt: Number.isFinite(q.regularMarketTime) ? q.regularMarketTime : null, // 어느 거래일 값인지(2026-09-16)
       }))
       .sort((a, b) => b.dollarVolume - a.dollarVolume)
       .slice(0, 20);
@@ -17080,8 +17117,9 @@ async function runTrendVolume() {
     await scoreAndRenderMovers(ranked, marketReturnsPromise, {
       statusEl: trendStatus,
       resultsEl: trendResults,
-      rankNote: "순위는 당일 거래대금(거래량 × 현재가 추정) 기준입니다.",
-      metric: { header: "거래대금<br>(당일)", cell: (r) => (Number.isFinite(r.dollarVolume) ? `<b class="rank-hl">${fmtCompactCurrency(r.dollarVolume, "USD")}</b>` : "N/A") },
+      rankNote: "순위는 거래대금(거래량 × 현재가 추정) 기준입니다.",
+      prefixHtml: volumeDateNoteHtml(ranked),
+      metric: { header: "거래대금<br>(하루)", cell: (r) => (Number.isFinite(r.dollarVolume) ? `<b class="rank-hl">${fmtCompactCurrency(r.dollarVolume, "USD")}</b>` : "N/A") },
       initialCount: 10,
       fullCount: 20,
       capTotal: quotes.length, // 거래활발 상위 목록 중 20개만 표시 중이라는 경고(2026-09-03)

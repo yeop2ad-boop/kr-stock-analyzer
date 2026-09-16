@@ -615,14 +615,18 @@ body[data-header-tone="light"] .carousel-panel .cat-btn.active:not(.top-ranking-
 
 /* Top랭킹 탭 — 기업가치·미래예측 서브버튼. 2026-09-10 사용자 요청: 아이콘(이모지) 없이 글자만, 크기 확대 */
 .top-ranking-sub-nav { padding-bottom: 2px; }
+/* 거래대금 기준일 안내(2026-09-16 사용자 요청) — 표 위 왼쪽 */
+.rank-asof-note { margin: 2px 2px 6px; font-size: 11.5px; font-weight: 600; color: var(--muted); text-align: left; }
 /* 핵심지표 "+순위" 묶음 5개 — 좌우 스크롤 없이 한 줄(2026-09-16 사용자 요청) */
 .top30-sub-nav.sr-rank-nav { display: flex; gap: 4px; overflow-x: visible; }
-.sr-rank-nav .cat-btn { flex: 1 1 0; min-width: 0; padding: 7px 2px; font-size: 12.5px; letter-spacing: -0.6px; white-space: nowrap; }
+.top30-sub-nav.sr-rank-nav .cat-btn { flex: 1 1 0; min-width: 0; padding: 7px 2px; font-size: 12.5px; letter-spacing: -0.4px; white-space: nowrap; text-align: center; }
 .top-ranking-tab { display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
 .top-ranking-tab .btn-icon-svg { display: block; flex: none; }
 /* 기업가치·미래예측·인사이트 서브내비 글자 확대(2026-09-10 사용자 요청) */
 #topRankingSubNav .cat-btn,
 #panelInsight .top30-sub-nav .cat-btn { font-size: 13.5px; padding: 9px 13px; }
+/* 묶음 5개 줄은 한 줄에 다 들어가야 해서 여백을 줄인다 — ID 규칙보다 뒤·같은 특이도로 덮어씀(2026-09-16) */
+#topRankingSubNav.sr-rank-nav .cat-btn { padding: 8px 3px; font-size: 13px; letter-spacing: -0.4px; text-align: center; }
 #panelInsight .insight-firms-row-label { font-size: 12.5px; }
 .top-ranking-tab-orange { border-color: rgba(27, 42, 74, 0.5); color: var(--navy); }
 .top-ranking-tab-orange.active { color: var(--navy); border-color: var(--navy); background: rgba(27, 42, 74, 0.08); }
@@ -3002,7 +3006,8 @@ table.top30-table.rk-table tr.explain-row td { font-size: 11.5px; font-weight: 4
 .rk-table .wl-up { color: var(--pos); }
 .rk-table .wl-down { color: var(--neg); }
 .rk-table .price-chart-link:hover { text-decoration: none; color: inherit; }
-.rk-table .wr-pct, .rk-table .rank-hl { font-weight: 600; }
+.rk-table .wr-pct { font-weight: 600; }
+.rk-table .rank-hl { font-weight: 800; }
 .rk-table .rk-l2 .wr-pct, .rk-table .rk-l2 .rank-hl { font-weight: 500; }
 .rk-table .muted { font-size: 12px; font-weight: 400; letter-spacing: -0.3px; }
 .rk-table .nine-partial-mark { font-size: 14px; vertical-align: 1px; }
