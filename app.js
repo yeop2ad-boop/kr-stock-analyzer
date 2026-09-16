@@ -6332,10 +6332,11 @@ const S_REPORT_EXAMPLES = { win: "대표자산 10년평균 승률 비교", rsi: 
 const S_REPORT_TAP_HINT = `<p class="srt-tap-hint">* 모든 항목은 눌러서 자세한 설명을 볼 수 있습니다.</p>`;
 
 // 핵심 5개 정의 — ETF·코인은 3번이 1년 수익률
+// axis: 오각형 축을 비교군 백분위 대신 고정 눈금으로 그림(2026-09-16 사용자 지정 — 승률 40~70%, 상승률 0~50%)
 function sReportCoreSpecs(isAsset) {
   return [
     { key: "win", label: "승률", sub: "10년 월간", better: "high", band: 2, fmt: (v, d) => sPct(v, d), axis: (v) => (v - 40) / 30 },
-    { key: "ret", label: "상승률", sub: "연평균", better: "high", band: 2, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true) },
+    { key: "ret", label: "상승률", sub: "연평균", better: "high", band: 2, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true), axis: (v) => v / 50 },
     isAsset
       ? { key: "rev", label: "1년 수익률", explainKey: "ret1y", better: "high", band: 3, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true) }
       : { key: "rev", label: "매출액", sub: "작년 대비", better: "high", band: 3, rel: 0.2, signed: true, fmt: (v, d) => sPct(v, d, true) },
