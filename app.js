@@ -6392,10 +6392,13 @@ const S_FULL_ASSET_GROUPS = {
   ],
 };
 
-// 과열도 축 길이: 1년 평균과 같으면 한가운데(0.5), −20이면 꽉 참(1), +20이면 0
+// 과열도 축 길이(2026-09-16 사용자 지정): 이 종목의 1년 평균 RSI가 한가운데(0.5).
+// 거기서 RSI 0까지가 바깥쪽 절반, 100까지가 안쪽 절반 — 평균보다 낮아질수록 그래프가 커지고 높아질수록 작아진다.
+// (예: 평균 70이면 70이 한가운데, 0이면 꽉 참, 100이면 0)
 function rsiAxisScore(v, ref) {
   if (!Number.isFinite(v) || !Number.isFinite(ref)) return null;
-  return Math.min(1, Math.max(0, 0.5 - (v - ref) / 40));
+  if (v <= ref) return ref <= 0 ? 0.5 : Math.min(1, 0.5 + (0.5 * (ref - v)) / ref);
+  return ref >= 100 ? 0.5 : Math.max(0, 0.5 - (0.5 * (v - ref)) / (100 - ref));
 }
 
 // 항목 하나 계산 — 기준값(ref)·분포(dist)는 배치 DB의 비교군 값
