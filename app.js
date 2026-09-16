@@ -6719,9 +6719,12 @@ document.addEventListener("click", (e) => {
   line.insertAdjacentHTML(
     "afterend",
     `<div class="srf-explain">
-      ${title ? `<b class="srf-explain-title">${escapeHtml(title)}</b>` : ""}
+      ${/* 2026-09-16 사용자 요청: (+예시)(+순위)는 설명 오른쪽 위 — 제목과 같은 줄 */ ""}
+      <div class="srf-explain-head">
+        <b class="srf-explain-title">${escapeHtml(title)}</b>
+        ${example || rank ? `<div class="srf-explain-actions">${example}${rank}</div>` : ""}
+      </div>
       <p class="srf-explain-body">${escapeHtml(text)}</p>
-      ${example || rank ? `<div class="srf-explain-actions">${example}${rank}</div>` : ""}
       <div class="srf-example" style="display:none;"></div>
     </div>`
   );

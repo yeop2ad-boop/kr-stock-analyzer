@@ -3240,9 +3240,10 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 /* 항목 설명(2026-09-16 사용자 요청): 제목 + 설명, 오른쪽 아래에 작은 (+예시)(+순위) */
 .srf-line-open { border-bottom-color: transparent; }
 .srf-explain { padding: 10px 12px 12px; margin: 0 0 8px; border-radius: 10px; background: rgba(127, 127, 127, 0.08); border: 1px solid var(--border); }
-.srf-explain-title { display: block; font-size: 13px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
-.srf-explain-body { margin: 4px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--muted); white-space: pre-line; }
-.srf-explain-actions { display: flex; justify-content: flex-end; gap: 6px; margin-top: 8px; }
+.srf-explain-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.srf-explain-title { flex: 1; min-width: 0; font-size: 13px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+.srf-explain-body { margin: 6px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--muted); white-space: pre-line; }
+.srf-explain-actions { flex: none; display: flex; gap: 6px; }
 .srf-chip { padding: 3px 9px; border-radius: 99px; border: 1px solid var(--border); background: var(--bg); font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: -0.2px; cursor: pointer; }
 .srf-chip:active, .srf-chip-on { border-color: var(--text); color: var(--text); }
 .srf-example { margin-top: 10px; }
