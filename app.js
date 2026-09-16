@@ -7771,9 +7771,8 @@ function fin2BodyHtml(data, period, currency) {
   // 막대: 가장 큰 매출이 그림 영역의 78%가 되도록(위에 "00%상승"·말풍선 자리)
   const PLOT_H = 190;
   const maxRev = Math.max(...bars.map((b) => (Number.isFinite(b.rev) ? b.rev : 0)), 1);
-  // 순손실(2026-09-15 사용자 요청): 주황 막대를 기준선 아래(연도 쪽)로 살짝 그림 — 손실률에 비례(손실률 1%p당 0.5px, 6~24px)
-  //   매출 막대 높이에 곱하면 매출이 작은 해는 3px처럼 안 보여서 손실률만으로 길이를 정함
-  const NEG_MAX_PX = 24;
+  // 순손실(2026-09-16 사용자 요청): 매출 막대 높이에서 손실률만큼 아래로 — 예) −28%면 그 해 매출 막대 높이의 28%
+  //   손실률이 100%를 넘으면 매출 막대와 같은 길이까지만(차트가 아래로 끝없이 늘어나지 않게)
   let hasNeg = false;
   let maxNegPx = 0;
   const cols = bars
@@ -7781,7 +7780,7 @@ function fin2BodyHtml(data, period, currency) {
       const barPx = Number.isFinite(b.rev) && b.rev > 0 ? Math.max(4, (b.rev / maxRev) * PLOT_H * 0.78) : 4;
       const margin = Number.isFinite(b.ni) && Number.isFinite(b.rev) && b.rev > 0 ? (b.ni / b.rev) * 100 : null;
       const niPx = margin !== null && margin > 0 ? Math.min(barPx, (barPx * margin) / 100) : 0;
-      const negPx = margin !== null && margin < 0 ? Math.max(6, Math.min(NEG_MAX_PX, -margin * 0.5)) : 0;
+      const negPx = margin !== null && margin < 0 ? Math.max(3, Math.min(barPx, (barPx * -margin) / 100)) : 0;
       if (negPx) {
         hasNeg = true;
         maxNegPx = Math.max(maxNegPx, negPx);
