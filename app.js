@@ -11407,7 +11407,13 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
     // 2026-09-10 사용자 확정: 상관관계 상위 3개를 그때그때 쓰지 않고 아래 항목으로 고정.
     //   주식(한국·미국) 매출액 증가 · 순이익 증가 · 10년평균 승률 / 비트코인 10년평균 승률 · 연평균 상승(2개)
     // 배치(scan-correlation-daily.ps1)도 같은 키로 ranks를 만들므로 at.keys와 일치한다.
-    const keys = isCrypto ? AUTOTRACK_KEYS_CRYPTO : AUTOTRACK_KEYS_STOCK;
+    // 2026-09-16 사용자 요청: 세 항목을 다 보여주지 않고 "상관도(적중 점수)가 높은 2개"만 — 한 줄이 줄어 글씨를 키울 수 있다
+    const corrListForKeys = (side && side[isYear ? "year" : isWeek ? "week" : isDay ? "day" : "month"]) || [];
+    const hitOf = (k) => {
+      const m = corrListForKeys.find((x) => x.key === k);
+      return m ? corrHitScore(m) : -Infinity;
+    };
+    const keys = [...(isCrypto ? AUTOTRACK_KEYS_CRYPTO : AUTOTRACK_KEYS_STOCK)].sort((a, b) => hitOf(b) - hitOf(a)).slice(0, 2);
     let nameOf = (sym) => TICKER_TO_KOREAN_NAME[sym] || sym;
     if (isKr) {
       const m = await getKrSymbolNameMap().catch(() => new Map());
@@ -11462,12 +11468,10 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
     // 경고 기준: 주식 10년(120개월), 코인 7년(84개월, 2026-09-13 사용자 요청)
     const partialMonths = isCrypto ? 85 : 120;
     const isPartialRow = (r) => Number.isFinite(r.winTotal) && r.winTotal < partialMonths;
-    if (isCrypto) {
-      rows.sort((a, b) => isPartialRow(a) - isPartialRow(b) || wrRankOf(a) - wrRankOf(b));
-    } else {
-      const allGreen = (r) => r.c1.light === "🟢" && r.c2 && r.c2.light === "🟢" && r.c3 && r.c3.light === "🟢";
-      rows.sort((a, b) => allGreen(b) - allGreen(a) || isPartialRow(a) - isPartialRow(b) || wrRankOf(a) - wrRankOf(b));
-    }
+    // 2026-09-16 사용자 지정: 두 불이 모두 초록인 종목을 맨 위로, 그 안에서는 ① 항목 순위가 높은(숫자가 작은) 순.
+    // ⚠️(상장 기간이 짧은 종목)는 같은 조건이면 아래로.
+    const bothGreen = (r) => !!(r.c1 && r.c1.light === "🟢" && r.c2 && r.c2.light === "🟢");
+    rows.sort((a, b) => bothGreen(b) - bothGreen(a) || isPartialRow(a) - isPartialRow(b) || (a.c1 ? a.c1.r : Infinity) - (b.c1 ? b.c1.r : Infinity));
 
     const labels = keys.map((k) => corrLabelOf(k, autoTrackPeriod));
     const universeLabel = isKr ? "한국주식(코스피200+코스닥150)" : isCrypto ? "비트코인(암호화폐 시총 상위 100)" : "미국주식(S&P500)";
@@ -11498,10 +11502,9 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
         .map(
           (r) => `
         <tr>
-          <td class="at-name"><span class="ticker-cell">${tickerLogoHtml(r.sym)}<b class="ticker-link" data-ticker="${escapeHtml(r.sym)}">${escapeHtml(nameOf(r.sym))}</b></span></td>
+          <td class="at-name">${rankNameCellHtml(r.sym, tickerLogoHtml(r.sym), nameOf(r.sym))}</td>
           ${cellHtml(r.c1, keys[0], r.winTotal)}
           ${cellHtml(r.c2, keys[1], r.winTotal)}
-          ${keys[2] ? cellHtml(r.c3, keys[2], r.winTotal) : ""}
         </tr>`
         )
         .join("");
@@ -11509,12 +11512,12 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
       resultsEl.innerHTML = `
         <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} — ${keys.map((k, i) => `${["①", "②", "③"][i]}${escapeHtml(labels[i])}`).join(" ")}을 <b>현재 시점 점수</b>로 순위 매긴 신호등${
           isCrypto
-            ? "이며, ⚠️(상장 7년 이하) 없는 코인을 위에 두고 10년평균 승률이 높은 순입니다. 상장 4년이 안 된 코인은 표본이 모자라 목록에서 뺐습니다"
-            : "이며, 불이 모두 초록인 종목을 맨 위로, ⚠️(상장 10년 미만)는 그 아래로 두고 10년평균 승률이 높은 순입니다"
+            ? "이며, 두 불이 모두 초록인 코인을 맨 위로 두고 ① 항목 순위가 높은 순입니다. 상장 4년이 안 된 코인은 표본이 모자라 목록에서 뺐습니다"
+            : "이며, 두 불이 모두 초록인 종목을 맨 위로 두고 ① 항목 순위가 높은 순입니다"
         }.<br>
         * ${isKr || isCrypto ? "상위 20% 🟢 · 중간 🟡 · 하위 20% 🔴" : "상위 100등 🟢 · 중간 🟡 · 하위 100등 🔴"}${keys.includes("winRate10y") ? ` · 승률의 ⚠️는 상장 ${isCrypto ? "7년 이하" : "10년 미만"}` : ""} <span id="autoTrackCorrBtnSlot"></span></p>
         <div id="autoTrackCorrSlot"></div>
-        <table class="top30-table autotrack-table autotrack-lights-table">
+        <table class="top30-table rk-table autotrack-table autotrack-lights-table">
           <thead><tr><th class="at-name">종목명</th>${headCells}</tr></thead>
           <tbody>${body}</tbody>
         </table>
@@ -11845,14 +11848,15 @@ async function renderAutoTrack() {
   statusEl.style.display = "block";
   statusEl.textContent = "자동추적 데이터를 불러오는 중...";
   try {
-    const mode = appSectionMode === "etf" ? "etf" : appSectionMode === "crypto" ? "crypto" : getWatchlistActiveMarket() === "KR" ? "kr" : "us";
+    // ETF는 자동추적에서 뺀다(2026-09-16 사용자 요청) — 들어오면 지금 보던 주식 시장으로
+    const mode = appSectionMode === "crypto" ? "crypto" : getWatchlistActiveMarket() === "KR" ? "kr" : "us";
     // 한국·미국주식은 상관관계 상위 3개 항목 신호등 표(2026-09-05 개편, 월간/년간 토글), ETF·코인은 기존 10년평균승률 표 유지
     // 비트코인(2026-09-07 사용자 요청): 코인 상관관계 배치(correlation-daily.json의 crypto)가 있으면 주식과 같은 신호등 표, 없으면 기존 승률 표로 폴백
     let cryptoCorrReady = false;
     if (mode === "crypto") {
       const corr = await getCorrDb().catch(() => null);
       const at = corr && corr.crypto && corr.crypto.autotrack;
-      cryptoCorrReady = !!(at && Array.isArray(at.keys) && at.keys.length >= 3 && at.ranks);
+      cryptoCorrReady = !!(at && Array.isArray(at.keys) && at.keys.length >= 2 && at.ranks); // 항목 2개 체제(2026-09-16)
     }
     const lightsMode = mode === "kr" || mode === "us" || (mode === "crypto" && cryptoCorrReady);
     el("autoTrackNav").style.display = "none"; // 년간만 제공(2026-09-08) — 일간/주간/월간 버튼 숨김

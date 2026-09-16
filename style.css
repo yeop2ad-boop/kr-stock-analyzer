@@ -2660,9 +2660,15 @@ body[data-header-tone="dark"] .fh-market-label { color: #fff; }
   .autotrack-lights-table th .at-head-sub { font-size: 10px; }
 }
 .autotrack-lights-table td.at-name .ticker-cell { display: flex; align-items: center; gap: 4px; min-width: 0; }
-.autotrack-lights-table td.at-name b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11.5px; }
-.autotrack-lights-table td b { font-size: 11.5px; }
-.autotrack-lights-table .at-pct { font-size: 9.5px; }
+/* 2026-09-16 사용자 요청: 항목을 2개로 줄인 만큼 메인 목록과 같은 크기로 키움 */
+.autotrack-lights-table th.at-name, .autotrack-lights-table td.at-name { width: 42%; }
+.autotrack-lights-table th, .autotrack-lights-table td { padding: 9px 3px; font-size: 13px; }
+.autotrack-lights-table td.at-name b.rk-name { font-size: 15.5px; font-weight: 700; }
+.autotrack-lights-table td.at-name .rk-sub { font-size: 11.5px; }
+.autotrack-lights-table td.at-name .ticker-logo-wrap, .autotrack-lights-table td.at-name .ticker-logo { width: 30px; height: 30px; }
+.autotrack-lights-table td b { font-size: 15px; font-weight: 800; }
+.autotrack-lights-table .at-emoji { font-size: 15px; }
+.autotrack-lights-table .at-pct { font-size: 11px; }
 
 /* 구글 로그인 접근 게이트(2026-09-04): 로그인+승인 전까지 전체 화면을 덮는 오버레이 */
 .auth-gate {
