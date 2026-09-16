@@ -5772,14 +5772,12 @@ async function runAnalysis(ticker) {
       el("sReportTopSection").innerHTML = `<p class="error-inline">핵심지표를 계산하지 못했습니다: ${escapeHtml(e.message || "")}</p>`;
     });
 
-    // 하위 탭 3번째 자리: 주식은 매출액(재무정보), ETF는 매출이 없어 그 자리에 보유종목(2026-09-16 사용자 요청)
-    el("summarySubtabRevenueBtn").querySelector(".tab-label").textContent = isEtfDetail ? "보유종목" : "매출액";
-    el("financialsHeading").textContent = isEtfDetail ? "보유 종목" : "재무정보";
-    el("summarySubtabRevenueBtn").style.display = isCryptoDetail ? "none" : "";
+    // 매출액(재무정보) 탭은 주식 전용 — ETF·코인은 매출이 없어 탭째 감춘다.
+    // ETF의 보유 종목은 renderSummary가 핵심지표 카드 아래에 붙인다(2026-09-16 사용자 요청)
+    el("summarySubtabRevenueBtn").style.display = isCryptoDetail || isEtfDetail ? "none" : "";
     if (isCryptoDetail || isEtfDetail) {
       FIN2_STATE.token++; // 매출액 차트가 없는 자산 — 앞서 연 주식의 늦게 도착한 차트가 숨은 영역에 그려지지 않게
-      // ETF는 renderSummary가 이 자리에 보유 종목 블록을 넣으므로 비우지 않는다(비우면 늦게 끝난 쪽이 상대를 지움)
-      if (!isEtfDetail) el("financialsSection").innerHTML = "";
+      el("financialsSection").innerHTML = "";
     } else {
       // 2026-09-15 사용자 요청: 년간/분기 세로 막대 차트 한 장으로 통합(분기 실적 섹션은 "분기" 버튼으로 이동, 영업이익 삭제)
       renderFinancials(ticker, meta.currency).catch((e) => {
@@ -6288,23 +6286,23 @@ const sNum = (v, d) => (d ? (Math.round(v * 10) / 10).toFixed(1) : String(Math.r
 
 // 항목을 누르면 펼쳐지는 2줄 설명(2026-09-15 사용자 요청: 어떻게 구했는지 + 높을수록 무슨 뜻인지) — 앱 공통 data-explain 장치 사용
 const S_REPORT_EXPLAIN = {
-  win: "최근 10년 동안 월말 종가가 전달보다 오른 달의 비율입니다.\n높을수록 꾸준히 올랐다는 뜻이에요.",
-  ret: "최근 10년간 매년 평균 몇 %씩 올랐는지(연복리)입니다.\n높을수록 장기 성과가 좋았다는 뜻이에요.",
-  rev: "최근 실적 매출이 1년 전 같은 기간보다 몇 % 늘었는지입니다.\n높을수록 사업이 빠르게 커지고 있어요.",
+  win: "최근 10년간 전달보다 오른 달의 비율입니다.\n높을수록 꾸준히 올랐다는 뜻이에요.",
+  ret: "최근 10년 연평균 상승률(연복리)입니다.\n높을수록 장기 성과가 좋았어요.",
+  rev: "매출이 1년 전보다 몇 % 늘었는지입니다.\n높을수록 사업이 커지고 있어요.",
   ret1y: "1년 전 가격과 비교해 지금 몇 % 올랐는지입니다.\n높을수록 최근 1년 성과가 좋았어요.",
   vol: "최근 3개월 하루 평균 등락 폭입니다.\n높을수록 하루하루 크게 흔들려 위험해요.",
-  rsi: "최근 14주 등락 폭으로 만든 주간 RSI입니다.\n이 종목의 1년 평균보다 높으면 과열, 낮으면 침체예요(±10 정상, ±20부터 매우).",
-  ni: "최근 회계연도 순이익이 전년보다 몇 % 늘었는지입니다.\n높을수록 실제 남기는 이익이 빠르게 늘어요.",
-  om: "매출에서 영업이익이 차지하는 비율(최근 분기)입니다.\n높을수록 본업에서 효율적으로 벌어요.",
+  rsi: "최근 14주 등락 폭으로 만든 주간 RSI입니다.\n1년 평균보다 높으면 과열, 낮으면 침체예요.",
+  ni: "순이익이 작년보다 몇 % 늘었는지입니다.\n높을수록 남기는 이익이 빠르게 늘어요.",
+  om: "매출에서 영업이익이 차지하는 비율입니다.\n높을수록 본업에서 효율적으로 벌어요.",
   roe: "자기자본 대비 순이익 비율(최근 분기)입니다.\n높을수록 주주 돈으로 이익을 잘 만들어요.",
-  cf: "영업활동 현금흐름이 전년보다 몇 % 늘었는지입니다.\n높을수록 실제 들어오는 현금이 늘고 있어요.",
+  cf: "영업 현금흐름의 작년 대비 증가율입니다.\n높을수록 실제 현금이 늘고 있어요.",
   debt: "자기자본 대비 부채 비율(최근 분기)입니다.\n낮을수록 빚 부담이 적어 안정적이에요.",
-  per: "주가가 주당순이익의 몇 배인지입니다.\n낮을수록 이익에 비해 싸지만, 성장 기대가 낮아서일 수도 있어요.",
+  per: "주가가 주당순이익의 몇 배인지입니다.\n낮을수록 이익에 비해 싸다는 뜻이에요.",
   div: "최근 1년 배당금 합계를 현재가로 나눈 값입니다.\n높을수록 들고만 있어도 받는 현금이 많아요.",
   fee: "ETF를 1년 들고 있으면 빠져나가는 연간 총보수입니다.\n낮을수록 오래 보유하기 유리해요.",
   mcap: "가격 × 발행주식수(코인은 유통량)입니다.\n클수록 규모가 큰 대형 종목이에요.",
   dv: "최근 5거래일 평균 거래대금입니다.\n클수록 사고팔기 쉬운 종목이에요.",
-  w52: "52주 최저(0%)에서 최고(100%) 사이 지금 가격의 위치입니다.\n높을수록 1년 고점에 가까워요.",
+  w52: "52주 최저 0%, 최고 100% 사이 지금 위치입니다.\n높을수록 1년 고점에 가까워요.",
 };
 // 항목을 누르면 설명 맨 위에 붙는 제목(2026-09-16 사용자 지정) — 화면의 항목 이름·차트 축·목록 제목은 전부 짧은 이름을 쓰고,
 // 풀어 쓴 긴 이름은 이 설명 안에서만 보여준다(2026-09-16 사용자 요청)
@@ -6397,6 +6395,12 @@ const S_FULL_ASSET_GROUPS = {
   ],
 };
 
+// 과열도 축 길이: 1년 평균과 같으면 한가운데(0.5), −20이면 꽉 참(1), +20이면 0
+function rsiAxisScore(v, ref) {
+  if (!Number.isFinite(v) || !Number.isFinite(ref)) return null;
+  return Math.min(1, Math.max(0, 0.5 - (v - ref) / 40));
+}
+
 // 항목 하나 계산 — 기준값(ref)·분포(dist)는 배치 DB의 비교군 값
 // RSI만은 비교군 평균이 아니라 이 종목 자신의 직전 1년(52주) 평균 RSI가 기준(ownRef, 2026-09-15 사용자 요청)
 function sReportMakeItem(spec, value, group, currency, ownRef) {
@@ -6436,8 +6440,10 @@ function sReportMakeItem(spec, value, group, currency, ownRef) {
     topPct,
     mark,
     judge: spec.isRsi ? sReportRsiJudge(value, ref) : { text: "", tone: mark === "fire" ? "good" : mark === "warn" ? "bad" : "neutral" },
-    score: sReportPercentile(dist, value, dir),
-    avgScore: sReportPercentile(dist, ref, dir),
+    // 과열도(RSI)만은 비교군 분포가 아니라 이 종목의 1년 평균 RSI를 오각형 한가운데(0.5)에 두고,
+    // 평균보다 낮을수록(침체) 바깥으로, 높을수록(과열) 안쪽으로 그린다 — 등급 기준과 같은 ±20이 양 끝(2026-09-16 사용자 요청)
+    score: useOwn ? rsiAxisScore(value, ref) : sReportPercentile(dist, value, dir),
+    avgScore: useOwn ? 0.5 : sReportPercentile(dist, ref, dir),
   };
 }
 
@@ -7012,12 +7018,11 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     else el("summarySection").appendChild(wrap);
   });
 
-  // ETF 보유 종목은 "보유종목" 하위 탭(주식의 매출액 자리)에 상시 표시 — 2026-09-16 사용자 요청
+  // ETF 보유 종목은 핵심지표 카드 바로 아래에 상시 표시 — 2026-09-16 사용자 요청(버튼·매출액 탭 대신)
   if (summaryAssetSection === "etf" && holdingsAnchor) {
     holdingsAnchor.style.display = "block";
-    const finSection = el("financialsSection");
-    finSection.innerHTML = "";
-    finSection.appendChild(holdingsAnchor);
+    const sReportSection = el("sReportTopSection").parentNode; // 핵심지표 패널의 <section>
+    sReportSection.appendChild(holdingsAnchor);
     renderEtfHoldingsBlock(meta.symbol || quote.symbol || "", isKrTicker(meta.symbol || quote.symbol || ""));
   }
 
