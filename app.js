@@ -5342,6 +5342,42 @@ function getEtfInfoDb() {
   }
   return etfInfoDbPromise;
 }
+// ---------- ETF 섹터(2026-09-16 사용자 요청) ----------
+// 마켓맵 지도가 ETF 버블을 묶는 기준(sector-map/app.js의 US_ETF_CATEGORY·classifyEtfCompany)과 같은 분류를 상세 개요에도 쓴다.
+// 지도와 규칙이 갈라지면 같은 ETF가 다른 섹터로 보이므로, 지도 쪽을 고치면 여기도 같이 고칠 것.
+const US_ETF_SECTOR = (() => {
+  const m = {};
+  const put = (cat, syms) => syms.split(" ").forEach((x) => (m[x] = cat));
+  put(
+    "미국지수",
+    "VOO IVV SPY VTI QQQ QQQM VUG VTV IWF IWD IWM IJH IJR ITOT RSP IVW IVE VO VB VV VBR IWB IWR MGK MDY VOOG SPYG SPYV SCHX SCHG SCHB DFAC USMV QUAL MOAT COWZ AVUV DIA SPLG"
+  );
+  put("글로벌지수", "VEA IEFA IEMG VXUS VWO EFA SCHF IXUS ACWI EWJ VT EEM");
+  put("배당·인컴", "SCHD VIG VYM JEPI JEPQ DGRO DVY SDY NOBL PFF SPYD SPHD HDV QYLD XYLD");
+  put("채권·금리", "BND AGG TLT LQD VCIT VCSH MUB JPST MBB GOVT IEF SHY BSV VGIT VTEB IUSB SHV BIV EMB USFR BIL SGOV TIP VTIP TFLO HYG JNK");
+  put("원자재", "GLD IAU GLDM SLV SGOL USO GDX GDXJ PDBC DBC");
+  put("반도체·테크", "XLK VGT SMH SOXX FTEC IGV SKYY IYW ARKK");
+  put("섹터·테마", "XLF XLV XLE XLY XLI XLP XLU XLB XLC XLRE VNQ VHT VDC VFH VDE VPU IBIT FBTC XBI IBB ITA JETS KRE XOP");
+  put("레버리지·인버스", "TQQQ SQQQ SOXL SOXS UPRO SPXU TMF TZA TNA QLD SSO");
+  return m;
+})();
+function etfSectorOf(symbol, name) {
+  const sym = String(symbol || "").toUpperCase();
+  if (!/\.(KS|KQ)$/i.test(sym)) return US_ETF_SECTOR[sym] || "기타";
+  const n = String(name || "");
+  if (/(레버리지|인버스|곱버스)/.test(n)) return "레버리지·인버스";
+  if (/(커버드콜|배당|리츠)/.test(n)) return "배당·인컴";
+  if (/(채권|금리|머니마켓|KOFR|국채|통안채|금융채|단기채|크레딧|캐리)/.test(n)) return "채권·금리";
+  if (/(금현물|골드|은현물|원유|원자재|구리|WTI)/.test(n)) return "원자재";
+  if (/(반도체|HBM)/.test(n)) return "반도체·테크";
+  if (/미국.*(S&P|나스닥|다우|500)/.test(n)) return "미국지수";
+  if (/(테크|IT|AI|인공지능|로봇|우주|빅테크|전력|소프트웨어|인터넷)/.test(n)) return "반도체·테크";
+  if (/(코스피|코스닥|코리아|KRX|Korea|밸류업|그룹|Top5|TOP10|(^|\s)200|(^|\s)100)/.test(n)) return "한국지수";
+  if (/(2차전지|조선|방산|바이오|헬스케어|자동차|은행|금융|증권|철강|화학|건설|엔터|게임|여행|화장품|음식료|보험|에너지|수소|태양광|풍력|원자력|인프라|배터리)/.test(n)) return "섹터·테마";
+  if (/(글로벌|중국|일본|인도|베트남|유럽|신흥국|차이나|항셍|닛케이|아시아)/.test(n)) return "글로벌지수";
+  return "기타";
+}
+
 // 미국은 티커 그대로("VOO"), 국내는 야후 심볼 그대로("069500.KS")가 키
 function etfInfoOf(db, symbol) {
   if (!db || !symbol) return null;
@@ -6976,6 +7012,10 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
         ${summaryAssetSection === "crypto"
           ? `<span>섹터: <b>${escapeHtml(cryptoSectorOf(cryptoBaseTicker(symbol)))}</b></span>
         <span>상장 거래소: <b>${escapeHtml(cryptoExchangesOf(cryptoBaseTicker(symbol)))}</b></span>`
+          : summaryAssetSection === "etf"
+          ? `${/* ETF는 업종이 없어 빼고, 섹터는 마켓맵 지도와 같은 분류(2026-09-16 사용자 요청) */ ""}
+        <span>섹터: <b>${escapeHtml(etfSectorOf(symbol, companyName))}</b></span>
+        <span>거래소: <b>${escapeHtml(krExchangeName(symbol) || quote.exchDisp || meta.fullExchangeName || "N/A")}</b></span>`
           : `<span>업종: <b>${escapeHtml(industryKo || "N/A")}</b></span>
         <span>섹터: <b>${escapeHtml(sectorKo || "N/A")}</b></span>
         <span>거래소: <b>${escapeHtml(krExchangeName(symbol) || quote.exchDisp || meta.fullExchangeName || "N/A")}</b></span>`}
