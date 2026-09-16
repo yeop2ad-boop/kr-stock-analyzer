@@ -2491,6 +2491,14 @@ function setCarouselViewTitle(i18nKey) {
   document.querySelectorAll(".fh-tab").forEach((b) => b.classList.toggle("active", b.dataset.fhtab === i18nKey));
 }
 
+// 사전(I18N) 키가 없는 제목을 그대로 넣을 때(핵심지표 "+순위"로 들어온 항목 이름 등, 2026-09-16)
+function setCarouselViewTitleText(text) {
+  const titleEl = el("carouselViewTitle");
+  if (!titleEl) return;
+  titleEl.removeAttribute("data-i18n");
+  titleEl.textContent = text;
+}
+
 function switchTab(index) {
   index = Math.max(0, Math.min(TAB_ORDER.length - 1, index));
   const switchKey = TAB_ORDER[index];
@@ -6487,7 +6495,7 @@ const SR_RANK_GROUPS = [
     key: "growth",
     items: [
       { k: "win", label: "승률", tab: "trend", run: () => runTrendRsiWinRate("winrate") },
-      { k: "ret", label: "상승률", tab: "trend", run: () => runTrendRsiWinRate("ret") },
+      { k: "ret", label: "상승률", tab: "trend", run: () => runTrendRsiWinRate("cagr") },
       { k: "rev", label: "매출액", tab: "valuation", run: () => runValueRevenue() },
       { k: "vol", label: "변동성", tab: "trend", run: () => runStockVolatility() },
       { k: "rsi", label: "과열도", tab: "trend", run: () => runTrendRsiWinRate("rsi") },
@@ -6592,6 +6600,7 @@ function openSReportRank(itemKey, section, market) {
   const item = SR_RANK_ITEM_BY_KEY.get(itemKey);
   if (!item) return;
   srRankActive = { group: item.group, k: item.k };
+  setCarouselViewTitleText(S_REPORT_TITLES[item.k] || item.label); // 제목이 "인기종목"에 머물던 문제(2026-09-16)
   appSectionMode = "stocks";
   if (market === "kr" || market === "us") {
     setWatchlistActiveMarket(market === "kr" ? "KR" : "US");
@@ -6636,7 +6645,7 @@ function sReportLineHtml(it) {
   const sKey = it.explainKey || it.key;
   return `
     <div class="srf-line" data-sr-key="${escapeHtml(sKey)}" data-sr-explain="${escapeHtml(it.explain || "")}" data-sr-title="${escapeHtml(S_REPORT_TITLES[sKey] || it.label)}">
-      <span class="srf-name">${escapeHtml(it.label)}</span>
+      <span class="srf-name">${escapeHtml(S_REPORT_TITLES[sKey] || it.label)}</span>
       <b class="srf-val" data-round="${escapeHtml(has ? it.fmt(it.value, 0) : "N/A")}">${escapeHtml(has ? it.fmt(it.value, 1) : "N/A")}</b>
       <span class="srf-rank${it.mark ? ` srf-rank-${it.mark}` : ""}" data-short="${escapeHtml(shortHtml)}">${rankHtml}</span>
     </div>`;
@@ -6763,7 +6772,7 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
         <div id="sReportMoreSlot"></div>
         <button type="button" class="srt-more-btn" id="sReportTopMoreBtn">더보기 <span aria-hidden="true">▾</span></button>
       </div>
-      <p class="srt-note">등수는 ${escapeHtml(group ? group.label : "비교군")} 안 순위(유리한 쪽이 1위, 시가총액·거래대금·52주 위치는 클수록 1위) · 🔥 상위 10% · ⚠️ 하위 10%. RSI는 이 종목의 1년 평균 RSI와 비교한 매수·매도 등급입니다${asOfText}. 투자 자문이 아닙니다.</p>`;
+      <p class="srt-note">등수는 ${escapeHtml(group ? group.label : "비교군")} 안 순위(유리한 쪽이 1위, 시가총액·거래대금·52주 위치는 클수록 1위) · 🔥 상위 10% · ⚠️ 하위 10%. RSI(과열도)는 이 종목의 1년 평균 RSI와 비교한 과열·침체 등급입니다${asOfText}. 투자 자문이 아닙니다.</p>`;
     // 더보기 항목은 5개 행 바로 아래(버튼 위)에 붙음
     el("sReportMoreSlot").appendChild(sReportInlineWrap);
     fitSReportRoundCells(section);
@@ -15546,7 +15555,10 @@ historicalFullUpBtn.addEventListener("click", () => runHistoricalMovers("year", 
 historicalFullDownBtn.addEventListener("click", () => runHistoricalMovers("year", "down"));
 
 // 티커/현재가(+등락률)/연평균 상승/10년평균 승률 5열 표(2026-09-04 상승압력·투자안정 대체) — 인기종목·급등주·급락주가 공유하는 렌더러
-function moversTableHtml(scored, rankNote) {
+// 2026-09-16 사용자 요청: 어느 순위든 기업명 - 현재가(등락률) - 해당 항목 3칸.
+// metric을 주면 셋째 칸이 그 화면의 기준값(거래대금·등락률 등)이고, 없으면 예전처럼 연평균 상승을 쓴다.
+function moversTableHtml(scored, rankNote, metric) {
+  const m = metric || { header: "연평균<br>상승", cell: (r) => stockRet10CellHtml(r.symbol) };
   const rows = scored
     .map((r, i) => {
       const changeClass = r.changePct >= 0 ? "delta-up" : "delta-down";
@@ -15554,8 +15566,7 @@ function moversTableHtml(scored, rankNote) {
       <tr>
         <td><span class="ticker-cell rank-logo">${tickerLogoHtml(r.symbol)}<b class="ticker-link" data-ticker="${escapeHtml(r.symbol)}">${escapeHtml(r.symbol)}</b>${surgeWarningEmoji(r.fiveDayExtremes)}</span><br><span class="muted" style="font-size:11px;">${escapeHtml(r.name)}</span></td>
         <td>${priceChartLink(r.symbol, "$" + r.price.toFixed(2))}<br><span class="${changeClass}" style="font-size:11px;">(${fmtPct(r.changePct)})</span></td>
-        <td>${stockRet10CellHtml(r.symbol)}</td>
-        <td>${stockWinRateCellHtml(r.symbol)}</td>
+        <td>${m.cell(r)}</td>
       </tr>`;
     })
     .join("");
@@ -15564,12 +15575,12 @@ function moversTableHtml(scored, rankNote) {
       <div class="popular-table-wrap">
         <table class="top30-table popular-table">
           <thead>
-            <tr><th>기업명</th><th>현재가</th><th>연평균<br>상승</th><th>10년평균<br>승률</th></tr>
+            <tr><th>기업명</th><th>현재가<br>(등락률)</th><th>${m.header}</th></tr>
           </thead>
           <tbody>${rows}</tbody>
         </table>
       </div>
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${rankNote} 연평균 상승(연복리 수익률(CAGR))·10년평균 승률은 매일 갱신되는 배치 DB 기준이며 투자 자문이 아닙니다.</p>
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${rankNote} 투자 자문이 아닙니다.</p>
       ${SURGE_WARNING_LEGEND}
     `;
 }
@@ -15577,7 +15588,7 @@ function moversTableHtml(scored, rankNote) {
 // 후보 목록(가벼운 조회로 얻은 심볼/현재가/등락률)에 5일 급등락 경고만 붙여 표 HTML까지 완성
 // (2026-09-04 개편: 상승압력·투자안정 점수 계산 삭제 — 표의 연평균 상승·10년평균 승률은 배치 DB에서 조회)
 // initialCount만큼만 먼저 스코어링해 빠르게 보여주고, "더보기" 클릭 시 fullCount까지 나머지를 추가로 스코어링(이미 계산한 항목은 재요청하지 않음)
-async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl, resultsEl, rankNote, initialCount, fullCount, capTotal }) {
+async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl, resultsEl, rankNote, initialCount, fullCount, capTotal, metric }) {
   initialCount = initialCount || candidates.length;
   fullCount = Math.min(fullCount || candidates.length, candidates.length);
 
@@ -15612,7 +15623,7 @@ async function scoreAndRenderMovers(candidates, marketReturnsPromise, { statusEl
     resultsEl.innerHTML =
       // 상위 일부만 반영됐다는 주황 경고(2026-09-03 사용자 요청: RSI·우상향 외 나머지 항목에도 동일 표기, 인기종목 제외)
       (capTotal ? topCapNoteHtml(fullCount, capTotal, false) : "") +
-      moversTableHtml(scored, rankNote) +
+      moversTableHtml(scored, rankNote, metric) +
       (hasMore
         ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${nextCount}">더보기 (${scored.length}/${fullCount})</button>`
         : "");
@@ -16777,6 +16788,10 @@ async function runMovers(direction) {
       statusEl: trendStatus,
       resultsEl: trendResults,
       rankNote: `순위는 전일 대비 등락률(${direction === "surge" ? "상승률 높은" : "하락률 큰"} 순) 기준이며, S&P500 편입 종목 중 상위 50개입니다.`,
+      metric: {
+        header: "당일<br>등락률",
+        cell: (r) => (Number.isFinite(r.changePct) ? `<b class="${r.changePct >= 0 ? "delta-up" : "delta-down"}">${fmtPct(r.changePct)}</b>` : "N/A"),
+      },
       initialCount: 10,
       fullCount: 50,
       capTotal: candidates.length, // 전체 S&P500 대비 상위 50개만 표시 중이라는 경고(2026-09-03)
@@ -17006,29 +17021,13 @@ async function runTrendVolume() {
     // 가벼운 일별 등락(getKrDailyChanges, 차트 조회만)으로 먼저 거래대금 상위 30개만 추린 뒤
     // 그 30개에 대해서만 무거운 조회를 추가로 돌림(상승률·하락률 탭과 동일한 2단계 패턴, 기존 기업가치 탭
     // 기본 스캔 규모(30개)와 맞춰 로딩 시간이 크게 늘지 않도록 함)
+    // 2026-09-16 사용자 요청: 셋째 칸은 그 화면의 기준값 — 거래대금 순위이므로 거래대금을 그대로 보여준다
+    // (예전엔 상승 압력 점수를 보여주느라 30종목 재무제표를 통째로 더 조회해 1분 넘게 걸렸다)
     await renderKrRanking(getKrDailyChanges, "거래량", trendStatus, trendResults, {
-      mapFn: async (list) => {
-        const top = list.sort((a, b) => (b.dollarVolume ?? 0) - (a.dollarVolume ?? 0)).slice(0, 30);
-        const { sp500Return, kospi200Return } = await getMarketReturnsCached();
-        const full = (await mapWithConcurrency(top, 8, (r) => getFullMetrics(r.symbol).catch(() => null))).filter(Boolean);
-        const fullBySymbol = new Map(full.map((m) => [m.symbol, m]));
-        return top
-          .map((r) => {
-            const m = fullBySymbol.get(r.symbol);
-            return m
-              ? {
-                  ...r,
-                  attractivenessTotal: computeAttractivenessScore(m).total,
-                  riskTotal: computeRiskScore(m, sp500Return, kospi200Return).total,
-                  isIPO: isRecentIPO(m.firstTradeDate),
-                }
-              : r;
-          })
-          .filter((r) => r.attractivenessTotal !== undefined);
-      },
+      mapFn: (list) => list.slice().sort((a, b) => (b.dollarVolume ?? 0) - (a.dollarVolume ?? 0)).slice(0, 30),
       sortFn: (a, b) => (b.dollarVolume ?? 0) - (a.dollarVolume ?? 0),
-      metricHeaderHtml: "상승 압력 점수",
-      metricCellFn: (r) => (r.isIPO ? "IPO" : scoreRankColorHtml(r.attractivenessTotal, r.attractivenessTotal)),
+      metricHeaderHtml: `거래대금${THEAD_SUB("당일")}`,
+      metricCellFn: (r) => (Number.isFinite(r.dollarVolume) ? `<b class="rank-hl">${fmtAmountUnified(r.dollarVolume, "KRW")}</b>` : "N/A"),
       noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 순위는 당일 거래대금(거래량 × 현재가) 기준이며, 코스피200+코스닥150(약 350종목) 중 상위 30개입니다. 투자 자문이 아닙니다.</p>`,
     });
     return;
@@ -17060,6 +17059,7 @@ async function runTrendVolume() {
       statusEl: trendStatus,
       resultsEl: trendResults,
       rankNote: "순위는 당일 거래대금(거래량 × 현재가 추정) 기준입니다.",
+      metric: { header: "거래대금<br>(당일)", cell: (r) => (Number.isFinite(r.dollarVolume) ? `<b class="rank-hl">${fmtCompactCurrency(r.dollarVolume, "USD")}</b>` : "N/A") },
       initialCount: 10,
       fullCount: 20,
       capTotal: quotes.length, // 거래활발 상위 목록 중 20개만 표시 중이라는 경고(2026-09-03)
@@ -17156,8 +17156,9 @@ function rsiRankCellHtml(rsi) {
 }
 async function runTrendRsiWinRate(mode) {
   const isRsi = mode === "rsi";
-  const isRet = mode === "ret"; // 연평균 상승(연복리 수익률(CAGR)) 순위 — 2026-09-04 상승압력 대체
-  const label = isRsi ? "RSI 순위" : isRet ? "1년 수익률" : "10년평균 승률";
+  const isRet = mode === "ret"; // 상단 "수익률" 탭 — 2026-09-12 사용자 요청으로 1년 상승량 순
+  const isCagr = mode === "cagr"; // 핵심지표 "10년 평균상승률"의 +순위(2026-09-16) — 10년 연복리(CAGR) 순
+  const label = isRsi ? "RSI 순위" : isRet ? "1년 수익률" : isCagr ? "10년 평균상승률" : "10년평균 승률";
   const statusEl = trendStatus;
   const resultsEl = trendResults;
   // 국내 모드(2026-09-02 확장): 코스피200+코스닥150 유니버스(scoresKr)로 동일하게 동작
@@ -17235,6 +17236,8 @@ async function runTrendRsiWinRate(mode) {
       ranked.sort(
         isRsi
           ? (a, b) => (a.rsi ?? Infinity) - (b.rsi ?? Infinity)
+          : isCagr
+          ? (a, b) => (Number.isFinite(b.ret10y) ? b.ret10y : -Infinity) - (Number.isFinite(a.ret10y) ? a.ret10y : -Infinity)
           : isRet
           ? // 2026-09-12 사용자 요청: 연평균(CAGR)이 아니라 현시점 기준 1년 상승량 순
             (a, b) => (Number.isFinite(b.oneYearReturn) ? b.oneYearReturn : -Infinity) - (Number.isFinite(a.oneYearReturn) ? a.oneYearReturn : -Infinity)
@@ -17251,11 +17254,18 @@ async function runTrendRsiWinRate(mode) {
         <tr>
           <td>${rankNameCellHtml(r.symbol, tickerLogoHtml(r.symbol), mainName)}</td>
           <td>${rankPriceCellHtml(r.symbol, r.price, isKr ? "KRW" : "USD", r.changePct)}</td>
-          <td>${isRsi ? rsiRankCellHtml(r.rsi) : isRet ? ret1yCellHtml(r.oneYearReturn) : winRateCell(r)}</td>${
-            // 2026-09-12 사용자 요청: 승률·수익률 탭은 딸림 열(연평균 상승·10년평균 승률)을 없애고 그 탭의 기준 하나만 보여준다.
-            // RSI 순위는 상단 탭이 아니라 간편검색으로만 들어오는 화면이라 기존대로 승률을 함께 둔다.
-            isRsi ? `<td>${winRateCell(r)}</td>` : ""
-          }
+          ${/* 2026-09-16 사용자 요청: 어느 순위든 기업명 - 현재가(등락률) - 해당 항목 3칸으로 통일(RSI의 딸림 승률 열도 삭제) */ ""}
+          <td>${
+            isRsi
+              ? rsiRankCellHtml(r.rsi)
+              : isRet
+              ? ret1yCellHtml(r.oneYearReturn)
+              : isCagr
+              ? Number.isFinite(r.ret10y)
+                ? `${partialMarkHtml(r.winTotal, "wr-mark-front", partialMonthsFor(r.symbol))}<b class="rank-hl">${r.ret10y > 0 ? "+" : ""}${Math.round(r.ret10y * 10) / 10}%</b>`
+                : "N/A"
+              : winRateCell(r)
+          }</td>
         </tr>`;
         })
         .join("");
@@ -17263,14 +17273,16 @@ async function runTrendRsiWinRate(mode) {
       const universeLabel = isKr ? "코스피200+코스닥150" : "S&P500";
       const trendNoteHtml = isRsi
         ? `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — 주간 RSI(14)가 낮은 순(과매도부터 1등) 순위입니다. <b style="color:#22a866;">30 미만 과매도(초록)</b>·<b style="color:#ef4444;">70 이상 과매수(빨강)</b>, 참고용 기술적 지표이며 투자 자문이 아닙니다.</p>`
+        : isCagr
+        ? `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — <b>10년 평균상승률</b>(최근 10년 연복리 수익률 CAGR, 매년 몇 %씩 오른 셈인지)이 높은 순 순위입니다. 상장 10년 미만은 상장 후 기간만 연율화한 값이라 ⚠️가 붙습니다. 참고용 지표이며 투자 자문이 아닙니다.</p>`
         : isRet
         ? `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — <b>1년 수익률</b>(1년 전 같은 시점의 주가 대비 현재가, 현시점 기준 실제 상승량)이 높은 순 순위입니다. 매년 평균이 아니라 최근 1년치 성적이며, 상장 1년이 안 된 종목은 값이 없어 맨 뒤로 갑니다. 참고용 지표이며 투자 자문이 아닙니다.</p>`
         : `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${universeLabel} 대상 — 10년평균 승률(최근 10년 월봉 기준 상승 개월수/총 개월수×100, 상장 10년 미만은 상장 후부터 집계·⚠️ 표시)이 높은 순 순위입니다. 참고용 지표이며 투자 자문이 아닙니다.</p>`;
       resultsEl.innerHTML = `
         ${rankScanCaptionHtml(ranked.length, hasMore)}
-        ${!isRsi && !isRet ? WINRATE_HEAD_HTML : TAP_HINT_HTML}
+        ${!isRsi && !isRet && !isCagr ? WINRATE_HEAD_HTML : TAP_HINT_HTML}
         <table class="top30-table rk-table">
-          <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}${isRsi ? RANK_TH_RSI : isRet ? RANK_TH_RET1Y : RANK_TH_WINRATE}${isRsi ? RANK_TH_WINRATE : ""}</tr></thead>
+          <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}${isRsi ? RANK_TH_RSI : isRet ? RANK_TH_RET1Y : isCagr ? RANK_TH_RET10 : RANK_TH_WINRATE}</tr></thead>
           <tbody>${rows}</tbody>
         </table>
         ${hasMore ? `<button type="button" class="cat-btn load-more-btn" data-next-count="${tickers.length}">전체보기 (나머지 ${tickers.length - cursor}개 · ${tickers.length}개 전부 검색 시 약 1분 소요)</button>` : ""}
