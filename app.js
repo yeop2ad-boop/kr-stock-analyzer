@@ -6502,7 +6502,10 @@ function sReportRadarSvg(items) {
       const [x, y] = pt(i, 1.2);
       const anchor = x < cx - 6 ? "end" : x > cx + 6 ? "start" : "middle";
       const dy = y < cy - R * 0.9 ? -14 : y > cy + R * 0.5 ? 6 : -6;
-      const warn = Number.isFinite(it.partialTotal) && it.partialTotal < (it.partialMin || 120) ? "⚠️" : "";
+      // 승률의 상장 기간 경고(⚠️) + 비교군 안 순위 표시 — 상위 10% 🔥 · 하위 10% ⚠️(2026-09-16 사용자 요청)
+      const partialWarn = Number.isFinite(it.partialTotal) && it.partialTotal < (it.partialMin || 120) ? "⚠️" : "";
+      // 경고(상장 기간)와 불이 겹치면 경고만 보여준다(2026-09-16 사용자 지시)
+      const warn = partialWarn || (it.mark === "fire" ? "🔥" : it.mark === "warn" ? "⚠️" : "");
       const val = (it.value === null ? "N/A" : it.fmt(it.value, 0));
       return `<text x="${x.toFixed(1)}" y="${(y + dy).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-label">${escapeHtml(it.label)}</text>
         <text x="${x.toFixed(1)}" y="${(y + dy + 15).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-value srt-tone-${it.judge ? it.judge.tone : "neutral"}">${warn}${escapeHtml(val)}${/* 오각형에는 현재 RSI만(1년 평균은 아래 항목 줄에 "/72(평균)"로 표시) — 2026-09-16 사용자 요청 */ ""}</text>`;
