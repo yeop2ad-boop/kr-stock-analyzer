@@ -6576,7 +6576,7 @@ function openSReportRank(itemKey, section, market) {
   if (section === "etf" || section === "crypto") {
     clearSrRankTabs();
     appSectionMode = section;
-    if (section === "etf") etfPopularRegion = getWatchlistActiveMarket() === "KR" ? "kr" : "us";
+    if (section === "etf") etfPopularRegion = "all"; // ETF 순위는 한국·미국 통합(2026-09-16 사용자 요청)
     setHeaderToneForSection(section);
     const conf = (SR_ASSET_RANK[section] || {})[itemKey] || ["tab", "winrate"];
     if (conf[0] === "tab") (section === "etf" ? openEtfMetricTab : openCryptoMetricTab)(conf[1]);
@@ -10812,6 +10812,14 @@ function combinedRankTableHtml(rows, universeLabel, rowNameHtmlFn, priceStrFn) {
 // 시장동향(처음 20개 → 더보기 시 전체)과 인기종목(전체)이 같은 캐시를 이어서 사용한다(2026-09-01 단계식 개편)
 const etfScanStateByRegion = new Map(); // region("us"|"kr") -> { rows, scanned, chain(Promise 직렬화) }
 function ensureEtfScanRows(region, targetCount, statusEl) {
+  // 2026-09-16 사용자 요청: ETF 순위는 한국·미국을 통합해서 본다 — 두 지역을 따로 스캔해 합친다
+  if (region === "all") {
+    return Promise.all([ensureEtfScanRows("kr", targetCount, statusEl), ensureEtfScanRows("us", targetCount, statusEl)]).then(([kr, us]) => ({
+      rows: [...kr.rows, ...us.rows],
+      scanned: kr.scanned + us.scanned,
+      total: kr.total + us.total,
+    }));
+  }
   if (!etfScanStateByRegion.has(region)) etfScanStateByRegion.set(region, { rows: [], scanned: 0, chain: Promise.resolve() });
   const state = etfScanStateByRegion.get(region);
   // 같은 지역에 대한 스캔 요청을 직렬화 — 20개 스캔 중 더보기(100개)를 눌러도 중복 조회 없이 이어서 진행
@@ -10879,9 +10887,10 @@ function getEtfScanRows(region, statusEl) {
   return ensureEtfScanRows(region, 30, statusEl).then((r) => r.rows);
 }
 
-function etfRegionNavHtml(attr) {
+function etfRegionNavHtml(attr, includeAll) {
   return `
     <div class="top30-sub-nav" style="margin-bottom:6px;">
+      ${includeAll ? `<button type="button" class="cat-btn${etfPopularRegion === "all" ? " active" : ""}" ${attr}="all">전체</button>` : ""}
       <button type="button" class="cat-btn${etfPopularRegion === "us" ? " active" : ""}" ${attr}="us">미국 ETF</button>
       <button type="button" class="cat-btn${etfPopularRegion === "kr" ? " active" : ""}" ${attr}="kr">한국 ETF</button>
     </div>`;
@@ -12447,6 +12456,7 @@ async function runEtfMetricTab() {
   const tabAtStart = etfMetricTab;
   try {
     const isKr = region === "kr";
+    const isAll = region === "all";
     const expanded = etfMetricExpanded.has(region);
     const { rows, scanned, total } = await ensureEtfScanRows(region, expanded ? 100 : 30, statusEl);
     if (etfPopularRegion !== region || appSectionMode !== "etf" || etfMetricTab !== tabAtStart) return;
@@ -12462,14 +12472,14 @@ async function runEtfMetricTab() {
     if (etfPopularRegion !== region || appSectionMode !== "etf" || etfMetricTab !== tabAtStart) return;
     statusEl.style.display = "none";
 
-    const universeLabel = isKr ? "국내 상장 ETF 시가총액 상위" : "미국 상장 ETF 순자산 상위";
+    const universeLabel = isAll ? "한국·미국 상장 ETF" : isKr ? "국내 상장 ETF 시가총액 상위" : "미국 상장 ETF 순자산 상위";
     const limit = expanded ? total : 30;
     const listed = (conf.filter ? rows.filter(conf.filter) : rows.slice()).sort(conf.sort).slice(0, limit);
     const body = listed
       .map(
         (r, i) => `
       <tr>
-        <td>${etfRankNameCellHtml(r, isKr)}</td>
+        <td>${etfRankNameCellHtml(r, isAll ? isKrTicker(r.symbol) : isKr)}</td>
         <td>${conf.midCell(r)}</td>
         <td>${conf.rightCell(r)}</td>
       </tr>`
@@ -12477,7 +12487,7 @@ async function runEtfMetricTab() {
       .join("");
     // 2026-09-13: 순위 열을 빼고 3칸(이름 / 현재가·등락률 / 기준값)으로 — 순서가 곧 순위
     resultsEl.innerHTML =
-      etfRegionNavHtml("data-etf-metric-region") +
+      etfRegionNavHtml("data-etf-metric-region", true) +
       (!expanded ? topCapNoteHtml(Math.min(30, scanned), total, true) : "") +
       `${etfMetricTab === "winrate" ? WINRATE_HEAD_HTML : TAP_HINT_HTML}
       <table class="top30-table rk-table">
