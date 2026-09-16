@@ -6334,7 +6334,7 @@ const S_REPORT_TAP_HINT = `<p class="srt-tap-hint">* 모든 항목은 눌러서 
 // 핵심 5개 정의 — ETF·코인은 3번이 1년 수익률
 function sReportCoreSpecs(isAsset) {
   return [
-    { key: "win", label: "승률", sub: "10년 월간", better: "high", band: 2, fmt: (v, d) => sPct(v, d) },
+    { key: "win", label: "승률", sub: "10년 월간", better: "high", band: 2, fmt: (v, d) => sPct(v, d), axis: (v) => (v - 40) / 30 },
     { key: "ret", label: "상승률", sub: "연평균", better: "high", band: 2, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true) },
     isAsset
       ? { key: "rev", label: "1년 수익률", explainKey: "ret1y", better: "high", band: 3, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true) }
@@ -6405,6 +6405,7 @@ function rsiAxisScore(v, ref) {
 // RSI만은 비교군 평균이 아니라 이 종목 자신의 직전 1년(52주) 평균 RSI가 기준(ownRef, 2026-09-15 사용자 요청)
 function sReportMakeItem(spec, value, group, currency, ownRef) {
   const useOwn = spec.isRsi;
+  const axisOf = spec.axis ? (v) => (Number.isFinite(v) ? Math.min(1, Math.max(0, spec.axis(v))) : null) : null;
   const ref = useOwn ? ownRef : group && group.ref ? group.ref[spec.key] : null;
   const dist = group && group.dist ? group.dist[spec.key] : null;
   const dir = spec.better === "low" ? "low" : "high";
@@ -6442,8 +6443,9 @@ function sReportMakeItem(spec, value, group, currency, ownRef) {
     judge: spec.isRsi ? sReportRsiJudge(value, ref) : { text: "", tone: mark === "fire" ? "good" : mark === "warn" ? "bad" : "neutral" },
     // 과열도(RSI)만은 비교군 분포가 아니라 이 종목의 1년 평균 RSI를 오각형 한가운데(0.5)에 두고,
     // 평균보다 낮을수록(침체) 바깥으로, 높을수록(과열) 안쪽으로 그린다 — 등급 기준과 같은 ±20이 양 끝(2026-09-16 사용자 요청)
-    score: useOwn ? rsiAxisScore(value, ref) : sReportPercentile(dist, value, dir),
-    avgScore: useOwn ? 0.5 : sReportPercentile(dist, ref, dir),
+    // spec.axis가 있으면 비교군 분포 대신 고정 눈금으로 축 길이를 잡는다(승률: 40% 0점 ~ 70% 만점)
+    score: useOwn ? rsiAxisScore(value, ref) : axisOf ? axisOf(value) : sReportPercentile(dist, value, dir),
+    avgScore: useOwn ? 0.5 : axisOf ? axisOf(ref) : sReportPercentile(dist, ref, dir),
   };
 }
 

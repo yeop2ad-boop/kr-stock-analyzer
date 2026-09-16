@@ -1,4 +1,0 @@
-ipo-map us에 SNDK: 0
-  
-sp500-sectors에 SNDK: 1  mcap=224152862720
-winrate scores에 SNDK: True
