@@ -3004,65 +3004,45 @@ const MORE_INSIGHT_SECTIONS = {
   corr: [["kr", "한국주식"], ["us", "미국주식"], ["crypto", "비트코인"]],
   sectorWin: [["kr", "한국주식"], ["us", "미국주식"], ["crypto", "비트코인"]],
 };
-// 앱 마크(FLAG_SVG_*)는 이 줄보다 아래에서 선언되므로 더보기를 처음 열 때 채운다(즉시 부르면 TDZ 오류)
-let moreInsightNavsReady = false;
-function initMoreInsightNavs() {
-  if (moreInsightNavsReady) return;
-  moreInsightNavsReady = true;
-  // 2026-09-16 사용자 요청: 마크 없이 글씨만, 한 줄로
-  document.querySelectorAll("[data-insight-cat-nav]").forEach((nav) => {
-    const rows = MORE_INSIGHT_SECTIONS[nav.dataset.insightCatNav] || [];
-    nav.innerHTML = rows.map(([sec, label]) => `<button type="button" class="cat-btn more-insight-sec" data-insight-section="${sec}">${escapeHtml(label)}</button>`).join("");
-  });
+// 지금 화면의 투자처를 그 보기가 지원하는 것 중에서 고름(지원하지 않으면 첫 번째)
+function defaultInsightSectionFor(cat) {
+  const allowed = (MORE_INSIGHT_SECTIONS[cat] || []).map(([sec]) => sec);
+  const cur = appSectionMode === "crypto" ? "crypto" : getWatchlistActiveMarket() === "KR" ? "kr" : "us";
+  if (!allowed.length) return cur;
+  return allowed.includes(cur) ? cur : allowed[0];
 }
 document.querySelectorAll(".more-insight-item").forEach((btn) => {
   btn.addEventListener("click", () => {
-    initMoreInsightNavs();
     const cat = btn.dataset.insightCat;
-    const nav = document.querySelector(`[data-insight-cat-nav="${cat}"]`);
-    if (!nav) {
-      // 투자방법 비교 — 지금 보고 있는 시장(한국/미국)으로 바로
-      closeMorePanel();
-      openInsightSectionOverlay(getWatchlistActiveMarket() === "KR" ? "kr" : "us", cat);
-      return;
-    }
-    // 한 번에 하나만 펼침
-    document.querySelectorAll(".more-insight-nav").forEach((n) => {
-      if (n !== nav) n.style.display = "none";
-    });
-    document.querySelectorAll(".more-insight-item").forEach((b) => b !== btn && b.setAttribute("aria-expanded", "false"));
-    const open = nav.style.display === "none";
-    nav.style.display = open ? "" : "none";
-    btn.setAttribute("aria-expanded", open ? "true" : "false");
+    closeMorePanel();
+    openInsightSectionOverlay(defaultInsightSectionFor(cat), cat);
   });
 });
-document.querySelectorAll(".more-insight-nav").forEach((nav) => {
-  nav.addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-insight-section]");
-    if (!btn) return;
-    closeMorePanel();
-    openInsightSectionOverlay(btn.dataset.insightSection, nav.dataset.insightCatNav);
-  });
+// 열린 화면 안의 투자처 버튼(한국주식·미국주식·비트코인)
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-insight-switch]");
+  if (!btn) return;
+  openInsightSectionOverlay(btn.dataset.insightSwitch, insightActiveCategory);
 });
 // 자동추적(2026-09-10 사용자 요청): 상단 탭에서 더보기로 이동 — 누르면 투자처 4개를 고르는 줄이 펼쳐지고,
 // 고른 투자처(한국주식/미국주식/ETF/비트코인)로 섹션을 전환한 뒤 그 투자처의 자동추적 화면을 연다
 el("morePanelAutoTrackBtn").addEventListener("click", () => {
-  const nav = el("morePanelAutoTrackNav");
-  const open = nav.style.display === "none";
-  nav.style.display = open ? "" : "none";
-  el("morePanelAutoTrackBtn").setAttribute("aria-expanded", open ? "true" : "false");
+  closeMorePanel();
+  goAutoTrackSection(appSectionMode === "crypto" ? "crypto" : getWatchlistActiveMarket() === "KR" ? "kr" : "us");
 });
-el("morePanelAutoTrackNav").addEventListener("click", (e) => {
-  const btn = e.target.closest("[data-autotrack-section]");
-  if (!btn) return;
-  const section = btn.dataset.autotrackSection; // kr | us | etf | crypto
-  appSectionMode = section === "etf" ? "etf" : section === "crypto" ? "crypto" : "stocks";
+// 투자처 전환(자동추적 화면 위 버튼 줄) — 인사이트 화면과 같은 방식(2026-09-16 사용자 요청)
+function goAutoTrackSection(section) {
+  appSectionMode = section === "crypto" ? "crypto" : "stocks";
   if (section === "kr" || section === "us") setAppMarketMode(section);
-  if (section === "etf") etfPopularRegion = getWatchlistActiveMarket() === "KR" ? "kr" : "us";
   setHeaderToneForSection(section);
   showOnlyCarouselView(() => openAutoTrack());
   setBottomNavActive(bottomNavKeyForSection());
   syncSectionHeader();
+}
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-autotrack-switch]");
+  if (!btn) return;
+  goAutoTrackSection(btn.dataset.autotrackSwitch);
 });
 el("morePanelCalendarOverlayBtn").addEventListener("click", () => {
   closeMorePanel();
@@ -11366,7 +11346,16 @@ function openAutoTrack() {
   el("tabValuationBtn").classList.remove("active");
   tabTrendBtn.classList.remove("active");
   setCarouselViewTitle("tab.autotrack");
-  el("topRankingSubNav").innerHTML = "";
+  // 투자처는 이 화면 안에서 바꾼다(2026-09-16 사용자 요청) — ETF는 자동추적에서 제외
+  const cur = appSectionMode === "crypto" ? "crypto" : getWatchlistActiveMarket() === "KR" ? "kr" : "us";
+  el("topRankingSubNav").classList.remove("sr-rank-nav");
+  el("topRankingSubNav").innerHTML = [
+    ["kr", "한국주식"],
+    ["us", "미국주식"],
+    ["crypto", "비트코인"],
+  ]
+    .map(([sec, label]) => `<button type="button" class="cat-btn${sec === cur ? " active" : ""}" data-autotrack-switch="${sec}">${label}</button>`)
+    .join("");
   showRankingGroup("autotrack");
   renderAutoTrack();
 }
@@ -12956,11 +12945,32 @@ function openInsightSectionOverlay(section, category) {
   panel.style.display = "flex";
   requestAnimationFrame(() => panel.classList.add("open"));
   // 고른 보기 하나만 보여주므로 카테고리 칩 줄은 감춘다(닫을 때 원래대로)
-  const catNav = body.querySelector(".top30-sub-nav");
+  const catNav = body.querySelector(".top30-sub-nav:not(.insight-switch-nav)"); // 투자처 전환 줄은 제외
   if (catNav) catNav.style.display = catLabel ? "none" : "";
+  // 투자처(한국주식·미국주식·비트코인)는 이 화면 안에서 바꾼다(2026-09-16 사용자 요청)
+  const switchRows = category ? MORE_INSIGHT_SECTIONS[category] || [] : [];
+  let switchNav = el("insightSwitchNav");
+  if (switchRows.length > 1) {
+    if (!switchNav) {
+      switchNav = document.createElement("div");
+      switchNav.id = "insightSwitchNav";
+      switchNav.className = "top30-sub-nav insight-switch-nav";
+    }
+    switchNav.innerHTML = switchRows
+      .map(([sec, label]) => `<button type="button" class="cat-btn${sec === section ? " active" : ""}" data-insight-switch="${sec}">${escapeHtml(label)}</button>`)
+      .join("");
+    body.insertBefore(switchNav, body.firstChild);
+  } else if (switchNav) {
+    switchNav.remove();
+  }
+  // 이 보기와 상관없는 하위 버튼 줄(브랜드·순위상승 기간·상관관계 기간·미래산업)은 모두 숨긴다 —
+  // 전에 열었던 보기의 버튼이 남아 "이상한 버튼"으로 보이던 문제(2026-09-16 사용자 지적)
+  [insightBrandNav, futureIndustryNav, el("rankUpNav"), el("corrNav")].forEach((n) => {
+    if (n) n.style.display = "none";
+  });
   syncInsightCategoryVisibility(); // 이 투자처에 없는 하위 보기는 감추고, 지금 카테고리가 빠졌으면 첫 항목으로
   setInsightCategoryActive(insightActiveCategory);
-  updateFirmsNavVisibility();
+  updateFirmsNavVisibility(); // 기관·자산운용사일 때만 기관 목록 줄 표시
   insightDirty = false;
   runInsightCategory(insightActiveCategory);
 }
