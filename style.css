@@ -1565,7 +1565,18 @@ table.s-report-table td:first-child { text-align: left; font-weight: 600; }
 }
 .wizard-root-option:hover { border-color: var(--accent); }
 .wizard-option-sub { display: block; margin-top: 4px; font-size: 12px; font-weight: 400; color: var(--muted); }
-.wizard-option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+/* 간편검색(2026-09-16 개편): 투자처 = 하단 네비와 같은 마크 + 이름 + 한 줄 설명 */
+.wizard-market-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+.wizard-market-btn { display: flex; align-items: center; gap: 12px; width: 100%; padding: 13px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text); text-align: left; cursor: pointer; }
+.wizard-market-btn:hover { border-color: var(--accent); }
+.wizard-market-mark { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 28px; }
+.wizard-market-mark svg { width: 26px; height: 17px; display: block; }
+.wizard-market-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.wizard-market-text b { font-size: 15px; font-weight: 800; letter-spacing: -0.3px; }
+.wizard-market-text small { font-size: 11.5px; font-weight: 600; color: var(--muted); }
+.wizard-market-arrow { flex: none; font-size: 18px; color: var(--muted); }
+.wizard-group-title { margin: 14px 0 6px; font-size: 12px; font-weight: 800; color: var(--muted); letter-spacing: -0.2px; }
+.wizard-option-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 4px; }
 .wizard-option-btn {
   padding: 10px 8px;
   border-radius: 8px;

@@ -4506,9 +4506,14 @@ el("searchWizardBody").addEventListener("click", (e) => {
     searchWizardStep = btn.dataset.wizardBackStep;
     renderSearchWizardStep();
   } else if (action === "market-pick") {
+    // 2026-09-16: 랭킹검색만 남겨 투자처를 고르면 곧바로 항목 목록으로
     searchWizardAnswers = { market: btn.dataset.market };
-    searchWizardStep = "menu";
+    searchWizardStep = "branchA";
     renderSearchWizardStep();
+  } else if (action === "sr-rank") {
+    const market = wizardMarket();
+    closeSearchWizard();
+    openSReportRank(btn.dataset.srKey, market === "etf" || market === "crypto" ? market : "stocks", market === "kr" ? "kr" : "us");
   } else if (action === "root-a") {
     searchWizardStep = "branchA";
     renderSearchWizardStep();
@@ -4570,16 +4575,27 @@ el("searchWizardBody").addEventListener("click", (e) => {
   }
 });
 
-// 1단계(2026-09-03 개편): 관심 있는 투자처 선택 — 한국주식/미국주식/ETF/비트코인
+// 1단계(2026-09-16 개편): 투자처 선택 — 하단 네비와 같은 마크를 써서 앱 안에서 같은 것을 가리키는 게 한눈에 보이게 한다.
+// 고르면 곧바로 항목 목록(=핵심지표 항목)으로 넘어간다. 예전의 선택찾기·자동찾기 갈래는 사용자 요청으로 없앴다.
 function renderWizardRoot() {
-  const name = wizardUserName();
+  const rows = [
+    { m: "kr", icon: FLAG_SVG_KR, name: "한국주식", sub: "코스피200 + 코스닥150 350종목" },
+    { m: "us", icon: FLAG_SVG_US, name: "미국주식", sub: "S&P500" },
+    { m: "etf", icon: ICON_SVG_ETF, name: "ETF", sub: "한국·미국 상장지수펀드 200종목" },
+    { m: "crypto", icon: ICON_SVG_BTC, name: "비트코인", sub: "암호화폐 시가총액 상위 200" },
+  ];
   return `
-    <p class="wizard-question">${escapeHtml(name)}님, 관심 있는 투자처를 선택해주세요.</p>
-    <div class="wizard-root-options">
-      <button type="button" class="wizard-root-option" data-wizard-action="market-pick" data-market="kr"><b>🇰🇷 1. 한국주식</b> 코스피200+코스닥150</button>
-      <button type="button" class="wizard-root-option" data-wizard-action="market-pick" data-market="us"><b>🇺🇸 2. 미국주식</b> S&amp;P500</button>
-      <button type="button" class="wizard-root-option" data-wizard-action="market-pick" data-market="etf"><b>📊 3. ETF</b> 미국·한국 상장지수펀드</button>
-      <button type="button" class="wizard-root-option" data-wizard-action="market-pick" data-market="crypto"><b>₿ 4. 비트코인</b> 암호화폐 시총 상위</button>
+    <p class="wizard-question">어떤 투자처를 보시겠어요?</p>
+    <div class="wizard-market-list">
+      ${rows
+        .map(
+          (r) => `<button type="button" class="wizard-market-btn" data-wizard-action="market-pick" data-market="${r.m}">
+            <span class="wizard-market-mark">${r.icon}</span>
+            <span class="wizard-market-text"><b>${escapeHtml(r.name)}</b><small>${escapeHtml(r.sub)}</small></span>
+            <span class="wizard-market-arrow" aria-hidden="true">›</span>
+          </button>`
+        )
+        .join("")}
     </div>
   `;
 }
@@ -4689,27 +4705,33 @@ tabTrendBtn.addEventListener("click", () => activateRankingGroup("market"));
 
 function renderWizardBranchA() {
   const market = wizardMarket();
-  let items;
+  const label = WIZARD_MARKET_LABEL[market];
+  let body;
   if (market === "etf" || market === "crypto") {
-    // ETF·비트코인은 증시동향 8개 지표 랭킹만 제공(2026-09-03 투자처 개편: 선택 가능한 항목만 노출)
-    items = ASSET_TREND_ORDER.filter((k) => ASSET_TREND_METRICS[k])
-      .map((k) => [k, ASSET_TREND_METRICS[k]])
+    // ETF·코인은 항목이 적어 묶음 없이 한 벌로
+    const keys = SR_ASSET_ITEM_ORDER[market] || [];
+    body = `<div class="wizard-option-grid">${keys
       .map(
-        ([key, m]) =>
-          `<button type="button" class="wizard-option-btn${m.orange ? " wizard-option-btn-orange" : ""}" data-wizard-action="asset-rank-nav" data-metric="${key}">${iconHtml(m.icon)} ${m.label}</button>`
+        (k) =>
+          `<button type="button" class="wizard-option-btn" data-wizard-action="sr-rank" data-sr-key="${escapeHtml(k)}">${escapeHtml(SR_ASSET_ITEM_LABEL[k] || k)}</button>`
       )
-      .join("");
+      .join("")}</div>`;
   } else {
-    // RSI 순위·우상향점수는 2026-09-02 확장으로 국내(scoresKr)도 지원 — 한국·미국 모두 전체 항목 노출
-    items = RANKING_ENTRIES.map(
-      (entry, i) =>
-        `<button type="button" class="wizard-option-btn${entry.orange ? " wizard-option-btn-orange" : ""}" data-wizard-action="rank-nav" data-rank-idx="${i}">${iconHtml(entry.icon)} ${entry.label}</button>`
+    const titles = { growth: "성장 · 추세", profit: "수익성 · 재무", market: "시장" };
+    body = SR_RANK_GROUPS.map(
+      (g) => `<p class="wizard-group-title">${escapeHtml(titles[g.key] || "")}</p>
+        <div class="wizard-option-grid">${g.items
+          .map(
+            (it) =>
+              `<button type="button" class="wizard-option-btn" data-wizard-action="sr-rank" data-sr-key="${escapeHtml(it.k)}">${escapeHtml(it.label)}</button>`
+          )
+          .join("")}</div>`
     ).join("");
   }
   return `
-    <p class="wizard-question">[${escapeHtml(WIZARD_MARKET_LABEL[market])} · 랭킹찾기]에서 찾으실 항목을 선택해주세요.</p>
-    <div class="wizard-option-grid">${items}</div>
-    <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="menu">← 뒤로</button>
+    <p class="wizard-question">[${escapeHtml(label)}] 어떤 순위를 보시겠어요?</p>
+    ${body}
+    <button type="button" class="wizard-back-btn" data-wizard-action="back" data-wizard-back-step="root">← 뒤로</button>
   `;
 }
 // 선택찾기 미제공 투자처 안내(섹터 스크리너가 S&P500 전용)
@@ -6364,13 +6386,22 @@ const SR_RANK_ITEM_BY_KEY = new Map(SR_RANK_GROUPS.flatMap((g) => g.items.map((i
 // ETF·코인: ["tab", 키] = 상단 탭 랭킹, ["trend", 지표] = 시장동향 랭킹
 const SR_ASSET_RANK = {
   etf: {
-    win: ["tab", "winrate"], ret: ["tab", "return"], rev: ["tab", "return"], vol: ["tab", "volatility"],
+    win: ["tab", "winrate"], ret: ["trend", "pressure"], rev: ["tab", "return"], vol: ["tab", "volatility"],
     div: ["tab", "dividend"], fee: ["tab", "fee"], rsi: ["trend", "rsi"], w52: ["trend", "week52"],
   },
   crypto: {
-    win: ["tab", "winrate"], ret: ["tab", "return"], rev: ["tab", "return"], vol: ["tab", "volatility"],
+    win: ["tab", "winrate"], ret: ["trend", "pressure"], rev: ["tab", "return"], vol: ["tab", "volatility"],
     mcap: ["tab", "marketcap"], rsi: ["trend", "rsi"], w52: ["trend", "week52"],
   },
+};
+// 간편검색 목록에 쓰는 항목 이름 — ETF·코인은 매출이 없어 3번 자리가 1년 수익률이라 이름이 다르다
+const SR_ASSET_ITEM_ORDER = {
+  etf: ["win", "ret", "rev", "vol", "rsi", "div", "fee", "w52"],
+  crypto: ["win", "ret", "rev", "vol", "rsi", "mcap", "w52"],
+};
+const SR_ASSET_ITEM_LABEL = {
+  win: "승률", ret: "연평균 상승", rev: "1년 수익률", vol: "변동성", rsi: "과열도(RSI)",
+  div: "배당률", fee: "운용보수", mcap: "시가총액", w52: "52주 구간",
 };
 
 // var로 둔 이유: 앱 부팅 때 syncSectionHeader가 이 파일 위쪽에서 먼저 불리는데, let이면 아직 TDZ라 참조 오류가 난다
