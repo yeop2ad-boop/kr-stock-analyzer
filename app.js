@@ -6288,25 +6288,26 @@ const sNum = (v, d) => (d ? (Math.round(v * 10) / 10).toFixed(1) : String(Math.r
 
 // 항목을 누르면 펼쳐지는 2줄 설명(2026-09-15 사용자 요청: 어떻게 구했는지 + 높을수록 무슨 뜻인지) — 앱 공통 data-explain 장치 사용
 const S_REPORT_EXPLAIN = {
-  win: "최근 10년(최대 120개월) 동안 월말 종가가 전달보다 오른 달의 비율입니다.\n높을수록 꾸준히 오르며 마감한 달이 많았다는 뜻이에요.",
-  ret: "최근 10년 동안 가격이 매년 평균 몇 %씩 올랐는지(연복리 수익률)입니다. 상장 10년 미만은 상장 후 기간으로 계산해요.\n높을수록 장기적으로 크게 올랐다는 뜻이에요.",
-  rev: "최근 발표 실적의 매출이 1년 전 같은 기간보다 몇 % 늘었는지입니다.\n높을수록 사업 규모가 빠르게 커지고 있다는 뜻이에요.",
-  ret1y: "1년 전 같은 시점 가격과 비교해 지금 가격이 몇 % 올랐는지입니다.\n높을수록 최근 1년 성과가 좋았다는 뜻이에요.",
-  vol: "최근 3개월 동안 하루에 가격이 평균 몇 % 움직였는지(일간 등락률 절댓값 평균)입니다.\n높을수록 하루하루 크게 흔들려 위험이 크다는 뜻이에요.",
-  rsi: "최근 14주 상승폭과 하락폭으로 계산한 주간 RSI(0~100)입니다. 종목마다 1년 평균 RSI를 따로 계산하므로 기준이 되는 평균 값이 종목마다 다릅니다.\n1년 평균 RSI보다 낮으면 침체, 높으면 과열을 뜻해요. 매우 과열 +20 이상 · 약한 과열 +10 이상 · 정상 ±10 안 · 약한 침체 −10 이하 · 매우 침체 −20 이하.",
-  ni: "최근 회계연도 순이익이 전년보다 몇 % 늘었는지입니다.\n높을수록 회사가 실제로 남기는 이익이 빠르게 늘고 있다는 뜻이에요.",
-  om: "매출에서 영업이익이 차지하는 비율(최근 분기)입니다.\n높을수록 본업에서 돈을 효율적으로 번다는 뜻이에요.",
-  roe: "자기자본 대비 순이익 비율(최근 분기)입니다.\n높을수록 주주의 돈으로 이익을 잘 만들어 낸다는 뜻이에요.",
-  cf: "최근 회계연도 영업활동 현금흐름이 전년보다 몇 % 늘었는지입니다.\n높을수록 장부상 이익이 아니라 실제로 들어오는 현금이 늘고 있다는 뜻이에요.",
-  debt: "자기자본 대비 부채 비율(최근 분기)입니다.\n낮을수록 빚 부담이 적어 재무가 안정적이라는 뜻이에요.",
-  per: "주가를 주당순이익으로 나눈 값으로, 이익의 몇 배에 거래되는지를 뜻합니다.\n낮을수록 이익에 비해 싸게 거래되지만, 성장 기대가 낮아서일 수도 있어요.",
-  div: "최근 1년 동안 받은 배당금(분배금) 합계를 현재가로 나눈 값입니다.\n높을수록 들고만 있어도 받는 현금이 많다는 뜻이에요.",
-  fee: "ETF를 1년 들고 있으면 자산에서 자동으로 빠져나가는 연간 총보수입니다.\n낮을수록 비용 부담이 적어 오래 보유할수록 유리해요.",
-  mcap: "가격 × 발행주식수(코인은 유통량)로 계산한 전체 가치입니다.\n클수록 규모가 큰 대형 종목이라는 뜻이에요.",
-  dv: "최근 5거래일 평균 거래대금(종가 × 거래량)입니다.\n클수록 사고팔기 쉬운, 유동성이 풍부한 종목이에요.",
-  w52: "최근 52주 최저가(0%)부터 최고가(100%) 사이에서 지금 가격의 위치입니다.\n높을수록 1년 고점에, 낮을수록 1년 저점에 가깝다는 뜻이에요.",
+  win: "최근 10년 동안 월말 종가가 전달보다 오른 달의 비율입니다.\n높을수록 꾸준히 올랐다는 뜻이에요.",
+  ret: "최근 10년간 매년 평균 몇 %씩 올랐는지(연복리)입니다.\n높을수록 장기 성과가 좋았다는 뜻이에요.",
+  rev: "최근 실적 매출이 1년 전 같은 기간보다 몇 % 늘었는지입니다.\n높을수록 사업이 빠르게 커지고 있어요.",
+  ret1y: "1년 전 가격과 비교해 지금 몇 % 올랐는지입니다.\n높을수록 최근 1년 성과가 좋았어요.",
+  vol: "최근 3개월 하루 평균 등락 폭입니다.\n높을수록 하루하루 크게 흔들려 위험해요.",
+  rsi: "최근 14주 등락 폭으로 만든 주간 RSI입니다.\n이 종목의 1년 평균보다 높으면 과열, 낮으면 침체예요(±10 정상, ±20부터 매우).",
+  ni: "최근 회계연도 순이익이 전년보다 몇 % 늘었는지입니다.\n높을수록 실제 남기는 이익이 빠르게 늘어요.",
+  om: "매출에서 영업이익이 차지하는 비율(최근 분기)입니다.\n높을수록 본업에서 효율적으로 벌어요.",
+  roe: "자기자본 대비 순이익 비율(최근 분기)입니다.\n높을수록 주주 돈으로 이익을 잘 만들어요.",
+  cf: "영업활동 현금흐름이 전년보다 몇 % 늘었는지입니다.\n높을수록 실제 들어오는 현금이 늘고 있어요.",
+  debt: "자기자본 대비 부채 비율(최근 분기)입니다.\n낮을수록 빚 부담이 적어 안정적이에요.",
+  per: "주가가 주당순이익의 몇 배인지입니다.\n낮을수록 이익에 비해 싸지만, 성장 기대가 낮아서일 수도 있어요.",
+  div: "최근 1년 배당금 합계를 현재가로 나눈 값입니다.\n높을수록 들고만 있어도 받는 현금이 많아요.",
+  fee: "ETF를 1년 들고 있으면 빠져나가는 연간 총보수입니다.\n낮을수록 오래 보유하기 유리해요.",
+  mcap: "가격 × 발행주식수(코인은 유통량)입니다.\n클수록 규모가 큰 대형 종목이에요.",
+  dv: "최근 5거래일 평균 거래대금입니다.\n클수록 사고팔기 쉬운 종목이에요.",
+  w52: "52주 최저(0%)에서 최고(100%) 사이 지금 가격의 위치입니다.\n높을수록 1년 고점에 가까워요.",
 };
-// 항목을 누르면 설명 맨 위에 붙는 제목(2026-09-16 사용자 지정) — 행 라벨은 좁아서 짧게 두고, 뜻은 여기서 길게 적는다
+// 항목을 누르면 설명 맨 위에 붙는 제목(2026-09-16 사용자 지정) — 화면의 항목 이름·차트 축·목록 제목은 전부 짧은 이름을 쓰고,
+// 풀어 쓴 긴 이름은 이 설명 안에서만 보여준다(2026-09-16 사용자 요청)
 const S_REPORT_TITLES = {
   win: "10년 평균 승률",
   ret: "10년 평균상승률",
@@ -6341,8 +6342,8 @@ function sReportCoreSpecs(isAsset) {
       ? { key: "rev", label: "1년 수익률", explainKey: "ret1y", better: "high", band: 3, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true) }
       : { key: "rev", label: "매출액", sub: "작년 대비", better: "high", band: 3, rel: 0.2, signed: true, fmt: (v, d) => sPct(v, d, true) },
     { key: "vol", label: "변동성", sub: "3개월 하루", better: "low", band: 0.1, rel: 0.1, fmt: (v, d) => `${v.toFixed(d ? 2 : 1)}%` },
-    // RSI는 높을수록 매수 쪽이라 레이더에서도 높을수록 바깥(2026-09-15 사용자 정정)
-    { key: "rsi", label: "과열도(RSI)", better: "high", isRsi: true, fmt: (v, d) => sNum(v, d) },
+    // 과열도는 낮을수록 좋은 점수(2026-09-16 사용자 요청) — 등수도 낮은 순으로 1위, 레이더에서도 낮을수록 바깥
+    { key: "rsi", label: "과열도(RSI)", better: "low", isRsi: true, fmt: (v, d) => sNum(v, d) },
   ];
 }
 // 전체 보기 추가 항목(배치 DB 키) — live: DB에 없는 주식은 실시간 지표(getFullMetrics)로 보충
@@ -6600,7 +6601,7 @@ function openSReportRank(itemKey, section, market) {
   const item = SR_RANK_ITEM_BY_KEY.get(itemKey);
   if (!item) return;
   srRankActive = { group: item.group, k: item.k };
-  setCarouselViewTitleText(S_REPORT_TITLES[item.k] || item.label); // 제목이 "인기종목"에 머물던 문제(2026-09-16)
+  setCarouselViewTitleText(item.label); // 제목이 "인기종목"에 머물던 문제(2026-09-16) — 이름은 짧게
   appSectionMode = "stocks";
   if (market === "kr" || market === "us") {
     setWatchlistActiveMarket(market === "kr" ? "KR" : "US");
@@ -6645,7 +6646,7 @@ function sReportLineHtml(it) {
   const sKey = it.explainKey || it.key;
   return `
     <div class="srf-line" data-sr-key="${escapeHtml(sKey)}" data-sr-explain="${escapeHtml(it.explain || "")}" data-sr-title="${escapeHtml(S_REPORT_TITLES[sKey] || it.label)}">
-      <span class="srf-name">${escapeHtml(S_REPORT_TITLES[sKey] || it.label)}</span>
+      <span class="srf-name">${escapeHtml(it.label)}</span>
       <b class="srf-val" data-round="${escapeHtml(has ? it.fmt(it.value, 0) : "N/A")}">${escapeHtml(has ? it.fmt(it.value, 1) : "N/A")}</b>
       <span class="srf-rank${it.mark ? ` srf-rank-${it.mark}` : ""}" data-short="${escapeHtml(shortHtml)}">${rankHtml}</span>
     </div>`;
@@ -6775,7 +6776,7 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
         <div id="sReportMoreSlot"></div>
         <button type="button" class="srt-more-btn" id="sReportTopMoreBtn">더보기 <span aria-hidden="true">▾</span></button>
       </div>
-      <p class="srt-note">등수는 ${escapeHtml(group ? group.label : "비교군")} 안 순위(유리한 쪽이 1위, 시가총액·거래대금·52주 위치는 클수록 1위) · 🔥 상위 10% · ⚠️ 하위 10%. RSI(과열도)는 이 종목의 1년 평균 RSI와 비교한 과열·침체 등급입니다${asOfText}. 투자 자문이 아닙니다.</p>`;
+      <p class="srt-note">등수는 ${escapeHtml(group ? group.label : "비교군")} 안 순위(유리한 쪽이 1위 — 변동성·부채비율·PER·과열도는 낮을수록, 시가총액·거래대금·52주 위치는 클수록 1위) · 🔥 상위 10% · ⚠️ 하위 10%. RSI(과열도)는 이 종목의 1년 평균 RSI와 비교한 과열·침체 등급입니다${asOfText}. 투자 자문이 아닙니다.</p>`;
     // 더보기 항목은 5개 행 바로 아래(버튼 위)에 붙음
     el("sReportMoreSlot").appendChild(sReportInlineWrap);
     fitSReportRoundCells(section);
