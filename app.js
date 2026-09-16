@@ -7775,7 +7775,6 @@ function fin2BodyHtml(data, period, currency) {
   //   손실률이 100%를 넘으면 매출 막대와 같은 길이까지만(차트가 아래로 끝없이 늘어나지 않게)
   let hasNeg = false;
   let maxNegPx = 0;
-  let hasOverMargin = false; // 순이익이 매출보다 큰 해(지분 매각·평가이익 같은 영업 밖 이익이 섞인 경우)
   const cols = bars
     .map((b) => {
       const barPx = Number.isFinite(b.rev) && b.rev > 0 ? Math.max(4, (b.rev / maxRev) * PLOT_H * 0.78) : 4;
@@ -7788,8 +7787,7 @@ function fin2BodyHtml(data, period, currency) {
       }
       let marginHtml = "";
       if (margin !== null) {
-        if (margin > 100) hasOverMargin = true;
-        const txt = `${Math.round(margin)}%${margin > 100 ? "*" : ""}`;
+        const txt = `${Math.round(margin)}%`;
         // 순손실(2026-09-16 사용자 요청): 기준선 아래 검회색 막대 + 그 아래에 파란색 마이너스 %
         if (margin < 0) marginHtml = `<div class="fin2-ni-neg" style="height:${negPx.toFixed(1)}px"><span class="fin2-neg-label">${txt}</span></div>`;
         else if (margin === 0) marginHtml = `<span class="fin2-margin fin2-margin-zero" style="bottom:3px">${txt}</span>`;
@@ -7824,11 +7822,7 @@ function fin2BodyHtml(data, period, currency) {
       <span><i class="fin2-dot fin2-dot-ni"></i>순이익 <em>(막대 안 % = 순이익률)</em></span>
     </div>
     <div class="fin2-chart${hasNeg ? " has-neg" : ""}" style="grid-template-columns:repeat(${bars.length},1fr);--fin2-neg-space:${Math.round(maxNegPx + 20)}px">${cols}</div>
-    <p class="fin2-caption">막대를 누르면 매출액이 보여요. 막대 위 %는 ${isAnnual ? "작년" : "전분기"} 대비 매출 증감입니다.${estNote}${
-      hasOverMargin
-        ? ` <b>*</b> 순이익이 매출보다 큰 ${isAnnual ? "해" : "분기"}입니다 — 본업(영업이익) 밖에서 생긴 지분 매각·평가이익 등이 순이익에 더해진 것입니다.`
-        : ""
-    } 출처: ${escapeHtml(source)}.</p>`;
+    <p class="fin2-caption">막대를 누르면 매출액이 보여요. 막대 위 %는 ${isAnnual ? "작년" : "전분기"} 대비 매출 증감입니다.${estNote} 출처: ${escapeHtml(source)}.</p>`;
 }
 
 // ---------- 2+. 최근 분기 실적(최근 3개) + 다음 분기 가이던스(1개) ----------
