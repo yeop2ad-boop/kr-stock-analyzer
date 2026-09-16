@@ -5609,7 +5609,7 @@ async function runAnalysis(ticker) {
 
     // S리포트 요약 카드(2026-09-15): 승률·상승률·매출액·변동성·RSI 5개 + 평가 한 줄
     renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise).catch((e) => {
-      el("sReportTopSection").innerHTML = `<p class="error-inline">S리포트를 계산하지 못했습니다: ${escapeHtml(e.message || "")}</p>`;
+      el("sReportTopSection").innerHTML = `<p class="error-inline">핵심지표를 계산하지 못했습니다: ${escapeHtml(e.message || "")}</p>`;
     });
 
     if (isCryptoDetail || isEtfDetail) {
@@ -5983,7 +5983,7 @@ function sReportRowHtml(r) {
 
 async function runSReport(symbol, selfMetricsPromise) {
   const isKr = isKrTicker(symbol);
-  sReportInlineWrap.innerHTML = `<p class="muted" style="padding:12px 0;">⏳ S리포트를 계산하는 중...</p>`;
+  sReportInlineWrap.innerHTML = `<p class="muted" style="padding:12px 0;">⏳ 핵심지표를 계산하는 중...</p>`;
 
   // 배당컷/지연 경고는 유니버스 스냅샷에 없어서 이 종목 하나만 배당 이력을 조회해 랭킹 표와 동일한 "⚠️컷/⚠️지연"을 붙임(2026-08-31)
   const [baseUniverse, selfMetrics, divInfo, ipoUniverse] = await Promise.all([
@@ -5996,14 +5996,14 @@ async function runSReport(symbol, selfMetricsPromise) {
   const universe = ipoUniverse || baseUniverse;
 
   if (!universe || !Array.isArray(universe.companies)) {
-    sReportInlineWrap.innerHTML = `<p class="muted" style="padding:12px 0;">🚧 S리포트 데이터를 가져오지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
+    sReportInlineWrap.innerHTML = `<p class="muted" style="padding:12px 0;">🚧 핵심지표 데이터를 가져오지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
     return;
   }
   const companies = universe.companies;
   const self = companies.find((c) => c.symbol === symbol);
   if (!self) {
     const universeLabel = ipoUniverse ? ipoUniverse.label : isKr ? "코스피200+코스닥150" : "S&P500";
-    sReportInlineWrap.innerHTML = `<p class="muted" style="padding:12px 0;">이 종목은 S리포트 비교 대상 유니버스(${universeLabel})에 포함되지 않아 순위를 계산할 수 없습니다.</p>`;
+    sReportInlineWrap.innerHTML = `<p class="muted" style="padding:12px 0;">이 종목은 핵심지표 비교 대상 유니버스(${universeLabel})에 포함되지 않아 순위를 계산할 수 없습니다.</p>`;
     return;
   }
 
@@ -6295,7 +6295,7 @@ function sReportRadarSvg(items) {
       }</text>`;
     })
     .join("");
-  return `<svg class="srt-radar" viewBox="0 0 ${W} ${H}" role="img" aria-label="S리포트 핵심 5개 지표 레이더 차트">${rings}${spokes}${avgPoly}${selfPoly}${avgDots}${dots}${labels}</svg>`;
+  return `<svg class="srt-radar" viewBox="0 0 ${W} ${H}" role="img" aria-label="핵심 5개 지표 레이더 차트">${rings}${spokes}${avgPoly}${selfPoly}${avgDots}${dots}${labels}</svg>`;
 }
 
 // 한 줄 행(2026-09-15 사용자 요청): 항목 | 현재 값 | 등수 "12/200위 (상위 6%)" + 상위 10% 🔥 · 하위 10% ⚠️
@@ -6393,7 +6393,7 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
     return;
   }
   if (member) draw();
-  else section.innerHTML = `<p class="muted" style="padding:8px 0;">S리포트를 계산하는 중...</p>`;
+  else section.innerHTML = `<p class="muted" style="padding:8px 0;">핵심지표를 계산하는 중...</p>`;
   const [entry, metrics, derived] = await Promise.all([
     getDetailWrEntry(ticker, scoreMode).catch(() => null),
     isAsset ? Promise.resolve(null) : (selfMetricsPromise || Promise.resolve(null)).catch(() => null),
@@ -6892,7 +6892,7 @@ async function runAssetSReport(ticker, assetType) {
         <tbody>${body}</tbody>
       </table>`;
   } catch (err) {
-    wrap.innerHTML = `<p class="error-inline">S리포트를 계산하지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
+    wrap.innerHTML = `<p class="error-inline">핵심지표를 계산하지 못했습니다: ${escapeHtml(err.message || "")}</p>`;
   }
 }
 
@@ -7227,7 +7227,7 @@ async function loadFin2Annual(ticker, currency) {
   } else if (actual.length >= 2) {
     const rev = projectNextQuarter(actual, "rev");
     if (Number.isFinite(rev) && rev > 0) {
-      est = { label: String(lastYear + 1), rev, ni: projectNextQuarter(actual, "ni"), est: true };
+      est = { label: String(lastYear + 1), rev, ni: projectNextNetIncome(actual, rev), est: true };
       estSource = "추세 예상";
     }
   }
@@ -7257,7 +7257,8 @@ async function loadFin2Quarter(ticker, currency) {
         if (!est && actual.length >= 2) {
           const y = Number(lastKey.slice(0, 4));
           const m = Number(lastKey.slice(4, 6)) + 3;
-          est = { label: fin2QuarterLabel(m > 12 ? y + 1 : y, m > 12 ? m - 12 : m), rev: projectNextQuarter(actual, "rev"), ni: projectNextQuarter(actual, "ni"), est: true };
+          const estRev = projectNextQuarter(actual, "rev");
+          est = { label: fin2QuarterLabel(m > 12 ? y + 1 : y, m > 12 ? m - 12 : m), rev: estRev, ni: projectNextNetIncome(actual, estRev), est: true };
           estSource = "추세 예상";
         }
         const bars = est && Number.isFinite(est.rev) ? [...actual, ...fin2WithGrowth([est], actual[actual.length - 1].rev)] : actual;
@@ -7299,7 +7300,7 @@ async function loadFin2Quarter(ticker, currency) {
     const nextDate = addMonths(new Date(shown[shown.length - 1] + "T00:00:00"), 3);
     const rev = projectNextQuarter(actual, "rev");
     if (Number.isFinite(rev) && rev > 0) {
-      const est = { label: fin2QuarterLabel(nextDate.getFullYear(), nextDate.getMonth() + 1), rev, ni: projectNextQuarter(actual, "ni"), est: true };
+      const est = { label: fin2QuarterLabel(nextDate.getFullYear(), nextDate.getMonth() + 1), rev, ni: projectNextNetIncome(actual, rev), est: true };
       bars = [...actual, ...fin2WithGrowth([est], actual[actual.length - 1].rev)];
     }
   }
@@ -7367,8 +7368,9 @@ function fin2BodyHtml(data, period, currency) {
       let marginHtml = "";
       if (margin !== null) {
         const txt = `${Math.round(margin)}%`;
-        if (margin < 0) marginHtml = `<span class="fin2-margin fin2-margin-loss" style="bottom:3px">${txt}</span><div class="fin2-ni-neg" style="height:${negPx.toFixed(1)}px"></div>`;
-        else if (margin === 0) marginHtml = `<span class="fin2-margin fin2-margin-loss" style="bottom:3px">${txt}</span>`;
+        // 순손실(2026-09-16 사용자 요청): 기준선 아래 검회색 막대 + 그 아래에 파란색 마이너스 %
+        if (margin < 0) marginHtml = `<div class="fin2-ni-neg" style="height:${negPx.toFixed(1)}px"><span class="fin2-neg-label">${txt}</span></div>`;
+        else if (margin === 0) marginHtml = `<span class="fin2-margin fin2-margin-zero" style="bottom:3px">${txt}</span>`;
         else if (niPx >= 17) marginHtml = `<span class="fin2-margin fin2-margin-in" style="bottom:${Math.max(2, niPx - 16).toFixed(0)}px">${txt}</span>`;
         else if (barPx - niPx >= 17) marginHtml = `<span class="fin2-margin fin2-margin-out" style="bottom:${(niPx + 1).toFixed(0)}px">${txt}</span>`;
       }
@@ -7399,7 +7401,7 @@ function fin2BodyHtml(data, period, currency) {
       <span><i class="fin2-dot fin2-dot-rev"></i>매출액</span>
       <span><i class="fin2-dot fin2-dot-ni"></i>순이익 <em>(막대 안 % = 순이익률)</em></span>
     </div>
-    <div class="fin2-chart${hasNeg ? " has-neg" : ""}" style="grid-template-columns:repeat(${bars.length},1fr);--fin2-neg-space:${Math.round(maxNegPx + 8)}px">${cols}</div>
+    <div class="fin2-chart${hasNeg ? " has-neg" : ""}" style="grid-template-columns:repeat(${bars.length},1fr);--fin2-neg-space:${Math.round(maxNegPx + 20)}px">${cols}</div>
     <p class="fin2-caption">막대를 누르면 매출액이 보여요. 막대 위 %는 ${isAnnual ? "작년" : "전분기"} 대비 매출 증감입니다.${estNote} 출처: ${escapeHtml(source)}.</p>`;
 }
 
@@ -7409,6 +7411,16 @@ function fin2BodyHtml(data, period, currency) {
 // 실제 기업 가이던스·컨센서스 추정치를 가져올 방법이 없음. 대신 fundamentals-timeseries(무인증, 정상 동작)의
 // 분기별 매출/순이익 실적만으로 4번째(다음 분기) 막대를 "최근 분기 대비 성장률 기반 추정치"로 계산해 표시하고,
 // 발표일도 정확한 발표일이 아닌 회계분기 마감일(asOfDate)로 표시 — 라벨과 캡션에 명확히 "추정" 표기해 오해를 방지함.
+// 예상 막대의 순이익(2026-09-16 사용자 지적 "마이크론 분기 순이익률이 90%가 넘는다"):
+// 매출과 순이익을 각각 따로 외삽하면 순이익 증가율이 매출 증가율보다 높을 때 순이익률이 92%처럼 비현실적으로 튄다.
+// 예상 매출에 "가장 최근 실적의 순이익률"을 그대로 적용해 마진이 유지된다고 본다(적자면 적자율 유지).
+function projectNextNetIncome(actual, estRev) {
+  if (!Number.isFinite(estRev)) return null;
+  const last = [...actual].reverse().find((b) => Number.isFinite(b.ni) && Number.isFinite(b.rev) && b.rev > 0);
+  if (!last) return null;
+  return estRev * (last.ni / last.rev);
+}
+
 function projectNextQuarter(quarters, key) {
   const vals = quarters.map((q) => q[key]).filter((v) => v !== null && v !== undefined);
   if (vals.length === 0) return null;

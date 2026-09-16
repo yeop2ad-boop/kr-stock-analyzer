@@ -3336,10 +3336,15 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .fin2-margin { position: absolute; left: 0; right: 0; text-align: center; font-size: 10px; font-weight: 800; letter-spacing: -0.3px; line-height: 14px; }
 .fin2-margin-in { color: #fff; }
 .fin2-margin-out { color: #8a5a00; }
-.fin2-margin-loss { color: #e03131; }
+.fin2-margin-zero { color: #868e96; }
 /* 순손실 막대: 기준선 아래(연도 쪽)로 — 적자 연도가 있으면 연도 라벨을 그만큼 내림(2026-09-15) */
-.fin2-ni-neg { position: absolute; left: 0; right: 0; top: calc(100% + 2px); background: #f59f00; border-radius: 0 0 4px 4px; }
-.fin2-col.est .fin2-ni-neg { background: rgba(245, 159, 0, 0.35); }
+.fin2-ni-neg { position: absolute; left: 0; right: 0; top: calc(100% + 2px); background: #4b5563; border-radius: 0 0 4px 4px; }
+.fin2-col.est .fin2-ni-neg { background: rgba(75, 85, 99, 0.4); }
+/* 적자 폭(%)은 검회색 막대 바로 아래에 파란 글씨로(2026-09-16 사용자 요청) */
+.fin2-neg-label { position: absolute; left: -4px; right: -4px; top: calc(100% + 2px); text-align: center; font-size: 10px; font-weight: 800; letter-spacing: -0.3px; line-height: 13px; color: #1c66d9; white-space: nowrap; }
+:root[data-theme="dark"] .fin2-ni-neg { background: #9aa4b2; }
+:root[data-theme="dark"] .fin2-col.est .fin2-ni-neg { background: rgba(154, 164, 178, 0.4); }
+:root[data-theme="dark"] .fin2-neg-label { color: #6aa8ff; }
 .fin2-chart.has-neg .fin2-xlabel { margin-top: var(--fin2-neg-space, 30px); }
 .fin2-tip { display: none; position: absolute; left: 50%; bottom: calc(100% + 4px); transform: translateX(-50%); padding: 5px 9px; border-radius: 8px; background: rgba(34, 34, 34, 0.92); color: #fff; font-size: 12px; font-weight: 800; white-space: nowrap; z-index: 3; }
 .fin2-col.active .fin2-tip { display: block; }
