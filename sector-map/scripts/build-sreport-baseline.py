@@ -2,14 +2,13 @@
 종목 상세의 S리포트(오각형 레이더 + 전체 비교표)가 볼 때마다 비교군 수백 개를 계산하느라 버퍼링되지 않도록,
 비교군별 평균과 백분위 분포, 종목별 값을 매일 미리 계산해 둔다. 앱은 이 파일 하나만 읽고 즉시 그린다.
 
-비교군(사용자 지정):
-  kospi200  코스피 주식 → 코스피200 종목 평균(분할 신설회사 편입 등으로 일시적으로 200개를 넘을 수 있음)
-  kosdaq150 코스닥 주식 → 코스닥150 종목 평균
-  sp200     미국 주식 → S&P500 중 시가총액 상위 200개 평균
-  ipoKr100  한국 IPO(최근 5년 신규 상장) → 시총 상위 100개 평균
-  ipoUs100  미국 IPO → 시총 상위 100개 평균
-  crypto200 코인 → 코인 200개 평균
-  etf       ETF → SPY 값 기준(분포는 ETF 전체)
+비교군(2026-09-16 사용자 지정):
+  kr350     한국 주식 → 코스피200+코스닥150 시총순 350종목 평균(명단이 모자라면 시총 상위로 채움)
+  sp500     미국 주식 → S&P500 전체 평균
+  ipoKr200  국내 신규 상장주 중 kr350에 없는 종목만 시총 상위 200
+  ipoUs200  미국 신규 상장주 중 S&P500에 없는 종목만 시총 상위 200
+  crypto200 코인 → 시총 상위 200개 평균
+  etfUs/etfKr ETF(한국·미국 통합 시총 상위 200이 순위 모수) → 평균선은 미국 상장 = S&P500 평균, 한국 상장 = 코스피·코스닥350 평균
 평균은 한두 종목의 극단값에 휘둘리지 않게 위아래 10%씩 뺀 평균.
 
 RSI만은 비교군 평균이 아니라 종목 자신의 직전 52주 평균 RSI(members의 rsiAvg)와 비교 — groups.ref.rsi는 참고용.
@@ -121,51 +120,66 @@ def put_member(symbol, group, values):
 CORE = ["win", "ret", "rev", "vol", "rsi"]
 STOCK_METRICS = CORE + list(STOCK_EXTRA.keys())
 
-# ---- 한국 주식: 코스피 종목 → 코스피200, 코스닥 종목 → 코스닥150 (2026-09-15 사용자 요청으로 분리) ----
-# 구성종목은 KODEX 200·코스닥150 보유종목 명단(kr-universe) 기준 — 지도 스냅샷(kr-sectors)에 아직 없는 신규 종목도 승률 DB 값으로 포함
+# ---- 한국 주식: 코스피200+코스닥150 = 350종목 한 비교군(2026-09-16 사용자 요청, 기존 코스피/코스닥 분리에서 통합) ----
+# 명단(KODEX 200·코스닥150 보유종목)을 시총순으로 세워 상위 350개. 명단이 350에 못 미치면 지도 스냅샷의 시총 상위 종목으로 채운다.
 kr_row_by_symbol = {c["symbol"]: c for c in kr}
-for key, label in (("kospi200", "코스피200"), ("kosdaq150", "코스닥150")):
-    rows = []
-    for it in kr_universe.get(key, []):
-        sym = it["symbol"]
-        vals = stock_values(kr_row_by_symbol.get(sym, {}), (db.get("scoresKr") or {}).get(sym))
-        rows.append(vals)
-        put_member(sym, key, vals)
-    add_group(key, label, f"{label} 평균", rows, STOCK_METRICS)
-# 명단 밖이지만 스냅샷에 있는 한국 종목은 거래소 기준으로 배정
-for c in kr:
-    if c["symbol"] not in members:
-        put_member(c["symbol"], "kosdaq150" if c["symbol"].endswith(".KQ") else "kospi200", stock_values(c, (db.get("scoresKr") or {}).get(c["symbol"])))
 
-# ---- 미국 주식: S&P500 시총 상위 200 ----
-sp_sorted = sorted(sp, key=lambda c: num(c.get("marketCap")) or 0, reverse=True)
+
+def kr_mcap(sym):
+    return num((kr_row_by_symbol.get(sym) or {}).get("marketCap")) or 0
+
+
+kr_listed = list(dict.fromkeys([it["symbol"] for key in ("kospi200", "kosdaq150") for it in kr_universe.get(key, [])]))
+kr_listed.sort(key=kr_mcap, reverse=True)
+if len(kr_listed) < 350:
+    seen = set(kr_listed)
+    for c in sorted(kr, key=lambda c: num(c.get("marketCap")) or 0, reverse=True):
+        if len(kr_listed) >= 350:
+            break
+        if c["symbol"] not in seen:
+            kr_listed.append(c["symbol"])
+            seen.add(c["symbol"])
+kr350 = kr_listed[:350]
+kr_rows = []
+for sym in kr350:
+    vals = stock_values(kr_row_by_symbol.get(sym, {}), (db.get("scoresKr") or {}).get(sym))
+    kr_rows.append(vals)
+    put_member(sym, "kr350", vals)
+add_group("kr350", "코스피200+코스닥150", "코스피·코스닥 350 평균", kr_rows, STOCK_METRICS)
+
+# ---- 미국 주식: S&P500 전체(2026-09-16 사용자 요청, 기존 시총 상위 200에서 확대) ----
 us_rows = []
-for i, c in enumerate(sp_sorted):
+for c in sorted(sp, key=lambda c: num(c.get("marketCap")) or 0, reverse=True):
     vals = stock_values(c, (db.get("scores") or {}).get(c["symbol"]))
-    if i < 200:
-        us_rows.append(vals)
-    put_member(c["symbol"], "sp200", vals)
-# S&P500 밖이지만 승률 DB에 있는 미국 종목(나스닥100 추가분 등)도 값은 담아 둔다
-for sym, e in (db.get("scores") or {}).items():
-    if sym not in members:
-        put_member(sym, "sp200", core_from(e, None, None))
-add_group("sp200", "S&P500 상위 200", "S&P500 상위 200 평균", us_rows, STOCK_METRICS)
+    us_rows.append(vals)
+    put_member(c["symbol"], "sp500", vals)
+add_group("sp500", "S&P500", "S&P500 평균", us_rows, STOCK_METRICS)
 
-# ---- IPO: 한국·미국 각 시총 상위 100 (IPO 종목은 지수 편입 여부와 무관하게 IPO 비교군이 우선) ----
-for side, key, label in (("kr", "ipoKr100", "한국 IPO100"), ("us", "ipoUs100", "미국 IPO100")):
-    comps = sorted((ipo.get(side) or {}).get("companies", []), key=lambda c: num(c.get("marketCap")) or 0, reverse=True)
+# ---- IPO: 위 두 비교군(코스피·코스닥350 / S&P500)에 이미 든 종목은 제외하고, 남은 신규 상장주 중 시총 상위 200 ----
+# (2026-09-16 사용자 요청: 지수 편입 종목은 지수 안에서 비교하고, 겹치지 않는 종목만 IPO 비교군으로 따로 평균·분포를 만든다)
+for side, key, label in (("kr", "ipoKr200", "국내 IPO200"), ("us", "ipoUs200", "미국 IPO200")):
+    comps = [c for c in (ipo.get(side) or {}).get("companies", []) if c["symbol"] not in members]
+    comps.sort(key=lambda c: num(c.get("marketCap")) or 0, reverse=True)
     wr_map = db.get("scoresKr" if side == "kr" else "scores") or {}
     rows = []
     for i, c in enumerate(comps):
         vals = stock_values(c, wr_map.get(c["symbol"]))
-        if i < 100:
+        if i < 200:
             rows.append(vals)
         put_member(c["symbol"], key, vals)
     add_group(key, label, f"{label} 평균", rows, STOCK_METRICS)
 
-# ---- 코인 200 ----
+# 비교군 명단 밖이지만 값이 있는 종목도 담아 둔다 — 순위는 같은 시장의 비교군 안에서 매겨진다
+for c in kr:
+    if c["symbol"] not in members:
+        put_member(c["symbol"], "kr350", stock_values(c, (db.get("scoresKr") or {}).get(c["symbol"])))
+for sym, e in (db.get("scores") or {}).items():
+    if sym not in members:
+        put_member(sym, "sp500", core_from(e, None, None))
+
+# ---- 코인 200(시총 상위 200) ----
 crypto_rows = []
-for c in crypto_map:
+for c in sorted(crypto_map, key=lambda c: num(c.get("marketCap")) or 0, reverse=True)[:200]:
     e = (db.get("scoresCrypto") or {}).get(c["symbol"])
     vals = core_from(e, c, (e or {}).get("ret1y"))
     vals.update({"mcap": num(c.get("marketCap")), "w52": num(c.get("week52RangePct"))})
@@ -174,7 +188,9 @@ for c in crypto_map:
 add_group("crypto200", "코인200", "코인200 평균", crypto_rows, CORE + ["mcap", "w52"])
 
 
-# ---- ETF: 분포는 ETF 전체, 기준값은 SPY ----
+# ---- ETF: 한국·미국 통합 시총 상위 200이 순위 모수, 평균선만 상장 시장별로 다름(2026-09-16 사용자 요청) ----
+#   미국 상장 ETF → S&P500 평균 / 한국 상장 ETF → 코스피·코스닥350 평균과 비교.
+#   ETF엔 매출이 없어 3번 항목이 1년 수익률이라, 주식 비교군의 1년 수익률 평균(ret1y)을 그 자리 기준값으로 쓴다.
 def fetch_etf_dividend(sym):
     """최근 1년 분배금 합계 ÷ 현재가(%) — 분배금이 없으면 0"""
     q = urllib.parse.quote(sym)
@@ -192,25 +208,40 @@ def fetch_etf_dividend(sym):
     return None
 
 
-etf_symbols = sorted({c["symbol"] for c in etf_map} | set((db.get("scoresEtf") or {}).keys()))
 row_by_symbol = {c["symbol"]: c for c in etf_map}
-prev_div = {s: m.get("div") for s, m in (prev.get("members") or {}).items() if (m or {}).get("g") == "etf"}
+etf_symbols = sorted({c["symbol"] for c in etf_map} | set((db.get("scoresEtf") or {}).keys()))
+etf_symbols.sort(key=lambda s: num((row_by_symbol.get(s) or {}).get("marketCap")) or 0, reverse=True)
+etf_symbols = etf_symbols[:200]
+prev_div = {s: m.get("div") for s, m in (prev.get("members") or {}).items() if (m or {}).get("g", "").startswith("etf")}
 with ThreadPoolExecutor(max_workers=4) as ex:
     dividends = dict(zip(etf_symbols, ex.map(fetch_etf_dividend, etf_symbols)))
 etf_rows = []
-spy_values = None
 for sym in etf_symbols:
     e = (db.get("scoresEtf") or {}).get(sym)
     row = row_by_symbol.get(sym)
+    is_kr_etf = sym.endswith((".KS", ".KQ"))
     vals = core_from(e, row, (e or {}).get("ret1y"))
-    info = (etf_info.get("kr" if sym.endswith((".KS", ".KQ")) else "us") or {}).get(sym) or {}
+    info = (etf_info.get("kr" if is_kr_etf else "us") or {}).get(sym) or {}
     div = dividends.get(sym)
     vals.update({"div": div if div is not None else prev_div.get(sym), "fee": num(info.get("fee")), "w52": num((row or {}).get("week52RangePct"))})
     etf_rows.append(vals)
-    put_member(sym, "etf", vals)
-    if sym == "SPY":
-        spy_values = vals
-add_group("etf", "ETF", "SPY", etf_rows, CORE + ["div", "fee", "w52"], ref_values=spy_values or {})
+    put_member(sym, "etfKr" if is_kr_etf else "etfUs", vals)
+
+ETF_METRICS = CORE + ["div", "fee", "w52"]
+etf_own_mean = {m: trimmed_mean([r.get(m) for r in etf_rows]) for m in ETF_METRICS}
+kr_ret1y = trimmed_mean([num(((db.get("scoresKr") or {}).get(s) or {}).get("ret1y")) for s in kr350])
+us_ret1y = trimmed_mean([num(((db.get("scores") or {}).get(c["symbol"]) or {}).get("ret1y")) for c in sp])
+for key, label, stock_key, ref_name, stock_ret1y in (
+    ("etfUs", "ETF200", "sp500", "S&P500 평균", us_ret1y),
+    ("etfKr", "ETF200", "kr350", "코스피·코스닥350 평균", kr_ret1y),
+):
+    stock_ref = groups[stock_key]["ref"]
+    ref_values = {m: stock_ref.get(m) for m in CORE}
+    ref_values["rev"] = stock_ret1y  # ETF 3번 항목(1년 수익률) 기준 = 주식 비교군의 1년 수익률 평균
+    for m in ("div", "fee", "w52"):
+        ref_values[m] = etf_own_mean.get(m)  # 배당·보수·52주 위치는 주식에 대응값이 없어 ETF 평균
+    add_group(key, label, ref_name, etf_rows, ETF_METRICS, ref_values=ref_values)
+
 
 out = {
     "generatedAt": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
