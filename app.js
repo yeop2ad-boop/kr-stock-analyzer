@@ -6609,9 +6609,8 @@ function sReportLineHtml(it) {
   let shortHtml;
   // 2026-09-15 사용자 요청: 등수 칸이 너무 넓음 — 가장 중요한 "몇 위"만 크게, 전체 수는 작게("36위 /200"), 상위 % 글자는 뺌
   if (it.isRsi) {
-    const avgTxt = Number.isFinite(it.avg) ? `평균 ${Math.round(it.avg)} · ` : "";
-    rankHtml = has ? `<span class="srf-rank-sub">${avgTxt}</span><b class="srf-grade srt-rank-${tone}">${escapeHtml(it.judge.text)}</b>` : "—";
-    shortHtml = has ? `<b class="srf-grade srt-rank-${tone}">${escapeHtml(it.judge.text)}</b>` : "—";
+    // 등수 칸이 좁아 "평균 72 · "가 잘려 보여서 등급만 둔다(1년 평균은 레이더 라벨의 54/72로 확인, 2026-09-16)
+    rankHtml = shortHtml = has ? `<b class="srf-grade srt-rank-${tone}">${escapeHtml(it.judge.text)}</b>` : "—";
   } else if (it.rank) {
     rankHtml = `${markHtml}<b class="srf-rank-no">${it.rank}위</b><span class="srf-rank-of">/${it.total}</span>`;
     shortHtml = rankHtml;
