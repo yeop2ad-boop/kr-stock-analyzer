@@ -6332,7 +6332,7 @@ const S_REPORT_EXAMPLES = { win: "대표자산 10년평균 승률 비교", rsi: 
 const S_REPORT_TAP_HINT = `<p class="srt-tap-hint">* 모든 항목은 눌러서 자세한 설명을 볼 수 있습니다.</p>`;
 
 // 핵심 5개 정의 — ETF·코인은 3번이 1년 수익률
-// axis: 오각형 축을 비교군 백분위 대신 고정 눈금으로 그림(2026-09-16 사용자 지정 — 승률 40~70%, 상승률 0~50%)
+// axis: 오각형 축을 비교군 백분위 대신 고정 눈금으로 그림(2026-09-16 사용자 지정 — 승률 40~70%, 상승률 0~50%, 변동성 5~1%)
 function sReportCoreSpecs(isAsset) {
   return [
     { key: "win", label: "승률", sub: "10년 월간", better: "high", band: 2, fmt: (v, d) => sPct(v, d), axis: (v) => (v - 40) / 30 },
@@ -6340,7 +6340,7 @@ function sReportCoreSpecs(isAsset) {
     isAsset
       ? { key: "rev", label: "1년 수익률", explainKey: "ret1y", better: "high", band: 3, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true) }
       : { key: "rev", label: "매출액", sub: "작년 대비", better: "high", band: 3, rel: 0.2, signed: true, fmt: (v, d) => sPct(v, d, true) },
-    { key: "vol", label: "변동성", sub: "3개월 하루", better: "low", band: 0.1, rel: 0.1, fmt: (v, d) => `${v.toFixed(d ? 2 : 1)}%` },
+    { key: "vol", label: "변동성", sub: "3개월 하루", better: "low", band: 0.1, rel: 0.1, fmt: (v, d) => `${v.toFixed(d ? 2 : 1)}%`, axis: (v) => (5 - v) / 4 },
     // 과열도는 낮을수록 좋은 점수(2026-09-16 사용자 요청) — 등수도 낮은 순으로 1위, 레이더에서도 낮을수록 바깥
     { key: "rsi", label: "과열도(RSI)", better: "low", isRsi: true, fmt: (v, d) => sNum(v, d) },
   ];
