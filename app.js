@@ -6505,10 +6505,7 @@ function sReportRadarSvg(items) {
       const warn = Number.isFinite(it.partialTotal) && it.partialTotal < (it.partialMin || 120) ? "⚠️" : "";
       const val = (it.value === null ? "N/A" : it.fmt(it.value, 0));
       return `<text x="${x.toFixed(1)}" y="${(y + dy).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-label">${escapeHtml(it.label)}</text>
-        <text x="${x.toFixed(1)}" y="${(y + dy + 15).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-value srt-tone-${it.judge ? it.judge.tone : "neutral"}">${warn}${escapeHtml(val)}${
-        // RSI는 비교 기준이 이 종목의 1년 평균이라 "현재/1년 평균"으로 간단히(예: 55/72, 2026-09-15 사용자 요청)
-        it.isRsi && Number.isFinite(it.avg) ? `<tspan class="srt-rd-avgtxt">/${Math.round(it.avg)}</tspan>` : ""
-      }</text>`;
+        <text x="${x.toFixed(1)}" y="${(y + dy + 15).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-value srt-tone-${it.judge ? it.judge.tone : "neutral"}">${warn}${escapeHtml(val)}${/* 오각형에는 현재 RSI만(1년 평균은 아래 항목 줄에 "/72(평균)"로 표시) — 2026-09-16 사용자 요청 */ ""}</text>`;
     })
     .join("");
   return `<svg class="srt-radar" viewBox="0 0 ${W} ${H}" role="img" aria-label="핵심 5개 지표 레이더 차트">${rings}${spokes}${avgPoly}${selfPoly}${avgDots}${dots}${labels}</svg>`;
@@ -6659,7 +6656,9 @@ function sReportLineHtml(it) {
       <span class="srf-name">${escapeHtml(it.label)}</span>
       <b class="srf-val" data-round="${escapeHtml(has ? it.fmt(it.value, 0) : "N/A")}">${partialMarkHtml(it.partialTotal, "wr-mark-front", it.partialMin)}${escapeHtml(
         has ? it.fmt(it.value, 1) : "N/A"
-      )}</b>
+      )}${/* 과열도는 값 옆에 이 종목의 1년 평균을 작게 붙임(2026-09-16 사용자 요청) */ ""}${
+        it.isRsi && has && Number.isFinite(it.avg) ? `<span class="srf-val-avg">/${Math.round(it.avg)}(평균)</span>` : ""
+      }</b>
       <span class="srf-rank${it.mark ? ` srf-rank-${it.mark}` : ""}" data-short="${escapeHtml(shortHtml)}">${rankHtml}</span>
     </div>`;
 }
