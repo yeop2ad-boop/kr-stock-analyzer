@@ -343,7 +343,7 @@
         <div class="summary-subtab-panel" data-summary-subtabpanel="revenue">
         <section class="flush-section">
           <div class="section-heading-row">
-            <h2>재무정보</h2>
+            <h2 id="financialsHeading">재무정보</h2>
             <!-- 투자 그라운드 — 2026-08-30 사용자 요청으로 기능 숨김(버튼 DOM은 JS가 참조하므로 display:none으로만 제거) -->
             <button type="button" id="groundOpenBtn" class="ground-open-btn" style="display:none;">투자 그라운드</button>
             <!-- 경쟁사 매출 비교 — 2026-09-15 사용자 요청으로 버튼 숨김(JS가 요소를 참조해서 DOM은 남김, style.css에서도 숨김) -->
@@ -510,8 +510,8 @@
             <button type="button" class="wl-tool-btn" id="wlSortBtn"><span id="wlSortBtnLabel">직접설정순</span> <span class="wl-tool-caret">⌄</span></button>
             <div id="wlSortMenu" class="wl-sort-menu" style="display:none;"></div>
           </div>
-          <button type="button" class="wl-tool-btn" id="wlAddStockBtn">+ 종목추가</button>
-          <button type="button" class="wl-tool-btn" id="wlDeleteBtn">− 종목삭제</button>
+          <button type="button" class="wl-tool-btn" id="wlAddStockBtn">+추가</button>
+          <button type="button" class="wl-tool-btn" id="wlDeleteBtn">−삭제</button>
           <button type="button" class="wl-tool-btn wl-tool-btn-share" id="wlShareBtn">🔗 공유</button>
         </div>
         <!-- 일괄 삭제 모드(2026-09-01): -종목삭제를 누르면 나타나는 확인/취소 바 -->
@@ -716,7 +716,9 @@
         <span class="wl-group-pick-title">어느 관심목록에 담을까요?</span>
         <button type="button" class="chart-modal-close" id="wlGroupPickCloseBtn" aria-label="닫기">✕</button>
       </div>
+      <!-- 2026-09-16 사용자 요청: 체크로 여러 목록을 고르고 확인을 누르면 한 번에 담김. 이름을 길게 누르면 이름 수정 -->
       <div class="wl-group-pick-list" id="wlGroupPickList"></div>
+      <button type="button" class="wl-group-pick-confirm" id="wlGroupPickConfirmBtn">확인</button>
     </div>
   </div>
 
@@ -727,6 +729,11 @@
       <h2 class="search-overlay-title more-panel-title" data-i18n="nav.more">더보기</h2>
       <div class="more-panel-list">
         <!-- Pro 멤버십은 2026-09-09 사용자 결정(비공개·승인제 운영)으로 제거 -->
+        <!-- 관심종목을 맨 위로(2026-09-16 사용자 요청) -->
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelWatchlistBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" /></svg>
+          <span class="more-panel-item-label" data-i18n="tab.watchlist">관심종목</span>
+        </button>
         <!-- 지도: 하단 네비에서 더보기로 이동(2026-09-01) -->
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelMapBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.6"/></svg>
@@ -734,27 +741,38 @@
           <!-- 2026-09-12 사용자 요청: 마켓맵 오른쪽 배지 표시 → 2026-09-14 사용자 요청으로 "주요기능"에서 "종목찾기"로 변경 -->
           <span class="more-panel-item-badge">종목찾기</span>
         </button>
-        <!-- 인사이트: 상단 탭에서 더보기로 이동(2026-09-12 사용자 요청) — 누르면 투자처 4개를 고르는 줄이 펼쳐지고,
-             고른 투자처의 인사이트가 "(로고) 인사이트" 제목의 별도 창으로 열린다(자동추적과 같은 방식) -->
-        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelInsightBtn" aria-expanded="false">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6.5 6.5 0 0 0-3.7 11.8c.7.5 1.2 1.3 1.2 2.2h5c0-.9.5-1.7 1.2-2.2A6.5 6.5 0 0 0 12 3Z" /></svg>
-          <span class="more-panel-item-label" data-i18n="tab.insight">인사이트</span>
+        <!-- 2026-09-16 사용자 요청: "인사이트" 한 덩어리를 없애고 안에 있던 보기 5개를 그대로 더보기 항목으로 올림.
+             누르면 그 보기를 제공하는 투자처만 하위 버튼으로 펼쳐진다(ETF 제외 — ETF 인사이트는 변동성 순위뿐이라 상단 탭에 이미 있음).
+             투자방법 비교만 주식 기준 백테스트 하나라 하위 버튼 없이 바로 열린다. 하위 버튼은 JS(initMoreInsightNavs)가 앱 마크와 함께 채움. -->
+        <button type="button" class="more-panel-item more-panel-item-active more-insight-item" data-insight-cat="firms" aria-expanded="false">
+          <span class="more-insight-emoji" aria-hidden="true">🏦</span>
+          <span class="more-panel-item-label">기관 · 자산운용사</span>
           <span class="more-panel-item-badge">주요기능</span>
         </button>
-        <div class="more-panel-subnav" id="morePanelInsightNav" style="display:none;">
-          <button type="button" class="cat-btn" data-insight-section="kr">한국주식</button>
-          <button type="button" class="cat-btn" data-insight-section="us">미국주식</button>
-          <button type="button" class="cat-btn" data-insight-section="etf">ETF</button>
-          <button type="button" class="cat-btn" data-insight-section="crypto">비트코인</button>
-        </div>
+        <div class="more-panel-subnav more-insight-nav" data-insight-cat-nav="firms" style="display:none;"></div>
+        <button type="button" class="more-panel-item more-panel-item-active more-insight-item" data-insight-cat="rankup" aria-expanded="false">
+          <span class="more-insight-emoji" aria-hidden="true">🚀</span>
+          <span class="more-panel-item-label">상승종목</span>
+        </button>
+        <div class="more-panel-subnav more-insight-nav" data-insight-cat-nav="rankup" style="display:none;"></div>
+        <button type="button" class="more-panel-item more-panel-item-active more-insight-item" data-insight-cat="corr" aria-expanded="false">
+          <span class="more-insight-emoji" aria-hidden="true">🔗</span>
+          <span class="more-panel-item-label">상관관계</span>
+        </button>
+        <div class="more-panel-subnav more-insight-nav" data-insight-cat-nav="corr" style="display:none;"></div>
+        <button type="button" class="more-panel-item more-panel-item-active more-insight-item" data-insight-cat="sectorWin" aria-expanded="false">
+          <span class="more-insight-emoji" aria-hidden="true">🏅</span>
+          <span class="more-panel-item-label">섹터승률</span>
+        </button>
+        <div class="more-panel-subnav more-insight-nav" data-insight-cat-nav="sectorWin" style="display:none;"></div>
+        <button type="button" class="more-panel-item more-panel-item-active more-insight-item" data-insight-cat="strategy">
+          <span class="more-insight-emoji" aria-hidden="true">🧭</span>
+          <span class="more-panel-item-label">투자방법</span>
+        </button>
         <!-- 시장: 하단 네비에서 더보기로 이동(2026-09-01) -->
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelMarketBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 5"/><polyline points="15 5 21 5 21 11"/></svg>
           <span class="more-panel-item-label" data-i18n="nav.marketBtn">시장</span>
-        </button>
-        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelWatchlistBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" /></svg>
-          <span class="more-panel-item-label" data-i18n="tab.watchlist">관심종목</span>
         </button>
         <!-- 기업가치/시장동향/인사이트는 상단 4탭으로 충분해 더보기에서 제거(2026-09-02 사용자 요청) —
              JS가 버튼을 참조하므로 DOM은 유지하고 display:none만(캘린더/뉴스 버튼과 동일 관례) -->
@@ -791,8 +809,8 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h9l7 7v9H4V4Z" /><path d="M13 4v7h7" /></svg>
           <span class="more-panel-item-label" data-i18n="more.news">뉴스</span>
         </button>
-        <!-- 다트공시(국내)/브랜드평판순(해외)·신기술: 인사이트 카테고리 줄에서 이동(2026-09-08 사용자 요청) -->
-        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelBrandBtn">
+        <!-- 다트공시(국내)/브랜드평판순(해외)은 2026-09-16 사용자 요청으로 더보기에서 내림 — JS가 버튼을 참조하므로 숨김만 -->
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelBrandBtn" style="display:none;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M5 4h14v4a7 7 0 0 1-14 0V4Z"/><path d="M5 6H3v2a3 3 0 0 0 3 3M19 6h2v2a3 3 0 0 1-3 3"/></svg>
           <span class="more-panel-item-label" id="morePanelBrandLabel">브랜드평판순</span>
         </button>

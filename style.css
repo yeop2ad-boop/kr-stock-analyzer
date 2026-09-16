@@ -1566,6 +1566,12 @@ table.s-report-table td:first-child { text-align: left; font-weight: 600; }
 .wizard-root-option:hover { border-color: var(--accent); }
 .wizard-option-sub { display: block; margin-top: 4px; font-size: 12px; font-weight: 400; color: var(--muted); }
 /* 간편검색(2026-09-16 개편): 투자처 = 하단 네비와 같은 마크 + 이름 + 한 줄 설명 */
+/* 더보기 > 인사이트 5개(2026-09-16): 항목 앞 이모지, 하위 투자처 버튼에는 앱 마크 */
+.more-insight-emoji { flex: none; width: 24px; text-align: center; font-size: 16px; line-height: 1; }
+.more-insight-sec { display: inline-flex; align-items: center; gap: 6px; }
+.more-insight-sec-mark { display: inline-flex; align-items: center; }
+.more-insight-sec-mark svg { width: 18px; height: 12px; display: block; }
+
 .wizard-market-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
 .wizard-market-btn { display: flex; align-items: center; gap: 12px; width: 100%; padding: 13px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text); text-align: left; cursor: pointer; }
 .wizard-market-btn:hover { border-color: var(--accent); }
@@ -1954,6 +1960,11 @@ table.insight-holdings-table td span, table.insight-holdings-table td b { max-wi
   align-items: center;
   justify-content: center;
 }
+/* 2026-09-16: 목록마다 담긴 종목 수 + "목록 추가" 줄 + 확인 버튼 */
+.wl-group-pick-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wl-group-pick-count { flex: none; min-width: 22px; padding: 1px 7px; border-radius: 99px; background: rgba(127, 127, 127, 0.14); color: var(--muted); font-size: 11.5px; font-weight: 700; text-align: center; }
+.wl-group-pick-add { width: 100%; margin-top: 2px; padding: 11px 12px; border: 1px dashed var(--border); border-radius: 12px; background: none; color: var(--muted); font-size: 13px; font-weight: 700; cursor: pointer; }
+.wl-group-pick-confirm { width: 100%; margin-top: 10px; padding: 13px 12px; border: none; border-radius: 12px; background: var(--accent); color: #fff; font-size: 14.5px; font-weight: 800; cursor: pointer; }
 .wl-group-pick-item.checked { border-color: var(--accent); }
 .wl-group-pick-item.checked .wl-group-pick-check { background: var(--accent); border-color: var(--accent); color: #fff; }
 .wl-group-manage-btn {

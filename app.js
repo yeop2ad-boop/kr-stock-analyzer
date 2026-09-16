@@ -2987,19 +2987,59 @@ el("morePanelValuationBtn").addEventListener("click", () => {
 el("morePanelTrendBtn").addEventListener("click", () => {
   showOnlyCarouselView(() => activateRankingGroup("market"));
 });
-// 인사이트: 상단 탭에서 더보기로 이동(2026-09-12 사용자 요청) — 자동추적과 같이 투자처 4개 줄이 펼쳐지고,
-// 고른 투자처의 인사이트가 "(로고) 인사이트" 제목의 별도 창으로 뜬다
-el("morePanelInsightBtn").addEventListener("click", () => {
-  const nav = el("morePanelInsightNav");
-  const open = nav.style.display === "none";
-  nav.style.display = open ? "" : "none";
-  el("morePanelInsightBtn").setAttribute("aria-expanded", open ? "true" : "false");
+// 더보기 > 인사이트 5개(2026-09-16 사용자 요청): 기관·자산운용사 / 상승종목 / 상관관계 / 섹터승률 / 투자방법.
+// 누르면 그 보기를 제공하는 투자처만 하위 버튼으로 펼쳐진다(ETF 인사이트는 변동성 순위뿐이라 제외).
+// 투자방법 비교는 주식 기준 백테스트 하나라 하위 버튼 없이 바로 연다.
+const MORE_INSIGHT_SECTIONS = {
+  firms: [["kr", "한국주식"], ["us", "미국주식"]], // 코인엔 13F·5%룰 지분 공시가 없음
+  rankup: [["kr", "한국주식"], ["us", "미국주식"], ["crypto", "비트코인"]],
+  corr: [["kr", "한국주식"], ["us", "미국주식"], ["crypto", "비트코인"]],
+  sectorWin: [["kr", "한국주식"], ["us", "미국주식"], ["crypto", "비트코인"]],
+};
+// 앱 마크(FLAG_SVG_*)는 이 줄보다 아래에서 선언되므로 더보기를 처음 열 때 채운다(즉시 부르면 TDZ 오류)
+let moreInsightNavsReady = false;
+function initMoreInsightNavs() {
+  if (moreInsightNavsReady) return;
+  moreInsightNavsReady = true;
+  const mark = { kr: FLAG_SVG_KR, us: FLAG_SVG_US, crypto: ICON_SVG_BTC };
+  document.querySelectorAll("[data-insight-cat-nav]").forEach((nav) => {
+    const rows = MORE_INSIGHT_SECTIONS[nav.dataset.insightCatNav] || [];
+    nav.innerHTML = rows
+      .map(
+        ([sec, label]) =>
+          `<button type="button" class="cat-btn more-insight-sec" data-insight-section="${sec}"><span class="more-insight-sec-mark">${mark[sec]}</span>${escapeHtml(label)}</button>`
+      )
+      .join("");
+  });
+}
+document.querySelectorAll(".more-insight-item").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    initMoreInsightNavs();
+    const cat = btn.dataset.insightCat;
+    const nav = document.querySelector(`[data-insight-cat-nav="${cat}"]`);
+    if (!nav) {
+      // 투자방법 비교 — 지금 보고 있는 시장(한국/미국)으로 바로
+      closeMorePanel();
+      openInsightSectionOverlay(getWatchlistActiveMarket() === "KR" ? "kr" : "us", cat);
+      return;
+    }
+    // 한 번에 하나만 펼침
+    document.querySelectorAll(".more-insight-nav").forEach((n) => {
+      if (n !== nav) n.style.display = "none";
+    });
+    document.querySelectorAll(".more-insight-item").forEach((b) => b !== btn && b.setAttribute("aria-expanded", "false"));
+    const open = nav.style.display === "none";
+    nav.style.display = open ? "" : "none";
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+  });
 });
-el("morePanelInsightNav").addEventListener("click", (e) => {
-  const btn = e.target.closest("[data-insight-section]");
-  if (!btn) return;
-  closeMorePanel();
-  openInsightSectionOverlay(btn.dataset.insightSection); // kr | us | etf | crypto
+document.querySelectorAll(".more-insight-nav").forEach((nav) => {
+  nav.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-insight-section]");
+    if (!btn) return;
+    closeMorePanel();
+    openInsightSectionOverlay(btn.dataset.insightSection, nav.dataset.insightCatNav);
+  });
 });
 // 자동추적(2026-09-10 사용자 요청): 상단 탭에서 더보기로 이동 — 누르면 투자처 4개를 고르는 줄이 펼쳐지고,
 // 고른 투자처(한국주식/미국주식/ETF/비트코인)로 섹션을 전환한 뒤 그 투자처의 자동추적 화면을 연다
@@ -3556,7 +3596,13 @@ function deleteWatchlistGroup(id) {
   groups = groups.filter((g) => g.id !== id);
   saveWatchlistGroups(groups);
   const fallbackId = groups[0].id; // 삭제된 그룹의 종목은 남은 첫 그룹으로 이동
-  saveWatchlist(getWatchlist().map((w) => (w.groupId === id ? { ...w, groupId: fallbackId } : w)));
+  saveWatchlist(
+    getWatchlist().map((w) => {
+      const ids = wlGroupIdsOf(w).filter((g) => g !== id);
+      const next = ids.length ? ids : [fallbackId];
+      return { ...w, groupIds: next, groupId: next[0] };
+    })
+  );
   if (getActiveWatchlistGroup() === id) setActiveWatchlistGroup(WATCHLIST_ALL_GROUP_ID);
 }
 function getActiveWatchlistGroup(market = getWatchlistActiveMarket()) {
@@ -3603,13 +3649,27 @@ function sortWatchlistRows(rows) {
   return arr;
 }
 
+// 한 종목이 속한 관심목록 id들(2026-09-16 사용자 요청: 여러 목록에 한 번에 담기) — 예전 groupId 하나만 있던 항목도 그대로 읽는다
+function wlGroupIdsOf(w) {
+  if (Array.isArray(w.groupIds) && w.groupIds.length) return w.groupIds;
+  return [w.groupId || WATCHLIST_DEFAULT_GROUP_ID];
+}
 function addToWatchlist(symbol, groupId) {
   const sym = symbol.toUpperCase();
-  if (isWatchlisted(sym)) return;
   const market = watchlistMarketOf(sym);
   const active = getActiveWatchlistGroup(market);
-  const gid = groupId || (active === WATCHLIST_ALL_GROUP_ID ? WATCHLIST_DEFAULT_GROUP_ID : active);
-  saveWatchlist([...getWatchlist(market), { symbol: sym, addedAt: Date.now(), groupId: gid }], market);
+  const fallback = active === WATCHLIST_ALL_GROUP_ID ? WATCHLIST_DEFAULT_GROUP_ID : active;
+  const ids = (Array.isArray(groupId) ? groupId : [groupId]).filter(Boolean);
+  const gids = ids.length ? ids : [fallback];
+  const list = getWatchlist(market);
+  const cur = list.find((w) => w.symbol === sym);
+  if (cur) {
+    // 이미 담긴 종목이면 고른 목록만 더해 준다
+    const merged = [...new Set([...wlGroupIdsOf(cur), ...gids])];
+    saveWatchlist(list.map((w) => (w.symbol === sym ? { ...w, groupIds: merged, groupId: merged[0] } : w)), market);
+    return;
+  }
+  saveWatchlist([...list, { symbol: sym, addedAt: Date.now(), groupIds: gids, groupId: gids[0] }], market);
 }
 function removeFromWatchlist(symbol) {
   const sym = symbol.toUpperCase();
@@ -3618,20 +3678,39 @@ function removeFromWatchlist(symbol) {
 }
 // ---------- 관심종목 그룹 선택 시트(2026-09-11 사용자 요청) ----------
 // 그룹이 2개 이상일 때 별을 누르면 "어느 목록에 넣을지" 고르는 작은 시트를 아래에서 띄움(1개면 바로 추가)
+// 2026-09-16 사용자 요청: 하나만 고르던 것을 체크 방식으로 바꿔 여러 목록에 한 번에 담는다.
+// 목록마다 담긴 종목 수를 함께 보여주고, "+ 목록 추가"로 새 목록을 만들 수 있으며, 이름을 길게 누르면 바로 고쳐진다.
 let wlGroupPickTarget = null;
+let wlGroupPickChecked = new Set();
+function wlGroupCounts(market) {
+  const counts = {};
+  getWatchlist(market).forEach((w) => wlGroupIdsOf(w).forEach((id) => (counts[id] = (counts[id] || 0) + 1)));
+  return counts;
+}
+function renderWlGroupPickList() {
+  const market = watchlistMarketOf(wlGroupPickTarget || "");
+  const groups = getWatchlistGroups(market);
+  const counts = wlGroupCounts(market);
+  el("wlGroupPickList").innerHTML =
+    groups
+      .map(
+        (g) => `<button type="button" class="wl-group-pick-item${wlGroupPickChecked.has(g.id) ? " checked" : ""}" data-pick-group="${escapeHtml(g.id)}">
+        <span class="wl-group-pick-check">✓</span>
+        <span class="wl-group-pick-name" data-group-name="${escapeHtml(g.id)}">${escapeHtml(g.name)}</span>
+        <span class="wl-group-pick-count">${counts[g.id] || 0}</span>
+      </button>`
+      )
+      .join("") + `<button type="button" class="wl-group-pick-add" id="wlGroupPickAddBtn">+ 목록 추가</button>`;
+}
 function openWlGroupPickSheet(symbol) {
   const market = watchlistMarketOf(symbol);
   const groups = getWatchlistGroups(market);
   wlGroupPickTarget = symbol;
+  const cur = getWatchlist(market).find((w) => w.symbol === symbol.toUpperCase());
   const active = getActiveWatchlistGroup(market);
   const defaultId = active === WATCHLIST_ALL_GROUP_ID ? groups[0].id : active;
-  el("wlGroupPickList").innerHTML = groups
-    .map(
-      (g) => `<button type="button" class="wl-group-pick-item${g.id === defaultId ? " checked" : ""}" data-pick-group="${escapeHtml(g.id)}">
-        <span class="wl-group-pick-check">✓</span><span class="wl-group-pick-name">${escapeHtml(g.name)}</span>
-      </button>`
-    )
-    .join("");
+  wlGroupPickChecked = new Set(cur ? wlGroupIdsOf(cur) : [defaultId]);
+  renderWlGroupPickList();
   el("wlGroupPickSheet").style.display = "flex";
 }
 function closeWlGroupPickSheet() {
@@ -3641,13 +3720,61 @@ function closeWlGroupPickSheet() {
 el("wlGroupPickBackdrop").addEventListener("click", closeWlGroupPickSheet);
 el("wlGroupPickCloseBtn").addEventListener("click", closeWlGroupPickSheet);
 el("wlGroupPickList").addEventListener("click", (e) => {
+  if (e.target.closest("#wlGroupPickAddBtn")) {
+    const name = prompt("새 관심목록 이름을 입력해주세요.");
+    const id = name === null ? null : addWatchlistGroup(name);
+    if (id) {
+      wlGroupPickChecked.add(id);
+      renderWlGroupPickList();
+      renderWatchlistList();
+    }
+    return;
+  }
   const btn = e.target.closest("[data-pick-group]");
   if (!btn || !wlGroupPickTarget) return;
+  const id = btn.dataset.pickGroup;
+  if (wlGroupPickChecked.has(id)) wlGroupPickChecked.delete(id);
+  else wlGroupPickChecked.add(id);
+  btn.classList.toggle("checked", wlGroupPickChecked.has(id));
+});
+// 목록 이름을 길게 누르면 이름 고치기(2026-09-16 사용자 요청)
+(function bindWlGroupPickRename() {
+  const list = el("wlGroupPickList");
+  let timer = null;
+  const start = (e) => {
+    const nameEl = e.target.closest("[data-group-name]");
+    if (!nameEl) return;
+    timer = setTimeout(() => {
+      timer = null;
+      const id = nameEl.dataset.groupName;
+      const next = prompt("목록 이름을 바꿉니다.", nameEl.textContent);
+      if (next !== null) {
+        renameWatchlistGroup(id, next);
+        renderWlGroupPickList();
+        renderWatchlistList();
+      }
+    }, 550);
+  };
+  const cancel = () => {
+    if (timer) clearTimeout(timer);
+    timer = null;
+  };
+  list.addEventListener("touchstart", start, { passive: true });
+  list.addEventListener("mousedown", start);
+  ["touchend", "touchmove", "touchcancel", "mouseup", "mouseleave", "scroll"].forEach((ev) => list.addEventListener(ev, cancel, { passive: true }));
+})();
+el("wlGroupPickConfirmBtn").addEventListener("click", () => {
   const symbol = wlGroupPickTarget;
-  addToWatchlist(symbol, btn.dataset.pickGroup);
+  if (!symbol) return;
+  if (!wlGroupPickChecked.size) {
+    showToast("담을 목록을 하나 이상 골라주세요");
+    return;
+  }
+  addToWatchlist(symbol, [...wlGroupPickChecked]);
   closeWlGroupPickSheet();
   syncWatchStars(symbol);
-  showToast(`관심종목에 추가했습니다`);
+  renderWatchlistList();
+  showToast(`관심종목 ${wlGroupPickChecked.size}개 목록에 담았습니다`);
 });
 
 function toggleWatchlist(symbol) {
@@ -3931,8 +4058,8 @@ el("wlDeleteConfirmBtn").addEventListener("click", () => {
 async function shareWatchlist() {
   const groups = getWatchlistGroups();
   const activeGroup = getActiveWatchlistGroup();
-  const list = getWatchlist().map((w) => (w.groupId ? w : { ...w, groupId: WATCHLIST_DEFAULT_GROUP_ID }));
-  const filtered = activeGroup === WATCHLIST_ALL_GROUP_ID ? list : list.filter((w) => w.groupId === activeGroup);
+  const list = getWatchlist().map((w) => (w.groupId || w.groupIds ? w : { ...w, groupId: WATCHLIST_DEFAULT_GROUP_ID }));
+  const filtered = activeGroup === WATCHLIST_ALL_GROUP_ID ? list : list.filter((w) => wlGroupIdsOf(w).includes(activeGroup));
   if (filtered.length === 0) {
     alert("공유할 관심종목이 없습니다.");
     return;
@@ -4300,7 +4427,7 @@ async function renderWatchlistList() {
   const rawList = getWatchlist();
   let migrated = false; // 그룹 도입 이전에 저장된 항목엔 groupId가 없어 1회 마이그레이션
   const list = rawList.map((w) => {
-    if (w.groupId) return w;
+    if (w.groupId || w.groupIds) return w;
     migrated = true;
     return { ...w, groupId: WATCHLIST_DEFAULT_GROUP_ID };
   });
@@ -4315,7 +4442,7 @@ async function renderWatchlistList() {
   el("wlGroupTabs").innerHTML = wlGroupTabsHtml(groups, activeGroup);
   el("wlSortBtnLabel").textContent = (WATCHLIST_SORT_OPTIONS.find((o) => o.id === getWatchlistSort()) || WATCHLIST_SORT_OPTIONS[0]).label;
 
-  const filtered = activeGroup === WATCHLIST_ALL_GROUP_ID ? list : list.filter((w) => w.groupId === activeGroup);
+  const filtered = activeGroup === WATCHLIST_ALL_GROUP_ID ? list : list.filter((w) => wlGroupIdsOf(w).includes(activeGroup));
 
   if (filtered.length === 0) {
     statusEl.style.display = "none";
@@ -5637,9 +5764,14 @@ async function runAnalysis(ticker) {
       el("sReportTopSection").innerHTML = `<p class="error-inline">핵심지표를 계산하지 못했습니다: ${escapeHtml(e.message || "")}</p>`;
     });
 
+    // 하위 탭 3번째 자리: 주식은 매출액(재무정보), ETF는 매출이 없어 그 자리에 보유종목(2026-09-16 사용자 요청)
+    el("summarySubtabRevenueBtn").querySelector(".tab-label").textContent = isEtfDetail ? "보유종목" : "매출액";
+    el("financialsHeading").textContent = isEtfDetail ? "보유 종목" : "재무정보";
+    el("summarySubtabRevenueBtn").style.display = isCryptoDetail ? "none" : "";
     if (isCryptoDetail || isEtfDetail) {
-      FIN2_STATE.token++; // 매출액 탭이 없는 자산 — 앞서 연 주식의 늦게 도착한 차트가 숨은 영역에 그려지지 않게
-      el("financialsSection").innerHTML = "";
+      FIN2_STATE.token++; // 매출액 차트가 없는 자산 — 앞서 연 주식의 늦게 도착한 차트가 숨은 영역에 그려지지 않게
+      // ETF는 renderSummary가 이 자리에 보유 종목 블록을 넣으므로 비우지 않는다(비우면 늦게 끝난 쪽이 상대를 지움)
+      if (!isEtfDetail) el("financialsSection").innerHTML = "";
     } else {
       // 2026-09-15 사용자 요청: 년간/분기 세로 막대 차트 한 장으로 통합(분기 실적 섹션은 "분기" 버튼으로 이동, 영업이익 삭제)
       renderFinancials(ticker, meta.currency).catch((e) => {
@@ -6846,15 +6978,13 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
         <button type="button" class="summary-action-btn" id="tickerHistoricalToggleBtn" data-ticker="${escapeHtml(symbol)}">🕰️ 과거분석</button>
         <button type="button" class="summary-action-btn" id="tickerFutureToggleBtn" data-ticker="${escapeHtml(symbol)}">🔮 미래예측</button>
         <button type="button" class="summary-action-btn" id="tickerFearToggleBtn">${summaryAssetSection === "crypto" ? "🪙 알트시즌지수" : "😱 공포지수"}</button>
-        ${summaryAssetSection === "etf" ? `<button type="button" class="summary-action-btn" id="tickerHoldingsToggleBtn">📦 보유 종목</button>` : ""}
+        ${/* 보유 종목은 버튼 대신 하위 탭 "보유종목"(주식의 매출액 자리)에 바로 펼쳐 둔다 — 2026-09-16 사용자 요청 */ ""}
       </div>
     </div>
     <div id="etfHoldingsBlock" class="etf-holdings-block" style="display:none;"></div>
     <div id="tickerHistoricalRow" style="display:none;"></div>
   `;
-  // ETF면 개요 맨 위에 보유 종목 TOP10(2026-09-11 사용자 요청) — 데이터는 지연 로드라 렌더를 기다리지 않음
   etfHoldingsShowMore = false;
-  if (summaryAssetSection === "etf") renderEtfHoldingsBlock(symbol, isKrTicker(symbol));
 
   // 세 버튼(과거분석·미래예측·S리포트) 모두 누른 자리 바로 아래에서 열리도록 정적 섹션을 요약 영역 안으로 이동
   // — innerHTML 재렌더로 DOM에서 떨어져 나가도 상단 const 참조가 노드를 붙잡고 있어 매 렌더마다 다시 붙임(내용·리스너 유지)
@@ -6868,6 +6998,15 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     if (holdingsAnchor) el("summarySection").insertBefore(wrap, holdingsAnchor);
     else el("summarySection").appendChild(wrap);
   });
+
+  // ETF 보유 종목은 "보유종목" 하위 탭(주식의 매출액 자리)에 상시 표시 — 2026-09-16 사용자 요청
+  if (summaryAssetSection === "etf" && holdingsAnchor) {
+    holdingsAnchor.style.display = "block";
+    const finSection = el("financialsSection");
+    finSection.innerHTML = "";
+    finSection.appendChild(holdingsAnchor);
+    renderEtfHoldingsBlock(meta.symbol || quote.symbol || "", isKrTicker(meta.symbol || quote.symbol || ""));
+  }
 
   const futureToggleBtn = el("tickerFutureToggleBtn");
   const historicalToggleBtn = el("tickerHistoricalToggleBtn");
@@ -12770,11 +12909,12 @@ let insightOverlayPrevSection = null;
 function insightSectionIconHtml(section) {
   return section === "crypto" ? ICON_SVG_BTC : section === "etf" ? ICON_SVG_ETF : section === "kr" ? FLAG_SVG_KR : FLAG_SVG_US;
 }
-function openInsightSectionOverlay(section) {
+function openInsightSectionOverlay(section, category) {
   const panel = el("insightOverlayPanel");
   const body = el("insightOverlayBody");
   insightOverlayPrevSection = { mode: appSectionMode, market: getWatchlistActiveMarket() };
   insightOverlayPrevCategory = null; // 투자처마다 하위 보기가 달라 카테고리는 복원하지 않는다
+  if (category) insightActiveCategory = category; // 더보기에서 보기를 직접 골라 들어온 경우(2026-09-16)
   appSectionMode = section === "etf" ? "etf" : section === "crypto" ? "crypto" : "stocks";
   if (section === "kr" || section === "us") setAppMarketMode(section); // 내부에서 syncSectionHeader까지 돈다
   else syncSectionHeader();

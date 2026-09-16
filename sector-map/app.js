@@ -1296,11 +1296,27 @@ function isSheetWatchlisted(symbol) {
 function removeSheetWatchlist(symbol) {
   localStorage.setItem("watchlist_v1_all", JSON.stringify(readUnifiedWatchlist().filter((w) => w.symbol !== symbol)));
 }
-function addSheetWatchlist(symbol, groupId) {
+// 2026-09-16 사용자 요청: 한 종목을 여러 관심목록에 한 번에 담는다(본체와 같은 groupIds 스키마)
+function sheetGroupIdsOf(w) {
+  if (Array.isArray(w.groupIds) && w.groupIds.length) return w.groupIds;
+  return [w.groupId || "default"];
+}
+function addSheetWatchlist(symbol, groupIds) {
   const list = readUnifiedWatchlist();
-  if (list.some((w) => w.symbol === symbol)) return;
-  list.push({ symbol, addedAt: Date.now(), groupId: groupId || "default" });
+  const gids = (Array.isArray(groupIds) ? groupIds : [groupIds]).filter(Boolean);
+  const next = gids.length ? gids : ["default"];
+  const cur = list.find((w) => w.symbol === symbol);
+  if (cur) {
+    const merged = [...new Set([...sheetGroupIdsOf(cur), ...next])];
+    cur.groupIds = merged;
+    cur.groupId = merged[0];
+  } else {
+    list.push({ symbol, addedAt: Date.now(), groupIds: next, groupId: next[0] });
+  }
   localStorage.setItem("watchlist_v1_all", JSON.stringify(list));
+}
+function saveWatchlistGroups(groups) {
+  localStorage.setItem("watchlist_groups_v1_all", JSON.stringify(groups));
 }
 // 본체 관심종목 그룹(watchlist_groups_v1_all)과 마지막으로 보던 그룹(watchlist_active_group_v1_all)을 그대로 읽음
 function readWatchlistGroups() {
@@ -1314,9 +1330,8 @@ function readWatchlistGroups() {
 // ---------- 관심목록 선택 시트(2026-09-13 사용자 요청: 본체와 동일) ----------
 // 별을 누르면 바로 담지 않고, 화면 아래에서 "어느 관심목록에 담을까요?"를 띄워 고른 그룹에 담는다
 function openMapGroupPickSheet(symbol, onAdded) {
-  const groups = readWatchlistGroups();
   const active = localStorage.getItem("watchlist_active_group_v1_all");
-  const defaultId = groups.some((g) => g.id === active) ? active : groups[0].id;
+  const cur = readUnifiedWatchlist().find((w) => w.symbol === symbol);
   let sheet = document.getElementById("mapGroupPickSheet");
   if (!sheet) {
     sheet = document.createElement("div");
@@ -1325,6 +1340,27 @@ function openMapGroupPickSheet(symbol, onAdded) {
     document.body.appendChild(sheet);
   }
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  const groups0 = readWatchlistGroups();
+  const defaultId = groups0.some((g) => g.id === active) ? active : groups0[0].id;
+  const checked = new Set(cur ? sheetGroupIdsOf(cur) : [defaultId]);
+  const counts = () => {
+    const c = {};
+    readUnifiedWatchlist().forEach((w) => sheetGroupIdsOf(w).forEach((id) => (c[id] = (c[id] || 0) + 1)));
+    return c;
+  };
+  const renderList = () => {
+    const n = counts();
+    sheet.querySelector(".map-group-pick-list").innerHTML =
+      readWatchlistGroups()
+        .map(
+          (g) => `<button type="button" class="map-group-pick-item${checked.has(g.id) ? " checked" : ""}" data-pick-group="${esc(g.id)}">
+            <span class="map-group-pick-check">✓</span>
+            <span class="map-group-pick-name" data-group-name="${esc(g.id)}">${esc(g.name || "기본")}</span>
+            <span class="map-group-pick-count">${n[g.id] || 0}</span>
+          </button>`
+        )
+        .join("") + `<button type="button" class="map-group-pick-add">+ 목록 추가</button>`;
+  };
   sheet.innerHTML = `
     <div class="map-group-pick-backdrop"></div>
     <div class="map-group-pick-panel">
@@ -1332,27 +1368,69 @@ function openMapGroupPickSheet(symbol, onAdded) {
         <span class="map-group-pick-title">어느 관심목록에 담을까요?</span>
         <button type="button" class="map-group-pick-close" aria-label="닫기">✕</button>
       </div>
-      <div class="map-group-pick-list">${groups
-        .map(
-          (g) => `<button type="button" class="map-group-pick-item${g.id === defaultId ? " checked" : ""}" data-pick-group="${esc(g.id)}">
-            <span class="map-group-pick-check">✓</span><span>${esc(g.name || "기본")}</span>
-          </button>`
-        )
-        .join("")}</div>
+      <div class="map-group-pick-list"></div>
+      <button type="button" class="map-group-pick-confirm">확인</button>
     </div>`;
+  renderList();
   sheet.style.display = "flex";
   const close = () => {
     sheet.style.display = "none";
   };
   sheet.querySelector(".map-group-pick-backdrop").addEventListener("click", close);
   sheet.querySelector(".map-group-pick-close").addEventListener("click", close);
-  sheet.querySelector(".map-group-pick-list").addEventListener("click", (e) => {
+  const list = sheet.querySelector(".map-group-pick-list");
+  list.addEventListener("click", (e) => {
+    if (e.target.closest(".map-group-pick-add")) {
+      const name = prompt("새 관심목록 이름을 입력해주세요.");
+      const trimmed = (name || "").trim();
+      if (!trimmed) return;
+      const groups = readWatchlistGroups();
+      const id = `g_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+      groups.push({ id, name: trimmed });
+      saveWatchlistGroups(groups);
+      checked.add(id);
+      renderList();
+      return;
+    }
     const btn = e.target.closest("[data-pick-group]");
     if (!btn) return;
-    addSheetWatchlist(symbol, btn.dataset.pickGroup);
+    const id = btn.dataset.pickGroup;
+    if (checked.has(id)) checked.delete(id);
+    else checked.add(id);
+    btn.classList.toggle("checked", checked.has(id));
+  });
+  // 이름을 길게 누르면 이름 고치기
+  let timer = null;
+  const startRename = (e) => {
+    const nameEl = e.target.closest("[data-group-name]");
+    if (!nameEl) return;
+    timer = setTimeout(() => {
+      timer = null;
+      const id = nameEl.dataset.groupName;
+      const next = prompt("목록 이름을 바꿉니다.", nameEl.textContent);
+      const trimmed = (next || "").trim();
+      if (!trimmed) return;
+      const groups = readWatchlistGroups().map((g) => (g.id === id ? { ...g, name: trimmed } : g));
+      saveWatchlistGroups(groups);
+      renderList();
+    }, 550);
+  };
+  const cancelRename = () => {
+    if (timer) clearTimeout(timer);
+    timer = null;
+  };
+  list.addEventListener("touchstart", startRename, { passive: true });
+  list.addEventListener("mousedown", startRename);
+  ["touchend", "touchmove", "touchcancel", "mouseup", "mouseleave", "scroll"].forEach((ev) => list.addEventListener(ev, cancelRename, { passive: true }));
+  sheet.querySelector(".map-group-pick-confirm").addEventListener("click", () => {
+    if (!checked.size) {
+      showToast("담을 목록을 하나 이상 골라주세요");
+      return;
+    }
+    addSheetWatchlist(symbol, [...checked]);
     close();
     if (onAdded) onAdded();
-    showToast("관심종목에 추가했습니다");
+    showToast(`관심종목 ${checked.size}개 목록에 담았습니다`);
   });
 }
 

@@ -1190,5 +1190,10 @@ body[data-map-view-kind="asset"] .metric-chip[data-metric="week52RangePct"]:not(
   flex: none; width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--line);
   color: transparent; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center;
 }
+/* 2026-09-16: 담긴 종목 수 + "목록 추가" + 확인 버튼(본체 시트와 같은 모양) */
+.map-group-pick-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.map-group-pick-count { flex: none; min-width: 22px; padding: 1px 7px; border-radius: 99px; background: rgba(127, 127, 127, 0.14); color: var(--text-mid); font-size: 11.5px; font-weight: 700; text-align: center; }
+.map-group-pick-add { width: 100%; margin-top: 2px; padding: 11px 12px; border: 1px dashed var(--line); border-radius: 12px; background: none; color: var(--text-mid); font-size: 13px; font-weight: 700; cursor: pointer; }
+.map-group-pick-confirm { width: 100%; margin-top: 10px; padding: 13px 12px; border: none; border-radius: 12px; background: var(--navy); color: #fff; font-size: 14.5px; font-weight: 800; cursor: pointer; }
 .map-group-pick-item.checked { border-color: var(--navy); }
 .map-group-pick-item.checked .map-group-pick-check { background: var(--navy); border-color: var(--navy); color: #fff; }
