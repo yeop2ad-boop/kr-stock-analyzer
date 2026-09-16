@@ -82,6 +82,17 @@ jobs:
             git commit -m "섹터맵 데이터 자동 갱신 ($(date -u +%Y-%m-%d))"
             git status --short
             git stash --include-untracked || true
-            git pull --rebase origin main
+            # 2026-09-17: 커밋까지는 되는데 이 단계에서 매일 실패(9/11~9/16, 승률·RSI DB가 9/10에 멈춤).
+            # 앱 쪽에서 같은 데이터 파일(sreport-baseline.json 등)을 손대면 rebase가 내용 충돌로 죽는다 —
+            # 데이터 파일은 방금 배치가 만든 값이 맞으므로 -X theirs(재적용 커밋 쪽)로 자동 해결하고,
+            # 그래도 실패하면 rebase를 접고 원격 위에 우리 커밋만 다시 얹는다.
+            git pull --rebase -X theirs origin main || {
+              echo "rebase 실패 — 원격 위에 데이터 커밋만 다시 얹는다"
+              git rebase --abort || true
+              git fetch origin main
+              git reset --soft origin/main
+              git add -A sector-map/data data/winrate-scores-us.json data/etf-info.json data/sreport-baseline.json data/strategy-compare.json sector-map/scripts/strategy-series-cache.json
+              git commit -m "섹터맵 데이터 자동 갱신 ($(date -u +%Y-%m-%d))" || true
+            }
             git push
           fi
