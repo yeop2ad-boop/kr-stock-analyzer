@@ -1568,9 +1568,8 @@ table.s-report-table td:first-child { text-align: left; font-weight: 600; }
 /* 간편검색(2026-09-16 개편): 투자처 = 하단 네비와 같은 마크 + 이름 + 한 줄 설명 */
 /* 더보기 > 인사이트 5개(2026-09-16): 항목 앞 이모지, 하위 투자처 버튼에는 앱 마크 */
 .more-insight-emoji { flex: none; width: 24px; text-align: center; font-size: 16px; line-height: 1; }
-.more-insight-sec { display: inline-flex; align-items: center; gap: 6px; }
-.more-insight-sec-mark { display: inline-flex; align-items: center; }
-.more-insight-sec-mark svg { width: 18px; height: 12px; display: block; }
+/* 하위 투자처는 글씨만, 한 줄에 나란히(2026-09-16 사용자 요청) */
+.more-insight-nav { flex-wrap: nowrap; }
 
 .wizard-market-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
 .wizard-market-btn { display: flex; align-items: center; gap: 12px; width: 100%; padding: 13px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text); text-align: left; cursor: pointer; }

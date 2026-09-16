@@ -3009,15 +3009,10 @@ let moreInsightNavsReady = false;
 function initMoreInsightNavs() {
   if (moreInsightNavsReady) return;
   moreInsightNavsReady = true;
-  const mark = { kr: FLAG_SVG_KR, us: FLAG_SVG_US, crypto: ICON_SVG_BTC };
+  // 2026-09-16 사용자 요청: 마크 없이 글씨만, 한 줄로
   document.querySelectorAll("[data-insight-cat-nav]").forEach((nav) => {
     const rows = MORE_INSIGHT_SECTIONS[nav.dataset.insightCatNav] || [];
-    nav.innerHTML = rows
-      .map(
-        ([sec, label]) =>
-          `<button type="button" class="cat-btn more-insight-sec" data-insight-section="${sec}"><span class="more-insight-sec-mark">${mark[sec]}</span>${escapeHtml(label)}</button>`
-      )
-      .join("");
+    nav.innerHTML = rows.map(([sec, label]) => `<button type="button" class="cat-btn more-insight-sec" data-insight-section="${sec}">${escapeHtml(label)}</button>`).join("");
   });
 }
 document.querySelectorAll(".more-insight-item").forEach((btn) => {
