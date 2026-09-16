@@ -14700,7 +14700,8 @@ async function runInsightNews() {
   const status = el("insightStatus");
   const results = el("insightResults");
   status.style.display = "";
-  status.textContent = "⏳ 주요기업 최신 뉴스를 불러오는 중...";
+  const hasWatchlist = getWatchlist().length > 0;
+  status.textContent = hasWatchlist ? "* 내 관심종목 최신뉴스를 가져오는중..." : "* 주요 대형주 최신뉴스를 가져오는중...";
   results.innerHTML = "";
 
   const watchlistSymbols = getWatchlist().map((w) => w.symbol);
@@ -14743,7 +14744,7 @@ async function runInsightNews() {
     .join("");
 
   results.innerHTML = `
-    <p class="disclaimer tab-note">📢 주요기업 최신 뉴스 — ${watchlistSymbols.length ? "관심종목" : "주요 대형주 20개"} 기준으로 모은 뉴스를 발행 시각 최신순으로 정렬한 TOP20입니다(맨 위가 최신). 제목은 자동 번역되었습니다.</p>
+    <p class="disclaimer tab-note">📢 ${watchlistSymbols.length ? "관심종목의 최신뉴스" : "주요 대형주 20개의 최신뉴스"} — 발행 시각 최신순 TOP20이고 제목은 자동 번역했습니다.</p>
     <div class="major-news-list">${rows}</div>
   `;
 }
