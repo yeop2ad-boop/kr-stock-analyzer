@@ -6485,9 +6485,10 @@ function sReportRadarSvg(items) {
       const [x, y] = pt(i, 1.2);
       const anchor = x < cx - 6 ? "end" : x > cx + 6 ? "start" : "middle";
       const dy = y < cy - R * 0.9 ? -14 : y > cy + R * 0.5 ? 6 : -6;
-      const val = it.value === null ? "N/A" : it.fmt(it.value, 0);
+      const warn = Number.isFinite(it.partialTotal) && it.partialTotal < (it.partialMin || 120) ? "⚠️" : "";
+      const val = (it.value === null ? "N/A" : it.fmt(it.value, 0));
       return `<text x="${x.toFixed(1)}" y="${(y + dy).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-label">${escapeHtml(it.label)}</text>
-        <text x="${x.toFixed(1)}" y="${(y + dy + 15).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-value srt-tone-${it.judge ? it.judge.tone : "neutral"}">${escapeHtml(val)}${
+        <text x="${x.toFixed(1)}" y="${(y + dy + 15).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-value srt-tone-${it.judge ? it.judge.tone : "neutral"}">${warn}${escapeHtml(val)}${
         // RSI는 비교 기준이 이 종목의 1년 평균이라 "현재/1년 평균"으로 간단히(예: 55/72, 2026-09-15 사용자 요청)
         it.isRsi && Number.isFinite(it.avg) ? `<tspan class="srt-rd-avgtxt">/${Math.round(it.avg)}</tspan>` : ""
       }</text>`;
@@ -6655,7 +6656,9 @@ function sReportLineHtml(it) {
   return `
     <div class="srf-line" data-sr-key="${escapeHtml(sKey)}" data-sr-explain="${escapeHtml(it.explain || "")}" data-sr-title="${escapeHtml(S_REPORT_TITLES[sKey] || it.label)}">
       <span class="srf-name">${escapeHtml(it.label)}</span>
-      <b class="srf-val" data-round="${escapeHtml(has ? it.fmt(it.value, 0) : "N/A")}">${escapeHtml(has ? it.fmt(it.value, 1) : "N/A")}</b>
+      <b class="srf-val" data-round="${escapeHtml(has ? it.fmt(it.value, 0) : "N/A")}">${partialMarkHtml(it.partialTotal, "wr-mark-front", it.partialMin)}${escapeHtml(
+        has ? it.fmt(it.value, 1) : "N/A"
+      )}</b>
       <span class="srf-rank${it.mark ? ` srf-rank-${it.mark}` : ""}" data-short="${escapeHtml(shortHtml)}">${rankHtml}</span>
     </div>`;
 }
@@ -6709,6 +6712,7 @@ document.addEventListener("click", (e) => {
     if (!e.target.closest(".srf-explain")) closeSrExplain(null);
     return;
   }
+  if (e.target.closest(".nine-partial-mark")) return; // ⚠️(상장 10년 미만)는 공용 경고 설명 장치가 처리
   e.preventDefault();
   e.stopPropagation();
   const next = line.nextElementSibling;
@@ -6770,6 +6774,12 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
 
   const draw = () => {
     const items = coreSpecs.map((s) => sReportMakeItem(s, self[s.key], group, currency, self.rsiAvg));
+    // 승률은 상장 10년(코인 7년) 미만이면 값 앞에 ⚠️ — 짧은 기간만으로 계산한 값이라는 경고
+    const winItem = items.find((it) => it.key === "win");
+    if (winItem) {
+      winItem.partialTotal = self.wn;
+      winItem.partialMin = partialMonthsFor(ticker);
+    }
     const asOf = baseline && baseline.generatedAt ? new Date(baseline.generatedAt) : null;
     const asOfText = asOf && !Number.isNaN(asOf.getTime()) ? ` · ${asOf.getMonth() + 1}월 ${asOf.getDate()}일 기준` : "";
     section.innerHTML = `
@@ -6800,6 +6810,15 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
       }
     });
   };
+
+  // 승률 경고에 쓸 "상장 후 개월 수"는 승률 DB에만 있음 — 도착하면 다시 그린다
+  getDetailWrEntry(ticker, scoreMode)
+    .then((e) => {
+      if (token !== sReportTopToken || !e || !Number.isFinite(e.total) || self.wn === e.total) return;
+      self.wn = e.total;
+      if (section.querySelector(".srt-card")) draw();
+    })
+    .catch(() => {});
 
   // DB에 핵심 값이 다 있으면 바로 그림 — 빠진 값(DB 밖 종목 등)은 실시간으로 채운 뒤 한 번 더 그림
   const missing = coreSpecs.some((s) => !Number.isFinite(self[s.key])) || !Number.isFinite(self.rsiAvg);
@@ -6877,7 +6896,10 @@ function fitSReportRoundCells(root) {
   });
   root.querySelectorAll(".srf-line [data-round]").forEach((node) => {
     const box = node.closest(".srf-line");
-    if (box && box.scrollWidth > box.clientWidth + 1) node.textContent = node.dataset.round;
+    if (!box || box.scrollWidth <= box.clientWidth + 1) return;
+    const mark = node.querySelector(".nine-partial-mark"); // ⚠️(상장 10년 미만)는 그대로 두고 숫자만 반올림
+    node.textContent = node.dataset.round;
+    if (mark) node.insertAdjacentElement("afterbegin", mark);
   });
 }
 window.addEventListener("resize", () => {
