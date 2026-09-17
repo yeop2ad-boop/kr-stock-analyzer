@@ -12341,10 +12341,11 @@ async function renderEtfHoldingsBlock(symbol, isKr) {
     // 데이터 파일을 못 읽으면 블록 자체를 숨김
   }
   if (!info || !info.holdings || !info.holdings.length) {
-    box.innerHTML = "";
-    box.style.display = "none";
-    const hb = el("tickerHoldingsToggleBtn"); // 보유 종목 공시가 없는 ETF는 버튼도 뺌
-    if (hb) hb.remove();
+    // 금·채권·비트코인 ETF처럼 개별 종목을 담지 않는 상품은 공시 자체가 없다 — 빈 화면 대신 이유를 적어 준다(2026-09-17 사용자 지적)
+    box.innerHTML = `<div class="etf-holdings-head"><b>보유 종목</b>${
+      info && info.category ? `<span class="muted">${escapeHtml(info.category)}</span>` : ""
+    }</div><p class="muted" style="font-size:12.5px;margin:6px 2px 0;line-height:1.6;">이 ETF는 개별 종목을 담지 않아(금·원자재 현물, 채권, 비트코인 등) 보유 종목 공시가 없습니다.</p>`;
+    box.style.display = "block";
     return;
   }
   const paint = () => {
