@@ -6349,7 +6349,7 @@ const S_REPORT_TAP_HINT = `<p class="srt-tap-hint">* 모든 항목은 눌러서 
 // axis: 오각형 축을 비교군 백분위 대신 고정 눈금으로 그림(2026-09-16 사용자 지정 — 승률 40~70%, 상승률·매출액 0~50%, 변동성 5~1%,
 //       과열도는 rsiAxisScore로 1년 평균이 한가운데). ETF·코인의 3번(1년 수익률)만 비교군 분포를 그대로 쓴다.
 function sReportCoreSpecs(isAsset, isEtf) {
-  return [
+  const specs = [
     { key: "win", label: "승률", sub: "10년 월간", better: "high", band: 2, fmt: (v, d) => sPct(v, d), axis: (v) => (v - 40) / 30 },
     { key: "ret", label: "상승률", sub: "연평균", better: "high", band: 2, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true), axis: (v) => v / 50 },
     isEtf
@@ -6359,6 +6359,7 @@ function sReportCoreSpecs(isAsset, isEtf) {
           label: "운용보수",
           sub: "연간",
           better: "low",
+          isFee: true,
           band: 0.02,
           rel: 0.15,
           fmt: (v, d) => `${Number(v.toFixed(d ? 4 : 3))}%`,
@@ -6371,6 +6372,24 @@ function sReportCoreSpecs(isAsset, isEtf) {
     // 과열도는 낮을수록 좋은 점수(2026-09-16 사용자 요청) — 등수도 낮은 순으로 1위, 레이더에서도 낮을수록 바깥
     { key: "rsi", label: "과열도(RSI)", better: "low", isRsi: true, fmt: (v, d) => sNum(v, d) },
   ];
+  // ETF는 운용보수를 과열도 자리(왼쪽 위 꼭짓점)로 옮긴다 — 2026-09-17 사용자 요청
+  if (isEtf) {
+    const t = specs[2];
+    specs[2] = specs[4];
+    specs[4] = t;
+  }
+  return specs;
+}
+
+// 운용보수 6단계(2026-09-17 사용자 지정) — 등수 대신 이 등급을 보여준다
+function sReportFeeJudge(v) {
+  if (!Number.isFinite(v)) return null;
+  if (v >= 0.5) return { text: "매우 높음", tone: "bad" };
+  if (v >= 0.2) return { text: "높음", tone: "bad" };
+  if (v >= 0.1) return { text: "조금 높음", tone: "bad" };
+  if (v >= 0.07) return { text: "평균", tone: "neutral" };
+  if (v >= 0.05) return { text: "조금 낮음", tone: "good" };
+  return { text: "매우 낮음", tone: "good" };
 }
 // 전체 보기 추가 항목(배치 DB 키) — live: DB에 없는 주식은 실시간 지표(getFullMetrics)로 보충
 const S_FULL_STOCK_GROUPS = [
@@ -6471,7 +6490,11 @@ function sReportMakeItem(spec, value, group, currency, ownRef) {
     total,
     topPct,
     mark,
-    judge: spec.isRsi ? sReportRsiJudge(value, ref) : { text: "", tone: mark === "fire" ? "good" : mark === "warn" ? "bad" : "neutral" },
+    judge: spec.isRsi
+      ? sReportRsiJudge(value, ref)
+      : spec.isFee
+      ? sReportFeeJudge(value)
+      : { text: "", tone: mark === "fire" ? "good" : mark === "warn" ? "bad" : "neutral" },
     // 과열도(RSI)만은 비교군 분포가 아니라 이 종목의 1년 평균 RSI를 오각형 한가운데(0.5)에 두고,
     // 평균보다 낮을수록(침체) 바깥으로, 높을수록(과열) 안쪽으로 그린다 — 등급 기준과 같은 ±20이 양 끝(2026-09-16 사용자 요청)
     // spec.axis가 있으면 비교군 분포 대신 고정 눈금으로 축 길이를 잡는다(승률: 40% 0점 ~ 70% 만점)
@@ -6663,9 +6686,9 @@ function sReportLineHtml(it) {
   let rankHtml;
   let shortHtml;
   // 2026-09-17 사용자 요청: 비교군 안 위치(상위 N%)를 크게, 실제 등수(40위/349)는 그 아래 작게
-  if (it.isRsi) {
-    // 등수 칸이 좁아 "평균 72 · "가 잘려 보여서 등급만 둔다(1년 평균은 값 옆 "/72(평균)"으로 확인, 2026-09-16)
-    rankHtml = shortHtml = has ? `<b class="srf-grade srt-rank-${tone}">${escapeHtml(it.judge.text)}</b>` : "—";
+  if (it.isRsi || it.isFee) {
+    // 과열도·운용보수는 등수 대신 등급으로 보여준다(2026-09-16·17 사용자 요청)
+    rankHtml = shortHtml = has && it.judge ? `<b class="srf-grade srt-rank-${tone}">${escapeHtml(it.judge.text)}</b>` : "—";
   } else if (it.rank) {
     const pct = Number.isFinite(it.topPct) ? Math.max(1, Math.round(it.topPct)) : null;
     rankHtml = `<span class="srf-rank-top">${markHtml}<b class="srf-rank-pct">${pct === null ? `${it.rank}위` : `상위 ${pct}%`}</b></span><span class="srf-rank-of">${it.rank}위/${it.total}</span>`;
