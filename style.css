@@ -3316,6 +3316,9 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .srf-rank-of { font-size: 10px; font-weight: 600; color: var(--muted); }
 /* RSI 강한·약한 매수/매도 — 등수 숫자와 같은 크기·굵기, 색은 검정으로 통일(2026-09-15 사용자 요청) */
 .srf-grade, .srf-grade.srt-rank-good, .srf-grade.srt-rank-bad, .srf-grade.srt-rank-neutral { font-size: 16px; font-weight: 900; letter-spacing: -0.4px; color: var(--text); }
+/* 긴 등급(강한매수우위·강한매도우위)은 등수 칸 폭에 맞춰 줄인다 — 안 그러면 앞 글자가 잘린다(2026-09-17) */
+.srf-grade-mid, .srf-grade.srf-grade-mid { font-size: 14px; letter-spacing: -0.6px; }
+.srf-grade-long, .srf-grade.srf-grade-long { font-size: 12.5px; letter-spacing: -0.6px; }
 .srf-line .srf-rank-sub { font-size: 11px; }
 .srt-rank-neutral { color: var(--text); }
 .srt-card .srf-list { margin-top: 6px; border-top: 1px solid var(--border); }

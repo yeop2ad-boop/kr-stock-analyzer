@@ -6349,32 +6349,32 @@ const S_REPORT_TAP_HINT = `<p class="srt-tap-hint">* 모든 항목은 눌러서 
 // axis: 오각형 축을 비교군 백분위 대신 고정 눈금으로 그림(2026-09-16 사용자 지정 — 승률 40~70%, 상승률·매출액 0~50%, 변동성 5~1%,
 //       과열도는 rsiAxisScore로 1년 평균이 한가운데). ETF·코인의 3번(1년 수익률)만 비교군 분포를 그대로 쓴다.
 function sReportCoreSpecs(isAsset, isEtf) {
-  const specs = [
+  // 2026-09-17 사용자 지정: 어느 투자처든 앞 네 자리는 승률 - 상승률 - 변동성 - 과열도로 같고,
+  // 다섯 번째만 달라진다(주식 = 매출액, ETF = 운용보수, 코인 = 1년 수익률). 오각형 축과 항목 줄이 같은 순서다.
+  const fifth = isEtf
+    ? // ETF 운용보수 눈금(사용자 지정): 0.02% 만점 · 0.087%(중앙값)가 한가운데 · 0.3% 이상 0점
+      {
+        key: "fee",
+        label: "운용보수",
+        sub: "연간",
+        better: "low",
+        isFee: true,
+        band: 0.02,
+        rel: 0.15,
+        fmt: (v, d) => `${Number(v.toFixed(d ? 4 : 3))}%`,
+        axis: (v) => (v <= 0.087 ? 0.5 + (0.5 * (0.087 - v)) / (0.087 - 0.02) : 0.5 - (0.5 * (v - 0.087)) / (0.3 - 0.087)),
+      }
+    : isAsset
+    ? { key: "rev", label: "1년 수익률", explainKey: "ret1y", better: "high", band: 3, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true) }
+    : { key: "rev", label: "매출액", sub: "작년 대비", better: "high", band: 3, rel: 0.2, signed: true, fmt: (v, d) => sPct(v, d, true), axis: (v) => v / 50 };
+  return [
     { key: "win", label: "승률", sub: "10년 월간", better: "high", band: 2, fmt: (v, d) => sPct(v, d), axis: (v) => (v - 40) / 30 },
     { key: "ret", label: "상승률", sub: "연평균", better: "high", band: 2, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true), axis: (v) => v / 50 },
-    isEtf
-      ? // ETF는 3번 자리에 운용보수(2026-09-17 사용자 지정 눈금: 0.02% 만점 · 0.087%(중앙값)가 한가운데 · 0.3% 이상 0점)
-        {
-          key: "fee",
-          label: "운용보수",
-          sub: "연간",
-          better: "low",
-          isFee: true,
-          band: 0.02,
-          rel: 0.15,
-          fmt: (v, d) => `${Number(v.toFixed(d ? 4 : 3))}%`,
-          axis: (v) => (v <= 0.087 ? 0.5 + (0.5 * (0.087 - v)) / (0.087 - 0.02) : 0.5 - (0.5 * (v - 0.087)) / (0.3 - 0.087)),
-        }
-      : isAsset
-      ? { key: "rev", label: "1년 수익률", explainKey: "ret1y", better: "high", band: 3, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true) }
-      : { key: "rev", label: "매출액", sub: "작년 대비", better: "high", band: 3, rel: 0.2, signed: true, fmt: (v, d) => sPct(v, d, true), axis: (v) => v / 50 },
     { key: "vol", label: "변동성", sub: "3개월 하루", better: "low", band: 0.1, rel: 0.1, fmt: (v, d) => `${v.toFixed(d ? 2 : 1)}%`, axis: (v) => (5 - v) / 4 },
     // 과열도는 낮을수록 좋은 점수(2026-09-16 사용자 요청) — 등수도 낮은 순으로 1위, 레이더에서도 낮을수록 바깥
     { key: "rsi", label: "과열도(RSI)", better: "low", isRsi: true, fmt: (v, d) => sNum(v, d) },
+    fifth,
   ];
-  // ETF 순서(2026-09-17 사용자 지정): 승률 - 상승률 - 변동성 - 과열도 - 운용보수
-  if (isEtf) specs.push(specs.splice(2, 1)[0]);
-  return specs;
 }
 
 // 운용보수 6단계(2026-09-17 사용자 지정) — 등수 대신 이 등급을 보여준다
@@ -6684,7 +6684,15 @@ function sReportLineHtml(it) {
   // 2026-09-17 사용자 요청: 비교군 안 위치(상위 N%)를 크게, 실제 등수(40위/349)는 그 아래 작게
   if (it.isRsi || it.isFee) {
     // 과열도·운용보수는 등수 대신 등급으로 보여준다(2026-09-16·17 사용자 요청)
-    rankHtml = shortHtml = has && it.judge ? `<b class="srf-grade srt-rank-${tone}">${escapeHtml(it.judge.text)}</b>` : "—";
+    const gradeText = has && it.judge ? it.judge.text : "";
+    // 글자 수가 많은 등급("강한매도우위")은 칸(76px)을 넘겨 앞 글자가 잘렸다 — 길이에 따라 글씨를 줄인다(2026-09-17 사용자 지적)
+    const gradeHtml = gradeText
+      ? `<b class="srf-grade${gradeText.length >= 6 ? " srf-grade-long" : gradeText.length === 5 ? " srf-grade-mid" : ""} srt-rank-${tone}">${escapeHtml(gradeText)}</b>`
+      : "—";
+    // 운용보수는 등급 아래에 비교군 안 등수도 작게(2026-09-17 사용자 요청)
+    const gradeRankHtml = it.isFee && it.rank ? `<span class="srf-rank-of">${it.rank}위/${it.total}</span>` : "";
+    rankHtml = gradeHtml + gradeRankHtml;
+    shortHtml = gradeHtml;
   } else if (it.rank) {
     const pct = Number.isFinite(it.topPct) ? Math.max(1, Math.round(it.topPct)) : null;
     rankHtml = `<span class="srf-rank-top">${markHtml}<b class="srf-rank-pct">${pct === null ? `${it.rank}위` : `상위 ${pct}%`}</b></span><span class="srf-rank-of">${it.rank}위/${it.total}</span>`;
