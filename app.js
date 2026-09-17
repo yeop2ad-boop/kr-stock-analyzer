@@ -3178,7 +3178,7 @@ function applyLang(lang) {
   // 종목 상세(예: "AAPL 분석 - 굴려볼까" / "AAPL Analysis - Marketmap")를 보고 있는 중이 아닐 때만 앱 이름/슬로건 타이틀을 언어에 맞춰 갱신
   // (새 슬로건 자체에 " - "가 들어가므로 "분석 - "/"Analysis - " 패턴으로만 종목 상세를 판별)
   if (!/분석 - |Analysis - /.test(document.title)) {
-    document.title = isEn ? "MarketMap - Find companies on a map" : "마켓맵: 주식•코인 AI분석 공유 플랫폼";
+    document.title = isEn ? "MarketMap: AI Stock & Crypto Analysis" : "마켓맵: 주식•코인 AI분석 공유 플랫폼";
   }
 }
 function setLang(lang) {
@@ -3408,7 +3408,7 @@ function closeCompanyPanel({ push = true } = {}) {
     // 주소로 바로 들어온 상세는 항목을 새로 쌓지 않고 주소만 바꿈 — 뒤로가기를 눌렀을 때 닫았던 상세가 다시 열리지 않게
     if (history.state && history.state.ticker && history.state.fromApp) history.back();
     else history.replaceState(history.state, "", location.pathname);
-    document.title = document.documentElement.lang === "en" ? "MarketMap - Find companies on a map" : "마켓맵: 주식•코인 AI분석 공유 플랫폼";
+    document.title = document.documentElement.lang === "en" ? "MarketMap: AI Stock & Crypto Analysis" : "마켓맵: 주식•코인 AI분석 공유 플랫폼";
   }
 }
 companyPanelCloseBtn.addEventListener("click", () => closeCompanyPanel());
