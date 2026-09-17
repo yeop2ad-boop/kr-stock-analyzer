@@ -3341,6 +3341,9 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .srf-tick { position: absolute; top: -4px; width: 2px; height: 14px; margin-left: -1px; border-radius: 1px; background: var(--text); }
 .srf-rank { flex: 0 0 64px; text-align: right; font-size: 12.5px; font-weight: 800; color: var(--muted); white-space: nowrap; letter-spacing: -0.3px; }
 .srt-rank-good { color: #087f5b; }
+/* 매수·매도 우위(2026-09-17): 앱의 상승·하락 색을 그대로 */
+.srt-rank-up { color: var(--pos); }
+.srt-rank-down { color: var(--neg); }
 .srt-rank-bad { color: #c92a2a; }
 .srt-rank-same, .srt-rank-neutral { color: var(--text); }
 /* 백분위 5칸 막대(D안) — 채운 칸 + 위치 점 */

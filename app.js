@@ -6283,17 +6283,17 @@ function sReportJudge(level, better) {
 }
 function sReportRsiJudge(rsi, refRsi) {
   if (!Number.isFinite(rsi)) return null;
-  // 과열·침체 5등급(2026-09-16 사용자 지정) — 기준은 이 종목 자신의 1년 평균 RSI라 종목마다 다르다.
-  //   매우 과열 +20 이상 · 약한 과열 +10 이상 · 정상 ±10 안 · 약한 침체 −10 이하 · 매우 침체 −20 이하
-  //   색은 앱의 RSI 관례를 따라 과열 = 빨강(주의), 침체 = 초록(과매도)
-  if (!Number.isFinite(refRsi)) return { text: "정상", tone: "neutral" };
+  // 매수·매도 우위 5등급(2026-09-17 사용자 지정) — 기준은 이 종목 자신의 1년 평균 RSI라 종목마다 다르다.
+  //   평균보다 높으면 매수 쪽에 힘이 실린 상태, 낮으면 매도 쪽. ±10 안은 평균, ±20부터 "강한".
+  if (!Number.isFinite(refRsi)) return { text: "평균", tone: "neutral" };
   const diff = rsi - refRsi;
-  if (diff >= 20) return { text: "매우 과열", tone: "bad" };
-  if (diff >= 10) return { text: "약한 과열", tone: "bad" };
-  if (diff > -10) return { text: "정상", tone: "neutral" };
-  if (diff > -20) return { text: "약한 침체", tone: "good" };
-  return { text: "매우 침체", tone: "good" };
+  if (diff >= 20) return { text: "강한매수우위", tone: "up" };
+  if (diff >= 10) return { text: "매수우위", tone: "up" };
+  if (diff > -10) return { text: "평균", tone: "neutral" };
+  if (diff > -20) return { text: "매도우위", tone: "down" };
+  return { text: "강한매도우위", tone: "down" };
 }
+
 
 const sPct = (v, d, signed) => `${signed && v > 0 ? "+" : ""}${d ? (Math.round(v * 10) / 10).toFixed(1) : Math.round(v)}%`;
 const sNum = (v, d) => (d ? (Math.round(v * 10) / 10).toFixed(1) : String(Math.round(v)));
@@ -6305,7 +6305,7 @@ const S_REPORT_EXPLAIN = {
   rev: "매출이 1년 전보다 몇 % 늘었는지입니다.\n높을수록 사업이 커지고 있어요.",
   ret1y: "1년 전 가격과 비교해 지금 몇 % 올랐는지입니다.\n높을수록 최근 1년 성과가 좋았어요.",
   vol: "최근 3개월 하루 평균 등락 폭입니다.\n높을수록 하루하루 크게 흔들려 위험해요.",
-  rsi: "최근 14주 등락 폭으로 만든 주간 RSI입니다.\n1년 평균보다 높으면 과열, 낮으면 침체예요.",
+  rsi: "최근 14주 등락 폭으로 만든 주간 RSI입니다.\n이 종목의 1년 평균보다 높으면 매수우위, 낮으면 매도우위예요.",
   ni: "순이익이 작년보다 몇 % 늘었는지입니다.\n높을수록 남기는 이익이 빠르게 늘어요.",
   om: "매출에서 영업이익이 차지하는 비율입니다.\n높을수록 본업에서 효율적으로 벌어요.",
   roe: "자기자본 대비 순이익 비율(최근 분기)입니다.\n높을수록 주주 돈으로 이익을 잘 만들어요.",
@@ -6380,12 +6380,12 @@ function sReportCoreSpecs(isAsset, isEtf) {
 // 운용보수 6단계(2026-09-17 사용자 지정) — 등수 대신 이 등급을 보여준다
 function sReportFeeJudge(v) {
   if (!Number.isFinite(v)) return null;
-  if (v >= 0.5) return { text: "매우 높음", tone: "bad" };
+  if (v >= 0.5) return { text: "매우높음", tone: "bad" };
   if (v >= 0.2) return { text: "높음", tone: "bad" };
-  if (v >= 0.1) return { text: "조금 높음", tone: "bad" };
+  if (v >= 0.1) return { text: "조금높음", tone: "bad" };
   if (v >= 0.07) return { text: "평균", tone: "neutral" };
-  if (v >= 0.05) return { text: "조금 낮음", tone: "good" };
-  return { text: "매우 낮음", tone: "good" };
+  if (v >= 0.05) return { text: "조금낮음", tone: "good" };
+  return { text: "매우낮음", tone: "good" };
 }
 // 전체 보기 추가 항목(배치 DB 키) — live: DB에 없는 주식은 실시간 지표(getFullMetrics)로 보충
 const S_FULL_STOCK_GROUPS = [
