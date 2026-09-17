@@ -5784,7 +5784,9 @@ async function runAnalysis(ticker) {
 
     // 하위 탭 3번째 자리: 주식은 매출액(재무정보), ETF는 보유종목, 코인은 아예 감춤(2026-09-16 사용자 요청)
     el("summarySubtabRevenueBtn").querySelector(".tab-label").textContent = isEtfDetail ? "보유종목" : "매출액";
-    el("financialsHeading").textContent = isEtfDetail ? "보유 종목" : "재무정보";
+    el("financialsHeading").innerHTML = isEtfDetail
+      ? `보유 종목<span class="srt-asof">${new Date().getMonth() + 1}/${new Date().getDate()} 기준</span>`
+      : "재무정보";
     el("summarySubtabRevenueBtn").style.display = isCryptoDetail ? "none" : "";
     if (isCryptoDetail || isEtfDetail) {
       FIN2_STATE.token++; // 매출액 차트가 없는 자산 — 앞서 연 주식의 늦게 도착한 차트가 숨은 영역에 그려지지 않게
@@ -12379,9 +12381,9 @@ async function renderEtfHoldingsBlock(symbol, isKr) {
   }
   if (!info || !info.holdings || !info.holdings.length) {
     // 금·채권·비트코인 ETF처럼 개별 종목을 담지 않는 상품은 공시 자체가 없다 — 빈 화면 대신 이유를 적어 준다(2026-09-17 사용자 지적)
-    box.innerHTML = `<div class="etf-holdings-head"><b>보유 종목</b>${
-      info && info.category ? `<span class="muted">${escapeHtml(info.category)}</span>` : ""
-    }</div><p class="muted" style="font-size:12.5px;margin:6px 2px 0;line-height:1.6;">이 ETF는 개별 종목을 담지 않아(금·원자재 현물, 채권, 비트코인 등) 보유 종목 공시가 없습니다.</p>`;
+    box.innerHTML = `${
+      info && info.category ? `<div class="etf-holdings-head"><span class="muted" style="font-size:11.5px;">${escapeHtml(info.category)}</span></div>` : ""
+    }<p class="muted" style="font-size:12.5px;margin:6px 2px 0;line-height:1.6;">이 ETF는 개별 종목을 담지 않아(금·원자재 현물, 채권, 비트코인 등) 보유 종목 공시가 없습니다.</p>`;
     box.style.display = "block";
     return;
   }
@@ -12432,14 +12434,12 @@ async function renderEtfHoldingsBlock(symbol, isKr) {
       : "";
     box.innerHTML = `
       <div class="etf-holdings-head">
-        <b>보유 종목</b>
-        <span class="muted" style="font-size:11px;">비중 순 · ${info.index ? escapeHtml(info.index) + " 추종" : escapeHtml(info.category || "")}${
+        <span class="muted" style="font-size:11.5px;">비중 순 · ${info.index ? escapeHtml(info.index) + " 추종" : escapeHtml(info.category || "")}${
       Number.isFinite(info.fee) ? ` · 운용보수 연 ${info.fee}%` : ""
     }</span>
-        <span class="etf-holdings-asof">${new Date().getMonth() + 1}/${new Date().getDate()} 기준</span>
       </div>
       <table class="top30-table etf-holdings-table">
-        <thead><tr><th>종목</th><th>${weightHeader}</th><th>1개월</th></tr></thead>
+        <thead><tr><th>종목</th><th>${weightHeader}</th><th>수익률<br>(1개월)</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
       ${extra}
