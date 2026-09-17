@@ -3274,11 +3274,16 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .srf-line .srf-val { font-size: 14px; font-weight: 700; color: var(--muted); }
 /* 과열도 값 옆 "/72(평균)" — 현재 값보다 작게(2026-09-16 사용자 요청) */
 .srf-val-avg { margin-left: 1px; font-size: 10px; font-weight: 600; color: var(--muted); opacity: 0.8; }
-.srf-line .srf-rank { display: flex; align-items: baseline; justify-content: flex-end; gap: 1px; }
+.srf-line .srf-rank { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 0; line-height: 1.25; }
 .srf-line .srf-rank .srf-mark { margin: 0 3px 0 0; font-size: 12px; }
 .srf-rank-no { font-size: 16px; font-weight: 900; color: var(--text); letter-spacing: -0.4px; }
+/* 2026-09-17 사용자 요청: 상위 N%를 크게, 실제 등수는 그 아래 작게 / 상위 10%는 값이 빨강·하위 10%는 파랑 */
+.srf-rank-top { display: flex; align-items: center; justify-content: flex-end; gap: 2px; }
+.srf-rank-pct { font-size: 14.5px; font-weight: 900; color: var(--text); letter-spacing: -0.4px; }
+.srf-line .srf-val-fire { color: #d9480f; }
+.srf-line .srf-val-warn { color: #1c7ed6; }
 
-.srf-rank-of { font-size: 11px; font-weight: 600; color: var(--muted); }
+.srf-rank-of { font-size: 10px; font-weight: 600; color: var(--muted); }
 /* RSI 강한·약한 매수/매도 — 등수 숫자와 같은 크기·굵기, 색은 검정으로 통일(2026-09-15 사용자 요청) */
 .srf-grade, .srf-grade.srt-rank-good, .srf-grade.srt-rank-bad, .srf-grade.srt-rank-neutral { font-size: 16px; font-weight: 900; letter-spacing: -0.4px; color: var(--text); }
 .srf-line .srf-rank-sub { font-size: 11px; }

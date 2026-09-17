@@ -6507,7 +6507,8 @@ function sReportRadarSvg(items) {
       // 경고(상장 기간)와 불이 겹치면 경고만 보여준다(2026-09-16 사용자 지시)
       const warn = partialWarn || (it.mark === "fire" ? "🔥" : it.mark === "warn" ? "⚠️" : "");
       const val = (it.value === null ? "N/A" : it.fmt(it.value, 0));
-      return `<text x="${x.toFixed(1)}" y="${(y + dy).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-label">${escapeHtml(it.label)}</text>
+      const axisLabel = it.isRsi ? String(it.label).replace(/\s*\(RSI\)\s*$/, "") : it.label; // 오각형은 "과열도"만(2026-09-17)
+      return `<text x="${x.toFixed(1)}" y="${(y + dy).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-label">${escapeHtml(axisLabel)}</text>
         <text x="${x.toFixed(1)}" y="${(y + dy + 15).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-value srt-tone-${it.judge ? it.judge.tone : "neutral"}">${warn}${escapeHtml(val)}${/* 오각형에는 현재 RSI만(1년 평균은 아래 항목 줄에 "/72(평균)"로 표시) — 2026-09-16 사용자 요청 */ ""}</text>`;
     })
     .join("");
@@ -6643,12 +6644,13 @@ function sReportLineHtml(it) {
   const markHtml = it.mark === "fire" ? `<i class="srf-mark">🔥</i>` : it.mark === "warn" ? `<i class="srf-mark">⚠️</i>` : "";
   let rankHtml;
   let shortHtml;
-  // 2026-09-15 사용자 요청: 등수 칸이 너무 넓음 — 가장 중요한 "몇 위"만 크게, 전체 수는 작게("36위 /200"), 상위 % 글자는 뺌
+  // 2026-09-17 사용자 요청: 비교군 안 위치(상위 N%)를 크게, 실제 등수(40위/349)는 그 아래 작게
   if (it.isRsi) {
-    // 등수 칸이 좁아 "평균 72 · "가 잘려 보여서 등급만 둔다(1년 평균은 레이더 라벨의 54/72로 확인, 2026-09-16)
+    // 등수 칸이 좁아 "평균 72 · "가 잘려 보여서 등급만 둔다(1년 평균은 값 옆 "/72(평균)"으로 확인, 2026-09-16)
     rankHtml = shortHtml = has ? `<b class="srf-grade srt-rank-${tone}">${escapeHtml(it.judge.text)}</b>` : "—";
   } else if (it.rank) {
-    rankHtml = `${markHtml}<b class="srf-rank-no">${it.rank}위</b><span class="srf-rank-of">/${it.total}</span>`;
+    const pct = Number.isFinite(it.topPct) ? Math.max(1, Math.round(it.topPct)) : null;
+    rankHtml = `<span class="srf-rank-top">${markHtml}<b class="srf-rank-pct">${pct === null ? `${it.rank}위` : `상위 ${pct}%`}</b></span><span class="srf-rank-of">${it.rank}위/${it.total}</span>`;
     shortHtml = rankHtml;
   } else {
     rankHtml = shortHtml = "—";
@@ -6657,7 +6659,7 @@ function sReportLineHtml(it) {
   return `
     <div class="srf-line" data-sr-key="${escapeHtml(sKey)}" data-sr-explain="${escapeHtml(it.explain || "")}" data-sr-title="${escapeHtml(S_REPORT_TITLES[sKey] || it.label)}">
       <span class="srf-name">${escapeHtml(it.label)}</span>
-      <b class="srf-val" data-round="${escapeHtml(has ? it.fmt(it.value, 0) : "N/A")}">${partialMarkHtml(it.partialTotal, "wr-mark-front", it.partialMin)}${escapeHtml(
+      <b class="srf-val${it.mark ? ` srf-val-${it.mark}` : ""}" data-round="${escapeHtml(has ? it.fmt(it.value, 0) : "N/A")}">${partialMarkHtml(it.partialTotal, "wr-mark-front", it.partialMin)}${escapeHtml(
         has ? it.fmt(it.value, 1) : "N/A"
       )}${/* 과열도는 값 옆에 이 종목의 1년 평균을 작게 붙임(2026-09-16 사용자 요청) */ ""}${
         it.isRsi && has && Number.isFinite(it.avg) ? `<span class="srf-val-avg">/${Math.round(it.avg)}(평균)</span>` : ""
