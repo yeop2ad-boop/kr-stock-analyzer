@@ -12330,6 +12330,43 @@ function etfPortionListHtml(title, list) {
     .join("")}</div>`;
 }
 let etfHoldingsShowMore = false;
+// 보유 종목의 "1달 전 대비 현재" 주가 변화(2026-09-17 사용자 요청) — 비중 이력은 어느 소스도 주지 않아 주가 변화로 채운다
+const etfHoldChangeCache = new Map();
+function holdingOneMonthChange(sym) {
+  if (!sym) return Promise.resolve(null);
+  if (!etfHoldChangeCache.has(sym)) {
+    etfHoldChangeCache.set(
+      sym,
+      (async () => {
+        const chart = await yahooChart(sym, "3mo", "1d").catch(() => null);
+        const pairs = chartClosePairs(chart);
+        if (pairs.length < 2) return null;
+        const last = pairs[pairs.length - 1];
+        const target = last.t - 30 * 86400;
+        let base = null;
+        let min = Infinity;
+        for (const q of pairs) {
+          const d = Math.abs(q.t - target);
+          if (d < min) {
+            min = d;
+            base = q;
+          }
+        }
+        if (!base || !(base.c > 0) || min > 20 * 86400) return null;
+        return ((last.c - base.c) / base.c) * 100;
+      })().catch(() => null)
+    );
+  }
+  return etfHoldChangeCache.get(sym);
+}
+async function fillEtfHoldChanges(root) {
+  const cells = [...root.querySelectorAll("[data-hold-sym]")].filter((td) => td.dataset.holdSym);
+  await mapWithConcurrency(cells, 5, async (td) => {
+    const v = await holdingOneMonthChange(td.dataset.holdSym);
+    td.innerHTML = Number.isFinite(v) ? `<b class="${v >= 0 ? "delta-up" : "delta-down"}">${v >= 0 ? "+" : ""}${v.toFixed(1)}%</b>` : "—";
+  });
+}
+
 async function renderEtfHoldingsBlock(symbol, isKr) {
   const box = el("etfHoldingsBlock");
   if (!box) return;
@@ -12369,9 +12406,9 @@ async function renderEtfHoldingsBlock(symbol, isKr) {
           : "—";
         return `
         <tr>
-          <td class="etf-hold-no">${i + 1}</td>
           <td>${nameCell}</td>
           <td class="etf-hold-weight">${weightCell}</td>
+          <td class="etf-hold-chg" data-hold-sym="${escapeHtml(linkSym)}">…</td>
         </tr>`;
       })
       .join("");
@@ -12399,13 +12436,15 @@ async function renderEtfHoldingsBlock(symbol, isKr) {
         <span class="muted" style="font-size:11px;">비중 순 · ${info.index ? escapeHtml(info.index) + " 추종" : escapeHtml(info.category || "")}${
       Number.isFinite(info.fee) ? ` · 운용보수 연 ${info.fee}%` : ""
     }</span>
+        <span class="etf-holdings-asof">${new Date().getMonth() + 1}/${new Date().getDate()} 기준</span>
       </div>
       <table class="top30-table etf-holdings-table">
-        <thead><tr><th>순위</th><th>종목</th><th>${weightHeader}</th></tr></thead>
+        <thead><tr><th>종목</th><th>${weightHeader}</th><th>1개월</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
       ${extra}
       <button type="button" class="cat-btn etf-holdings-more-btn">${etfHoldingsShowMore ? "접기" : "더보기"}</button>`;
+    fillEtfHoldChanges(box); // 1달 전 대비 주가 변화는 표를 그린 뒤 채운다
     const btn = box.querySelector(".etf-holdings-more-btn");
     if (btn)
       btn.addEventListener("click", () => {
