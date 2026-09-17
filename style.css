@@ -3277,8 +3277,9 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 /* 등수 칸 정리(2026-09-15): "🔥 36위 /200" — 몇 위를 크게, 전체 수는 작게 */
 /* 2026-09-16 사용자 요청: 행마다 칸 폭이 달라 세로 정렬이 어긋나 보여 값·등수 칸을 고정 폭으로 */
 .srf-line { grid-template-columns: minmax(0, 1fr) minmax(0, 92px) minmax(0, 76px); }
-.srf-line .srf-name { font-size: 14.5px; }
-.srf-line .srf-val { font-size: 14px; font-weight: 700; color: var(--muted); }
+.srf-line { padding: 11px 0; }
+.srf-line .srf-name { font-size: 15.5px; font-weight: 700; letter-spacing: -0.3px; }
+.srf-line .srf-val { font-size: 15px; font-weight: 800; color: var(--text); }
 /* 과열도 값 옆 "/72(평균)" — 현재 값보다 작게(2026-09-16 사용자 요청) */
 .srf-val-avg { margin-left: 1px; font-size: 10px; font-weight: 600; color: var(--muted); opacity: 0.8; }
 .srf-line .srf-rank { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 0; line-height: 1.25; }
@@ -3302,7 +3303,7 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .srf-verdict b { color: var(--text); font-weight: 800; }
 .srf-verdict-sub { display: block; margin-top: 2px; font-size: 11.5px; }
 #sReportMoreSlot #sReportInlineWrap { margin-top: 0; }
-.srf-group { margin: 14px 0 0; padding: 0 0 4px; font-size: 11.5px; font-weight: 800; color: var(--muted); border-bottom: 1px solid var(--border); }
+.srf-group { margin: 14px 0 0; padding: 0 0 5px; font-size: 12.5px; font-weight: 800; color: var(--muted); border-bottom: 1px solid var(--border); }
 .srf-cells { white-space: nowrap; overflow: hidden; }
 .srf-name { font-size: 13.5px; font-weight: 700; color: var(--text); overflow: hidden; text-overflow: ellipsis; }
 .srf-name small { display: block; font-size: 10px; font-weight: 500; color: var(--muted); }
