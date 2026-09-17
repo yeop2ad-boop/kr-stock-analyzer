@@ -6790,7 +6790,7 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
       winItem.partialMin = partialMonthsFor(ticker);
     }
     const asOf = baseline && baseline.generatedAt ? new Date(baseline.generatedAt) : null;
-    const asOfText = asOf && !Number.isNaN(asOf.getTime()) ? ` · ${asOf.getMonth() + 1}월 ${asOf.getDate()}일 기준` : "";
+    const asOfText = asOf && !Number.isNaN(asOf.getTime()) ? `${asOf.getMonth() + 1}월 ${asOf.getDate()}일 기준 · ` : "";
     section.innerHTML = `
       <div class="srt-card">
         <div class="srt-radar-head">
@@ -6803,7 +6803,7 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
         <div id="sReportMoreSlot"></div>
         <button type="button" class="srt-more-btn" id="sReportTopMoreBtn">더보기 <span aria-hidden="true">▾</span></button>
       </div>
-      <p class="srt-note">등수는 ${escapeHtml(group ? group.label : "비교군")} 안 순위(유리한 쪽이 1위 — 변동성·부채비율·PER·과열도는 낮을수록, 시가총액·거래대금·52주 위치는 클수록 1위) · 🔥 상위 10% · ⚠️ 하위 10%. RSI(과열도)는 이 종목의 1년 평균 RSI와 비교한 과열·침체 등급입니다${asOfText}. 투자 자문이 아닙니다.</p>`;
+      <p class="srt-note">${asOfText}🔥 상위 10% · ⚠️ 하위 10% 투자 자문이 아닙니다.</p>`;
     // 더보기 항목은 5개 행 바로 아래(버튼 위)에 붙음
     el("sReportMoreSlot").appendChild(sReportInlineWrap);
     fitSReportRoundCells(section);
