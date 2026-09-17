@@ -3209,8 +3209,10 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .srt-rd-dot.srt-tone-bad { fill: #e03131; }
 .srt-rd-avgdot { fill: #9aa2b1; stroke: var(--bg); stroke-width: 1; }
 .srt-rd-avgtxt { fill: var(--muted); font-size: 12px; font-weight: 700; }
-.srt-rd-value.srt-tone-good { fill: #0ca678; }
-.srt-rd-value.srt-tone-bad { fill: #e03131; }
+/* 2026-09-17 사용자 요청: 오각형 값도 표와 같은 색 — 상위 10% 빨강 · 하위 10% 파랑 · 그 외 검정 */
+.srt-rd-value.srt-rd-fire { fill: #d9480f; }
+.srt-rd-value.srt-rd-warn { fill: #1c7ed6; }
+.srt-rd-value.srt-rd-neutral { fill: var(--text); }
 .srt-chips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-top: 6px; }
 .srt-chip { display: flex; align-items: center; gap: 6px; min-width: 0; padding: 8px 10px; border-radius: 10px; background: var(--bg); white-space: nowrap; overflow: hidden; }
 .srt-chip-wide { grid-column: 1 / -1; }

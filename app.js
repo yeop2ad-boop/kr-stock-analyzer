@@ -6508,8 +6508,12 @@ function sReportRadarSvg(items) {
       const warn = partialWarn || (it.mark === "fire" ? "🔥" : it.mark === "warn" ? "⚠️" : "");
       const val = (it.value === null ? "N/A" : it.fmt(it.value, 0));
       const axisLabel = it.isRsi ? String(it.label).replace(/\s*\(RSI\)\s*$/, "") : it.label; // 오각형은 "과열도"만(2026-09-17)
+      // 값은 라벨 한가운데에 오게(2026-09-17 사용자 요청) — 좌우 축은 라벨이 끝 기준이라 값이 한쪽으로 쏠려 보였다.
+      // SVG는 글자 폭을 알 수 없어 한글 12px·그 외 6.6px로 어림잡아 라벨 중심을 구한다.
+      const estWidth = (t) => [...String(t)].reduce((w, ch) => w + (ch.charCodeAt(0) < 128 ? 6.6 : 12), 0);
+      const labelMid = anchor === "end" ? x - estWidth(axisLabel) / 2 : anchor === "start" ? x + estWidth(axisLabel) / 2 : x;
       return `<text x="${x.toFixed(1)}" y="${(y + dy).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-label">${escapeHtml(axisLabel)}</text>
-        <text x="${x.toFixed(1)}" y="${(y + dy + 15).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-value srt-tone-${it.judge ? it.judge.tone : "neutral"}">${warn}${escapeHtml(val)}${/* 오각형에는 현재 RSI만(1년 평균은 아래 항목 줄에 "/72(평균)"로 표시) — 2026-09-16 사용자 요청 */ ""}</text>`;
+        <text x="${labelMid.toFixed(1)}" y="${(y + dy + 15).toFixed(1)}" text-anchor="middle" class="srt-rd-value srt-rd-${it.mark || "neutral"}">${warn}${escapeHtml(val)}${/* 오각형에는 현재 RSI만(1년 평균은 아래 항목 줄에 "/72(평균)"로 표시) — 2026-09-16 사용자 요청 */ ""}</text>`;
     })
     .join("");
   return `<svg class="srt-radar" viewBox="0 0 ${W} ${H}" role="img" aria-label="핵심 5개 지표 레이더 차트">${rings}${spokes}${avgPoly}${selfPoly}${avgDots}${dots}${labels}</svg>`;
