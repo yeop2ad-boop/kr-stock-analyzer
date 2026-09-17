@@ -6797,13 +6797,13 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
           <span class="srt-radar-title">핵심 5개 지표</span>
           <span class="srt-legend"><i class="srt-lg-self"></i>이 종목 <i class="srt-lg-avg"></i>${escapeHtml(group ? group.refName : "비교 기준")}</span>
         </div>
+        <p class="srt-note">${asOfText}🔥 상위 10% · ⚠️ 하위 10% 투자 자문이 아닙니다.</p>
         ${S_REPORT_TAP_HINT}
         ${group ? sReportRadarSvg(items) : `<p class="muted" style="padding:10px 0;">비교 기준 데이터를 불러오지 못했습니다. 잠시 후 다시 열어 주세요.</p>`}
         <div class="srf-list">${items.map(sReportLineHtml).join("")}</div>
         <div id="sReportMoreSlot"></div>
         <button type="button" class="srt-more-btn" id="sReportTopMoreBtn">더보기 <span aria-hidden="true">▾</span></button>
-      </div>
-      <p class="srt-note">${asOfText}🔥 상위 10% · ⚠️ 하위 10% 투자 자문이 아닙니다.</p>`;
+      </div>`;
     // 더보기 항목은 5개 행 바로 아래(버튼 위)에 붙음
     el("sReportMoreSlot").appendChild(sReportInlineWrap);
     fitSReportRoundCells(section);
