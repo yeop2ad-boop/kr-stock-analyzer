@@ -2909,9 +2909,18 @@ tr.sector-members-row td { background: var(--subtle-fill); padding: 10px !import
 .etf-holdings-table .etf-hold-weight b { font-size: 15px; font-weight: 800; }
 .etf-holdings-table .etf-hold-chg { font-size: 14px; }
 .etf-holdings-table .etf-hold-chg b { font-weight: 800; }
-.etf-holdings-table .etf-hold-weight { width: 68px; text-align: right; }
+/* 미국 보유 종목: 한글 이름 옆 작은 티커, 두 줄로 넘기지 않고 길면 말줄임(2026-09-17 사용자 요청) */
+.etf-hold-ticker { flex: none; margin-left: 3px; font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: 0; }
+/* 고정 레이아웃에서는 머리글 칸에도 폭을 줘야 첫 열(종목)이 남은 자리를 다 쓴다 */
+.etf-holdings-table { table-layout: fixed; width: 100%; }
+.etf-holdings-table th:nth-child(2), .etf-holdings-table td:nth-child(2) { width: 62px; }
+.etf-holdings-table th:nth-child(3), .etf-holdings-table td:nth-child(3) { width: 68px; }
+.etf-holdings-table .ticker-cell { display: flex; align-items: center; gap: 0; min-width: 0; flex-wrap: nowrap; }
+.etf-holdings-table .ticker-cell .ticker-logo-wrap { margin-right: 8px; }
+.etf-holdings-table .ticker-link, .etf-holdings-table .etf-hold-plain { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.etf-holdings-table .etf-hold-weight { text-align: right; }
 /* 1달 전 대비 현재 주가 변화 */
-.etf-holdings-table .etf-hold-chg { width: 74px; text-align: right; }
+.etf-holdings-table .etf-hold-chg { text-align: right; }
 /* 로고는 사각형으로 크게(2026-09-17 사용자 요청) */
 .etf-holdings-table .ticker-logo-wrap, .etf-holdings-table .ticker-logo { width: 30px; height: 30px; border-radius: 6px; }
 .etf-holdings-table .rank-logo { gap: 8px; }

@@ -12396,10 +12396,12 @@ async function renderEtfHoldingsBlock(symbol, isKr) {
         // 다만 해외 지수를 추종하는 국내 ETF는 네이버가 종목코드를 비워 줘서(이름·주식수만 옴) 링크를 걸 수 없다 —
         // 이 경우 로고·링크 없이 이름만 두고, 비중 대신 보유 주식수를 보여준다.
         const linkSym = h.s ? (isKr ? `${h.s}.KS` : h.s) : "";
+        // 미국 보유 종목은 한글 이름으로 바꾸고 티커를 아주 작게 옆에 붙인다(2026-09-17 사용자 요청)
+        const dispName = isKr ? h.n || h.s : rankDisplayName(linkSym, h.n || h.s, false);
         const nameCell = linkSym
           ? `<span class="ticker-cell rank-logo">${tickerLogoHtml(linkSym, (h.n || h.s).slice(0, 2))}<b class="ticker-link" data-ticker="${escapeHtml(
               linkSym
-            )}">${escapeHtml(h.n || h.s)}</b></span>`
+            )}">${escapeHtml(dispName)}</b>${isKr ? "" : `<span class="etf-hold-ticker">${escapeHtml(h.s || "")}</span>`}</span>`
           : `<span class="etf-hold-plain">${escapeHtml(h.n || "")}</span>`;
         const weightCell = Number.isFinite(h.w)
           ? `<b>${h.w.toFixed(2)}%</b>`
