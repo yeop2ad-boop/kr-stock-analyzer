@@ -6348,11 +6348,23 @@ const S_REPORT_TAP_HINT = `<p class="srt-tap-hint">* 모든 항목은 눌러서 
 // 핵심 5개 정의 — ETF·코인은 3번이 1년 수익률
 // axis: 오각형 축을 비교군 백분위 대신 고정 눈금으로 그림(2026-09-16 사용자 지정 — 승률 40~70%, 상승률·매출액 0~50%, 변동성 5~1%,
 //       과열도는 rsiAxisScore로 1년 평균이 한가운데). ETF·코인의 3번(1년 수익률)만 비교군 분포를 그대로 쓴다.
-function sReportCoreSpecs(isAsset) {
+function sReportCoreSpecs(isAsset, isEtf) {
   return [
     { key: "win", label: "승률", sub: "10년 월간", better: "high", band: 2, fmt: (v, d) => sPct(v, d), axis: (v) => (v - 40) / 30 },
     { key: "ret", label: "상승률", sub: "연평균", better: "high", band: 2, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true), axis: (v) => v / 50 },
-    isAsset
+    isEtf
+      ? // ETF는 3번 자리에 운용보수(2026-09-17 사용자 지정 눈금: 0.02% 만점 · 0.087%(중앙값)가 한가운데 · 0.3% 이상 0점)
+        {
+          key: "fee",
+          label: "운용보수",
+          sub: "연간",
+          better: "low",
+          band: 0.02,
+          rel: 0.15,
+          fmt: (v, d) => `${Number(v.toFixed(d ? 4 : 3))}%`,
+          axis: (v) => (v <= 0.087 ? 0.5 + (0.5 * (0.087 - v)) / (0.087 - 0.02) : 0.5 - (0.5 * (v - 0.087)) / (0.3 - 0.087)),
+        }
+      : isAsset
       ? { key: "rev", label: "1년 수익률", explainKey: "ret1y", better: "high", band: 3, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true) }
       : { key: "rev", label: "매출액", sub: "작년 대비", better: "high", band: 3, rel: 0.2, signed: true, fmt: (v, d) => sPct(v, d, true), axis: (v) => v / 50 },
     { key: "vol", label: "변동성", sub: "3개월 하루", better: "low", band: 0.1, rel: 0.1, fmt: (v, d) => `${v.toFixed(d ? 2 : 1)}%`, axis: (v) => (5 - v) / 4 },
@@ -6391,10 +6403,10 @@ const S_FULL_STOCK_GROUPS = [
 const S_FULL_ASSET_GROUPS = {
   etf: [
     {
-      title: "비용 · 배당",
+      title: "수익 · 배당",
       specs: [
+        { key: "rev", label: "1년 수익률", explainKey: "ret1y", better: "high", band: 3, rel: 0.15, signed: true },
         { key: "div", label: "배당률", better: "high", band: 0.2, rel: 0.15, digits: 2 },
-        { key: "fee", label: "운용보수", better: "low", band: 0.02, rel: 0.15, digits: 3 },
       ],
     },
     { title: "시장", specs: [{ key: "w52", label: "52주 구간 위치", better: "neutral", band: 5 }] },
@@ -6781,7 +6793,7 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
   const group = baseline && baseline.groups ? baseline.groups[groupKey] : null;
   const currency = ["kr350", "ipoKr200", "etfKr"].includes(groupKey) ? "KRW" : "USD";
   const self = { ...(member || {}) };
-  const coreSpecs = sReportCoreSpecs(isAsset);
+  const coreSpecs = sReportCoreSpecs(isAsset, scoreMode === "etf");
 
   const draw = () => {
     const items = coreSpecs.map((s) => sReportMakeItem(s, self[s.key], group, currency, self.rsiAvg));
