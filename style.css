@@ -3194,9 +3194,10 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 
 /* S리포트(2026-09-15 2차): 핵심 5개 = 오각형 레이더, 더보기 = 종합 판정 + 비교표(평균선 막대) */
 .srt-card { border-radius: 16px; background: var(--subtle-fill); padding: 14px 14px 12px; }
-.srt-radar-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.srt-radar-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: wrap; }
 .srt-radar-title { font-size: 15px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
-.srt-legend { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.srt-asof { margin-left: 5px; font-size: 10px; font-weight: 600; color: var(--muted); white-space: nowrap; } /* 제목 옆 기준일(2026-09-17) */
+.srt-legend { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; color: var(--muted); white-space: nowrap; }
 .srt-lg-self { display: inline-block; width: 14px; height: 3px; border-radius: 2px; background: #0ca678; }
 .srt-lg-avg { display: inline-block; width: 14px; border-top: 2px dashed #9aa2b1; margin-left: 6px; }
 .srt-radar { display: block; width: 100%; max-width: 360px; height: auto; margin: 4px auto 2px; }

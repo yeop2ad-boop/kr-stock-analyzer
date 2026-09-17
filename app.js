@@ -6790,14 +6790,15 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
       winItem.partialMin = partialMonthsFor(ticker);
     }
     const asOf = baseline && baseline.generatedAt ? new Date(baseline.generatedAt) : null;
-    const asOfText = asOf && !Number.isNaN(asOf.getTime()) ? `${asOf.getMonth() + 1}월 ${asOf.getDate()}일 기준 · ` : "";
+    // 제목 옆에 붙이므로 짧게("9/16 기준") — 길게 쓰면 범례가 다음 줄로 밀린다(2026-09-17)
+    const asOfText = asOf && !Number.isNaN(asOf.getTime()) ? `${asOf.getMonth() + 1}/${asOf.getDate()} 기준` : "";
     section.innerHTML = `
       <div class="srt-card">
         <div class="srt-radar-head">
-          <span class="srt-radar-title">핵심 5개 지표</span>
+          <span class="srt-radar-title">핵심 5개 지표${asOfText ? `<span class="srt-asof">${asOfText}</span>` : ""}</span>
           <span class="srt-legend"><i class="srt-lg-self"></i>이 종목 <i class="srt-lg-avg"></i>${escapeHtml(group ? group.refName : "비교 기준")}</span>
         </div>
-        <p class="srt-note">${asOfText}🔥 상위 10% · ⚠️ 하위 10% 투자 자문이 아닙니다.</p>
+        <p class="srt-note">🔥 상위 10% · ⚠️ 하위 10% 투자 자문이 아닙니다.</p>
         ${S_REPORT_TAP_HINT}
         ${group ? sReportRadarSvg(items) : `<p class="muted" style="padding:10px 0;">비교 기준 데이터를 불러오지 못했습니다. 잠시 후 다시 열어 주세요.</p>`}
         <div class="srf-list">${items.map(sReportLineHtml).join("")}</div>
@@ -7858,7 +7859,7 @@ function fin2BodyHtml(data, period, currency) {
       <span><i class="fin2-dot fin2-dot-ni"></i>순이익 <em>(막대 안 % = 순이익률)</em></span>
     </div>
     <div class="fin2-chart${hasNeg ? " has-neg" : ""}" style="grid-template-columns:repeat(${bars.length},1fr);--fin2-neg-space:${Math.round(maxNegPx + 20)}px">${cols}</div>
-    <p class="fin2-caption">막대를 누르면 매출액이 보여요. 막대 위 %는 ${isAnnual ? "작년" : "전분기"} 대비 매출 증감입니다.${estNote} 출처: ${escapeHtml(source)}.</p>`;
+    <p class="fin2-caption">막대를 누르면 매출액이 표시됩니다. 막대 위 %는 ${isAnnual ? "작년" : "전분기"} 대비 매출 증감입니다.${estNote} 출처: ${escapeHtml(source)}.</p>`;
 }
 
 // ---------- 2+. 최근 분기 실적(최근 3개) + 다음 분기 가이던스(1개) ----------
