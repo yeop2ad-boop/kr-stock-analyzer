@@ -2917,7 +2917,20 @@ tr.sector-members-row td { background: var(--subtle-fill); padding: 10px !import
 .etf-holdings-table .rank-logo { gap: 8px; }
 /* 종목코드가 없어 링크를 못 거는 해외 구성종목 — 로고 자리 없이 이름만 */
 .etf-hold-plain { font-weight: 700; }
-.etf-holdings-more-btn { margin-top: 6px; width: 100%; }
+/* 2026-09-17 사용자 요청: 핵심지표 "더보기"와 같은 크기·모양 */
+.etf-holdings-block .etf-holdings-more-btn {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 11px 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
 .etf-holdings-more { margin-top: 8px; }
 .etf-portion-block { margin-bottom: 6px; }
 .etf-portion-title {
