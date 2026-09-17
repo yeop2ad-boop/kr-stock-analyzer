@@ -6372,12 +6372,8 @@ function sReportCoreSpecs(isAsset, isEtf) {
     // 과열도는 낮을수록 좋은 점수(2026-09-16 사용자 요청) — 등수도 낮은 순으로 1위, 레이더에서도 낮을수록 바깥
     { key: "rsi", label: "과열도(RSI)", better: "low", isRsi: true, fmt: (v, d) => sNum(v, d) },
   ];
-  // ETF는 운용보수를 과열도 자리(왼쪽 위 꼭짓점)로 옮긴다 — 2026-09-17 사용자 요청
-  if (isEtf) {
-    const t = specs[2];
-    specs[2] = specs[4];
-    specs[4] = t;
-  }
+  // ETF 순서(2026-09-17 사용자 지정): 승률 - 상승률 - 변동성 - 과열도 - 운용보수
+  if (isEtf) specs.push(specs.splice(2, 1)[0]);
   return specs;
 }
 
