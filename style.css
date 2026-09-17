@@ -2892,17 +2892,17 @@ tr.sector-members-row td { background: var(--subtle-fill); padding: 10px !import
 }
 
 /* ---------- ETF 검색상세 보유 종목(2026-09-11 사용자 요청) ---------- */
-/* 2026-09-17 사용자 요청: 회색 대신 옅은 노란톤 박스(앱 매출 막대 #f8d940 계열) */
+/* 2026-09-17 사용자 요청: 갈색빛이 도는 주황 톤 박스(앱 순이익 막대 #f59f00 계열) */
 .etf-holdings-block {
   margin: 10px 0 4px;
   padding: 10px 12px;
-  border: 1px solid rgba(214, 168, 20, 0.28);
+  border: 1px solid rgba(154, 96, 21, 0.3);
   border-radius: 12px;
-  background: rgba(248, 217, 64, 0.1);
+  background: rgba(196, 122, 30, 0.1);
 }
 :root[data-theme="dark"] .etf-holdings-block {
-  border-color: rgba(248, 217, 64, 0.26);
-  background: rgba(248, 217, 64, 0.08);
+  border-color: rgba(245, 159, 0, 0.3);
+  background: rgba(245, 159, 0, 0.1);
 }
 .etf-holdings-head {
   display: flex;
