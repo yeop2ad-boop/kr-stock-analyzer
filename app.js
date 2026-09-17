@@ -6359,6 +6359,7 @@ function sReportCoreSpecs(isAsset, isEtf) {
         sub: "연간",
         better: "low",
         isFee: true,
+        fireIf: (v) => v < 0.05, // "매우낮음"이면 🔥(2026-09-17 사용자 지정)
         band: 0.02,
         rel: 0.15,
         fmt: (v, d) => `${Number(v.toFixed(d ? 4 : 3))}%`,
@@ -6368,9 +6369,10 @@ function sReportCoreSpecs(isAsset, isEtf) {
     ? { key: "rev", label: "1년 수익률", explainKey: "ret1y", better: "high", band: 3, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true) }
     : { key: "rev", label: "매출액", sub: "작년 대비", better: "high", band: 3, rel: 0.2, signed: true, fmt: (v, d) => sPct(v, d, true), axis: (v) => v / 50 };
   return [
-    { key: "win", label: "승률", sub: "10년 월간", better: "high", band: 2, fmt: (v, d) => sPct(v, d), axis: (v) => (v - 40) / 30 },
+    // ETF만 🔥 기준이 등수가 아니라 절대값 — 승률 60% 이상, 변동성 0.8% 미만(2026-09-17 사용자 지정)
+    { key: "win", label: "승률", sub: "10년 월간", better: "high", band: 2, fmt: (v, d) => sPct(v, d), axis: (v) => (v - 40) / 30, ...(isEtf ? { fireIf: (v) => v >= 60 } : {}) },
     { key: "ret", label: "상승률", sub: "연평균", better: "high", band: 2, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true), axis: (v) => v / 50 },
-    { key: "vol", label: "변동성", sub: "3개월 하루", better: "low", band: 0.1, rel: 0.1, fmt: (v, d) => `${v.toFixed(d ? 2 : 1)}%`, axis: (v) => (5 - v) / 4 },
+    { key: "vol", label: "변동성", sub: "3개월 하루", better: "low", band: 0.1, rel: 0.1, fmt: (v, d) => `${v.toFixed(d ? 2 : 1)}%`, axis: (v) => (5 - v) / 4, ...(isEtf ? { fireIf: (v) => v < 0.8 } : {}) },
     // 과열도는 낮을수록 좋은 점수(2026-09-16 사용자 요청) — 등수도 낮은 순으로 1위, 레이더에서도 낮을수록 바깥
     { key: "rsi", label: "과열도(RSI)", better: "low", isRsi: true, fmt: (v, d) => sNum(v, d) },
     fifth,
@@ -6473,7 +6475,10 @@ function sReportMakeItem(spec, value, group, currency, ownRef) {
     total = dist.length + (dist.some((x) => Math.abs(x - value) < 1e-9) ? 0 : 1);
   }
   const topPct = rank ? (rank / total) * 100 : null;
-  const mark = topPct === null ? null : topPct <= 10 ? "fire" : topPct > 90 ? "warn" : null;
+  // 🔥는 보통 비교군 상위 10%지만, spec.fireIf가 있으면 등수 대신 그 절대 기준으로 붙인다
+  // (ETF 승률 60% 이상 · 변동성 0.8% 미만 · 운용보수 "매우낮음" — 2026-09-17 사용자 지정). ⚠️(하위 10%)는 그대로.
+  let mark = topPct === null ? null : topPct <= 10 ? "fire" : topPct > 90 ? "warn" : null;
+  if (spec.fireIf) mark = Number.isFinite(value) && spec.fireIf(value) ? "fire" : mark === "fire" ? null : mark;
   return {
     ...spec,
     explain: S_REPORT_EXPLAIN[spec.explainKey || spec.key] || "",
@@ -6685,9 +6690,11 @@ function sReportLineHtml(it) {
   if (it.isRsi || it.isFee) {
     // 과열도·운용보수는 등수 대신 등급으로 보여준다(2026-09-16·17 사용자 요청)
     const gradeText = has && it.judge ? it.judge.text : "";
+    // 🔥·⚠️가 붙으면 그만큼 자리를 더 먹으므로 한 글자 더 긴 것으로 치고 글씨를 줄인다
+    const gradeLen = gradeText.length + (markHtml ? 1 : 0);
     // 글자 수가 많은 등급("강한매도우위")은 칸(76px)을 넘겨 앞 글자가 잘렸다 — 길이에 따라 글씨를 줄인다(2026-09-17 사용자 지적)
     const gradeHtml = gradeText
-      ? `<b class="srf-grade${gradeText.length >= 6 ? " srf-grade-long" : gradeText.length === 5 ? " srf-grade-mid" : ""} srt-rank-${tone}">${escapeHtml(gradeText)}</b>`
+      ? `<span class="srf-rank-top">${markHtml}<b class="srf-grade${gradeLen >= 6 ? " srf-grade-long" : gradeLen === 5 ? " srf-grade-mid" : ""} srt-rank-${tone}">${escapeHtml(gradeText)}</b></span>`
       : "—";
     // 운용보수는 등급 아래에 비교군 안 등수도 작게(2026-09-17 사용자 요청)
     const gradeRankHtml = it.isFee && it.rank ? `<span class="srf-rank-of">${it.rank}위/${it.total}</span>` : "";
@@ -6839,7 +6846,6 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
           <span class="srt-radar-title">핵심 5개 지표${asOfText ? `<span class="srt-asof">${asOfText}</span>` : ""}</span>
           <span class="srt-legend"><i class="srt-lg-self"></i>이 종목 <i class="srt-lg-avg"></i>${escapeHtml(group ? group.refName : "비교 기준")}</span>
         </div>
-        <p class="srt-note">🔥 상위 10% · ⚠️ 하위 10% 투자 자문이 아닙니다.</p>
         ${S_REPORT_TAP_HINT}
         ${group ? sReportRadarSvg(items) : `<p class="muted" style="padding:10px 0;">비교 기준 데이터를 불러오지 못했습니다. 잠시 후 다시 열어 주세요.</p>`}
         <div class="srf-list">${items.map(sReportLineHtml).join("")}</div>
