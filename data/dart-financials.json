@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-17T13:58:54.540Z",
+  "updatedAt": "2026-09-18T13:21:23.630Z",
   "dataYear": 2025,
   "buybackPeriod": {
-    "from": "20250917",
-    "to": "20260917"
+    "from": "20250918",
+    "to": "20260918"
   },
   "source": "DART Open API(opendart.fss.or.kr) — 사업보고서 임직원 현황(empSttus), 자기주식취득결정(tsstkAqDecsn)",
   "items": [
@@ -155,7 +155,7 @@
       "headcount": 1565,
       "headcountPrevYear": 1494,
       "headcountChange": 71,
-      "buybackAmount": 400000263700
+      "buybackAmount": 300000133400
     },
     {
       "symbol": "035420.KS",
@@ -2965,7 +2965,7 @@
       "headcount": 134,
       "headcountPrevYear": 111,
       "headcountChange": 23,
-      "buybackAmount": 6000000000
+      "buybackAmount": 3000000000
     },
     {
       "symbol": "222080.KQ",
