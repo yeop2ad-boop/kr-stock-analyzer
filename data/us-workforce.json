@@ -1,0 +1,4864 @@
+{
+ "generatedAt": "2026-09-18T20:53:27Z",
+ "source": "SEC EDGAR — 10-K 본문 직원 수(Human Capital), 위임장(DEF 14A) CEO Pay Ratio 직원 중위 연간 총보상",
+ "items": {
+  "A": {
+   "cik": 1090872,
+   "name": "Agilent Technologies",
+   "headcount": 1900,
+   "headcountPeriod": "2025-10-31",
+   "headcountPrevYear": 1900,
+   "medianPay": 82873,
+   "medianPayFiled": "2026-02-06",
+   "medianPayPrevYear": 75642,
+   "medianPayPrevFiled": "2025-01-31"
+  },
+  "AAPL": {
+   "cik": 320193,
+   "name": "Apple Inc.",
+   "headcount": 166000,
+   "headcountPeriod": "2025-09-27",
+   "headcountPrevYear": 164000,
+   "medianPay": 139483,
+   "medianPayFiled": "2026-01-08",
+   "medianPayPrevYear": 114738,
+   "medianPayPrevFiled": "2025-01-10"
+  },
+  "ABBV": {
+   "cik": 1551152,
+   "name": "AbbVie",
+   "headcount": 57000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 55000
+  },
+  "ABNB": {
+   "cik": 1559720,
+   "name": "Airbnb",
+   "headcount": 13000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 11000,
+   "medianPay": 242122,
+   "medianPayFiled": "2026-04-24",
+   "medianPayPrevYear": 186326,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "ABT": {
+   "cik": 1800,
+   "name": "Abbott Laboratories",
+   "headcount": 115000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 114000,
+   "medianPay": 16795,
+   "medianPayFiled": "2026-03-13",
+   "medianPayPrevYear": 15813,
+   "medianPayPrevFiled": "2025-03-14"
+  },
+  "ACGL": {
+   "cik": 947484,
+   "name": "Arch Capital Group",
+   "headcount": 8000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 7200,
+   "medianPay": 132527,
+   "medianPayFiled": "2026-03-24",
+   "medianPayPrevYear": 149222,
+   "medianPayPrevFiled": "2025-03-25"
+  },
+  "ACN": {
+   "cik": 1467373,
+   "name": "Accenture",
+   "headcount": 779000,
+   "headcountPeriod": "2025-08-31",
+   "headcountPrevYear": 774000,
+   "medianPay": 64379,
+   "medianPayFiled": "2025-12-12",
+   "medianPayPrevYear": 59298,
+   "medianPayPrevFiled": "2024-12-16"
+  },
+  "ADBE": {
+   "cik": 796343,
+   "name": "Adobe Inc.",
+   "headcount": 31360,
+   "headcountPeriod": "2025-11-28",
+   "headcountPrevYear": 30709,
+   "medianPay": 235989,
+   "medianPayFiled": "2026-02-27",
+   "medianPayPrevYear": 209583,
+   "medianPayPrevFiled": "2025-02-28"
+  },
+  "ADI": {
+   "cik": 6281,
+   "name": "Analog Devices",
+   "headcount": 24500,
+   "headcountPeriod": "2025-11-01",
+   "headcountPrevYear": 24000,
+   "medianPay": 51411,
+   "medianPayFiled": "2026-01-23",
+   "medianPayPrevYear": 49925,
+   "medianPayPrevFiled": "2025-01-27"
+  },
+  "ADM": {
+   "cik": 7084,
+   "name": "Archer Daniels Midland",
+   "medianPay": 85460,
+   "medianPayFiled": "2026-03-26",
+   "medianPayPrevYear": 80513,
+   "medianPayPrevFiled": "2025-03-25"
+  },
+  "ADP": {
+   "cik": 8670,
+   "name": "ADP (company)",
+   "headcount": 1100000,
+   "headcountPeriod": "2026-06-30",
+   "medianPay": 67434,
+   "medianPayFiled": "2025-09-25",
+   "medianPayPrevYear": 65894,
+   "medianPayPrevFiled": "2024-09-19"
+  },
+  "ADSK": {
+   "cik": 769397,
+   "name": "Autodesk",
+   "headcount": 15300,
+   "headcountPeriod": "2026-01-31",
+   "headcountPrevYear": 15300,
+   "medianPay": 147841,
+   "medianPayFiled": "2026-05-06",
+   "medianPayPrevYear": 143780,
+   "medianPayPrevFiled": "2025-05-06"
+  },
+  "AEE": {
+   "cik": 1002910,
+   "name": "Ameren",
+   "medianPay": 125070,
+   "medianPayFiled": "2026-03-31",
+   "medianPayPrevYear": 128436,
+   "medianPayPrevFiled": "2025-03-25"
+  },
+  "AEP": {
+   "cik": 4904,
+   "name": "American Electric Power",
+   "headcount": 100,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 100,
+   "medianPay": 140432,
+   "medianPayFiled": "2026-03-18",
+   "medianPayPrevYear": 126212,
+   "medianPayPrevFiled": "2025-03-13"
+  },
+  "AES": {
+   "cik": 874761,
+   "name": "AES Corporation",
+   "medianPay": 76082,
+   "medianPayFiled": "2026-03-20",
+   "medianPayPrevYear": 97584,
+   "medianPayPrevFiled": "2025-03-19"
+  },
+  "AFL": {
+   "cik": 4977,
+   "name": "Aflac",
+   "headcount": 158,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 153,
+   "medianPay": 63153,
+   "medianPayFiled": "2026-03-19",
+   "medianPayPrevYear": 70367,
+   "medianPayPrevFiled": "2025-03-20"
+  },
+  "AIG": {
+   "cik": 5272,
+   "name": "American International Group",
+   "headcount": 22100,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 22000,
+   "medianPay": 93766,
+   "medianPayFiled": "2026-03-31",
+   "medianPayPrevYear": 82224,
+   "medianPayPrevFiled": "2025-04-02"
+  },
+  "AIZ": {
+   "cik": 1267238,
+   "name": "Assurant",
+   "headcount": 14800,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 14200,
+   "medianPay": 56767,
+   "medianPayFiled": "2026-04-06",
+   "medianPayPrevYear": 53501,
+   "medianPayPrevFiled": "2025-04-08"
+  },
+  "AJG": {
+   "cik": 354190,
+   "name": "Arthur J. Gallagher & Co.",
+   "headcount": 72000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 56000,
+   "medianPay": 59957,
+   "medianPayFiled": "2026-03-23",
+   "medianPayPrevYear": 58230,
+   "medianPayPrevFiled": "2025-03-24"
+  },
+  "AKAM": {
+   "cik": 1086222,
+   "name": "Akamai Technologies",
+   "headcount": 11000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 10700,
+   "medianPay": 129052,
+   "medianPayFiled": "2026-03-31",
+   "medianPayPrevYear": 129006,
+   "medianPayPrevFiled": "2025-04-01"
+  },
+  "ALAB": {
+   "cik": 1736297,
+   "name": "Astera Labs, Inc.",
+   "headcount": 756,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 440
+  },
+  "ALB": {
+   "cik": 915913,
+   "name": "Albemarle Corporation",
+   "headcount": 7800,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 8300,
+   "medianPay": 71667,
+   "medianPayFiled": "2026-03-24",
+   "medianPayPrevYear": 67663,
+   "medianPayPrevFiled": "2025-03-27"
+  },
+  "ALGN": {
+   "cik": 1097149,
+   "name": "Align Technology",
+   "headcount": 20290,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 20945,
+   "medianPay": 31454,
+   "medianPayFiled": "2026-04-07",
+   "medianPayPrevYear": 24348,
+   "medianPayPrevFiled": "2025-04-08"
+  },
+  "ALL": {
+   "cik": 899051,
+   "name": "Allstate",
+   "headcount": 53000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 55000,
+   "medianPay": 74782,
+   "medianPayFiled": "2026-04-10",
+   "medianPayPrevYear": 73333,
+   "medianPayPrevFiled": "2025-04-17"
+  },
+  "ALLE": {
+   "cik": 1579241,
+   "name": "Allegion",
+   "headcount": 13300,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 14400,
+   "medianPay": 71659,
+   "medianPayFiled": "2026-04-17",
+   "medianPayPrevYear": 64714,
+   "medianPayPrevFiled": "2025-04-18"
+  },
+  "ALNY": {
+   "cik": 1178670,
+   "name": "ALNYLAM PHARMACEUTICALS, INC.",
+   "headcount": 2500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 2230,
+   "medianPay": 312180,
+   "medianPayFiled": "2026-04-06",
+   "medianPayPrevYear": 297040,
+   "medianPayPrevFiled": "2025-03-24"
+  },
+  "AMAT": {
+   "cik": 6951,
+   "name": "Applied Materials",
+   "headcount": 36500,
+   "headcountPeriod": "2025-10-26",
+   "headcountPrevYear": 35700,
+   "medianPay": 89744,
+   "medianPayFiled": "2026-01-28",
+   "medianPayPrevYear": 86954,
+   "medianPayPrevFiled": "2025-01-22"
+  },
+  "AMCR": {
+   "cik": 1748790,
+   "name": "Amcor",
+   "headcount": 75000,
+   "headcountPeriod": "2026-06-30",
+   "headcountPrevYear": 77000,
+   "medianPay": 71040,
+   "medianPayFiled": "2025-09-23",
+   "medianPayPrevYear": 71038,
+   "medianPayPrevFiled": "2024-09-24"
+  },
+  "AMD": {
+   "cik": 2488,
+   "name": "AMD",
+   "headcount": 31000,
+   "headcountPeriod": "2025-12-27",
+   "headcountPrevYear": 28000
+  },
+  "AME": {
+   "cik": 1037868,
+   "name": "Ametek",
+   "headcount": 22500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 21500,
+   "medianPay": 63719,
+   "medianPayFiled": "2026-03-11",
+   "medianPayPrevYear": 65294,
+   "medianPayPrevFiled": "2025-03-12"
+  },
+  "AMGN": {
+   "cik": 318154,
+   "name": "Amgen",
+   "headcount": 31500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 28000,
+   "medianPay": 154123,
+   "medianPayFiled": "2026-04-07",
+   "medianPayPrevYear": 160017,
+   "medianPayPrevFiled": "2025-04-09"
+  },
+  "AMP": {
+   "cik": 820027,
+   "name": "Ameriprise Financial",
+   "medianPay": 133001,
+   "medianPayFiled": "2026-03-20",
+   "medianPayPrevYear": 134226,
+   "medianPayPrevFiled": "2025-03-21"
+  },
+  "AMT": {
+   "cik": 1053507,
+   "name": "American Tower",
+   "headcount": 2388,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 2589,
+   "medianPay": 90534,
+   "medianPayFiled": "2026-04-08",
+   "medianPayPrevYear": 85726,
+   "medianPayPrevFiled": "2025-04-02"
+  },
+  "AMZN": {
+   "cik": 1018724,
+   "name": "Amazon (company)",
+   "headcount": 1576000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 1556000,
+   "medianPay": 40206,
+   "medianPayFiled": "2026-04-09",
+   "medianPayPrevYear": 37181,
+   "medianPayPrevFiled": "2025-04-10"
+  },
+  "ANET": {
+   "cik": 1596532,
+   "name": "Arista Networks",
+   "headcount": 5115,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 4412,
+   "medianPay": 190815,
+   "medianPayFiled": "2026-04-16",
+   "medianPayPrevYear": 171500,
+   "medianPayPrevFiled": "2025-04-16"
+  },
+  "AON": {
+   "cik": 315293,
+   "name": "Aon (company)",
+   "headcount": 60000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 60000,
+   "medianPay": 31000,
+   "medianPayFiled": "2026-04-28",
+   "medianPayPrevYear": 28000,
+   "medianPayPrevFiled": "2025-04-28"
+  },
+  "AOS": {
+   "cik": 91142,
+   "name": "A. O. Smith",
+   "headcount": 11500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 12700,
+   "medianPay": 44976,
+   "medianPayFiled": "2026-03-04",
+   "medianPayPrevYear": 50022,
+   "medianPayPrevFiled": "2025-02-27"
+  },
+  "APA": {
+   "cik": 1841666,
+   "name": "APA Corporation",
+   "headcount": 1791,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 2305,
+   "medianPay": 237527,
+   "medianPayFiled": "2026-04-09",
+   "medianPayPrevYear": 208313,
+   "medianPayPrevFiled": "2025-04-10"
+  },
+  "APD": {
+   "cik": 2969,
+   "name": "Air Products",
+   "headcount": 21300,
+   "headcountPeriod": "2025-09-30",
+   "headcountPrevYear": 23000,
+   "medianPay": 71545,
+   "medianPayFiled": "2025-12-11",
+   "medianPayPrevYear": 66355,
+   "medianPayPrevFiled": "2023-12-08"
+  },
+  "APH": {
+   "cik": 820313,
+   "name": "Amphenol",
+   "headcount": 170000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 125000,
+   "medianPay": 18816,
+   "medianPayFiled": "2026-04-08",
+   "medianPayPrevYear": 17712,
+   "medianPayPrevFiled": "2025-04-04"
+  },
+  "APO": {
+   "cik": 1858681,
+   "name": "Apollo Global Management",
+   "headcount": 4130,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 3125,
+   "medianPay": 189150,
+   "medianPayFiled": "2026-04-24",
+   "medianPayPrevYear": 182781,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "APP": {
+   "cik": 1751008,
+   "name": "AppLovin",
+   "headcount": 898,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 1563,
+   "medianPay": 133808,
+   "medianPayFiled": "2026-04-21",
+   "medianPayPrevYear": 98555,
+   "medianPayPrevFiled": "2025-04-22"
+  },
+  "APTV": {
+   "cik": 1521332,
+   "name": "Aptiv",
+   "headcount": 140000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 141000,
+   "medianPay": 10162,
+   "medianPayFiled": "2026-03-16",
+   "medianPayPrevYear": 9052,
+   "medianPayPrevFiled": "2025-03-10"
+  },
+  "ARE": {
+   "cik": 1035443,
+   "name": "Alexandria Real Estate Equities",
+   "headcount": 514,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 552
+  },
+  "ARES": {
+   "cik": 1176948,
+   "name": "Ares Management",
+   "headcount": 4250,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 3200,
+   "medianPay": 197440,
+   "medianPayFiled": "2026-04-21",
+   "medianPayPrevYear": 240000,
+   "medianPayPrevFiled": "2025-04-16"
+  },
+  "ARM": {
+   "cik": 1973239,
+   "name": "ARM HOLDINGS PLC /UK"
+  },
+  "ASML": {
+   "cik": 937966,
+   "name": "ASML HOLDING NV"
+  },
+  "ATO": {
+   "cik": 731802,
+   "name": "Atmos Energy",
+   "headcount": 5487,
+   "headcountPeriod": "2025-09-30",
+   "headcountPrevYear": 5260,
+   "medianPay": 94123,
+   "medianPayFiled": "2025-12-19",
+   "medianPayPrevYear": 90476,
+   "medianPayPrevFiled": "2024-12-20"
+  },
+  "AVGO": {
+   "cik": 1730168,
+   "name": "Broadcom",
+   "headcount": 33000,
+   "headcountPeriod": "2025-11-02",
+   "headcountPrevYear": 37000
+  },
+  "AVY": {
+   "cik": 8818,
+   "name": "Avery Dennison",
+   "headcount": 35000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 35000,
+   "medianPay": 17158,
+   "medianPayFiled": "2026-03-12",
+   "medianPayPrevYear": 17126,
+   "medianPayPrevFiled": "2025-03-07"
+  },
+  "AWK": {
+   "cik": 1410636,
+   "name": "American Water Works",
+   "headcount": 7000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 6700,
+   "medianPay": 104956,
+   "medianPayFiled": "2026-03-24",
+   "medianPayPrevYear": 107694,
+   "medianPayPrevFiled": "2025-03-27"
+  },
+  "AXON": {
+   "cik": 1069183,
+   "name": "Axon Enterprise",
+   "headcount": 5100,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 4100,
+   "medianPay": 40001,
+   "medianPayFiled": "2026-04-16"
+  },
+  "AXP": {
+   "cik": 4962,
+   "name": "American Express",
+   "headcount": 76800,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 75100,
+   "medianPay": 56827,
+   "medianPayFiled": "2026-03-25",
+   "medianPayPrevYear": 60421,
+   "medianPayPrevFiled": "2025-03-14"
+  },
+  "AZO": {
+   "cik": 866787,
+   "name": "AutoZone",
+   "medianPay": 29017,
+   "medianPayFiled": "2025-10-28",
+   "medianPayPrevYear": 30637,
+   "medianPayPrevFiled": "2024-10-30"
+  },
+  "BA": {
+   "cik": 12927,
+   "name": "Boeing",
+   "headcount": 182000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 172000,
+   "medianPay": 141933,
+   "medianPayFiled": "2026-03-06"
+  },
+  "BAC": {
+   "cik": 70858,
+   "name": "Bank of America",
+   "headcount": 213000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 213000
+  },
+  "BALL": {
+   "cik": 9389,
+   "name": "Ball Corporation",
+   "headcount": 16000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 16000,
+   "medianPay": 91248,
+   "medianPayFiled": "2026-03-17"
+  },
+  "BAX": {
+   "cik": 10456,
+   "name": "Baxter International",
+   "headcount": 37500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 38000
+  },
+  "BBY": {
+   "cik": 764478,
+   "name": "Best Buy",
+   "headcount": 82000,
+   "headcountPeriod": "2026-01-31",
+   "headcountPrevYear": 85000,
+   "medianPay": 32018,
+   "medianPayFiled": "2026-04-30",
+   "medianPayPrevYear": 31141,
+   "medianPayPrevFiled": "2025-05-01"
+  },
+  "BDX": {
+   "cik": 10795,
+   "name": "BD (company)",
+   "headcount": 72000,
+   "headcountPeriod": "2025-09-30",
+   "headcountPrevYear": 74000
+  },
+  "BEN": {
+   "cik": 38777,
+   "name": "Franklin Templeton Investments",
+   "headcount": 9800,
+   "headcountPeriod": "2025-09-30",
+   "headcountPrevYear": 10200,
+   "medianPay": 149010,
+   "medianPayFiled": "2025-12-22",
+   "medianPayPrevYear": 154596,
+   "medianPayPrevFiled": "2024-12-20"
+  },
+  "BF-B": {
+   "cik": 14693,
+   "name": "Brown–Forman",
+   "headcount": 4900,
+   "headcountPeriod": "2026-04-30",
+   "headcountPrevYear": 5000,
+   "medianPay": 57651,
+   "medianPayFiled": "2026-06-18",
+   "medianPayPrevYear": 61347,
+   "medianPayPrevFiled": "2025-06-20"
+  },
+  "BG": {
+   "cik": 1996862,
+   "name": "Bunge Global",
+   "headcount": 34000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 23000,
+   "medianPay": 75124,
+   "medianPayFiled": "2026-04-10",
+   "medianPayPrevYear": 61474,
+   "medianPayPrevFiled": "2025-04-04"
+  },
+  "BIIB": {
+   "cik": 875045,
+   "name": "Biogen",
+   "headcount": 7500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 7605,
+   "medianPay": 208335,
+   "medianPayFiled": "2026-04-28",
+   "medianPayPrevYear": 183062,
+   "medianPayPrevFiled": "2025-04-28"
+  },
+  "BKNG": {
+   "cik": 1075531,
+   "name": "Booking Holdings",
+   "headcount": 24300,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 24300,
+   "medianPay": 101004,
+   "medianPayFiled": "2026-04-21",
+   "medianPayPrevYear": 96228,
+   "medianPayPrevFiled": "2025-04-22"
+  },
+  "BKR": {
+   "cik": 1701605,
+   "name": "Baker Hughes",
+   "headcount": 56000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 57000
+  },
+  "BLDR": {
+   "cik": 1316835,
+   "name": "Builders FirstSource",
+   "headcount": 28000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 29000,
+   "medianPay": 74761,
+   "medianPayFiled": "2026-04-02",
+   "medianPayPrevYear": 66269,
+   "medianPayPrevFiled": "2025-04-15"
+  },
+  "BLK": {
+   "cik": 2012383,
+   "name": "BlackRock",
+   "headcount": 24900,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 21100,
+   "medianPay": 153770,
+   "medianPayFiled": "2026-04-10",
+   "medianPayPrevYear": 172264,
+   "medianPayPrevFiled": "2025-04-04"
+  },
+  "BMY": {
+   "cik": 14272,
+   "name": "Bristol Myers Squibb",
+   "headcount": 32500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 34100,
+   "medianPay": 167191,
+   "medianPayFiled": "2026-03-25",
+   "medianPayPrevYear": 160144,
+   "medianPayPrevFiled": "2025-03-26"
+  },
+  "BNY": {
+   "cik": 1390777,
+   "name": "BNY",
+   "headcount": 48100,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 51800,
+   "medianPay": 81987,
+   "medianPayFiled": "2026-03-05",
+   "medianPayPrevYear": 80839,
+   "medianPayPrevFiled": "2025-03-05"
+  },
+  "BR": {
+   "cik": 1383312,
+   "name": "Broadridge Financial Solutions",
+   "headcount": 16000,
+   "headcountPeriod": "2026-06-30",
+   "headcountPrevYear": 15000,
+   "medianPay": 79503,
+   "medianPayFiled": "2025-10-02",
+   "medianPayPrevYear": 71876,
+   "medianPayPrevFiled": "2024-10-02"
+  },
+  "BRK-B": {
+   "cik": 1067983,
+   "name": "Berkshire Hathaway",
+   "headcount": 387800,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 392400,
+   "medianPay": 389488,
+   "medianPayFiled": "2026-03-13",
+   "medianPayPrevYear": 405111,
+   "medianPayPrevFiled": "2025-03-14"
+  },
+  "BRO": {
+   "cik": 79282,
+   "name": "Brown & Brown",
+   "headcount": 7905,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 10962,
+   "medianPay": 74010,
+   "medianPayFiled": "2026-03-24",
+   "medianPayPrevYear": 74035,
+   "medianPayPrevFiled": "2025-03-24"
+  },
+  "BSX": {
+   "cik": 885725,
+   "name": "Boston Scientific",
+   "headcount": 59000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 53000,
+   "medianPay": 67539,
+   "medianPayFiled": "2026-03-18",
+   "medianPayPrevYear": 58074,
+   "medianPayPrevFiled": "2025-03-19"
+  },
+  "BX": {
+   "cik": 1393818,
+   "name": "Blackstone Inc.",
+   "headcount": 5285,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 4895
+  },
+  "BXP": {
+   "cik": 1037540,
+   "name": "BXP, Inc."
+  },
+  "C": {
+   "cik": 831001,
+   "name": "Citigroup"
+  },
+  "CAH": {
+   "cik": 721371,
+   "name": "Cardinal Health",
+   "headcount": 63900,
+   "headcountPeriod": "2026-06-30",
+   "headcountPrevYear": 57700,
+   "medianPay": 72657,
+   "medianPayFiled": "2025-09-16",
+   "medianPayPrevYear": 56119,
+   "medianPayPrevFiled": "2024-09-16"
+  },
+  "CARR": {
+   "cik": 1783180,
+   "name": "Carrier Global",
+   "headcount": 47000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 48000,
+   "medianPay": 46976,
+   "medianPayFiled": "2026-03-03",
+   "medianPayPrevYear": 51001,
+   "medianPayPrevFiled": "2025-02-25"
+  },
+  "CASY": {
+   "cik": 726958,
+   "name": "Casey's",
+   "medianPay": 20065,
+   "medianPayFiled": "2026-07-22",
+   "medianPayPrevYear": 18148,
+   "medianPayPrevFiled": "2025-07-23"
+  },
+  "CAT": {
+   "cik": 18230,
+   "name": "Caterpillar Inc.",
+   "headcount": 7972,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 7386
+  },
+  "CB": {
+   "cik": 896159,
+   "name": "Chubb Limited",
+   "headcount": 45000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 43000,
+   "medianPay": 64842,
+   "medianPayFiled": "2026-04-03",
+   "medianPayPrevYear": 63197,
+   "medianPayPrevFiled": "2025-04-01"
+  },
+  "CBRE": {
+   "cik": 1138118,
+   "name": "CBRE Group",
+   "headcount": 155000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 140000,
+   "medianPay": 71351,
+   "medianPayFiled": "2026-04-03",
+   "medianPayPrevYear": 70862,
+   "medianPayPrevFiled": "2025-04-04"
+  },
+  "CCEP": {
+   "cik": 1650107,
+   "name": "COCA-COLA EUROPACIFIC PARTNERS plc"
+  },
+  "CCI": {
+   "cik": 1051470,
+   "name": "Crown Castle",
+   "headcount": 4000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 3900,
+   "medianPay": 149323,
+   "medianPayFiled": "2026-04-06",
+   "medianPayPrevYear": 160310,
+   "medianPayPrevFiled": "2025-04-07"
+  },
+  "CCL": {
+   "cik": 815097,
+   "name": "Carnival Corporation",
+   "headcount": 101000,
+   "headcountPeriod": "2025-11-30",
+   "headcountPrevYear": 100000,
+   "medianPay": 17773,
+   "medianPayFiled": "2026-02-27",
+   "medianPayPrevYear": 16854,
+   "medianPayPrevFiled": "2025-02-28"
+  },
+  "CDNS": {
+   "cik": 813672,
+   "name": "Cadence Design Systems",
+   "headcount": 13800,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 12700
+  },
+  "CDW": {
+   "cik": 1402057,
+   "name": "CDW",
+   "headcount": 250,
+   "headcountPeriod": "2025-12-31"
+  },
+  "CEG": {
+   "cik": 1868275,
+   "name": "Constellation Energy",
+   "headcount": 15339,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 14264,
+   "medianPay": 122610,
+   "medianPayFiled": "2026-03-19",
+   "medianPayPrevYear": 188677,
+   "medianPayPrevFiled": "2025-03-19"
+  },
+  "CF": {
+   "cik": 1324404,
+   "name": "CF Industries",
+   "headcount": 2900,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 2800,
+   "medianPay": 155394,
+   "medianPayFiled": "2026-03-17",
+   "medianPayPrevYear": 136521,
+   "medianPayPrevFiled": "2025-03-25"
+  },
+  "CFG": {
+   "cik": 759944,
+   "name": "Citizens Financial Group",
+   "headcount": 17398,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 17287,
+   "medianPay": 80559,
+   "medianPayFiled": "2026-03-09",
+   "medianPayPrevYear": 77882,
+   "medianPayPrevFiled": "2025-03-10"
+  },
+  "CHD": {
+   "cik": 313927,
+   "name": "Church & Dwight",
+   "headcount": 5550,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 5750,
+   "medianPay": 69467,
+   "medianPayFiled": "2026-03-19",
+   "medianPayPrevYear": 65938,
+   "medianPayPrevFiled": "2025-03-20"
+  },
+  "CHRW": {
+   "cik": 1043277,
+   "name": "C.H. Robinson",
+   "headcount": 11855,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 13781,
+   "medianPay": 62176,
+   "medianPayFiled": "2026-03-24",
+   "medianPayPrevYear": 58983,
+   "medianPayPrevFiled": "2025-03-25"
+  },
+  "CHTR": {
+   "cik": 1091667,
+   "name": "Charter Communications",
+   "headcount": 91900,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 94500,
+   "medianPay": 79159,
+   "medianPayFiled": "2026-03-12",
+   "medianPayPrevYear": 69829,
+   "medianPayPrevFiled": "2025-03-13"
+  },
+  "CI": {
+   "cik": 1739940,
+   "name": "Cigna",
+   "headcount": 67700,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 73500,
+   "medianPay": 73674,
+   "medianPayFiled": "2026-03-13",
+   "medianPayPrevYear": 83483,
+   "medianPayPrevFiled": "2025-03-14"
+  },
+  "CIEN": {
+   "cik": 936395,
+   "name": "Ciena",
+   "headcount": 9080,
+   "headcountPeriod": "2025-11-01",
+   "headcountPrevYear": 8657,
+   "medianPay": 111613,
+   "medianPayFiled": "2026-02-12"
+  },
+  "CINF": {
+   "cik": 20286,
+   "name": "Cincinnati Financial",
+   "headcount": 5705,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 5624,
+   "medianPay": 128245,
+   "medianPayFiled": "2026-03-18",
+   "medianPayPrevYear": 133068,
+   "medianPayPrevFiled": "2025-03-19"
+  },
+  "CL": {
+   "cik": 21665,
+   "name": "Colgate-Palmolive",
+   "headcount": 33600,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 34000,
+   "medianPay": 59655,
+   "medianPayFiled": "2026-03-25",
+   "medianPayPrevYear": 58123,
+   "medianPayPrevFiled": "2025-03-26"
+  },
+  "CLX": {
+   "cik": 21076,
+   "name": "Clorox",
+   "headcount": 9200,
+   "headcountPeriod": "2026-06-30",
+   "headcountPrevYear": 7600,
+   "medianPay": 79721,
+   "medianPayFiled": "2025-10-07",
+   "medianPayPrevYear": 71787,
+   "medianPayPrevFiled": "2024-10-04"
+  },
+  "CMCSA": {
+   "cik": 1166691,
+   "name": "Comcast",
+   "headcount": 179000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 182000,
+   "medianPay": 92390,
+   "medianPayFiled": "2026-04-24",
+   "medianPayPrevYear": 89237,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "CME": {
+   "cik": 1156375,
+   "name": "CME Group",
+   "headcount": 3875,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 3760
+  },
+  "CMG": {
+   "cik": 1058090,
+   "name": "Chipotle Mexican Grill",
+   "headcount": 130301,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 130504,
+   "medianPay": 17446,
+   "medianPayFiled": "2026-04-28",
+   "medianPayPrevYear": 16666,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "CMI": {
+   "cik": 26172,
+   "name": "Cummins",
+   "medianPay": 63834,
+   "medianPayFiled": "2026-04-02",
+   "medianPayPrevYear": 66598,
+   "medianPayPrevFiled": "2025-03-31"
+  },
+  "CMS": {
+   "cik": 811156,
+   "name": "CMS Energy",
+   "medianPay": 187884,
+   "medianPayFiled": "2026-03-26",
+   "medianPayPrevYear": 149320,
+   "medianPayPrevFiled": "2025-03-20"
+  },
+  "CNC": {
+   "cik": 1071739,
+   "name": "Centene Corporation",
+   "headcount": 61100,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 60500,
+   "medianPay": 94800,
+   "medianPayFiled": "2026-03-26",
+   "medianPayPrevYear": 91902,
+   "medianPayPrevFiled": "2025-03-27"
+  },
+  "CNP": {
+   "cik": 1130310,
+   "name": "CenterPoint Energy",
+   "headcount": 1613,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 1587,
+   "medianPay": 130189,
+   "medianPayFiled": "2026-03-04",
+   "medianPayPrevYear": 121266,
+   "medianPayPrevFiled": "2025-03-05"
+  },
+  "COF": {
+   "cik": 927628,
+   "name": "Capital One",
+   "headcount": 76300,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 52600,
+   "medianPay": 123454,
+   "medianPayFiled": "2026-03-25",
+   "medianPayPrevYear": 97398,
+   "medianPayPrevFiled": "2025-03-27"
+  },
+  "COHR": {
+   "cik": 820318,
+   "name": "Coherent Corp.",
+   "headcount": 51000,
+   "headcountPeriod": "2026-06-30",
+   "headcountPrevYear": 30000,
+   "medianPay": 22791,
+   "medianPayFiled": "2025-10-02",
+   "medianPayPrevYear": 14474,
+   "medianPayPrevFiled": "2024-10-04"
+  },
+  "COIN": {
+   "cik": 1679788,
+   "name": "Coinbase",
+   "headcount": 4951,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 3772,
+   "medianPay": 217526,
+   "medianPayFiled": "2026-04-24",
+   "medianPayPrevYear": 333757,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "COO": {
+   "cik": 711404,
+   "name": "The Cooper Companies",
+   "headcount": 15000,
+   "headcountPeriod": "2025-10-31",
+   "headcountPrevYear": 16000
+  },
+  "COP": {
+   "cik": 1163165,
+   "name": "ConocoPhillips",
+   "headcount": 9900,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 11800,
+   "medianPay": 212063,
+   "medianPayFiled": "2026-03-30",
+   "medianPayPrevYear": 197655,
+   "medianPayPrevFiled": "2025-03-31"
+  },
+  "COR": {
+   "cik": 1140859,
+   "name": "Cencora",
+   "headcount": 51000,
+   "headcountPeriod": "2025-09-30",
+   "headcountPrevYear": 46000,
+   "medianPay": 92438,
+   "medianPayFiled": "2026-01-22",
+   "medianPayPrevYear": 87891,
+   "medianPayPrevFiled": "2025-01-23"
+  },
+  "COST": {
+   "cik": 909832,
+   "name": "Costco",
+   "headcount": 341000,
+   "headcountPeriod": "2025-08-31",
+   "headcountPrevYear": 333000,
+   "medianPay": 49186,
+   "medianPayFiled": "2025-12-04",
+   "medianPayPrevYear": 47092,
+   "medianPayPrevFiled": "2024-12-11"
+  },
+  "CPAY": {
+   "cik": 1175454,
+   "name": "Corpay",
+   "headcount": 11800,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 11200,
+   "medianPay": 52527,
+   "medianPayFiled": "2026-04-10",
+   "medianPayPrevYear": 50277,
+   "medianPayPrevFiled": "2025-04-30"
+  },
+  "CPRT": {
+   "cik": 900075,
+   "name": "Copart",
+   "headcount": 11600,
+   "headcountPeriod": "2025-07-31",
+   "headcountPrevYear": 11700,
+   "medianPay": 44620,
+   "medianPayFiled": "2025-10-24",
+   "medianPayPrevYear": 42139,
+   "medianPayPrevFiled": "2024-10-24"
+  },
+  "CPT": {
+   "cik": 906345,
+   "name": "Camden Property Trust",
+   "headcount": 1640,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 1660
+  },
+  "CRH": {
+   "cik": 849395,
+   "name": "CRH plc",
+   "headcount": 83032,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 79800,
+   "medianPay": 58919,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 57521,
+   "medianPayPrevFiled": "2025-03-28"
+  },
+  "CRL": {
+   "cik": 1100682,
+   "name": "Charles River Laboratories",
+   "headcount": 19700,
+   "headcountPeriod": "2025-12-27",
+   "headcountPrevYear": 20100,
+   "medianPay": 53761,
+   "medianPayFiled": "2026-03-31",
+   "medianPayPrevYear": 52319,
+   "medianPayPrevFiled": "2025-04-02"
+  },
+  "CRM": {
+   "cik": 1108524,
+   "name": "Salesforce",
+   "headcount": 83334,
+   "headcountPeriod": "2026-01-31",
+   "headcountPrevYear": 76453,
+   "medianPay": 166753,
+   "medianPayFiled": "2026-04-16",
+   "medianPayPrevYear": 178949,
+   "medianPayPrevFiled": "2025-04-24"
+  },
+  "CRWD": {
+   "cik": 1535527,
+   "name": "CrowdStrike",
+   "headcount": 10698,
+   "headcountPeriod": "2026-01-31",
+   "headcountPrevYear": 10118
+  },
+  "CRWV": {
+   "cik": 1769628,
+   "name": "CoreWeave, Inc.",
+   "headcount": 2189,
+   "headcountPeriod": "2025-12-31"
+  },
+  "CSCO": {
+   "cik": 858877,
+   "name": "Cisco",
+   "headcount": 82400,
+   "headcountPeriod": "2026-07-25",
+   "headcountPrevYear": 86200,
+   "medianPay": 177115,
+   "medianPayFiled": "2025-10-28",
+   "medianPayPrevYear": 166915,
+   "medianPayPrevFiled": "2024-10-18"
+  },
+  "CSGP": {
+   "cik": 1057352,
+   "name": "CoStar Group",
+   "headcount": 608,
+   "headcountPeriod": "2025-12-31",
+   "medianPay": 120170,
+   "medianPayFiled": "2026-04-30"
+  },
+  "CSX": {
+   "cik": 277948,
+   "name": "CSX Corporation",
+   "headcount": 23000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 23500,
+   "medianPay": 122362,
+   "medianPayFiled": "2026-03-30",
+   "medianPayPrevYear": 123935,
+   "medianPayPrevFiled": "2025-03-25"
+  },
+  "CTAS": {
+   "cik": 723254,
+   "name": "Cintas"
+  },
+  "CTSH": {
+   "cik": 1058290,
+   "name": "Cognizant",
+   "headcount": 351600,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 336800,
+   "medianPay": 45138,
+   "medianPayFiled": "2026-04-17",
+   "medianPayPrevYear": 44497,
+   "medianPayPrevFiled": "2025-04-18"
+  },
+  "CTVA": {
+   "cik": 1755672,
+   "name": "Corteva",
+   "headcount": 21500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 22000,
+   "medianPay": 85012,
+   "medianPayFiled": "2026-03-19",
+   "medianPayPrevYear": 81312,
+   "medianPayPrevFiled": "2025-03-21"
+  },
+  "CVNA": {
+   "cik": 1690820,
+   "name": "Carvana"
+  },
+  "CVS": {
+   "cik": 64803,
+   "name": "CVS Health",
+   "headcount": 300000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 300000,
+   "medianPay": 63262,
+   "medianPayFiled": "2026-04-03",
+   "medianPayPrevYear": 60917,
+   "medianPayPrevFiled": "2025-04-04"
+  },
+  "CVX": {
+   "cik": 93410,
+   "name": "Chevron Corporation",
+   "headcount": 37860,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 39742,
+   "medianPay": 152970,
+   "medianPayFiled": "2026-04-07",
+   "medianPayPrevYear": 163744,
+   "medianPayPrevFiled": "2025-04-09"
+  },
+  "D": {
+   "cik": 715957,
+   "name": "Dominion Energy",
+   "headcount": 15200,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 14700,
+   "medianPay": 149396,
+   "medianPayFiled": "2026-03-19",
+   "medianPayPrevYear": 124178,
+   "medianPayPrevFiled": "2025-03-28"
+  },
+  "DAL": {
+   "cik": 27904,
+   "name": "Delta Air Lines"
+  },
+  "DASH": {
+   "cik": 1792789,
+   "name": "DoorDash",
+   "headcount": 31400,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 23700,
+   "medianPay": 36373,
+   "medianPayFiled": "2026-04-20",
+   "medianPayPrevYear": 38112,
+   "medianPayPrevFiled": "2025-04-29"
+  },
+  "DD": {
+   "cik": 1666700,
+   "name": "DuPont",
+   "headcount": 15000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 24000,
+   "medianPay": 85492,
+   "medianPayFiled": "2026-04-10",
+   "medianPayPrevYear": 115630,
+   "medianPayPrevFiled": "2025-04-03"
+  },
+  "DDOG": {
+   "cik": 1561550,
+   "name": "Datadog",
+   "headcount": 8100,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 6500,
+   "medianPay": 206250,
+   "medianPayFiled": "2026-04-29"
+  },
+  "DE": {
+   "cik": 315189,
+   "name": "John Deere",
+   "headcount": 73100,
+   "headcountPeriod": "2025-11-02",
+   "headcountPrevYear": 75800
+  },
+  "DECK": {
+   "cik": 910521,
+   "name": "Deckers Brands",
+   "headcount": 6000,
+   "headcountPeriod": "2026-03-31",
+   "headcountPrevYear": 5500,
+   "medianPay": 51638,
+   "medianPayFiled": "2026-07-24",
+   "medianPayPrevYear": 50714,
+   "medianPayPrevFiled": "2025-07-25"
+  },
+  "DELL": {
+   "cik": 1571996,
+   "name": "Dell Technologies",
+   "headcount": 97000,
+   "headcountPeriod": "2026-01-30",
+   "headcountPrevYear": 108000,
+   "medianPay": 78796,
+   "medianPayFiled": "2026-05-15",
+   "medianPayPrevYear": 74070,
+   "medianPayPrevFiled": "2025-05-16"
+  },
+  "DG": {
+   "cik": 29534,
+   "name": "Dollar General",
+   "headcount": 194000,
+   "headcountPeriod": "2026-01-30",
+   "headcountPrevYear": 194200,
+   "medianPay": 18876,
+   "medianPayFiled": "2026-04-07",
+   "medianPayPrevYear": 18951,
+   "medianPayPrevFiled": "2025-04-08"
+  },
+  "DGX": {
+   "cik": 1022079,
+   "name": "Quest Diagnostics",
+   "headcount": 57000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 56000
+  },
+  "DHI": {
+   "cik": 882184,
+   "name": "D. R. Horton",
+   "headcount": 14341,
+   "headcountPeriod": "2025-09-30",
+   "headcountPrevYear": 14766,
+   "medianPay": 129775,
+   "medianPayFiled": "2025-12-10",
+   "medianPayPrevYear": 125961,
+   "medianPayPrevFiled": "2024-12-13"
+  },
+  "DHR": {
+   "cik": 313616,
+   "name": "Danaher Corporation",
+   "headcount": 60000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 63000
+  },
+  "DIS": {
+   "cik": 1744489,
+   "name": "The Walt Disney Company",
+   "headcount": 231000,
+   "headcountPeriod": "2025-09-27",
+   "headcountPrevYear": 233000,
+   "medianPay": 56932,
+   "medianPayFiled": "2026-01-22",
+   "medianPayPrevYear": 55111,
+   "medianPayPrevFiled": "2025-01-23"
+  },
+  "DLR": {
+   "cik": 1297996,
+   "name": "Digital Realty",
+   "headcount": 4282,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 3936,
+   "medianPay": 121174,
+   "medianPayFiled": "2026-04-17",
+   "medianPayPrevYear": 113385,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "DLTR": {
+   "cik": 935703,
+   "name": "Dollar Tree",
+   "headcount": 153032,
+   "headcountPeriod": "2026-01-31",
+   "headcountPrevYear": 214710,
+   "medianPay": 16214,
+   "medianPayFiled": "2026-05-01",
+   "medianPayPrevYear": 15602,
+   "medianPayPrevFiled": "2025-05-06"
+  },
+  "DOC": {
+   "cik": 765880,
+   "name": "Healthpeak Properties",
+   "medianPay": 124450,
+   "medianPayFiled": "2026-03-12",
+   "medianPayPrevYear": 128353,
+   "medianPayPrevFiled": "2025-03-12"
+  },
+  "DOV": {
+   "cik": 29905,
+   "name": "Dover Corporation",
+   "headcount": 24000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 24000
+  },
+  "DOW": {
+   "cik": 1751788,
+   "name": "Dow Chemical Company",
+   "headcount": 34600,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 36000,
+   "medianPay": 91995,
+   "medianPayFiled": "2026-02-27",
+   "medianPayPrevYear": 89583,
+   "medianPayPrevFiled": "2025-02-28"
+  },
+  "DPZ": {
+   "cik": 1286681,
+   "name": "Domino's",
+   "headcount": 10200,
+   "headcountPeriod": "2025-12-28",
+   "headcountPrevYear": 10700
+  },
+  "DRI": {
+   "cik": 940944,
+   "name": "Darden Restaurants",
+   "headcount": 200,
+   "headcountPeriod": "2026-05-31",
+   "headcountPrevYear": 200
+  },
+  "DTE": {
+   "cik": 936340,
+   "name": "DTE Energy",
+   "headcount": 9650,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 9500,
+   "medianPay": 134340,
+   "medianPayFiled": "2026-03-12",
+   "medianPayPrevYear": 106078,
+   "medianPayPrevFiled": "2025-03-13"
+  },
+  "DUK": {
+   "cik": 1326160,
+   "name": "Duke Energy",
+   "headcount": 100,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 100
+  },
+  "DVA": {
+   "cik": 927066,
+   "name": "DaVita"
+  },
+  "DVN": {
+   "cik": 1090012,
+   "name": "Devon Energy",
+   "headcount": 2200,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 2300
+  },
+  "DXCM": {
+   "cik": 1093557,
+   "name": "Dexcom",
+   "headcount": 11100,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 10300
+  },
+  "EBAY": {
+   "cik": 1065088,
+   "name": "eBay",
+   "headcount": 12300,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 11500,
+   "medianPay": 180276,
+   "medianPayFiled": "2026-04-30",
+   "medianPayPrevYear": 167976,
+   "medianPayPrevFiled": "2025-04-30"
+  },
+  "ECHO": {
+   "cik": 1415404,
+   "name": "EchoStar",
+   "headcount": 12100,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 13700
+  },
+  "ECL": {
+   "cik": 31462,
+   "name": "Ecolab",
+   "headcount": 48000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 48000
+  },
+  "ED": {
+   "cik": 1047862,
+   "name": "Consolidated Edison",
+   "medianPay": 207199,
+   "medianPayFiled": "2026-04-08",
+   "medianPayPrevYear": 128713,
+   "medianPayPrevFiled": "2025-04-09"
+  },
+  "EFX": {
+   "cik": 33185,
+   "name": "Equifax",
+   "headcount": 4800,
+   "headcountPeriod": "2025-12-31",
+   "medianPay": 79492,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 73777,
+   "medianPayPrevFiled": "2025-03-28"
+  },
+  "EG": {
+   "cik": 1095073,
+   "name": "Everest Group",
+   "medianPay": 187057,
+   "medianPayFiled": "2026-04-10",
+   "medianPayPrevYear": 175597,
+   "medianPayPrevFiled": "2025-04-11"
+  },
+  "EIX": {
+   "cik": 827052,
+   "name": "Edison International",
+   "medianPay": 220100,
+   "medianPayFiled": "2026-03-13",
+   "medianPayPrevYear": 183066,
+   "medianPayPrevFiled": "2025-03-14"
+  },
+  "EL": {
+   "cik": 1001250,
+   "name": "The Estée Lauder Companies",
+   "headcount": 55000,
+   "headcountPeriod": "2026-06-30",
+   "headcountPrevYear": 57000
+  },
+  "ELV": {
+   "cik": 1156039,
+   "name": "Elevance Health",
+   "medianPay": 79007,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 55372,
+   "medianPayPrevFiled": "2025-03-28"
+  },
+  "EME": {
+   "cik": 105634,
+   "name": "Emcor",
+   "headcount": 44000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 40400
+  },
+  "EMR": {
+   "cik": 32604,
+   "name": "Emerson Electric",
+   "headcount": 100,
+   "headcountPeriod": "2025-09-30",
+   "medianPay": 52916,
+   "medianPayFiled": "2025-12-12",
+   "medianPayPrevYear": 47221,
+   "medianPayPrevFiled": "2024-12-13"
+  },
+  "EOG": {
+   "cik": 821189,
+   "name": "EOG Resources",
+   "medianPay": 225792,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 221005,
+   "medianPayPrevFiled": "2025-03-28"
+  },
+  "EQIX": {
+   "cik": 1101239,
+   "name": "Equinix",
+   "headcount": 13716,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 13606,
+   "medianPay": 126952,
+   "medianPayFiled": "2026-04-02",
+   "medianPayPrevYear": 118527,
+   "medianPayPrevFiled": "2025-04-10"
+  },
+  "EQT": {
+   "cik": 33213,
+   "name": "EQT Corporation",
+   "headcount": 1523,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 1461,
+   "medianPay": 155823,
+   "medianPayFiled": "2026-02-26",
+   "medianPayPrevYear": 152502,
+   "medianPayPrevFiled": "2025-03-03"
+  },
+  "ERIE": {
+   "cik": 922621,
+   "name": "Erie Insurance Group",
+   "headcount": 6667,
+   "headcountPeriod": "2025-12-31"
+  },
+  "ES": {
+   "cik": 72741,
+   "name": "Eversource Energy",
+   "headcount": 10731,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 10680,
+   "medianPay": 144330,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 142220,
+   "medianPayPrevFiled": "2025-03-21"
+  },
+  "ESS": {
+   "cik": 920522,
+   "name": "Essex Property Trust",
+   "headcount": 1689,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 1715,
+   "medianPay": 113049,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 97782,
+   "medianPayPrevFiled": "2025-03-28"
+  },
+  "ETN": {
+   "cik": 1551182,
+   "name": "Eaton Corporation",
+   "headcount": 97000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 94000,
+   "medianPay": 61945,
+   "medianPayFiled": "2026-03-13",
+   "medianPayPrevYear": 40157,
+   "medianPayPrevFiled": "2025-03-14"
+  },
+  "ETR": {
+   "cik": 65984,
+   "name": "Entergy"
+  },
+  "EVRG": {
+   "cik": 1711269,
+   "name": "Evergy",
+   "headcount": 1882,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 1897,
+   "medianPay": 119031,
+   "medianPayFiled": "2026-03-26",
+   "medianPayPrevYear": 113559,
+   "medianPayPrevFiled": "2025-03-27"
+  },
+  "EW": {
+   "cik": 1099800,
+   "name": "Edwards Lifesciences",
+   "headcount": 360,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 360
+  },
+  "EXC": {
+   "cik": 1109357,
+   "name": "Exelon",
+   "medianPay": 150905,
+   "medianPayFiled": "2026-03-18",
+   "medianPayPrevYear": 146214,
+   "medianPayPrevFiled": "2025-03-19"
+  },
+  "EXE": {
+   "cik": 895126,
+   "name": "Expand Energy",
+   "headcount": 1600,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 1700,
+   "medianPay": 158503,
+   "medianPayFiled": "2026-04-24",
+   "medianPayPrevYear": 154646,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "EXPD": {
+   "cik": 746515,
+   "name": "Expeditors International",
+   "headcount": 20000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 18000,
+   "medianPay": 52350,
+   "medianPayFiled": "2026-03-24",
+   "medianPayPrevYear": 54048,
+   "medianPayPrevFiled": "2025-03-25"
+  },
+  "EXPE": {
+   "cik": 1324424,
+   "name": "Expedia Group",
+   "headcount": 16000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 16500,
+   "medianPay": 114597,
+   "medianPayFiled": "2026-04-29",
+   "medianPayPrevYear": 111666,
+   "medianPayPrevFiled": "2025-04-21"
+  },
+  "EXR": {
+   "cik": 1289490,
+   "name": "Extra Space Storage"
+  },
+  "F": {
+   "cik": 37996,
+   "name": "Ford Motor Company",
+   "headcount": 169000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 171000,
+   "medianPay": 76076,
+   "medianPayFiled": "2026-03-27"
+  },
+  "FANG": {
+   "cik": 1539838,
+   "name": "Diamondback Energy"
+  },
+  "FAST": {
+   "cik": 815556,
+   "name": "Fastenal",
+   "headcount": 24489,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 23702,
+   "medianPay": 47287,
+   "medianPayFiled": "2026-02-25",
+   "medianPayPrevYear": 48037,
+   "medianPayPrevFiled": "2025-02-26"
+  },
+  "FCX": {
+   "cik": 831259,
+   "name": "Freeport-McMoRan",
+   "headcount": 29000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 28500,
+   "medianPay": 115935,
+   "medianPayFiled": "2026-04-23",
+   "medianPayPrevYear": 98257,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "FDS": {
+   "cik": 1013237,
+   "name": "FactSet",
+   "headcount": 12800,
+   "headcountPeriod": "2025-08-31",
+   "headcountPrevYear": 12398,
+   "medianPay": 17636,
+   "medianPayFiled": "2025-10-27",
+   "medianPayPrevYear": 17171,
+   "medianPayPrevFiled": "2024-10-30"
+  },
+  "FDX": {
+   "cik": 1048911,
+   "name": "FedEx",
+   "headcount": 452000,
+   "headcountPeriod": "2026-05-31",
+   "headcountPrevYear": 440000,
+   "medianPay": 20999,
+   "medianPayFiled": "2026-08-17",
+   "medianPayPrevYear": 23775,
+   "medianPayPrevFiled": "2025-08-18"
+  },
+  "FE": {
+   "cik": 1031296,
+   "name": "FirstEnergy",
+   "medianPay": 160003,
+   "medianPayFiled": "2026-04-01",
+   "medianPayPrevYear": 118994,
+   "medianPayPrevFiled": "2025-04-03"
+  },
+  "FER": {
+   "cik": 1468522,
+   "name": "Ferrovial N.V."
+  },
+  "FERG": {
+   "cik": 2011641,
+   "name": "Ferguson Enterprises",
+   "headcount": 35000,
+   "headcountPeriod": "2025-07-31",
+   "headcountPrevYear": 35000,
+   "medianPay": 32046,
+   "medianPayFiled": "2026-03-16",
+   "medianPayPrevYear": 66365,
+   "medianPayPrevFiled": "2025-10-15"
+  },
+  "FFIV": {
+   "cik": 1048695,
+   "name": "F5, Inc.",
+   "headcount": 6578,
+   "headcountPeriod": "2025-09-30",
+   "headcountPrevYear": 6557
+  },
+  "FICO": {
+   "cik": 814547,
+   "name": "FICO"
+  },
+  "FIS": {
+   "cik": 1136893,
+   "name": "FIS (company)",
+   "headcount": 44000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 50000,
+   "medianPay": 44229,
+   "medianPayFiled": "2026-04-28",
+   "medianPayPrevYear": 45447,
+   "medianPayPrevFiled": "2025-04-28"
+  },
+  "FISV": {
+   "cik": 798354,
+   "name": "Fiserv",
+   "headcount": 38000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 38000,
+   "medianPay": 88295,
+   "medianPayFiled": "2026-04-02"
+  },
+  "FITB": {
+   "cik": 35527,
+   "name": "Fifth Third Bancorp",
+   "headcount": 18676,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 18616,
+   "medianPay": 75501,
+   "medianPayFiled": "2026-03-09"
+  },
+  "FIX": {
+   "cik": 1035983,
+   "name": "Comfort Systems USA",
+   "headcount": 22700,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 18300
+  },
+  "FLEX": {
+   "cik": 866374,
+   "name": "Flex Ltd.",
+   "headcount": 150000,
+   "headcountPeriod": "2026-03-31",
+   "headcountPrevYear": 148000,
+   "medianPay": 12939,
+   "medianPayFiled": "2026-06-24",
+   "medianPayPrevYear": 11276,
+   "medianPayPrevFiled": "2025-06-24"
+  },
+  "FOX": {
+   "cik": 1754301,
+   "name": "Fox Corporation",
+   "headcount": 10550,
+   "headcountPeriod": "2026-06-30",
+   "headcountPrevYear": 10400,
+   "medianPay": 104998,
+   "medianPayFiled": "2026-09-17",
+   "medianPayPrevYear": 100889,
+   "medianPayPrevFiled": "2025-09-25"
+  },
+  "FOXA": {
+   "cik": 1754301,
+   "name": "Fox Corporation",
+   "headcount": 10550,
+   "headcountPeriod": "2026-06-30",
+   "headcountPrevYear": 10400,
+   "medianPay": 104998,
+   "medianPayFiled": "2026-09-17",
+   "medianPayPrevYear": 100889,
+   "medianPayPrevFiled": "2025-09-25"
+  },
+  "FRT": {
+   "cik": 34903,
+   "name": "Federal Realty Investment Trust",
+   "headcount": 314,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 304
+  },
+  "FSLR": {
+   "cik": 1274494,
+   "name": "First Solar",
+   "headcount": 7900,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 8100,
+   "medianPay": 42006,
+   "medianPayFiled": "2026-04-02",
+   "medianPayPrevYear": 37440,
+   "medianPayPrevFiled": "2025-04-04"
+  },
+  "FTNT": {
+   "cik": 1262039,
+   "name": "Fortinet",
+   "headcount": 15109,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 14138,
+   "medianPay": 152084,
+   "medianPayFiled": "2026-04-29",
+   "medianPayPrevYear": 124517,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "FTV": {
+   "cik": 1659166,
+   "name": "Fortive",
+   "headcount": 10000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 18000,
+   "medianPay": 94172,
+   "medianPayFiled": "2026-04-29",
+   "medianPayPrevYear": 82000,
+   "medianPayPrevFiled": "2025-04-21"
+  },
+  "GD": {
+   "cik": 40533,
+   "name": "General Dynamics",
+   "headcount": 40000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 40000,
+   "medianPay": 107485,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 99445,
+   "medianPayPrevFiled": "2025-03-28"
+  },
+  "GDDY": {
+   "cik": 1609711,
+   "name": "GoDaddy",
+   "headcount": 5845,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 5518
+  },
+  "GE": {
+   "cik": 40545,
+   "name": "GE Aerospace",
+   "headcount": 57000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 53000,
+   "medianPay": 93873,
+   "medianPayFiled": "2026-03-12",
+   "medianPayPrevYear": 69553,
+   "medianPayPrevFiled": "2025-03-13"
+  },
+  "GEHC": {
+   "cik": 1932393,
+   "name": "GE HealthCare",
+   "headcount": 54000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 53000,
+   "medianPay": 76951,
+   "medianPayFiled": "2026-03-19",
+   "medianPayPrevYear": 73078,
+   "medianPayPrevFiled": "2025-04-10"
+  },
+  "GEN": {
+   "cik": 849399,
+   "name": "Gen Digital",
+   "headcount": 3900,
+   "headcountPeriod": "2026-04-03",
+   "headcountPrevYear": 3500,
+   "medianPay": 92823,
+   "medianPayFiled": "2026-07-28",
+   "medianPayPrevYear": 81460,
+   "medianPayPrevFiled": "2025-07-28"
+  },
+  "GEV": {
+   "cik": 1996810,
+   "name": "GE Vernova",
+   "headcount": 75000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 75000,
+   "medianPay": 63902,
+   "medianPayFiled": "2026-04-03"
+  },
+  "GILD": {
+   "cik": 882095,
+   "name": "Gilead Sciences",
+   "headcount": 17000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 17600,
+   "medianPay": 238979,
+   "medianPayFiled": "2026-03-20",
+   "medianPayPrevYear": 244296,
+   "medianPayPrevFiled": "2025-03-27"
+  },
+  "GIS": {
+   "cik": 40704,
+   "name": "General Mills",
+   "headcount": 30000,
+   "headcountPeriod": "2026-05-31",
+   "headcountPrevYear": 33000,
+   "medianPay": 63212,
+   "medianPayFiled": "2026-08-13",
+   "medianPayPrevYear": 60655,
+   "medianPayPrevFiled": "2025-08-11"
+  },
+  "GL": {
+   "cik": 320335,
+   "name": "Globe Life",
+   "medianPay": 62339,
+   "medianPayFiled": "2026-03-19",
+   "medianPayPrevYear": 56413,
+   "medianPayPrevFiled": "2025-03-18"
+  },
+  "GLW": {
+   "cik": 24741,
+   "name": "Corning Inc.",
+   "medianPay": 57059,
+   "medianPayFiled": "2026-03-20",
+   "medianPayPrevYear": 48747,
+   "medianPayPrevFiled": "2025-03-21"
+  },
+  "GM": {
+   "cik": 1467858,
+   "name": "General Motors",
+   "headcount": 156000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 162000,
+   "medianPay": 89785,
+   "medianPayFiled": "2026-04-20",
+   "medianPayPrevYear": 95111,
+   "medianPayPrevFiled": "2025-04-22"
+  },
+  "GNRC": {
+   "cik": 1474735,
+   "name": "Generac",
+   "medianPay": 72040,
+   "medianPayFiled": "2026-04-29",
+   "medianPayPrevYear": 76612,
+   "medianPayPrevFiled": "2025-04-29"
+  },
+  "GOOG": {
+   "cik": 1652044,
+   "name": "Alphabet Inc.",
+   "headcount": 190820,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 183323,
+   "medianPay": 310826,
+   "medianPayFiled": "2026-04-24",
+   "medianPayPrevYear": 331894,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "GOOGL": {
+   "cik": 1652044,
+   "name": "Alphabet Inc.",
+   "headcount": 190820,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 183323,
+   "medianPay": 310826,
+   "medianPayFiled": "2026-04-24",
+   "medianPayPrevYear": 331894,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "GPC": {
+   "cik": 40987,
+   "name": "Genuine Parts Company",
+   "headcount": 65000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 63000,
+   "medianPay": 38901,
+   "medianPayFiled": "2026-02-27"
+  },
+  "GPN": {
+   "cik": 1123360,
+   "name": "Global Payments",
+   "headcount": 26000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 27000,
+   "medianPay": 61011,
+   "medianPayFiled": "2026-03-17",
+   "medianPayPrevYear": 62410,
+   "medianPayPrevFiled": "2025-03-13"
+  },
+  "GRMN": {
+   "cik": 1121788,
+   "name": "Garmin",
+   "headcount": 23000,
+   "headcountPeriod": "2025-12-27",
+   "headcountPrevYear": 21800,
+   "medianPay": 46356,
+   "medianPayFiled": "2026-04-22",
+   "medianPayPrevYear": 49027,
+   "medianPayPrevFiled": "2025-04-23"
+  },
+  "GS": {
+   "cik": 886982,
+   "name": "Goldman Sachs",
+   "headcount": 47400,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 46500
+  },
+  "GWW": {
+   "cik": 277135,
+   "name": "W. W. Grainger",
+   "headcount": 25000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 26000,
+   "medianPay": 67858,
+   "medianPayFiled": "2026-03-10",
+   "medianPayPrevYear": 67066,
+   "medianPayPrevFiled": "2025-03-07"
+  },
+  "HAL": {
+   "cik": 45012,
+   "name": "Halliburton",
+   "headcount": 46000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 48000,
+   "medianPay": 88698,
+   "medianPayFiled": "2026-03-31",
+   "medianPayPrevYear": 83367,
+   "medianPayPrevFiled": "2025-04-01"
+  },
+  "HAS": {
+   "cik": 46080,
+   "name": "Hasbro",
+   "headcount": 4520,
+   "headcountPeriod": "2025-12-28",
+   "headcountPrevYear": 4985,
+   "medianPay": 113241,
+   "medianPayFiled": "2026-04-17",
+   "medianPayPrevYear": 105311,
+   "medianPayPrevFiled": "2025-04-04"
+  },
+  "HBAN": {
+   "cik": 49196,
+   "name": "Huntington Bancshares",
+   "medianPay": 89658,
+   "medianPayFiled": "2026-03-12",
+   "medianPayPrevYear": 73567,
+   "medianPayPrevFiled": "2025-03-06"
+  },
+  "HCA": {
+   "cik": 860730,
+   "name": "HCA Healthcare",
+   "headcount": 320000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 316000
+  },
+  "HD": {
+   "cik": 354950,
+   "name": "Home Depot",
+   "headcount": 472400,
+   "headcountPeriod": "2026-02-01",
+   "headcountPrevYear": 470100
+  },
+  "HIG": {
+   "cik": 874766,
+   "name": "The Hartford",
+   "headcount": 19200,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 19100,
+   "medianPay": 113040,
+   "medianPayFiled": "2026-04-09",
+   "medianPayPrevYear": 101161,
+   "medianPayPrevFiled": "2025-04-10"
+  },
+  "HII": {
+   "cik": 1501585,
+   "name": "Huntington Ingalls Industries",
+   "headcount": 44000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 44000,
+   "medianPay": 85536,
+   "medianPayFiled": "2026-03-20",
+   "medianPayPrevYear": 77857,
+   "medianPayPrevFiled": "2025-03-21"
+  },
+  "HLT": {
+   "cik": 1585689,
+   "name": "Hilton Worldwide",
+   "medianPay": 50461,
+   "medianPayFiled": "2026-04-02",
+   "medianPayPrevYear": 48448,
+   "medianPayPrevFiled": "2025-04-04"
+  },
+  "HON": {
+   "cik": 773840,
+   "name": "Honeywell",
+   "headcount": 101000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 102000,
+   "medianPay": 85048,
+   "medianPayFiled": "2026-04-10",
+   "medianPayPrevYear": 79090,
+   "medianPayPrevFiled": "2025-04-09"
+  },
+  "HOOD": {
+   "cik": 1783879,
+   "name": "Robinhood Markets",
+   "headcount": 2900,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 2300,
+   "medianPay": 194162,
+   "medianPayFiled": "2026-04-22",
+   "medianPayPrevYear": 285061,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "HPE": {
+   "cik": 1645590,
+   "name": "Hewlett Packard Enterprise",
+   "headcount": 67000,
+   "headcountPeriod": "2025-10-31",
+   "headcountPrevYear": 61000,
+   "medianPay": 74276,
+   "medianPayFiled": "2026-02-11",
+   "medianPayPrevYear": 66886,
+   "medianPayPrevFiled": "2025-02-12"
+  },
+  "HPQ": {
+   "cik": 47217,
+   "name": "HP Inc.",
+   "headcount": 55000,
+   "headcountPeriod": "2025-10-31",
+   "headcountPrevYear": 58000,
+   "medianPay": 77679,
+   "medianPayFiled": "2026-02-25",
+   "medianPayPrevYear": 69571,
+   "medianPayPrevFiled": "2025-02-24"
+  },
+  "HRL": {
+   "cik": 48465,
+   "name": "Hormel Foods",
+   "headcount": 20000,
+   "headcountPeriod": "2025-10-26",
+   "headcountPrevYear": 20000,
+   "medianPay": 57789,
+   "medianPayFiled": "2025-12-17",
+   "medianPayPrevYear": 54929,
+   "medianPayPrevFiled": "2024-12-18"
+  },
+  "HSIC": {
+   "cik": 1000228,
+   "name": "Henry Schein",
+   "headcount": 25000,
+   "headcountPeriod": "2025-12-27",
+   "headcountPrevYear": 25000,
+   "medianPay": 78954,
+   "medianPayFiled": "2026-04-08",
+   "medianPayPrevYear": 76751,
+   "medianPayPrevFiled": "2025-04-09"
+  },
+  "HST": {
+   "cik": 1070750,
+   "name": "Host Hotels & Resorts",
+   "headcount": 162,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 165,
+   "medianPay": 243291,
+   "medianPayFiled": "2026-04-08",
+   "medianPayPrevYear": 260628,
+   "medianPayPrevFiled": "2025-04-03"
+  },
+  "HSY": {
+   "cik": 47111,
+   "name": "The Hershey Company",
+   "headcount": 2045,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 1490
+  },
+  "HUBB": {
+   "cik": 48898,
+   "name": "Hubbell Incorporated",
+   "headcount": 18000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 17700,
+   "medianPay": 64210,
+   "medianPayFiled": "2026-03-23",
+   "medianPayPrevYear": 56881,
+   "medianPayPrevFiled": "2025-03-24"
+  },
+  "HUM": {
+   "cik": 49071,
+   "name": "Humana",
+   "headcount": 67060,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 65680
+  },
+  "HWM": {
+   "cik": 4281,
+   "name": "Howmet Aerospace",
+   "headcount": 25430,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 23930,
+   "medianPay": 63551,
+   "medianPayFiled": "2026-04-06",
+   "medianPayPrevYear": 60680,
+   "medianPayPrevFiled": "2025-04-16"
+  },
+  "IBKR": {
+   "cik": 1381197,
+   "name": "Interactive Brokers",
+   "headcount": 3182,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 2998,
+   "medianPay": 111200,
+   "medianPayFiled": "2026-03-11",
+   "medianPayPrevYear": 106000,
+   "medianPayPrevFiled": "2025-03-06"
+  },
+  "IBM": {
+   "cik": 51143,
+   "name": "IBM",
+   "medianPay": 49630,
+   "medianPayFiled": "2026-03-10",
+   "medianPayPrevYear": 48582,
+   "medianPayPrevFiled": "2025-03-10"
+  },
+  "ICE": {
+   "cik": 1571949,
+   "name": "Intercontinental Exchange",
+   "headcount": 12844,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 12920,
+   "medianPay": 112902,
+   "medianPayFiled": "2026-03-31",
+   "medianPayPrevYear": 135737,
+   "medianPayPrevFiled": "2025-03-31"
+  },
+  "IDXX": {
+   "cik": 874716,
+   "name": "Idexx Laboratories",
+   "headcount": 11000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 11000,
+   "medianPay": 66956,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 62855,
+   "medianPayPrevFiled": "2025-03-28"
+  },
+  "IEX": {
+   "cik": 832101,
+   "name": "IDEX Corporation",
+   "headcount": 8700,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 9000
+  },
+  "IFF": {
+   "cik": 51253,
+   "name": "International Flavors & Fragrances",
+   "headcount": 21500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 22400,
+   "medianPay": 62828,
+   "medianPayFiled": "2026-03-18",
+   "medianPayPrevYear": 63704,
+   "medianPayPrevFiled": "2025-03-18"
+  },
+  "INCY": {
+   "cik": 879169,
+   "name": "Incyte",
+   "headcount": 2844,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 2617
+  },
+  "INTC": {
+   "cik": 50863,
+   "name": "Intel",
+   "headcount": 85100,
+   "headcountPeriod": "2025-12-27",
+   "headcountPrevYear": 108900,
+   "medianPay": 114900,
+   "medianPayFiled": "2026-03-23",
+   "medianPayPrevYear": 96100,
+   "medianPayPrevFiled": "2025-03-27"
+  },
+  "INTU": {
+   "cik": 896878,
+   "name": "Intuit",
+   "headcount": 18600,
+   "headcountPeriod": "2026-07-31",
+   "headcountPrevYear": 18200,
+   "medianPay": 242190,
+   "medianPayFiled": "2025-11-26",
+   "medianPayPrevYear": 200562,
+   "medianPayPrevFiled": "2024-11-27"
+  },
+  "INVH": {
+   "cik": 1687229,
+   "name": "Invitation Homes",
+   "headcount": 1725,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 1750,
+   "medianPay": 76233,
+   "medianPayFiled": "2026-03-26",
+   "medianPayPrevYear": 74101,
+   "medianPayPrevFiled": "2025-04-03"
+  },
+  "IP": {
+   "cik": 51434,
+   "name": "International Paper",
+   "headcount": 62602,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 37000,
+   "medianPay": 90506,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 78960,
+   "medianPayPrevFiled": "2025-04-01"
+  },
+  "IQV": {
+   "cik": 1478242,
+   "name": "IQVIA",
+   "headcount": 93000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 88000,
+   "medianPay": 102424,
+   "medianPayFiled": "2026-02-27",
+   "medianPayPrevYear": 77918,
+   "medianPayPrevFiled": "2025-02-28"
+  },
+  "IR": {
+   "cik": 1699150,
+   "name": "Ingersoll Rand",
+   "headcount": 21000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 21000
+  },
+  "IRM": {
+   "cik": 1020569,
+   "name": "Iron Mountain (company)",
+   "headcount": 11700,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 11150,
+   "medianPay": 37949,
+   "medianPayFiled": "2026-03-24",
+   "medianPayPrevYear": 37085,
+   "medianPayPrevFiled": "2025-04-18"
+  },
+  "ISRG": {
+   "cik": 1035267,
+   "name": "Intuitive Surgical",
+   "headcount": 17021,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 15638,
+   "medianPay": 124131,
+   "medianPayFiled": "2026-03-13",
+   "medianPayPrevYear": 118680,
+   "medianPayPrevFiled": "2025-03-14"
+  },
+  "IT": {
+   "cik": 749251,
+   "name": "Gartner",
+   "headcount": 20244,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 21044
+  },
+  "ITW": {
+   "cik": 49826,
+   "name": "Illinois Tool Works",
+   "headcount": 43000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 44000,
+   "medianPay": 73094,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 69508,
+   "medianPayPrevFiled": "2025-03-21"
+  },
+  "IVZ": {
+   "cik": 914208,
+   "name": "Invesco",
+   "headcount": 8508,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 8489,
+   "medianPay": 122418,
+   "medianPayFiled": "2026-04-02",
+   "medianPayPrevYear": 117537,
+   "medianPayPrevFiled": "2025-03-28"
+  },
+  "J": {
+   "cik": 52988,
+   "name": "Jacobs Solutions",
+   "headcount": 43000,
+   "headcountPeriod": "2025-09-26",
+   "headcountPrevYear": 45000,
+   "medianPay": 87962,
+   "medianPayFiled": "2025-12-18",
+   "medianPayPrevYear": 97999,
+   "medianPayPrevFiled": "2024-12-16"
+  },
+  "JBHT": {
+   "cik": 728535,
+   "name": "J.B. Hunt",
+   "headcount": 31750,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 33646,
+   "medianPay": 76432,
+   "medianPayFiled": "2026-03-11"
+  },
+  "JBL": {
+   "cik": 898293,
+   "name": "Jabil",
+   "medianPay": 12144,
+   "medianPayFiled": "2025-12-12",
+   "medianPayPrevYear": 10191,
+   "medianPayPrevFiled": "2024-12-12"
+  },
+  "JCI": {
+   "cik": 833444,
+   "name": "Johnson Controls",
+   "headcount": 87000,
+   "headcountPeriod": "2025-09-30",
+   "headcountPrevYear": 94000,
+   "medianPay": 66795,
+   "medianPayFiled": "2026-01-16",
+   "medianPayPrevYear": 49035,
+   "medianPayPrevFiled": "2025-01-21"
+  },
+  "JKHY": {
+   "cik": 779152,
+   "name": "Jack Henry & Associates",
+   "headcount": 7300,
+   "headcountPeriod": "2026-06-30",
+   "headcountPrevYear": 7240,
+   "medianPay": 93193,
+   "medianPayFiled": "2025-10-02",
+   "medianPayPrevYear": 86594,
+   "medianPayPrevFiled": "2024-10-03"
+  },
+  "JNJ": {
+   "cik": 200406,
+   "name": "Johnson & Johnson",
+   "headcount": 138200,
+   "headcountPeriod": "2025-12-28",
+   "headcountPrevYear": 138100
+  },
+  "JPM": {
+   "cik": 19617,
+   "name": "JPMorgan Chase",
+   "headcount": 318512,
+   "headcountPeriod": "2025-12-31",
+   "medianPay": 111905,
+   "medianPayFiled": "2026-04-06",
+   "medianPayPrevYear": 108218,
+   "medianPayPrevFiled": "2025-04-07"
+  },
+  "KDP": {
+   "cik": 1418135,
+   "name": "Keurig Dr Pepper",
+   "headcount": 30600,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 29400,
+   "medianPay": 64534,
+   "medianPayFiled": "2026-04-24",
+   "medianPayPrevYear": 55198,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "KEY": {
+   "cik": 91576,
+   "name": "KeyCorp",
+   "headcount": 17883,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 17406
+  },
+  "KEYS": {
+   "cik": 1601046,
+   "name": "Keysight Technologies",
+   "headcount": 16800,
+   "headcountPeriod": "2025-10-31",
+   "headcountPrevYear": 15500,
+   "medianPay": 85838,
+   "medianPayFiled": "2026-01-26"
+  },
+  "KHC": {
+   "cik": 1637459,
+   "name": "Kraft Heinz",
+   "headcount": 35000,
+   "headcountPeriod": "2025-12-27",
+   "headcountPrevYear": 36000
+  },
+  "KIM": {
+   "cik": 879101,
+   "name": "Kimco Realty",
+   "medianPay": 119871,
+   "medianPayFiled": "2026-04-08",
+   "medianPayPrevYear": 105813,
+   "medianPayPrevFiled": "2025-03-19"
+  },
+  "KKR": {
+   "cik": 1404912,
+   "name": "Kohlberg Kravis Roberts",
+   "headcount": 4200,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 4834
+  },
+  "KLAC": {
+   "cik": 319201,
+   "name": "KLA Corporation",
+   "headcount": 17000,
+   "headcountPeriod": "2026-06-30",
+   "headcountPrevYear": 15000,
+   "medianPay": 97645,
+   "medianPayFiled": "2025-09-23",
+   "medianPayPrevYear": 87477,
+   "medianPayPrevFiled": "2024-09-24"
+  },
+  "KMB": {
+   "cik": 55785,
+   "name": "Kimberly-Clark",
+   "headcount": 36000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 38000,
+   "medianPay": 56552,
+   "medianPayFiled": "2026-03-23",
+   "medianPayPrevYear": 53733,
+   "medianPayPrevFiled": "2025-03-10"
+  },
+  "KMI": {
+   "cik": 1506307,
+   "name": "Kinder Morgan",
+   "headcount": 11028,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 10933,
+   "medianPay": 135175,
+   "medianPayFiled": "2026-04-02",
+   "medianPayPrevYear": 126918,
+   "medianPayPrevFiled": "2025-04-04"
+  },
+  "KO": {
+   "cik": 21344,
+   "name": "The Coca-Cola Company",
+   "headcount": 65900,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 69700,
+   "medianPay": 17947,
+   "medianPayFiled": "2026-03-16",
+   "medianPayPrevYear": 14144,
+   "medianPayPrevFiled": "2025-03-17"
+  },
+  "KR": {
+   "cik": 56873,
+   "name": "Kroger",
+   "headcount": 403000,
+   "headcountPeriod": "2026-01-31",
+   "headcountPrevYear": 409000,
+   "medianPay": 34552,
+   "medianPayFiled": "2026-05-13",
+   "medianPayPrevYear": 34213,
+   "medianPayPrevFiled": "2025-05-15"
+  },
+  "KVUE": {
+   "cik": 1944048,
+   "name": "Kenvue",
+   "headcount": 22000,
+   "headcountPeriod": "2025-12-28",
+   "headcountPrevYear": 22000,
+   "medianPay": 70244,
+   "medianPayFiled": "2026-04-08"
+  },
+  "L": {
+   "cik": 60086,
+   "name": "Loews Corporation",
+   "medianPay": 93719,
+   "medianPayFiled": "2026-04-01",
+   "medianPayPrevYear": 66345,
+   "medianPayPrevFiled": "2025-04-02"
+  },
+  "LDOS": {
+   "cik": 1336920,
+   "name": "Leidos",
+   "headcount": 47000,
+   "headcountPeriod": "2026-01-02",
+   "headcountPrevYear": 48000,
+   "medianPay": 120427,
+   "medianPayFiled": "2026-03-19",
+   "medianPayPrevYear": 108548,
+   "medianPayPrevFiled": "2025-03-17"
+  },
+  "LEN": {
+   "cik": 920760,
+   "name": "Lennar"
+  },
+  "LH": {
+   "cik": 920148,
+   "name": "Labcorp",
+   "medianPay": 62929,
+   "medianPayFiled": "2026-04-10",
+   "medianPayPrevYear": 57316,
+   "medianPayPrevFiled": "2025-04-04"
+  },
+  "LHX": {
+   "cik": 202058,
+   "name": "L3Harris",
+   "headcount": 45000,
+   "headcountPeriod": "2026-01-02",
+   "headcountPrevYear": 47000,
+   "medianPay": 111832,
+   "medianPayFiled": "2026-04-01",
+   "medianPayPrevYear": 113639,
+   "medianPayPrevFiled": "2025-03-07"
+  },
+  "LII": {
+   "cik": 1069202,
+   "name": "Lennox International",
+   "headcount": 12900,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 14200,
+   "medianPay": 63587,
+   "medianPayFiled": "2026-04-08",
+   "medianPayPrevYear": 61166,
+   "medianPayPrevFiled": "2025-04-09"
+  },
+  "LIN": {
+   "cik": 1707925,
+   "name": "Linde plc",
+   "headcount": 65177,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 65289,
+   "medianPay": 50860,
+   "medianPayFiled": "2026-04-29",
+   "medianPayPrevYear": 52889,
+   "medianPayPrevFiled": "2025-04-30"
+  },
+  "LITE": {
+   "cik": 1633978,
+   "name": "Lumentum",
+   "headcount": 13757,
+   "headcountPeriod": "2026-06-27",
+   "headcountPrevYear": 10562,
+   "medianPay": 9595,
+   "medianPayFiled": "2025-10-07"
+  },
+  "LLY": {
+   "cik": 59478,
+   "name": "Eli Lilly and Company",
+   "headcount": 50000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 47000,
+   "medianPay": 125100,
+   "medianPayFiled": "2026-03-20",
+   "medianPayPrevYear": 120574,
+   "medianPayPrevFiled": "2025-03-21"
+  },
+  "LMT": {
+   "cik": 936468,
+   "name": "Lockheed Martin",
+   "headcount": 123000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 121000,
+   "medianPay": 130614,
+   "medianPayFiled": "2026-03-26",
+   "medianPayPrevYear": 125963,
+   "medianPayPrevFiled": "2025-03-27"
+  },
+  "LNT": {
+   "cik": 352541,
+   "name": "Alliant Energy"
+  },
+  "LOW": {
+   "cik": 60667,
+   "name": "Lowe's",
+   "headcount": 167000,
+   "headcountPeriod": "2026-01-30",
+   "headcountPrevYear": 161000
+  },
+  "LRCX": {
+   "cik": 707549,
+   "name": "Lam Research",
+   "headcount": 23300,
+   "headcountPeriod": "2026-06-28",
+   "headcountPrevYear": 19000,
+   "medianPay": 91230,
+   "medianPayFiled": "2025-09-24",
+   "medianPayPrevYear": 83462,
+   "medianPayPrevFiled": "2024-09-25"
+  },
+  "LULU": {
+   "cik": 1397187,
+   "name": "Lululemon",
+   "headcount": 675048,
+   "headcountPeriod": "2026-02-01",
+   "headcountPrevYear": 671622,
+   "medianPay": 20536,
+   "medianPayFiled": "2025-04-29",
+   "medianPayPrevYear": 19518,
+   "medianPayPrevFiled": "2024-04-25"
+  },
+  "LUV": {
+   "cik": 92380,
+   "name": "Southwest Airlines",
+   "headcount": 72790,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 72450,
+   "medianPay": 95715,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 91442,
+   "medianPayPrevFiled": "2025-04-04"
+  },
+  "LVS": {
+   "cik": 1300514,
+   "name": "Las Vegas Sands",
+   "medianPay": 40215,
+   "medianPayFiled": "2026-04-01",
+   "medianPayPrevYear": 42426,
+   "medianPayPrevFiled": "2025-04-03"
+  },
+  "LYB": {
+   "cik": 1489393,
+   "name": "LyondellBasell",
+   "headcount": 18970,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 13700
+  },
+  "LYV": {
+   "cik": 1335258,
+   "name": "Live Nation Entertainment",
+   "headcount": 37000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 34500
+  },
+  "MA": {
+   "cik": 1141391,
+   "name": "Mastercard",
+   "headcount": 6000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 5000,
+   "medianPay": 124650,
+   "medianPayFiled": "2026-04-27",
+   "medianPayPrevYear": 120501,
+   "medianPayPrevFiled": "2025-04-28"
+  },
+  "MAA": {
+   "cik": 912595,
+   "name": "Mid-America Apartment Communities",
+   "headcount": 2507,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 2532,
+   "medianPay": 65112,
+   "medianPayFiled": "2026-04-06",
+   "medianPayPrevYear": 59237,
+   "medianPayPrevFiled": "2025-04-01"
+  },
+  "MAR": {
+   "cik": 1048286,
+   "name": "Marriott International",
+   "headcount": 414000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 418000,
+   "medianPay": 48486,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 46211,
+   "medianPayPrevFiled": "2025-03-27"
+  },
+  "MAS": {
+   "cik": 62996,
+   "name": "Masco",
+   "headcount": 18000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 18000,
+   "medianPay": 52107,
+   "medianPayFiled": "2026-04-10",
+   "medianPayPrevYear": 51203,
+   "medianPayPrevFiled": "2025-04-07"
+  },
+  "MCD": {
+   "cik": 63908,
+   "name": "McDonald's",
+   "headcount": 150000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 150000,
+   "medianPay": 19020,
+   "medianPayFiled": "2026-04-07",
+   "medianPayPrevYear": 17492,
+   "medianPayPrevFiled": "2025-04-07"
+  },
+  "MCHP": {
+   "cik": 827054,
+   "name": "Microchip Technology",
+   "headcount": 17900,
+   "headcountPeriod": "2026-03-31",
+   "headcountPrevYear": 19400
+  },
+  "MCK": {
+   "cik": 927653,
+   "name": "McKesson Corporation",
+   "headcount": 43000,
+   "headcountPeriod": "2026-03-31",
+   "headcountPrevYear": 45000,
+   "medianPay": 67803,
+   "medianPayFiled": "2026-06-12",
+   "medianPayPrevYear": 68406,
+   "medianPayPrevFiled": "2025-06-20"
+  },
+  "MCO": {
+   "cik": 1059556,
+   "name": "Moody's Corporation",
+   "headcount": 16000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 16000,
+   "medianPay": 123561,
+   "medianPayFiled": "2026-03-04",
+   "medianPayPrevYear": 106708,
+   "medianPayPrevFiled": "2025-03-05"
+  },
+  "MDLZ": {
+   "cik": 1103982,
+   "name": "Mondelez International",
+   "headcount": 91000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 90000,
+   "medianPay": 38024,
+   "medianPayFiled": "2026-04-03",
+   "medianPayPrevYear": 33948,
+   "medianPayPrevFiled": "2025-04-04"
+  },
+  "MDT": {
+   "cik": 1613103,
+   "name": "Medtronic",
+   "headcount": 1200,
+   "headcountPeriod": "2026-04-24",
+   "headcountPrevYear": 1500,
+   "medianPay": 75587,
+   "medianPayFiled": "2026-08-17",
+   "medianPayPrevYear": 68770,
+   "medianPayPrevFiled": "2025-08-25"
+  },
+  "MELI": {
+   "cik": 1099590,
+   "name": "MERCADOLIBRE INC",
+   "headcount": 123670,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 84207
+  },
+  "MET": {
+   "cik": 1099219,
+   "name": "MetLife",
+   "headcount": 46000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 45000,
+   "medianPay": 80510,
+   "medianPayFiled": "2026-04-29",
+   "medianPayPrevYear": 82703,
+   "medianPayPrevFiled": "2025-04-29"
+  },
+  "META": {
+   "cik": 1326801,
+   "name": "Meta Platforms",
+   "headcount": 78865,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 74067
+  },
+  "MGM": {
+   "cik": 789570,
+   "name": "MGM Resorts",
+   "headcount": 18000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 18000
+  },
+  "MKC": {
+   "cik": 63754,
+   "name": "McCormick & Company",
+   "headcount": 14100,
+   "headcountPeriod": "2025-11-30",
+   "headcountPrevYear": 14100,
+   "medianPay": 41468,
+   "medianPayFiled": "2026-02-18",
+   "medianPayPrevYear": 45444,
+   "medianPayPrevFiled": "2025-02-13"
+  },
+  "MLM": {
+   "cik": 916076,
+   "name": "Martin Marietta Materials",
+   "headcount": 9600,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 9400
+  },
+  "MMM": {
+   "cik": 66740,
+   "name": "3M",
+   "headcount": 60500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 61500,
+   "medianPay": 66524,
+   "medianPayFiled": "2026-03-25",
+   "medianPayPrevYear": 74417,
+   "medianPayPrevFiled": "2025-03-26"
+  },
+  "MNST": {
+   "cik": 865752,
+   "name": "Monster Beverage",
+   "headcount": 6891,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 6558,
+   "medianPay": 88521,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 102247,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "MO": {
+   "cik": 764180,
+   "name": "Altria",
+   "headcount": 5900,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 6200
+  },
+  "MOS": {
+   "cik": 1285785,
+   "name": "The Mosaic Company",
+   "headcount": 13249,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 13765,
+   "medianPay": 51237,
+   "medianPayFiled": "2026-04-16",
+   "medianPayPrevYear": 43087,
+   "medianPayPrevFiled": "2025-04-16"
+  },
+  "MPC": {
+   "cik": 1510295,
+   "name": "Marathon Petroleum",
+   "headcount": 18500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 18300,
+   "medianPay": 186132,
+   "medianPayFiled": "2026-03-16",
+   "medianPayPrevYear": 173773,
+   "medianPayPrevFiled": "2025-03-17"
+  },
+  "MPWR": {
+   "cik": 1280452,
+   "name": "Monolithic Power Systems",
+   "headcount": 4501,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 4017
+  },
+  "MRK": {
+   "cik": 310158,
+   "name": "Merck & Co.",
+   "headcount": 75000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 75000,
+   "medianPay": 108614,
+   "medianPayFiled": "2026-04-08",
+   "medianPayPrevYear": 106091,
+   "medianPayPrevFiled": "2025-04-09"
+  },
+  "MRNA": {
+   "cik": 1682852,
+   "name": "Moderna",
+   "headcount": 4700,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 5800,
+   "medianPay": 225053,
+   "medianPayFiled": "2026-03-16"
+  },
+  "MRSH": {
+   "cik": 62709,
+   "name": "Marsh McLennan",
+   "headcount": 95000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 90000,
+   "medianPay": 76092,
+   "medianPayFiled": "2026-03-31",
+   "medianPayPrevYear": 72671,
+   "medianPayPrevFiled": "2025-03-28"
+  },
+  "MRVL": {
+   "cik": 1835632,
+   "name": "Marvell Technology",
+   "headcount": 7480,
+   "headcountPeriod": "2026-01-31",
+   "headcountPrevYear": 7042,
+   "medianPay": 158857,
+   "medianPayFiled": "2026-05-13",
+   "medianPayPrevYear": 171377,
+   "medianPayPrevFiled": "2025-05-01"
+  },
+  "MS": {
+   "cik": 895421,
+   "name": "Morgan Stanley",
+   "headcount": 83000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 80000
+  },
+  "MSCI": {
+   "cik": 1408198,
+   "name": "MSCI",
+   "headcount": 6268,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 6132,
+   "medianPay": 50461,
+   "medianPayFiled": "2026-03-11",
+   "medianPayPrevYear": 50917,
+   "medianPayPrevFiled": "2025-03-12"
+  },
+  "MSFT": {
+   "cik": 789019,
+   "name": "Microsoft",
+   "headcount": 223000,
+   "headcountPeriod": "2026-06-30",
+   "headcountPrevYear": 228000,
+   "medianPay": 200972,
+   "medianPayFiled": "2025-10-21",
+   "medianPayPrevYear": 193744,
+   "medianPayPrevFiled": "2024-10-24"
+  },
+  "MSI": {
+   "cik": 68505,
+   "name": "Motorola Solutions",
+   "headcount": 23000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 21000
+  },
+  "MSTR": {
+   "cik": 1050446,
+   "name": "Strategy Inc",
+   "headcount": 1539,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 1534,
+   "medianPay": 82083,
+   "medianPayFiled": "2026-04-28",
+   "medianPayPrevYear": 91502,
+   "medianPayPrevFiled": "2025-04-28"
+  },
+  "MTB": {
+   "cik": 36270,
+   "name": "M&T Bank",
+   "headcount": 21839,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 21873,
+   "medianPay": 83428,
+   "medianPayFiled": "2026-03-10",
+   "medianPayPrevYear": 87679,
+   "medianPayPrevFiled": "2025-03-04"
+  },
+  "MTD": {
+   "cik": 1037646,
+   "name": "Mettler Toledo",
+   "headcount": 18100,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 17300,
+   "medianPay": 56972,
+   "medianPayFiled": "2026-03-18",
+   "medianPayPrevYear": 45374,
+   "medianPayPrevFiled": "2025-03-17"
+  },
+  "MU": {
+   "cik": 723125,
+   "name": "Micron Technology",
+   "headcount": 53000,
+   "headcountPeriod": "2025-08-28",
+   "headcountPrevYear": 48000,
+   "medianPay": 58461,
+   "medianPayFiled": "2025-11-25",
+   "medianPayPrevYear": 64042,
+   "medianPayPrevFiled": "2024-11-26"
+  },
+  "NBIS": {
+   "cik": 1513845,
+   "name": "Nebius Group N.V."
+  },
+  "NCLH": {
+   "cik": 1513761,
+   "name": "Norwegian Cruise Line Holdings",
+   "headcount": 39200,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 36500,
+   "medianPay": 25954,
+   "medianPayFiled": "2026-04-30"
+  },
+  "NDAQ": {
+   "cik": 1120193,
+   "name": "Nasdaq, Inc.",
+   "headcount": 9525,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 9162,
+   "medianPay": 101885,
+   "medianPayFiled": "2026-04-24",
+   "medianPayPrevYear": 92031,
+   "medianPayPrevFiled": "2025-04-28"
+  },
+  "NDSN": {
+   "cik": 72331,
+   "name": "Nordson Corporation",
+   "headcount": 8000,
+   "headcountPeriod": "2025-10-31",
+   "headcountPrevYear": 8000,
+   "medianPay": 62650,
+   "medianPayFiled": "2026-01-16",
+   "medianPayPrevYear": 71870,
+   "medianPayPrevFiled": "2025-01-17"
+  },
+  "NEE": {
+   "cik": 753308,
+   "name": "NextEra Energy",
+   "headcount": 9400,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 9300,
+   "medianPay": 164555,
+   "medianPayFiled": "2026-04-01",
+   "medianPayPrevYear": 146532,
+   "medianPayPrevFiled": "2025-04-01"
+  },
+  "NEM": {
+   "cik": 1164727,
+   "name": "Newmont",
+   "headcount": 26600,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 22200,
+   "medianPay": 83771,
+   "medianPayFiled": "2026-03-26",
+   "medianPayPrevYear": 64119,
+   "medianPayPrevFiled": "2025-03-14"
+  },
+  "NFLX": {
+   "cik": 1065280,
+   "name": "Netflix, Inc.",
+   "headcount": 16000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 14000,
+   "medianPay": 211201,
+   "medianPayFiled": "2026-04-16",
+   "medianPayPrevYear": 215503,
+   "medianPayPrevFiled": "2025-04-17"
+  },
+  "NI": {
+   "cik": 1111711,
+   "name": "NiSource",
+   "medianPay": 125021,
+   "medianPayFiled": "2026-03-30",
+   "medianPayPrevYear": 125174,
+   "medianPayPrevFiled": "2025-03-31"
+  },
+  "NKE": {
+   "cik": 320187,
+   "name": "Nike, Inc.",
+   "headcount": 73000,
+   "headcountPeriod": "2026-05-31",
+   "headcountPrevYear": 77800,
+   "medianPay": 48695,
+   "medianPayFiled": "2026-07-15",
+   "medianPayPrevYear": 48723,
+   "medianPayPrevFiled": "2025-07-17"
+  },
+  "NOC": {
+   "cik": 1133421,
+   "name": "Northrop Grumman",
+   "headcount": 95000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 97000,
+   "medianPay": 112998,
+   "medianPayFiled": "2026-04-03",
+   "medianPayPrevYear": 109782,
+   "medianPayPrevFiled": "2025-04-04"
+  },
+  "NOW": {
+   "cik": 1373715,
+   "name": "ServiceNow",
+   "headcount": 29187,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 26293,
+   "medianPay": 205259,
+   "medianPayFiled": "2026-04-06"
+  },
+  "NRG": {
+   "cik": 1013871,
+   "name": "NRG Energy",
+   "headcount": 16702,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 15637,
+   "medianPay": 93161,
+   "medianPayFiled": "2026-03-18",
+   "medianPayPrevYear": 88545,
+   "medianPayPrevFiled": "2025-03-19"
+  },
+  "NSC": {
+   "cik": 702165,
+   "name": "Norfolk Southern Railway",
+   "headcount": 19400,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 20200,
+   "medianPay": 118895,
+   "medianPayFiled": "2026-03-27"
+  },
+  "NTAP": {
+   "cik": 1002047,
+   "name": "NetApp",
+   "headcount": 11700,
+   "headcountPeriod": "2026-04-24",
+   "headcountPrevYear": 11700
+  },
+  "NTRS": {
+   "cik": 73124,
+   "name": "Northern Trust",
+   "headcount": 23800,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 23300,
+   "medianPay": 73867,
+   "medianPayFiled": "2026-03-11",
+   "medianPayPrevYear": 72673,
+   "medianPayPrevFiled": "2025-03-12"
+  },
+  "NUE": {
+   "cik": 73309,
+   "name": "Nucor",
+   "headcount": 100,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 100,
+   "medianPay": 133886,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 98334,
+   "medianPayPrevFiled": "2025-03-24"
+  },
+  "NVDA": {
+   "cik": 1045810,
+   "name": "Nvidia",
+   "headcount": 42000,
+   "headcountPeriod": "2026-01-25",
+   "headcountPrevYear": 36000,
+   "medianPay": 282050,
+   "medianPayFiled": "2026-05-12",
+   "medianPayPrevYear": 301233,
+   "medianPayPrevFiled": "2025-05-13"
+  },
+  "NVR": {
+   "cik": 906163,
+   "name": "NVR, Inc.",
+   "headcount": 7000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 7000,
+   "medianPay": 88431,
+   "medianPayFiled": "2026-03-17",
+   "medianPayPrevYear": 75244,
+   "medianPayPrevFiled": "2025-03-18"
+  },
+  "NWS": {
+   "cik": 1564708,
+   "name": "News Corp",
+   "headcount": 21700,
+   "headcountPeriod": "2026-06-30",
+   "headcountPrevYear": 22300,
+   "medianPay": 93321,
+   "medianPayFiled": "2025-10-08",
+   "medianPayPrevYear": 77534,
+   "medianPayPrevFiled": "2023-10-04"
+  },
+  "NWSA": {
+   "cik": 1564708,
+   "name": "News Corp",
+   "headcount": 21700,
+   "headcountPeriod": "2026-06-30",
+   "headcountPrevYear": 22300,
+   "medianPay": 93321,
+   "medianPayFiled": "2025-10-08",
+   "medianPayPrevYear": 77534,
+   "medianPayPrevFiled": "2023-10-04"
+  },
+  "NXPI": {
+   "cik": 1413447,
+   "name": "NXP Semiconductors",
+   "headcount": 32169,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 33100,
+   "medianPay": 53654,
+   "medianPayFiled": "2026-04-27",
+   "medianPayPrevYear": 46891,
+   "medianPayPrevFiled": "2025-04-29"
+  },
+  "O": {
+   "cik": 726728,
+   "name": "Realty Income",
+   "medianPay": 154939,
+   "medianPayFiled": "2026-03-25",
+   "medianPayPrevYear": 143475,
+   "medianPayPrevFiled": "2025-03-26"
+  },
+  "ODFL": {
+   "cik": 878927,
+   "name": "Old Dominion Freight Line",
+   "medianPay": 79034,
+   "medianPayFiled": "2026-04-20",
+   "medianPayPrevYear": 77394,
+   "medianPayPrevFiled": "2025-04-21"
+  },
+  "OKE": {
+   "cik": 1039684,
+   "name": "Oneok",
+   "headcount": 6326,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 5177,
+   "medianPay": 174009,
+   "medianPayFiled": "2026-04-01"
+  },
+  "OMC": {
+   "cik": 29989,
+   "name": "Omnicom Group",
+   "headcount": 120000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 74900,
+   "medianPay": 57337,
+   "medianPayFiled": "2026-03-26",
+   "medianPayPrevYear": 43832,
+   "medianPayPrevFiled": "2025-12-22"
+  },
+  "ON": {
+   "cik": 1097864,
+   "name": "onsemi",
+   "headcount": 2400,
+   "headcountPeriod": "2025-12-31"
+  },
+  "ORCL": {
+   "cik": 1341439,
+   "name": "Oracle Corporation",
+   "headcount": 141000,
+   "headcountPeriod": "2026-05-31",
+   "headcountPrevYear": 162000
+  },
+  "ORLY": {
+   "cik": 898173,
+   "name": "O'Reilly Auto Parts",
+   "headcount": 92923,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 93047
+  },
+  "OTIS": {
+   "cik": 1781335,
+   "name": "Otis Worldwide",
+   "headcount": 72000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 72000,
+   "medianPay": 59408,
+   "medianPayFiled": "2026-04-17",
+   "medianPayPrevYear": 61120,
+   "medianPayPrevFiled": "2025-04-04"
+  },
+  "OXY": {
+   "cik": 797468,
+   "name": "Occidental Petroleum"
+  },
+  "PANW": {
+   "cik": 1327567,
+   "name": "Palo Alto Networks",
+   "headcount": 21921,
+   "headcountPeriod": "2026-07-31",
+   "headcountPrevYear": 16068
+  },
+  "PAYX": {
+   "cik": 723531,
+   "name": "Paychex",
+   "headcount": 17600,
+   "headcountPeriod": "2026-05-31",
+   "medianPay": 71890,
+   "medianPayFiled": "2026-09-04",
+   "medianPayPrevYear": 70003,
+   "medianPayPrevFiled": "2025-08-29"
+  },
+  "PCAR": {
+   "cik": 75362,
+   "name": "Paccar",
+   "headcount": 25900,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 30100,
+   "medianPay": 274046,
+   "medianPayFiled": "2026-03-18"
+  },
+  "PCG": {
+   "cik": 1004980,
+   "name": "PG&E",
+   "headcount": 29000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 28400,
+   "medianPay": 198261,
+   "medianPayFiled": "2026-04-09",
+   "medianPayPrevYear": 181643,
+   "medianPayPrevFiled": "2025-04-10"
+  },
+  "PDD": {
+   "cik": 1737806,
+   "name": "PDD Holdings Inc."
+  },
+  "PEG": {
+   "cik": 788784,
+   "name": "Public Service Enterprise Group",
+   "medianPay": 174510,
+   "medianPayFiled": "2026-03-12",
+   "medianPayPrevYear": 152491,
+   "medianPayPrevFiled": "2025-03-13"
+  },
+  "PEP": {
+   "cik": 77476,
+   "name": "PepsiCo",
+   "headcount": 306000,
+   "headcountPeriod": "2025-12-27",
+   "headcountPrevYear": 319000,
+   "medianPay": 53296,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 53551,
+   "medianPayPrevFiled": "2025-03-28"
+  },
+  "PFE": {
+   "cik": 78003,
+   "name": "Pfizer",
+   "headcount": 75000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 81000
+  },
+  "PFG": {
+   "cik": 1126328,
+   "name": "Principal Financial Group",
+   "headcount": 19700,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 19700,
+   "medianPay": 87868,
+   "medianPayFiled": "2026-04-06",
+   "medianPayPrevYear": 77166,
+   "medianPayPrevFiled": "2025-04-07"
+  },
+  "PG": {
+   "cik": 80424,
+   "name": "Procter & Gamble",
+   "headcount": 104000,
+   "headcountPeriod": "2026-06-30",
+   "headcountPrevYear": 109000
+  },
+  "PGR": {
+   "cik": 80661,
+   "name": "Progressive Corporation",
+   "headcount": 70000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 66300,
+   "medianPay": 86906,
+   "medianPayFiled": "2026-03-23",
+   "medianPayPrevYear": 72617,
+   "medianPayPrevFiled": "2025-03-24"
+  },
+  "PH": {
+   "cik": 76334,
+   "name": "Parker Hannifin",
+   "medianPay": 68744,
+   "medianPayFiled": "2026-09-18",
+   "medianPayPrevYear": 66034,
+   "medianPayPrevFiled": "2025-09-19"
+  },
+  "PHM": {
+   "cik": 822416,
+   "name": "PulteGroup",
+   "headcount": 6506,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 6793
+  },
+  "PKG": {
+   "cik": 75677,
+   "name": "Packaging Corporation of America",
+   "headcount": 16800,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 15400,
+   "medianPay": 89867,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 85079,
+   "medianPayPrevFiled": "2025-03-27"
+  },
+  "PLD": {
+   "cik": 1045609,
+   "name": "Prologis",
+   "headcount": 2802,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 2703
+  },
+  "PLTR": {
+   "cik": 1321655,
+   "name": "Palantir Technologies",
+   "headcount": 4429,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 3936,
+   "medianPay": 235115,
+   "medianPayFiled": "2026-04-24",
+   "medianPayPrevYear": 229912,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "PM": {
+   "cik": 1413329,
+   "name": "Philip Morris International",
+   "headcount": 84900,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 83100,
+   "medianPay": 43244,
+   "medianPayFiled": "2026-03-26",
+   "medianPayPrevYear": 47109,
+   "medianPayPrevFiled": "2025-03-27"
+  },
+  "PNC": {
+   "cik": 713676,
+   "name": "PNC Financial Services",
+   "headcount": 1474,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 1498,
+   "medianPay": 130900,
+   "medianPayFiled": "2026-03-11",
+   "medianPayPrevYear": 125000,
+   "medianPayPrevFiled": "2025-03-12"
+  },
+  "PNR": {
+   "cik": 77360,
+   "name": "Pentair",
+   "headcount": 9000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 9750
+  },
+  "PNW": {
+   "cik": 764622,
+   "name": "Pinnacle West Capital",
+   "headcount": 6610,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 6403,
+   "medianPay": 182127,
+   "medianPayFiled": "2026-04-03",
+   "medianPayPrevYear": 168002,
+   "medianPayPrevFiled": "2025-04-08"
+  },
+  "PODD": {
+   "cik": 1145197,
+   "name": "Insulet Corporation",
+   "headcount": 5400,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 3900
+  },
+  "PPG": {
+   "cik": 79879,
+   "name": "PPG Industries",
+   "headcount": 43500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 46000,
+   "medianPay": 47032,
+   "medianPayFiled": "2026-03-05",
+   "medianPayPrevYear": 61459,
+   "medianPayPrevFiled": "2025-03-06"
+  },
+  "PPL": {
+   "cik": 922224,
+   "name": "PPL Corporation",
+   "medianPay": 178625,
+   "medianPayFiled": "2026-04-01",
+   "medianPayPrevYear": 166915,
+   "medianPayPrevFiled": "2025-04-02"
+  },
+  "PRU": {
+   "cik": 1137774,
+   "name": "Prudential Financial"
+  },
+  "PSA": {
+   "cik": 1393311,
+   "name": "Public Storage",
+   "headcount": 5770,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 5900,
+   "medianPay": 38819,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 36953,
+   "medianPayPrevFiled": "2025-03-28"
+  },
+  "PSKY": {
+   "cik": 2041610,
+   "name": "Paramount Skydance",
+   "headcount": 17600,
+   "headcountPeriod": "2025-12-31"
+  },
+  "PSX": {
+   "cik": 1534701,
+   "name": "Phillips 66",
+   "headcount": 12600,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 13200,
+   "medianPay": 159592,
+   "medianPayFiled": "2026-04-02",
+   "medianPayPrevYear": 156695,
+   "medianPayPrevFiled": "2024-04-03"
+  },
+  "PTC": {
+   "cik": 857005,
+   "name": "PTC (software company)",
+   "headcount": 7642,
+   "headcountPeriod": "2025-09-30",
+   "headcountPrevYear": 7501,
+   "medianPay": 90135,
+   "medianPayFiled": "2025-12-23",
+   "medianPayPrevYear": 89870,
+   "medianPayPrevFiled": "2025-01-02"
+  },
+  "PWR": {
+   "cik": 1050915,
+   "name": "Quanta Services",
+   "headcount": 69500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 58400,
+   "medianPay": 102192,
+   "medianPayFiled": "2026-04-10",
+   "medianPayPrevYear": 115503,
+   "medianPayPrevFiled": "2025-04-11"
+  },
+  "PYPL": {
+   "cik": 1633917,
+   "name": "PayPal",
+   "headcount": 23800,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 24400,
+   "medianPay": 114331,
+   "medianPayFiled": "2026-04-07",
+   "medianPayPrevYear": 95903,
+   "medianPayPrevFiled": "2025-04-21"
+  },
+  "Q": {
+   "cik": 2058873,
+   "name": "Qnity Electronics",
+   "headcount": 10000,
+   "headcountPeriod": "2025-12-31"
+  },
+  "QCOM": {
+   "cik": 804328,
+   "name": "Qualcomm",
+   "medianPay": 101639,
+   "medianPayFiled": "2026-01-22",
+   "medianPayPrevYear": 99451,
+   "medianPayPrevFiled": "2025-01-23"
+  },
+  "RCL": {
+   "cik": 884887,
+   "name": "Royal Caribbean Group",
+   "headcount": 108000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 106000
+  },
+  "RDDT": {
+   "cik": 1713445,
+   "name": "Reddit",
+   "headcount": 2555,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 2233,
+   "medianPay": 274953,
+   "medianPayFiled": "2026-04-23"
+  },
+  "REG": {
+   "cik": 910606,
+   "name": "Regency Centers",
+   "headcount": 507,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 500,
+   "medianPay": 154922,
+   "medianPayFiled": "2026-03-25",
+   "medianPayPrevYear": 137444,
+   "medianPayPrevFiled": "2025-03-26"
+  },
+  "REGN": {
+   "cik": 872589,
+   "name": "Regeneron Pharmaceuticals",
+   "headcount": 15410,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 15106
+  },
+  "RF": {
+   "cik": 1281761,
+   "name": "Regions Financial Corporation",
+   "headcount": 19969,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 19644,
+   "medianPay": 60237,
+   "medianPayFiled": "2026-03-23",
+   "medianPayPrevYear": 58895,
+   "medianPayPrevFiled": "2025-03-03"
+  },
+  "RJF": {
+   "cik": 720005,
+   "name": "Raymond James Financial",
+   "headcount": 19500,
+   "headcountPeriod": "2025-09-30",
+   "headcountPrevYear": 19000
+  },
+  "RKLB": {
+   "cik": 1819994,
+   "name": "Rocket Lab Corp",
+   "headcount": 2600,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 2100,
+   "medianPay": 78031,
+   "medianPayFiled": "2026-04-06",
+   "medianPayPrevYear": 71805,
+   "medianPayPrevFiled": "2025-07-11"
+  },
+  "RL": {
+   "cik": 1037038,
+   "name": "Ralph Lauren Corporation",
+   "headcount": 23600,
+   "headcountPeriod": "2026-03-28",
+   "headcountPrevYear": 23400
+  },
+  "RMD": {
+   "cik": 943819,
+   "name": "ResMed",
+   "headcount": 11370,
+   "headcountPeriod": "2026-06-30",
+   "headcountPrevYear": 10600,
+   "medianPay": 78354,
+   "medianPayFiled": "2025-10-02",
+   "medianPayPrevYear": 79096,
+   "medianPayPrevFiled": "2024-10-03"
+  },
+  "ROK": {
+   "cik": 1024478,
+   "name": "Rockwell Automation",
+   "headcount": 5000,
+   "headcountPeriod": "2025-09-30",
+   "medianPay": 55692,
+   "medianPayFiled": "2025-12-22"
+  },
+  "ROL": {
+   "cik": 84839,
+   "name": "Rollins, Inc.",
+   "headcount": 21946,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 20265,
+   "medianPay": 65116,
+   "medianPayFiled": "2026-03-17",
+   "medianPayPrevYear": 62200,
+   "medianPayPrevFiled": "2025-03-13"
+  },
+  "ROP": {
+   "cik": 882835,
+   "name": "Roper Technologies",
+   "headcount": 19400,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 18200,
+   "medianPay": 100901,
+   "medianPayFiled": "2026-04-07",
+   "medianPayPrevYear": 95181,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "ROST": {
+   "cik": 745732,
+   "name": "Ross Stores",
+   "headcount": 137145,
+   "headcountPeriod": "2026-01-31",
+   "headcountPrevYear": 136599,
+   "medianPay": 10059,
+   "medianPayFiled": "2026-04-07",
+   "medianPayPrevYear": 9602,
+   "medianPayPrevFiled": "2025-04-08"
+  },
+  "RSG": {
+   "cik": 1060391,
+   "name": "Republic Services",
+   "medianPay": 79734,
+   "medianPayFiled": "2026-03-24",
+   "medianPayPrevYear": 84950,
+   "medianPayPrevFiled": "2025-04-07"
+  },
+  "RTX": {
+   "cik": 101829,
+   "name": "RTX Corporation",
+   "headcount": 180000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 186000,
+   "medianPay": 120092,
+   "medianPayFiled": "2026-03-09",
+   "medianPayPrevYear": 113094,
+   "medianPayPrevFiled": "2025-03-10"
+  },
+  "RVTY": {
+   "cik": 31791,
+   "name": "Revvity",
+   "headcount": 11000,
+   "headcountPeriod": "2025-12-28",
+   "headcountPrevYear": 11000,
+   "medianPay": 57745,
+   "medianPayFiled": "2026-03-16",
+   "medianPayPrevYear": 53846,
+   "medianPayPrevFiled": "2025-03-12"
+  },
+  "SBAC": {
+   "cik": 1034054,
+   "name": "SBA Communications",
+   "headcount": 1844,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 1720,
+   "medianPay": 86943,
+   "medianPayFiled": "2026-04-09",
+   "medianPayPrevYear": 68157,
+   "medianPayPrevFiled": "2025-04-07"
+  },
+  "SBUX": {
+   "cik": 829224,
+   "name": "Starbucks",
+   "headcount": 381000,
+   "headcountPeriod": "2025-09-28",
+   "headcountPrevYear": 361000,
+   "medianPay": 17279,
+   "medianPayFiled": "2026-01-26",
+   "medianPayPrevYear": 14674,
+   "medianPayPrevFiled": "2025-01-24"
+  },
+  "SCHW": {
+   "cik": 316709,
+   "name": "Charles Schwab Corporation",
+   "medianPay": 131480,
+   "medianPayFiled": "2026-04-06",
+   "medianPayPrevYear": 125038,
+   "medianPayPrevFiled": "2025-04-04"
+  },
+  "SHOP": {
+   "cik": 1594805,
+   "name": "SHOPIFY INC.",
+   "headcount": 7600,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 8100
+  },
+  "SHW": {
+   "cik": 89800,
+   "name": "Sherwin-Williams",
+   "headcount": 64249,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 63890,
+   "medianPay": 60049,
+   "medianPayFiled": "2026-03-11",
+   "medianPayPrevYear": 56120,
+   "medianPayPrevFiled": "2025-03-06"
+  },
+  "SJM": {
+   "cik": 91419,
+   "name": "The J.M. Smucker Company",
+   "headcount": 400,
+   "headcountPeriod": "2026-04-30",
+   "medianPay": 77698,
+   "medianPayFiled": "2026-06-26",
+   "medianPayPrevYear": 79561,
+   "medianPayPrevFiled": "2025-06-27"
+  },
+  "SLB": {
+   "cik": 87347,
+   "name": "Schlumberger",
+   "headcount": 109000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 110000,
+   "medianPay": 140734,
+   "medianPayFiled": "2026-02-26"
+  },
+  "SMCI": {
+   "cik": 1375365,
+   "name": "Supermicro",
+   "headcount": 7000,
+   "headcountPeriod": "2026-06-30",
+   "headcountPrevYear": 6238,
+   "medianPay": 86832,
+   "medianPayFiled": "2026-03-03",
+   "medianPayPrevYear": 142498,
+   "medianPayPrevFiled": "2025-04-24"
+  },
+  "SNA": {
+   "cik": 91440,
+   "name": "Snap-on",
+   "headcount": 13000,
+   "headcountPeriod": "2026-01-03",
+   "headcountPrevYear": 13000
+  },
+  "SNDK": {
+   "cik": 2023554,
+   "name": "Sandisk",
+   "headcount": 11100,
+   "headcountPeriod": "2026-07-03",
+   "headcountPrevYear": 11000
+  },
+  "SNPS": {
+   "cik": 883241,
+   "name": "Synopsys",
+   "headcount": 28000,
+   "headcountPeriod": "2025-10-31",
+   "headcountPrevYear": 20000,
+   "medianPay": 93538,
+   "medianPayFiled": "2026-02-19",
+   "medianPayPrevYear": 93786,
+   "medianPayPrevFiled": "2025-02-14"
+  },
+  "SO": {
+   "cik": 92122,
+   "name": "Southern Company",
+   "medianPay": 173100,
+   "medianPayFiled": "2026-04-03",
+   "medianPayPrevYear": 155611,
+   "medianPayPrevFiled": "2025-04-11"
+  },
+  "SOLV": {
+   "cik": 1964738,
+   "name": "Solventum",
+   "headcount": 10000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 11000,
+   "medianPay": 82152,
+   "medianPayFiled": "2026-03-27"
+  },
+  "SPG": {
+   "cik": 1063761,
+   "name": "Simon Property Group",
+   "medianPay": 78989,
+   "medianPayFiled": "2026-04-01",
+   "medianPayPrevYear": 78174,
+   "medianPayPrevFiled": "2025-04-01"
+  },
+  "SPGI": {
+   "cik": 64040,
+   "name": "S&P Global",
+   "headcount": 44500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 42350,
+   "medianPay": 40158,
+   "medianPayFiled": "2026-03-31",
+   "medianPayPrevYear": 45512,
+   "medianPayPrevFiled": "2025-03-25"
+  },
+  "SRE": {
+   "cik": 1032208,
+   "name": "Sempra",
+   "headcount": 5600,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 4850,
+   "medianPay": 171317,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 125107,
+   "medianPayPrevFiled": "2025-03-28"
+  },
+  "STE": {
+   "cik": 1757898,
+   "name": "Steris",
+   "headcount": 1110,
+   "headcountPeriod": "2026-03-31",
+   "headcountPrevYear": 1010
+  },
+  "STLD": {
+   "cik": 1022671,
+   "name": "Steel Dynamics",
+   "medianPay": 104530,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 107859,
+   "medianPayPrevFiled": "2025-03-13"
+  },
+  "STT": {
+   "cik": 93751,
+   "name": "State Street Corporation"
+  },
+  "STX": {
+   "cik": 1137789,
+   "name": "Seagate Technology",
+   "headcount": 30000,
+   "headcountPeriod": "2026-07-03",
+   "headcountPrevYear": 30000,
+   "medianPay": 12550,
+   "medianPayFiled": "2026-09-08",
+   "medianPayPrevYear": 19948,
+   "medianPayPrevFiled": "2025-09-09"
+  },
+  "STZ": {
+   "cik": 16918,
+   "name": "Constellation Brands",
+   "headcount": 9400,
+   "headcountPeriod": "2026-02-28",
+   "headcountPrevYear": 10600,
+   "medianPay": 48558,
+   "medianPayFiled": "2026-06-08",
+   "medianPayPrevYear": 49050,
+   "medianPayPrevFiled": "2025-06-05"
+  },
+  "SW": {
+   "cik": 2005951,
+   "name": "Smurfit Westrock",
+   "headcount": 97000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 100000,
+   "medianPay": 60554,
+   "medianPayFiled": "2026-03-11"
+  },
+  "SWK": {
+   "cik": 93556,
+   "name": "Stanley Black & Decker",
+   "headcount": 43500,
+   "headcountPeriod": "2026-01-03",
+   "headcountPrevYear": 48500,
+   "medianPay": 47897,
+   "medianPayFiled": "2026-03-06",
+   "medianPayPrevYear": 76984,
+   "medianPayPrevFiled": "2025-03-07"
+  },
+  "SWKS": {
+   "cik": 4127,
+   "name": "Skyworks Solutions",
+   "headcount": 10000,
+   "headcountPeriod": "2025-10-03",
+   "headcountPrevYear": 10100,
+   "medianPay": 34250,
+   "medianPayFiled": "2026-04-03",
+   "medianPayPrevYear": 31541,
+   "medianPayPrevFiled": "2025-03-28"
+  },
+  "SYF": {
+   "cik": 1601712,
+   "name": "Synchrony Financial",
+   "headcount": 20000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 20000,
+   "medianPay": 63465,
+   "medianPayFiled": "2026-04-29",
+   "medianPayPrevYear": 58195,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "SYK": {
+   "cik": 310764,
+   "name": "Stryker Corporation",
+   "headcount": 56000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 53000,
+   "medianPay": 81018,
+   "medianPayFiled": "2026-03-23",
+   "medianPayPrevYear": 83642,
+   "medianPayPrevFiled": "2025-03-25"
+  },
+  "SYY": {
+   "cik": 96021,
+   "name": "Sysco",
+   "headcount": 75000,
+   "headcountPeriod": "2026-06-27",
+   "headcountPrevYear": 75000,
+   "medianPay": 83910,
+   "medianPayFiled": "2025-10-02",
+   "medianPayPrevYear": 71868,
+   "medianPayPrevFiled": "2024-10-03"
+  },
+  "T": {
+   "cik": 732717,
+   "name": "AT&T",
+   "medianPay": 139026,
+   "medianPayFiled": "2026-03-23",
+   "medianPayPrevYear": 122611,
+   "medianPayPrevFiled": "2025-04-04"
+  },
+  "TAP": {
+   "cik": 24545,
+   "name": "Molson Coors",
+   "headcount": 16200,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 16800,
+   "medianPay": 97029,
+   "medianPayFiled": "2026-03-25",
+   "medianPayPrevYear": 100197,
+   "medianPayPrevFiled": "2025-04-02"
+  },
+  "TDG": {
+   "cik": 1260221,
+   "name": "TransDigm Group",
+   "medianPay": 68247,
+   "medianPayFiled": "2026-01-23",
+   "medianPayPrevYear": 62513,
+   "medianPayPrevFiled": "2025-01-24"
+  },
+  "TDY": {
+   "cik": 1094285,
+   "name": "Teledyne Technologies",
+   "headcount": 15800,
+   "headcountPeriod": "2025-12-28",
+   "headcountPrevYear": 14900,
+   "medianPay": 65616,
+   "medianPayFiled": "2026-03-12",
+   "medianPayPrevYear": 72064,
+   "medianPayPrevFiled": "2025-03-14"
+  },
+  "TECH": {
+   "cik": 842023,
+   "name": "Bio-Techne",
+   "headcount": 3000,
+   "headcountPeriod": "2026-06-30",
+   "headcountPrevYear": 3100,
+   "medianPay": 91707,
+   "medianPayFiled": "2025-09-19",
+   "medianPayPrevYear": 87290,
+   "medianPayPrevFiled": "2024-09-12"
+  },
+  "TEL": {
+   "cik": 1385157,
+   "name": "TE Connectivity",
+   "headcount": 93000,
+   "headcountPeriod": "2025-09-26",
+   "headcountPrevYear": 87000,
+   "medianPay": 29529,
+   "medianPayFiled": "2026-01-15",
+   "medianPayPrevYear": 28591,
+   "medianPayPrevFiled": "2025-01-17"
+  },
+  "TER": {
+   "cik": 97210,
+   "name": "Teradyne",
+   "headcount": 6600,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 6500
+  },
+  "TFC": {
+   "cik": 92230,
+   "name": "Truist Financial"
+  },
+  "TGT": {
+   "cik": 27419,
+   "name": "Target Corporation",
+   "headcount": 400000,
+   "headcountPeriod": "2026-01-31",
+   "headcountPrevYear": 400000,
+   "medianPay": 27506,
+   "medianPayFiled": "2026-04-27",
+   "medianPayPrevYear": 27090,
+   "medianPayPrevFiled": "2025-04-28"
+  },
+  "TJX": {
+   "cik": 109198,
+   "name": "TJX Companies",
+   "headcount": 377000,
+   "headcountPeriod": "2026-01-31",
+   "headcountPrevYear": 364000
+  },
+  "TKO": {
+   "cik": 1973266,
+   "name": "TKO Group Holdings",
+   "headcount": 4000,
+   "headcountPeriod": "2025-12-31",
+   "medianPay": 82428,
+   "medianPayFiled": "2026-04-23",
+   "medianPayPrevYear": 105026,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "TMO": {
+   "cik": 97745,
+   "name": "Thermo Fisher Scientific",
+   "headcount": 125000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 125000,
+   "medianPay": 71333,
+   "medianPayFiled": "2026-04-07"
+  },
+  "TMUS": {
+   "cik": 1283699,
+   "name": "T-Mobile US",
+   "headcount": 75000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 70000,
+   "medianPay": 76141,
+   "medianPayFiled": "2026-04-27",
+   "medianPayPrevYear": 74097,
+   "medianPayPrevFiled": "2025-04-18"
+  },
+  "TPL": {
+   "cik": 1811074,
+   "name": "Texas Pacific Land Corporation",
+   "headcount": 114,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 111,
+   "medianPay": 162405,
+   "medianPayFiled": "2025-09-26",
+   "medianPayPrevYear": 152405,
+   "medianPayPrevFiled": "2024-09-24"
+  },
+  "TPR": {
+   "cik": 1116132,
+   "name": "Tapestry, Inc.",
+   "headcount": 20600,
+   "headcountPeriod": "2026-06-27",
+   "headcountPrevYear": 19000,
+   "medianPay": 26657,
+   "medianPayFiled": "2025-09-26"
+  },
+  "TRGP": {
+   "cik": 1389170,
+   "name": "Targa Resources",
+   "headcount": 3570,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 3370,
+   "medianPay": 147880,
+   "medianPayFiled": "2026-03-26",
+   "medianPayPrevYear": 141711,
+   "medianPayPrevFiled": "2025-03-28"
+  },
+  "TRI": {
+   "cik": 1075124,
+   "name": "THOMSON REUTERS CORP /CAN/"
+  },
+  "TRMB": {
+   "cik": 864749,
+   "name": "Trimble Inc.",
+   "headcount": 11500,
+   "headcountPeriod": "2026-01-02",
+   "headcountPrevYear": 12100
+  },
+  "TROW": {
+   "cik": 1113169,
+   "name": "T. Rowe Price",
+   "headcount": 8158,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 8158,
+   "medianPay": 170274,
+   "medianPayFiled": "2026-03-17",
+   "medianPayPrevYear": 163864,
+   "medianPayPrevFiled": "2025-03-26"
+  },
+  "TRV": {
+   "cik": 86312,
+   "name": "The Travelers Companies",
+   "headcount": 34000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 34000,
+   "medianPay": 132067,
+   "medianPayFiled": "2026-04-07",
+   "medianPayPrevYear": 120893,
+   "medianPayPrevFiled": "2025-04-04"
+  },
+  "TSCO": {
+   "cik": 916365,
+   "name": "Tractor Supply",
+   "headcount": 26000,
+   "headcountPeriod": "2025-12-27",
+   "medianPay": 24376,
+   "medianPayFiled": "2026-03-26",
+   "medianPayPrevYear": 36352,
+   "medianPayPrevFiled": "2025-03-27"
+  },
+  "TSLA": {
+   "cik": 1318605,
+   "name": "Tesla, Inc.",
+   "headcount": 134785,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 125665
+  },
+  "TSN": {
+   "cik": 100493,
+   "name": "Tyson Foods",
+   "headcount": 133000,
+   "headcountPeriod": "2025-09-27",
+   "headcountPrevYear": 138000
+  },
+  "TT": {
+   "cik": 1466258,
+   "name": "Trane Technologies",
+   "headcount": 44000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 45000,
+   "medianPay": 67812,
+   "medianPayFiled": "2026-04-23",
+   "medianPayPrevYear": 66179,
+   "medianPayPrevFiled": "2025-04-24"
+  },
+  "TTD": {
+   "cik": 1671933,
+   "name": "The Trade Desk",
+   "headcount": 3843,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 3522
+  },
+  "TTWO": {
+   "cik": 946581,
+   "name": "Take-Two Interactive",
+   "headcount": 12909,
+   "headcountPeriod": "2026-03-31",
+   "headcountPrevYear": 12928
+  },
+  "TXN": {
+   "cik": 97476,
+   "name": "Texas Instruments",
+   "headcount": 33000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 34000
+  },
+  "TXT": {
+   "cik": 217346,
+   "name": "Textron",
+   "headcount": 34000,
+   "headcountPeriod": "2026-01-03",
+   "headcountPrevYear": 34000,
+   "medianPay": 111269,
+   "medianPayFiled": "2026-03-05",
+   "medianPayPrevYear": 114864,
+   "medianPayPrevFiled": "2025-03-04"
+  },
+  "TYL": {
+   "cik": 860731,
+   "name": "Tyler Technologies",
+   "headcount": 7800,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 7400,
+   "medianPay": 102461,
+   "medianPayFiled": "2026-03-23",
+   "medianPayPrevYear": 101183,
+   "medianPayPrevFiled": "2025-03-27"
+  },
+  "UAL": {
+   "cik": 100517,
+   "name": "United Airlines Holdings",
+   "headcount": 113200,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 107300,
+   "medianPay": 96670,
+   "medianPayFiled": "2026-04-07",
+   "medianPayPrevYear": 89197,
+   "medianPayPrevFiled": "2025-04-10"
+  },
+  "UBER": {
+   "cik": 1543151,
+   "name": "Uber",
+   "headcount": 34000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 31100,
+   "medianPay": 98826,
+   "medianPayFiled": "2026-03-23",
+   "medianPayPrevYear": 92958,
+   "medianPayPrevFiled": "2025-03-24"
+  },
+  "UDR": {
+   "cik": 74208,
+   "name": "UDR, Inc.",
+   "headcount": 1420,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 1419,
+   "medianPay": 86140,
+   "medianPayFiled": "2026-04-02",
+   "medianPayPrevYear": 85691,
+   "medianPayPrevFiled": "2025-03-27"
+  },
+  "UHS": {
+   "cik": 352915,
+   "name": "Universal Health Services",
+   "headcount": 101500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 99000,
+   "medianPay": 57048,
+   "medianPayFiled": "2026-04-09",
+   "medianPayPrevYear": 53396,
+   "medianPayPrevFiled": "2025-04-03"
+  },
+  "ULTA": {
+   "cik": 1403568,
+   "name": "Ulta Beauty",
+   "headcount": 65000,
+   "headcountPeriod": "2026-01-31",
+   "headcountPrevYear": 38000,
+   "medianPay": 11883,
+   "medianPayFiled": "2026-04-22",
+   "medianPayPrevYear": 11078,
+   "medianPayPrevFiled": "2025-04-23"
+  },
+  "UNH": {
+   "cik": 731766,
+   "name": "UnitedHealth Group",
+   "headcount": 390000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 400000,
+   "medianPay": 81474,
+   "medianPayFiled": "2026-04-21",
+   "medianPayPrevYear": 75778,
+   "medianPayPrevFiled": "2025-04-21"
+  },
+  "UNP": {
+   "cik": 100885,
+   "name": "Union Pacific Corporation",
+   "headcount": 29287,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 32439
+  },
+  "UPS": {
+   "cik": 1090727,
+   "name": "United Parcel Service",
+   "headcount": 460000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 490000,
+   "medianPay": 66268,
+   "medianPayFiled": "2026-03-19",
+   "medianPayPrevYear": 55200,
+   "medianPayPrevFiled": "2025-03-17"
+  },
+  "URI": {
+   "cik": 1067701,
+   "name": "United Rentals"
+  },
+  "USB": {
+   "cik": 36104,
+   "name": "U.S. Bancorp",
+   "headcount": 68520,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 70263
+  },
+  "V": {
+   "cik": 1403161,
+   "name": "Visa Inc.",
+   "headcount": 34100,
+   "headcountPeriod": "2025-09-30",
+   "headcountPrevYear": 31600,
+   "medianPay": 154909,
+   "medianPayFiled": "2025-12-08",
+   "medianPayPrevYear": 154266,
+   "medianPayPrevFiled": "2024-12-09"
+  },
+  "VEEV": {
+   "cik": 1393052,
+   "name": "Veeva Systems",
+   "headcount": 7928,
+   "headcountPeriod": "2026-01-31",
+   "headcountPrevYear": 7291,
+   "medianPay": 470833,
+   "medianPayFiled": "2026-05-04"
+  },
+  "VICI": {
+   "cik": 1705696,
+   "name": "Vici Properties",
+   "medianPay": 468119,
+   "medianPayFiled": "2026-03-16",
+   "medianPayPrevYear": 465476,
+   "medianPayPrevFiled": "2025-03-17"
+  },
+  "VLO": {
+   "cik": 1035002,
+   "name": "Valero Energy",
+   "headcount": 9811,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 9922
+  },
+  "VLTO": {
+   "cik": 1967680,
+   "name": "Veralto",
+   "headcount": 17000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 17000
+  },
+  "VMC": {
+   "cik": 1396009,
+   "name": "Vulcan Materials Company",
+   "headcount": 11172,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 11436,
+   "medianPay": 92501,
+   "medianPayFiled": "2026-03-24",
+   "medianPayPrevYear": 85671,
+   "medianPayPrevFiled": "2025-03-24"
+  },
+  "VMRK": {
+   "cik": 906107,
+   "name": "Vivmark Residential",
+   "medianPay": 77311,
+   "medianPayFiled": "2026-04-14",
+   "medianPayPrevYear": 71418,
+   "medianPayPrevFiled": "2025-04-15"
+  },
+  "VRSK": {
+   "cik": 1442145,
+   "name": "Verisk Analytics",
+   "headcount": 8000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 7800
+  },
+  "VRSN": {
+   "cik": 1014473,
+   "name": "Verisign",
+   "headcount": 928,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 932,
+   "medianPay": 233491,
+   "medianPayFiled": "2026-04-10",
+   "medianPayPrevYear": 221962,
+   "medianPayPrevFiled": "2025-04-11"
+  },
+  "VRT": {
+   "cik": 1674101,
+   "name": "Vertiv",
+   "headcount": 34000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 31000,
+   "medianPay": 27811,
+   "medianPayFiled": "2026-04-24",
+   "medianPayPrevYear": 25463,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "VRTX": {
+   "cik": 875320,
+   "name": "Vertex Pharmaceuticals",
+   "headcount": 6400,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 6100
+  },
+  "VST": {
+   "cik": 1692819,
+   "name": "Vistra Corp",
+   "headcount": 6390,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 6850,
+   "medianPay": 137164,
+   "medianPayFiled": "2026-03-18",
+   "medianPayPrevYear": 132568,
+   "medianPayPrevFiled": "2025-03-19"
+  },
+  "VTR": {
+   "cik": 740260,
+   "name": "Ventas (company)"
+  },
+  "VTRS": {
+   "cik": 1792044,
+   "name": "Viatris",
+   "medianPay": 46729,
+   "medianPayFiled": "2026-04-02",
+   "medianPayPrevYear": 48598,
+   "medianPayPrevFiled": "2025-10-24"
+  },
+  "VZ": {
+   "cik": 732712,
+   "name": "Verizon",
+   "headcount": 89900,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 99600
+  },
+  "WAB": {
+   "cik": 943452,
+   "name": "Wabtec",
+   "headcount": 31000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 29500,
+   "medianPay": 51471,
+   "medianPayFiled": "2026-03-31",
+   "medianPayPrevYear": 48337,
+   "medianPayPrevFiled": "2025-04-03"
+  },
+  "WAT": {
+   "cik": 1000697,
+   "name": "Waters Corporation",
+   "headcount": 7600,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 7900
+  },
+  "WBD": {
+   "cik": 1437107,
+   "name": "Warner Bros. Discovery",
+   "headcount": 35500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 35000,
+   "medianPay": 119748,
+   "medianPayFiled": "2026-04-30",
+   "medianPayPrevYear": 130316,
+   "medianPayPrevFiled": "2025-04-23"
+  },
+  "WDAY": {
+   "cik": 1327811,
+   "name": "Workday, Inc.",
+   "headcount": 21000,
+   "headcountPeriod": "2026-01-31",
+   "headcountPrevYear": 20400,
+   "medianPay": 218717,
+   "medianPayFiled": "2026-05-05",
+   "medianPayPrevYear": 219720,
+   "medianPayPrevFiled": "2025-04-23"
+  },
+  "WDC": {
+   "cik": 106040,
+   "name": "Western Digital",
+   "headcount": 40000,
+   "headcountPeriod": "2026-07-03",
+   "headcountPrevYear": 40000,
+   "medianPay": 8740,
+   "medianPayFiled": "2025-10-06",
+   "medianPayPrevYear": 10726,
+   "medianPayPrevFiled": "2024-10-07"
+  },
+  "WEC": {
+   "cik": 783325,
+   "name": "WEC Energy Group",
+   "medianPay": 133113,
+   "medianPayFiled": "2026-03-26",
+   "medianPayPrevYear": 134997,
+   "medianPayPrevFiled": "2025-03-27"
+  },
+  "WELL": {
+   "cik": 766704,
+   "name": "Welltower",
+   "headcount": 712,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 685,
+   "medianPay": 124995,
+   "medianPayFiled": "2026-04-10",
+   "medianPayPrevYear": 120000,
+   "medianPayPrevFiled": "2025-04-11"
+  },
+  "WFC": {
+   "cik": 72971,
+   "name": "Wells Fargo",
+   "headcount": 205000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 217000,
+   "medianPay": 82044,
+   "medianPayFiled": "2026-03-18",
+   "medianPayPrevYear": 80296,
+   "medianPayPrevFiled": "2025-03-19"
+  },
+  "WM": {
+   "cik": 823768,
+   "name": "Waste Management, Inc.",
+   "headcount": 60500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 61700,
+   "medianPay": 100067,
+   "medianPayFiled": "2026-03-31",
+   "medianPayPrevYear": 85148,
+   "medianPayPrevFiled": "2025-04-01"
+  },
+  "WMB": {
+   "cik": 107263,
+   "name": "Williams Companies",
+   "headcount": 5987,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 5829,
+   "medianPay": 143269,
+   "medianPayFiled": "2026-03-18",
+   "medianPayPrevYear": 134239,
+   "medianPayPrevFiled": "2025-03-19"
+  },
+  "WMT": {
+   "cik": 104169,
+   "name": "Walmart",
+   "headcount": 2100000,
+   "headcountPeriod": "2026-01-31",
+   "headcountPrevYear": 2100000,
+   "medianPay": 30520,
+   "medianPayFiled": "2026-04-23",
+   "medianPayPrevYear": 29469,
+   "medianPayPrevFiled": "2025-04-24"
+  },
+  "WRB": {
+   "cik": 11544,
+   "name": "W. R. Berkley Corporation",
+   "medianPay": 135437,
+   "medianPayFiled": "2026-04-22",
+   "medianPayPrevYear": 130099,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "WSM": {
+   "cik": 719955,
+   "name": "Williams-Sonoma, Inc.",
+   "headcount": 19800,
+   "headcountPeriod": "2026-02-01",
+   "headcountPrevYear": 19600,
+   "medianPay": 24943,
+   "medianPayFiled": "2026-05-06",
+   "medianPayPrevYear": 26078,
+   "medianPayPrevFiled": "2025-04-29"
+  },
+  "WST": {
+   "cik": 105770,
+   "name": "West Pharmaceutical Services",
+   "headcount": 10800,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 10600,
+   "medianPay": 64635,
+   "medianPayFiled": "2026-03-12",
+   "medianPayPrevYear": 61069,
+   "medianPayPrevFiled": "2025-03-21"
+  },
+  "WTW": {
+   "cik": 1140536,
+   "name": "Willis Towers Watson",
+   "headcount": 19300,
+   "headcountPeriod": "2025-12-31",
+   "medianPay": 63007,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 48869,
+   "medianPayPrevFiled": "2025-03-28"
+  },
+  "WY": {
+   "cik": 106535,
+   "name": "Weyerhaeuser",
+   "headcount": 9517,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 9440,
+   "medianPay": 114304,
+   "medianPayFiled": "2026-04-01",
+   "medianPayPrevYear": 89676,
+   "medianPayPrevFiled": "2025-03-26"
+  },
+  "WYNN": {
+   "cik": 1174922,
+   "name": "Wynn Resorts",
+   "headcount": 28500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 28000,
+   "medianPay": 325000,
+   "medianPayFiled": "2026-03-25"
+  },
+  "XEL": {
+   "cik": 72903,
+   "name": "Xcel Energy",
+   "headcount": 11534,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 11380,
+   "medianPay": 147664,
+   "medianPayFiled": "2026-04-07",
+   "medianPayPrevYear": 130406,
+   "medianPayPrevFiled": "2025-04-08"
+  },
+  "XOM": {
+   "cik": 34088,
+   "name": "ExxonMobil",
+   "headcount": 58000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 61000,
+   "medianPay": 183084,
+   "medianPayFiled": "2026-04-08",
+   "medianPayPrevYear": 190266,
+   "medianPayPrevFiled": "2025-04-07"
+  },
+  "XYL": {
+   "cik": 1524472,
+   "name": "Xylem Inc.",
+   "headcount": 22000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 23000,
+   "medianPay": 66535,
+   "medianPayFiled": "2026-03-30"
+  },
+  "XYZ": {
+   "cik": 1512673,
+   "name": "Block, Inc.",
+   "headcount": 10205,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 11372,
+   "medianPay": 222772,
+   "medianPayFiled": "2026-04-24",
+   "medianPayPrevYear": 202981,
+   "medianPayPrevFiled": "2025-04-25"
+  },
+  "YUM": {
+   "cik": 1041061,
+   "name": "Yum! Brands",
+   "headcount": 1000000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 1000000,
+   "medianPay": 15346,
+   "medianPayFiled": "2026-04-03",
+   "medianPayPrevYear": 17160,
+   "medianPayPrevFiled": "2025-04-04"
+  },
+  "ZBH": {
+   "cik": 1136869,
+   "name": "Zimmer Biomet",
+   "headcount": 17000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 17000,
+   "medianPay": 80380,
+   "medianPayFiled": "2026-04-01",
+   "medianPayPrevYear": 68111,
+   "medianPayPrevFiled": "2025-04-14"
+  },
+  "ZBRA": {
+   "cik": 877212,
+   "name": "Zebra Technologies",
+   "headcount": 10700,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 9900
+  },
+  "ZTS": {
+   "cik": 1555280,
+   "name": "Zoetis",
+   "headcount": 14500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 13800
+  }
+ }
+}
