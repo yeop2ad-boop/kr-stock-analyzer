@@ -15,7 +15,8 @@
       "headcount": 128881,
       "headcountPrevYear": 129480,
       "headcountChange": -599,
-      "buybackAmount": 28247299992000
+      "buybackAmount": 28247299992000,
+      "avgSalaryPrevYear": 125665106.58016682
     },
     {
       "symbol": "000660.KS",
@@ -25,7 +26,8 @@
       "headcount": 34549,
       "headcountPrevYear": 32390,
       "headcountChange": 2159,
-      "buybackAmount": 40004340000000
+      "buybackAmount": 40004340000000,
+      "avgSalaryPrevYear": 113910497.066996
     },
     {
       "symbol": "402340.KS",
@@ -35,7 +37,8 @@
       "headcount": 84,
       "headcountPrevYear": 88,
       "headcountChange": -4,
-      "buybackAmount": 140000000000
+      "buybackAmount": 140000000000,
+      "avgSalaryPrevYear": 287886363.6363636
     },
     {
       "symbol": "009150.KS",
@@ -45,7 +48,8 @@
       "headcount": 12173,
       "headcountPrevYear": 12161,
       "headcountChange": 12,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 103310829.70150481
     },
     {
       "symbol": "005380.KS",
@@ -55,7 +59,8 @@
       "headcount": 72598,
       "headcountPrevYear": 75137,
       "headcountChange": -2539,
-      "buybackAmount": 400692410500
+      "buybackAmount": 400692410500,
+      "avgSalaryPrevYear": 123831481.1610791
     },
     {
       "symbol": "105560.KS",
@@ -65,7 +70,8 @@
       "headcount": 144,
       "headcountPrevYear": 140,
       "headcountChange": 4,
-      "buybackAmount": 1200000000000
+      "buybackAmount": 1200000000000,
+      "avgSalaryPrevYear": 161221428.57142857
     },
     {
       "symbol": "055550.KS",
@@ -75,7 +81,8 @@
       "headcount": 195,
       "headcountPrevYear": 185,
       "headcountChange": 10,
-      "buybackAmount": 700000000000
+      "buybackAmount": 700000000000,
+      "avgSalaryPrevYear": 168070270.27027026
     },
     {
       "symbol": "012450.KS",
@@ -85,7 +92,8 @@
       "headcount": 5680,
       "headcountPrevYear": 5330,
       "headcountChange": 350,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 115968667.9174484
     },
     {
       "symbol": "028260.KS",
@@ -95,7 +103,8 @@
       "headcount": 9261,
       "headcountPrevYear": 9380,
       "headcountChange": -119,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 134164605.54371002
     },
     {
       "symbol": "034020.KS",
@@ -105,7 +114,8 @@
       "headcount": 6233,
       "headcountPrevYear": 6174,
       "headcountChange": 59,
-      "buybackAmount": 130342656000
+      "buybackAmount": 130342656000,
+      "avgSalaryPrevYear": 100594266.27793975
     },
     {
       "symbol": "000270.KS",
@@ -115,7 +125,8 @@
       "headcount": 36566,
       "headcountPrevYear": 35747,
       "headcountChange": 819,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 136192128.01074216
     },
     {
       "symbol": "012330.KS",
@@ -125,7 +136,8 @@
       "headcount": 10322,
       "headcountPrevYear": 10073,
       "headcountChange": 249,
-      "buybackAmount": 500000000000
+      "buybackAmount": 500000000000,
+      "avgSalaryPrevYear": 134628908.96455872
     },
     {
       "symbol": "086790.KS",
@@ -135,7 +147,8 @@
       "headcount": 131,
       "headcountPrevYear": 129,
       "headcountChange": 2,
-      "buybackAmount": 800000000000
+      "buybackAmount": 800000000000,
+      "avgSalaryPrevYear": 165627906.97674417
     },
     {
       "symbol": "006400.KS",
@@ -145,7 +158,8 @@
       "headcount": 11026,
       "headcountPrevYear": 11202,
       "headcountChange": -176,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 88369933.94036779
     },
     {
       "symbol": "068270.KS",
@@ -155,7 +169,12 @@
       "headcount": 1565,
       "headcountPrevYear": 1494,
       "headcountChange": 71,
+<<<<<<< HEAD
       "buybackAmount": 300000133400
+=======
+      "buybackAmount": 400000263700,
+      "avgSalaryPrevYear": 83317269.07630523
+>>>>>>> dbfddfa (검색 상세에 리스크 탭 추가(국내): 임금 감소·동결, 인원 감축 순위)
     },
     {
       "symbol": "035420.KS",
@@ -165,7 +184,8 @@
       "headcount": 5047,
       "headcountPrevYear": 4583,
       "headcountChange": 464,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 127089242.85402575
     },
     {
       "symbol": "032830.KS",
@@ -175,7 +195,8 @@
       "headcount": 5124,
       "headcountPrevYear": 5163,
       "headcountChange": -39,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 150401317.06372264
     },
     {
       "symbol": "066570.KS",
@@ -185,7 +206,8 @@
       "headcount": 34144,
       "headcountPrevYear": 35727,
       "headcountChange": -1583,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 117321213.64794134
     },
     {
       "symbol": "005490.KS",
@@ -195,7 +217,8 @@
       "headcount": 524,
       "headcountPrevYear": 527,
       "headcountChange": -3,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 142611005.69259962
     },
     {
       "symbol": "316140.KS",
@@ -205,7 +228,8 @@
       "headcount": 114,
       "headcountPrevYear": 107,
       "headcountChange": 7,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 176177570.09345794
     },
     {
       "symbol": "034730.KS",
@@ -215,7 +239,8 @@
       "headcount": 4419,
       "headcountPrevYear": 4404,
       "headcountChange": 15,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 116188465.03178929
     },
     {
       "symbol": "000810.KS",
@@ -225,7 +250,8 @@
       "headcount": 5535,
       "headcountPrevYear": 5549,
       "headcountChange": -14,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 149737521.35519913
     },
     {
       "symbol": "373220.KS",
@@ -235,7 +261,8 @@
       "headcount": 12922,
       "headcountPrevYear": 12635,
       "headcountChange": 287,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 118385991.29402454
     },
     {
       "symbol": "267260.KS",
@@ -245,7 +272,8 @@
       "headcount": 2209,
       "headcountPrevYear": 2184,
       "headcountChange": 25,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 126533424.90842491
     },
     {
       "symbol": "009540.KS",
@@ -255,7 +283,8 @@
       "headcount": 1543,
       "headcountPrevYear": 1411,
       "headcountChange": 132,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 111327364.28065202
     },
     {
       "symbol": "207940.KS",
@@ -265,7 +294,8 @@
       "headcount": 5455,
       "headcountPrevYear": 5011,
       "headcountChange": 444,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 102172221.11355019
     },
     {
       "symbol": "010120.KS",
@@ -275,7 +305,8 @@
       "headcount": 1602,
       "headcountPrevYear": 1580,
       "headcountChange": 22,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 82679113.92405063
     },
     {
       "symbol": "329180.KS",
@@ -285,7 +316,8 @@
       "headcount": 13319,
       "headcountPrevYear": 11194,
       "headcountChange": 2125,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 95258021.79739146
     },
     {
       "symbol": "033780.KS",
@@ -295,7 +327,8 @@
       "headcount": 4331,
       "headcountPrevYear": 4442,
       "headcountChange": -111,
-      "buybackAmount": 260000000000
+      "buybackAmount": 260000000000,
+      "avgSalaryPrevYear": 106526339.4867177
     },
     {
       "symbol": "017670.KS",
@@ -305,7 +338,8 @@
       "headcount": 5316,
       "headcountPrevYear": 5493,
       "headcountChange": -177,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 161378299.65410522
     },
     {
       "symbol": "010140.KS",
@@ -315,7 +349,8 @@
       "headcount": 10301,
       "headcountPrevYear": 9837,
       "headcountChange": 464,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 91611161.93961574
     },
     {
       "symbol": "298040.KS",
@@ -325,7 +360,8 @@
       "headcount": 3567,
       "headcountPrevYear": 3395,
       "headcountChange": 172,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 84469513.99116348
     },
     {
       "symbol": "035720.KS",
@@ -335,7 +371,8 @@
       "headcount": 3922,
       "headcountPrevYear": 4028,
       "headcountChange": -106,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 101657894.73684211
     },
     {
       "symbol": "051910.KS",
@@ -345,7 +382,8 @@
       "headcount": 5829,
       "headcountPrevYear": 6161,
       "headcountChange": -332,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 105492452.52394092
     },
     {
       "symbol": "042660.KS",
@@ -355,7 +393,8 @@
       "headcount": 11178,
       "headcountPrevYear": 10202,
       "headcountChange": 976,
-      "buybackAmount": 5107423400
+      "buybackAmount": 5107423400,
+      "avgSalaryPrevYear": 83000392.07998432
     },
     {
       "symbol": "030200.KS",
@@ -365,7 +404,8 @@
       "headcount": 14701,
       "headcountPrevYear": 16927,
       "headcountChange": -2226,
-      "buybackAmount": 186136400
+      "buybackAmount": 186136400,
+      "avgSalaryPrevYear": 113908666.62728186
     },
     {
       "symbol": "079550.KS",
@@ -375,7 +415,8 @@
       "headcount": 3198,
       "headcountPrevYear": 2793,
       "headcountChange": 405,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 95040100.25062656
     },
     {
       "symbol": "064350.KS",
@@ -385,7 +426,8 @@
       "headcount": 1969,
       "headcountPrevYear": 1833,
       "headcountChange": 136,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 121012002.18221495
     },
     {
       "symbol": "015760.KS",
@@ -395,7 +437,8 @@
       "headcount": 22875,
       "headcountPrevYear": 22742,
       "headcountChange": 133,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 91392450.00439715
     },
     {
       "symbol": "267250.KS",
@@ -405,7 +448,8 @@
       "headcount": 48,
       "headcountPrevYear": 53,
       "headcountChange": -5,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 165543660.3773585
     },
     {
       "symbol": "003550.KS",
@@ -415,7 +459,8 @@
       "headcount": 195,
       "headcountPrevYear": 182,
       "headcountChange": 13,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 198851648.35164836
     },
     {
       "symbol": "006800.KS",
@@ -425,7 +470,8 @@
       "headcount": 1346,
       "headcountPrevYear": 1406,
       "headcountChange": -60,
-      "buybackAmount": 400000000000
+      "buybackAmount": 400000000000,
+      "avgSalaryPrevYear": 136456614.50924608
     },
     {
       "symbol": "042700.KS",
@@ -435,7 +481,8 @@
       "headcount": 737,
       "headcountPrevYear": 710,
       "headcountChange": 27,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 63308805.633802816
     },
     {
       "symbol": "047810.KS",
@@ -445,7 +492,8 @@
       "headcount": 3874,
       "headcountPrevYear": 3645,
       "headcountChange": 229,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 115480658.43621399
     },
     {
       "symbol": "096770.KS",
@@ -455,7 +503,8 @@
       "headcount": 1500,
       "headcountPrevYear": 1564,
       "headcountChange": -64,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 161225063.93861893
     },
     {
       "symbol": "278470.KS",
@@ -465,7 +514,8 @@
       "headcount": 657,
       "headcountPrevYear": 554,
       "headcountChange": 103,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 76689530.68592058
     },
     {
       "symbol": "010130.KS",
@@ -475,7 +525,8 @@
       "headcount": 2054,
       "headcountPrevYear": 1944,
       "headcountChange": 110,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 111365740.74074075
     },
     {
       "symbol": "018260.KS",
@@ -485,7 +536,8 @@
       "headcount": 11219,
       "headcountPrevYear": 11387,
       "headcountChange": -168,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 135777114.25309563
     },
     {
       "symbol": "138040.KS",
@@ -495,7 +547,8 @@
       "headcount": 38,
       "headcountPrevYear": 36,
       "headcountChange": 2,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 193083333.33333334
     },
     {
       "symbol": "000720.KS",
@@ -505,7 +558,8 @@
       "headcount": 2471,
       "headcountPrevYear": 2477,
       "headcountChange": -6,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 97537343.56075898
     },
     {
       "symbol": "011070.KS",
@@ -515,7 +569,8 @@
       "headcount": 6013,
       "headcountPrevYear": 6456,
       "headcountChange": -443,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 79696096.65427509
     },
     {
       "symbol": "000150.KS",
@@ -525,7 +580,8 @@
       "headcount": 1112,
       "headcountPrevYear": 1048,
       "headcountChange": 64,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 93182251.90839694
     },
     {
       "symbol": "071050.KS",
@@ -535,7 +591,8 @@
       "headcount": 93,
       "headcountPrevYear": 87,
       "headcountChange": 6,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 166321839.08045977
     },
     {
       "symbol": "028050.KS",
@@ -545,7 +602,8 @@
       "headcount": 2621,
       "headcountPrevYear": 2512,
       "headcountChange": 109,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 132452627.38853504
     },
     {
       "symbol": "086280.KS",
@@ -555,7 +613,8 @@
       "headcount": 2319,
       "headcountPrevYear": 2441,
       "headcountChange": -122,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 99032165.79434659
     },
     {
       "symbol": "005830.KS",
@@ -565,7 +624,8 @@
       "headcount": 4716,
       "headcountPrevYear": 4702,
       "headcountChange": 14,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 89821061.03785624
     },
     {
       "symbol": "323410.KS",
@@ -575,7 +635,8 @@
       "headcount": 1806,
       "headcountPrevYear": 1663,
       "headcountChange": 143,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 113286229.70535177
     },
     {
       "symbol": "011200.KS",
@@ -585,7 +646,8 @@
       "headcount": 1183,
       "headcountPrevYear": 1137,
       "headcountChange": 46,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 107527215.47933157
     },
     {
       "symbol": "003490.KS",
@@ -595,7 +657,8 @@
       "headcount": 14984,
       "headcountPrevYear": 15017,
       "headcountChange": -33,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 110112938.66950789
     },
     {
       "symbol": "259960.KS",
@@ -605,7 +668,8 @@
       "headcount": 2118,
       "headcountPrevYear": 1903,
       "headcountChange": 215,
-      "buybackAmount": 399998424000
+      "buybackAmount": 399998424000,
+      "avgSalaryPrevYear": 96142932.21229638
     },
     {
       "symbol": "010950.KS",
@@ -615,7 +679,8 @@
       "headcount": 1542,
       "headcountPrevYear": 1407,
       "headcountChange": 135,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 142696560.7675906
     },
     {
       "symbol": "003670.KS",
@@ -625,7 +690,8 @@
       "headcount": 2979,
       "headcountPrevYear": 3045,
       "headcountChange": -66,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 83493596.0591133
     },
     {
       "symbol": "007660.KS",
@@ -635,7 +701,8 @@
       "headcount": 1368,
       "headcountPrevYear": 1186,
       "headcountChange": 182,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 91013887.01517707
     },
     {
       "symbol": "016360.KS",
@@ -645,7 +712,8 @@
       "headcount": 1399,
       "headcountPrevYear": 1325,
       "headcountChange": 74,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 136465660.3773585
     },
     {
       "symbol": "003230.KS",
@@ -655,7 +723,8 @@
       "headcount": 1944,
       "headcountPrevYear": 1467,
       "headcountChange": 477,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 49534421.26789366
     },
     {
       "symbol": "024110.KS",
@@ -665,7 +734,8 @@
       "headcount": 13507,
       "headcountPrevYear": 13566,
       "headcountChange": -59,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 88930193.12988353
     },
     {
       "symbol": "180640.KS",
@@ -675,7 +745,8 @@
       "headcount": 25,
       "headcountPrevYear": 25,
       "headcountChange": 0,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 132320000.0
     },
     {
       "symbol": "272210.KS",
@@ -685,7 +756,8 @@
       "headcount": 3256,
       "headcountPrevYear": 3187,
       "headcountChange": 69,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 100525572.63884531
     },
     {
       "symbol": "006260.KS",
@@ -695,7 +767,8 @@
       "headcount": 94,
       "headcountPrevYear": 92,
       "headcountChange": 2,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 141000000.0
     },
     {
       "symbol": "078930.KS",
@@ -705,7 +778,8 @@
       "headcount": 96,
       "headcountPrevYear": 89,
       "headcountChange": 7,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 145651685.39325842
     },
     {
       "symbol": "021240.KS",
@@ -715,7 +789,8 @@
       "headcount": 6352,
       "headcountPrevYear": 6282,
       "headcountChange": 70,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 63756414.51766953
     },
     {
       "symbol": "000100.KS",
@@ -725,7 +800,8 @@
       "headcount": 2153,
       "headcountPrevYear": 2117,
       "headcountChange": 36,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 96343882.853094
     },
     {
       "symbol": "009830.KS",
@@ -735,7 +811,8 @@
       "headcount": 2615,
       "headcountPrevYear": 2902,
       "headcountChange": -287,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 63689869.05582357
     },
     {
       "symbol": "161390.KS",
@@ -745,7 +822,8 @@
       "headcount": 6493,
       "headcountPrevYear": 6465,
       "headcountChange": 28,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 92513225.05800465
     },
     {
       "symbol": "352820.KS",
@@ -755,7 +833,8 @@
       "headcount": 893,
       "headcountPrevYear": 823,
       "headcountChange": 70,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 104229647.63061969
     },
     {
       "symbol": "039490.KS",
@@ -765,7 +844,8 @@
       "headcount": 881,
       "headcountPrevYear": 724,
       "headcountChange": 157,
-      "buybackAmount": 40000028652
+      "buybackAmount": 40000028652,
+      "avgSalaryPrevYear": 90481081.21132597
     },
     {
       "symbol": "090430.KS",
@@ -775,7 +855,8 @@
       "headcount": 3013,
       "headcountPrevYear": 2994,
       "headcountChange": 19,
-      "buybackAmount": 10000020800
+      "buybackAmount": 10000020800,
+      "avgSalaryPrevYear": 74848363.39345357
     },
     {
       "symbol": "175330.KS",
@@ -785,7 +866,8 @@
       "headcount": 108,
       "headcountPrevYear": 109,
       "headcountChange": -1,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 171825688.0733945
     },
     {
       "symbol": "005940.KS",
@@ -795,7 +877,8 @@
       "headcount": 1318,
       "headcountPrevYear": 1350,
       "headcountChange": -32,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 139455555.55555555
     },
     {
       "symbol": "032640.KS",
@@ -805,7 +888,8 @@
       "headcount": 9765,
       "headcountPrevYear": 10571,
       "headcountChange": -806,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 111007757.07123262
     },
     {
       "symbol": "443060.KS",
@@ -815,7 +899,8 @@
       "headcount": 583,
       "headcountPrevYear": 537,
       "headcountChange": 46,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 132188572.0670391
     },
     {
       "symbol": "010060.KS",
@@ -825,7 +910,8 @@
       "headcount": 67,
       "headcountPrevYear": 70,
       "headcountChange": -3,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 104228571.42857143
     },
     {
       "symbol": "138930.KS",
@@ -835,7 +921,8 @@
       "headcount": 121,
       "headcountPrevYear": 120,
       "headcountChange": 1,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 162125000.0
     },
     {
       "symbol": "036570.KS",
@@ -845,7 +932,8 @@
       "headcount": 3262,
       "headcountPrevYear": 3832,
       "headcountChange": -570,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 107974686.84759916
     },
     {
       "symbol": "064400.KS",
@@ -855,7 +943,8 @@
       "headcount": 6890,
       "headcountPrevYear": 6891,
       "headcountChange": -1,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 115842548.25134233
     },
     {
       "symbol": "267270.KS",
@@ -865,7 +954,8 @@
       "headcount": 1123,
       "headcountPrevYear": 1166,
       "headcountChange": -43,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 105545326.75814751
     },
     {
       "symbol": "326030.KS",
@@ -875,7 +965,8 @@
       "headcount": 272,
       "headcountPrevYear": 265,
       "headcountChange": 7,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 98950943.39622642
     },
     {
       "symbol": "001440.KS",
@@ -885,7 +976,8 @@
       "headcount": 809,
       "headcountPrevYear": 626,
       "headcountChange": 183,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 66659744.40894569
     },
     {
       "symbol": "066970.KS",
@@ -895,7 +987,8 @@
       "headcount": 1924,
       "headcountPrevYear": 1643,
       "headcountChange": 281,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 55423209.37309799
     },
     {
       "symbol": "047040.KS",
@@ -905,7 +998,8 @@
       "headcount": 2274,
       "headcountPrevYear": 2475,
       "headcountChange": -201,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 110093333.33333333
     },
     {
       "symbol": "241560.KS",
@@ -915,7 +1009,8 @@
       "headcount": 153,
       "headcountPrevYear": 150,
       "headcountChange": 3,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 134520000.0
     },
     {
       "symbol": "034220.KS",
@@ -925,7 +1020,8 @@
       "headcount": 24430,
       "headcountPrevYear": 25144,
       "headcountChange": -714,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 87436127.90327713
     },
     {
       "symbol": "062040.KS",
@@ -935,7 +1031,8 @@
       "headcount": 333,
       "headcountPrevYear": 304,
       "headcountChange": 29,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 63878289.473684214
     },
     {
       "symbol": "000990.KS",
@@ -945,7 +1042,8 @@
       "headcount": 2221,
       "headcountPrevYear": 2051,
       "headcountChange": 170,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 85741589.46855192
     },
     {
       "symbol": "001450.KS",
@@ -955,7 +1053,8 @@
       "headcount": 3987,
       "headcountPrevYear": 3990,
       "headcountChange": -3,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 113559147.86967419
     },
     {
       "symbol": "307950.KS",
@@ -965,7 +1064,8 @@
       "headcount": 3912,
       "headcountPrevYear": 3595,
       "headcountChange": 317,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 101637552.15577191
     },
     {
       "symbol": "271560.KS",
@@ -975,7 +1075,8 @@
       "headcount": 634,
       "headcountPrevYear": 612,
       "headcountChange": 22,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 86642156.86274509
     },
     {
       "symbol": "051900.KS",
@@ -985,7 +1086,8 @@
       "headcount": 1733,
       "headcountPrevYear": 2054,
       "headcountChange": -321,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 70244888.02336903
     },
     {
       "symbol": "082740.KS",
@@ -995,7 +1097,8 @@
       "headcount": 874,
       "headcountPrevYear": 825,
       "headcountChange": 49,
-      "buybackAmount": 15680788200
+      "buybackAmount": 15680788200,
+      "avgSalaryPrevYear": 77979393.93939394
     },
     {
       "symbol": "004170.KS",
@@ -1005,7 +1108,8 @@
       "headcount": 2634,
       "headcountPrevYear": 2672,
       "headcountChange": -38,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 87734281.43712574
     },
     {
       "symbol": "454910.KS",
@@ -1015,7 +1119,8 @@
       "headcount": 255,
       "headcountPrevYear": 234,
       "headcountChange": 21,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 66064102.56410257
     },
     {
       "symbol": "047050.KS",
@@ -1025,7 +1130,8 @@
       "headcount": 1738,
       "headcountPrevYear": 1743,
       "headcountChange": -5,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 130080321.28514056
     },
     {
       "symbol": "128940.KS",
@@ -1035,7 +1141,8 @@
       "headcount": 2382,
       "headcountPrevYear": 2388,
       "headcountChange": -6,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 78644053.60134004
     },
     {
       "symbol": "004020.KS",
@@ -1045,7 +1152,8 @@
       "headcount": 11694,
       "headcountPrevYear": 11803,
       "headcountChange": -109,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 92903244.93772769
     },
     {
       "symbol": "139130.KS",
@@ -1055,7 +1163,8 @@
       "headcount": 143,
       "headcountPrevYear": 126,
       "headcountChange": 17,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 125214285.71428572
     },
     {
       "symbol": "161890.KS",
@@ -1065,7 +1174,8 @@
       "headcount": 1542,
       "headcountPrevYear": 1304,
       "headcountChange": 238,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 63357361.96319018
     },
     {
       "symbol": "483650.KS",
@@ -1075,7 +1185,8 @@
       "headcount": 203,
       "headcountPrevYear": 137,
       "headcountChange": 66,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 100525547.44525547
     },
     {
       "symbol": "011790.KS",
@@ -1085,7 +1196,8 @@
       "headcount": 172,
       "headcountPrevYear": 178,
       "headcountChange": -6,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 128039325.84269662
     },
     {
       "symbol": "009420.KS",
@@ -1095,7 +1207,8 @@
       "headcount": 209,
       "headcountPrevYear": 209,
       "headcountChange": 0,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 80156028.70813397
     },
     {
       "symbol": "375500.KS",
@@ -1105,7 +1218,8 @@
       "headcount": 1862,
       "headcountPrevYear": 2104,
       "headcountChange": -242,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 91693441.06463878
     },
     {
       "symbol": "192820.KS",
@@ -1115,7 +1229,8 @@
       "headcount": 1565,
       "headcountPrevYear": 1528,
       "headcountChange": 37,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 78413466.62303665
     },
     {
       "symbol": "002380.KS",
@@ -1125,7 +1240,8 @@
       "headcount": 1898,
       "headcountPrevYear": 1917,
       "headcountChange": -19,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 84651862.82629108
     },
     {
       "symbol": "014680.KS",
@@ -1135,7 +1251,8 @@
       "headcount": 716,
       "headcountPrevYear": 680,
       "headcountChange": 36,
-      "buybackAmount": 60000300000
+      "buybackAmount": 60000300000,
+      "avgSalaryPrevYear": 94683823.52941176
     },
     {
       "symbol": "017800.KS",
@@ -1145,7 +1262,8 @@
       "headcount": 2867,
       "headcountPrevYear": 2886,
       "headcountChange": -19,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 97744282.74428274
     },
     {
       "symbol": "088350.KS",
@@ -1155,7 +1273,8 @@
       "headcount": 2794,
       "headcountPrevYear": 2783,
       "headcountChange": 11,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 108311893.63995688
     },
     {
       "symbol": "012750.KS",
@@ -1165,7 +1284,8 @@
       "headcount": 7044,
       "headcountPrevYear": 6958,
       "headcountChange": 86,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 81420523.138833
     },
     {
       "symbol": "204320.KS",
@@ -1175,7 +1295,8 @@
       "headcount": 3828,
       "headcountPrevYear": 3918,
       "headcountChange": -90,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 107612046.96273609
     },
     {
       "symbol": "011780.KS",
@@ -1185,7 +1306,8 @@
       "headcount": 1606,
       "headcountPrevYear": 1579,
       "headcountChange": 27,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 99486383.7872071
     },
     {
       "symbol": "052690.KS",
@@ -1195,7 +1317,8 @@
       "headcount": 2466,
       "headcountPrevYear": 2407,
       "headcountChange": 59,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 89050685.50062318
     },
     {
       "symbol": "001040.KS",
@@ -1205,7 +1328,8 @@
       "headcount": 64,
       "headcountPrevYear": 62,
       "headcountChange": 2,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 794451612.9032258
     },
     {
       "symbol": "377300.KS",
@@ -1215,7 +1339,8 @@
       "headcount": 1282,
       "headcountPrevYear": 1198,
       "headcountChange": 84,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 83824707.84641069
     },
     {
       "symbol": "111770.KS",
@@ -1225,7 +1350,8 @@
       "headcount": 351,
       "headcountPrevYear": 339,
       "headcountChange": 12,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 73949852.50737463
     },
     {
       "symbol": "035250.KS",
@@ -1235,7 +1361,8 @@
       "headcount": 2513,
       "headcountPrevYear": 2459,
       "headcountChange": 54,
-      "buybackAmount": 40000000000
+      "buybackAmount": 40000000000,
+      "avgSalaryPrevYear": 67366652.29768199
     },
     {
       "symbol": "097950.KS",
@@ -1245,7 +1372,8 @@
       "headcount": 6894,
       "headcountPrevYear": 7140,
       "headcountChange": -246,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 79914565.82633053
     },
     {
       "symbol": "004370.KS",
@@ -1255,7 +1383,8 @@
       "headcount": 5501,
       "headcountPrevYear": 5535,
       "headcountChange": -34,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 61511384.28184282
     },
     {
       "symbol": "139480.KS",
@@ -1265,7 +1394,8 @@
       "headcount": 23075,
       "headcountPrevYear": 24548,
       "headcountChange": -1473,
-      "buybackAmount": 73980000
+      "buybackAmount": 73980000,
+      "avgSalaryPrevYear": 50476576.50317745
     },
     {
       "symbol": "450080.KS",
@@ -1275,7 +1405,8 @@
       "headcount": 462,
       "headcountPrevYear": 473,
       "headcountChange": -11,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 121729386.8921776
     },
     {
       "symbol": "036460.KS",
@@ -1285,7 +1416,8 @@
       "headcount": 3102,
       "headcountPrevYear": 3058,
       "headcountChange": 44,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 91713592.21713538
     },
     {
       "symbol": "103140.KS",
@@ -1295,7 +1427,8 @@
       "headcount": 2560,
       "headcountPrevYear": 2469,
       "headcountChange": 91,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 91119339.81368975
     },
     {
       "symbol": "008770.KS",
@@ -1305,7 +1438,8 @@
       "headcount": 1265,
       "headcountPrevYear": 1231,
       "headcountChange": 34,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 48763606.82372055
     },
     {
       "symbol": "028670.KS",
@@ -1315,7 +1449,8 @@
       "headcount": 999,
       "headcountPrevYear": 954,
       "headcountChange": 45,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 105017819.70649895
     },
     {
       "symbol": "030000.KS",
@@ -1325,7 +1460,8 @@
       "headcount": 1511,
       "headcountPrevYear": 1474,
       "headcountChange": 37,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 122177747.62550882
     },
     {
       "symbol": "457190.KS",
@@ -1335,7 +1471,8 @@
       "headcount": 215,
       "headcountPrevYear": 193,
       "headcountChange": 22,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 79829015.54404145
     },
     {
       "symbol": "008930.KS",
@@ -1345,7 +1482,8 @@
       "headcount": 489,
       "headcountPrevYear": 453,
       "headcountChange": 36,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 69860927.15231788
     },
     {
       "symbol": "282330.KS",
@@ -1355,7 +1493,8 @@
       "headcount": 3130,
       "headcountPrevYear": 3379,
       "headcountChange": -249,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 52303936.07576206
     },
     {
       "symbol": "081660.KS",
@@ -1365,7 +1504,8 @@
       "headcount": 65,
       "headcountPrevYear": 55,
       "headcountChange": 10,
-      "buybackAmount": 35000000000
+      "buybackAmount": 35000000000,
+      "avgSalaryPrevYear": 110654545.45454545
     },
     {
       "symbol": "029780.KS",
@@ -1375,7 +1515,8 @@
       "headcount": 2033,
       "headcountPrevYear": 2021,
       "headcountChange": 12,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 149594755.07174665
     },
     {
       "symbol": "018880.KS",
@@ -1385,7 +1526,8 @@
       "headcount": 2223,
       "headcountPrevYear": 2219,
       "headcountChange": 4,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 112555811.62685895
     },
     {
       "symbol": "071970.KS",
@@ -1395,7 +1537,8 @@
       "headcount": 210,
       "headcountPrevYear": 199,
       "headcountChange": 11,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 89678391.95979899
     },
     {
       "symbol": "112610.KS",
@@ -1405,7 +1548,8 @@
       "headcount": 98,
       "headcountPrevYear": 106,
       "headcountChange": -8,
-      "buybackAmount": 3245000000
+      "buybackAmount": 3245000000,
+      "avgSalaryPrevYear": 101915094.33962265
     },
     {
       "symbol": "251270.KS",
@@ -1415,7 +1559,8 @@
       "headcount": 795,
       "headcountPrevYear": 752,
       "headcountChange": 43,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 80565159.57446809
     },
     {
       "symbol": "120110.KS",
@@ -1425,7 +1570,8 @@
       "headcount": 3223,
       "headcountPrevYear": 2891,
       "headcountChange": 332,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 79585410.93047388
     },
     {
       "symbol": "069960.KS",
@@ -1435,7 +1581,8 @@
       "headcount": 3139,
       "headcountPrevYear": 3178,
       "headcountChange": -39,
-      "buybackAmount": 21000000000
+      "buybackAmount": 21000000000,
+      "avgSalaryPrevYear": 72391126.49465072
     },
     {
       "symbol": "022100.KS",
@@ -1445,7 +1592,8 @@
       "headcount": 1066,
       "headcountPrevYear": 952,
       "headcountChange": 114,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 99582983.19327731
     },
     {
       "symbol": "011170.KS",
@@ -1455,7 +1603,8 @@
       "headcount": 4349,
       "headcountPrevYear": 4764,
       "headcountChange": -415,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 101158270.36104114
     },
     {
       "symbol": "051600.KS",
@@ -1465,7 +1614,8 @@
       "headcount": 6485,
       "headcountPrevYear": 6579,
       "headcountChange": -94,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 82042929.62456301
     },
     {
       "symbol": "302440.KS",
@@ -1475,7 +1625,8 @@
       "headcount": 1129,
       "headcountPrevYear": 1021,
       "headcountChange": 108,
-      "buybackAmount": 17136925200
+      "buybackAmount": 17136925200,
+      "avgSalaryPrevYear": 80132223.31047992
     },
     {
       "symbol": "023530.KS",
@@ -1485,7 +1636,8 @@
       "headcount": 9792,
       "headcountPrevYear": 10348,
       "headcountChange": -556,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 42318802.28063394
     },
     {
       "symbol": "007340.KS",
@@ -1495,7 +1647,8 @@
       "headcount": 1604,
       "headcountPrevYear": 1703,
       "headcountChange": -99,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 43155637.698179685
     },
     {
       "symbol": "011210.KS",
@@ -1505,7 +1658,8 @@
       "headcount": 1478,
       "headcountPrevYear": 1691,
       "headcountChange": -213,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 123387936.132466
     },
     {
       "symbol": "007070.KS",
@@ -1515,7 +1669,8 @@
       "headcount": 3596,
       "headcountPrevYear": 3743,
       "headcountChange": -147,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 33283729.628640126
     },
     {
       "symbol": "009970.KS",
@@ -1525,7 +1680,8 @@
       "headcount": 51,
       "headcountPrevYear": 52,
       "headcountChange": -1,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 82307692.3076923
     },
     {
       "symbol": "383220.KS",
@@ -1535,7 +1691,8 @@
       "headcount": 646,
       "headcountPrevYear": 679,
       "headcountChange": -33,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 77145232.69513991
     },
     {
       "symbol": "005850.KS",
@@ -1545,7 +1702,8 @@
       "headcount": 3444,
       "headcountPrevYear": 3346,
       "headcountChange": 98,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 83468918.11117752
     },
     {
       "symbol": "298020.KS",
@@ -1555,7 +1713,8 @@
       "headcount": 1266,
       "headcountPrevYear": 1317,
       "headcountChange": -51,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 73991647.6841306
     },
     {
       "symbol": "073240.KS",
@@ -1565,7 +1724,8 @@
       "headcount": 5463,
       "headcountPrevYear": 5551,
       "headcountChange": -88,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 83536299.76580796
     },
     {
       "symbol": "000120.KS",
@@ -1575,7 +1735,8 @@
       "headcount": 6847,
       "headcountPrevYear": 7002,
       "headcountChange": -155,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 78807197.94344473
     },
     {
       "symbol": "026960.KS",
@@ -1585,7 +1746,8 @@
       "headcount": 275,
       "headcountPrevYear": 273,
       "headcountChange": 2,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 87412260.07326007
     },
     {
       "symbol": "017960.KS",
@@ -1595,7 +1757,8 @@
       "headcount": 447,
       "headcountPrevYear": 421,
       "headcountChange": 26,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 11301662.70783848
     },
     {
       "symbol": "093370.KS",
@@ -1605,7 +1768,8 @@
       "headcount": 351,
       "headcountPrevYear": 358,
       "headcountChange": -7,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 87206256.98324022
     },
     {
       "symbol": "006280.KS",
@@ -1615,7 +1779,8 @@
       "headcount": 2351,
       "headcountPrevYear": 2355,
       "headcountChange": -4,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 72631422.50530785
     },
     {
       "symbol": "004000.KS",
@@ -1625,7 +1790,8 @@
       "headcount": 943,
       "headcountPrevYear": 958,
       "headcountChange": -15,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 110508350.73068893
     },
     {
       "symbol": "002790.KS",
@@ -1635,7 +1801,8 @@
       "headcount": 60,
       "headcountPrevYear": 69,
       "headcountChange": -9,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 102898550.72463769
     },
     {
       "symbol": "004990.KS",
@@ -1645,7 +1812,8 @@
       "headcount": 296,
       "headcountPrevYear": 279,
       "headcountChange": 17,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 169111111.1111111
     },
     {
       "symbol": "192080.KS",
@@ -1655,7 +1823,8 @@
       "headcount": 383,
       "headcountPrevYear": 394,
       "headcountChange": -11,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 90121827.41116752
     },
     {
       "symbol": "003240.KS",
@@ -1665,7 +1834,8 @@
       "headcount": 826,
       "headcountPrevYear": 906,
       "headcountChange": -80,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 85876379.69094923
     },
     {
       "symbol": "000240.KS",
@@ -1675,7 +1845,8 @@
       "headcount": 1088,
       "headcountPrevYear": 1050,
       "headcountChange": 38,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 82783809.52380952
     },
     {
       "symbol": "069620.KS",
@@ -1685,7 +1856,8 @@
       "headcount": 1794,
       "headcountPrevYear": 1757,
       "headcountChange": 37,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 76370517.92828685
     },
     {
       "symbol": "361610.KS",
@@ -1695,7 +1867,8 @@
       "headcount": 319,
       "headcountPrevYear": 389,
       "headcountChange": -70,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 117681233.93316196
     },
     {
       "symbol": "185750.KS",
@@ -1705,7 +1878,8 @@
       "headcount": 2304,
       "headcountPrevYear": 2336,
       "headcountChange": -32,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 81769263.69863014
     },
     {
       "symbol": "000210.KS",
@@ -1715,7 +1889,8 @@
       "headcount": 25,
       "headcountPrevYear": 24,
       "headcountChange": 1,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 224125000.0
     },
     {
       "symbol": "001800.KS",
@@ -1725,7 +1900,8 @@
       "headcount": 8,
       "headcountPrevYear": 8,
       "headcountChange": 0,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 476750000.0
     },
     {
       "symbol": "001430.KS",
@@ -1735,7 +1911,8 @@
       "headcount": 52,
       "headcountPrevYear": 55,
       "headcountChange": -3,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 113236363.63636364
     },
     {
       "symbol": "285130.KS",
@@ -1745,7 +1922,8 @@
       "headcount": 1547,
       "headcountPrevYear": 1466,
       "headcountChange": 81,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 85199181.44611187
     },
     {
       "symbol": "000080.KS",
@@ -1755,7 +1933,8 @@
       "headcount": 1729,
       "headcountPrevYear": 1790,
       "headcountChange": -61,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 117544733.56201117
     },
     {
       "symbol": "007310.KS",
@@ -1765,7 +1944,8 @@
       "headcount": 3388,
       "headcountPrevYear": 3460,
       "headcountChange": -72,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 48591907.51445087
     },
     {
       "symbol": "034230.KS",
@@ -1775,7 +1955,8 @@
       "headcount": 1473,
       "headcountPrevYear": 1373,
       "headcountChange": 100,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 66327289.87618354
     },
     {
       "symbol": "006040.KS",
@@ -1785,7 +1966,8 @@
       "headcount": 712,
       "headcountPrevYear": 774,
       "headcountChange": -62,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 96926356.58914728
     },
     {
       "symbol": "456040.KS",
@@ -1795,7 +1977,8 @@
       "headcount": 1680,
       "headcountPrevYear": 1610,
       "headcountChange": 70,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 96512422.36024845
     },
     {
       "symbol": "280360.KS",
@@ -1805,7 +1988,8 @@
       "headcount": 3123,
       "headcountPrevYear": 3502,
       "headcountChange": -379,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 55687892.63278127
     },
     {
       "symbol": "001680.KS",
@@ -1815,7 +1999,8 @@
       "headcount": 4345,
       "headcountPrevYear": 4560,
       "headcountChange": -215,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 60572149.12280702
     },
     {
       "symbol": "069260.KS",
@@ -1825,7 +2010,8 @@
       "headcount": 233,
       "headcountPrevYear": 243,
       "headcountChange": -10,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 111193415.63786009
     },
     {
       "symbol": "298050.KS",
@@ -1835,7 +2021,8 @@
       "headcount": 998,
       "headcountPrevYear": 1019,
       "headcountChange": -21,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 69643768.40039255
     },
     {
       "symbol": "005300.KS",
@@ -1845,7 +2032,8 @@
       "headcount": 3588,
       "headcountPrevYear": 4002,
       "headcountChange": -414,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 66534232.88355822
     },
     {
       "symbol": "300720.KS",
@@ -1855,7 +2043,8 @@
       "headcount": 980,
       "headcountPrevYear": 683,
       "headcountChange": 297,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 93295937.04245974
     },
     {
       "symbol": "003090.KS",
@@ -1865,7 +2054,8 @@
       "headcount": 413,
       "headcountPrevYear": 349,
       "headcountChange": 64,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 74805157.59312321
     },
     {
       "symbol": "009240.KS",
@@ -1875,7 +2065,8 @@
       "headcount": 1322,
       "headcountPrevYear": 1371,
       "headcountChange": -49,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 59798687.08971553
     },
     {
       "symbol": "006650.KS",
@@ -1885,7 +2076,8 @@
       "headcount": 866,
       "headcountPrevYear": 870,
       "headcountChange": -4,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 95945977.01149425
     },
     {
       "symbol": "005420.KS",
@@ -1895,7 +2087,8 @@
       "headcount": 257,
       "headcountPrevYear": 291,
       "headcountChange": -34,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 81646048.10996564
     },
     {
       "symbol": "137310.KS",
@@ -1905,7 +2098,8 @@
       "headcount": 336,
       "headcountPrevYear": 329,
       "headcountChange": 7,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 66200188.449848026
     },
     {
       "symbol": "071320.KS",
@@ -1915,7 +2109,8 @@
       "headcount": 2213,
       "headcountPrevYear": 2189,
       "headcountChange": 24,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 80417744.17542256
     },
     {
       "symbol": "000670.KS",
@@ -1925,7 +2120,8 @@
       "headcount": 781,
       "headcountPrevYear": 738,
       "headcountChange": 43,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 57749802.16802168
     },
     {
       "symbol": "008730.KS",
@@ -1935,7 +2131,8 @@
       "headcount": 397,
       "headcountPrevYear": 388,
       "headcountChange": 9,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 71027763.27319588
     },
     {
       "symbol": "002840.KS",
@@ -1945,7 +2142,8 @@
       "headcount": 258,
       "headcountPrevYear": 256,
       "headcountChange": 2,
-      "buybackAmount": 16499682800
+      "buybackAmount": 16499682800,
+      "avgSalaryPrevYear": 66663773.4375
     },
     {
       "symbol": "003030.KS",
@@ -1955,7 +2153,8 @@
       "headcount": 45,
       "headcountPrevYear": 42,
       "headcountChange": 3,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 97976190.47619048
     },
     {
       "symbol": "002030.KS",
@@ -1965,7 +2164,8 @@
       "headcount": 10,
       "headcountPrevYear": 10,
       "headcountChange": 0,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 109850800.0
     },
     {
       "symbol": "014820.KS",
@@ -1975,7 +2175,8 @@
       "headcount": 913,
       "headcountPrevYear": 888,
       "headcountChange": 25,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 61864387.38738739
     },
     {
       "symbol": "268280.KS",
@@ -1985,7 +2186,8 @@
       "headcount": 370,
       "headcountPrevYear": 382,
       "headcountChange": -12,
-      "buybackAmount": 4242000000
+      "buybackAmount": 4242000000,
+      "avgSalaryPrevYear": 62750314.136125654
     },
     {
       "symbol": "000880.KS",
@@ -1995,7 +2197,8 @@
       "headcount": 1936,
       "headcountPrevYear": 2122,
       "headcountChange": -186,
-      "buybackAmount": 14151246300
+      "buybackAmount": 14151246300,
+      "avgSalaryPrevYear": 85934967.0122526
     },
     {
       "symbol": "196170.KQ",
@@ -2005,7 +2208,8 @@
       "headcount": 161,
       "headcountPrevYear": 154,
       "headcountChange": 7,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 223190539.61038962
     },
     {
       "symbol": "086520.KQ",
@@ -2015,7 +2219,8 @@
       "headcount": 185,
       "headcountPrevYear": 190,
       "headcountChange": -5,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 94247368.42105263
     },
     {
       "symbol": "247540.KQ",
@@ -2025,7 +2230,8 @@
       "headcount": 753,
       "headcountPrevYear": 787,
       "headcountChange": -34,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 53665819.56797967
     },
     {
       "symbol": "036930.KQ",
@@ -2035,7 +2241,8 @@
       "headcount": 485,
       "headcountPrevYear": 521,
       "headcountChange": -36,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 72124760.07677543
     },
     {
       "symbol": "028300.KQ",
@@ -2045,7 +2252,8 @@
       "headcount": 104,
       "headcountPrevYear": 119,
       "headcountChange": -15,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 46875983.193277314
     },
     {
       "symbol": "087010.KQ",
@@ -2055,7 +2263,8 @@
       "headcount": 160,
       "headcountPrevYear": 112,
       "headcountChange": 48,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 55498642.85714286
     },
     {
       "symbol": "240810.KQ",
@@ -2065,7 +2274,8 @@
       "headcount": 1509,
       "headcountPrevYear": 1484,
       "headcountChange": 25,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 78895762.12938005
     },
     {
       "symbol": "277810.KQ",
@@ -2075,7 +2285,8 @@
       "headcount": 161,
       "headcountPrevYear": 98,
       "headcountChange": 63,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 47810938.77551021
     },
     {
       "symbol": "039030.KQ",
@@ -2085,7 +2296,8 @@
       "headcount": 636,
       "headcountPrevYear": 634,
       "headcountChange": 2,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 68620843.84858043
     },
     {
       "symbol": "058470.KQ",
@@ -2095,7 +2307,8 @@
       "headcount": 677,
       "headcountPrevYear": 636,
       "headcountChange": 41,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 90086048.86320755
     },
     {
       "symbol": "298380.KQ",
@@ -2105,7 +2318,8 @@
       "headcount": 108,
       "headcountPrevYear": 104,
       "headcountChange": 4,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 93701923.07692307
     },
     {
       "symbol": "403870.KQ",
@@ -2115,7 +2329,8 @@
       "headcount": 127,
       "headcountPrevYear": 115,
       "headcountChange": 12,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 156573913.04347825
     },
     {
       "symbol": "108490.KQ",
@@ -2125,7 +2340,8 @@
       "headcount": 111,
       "headcountPrevYear": 153,
       "headcountChange": -42,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 51863633.986928105
     },
     {
       "symbol": "222800.KQ",
@@ -2135,7 +2351,8 @@
       "headcount": 2902,
       "headcountPrevYear": 2824,
       "headcountChange": 78,
-      "buybackAmount": 7596000000
+      "buybackAmount": 7596000000,
+      "avgSalaryPrevYear": 63628998.22946176
     },
     {
       "symbol": "141080.KQ",
@@ -2145,7 +2362,8 @@
       "headcount": 177,
       "headcountPrevYear": 170,
       "headcountChange": 7,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 110205882.35294117
     },
     {
       "symbol": "214450.KQ",
@@ -2155,7 +2373,8 @@
       "headcount": 526,
       "headcountPrevYear": 436,
       "headcountChange": 90,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 68071100.91743119
     },
     {
       "symbol": "319660.KQ",
@@ -2165,7 +2384,8 @@
       "headcount": 343,
       "headcountPrevYear": 332,
       "headcountChange": 11,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 80969879.51807229
     },
     {
       "symbol": "000250.KQ",
@@ -2175,7 +2395,8 @@
       "headcount": 436,
       "headcountPrevYear": 417,
       "headcountChange": 19,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 66422062.3501199
     },
     {
       "symbol": "080220.KQ",
@@ -2185,7 +2406,8 @@
       "headcount": 139,
       "headcountPrevYear": 134,
       "headcountChange": 5,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 73552238.80597015
     },
     {
       "symbol": "347850.KQ",
@@ -2195,7 +2417,8 @@
       "headcount": 17,
       "headcountPrevYear": 18,
       "headcountChange": -1,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 88944444.44444445
     },
     {
       "symbol": "032820.KQ",
@@ -2205,7 +2428,8 @@
       "headcount": 69,
       "headcountPrevYear": 63,
       "headcountChange": 6,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 64428571.428571425
     },
     {
       "symbol": "178320.KQ",
@@ -2215,7 +2439,8 @@
       "headcount": 199,
       "headcountPrevYear": 191,
       "headcountChange": 8,
-      "buybackAmount": 10000000000
+      "buybackAmount": 10000000000,
+      "avgSalaryPrevYear": 50528795.81151833
     },
     {
       "symbol": "084370.KQ",
@@ -2225,7 +2450,8 @@
       "headcount": 348,
       "headcountPrevYear": 316,
       "headcountChange": 32,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 92481012.65822785
     },
     {
       "symbol": "310210.KQ",
@@ -2235,7 +2461,8 @@
       "headcount": 149,
       "headcountPrevYear": 147,
       "headcountChange": 2,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 73306122.44897959
     },
     {
       "symbol": "226950.KQ",
@@ -2245,7 +2472,8 @@
       "headcount": 76,
       "headcountPrevYear": 69,
       "headcountChange": 7,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 69478260.86956522
     },
     {
       "symbol": "067310.KQ",
@@ -2255,7 +2483,8 @@
       "headcount": 771,
       "headcountPrevYear": 801,
       "headcountChange": -30,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 61887640.4494382
     },
     {
       "symbol": "095340.KQ",
@@ -2265,7 +2494,8 @@
       "headcount": 407,
       "headcountPrevYear": 217,
       "headcountChange": 190,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 57493087.55760369
     },
     {
       "symbol": "095610.KQ",
@@ -2275,7 +2505,8 @@
       "headcount": 438,
       "headcountPrevYear": 411,
       "headcountChange": 27,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 99637469.5863747
     },
     {
       "symbol": "257720.KQ",
@@ -2285,7 +2516,8 @@
       "headcount": 309,
       "headcountPrevYear": 118,
       "headcountChange": 191,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 57058975.75423729
     },
     {
       "symbol": "098460.KQ",
@@ -2295,7 +2527,8 @@
       "headcount": 472,
       "headcountPrevYear": 462,
       "headcountChange": 10,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 75322510.82251082
     },
     {
       "symbol": "005290.KQ",
@@ -2305,7 +2538,8 @@
       "headcount": 1257,
       "headcountPrevYear": 1450,
       "headcountChange": -193,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 77308988.27586207
     },
     {
       "symbol": "237690.KQ",
@@ -2315,7 +2549,8 @@
       "headcount": 780,
       "headcountPrevYear": 664,
       "headcountChange": 116,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 55072289.15662651
     },
     {
       "symbol": "089970.KQ",
@@ -2325,7 +2560,8 @@
       "headcount": 102,
       "headcountPrevYear": 67,
       "headcountChange": 35,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 99227671.64179105
     },
     {
       "symbol": "058610.KQ",
@@ -2335,7 +2571,8 @@
       "headcount": 411,
       "headcountPrevYear": 429,
       "headcountChange": -18,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 52455174.82517482
     },
     {
       "symbol": "145020.KQ",
@@ -2345,7 +2582,8 @@
       "headcount": 629,
       "headcountPrevYear": 609,
       "headcountChange": 20,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 64784893.267651886
     },
     {
       "symbol": "089030.KQ",
@@ -2355,7 +2593,8 @@
       "headcount": 589,
       "headcountPrevYear": 594,
       "headcountChange": -5,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 54163299.663299665
     },
     {
       "symbol": "357780.KQ",
@@ -2365,7 +2604,8 @@
       "headcount": 1133,
       "headcountPrevYear": 1192,
       "headcountChange": -59,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 71325503.3557047
     },
     {
       "symbol": "131290.KQ",
@@ -2375,7 +2615,8 @@
       "headcount": 509,
       "headcountPrevYear": 319,
       "headcountChange": 190,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 44300940.43887147
     },
     {
       "symbol": "319400.KQ",
@@ -2385,7 +2626,8 @@
       "headcount": 441,
       "headcountPrevYear": 423,
       "headcountChange": 18,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 63780141.84397163
     },
     {
       "symbol": "475830.KQ",
@@ -2395,7 +2637,8 @@
       "headcount": 15,
       "headcountPrevYear": 11,
       "headcountChange": 4,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 79909090.9090909
     },
     {
       "symbol": "039200.KQ",
@@ -2405,7 +2648,8 @@
       "headcount": 57,
       "headcountPrevYear": 51,
       "headcountChange": 6,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 50117647.058823526
     },
     {
       "symbol": "064760.KQ",
@@ -2415,7 +2659,8 @@
       "headcount": 325,
       "headcountPrevYear": 321,
       "headcountChange": 4,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 78592856.52959502
     },
     {
       "symbol": "083650.KQ",
@@ -2425,7 +2670,8 @@
       "headcount": 688,
       "headcountPrevYear": 558,
       "headcountChange": 130,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 64394265.23297491
     },
     {
       "symbol": "140860.KQ",
@@ -2435,7 +2681,8 @@
       "headcount": 392,
       "headcountPrevYear": 361,
       "headcountChange": 31,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 40878116.3434903
     },
     {
       "symbol": "007390.KQ",
@@ -2445,7 +2692,8 @@
       "headcount": 50,
       "headcountPrevYear": 58,
       "headcountChange": -8,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 40982758.62068965
     },
     {
       "symbol": "263750.KQ",
@@ -2455,7 +2703,8 @@
       "headcount": 642,
       "headcountPrevYear": 601,
       "headcountChange": 41,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 102586507.4875208
     },
     {
       "symbol": "323280.KQ",
@@ -2465,7 +2714,8 @@
       "headcount": 105,
       "headcountPrevYear": 94,
       "headcountChange": 11,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 47383468.08510638
     },
     {
       "symbol": "035900.KQ",
@@ -2475,7 +2725,8 @@
       "headcount": 496,
       "headcountPrevYear": 422,
       "headcountChange": 74,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 102609881.51658767
     },
     {
       "symbol": "290650.KQ",
@@ -2485,7 +2736,8 @@
       "headcount": 68,
       "headcountPrevYear": 56,
       "headcountChange": 12,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 47577035.71428572
     },
     {
       "symbol": "041510.KQ",
@@ -2495,7 +2747,8 @@
       "headcount": 765,
       "headcountPrevYear": 723,
       "headcountChange": 42,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 75311146.61134163
     },
     {
       "symbol": "131970.KQ",
@@ -2505,7 +2758,8 @@
       "headcount": 694,
       "headcountPrevYear": 563,
       "headcountChange": 131,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 62936056.8383659
     },
     {
       "symbol": "078600.KQ",
@@ -2515,7 +2769,8 @@
       "headcount": 357,
       "headcountPrevYear": 364,
       "headcountChange": -7,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 60414835.16483516
     },
     {
       "symbol": "096530.KQ",
@@ -2525,7 +2780,8 @@
       "headcount": 328,
       "headcountPrevYear": 365,
       "headcountChange": -37,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 73509589.0410959
     },
     {
       "symbol": "214150.KQ",
@@ -2535,7 +2791,8 @@
       "headcount": 528,
       "headcountPrevYear": 527,
       "headcountChange": 1,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 53717267.55218216
     },
     {
       "symbol": "082920.KQ",
@@ -2545,7 +2802,8 @@
       "headcount": 430,
       "headcountPrevYear": 414,
       "headcountChange": 16,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 61937198.06763285
     },
     {
       "symbol": "068760.KQ",
@@ -2555,7 +2813,8 @@
       "headcount": 563,
       "headcountPrevYear": 920,
       "headcountChange": -357,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 64367391.30434783
     },
     {
       "symbol": "214370.KQ",
@@ -2565,7 +2824,8 @@
       "headcount": 201,
       "headcountPrevYear": 193,
       "headcountChange": 8,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 47093264.248704664
     },
     {
       "symbol": "031980.KQ",
@@ -2575,7 +2835,8 @@
       "headcount": 133,
       "headcountPrevYear": 112,
       "headcountChange": 21,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 79750000.0
     },
     {
       "symbol": "241710.KQ",
@@ -2585,7 +2846,8 @@
       "headcount": 506,
       "headcountPrevYear": 450,
       "headcountChange": 56,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 54391111.11111111
     },
     {
       "symbol": "218410.KQ",
@@ -2595,7 +2857,8 @@
       "headcount": 334,
       "headcountPrevYear": 314,
       "headcountChange": 20,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 56338834.39490446
     },
     {
       "symbol": "090710.KQ",
@@ -2605,7 +2868,8 @@
       "headcount": 56,
       "headcountPrevYear": 70,
       "headcountChange": -14,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 44228571.428571425
     },
     {
       "symbol": "030530.KQ",
@@ -2615,7 +2879,8 @@
       "headcount": 419,
       "headcountPrevYear": 413,
       "headcountChange": 6,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 73673123.4866828
     },
     {
       "symbol": "466100.KQ",
@@ -2625,7 +2890,8 @@
       "headcount": 109,
       "headcountPrevYear": 103,
       "headcountChange": 6,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 60421951.45631068
     },
     {
       "symbol": "101490.KQ",
@@ -2635,7 +2901,8 @@
       "headcount": 311,
       "headcountPrevYear": 299,
       "headcountChange": 12,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 52809364.54849498
     },
     {
       "symbol": "445680.KQ",
@@ -2645,7 +2912,8 @@
       "headcount": 13,
       "headcountPrevYear": 13,
       "headcountChange": 0,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 66615384.615384616
     },
     {
       "symbol": "043260.KQ",
@@ -2655,7 +2923,8 @@
       "headcount": 86,
       "headcountPrevYear": 92,
       "headcountChange": -6,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 52886076.08695652
     },
     {
       "symbol": "048410.KQ",
@@ -2665,7 +2934,8 @@
       "headcount": 67,
       "headcountPrevYear": 55,
       "headcountChange": 12,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 80418181.81818181
     },
     {
       "symbol": "328130.KQ",
@@ -2675,7 +2945,8 @@
       "headcount": 159,
       "headcountPrevYear": 189,
       "headcountChange": -30,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 97158730.15873016
     },
     {
       "symbol": "420770.KQ",
@@ -2685,7 +2956,8 @@
       "headcount": 138,
       "headcountPrevYear": 135,
       "headcountChange": 3,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 80340740.74074075
     },
     {
       "symbol": "195940.KQ",
@@ -2695,7 +2967,8 @@
       "headcount": 1660,
       "headcountPrevYear": 1668,
       "headcountChange": -8,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 51988009.59232614
     },
     {
       "symbol": "183300.KQ",
@@ -2705,7 +2978,8 @@
       "headcount": 868,
       "headcountPrevYear": 767,
       "headcountChange": 101,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 61797913.95045632
     },
     {
       "symbol": "166090.KQ",
@@ -2715,7 +2989,8 @@
       "headcount": 717,
       "headcountPrevYear": 738,
       "headcountChange": -21,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 70039295.39295393
     },
     {
       "symbol": "085660.KQ",
@@ -2725,7 +3000,8 @@
       "headcount": 354,
       "headcountPrevYear": 334,
       "headcountChange": 20,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 45650281.43712575
     },
     {
       "symbol": "122870.KQ",
@@ -2735,7 +3011,8 @@
       "headcount": 438,
       "headcountPrevYear": 496,
       "headcountChange": -58,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 62786290.32258064
     },
     {
       "symbol": "137400.KQ",
@@ -2745,7 +3022,8 @@
       "headcount": 311,
       "headcountPrevYear": 318,
       "headcountChange": -7,
-      "buybackAmount": 1480450000
+      "buybackAmount": 1480450000,
+      "avgSalaryPrevYear": 51449066.03773585
     },
     {
       "symbol": "124500.KQ",
@@ -2755,7 +3033,8 @@
       "headcount": 164,
       "headcountPrevYear": 230,
       "headcountChange": -66,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 66206226.08695652
     },
     {
       "symbol": "189300.KQ",
@@ -2765,7 +3044,8 @@
       "headcount": 250,
       "headcountPrevYear": 230,
       "headcountChange": 20,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 69204347.82608695
     },
     {
       "symbol": "065350.KQ",
@@ -2775,7 +3055,8 @@
       "headcount": 195,
       "headcountPrevYear": 214,
       "headcountChange": -19,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 51182242.99065421
     },
     {
       "symbol": "358570.KQ",
@@ -2785,7 +3066,8 @@
       "headcount": 82,
       "headcountPrevYear": 84,
       "headcountChange": -2,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 92988654.76190476
     },
     {
       "symbol": "090360.KQ",
@@ -2795,7 +3077,8 @@
       "headcount": 204,
       "headcountPrevYear": 184,
       "headcountChange": 20,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 54597826.08695652
     },
     {
       "symbol": "099320.KQ",
@@ -2805,7 +3088,8 @@
       "headcount": 513,
       "headcountPrevYear": 484,
       "headcountChange": 29,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 70039256.1983471
     },
     {
       "symbol": "060370.KQ",
@@ -2815,7 +3099,8 @@
       "headcount": 52,
       "headcountPrevYear": 44,
       "headcountChange": 8,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 86909090.9090909
     },
     {
       "symbol": "050890.KQ",
@@ -2825,7 +3110,8 @@
       "headcount": 333,
       "headcountPrevYear": 222,
       "headcountChange": 111,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 76441441.44144145
     },
     {
       "symbol": "033100.KQ",
@@ -2835,7 +3121,8 @@
       "headcount": 190,
       "headcountPrevYear": 201,
       "headcountChange": -11,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 79388616.91542289
     },
     {
       "symbol": "161580.KQ",
@@ -2845,7 +3132,8 @@
       "headcount": 319,
       "headcountPrevYear": 332,
       "headcountChange": -13,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 67536144.57831325
     },
     {
       "symbol": "003380.KQ",
@@ -2855,7 +3143,8 @@
       "headcount": 91,
       "headcountPrevYear": 74,
       "headcountChange": 17,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 76297297.2972973
     },
     {
       "symbol": "281740.KQ",
@@ -2865,7 +3154,8 @@
       "headcount": 300,
       "headcountPrevYear": 287,
       "headcountChange": 13,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 63167247.38675958
     },
     {
       "symbol": "032500.KQ",
@@ -2875,7 +3165,8 @@
       "headcount": 69,
       "headcountPrevYear": 75,
       "headcountChange": -6,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 207813333.33333334
     },
     {
       "symbol": "036540.KQ",
@@ -2885,7 +3176,8 @@
       "headcount": 584,
       "headcountPrevYear": 577,
       "headcountChange": 7,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 54308492.20103986
     },
     {
       "symbol": "417200.KQ",
@@ -2895,7 +3187,8 @@
       "headcount": 122,
       "headcountPrevYear": 80,
       "headcountChange": 42,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 68400000.0
     },
     {
       "symbol": "074600.KQ",
@@ -2905,7 +3198,8 @@
       "headcount": 731,
       "headcountPrevYear": 714,
       "headcountChange": 17,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": null
     },
     {
       "symbol": "121600.KQ",
@@ -2915,7 +3209,8 @@
       "headcount": 350,
       "headcountPrevYear": 288,
       "headcountChange": 62,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 69295138.8888889
     },
     {
       "symbol": "213420.KQ",
@@ -2925,7 +3220,8 @@
       "headcount": 294,
       "headcountPrevYear": 277,
       "headcountChange": 17,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 70144202.16606498
     },
     {
       "symbol": "348370.KQ",
@@ -2935,7 +3231,8 @@
       "headcount": 398,
       "headcountPrevYear": 408,
       "headcountChange": -10,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 63350710.78431372
     },
     {
       "symbol": "232140.KQ",
@@ -2945,7 +3242,8 @@
       "headcount": 210,
       "headcountPrevYear": 204,
       "headcountChange": 6,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 64862745.09803922
     },
     {
       "symbol": "293490.KQ",
@@ -2955,7 +3253,8 @@
       "headcount": 473,
       "headcountPrevYear": 474,
       "headcountChange": -1,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 92208860.75949366
     },
     {
       "symbol": "437730.KQ",
@@ -2965,7 +3264,12 @@
       "headcount": 134,
       "headcountPrevYear": 111,
       "headcountChange": 23,
+<<<<<<< HEAD
       "buybackAmount": 3000000000
+=======
+      "buybackAmount": 6000000000,
+      "avgSalaryPrevYear": 44254657.65765766
+>>>>>>> dbfddfa (검색 상세에 리스크 탭 추가(국내): 임금 감소·동결, 인원 감축 순위)
     },
     {
       "symbol": "222080.KQ",
@@ -2975,7 +3279,8 @@
       "headcount": 477,
       "headcountPrevYear": 513,
       "headcountChange": -36,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 37348670.56530214
     },
     {
       "symbol": "388720.KQ",
@@ -2985,7 +3290,8 @@
       "headcount": 127,
       "headcountPrevYear": 90,
       "headcountChange": 37,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 48725444.44444445
     },
     {
       "symbol": "014620.KQ",
@@ -2995,7 +3301,8 @@
       "headcount": 241,
       "headcountPrevYear": 249,
       "headcountChange": -8,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 74555368.29317269
     },
     {
       "symbol": "036810.KQ",
@@ -3005,7 +3312,8 @@
       "headcount": 855,
       "headcountPrevYear": 834,
       "headcountChange": 21,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 51160671.46282974
     },
     {
       "symbol": "295310.KQ",
@@ -3015,7 +3323,8 @@
       "headcount": 116,
       "headcountPrevYear": 89,
       "headcountChange": 27,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 53017471.91011236
     },
     {
       "symbol": "035760.KQ",
@@ -3025,7 +3334,8 @@
       "headcount": 1342,
       "headcountPrevYear": 1285,
       "headcountChange": 57,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 90771206.22568093
     },
     {
       "symbol": "025980.KQ",
@@ -3035,7 +3345,8 @@
       "headcount": 522,
       "headcountPrevYear": 520,
       "headcountChange": 2,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 36203180.76923077
     },
     {
       "symbol": "204270.KQ",
@@ -3045,7 +3356,8 @@
       "headcount": 178,
       "headcountPrevYear": 176,
       "headcountChange": 2,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 57517045.45454545
     },
     {
       "symbol": "082270.KQ",
@@ -3055,7 +3367,8 @@
       "headcount": 217,
       "headcountPrevYear": 199,
       "headcountChange": 18,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 55859296.48241206
     },
     {
       "symbol": "052400.KQ",
@@ -3065,7 +3378,8 @@
       "headcount": 383,
       "headcountPrevYear": 395,
       "headcountChange": -12,
-      "buybackAmount": 10020150000
+      "buybackAmount": 10020150000,
+      "avgSalaryPrevYear": 57845569.62025317
     },
     {
       "symbol": "171090.KQ",
@@ -3075,7 +3389,8 @@
       "headcount": 261,
       "headcountPrevYear": 220,
       "headcountChange": 41,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 60272727.27272727
     },
     {
       "symbol": "025320.KQ",
@@ -3085,7 +3400,8 @@
       "headcount": 107,
       "headcountPrevYear": 94,
       "headcountChange": 13,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 81414893.61702128
     },
     {
       "symbol": "006730.KQ",
@@ -3095,7 +3411,8 @@
       "headcount": 512,
       "headcountPrevYear": 559,
       "headcountChange": -47,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 27835978.533094812
     },
     {
       "symbol": "056190.KQ",
@@ -3105,7 +3422,8 @@
       "headcount": 735,
       "headcountPrevYear": 762,
       "headcountChange": -27,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 74213160.10498688
     },
     {
       "symbol": "060250.KQ",
@@ -3115,7 +3433,8 @@
       "headcount": 452,
       "headcountPrevYear": 407,
       "headcountChange": 45,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 60289926.28992629
     },
     {
       "symbol": "042000.KQ",
@@ -3125,7 +3444,8 @@
       "headcount": 982,
       "headcountPrevYear": 1035,
       "headcountChange": -53,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 72085771.98067632
     },
     {
       "symbol": "033500.KQ",
@@ -3135,7 +3455,8 @@
       "headcount": 431,
       "headcountPrevYear": 384,
       "headcountChange": 47,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 67281250.0
     },
     {
       "symbol": "112040.KQ",
@@ -3145,7 +3466,8 @@
       "headcount": 474,
       "headcountPrevYear": 542,
       "headcountChange": -68,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 114977859.77859779
     },
     {
       "symbol": "214430.KQ",
@@ -3155,7 +3477,8 @@
       "headcount": 507,
       "headcountPrevYear": 479,
       "headcountChange": 28,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 58764288.10020877
     },
     {
       "symbol": "253450.KQ",
@@ -3165,7 +3488,8 @@
       "headcount": 179,
       "headcountPrevYear": 173,
       "headcountChange": 6,
-      "buybackAmount": 129195300
+      "buybackAmount": 129195300,
+      "avgSalaryPrevYear": 117697416.1849711
     },
     {
       "symbol": "399720.KQ",
@@ -3175,7 +3499,8 @@
       "headcount": 261,
       "headcountPrevYear": 256,
       "headcountChange": 5,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 93289062.5
     },
     {
       "symbol": "067160.KQ",
@@ -3185,7 +3510,8 @@
       "headcount": 813,
       "headcountPrevYear": 822,
       "headcountChange": -9,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 64392944.03892944
     },
     {
       "symbol": "053800.KQ",
@@ -3195,7 +3521,8 @@
       "headcount": 1257,
       "headcountPrevYear": 1266,
       "headcountChange": -9,
-      "buybackAmount": 34232009000
+      "buybackAmount": 34232009000,
+      "avgSalaryPrevYear": 69451585.30805688
     },
     {
       "symbol": "038500.KQ",
@@ -3205,7 +3532,8 @@
       "headcount": 649,
       "headcountPrevYear": 741,
       "headcountChange": -92,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 89454790.82321188
     },
     {
       "symbol": "211050.KQ",
@@ -3215,7 +3543,8 @@
       "headcount": 407,
       "headcountPrevYear": 366,
       "headcountChange": 41,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 50469729.50819672
     },
     {
       "symbol": "100790.KQ",
@@ -3225,7 +3554,8 @@
       "headcount": 34,
       "headcountPrevYear": 32,
       "headcountChange": 2,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 189571312.5
     },
     {
       "symbol": "015750.KQ",
@@ -3235,7 +3565,8 @@
       "headcount": 1782,
       "headcountPrevYear": 1802,
       "headcountChange": -20,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 78966431.74250832
     },
     {
       "symbol": "018290.KQ",
@@ -3245,7 +3576,8 @@
       "headcount": 277,
       "headcountPrevYear": 212,
       "headcountChange": 65,
-      "buybackAmount": 14999997750
+      "buybackAmount": 14999997750,
+      "avgSalaryPrevYear": 62250000.0
     },
     {
       "symbol": "125490.KQ",
@@ -3255,7 +3587,8 @@
       "headcount": 59,
       "headcountPrevYear": null,
       "headcountChange": null,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": null
     },
     {
       "symbol": "030520.KQ",
@@ -3265,7 +3598,8 @@
       "headcount": 420,
       "headcountPrevYear": 395,
       "headcountChange": 25,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 89488607.59493671
     },
     {
       "symbol": "348210.KQ",
@@ -3275,7 +3609,8 @@
       "headcount": 127,
       "headcountPrevYear": 131,
       "headcountChange": -4,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 98045106.870229
     },
     {
       "symbol": "251970.KQ",
@@ -3285,7 +3620,8 @@
       "headcount": 665,
       "headcountPrevYear": 659,
       "headcountChange": 6,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 38853503.79362671
     },
     {
       "symbol": "060280.KQ",
@@ -3295,7 +3631,8 @@
       "headcount": 101,
       "headcountPrevYear": 97,
       "headcountChange": 4,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 63061855.670103095
     },
     {
       "symbol": "032190.KQ",
@@ -3305,7 +3642,8 @@
       "headcount": 102,
       "headcountPrevYear": 92,
       "headcountChange": 10,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 69956521.73913044
     },
     {
       "symbol": "041190.KQ",
@@ -3315,7 +3653,8 @@
       "headcount": 11,
       "headcountPrevYear": 12,
       "headcountChange": -1,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 100166666.66666667
     },
     {
       "symbol": "272290.KQ",
@@ -3325,7 +3664,8 @@
       "headcount": 727,
       "headcountPrevYear": 767,
       "headcountChange": -40,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 66529335.07170796
     },
     {
       "symbol": "009520.KQ",
@@ -3335,7 +3675,8 @@
       "headcount": 999,
       "headcountPrevYear": 1021,
       "headcountChange": -22,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 82064642.50734574
     },
     {
       "symbol": "078340.KQ",
@@ -3345,7 +3686,8 @@
       "headcount": 1505,
       "headcountPrevYear": 1471,
       "headcountChange": 34,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 80807613.86811693
     },
     {
       "symbol": "278280.KQ",
@@ -3355,7 +3697,8 @@
       "headcount": 94,
       "headcountPrevYear": 96,
       "headcountChange": -2,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 48252645.833333336
     },
     {
       "symbol": "036620.KQ",
@@ -3365,7 +3708,8 @@
       "headcount": 99,
       "headcountPrevYear": 84,
       "headcountChange": 15,
-      "buybackAmount": 4500000000
+      "buybackAmount": 4500000000,
+      "avgSalaryPrevYear": 59666666.666666664
     },
     {
       "symbol": "056080.KQ",
@@ -3375,7 +3719,8 @@
       "headcount": 142,
       "headcountPrevYear": 153,
       "headcountChange": -11,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 76379274.50980392
     },
     {
       "symbol": "215200.KQ",
@@ -3385,7 +3730,8 @@
       "headcount": 2002,
       "headcountPrevYear": 2168,
       "headcountChange": -166,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 41341738.9298893
     },
     {
       "symbol": "376300.KQ",
@@ -3395,7 +3741,8 @@
       "headcount": 70,
       "headcountPrevYear": 62,
       "headcountChange": 8,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 68274193.5483871
     },
     {
       "symbol": "253590.KQ",
@@ -3405,7 +3752,8 @@
       "headcount": 67,
       "headcountPrevYear": 61,
       "headcountChange": 6,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 57582.737704918036
     },
     {
       "symbol": "095660.KQ",
@@ -3415,7 +3763,8 @@
       "headcount": 899,
       "headcountPrevYear": 968,
       "headcountChange": -69,
-      "buybackAmount": 6000000000
+      "buybackAmount": 6000000000,
+      "avgSalaryPrevYear": 85799586.7768595
     },
     {
       "symbol": "069080.KQ",
@@ -3425,7 +3774,8 @@
       "headcount": 474,
       "headcountPrevYear": 473,
       "headcountChange": 1,
-      "buybackAmount": 10923000000
+      "buybackAmount": 10923000000,
+      "avgSalaryPrevYear": 80735729.38689218
     },
     {
       "symbol": "225570.KQ",
@@ -3435,7 +3785,8 @@
       "headcount": 1714,
       "headcountPrevYear": 1459,
       "headcountChange": 255,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 87321327.62165867
     },
     {
       "symbol": "036830.KQ",
@@ -3445,7 +3796,8 @@
       "headcount": 75,
       "headcountPrevYear": 76,
       "headcountChange": -1,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 97750000.0
     },
     {
       "symbol": "194480.KQ",
@@ -3455,7 +3807,8 @@
       "headcount": 431,
       "headcountPrevYear": 312,
       "headcountChange": 119,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 65532051.28205128
     },
     {
       "symbol": "101730.KQ",
@@ -3465,7 +3818,8 @@
       "headcount": 17,
       "headcountPrevYear": 12,
       "headcountChange": 5,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 65583333.333333336
     },
     {
       "symbol": "025900.KQ",
@@ -3475,7 +3829,8 @@
       "headcount": 403,
       "headcountPrevYear": 472,
       "headcountChange": -69,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 75756038.13559322
     },
     {
       "symbol": "352480.KQ",
@@ -3485,7 +3840,8 @@
       "headcount": 666,
       "headcountPrevYear": 619,
       "headcountChange": 47,
-      "buybackAmount": 0
+      "buybackAmount": 0,
+      "avgSalaryPrevYear": 46684975.76736672
     }
   ]
 }

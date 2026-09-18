@@ -182,6 +182,8 @@ async function scanOne(symbol, corpEntry, thisYear, lastYear, bgnDe, endDe) {
       headcount: curr.headcount,
       headcountPrevYear: prev ? prev.headcount : null,
       headcountChange: prev ? curr.headcount - prev.headcount : null,
+      // 리스크 탭(2026-09-19): 1인 평균 급여가 작년보다 줄었거나 제자리인 회사를 가려내기 위한 작년 값
+      avgSalaryPrevYear: prev ? prev.avgSalary : null,
       buybackAmount: buyback,
     };
   } catch (err) {

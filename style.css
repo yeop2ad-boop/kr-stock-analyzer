@@ -2219,6 +2219,10 @@ body[data-header-tone="dark"] .fh-market-label { color: #fff; }
    코인 요약 메타(업종/거래소) 숨김 규칙은 2026-09-03 섹터·상장거래소 전용 표기로 대체되어 제거 */
 /* 2026-09-16 사용자 요청: ETF는 이 자리를 "보유종목" 탭으로 쓰므로 코인에서만 숨긴다 */
 .company-panel.crypto-detail #summarySubtabRevenueBtn,
+.company-panel.crypto-detail #summarySubtabRiskBtn,
+.company-panel.etf-detail #summarySubtabRiskBtn,
+.company-panel.crypto-detail .summary-subtab-panel[data-summary-subtabpanel="risk"],
+.company-panel.etf-detail .summary-subtab-panel[data-summary-subtabpanel="risk"],
 .company-panel.crypto-detail .summary-subtab-panel[data-summary-subtabpanel="revenue"] { display: none !important; }
 /* 코인 상세에도 과거분석·미래예측·S리포트 3버튼은 표시(2026-09-02 — 코인 전용 렌더러 연결) */
 
@@ -3442,3 +3446,27 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .fin2-xlabel small { display: block; font-size: 9.5px; font-weight: 600; }
 .fin2-caption { margin: 10px 2px 0; font-size: 10.5px; color: var(--muted); line-height: 1.5; }
 @media (max-width: 360px) { .fin2-sum-amount { font-size: 15px; } .fin2-sum-val { font-size: 14px; } .fin2-growth { font-size: 10px; } }
+
+/* ---------- 검색 상세 리스크 탭(2026-09-19) — 임금 감소·동결 / 인원 감축 ---------- */
+.risk-card { border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+.risk-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.risk-card-title { font-size: 15px; font-weight: 800; }
+.risk-chip { font-size: 12px; font-weight: 800; padding: 3px 9px; border-radius: 999px; background: var(--border); color: var(--muted); }
+.risk-chip.risk-bad { background: rgba(224, 49, 49, 0.14); color: #e03131; }
+.risk-chip.risk-warn { background: rgba(240, 140, 0, 0.16); color: #f08c00; }
+.risk-chip.risk-good { background: rgba(47, 111, 237, 0.14); color: #2f6fed; }
+.risk-card-value { font-size: 14px; line-height: 1.5; word-break: keep-all; }
+.risk-card-rank { font-size: 13px; margin-top: 4px; }
+.risk-card-rank .muted { font-size: 12px; }
+span.risk-bad { color: #e03131; font-weight: 700; }
+span.risk-warn { color: #f08c00; font-weight: 700; }
+span.risk-good { color: #2f6fed; font-weight: 700; }
+.risk-more-btn { margin-top: 10px; background: none; border: none; padding: 0; color: var(--muted); font-size: 13px; font-weight: 700; cursor: pointer; }
+.risk-rank-list { list-style: none; margin: 8px 0 0; padding: 0; max-height: 360px; overflow-y: auto; }
+.risk-rank-row { display: flex; align-items: center; gap: 10px; padding: 8px 2px; border-top: 1px solid var(--border); font-size: 13px; cursor: pointer; }
+.risk-rank-row.is-self { background: rgba(240, 140, 0, 0.12); }
+.risk-rank-no { width: 26px; flex: none; color: var(--muted); font-weight: 700; text-align: right; }
+.risk-rank-name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.risk-rank-val { flex: none; font-variant-numeric: tabular-nums; }
+.risk-note { font-size: 13px; }
+.risk-source { font-size: 11px; color: var(--muted); line-height: 1.5; margin: 4px 0 0; }

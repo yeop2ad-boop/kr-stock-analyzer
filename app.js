@@ -5797,6 +5797,9 @@ async function runAnalysis(ticker) {
       renderFinancials(ticker, meta.currency).catch((e) => {
         el("financialsSection").innerHTML = `<p class="error-inline">실적 데이터를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
       });
+      renderRiskPanel(ticker).catch(() => {
+        el("riskSection").innerHTML = `<p class="error-inline">리스크 데이터를 불러오지 못했습니다.</p>`;
+      });
       // 경쟁사 매출 비교(renderPeers)는 2026-09-15 사용자 요청으로 버튼째 숨겨 불러오지 않음(요청 수 절약)
     }
 
@@ -5980,12 +5983,14 @@ const summarySubtabButtons = {
   summary: el("summarySubtabSummaryBtn"),
   sreport: el("summarySubtabSReportBtn"),
   revenue: el("summarySubtabRevenueBtn"),
+  risk: el("summarySubtabRiskBtn"),
   news: el("summarySubtabNewsBtn"),
 };
 const summarySubtabPanels = {
   summary: document.querySelector('[data-summary-subtabpanel="summary"]'),
   sreport: document.querySelector('[data-summary-subtabpanel="sreport"]'),
   revenue: document.querySelector('[data-summary-subtabpanel="revenue"]'),
+  risk: document.querySelector('[data-summary-subtabpanel="risk"]'),
   news: document.querySelector('[data-summary-subtabpanel="news"]'),
 };
 // 개요 아래로 매출액/invest점수/주요뉴스가 한 화면에 이어져 있어(단일 스크롤), 탭 클릭은 숨기고 보여주는 대신
@@ -19460,4 +19465,132 @@ async function runFutureCompare(ticker, metricsPromise, marketReturnsPromise, op
   } catch (err) {
     setFutureStatus("error", `❌ ${escapeHtml(err.message || "그래프를 불러오지 못했습니다.")}`);
   }
+}
+
+// ---------- 검색 상세 "리스크" 탭(2026-09-19 사용자 요청) — 국내 주식부터 ----------
+// data/dart-financials.json(코스피200+코스닥150, DART 사업보고서 임직원 현황)으로
+// ① 임금 감소·동결: 1인 평균 급여의 작년 대비 변화율(±1% 이내 = 동결) ② 인원 감축: 작년 대비 직원 수 감소 인원
+// 두 가지를 350개 기업 안에서 순위로 보여줌. 해외 주식은 아직 데이터가 없어 준비 중 안내만 한다.
+const RISK_SALARY_FREEZE_PCT = 1;
+let riskRenderToken = 0;
+function riskSalaryPct(r) {
+  if (r.avgSalary == null || r.avgSalaryPrevYear == null || r.avgSalaryPrevYear <= 0) return null;
+  return ((r.avgSalary - r.avgSalaryPrevYear) / r.avgSalaryPrevYear) * 100;
+}
+function riskSalaryGrade(pct) {
+  if (pct == null) return null;
+  if (pct <= -RISK_SALARY_FREEZE_PCT) return { cls: "risk-bad", label: "감소" };
+  if (pct < RISK_SALARY_FREEZE_PCT) return { cls: "risk-warn", label: "동결" };
+  return { cls: "risk-good", label: "증가" };
+}
+function riskFmtWon(v) {
+  return v == null ? "N/A" : `${Math.round(v / 10000).toLocaleString()}만원`;
+}
+function riskFmtPct(p) {
+  return `${p > 0 ? "+" : ""}${p.toFixed(1)}%`;
+}
+function riskRankListHtml(rows, cellFn, currentSymbol) {
+  return `<ol class="risk-rank-list">${rows
+    .map(
+      (r, i) => `<li class="risk-rank-row${r.symbol === currentSymbol ? " is-self" : ""}" data-risk-ticker="${escapeHtml(r.symbol)}">
+        <span class="risk-rank-no">${i + 1}</span>
+        <span class="risk-rank-name">${escapeHtml(r.corpName || r.symbol)}</span>
+        ${cellFn(r)}
+      </li>`
+    )
+    .join("")}</ol>`;
+}
+async function renderRiskPanel(ticker) {
+  const token = ++riskRenderToken;
+  const box = el("riskSection");
+  el("riskHeading").textContent = "리스크 점검";
+  if (!/\.(KS|KQ)$/i.test(ticker)) {
+    box.innerHTML = `<p class="muted risk-note">해외 주식 리스크 점검은 준비 중입니다. 지금은 국내 주식(코스피200·코스닥150)만 제공합니다.</p>`;
+    return;
+  }
+  box.innerHTML = `<p class="muted risk-note">리스크 데이터를 불러오는 중...</p>`;
+  const data = await getDartFinancialsData();
+  if (token !== riskRenderToken) return;
+  const items = (data && data.items) || [];
+  const self = items.find((r) => r.symbol === ticker);
+  const year = data && data.dataYear;
+  if (year) el("riskHeading").innerHTML = `리스크 점검<span class="srt-asof">${year}년 사업보고서 기준</span>`;
+  if (!self) {
+    box.innerHTML = `<p class="muted risk-note">이 종목은 리스크 점검 대상(코스피200·코스닥150)에 없거나 DART 임직원 현황이 공시되지 않았습니다.</p>`;
+    return;
+  }
+
+  // ① 임금: 변화율이 낮은 순(감소폭 큰 회사가 1위) — 감소·동결만 순위에 올림
+  const salaryAll = items.map((r) => ({ ...r, _pct: riskSalaryPct(r) })).filter((r) => r._pct != null);
+  const salaryRows = salaryAll.filter((r) => r._pct < RISK_SALARY_FREEZE_PCT).sort((a, b) => a._pct - b._pct);
+  const selfPct = riskSalaryPct(self);
+  const selfGrade = riskSalaryGrade(selfPct);
+  const selfSalaryRank = salaryRows.findIndex((r) => r.symbol === ticker) + 1;
+
+  // ② 인원: 감소 인원이 많은 순 — 감소한 회사만 순위에 올림
+  const headTotal = items.filter((r) => r.headcountChange != null).length;
+  const headRows = items.filter((r) => r.headcountChange != null && r.headcountChange < 0).sort((a, b) => a.headcountChange - b.headcountChange);
+  const selfHeadRank = headRows.findIndex((r) => r.symbol === ticker) + 1;
+  const hc = self.headcountChange;
+  const headGrade =
+    hc == null ? null : hc < 0 ? { cls: "risk-bad", label: "감소" } : hc === 0 ? { cls: "risk-warn", label: "변동 없음" } : { cls: "risk-good", label: "증가" };
+  const headPct = hc != null && self.headcountPrevYear ? (hc / self.headcountPrevYear) * 100 : null;
+
+  const chip = (g) => (g ? `<span class="risk-chip ${g.cls}">${g.label}</span>` : `<span class="risk-chip">자료 없음</span>`);
+  const salaryCard = `<div class="risk-card">
+      <div class="risk-card-top"><span class="risk-card-title">① 임금 감소·동결</span>${chip(selfGrade)}</div>
+      ${
+        selfPct == null
+          ? `<p class="muted risk-note">작년 또는 올해 평균 급여가 공시되지 않았습니다.</p>`
+          : `<div class="risk-card-value">1인 평균 급여 ${riskFmtWon(self.avgSalaryPrevYear)} → <b>${riskFmtWon(self.avgSalary)}</b> <span class="${selfGrade.cls}">(${riskFmtPct(selfPct)})</span></div>
+             <div class="risk-card-rank">${
+               selfSalaryRank
+                 ? `감소·동결 ${salaryRows.length}곳 중 <b>${selfSalaryRank}위</b> <span class="muted">(${salaryAll.length}개 기업 중)</span>`
+                 : `감소·동결 기업 아님 <span class="muted">(${salaryAll.length}개 기업 중 ${salaryRows.length}곳 해당)</span>`
+             }</div>`
+      }
+      <button type="button" class="risk-more-btn" data-risk-toggle="salary">+ 전체 순위 (${salaryRows.length}곳)</button>
+      <div class="risk-more" data-risk-list="salary" style="display:none;">${riskRankListHtml(
+        salaryRows,
+        (r) => `<span class="risk-rank-val ${riskSalaryGrade(r._pct).cls}">${riskFmtPct(r._pct)}</span>`,
+        ticker
+      )}</div>
+    </div>`;
+
+  const headCard = `<div class="risk-card">
+      <div class="risk-card-top"><span class="risk-card-title">② 인원 감축</span>${chip(headGrade)}</div>
+      ${
+        hc == null
+          ? `<p class="muted risk-note">작년 직원 수가 공시되지 않았습니다.</p>`
+          : `<div class="risk-card-value">직원 수 ${self.headcountPrevYear.toLocaleString()}명 → <b>${self.headcount.toLocaleString()}명</b> <span class="${headGrade.cls}">(${hc > 0 ? "+" : ""}${hc.toLocaleString()}명${headPct != null ? `, ${riskFmtPct(headPct)}` : ""})</span></div>
+             <div class="risk-card-rank">${
+               selfHeadRank
+                 ? `인원 감소 ${headRows.length}곳 중 <b>${selfHeadRank}위</b> <span class="muted">(${headTotal}개 기업 중)</span>`
+                 : `인원 감소 기업 아님 <span class="muted">(${headTotal}개 기업 중 ${headRows.length}곳 해당)</span>`
+             }</div>`
+      }
+      <button type="button" class="risk-more-btn" data-risk-toggle="headcount">+ 전체 순위 (${headRows.length}곳)</button>
+      <div class="risk-more" data-risk-list="headcount" style="display:none;">${riskRankListHtml(
+        headRows,
+        (r) => `<span class="risk-rank-val risk-bad">${r.headcountChange.toLocaleString()}명</span>`,
+        ticker
+      )}</div>
+    </div>`;
+
+  box.innerHTML = `${salaryCard}${headCard}
+    <p class="risk-source">출처: DART 전자공시 사업보고서 임직원 현황 · 평균 급여 = 연간 급여 총액 ÷ 직원 수(작년 대비 ±${RISK_SALARY_FREEZE_PCT}% 이내는 동결)</p>`;
+
+  box.querySelectorAll("[data-risk-toggle]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const list = box.querySelector(`[data-risk-list="${btn.dataset.riskToggle}"]`);
+      const open = list.style.display === "none";
+      list.style.display = open ? "" : "none";
+      btn.textContent = btn.textContent.replace(open ? "+" : "−", open ? "−" : "+");
+    });
+  });
+  box.querySelectorAll("[data-risk-ticker]").forEach((row) => {
+    row.addEventListener("click", () => {
+      if (row.dataset.riskTicker !== ticker) navigateToTicker(row.dataset.riskTicker);
+    });
+  });
 }

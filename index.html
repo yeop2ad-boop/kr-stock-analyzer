@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20260917c" />
+<link rel="stylesheet" href="style.css?v=20260919a" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -252,6 +252,8 @@
           <!-- 2026-09-15 사용자 요청: 하위 보기 = 개요 - S리포트 - 매출액 - 뉴스 (invest점수 탭 삭제) -->
           <button type="button" class="cat-btn" id="summarySubtabSReportBtn" data-summary-subtab="sreport"><span class="tab-label">핵심지표</span></button>
           <button type="button" class="cat-btn" id="summarySubtabRevenueBtn" data-summary-subtab="revenue"><span class="tab-label">매출액</span></button>
+          <!-- 2026-09-19 사용자 요청: 매출액 다음에 리스크 점검(국내부터 — 임금 감소·동결, 인원 감축) -->
+          <button type="button" class="cat-btn" id="summarySubtabRiskBtn" data-summary-subtab="risk"><span class="tab-label">리스크</span></button>
           <button type="button" class="cat-btn" id="summarySubtabNewsBtn" data-summary-subtab="news"><span class="tab-label">뉴스</span></button>
         </div>
 
@@ -390,6 +392,14 @@
           <div id="rsiSection" class="section-body"></div>
         </section>
 
+        </div>
+
+        <!-- 리스크 점검(2026-09-19): DART 사업보고서 임직원 현황(data/dart-financials.json) 기준 — renderRiskPanel이 채움 -->
+        <div class="summary-subtab-panel" data-summary-subtabpanel="risk">
+        <section class="flush-section">
+          <h2 id="riskHeading">리스크 점검</h2>
+          <div id="riskSection" class="section-body"></div>
+        </section>
         </div>
 
         <div class="summary-subtab-panel" data-summary-subtabpanel="news">
@@ -934,6 +944,6 @@
   <script src="data/ko-company-names.js?v=20260911e"></script>
   <script src="data/logo-db.js?v=20260903g"></script>
   <script src="data/etf-meta.js?v=20260912a"></script>
-  <script src="app.js?v=20260917c"></script>
+  <script src="app.js?v=20260919a"></script>
 </body>
 </html>
