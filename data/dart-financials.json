@@ -169,12 +169,8 @@
       "headcount": 1565,
       "headcountPrevYear": 1494,
       "headcountChange": 71,
-<<<<<<< HEAD
-      "buybackAmount": 300000133400
-=======
-      "buybackAmount": 400000263700,
+      "buybackAmount": 300000133400,
       "avgSalaryPrevYear": 83317269.07630523
->>>>>>> dbfddfa (검색 상세에 리스크 탭 추가(국내): 임금 감소·동결, 인원 감축 순위)
     },
     {
       "symbol": "035420.KS",
@@ -3264,12 +3260,8 @@
       "headcount": 134,
       "headcountPrevYear": 111,
       "headcountChange": 23,
-<<<<<<< HEAD
-      "buybackAmount": 3000000000
-=======
-      "buybackAmount": 6000000000,
+      "buybackAmount": 3000000000,
       "avgSalaryPrevYear": 44254657.65765766
->>>>>>> dbfddfa (검색 상세에 리스크 탭 추가(국내): 임금 감소·동결, 인원 감축 순위)
     },
     {
       "symbol": "222080.KQ",
