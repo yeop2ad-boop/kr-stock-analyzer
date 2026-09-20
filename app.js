@@ -19793,7 +19793,13 @@ async function renderRiskPanel(ticker) {
       )}</div>
     </div>`;
 
-  pushSummary("eps", "EPS", epsGrade, myEpsPct != null ? riskFmtPct(myEpsPct) : epsGrade ? epsGrade.label : "자료 없음", myEpsRank ? `${epsRows.length}곳 중 ${myEpsRank}위` : "");
+  pushSummary(
+    "eps",
+    "EPS",
+    epsGrade,
+    myEpsPct != null ? riskFmtPct(myEpsPct) : epsGrade ? `${epsGrade.label} ${myEps && myEps.current != null ? fmtEps(myEps.current) : ""}`.trim() : "자료 없음",
+    myEpsRank ? `${epsRows.length}곳 중 ${myEpsRank}위` : ""
+  );
 
   // ⑦ 매출액 감소 ⑧ 순이익 감소(2026-09-21 사용자 요청) — 가장 최근 분기를 1년 전 같은 분기와 비교(YoY)해 하락한 순 순위.
   // 국내는 정기보고서의 "3개월" 칸, 미국은 SEC 분기 실적.
@@ -19812,7 +19818,8 @@ async function renderRiskPanel(ticker) {
       key,
       key === "revenue" ? "매출액" : "순이익",
       grade,
-      myPct != null ? riskFmtPct(myPct) : grade ? grade.label : "자료 없음",
+      // 적자 지속처럼 변화율이 없는 경우에도 최근 금액을 함께 보여준다(2026-09-21 사용자 요청)
+      myPct != null ? riskFmtPct(myPct) : grade ? `${grade.label} ${q && q[key] != null ? money(q[key]) : ""}`.trim() : "자료 없음",
       myRank ? `${rows.length}곳 중 ${myRank}위` : ""
     );
     return `<div class="risk-card" id="riskCard-${key}">
@@ -19899,7 +19906,7 @@ async function renderRiskPanel(ticker) {
           : `<div class="risk-card-value">1주 최대 하락 <b class="${riskDeltaCls(myCrash.pct)}">${riskFmtPct(myCrash.pct)}</b> <span class="muted">(${crashPrice(myCrash.fromPrice)} → ${crashPrice(
               myCrash.toPrice
             )})</span></div>
-             ${riskBasisHtml(myCrash.from, myCrash.to, `최근 52주(${myCrash.rangeFrom}~${myCrash.rangeTo}) 중 가장 큰 5거래일 낙폭`)}
+             ${riskBasisHtml(myCrash.from, myCrash.to, "52주 기준 가장 큰 5거래일 낙폭")}
              <div class="risk-card-rank">${myCrashRank ? `낙폭 ${crashRows.length}곳 중 <b>${myCrashRank}위</b> <span class="muted">(많이 빠진 순)</span>` : ""}</div>`
       }
       <button type="button" class="risk-more-btn" data-risk-toggle="crash">+ 전체 순위 (${crashRows.length}곳)</button>
