@@ -19885,13 +19885,24 @@ async function renderRiskPanel(ticker) {
     .filter((r) => r.debt && r.debt.changePp != null && !debtOutOfScope(r))
     .map((r) => ({ ...r, _pp: r.debt.changePp }))
     .sort((a, b) => b._pp - a._pp);
-  const debtExcluded = debtOutOfScope(self);
+  // 금융업은 수치를 숨기지 않고 "금융부채"(주의)로 보여주되, 일반 기업 순위에서는 빼고 금융업끼리 따로 순위를 낸다
+  const selfFinancial = isFinancial(self);
+  const finDebtRows = items
+    .filter((r) => isFinancial(r) && r.debt && r.debt.changePp != null)
+    .map((r) => ({ ...r, _pp: r.debt.changePp }))
+    .sort((a, b) => b._pp - a._pp);
+  const myFinRank = finDebtRows.findIndex((r) => r.symbol === ticker) + 1;
+  const debtExcluded = debtOutOfScope(self) && !selfFinancial;
   const myDebt = debtExcluded ? null : self.debt;
   const myPp = myDebt && myDebt.changePp != null ? myDebt.changePp : null;
   const myDebtRank = debtRows.findIndex((r) => r.symbol === ticker) + 1;
-  // 부채비율은 오를수록 나쁘므로 부호를 뒤집어 같은 기준(+20%p 이상 위험, 오르면 주의)을 쓴다
-  const debtGrade =
-    myDebt && myDebt.negativeEquity ? { cls: "risk-bad", label: "자본잠식" } : riskChangeGrade(myPp == null ? null : -myPp, { down: "증가", up: "감소" });
+  // 부채비율은 오를수록 나쁘므로 부호를 뒤집어 같은 기준(+20%p 이상 위험, 오르면 주의)을 쓴다.
+  // 금융업은 비율 자체가 높은 게 정상이라 등급을 매기지 않고 "금융부채"(주의)로 고정한다.
+  const debtGrade = selfFinancial
+    ? { cls: "risk-warn", label: "금융부채" }
+    : myDebt && myDebt.negativeEquity
+    ? { cls: "risk-bad", label: "자본잠식" }
+    : riskChangeGrade(myPp == null ? null : -myPp, { down: "증가", up: "감소" });
   const fmtRatio = (v) => (v == null ? "N/A" : `${v.toFixed(1)}%`);
   const fmtPp = (v) => `${v > 0 ? "+" : ""}${v.toFixed(1)}%p`;
   const debtCard = `<div class="risk-card" id="riskCard-debt">
@@ -19911,7 +19922,13 @@ async function renderRiskPanel(ticker) {
               myPp != null ? ` <span class="${riskDeltaCls(myPp)}">(${fmtPp(myPp)})</span>` : ""
             }</div>
              ${riskBasisHtml(myDebt.dateFrom || myDebt.periodFrom, myDebt.dateTo || myDebt.periodTo, myDebt.label)}
-             <div class="risk-card-rank">${myDebtRank ? `부채비율 변화 ${debtRows.length}곳 중 <b>${myDebtRank}위</b> <span class="muted">(많이 오른 순)</span>` : ""}</div>`
+             <div class="risk-card-rank">${
+               selfFinancial
+                 ? `금융업은 예금·보험 부채가 영업 자산이라 일반 기업 순위에서 빼고, 금융업 ${finDebtRows.length}곳 중 <b>${myFinRank}위</b> <span class="muted">(많이 오른 순)</span>`
+                 : myDebtRank
+                 ? `부채비율 변화 ${debtRows.length}곳 중 <b>${myDebtRank}위</b> <span class="muted">(많이 오른 순)</span>`
+                 : ""
+             }</div>`
       }
       <button type="button" class="risk-more-btn" data-risk-toggle="debt">+ 전체 순위 (${debtRows.length}곳)</button>
       <div class="risk-more" data-risk-list="debt" style="display:none;">${riskRankListHtml(
@@ -19919,9 +19936,25 @@ async function renderRiskPanel(ticker) {
         (r) => `<span class="risk-rank-val ${riskDeltaCls(r._pp)}">${fmtPp(r._pp)}</span>`,
         ticker
       )}</div>
+      ${
+        selfFinancial
+          ? `<button type="button" class="risk-more-btn" data-risk-toggle="debtFin">+ 금융 순위 (${finDebtRows.length}곳)</button>
+             <div class="risk-more" data-risk-list="debtFin" style="display:none;">${riskRankListHtml(
+               finDebtRows,
+               (r) => `<span class="risk-rank-val ${riskDeltaCls(r._pp)}">${fmtPp(r._pp)}</span>`,
+               ticker
+             )}</div>`
+          : ""
+      }
     </div>`;
 
-  pushSummary("debt", "부채비율", debtGrade, myPp != null ? fmtPp(myPp) : debtGrade ? debtGrade.label : "자료 없음", myDebtRank ? `${debtRows.length}곳 중 ${myDebtRank}위` : "");
+  pushSummary(
+    "debt",
+    "부채비율",
+    debtGrade,
+    myPp != null ? fmtPp(myPp) : selfFinancial && self.debt && self.debt.current != null ? `${self.debt.current.toFixed(0)}%` : debtGrade ? debtGrade.label : "자료 없음",
+    selfFinancial ? (myFinRank ? `금융 ${finDebtRows.length}곳 중 ${myFinRank}위` : "") : myDebtRank ? `${debtRows.length}곳 중 ${myDebtRank}위` : ""
+  );
 
   // ⑩ 급락률(2026-09-21 사용자 요청) — 최근 52주 안에서 5거래일(약 1주) 기준 가장 크게 빠진 구간. 낙폭이 큰 순.
   const crashRows = items
