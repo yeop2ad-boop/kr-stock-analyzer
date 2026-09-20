@@ -19649,7 +19649,7 @@ async function renderRiskPanel(ticker) {
   // C안 요약(2026-09-21 사용자 선택): 위에서 위험/주의/양호 개수와 '문제 있는 항목'만 먼저 보여주고,
   // 한 줄을 누르면 아래 해당 상세 카드로 이동해 펼쳐진다. 각 카드를 만들면서 여기에 한 줄씩 쌓는다.
   const riskSummary = [];
-  const pushSummary = (key, label, grade, value, note) => riskSummary.push({ key, label, grade, value, note });
+  const pushSummary = (key, label, grade, value, note, noteCls, valueCls) => riskSummary.push({ key, label, grade, value, note, noteCls, valueCls });
   const salaryCard = `<div class="risk-card" id="riskCard-salary">
       <div class="risk-card-top"><span class="risk-card-title">임금 감소·동결</span>${chip(selfGrade)}</div>
       ${
@@ -19797,8 +19797,9 @@ async function renderRiskPanel(ticker) {
     "eps",
     "EPS",
     epsGrade,
-    myEpsPct != null ? riskFmtPct(myEpsPct) : epsGrade ? `${epsGrade.label} ${myEps && myEps.current != null ? fmtEps(myEps.current) : ""}`.trim() : "자료 없음",
-    myEpsRank ? `${epsRows.length}곳 중 ${myEpsRank}위` : ""
+    myEpsPct != null ? riskFmtPct(myEpsPct) : epsGrade ? epsGrade.label : "자료 없음",
+    myEpsRank ? `${epsRows.length}곳 중 ${myEpsRank}위` : myEps && myEps.current != null && myEpsPct == null ? fmtEps(myEps.current) : "",
+    myEpsRank ? undefined : "is-strong"
   );
 
   // ⑦ 매출액 감소 ⑧ 순이익 감소(2026-09-21 사용자 요청) — 가장 최근 분기를 1년 전 같은 분기와 비교(YoY)해 하락한 순 순위.
@@ -19818,9 +19819,10 @@ async function renderRiskPanel(ticker) {
       key,
       key === "revenue" ? "매출액" : "순이익",
       grade,
-      // 적자 지속처럼 변화율이 없는 경우에도 최근 금액을 함께 보여준다(2026-09-21 사용자 요청)
-      myPct != null ? riskFmtPct(myPct) : grade ? `${grade.label} ${q && q[key] != null ? money(q[key]) : ""}`.trim() : "자료 없음",
-      myRank ? `${rows.length}곳 중 ${myRank}위` : ""
+      myPct != null ? riskFmtPct(myPct) : grade ? grade.label : "자료 없음",
+      // 순위가 없는 적자 항목은 그 자리에 최근 적자 규모를 검은색으로 적는다(2026-09-21 사용자 요청)
+      myRank ? `${rows.length}곳 중 ${myRank}위` : q && q[key] != null && myPct == null ? money(q[key]) : "",
+      myRank ? undefined : "is-strong"
     );
     return `<div class="risk-card" id="riskCard-${key}">
       <div class="risk-card-top"><span class="risk-card-title">${title}</span>${chip(grade)}</div>
@@ -19989,8 +19991,8 @@ async function renderRiskPanel(ticker) {
           : `<span class="risk-sum-dot ${r.grade ? r.grade.cls : "risk-none"}"></span>`
       }
       <span class="risk-sum-label">${escapeHtml(r.label)}</span>
-      <span class="risk-sum-value ${/^\+/.test(r.value) ? "up" : /^[-−]/.test(r.value) ? "down" : riskWordCls(r.value) ? riskWordCls(r.value).split(" ")[1] : r.grade ? r.grade.cls : ""}">${escapeHtml(r.value)}</span>
-      <span class="risk-sum-note muted">${escapeHtml(r.note || "")}</span>
+      <span class="risk-sum-value ${r.valueCls || (/^\+/.test(r.value) ? "up" : /^[-−]/.test(r.value) ? "down" : riskWordCls(r.value) ? riskWordCls(r.value).split(" ")[1] : r.grade ? r.grade.cls : "")}">${escapeHtml(r.value)}</span>
+      <span class="risk-sum-note ${r.noteCls || "muted"}">${escapeHtml(r.note || "")}</span>
       <span class="risk-sum-arrow">﹀</span>
     </button>`;
   const restCount = counts[2];
