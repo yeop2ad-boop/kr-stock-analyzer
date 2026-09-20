@@ -19478,6 +19478,10 @@ const RISK_SALARY_FREEZE_PCT = 1;
 // 위험/주의/양호 공통 기준(2026-09-21 사용자 지정): 변화율이 -20% 이하면 위험, 마이너스면 주의, 0 이상이면 양호.
 // 부채비율처럼 "오를수록 나쁜" 지표는 부호를 뒤집어 같은 기준을 적용하고, 유상증자·전환사채는 시총 대비 비율로 본다.
 const RISK_DANGER_PCT = 20;
+// 인원은 비율과 별개로 이 인원수 이상 줄면 위험(대기업 대량 감원이 비율로는 작게 보이기 때문)
+const RISK_HEADCOUNT_DANGER = 300;
+// 부채비율 비교에서 빼는 업종 — 증권·은행·보험은 영업 구조상 부채비율이 1,000% 안팎이라 같은 잣대로 볼 수 없다
+const RISK_DEBT_EXCLUDED_SECTORS = ["금융"];
 function riskChangeGrade(pct, labels) {
   if (pct == null || !Number.isFinite(pct)) return null;
   const down = labels && labels.down ? labels.down : "감소";
@@ -19529,6 +19533,7 @@ async function loadRiskDataset(isKr) {
           eps: r.eps || null,
           quarter: r.quarter || null,
           debt: r.debt || null,
+          sector: r.sector || null,
           crash: r.crash || null,
         };
       }),
@@ -19557,6 +19562,7 @@ async function loadRiskDataset(isKr) {
       eps: r.eps || null,
       quarter: r.quarter || null,
       debt: r.debt || null,
+      sector: r.sector || null,
       crash: r.crash || null,
     })),
     hasIssuance: true,
@@ -19650,8 +19656,14 @@ async function renderRiskPanel(ticker) {
   const selfHeadRank = headRows.findIndex((r) => r.symbol === ticker) + 1;
   const hc = self.headcount != null && self.headcountPrev != null ? self.headcount - self.headcountPrev : null;
   const headPct = riskPct(self.headcount, self.headcountPrev);
-  // 인원도 비율로 본다 — 인원 수만 보면 큰 회사가 늘 위험으로 잡힌다(현대차 -966명 = -1.3%)
-  const headGrade = hc === 0 ? { cls: "risk-good", label: "변동 없음" } : riskChangeGrade(headPct);
+  // 인원은 비율로 보되, 300명 이상 줄면 비율이 작아도 위험으로 본다(2026-09-21 사용자 지정).
+  // 비율만 쓰면 LG전자 -1,980명(-5.6%)처럼 큰 회사의 대량 감원이 주의로 내려간다.
+  const headGrade =
+    hc === 0
+      ? { cls: "risk-good", label: "변동 없음" }
+      : hc != null && hc <= -RISK_HEADCOUNT_DANGER
+      ? { cls: "risk-bad", label: "감소" }
+      : riskChangeGrade(headPct);
 
   // 위험(빨강)으로 분류된 항목은 한눈에 알아보도록 경고 아이콘을 붙인다(2026-09-21 사용자 요청)
   const chip = (g) =>
@@ -19838,7 +19850,11 @@ async function renderRiskPanel(ticker) {
       <div class="risk-card-top"><span class="risk-card-title">${title}</span>${chip(grade)}</div>
       ${
         !q || q[key] == null
-          ? `<p class="muted risk-note">최근 분기 ${unit}을 공시에서 찾지 못했습니다.</p>`
+          ? `<p class="muted risk-note">${
+              key === "revenue" && RISK_DEBT_EXCLUDED_SECTORS.includes(self.sector)
+                ? "금융업(은행·증권·보험)은 매출액 대신 이자·수수료 수익 구조라 같은 기준으로 비교하지 않습니다."
+                : `최근 분기 ${unit}을 공시에서 찾지 못했습니다.`
+            }</p>`
           : `<div class="risk-card-value">${unit} ${money(q[key + "Prev"])} → <b>${money(q[key])}</b>${
               myPct != null ? ` <span class="${riskDeltaCls(myPct)}">(${riskFmtPct(myPct)})</span>` : grade ? ` <span class="${riskWordCls(grade.label) || grade.cls}">(${grade.label})</span>` : ""
             }</div>
@@ -19861,11 +19877,16 @@ async function renderRiskPanel(ticker) {
 
   // ⑨ 부채비율 증가(2026-09-21 사용자 요청) — 최근 분기말 부채비율(부채총계÷자본총계)을 1년 전 같은 분기말과 비교.
   // 부채비율 자체가 %라 변화는 "몇 %p 올랐는지"로 보고, 많이 오른 순으로 순위를 매긴다.
+  // 금융업과 "자본이 거의 남지 않은 회사"는 부채비율 비교에서 뺀다.
+  // 자사주를 많이 사들여 자본총계가 바닥이면(필립모리스 31,057%) 비율이 수천 %로 튀어 순위가 무의미해진다.
+  const isFinancial = (r) => RISK_DEBT_EXCLUDED_SECTORS.includes(r.sector);
+  const debtOutOfScope = (r) => isFinancial(r) || (r.debt && (r.debt.tinyEquity || r.debt.negativeEquity));
   const debtRows = items
-    .filter((r) => r.debt && r.debt.changePp != null)
+    .filter((r) => r.debt && r.debt.changePp != null && !debtOutOfScope(r))
     .map((r) => ({ ...r, _pp: r.debt.changePp }))
     .sort((a, b) => b._pp - a._pp);
-  const myDebt = self.debt;
+  const debtExcluded = debtOutOfScope(self);
+  const myDebt = debtExcluded ? null : self.debt;
   const myPp = myDebt && myDebt.changePp != null ? myDebt.changePp : null;
   const myDebtRank = debtRows.findIndex((r) => r.symbol === ticker) + 1;
   // 부채비율은 오를수록 나쁘므로 부호를 뒤집어 같은 기준(+20%p 이상 위험, 오르면 주의)을 쓴다
@@ -19876,9 +19897,15 @@ async function renderRiskPanel(ticker) {
   const debtCard = `<div class="risk-card" id="riskCard-debt">
       <div class="risk-card-top"><span class="risk-card-title">부채비율 증가</span>${chip(debtGrade)}</div>
       ${
-        !myDebt || myDebt.current == null
+        debtExcluded
           ? `<p class="muted risk-note">${
-              myDebt && myDebt.negativeEquity ? "자본총계가 0 이하(자본잠식)라 부채비율을 계산할 수 없습니다." : "최근 분기 재무상태표를 찾지 못했습니다."
+              isFinancial(self)
+                ? "금융업(증권·은행·보험)은 영업 구조상 부채비율이 수백~1,000%대라 다른 업종과 같은 기준으로 볼 수 없어 비교에서 제외합니다."
+                : "자기주식 매입 등으로 자본총계가 거의 남지 않아 부채비율이 비정상적으로 커지는 회사라 비교에서 제외합니다."
+            }${self.debt && self.debt.current != null ? ` (참고: 최근 ${self.debt.current.toFixed(0)}%)` : ""}</p>`
+          : !myDebt || myDebt.current == null
+          ? `<p class="muted risk-note">${
+              self.debt && self.debt.negativeEquity ? "자본총계가 0 이하(자본잠식)라 부채비율을 계산할 수 없습니다." : "최근 분기 재무상태표를 찾지 못했습니다."
             }</p>`
           : `<div class="risk-card-value">부채비율 ${fmtRatio(myDebt.prev)} → <b>${fmtRatio(myDebt.current)}</b>${
               myPp != null ? ` <span class="${riskDeltaCls(myPp)}">(${fmtPp(myPp)})</span>` : ""

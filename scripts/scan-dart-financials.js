@@ -292,11 +292,25 @@ function loadMarketCaps() {
   return map;
 }
 
+// 업종(금융업은 리스크 탭 부채비율 비교에서 제외하므로 종목마다 함께 저장)
+function loadSectors() {
+  const file = path.join(__dirname, "..", "sector-map", "data", "kr-sectors.json");
+  const map = {};
+  try {
+    for (const c of readJsonFile(file).companies || []) {
+      if (c.symbol) map[c.symbol] = c.sectorKo || c.sector || null;
+    }
+  } catch {
+    console.error("kr-sectors.json을 읽지 못해 업종은 비워 둡니다.");
+  }
+  return map;
+}
+
 function toDateStr(d) {
   return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}${String(d.getDate()).padStart(2, "0")}`;
 }
 
-async function scanOne(symbol, corpEntry, thisYear, lastYear, bgnDe, endDe, marketCaps) {
+async function scanOne(symbol, corpEntry, thisYear, lastYear, bgnDe, endDe, marketCaps, sectors) {
   try {
     const curr = await getEmployeeSummary(corpEntry.corpCode, thisYear);
     await sleep(REQUEST_GAP_MS);
@@ -337,6 +351,7 @@ async function scanOne(symbol, corpEntry, thisYear, lastYear, bgnDe, endDe, mark
       recentPrev,
       // 리스크 탭 ③④ — 최근 1년 유상증자·전환사채 결정공시와 시총 대비 비율
       issuance,
+      sector: (sectors && sectors[symbol]) || null,
     };
   } catch (err) {
     console.error(`[건너뜀] ${symbol}:`, err.message);
@@ -381,6 +396,10 @@ async function main() {
   const endDe = toDateStr(now);
   console.log(`기준 사업연도: ${thisYear} / 자사주 취득 조회 기간: ${bgnDe}~${endDe}`);
 
+  // 시총(유상증자·전환사채의 시총 대비 비율)과 업종(금융업은 부채비율 비교 제외)은 지도 데이터에서 가져온다
+  const marketCaps = loadMarketCaps();
+  const sectors = loadSectors();
+
   const results = await mapWithConcurrency(entries, CONCURRENCY, (e) => {
     const ticker6 = e.symbol.split(".")[0];
     const corpEntry = corpCodeMap[ticker6];
@@ -388,7 +407,7 @@ async function main() {
       console.error(`[건너뜀] ${e.symbol}: corp_code 매핑 없음`);
       return null;
     }
-    return scanOne(e.symbol, corpEntry, thisYear, lastYear, bgnDe, endDe, marketCaps);
+    return scanOne(e.symbol, corpEntry, thisYear, lastYear, bgnDe, endDe, marketCaps, sectors);
   });
 
   const items = results.filter(Boolean);
