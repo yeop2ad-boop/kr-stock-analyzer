@@ -19586,6 +19586,13 @@ function riskProfitGrade(cur, prev, pct) {
 // 등락 숫자 색 — 앱 설정(더보기 > 상승·하락 색상)을 그대로 따라간다. 기본 한국식은 +빨강/-파랑,
 // "초록·빨강"(해외식)으로 바꾸면 --pos/--neg가 통째로 바뀌어 여기에도 반영된다.
 // (위험/주의/양호 칩은 등락이 아니라 상태라서 기존 의미색을 유지)
+// "적자 전환"·"적자 지속"처럼 숫자가 없는 값도 등락 색을 따른다(적자=하락색, 흑자 전환=상승색)
+function riskWordCls(label) {
+  if (!label) return "";
+  if (label.startsWith("적자")) return "risk-delta down";
+  if (label.startsWith("흑자")) return "risk-delta up";
+  return "";
+}
 function riskDeltaCls(v) {
   if (v === null || v === undefined || !Number.isFinite(v)) return "";
   return v > 0 ? "risk-delta up" : v < 0 ? "risk-delta down" : "risk-delta";
@@ -19760,7 +19767,7 @@ async function renderRiskPanel(ticker) {
         !myEps || myEps.current == null
           ? `<p class="muted risk-note">최근 실적의 주당순이익을 찾지 못했습니다.</p>`
           : `<div class="risk-card-value">EPS ${myEps.prev != null ? `${fmtEps(myEps.prev)} → ` : ""}<b>${fmtEps(myEps.current)}</b>${
-              myEpsPct != null ? ` <span class="${riskDeltaCls(myEpsPct)}">(${riskFmtPct(myEpsPct)})</span>` : myEps.current < 0 ? ` <span class="risk-bad">(적자)</span>` : ""
+              myEpsPct != null ? ` <span class="${riskDeltaCls(myEpsPct)}">(${riskFmtPct(myEpsPct)})</span>` : myEps.current < 0 ? ` <span class="risk-delta down">(적자)</span>` : ""
             }</div>
              ${
                myEps.priceCurrent != null && myEps.pricePrev != null
@@ -19780,7 +19787,7 @@ async function renderRiskPanel(ticker) {
         // 흑자 → 적자로 돌아선 곳은 변화율(-4,762% 같은 수)보다 "적자 전환"이라고 쓰는 편이 읽기 쉽다
         (r) =>
           r.eps.current != null && r.eps.current < 0
-            ? `<span class="risk-rank-val risk-bad">${r.eps.turnedLoss ? "적자 전환" : "적자"}</span>`
+            ? `<span class="risk-rank-val risk-delta down">${r.eps.turnedLoss ? "적자 전환" : "적자"}</span>`
             : `<span class="risk-rank-val ${riskDeltaCls(r._pct)}">${riskFmtPct(r._pct)}</span>`,
         ticker
       )}</div>
@@ -19814,7 +19821,7 @@ async function renderRiskPanel(ticker) {
         !q || q[key] == null
           ? `<p class="muted risk-note">최근 분기 ${unit}을 공시에서 찾지 못했습니다.</p>`
           : `<div class="risk-card-value">${unit} ${money(q[key + "Prev"])} → <b>${money(q[key])}</b>${
-              myPct != null ? ` <span class="${riskDeltaCls(myPct)}">(${riskFmtPct(myPct)})</span>` : grade ? ` <span class="${grade.cls}">(${grade.label})</span>` : ""
+              myPct != null ? ` <span class="${riskDeltaCls(myPct)}">(${riskFmtPct(myPct)})</span>` : grade ? ` <span class="${riskWordCls(grade.label) || grade.cls}">(${grade.label})</span>` : ""
             }</div>
              ${riskBasisHtml(`${q.yearFrom} ${q.quarterLabel}`, `${q.yearTo} ${q.quarterLabel}`, q.label)}
              <div class="risk-card-rank">${myRank ? `${unit} 변화율 ${rows.length}곳 중 <b>${myRank}위</b> <span class="muted">(하락한 순)</span>` : ""}</div>`
@@ -19824,7 +19831,7 @@ async function renderRiskPanel(ticker) {
         rows,
         (r) =>
           key === "netIncome" && r.quarter[key] != null && r.quarter[key] < 0
-            ? `<span class="risk-rank-val risk-bad">${r.quarter.niTurnedLoss ? "적자 전환" : "적자"}</span>`
+            ? `<span class="risk-rank-val risk-delta down">${r.quarter.niTurnedLoss ? "적자 전환" : "적자"}</span>`
             : `<span class="risk-rank-val ${riskDeltaCls(r._pct)}">${riskFmtPct(r._pct)}</span>`,
         ticker
       )}</div>
@@ -19975,7 +19982,7 @@ async function renderRiskPanel(ticker) {
           : `<span class="risk-sum-dot ${r.grade ? r.grade.cls : "risk-none"}"></span>`
       }
       <span class="risk-sum-label">${escapeHtml(r.label)}</span>
-      <span class="risk-sum-value ${/^\+/.test(r.value) ? "up" : /^[-−]/.test(r.value) ? "down" : r.grade ? r.grade.cls : ""}">${escapeHtml(r.value)}</span>
+      <span class="risk-sum-value ${/^\+/.test(r.value) ? "up" : /^[-−]/.test(r.value) ? "down" : riskWordCls(r.value) ? riskWordCls(r.value).split(" ")[1] : r.grade ? r.grade.cls : ""}">${escapeHtml(r.value)}</span>
       <span class="risk-sum-note muted">${escapeHtml(r.note || "")}</span>
       <span class="risk-sum-arrow">﹀</span>
     </button>`;
