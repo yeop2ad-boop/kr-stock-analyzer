@@ -19475,6 +19475,17 @@ async function runFutureCompare(ticker, metricsPromise, marketReturnsPromise, op
 //  - 미국: data/us-workforce.json(S&P500) — 평균 급여 공시가 없어 위임장(DEF 14A) CEO Pay Ratio의 "직원 중위 연봉",
 //          직원 수는 10-K 본문. 둘 다 1년에 한 번뿐이라 분기 비교는 불가능하고 보고서 기준일을 그대로 보여준다.
 const RISK_SALARY_FREEZE_PCT = 1;
+// 위험/주의/양호 공통 기준(2026-09-21 사용자 지정): 변화율이 -20% 이하면 위험, 마이너스면 주의, 0 이상이면 양호.
+// 부채비율처럼 "오를수록 나쁜" 지표는 부호를 뒤집어 같은 기준을 적용하고, 유상증자·전환사채는 시총 대비 비율로 본다.
+const RISK_DANGER_PCT = 20;
+function riskChangeGrade(pct, labels) {
+  if (pct == null || !Number.isFinite(pct)) return null;
+  const down = labels && labels.down ? labels.down : "감소";
+  const up = labels && labels.up ? labels.up : "증가";
+  if (pct <= -RISK_DANGER_PCT) return { cls: "risk-bad", label: down };
+  if (pct < 0) return { cls: "risk-warn", label: down };
+  return { cls: "risk-good", label: up };
+}
 // 미국 ③④는 "발행 결정" 공시가 아니라 현금흐름표의 실제 조달액(스톡옵션 행사·우리사주 같은 소액이 늘 섞임)이라,
 // 시가총액 대비 이 비율을 넘을 때만 "있음"으로 보고 순위에 올린다
 const RISK_US_ISSUANCE_MIN_PCT = 1;
@@ -19571,17 +19582,16 @@ function riskPct(cur, prev) {
 }
 function riskSalaryGrade(pct) {
   if (pct == null) return null;
-  if (pct <= -RISK_SALARY_FREEZE_PCT) return { cls: "risk-bad", label: "감소" };
-  if (pct < RISK_SALARY_FREEZE_PCT) return { cls: "risk-warn", label: "동결" };
-  return { cls: "risk-good", label: "증가" };
+  // 임금만 예외: 0%에 가까우면(±1%) 동결로 부르되 등급은 양호 쪽(마이너스면 주의)
+  if (pct > -RISK_SALARY_FREEZE_PCT && pct < RISK_SALARY_FREEZE_PCT) return { cls: "risk-good", label: "동결" };
+  return riskChangeGrade(pct);
 }
 // 이익 성격 지표(EPS·순이익)의 상태 칩 — 적자 전환/적자 지속은 변화율로 표현되지 않으므로 따로 분류한다
 function riskProfitGrade(cur, prev, pct) {
   if (cur == null) return null;
   if (cur < 0) return { cls: "risk-bad", label: prev != null && prev < 0 ? "적자 지속" : "적자 전환" };
   if (prev != null && prev < 0) return { cls: "risk-good", label: "흑자 전환" };
-  if (pct == null) return null;
-  return pct < 0 ? { cls: "risk-bad", label: "감소" } : { cls: "risk-good", label: "증가" };
+  return riskChangeGrade(pct);
 }
 // 등락 숫자 색 — 앱 설정(더보기 > 상승·하락 색상)을 그대로 따라간다. 기본 한국식은 +빨강/-파랑,
 // "초록·빨강"(해외식)으로 바꾸면 --pos/--neg가 통째로 바뀌어 여기에도 반영된다.
@@ -19639,9 +19649,9 @@ async function renderRiskPanel(ticker) {
   const headRows = headAll.filter((r) => r._chg < 0).sort((a, b) => a._chg - b._chg);
   const selfHeadRank = headRows.findIndex((r) => r.symbol === ticker) + 1;
   const hc = self.headcount != null && self.headcountPrev != null ? self.headcount - self.headcountPrev : null;
-  const headGrade =
-    hc == null ? null : hc < 0 ? { cls: "risk-bad", label: "감소" } : hc === 0 ? { cls: "risk-warn", label: "변동 없음" } : { cls: "risk-good", label: "증가" };
   const headPct = riskPct(self.headcount, self.headcountPrev);
+  // 인원도 비율로 본다 — 인원 수만 보면 큰 회사가 늘 위험으로 잡힌다(현대차 -966명 = -1.3%)
+  const headGrade = hc === 0 ? { cls: "risk-good", label: "변동 없음" } : riskChangeGrade(headPct);
 
   // 위험(빨강)으로 분류된 항목은 한눈에 알아보도록 경고 아이콘을 붙인다(2026-09-21 사용자 요청)
   const chip = (g) =>
@@ -19717,13 +19727,13 @@ async function renderRiskPanel(ticker) {
     pushSummary(
       key,
       key === "rights" ? "유상증자" : "전환사채",
-      has ? { cls: "risk-bad", label: "있음" } : { cls: "risk-good", label: "없음" },
+      has ? { cls: ratio != null && ratio >= RISK_DANGER_PCT ? "risk-bad" : "risk-warn", label: "있음" } : { cls: "risk-good", label: "없음" },
       has && ratio != null ? `시총 대비 ${ratio.toFixed(1)}%` : "없음",
       has && myRank ? `${rows.length}곳 중 ${myRank}위` : ""
     );
     return `<div class="risk-card" id="riskCard-${key}">
       <div class="risk-card-top"><span class="risk-card-title">${title}</span>${
-        has ? `<span class="risk-chip risk-bad">있음</span>` : `<span class="risk-chip risk-good">없음</span>`
+        chip(has ? { cls: ratio != null && ratio >= RISK_DANGER_PCT ? "risk-bad" : "risk-warn", label: "있음" } : { cls: "risk-good", label: "없음" })
       }</div>
       ${
         has
@@ -19858,13 +19868,9 @@ async function renderRiskPanel(ticker) {
   const myDebt = self.debt;
   const myPp = myDebt && myDebt.changePp != null ? myDebt.changePp : null;
   const myDebtRank = debtRows.findIndex((r) => r.symbol === ticker) + 1;
-  const debtGrade = myDebt && myDebt.negativeEquity
-    ? { cls: "risk-bad", label: "자본잠식" }
-    : myPp == null
-    ? null
-    : myPp > 0
-    ? { cls: "risk-bad", label: "증가" }
-    : { cls: "risk-good", label: "감소" };
+  // 부채비율은 오를수록 나쁘므로 부호를 뒤집어 같은 기준(+20%p 이상 위험, 오르면 주의)을 쓴다
+  const debtGrade =
+    myDebt && myDebt.negativeEquity ? { cls: "risk-bad", label: "자본잠식" } : riskChangeGrade(myPp == null ? null : -myPp, { down: "증가", up: "감소" });
   const fmtRatio = (v) => (v == null ? "N/A" : `${v.toFixed(1)}%`);
   const fmtPp = (v) => `${v > 0 ? "+" : ""}${v.toFixed(1)}%p`;
   const debtCard = `<div class="risk-card" id="riskCard-debt">
@@ -19898,7 +19904,15 @@ async function renderRiskPanel(ticker) {
   const myCrash = self.crash;
   const myCrashRank = crashRows.findIndex((r) => r.symbol === ticker) + 1;
   // 1주에 20% 넘게 빠진 적이 있으면 주의 신호로 본다(52주 안에 한 번이라도)
-  const crashGrade = !myCrash ? null : myCrash.pct <= -20 ? { cls: "risk-bad", label: "급락 있음" } : myCrash.pct <= -10 ? { cls: "risk-warn", label: "하락 있음" } : { cls: "risk-good", label: "완만" };
+  // 급락률은 "가장 나빴던 1주"라 항상 마이너스다. 마이너스 전부를 주의로 보면 모든 종목이 주의가 되므로
+  // -20% 이하 위험 / -10%까지 주의 / 그보다 완만하면 양호로 둔다
+  const crashGrade = !myCrash
+    ? null
+    : myCrash.pct <= -RISK_DANGER_PCT
+    ? { cls: "risk-bad", label: "급락 있음" }
+    : myCrash.pct <= -10
+    ? { cls: "risk-warn", label: "하락 있음" }
+    : { cls: "risk-good", label: "완만" };
   const crashPrice = (v) => (isKr ? `${Math.round(v).toLocaleString()}원` : `$${v.toFixed(2)}`);
   const crashCard = `<div class="risk-card" id="riskCard-crash">
       <div class="risk-card-top"><span class="risk-card-title">급락률(1주 최대)</span>${chip(crashGrade)}</div>
@@ -19929,7 +19943,7 @@ async function renderRiskPanel(ticker) {
   const mySectorRank = mySectorRow ? sectorRows.findIndex((s) => s.sector === mySector) + 1 : 0;
   const sectorCard = `<div class="risk-card" id="riskCard-sector">
       <div class="risk-card-top"><span class="risk-card-title">섹터 매출 성장</span>${
-        mySectorRow ? chip(mySectorRow.growthPct < 0 ? { cls: "risk-bad", label: "하락" } : { cls: "risk-good", label: "상승" }) : chip(null)
+        chip(mySectorRow ? riskChangeGrade(mySectorRow.growthPct, { down: "하락", up: "상승" }) : null)
       }</div>
       ${
         !mySectorRow
@@ -19960,7 +19974,7 @@ async function renderRiskPanel(ticker) {
   pushSummary(
     "sector",
     "섹터 매출",
-    mySectorRow ? (mySectorRow.growthPct < 0 ? { cls: "risk-bad", label: "하락" } : { cls: "risk-good", label: "상승" }) : null,
+    mySectorRow ? riskChangeGrade(mySectorRow.growthPct, { down: "하락", up: "상승" }) : null,
     mySectorRow ? riskFmtPct(mySectorRow.growthPct) : "자료 없음",
     mySectorRow ? `${sectorRows.length}개 섹터 중 ${mySectorRank}위` : ""
   );
@@ -19977,9 +19991,9 @@ async function renderRiskPanel(ticker) {
     : ` · 미국은 같은 형식의 발행 결정 공시가 없어 SEC 현금흐름표의 <b>실제 조달액</b>(주식 발행·전환사채) 최근 1년 합계로 대신하며, 스톡옵션 행사 같은 소액이 섞이므로 시총 대비 ${RISK_US_ISSUANCE_MIN_PCT}% 이상만 '있음'으로 봄`;
 
   // 요약 블록 — 위험(빨강) → 주의(주황) 순으로 먼저 보여주고, 양호·자료 없음은 접어 둔다
-  const sevOf = (r) => (r.grade && r.grade.cls === "risk-bad" ? 0 : r.grade && r.grade.cls === "risk-warn" ? 1 : 2);
+  const sevOf = (r) => (r.grade && r.grade.cls === "risk-bad" ? 0 : r.grade && r.grade.cls === "risk-warn" ? 1 : r.grade ? 2 : 3);
   const sorted = [...riskSummary].sort((a, b) => sevOf(a) - sevOf(b));
-  const counts = [0, 0, 0];
+  const counts = [0, 0, 0, 0]; // 위험 / 주의 / 양호 / 자료 없음(양호로 세지 않음)
   sorted.forEach((r) => counts[sevOf(r)]++);
   const summaryRowHtml = (r, hidden) =>
     `<button type="button" class="risk-sum-row${hidden ? " is-rest" : ""}${r.grade && r.grade.cls === "risk-bad" ? " is-danger" : ""}" data-risk-goto="${
@@ -19995,14 +20009,15 @@ async function renderRiskPanel(ticker) {
       <span class="risk-sum-note ${r.noteCls || "muted"}">${escapeHtml(r.note || "")}</span>
       <span class="risk-sum-arrow">﹀</span>
     </button>`;
-  const restCount = counts[2];
+  const restCount = counts[2] + counts[3];
   const summaryBlock = `<div class="risk-summary">
       <div class="risk-sum-counts">
         <span class="risk-sum-count risk-bad"><b>${counts[0]}</b>⚠️ 위험</span>
         <span class="risk-sum-count risk-warn"><b>${counts[1]}</b>주의</span>
         <span class="risk-sum-count risk-good"><b>${counts[2]}</b>양호</span>
+        ${counts[3] ? `<span class="risk-sum-count"><b>${counts[3]}</b>자료 없음</span>` : ""}
       </div>
-      ${sorted.map((r) => summaryRowHtml(r, sevOf(r) === 2)).join("")}
+      ${sorted.map((r) => summaryRowHtml(r, sevOf(r) >= 2)).join("")}
       ${restCount ? `<button type="button" class="risk-more-btn" id="riskSumMoreBtn">+ 나머지 ${restCount}개 보기</button>` : ""}
     </div>`;
 
