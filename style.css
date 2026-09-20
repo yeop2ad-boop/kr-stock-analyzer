@@ -3492,4 +3492,14 @@ span.risk-good { color: #2f9e44; font-weight: 700; }
 .risk-sum-value.risk-good { color: #2f9e44; }
 .risk-sum-note { flex: none; font-size: 11px; }
 .risk-sum-arrow { flex: none; color: var(--muted); font-size: 15px; }
-.risk-card-flash { box-shadow: 0 0 0 2px rgba(240, 140, 0, 0.55); transition: box-shadow 0.3s; }
+.risk-card-detail { margin: 0 0 10px; border-radius: 10px; background: var(--bg); }
+.risk-sum-row.is-open { font-weight: 700; }
+.risk-sum-row.is-open .risk-sum-arrow { transform: rotate(180deg); }
+.risk-sum-arrow { display: inline-block; transition: transform 0.15s; }
+
+/* 리스크 탭 등락 숫자 — 앱 설정(상승·하락 색상)을 따라감: 기본 +빨강/-파랑, 해외식으로 바꾸면 +초록/-빨강 */
+.risk-delta { font-weight: 700; }
+.risk-delta.up { color: var(--pos); }
+.risk-delta.down { color: var(--neg); }
+.risk-sum-value.up { color: var(--pos); }
+.risk-sum-value.down { color: var(--neg); }

@@ -19583,6 +19583,13 @@ function riskProfitGrade(cur, prev, pct) {
   if (pct == null) return null;
   return pct < 0 ? { cls: "risk-bad", label: "감소" } : { cls: "risk-good", label: "증가" };
 }
+// 등락 숫자 색 — 앱 설정(더보기 > 상승·하락 색상)을 그대로 따라간다. 기본 한국식은 +빨강/-파랑,
+// "초록·빨강"(해외식)으로 바꾸면 --pos/--neg가 통째로 바뀌어 여기에도 반영된다.
+// (위험/주의/양호 칩은 등락이 아니라 상태라서 기존 의미색을 유지)
+function riskDeltaCls(v) {
+  if (v === null || v === undefined || !Number.isFinite(v)) return "";
+  return v > 0 ? "risk-delta up" : v < 0 ? "risk-delta down" : "risk-delta";
+}
 function riskFmtPct(p) {
   return `${p > 0 ? "+" : ""}${p.toFixed(1)}%`;
 }
@@ -19601,7 +19608,7 @@ async function renderRiskPanel(ticker) {
   const token = ++riskRenderToken;
   const box = el("riskSection");
   const isKr = /\.(KS|KQ)$/i.test(ticker);
-  el("riskHeading").textContent = "리스크 점검";
+  el("riskHeading").textContent = "리스크";
   box.innerHTML = `<p class="muted risk-note">리스크 데이터를 불러오는 중...</p>`;
   const [ds, sectorRev] = await Promise.all([loadRiskDataset(isKr), getSectorRevenueData()]);
   if (token !== riskRenderToken) return;
@@ -19611,7 +19618,7 @@ async function renderRiskPanel(ticker) {
     box.innerHTML = `<p class="muted risk-note">이 종목은 리스크 점검 대상(${isKr ? "코스피200·코스닥150" : "S&P500"})에 없거나 임직원 공시를 찾지 못했습니다.</p>`;
     return;
   }
-  el("riskHeading").innerHTML = `리스크 점검<span class="srt-asof">${escapeHtml(self.headNote || self.payNote || "")} 기준</span>`;
+  el("riskHeading").innerHTML = `리스크<span class="srt-asof">${escapeHtml(self.headNote || self.payNote || "")} 기준</span>`;
 
   // ① 임금: 변화율이 낮은 순(감소폭 큰 회사가 1위) — 감소·동결만 순위에 올림
   const salaryAll = items.map((r) => ({ ...r, _pct: riskPct(r.pay, r.payPrev) })).filter((r) => r._pct != null);
@@ -19635,11 +19642,11 @@ async function renderRiskPanel(ticker) {
   const riskSummary = [];
   const pushSummary = (key, label, grade, value, note) => riskSummary.push({ key, label, grade, value, note });
   const salaryCard = `<div class="risk-card" id="riskCard-salary">
-      <div class="risk-card-top"><span class="risk-card-title">① 임금 감소·동결</span>${chip(selfGrade)}</div>
+      <div class="risk-card-top"><span class="risk-card-title">임금 감소·동결</span>${chip(selfGrade)}</div>
       ${
         selfPct == null
           ? `<p class="muted risk-note">작년 또는 올해 ${ds.payLabel}을 공시에서 찾지 못했습니다.${self.pay != null ? ` (최근 ${ds.fmtPay(self.pay)})` : ""}</p>`
-          : `<div class="risk-card-value">${ds.payLabel} ${ds.fmtPay(self.payPrev)} → <b>${ds.fmtPay(self.pay)}</b> <span class="${selfGrade.cls}">(${riskFmtPct(selfPct)})</span></div>
+          : `<div class="risk-card-value">${ds.payLabel} ${ds.fmtPay(self.payPrev)} → <b>${ds.fmtPay(self.pay)}</b> <span class="${riskDeltaCls(selfPct)}">(${riskFmtPct(selfPct)})</span></div>
              ${riskBasisHtml(self.payFrom, self.payTo, self.payNote)}
              <div class="risk-card-rank">${
                selfSalaryRank
@@ -19650,18 +19657,18 @@ async function renderRiskPanel(ticker) {
       <button type="button" class="risk-more-btn" data-risk-toggle="salary">+ 전체 순위 (${salaryRows.length}곳)</button>
       <div class="risk-more" data-risk-list="salary" style="display:none;">${riskRankListHtml(
         salaryRows,
-        (r) => `<span class="risk-rank-val ${riskSalaryGrade(r._pct).cls}">${riskFmtPct(r._pct)}</span>`,
+        (r) => `<span class="risk-rank-val ${riskDeltaCls(r._pct)}">${riskFmtPct(r._pct)}</span>`,
         ticker
       )}</div>
     </div>`;
 
   pushSummary("salary", "임금", selfGrade, selfPct == null ? "자료 없음" : riskFmtPct(selfPct), selfSalaryRank ? `${salaryRows.length}곳 중 ${selfSalaryRank}위` : "");
   const headCard = `<div class="risk-card" id="riskCard-headcount">
-      <div class="risk-card-top"><span class="risk-card-title">② 인원 감축</span>${chip(headGrade)}</div>
+      <div class="risk-card-top"><span class="risk-card-title">인원 감축</span>${chip(headGrade)}</div>
       ${
         hc == null
           ? `<p class="muted risk-note">작년 또는 올해 직원 수를 공시에서 찾지 못했습니다.${self.headcount != null ? ` (최근 ${self.headcount.toLocaleString()}명)` : ""}</p>`
-          : `<div class="risk-card-value">직원 수 ${self.headcountPrev.toLocaleString()}명 → <b>${self.headcount.toLocaleString()}명</b> <span class="${headGrade.cls}">(${hc > 0 ? "+" : ""}${hc.toLocaleString()}명${headPct != null ? `, ${riskFmtPct(headPct)}` : ""})</span></div>
+          : `<div class="risk-card-value">직원 수 ${self.headcountPrev.toLocaleString()}명 → <b>${self.headcount.toLocaleString()}명</b> <span class="${riskDeltaCls(hc)}">(${hc > 0 ? "+" : ""}${hc.toLocaleString()}명${headPct != null ? `, ${riskFmtPct(headPct)}` : ""})</span></div>
              ${riskBasisHtml(self.headFrom, self.headTo, self.headNote)}
              <div class="risk-card-rank">${
                selfHeadRank
@@ -19672,7 +19679,7 @@ async function renderRiskPanel(ticker) {
       <button type="button" class="risk-more-btn" data-risk-toggle="headcount">+ 전체 순위 (${headRows.length}곳)</button>
       <div class="risk-more" data-risk-list="headcount" style="display:none;">${riskRankListHtml(
         headRows,
-        (r) => `<span class="risk-rank-val risk-bad">${r._chg.toLocaleString()}명</span>`,
+        (r) => `<span class="risk-rank-val ${riskDeltaCls(r._chg)}">${r._chg.toLocaleString()}명</span>`,
         ticker
       )}</div>
     </div>`;
@@ -19746,18 +19753,18 @@ async function renderRiskPanel(ticker) {
   const fmtEps = (v) => (isKr ? `${Math.round(v).toLocaleString()}원` : `$${v.toFixed(2)}`);
   const fmtPx = (v) => (isKr ? `${Math.round(v).toLocaleString()}원` : `$${v.toFixed(2)}`);
   const epsCard = `<div class="risk-card" id="riskCard-eps">
-      <div class="risk-card-top"><span class="risk-card-title">⑤ EPS(주당순이익) 감소</span>${chip(epsGrade)}</div>
+      <div class="risk-card-top"><span class="risk-card-title">EPS(주당순이익) 감소</span>${chip(epsGrade)}</div>
       ${
         !myEps || myEps.current == null
           ? `<p class="muted risk-note">최근 실적의 주당순이익을 찾지 못했습니다.</p>`
           : `<div class="risk-card-value">EPS ${myEps.prev != null ? `${fmtEps(myEps.prev)} → ` : ""}<b>${fmtEps(myEps.current)}</b>${
-              myEpsPct != null ? ` <span class="${epsGrade.cls}">(${riskFmtPct(myEpsPct)})</span>` : myEps.current < 0 ? ` <span class="risk-bad">(적자)</span>` : ""
+              myEpsPct != null ? ` <span class="${riskDeltaCls(myEpsPct)}">(${riskFmtPct(myEpsPct)})</span>` : myEps.current < 0 ? ` <span class="risk-bad">(적자)</span>` : ""
             }</div>
              ${
                myEps.priceCurrent != null && myEps.pricePrev != null
-                 ? `<div class="risk-card-value">같은 기간 주가 ${fmtPx(myEps.pricePrev)} → <b>${fmtPx(myEps.priceCurrent)}</b> <span class="${
-                     myEps.priceChangePct < 0 ? "risk-bad" : "risk-good"
-                   }">(${riskFmtPct(myEps.priceChangePct)})</span></div>`
+                 ? `<div class="risk-card-value">같은 기간 주가 ${fmtPx(myEps.pricePrev)} → <b>${fmtPx(myEps.priceCurrent)}</b> <span class="${riskDeltaCls(
+                     myEps.priceChangePct
+                   )}">(${riskFmtPct(myEps.priceChangePct)})</span></div>`
                  : ""
              }
              ${riskBasisHtml(myEps.periodFrom || myEps.dateFrom, myEps.periodTo || myEps.dateTo, myEps.reportLabel)}
@@ -19772,7 +19779,7 @@ async function renderRiskPanel(ticker) {
         (r) =>
           r.eps.current != null && r.eps.current < 0
             ? `<span class="risk-rank-val risk-bad">${r.eps.turnedLoss ? "적자 전환" : "적자"}</span>`
-            : `<span class="risk-rank-val ${r._pct < 0 ? "risk-bad" : "risk-good"}">${riskFmtPct(r._pct)}</span>`,
+            : `<span class="risk-rank-val ${riskDeltaCls(r._pct)}">${riskFmtPct(r._pct)}</span>`,
         ticker
       )}</div>
     </div>`;
@@ -19805,7 +19812,7 @@ async function renderRiskPanel(ticker) {
         !q || q[key] == null
           ? `<p class="muted risk-note">최근 분기 ${unit}을 공시에서 찾지 못했습니다.</p>`
           : `<div class="risk-card-value">${unit} ${money(q[key + "Prev"])} → <b>${money(q[key])}</b>${
-              myPct != null ? ` <span class="${grade.cls}">(${riskFmtPct(myPct)})</span>` : grade ? ` <span class="${grade.cls}">(${grade.label})</span>` : ""
+              myPct != null ? ` <span class="${riskDeltaCls(myPct)}">(${riskFmtPct(myPct)})</span>` : grade ? ` <span class="${grade.cls}">(${grade.label})</span>` : ""
             }</div>
              ${riskBasisHtml(`${q.yearFrom} ${q.quarterLabel}`, `${q.yearTo} ${q.quarterLabel}`, q.label)}
              <div class="risk-card-rank">${myRank ? `${unit} 변화율 ${rows.length}곳 중 <b>${myRank}위</b> <span class="muted">(하락한 순)</span>` : ""}</div>`
@@ -19816,13 +19823,13 @@ async function renderRiskPanel(ticker) {
         (r) =>
           key === "netIncome" && r.quarter[key] != null && r.quarter[key] < 0
             ? `<span class="risk-rank-val risk-bad">${r.quarter.niTurnedLoss ? "적자 전환" : "적자"}</span>`
-            : `<span class="risk-rank-val ${r._pct < 0 ? "risk-bad" : "risk-good"}">${riskFmtPct(r._pct)}</span>`,
+            : `<span class="risk-rank-val ${riskDeltaCls(r._pct)}">${riskFmtPct(r._pct)}</span>`,
         ticker
       )}</div>
     </div>`;
   };
-  const revenueCard = quarterCard("revenue", "revenuePct", "⑦ 매출액 감소", "매출액");
-  const netIncomeCard = quarterCard("netIncome", "netIncomePct", "⑧ 순이익 감소", "순이익");
+  const revenueCard = quarterCard("revenue", "revenuePct", "매출액 감소", "매출액");
+  const netIncomeCard = quarterCard("netIncome", "netIncomePct", "순이익 감소", "순이익");
 
   // ⑨ 부채비율 증가(2026-09-21 사용자 요청) — 최근 분기말 부채비율(부채총계÷자본총계)을 1년 전 같은 분기말과 비교.
   // 부채비율 자체가 %라 변화는 "몇 %p 올랐는지"로 보고, 많이 오른 순으로 순위를 매긴다.
@@ -19843,14 +19850,14 @@ async function renderRiskPanel(ticker) {
   const fmtRatio = (v) => (v == null ? "N/A" : `${v.toFixed(1)}%`);
   const fmtPp = (v) => `${v > 0 ? "+" : ""}${v.toFixed(1)}%p`;
   const debtCard = `<div class="risk-card" id="riskCard-debt">
-      <div class="risk-card-top"><span class="risk-card-title">⑨ 부채비율 증가</span>${chip(debtGrade)}</div>
+      <div class="risk-card-top"><span class="risk-card-title">부채비율 증가</span>${chip(debtGrade)}</div>
       ${
         !myDebt || myDebt.current == null
           ? `<p class="muted risk-note">${
               myDebt && myDebt.negativeEquity ? "자본총계가 0 이하(자본잠식)라 부채비율을 계산할 수 없습니다." : "최근 분기 재무상태표를 찾지 못했습니다."
             }</p>`
           : `<div class="risk-card-value">부채비율 ${fmtRatio(myDebt.prev)} → <b>${fmtRatio(myDebt.current)}</b>${
-              myPp != null ? ` <span class="${myPp > 0 ? "risk-bad" : "risk-good"}">(${fmtPp(myPp)})</span>` : ""
+              myPp != null ? ` <span class="${riskDeltaCls(myPp)}">(${fmtPp(myPp)})</span>` : ""
             }</div>
              ${riskBasisHtml(myDebt.dateFrom || myDebt.periodFrom, myDebt.dateTo || myDebt.periodTo, myDebt.label)}
              <div class="risk-card-rank">${myDebtRank ? `부채비율 변화 ${debtRows.length}곳 중 <b>${myDebtRank}위</b> <span class="muted">(많이 오른 순)</span>` : ""}</div>`
@@ -19858,7 +19865,7 @@ async function renderRiskPanel(ticker) {
       <button type="button" class="risk-more-btn" data-risk-toggle="debt">+ 전체 순위 (${debtRows.length}곳)</button>
       <div class="risk-more" data-risk-list="debt" style="display:none;">${riskRankListHtml(
         debtRows,
-        (r) => `<span class="risk-rank-val ${r._pp > 0 ? "risk-bad" : "risk-good"}">${fmtPp(r._pp)}</span>`,
+        (r) => `<span class="risk-rank-val ${riskDeltaCls(r._pp)}">${fmtPp(r._pp)}</span>`,
         ticker
       )}</div>
     </div>`;
@@ -19876,11 +19883,11 @@ async function renderRiskPanel(ticker) {
   const crashGrade = !myCrash ? null : myCrash.pct <= -20 ? { cls: "risk-bad", label: "급락 있음" } : myCrash.pct <= -10 ? { cls: "risk-warn", label: "하락 있음" } : { cls: "risk-good", label: "완만" };
   const crashPrice = (v) => (isKr ? `${Math.round(v).toLocaleString()}원` : `$${v.toFixed(2)}`);
   const crashCard = `<div class="risk-card" id="riskCard-crash">
-      <div class="risk-card-top"><span class="risk-card-title">⑩ 급락률(1주 최대)</span>${chip(crashGrade)}</div>
+      <div class="risk-card-top"><span class="risk-card-title">급락률(1주 최대)</span>${chip(crashGrade)}</div>
       ${
         !myCrash
           ? `<p class="muted risk-note">최근 52주 시세를 가져오지 못했습니다.</p>`
-          : `<div class="risk-card-value">1주 최대 하락 <b class="risk-bad">${riskFmtPct(myCrash.pct)}</b> <span class="muted">(${crashPrice(myCrash.fromPrice)} → ${crashPrice(
+          : `<div class="risk-card-value">1주 최대 하락 <b class="${riskDeltaCls(myCrash.pct)}">${riskFmtPct(myCrash.pct)}</b> <span class="muted">(${crashPrice(myCrash.fromPrice)} → ${crashPrice(
               myCrash.toPrice
             )})</span></div>
              ${riskBasisHtml(myCrash.from, myCrash.to, `최근 52주(${myCrash.rangeFrom}~${myCrash.rangeTo}) 중 가장 큰 5거래일 낙폭`)}
@@ -19889,7 +19896,7 @@ async function renderRiskPanel(ticker) {
       <button type="button" class="risk-more-btn" data-risk-toggle="crash">+ 전체 순위 (${crashRows.length}곳)</button>
       <div class="risk-more" data-risk-list="crash" style="display:none;">${riskRankListHtml(
         crashRows,
-        (r) => `<span class="risk-rank-val risk-bad">${riskFmtPct(r._pct)}</span>`,
+        (r) => `<span class="risk-rank-val ${riskDeltaCls(r._pct)}">${riskFmtPct(r._pct)}</span>`,
         ticker
       )}</div>
     </div>`;
@@ -19903,18 +19910,18 @@ async function renderRiskPanel(ticker) {
   const mySectorRow = mySector ? sectorRows.find((s) => s.sector === mySector) : null;
   const mySectorRank = mySectorRow ? sectorRows.findIndex((s) => s.sector === mySector) + 1 : 0;
   const sectorCard = `<div class="risk-card" id="riskCard-sector">
-      <div class="risk-card-top"><span class="risk-card-title">⑥ 섹터 매출 성장</span>${
+      <div class="risk-card-top"><span class="risk-card-title">섹터 매출 성장</span>${
         mySectorRow ? chip(mySectorRow.growthPct < 0 ? { cls: "risk-bad", label: "하락" } : { cls: "risk-good", label: "상승" }) : chip(null)
       }</div>
       ${
         !mySectorRow
           ? `<p class="muted risk-note">이 종목이 속한 섹터의 분기 매출 데이터를 찾지 못했습니다.</p>`
-          : `<div class="risk-card-value">${escapeHtml(mySector)} 섹터 최근 분기 매출 <b class="${mySectorRow.growthPct < 0 ? "risk-bad" : "risk-good"}">${riskFmtPct(
+          : `<div class="risk-card-value">${escapeHtml(mySector)} 섹터 최근 분기 매출 <b class="${riskDeltaCls(mySectorRow.growthPct)}">${riskFmtPct(
               mySectorRow.growthPct
             )}</b> <span class="muted">(직전 분기 대비, ${mySectorRow.count}개 기업 합계)</span></div>
              ${
                myCompanyRow
-                 ? `<div class="risk-card-value">이 종목은 <span class="${myCompanyRow.growthPct < 0 ? "risk-bad" : "risk-good"}">${riskFmtPct(myCompanyRow.growthPct)}</span></div>`
+                 ? `<div class="risk-card-value">이 종목은 <span class="${riskDeltaCls(myCompanyRow.growthPct)}">${riskFmtPct(myCompanyRow.growthPct)}</span></div>`
                  : ""
              }
              ${riskBasisHtml("직전 분기", "최근 분기", srMarket.basis || "")}
@@ -19926,7 +19933,7 @@ async function renderRiskPanel(ticker) {
           (s, i) => `<li class="risk-rank-row${s.sector === mySector ? " is-self" : ""}">
             <span class="risk-rank-no">${i + 1}</span>
             <span class="risk-rank-name">${escapeHtml(s.sector)} <span class="muted">(${s.count})</span></span>
-            <span class="risk-rank-val ${s.growthPct < 0 ? "risk-bad" : "risk-good"}">${riskFmtPct(s.growthPct)}</span>
+            <span class="risk-rank-val ${riskDeltaCls(s.growthPct)}">${riskFmtPct(s.growthPct)}</span>
           </li>`
         )
         .join("")}</ol></div>
@@ -19941,7 +19948,7 @@ async function renderRiskPanel(ticker) {
   );
 
   const issuanceCards = ds.hasIssuance
-    ? issuanceCard("rights", "rightsRatio", "③ 유상증자", "유상증자") + issuanceCard("cb", "cbRatio", "④ 전환사채", "전환사채")
+    ? issuanceCard("rights", "rightsRatio", "유상증자", "유상증자") + issuanceCard("cb", "cbRatio", "전환사채", "전환사채")
     : `<p class="muted risk-note">유상증자·전환사채 점검은 국내 주식만 제공합니다(미국은 같은 형식의 공시 데이터가 없어 준비 중).</p>`;
   pushSummary("crash", "급락률", crashGrade, myCrash ? riskFmtPct(myCrash.pct) : "자료 없음", myCrashRank ? `${crashRows.length}곳 중 ${myCrashRank}위` : "");
 
@@ -19960,9 +19967,9 @@ async function renderRiskPanel(ticker) {
     `<button type="button" class="risk-sum-row${hidden ? " is-rest" : ""}" data-risk-goto="${r.key}"${hidden ? ' style="display:none;"' : ""}>
       <span class="risk-sum-dot ${r.grade ? r.grade.cls : "risk-none"}"></span>
       <span class="risk-sum-label">${escapeHtml(r.label)}</span>
-      <span class="risk-sum-value ${r.grade ? r.grade.cls : ""}">${escapeHtml(r.value)}</span>
+      <span class="risk-sum-value ${/^\+/.test(r.value) ? "up" : /^[-−]/.test(r.value) ? "down" : r.grade ? r.grade.cls : ""}">${escapeHtml(r.value)}</span>
       <span class="risk-sum-note muted">${escapeHtml(r.note || "")}</span>
-      <span class="risk-sum-arrow">›</span>
+      <span class="risk-sum-arrow">﹀</span>
     </button>`;
   const restCount = counts[2];
   const summaryBlock = `<div class="risk-summary">
@@ -19975,7 +19982,9 @@ async function renderRiskPanel(ticker) {
       ${restCount ? `<button type="button" class="risk-more-btn" id="riskSumMoreBtn">+ 나머지 ${restCount}개 보기</button>` : ""}
     </div>`;
 
-  box.innerHTML = `${summaryBlock}${salaryCard}${headCard}${issuanceCards}${epsCard}${sectorCard}${revenueCard}${netIncomeCard}${debtCard}${crashCard}
+  // 상세 카드는 처음엔 모두 감춰 두고(2026-09-21 사용자 요청: 아래에 전부 늘어놓지 않음),
+  // 아래 스크립트가 각 카드를 자기 요약 줄 바로 뒤로 옮긴다 — 누른 항목만 그 자리에서 펼쳐진다
+  box.innerHTML = `${summaryBlock}<div id="riskDetailStore" style="display:none;">${salaryCard}${headCard}${issuanceCards}${epsCard}${sectorCard}${revenueCard}${netIncomeCard}${debtCard}${crashCard}</div>
     <p class="risk-source">${ds.source} · 작년 대비 ±${RISK_SALARY_FREEZE_PCT}% 이내는 동결${issuanceSource} · EPS는 ${
       isKr ? "DART 전체 재무제표의 기본주당이익(최신 정기보고서 ↔ 1년 전 같은 기간 누적)" : "SEC 분기 주당순이익"
     } · 섹터 매출 성장은 최근 분기 ÷ 직전 분기(섹터 소속 기업 매출 합계) · 매출액·순이익은 가장 최근 분기를 1년 전 같은 분기와 비교(${
@@ -19995,17 +20004,38 @@ async function renderRiskPanel(ticker) {
     sumMoreBtn.addEventListener("click", () => {
       const rest = box.querySelectorAll(".risk-sum-row.is-rest");
       const open = rest[0] && rest[0].style.display === "none";
-      rest.forEach((el) => (el.style.display = open ? "" : "none"));
+      rest.forEach((el) => {
+        el.style.display = open ? "" : "none";
+        // 접을 때는 그 줄에 붙어 있던 상세도 같이 닫는다
+        const card = el.nextElementSibling;
+        if (!open && card && card.classList.contains("risk-card-detail")) {
+          card.style.display = "none";
+          el.classList.remove("is-open");
+        }
+      });
       sumMoreBtn.textContent = open ? `− 나머지 ${rest.length}개 접기` : `+ 나머지 ${rest.length}개 보기`;
     });
   }
+  // 각 상세 카드를 자기 요약 줄 바로 뒤에 숨겨 둔 뒤, 줄을 누르면 그 카드만 펼친다(다른 항목은 접음)
+  const detailStore = box.querySelector("#riskDetailStore");
   box.querySelectorAll("[data-risk-goto]").forEach((row) => {
+    const key = row.dataset.riskGoto;
+    const card = detailStore && detailStore.querySelector(`#riskCard-${key}`);
+    if (card) {
+      card.style.display = "none";
+      card.classList.add("risk-card-detail");
+      row.insertAdjacentElement("afterend", card);
+    }
     row.addEventListener("click", () => {
-      const card = box.querySelector(`#riskCard-${row.dataset.riskGoto}`);
       if (!card) return;
-      card.scrollIntoView({ behavior: "smooth", block: "center" });
-      card.classList.add("risk-card-flash");
-      setTimeout(() => card.classList.remove("risk-card-flash"), 1200);
+      const open = card.style.display === "none";
+      box.querySelectorAll(".risk-card-detail").forEach((c) => (c.style.display = "none"));
+      box.querySelectorAll(".risk-sum-row").forEach((r) => r.classList.remove("is-open"));
+      if (open) {
+        card.style.display = "";
+        row.classList.add("is-open");
+        row.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
     });
   });
   box.querySelectorAll("[data-risk-ticker]").forEach((row) => {
