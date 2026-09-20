@@ -3485,7 +3485,7 @@ span.risk-good { color: #2f9e44; font-weight: 700; }
 .risk-sum-dot.risk-bad { background: #e03131; }
 .risk-sum-dot.risk-warn { background: #f08c00; }
 .risk-sum-dot.risk-good { background: #2f9e44; }
-.risk-sum-label { flex: none; width: 62px; }
+.risk-sum-label { flex: none; width: 70px; white-space: nowrap; }
 .risk-sum-value { flex: 1 1 auto; font-weight: 700; }
 .risk-sum-value.risk-bad { color: #e03131; }
 .risk-sum-value.risk-warn { color: #f08c00; }

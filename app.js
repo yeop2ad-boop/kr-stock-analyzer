@@ -19686,7 +19686,7 @@ async function renderRiskPanel(ticker) {
       )}</div>
     </div>`;
 
-  pushSummary("headcount", "인원", headGrade, hc == null ? "자료 없음" : `${hc > 0 ? "+" : ""}${hc.toLocaleString()}명`, selfHeadRank ? `${headRows.length}곳 중 ${selfHeadRank}위` : "");
+  pushSummary("headcount", "인원감축", headGrade, hc == null ? "자료 없음" : `${hc > 0 ? "+" : ""}${hc.toLocaleString()}명`, selfHeadRank ? `${headRows.length}곳 중 ${selfHeadRank}위` : "");
 
   // ③ 유상증자 ④ 전환사채(2026-09-20 사용자 요청, 국내만) — 최근 1년 결정공시 금액의 시가총액 대비 비율 순위.
   // "있음/없음"을 먼저 보여주고, 비율이 높은 회사부터 순위를 매긴다.
