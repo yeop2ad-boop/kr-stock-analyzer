@@ -19627,6 +19627,153 @@ function riskRankListHtml(rows, cellFn, currentSymbol) {
     )
     .join("")}</ol>`;
 }
+// ---------- 리스크 항목별 그래프(2026-09-21 사용자 요청) ----------
+// 글로만 적던 상세를 항목 성격에 맞는 그림으로 바꾼다.
+//  · 임금·인원: 전후 막대(작년 값 → 올해 값)
+//  · 유상증자·전환사채: 시가총액 중 조달액이 차지하는 비중 막대
+//  · EPS: 같은 기간 EPS 변화율과 주가 변화율을 0 기준 좌우 막대로 비교
+//  · 매출액·순이익·급락률: 전체 종목 분포(히스토그램) 위에 이 종목 위치 표시
+//  · 부채비율: 순위를 백분위 게이지로
+//  · 섹터 매출: 섹터별 성장률 막대(내 섹터 강조)
+// 색은 앱 공통 등락색(--pos/--neg)을 따르고, 기준선·눈금은 --border/--muted로 눌러 둔다.
+const RISK_CHART_W = 300;
+
+function riskSvgWrap(height, inner, label) {
+  return `<svg class="risk-chart" viewBox="0 0 ${RISK_CHART_W} ${height}" width="100%" height="${height}" role="img" aria-label="${escapeHtml(label)}">${inner}</svg>`;
+}
+
+// 전후 비교 막대 — 작년 값과 올해 값의 길이를 그대로 비교한다(0에서 시작해야 길이가 뜻을 가짐)
+function riskBeforeAfterChart(prevVal, curVal, fmt, prevLabel, curLabel) {
+  if (!Number.isFinite(prevVal) || !Number.isFinite(curVal)) return "";
+  const max = Math.max(Math.abs(prevVal), Math.abs(curVal)) || 1;
+  const barW = (v) => Math.max(3, (Math.abs(v) / max) * 176);
+  const down = curVal < prevVal;
+  const rows = [
+    { y: 6, w: barW(prevVal), fill: "var(--border)", text: fmt(prevVal), label: prevLabel, textCls: "risk-chart-muted" },
+    { y: 40, w: barW(curVal), fill: down ? "var(--neg)" : "var(--pos)", text: fmt(curVal), label: curLabel, textCls: "" },
+  ];
+  const inner =
+    rows
+      .map(
+        (r) => `<text x="0" y="${r.y + 9}" class="risk-chart-label">${escapeHtml(r.label)}</text>
+        <rect x="46" y="${r.y}" width="${r.w.toFixed(1)}" height="14" rx="4" fill="${r.fill}"/>
+        <text x="${(46 + r.w + 6).toFixed(1)}" y="${r.y + 11}" class="risk-chart-value ${r.textCls}">${escapeHtml(r.text)}</text>`
+      )
+      .join("") +
+    `<line x1="46" y1="6" x2="46" y2="54" stroke="var(--border)"/>`;
+  return riskSvgWrap(62, inner, `${prevLabel} ${fmt(prevVal)}에서 ${curLabel} ${fmt(curVal)}로 변화`);
+}
+
+// 시총 대비 비중 — 전체 막대가 시가총액, 채워진 부분이 조달액
+function riskShareChart(ratioPct, amountText) {
+  if (!Number.isFinite(ratioPct)) return "";
+  const w = Math.max(3, Math.min(100, ratioPct) * 2.6);
+  const inner = `<rect x="0" y="8" width="260" height="16" rx="5" fill="var(--border)"/>
+    <rect x="0" y="8" width="${w.toFixed(1)}" height="16" rx="5" fill="var(--neg)"/>
+    <text x="0" y="40" class="risk-chart-label">조달 ${escapeHtml(amountText)}</text>
+    <text x="260" y="40" class="risk-chart-label" text-anchor="end">시가총액 100%</text>
+    <text x="${Math.min(232, w + 6).toFixed(1)}" y="21" class="risk-chart-value">${ratioPct.toFixed(1)}%</text>`;
+  return riskSvgWrap(46, inner, `시가총액 대비 ${ratioPct.toFixed(1)}%`);
+}
+
+// 0 기준 좌우 막대 — 두 변화율(EPS와 주가)을 같은 축에서 비교.
+// 라벨(왼쪽)·막대(가운데)·값(오른쪽)을 칸으로 나눠 긴 수치에서도 겹치지 않게 한다.
+function riskDivergingChart(rows) {
+  const vals = rows.filter((r) => Number.isFinite(r.pct));
+  if (!vals.length) return "";
+  const LEFT = 34, RIGHT = 232, MID = (LEFT + RIGHT) / 2, HALF = (RIGHT - LEFT) / 2 - 4;
+  const cap = (v) => Math.max(-300, Math.min(300, v));
+  const max = Math.max(30, ...vals.map((r) => Math.abs(cap(r.pct))));
+  const inner =
+    `<line x1="${MID}" y1="2" x2="${MID}" y2="${vals.length * 30 + 2}" stroke="var(--border)"/>` +
+    vals
+      .map((r, i) => {
+        const v = cap(r.pct);
+        const w = Math.max(3, (Math.abs(v) / max) * HALF);
+        const x = v < 0 ? MID - w : MID;
+        const y = i * 30 + 6;
+        return `<text x="0" y="${y + 11}" class="risk-chart-label">${escapeHtml(r.label)}</text>
+          <rect x="${x.toFixed(1)}" y="${y}" width="${w.toFixed(1)}" height="14" rx="4" fill="${v < 0 ? "var(--neg)" : "var(--pos)"}"/>
+          <text x="300" y="${y + 11}" class="risk-chart-value" text-anchor="end">${riskFmtPct(r.pct)}</text>`;
+      })
+      .join("");
+  return riskSvgWrap(vals.length * 30 + 8, inner, vals.map((r) => `${r.label} ${riskFmtPct(r.pct)}`).join(", "));
+}
+
+// 분포 + 내 위치 — 전체 종목이 어디에 몰려 있고 이 종목이 어디인지
+function riskDistributionChart(values, mine, fmt) {
+  const nums = values.filter((v) => Number.isFinite(v));
+  if (nums.length < 10 || !Number.isFinite(mine)) return "";
+  const sorted = [...nums].sort((a, b) => a - b);
+  // 양 끝 2%는 축을 늘려 그림을 망가뜨리므로 잘라내고, 이 종목이 그 밖이면 끝에 붙여 표시
+  const lo = sorted[Math.floor(sorted.length * 0.02)];
+  const hi = sorted[Math.floor(sorted.length * 0.98)];
+  const span = hi - lo || 1;
+  const bins = 18;
+  const counts = new Array(bins).fill(0);
+  nums.forEach((v) => {
+    const i = Math.max(0, Math.min(bins - 1, Math.floor(((v - lo) / span) * bins)));
+    counts[i]++;
+  });
+  const peak = Math.max(...counts) || 1;
+  const bw = 260 / bins;
+  const myX = 20 + Math.max(0, Math.min(1, (mine - lo) / span)) * 260;
+  const bars = counts
+    .map((c, i) => {
+      const h = Math.max(2, (c / peak) * 54);
+      const x = 20 + i * bw;
+      const isMine = myX >= x && myX < x + bw;
+      return `<rect x="${(x + 1).toFixed(1)}" y="${(64 - h).toFixed(1)}" width="${(bw - 2).toFixed(1)}" height="${h.toFixed(1)}" rx="2" fill="${
+        isMine ? "var(--neg)" : "var(--border)"
+      }"/>`;
+    })
+    .join("");
+  const inner = `${bars}
+    <line x1="20" y1="64" x2="280" y2="64" stroke="var(--border)"/>
+    <line x1="${myX.toFixed(1)}" y1="6" x2="${myX.toFixed(1)}" y2="66" stroke="var(--neg)" stroke-width="2"/>
+    <text x="${Math.max(30, Math.min(270, myX)).toFixed(1)}" y="4" class="risk-chart-value" text-anchor="middle">${escapeHtml(fmt(mine))}</text>
+    <text x="20" y="78" class="risk-chart-label">${escapeHtml(fmt(lo))}</text>
+    <text x="280" y="78" class="risk-chart-label" text-anchor="end">${escapeHtml(fmt(hi))}</text>`;
+  return riskSvgWrap(82, inner, `전체 분포에서 이 종목은 ${fmt(mine)}`);
+}
+
+// 백분위 게이지 — 순위를 0~100 막대 위의 점으로
+function riskGaugeChart(rank, total, valueText, leftLabel, rightLabel) {
+  if (!rank || !total) return "";
+  const p = rank / total;
+  const x = Math.max(6, Math.min(254, p * 260));
+  const inner = `<rect x="0" y="16" width="260" height="10" rx="5" fill="var(--border)"/>
+    <rect x="0" y="16" width="${x.toFixed(1)}" height="10" rx="5" fill="var(--neg)"/>
+    <circle cx="${x.toFixed(1)}" cy="21" r="7" fill="var(--neg)" stroke="var(--bg)" stroke-width="2"/>
+    <text x="${x.toFixed(1)}" y="44" class="risk-chart-value" text-anchor="middle">${escapeHtml(valueText)}</text>
+    <text x="0" y="10" class="risk-chart-label">${escapeHtml(leftLabel)}</text>
+    <text x="260" y="10" class="risk-chart-label" text-anchor="end">${escapeHtml(rightLabel)}</text>`;
+  return riskSvgWrap(50, inner, `${total}곳 중 ${rank}위`);
+}
+
+// 섹터 막대 — 섹터별 성장률(하락한 순), 내 섹터만 색으로 강조
+function riskSectorChart(sectors, mySector) {
+  const rows = sectors.filter((s) => Number.isFinite(s.growthPct));
+  if (!rows.length) return "";
+  const max = Math.max(...rows.map((s) => Math.abs(s.growthPct)), 5);
+  const mid = 96;
+  const inner =
+    `<line x1="${mid}" y1="0" x2="${mid}" y2="${rows.length * 18}" stroke="var(--border)"/>` +
+    rows
+      .map((s, i) => {
+        const w = (Math.abs(s.growthPct) / max) * 150;
+        const x = s.growthPct < 0 ? mid - w : mid;
+        const y = i * 18 + 3;
+        const me = s.sector === mySector;
+        const color = me ? (s.growthPct < 0 ? "var(--neg)" : "var(--pos)") : "var(--border)";
+        return `<text x="0" y="${y + 9}" class="risk-chart-label ${me ? "risk-chart-strong" : ""}">${escapeHtml(s.sector)}</text>
+          <rect x="${x.toFixed(1)}" y="${y}" width="${Math.max(2, w).toFixed(1)}" height="11" rx="3" fill="${color}"/>
+          ${me ? `<text x="${(x + w + 5).toFixed(1)}" y="${y + 9}" class="risk-chart-value">${riskFmtPct(s.growthPct)}</text>` : ""}`;
+      })
+      .join("");
+  return riskSvgWrap(rows.length * 18 + 4, inner, `섹터별 매출 성장률, 내 섹터는 ${mySector}`);
+}
+
 async function renderRiskPanel(ticker) {
   const token = ++riskRenderToken;
   const box = el("riskSection");
@@ -19678,6 +19825,7 @@ async function renderRiskPanel(ticker) {
         selfPct == null
           ? `<p class="muted risk-note">작년 또는 올해 ${ds.payLabel}을 공시에서 찾지 못했습니다.${self.pay != null ? ` (최근 ${ds.fmtPay(self.pay)})` : ""}</p>`
           : `<div class="risk-card-value">${ds.payLabel} ${ds.fmtPay(self.payPrev)} → <b>${ds.fmtPay(self.pay)}</b> <span class="${riskDeltaCls(selfPct)}">(${riskFmtPct(selfPct)})</span></div>
+             ${riskBeforeAfterChart(self.payPrev, self.pay, ds.fmtPay, "작년", "올해")}
              ${riskBasisHtml(self.payFrom, self.payTo, self.payNote)}
              <div class="risk-card-rank">${
                selfSalaryRank
@@ -19700,6 +19848,7 @@ async function renderRiskPanel(ticker) {
         hc == null
           ? `<p class="muted risk-note">작년 또는 올해 직원 수를 공시에서 찾지 못했습니다.${self.headcount != null ? ` (최근 ${self.headcount.toLocaleString()}명)` : ""}</p>`
           : `<div class="risk-card-value">직원 수 ${self.headcountPrev.toLocaleString()}명 → <b>${self.headcount.toLocaleString()}명</b> <span class="${riskDeltaCls(hc)}">(${hc > 0 ? "+" : ""}${hc.toLocaleString()}명${headPct != null ? `, ${riskFmtPct(headPct)}` : ""})</span></div>
+             ${riskBeforeAfterChart(self.headcountPrev, self.headcount, (v) => `${Math.round(v).toLocaleString()}명`, "작년", "올해")}
              ${riskBasisHtml(self.headFrom, self.headTo, self.headNote)}
              <div class="risk-card-rank">${
                selfHeadRank
@@ -19752,6 +19901,7 @@ async function renderRiskPanel(ticker) {
           ? `<div class="risk-card-value">최근 1년 <b>${fmtAmountUnified(mine.amount, isKr ? "KRW" : "USD")}</b>${
               ratio != null ? ` · 시총 대비 <b>${ratio.toFixed(1)}%</b>` : ""
             }${isKr ? ` <span class="muted">(${mine.count}건)</span>` : ""}</div>
+             ${ratio != null ? riskShareChart(ratio, fmtAmountUnified(mine.amount, isKr ? "KRW" : "USD")) : ""}
              ${riskBasisHtml(
                self.issuance.windowFrom,
                self.issuance.windowTo,
@@ -19798,6 +19948,10 @@ async function renderRiskPanel(ticker) {
                    )}">(${riskFmtPct(myEps.priceChangePct)})</span></div>`
                  : ""
              }
+             ${riskDivergingChart([
+               { label: "EPS", pct: myEpsPct },
+               { label: "주가", pct: myEps.priceChangePct },
+             ])}
              ${riskBasisHtml(myEps.periodFrom || myEps.dateFrom, myEps.periodTo || myEps.dateTo, myEps.reportLabel)}
              <div class="risk-card-rank">${
                myEpsRank ? `EPS 변화율 ${epsRows.length}곳 중 <b>${myEpsRank}위</b> <span class="muted">(하락한 순)</span>` : ""
@@ -19858,6 +20012,11 @@ async function renderRiskPanel(ticker) {
           : `<div class="risk-card-value">${unit} ${money(q[key + "Prev"])} → <b>${money(q[key])}</b>${
               myPct != null ? ` <span class="${riskDeltaCls(myPct)}">(${riskFmtPct(myPct)})</span>` : grade ? ` <span class="${riskWordCls(grade.label) || grade.cls}">(${grade.label})</span>` : ""
             }</div>
+             ${
+               myPct != null
+                 ? riskDistributionChart(rows.map((r) => r._pct), myPct, (v) => riskFmtPct(v))
+                 : riskBeforeAfterChart(q[key + "Prev"], q[key], money, "작년 같은 분기", "최근 분기")
+             }
              ${riskBasisHtml(`${q.yearFrom} ${q.quarterLabel}`, `${q.yearTo} ${q.quarterLabel}`, q.label)}
              <div class="risk-card-rank">${myRank ? `${unit} 변화율 ${rows.length}곳 중 <b>${myRank}위</b> <span class="muted">(하락한 순)</span>` : ""}</div>`
       }
@@ -19921,6 +20080,11 @@ async function renderRiskPanel(ticker) {
           : `<div class="risk-card-value">부채비율 ${fmtRatio(myDebt.prev)} → <b>${fmtRatio(myDebt.current)}</b>${
               myPp != null ? ` <span class="${riskDeltaCls(myPp)}">(${fmtPp(myPp)})</span>` : ""
             }</div>
+             ${
+               selfFinancial
+                 ? riskGaugeChart(myFinRank, finDebtRows.length, fmtPp(myPp == null ? 0 : myPp), "많이 오름", "내림")
+                 : riskGaugeChart(myDebtRank, debtRows.length, fmtPp(myPp == null ? 0 : myPp), "많이 오름", "내림")
+             }
              ${riskBasisHtml(myDebt.dateFrom || myDebt.periodFrom, myDebt.dateTo || myDebt.periodTo, myDebt.label)}
              <div class="risk-card-rank">${
                selfFinancial
@@ -19982,6 +20146,7 @@ async function renderRiskPanel(ticker) {
           : `<div class="risk-card-value">1주 최대 하락 <b class="${riskDeltaCls(myCrash.pct)}">${riskFmtPct(myCrash.pct)}</b> <span class="muted">(${crashPrice(myCrash.fromPrice)} → ${crashPrice(
               myCrash.toPrice
             )})</span></div>
+             ${riskDistributionChart(crashRows.map((r) => r._pct), myCrash.pct, (v) => riskFmtPct(v))}
              ${riskBasisHtml(myCrash.from, myCrash.to, "52주 기준 가장 큰 5거래일 낙폭")}
              <div class="risk-card-rank">${myCrashRank ? `낙폭 ${crashRows.length}곳 중 <b>${myCrashRank}위</b> <span class="muted">(많이 빠진 순)</span>` : ""}</div>`
       }
@@ -20016,6 +20181,7 @@ async function renderRiskPanel(ticker) {
                  ? `<div class="risk-card-value">이 종목은 <span class="${riskDeltaCls(myCompanyRow.growthPct)}">${riskFmtPct(myCompanyRow.growthPct)}</span></div>`
                  : ""
              }
+             ${riskSectorChart(sectorRows, mySector)}
              ${riskBasisHtml("직전 분기", "최근 분기", srMarket.basis || "")}
              <div class="risk-card-rank">${sectorRows.length}개 섹터 중 <b>${mySectorRank}위</b> <span class="muted">(하락한 순)</span></div>`
       }

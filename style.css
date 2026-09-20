@@ -3510,3 +3510,10 @@ span.risk-good { color: #2f9e44; font-weight: 700; }
 .risk-sum-row.is-danger .risk-sum-label { font-weight: 700; }
 .risk-card-detail .risk-chip.risk-bad { font-weight: 800; }
 .risk-sum-note.is-strong { color: var(--text); font-weight: 700; font-size: 12px; }
+
+/* 리스크 상세 그래프(2026-09-21) — 항목별로 전후 막대·분포·게이지 등을 SVG로 */
+.risk-chart { display: block; width: 100%; margin: 10px 0 6px; overflow: visible; }
+.risk-chart-label { font-size: 10px; fill: var(--muted); }
+.risk-chart-label.risk-chart-strong { fill: var(--text); font-weight: 700; }
+.risk-chart-value { font-size: 11px; fill: var(--text); font-weight: 700; }
+.risk-chart-value.risk-chart-muted { fill: var(--muted); font-weight: 600; }
