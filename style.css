@@ -3456,6 +3456,7 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .risk-chip.risk-warn { background: rgba(240, 140, 0, 0.16); color: #f08c00; }
 .risk-chip.risk-good { background: rgba(47, 111, 237, 0.14); color: #2f6fed; }
 .risk-card-value { font-size: 14px; line-height: 1.5; word-break: keep-all; }
+.risk-card-basis { font-size: 12px; color: var(--muted); margin-top: 3px; }
 .risk-card-rank { font-size: 13px; margin-top: 4px; }
 .risk-card-rank .muted { font-size: 12px; }
 span.risk-bad { color: #e03131; font-weight: 700; }

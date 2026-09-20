@@ -122,8 +122,19 @@ function pickGenderTotals(rows) {
   return [...bySex.values()];
 }
 
-async function getEmployeeSummary(corpCode, year) {
-  const data = await dartFetch(`/api/empSttus.json?corp_code=${corpCode}&bsns_year=${year}&reprt_code=11011`);
+// 회사마다 급여를 원/천원/백만원 아무 단위로나 적어 낸다(달바글로벌 반기 "45"=4,500만원, 클로봇 "30,000"=3,000만원,
+// 유일로보틱스 "26,678,000,000"=2,667만원의 1,000배 오기입). 1인당 금액이 상식적인 자리수가 될 때까지 1,000배씩
+// 조정하고, 그래도 범위를 벗어나면 null로 버린다(잘못된 값으로 순위를 매기지 않기 위해).
+function normalizePay(v) {
+  if (v === null || v === undefined || v <= 0) return null;
+  let x = v;
+  while (x < 1_000_000) x *= 1000;
+  while (x > 1_000_000_000) x /= 1000;
+  return x >= 3_000_000 && x <= 600_000_000 ? x : null;
+}
+
+async function getEmployeeSummary(corpCode, year, reprtCode = "11011") {
+  const data = await dartFetch(`/api/empSttus.json?corp_code=${corpCode}&bsns_year=${year}&reprt_code=${reprtCode}`);
   if (data.status !== "000" || !Array.isArray(data.list)) return null;
   const totals = pickGenderTotals(data.list);
   if (totals.length === 0) return null;
@@ -132,6 +143,9 @@ async function getEmployeeSummary(corpCode, year) {
   let totalSalary = 0;
   let hasSalary = true;
   let tenureWeightedSum = 0;
+  let paySum = 0;
+  let payWeight = 0;
+  let payMismatch = false;
   for (const { headcount, row } of totals) {
     totalHeadcount += headcount;
     const salary = parseKoNumber(row.fyer_salary_totamt);
@@ -139,6 +153,22 @@ async function getEmployeeSummary(corpCode, year) {
     else totalSalary += salary;
     const tenure = parseKoNumber(row.avrg_cnwk_sdytrn);
     if (tenure !== null) tenureWeightedSum += tenure * headcount;
+    // 리스크 탭용 1인당 급여 — 공시 칸이 서로 어긋나는 회사가 많아 "급여총액÷인원"과 "1인 평균 급여액"을 함께 보고,
+    // 30% 넘게 다르면 어느 쪽이 맞는지 알 수 없으므로 그 회사는 임금 비교에서 뺀다(잘못된 순위를 만들지 않기 위해).
+    //  · 한전KPS 2026 반기: 총액÷인원 4,420만 vs 1인평균 2,178만
+    //  · 동화기업 2026 반기: 총액이 전년과 완전히 같은 값(인원만 바뀜)
+    //  · HD현대일렉트릭 2025 반기: 총액이 연간치(1인평균의 약 2배)
+    const fromTotal = normalizePay(salary !== null && headcount ? salary / headcount : null);
+    const fromPerHead = normalizePay(parseKoNumber(row.jan_salary_am));
+    let per = fromTotal !== null ? fromTotal : fromPerHead;
+    if (fromTotal !== null && fromPerHead !== null && Math.abs(fromTotal - fromPerHead) / Math.max(fromTotal, fromPerHead) > 0.3) {
+      per = null;
+      payMismatch = true;
+    }
+    if (per !== null) {
+      paySum += per * headcount;
+      payWeight += headcount;
+    }
   }
   if (totalHeadcount === 0) return null;
 
@@ -146,7 +176,50 @@ async function getEmployeeSummary(corpCode, year) {
     headcount: totalHeadcount,
     avgSalary: hasSalary && totalSalary > 0 ? totalSalary / totalHeadcount : null,
     avgTenureYears: tenureWeightedSum > 0 ? tenureWeightedSum / totalHeadcount : null,
+    perPersonPay: payMismatch || !payWeight ? null : paySum / payWeight,
+    stlmDt: totals[0].row.stlm_dt || null,
   };
+}
+
+// 리스크 탭(2026-09-20 사용자 요청): "가장 최근 보고서" 기준 임금·인원. 임직원 현황은 분기·반기보고서에도 들어 있고
+// 급여 총액은 그 기간 누적이므로, 최신 보고서와 "1년 전 같은 종류의 보고서"를 짝지어야 같은 기간끼리 비교가 된다
+// (예: 2026년 반기 1~6월 ↔ 2025년 반기 1~6월). 기준일이 늦은 것부터 훑고, 지난 연도는 사업보고서(12/31)가 3분기보다 최신.
+const PERIODIC_REPORTS = [
+  { code: "11014", label: "3분기보고서", period: "1~9월" },
+  { code: "11012", label: "반기보고서", period: "1~6월" },
+  { code: "11013", label: "1분기보고서", period: "1~3월" },
+  { code: "11011", label: "사업보고서", period: "1~12월" },
+];
+
+function reportCandidates(nowYear) {
+  const out = [];
+  for (const year of [nowYear, nowYear - 1, nowYear - 2]) {
+    const order = year === nowYear ? PERIODIC_REPORTS.slice(0, 3) : [PERIODIC_REPORTS[3], ...PERIODIC_REPORTS.slice(0, 3)];
+    for (const r of order) out.push({ year, ...r });
+  }
+  return out;
+}
+
+async function getRecentBasis(corpCode, nowYear) {
+  for (const c of reportCandidates(nowYear)) {
+    const cur = await getEmployeeSummary(corpCode, c.year, c.code).catch(() => null);
+    await sleep(REQUEST_GAP_MS);
+    if (!cur) continue;
+    const prev = await getEmployeeSummary(corpCode, c.year - 1, c.code).catch(() => null);
+    await sleep(REQUEST_GAP_MS);
+    if (!prev) continue;
+    const fmt = (s, year) => ({
+      headcount: s.headcount,
+      avgSalary: s.perPersonPay,
+      stlmDt: s.stlmDt,
+      reportLabel: `${year}년 ${c.label}`,
+      periodLabel: `${year}년 ${c.period}`,
+      year,
+      reportCode: c.code,
+    });
+    return { recent: fmt(cur, c.year), recentPrev: fmt(prev, c.year - 1) };
+  }
+  return { recent: null, recentPrev: null };
 }
 
 // 이사회가 "취득하기로 결정한" 계획 금액의 합계 — 실제 집행 완료 금액이 아니라 결정공시 기준(사업보고서의
@@ -162,11 +235,68 @@ async function getBuybackAmount(corpCode, bgnDe, endDe) {
   return total;
 }
 
+// 리스크 탭 ③유상증자 ④전환사채(2026-09-20 사용자 요청) — 최근 1년 결정공시.
+//  · piicDecsn(유상증자결정)은 조달 금액 칸이 따로 없어 자금조달 목적별 금액(fdpp_*)의 합을 조달액으로 본다
+//  · cvbdIsDecsn(전환사채 발행결정)은 사채 권면(전자등록)총액(bd_fta)
+// 둘 다 "결정" 공시라 실제 납입 금액과는 다를 수 있다(자사주 취득금액과 같은 한계, UI에 고지).
+const FDPP_FIELDS = ["fdpp_fclt", "fdpp_bsninh", "fdpp_op", "fdpp_dtrp", "fdpp_ocsa", "fdpp_etc"];
+
+function rceptDate(row) {
+  const no = String(row.rcept_no || "");
+  return no.length >= 8 ? `${no.slice(0, 4)}-${no.slice(4, 6)}-${no.slice(6, 8)}` : null;
+}
+
+async function getDecisionSummary(corpCode, api, bgnDe, endDe, amountOf, noteOf) {
+  const data = await dartFetch(`/api/${api}.json?corp_code=${corpCode}&bgn_de=${bgnDe}&end_de=${endDe}`);
+  // status 013 = 조회된 데이터 없음(= 해당 공시 없음)
+  if (data.status !== "000" || !Array.isArray(data.list)) return { count: 0, amount: 0, latestDate: null, latestNote: null };
+  const rows = data.list
+    .map((r) => ({ date: rceptDate(r), amount: amountOf(r) || 0, note: (noteOf(r) || "").trim() || null }))
+    .filter((r) => r.date)
+    .sort((a, b) => (a.date < b.date ? 1 : -1));
+  return {
+    count: rows.length,
+    amount: rows.reduce((s, r) => s + r.amount, 0),
+    latestDate: rows.length ? rows[0].date : null,
+    latestNote: rows.length ? rows[0].note : null,
+  };
+}
+
+async function getIssuance(corpCode, bgnDe, endDe) {
+  const rights = await getDecisionSummary(
+    corpCode,
+    "piicDecsn",
+    bgnDe,
+    endDe,
+    (r) => FDPP_FIELDS.reduce((s, k) => s + (parseKoNumber(r[k]) || 0), 0),
+    (r) => r.ic_mthn
+  ).catch(() => null);
+  await sleep(REQUEST_GAP_MS);
+  const cb = await getDecisionSummary(corpCode, "cvbdIsDecsn", bgnDe, endDe, (r) => parseKoNumber(r.bd_fta), (r) => r.bd_knd).catch(() => null);
+  await sleep(REQUEST_GAP_MS);
+  if (!rights && !cb) return null;
+  return { rights: rights || { count: 0, amount: 0 }, cb: cb || { count: 0, amount: 0 } };
+}
+
+// 시가총액은 지도 데이터(한국 저녁 배치가 매일 갱신)에서 가져와 "시총 대비 비율"을 미리 계산해 둔다
+function loadMarketCaps() {
+  const file = path.join(__dirname, "..", "sector-map", "data", "kr-sectors.json");
+  const map = {};
+  try {
+    for (const c of readJsonFile(file).companies || []) {
+      if (c.symbol && c.marketCap) map[c.symbol] = c.marketCap;
+    }
+  } catch {
+    console.error("kr-sectors.json을 읽지 못해 시총 대비 비율은 비워 둡니다.");
+  }
+  return map;
+}
+
 function toDateStr(d) {
   return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}${String(d.getDate()).padStart(2, "0")}`;
 }
 
-async function scanOne(symbol, corpEntry, thisYear, lastYear, bgnDe, endDe) {
+async function scanOne(symbol, corpEntry, thisYear, lastYear, bgnDe, endDe, marketCaps) {
   try {
     const curr = await getEmployeeSummary(corpEntry.corpCode, thisYear);
     await sleep(REQUEST_GAP_MS);
@@ -174,6 +304,22 @@ async function scanOne(symbol, corpEntry, thisYear, lastYear, bgnDe, endDe) {
     const prev = await getEmployeeSummary(corpEntry.corpCode, lastYear).catch(() => null);
     await sleep(REQUEST_GAP_MS);
     const buyback = await getBuybackAmount(corpEntry.corpCode, bgnDe, endDe).catch(() => 0);
+    const { recent, recentPrev } = await getRecentBasis(corpEntry.corpCode, new Date().getFullYear()).catch(() => ({ recent: null, recentPrev: null }));
+    const raised = await getIssuance(corpEntry.corpCode, bgnDe, endDe).catch(() => null);
+    const marketCap = (marketCaps && marketCaps[symbol]) || null;
+    const ratio = (amount) => (marketCap && amount ? (amount / marketCap) * 100 : null);
+    const issuance = raised
+      ? {
+          windowFrom: `${bgnDe.slice(0, 4)}-${bgnDe.slice(4, 6)}-${bgnDe.slice(6, 8)}`,
+          windowTo: `${endDe.slice(0, 4)}-${endDe.slice(4, 6)}-${endDe.slice(6, 8)}`,
+          rights: raised.rights,
+          cb: raised.cb,
+          marketCap,
+          rightsRatio: ratio(raised.rights.amount),
+          cbRatio: ratio(raised.cb.amount),
+          totalRatio: ratio((raised.rights.amount || 0) + (raised.cb.amount || 0)),
+        }
+      : null;
     return {
       symbol,
       corpName: corpEntry.corpName,
@@ -185,6 +331,12 @@ async function scanOne(symbol, corpEntry, thisYear, lastYear, bgnDe, endDe) {
       // 리스크 탭(2026-09-19): 1인 평균 급여가 작년보다 줄었거나 제자리인 회사를 가려내기 위한 작년 값
       avgSalaryPrevYear: prev ? prev.avgSalary : null,
       buybackAmount: buyback,
+      // 리스크 탭 전용 — 최신 정기보고서와 1년 전 같은 보고서(분기·반기 포함). 인사이트 탭의 "평균연봉"은
+      // 연간 값이어야 하므로 위의 avgSalary/headcount는 사업보고서 기준 그대로 둔다
+      recent,
+      recentPrev,
+      // 리스크 탭 ③④ — 최근 1년 유상증자·전환사채 결정공시와 시총 대비 비율
+      issuance,
     };
   } catch (err) {
     console.error(`[건너뜀] ${symbol}:`, err.message);
@@ -236,7 +388,7 @@ async function main() {
       console.error(`[건너뜀] ${e.symbol}: corp_code 매핑 없음`);
       return null;
     }
-    return scanOne(e.symbol, corpEntry, thisYear, lastYear, bgnDe, endDe);
+    return scanOne(e.symbol, corpEntry, thisYear, lastYear, bgnDe, endDe, marketCaps);
   });
 
   const items = results.filter(Boolean);

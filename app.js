@@ -19468,11 +19468,12 @@ async function runFutureCompare(ticker, metricsPromise, marketReturnsPromise, op
 }
 
 // ---------- 검색 상세 "리스크" 탭(2026-09-19 사용자 요청) ----------
-// ① 임금 감소·동결: 작년 대비 임금 변화율(±1% 이내 = 동결) ② 인원 감축: 작년 대비 직원 수 감소 인원
-// 두 가지를 같은 시장 기업들 안에서 순위로 보여줌.
-//  - 국내: data/dart-financials.json(코스피200+코스닥150, DART 사업보고서 임직원 현황) — 1인 평균 급여
-//  - 미국: data/us-workforce.json(S&P500, scripts/scan-us-workforce.py) — 미국은 평균 급여 공시가 없어
-//          위임장(DEF 14A) CEO Pay Ratio의 "직원 중위 연봉", 직원 수는 10-K 본문(Human Capital)
+// ① 임금 감소·동결 ② 인원 감축 — 두 가지를 같은 시장 기업들 안에서 순위로 보여주고, 각 카드에 "언제 기준 → 언제 기준"을 함께 표시한다.
+//  - 국내: data/dart-financials.json의 recent/recentPrev(2026-09-20 추가) = 종목별 최신 정기보고서(분기·반기·사업)와
+//          1년 전 같은 보고서. 분기·반기 급여총액은 그 기간 누적이라 같은 기간끼리만 비교한다(반기↔반기).
+//          recent가 없으면 예전처럼 사업보고서 연간 값(avgSalary/headcount)으로 내려간다.
+//  - 미국: data/us-workforce.json(S&P500) — 평균 급여 공시가 없어 위임장(DEF 14A) CEO Pay Ratio의 "직원 중위 연봉",
+//          직원 수는 10-K 본문. 둘 다 1년에 한 번뿐이라 분기 비교는 불가능하고 보고서 기준일을 그대로 보여준다.
 const RISK_SALARY_FREEZE_PCT = 1;
 let riskRenderToken = 0;
 let usWorkforcePromise = null;
@@ -19484,23 +19485,39 @@ function getUsWorkforceData() {
   }
   return usWorkforcePromise;
 }
-// 두 시장 데이터를 같은 모양({symbol, name, pay, payPrev, headcount, headcountPrev})으로 맞춤
+function riskBasisHtml(from, to, note) {
+  if (!from || !to) return "";
+  return `<div class="risk-card-basis">기준 ${escapeHtml(from)} → ${escapeHtml(to)}${note ? ` <span class="muted">(${escapeHtml(note)})</span>` : ""}</div>`;
+}
+// 두 시장 데이터를 같은 모양으로 맞춤
 async function loadRiskDataset(isKr) {
   if (isKr) {
     const data = await getDartFinancialsData();
     return {
-      items: ((data && data.items) || []).map((r) => ({
-        symbol: r.symbol,
-        name: r.corpName || r.symbol,
-        pay: r.avgSalary,
-        payPrev: r.avgSalaryPrevYear,
-        headcount: r.headcount,
-        headcountPrev: r.headcountPrevYear,
-      })),
-      asof: data && data.dataYear ? `${data.dataYear}년 사업보고서 기준` : "",
+      items: ((data && data.items) || []).map((r) => {
+        const cur = r.recent || null;
+        const prev = r.recentPrev || null;
+        const useRecent = cur && prev;
+        return {
+          symbol: r.symbol,
+          name: r.corpName || r.symbol,
+          pay: useRecent ? cur.avgSalary : r.avgSalary,
+          payPrev: useRecent ? prev.avgSalary : r.avgSalaryPrevYear,
+          payFrom: useRecent ? prev.periodLabel : data && data.dataYear ? `${data.dataYear - 1}년 1~12월` : "",
+          payTo: useRecent ? cur.periodLabel : data && data.dataYear ? `${data.dataYear}년 1~12월` : "",
+          payNote: useRecent ? cur.reportLabel : data && data.dataYear ? `${data.dataYear}년 사업보고서` : "",
+          headcount: useRecent ? cur.headcount : r.headcount,
+          headcountPrev: useRecent ? prev.headcount : r.headcountPrevYear,
+          headFrom: useRecent ? prev.stlmDt : data && data.dataYear ? `${data.dataYear - 1}-12-31` : "",
+          headTo: useRecent ? cur.stlmDt : data && data.dataYear ? `${data.dataYear}-12-31` : "",
+          headNote: useRecent ? cur.reportLabel : data && data.dataYear ? `${data.dataYear}년 사업보고서` : "",
+          issuance: r.issuance || null,
+        };
+      }),
+      hasIssuance: true,
       payLabel: "1인 평균 급여",
       fmtPay: (v) => `${Math.round(v / 10000).toLocaleString()}만원`,
-      source: "출처: DART 전자공시 사업보고서 임직원 현황 · 평균 급여 = 연간 급여 총액 ÷ 직원 수",
+      source: "출처: DART 전자공시 정기보고서 임직원 현황 · 평균 급여 = 해당 기간 급여 총액 ÷ 직원 수(분기·반기는 그 기간 누적이라 작년 같은 기간과 비교) · 종목마다 최신 보고서가 달라 기준일이 다를 수 있음",
     };
   }
   const data = await getUsWorkforceData();
@@ -19510,13 +19527,20 @@ async function loadRiskDataset(isKr) {
       name: TICKER_TO_KOREAN_NAME[sym] || r.name || sym,
       pay: r.medianPay,
       payPrev: r.medianPayPrevYear,
+      payFrom: r.medianPayPrevFiled ? `${r.medianPayPrevFiled} 제출` : "",
+      payTo: r.medianPayFiled ? `${r.medianPayFiled} 제출` : "",
+      payNote: "위임장, 직전 회계연도",
       headcount: r.headcount,
       headcountPrev: r.headcountPrevYear,
+      headFrom: r.headcountPrevPeriod || "",
+      headTo: r.headcountPeriod || "",
+      headNote: "연차보고서(10-K)",
+      issuance: null, // 미국은 유상증자·전환사채 결정공시에 해당하는 정형 데이터가 없어 아직 미지원
     })),
-    asof: "최근 연차보고서(10-K)·위임장 기준",
+    hasIssuance: false,
     payLabel: "직원 중위 연봉",
     fmtPay: (v) => `$${Math.round(v).toLocaleString()}`,
-    source: "출처: SEC EDGAR — 직원 수는 연차보고서(10-K) 인적자원 항목, 임금은 위임장(DEF 14A) CEO 보수 비율 공시의 직원 중위 연간 총보상(평균이 아니라 중간값, 회사가 적은 문장을 자동 추출)",
+    source: "출처: SEC EDGAR — 직원 수는 연차보고서(10-K) 인적자원 항목, 임금은 위임장(DEF 14A) CEO 보수 비율 공시의 직원 중위 연간 총보상(평균이 아니라 중간값) · 미국은 두 공시 모두 1년에 한 번이라 분기 비교가 없음",
   };
 }
 function riskPct(cur, prev) {
@@ -19553,11 +19577,11 @@ async function renderRiskPanel(ticker) {
   if (token !== riskRenderToken) return;
   const items = ds.items;
   const self = items.find((r) => r.symbol === ticker);
-  if (ds.asof) el("riskHeading").innerHTML = `리스크 점검<span class="srt-asof">${ds.asof}</span>`;
   if (!self) {
     box.innerHTML = `<p class="muted risk-note">이 종목은 리스크 점검 대상(${isKr ? "코스피200·코스닥150" : "S&P500"})에 없거나 임직원 공시를 찾지 못했습니다.</p>`;
     return;
   }
+  el("riskHeading").innerHTML = `리스크 점검<span class="srt-asof">${escapeHtml(self.headNote || self.payNote || "")} 기준</span>`;
 
   // ① 임금: 변화율이 낮은 순(감소폭 큰 회사가 1위) — 감소·동결만 순위에 올림
   const salaryAll = items.map((r) => ({ ...r, _pct: riskPct(r.pay, r.payPrev) })).filter((r) => r._pct != null);
@@ -19580,8 +19604,9 @@ async function renderRiskPanel(ticker) {
       <div class="risk-card-top"><span class="risk-card-title">① 임금 감소·동결</span>${chip(selfGrade)}</div>
       ${
         selfPct == null
-          ? `<p class="muted risk-note">작년 또는 올해 ${ds.payLabel}을 공시에서 찾지 못했습니다.${self.pay != null ? ` (올해 ${ds.fmtPay(self.pay)})` : ""}</p>`
+          ? `<p class="muted risk-note">작년 또는 올해 ${ds.payLabel}을 공시에서 찾지 못했습니다.${self.pay != null ? ` (최근 ${ds.fmtPay(self.pay)})` : ""}</p>`
           : `<div class="risk-card-value">${ds.payLabel} ${ds.fmtPay(self.payPrev)} → <b>${ds.fmtPay(self.pay)}</b> <span class="${selfGrade.cls}">(${riskFmtPct(selfPct)})</span></div>
+             ${riskBasisHtml(self.payFrom, self.payTo, self.payNote)}
              <div class="risk-card-rank">${
                selfSalaryRank
                  ? `감소·동결 ${salaryRows.length}곳 중 <b>${selfSalaryRank}위</b> <span class="muted">(${salaryAll.length}개 기업 중)</span>`
@@ -19600,8 +19625,9 @@ async function renderRiskPanel(ticker) {
       <div class="risk-card-top"><span class="risk-card-title">② 인원 감축</span>${chip(headGrade)}</div>
       ${
         hc == null
-          ? `<p class="muted risk-note">작년 또는 올해 직원 수를 공시에서 찾지 못했습니다.${self.headcount != null ? ` (올해 ${self.headcount.toLocaleString()}명)` : ""}</p>`
+          ? `<p class="muted risk-note">작년 또는 올해 직원 수를 공시에서 찾지 못했습니다.${self.headcount != null ? ` (최근 ${self.headcount.toLocaleString()}명)` : ""}</p>`
           : `<div class="risk-card-value">직원 수 ${self.headcountPrev.toLocaleString()}명 → <b>${self.headcount.toLocaleString()}명</b> <span class="${headGrade.cls}">(${hc > 0 ? "+" : ""}${hc.toLocaleString()}명${headPct != null ? `, ${riskFmtPct(headPct)}` : ""})</span></div>
+             ${riskBasisHtml(self.headFrom, self.headTo, self.headNote)}
              <div class="risk-card-rank">${
                selfHeadRank
                  ? `인원 감소 ${headRows.length}곳 중 <b>${selfHeadRank}위</b> <span class="muted">(${headAll.length}개 기업 중)</span>`
@@ -19616,8 +19642,49 @@ async function renderRiskPanel(ticker) {
       )}</div>
     </div>`;
 
-  box.innerHTML = `${salaryCard}${headCard}
-    <p class="risk-source">${ds.source} · 작년 대비 ±${RISK_SALARY_FREEZE_PCT}% 이내는 동결</p>`;
+  // ③ 유상증자 ④ 전환사채(2026-09-20 사용자 요청, 국내만) — 최근 1년 결정공시 금액의 시가총액 대비 비율 순위.
+  // "있음/없음"을 먼저 보여주고, 비율이 높은 회사부터 순위를 매긴다.
+  const issuanceCard = (key, ratioKey, title, unitNote) => {
+    const rows = items
+      .filter((r) => r.issuance && r.issuance[key] && r.issuance[key].count && r.issuance[ratioKey] != null)
+      .map((r) => ({ ...r, _ratio: r.issuance[ratioKey] }))
+      .sort((a, b) => b._ratio - a._ratio);
+    const mine = self.issuance && self.issuance[key];
+    const has = !!(mine && mine.count);
+    const myRank = rows.findIndex((r) => r.symbol === ticker) + 1;
+    const ratio = self.issuance ? self.issuance[ratioKey] : null;
+    return `<div class="risk-card">
+      <div class="risk-card-top"><span class="risk-card-title">${title}</span>${
+        has ? `<span class="risk-chip risk-bad">있음</span>` : `<span class="risk-chip risk-good">없음</span>`
+      }</div>
+      ${
+        has
+          ? `<div class="risk-card-value">최근 1년 <b>${fmtAmountUnified(mine.amount, "KRW")}</b>${
+              ratio != null ? ` · 시총 대비 <b>${ratio.toFixed(1)}%</b>` : ""
+            } <span class="muted">(${mine.count}건)</span></div>
+             ${riskBasisHtml(self.issuance.windowFrom, self.issuance.windowTo, `최근 공시 ${mine.latestDate || "-"}${mine.latestNote ? ` · ${mine.latestNote}` : ""}`)}
+             <div class="risk-card-rank">${
+               myRank ? `시총 대비 비율 ${rows.length}곳 중 <b>${myRank}위</b> <span class="muted">(${items.length}개 기업 중)</span>` : ""
+             }</div>`
+          : `<p class="muted risk-note">최근 1년(${self.issuance ? `${self.issuance.windowFrom}~${self.issuance.windowTo}` : "1년"}) ${unitNote} 결정 공시가 없습니다.</p>`
+      }
+      <button type="button" class="risk-more-btn" data-risk-toggle="${key}">+ 전체 순위 (${rows.length}곳)</button>
+      <div class="risk-more" data-risk-list="${key}" style="display:none;">${riskRankListHtml(
+        rows,
+        (r) => `<span class="risk-rank-val risk-bad">${r._ratio.toFixed(1)}%</span>`,
+        ticker
+      )}</div>
+    </div>`;
+  };
+  const issuanceCards = ds.hasIssuance
+    ? issuanceCard("rights", "rightsRatio", "③ 유상증자", "유상증자") + issuanceCard("cb", "cbRatio", "④ 전환사채", "전환사채")
+    : `<p class="muted risk-note">유상증자·전환사채 점검은 국내 주식만 제공합니다(미국은 같은 형식의 공시 데이터가 없어 준비 중).</p>`;
+  const issuanceSource = ds.hasIssuance
+    ? " · 유상증자·전환사채는 DART 주요사항보고서의 발행 <b>결정</b> 공시 기준(실제 납입액과 다를 수 있음), 시가총액은 어제 종가 기준"
+    : "";
+
+  box.innerHTML = `${salaryCard}${headCard}${issuanceCards}
+    <p class="risk-source">${ds.source} · 작년 대비 ±${RISK_SALARY_FREEZE_PCT}% 이내는 동결${issuanceSource}</p>`;
 
   box.querySelectorAll("[data-risk-toggle]").forEach((btn) => {
     btn.addEventListener("click", () => {
