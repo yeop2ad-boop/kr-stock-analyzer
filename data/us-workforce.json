@@ -242,7 +242,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": null,
     "periodFrom": null
-   }
+   },
+   "medianPay": 169019,
+   "medianPayFiled": "2026-03-23",
+   "medianPayPrevYear": 134351,
+   "medianPayPrevFiled": "2025-03-24"
   },
   "ABNB": {
    "cik": 1559720,
@@ -379,7 +383,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "헬스케어"
+   "sector": "헬스케어",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-03-31",
+    "dateFrom": "2025-03-31",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 11164000000.0,
+    "revenuePrev": 10358000000.0,
+    "revenuePct": 7.78142498551844,
+    "netIncome": 1077000000.0,
+    "netIncomePrev": 1325000000.0,
+    "netIncomePct": -18.71698113207547,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 110.88530761990742,
+    "prev": 66.34570076417201,
+    "changePp": 44.539606855735414,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-03-31",
+    "dateFrom": "2025-03-31",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-03-31",
+    "periodFrom": "2025-03-31",
+    "source": "yahoo"
+   }
   },
   "ACGL": {
    "cik": 947484,
@@ -853,6 +886,21 @@
     "netIncomePrev": 1249500000.0,
     "netIncomePct": 8.827531012404961,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 2.45,
+    "prev": 2.24,
+    "changePct": 9.374999999999996,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "ADSK": {
@@ -1082,6 +1130,21 @@
     "netIncomePrev": 802200000.0,
     "netIncomePct": 12.56544502617801,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 1.31,
+    "prev": 2.29,
+    "changePct": -42.79475982532751,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "AES": {
@@ -1649,7 +1712,7 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": null
+   "sector": "기술"
   },
   "ALB": {
    "cik": 915913,
@@ -2059,7 +2122,7 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": null
+   "sector": "헬스케어"
   },
   "AMAT": {
    "cik": 6951,
@@ -2209,6 +2272,21 @@
     "netIncomePrev": 196000000.0,
     "netIncomePct": 41.83673469387755,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 0.84,
+    "prev": -0.095,
+    "changePct": null,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "AMD": {
@@ -2287,7 +2365,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-27",
     "periodFrom": "2025-06-28"
-   }
+   },
+   "medianPay": 161780,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 143804,
+   "medianPayPrevFiled": "2025-03-28"
   },
   "AME": {
    "cik": 1037868,
@@ -2987,19 +3069,20 @@
     "totalRatio": null
    },
    "quarter": {
-    "label": "SEC 분기 실적",
+    "label": "야후 분기 실적",
     "quarterLabel": "분기",
     "dateTo": "2026-06-30",
-    "dateFrom": null,
+    "dateFrom": "2025-06-30",
     "yearTo": "2026",
-    "yearFrom": null,
-    "revenue": null,
-    "revenuePrev": null,
-    "revenuePct": null,
+    "yearFrom": "2025",
+    "revenue": 2373000000.0,
+    "revenuePrev": 2178000000.0,
+    "revenuePct": 8.953168044077135,
     "netIncome": 747000000.0,
     "netIncomePrev": 603000000.0,
     "netIncomePct": 23.88059701492537,
-    "niTurnedLoss": false
+    "niTurnedLoss": false,
+    "source": "yahoo"
    },
    "crash": {
     "pct": -13.803539179587887,
@@ -3510,7 +3593,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "부동산"
+   "sector": "부동산",
+   "medianPay": 207588,
+   "medianPayFiled": "2026-04-01",
+   "medianPayPrevYear": 193000,
+   "medianPayPrevFiled": "2025-04-02"
   },
   "ARES": {
    "cik": 1176948,
@@ -3578,7 +3665,22 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "금융"
+   "sector": "금융",
+   "eps": {
+    "current": 0.49,
+    "prev": 0.46,
+    "changePct": 6.521739130434775,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   }
   },
   "ARM": {
    "cik": 1973239,
@@ -3653,7 +3755,7 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": null
+   "sector": "기술"
   },
   "ASML": {
    "cik": 937966,
@@ -3687,7 +3789,53 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": null
+   "sector": "기술",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 9326500000.0,
+    "revenuePrev": 7691700000.0,
+    "revenuePct": 21.254079072246707,
+    "netIncome": 2917600000.0,
+    "netIncomePrev": 2290300000.0,
+    "netIncomePct": 27.38942496616164,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 130.0750501709018,
+    "prev": 154.5611924033102,
+    "changePp": -24.48614223240841,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   },
+   "eps": {
+    "current": 7.59,
+    "prev": 5.9,
+    "changePct": 28.644067796610162,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   },
+   "headcount": 10000,
+   "headcountPeriod": "2025-12-31"
   },
   "ATO": {
    "cik": 731802,
@@ -3847,7 +3995,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "기술"
+   "sector": "기술",
+   "medianPay": 378281,
+   "medianPayFiled": "2026-03-02",
+   "medianPayPrevYear": 324658,
+   "medianPayPrevFiled": "2025-03-03"
   },
   "AVY": {
    "cik": 8818,
@@ -4238,6 +4390,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": null,
     "periodFrom": null
+   },
+   "eps": {
+    "current": 38.95,
+    "prev": 36.33,
+    "changePct": 7.211670795485838,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-05-31",
+    "periodTo": "2026-05-31",
+    "dateFrom": "2025-05-31",
+    "dateTo": "2026-05-31",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "BA": {
@@ -4318,7 +4485,9 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "산업재"
+   "sector": "산업재",
+   "medianPayPrevYear": 106624,
+   "medianPayPrevFiled": "2025-03-07"
   },
   "BAC": {
    "cik": 70858,
@@ -4396,7 +4565,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "금융"
+   "sector": "금융",
+   "medianPay": 123990,
+   "medianPayFiled": "2026-03-23",
+   "medianPayPrevYear": 117234,
+   "medianPayPrevFiled": "2025-03-10"
   },
   "BALL": {
    "cik": 9389,
@@ -4476,7 +4649,9 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "소재"
+   "sector": "소재",
+   "medianPayPrevYear": 79128,
+   "medianPayPrevFiled": "2025-03-20"
   },
   "BAX": {
    "cik": 10456,
@@ -4554,7 +4729,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "헬스케어"
+   "sector": "헬스케어",
+   "medianPay": 72402,
+   "medianPayFiled": "2026-03-23",
+   "medianPayPrevYear": 70331,
+   "medianPayPrevFiled": "2025-03-25"
   },
   "BBY": {
    "cik": 764478,
@@ -4714,7 +4893,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
-   }
+   },
+   "medianPay": 45831,
+   "medianPayFiled": "2025-12-18",
+   "medianPayPrevYear": 43763,
+   "medianPayPrevFiled": "2024-12-19"
   },
   "BEN": {
    "cik": 38777,
@@ -4925,19 +5108,20 @@
     "totalRatio": null
    },
    "quarter": {
-    "label": "SEC 분기 실적",
+    "label": "야후 분기 실적",
     "quarterLabel": "분기",
-    "dateTo": "2025-12-31",
-    "dateFrom": null,
-    "yearTo": "2025",
-    "yearFrom": null,
-    "revenue": null,
-    "revenuePrev": null,
-    "revenuePct": null,
-    "netIncome": 95000000.0,
-    "netIncomePrev": 602000000.0,
-    "netIncomePct": -84.21926910299004,
-    "niTurnedLoss": false
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 24041000000.0,
+    "revenuePrev": 12769000000.0,
+    "revenuePct": 88.27629414989427,
+    "netIncome": 678000000.0,
+    "netIncomePrev": 354000000.0,
+    "netIncomePct": 91.52542372881356,
+    "niTurnedLoss": false,
+    "source": "yahoo"
    },
    "crash": {
     "pct": -14.088309834008584,
@@ -4948,7 +5132,20 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "필수소비재"
+   "sector": "필수소비재",
+   "debt": {
+    "current": 184.11584028082493,
+    "prev": 176.40356519342092,
+    "changePp": 7.712275087404009,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "BIIB": {
    "cik": 875045,
@@ -5003,7 +5200,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "헬스케어"
+   "sector": "헬스케어",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 2736000000.0,
+    "revenuePrev": 2645500000.0,
+    "revenuePct": 3.4209034209034206,
+    "netIncome": 97500000.0,
+    "netIncomePrev": 634800000.0,
+    "netIncomePct": -84.64083175803403,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 70.2387521222411,
+    "prev": 60.65668594760123,
+    "changePp": 9.582066174639863,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "BKNG": {
    "cik": 1075531,
@@ -5149,7 +5375,26 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
-   }
+   },
+   "eps": {
+    "current": 0.69,
+    "prev": 0.71,
+    "changePct": -2.8169014084507067,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   },
+   "medianPay": 68720,
+   "medianPayFiled": "2026-03-30",
+   "medianPayPrevYear": 74104,
+   "medianPayPrevFiled": "2025-03-31"
   },
   "BLDR": {
    "cik": 1316835,
@@ -5442,19 +5687,20 @@
     "totalRatio": 1.9233874935045125
    },
    "quarter": {
-    "label": "SEC 분기 실적",
+    "label": "야후 분기 실적",
     "quarterLabel": "분기",
-    "dateTo": "2026-06-30",
-    "dateFrom": null,
+    "dateTo": "2026-03-31",
+    "dateFrom": "2025-03-31",
     "yearTo": "2026",
-    "yearFrom": null,
-    "revenue": null,
-    "revenuePrev": null,
-    "revenuePct": null,
-    "netIncome": 1761000000.0,
-    "netIncomePrev": 1423000000.0,
-    "netIncomePct": 23.752635277582574,
-    "niTurnedLoss": false
+    "yearFrom": "2025",
+    "revenue": 5336000000.0,
+    "revenuePrev": 4687000000.0,
+    "revenuePct": 13.846810326434818,
+    "netIncome": 1632000000.0,
+    "netIncomePrev": 1220000000.0,
+    "netIncomePct": 33.77049180327869,
+    "niTurnedLoss": false,
+    "source": "yahoo"
    },
    "debt": {
     "current": 1073.9544151889665,
@@ -5545,6 +5791,21 @@
     "netIncomePrev": 243100000.0,
     "netIncomePct": 13.656931303990127,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 3.46,
+    "prev": 3.19,
+    "changePct": 8.46394984326019,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "BRK-B": {
@@ -5613,7 +5874,22 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "금융"
+   "sector": "금융",
+   "eps": {
+    "current": 11.912006,
+    "prev": 5.734003,
+    "changePct": 107.74328161321156,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   }
   },
   "BRO": {
    "cik": 79282,
@@ -5991,7 +6267,29 @@
     "netIncomePrev": 3238000000.0,
     "netIncomePct": 15.873996294008647,
     "niTurnedLoss": false
-   }
+   },
+   "eps": {
+    "current": 3.201834,
+    "prev": 1.984482,
+    "changePct": 61.34356471865201,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   },
+   "medianPay": 73145,
+   "medianPayFiled": "2026-04-02",
+   "medianPayPrevYear": 70138,
+   "medianPayPrevFiled": "2025-03-18",
+   "headcount": 226000,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 229000
   },
   "CAH": {
    "cik": 721371,
@@ -6059,6 +6357,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": null,
     "periodFrom": null
+   },
+   "eps": {
+    "current": 1.7,
+    "prev": 1.01,
+    "changePct": 68.31683168316832,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "CARR": {
@@ -6298,7 +6611,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "산업재"
+   "sector": "산업재",
+   "medianPay": 89253,
+   "medianPayFiled": "2026-04-30",
+   "medianPayPrevYear": 63238,
+   "medianPayPrevFiled": "2025-04-30"
   },
   "CB": {
    "cik": 896159,
@@ -6353,7 +6670,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "금융"
+   "sector": "금융",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 15959000000.0,
+    "revenuePrev": 14881000000.0,
+    "revenuePct": 7.24413681876218,
+    "netIncome": 2854000000.0,
+    "netIncomePrev": 2968000000.0,
+    "netIncomePct": -3.840970350404313,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 265.9833890569442,
+    "prev": 269.6390229843649,
+    "changePp": -3.655633927420695,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "CBRE": {
    "cik": 1138118,
@@ -6469,7 +6815,22 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": null
+   "sector": "필수소비재",
+   "debt": {
+    "current": 275.2903637523931,
+    "prev": 260.5136058428555,
+    "changePp": 14.776757909537594,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2025-12-31",
+    "dateFrom": "2024-12-31",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2025-12-31",
+    "periodFrom": "2024-12-31",
+    "source": "yahoo"
+   },
+   "headcount": 146100,
+   "headcountPeriod": "2025-12-31"
   },
   "CCI": {
    "cik": 1051470,
@@ -6684,7 +7045,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "기술"
+   "sector": "기술",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 1584451000.0,
+    "revenuePrev": 1275441000.0,
+    "revenuePct": 24.22769849800971,
+    "netIncome": 367076000.0,
+    "netIncomePrev": 160051000.0,
+    "netIncomePct": 129.34939488038188,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 76.15033793562316,
+    "prev": 89.92561326809064,
+    "changePp": -13.775275332467487,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "CDW": {
    "cik": 1402057,
@@ -7415,7 +7805,9 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "기술"
+   "sector": "기술",
+   "medianPayPrevYear": 99735,
+   "medianPayPrevFiled": "2025-02-13"
   },
   "CINF": {
    "cik": 20286,
@@ -7647,6 +8039,21 @@
     "netIncomePrev": 186000000.0,
     "netIncomePct": 0.5376344086021506,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 1.54,
+    "prev": 1.51,
+    "changePct": 1.986754966887419,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-03-31",
+    "periodTo": "2026-03-31",
+    "dateFrom": "2025-03-31",
+    "dateTo": "2026-03-31",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "CMCSA": {
@@ -7807,7 +8214,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "금융"
+   "sector": "금융",
+   "medianPay": 167162,
+   "medianPayFiled": "2026-03-23",
+   "medianPayPrevYear": 166074,
+   "medianPayPrevFiled": "2025-03-20"
   },
   "CMG": {
    "cik": 1058090,
@@ -8197,6 +8608,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-03-31",
     "periodFrom": "2025-03-31"
+   },
+   "eps": {
+    "current": 0.37,
+    "prev": 0.3,
+    "changePct": 23.333333333333336,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "COF": {
@@ -8347,6 +8773,21 @@
     "netIncomePrev": 15711000.0,
     "netIncomePct": 1118.267455922602,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 1.23,
+    "prev": -0.83,
+    "changePct": null,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "COIN": {
@@ -8507,7 +8948,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "헬스케어"
+   "sector": "헬스케어",
+   "medianPay": 48540,
+   "medianPayFiled": "2026-02-24",
+   "medianPayPrevYear": 39159,
+   "medianPayPrevFiled": "2025-02-19"
   },
   "COP": {
    "cik": 1163165,
@@ -8739,6 +9184,21 @@
     "label": "SEC 분기 재무상태표",
     "periodTo": "2026-05-10",
     "periodFrom": "2025-05-11"
+   },
+   "eps": {
+    "current": 4.94,
+    "prev": 4.29,
+    "changePct": 15.15151515151516,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-05-31",
+    "periodTo": "2026-05-31",
+    "dateFrom": "2025-05-31",
+    "dateTo": "2026-05-31",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "CPAY": {
@@ -8889,6 +9349,21 @@
     "netIncomePrev": 406609000.0,
     "netIncomePct": -1.0349008506944017,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 0.35,
+    "prev": 0.41,
+    "changePct": -14.634146341463413,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-07-31",
+    "periodTo": "2026-07-31",
+    "dateFrom": "2025-07-31",
+    "dateTo": "2026-07-31",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "CPT": {
@@ -8967,7 +9442,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "부동산"
+   "sector": "부동산",
+   "medianPay": 67842,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 66298,
+   "medianPayPrevFiled": "2025-03-25"
   },
   "CRH": {
    "cik": 849395,
@@ -9368,7 +9847,7 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": null
+   "sector": "기술"
   },
   "CSCO": {
    "cik": 858877,
@@ -9436,6 +9915,21 @@
     "netIncomePrev": 2491000000.0,
     "netIncomePct": 35.40746688077078,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 0.98,
+    "prev": 0.71,
+    "changePct": 38.02816901408451,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-07-31",
+    "periodTo": "2026-07-31",
+    "dateFrom": "2025-07-31",
+    "dateTo": "2026-07-31",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "CSGP": {
@@ -9658,6 +10152,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-05-31",
     "periodFrom": "2025-05-31"
+   },
+   "eps": {
+    "current": 1.27,
+    "prev": 1.11,
+    "changePct": 14.414414414414406,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-05-31",
+    "periodTo": "2026-05-31",
+    "dateFrom": "2025-05-31",
+    "dateTo": "2026-05-31",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "CTSH": {
@@ -9713,7 +10222,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "기술"
+   "sector": "기술",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 5481000000.0,
+    "revenuePrev": 5245000000.0,
+    "revenuePct": 4.4995233555767395,
+    "netIncome": 636000000.0,
+    "netIncomePrev": 645000000.0,
+    "netIncomePct": -1.3953488372093024,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 43.99806389157793,
+    "prev": 31.894296180010468,
+    "changePp": 12.10376771156746,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "CTVA": {
    "cik": 1755672,
@@ -9856,7 +10394,22 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "경기소비재"
+   "sector": "경기소비재",
+   "eps": {
+    "current": 0.43,
+    "prev": 0.27,
+    "changePct": 59.259259259259245,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   }
   },
   "CVS": {
    "cik": 64803,
@@ -10088,6 +10641,21 @@
     "netIncomePrev": 646000000.0,
     "netIncomePct": -3.8699690402476783,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 0.386578,
+    "prev": 0.891192,
+    "changePct": -56.62236644853186,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "DAL": {
@@ -10163,7 +10731,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
-   }
+   },
+   "medianPay": 100976,
+   "medianPayFiled": "2026-04-24",
+   "medianPayPrevYear": 105269,
+   "medianPayPrevFiled": "2025-04-25"
   },
   "DASH": {
    "cik": 1792789,
@@ -10485,7 +11057,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "산업재"
+   "sector": "산업재",
+   "medianPay": 147019,
+   "medianPayFiled": "2026-01-14",
+   "medianPayPrevYear": 146175,
+   "medianPayPrevFiled": "2025-01-10"
   },
   "DECK": {
    "cik": 910521,
@@ -10969,7 +11545,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-26",
     "periodFrom": "2025-06-27"
-   }
+   },
+   "medianPay": 69440,
+   "medianPayFiled": "2026-03-25",
+   "medianPayPrevYear": 68828,
+   "medianPayPrevFiled": "2025-03-26"
   },
   "DIS": {
    "cik": 1744489,
@@ -11119,6 +11699,21 @@
     "netIncomePrev": 109974000.0,
     "netIncomePct": 63.01489442959245,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 1.25,
+    "prev": 0.7575,
+    "changePct": 65.01650165016503,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "DLTR": {
@@ -11358,7 +11953,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
-   }
+   },
+   "medianPay": 55766,
+   "medianPayFiled": "2026-03-24",
+   "medianPayPrevYear": 54842,
+   "medianPayPrevFiled": "2025-03-20"
   },
   "DOW": {
    "cik": 1751788,
@@ -11426,6 +12025,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-03-31",
     "periodFrom": "2025-03-31"
+   },
+   "eps": {
+    "current": 0.99,
+    "prev": -1.18,
+    "changePct": null,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "DPZ": {
@@ -11504,7 +12118,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": null,
     "periodFrom": null
-   }
+   },
+   "medianPay": 36776,
+   "medianPayFiled": "2026-03-10",
+   "medianPayPrevYear": 33744,
+   "medianPayPrevFiled": "2025-03-14"
   },
   "DRI": {
    "cik": 940944,
@@ -11568,7 +12186,26 @@
     "netIncomePrev": 323400000.0,
     "netIncomePct": -5.132962275819419,
     "niTurnedLoss": false
-   }
+   },
+   "eps": {
+    "current": 3.54,
+    "prev": 2.59,
+    "changePct": 36.67953667953669,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-05-31",
+    "periodTo": "2026-05-31",
+    "dateFrom": "2025-05-31",
+    "dateTo": "2026-05-31",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   },
+   "medianPay": 23712,
+   "medianPayFiled": "2026-08-10",
+   "medianPayPrevYear": 23074,
+   "medianPayPrevFiled": "2025-08-04"
   },
   "DTE": {
    "cik": 936340,
@@ -11611,19 +12248,20 @@
    },
    "sector": "유틸리티",
    "quarter": {
-    "label": "SEC 분기 실적",
+    "label": "야후 분기 실적",
     "quarterLabel": "분기",
     "dateTo": "2026-03-31",
-    "dateFrom": null,
+    "dateFrom": "2025-03-31",
     "yearTo": "2026",
-    "yearFrom": null,
-    "revenue": null,
-    "revenuePrev": null,
-    "revenuePct": null,
+    "yearFrom": "2025",
+    "revenue": 5141000000.0,
+    "revenuePrev": 4440000000.0,
+    "revenuePct": 15.788288288288289,
     "netIncome": 247000000.0,
     "netIncomePrev": 445000000.0,
     "netIncomePct": -44.49438202247191,
-    "niTurnedLoss": false
+    "niTurnedLoss": false,
+    "source": "yahoo"
    },
    "debt": {
     "current": 347.19629960236955,
@@ -11636,6 +12274,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-03-31",
     "periodFrom": "2025-03-31"
+   },
+   "eps": {
+    "current": 1.35,
+    "prev": 1.1,
+    "changePct": 22.727272727272727,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "DUK": {
@@ -11700,7 +12353,26 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-03-31",
     "periodFrom": "2025-03-31"
-   }
+   },
+   "eps": {
+    "current": 1.38,
+    "prev": 1.25,
+    "changePct": 10.399999999999991,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   },
+   "medianPay": 132604,
+   "medianPayFiled": "2026-03-20",
+   "medianPayPrevYear": 129126,
+   "medianPayPrevFiled": "2025-03-14"
   },
   "DVA": {
    "cik": 927066,
@@ -12091,7 +12763,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "커뮤니케이션"
+   "sector": "커뮤니케이션",
+   "medianPay": 84476,
+   "medianPayFiled": "2026-09-18",
+   "medianPayPrevYear": 85048,
+   "medianPayPrevFiled": "2025-03-21"
   },
   "ECL": {
    "cik": 31462,
@@ -12169,7 +12845,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "소재"
+   "sector": "소재",
+   "medianPay": 53462,
+   "medianPayFiled": "2026-03-20",
+   "medianPayPrevYear": 50143,
+   "medianPayPrevFiled": "2025-03-24"
   },
   "ED": {
    "cik": 1047862,
@@ -12234,6 +12914,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-03-31",
     "periodFrom": "2025-03-31"
+   },
+   "eps": {
+    "current": 0.83,
+    "prev": 0.68,
+    "changePct": 22.05882352941175,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "EFX": {
@@ -12459,6 +13154,21 @@
     "netIncomePrev": 1436000000.0,
     "netIncomePct": -63.02228412256268,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 1.39,
+    "prev": 0.89,
+    "changePct": 56.17977528089886,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "EL": {
@@ -12523,7 +13233,26 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-03-31",
     "periodFrom": "2025-03-31"
-   }
+   },
+   "eps": {
+    "current": -0.32,
+    "prev": -1.51,
+    "changePct": null,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   },
+   "medianPay": 38149,
+   "medianPayFiled": "2025-09-25",
+   "medianPayPrevYear": 34711,
+   "medianPayPrevFiled": "2024-09-19"
   },
   "ELV": {
    "cik": 1156039,
@@ -12680,7 +13409,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "산업재"
+   "sector": "산업재",
+   "medianPay": 87632,
+   "medianPayFiled": "2026-04-21",
+   "medianPayPrevYear": 65828,
+   "medianPayPrevFiled": "2025-04-23"
   },
   "EMR": {
    "cik": 32604,
@@ -13067,7 +13800,22 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "금융"
+   "sector": "금융",
+   "eps": {
+    "current": 3.87,
+    "prev": 3.75,
+    "changePct": 3.200000000000003,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   }
   },
   "ES": {
    "cik": 72741,
@@ -13374,7 +14122,25 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-03-31",
     "periodFrom": "2025-03-31"
-   }
+   },
+   "eps": {
+    "current": 1.05,
+    "prev": 4.18,
+    "changePct": -74.88038277511963,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   },
+   "headcount": 12233,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 12267
   },
   "EVRG": {
    "cik": 1711269,
@@ -13442,6 +14208,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-03-31",
     "periodFrom": "2025-03-31"
+   },
+   "eps": {
+    "current": 0.93,
+    "prev": 0.74,
+    "changePct": 25.675675675675684,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "EW": {
@@ -13520,7 +14301,9 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "헬스케어"
+   "sector": "헬스케어",
+   "medianPay": 89827,
+   "medianPayFiled": "2026-03-26"
   },
   "EXC": {
    "cik": 1109357,
@@ -13585,6 +14368,21 @@
     "netIncomePrev": 908000000.0,
     "netIncomePct": 1.2114537444933922,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 0.39,
+    "prev": 0.39,
+    "changePct": 0.0,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "EXE": {
@@ -13906,7 +14704,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "부동산"
+   "sector": "부동산",
+   "medianPay": 52643,
+   "medianPayFiled": "2026-04-01",
+   "medianPayPrevYear": 49160,
+   "medianPayPrevFiled": "2025-04-01"
   },
   "F": {
    "cik": 37996,
@@ -13959,7 +14761,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "경기소비재"
+   "sector": "경기소비재",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 48296000000.0,
+    "revenuePrev": 50184000000.0,
+    "revenuePct": -3.76215526861151,
+    "netIncome": -1327000000.0,
+    "netIncomePrev": -36000000.0,
+    "netIncomePct": null,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 699.2804949746634,
+    "prev": 549.6238098408683,
+    "changePp": 149.65668513379512,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "FANG": {
    "cik": 1539838,
@@ -14348,6 +15179,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-05-31",
     "periodFrom": "2025-05-31"
+   },
+   "eps": {
+    "current": 6.630705,
+    "prev": 6.92437,
+    "changePct": -4.241035646564234,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-05-31",
+    "periodTo": "2026-05-31",
+    "dateFrom": "2025-05-31",
+    "dateTo": "2026-05-31",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "FE": {
@@ -14413,6 +15259,21 @@
     "netIncomePrev": 360000000.0,
     "netIncomePct": 12.5,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 0.125,
+    "prev": 0.115,
+    "changePct": 8.69565217391304,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "FER": {
@@ -14447,7 +15308,38 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": null
+   "sector": "산업재",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 2603000000.0,
+    "revenuePrev": 2410000000.0,
+    "revenuePct": 8.008298755186722,
+    "netIncome": 2406000000.0,
+    "netIncomePrev": null,
+    "netIncomePct": null,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 346.3742792241831,
+    "prev": 320.54585522969995,
+    "changePp": 25.82842399448316,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   },
+   "headcount": 22609,
+   "headcountPeriod": "2025-12-31"
   },
   "FERG": {
    "cik": 2011641,
@@ -14607,7 +15499,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
-   }
+   },
+   "medianPay": 162795,
+   "medianPayFiled": "2026-01-26",
+   "medianPayPrevYear": 156076,
+   "medianPayPrevFiled": "2025-01-27"
   },
   "FICO": {
    "cik": 814547,
@@ -14844,7 +15740,9 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "금융"
+   "sector": "금융",
+   "medianPayPrevYear": 85817,
+   "medianPayPrevFiled": "2025-04-02"
   },
   "FITB": {
    "cik": 35527,
@@ -14889,19 +15787,20 @@
     "totalRatio": null
    },
    "quarter": {
-    "label": "SEC 분기 실적",
+    "label": "야후 분기 실적",
     "quarterLabel": "분기",
     "dateTo": "2026-06-30",
-    "dateFrom": null,
+    "dateFrom": "2025-06-30",
     "yearTo": "2026",
-    "yearFrom": null,
-    "revenue": null,
-    "revenuePrev": null,
-    "revenuePct": null,
+    "yearFrom": "2025",
+    "revenue": 3209000000.0,
+    "revenuePrev": 2223000000.0,
+    "revenuePct": 44.3544759334233,
     "netIncome": 801000000.0,
-    "netIncomePrev": 627000000.0,
-    "netIncomePct": 27.751196172248804,
-    "niTurnedLoss": false
+    "netIncomePrev": 628000000.0,
+    "netIncomePct": 27.547770700636942,
+    "niTurnedLoss": false,
+    "source": "yahoo"
    },
    "debt": {
     "current": 770.541151905342,
@@ -15002,7 +15901,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "산업재"
+   "sector": "산업재",
+   "medianPay": 67118,
+   "medianPayFiled": "2026-04-09",
+   "medianPayPrevYear": 59611,
+   "medianPayPrevFiled": "2025-04-07"
   },
   "FLEX": {
    "cik": 866374,
@@ -15152,6 +16055,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
+   },
+   "eps": {
+    "current": 1.61,
+    "prev": 1.57,
+    "changePct": 2.5477707006369448,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "FOXA": {
@@ -15220,6 +16138,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
+   },
+   "eps": {
+    "current": 1.61,
+    "prev": 1.57,
+    "changePct": 2.5477707006369448,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "FRT": {
@@ -15284,6 +16217,21 @@
     "netIncomePrev": 63768000.0,
     "netIncomePct": 149.49661272111402,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 0.97,
+    "prev": 1.78,
+    "changePct": -45.50561797752809,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "FSLR": {
@@ -15495,19 +16443,20 @@
     "totalRatio": null
    },
    "quarter": {
-    "label": "SEC 분기 실적",
+    "label": "야후 분기 실적",
     "quarterLabel": "분기",
-    "dateTo": "2025-12-31",
-    "dateFrom": null,
-    "yearTo": "2025",
-    "yearFrom": null,
-    "revenue": null,
-    "revenuePrev": null,
-    "revenuePct": null,
-    "netIncome": 185700000.0,
-    "netIncomePrev": 208800000.0,
-    "netIncomePct": -11.063218390804598,
-    "niTurnedLoss": false
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 1096800000.0,
+    "revenuePrev": 1016400000.0,
+    "revenuePct": 7.910271546635183,
+    "netIncome": 157300000.0,
+    "netIncomePrev": 166600000.0,
+    "netIncomePct": -5.582232893157263,
+    "niTurnedLoss": false,
+    "source": "yahoo"
    },
    "crash": {
     "pct": -6.976745364968622,
@@ -15518,7 +16467,20 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "산업재"
+   "sector": "산업재",
+   "debt": {
+    "current": 91.5024915024915,
+    "prev": 75.65906704809238,
+    "changePp": 15.843424454399113,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "GD": {
    "cik": 40533,
@@ -15573,7 +16535,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "산업재"
+   "sector": "산업재",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 14094000000.0,
+    "revenuePrev": 13041000000.0,
+    "revenuePct": 8.074534161490684,
+    "netIncome": 1160000000.0,
+    "netIncomePrev": 1014000000.0,
+    "netIncomePct": 14.398422090729785,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 124.27122940430925,
+    "prev": 141.25530110262935,
+    "changePp": -16.984071698320093,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "GDDY": {
    "cik": 1609711,
@@ -15788,7 +16779,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "헬스케어"
+   "sector": "헬스케어",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 5294000000.0,
+    "revenuePrev": 5006000000.0,
+    "revenuePct": 5.75309628445865,
+    "netIncome": 560000000.0,
+    "netIncomePrev": 486000000.0,
+    "netIncomePct": 15.22633744855967,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 237.15717539863323,
+    "prev": 263.0457166392092,
+    "changePp": -25.88854124057599,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "GEN": {
    "cik": 849399,
@@ -16814,7 +17834,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "경기소비재"
+   "sector": "경기소비재",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 2022092000.0,
+    "revenuePrev": 1814564000.0,
+    "revenuePct": 11.436796938548323,
+    "netIncome": 541920000.0,
+    "netIncomePrev": 400822000.0,
+    "netIncomePct": 35.20215956209988,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 26.52425021428145,
+    "prev": 27.06381488203669,
+    "changePp": -0.5395646677552399,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "GS": {
    "cik": 886982,
@@ -16843,19 +17892,20 @@
     "totalRatio": 0.6908911295072383
    },
    "quarter": {
-    "label": "SEC 분기 실적",
+    "label": "야후 분기 실적",
     "quarterLabel": "분기",
     "dateTo": "2026-06-30",
-    "dateFrom": null,
+    "dateFrom": "2025-06-30",
     "yearTo": "2026",
-    "yearFrom": null,
-    "revenue": null,
-    "revenuePrev": null,
-    "revenuePct": null,
+    "yearFrom": "2025",
+    "revenue": 20338000000.0,
+    "revenuePrev": 14583000000.0,
+    "revenuePct": 39.46375917163821,
     "netIncome": 6628000000.0,
     "netIncomePrev": 3723000000.0,
     "netIncomePct": 78.02847166263766,
-    "niTurnedLoss": false
+    "niTurnedLoss": false,
+    "source": "yahoo"
    },
    "debt": {
     "current": 1633.4824265532582,
@@ -16878,7 +17928,22 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "금융"
+   "sector": "금융",
+   "eps": {
+    "current": 21.27,
+    "prev": 11.03,
+    "changePct": 92.83771532184952,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   }
   },
   "GWW": {
    "cik": 277135,
@@ -17176,7 +18241,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "금융"
+   "sector": "금융",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 2837000000.0,
+    "revenuePrev": 1938000000.0,
+    "revenuePct": 46.388028895768834,
+    "netIncome": 727000000.0,
+    "netIncomePrev": 536000000.0,
+    "netIncomePct": 35.634328358208954,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 770.3500490436488,
+    "prev": 892.4503058103976,
+    "changePp": -122.10025676674877,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "HCA": {
    "cik": 860730,
@@ -17227,7 +18321,27 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "헬스케어"
+   "sector": "헬스케어",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 20230000000.0,
+    "revenuePrev": 18605000000.0,
+    "revenuePct": 8.734211233539371,
+    "netIncome": 1699000000.0,
+    "netIncomePrev": 1653000000.0,
+    "netIncomePct": 2.782819116757411,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "medianPay": 62955,
+   "medianPayFiled": "2026-03-13",
+   "medianPayPrevYear": 60820,
+   "medianPayPrevFiled": "2025-03-14"
   },
   "HD": {
    "cik": 354950,
@@ -18186,7 +19300,26 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "필수소비재"
+   "sector": "필수소비재",
+   "eps": {
+    "current": 2.32,
+    "prev": 0.32,
+    "changePct": 624.9999999999999,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   },
+   "medianPay": 64007,
+   "medianPayFiled": "2026-03-25",
+   "medianPayPrevYear": 42331,
+   "medianPayPrevFiled": "2025-03-26"
   },
   "HUBB": {
    "cik": 48898,
@@ -18241,7 +19374,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "산업재"
+   "sector": "산업재",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 1711800000.0,
+    "revenuePrev": 1484300000.0,
+    "revenuePct": 15.327090210873811,
+    "netIncome": 240400000.0,
+    "netIncomePrev": 244200000.0,
+    "netIncomePct": -1.556101556101556,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 202.5409647485876,
+    "prev": 104.65923101184163,
+    "changePp": 97.88173373674599,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "HUM": {
    "cik": 49071,
@@ -18292,7 +19454,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "헬스케어"
+   "sector": "헬스케어",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 40867000000.0,
+    "revenuePrev": 32388000000.0,
+    "revenuePct": 26.179449178708165,
+    "netIncome": 694000000.0,
+    "netIncomePrev": 545000000.0,
+    "netIncomePct": 27.339449541284406,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 197.3611617134232,
+    "prev": 175.83634967642865,
+    "changePp": 21.524812036994547,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "HWM": {
    "cik": 4281,
@@ -18777,7 +19968,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "산업재"
+   "sector": "산업재",
+   "medianPay": 75575,
+   "medianPayFiled": "2026-03-26",
+   "medianPayPrevYear": 67484,
+   "medianPayPrevFiled": "2025-03-26"
   },
   "IFF": {
    "cik": 51253,
@@ -18910,7 +20105,38 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "헬스케어"
+   "sector": "헬스케어",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 1674039000.0,
+    "revenuePrev": 1215529000.0,
+    "revenuePct": 37.72102516682037,
+    "netIncome": 585605000.0,
+    "netIncomePrev": 404999000.0,
+    "netIncomePct": 44.59418418317082,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 24.087596878331173,
+    "prev": 39.57059178791739,
+    "changePp": -15.482994909586214,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   },
+   "medianPay": 295914,
+   "medianPayFiled": "2026-04-28"
   },
   "INTC": {
    "cik": 50863,
@@ -19060,6 +20286,21 @@
     "netIncomePrev": 2820000000.0,
     "netIncomePct": 8.652482269503546,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 1.34,
+    "prev": 1.36,
+    "changePct": -1.4705882352941189,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-07-31",
+    "periodTo": "2026-07-31",
+    "dateFrom": "2025-07-31",
+    "dateTo": "2026-07-31",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "INVH": {
@@ -19279,7 +20520,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "헬스케어"
+   "sector": "헬스케어",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 4368000000.0,
+    "revenuePrev": 4017000000.0,
+    "revenuePct": 8.737864077669903,
+    "netIncome": 256000000.0,
+    "netIncomePrev": 266000000.0,
+    "netIncomePct": -3.7593984962406015,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 382.1098687408848,
+    "prev": 395.3963309103496,
+    "changePp": -13.286462169464812,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "IR": {
    "cik": 1699150,
@@ -19599,7 +20869,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "기술"
+   "sector": "기술",
+   "medianPay": 127275,
+   "medianPayFiled": "2026-04-15",
+   "medianPayPrevYear": 123618,
+   "medianPayPrevFiled": "2025-04-15"
   },
   "ITW": {
    "cik": 49826,
@@ -19925,7 +21199,9 @@
     "label": "SEC 분기 재무상태표",
     "periodTo": "2025-12-31",
     "periodFrom": "2024-12-31"
-   }
+   },
+   "medianPayPrevYear": 84947,
+   "medianPayPrevFiled": "2025-03-14"
   },
   "JBL": {
    "cik": 898293,
@@ -20059,7 +21335,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "산업재"
+   "sector": "산업재",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 6614000000.0,
+    "revenuePrev": 6052000000.0,
+    "revenuePct": 9.286186384666225,
+    "netIncome": 749000000.0,
+    "netIncomePrev": 701000000.0,
+    "netIncomePct": 6.847360912981455,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 187.24224892449192,
+    "prev": 166.44346178142766,
+    "changePp": 20.79878714306426,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "JKHY": {
    "cik": 779152,
@@ -20127,6 +21432,21 @@
     "netIncomePrev": 111108000.0,
     "netIncomePct": 10.607697015516434,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 1.587367,
+    "prev": 1.751926,
+    "changePct": -9.393033724027163,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "JNJ": {
@@ -20251,19 +21571,20 @@
     "totalRatio": 0.645516640964285
    },
    "quarter": {
-    "label": "SEC 분기 실적",
+    "label": "야후 분기 실적",
     "quarterLabel": "분기",
     "dateTo": "2026-06-30",
-    "dateFrom": null,
+    "dateFrom": "2025-06-30",
     "yearTo": "2026",
-    "yearFrom": null,
-    "revenue": null,
-    "revenuePrev": null,
-    "revenuePct": null,
+    "yearFrom": "2025",
+    "revenue": 52852000000.0,
+    "revenuePrev": 44882000000.0,
+    "revenuePct": 17.757675682901834,
     "netIncome": 21155000000.0,
     "netIncomePrev": 14987000000.0,
     "netIncomePct": 41.15566824581304,
-    "niTurnedLoss": false
+    "niTurnedLoss": false,
+    "source": "yahoo"
    },
    "debt": {
     "current": 1238.7869129039664,
@@ -20747,7 +22068,22 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "금융"
+   "sector": "금융",
+   "eps": {
+    "current": 0.74,
+    "prev": 0.53,
+    "changePct": 39.622641509433954,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   }
   },
   "KLAC": {
    "cik": 319201,
@@ -20815,6 +22151,21 @@
     "netIncomePrev": 1088416000.0,
     "netIncomePct": 10.3429203539823,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 1.04,
+    "prev": 0.911,
+    "changePct": 14.1602634467618,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "KMB": {
@@ -21034,7 +22385,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "필수소비재"
+   "sector": "필수소비재",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 13380000000.0,
+    "revenuePrev": 12535000000.0,
+    "revenuePct": 6.741124850418827,
+    "netIncome": 4425000000.0,
+    "netIncomePrev": 3810000000.0,
+    "netIncomePct": 16.141732283464567,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 192.55048409405256,
+    "prev": 259.40528249081683,
+    "changePp": -66.85479839676427,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "KR": {
    "cik": 56873,
@@ -21196,7 +22576,9 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "필수소비재"
+   "sector": "필수소비재",
+   "medianPayPrevYear": 72465,
+   "medianPayPrevFiled": "2025-04-09"
   },
   "L": {
    "cik": 60086,
@@ -21648,7 +23030,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "산업재"
+   "sector": "산업재",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 1545300000.0,
+    "revenuePrev": 1500900000.0,
+    "revenuePct": 2.9582250649610233,
+    "netIncome": 269000000.0,
+    "netIncomePrev": 273900000.0,
+    "netIncomePct": -1.7889740781307049,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 250.37002775208143,
+    "prev": 305.6302054414215,
+    "changePp": -55.260177689340054,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "LIN": {
    "cik": 1707925,
@@ -21796,7 +23207,24 @@
     "netIncomePrev": -44100000.0,
     "netIncomePct": null,
     "niTurnedLoss": false
-   }
+   },
+   "eps": {
+    "current": -84.65,
+    "prev": 3.06,
+    "changePct": -2866.339869281046,
+    "turnedLoss": true,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   },
+   "medianPayPrevYear": 20018,
+   "medianPayPrevFiled": "2024-10-03"
   },
   "LLY": {
    "cik": 59478,
@@ -22021,6 +23449,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-03-31",
     "periodFrom": "2025-03-31"
+   },
+   "eps": {
+    "current": 0.87,
+    "prev": 0.83,
+    "changePct": 4.81927710843374,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-03-31",
+    "periodTo": "2026-03-31",
+    "dateFrom": "2025-03-31",
+    "dateTo": "2026-03-31",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "LOW": {
@@ -22099,7 +23542,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": null,
     "periodFrom": null
-   }
+   },
+   "medianPay": 37371,
+   "medianPayFiled": "2026-04-16",
+   "medianPayPrevYear": 30606,
+   "medianPayPrevFiled": "2025-04-17"
   },
   "LRCX": {
    "cik": 707549,
@@ -22167,6 +23614,21 @@
     "netIncomePrev": 1330667000.0,
     "netIncomePct": 37.183833370783226,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 1.82,
+    "prev": 1.35,
+    "changePct": 34.81481481481481,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "LULU": {
@@ -22488,7 +23950,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
-   }
+   },
+   "medianPay": 110140,
+   "medianPayFiled": "2026-04-10",
+   "medianPayPrevYear": 111898,
+   "medianPayPrevFiled": "2025-04-11"
   },
   "LYV": {
    "cik": 1335258,
@@ -22716,6 +24182,21 @@
     "netIncomePrev": 181673000.0,
     "netIncomePct": -31.54789099095628,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 1.040004,
+    "prev": 0.920004,
+    "changePct": 13.043421550341073,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "MAR": {
@@ -22853,7 +24334,23 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "산업재"
+   "sector": "산업재",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 1992000000.0,
+    "revenuePrev": 2051000000.0,
+    "revenuePct": -2.8766455387615797,
+    "netIncome": 318000000.0,
+    "netIncomePrev": 270000000.0,
+    "netIncomePct": 17.77777777777778,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   }
   },
   "MCD": {
    "cik": 63908,
@@ -23013,7 +24510,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
-   }
+   },
+   "medianPay": 58020,
+   "medianPayFiled": "2026-07-06",
+   "medianPayPrevYear": 52376,
+   "medianPayPrevFiled": "2025-07-07"
   },
   "MCK": {
    "cik": 927653,
@@ -23232,7 +24733,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "필수소비재"
+   "sector": "필수소비재",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-03-31",
+    "dateFrom": "2025-03-31",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 10080000000.0,
+    "revenuePrev": 9313000000.0,
+    "revenuePct": 8.23579942016536,
+    "netIncome": 560000000.0,
+    "netIncomePrev": 402000000.0,
+    "netIncomePct": 39.30348258706468,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 175.99223300970874,
+    "prev": 167.16695753344968,
+    "changePp": 8.825275476259065,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-03-31",
+    "dateFrom": "2025-03-31",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-03-31",
+    "periodFrom": "2025-03-31",
+    "source": "yahoo"
+   }
   },
   "MDT": {
    "cik": 1613103,
@@ -23392,7 +24922,7 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": null
+   "sector": "경기소비재"
   },
   "MET": {
    "cik": 1099219,
@@ -23630,7 +25160,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "경기소비재"
+   "sector": "경기소비재",
+   "medianPay": 46713,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 47607,
+   "medianPayPrevFiled": "2025-03-28"
   },
   "MKC": {
    "cik": 63754,
@@ -24032,7 +25566,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": null,
     "periodFrom": null
-   }
+   },
+   "medianPay": 166721,
+   "medianPayFiled": "2026-04-02",
+   "medianPayPrevYear": 158795,
+   "medianPayPrevFiled": "2025-04-03"
   },
   "MOS": {
    "cik": 1285785,
@@ -24274,7 +25812,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
-   }
+   },
+   "medianPay": 53601,
+   "medianPayFiled": "2026-04-30",
+   "medianPayPrevYear": 49405,
+   "medianPayPrevFiled": "2025-04-30"
   },
   "MRK": {
    "cik": 310158,
@@ -24653,19 +26195,20 @@
    },
    "sector": "금융",
    "quarter": {
-    "label": "SEC 분기 실적",
+    "label": "야후 분기 실적",
     "quarterLabel": "분기",
     "dateTo": "2026-06-30",
-    "dateFrom": null,
+    "dateFrom": "2025-06-30",
     "yearTo": "2026",
-    "yearFrom": null,
-    "revenue": null,
-    "revenuePrev": null,
-    "revenuePct": null,
+    "yearFrom": "2025",
+    "revenue": 19884000000.0,
+    "revenuePrev": 15604000000.0,
+    "revenuePct": 27.428864393745194,
     "netIncome": 5581000000.0,
     "netIncomePrev": 3539000000.0,
     "netIncomePct": 57.69991523029104,
-    "niTurnedLoss": false
+    "niTurnedLoss": false,
+    "source": "yahoo"
    },
    "debt": {
     "current": 1339.9307137515152,
@@ -24678,7 +26221,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
-   }
+   },
+   "medianPay": 136396,
+   "medianPayFiled": "2026-04-02",
+   "medianPayPrevYear": 305900,
+   "medianPayPrevFiled": "2025-04-04"
   },
   "MSCI": {
    "cik": 1408198,
@@ -24828,6 +26375,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
+   },
+   "eps": {
+    "current": 4.82,
+    "prev": 3.66,
+    "changePct": 31.693989071038253,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "MSI": {
@@ -24906,7 +26468,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-07-04",
     "periodFrom": "2025-06-28"
-   }
+   },
+   "medianPay": 106940,
+   "medianPayFiled": "2026-04-02",
+   "medianPayPrevYear": 96957,
+   "medianPayPrevFiled": "2025-03-27"
   },
   "MSTR": {
    "cik": 1050446,
@@ -24961,7 +26527,7 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": null,
+   "sector": "기술",
    "quarter": {
     "label": "SEC 분기 실적",
     "quarterLabel": "분기",
@@ -25268,7 +26834,7 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": null,
+   "sector": "커뮤니케이션",
    "debt": {
     "current": 170.5833696125381,
     "prev": 9.063527676184037,
@@ -25280,7 +26846,41 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2025-12-31",
     "periodFrom": "2024-12-31"
-   }
+   },
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 582300000.0,
+    "revenuePrev": 105100000.0,
+    "revenuePct": 454.0437678401522,
+    "netIncome": -190400000.0,
+    "netIncomePrev": 584400000.0,
+    "netIncomePct": -132.580424366872,
+    "niTurnedLoss": true,
+    "source": "yahoo"
+   },
+   "eps": {
+    "current": -0.68,
+    "prev": 2.45,
+    "changePct": -127.75510204081633,
+    "turnedLoss": true,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   },
+   "headcount": 1500,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 1371
   },
   "NCLH": {
    "cik": 1513761,
@@ -25360,7 +26960,9 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
-   }
+   },
+   "medianPayPrevYear": 23312,
+   "medianPayPrevFiled": "2025-04-29"
   },
   "NDAQ": {
    "cik": 1120193,
@@ -25592,6 +27194,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-03-31",
     "periodFrom": "2025-03-31"
+   },
+   "eps": {
+    "current": 1.507333,
+    "prev": 0.99,
+    "changePct": 52.2558585858586,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "NEM": {
@@ -25903,6 +27520,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-05-31",
     "periodFrom": "2025-05-31"
+   },
+   "eps": {
+    "current": 0.72,
+    "prev": 0.14,
+    "changePct": 414.2857142857142,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-05-31",
+    "periodTo": "2026-05-31",
+    "dateFrom": "2025-05-31",
+    "dateTo": "2026-05-31",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "NOC": {
@@ -26227,7 +27859,9 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
-   }
+   },
+   "medianPayPrevYear": 79792,
+   "medianPayPrevFiled": "2025-03-28"
   },
   "NTAP": {
    "cik": 1002047,
@@ -26373,6 +28007,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
+   },
+   "eps": {
+    "current": 4.25,
+    "prev": 2.14,
+    "changePct": 98.59813084112147,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "NUE": {
@@ -26687,6 +28336,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
+   },
+   "eps": {
+    "current": 0.33,
+    "prev": 1.31,
+    "changePct": -74.8091603053435,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "NWSA": {
@@ -26755,6 +28419,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
+   },
+   "eps": {
+    "current": 0.33,
+    "prev": null,
+    "changePct": null,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": null,
+    "periodTo": "2026-06-30",
+    "dateFrom": null,
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "NXPI": {
@@ -26810,7 +28489,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "기술"
+   "sector": "기술",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 3496000000.0,
+    "revenuePrev": 2926000000.0,
+    "revenuePct": 19.480519480519483,
+    "netIncome": 767000000.0,
+    "netIncomePrev": 445000000.0,
+    "netIncomePct": 72.35955056179775,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 130.74831125537327,
+    "prev": 160.0376214860487,
+    "changePp": -29.289310230675426,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "O": {
    "cik": 726728,
@@ -27103,7 +28811,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "커뮤니케이션"
+   "sector": "커뮤니케이션",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 6562500000.0,
+    "revenuePrev": 4015600000.0,
+    "revenuePct": 63.425141946409,
+    "netIncome": 584800000.0,
+    "netIncomePrev": 257600000.0,
+    "netIncomePct": 127.01863354037266,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 406.88070545861024,
+    "prev": 519.1450476954623,
+    "changePp": -112.26434223685203,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "ON": {
    "cik": 1097864,
@@ -27180,7 +28917,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-07-03",
     "periodFrom": "2025-07-04"
-   }
+   },
+   "medianPay": 14060,
+   "medianPayFiled": "2026-04-02",
+   "medianPayPrevYear": 15580,
+   "medianPayPrevFiled": "2025-04-03"
   },
   "ORCL": {
    "cik": 1341439,
@@ -27244,7 +28985,26 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-08-31",
     "periodFrom": "2025-08-31"
-   }
+   },
+   "eps": {
+    "current": 1.58,
+    "prev": 1.04,
+    "changePct": 51.92307692307693,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-08-31",
+    "periodTo": "2026-08-31",
+    "dateFrom": "2025-08-31",
+    "dateTo": "2026-08-31",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   },
+   "medianPay": 98899,
+   "medianPayFiled": "2025-09-26",
+   "medianPayPrevYear": 78950,
+   "medianPayPrevFiled": "2024-09-25"
   },
   "ORLY": {
    "cik": 898173,
@@ -27322,7 +29082,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": null,
     "periodFrom": null
-   }
+   },
+   "medianPay": 33054,
+   "medianPayFiled": "2026-03-27",
+   "medianPayPrevYear": 31854,
+   "medianPayPrevFiled": "2025-03-31"
   },
   "OTIS": {
    "cik": 1781335,
@@ -27479,7 +29243,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
-   }
+   },
+   "medianPay": 225637,
+   "medianPayFiled": "2026-03-19",
+   "medianPayPrevYear": 218952,
+   "medianPayPrevFiled": "2025-03-20"
   },
   "PANW": {
    "cik": 1327567,
@@ -27543,6 +29311,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-07-31",
     "periodFrom": "2025-07-31"
+   },
+   "eps": {
+    "current": -0.35,
+    "prev": 0.38,
+    "changePct": -192.10526315789474,
+    "turnedLoss": true,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-07-31",
+    "periodTo": "2026-07-31",
+    "dateFrom": "2025-07-31",
+    "dateTo": "2026-07-31",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "PAYX": {
@@ -27610,6 +29393,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-05-31",
     "periodFrom": "2025-05-31"
+   },
+   "eps": {
+    "current": 1.18,
+    "prev": 0.82,
+    "changePct": 43.90243902439025,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-05-31",
+    "periodTo": "2026-05-31",
+    "dateFrom": "2025-05-31",
+    "dateTo": "2026-05-31",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "PCAR": {
@@ -27747,7 +29545,7 @@
    },
    "sector": "유틸리티",
    "quarter": {
-    "label": "SEC 분기 실적",
+    "label": "야후 분기 실적",
     "quarterLabel": "분기",
     "dateTo": "2026-06-30",
     "dateFrom": "2025-06-30",
@@ -27756,10 +29554,11 @@
     "revenue": 5902000000.0,
     "revenuePrev": 5898000000.0,
     "revenuePct": 0.0678195998643608,
-    "netIncome": null,
-    "netIncomePrev": null,
-    "netIncomePct": null,
-    "niTurnedLoss": false
+    "netIncome": 761000000.0,
+    "netIncomePrev": 549000000.0,
+    "netIncomePct": 38.61566484517304,
+    "niTurnedLoss": false,
+    "source": "yahoo"
    },
    "debt": {
     "current": 327.9401787557889,
@@ -27806,7 +29605,7 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": null,
+   "sector": "경기소비재",
    "debt": {
     "current": 52.41096794966127,
     "prev": 61.19155976268787,
@@ -27818,6 +29617,37 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2025-12-31",
     "periodFrom": "2024-12-31"
+   },
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 112358000000.0,
+    "revenuePrev": 103985000000.0,
+    "revenuePct": 8.052122902341683,
+    "netIncome": 27182000000.0,
+    "netIncomePrev": 30754000000.0,
+    "netIncomePct": -11.614749300903947,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "eps": {
+    "current": 19.32,
+    "prev": 22.0,
+    "changePct": -12.181818181818182,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "PEG": {
@@ -28112,7 +29942,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "금융"
+   "sector": "금융",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 3905800000.0,
+    "revenuePrev": 3671300000.0,
+    "revenuePct": 6.387383215754637,
+    "netIncome": 403400000.0,
+    "netIncomePrev": 406200000.0,
+    "netIncomePct": -0.6893156080748399,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 2798.8832888625357,
+    "prev": 2726.562595814389,
+    "changePp": 72.3206930481465,
+    "tinyEquity": true,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "PG": {
    "cik": 80424,
@@ -28176,6 +30035,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
+   },
+   "eps": {
+    "current": 1.28,
+    "prev": 1.51,
+    "changePct": -15.2317880794702,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "PGR": {
@@ -28298,19 +30172,20 @@
    },
    "sector": "산업재",
    "quarter": {
-    "label": "SEC 분기 실적",
+    "label": "야후 분기 실적",
     "quarterLabel": "분기",
     "dateTo": "2026-06-30",
     "dateFrom": "2025-06-30",
     "yearTo": "2026",
     "yearFrom": "2025",
     "revenue": 5755000000.0,
-    "revenuePrev": 5243000000.0,
-    "revenuePct": 9.765401487697883,
-    "netIncome": null,
-    "netIncomePrev": null,
-    "netIncomePct": null,
-    "niTurnedLoss": false
+    "revenuePrev": 5243074000.0,
+    "revenuePct": 9.763852274448158,
+    "netIncome": 1091000000.0,
+    "netIncomePrev": 923172000.0,
+    "netIncomePct": 18.179494178766255,
+    "niTurnedLoss": false,
+    "source": "yahoo"
    },
    "debt": {
     "current": 100.44793560114256,
@@ -28323,6 +30198,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
+   },
+   "eps": {
+    "current": 8.66,
+    "prev": 7.25,
+    "changePct": 19.448275862068968,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "PHM": {
@@ -28547,6 +30437,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-03-31",
     "periodFrom": "2025-03-31"
+   },
+   "eps": {
+    "current": 1.14,
+    "prev": 0.61,
+    "changePct": 86.88524590163934,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "PLTR": {
@@ -28844,7 +30749,40 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "산업재"
+   "sector": "산업재",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 932600000.0,
+    "revenuePrev": 1123100000.0,
+    "revenuePct": -16.961980233282876,
+    "netIncome": 128600000.0,
+    "netIncomePrev": 148500000.0,
+    "netIncomePct": -13.400673400673401,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 79.02541807804123,
+    "prev": 76.44736125483361,
+    "changePp": 2.5780568232076178,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   },
+   "medianPay": 54012,
+   "medianPayFiled": "2026-03-20",
+   "medianPayPrevYear": 62850,
+   "medianPayPrevFiled": "2025-03-21"
   },
   "PNW": {
    "cik": 764622,
@@ -29059,7 +30997,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "소재"
+   "sector": "소재",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 4495000000.0,
+    "revenuePrev": 4195000000.0,
+    "revenuePct": 7.151370679380214,
+    "netIncome": 437000000.0,
+    "netIncomePrev": 450000000.0,
+    "netIncomePct": -2.888888888888889,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 165.1545659125903,
+    "prev": 189.45492939157978,
+    "changePp": -24.300363478989482,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "PPL": {
    "cik": 922224,
@@ -29124,6 +31091,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-03-31",
     "periodFrom": "2025-03-31"
+   },
+   "eps": {
+    "current": 0.31,
+    "prev": 0.25,
+    "changePct": 24.0,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "PRU": {
@@ -29199,7 +31181,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
-   }
+   },
+   "medianPay": 100551,
+   "medianPayFiled": "2026-03-26",
+   "medianPayPrevYear": 96126,
+   "medianPayPrevFiled": "2025-03-27"
   },
   "PSA": {
    "cik": 1393311,
@@ -29659,7 +31645,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "금융"
+   "sector": "금융",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 8682000000.0,
+    "revenuePrev": 8288000000.0,
+    "revenuePct": 4.7538610038610045,
+    "netIncome": 1104000000.0,
+    "netIncomePrev": 1261000000.0,
+    "netIncomePct": -12.450436161776368,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 317.4419778002018,
+    "prev": 294.91609326270975,
+    "changePp": 22.52588453749206,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "Q": {
    "cik": 2058873,
@@ -29726,16 +31741,17 @@
     "niTurnedLoss": false
    },
    "debt": {
-    "current": 97.36950833218565,
-    "prev": null,
-    "changePp": null,
+    "current": 93.44442914199146,
+    "prev": 87.82401569286816,
+    "changePp": 5.620413449123305,
     "tinyEquity": false,
     "negativeEquity": false,
     "dateTo": "2026-06-30",
-    "dateFrom": null,
-    "label": "SEC 분기 재무상태표(자산−자본)",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
     "periodTo": "2026-06-30",
-    "periodFrom": null
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
    }
   },
   "QCOM": {
@@ -29893,7 +31909,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
-   }
+   },
+   "medianPay": 19027,
+   "medianPayFiled": "2026-04-17",
+   "medianPayPrevYear": 18799,
+   "medianPayPrevFiled": "2025-04-18"
   },
   "RDDT": {
    "cik": 1713445,
@@ -30041,6 +32061,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-03-31",
     "periodFrom": "2025-03-31"
+   },
+   "eps": {
+    "current": 0.613545,
+    "prev": 0.566708,
+    "changePct": 8.264750100580901,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "REGN": {
@@ -30119,7 +32154,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
-   }
+   },
+   "medianPay": 174138,
+   "medianPayFiled": "2026-04-24",
+   "medianPayPrevYear": 164447,
+   "medianPayPrevFiled": "2025-04-29"
   },
   "RF": {
    "cik": 1281761,
@@ -30176,19 +32215,20 @@
    },
    "sector": "금융",
    "quarter": {
-    "label": "SEC 분기 실적",
+    "label": "야후 분기 실적",
     "quarterLabel": "분기",
     "dateTo": "2026-06-30",
-    "dateFrom": null,
+    "dateFrom": "2025-06-30",
     "yearTo": "2026",
-    "yearFrom": null,
-    "revenue": null,
-    "revenuePrev": null,
-    "revenuePct": null,
+    "yearFrom": "2025",
+    "revenue": 1907000000.0,
+    "revenuePrev": 1905000000.0,
+    "revenuePct": 0.10498687664041995,
     "netIncome": 570000000.0,
     "netIncomePrev": 563000000.0,
     "netIncomePct": 1.2433392539964476,
-    "niTurnedLoss": false
+    "niTurnedLoss": false,
+    "source": "yahoo"
    },
    "debt": {
     "current": 756.151804670913,
@@ -30279,7 +32319,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
-   }
+   },
+   "medianPay": 123007,
+   "medianPayFiled": "2026-01-07",
+   "medianPayPrevYear": 119044,
+   "medianPayPrevFiled": "2025-01-08"
   },
   "RKLB": {
    "cik": 1819994,
@@ -30334,7 +32378,7 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": null,
+   "sector": "산업재",
    "quarter": {
     "label": "SEC 분기 실적",
     "quarterLabel": "분기",
@@ -30439,7 +32483,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-27",
     "periodFrom": "2025-06-28"
-   }
+   },
+   "medianPay": 34214,
+   "medianPayFiled": "2026-06-18",
+   "medianPayPrevYear": 31748,
+   "medianPayPrevFiled": "2025-06-20"
   },
   "RMD": {
    "cik": 943819,
@@ -30507,6 +32555,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
+   },
+   "eps": {
+    "current": 2.65,
+    "prev": 2.59,
+    "changePct": 2.316602316602319,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "ROK": {
@@ -30586,7 +32649,9 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
-   }
+   },
+   "medianPayPrevYear": 53679,
+   "medianPayPrevFiled": "2024-12-20"
   },
   "ROL": {
    "cik": 84839,
@@ -31369,7 +33434,7 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": null,
+   "sector": "기술",
    "quarter": {
     "label": "SEC 분기 실적",
     "quarterLabel": "분기",
@@ -31707,6 +33772,21 @@
     "netIncomePrev": 195154000.0,
     "netIncomePct": 503.73704868975267,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 1.83,
+    "prev": null,
+    "changePct": null,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": null,
+    "periodTo": "2026-06-30",
+    "dateFrom": null,
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "SNA": {
@@ -31785,7 +33865,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "산업재"
+   "sector": "산업재",
+   "medianPay": 62691,
+   "medianPayFiled": "2026-03-12",
+   "medianPayPrevYear": 60771,
+   "medianPayPrevFiled": "2025-03-12"
   },
   "SNDK": {
    "cik": 2023554,
@@ -31849,6 +33933,21 @@
     "netIncomePrev": -1933000000.0,
     "netIncomePct": null,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 46.96,
+    "prev": -0.16,
+    "changePct": null,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "SNPS": {
@@ -31996,7 +34095,25 @@
     "netIncomePrev": 1334000000.0,
     "netIncomePct": 1.6491754122938531,
     "niTurnedLoss": false
-   }
+   },
+   "eps": {
+    "current": 1.03,
+    "prev": 0.8,
+    "changePct": 28.749999999999996,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   },
+   "headcount": 29800,
+   "headcountPeriod": "2025-12-31",
+   "headcountPrevYear": 28600
   },
   "SOLV": {
    "cik": 1964738,
@@ -32210,7 +34327,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "금융"
+   "sector": "금융",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 4146000000.0,
+    "revenuePrev": 3755000000.0,
+    "revenuePct": 10.412782956058589,
+    "netIncome": 1217000000.0,
+    "netIncomePrev": 1072000000.0,
+    "netIncomePct": 13.526119402985074,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 83.38147995301736,
+    "prev": 67.18778077268644,
+    "changePp": 16.193699180330924,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "SRE": {
    "cik": 1032208,
@@ -32278,6 +34424,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-03-31",
     "periodFrom": "2025-03-31"
+   },
+   "eps": {
+    "current": 1.22,
+    "prev": 0.71,
+    "changePct": 71.83098591549296,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "STE": {
@@ -32356,7 +34517,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "헬스케어"
+   "sector": "헬스케어",
+   "medianPay": 73280,
+   "medianPayFiled": "2026-06-11",
+   "medianPayPrevYear": 70915,
+   "medianPayPrevFiled": "2025-06-12"
   },
   "STLD": {
    "cik": 1022671,
@@ -32510,7 +34675,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "금융"
+   "sector": "금융",
+   "medianPay": 43491,
+   "medianPayFiled": "2026-04-08",
+   "medianPayPrevYear": 41630,
+   "medianPayPrevFiled": "2025-04-03"
   },
   "STX": {
    "cik": 1137789,
@@ -32578,6 +34747,21 @@
     "netIncomePrev": 340000000.0,
     "netIncomePct": 120.0,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 5.750259,
+    "prev": 2.300104,
+    "changePct": 149.99995652370498,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "STZ": {
@@ -32646,7 +34830,22 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "필수소비재"
+   "sector": "필수소비재",
+   "eps": {
+    "current": 3.8,
+    "prev": 2.9,
+    "changePct": 31.034482758620683,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-05-31",
+    "periodTo": "2026-05-31",
+    "dateFrom": "2025-05-31",
+    "dateTo": "2026-05-31",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   }
   },
   "SW": {
    "cik": 2005951,
@@ -32937,19 +35136,20 @@
     "totalRatio": 2.023277689568623
    },
    "quarter": {
-    "label": "SEC 분기 실적",
+    "label": "야후 분기 실적",
     "quarterLabel": "분기",
     "dateTo": "2026-06-30",
-    "dateFrom": null,
+    "dateFrom": "2025-06-30",
     "yearTo": "2026",
-    "yearFrom": null,
-    "revenue": null,
-    "revenuePrev": null,
-    "revenuePct": null,
+    "yearFrom": "2025",
+    "revenue": 3718000000.0,
+    "revenuePrev": 3647000000.0,
+    "revenuePct": 1.946805593638607,
     "netIncome": 885000000.0,
     "netIncomePrev": 967000000.0,
     "netIncomePct": -8.479834539813858,
-    "niTurnedLoss": false
+    "niTurnedLoss": false,
+    "source": "yahoo"
    },
    "debt": {
     "current": 621.6073859264958,
@@ -33122,6 +35322,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-27",
     "periodFrom": "2025-06-28"
+   },
+   "eps": {
+    "current": 1.15,
+    "prev": 1.1,
+    "changePct": 4.545454545454529,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "T": {
@@ -33512,6 +35727,21 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
+   },
+   "eps": {
+    "current": 0.35,
+    "prev": -0.11,
+    "changePct": null,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "TEL": {
@@ -33672,7 +35902,9 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "기술"
+   "sector": "기술",
+   "medianPay": 117600,
+   "medianPayFiled": "2026-03-27"
   },
   "TFC": {
    "cik": 92230,
@@ -33712,19 +35944,20 @@
     "totalRatio": 0.8344266374355173
    },
    "quarter": {
-    "label": "SEC 분기 실적",
+    "label": "야후 분기 실적",
     "quarterLabel": "분기",
-    "dateTo": "2026-06-30",
-    "dateFrom": null,
+    "dateTo": "2026-03-31",
+    "dateFrom": "2025-03-31",
     "yearTo": "2026",
-    "yearFrom": null,
-    "revenue": null,
-    "revenuePrev": null,
-    "revenuePct": null,
-    "netIncome": 1553000000.0,
-    "netIncomePrev": 1240000000.0,
-    "netIncomePct": 25.241935483870968,
-    "niTurnedLoss": false
+    "yearFrom": "2025",
+    "revenue": 5152000000.0,
+    "revenuePrev": 4899000000.0,
+    "revenuePct": 5.164319248826291,
+    "netIncome": 1481000000.0,
+    "netIncomePrev": 1261000000.0,
+    "netIncomePct": 17.446471054718476,
+    "niTurnedLoss": false,
+    "source": "yahoo"
    },
    "debt": {
     "current": 767.4982447928855,
@@ -33747,7 +35980,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "금융"
+   "sector": "금융",
+   "medianPay": 104397,
+   "medianPayFiled": "2026-03-16",
+   "medianPayPrevYear": 93785,
+   "medianPayPrevFiled": "2025-03-17"
   },
   "TGT": {
    "cik": 27419,
@@ -33907,7 +36144,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-08-01",
     "periodFrom": "2025-08-02"
-   }
+   },
+   "medianPay": 14994,
+   "medianPayFiled": "2026-04-30",
+   "medianPayPrevYear": 15002,
+   "medianPayPrevFiled": "2025-05-01"
   },
   "TKO": {
    "cik": 1973266,
@@ -34068,7 +36309,9 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-27",
     "periodFrom": "2025-06-28"
-   }
+   },
+   "medianPayPrevYear": 75643,
+   "medianPayPrevFiled": "2025-04-08"
   },
   "TMUS": {
    "cik": 1283699,
@@ -34298,6 +36541,21 @@
     "netIncomePrev": 203300000.0,
     "netIncomePct": 69.1096901131333,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 1.73,
+    "prev": -2.49,
+    "changePct": null,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "TRGP": {
@@ -34414,7 +36672,51 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": null
+   "sector": "산업재",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 1954000000.0,
+    "revenuePrev": 1785000000.0,
+    "revenuePct": 9.467787114845938,
+    "netIncome": 448000000.0,
+    "netIncomePrev": 313000000.0,
+    "netIncomePct": 43.13099041533546,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 62.507865168539325,
+    "prev": 42.40646797717184,
+    "changePp": 20.101397191367482,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   },
+   "eps": {
+    "current": 1.02,
+    "prev": 0.700821,
+    "changePct": 45.54358388233229,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   }
   },
   "TRMB": {
    "cik": 864749,
@@ -34879,7 +37181,24 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-27",
     "periodFrom": "2025-06-28"
-   }
+   },
+   "eps": {
+    "current": 0.53,
+    "prev": 0.18,
+    "changePct": 194.44444444444446,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   },
+   "medianPay": 43206,
+   "medianPayFiled": "2025-12-17"
   },
   "TT": {
    "cik": 1466258,
@@ -35117,7 +37436,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "커뮤니케이션"
+   "sector": "커뮤니케이션",
+   "medianPay": 86683,
+   "medianPayFiled": "2026-07-27",
+   "medianPayPrevYear": 73005,
+   "medianPayPrevFiled": "2025-07-28"
   },
   "TXN": {
    "cik": 97476,
@@ -35929,7 +38252,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "산업재"
+   "sector": "산업재",
+   "medianPay": 134454,
+   "medianPayFiled": "2026-03-25",
+   "medianPayPrevYear": 134862,
+   "medianPayPrevFiled": "2025-03-25"
   },
   "UPS": {
    "cik": 1090727,
@@ -36072,7 +38399,26 @@
     "netIncomePrev": 518000000.0,
     "netIncomePct": 2.5096525096525095,
     "niTurnedLoss": false
-   }
+   },
+   "eps": {
+    "current": 12.028754,
+    "prev": 9.583975,
+    "changePct": 25.50902939542307,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   },
+   "medianPay": 88098,
+   "medianPayFiled": "2026-03-25",
+   "medianPayPrevYear": 98913,
+   "medianPayPrevFiled": "2025-03-26"
   },
   "USB": {
    "cik": 36104,
@@ -36183,19 +38529,20 @@
     "totalRatio": null
    },
    "quarter": {
-    "label": "SEC 분기 실적",
+    "label": "야후 분기 실적",
     "quarterLabel": "분기",
-    "dateTo": "2025-12-31",
-    "dateFrom": null,
-    "yearTo": "2025",
-    "yearFrom": null,
-    "revenue": null,
-    "revenuePrev": null,
-    "revenuePct": null,
-    "netIncome": 5853000000.0,
-    "netIncomePrev": 5119000000.0,
-    "netIncomePct": 14.338738034772417,
-    "niTurnedLoss": false
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 11633000000.0,
+    "revenuePrev": 10172000000.0,
+    "revenuePct": 14.362957137239482,
+    "netIncome": 5628000000.0,
+    "netIncomePrev": 5272000000.0,
+    "netIncomePct": 6.752655538694992,
+    "niTurnedLoss": false,
+    "source": "yahoo"
    },
    "crash": {
     "pct": -8.300702785108829,
@@ -36206,7 +38553,35 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "금융"
+   "sector": "금융",
+   "debt": {
+    "current": 168.88964693842743,
+    "prev": 158.70060004138216,
+    "changePp": 10.189046897045273,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   },
+   "eps": {
+    "current": 2.97,
+    "prev": 2.69,
+    "changePct": 10.408921933085512,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
+   }
   },
   "VEEV": {
    "cik": 1393052,
@@ -36443,7 +38818,11 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": "2026-06-30",
     "periodFrom": "2025-06-30"
-   }
+   },
+   "medianPay": 211035,
+   "medianPayFiled": "2026-03-19",
+   "medianPayPrevYear": 193216,
+   "medianPayPrevFiled": "2025-03-18"
   },
   "VLTO": {
    "cik": 1967680,
@@ -36494,7 +38873,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "산업재"
+   "sector": "산업재",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 1474000000.0,
+    "revenuePrev": 1371000000.0,
+    "revenuePct": 7.512764405543399,
+    "netIncome": 241000000.0,
+    "netIncomePrev": 222000000.0,
+    "netIncomePct": 8.558558558558559,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 176.2996448175654,
+    "prev": 169.9962306822465,
+    "changePp": 6.303414135318889,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "VMC": {
    "cik": 1396009,
@@ -36549,7 +38957,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "소재"
+   "sector": "소재",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 2155800000.0,
+    "revenuePrev": 2102400000.0,
+    "revenuePct": 2.5399543378995433,
+    "netIncome": 323400000.0,
+    "netIncomePrev": 320900000.0,
+    "netIncomePct": 0.7790588968526021,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 93.95962054177939,
+    "prev": 101.64269825976282,
+    "changePp": -7.683077717983437,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-06-30",
+    "periodFrom": "2025-06-30",
+    "source": "yahoo"
+   }
   },
   "VMRK": {
    "cik": 906107,
@@ -36593,19 +39030,20 @@
     "totalRatio": null
    },
    "quarter": {
-    "label": "SEC 분기 실적",
+    "label": "야후 분기 실적",
     "quarterLabel": "분기",
     "dateTo": "2026-06-30",
-    "dateFrom": null,
+    "dateFrom": "2025-06-30",
     "yearTo": "2026",
-    "yearFrom": null,
-    "revenue": null,
-    "revenuePrev": null,
-    "revenuePct": null,
-    "netIncome": 114135000.0,
-    "netIncomePrev": 192356000.0,
-    "netIncomePct": -40.664705026097444,
-    "niTurnedLoss": false
+    "yearFrom": "2025",
+    "revenue": 777768000.0,
+    "revenuePrev": 760195000.0,
+    "revenuePct": 2.311643722992127,
+    "netIncome": 155720000.0,
+    "netIncomePrev": 268665000.0,
+    "netIncomePct": -42.03934267582305,
+    "niTurnedLoss": false,
+    "source": "yahoo"
    },
    "debt": {
     "current": 89.29163916621809,
@@ -36679,7 +39117,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "산업재"
+   "sector": "산업재",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 806300000.0,
+    "revenuePrev": 772600000.0,
+    "revenuePct": 4.361894900336527,
+    "netIncome": 228600000.0,
+    "netIncomePrev": 253300000.0,
+    "netIncomePct": -9.751283063560996,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 1904.7572815533981,
+    "prev": null,
+    "changePp": null,
+    "tinyEquity": true,
+    "negativeEquity": false,
+    "dateTo": "2025-12-31",
+    "dateFrom": null,
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2025-12-31",
+    "periodFrom": null,
+    "source": "yahoo"
+   }
   },
   "VRSN": {
    "cik": 1014473,
@@ -36921,7 +39388,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "헬스케어"
+   "sector": "헬스케어",
+   "medianPay": 264487,
+   "medianPayFiled": "2026-04-02",
+   "medianPayPrevYear": 245708,
+   "medianPayPrevFiled": "2025-04-03"
   },
   "VST": {
    "cik": 1692819,
@@ -37078,7 +39549,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "부동산"
+   "sector": "부동산",
+   "medianPay": 123420,
+   "medianPayFiled": "2026-04-01",
+   "medianPayPrevYear": 123389,
+   "medianPayPrevFiled": "2025-04-01"
   },
   "VTRS": {
    "cik": 1792044,
@@ -37627,6 +40102,21 @@
     "netIncomePrev": 520000000.0,
     "netIncomePct": 516.3461538461538,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 17.34,
+    "prev": 1.37,
+    "changePct": 1165.6934306569342,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "WEC": {
@@ -37761,7 +40251,36 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "부동산"
+   "sector": "부동산",
+   "quarter": {
+    "label": "야후 분기 실적",
+    "quarterLabel": "분기",
+    "dateTo": "2026-03-31",
+    "dateFrom": "2025-03-31",
+    "yearTo": "2026",
+    "yearFrom": "2025",
+    "revenue": 3305702000.0,
+    "revenuePrev": 2388587000.0,
+    "revenuePct": 38.395712611682136,
+    "netIncome": 728672000.0,
+    "netIncomePrev": 257957000.0,
+    "netIncomePct": 182.47808743317682,
+    "niTurnedLoss": false,
+    "source": "yahoo"
+   },
+   "debt": {
+    "current": 50.900697418063224,
+    "prev": 55.10430780511179,
+    "changePp": -4.203610387048563,
+    "tinyEquity": false,
+    "negativeEquity": false,
+    "dateTo": "2026-03-31",
+    "dateFrom": "2025-03-31",
+    "label": "야후 분기 재무상태표",
+    "periodTo": "2026-03-31",
+    "periodFrom": "2025-03-31",
+    "source": "yahoo"
+   }
   },
   "WFC": {
    "cik": 72971,
@@ -37808,19 +40327,20 @@
     "totalRatio": 0.8624303559057356
    },
    "quarter": {
-    "label": "SEC 분기 실적",
+    "label": "야후 분기 실적",
     "quarterLabel": "분기",
     "dateTo": "2026-06-30",
-    "dateFrom": null,
+    "dateFrom": "2025-06-30",
     "yearTo": "2026",
-    "yearFrom": null,
-    "revenue": null,
-    "revenuePrev": null,
-    "revenuePct": null,
+    "yearFrom": "2025",
+    "revenue": 22622000000.0,
+    "revenuePrev": 20569000000.0,
+    "revenuePct": 9.981039428265836,
     "netIncome": 6407000000.0,
     "netIncomePrev": 5494000000.0,
     "netIncomePct": 16.61812886785584,
-    "niTurnedLoss": false
+    "niTurnedLoss": false,
+    "source": "yahoo"
    },
    "debt": {
     "current": 1165.3687774016316,
@@ -38503,7 +41023,7 @@
    "headcount": 28500,
    "headcountPeriod": "2025-12-31",
    "headcountPrevYear": 28000,
-   "medianPay": 325000,
+   "medianPay": 270111,
    "medianPayFiled": "2026-03-25",
    "eps": {
     "current": 1.37,
@@ -38575,7 +41095,9 @@
     "label": "SEC 분기 재무상태표(자산−자본)",
     "periodTo": null,
     "periodFrom": null
-   }
+   },
+   "medianPayPrevYear": 179636,
+   "medianPayPrevFiled": "2025-03-19"
   },
   "XEL": {
    "cik": 72903,
@@ -38622,19 +41144,20 @@
     "totalRatio": 7.440037548806647
    },
    "quarter": {
-    "label": "SEC 분기 실적",
+    "label": "야후 분기 실적",
     "quarterLabel": "분기",
     "dateTo": "2026-06-30",
-    "dateFrom": null,
+    "dateFrom": "2025-06-30",
     "yearTo": "2026",
-    "yearFrom": null,
-    "revenue": null,
-    "revenuePrev": null,
-    "revenuePct": null,
+    "yearFrom": "2025",
+    "revenue": 3119000000.0,
+    "revenuePrev": 3287000000.0,
+    "revenuePct": -5.111043504715546,
     "netIncome": 586000000.0,
     "netIncomePrev": 444000000.0,
     "netIncomePct": 31.98198198198198,
-    "niTurnedLoss": false
+    "niTurnedLoss": false,
+    "source": "yahoo"
    },
    "crash": {
     "pct": -6.275188364349539,
@@ -38725,6 +41248,21 @@
     "netIncomePrev": 7713000000.0,
     "netIncomePct": -45.76688707377156,
     "niTurnedLoss": false
+   },
+   "eps": {
+    "current": 3.48,
+    "prev": 1.64,
+    "changePct": 112.19512195121952,
+    "turnedLoss": false,
+    "priceCurrent": null,
+    "pricePrev": null,
+    "priceChangePct": null,
+    "periodFrom": "2025-06-30",
+    "periodTo": "2026-06-30",
+    "dateFrom": "2025-06-30",
+    "dateTo": "2026-06-30",
+    "reportLabel": "야후 분기 실적",
+    "source": "yahoo"
    }
   },
   "XYL": {
@@ -39129,7 +41667,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "기술"
+   "sector": "기술",
+   "medianPay": 68738,
+   "medianPayFiled": "2026-04-03",
+   "medianPayPrevYear": 72654,
+   "medianPayPrevFiled": "2025-03-28"
   },
   "ZTS": {
    "cik": 1555280,
@@ -39207,7 +41749,11 @@
     "rangeFrom": "2025-09-19",
     "rangeTo": "2026-09-18"
    },
-   "sector": "헬스케어"
+   "sector": "헬스케어",
+   "medianPay": 80592,
+   "medianPayFiled": "2026-04-08",
+   "medianPayPrevYear": 79134,
+   "medianPayPrevFiled": "2025-04-09"
   }
  },
  "epsNote": "eps = SEC XBRL 분기 주당순이익(CY2025Q2 → CY2026Q2)과 두 분기말 종가",

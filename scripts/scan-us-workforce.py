@@ -124,16 +124,26 @@ MONEY = re.compile(r"\$\s?(\d{1,3}(?:,\d{3})+(?:\.\d+)?)")
 
 
 def parse_median_pay(text):
-    for sent in re.split(r"(?<=[a-z0-9)])\.\s+(?=[A-Z●•])", text):
-        low = sent.lower()
-        if "median" not in low or "peer" in low or len(sent) > 900:
-            continue
-        if not re.search(r"median (?:compensated )?(?:employee|associate|team member|colleague|worker)|median (?:annual )?(?:total )?compensation of (?:all|our)", low):
-            continue
-        for m in MONEY.finditer(sent):
+    """CEO 보수 비율 공시의 직원 중위 연봉.
+    문장 단위로 끊으면 표·불릿·긴 문단에서 놓친다(뱅크오브아메리카는 표, AMD는 불릿, 애브비는 긴 문단).
+    그래서 "median employee" 같은 표현이 나오는 자리마다 앞뒤 구간을 잘라 그 안의 달러 금액을 찾는다."""
+    low = text.lower()
+    anchors = [m.start() for m in re.finditer(r"median (?:compensated )?(?:employee|associate|team member|colleague|worker)|median annual total compensation|median employee annual total compensation", low)]
+    for i in anchors:
+        before = low[max(0, i - 80) : i]
+        if "peer" in before or "peer" in low[i : i + 40]:
+            continue  # 비교 기업 중앙값(peer group median)은 제외
+        window = text[max(0, i - 260) : i + 400]
+        best = None
+        for m in MONEY.finditer(window):
             v = float(m.group(1).replace(",", ""))
-            if 8_000 <= v <= 600_000:  # 처치앤드와이트처럼 같은 표 행에 CEO 급여($986,580)가 먼저 나오는 경우 건너뛰기
-                return int(round(v))
+            if not (8_000 <= v <= 600_000):
+                continue  # CEO 보수(수백만 달러)나 오탐 제외
+            dist = abs(m.start() - (i - max(0, i - 260)))
+            if best is None or dist < best[0]:
+                best = (dist, v)
+        if best:
+            return int(round(best[1]))
     return None
 
 
