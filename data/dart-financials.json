@@ -54,6 +54,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 17950.0,
+        "prev": 1929.0,
+        "changePct": 830.5339554173147,
+        "turnedLoss": false,
+        "priceCurrent": 334000.0,
+        "pricePrev": 59800.0,
+        "priceChangePct": 458.5284280936455,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -103,6 +117,20 @@
         "rightsRatio": 2.9605043783264904,
         "cbRatio": null,
         "totalRatio": 2.9605043783264904
+      },
+      "eps": {
+        "current": 189546.0,
+        "prev": 21890.0,
+        "changePct": 765.9022384650525,
+        "turnedLoss": false,
+        "priceCurrent": 2650000.0,
+        "pricePrev": 292000.0,
+        "priceChangePct": 807.5342465753424,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -152,6 +180,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 205323.0,
+        "prev": 23069.0,
+        "changePct": 790.0385799124366,
+        "turnedLoss": false,
+        "priceCurrent": 1697000.0,
+        "pricePrev": 183000.0,
+        "priceChangePct": 827.3224043715848,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -201,6 +243,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 7501.0,
+        "prev": 3511.0,
+        "changePct": 113.64283679863287,
+        "turnedLoss": false,
+        "priceCurrent": 2184000.0,
+        "pricePrev": 134700.0,
+        "priceChangePct": 1521.380846325167,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -250,6 +306,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 18555.0,
+        "prev": 23631.0,
+        "changePct": -21.480258981845882,
+        "turnedLoss": false,
+        "priceCurrent": 495000.0,
+        "pricePrev": 203500.0,
+        "priceChangePct": 143.24324324324326,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -299,6 +369,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 15410.0,
+        "prev": 12880.0,
+        "changePct": 19.642857142857142,
+        "turnedLoss": false,
+        "priceCurrent": 124700.0,
+        "pricePrev": 82900.0,
+        "priceChangePct": 50.42219541616405,
+        "periodFrom": "2024년 1~12월",
+        "periodTo": "2025년 1~12월",
+        "dateFrom": "2024-12-31",
+        "dateTo": "2025-12-31",
+        "reportLabel": "2025년 사업보고서"
       }
     },
     {
@@ -348,6 +432,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 7075.0,
+        "prev": 5978.0,
+        "changePct": 18.350618936099032,
+        "turnedLoss": false,
+        "priceCurrent": 95800.0,
+        "pricePrev": 61400.0,
+        "priceChangePct": 56.02605863192183,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -397,6 +495,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 17202.0,
+        "prev": 5160.0,
+        "changePct": 233.37209302325581,
+        "turnedLoss": false,
+        "priceCurrent": 995000.0,
+        "pricePrev": 848000.0,
+        "priceChangePct": 17.33490566037736,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -446,6 +558,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 8798.0,
+        "prev": 6633.0,
+        "changePct": 32.63983114729383,
+        "turnedLoss": false,
+        "priceCurrent": 468500.0,
+        "pricePrev": 161400.0,
+        "priceChangePct": 190.272614622057,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -495,6 +621,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 248.0,
+        "prev": 97.0,
+        "changePct": 155.6701030927835,
+        "turnedLoss": false,
+        "priceCurrent": 86800.0,
+        "pricePrev": 68400.0,
+        "priceChangePct": 26.900584795321635,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -544,6 +684,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 10702.0,
+        "prev": 11883.0,
+        "changePct": -9.938567701758814,
+        "turnedLoss": false,
+        "priceCurrent": 138000.0,
+        "pricePrev": 96900.0,
+        "priceChangePct": 42.414860681114554,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -593,6 +747,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 21789.0,
+        "prev": 21856.0,
+        "changePct": -0.3065519765739385,
+        "turnedLoss": false,
+        "priceCurrent": 500000.0,
+        "pricePrev": 287000.0,
+        "priceChangePct": 74.21602787456446,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -642,6 +810,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 8615.0,
+        "prev": 7972.0,
+        "changePct": 8.065730055193177,
+        "turnedLoss": false,
+        "priceCurrent": 114600.0,
+        "pricePrev": 86300.0,
+        "priceChangePct": 32.79258400926999,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -691,6 +873,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 3991.0,
+        "prev": -5415.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 487000.0,
+        "pricePrev": 172800.0,
+        "priceChangePct": 181.8287037037037,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -740,6 +936,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 3122.0,
+        "prev": 728.0,
+        "changePct": 328.8461538461538,
+        "turnedLoss": false,
+        "priceCurrent": 173300.0,
+        "pricePrev": 152000.0,
+        "priceChangePct": 14.01315789473684,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -789,6 +999,20 @@
         "rightsRatio": 5.007790303118565,
         "cbRatio": null,
         "totalRatio": 5.007790303118565
+      },
+      "eps": {
+        "current": 6573.0,
+        "prev": 6089.0,
+        "changePct": 7.948760059123009,
+        "turnedLoss": false,
+        "priceCurrent": 199000.0,
+        "pricePrev": 262500.0,
+        "priceChangePct": -24.19047619047619,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -838,6 +1062,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 10544.0,
+        "prev": 7764.0,
+        "changePct": 35.806285419886656,
+        "turnedLoss": false,
+        "priceCurrent": 401000.0,
+        "pricePrev": 127400.0,
+        "priceChangePct": 214.75667189952904,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -887,6 +1125,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 8255.0,
+        "prev": 7793.0,
+        "changePct": 5.928397279609906,
+        "turnedLoss": false,
+        "priceCurrent": 203000.0,
+        "pricePrev": 73800.0,
+        "priceChangePct": 175.06775067750678,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -936,6 +1188,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 15233.0,
+        "prev": 6112.0,
+        "changePct": 149.23102094240838,
+        "turnedLoss": false,
+        "priceCurrent": 317000.0,
+        "pricePrev": 261000.0,
+        "priceChangePct": 21.455938697318008,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -985,6 +1251,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2103.0,
+        "prev": 2006.0,
+        "changePct": 4.835493519441675,
+        "turnedLoss": false,
+        "priceCurrent": 29000.0,
+        "pricePrev": 22450.0,
+        "priceChangePct": 29.175946547884184,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1034,6 +1314,20 @@
         "rightsRatio": null,
         "cbRatio": 0.029280661931877578,
         "totalRatio": 0.029280661931877578
+      },
+      "eps": {
+        "current": 169676.0,
+        "prev": 52634.0,
+        "changePct": 222.36957099973404,
+        "turnedLoss": false,
+        "priceCurrent": 834000.0,
+        "pricePrev": 204500.0,
+        "priceChangePct": 307.8239608801956,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1083,6 +1377,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 32283.0,
+        "prev": 29301.0,
+        "changePct": 10.17712706050988,
+        "turnedLoss": false,
+        "priceCurrent": 618000.0,
+        "pricePrev": 434000.0,
+        "priceChangePct": 42.3963133640553,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1132,6 +1440,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -4502.0,
+        "prev": -1894.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 362000.0,
+        "pricePrev": 297000.0,
+        "priceChangePct": 21.885521885521886,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1181,6 +1503,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 11521.0,
+        "prev": 8238.0,
+        "changePct": 39.851905802379214,
+        "turnedLoss": false,
+        "priceCurrent": 972000.0,
+        "pricePrev": 507000.0,
+        "priceChangePct": 91.71597633136095,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1230,6 +1566,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 30146.0,
+        "prev": 12046.0,
+        "changePct": 150.25734683712435,
+        "turnedLoss": false,
+        "priceCurrent": 350000.0,
+        "pricePrev": 366000.0,
+        "priceChangePct": -4.371584699453552,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1279,6 +1629,20 @@
         "rightsRatio": 4.637180895048885,
         "cbRatio": null,
         "totalRatio": 4.637180895048885
+      },
+      "eps": {
+        "current": 19462.0,
+        "prev": 9342.0,
+        "changePct": 108.3279811603511,
+        "turnedLoss": false,
+        "priceCurrent": 1391000.0,
+        "pricePrev": 1525235.625,
+        "priceChangePct": -8.800976242605138,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1328,6 +1692,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1607.0,
+        "prev": 922.0,
+        "changePct": 74.29501084598698,
+        "turnedLoss": false,
+        "priceCurrent": 238000.0,
+        "pricePrev": 59800.0,
+        "priceChangePct": 297.9933110367893,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1377,6 +1755,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 15209.0,
+        "prev": 5578.0,
+        "changePct": 172.66045177482968,
+        "turnedLoss": false,
+        "priceCurrent": 592000.0,
+        "pricePrev": 428500.0,
+        "priceChangePct": 38.1563593932322,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1426,6 +1818,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 7175.0,
+        "prev": 3698.0,
+        "changePct": 94.02379664683613,
+        "turnedLoss": false,
+        "priceCurrent": 169700.0,
+        "pricePrev": 127700.0,
+        "priceChangePct": 32.88958496476116,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1475,6 +1881,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 3676.0,
+        "prev": 2086.0,
+        "changePct": 76.22243528283796,
+        "turnedLoss": false,
+        "priceCurrent": 88400.0,
+        "pricePrev": 56700.0,
+        "priceChangePct": 55.908289241622576,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1524,6 +1944,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": null,
+        "prev": null,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 23300.0,
+        "pricePrev": 16760.0,
+        "priceChangePct": 39.02147971360382,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1573,6 +2007,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 27905.0,
+        "prev": 20907.0,
+        "changePct": 33.47204285645956,
+        "turnedLoss": false,
+        "priceCurrent": 3438000.0,
+        "pricePrev": 891000.0,
+        "priceChangePct": 285.85858585858585,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1622,6 +2070,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1095.0,
+        "prev": 222.0,
+        "changePct": 393.2432432432432,
+        "turnedLoss": false,
+        "priceCurrent": 34550.0,
+        "pricePrev": 60000.0,
+        "priceChangePct": -42.41666666666667,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1671,6 +2133,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -2999.0,
+        "prev": -6923.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 280000.0,
+        "pricePrev": 211500.0,
+        "priceChangePct": 32.38770685579196,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1720,6 +2196,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 3854.0,
+        "prev": 1150.0,
+        "changePct": 235.1304347826087,
+        "turnedLoss": false,
+        "priceCurrent": 100300.0,
+        "pricePrev": 79400.0,
+        "priceChangePct": 26.322418136020154,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1769,6 +2259,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 3290.0,
+        "prev": 5014.0,
+        "changePct": -34.38372556840846,
+        "turnedLoss": false,
+        "priceCurrent": 52900.0,
+        "pricePrev": 55700.0,
+        "priceChangePct": -5.026929982046679,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1818,6 +2322,20 @@
         "rightsRatio": 3.273072884499263,
         "cbRatio": null,
         "totalRatio": 3.273072884499263
+      },
+      "eps": {
+        "current": 10187.0,
+        "prev": 8681.0,
+        "changePct": 17.34823177053335,
+        "turnedLoss": false,
+        "priceCurrent": 719000.0,
+        "pricePrev": 540000.0,
+        "priceChangePct": 33.14814814814815,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1867,6 +2385,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 3543.0,
+        "prev": 3198.0,
+        "changePct": 10.787992495309568,
+        "turnedLoss": false,
+        "priceCurrent": 173000.0,
+        "pricePrev": 196500.0,
+        "priceChangePct": -11.959287531806616,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1916,6 +2448,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 4299.0,
+        "prev": 5397.0,
+        "changePct": -20.344635908838242,
+        "turnedLoss": false,
+        "priceCurrent": 37000.0,
+        "pricePrev": 39300.0,
+        "priceChangePct": -5.852417302798982,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -1965,6 +2511,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 29891.0,
+        "prev": 4817.0,
+        "changePct": 520.5314511106498,
+        "turnedLoss": false,
+        "priceCurrent": 199500.0,
+        "pricePrev": 129500.0,
+        "priceChangePct": 54.054054054054056,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2014,6 +2574,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": null,
+        "prev": null,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 97300.0,
+        "pricePrev": 79600.0,
+        "priceChangePct": 22.236180904522612,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2063,6 +2637,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 4951.0,
+        "prev": 1120.0,
+        "changePct": 342.05357142857144,
+        "turnedLoss": false,
+        "priceCurrent": 42750.0,
+        "pricePrev": 21294.115234375,
+        "priceChangePct": 100.75969125492877,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2112,6 +2700,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1344.0,
+        "prev": 1259.0,
+        "changePct": 6.751389992057188,
+        "turnedLoss": false,
+        "priceCurrent": 256500.0,
+        "pricePrev": 102000.0,
+        "priceChangePct": 151.47058823529412,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2161,6 +2763,20 @@
         "rightsRatio": null,
         "cbRatio": 3.951860369095634,
         "totalRatio": 3.951860369095634
+      },
+      "eps": {
+        "current": 799.0,
+        "prev": 887.0,
+        "changePct": -9.92108229988726,
+        "turnedLoss": false,
+        "priceCurrent": 146400.0,
+        "pricePrev": 89800.0,
+        "priceChangePct": 63.02895322939867,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2210,6 +2826,20 @@
         "rightsRatio": null,
         "cbRatio": 2.579227426173507,
         "totalRatio": 2.579227426173507
+      },
+      "eps": {
+        "current": 6971.0,
+        "prev": -6727.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 94900.0,
+        "pricePrev": 122400.0,
+        "priceChangePct": -22.46732026143791,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2259,6 +2889,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 6913.0,
+        "prev": 3127.0,
+        "changePct": 121.07451231212025,
+        "turnedLoss": false,
+        "priceCurrent": 385500.0,
+        "pricePrev": 154200.0,
+        "priceChangePct": 150.0,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2308,6 +2952,20 @@
         "rightsRatio": 12.361762129515911,
         "cbRatio": null,
         "totalRatio": 12.361762129515911
+      },
+      "eps": {
+        "current": 34482.0,
+        "prev": 27160.0,
+        "changePct": 26.95876288659794,
+        "turnedLoss": false,
+        "priceCurrent": 1080000.0,
+        "pricePrev": 819000.0,
+        "priceChangePct": 31.868131868131865,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2357,6 +3015,20 @@
         "rightsRatio": null,
         "cbRatio": 7.183050642903345,
         "totalRatio": 7.183050642903345
+      },
+      "eps": {
+        "current": 3509.0,
+        "prev": 4940.0,
+        "changePct": -28.96761133603239,
+        "turnedLoss": false,
+        "priceCurrent": 190800.0,
+        "pricePrev": 169600.0,
+        "priceChangePct": 12.5,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2406,6 +3078,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 8589.0,
+        "prev": 7390.0,
+        "changePct": 16.22462787550744,
+        "turnedLoss": false,
+        "priceCurrent": 105600.0,
+        "pricePrev": 112500.0,
+        "priceChangePct": -6.133333333333333,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2455,6 +3141,20 @@
         "rightsRatio": null,
         "cbRatio": 3.597847185020243,
         "totalRatio": 3.597847185020243
+      },
+      "eps": {
+        "current": 2604.0,
+        "prev": 1931.0,
+        "changePct": 34.85240807871569,
+        "turnedLoss": false,
+        "priceCurrent": 114200.0,
+        "pricePrev": 78500.0,
+        "priceChangePct": 45.47770700636943,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2504,6 +3204,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 16853.0,
+        "prev": 3251.0,
+        "changePct": 418.39434020301445,
+        "turnedLoss": false,
+        "priceCurrent": 981000.0,
+        "pricePrev": 147400.0,
+        "priceChangePct": 565.5359565807327,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2553,6 +3267,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 22064.0,
+        "prev": 5734.0,
+        "changePct": 284.79246599232647,
+        "turnedLoss": false,
+        "priceCurrent": 1487000.0,
+        "pricePrev": 656000.0,
+        "priceChangePct": 126.67682926829269,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2602,6 +3330,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 32718.0,
+        "prev": 17080.0,
+        "changePct": 91.55737704918033,
+        "turnedLoss": false,
+        "priceCurrent": 221000.0,
+        "pricePrev": 139600.0,
+        "priceChangePct": 58.30945558739254,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2651,6 +3393,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1719.0,
+        "prev": 1486.0,
+        "changePct": 15.679676985195155,
+        "turnedLoss": false,
+        "priceCurrent": 47600.0,
+        "pricePrev": 22100.0,
+        "priceChangePct": 115.38461538461537,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2700,6 +3456,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 9447.0,
+        "prev": 12016.0,
+        "changePct": -21.37982689747004,
+        "turnedLoss": false,
+        "priceCurrent": 183100.0,
+        "pricePrev": 134800.0,
+        "priceChangePct": 35.83086053412463,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2749,6 +3519,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 17960.0,
+        "prev": 18007.0,
+        "changePct": -0.26100960737490975,
+        "turnedLoss": false,
+        "priceCurrent": 133900.0,
+        "pricePrev": 123300.0,
+        "priceChangePct": 8.59691808596918,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2798,6 +3582,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 688.0,
+        "prev": 553.0,
+        "changePct": 24.412296564195298,
+        "turnedLoss": false,
+        "priceCurrent": 20900.0,
+        "pricePrev": 30000.0,
+        "priceChangePct": -30.333333333333336,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2847,6 +3645,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 811.0,
+        "prev": 1281.0,
+        "changePct": -36.69008587041374,
+        "turnedLoss": false,
+        "priceCurrent": 18610.0,
+        "pricePrev": 22500.0,
+        "priceChangePct": -17.28888888888889,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2896,6 +3708,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -716.0,
+        "prev": 2095.0,
+        "changePct": -134.1766109785203,
+        "turnedLoss": true,
+        "priceCurrent": 27550.0,
+        "pricePrev": 22900.0,
+        "priceChangePct": 20.305676855895197,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2945,6 +3771,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 11171.0,
+        "prev": 8585.0,
+        "changePct": 30.122306348281885,
+        "turnedLoss": false,
+        "priceCurrent": 236000.0,
+        "pricePrev": 363000.0,
+        "priceChangePct": -34.9862258953168,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -2994,6 +3834,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 10613.0,
+        "prev": -957.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 106400.0,
+        "pricePrev": 59900.0,
+        "priceChangePct": 77.62938230383973,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3043,6 +3897,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 97.0,
+        "prev": -7.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 175600.0,
+        "pricePrev": 126400.0,
+        "priceChangePct": 38.924050632911396,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3092,6 +3960,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1501.0,
+        "prev": 1033.0,
+        "changePct": 45.30493707647628,
+        "turnedLoss": false,
+        "priceCurrent": 115400.0,
+        "pricePrev": 52300.0,
+        "priceChangePct": 120.65009560229444,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3141,6 +4023,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 10516.0,
+        "prev": 5409.0,
+        "changePct": 94.41671288593085,
+        "turnedLoss": false,
+        "priceCurrent": 108500.0,
+        "pricePrev": 73600.0,
+        "priceChangePct": 47.41847826086957,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3190,6 +4086,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 37414.0,
+        "prev": 24627.0,
+        "changePct": 51.92268648231616,
+        "turnedLoss": false,
+        "priceCurrent": 1119000.0,
+        "pricePrev": 1395000.0,
+        "priceChangePct": -19.78494623655914,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3239,6 +4149,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1671.0,
+        "prev": 1776.0,
+        "changePct": -5.912162162162162,
+        "turnedLoss": false,
+        "priceCurrent": 19900.0,
+        "pricePrev": 18260.0,
+        "priceChangePct": 8.981380065717415,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3288,6 +4212,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -46.0,
+        "prev": 2728.0,
+        "changePct": -101.68621700879766,
+        "turnedLoss": true,
+        "priceCurrent": 118000.0,
+        "pricePrev": 118200.0,
+        "priceChangePct": -0.1692047377326565,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3337,6 +4275,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 94.0,
+        "prev": 324.0,
+        "changePct": -70.98765432098766,
+        "turnedLoss": false,
+        "priceCurrent": 73000.0,
+        "pricePrev": 58000.0,
+        "priceChangePct": 25.862068965517242,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3386,6 +4338,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 12590.0,
+        "prev": 6843.0,
+        "changePct": 83.98363290954259,
+        "turnedLoss": false,
+        "priceCurrent": 365500.0,
+        "pricePrev": 197000.0,
+        "priceChangePct": 85.53299492385787,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3435,6 +4401,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 18810.0,
+        "prev": 2563.0,
+        "changePct": 633.9055793991416,
+        "turnedLoss": false,
+        "priceCurrent": 66300.0,
+        "pricePrev": 46650.0,
+        "priceChangePct": 42.12218649517685,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3484,6 +4464,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 5122.0,
+        "prev": 4096.0,
+        "changePct": 25.048828125,
+        "turnedLoss": false,
+        "priceCurrent": 90300.0,
+        "pricePrev": 96800.0,
+        "priceChangePct": -6.714876033057851,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3533,6 +4527,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1302.0,
+        "prev": 725.0,
+        "changePct": 79.58620689655173,
+        "turnedLoss": false,
+        "priceCurrent": 70200.0,
+        "pricePrev": 104200.0,
+        "priceChangePct": -32.629558541266796,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3582,6 +4590,20 @@
         "rightsRatio": 20.687029034660405,
         "cbRatio": null,
         "totalRatio": 20.687029034660405
+      },
+      "eps": {
+        "current": 1220.0,
+        "prev": -1499.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 33950.0,
+        "pricePrev": 31600.0,
+        "priceChangePct": 7.436708860759493,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3631,6 +4653,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 5126.0,
+        "prev": 4113.0,
+        "changePct": 24.62922441040603,
+        "turnedLoss": false,
+        "priceCurrent": 61900.0,
+        "pricePrev": 39750.0,
+        "priceChangePct": 55.72327044025157,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3680,6 +4716,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -1316.0,
+        "prev": 1884.0,
+        "changePct": -169.85138004246286,
+        "turnedLoss": true,
+        "priceCurrent": 192100.0,
+        "pricePrev": 309000.0,
+        "priceChangePct": -37.83171521035599,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3729,6 +4779,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 44130.0,
+        "prev": 21526.0,
+        "changePct": 105.00789742636812,
+        "turnedLoss": false,
+        "priceCurrent": 343000.0,
+        "pricePrev": 229000.0,
+        "priceChangePct": 49.78165938864629,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3778,6 +4842,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2855.0,
+        "prev": 2125.0,
+        "changePct": 34.35294117647059,
+        "turnedLoss": false,
+        "priceCurrent": 105700.0,
+        "pricePrev": 136700.0,
+        "priceChangePct": -22.677395757132405,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3827,6 +4905,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2009.0,
+        "prev": 1878.0,
+        "changePct": 6.975505857294994,
+        "turnedLoss": false,
+        "priceCurrent": 24800.0,
+        "pricePrev": 20550.0,
+        "priceChangePct": 20.68126520681265,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3876,6 +4968,20 @@
         "rightsRatio": 4.172424564928674,
         "cbRatio": null,
         "totalRatio": 4.172424564928674
+      },
+      "eps": {
+        "current": 2558.0,
+        "prev": 1348.0,
+        "changePct": 89.76261127596439,
+        "turnedLoss": false,
+        "priceCurrent": 29400.0,
+        "pricePrev": 19990.0,
+        "priceChangePct": 47.073536768384194,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3925,6 +5031,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 934.0,
+        "prev": 896.0,
+        "changePct": 4.241071428571429,
+        "turnedLoss": false,
+        "priceCurrent": 14000.0,
+        "pricePrev": 14300.0,
+        "priceChangePct": -2.097902097902098,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -3974,6 +5094,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 4041.0,
+        "prev": 2595.0,
+        "changePct": 55.722543352601164,
+        "turnedLoss": false,
+        "priceCurrent": 224500.0,
+        "pricePrev": 205500.0,
+        "priceChangePct": 9.245742092457421,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4023,6 +5157,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2598.0,
+        "prev": -4214.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 214500.0,
+        "pricePrev": 72800.0,
+        "priceChangePct": 194.64285714285714,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4072,6 +5220,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1291.0,
+        "prev": 1455.0,
+        "changePct": -11.271477663230241,
+        "turnedLoss": false,
+        "priceCurrent": 17050.0,
+        "pricePrev": 12450.0,
+        "priceChangePct": 36.94779116465863,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4121,6 +5283,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 14077.0,
+        "prev": 121.0,
+        "changePct": 11533.884297520663,
+        "turnedLoss": false,
+        "priceCurrent": 257500.0,
+        "pricePrev": 206500.0,
+        "priceChangePct": 24.69733656174334,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4170,6 +5346,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2053.0,
+        "prev": 1626.0,
+        "changePct": 26.260762607626077,
+        "turnedLoss": false,
+        "priceCurrent": 78800.0,
+        "pricePrev": 75100.0,
+        "priceChangePct": 4.92676431424767,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4219,6 +5409,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 7414.0,
+        "prev": 1900.0,
+        "changePct": 290.2105263157895,
+        "turnedLoss": false,
+        "priceCurrent": 124800.0,
+        "pricePrev": 76000.0,
+        "priceChangePct": 64.21052631578948,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4268,6 +5472,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2429.0,
+        "prev": 718.0,
+        "changePct": 238.30083565459609,
+        "turnedLoss": false,
+        "priceCurrent": 86600.0,
+        "pricePrev": 92000.0,
+        "priceChangePct": -5.869565217391305,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4317,6 +5535,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -509.0,
+        "prev": 21.0,
+        "changePct": -2523.809523809524,
+        "turnedLoss": true,
+        "priceCurrent": 33900.0,
+        "pricePrev": 17240.0,
+        "priceChangePct": 96.63573085846868,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4366,6 +5598,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -308.0,
+        "prev": -6639.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 111500.0,
+        "pricePrev": 49300.0,
+        "priceChangePct": 126.16632860040569,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4415,6 +5661,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 877.0,
+        "prev": 31.0,
+        "changePct": 2729.032258064516,
+        "turnedLoss": false,
+        "priceCurrent": 18840.0,
+        "pricePrev": 4180.0,
+        "priceChangePct": 350.7177033492823,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4464,6 +5724,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2.33,
+        "prev": 1.71,
+        "changePct": 36.257309941520475,
+        "turnedLoss": false,
+        "priceCurrent": 61700.0,
+        "pricePrev": 58200.0,
+        "priceChangePct": 6.013745704467354,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4513,6 +5787,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -1951.0,
+        "prev": 1206.0,
+        "changePct": -261.7744610281924,
+        "turnedLoss": true,
+        "priceCurrent": 11530.0,
+        "pricePrev": 8960.0,
+        "priceChangePct": 28.683035714285715,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4562,6 +5850,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 3292.0,
+        "prev": 2275.0,
+        "changePct": 44.7032967032967,
+        "turnedLoss": false,
+        "priceCurrent": 238500.0,
+        "pricePrev": 88700.0,
+        "priceChangePct": 168.88387824126266,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4611,6 +5913,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 4633.0,
+        "prev": 2605.0,
+        "changePct": 77.85028790786949,
+        "turnedLoss": false,
+        "priceCurrent": 144200.0,
+        "pricePrev": 46800.0,
+        "priceChangePct": 208.11965811965814,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4660,6 +5976,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 8303.0,
+        "prev": 6434.0,
+        "changePct": 29.048803232825616,
+        "turnedLoss": false,
+        "priceCurrent": 34850.0,
+        "pricePrev": 26450.0,
+        "priceChangePct": 31.758034026465026,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4709,6 +6039,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 3139.0,
+        "prev": 2837.0,
+        "changePct": 10.645047585477617,
+        "turnedLoss": false,
+        "priceCurrent": 530000.0,
+        "pricePrev": 170600.0,
+        "priceChangePct": 210.66822977725673,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4758,6 +6102,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 5329.0,
+        "prev": 4406.0,
+        "changePct": 20.94870630957785,
+        "turnedLoss": false,
+        "priceCurrent": 131900.0,
+        "pricePrev": 108800.0,
+        "priceChangePct": 21.231617647058822,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4807,6 +6165,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 9422.0,
+        "prev": 7956.0,
+        "changePct": 18.426344896933134,
+        "turnedLoss": false,
+        "priceCurrent": 229500.0,
+        "pricePrev": 319500.0,
+        "priceChangePct": -28.169014084507044,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4856,6 +6228,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1026.0,
+        "prev": 490.0,
+        "changePct": 109.38775510204081,
+        "turnedLoss": false,
+        "priceCurrent": 51000.0,
+        "pricePrev": 28450.0,
+        "priceChangePct": 79.26186291739896,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4905,6 +6291,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 23992.0,
+        "prev": 6305.0,
+        "changePct": 280.5233941316415,
+        "turnedLoss": false,
+        "priceCurrent": 755000.0,
+        "pricePrev": 188400.0,
+        "priceChangePct": 300.74309978768576,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -4954,6 +6354,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -339.0,
+        "prev": -401.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 90300.0,
+        "pricePrev": 66100.0,
+        "priceChangePct": 36.61119515885023,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5003,6 +6417,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2956.0,
+        "prev": 1699.0,
+        "changePct": 73.98469688051796,
+        "turnedLoss": false,
+        "priceCurrent": 49150.0,
+        "pricePrev": 49700.0,
+        "priceChangePct": -1.1066398390342052,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5052,6 +6480,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 10151.0,
+        "prev": 6412.0,
+        "changePct": 58.31253898939488,
+        "turnedLoss": false,
+        "priceCurrent": 397500.0,
+        "pricePrev": 286000.0,
+        "priceChangePct": 38.98601398601399,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5101,6 +6543,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -247.0,
+        "prev": -162.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 28100.0,
+        "pricePrev": 29400.0,
+        "priceChangePct": -4.421768707482993,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5150,6 +6606,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1734.0,
+        "prev": 1779.0,
+        "changePct": -2.5295109612141653,
+        "turnedLoss": false,
+        "priceCurrent": 16810.0,
+        "pricePrev": 12570.0,
+        "priceChangePct": 33.73110580747812,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5199,6 +6669,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 4575.0,
+        "prev": 2041.0,
+        "changePct": 124.15482606565409,
+        "turnedLoss": false,
+        "priceCurrent": 99500.0,
+        "pricePrev": 99800.0,
+        "priceChangePct": -0.30060120240480964,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5248,6 +6732,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 5992.0,
+        "prev": 3830.0,
+        "changePct": 56.44908616187989,
+        "turnedLoss": false,
+        "priceCurrent": 231500.0,
+        "pricePrev": 196900.0,
+        "priceChangePct": 17.572371762315896,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5297,6 +6795,20 @@
         "rightsRatio": 35.143556804956255,
         "cbRatio": null,
         "totalRatio": 35.143556804956255
+      },
+      "eps": {
+        "current": -4623.0,
+        "prev": -7194.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 106600.0,
+        "pricePrev": 110200.0,
+        "priceChangePct": -3.2667876588021776,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5346,6 +6858,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -373.0,
+        "prev": 8.0,
+        "changePct": -4762.5,
+        "turnedLoss": true,
+        "priceCurrent": 62400.0,
+        "pricePrev": 24250.0,
+        "priceChangePct": 157.31958762886597,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5395,6 +6921,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 6966.0,
+        "prev": 907.0,
+        "changePct": 668.026460859978,
+        "turnedLoss": false,
+        "priceCurrent": 64100.0,
+        "pricePrev": 51800.0,
+        "priceChangePct": 23.745173745173744,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5444,6 +6984,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 7956.0,
+        "prev": 2561.0,
+        "changePct": 210.65989847715736,
+        "turnedLoss": false,
+        "priceCurrent": 154900.0,
+        "pricePrev": 279500.0,
+        "priceChangePct": -44.57960644007156,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5493,6 +7047,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 416624.0,
+        "prev": 129015.0,
+        "changePct": 222.92679145835757,
+        "turnedLoss": false,
+        "priceCurrent": 486500.0,
+        "pricePrev": 312000.0,
+        "priceChangePct": 55.92948717948718,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5542,6 +7110,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 8523.0,
+        "prev": 7730.0,
+        "changePct": 10.258732212160414,
+        "turnedLoss": false,
+        "priceCurrent": 291000.0,
+        "pricePrev": 171700.0,
+        "priceChangePct": 69.48165404775771,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5591,6 +7173,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 5258.0,
+        "prev": 2340.0,
+        "changePct": 124.7008547008547,
+        "turnedLoss": false,
+        "priceCurrent": 71100.0,
+        "pricePrev": 86000.0,
+        "priceChangePct": -17.325581395348838,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5640,6 +7236,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 893.0,
+        "prev": 426.0,
+        "changePct": 109.6244131455399,
+        "turnedLoss": false,
+        "priceCurrent": 4540.0,
+        "pricePrev": 3295.0,
+        "priceChangePct": 37.7845220030349,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5689,6 +7299,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2020.0,
+        "prev": 2784.0,
+        "changePct": -27.442528735632184,
+        "turnedLoss": false,
+        "priceCurrent": 71300.0,
+        "pricePrev": 68600.0,
+        "priceChangePct": 3.9358600583090384,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5738,6 +7362,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2161.0,
+        "prev": 690.0,
+        "changePct": 213.18840579710147,
+        "turnedLoss": false,
+        "priceCurrent": 49000.0,
+        "pricePrev": 32850.0,
+        "priceChangePct": 49.16286149162861,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5787,6 +7425,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 15631.0,
+        "prev": 7129.0,
+        "changePct": 119.2593631645392,
+        "turnedLoss": false,
+        "priceCurrent": 113300.0,
+        "pricePrev": 112300.0,
+        "priceChangePct": 0.8904719501335707,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5836,6 +7488,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 442.0,
+        "prev": 1741.0,
+        "changePct": -74.61229178632969,
+        "turnedLoss": false,
+        "priceCurrent": 107900.0,
+        "pricePrev": 104300.0,
+        "priceChangePct": 3.451581975071908,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5885,6 +7551,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 4088.0,
+        "prev": 6962.0,
+        "changePct": -41.28124102269462,
+        "turnedLoss": false,
+        "priceCurrent": 154700.0,
+        "pricePrev": 160500.0,
+        "priceChangePct": -3.6137071651090342,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5934,6 +7614,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 507.0,
+        "prev": 193.0,
+        "changePct": 162.69430051813472,
+        "turnedLoss": false,
+        "priceCurrent": 41050.0,
+        "pricePrev": 76700.0,
+        "priceChangePct": -46.47979139504563,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -5983,6 +7677,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 7210.0,
+        "prev": 4886.0,
+        "changePct": 47.56446991404012,
+        "turnedLoss": false,
+        "priceCurrent": 72600.0,
+        "pricePrev": 63200.0,
+        "priceChangePct": 14.873417721518987,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6032,6 +7740,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 753.0,
+        "prev": 686.0,
+        "changePct": 9.7667638483965,
+        "turnedLoss": false,
+        "priceCurrent": 14300.0,
+        "pricePrev": 18300.0,
+        "priceChangePct": -21.85792349726776,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6081,6 +7803,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 4287.0,
+        "prev": 11022.0,
+        "changePct": -61.10506260206859,
+        "turnedLoss": false,
+        "priceCurrent": 185100.0,
+        "pricePrev": 249000.0,
+        "priceChangePct": -25.662650602409638,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6130,6 +7866,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 19776.0,
+        "prev": 15328.0,
+        "changePct": 29.018789144050107,
+        "turnedLoss": false,
+        "priceCurrent": 335500.0,
+        "pricePrev": 393000.0,
+        "priceChangePct": -14.631043256997456,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6179,6 +7929,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -3601.0,
+        "prev": 691.0,
+        "changePct": -621.1287988422577,
+        "turnedLoss": true,
+        "priceCurrent": 82400.0,
+        "pricePrev": 85400.0,
+        "priceChangePct": -3.51288056206089,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6228,6 +7992,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 94.0,
+        "prev": -585.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 44800.0,
+        "pricePrev": 45400.0,
+        "priceChangePct": -1.3215859030837005,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6277,6 +8055,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 10141.0,
+        "prev": 5166.0,
+        "changePct": 96.30274874177314,
+        "turnedLoss": false,
+        "priceCurrent": 31950.0,
+        "pricePrev": 41650.0,
+        "priceChangePct": -23.289315726290518,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6326,6 +8118,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 5875.0,
+        "prev": 3872.0,
+        "changePct": 51.73037190082644,
+        "turnedLoss": false,
+        "priceCurrent": 64400.0,
+        "pricePrev": 128700.0,
+        "priceChangePct": -49.96114996114996,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6375,6 +8181,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 724.0,
+        "prev": -187.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 47150.0,
+        "pricePrev": 51700.0,
+        "priceChangePct": -8.800773694390715,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6424,6 +8244,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 434.0,
+        "prev": 364.0,
+        "changePct": 19.230769230769234,
+        "turnedLoss": false,
+        "priceCurrent": 4735.0,
+        "pricePrev": 3715.0,
+        "priceChangePct": 27.456258411843876,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6473,6 +8307,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 905.0,
+        "prev": 782.0,
+        "changePct": 15.728900255754475,
+        "turnedLoss": false,
+        "priceCurrent": 18200.0,
+        "pricePrev": 20050.0,
+        "priceChangePct": -9.226932668329177,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6522,6 +8370,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 182.0,
+        "prev": -11.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 71500.0,
+        "pricePrev": 42350.0,
+        "priceChangePct": 68.83116883116884,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6571,6 +8433,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1275.0,
+        "prev": 795.0,
+        "changePct": 60.37735849056604,
+        "turnedLoss": false,
+        "priceCurrent": 30150.0,
+        "pricePrev": 44800.0,
+        "priceChangePct": -32.700892857142854,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6620,6 +8496,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 4985.0,
+        "prev": 3830.0,
+        "changePct": 30.156657963446477,
+        "turnedLoss": false,
+        "priceCurrent": 115800.0,
+        "pricePrev": 121000.0,
+        "priceChangePct": -4.297520661157025,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6669,6 +8559,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 4125.0,
+        "prev": 2937.0,
+        "changePct": 40.44943820224719,
+        "turnedLoss": false,
+        "priceCurrent": 41450.0,
+        "pricePrev": 35750.0,
+        "priceChangePct": 15.944055944055943,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6718,6 +8622,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2910.0,
+        "prev": 3145.0,
+        "changePct": -7.472178060413355,
+        "turnedLoss": false,
+        "priceCurrent": 47950.0,
+        "pricePrev": 49400.0,
+        "priceChangePct": -2.935222672064777,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6767,6 +8685,20 @@
         "rightsRatio": 27.815926895397254,
         "cbRatio": null,
         "totalRatio": 27.815926895397254
+      },
+      "eps": {
+        "current": 149.0,
+        "prev": -60.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 3835.0,
+        "pricePrev": 3100.0,
+        "priceChangePct": 23.70967741935484,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6816,6 +8748,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1769.0,
+        "prev": 897.0,
+        "changePct": 97.21293199554069,
+        "turnedLoss": false,
+        "priceCurrent": 58600.0,
+        "pricePrev": 50300.0,
+        "priceChangePct": 16.50099403578529,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6865,6 +8811,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2472.0,
+        "prev": 3211.0,
+        "changePct": -23.01463718467767,
+        "turnedLoss": false,
+        "priceCurrent": 42550.0,
+        "pricePrev": 46900.0,
+        "priceChangePct": -9.275053304904052,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6914,6 +8874,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 5003.0,
+        "prev": 2880.0,
+        "changePct": 73.71527777777777,
+        "turnedLoss": false,
+        "priceCurrent": 37350.0,
+        "pricePrev": 62000.0,
+        "priceChangePct": -39.75806451612903,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -6963,6 +8937,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 3917.0,
+        "prev": 855.0,
+        "changePct": 358.12865497076024,
+        "turnedLoss": false,
+        "priceCurrent": 60200.0,
+        "pricePrev": 44050.0,
+        "priceChangePct": 36.66288308740068,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7012,6 +9000,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 6389.0,
+        "prev": 5177.0,
+        "changePct": 23.4112420320649,
+        "turnedLoss": false,
+        "priceCurrent": 193700.0,
+        "pricePrev": 75600.0,
+        "priceChangePct": 156.21693121693121,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7061,6 +9063,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 103.0,
+        "prev": 236.0,
+        "changePct": -56.355932203389834,
+        "turnedLoss": false,
+        "priceCurrent": 21650.0,
+        "pricePrev": 23450.0,
+        "priceChangePct": -7.675906183368871,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7110,6 +9126,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 6375.0,
+        "prev": -14118.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 64000.0,
+        "pricePrev": 58800.0,
+        "priceChangePct": 8.843537414965986,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7159,6 +9189,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1504.0,
+        "prev": 1380.0,
+        "changePct": 8.985507246376812,
+        "turnedLoss": false,
+        "priceCurrent": 44300.0,
+        "pricePrev": 60100.0,
+        "priceChangePct": -26.28951747088186,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7208,6 +9252,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -654.0,
+        "prev": -306.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 35750.0,
+        "pricePrev": 47750.0,
+        "priceChangePct": -25.13089005235602,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7257,6 +9315,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 4434.0,
+        "prev": -148.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 169700.0,
+        "pricePrev": 74200.0,
+        "priceChangePct": 128.70619946091642,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7306,6 +9378,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 4391.0,
+        "prev": 2338.0,
+        "changePct": 87.81009409751924,
+        "turnedLoss": false,
+        "priceCurrent": 38200.0,
+        "pricePrev": 22200.0,
+        "priceChangePct": 72.07207207207207,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7355,6 +9441,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": null,
+        "prev": null,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 63900.0,
+        "pricePrev": 45800.0,
+        "priceChangePct": 39.519650655021834,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7404,6 +9504,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1299.0,
+        "prev": 269.0,
+        "changePct": 382.8996282527881,
+        "turnedLoss": false,
+        "priceCurrent": 23500.0,
+        "pricePrev": 16650.0,
+        "priceChangePct": 41.14114114114114,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7453,6 +9567,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 17067.0,
+        "prev": 11601.0,
+        "changePct": 47.11662787690717,
+        "turnedLoss": false,
+        "priceCurrent": 163100.0,
+        "pricePrev": 139100.0,
+        "priceChangePct": 17.253774263120057,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7502,6 +9630,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 7218.0,
+        "prev": 3880.0,
+        "changePct": 86.03092783505156,
+        "turnedLoss": false,
+        "priceCurrent": 77200.0,
+        "pricePrev": 79000.0,
+        "priceChangePct": -2.278481012658228,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7551,6 +9693,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 5202.0,
+        "prev": 3673.0,
+        "changePct": 41.628096923495775,
+        "turnedLoss": false,
+        "priceCurrent": 56700.0,
+        "pricePrev": 31250.0,
+        "priceChangePct": 81.44,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7600,6 +9756,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 31331.0,
+        "prev": 7612.0,
+        "changePct": 311.60010509721496,
+        "turnedLoss": false,
+        "priceCurrent": 272000.0,
+        "pricePrev": 250000.0,
+        "priceChangePct": 8.799999999999999,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7649,6 +9819,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 782.0,
+        "prev": 332.0,
+        "changePct": 135.5421686746988,
+        "turnedLoss": false,
+        "priceCurrent": 4880.0,
+        "pricePrev": 4505.0,
+        "priceChangePct": 8.32408435072142,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7698,6 +9882,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 3083.0,
+        "prev": 4037.0,
+        "changePct": -23.631409462472135,
+        "turnedLoss": false,
+        "priceCurrent": 74100.0,
+        "pricePrev": 87400.0,
+        "priceChangePct": -15.217391304347828,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7747,6 +9945,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 850.0,
+        "prev": 855.0,
+        "changePct": -0.5847953216374269,
+        "turnedLoss": false,
+        "priceCurrent": 23600.0,
+        "pricePrev": 28400.0,
+        "priceChangePct": -16.901408450704224,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7796,6 +10008,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1021.0,
+        "prev": 1040.0,
+        "changePct": -1.826923076923077,
+        "turnedLoss": false,
+        "priceCurrent": 26700.0,
+        "pricePrev": 26000.0,
+        "priceChangePct": 2.6923076923076925,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7845,6 +10071,20 @@
         "rightsRatio": null,
         "cbRatio": 1.7148211256454187,
         "totalRatio": 1.7148211256454187
+      },
+      "eps": {
+        "current": 107.0,
+        "prev": -184.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 20050.0,
+        "pricePrev": 4730.0,
+        "priceChangePct": 323.89006342494713,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7894,6 +10134,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1968.0,
+        "prev": 5930.0,
+        "changePct": -66.81281618887014,
+        "turnedLoss": false,
+        "priceCurrent": 120200.0,
+        "pricePrev": 126300.0,
+        "priceChangePct": -4.829770387965162,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7943,6 +10197,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 5452.0,
+        "prev": 1724.0,
+        "changePct": 216.24129930394434,
+        "turnedLoss": false,
+        "priceCurrent": 44050.0,
+        "pricePrev": 39450.0,
+        "priceChangePct": 11.660329531051964,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -7992,6 +10260,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1084.0,
+        "prev": 922.0,
+        "changePct": 17.570498915401302,
+        "turnedLoss": false,
+        "priceCurrent": 21800.0,
+        "pricePrev": 31750.0,
+        "priceChangePct": -31.338582677165356,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8041,6 +10323,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 380.0,
+        "prev": -2942.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 22950.0,
+        "pricePrev": 27800.0,
+        "priceChangePct": -17.446043165467625,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8090,6 +10386,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 5431.0,
+        "prev": 2864.0,
+        "changePct": 89.62988826815642,
+        "turnedLoss": false,
+        "priceCurrent": 63700.0,
+        "pricePrev": 57100.0,
+        "priceChangePct": 11.558669001751314,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8139,6 +10449,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 53243.0,
+        "prev": 3939.0,
+        "changePct": 1251.6882457476515,
+        "turnedLoss": false,
+        "priceCurrent": 814000.0,
+        "pricePrev": 979000.0,
+        "priceChangePct": -16.853932584269664,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8188,6 +10512,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1067.0,
+        "prev": 1163.0,
+        "changePct": -8.25451418744626,
+        "turnedLoss": false,
+        "priceCurrent": 23700.0,
+        "pricePrev": 19200.0,
+        "priceChangePct": 23.4375,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8237,6 +10575,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 5151.0,
+        "prev": 5184.0,
+        "changePct": -0.6365740740740741,
+        "turnedLoss": false,
+        "priceCurrent": 112700.0,
+        "pricePrev": 144000.0,
+        "priceChangePct": -21.73611111111111,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8286,6 +10638,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -17234.0,
+        "prev": -571.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 16210.0,
+        "pricePrev": 26900.0,
+        "priceChangePct": -39.73977695167286,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8335,6 +10701,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2490.0,
+        "prev": 2341.0,
+        "changePct": 6.364801366937206,
+        "turnedLoss": false,
+        "priceCurrent": 66200.0,
+        "pricePrev": 82900.0,
+        "priceChangePct": -20.14475271411339,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8384,6 +10764,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 5854.0,
+        "prev": -4276.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 43250.0,
+        "pricePrev": 45800.0,
+        "priceChangePct": -5.567685589519651,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8433,6 +10827,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1323.0,
+        "prev": 1001.0,
+        "changePct": 32.16783216783217,
+        "turnedLoss": false,
+        "priceCurrent": 24050.0,
+        "pricePrev": 22000.0,
+        "priceChangePct": 9.318181818181818,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8482,6 +10890,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1574.0,
+        "prev": 669.0,
+        "changePct": 135.2765321375187,
+        "turnedLoss": false,
+        "priceCurrent": 34800.0,
+        "pricePrev": 32900.0,
+        "priceChangePct": 5.775075987841945,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8531,6 +10953,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -171.0,
+        "prev": 1766.0,
+        "changePct": -109.68289920724801,
+        "turnedLoss": true,
+        "priceCurrent": 39450.0,
+        "pricePrev": 72000.0,
+        "priceChangePct": -45.208333333333336,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8580,6 +11016,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1102.0,
+        "prev": 1022.0,
+        "changePct": 7.8277886497064575,
+        "turnedLoss": false,
+        "priceCurrent": 14360.0,
+        "pricePrev": 20600.0,
+        "priceChangePct": -30.29126213592233,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8629,6 +11079,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 20162.0,
+        "prev": 19052.0,
+        "changePct": 5.826159983203863,
+        "turnedLoss": false,
+        "priceCurrent": 303000.0,
+        "pricePrev": 394000.0,
+        "priceChangePct": -23.096446700507613,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8678,6 +11142,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 368.0,
+        "prev": 602.0,
+        "changePct": -38.87043189368771,
+        "turnedLoss": false,
+        "priceCurrent": 13800.0,
+        "pricePrev": 15270.0,
+        "priceChangePct": -9.62671905697446,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8727,6 +11205,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 4803.0,
+        "prev": 3730.0,
+        "changePct": 28.766756032171582,
+        "turnedLoss": false,
+        "priceCurrent": 32150.0,
+        "pricePrev": 47250.0,
+        "priceChangePct": -31.957671957671955,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8776,6 +11268,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 6144.0,
+        "prev": -1841.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 94500.0,
+        "pricePrev": 55300.0,
+        "priceChangePct": 70.88607594936708,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8825,6 +11331,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 6176.0,
+        "prev": 4674.0,
+        "changePct": 32.135216089002995,
+        "turnedLoss": false,
+        "priceCurrent": 95300.0,
+        "pricePrev": 115500.0,
+        "priceChangePct": -17.48917748917749,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8874,6 +11394,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1403.0,
+        "prev": 1281.0,
+        "changePct": 9.523809523809524,
+        "turnedLoss": false,
+        "priceCurrent": 16850.0,
+        "pricePrev": 21900.0,
+        "priceChangePct": -23.059360730593607,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8923,6 +11457,20 @@
         "rightsRatio": null,
         "cbRatio": 8.12895569409923,
         "totalRatio": 8.12895569409923
+      },
+      "eps": {
+        "current": 973.0,
+        "prev": 854.0,
+        "changePct": 13.934426229508196,
+        "turnedLoss": false,
+        "priceCurrent": 15200.0,
+        "pricePrev": 16800.0,
+        "priceChangePct": -9.523809523809524,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -8972,6 +11520,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 11531.0,
+        "prev": -1586.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 160100.0,
+        "pricePrev": 208500.0,
+        "priceChangePct": -23.213429256594726,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9021,6 +11583,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 4972.0,
+        "prev": 3166.0,
+        "changePct": 57.04358812381554,
+        "turnedLoss": false,
+        "priceCurrent": 98700.0,
+        "pricePrev": 119200.0,
+        "priceChangePct": -17.197986577181208,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9070,6 +11646,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 785.0,
+        "prev": 437.0,
+        "changePct": 79.63386727688787,
+        "turnedLoss": false,
+        "priceCurrent": 13610.0,
+        "pricePrev": 18610.0,
+        "priceChangePct": -26.867275658248253,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9119,6 +11709,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1653.0,
+        "prev": 1591.0,
+        "changePct": 3.8969201759899437,
+        "turnedLoss": false,
+        "priceCurrent": 16900.0,
+        "pricePrev": 23050.0,
+        "priceChangePct": -26.68112798264642,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9168,6 +11772,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 449.0,
+        "prev": 2533.0,
+        "changePct": -82.2739834188709,
+        "turnedLoss": false,
+        "priceCurrent": 32800.0,
+        "pricePrev": 46100.0,
+        "priceChangePct": -28.850325379609544,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9217,6 +11835,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 7512.0,
+        "prev": 715.0,
+        "changePct": 950.6293706293706,
+        "turnedLoss": false,
+        "priceCurrent": 113600.0,
+        "pricePrev": 83900.0,
+        "priceChangePct": 35.39928486293206,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9266,6 +11898,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 85.0,
+        "prev": -200.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 11010.0,
+        "pricePrev": 14770.0,
+        "priceChangePct": -25.457007447528774,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9315,6 +11961,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 327.0,
+        "prev": 2143.0,
+        "changePct": -84.74101726551562,
+        "turnedLoss": false,
+        "priceCurrent": 6380.0,
+        "pricePrev": 10440.0,
+        "priceChangePct": -38.88888888888889,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9364,6 +12024,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 19167.0,
+        "prev": 17652.0,
+        "changePct": 8.582596872875595,
+        "turnedLoss": false,
+        "priceCurrent": 64600.0,
+        "pricePrev": 83800.0,
+        "priceChangePct": -22.911694510739856,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9413,6 +12087,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 20525.0,
+        "prev": 14292.0,
+        "changePct": 43.61181080324657,
+        "turnedLoss": false,
+        "priceCurrent": 39500.0,
+        "pricePrev": 41699.02734375,
+        "priceChangePct": -5.273569873997548,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9462,6 +12150,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 294.0,
+        "prev": 260.0,
+        "changePct": 13.076923076923078,
+        "turnedLoss": false,
+        "priceCurrent": 15380.0,
+        "pricePrev": 30850.0,
+        "priceChangePct": -50.14586709886548,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9511,6 +12213,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 6583.0,
+        "prev": 4401.0,
+        "changePct": 49.579640990683934,
+        "turnedLoss": false,
+        "priceCurrent": 116800.0,
+        "pricePrev": 163900.0,
+        "priceChangePct": -28.737034777303233,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9560,6 +12276,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -24412.0,
+        "prev": 20225.0,
+        "changePct": -220.70210135970333,
+        "turnedLoss": true,
+        "priceCurrent": 113800.0,
+        "pricePrev": 220000.0,
+        "priceChangePct": -48.27272727272727,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9609,6 +12339,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 15356.0,
+        "prev": 17060.0,
+        "changePct": -9.988276670574443,
+        "turnedLoss": false,
+        "priceCurrent": 171600.0,
+        "pricePrev": 309500.0,
+        "priceChangePct": -44.55573505654281,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9658,6 +12402,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1230.0,
+        "prev": 902.0,
+        "changePct": 36.36363636363637,
+        "turnedLoss": false,
+        "priceCurrent": 18810.0,
+        "pricePrev": 31850.0,
+        "priceChangePct": -40.94191522762951,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9707,6 +12465,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 11314.0,
+        "prev": 5834.0,
+        "changePct": 93.93212204319506,
+        "turnedLoss": false,
+        "priceCurrent": 105600.0,
+        "pricePrev": 147200.0,
+        "priceChangePct": -28.26086956521739,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9756,6 +12528,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 6442.0,
+        "prev": 1733.0,
+        "changePct": 271.7253317945759,
+        "turnedLoss": false,
+        "priceCurrent": 131816.703125,
+        "pricePrev": 124677.1875,
+        "priceChangePct": 5.726400930402765,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9805,6 +12591,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1871.0,
+        "prev": 939.0,
+        "changePct": 99.2545260915868,
+        "turnedLoss": false,
+        "priceCurrent": 277692.3125,
+        "pricePrev": 286153.84375,
+        "priceChangePct": -2.956986751990816,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9854,6 +12654,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1929.0,
+        "prev": -220.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 106600.0,
+        "pricePrev": 45150.0,
+        "priceChangePct": 136.10188261351053,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9903,6 +12717,20 @@
         "rightsRatio": 8.520105891041393,
         "cbRatio": null,
         "totalRatio": 8.520105891041393
+      },
+      "eps": {
+        "current": -91.0,
+        "prev": -135.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 142500.0,
+        "pricePrev": 100600.0,
+        "priceChangePct": 41.65009940357853,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -9952,6 +12780,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 94.0,
+        "prev": 717.0,
+        "changePct": -86.88981868898186,
+        "turnedLoss": false,
+        "priceCurrent": 201000.0,
+        "pricePrev": 31050.0,
+        "priceChangePct": 547.3429951690822,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10001,6 +12843,20 @@
         "rightsRatio": null,
         "cbRatio": 1.9036656066072206,
         "totalRatio": 1.9036656066072206
+      },
+      "eps": {
+        "current": -865.0,
+        "prev": -930.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 52000.0,
+        "pricePrev": 49100.0,
+        "priceChangePct": 5.906313645621181,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10050,6 +12906,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -595.0,
+        "prev": -307.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 184300.0,
+        "pricePrev": 188300.0,
+        "priceChangePct": -2.1242697822623473,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10099,6 +12969,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2302.0,
+        "prev": 471.0,
+        "changePct": 388.7473460721868,
+        "turnedLoss": false,
+        "priceCurrent": 168100.0,
+        "pricePrev": 26450.0,
+        "priceChangePct": 535.5387523629489,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10148,6 +13032,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -50.0,
+        "prev": -65.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 519000.0,
+        "pricePrev": 280500.0,
+        "priceChangePct": 85.02673796791443,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10197,6 +13095,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 5536.0,
+        "prev": 1397.0,
+        "changePct": 296.2777380100215,
+        "turnedLoss": false,
+        "priceCurrent": 476000.0,
+        "pricePrev": 168200.0,
+        "priceChangePct": 182.9964328180737,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10246,6 +13158,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1401.0,
+        "prev": 928.0,
+        "changePct": 50.9698275862069,
+        "turnedLoss": false,
+        "priceCurrent": 84000.0,
+        "pricePrev": 50900.0,
+        "priceChangePct": 65.0294695481336,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10295,6 +13221,20 @@
         "rightsRatio": 0.7037368861260681,
         "cbRatio": null,
         "totalRatio": 0.7037368861260681
+      },
+      "eps": {
+        "current": -523.0,
+        "prev": 240.0,
+        "changePct": -317.9166666666667,
+        "turnedLoss": true,
+        "priceCurrent": 99500.0,
+        "pricePrev": 67200.0,
+        "priceChangePct": 48.06547619047619,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10344,6 +13284,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 602.0,
+        "prev": 445.0,
+        "changePct": 35.28089887640449,
+        "turnedLoss": false,
+        "priceCurrent": 54000.0,
+        "pricePrev": 27750.0,
+        "priceChangePct": 94.5945945945946,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10393,6 +13347,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -518.0,
+        "prev": 98.0,
+        "changePct": -628.5714285714286,
+        "turnedLoss": true,
+        "priceCurrent": 260000.0,
+        "pricePrev": 73000.0,
+        "priceChangePct": 256.16438356164383,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10442,6 +13410,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1586.0,
+        "prev": -1702.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 148700.0,
+        "pricePrev": 24100.0,
+        "priceChangePct": 517.0124481327802,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10491,6 +13473,20 @@
         "rightsRatio": 11.017136156586977,
         "cbRatio": 5.675499928487766,
         "totalRatio": 16.692636085074742
+      },
+      "eps": {
+        "current": -2963.0,
+        "prev": -112.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 149900.0,
+        "pricePrev": 114800.0,
+        "priceChangePct": 30.57491289198606,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10540,6 +13536,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 10024.0,
+        "prev": 8044.0,
+        "changePct": 24.614619592242665,
+        "turnedLoss": false,
+        "priceCurrent": 363000.0,
+        "pricePrev": 493500.0,
+        "priceChangePct": -26.443768996960486,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10589,6 +13599,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2933.0,
+        "prev": 1332.0,
+        "changePct": 120.1951951951952,
+        "turnedLoss": false,
+        "priceCurrent": 196100.0,
+        "pricePrev": 19370.0,
+        "priceChangePct": 912.3902942694889,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10638,6 +13662,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 413.0,
+        "prev": -123.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 226000.0,
+        "pricePrev": 147300.0,
+        "priceChangePct": 53.428377460964015,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10687,6 +13725,20 @@
         "rightsRatio": null,
         "cbRatio": 1.8201381294122103,
         "totalRatio": 1.8201381294122103
+      },
+      "eps": {
+        "current": 5727.0,
+        "prev": 51.0,
+        "changePct": 11129.411764705883,
+        "turnedLoss": false,
+        "priceCurrent": 103900.0,
+        "pricePrev": 15460.0,
+        "priceChangePct": 572.0569210866753,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10736,6 +13788,20 @@
         "rightsRatio": null,
         "cbRatio": 11.484898621651377,
         "totalRatio": 11.484898621651377
+      },
+      "eps": {
+        "current": -405.0,
+        "prev": -462.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 87500.0,
+        "pricePrev": 29625.0,
+        "priceChangePct": 195.35864978902953,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10785,6 +13851,20 @@
         "rightsRatio": null,
         "cbRatio": 2.612634678114967,
         "totalRatio": 2.612634678114967
+      },
+      "eps": {
+        "current": 105.94,
+        "prev": 109.48,
+        "changePct": -3.233467299963469,
+        "turnedLoss": false,
+        "priceCurrent": 12200.0,
+        "pricePrev": 5000.0,
+        "priceChangePct": 144.0,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10834,6 +13914,20 @@
         "rightsRatio": 8.97626522351465,
         "cbRatio": 9.973627128500947,
         "totalRatio": 18.9498923520156
+      },
+      "eps": {
+        "current": -1016.0,
+        "prev": -1412.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 52500.0,
+        "pricePrev": 21150.0,
+        "priceChangePct": 148.22695035460993,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10883,6 +13977,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 3846.0,
+        "prev": 819.0,
+        "changePct": 369.5970695970696,
+        "turnedLoss": false,
+        "priceCurrent": 185700.0,
+        "pricePrev": 39100.0,
+        "priceChangePct": 374.9360613810742,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10932,6 +14040,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -2784.0,
+        "prev": -1368.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 186700.0,
+        "pricePrev": 109500.0,
+        "priceChangePct": 70.50228310502284,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -10981,6 +14103,20 @@
         "rightsRatio": 4.888808642636901,
         "cbRatio": null,
         "totalRatio": 4.888808642636901
+      },
+      "eps": {
+        "current": -933.0,
+        "prev": -1167.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 155600.0,
+        "pricePrev": 34800.0,
+        "priceChangePct": 347.1264367816092,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11030,6 +14166,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2214.0,
+        "prev": -4.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 49850.0,
+        "pricePrev": 11950.0,
+        "priceChangePct": 317.1548117154812,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11079,6 +14229,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1911.0,
+        "prev": 896.0,
+        "changePct": 113.28125,
+        "turnedLoss": false,
+        "priceCurrent": 181500.0,
+        "pricePrev": 59800.0,
+        "priceChangePct": 203.51170568561875,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11128,6 +14292,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 3265.0,
+        "prev": 1982.0,
+        "changePct": 64.73259334006055,
+        "turnedLoss": false,
+        "priceCurrent": 208000.0,
+        "pricePrev": 25350.0,
+        "priceChangePct": 720.5128205128206,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11177,6 +14355,20 @@
         "rightsRatio": 11.826975739562801,
         "cbRatio": null,
         "totalRatio": 11.826975739562801
+      },
+      "eps": {
+        "current": 2019.0,
+        "prev": 1216.0,
+        "changePct": 66.03618421052632,
+        "turnedLoss": false,
+        "priceCurrent": 31650.0,
+        "pricePrev": 61700.0,
+        "priceChangePct": -48.703403565640194,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11226,6 +14418,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 475.0,
+        "prev": -23.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 31950.0,
+        "pricePrev": 16050.0,
+        "priceChangePct": 99.06542056074767,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11275,6 +14481,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 3020.0,
+        "prev": 863.0,
+        "changePct": 249.9420625724218,
+        "turnedLoss": false,
+        "priceCurrent": 58300.0,
+        "pricePrev": 32700.0,
+        "priceChangePct": 78.2874617737003,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11324,6 +14544,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1358.0,
+        "prev": 321.0,
+        "changePct": 323.0529595015576,
+        "turnedLoss": false,
+        "priceCurrent": 132200.0,
+        "pricePrev": 77000.0,
+        "priceChangePct": 71.68831168831169,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11373,6 +14607,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1765.0,
+        "prev": 166.0,
+        "changePct": 963.2530120481928,
+        "turnedLoss": false,
+        "priceCurrent": 109300.0,
+        "pricePrev": 12640.0,
+        "priceChangePct": 764.7151898734177,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11422,6 +14670,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 266.0,
+        "prev": 249.0,
+        "changePct": 6.827309236947792,
+        "turnedLoss": false,
+        "priceCurrent": 80300.0,
+        "pricePrev": 27600.0,
+        "priceChangePct": 190.94202898550725,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11471,6 +14733,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 7645.0,
+        "prev": 6037.0,
+        "changePct": 26.63574623157197,
+        "turnedLoss": false,
+        "priceCurrent": 264000.0,
+        "pricePrev": 388000.0,
+        "priceChangePct": -31.958762886597935,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11520,6 +14796,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -27.0,
+        "prev": 564.0,
+        "changePct": -104.7872340425532,
+        "turnedLoss": true,
+        "priceCurrent": 53600.0,
+        "pricePrev": 33350.0,
+        "priceChangePct": 60.71964017991005,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11569,6 +14859,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 11876.0,
+        "prev": 5491.0,
+        "changePct": 116.28118739755963,
+        "turnedLoss": false,
+        "priceCurrent": 365500.0,
+        "pricePrev": 180000.0,
+        "priceChangePct": 103.05555555555554,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11618,6 +14922,20 @@
         "rightsRatio": null,
         "cbRatio": 3.7203387893630735,
         "totalRatio": 3.7203387893630735
+      },
+      "eps": {
+        "current": 6670.0,
+        "prev": 682.0,
+        "changePct": 878.0058651026392,
+        "turnedLoss": false,
+        "priceCurrent": 244500.0,
+        "pricePrev": 39500.0,
+        "priceChangePct": 518.9873417721519,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11667,6 +14985,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 102.0,
+        "prev": 46.2,
+        "changePct": 120.77922077922076,
+        "turnedLoss": false,
+        "priceCurrent": 26500.0,
+        "pricePrev": 5260.0,
+        "priceChangePct": 403.80228136882124,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11716,6 +15048,20 @@
         "rightsRatio": 18.259812147960304,
         "cbRatio": null,
         "totalRatio": 18.259812147960304
+      },
+      "eps": {
+        "current": 2247.0,
+        "prev": -605.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 59200.0,
+        "pricePrev": 18970.0,
+        "priceChangePct": 212.07169214549288,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11765,6 +15111,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 887.0,
+        "prev": -204.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 36250.0,
+        "pricePrev": 28650.0,
+        "priceChangePct": 26.527050610820247,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11814,6 +15174,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 4362.0,
+        "prev": 3076.0,
+        "changePct": 41.8075422626788,
+        "turnedLoss": false,
+        "priceCurrent": 272500.0,
+        "pricePrev": 107400.0,
+        "priceChangePct": 153.7243947858473,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11863,6 +15237,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 822.0,
+        "prev": 1246.0,
+        "changePct": -34.02889245585875,
+        "turnedLoss": false,
+        "priceCurrent": 54600.0,
+        "pricePrev": 42450.0,
+        "priceChangePct": 28.621908127208478,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11912,6 +15300,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1110.0,
+        "prev": 2737.0,
+        "changePct": -59.44464742418707,
+        "turnedLoss": false,
+        "priceCurrent": 248500.0,
+        "pricePrev": 285500.0,
+        "priceChangePct": -12.95971978984238,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -11961,6 +15363,20 @@
         "rightsRatio": null,
         "cbRatio": 1.0746702205894545,
         "totalRatio": 1.0746702205894545
+      },
+      "eps": {
+        "current": -27.61,
+        "prev": -29.63,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 23250.0,
+        "pricePrev": 27850.0,
+        "priceChangePct": -16.517055655296232,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12010,6 +15426,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 3924.0,
+        "prev": -128.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 36200.0,
+        "pricePrev": 42300.0,
+        "priceChangePct": -14.420803782505912,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12059,6 +15489,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 98.0,
+        "prev": -71.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 42600.0,
+        "pricePrev": 27050.0,
+        "priceChangePct": 57.48613678373382,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12108,6 +15552,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1625.0,
+        "prev": 3193.0,
+        "changePct": -49.107422486689636,
+        "turnedLoss": false,
+        "priceCurrent": 51400.0,
+        "pricePrev": 74300.0,
+        "priceChangePct": -30.82099596231494,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12157,6 +15615,20 @@
         "rightsRatio": 1.293997062807127,
         "cbRatio": null,
         "totalRatio": 1.293997062807127
+      },
+      "eps": {
+        "current": -937.0,
+        "prev": -550.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 90400.0,
+        "pricePrev": 27750.0,
+        "priceChangePct": 225.76576576576576,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12206,6 +15678,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2706.0,
+        "prev": 12121.0,
+        "changePct": -77.675109314413,
+        "turnedLoss": false,
+        "priceCurrent": 70800.0,
+        "pricePrev": 141000.0,
+        "priceChangePct": -49.787234042553195,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12255,6 +15741,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 805.0,
+        "prev": -896.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 116300.0,
+        "pricePrev": 26200.0,
+        "priceChangePct": 343.89312977099235,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12304,6 +15804,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 28.0,
+        "prev": 734.0,
+        "changePct": -96.18528610354224,
+        "turnedLoss": false,
+        "priceCurrent": 97300.0,
+        "pricePrev": 71600.0,
+        "priceChangePct": 35.89385474860335,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12353,6 +15867,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1327.0,
+        "prev": 373.0,
+        "changePct": 255.76407506702412,
+        "turnedLoss": false,
+        "priceCurrent": 29700.0,
+        "pricePrev": 33100.0,
+        "priceChangePct": -10.27190332326284,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12402,6 +15930,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 950.0,
+        "prev": 859.0,
+        "changePct": 10.593713620488941,
+        "turnedLoss": false,
+        "priceCurrent": 46600.0,
+        "pricePrev": 62700.0,
+        "priceChangePct": -25.677830940988837,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12451,6 +15993,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 835.0,
+        "prev": 515.0,
+        "changePct": 62.13592233009708,
+        "turnedLoss": false,
+        "priceCurrent": 40500.0,
+        "pricePrev": 14125.0,
+        "priceChangePct": 186.72566371681415,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12500,6 +16056,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 509.0,
+        "prev": 416.0,
+        "changePct": 22.355769230769234,
+        "turnedLoss": false,
+        "priceCurrent": 40900.0,
+        "pricePrev": 48676.46875,
+        "priceChangePct": -15.975827642591678,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12549,6 +16119,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 327.0,
+        "prev": 270.0,
+        "changePct": 21.11111111111111,
+        "turnedLoss": false,
+        "priceCurrent": 68900.0,
+        "pricePrev": 34250.0,
+        "priceChangePct": 101.16788321167883,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12598,6 +16182,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2061.0,
+        "prev": 1531.0,
+        "changePct": 34.617896799477464,
+        "turnedLoss": false,
+        "priceCurrent": 160000.0,
+        "pricePrev": 35250.0,
+        "priceChangePct": 353.90070921985813,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12647,6 +16245,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 3308.0,
+        "prev": 1586.0,
+        "changePct": 108.5750315258512,
+        "turnedLoss": false,
+        "priceCurrent": 69000.0,
+        "pricePrev": 60000.0,
+        "priceChangePct": 15.0,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12696,6 +16308,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 595.0,
+        "prev": 434.0,
+        "changePct": 37.096774193548384,
+        "turnedLoss": false,
+        "priceCurrent": 63200.0,
+        "pricePrev": 27250.0,
+        "priceChangePct": 131.92660550458714,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12745,6 +16371,20 @@
         "rightsRatio": 0.12983558766857228,
         "cbRatio": null,
         "totalRatio": 0.12983558766857228
+      },
+      "eps": {
+        "current": -44.0,
+        "prev": -5.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 8240.0,
+        "pricePrev": 3495.0,
+        "priceChangePct": 135.7653791130186,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12794,6 +16434,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 336.0,
+        "prev": -27.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 20950.0,
+        "pricePrev": 5470.0,
+        "priceChangePct": 282.9981718464351,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12843,6 +16497,20 @@
         "rightsRatio": 18.290941859059394,
         "cbRatio": null,
         "totalRatio": 18.290941859059394
+      },
+      "eps": {
+        "current": -192.0,
+        "prev": -175.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 29690.9765625,
+        "pricePrev": 20550.0,
+        "priceChangePct": 44.481637773722625,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12892,6 +16560,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1270.0,
+        "prev": 1059.0,
+        "changePct": 19.924457034938623,
+        "turnedLoss": false,
+        "priceCurrent": 55600.0,
+        "pricePrev": 40200.0,
+        "priceChangePct": 38.308457711442784,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12941,6 +16623,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -436.0,
+        "prev": -1355.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 48350.0,
+        "pricePrev": 38750.0,
+        "priceChangePct": 24.774193548387096,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -12990,6 +16686,20 @@
         "rightsRatio": null,
         "cbRatio": 8.02322618695351,
         "totalRatio": 8.02322618695351
+      },
+      "eps": {
+        "current": 3852.0,
+        "prev": 49.0,
+        "changePct": 7761.224489795919,
+        "turnedLoss": false,
+        "priceCurrent": 29650.0,
+        "pricePrev": 1156.0,
+        "priceChangePct": 2464.878892733564,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13039,6 +16749,20 @@
         "rightsRatio": null,
         "cbRatio": 3.828113494987702,
         "totalRatio": 3.828113494987702
+      },
+      "eps": {
+        "current": -175.49,
+        "prev": -113.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 8220.0,
+        "pricePrev": 4415.0,
+        "priceChangePct": 86.18346545866365,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13088,6 +16812,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -615.0,
+        "prev": -569.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 11440.0,
+        "pricePrev": 26931.341796875,
+        "priceChangePct": -57.521611487893075,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13137,6 +16875,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 523.0,
+        "prev": 87.0,
+        "changePct": 501.1494252873563,
+        "turnedLoss": false,
+        "priceCurrent": 192200.0,
+        "pricePrev": 25700.0,
+        "priceChangePct": 647.8599221789883,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13186,6 +16938,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1398.0,
+        "prev": 1040.0,
+        "changePct": 34.42307692307692,
+        "turnedLoss": false,
+        "priceCurrent": 40500.0,
+        "pricePrev": 42800.0,
+        "priceChangePct": -5.373831775700935,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13235,6 +17001,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 400.0,
+        "prev": 1282.0,
+        "changePct": -68.79875195007801,
+        "turnedLoss": false,
+        "priceCurrent": 37600.0,
+        "pricePrev": 14460.0,
+        "priceChangePct": 160.0276625172891,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13284,6 +17064,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1939.0,
+        "prev": 597.0,
+        "changePct": 224.7906197654941,
+        "turnedLoss": false,
+        "priceCurrent": 63200.0,
+        "pricePrev": 25650.0,
+        "priceChangePct": 146.39376218323588,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13333,6 +17127,20 @@
         "rightsRatio": 18.823328875322893,
         "cbRatio": null,
         "totalRatio": 18.823328875322893
+      },
+      "eps": {
+        "current": 497.0,
+        "prev": -1368.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 10860.0,
+        "pricePrev": 10760.0,
+        "priceChangePct": 0.929368029739777,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13382,6 +17190,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 548.0,
+        "prev": 711.0,
+        "changePct": -22.925457102672294,
+        "turnedLoss": false,
+        "priceCurrent": 41650.0,
+        "pricePrev": 95200.0,
+        "priceChangePct": -56.25,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13431,6 +17253,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1164.0,
+        "prev": 798.0,
+        "changePct": 45.86466165413533,
+        "turnedLoss": false,
+        "priceCurrent": 36850.0,
+        "pricePrev": 30950.0,
+        "priceChangePct": 19.063004846526656,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13480,6 +17316,20 @@
         "rightsRatio": null,
         "cbRatio": 5.813833277651188,
         "totalRatio": 5.813833277651188
+      },
+      "eps": {
+        "current": 1661.0,
+        "prev": 621.0,
+        "changePct": 167.4718196457327,
+        "turnedLoss": false,
+        "priceCurrent": 24200.0,
+        "pricePrev": 25100.0,
+        "priceChangePct": -3.5856573705179287,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13529,6 +17379,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1784.0,
+        "prev": -1761.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 77700.0,
+        "pricePrev": 50100.0,
+        "priceChangePct": 55.08982035928144,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13578,6 +17442,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 556.0,
+        "prev": 280.0,
+        "changePct": 98.57142857142858,
+        "turnedLoss": false,
+        "priceCurrent": 32100.0,
+        "pricePrev": 69100.0,
+        "priceChangePct": -53.54558610709117,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13627,6 +17505,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -414.0,
+        "prev": -426.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 10330.0,
+        "pricePrev": 20750.0,
+        "priceChangePct": -50.216867469879524,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13676,6 +17568,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": null,
+        "prev": null,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 92600.0,
+        "pricePrev": 29200.0,
+        "priceChangePct": 217.12328767123287,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13725,6 +17631,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -84.0,
+        "prev": 460.0,
+        "changePct": -118.26086956521739,
+        "turnedLoss": true,
+        "priceCurrent": 90200.0,
+        "pricePrev": 47500.0,
+        "priceChangePct": 89.89473684210526,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13774,6 +17694,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 257.0,
+        "prev": 132.0,
+        "changePct": 94.6969696969697,
+        "turnedLoss": false,
+        "priceCurrent": 27150.0,
+        "pricePrev": 31450.0,
+        "priceChangePct": -13.672496025437203,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13823,6 +17757,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 369.0,
+        "prev": 67.0,
+        "changePct": 450.74626865671644,
+        "turnedLoss": false,
+        "priceCurrent": 10900.0,
+        "pricePrev": 7210.0,
+        "priceChangePct": 51.17891816920943,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13872,6 +17820,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1624.0,
+        "prev": 1859.0,
+        "changePct": -12.641204948897256,
+        "turnedLoss": false,
+        "priceCurrent": 51200.0,
+        "pricePrev": 43600.0,
+        "priceChangePct": 17.431192660550458,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13921,6 +17883,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -479.0,
+        "prev": -373.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 36900.0,
+        "pricePrev": 37800.0,
+        "priceChangePct": -2.380952380952381,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -13970,6 +17946,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1166.0,
+        "prev": 1876.0,
+        "changePct": -37.846481876332625,
+        "turnedLoss": false,
+        "priceCurrent": 9720.0,
+        "pricePrev": 9570.0,
+        "priceChangePct": 1.5673981191222568,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14019,6 +18009,20 @@
         "rightsRatio": null,
         "cbRatio": 7.115825626806299,
         "totalRatio": 7.115825626806299
+      },
+      "eps": {
+        "current": 135.0,
+        "prev": 44.0,
+        "changePct": 206.81818181818184,
+        "turnedLoss": false,
+        "priceCurrent": 14520.0,
+        "pricePrev": 12090.0,
+        "priceChangePct": 20.099255583126553,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14068,6 +18072,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -482.0,
+        "prev": -505.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 18990.0,
+        "pricePrev": 12970.0,
+        "priceChangePct": 46.41480339244411,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14117,6 +18135,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -25.0,
+        "prev": -79.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 5910.0,
+        "pricePrev": 3150.0,
+        "priceChangePct": 87.61904761904762,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14166,6 +18198,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -1.0,
+        "prev": -13.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 14790.0,
+        "pricePrev": 11000.0,
+        "priceChangePct": 34.45454545454545,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14215,6 +18261,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1489.0,
+        "prev": 506.0,
+        "changePct": 194.2687747035573,
+        "turnedLoss": false,
+        "priceCurrent": 35150.0,
+        "pricePrev": 17940.0,
+        "priceChangePct": 95.93088071348942,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14264,6 +18324,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1045.0,
+        "prev": -100.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 51200.0,
+        "pricePrev": 50100.0,
+        "priceChangePct": 2.19560878243513,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14313,6 +18387,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1448.0,
+        "prev": 710.0,
+        "changePct": 103.94366197183098,
+        "turnedLoss": false,
+        "priceCurrent": 32800.0,
+        "pricePrev": 35550.0,
+        "priceChangePct": -7.7355836849507735,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14362,6 +18450,20 @@
         "rightsRatio": null,
         "cbRatio": 6.5326685514417715,
         "totalRatio": 6.5326685514417715
+      },
+      "eps": {
+        "current": -1752.0,
+        "prev": 2003.0,
+        "changePct": -187.46879680479282,
+        "turnedLoss": true,
+        "priceCurrent": 27450.0,
+        "pricePrev": 55900.0,
+        "priceChangePct": -50.89445438282647,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14411,6 +18513,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 144.0,
+        "prev": -2.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 13150.0,
+        "pricePrev": 10030.0,
+        "priceChangePct": 31.106679960119642,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14460,6 +18576,20 @@
         "rightsRatio": 42.78199922588437,
         "cbRatio": 7.365348699192739,
         "totalRatio": 50.14734792507711
+      },
+      "eps": {
+        "current": -212.0,
+        "prev": -77.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 7760.0,
+        "pricePrev": 19120.0,
+        "priceChangePct": -59.41422594142259,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14509,6 +18639,20 @@
         "rightsRatio": null,
         "cbRatio": 3.053100454713189,
         "totalRatio": 3.053100454713189
+      },
+      "eps": {
+        "current": -308.0,
+        "prev": 182.0,
+        "changePct": -269.2307692307692,
+        "turnedLoss": true,
+        "priceCurrent": 34700.0,
+        "pricePrev": 14110.0,
+        "priceChangePct": 145.92487597448618,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14558,6 +18702,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 246.0,
+        "prev": 77.0,
+        "changePct": 219.4805194805195,
+        "turnedLoss": false,
+        "priceCurrent": 8890.0,
+        "pricePrev": 6940.0,
+        "priceChangePct": 28.097982708933717,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14607,6 +18765,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -788.0,
+        "prev": -1569.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 71000.0,
+        "pricePrev": 81200.0,
+        "priceChangePct": -12.561576354679804,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14656,6 +18828,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 678.0,
+        "prev": 589.0,
+        "changePct": 15.110356536502549,
+        "turnedLoss": false,
+        "priceCurrent": 27900.0,
+        "pricePrev": 29850.0,
+        "priceChangePct": -6.532663316582915,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14705,6 +18891,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 210.0,
+        "prev": -164.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 26250.0,
+        "pricePrev": 18386.138671875,
+        "priceChangePct": 42.77059728780481,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14754,6 +18954,20 @@
         "rightsRatio": null,
         "cbRatio": 12.88306354097779,
         "totalRatio": 12.88306354097779
+      },
+      "eps": {
+        "current": -466.0,
+        "prev": 301.0,
+        "changePct": -254.81727574750832,
+        "turnedLoss": true,
+        "priceCurrent": 57900.0,
+        "pricePrev": 28850.0,
+        "priceChangePct": 100.69324090121316,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14803,6 +19017,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1434.0,
+        "prev": 3077.0,
+        "changePct": -53.396165095872604,
+        "turnedLoss": false,
+        "priceCurrent": 31800.0,
+        "pricePrev": 74900.0,
+        "priceChangePct": -57.543391188251,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14852,6 +19080,20 @@
         "rightsRatio": null,
         "cbRatio": 11.927335848006285,
         "totalRatio": 11.927335848006285
+      },
+      "eps": {
+        "current": -275.0,
+        "prev": -418.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 4060.0,
+        "pricePrev": 10380.0,
+        "priceChangePct": -60.886319845857415,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14901,6 +19143,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -579.0,
+        "prev": -1010.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 18490.0,
+        "pricePrev": 18440.0,
+        "priceChangePct": 0.27114967462039047,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14950,6 +19206,20 @@
         "rightsRatio": 3.1719774041300117,
         "cbRatio": 5.2790899196881815,
         "totalRatio": 8.451067323818192
+      },
+      "eps": {
+        "current": -261.0,
+        "prev": -259.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 12350.0,
+        "pricePrev": 61500.0,
+        "priceChangePct": -79.91869918699187,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -14999,6 +19269,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 3200.0,
+        "prev": 1703.0,
+        "changePct": 87.90369935408103,
+        "turnedLoss": false,
+        "priceCurrent": 45650.0,
+        "pricePrev": 61000.0,
+        "priceChangePct": -25.163934426229506,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15048,6 +19332,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -2923.0,
+        "prev": 6356.0,
+        "changePct": -145.9880427942102,
+        "turnedLoss": true,
+        "priceCurrent": 59600.0,
+        "pricePrev": 34700.0,
+        "priceChangePct": 71.75792507204612,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15097,6 +19395,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 11.0,
+        "prev": 92.0,
+        "changePct": -88.04347826086956,
+        "turnedLoss": false,
+        "priceCurrent": 6030.0,
+        "pricePrev": 7152.380859375,
+        "priceChangePct": -15.692409023546846,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15146,6 +19458,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 156.0,
+        "prev": -142.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 9650.0,
+        "pricePrev": 8820.0,
+        "priceChangePct": 9.410430839002268,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15195,6 +19521,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1385.0,
+        "prev": 1105.0,
+        "changePct": 25.339366515837103,
+        "turnedLoss": false,
+        "priceCurrent": 23250.0,
+        "pricePrev": 23550.0,
+        "priceChangePct": -1.2738853503184715,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15244,6 +19584,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 767.0,
+        "prev": 506.0,
+        "changePct": 51.581027667984195,
+        "turnedLoss": false,
+        "priceCurrent": 12830.0,
+        "pricePrev": 10970.0,
+        "priceChangePct": 16.955332725615317,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15293,6 +19647,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 629.0,
+        "prev": 786.0,
+        "changePct": -19.974554707379134,
+        "turnedLoss": false,
+        "priceCurrent": 17780.0,
+        "pricePrev": 48350.0,
+        "priceChangePct": -63.22647362978283,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15342,6 +19710,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1460.0,
+        "prev": 671.0,
+        "changePct": 117.58569299552906,
+        "turnedLoss": false,
+        "priceCurrent": 17360.0,
+        "pricePrev": 26250.0,
+        "priceChangePct": -33.86666666666667,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15391,6 +19773,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 952.0,
+        "prev": -1506.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 19330.0,
+        "pricePrev": 34200.0,
+        "priceChangePct": -43.47953216374269,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15440,6 +19836,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1194.0,
+        "prev": 1468.0,
+        "changePct": -18.66485013623978,
+        "turnedLoss": false,
+        "priceCurrent": 61200.0,
+        "pricePrev": 98100.0,
+        "priceChangePct": -37.61467889908257,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15489,6 +19899,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 651.0,
+        "prev": -45.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 21300.0,
+        "pricePrev": 51400.0,
+        "priceChangePct": -58.5603112840467,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15538,6 +19962,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -69.0,
+        "prev": -837.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 39950.0,
+        "pricePrev": 46100.0,
+        "priceChangePct": -13.34056399132321,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15587,6 +20025,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2900.0,
+        "prev": 4226.0,
+        "changePct": -31.377188831045906,
+        "turnedLoss": false,
+        "priceCurrent": 49200.0,
+        "pricePrev": 91200.0,
+        "priceChangePct": -46.05263157894737,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15636,6 +20088,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1396.0,
+        "prev": 1788.0,
+        "changePct": -21.92393736017897,
+        "turnedLoss": false,
+        "priceCurrent": 52500.0,
+        "pricePrev": 68300.0,
+        "priceChangePct": -23.133235724743777,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15685,6 +20151,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 68.0,
+        "prev": 117.0,
+        "changePct": -41.88034188034188,
+        "turnedLoss": false,
+        "priceCurrent": 8810.0,
+        "pricePrev": 3190.0,
+        "priceChangePct": 176.1755485893417,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15734,6 +20214,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 889.0,
+        "prev": 682.0,
+        "changePct": 30.35190615835777,
+        "turnedLoss": false,
+        "priceCurrent": 10060.0,
+        "pricePrev": 14630.0,
+        "priceChangePct": -31.237183868762813,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15783,6 +20277,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 520.0,
+        "prev": 85.0,
+        "changePct": 511.7647058823529,
+        "turnedLoss": false,
+        "priceCurrent": 19410.0,
+        "pricePrev": 7140.0,
+        "priceChangePct": 171.8487394957983,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15832,6 +20340,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 784.0,
+        "prev": 711.0,
+        "changePct": 10.267229254571026,
+        "turnedLoss": false,
+        "priceCurrent": 6160.0,
+        "pricePrev": 5770.0,
+        "priceChangePct": 6.759098786828423,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15881,6 +20403,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 605.0,
+        "prev": 1206.0,
+        "changePct": -49.834162520729684,
+        "turnedLoss": false,
+        "priceCurrent": 11530.0,
+        "pricePrev": 35300.0,
+        "priceChangePct": -67.33711048158641,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15930,6 +20466,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 97.0,
+        "prev": 65.0,
+        "changePct": 49.23076923076923,
+        "turnedLoss": false,
+        "priceCurrent": 9100.0,
+        "pricePrev": null,
+        "priceChangePct": null,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -15979,6 +20529,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1312.0,
+        "prev": 1090.0,
+        "changePct": 20.36697247706422,
+        "turnedLoss": false,
+        "priceCurrent": 18500.0,
+        "pricePrev": 30550.0,
+        "priceChangePct": -39.44353518821604,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16028,6 +20592,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -70.0,
+        "prev": 180.0,
+        "changePct": -138.88888888888889,
+        "turnedLoss": true,
+        "priceCurrent": 49350.0,
+        "pricePrev": 50700.0,
+        "priceChangePct": -2.6627218934911245,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16077,6 +20655,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 2489.0,
+        "prev": 1762.0,
+        "changePct": 41.25993189557321,
+        "turnedLoss": false,
+        "priceCurrent": 35800.0,
+        "pricePrev": 61500.0,
+        "priceChangePct": -41.78861788617886,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16126,6 +20718,20 @@
         "rightsRatio": null,
         "cbRatio": 0.15153690867937666,
         "totalRatio": 0.15153690867937666
+      },
+      "eps": {
+        "current": 71.0,
+        "prev": 5.0,
+        "changePct": 1320.0,
+        "turnedLoss": false,
+        "priceCurrent": 9100.0,
+        "pricePrev": 9500.0,
+        "priceChangePct": -4.2105263157894735,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16175,6 +20781,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 5819.0,
+        "prev": 2768.0,
+        "changePct": 110.22398843930637,
+        "turnedLoss": false,
+        "priceCurrent": 18050.0,
+        "pricePrev": 17070.0,
+        "priceChangePct": 5.741066198008202,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16224,6 +20844,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 961.0,
+        "prev": 1868.0,
+        "changePct": -48.554603854389725,
+        "turnedLoss": false,
+        "priceCurrent": 4740.0,
+        "pricePrev": 8790.0,
+        "priceChangePct": -46.075085324232084,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16273,6 +20907,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1843.0,
+        "prev": 1748.0,
+        "changePct": 5.434782608695652,
+        "turnedLoss": false,
+        "priceCurrent": 24900.0,
+        "pricePrev": 22650.0,
+        "priceChangePct": 9.933774834437086,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16322,6 +20970,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 239.0,
+        "prev": -105.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 12710.0,
+        "pricePrev": 11480.0,
+        "priceChangePct": 10.714285714285714,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16371,6 +21033,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -701.0,
+        "prev": 1411.0,
+        "changePct": -149.6810772501772,
+        "turnedLoss": true,
+        "priceCurrent": 26050.0,
+        "pricePrev": 41450.0,
+        "priceChangePct": -37.15319662243667,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16420,6 +21096,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -916.0,
+        "prev": -420.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 40700.0,
+        "pricePrev": 40000.0,
+        "priceChangePct": 1.7500000000000002,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16469,6 +21159,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 174.0,
+        "prev": 136.0,
+        "changePct": 27.941176470588236,
+        "turnedLoss": false,
+        "priceCurrent": 4075.0,
+        "pricePrev": 6360.0,
+        "priceChangePct": -35.92767295597484,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16518,6 +21222,20 @@
         "rightsRatio": 3.6894666620032894,
         "cbRatio": null,
         "totalRatio": 3.6894666620032894
+      },
+      "eps": {
+        "current": -180.0,
+        "prev": -140.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 14900.0,
+        "pricePrev": 11700.0,
+        "priceChangePct": 27.350427350427353,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16567,6 +21285,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 4197.0,
+        "prev": 4139.0,
+        "changePct": 1.4013046629620682,
+        "turnedLoss": false,
+        "priceCurrent": 38900.0,
+        "pricePrev": 50200.0,
+        "priceChangePct": -22.50996015936255,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16616,6 +21348,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 686.0,
+        "prev": -58.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 21150.0,
+        "pricePrev": 61500.0,
+        "priceChangePct": -65.60975609756098,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16665,6 +21411,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 258.0,
+        "prev": 4.0,
+        "changePct": 6350.0,
+        "turnedLoss": false,
+        "priceCurrent": 11270.0,
+        "pricePrev": 9290.0,
+        "priceChangePct": 21.31324004305705,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16714,6 +21474,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 1771.0,
+        "prev": 1071.0,
+        "changePct": 65.359477124183,
+        "turnedLoss": false,
+        "priceCurrent": 17460.0,
+        "pricePrev": 25200.0,
+        "priceChangePct": -30.714285714285715,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16763,6 +21537,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": 524.0,
+        "prev": 280.0,
+        "changePct": 87.14285714285714,
+        "turnedLoss": false,
+        "priceCurrent": 11560.0,
+        "pricePrev": 14700.0,
+        "priceChangePct": -21.360544217687075,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16812,6 +21600,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -209.0,
+        "prev": -369.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 8640.0,
+        "pricePrev": 13900.0,
+        "priceChangePct": -37.84172661870503,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16861,6 +21663,20 @@
         "rightsRatio": null,
         "cbRatio": 5.4076696327317615,
         "totalRatio": 5.4076696327317615
+      },
+      "eps": {
+        "current": 6289.0,
+        "prev": 635.0,
+        "changePct": 890.3937007874015,
+        "turnedLoss": false,
+        "priceCurrent": 38400.0,
+        "pricePrev": 40800.0,
+        "priceChangePct": -5.88235294117647,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16910,6 +21726,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -2724.0,
+        "prev": 1852.0,
+        "changePct": -247.08423326133908,
+        "turnedLoss": true,
+        "priceCurrent": 16350.0,
+        "pricePrev": 43500.0,
+        "priceChangePct": -62.41379310344828,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -16959,6 +21789,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -313.0,
+        "prev": -199.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 3290.0,
+        "pricePrev": 8070.0,
+        "priceChangePct": -59.23172242874845,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -17008,6 +21852,20 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -228.0,
+        "prev": -346.0,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": 6640.0,
+        "pricePrev": 8460.0,
+        "priceChangePct": -21.513002364066196,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     },
     {
@@ -17057,9 +21915,24 @@
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
+      },
+      "eps": {
+        "current": -85.0,
+        "prev": 528.0,
+        "changePct": -116.09848484848484,
+        "turnedLoss": true,
+        "priceCurrent": 21350.0,
+        "pricePrev": 33500.0,
+        "priceChangePct": -36.268656716417915,
+        "periodFrom": "2025년 1~6월",
+        "periodTo": "2026년 1~6월",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "2026년 반기보고서"
       }
     }
   ],
   "recentNote": "recent/recentPrev = 종목별 최신 정기보고서(분기·반기·사업)와 1년 전 같은 보고서 — 리스크 탭 전용",
-  "issuanceNote": "issuance = 최근 1년(20250920~20260920) 유상증자결정(piicDecsn, 자금조달 목적 금액 합계)·전환사채 발행결정(cvbdIsDecsn, 권면총액)과 시가총액 대비 비율"
+  "issuanceNote": "issuance = 최근 1년(20250920~20260920) 유상증자결정(piicDecsn, 자금조달 목적 금액 합계)·전환사채 발행결정(cvbdIsDecsn, 권면총액)과 시가총액 대비 비율",
+  "epsNote": "eps = DART 전체 재무제표 기본주당이익(최신 정기보고서 ↔ 1년 전 같은 보고서)과 두 기준일 종가"
 }

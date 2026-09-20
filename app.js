@@ -19512,6 +19512,7 @@ async function loadRiskDataset(isKr) {
           headTo: useRecent ? cur.stlmDt : data && data.dataYear ? `${data.dataYear}-12-31` : "",
           headNote: useRecent ? cur.reportLabel : data && data.dataYear ? `${data.dataYear}년 사업보고서` : "",
           issuance: r.issuance || null,
+          eps: r.eps || null,
         };
       }),
       hasIssuance: true,
@@ -19536,12 +19537,24 @@ async function loadRiskDataset(isKr) {
       headTo: r.headcountPeriod || "",
       headNote: "연차보고서(10-K)",
       issuance: null, // 미국은 유상증자·전환사채 결정공시에 해당하는 정형 데이터가 없어 아직 미지원
+      eps: r.eps || null,
     })),
     hasIssuance: false,
     payLabel: "직원 중위 연봉",
     fmtPay: (v) => `$${Math.round(v).toLocaleString()}`,
     source: "출처: SEC EDGAR — 직원 수는 연차보고서(10-K) 인적자원 항목, 임금은 위임장(DEF 14A) CEO 보수 비율 공시의 직원 중위 연간 총보상(평균이 아니라 중간값) · 미국은 두 공시 모두 1년에 한 번이라 분기 비교가 없음",
   };
+}
+// ⑥ 섹터 매출 성장(2026-09-20 사용자 요청) — 최근 분기 매출이 직전 분기보다 얼마나 오르내렸는지를 섹터로 묶은 것.
+// data/sector-revenue.json은 한국(코스피200+코스닥150, DART 분기 매출)과 미국(S&P500, SEC XBRL 분기 매출)을 함께 담는다.
+let sectorRevenuePromise = null;
+function getSectorRevenueData() {
+  if (!sectorRevenuePromise) {
+    sectorRevenuePromise = fetch("data/sector-revenue.json", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+  }
+  return sectorRevenuePromise;
 }
 function riskPct(cur, prev) {
   if (cur == null || prev == null || prev <= 0) return null;
@@ -19573,7 +19586,7 @@ async function renderRiskPanel(ticker) {
   const isKr = /\.(KS|KQ)$/i.test(ticker);
   el("riskHeading").textContent = "리스크 점검";
   box.innerHTML = `<p class="muted risk-note">리스크 데이터를 불러오는 중...</p>`;
-  const ds = await loadRiskDataset(isKr);
+  const [ds, sectorRev] = await Promise.all([loadRiskDataset(isKr), getSectorRevenueData()]);
   if (token !== riskRenderToken) return;
   const items = ds.items;
   const self = items.find((r) => r.symbol === ticker);
@@ -19676,6 +19689,86 @@ async function renderRiskPanel(ticker) {
       )}</div>
     </div>`;
   };
+  // ⑤ EPS 감소(2026-09-20 사용자 요청) — 최신 실적의 주당순이익을 1년 전 같은 기간과 비교하고, 같은 기간 주가 변화도 함께 보여준다
+  const epsRows = items
+    .filter((r) => r.eps && r.eps.changePct != null)
+    .map((r) => ({ ...r, _pct: r.eps.changePct }))
+    .sort((a, b) => a._pct - b._pct);
+  const myEps = self.eps;
+  const myEpsPct = myEps && myEps.changePct != null ? myEps.changePct : null;
+  const myEpsRank = epsRows.findIndex((r) => r.symbol === ticker) + 1;
+  const epsGrade = myEps && myEps.turnedLoss ? { cls: "risk-bad", label: "적자 전환" } : myEpsPct == null ? null : myEpsPct < 0 ? { cls: "risk-bad", label: "감소" } : { cls: "risk-good", label: "증가" };
+  const fmtEps = (v) => (isKr ? `${Math.round(v).toLocaleString()}원` : `$${v.toFixed(2)}`);
+  const fmtPx = (v) => (isKr ? `${Math.round(v).toLocaleString()}원` : `$${v.toFixed(2)}`);
+  const epsCard = `<div class="risk-card">
+      <div class="risk-card-top"><span class="risk-card-title">⑤ EPS(주당순이익) 감소</span>${chip(epsGrade)}</div>
+      ${
+        !myEps || myEps.current == null
+          ? `<p class="muted risk-note">최근 실적의 주당순이익을 찾지 못했습니다.</p>`
+          : `<div class="risk-card-value">EPS ${myEps.prev != null ? `${fmtEps(myEps.prev)} → ` : ""}<b>${fmtEps(myEps.current)}</b>${
+              myEpsPct != null ? ` <span class="${epsGrade.cls}">(${riskFmtPct(myEpsPct)})</span>` : myEps.current < 0 ? ` <span class="risk-bad">(적자)</span>` : ""
+            }</div>
+             ${
+               myEps.priceCurrent != null && myEps.pricePrev != null
+                 ? `<div class="risk-card-value">같은 기간 주가 ${fmtPx(myEps.pricePrev)} → <b>${fmtPx(myEps.priceCurrent)}</b> <span class="${
+                     myEps.priceChangePct < 0 ? "risk-bad" : "risk-good"
+                   }">(${riskFmtPct(myEps.priceChangePct)})</span></div>`
+                 : ""
+             }
+             ${riskBasisHtml(myEps.periodFrom || myEps.dateFrom, myEps.periodTo || myEps.dateTo, myEps.reportLabel)}
+             <div class="risk-card-rank">${
+               myEpsRank ? `EPS 변화율 ${epsRows.length}곳 중 <b>${myEpsRank}위</b> <span class="muted">(하락한 순)</span>` : ""
+             }</div>`
+      }
+      <button type="button" class="risk-more-btn" data-risk-toggle="eps">+ 전체 순위 (${epsRows.length}곳)</button>
+      <div class="risk-more" data-risk-list="eps" style="display:none;">${riskRankListHtml(
+        epsRows,
+        // 흑자 → 적자로 돌아선 곳은 변화율(-4,762% 같은 수)보다 "적자 전환"이라고 쓰는 편이 읽기 쉽다
+        (r) =>
+          r.eps.turnedLoss
+            ? `<span class="risk-rank-val risk-bad">적자 전환</span>`
+            : `<span class="risk-rank-val ${r._pct < 0 ? "risk-bad" : "risk-good"}">${riskFmtPct(r._pct)}</span>`,
+        ticker
+      )}</div>
+    </div>`;
+
+  // ⑥ 섹터 매출 성장 — 이 종목이 속한 섹터의 "최근 분기 vs 직전 분기" 매출 성장률과, 하락한 섹터 순위
+  const srMarket = sectorRev && sectorRev[isKr ? "kr" : "us"];
+  const myCompanyRow = srMarket && (srMarket.companies || []).find((c) => c.symbol === ticker);
+  const sectorRows = (srMarket && srMarket.sectors) || [];
+  const mySector = myCompanyRow ? myCompanyRow.sector : null;
+  const mySectorRow = mySector ? sectorRows.find((s) => s.sector === mySector) : null;
+  const mySectorRank = mySectorRow ? sectorRows.findIndex((s) => s.sector === mySector) + 1 : 0;
+  const sectorCard = `<div class="risk-card">
+      <div class="risk-card-top"><span class="risk-card-title">⑥ 섹터 매출 성장</span>${
+        mySectorRow ? chip(mySectorRow.growthPct < 0 ? { cls: "risk-bad", label: "하락" } : { cls: "risk-good", label: "상승" }) : chip(null)
+      }</div>
+      ${
+        !mySectorRow
+          ? `<p class="muted risk-note">이 종목이 속한 섹터의 분기 매출 데이터를 찾지 못했습니다.</p>`
+          : `<div class="risk-card-value">${escapeHtml(mySector)} 섹터 최근 분기 매출 <b class="${mySectorRow.growthPct < 0 ? "risk-bad" : "risk-good"}">${riskFmtPct(
+              mySectorRow.growthPct
+            )}</b> <span class="muted">(직전 분기 대비, ${mySectorRow.count}개 기업 합계)</span></div>
+             ${
+               myCompanyRow
+                 ? `<div class="risk-card-value">이 종목은 <span class="${myCompanyRow.growthPct < 0 ? "risk-bad" : "risk-good"}">${riskFmtPct(myCompanyRow.growthPct)}</span></div>`
+                 : ""
+             }
+             ${riskBasisHtml("직전 분기", "최근 분기", srMarket.basis || "")}
+             <div class="risk-card-rank">${sectorRows.length}개 섹터 중 <b>${mySectorRank}위</b> <span class="muted">(하락한 순)</span></div>`
+      }
+      <button type="button" class="risk-more-btn" data-risk-toggle="sector">+ 전체 순위 (${sectorRows.length}개 섹터)</button>
+      <div class="risk-more" data-risk-list="sector" style="display:none;"><ol class="risk-rank-list">${sectorRows
+        .map(
+          (s, i) => `<li class="risk-rank-row${s.sector === mySector ? " is-self" : ""}">
+            <span class="risk-rank-no">${i + 1}</span>
+            <span class="risk-rank-name">${escapeHtml(s.sector)} <span class="muted">(${s.count})</span></span>
+            <span class="risk-rank-val ${s.growthPct < 0 ? "risk-bad" : "risk-good"}">${riskFmtPct(s.growthPct)}</span>
+          </li>`
+        )
+        .join("")}</ol></div>
+    </div>`;
+
   const issuanceCards = ds.hasIssuance
     ? issuanceCard("rights", "rightsRatio", "③ 유상증자", "유상증자") + issuanceCard("cb", "cbRatio", "④ 전환사채", "전환사채")
     : `<p class="muted risk-note">유상증자·전환사채 점검은 국내 주식만 제공합니다(미국은 같은 형식의 공시 데이터가 없어 준비 중).</p>`;
@@ -19683,8 +19776,10 @@ async function renderRiskPanel(ticker) {
     ? " · 유상증자·전환사채는 DART 주요사항보고서의 발행 <b>결정</b> 공시 기준(실제 납입액과 다를 수 있음), 시가총액은 어제 종가 기준"
     : "";
 
-  box.innerHTML = `${salaryCard}${headCard}${issuanceCards}
-    <p class="risk-source">${ds.source} · 작년 대비 ±${RISK_SALARY_FREEZE_PCT}% 이내는 동결${issuanceSource}</p>`;
+  box.innerHTML = `${salaryCard}${headCard}${issuanceCards}${epsCard}${sectorCard}
+    <p class="risk-source">${ds.source} · 작년 대비 ±${RISK_SALARY_FREEZE_PCT}% 이내는 동결${issuanceSource} · EPS는 ${
+      isKr ? "DART 전체 재무제표의 기본주당이익(최신 정기보고서 ↔ 1년 전 같은 기간 누적)" : "SEC 분기 주당순이익"
+    } · 섹터 매출 성장은 최근 분기 ÷ 직전 분기(섹터 소속 기업 매출 합계)</p>`;
 
   box.querySelectorAll("[data-risk-toggle]").forEach((btn) => {
     btn.addEventListener("click", () => {
