@@ -3454,14 +3454,14 @@ table.top30-table.rk-table:has(.rk-etf-kr) th:nth-child(3) { width: 24%; }
 .risk-chip { font-size: 12px; font-weight: 800; padding: 3px 9px; border-radius: 999px; background: var(--border); color: var(--muted); }
 .risk-chip.risk-bad { background: rgba(224, 49, 49, 0.14); color: #e03131; }
 .risk-chip.risk-warn { background: rgba(240, 140, 0, 0.16); color: #f08c00; }
-.risk-chip.risk-good { background: rgba(47, 111, 237, 0.14); color: #2f6fed; }
+.risk-chip.risk-good { background: rgba(47, 158, 68, 0.14); color: #2f9e44; } /* 양호 = 초록(2026-09-21 사용자 요청) */
 .risk-card-value { font-size: 14px; line-height: 1.5; word-break: keep-all; }
 .risk-card-basis { font-size: 12px; color: var(--muted); margin-top: 3px; }
 .risk-card-rank { font-size: 13px; margin-top: 4px; }
 .risk-card-rank .muted { font-size: 12px; }
 span.risk-bad { color: #e03131; font-weight: 700; }
 span.risk-warn { color: #f08c00; font-weight: 700; }
-span.risk-good { color: #2f6fed; font-weight: 700; }
+span.risk-good { color: #2f9e44; font-weight: 700; }
 .risk-more-btn { margin-top: 10px; background: none; border: none; padding: 0; color: var(--muted); font-size: 13px; font-weight: 700; cursor: pointer; }
 .risk-rank-list { list-style: none; margin: 8px 0 0; padding: 0; max-height: 360px; overflow-y: auto; }
 .risk-rank-row { display: flex; align-items: center; gap: 10px; padding: 8px 2px; border-top: 1px solid var(--border); font-size: 13px; cursor: pointer; }
@@ -3471,3 +3471,25 @@ span.risk-good { color: #2f6fed; font-weight: 700; }
 .risk-rank-val { flex: none; font-variant-numeric: tabular-nums; }
 .risk-note { font-size: 13px; }
 .risk-source { font-size: 11px; color: var(--muted); line-height: 1.5; margin: 4px 0 0; }
+
+/* 리스크 요약(2026-09-21) — 위험/주의 개수 + 문제 항목 줄, 누르면 아래 상세 카드로 이동 */
+.risk-summary { border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 12px; }
+.risk-sum-counts { display: flex; gap: 6px; margin-bottom: 10px; }
+.risk-sum-count { flex: 1; text-align: center; font-size: 11px; border-radius: 8px; padding: 7px 0; background: var(--border); color: var(--muted); }
+.risk-sum-count b { display: block; font-size: 17px; }
+.risk-sum-count.risk-bad { background: rgba(224, 49, 49, 0.12); color: #e03131; }
+.risk-sum-count.risk-warn { background: rgba(240, 140, 0, 0.14); color: #f08c00; }
+.risk-sum-count.risk-good { background: rgba(47, 158, 68, 0.12); color: #2f9e44; }
+.risk-sum-row { display: flex; align-items: center; gap: 8px; width: 100%; padding: 9px 2px; border: none; border-top: 1px solid var(--border); background: none; color: var(--text); font-size: 13px; text-align: left; cursor: pointer; }
+.risk-sum-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--muted); }
+.risk-sum-dot.risk-bad { background: #e03131; }
+.risk-sum-dot.risk-warn { background: #f08c00; }
+.risk-sum-dot.risk-good { background: #2f9e44; }
+.risk-sum-label { flex: none; width: 62px; }
+.risk-sum-value { flex: 1 1 auto; font-weight: 700; }
+.risk-sum-value.risk-bad { color: #e03131; }
+.risk-sum-value.risk-warn { color: #f08c00; }
+.risk-sum-value.risk-good { color: #2f9e44; }
+.risk-sum-note { flex: none; font-size: 11px; }
+.risk-sum-arrow { flex: none; color: var(--muted); font-size: 15px; }
+.risk-card-flash { box-shadow: 0 0 0 2px rgba(240, 140, 0, 0.55); transition: box-shadow 0.3s; }
