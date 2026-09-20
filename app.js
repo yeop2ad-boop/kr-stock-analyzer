@@ -19608,7 +19608,7 @@ async function renderRiskPanel(ticker) {
   const token = ++riskRenderToken;
   const box = el("riskSection");
   const isKr = /\.(KS|KQ)$/i.test(ticker);
-  el("riskHeading").textContent = "리스크";
+  el("riskHeading").textContent = "리스크 점검";
   box.innerHTML = `<p class="muted risk-note">리스크 데이터를 불러오는 중...</p>`;
   const [ds, sectorRev] = await Promise.all([loadRiskDataset(isKr), getSectorRevenueData()]);
   if (token !== riskRenderToken) return;
@@ -19618,7 +19618,7 @@ async function renderRiskPanel(ticker) {
     box.innerHTML = `<p class="muted risk-note">이 종목은 리스크 점검 대상(${isKr ? "코스피200·코스닥150" : "S&P500"})에 없거나 임직원 공시를 찾지 못했습니다.</p>`;
     return;
   }
-  el("riskHeading").innerHTML = `리스크<span class="srt-asof">${escapeHtml(self.headNote || self.payNote || "")} 기준</span>`;
+  el("riskHeading").innerHTML = `리스크 점검<span class="srt-asof">${escapeHtml(self.headNote || self.payNote || "")} 기준</span>`;
 
   // ① 임금: 변화율이 낮은 순(감소폭 큰 회사가 1위) — 감소·동결만 순위에 올림
   const salaryAll = items.map((r) => ({ ...r, _pct: riskPct(r.pay, r.payPrev) })).filter((r) => r._pct != null);
@@ -19636,7 +19636,9 @@ async function renderRiskPanel(ticker) {
     hc == null ? null : hc < 0 ? { cls: "risk-bad", label: "감소" } : hc === 0 ? { cls: "risk-warn", label: "변동 없음" } : { cls: "risk-good", label: "증가" };
   const headPct = riskPct(self.headcount, self.headcountPrev);
 
-  const chip = (g) => (g ? `<span class="risk-chip ${g.cls}">${g.label}</span>` : `<span class="risk-chip">자료 없음</span>`);
+  // 위험(빨강)으로 분류된 항목은 한눈에 알아보도록 경고 아이콘을 붙인다(2026-09-21 사용자 요청)
+  const chip = (g) =>
+    g ? `<span class="risk-chip ${g.cls}">${g.cls === "risk-bad" ? "⚠️ " : ""}${g.label}</span>` : `<span class="risk-chip">자료 없음</span>`;
   // C안 요약(2026-09-21 사용자 선택): 위에서 위험/주의/양호 개수와 '문제 있는 항목'만 먼저 보여주고,
   // 한 줄을 누르면 아래 해당 상세 카드로 이동해 펼쳐진다. 각 카드를 만들면서 여기에 한 줄씩 쌓는다.
   const riskSummary = [];
@@ -19964,8 +19966,14 @@ async function renderRiskPanel(ticker) {
   const counts = [0, 0, 0];
   sorted.forEach((r) => counts[sevOf(r)]++);
   const summaryRowHtml = (r, hidden) =>
-    `<button type="button" class="risk-sum-row${hidden ? " is-rest" : ""}" data-risk-goto="${r.key}"${hidden ? ' style="display:none;"' : ""}>
-      <span class="risk-sum-dot ${r.grade ? r.grade.cls : "risk-none"}"></span>
+    `<button type="button" class="risk-sum-row${hidden ? " is-rest" : ""}${r.grade && r.grade.cls === "risk-bad" ? " is-danger" : ""}" data-risk-goto="${
+      r.key
+    }"${hidden ? ' style="display:none;"' : ""}>
+      ${
+        r.grade && r.grade.cls === "risk-bad"
+          ? `<span class="risk-sum-warn" aria-label="위험">⚠️</span>`
+          : `<span class="risk-sum-dot ${r.grade ? r.grade.cls : "risk-none"}"></span>`
+      }
       <span class="risk-sum-label">${escapeHtml(r.label)}</span>
       <span class="risk-sum-value ${/^\+/.test(r.value) ? "up" : /^[-−]/.test(r.value) ? "down" : r.grade ? r.grade.cls : ""}">${escapeHtml(r.value)}</span>
       <span class="risk-sum-note muted">${escapeHtml(r.note || "")}</span>
@@ -19974,7 +19982,7 @@ async function renderRiskPanel(ticker) {
   const restCount = counts[2];
   const summaryBlock = `<div class="risk-summary">
       <div class="risk-sum-counts">
-        <span class="risk-sum-count risk-bad"><b>${counts[0]}</b>위험</span>
+        <span class="risk-sum-count risk-bad"><b>${counts[0]}</b>⚠️ 위험</span>
         <span class="risk-sum-count risk-warn"><b>${counts[1]}</b>주의</span>
         <span class="risk-sum-count risk-good"><b>${counts[2]}</b>양호</span>
       </div>
