@@ -13,3 +13,4 @@ sector-map/scripts/ticker-price-map.json
 sector-map/scripts/strategy-series-cache.json
 sector-map/scripts/ipo-universe-cache.json
 sector-map/scripts/ipo-raw.json
+__pycache__/
