@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-21T00:00:01Z",
-  "dateKst": "2026-09-21",
+  "generatedAt": "2026-09-21T15:08:02Z",
+  "dateKst": "2026-09-22",
   "us": {
     "dateKst": "2026-09-21",
     "day": [
@@ -28653,7 +28653,7 @@
     }
   },
   "kr": {
-    "dateKst": "2026-09-20",
+    "dateKst": "2026-09-22",
     "day": [
       {
         "key": "dollarVolume",
@@ -28780,8 +28780,8 @@
         "key": "marketCap",
         "n": 348,
         "top": 15,
-        "bot": 12,
-        "tot": 27,
+        "bot": 13,
+        "tot": 28,
         "exp": 14.4,
         "max": 100,
         "topN": 50,
@@ -28824,8 +28824,8 @@
         "key": "per",
         "n": 278,
         "top": 6,
-        "bot": 10,
-        "tot": 16,
+        "bot": 11,
+        "tot": 17,
         "exp": 18.0,
         "max": 100,
         "topN": 50,
@@ -29002,8 +29002,8 @@
         "key": "marketCap",
         "n": 348,
         "top": 7,
-        "bot": 8,
-        "tot": 15,
+        "bot": 9,
+        "tot": 16,
         "exp": 14.4,
         "max": 100,
         "topN": 50,
@@ -29113,9 +29113,9 @@
       {
         "key": "dividendYield",
         "n": 348,
-        "top": 5,
+        "top": 6,
         "bot": 22,
-        "tot": 27,
+        "tot": 28,
         "exp": 14.4,
         "max": 100,
         "topN": 50,
@@ -29313,9 +29313,9 @@
       {
         "key": "dividendYield",
         "n": 348,
-        "top": 7,
+        "top": 6,
         "bot": 22,
-        "tot": 29,
+        "tot": 28,
         "exp": 14.4,
         "max": 100,
         "topN": 50,
