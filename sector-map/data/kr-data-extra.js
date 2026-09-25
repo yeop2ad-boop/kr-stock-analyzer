@@ -337,7 +337,7 @@ const KR_EXTRA_DATA = {
       "operatingMargin": 10.7,
       "roe": 3.3,
       "debtRatio": 36.1,
-      "week52RangePct": 1.7
+      "week52RangePct": 1.8
     },
     {
       "symbol": "111770.KS",
@@ -1079,7 +1079,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -48311.0,
       "dividendYield": 1.66,
-      "dollarVolume": 7218943200.0,
+      "dollarVolume": 7076811000.0,
       "revenueGrowth": 35.48,
       "netIncomeGrowth": 154.2,
       "cashFlowGrowth": -53.2,
@@ -2131,7 +2131,7 @@ const KR_EXTRA_DATA = {
       "operatingMargin": 11.2,
       "roe": 0.9,
       "debtRatio": 112.3,
-      "week52RangePct": 2.8
+      "week52RangePct": 2.9
     },
     {
       "symbol": "298050.KS",
@@ -2235,7 +2235,7 @@ const KR_EXTRA_DATA = {
       "operatingMargin": -3.9,
       "roe": 0.7,
       "debtRatio": 20.7,
-      "week52RangePct": 5.6
+      "week52RangePct": 5.9
     },
     {
       "symbol": "000670.KS",
@@ -2417,7 +2417,7 @@ const KR_EXTRA_DATA = {
       "operatingMargin": 15.6,
       "roe": 4.4,
       "debtRatio": 20.4,
-      "week52RangePct": 52.1
+      "week52RangePct": 53.0
     },
     {
       "symbol": "006650.KS",
@@ -2599,7 +2599,7 @@ const KR_EXTRA_DATA = {
       "operatingMargin": 32.2,
       "roe": 2.7,
       "debtRatio": 69.8,
-      "week52RangePct": 41.0
+      "week52RangePct": 40.4
     },
     {
       "symbol": "241710.KQ",
@@ -2743,7 +2743,7 @@ const KR_EXTRA_DATA = {
       "per": 100.98,
       "eps": 1219.0,
       "dividendYield": 0.65,
-      "dollarVolume": 13224756100.0,
+      "dollarVolume": 13431194800.0,
       "revenueGrowth": 150.81,
       "netIncomeGrowth": 330.2,
       "cashFlowGrowth": 19561.07,
@@ -3003,7 +3003,7 @@ const KR_EXTRA_DATA = {
       "per": 169.06,
       "eps": 307.0,
       "dividendYield": 0.1,
-      "dollarVolume": 20950992000.0,
+      "dollarVolume": 21618996900.0,
       "revenueGrowth": -21.83,
       "netIncomeGrowth": -307.47,
       "cashFlowGrowth": -170.04,
@@ -4705,7 +4705,7 @@ const KR_EXTRA_DATA = {
       "operatingMargin": 12.0,
       "roe": 5.7,
       "debtRatio": 60.4,
-      "week52RangePct": 20.2
+      "week52RangePct": 20.3
     },
     {
       "symbol": "067160.KQ",
@@ -4757,7 +4757,7 @@ const KR_EXTRA_DATA = {
       "operatingMargin": 9.9,
       "roe": 3.3,
       "debtRatio": 56.9,
-      "week52RangePct": 10.9
+      "week52RangePct": 11.2
     },
     {
       "symbol": "348370.KQ",
@@ -5095,7 +5095,7 @@ const KR_EXTRA_DATA = {
       "operatingMargin": 2.2,
       "roe": -1.8,
       "debtRatio": 20.0,
-      "week52RangePct": 19.6
+      "week52RangePct": 20.0
     },
     {
       "symbol": "194480.KQ",
@@ -5121,7 +5121,7 @@ const KR_EXTRA_DATA = {
       "operatingMargin": -30.3,
       "roe": -10.9,
       "debtRatio": 102.6,
-      "week52RangePct": 2.9
+      "week52RangePct": 3.0
     },
     {
       "symbol": "000880.KS",
@@ -5151,5 +5151,5 @@ const KR_EXTRA_DATA = {
     }
   ],
   "ratiosUpdatedAt": "2026-08-25T11:29:54Z",
-  "generatedAt": "2026-09-24T13:30:49Z"
+  "generatedAt": "2026-09-25T13:30:54Z"
 };

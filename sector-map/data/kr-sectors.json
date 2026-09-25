@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-24T13:30:49Z",
+  "generatedAt": "2026-09-25T13:30:54Z",
   "count": 351,
   "companies": [
     {
@@ -742,7 +742,7 @@
       "per": 17.05,
       "eps": 10220.0,
       "dividendYield": 3.79,
-      "dollarVolume": 50667789900.0,
+      "dollarVolume": 46469077200.0,
       "revenueGrowth": 9.93,
       "netIncomeGrowth": 154.15,
       "cashFlowGrowth": 31.49,
@@ -1002,7 +1002,7 @@
       "per": 2.27,
       "eps": 13311.0,
       "dividendYield": 5.1,
-      "dollarVolume": 47887232250.0,
+      "dollarVolume": 45747589250.0,
       "revenueGrowth": -0.14,
       "netIncomeGrowth": -76.48,
       "cashFlowGrowth": -73.04,
@@ -1340,7 +1340,7 @@
       "per": 357.45,
       "eps": 4230.0,
       "dividendYield": 0.4,
-      "dollarVolume": 124006680000.0,
+      "dollarVolume": 119810880000.0,
       "revenueGrowth": 4.78,
       "netIncomeGrowth": 351.91,
       "cashFlowGrowth": -209.6,
@@ -1586,7 +1586,7 @@
       "operatingMargin": 8.5,
       "roe": 5.1,
       "debtRatio": 199.9,
-      "week52RangePct": 81.7
+      "week52RangePct": 81.6
     },
     {
       "symbol": "003670.KS",
@@ -3666,7 +3666,7 @@
       "operatingMargin": 10.7,
       "roe": 3.3,
       "debtRatio": 36.1,
-      "week52RangePct": 1.7
+      "week52RangePct": 1.8
     },
     {
       "symbol": "120110.KS",
@@ -3758,7 +3758,7 @@
       "per": null,
       "eps": -48311.0,
       "dividendYield": 1.66,
-      "dollarVolume": 7218943200.0,
+      "dollarVolume": 7076811000.0,
       "revenueGrowth": 35.48,
       "netIncomeGrowth": 154.2,
       "cashFlowGrowth": -53.2,
@@ -4602,7 +4602,7 @@
       "operatingMargin": 11.2,
       "roe": 0.9,
       "debtRatio": 112.3,
-      "week52RangePct": 2.8
+      "week52RangePct": 2.9
     },
     {
       "symbol": "006040.KS",
@@ -4940,7 +4940,7 @@
       "operatingMargin": -3.9,
       "roe": 0.7,
       "debtRatio": 20.7,
-      "week52RangePct": 5.6
+      "week52RangePct": 5.9
     },
     {
       "symbol": "071320.KS",
@@ -5044,7 +5044,7 @@
       "operatingMargin": 15.6,
       "roe": 4.4,
       "debtRatio": 20.4,
-      "week52RangePct": 52.1
+      "week52RangePct": 53.0
     },
     {
       "symbol": "003030.KS",
@@ -5424,7 +5424,7 @@
       "operatingMargin": -15.8,
       "roe": -0.1,
       "debtRatio": 9.1,
-      "week52RangePct": 20.1
+      "week52RangePct": 19.4
     },
     {
       "symbol": "039030.KQ",
@@ -5892,7 +5892,7 @@
       "operatingMargin": 20.8,
       "roe": 13.0,
       "debtRatio": 291.1,
-      "week52RangePct": 67.6
+      "week52RangePct": 67.2
     },
     {
       "symbol": "095340.KQ",
@@ -6828,7 +6828,7 @@
       "operatingMargin": 32.2,
       "roe": 2.7,
       "debtRatio": 69.8,
-      "week52RangePct": 41.0
+      "week52RangePct": 40.4
     },
     {
       "symbol": "466100.KQ",
@@ -6998,7 +6998,7 @@
       "per": 100.98,
       "eps": 1219.0,
       "dividendYield": 0.65,
-      "dollarVolume": 13224756100.0,
+      "dollarVolume": 13431194800.0,
       "revenueGrowth": 150.81,
       "netIncomeGrowth": 330.2,
       "cashFlowGrowth": 19561.07,
@@ -7726,7 +7726,7 @@
       "per": 169.06,
       "eps": 307.0,
       "dividendYield": 0.1,
-      "dollarVolume": 20950992000.0,
+      "dollarVolume": 21618996900.0,
       "revenueGrowth": -21.83,
       "netIncomeGrowth": -307.47,
       "cashFlowGrowth": -170.04,
@@ -8154,7 +8154,7 @@
       "operatingMargin": 9.9,
       "roe": 3.3,
       "debtRatio": 56.9,
-      "week52RangePct": 10.9
+      "week52RangePct": 11.2
     },
     {
       "symbol": "033500.KQ",
@@ -8518,7 +8518,7 @@
       "operatingMargin": 12.0,
       "roe": 5.7,
       "debtRatio": 60.4,
-      "week52RangePct": 20.2
+      "week52RangePct": 20.3
     },
     {
       "symbol": "348210.KQ",
@@ -9012,7 +9012,7 @@
       "operatingMargin": -30.3,
       "roe": -10.9,
       "debtRatio": 102.6,
-      "week52RangePct": 2.9
+      "week52RangePct": 3.0
     },
     {
       "symbol": "101730.KQ",
@@ -9090,7 +9090,7 @@
       "operatingMargin": 2.2,
       "roe": -1.8,
       "debtRatio": 20.0,
-      "week52RangePct": 19.6
+      "week52RangePct": 20.0
     },
     {
       "symbol": "0009K0.KQ",
@@ -9114,5 +9114,5 @@
       "week52RangePct": 6.4
     }
   ],
-  "ratiosUpdatedAt": "2026-09-24T13:33:08Z"
+  "ratiosUpdatedAt": "2026-09-25T13:32:38Z"
 }
