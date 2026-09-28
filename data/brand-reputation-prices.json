@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-27T00:48:13.833Z",
+  "updatedAt": "2026-09-28T01:04:37.546Z",
   "prices": {
     "CHWY": {
       "price": 18.27,
@@ -14,10 +14,10 @@
       "oneYearChangeAmt": -7.760009765625
     },
     "005930.KS": {
-      "price": 285500,
+      "price": 277500,
       "currency": "KRW",
-      "oneYearReturn": 237.0720188902007,
-      "oneYearChangeAmt": 200800
+      "oneYearReturn": 229.5724465558195,
+      "oneYearChangeAmt": 193300
     },
     "NVDA": {
       "price": 225.07,
