@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-29T15:22:18.884Z",
+  "updatedAt": "2026-09-30T15:37:06.147Z",
   "dataYear": 2025,
   "buybackPeriod": {
-    "from": "20250929",
-    "to": "20260929"
+    "from": "20250930",
+    "to": "20260930"
   },
   "source": "DART Open API(opendart.fss.or.kr) — 사업보고서 임직원 현황(empSttus), 자기주식취득결정(tsstkAqDecsn)",
   "items": [
@@ -36,8 +36,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -50,7 +50,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1835454429685000,
+        "marketCap": 1808511979341000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -86,8 +86,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 1,
           "amount": 40023070290000,
@@ -100,10 +100,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1284924174225000,
-        "rightsRatio": 3.114819620709514,
+        "marketCap": 1292932200240000,
+        "rightsRatio": 3.095527382067732,
         "cbRatio": null,
-        "totalRatio": 3.114819620709514
+        "totalRatio": 3.095527382067732
       },
       "sector": "기술"
     },
@@ -136,8 +136,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -150,7 +150,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 147437717934000,
+        "marketCap": 150207120507000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -186,8 +186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -200,7 +200,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 118573839040000,
+        "marketCap": 117409828840000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -236,8 +236,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -250,7 +250,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 92886537800000,
+        "marketCap": 91559587260000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -286,8 +286,8 @@
         "reportCode": "11011"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -300,7 +300,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 66183674870500,
+        "marketCap": 64390802986400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -336,8 +336,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -350,7 +350,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 53647190207000,
+        "marketCap": 51511012497400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -386,8 +386,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -400,7 +400,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 52182161812000,
+        "marketCap": 51924344807000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -436,8 +436,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -450,7 +450,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 59148226230000,
+        "marketCap": 58548171761000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -486,8 +486,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -500,7 +500,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 51045073889600,
+        "marketCap": 52261957708800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -536,8 +536,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -550,7 +550,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 45077916100000,
+        "marketCap": 43834387380000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -586,8 +586,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -636,8 +636,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -650,7 +650,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 36605336120100,
+        "marketCap": 35171424210000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -686,8 +686,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -700,7 +700,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 42005950686000,
+        "marketCap": 42334764390000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -736,8 +736,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -750,7 +750,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 41083914850800,
+        "marketCap": 40808338004400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -786,8 +786,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 1,
           "amount": 1480899838000,
@@ -800,10 +800,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 29138140559600,
-        "rightsRatio": 5.082341596132136,
+        "marketCap": 28973602804900,
+        "rightsRatio": 5.111203628944451,
         "cbRatio": null,
-        "totalRatio": 5.082341596132136
+        "totalRatio": 5.111203628944451
       },
       "sector": "커뮤니케이션"
     },
@@ -836,8 +836,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -850,7 +850,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 52166473299500,
+        "marketCap": 50640087678000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -886,8 +886,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -900,7 +900,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 34719143903500,
+        "marketCap": 34556524962500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -936,8 +936,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -950,7 +950,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 24603617408000,
+        "marketCap": 24765483312000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -986,8 +986,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1000,7 +1000,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 26720378048000,
+        "marketCap": 25619263568000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1036,8 +1036,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1050,10 +1050,10 @@
           "latestDate": "2026-08-03",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 31949894344000,
+        "marketCap": 32058938352000,
         "rightsRatio": null,
-        "cbRatio": 0.02723201493664382,
-        "totalRatio": 0.02723201493664382
+        "cbRatio": 0.027139389035498774,
+        "totalRatio": 0.027139389035498774
       },
       "sector": "산업재"
     },
@@ -1086,8 +1086,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1100,7 +1100,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 26007877288000,
+        "marketCap": 25211311368000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1136,8 +1136,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1150,7 +1150,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 82485000000000,
+        "marketCap": 83538000000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1186,8 +1186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1200,7 +1200,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 24548098935000,
+        "marketCap": 23863203370000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1236,8 +1236,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1286,8 +1286,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 1,
           "amount": 3000940000000,
@@ -1300,10 +1300,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 64112967135000,
-        "rightsRatio": 4.680706780706383,
+        "marketCap": 64390712841000,
+        "rightsRatio": 4.660516816159842,
         "cbRatio": null,
-        "totalRatio": 4.680706780706383
+        "totalRatio": 4.660516816159842
       },
       "sector": "헬스케어"
     },
@@ -1336,8 +1336,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1386,8 +1386,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1400,7 +1400,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 45016160046000,
+        "marketCap": 45488357529000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1436,8 +1436,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1450,7 +1450,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 18395212803200,
+        "marketCap": 18291402347200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1486,8 +1486,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1500,7 +1500,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 18514902568600,
+        "marketCap": 18386028536800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1536,8 +1536,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1550,7 +1550,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 17012619953850,
+        "marketCap": 17338262446500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1586,8 +1586,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1600,7 +1600,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 26110121764000,
+        "marketCap": 25821457793000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1636,8 +1636,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1650,7 +1650,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9415325488100,
+        "marketCap": 9373417511150,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1686,8 +1686,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1700,7 +1700,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 17648085250000,
+        "marketCap": 17718677591000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1736,8 +1736,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1750,7 +1750,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 24082818898200,
+        "marketCap": 24144098335600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1786,8 +1786,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1800,7 +1800,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 13331947136500,
+        "marketCap": 13180734125500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1836,8 +1836,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 1,
           "amount": 531968150000,
@@ -1850,10 +1850,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 14811079500000,
-        "rightsRatio": 3.5916905989195453,
+        "marketCap": 14898460500000,
+        "rightsRatio": 3.5706249649082875,
         "cbRatio": null,
-        "totalRatio": 3.5916905989195453
+        "totalRatio": 3.5706249649082875
       },
       "sector": "산업재"
     },
@@ -1886,8 +1886,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1900,7 +1900,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 12256679503900,
+        "marketCap": 12180279898800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1936,8 +1936,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1950,7 +1950,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 19323118717700,
+        "marketCap": 19226824106150,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1986,8 +1986,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2000,7 +2000,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 14239688645000,
+        "marketCap": 14310357075000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2036,8 +2036,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2050,7 +2050,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 16842789245600,
+        "marketCap": 16752074043200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2086,8 +2086,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2100,7 +2100,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 22446208919400,
+        "marketCap": 22302092008200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2136,8 +2136,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2150,7 +2150,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 23902956504000,
+        "marketCap": 24329795013000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2186,8 +2186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2200,10 +2200,10 @@
           "latestDate": "2026-02-05",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 12418328631800,
+        "marketCap": 12301358503400,
         "rightsRatio": null,
-        "cbRatio": 4.0263067182779695,
-        "totalRatio": 4.0263067182779695
+        "cbRatio": 4.064591726692656,
+        "totalRatio": 4.064591726692656
       },
       "sector": "산업재"
     },
@@ -2236,8 +2236,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2250,10 +2250,10 @@
           "latestDate": "2025-10-22",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 24846947122600,
+        "marketCap": 25340820643200,
         "rightsRatio": null,
-        "cbRatio": 2.4148215655606653,
-        "totalRatio": 2.4148215655606653
+        "cbRatio": 2.367758510855518,
+        "totalRatio": 2.367758510855518
       },
       "sector": "에너지"
     },
@@ -2286,8 +2286,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2300,7 +2300,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 13568612437500,
+        "marketCap": 13699619730000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2336,8 +2336,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 1,
           "amount": 2833562221325,
@@ -2350,10 +2350,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 21698398848000,
-        "rightsRatio": 13.058853978924704,
+        "marketCap": 21820758240000,
+        "rightsRatio": 12.985626760351293,
         "cbRatio": null,
-        "totalRatio": 13.058853978924704
+        "totalRatio": 12.985626760351293
       },
       "sector": "소재"
     },
@@ -2386,8 +2386,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2400,10 +2400,10 @@
           "latestDate": "2026-04-15",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 16752293700000,
+        "marketCap": 16945738200000,
         "rightsRatio": null,
-        "cbRatio": 7.282584831950505,
-        "totalRatio": 7.282584831950505
+        "cbRatio": 7.199450301905408,
+        "totalRatio": 7.199450301905408
       },
       "sector": "기술"
     },
@@ -2436,8 +2436,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2450,7 +2450,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 23251929277100,
+        "marketCap": 22130509929900,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2486,8 +2486,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2500,10 +2500,10 @@
           "latestDate": "2026-06-09",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 13028624505000,
+        "marketCap": 13084302387500,
         "rightsRatio": null,
-        "cbRatio": 3.837703664021592,
-        "totalRatio": 3.837703664021592
+        "cbRatio": 3.821373010132138,
+        "totalRatio": 3.821373010132138
       },
       "sector": "산업재"
     },
@@ -2536,8 +2536,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2550,7 +2550,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 13843736595000,
+        "marketCap": 13346781948000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2586,8 +2586,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2600,7 +2600,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 18788382091000,
+        "marketCap": 18611518248000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2636,8 +2636,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2650,7 +2650,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9440193827000,
+        "marketCap": 9334716801000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2686,8 +2686,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2700,7 +2700,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9241400000000,
+        "marketCap": 9349200000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2736,8 +2736,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2750,7 +2750,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 14812500000000,
+        "marketCap": 14760000000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2786,8 +2786,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2800,7 +2800,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 13293974400000,
+        "marketCap": 12836040000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2836,8 +2836,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2850,7 +2850,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9648701835750,
+        "marketCap": 9477169358670,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2886,8 +2886,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2900,7 +2900,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 19807997370000,
+        "marketCap": 19666511674500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2936,8 +2936,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2950,7 +2950,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 11562127154000,
+        "marketCap": 11783059520000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2986,8 +2986,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3000,7 +3000,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9419141219700,
+        "marketCap": 9239006661900,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3036,8 +3036,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3050,7 +3050,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 17765564577600,
+        "marketCap": 18204637466400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3086,8 +3086,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3100,7 +3100,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 15601160849000,
+        "marketCap": 15903577878000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3136,8 +3136,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3150,7 +3150,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 8662287842000,
+        "marketCap": 8449401106900,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3186,8 +3186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3200,7 +3200,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7903050000000,
+        "marketCap": 7894120000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3236,8 +3236,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3250,7 +3250,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9227943375000,
+        "marketCap": 9137547195000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3286,8 +3286,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3300,7 +3300,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 16506715446900,
+        "marketCap": 16108002513400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3336,8 +3336,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3350,7 +3350,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9033088815600,
+        "marketCap": 8781064311200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3386,8 +3386,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3400,7 +3400,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 13444815465900,
+        "marketCap": 14024494575000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3436,8 +3436,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3450,7 +3450,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 8750361896500,
+        "marketCap": 8556217575500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3486,8 +3486,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3500,7 +3500,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 10097740306500,
+        "marketCap": 9958397064000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3536,8 +3536,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3550,7 +3550,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7234380223000,
+        "marketCap": 7084703390800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3586,8 +3586,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3600,7 +3600,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 5373952013000,
+        "marketCap": 5359228856800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3636,8 +3636,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 1,
           "amount": 1171300000000,
@@ -3650,10 +3650,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6479403710000,
-        "rightsRatio": 18.07728075644171,
+        "marketCap": 6758516485200,
+        "rightsRatio": 17.33072638891904,
         "cbRatio": null,
-        "totalRatio": 18.07728075644171
+        "totalRatio": 17.33072638891904
       },
       "sector": "기술"
     },
@@ -3686,8 +3686,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3700,7 +3700,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7294927429400,
+        "marketCap": 7197336427000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3736,8 +3736,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3750,7 +3750,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6738765740400,
+        "marketCap": 6649594927200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3786,8 +3786,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3800,7 +3800,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6845762500500,
+        "marketCap": 6738588136500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3836,8 +3836,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3850,7 +3850,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 8328564918500,
+        "marketCap": 8077599052000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3886,8 +3886,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3900,7 +3900,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 5737083849600,
+        "marketCap": 5402884790400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3936,8 +3936,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 1,
           "amount": 399999989600,
@@ -3950,10 +3950,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9849402596250,
-        "rightsRatio": 4.061159909863909,
+        "marketCap": 9755598762000,
+        "rightsRatio": 4.100209524381831,
         "cbRatio": null,
-        "totalRatio": 4.061159909863909
+        "totalRatio": 4.100209524381831
       },
       "sector": "금융"
     },
@@ -3986,8 +3986,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4000,7 +4000,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6281530433600,
+        "marketCap": 6166934945960,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4036,8 +4036,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4050,7 +4050,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 10647442062500,
+        "marketCap": 10669857730000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4086,8 +4086,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4100,7 +4100,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4042105228000,
+        "marketCap": 4172796852000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4136,8 +4136,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4150,7 +4150,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 5101776422520,
+        "marketCap": 4940406365360,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4186,8 +4186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4200,7 +4200,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4091805473000,
+        "marketCap": 4053020587000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4236,8 +4236,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4250,7 +4250,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6714196196400,
+        "marketCap": 6665753222400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4286,8 +4286,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4300,7 +4300,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 5987169926400,
+        "marketCap": 5924803573000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4336,8 +4336,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4350,7 +4350,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 5865662425000,
+        "marketCap": 5826505800000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4386,8 +4386,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4400,7 +4400,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 5481405443000,
+        "marketCap": 5509276996100,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4436,8 +4436,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4450,7 +4450,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4385231320000,
+        "marketCap": 4509948908000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4486,8 +4486,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4500,7 +4500,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7137084956400,
+        "marketCap": 7289112672800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4536,8 +4536,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4550,7 +4550,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 5283401870400,
+        "marketCap": 5225973589200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4586,8 +4586,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4600,7 +4600,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4170000000000,
+        "marketCap": 4165000000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4636,8 +4636,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4650,7 +4650,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6259196082000,
+        "marketCap": 6456694987500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4686,8 +4686,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4700,7 +4700,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6081941402400,
+        "marketCap": 5942726720800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4736,8 +4736,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4750,7 +4750,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3920725000000,
+        "marketCap": 3752133825000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4786,8 +4786,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4800,7 +4800,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 10146552920000,
+        "marketCap": 10132841362000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4836,8 +4836,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4850,7 +4850,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4407459862000,
+        "marketCap": 4225627437200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4886,8 +4886,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4900,7 +4900,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4104739520000,
+        "marketCap": 3943481896000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4936,8 +4936,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4950,7 +4950,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3883458654250,
+        "marketCap": 4087851215000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4986,8 +4986,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5000,7 +5000,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2981011540000,
+        "marketCap": 2950324656500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5036,8 +5036,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5050,7 +5050,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4440168630000,
+        "marketCap": 4446650628000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5086,8 +5086,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5100,7 +5100,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9272180092800,
+        "marketCap": 9698291310300,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5136,8 +5136,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5150,7 +5150,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6428868498000,
+        "marketCap": 6327426786000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5186,8 +5186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5236,8 +5236,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5250,7 +5250,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3056351000760,
+        "marketCap": 2960738747820,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5286,8 +5286,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5300,7 +5300,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3540761550000,
+        "marketCap": 3446341242000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5336,8 +5336,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5350,7 +5350,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2346428906000,
+        "marketCap": 2317859364000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5386,8 +5386,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 1,
           "amount": 1167135000000,
@@ -5400,10 +5400,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3483883416000,
-        "rightsRatio": 33.50097751950722,
+        "marketCap": 3760321991400,
+        "rightsRatio": 31.03816648332995,
         "cbRatio": null,
-        "totalRatio": 33.50097751950722
+        "totalRatio": 31.03816648332995
       },
       "sector": "소재"
     },
@@ -5436,8 +5436,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5450,7 +5450,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2196272065250,
+        "marketCap": 2239435793700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5486,8 +5486,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5500,7 +5500,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2951875662000,
+        "marketCap": 2921831126000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5536,8 +5536,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5550,7 +5550,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3148421205000,
+        "marketCap": 3029291754000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5586,8 +5586,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5600,7 +5600,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3467491626500,
+        "marketCap": 3460137455500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5636,8 +5636,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5650,7 +5650,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2799793165000,
+        "marketCap": 2930147907500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5686,8 +5686,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5700,7 +5700,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2660943069400,
+        "marketCap": 2635669526000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5736,8 +5736,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5750,7 +5750,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4380605157500,
+        "marketCap": 4004910032500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5786,8 +5786,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5800,7 +5800,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2823154956500,
+        "marketCap": 2792725741400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5836,8 +5836,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5850,7 +5850,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2155331808000,
+        "marketCap": 2143592528000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5886,8 +5886,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5900,7 +5900,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2618010285800,
+        "marketCap": 2597733097700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5936,8 +5936,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5950,7 +5950,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4607068455500,
+        "marketCap": 4664133713000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5986,8 +5986,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6000,7 +6000,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3701596507200,
+        "marketCap": 3631244526800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6036,8 +6036,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6050,7 +6050,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 5419320515000,
+        "marketCap": 5385534227500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6086,8 +6086,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6100,7 +6100,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3026023963200,
+        "marketCap": 2928135705600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6136,8 +6136,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6150,7 +6150,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2859936591720,
+        "marketCap": 2826243645040,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6186,8 +6186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6200,7 +6200,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2635150404700,
+        "marketCap": 2630741341000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6236,8 +6236,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6250,7 +6250,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2496924541000,
+        "marketCap": 2454346047000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6286,8 +6286,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6300,7 +6300,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1928761416000,
+        "marketCap": 1915367239500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6336,8 +6336,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6350,7 +6350,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2423693199900,
+        "marketCap": 2455444639200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6386,8 +6386,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6400,7 +6400,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3098277907000,
+        "marketCap": 3037185103200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6436,8 +6436,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6450,7 +6450,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2127782256200,
+        "marketCap": 2119587972800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6486,8 +6486,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6500,7 +6500,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1491947464200,
+        "marketCap": 1460401311350,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6536,8 +6536,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6550,7 +6550,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3047046218400,
+        "marketCap": 3084466084240,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6566,7 +6566,7 @@
       "headcountPrevYear": 1474,
       "headcountChange": 37,
       "avgSalaryPrevYear": 122177747.62550882,
-      "buybackAmount": 0,
+      "buybackAmount": 40000000000,
       "recent": {
         "headcount": 1538,
         "avgSalary": 43571521.45643693,
@@ -6586,8 +6586,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6600,7 +6600,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2056937103000,
+        "marketCap": 2155872556500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6636,8 +6636,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6650,7 +6650,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2054163040000,
+        "marketCap": 2407599916000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6686,8 +6686,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6700,7 +6700,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3570038910000,
+        "marketCap": 3611073840000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6736,8 +6736,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6750,7 +6750,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2291845935600,
+        "marketCap": 2246907780000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6786,8 +6786,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6800,7 +6800,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2035821788000,
+        "marketCap": 1982943300000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6836,8 +6836,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6850,7 +6850,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4535204537500,
+        "marketCap": 4503191329000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6886,8 +6886,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6900,7 +6900,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3284040166400,
+        "marketCap": 3612444183040,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6936,8 +6936,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6950,7 +6950,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1601093525600,
+        "marketCap": 1648583587800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6986,8 +6986,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7000,7 +7000,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2125438711200,
+        "marketCap": 2146524412700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7036,8 +7036,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7050,7 +7050,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2969693494100,
+        "marketCap": 2956800468800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7086,8 +7086,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7100,7 +7100,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1504913565700,
+        "marketCap": 1515918418100,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7136,8 +7136,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7150,7 +7150,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1930059624000,
+        "marketCap": 1932216115200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7186,8 +7186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7200,7 +7200,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3015195227340,
+        "marketCap": 3022786353290,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7236,8 +7236,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7250,7 +7250,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2521595390600,
+        "marketCap": 2530028820000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7286,8 +7286,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7300,7 +7300,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2088000000000,
+        "marketCap": 1966500000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7336,8 +7336,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7350,7 +7350,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2815805765900,
+        "marketCap": 2831492706100,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7386,8 +7386,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7400,7 +7400,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2883605280000,
+        "marketCap": 2866642896000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7436,8 +7436,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7450,7 +7450,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2541527457000,
+        "marketCap": 2520822549000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7486,8 +7486,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7500,7 +7500,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1412340259500,
+        "marketCap": 1385742514500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7536,8 +7536,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7550,7 +7550,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1917830290500,
+        "marketCap": 1876047495500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7586,8 +7586,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7600,7 +7600,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1933376006800,
+        "marketCap": 1884635435200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7636,8 +7636,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7650,7 +7650,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2616213865200,
+        "marketCap": 2571235976400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7686,8 +7686,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7700,7 +7700,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2288956461400,
+        "marketCap": 2270534276600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7736,8 +7736,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7750,7 +7750,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1231765829000,
+        "marketCap": 1197430893000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7786,8 +7786,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7800,7 +7800,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1964860363080,
+        "marketCap": 1916026114290,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7836,8 +7836,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7850,7 +7850,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1408126107400,
+        "marketCap": 1396159030000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7886,8 +7886,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7900,7 +7900,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2587215000000,
+        "marketCap": 2527395000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7936,8 +7936,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7950,7 +7950,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1000303435560,
+        "marketCap": 1009873307300,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7986,8 +7986,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8000,10 +8000,10 @@
           "latestDate": "2025-10-23",
           "latestNote": "기명식 무보증 사모 전환사채"
         },
-        "marketCap": 1501574620000,
+        "marketCap": 1608829950000,
         "rightsRatio": null,
-        "cbRatio": 1.798112437462482,
-        "totalRatio": 1.798112437462482
+        "cbRatio": 1.6782382749649831,
+        "totalRatio": 1.6782382749649831
       },
       "sector": "소재"
     },
@@ -8036,8 +8036,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8050,7 +8050,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1406097246400,
+        "marketCap": 1403814621000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8086,8 +8086,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8100,7 +8100,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1104124500000,
+        "marketCap": 1100304000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8136,8 +8136,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8150,7 +8150,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2496892927500,
+        "marketCap": 2403898777500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8186,8 +8186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8236,8 +8236,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8250,7 +8250,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1266108863400,
+        "marketCap": 1246762548000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8286,8 +8286,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8300,7 +8300,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 760834424000,
+        "marketCap": 765884210000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8336,8 +8336,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8350,7 +8350,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2367953600000,
+        "marketCap": 2377425414400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8386,8 +8386,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8400,7 +8400,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1234622771000,
+        "marketCap": 1223116501000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8436,8 +8436,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8450,7 +8450,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1376476893000,
+        "marketCap": 1419006185000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8486,8 +8486,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8500,7 +8500,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 888899032000,
+        "marketCap": 886138476000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8536,8 +8536,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8550,7 +8550,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1052815568100,
+        "marketCap": 1037117522850,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8586,8 +8586,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8600,7 +8600,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1458798811000,
+        "marketCap": 1395634326400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8636,8 +8636,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8650,7 +8650,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1624553990700,
+        "marketCap": 1612002249050,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8686,8 +8686,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8700,7 +8700,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 889346135500,
+        "marketCap": 885892364100,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8736,8 +8736,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8750,7 +8750,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1076866219060,
+        "marketCap": 1053347631880,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8786,8 +8786,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8800,7 +8800,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1085107668500,
+        "marketCap": 1083388005000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8836,8 +8836,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8850,7 +8850,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 828960152770,
+        "marketCap": 816705198030,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8886,8 +8886,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8900,7 +8900,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1571414224400,
+        "marketCap": 1558171969700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8936,8 +8936,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8950,7 +8950,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 666960877500,
+        "marketCap": 676808622000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8986,8 +8986,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9000,7 +9000,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1164932664800,
+        "marketCap": 1141671229800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9036,8 +9036,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9050,7 +9050,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 626436292000,
+        "marketCap": 622625009250,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9086,8 +9086,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9100,10 +9100,10 @@
           "latestDate": "2026-04-08",
           "latestNote": "무기명식 무이권부 무보증 사모 전환사채"
         },
-        "marketCap": 626980130180,
+        "marketCap": 604341312750,
         "rightsRatio": null,
-        "cbRatio": 7.974734380441287,
-        "totalRatio": 7.974734380441287
+        "cbRatio": 8.273470461994325,
+        "totalRatio": 8.273470461994325
       },
       "sector": "소재"
     },
@@ -9136,8 +9136,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9150,7 +9150,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 719479648800,
+        "marketCap": 726199570800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9186,8 +9186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9200,7 +9200,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 883349756800,
+        "marketCap": 878710314800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9236,8 +9236,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9250,7 +9250,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1194320813280,
+        "marketCap": 1190643717180,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9286,8 +9286,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9300,7 +9300,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 657456725000,
+        "marketCap": 633495706250,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9336,8 +9336,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9350,7 +9350,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 944887209200,
+        "marketCap": 918999888400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9386,8 +9386,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9436,8 +9436,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9450,7 +9450,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 390995761040,
+        "marketCap": 395988830680,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9486,8 +9486,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9500,7 +9500,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 729677211500,
+        "marketCap": 733265787950,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9536,8 +9536,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9550,7 +9550,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 918194399200,
+        "marketCap": 911247152800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9586,8 +9586,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9600,7 +9600,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 775089754300,
+        "marketCap": 759440673750,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9636,8 +9636,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9650,7 +9650,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 361336000000,
+        "marketCap": 360840000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9686,8 +9686,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9700,7 +9700,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 650750000000,
+        "marketCap": 649800000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9736,8 +9736,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9750,7 +9750,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 449299263200,
+        "marketCap": 475158213600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9786,8 +9786,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9800,7 +9800,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 338141584000,
+        "marketCap": 325994750400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9836,8 +9836,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9886,8 +9886,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9900,7 +9900,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 638393550600,
+        "marketCap": 621543042100,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9936,8 +9936,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9950,7 +9950,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 12028312984800,
+        "marketCap": 11867557229500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9986,8 +9986,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10000,7 +10000,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 17625019464000,
+        "marketCap": 17694546168000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10036,8 +10036,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10050,7 +10050,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 10589386782800,
+        "marketCap": 10831276328600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10086,8 +10086,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 1,
           "amount": 886138605000,
@@ -10100,10 +10100,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 10519535426500,
-        "rightsRatio": 8.423742770690312,
+        "marketCap": 10816977521500,
+        "rightsRatio": 8.192109147298279,
         "cbRatio": null,
-        "totalRatio": 8.423742770690312
+        "totalRatio": 8.192109147298279
       },
       "sector": "산업재"
     },
@@ -10136,8 +10136,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10150,7 +10150,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 10144050684000,
+        "marketCap": 10623836865000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10186,8 +10186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10200,10 +10200,10 @@
           "latestDate": "2026-08-05",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 5334963490450,
+        "marketCap": 5501058244200,
         "rightsRatio": null,
-        "cbRatio": 1.0309348901534994,
-        "totalRatio": 1.0309348901534994
+        "cbRatio": 0.999807628977367,
+        "totalRatio": 0.999807628977367
       },
       "sector": "헬스케어"
     },
@@ -10236,8 +10236,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10250,7 +10250,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3065803009100,
+        "marketCap": 3058829992400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10286,8 +10286,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10300,7 +10300,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6339836407000,
+        "marketCap": 6398223235000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10336,8 +10336,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10350,7 +10350,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 8080040857000,
+        "marketCap": 8109140644000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10386,8 +10386,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10400,7 +10400,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6104337025000,
+        "marketCap": 6406166000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10436,8 +10436,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10450,7 +10450,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 5578326600000,
+        "marketCap": 5570737040000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10486,8 +10486,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 1,
           "amount": 21724422700,
@@ -10500,10 +10500,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2717670634500,
-        "rightsRatio": 0.7993765846462436,
+        "marketCap": 2673570502500,
+        "rightsRatio": 0.8125621777950476,
         "cbRatio": null,
-        "totalRatio": 0.7993765846462436
+        "totalRatio": 0.8125621777950476
       },
       "sector": "헬스케어"
     },
@@ -10536,8 +10536,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10550,7 +10550,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4957304080000,
+        "marketCap": 5176725736000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10586,8 +10586,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10600,7 +10600,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4171182480000,
+        "marketCap": 4185818208000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10636,8 +10636,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10650,7 +10650,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 5682227494400,
+        "marketCap": 5611292985600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10686,8 +10686,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 1,
           "amount": 329999677600,
@@ -10700,10 +10700,10 @@
           "latestDate": "2026-07-22",
           "latestNote": "무기명식 무이권부 무보증 사모 전환사채"
         },
-        "marketCap": 2896944066000,
-        "rightsRatio": 11.391303044923893,
-        "cbRatio": 5.868252756247728,
-        "totalRatio": 17.25955580117162
+        "marketCap": 2907875930400,
+        "rightsRatio": 11.348478597386585,
+        "cbRatio": 5.846191655660331,
+        "totalRatio": 17.194670253046915
       },
       "sector": "헬스케어"
     },
@@ -10736,8 +10736,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10750,7 +10750,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3288323592000,
+        "marketCap": 3225985704000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10786,8 +10786,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10800,7 +10800,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4310247043200,
+        "marketCap": 4301557029000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10836,8 +10836,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10850,7 +10850,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3887980102600,
+        "marketCap": 4044810124800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10886,8 +10886,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10900,10 +10900,10 @@
           "latestDate": "2026-03-13",
           "latestNote": "무기명식 무이권부 무보증 사모 전환사채"
         },
-        "marketCap": 2593599008000,
+        "marketCap": 2637387043200,
         "rightsRatio": null,
-        "cbRatio": 1.7350407623228086,
-        "totalRatio": 1.7350407623228086
+        "cbRatio": 1.7062342107133623,
+        "totalRatio": 1.7062342107133623
       },
       "sector": "기술"
     },
@@ -10936,8 +10936,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10950,10 +10950,10 @@
           "latestDate": "2026-04-15",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 1826311288500,
+        "marketCap": 1821957745500,
         "rightsRatio": null,
-        "cbRatio": 12.402047856038315,
-        "totalRatio": 12.402047856038315
+        "cbRatio": 12.431682378991812,
+        "totalRatio": 12.431682378991812
       },
       "sector": "헬스케어"
     },
@@ -10986,8 +10986,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11000,10 +11000,10 @@
           "latestDate": "2026-08-05",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 2085644319860,
+        "marketCap": 2104464736200,
         "rightsRatio": null,
-        "cbRatio": 2.9727024598404093,
-        "totalRatio": 2.9727024598404093
+        "cbRatio": 2.9461173158906173,
+        "totalRatio": 2.9461173158906173
       },
       "sector": "산업재"
     },
@@ -11036,8 +11036,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 1,
           "amount": 180000016200,
@@ -11050,10 +11050,10 @@
           "latestDate": "2026-09-01",
           "latestNote": "무기명식 이권부 무보증 사모 영구 전환사채"
         },
-        "marketCap": 2188933851550,
-        "rightsRatio": 8.223182078916668,
-        "cbRatio": 9.136868154255943,
-        "totalRatio": 17.36005023317261
+        "marketCap": 2274832473600,
+        "rightsRatio": 7.912671297290909,
+        "cbRatio": 8.79185620572284,
+        "totalRatio": 16.70452750301375
       },
       "sector": "기술"
     },
@@ -11086,8 +11086,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11100,7 +11100,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3778919210700,
+        "marketCap": 3790226569200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11136,8 +11136,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11150,7 +11150,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2427173217600,
+        "marketCap": 2452838191200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11186,8 +11186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 2,
           "amount": 110758162833,
@@ -11200,10 +11200,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2086899932400,
-        "rightsRatio": 5.307305880527998,
+        "marketCap": 2080809757500,
+        "rightsRatio": 5.322839458714909,
         "cbRatio": null,
-        "totalRatio": 5.307305880527998
+        "totalRatio": 5.322839458714909
       },
       "sector": "헬스케어"
     },
@@ -11236,8 +11236,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11250,7 +11250,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3090586509000,
+        "marketCap": 3147081101100,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11286,8 +11286,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11300,7 +11300,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4287248224000,
+        "marketCap": 4369104992000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11336,8 +11336,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11350,7 +11350,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3028988720800,
+        "marketCap": 2974012930200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11386,8 +11386,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 1,
           "amount": 299999970000,
@@ -11436,8 +11436,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11450,7 +11450,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2029298587500,
+        "marketCap": 2042497277500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11486,8 +11486,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11500,7 +11500,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2377438613600,
+        "marketCap": 2431007509400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11536,8 +11536,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11550,7 +11550,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1944220574100,
+        "marketCap": 1910879170900,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11586,8 +11586,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11600,7 +11600,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1489113395000,
+        "marketCap": 1537936785000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11636,8 +11636,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11650,7 +11650,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2157857128000,
+        "marketCap": 2144550712000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11686,8 +11686,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11700,7 +11700,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1980243423600,
+        "marketCap": 1941351572400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11736,8 +11736,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11750,7 +11750,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1893441259500,
+        "marketCap": 1923084175500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11786,8 +11786,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11800,7 +11800,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2960070544000,
+        "marketCap": 3124731648000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11836,8 +11836,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11850,10 +11850,10 @@
           "latestDate": "2026-07-10",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 3285244413000,
+        "marketCap": 3196752981000,
         "rightsRatio": null,
-        "cbRatio": 3.043913554933424,
-        "totalRatio": 3.043913554933424
+        "cbRatio": 3.1281741377689514,
+        "totalRatio": 3.1281741377689514
       },
       "sector": "기술"
     },
@@ -11886,8 +11886,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11900,7 +11900,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2272071195600,
+        "marketCap": 2266502393650,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11936,8 +11936,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 2,
           "amount": 144999445125,
@@ -11950,10 +11950,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 477728280000,
-        "rightsRatio": 30.351865525942905,
+        "marketCap": 470296951200,
+        "rightsRatio": 30.831466109874285,
         "cbRatio": null,
-        "totalRatio": 30.351865525942905
+        "totalRatio": 30.831466109874285
       },
       "sector": "헬스케어"
     },
@@ -11986,8 +11986,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12036,8 +12036,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12050,7 +12050,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3353824800000,
+        "marketCap": 3404132172000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12086,8 +12086,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12100,7 +12100,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1797737985400,
+        "marketCap": 1856528040000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12136,8 +12136,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12150,7 +12150,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1877642100000,
+        "marketCap": 1908936135000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12186,8 +12186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12200,10 +12200,10 @@
           "latestDate": "2026-07-22",
           "latestNote": "무기명식 이권부 무보증 사모 전환사채"
         },
-        "marketCap": 1568993613600,
+        "marketCap": 1556106602400,
         "rightsRatio": null,
-        "cbRatio": 1.0834970807174993,
-        "totalRatio": 1.0834970807174993
+        "cbRatio": 1.092470141427375,
+        "totalRatio": 1.092470141427375
       },
       "sector": "필수소비재"
     },
@@ -12236,8 +12236,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12250,7 +12250,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2006111011500,
+        "marketCap": 2033760321000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12286,8 +12286,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12300,7 +12300,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1647039420000,
+        "marketCap": 1778192559000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12336,8 +12336,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12350,7 +12350,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1259056242000,
+        "marketCap": 1244146365450,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12386,8 +12386,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 1,
           "amount": 14999913600,
@@ -12400,10 +12400,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1189366446400,
-        "rightsRatio": 1.2611683846809418,
+        "marketCap": 1302519702400,
+        "rightsRatio": 1.1516074246217867,
         "cbRatio": null,
-        "totalRatio": 1.2611683846809418
+        "totalRatio": 1.1516074246217867
       },
       "sector": "헬스케어"
     },
@@ -12436,8 +12436,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12450,7 +12450,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1918575022000,
+        "marketCap": 1865917235000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12486,8 +12486,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12500,7 +12500,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1853353976400,
+        "marketCap": 1880297855600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12536,8 +12536,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12550,7 +12550,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1345830893800,
+        "marketCap": 1414771006400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12586,8 +12586,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12600,7 +12600,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1535229617500,
+        "marketCap": 1614952223750,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12636,8 +12636,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12650,7 +12650,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2005505621250,
+        "marketCap": 1969634789000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12686,8 +12686,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12700,7 +12700,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1262660236800,
+        "marketCap": 1264906963200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12736,8 +12736,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12750,7 +12750,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1709774802400,
+        "marketCap": 1687627460400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12786,8 +12786,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12800,7 +12800,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2037911692800,
+        "marketCap": 1996371526400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12836,8 +12836,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12850,7 +12850,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3898481016000,
+        "marketCap": 3851043747000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12886,8 +12886,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12900,7 +12900,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1384128000000,
+        "marketCap": 1215384000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12936,8 +12936,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12950,7 +12950,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1465361668400,
+        "marketCap": 1483108263000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12986,8 +12986,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 2,
           "amount": 2999998600,
@@ -13000,10 +13000,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 722433162000,
-        "rightsRatio": 0.41526313544283283,
+        "marketCap": 723627266400,
+        "rightsRatio": 0.41457788274408225,
         "cbRatio": null,
-        "totalRatio": 0.41526313544283283
+        "totalRatio": 0.41457788274408225
       },
       "sector": "기술"
     },
@@ -13036,8 +13036,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13050,7 +13050,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2031787933000,
+        "marketCap": 2016511332000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13086,8 +13086,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 1,
           "amount": 113186700000,
@@ -13100,10 +13100,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 589785388800,
-        "rightsRatio": 19.191167185456052,
+        "marketCap": 587146528000,
+        "rightsRatio": 19.277419622244622,
         "cbRatio": null,
-        "totalRatio": 19.191167185456052
+        "totalRatio": 19.277419622244622
       },
       "sector": "기술"
     },
@@ -13136,8 +13136,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13150,7 +13150,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 946941795000,
+        "marketCap": 950098267650,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13186,8 +13186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13200,7 +13200,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 917623048800,
+        "marketCap": 982678414200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13236,8 +13236,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13250,10 +13250,10 @@
           "latestDate": "2026-09-08",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 1677324763950,
+        "marketCap": 1875908668350,
         "rightsRatio": null,
-        "cbRatio": 9.091858850332095,
-        "totalRatio": 9.091858850332095
+        "cbRatio": 8.129393641223217,
+        "totalRatio": 8.129393641223217
       },
       "sector": "기술"
     },
@@ -13286,8 +13286,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13300,10 +13300,10 @@
           "latestDate": "2026-06-15",
           "latestNote": "무기명식 이권부 무보증 사모 전환사채"
         },
-        "marketCap": 655944348320,
+        "marketCap": 662667057600,
         "rightsRatio": null,
-        "cbRatio": 1.5245195763347803,
-        "totalRatio": 1.5245195763347803
+        "cbRatio": 1.5090534357052972,
+        "totalRatio": 1.5090534357052972
       },
       "sector": "헬스케어"
     },
@@ -13336,8 +13336,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13350,7 +13350,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 739067877800,
+        "marketCap": 682071965190,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13386,8 +13386,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13400,7 +13400,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1635172782000,
+        "marketCap": 1611088841800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13436,8 +13436,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13450,7 +13450,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1123280178150,
+        "marketCap": 1107698738100,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13486,8 +13486,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13500,7 +13500,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1694217168000,
+        "marketCap": 1716907576500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13536,8 +13536,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13550,7 +13550,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1153509229600,
+        "marketCap": 1157367120000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13586,8 +13586,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 3,
           "amount": 139999975224,
@@ -13600,10 +13600,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 760492342320,
-        "rightsRatio": 18.40912359444782,
+        "marketCap": 761422039560,
+        "rightsRatio": 18.386646032061435,
         "cbRatio": null,
-        "totalRatio": 18.40912359444782
+        "totalRatio": 18.386646032061435
       },
       "sector": "헬스케어"
     },
@@ -13636,8 +13636,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13650,7 +13650,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 797515754000,
+        "marketCap": 795661066200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13686,8 +13686,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13700,7 +13700,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 662549076000,
+        "marketCap": 686958778800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13736,8 +13736,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13750,10 +13750,10 @@
           "latestDate": "2026-05-08",
           "latestNote": "무기명식 이권부 무보증 사모 전환사채"
         },
-        "marketCap": 663649472200,
+        "marketCap": 665969924900,
         "rightsRatio": null,
-        "cbRatio": 6.0272782056768435,
-        "totalRatio": 6.0272782056768435
+        "cbRatio": 6.006277236319084,
+        "totalRatio": 6.006277236319084
       },
       "sector": "기술"
     },
@@ -13786,8 +13786,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13800,7 +13800,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 690571546000,
+        "marketCap": 683356619400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13836,8 +13836,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13850,7 +13850,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 842383006200,
+        "marketCap": 841008808800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13886,8 +13886,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13900,7 +13900,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 509067738270,
+        "marketCap": 507790278450,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13936,8 +13936,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13950,7 +13950,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 741000000000,
+        "marketCap": 734175000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13986,8 +13986,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14000,7 +14000,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 864055834200,
+        "marketCap": 825726361200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14036,8 +14036,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14086,8 +14086,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14100,7 +14100,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 568670646050,
+        "marketCap": 569869108950,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14136,8 +14136,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14150,7 +14150,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 756539463900,
+        "marketCap": 764570668400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14186,8 +14186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14200,7 +14200,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 901005759500,
+        "marketCap": 923238369150,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14236,8 +14236,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14250,7 +14250,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1214140931640,
+        "marketCap": 1209660706800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14286,8 +14286,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14300,10 +14300,10 @@
           "latestDate": "2026-05-13",
           "latestNote": "무기명식 이권부 무보증 사모 전환사채"
         },
-        "marketCap": 732895186500,
+        "marketCap": 755900865000,
         "rightsRatio": null,
-        "cbRatio": 6.82225793278559,
-        "totalRatio": 6.82225793278559
+        "cbRatio": 6.614623995700812,
+        "totalRatio": 6.614623995700812
       },
       "sector": "소재"
     },
@@ -14336,8 +14336,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14386,8 +14386,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14400,7 +14400,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1729830739450,
+        "marketCap": 1767542689220,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14436,8 +14436,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14450,7 +14450,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 883543726540,
+        "marketCap": 941048486690,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14486,8 +14486,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14500,7 +14500,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 783382400000,
+        "marketCap": 803098400000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14536,8 +14536,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14550,7 +14550,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 648425558500,
+        "marketCap": 667602654500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14586,8 +14586,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14600,7 +14600,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 722149701000,
+        "marketCap": 712324535000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14636,8 +14636,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14650,10 +14650,10 @@
           "latestDate": "2026-01-30",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 443697608250,
+        "marketCap": 450270906150,
         "rightsRatio": null,
-        "cbRatio": 6.581058688859859,
-        "totalRatio": 6.581058688859859
+        "cbRatio": 6.484984839387452,
+        "totalRatio": 6.484984839387452
       },
       "sector": "산업재"
     },
@@ -14686,8 +14686,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14700,7 +14700,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1166082330500,
+        "marketCap": 1197221563500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14736,8 +14736,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 2,
           "amount": 348513024758,
@@ -14750,10 +14750,10 @@
           "latestDate": "2026-05-29",
           "latestNote": "무기명식 무이권부 무보증 사모 전환사채"
         },
-        "marketCap": 846641227040,
-        "rightsRatio": 41.164192532468576,
-        "cbRatio": 7.0868271097274675,
-        "totalRatio": 48.25101964219604
+        "marketCap": 819072027420,
+        "rightsRatio": 42.5497408153204,
+        "cbRatio": 7.325363092791042,
+        "totalRatio": 49.875103908111434
       },
       "sector": "커뮤니케이션"
     },
@@ -14786,8 +14786,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14800,10 +14800,10 @@
           "latestDate": "2025-10-22",
           "latestNote": "무기명식 무이권부 무보증 사모 전환사채"
         },
-        "marketCap": 1537816999500,
+        "marketCap": 1567939188150,
         "rightsRatio": null,
-        "cbRatio": 3.153821294456304,
-        "totalRatio": 3.153821294456304
+        "cbRatio": 3.093232209931866,
+        "totalRatio": 3.093232209931866
       },
       "sector": "산업재"
     },
@@ -14836,8 +14836,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14850,7 +14850,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 580224885000,
+        "marketCap": 608849312660,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14886,8 +14886,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14900,7 +14900,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 784854944500,
+        "marketCap": 783685265000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14936,8 +14936,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14950,7 +14950,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 812655338400,
+        "marketCap": 819294679400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14986,8 +14986,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15000,7 +15000,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 653576961300,
+        "marketCap": 635252373600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15036,8 +15036,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15050,10 +15050,10 @@
           "latestDate": "2026-04-02",
           "latestNote": "무기명식 이권부 무보증 사모 전환사채"
         },
-        "marketCap": 692692384200,
+        "marketCap": 711735473800,
         "rightsRatio": null,
-        "cbRatio": 13.281508805131741,
-        "totalRatio": 13.281508805131741
+        "cbRatio": 12.92615071001116,
+        "totalRatio": 12.92615071001116
       },
       "sector": "소재"
     },
@@ -15086,8 +15086,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15100,7 +15100,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 809909412000,
+        "marketCap": 764222214400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15136,8 +15136,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15150,10 +15150,10 @@
           "latestDate": "2026-07-06",
           "latestNote": "무기명식 이권부 무보증 사모 전환사채"
         },
-        "marketCap": 454882128250,
+        "marketCap": 469963781700,
         "rightsRatio": null,
-        "cbRatio": 13.19023023191283,
-        "totalRatio": 13.19023023191283
+        "cbRatio": 12.76694127001915,
+        "totalRatio": 12.76694127001915
       },
       "sector": "경기소비재"
     },
@@ -15186,8 +15186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15200,7 +15200,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1317954951450,
+        "marketCap": 1272212480250,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15236,8 +15236,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 1,
           "amount": 13999964888,
@@ -15250,10 +15250,10 @@
           "latestDate": "2026-05-22",
           "latestNote": "국내 무기명식\n 무보증 사모 전환사채"
         },
-        "marketCap": 452431254660,
-        "rightsRatio": 3.094385001876342,
-        "cbRatio": 5.149953669206572,
-        "totalRatio": 8.244338671082915
+        "marketCap": 456858174960,
+        "rightsRatio": 3.0644006510829667,
+        "cbRatio": 5.1000510173731755,
+        "totalRatio": 8.164451668456142
       },
       "sector": "기술"
     },
@@ -15286,8 +15286,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15300,7 +15300,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 549728235000,
+        "marketCap": 541105047000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15336,8 +15336,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15386,8 +15386,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15400,7 +15400,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 351841524020,
+        "marketCap": 349999421800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15436,8 +15436,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15450,7 +15450,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 682551533440,
+        "marketCap": 674274322680,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15486,8 +15486,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15500,7 +15500,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 795118992000,
+        "marketCap": 797908883200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15536,8 +15536,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15550,7 +15550,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 505775810970,
+        "marketCap": 499741200250,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15586,8 +15586,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15600,7 +15600,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 453340668750,
+        "marketCap": 450439288470,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15636,8 +15636,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15650,7 +15650,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 478032070130,
+        "marketCap": 474140763360,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15686,8 +15686,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15700,7 +15700,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 524639337120,
+        "marketCap": 501990602850,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15736,8 +15736,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15786,8 +15786,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15800,7 +15800,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 620707983700,
+        "marketCap": 605678734700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15836,8 +15836,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15850,7 +15850,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 536519425000,
+        "marketCap": 528979152000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15886,8 +15886,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15900,7 +15900,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 393183677700,
+        "marketCap": 387848756700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15936,8 +15936,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15950,7 +15950,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 689406214900,
+        "marketCap": 677721363800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15986,8 +15986,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16000,7 +16000,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 698871623520,
+        "marketCap": 701018694560,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16036,8 +16036,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16050,7 +16050,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 480746924320,
+        "marketCap": 464984730080,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16086,8 +16086,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16100,7 +16100,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 920579616740,
+        "marketCap": 900925002880,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16136,8 +16136,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16150,7 +16150,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 463151323470,
+        "marketCap": 457551911960,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16186,8 +16186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16200,7 +16200,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 427759021300,
+        "marketCap": 421178113280,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16236,8 +16236,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16250,7 +16250,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 422332212640,
+        "marketCap": 424887377280,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16286,8 +16286,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16300,7 +16300,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 415095252640,
+        "marketCap": 403934224680,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16336,8 +16336,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16350,7 +16350,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 351429643200,
+        "marketCap": 365221213500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16386,8 +16386,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16400,7 +16400,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 781098318000,
+        "marketCap": 760021061800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16436,8 +16436,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16450,10 +16450,10 @@
           "latestDate": "2026-04-22",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 334061618700,
+        "marketCap": 334883418500,
         "rightsRatio": null,
-        "cbRatio": 0.1496729860633942,
-        "totalRatio": 0.1496729860633942
+        "cbRatio": 0.14930569039207298,
+        "totalRatio": 0.14930569039207298
       },
       "sector": "헬스케어"
     },
@@ -16486,8 +16486,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16500,7 +16500,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 735743000000,
+        "marketCap": 726934000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16536,8 +16536,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16550,7 +16550,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 447759147000,
+        "marketCap": 446980435440,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16586,8 +16586,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16600,7 +16600,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 405600976050,
+        "marketCap": 401836697850,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16636,8 +16636,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16650,7 +16650,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 511333784520,
+        "marketCap": 519661696320,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16686,8 +16686,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16700,7 +16700,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 428038175400,
+        "marketCap": 420026765700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16736,8 +16736,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16750,7 +16750,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 419694631200,
+        "marketCap": 422086053600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16786,8 +16786,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16800,7 +16800,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 332043578080,
+        "marketCap": 333840836960,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16836,8 +16836,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 1,
           "amount": 17299979278,
@@ -16850,10 +16850,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 435140963200,
-        "rightsRatio": 3.975718385779406,
+        "marketCap": 433265355600,
+        "rightsRatio": 3.992929287882347,
         "cbRatio": null,
-        "totalRatio": 3.975718385779406
+        "totalRatio": 3.992929287882347
       },
       "sector": "기술"
     },
@@ -16886,8 +16886,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16936,8 +16936,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16950,7 +16950,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 431801605140,
+        "marketCap": 437973590700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16986,8 +16986,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17000,7 +17000,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 579216815820,
+        "marketCap": 578784886800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17036,8 +17036,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17050,7 +17050,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 353501419320,
+        "marketCap": 347042091060,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17086,8 +17086,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17100,7 +17100,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 338919062900,
+        "marketCap": 335721713250,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17136,8 +17136,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17150,7 +17150,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 691133866780,
+        "marketCap": 650885852700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17186,8 +17186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17200,10 +17200,10 @@
           "latestDate": "2026-06-15",
           "latestNote": "무기명식 무이권부 무보증 사모 전환사채"
         },
-        "marketCap": 849530510550,
+        "marketCap": 860775800100,
         "rightsRatio": null,
-        "cbRatio": 5.297043418825095,
-        "totalRatio": 5.297043418825095
+        "cbRatio": 5.2278421390067145,
+        "totalRatio": 5.2278421390067145
       },
       "sector": "소재"
     },
@@ -17236,8 +17236,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17250,7 +17250,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 156686620460,
+        "marketCap": 152848949560,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17286,8 +17286,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17300,7 +17300,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 371671553340,
+        "marketCap": 370004864760,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17336,8 +17336,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17350,7 +17350,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 311496741180,
+        "marketCap": 323846832240,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17386,8 +17386,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-09-29",
-        "windowTo": "2026-09-29",
+        "windowFrom": "2025-09-30",
+        "windowTo": "2026-09-30",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17400,7 +17400,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 287916303600,
+        "marketCap": 282471078000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
