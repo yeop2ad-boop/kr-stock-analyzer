@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-03T01:03:32Z",
+  "generatedAt": "2026-10-03T13:23:12Z",
   "dateKst": "2026-10-03",
   "us": {
     "dateKst": "2026-10-03",
@@ -28841,7 +28841,7 @@
     }
   },
   "kr": {
-    "dateKst": "2026-10-02",
+    "dateKst": "2026-10-03",
     "day": [
       {
         "key": "prevMonthDown",
@@ -29499,23 +29499,23 @@
         "rankN": 100
       },
       {
+        "key": "marketCap",
+        "n": 348,
+        "top": 12,
+        "bot": 15,
+        "tot": 27,
+        "exp": 14.4,
+        "max": 100,
+        "topN": 50,
+        "rankN": 100
+      },
+      {
         "key": "per",
         "n": 278,
         "top": 12,
         "bot": 15,
         "tot": 27,
         "exp": 18.0,
-        "max": 100,
-        "topN": 50,
-        "rankN": 100
-      },
-      {
-        "key": "marketCap",
-        "n": 348,
-        "top": 12,
-        "bot": 14,
-        "tot": 26,
-        "exp": 14.4,
         "max": 100,
         "topN": 50,
         "rankN": 100
