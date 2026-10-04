@@ -1677,7 +1677,7 @@ const KR_CORE_DATA = {
       "per": 9.35,
       "eps": 2882.0,
       "dividendYield": 4.82,
-      "dollarVolume": 9536014950.0,
+      "dollarVolume": 9118640300.0,
       "revenueGrowth": 89.35,
       "netIncomeGrowth": 90.68,
       "cashFlowGrowth": -53.39,
@@ -3903,5 +3903,5 @@ const KR_CORE_DATA = {
     }
   ],
   "ratiosUpdatedAt": "2026-08-25T11:29:54Z",
-  "generatedAt": "2026-10-03T13:17:33Z"
+  "generatedAt": "2026-10-04T13:58:27Z"
 };

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-03T13:17:33Z",
+  "generatedAt": "2026-10-04T13:58:27Z",
   "count": 351,
   "companies": [
     {
@@ -2042,7 +2042,7 @@
       "per": 9.35,
       "eps": 2882.0,
       "dividendYield": 4.82,
-      "dollarVolume": 9536014950.0,
+      "dollarVolume": 9118640300.0,
       "revenueGrowth": 89.35,
       "netIncomeGrowth": 90.68,
       "cashFlowGrowth": -53.39,
@@ -3680,7 +3680,7 @@
       "per": 249.78,
       "eps": 225.0,
       "dividendYield": 2.85,
-      "dollarVolume": 4977521600.0,
+      "dollarVolume": 4867313400.0,
       "revenueGrowth": 7.79,
       "netIncomeGrowth": 156.25,
       "cashFlowGrowth": -12.24,
@@ -6452,7 +6452,7 @@
       "per": 7.72,
       "eps": 4846.0,
       "dividendYield": 2.34,
-      "dollarVolume": 5832904000.0,
+      "dollarVolume": 5649943200.0,
       "revenueGrowth": -15.15,
       "netIncomeGrowth": -40.11,
       "cashFlowGrowth": -41.81,
@@ -9114,5 +9114,5 @@
       "week52RangePct": 11.8
     }
   ],
-  "ratiosUpdatedAt": "2026-10-03T13:21:02Z"
+  "ratiosUpdatedAt": "2026-10-04T14:02:18Z"
 }

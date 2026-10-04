@@ -1677,7 +1677,7 @@ const KR_EXTRA_DATA = {
       "per": 249.78,
       "eps": 225.0,
       "dividendYield": 2.85,
-      "dollarVolume": 4977521600.0,
+      "dollarVolume": 4867313400.0,
       "revenueGrowth": 7.79,
       "netIncomeGrowth": 156.25,
       "cashFlowGrowth": -12.24,
@@ -2795,7 +2795,7 @@ const KR_EXTRA_DATA = {
       "per": 7.72,
       "eps": 4846.0,
       "dividendYield": 2.34,
-      "dollarVolume": 5832904000.0,
+      "dollarVolume": 5649943200.0,
       "revenueGrowth": -15.15,
       "netIncomeGrowth": -40.11,
       "cashFlowGrowth": -41.81,
@@ -5151,5 +5151,5 @@ const KR_EXTRA_DATA = {
     }
   ],
   "ratiosUpdatedAt": "2026-08-25T11:29:54Z",
-  "generatedAt": "2026-10-03T13:17:33Z"
+  "generatedAt": "2026-10-04T13:58:27Z"
 };
