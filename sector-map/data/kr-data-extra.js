@@ -5151,5 +5151,5 @@ const KR_EXTRA_DATA = {
     }
   ],
   "ratiosUpdatedAt": "2026-08-25T11:29:54Z",
-  "generatedAt": "2026-10-04T13:58:27Z"
+  "generatedAt": "2026-10-05T17:00:33Z"
 };
