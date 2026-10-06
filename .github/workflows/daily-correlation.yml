@@ -53,6 +53,7 @@ jobs:
         run: |
           python3 scripts/build-autotrack-grades.py us
           python3 scripts/build-autotrack-grades.py crypto
+          python3 scripts/build-autotrack-grades.py etf
 
       - name: 변경사항 커밋 및 푸시
         run: |

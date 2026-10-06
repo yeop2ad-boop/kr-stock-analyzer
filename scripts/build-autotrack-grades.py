@@ -19,8 +19,10 @@ import time
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "data", "autotrack-grades.json")
 RATINGS = ["강력매수", "매수", "보유", "매도", "강력매도"]
-STOCK_FACTORS = ["성장", "수익성", "모멘텀", "가치", "승률"]
-CRYPTO_FACTORS = ["승률", "장기상승", "모멘텀", "안정성", "규모"]
+STOCK_FACTORS = ["성장", "수익성", "모멘텀", "가치", "승률"]  # 미국
+# 2026-10-07 사용자 지정(한국): 성장(매출 증가) · 수익성(순이익 증가·영업이익 증가) · 승률(10년평균 승률) · 가치(ROE·PER) · 모멘텀(한달 상승·52주 위치)
+KR_FACTORS = ["성장", "수익성", "승률", "가치", "모멘텀"]
+CRYPTO_FACTORS = ["승률", "장기상승", "모멘텀", "안정성", "규모"]  # 비트코인·ETF(2026-10-07 ETF도 같은 기준)
 STABLE = {"USDT", "USDC", "DAI", "USDE", "FDUSD", "TUSD", "USDS", "PYUSD", "USD1", "BUSD", "USDD", "USDTB", "RLUSD", "USDF", "FRAX", "USD0", "BFUSD", "SUSDS", "SUSDE", "XAUT", "PAXG"}
 EVENT_DAYS = 7
 
@@ -62,6 +64,46 @@ def mom3(e):
     return (r - 1) * 100
 
 
+def mom1(e):
+    """직전 완성월 한 달 수익률(m12의 끝에서 두 번째 — 마지막은 진행 중인 달)"""
+    m12 = (e or {}).get("m12") or []
+    return m12[-2] if len(m12) >= 2 else None
+
+
+def kr_op_income_growth(symbols):
+    """한국 분기 영업이익 증가율(최근 분기 ÷ 1년 전 같은 분기 − 1, %) — 야후 분기 재무. 은행·보험은 항목이 없어 빠짐"""
+    import urllib.request
+    from concurrent.futures import ThreadPoolExecutor
+
+    def one(sym):
+        url = (f"https://query2.finance.yahoo.com/ws/fundamentals-timeseries/v1/finance/timeseries/{sym}?symbol={sym}"
+               f"&type=quarterlyOperatingIncome&period1=1600000000&period2={int(time.time())}")
+        for _ in range(3):
+            try:
+                js = json.load(urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"}), timeout=30))
+                break
+            except Exception:
+                time.sleep(1.5)
+        else:
+            return sym, None
+        try:
+            rows = [x for x in js["timeseries"]["result"][0].get("quarterlyOperatingIncome") or [] if x]
+        except Exception:
+            return sym, None
+        ser = {x["asOfDate"]: x["reportedValue"]["raw"] for x in rows if x.get("asOfDate") and x.get("reportedValue")}
+        if not ser:
+            return sym, None
+        cur = max(ser)
+        y, m = int(cur[:4]), int(cur[5:7])
+        prev = [d for d in ser if int(d[:4]) == y - 1 and abs(int(d[5:7]) - m) <= 1]
+        if not prev or ser[prev[-1]] <= 0:
+            return sym, None
+        return sym, (ser[cur] / ser[prev[-1]] - 1) * 100
+
+    with ThreadPoolExecutor(4) as ex:
+        return dict(ex.map(one, symbols))
+
+
 def grade_of(p):
     if p is None:
         return "-"
@@ -77,9 +119,29 @@ def combine(*maps):
     return out
 
 
-def compute(market, rev=None):
+def compute(market, rev=None, extra=None):
     wr = read_json("data/winrate-scores-us.json", rev)
-    if market == "crypto":
+    if market == "etf":
+        # ETF(2026-10-07 사용자 요청): 비트코인과 같은 5개 기준 — 지도 ETF200(미국 100 + 한국 100)
+        t = read_text("sector-map/data/etf-crypto-map.js", rev)
+        i = t.find("ETF_MAP_DATA")
+        scores = wr.get("scoresEtf") or {}
+        # CD금리·머니마켓·초단기채 같은 현금성 ETF(하루 변동 0.1% 미만)는 코인의 스테이블코인처럼 제외 —
+        # 안정성·모멘텀·승률이 저절로 최상위라 강력매수를 독차지한다
+        cashlike = lambda c: isinstance((scores.get(c["symbol"]) or {}).get("vol3m"), (int, float)) and scores[c["symbol"]]["vol3m"] < 0.1
+        comps = [c for c in json.JSONDecoder().raw_decode(t[t.find("{", i):])[0].get("companies", []) if c.get("marketCap") and not cashlike(c)]
+        syms = [c["symbol"] for c in comps]
+        by = {c["symbol"]: c for c in comps}
+        # 지도 ETF 데이터의 marketCap은 한국 ETF도 이미 달러 환산값(KODEX 200 ≈ 187억 달러)이라 그대로 비교
+        usd_cap = {s: by[s]["marketCap"] for s in syms}
+        f = [
+            pct_rank({s: by[s].get("winRateScore") for s in syms}),
+            pct_rank({s: by[s].get("ret10yAvg") for s in syms}),
+            combine(pct_rank({s: mom3(scores.get(s)) for s in syms}), pct_rank({s: by[s].get("week52RangePct") for s in syms})),
+            pct_rank({s: (scores.get(s) or {}).get("vol3m") for s in syms}, higher_better=False),
+            pct_rank(usd_cap),
+        ]
+    elif market == "crypto":
         scores = wr.get("scoresCrypto") or {}
         def is_stable(c):
             base = (c.get("displayName") or c["symbol"].split("-")[0]).upper()
@@ -105,13 +167,23 @@ def compute(market, rev=None):
         by = {c["symbol"]: c for c in comps}
         g = lambda k: {s: by[s].get(k) for s in syms}
         per = {s: (v if isinstance(v, (int, float)) and v > 0 else None) for s, v in g("per").items()}
-        f = [
-            combine(pct_rank(g("revenueGrowth")), pct_rank(g("netIncomeGrowth"))),
-            combine(pct_rank(g("operatingMargin")), pct_rank(g("roe"))),
-            combine(pct_rank({s: mom3(scores.get(s)) for s in syms}), pct_rank(g("week52RangePct"))),
-            combine(pct_rank(per, higher_better=False), pct_rank(g("dividendYield"))),
-            combine(pct_rank(g("winRateScore")), pct_rank(g("ret10yAvg"))),
-        ]
+        if market == "kr":
+            opg = (extra or {}).get("opg") or {}
+            f = [
+                pct_rank(g("revenueGrowth")),
+                combine(pct_rank(g("netIncomeGrowth")), pct_rank({s: opg.get(s) for s in syms})),
+                pct_rank(g("winRateScore")),
+                combine(pct_rank(g("roe")), pct_rank(per, higher_better=False)),
+                combine(pct_rank({s: mom1(scores.get(s)) for s in syms}), pct_rank(g("week52RangePct"))),
+            ]
+        else:
+            f = [
+                combine(pct_rank(g("revenueGrowth")), pct_rank(g("netIncomeGrowth"))),
+                combine(pct_rank(g("operatingMargin")), pct_rank(g("roe"))),
+                combine(pct_rank({s: mom3(scores.get(s)) for s in syms}), pct_rank(g("week52RangePct"))),
+                combine(pct_rank(per, higher_better=False), pct_rank(g("dividendYield"))),
+                combine(pct_rank(g("winRateScore")), pct_rank(g("ret10yAvg"))),
+            ]
     total = {}
     for s in syms:
         ps = [m[s] for m in f if s in m]
@@ -153,17 +225,25 @@ def diff_events(prev_items, cur_items, factors, date):
 
 def main():
     args = sys.argv[1:]
-    which = next((a for a in args if a in ("kr", "us", "crypto", "all")), "all")
+    which = next((a for a in args if a in ("kr", "us", "crypto", "etf", "all")), "all")
     prev_rev = args[args.index("--prev-rev") + 1] if "--prev-rev" in args else None
-    markets = ["kr", "us", "crypto"] if which == "all" else [which]
+    markets = ["kr", "us", "crypto", "etf"] if which == "all" else [which]
     today = time.strftime("%Y-%m-%d", time.gmtime(time.time() + 9 * 3600))
     data = json.load(open(OUT, encoding="utf-8")) if os.path.exists(OUT) else {"markets": {}}
     for m in markets:
-        factors = CRYPTO_FACTORS if m == "crypto" else STOCK_FACTORS
+        factors = CRYPTO_FACTORS if m in ("crypto", "etf") else KR_FACTORS if m == "kr" else STOCK_FACTORS
         side = data["markets"].get(m) or {}
-        cur = compute(m)
+        extra = None
+        if m == "kr":
+            syms = [c["symbol"] for c in read_json("sector-map/data/kr-sectors.json")["companies"]]
+            extra = {"opg": kr_op_income_growth(syms)}
+            print(f"[kr] 영업이익 증가율 {sum(1 for v in extra['opg'].values() if v is not None)}/{len(syms)}종목", flush=True)
+        if side.get("factors") and side["factors"] != factors:
+            side.pop("prev", None)  # 항목 구성이 바뀌면 어제 판정과 비교하지 않음(가짜 신호 방지)
+            side["events"] = []
+        cur = compute(m, extra=extra)
         if prev_rev:
-            side["prev"] = {"date": "seed:" + prev_rev[:7], "items": compute(m, prev_rev)}
+            side["prev"] = {"date": "seed:" + prev_rev[:7], "items": compute(m, prev_rev, extra)}
         elif side.get("date") and side["date"] != today and side.get("items"):
             side["prev"] = {"date": side["date"], "items": side["items"]}
         prev = (side.get("prev") or {}).get("items") or {}

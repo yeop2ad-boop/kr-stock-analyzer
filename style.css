@@ -3708,3 +3708,23 @@ table.top30-table.atg-table th:nth-child(2) { width: 84px; }
 /* 상단 탭 ★관심종목(2026-10-06) */
 .fh-tab-watch { display: inline-flex; align-items: center; gap: 3px; }
 .fh-tab-watch .fh-tab-icon { flex: none; } /* 별은 탭 글자와 같은 색의 테두리만(2026-10-07) */
+
+/* ---------- 자동추적 +등급기준(2026-10-07) ---------- */
+.atg-crit { padding: 4px 2px 6px; }
+.atg-crit-title { margin: 12px 0 6px; font-size: 13.5px; font-weight: 800; color: var(--text); }
+.atg-crit-title:first-child { margin-top: 2px; }
+.atg-crit-title .muted { font-size: 11.5px; font-weight: 500; }
+.atg-scale { display: flex; gap: 2px; border-radius: 8px; overflow: hidden; }
+.atg-seg { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 6px 2px; line-height: 1.25; }
+.atg-seg b { font-size: 13px; }
+.atg-seg small { font-size: 10px; opacity: 0.85; }
+.atg-crit-row { display: flex; align-items: center; gap: 8px; margin: 5px 0; }
+.atg-crit-name { flex: none; width: 74px; font-size: 13px; font-weight: 800; color: var(--text); }
+.atg-crit-bar { flex: 1; display: flex; gap: 2px; border-radius: 7px; overflow: hidden; }
+.atg-crit-part { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5px 4px; font-size: 11.5px; font-weight: 700; text-align: center; line-height: 1.25; color: #fff; background: #3b5bdb; }
+.atg-crit-part.p1 { background: #748ffc; }
+.atg-crit-part small { font-size: 10px; font-weight: 500; opacity: 0.9; }
+.atg-crit-note { margin: 10px 0 0; font-size: 11.5px; }
+.atg-crit-btn-row { display: flex; justify-content: flex-end; margin: 2px 0 6px; }
+.atg-scale .atg-seg { min-width: 54px; }
+.atg-scale .atg-seg b { white-space: nowrap; font-size: 12px; }

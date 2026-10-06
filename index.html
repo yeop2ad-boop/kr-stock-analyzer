@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20261007a" />
+<link rel="stylesheet" href="style.css?v=20261007b" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -656,7 +656,7 @@
           <!-- 버튼 줄과 펼침 영역은 표 바로 위(①②③ 머리글 위)로 옮겨 붙임(2026-09-07 사용자 확정) — 렌더마다 mountAutoTrackCorr가 #autoTrackCorrSlot으로 이동, 재렌더 전엔 여기(홀더)로 되돌림 -->
           <div id="autoTrackCorrHolder" style="display:none;">
             <div class="section-heading-row autotrack-head-row">
-              <button type="button" id="autoTrackCorrBtn" class="score-method-detail-btn">+자세히</button>
+              <button type="button" id="autoTrackCorrBtn" class="score-method-detail-btn">+등급기준</button>
             </div>
             <div id="autoTrackCorrWrap" class="chart-detail-wrap" style="display:none;"></div>
           </div>
@@ -956,6 +956,6 @@
   <script src="data/logo-db.js?v=20260903g"></script>
   <script src="data/etf-meta.js?v=20260912a"></script>
   <script src="winrate-benchmark.js?v=20261006h"></script>
-  <script src="app.js?v=20261007a"></script>
+  <script src="app.js?v=20261007b"></script>
 </body>
 </html>

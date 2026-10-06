@@ -3082,7 +3082,7 @@ el("morePanelAutoTrackBtn").addEventListener("click", () => {
 });
 // 투자처 전환(자동추적 화면 위 버튼 줄) — 인사이트 화면과 같은 방식(2026-09-16 사용자 요청)
 function goAutoTrackSection(section) {
-  appSectionMode = section === "crypto" ? "crypto" : "stocks";
+  appSectionMode = section === "crypto" ? "crypto" : section === "etf" ? "etf" : "stocks";
   if (section === "kr" || section === "us") setAppMarketMode(section);
   setHeaderToneForSection(section);
   showOnlyCarouselView(() => openAutoTrack());
@@ -11636,12 +11636,13 @@ function openAutoTrack() {
   el("tabValuationBtn").classList.remove("active");
   tabTrendBtn.classList.remove("active");
   setCarouselViewTitle("tab.autotrack");
-  // 투자처는 이 화면 안에서 바꾼다(2026-09-16 사용자 요청) — ETF는 자동추적에서 제외
-  const cur = appSectionMode === "crypto" ? "crypto" : getWatchlistActiveMarket() === "KR" ? "kr" : "us";
+  // 투자처는 이 화면 안에서 바꾼다(2026-09-16 사용자 요청) — ETF도 2026-10-07부터 포함(비트코인과 같은 5개 기준)
+  const cur = appSectionMode === "crypto" ? "crypto" : appSectionMode === "etf" ? "etf" : getWatchlistActiveMarket() === "KR" ? "kr" : "us";
   el("topRankingSubNav").classList.remove("sr-rank-nav");
   el("topRankingSubNav").innerHTML = [
     ["kr", "한국주식"],
     ["us", "미국주식"],
+    ["etf", "ETF"],
     ["crypto", "비트코인"],
   ]
     .map(([sec, label]) => `<button type="button" class="cat-btn${sec === cur ? " active" : ""}" data-autotrack-switch="${sec}">${label}</button>`)
@@ -12069,25 +12070,9 @@ function corrHitSubHtml(m) {
   const tip = `적중 ${s.toFixed(2)}점(${g.label}) — 무작위로 골랐을 때 기대되는 적중 수보다 얼마나 더 맞혔는지를 -1~1로 환산한 값입니다. 1에 가까울수록 이 항목이 실제 등락을 잘 설명했다는 뜻입니다.`;
   return `<br><span class="at-head-sub" data-explain="${escapeHtml(tip)}">적중 ${s.toFixed(2)}점</span><span class="at-head-grade" style="color:${g.color};" data-explain="${escapeHtml(tip)}">${escapeHtml(g.label)}</span>`;
 }
-// 자동추적 "+자세히"(2026-10-06 사용자 요청): 더보기에서 내린 "상관관계" 페이지 내용을 그대로 펼친다(기간 1일·1주·1달·1년).
-let autoTrackCorrPeriod = "month";
+// 자동추적 "+등급기준"(2026-10-07 사용자 요청, 이전엔 +자세히 = 상관관계 화면) — ①~⑤ 항목 배점 그래프
 function renderAutoTrackCorrDetail(wrap) {
-  const periods = [["day", "1일"], ["week", "1주"], ["month", "1달"], ["year", "1년"]];
-  wrap.innerHTML = `
-    <div class="top30-sub-nav at-corr-nav">${periods
-      .map(([k, l]) => `<button type="button" class="cat-btn${k === autoTrackCorrPeriod ? " active" : ""}" data-at-corr="${k}">${l}</button>`)
-      .join("")}</div>
-    <p class="muted top30-status at-corr-status" style="display:none;"></p>
-    <div class="at-corr-results"></div>`;
-  const run = () => runInsightCorr(autoTrackCorrPeriod, wrap.querySelector(".at-corr-status"), wrap.querySelector(".at-corr-results"));
-  wrap.querySelector(".at-corr-nav").addEventListener("click", (e) => {
-    const b = e.target.closest("[data-at-corr]");
-    if (!b) return;
-    autoTrackCorrPeriod = b.dataset.atCorr;
-    wrap.querySelectorAll("[data-at-corr]").forEach((x) => x.classList.toggle("active", x === b));
-    run();
-  });
-  run();
+  wrap.innerHTML = atgCriteriaHtml(atgCurrentMode, atgCurrentCount);
 }
 el("autoTrackCorrBtn").addEventListener("click", () => {
   const wrap = el("autoTrackCorrWrap");
@@ -12095,7 +12080,7 @@ el("autoTrackCorrBtn").addEventListener("click", () => {
   const isOpen = wrap.style.display !== "none";
   wrap.style.display = isOpen ? "none" : "block";
   wrap.classList.toggle("chart-detail-expanded", !isOpen);
-  btn.textContent = isOpen ? "+자세히" : "-접기";
+  btn.textContent = isOpen ? "+등급기준" : "-접기";
   if (!isOpen) renderAutoTrackCorrDetail(wrap);
 });
 
@@ -12108,7 +12093,7 @@ async function renderAutoTrack() {
   statusEl.textContent = "자동추적 데이터를 불러오는 중...";
   try {
     // ETF는 자동추적에서 뺀다(2026-09-16 사용자 요청) — 들어오면 지금 보던 주식 시장으로
-    const mode = appSectionMode === "crypto" ? "crypto" : getWatchlistActiveMarket() === "KR" ? "kr" : "us";
+    const mode = appSectionMode === "crypto" ? "crypto" : appSectionMode === "etf" ? "etf" : getWatchlistActiveMarket() === "KR" ? "kr" : "us";
     // 한국·미국주식은 상관관계 상위 3개 항목 신호등 표(2026-09-05 개편, 월간/년간 토글), ETF·코인은 기존 10년평균승률 표 유지
     // 비트코인(2026-09-07 사용자 요청): 코인 상관관계 배치(correlation-daily.json의 crypto)가 있으면 주식과 같은 신호등 표, 없으면 기존 승률 표로 폴백
     let cryptoCorrReady = false;
@@ -12120,7 +12105,7 @@ async function renderAutoTrack() {
     const lightsMode = mode === "kr" || mode === "us" || (mode === "crypto" && cryptoCorrReady);
     el("autoTrackNav").style.display = "none"; // 년간만 제공(2026-09-08) — 일간/주간/월간 버튼 숨김
     // 2026-10-06 사용자 선택(예시 1번+5번): 신호등 표 대신 종합 등급 + 오늘 바뀐 신호 피드
-    if (mode === "kr" || mode === "us" || mode === "crypto") return renderAutoTrackGrades(mode, statusEl, resultsEl);
+    if (mode === "kr" || mode === "us" || mode === "crypto" || mode === "etf") return renderAutoTrackGrades(mode, statusEl, resultsEl);
     if (lightsMode) return renderAutoTrackStocks(mode, statusEl, resultsEl);
     const db = await getWinRateDb();
     const map = db && (mode === "etf" ? db.scoresEtf : mode === "crypto" ? db.scoresCrypto : mode === "kr" ? db.scoresKr : db.scores);
@@ -21464,16 +21449,71 @@ function getAutotrackGradesDb() {
   return autotrackGradesPromise;
 }
 const ATG_RATINGS = ["강력매수", "매수", "보유", "매도", "강력매도"];
-const ATG_FACTOR_EXPLAIN = {
-  성장: "성장 — 매출액·순이익 증가율이 비교군에서 몇 등인지(백분위)를 합친 등급입니다.",
-  수익성: "수익성 — 영업이익률·ROE 백분위를 합친 등급입니다.",
-  모멘텀: "모멘텀 — 최근 3개월 수익률과 52주 가격 구간 위치(높을수록 좋음) 백분위를 합친 등급입니다.",
-  가치: "가치 — PER(낮을수록 좋음)과 배당률(높을수록 좋음) 백분위를 합친 등급입니다.",
-  승률: "승률 — 10년평균 승률(오르며 마감한 달의 비율)과 연평균 상승률 백분위를 합친 등급입니다.",
-  장기상승: "장기상승 — 연평균 상승률 백분위 등급입니다.",
-  안정성: "안정성 — 최근 3개월 하루 평균 변동폭이 작을수록 높은 등급입니다.",
-  규모: "규모 — 시가총액 백분위 등급입니다.",
+// 투자처별 5개 항목과 각 항목에 들어가는 지표(↑ 높을수록 좋음, ↓ 낮을수록 좋음) — 배치(build-autotrack-grades.py)와 같은 구성.
+// 표 머리글 설명과 "+등급기준" 그래프가 함께 쓴다.
+const ATG_CRITERIA = {
+  // 2026-10-07 사용자 지정(한국)
+  kr: [
+    { f: "성장", items: ["매출 증가율 ↑"] },
+    { f: "수익성", items: ["순이익 증가율 ↑", "영업이익 증가율 ↑"] },
+    { f: "승률", items: ["10년평균 승률 ↑"] },
+    { f: "가치", items: ["ROE ↑", "PER ↓"] },
+    { f: "모멘텀", items: ["한 달 수익률 ↑", "52주 위치 ↑"] },
+  ],
+  us: [
+    { f: "성장", items: ["매출 증가율 ↑", "순이익 증가율 ↑"] },
+    { f: "수익성", items: ["영업이익률 ↑", "ROE ↑"] },
+    { f: "모멘텀", items: ["3개월 수익률 ↑", "52주 위치 ↑"] },
+    { f: "가치", items: ["PER ↓", "배당률 ↑"] },
+    { f: "승률", items: ["10년평균 승률 ↑", "연평균 상승률 ↑"] },
+  ],
+  crypto: [
+    { f: "승률", items: ["10년평균 승률 ↑"] },
+    { f: "장기상승", items: ["연평균 상승률 ↑"] },
+    { f: "모멘텀", items: ["3개월 수익률 ↑", "52주 위치 ↑"] },
+    { f: "안정성", items: ["하루 평균 변동폭 ↓"] },
+    { f: "규모", items: ["시가총액 ↑"] },
+  ],
 };
+ATG_CRITERIA.etf = ATG_CRITERIA.crypto.map((c) => (c.f === "규모" ? { f: "규모", items: ["순자산(시가총액) ↑"] } : c));
+let atgCurrentMode = "kr";
+let atgCurrentCount = 0;
+// "+등급기준"(2026-10-07 사용자 요청: +자세히 대신) — ①~⑤ 항목이 어떤 지표로 몇 %씩 매겨지는지 간단한 막대그래프
+function atgCriteriaHtml(mode, count) {
+  const crit = ATG_CRITERIA[mode] || ATG_CRITERIA.kr;
+  const scale = ["A", "B", "C", "D", "F"]
+    .map((g, i) => `<span class="atg-seg atg-g${g}"><b>${g}</b><small>${i === 0 ? "상위 20%" : i === 4 ? "하위 20%" : `${i * 20}~${i * 20 + 20}%`}</small></span>`)
+    .join("");
+  const rows = crit
+    .map((c, i) => {
+      const w = 100 / c.items.length;
+      return `<div class="atg-crit-row">
+          <span class="atg-crit-name">${["①", "②", "③", "④", "⑤"][i]} ${escapeHtml(c.f)}</span>
+          <span class="atg-crit-bar">${c.items
+            .map((it, k) => `<span class="atg-crit-part p${k}" style="width:${w}%;">${escapeHtml(it)}<small>${Math.round(w)}%</small></span>`)
+            .join("")}</span>
+        </div>`;
+    })
+    .join("");
+  const ratings = [
+    ["강력매수", 10, 0],
+    ["매수", 20, 1],
+    ["보유", 40, 2],
+    ["매도", 20, 3],
+    ["강력매도", 10, 4],
+  ]
+    .map(([l, w, r]) => `<span class="atg-seg atg-r${r}" style="flex:${w};"><b>${l}</b><small>${w}%</small></span>`)
+    .join("");
+  return `<div class="atg-crit">
+      <p class="atg-crit-title">항목 등급 — 비교 대상 ${count ? `${count}종목` : ""} 안 순위</p>
+      <div class="atg-scale">${scale}</div>
+      <p class="atg-crit-title">①~⑤ 항목 구성 <span class="muted">(지표가 두 개면 반씩 섞음)</span></p>
+      ${rows}
+      <p class="atg-crit-title">종합 판정 — ①~⑤ 점수 평균 순위</p>
+      <div class="atg-scale">${ratings}</div>
+      <p class="muted atg-crit-note">↑ 높을수록 좋음 · ↓ 낮을수록 좋음. 값이 없는 지표는 빼고, 5개 중 3개 이상 있는 종목만 판정합니다.</p>
+    </div>`;
+}
 let atgFilter = -1; // -1 = 전체, 0~4 = 그 판정만
 let atgShown = 50;
 let atgEventsExpanded = false;
@@ -21505,15 +21545,19 @@ async function renderAutoTrackGrades(mode, statusEl, resultsEl) {
       nameOf = (sym) => m.get(sym) || TICKER_TO_KOREAN_NAME[sym] || sym;
     } else if (isCrypto) {
       nameOf = (sym) => cryptoKoName(sym, TICKER_TO_KOREAN_NAME[sym] || sym.replace(/-USD$/, "").replace(/\d{4,}$/, ""));
+    } else if (mode === "etf") {
+      await getKrEtfFullList().catch(() => null);
+      nameOf = (sym) => (isKrTicker(sym) ? ETF_NAME_BY_SYMBOL.get(sym) || sym : sym);
     }
-    const uni = isCrypto ? null : await getSReportUniverse(isKr).catch(() => null);
+    atgCurrentMode = mode;
+    atgCurrentCount = Object.keys(side.items).length;
+    const uni = isCrypto || mode === "etf" ? null : await getSReportUniverse(isKr).catch(() => null);
     const sectorOf = new Map(((uni && uni.companies) || []).map((c) => [c.symbol, c.sectorKo || ""]));
     const logoOf = (sym) => (isCrypto ? cryptoLogoHtml(cryptoBaseTicker(sym)) : tickerLogoHtml(sym));
     const factors = side.factors || [];
     const rows = Object.entries(side.items)
       .map(([sym, v]) => ({ sym, r: v[0], g: v[1] || "", sc: v[2] }))
       .sort((a, b) => b.sc - a.sc);
-    const universeLabel = isKr ? "한국주식(코스피200+코스닥150)" : isCrypto ? "비트코인(시총 상위, 스테이블코인 제외)" : "미국주식(S&P500)";
     const events = side.events || [];
     statusEl.style.display = "none";
 
@@ -21559,9 +21603,8 @@ async function renderAutoTrackGrades(mode, statusEl, resultsEl) {
           <div class="atg-feed-head"><b>${feedTitle}</b><span class="muted">${atgDateLabel(side.date)} 기준 · 전 거래일 판정 대비</span></div>
           ${feedHtml}
         </section>
-        <p class="muted autotrack-legend">📢 ${universeLabel} — ${factors.join("·")} 5개 항목을 비교군 안 순위로 A~F 등급(상위 20%마다 한 단계)을 매기고, 다섯 항목 평균 순위로 상위 10% 강력매수 · 30% 매수 · 70% 보유 · 90% 매도 · 나머지 강력매도로 판정했습니다. ${
-          isKr ? "매일 오후 5시" : "매일 오전 7시"
-        } 갱신. 참고용이며 투자 자문이 아닙니다. <span id="autoTrackCorrBtnSlot"></span></p>
+        ${/* 2026-10-07 사용자 요청: 피드 아래 설명 문구는 모두 삭제 — 기준은 +등급기준 버튼으로 */ ""}
+        <div class="atg-crit-btn-row"><span id="autoTrackCorrBtnSlot"></span></div>
         <div id="autoTrackCorrSlot"></div>
         <div class="atg-filter">
           <button type="button" class="atg-chip${atgFilter < 0 ? " active" : ""}" data-atg-filter="-1">전체 ${rows.length}</button>
@@ -21569,7 +21612,7 @@ async function renderAutoTrackGrades(mode, statusEl, resultsEl) {
         </div>
         <table class="top30-table rk-table atg-table">
           <thead><tr><th data-explain="종목명 옆 작은 글씨는 섹터, 아래 다섯 칸은 항목별 등급(A 최상 ~ F 최하)입니다. ${escapeHtml(
-            factors.map((f) => ATG_FACTOR_EXPLAIN[f] || f).join(" ")
+            (ATG_CRITERIA[mode] || []).map((c) => `${c.f}: ${c.items.join("·")}`).join(" / ")
           )}">종목 · 항목 등급</th><th data-explain="종합 판정 — 다섯 항목 순위 평균이 비교군에서 상위 10%면 강력매수, 30%까지 매수, 70%까지 보유, 90%까지 매도, 그 아래는 강력매도입니다.">종합 판정</th></tr></thead>
           <tbody>${body}</tbody>
         </table>
