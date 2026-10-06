@@ -3005,8 +3005,10 @@ try {
     if (saved && MAP_VIEWS[saved.view] && Date.now() - (saved.t || 0) < 30 * 60 * 1000) restoredView = saved.view;
   }
 } catch {}
+// 본체 상단 "종목찾기"(2026-10-06)는 지금 보던 투자처를 넘겨줌 — ETF·비트코인이면 그 지도부터
 const initialView =
   restoredView ||
+  (requestedMarket === "etf" ? "etf200" : requestedMarket === "crypto" ? "crypto100" : null) ||
   (requestedMarket === "domestic" && typeof KR_CORE_DATA !== "undefined" && KR_CORE_DATA.companies && KR_CORE_DATA.companies.length
     ? "kospi200"
     : "sp200");

@@ -3517,3 +3517,122 @@ span.risk-good { color: #2f9e44; font-weight: 700; }
 .risk-chart-label.risk-chart-strong { fill: var(--text); font-weight: 700; }
 .risk-chart-value { font-size: 11px; fill: var(--text); font-weight: 700; }
 .risk-chart-value.risk-chart-muted { fill: var(--muted); font-weight: 600; }
+
+/* ---------- 상단 탭 지도 마크(종목찾기, 2026-10-06) ---------- */
+.fh-tab-map { display: inline-flex; align-items: center; gap: 4px; }
+.fh-tab-map .fh-tab-icon { flex: none; }
+
+/* ---------- 인기종목 실시간 순위 모션(2026-10-06) ---------- */
+.pop-vol { color: #8a8f98; }
+.pop-vol-hot { color: var(--pos); font-weight: 600; }
+.rk-table tr.pop-rank-up td { animation: popFlashUp 2.2s ease-out; }
+.rk-table tr.pop-rank-down td { animation: popFlashDown 2.2s ease-out; }
+@keyframes popFlashUp { 0% { background: color-mix(in srgb, var(--pos) 16%, transparent); } 100% { background: transparent; } }
+@keyframes popFlashDown { 0% { background: color-mix(in srgb, var(--neg) 12%, transparent); } 100% { background: transparent; } }
+.pop-rank-chip { display: inline-block; margin-left: 5px; font-size: 11px; font-weight: 700; vertical-align: 2px; transition: opacity 0.8s; }
+.pop-rank-chip.up { color: var(--pos); }
+.pop-rank-chip.down { color: var(--neg); }
+.pop-rank-chip.fade { opacity: 0; }
+.rk-table .rk-name-box:has(.pop-rank-chip) { flex-direction: row; flex-wrap: wrap; align-items: baseline; }
+.rk-table .rk-name-box:has(.pop-rank-chip) .rk-sub { flex-basis: 100%; }
+
+/* ---------- 투자분석(2026-10-06) ---------- */
+.ia-wrap { padding: 4px 0 8px; }
+.ia-legend { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 8px; }
+.ia-legend-item, .ia-legend-add {
+  display: inline-flex; align-items: center; gap: 5px; padding: 5px 9px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--card-bg); color: var(--text); font-size: 12.5px; font-weight: 600; cursor: pointer;
+}
+.ia-legend-item i { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.ia-legend-item.off { opacity: 0.38; }
+.ia-legend-item.pf { border-color: #74c0fc; }
+.ia-legend-ret { font-weight: 700; font-size: 12px; }
+.ia-legend-ret .wl-up, .ia-block-ret .wl-up, .ia-ret-table .wl-up, .ia-tip .wl-up { color: var(--pos); }
+.ia-legend-ret .wl-down, .ia-block-ret .wl-down, .ia-ret-table .wl-down, .ia-tip .wl-down { color: var(--neg); }
+.ia-legend-add { border-style: dashed; color: var(--accent); }
+.ia-mark { display: inline-flex; vertical-align: middle; }
+.ia-mark svg { width: 17px; height: 12px; }
+.ia-chart-box { position: relative; border: 1px solid var(--rk-line); border-radius: var(--radius); padding: 30px 4px 2px; background: var(--card-bg); }
+.ia-table-btn {
+  position: absolute; top: 6px; left: 6px; z-index: 2; width: 30px; height: 26px; display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border); border-radius: 7px; background: var(--card-bg); color: var(--muted); cursor: pointer;
+}
+.ia-table-btn.active { background: var(--navy); border-color: var(--navy); color: #fff; }
+.ia-chart { min-height: 200px; }
+.ia-svg { width: 100%; height: auto; display: block; touch-action: pan-y; }
+.ia-grid { stroke: var(--rk-line); stroke-width: 1; }
+.ia-base { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; opacity: 0.7; }
+.ia-axis { fill: var(--muted); font-size: 9.5px; }
+.ia-cross { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 2 2; }
+.ia-chart-loading { display: flex; align-items: center; justify-content: center; min-height: 200px; color: var(--muted); font-size: 13px; text-align: center; padding: 0 12px; }
+.ia-tip {
+  position: absolute; top: 34px; z-index: 3; min-width: 140px; max-width: 70%; padding: 7px 9px; border-radius: 9px;
+  background: var(--card-bg); border: 1px solid var(--border); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12); font-size: 11.5px; pointer-events: none;
+}
+.ia-tip-when { color: var(--muted); margin-bottom: 3px; }
+.ia-tip-row { display: flex; align-items: center; gap: 5px; line-height: 1.5; }
+.ia-tip-row i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.ia-tip-row span:first-of-type { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ia-range-nav { margin-top: 8px; }
+.ia-ret-scroll { overflow-x: auto; padding: 0 2px 4px; }
+table.top30-table.ia-ret-table { width: 100%; font-size: 12.5px; }
+.ia-ret-table th, .ia-ret-table td { padding: 7px 4px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--rk-line); }
+.ia-ret-table .ia-ret-name { text-align: left; position: sticky; left: 0; background: var(--card-bg); max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
+.ia-ret-name i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: 1px; }
+.ia-block { margin-top: 18px; }
+.ia-block-head { display: flex; align-items: center; gap: 6px; padding: 0 2px 4px; }
+.ia-dot { width: 11px; height: 11px; border-radius: 50%; flex: none; }
+.ia-block-title { font-size: 16px; font-weight: 800; color: var(--text); }
+.ia-block-ret { font-size: 13.5px; font-weight: 700; }
+.ia-block-actions { margin-left: auto; display: inline-flex; gap: 5px; }
+.ia-block-note { margin: 0 2px 4px; font-size: 12px; color: var(--muted); line-height: 1.45; }
+.ia-mini-btn { padding: 4px 9px; border-radius: 7px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text); font-size: 12px; font-weight: 600; cursor: pointer; }
+.ia-mini-btn.danger { color: var(--bad); }
+.ia-more-btn { display: block; width: 100%; margin-top: 6px; }
+
+/* 추가하기 시트 */
+.ia-sheet-backdrop { position: fixed; inset: 0; z-index: 600; background: rgba(0, 0, 0, 0.38); display: flex; align-items: flex-end; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+.ia-sheet-backdrop.open { opacity: 1; }
+.ia-sheet {
+  width: 100%; max-width: 520px; max-height: 86vh; overflow-y: auto; background: var(--card-bg); color: var(--text);
+  border-radius: 16px 16px 0 0; padding: 14px 16px 20px; transform: translateY(24px); transition: transform 0.22s;
+}
+.ia-sheet-backdrop.open .ia-sheet { transform: none; }
+.ia-sheet-head { display: flex; align-items: center; gap: 7px; font-size: 16.5px; margin-bottom: 6px; }
+.ia-sheet-x { margin-left: auto; border: none; background: none; font-size: 18px; color: var(--muted); cursor: pointer; }
+.ia-sheet-sub { margin: 0 0 10px; font-size: 12.5px; color: var(--muted); line-height: 1.45; }
+.ia-choice {
+  display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 13px 12px; margin-bottom: 8px;
+  border: 1px solid var(--border); border-radius: 12px; background: var(--card-bg); color: var(--text); cursor: pointer;
+}
+.ia-choice b { display: block; font-size: 15px; }
+.ia-choice small { display: block; margin-top: 2px; font-size: 12px; color: var(--muted); }
+.ia-choice-ic { font-size: 20px; }
+.ia-choice:disabled { opacity: 0.45; cursor: default; }
+.ia-field { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 13px; color: var(--muted); }
+.ia-field input, .ia-search input {
+  flex: 1; width: 100%; box-sizing: border-box; padding: 9px 11px; border: 1px solid var(--border); border-radius: 9px;
+  background: var(--bg); color: var(--text); font-size: 15px;
+}
+.ia-search { position: relative; margin-bottom: 10px; }
+.ia-suggest { margin-top: 4px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.ia-suggest-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 10px; border: none; border-bottom: 1px solid var(--rk-line); background: var(--card-bg); color: var(--text); text-align: left; cursor: pointer; }
+.ia-suggest-item:last-child { border-bottom: none; }
+.ia-suggest-item .ticker-logo-wrap, .ia-suggest-item .crypto-logo-wrap, .ia-suggest-item .crypto-logo { width: 24px; height: 24px; margin: 0; }
+.ia-suggest-name { flex: 1; min-width: 0; font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ia-suggest-name small, .ia-item-name small { display: block; font-size: 11.5px; font-weight: 400; color: var(--muted); }
+.ia-suggest-add { font-size: 20px; font-weight: 700; color: var(--accent); }
+.ia-suggest-empty { padding: 10px; font-size: 13px; color: var(--muted); }
+.ia-items { display: flex; flex-direction: column; gap: 6px; }
+.ia-item { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border: 1px solid var(--rk-line); border-radius: 10px; }
+.ia-item-name { flex: 1; min-width: 0; font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ia-item-w { width: 64px; padding: 6px; border: 1px solid var(--border); border-radius: 7px; background: var(--bg); color: var(--text); font-size: 14px; text-align: right; }
+.ia-item-pct { font-size: 13px; color: var(--muted); }
+.ia-item-x { border: none; background: none; color: var(--muted); font-size: 15px; cursor: pointer; padding: 2px 4px; }
+.ia-empty { margin: 6px 0; font-size: 13px; color: var(--muted); text-align: center; }
+.ia-editor-foot { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+.ia-sum { flex: 1; font-size: 12.5px; color: var(--good); font-weight: 600; }
+.ia-sum.bad { color: var(--bad); }
+.ia-save-btn { padding: 9px 18px; border: none; border-radius: 9px; background: var(--navy); color: #fff; font-size: 14.5px; font-weight: 700; cursor: pointer; }
+.ia-save-btn:disabled { opacity: 0.4; cursor: default; }
+.ia-table-btn svg { width: 16px; height: 16px; min-width: 16px; flex: none; }

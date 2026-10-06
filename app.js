@@ -2817,7 +2817,13 @@ document.querySelectorAll(".fh-tab").forEach((btn) => {
       showOnlyCarouselView(() =>
         appSectionMode === "etf" ? openEtfMetricTab(metric) : appSectionMode === "crypto" ? openCryptoMetricTab(metric) : openStockMetricTab(metric)
       );
-    } else if (key === "tab.ipo") showOnlyCarouselView(() => openIpoList());
+    } else if (key === "tab.findmap") {
+      // 종목찾기(2026-10-06): 마켓맵(지도)으로 이동 — 지금 보던 투자처의 지도부터 연다
+      const market = appSectionMode === "etf" ? "etf" : appSectionMode === "crypto" ? "crypto" : getWatchlistActiveMarket() === "KR" ? "domestic" : "overseas";
+      window.location.href = `sector-map/index.html?market=${market}`;
+      return;
+    } else if (key === "tab.analysis") showOnlyCarouselView(() => openInvestAnalysis());
+    else if (key === "tab.ipo") showOnlyCarouselView(() => openIpoList());
     else if (key === "tab.popular") showOnlyCarouselView(() => openPopularStocks());
     else if (key === "tab.autotrack") showOnlyCarouselView(() => openAutoTrack());
     else if (key === "tab.valuation") showOnlyCarouselView(() => activateRankingGroup("disclosure"));
@@ -2841,6 +2847,7 @@ function refreshTopRankingView() {
   showToast("실시간 데이터로 다시 검색합니다");
   const tab = [...document.querySelectorAll("#fhTabs .fh-tab.active")][0];
   const key = tab ? tab.dataset.fhtab : "";
+  if (key === "tab.analysis") investAnalysisResetCaches();
   // 기업가치·(주식)미래예측은 탭을 다시 누르면 첫 서브항목으로 돌아가므로, 보고 있던 서브항목을 그대로 다시 실행
   if (key === "tab.valuation" || (key === "tab.trend" && appSectionMode === "stocks")) runRankingEntry(topRankingActiveIdx);
   else if (tab) tab.click();
@@ -2872,7 +2879,8 @@ function refreshTopRankingView() {
     }
     return false;
   };
-  const visibleTabs = () => [...document.querySelectorAll("#fhTabs .fh-tab")].filter((b) => b.style.display !== "none" && getComputedStyle(b).display !== "none");
+  const visibleTabs = () =>
+    [...document.querySelectorAll("#fhTabs .fh-tab")].filter((b) => b.dataset.fhtab !== "tab.findmap" && b.style.display !== "none" && getComputedStyle(b).display !== "none");
   const setPanelX = (px, transition) => {
     panel.style.transition = transition || "none";
     panel.style.transform = `translateX(${px}px)`;
@@ -3120,6 +3128,8 @@ const I18N = {
   "tab.valuation": { ko: "기업가치", en: "Value" }, // 2026-09-10 사용자 요청: 실적→기업가치
   "tab.trend": { ko: "시장분석", en: "Market" }, // 2026-09-11 사용자 요청: 미래예측→시장분석
   "tab.ipo": { ko: "IPO", en: "IPO" }, // 2026-09-11: 최근 5년 신규 상장
+  "tab.analysis": { ko: "투자분석", en: "Analysis" }, // 2026-10-06: 투자방법별 수익 비교 + 내 포트폴리오
+  "tab.findmap": { ko: "종목찾기", en: "Map" }, // 2026-10-06: 마켓맵(지도)으로 이동
   // ETF 전용 상단 탭(2026-09-11 사용자 요청) — 시장분석·인사이트를 빼고 그 안에 있던 항목들을 위로 올림
   "tab.etfWinrate": { ko: "승률", en: "Win rate" },
   "tab.etfReturn": { ko: "수익률", en: "Return" },
@@ -4760,6 +4770,8 @@ function showRankingGroup(tabKey) {
   if (autoTrackGroup) autoTrackGroup.style.display = tabKey === "autotrack" ? "block" : "none";
   const ipoGroup = el("ipoGroup");
   if (ipoGroup) ipoGroup.style.display = tabKey === "ipo" ? "block" : "none";
+  const analysisGroup = el("analysisGroup");
+  if (analysisGroup) analysisGroup.style.display = tabKey === "analysis" ? "block" : "none";
 }
 
 let topRankingActiveIdx = 0;
@@ -5430,29 +5442,18 @@ function syncSectionHeader() {
       flag.innerHTML = isKr ? FLAG_SVG_KR : FLAG_SVG_US;
     }
   }
-  // 상단 탭은 투자처마다 6개씩(2026-09-12 사용자 요청) — 하위(서브내비) 버튼은 전부 없애고 그 안 항목을 위로 올렸다.
-  //  · 한국주식·미국주식: 인기종목 - 승률 - 수익률 - 변동성 - 배당률 - IPO
-  //  · ETF            : 인기종목 - 승률 - 수익률 - 변동성 - 배당률 - 운용보수
-  //  · 비트코인        : 인기종목 - 승률 - 수익률 - 변동성 - 시가총액 - 최대낙폭
-  // 기업가치·미래예측·인사이트는 상단에서 내렸다(인사이트는 더보기 > 인사이트로 이동).
-  const isEtfMode = appSectionMode === "etf";
-  const isCryptoMode = appSectionMode === "crypto";
-  const isStockMode = !isEtfMode && !isCryptoMode;
   const showTab = (key, show) => {
     const b = document.querySelector(`.fh-tab[data-fhtab="${key}"]`);
     if (b) b.style.display = show ? "" : "none";
   };
-  showTab("tab.valuation", false);
-  showTab("tab.trend", false);
-  showTab("tab.insight", false);
-  showTab("tab.ipo", isStockMode); // IPO는 주식 섹션 전용(한국주식=국내 신규상장, 미국주식=미국 신규상장)
-  showTab("tab.etfWinrate", true);
-  showTab("tab.etfReturn", true);
-  showTab("tab.etfVolatility", true);
-  showTab("tab.etfDividend", !isCryptoMode); // 코인은 배당이 없어 그 자리에 최대낙폭
-  showTab("tab.etfFee", isEtfMode); // 운용보수는 ETF 전용
-  showTab("tab.cryptoCap", false); // 시가총액 탭은 빼기로 확정(2026-09-12 사용자 재요청) — 최대낙폭만 남김
-  showTab("tab.cryptoDrawdown", isCryptoMode);
+  // 2026-10-06 사용자 요청: 투자처와 상관없이 인기종목 - 투자분석 - (지도)종목찾기 3개만 남김.
+  // 승률·수익률·변동성·배당률·운용보수·최대낙폭·IPO 화면은 지우지 않고(핵심지표 +순위 등이 그대로 씀) 탭만 숨긴다.
+  ["tab.valuation", "tab.trend", "tab.insight", "tab.ipo", "tab.etfWinrate", "tab.etfReturn", "tab.etfVolatility", "tab.etfDividend", "tab.etfFee", "tab.cryptoCap", "tab.cryptoDrawdown"].forEach((k) =>
+    showTab(k, false)
+  );
+  showTab("tab.popular", true);
+  showTab("tab.analysis", true);
+  showTab("tab.findmap", true);
   // 인사이트 하위 보기도 투자처마다 다름(ETF=변동성 순위만, 비트코인=자산&투자사 제외) — 이 시점엔 인사이트
   // 상태 변수들이 아직 선언 전(TDZ)이라 syncDartTabForMarket과 같은 방식으로 커스텀 이벤트로 느슨하게 연결
   document.dispatchEvent(new CustomEvent("appsectionchange"));
@@ -10498,16 +10499,15 @@ async function runPopularStocks() {
       wrMap = wr && (isKr ? wr.scoresKr : wr.scores);
     } catch {}
 
-    // 5일 차트 1회로 시세 + 최근 5일 평균 거래대금(종가×거래량)을 함께 계산 — 정렬 기준이라 50개 전부 선조회
+    // 3개월 일봉 1회로 시세 + 오늘 거래량 ÷ 직전 30거래일 평균 거래량을 함께 계산(2026-10-06 사용자 요청) — 정렬 기준이라 50개 전부 선조회
     const fetchSnap = async (c) => {
       try {
-        const chart = await yahooChart(c.symbol, "5d");
+        const chart = await yahooChart(c.symbol, "3mo");
         const snap = yahooSnapshot(chart);
         const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
-        const pairs = chartCloseVolumePairs(chart);
-        const dvs = pairs.map((p) => p.c * p.v).filter((v) => v > 0);
-        const avgDollarVolume = dvs.length ? dvs.reduce((a, b) => a + b, 0) / dvs.length : 0;
-        return (snap && { ...snap, currency: (meta && meta.currency) || (isKr ? "KRW" : "USD"), avgDollarVolume }) || null;
+        const changePct = getDailyChangePercent(chart);
+        const vol = volumeSurgeStats(chartCloseVolumePairs(chart));
+        return (snap && { ...snap, changePct: changePct ?? snap.changePct, currency: (meta && meta.currency) || (isKr ? "KRW" : "USD"), ...vol }) || null;
       } catch {
         return null;
       }
@@ -10521,16 +10521,14 @@ async function runPopularStocks() {
         snaps[i] = await fetchSnap(c);
       },
       (done) => {
-        statusEl.textContent = `인기종목 거래대금을 확인하는 중... (${done}/${capTop.length})`;
+        statusEl.textContent = `인기종목 거래량을 확인하는 중... (${done}/${capTop.length})`;
       }
     );
-    // 시세를 하나도 못 받았으면(프록시·야후 장애) 거래대금 정렬이 무의미 — 직전 성공 결과로 폴백
+    // 시세를 하나도 못 받았으면(프록시·야후 장애) 거래량 정렬이 무의미 — 직전 성공 결과로 폴백
     const okCount = snaps.filter((s) => s && s.price !== null && s.price !== undefined).length;
     if (okCount === 0) throw new Error("실시간 시세를 받아오지 못했습니다");
-    // 거래대금(최근 5일 평균) 큰 순으로 정렬 — 시세 조회에 실패한 종목은 맨 뒤
-    const scored = capTop
-      .map((c, i) => ({ c, snap: snaps[i] }))
-      .sort((a, b) => ((b.snap && b.snap.avgDollarVolume) || 0) - ((a.snap && a.snap.avgDollarVolume) || 0));
+    // 오늘 거래량 ÷ 30일 평균 거래량 큰 순으로 정렬 — 시세 조회에 실패한 종목은 맨 뒤
+    const scored = capTop.map((c, i) => ({ c, snap: snaps[i] })).sort((a, b) => popularVolKey(b.snap) - popularVolKey(a.snap));
     const plainRows = scored.map(({ c, snap }) => ({
       symbol: c.symbol,
       name: TICKER_TO_KOREAN_NAME[c.symbol] || c.name || c.symbol,
@@ -10538,12 +10536,14 @@ async function runPopularStocks() {
       currency: (snap && snap.currency) || (isKr ? "KRW" : "USD"),
       changePct: snap && snap.changePct !== null && snap.changePct !== undefined ? snap.changePct : null,
       changes: monthlyFromM12(wrMap && wrMap[c.symbol]), // 직전 5개월 월별 등락(2026-09-10) — 승률 DB의 m12 재사용(추가 조회 없음)
+      volRatio: snap ? snap.volRatio : null,
+      avgVolume30: snap ? snap.avgVolume30 : null,
       ret10yAvg: popularRet10y(c, wrMap),
       winRateScore: popularWinRate(c, wrMap),
       winTotal: popularWinTotal(c, wrMap),
     }));
     statusEl.style.display = "none";
-    paintPopularRows(resultsEl, isKr, plainRows, "");
+    paintPopularRows(resultsEl, isKr, plainRows, "", { liveKey: `stock-${isKr ? "kr" : "us"}` });
     savePopularCache(isKr, plainRows);
   } catch (err) {
     // 실패 시(휴장·장 마감 중 시세 장애 포함) 직전 성공 결과 → 없으면 시가총액 순(시세 없음) → 그것도 없으면 오류만
@@ -10592,7 +10592,7 @@ function popularWinRate(c, wrMap) {
 }
 // ---------- 인기종목 직전 결과 캐시(2026-09-07 사용자 요청): 휴장·장 마감·시세 장애 때도 마지막 인기종목을 그대로 보여줌 ----------
 function popularCacheKey(isKr) {
-  return `popular_last_v4_${isKr ? "kr" : "us"}`; // v4(2026-09-12): 표 구성이 여러 번 바뀌어 옛 캐시는 버리고 새로 받는다
+  return `popular_last_v5_${isKr ? "kr" : "us"}`; // v5(2026-10-06): 순위 기준이 거래량 배수로 바뀌어 옛(거래대금순) 캐시는 버림
 }
 function readPopularCache(isKr) {
   try {
@@ -10617,7 +10617,7 @@ function popularSnapshotResetCaches() {
   try {
     localStorage.removeItem(popularCacheKey(true));
     localStorage.removeItem(popularCacheKey(false));
-    ["v1", "v2", "v3"].forEach((v) => ["kr", "us"].forEach((m) => localStorage.removeItem(`popular_last_${v}_${m}`)));
+    ["v1", "v2", "v3", "v4"].forEach((v) => ["kr", "us"].forEach((m) => localStorage.removeItem(`popular_last_${v}_${m}`)));
   } catch {}
   etfScanStateByRegion.clear();
   cryptoScanState.rows = [];
@@ -10635,9 +10635,9 @@ function popularSimpleTableHtml(rows, isKr, opts) {
   // 2026-09-13: 관심종목과 같은 3칸 틀 — 이름은 위(해외도 한글명), 코드·시장은 아래 줄로 통일
   const body = rows
     .map(
-      (r) => `
-      <tr>
-        <td>${opts && opts.etf ? etfRankNameCellHtml(r, isKr) : rankNameCellHtml(r.symbol, logoFn(r), rankDisplayName(r.symbol, r.name, isKr))}</td>
+      (r, i) => `
+      <tr data-sym="${escapeHtml(r.symbol)}" data-idx="${i}">
+        <td>${popularWithVolRatio(opts && opts.etf ? etfRankNameCellHtml(r, isKr) : rankNameCellHtml(r.symbol, logoFn(r), rankDisplayName(r.symbol, r.name, isKr)), r)}</td>
         <td>${rankPriceCellHtml(r.symbol, r.price, r.currency || (isKr ? "KRW" : "USD"), r.changePct)}</td>
         <td>${winRatePctCellHtml(r.winRateScore, r.winTotal, false, partialMonthsFor(r.symbol))}</td>
       </tr>`
@@ -10649,17 +10649,124 @@ function popularSimpleTableHtml(rows, isKr, opts) {
       <tbody>${body}</tbody>
     </table>`;
 }
+// 이름 아래 작은 줄(코드·시장) 끝에 "거래량 2.3배"를 붙임 — 순위 기준(2026-10-06)이 눈에 보이게
+function popularWithVolRatio(nameHtml, r) {
+  if (!r || !Number.isFinite(r.volRatio)) return nameHtml;
+  const x = r.volRatio;
+  const txt = x >= 10 ? Math.round(x) : x.toFixed(1);
+  const hot = x >= 2 ? " pop-vol-hot" : "";
+  return nameHtml.replace(/(<span class="rk-sub">)([^<]*)(<\/span>)/, (m, a, b, c) => `${a}${b}<span class="pop-vol${hot}"> · 거래량 ${txt}배</span>${c}`);
+}
+function popularVolKey(r) {
+  return r && Number.isFinite(r.volRatio) ? r.volRatio : -1;
+}
+
+// ---------- 인기종목 실시간 순위(2026-10-06 사용자 요청) ----------
+// 화면을 보고 있는 동안 1분마다 오늘 거래량·현재가만 다시 받아(종목당 1일 차트 1회) 순위를 다시 매기고,
+// 자리가 바뀐 줄은 원래 자리에서 새 자리로 미끄러지듯 움직인다(FLIP). 30일 평균 거래량은 처음 계산한 값을 그대로 쓴다.
+const POPULAR_LIVE_MS = 60000;
+const popularLive = { key: "", el: null, rows: null, isKr: false, opts: null, timer: null, busy: false };
+function stopPopularLive() {
+  if (popularLive.timer) clearInterval(popularLive.timer);
+  popularLive.timer = null;
+  popularLive.key = "";
+}
+function startPopularLive(resultsEl, isKr, rows, opts) {
+  if (popularLive.key === opts.liveKey && popularLive.timer) {
+    popularLive.rows = rows;
+    return;
+  }
+  stopPopularLive();
+  Object.assign(popularLive, { key: opts.liveKey, el: resultsEl, rows, isKr, opts });
+  popularLive.timer = setInterval(popularLiveTick, POPULAR_LIVE_MS);
+}
+async function popularLiveTick() {
+  const st = popularLive;
+  if (st.busy || !st.rows || !st.el) return;
+  if (st.el.dataset.liveKey !== st.key) return stopPopularLive(); // 다른 투자처·화면 결과로 바뀜
+  const group = el("popularGroup");
+  if (document.hidden || !group || group.style.display === "none" || TAB_ORDER[activeTabIndex] !== "topranking") return;
+  if (st.el.dataset.scanning === "1") return;
+  st.busy = true;
+  const key = st.key;
+  try {
+    const rows = st.rows.map((r) => ({ ...r }));
+    await mapWithConcurrency(rows, 6, async (r) => {
+      if (!Number.isFinite(r.avgVolume30) || !r.avgVolume30) return;
+      const chart = await yahooChart(r.symbol, "1d", "1d");
+      const res = chart && chart.chart && chart.chart.result && chart.chart.result[0];
+      if (!res) return;
+      const meta = res.meta || {};
+      const pairs = chartCloseVolumePairs(chart);
+      const vol = Number.isFinite(meta.regularMarketVolume) ? meta.regularMarketVolume : pairs.length ? pairs[pairs.length - 1].v : null;
+      if (Number.isFinite(vol) && vol > 0) r.volRatio = vol / r.avgVolume30;
+      if (Number.isFinite(meta.regularMarketPrice)) r.price = meta.regularMarketPrice;
+      const chg = getDailyChangePercent(chart);
+      if (Number.isFinite(chg)) r.changePct = chg;
+    });
+    if (st.key !== key || st.el.dataset.liveKey !== key) return;
+    rows.sort((a, b) => popularVolKey(b) - popularVolKey(a));
+    st.rows = rows;
+    paintPopularRows(st.el, st.isKr, rows, "", { ...st.opts, animate: true });
+    if (key.startsWith("stock-")) savePopularCache(st.isKr, rows);
+  } catch {
+    // 한 번 실패해도 다음 주기에 다시 시도
+  } finally {
+    st.busy = false;
+  }
+}
+// 줄 이동 모션: 다시 그리기 전 각 줄의 위치를 기억해 뒀다가, 새 자리에서 그만큼 거꾸로 옮겨 놓고 0으로 되돌린다
+function popularRowPositions(resultsEl) {
+  const m = new Map();
+  resultsEl.querySelectorAll("tr[data-sym]").forEach((tr) => m.set(tr.dataset.sym, { top: tr.getBoundingClientRect().top, idx: Number(tr.dataset.idx) }));
+  return m;
+}
+function popularAnimateRows(resultsEl, before) {
+  resultsEl.querySelectorAll("tr[data-sym]").forEach((tr) => {
+    const old = before.get(tr.dataset.sym);
+    const idx = Number(tr.dataset.idx);
+    if (!old || old.idx === idx) return;
+    const dy = old.top - tr.getBoundingClientRect().top;
+    const up = idx < old.idx;
+    tr.classList.add(up ? "pop-rank-up" : "pop-rank-down");
+    const nameEl = tr.querySelector(".rk-name");
+    if (nameEl) {
+      const chip = document.createElement("span");
+      chip.className = `pop-rank-chip ${up ? "up" : "down"}`;
+      chip.textContent = `${up ? "▲" : "▼"}${Math.abs(old.idx - idx)}`;
+      nameEl.after(chip);
+    }
+    if (Math.abs(dy) > 1) {
+      tr.style.transition = "none";
+      tr.style.transform = `translateY(${dy}px)`;
+      tr.getBoundingClientRect(); // 강제 리플로우 — 옛 자리에서 출발하게
+      tr.style.transition = "transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1)";
+      tr.style.transform = "";
+    }
+    setTimeout(() => {
+      tr.classList.remove("pop-rank-up", "pop-rank-down");
+      const chip = tr.querySelector(".pop-rank-chip");
+      if (chip) chip.classList.add("fade");
+    }, 2200);
+  });
+}
 // opts(2026-09-12 사용자 요청 — ETF·비트코인 인기종목도 이 회색 틀로 통일): { logoFn, nameFn, prefixHtml, universeLabel }
+// opts.liveKey(2026-10-06): 실시간 결과일 때만 — 1분마다 순위를 다시 매기는 갱신을 켬. opts.animate: 갱신으로 다시 그릴 때 줄 이동 모션
 function paintPopularRows(resultsEl, isKr, rows, extraNoteHtml, opts) {
   const o = opts || {};
   const universeLabel = o.universeLabel || `${isKr ? "코스피200+코스닥150" : "S&P500"} 시가총액 상위 50위권`;
-  let shown = Math.min(30, rows.length);
+  // 같은 목록을 다시 그릴 때(실시간 갱신)는 "더보기"로 펼친 상태를 유지
+  let shown = o.animate && resultsEl._popularShown ? Math.min(resultsEl._popularShown, rows.length) : Math.min(30, rows.length);
+  resultsEl.dataset.liveKey = o.liveKey || "";
+  if (o.liveKey) startPopularLive(resultsEl, isKr, rows, o);
   const paint = () => {
+    resultsEl._popularShown = shown;
+    const before = o.animate ? popularRowPositions(resultsEl) : null;
     const visible = rows.slice(0, shown);
     // 2026-09-13 사용자 요청: "+등락표"를 "+승률이란"으로 교체 — 누르면 INVEST점수 10년평균 승률 +자세히와 같은
     // 대표자산 승률비교(그래프·표)를 표 위에 펼침. 월별 등락표(popularSnapTableHtml)는 더 이상 열지 않음.
     const tableHtml = popularSimpleTableHtml(visible, isKr, o);
-    const noteHtml = `${universeLabel} 중 거래대금(최근 5일 평균)이 큰 순입니다. 오른쪽 위 <b>+승률이란</b>을 누르면 대표자산의 10년평균 승률을 비교해 볼 수 있습니다. 투자 자문이 아닙니다.`;
+    const noteHtml = `${universeLabel} 중 <b>오늘 거래량이 최근 30거래일 평균보다 많이 터진 순</b>입니다(이름 아래 "거래량 N배"). 화면을 보고 있는 동안 1분마다 다시 매겨 순위가 바뀌면 줄이 움직입니다. 오른쪽 위 <b>+승률이란</b>을 누르면 대표자산의 10년평균 승률을 비교해 볼 수 있습니다. 투자 자문이 아닙니다.`;
     resultsEl.innerHTML = `
         ${o.prefixHtml || ""}
         <div class="popular-head-row">
@@ -10684,6 +10791,7 @@ function paintPopularRows(resultsEl, isKr, rows, extraNoteHtml, opts) {
         popularShowWinRateInfo = !popularShowWinRateInfo;
         paint();
       });
+    if (before) popularAnimateRows(resultsEl, before);
   };
   paint();
 }
@@ -10895,7 +11003,22 @@ async function computeChartDerivedMetrics(symbol, opts) {
     fiveYearCagr,
     firstTradeDate: meta.firstTradeDate ?? allPairs[0].t ?? null,
     priceBreak, // 최근 1년 중 하루 20배↑·1/20↓ 가격 단절 여부 — 목록 스캔에서 제외 기준
+    ...volumeSurgeStats(pairs), // 인기종목 순위 기준(오늘 거래량 ÷ 30일 평균, 2026-10-06)
   };
+}
+
+// 인기종목 순위 기준(2026-10-06 사용자 요청): 오늘(가장 최근 거래일) 거래량 ÷ 그 전 30거래일 평균 거래량.
+// 평소보다 거래가 몰린 종목이 위로 온다. 장 시작 전에는 직전 거래일 값이 "오늘"이 된다.
+function volumeSurgeStats(pairs) {
+  if (!pairs || pairs.length < 6) return { lastVolume: null, avgVolume30: null, volRatio: null };
+  const last = pairs[pairs.length - 1];
+  const prev = pairs
+    .slice(-31, -1)
+    .map((p) => p.v)
+    .filter((v) => v > 0);
+  const avg = prev.length ? prev.reduce((a, b) => a + b, 0) / prev.length : null;
+  const lastVolume = last.v || 0;
+  return { lastVolume, avgVolume30: avg, volRatio: avg ? lastVolume / avg : null };
 }
 
 // 인기종목 공용 표 — 코인은 주식과 같은 통일 표(회색 박스 + 직전 5개월 등락 + 연평균 상승·10년평균 승률, 2026-09-10),
@@ -10983,6 +11106,9 @@ function ensureEtfScanRows(region, targetCount, statusEl) {
             pressure,
             risk,
             recentDollarVolume: m.recentDollarVolume,
+            volRatio: m.volRatio, // 인기종목 순위(오늘 거래량 ÷ 30일 평균, 2026-10-06)
+            avgVolume30: m.avgVolume30,
+            lastVolume: m.lastVolume,
             week52RangePct: m.week52RangePct,
             volatility3m: m.volatility3m, // ETF 인사이트 "변동성 순위"용(2026-09-10)
             monthReturn: m.monthReturn, // ETF 과거분석 한달상승/하락용(2026-09-02)
@@ -11041,7 +11167,8 @@ async function runEtfPopular() {
     const isKr = region === "kr";
     const rows = await getEtfScanRows(region, statusEl);
     if (etfPopularRegion !== region) return; // 조회 중 다른 지역 칩으로 전환했으면 그쪽 렌더에 맡김
-    const scored = [...rows].sort((a, b) => (b.recentDollarVolume || 0) - (a.recentDollarVolume || 0)).slice(0, 30);
+    // 2026-10-06 사용자 요청: 오늘 거래량 ÷ 30일 평균 거래량 큰 순
+    const scored = [...rows].sort((a, b) => popularVolKey(b) - popularVolKey(a)).slice(0, 30);
     if (scored.length === 0) throw new Error("ETF 점수를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.");
     await attachWinRateRsiToRows(scored, "scoresEtf"); // 연평균 상승·10년평균 승률 열(2026-09-04)
     statusEl.style.display = "none";
@@ -11058,11 +11185,14 @@ async function runEtfPopular() {
       changes: r.m12Changes,
       winRateScore: r.winRate,
       winTotal: r.winTotal,
+      volRatio: r.volRatio,
+      avgVolume30: r.avgVolume30,
     }));
     paintPopularRows(resultsEl, isKr, etfRows, "", {
       prefixHtml: etfRegionNavHtml("data-etf-popular-region"),
       etf: true, // 이름 칸을 ETF 전용 표기(한국=상품명/브랜드, 미국=티커/상품명)로
       universeLabel: isKr ? "국내 상장 ETF 시가총액 상위 30개" : "미국 상장 ETF 순자산 상위 30개",
+      liveKey: `etf-${region}`,
       logoFn: (r) => {
         if (isKr) ensureKrEtfLogoOverride(r.symbol, r.name); // 브랜드 → 운용사 그룹 CI(2026-09-03)
         return tickerLogoHtml(r.symbol, isKr ? KR_ETF_BRAND_BADGE_POPULAR[(r.name || "").split(" ")[0]] : undefined);
@@ -11174,6 +11304,9 @@ function ensureCryptoScanRows(targetCount, statusEl) {
             pressure,
             risk,
             recentDollarVolume: m.recentDollarVolume,
+            volRatio: m.volRatio, // 인기종목 순위(오늘 거래량 ÷ 30일 평균, 2026-10-06)
+            avgVolume30: m.avgVolume30,
+            lastVolume: m.lastVolume,
             week52RangePct: m.week52RangePct,
             volatility3m: m.volatility3m, // 코인 "변동성" 탭(2026-09-12) — ETF와 같은 3개월 일평균 변동
             week52DrawdownPct: m.week52DrawdownPct, // 코인 "최대낙폭" 탭(2026-09-12) — 52주 최고가 대비 현재가 낙폭
@@ -11224,7 +11357,8 @@ async function runCryptoPopular() {
   statusEl.textContent = "암호화폐 목록을 불러오는 중...";
   try {
     const rows = await getCryptoScanRows(statusEl);
-    const scored = [...rows].sort((a, b) => (b.recentDollarVolume || 0) - (a.recentDollarVolume || 0)).slice(0, 30);
+    // 2026-10-06 사용자 요청: 오늘 거래량 ÷ 30일 평균 거래량 큰 순
+    const scored = [...rows].sort((a, b) => popularVolKey(b) - popularVolKey(a)).slice(0, 30);
     if (scored.length === 0) throw new Error("코인 점수를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.");
     await attachWinRateRsiToRows(scored, "scoresCrypto"); // 연평균 상승·10년평균 승률 열(2026-09-04)
     statusEl.style.display = "none";
@@ -11238,9 +11372,12 @@ async function runCryptoPopular() {
       changes: r.m12Changes,
       winRateScore: r.winRate,
       winTotal: r.winTotal,
+      volRatio: r.volRatio,
+      avgVolume30: r.avgVolume30,
     }));
     paintPopularRows(resultsEl, false, cryptoRows, "", {
       universeLabel: "암호화폐 시가총액 상위 30개",
+      liveKey: "crypto",
       logoFn: (r) => cryptoLogoHtml(cryptoBaseTicker(r.symbol)),
       nameFn: (r) => r.name || r.symbol,
     });
@@ -20307,5 +20444,949 @@ async function renderRiskPanel(ticker) {
     row.addEventListener("click", () => {
       if (row.dataset.riskTicker !== ticker) navigateToTicker(row.dataset.riskTicker);
     });
+  });
+}
+
+// ====================== 투자분석(2026-10-06 사용자 요청) ======================
+// 상단 둘째 탭. 투자처(한국주식·미국주식·ETF·비트코인)마다 투자방법 5~6개와 내가 만든 포트폴리오(파란 선)를
+// 시작=100 수익 지수로 한 그래프에 겹쳐 그리고, 아래에 투자방법별 구성종목(기업명·현재가·비중, 비중 높은 순 10개 → +더보기 30개)을 보여준다.
+// · 1년·5년·최대(10년): 배치(scripts/build-invest-analysis.py → data/invest-analysis.json)가 미리 계산한 지수
+// · 1일·1주·1달: 지수형은 지수 시세 하나, 바구니형은 비중 상위 10종목 시세로 실시간 계산
+// · 내 포트폴리오: 모든 기간을 실시간 계산 — 상장 10년 미만 종목은 시세가 생긴 때부터 더해진다
+let investAnalysisDbPromise = null;
+function getInvestAnalysisDb() {
+  if (!investAnalysisDbPromise) {
+    investAnalysisDbPromise = fetch("data/invest-analysis.json", { cache: "no-store" })
+      .then((r) => {
+        if (!r.ok) throw new Error("http " + r.status);
+        return r.json();
+      })
+      .catch((e) => {
+        investAnalysisDbPromise = null; // 실패는 캐시하지 않음
+        throw e;
+      });
+  }
+  return investAnalysisDbPromise;
+}
+const IA_RANGES = [
+  { key: "1d", label: "1일" },
+  { key: "1w", label: "1주" },
+  { key: "1m", label: "1달" },
+  { key: "1y", label: "1년" },
+  { key: "5y", label: "5년" },
+  { key: "max", label: "최대" },
+];
+const IA_SECTION_LABEL = { kr: "한국주식", us: "미국주식", etf: "ETF", crypto: "비트코인" };
+const IA_PF_KEY = "invest_analysis_portfolios_v1";
+const IA_PF_COLORS = ["#1971c2", "#4dabf7", "#3b5bdb", "#74c0fc", "#1864ab"]; // 내 포트폴리오는 파란 계열
+const IA_KST = 9 * 3600;
+const iaState = { range: "1y", table: false, hidden: new Set(), expanded: new Set(), seq: 0, ctx: null, plot: null };
+const iaChartCache = new Map();
+const iaRangeCache = new Map();
+const iaQuoteCache = new Map();
+
+function investAnalysisResetCaches() {
+  iaChartCache.clear();
+  iaRangeCache.clear();
+  iaQuoteCache.clear();
+  investAnalysisDbPromise = null;
+}
+function iaCurrentSection() {
+  if (appSectionMode === "etf") return "etf";
+  if (appSectionMode === "crypto") return "crypto";
+  return getWatchlistActiveMarket() === "KR" ? "kr" : "us";
+}
+function iaSectionMarkHtml(sec) {
+  const svg = sec === "crypto" ? ICON_SVG_BTC : sec === "etf" ? ICON_SVG_ETF : sec === "kr" ? FLAG_SVG_KR : FLAG_SVG_US;
+  return `<span class="section-mark ia-mark" title="${IA_SECTION_LABEL[sec]}" aria-label="${IA_SECTION_LABEL[sec]}">${svg}</span>`;
+}
+// ---------- 내 포트폴리오 저장(이 기기 localStorage) ----------
+// [{ id, section: kr|us|etf|crypto, name, items: [{ symbol, name, weight }] }] — 투자처가 다른 종목은 한 포트폴리오에 섞지 않는다
+function iaLoadPortfolios() {
+  try {
+    const v = JSON.parse(localStorage.getItem(IA_PF_KEY));
+    return Array.isArray(v) ? v.filter((p) => p && p.id && Array.isArray(p.items)) : [];
+  } catch {
+    return [];
+  }
+}
+function iaSavePortfolios(list) {
+  try {
+    localStorage.setItem(IA_PF_KEY, JSON.stringify(list));
+  } catch {}
+}
+
+function openInvestAnalysis() {
+  switchTab(TAB_ORDER.indexOf("topranking"));
+  el("tabValuationBtn").classList.remove("active");
+  tabTrendBtn.classList.remove("active");
+  setCarouselViewTitle("tab.analysis");
+  el("topRankingSubNav").innerHTML = "";
+  showRankingGroup("analysis");
+  renderInvestAnalysis();
+}
+
+async function iaBuildContext(sec) {
+  const db = await getInvestAnalysisDb();
+  const strategies = ((db && db.sections && db.sections[sec]) || []).map((st) => ({
+    id: `${sec}:${st.key}`,
+    kind: "strategy",
+    label: st.label,
+    color: st.color,
+    ticker: st.ticker || null,
+    holdings: st.holdings || [],
+    note: st.note || "",
+    series: st.series || {},
+  }));
+  const pfList = iaLoadPortfolios().filter((p) => p.section === sec);
+  const pfs = pfList.map((p, i) => ({
+    id: `pf:${p.id}`,
+    kind: "portfolio",
+    pfId: p.id,
+    label: p.name,
+    color: IA_PF_COLORS[i % IA_PF_COLORS.length],
+    holdings: p.items.map((it) => ({ s: it.symbol, n: it.name, w: Number(it.weight) || 0 })).filter((h) => h.w > 0),
+    note: "",
+  }));
+  return { sec, db, lines: [...strategies, ...pfs], key: `${sec}|${(db && db.generatedAt) || ""}|${JSON.stringify(pfList)}` };
+}
+
+async function renderInvestAnalysis() {
+  const seq = ++iaState.seq;
+  const status = el("analysisStatus");
+  const results = el("analysisResults");
+  if (!status || !results) return;
+  const sec = iaCurrentSection();
+  if (!results.innerHTML || (iaState.ctx && iaState.ctx.sec !== sec)) results.innerHTML = "";
+  status.style.display = "block";
+  status.textContent = "투자방법별 수익을 불러오는 중...";
+  let ctx;
+  try {
+    ctx = await iaBuildContext(sec);
+    if (!ctx.lines.length) throw new Error("이 투자처의 투자분석 데이터가 아직 없습니다.");
+  } catch (e) {
+    if (seq !== iaState.seq) return;
+    status.innerHTML = `❌ ${escapeHtml((e && e.message) || "투자분석 데이터를 불러오지 못했습니다.")} <button type="button" class="cat-btn corr-retry-btn" style="margin-left:6px;">다시 시도</button>`;
+    const retry = status.querySelector(".corr-retry-btn");
+    if (retry) retry.addEventListener("click", () => renderInvestAnalysis());
+    return;
+  }
+  if (seq !== iaState.seq) return;
+  status.style.display = "none";
+  iaState.ctx = ctx;
+  results.innerHTML = iaShellHtml(ctx);
+  iaBindShell(results);
+  iaDrawChart();
+  iaObserveRows(results);
+}
+
+function iaShellHtml(ctx) {
+  const dateStr = ctx.db && ctx.db.generatedAt ? String(ctx.db.generatedAt).slice(0, 10) : "-";
+  const rangeBtns = IA_RANGES.map((r) => `<button type="button" class="cat-btn${r.key === iaState.range ? " active" : ""}" data-ia-range="${r.key}">${r.label}</button>`).join("");
+  return `
+    <div class="ia-wrap" data-sec="${ctx.sec}">
+      <div class="ia-legend" id="iaLegend">${iaLegendHtml(ctx)}</div>
+      <div class="ia-chart-box">
+        <button type="button" class="ia-table-btn${iaState.table ? " active" : ""}" id="iaTableBtn" aria-label="표로 보기" title="표로 보기">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9.5h18M3 15h18M9.5 4v16"/></svg>
+        </button>
+        <div class="ia-chart" id="iaChart"></div>
+        <div class="ia-tip" id="iaTip" style="display:none;"></div>
+      </div>
+      <div class="top30-sub-nav ia-range-nav" id="iaRangeNav"${iaState.table ? ' style="display:none;"' : ""}>${rangeBtns}</div>
+      <p class="tap-hint">* 위 이름을 누르면 그 선을 끄고 켤 수 있습니다. 왼쪽 위 표 버튼을 누르면 기간별 수익률을 표로 봅니다.</p>
+      <div id="iaBlocks">${ctx.lines.map((l) => iaBlockHtml(l, ctx.sec)).join("")}</div>
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 모든 그래프는 기간 시작을 100으로 둔 수익 지수입니다. 투자방법 구성종목·1년/5년/최대(10년) 그래프는 ${dateStr} 배치 기준이고, 1일·1주·1달은 실시간(바구니형은 비중 상위 10종목)으로 계산합니다. 바구니형 투자방법은 <b>지금 고른 종목</b>을 그 비중으로 계속 들고 있었다고 가정한 값이라 과거 성적이 부풀려지는 생존편향이 있고, 상장 10년이 안 된 종목은 상장 시점부터 더해집니다. 수수료·세금·배당은 반영하지 않았으며 투자 자문이 아닙니다.</p>
+    </div>`;
+}
+function iaLegendHtml(ctx) {
+  const items = ctx.lines
+    .map(
+      (l) => `<button type="button" class="ia-legend-item${iaState.hidden.has(l.id) ? " off" : ""}${l.kind === "portfolio" ? " pf" : ""}" data-ia-line="${escapeHtml(l.id)}">
+        <i style="background:${l.color};"></i>${l.kind === "portfolio" ? iaSectionMarkHtml(ctx.sec) : ""}<span class="ia-legend-name">${escapeHtml(l.label)}</span><span class="ia-legend-ret" data-ia-ret="${escapeHtml(l.id)}"></span>
+      </button>`
+    )
+    .join("");
+  return `${items}<button type="button" class="ia-legend-add" id="iaAddBtn">+추가하기</button>`;
+}
+function iaFmtWeight(w) {
+  const n = Number(w);
+  if (!Number.isFinite(n)) return "-";
+  return n >= 10 ? n.toFixed(1) : n.toFixed(2).replace(/0$/, "");
+}
+function iaHoldingRowHtml(h) {
+  const sym = h.s;
+  const isCrypto = /-(USD|KRW)$/.test(sym);
+  const logo = isCrypto ? cryptoLogoHtml(cryptoBaseTicker(sym)) : tickerLogoHtml(sym);
+  const name = isCrypto ? TICKER_TO_KOREAN_NAME[sym] || h.n || sym : rankDisplayName(sym, h.n, isKrTicker(sym));
+  const q = iaQuoteCache.get(sym);
+  const priceHtml = q && q.data ? rankPriceCellHtml(sym, q.data.price, q.data.currency, q.data.changePct) : `<span class="muted">…</span>`;
+  return `<tr data-ia-sym="${escapeHtml(sym)}">
+      <td>${rankNameCellHtml(sym, logo, name)}</td>
+      <td class="ia-price">${priceHtml}</td>
+      <td><b class="rank-hl">${iaFmtWeight(h.w)}%</b></td>
+    </tr>`;
+}
+function iaBlockHtml(line, sec) {
+  const expanded = iaState.expanded.has(line.id);
+  const list = line.kind === "portfolio" ? [...line.holdings].sort((a, b) => b.w - a.w) : line.holdings;
+  const shown = list.slice(0, expanded ? 30 : 10);
+  const total = Math.min(30, list.length);
+  const head = `<div class="ia-block-head">
+      <i class="ia-dot" style="background:${line.color};"></i>
+      ${line.kind === "portfolio" ? iaSectionMarkHtml(sec) : ""}
+      <b class="ia-block-title">${escapeHtml(line.label)}</b>
+      <span class="ia-block-ret" data-ia-ret="${escapeHtml(line.id)}"></span>
+      ${
+        line.kind === "portfolio"
+          ? `<span class="ia-block-actions"><button type="button" class="ia-mini-btn" data-ia-edit="${escapeHtml(line.pfId)}">편집</button><button type="button" class="ia-mini-btn danger" data-ia-del="${escapeHtml(line.pfId)}">삭제</button></span>`
+          : ""
+      }
+    </div>`;
+  const note = line.note ? `<p class="ia-block-note">${escapeHtml(line.note)}</p>` : "";
+  const table = `<table class="top30-table rk-table ia-table">
+      <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}<th data-explain="비중 — 이 투자방법(또는 내 포트폴리오) 안에서 그 종목이 차지하는 비율입니다. 투자방법은 시가총액 비중(지수형은 지수 전체 대비), 내 포트폴리오는 직접 정한 값입니다.">비중</th></tr></thead>
+      <tbody>${shown.map((h) => iaHoldingRowHtml(h)).join("")}</tbody>
+    </table>`;
+  const more =
+    list.length > 10
+      ? `<button type="button" class="cat-btn load-more-btn ia-more-btn" data-ia-more="${escapeHtml(line.id)}">${expanded ? "− 접기" : `+더보기 (${total}종목)`}</button>`
+      : "";
+  return `<section class="ia-block${line.kind === "portfolio" ? " ia-block-pf" : ""}" data-ia-block="${escapeHtml(line.id)}">${head}${note}${table}${more}</section>`;
+}
+
+function iaBindShell(root) {
+  root.onclick = (e) => {
+    const rb = e.target.closest("[data-ia-range]");
+    if (rb) {
+      iaState.range = rb.dataset.iaRange;
+      root.querySelectorAll("[data-ia-range]").forEach((b) => b.classList.toggle("active", b === rb));
+      iaDrawChart();
+      return;
+    }
+    const lg = e.target.closest("[data-ia-line]");
+    if (lg) {
+      const id = lg.dataset.iaLine;
+      const ctx = iaState.ctx;
+      if (iaState.hidden.has(id)) iaState.hidden.delete(id);
+      else if (ctx && ctx.lines.filter((l) => !iaState.hidden.has(l.id)).length > 1) iaState.hidden.add(id); // 최소 1개는 남김
+      lg.classList.toggle("off", iaState.hidden.has(id));
+      if (!iaState.table) iaDrawChart();
+      return;
+    }
+    if (e.target.closest("#iaAddBtn")) return iaOpenAddChoice();
+    if (e.target.closest("#iaTableBtn")) {
+      iaState.table = !iaState.table;
+      el("iaTableBtn").classList.toggle("active", iaState.table);
+      el("iaRangeNav").style.display = iaState.table ? "none" : "";
+      iaDrawChart();
+      return;
+    }
+    const more = e.target.closest("[data-ia-more]");
+    if (more) {
+      const id = more.dataset.iaMore;
+      if (iaState.expanded.has(id)) iaState.expanded.delete(id);
+      else iaState.expanded.add(id);
+      const line = iaState.ctx.lines.find((l) => l.id === id);
+      const block = root.querySelector(`[data-ia-block="${CSS.escape(id)}"]`);
+      if (line && block) {
+        block.outerHTML = iaBlockHtml(line, iaState.ctx.sec);
+        iaPaintReturns(iaState.lastData);
+        iaObserveRows(root);
+      }
+      return;
+    }
+    const ed = e.target.closest("[data-ia-edit]");
+    if (ed) {
+      const pf = iaLoadPortfolios().find((p) => p.id === ed.dataset.iaEdit);
+      if (pf) iaOpenEditor(pf);
+      return;
+    }
+    const del = e.target.closest("[data-ia-del]");
+    if (del) {
+      const pf = iaLoadPortfolios().find((p) => p.id === del.dataset.iaDel);
+      if (pf && window.confirm(`'${pf.name}' 포트폴리오를 삭제할까요?`)) {
+        iaSavePortfolios(iaLoadPortfolios().filter((p) => p.id !== pf.id));
+        renderInvestAnalysis();
+      }
+    }
+  };
+}
+
+// ---------- 시세 조회·지수 계산 ----------
+function iaFetchChart(sym, rk) {
+  const key = `${sym}|${rk}`;
+  const ttl = rk === "1y" || rk === "10y" ? 30 * 60000 : 2 * 60000;
+  const hit = iaChartCache.get(key);
+  if (hit && Date.now() - hit.at < ttl) return hit.p;
+  const isCrypto = /-(USD|KRW)$/.test(sym);
+  const now = Math.floor(Date.now() / 1000);
+  let p;
+  if (rk === "1d") p = isCrypto ? yahooChartRange(sym, now - 86400, now, "5m") : yahooChart(sym, "1d", "5m");
+  else if (rk === "1w") p = isCrypto ? yahooChartRange(sym, now - 7 * 86400, now, "30m") : yahooChart(sym, "5d", "15m");
+  else if (rk === "1m") p = yahooChart(sym, "1mo", "60m");
+  else if (rk === "1y") p = yahooChart(sym, "1y", "1d");
+  else p = yahooChart(sym, "10y", "1wk");
+  p = p.catch(() => null);
+  iaChartCache.set(key, { at: Date.now(), p });
+  return p;
+}
+function iaParseChart(chart) {
+  const res = chart && chart.chart && chart.chart.result && chart.chart.result[0];
+  if (!res) return null;
+  const meta = res.meta || {};
+  const pts = chartCloseVolumePairs(chart)
+    .filter((p) => p.c > 0)
+    .map((p) => [p.t, p.c]);
+  const reg = meta.currentTradingPeriod && meta.currentTradingPeriod.regular;
+  return {
+    pts,
+    prevClose: Number.isFinite(meta.chartPreviousClose) ? meta.chartPreviousClose : Number.isFinite(meta.previousClose) ? meta.previousClose : null,
+    sessionLen: reg && reg.end > reg.start ? reg.end - reg.start : null,
+  };
+}
+// 서로 다른 종목의 봉을 같은 칸에 넣기 위한 묶음 키 — 일봉·주봉은 한국시간 날짜/주(월요일 시작) 기준(배치와 같은 규칙)
+function iaBucket(rk, t, crypto) {
+  if (rk === "1d") return Math.floor(t / 300);
+  if (rk === "1w") return Math.floor(t / (crypto ? 1800 : 900));
+  if (rk === "1m") return Math.floor(t / 3600);
+  if (rk === "1y") return Math.floor((t + IA_KST) / 86400);
+  return Math.floor((t + IA_KST - 4 * 86400) / (7 * 86400));
+}
+// 비중 가중 수익 지수(시작=100): 칸마다 그 칸에 시세가 있는 종목들의 가중 평균 수익률로 이어 붙임.
+// 상장 전 종목은 시세가 생긴 다음 칸부터 비중에 들어간다(10년이 안 된 종목은 그 해부터 가산).
+function iaBasket(holdings, parsed, rk, crypto, usePrevClose) {
+  const per = new Map();
+  const firstT = new Map();
+  holdings.forEach((h) => {
+    const m = new Map();
+    const pc = parsed.get(h.s);
+    if (pc)
+      pc.pts.forEach(([t, c]) => {
+        const k = iaBucket(rk, t, crypto);
+        m.set(k, c);
+        if (!firstT.has(k)) firstT.set(k, t);
+      });
+    per.set(h.s, m);
+  });
+  const keys = [...firstT.keys()].sort((a, b) => a - b);
+  if (!keys.length) return [];
+  const prev = new Map();
+  const out = [];
+  if (usePrevClose) {
+    holdings.forEach((h) => {
+      const pc = parsed.get(h.s);
+      if (pc && pc.prevClose > 0) prev.set(h.s, pc.prevClose);
+    });
+    if (prev.size) out.push([firstT.get(keys[0]) - 60, 100]); // 1일은 전일 종가를 100으로
+  }
+  let level = 100;
+  keys.forEach((k) => {
+    let num = 0;
+    let den = 0;
+    holdings.forEach((h) => {
+      const p = per.get(h.s).get(k);
+      if (p === undefined) return;
+      if (prev.has(h.s)) {
+        num += h.w * (p / prev.get(h.s) - 1);
+        den += h.w;
+      }
+      prev.set(h.s, p);
+    });
+    if (den > 0) level *= 1 + num / den;
+    out.push([firstT.get(k), level]);
+  });
+  return out;
+}
+function iaRebase(pts) {
+  if (!pts.length || !pts[0][1]) return pts;
+  const b = pts[0][1];
+  return pts.map(([t, v]) => [t, (v / b) * 100]);
+}
+function iaSlice5y(pts) {
+  if (!pts.length) return pts;
+  const from = pts[pts.length - 1][0] - 5 * 365.25 * 86400;
+  return iaRebase(pts.filter(([t]) => t >= from));
+}
+async function iaLineSeries(line, rk, sec) {
+  if (line.kind === "strategy" && (rk === "1y" || rk === "5y" || rk === "max")) {
+    const s = rk === "1y" ? line.series["1y"] : line.series["10y"];
+    if (!s || !Array.isArray(s.t) || !s.t.length) return { pts: [] };
+    const pts = s.t.map((t, i) => [t, s.v[i]]);
+    return { pts: rk === "5y" ? iaSlice5y(pts) : pts };
+  }
+  const holdings =
+    line.kind === "strategy"
+      ? line.ticker
+        ? [{ s: line.ticker, w: 1 }]
+        : line.holdings.slice(0, 10).map((h) => ({ s: h.s, w: h.w }))
+      : line.holdings.map((h) => ({ s: h.s, w: h.w }));
+  if (!holdings.length) return { pts: [] };
+  const fetchKey = rk === "5y" || rk === "max" ? "10y" : rk;
+  const parsed = new Map();
+  await mapWithConcurrency(holdings, 5, async (h) => {
+    const pc = iaParseChart(await iaFetchChart(h.s, fetchKey));
+    if (pc && pc.pts.length) parsed.set(h.s, pc);
+  });
+  const crypto = sec === "crypto";
+  let pts = iaBasket(holdings, parsed, fetchKey, crypto, rk === "1d" && !crypto);
+  if (rk === "5y") pts = iaSlice5y(pts);
+  let span = null;
+  if (rk === "1d" && pts.length) {
+    // 1일: 각 선을 자기 거래시간(코인은 최근 24시간) 안에서 진행한 만큼만 그린다 — 장중이면 선이 중간까지만
+    if (crypto) {
+      const now = Math.floor(Date.now() / 1000);
+      span = [now - 86400, now];
+    } else {
+      const first = parsed.get(holdings[0].s) || [...parsed.values()][0];
+      const start = pts[0][0];
+      const len = (first && first.sessionLen) || pts[pts.length - 1][0] - start;
+      span = [start, Math.max(start + len, pts[pts.length - 1][0])];
+    }
+  }
+  return { pts, span };
+}
+function iaComputeRange(rk) {
+  const ctx = iaState.ctx;
+  const key = `${ctx.key}|${rk}`;
+  const ttl = rk === "1d" || rk === "1w" || rk === "1m" ? 120000 : 1800000;
+  const hit = iaRangeCache.get(key);
+  if (hit && Date.now() - hit.at < ttl) return hit.p;
+  const p = (async () => {
+    const out = new Map();
+    await mapWithConcurrency(ctx.lines, 2, async (line) => {
+      try {
+        out.set(line.id, await iaLineSeries(line, rk, ctx.sec));
+      } catch {
+        out.set(line.id, { pts: [] });
+      }
+    });
+    return out;
+  })();
+  iaRangeCache.set(key, { at: Date.now(), p });
+  return p;
+}
+function iaReturnOf(series) {
+  const pts = series && series.pts;
+  if (!pts || pts.length < 2 || !pts[0][1]) return null;
+  return (pts[pts.length - 1][1] / pts[0][1] - 1) * 100;
+}
+function iaPctHtml(v) {
+  if (!Number.isFinite(v)) return `<span class="muted">-</span>`;
+  const r = Math.round(v * 10) / 10;
+  const cls = r > 0 ? "wl-up" : r < 0 ? "wl-down" : "";
+  return `<span class="${cls}">${r > 0 ? "+" : ""}${r.toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%</span>`;
+}
+function iaPaintReturns(data) {
+  if (!data) return;
+  document.querySelectorAll("[data-ia-ret]").forEach((node) => {
+    const s = data.get(node.dataset.iaRet);
+    node.innerHTML = s ? iaPctHtml(iaReturnOf(s)) : "";
+  });
+}
+
+// ---------- 그래프 ----------
+async function iaDrawChart() {
+  const ctx = iaState.ctx;
+  const box = el("iaChart");
+  if (!ctx || !box) return;
+  if (iaState.table) return iaDrawTable();
+  const rk = iaState.range;
+  const seq = iaState.seq;
+  box.innerHTML = `<div class="ia-chart-loading">그래프를 그리는 중...</div>`;
+  el("iaTip").style.display = "none";
+  const data = await iaComputeRange(rk);
+  if (seq !== iaState.seq || rk !== iaState.range || iaState.table || !el("iaChart")) return;
+  iaState.lastData = data;
+  el("iaChart").innerHTML = iaChartSvg(ctx, data, rk);
+  iaPaintReturns(data);
+  iaBindCrosshair();
+}
+function iaFmtTime(t, rk) {
+  const d = new Date(t * 1000);
+  const p2 = (n) => String(n).padStart(2, "0");
+  if (rk === "1d") return `${p2(d.getHours())}:${p2(d.getMinutes())}`;
+  if (rk === "1w" || rk === "1m") return `${d.getMonth() + 1}/${d.getDate()}`;
+  if (rk === "1y") return `${String(d.getFullYear()).slice(2)}.${d.getMonth() + 1}`;
+  return `${d.getFullYear()}`;
+}
+function iaChartSvg(ctx, data, rk) {
+  const W = 360,
+    H = 230,
+    ML = 40,
+    MR = 10,
+    MT = 12,
+    MB = 22;
+  const PW = W - ML - MR;
+  const PH = H - MT - MB;
+  const crypto = ctx.sec === "crypto";
+  const vis = ctx.lines.filter((l) => !iaState.hidden.has(l.id) && data.get(l.id) && data.get(l.id).pts.length >= 2);
+  if (!vis.length) {
+    iaState.plot = null;
+    return `<div class="ia-chart-loading">표시할 시세가 없습니다. 휴장 중이거나 시세 조회에 실패했을 수 있어요.</div>`;
+  }
+  // 가로축: 1일은 선마다 자기 거래시간 비율, 나머지는 모든 선의 봉을 합친 순번(휴장 시간은 건너뜀)
+  let xOf;
+  let axisTimes = [];
+  if (rk === "1d") {
+    const spanOf = (l) => data.get(l.id).span || [data.get(l.id).pts[0][0], data.get(l.id).pts[data.get(l.id).pts.length - 1][0]];
+    xOf = (l, t) => {
+      const [a, b] = spanOf(l);
+      return ML + (b > a ? clamp((t - a) / (b - a), 0, 1) : 0) * PW;
+    };
+    const s0 = spanOf(vis[0]);
+    axisTimes = [s0[0], (s0[0] + s0[1]) / 2, s0[1]].map((t) => ({ x: xOf(vis[0], t), t }));
+  } else {
+    const fk = rk === "5y" || rk === "max" ? "10y" : rk;
+    const firstT = new Map();
+    vis.forEach((l) =>
+      data.get(l.id).pts.forEach(([t]) => {
+        const k = iaBucket(fk, t, crypto);
+        if (!firstT.has(k) || firstT.get(k) > t) firstT.set(k, t);
+      })
+    );
+    const keys = [...firstT.keys()].sort((a, b) => a - b);
+    const idx = new Map(keys.map((k, i) => [k, i]));
+    const n = Math.max(1, keys.length - 1);
+    xOf = (l, t) => ML + (idx.get(iaBucket(fk, t, crypto)) / n) * PW;
+    axisTimes = [0, Math.floor(keys.length / 2), keys.length - 1].map((i) => ({ x: ML + (i / n) * PW, t: firstT.get(keys[i]) }));
+  }
+  let lo = Infinity;
+  let hi = -Infinity;
+  vis.forEach((l) =>
+    data.get(l.id).pts.forEach(([, v]) => {
+      if (v < lo) lo = v;
+      if (v > hi) hi = v;
+    })
+  );
+  lo = Math.min(lo, 100);
+  hi = Math.max(hi, 100);
+  // 코인 10년처럼 수백 배 차이 나면 다른 선이 바닥에 깔리므로 로그 눈금
+  const useLog = lo > 0 && hi / lo > 8;
+  let yOf;
+  const ticks = [];
+  if (useLog) {
+    const a = Math.log10(lo * 0.92);
+    const b = Math.log10(hi * 1.08);
+    yOf = (v) => MT + (1 - (Math.log10(v) - a) / (b - a)) * PH;
+    for (let e = Math.floor(a); e <= Math.ceil(b); e++)
+      [1, 2, 5].forEach((m) => {
+        const v = m * Math.pow(10, e);
+        if (Math.log10(v) >= a && Math.log10(v) <= b) ticks.push(v);
+      });
+  } else {
+    const pad = Math.max((hi - lo) * 0.08, 0.5);
+    const step = niceStepGeneric((hi - lo + pad * 2) / 4);
+    const a = Math.floor((lo - pad) / step) * step;
+    const b = Math.ceil((hi + pad) / step) * step;
+    yOf = (v) => MT + (1 - (v - a) / (b - a)) * PH;
+    for (let v = a; v <= b + step * 0.001; v += step) ticks.push(Math.round(v * 1000) / 1000);
+  }
+  const fmtTick = (v) => (v >= 1000 ? Math.round(v).toLocaleString("en-US") : Number.isInteger(v) ? String(v) : v.toFixed(1));
+  let grid = "";
+  ticks.forEach((v) => {
+    const y = yOf(v).toFixed(1);
+    grid += `<line class="ia-grid" x1="${ML}" y1="${y}" x2="${ML + PW}" y2="${y}" />`;
+    grid += `<text class="ia-axis" x="${ML - 5}" y="${(Number(y) + 3.5).toFixed(1)}" text-anchor="end">${fmtTick(v)}</text>`;
+  });
+  const y100 = yOf(100).toFixed(1);
+  grid += `<line class="ia-base" x1="${ML}" y1="${y100}" x2="${ML + PW}" y2="${y100}" />`;
+  axisTimes.forEach((a, i) => {
+    if (!Number.isFinite(a.t)) return;
+    grid += `<text class="ia-axis" x="${a.x.toFixed(1)}" y="${H - 6}" text-anchor="${i === 0 ? "start" : i === axisTimes.length - 1 ? "end" : "middle"}">${iaFmtTime(a.t, rk)}</text>`;
+  });
+  // 포트폴리오(파란 선)는 맨 위에 그리도록 뒤로 보냄
+  const order = [...vis.filter((l) => l.kind !== "portfolio"), ...vis.filter((l) => l.kind === "portfolio")];
+  const plotLines = [];
+  let paths = "";
+  order.forEach((l) => {
+    const pts = data.get(l.id).pts.map(([t, v]) => ({ t, v, x: xOf(l, t), y: yOf(v) }));
+    plotLines.push({ line: l, pts });
+    const d = pts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
+    paths += `<path d="${d}" fill="none" stroke="${l.color}" stroke-width="${l.kind === "portfolio" ? 2.6 : 1.7}" stroke-linejoin="round" stroke-linecap="round" />`;
+    const last = pts[pts.length - 1];
+    paths += `<circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="2.6" fill="${l.color}" />`;
+  });
+  iaState.plot = { lines: plotLines, ML, PW, MT, PH, W, H, rk };
+  return `<svg class="ia-svg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="투자방법별 수익 지수 그래프">
+      ${grid}${paths}
+      ${useLog ? `<text class="ia-axis" x="${ML + 4}" y="${MT + 9}">로그 눈금</text>` : ""}
+      <line class="ia-cross" id="iaCross" x1="0" y1="${MT}" x2="0" y2="${MT + PH}" style="display:none;" />
+    </svg>`;
+}
+// 그래프를 누르거나 끌면 그 시점의 각 선 값(시작 대비 %)을 띄움
+function iaBindCrosshair() {
+  const svg = document.querySelector("#iaChart .ia-svg");
+  const tip = el("iaTip");
+  if (!svg || !tip || !iaState.plot) return;
+  let hideTimer = null;
+  const show = (clientX) => {
+    const plot = iaState.plot;
+    if (!plot) return;
+    const rect = svg.getBoundingClientRect();
+    const x = ((clientX - rect.left) / rect.width) * plot.W;
+    if (x < plot.ML - 4 || x > plot.ML + plot.PW + 4) return;
+    let tRef = null;
+    const rows = plot.lines
+      .map(({ line, pts }) => {
+        let best = null;
+        pts.forEach((p) => {
+          if (!best || Math.abs(p.x - x) < Math.abs(best.x - x)) best = p;
+        });
+        if (!best || Math.abs(best.x - x) > plot.PW * 0.08) return null;
+        if (tRef === null) tRef = best.t;
+        return `<div class="ia-tip-row"><i style="background:${line.color};"></i><span>${escapeHtml(line.label)}</span>${iaPctHtml(best.v - 100)}</div>`;
+      })
+      .filter(Boolean);
+    const cross = svg.querySelector("#iaCross");
+    cross.setAttribute("x1", x.toFixed(1));
+    cross.setAttribute("x2", x.toFixed(1));
+    cross.style.display = "";
+    const d = tRef ? new Date(tRef * 1000) : null;
+    const when = d ? (plot.rk === "1d" || plot.rk === "1w" || plot.rk === "1m" ? `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}` : `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()}`) : "";
+    tip.innerHTML = `<div class="ia-tip-when">${when}</div>${rows.join("")}`;
+    tip.style.display = "block";
+    const boxRect = svg.parentElement.getBoundingClientRect();
+    const px = clientX - boxRect.left;
+    tip.style.left = px > boxRect.width / 2 ? "8px" : "auto";
+    tip.style.right = px > boxRect.width / 2 ? "auto" : "8px";
+    clearTimeout(hideTimer);
+  };
+  const hide = () => {
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(() => {
+      tip.style.display = "none";
+      const cross = svg.querySelector("#iaCross");
+      if (cross) cross.style.display = "none";
+    }, 1800);
+  };
+  svg.addEventListener("mousemove", (e) => show(e.clientX));
+  svg.addEventListener("mouseleave", hide);
+  svg.addEventListener("touchstart", (e) => show(e.touches[0].clientX), { passive: true });
+  svg.addEventListener("touchmove", (e) => show(e.touches[0].clientX), { passive: true });
+  svg.addEventListener("touchend", hide);
+}
+
+// ---------- 표 보기(왼쪽 위 표 버튼): 투자방법 + 내 포트폴리오 × 6개 기간 수익률 ----------
+function iaDrawTable() {
+  const ctx = iaState.ctx;
+  const box = el("iaChart");
+  if (!ctx || !box) return;
+  el("iaTip").style.display = "none";
+  const head = IA_RANGES.map((r) => `<th>${r.label}</th>`).join("");
+  const rows = ctx.lines
+    .map(
+      (l) => `<tr>
+        <td class="ia-ret-name"><i style="background:${l.color};"></i>${l.kind === "portfolio" ? iaSectionMarkHtml(ctx.sec) : ""}${escapeHtml(l.label)}</td>
+        ${IA_RANGES.map((r) => `<td data-ia-cell="${escapeHtml(l.id)}|${r.key}"><span class="muted">…</span></td>`).join("")}
+      </tr>`
+    )
+    .join("");
+  box.innerHTML = `<div class="ia-ret-scroll"><table class="top30-table ia-ret-table"><thead><tr><th class="ia-ret-name">투자방법</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
+  const seq = iaState.seq;
+  IA_RANGES.forEach((r) =>
+    iaComputeRange(r.key).then((data) => {
+      if (seq !== iaState.seq || !iaState.table) return;
+      data.forEach((s, id) => {
+        const cell = box.querySelector(`[data-ia-cell="${CSS.escape(id + "|" + r.key)}"]`);
+        if (cell) cell.innerHTML = iaPctHtml(iaReturnOf(s));
+      });
+      if (r.key === iaState.range) iaPaintReturns(data);
+    })
+  );
+}
+
+// ---------- 구성종목 현재가: 화면에 보이는 줄만 받아 채움 ----------
+let iaRowObserver = null;
+const iaQuoteQueue = [];
+let iaQuoteActive = 0;
+function iaObserveRows(root) {
+  if (!("IntersectionObserver" in window)) {
+    root.querySelectorAll("tr[data-ia-sym]").forEach((tr) => iaQueueQuote(tr.dataset.iaSym));
+    return;
+  }
+  if (!iaRowObserver)
+    iaRowObserver = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((en) => {
+          if (!en.isIntersecting) return;
+          iaRowObserver.unobserve(en.target);
+          iaQueueQuote(en.target.dataset.iaSym);
+        }),
+      { rootMargin: "200px 0px" }
+    );
+  root.querySelectorAll("tr[data-ia-sym]").forEach((tr) => iaRowObserver.observe(tr));
+}
+function iaQueueQuote(sym) {
+  const hit = iaQuoteCache.get(sym);
+  if (hit && (hit.pending || Date.now() - hit.at < 60000)) {
+    if (hit.data) iaPaintQuote(sym);
+    return;
+  }
+  iaQuoteCache.set(sym, { ...(hit || {}), pending: true });
+  iaQuoteQueue.push(sym);
+  iaPumpQuotes();
+}
+function iaPumpQuotes() {
+  while (iaQuoteActive < 4 && iaQuoteQueue.length) {
+    const sym = iaQuoteQueue.shift();
+    iaQuoteActive++;
+    yahooChart(sym, "5d", "1d")
+      .then((chart) => {
+        const snap = yahooSnapshot(chart);
+        const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
+        const chg = getDailyChangePercent(chart);
+        const data = snap ? { price: snap.price, changePct: Number.isFinite(chg) ? chg : snap.changePct, currency: (meta && meta.currency) || (isKrTicker(sym) ? "KRW" : "USD") } : null;
+        iaQuoteCache.set(sym, { at: Date.now(), data, pending: false });
+      })
+      .catch(() => iaQuoteCache.set(sym, { at: Date.now(), data: null, pending: false }))
+      .finally(() => {
+        iaQuoteActive--;
+        iaPaintQuote(sym);
+        iaPumpQuotes();
+      });
+  }
+}
+function iaPaintQuote(sym) {
+  const q = iaQuoteCache.get(sym);
+  document.querySelectorAll(`#analysisResults tr[data-ia-sym="${CSS.escape(sym)}"] .ia-price`).forEach((td) => {
+    td.innerHTML = q && q.data ? rankPriceCellHtml(sym, q.data.price, q.data.currency, q.data.changePct) : "N/A";
+  });
+}
+
+// ---------- +추가하기: 내 관심종목에서 / 직접 추가 ----------
+function iaOpenSheet(innerHtml) {
+  iaCloseSheet();
+  const wrap = document.createElement("div");
+  wrap.className = "ia-sheet-backdrop";
+  wrap.id = "iaSheet";
+  wrap.innerHTML = `<div class="ia-sheet" role="dialog" aria-modal="true">${innerHtml}</div>`;
+  wrap.addEventListener("click", (e) => {
+    if (e.target === wrap || e.target.closest("[data-ia-close]")) iaCloseSheet();
+  });
+  document.body.appendChild(wrap);
+  requestAnimationFrame(() => wrap.classList.add("open"));
+  return wrap.querySelector(".ia-sheet");
+}
+function iaCloseSheet() {
+  const s = el("iaSheet");
+  if (s) s.remove();
+}
+function iaSheetHead(title) {
+  const sec = iaCurrentSection();
+  return `<div class="ia-sheet-head">${iaSectionMarkHtml(sec)}<b>${escapeHtml(title)}</b><button type="button" class="ia-sheet-x" data-ia-close aria-label="닫기">✕</button></div>`;
+}
+function iaOpenAddChoice() {
+  const sec = iaCurrentSection();
+  const sheet = iaOpenSheet(`
+    ${iaSheetHead("내 포트폴리오 추가하기")}
+    <p class="ia-sheet-sub">${IA_SECTION_LABEL[sec]} 포트폴리오로 만들어집니다. 다른 투자처 종목은 섞이지 않아요.</p>
+    <button type="button" class="ia-choice" data-ia-choice="watch"><span class="ia-choice-ic">⭐</span><span><b>내 관심종목 추가하기</b><small>관심종목 목록을 골라 그대로 포트폴리오로</small></span></button>
+    <button type="button" class="ia-choice" data-ia-choice="manual"><span class="ia-choice-ic">🔍</span><span><b>직접 추가하기</b><small>티커·종목명을 검색해서 직접 구성</small></span></button>`);
+  sheet.addEventListener("click", (e) => {
+    const c = e.target.closest("[data-ia-choice]");
+    if (!c) return;
+    if (c.dataset.iaChoice === "watch") iaOpenWatchPicker();
+    else iaOpenEditor(null);
+  });
+}
+function iaOpenWatchPicker() {
+  const sec = iaCurrentSection();
+  const list = getWatchlist().filter((w) => w && w.symbol && sectionOfSymbol(w.symbol) === sec);
+  const groups = getWatchlistGroups();
+  const membersOf = (gid) => (gid === WATCHLIST_ALL_GROUP_ID ? list : list.filter((w) => wlGroupIdsOf(w).includes(gid)));
+  const rows = [{ id: WATCHLIST_ALL_GROUP_ID, name: "전체" }, ...groups]
+    .map((g) => {
+      const n = membersOf(g.id).length;
+      return `<button type="button" class="ia-choice ia-group-row"${n ? "" : " disabled"} data-ia-group="${escapeHtml(g.id)}"><span class="ia-choice-ic">⭐</span><span><b>${escapeHtml(g.name)}</b><small>${
+        n ? `${IA_SECTION_LABEL[sec]} ${n}종목` : `${IA_SECTION_LABEL[sec]} 종목이 없어요`
+      }</small></span></button>`;
+    })
+    .join("");
+  const sheet = iaOpenSheet(`${iaSheetHead("관심종목 목록 선택")}<p class="ia-sheet-sub">고른 목록의 ${IA_SECTION_LABEL[sec]} 종목만 담깁니다(최대 30개). 비중은 다음 화면에서 정할 수 있어요.</p><div class="ia-group-list">${rows}</div>`);
+  sheet.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-ia-group]");
+    if (!b || b.disabled) return;
+    const g = [{ id: WATCHLIST_ALL_GROUP_ID, name: "전체" }, ...groups].find((x) => x.id === b.dataset.iaGroup);
+    const items = membersOf(b.dataset.iaGroup)
+      .slice(0, 30)
+      .map((w) => ({ symbol: w.symbol, name: iaSymbolName(w.symbol, w.name), weight: 0 }));
+    iaEqualize(items);
+    iaOpenEditor({ id: null, section: sec, name: g ? (g.id === WATCHLIST_ALL_GROUP_ID ? "내 관심종목" : g.name) : "내 관심종목", items });
+  });
+}
+function iaSymbolName(sym, fallback) {
+  const etf = typeof etfDisplayParts === "function" ? etfDisplayParts(sym, fallback, sectionOfSymbol(sym) === "etf" ? "ETF" : undefined) : null;
+  if (etf && etf.main) return etf.main;
+  return TICKER_TO_KOREAN_NAME[sym] || fallback || sym;
+}
+// 비중 균등 배분 — 소수 첫째 자리까지, 남는 끝수는 앞 종목에 얹어 합이 정확히 100
+function iaEqualize(items) {
+  if (!items.length) return;
+  const base = Math.floor((1000 / items.length)) / 10;
+  items.forEach((it) => (it.weight = base));
+  let rest = Math.round((100 - base * items.length) * 10);
+  for (let i = 0; rest > 0; i = (i + 1) % items.length, rest--) items[i].weight = Math.round((items[i].weight + 0.1) * 10) / 10;
+}
+function iaWeightSum(items) {
+  return Math.round(items.reduce((a, it) => a + (Number(it.weight) || 0), 0) * 100) / 100;
+}
+// 포트폴리오 편집 화면: 이름 + 간단 티커 검색 + 종목별 비중(합 100)
+function iaOpenEditor(pf) {
+  const sec = (pf && pf.section) || iaCurrentSection();
+  const draft = {
+    id: (pf && pf.id) || null,
+    section: sec,
+    name: (pf && pf.name) || "",
+    items: ((pf && pf.items) || []).map((it) => ({ ...it, weight: Number(it.weight) || 0 })),
+  };
+  const sheet = iaOpenSheet(`
+    ${iaSheetHead(draft.id ? "포트폴리오 편집" : "포트폴리오 만들기")}
+    <label class="ia-field"><span>이름</span><input type="text" id="iaPfName" maxlength="20" placeholder="예) 내 반도체" value="${escapeHtml(draft.name)}" /></label>
+    <div class="ia-search">
+      <input type="text" id="iaPfSearch" placeholder="${sec === "kr" ? "종목명·코드 검색 (예: 삼성전자)" : sec === "crypto" ? "코인 이름·티커 검색 (예: 비트코인, ETH)" : sec === "etf" ? "ETF 이름·티커 검색 (예: QQQ, KODEX 200)" : "티커·종목명 검색 (예: AAPL, 엔비디아)"}" autocomplete="off" />
+      <div class="ia-suggest" id="iaPfSuggest" style="display:none;"></div>
+    </div>
+    <div class="ia-items" id="iaPfItems"></div>
+    <div class="ia-editor-foot">
+      <button type="button" class="ia-mini-btn" id="iaPfEqual">균등 배분</button>
+      <span class="ia-sum" id="iaPfSum"></span>
+      <button type="button" class="ia-save-btn" id="iaPfSave">저장</button>
+    </div>`);
+  const itemsEl = sheet.querySelector("#iaPfItems");
+  const sumEl = sheet.querySelector("#iaPfSum");
+  const saveBtn = sheet.querySelector("#iaPfSave");
+  const syncFoot = () => {
+    const sum = iaWeightSum(draft.items);
+    const ok = draft.items.length > 0 && Math.abs(sum - 100) < 0.01;
+    sumEl.textContent = `비중 합계 ${sum}%${ok ? "" : " (100%가 되어야 저장)"}`;
+    sumEl.classList.toggle("bad", !ok);
+    saveBtn.disabled = !ok;
+  };
+  const paintItems = () => {
+    itemsEl.innerHTML = draft.items.length
+      ? draft.items
+          .map(
+            (it, i) => `<div class="ia-item">
+              <span class="ia-item-name">${escapeHtml(it.name || it.symbol)}<small>${escapeHtml(rankCodeLabel(it.symbol))}</small></span>
+              <input type="number" inputmode="decimal" min="0" max="100" step="0.1" class="ia-item-w" data-ia-w="${i}" value="${it.weight}" /><span class="ia-item-pct">%</span>
+              <button type="button" class="ia-item-x" data-ia-rm="${i}" aria-label="빼기">✕</button>
+            </div>`
+          )
+          .join("")
+      : `<p class="ia-empty">위 검색창에서 종목을 찾아 추가하세요(최대 30개).</p>`;
+    syncFoot();
+  };
+  itemsEl.addEventListener("input", (e) => {
+    const inp = e.target.closest("[data-ia-w]");
+    if (!inp) return;
+    draft.items[Number(inp.dataset.iaW)].weight = Math.max(0, Math.min(100, Number(inp.value) || 0));
+    syncFoot();
+  });
+  itemsEl.addEventListener("click", (e) => {
+    const rm = e.target.closest("[data-ia-rm]");
+    if (!rm) return;
+    draft.items.splice(Number(rm.dataset.iaRm), 1);
+    paintItems();
+  });
+  sheet.querySelector("#iaPfEqual").addEventListener("click", () => {
+    iaEqualize(draft.items);
+    paintItems();
+  });
+  const addSymbol = (symbol, name) => {
+    if (draft.items.some((it) => it.symbol === symbol)) return showToast("이미 담긴 종목입니다");
+    if (draft.items.length >= 30) return showToast("최대 30종목까지 담을 수 있어요");
+    draft.items.push({ symbol, name: iaSymbolName(symbol, name), weight: 0 });
+    iaEqualize(draft.items); // 새로 담으면 균등으로 다시 나눔 — 그다음 직접 조정
+    paintItems();
+  };
+  iaAttachSuggest(sheet.querySelector("#iaPfSearch"), sheet.querySelector("#iaPfSuggest"), sec, addSymbol);
+  saveBtn.addEventListener("click", () => {
+    const name = sheet.querySelector("#iaPfName").value.trim() || "내 포트폴리오";
+    if (Math.abs(iaWeightSum(draft.items) - 100) >= 0.01) return;
+    const list = iaLoadPortfolios();
+    const rec = { id: draft.id || `p_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`, section: sec, name, items: draft.items.map((it) => ({ symbol: it.symbol, name: it.name, weight: it.weight })) };
+    const i = list.findIndex((p) => p.id === rec.id);
+    if (i >= 0) list[i] = rec;
+    else list.push(rec);
+    iaSavePortfolios(list);
+    iaState.hidden.delete(`pf:${rec.id}`);
+    iaCloseSheet();
+    showToast(`'${name}' 포트폴리오를 저장했습니다`);
+    renderInvestAnalysis();
+  });
+  paintItems();
+}
+// 간단 티커 검색 — 앱 검색창과 같은 자료(한글 회사명·국내 ETF 목록·야후 검색)에서 지금 투자처 종목만 보여줌
+function iaAttachSuggest(inputEl, suggestEl, sec, onPick) {
+  let timer = null;
+  let seq = 0;
+  const render = (items) => {
+    const list = items.filter((it) => sectionOfSymbol(it.symbol, it.quoteType) === sec).slice(0, 8);
+    if (!list.length) {
+      suggestEl.innerHTML = inputEl.value.trim() ? `<div class="ia-suggest-empty">${IA_SECTION_LABEL[sec]}에서 찾은 종목이 없어요</div>` : "";
+      suggestEl.style.display = inputEl.value.trim() ? "block" : "none";
+      return;
+    }
+    suggestEl.innerHTML = list
+      .map((it) => {
+        const isCrypto = /-(USD|KRW)$/.test(it.symbol);
+        const logo = isCrypto ? cryptoLogoHtml(cryptoBaseTicker(it.symbol)) : tickerLogoHtml(it.symbol);
+        return `<button type="button" class="ia-suggest-item" data-sym="${escapeHtml(it.symbol)}" data-name="${escapeHtml(it.name || "")}">${logo}<span class="ia-suggest-name">${escapeHtml(
+          iaSymbolName(it.symbol, it.name)
+        )}<small>${escapeHtml(rankCodeLabel(it.symbol))}</small></span><span class="ia-suggest-add">+</span></button>`;
+      })
+      .join("");
+    suggestEl.style.display = "block";
+  };
+  const localMatches = (q) => {
+    const norm = (s) => String(s || "").replace(/\s+/g, "").toUpperCase();
+    const nq = norm(q);
+    const out = [];
+    Object.entries(KOREAN_COMPANY_NAMES).forEach(([name, symbol]) => {
+      if (name.includes(q)) out.push({ symbol, name });
+    });
+    Object.entries(KR_NAME_TO_TICKER).forEach(([name, symbol]) => {
+      if (name.includes(q)) out.push({ symbol, name });
+    });
+    if (/^\d{6}$/.test(q)) {
+      Object.entries(KR_NAME_TO_TICKER).forEach(([name, symbol]) => {
+        if (symbol.startsWith(q)) out.push({ symbol, name });
+      });
+    }
+    ETF_NAME_BY_SYMBOL.forEach((name, symbol) => {
+      if (norm(name).includes(nq) || norm(symbol).startsWith(nq)) out.push({ symbol, name, quoteType: "ETF" });
+    });
+    const seen = new Set();
+    return out.filter((it) => !seen.has(it.symbol) && seen.add(it.symbol));
+  };
+  inputEl.addEventListener("input", () => {
+    const q = inputEl.value.trim();
+    clearTimeout(timer);
+    const my = ++seq;
+    if (!q) {
+      suggestEl.style.display = "none";
+      return;
+    }
+    const local = localMatches(q);
+    render(local);
+    timer = setTimeout(async () => {
+      let remote = [];
+      try {
+        const data = await yahooSearch(sec === "crypto" && !/-USD$/i.test(q) ? q : q);
+        remote = ((data && data.quotes) || []).filter((x) => x.symbol).map((x) => ({ symbol: x.symbol, name: x.shortname || x.longname || "", quoteType: x.quoteType }));
+      } catch {}
+      if (my !== seq) return;
+      const seen = new Set();
+      render([...local, ...remote].filter((it) => !seen.has(it.symbol) && seen.add(it.symbol)));
+    }, 250);
+  });
+  suggestEl.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-sym]");
+    if (!b) return;
+    onPick(b.dataset.sym, b.dataset.name);
+    inputEl.value = "";
+    suggestEl.style.display = "none";
+    inputEl.focus();
   });
 }

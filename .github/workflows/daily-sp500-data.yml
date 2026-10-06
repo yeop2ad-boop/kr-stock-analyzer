@@ -62,6 +62,10 @@ jobs:
         continue-on-error: true
         run: ./fetch-etf-info.ps1 -KrCount 300
 
+      - name: 투자분석 탭(투자방법별 구성종목·1년/10년 수익 지수) 갱신
+        continue-on-error: true
+        run: python3 scripts/build-invest-analysis.py
+
       - name: 지도가 실제 로드하는 core/extra 데이터 파일에 병합
         shell: pwsh
         working-directory: sector-map
@@ -75,7 +79,7 @@ jobs:
           # 빠져 작업트리가 더러운 채로 남고, 그러면 아래 git pull --rebase 가 fatal(exit 128)로 죽어 5일간 푸시가 막혔음
           # 2026-09-15: 9/11부터 투자방법 비교 단계가 쓰는 data/strategy-compare.json·strategy-series-cache.json이 목록에 없어
           # 같은 이유로 매일 실패(승률·RSI DB가 9/10에 멈춤) → 두 파일 추가 + 커밋 뒤 남은 변경은 stash로 치워 pull이 다시는 막히지 않게
-          git add -A sector-map/data data/winrate-scores-us.json data/etf-info.json data/sreport-baseline.json data/strategy-compare.json sector-map/scripts/strategy-series-cache.json
+          git add -A sector-map/data data/winrate-scores-us.json data/etf-info.json data/sreport-baseline.json data/strategy-compare.json data/invest-analysis.json sector-map/scripts/strategy-series-cache.json
           if git diff --cached --quiet; then
             echo "변경된 데이터 없음"
           else
@@ -91,7 +95,7 @@ jobs:
               git rebase --abort || true
               git fetch origin main
               git reset --soft origin/main
-              git add -A sector-map/data data/winrate-scores-us.json data/etf-info.json data/sreport-baseline.json data/strategy-compare.json sector-map/scripts/strategy-series-cache.json
+              git add -A sector-map/data data/winrate-scores-us.json data/etf-info.json data/sreport-baseline.json data/strategy-compare.json data/invest-analysis.json sector-map/scripts/strategy-series-cache.json
               git commit -m "섹터맵 데이터 자동 갱신 ($(date -u +%Y-%m-%d))" || true
             }
             git push
