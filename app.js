@@ -3078,9 +3078,9 @@ document.addEventListener("click", (e) => {
 // 고른 투자처(한국주식/미국주식/ETF/비트코인)로 섹션을 전환한 뒤 그 투자처의 자동추적 화면을 연다
 el("morePanelAutoTrackBtn").addEventListener("click", () => {
   closeMorePanel();
-  goAutoTrackSection(appSectionMode === "crypto" ? "crypto" : getWatchlistActiveMarket() === "KR" ? "kr" : "us");
+  goAutoTrackSection(appSectionMode === "crypto" ? "crypto" : appSectionMode === "etf" ? "etf" : getWatchlistActiveMarket() === "KR" ? "kr" : "us");
 });
-// 투자처 전환(자동추적 화면 위 버튼 줄) — 인사이트 화면과 같은 방식(2026-09-16 사용자 요청)
+// 지금 투자처의 자동추적 화면 열기(더보기 > 자동추적) — 화면 위 투자처 버튼 줄은 2026-10-07 삭제
 function goAutoTrackSection(section) {
   appSectionMode = section === "crypto" ? "crypto" : section === "etf" ? "etf" : "stocks";
   if (section === "kr" || section === "us") setAppMarketMode(section);
@@ -3089,11 +3089,6 @@ function goAutoTrackSection(section) {
   setBottomNavActive(bottomNavKeyForSection());
   syncSectionHeader();
 }
-document.addEventListener("click", (e) => {
-  const btn = e.target.closest("[data-autotrack-switch]");
-  if (!btn) return;
-  goAutoTrackSection(btn.dataset.autotrackSwitch);
-});
 el("morePanelCalendarOverlayBtn").addEventListener("click", () => {
   closeMorePanel();
   closeCompanyPanel();
@@ -11636,17 +11631,10 @@ function openAutoTrack() {
   el("tabValuationBtn").classList.remove("active");
   tabTrendBtn.classList.remove("active");
   setCarouselViewTitle("tab.autotrack");
-  // 투자처는 이 화면 안에서 바꾼다(2026-09-16 사용자 요청) — ETF도 2026-10-07부터 포함(비트코인과 같은 5개 기준)
-  const cur = appSectionMode === "crypto" ? "crypto" : appSectionMode === "etf" ? "etf" : getWatchlistActiveMarket() === "KR" ? "kr" : "us";
+  // 2026-10-07 사용자 요청: 화면 안 투자처 버튼(한국주식·미국주식·ETF·비트코인)을 없애고, 지금 보고 있는 투자처만 보여준다
+  // (투자처는 하단 네비로 바꾼다)
   el("topRankingSubNav").classList.remove("sr-rank-nav");
-  el("topRankingSubNav").innerHTML = [
-    ["kr", "한국주식"],
-    ["us", "미국주식"],
-    ["etf", "ETF"],
-    ["crypto", "비트코인"],
-  ]
-    .map(([sec, label]) => `<button type="button" class="cat-btn${sec === cur ? " active" : ""}" data-autotrack-switch="${sec}">${label}</button>`)
-    .join("");
+  el("topRankingSubNav").innerHTML = "";
   showRankingGroup("autotrack");
   renderAutoTrack();
 }
