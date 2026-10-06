@@ -21452,20 +21452,13 @@ const ATG_RATINGS = ["강력매수", "매수", "보유", "매도", "강력매도
 // 투자처별 5개 항목과 각 항목에 들어가는 지표(↑ 높을수록 좋음, ↓ 낮을수록 좋음) — 배치(build-autotrack-grades.py)와 같은 구성.
 // 표 머리글 설명과 "+등급기준" 그래프가 함께 쓴다.
 const ATG_CRITERIA = {
-  // 2026-10-07 사용자 지정(한국)
+  // 2026-10-07 사용자 지정(한국, 미국도 동일)
   kr: [
     { f: "성장", items: ["매출 증가율 ↑"] },
     { f: "수익성", items: ["순이익 증가율 ↑", "영업이익 증가율 ↑"] },
     { f: "승률", items: ["10년평균 승률 ↑"] },
     { f: "가치", items: ["ROE ↑", "PER ↓"] },
     { f: "모멘텀", items: ["한 달 수익률 ↑", "52주 위치 ↑"] },
-  ],
-  us: [
-    { f: "성장", items: ["매출 증가율 ↑", "순이익 증가율 ↑"] },
-    { f: "수익성", items: ["영업이익률 ↑", "ROE ↑"] },
-    { f: "모멘텀", items: ["3개월 수익률 ↑", "52주 위치 ↑"] },
-    { f: "가치", items: ["PER ↓", "배당률 ↑"] },
-    { f: "승률", items: ["10년평균 승률 ↑", "연평균 상승률 ↑"] },
   ],
   crypto: [
     { f: "승률", items: ["10년평균 승률 ↑"] },
@@ -21475,6 +21468,7 @@ const ATG_CRITERIA = {
     { f: "규모", items: ["시가총액 ↑"] },
   ],
 };
+ATG_CRITERIA.us = ATG_CRITERIA.kr; // 2026-10-07 사용자 요청: 미국도 한국과 같은 구성
 ATG_CRITERIA.etf = ATG_CRITERIA.crypto.map((c) => (c.f === "규모" ? { f: "규모", items: ["순자산(시가총액) ↑"] } : c));
 let atgCurrentMode = "kr";
 let atgCurrentCount = 0;

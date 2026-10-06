@@ -3,7 +3,7 @@
 
 투자처(kr·us·crypto)마다 종목별로 5개 항목을 비교군 안 백분위로 A~F 등급을 매기고,
 5개 백분위 평균(종합 점수) 순위로 강력매수(상위 10%)·매수(~30%)·보유(~70%)·매도(~90%)·강력매도(하위 10%) 판정.
-  · 주식: 성장(매출·순이익 증가) · 수익성(영업이익률·ROE) · 모멘텀(최근 3개월 수익률·52주 위치) · 가치(PER 낮을수록·배당률) · 승률(10년평균 승률·연평균 상승)
+  · 주식(한국·미국): 성장(매출 증가) · 수익성(순이익·영업이익 증가) · 승률(10년평균 승률) · 가치(ROE·PER 낮을수록) · 모멘텀(한 달 수익률·52주 위치)
   · 코인: 승률 · 장기상승(연평균 상승) · 모멘텀 · 안정성(3개월 하루 변동 낮을수록) · 규모(시가총액)
 투자처별로 "오늘(KST)" 판정을 저장하고, 날짜가 바뀌면 이전 판정을 prev로 옮겨 판정이 달라진 종목을 events(최근 7일)에 쌓는다.
 같은 날 여러 번 돌면 오늘 events만 다시 계산한다.
@@ -19,9 +19,8 @@ import time
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "data", "autotrack-grades.json")
 RATINGS = ["강력매수", "매수", "보유", "매도", "강력매도"]
-STOCK_FACTORS = ["성장", "수익성", "모멘텀", "가치", "승률"]  # 미국
-# 2026-10-07 사용자 지정(한국): 성장(매출 증가) · 수익성(순이익 증가·영업이익 증가) · 승률(10년평균 승률) · 가치(ROE·PER) · 모멘텀(한달 상승·52주 위치)
-KR_FACTORS = ["성장", "수익성", "승률", "가치", "모멘텀"]
+# 2026-10-07 사용자 지정(한국, 같은 날 미국도 동일): 성장(매출 증가) · 수익성(순이익 증가·영업이익 증가) · 승률(10년평균 승률) · 가치(ROE·PER) · 모멘텀(한달 상승·52주 위치)
+STOCK_FACTORS = ["성장", "수익성", "승률", "가치", "모멘텀"]
 CRYPTO_FACTORS = ["승률", "장기상승", "모멘텀", "안정성", "규모"]  # 비트코인·ETF(2026-10-07 ETF도 같은 기준)
 STABLE = {"USDT", "USDC", "DAI", "USDE", "FDUSD", "TUSD", "USDS", "PYUSD", "USD1", "BUSD", "USDD", "USDTB", "RLUSD", "USDF", "FRAX", "USD0", "BFUSD", "SUSDS", "SUSDE", "XAUT", "PAXG"}
 EVENT_DAYS = 7
@@ -70,8 +69,8 @@ def mom1(e):
     return m12[-2] if len(m12) >= 2 else None
 
 
-def kr_op_income_growth(symbols):
-    """한국 분기 영업이익 증가율(최근 분기 ÷ 1년 전 같은 분기 − 1, %) — 야후 분기 재무. 은행·보험은 항목이 없어 빠짐"""
+def op_income_growth(symbols):
+    """분기 영업이익 증가율(최근 분기 ÷ 1년 전 같은 분기 − 1, %) — 야후 분기 재무. 은행·보험 등 항목이 없는 회사는 빠짐"""
     import urllib.request
     from concurrent.futures import ThreadPoolExecutor
 
@@ -167,23 +166,15 @@ def compute(market, rev=None, extra=None):
         by = {c["symbol"]: c for c in comps}
         g = lambda k: {s: by[s].get(k) for s in syms}
         per = {s: (v if isinstance(v, (int, float)) and v > 0 else None) for s, v in g("per").items()}
-        if market == "kr":
-            opg = (extra or {}).get("opg") or {}
-            f = [
-                pct_rank(g("revenueGrowth")),
-                combine(pct_rank(g("netIncomeGrowth")), pct_rank({s: opg.get(s) for s in syms})),
-                pct_rank(g("winRateScore")),
-                combine(pct_rank(g("roe")), pct_rank(per, higher_better=False)),
-                combine(pct_rank({s: mom1(scores.get(s)) for s in syms}), pct_rank(g("week52RangePct"))),
-            ]
-        else:
-            f = [
-                combine(pct_rank(g("revenueGrowth")), pct_rank(g("netIncomeGrowth"))),
-                combine(pct_rank(g("operatingMargin")), pct_rank(g("roe"))),
-                combine(pct_rank({s: mom3(scores.get(s)) for s in syms}), pct_rank(g("week52RangePct"))),
-                combine(pct_rank(per, higher_better=False), pct_rank(g("dividendYield"))),
-                combine(pct_rank(g("winRateScore")), pct_rank(g("ret10yAvg"))),
-            ]
+        # 2026-10-07 사용자 요청: 한국·미국 같은 구성 — 성장(매출) · 수익성(순이익·영업이익 증가) · 승률 · 가치(ROE·PER) · 모멘텀(한 달·52주)
+        opg = (extra or {}).get("opg") or {}
+        f = [
+            pct_rank(g("revenueGrowth")),
+            combine(pct_rank(g("netIncomeGrowth")), pct_rank({s: opg.get(s) for s in syms})),
+            pct_rank(g("winRateScore")),
+            combine(pct_rank(g("roe")), pct_rank(per, higher_better=False)),
+            combine(pct_rank({s: mom1(scores.get(s)) for s in syms}), pct_rank(g("week52RangePct"))),
+        ]
     total = {}
     for s in syms:
         ps = [m[s] for m in f if s in m]
@@ -231,13 +222,13 @@ def main():
     today = time.strftime("%Y-%m-%d", time.gmtime(time.time() + 9 * 3600))
     data = json.load(open(OUT, encoding="utf-8")) if os.path.exists(OUT) else {"markets": {}}
     for m in markets:
-        factors = CRYPTO_FACTORS if m in ("crypto", "etf") else KR_FACTORS if m == "kr" else STOCK_FACTORS
+        factors = CRYPTO_FACTORS if m in ("crypto", "etf") else STOCK_FACTORS
         side = data["markets"].get(m) or {}
         extra = None
-        if m == "kr":
-            syms = [c["symbol"] for c in read_json("sector-map/data/kr-sectors.json")["companies"]]
-            extra = {"opg": kr_op_income_growth(syms)}
-            print(f"[kr] 영업이익 증가율 {sum(1 for v in extra['opg'].values() if v is not None)}/{len(syms)}종목", flush=True)
+        if m in ("kr", "us"):
+            syms = [c["symbol"] for c in read_json("sector-map/data/kr-sectors.json" if m == "kr" else "sector-map/data/sp500-sectors.json")["companies"]]
+            extra = {"opg": op_income_growth(syms)}
+            print(f"[{m}] 영업이익 증가율 {sum(1 for v in extra['opg'].values() if v is not None)}/{len(syms)}종목", flush=True)
         if side.get("factors") and side["factors"] != factors:
             side.pop("prev", None)  # 항목 구성이 바뀌면 어제 판정과 비교하지 않음(가짜 신호 방지)
             side["events"] = []
