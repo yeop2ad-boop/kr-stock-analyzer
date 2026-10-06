@@ -84,7 +84,9 @@ jobs:
           # 빠져 작업트리가 더러운 채로 남고, 그러면 아래 git pull --rebase 가 fatal(exit 128)로 죽어 5일간 푸시가 막혔음
           # 2026-09-15: 9/11부터 투자방법 비교 단계가 쓰는 data/strategy-compare.json·strategy-series-cache.json이 목록에 없어
           # 같은 이유로 매일 실패(승률·RSI DB가 9/10에 멈춤) → 두 파일 추가 + 커밋 뒤 남은 변경은 stash로 치워 pull이 다시는 막히지 않게
-          git add -A sector-map/data data/winrate-scores-us.json data/etf-info.json data/sreport-baseline.json data/strategy-compare.json data/invest-analysis.json data/etf-holdings-kr.json data/etf-holding-names.json scripts/kr-suffix-cache.json sector-map/scripts/strategy-series-cache.json
+          # 2026-10-06: 그런데 strategy-series-cache.json은 .gitignore 대상이라 git add가 "ignored 경로" 오류로 exit 1 →
+          # 9/15~10/5 매일 이 단계에서 실패(승률·ETF·코인 지도 3주 정지). 목록에서 뺐다 — 무시 대상 파일을 여기 넣지 말 것
+          git add -A sector-map/data data/winrate-scores-us.json data/etf-info.json data/sreport-baseline.json data/strategy-compare.json data/invest-analysis.json data/etf-holdings-kr.json data/etf-holding-names.json scripts/kr-suffix-cache.json
           if git diff --cached --quiet; then
             echo "변경된 데이터 없음"
           else
@@ -100,7 +102,7 @@ jobs:
               git rebase --abort || true
               git fetch origin main
               git reset --soft origin/main
-              git add -A sector-map/data data/winrate-scores-us.json data/etf-info.json data/sreport-baseline.json data/strategy-compare.json data/invest-analysis.json data/etf-holdings-kr.json data/etf-holding-names.json scripts/kr-suffix-cache.json sector-map/scripts/strategy-series-cache.json
+              git add -A sector-map/data data/winrate-scores-us.json data/etf-info.json data/sreport-baseline.json data/strategy-compare.json data/invest-analysis.json data/etf-holdings-kr.json data/etf-holding-names.json scripts/kr-suffix-cache.json
               git commit -m "섹터맵 데이터 자동 갱신 ($(date -u +%Y-%m-%d))" || true
             }
             git push

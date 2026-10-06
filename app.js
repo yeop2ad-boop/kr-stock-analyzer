@@ -12163,6 +12163,8 @@ async function renderAutoTrack() {
     }
     const lightsMode = mode === "kr" || mode === "us" || (mode === "crypto" && cryptoCorrReady);
     el("autoTrackNav").style.display = "none"; // 년간만 제공(2026-09-08) — 일간/주간/월간 버튼 숨김
+    // 2026-10-06 사용자 선택(예시 1번+5번): 신호등 표 대신 종합 등급 + 오늘 바뀐 신호 피드
+    if (mode === "kr" || mode === "us" || mode === "crypto") return renderAutoTrackGrades(mode, statusEl, resultsEl);
     if (lightsMode) return renderAutoTrackStocks(mode, statusEl, resultsEl);
     const db = await getWinRateDb();
     const map = db && (mode === "etf" ? db.scoresEtf : mode === "crypto" ? db.scoresCrypto : mode === "kr" ? db.scoresKr : db.scores);
@@ -21483,4 +21485,165 @@ function iaAttachSuggest(inputEl, suggestEl, sec, onPick) {
     suggestEl.style.display = "none";
     inputEl.focus();
   });
+}
+
+// ====================== 자동추적 종합 등급 + 신호 변화(2026-10-06 사용자 선택: 예시 1번 + 5번) ======================
+// 데이터: data/autotrack-grades.json(scripts/build-autotrack-grades.py — 한국 매일 오후 5시, 미국·코인 매일 오전 7시)
+//  · items[sym] = [판정(0 강력매수 ~ 4 강력매도), 5개 항목 등급 문자열(예 "ABACB"), 종합 점수]
+//  · events = 판정이 어제와 달라진 종목(최근 7일) [{d 날짜, s 심볼, f 이전 판정, t 새 판정, why 가장 크게 바뀐 항목}]
+// 화면: 맨 위 "오늘 바뀐 신호" 카드 → 판정 필터 칩 → 종목별 한 줄(이름·섹터 / 5개 항목 등급 / 종합 판정)
+let autotrackGradesPromise = null;
+function getAutotrackGradesDb() {
+  if (!autotrackGradesPromise) {
+    autotrackGradesPromise = fetch("data/autotrack-grades.json", { cache: "no-store" })
+      .then((r) => {
+        if (!r.ok) throw new Error("http " + r.status);
+        return r.json();
+      })
+      .catch((e) => {
+        autotrackGradesPromise = null;
+        throw e;
+      });
+  }
+  return autotrackGradesPromise;
+}
+const ATG_RATINGS = ["강력매수", "매수", "보유", "매도", "강력매도"];
+const ATG_FACTOR_EXPLAIN = {
+  성장: "성장 — 매출액·순이익 증가율이 비교군에서 몇 등인지(백분위)를 합친 등급입니다.",
+  수익성: "수익성 — 영업이익률·ROE 백분위를 합친 등급입니다.",
+  모멘텀: "모멘텀 — 최근 3개월 수익률과 52주 가격 구간 위치(높을수록 좋음) 백분위를 합친 등급입니다.",
+  가치: "가치 — PER(낮을수록 좋음)과 배당률(높을수록 좋음) 백분위를 합친 등급입니다.",
+  승률: "승률 — 10년평균 승률(오르며 마감한 달의 비율)과 연평균 상승률 백분위를 합친 등급입니다.",
+  장기상승: "장기상승 — 연평균 상승률 백분위 등급입니다.",
+  안정성: "안정성 — 최근 3개월 하루 평균 변동폭이 작을수록 높은 등급입니다.",
+  규모: "규모 — 시가총액 백분위 등급입니다.",
+};
+let atgFilter = -1; // -1 = 전체, 0~4 = 그 판정만
+let atgShown = 50;
+let atgEventsExpanded = false;
+function atgRatingBadge(r, small) {
+  return `<span class="atg-rating atg-r${r}${small ? " sm" : ""}">${ATG_RATINGS[r]}</span>`;
+}
+function atgGradeChips(factors, grades) {
+  return `<span class="atg-grades">${factors
+    .map((f, i) => {
+      const g = grades[i] || "-";
+      return `<span class="atg-g atg-g${g === "-" ? "x" : g}"><i>${escapeHtml(f)}</i>${g}</span>`;
+    })
+    .join("")}</span>`;
+}
+function atgDateLabel(d) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || "");
+  return m ? `${Number(m[2])}/${Number(m[3])}` : d || "";
+}
+async function renderAutoTrackGrades(mode, statusEl, resultsEl) {
+  try {
+    const db = await getAutotrackGradesDb();
+    const side = db && db.markets && db.markets[mode];
+    if (!side || !side.items || !Object.keys(side.items).length) throw new Error("자동추적 등급 데이터가 아직 준비되지 않았습니다.");
+    const isKr = mode === "kr";
+    const isCrypto = mode === "crypto";
+    let nameOf = (sym) => TICKER_TO_KOREAN_NAME[sym] || sym;
+    if (isKr) {
+      const m = await getKrSymbolNameMap().catch(() => new Map());
+      nameOf = (sym) => m.get(sym) || TICKER_TO_KOREAN_NAME[sym] || sym;
+    } else if (isCrypto) {
+      nameOf = (sym) => cryptoKoName(sym, TICKER_TO_KOREAN_NAME[sym] || sym.replace(/-USD$/, "").replace(/\d{4,}$/, ""));
+    }
+    const uni = isCrypto ? null : await getSReportUniverse(isKr).catch(() => null);
+    const sectorOf = new Map(((uni && uni.companies) || []).map((c) => [c.symbol, c.sectorKo || ""]));
+    const logoOf = (sym) => (isCrypto ? cryptoLogoHtml(cryptoBaseTicker(sym)) : tickerLogoHtml(sym));
+    const factors = side.factors || [];
+    const rows = Object.entries(side.items)
+      .map(([sym, v]) => ({ sym, r: v[0], g: v[1] || "", sc: v[2] }))
+      .sort((a, b) => b.sc - a.sc);
+    const universeLabel = isKr ? "한국주식(코스피200+코스닥150)" : isCrypto ? "비트코인(시총 상위, 스테이블코인 제외)" : "미국주식(S&P500)";
+    const events = side.events || [];
+    statusEl.style.display = "none";
+
+    const nameCell = (sym) => {
+      const html = rankNameCellHtml(sym, logoOf(sym), nameOf(sym));
+      const sec = sectorOf.get(sym);
+      return sec ? html.replace(/(<b class="ticker-link rk-name"[^>]*>[^<]*<\/b>)/, `<span class="at-name-line">$1<span class="at-sector">${escapeHtml(sec)}</span></span>`) : html;
+    };
+    const eventCard = (e) => {
+      const up = e.t < e.f;
+      return `<button type="button" class="atg-card ${up ? "up" : "down"} ticker-link" data-ticker="${escapeHtml(e.s)}">
+          <span class="atg-card-arrow">${up ? "▲" : "▼"}</span>
+          <span class="atg-card-body">
+            <span class="atg-card-name">${escapeHtml(nameOf(e.s))}${sectorOf.get(e.s) ? `<span class="at-sector">${escapeHtml(sectorOf.get(e.s))}</span>` : ""}</span>
+            <span class="atg-card-why">${e.why ? escapeHtml(e.why) : "종합 점수 변화"}${e.d !== side.date ? ` · ${atgDateLabel(e.d)}` : ""}</span>
+          </span>
+          <span class="atg-card-move">${atgRatingBadge(e.f, true)}<span class="atg-card-to">→</span>${atgRatingBadge(e.t, true)}</span>
+        </button>`;
+    };
+    const paint = () => {
+      const todays = events.filter((e) => e.d === side.date);
+      const feedList = todays.length ? todays : events;
+      const feedShown = atgEventsExpanded ? feedList : feedList.slice(0, 5);
+      const feedTitle = todays.length ? `오늘 바뀐 신호 <span class="atg-feed-count">${todays.length}</span>` : "최근 바뀐 신호";
+      const feedHtml = feedList.length
+        ? `${feedShown.map(eventCard).join("")}${
+            feedList.length > 5 ? `<button type="button" class="cat-btn atg-feed-more">${atgEventsExpanded ? "접기" : `+${feedList.length - 5}개 더보기`}</button>` : ""
+          }`
+        : `<p class="muted atg-feed-empty">최근 7일 동안 판정이 바뀐 종목이 없습니다.</p>`;
+      const filtered = atgFilter < 0 ? rows : rows.filter((x) => x.r === atgFilter);
+      const counts = ATG_RATINGS.map((_, i) => rows.filter((x) => x.r === i).length);
+      const body = filtered
+        .slice(0, atgShown)
+        .map(
+          (x) => `<tr>
+            <td class="atg-name">${nameCell(x.sym)}${atgGradeChips(factors, x.g)}</td>
+            <td class="atg-rate">${atgRatingBadge(x.r)}</td>
+          </tr>`
+        )
+        .join("");
+      resultsEl.innerHTML = `
+        <section class="atg-feed">
+          <div class="atg-feed-head"><b>${feedTitle}</b><span class="muted">${atgDateLabel(side.date)} 기준 · 전 거래일 판정 대비</span></div>
+          ${feedHtml}
+        </section>
+        <p class="muted autotrack-legend">📢 ${universeLabel} — ${factors.join("·")} 5개 항목을 비교군 안 순위로 A~F 등급(상위 20%마다 한 단계)을 매기고, 다섯 항목 평균 순위로 상위 10% 강력매수 · 30% 매수 · 70% 보유 · 90% 매도 · 나머지 강력매도로 판정했습니다. ${
+          isKr ? "매일 오후 5시" : "매일 오전 7시"
+        } 갱신. 참고용이며 투자 자문이 아닙니다. <span id="autoTrackCorrBtnSlot"></span></p>
+        <div id="autoTrackCorrSlot"></div>
+        <div class="atg-filter">
+          <button type="button" class="atg-chip${atgFilter < 0 ? " active" : ""}" data-atg-filter="-1">전체 ${rows.length}</button>
+          ${ATG_RATINGS.map((l, i) => `<button type="button" class="atg-chip atg-chip-r${i}${atgFilter === i ? " active" : ""}" data-atg-filter="${i}">${l} ${counts[i]}</button>`).join("")}
+        </div>
+        <table class="top30-table rk-table atg-table">
+          <thead><tr><th data-explain="종목명 옆 작은 글씨는 섹터, 아래 다섯 칸은 항목별 등급(A 최상 ~ F 최하)입니다. ${escapeHtml(
+            factors.map((f) => ATG_FACTOR_EXPLAIN[f] || f).join(" ")
+          )}">종목 · 항목 등급</th><th data-explain="종합 판정 — 다섯 항목 순위 평균이 비교군에서 상위 10%면 강력매수, 30%까지 매수, 70%까지 보유, 90%까지 매도, 그 아래는 강력매도입니다.">종합 판정</th></tr></thead>
+          <tbody>${body}</tbody>
+        </table>
+        ${filtered.length > atgShown ? `<button type="button" class="cat-btn load-more-btn atg-more">더보기 (${Math.min(atgShown, filtered.length)}/${filtered.length})</button>` : ""}`;
+      mountAutoTrackCorr(resultsEl);
+    };
+    resultsEl.onclick = (e) => {
+      const f = e.target.closest("[data-atg-filter]");
+      if (f) {
+        parkAutoTrackCorr();
+        atgFilter = Number(f.dataset.atgFilter);
+        atgShown = 50;
+        paint();
+        return;
+      }
+      if (e.target.closest(".atg-more")) {
+        parkAutoTrackCorr();
+        atgShown += 100;
+        paint();
+        return;
+      }
+      if (e.target.closest(".atg-feed-more")) {
+        parkAutoTrackCorr();
+        atgEventsExpanded = !atgEventsExpanded;
+        paint();
+      }
+    };
+    paint();
+  } catch (err) {
+    statusEl.style.display = "block";
+    statusEl.textContent = `❌ ${err.message || "자동추적 등급을 불러오지 못했습니다."}`;
+  }
 }

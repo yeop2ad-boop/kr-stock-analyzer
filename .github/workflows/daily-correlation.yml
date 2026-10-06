@@ -47,11 +47,18 @@ jobs:
         working-directory: sector-map
         run: ./scripts/scan-correlation-daily.ps1 -Market crypto
 
+      # 2026-10-06: 자동추적 종합 등급(5개 항목 A~F + 강력매수~강력매도) + 어제 대비 바뀐 신호
+      - name: 자동추적 종합 등급·신호 변화 계산
+        continue-on-error: true
+        run: |
+          python3 scripts/build-autotrack-grades.py us
+          python3 scripts/build-autotrack-grades.py crypto
+
       - name: 변경사항 커밋 및 푸시
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add sector-map/data/sp500-sectors.json sector-map/data/sp500-data-core.js sector-map/data/sp500-data-extra.js sector-map/data/kr-data-core.js sector-map/data/kr-data-extra.js data/correlation-daily.json
+          git add sector-map/data/sp500-sectors.json sector-map/data/sp500-data-core.js sector-map/data/sp500-data-extra.js sector-map/data/kr-data-core.js sector-map/data/kr-data-extra.js data/correlation-daily.json data/autotrack-grades.json
           if git diff --cached --quiet; then
             echo "변경된 데이터 없음"
           else

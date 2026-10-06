@@ -3651,3 +3651,59 @@ table.top30-table.ia-ret-table { width: 100%; font-size: 12.5px; }
 #autoTrackCorrWrap { overflow-x: auto; }
 #autoTrackCorrWrap .top30-table { width: 100%; font-size: 13px; }
 #autoTrackCorrWrap .top30-table th, #autoTrackCorrWrap .top30-table td { padding: 7px 3px; }
+
+/* ---------- 자동추적 종합 등급 + 신호 변화 피드(2026-10-06) ---------- */
+.atg-feed { margin: 6px 0 12px; padding: 12px; border: 1px solid var(--rk-line); border-radius: var(--radius); background: var(--card-bg); }
+.atg-feed-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.atg-feed-head b { font-size: 16px; font-weight: 800; color: var(--text); }
+.atg-feed-head .muted { font-size: 11.5px; }
+.atg-feed-count { display: inline-block; min-width: 20px; margin-left: 4px; padding: 0 6px; border-radius: 999px; background: var(--navy); color: #fff; font-size: 12px; text-align: center; vertical-align: 2px; }
+.atg-feed-empty { margin: 4px 0; font-size: 13px; }
+.atg-card {
+  display: flex; align-items: center; gap: 9px; width: 100%; padding: 9px 8px; margin: 0; border: none; border-top: 1px solid var(--rk-line);
+  background: none; color: var(--text); text-align: left; cursor: pointer; font: inherit;
+}
+.atg-card:first-of-type { border-top: none; }
+.atg-card:hover { text-decoration: none; }
+.atg-card-arrow { flex: none; font-size: 13px; }
+.atg-card.up .atg-card-arrow { color: var(--pos); }
+.atg-card.down .atg-card-arrow { color: var(--neg); }
+.atg-card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.atg-card-name { display: flex; align-items: baseline; gap: 4px; font-size: 15px; font-weight: 700; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.atg-card-why { margin-top: 1px; font-size: 12px; color: var(--muted); }
+.atg-card-move { flex: none; display: inline-flex; align-items: center; gap: 3px; }
+.atg-card-to { font-size: 11px; color: var(--muted); }
+.atg-feed-more { display: block; width: 100%; margin-top: 6px; }
+
+.atg-rating { display: inline-block; padding: 4px 9px; border-radius: 7px; font-size: 13.5px; font-weight: 800; white-space: nowrap; letter-spacing: -0.3px; }
+.atg-rating.sm { padding: 2px 6px; font-size: 11px; font-weight: 700; border-radius: 5px; }
+.atg-r0 { background: var(--pos); color: #fff; }
+.atg-r1 { background: color-mix(in srgb, var(--pos) 16%, transparent); color: var(--pos); }
+.atg-r2 { background: var(--subtle-fill-2); color: var(--muted); }
+.atg-r3 { background: color-mix(in srgb, var(--neg) 14%, transparent); color: var(--neg); }
+.atg-r4 { background: var(--neg); color: #fff; }
+
+.atg-filter { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0 8px; scrollbar-width: none; }
+.atg-chip { flex: none; padding: 6px 11px; border-radius: 999px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text); font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.atg-chip.active { background: var(--navy); border-color: var(--navy); color: #fff; }
+
+table.top30-table.atg-table th:nth-child(2) { width: 26%; }
+.atg-table td.atg-name { padding-top: 10px; padding-bottom: 10px; }
+.atg-table td.atg-rate { text-align: center; }
+.atg-grades { display: flex; gap: 3px; margin-top: 6px; padding-left: 42px; flex-wrap: wrap; }
+.atg-g { display: inline-flex; align-items: baseline; gap: 2px; padding: 1px 5px; border-radius: 4px; font-size: 12px; font-weight: 800; background: var(--subtle-fill); color: var(--muted); }
+.atg-g i { font-style: normal; font-size: 10px; font-weight: 500; }
+.atg-gA { color: var(--good); background: var(--good-soft); }
+.atg-gB { color: var(--good); }
+.atg-gD { color: var(--bad); }
+.atg-gF { color: var(--bad); background: var(--bad-soft); }
+/* 자동추적 등급 표 폭 고정(좁은 화면에서 판정 칸이 잘리던 것) */
+table.top30-table.atg-table { table-layout: fixed; width: 100%; }
+table.top30-table.atg-table th:nth-child(1) { width: auto; }
+table.top30-table.atg-table th:nth-child(2) { width: 84px; }
+.atg-table td.atg-name { white-space: normal; }
+.atg-grades { flex-wrap: nowrap; gap: 3px; padding-left: 0; overflow: hidden; }
+.atg-g { padding: 1px 4px; font-size: 11.5px; }
+.atg-g i { font-size: 9.5px; }
+.atg-table td.atg-rate { padding-left: 2px; padding-right: 2px; }
+.atg-rating { padding: 4px 7px; font-size: 13px; }
