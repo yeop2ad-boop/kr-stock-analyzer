@@ -1384,6 +1384,48 @@ function getEtfMarketCapDb() {
   }
   return etfMarketCapDbPromise;
 }
+// ETF 규모(2026-10-06 사용자 요청) — 한국은 국내 ETF 시가총액 상위 100, 미국은 순자산 상위 100 안의 순위.
+// 값은 data/etf-marketcap.json(한국 m = 억원, 미국 a = 달러). 한국 "25.0조"(소수 둘째 자리부터 버림), 미국 "700B"(반올림).
+async function getEtfAumInfo(symbol) {
+  const db = await getEtfMarketCapDb();
+  const isKr = isKrTicker(symbol);
+  const list = (isKr ? db.kr || [] : db.us || [])
+    .map((x) => ({ s: x.s, v: isKr ? x.m : x.a }))
+    .filter((x) => x.s && Number.isFinite(x.v))
+    .sort((a, b) => b.v - a.v);
+  const idx = list.findIndex((x) => x.s === symbol);
+  if (idx < 0) return null;
+  return { value: list[idx].v, rank: idx + 1, isKr, top: list.slice(0, 100).map((x) => x.v) };
+}
+function etfAumText(v, isKr) {
+  if (!Number.isFinite(v)) return "N/A";
+  if (isKr === undefined) isKr = v < 1e8; // 한국 값은 억원 단위라 작다
+  if (isKr) {
+    const jo = Math.floor((v / 10000) * 10) / 10;
+    return jo >= 0.1 ? `${jo.toFixed(1)}조` : `${Math.round(v).toLocaleString()}억`;
+  }
+  return `${Math.round(v / 1e9).toLocaleString("en-US")}B`;
+}
+function applyEtfAumRank(it, info) {
+  it.avgName = "";
+  it.avgShort = "";
+  it.avg = null;
+  if (!info) {
+    it.score = null;
+    it.avgScore = null;
+    return;
+  }
+  const inTop = info.rank <= 100;
+  it.rank = inTop ? info.rank : null;
+  it.total = inTop ? 100 : null;
+  it.topPct = inTop ? info.rank : null;
+  it.mark = inTop ? (info.rank <= 10 ? "fire" : info.rank > 90 ? "warn" : null) : null;
+  it.judge = { text: "", tone: it.mark === "fire" ? "good" : it.mark === "warn" ? "bad" : "neutral" };
+  it.fmt = () => etfAumText(info.value, info.isKr);
+  // 오각형 축: 상위 100 안의 순위로(1위 = 꽉 참, 100위 = 가장 안쪽), 100위 밖은 가장 안쪽
+  it.score = inTop ? Math.max(0.04, 1 - (info.rank - 1) / 99) : 0.04;
+  it.avgScore = 0.5;
+}
 async function getUsEtfNetAssets(symbol) {
   const db = await getEtfMarketCapDb();
   const hit = (db.us || []).find((x) => x && x.s === symbol);
@@ -5784,7 +5826,7 @@ async function runAnalysis(ticker) {
     });
 
     // 하위 탭 3번째 자리: 주식은 매출액(재무정보), ETF는 보유종목, 코인은 아예 감춤(2026-09-16 사용자 요청)
-    el("summarySubtabRevenueBtn").querySelector(".tab-label").textContent = isEtfDetail ? "보유종목" : "매출액";
+    el("summarySubtabRevenueBtn").querySelector(".tab-label").textContent = isEtfDetail ? "보유비중" : "매출액"; // 2026-10-06 "보유종목" → "보유비중"
     el("financialsHeading").innerHTML = isEtfDetail
       ? `보유 종목<span class="srt-asof">${new Date().getMonth() + 1}/${new Date().getDate()} 기준</span>`
       : "재무정보";
@@ -6306,6 +6348,7 @@ const sNum = (v, d) => (d ? (Math.round(v * 10) / 10).toFixed(1) : String(Math.r
 
 // 항목을 누르면 펼쳐지는 2줄 설명(2026-09-15 사용자 요청: 어떻게 구했는지 + 높을수록 무슨 뜻인지) — 앱 공통 data-explain 장치 사용
 const S_REPORT_EXPLAIN = {
+  aum: "규모 — ETF에 쌓인 순자산(시가총액) 크기입니다. 한국 ETF는 국내 상장 ETF 시가총액 상위 100개, 미국 ETF는 미국 상장 ETF 순자산 상위 100개 안에서 순위를 매겨 상위 10위는 🔥, 하위 10위(91~100위)는 ⚠️로 표시합니다. 규모가 클수록 거래가 활발하고 상장폐지 위험이 낮습니다.",
   win: "최근 10년간 전달보다 오른 달의 비율입니다.\n높을수록 꾸준히 올랐다는 뜻이에요.",
   ret: "최근 10년 연평균 상승률(연복리)입니다.\n높을수록 장기 성과가 좋았어요.",
   rev: "매출이 1년 전보다 몇 % 늘었는지입니다.\n높을수록 사업이 커지고 있어요.",
@@ -6345,6 +6388,7 @@ const S_REPORT_TITLES = {
   dv: "5일 평균 거래대금",
   w52: "52주 구간 위치",
   hold: "보유 상위 종목",
+  aum: "순자산 규모",
 };
 // 설명 안에서 "+예시"로 펼쳐 볼 수 있는 항목(2026-09-16 사용자 요청)
 const S_REPORT_EXAMPLES = { win: "대표자산 10년평균 승률 비교", rsi: "SPY 5년 주봉과 주간 RSI" };
@@ -6379,8 +6423,9 @@ function sReportCoreSpecs(isAsset, isEtf) {
     { key: "win", label: "승률", sub: "10년 월간", better: "high", band: 2, fmt: (v, d) => sPct(v, d), axis: (v) => (v - 40) / 30, ...(isEtf ? { fireIf: (v) => v >= 60 } : {}) },
     { key: "ret", label: "상승률", sub: "연평균", better: "high", band: 2, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true), axis: (v) => v / 50 },
     { key: "vol", label: "변동성", sub: "3개월 하루", better: "low", band: 0.1, rel: 0.1, fmt: (v, d) => `${v.toFixed(d ? 2 : 1)}%`, axis: (v) => (5 - v) / 4, ...(isEtf ? { fireIf: (v) => v < 0.8 } : {}) },
-    // 과열도는 낮을수록 좋은 점수(2026-09-16 사용자 요청) — 등수도 낮은 순으로 1위, 레이더에서도 낮을수록 바깥
-    { key: "rsi", label: "과열도(RSI)", better: "low", isRsi: true, fmt: (v, d) => sNum(v, d) },
+    // 과열도는 낮을수록 좋은 점수(2026-09-16 사용자 요청) — 등수도 낮은 순으로 1위, 레이더에서도 낮을수록 바깥.
+    // ETF는 과열도를 일반지표(더보기)로 내리고 그 자리에 규모(순자산)를 둔다(2026-10-06 사용자 요청)
+    isEtf ? { key: "aum", label: "규모", sub: "순자산", better: "high", isAum: true, fmt: (v) => etfAumText(v) } : { key: "rsi", label: "과열도(RSI)", better: "low", isRsi: true, fmt: (v, d) => sNum(v, d) },
     fifth,
   ];
 }
@@ -6425,6 +6470,8 @@ const S_FULL_STOCK_GROUPS = [
 ];
 const S_FULL_ASSET_GROUPS = {
   etf: [
+    // 과열도는 핵심지표에서 일반지표로 내려옴(2026-10-06 사용자 요청)
+    { title: "기술 지표", specs: [{ key: "rsi", label: "과열도(RSI)", better: "low", isRsi: true, fmt: (v, d) => sNum(v, d) }] },
     {
       title: "수익 · 배당",
       specs: [
@@ -6547,9 +6594,9 @@ function sReportRadarSvg(items) {
       const anchor = x < cx - 6 ? "end" : x > cx + 6 ? "start" : "middle";
       const dy = y < cy - R * 0.9 ? -14 : y > cy + R * 0.5 ? 6 : -6;
       // 승률의 상장 기간 경고(⚠️) + 비교군 안 순위 표시 — 상위 10% 🔥 · 하위 10% ⚠️(2026-09-16 사용자 요청)
-      const partialWarn = Number.isFinite(it.partialTotal) && it.partialTotal < (it.partialMin || 120) ? "⚠️" : "";
-      // 경고(상장 기간)와 불이 겹치면 경고만 보여준다(2026-09-16 사용자 지시)
-      const warn = partialWarn || (it.mark === "fire" ? "🔥" : it.mark === "warn" ? "⚠️" : "");
+      // 상장 기간 경고는 ⚠️ 대신 값 뒤에 작은 "(10년미만)" 글씨로(2026-10-06 사용자 요청) — 불·경고 마크는 그대로 안 붙임
+      const partialTag = srPartialTag(it);
+      const warn = partialTag ? "" : it.mark === "fire" ? "🔥" : it.mark === "warn" ? "⚠️" : "";
       const val = (it.value === null ? "N/A" : it.fmt(it.value, 0));
       const axisLabel = it.isRsi ? String(it.label).replace(/\s*\(RSI\)\s*$/, "") : it.label; // 오각형은 "과열도"만(2026-09-17)
       // 값은 라벨 한가운데에 오게(2026-09-17 사용자 요청) — 좌우 축은 라벨이 끝 기준이라 값이 한쪽으로 쏠려 보였다.
@@ -6557,7 +6604,7 @@ function sReportRadarSvg(items) {
       const estWidth = (t) => [...String(t)].reduce((w, ch) => w + (ch.charCodeAt(0) < 128 ? 6.6 : 12), 0);
       const labelMid = anchor === "end" ? x - estWidth(axisLabel) / 2 : anchor === "start" ? x + estWidth(axisLabel) / 2 : x;
       return `<text x="${x.toFixed(1)}" y="${(y + dy).toFixed(1)}" text-anchor="${anchor}" class="srt-rd-label">${escapeHtml(axisLabel)}</text>
-        <text x="${labelMid.toFixed(1)}" y="${(y + dy + 15).toFixed(1)}" text-anchor="middle" class="srt-rd-value srt-rd-${it.mark || "neutral"}">${warn}${escapeHtml(val)}${/* 오각형에는 현재 RSI만(1년 평균은 아래 항목 줄에 "/72(평균)"로 표시) — 2026-09-16 사용자 요청 */ ""}</text>`;
+        <text x="${labelMid.toFixed(1)}" y="${(y + dy + 15).toFixed(1)}" text-anchor="middle" class="srt-rd-value srt-rd-${it.mark || "neutral"}">${warn}${escapeHtml(val)}${partialTag ? `<tspan class="srt-rd-partial">${partialTag}</tspan>` : ""}${/* 오각형에는 현재 RSI만(1년 평균은 아래 항목 줄에 "/72(평균)"로 표시) — 2026-09-16 사용자 요청 */ ""}</text>`;
     })
     .join("");
   return `<svg class="srt-radar" viewBox="0 0 ${W} ${H}" role="img" aria-label="핵심 5개 지표 레이더 차트">${rings}${spokes}${avgPoly}${selfPoly}${avgDots}${dots}${labels}</svg>`;
@@ -6717,9 +6764,9 @@ function sReportLineHtml(it) {
   return `
     <div class="srf-line" data-sr-key="${escapeHtml(sKey)}" data-sr-explain="${escapeHtml(it.explain || "")}" data-sr-title="${escapeHtml(S_REPORT_TITLES[sKey] || it.label)}">
       <span class="srf-name">${escapeHtml(it.label)}</span>
-      <b class="srf-val${it.mark ? ` srf-val-${it.mark}` : ""}" data-round="${escapeHtml(has ? it.fmt(it.value, 0) : "N/A")}">${partialMarkHtml(it.partialTotal, "wr-mark-front", it.partialMin)}${escapeHtml(
-        has ? it.fmt(it.value, 1) : "N/A"
-      )}${/* 과열도는 값 옆에 이 종목의 1년 평균을 작게 붙임(2026-09-16 사용자 요청) */ ""}${
+      <b class="srf-val${it.mark ? ` srf-val-${it.mark}` : ""}" data-round="${escapeHtml(has ? it.fmt(it.value, 0) : "N/A")}">${escapeHtml(has ? it.fmt(it.value, 1) : "N/A")}${
+        srPartialTag(it) ? `<span class="srf-partial">${srPartialTag(it)}</span>` : ""
+      }${/* 과열도는 값 옆에 이 종목의 1년 평균을 작게 붙임(2026-09-16 사용자 요청) */ ""}${
         it.isRsi && has && Number.isFinite(it.avg) ? `<span class="srf-val-avg">/${Math.round(it.avg)}(평균)</span>` : ""
       }</b>
       <span class="srf-rank${it.mark ? ` srf-rank-${it.mark}` : ""}" data-short="${escapeHtml(shortHtml)}">${rankHtml}</span>
@@ -6834,9 +6881,16 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
   const currency = ["kr350", "ipoKr200", "etfKr"].includes(groupKey) ? "KRW" : "USD";
   const self = { ...(member || {}) };
   const coreSpecs = sReportCoreSpecs(isAsset, scoreMode === "etf");
+  if (scoreMode === "etf") {
+    self.aumInfo = await getEtfAumInfo(ticker).catch(() => null);
+    if (token !== sReportTopToken) return;
+    if (self.aumInfo) self.aum = self.aumInfo.value;
+  }
 
   const draw = () => {
     const items = coreSpecs.map((s) => sReportMakeItem(s, self[s.key], group, currency, self.rsiAvg));
+    const aumItem = items.find((it) => it.isAum);
+    if (aumItem) applyEtfAumRank(aumItem, self.aumInfo);
     // 승률은 상장 10년(코인 7년) 미만이면 값 앞에 ⚠️ — 짧은 기간만으로 계산한 값이라는 경고
     const winItem = items.find((it) => it.key === "win");
     if (winItem) {
@@ -6934,7 +6988,7 @@ async function renderSReportMore(ticker, scoreMode, coreItems, group, self, curr
       })
     );
   }
-  const groups = specGroups.map((g) => ({ title: g.title, items: g.specs.map((s) => sReportMakeItem(s, values[s.key], group, currency)) }));
+  const groups = specGroups.map((g) => ({ title: g.title, items: g.specs.map((s) => sReportMakeItem(s, values[s.key], group, currency, self.rsiAvg)) }));
 
   // 요약 한 줄 — 상위 10%(🔥)·하위 10%(⚠️) 항목 모음
   const ranked = coreItems.concat(groups.flatMap((g) => g.items)).filter((it) => it.rank);
@@ -6960,9 +7014,9 @@ function fitSReportRoundCells(root) {
   root.querySelectorAll(".srf-line [data-round]").forEach((node) => {
     const box = node.closest(".srf-line");
     if (!box || box.scrollWidth <= box.clientWidth + 1) return;
-    const mark = node.querySelector(".nine-partial-mark"); // ⚠️(상장 10년 미만)는 그대로 두고 숫자만 반올림
+    const tag = node.querySelector(".srf-partial"); // (10년미만) 표시는 그대로 두고 숫자만 반올림
     node.textContent = node.dataset.round;
-    if (mark) node.insertAdjacentElement("afterbegin", mark);
+    if (tag) node.insertAdjacentElement("beforeend", tag);
   });
 }
 window.addEventListener("resize", () => {
@@ -8755,6 +8809,12 @@ function stockRet10CellHtml(symbol) {
 // 상장 10년 미만(승률 DB total<120개월) ⚠️ — 10년평균 승률·연평균 상승 표시 공통(2026-09-09 사용자 요청: 연평균 상승에도 표시).
 // 연평균 상승은 상장 후 기간만 연율화한 값이라(예: 센디스크 18개월 36배 → 연 1,001%) 10년치가 아님을 알리는 용도
 // minMonths: 이 개월수 미만이면 경고 — 주식·ETF 120(10년 미만), 코인 85(7년 이하, 2026-09-13 사용자 요청: 코인은 역사가 짧아 7년 이하만 경고)
+// 핵심지표 승률의 상장 기간 표시(2026-10-06 사용자 요청: ⚠️ 대신 작은 글씨) — 주식·ETF는 10년, 코인은 7년 기준
+function srPartialTag(it) {
+  const min = it.partialMin || 120;
+  if (!Number.isFinite(it.partialTotal) || it.partialTotal >= min) return "";
+  return min >= 120 ? "(10년미만)" : "(7년미만)";
+}
 function partialMarkHtml(total, cls, minMonths = 120) {
   if (!Number.isFinite(total) || total >= minMonths) return "";
   const ageText = minMonths >= 120 ? "10년이 안 된" : "7년 이하인";
@@ -11712,6 +11772,14 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
     // 승률 항목(winRate10y)은 상장 10년 미만 종목에 ⚠️(2026-09-09 사용자 요청) — 승률 DB의 total(집계 개월수)로 판정
     const wrDbAt = keys.includes("winRate10y") ? await getWinRateDb().catch(() => null) : null;
     const wrMapAt = wrDbAt ? (isKr ? wrDbAt.scoresKr : isCrypto ? wrDbAt.scoresCrypto : wrDbAt.scores) || {} : {};
+    // 종목명 오른쪽 작은 섹터명(2026-10-06 사용자 요청: 기술·금융 등) — 지도 스냅샷의 sectorKo, 코인은 섹터 없음
+    const atUniverse = isCrypto ? null : await getSReportUniverse(isKr).catch(() => null);
+    const sectorOfAt = new Map(((atUniverse && atUniverse.companies) || []).map((c) => [c.symbol, c.sectorKo || ""]));
+    const atNameCell = (sym) => {
+      const html = rankNameCellHtml(sym, tickerLogoHtml(sym), nameOf(sym));
+      const sec = sectorOfAt.get(sym);
+      return sec ? html.replace(/(<b class="ticker-link rk-name"[^>]*>[^<]*<\/b>)/, `<span class="at-name-line">$1<span class="at-sector">${escapeHtml(sec)}</span></span>`) : html;
+    };
     const rows = Object.entries(at.ranks)
       .map(([sym, r]) => ({ sym, c1: cellOf(r[keys[0]], keys[0]), c2: cellOf(r[keys[1]], keys[1]), c3: cellOf(r[keys[2]], keys[2]), winTotal: wrMapAt[sym] && Number.isFinite(wrMapAt[sym].total) ? wrMapAt[sym].total : null }))
       .filter((r) => r.c1 !== null)
@@ -11765,7 +11833,7 @@ async function renderAutoTrackStocks(mode, statusEl, resultsEl) {
         .map(
           (r) => `
         <tr>
-          <td class="at-name">${rankNameCellHtml(r.sym, tickerLogoHtml(r.sym), nameOf(r.sym))}</td>
+          <td class="at-name">${atNameCell(r.sym)}</td>
           ${cellHtml(r.c1, keys[0], r.winTotal)}
           ${cellHtml(r.c2, keys[1], r.winTotal)}
         </tr>`
@@ -12045,53 +12113,25 @@ function corrHitSubHtml(m) {
   const tip = `적중 ${s.toFixed(2)}점(${g.label}) — 무작위로 골랐을 때 기대되는 적중 수보다 얼마나 더 맞혔는지를 -1~1로 환산한 값입니다. 1에 가까울수록 이 항목이 실제 등락을 잘 설명했다는 뜻입니다.`;
   return `<br><span class="at-head-sub" data-explain="${escapeHtml(tip)}">적중 ${s.toFixed(2)}점</span><span class="at-head-grade" style="color:${g.color};" data-explain="${escapeHtml(tip)}">${escapeHtml(g.label)}</span>`;
 }
-let autoTrackCorrRendering = false;
-async function renderAutoTrackCorrDetail(wrap) {
-  if (wrap.dataset.built === "1" || autoTrackCorrRendering) return;
-  autoTrackCorrRendering = true;
-  wrap.innerHTML = `<p class="muted top30-status" style="display:block;">상관관계를 계산하는 중... (SPY 외 12개 자산의 10년 월봉)</p>`;
-  let data;
-  try {
-    data = await getAutoTrackCorrelations();
-  } catch {
-    data = { values: {}, liveCount: 0 };
-  }
-  const rows = AUTOTRACK_CORR_PAIRS.map((p, i) => {
-    const v = (data.values && data.values[p.sym]) || { r: p.fallback, live: false };
-    return { ...p, idx: i + 1, r: v.r, n: v.n, from: v.from, to: v.to, live: !!v.live, grade: corrGradeOf(v.r) };
-  });
-  // 그래프는 2026-09-07 사용자 요청으로 제거 — 표만 상관관계 높은 순으로 1~12번 정렬
-  const badge = (g) => `<span class="corr-grade-badge" style="background:${g.color};">${escapeHtml(g.label)}</span>`;
-  // 등급마다 대표 1개만(2026-09-08 사용자 요청): 상관관계 높은 순으로 훑으며 처음 나오는 등급만 남김 → 최대 7행
-  const seenGrade = new Set();
-  const sortedRows = rows
-    .slice()
-    .sort((a, b) => b.r - a.r)
-    .filter((r) => (seenGrade.has(r.grade.label) ? false : (seenGrade.add(r.grade.label), true)));
-  const tableRows = sortedRows
-    .map(
-      (row, i) => `
-      <tr>
-        <td>${i + 1}</td>
-        <td style="text-align:left;"><b>SPY - ${escapeHtml(row.name)}</b><br><span class="muted" style="font-size:10.5px;">${escapeHtml(row.sub)}${row.live ? "" : " · 스냅샷"}</span></td>
-        <td><b style="color:${row.grade.color};">${row.r.toFixed(3)}</b></td>
-        <td>${badge(row.grade)}</td>
-        <td><span class="muted" style="font-size:10.5px;">${row.n ? `${row.n}개월` : "2026-09 계산"}</span></td>
-      </tr>`
-    )
-    .join("");
-  // 표 위 제목·설명·등급 범례는 2026-09-10 사용자 요청으로 제거 — 표만 남김
+// 자동추적 "+자세히"(2026-10-06 사용자 요청): 더보기에서 내린 "상관관계" 페이지 내용을 그대로 펼친다(기간 1일·1주·1달·1년).
+let autoTrackCorrPeriod = "month";
+function renderAutoTrackCorrDetail(wrap) {
+  const periods = [["day", "1일"], ["week", "1주"], ["month", "1달"], ["year", "1년"]];
   wrap.innerHTML = `
-    <table class="top30-table corr-table" style="margin-top:6px;">
-      <thead><tr><th>순위</th><th>조합</th><th>점수</th><th>등급</th><th>비교 기간</th></tr></thead>
-      <tbody>${tableRows}</tbody>
-    </table>
-    <p class="disclaimer" style="margin-top:8px;">
-      ⚠️ 야후 월봉(10년) 기준으로 두 자산의 월간 등락률이 얼마나 같은 방향으로 움직였는지를 피어슨 상관계수로 계산했습니다(진행 중인 이번 달 제외).
-      코스피200은 KODEX200, 코스닥150은 KODEX코스닥150, 금은 GLD로 계산했습니다. 과거 데이터이며 미래 수익률을 보장하지 않고 투자 자문이 아닙니다.
-    </p>`;
-  wrap.dataset.built = "1";
-  autoTrackCorrRendering = false;
+    <div class="top30-sub-nav at-corr-nav">${periods
+      .map(([k, l]) => `<button type="button" class="cat-btn${k === autoTrackCorrPeriod ? " active" : ""}" data-at-corr="${k}">${l}</button>`)
+      .join("")}</div>
+    <p class="muted top30-status at-corr-status" style="display:none;"></p>
+    <div class="at-corr-results"></div>`;
+  const run = () => runInsightCorr(autoTrackCorrPeriod, wrap.querySelector(".at-corr-status"), wrap.querySelector(".at-corr-results"));
+  wrap.querySelector(".at-corr-nav").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-at-corr]");
+    if (!b) return;
+    autoTrackCorrPeriod = b.dataset.atCorr;
+    wrap.querySelectorAll("[data-at-corr]").forEach((x) => x.classList.toggle("active", x === b));
+    run();
+  });
+  run();
 }
 el("autoTrackCorrBtn").addEventListener("click", () => {
   const wrap = el("autoTrackCorrWrap");
@@ -12556,39 +12596,99 @@ async function fillEtfHoldChanges(root) {
   });
 }
 
+// 보유비중(2026-10-06 사용자 요청 개편)
+//  · 금·채권·현금(+선물·비트코인)도 건너뛰지 않고 비중 순으로 맨 위에 이모지와 함께 — 그 아래 주식을 비중 순으로
+//  · 표 위에 운용보수를 굵게
+//  · 한국 ETF는 funetf 운용사 PDF(scripts/build-etf-holdings.py, holdings[].t 종류 표시), 미국은 야후 topHoldings + 자산 구성(assets)
+const ETF_NONSTOCK_META = {
+  gold: { emoji: "🥇", label: "금" },
+  bond: { emoji: "📜", label: "채권" },
+  cash: { emoji: "💵", label: "현금" },
+  deriv: { emoji: "📈", label: "선물·파생" },
+  btc: { emoji: "₿", label: "비트코인" },
+  other: { emoji: "📦", label: "기타" },
+};
+function etfNonStockRows(info, isKr, symbol) {
+  const rows = [];
+  if (isKr) {
+    (info.holdings || []).forEach((h) => {
+      if (h.t && h.t !== "stock" && Number.isFinite(h.w)) rows.push({ kind: h.t, w: h.w, n: h.t === "gold" ? h.n : "" });
+    });
+  } else {
+    const cat = String(info.category || "");
+    const isGold = /GLD|IAU|GLDM|SGOL|AAAU/.test(symbol) || /gold/i.test(info.family || "") || (/Commodities/i.test(cat) && /GLD|IAU/.test(symbol));
+    const isBtc = /IBIT|FBTC|GBTC|ARKB|BITB|BITO/.test(symbol) || /Digital Assets/i.test(cat);
+    (info.assets || []).forEach((a) => {
+      const k = a.k === "채권" ? "bond" : a.k === "현금" ? "cash" : a.k === "기타" ? (isGold ? "gold" : isBtc ? "btc" : "other") : null;
+      if (k && Number.isFinite(a.w) && Math.abs(a.w) >= 0.01) rows.push({ kind: k, w: a.w, n: "" });
+    });
+  }
+  return rows.sort((a, b) => Math.abs(b.w) - Math.abs(a.w));
+}
+// 국내 6자리 코드만 있는 옛 데이터용 — 코스닥 종목을 .KS로 붙이면 상세가 안 열리므로 아는 목록에서 시장을 찾는다
+// 야후도 미국 ETF 보유 내역에서 삼성전자를 005930.KQ처럼 시장을 틀리게 주는 경우가 있어(SCHF) 아는 목록 기준으로 바로잡는다
+let krKnownSymbolSet = null;
+function krKnownSymbol(code) {
+  if (!krKnownSymbolSet) krKnownSymbolSet = new Set([...Object.values(KR_NAME_TO_TICKER), ...Object.keys(TICKER_TO_KOREAN_NAME).filter((k) => /\.(KS|KQ)$/.test(k))]);
+  if (krKnownSymbolSet.has(`${code}.KS`)) return `${code}.KS`;
+  if (krKnownSymbolSet.has(`${code}.KQ`)) return `${code}.KQ`;
+  return null;
+}
+function etfHoldingLinkSym(h, isKr) {
+  const s = String(h.s || "");
+  if (!s) return "";
+  const m = s.match(/^([0-9A-Z]{6})(?:\.(KS|KQ))?$/);
+  if (m && (m[2] || isKr)) return krKnownSymbol(m[1]) || (m[2] ? s : `${s}.KS`);
+  return s;
+}
+// 미국 채권 ETF가 "보유 종목"으로 주는 머니마켓펀드(BISXX 등)·현금성 계정(XTSLA)은 현금 행과 겹치므로 종목 목록에서 뺀다
+function etfIsCashLikeHolding(h) {
+  return /^[A-Z]{3,4}XX$/.test(String(h.s || "")) || /^XTSLA$/.test(String(h.s || ""));
+}
 async function renderEtfHoldingsBlock(symbol, isKr) {
   const box = el("etfHoldingsBlock");
   if (!box) return;
-  box.innerHTML = `<p class="muted" style="font-size:12px;margin:0;">보유 종목을 불러오는 중...</p>`;
+  box.innerHTML = `<p class="muted" style="font-size:12px;margin:0;">보유비중을 불러오는 중...</p>`;
   let info = null;
   try {
     info = etfInfoOf(await getEtfInfoDb(), symbol);
   } catch {
     // 데이터 파일을 못 읽으면 블록 자체를 숨김
   }
-  if (!info || !info.holdings || !info.holdings.length) {
-    // 금·채권·비트코인 ETF처럼 개별 종목을 담지 않는 상품은 공시 자체가 없다 — 빈 화면 대신 이유를 적어 준다(2026-09-17 사용자 지적)
-    box.innerHTML = `${
-      info && info.category ? `<div class="etf-holdings-head"><span class="muted" style="font-size:11.5px;">${escapeHtml(info.category)}</span></div>` : ""
-    }<p class="muted" style="font-size:12.5px;margin:6px 2px 0;line-height:1.6;">이 ETF는 개별 종목을 담지 않아(금·원자재 현물, 채권, 비트코인 등) 보유 종목 공시가 없습니다.</p>`;
+  if (!info) {
+    box.innerHTML = `<p class="muted" style="font-size:12.5px;margin:6px 2px 0;">이 ETF의 보유비중 자료를 찾지 못했습니다.</p>`;
     box.style.display = "block";
     return;
   }
+  const feeHtml = Number.isFinite(info.fee) ? `<div class="etf-fee-line">운용보수 연 ${info.fee}%</div>` : "";
+  const nonStock = etfNonStockRows(info, isKr, symbol);
+  const stocks = (info.holdings || [])
+    .filter((h) => (!h.t || h.t === "stock") && !(!isKr && etfIsCashLikeHolding(h)))
+    .slice()
+    .sort((a, b) => (Number.isFinite(b.w) ? b.w : -1) - (Number.isFinite(a.w) ? a.w : -1));
   const paint = () => {
-    // 기본 10위까지, 더보기를 누르면 20위까지(2026-09-11 사용자 요청)
-    const top = info.holdings.slice(0, etfHoldingsShowMore ? 20 : 10);
+    const top = stocks.slice(0, etfHoldingsShowMore ? 30 : 10);
+    const nonStockHtml = nonStock
+      .map((r) => {
+        const m = ETF_NONSTOCK_META[r.kind] || ETF_NONSTOCK_META.other;
+        const name = r.kind === "gold" && r.n ? `금 현물 <span class="etf-hold-ticker">${escapeHtml(r.n)}</span>` : escapeHtml(m.label);
+        return `<tr class="etf-hold-asset">
+          <td><span class="ticker-cell rank-logo"><span class="etf-asset-emoji">${m.emoji}</span><b>${name}</b></span></td>
+          <td class="etf-hold-weight"><b>${r.w.toFixed(2)}%</b></td>
+          <td class="etf-hold-chg">—</td>
+        </tr>`;
+      })
+      .join("");
     const rows = top
-      .map((h, i) => {
-        // 국내는 6자리 종목코드라 야후 심볼(.KS)로 바꿔야 상세로 넘어간다.
-        // 다만 해외 지수를 추종하는 국내 ETF는 네이버가 종목코드를 비워 줘서(이름·주식수만 옴) 링크를 걸 수 없다 —
-        // 이 경우 로고·링크 없이 이름만 두고, 비중 대신 보유 주식수를 보여준다.
-        const linkSym = h.s ? (isKr ? `${h.s}.KS` : h.s) : "";
+      .map((h) => {
+        const linkSym = etfHoldingLinkSym(h, isKr);
         // 미국 보유 종목은 한글 이름으로 바꾸고 티커를 아주 작게 옆에 붙인다(2026-09-17 사용자 요청)
-        const dispName = isKr ? h.n || h.s : rankDisplayName(linkSym, h.n || h.s, false);
+        const krStock = /\.(KS|KQ)$/.test(linkSym);
+        const dispName = krStock ? (/[가-힣]/.test(h.n || "") ? h.n : TICKER_TO_KOREAN_NAME[linkSym] || h.n || h.s) : rankDisplayName(linkSym, h.n || h.s, false);
         const nameCell = linkSym
           ? `<span class="ticker-cell rank-logo">${tickerLogoHtml(linkSym, (h.n || h.s).slice(0, 2))}<b class="ticker-link" data-ticker="${escapeHtml(
               linkSym
-            )}">${escapeHtml(dispName)}</b>${isKr ? "" : `<span class="etf-hold-ticker">${escapeHtml(h.s || "")}</span>`}</span>`
+            )}">${escapeHtml(dispName)}</b>${krStock ? "" : `<span class="etf-hold-ticker">${escapeHtml(linkSym)}</span>`}</span>`
           : `<span class="etf-hold-plain">${escapeHtml(h.n || "")}</span>`;
         const weightCell = Number.isFinite(h.w)
           ? `<b>${h.w.toFixed(2)}%</b>`
@@ -12603,36 +12703,32 @@ async function renderEtfHoldingsBlock(symbol, isKr) {
         </tr>`;
       })
       .join("");
-    // 비중이 전부 비면(해외 구성종목) 열 제목도 "보유 주식수"로 바꿔야 말이 된다
-    const weightHeader = top.some((h) => Number.isFinite(h.w)) ? "비중" : "보유<br>주식수";
     const portions =
       etfPortionListHtml("업종 비중", info.sectors) + etfPortionListHtml("자산 비중", info.assets) + etfPortionListHtml("국가 비중", info.countries);
-    // 20위까지 못 채운 건 출처(국내=네이버)가 상위 10종목까지만 공시하기 때문 — 그 사정을 그대로 밝힌다
-    const shortOfTwenty = etfHoldingsShowMore && info.holdings.length < 20;
     const extra = etfHoldingsShowMore
       ? `<div class="etf-holdings-more">
           ${portions}
           <p class="muted" style="font-size:11px;margin:6px 0 0;">${
-            shortOfTwenty
-              ? `이 ETF는 운용사가 비중 상위 ${info.holdings.length}종목까지만 공시해서 그 아래는 표시할 수 없습니다. ${
-                  portions ? "대신 전체 구성 비중을 함께 보여드립니다." : ""
-                }`
-              : "비중 상위 20종목입니다."
+            stocks.length < 30 ? `공시된 보유 종목 ${stocks.length}개를 모두 보여드립니다.` : "비중 상위 30종목입니다."
           }</p>
         </div>`
       : "";
+    const empty = !nonStock.length && !stocks.length;
     box.innerHTML = `
+      ${feeHtml}
       <div class="etf-holdings-head">
-        <span class="muted" style="font-size:11.5px;">비중 순 · ${info.index ? escapeHtml(info.index) + " 추종" : escapeHtml(info.category || "")}${
-      Number.isFinite(info.fee) ? ` · 운용보수 연 ${info.fee}%` : ""
-    }</span>
+        <span class="muted" style="font-size:11.5px;">비중 순 · ${info.index ? escapeHtml(info.index) + " 추종" : escapeHtml(info.category || "")}</span>
       </div>
-      <table class="top30-table etf-holdings-table">
-        <thead><tr><th>종목</th><th>${weightHeader}</th><th>수익률<br>(1개월)</th></tr></thead>
-        <tbody>${rows}</tbody>
+      ${
+        empty
+          ? `<p class="muted" style="font-size:12.5px;margin:6px 2px 0;line-height:1.6;">이 ETF는 보유 구성 공시를 찾지 못했습니다.</p>`
+          : `<table class="top30-table etf-holdings-table">
+        <thead><tr><th>종목</th><th>비중</th><th>수익률<br>(1개월)</th></tr></thead>
+        <tbody>${nonStockHtml}${rows}</tbody>
       </table>
       ${extra}
-      <button type="button" class="cat-btn etf-holdings-more-btn">${etfHoldingsShowMore ? "접기" : "더보기"}</button>`;
+      ${stocks.length > 10 || portions ? `<button type="button" class="cat-btn etf-holdings-more-btn">${etfHoldingsShowMore ? "접기" : "더보기"}</button>` : ""}`
+      }`;
     fillEtfHoldChanges(box); // 1달 전 대비 주가 변화는 표를 그린 뒤 채운다
     const btn = box.querySelector(".etf-holdings-more-btn");
     if (btn)
@@ -12641,9 +12737,24 @@ async function renderEtfHoldingsBlock(symbol, isKr) {
         paint();
       });
   };
-  // 2026-09-13: 보유 종목은 "📦 보유 종목" 버튼을 눌렀을 때만 보임 — 여기서는 내용만 채우고 표시 상태는 건드리지 않음
   paint();
+  box.style.display = "block";
 }
+
+// ETF 보유 상위 종목 중 앱 기본 목록(코스피200·코스닥150·S&P500) 밖의 종목(테스 등) — 검색·상세에서 찾을 수 있게 이름 등록(2026-10-06)
+fetch("data/etf-holding-names.json", { cache: "no-store" })
+  .then((r) => (r.ok ? r.json() : null))
+  .then((names) => {
+    if (!names) return;
+    Object.entries(names).forEach(([sym, name]) => {
+      if (!sym || !name) return;
+      if (!TICKER_TO_KOREAN_NAME[sym]) TICKER_TO_KOREAN_NAME[sym] = name;
+      if (/\.(KS|KQ)$/.test(sym)) {
+        if (!KR_NAME_TO_TICKER[name]) KR_NAME_TO_TICKER[name] = sym;
+      } else if (/[가-힣]/.test(name) && !KOREAN_COMPANY_NAMES[name]) KOREAN_COMPANY_NAMES[name] = sym;
+    });
+  })
+  .catch(() => {});
 
 // ---------- ETF 전용 상단 탭(2026-09-11 사용자 요청) ----------
 // 인기종목 - 승률 - 수익률 - 변동성 - 배당률 - 운용보수.
@@ -13772,9 +13883,10 @@ function corrLabelOf(key, period) {
   if (key === "prevMonthDown") return period === "day" ? "하루전 하락률" : period === "week" ? "한주전 하락률" : "한달전 하락률";
   return CORR_METRIC_LABELS[key] || key;
 }
-async function runInsightCorr(period) {
-  const status = el("insightStatus");
-  const results = el("insightResults");
+// statusEl/resultsEl(2026-10-06): 자동추적 "+자세히" 안에서도 같은 상관관계 화면을 그리려고 대상 영역을 받을 수 있게 함
+async function runInsightCorr(period, statusEl, resultsEl) {
+  const status = statusEl || el("insightStatus");
+  const results = resultsEl || el("insightResults");
   results.innerHTML = "";
   // 비트코인(2026-09-07 사용자 요청): 코인도 상관관계도 제공(재무 항목 제외, 배치 crypto 섹션). ETF만 미제공.
   if (appSectionMode === "etf") {
@@ -13830,7 +13942,7 @@ async function runInsightCorr(period) {
     status.style.display = "block";
     status.innerHTML = `❌ ${escapeHtml(e.message || "상관관계도를 불러오지 못했습니다.")} <button type="button" class="cat-btn corr-retry-btn" style="margin-left:6px;">다시 시도</button>`;
     const retry = status.querySelector(".corr-retry-btn");
-    if (retry) retry.addEventListener("click", () => runInsightCorr(period));
+    if (retry) retry.addEventListener("click", () => runInsightCorr(period, statusEl, resultsEl));
   }
 }
 
@@ -20353,7 +20465,7 @@ async function renderRiskPanel(ticker) {
     ? " · 유상증자·전환사채는 DART 주요사항보고서의 발행 <b>결정</b> 공시 기준(실제 납입액과 다를 수 있음), 시가총액은 어제 종가 기준"
     : ` · 미국은 같은 형식의 발행 결정 공시가 없어 SEC 현금흐름표의 <b>실제 조달액</b>(주식 발행·전환사채) 최근 1년 합계로 대신하며, 스톡옵션 행사 같은 소액이 섞이므로 시총 대비 ${RISK_US_ISSUANCE_MIN_PCT}% 이상만 '있음'으로 봄`;
 
-  // 요약 블록 — 위험(빨강) → 주의(주황) 순으로 먼저 보여주고, 양호·자료 없음은 접어 둔다
+  // 요약 블록 — 위험(빨강) → 주의(주황) → 양호 → 자료 없음 순으로 전부 보여준다
   const sevOf = (r) => (r.grade && r.grade.cls === "risk-bad" ? 0 : r.grade && r.grade.cls === "risk-warn" ? 1 : r.grade ? 2 : 3);
   const sorted = [...riskSummary].sort((a, b) => sevOf(a) - sevOf(b));
   const counts = [0, 0, 0, 0]; // 위험 / 주의 / 양호 / 자료 없음(양호로 세지 않음)
@@ -20372,16 +20484,15 @@ async function renderRiskPanel(ticker) {
       <span class="risk-sum-note ${r.noteCls || "muted"}">${escapeHtml(r.note || "")}</span>
       <span class="risk-sum-arrow">﹀</span>
     </button>`;
-  const restCount = counts[2] + counts[3];
   const summaryBlock = `<div class="risk-summary">
       <div class="risk-sum-counts">
         <span class="risk-sum-count risk-bad"><b>${counts[0]}</b>⚠️ 위험</span>
         <span class="risk-sum-count risk-warn"><b>${counts[1]}</b>주의</span>
         <span class="risk-sum-count risk-good"><b>${counts[2]}</b>양호</span>
-        ${counts[3] ? `<span class="risk-sum-count"><b>${counts[3]}</b>자료 없음</span>` : ""}
+        <span class="risk-sum-count"><b>${counts[3]}</b>자료 없음</span>
       </div>
-      ${sorted.map((r) => summaryRowHtml(r, sevOf(r) >= 2)).join("")}
-      ${restCount ? `<button type="button" class="risk-more-btn" id="riskSumMoreBtn">+ 나머지 ${restCount}개 보기</button>` : ""}
+      ${/* 2026-10-06 사용자 요청: 양호·자료 없음까지 항상 펼쳐 둔다(위험 → 주의 → 양호 → 자료 없음 순) */ ""}
+      ${sorted.map((r) => summaryRowHtml(r, false)).join("")}
     </div>`;
 
   // 상세 카드는 처음엔 모두 감춰 두고(2026-09-21 사용자 요청: 아래에 전부 늘어놓지 않음),
@@ -20401,23 +20512,6 @@ async function renderRiskPanel(ticker) {
       btn.textContent = btn.textContent.replace(open ? "+" : "−", open ? "−" : "+");
     });
   });
-  const sumMoreBtn = box.querySelector("#riskSumMoreBtn");
-  if (sumMoreBtn) {
-    sumMoreBtn.addEventListener("click", () => {
-      const rest = box.querySelectorAll(".risk-sum-row.is-rest");
-      const open = rest[0] && rest[0].style.display === "none";
-      rest.forEach((el) => {
-        el.style.display = open ? "" : "none";
-        // 접을 때는 그 줄에 붙어 있던 상세도 같이 닫는다
-        const card = el.nextElementSibling;
-        if (!open && card && card.classList.contains("risk-card-detail")) {
-          card.style.display = "none";
-          el.classList.remove("is-open");
-        }
-      });
-      sumMoreBtn.textContent = open ? `− 나머지 ${rest.length}개 접기` : `+ 나머지 ${rest.length}개 보기`;
-    });
-  }
   // 각 상세 카드를 자기 요약 줄 바로 뒤에 숨겨 둔 뒤, 줄을 누르면 그 카드만 펼친다(다른 항목은 접음)
   const detailStore = box.querySelector("#riskDetailStore");
   box.querySelectorAll("[data-risk-goto]").forEach((row) => {

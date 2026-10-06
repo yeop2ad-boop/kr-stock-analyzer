@@ -3636,3 +3636,18 @@ table.top30-table.ia-ret-table { width: 100%; font-size: 12.5px; }
 .ia-save-btn { padding: 9px 18px; border: none; border-radius: 9px; background: var(--navy); color: #fff; font-size: 14.5px; font-weight: 700; cursor: pointer; }
 .ia-save-btn:disabled { opacity: 0.4; cursor: default; }
 .ia-table-btn svg { width: 16px; height: 16px; min-width: 16px; flex: none; }
+/* 핵심지표 승률 상장 기간 표시(2026-10-06): ⚠️ 대신 작은 글씨 */
+.srf-partial { margin-left: 3px; font-size: 11px; font-weight: 500; color: var(--muted); letter-spacing: -0.3px; }
+.srt-rd-partial { font-size: 9px; font-weight: 500; fill: var(--muted); }
+/* ETF 보유비중(2026-10-06): 운용보수 굵게 + 금·채권·현금 행 */
+.etf-fee-line { margin: 2px 2px 6px; font-size: 15px; font-weight: 800; color: var(--text); }
+.etf-asset-emoji { display: inline-flex; width: 26px; justify-content: center; font-size: 19px; }
+.etf-hold-asset td { background: var(--subtle-fill); }
+/* 자동추적 종목명 옆 섹터(2026-10-06) */
+.at-name-line { display: flex; align-items: baseline; gap: 4px; min-width: 0; }
+.at-name-line .rk-name { min-width: 0; }
+.at-sector { flex: none; font-size: 10.5px; font-weight: 500; color: var(--muted); padding: 0 4px; border: 1px solid var(--border); border-radius: 4px; line-height: 1.4; }
+/* 자동추적 +자세히 안 상관관계 표(2026-10-06) — 펼침 박스 폭에 맞춤 */
+#autoTrackCorrWrap { overflow-x: auto; }
+#autoTrackCorrWrap .top30-table { width: 100%; font-size: 13px; }
+#autoTrackCorrWrap .top30-table th, #autoTrackCorrWrap .top30-table td { padding: 7px 3px; }

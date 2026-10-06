@@ -411,6 +411,21 @@ async function main() {
   });
 
   const items = results.filter(Boolean);
+  // 리스크 탭의 EPS·분기 매출/순이익·부채비율·급락률(eps/quarter/debt/crash)은 이 스크립트가 만들지 않고
+  // 뒤 단계(scripts/fill-risk-gaps.py)가 채운다. 예전엔 여기서 파일을 통째로 새로 써서 매일 그 값이 지워졌다
+  // (2026-09-23부터 한국 348종목 전부 "자료 없음" — 2026-10-06 사용자 지적으로 발견). 이전 값을 이어받는다.
+  try {
+    const prevItems = new Map(((fs.existsSync(OUT_FILE) && readJsonFile(OUT_FILE).items) || []).map((r) => [r.symbol, r]));
+    items.forEach((r) => {
+      const old = prevItems.get(r.symbol);
+      if (!old) return;
+      ["eps", "quarter", "debt", "crash"].forEach((k) => {
+        if (r[k] === undefined && old[k] !== undefined) r[k] = old[k];
+      });
+    });
+  } catch (e) {
+    console.error("이전 리스크 값 이어받기 실패:", e.message);
+  }
   fs.writeFileSync(
     OUT_FILE,
     JSON.stringify(

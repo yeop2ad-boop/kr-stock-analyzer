@@ -143,9 +143,62 @@ def fill_one(sym, item, name):
     return f"{name}: {', '.join(filled)}" if filled else None
 
 
+def y_crash(symbol):
+    """급락률: 최근 52주 일봉에서 5거래일 안에 가장 크게 떨어진 구간(%)"""
+    url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?range=1y&interval=1d"
+    js = None
+    for _ in range(3):
+        try:
+            js = json.load(urllib.request.urlopen(urllib.request.Request(url, headers=YUA), timeout=30))
+            break
+        except Exception:
+            time.sleep(1.5)
+    try:
+        res = js["chart"]["result"][0]
+        pts = [(t, c) for t, c in zip(res["timestamp"], res["indicators"]["quote"][0]["close"]) if c]
+    except Exception:
+        return None
+    if len(pts) < 30:
+        return None
+    day = lambda t: time.strftime("%Y-%m-%d", time.gmtime(t + 9 * 3600))
+    best = None
+    for i in range(len(pts)):
+        for j in range(i + 1, min(i + 6, len(pts))):
+            v = (pts[j][1] / pts[i][1] - 1) * 100
+            if best is None or v < best[0]:
+                best = (v, i, j)
+    v, i, j = best
+    return {"pct": v, "from": day(pts[i][0]), "to": day(pts[j][0]), "fromPrice": pts[i][1], "toPrice": pts[j][1], "rangeFrom": day(pts[0][0]), "rangeTo": day(pts[-1][0])}
+
+
+def refresh_stale_kr(items):
+    """DART에 더 새 정기보고서(recent.stlmDt)가 나왔는데 분기·EPS·부채가 그 전 기준이면 지워서 다시 채우게 함"""
+    n = 0
+    for i in items:
+        latest = (i.get("recent") or {}).get("stlmDt")
+        if not latest:
+            continue
+        for k in ("quarter", "eps", "debt"):
+            v = i.get(k) or {}
+            if v.get("dateTo") and str(v["dateTo"])[:10] < latest:
+                i.pop(k, None)
+                n += 1
+    return n
+
+
 def run_kr():
     data = json.load(open(KR_FILE, encoding="utf-8-sig"))
     items = data["items"]
+    print("새 보고서로 다시 채울 항목", refresh_stale_kr(items), flush=True)
+    # 급락률은 시세 기반이라 매일 새로 계산(2026-10-06)
+    with ThreadPoolExecutor(4) as ex:
+        crashes = list(ex.map(lambda i: y_crash(i["symbol"]), items))
+    ok = 0
+    for i, c in zip(items, crashes):
+        if c:
+            i["crash"] = c
+            ok += 1
+    print("급락률 갱신", ok, "/", len(items), flush=True)
     todo = [i for i in items if (i.get("quarter") or {}).get("revenue") is None or (i.get("quarter") or {}).get("netIncome") is None or (i.get("debt") or {}).get("changePp") is None or (i.get("eps") or {}).get("current") is None]
     print("한국 보완 대상", len(todo), flush=True)
     with ThreadPoolExecutor(4) as ex:
