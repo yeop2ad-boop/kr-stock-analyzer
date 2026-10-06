@@ -3728,3 +3728,34 @@ table.top30-table.atg-table th:nth-child(2) { width: 84px; }
 .atg-crit-btn-row { display: flex; justify-content: flex-end; margin: 2px 0 6px; }
 .atg-scale .atg-seg { min-width: 54px; }
 .atg-scale .atg-seg b { white-space: nowrap; font-size: 12px; }
+
+/* ---------- 투자분석 A안(랭킹 리스트형, 2026-10-07) ---------- */
+.ia-a .ia-top { display: flex; align-items: center; gap: 8px; margin: 4px 0 10px; }
+.ia-pills { flex: 1; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.ia-pill { flex: none; padding: 6px 12px; border: none; border-radius: 999px; background: transparent; color: var(--muted); font-size: 13.5px; font-weight: 600; cursor: pointer; }
+.ia-pill.active { background: var(--text); color: var(--bg); }
+.ia-a .ia-table-btn { position: static; flex: none; }
+.ia-hero { margin: 2px 2px 4px; }
+.ia-hero-name { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 14px; font-weight: 600; color: var(--text); }
+.ia-hero-name i { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+.ia-hero-name .muted { font-weight: 500; font-size: 12.5px; }
+.ia-hero-ret { margin: 2px 0 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+.ia-hero-ret .wl-up { color: var(--pos); }
+.ia-hero-ret .wl-down { color: var(--neg); }
+.ia-a .ia-chart-box { padding: 6px 2px 2px; border: none; background: transparent; }
+.ia-dim { stroke: var(--muted); stroke-opacity: 0.35; }
+.ia-rank { margin-top: 6px; border-top: 1px solid var(--rk-line); }
+.ia-rank-row { display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px 4px; border: none; border-bottom: 1px solid var(--rk-line); background: none; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+.ia-rank-row.sel { background: color-mix(in srgb, var(--ia-c) 8%, transparent); }
+.ia-rank-no { flex: none; width: 20px; text-align: center; font-size: 14px; font-weight: 800; color: var(--muted); }
+.ia-rank-row.sel .ia-rank-no { color: var(--ia-c); }
+.ia-rank-row.pf .ia-rank-no { color: #1c7ed6; }
+.ia-rank-name { flex: 1; min-width: 0; display: flex; align-items: center; gap: 5px; font-size: 15.5px; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ia-rank-row.pf .ia-rank-name { color: #1c7ed6; }
+.ia-rank-ret { flex: none; font-size: 15.5px; font-weight: 700; }
+.ia-rank-ret .wl-up { color: var(--pos); }
+.ia-rank-ret .wl-down { color: var(--neg); }
+.ia-rank-chev { flex: none; width: 14px; font-size: 11px; color: var(--muted); text-align: center; }
+.ia-detail { padding: 6px 2px 12px; border-bottom: 1px solid var(--rk-line); }
+.ia-detail-actions { display: flex; gap: 6px; justify-content: flex-end; margin: 0 0 6px; }
+.ia-add-row { display: block; width: 100%; margin: 12px 0 4px; padding: 11px; border: 1px dashed var(--border); border-radius: 10px; background: none; color: var(--accent); font-size: 14px; font-weight: 700; cursor: pointer; }

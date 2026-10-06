@@ -20505,7 +20505,7 @@ const IA_SECTION_LABEL = { kr: "한국주식", us: "미국주식", etf: "ETF", c
 const IA_PF_KEY = "invest_analysis_portfolios_v1";
 const IA_PF_COLORS = ["#1971c2", "#4dabf7", "#3b5bdb", "#74c0fc", "#1864ab"]; // 내 포트폴리오는 파란 계열
 const IA_KST = 9 * 3600;
-const iaState = { range: "1y", table: false, hidden: new Set(), expanded: new Set(), seq: 0, ctx: null, plot: null };
+const iaState = { range: "1y", table: false, expanded: new Set(), selected: null, userPicked: false, openDetail: null, seq: 0, ctx: null, plot: null };
 const iaChartCache = new Map();
 const iaRangeCache = new Map();
 const iaQuoteCache = new Map();
@@ -20582,7 +20582,12 @@ async function renderInvestAnalysis() {
   const results = el("analysisResults");
   if (!status || !results) return;
   const sec = iaCurrentSection();
-  if (!results.innerHTML || (iaState.ctx && iaState.ctx.sec !== sec)) results.innerHTML = "";
+  if (!results.innerHTML || (iaState.ctx && iaState.ctx.sec !== sec)) {
+    results.innerHTML = "";
+    iaState.selected = null;
+    iaState.userPicked = false;
+    iaState.openDetail = null;
+  }
   status.style.display = "block";
   status.textContent = "투자방법별 수익을 불러오는 중...";
   let ctx;
@@ -20601,38 +20606,32 @@ async function renderInvestAnalysis() {
   iaState.ctx = ctx;
   results.innerHTML = iaShellHtml(ctx);
   iaBindShell(results);
+  iaRenderHeroAndRank(null);
   iaDrawChart();
-  iaObserveRows(results);
 }
 
+// 2026-10-07 사용자 선택(A안 · 랭킹 리스트형): 기간 칩 → 선택한 투자방법 이름·수익률 크게 → 그 선만 진하게(나머지 회색) →
+// 수익률 순위 목록(내 포트폴리오는 ★로 순위 사이에). 줄을 누르면 그 선이 진해지고 바로 아래에 구성종목이 펼쳐진다.
 function iaShellHtml(ctx) {
   const dateStr = ctx.db && ctx.db.generatedAt ? String(ctx.db.generatedAt).slice(0, 10) : "-";
-  const rangeBtns = IA_RANGES.map((r) => `<button type="button" class="cat-btn${r.key === iaState.range ? " active" : ""}" data-ia-range="${r.key}">${r.label}</button>`).join("");
+  const pills = IA_RANGES.map((r) => `<button type="button" class="ia-pill${r.key === iaState.range ? " active" : ""}" data-ia-range="${r.key}">${r.label}</button>`).join("");
   return `
-    <div class="ia-wrap" data-sec="${ctx.sec}">
-      <div class="ia-legend" id="iaLegend">${iaLegendHtml(ctx)}</div>
-      <div class="ia-chart-box">
+    <div class="ia-wrap ia-a" data-sec="${ctx.sec}">
+      <div class="ia-top">
+        <div class="ia-pills" id="iaRangeNav">${pills}</div>
         <button type="button" class="ia-table-btn${iaState.table ? " active" : ""}" id="iaTableBtn" aria-label="표로 보기" title="표로 보기">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9.5h18M3 15h18M9.5 4v16"/></svg>
         </button>
+      </div>
+      <div class="ia-hero" id="iaHero"${iaState.table ? ' style="display:none;"' : ""}></div>
+      <div class="ia-chart-box">
         <div class="ia-chart" id="iaChart"></div>
         <div class="ia-tip" id="iaTip" style="display:none;"></div>
       </div>
-      <div class="top30-sub-nav ia-range-nav" id="iaRangeNav"${iaState.table ? ' style="display:none;"' : ""}>${rangeBtns}</div>
-      <p class="tap-hint">* 위 이름을 누르면 그 선을 끄고 켤 수 있습니다. 왼쪽 위 표 버튼을 누르면 기간별 수익률을 표로 봅니다.</p>
-      <div id="iaBlocks">${ctx.lines.map((l) => iaBlockHtml(l, ctx.sec)).join("")}</div>
+      <div class="ia-rank" id="iaRank"></div>
+      <button type="button" class="ia-add-row" id="iaAddBtn">+ 내 포트폴리오 추가</button>
       <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 모든 그래프는 기간 시작을 100으로 둔 수익 지수입니다. 투자방법 구성종목·1년/5년/최대(10년) 그래프는 ${dateStr} 배치 기준이고, 1일·1주·1달은 실시간(바구니형은 비중 상위 10종목)으로 계산합니다. 바구니형 투자방법은 <b>지금 고른 종목</b>을 그 비중으로 계속 들고 있었다고 가정한 값이라 과거 성적이 부풀려지는 생존편향이 있고, 상장 10년이 안 된 종목은 상장 시점부터 더해집니다. 수수료·세금·배당은 반영하지 않았으며 투자 자문이 아닙니다.</p>
     </div>`;
-}
-function iaLegendHtml(ctx) {
-  const items = ctx.lines
-    .map(
-      (l) => `<button type="button" class="ia-legend-item${iaState.hidden.has(l.id) ? " off" : ""}${l.kind === "portfolio" ? " pf" : ""}" data-ia-line="${escapeHtml(l.id)}">
-        <i style="background:${l.color};"></i>${l.kind === "portfolio" ? iaSectionMarkHtml(ctx.sec) : ""}<span class="ia-legend-name">${escapeHtml(l.label)}</span><span class="ia-legend-ret" data-ia-ret="${escapeHtml(l.id)}"></span>
-      </button>`
-    )
-    .join("");
-  return `${items}<button type="button" class="ia-legend-add" id="iaAddBtn">+추가하기</button>`;
 }
 function iaFmtWeight(w) {
   const n = Number(w);
@@ -20652,32 +20651,69 @@ function iaHoldingRowHtml(h) {
       <td><b class="rank-hl">${iaFmtWeight(h.w)}%</b></td>
     </tr>`;
 }
-function iaBlockHtml(line, sec) {
+// 순위 목록에서 펼친 줄 아래 — 설명 · 구성종목(기업명·현재가·비중, 10개 → +더보기 30개) · 내 포트폴리오면 편집/삭제
+function iaDetailHtml(line) {
   const expanded = iaState.expanded.has(line.id);
   const list = line.kind === "portfolio" ? [...line.holdings].sort((a, b) => b.w - a.w) : line.holdings;
   const shown = list.slice(0, expanded ? 30 : 10);
   const total = Math.min(30, list.length);
-  const head = `<div class="ia-block-head">
-      <i class="ia-dot" style="background:${line.color};"></i>
-      ${line.kind === "portfolio" ? iaSectionMarkHtml(sec) : ""}
-      <b class="ia-block-title">${escapeHtml(line.label)}</b>
-      <span class="ia-block-ret" data-ia-ret="${escapeHtml(line.id)}"></span>
-      ${
-        line.kind === "portfolio"
-          ? `<span class="ia-block-actions"><button type="button" class="ia-mini-btn" data-ia-edit="${escapeHtml(line.pfId)}">편집</button><button type="button" class="ia-mini-btn danger" data-ia-del="${escapeHtml(line.pfId)}">삭제</button></span>`
-          : ""
-      }
-    </div>`;
-  const note = line.note ? `<p class="ia-block-note">${escapeHtml(line.note)}</p>` : "";
-  const table = `<table class="top30-table rk-table ia-table">
-      <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}<th data-explain="비중 — 이 투자방법(또는 내 포트폴리오) 안에서 그 종목이 차지하는 비율입니다. 투자방법은 시가총액 비중(지수형은 지수 전체 대비), 내 포트폴리오는 직접 정한 값입니다.">비중</th></tr></thead>
-      <tbody>${shown.map((h) => iaHoldingRowHtml(h)).join("")}</tbody>
-    </table>`;
-  const more =
-    list.length > 10
-      ? `<button type="button" class="cat-btn load-more-btn ia-more-btn" data-ia-more="${escapeHtml(line.id)}">${expanded ? "− 접기" : `+더보기 (${total}종목)`}</button>`
+  const actions =
+    line.kind === "portfolio"
+      ? `<div class="ia-detail-actions"><button type="button" class="ia-mini-btn" data-ia-edit="${escapeHtml(line.pfId)}">편집</button><button type="button" class="ia-mini-btn danger" data-ia-del="${escapeHtml(line.pfId)}">삭제</button></div>`
       : "";
-  return `<section class="ia-block${line.kind === "portfolio" ? " ia-block-pf" : ""}" data-ia-block="${escapeHtml(line.id)}">${head}${note}${table}${more}</section>`;
+  return `<div class="ia-detail">
+      ${line.note ? `<p class="ia-block-note">${escapeHtml(line.note)}</p>` : ""}
+      ${actions}
+      <table class="top30-table rk-table ia-table">
+        <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}<th data-explain="비중 — 이 투자방법(또는 내 포트폴리오) 안에서 그 종목이 차지하는 비율입니다. 투자방법은 시가총액 비중(지수형은 지수 전체 대비), 내 포트폴리오는 직접 정한 값입니다.">비중</th></tr></thead>
+        <tbody>${shown.map((h) => iaHoldingRowHtml(h)).join("")}</tbody>
+      </table>
+      ${list.length > 10 ? `<button type="button" class="cat-btn load-more-btn ia-more-btn" data-ia-more="${escapeHtml(line.id)}">${expanded ? "− 접기" : `+더보기 (${total}종목)`}</button>` : ""}
+    </div>`;
+}
+// 지금 기간의 수익률 순서 — 값이 없는 선은 맨 뒤
+function iaRankedLines(data) {
+  const ctx = iaState.ctx;
+  const ret = (l) => {
+    const v = data ? iaReturnOf(data.get(l.id)) : null;
+    return Number.isFinite(v) ? v : -Infinity;
+  };
+  return ctx.lines.slice().sort((a, b) => ret(b) - ret(a));
+}
+function iaRenderHeroAndRank(data) {
+  const ctx = iaState.ctx;
+  if (!ctx) return;
+  const ranked = iaRankedLines(data);
+  // 직접 고르기 전까지는 그 기간 1위를 보여준다(수익률이 도착한 뒤에만 정함)
+  if (data && (!iaState.userPicked || !ctx.lines.some((l) => l.id === iaState.selected))) iaState.selected = ranked[0] && ranked[0].id;
+  const sel = ctx.lines.find((l) => l.id === iaState.selected);
+  const hero = el("iaHero");
+  if (hero && !sel) hero.innerHTML = `<p class="ia-hero-name muted">수익률을 계산하는 중...</p><p class="ia-hero-ret">&nbsp;</p>`;
+  if (hero && sel) {
+    const v = data ? iaReturnOf(data.get(sel.id)) : null;
+    const rangeLabel = (IA_RANGES.find((r) => r.key === iaState.range) || {}).label || "";
+    hero.innerHTML = `<p class="ia-hero-name"><i style="background:${sel.color};"></i>${sel.kind === "portfolio" ? "★ " : ""}${escapeHtml(sel.label)} <span class="muted">· ${rangeLabel}</span></p>
+      <p class="ia-hero-ret">${iaPctHtml(v)}</p>`;
+  }
+  let no = 0;
+  const rows = ranked
+    .map((l) => {
+      const isPf = l.kind === "portfolio";
+      if (!isPf) no++;
+      const v = data ? iaReturnOf(data.get(l.id)) : null;
+      const isSel = l.id === iaState.selected;
+      const open = isSel && iaState.openDetail === l.id;
+      return `<button type="button" class="ia-rank-row${isSel ? " sel" : ""}${isPf ? " pf" : ""}" data-ia-line="${escapeHtml(l.id)}" style="--ia-c:${l.color};">
+          <span class="ia-rank-no">${isPf ? "★" : no}</span>
+          <span class="ia-rank-name">${isPf ? iaSectionMarkHtml(ctx.sec) : ""}${escapeHtml(l.label)}</span>
+          <span class="ia-rank-ret">${data ? iaPctHtml(v) : `<span class="muted">…</span>`}</span>
+          <span class="ia-rank-chev">${open ? "▴" : "▾"}</span>
+        </button>${open ? iaDetailHtml(l) : ""}`;
+    })
+    .join("");
+  const rank = el("iaRank");
+  if (rank) rank.innerHTML = rows;
+  iaObserveRows(el("analysisResults"));
 }
 
 function iaBindShell(root) {
@@ -20689,21 +20725,28 @@ function iaBindShell(root) {
       iaDrawChart();
       return;
     }
-    const lg = e.target.closest("[data-ia-line]");
-    if (lg) {
-      const id = lg.dataset.iaLine;
-      const ctx = iaState.ctx;
-      if (iaState.hidden.has(id)) iaState.hidden.delete(id);
-      else if (ctx && ctx.lines.filter((l) => !iaState.hidden.has(l.id)).length > 1) iaState.hidden.add(id); // 최소 1개는 남김
-      lg.classList.toggle("off", iaState.hidden.has(id));
-      if (!iaState.table) iaDrawChart();
+    const row = e.target.closest(".ia-rank-row");
+    if (row) {
+      const id = row.dataset.iaLine;
+      // 같은 줄을 다시 누르면 구성종목만 접고 펼침, 다른 줄이면 그 선을 고르고 펼침
+      iaState.userPicked = true;
+      if (iaState.selected === id) iaState.openDetail = iaState.openDetail === id ? null : id;
+      else {
+        iaState.selected = id;
+        iaState.openDetail = id;
+      }
+      iaRenderHeroAndRank(iaState.lastData);
+      if (!iaState.table && iaState.lastData) {
+        el("iaChart").innerHTML = iaChartSvg(iaState.ctx, iaState.lastData, iaState.range);
+        iaBindCrosshair();
+      }
       return;
     }
     if (e.target.closest("#iaAddBtn")) return iaOpenAddChoice();
     if (e.target.closest("#iaTableBtn")) {
       iaState.table = !iaState.table;
       el("iaTableBtn").classList.toggle("active", iaState.table);
-      el("iaRangeNav").style.display = iaState.table ? "none" : "";
+      el("iaHero").style.display = iaState.table ? "none" : "";
       iaDrawChart();
       return;
     }
@@ -20712,13 +20755,7 @@ function iaBindShell(root) {
       const id = more.dataset.iaMore;
       if (iaState.expanded.has(id)) iaState.expanded.delete(id);
       else iaState.expanded.add(id);
-      const line = iaState.ctx.lines.find((l) => l.id === id);
-      const block = root.querySelector(`[data-ia-block="${CSS.escape(id)}"]`);
-      if (line && block) {
-        block.outerHTML = iaBlockHtml(line, iaState.ctx.sec);
-        iaPaintReturns(iaState.lastData);
-        iaObserveRows(root);
-      }
+      iaRenderHeroAndRank(iaState.lastData);
       return;
     }
     const ed = e.target.closest("[data-ia-edit]");
@@ -20902,13 +20939,6 @@ function iaPctHtml(v) {
   const cls = r > 0 ? "wl-up" : r < 0 ? "wl-down" : "";
   return `<span class="${cls}">${r > 0 ? "+" : ""}${r.toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%</span>`;
 }
-function iaPaintReturns(data) {
-  if (!data) return;
-  document.querySelectorAll("[data-ia-ret]").forEach((node) => {
-    const s = data.get(node.dataset.iaRet);
-    node.innerHTML = s ? iaPctHtml(iaReturnOf(s)) : "";
-  });
-}
 
 // ---------- 그래프 ----------
 async function iaDrawChart() {
@@ -20923,8 +20953,8 @@ async function iaDrawChart() {
   const data = await iaComputeRange(rk);
   if (seq !== iaState.seq || rk !== iaState.range || iaState.table || !el("iaChart")) return;
   iaState.lastData = data;
+  iaRenderHeroAndRank(data); // 선택(기본 = 이 기간 1위)이 정해진 뒤에 그래프를 그린다
   el("iaChart").innerHTML = iaChartSvg(ctx, data, rk);
-  iaPaintReturns(data);
   iaBindCrosshair();
 }
 function iaFmtTime(t, rk) {
@@ -20945,7 +20975,7 @@ function iaChartSvg(ctx, data, rk) {
   const PW = W - ML - MR;
   const PH = H - MT - MB;
   const crypto = ctx.sec === "crypto";
-  const vis = ctx.lines.filter((l) => !iaState.hidden.has(l.id) && data.get(l.id) && data.get(l.id).pts.length >= 2);
+  const vis = ctx.lines.filter((l) => data.get(l.id) && data.get(l.id).pts.length >= 2);
   if (!vis.length) {
     iaState.plot = null;
     return `<div class="ia-chart-loading">표시할 시세가 없습니다. 휴장 중이거나 시세 조회에 실패했을 수 있어요.</div>`;
@@ -21020,17 +21050,24 @@ function iaChartSvg(ctx, data, rk) {
     if (!Number.isFinite(a.t)) return;
     grid += `<text class="ia-axis" x="${a.x.toFixed(1)}" y="${H - 6}" text-anchor="${i === 0 ? "start" : i === axisTimes.length - 1 ? "end" : "middle"}">${iaFmtTime(a.t, rk)}</text>`;
   });
-  // 포트폴리오(파란 선)는 맨 위에 그리도록 뒤로 보냄
-  const order = [...vis.filter((l) => l.kind !== "portfolio"), ...vis.filter((l) => l.kind === "portfolio")];
+  // A안(2026-10-07): 고른 선만 제 색으로 굵게 맨 위에, 나머지는 옅은 회색(내 포트폴리오는 옅은 파랑 점선)
+  const order = [...vis.filter((l) => l.id !== iaState.selected), ...vis.filter((l) => l.id === iaState.selected)];
   const plotLines = [];
   let paths = "";
   order.forEach((l) => {
     const pts = data.get(l.id).pts.map(([t, v]) => ({ t, v, x: xOf(l, t), y: yOf(v) }));
     plotLines.push({ line: l, pts });
     const d = pts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
-    paths += `<path d="${d}" fill="none" stroke="${l.color}" stroke-width="${l.kind === "portfolio" ? 2.6 : 1.7}" stroke-linejoin="round" stroke-linecap="round" />`;
-    const last = pts[pts.length - 1];
-    paths += `<circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="2.6" fill="${l.color}" />`;
+    const sel = l.id === iaState.selected;
+    if (sel) {
+      paths += `<path d="${d}" fill="none" stroke="${l.color}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" />`;
+      const last = pts[pts.length - 1];
+      paths += `<circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="3.2" fill="${l.color}" />`;
+    } else if (l.kind === "portfolio") {
+      paths += `<path d="${d}" fill="none" stroke="#74c0fc" stroke-width="1.4" stroke-dasharray="3 3" stroke-linejoin="round" />`;
+    } else {
+      paths += `<path class="ia-dim" d="${d}" fill="none" stroke-width="1.2" stroke-linejoin="round" />`;
+    }
   });
   iaState.plot = { lines: plotLines, ML, PW, MT, PH, W, H, rk };
   return `<svg class="ia-svg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="투자방법별 수익 지수 그래프">
@@ -21116,7 +21153,10 @@ function iaDrawTable() {
         const cell = box.querySelector(`[data-ia-cell="${CSS.escape(id + "|" + r.key)}"]`);
         if (cell) cell.innerHTML = iaPctHtml(iaReturnOf(s));
       });
-      if (r.key === iaState.range) iaPaintReturns(data);
+      if (r.key === iaState.range) {
+        iaState.lastData = data;
+        iaRenderHeroAndRank(data);
+      }
     })
   );
 }
@@ -21335,7 +21375,8 @@ function iaOpenEditor(pf) {
     if (i >= 0) list[i] = rec;
     else list.push(rec);
     iaSavePortfolios(list);
-    iaState.hidden.delete(`pf:${rec.id}`);
+    iaState.selected = `pf:${rec.id}`; // 방금 만든 포트폴리오를 골라 둠
+    iaState.userPicked = true;
     iaCloseSheet();
     showToast(`'${name}' 포트폴리오를 저장했습니다`);
     renderInvestAnalysis();
