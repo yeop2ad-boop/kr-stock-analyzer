@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-06T02:11:29Z",
-  "dateKst": "2026-10-06",
+  "generatedAt": "2026-10-06T15:03:31Z",
+  "dateKst": "2026-10-07",
   "us": {
     "dateKst": "2026-10-06",
     "day": [
@@ -28857,7 +28857,7 @@
     }
   },
   "kr": {
-    "dateKst": "2026-10-06",
+    "dateKst": "2026-10-07",
     "day": [
       {
         "key": "prevMonthDown",
@@ -28949,7 +28949,7 @@
       },
       {
         "key": "roe",
-        "n": 348,
+        "n": 347,
         "top": 12,
         "bot": 14,
         "tot": 26,
@@ -28970,6 +28970,17 @@
         "rankN": 100
       },
       {
+        "key": "operatingMargin",
+        "n": 325,
+        "top": 11,
+        "bot": 14,
+        "tot": 25,
+        "exp": 15.4,
+        "max": 100,
+        "topN": 50,
+        "rankN": 100
+      },
+      {
         "key": "week52Low",
         "n": 350,
         "top": 4,
@@ -28981,34 +28992,23 @@
         "rankN": 100
       },
       {
-        "key": "marketCap",
-        "n": 348,
-        "top": 13,
-        "bot": 11,
-        "tot": 24,
-        "exp": 14.4,
-        "max": 100,
-        "topN": 50,
-        "rankN": 100
-      },
-      {
-        "key": "operatingMargin",
-        "n": 326,
-        "top": 11,
-        "bot": 13,
-        "tot": 24,
-        "exp": 15.3,
-        "max": 100,
-        "topN": 50,
-        "rankN": 100
-      },
-      {
         "key": "prevMonthUp",
         "n": 350,
         "top": 23,
         "bot": 1,
         "tot": 24,
         "exp": 14.3,
+        "max": 100,
+        "topN": 50,
+        "rankN": 100
+      },
+      {
+        "key": "marketCap",
+        "n": 348,
+        "top": 12,
+        "bot": 11,
+        "tot": 23,
+        "exp": 14.4,
         "max": 100,
         "topN": 50,
         "rankN": 100
@@ -29026,7 +29026,7 @@
       },
       {
         "key": "debtRatio",
-        "n": 348,
+        "n": 347,
         "top": 11,
         "bot": 9,
         "tot": 20,
@@ -29072,7 +29072,7 @@
       },
       {
         "key": "debtRatio",
-        "n": 348,
+        "n": 347,
         "top": 18,
         "bot": 19,
         "tot": 37,
@@ -29105,11 +29105,11 @@
       },
       {
         "key": "operatingMargin",
-        "n": 326,
+        "n": 325,
         "top": 16,
-        "bot": 10,
-        "tot": 26,
-        "exp": 15.3,
+        "bot": 11,
+        "tot": 27,
+        "exp": 15.4,
         "max": 100,
         "topN": 50,
         "rankN": 100
@@ -29138,7 +29138,7 @@
       },
       {
         "key": "roe",
-        "n": 348,
+        "n": 347,
         "top": 11,
         "bot": 11,
         "tot": 22,
@@ -29261,11 +29261,11 @@
       },
       {
         "key": "operatingMargin",
-        "n": 326,
+        "n": 325,
         "top": 21,
         "bot": 11,
         "tot": 32,
-        "exp": 15.3,
+        "exp": 15.4,
         "max": 100,
         "topN": 50,
         "rankN": 100
@@ -29283,7 +29283,7 @@
       },
       {
         "key": "debtRatio",
-        "n": 348,
+        "n": 347,
         "top": 19,
         "bot": 11,
         "tot": 30,
@@ -29305,7 +29305,7 @@
       },
       {
         "key": "roe",
-        "n": 348,
+        "n": 347,
         "top": 18,
         "bot": 9,
         "tot": 27,
@@ -29361,9 +29361,9 @@
       {
         "key": "dividendYield",
         "n": 348,
-        "top": 2,
+        "top": 1,
         "bot": 16,
-        "tot": 18,
+        "tot": 17,
         "exp": 14.4,
         "max": 100,
         "topN": 50,
@@ -29428,10 +29428,10 @@
       },
       {
         "key": "roe",
-        "n": 348,
-        "top": 28,
+        "n": 347,
+        "top": 27,
         "bot": 22,
-        "tot": 50,
+        "tot": 49,
         "exp": 14.4,
         "max": 100,
         "topN": 50,
@@ -29450,11 +29450,11 @@
       },
       {
         "key": "operatingMargin",
-        "n": 326,
+        "n": 325,
         "top": 23,
         "bot": 19,
         "tot": 42,
-        "exp": 15.3,
+        "exp": 15.4,
         "max": 100,
         "topN": 50,
         "rankN": 100
@@ -29515,10 +29515,21 @@
         "rankN": 100
       },
       {
+        "key": "per",
+        "n": 278,
+        "top": 12,
+        "bot": 16,
+        "tot": 28,
+        "exp": 18.0,
+        "max": 100,
+        "topN": 50,
+        "rankN": 100
+      },
+      {
         "key": "marketCap",
         "n": 348,
-        "top": 12,
-        "bot": 15,
+        "top": 13,
+        "bot": 14,
         "tot": 27,
         "exp": 14.4,
         "max": 100,
@@ -29526,19 +29537,8 @@
         "rankN": 100
       },
       {
-        "key": "per",
-        "n": 278,
-        "top": 12,
-        "bot": 15,
-        "tot": 27,
-        "exp": 18.0,
-        "max": 100,
-        "topN": 50,
-        "rankN": 100
-      },
-      {
         "key": "debtRatio",
-        "n": 348,
+        "n": 347,
         "top": 18,
         "bot": 5,
         "tot": 23,
