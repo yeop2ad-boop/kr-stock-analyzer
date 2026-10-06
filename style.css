@@ -3705,3 +3705,6 @@ table.top30-table.atg-table th:nth-child(2) { width: 84px; }
 .atg-g i { font-size: 9.5px; }
 .atg-table td.atg-rate { padding-left: 2px; padding-right: 2px; }
 .atg-rating { padding: 4px 7px; font-size: 13px; }
+/* 상단 탭 ★관심종목(2026-10-06) */
+.fh-tab-watch { display: inline-flex; align-items: center; gap: 3px; }
+.fh-tab-watch .fh-tab-icon { flex: none; color: #f6b301; }

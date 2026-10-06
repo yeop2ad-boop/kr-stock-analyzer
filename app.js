@@ -2835,7 +2835,8 @@ el("morePanelWatchlistBtn").addEventListener("click", () => {
   syncSectionHeader();
 });
 // 우측 상단 별 아이콘(2026-09-01 부활) — 어느 섹션에서든 통합 관심종목 화면으로 이동(지도의 별과 동일한 역할)
-el("fhWatchlistBtn").addEventListener("click", () => {
+// 상단 별은 2026-10-06 삭제(상단 탭 "★관심종목"이 대신함) — 버튼이 없으면 연결하지 않음
+if (el("fhWatchlistBtn")) el("fhWatchlistBtn").addEventListener("click", () => {
   showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist")));
 });
 // 현재 섹션(한국주식/미국주식/ETF/비트코인)에 해당하는 하단 네비 버튼 키 — 상단 탭 전환 시 하단 active 유지용(2026-09-02)
@@ -2859,12 +2860,8 @@ document.querySelectorAll(".fh-tab").forEach((btn) => {
       showOnlyCarouselView(() =>
         appSectionMode === "etf" ? openEtfMetricTab(metric) : appSectionMode === "crypto" ? openCryptoMetricTab(metric) : openStockMetricTab(metric)
       );
-    } else if (key === "tab.findmap") {
-      // 종목찾기(2026-10-06): 마켓맵(지도)으로 이동 — 지금 보던 투자처의 지도부터 연다
-      const market = appSectionMode === "etf" ? "etf" : appSectionMode === "crypto" ? "crypto" : getWatchlistActiveMarket() === "KR" ? "domestic" : "overseas";
-      window.location.href = `sector-map/index.html?market=${market}`;
-      return;
-    } else if (key === "tab.analysis") showOnlyCarouselView(() => openInvestAnalysis());
+    } else if (key === "tab.watchlist") showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist")));
+    else if (key === "tab.analysis") showOnlyCarouselView(() => openInvestAnalysis());
     else if (key === "tab.ipo") showOnlyCarouselView(() => openIpoList());
     else if (key === "tab.popular") showOnlyCarouselView(() => openPopularStocks());
     else if (key === "tab.autotrack") showOnlyCarouselView(() => openAutoTrack());
@@ -2922,7 +2919,7 @@ function refreshTopRankingView() {
     return false;
   };
   const visibleTabs = () =>
-    [...document.querySelectorAll("#fhTabs .fh-tab")].filter((b) => b.dataset.fhtab !== "tab.findmap" && b.style.display !== "none" && getComputedStyle(b).display !== "none");
+    [...document.querySelectorAll("#fhTabs .fh-tab")].filter((b) => b.style.display !== "none" && getComputedStyle(b).display !== "none");
   const setPanelX = (px, transition) => {
     panel.style.transition = transition || "none";
     panel.style.transform = `translateX(${px}px)`;
@@ -3171,7 +3168,6 @@ const I18N = {
   "tab.trend": { ko: "시장분석", en: "Market" }, // 2026-09-11 사용자 요청: 미래예측→시장분석
   "tab.ipo": { ko: "IPO", en: "IPO" }, // 2026-09-11: 최근 5년 신규 상장
   "tab.analysis": { ko: "투자분석", en: "Analysis" }, // 2026-10-06: 투자방법별 수익 비교 + 내 포트폴리오
-  "tab.findmap": { ko: "종목찾기", en: "Map" }, // 2026-10-06: 마켓맵(지도)으로 이동
   // ETF 전용 상단 탭(2026-09-11 사용자 요청) — 시장분석·인사이트를 빼고 그 안에 있던 항목들을 위로 올림
   "tab.etfWinrate": { ko: "승률", en: "Win rate" },
   "tab.etfReturn": { ko: "수익률", en: "Return" },
@@ -5466,12 +5462,7 @@ function syncSectionHeader() {
   const label = el("fhMarketLabel");
   const flag = el("fhMarketFlag");
   const isKr = getWatchlistActiveMarket() === "KR";
-  // 관심종목 화면에선 섹션 대신 "관심종목" 제목 + 별 아이콘(2026-09-01 사용자 요청)
-  if (window.__onWatchlistView && label && flag) {
-    label.textContent = "관심종목";
-    flag.innerHTML = ICON_SVG_WATCHLIST;
-    return;
-  }
+  // (2026-10-06) 관심종목이 상단 탭(투자처별)이 되면서 제목은 관심종목 화면에서도 투자처 이름을 그대로 보여준다
   if (label && flag) {
     if (appSectionMode === "etf") {
       label.textContent = "ETF";
@@ -5488,14 +5479,15 @@ function syncSectionHeader() {
     const b = document.querySelector(`.fh-tab[data-fhtab="${key}"]`);
     if (b) b.style.display = show ? "" : "none";
   };
-  // 2026-10-06 사용자 요청: 투자처와 상관없이 인기종목 - 투자분석 - (지도)종목찾기 3개만 남김.
+  // 2026-10-06 사용자 요청: 투자처와 상관없이 인기종목 - 투자분석 - 자동추적 - ★관심종목 4개만 남김(종목찾기 탭 삭제).
   // 승률·수익률·변동성·배당률·운용보수·최대낙폭·IPO 화면은 지우지 않고(핵심지표 +순위 등이 그대로 씀) 탭만 숨긴다.
   ["tab.valuation", "tab.trend", "tab.insight", "tab.ipo", "tab.etfWinrate", "tab.etfReturn", "tab.etfVolatility", "tab.etfDividend", "tab.etfFee", "tab.cryptoCap", "tab.cryptoDrawdown"].forEach((k) =>
     showTab(k, false)
   );
   showTab("tab.popular", true);
   showTab("tab.analysis", true);
-  showTab("tab.findmap", true);
+  showTab("tab.autotrack", true);
+  showTab("tab.watchlist", true);
   // 인사이트 하위 보기도 투자처마다 다름(ETF=변동성 순위만, 비트코인=자산&투자사 제외) — 이 시점엔 인사이트
   // 상태 변수들이 아직 선언 전(TDZ)이라 syncDartTabForMarket과 같은 방식으로 커스텀 이벤트로 느슨하게 연결
   document.dispatchEvent(new CustomEvent("appsectionchange"));

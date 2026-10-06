@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20261006e" />
+<link rel="stylesheet" href="style.css?v=20261006j" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -68,10 +68,7 @@
         <button type="button" id="searchOpenBtn" class="header-icon-btn" aria-label="검색">
           <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15.2" y2="15.2"/></svg>
         </button>
-        <!-- 우측 상단 별: 통합 관심종목(국내/해외 구분 없음) 화면으로 이동(2026-09-01 부활) -->
-        <button type="button" id="fhWatchlistBtn" class="header-icon-btn" aria-label="관심종목">
-          <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z"/></svg>
-        </button>
+        <!-- 우측 상단 별(관심종목 이동)은 2026-10-06 사용자 요청으로 삭제 — 상단 탭 "★관심종목"으로 대체 -->
       </div>
     </div>
     <div class="fh-titleline">
@@ -82,10 +79,11 @@
         <!-- 2026-10-06 사용자 요청: 상단 탭은 인기종목 - 투자분석 - (지도)종목찾기 3개만. 투자분석은 투자방법별 수익 비교 + 내 포트폴리오,
              종목찾기는 마켓맵(지도)으로 이동. 나머지 탭(승률·수익률·변동성·배당률·IPO 등)은 JS가 참조하므로 DOM만 남기고 숨김 -->
         <button type="button" class="fh-tab" data-fhtab="tab.analysis" data-i18n="tab.analysis">투자분석</button>
-        <button type="button" class="fh-tab fh-tab-map" data-fhtab="tab.findmap" aria-label="종목찾기(마켓맵)"><svg class="fh-tab-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6.5V20l6-2.5 6 2.5 6-2.5V4l-6 2.5L9 4z"/><path d="M9 4v13.5M15 6.5V20"/></svg><span data-i18n="tab.findmap">종목찾기</span></button>
+        <!-- 2026-10-06 사용자 요청: 인기종목 - 투자분석 - 자동추적 - ★관심종목(종목찾기 탭은 삭제, 마켓맵은 더보기에서) -->
+        <button type="button" class="fh-tab" data-fhtab="tab.autotrack" data-i18n="tab.autotrack">자동추적</button>
+        <button type="button" class="fh-tab fh-tab-watch" data-fhtab="tab.watchlist" aria-label="관심종목"><svg class="fh-tab-icon" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z"/></svg><span data-i18n="tab.watchlist">관심종목</span></button>
         <!-- 자동추적: 상단 4탭(인기종목/기업가치/미래예측/인사이트)만 남기고 더보기 패널로 이동(2026-09-10 사용자 요청) —
              JS(openAutoTrack·setCarouselViewTitle)가 이 버튼을 참조하므로 DOM은 유지하고 숨김만 -->
-        <button type="button" class="fh-tab" data-fhtab="tab.autotrack" data-i18n="tab.autotrack" style="display:none;">자동추적</button>
         <button type="button" class="fh-tab active" data-fhtab="tab.valuation" data-i18n="tab.valuation">기업가치</button>
         <button type="button" class="fh-tab" data-fhtab="tab.etfWinrate" data-i18n="tab.etfWinrate" style="display:none;">승률</button>
         <button type="button" class="fh-tab" data-fhtab="tab.etfReturn" data-i18n="tab.etfReturn" style="display:none;">수익률</button>
@@ -958,6 +956,6 @@
   <script src="data/logo-db.js?v=20260903g"></script>
   <script src="data/etf-meta.js?v=20260912a"></script>
   <script src="winrate-benchmark.js?v=20261006h"></script>
-  <script src="app.js?v=20261006i"></script>
+  <script src="app.js?v=20261006j"></script>
 </body>
 </html>
