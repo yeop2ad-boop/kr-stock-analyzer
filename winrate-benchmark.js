@@ -14,51 +14,43 @@ const WINRATE_BENCHMARKS = [
   { name: "코스피 인버스x1", short: "코스피인버스", sub: "KODEX인버스", up: 48, down: 72, score: 40.0, color: "#17becf" },
   { name: "나스닥 인버스x1", short: "나스닥인버스", sub: "PSQ", up: 38, down: 82, score: 31.7, color: "#9467bd" },
 ];
-// 그래프(SVG 문자열)만 만든다 — 표·설명은 각 페이지가 자기 스타일로 붙인다
+// 그래프(SVG 문자열)만 만든다 — 표·설명은 각 페이지가 자기 스타일로 붙인다.
+// 2026-10-06 사용자 요청(마켓맵에서 깨짐·선 정리): 점+이름표(이름이 몰려 겹치고, 축 색이 본체 전용 변수라 마켓맵에선 안 보임)
+// → 가로 막대그래프. 위에서부터 예금·적금(100%) → 승률 높은 순, 50%(오른 달·내린 달 반반) 점선 기준선.
+// 글자·눈금은 currentColor라 흰 화면·검은 화면, 본체·마켓맵 어디서나 보인다.
 function buildWinRateBenchmarkSvg() {
   const escapeHtml = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
-  const X_ZERO = 16;
-  const X_HUNDRED = 350;
-  const X0 = 44;
-  const X1 = 318;
-  const MIN = 28;
-  const MAX = 85;
-  const AXIS_Y = 122;
-  const xOf = (score) => X0 + ((score - MIN) / (MAX - MIN)) * (X1 - X0);
-  const breakMark = (x) =>
-    `<line x1="${x - 5}" y1="${AXIS_Y + 5}" x2="${x - 1}" y2="${AXIS_Y - 5}" stroke="var(--muted)" stroke-width="1.4"/><line x1="${x + 1}" y1="${AXIS_Y + 5}" x2="${x + 5}" y2="${AXIS_Y - 5}" stroke="var(--muted)" stroke-width="1.4"/>`;
-  const DEPOSIT_COLOR = "#0f766e";
-  // 점수가 몰려 있어 이름표를 위 3단·아래 2단으로 번갈아 배치(리더 선으로 연결)
-  const tierYs = [98, 64, 30, 154, 190];
-  const dots = WINRATE_BENCHMARKS.map((b, i) => {
-    const x = xOf(b.score);
-    const tier = tierYs[i % tierYs.length];
-    const above = tier < AXIS_Y;
-    const labelY = above ? tier : tier + 4;
-    return `
-      <line x1="${x}" y1="${AXIS_Y}" x2="${x}" y2="${above ? tier + 16 : tier - 12}" stroke="${b.color}" stroke-width="1" stroke-dasharray="2 2" opacity="0.8"/>
-      <circle cx="${x}" cy="${AXIS_Y}" r="5" fill="${b.color}" stroke="#fff" stroke-width="1.4"/>
-      <text x="${x}" y="${labelY}" text-anchor="middle" font-size="14.5" font-weight="800" fill="${b.color}">${escapeHtml(b.short || b.name)}</text>
-      <text x="${x}" y="${labelY + 15}" text-anchor="middle" font-size="13" font-weight="700" fill="${b.color}">${b.score}%</text>`;
-  }).join("");
+  const rows = [{ name: "예금·적금", short: "예금·적금", score: 100, color: "#0f766e" }, ...WINRATE_BENCHMARKS.slice().sort((a, b) => b.score - a.score)];
+  const W = 360;
+  const LABEL_W = 92; // 이름 칸
+  const X0 = LABEL_W;
+  const X1 = W - 48; // 오른쪽 값 글자 자리
+  const ROW = 22;
+  const TOP = 22;
+  const H = TOP + rows.length * ROW + 6;
+  const xOf = (v) => X0 + (v / 100) * (X1 - X0);
+  let grid = "";
+  [0, 25, 50, 75, 100].forEach((v) => {
+    const x = xOf(v).toFixed(1);
+    const isHalf = v === 50;
+    grid += `<line x1="${x}" y1="${TOP - 6}" x2="${x}" y2="${H - 4}" stroke="currentColor" stroke-opacity="${isHalf ? 0.45 : 0.12}" stroke-width="1" ${isHalf ? 'stroke-dasharray="3 3"' : ""}/>`;
+    grid += `<text x="${x}" y="${TOP - 10}" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.6">${v}%</text>`;
+  });
+  const bars = rows
+    .map((b, i) => {
+      const y = TOP + i * ROW;
+      const w = Math.max(1, xOf(b.score) - X0);
+      return `
+      <text x="${X0 - 8}" y="${y + 14}" text-anchor="end" font-size="12" font-weight="700" fill="currentColor">${escapeHtml(b.short || b.name)}</text>
+      <rect x="${X0}" y="${y + 4}" width="${w.toFixed(1)}" height="13" rx="3" fill="${b.color}" />
+      <text x="${(X0 + w + 5).toFixed(1)}" y="${y + 14.5}" font-size="11.5" font-weight="800" fill="${b.color}">${b.score === 100 ? "100%" : b.score.toFixed(1) + "%"}</text>`;
+    })
+    .join("");
   const svg = `
-    <svg viewBox="0 0 380 212" style="width:100%;height:auto;display:block;" role="img" aria-label="대표 자산 10년평균 승률 비교선">
-      ${[
-        [X_ZERO, (X_ZERO + X0) / 2 - 4],
-        [(X_ZERO + X0) / 2 + 4, (X1 + X_HUNDRED) / 2 - 4],
-        [(X1 + X_HUNDRED) / 2 + 4, X_HUNDRED],
-      ].map(([a, b]) => `<line x1="${a}" y1="${AXIS_Y}" x2="${b}" y2="${AXIS_Y}" stroke="var(--muted)" stroke-width="2"/>`).join("")}
-      ${[30, 40, 50, 60, 70, 80].map((v) => `<line x1="${xOf(v)}" y1="${AXIS_Y - 3}" x2="${xOf(v)}" y2="${AXIS_Y + 3}" stroke="var(--muted)" stroke-width="1.2"/>`).join("")}
-      ${breakMark((X_ZERO + X0) / 2)}${breakMark((X1 + X_HUNDRED) / 2)}
-      <line x1="${X_ZERO}" y1="${AXIS_Y - 6}" x2="${X_ZERO}" y2="${AXIS_Y + 6}" stroke="var(--muted)" stroke-width="2"/>
-      <text x="${X_ZERO}" y="${AXIS_Y + 20}" text-anchor="middle" font-size="12.5" font-weight="800" fill="var(--text)">0%</text>
-      <text x="${X_HUNDRED}" y="${AXIS_Y + 20}" text-anchor="middle" font-size="12.5" font-weight="800" fill="var(--text)">100%</text>
-      <line x1="${X_HUNDRED}" y1="${AXIS_Y}" x2="${X_HUNDRED}" y2="${80}" stroke="${DEPOSIT_COLOR}" stroke-width="1" stroke-dasharray="2 2" opacity="0.8"/>
-      <circle cx="${X_HUNDRED}" cy="${AXIS_Y}" r="5" fill="${DEPOSIT_COLOR}" stroke="#fff" stroke-width="1.4"/>
-      <text x="376" y="64" text-anchor="end" font-size="14.5" font-weight="800" fill="${DEPOSIT_COLOR}">예금·적금</text>
-      <text x="376" y="79" text-anchor="end" font-size="13" font-weight="700" fill="${DEPOSIT_COLOR}">100%</text>
-      ${dots}
-    </svg>`;
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" role="img" aria-label="대표 자산 10년평균 승률 비교 막대그래프">
+      ${grid}${bars}
+    </svg>
+    <p style="margin:4px 0 0;font-size:11px;opacity:0.65;text-align:right;">점선 = 50%(오른 달·내린 달이 반반)</p>`;
   return svg;
 }
 // 맨 위 설명 문구(2026-09-13 사용자 지정)
