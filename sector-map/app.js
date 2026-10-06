@@ -335,8 +335,9 @@ const MAP_VIEWS = {
   // 데이터는 data/ipo-map.js(fetch-ipo-map.ps1)로, 12개 지표를 주식 지도와 같은 공식으로 채워두었기 때문에
   // custom(ETF·코인)과 달리 필터 칩은 주식 보기 그대로 전부 쓴다.
   // 2026-09-14 사용자 요청: IPO도 시가총액 상위 200개만(한국IPO200·미국IPO200) — IPO_VIEW_LIMIT 참고
-  krIpo: { label: "한국IPO200", mark: "kr", market: "domestic", ipo: "kr" },
-  usIpo: { label: "미국IPO200", mark: "us", market: "overseas", ipo: "us" },
+  // 2026-10-06 사용자 요청: "IPO200" → "신규상장200", 한국·미국은 국기 이모지로 구분(국기 마크와 겹치지 않게 mark 없음)
+  krIpo: { label: "🇰🇷 신규상장200", market: "domestic", ipo: "kr" },
+  usIpo: { label: "🇺🇸 신규상장200", market: "overseas", ipo: "us" },
 };
 // IPO 지도에 올릴 종목 수 — 데이터 파일(ipo-map.js)은 S리포트 IPO 비교군으로도 쓰여 전체를 그대로 두고, 지도에서만 시총 상위로 자름
 const IPO_VIEW_LIMIT = 200;
@@ -1732,15 +1733,15 @@ function buildMetrics(market) {
     // 본체(app.js)의 computeAttractivenessScore·computeRiskScore와 동일 공식으로 배치 계산해둔 값
     // (sector-map/scripts/fetch-momentum-scores.ps1, data/*-sectors.json에 pressureScore/stabilityScore로 저장)
     // 2026-09-04 개편: 상승압력 → 연평균 상승(fetch-winrate-scores.ps1이 ret10yAvg로 병합), 투자안정 삭제(10년평균승률로 대체)
-    ret10yAvg: { label: "연평균 상승", hasData: true, get: (c) => c.ret10yAvg, fmt: (v) => `${v > 0 ? "+" : ""}${v.toFixed(1)}%`, domainMin: -20, domainMax: 80 },
+    ret10yAvg: { label: "연+20%", hasData: true, get: (c) => c.ret10yAvg, fmt: (v) => `${v > 0 ? "+" : ""}${v.toFixed(1)}%`, domainMin: -20, domainMax: 80 },
     // 10년평균승률·주간RSI(2026-09-02, 같은 날 국내·ETF·코인 확장): 본체 승률점수와 같은 배치(fetch-winrate-scores.ps1)가
     // sp500-sectors.json/kr-sectors.json/etf-crypto-map.js에 winRateScore/rsiWeekly로 병합 — 나스닥100 보기만 칩 숨김
-    winRateScore: { label: "10년평균승률", hasData: true, get: (c) => c.winRateScore, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 100 },
+    winRateScore: { label: "승률", hasData: true, get: (c) => c.winRateScore, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 100 },
     rsiWeekly: { label: "RSI", hasData: true, get: (c) => c.rsiWeekly, fmt: (v) => `${v.toFixed(1)}`, domainMin: 0, domainMax: 100 },
     // 상승률/하락률을 하나로 합쳐 근저(가장 큰 하락)~근고(가장 큰 상승)가 한 슬라이더 안에 전부 보이도록 함
-    changePct: { label: "등락률", hasData: true, live: !isKr, get: (c) => c.changePercent, fmt: (v) => `${v.toFixed(1)}%` },
-    revenueGrowth: { label: "매출성장", hasData: true, get: (c) => c.revenueGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
-    netIncomeGrowth: { label: "순이익증가", hasData: true, get: (c) => c.netIncomeGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
+    changePct: { label: "등락", hasData: true, live: !isKr, get: (c) => c.changePercent, fmt: (v) => `${v.toFixed(1)}%` },
+    revenueGrowth: { label: "매출", hasData: true, get: (c) => c.revenueGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
+    netIncomeGrowth: { label: "순이익", hasData: true, get: (c) => c.netIncomeGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
     dividendYield: { label: "배당률", hasData: true, get: (c) => c.dividendYield, fmt: (v) => `${v.toFixed(2)}%` },
     debtRatio: { label: "부채비율", hasData: true, get: (c) => c.debtRatio, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 300 },
     cashFlowGrowth: { label: "현금흐름 증가", hasData: true, get: (c) => c.cashFlowGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
@@ -1983,23 +1984,43 @@ const quickSliderCtrl = createSliderController(
 );
 
 // 칩 바텀시트에 표시할 지표 한 줄 설명 — 상승압력/투자안정은 "+자세히"로 배점 방식(본체 +자세히와 동일 공식)까지 안내
+// 칩 바텀시트 설명 — 2026-10-06 사용자 요청: 모두 2줄(①공식/정의 ②"높을수록 ~한다는 의미예요")로 통일
 const METRIC_DESCS = {
-  changePct: "전일 종가 대비 오늘 주가가 얼마나 움직였는지예요.",
-  popularStocks: "오늘 거래대금(사고판 금액) 순위 — 상위일수록 돈이 몰린 종목이에요.",
-  ret10yAvg: "최근 10년 연복리 수익률(CAGR)이에요 — 매년 몇 %씩 오른 셈인지(상장 10년 미만은 상장 후 기간 기준).",
-  per: "주가 ÷ 주당순이익 — 낮을수록 이익 대비 저렴한 편이에요.",
-  dividendYield: "현재 주가 대비 근근 1년 배당금 비율이에요.",
-  week52RangePct: "52주 근저~근고 사이에서 지금 주가의 위치(0%=근저점 부근)예요.",
-  revenueGrowth: "근근 분기 매출이 1년 전 같은 분기보다 얼마나 늘었는지예요.",
-  netIncomeGrowth: "근근 분기 순이익이 1년 전 같은 분기보다 얼마나 늘었는지예요.",
-  debtRatio: "자기자본 대비 부채 비율 — 낮을수록 빚 부담이 적어요.",
-  cashFlowGrowth: "영업활동 현금흐름이 1년 전보다 얼마나 늘었는지예요.",
-  winRateScore:
-    "한 달을 기준으로 상승했는지 하락했는지를 1개의 승/패로 표시하여, 최근 120개월(10년) 동안의 승률입니다. 수익률의 크기가 아니라 이긴 횟수라, 높을수록 꾸준히 우상향했다는 의미예요.",
-  rsiWeekly: "주간 RSI(14) 현재값 — 30 미만은 과매도, 70 이상은 과매수 신호로 봐요.",
+  winRateScore: "최근 10년(120개월) 중 전달보다 오르며 마감한 달의 비율이에요.\n높을수록 꾸준히 우상향했다는 의미예요.",
+  ret10yAvg: "최근 10년 연복리 수익률(CAGR) — 매년 평균 몇 %씩 올랐는지예요.\n높을수록 오래 크게 오른 종목이라는 의미예요.",
+  revenueGrowth: "최근 분기 매출 ÷ 1년 전 같은 분기 매출 − 1이에요.\n높을수록 사업이 빠르게 커지고 있다는 의미예요.",
+  changePct: "오늘 주가 ÷ 전일 종가 − 1이에요.\n높을수록 오늘 많이 올랐다는 의미예요.",
+  popularStocks: "오늘 거래대금(사고판 금액) 순위예요.\n상위일수록 돈과 관심이 몰렸다는 의미예요.",
+  rsiWeekly: "주간 RSI(14) — 최근 14주 상승폭 ÷ (상승폭+하락폭) × 100이에요.\n높을수록 과열(70↑), 낮을수록 침체(30↓)라는 의미예요.",
+  per: "주가 ÷ 주당순이익(EPS)이에요.\n높을수록 이익 대비 비싸게 거래된다는 의미예요.",
+  dividendYield: "최근 1년 배당금 ÷ 현재 주가예요.\n높을수록 주가 대비 배당을 많이 준다는 의미예요.",
+  week52RangePct: "(현재가 − 52주 최저) ÷ (52주 최고 − 52주 최저)예요.\n높을수록 52주 최고가에 가깝다는 의미예요.",
+  netIncomeGrowth: "최근 분기 순이익 ÷ 1년 전 같은 분기 순이익 − 1이에요.\n높을수록 이익이 빠르게 늘고 있다는 의미예요.",
+  debtRatio: "부채총계 ÷ 자본총계예요.\n높을수록 빚 부담이 크다는 의미예요.",
+  cashFlowGrowth: "영업활동 현금흐름 ÷ 1년 전 영업활동 현금흐름 − 1이에요.\n높을수록 실제로 들어오는 현금이 늘고 있다는 의미예요.",
 };
 // 2026-09-04 개편: 상승압력·투자안정 삭제로 +자세히 배점 안내가 필요한 지표가 없어짐(버튼은 자동 숨김)
-const SCORE_INFO_CONTENT = {};
+const SCORE_INFO_CONTENT = {
+  // 2026-10-06 사용자 요청: 승률 칩 시트에 "+승률이란?" — 본체 인기종목 "+승률이란"과 같은 내용(공용 winrate-benchmark.js)
+  winRateScore: {
+    button: "+승률이란?",
+    title: "승률이란?",
+    get html() {
+      if (typeof buildWinRateBenchmarkSvg !== "function") return "<p>설명을 불러오지 못했습니다.</p>";
+      const rows = WINRATE_BENCHMARKS.map(
+        (b, i) => `<tr><td>${i + 1}</td><td><span class="wr-bench-dot" style="background:${b.color};"></span><b>${b.name}</b></td><td>${b.up}회</td><td>${b.down}회</td><td><b class="wr-pct">${b.score.toFixed(1)}%</b></td></tr>`
+      ).join("");
+      return `${WINRATE_INTRO_HTML}
+        <h3 class="wr-bench-title">대표자산 10년평균 승률비교</h3>
+        ${buildWinRateBenchmarkSvg()}
+        <table class="wr-bench-table">
+          <thead><tr><th>순위</th><th>이름</th><th>상승</th><th>하락</th><th>승률</th></tr></thead>
+          <tbody>${rows}<tr class="wr-bench-deposit"><td>기준</td><td><span class="wr-bench-dot" style="background:#0f766e;"></span><b>예금·적금</b></td><td>120회</td><td>0회</td><td><b class="wr-pct">100.0%</b></td></tr></tbody>
+        </table>
+        <p class="wr-bench-note">과거 데이터이며 미래 수익률을 보장하지 않고 투자 자문이 아닙니다.</p>`;
+    },
+  },
+};
 
 function openRangeSheet(key) {
   closeCompanySheet();
@@ -2008,7 +2029,9 @@ function openRangeSheet(key) {
   quickSheetKey = key;
   rangeSheetTitle.textContent = METRICS[key].label;
   document.getElementById("rangeSheetDescText").textContent = METRIC_DESCS[key] || "";
-  document.getElementById("rangeSheetDetailBtn").style.display = SCORE_INFO_CONTENT[key] ? "" : "none";
+  const detailBtn = document.getElementById("rangeSheetDetailBtn");
+  detailBtn.style.display = SCORE_INFO_CONTENT[key] ? "" : "none";
+  if (SCORE_INFO_CONTENT[key]) detailBtn.textContent = SCORE_INFO_CONTENT[key].button || "+자세히";
   quickSliderCtrl.refresh();
   rangeSheet.classList.add("open");
 }

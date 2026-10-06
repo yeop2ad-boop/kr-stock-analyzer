@@ -34,10 +34,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="마켓맵" />
-<link rel="stylesheet" href="style.css?v=20260914a" />
+<link rel="stylesheet" href="style.css?v=20261006e" />
 <!-- 지도가 떠 있는 동안 본체 파일을 미리 받아둠 — 간편검색/시장/더보기로 처음 넘어갈 때 로딩 체감 단축 -->
-<link rel="prefetch" href="../app.js?v=20261006d" />
-<link rel="prefetch" href="../style.css?v=20261006c" />
+<link rel="prefetch" href="../app.js?v=20261006e" />
+<link rel="prefetch" href="../style.css?v=20261006e" />
 <link rel="prefetch" href="../index.html" />
 </head>
 <body>
@@ -65,8 +65,8 @@
           <button type="button" class="map-view-item" data-view="ndx100">나스닥 100</button>
           <button type="button" class="map-view-item" data-view="etf200">ETF200</button>
           <button type="button" class="map-view-item" data-view="crypto100">비트코인200</button>
-          <button type="button" class="map-view-item" data-view="krIpo">한국IPO200</button>
-          <button type="button" class="map-view-item" data-view="usIpo">미국IPO200</button>
+          <button type="button" class="map-view-item" data-view="krIpo">🇰🇷 신규상장200</button>
+          <button type="button" class="map-view-item" data-view="usIpo">🇺🇸 신규상장200</button>
         </div>
       </div>
 
@@ -91,25 +91,25 @@
       <button type="button" class="filter-chip metric-chip asset-only-chip" data-metric="week52RangePct">
         52주최저<span class="chip-reset" data-metric="week52RangePct" role="button" aria-label="52주최저 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <!-- 2026-09-08 사용자 요청: 10년평균승률·매출성장을 맨 앞으로, 첫 접속엔 10년평균승률 칩만 눌린 표시 -->
+      <!-- 2026-09-08 사용자 요청: 승률·매출을 맨 앞으로, 첫 접속엔 승률 칩만 눌린 표시. 2026-10-06 이름 간소화(승률·연+20%·매출·등락·순이익) -->
       <button type="button" class="filter-chip metric-chip us-stock-only-chip" data-metric="winRateScore">
-        10년평균승률<span class="chip-reset" data-metric="winRateScore" role="button" aria-label="10년평균승률 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        승률<span class="chip-reset" data-metric="winRateScore" role="button" aria-label="승률 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <!-- 2026-10-06 사용자 요청: "연평균 상승" → "연+20%", 승률 바로 다음 자리 · 검은색 눌린 모양 -->
+      <button type="button" class="filter-chip metric-chip us-stock-only-chip chip-pressed" data-metric="ret10yAvg">
+        연+20%<span class="chip-reset" data-metric="ret10yAvg" role="button" aria-label="연+20% 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button type="button" class="filter-chip metric-chip" data-metric="revenueGrowth">
-        매출성장<span class="chip-reset" data-metric="revenueGrowth" role="button" aria-label="매출성장 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        매출<span class="chip-reset" data-metric="revenueGrowth" role="button" aria-label="매출 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button type="button" class="filter-chip metric-chip" data-metric="changePct">
-        등락률<span class="chip-reset" data-metric="changePct" role="button" aria-label="등락률 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        등락<span class="chip-reset" data-metric="changePct" role="button" aria-label="등락 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button type="button" class="filter-chip metric-chip" data-metric="popularStocks">
         거래대금<span class="chip-reset" data-metric="popularStocks" role="button" aria-label="거래대금 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button type="button" class="filter-chip chg-half-chip asset-only-chip" data-chg-half="up">상승률</button>
       <button type="button" class="filter-chip chg-half-chip asset-only-chip" data-chg-half="down">하락률</button>
-      <!-- 2026-09-04 개편: 상승압력 → 연평균 상승(ret10yAvg), 투자안정 삭제(10년평균승률로 대체), 우상향점수 → 10년평균승률 -->
-      <button type="button" class="filter-chip metric-chip us-stock-only-chip" data-metric="ret10yAvg">
-        연평균 상승<span class="chip-reset" data-metric="ret10yAvg" role="button" aria-label="연평균 상승 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
       <!-- 10년평균승률·RSI(2026-09-02, 같은 날 국내·ETF·코인 확장) — 배치 데이터가 없는 나스닥100 보기만 CSS로 숨김(us-stock-only-chip) -->
       <button type="button" class="filter-chip metric-chip us-stock-only-chip" data-metric="rsiWeekly">
         RSI<span class="chip-reset" data-metric="rsiWeekly" role="button" aria-label="RSI 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -124,7 +124,7 @@
         52주최저<span class="chip-reset" data-metric="week52RangePct" role="button" aria-label="52주최저 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button type="button" class="filter-chip metric-chip" data-metric="netIncomeGrowth">
-        순이익증가<span class="chip-reset" data-metric="netIncomeGrowth" role="button" aria-label="순이익증가 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        순이익<span class="chip-reset" data-metric="netIncomeGrowth" role="button" aria-label="순이익 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button type="button" class="filter-chip metric-chip" data-metric="debtRatio">
         부채비율<span class="chip-reset" data-metric="debtRatio" role="button" aria-label="부채비율 필터 초기화"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><svg class="chip-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -257,6 +257,7 @@
 <script src="../data/ko-company-names.js?v=20260911e"></script>
 <script src="data/sp500-data-core.js?v=20260904h"></script>
 <script src="data/kr-data-core.js?v=20260904h" onerror="window.KR_CORE_DATA = { companies: [] };"></script>
-<script src="app.js?v=20261006a"></script>
+<script src="../winrate-benchmark.js?v=20261006e"></script>
+<script src="app.js?v=20261006e"></script>
 </body>
 </html>

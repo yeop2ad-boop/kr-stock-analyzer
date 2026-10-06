@@ -6353,7 +6353,7 @@ const S_REPORT_EXPLAIN = {
   ret: "최근 10년 연평균 상승률(연복리)입니다.\n높을수록 장기 성과가 좋았어요.",
   rev: "매출이 1년 전보다 몇 % 늘었는지입니다.\n높을수록 사업이 커지고 있어요.",
   ret1y: "1년 전 가격과 비교해 지금 몇 % 올랐는지입니다.\n높을수록 최근 1년 성과가 좋았어요.",
-  vol: "최근 3개월 하루 평균 등락 폭입니다.\n높을수록 하루하루 크게 흔들려 위험해요.",
+  vol: "최근 3개월 하루 평균 등락 폭입니다.\n높을수록 하루하루 크게 흔들려 위험해요.\n등급: 매우안정 0.75% 미만(연 변동성 약 15% 미만) · 안정 1.25% 미만(약 25%, S&P500 수준) · 보통 1.75% 미만(약 35%) · 높음 2.5% 미만(약 50%) · 매우높음 2.5% 이상.",
   rsi: "최근 14주 등락 폭으로 만든 주간 RSI입니다.\n이 종목의 1년 평균보다 높으면 매수우위, 낮으면 매도우위예요.",
   ni: "순이익이 작년보다 몇 % 늘었는지입니다.\n높을수록 남기는 이익이 빠르게 늘어요.",
   om: "매출에서 영업이익이 차지하는 비율입니다.\n높을수록 본업에서 효율적으로 벌어요.",
@@ -6422,7 +6422,8 @@ function sReportCoreSpecs(isAsset, isEtf) {
     // ETF만 🔥 기준이 등수가 아니라 절대값 — 승률 60% 이상, 변동성 0.8% 미만(2026-09-17 사용자 지정)
     { key: "win", label: "승률", sub: "10년 월간", better: "high", band: 2, fmt: (v, d) => sPct(v, d), axis: (v) => (v - 40) / 30, ...(isEtf ? { fireIf: (v) => v >= 60 } : {}) },
     { key: "ret", label: "상승률", sub: "연평균", better: "high", band: 2, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true), axis: (v) => v / 50 },
-    { key: "vol", label: "변동성", sub: "3개월 하루", better: "low", band: 0.1, rel: 0.1, fmt: (v, d) => `${v.toFixed(d ? 2 : 1)}%`, axis: (v) => (5 - v) / 4, ...(isEtf ? { fireIf: (v) => v < 0.8 } : {}) },
+    // 변동성은 등수(상위 N%) 대신 5단계 등급(2026-10-06 사용자 요청) — sReportVolJudge 참고
+    { key: "vol", label: "변동성", sub: "3개월 하루", better: "low", isVol: true, band: 0.1, rel: 0.1, fmt: (v, d) => `${v.toFixed(d ? 2 : 1)}%`, axis: (v) => (5 - v) / 4 },
     // 과열도는 낮을수록 좋은 점수(2026-09-16 사용자 요청) — 등수도 낮은 순으로 1위, 레이더에서도 낮을수록 바깥.
     // ETF는 과열도를 일반지표(더보기)로 내리고 그 자리에 규모(순자산)를 둔다(2026-10-06 사용자 요청)
     isEtf ? { key: "aum", label: "규모", sub: "순자산", better: "high", isAum: true, fmt: (v) => etfAumText(v) } : { key: "rsi", label: "과열도(RSI)", better: "low", isRsi: true, fmt: (v, d) => sNum(v, d) },
@@ -6430,6 +6431,19 @@ function sReportCoreSpecs(isAsset, isEtf) {
   ];
 }
 
+// 변동성 5단계(2026-10-06 사용자 요청) — 비교군 안 순위가 아니라 절대 기준이라 주식·ETF·코인 어디서 봐도 같은 뜻이다.
+// 값은 최근 3개월 하루 등락폭(|일간 등락률|) 평균. 정규분포 가정에서 연 변동성(표준편차) ≈ 하루 평균폭 × 19.9
+// (= ÷0.798(평균절대편차→표준편차) × √252)이라, 흔히 쓰는 연 변동성 구간을 하루 폭으로 환산했다:
+//   매우안정 < 0.75%(연 15% 미만, 채권혼합·배당 ETF 수준) · 안정 < 1.25%(연 25%, S&P500·대형 우량주) ·
+//   보통 < 1.75%(연 35%, 일반 개별 종목) · 높음 < 2.5%(연 50%, 성장·소형주) · 매우높음 2.5% 이상(연 50%↑, 코인·테마주)
+function sReportVolJudge(v) {
+  if (!Number.isFinite(v)) return null;
+  if (v < 0.75) return { text: "매우안정", tone: "good" };
+  if (v < 1.25) return { text: "안정", tone: "good" };
+  if (v < 1.75) return { text: "보통", tone: "neutral" };
+  if (v < 2.5) return { text: "높음", tone: "bad" };
+  return { text: "매우높음", tone: "bad" };
+}
 // 운용보수 6단계(2026-09-17 사용자 지정) — 등수 대신 이 등급을 보여준다
 function sReportFeeJudge(v) {
   if (!Number.isFinite(v)) return null;
@@ -6532,6 +6546,8 @@ function sReportMakeItem(spec, value, group, currency, ownRef) {
   // (ETF 승률 60% 이상 · 변동성 0.8% 미만 · 운용보수 "매우낮음" — 2026-09-17 사용자 지정). ⚠️(하위 10%)는 그대로.
   let mark = topPct === null ? null : topPct <= 10 ? "fire" : topPct > 90 ? "warn" : null;
   if (spec.fireIf) mark = Number.isFinite(value) && spec.fireIf(value) ? "fire" : mark === "fire" ? null : mark;
+  // 변동성은 등급 기준으로 🔥(매우안정)·⚠️(매우높음)
+  if (spec.isVol) mark = !Number.isFinite(value) ? null : value < 0.75 ? "fire" : value >= 2.5 ? "warn" : null;
   return {
     ...spec,
     explain: S_REPORT_EXPLAIN[spec.explainKey || spec.key] || "",
@@ -6548,6 +6564,8 @@ function sReportMakeItem(spec, value, group, currency, ownRef) {
       ? sReportRsiJudge(value, ref)
       : spec.isFee
       ? sReportFeeJudge(value)
+      : spec.isVol
+      ? sReportVolJudge(value)
       : { text: "", tone: mark === "fire" ? "good" : mark === "warn" ? "bad" : "neutral" },
     // 과열도(RSI)만은 비교군 분포가 아니라 이 종목의 1년 평균 RSI를 오각형 한가운데(0.5)에 두고,
     // 평균보다 낮을수록(침체) 바깥으로, 높을수록(과열) 안쪽으로 그린다 — 등급 기준과 같은 ±20이 양 끝(2026-09-16 사용자 요청)
@@ -6740,8 +6758,8 @@ function sReportLineHtml(it) {
   let rankHtml;
   let shortHtml;
   // 2026-09-17 사용자 요청: 비교군 안 위치(상위 N%)를 크게, 실제 등수(40위/349)는 그 아래 작게
-  if (it.isRsi || it.isFee) {
-    // 과열도·운용보수는 등수 대신 등급으로 보여준다(2026-09-16·17 사용자 요청)
+  if (it.isRsi || it.isFee || it.isVol) {
+    // 과열도·운용보수·변동성은 등수 대신 등급으로 보여준다(2026-09-16·17, 변동성 2026-10-06 사용자 요청)
     const gradeText = has && it.judge ? it.judge.text : "";
     // 🔥·⚠️가 붙으면 그만큼 자리를 더 먹으므로 한 글자 더 긴 것으로 치고 글씨를 줄인다
     const gradeLen = gradeText.length + (markHtml ? 1 : 0);
@@ -9122,20 +9140,7 @@ async function renderRsi(ticker, mode) {
 // ---------- 6-4. 장기 우상향 점수 "+자세히"(2026-09-03 사용자 요청): 대표 자산 11종의 10년 월간 승률 벤치마크 ----------
 // 값은 2026-09-03에 야후(월봉 11y)·ECOS(서울 아파트 매매가격지수 901Y062/P63ACA, 한국부동산원)로 일괄 계산한 정적 스냅샷.
 // 승률은 10년 누적이라 천천히 변함 — 갱신 시 scratchpad의 winrate-benchmarks.ps1 재실행 후 이 표를 교체.
-const WINRATE_BENCHMARKS = [
-  // short: 그래프 이름표용 짧은 이름(2026-09-13 그래프 확대 — 긴 이름은 서로 겹침)
-  { name: "서울 부동산", short: "서울부동산", sub: "서울 아파트 지수", up: 94, down: 26, score: 78.3, color: "#8b5a2b" },
-  { name: "SPY", short: "SPY", sub: "S&P500", up: 82, down: 38, score: 68.3, color: "#1f77b4" },
-  { name: "QQQ", short: "QQQ", sub: "나스닥100", up: 78, down: 42, score: 65.0, color: "#ff7f0e" },
-  { name: "필라델피아 반도체", short: "SOX", sub: "SOX", up: 77, down: 43, score: 64.2, color: "#2ca02c" },
-  { name: "코스피200", short: "코스피200", sub: "KODEX200", up: 69, down: 51, score: 57.5, color: "#d62728" },
-  { name: "BTC", short: "BTC", sub: "비트코인", up: 67, down: 53, score: 55.8, color: "#f7931a" },
-  { name: "코스닥150", short: "코스닥150", sub: "KODEX코스닥150", up: 65, down: 55, score: 54.2, color: "#e377c2" },
-  { name: "금 GOLD", short: "금", sub: "GLD", up: 63, down: 57, score: 52.5, color: "#d4af37" },
-  { name: "이더리움", short: "ETH", sub: "ETH", up: 53, down: 52, score: 50.5, color: "#627eea" },
-  { name: "코스피 인버스x1", short: "코스피인버스", sub: "KODEX인버스", up: 48, down: 72, score: 40.0, color: "#17becf" },
-  { name: "나스닥 인버스x1", short: "나스닥인버스", sub: "PSQ", up: 38, down: 82, score: 31.7, color: "#9467bd" },
-];
+// WINRATE_BENCHMARKS(대표자산 10년평균 승률)는 공용 파일 winrate-benchmark.js로 옮김(2026-10-06 — 마켓맵과 공유)
 let winRateBenchmarkBuilt = false;
 function renderWinRateBenchmarkDetail() {
   if (winRateBenchmarkBuilt) return;
@@ -9145,48 +9150,8 @@ function renderWinRateBenchmarkDetail() {
 function buildWinRateBenchmarkHtml() {
   // 2026-09-13 사용자 요청: 휴대폰에서 글씨가 안 보여 확대 — 가로 700 → 380으로 좁혀 글자가 실제 크기에 가깝게 그려지고,
   // 자산들이 몰려 있는 28~85% 구간을 넓게 그리고, 양 끝에 0%와 100%(예금·적금)를 물결(생략) 표시로 붙임
-  const X_ZERO = 16;
-  const X_HUNDRED = 350;
-  const X0 = 44;
-  const X1 = 318;
-  const MIN = 28;
-  const MAX = 85;
-  const AXIS_Y = 122;
-  const xOf = (score) => X0 + ((score - MIN) / (MAX - MIN)) * (X1 - X0);
-  const breakMark = (x) =>
-    `<line x1="${x - 5}" y1="${AXIS_Y + 5}" x2="${x - 1}" y2="${AXIS_Y - 5}" stroke="var(--muted)" stroke-width="1.4"/><line x1="${x + 1}" y1="${AXIS_Y + 5}" x2="${x + 5}" y2="${AXIS_Y - 5}" stroke="var(--muted)" stroke-width="1.4"/>`;
+  const svg = buildWinRateBenchmarkSvg(); // 그래프는 공용 winrate-benchmark.js
   const DEPOSIT_COLOR = "#0f766e";
-  // 점수가 몰려 있어 이름표를 위 3단·아래 2단으로 번갈아 배치(리더 선으로 연결)
-  const tierYs = [98, 64, 30, 154, 190];
-  const dots = WINRATE_BENCHMARKS.map((b, i) => {
-    const x = xOf(b.score);
-    const tier = tierYs[i % tierYs.length];
-    const above = tier < AXIS_Y;
-    const labelY = above ? tier : tier + 4;
-    return `
-      <line x1="${x}" y1="${AXIS_Y}" x2="${x}" y2="${above ? tier + 16 : tier - 12}" stroke="${b.color}" stroke-width="1" stroke-dasharray="2 2" opacity="0.8"/>
-      <circle cx="${x}" cy="${AXIS_Y}" r="5" fill="${b.color}" stroke="#fff" stroke-width="1.4"/>
-      <text x="${x}" y="${labelY}" text-anchor="middle" font-size="14.5" font-weight="800" fill="${b.color}">${escapeHtml(b.short || b.name)}</text>
-      <text x="${x}" y="${labelY + 15}" text-anchor="middle" font-size="13" font-weight="700" fill="${b.color}">${b.score}%</text>`;
-  }).join("");
-  const svg = `
-    <svg viewBox="0 0 380 212" style="width:100%;height:auto;display:block;" role="img" aria-label="대표 자산 10년평균 승률 비교선">
-      ${[
-        [X_ZERO, (X_ZERO + X0) / 2 - 4],
-        [(X_ZERO + X0) / 2 + 4, (X1 + X_HUNDRED) / 2 - 4],
-        [(X1 + X_HUNDRED) / 2 + 4, X_HUNDRED],
-      ].map(([a, b]) => `<line x1="${a}" y1="${AXIS_Y}" x2="${b}" y2="${AXIS_Y}" stroke="var(--muted)" stroke-width="2"/>`).join("")}
-      ${[30, 40, 50, 60, 70, 80].map((v) => `<line x1="${xOf(v)}" y1="${AXIS_Y - 3}" x2="${xOf(v)}" y2="${AXIS_Y + 3}" stroke="var(--muted)" stroke-width="1.2"/>`).join("")}
-      ${breakMark((X_ZERO + X0) / 2)}${breakMark((X1 + X_HUNDRED) / 2)}
-      <line x1="${X_ZERO}" y1="${AXIS_Y - 6}" x2="${X_ZERO}" y2="${AXIS_Y + 6}" stroke="var(--muted)" stroke-width="2"/>
-      <text x="${X_ZERO}" y="${AXIS_Y + 20}" text-anchor="middle" font-size="12.5" font-weight="800" fill="var(--text)">0%</text>
-      <text x="${X_HUNDRED}" y="${AXIS_Y + 20}" text-anchor="middle" font-size="12.5" font-weight="800" fill="var(--text)">100%</text>
-      <line x1="${X_HUNDRED}" y1="${AXIS_Y}" x2="${X_HUNDRED}" y2="${80}" stroke="${DEPOSIT_COLOR}" stroke-width="1" stroke-dasharray="2 2" opacity="0.8"/>
-      <circle cx="${X_HUNDRED}" cy="${AXIS_Y}" r="5" fill="${DEPOSIT_COLOR}" stroke="#fff" stroke-width="1.4"/>
-      <text x="376" y="64" text-anchor="end" font-size="14.5" font-weight="800" fill="${DEPOSIT_COLOR}">예금·적금</text>
-      <text x="376" y="79" text-anchor="end" font-size="13" font-weight="700" fill="${DEPOSIT_COLOR}">100%</text>
-      ${dots}
-    </svg>`;
   const rows = WINRATE_BENCHMARKS.map(
     (b, i) => `
       <tr>
@@ -9211,10 +9176,7 @@ function buildWinRateBenchmarkHtml() {
 function winRateBenchmarkHtml(svg, rows) {
   // 문구는 2026-09-13 사용자 지정 — 맨 위 설명 한 줄, 맨 아래 안내 한 줄만
   return `
-    <div class="wr-intro">
-      <p class="wr-intro-q">10년평균 승률이란?</p>
-      <p class="wr-intro-def">최근 10년(최대 120개월) 동안 <b>전달보다 오르며 마감한 달의 비율</b>입니다. 수익률의 크기가 아니라 <b>이긴 횟수</b>라, <b class="wr-intro-key">높을수록 꾸준히 우상향했다는 뜻입니다.</b></p>
-    </div>
+    ${WINRATE_INTRO_HTML}
     <h3 class="future-chart-subheading">대표자산 10년평균 승률비교</h3>
     ${svg}
     <table class="top30-table wr-bench-table" style="margin-top:10px;">
