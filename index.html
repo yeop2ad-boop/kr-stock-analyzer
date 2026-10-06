@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20261006j" />
+<link rel="stylesheet" href="style.css?v=20261007a" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -81,7 +81,7 @@
         <button type="button" class="fh-tab" data-fhtab="tab.analysis" data-i18n="tab.analysis">투자분석</button>
         <!-- 2026-10-06 사용자 요청: 인기종목 - 투자분석 - 자동추적 - ★관심종목(종목찾기 탭은 삭제, 마켓맵은 더보기에서) -->
         <button type="button" class="fh-tab" data-fhtab="tab.autotrack" data-i18n="tab.autotrack">자동추적</button>
-        <button type="button" class="fh-tab fh-tab-watch" data-fhtab="tab.watchlist" aria-label="관심종목"><svg class="fh-tab-icon" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z"/></svg><span data-i18n="tab.watchlist">관심종목</span></button>
+        <button type="button" class="fh-tab fh-tab-watch" data-fhtab="tab.watchlist" aria-label="관심종목"><svg class="fh-tab-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z"/></svg><span data-i18n="tab.watchlist">관심종목</span></button>
         <!-- 자동추적: 상단 4탭(인기종목/기업가치/미래예측/인사이트)만 남기고 더보기 패널로 이동(2026-09-10 사용자 요청) —
              JS(openAutoTrack·setCarouselViewTitle)가 이 버튼을 참조하므로 DOM은 유지하고 숨김만 -->
         <button type="button" class="fh-tab active" data-fhtab="tab.valuation" data-i18n="tab.valuation">기업가치</button>
@@ -956,6 +956,6 @@
   <script src="data/logo-db.js?v=20260903g"></script>
   <script src="data/etf-meta.js?v=20260912a"></script>
   <script src="winrate-benchmark.js?v=20261006h"></script>
-  <script src="app.js?v=20261006j"></script>
+  <script src="app.js?v=20261007a"></script>
 </body>
 </html>

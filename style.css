@@ -3707,4 +3707,4 @@ table.top30-table.atg-table th:nth-child(2) { width: 84px; }
 .atg-rating { padding: 4px 7px; font-size: 13px; }
 /* 상단 탭 ★관심종목(2026-10-06) */
 .fh-tab-watch { display: inline-flex; align-items: center; gap: 3px; }
-.fh-tab-watch .fh-tab-icon { flex: none; color: #f6b301; }
+.fh-tab-watch .fh-tab-icon { flex: none; } /* 별은 탭 글자와 같은 색의 테두리만(2026-10-07) */

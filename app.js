@@ -2860,7 +2860,10 @@ document.querySelectorAll(".fh-tab").forEach((btn) => {
       showOnlyCarouselView(() =>
         appSectionMode === "etf" ? openEtfMetricTab(metric) : appSectionMode === "crypto" ? openCryptoMetricTab(metric) : openStockMetricTab(metric)
       );
-    } else if (key === "tab.watchlist") showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist")));
+    } else if (key === "tab.watchlist") {
+      tabLoadPromises.watchlist = null; // 투자처마다 목록이 달라서 매번 다시 그림
+      showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist")));
+    }
     else if (key === "tab.analysis") showOnlyCarouselView(() => openInvestAnalysis());
     else if (key === "tab.ipo") showOnlyCarouselView(() => openIpoList());
     else if (key === "tab.popular") showOnlyCarouselView(() => openPopularStocks());
@@ -4473,11 +4476,18 @@ async function renderWatchlistList() {
   el("wlGroupTabs").innerHTML = wlGroupTabsHtml(groups, activeGroup);
   el("wlSortBtnLabel").textContent = (WATCHLIST_SORT_OPTIONS.find((o) => o.id === getWatchlistSort()) || WATCHLIST_SORT_OPTIONS[0]).label;
 
-  const filtered = activeGroup === WATCHLIST_ALL_GROUP_ID ? list : list.filter((w) => wlGroupIdsOf(w).includes(activeGroup));
+  // 투자처별 관심종목(2026-10-06 사용자 요청): 한국주식 탭에선 한국주식만, 미국주식·ETF·비트코인도 각자 것만 보여준다.
+  // 저장은 그대로 한 목록(종목 상세의 별로 추가) — 화면에서 지금 투자처 종목만 거른다. 국내 ETF 판별에 ETF 목록이 필요해 먼저 받음.
+  const wlSection = appSectionMode === "etf" ? "etf" : appSectionMode === "crypto" ? "crypto" : getWatchlistActiveMarket() === "KR" ? "kr" : "us";
+  const WL_SECTION_LABEL = { kr: "한국주식", us: "미국주식", etf: "ETF", crypto: "비트코인" };
+  if (list.some((w) => isKrTicker(w.symbol))) await getKrEtfFullList().catch(() => null);
+  const filtered = (activeGroup === WATCHLIST_ALL_GROUP_ID ? list : list.filter((w) => wlGroupIdsOf(w).includes(activeGroup))).filter(
+    (w) => sectionOfSymbol(w.symbol) === wlSection
+  );
 
   if (filtered.length === 0) {
     statusEl.style.display = "none";
-    listEl.innerHTML = `<p class="muted" style="padding:12px 0;">${iconHtml("star")} 관심종목이 없습니다. 종목 상세 화면에서 별 아이콘을 눌러 추가해보세요.</p>`;
+    listEl.innerHTML = `<p class="muted" style="padding:12px 0;">${iconHtml("star")} ${WL_SECTION_LABEL[wlSection]} 관심종목이 없습니다. 종목 상세 화면에서 별 아이콘을 눌러 추가해보세요.</p>`;
     return;
   }
   statusEl.style.display = "block";
