@@ -3523,8 +3523,6 @@ span.risk-good { color: #2f9e44; font-weight: 700; }
 .fh-tab-map .fh-tab-icon { flex: none; }
 
 /* ---------- 인기종목 실시간 순위 모션(2026-10-06) ---------- */
-.pop-vol { color: #8a8f98; }
-.pop-vol-hot { color: var(--pos); font-weight: 600; }
 .rk-table tr.pop-rank-up td { animation: popFlashUp 2.2s ease-out; }
 .rk-table tr.pop-rank-down td { animation: popFlashDown 2.2s ease-out; }
 @keyframes popFlashUp { 0% { background: color-mix(in srgb, var(--pos) 16%, transparent); } 100% { background: transparent; } }

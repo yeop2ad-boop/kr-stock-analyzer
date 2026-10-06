@@ -10697,7 +10697,7 @@ function popularSimpleTableHtml(rows, isKr, opts) {
     .map(
       (r, i) => `
       <tr data-sym="${escapeHtml(r.symbol)}" data-idx="${i}">
-        <td>${popularWithVolRatio(opts && opts.etf ? etfRankNameCellHtml(r, isKr) : rankNameCellHtml(r.symbol, logoFn(r), rankDisplayName(r.symbol, r.name, isKr)), r)}</td>
+        <td>${opts && opts.etf ? etfRankNameCellHtml(r, isKr) : rankNameCellHtml(r.symbol, logoFn(r), rankDisplayName(r.symbol, r.name, isKr))}</td>
         <td>${rankPriceCellHtml(r.symbol, r.price, r.currency || (isKr ? "KRW" : "USD"), r.changePct)}</td>
         <td>${winRatePctCellHtml(r.winRateScore, r.winTotal, false, partialMonthsFor(r.symbol))}</td>
       </tr>`
@@ -10708,14 +10708,6 @@ function popularSimpleTableHtml(rows, isKr, opts) {
       <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}${RANK_TH_WINRATE}</tr></thead>
       <tbody>${body}</tbody>
     </table>`;
-}
-// 이름 아래 작은 줄(코드·시장) 끝에 "거래량 2.3배"를 붙임 — 순위 기준(2026-10-06)이 눈에 보이게
-function popularWithVolRatio(nameHtml, r) {
-  if (!r || !Number.isFinite(r.volRatio)) return nameHtml;
-  const x = r.volRatio;
-  const txt = x >= 10 ? Math.round(x) : x.toFixed(1);
-  const hot = x >= 2 ? " pop-vol-hot" : "";
-  return nameHtml.replace(/(<span class="rk-sub">)([^<]*)(<\/span>)/, (m, a, b, c) => `${a}${b}<span class="pop-vol${hot}"> · 거래량 ${txt}배</span>${c}`);
 }
 function popularVolKey(r) {
   return r && Number.isFinite(r.volRatio) ? r.volRatio : -1;
@@ -10826,7 +10818,7 @@ function paintPopularRows(resultsEl, isKr, rows, extraNoteHtml, opts) {
     // 2026-09-13 사용자 요청: "+등락표"를 "+승률이란"으로 교체 — 누르면 INVEST점수 10년평균 승률 +자세히와 같은
     // 대표자산 승률비교(그래프·표)를 표 위에 펼침. 월별 등락표(popularSnapTableHtml)는 더 이상 열지 않음.
     const tableHtml = popularSimpleTableHtml(visible, isKr, o);
-    const noteHtml = `${universeLabel} 중 <b>오늘 거래량이 최근 30거래일 평균보다 많이 터진 순</b>입니다(이름 아래 "거래량 N배"). 화면을 보고 있는 동안 1분마다 다시 매겨 순위가 바뀌면 줄이 움직입니다. 오른쪽 위 <b>+승률이란</b>을 누르면 대표자산의 10년평균 승률을 비교해 볼 수 있습니다. 투자 자문이 아닙니다.`;
+    const noteHtml = `${universeLabel} 중 <b>오늘 거래량이 최근 30거래일 평균보다 많이 터진 순</b>입니다. 화면을 보고 있는 동안 1분마다 다시 매겨 순위가 바뀌면 줄이 움직입니다. 오른쪽 위 <b>+승률이란</b>을 누르면 대표자산의 10년평균 승률을 비교해 볼 수 있습니다. 투자 자문이 아닙니다.`;
     resultsEl.innerHTML = `
         ${o.prefixHtml || ""}
         <div class="popular-head-row">
