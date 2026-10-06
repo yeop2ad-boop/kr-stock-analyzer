@@ -3758,4 +3758,11 @@ table.top30-table.atg-table th:nth-child(2) { width: 84px; }
 .ia-rank-chev { flex: none; width: 14px; font-size: 11px; color: var(--muted); text-align: center; }
 .ia-detail { padding: 6px 2px 12px; border-bottom: 1px solid var(--rk-line); }
 .ia-detail-actions { display: flex; gap: 6px; justify-content: flex-end; margin: 0 0 6px; }
-.ia-add-row { display: block; width: 100%; margin: 12px 0 4px; padding: 11px; border: 1px dashed var(--border); border-radius: 10px; background: none; color: var(--accent); font-size: 14px; font-weight: 700; cursor: pointer; }
+/* 내 포트폴리오 추가하기(2026-10-07): 점선 글자 버튼 → 아이콘 + 두 줄 문구 카드 */
+.ia-add-row { display: flex; align-items: center; gap: 12px; width: 100%; margin: 14px 0 4px; padding: 13px 14px; border: none; border-radius: 14px; background: var(--accent-soft); color: var(--text); text-align: left; font: inherit; cursor: pointer; transition: transform 0.12s ease; }
+.ia-add-row:active { transform: scale(0.985); }
+.ia-add-icon { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: #fff; }
+.ia-add-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.ia-add-text b { font-size: 15px; font-weight: 800; color: var(--accent); }
+.ia-add-text small { margin-top: 2px; font-size: 12px; color: var(--muted); }
+.ia-add-chev { flex: none; font-size: 22px; line-height: 1; color: var(--accent); }

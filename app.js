@@ -20629,7 +20629,11 @@ function iaShellHtml(ctx) {
         <div class="ia-tip" id="iaTip" style="display:none;"></div>
       </div>
       <div class="ia-rank" id="iaRank"></div>
-      <button type="button" class="ia-add-row" id="iaAddBtn">+ 내 포트폴리오 추가</button>
+      <button type="button" class="ia-add-row" id="iaAddBtn">
+        <span class="ia-add-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+        <span class="ia-add-text"><b>내 포트폴리오 추가하기</b><small>관심종목이나 직접 고른 종목으로 수익률 비교</small></span>
+        <span class="ia-add-chev" aria-hidden="true">›</span>
+      </button>
       <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 모든 그래프는 기간 시작을 100으로 둔 수익 지수입니다. 투자방법 구성종목·1년/5년/최대(10년) 그래프는 ${dateStr} 배치 기준이고, 1일·1주·1달은 실시간(바구니형은 비중 상위 10종목)으로 계산합니다. 바구니형 투자방법은 <b>지금 고른 종목</b>을 그 비중으로 계속 들고 있었다고 가정한 값이라 과거 성적이 부풀려지는 생존편향이 있고, 상장 10년이 안 된 종목은 상장 시점부터 더해집니다. 수수료·세금·배당은 반영하지 않았으며 투자 자문이 아닙니다.</p>
     </div>`;
 }
