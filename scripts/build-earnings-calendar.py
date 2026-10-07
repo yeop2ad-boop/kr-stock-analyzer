@@ -109,7 +109,44 @@ def us_calendar(_today):
             got += 1
         time.sleep(0.12)
     print(f"미국: SEC 8-K 실적 발표일 {got}종목", flush=True)
+    us_reported_revenue(out, today)
     return out
+
+
+def us_reported_revenue(out, today):
+    """최근 45일 안에 발표한 종목 — 야후 quoteSummary(earnings)의 분기 매출(발표 당일 갱신)로 직전 분기 대비 %
+    야후 분기 재무(timeseries)는 10-Q가 나와야 바뀌어 몇 주 늦다(2026-10-08 확인)"""
+    import http.cookiejar
+    cj = http.cookiejar.CookieJar()
+    op = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj))
+    hdr = {"User-Agent": UA}
+    try:
+        try:
+            op.open(urllib.request.Request("https://fc.yahoo.com", headers=hdr), timeout=15)
+        except Exception:
+            pass  # 404여도 쿠키는 받음
+        crumb = op.open(urllib.request.Request("https://query1.finance.yahoo.com/v1/test/getcrumb", headers=hdr), timeout=15).read().decode()
+    except Exception as e:
+        print("  야후 crumb 실패:", type(e).__name__, flush=True)
+        return
+    n = 0
+    for sym, e in out.items():
+        if not e.get("last") or (today - date.fromisoformat(e["last"])).days > 45:
+            continue
+        try:
+            url = f"https://query1.finance.yahoo.com/v10/finance/quoteSummary/{urllib.parse.quote(sym)}?modules=earnings&crumb={urllib.parse.quote(crumb)}"
+            with op.open(urllib.request.Request(url, headers=hdr), timeout=20) as resp:
+                d = json.loads(resp.read().decode("utf-8"))
+            q = d["quoteSummary"]["result"][0]["earnings"]["financialsChart"]["quarterly"]
+            cur, prv = q[-1], q[-2]
+            a, b = (cur.get("revenue") or {}).get("raw"), (prv.get("revenue") or {}).get("raw")
+            if a and b:
+                e["rep"] = {"date": e["last"], "q": cur.get("date"), "qoq": round((a / b - 1) * 100, 2), "src": "yahoo"}
+                n += 1
+        except Exception:
+            pass
+        time.sleep(0.25)
+    print(f"미국: 발표 매출(야후 실적 요약) {n}종목", flush=True)
 
 
 KR_KEYWORDS = ("영업(잠정)실적", "분기보고서", "반기보고서", "사업보고서")
@@ -124,6 +161,57 @@ def kr_filings(syms, key, bgn, end):
         for sym, ds in kr_filings_chunk(syms, key, a, b).items():
             out.setdefault(sym, []).extend(ds)
         a = b + timedelta(days=1)
+    return out
+
+
+PRELIM = {}  # symbol -> [(rcept_dt, rcept_no)] 잠정실적 공시
+
+
+def parse_prelim_revenue(raw):
+    """영업(잠정)실적 공시 본문(document.xml 압축) → 매출액 {cur 당기, prev 직전 분기} — 표의 첫 '매출액' 줄"""
+    import html as _html
+    import io
+    import zipfile
+    try:
+        z = zipfile.ZipFile(io.BytesIO(raw))
+        txt = "\n".join(z.read(n).decode("utf-8", "ignore") for n in z.namelist())
+    except Exception:
+        return None
+    for row in re.findall(r"<TR[^>]*>(.*?)</TR>", txt, re.S | re.I):
+        cells = [_html.unescape(re.sub(r"<[^>]+>", "", c)).strip() for c in re.findall(r"<T[DHEU][^>]*>(.*?)</T[DHEU]>", row, re.S | re.I)]
+        if not cells or not re.sub(r"\s", "", cells[0]).startswith("매출액"):
+            continue
+        nums = []
+        for c in cells[1:]:
+            t = re.sub(r"[\s,]", "", c).replace("△", "-")
+            neg = t.startswith("(") and t.endswith(")")
+            t = t.strip("()")
+            if re.fullmatch(r"-?\d+(\.\d+)?", t):
+                nums.append(-float(t) if neg else float(t))
+        if len(nums) >= 2 and nums[1]:
+            return {"cur": nums[0], "prev": nums[1]}
+    return None
+
+
+def kr_prelim_results(key, today):
+    """최근 45일 잠정실적 공시마다 매출 직전 분기 대비 % → {symbol: {"rep": {...}}}"""
+    out = {}
+    for sym, lst in PRELIM.items():
+        dt, no = max(lst)
+        if (today - date(int(dt[:4]), int(dt[4:6]), int(dt[6:]))).days > 45:
+            continue
+        try:
+            req = urllib.request.Request(f"https://opendart.fss.or.kr/api/document.xml?crtfc_key={key}&rcept_no={no}", headers={"User-Agent": UA})
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                raw = resp.read()
+        except Exception as e:
+            print("  잠정실적 본문 실패:", sym, type(e).__name__, flush=True)
+            continue
+        rv = parse_prelim_revenue(raw)
+        if rv:
+            out[sym] = {"date": f"{dt[:4]}-{dt[4:6]}-{dt[6:]}", "qoq": round((rv["cur"] / rv["prev"] - 1) * 100, 2), "src": "잠정"}
+        time.sleep(0.3)
+    print(f"한국: 잠정실적 매출 {len(out)}종목", flush=True)
     return out
 
 
@@ -147,6 +235,8 @@ def kr_filings_chunk(syms, key, bgn, end):
                     if code in syms and any(k in nm for k in KR_KEYWORDS) and not re.search(r"\[(기재정정|첨부정정|첨부추가|발행조건확정)\]", nm):
                         dt = it.get("rcept_dt")
                         out.setdefault(syms[code], []).append(f"{dt[:4]}-{dt[4:6]}-{dt[6:]}")
+                        if "잠정" in nm and it.get("rcept_no"):
+                            PRELIM.setdefault(syms[code], []).append((dt, it["rcept_no"]))
                 if page >= int(js.get("total_page") or 1):
                     break
                 page += 1
@@ -180,6 +270,8 @@ def kr_calendar(today, key):
             e["next"], e["nextEst"] = cand[0].isoformat(), True
         if e:
             out[sym] = e
+    for sym, rep in kr_prelim_results(key, today).items():
+        out.setdefault(sym, {})["rep"] = rep
     print(f"한국: 최근 실적 공시 {sum(1 for v in out.values() if 'last' in v)}종목 · 다음 발표 예상 {sum(1 for v in out.values() if 'next' in v)}종목", flush=True)
     return out
 

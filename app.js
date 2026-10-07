@@ -21507,12 +21507,16 @@ function earnRevNumbers(data, row, kind) {
   const estBar = data.bars.find((b) => b.est);
   const last = actual[actual.length - 1];
   if (kind === "soon") return { exp: estBar && Number.isFinite(estBar.growth) ? estBar.growth : null };
+  // 발표 당일 값(2026-10-08): 미국 야후 실적 요약 · 한국 DART 잠정실적 본문의 매출 직전 분기 대비 — 분기 재무는 몇 주 늦게 바뀐다
+  const ce = earningsEntry(row.symbol);
+  const rep = ce && ce.rep && ce.rep.date === row.date && Number.isFinite(ce.rep.qoq) ? ce.rep : null;
   const qEnd = last && earnQuarterEnd(last.label);
   // 발표일 직전에 끝난 분기가 데이터에 들어와 있어야 '발표' 값 — 아니면 아직 반영 전(10/7 잠정실적인데 데이터는 2분기까지인 경우)
   const rel = new Date(row.date + "T00:00:00");
   const due = new Date(rel.getFullYear(), Math.floor(rel.getMonth() / 3) * 3, 0); // 발표일 이전 마지막 분기말
   const stale = !qEnd || qEnd < due;
-  if (stale) return { exp: estBar && Number.isFinite(estBar.growth) ? estBar.growth : null, stale: true };
+  // 분기 재무가 아직 옛 분기면: 그 '다음 분기 예상'이 곧 이번 발표의 예상치, 실제는 발표 당일 값
+  if (stale) return { exp: estBar && Number.isFinite(estBar.growth) ? estBar.growth : null, act: rep ? rep.qoq : null, stale: !rep };
   const before = actual.slice(0, -1);
   const prevRev = before.length ? before[before.length - 1].rev : null;
   const expRev = before.length >= 2 ? projectNextQuarter(before, "rev") : null;
@@ -21572,13 +21576,13 @@ async function renderEarningsTab() {
   done.sort((a, b) => b.date.localeCompare(a.date) || (names.get(a.symbol) || "").localeCompare(names.get(b.symbol) || ""));
   const dow = (iso) => ["일", "월", "화", "수", "목", "금", "토"][new Date(iso + "T00:00:00").getDay()];
   const md = (iso) => `${Number(iso.slice(5, 7))}/${Number(iso.slice(8, 10))}`;
-  // 2026-10-08 사용자 요청: 예정은 "+00% 예상"(지난 분기 대비), 발표는 "+00% 예상 / +00% 발표"
+  // 2026-10-08 사용자 요청: 예정은 "+00% 예상"(지난 분기 대비), 발표는 "+00% 예상 / +00% 실제"
   const revCell = (data, row, kind) => {
     if (data === undefined) return `<span class="rk-l1 muted">…</span>`;
     const n = earnRevNumbers(data, row, kind);
     if (!n) return `<span class="rk-l1 muted">-</span>`;
     if (kind === "soon") return `${earnPctHtml(n.exp, "예상", "rk-l1")}<span class="rk-l2 muted">지난 분기 대비</span>`;
-    return `${earnPctHtml(n.exp, "예상", "rk-l1")}${n.stale ? `<span class="rk-l2 muted">발표 반영 전</span>` : earnPctHtml(n.act, "발표", "rk-l2")}`;
+    return `${earnPctHtml(n.exp, "예상", "rk-l1")}${n.stale ? `<span class="rk-l2 muted">실제 반영 전</span>` : earnPctHtml(n.act, "실제", "rk-l2")}`;
   };
   const revDone = new Map();
   const tableHtml = (rows, kind) => {
