@@ -3,7 +3,8 @@
 
 왜: 네이버 etfAnalysis는 해외 지수 추종 ETF(184/300개)에서 비중 없이 '주식수'만 주고, 금·현금 행은 종목코드가 비어
     화면에서 빠지거나 주식수로 보였다. 국내 종목은 무조건 .KS로 붙여 코스닥 종목(테스 등)은 상세로 넘어가지 않았다.
-funetf ETF 페이지에 인라인된 setPdfChart([...])는 운용사 PDF 전체(비중 evP %, 티커, ISIN)를 준다.
+출처(2026-10-08): 네이버 증권 새 사이트 API stock.naver.com/api/domestic/detail/{코드}/ETFComponent — 운용사 PDF 전체
+(비중 %, ISIN, 해외 로이터 코드, 한글명, 기준일), 차단 없이 매일 전부. 비면 예비로 funetf(setPdfChart, 요청이 잦으면 429).
 
 holdings 항목: {"s": 야후 심볼(없으면 ""), "n": 이름, "w": 비중 %, "t": stock|gold|bond|cash|deriv|other}
  · 금·채권·현금·파생은 화면 맨 위에 합계로 보여주므로 종류(t)를 붙여 둔다. 주식은 비중 상위 30개까지.
@@ -24,7 +25,7 @@ NAMES = os.path.join(ROOT, "data", "etf-holding-names.json")
 SUFFIX_CACHE = os.path.join(ROOT, "scripts", "kr-suffix-cache.json")
 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
 MAX_STOCKS = 30
-MAX_PER_RUN = 220  # 2026-10-08: 깃허브 서버에선 막히지 않아(10/6 밤 80개 성공) 남은 것을 한 번에 — 3초 간격이라 약 11분
+MAX_PER_RUN = 400  # 2026-10-08: 네이버 ETFComponent로 바꾼 뒤엔 차단이 없어 매일 전부(0.4초 간격, 약 2분)
 HOLD_CACHE = os.path.join(ROOT, "data", "etf-holdings-kr.json")
 
 
@@ -49,6 +50,37 @@ def get(url, tries=3, timeout=40):
         except Exception:
             time.sleep(1.5 * (k + 1))
     return None
+
+
+def naver_rows(code):
+    """네이버 증권 새 사이트(stock.naver.com)의 ETF 구성종목 API — 운용사 PDF 전체(비중 %, ISIN, 해외는 로이터 코드 NVDA.O,
+    한글 종목명, 기준일). 2026-10-08 확인: funetf와 같은 내용이고 차단이 없어 기본 출처로 쓴다.
+    funetf 행 모양(grpItmNo·ticker·citmNm·evP)으로 바꿔 돌려줘서 아래 분류·심볼 변환을 그대로 쓴다."""
+    out = []
+    for start in (0, 100, 200):
+        raw = get(f"https://stock.naver.com/api/domestic/detail/{code}/ETFComponent?startIdx={start}&pageSize=100", tries=2, timeout=20)
+        try:
+            rows = json.loads(raw)
+        except Exception:
+            return out or None
+        if not isinstance(rows, list) or not rows:
+            break
+        for x in rows:
+            try:
+                w = float(x.get("weight"))
+            except (TypeError, ValueError):
+                continue
+            reuters = (x.get("componentReutersCode") or "").split(".")[0]
+            out.append({
+                "grpItmNo": x.get("componentIsinCode") or "",
+                "ticker": x.get("componentItemCode") or reuters or "",
+                "citmNm": x.get("componentName") or "",
+                "evP": w,
+                "_ref": x.get("referenceDate"),
+            })
+        if len(rows) < 100:
+            break
+    return out or None
 
 
 def funetf_rows(code):
@@ -167,24 +199,28 @@ def main():
     hold = json.load(open(HOLD_CACHE, encoding="utf-8")) if os.path.exists(HOLD_CACHE) else {}
     full = "--all" in sys.argv
     today = time.strftime("%Y-%m-%d")
-    stale_before = time.strftime("%Y-%m-%d", time.gmtime(time.time() - 6 * 86400))
+    stale_before = today  # 매일 새로(오늘 받은 것만 건너뜀)
     todo = [s for s in codes if full or (hold.get(s) or {}).get("at", "") < stale_before]
     todo.sort(key=lambda s: (hold.get(s) or {}).get("at", ""))  # 가장 오래된(없는) 것부터
     if not full:
         todo = todo[:MAX_PER_RUN]
-    print(f"한국 ETF {len(codes)}개 중 {len(todo)}개 funetf 조회(한 번에 하나씩, 3초 간격)", flush=True)
+    print(f"한국 ETF {len(codes)}개 중 {len(todo)}개 구성종목 조회(네이버 ETFComponent, 안 되면 funetf)", flush=True)
     names = json.load(open(NAMES, encoding="utf-8")) if os.path.exists(NAMES) else {}
     label = {"gold": "금 현물", "bond": "채권", "cash": "현금", "deriv": "선물·파생", "other": "기타"}
     ok = fails = 0
     for i, sym in enumerate(todo):
-        rows = funetf_rows(sym.split(".")[0])
+        rows = naver_rows(sym.split(".")[0])
+        src = "naver"
+        if not rows:  # 네이버가 비면 예비로 funetf
+            rows = funetf_rows(sym.split(".")[0])
+            src = "funetf"
         fails = 0 if rows else fails + 1
         if fails >= 3:  # 계속 막히면 받은 것까지만 저장하고 다음 실행에서 이어서
             print("  연속 3회 실패 — 여기까지 저장", flush=True)
             break
         if (i + 1) % 20 == 0:
             print(f"  {i + 1}/{len(todo)}", flush=True)
-        time.sleep(3)
+        time.sleep(0.4 if src == "naver" else 3)
         if not rows:
             continue
         agg = {}
@@ -205,7 +241,7 @@ def main():
         stocks.sort(key=lambda x: -x[1])
         out = []
         for k, (w, ns) in sorted(agg.items(), key=lambda kv: -abs(kv[1][0])):
-            if abs(w) < 0.01:
+            if w < 0.05:  # 설정·환매 차이로 생기는 -0.05% 같은 음수·아주 작은 현금 행은 뺀다
                 continue
             out.append({"s": "", "n": label[k] if k != "gold" else (ns[0] if ns else "금 현물"), "w": round(w, 2), "t": k})
         for r, w in stocks[:MAX_STOCKS]:
@@ -215,7 +251,7 @@ def main():
             if ysym and (ysym not in known.values()):
                 names[ysym] = nm
         if out:
-            hold[sym] = {"at": today, "holdings": out}
+            hold[sym] = {"at": today, "holdings": out, "src": src}
             ok += 1
     # 캐시를 etf-info.json에 적용
     applied = 0
@@ -223,7 +259,7 @@ def main():
         h = hold.get(sym)
         if h and h.get("holdings"):
             kr[sym]["holdings"] = h["holdings"]
-            kr[sym]["holdingsSource"] = "funetf PDF"
+            kr[sym]["holdingsSource"] = "운용사 PDF"
             kr[sym]["holdingsAt"] = h["at"]
             applied += 1
     info["kr"] = kr
