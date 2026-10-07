@@ -4080,3 +4080,25 @@ table.pop-table td.pop-spark-td .pop-spark-cell { justify-content: center; }
 #financialsHeading .earn-badge { vertical-align: 3px; }
 
 .earn-badge.earn-badge-soon { background: rgba(37, 99, 235, 0.1); color: #2563eb; }
+
+/* 실적발표 탭(2026-10-08): 기업명 | 발표일 | 매출 */
+table.earn-table col.earn-col-date { width: 25%; }
+table.earn-table col.earn-col-rev { width: 27%; }
+table.earn-table td:nth-child(2) { text-align: center; }
+table.earn-table td .rk-l1, table.earn-table td .rk-l2 { display: block; }
+table.earn-table td:nth-child(2) .rk-l1 { font-size: 15.5px; }
+table.earn-table td:nth-child(3) .rk-l1 { font-size: 15.5px; }
+table.earn-table .muted { color: var(--muted); }
+.earn-empty { padding: 14px 0; font-size: 13.5px; }
+/* 상단 탭 5개 — 좁은 화면에서도 한 줄에 */
+@media (max-width: 400px) { #fhTabs { gap: 4px; } #fhTabs .fh-tab { font-size: 15px; letter-spacing: -0.5px; } }
+
+/* 실적발표 탭 매출 칸 "+00% 예상 / 발표" · 펼친 분기 그래프(2026-10-08) */
+table.earn-table td:nth-child(3) .rk-l1 { font-size: 15px; font-weight: 700; }
+table.earn-table td:nth-child(3) .rk-l2 { font-size: 13.5px; font-weight: 700; }
+table.earn-table td:nth-child(3) small { font-size: 11.5px; font-weight: 500; color: var(--muted); }
+table.earn-table tr.earn-row { cursor: pointer; }
+table.earn-table tr.earn-row.open td { background: var(--subtle-fill); }
+table.earn-table tr.earn-chart-row td { padding: 6px 0 14px; white-space: normal; text-align: left; background: var(--subtle-fill); }
+.earn-chart { padding: 0 8px; }
+.earn-detail-link { display: block; width: 100%; margin-top: 8px; padding: 11px 0; border: none; border-radius: 10px; background: var(--bg); color: var(--accent); font-size: 14px; font-weight: 800; cursor: pointer; }

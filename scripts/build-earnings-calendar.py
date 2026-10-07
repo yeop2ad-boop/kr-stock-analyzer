@@ -91,12 +91,17 @@ def us_calendar(_today):
         js = get_json(f"https://data.sec.gov/submissions/CIK{int(cik):010d}.json", tries=2, headers=SEC_UA)
         rec = ((js or {}).get("filings") or {}).get("recent") or {}
         best = None
+        nxt = (out.get(sym) or {}).get("next")
         for form, fdate, items in zip(rec.get("form") or [], rec.get("filingDate") or [], rec.get("items") or []):
             if form in ("8-K", "8-K/A") and "2.02" in (items or "") and fdate <= today.isoformat():
+                # 다음 실적일 45일 안쪽의 2.02(테슬라 분기 인도량 발표 등)는 실적 발표가 아님
+                if nxt and (date.fromisoformat(nxt) - date.fromisoformat(fdate)).days < 45:
+                    continue
                 best = fdate if best is None or fdate > best else best
         if best:
             e = out.setdefault(sym, {})
-            if not e.get("last") or best > e["last"]:
+            # 나스닥 캘린더의 최근 발표일(14일 안)은 그대로 믿고, 없을 때만 SEC 날짜
+            if not e.get("last"):
                 e["last"] = best
             got += 1
         time.sleep(0.12)

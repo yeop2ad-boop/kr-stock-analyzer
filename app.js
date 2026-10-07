@@ -2874,6 +2874,7 @@ document.querySelectorAll(".fh-tab").forEach((btn) => {
       showOnlyCarouselView(() => switchTab(TAB_ORDER.indexOf("watchlist")));
     }
     else if (key === "tab.analysis") showOnlyCarouselView(() => openInvestAnalysis());
+    else if (key === "tab.earnings") showOnlyCarouselView(() => openEarningsTab());
     else if (key === "tab.ipo") showOnlyCarouselView(() => openIpoList());
     else if (key === "tab.popular") showOnlyCarouselView(() => openPopularStocks());
     else if (key === "tab.autotrack") showOnlyCarouselView(() => openAutoTrack());
@@ -3171,6 +3172,7 @@ const I18N = {
   "tab.popular": { ko: "인기종목", en: "Popular" },
   "tab.autotrack": { ko: "자동추적", en: "Auto Track" },
   "tab.search": { ko: "간편검색", en: "Search" },
+  "tab.earnings": { ko: "실적발표", en: "Earnings" }, // 2026-10-08: 실적 예정·발표 종목
   "tab.valuation": { ko: "기업가치", en: "Value" }, // 2026-09-10 사용자 요청: 실적→기업가치
   "tab.trend": { ko: "시장분석", en: "Market" }, // 2026-09-11 사용자 요청: 미래예측→시장분석
   "tab.ipo": { ko: "IPO", en: "IPO" }, // 2026-09-11: 최근 5년 신규 상장
@@ -5176,6 +5178,8 @@ function showRankingGroup(tabKey) {
   if (ipoGroup) ipoGroup.style.display = tabKey === "ipo" ? "block" : "none";
   const analysisGroup = el("analysisGroup");
   if (analysisGroup) analysisGroup.style.display = tabKey === "analysis" ? "block" : "none";
+  const earningsGroup = el("earningsGroup");
+  if (earningsGroup) earningsGroup.style.display = tabKey === "earnings" ? "block" : "none";
 }
 
 let topRankingActiveIdx = 0;
@@ -5961,6 +5965,7 @@ function syncSectionHeader() {
   );
   showTab("tab.popular", true);
   showTab("tab.analysis", true);
+  showTab("tab.earnings", true);
   // 2026-10-08 사용자 요청: 자동추적 탭 자리에 간편검색 — 자동추적은 더보기에서
   showTab("tab.autotrack", false);
   showTab("tab.search", true);
@@ -9456,8 +9461,8 @@ async function nextEarningsInfo(sym) {
   const est = await estimateNextEarningsDate(sym);
   return est ? { ...est, exact: false } : null;
 }
-function rankNameCellHtml(symbol, logoHtml, name, sub, extraCls) {
-  const badge = earnBadgeHtml(symbol);
+function rankNameCellHtml(symbol, logoHtml, name, sub, extraCls, noBadge) {
+  const badge = noBadge ? "" : earnBadgeHtml(symbol);
   return `<span class="ticker-cell rank-logo">${logoHtml}<span class="rk-name-box${extraCls ? " " + extraCls : ""}">${badge ? '<span class="at-name-line">' : ""}<b class="ticker-link rk-name" data-ticker="${escapeHtml(
     symbol
   )}">${escapeHtml(name)}</b>${badge ? `${badge}</span>` : ""}<span class="rk-sub">${escapeHtml(sub === undefined ? rankCodeLabel(symbol) : sub)}</span></span></span>`;
@@ -21399,6 +21404,216 @@ function iaSavePortfolios(list) {
   } catch {}
 }
 
+// ---------- 실적발표 탭(2026-10-08 사용자 요청) ----------
+// 지금 투자처(한국주식/미국주식)의 실적 '예정'(앞으로 7일) · '발표'(지난 7일) 종목 — 기업명 | 발표일 | 매출(최근 분기 · 작년 같은 분기 대비)
+const earnRevCache = new Map();
+async function earnRevenueOf(sym) {
+  if (earnRevCache.has(sym)) return earnRevCache.get(sym);
+  let out = null;
+  try {
+    const d = await yahooFundamentals(sym, "quarterlyTotalRevenue");
+    const res = d && d.timeseries && d.timeseries.result && d.timeseries.result[0];
+    const arr = ((res && res.quarterlyTotalRevenue) || [])
+      .filter((x) => x && x.asOfDate && x.reportedValue && Number.isFinite(x.reportedValue.raw))
+      .sort((a, b) => a.asOfDate.localeCompare(b.asOfDate));
+    const last = arr[arr.length - 1];
+    if (last) {
+      const t = new Date(last.asOfDate);
+      const prev = arr.find((x) => {
+        const dd = (t - new Date(x.asOfDate)) / 86400000;
+        return dd > 330 && dd < 400;
+      });
+      out = {
+        rev: last.reportedValue.raw,
+        cur: last.currencyCode || (isKrTicker(sym) ? "KRW" : "USD"),
+        asOf: last.asOfDate,
+        yoy: prev && prev.reportedValue.raw > 0 ? (last.reportedValue.raw / prev.reportedValue.raw - 1) * 100 : null,
+      };
+    }
+  } catch {}
+  if (!out && isKrTicker(sym)) {
+    // 야후에 분기 매출이 없으면 DART 정기보고서 분기 매출
+    const db = await getDartFinancialsData().catch(() => null);
+    const it = db && db.items && db.items.find((x) => x.symbol === sym);
+    const q = it && it.quarter;
+    if (q && q.revenue) out = { rev: q.revenue, cur: "KRW", asOf: q.dateTo, yoy: Number.isFinite(q.revenuePct) ? q.revenuePct : null };
+  }
+  earnRevCache.set(sym, out);
+  return out;
+}
+// 재무정보 '분기' 그래프와 같은 데이터(네이버 분기+컨센서스 / 야후 분기+추세 예상)로
+// 예정 종목: 다음 분기 예상 매출의 직전 분기 대비 %, 발표 종목: 발표 전 예상(그 분기를 빼고 다시 낸 추세 예상) vs 실제(직전 분기 대비)
+const earnQCache = new Map();
+function earnQuarterData(sym) {
+  if (!earnQCache.has(sym)) earnQCache.set(sym, loadFin2Quarter(sym, isKrTicker(sym) ? "KRW" : "USD").catch(() => null));
+  return earnQCache.get(sym);
+}
+function earnQuarterEnd(label) {
+  const m = String(label || "").match(/^(\d{2})\.(\d)Q/);
+  return m ? new Date(2000 + Number(m[1]), Number(m[2]) * 3, 0) : null;
+}
+function earnRevNumbers(data, row, kind) {
+  if (!data || !data.bars) return null;
+  const actual = data.bars.filter((b) => !b.est);
+  const estBar = data.bars.find((b) => b.est);
+  const last = actual[actual.length - 1];
+  if (kind === "soon") return { exp: estBar && Number.isFinite(estBar.growth) ? estBar.growth : null };
+  const qEnd = last && earnQuarterEnd(last.label);
+  const stale = !qEnd || (new Date(row.date + "T00:00:00") - qEnd) / 86400000 > 100;
+  if (stale) return { exp: estBar && Number.isFinite(estBar.growth) ? estBar.growth : null, stale: true };
+  const before = actual.slice(0, -1);
+  const prevRev = before.length ? before[before.length - 1].rev : null;
+  const expRev = before.length >= 2 ? projectNextQuarter(before, "rev") : null;
+  return {
+    exp: Number.isFinite(expRev) && prevRev > 0 ? (expRev / prevRev - 1) * 100 : null,
+    act: Number.isFinite(last.growth) ? last.growth : null,
+    qLabel: last.label,
+  };
+}
+function earnPctHtml(v, word, cls) {
+  if (!Number.isFinite(v)) return `<span class="${cls} muted">- ${word}</span>`;
+  return `<span class="${cls} ${v >= 0 ? "wl-up" : "wl-down"}">${v >= 0 ? "+" : ""}${v.toFixed(1)}% <small>${word}</small></span>`;
+}
+function earnSectionKey() {
+  if (appSectionMode === "etf" || appSectionMode === "crypto") return appSectionMode;
+  return getWatchlistActiveMarket() === "KR" ? "kr" : "us";
+}
+function openEarningsTab() {
+  switchTab(TAB_ORDER.indexOf("topranking"));
+  el("tabValuationBtn").classList.remove("active");
+  tabTrendBtn.classList.remove("active");
+  setCarouselViewTitle("tab.earnings");
+  el("topRankingSubNav").innerHTML = "";
+  showRankingGroup("earnings");
+  renderEarningsTab();
+}
+const earnShown = { soon: 10, done: 10 };
+let earnSeq = 0;
+async function renderEarningsTab() {
+  const box = el("earningsResults");
+  if (!box) return;
+  const seq = ++earnSeq;
+  const sec = earnSectionKey();
+  if (sec === "etf" || sec === "crypto") {
+    box.innerHTML = `<p class="muted earn-empty">${sec === "etf" ? "ETF" : "코인"}는 실적 발표가 없습니다. 한국주식·미국주식에서 확인해 주세요.</p>`;
+    return;
+  }
+  const isKr = sec === "kr";
+  box.innerHTML = `<p class="muted earn-empty">실적 일정을 불러오는 중...</p>`;
+  const [cal, uni] = await Promise.all([getEarningsCal(), getSReportUniverse(isKr).catch(() => null)]);
+  if (seq !== earnSeq) return;
+  const names = new Map(((uni && uni.companies) || []).map((c) => [c.symbol, c.name]));
+  const src = (cal && (isKr ? cal.kr : cal.us)) || {};
+  const soon = [];
+  const done = [];
+  Object.entries(src).forEach(([sym, e]) => {
+    if (e.next) {
+      const d = -earnDaysSince(e.next);
+      if (d >= 0 && d <= 7) soon.push({ symbol: sym, date: e.next, days: d, time: e.nextTime || "", est: !!e.nextEst });
+    }
+    if (e.last) {
+      const d = earnDaysSince(e.last);
+      if (d >= 0 && d <= 7) done.push({ symbol: sym, date: e.last, days: d });
+    }
+  });
+  soon.sort((a, b) => a.date.localeCompare(b.date) || (names.get(a.symbol) || "").localeCompare(names.get(b.symbol) || ""));
+  done.sort((a, b) => b.date.localeCompare(a.date) || (names.get(a.symbol) || "").localeCompare(names.get(b.symbol) || ""));
+  const dow = (iso) => ["일", "월", "화", "수", "목", "금", "토"][new Date(iso + "T00:00:00").getDay()];
+  const md = (iso) => `${Number(iso.slice(5, 7))}/${Number(iso.slice(8, 10))}`;
+  // 2026-10-08 사용자 요청: 예정은 "+00% 예상"(지난 분기 대비), 발표는 "+00% 예상 / +00% 발표"
+  const revCell = (data, row, kind) => {
+    if (data === undefined) return `<span class="rk-l1 muted">…</span>`;
+    const n = earnRevNumbers(data, row, kind);
+    if (!n) return `<span class="rk-l1 muted">-</span>`;
+    if (kind === "soon") return `${earnPctHtml(n.exp, "예상", "rk-l1")}<span class="rk-l2 muted">지난 분기 대비</span>`;
+    return `${earnPctHtml(n.exp, "예상", "rk-l1")}${n.stale ? `<span class="rk-l2 muted">발표 반영 전</span>` : earnPctHtml(n.act, "발표", "rk-l2")}`;
+  };
+  const revDone = new Map();
+  const tableHtml = (rows, kind) => {
+    const n = earnShown[kind];
+    const list = rows.slice(0, n);
+    const body = list
+      .map((row) => {
+        const name = rankDisplayName(row.symbol, names.get(row.symbol) || row.symbol, isKr);
+        const sub =
+          kind === "soon"
+            ? `${row.days === 0 ? "오늘" : `D-${row.days}`}${row.est ? " · 추정" : EARN_TIME_LABEL[row.time] ? ` · ${EARN_TIME_LABEL[row.time].replace("장 시작 전", "장 전").replace("장 마감 후", "장 후")}` : ""}`
+            : row.days === 0
+            ? "오늘"
+            : `${row.days}일 전`;
+        return `<tr class="earn-row" data-sym="${escapeHtml(row.symbol)}" data-kind="${kind}">
+          <td>${rankNameCellHtml(row.symbol, tickerLogoHtml(row.symbol), name, undefined, "", true).replace("ticker-link rk-name", "rk-name")}</td>
+          <td><span class="rk-l1">${md(row.date)}(${dow(row.date)})</span><span class="rk-l2 muted">${sub}</span></td>
+          <td data-earn-rev="${escapeHtml(row.symbol)}">${revCell(revDone.get(row.symbol), row, kind)}</td>
+        </tr>`;
+      })
+      .join("");
+    return list.length
+      ? `<table class="top30-table rk-table earn-table"><colgroup><col><col class="earn-col-date"><col class="earn-col-rev"></colgroup><tbody>${body}</tbody></table>
+         ${rows.length > 10 ? `<button type="button" class="cat-btn load-more-btn pop-more" data-earn-more="${kind}">${n > 10 ? "− 접기" : `+더보기 (${rows.length}개)`}</button>` : ""}`
+      : `<p class="muted earn-empty">${kind === "soon" ? "앞으로 7일 안에 실적 발표 예정인 종목이 없습니다." : "지난 7일 동안 실적을 발표한 종목이 없습니다."}</p>`;
+  };
+  const paint = () => {
+    if (seq !== earnSeq) return;
+    box.innerHTML = `
+      <p class="tap-hint">* 매출은 지난 분기 대비 증감(예상은 ${isKr ? "증권사 컨센서스, 없으면 " : ""}추세 예상)입니다. 종목을 누르면 분기 그래프가 펼쳐집니다.${isKr ? " 한국주식 발표 예정일은 작년 같은 시기 공시일로 추정했습니다." : ""}</p>
+      <section class="pop-sec"><div class="pop-sec-head"><b>발표 예정</b><span class="pop-asof">앞으로 7일 · ${soon.length}종목</span></div>${tableHtml(soon, "soon")}</section>
+      <section class="pop-sec"><div class="pop-sec-head"><b>실적 발표</b><span class="pop-asof">지난 7일 · ${done.length}종목</span></div>${tableHtml(done, "done")}</section>`;
+    bindEarnRows();
+    box.querySelectorAll("[data-earn-more]").forEach((b) =>
+      b.addEventListener("click", () => {
+        const k = b.dataset.earnMore;
+        earnShown[k] = earnShown[k] > 10 ? 10 : 60;
+        paint();
+        fillRevenue();
+      })
+    );
+  };
+  const fillRevenue = () => {
+    const need = [...soon.slice(0, earnShown.soon).map((r) => [r, "soon"]), ...done.slice(0, earnShown.done).map((r) => [r, "done"])].filter(([r]) => !revDone.has(r.symbol + "|"));
+    mapWithConcurrency(need, 4, async ([row, kind]) => {
+      const data = await earnQuarterData(row.symbol);
+      revDone.set(row.symbol, data);
+      if (seq !== earnSeq) return;
+      const td = box.querySelector(`tr[data-sym="${CSS.escape(row.symbol)}"][data-kind="${kind}"] [data-earn-rev]`);
+      if (td) td.innerHTML = revCell(data, row, kind);
+    });
+  };
+  // 줄을 누르면 바로 아래에 재무정보와 같은 분기 그래프(다시 누르면 접힘)
+  const bindEarnRows = () => {
+    box.querySelectorAll("tr.earn-row").forEach((tr) =>
+      tr.addEventListener("click", async () => {
+        const open = tr.nextElementSibling && tr.nextElementSibling.classList.contains("earn-chart-row");
+        box.querySelectorAll(".earn-chart-row").forEach((x) => x.remove());
+        box.querySelectorAll("tr.earn-row.open").forEach((x) => x.classList.remove("open"));
+        if (open) return;
+        const sym = tr.dataset.sym;
+        tr.classList.add("open");
+        const cur = isKrTicker(sym) ? "KRW" : "USD";
+        const chartTr = document.createElement("tr");
+        chartTr.className = "earn-chart-row";
+        chartTr.innerHTML = `<td colspan="3"><div class="earn-chart"><p class="muted" style="padding:10px 0;">분기 실적을 불러오는 중...</p></div></td>`;
+        tr.after(chartTr);
+        const data = await earnQuarterData(sym);
+        const holder = chartTr.querySelector(".earn-chart");
+        if (!holder) return;
+        holder.innerHTML = data
+          ? `${fin2BodyHtml(data, "quarter", cur)}<button type="button" class="earn-detail-link ticker-link" data-ticker="${escapeHtml(sym)}">종목 상세 보기 ›</button>`
+          : `<p class="muted" style="padding:10px 0;">분기 실적 데이터를 찾을 수 없습니다.</p>`;
+        holder.querySelectorAll(".fin2-col").forEach((col) =>
+          col.addEventListener("click", (ev) => {
+            ev.stopPropagation();
+            const was = col.classList.contains("active");
+            holder.querySelectorAll(".fin2-col.active").forEach((c) => c.classList.remove("active"));
+            if (!was) col.classList.add("active");
+          })
+        );
+      })
+    );
+  };
+  paint();
+  fillRevenue();
+}
 function openInvestAnalysis() {
   switchTab(TAB_ORDER.indexOf("topranking"));
   el("tabValuationBtn").classList.remove("active");
