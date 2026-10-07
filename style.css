@@ -3989,3 +3989,73 @@ table.pop-table col.pop-col-spark { width: 20%; }
 table.pop-table td:nth-child(2) { padding-right: 8px; }
 table.pop-table td.pop-spark-td { padding-right: 0; text-align: center; }
 table.pop-table td.pop-spark-td .pop-spark-cell { justify-content: center; }
+
+/* ---------- 아래에서 올라오는 시트 공통 디자인(2026-10-08 · 금융 앱 스타일) ---------- */
+.ia-sheet-backdrop { background: rgba(15, 23, 42, 0.5); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+.ia-sheet { border-radius: 22px 22px 0 0; padding: 8px 20px calc(20px + env(safe-area-inset-bottom)); box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.18); transform: translateY(40px); transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1); }
+.sheet-grabber { width: 38px; height: 4px; margin: 0 auto 14px; border-radius: 99px; background: var(--border); }
+.ia-sheet-head { min-height: 34px; margin-bottom: 4px; font-size: 19px; letter-spacing: -0.5px; }
+.ia-sheet-head b { font-weight: 800; }
+.ia-sheet-x { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; padding: 0; border-radius: 50%; background: var(--subtle-fill); color: var(--muted); }
+.ia-sheet-sub { margin: 2px 0 14px; font-size: 13.5px; line-height: 1.5; }
+/* 목록형 줄: 둥근 네모 아이콘 + 제목/설명 + 오른쪽 화살표 */
+.ia-choice { gap: 14px; margin: 0; padding: 14px 2px; border: none; border-bottom: 1px solid var(--border); border-radius: 0; background: none; transition: background 0.12s; }
+.ia-choice:last-of-type { border-bottom: none; }
+.ia-choice:active { background: var(--subtle-fill); }
+.ia-choice > span:not(.ia-choice-ic):not(.sheet-radio) { flex: 1; min-width: 0; }
+.ia-choice b { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+.ia-choice small { margin-top: 3px; font-size: 13px; }
+.ia-choice-ic { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 13px; background: var(--accent-soft); color: var(--accent); font-size: 0; }
+.ia-choice:not(.sheet-radio-row)::after { content: ""; flex: none; width: 8px; height: 8px; margin-right: 6px; border-top: 2px solid var(--muted); border-right: 2px solid var(--muted); transform: rotate(45deg); opacity: 0.7; }
+.ia-choice:disabled::after { display: none; }
+.sheet-list { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.sheet-list .ia-choice:last-child, .sheet-list .sheet-manage-row:last-child { border-bottom: none; }
+/* 선택 원 */
+.sheet-radio { flex: none; width: 24px; height: 24px; box-sizing: border-box; border-radius: 50%; border: 2px solid var(--border); transition: border 0.15s; }
+.sheet-radio-row.selected .sheet-radio { border: 7px solid var(--accent); }
+.sheet-radio-row.selected b { color: var(--accent); }
+/* 버튼 */
+.sheet-actions { display: flex; gap: 8px; margin-top: 18px; }
+.sheet-btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 4px; height: 54px; border: none; border-radius: 14px; font-size: 16.5px; font-weight: 800; letter-spacing: -0.3px; cursor: pointer; transition: opacity 0.15s, transform 0.1s; }
+.sheet-btn:active { transform: scale(0.985); }
+.sheet-btn.primary { background: var(--accent); color: #fff; }
+.sheet-btn.danger { background: #e5484d; color: #fff; }
+.sheet-btn.ghost { flex: 0 0 34%; background: var(--subtle-fill); color: var(--text); }
+.sheet-btn:disabled { opacity: 0.35; cursor: default; transform: none; }
+.sheet-btn-sm { flex: none; height: 48px; padding: 0 16px; font-size: 15px; }
+/* 확인 시트 */
+.sheet-confirm { padding: 8px 4px 0; text-align: center; }
+.sheet-confirm-ic { display: inline-flex; align-items: center; justify-content: center; width: 58px; height: 58px; margin-bottom: 14px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
+.sheet-confirm-ic.danger { background: rgba(229, 72, 77, 0.12); color: #e5484d; }
+.sheet-confirm-title { display: block; font-size: 19px; font-weight: 800; letter-spacing: -0.5px; color: var(--text); }
+.sheet-confirm-sub { margin: 8px 0 0; font-size: 14px; line-height: 1.6; color: var(--muted); }
+/* 입력 */
+.sheet-input { width: 100%; height: 52px; box-sizing: border-box; padding: 0 14px; border: 1.5px solid var(--border); border-radius: 13px; background: var(--bg); color: var(--text); font-size: 16px; }
+.sheet-input:focus, .sheet-inline-input:focus { outline: none; border-color: var(--accent); }
+.sheet-add-row { display: flex; gap: 8px; margin-top: 14px; }
+.sheet-add-row .sheet-input { height: 48px; }
+/* 그룹 관리 줄 */
+.sheet-manage-row { display: flex; align-items: center; gap: 12px; padding: 10px 2px; border-bottom: 1px solid var(--border); }
+.sheet-inline-input { flex: 1; min-width: 0; height: 40px; padding: 0 10px; border: 1.5px solid transparent; border-radius: 10px; background: var(--subtle-fill); color: var(--text); font-size: 16px; font-weight: 700; }
+.sheet-count { flex: none; font-size: 12.5px; color: var(--muted); }
+.sheet-icon-btn { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; padding: 0; border: none; border-radius: 10px; background: none; color: var(--muted); cursor: pointer; }
+.sheet-icon-btn:active { background: rgba(229, 72, 77, 0.1); color: #e5484d; }
+/* 관심목록 담기 시트(종목 상세의 별)도 같은 모양 */
+.wl-group-pick-backdrop { background: rgba(15, 23, 42, 0.5); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+.wl-group-pick-panel { border-radius: 22px 22px 0 0; padding: 8px 20px calc(20px + env(safe-area-inset-bottom)); box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.18); }
+.wl-group-pick-panel::before { content: ""; display: block; width: 38px; height: 4px; margin: 0 auto 14px; border-radius: 99px; background: var(--border); }
+.wl-group-pick-head { margin-bottom: 14px; }
+.wl-group-pick-title { font-size: 19px; letter-spacing: -0.5px; }
+.wl-group-pick-x { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; padding: 0; border-radius: 50%; background: var(--subtle-fill); color: var(--muted); }
+.wl-group-pick-list { gap: 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.wl-group-pick-item { gap: 14px; padding: 15px 2px; border: none; border-bottom: 1px solid var(--border); border-radius: 0; background: none; font-size: 16px; font-weight: 700; }
+.wl-group-pick-item.checked { border-color: var(--border); color: var(--accent); }
+.wl-group-pick-check { order: 3; width: 24px; height: 24px; border-radius: 7px; border: 2px solid var(--border); font-size: 13px; }
+.wl-group-pick-count { order: 2; background: none; font-size: 13px; font-weight: 500; }
+.wl-group-pick-add { margin: 0; padding: 15px 2px; border: none; border-radius: 0; color: var(--accent); font-size: 15px; text-align: left; }
+.wl-group-pick-confirm { height: 54px; margin-top: 18px; padding: 0; border-radius: 14px; font-size: 16.5px; }
+
+/* 관심종목 편집 중엔 체크칸·≡ 자리를 위해 1일 그래프 칸을 숨기고 이름 칸을 넓힘(2026-10-08) */
+#watchlistList.wl-delete-mode .wl-spark { display: none; }
+#watchlistList.wl-delete-mode .wl-row-grid.wl-grid-spark { grid-template-columns: minmax(0, 1fr) 104px; }
+#watchlistList.wl-delete-mode .stock-card-row { padding-right: 56px; } /* 오른쪽 ≡(끌어서 순서) 손잡이 자리 */

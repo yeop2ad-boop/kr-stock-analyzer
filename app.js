@@ -3785,13 +3785,14 @@ el("wlGroupPickCloseBtn").addEventListener("click", closeWlGroupPickSheet);
 el("wlGroupPickList").addEventListener("click", (e) => {
   if (e.target.closest("#wlGroupPickAddBtn")) {
     const sec = sectionOfSymbol(wlGroupPickTarget || "");
-    const name = prompt("새 관심목록 이름을 입력해주세요.", wlNextGroupName(sec));
-    const id = name === null ? null : addWatchlistGroup(name, sec);
-    if (id) {
-      wlGroupPickChecked.add(id);
-      renderWlGroupPickList();
-      renderWatchlistList();
-    }
+    appPromptSheet({ title: "새 관심목록", sub: "목록 이름을 입력해 주세요.", value: wlNextGroupName(sec), placeholder: "예) 반도체", okLabel: "만들기", maxLength: 12 }).then((name) => {
+      const id = name === null ? null : addWatchlistGroup(name, sec);
+      if (id) {
+        wlGroupPickChecked.add(id);
+        renderWlGroupPickList();
+        renderWatchlistList();
+      }
+    });
     return;
   }
   const btn = e.target.closest("[data-pick-group]");
@@ -3811,12 +3812,13 @@ el("wlGroupPickList").addEventListener("click", (e) => {
     timer = setTimeout(() => {
       timer = null;
       const id = nameEl.dataset.groupName;
-      const next = prompt("목록 이름을 바꿉니다.", nameEl.textContent);
-      if (next !== null) {
-        renameWatchlistGroup(id, next);
-        renderWlGroupPickList();
-        renderWatchlistList();
-      }
+      appPromptSheet({ title: "목록 이름 바꾸기", value: nameEl.textContent, okLabel: "저장", maxLength: 12 }).then((next) => {
+        if (next !== null) {
+          renameWatchlistGroup(id, next);
+          renderWlGroupPickList();
+          renderWatchlistList();
+        }
+      });
     }, 550);
   };
   const cancel = () => {
@@ -3987,8 +3989,67 @@ function renderWlGroupModal() {
     </div>`;
 }
 function openWlGroupModal() {
-  renderWlGroupModal();
-  el("wlGroupModal").style.display = "flex";
+  // 2026-10-08: 전체 화면 모달 → 다른 시트와 같은 디자인의 아래 시트(이름은 바로 고치고, 삭제는 확인 후)
+  const sec = wlCurrentSection();
+  const groups = wlGroupsForSection(sec).map((g) => ({ ...g, name: wlGroupLabel(g, sec) }));
+  const countOf = (id) => getWatchlist().filter((w) => wlGroupIdsOf(w).includes(id) && sectionOfSymbol(w.symbol) === sec).length;
+  const sheet = iaOpenSheet(`
+    ${sheetHead("그룹 관리")}
+    <p class="ia-sheet-sub">이름을 눌러 바로 고칠 수 있어요.</p>
+    <div class="sheet-list">${groups
+      .map(
+        (g) => `<div class="sheet-manage-row" data-group-id="${escapeHtml(g.id)}">${sheetIc("folder")}
+          <input type="text" class="sheet-inline-input" value="${escapeHtml(g.name)}" maxlength="12" aria-label="그룹 이름" />
+          <span class="sheet-count">${countOf(g.id)}종목</span>
+          <button type="button" class="sheet-icon-btn" data-group-del aria-label="그룹 삭제">${sheetSvg("trash", 19)}</button>
+        </div>`
+      )
+      .join("")}</div>
+    <div class="sheet-add-row">
+      <input type="text" class="sheet-input" id="sheetNewGroup" maxlength="12" placeholder="새 그룹 이름" value="${escapeHtml(wlNextGroupName(sec))}" />
+      <button type="button" class="sheet-btn primary sheet-btn-sm" data-group-add>${sheetSvg("plus", 18)} 추가</button>
+    </div>
+    <div class="sheet-actions"><button type="button" class="sheet-btn primary" data-ia-close>완료</button></div>`);
+  sheet.querySelectorAll(".sheet-inline-input").forEach((inp) => {
+    const save = () => {
+      const id = inp.closest("[data-group-id]").dataset.groupId;
+      if (inp.value.trim()) {
+        renameWatchlistGroup(id, inp.value);
+        renderWatchlistList();
+      }
+    };
+    inp.addEventListener("change", save);
+    inp.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") inp.blur();
+    });
+  });
+  sheet.addEventListener("click", (e) => {
+    const del = e.target.closest("[data-group-del]");
+    if (del) {
+      const row = del.closest("[data-group-id]");
+      if (getWatchlistGroups().length <= 1 || groups.length <= 1) {
+        showToast("최소 1개의 그룹은 남아 있어야 합니다.");
+        return;
+      }
+      const name = row.querySelector(".sheet-inline-input").value;
+      appConfirmSheet({ icon: "trash", danger: true, title: `'${name}' 그룹을 삭제할까요?`, sub: "그룹 안의 종목은 지워지지 않고 다른 그룹으로 옮겨져요.", okLabel: "삭제" }).then((ok) => {
+        if (ok) {
+          deleteWatchlistGroup(row.dataset.groupId);
+          renderWatchlistList();
+        }
+        openWlGroupModal();
+      });
+      return;
+    }
+    if (e.target.closest("[data-group-add]")) {
+      const id = addWatchlistGroup(sheet.querySelector("#sheetNewGroup").value, sec);
+      if (id) {
+        setActiveWatchlistGroup(id);
+        renderWatchlistList();
+        openWlGroupModal();
+      }
+    }
+  });
 }
 function closeWlGroupModal() {
   el("wlGroupModal").style.display = "none";
@@ -4009,7 +4070,7 @@ el("wlGroupModalBody").addEventListener("click", (e) => {
     const row = deleteBtn.closest(".wl-group-modal-row");
     if (row) {
       if (getWatchlistGroups().length <= 1) {
-        alert("최소 1개의 그룹은 남아 있어야 합니다.");
+        showToast("최소 1개의 그룹은 남아 있어야 합니다.");
         return;
       }
       deleteWatchlistGroup(row.dataset.groupId);
@@ -4193,24 +4254,32 @@ el("wlMoveGroupBtn").addEventListener("click", () => {
   }
   const sec = wlCurrentSection();
   const groups = wlGroupsForSection(sec).map((g) => ({ ...g, name: wlGroupLabel(g, sec) }));
+  const current = new Set(getWatchlist().filter((w) => symbols.includes(w.symbol)).flatMap((w) => wlGroupIdsOf(w)));
+  let picked = null;
   const sheet = iaOpenSheet(`
-    <div class="ia-sheet-head"><b>${symbols.length}개 종목 그룹 이동</b><button type="button" class="ia-sheet-x" data-ia-close aria-label="닫기">✕</button></div>
-    <p class="ia-sheet-sub">옮길 그룹을 고르세요. 원래 있던 그룹에서는 빠집니다. 새 그룹은 "그룹 관리"에서 만들 수 있어요.</p>
-    ${groups
-      .map(
-        (g) =>
-          `<button type="button" class="ia-choice" data-wl-move="${escapeHtml(g.id)}"><span class="ia-choice-ic">📁</span><span><b>${escapeHtml(g.name)}</b><small>${
-            getWatchlist().filter((w) => wlGroupIdsOf(w).includes(g.id)).length
-          }종목</small></span></button>`
-      )
-      .join("")}`);
+    ${sheetHead(`${symbols.length}개 종목 그룹 이동`)}
+    <p class="ia-sheet-sub">옮길 그룹을 고르세요. 원래 있던 그룹에서는 빠집니다.</p>
+    <div class="sheet-list">${groups
+      .map((g) => {
+        const n = getWatchlist().filter((w) => wlGroupIdsOf(w).includes(g.id) && sectionOfSymbol(w.symbol) === sec).length;
+        return `<button type="button" class="ia-choice sheet-radio-row" data-wl-move="${escapeHtml(g.id)}">${sheetIc("folder")}<span><b>${escapeHtml(g.name)}</b><small>${n}종목${
+          current.has(g.id) ? " · 현재 그룹" : ""
+        }</small></span><span class="sheet-radio" aria-hidden="true"></span></button>`;
+      })
+      .join("")}</div>
+    <div class="sheet-actions"><button type="button" class="sheet-btn primary" data-wl-move-go disabled>이동하기</button></div>`);
   sheet.addEventListener("click", (ev) => {
-    const b = ev.target.closest("[data-wl-move]");
-    if (!b) return;
-    const gid = b.dataset.wlMove;
-    const g = groups.find((x) => x.id === gid);
+    const row = ev.target.closest("[data-wl-move]");
+    if (row) {
+      picked = row.dataset.wlMove;
+      sheet.querySelectorAll("[data-wl-move]").forEach((b) => b.classList.toggle("selected", b === row));
+      sheet.querySelector("[data-wl-move-go]").disabled = false;
+      return;
+    }
+    if (!ev.target.closest("[data-wl-move-go]") || !picked) return;
+    const g = groups.find((x) => x.id === picked);
     const set = new Set(symbols);
-    saveWatchlist(getWatchlist().map((w) => (set.has(w.symbol) ? { ...w, groupIds: [gid], groupId: gid } : w)));
+    saveWatchlist(getWatchlist().map((w) => (set.has(w.symbol) ? { ...w, groupIds: [picked], groupId: picked } : w)));
     iaCloseSheet();
     setWlDeleteMode(false);
     renderWatchlistList();
@@ -4223,11 +4292,22 @@ el("wlDeleteConfirmBtn").addEventListener("click", () => {
     showToast("삭제할 종목을 선택해주세요.");
     return;
   }
-  const removeSet = new Set(symbols);
-  saveWatchlist(getWatchlist().filter((w) => !removeSet.has(w.symbol)));
-  setWlDeleteMode(false);
-  renderWatchlistList();
-  showToast(`${symbols.length}개 종목을 삭제했습니다.`);
+  const names = symbols.map((x) => wlKoName(x));
+  const shown = names.length > 3 ? `${names.slice(0, 3).join(", ")} 외 ${names.length - 3}개` : names.join(", ");
+  appConfirmSheet({
+    icon: "trash",
+    danger: true,
+    title: `${symbols.length}개 종목을 삭제할까요?`,
+    sub: `${escapeHtml(shown)}<br>삭제해도 언제든 다시 추가할 수 있어요.`,
+    okLabel: "삭제",
+  }).then((ok) => {
+    if (!ok) return;
+    const removeSet = new Set(symbols);
+    saveWatchlist(getWatchlist().filter((w) => !removeSet.has(w.symbol)));
+    setWlDeleteMode(false);
+    renderWatchlistList();
+    showToast(`${symbols.length}개 종목을 삭제했습니다.`);
+  });
 });
 
 async function shareWatchlist() {
@@ -21710,10 +21790,12 @@ function iaBindShell(root) {
     const del = e.target.closest("[data-ia-del]");
     if (del) {
       const pf = iaLoadPortfolios().find((p) => p.id === del.dataset.iaDel);
-      if (pf && window.confirm(`'${pf.name}' 포트폴리오를 삭제할까요?`)) {
-        iaSavePortfolios(iaLoadPortfolios().filter((p) => p.id !== pf.id));
-        renderInvestAnalysis();
-      }
+      if (pf)
+        appConfirmSheet({ icon: "trash", danger: true, title: `'${pf.name}' 포트폴리오를 삭제할까요?`, sub: "삭제하면 되돌릴 수 없어요.", okLabel: "삭제" }).then((ok) => {
+          if (!ok) return;
+          iaSavePortfolios(iaLoadPortfolios().filter((p) => p.id !== pf.id));
+          renderInvestAnalysis();
+        });
     }
   };
 }
@@ -22163,12 +22245,115 @@ function iaPaintQuote(sym) {
 }
 
 // ---------- +추가하기: 내 관심종목에서 / 직접 추가 ----------
+// 2026-10-08 사용자 요청(올라오는 창이 성의 없어 보임 → 금융 앱처럼 전문적으로): 손잡이 · 선 아이콘(이모지 대신) ·
+// 목록형 줄 + 오른쪽 화살표/선택 원 · 아래 큰 확인 버튼. 브라우저 기본 확인창(confirm·prompt)도 이 시트로 바꿈
+const SHEET_ICON = {
+  folder: '<path d="M3.5 7.5A1.5 1.5 0 0 1 5 6h4.2l2 2H19a1.5 1.5 0 0 1 1.5 1.5v8A1.5 1.5 0 0 1 19 19H5a1.5 1.5 0 0 1-1.5-1.5z"/>',
+  star: '<path d="M12 3.8l2.5 5.1 5.6.8-4 3.9.9 5.6-5-2.6-5 2.6.9-5.6-4-3.9 5.6-.8z"/>',
+  search: '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>',
+  trash: '<path d="M4.5 7h15M10 11v6M14 11v6M6.5 7l.8 11.2A2 2 0 0 0 9.3 20h5.4a2 2 0 0 0 2-1.8L17.5 7M9.5 7V4.5h5V7"/>',
+  close: '<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
+  plus: '<path d="M12 5.5v13M5.5 12h13"/>',
+  edit: '<path d="M4.5 19.5h4l10-10-4-4-10 10z"/><path d="M13.5 6.5l4 4"/>',
+  move: '<path d="M4 12h13M13 7l5 5-5 5"/>',
+};
+function sheetSvg(k, size = 20) {
+  return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SHEET_ICON[k] || ""}</svg>`;
+}
+function sheetIc(k, tone) {
+  return `<span class="ia-choice-ic${tone ? " " + tone : ""}">${sheetSvg(k)}</span>`;
+}
+function sheetHead(title) {
+  return `<div class="ia-sheet-head"><b>${escapeHtml(title)}</b><button type="button" class="ia-sheet-x" data-ia-close aria-label="닫기">${sheetSvg("close", 18)}</button></div>`;
+}
+// 확인 시트 — Promise<boolean>. danger면 빨간 버튼
+function appConfirmSheet(o) {
+  return new Promise((resolve) => {
+    let done = false;
+    const fin = (v) => {
+      if (done) return;
+      done = true;
+      resolve(v);
+    };
+    const sheet = iaOpenSheet(`
+      <div class="sheet-confirm">
+        ${o.icon ? `<span class="sheet-confirm-ic${o.danger ? " danger" : ""}">${sheetSvg(o.icon, 26)}</span>` : ""}
+        <b class="sheet-confirm-title">${escapeHtml(o.title)}</b>
+        ${o.sub ? `<p class="sheet-confirm-sub">${o.sub}</p>` : ""}
+      </div>
+      <div class="sheet-actions">
+        <button type="button" class="sheet-btn ghost" data-sheet-cancel>${escapeHtml(o.cancelLabel || "취소")}</button>
+        <button type="button" class="sheet-btn ${o.danger ? "danger" : "primary"}" data-sheet-ok>${escapeHtml(o.okLabel || "확인")}</button>
+      </div>`);
+    const wrap = sheet.parentElement;
+    wrap.addEventListener("click", (e) => {
+      if (e.target === wrap || e.target.closest("[data-ia-close]")) fin(false);
+    });
+    sheet.addEventListener("click", (e) => {
+      if (e.target.closest("[data-sheet-ok]")) {
+        iaCloseSheet();
+        fin(true);
+      } else if (e.target.closest("[data-sheet-cancel]")) {
+        iaCloseSheet();
+        fin(false);
+      }
+    });
+  });
+}
+// 입력 시트 — Promise<string|null>
+function appPromptSheet(o) {
+  return new Promise((resolve) => {
+    let done = false;
+    const fin = (v) => {
+      if (done) return;
+      done = true;
+      resolve(v);
+    };
+    const sheet = iaOpenSheet(`
+      ${sheetHead(o.title)}
+      ${o.sub ? `<p class="ia-sheet-sub">${o.sub}</p>` : ""}
+      <input type="text" class="sheet-input" maxlength="${o.maxLength || 20}" placeholder="${escapeHtml(o.placeholder || "")}" value="${escapeHtml(o.value || "")}" />
+      <div class="sheet-actions">
+        <button type="button" class="sheet-btn ghost" data-sheet-cancel>취소</button>
+        <button type="button" class="sheet-btn primary" data-sheet-ok>${escapeHtml(o.okLabel || "확인")}</button>
+      </div>`);
+    const input = sheet.querySelector(".sheet-input");
+    const okBtn = sheet.querySelector("[data-sheet-ok]");
+    const sync = () => (okBtn.disabled = !input.value.trim());
+    sync();
+    input.addEventListener("input", sync);
+    setTimeout(() => {
+      input.focus();
+      input.select();
+    }, 250);
+    const submit = () => {
+      if (!input.value.trim()) return;
+      const v = input.value.trim();
+      iaCloseSheet();
+      fin(v);
+    };
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") submit();
+    });
+    const wrap = sheet.parentElement;
+    wrap.addEventListener("click", (e) => {
+      if (e.target === wrap || e.target.closest("[data-ia-close]")) fin(null);
+    });
+    sheet.addEventListener("click", (e) => {
+      if (e.target.closest("[data-sheet-ok]")) submit();
+      else if (e.target.closest("[data-sheet-cancel]")) {
+        iaCloseSheet();
+        fin(null);
+      }
+    });
+  });
+}
 function iaOpenSheet(innerHtml) {
   iaCloseSheet();
   const wrap = document.createElement("div");
   wrap.className = "ia-sheet-backdrop";
   wrap.id = "iaSheet";
-  wrap.innerHTML = `<div class="ia-sheet" role="dialog" aria-modal="true">${innerHtml}</div>`;
+  wrap.innerHTML = `<div class="ia-sheet" role="dialog" aria-modal="true"><div class="sheet-grabber" aria-hidden="true"></div>${innerHtml}</div>`;
   wrap.addEventListener("click", (e) => {
     if (e.target === wrap || e.target.closest("[data-ia-close]")) iaCloseSheet();
   });
@@ -22182,15 +22367,15 @@ function iaCloseSheet() {
 }
 function iaSheetHead(title) {
   const sec = iaCurrentSection();
-  return `<div class="ia-sheet-head">${iaSectionMarkHtml(sec)}<b>${escapeHtml(title)}</b><button type="button" class="ia-sheet-x" data-ia-close aria-label="닫기">✕</button></div>`;
+  return `<div class="ia-sheet-head">${iaSectionMarkHtml(sec)}<b>${escapeHtml(title)}</b><button type="button" class="ia-sheet-x" data-ia-close aria-label="닫기">${sheetSvg("close", 18)}</button></div>`;
 }
 function iaOpenAddChoice() {
   const sec = iaCurrentSection();
   const sheet = iaOpenSheet(`
     ${iaSheetHead("내 포트폴리오 추가하기")}
     <p class="ia-sheet-sub">${IA_SECTION_LABEL[sec]} 포트폴리오로 만들어집니다. 다른 투자처 종목은 섞이지 않아요.</p>
-    <button type="button" class="ia-choice" data-ia-choice="watch"><span class="ia-choice-ic">⭐</span><span><b>내 관심종목 추가하기</b><small>관심종목 목록을 골라 그대로 포트폴리오로</small></span></button>
-    <button type="button" class="ia-choice" data-ia-choice="manual"><span class="ia-choice-ic">🔍</span><span><b>직접 추가하기</b><small>티커·종목명을 검색해서 직접 구성</small></span></button>`);
+    <button type="button" class="ia-choice" data-ia-choice="watch">${sheetIc("star")}<span><b>내 관심종목 추가하기</b><small>관심종목 목록을 골라 그대로 포트폴리오로</small></span></button>
+    <button type="button" class="ia-choice" data-ia-choice="manual">${sheetIc("search")}<span><b>직접 추가하기</b><small>티커·종목명을 검색해서 직접 구성</small></span></button>`);
   sheet.addEventListener("click", (e) => {
     const c = e.target.closest("[data-ia-choice]");
     if (!c) return;
@@ -22206,7 +22391,7 @@ function iaOpenWatchPicker() {
   const rows = [{ id: WATCHLIST_ALL_GROUP_ID, name: "전체" }, ...groups]
     .map((g) => {
       const n = membersOf(g.id).length;
-      return `<button type="button" class="ia-choice ia-group-row"${n ? "" : " disabled"} data-ia-group="${escapeHtml(g.id)}"><span class="ia-choice-ic">⭐</span><span><b>${escapeHtml(g.name)}</b><small>${
+      return `<button type="button" class="ia-choice ia-group-row"${n ? "" : " disabled"} data-ia-group="${escapeHtml(g.id)}">${sheetIc("folder")}<span><b>${escapeHtml(g.name)}</b><small>${
         n ? `${IA_SECTION_LABEL[sec]} ${n}종목` : `${IA_SECTION_LABEL[sec]} 종목이 없어요`
       }</small></span></button>`;
     })
