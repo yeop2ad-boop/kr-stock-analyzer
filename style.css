@@ -82,7 +82,7 @@ body {
 .container {
   max-width: 860px;
   margin: 0 auto;
-  padding: calc(var(--fixed-header-h, 210px) + 16px) 20px 96px;
+  padding: calc(var(--fixed-header-h, 210px) + 6px) 20px 96px; /* 2026-10-08: 상단 탭 아래 빈 공간 16 → 6px */
 }
 
 .fixed-header {
@@ -3946,3 +3946,9 @@ body.on-watchlist .source-note { display: none; }
 
 /* 순위 화면 안내 번갈아(2026-10-08): 두 번째 문구가 두 줄이라 처음부터 두 줄 높이를 잡아 표가 들썩이지 않게 */
 .tap-hint.pop-hint:has([data-hint-set="rank"]) { min-height: 34px; display: flex; align-items: center; }
+
+/* 상단 탭 아래 공백 최소화(2026-10-08): 비어 있는 하위 메뉴 줄(인기종목·투자분석 등)은 자리도 차지하지 않게 */
+.top-ranking-sub-nav:empty { display: none; }
+
+/* 상단 탭 밑줄 아래 헤더 여백 6 → 0px(2026-10-08) — 밑줄이 헤더 아래 끝에 붙게 */
+.fh-titleline { margin-bottom: 0; }
