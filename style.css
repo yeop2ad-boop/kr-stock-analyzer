@@ -3943,3 +3943,6 @@ body.on-watchlist .source-note { display: none; }
 .wl-grid-spark .wl-pct { grid-column: 2; grid-row: 2; padding-right: 15px; }
 .wl-grid-spark .wl-arrow-after { display: inline-block; width: 15px; margin: 0; font-size: 11px; text-align: right; }
 @media (max-width: 360px) { .wl-row-grid.wl-grid-spark { grid-template-columns: minmax(0, 1fr) 100px 58px; } }
+
+/* 순위 화면 안내 번갈아(2026-10-08): 두 번째 문구가 두 줄이라 처음부터 두 줄 높이를 잡아 표가 들썩이지 않게 */
+.tap-hint.pop-hint:has([data-hint-set="rank"]) { min-height: 34px; display: flex; align-items: center; }

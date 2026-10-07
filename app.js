@@ -9244,9 +9244,12 @@ function stripTags(html) {
   return String(html || "").replace(/<[^>]*>/g, "");
 }
 // 표 맨 위 안내(2026-09-10 사용자 요청) — 머리글·아이콘 아무 데나 눌러도 설명이 나온다는 힌트
-const TAP_HINT_HTML = `<p class="tap-hint">* 모든 항목은 눌러서 자세한 설명을 볼 수 있습니다.</p>`;
+// 2026-10-08 사용자 요청: 순위 화면 안내도 번갈아 — 두 번째 문구는 아래에 전체 순위 버튼이 있는 화면에서만(타이머는 POPULAR_HINTS 옆)
+const RANK_HINTS = ["모든 항목은 눌러서 자세한 설명을 볼 수 있습니다.", "현재 시가총액 상위 30위까지의 결과입니다. 전체 순위는 아래 버튼을 눌러 주세요."];
+const RANK_HINT_SPAN = `<span class="pop-hint-text" data-hint-set="rank">* ${RANK_HINTS[0]}</span>`;
+const TAP_HINT_HTML = `<p class="tap-hint pop-hint">${RANK_HINT_SPAN}</p>`;
 // 승률 탭 머리줄(2026-09-13 사용자 요청): 안내 + 오른쪽 "+승률이란" — 누르면 바로 아래에 대표자산 승률비교를 펼침(인기종목과 같은 내용)
-const WINRATE_HEAD_HTML = `<div class="popular-head-row"><span class="tap-hint">* 모든 항목은 눌러서 자세한 설명을 볼 수 있습니다.</span><button type="button" class="score-method-detail-btn winrate-info-btn">+승률이란</button></div>`;
+const WINRATE_HEAD_HTML = `<div class="popular-head-row"><span class="tap-hint pop-hint">${RANK_HINT_SPAN}</span><button type="button" class="score-method-detail-btn winrate-info-btn">+승률이란</button></div>`;
 document.addEventListener("click", (e) => {
   const btn = e.target.closest(".winrate-info-btn");
   if (!btn) return;
@@ -11078,7 +11081,17 @@ if (!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)")
   setInterval(() => {
     popularHintIdx = (popularHintIdx + 1) % POPULAR_HINTS.length;
     document.querySelectorAll(".pop-hint-text").forEach((n) => {
-      const set = n.dataset.hintSet === "sr" ? SR_HINTS : POPULAR_HINTS;
+      let set = n.dataset.hintSet === "sr" ? SR_HINTS : n.dataset.hintSet === "rank" ? RANK_HINTS : POPULAR_HINTS;
+      if (set === RANK_HINTS) {
+        // 같은 결과 묶음 안에 보이는 더보기/전체보기 버튼이 없으면 첫 문구만(바꾸지 않음)
+        let box = n.closest(".tap-hint");
+        for (let i = 0; i < 3 && box && box.parentElement; i++) box = box.parentElement;
+        const hasMore = box && [...box.querySelectorAll(".load-more-btn")].some((b) => b.offsetParent !== null);
+        if (!hasMore) {
+          if (n.textContent !== `* ${RANK_HINTS[0]}`) n.textContent = `* ${RANK_HINTS[0]}`;
+          return;
+        }
+      }
       n.classList.add("out");
       setTimeout(() => {
         n.textContent = `* ${set[popularHintIdx % set.length]}`;
