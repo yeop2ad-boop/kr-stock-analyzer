@@ -12,6 +12,7 @@
 """
 import json
 import os
+import re
 import sys
 import time
 import urllib.parse
@@ -26,16 +27,18 @@ KST = timezone(timedelta(hours=9))
 SEC_UA = {"User-Agent": "MarketMap research hyhykhy6@gmail.com", "Accept": "application/json"}
 
 
-def get_json(url, tries=3, headers=None):
+def get_json(url, tries=3, headers=None, timeout=25):
     for k in range(tries):
         try:
             req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json", **(headers or {})})
-            with urllib.request.urlopen(req, timeout=25) as r:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
                 return json.loads(r.read().decode("utf-8"))
         except Exception as e:
             err = e
             time.sleep(2 * (k + 1))
-    print("  실패:", url[:90], err, flush=True)
+    # API 키가 로그(공개 저장소의 Actions 로그)에 찍히지 않게 crtfc_key 값은 가린다
+    safe = re.sub(r"crtfc_key=[^&]+", "crtfc_key=***", url)
+    print("  실패:", safe[:120], err, flush=True)
     return None
 
 
@@ -113,14 +116,25 @@ KR_KEYWORDS = ("영업(잠정)실적", "분기보고서", "반기보고서", "�
 
 
 def kr_filings(syms, key, bgn, end):
-    """[bgn, end] 사이 실적 관련 공시 → {symbol: [날짜…]} (DART list.json, 기간 3개월 이하)"""
+    """[bgn, end] 사이 실적 관련 공시 → {symbol: [날짜…]} — 한 번에 길게 물으면 DART가 늦게 답해(2026-10-08 타임아웃) 15일씩 나눔"""
+    out = {}
+    a = bgn
+    while a <= end:
+        b = min(a + timedelta(days=14), end)
+        for sym, ds in kr_filings_chunk(syms, key, a, b).items():
+            out.setdefault(sym, []).extend(ds)
+        a = b + timedelta(days=1)
+    return out
+
+
+def kr_filings_chunk(syms, key, bgn, end):
     out = {}
     for ty in ("I", "A"):
         for cls in ("Y", "K"):
             page = 1
             while True:
                 q = urllib.parse.urlencode({"crtfc_key": key, "bgn_de": bgn.strftime("%Y%m%d"), "end_de": end.strftime("%Y%m%d"), "pblntf_ty": ty, "corp_cls": cls, "page_no": page, "page_count": 100})
-                js = get_json(f"https://opendart.fss.or.kr/api/list.json?{q}")
+                js = get_json(f"https://opendart.fss.or.kr/api/list.json?{q}", tries=4, timeout=60)
                 if not js or js.get("status") not in ("000", "013"):
                     print("  DART 응답:", (js or {}).get("status"), (js or {}).get("message"), flush=True)
                     if not js or js.get("status") not in ("013",):
