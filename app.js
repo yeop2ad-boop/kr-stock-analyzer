@@ -10908,7 +10908,8 @@ function popularSimpleTableHtml(rows, isKr, opts) {
     .join("");
   queueMicrotask(fillPopularSparks);
   return `
-    <table class="top30-table rk-table">
+    <table class="top30-table rk-table pop-table">
+      <colgroup><col><col class="pop-col-price"><col class="pop-col-spark"></colgroup>
       <tbody>${body}</tbody>
     </table>`;
 }

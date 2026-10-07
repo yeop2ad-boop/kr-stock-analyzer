@@ -3882,3 +3882,10 @@ table.top30-table.atg-table th:nth-child(2) { width: 84px; }
 .more-map-text small { margin-top: 2px; font-size: 12.5px; color: var(--mm-sub); }
 .more-map-chev { flex: none; font-size: 24px; line-height: 1; color: var(--mm-sub); }
 .more-panel-item.more-map-banner svg.more-map-venn { width: 58px; height: 48px; min-width: 58px; flex: none; }
+
+/* 인기종목 표 칸 너비(2026-10-08): 머리글 줄을 없앤 뒤 세 칸이 1/3씩 나뉘어 이름이 잘림 —
+   현재가·그래프 칸은 필요한 만큼만(오른쪽에 붙임), 남는 폭은 전부 이름 칸 */
+table.pop-table col.pop-col-price { width: 104px; }
+table.pop-table col.pop-col-spark { width: 62px; }
+table.pop-table td.pop-spark-td { padding-right: 0; }
+table.pop-table td:nth-child(2) { padding-right: 2px; }
