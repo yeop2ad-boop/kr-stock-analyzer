@@ -3889,3 +3889,15 @@ table.pop-table col.pop-col-price { width: 104px; }
 table.pop-table col.pop-col-spark { width: 62px; }
 table.pop-table td.pop-spark-td { padding-right: 0; }
 table.pop-table td:nth-child(2) { padding-right: 2px; }
+
+/* 투자분석 잠금(관심종목 5개 미만, 2026-10-08) */
+#analysisResults.ia-locked { position: relative; min-height: 420px; }
+#analysisResults.ia-locked > *:not(.ia-gate) { filter: blur(7px); opacity: 0.55; pointer-events: none; user-select: none; }
+.ia-gate { position: absolute; inset: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: 110px; z-index: 5; }
+.ia-gate-card { width: min(300px, 86%); padding: 22px 18px 18px; border-radius: 18px; background: var(--card, var(--bg)); box-shadow: 0 8px 28px rgba(0, 0, 0, 0.16); text-align: center; }
+.ia-gate-ic { font-size: 30px; line-height: 1; margin-bottom: 10px; }
+.ia-gate-title { display: block; font-size: 18px; font-weight: 800; letter-spacing: -0.4px; color: var(--text); }
+.ia-gate-desc { margin: 8px 0 10px; font-size: 13.5px; line-height: 1.5; color: var(--muted); }
+.ia-gate-count { margin-bottom: 14px; font-size: 14px; color: var(--muted); }
+.ia-gate-count b { color: var(--text); font-size: 16px; }
+.ia-gate-btn { width: 100%; }

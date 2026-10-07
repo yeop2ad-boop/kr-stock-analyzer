@@ -3586,6 +3586,7 @@ function isWatchlisted(symbol) {
 function saveWatchlist(list, market = getWatchlistActiveMarket()) {
   localStorage.setItem(wlKey("watchlist_v1", market), JSON.stringify(list));
   tabLoadPromises.watchlist = null; // 다음에 관심종목 탭에 들어갈 때 최신 목록으로 다시 렌더링되도록 캐시 무효화
+  if (typeof iaApplyGate === "function") iaApplyGate();
 }
 
 // ---------- 관심종목 그룹(가로스크롤 탭) — 시장별 별도 ----------
@@ -21127,6 +21128,36 @@ async function renderInvestAnalysis() {
   iaBindShell(results);
   iaRenderHeroAndRank(null);
   iaDrawChart();
+  iaApplyGate();
+}
+
+// 2026-10-08 사용자 요청: 관심종목이 5개 미만이면 투자분석 화면을 흐리게 덮고 "최소 5개 종목을 등록하세요" —
+// 종목을 추가해 5개가 되면 바로 풀림(saveWatchlist가 다시 부름)
+const IA_GATE_MIN = 5;
+function iaApplyGate() {
+  const results = el("analysisResults");
+  if (!results || !results.firstElementChild) return;
+  const n = getWatchlist().length;
+  const locked = n < IA_GATE_MIN;
+  results.classList.toggle("ia-locked", locked);
+  let gate = results.querySelector(".ia-gate");
+  if (!locked) {
+    if (gate) gate.remove();
+    return;
+  }
+  if (!gate) {
+    gate = document.createElement("div");
+    gate.className = "ia-gate";
+    results.appendChild(gate);
+  }
+  gate.innerHTML = `<div class="ia-gate-card">
+      <div class="ia-gate-ic" aria-hidden="true">🔒</div>
+      <b class="ia-gate-title">최소 5개 종목을 등록하세요</b>
+      <p class="ia-gate-desc">관심종목을 5개 이상 등록하면 투자분석을 볼 수 있습니다.</p>
+      <div class="ia-gate-count">지금 <b>${n}</b> / ${IA_GATE_MIN}개</div>
+      <button type="button" class="wl-add-stock-btn ia-gate-btn">+ 종목 추가</button>
+    </div>`;
+  gate.querySelector(".ia-gate-btn").addEventListener("click", () => openSearchOverlay());
 }
 
 // 2026-10-07 사용자 선택(A안 · 랭킹 리스트형): 기간 칩 → 선택한 투자방법 이름·수익률 크게 → 그 선만 진하게(나머지 회색) →
