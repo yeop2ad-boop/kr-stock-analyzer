@@ -6676,13 +6676,14 @@ function sReportCoreSpecs(isAsset, isEtf) {
       }
     : isAsset
     ? { key: "rev", label: "1년 수익률", explainKey: "ret1y", better: "high", band: 3, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true) }
-    : { key: "rev", label: "매출액", sub: "작년 대비", better: "high", band: 3, rel: 0.2, signed: true, fmt: (v, d) => sPct(v, d, true), axis: (v) => v / 50 };
+    : { key: "rev", label: "매출성장", sub: "작년 대비", better: "high", band: 3, rel: 0.2, signed: true, fmt: (v, d) => sPct(v, d, true), axis: (v) => v / 50 };
   return [
     // ETF만 🔥 기준이 등수가 아니라 절대값 — 승률 60% 이상, 변동성 0.8% 미만(2026-09-17 사용자 지정)
-    { key: "win", label: "승률", sub: "10년 월간", better: "high", band: 2, fmt: (v, d) => sPct(v, d), axis: (v) => (v - 40) / 30, ...(isEtf ? { fireIf: (v) => v >= 60 } : {}) },
-    { key: "ret", label: "상승률", sub: "연평균", better: "high", band: 2, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true), axis: (v) => v / 50 },
+    // 2026-10-08 사용자 요청: 오각형·표 이름만 길게(10년평균 승률·연 상승률·일 변동성·매출성장) — 눌렀을 때 설명 제목은 S_REPORT_TITLES 그대로
+    { key: "win", label: "10년평균 승률", sub: "10년 월간", better: "high", band: 2, fmt: (v, d) => sPct(v, d), axis: (v) => (v - 40) / 30, ...(isEtf ? { fireIf: (v) => v >= 60 } : {}) },
+    { key: "ret", label: "연 상승률", sub: "연평균", better: "high", band: 2, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true), axis: (v) => v / 50 },
     // 변동성은 등수(상위 N%) 대신 5단계 등급(2026-10-06 사용자 요청) — sReportVolJudge 참고
-    { key: "vol", label: "변동성", sub: "3개월 하루", better: "low", isVol: true, band: 0.1, rel: 0.1, fmt: (v, d) => `${v.toFixed(d ? 2 : 1)}%`, axis: (v) => (5 - v) / 4 },
+    { key: "vol", label: "일 변동성", sub: "3개월 하루", better: "low", isVol: true, band: 0.1, rel: 0.1, fmt: (v, d) => `${v.toFixed(d ? 2 : 1)}%`, axis: (v) => (5 - v) / 4 },
     // 과열도는 낮을수록 좋은 점수(2026-09-16 사용자 요청) — 등수도 낮은 순으로 1위, 레이더에서도 낮을수록 바깥.
     // ETF는 과열도를 일반지표(더보기)로 내리고 그 자리에 규모(순자산)를 둔다(2026-10-06 사용자 요청)
     isEtf ? { key: "aum", label: "규모", sub: "순자산", better: "high", isAum: true, fmt: (v) => etfAumText(v) } : { key: "rsi", label: "과열도(RSI)", better: "low", isRsi: true, fmt: (v, d) => sNum(v, d) },
