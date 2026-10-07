@@ -3842,8 +3842,8 @@ function wlGroupTabsHtml(groups, activeId) {
   const groupTabs = groups
     .map((g) => `<button type="button" class="wl-group-tab${activeId === g.id ? " active" : ""}" data-group-id="${escapeHtml(g.id)}">${escapeHtml(g.name)}</button>`)
     .join("");
-  const addTab = `<button type="button" class="wl-group-tab wl-group-tab-add" id="wlGroupAddBtn">+ 새 그룹</button>`;
-  return allTab + groupTabs + addTab;
+  // "+ 새 그룹" 탭은 2026-10-07 삭제 — 새 그룹은 편집 > 그룹 관리에서
+  return allTab + groupTabs;
 }
 el("wlGroupTabs").addEventListener("click", (e) => {
   if (e.target.closest("#wlGroupAddBtn")) {
@@ -3857,6 +3857,7 @@ el("wlGroupTabs").addEventListener("click", (e) => {
   renderWatchlistList();
 });
 el("wlGroupManageBtn").addEventListener("click", () => openWlGroupModal());
+el("wlEditGroupBtn").addEventListener("click", () => openWlGroupModal()); // 편집 막대의 "그룹 관리"(2026-10-07)
 
 // ---------- 관심종목 그룹 탭 — "기본" 등 그룹 탭을 길게 누르면 그 자리에서 바로 이름 변경, "+ 새 그룹"은 누르면 바로 입력창이 생김 ----------
 function startInlineTabRename(tabBtn) {
@@ -4024,11 +4025,15 @@ el("wlAddStockBtn").addEventListener("click", () => openSearchOverlay());
 let wlDeleteMode = false;
 function updateWlDeleteBar() {
   const count = el("watchlistList").querySelectorAll(".wl-del-check:checked").length;
-  el("wlDeleteConfirmBtn").textContent = `선택한 ${count}개 삭제`;
+  el("wlDeleteConfirmBtn").textContent = count ? `${count}개 삭제` : "삭제";
+  el("wlMoveGroupBtn").textContent = count ? `${count}개 그룹 이동` : "그룹 이동";
+  el("wlDeleteConfirmBtn").classList.toggle("idle", !count);
+  el("wlMoveGroupBtn").classList.toggle("idle", !count);
 }
 function setWlDeleteMode(on) {
   wlDeleteMode = on;
   el("wlDeleteBtn").classList.toggle("active", on);
+  el("wlDeleteBtn").textContent = on ? "완료" : "편집";
   const listEl = el("watchlistList");
   listEl.classList.toggle("wl-delete-mode", on);
   listEl.querySelectorAll(".wl-del-check-wrap").forEach((n) => n.remove());
@@ -4039,24 +4044,35 @@ function setWlDeleteMode(on) {
       wrap.className = "wl-del-check-wrap";
       wrap.innerHTML = `<input type="checkbox" class="wl-del-check" tabindex="-1" aria-label="삭제 선택" />`;
       row.prepend(wrap);
+      // 오른쪽 ≡ 손잡이 — 끌어서 순서 바꾸기(2026-10-07 A안)
+      const handle = document.createElement("span");
+      handle.className = "wl-drag";
+      handle.setAttribute("aria-label", "끌어서 순서 바꾸기");
+      handle.textContent = "≡";
+      row.closest(".wl-card-wrap").appendChild(handle);
     });
+    wlBindDrag(listEl);
+  } else {
+    listEl.querySelectorAll(".wl-drag").forEach((n) => n.remove());
   }
   el("wlDeleteBar").style.display = on ? "flex" : "none";
   updateWlDeleteBar();
+  syncCarouselHeight(); // 편집 막대가 생기며 화면이 길어지는데 높이를 다시 안 맞춰 목록이 잘려 보이던 문제(2026-10-07)
 }
 el("wlDeleteBtn").addEventListener("click", () => {
-  if (!wlDeleteMode && !el("watchlistList").querySelector(".stock-card-row")) {
-    showToast("삭제할 관심종목이 없습니다.");
-    return;
-  }
+  // 종목이 없어도 편집에 들어가 그룹 관리는 할 수 있게(2026-10-07)
   setWlDeleteMode(!wlDeleteMode);
 });
-el("wlDeleteCancelBtn").addEventListener("click", () => setWlDeleteMode(false));
 // 삭제 모드에선 행 클릭이 상세 이동 대신 체크 토글이 되도록 캡처 단계에서 가로챔(전역 ticker-link 위임보다 먼저 실행됨)
 el("watchlistList").addEventListener(
   "click",
   (e) => {
     if (!wlDeleteMode) return;
+    if (e.target.closest(".wl-drag")) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
     const row = e.target.closest(".stock-card-row");
     if (!row) return;
     e.preventDefault();
@@ -4069,6 +4085,99 @@ el("watchlistList").addEventListener(
   },
   true
 );
+// ≡ 손잡이 끌기 — 손가락을 따라 줄이 위아래 자리로 옮겨지고, 놓으면 그 순서를 저장한다(정렬은 직접설정순으로)
+function wlBindDrag(listEl) {
+  listEl.querySelectorAll(".wl-drag").forEach((h) => {
+    h.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const wrap = h.closest(".wl-card-wrap");
+      const parent = wrap && wrap.parentElement;
+      if (!parent) return;
+      try {
+        h.setPointerCapture(e.pointerId);
+      } catch {}
+      wrap.classList.add("wl-dragging");
+      const move = (ev) => {
+        const y = ev.clientY;
+        let before = null;
+        for (const sib of parent.children) {
+          if (sib === wrap) continue;
+          const rc = sib.getBoundingClientRect();
+          if (y < rc.top + rc.height / 2) {
+            before = sib;
+            break;
+          }
+        }
+        if (before) {
+          if (wrap.nextElementSibling !== before) parent.insertBefore(wrap, before);
+        } else if (parent.lastElementChild !== wrap) parent.appendChild(wrap);
+      };
+      const up = () => {
+        h.removeEventListener("pointermove", move);
+        h.removeEventListener("pointerup", up);
+        h.removeEventListener("pointercancel", up);
+        wrap.classList.remove("wl-dragging");
+        wlSaveDomOrder(parent);
+      };
+      h.addEventListener("pointermove", move);
+      h.addEventListener("pointerup", up);
+      h.addEventListener("pointercancel", up);
+    });
+  });
+}
+// 화면에 보이는 종목(지금 투자처·그룹)의 새 순서를, 저장 목록에서 그 종목들이 있던 자리에 그대로 채워 넣는다 —
+// 다른 투자처·그룹 종목의 자리는 건드리지 않음
+function wlSaveDomOrder(parent) {
+  const order = [...parent.querySelectorAll(".stock-card-row")].map((row) => row.dataset.ticker);
+  const list = getWatchlist();
+  const inView = new Set(order);
+  const slots = [];
+  list.forEach((w, i) => inView.has(w.symbol) && slots.push(i));
+  const bySym = new Map(list.map((w) => [w.symbol, w]));
+  const next = list.slice();
+  slots.forEach((slot, k) => {
+    if (bySym.has(order[k])) next[slot] = bySym.get(order[k]);
+  });
+  saveWatchlist(next);
+  if (getWatchlistSort() !== "manual") {
+    setWatchlistSort("manual");
+    el("wlSortBtnLabel").textContent = "직접설정순";
+    showToast("순서를 바꿔서 직접설정순으로 정렬해요");
+  }
+}
+// 선택한 종목을 다른 그룹으로 옮김(원래 그룹에서는 빠짐)
+el("wlMoveGroupBtn").addEventListener("click", () => {
+  const symbols = [...el("watchlistList").querySelectorAll(".wl-del-check:checked")].map((cb) => cb.closest(".stock-card-row").dataset.ticker);
+  if (!symbols.length) {
+    showToast("옮길 종목을 먼저 선택해주세요.");
+    return;
+  }
+  const groups = getWatchlistGroups();
+  const sheet = iaOpenSheet(`
+    <div class="ia-sheet-head"><b>${symbols.length}개 종목 그룹 이동</b><button type="button" class="ia-sheet-x" data-ia-close aria-label="닫기">✕</button></div>
+    <p class="ia-sheet-sub">옮길 그룹을 고르세요. 원래 있던 그룹에서는 빠집니다. 새 그룹은 "그룹 관리"에서 만들 수 있어요.</p>
+    ${groups
+      .map(
+        (g) =>
+          `<button type="button" class="ia-choice" data-wl-move="${escapeHtml(g.id)}"><span class="ia-choice-ic">📁</span><span><b>${escapeHtml(g.name)}</b><small>${
+            getWatchlist().filter((w) => wlGroupIdsOf(w).includes(g.id)).length
+          }종목</small></span></button>`
+      )
+      .join("")}`);
+  sheet.addEventListener("click", (ev) => {
+    const b = ev.target.closest("[data-wl-move]");
+    if (!b) return;
+    const gid = b.dataset.wlMove;
+    const g = groups.find((x) => x.id === gid);
+    const set = new Set(symbols);
+    saveWatchlist(getWatchlist().map((w) => (set.has(w.symbol) ? { ...w, groupIds: [gid], groupId: gid } : w)));
+    iaCloseSheet();
+    setWlDeleteMode(false);
+    renderWatchlistList();
+    showToast(`${symbols.length}개 종목을 '${g ? g.name : "그룹"}'(으)로 옮겼어요`);
+  });
+});
 el("wlDeleteConfirmBtn").addEventListener("click", () => {
   const symbols = [...el("watchlistList").querySelectorAll(".wl-del-check:checked")].map((cb) => cb.closest(".stock-card-row").dataset.ticker);
   if (!symbols.length) {
@@ -4077,9 +4186,7 @@ el("wlDeleteConfirmBtn").addEventListener("click", () => {
   }
   const removeSet = new Set(symbols);
   saveWatchlist(getWatchlist().filter((w) => !removeSet.has(w.symbol)));
-  wlDeleteMode = false;
-  el("wlDeleteBar").style.display = "none";
-  el("wlDeleteBtn").classList.remove("active");
+  setWlDeleteMode(false);
   renderWatchlistList();
   showToast(`${symbols.length}개 종목을 삭제했습니다.`);
 });

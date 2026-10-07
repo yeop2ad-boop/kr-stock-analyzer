@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20261007f" />
+<link rel="stylesheet" href="style.css?v=20261007h" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -515,21 +515,32 @@
         <div id="watchlistSelfTestPin"></div>
         <div class="wl-group-row">
           <div class="wl-group-tabs" id="wlGroupTabs"></div>
-          <button type="button" class="wl-group-manage-btn" id="wlGroupManageBtn" aria-label="그룹 관리">⚙</button>
+          <!-- 2026-10-07 사용자 요청(추가·삭제·새 그룹이 어려움): ⚙·"+ 새 그룹"은 평소엔 숨기고 "편집" 안의 "그룹 관리"로 -->
+          <button type="button" class="wl-group-manage-btn" id="wlGroupManageBtn" aria-label="그룹 관리" style="display:none;">⚙</button>
         </div>
         <div class="wl-toolbar">
           <div class="wl-sort-wrap">
             <button type="button" class="wl-tool-btn" id="wlSortBtn"><span id="wlSortBtnLabel">직접설정순</span> <span class="wl-tool-caret">⌄</span></button>
             <div id="wlSortMenu" class="wl-sort-menu" style="display:none;"></div>
           </div>
-          <button type="button" class="wl-tool-btn" id="wlAddStockBtn">+추가</button>
-          <button type="button" class="wl-tool-btn" id="wlDeleteBtn">−삭제</button>
-          <button type="button" class="wl-tool-btn wl-tool-btn-share" id="wlShareBtn">🔗 공유</button>
+          <span class="wl-toolbar-gap"></span>
+          <button type="button" class="wl-tool-btn wl-edit-btn" id="wlDeleteBtn">편집</button>
+          <button type="button" class="wl-add-stock-btn" id="wlAddStockBtn">+ 종목 추가</button>
         </div>
-        <!-- 일괄 삭제 모드(2026-09-01): -종목삭제를 누르면 나타나는 확인/취소 바 -->
-        <div id="wlDeleteBar" class="wl-delete-bar" style="display:none;">
-          <button type="button" class="wl-delete-confirm-btn" id="wlDeleteConfirmBtn">선택한 0개 삭제</button>
-          <button type="button" class="wl-tool-btn" id="wlDeleteCancelBtn">취소</button>
+        <!-- 편집 모드(2026-10-07 A안 · 토스증권 방식): "편집"을 누르면 종목마다 체크칸 + 오른쪽 ≡(끌어서 순서 바꾸기),
+             위 막대에서 그룹 이동 · 삭제, 그 아래 작게 그룹 관리 · 공유. 다시 "완료"를 누르면 끝 -->
+        <div id="wlDeleteBar" class="wl-delete-bar wl-edit-bar" style="display:none;">
+          <div class="wl-edit-main">
+            <button type="button" class="wl-edit-move" id="wlMoveGroupBtn">그룹 이동</button>
+            <button type="button" class="wl-delete-confirm-btn" id="wlDeleteConfirmBtn">삭제</button>
+          </div>
+          <div class="wl-edit-sub">
+            <button type="button" id="wlEditGroupBtn">그룹 관리</button>
+            <span aria-hidden="true">·</span>
+            <button type="button" id="wlShareBtn">공유</button>
+            <span aria-hidden="true">·</span>
+            <span class="wl-edit-hint">≡를 끌어 순서 바꾸기</span>
+          </div>
         </div>
         <p id="watchlistStatus" class="muted top30-status" style="display:none;"></p>
         <div id="watchlistList"></div>
@@ -956,6 +967,6 @@
   <script src="data/logo-db.js?v=20260903g"></script>
   <script src="data/etf-meta.js?v=20260912a"></script>
   <script src="winrate-benchmark.js?v=20261006h"></script>
-  <script src="app.js?v=20261007f"></script>
+  <script src="app.js?v=20261007h"></script>
 </body>
 </html>

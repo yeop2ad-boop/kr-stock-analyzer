@@ -3766,3 +3766,21 @@ table.top30-table.atg-table th:nth-child(2) { width: 84px; }
 .ia-add-text b { font-size: 15px; font-weight: 800; color: var(--accent); }
 .ia-add-text small { margin-top: 2px; font-size: 12px; color: var(--muted); }
 .ia-add-chev { flex: none; font-size: 22px; line-height: 1; color: var(--accent); }
+
+/* ---------- 관심종목 상단 간소화(2026-10-07): 정렬 · 편집 · +종목 추가 / 편집 막대 ---------- */
+.wl-toolbar-gap { flex: 1; }
+.wl-tool-btn.wl-edit-btn { border: none; background: none; font-size: 13.5px; color: var(--text); padding: 6px 8px; }
+#wlDeleteBtn.wl-edit-btn.active { background: none; color: var(--accent); }
+.wl-add-stock-btn { flex: none; padding: 7px 14px; border: none; border-radius: 999px; background: var(--accent); color: #fff; font-size: 13px; font-weight: 800; cursor: pointer; }
+.wl-edit-bar { flex-direction: column; gap: 8px; padding: 10px; border-radius: 12px; background: var(--subtle-fill); }
+.wl-edit-main { display: flex; gap: 8px; }
+.wl-edit-move { flex: 1; padding: 11px; border: 1px solid var(--border); border-radius: 10px; background: var(--card-bg); color: var(--text); font-size: 14px; font-weight: 800; cursor: pointer; }
+.wl-edit-bar .wl-delete-confirm-btn { flex: 1; }
+.wl-edit-move.idle, .wl-edit-bar .wl-delete-confirm-btn.idle { opacity: 0.45; }
+.wl-edit-sub { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12.5px; color: var(--muted); }
+.wl-edit-sub button { border: none; background: none; padding: 2px 4px; color: var(--text); font-size: 12.5px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.wl-edit-hint { font-size: 12px; }
+/* ≡ 손잡이: 편집 중엔 오른쪽 등락 칸 위를 덮는다(토스처럼 편집 화면은 이름·체크·손잡이만) */
+.wl-delete-mode .wl-card-wrap { position: relative; }
+.wl-drag { position: absolute; top: 0; right: 0; bottom: 0; width: 56px; display: flex; align-items: center; justify-content: center; background: var(--bg); color: var(--muted); font-size: 22px; cursor: grab; touch-action: none; user-select: none; }
+.wl-card-wrap.wl-dragging { opacity: 0.85; background: var(--subtle-fill); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12); z-index: 2; }
