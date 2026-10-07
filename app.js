@@ -5417,6 +5417,96 @@ function registerEtfName(symbol, name) {
 //  · 한국 ETF → main: 브랜드를 뗀 상품명("미국배당다우존스"), sub: 브랜드(KODEX·TIGER…)
 //  · 미국 ETF → main: 티커(SPY), sub: 한글명/영문 상품명
 // ETF가 아니면 null. fallbackName은 야후 등에서 받은 이름(국내 ETF 목록이 아직 안 불러와졌을 때 대비)
+// 미국 ETF 티커 아래 줄(2026-10-07 사용자 요청): 긴 상품 풀네임 대신 "무엇을 담는지" 핵심만 —
+// 금은 GOLD, 지수 추종은 S&P500·NASDAQ100, 배당·금리가 섞이면 대표 두 가지(Dividend · Interest Rate 등)
+const US_ETF_CORE = (() => {
+  const m = {};
+  const put = (label, syms) => syms.split(" ").forEach((x) => (m[x] = label));
+  put("S&P500", "VOO IVV SPY SPLG");
+  put("NASDAQ100", "QQQ QQQM");
+  put("US Total Market", "VTI ITOT SCHB");
+  put("Dow Jones 30", "DIA");
+  put("Russell 2000", "IWM");
+  put("US Large Cap", "SCHX VV IWB");
+  put("US Large Growth", "VUG IWF SCHG MGK VOOG SPYG IVW");
+  put("US Large Value", "VTV IWD SPYV IVE");
+  put("US Mid Cap", "IJH MDY VO IWR");
+  put("US Small Cap", "IJR VB");
+  put("Small Cap · Value", "VBR AVUV");
+  put("S&P500 Equal Weight", "RSP");
+  put("Low Volatility", "USMV");
+  put("Quality Factor", "QUAL");
+  put("Wide Moat", "MOAT");
+  put("Free Cash Flow", "COWZ");
+  put("US Core Equity", "DFAC");
+  put("Developed ex-US", "VEA IEFA EFA SCHF");
+  put("Emerging Markets", "IEMG VWO EEM");
+  put("Total International", "VXUS IXUS");
+  put("All World", "ACWI VT");
+  put("Japan", "EWJ");
+  put("Dividend", "SCHD VYM DVY SDY HDV SPYD SPHD");
+  put("Dividend Growth", "VIG DGRO NOBL");
+  put("S&P500 · Covered Call", "JEPI XYLD");
+  put("NASDAQ100 · Covered Call", "JEPQ QYLD");
+  put("Preferred · Dividend", "PFF");
+  put("US Bonds · Interest Rate", "BND AGG IUSB BSV BIV");
+  put("20Y+ Treasury", "TLT");
+  put("7-10Y Treasury", "IEF");
+  put("1-3Y Treasury", "SHY");
+  put("US Treasury", "GOVT VGIT");
+  put("T-Bill · Interest Rate", "SGOV BIL SHV USFR TFLO");
+  put("Short Bond · Interest Rate", "JPST");
+  put("Corporate Bond", "LQD VCIT VCSH");
+  put("Municipal Bond", "MUB VTEB");
+  put("Mortgage Bond", "MBB");
+  put("EM Bond", "EMB");
+  put("TIPS · Inflation", "TIP VTIP");
+  put("High Yield Bond", "HYG JNK");
+  put("GOLD", "GLD IAU GLDM SGOL");
+  put("SILVER", "SLV");
+  put("Gold Miners", "GDX GDXJ");
+  put("Crude Oil", "USO");
+  put("Commodities", "PDBC DBC");
+  put("US Tech", "XLK VGT FTEC IYW");
+  put("Semiconductor", "SMH SOXX");
+  put("Software", "IGV");
+  put("Cloud", "SKYY");
+  put("Innovation", "ARKK");
+  put("Financials", "XLF VFH");
+  put("Health Care", "XLV VHT");
+  put("Energy", "XLE VDE");
+  put("Consumer Disc.", "XLY");
+  put("Industrials", "XLI");
+  put("Consumer Staples", "XLP VDC");
+  put("Utilities", "XLU VPU");
+  put("Materials", "XLB");
+  put("Communication", "XLC");
+  put("Real Estate", "VNQ XLRE");
+  put("Bitcoin", "IBIT FBTC");
+  put("Biotech", "XBI IBB");
+  put("Aerospace · Defense", "ITA");
+  put("NASDAQ100 3x", "TQQQ");
+  put("NASDAQ100 -3x", "SQQQ");
+  put("Semiconductor 3x", "SOXL");
+  put("Semiconductor -3x", "SOXS");
+  put("S&P500 3x", "UPRO");
+  put("S&P500 -3x", "SPXU");
+  put("NASDAQ100 2x", "QLD");
+  put("S&P500 2x", "SSO");
+  return m;
+})();
+// 미국 ETF 티커 오른쪽 작은 네모 섹터(2026-10-07 사용자 요청: 한국주식 자동추적처럼) — 한국 ETF·주식·코인은 빈 문자열
+function etfSectorTagHtml(symbol) {
+  const sym = String(symbol || "").toUpperCase();
+  if (!sym || /\.(KS|KQ)$/.test(sym) || /-(USD|KRW)$/.test(sym) || sectionOfSymbol(sym) !== "etf") return "";
+  const sec = etfSectorOf(sym);
+  return sec && sec !== "기타" ? `<span class="at-sector">${escapeHtml(sec)}</span>` : "";
+}
+// 순위 표 이름 칸(rankNameCellHtml 결과)의 이름 바로 옆에 태그를 끼움
+function withNameTag(nameHtml, tagHtml) {
+  if (!tagHtml) return nameHtml;
+  return nameHtml.replace(/(<b class="ticker-link rk-name"[^>]*>[^<]*<\/b>)/, `<span class="at-name-line">$1${tagHtml}</span>`);
+}
 function etfDisplayParts(symbol, fallbackName, quoteType) {
   const sym = String(symbol || "").toUpperCase();
   if (sectionOfSymbol(sym, quoteType) !== "etf") return null;
@@ -5431,7 +5521,7 @@ function etfDisplayParts(symbol, fallbackName, quoteType) {
     if (brand && KOSPI200_ALIAS[main]) main = KOSPI200_ALIAS[main];
     return { isKr: true, brand, main, sub: brand || rankCodeLabel(sym) };
   }
-  const sub = TICKER_TO_KOREAN_NAME[sym] || (name && name !== sym ? name : "");
+  const sub = US_ETF_CORE[sym] || TICKER_TO_KOREAN_NAME[sym] || (name && name !== sym ? name : "");
   return { isKr: false, brand: "", main: sym, sub };
 }
 // 국기 이모지(🇰🇷·🇺🇸 등)는 윈도우 크롬에서 "KR"·"US" 글자 두 개로 깨진다 —
@@ -5526,7 +5616,9 @@ const US_ETF_SECTOR = (() => {
 function etfSectorOf(symbol, name) {
   const sym = String(symbol || "").toUpperCase();
   if (!/\.(KS|KQ)$/i.test(sym)) return US_ETF_SECTOR[sym] || "기타";
-  const n = String(name || "");
+  // 상세 화면은 야후 영문명("Samsung KODEX 200 ETF")을 넘겨서 한국 ETF가 전부 "기타"로 나왔다(2026-10-07) —
+  // 앱이 가진 한글 상품명(국내 ETF 목록)을 먼저 쓴다
+  const n = String(ETF_NAME_BY_SYMBOL.get(sym) || (KR_ETF_LIST.find((x) => x.t === sym) || {}).name || name || "");
   if (/(레버리지|인버스|곱버스)/.test(n)) return "레버리지·인버스";
   if (/(커버드콜|배당|리츠)/.test(n)) return "배당·인컴";
   if (/(채권|금리|머니마켓|KOFR|국채|통안채|금융채|단기채|크레딧|캐리)/.test(n)) return "채권·금리";
@@ -10872,9 +10964,10 @@ function popularAnimateRows(resultsEl, before) {
 // opts.liveKey(2026-10-06): 실시간 결과일 때만 — 1분마다 순위를 다시 매기는 갱신을 켬. opts.animate: 갱신으로 다시 그릴 때 줄 이동 모션
 function paintPopularRows(resultsEl, isKr, rows, extraNoteHtml, opts) {
   const o = opts || {};
-  const universeLabel = o.universeLabel || `${isKr ? "코스피200+코스닥150" : "S&P500"} 시가총액 상위 50위권`;
   // 같은 목록을 다시 그릴 때(실시간 갱신)는 "더보기"로 펼친 상태를 유지
-  let shown = o.animate && resultsEl._popularShown ? Math.min(resultsEl._popularShown, rows.length) : Math.min(30, rows.length);
+  // 2026-10-07 사용자 요청: 인기 · 급등주 · 급락주 세 구역 — 인기는 5개, +더보기로 30개까지
+  rows = rows.slice(0, 30);
+  let shown = o.animate && resultsEl._popularShown ? Math.min(resultsEl._popularShown, rows.length) : Math.min(5, rows.length);
   resultsEl.dataset.liveKey = o.liveKey || "";
   if (o.liveKey) startPopularLive(resultsEl, isKr, rows, o);
   const paint = () => {
@@ -10884,7 +10977,6 @@ function paintPopularRows(resultsEl, isKr, rows, extraNoteHtml, opts) {
     // 2026-09-13 사용자 요청: "+등락표"를 "+승률이란"으로 교체 — 누르면 INVEST점수 10년평균 승률 +자세히와 같은
     // 대표자산 승률비교(그래프·표)를 표 위에 펼침. 월별 등락표(popularSnapTableHtml)는 더 이상 열지 않음.
     const tableHtml = popularSimpleTableHtml(visible, isKr, o);
-    const noteHtml = `${universeLabel} 중 <b>오늘 거래량이 최근 30거래일 평균보다 많이 터진 순</b>입니다. 화면을 보고 있는 동안 1분마다 다시 매겨 순위가 바뀌면 줄이 움직입니다. 오른쪽 위 <b>+승률이란</b>을 누르면 대표자산의 10년평균 승률을 비교해 볼 수 있습니다. 투자 자문이 아닙니다.`;
     resultsEl.innerHTML = `
         ${o.prefixHtml || ""}
         <div class="popular-head-row">
@@ -10892,15 +10984,15 @@ function paintPopularRows(resultsEl, isKr, rows, extraNoteHtml, opts) {
           <button type="button" class="score-method-detail-btn popular-delta-btn">${popularShowWinRateInfo ? "−승률이란 닫기" : "+승률이란"}</button>
         </div>
         ${popularShowWinRateInfo ? `<div class="chart-detail-wrap chart-detail-expanded popular-winrate-info">${buildWinRateBenchmarkHtml()}</div>` : ""}
+        <div class="pop-sec-head"><b>인기</b><span class="pop-asof" data-pop-asof>${popularAsOfHtmlCache}</span></div>
         ${extraNoteHtml || ""}
         ${tableHtml}
-        ${shown < rows.length ? `<button type="button" class="cat-btn load-more-btn">더보기 (${shown}/${rows.length})</button>` : ""}
-        <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${noteHtml}</p>
+        ${rows.length > 5 ? `<button type="button" class="cat-btn load-more-btn pop-more">${shown > 5 ? "− 접기" : `+더보기 (${rows.length}개)`}</button>` : ""}
       `;
     const moreBtn = resultsEl.querySelector(".load-more-btn");
     if (moreBtn)
       moreBtn.addEventListener("click", () => {
-        shown = rows.length;
+        shown = shown > 5 ? Math.min(5, rows.length) : rows.length;
         paint();
       });
     const deltaBtn = resultsEl.querySelector(".popular-delta-btn");
@@ -10910,6 +11002,131 @@ function paintPopularRows(resultsEl, isKr, rows, extraNoteHtml, opts) {
         paint();
       });
     if (before) popularAnimateRows(resultsEl, before);
+  };
+  paint();
+}
+
+// ---------- 인기종목 화면의 급등주 · 급락주(2026-10-07 사용자 요청) ----------
+// 오늘(장이 끝났으면 직전 거래일) 등락률 상·하위 — 5개, +더보기로 30개. 부제목 옆에 시세 기준 시각과 지연 여부.
+//  · 한국주식: Worker /kr-quotes(코스피200+코스닥150 등락률, 15분 캐시) → 보이는 줄만 현재가 조회
+//  · 미국주식: 야후 섹터 스크리너 11개(지도와 같은 방식) 중 S&P500 종목
+//  · ETF: 인기 목록과 같은 지역 ETF / 비트코인: 시가총액 상위 코인
+let popularAsOfHtmlCache = "";
+let popularMoversSeq = 0;
+const popularMoversShown = { up: 5, down: 5 };
+function popularAsOfLabel(ts, delayedMin) {
+  if (!ts) return "";
+  const d = new Date(ts * 1000);
+  const p2 = (n) => String(n).padStart(2, "0");
+  return `${d.getMonth() + 1}/${d.getDate()} ${p2(d.getHours())}:${p2(d.getMinutes())} 기준${delayedMin > 0 ? ` <small>(최대 ${Math.max(15, delayedMin)}분 지연)</small>` : ""}`;
+}
+async function popularAsOf(sym) {
+  const chart = await yahooChart(sym, "1d", "5m").catch(() => null);
+  const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
+  if (!meta) return "";
+  // 장중일 때만 지연 표시 — 야후 한국 시세는 장중 약 20분 늦지만 지수 응답엔 지연값이 0으로 와서 한국은 장중이면 20분으로 본다
+  const reg = meta.currentTradingPeriod && meta.currentTradingPeriod.regular;
+  const now = Date.now() / 1000;
+  const open = !!(reg && now >= reg.start && now <= reg.end);
+  const delay = open ? Number(meta.exchangeDataDelayedBy) || (/\.KS$|\.KQ$|^\^KS11$|^\^KQ11$/.test(sym) ? 20 : 0) : 0;
+  return popularAsOfLabel(meta.regularMarketTime, delay);
+}
+async function loadPopularMoverRows(section) {
+  const wrDb = await getWinRateDb().catch(() => null);
+  const wrMap = (wrDb && (section === "kr" ? wrDb.scoresKr : section === "etf" ? wrDb.scoresEtf : section === "crypto" ? wrDb.scoresCrypto : wrDb.scores)) || {};
+  const withWr = (r) => ({ ...r, winRateScore: wrMap[r.symbol] ? wrMap[r.symbol].score : null, winTotal: wrMap[r.symbol] ? wrMap[r.symbol].total : null });
+  if (section === "kr") {
+    const [res, uni] = await Promise.all([fetch("https://us-stock.yeop2ad.workers.dev/kr-quotes").then((x) => (x.ok ? x.json() : null)), getSReportUniverse(true)]);
+    const names = new Map(((uni && uni.companies) || []).map((c) => [c.symbol, c.name]));
+    return Object.entries((res && res.quotes) || {})
+      .filter(([, v]) => Number.isFinite(v))
+      .map(([sym, chg]) => withWr({ symbol: sym, name: names.get(sym) || TICKER_TO_KOREAN_NAME[sym] || sym, price: null, currency: "KRW", changePct: chg }));
+  }
+  if (section === "us") {
+    const uni = await getSReportUniverse(false);
+    const sp = new Map(((uni && uni.companies) || []).map((c) => [c.symbol, c.name]));
+    const ids = ["ms_technology", "ms_healthcare", "ms_financial_services", "ms_consumer_cyclical", "ms_consumer_defensive", "ms_communication_services", "ms_industrials", "ms_energy", "ms_utilities", "ms_real_estate", "ms_basic_materials"];
+    const lists = await mapWithConcurrency(ids, 4, async (id) => {
+      const d = await yahooScreener(id, 250);
+      return (d && d.finance && d.finance.result && d.finance.result[0] && d.finance.result[0].quotes) || [];
+    });
+    const seen = new Set();
+    const out = [];
+    lists.flat().forEach((q) => {
+      if (!q || !q.symbol) return;
+      const sym = q.symbol.replace(".", "-");
+      if (!sp.has(sym) || seen.has(sym) || !Number.isFinite(q.regularMarketChangePercent)) return;
+      seen.add(sym);
+      out.push(withWr({ symbol: sym, name: sp.get(sym) || sym, price: q.regularMarketPrice, currency: "USD", changePct: q.regularMarketChangePercent }));
+    });
+    return out;
+  }
+  if (section === "etf") {
+    const rows = await getEtfScanRows(etfPopularRegion);
+    return rows.filter((r) => Number.isFinite(r.changePct)).map((r) => withWr({ symbol: r.symbol, name: r.name, price: r.price, currency: r.currency, changePct: r.changePct }));
+  }
+  const coins = await getCryptoTop100();
+  return coins
+    .filter((q) => Number.isFinite(q.regularMarketChangePercent))
+    .map((q) => withWr({ symbol: q.symbol, name: cryptoKoName(q.symbol, q.shortName || q.symbol), price: q.regularMarketPrice, currency: "USD", changePct: q.regularMarketChangePercent }));
+}
+async function runPopularMovers() {
+  const box = el("popularMovers");
+  if (!box) return;
+  const seq = ++popularMoversSeq;
+  const section = appSectionMode === "etf" ? "etf" : appSectionMode === "crypto" ? "crypto" : getWatchlistActiveMarket() === "KR" ? "kr" : "us";
+  const isKr = section === "kr" || (section === "etf" && etfPopularRegion === "kr");
+  popularMoversShown.up = 5;
+  popularMoversShown.down = 5;
+  box.innerHTML = `<p class="muted top30-status" style="display:block;">급등주·급락주를 불러오는 중...</p>`;
+  const asOfSym = section === "crypto" ? "BTC-USD" : isKr ? "^KS11" : "^GSPC";
+  let rows = [];
+  try {
+    const [r, asOf] = await Promise.all([loadPopularMoverRows(section), popularAsOf(asOfSym)]);
+    rows = r;
+    popularAsOfHtmlCache = asOf;
+    document.querySelectorAll("[data-pop-asof]").forEach((n) => (n.innerHTML = asOf));
+  } catch {
+    rows = [];
+  }
+  if (seq !== popularMoversSeq) return;
+  if (!rows.length) {
+    box.innerHTML = `<p class="muted top30-status" style="display:block;">급등주·급락주 시세를 받아오지 못했습니다. 아래로 당겨 새로고침해 보세요.</p>`;
+    return;
+  }
+  const up = rows.slice().sort((a, b) => b.changePct - a.changePct).slice(0, 30);
+  const down = rows.slice().sort((a, b) => a.changePct - b.changePct).slice(0, 30);
+  const opts = section === "etf" ? { etf: true } : section === "crypto" ? { logoFn: (r) => cryptoLogoHtml(cryptoBaseTicker(r.symbol)) } : {};
+  const paint = () => {
+    const part = (key, title, list) => {
+      const n = popularMoversShown[key];
+      return `<section class="pop-sec">
+          <div class="pop-sec-head"><b>${title}</b><span class="pop-asof" data-pop-asof>${popularAsOfHtmlCache}</span></div>
+          ${popularSimpleTableHtml(list.slice(0, n), isKr, opts)}
+          ${list.length > 5 ? `<button type="button" class="cat-btn load-more-btn pop-more" data-pop-more="${key}">${n > 5 ? "− 접기" : `+더보기 (${list.length}개)`}</button>` : ""}
+        </section>`;
+    };
+    box.innerHTML = `${part("up", "급등주", up)}${part("down", "급락주", down)}
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> <b>인기</b>는 시가총액 상위 종목 중 오늘 거래량이 최근 30거래일 평균보다 많이 터진 순(1분마다 다시 매김), <b>급등주·급락주</b>는 오늘 등락률 순입니다(${
+        section === "kr" ? "코스피200+코스닥150" : section === "us" ? "S&P500" : section === "etf" ? "인기 ETF" : "시가총액 상위 코인"
+      }). 장이 끝난 뒤에는 직전 거래일 기준이며, 투자 자문이 아닙니다.</p>`;
+    // 한국은 등락률만 먼저 와서 보이는 줄의 현재가를 따로 채운다
+    if (section === "kr") {
+      const need = [...up.slice(0, popularMoversShown.up), ...down.slice(0, popularMoversShown.down)].filter((r) => r.price === null);
+      mapWithConcurrency(need, 5, async (r) => {
+        const snap = yahooSnapshot(await yahooChart(r.symbol, "5d").catch(() => null));
+        if (snap && Number.isFinite(snap.price)) r.price = snap.price;
+      }).then(() => {
+        if (seq === popularMoversSeq && need.some((r) => r.price !== null)) paint();
+      });
+    }
+  };
+  box.onclick = (e) => {
+    const b = e.target.closest("[data-pop-more]");
+    if (!b) return;
+    const k = b.dataset.popMore;
+    popularMoversShown[k] = popularMoversShown[k] > 5 ? 5 : 30;
+    paint();
   };
   paint();
 }
@@ -11511,6 +11728,7 @@ el("popularResults").addEventListener("click", (e) => {
   if (!regionBtn) return;
   etfPopularRegion = regionBtn.dataset.etfPopularRegion;
   runEtfPopular();
+  runPopularMovers();
 });
 
 // 인기종목 화면 진입 — topranking 패널을 빌려 쓰되 서브내비(랭킹 칩)는 비우고 제목줄 탭만 활성화.
@@ -11525,6 +11743,7 @@ function openPopularStocks() {
   if (appSectionMode === "etf") runEtfPopular();
   else if (appSectionMode === "crypto") runCryptoPopular();
   else runPopularStocks();
+  runPopularMovers(); // 급등주·급락주(2026-10-07)
 }
 
 // ---------- IPO(2026-09-11 사용자 요청): 최근 5년 미국 신규 상장 종목 ----------
@@ -12815,7 +13034,7 @@ function etfRankNameCellHtml(r, isKr) {
     ensureKrEtfLogoOverride(r.symbol, r.name); // 브랜드 → 운용사 그룹 CI(2026-09-03)
     return rankNameCellHtml(r.symbol, tickerLogoHtml(r.symbol, KR_ETF_BRAND_BADGE_POPULAR[parts.brand]), parts.main, parts.sub, "rk-etf-kr");
   }
-  return rankNameCellHtml(r.symbol, tickerLogoHtml(r.symbol), parts.main, parts.sub, "rk-etf-us");
+  return withNameTag(rankNameCellHtml(r.symbol, tickerLogoHtml(r.symbol), parts.main, parts.sub, "rk-etf-us"), etfSectorTagHtml(r.symbol));
 }
 const ETF_METRIC_TABS = {
   winrate: {
@@ -17849,7 +18068,7 @@ function stockCardRowHtml(r) {
     <div class="idx-row stock-card-row wl-row ticker-link idx-row-clickable" data-ticker="${escapeHtml(r.symbol)}">
       <div class="wl-row-logo">${tickerLogoHtml(r.symbol)}</div>
       <div class="wl-row-grid">
-        <div class="wl-name">${escapeHtml(displayName)}</div>
+        <div class="wl-name">${escapeHtml(displayName)}${etfSectorTagHtml(r.symbol)}</div>
         <div class="wl-price ${cls}">${wlNumStr(r.price, r.currency)}</div>
         <div class="wl-change ${cls}">${arrow ? `<span class="wl-arrow">${arrow}</span>` : ""}${changeAmtStr}</div>
         <div class="wl-sub">${etfParts ? escapeHtml(etfParts.sub) : `${escapeHtml(code)} ${wlMarketLabel(r)}`}</div>
@@ -21870,6 +22089,10 @@ async function renderAutoTrackGrades(mode, statusEl, resultsEl) {
     atgCurrentCount = Object.keys(side.items).length;
     const uni = isCrypto || mode === "etf" ? null : await getSReportUniverse(isKr).catch(() => null);
     const sectorOf = new Map(((uni && uni.companies) || []).map((c) => [c.symbol, c.sectorKo || ""]));
+    if (mode === "etf")
+      Object.keys(side.items).forEach((sym) => {
+        if (!isKrTicker(sym)) sectorOf.set(sym, etfSectorOf(sym) === "기타" ? "" : etfSectorOf(sym));
+      });
     const logoOf = (sym) => (isCrypto ? cryptoLogoHtml(cryptoBaseTicker(sym)) : tickerLogoHtml(sym));
     const factors = side.factors || [];
     const rows = Object.entries(side.items)
@@ -21963,3 +22186,8 @@ async function renderAutoTrackGrades(mode, statusEl, resultsEl) {
     statusEl.textContent = `❌ ${err.message || "자동추적 등급을 불러오지 못했습니다."}`;
   }
 }
+
+// 한국 ETF 상세의 섹터 분류(etfSectorOf)는 한글 상품명이 필요하다 — 처음 화면이 뜬 뒤 국내 ETF 목록을 미리 받아 둔다(2026-10-07)
+setTimeout(() => {
+  getKrEtfFullList().catch(() => {});
+}, 3000);

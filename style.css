@@ -3828,3 +3828,14 @@ table.top30-table.atg-table th:nth-child(2) { width: 84px; }
 .ia-sec-ret .wl-up { color: var(--pos); }
 .ia-sec-ret .wl-down { color: var(--neg); }
 .ia-cash-row td { background: var(--subtle-fill); }
+
+/* 관심종목 줄 이름 옆 미국 ETF 섹터 네모(2026-10-07) */
+.wl-name .at-sector { margin-left: 5px; vertical-align: 2px; }
+
+/* 인기종목 세 구역: 인기 · 급등주 · 급락주(2026-10-07) */
+.pop-sec { margin-top: 22px; }
+.pop-sec-head { display: flex; align-items: baseline; gap: 8px; margin: 10px 2px 4px; }
+.pop-sec-head b { font-size: 18px; font-weight: 800; color: var(--text); }
+.pop-asof { font-size: 12px; color: var(--muted); }
+.pop-asof small { font-size: 11px; }
+.pop-more { display: block; width: 100%; margin-top: 6px; }

@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20261007j" />
+<link rel="stylesheet" href="style.css?v=20261007k" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -659,6 +659,8 @@
                인기종목 목록 표가 같은 구성이라 중복이었음 -->
           <p id="popularStatus" class="muted top30-status" style="display:none;"></p>
           <div id="popularResults"></div>
+          <!-- 급등주·급락주(2026-10-07): 인기(위) 아래에 오늘 등락률 상·하위 — runPopularMovers가 채움 -->
+          <div id="popularMovers"></div>
         </div>
 
         <!-- 자동추적(2026-09-04, 2026-09-05 개편): 한국·미국주식은 상관관계 상위 3개 항목 신호등 표(월간/년간), ETF·코인은 승률 표 -->
@@ -966,7 +968,7 @@
   <script src="data/ko-company-names.js?v=20260911e"></script>
   <script src="data/logo-db.js?v=20260903g"></script>
   <script src="data/etf-meta.js?v=20260912a"></script>
-  <script src="winrate-benchmark.js?v=20261006h"></script>
-  <script src="app.js?v=20261007j"></script>
+  <script src="winrate-benchmark.js?v=20261007k"></script>
+  <script src="app.js?v=20261007k"></script>
 </body>
 </html>
