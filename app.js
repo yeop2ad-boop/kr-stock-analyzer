@@ -2411,7 +2411,8 @@ syncHeaderHeight();
 // ---------- 스와이프 캐로셀(관심종목/기업가치/주식동향/인사이트) ----------
 // 시장·투데이·기업검색은 캐러셀에서 빠지고 companyPanel과 동일한 슬라이드 오버레이 패턴(openMarketPanel 등)으로
 // 별도 관리됨 — TAB_ORDER는 실제 스와이프되는 4개 패널만 담당
-const TAB_ORDER = ["watchlist", "topranking", "insight"];
+// 2026-10-08 사용자 요청: 관심종목이 왼쪽에서 들어오는 것처럼 보임 → 인기종목 화면(topranking) 오른쪽에 둬서 오른쪽에서 들어오게
+const TAB_ORDER = ["topranking", "watchlist", "insight"];
 const panels = {
   watchlist: el("panelWatchlist"),
   topranking: el("panelTopRanking"),
@@ -11060,8 +11061,8 @@ function popularAnimateRows(resultsEl, before) {
 function paintPopularRows(resultsEl, isKr, rows, extraNoteHtml, opts) {
   const o = opts || {};
   // 같은 목록을 다시 그릴 때(실시간 갱신)는 "더보기"로 펼친 상태를 유지
-  // 2026-10-07 사용자 요청: 인기 · 급등주 · 급락주 세 구역 — 인기는 5개, +더보기로 30개까지
-  rows = rows.slice(0, 30);
+  // 2026-10-07 사용자 요청: 인기 · 급등주 · 급락주 세 구역 — 인기는 5개, +더보기로 15개까지(10/8: 30개는 너무 많음)
+  rows = rows.slice(0, 15);
   let shown = o.animate && resultsEl._popularShown ? Math.min(resultsEl._popularShown, rows.length) : Math.min(5, rows.length);
   resultsEl.dataset.liveKey = o.liveKey || "";
   if (o.liveKey) startPopularLive(resultsEl, isKr, rows, o);
@@ -11283,8 +11284,8 @@ async function runPopularMovers() {
     box.innerHTML = `<p class="muted top30-status" style="display:block;">급등주·급락주 시세를 받아오지 못했습니다. 아래로 당겨 새로고침해 보세요.</p>`;
     return;
   }
-  const up = rows.slice().sort((a, b) => b.changePct - a.changePct).slice(0, 30);
-  const down = rows.slice().sort((a, b) => a.changePct - b.changePct).slice(0, 30);
+  const up = rows.slice().sort((a, b) => b.changePct - a.changePct).slice(0, 15);
+  const down = rows.slice().sort((a, b) => a.changePct - b.changePct).slice(0, 15);
   const opts = section === "etf" ? { etf: true } : section === "crypto" ? { logoFn: (r) => cryptoLogoHtml(cryptoBaseTicker(r.symbol)) } : {};
   const paint = () => {
     const part = (key, title, list) => {
