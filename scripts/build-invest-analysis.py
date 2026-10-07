@@ -72,7 +72,7 @@ def basket_series(holdings, charts, kind):
             p = per[sym].get(k)
             if p is None:
                 continue
-            if sym in prev:
+            if sym in prev and sb._sane(p / prev[sym]):  # 한 칸 4배↑·1/4↓ 가격 단절(야후 데이터 오류)은 건너뜀
                 num += w * (p / prev[sym] - 1)
                 den += w
             prev[sym] = p
@@ -201,9 +201,56 @@ def monthly_strategies(market, universe, *, min_months, sector_min, yrs):
     return out
 
 
+# 2026-10-08 사용자 요청: 10년 승률·52주 신고가·52주 신저가·섹터 순환은 10/6까지 쓰던 방식으로 되돌림 —
+# 지금 시점 조건으로 고른 30종목을 시가총액 비중으로 담고, 그 바구니를 1년·10년 그대로 들고 있었을 때의 수익 지수.
+# (매달 1일 리밸런싱 백테스트 monthly_strategies는 남겨 둠)
+def sector_rotation(companies, scores, sector_min):
+    # 직전 완성월(m12의 끝에서 두 번째) 섹터별 시총 가중 수익률 1위 섹터
+    agg = {}
+    counts = {}
+    for c in companies:
+        if c.get("sector"):
+            counts[c["sector"]] = counts.get(c["sector"], 0) + 1
+        e = scores.get(c["symbol"]) or {}
+        m12 = e.get("m12") or []
+        if len(m12) < 2 or not c.get("marketCap") or not c.get("sector"):
+            continue
+        a = agg.setdefault(c["sector"], [0.0, 0.0, c.get("sectorKo") or c["sector"]])
+        a[0] += m12[-2] * c["marketCap"]
+        a[1] += c["marketCap"]
+    # 종목이 몇 개 안 되는 섹터는 한두 종목짜리 바구니가 되므로 sector_min 이상인 섹터만 후보
+    agg = {k: v for k, v in agg.items() if counts.get(k, 0) >= sector_min and v[1] > 0}
+    if not agg:
+        return None, None, []
+    sec, (sm, w, ko) = max(agg.items(), key=lambda kv: kv[1][0] / kv[1][1])
+    members = sorted([c for c in companies if c.get("sector") == sec and c.get("marketCap")], key=lambda c: -c["marketCap"])[:TOP_N]
+    return ko, round(sm / w, 2), members
+
+
+def snapshot_strategies(companies, scores, *, min_total, sector_min, yrs, unit="종목"):
+    comps = [c for c in companies if c.get("marketCap") and c["symbol"] not in SECONDARY_SHARE_CLASS]
+    out = {}
+    with52 = [c for c in comps if c.get("week52RangePct") is not None]
+    hi = sorted(with52, key=lambda c: (-c["week52RangePct"], -c["marketCap"]))[:TOP_N]
+    lo = sorted(with52, key=lambda c: (c["week52RangePct"], -c["marketCap"]))[:TOP_N]
+    out["high52"] = {"key": "high52", "label": LABELS["high52"], "holdings": holding_list(cap_weights(hi)),
+                     "note": f"지금 52주 가격 구간에서 가장 위쪽(신고가 근처)에 있는 30{unit}을 시가총액 비중으로 담았습니다."}
+    out["low52"] = {"key": "low52", "label": LABELS["low52"], "holdings": holding_list(cap_weights(lo)),
+                    "note": f"지금 52주 가격 구간에서 가장 아래쪽(신저가 근처)에 있는 30{unit}을 시가총액 비중으로 담았습니다."}
+    sec_ko, sec_ret, members = sector_rotation(comps, scores, sector_min)
+    out["sector"] = {"key": "sector", "label": LABELS["sector"], "holdings": holding_list(cap_weights(members)),
+                     "note": f"직전 한 달 수익률 1위 섹터({sec_ko}, {sec_ret:+.1f}%)의 시가총액 상위 30{unit}입니다." if sec_ko else "직전 한 달 수익률 1위 섹터"}
+    wr = [c for c in comps if (scores.get(c["symbol"]) or {}).get("total", 0) >= min_total and (scores.get(c["symbol"]) or {}).get("score") is not None]
+    wr = sorted(wr, key=lambda c: (-scores[c["symbol"]]["score"], -c["marketCap"]))[:TOP_N]
+    out["winrate"] = {"key": "winrate", "label": LABELS["winrate"], "holdings": holding_list(cap_weights(wr)),
+                      "note": f"10년평균 승률(오르며 마감한 달의 비율, {yrs}년 이상 상장 {unit.replace("개 ", "")}) 상위 30{unit}을 시가총액 비중으로 담았습니다."}
+    return out
+
+
 def main():
     kr = load("sector-map/data/kr-sectors.json")["companies"]
     us = load("sector-map/data/sp500-sectors.json")["companies"]
+    wrs = load("data/winrate-scores-us.json")
     uni = load("data/kr-universe-kospi200-kosdaq150.json")
     etf = load("data/etf-info.json")
     crypto = load_crypto_snapshot()
@@ -227,7 +274,7 @@ def main():
 
     sections = {}
     # 한국(2026-10-07 사용자 지정 순서): 10년 승률 · 52주 신고가 · 코스피200 · 섹터 순환 · 코스닥150 · 52주 신저가
-    krm = monthly_strategies("kr", stock_universe([c for c in kr if c.get("marketCap")]), min_months=60, sector_min=5, yrs=5)
+    krm = snapshot_strategies(kr, wrs.get("scoresKr") or {}, min_total=60, sector_min=5, yrs=5)
     sections["kr"] = [
         krm["winrate"],
         krm["high52"],
@@ -237,7 +284,7 @@ def main():
         krm["low52"],
     ]
     # 미국: 같은 규칙, 비교군 S&P500
-    usm = monthly_strategies("us", stock_universe(us_caps), min_months=60, sector_min=5, yrs=5)
+    usm = snapshot_strategies(us, wrs.get("scores") or {}, min_total=60, sector_min=5, yrs=5)
     sections["us"] = [
         usm["winrate"],
         usm["high52"],
@@ -269,15 +316,14 @@ def main():
     nci = ["BTC", "ETH", "XRP", "SOL", "ADA", "LINK", "XLM", "LTC", "AVAX", "UNI", "DOT", "HBAR"]
     # 코인(2026-10-07 사용자 요청): Bitwise 10 삭제, 주식과 같은 4개 규칙 추가 — 10년 승률은 상장 3년 이상.
     # 스테이블코인·스테이킹/랩드 토큰(원본 코인과 값이 같음)은 비교군에서 뺀다
-    coin_uni = [
-        {"symbol": c["symbol"], "name": c.get("name") or c["symbol"], "sector": crypto_category(c["symbol"]), "cap": c["marketCap"]}
-        for c in crypto
-        if c.get("marketCap") and crypto_category(c["symbol"]) not in ("스테이블코인", "스테이킹·랩드")
-    ]
-    for u in coin_uni:
-        if u["sector"] == "기타":
-            u["sector"] = None  # 분류가 없는 코인은 섹터 순환 후보에서 제외
-    cm = monthly_strategies("crypto", coin_uni, min_months=36, sector_min=3, yrs=3)
+    coin_uni = []
+    for c in crypto:
+        cat = crypto_category(c["symbol"])
+        if not c.get("marketCap") or cat in ("스테이블코인", "스테이킹·랩드"):
+            continue
+        sec = None if cat == "기타" else cat  # 분류가 없는 코인은 섹터 순환 후보에서 제외
+        coin_uni.append({**c, "sector": sec, "sectorKo": sec})
+    cm = snapshot_strategies(coin_uni, wrs.get("scoresCrypto") or {}, min_total=36, sector_min=5, yrs=3, unit="개 코인")
     sections["crypto"] = [
         {"key": "cd20", "label": "CoinDesk 20 Index", "holdings": holding_list(cap_weights(coin_rows(cd20), cap_limit=30)),
          "note": "CoinDesk 20 구성 코인(스테이블코인 제외 대형 20종)을 시가총액 비중(한 코인 최대 30%)으로 담았습니다. 구성은 공개 자료 기준 근사치입니다."},
