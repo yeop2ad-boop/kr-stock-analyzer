@@ -24,7 +24,7 @@ NAMES = os.path.join(ROOT, "data", "etf-holding-names.json")
 SUFFIX_CACHE = os.path.join(ROOT, "scripts", "kr-suffix-cache.json")
 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
 MAX_STOCKS = 30
-MAX_PER_RUN = 80
+MAX_PER_RUN = 220  # 2026-10-08: 깃허브 서버에선 막히지 않아(10/6 밤 80개 성공) 남은 것을 한 번에 — 3초 간격이라 약 11분
 HOLD_CACHE = os.path.join(ROOT, "data", "etf-holdings-kr.json")
 
 
@@ -172,7 +172,7 @@ def main():
     todo.sort(key=lambda s: (hold.get(s) or {}).get("at", ""))  # 가장 오래된(없는) 것부터
     if not full:
         todo = todo[:MAX_PER_RUN]
-    print(f"한국 ETF {len(codes)}개 중 {len(todo)}개 funetf 조회(한 번에 하나씩, 2.5초 간격)", flush=True)
+    print(f"한국 ETF {len(codes)}개 중 {len(todo)}개 funetf 조회(한 번에 하나씩, 3초 간격)", flush=True)
     names = json.load(open(NAMES, encoding="utf-8")) if os.path.exists(NAMES) else {}
     label = {"gold": "금 현물", "bond": "채권", "cash": "현금", "deriv": "선물·파생", "other": "기타"}
     ok = fails = 0
@@ -184,7 +184,7 @@ def main():
             break
         if (i + 1) % 20 == 0:
             print(f"  {i + 1}/{len(todo)}", flush=True)
-        time.sleep(2.5)
+        time.sleep(3)
         if not rows:
             continue
         agg = {}
