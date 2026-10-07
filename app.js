@@ -21508,7 +21508,10 @@ function earnRevNumbers(data, row, kind) {
   const last = actual[actual.length - 1];
   if (kind === "soon") return { exp: estBar && Number.isFinite(estBar.growth) ? estBar.growth : null };
   const qEnd = last && earnQuarterEnd(last.label);
-  const stale = !qEnd || (new Date(row.date + "T00:00:00") - qEnd) / 86400000 > 100;
+  // 발표일 직전에 끝난 분기가 데이터에 들어와 있어야 '발표' 값 — 아니면 아직 반영 전(10/7 잠정실적인데 데이터는 2분기까지인 경우)
+  const rel = new Date(row.date + "T00:00:00");
+  const due = new Date(rel.getFullYear(), Math.floor(rel.getMonth() / 3) * 3, 0); // 발표일 이전 마지막 분기말
+  const stale = !qEnd || qEnd < due;
   if (stale) return { exp: estBar && Number.isFinite(estBar.growth) ? estBar.growth : null, stale: true };
   const before = actual.slice(0, -1);
   const prevRev = before.length ? before[before.length - 1].rev : null;
