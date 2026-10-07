@@ -3,9 +3,10 @@
 미국(S&P500): 나스닥 실적 캘린더(api.nasdaq.com/api/calendar/earnings?date=)를 오늘-14일 ~ +100일 평일마다 조회
   · next: 앞으로 가장 가까운 실적발표일(확정 일정) + 장 시작 전/후
   · last: 최근 14일 안에 실적을 발표한 날 → 앱이 7일 동안 이름 옆에 '실적' 마크
-한국(코스피200·코스닥150): DART 공시목록(list.json)에서 최근 45일의 '영업(잠정)실적' 공정공시와 분기·반기·사업보고서
-  · last: 이번 실적 시즌에 처음 실적이 나온 날(잠정실적이 있으면 그날) — DART_API_KEY가 없으면 이전 값 유지
-  · 한국은 발표 예정일을 기계가 읽을 수 있게 미리 공시하지 않아 next는 없음(앱이 지난 분기 결산일로 추정)
+  · 최근 실적 발표일 last는 SEC 8-K Item 2.02(실적 보도자료) 제출일로 보충
+한국(코스피200·코스닥150): DART 공시목록(list.json)에서 최근 120일의 '영업(잠정)실적' 공정공시와 분기·반기·사업보고서
+  · last: 가장 최근 실적 시즌에 처음 실적이 나온 날(잠정실적이 있으면 그날) — DART_API_KEY가 없으면 이전 값 유지
+  · next(nextEst=true): 발표 예정일을 미리 공시하지 않아 작년 같은 시기 첫 실적 공시일 + 364일로 추정
 
 로컬: python scripts/build-earnings-calendar.py   (DART_API_KEY 있으면 한국도)
 """
@@ -21,6 +22,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "data", "earnings-calendar.json")
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 KST = timezone(timedelta(hours=9))
+# SEC는 User-Agent에 연락처를 요구 — scan-us-workforce.py·scan-us-annual-financials.js와 같은 값
+SEC_UA = {"User-Agent": "MarketMap research hyhykhy6@gmail.com", "Accept": "application/json"}
 
 
 def get_json(url, tries=3, headers=None):
@@ -76,42 +79,88 @@ def us_calendar(_today):
             time.sleep(0.4)
         d += timedelta(days=1)
     print(f"미국: 날짜 {ok_days}일 조회, 종목 {len(out)}개", flush=True)
-    return out if ok_days >= 20 else None
+    if ok_days < 20:
+        return None
+    # 최근 실적 발표일(2026-10-08 사용자 요청: 재무정보 옆에 항상) — SEC 8-K 중 Item 2.02(Results of Operations) = 실적 발표 보도자료
+    ciks = {s: v.get("cik") for s, v in load("data/us-annual-financials.json")["items"].items() if v.get("cik")}
+    got = 0
+    for sym in sorted(universe):
+        cik = ciks.get(sym)
+        if not cik:
+            continue
+        js = get_json(f"https://data.sec.gov/submissions/CIK{int(cik):010d}.json", tries=2, headers=SEC_UA)
+        rec = ((js or {}).get("filings") or {}).get("recent") or {}
+        best = None
+        for form, fdate, items in zip(rec.get("form") or [], rec.get("filingDate") or [], rec.get("items") or []):
+            if form in ("8-K", "8-K/A") and "2.02" in (items or "") and fdate <= today.isoformat():
+                best = fdate if best is None or fdate > best else best
+        if best:
+            e = out.setdefault(sym, {})
+            if not e.get("last") or best > e["last"]:
+                e["last"] = best
+            got += 1
+        time.sleep(0.12)
+    print(f"미국: SEC 8-K 실적 발표일 {got}종목", flush=True)
+    return out
 
 
 KR_KEYWORDS = ("영업(잠정)실적", "분기보고서", "반기보고서", "사업보고서")
 
 
-def kr_calendar(today, key):
-    syms = {c["symbol"].split(".")[0]: c["symbol"] for c in load("sector-map/data/kr-sectors.json")["companies"]}
-    first = {}
-    bgn = (today - timedelta(days=45)).strftime("%Y%m%d")
-    end = today.strftime("%Y%m%d")
+def kr_filings(syms, key, bgn, end):
+    """[bgn, end] 사이 실적 관련 공시 → {symbol: [날짜…]} (DART list.json, 기간 3개월 이하)"""
+    out = {}
     for ty in ("I", "A"):
         for cls in ("Y", "K"):
             page = 1
             while True:
-                q = urllib.parse.urlencode({"crtfc_key": key, "bgn_de": bgn, "end_de": end, "pblntf_ty": ty, "corp_cls": cls, "page_no": page, "page_count": 100})
+                q = urllib.parse.urlencode({"crtfc_key": key, "bgn_de": bgn.strftime("%Y%m%d"), "end_de": end.strftime("%Y%m%d"), "pblntf_ty": ty, "corp_cls": cls, "page_no": page, "page_count": 100})
                 js = get_json(f"https://opendart.fss.or.kr/api/list.json?{q}")
                 if not js or js.get("status") not in ("000", "013"):
                     print("  DART 응답:", (js or {}).get("status"), (js or {}).get("message"), flush=True)
+                    if not js or js.get("status") not in ("013",):
+                        raise RuntimeError("DART 조회 실패")
                     break
                 for it in js.get("list") or []:
-                    name = it.get("report_nm") or ""
                     code = (it.get("stock_code") or "").strip()
-                    if code not in syms or not any(k in name for k in KR_KEYWORDS):
-                        continue
-                    dt = it.get("rcept_dt")
-                    iso = f"{dt[:4]}-{dt[4:6]}-{dt[6:]}"
-                    sym = syms[code]
-                    if sym not in first or iso < first[sym]:
-                        first[sym] = iso
+                    if code in syms and any(k in (it.get("report_nm") or "") for k in KR_KEYWORDS):
+                        dt = it.get("rcept_dt")
+                        out.setdefault(syms[code], []).append(f"{dt[:4]}-{dt[4:6]}-{dt[6:]}")
                 if page >= int(js.get("total_page") or 1):
                     break
                 page += 1
                 time.sleep(0.3)
-    print(f"한국: 최근 45일 실적 공시 종목 {len(first)}개", flush=True)
-    return {s: {"last": d} for s, d in first.items()}
+    return out
+
+
+def kr_calendar(today, key):
+    syms = {c["symbol"].split(".")[0]: c["symbol"] for c in load("sector-map/data/kr-sectors.json")["companies"]}
+    try:
+        recent = {}
+        for a, b in ((today - timedelta(days=120), today - timedelta(days=61)), (today - timedelta(days=60), today)):
+            for sym, ds in kr_filings(syms, key, a, b).items():
+                recent.setdefault(sym, []).extend(ds)
+        # 작년 같은 시기(오늘-1년-3일 ~ +60일) 첫 실적 공시 → +364일(같은 요일)을 다음 발표 예상일로
+        ly = kr_filings(syms, key, today - timedelta(days=368), today - timedelta(days=305))
+    except RuntimeError:
+        return None
+    out = {}
+    for sym in set(recent) | set(ly):
+        e = {}
+        ds = sorted(set(recent.get(sym, [])))
+        if ds:
+            latest = date.fromisoformat(ds[-1])
+            # 같은 시즌(최근 공시 40일 안) 중 처음 나온 날 — 잠정실적이 있으면 그날
+            e["last"] = min(d for d in ds if date.fromisoformat(d) >= latest - timedelta(days=40))
+        season_done = ds and (today - date.fromisoformat(e["last"])).days <= 40
+        cand = [date.fromisoformat(d) + timedelta(days=364) for d in sorted(set(ly.get(sym, [])))]
+        cand = [d for d in cand if d >= today - timedelta(days=1)]
+        if cand and not season_done:
+            e["next"], e["nextEst"] = cand[0].isoformat(), True
+        if e:
+            out[sym] = e
+    print(f"한국: 최근 실적 공시 {sum(1 for v in out.values() if 'last' in v)}종목 · 다음 발표 예상 {sum(1 for v in out.values() if 'next' in v)}종목", flush=True)
+    return out
 
 
 def main():

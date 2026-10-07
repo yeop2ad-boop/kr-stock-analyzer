@@ -6307,12 +6307,13 @@ async function runAnalysis(ticker) {
         await getEarningsCal();
         const e = earningsEntry(headTicker);
         const md = (d) => `${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
+        // 2026-10-08 사용자 요청: 한국·미국 모두 오른쪽엔 '최근' 실적 발표일 + 마크(실적/예정). 최근 기록이 없을 때만 다음 발표일
         let html = "";
-        if (e && e.last && earnDaysSince(e.last) >= 0 && earnDaysSince(e.last) <= 7) {
-          html = `<span class="fin-earn">실적발표 ${md(new Date(e.last + "T00:00:00"))}</span>${earnBadgeHtml(headTicker)}`;
+        if (e && e.last) {
+          html = `<span class="fin-earn">최근 실적발표 ${md(new Date(e.last + "T00:00:00"))}</span>${earnBadgeHtml(headTicker)}`;
         } else {
           const n = await nextEarningsInfo(headTicker).catch(() => null);
-          if (n) html = `<span class="fin-earn">실적발표 ${md(n.date)}${n.exact ? (EARN_TIME_LABEL[n.time] ? ` · ${EARN_TIME_LABEL[n.time]}` : "") : "(추정)"}</span>`;
+          if (n) html = `<span class="fin-earn">다음 실적발표 ${md(n.date)}${n.exact ? "" : "(추정)"}</span>${earnBadgeHtml(headTicker)}`;
         }
         const h = el("financialsHeading");
         if (h && html && window.__finHeadTicker === headTicker) h.innerHTML = `재무정보${html}`;
@@ -9427,12 +9428,19 @@ function earnDaysSince(iso) {
   t.setHours(0, 0, 0, 0);
   return Math.round((t - new Date(iso + "T00:00:00")) / 86400000);
 }
-// 실적이 나온 뒤 7일 동안 이름 오른쪽에 '실적' 마크
+// 실적이 나온 뒤 7일 동안 '실적', 발표 7일 전부터는 '예정'(2026-10-08 사용자 요청) — 이름 오른쪽 마크
 function earnBadgeHtml(sym) {
   const e = earningsEntry(sym);
-  if (!e || !e.last) return "";
-  const d = earnDaysSince(e.last);
-  return d >= 0 && d <= 7 ? `<span class="earn-badge" title="${escapeHtml(e.last)} 실적 발표">실적</span>` : "";
+  if (!e) return "";
+  if (e.last) {
+    const d = earnDaysSince(e.last);
+    if (d >= 0 && d <= 7) return `<span class="earn-badge" title="${escapeHtml(e.last)} 실적 발표">실적</span>`;
+  }
+  if (e.next) {
+    const d = -earnDaysSince(e.next);
+    if (d >= 0 && d <= 7) return `<span class="earn-badge earn-badge-soon" title="${escapeHtml(e.next)} 실적 발표 예정${e.nextEst ? "(추정)" : ""}">예정</span>`;
+  }
+  return "";
 }
 const EARN_TIME_LABEL = { pre: "장 시작 전", after: "장 마감 후" };
 function fqToQuarterLabel(fq) {
@@ -9444,7 +9452,7 @@ function fqToQuarterLabel(fq) {
 async function nextEarningsInfo(sym) {
   await getEarningsCal();
   const e = earningsEntry(sym);
-  if (e && e.next) return { symbol: sym, date: new Date(e.next + "T00:00:00"), exact: true, time: e.nextTime || "", quarterLabel: fqToQuarterLabel(e.fq) };
+  if (e && e.next) return { symbol: sym, date: new Date(e.next + "T00:00:00"), exact: !e.nextEst, time: e.nextTime || "", quarterLabel: fqToQuarterLabel(e.fq) };
   const est = await estimateNextEarningsDate(sym);
   return est ? { ...est, exact: false } : null;
 }

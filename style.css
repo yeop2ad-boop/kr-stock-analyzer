@@ -4078,3 +4078,5 @@ table.pop-table td.pop-spark-td .pop-spark-cell { justify-content: center; }
 .rk-name-box .at-name-line .rk-name { min-width: 0; }
 .fin-earn { margin-left: 8px; font-size: 13px; font-weight: 700; color: var(--muted); letter-spacing: -0.2px; vertical-align: 2px; }
 #financialsHeading .earn-badge { vertical-align: 3px; }
+
+.earn-badge.earn-badge-soon { background: rgba(37, 99, 235, 0.1); color: #2563eb; }
