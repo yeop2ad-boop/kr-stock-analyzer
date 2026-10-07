@@ -259,7 +259,7 @@ def kr_prelim_scan(key, today):
             time.sleep(0.3)
             if not txt:
                 continue
-            if len(DEBUG) < 8 and (sym in ("066570.KS", "139480.KS") or len(DEBUG) < 4):
+            if False:  # 점검용 표 덤프(2026-10-08 확인 끝, 필요하면 True)
                 rows = []
                 for row in re.findall(r"<TR[^>]*>(.*?)</TR>", txt, re.S | re.I)[:30]:
                     cells = [re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", c)).strip() for c in re.findall(r"<T[DHEU][^>]*>(.*?)</T[DHEU]>", row, re.S | re.I)]
@@ -373,9 +373,7 @@ def main():
     }
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
-    if DEBUG:
-        with open(os.path.join(ROOT, "data", "earnings-debug.json"), "w", encoding="utf-8") as f:
-            json.dump(DEBUG, f, ensure_ascii=False, indent=1)
+
     print("저장:", OUT, os.path.getsize(OUT) // 1024, "KB")
 
 
