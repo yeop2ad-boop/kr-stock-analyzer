@@ -141,7 +141,8 @@ def us_reported_revenue(out, today):
             cur, prv = q[-1], q[-2]
             a, b = (cur.get("revenue") or {}).get("raw"), (prv.get("revenue") or {}).get("raw")
             if a and b:
-                e["rep"] = {"date": e["last"], "q": cur.get("date"), "qoq": round((a / b - 1) * 100, 2), "src": "yahoo"}
+                ni = (cur.get("earnings") or {}).get("raw")
+                e["rep"] = {"date": e["last"], "q": cur.get("date"), "qoq": round((a / b - 1) * 100, 2), "rev": a, "ni": ni, "src": "yahoo"}
                 n += 1
         except Exception:
             pass
@@ -177,9 +178,18 @@ def parse_prelim_revenue(raw):
         txt = "\n".join(z.read(n).decode("utf-8", "ignore") for n in z.namelist())
     except Exception:
         return None
+    # 표 위 "(단위 : 억원)" 같은 표기 → 원 단위로
+    plain = re.sub(r"<[^>]+>", " ", txt)
+    um = re.search(r"단위\s*[:：]?\s*(조원|억원|백만원|천원|원)", plain)
+    unit = {"조원": 1e12, "억원": 1e8, "백만원": 1e6, "천원": 1e3, "원": 1}.get(um.group(1) if um else "", None)
+    found = {}
     for row in re.findall(r"<TR[^>]*>(.*?)</TR>", txt, re.S | re.I):
         cells = [_html.unescape(re.sub(r"<[^>]+>", "", c)).strip() for c in re.findall(r"<T[DHEU][^>]*>(.*?)</T[DHEU]>", row, re.S | re.I)]
-        if not cells or not re.sub(r"\s", "", cells[0]).startswith("매출액"):
+        if not cells:
+            continue
+        head = re.sub(r"\s", "", cells[0])
+        key = "rev" if head.startswith("매출액") else "ni" if head.startswith("당기순이익") else None
+        if not key or key in found:
             continue
         nums = []
         for c in cells[1:]:
@@ -188,9 +198,16 @@ def parse_prelim_revenue(raw):
             t = t.strip("()")
             if re.fullmatch(r"-?\d+(\.\d+)?", t):
                 nums.append(-float(t) if neg else float(t))
-        if len(nums) >= 2 and nums[1]:
-            return {"cur": nums[0], "prev": nums[1]}
-    return None
+        if len(nums) >= 2:
+            found[key] = nums
+    if "rev" not in found or not found["rev"][1]:
+        return None
+    out = {"cur": found["rev"][0], "prev": found["rev"][1]}
+    if unit:
+        out["rev"] = found["rev"][0] * unit
+        if "ni" in found:
+            out["ni"] = found["ni"][0] * unit
+    return out
 
 
 def kr_prelim_results(key, today):
@@ -210,6 +227,10 @@ def kr_prelim_results(key, today):
         rv = parse_prelim_revenue(raw)
         if rv:
             out[sym] = {"date": f"{dt[:4]}-{dt[4:6]}-{dt[6:]}", "qoq": round((rv["cur"] / rv["prev"] - 1) * 100, 2), "src": "잠정"}
+            if rv.get("rev"):
+                out[sym]["rev"] = rv["rev"]
+            if rv.get("ni") is not None:
+                out[sym]["ni"] = rv["ni"]
         time.sleep(0.3)
     print(f"한국: 잠정실적 매출 {len(out)}종목", flush=True)
     return out

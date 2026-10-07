@@ -4108,3 +4108,6 @@ table.earn-table tr.earn-chart-row td { padding: 6px 0 14px; white-space: normal
 #topRankingSubNav .sr-region-row { flex: 0 0 100%; display: flex; gap: 6px; margin-top: 8px; }
 #topRankingSubNav .sr-region-btn { flex: 1; }
 #topRankingSubNav.sr-asset-nav ~ #trendGroup .etf-region-nav { display: none; }
+
+/* 실적 비교 그래프: 예상 막대 옆 실제 막대 강조(2026-10-08) */
+.fin2-col .fin2-xlabel small { display: block; }

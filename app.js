@@ -8218,7 +8218,7 @@ async function renderFin2Period(token) {
   section.innerHTML = fin2ToggleHtml(period) + `<p class="muted" style="padding:10px 0;">불러오는 중...</p>`;
   bindFin2Section(section);
   try {
-    if (!FIN2_STATE.cache[period]) FIN2_STATE.cache[period] = period === "annual" ? loadFin2Annual(ticker, currency) : loadFin2Quarter(ticker, currency);
+    if (!FIN2_STATE.cache[period]) FIN2_STATE.cache[period] = period === "annual" ? loadFin2Annual(ticker, currency) : loadFin2QuarterLive(ticker, currency);
     const data = await FIN2_STATE.cache[period];
     if (stale()) return;
     section.innerHTML = fin2ToggleHtml(period) + fin2BodyHtml(data, period, currency);
@@ -8356,6 +8356,28 @@ function fin2QuarterLabel(year, month) {
   return `${String(year).slice(2)}.${Math.ceil(month / 3)}Q`;
 }
 
+// 2026-10-08 사용자 요청: 실적이 나오면 재무정보 분기 그래프에 바로 — 분기 재무(야후·네이버)는 10-Q·분기보고서 뒤라 몇 주 늦어서
+// 실적 일정 데이터의 발표 당일 값(미국 야후 실적 요약 · 한국 DART 잠정실적)으로 새 분기 막대를 붙이고 다음 분기 예상을 다시 낸다
+async function loadFin2QuarterLive(ticker, currency) {
+  const data = await loadFin2Quarter(ticker, currency);
+  await getEarningsCal();
+  const e = earningsEntry(ticker);
+  const rep = e && e.rep;
+  if (!data || !data.bars || !rep || !Number.isFinite(rep.rev) || (isKrTicker(ticker) ? "KRW" : "USD") !== currency) return data;
+  const actual = data.bars.filter((b) => !b.est);
+  const last = actual[actual.length - 1];
+  const lastEnd = last && earnQuarterEnd(last.label);
+  const rel = new Date(rep.date + "T00:00:00");
+  const due = new Date(rel.getFullYear(), Math.floor(rel.getMonth() / 3) * 3, 0);
+  if (!last || (lastEnd && lastEnd >= due)) return data; // 이미 분기 재무에 들어와 있음
+  const nb = { label: fin2QuarterLabel(due.getFullYear(), due.getMonth() + 1), rev: rep.rev, ni: Number.isFinite(rep.ni) ? rep.ni : null, est: false, prelim: rep.src === "잠정" ? "잠정" : "실제" };
+  const all = [...actual.map(({ growth, ...b }) => b), nb];
+  const shown = fin2WithGrowth(all.slice(-4), all.length > 4 ? all[all.length - 5].rev : null);
+  const estRev = projectNextQuarter(shown, "rev");
+  const nx = new Date(due.getFullYear(), due.getMonth() + 3, 1);
+  const est = Number.isFinite(estRev) && estRev > 0 ? fin2WithGrowth([{ label: fin2QuarterLabel(nx.getFullYear(), nx.getMonth() + 1), rev: estRev, ni: projectNextNetIncome(shown, estRev), est: true }], nb.rev) : [];
+  return { ...data, bars: [...shown, ...est], estSource: "추세 예상", source: `${data.source} · 최근 분기는 ${rep.src === "잠정" ? "DART 잠정실적" : "실적 발표(야후)"}` };
+}
 async function loadFin2Quarter(ticker, currency) {
   // 국내: 네이버 증권 분기 재무(최신 분기 실적 + 다음 분기 애널리스트 컨센서스) — 실패하면 Yahoo
   if (isKrTicker(ticker)) {
@@ -8448,7 +8470,24 @@ function fin2BodyHtml(data, period, currency) {
   const toneCls = (g) => (Number.isFinite(g) ? (g >= 0 ? "fin2-up" : "fin2-down") : "");
   const amt = (v) => (Number.isFinite(v) ? escapeHtml(fmtAmountUnified(v, currency)) : "—");
   const estGrowth = estBar && Number.isFinite(estBar.growth) ? estBar.growth : null;
-  const summaryHtml = `
+  // 실적발표 탭 '발표' 종목(2026-10-08): 그 분기 예상 막대 바로 오른쪽에 실제 막대 — 요약도 예상 · 실제 · 예상 대비
+  const summaryHtml = data.compare && estBar
+    ? `
+    <div class="fin2-strip">
+      <div class="fin2-strip-item">
+        <span class="fin2-strip-label">예상 매출 <small>${escapeHtml(estBar.label)}</small></span>
+        <b class="fin2-strip-value">${amt(estBar.rev)}</b>
+      </div>
+      <div class="fin2-strip-item">
+        <span class="fin2-strip-label">실제 매출</span>
+        <b class="fin2-strip-value">${amt(last.rev)}</b>
+      </div>
+      <div class="fin2-strip-item">
+        <span class="fin2-strip-label">예상 대비</span>
+        <b class="fin2-strip-value ${toneCls((last.rev / estBar.rev - 1) * 100)}">${signedPct((last.rev / estBar.rev - 1) * 100)}</b>
+      </div>
+    </div>`
+    : `
     <div class="fin2-strip">
       <div class="fin2-strip-item">
         <span class="fin2-strip-label">${isAnnual ? `작년 매출 <small>${escapeHtml(last.label)}</small>` : `최근 분기 <small>${escapeHtml(last.label)}</small>`}</span>
@@ -8501,7 +8540,7 @@ function fin2BodyHtml(data, period, currency) {
               ${marginHtml}
             </div>
           </div>
-          <span class="fin2-xlabel">${escapeHtml(b.label)}${b.est ? `<small>${estSource === "컨센서스" ? "컨센서스" : "예상"}</small>` : ""}</span>
+          <span class="fin2-xlabel">${escapeHtml(b.label)}${b.est ? `<small>${b.nextEst ? "다음 예상" : estSource === "컨센서스" ? "컨센서스" : "예상"}</small>` : b.prelim ? `<small>${escapeHtml(b.prelim)}</small>` : ""}</span>
         </div>`;
     })
     .join("");
@@ -21494,7 +21533,7 @@ async function earnRevenueOf(sym) {
 // 예정 종목: 다음 분기 예상 매출의 직전 분기 대비 %, 발표 종목: 발표 전 예상(그 분기를 빼고 다시 낸 추세 예상) vs 실제(직전 분기 대비)
 const earnQCache = new Map();
 function earnQuarterData(sym) {
-  if (!earnQCache.has(sym)) earnQCache.set(sym, loadFin2Quarter(sym, isKrTicker(sym) ? "KRW" : "USD").catch(() => null));
+  if (!earnQCache.has(sym)) earnQCache.set(sym, loadFin2QuarterLive(sym, isKrTicker(sym) ? "KRW" : "USD").catch(() => null));
   return earnQCache.get(sym);
 }
 function earnQuarterEnd(label) {
@@ -21503,6 +21542,12 @@ function earnQuarterEnd(label) {
 }
 function earnRevNumbers(data, row, kind) {
   if (!data || !data.bars) return null;
+  if (data.compare) {
+    // 비교 그래프와 같은 값(예상 막대 · 실제 막대의 직전 분기 대비)
+    const exp = data.bars.find((b) => b.est && !b.nextEst);
+    const act = data.bars.find((b) => !b.est && b.prelim);
+    return { exp: exp ? exp.growth : null, act: act ? act.growth : null };
+  }
   const actual = data.bars.filter((b) => !b.est);
   const estBar = data.bars.find((b) => b.est);
   const last = actual[actual.length - 1];
@@ -21529,6 +21574,49 @@ function earnRevNumbers(data, row, kind) {
 function earnPctHtml(v, word, cls) {
   if (!Number.isFinite(v)) return `<span class="${cls} muted">- ${word}</span>`;
   return `<span class="${cls} ${v >= 0 ? "wl-up" : "wl-down"}">${v >= 0 ? "+" : ""}${v.toFixed(1)}% <small>${word}</small></span>`;
+}
+// 발표 종목 비교 그래프: 직전 분기들 + [그 분기 예상] + [그 분기 실제] — 예상은 발표 전 기준(분기 재무가 옛 분기면 그 '다음 분기 예상',
+// 이미 들어왔으면 그 분기를 빼고 다시 낸 추세 예상), 실제는 분기 재무 또는 발표 당일 값
+const earnRawQCache = new Map();
+async function earnCompareData(sym, rowDate) {
+  const cur = isKrTicker(sym) ? "KRW" : "USD";
+  if (!earnRawQCache.has(sym)) earnRawQCache.set(sym, loadFin2Quarter(sym, cur).catch(() => null));
+  const raw = await earnRawQCache.get(sym);
+  if (!raw || !raw.bars) return null;
+  await getEarningsCal();
+  const e = earningsEntry(sym);
+  const rep = e && e.rep && e.rep.date === rowDate && Number.isFinite(e.rep.rev) ? e.rep : null;
+  const actual = raw.bars.filter((b) => !b.est).map(({ growth, ...b }) => b);
+  const estBar = raw.bars.find((b) => b.est);
+  const rel = new Date(rowDate + "T00:00:00");
+  const due = new Date(rel.getFullYear(), Math.floor(rel.getMonth() / 3) * 3, 0);
+  const last = actual[actual.length - 1];
+  const lastEnd = last && earnQuarterEnd(last.label);
+  let before, exp, act;
+  if (lastEnd && lastEnd >= due) {
+    before = actual.slice(0, -1);
+    act = last;
+    const er = before.length >= 2 ? projectNextQuarter(before, "rev") : null;
+    exp = Number.isFinite(er) ? { label: last.label, rev: er, ni: projectNextNetIncome(before, er), est: true } : null;
+  } else {
+    if (!rep || !estBar) return null;
+    before = actual;
+    exp = { label: estBar.label, rev: estBar.rev, ni: estBar.ni, est: true };
+    act = { label: estBar.label, rev: rep.rev, ni: Number.isFinite(rep.ni) ? rep.ni : null, est: false, prelim: rep.src === "잠정" ? "잠정" : "실제" };
+  }
+  if (!exp || !act) return null;
+  const prev = before.slice(-3);
+  const base = before.length ? before[before.length - 1].rev : null;
+  const prevG = fin2WithGrowth(prev, before.length > 3 ? before[before.length - 4].rev : null);
+  const [expG] = fin2WithGrowth([exp], base);
+  const [actG] = fin2WithGrowth([{ ...act, prelim: act.prelim || "실제" }], base);
+  // 2026-10-08 사용자 요청: 이전 3개 + 예상 + 실제 + 다음 분기 예상(실제까지 넣어 다시 낸 추세 예상)
+  const withAct = [...before, act];
+  const nRev = projectNextQuarter(withAct, "rev");
+  const aEnd = earnQuarterEnd(act.label) || due;
+  const nx = new Date(aEnd.getFullYear(), aEnd.getMonth() + 3, 1);
+  const nextG = Number.isFinite(nRev) && nRev > 0 ? fin2WithGrowth([{ label: fin2QuarterLabel(nx.getFullYear(), nx.getMonth() + 1), rev: nRev, ni: projectNextNetIncome(withAct, nRev), est: true, nextEst: true }], act.rev) : [];
+  return { bars: [...prevG, expG, actG, ...nextG], source: raw.source, estSource: raw.estSource === "컨센서스" && !(lastEnd && lastEnd >= due) ? "컨센서스" : "추세 예상", compare: true };
 }
 function earnSectionKey() {
   if (appSectionMode === "etf" || appSectionMode === "crypto") return appSectionMode;
@@ -21597,7 +21685,7 @@ async function renderEarningsTab() {
             : row.days === 0
             ? "오늘"
             : `${row.days}일 전`;
-        return `<tr class="earn-row" data-sym="${escapeHtml(row.symbol)}" data-kind="${kind}">
+        return `<tr class="earn-row" data-sym="${escapeHtml(row.symbol)}" data-kind="${kind}" data-date="${row.date}">
           <td>${rankNameCellHtml(row.symbol, tickerLogoHtml(row.symbol), name, undefined, "", true).replace("ticker-link rk-name", "rk-name")}</td>
           <td><span class="rk-l1">${md(row.date)}(${dow(row.date)})</span><span class="rk-l2 muted">${sub}</span></td>
           <td data-earn-rev="${escapeHtml(row.symbol)}">${revCell(revDone.get(row.symbol), row, kind)}</td>
@@ -21628,7 +21716,7 @@ async function renderEarningsTab() {
   const fillRevenue = () => {
     const need = [...soon.slice(0, earnShown.soon).map((r) => [r, "soon"]), ...done.slice(0, earnShown.done).map((r) => [r, "done"])].filter(([r]) => !revDone.has(r.symbol + "|"));
     mapWithConcurrency(need, 4, async ([row, kind]) => {
-      const data = await earnQuarterData(row.symbol);
+      const data = kind === "done" ? (await earnCompareData(row.symbol, row.date)) || (await earnQuarterData(row.symbol)) : await earnQuarterData(row.symbol);
       revDone.set(row.symbol, data);
       if (seq !== earnSeq) return;
       const td = box.querySelector(`tr[data-sym="${CSS.escape(row.symbol)}"][data-kind="${kind}"] [data-earn-rev]`);
@@ -21650,7 +21738,7 @@ async function renderEarningsTab() {
         chartTr.className = "earn-chart-row";
         chartTr.innerHTML = `<td colspan="3"><div class="earn-chart"><p class="muted" style="padding:10px 0;">분기 실적을 불러오는 중...</p></div></td>`;
         tr.after(chartTr);
-        const data = await earnQuarterData(sym);
+        const data = tr.dataset.kind === "done" ? (await earnCompareData(sym, tr.dataset.date)) || (await earnQuarterData(sym)) : await earnQuarterData(sym);
         const holder = chartTr.querySelector(".earn-chart");
         if (!holder) return;
         holder.innerHTML = data
