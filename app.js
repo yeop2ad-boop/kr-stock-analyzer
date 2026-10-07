@@ -5966,7 +5966,7 @@ function syncSectionHeader() {
   );
   showTab("tab.popular", true);
   showTab("tab.analysis", true);
-  showTab("tab.earnings", true);
+  showTab("tab.earnings", appSectionMode !== "etf" && appSectionMode !== "crypto"); // ETF·코인은 실적이 없어 탭 숨김(2026-10-08)
   // 2026-10-08 사용자 요청: 자동추적 탭 자리에 간편검색 — 자동추적은 더보기에서
   showTab("tab.autotrack", false);
   showTab("tab.search", true);
