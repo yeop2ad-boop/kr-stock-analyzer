@@ -3952,3 +3952,32 @@ body.on-watchlist .source-note { display: none; }
 
 /* 상단 탭 밑줄 아래 헤더 여백 6 → 0px(2026-10-08) — 밑줄이 헤더 아래 끝에 붙게 */
 .fh-titleline { margin-bottom: 0; }
+
+/* 투자분석 미래예측(2026-10-08): 보라 버튼(추가 버튼과 같은 크기) + 예상 흐름 그래프 */
+:root { --ia-purple: #7c3aed; --ia-purple-soft: #f1eafe; }
+:root[data-theme="dark"] { --ia-purple: #a78bfa; --ia-purple-soft: rgba(167, 139, 250, 0.16); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --ia-purple: #a78bfa; --ia-purple-soft: rgba(167, 139, 250, 0.16); } }
+.ia-future-row { margin-top: 8px; background: var(--ia-purple-soft); }
+.ia-future-row .ia-add-icon { background: var(--ia-purple); }
+.ia-future-row .ia-add-text b, .ia-future-row .ia-add-chev { color: var(--ia-purple); }
+.ia-future { margin: 10px 0 4px; padding: 14px 12px 10px; border-radius: 14px; border: 1px solid var(--border); }
+.ia-future-chips { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 10px; scrollbar-width: none; }
+.ia-future-loading { margin: 6px 0; font-size: 13px; }
+.ia-future-head { display: flex; gap: 22px; margin-bottom: 4px; }
+.ia-future-head small { display: block; font-size: 12px; color: var(--muted); }
+.ia-future-head b { font-size: 22px; font-weight: 800; letter-spacing: -0.4px; }
+.ia-future-up { color: var(--ia-purple); }
+.ia-future-crash { color: #2563eb; }
+.ia-future-svg { display: block; width: 100%; height: auto; }
+.ia-future-svg .ia-fg { stroke: var(--border); stroke-width: 1; }
+.ia-future-svg .ia-fg.zero { stroke: var(--muted); stroke-dasharray: 2 3; }
+.ia-future-svg .ia-ft { font-size: 10px; fill: var(--muted); }
+.ia-future-svg .ia-ft-crash { fill: #2563eb; font-weight: 700; }
+.ia-future-svg .ia-fline { fill: none; stroke: var(--ia-purple); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+.ia-future-svg .ia-farea { fill: var(--ia-purple); opacity: 0.08; }
+.ia-future-svg .ia-fdot { fill: var(--ia-purple); }
+.ia-future-svg .ia-fcrash { stroke: #2563eb; stroke-width: 2; stroke-dasharray: 6 4; }
+.ia-future-legend { display: flex; gap: 14px; margin-top: 4px; font-size: 12px; color: var(--muted); }
+.ia-future-legend i { display: inline-block; width: 16px; height: 0; margin-right: 5px; vertical-align: 3px; border-top: 2.6px solid var(--ia-purple); }
+.ia-future-legend i.ia-lg-crash { border-top: 2px dashed #2563eb; }
+.ia-future-note { margin: 8px 0 0; font-size: 11.5px; line-height: 1.5; color: var(--muted); }

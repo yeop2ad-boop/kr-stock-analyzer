@@ -21359,8 +21359,150 @@ function iaShellHtml(ctx) {
         <span class="ia-add-text"><b>내 포트폴리오 추가하기</b><small>관심종목이나 직접 고른 종목으로 수익률 비교</small></span>
         <span class="ia-add-chev" aria-hidden="true">›</span>
       </button>
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 모든 그래프는 기간 시작을 100으로 둔 수익 지수입니다. 투자방법 구성종목·1년/5년/최대(10년) 그래프는 ${dateStr} 배치 기준이고, 1일·1주·1달은 실시간(바구니형은 비중 상위 10종목)으로 계산합니다. 10년 승률·52주 신고가·52주 신저가·섹터 순환은 <b>매달 1일 그 시점 데이터로 다시 골라</b> 한 달씩 들고 간 백테스트이고(과거 시가총액은 지금 시가총액 × 주가 변화로 추정), 비교군이 오늘의 구성종목이라 그 사이 빠진 종목이 없는 생존편향이 있습니다. 코인 지수는 지금 구성 코인을 그 비중으로 들고 있었다고 가정한 값입니다. 수수료·세금·배당은 반영하지 않았으며 투자 자문이 아닙니다.</p>
+      <!-- 2026-10-08 사용자 요청: 아래 설명 문단은 지우고, 같은 크기의 보라색 "미래예측" 버튼 — 누르면 내 포트폴리오 예상 흐름 -->
+      <button type="button" class="ia-add-row ia-future-row" id="iaFutureBtn">
+        <span class="ia-add-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg></span>
+        <span class="ia-add-text"><b>미래예측</b><small>내 포트폴리오의 앞으로 6개월 예상 흐름</small></span>
+        <span class="ia-add-chev" aria-hidden="true">›</span>
+      </button>
+      <div class="ia-future" id="iaFuture" style="display:none;"></div>
     </div>`;
+}
+// ---------- 투자분석 "미래예측"(2026-10-08 사용자 요청) ----------
+// 보라 실선: 종목 상세 미래예측과 같은 방식(지난 4년 같은 시기 '오늘 → 6개월 뒤' 흐름의 평균)을 종목마다 구해 포트폴리오 비중으로 평균.
+// 파란 점선: 리스크 점검의 급락률(최근 52주 중 5거래일 최대 낙폭)을 종목마다 구해 비중 평균 — 1주 만에 이만큼 빠질 수 있다는 기준선.
+const IA_FUTURE_STEPS = 26; // 6개월을 26칸(약 1주씩)으로
+const iaFutureCache = new Map(); // symbol → { path:[pct…], crash }
+async function iaFutureOf(sym) {
+  if (iaFutureCache.has(sym)) return iaFutureCache.get(sym);
+  const out = { path: null, crash: null };
+  try {
+    const fp = await computeFuturePrediction(sym);
+    // 각 과거 해의 창 중간(오늘에 해당)을 0으로 두고 끝(6개월 뒤)까지를 같은 칸으로 다시 뽑아 평균
+    const rows = fp.historicalBuckets
+      .map((b) => {
+        const pts = b.points;
+        if (!pts.length || pts[pts.length - 1].frac < 0.9) return null;
+        const at = (f) => {
+          let best = pts[0];
+          for (const q of pts) if (Math.abs(q.frac - f) < Math.abs(best.frac - f)) best = q;
+          return best.pct;
+        };
+        const mid = 1 + at(0.5) / 100;
+        return Array.from({ length: IA_FUTURE_STEPS + 1 }, (_, k) => ((1 + at(0.5 + (0.5 * k) / IA_FUTURE_STEPS) / 100) / mid - 1) * 100);
+      })
+      .filter(Boolean);
+    if (rows.length) out.path = rows[0].map((_, k) => rows.reduce((a, row) => a + row[k], 0) / rows.length);
+  } catch {}
+  try {
+    const pairs = chartClosePairs(await yahooChart(sym, "1y", "1d"));
+    let worst = null;
+    for (let k = 5; k < pairs.length; k++) {
+      const chg = (pairs[k].c / pairs[k - 5].c - 1) * 100;
+      if (Number.isFinite(chg) && (worst === null || chg < worst)) worst = chg;
+    }
+    out.crash = worst;
+  } catch {}
+  iaFutureCache.set(sym, out);
+  return out;
+}
+function iaToggleFuture() {
+  const box = el("iaFuture");
+  if (!box) return;
+  if (box.style.display !== "none") {
+    box.style.display = "none";
+    return;
+  }
+  const sec = iaState.ctx && iaState.ctx.sec;
+  const pfs = iaLoadPortfolios().filter((p) => p.section === sec);
+  if (!pfs.length) {
+    showToast("먼저 내 포트폴리오를 추가해 주세요");
+    iaOpenAddChoice();
+    return;
+  }
+  box.style.display = "";
+  const sel = iaState.selected && String(iaState.selected).startsWith("pf:") ? String(iaState.selected).slice(3) : "";
+  iaRenderFuture(pfs.some((p) => p.id === sel) ? sel : pfs[0].id);
+}
+let iaFutureSeq = 0;
+async function iaRenderFuture(pfId) {
+  const box = el("iaFuture");
+  if (!box) return;
+  const seq = ++iaFutureSeq;
+  const sec = iaState.ctx && iaState.ctx.sec;
+  const pfs = iaLoadPortfolios().filter((p) => p.section === sec);
+  const pf = pfs.find((p) => p.id === pfId) || pfs[0];
+  if (!pf) return;
+  const chips =
+    pfs.length > 1
+      ? `<div class="ia-future-chips">${pfs
+          .map((p) => `<button type="button" class="cat-btn${p.id === pf.id ? " active" : ""}" data-ia-future-pf="${escapeHtml(p.id)}">${escapeHtml(p.name)}</button>`)
+          .join("")}</div>`
+      : "";
+  const items = pf.items.filter((it) => it.symbol && Number(it.weight) > 0);
+  box.innerHTML = `${chips}<p class="muted ia-future-loading">${escapeHtml(pf.name)} ${items.length}종목의 미래예측을 계산하는 중...</p>`;
+  const res = await mapWithConcurrency(items, 4, async (it) => ({ it, f: await iaFutureOf(it.symbol) }));
+  if (seq !== iaFutureSeq) return;
+  const withPath = res.filter((x) => x.f.path);
+  const withCrash = res.filter((x) => Number.isFinite(x.f.crash));
+  const wsum = (arr) => arr.reduce((a, x) => a + Number(x.it.weight), 0);
+  if (!withPath.length) {
+    box.innerHTML = `${chips}<p class="muted ia-future-loading">미래예측에 필요한 과거 시세(4년 이상)를 가진 종목이 없습니다.</p>`;
+    return;
+  }
+  const wp = wsum(withPath);
+  const path = Array.from({ length: IA_FUTURE_STEPS + 1 }, (_, k) => withPath.reduce((a, x) => a + x.f.path[k] * Number(x.it.weight), 0) / wp);
+  const crash = withCrash.length ? withCrash.reduce((a, x) => a + x.f.crash * Number(x.it.weight), 0) / wsum(withCrash) : null;
+  const end = path[path.length - 1];
+  const miss = items.length - withPath.length;
+  box.innerHTML = `${chips}
+    <div class="ia-future-head">
+      <div><small>6개월 뒤 예상</small><b class="ia-future-up">${end >= 0 ? "+" : ""}${end.toFixed(1)}%</b></div>
+      ${crash !== null ? `<div><small>1주 급락 평균</small><b class="ia-future-crash">${crash.toFixed(1)}%</b></div>` : ""}
+    </div>
+    ${iaFutureSvg(path, crash)}
+    <div class="ia-future-legend"><span><i class="ia-lg-up"></i>미래예측(비중 평균)</span>${crash !== null ? `<span><i class="ia-lg-crash"></i>급락률(비중 평균)</span>` : ""}</div>
+    <p class="ia-future-note">* 종목별 미래예측은 지난 4년 같은 시기의 흐름 평균, 급락률은 최근 52주 중 1주 최대 낙폭입니다.${
+      miss > 0 ? ` 과거 시세가 4년이 안 되는 ${miss}종목은 미래예측에서 뺐습니다.` : ""
+    } 투자 자문이 아닙니다.</p>`;
+}
+function iaFutureSvg(path, crash) {
+  const W = 340,
+    H = 190,
+    L = 36,
+    R = 10,
+    T = 12,
+    B = 24;
+  const vals = [0, ...path, ...(crash !== null ? [crash] : [])];
+  let lo = Math.min(...vals),
+    hi = Math.max(...vals);
+  const pad = Math.max((hi - lo) * 0.12, 2);
+  lo -= pad;
+  hi += pad;
+  const step = [1, 2, 5, 10, 20, 25, 50, 100].find((c) => (hi - lo) / c <= 6) || 200;
+  lo = Math.floor(lo / step) * step;
+  hi = Math.ceil(hi / step) * step;
+  const x = (k) => L + ((W - L - R) * k) / IA_FUTURE_STEPS;
+  const y = (v) => T + ((hi - v) / (hi - lo)) * (H - T - B);
+  let grid = "";
+  for (let v = lo; v <= hi + 1e-9; v += step) {
+    grid += `<line x1="${L}" x2="${W - R}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" class="ia-fg${v === 0 ? " zero" : ""}"/><text x="${L - 5}" y="${(y(v) + 3.5).toFixed(1)}" text-anchor="end" class="ia-ft">${v > 0 ? "+" : ""}${v}%</text>`;
+  }
+  const now = new Date();
+  const mlab = (m) => {
+    const d = addMonths(now, m);
+    return `${d.getMonth() + 1}월`;
+  };
+  const xl = [0, 3, 6].map((m) => `<text x="${x((IA_FUTURE_STEPS * m) / 6).toFixed(1)}" y="${H - 6}" text-anchor="${m === 0 ? "start" : m === 6 ? "end" : "middle"}" class="ia-ft">${m === 0 ? "오늘" : mlab(m)}</text>`).join("");
+  const d = path.map((v, k) => `${k ? "L" : "M"}${x(k).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+  const area = `${d} L${x(IA_FUTURE_STEPS).toFixed(1)},${y(0).toFixed(1)} L${x(0).toFixed(1)},${y(0).toFixed(1)} Z`;
+  const crashLine =
+    crash !== null
+      ? `<line x1="${L}" x2="${W - R}" y1="${y(crash).toFixed(1)}" y2="${y(crash).toFixed(1)}" class="ia-fcrash"/><text x="${W - R}" y="${(y(crash) - 5).toFixed(1)}" text-anchor="end" class="ia-ft ia-ft-crash">급락 시 ${crash.toFixed(1)}%</text>`
+      : "";
+  return `<svg class="ia-future-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="내 포트폴리오 미래예측 그래프">${grid}${xl}<path d="${area}" class="ia-farea"/><path d="${d}" class="ia-fline"/><circle cx="${x(
+    IA_FUTURE_STEPS
+  ).toFixed(1)}" cy="${y(path[path.length - 1]).toFixed(1)}" r="4" class="ia-fdot"/>${crashLine}</svg>`;
 }
 function iaFmtWeight(w) {
   const n = Number(w);
@@ -21534,6 +21676,9 @@ function iaBindShell(root) {
       return;
     }
     if (e.target.closest("#iaAddBtn")) return iaOpenAddChoice();
+    if (e.target.closest("#iaFutureBtn")) return iaToggleFuture();
+    const fpf = e.target.closest("[data-ia-future-pf]");
+    if (fpf) return iaRenderFuture(fpf.dataset.iaFuturePf);
     if (e.target.closest("#iaTableBtn")) {
       iaState.table = !iaState.table;
       el("iaTableBtn").classList.toggle("active", iaState.table);
