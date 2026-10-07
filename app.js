@@ -2932,7 +2932,7 @@ function refreshTopRankingView() {
     return false;
   };
   const visibleTabs = () =>
-    [...document.querySelectorAll("#fhTabs .fh-tab")].filter((b) => b.dataset.fhtab !== "tab.search" && b.style.display !== "none" && getComputedStyle(b).display !== "none");
+    [...document.querySelectorAll("#fhTabs .fh-tab")].filter((b) => b.style.display !== "none" && getComputedStyle(b).display !== "none");
   const setPanelX = (px, transition) => {
     panel.style.transition = transition || "none";
     panel.style.transform = `translateX(${px}px)`;
@@ -4948,16 +4948,29 @@ el("watchlistList").addEventListener("click", (e) => {
 let searchWizardStep = "root";
 let searchWizardAnswers = {};
 
+// 2026-10-08 사용자 요청: 간편검색은 오른쪽에서 날아오는 창이 아니라 다른 탭처럼 상단 버튼은 그대로, 아래 내용 자리에서
+// (검색창·단계 화면 DOM을 #searchGroup으로 옮겨 그대로 씀 — 위임 리스너가 #searchWizardBody에 붙어 있어 동작 유지)
 function openSearchWizard() {
   searchWizardStep = "root";
   searchWizardAnswers = {};
-  el("searchWizardPanel").style.display = "flex";
-  requestAnimationFrame(() => el("searchWizardPanel").classList.add("open"));
+  const grp = el("searchGroup");
+  const body = el("searchWizardPanel").querySelector(".company-panel-body");
+  if (grp && body && body.parentElement !== grp) grp.appendChild(body);
+  showOnlyCarouselView(() => {
+    if (typeof clearSrRankTabs === "function") clearSrRankTabs();
+    switchTab(TAB_ORDER.indexOf("topranking"));
+    el("tabValuationBtn").classList.remove("active");
+    tabTrendBtn.classList.remove("active");
+    setCarouselViewTitle("tab.search");
+    el("topRankingSubNav").innerHTML = "";
+    showRankingGroup("search");
+  });
+  setBottomNavActive(bottomNavKeyForSection());
   renderSearchWizardStep();
+  window.scrollTo(0, 0);
 }
 function closeSearchWizard() {
-  el("searchWizardPanel").classList.remove("open");
-  window.setTimeout(() => { el("searchWizardPanel").style.display = "none"; }, 280);
+  // 창이 아니라 화면 안이라 닫을 것이 없음(예전 호출부 호환용)
 }
 el("searchWizardCloseBtn").addEventListener("click", closeSearchWizard);
 
@@ -5179,6 +5192,8 @@ function showRankingGroup(tabKey) {
   if (ipoGroup) ipoGroup.style.display = tabKey === "ipo" ? "block" : "none";
   const analysisGroup = el("analysisGroup");
   if (analysisGroup) analysisGroup.style.display = tabKey === "analysis" ? "block" : "none";
+  const searchGroup = el("searchGroup");
+  if (searchGroup) searchGroup.style.display = tabKey === "search" ? "block" : "none";
   const earningsGroup = el("earningsGroup");
   if (earningsGroup) earningsGroup.style.display = tabKey === "earnings" ? "block" : "none";
 }
@@ -8529,7 +8544,7 @@ function fin2BodyHtml(data, period, currency) {
       else if (niPx >= 17) marginHtml = `<span class="fin2-margin fin2-margin-in" style="bottom:${Math.max(2, niPx - 16).toFixed(0)}px">${txt}</span>`;
       else if (barPx - niPx >= 17) marginHtml = `<span class="fin2-margin fin2-margin-out" style="bottom:${(niPx + 1).toFixed(0)}px">${txt}</span>`;
     }
-    return { barPx, inner: `${niPx > 0 ? `<div class="fin2-ni" style="height:${niPx.toFixed(1)}px"></div>` : ""}${marginHtml}` };
+    return { barPx, niPx, inner: `${niPx > 0 ? `<div class="fin2-ni" style="height:${niPx.toFixed(1)}px"></div>` : ""}${marginHtml}` };
   };
   const colHtml = [];
   for (let i = 0; i < bars.length; i++) {
@@ -8541,19 +8556,35 @@ function fin2BodyHtml(data, period, currency) {
       const a = barParts(nx);
       const top = Math.max(e.barPx, a.barPx);
       const g = (v) => (Number.isFinite(v) ? `${Math.abs(v) < 0.5 ? "0%" : `${Math.round(Math.abs(v))}%`}${v >= 0 ? "↑" : "↓"}` : "-");
+      // 2026-10-08 사용자 요청(반으로 자르니 이상함): 실적 막대 하나만, 예상은 매출·순이익 높이에 빨간 가로 점선
       colHtml.push(`
         <div class="fin2-col fin2-pair" title="${escapeHtml(`${b.label} 예상 ${fmtAmountUnified(b.rev, currency)} · 실적 ${fmtAmountUnified(nx.rev, currency)}`)}">
           <div class="fin2-plot" style="height:${PLOT_H}px">
             <span class="fin2-pair-growth" style="bottom:${(top + 4).toFixed(0)}px"><em>예상 ${g(b.growth)}</em><b class="${nx.growth >= 0 ? "fin2-up" : "fin2-down"}">실적 ${g(nx.growth)}</b></span>
             <span class="fin2-tip">예상 ${escapeHtml(fmtAmountUnified(b.rev, currency))}<br>실적 ${escapeHtml(fmtAmountUnified(nx.rev, currency))}</span>
-            <div class="fin2-pair-bars">
-              <div class="fin2-bar fin2-bar-exp" style="height:${e.barPx.toFixed(1)}px">${e.inner}</div>
-              <div class="fin2-bar fin2-bar-act" style="height:${a.barPx.toFixed(1)}px">${a.inner}</div>
-            </div>
+            <div class="fin2-bar" style="height:${a.barPx.toFixed(1)}px">${a.inner}</div>
+            <i class="fin2-exp-line" style="bottom:${e.barPx.toFixed(1)}px" title="예상 매출"></i>
+            ${e.niPx > 0 ? `<i class="fin2-exp-line fin2-exp-ni" style="bottom:${e.niPx.toFixed(1)}px" title="예상 순이익"></i>` : ""}
           </div>
-          <span class="fin2-xlabel">${escapeHtml(b.label)}<small>예상/실적</small></span>
+          <span class="fin2-xlabel">${escapeHtml(b.label)}<small>실적</small></span>
         </div>`);
       i++;
+      continue;
+    }
+    // 2026-10-08 사용자 요청: 비교 그래프의 다음 분기 예상도 막대 대신 매출·순이익 높이에 빨간 가로 점선(통일)
+    if (data.compare && b.est && b.nextEst) {
+      const e = barParts(b);
+      const gtxt = Number.isFinite(b.growth) ? `${Math.abs(b.growth) < 0.5 ? "0%" : `${Math.round(Math.abs(b.growth))}%`}${b.growth >= 0 ? "↑" : "↓"}` : "";
+      colHtml.push(`
+        <div class="fin2-col fin2-pair" title="${escapeHtml(`${b.label} 예상 매출 ${fmtAmountUnified(b.rev, currency)}`)}">
+          <div class="fin2-plot" style="height:${PLOT_H}px">
+            ${gtxt ? `<span class="fin2-pair-growth" style="bottom:${(e.barPx + 4).toFixed(0)}px"><em>예상 ${gtxt}</em></span>` : ""}
+            <span class="fin2-tip">예상 ${escapeHtml(fmtAmountUnified(b.rev, currency))}</span>
+            <i class="fin2-exp-line" style="bottom:${e.barPx.toFixed(1)}px"></i>
+            ${e.niPx > 0 ? `<i class="fin2-exp-line fin2-exp-ni" style="bottom:${e.niPx.toFixed(1)}px"></i>` : ""}
+          </div>
+          <span class="fin2-xlabel">${escapeHtml(b.label)}<small>다음 예상</small></span>
+        </div>`);
       continue;
     }
     const { barPx, inner } = barParts(b);
@@ -8572,7 +8603,7 @@ function fin2BodyHtml(data, period, currency) {
   }
   const cols = colHtml.join("");
 
-  const estNote = estBar
+  const estNote = estBar && !data.compare
     ? estSource === "컨센서스"
       ? ` 점선 막대는 증권사 컨센서스(전망 평균)입니다.`
       : ` 점선 막대는 최근 실적 추세로 계산한 예상치이며 회사 공식 가이던스가 아닙니다.`
@@ -8584,7 +8615,7 @@ function fin2BodyHtml(data, period, currency) {
       <span><i class="fin2-dot fin2-dot-ni"></i>순이익 <em>(막대 안 % = 순이익률)</em></span>
     </div>
     <div class="fin2-chart${hasNeg ? " has-neg" : ""}" style="grid-template-columns:repeat(${colHtml.length},1fr);--fin2-neg-space:${Math.round(maxNegPx + 20)}px">${cols}</div>
-    <p class="fin2-caption">막대를 누르면 매출액이 표시됩니다. 막대 위 %는 ${isAnnual ? "작년" : "전분기"} 대비 매출 증감입니다.${estNote} 출처: ${escapeHtml(source)}.</p>`;
+    <p class="fin2-caption">막대를 누르면 매출액이 표시됩니다. 막대 위 %는 ${isAnnual ? "작년" : "전분기"} 대비 매출 증감입니다.${data.compare ? " 빨간 점선은 예상(매출액·순이익)입니다 — 실적 칸은 발표 전 예상, 마지막 칸은 다음 분기 예상." : ""}${estNote} 출처: ${escapeHtml(source)}.</p>`;
 }
 
 // ---------- 2+. 최근 분기 실적(최근 3개) + 다음 분기 가이던스(1개) ----------

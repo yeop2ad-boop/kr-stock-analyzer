@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20261008am" />
+<link rel="stylesheet" href="style.css?v=20261008aq" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -657,6 +657,9 @@
 
         <!-- 인기종목(2026-09-01): 기업가치·시장동향 스캔과 결과영역을 공유하면 진행 중 가드에 막히므로 전용 영역 분리 -->
         <!-- 투자분석(2026-10-06): 투자방법별 수익 지수 그래프 + 구성종목 + 내 포트폴리오(관심종목) 비교 — renderInvestAnalysis가 채움 -->
+        <!-- 간편검색(2026-10-08): 검색창·단계 화면을 JS가 여기로 옮겨 상단 탭 아래에서 보여줌 -->
+        <div id="searchGroup" class="search-inline" style="display:none;"></div>
+
         <div id="earningsGroup" style="display:none;">
           <div id="earningsResults"></div>
         </div>
@@ -999,6 +1002,6 @@
   <script src="data/logo-db.js?v=20260903g"></script>
   <script src="data/etf-meta.js?v=20260912a"></script>
   <script src="winrate-benchmark.js?v=20261007k"></script>
-  <script src="app.js?v=20261008ao"></script>
+  <script src="app.js?v=20261008ar"></script>
 </body>
 </html>
