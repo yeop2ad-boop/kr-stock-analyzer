@@ -6646,7 +6646,13 @@ const S_REPORT_TITLES = {
 // 설명 안에서 "+예시"로 펼쳐 볼 수 있는 항목(2026-09-16 사용자 요청)
 const S_REPORT_EXAMPLES = { win: "대표자산 10년평균 승률 비교", rsi: "SPY 5년 주봉과 주간 RSI" };
 
-const S_REPORT_TAP_HINT = `<p class="srt-tap-hint">* 모든 항목은 눌러서 자세한 설명을 볼 수 있습니다.</p>`;
+// 2026-10-08 사용자 요청: 핵심지표 아래 안내도 인기종목처럼 3개 문구가 번갈아(번갈아 바꾸는 타이머는 POPULAR_HINTS 옆)
+const SR_HINTS = [
+  "모든 항목은 눌러서 자세한 설명을 볼 수 있습니다.",
+  "승률이 높을수록 과거에 안정적으로 우상향했다는 뜻이에요.",
+  "상승률이 높을수록 연 수익률이 좋았어요. 눌러서 확인해 보세요.",
+];
+const S_REPORT_TAP_HINT = `<p class="srt-tap-hint pop-hint" aria-live="polite"><span class="pop-hint-text" data-hint-set="sr">* ${SR_HINTS[0]}</span></p>`;
 
 // 핵심 5개 정의 — ETF·코인은 3번이 1년 수익률
 // axis: 오각형 축을 비교군 백분위 대신 고정 눈금으로 그림(2026-09-16 사용자 지정 — 승률 40~70%, 상승률·매출액 0~50%, 변동성 5~1%,
@@ -7104,7 +7110,7 @@ document.addEventListener("click", (e) => {
   const title = line.dataset.srTitle || "";
   const text = line.dataset.srExplain || "";
   const example = S_REPORT_EXAMPLES[key]
-    ? `<button type="button" class="srf-chip" data-sr-chip="example" data-sr-chip-key="${escapeHtml(key)}">+예시</button>`
+    ? `<button type="button" class="srf-chip" data-sr-chip="example" data-sr-chip-key="${escapeHtml(key)}">${key === "win" ? "+승률이란" : "+예시"}</button>`
     : "";
   const rank = SR_RANK_ITEM_BY_KEY.has(key) || (SR_ASSET_RANK[srDetailSection()] || {})[key]
     ? `<button type="button" class="srf-chip" data-sr-chip="rank" data-sr-chip-key="${escapeHtml(key)}">+순위</button>`
@@ -10935,9 +10941,10 @@ if (!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)")
   setInterval(() => {
     popularHintIdx = (popularHintIdx + 1) % POPULAR_HINTS.length;
     document.querySelectorAll(".pop-hint-text").forEach((n) => {
+      const set = n.dataset.hintSet === "sr" ? SR_HINTS : POPULAR_HINTS;
       n.classList.add("out");
       setTimeout(() => {
-        n.textContent = `* ${POPULAR_HINTS[popularHintIdx]}`;
+        n.textContent = `* ${set[popularHintIdx % set.length]}`;
         n.classList.remove("out");
       }, 350);
     });
