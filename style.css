@@ -4071,3 +4071,10 @@ table.pop-table td.pop-spark-td .pop-spark-cell { justify-content: center; }
 .ia-future-act { display: inline-flex; align-items: center; gap: 4px; height: 32px; padding: 0 12px; border: 1px solid var(--border); border-radius: 999px; background: var(--bg); color: var(--text); font-size: 13px; font-weight: 700; cursor: pointer; }
 .ia-future-act.danger { color: #e5484d; }
 .ia-future-act.primary { margin-left: auto; border-color: transparent; background: var(--ia-purple-soft); color: var(--ia-purple); }
+
+/* 실적 마크(실적 발표 후 7일)·재무정보 옆 실적발표 날짜(2026-10-08) */
+.earn-badge { display: inline-flex; align-items: center; flex: none; margin-left: 5px; padding: 1px 6px; border-radius: 6px; background: rgba(124, 58, 237, 0.12); color: var(--ia-purple, #7c3aed); font-size: 11px; font-weight: 800; line-height: 1.5; letter-spacing: -0.2px; vertical-align: 2px; }
+.rk-name-box .at-name-line { display: flex; align-items: center; min-width: 0; }
+.rk-name-box .at-name-line .rk-name { min-width: 0; }
+.fin-earn { margin-left: 8px; font-size: 13px; font-weight: 700; color: var(--muted); letter-spacing: -0.2px; vertical-align: 2px; }
+#financialsHeading .earn-badge { vertical-align: 3px; }

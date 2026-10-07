@@ -4753,7 +4753,7 @@ async function renderWlExtras(symbols) {
 
   // 실적 캘린더 — 코인은 실적이 없어 제외
   const earnSyms = syms.filter((x) => !/-USD$/.test(x));
-  const earnP = mapWithConcurrency(earnSyms, 5, (x) => wlExtrasCached(`earn:${x}`, () => estimateNextEarningsDate(x))).then((list) => {
+  const earnP = mapWithConcurrency(earnSyms, 5, (x) => wlExtrasCached(`earn:${x}`, () => nextEarningsInfo(x))).then((list) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const rows = list
@@ -4771,7 +4771,7 @@ async function renderWlExtras(symbols) {
             return `<div class="wl-ex-earn-row ticker-link" data-ticker="${escapeHtml(e.symbol)}">
                 <span class="wl-ex-date"><b>${d.getMonth() + 1}/${d.getDate()}</b><small>${dow}</small></span>
                 <span class="wl-ex-logo">${tickerLogoHtml(e.symbol)}</span>
-                <span class="wl-ex-earn-body"><b>${escapeHtml(wlKoName(e.symbol))}</b><small>${escapeHtml(e.quarterLabel)} 실적발표(추정)</small></span>
+                <span class="wl-ex-earn-body"><b>${escapeHtml(wlKoName(e.symbol))}</b><small>${escapeHtml(e.quarterLabel ? e.quarterLabel + " " : "")}실적발표${e.exact ? (EARN_TIME_LABEL[e.time] ? ` · ${EARN_TIME_LABEL[e.time]}` : "") : "(추정)"}</small></span>
                 <span class="wl-ex-dday">${dday === 0 ? "오늘" : `D-${dday}`}</span>
               </div>`;
           })
@@ -6299,6 +6299,25 @@ async function runAnalysis(ticker) {
     el("financialsHeading").innerHTML = isEtfDetail
       ? `보유 종목<span class="srt-asof">${new Date().getMonth() + 1}/${new Date().getDate()} 기준</span>`
       : "재무정보";
+    // 2026-10-08 사용자 요청: 재무정보 옆에 실적발표 날짜 — 7일 안에 나왔으면 그 날짜 + '실적' 마크, 아니면 다음 발표일(확정/추정)
+    if (!isEtfDetail && !isCryptoDetail) {
+      const headTicker = ticker;
+      window.__finHeadTicker = ticker; // 늦게 끝난 이전 종목 결과가 덮지 않게
+      (async () => {
+        await getEarningsCal();
+        const e = earningsEntry(headTicker);
+        const md = (d) => `${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
+        let html = "";
+        if (e && e.last && earnDaysSince(e.last) >= 0 && earnDaysSince(e.last) <= 7) {
+          html = `<span class="fin-earn">실적발표 ${md(new Date(e.last + "T00:00:00"))}</span>${earnBadgeHtml(headTicker)}`;
+        } else {
+          const n = await nextEarningsInfo(headTicker).catch(() => null);
+          if (n) html = `<span class="fin-earn">실적발표 ${md(n.date)}${n.exact ? (EARN_TIME_LABEL[n.time] ? ` · ${EARN_TIME_LABEL[n.time]}` : "") : "(추정)"}</span>`;
+        }
+        const h = el("financialsHeading");
+        if (h && html && window.__finHeadTicker === headTicker) h.innerHTML = `재무정보${html}`;
+      })();
+    }
     el("summarySubtabRevenueBtn").style.display = isCryptoDetail ? "none" : "";
     if (isCryptoDetail || isEtfDetail) {
       FIN2_STATE.token++; // 매출액 차트가 없는 자산 — 앞서 연 주식의 늦게 도착한 차트가 숨은 영역에 그려지지 않게
@@ -9385,10 +9404,55 @@ function rankCodeLabel(symbol) {
 function rankDisplayName(symbol, name, isKr) {
   return isKr ? name || symbol : TICKER_TO_KOREAN_NAME[symbol] || name || symbol;
 }
+// ---------- 실적발표 일정(2026-10-08 사용자 요청) — data/earnings-calendar.json(매일 다트공시 배치가 갱신) ----------
+// 미국: 나스닥 실적 캘린더의 확정 발표일(next·장 전/후)과 최근 발표일(last). 한국: DART 잠정실적·정기보고서 첫 공시일(last).
+let earningsCal = null;
+let earningsCalPromise = null;
+function getEarningsCal() {
+  if (!earningsCalPromise)
+    earningsCalPromise = fetch("data/earnings-calendar.json", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null)
+      .then((d) => (earningsCal = d));
+  return earningsCalPromise;
+}
+getEarningsCal();
+function earningsEntry(sym) {
+  if (!earningsCal || !sym) return null;
+  const s = String(sym).toUpperCase();
+  return (isKrTicker(s) ? earningsCal.kr : earningsCal.us)?.[s] || null;
+}
+function earnDaysSince(iso) {
+  const t = new Date();
+  t.setHours(0, 0, 0, 0);
+  return Math.round((t - new Date(iso + "T00:00:00")) / 86400000);
+}
+// 실적이 나온 뒤 7일 동안 이름 오른쪽에 '실적' 마크
+function earnBadgeHtml(sym) {
+  const e = earningsEntry(sym);
+  if (!e || !e.last) return "";
+  const d = earnDaysSince(e.last);
+  return d >= 0 && d <= 7 ? `<span class="earn-badge" title="${escapeHtml(e.last)} 실적 발표">실적</span>` : "";
+}
+const EARN_TIME_LABEL = { pre: "장 시작 전", after: "장 마감 후" };
+function fqToQuarterLabel(fq) {
+  const m = String(fq || "").match(/^([A-Za-z]{3})/);
+  const mon = m ? ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].indexOf(m[1]) : -1;
+  return mon >= 0 ? `${Math.floor(mon / 3) + 1}분기` : "";
+}
+// 다음 실적발표일: 확정 일정이 있으면 그걸(exact), 없으면 지난 분기 결산일로 추정
+async function nextEarningsInfo(sym) {
+  await getEarningsCal();
+  const e = earningsEntry(sym);
+  if (e && e.next) return { symbol: sym, date: new Date(e.next + "T00:00:00"), exact: true, time: e.nextTime || "", quarterLabel: fqToQuarterLabel(e.fq) };
+  const est = await estimateNextEarningsDate(sym);
+  return est ? { ...est, exact: false } : null;
+}
 function rankNameCellHtml(symbol, logoHtml, name, sub, extraCls) {
-  return `<span class="ticker-cell rank-logo">${logoHtml}<span class="rk-name-box${extraCls ? " " + extraCls : ""}"><b class="ticker-link rk-name" data-ticker="${escapeHtml(symbol)}">${escapeHtml(
-    name
-  )}</b><span class="rk-sub">${escapeHtml(sub === undefined ? rankCodeLabel(symbol) : sub)}</span></span></span>`;
+  const badge = earnBadgeHtml(symbol);
+  return `<span class="ticker-cell rank-logo">${logoHtml}<span class="rk-name-box${extraCls ? " " + extraCls : ""}">${badge ? '<span class="at-name-line">' : ""}<b class="ticker-link rk-name" data-ticker="${escapeHtml(
+    symbol
+  )}">${escapeHtml(name)}</b>${badge ? `${badge}</span>` : ""}<span class="rk-sub">${escapeHtml(sub === undefined ? rankCodeLabel(symbol) : sub)}</span></span></span>`;
 }
 function rankPriceCellHtml(symbol, price, currency, changePct) {
   const p = price === null || price === undefined ? NaN : Number(price);
@@ -18529,7 +18593,7 @@ function stockCardRowHtml(r) {
     <div class="idx-row stock-card-row wl-row ticker-link idx-row-clickable" data-ticker="${escapeHtml(r.symbol)}">
       <div class="wl-row-logo">${tickerLogoHtml(r.symbol)}</div>
       <div class="wl-row-grid wl-grid-spark">
-        <div class="wl-name">${escapeHtml(displayName)}${etfSectorTagHtml(r.symbol)}</div>
+        <div class="wl-name">${escapeHtml(displayName)}${etfSectorTagHtml(r.symbol)}${earnBadgeHtml(r.symbol)}</div>
         <div class="wl-price ${cls}">${wlNumStr(r.price, r.currency)}${arrow ? `<span class="wl-arrow wl-arrow-after">${arrow}</span>` : ""}</div>
         <div class="wl-spark"><span class="pop-spark-cell" data-spark="${escapeHtml(r.symbol)}"></span></div>
         <div class="wl-sub">${etfParts ? escapeHtml(etfParts.sub) : `${escapeHtml(code)} ${wlMarketLabel(r)}`}</div>
