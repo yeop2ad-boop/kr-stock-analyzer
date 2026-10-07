@@ -3600,12 +3600,33 @@ function getWatchlistGroups(market = getWatchlistActiveMarket()) {
 function saveWatchlistGroups(groups, market = getWatchlistActiveMarket()) {
   localStorage.setItem(wlKey("watchlist_groups_v1", market), JSON.stringify(groups));
 }
-function addWatchlistGroup(name) {
+// ---------- 투자처별 관심목록(2026-10-07 사용자 요청) ----------
+// 목록은 투자처(한국주식·미국주식·ETF·비트코인)마다 따로 보이고, 새 목록의 기본 이름은 한국1·한국2…, 미국1…, ETF1…, 코인1….
+// 예전부터 있던 공용 "기본" 목록은 각 투자처에서 "한국1"처럼 보이게만 바꾼다(저장 이름은 그대로).
+const WL_SECTION_PREFIX = { kr: "한국", us: "미국", etf: "ETF", crypto: "코인" };
+function wlCurrentSection() {
+  return appSectionMode === "etf" ? "etf" : appSectionMode === "crypto" ? "crypto" : getWatchlistActiveMarket() === "KR" ? "kr" : "us";
+}
+function wlGroupsForSection(sec) {
+  return getWatchlistGroups().filter((g) => !g.section || g.section === sec);
+}
+function wlGroupLabel(g, sec) {
+  if (!g.section && g.id === WATCHLIST_DEFAULT_GROUP_ID && (g.name === "기본" || !g.name)) return `${WL_SECTION_PREFIX[sec] || ""}1`;
+  return g.name;
+}
+function wlNextGroupName(sec) {
+  const prefix = WL_SECTION_PREFIX[sec] || "목록";
+  const used = new Set(wlGroupsForSection(sec).map((g) => wlGroupLabel(g, sec)));
+  let n = 1;
+  while (used.has(`${prefix}${n}`)) n++;
+  return `${prefix}${n}`;
+}
+function addWatchlistGroup(name, section) {
   const trimmed = (name || "").trim();
   if (!trimmed) return null;
   const groups = getWatchlistGroups();
   const id = `g_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
-  groups.push({ id, name: trimmed });
+  groups.push(section ? { id, name: trimmed, section } : { id, name: trimmed });
   saveWatchlistGroups(groups);
   return id;
 }
@@ -3718,14 +3739,15 @@ function wlGroupCounts(market) {
 }
 function renderWlGroupPickList() {
   const market = watchlistMarketOf(wlGroupPickTarget || "");
-  const groups = getWatchlistGroups(market);
+  const sec = sectionOfSymbol(wlGroupPickTarget || "");
+  const groups = wlGroupsForSection(sec);
   const counts = wlGroupCounts(market);
   el("wlGroupPickList").innerHTML =
     groups
       .map(
         (g) => `<button type="button" class="wl-group-pick-item${wlGroupPickChecked.has(g.id) ? " checked" : ""}" data-pick-group="${escapeHtml(g.id)}">
         <span class="wl-group-pick-check">✓</span>
-        <span class="wl-group-pick-name" data-group-name="${escapeHtml(g.id)}">${escapeHtml(g.name)}</span>
+        <span class="wl-group-pick-name" data-group-name="${escapeHtml(g.id)}">${escapeHtml(wlGroupLabel(g, sec))}</span>
         <span class="wl-group-pick-count">${counts[g.id] || 0}</span>
       </button>`
       )
@@ -3733,7 +3755,7 @@ function renderWlGroupPickList() {
 }
 function openWlGroupPickSheet(symbol) {
   const market = watchlistMarketOf(symbol);
-  const groups = getWatchlistGroups(market);
+  const groups = wlGroupsForSection(sectionOfSymbol(symbol));
   wlGroupPickTarget = symbol;
   const cur = getWatchlist(market).find((w) => w.symbol === symbol.toUpperCase());
   const active = getActiveWatchlistGroup(market);
@@ -3750,8 +3772,9 @@ el("wlGroupPickBackdrop").addEventListener("click", closeWlGroupPickSheet);
 el("wlGroupPickCloseBtn").addEventListener("click", closeWlGroupPickSheet);
 el("wlGroupPickList").addEventListener("click", (e) => {
   if (e.target.closest("#wlGroupPickAddBtn")) {
-    const name = prompt("새 관심목록 이름을 입력해주세요.");
-    const id = name === null ? null : addWatchlistGroup(name);
+    const sec = sectionOfSymbol(wlGroupPickTarget || "");
+    const name = prompt("새 관심목록 이름을 입력해주세요.", wlNextGroupName(sec));
+    const id = name === null ? null : addWatchlistGroup(name, sec);
     if (id) {
       wlGroupPickChecked.add(id);
       renderWlGroupPickList();
@@ -3838,9 +3861,11 @@ companyPanelWatchlistBtn.addEventListener("click", () => {
 
 // ---------- 관심종목 상단 그룹 탭 ----------
 function wlGroupTabsHtml(groups, activeId) {
+  const sec = wlCurrentSection();
   const allTab = `<button type="button" class="wl-group-tab${activeId === WATCHLIST_ALL_GROUP_ID ? " active" : ""}" data-group-id="${WATCHLIST_ALL_GROUP_ID}">전체</button>`;
   const groupTabs = groups
-    .map((g) => `<button type="button" class="wl-group-tab${activeId === g.id ? " active" : ""}" data-group-id="${escapeHtml(g.id)}">${escapeHtml(g.name)}</button>`)
+    .filter((g) => !g.section || g.section === sec)
+    .map((g) => `<button type="button" class="wl-group-tab${activeId === g.id ? " active" : ""}" data-group-id="${escapeHtml(g.id)}">${escapeHtml(wlGroupLabel(g, sec))}</button>`)
     .join("");
   // "+ 새 그룹" 탭은 2026-10-07 삭제 — 새 그룹은 편집 > 그룹 관리에서
   return allTab + groupTabs;
@@ -3940,11 +3965,12 @@ function wlGroupModalRowHtml(g) {
     </div>`;
 }
 function renderWlGroupModal() {
-  const groups = getWatchlistGroups();
+  const sec = wlCurrentSection();
+  const groups = wlGroupsForSection(sec).map((g) => ({ ...g, name: wlGroupLabel(g, sec) }));
   el("wlGroupModalBody").innerHTML = `
     <div class="wl-group-modal-list">${groups.map(wlGroupModalRowHtml).join("")}</div>
     <div class="wl-group-modal-new">
-      <input type="text" id="wlGroupNewInput" class="wl-group-name-input" placeholder="새 그룹 이름" maxlength="12" />
+      <input type="text" id="wlGroupNewInput" class="wl-group-name-input" placeholder="새 그룹 이름" maxlength="12" value="${escapeHtml(wlNextGroupName(sec))}" />
       <button type="button" id="wlGroupNewAddBtn" class="wl-group-row-btn wl-group-save-btn" title="추가">+</button>
     </div>`;
 }
@@ -3980,7 +4006,7 @@ el("wlGroupModalBody").addEventListener("click", (e) => {
     }
   } else if (addBtn) {
     const input = el("wlGroupNewInput");
-    const id = addWatchlistGroup(input.value);
+    const id = addWatchlistGroup(input.value, wlCurrentSection());
     if (id) {
       setActiveWatchlistGroup(id);
       renderWlGroupModal();
@@ -4153,7 +4179,8 @@ el("wlMoveGroupBtn").addEventListener("click", () => {
     showToast("옮길 종목을 먼저 선택해주세요.");
     return;
   }
-  const groups = getWatchlistGroups();
+  const sec = wlCurrentSection();
+  const groups = wlGroupsForSection(sec).map((g) => ({ ...g, name: wlGroupLabel(g, sec) }));
   const sheet = iaOpenSheet(`
     <div class="ia-sheet-head"><b>${symbols.length}개 종목 그룹 이동</b><button type="button" class="ia-sheet-x" data-ia-close aria-label="닫기">✕</button></div>
     <p class="ia-sheet-sub">옮길 그룹을 고르세요. 원래 있던 그룹에서는 빠집니다. 새 그룹은 "그룹 관리"에서 만들 수 있어요.</p>
@@ -5345,8 +5372,25 @@ async function copyWizardResultToSelf(text) {
 
 // ---------- 티커 검색/클릭 → 기업 패널을 열고 그 종목을 로딩 ----------
 // push=false는 popstate(뒤로/앞으로가기)나 최초 URL 진입 처리 시, 이미 있는 히스토리 상태를 다시 쌓지 않기 위함
+// 최근 본 종목(2026-10-07): 인기종목 맨 위 "최근검색" — 투자처별로 최근 5개
+const RECENT_VIEWED_KEY = "recent_viewed_v1";
+function rememberRecentTicker(sym) {
+  try {
+    const list = (JSON.parse(localStorage.getItem(RECENT_VIEWED_KEY)) || []).filter((x) => x !== sym);
+    list.unshift(sym);
+    localStorage.setItem(RECENT_VIEWED_KEY, JSON.stringify(list.slice(0, 40)));
+  } catch {}
+}
+function recentTickersFor(section) {
+  try {
+    return (JSON.parse(localStorage.getItem(RECENT_VIEWED_KEY)) || []).filter((x) => sectionOfSymbol(x) === section).slice(0, 5);
+  } catch {
+    return [];
+  }
+}
 function navigateToTicker(ticker, { push = true } = {}) {
   ticker = ticker.toUpperCase();
+  rememberRecentTicker(ticker);
   if (push) {
     history.pushState({ ticker, fromApp: true }, "", "?ticker=" + encodeURIComponent(ticker));
     backTrackHistory(); // 뒤로가기 모듈이 "지금 머문 항목"을 알게 함(위에 뜬 창을 닫을 때 이 항목을 다시 얹음)
@@ -10857,15 +10901,56 @@ function popularSimpleTableHtml(rows, isKr, opts) {
       <tr data-sym="${escapeHtml(r.symbol)}" data-idx="${i}">
         <td>${opts && opts.etf ? etfRankNameCellHtml(r, isKr) : rankNameCellHtml(r.symbol, logoFn(r), rankDisplayName(r.symbol, r.name, isKr))}</td>
         <td>${rankPriceCellHtml(r.symbol, r.price, r.currency || (isKr ? "KRW" : "USD"), r.changePct)}</td>
-        <td>${winRatePctCellHtml(r.winRateScore, r.winTotal, false, partialMonthsFor(r.symbol))}</td>
+        <td class="pop-alt-td"><span class="pop-alt"><span class="pop-alt-a">${winRatePctCellHtml(r.winRateScore, r.winTotal, false, partialMonthsFor(r.symbol))}</span><span class="pop-alt-b" data-spark="${escapeHtml(
+          r.symbol
+        )}"></span></span></td>
       </tr>`
     )
     .join("");
+  queueMicrotask(fillPopularSparks);
   return `
     <table class="top30-table rk-table">
-      <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}${RANK_TH_WINRATE}</tr></thead>
+      <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}<th class="pop-alt-th" data-explain="1일 등락 그래프와 10년평균 승률이 번갈아 나옵니다. 그래프는 오늘(장이 끝났으면 직전 거래일) 하루 주가 흐름, 점선은 전일 종가입니다. 10년평균 승률은 최근 10년 동안 오르며 마감한 달의 비율입니다."><span class="pop-alt"><span class="pop-alt-a">10년평균<br>승률</span><span class="pop-alt-b">1일<br>등락</span></span></th></tr></thead>
       <tbody>${body}</tbody>
     </table>`;
+}
+// 번갈아 보이기: 화면 전체가 같은 박자로 바뀌도록 body 클래스 하나를 4.5초마다 뒤집는다(CSS가 0.6초 페이드)
+// CSS 애니메이션은 브라우저가 문서 시작 시각 기준으로 돌려서 나중에 그린 표와 박자가 어긋났다(2026-10-07 확인)
+if (!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)) {
+  setInterval(() => document.body.classList.toggle("pop-alt-show-b"), 4500);
+}
+// 1일 미니 그래프 — 표가 그려진 뒤 빈 칸만 채움(종목당 1일 5분봉 1회, 2분 캐시)
+const popularSparkCache = new Map();
+function popularSparkSvg(chart) {
+  const res = chart && chart.chart && chart.chart.result && chart.chart.result[0];
+  if (!res) return "";
+  const closes = ((res.indicators && res.indicators.quote && res.indicators.quote[0] && res.indicators.quote[0].close) || []).filter((c) => Number.isFinite(c));
+  const prev = res.meta && Number.isFinite(res.meta.chartPreviousClose) ? res.meta.chartPreviousClose : closes[0];
+  if (closes.length < 2 || !Number.isFinite(prev)) return "";
+  const W = 56,
+    H = 24;
+  const lo = Math.min(prev, ...closes);
+  const hi = Math.max(prev, ...closes);
+  const y = (v) => (hi > lo ? H - 2 - ((v - lo) / (hi - lo)) * (H - 4) : H / 2);
+  const d = closes.map((c, i) => `${i ? "L" : "M"}${((i / (closes.length - 1)) * W).toFixed(1)},${y(c).toFixed(1)}`).join(" ");
+  const up = closes[closes.length - 1] >= prev;
+  return `<svg class="pop-spark ${up ? "up" : "down"}" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true"><line x1="0" x2="${W}" y1="${y(prev).toFixed(1)}" y2="${y(prev).toFixed(1)}" class="pop-spark-base"/><path d="${d}"/></svg>`;
+}
+function fillPopularSparks() {
+  const cells = [...document.querySelectorAll(".pop-alt-b[data-spark]")].filter((n) => !n.dataset.filled);
+  if (!cells.length) return;
+  cells.forEach((n) => (n.dataset.filled = "1"));
+  const bySym = new Map();
+  cells.forEach((n) => (bySym.get(n.dataset.spark) || bySym.set(n.dataset.spark, []).get(n.dataset.spark)).push(n));
+  mapWithConcurrency([...bySym.keys()], 5, async (sym) => {
+    let hit = popularSparkCache.get(sym);
+    if (!hit || Date.now() - hit.at > 120000) {
+      hit = { at: Date.now(), p: yahooChart(sym, "1d", "5m").then(popularSparkSvg).catch(() => "") };
+      popularSparkCache.set(sym, hit);
+    }
+    const svg = await hit.p;
+    bySym.get(sym).forEach((n) => (n.innerHTML = svg || `<span class="muted">-</span>`));
+  });
 }
 function popularVolKey(r) {
   return r && Number.isFinite(r.volRatio) ? r.volRatio : -1;
@@ -11128,6 +11213,38 @@ async function renderMarketBar(section, rows) {
     .map((x) => marketBarChipHtml(x.label, x.pct, true))
     .join("")}${sectors.length ? `<span class="mb-sep" aria-hidden="true"></span>` : ""}${sectors.map((x) => marketBarChipHtml(x.label, x.pct, false)).join("")}</div>`;
 }
+async function renderPopularRecent(section) {
+  const box = el("popularRecent");
+  if (!box) return;
+  const syms = recentTickersFor(section);
+  if (!syms.length) {
+    box.innerHTML = "";
+    return;
+  }
+  const wrDb = await getWinRateDb().catch(() => null);
+  const wrMap = (wrDb && (section === "kr" ? wrDb.scoresKr : section === "etf" ? wrDb.scoresEtf : section === "crypto" ? wrDb.scoresCrypto : wrDb.scores)) || {};
+  const rows = await mapWithConcurrency(syms, 5, async (sym) => {
+    const chart = await yahooChart(sym, "5d").catch(() => null);
+    const snap = yahooSnapshot(chart);
+    const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
+    const chg = getDailyChangePercent(chart);
+    return {
+      symbol: sym,
+      name: /-(USD|KRW)$/.test(sym) ? cryptoKoName(sym, TICKER_TO_KOREAN_NAME[sym] || sym) : TICKER_TO_KOREAN_NAME[sym] || (meta && (meta.shortName || meta.longName)) || sym,
+      price: snap ? snap.price : null,
+      currency: (meta && meta.currency) || (isKrTicker(sym) ? "KRW" : "USD"),
+      changePct: Number.isFinite(chg) ? chg : snap ? snap.changePct : null,
+      winRateScore: wrMap[sym] ? wrMap[sym].score : null,
+      winTotal: wrMap[sym] ? wrMap[sym].total : null,
+    };
+  });
+  const isKr = section === "kr";
+  const opts = section === "etf" ? { etf: true } : section === "crypto" ? { logoFn: (r) => cryptoLogoHtml(cryptoBaseTicker(r.symbol)) } : {};
+  box.innerHTML = `<section class="pop-sec pop-sec-recent">
+      <div class="pop-sec-head"><b>최근검색</b><span class="pop-asof">최근에 본 종목 ${rows.filter(Boolean).length}개</span></div>
+      ${popularSimpleTableHtml(rows.filter(Boolean), isKr, opts)}
+    </section>`;
+}
 async function runPopularMovers() {
   const box = el("popularMovers");
   if (!box) return;
@@ -11140,6 +11257,7 @@ async function runPopularMovers() {
   const bar = el("popularMarketBar");
   if (bar) bar.innerHTML = `<div class="mb-row"><span class="mb-chip"><span>시장 요약 불러오는 중…</span></span></div>`;
   const asOfSym = section === "crypto" ? "BTC-USD" : isKr ? "^KS11" : "^GSPC";
+  renderPopularRecent(section).catch(() => {});
   let rows = [];
   try {
     const [r, asOf] = await Promise.all([loadPopularMoverRows(section), popularAsOf(asOfSym)]);
@@ -21720,7 +21838,7 @@ function iaOpenAddChoice() {
 function iaOpenWatchPicker() {
   const sec = iaCurrentSection();
   const list = getWatchlist().filter((w) => w && w.symbol && sectionOfSymbol(w.symbol) === sec);
-  const groups = getWatchlistGroups();
+  const groups = wlGroupsForSection(sec).map((g) => ({ ...g, name: wlGroupLabel(g, sec) }));
   const membersOf = (gid) => (gid === WATCHLIST_ALL_GROUP_ID ? list : list.filter((w) => wlGroupIdsOf(w).includes(gid)));
   const rows = [{ id: WATCHLIST_ALL_GROUP_ID, name: "전체" }, ...groups]
     .map((g) => {

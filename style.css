@@ -3850,3 +3850,16 @@ table.top30-table.atg-table th:nth-child(2) { width: 84px; }
 .mb-chip b.up { color: var(--pos); }
 .mb-chip b.down { color: var(--neg); }
 .mb-sep { flex: none; width: 1px; height: 18px; background: var(--border); margin: 0 2px; }
+
+/* 인기종목 세 번째 칸: 10년평균 승률 ↔ 1일 등락 그래프 번갈아(2026-10-07) — body.pop-alt-show-b를 JS가 4.5초마다 뒤집음 */
+.pop-alt { position: relative; display: inline-block; min-width: 58px; min-height: 26px; vertical-align: middle; }
+.pop-alt-a, .pop-alt-b { position: absolute; inset: 0; display: flex; align-items: center; justify-content: flex-end; transition: opacity 0.6s ease, transform 0.6s ease; }
+.pop-alt-b { opacity: 0; transform: translateY(3px); }
+body.pop-alt-show-b .pop-alt-a { opacity: 0; transform: translateY(-3px); }
+body.pop-alt-show-b .pop-alt-b { opacity: 1; transform: none; }
+.pop-alt-th .pop-alt-a, .pop-alt-th .pop-alt-b { justify-content: center; text-align: center; }
+.pop-spark path { fill: none; stroke-width: 1.6; stroke-linejoin: round; }
+.pop-spark.up path { stroke: var(--pos); }
+.pop-spark.down path { stroke: var(--neg); }
+.pop-spark-base { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 2 2; opacity: 0.6; }
+.pop-sec-recent { margin-top: 4px; }

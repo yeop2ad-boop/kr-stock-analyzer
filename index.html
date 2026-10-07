@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20261007l" />
+<link rel="stylesheet" href="style.css?v=20261007n" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -659,6 +659,8 @@
                인기종목 목록 표가 같은 구성이라 중복이었음 -->
           <!-- 시장 요약 한 줄(2026-10-07 A안): 지수·섹터 오늘 등락률 칩, 옆으로 밀어 보기 — renderMarketBar가 채움 -->
           <div id="popularMarketBar" class="market-bar"></div>
+          <!-- 최근검색(2026-10-07): 최근에 연 종목 5개(지금 투자처만) — renderPopularRecent가 채움 -->
+          <div id="popularRecent"></div>
           <p id="popularStatus" class="muted top30-status" style="display:none;"></p>
           <div id="popularResults"></div>
           <!-- 급등주·급락주(2026-10-07): 인기(위) 아래에 오늘 등락률 상·하위 — runPopularMovers가 채움 -->
@@ -763,7 +765,8 @@
       <div class="more-panel-list">
         <!-- Pro 멤버십은 2026-09-09 사용자 결정(비공개·승인제 운영)으로 제거 -->
         <!-- 관심종목을 맨 위로(2026-09-16 사용자 요청) -->
-        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelWatchlistBtn">
+        <!-- 관심종목은 상단 ★관심종목 탭으로 충분해 더보기에서 숨김(2026-10-07 사용자 요청) — JS가 참조하므로 DOM 유지 -->
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelWatchlistBtn" style="display:none;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" /></svg>
           <span class="more-panel-item-label" data-i18n="tab.watchlist">관심종목</span>
         </button>
@@ -971,6 +974,6 @@
   <script src="data/logo-db.js?v=20260903g"></script>
   <script src="data/etf-meta.js?v=20260912a"></script>
   <script src="winrate-benchmark.js?v=20261007k"></script>
-  <script src="app.js?v=20261007l"></script>
+  <script src="app.js?v=20261007n"></script>
 </body>
 </html>
