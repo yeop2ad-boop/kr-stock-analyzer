@@ -29,11 +29,18 @@ jobs:
         continue-on-error: true
         run: python3 scripts/fill-risk-gaps.py kr
 
+      # 2026-10-08: 실적발표 일정(미국 나스닥 캘린더 확정일 · 한국 DART 잠정실적/정기보고서 공시일) — 앱의 '실적' 마크·실적 캘린더용
+      - name: 실적발표 일정 갱신
+        continue-on-error: true
+        env:
+          DART_API_KEY: ${{ secrets.DART_API_KEY }}
+        run: python3 scripts/build-earnings-calendar.py
+
       - name: 변경사항 커밋 및 푸시
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/dart-financials.json data/dart-corpcode-map.json
+          git add data/dart-financials.json data/dart-corpcode-map.json data/earnings-calendar.json
           if git diff --cached --quiet; then
             echo "변경된 데이터 없음"
           else
