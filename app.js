@@ -3172,7 +3172,8 @@ const I18N = {
   "tab.popular": { ko: "인기종목", en: "Popular" },
   "tab.autotrack": { ko: "자동추적", en: "Auto Track" },
   "tab.search": { ko: "간편검색", en: "Search" },
-  "tab.earnings": { ko: "실적발표", en: "Earnings" }, // 2026-10-08: 실적 예정·발표 종목
+  "tab.earnings": { ko: "실적발표", en: "Earnings" },
+  "tab.etfAum": { ko: "규모", en: "Size" }, // 2026-10-08: 실적 예정·발표 종목
   "tab.valuation": { ko: "기업가치", en: "Value" }, // 2026-09-10 사용자 요청: 실적→기업가치
   "tab.trend": { ko: "시장분석", en: "Market" }, // 2026-09-11 사용자 요청: 미래예측→시장분석
   "tab.ipo": { ko: "IPO", en: "IPO" }, // 2026-09-11: 최근 5년 신규 상장
@@ -7171,7 +7172,7 @@ const SR_RANK_ITEM_BY_KEY = new Map(SR_RANK_GROUPS.flatMap((g) => g.items.map((i
 const SR_ASSET_RANK = {
   etf: {
     win: ["tab", "winrate"], ret: ["trend", "pressure"], rev: ["tab", "return"], vol: ["tab", "volatility"],
-    div: ["tab", "dividend"], fee: ["tab", "fee"], rsi: ["trend", "rsi"], w52: ["trend", "week52"],
+    div: ["tab", "dividend"], fee: ["tab", "fee"], rsi: ["trend", "rsi"], w52: ["trend", "week52"], aum: ["tab", "aum"],
   },
   crypto: {
     win: ["tab", "winrate"], ret: ["trend", "pressure"], rev: ["tab", "return"], vol: ["tab", "volatility"],
@@ -7182,13 +7183,16 @@ const SR_ASSET_RANK = {
 // 더보기에서 고른 보기의 제목(2026-09-16 사용자 요청: "인사이트" 대신 그 보기 이름)
 const MORE_INSIGHT_LABELS = { firms: "기관 · 자산운용사", rankup: "상승종목", corr: "상관관계", sectorWin: "섹터승률", strategy: "투자방법" };
 
-const SR_ASSET_ITEM_ORDER = {
-  etf: ["win", "ret", "rev", "vol", "rsi", "div", "fee", "w52"],
-  crypto: ["win", "ret", "rev", "vol", "rsi", "mcap", "w52"],
+// 2026-10-08 사용자 요청: 주식처럼 ETF·코인 순위에도 위에 묶음 버튼 — ETF 승률·상승률·변동성·규모·운용보수 / 과열도·수익률·배당률·52주구간,
+// 코인 승률·상승률·변동성·규모 / 과열도·수익률·52주구간. ETF는 그 아래 한국 ETF·미국 ETF 줄
+const SR_ASSET_GROUPS = {
+  etf: [["win", "ret", "vol", "aum", "fee"], ["rsi", "rev", "div", "w52"]],
+  crypto: [["win", "ret", "vol", "mcap"], ["rsi", "rev", "w52"]],
 };
+const SR_ASSET_ITEM_ORDER = { etf: SR_ASSET_GROUPS.etf.flat(), crypto: SR_ASSET_GROUPS.crypto.flat() };
 const SR_ASSET_ITEM_LABEL = {
-  win: "승률", ret: "연평균 상승", rev: "1년 수익률", vol: "변동성", rsi: "과열도(RSI)",
-  div: "배당률", fee: "운용보수", mcap: "시가총액", w52: "52주 구간",
+  win: "승률", ret: "상승률", rev: "수익률", vol: "변동성", rsi: "과열도",
+  div: "배당률", fee: "운용보수", mcap: "규모", aum: "규모", w52: "52주구간",
 };
 
 // var로 둔 이유: 앱 부팅 때 syncSectionHeader가 이 파일 위쪽에서 먼저 불리는데, let이면 아직 TDZ라 참조 오류가 난다
@@ -7196,6 +7200,23 @@ var srRankActive = null; // {group, k} — 목록 화면 상단 탭을 이 묶�
 // 묶음 5개를 목록 위 하위 버튼 줄(#topRankingSubNav)에 그린다 — 상단 탭(인기종목·승률…)은 그대로 둔다
 function applySrRankTabs() {
   const nav = el("topRankingSubNav");
+  if (nav && srRankActive && srRankActive.asset) {
+    // ETF·코인 묶음 + (ETF) 한국/미국 줄 — 결과 안에 있던 지역 버튼은 숨김(CSS)
+    const asset = srRankActive.asset;
+    const group = (SR_ASSET_GROUPS[asset] || []).find((g) => g.includes(srRankActive.k)) || SR_ASSET_GROUPS[asset][0];
+    nav.classList.add("sr-rank-nav", "sr-asset-nav");
+    nav.innerHTML =
+      group
+        .map((k) => `<button type="button" class="cat-btn${k === srRankActive.k ? " active" : ""}" data-sr-tab="${k}" data-sr-asset="${asset}">${escapeHtml(SR_ASSET_ITEM_LABEL[k] || k)}</button>`)
+        .join("") +
+      (asset === "etf"
+        ? `<div class="sr-region-row">${[["kr", "한국 ETF"], ["us", "미국 ETF"]]
+            .map(([v, l]) => `<button type="button" class="cat-btn sr-region-btn${etfPopularRegion === v ? " active" : ""}" data-sr-region="${v}">${l}</button>`)
+            .join("")}</div>`
+        : "");
+    return;
+  }
+  if (nav) nav.classList.remove("sr-asset-nav");
   const group = srRankActive ? SR_RANK_GROUPS.find((g) => g.key === srRankActive.group) : null;
   if (!nav || !group) return;
   nav.classList.add("sr-rank-nav"); // 5개가 좌우 스크롤 없이 한 줄에 들어가게
@@ -7205,6 +7226,8 @@ function applySrRankTabs() {
 }
 function clearSrRankTabs() {
   srRankActive = null;
+  const nav = el("topRankingSubNav");
+  if (nav) nav.classList.remove("sr-asset-nav");
 }
 // 항목 하나의 순위 화면 열기 — section이 etf/crypto면 묶음 없이 그 항목 랭킹으로 바로
 function openSReportRank(itemKey, section, market) {
@@ -7212,9 +7235,10 @@ function openSReportRank(itemKey, section, market) {
   if (companyPanel.style.display !== "none" && companyPanel.style.display !== "") closeCompanyPanel({ push: false });
   closeAllExplainNotes(null);
   if (section === "etf" || section === "crypto") {
-    clearSrRankTabs();
+    srRankActive = { asset: section, k: itemKey };
     appSectionMode = section;
-    if (section === "etf") etfPopularRegion = "all"; // ETF 순위는 한국·미국 통합(2026-09-16 사용자 요청)
+    // 2026-10-08: ETF 순위는 한국 ETF / 미국 ETF 중 하나(통합 '전체'는 없앰) — 고른 적 없으면 지금 시장 기준
+    if (section === "etf" && etfPopularRegion !== "kr" && etfPopularRegion !== "us") etfPopularRegion = getWatchlistActiveMarket() === "KR" ? "kr" : "us";
     setHeaderToneForSection(section);
     const conf = (SR_ASSET_RANK[section] || {})[itemKey] || ["tab", "winrate"];
     if (conf[0] === "tab") (section === "etf" ? openEtfMetricTab : openCryptoMetricTab)(conf[1]);
@@ -7247,8 +7271,15 @@ function openSReportRank(itemKey, section, market) {
 }
 // 묶음 안에서 다른 항목으로 갈아타기
 document.addEventListener("click", (e) => {
+  const reg = e.target.closest("[data-sr-region]");
+  if (reg && srRankActive && srRankActive.asset === "etf") {
+    etfPopularRegion = reg.dataset.srRegion;
+    openSReportRank(srRankActive.k, "etf");
+    return;
+  }
   const btn = e.target.closest("[data-sr-tab]");
   if (!btn) return;
+  if (btn.dataset.srAsset) return openSReportRank(btn.dataset.srTab, btn.dataset.srAsset);
   openSReportRank(btn.dataset.srTab, "stocks", getWatchlistActiveMarket() === "KR" ? "kr" : "us");
 });
 
@@ -12012,7 +12043,7 @@ function getEtfScanRows(region, statusEl) {
 
 function etfRegionNavHtml(attr, includeAll) {
   return `
-    <div class="top30-sub-nav" style="margin-bottom:6px;">
+    <div class="top30-sub-nav etf-region-nav" style="margin-bottom:6px;">
       ${includeAll ? `<button type="button" class="cat-btn${etfPopularRegion === "all" ? " active" : ""}" ${attr}="all">전체</button>` : ""}
       <button type="button" class="cat-btn${etfPopularRegion === "us" ? " active" : ""}" ${attr}="us">미국 ETF</button>
       <button type="button" class="cat-btn${etfPopularRegion === "kr" ? " active" : ""}" ${attr}="kr">한국 ETF</button>
@@ -13190,6 +13221,7 @@ async function attachWinRateRsiToRows(rows, mapKey) {
 const ASSET_TREND_ORDER = ["winrate", "pressure", "rsi", "week52", "volume", "surge", "plunge"];
 let assetTrendMetric = "winrate";
 function renderAssetTrendSubnav() {
+  el("topRankingSubNav").classList.remove("sr-asset-nav");
   el("topRankingSubNav").innerHTML = ASSET_TREND_ORDER.filter((k) => ASSET_TREND_METRICS[k] && (!ASSET_TREND_METRICS[k].hidden || k === assetTrendMetric)) // 간편검색으로 고른 숨김 지표는 그 칩만 예외로 노출
     .map((key) => [key, ASSET_TREND_METRICS[key]])
     .map(
@@ -13612,6 +13644,18 @@ const ETF_METRIC_TABS = {
     filter: (r) => Number.isFinite(r.dividendYield),
     note: "현재가 기준 배당률(최근 1년 분배금 합계 ÷ 현재가)이 높은 순입니다. 분배금이 없는 ETF는 빠집니다.",
   },
+  // 2026-10-08: 규모(순자산·시가총액) 큰 순 — 국내는 시가총액(억원), 미국은 순자산
+  aum: {
+    title: "tab.etfAum",
+    needsAum: true,
+    midHeader: RANK_TH_PRICE_CHG,
+    midCell: ETF_MID_PRICE_CELL,
+    rightHeader: `<th data-explain="ETF 규모 — 국내는 시가총액, 미국은 순자산(AUM)입니다. 클수록 거래가 많고 상장폐지 위험이 낮은 편입니다.">규모<br>(순자산)</th>`,
+    rightCell: (r) => (Number.isFinite(r.aum) ? `<b class="rank-hl">${escapeHtml(etfAumText(r.aum, isKrTicker(r.symbol)))}</b>` : "N/A"),
+    sort: (a, b) => (Number.isFinite(b.aum) ? b.aum : -1) - (Number.isFinite(a.aum) ? a.aum : -1),
+    filter: (r) => Number.isFinite(r.aum),
+    note: "규모(국내 시가총액 · 미국 순자산)가 큰 순입니다.",
+  },
   fee: {
     title: "tab.etfFee",
     needsInfo: true,
@@ -13690,6 +13734,11 @@ async function runEtfMetricTab() {
       });
     }
     if (conf.needsDividend) await attachEtfDividends(rows.slice(0, expanded ? total : 30), statusEl);
+    if (conf.needsAum) {
+      const mdb = await getEtfMarketCapDb().catch(() => null);
+      const m = new Map([...((mdb && mdb.kr) || []).map((x) => [x.s, x.m]), ...((mdb && mdb.us) || []).map((x) => [x.s, x.a])]);
+      rows.forEach((r) => (r.aum = Number.isFinite(m.get(r.symbol)) ? m.get(r.symbol) : null));
+    }
     if (etfPopularRegion !== region || appSectionMode !== "etf" || etfMetricTab !== tabAtStart) return;
     statusEl.style.display = "none";
 

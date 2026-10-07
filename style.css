@@ -4102,3 +4102,9 @@ table.earn-table tr.earn-row.open td { background: var(--subtle-fill); }
 table.earn-table tr.earn-chart-row td { padding: 6px 0 14px; white-space: normal; text-align: left; background: var(--subtle-fill); }
 .earn-chart { padding: 0 8px; }
 .earn-detail-link { display: block; width: 100%; margin-top: 8px; padding: 11px 0; border: none; border-radius: 10px; background: var(--bg); color: var(--accent); font-size: 14px; font-weight: 800; cursor: pointer; }
+
+/* ETF·코인 순위 묶음 버튼 + 한국/미국 ETF 줄(2026-10-08) */
+#topRankingSubNav.sr-asset-nav { flex-wrap: wrap; }
+#topRankingSubNav .sr-region-row { flex: 0 0 100%; display: flex; gap: 6px; margin-top: 8px; }
+#topRankingSubNav .sr-region-btn { flex: 1; }
+#topRankingSubNav.sr-asset-nav ~ #trendGroup .etf-region-nav { display: none; }
