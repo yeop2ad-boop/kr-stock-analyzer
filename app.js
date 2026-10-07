@@ -20256,7 +20256,7 @@ async function loadRiskDataset(isKr) {
       hasIssuance: true,
       payLabel: "1인 평균 급여",
       fmtPay: (v) => `${Math.round(v / 10000).toLocaleString()}만원`,
-      source: "출처: DART 전자공시 정기보고서 임직원 현황 · 평균 급여 = 해당 기간 급여 총액 ÷ 직원 수(분기·반기는 그 기간 누적이라 작년 같은 기간과 비교) · 종목마다 최신 보고서가 달라 기준일이 다를 수 있음",
+      source: "출처: DART 전자공시 정기보고서 임직원 현황 · 종목마다 최신 보고서가 달라 기준일이 다를 수 있음",
     };
   }
   const data = await getUsWorkforceData();
@@ -20284,7 +20284,7 @@ async function loadRiskDataset(isKr) {
     hasIssuance: true,
     payLabel: "직원 중위 연봉",
     fmtPay: (v) => `$${Math.round(v).toLocaleString()}`,
-    source: "출처: SEC EDGAR — 직원 수는 연차보고서(10-K) 인적자원 항목, 임금은 위임장(DEF 14A) CEO 보수 비율 공시의 직원 중위 연간 총보상(평균이 아니라 중간값) · 미국은 두 공시 모두 1년에 한 번이라 분기 비교가 없음",
+    source: "출처: SEC EDGAR — 직원 수는 연차보고서(10-K) 인적자원 항목 · 1년에 한 번 공시라 분기 비교가 없음",
   };
 }
 // ⑥ 섹터 매출 성장(2026-09-20 사용자 요청) — 최근 분기 매출이 직전 분기보다 얼마나 오르내렸는지를 섹터로 묶은 것.
@@ -20557,7 +20557,7 @@ async function renderRiskPanel(ticker) {
       )}</div>
     </div>`;
 
-  pushSummary("salary", "임금", selfGrade, selfPct == null ? "자료 없음" : riskFmtPct(selfPct), selfSalaryRank ? `${salaryRows.length}곳 중 ${selfSalaryRank}위` : "");
+  // 2026-10-08 사용자 요청: 임금 항목은 리스크 점검에서 뺌(요약 줄·상세 카드 모두) — 계산·카드 코드는 남겨 둠
   const headCard = `<div class="risk-card" id="riskCard-headcount">
       <div class="risk-card-top"><span class="risk-card-title">인원 감축</span>${chip(headGrade)}</div>
       ${
@@ -20964,8 +20964,8 @@ async function renderRiskPanel(ticker) {
 
   // 상세 카드는 처음엔 모두 감춰 두고(2026-09-21 사용자 요청: 아래에 전부 늘어놓지 않음),
   // 아래 스크립트가 각 카드를 자기 요약 줄 바로 뒤로 옮긴다 — 누른 항목만 그 자리에서 펼쳐진다
-  box.innerHTML = `${summaryBlock}<div id="riskDetailStore" style="display:none;">${salaryCard}${headCard}${issuanceCards}${epsCard}${sectorCard}${revenueCard}${netIncomeCard}${debtCard}${crashCard}</div>
-    <p class="risk-source">${ds.source} · 작년 대비 ±${RISK_SALARY_FREEZE_PCT}% 이내는 동결${issuanceSource} · EPS는 ${
+  box.innerHTML = `${summaryBlock}<div id="riskDetailStore" style="display:none;">${headCard}${issuanceCards}${epsCard}${sectorCard}${revenueCard}${netIncomeCard}${debtCard}${crashCard}</div>
+    <p class="risk-source">${ds.source}${issuanceSource} · EPS는 ${
       isKr ? "DART 전체 재무제표의 기본주당이익(최신 정기보고서 ↔ 1년 전 같은 기간 누적)" : "SEC 분기 주당순이익"
     } · 섹터 매출 성장은 최근 분기 ÷ 직전 분기(섹터 소속 기업 매출 합계) · 매출액·순이익은 가장 최근 분기를 1년 전 같은 분기와 비교(${
       isKr ? "정기보고서의 3개월 값" : "SEC 분기 실적"
