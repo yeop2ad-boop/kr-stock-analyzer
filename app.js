@@ -3172,7 +3172,7 @@ const I18N = {
   "tab.popular": { ko: "인기종목", en: "Popular" },
   "tab.autotrack": { ko: "자동추적", en: "Auto Track" },
   "tab.search": { ko: "간편검색", en: "Search" },
-  "tab.earnings": { ko: "실적발표", en: "Earnings" },
+  "tab.earnings": { ko: "실적", en: "Earnings" }, // 2026-10-08 사용자 요청: 실적발표 → 실적
   "tab.etfAum": { ko: "규모", en: "Size" }, // 2026-10-08: 실적 예정·발표 종목
   "tab.valuation": { ko: "기업가치", en: "Value" }, // 2026-09-10 사용자 요청: 실적→기업가치
   "tab.trend": { ko: "시장분석", en: "Market" }, // 2026-09-11 사용자 요청: 미래예측→시장분석
@@ -8510,40 +8510,67 @@ function fin2BodyHtml(data, period, currency) {
   //   손실률이 100%를 넘으면 매출 막대와 같은 길이까지만(차트가 아래로 끝없이 늘어나지 않게)
   let hasNeg = false;
   let maxNegPx = 0;
-  const cols = bars
-    .map((b) => {
-      const barPx = Number.isFinite(b.rev) && b.rev > 0 ? Math.max(4, (b.rev / maxRev) * PLOT_H * 0.78) : 4;
-      const margin = Number.isFinite(b.ni) && Number.isFinite(b.rev) && b.rev > 0 ? (b.ni / b.rev) * 100 : null;
-      const niPx = margin !== null && margin > 0 ? Math.min(barPx, (barPx * margin) / 100) : 0;
-      const negPx = margin !== null && margin < 0 ? Math.max(3, Math.min(barPx, (barPx * -margin) / 100)) : 0;
-      if (negPx) {
-        hasNeg = true;
-        maxNegPx = Math.max(maxNegPx, negPx);
-      }
-      let marginHtml = "";
-      if (margin !== null) {
-        const txt = `${Math.round(margin)}%`;
-        // 순손실(2026-09-16 사용자 요청): 기준선 아래 검회색 막대 + 그 아래에 파란색 마이너스 %
-        if (margin < 0) marginHtml = `<div class="fin2-ni-neg" style="height:${negPx.toFixed(1)}px"><span class="fin2-neg-label">${txt}</span></div>`;
-        else if (margin === 0) marginHtml = `<span class="fin2-margin fin2-margin-zero" style="bottom:3px">${txt}</span>`;
-        else if (niPx >= 17) marginHtml = `<span class="fin2-margin fin2-margin-in" style="bottom:${Math.max(2, niPx - 16).toFixed(0)}px">${txt}</span>`;
-        else if (barPx - niPx >= 17) marginHtml = `<span class="fin2-margin fin2-margin-out" style="bottom:${(niPx + 1).toFixed(0)}px">${txt}</span>`;
-      }
-      const growthTxt = fin2GrowthText(b.growth);
-      return `
+  // 막대 하나(매출 막대 + 순이익 + 순이익률) — 비교 칸에서는 반쪽 폭으로 둘을 붙여 그린다
+  const barParts = (b) => {
+    const barPx = Number.isFinite(b.rev) && b.rev > 0 ? Math.max(4, (b.rev / maxRev) * PLOT_H * 0.78) : 4;
+    const margin = Number.isFinite(b.ni) && Number.isFinite(b.rev) && b.rev > 0 ? (b.ni / b.rev) * 100 : null;
+    const niPx = margin !== null && margin > 0 ? Math.min(barPx, (barPx * margin) / 100) : 0;
+    const negPx = margin !== null && margin < 0 ? Math.max(3, Math.min(barPx, (barPx * -margin) / 100)) : 0;
+    if (negPx) {
+      hasNeg = true;
+      maxNegPx = Math.max(maxNegPx, negPx);
+    }
+    let marginHtml = "";
+    if (margin !== null) {
+      const txt = `${Math.round(margin)}%`;
+      // 순손실(2026-09-16 사용자 요청): 기준선 아래 검회색 막대 + 그 아래에 파란색 마이너스 %
+      if (margin < 0) marginHtml = `<div class="fin2-ni-neg" style="height:${negPx.toFixed(1)}px"><span class="fin2-neg-label">${txt}</span></div>`;
+      else if (margin === 0) marginHtml = `<span class="fin2-margin fin2-margin-zero" style="bottom:3px">${txt}</span>`;
+      else if (niPx >= 17) marginHtml = `<span class="fin2-margin fin2-margin-in" style="bottom:${Math.max(2, niPx - 16).toFixed(0)}px">${txt}</span>`;
+      else if (barPx - niPx >= 17) marginHtml = `<span class="fin2-margin fin2-margin-out" style="bottom:${(niPx + 1).toFixed(0)}px">${txt}</span>`;
+    }
+    return { barPx, inner: `${niPx > 0 ? `<div class="fin2-ni" style="height:${niPx.toFixed(1)}px"></div>` : ""}${marginHtml}` };
+  };
+  const colHtml = [];
+  for (let i = 0; i < bars.length; i++) {
+    const b = bars[i];
+    const nx = bars[i + 1];
+    // 2026-10-08 사용자 요청: 같은 분기 예상 + 실제는 한 칸에 반씩(왼쪽 예상 · 오른쪽 실제), 아래 "26.3Q 예상/실적"
+    if (data.compare && b.est && !b.nextEst && nx && !nx.est && nx.label === b.label) {
+      const e = barParts(b);
+      const a = barParts(nx);
+      const top = Math.max(e.barPx, a.barPx);
+      const g = (v) => (Number.isFinite(v) ? `${Math.abs(v) < 0.5 ? "0%" : `${Math.round(Math.abs(v))}%`}${v >= 0 ? "↑" : "↓"}` : "-");
+      colHtml.push(`
+        <div class="fin2-col fin2-pair" title="${escapeHtml(`${b.label} 예상 ${fmtAmountUnified(b.rev, currency)} · 실적 ${fmtAmountUnified(nx.rev, currency)}`)}">
+          <div class="fin2-plot" style="height:${PLOT_H}px">
+            <span class="fin2-pair-growth" style="bottom:${(top + 4).toFixed(0)}px"><em>예상 ${g(b.growth)}</em><b class="${nx.growth >= 0 ? "fin2-up" : "fin2-down"}">실적 ${g(nx.growth)}</b></span>
+            <span class="fin2-tip">예상 ${escapeHtml(fmtAmountUnified(b.rev, currency))}<br>실적 ${escapeHtml(fmtAmountUnified(nx.rev, currency))}</span>
+            <div class="fin2-pair-bars">
+              <div class="fin2-bar fin2-bar-exp" style="height:${e.barPx.toFixed(1)}px">${e.inner}</div>
+              <div class="fin2-bar fin2-bar-act" style="height:${a.barPx.toFixed(1)}px">${a.inner}</div>
+            </div>
+          </div>
+          <span class="fin2-xlabel">${escapeHtml(b.label)}<small>예상/실적</small></span>
+        </div>`);
+      i++;
+      continue;
+    }
+    const { barPx, inner } = barParts(b);
+    const growthTxt = fin2GrowthText(b.growth);
+    colHtml.push(`
         <div class="fin2-col${b.est ? " est" : ""}" title="${escapeHtml(`${b.label}${b.est ? " 예상" : ""} 매출 ${fmtAmountUnified(b.rev, currency)}`)}">
           <div class="fin2-plot" style="height:${PLOT_H}px">
             <div class="fin2-bar" style="height:${barPx.toFixed(1)}px">
               ${growthTxt ? `<span class="fin2-growth ${b.growth >= 0 ? "fin2-up" : "fin2-down"}">${growthTxt}</span>` : ""}
               <span class="fin2-tip">${escapeHtml(fmtAmountUnified(b.rev, currency))}</span>
-              ${niPx > 0 ? `<div class="fin2-ni" style="height:${niPx.toFixed(1)}px"></div>` : ""}
-              ${marginHtml}
+              ${inner}
             </div>
           </div>
           <span class="fin2-xlabel">${escapeHtml(b.label)}${b.est ? `<small>${b.nextEst ? "다음 예상" : estSource === "컨센서스" ? "컨센서스" : "예상"}</small>` : b.prelim ? `<small>${escapeHtml(b.prelim)}</small>` : ""}</span>
-        </div>`;
-    })
-    .join("");
+        </div>`);
+  }
+  const cols = colHtml.join("");
 
   const estNote = estBar
     ? estSource === "컨센서스"
@@ -8556,7 +8583,7 @@ function fin2BodyHtml(data, period, currency) {
       <span><i class="fin2-dot fin2-dot-rev"></i>매출액</span>
       <span><i class="fin2-dot fin2-dot-ni"></i>순이익 <em>(막대 안 % = 순이익률)</em></span>
     </div>
-    <div class="fin2-chart${hasNeg ? " has-neg" : ""}" style="grid-template-columns:repeat(${bars.length},1fr);--fin2-neg-space:${Math.round(maxNegPx + 20)}px">${cols}</div>
+    <div class="fin2-chart${hasNeg ? " has-neg" : ""}" style="grid-template-columns:repeat(${colHtml.length},1fr);--fin2-neg-space:${Math.round(maxNegPx + 20)}px">${cols}</div>
     <p class="fin2-caption">막대를 누르면 매출액이 표시됩니다. 막대 위 %는 ${isAnnual ? "작년" : "전분기"} 대비 매출 증감입니다.${estNote} 출처: ${escapeHtml(source)}.</p>`;
 }
 
@@ -21651,9 +21678,10 @@ async function renderEarningsTab() {
   const soon = [];
   const done = [];
   Object.entries(src).forEach(([sym, e]) => {
+    // 2026-10-08 사용자 요청: 발표 예정은 한국 3주 · 미국 2주까지 목록에(이름 옆 '예정' 마크는 그대로 7일 안만)
     if (e.next) {
       const d = -earnDaysSince(e.next);
-      if (d >= 0 && d <= 7) soon.push({ symbol: sym, date: e.next, days: d, time: e.nextTime || "", est: !!e.nextEst });
+      if (d >= 0 && d <= (isKr ? 21 : 14)) soon.push({ symbol: sym, date: e.next, days: d, time: e.nextTime || "", est: !!e.nextEst });
     }
     if (e.last) {
       const d = earnDaysSince(e.last);
@@ -21695,14 +21723,13 @@ async function renderEarningsTab() {
     return list.length
       ? `<table class="top30-table rk-table earn-table"><colgroup><col><col class="earn-col-date"><col class="earn-col-rev"></colgroup><tbody>${body}</tbody></table>
          ${rows.length > 10 ? `<button type="button" class="cat-btn load-more-btn pop-more" data-earn-more="${kind}">${n > 10 ? "− 접기" : `+더보기 (${rows.length}개)`}</button>` : ""}`
-      : `<p class="muted earn-empty">${kind === "soon" ? "앞으로 7일 안에 실적 발표 예정인 종목이 없습니다." : "지난 7일 동안 실적을 발표한 종목이 없습니다."}</p>`;
+      : `<p class="muted earn-empty">${kind === "soon" ? `앞으로 ${isKr ? "3주" : "2주"} 안에 실적 발표 예정인 종목이 없습니다.` : "지난 7일 동안 실적을 발표한 종목이 없습니다."}</p>`;
   };
   const paint = () => {
     if (seq !== earnSeq) return;
     box.innerHTML = `
-      <p class="tap-hint">* 매출은 지난 분기 대비 증감(예상은 ${isKr ? "증권사 컨센서스, 없으면 " : ""}추세 예상)입니다. 종목을 누르면 분기 그래프가 펼쳐집니다.${isKr ? " 한국주식 발표 예정일은 작년 같은 시기 공시일로 추정했습니다." : ""}</p>
-      <section class="pop-sec"><div class="pop-sec-head"><b>발표 예정</b><span class="pop-asof">앞으로 7일 · ${soon.length}종목</span></div>${tableHtml(soon, "soon")}</section>
-      <section class="pop-sec"><div class="pop-sec-head"><b>실적 발표</b><span class="pop-asof">지난 7일 · ${done.length}종목</span></div>${tableHtml(done, "done")}</section>`;
+      <section class="pop-sec" data-earn-sec="done"><div class="pop-sec-head"><b>최근실적</b><span class="pop-asof">지난 7일 · ${done.length}종목</span></div>${tableHtml(done, "done")}</section>
+      <section class="pop-sec" data-earn-sec="soon"><div class="pop-sec-head"><b>예정</b><span class="pop-asof">앞으로 ${isKr ? "3주" : "2주"} · ${soon.length}종목${isKr ? " · 추정" : ""}</span></div>${tableHtml(soon, "soon")}</section>`;
     bindEarnRows();
     box.querySelectorAll("[data-earn-more]").forEach((b) =>
       b.addEventListener("click", () => {

@@ -4111,3 +4111,16 @@ table.earn-table tr.earn-chart-row td { padding: 6px 0 14px; white-space: normal
 
 /* 실적 비교 그래프: 예상 막대 옆 실제 막대 강조(2026-10-08) */
 .fin2-col .fin2-xlabel small { display: block; }
+
+/* 같은 분기 예상/실적 한 칸(2026-10-08): 왼쪽 반 예상(점선) · 오른쪽 반 실적, 위에 두 줄 증감 */
+.fin2-pair .fin2-plot { position: relative; }
+.fin2-pair-bars { display: flex; align-items: flex-end; justify-content: center; width: 100%; height: 100%; }
+.fin2-pair .fin2-bar { width: 34%; max-width: 24px; }
+.fin2-pair .fin2-bar-exp { background: rgba(248, 217, 64, 0.22); border: 1.5px dashed #bdbdbd; border-bottom: none; border-radius: 7px 0 0 0; }
+.fin2-pair .fin2-bar-exp .fin2-ni { background: rgba(245, 159, 0, 0.3); }
+.fin2-pair .fin2-bar-act { border-radius: 0 7px 0 0; }
+.fin2-pair .fin2-margin { font-size: 9px; }
+.fin2-pair-growth { position: absolute; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; line-height: 1.2; font-size: 10px; font-weight: 800; white-space: nowrap; letter-spacing: -0.4px; z-index: 1; }
+.fin2-pair-growth em { font-style: normal; font-weight: 700; color: var(--muted); }
+.fin2-pair .fin2-tip { left: 50%; bottom: auto; top: 0; }
+.fin2-pair.active .fin2-pair-growth { visibility: hidden; }
