@@ -3863,3 +3863,22 @@ body.pop-alt-show-b .pop-alt-b { opacity: 1; transform: none; }
 .pop-spark.down path { stroke: var(--neg); }
 .pop-spark-base { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 2 2; opacity: 0.6; }
 .pop-sec-recent { margin-top: 4px; }
+
+/* 더보기 마켓맵 배너(2026-10-07 C안) — 겹친 원 세 개(섹터·조건 필터를 겹쳐 고르는 느낌), 교집합에 진한 점 하나 */
+:root { --mm-bg: #e6f6ef; --mm-ink: #0b5a43; --mm-sub: #2f8a6c; --mm-a: #12b886; --mm-b: #7048e8; --mm-c: #f59f00; }
+:root[data-theme="dark"] { --mm-bg: #12302a; --mm-ink: #c3f0de; --mm-sub: #7fd1b2; }
+.more-panel-item.more-map-banner { display: flex; align-items: center; gap: 12px; margin: 4px 0 8px; padding: 12px 14px; border: none; border-radius: 14px; background: var(--mm-bg); text-align: left; }
+.more-map-venn { flex: none; width: 58px; height: 48px; }
+.more-map-venn .vn { stroke-width: 1.2; fill-opacity: 0.22; }
+.more-map-venn .vn-a { fill: var(--mm-a); stroke: var(--mm-a); }
+.more-map-venn .vn-b { fill: var(--mm-b); stroke: var(--mm-b); }
+.more-map-venn .vn-c { fill: var(--mm-c); stroke: var(--mm-c); }
+.more-map-venn .vn-dot { fill: var(--mm-ink); }
+.more-map-venn .vn-dot-a { fill: var(--mm-a); }
+.more-map-venn .vn-dot-b { fill: var(--mm-b); }
+.more-map-venn .vn-dot-c { fill: var(--mm-c); }
+.more-map-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.more-map-text b { font-size: 16px; font-weight: 800; color: var(--mm-ink); }
+.more-map-text small { margin-top: 2px; font-size: 12.5px; color: var(--mm-sub); }
+.more-map-chev { flex: none; font-size: 24px; line-height: 1; color: var(--mm-sub); }
+.more-panel-item.more-map-banner svg.more-map-venn { width: 58px; height: 48px; min-width: 58px; flex: none; }

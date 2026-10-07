@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20261007n" />
+<link rel="stylesheet" href="style.css?v=20261007p" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -771,11 +771,22 @@
           <span class="more-panel-item-label" data-i18n="tab.watchlist">관심종목</span>
         </button>
         <!-- 지도: 하단 네비에서 더보기로 이동(2026-09-01) -->
-        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelMapBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.6"/></svg>
-          <span class="more-panel-item-label" data-i18n="nav.map">마켓맵</span>
-          <!-- 2026-09-12 사용자 요청: 마켓맵 오른쪽 배지 표시 → 2026-09-14 사용자 요청으로 "주요기능"에서 "종목찾기"로 변경 -->
-          <span class="more-panel-item-badge">종목찾기</span>
+        <!-- 2026-10-07 사용자 선택(C안): 마켓맵은 얇은 가로 배너 — 겹친 원(섹터·조건) 그림 + "필터로 종목 찾기" -->
+        <button type="button" class="more-panel-item more-panel-item-active more-map-banner" id="morePanelMapBtn">
+          <svg class="more-map-venn" viewBox="0 0 64 52" aria-hidden="true">
+            <circle cx="24" cy="21" r="15" class="vn vn-a" />
+            <circle cx="40" cy="21" r="15" class="vn vn-b" />
+            <circle cx="32" cy="34" r="15" class="vn vn-c" />
+            <circle cx="32" cy="26" r="3.2" class="vn-dot" />
+            <circle cx="21" cy="17" r="1.6" class="vn-dot-a" />
+            <circle cx="44" cy="17" r="1.6" class="vn-dot-b" />
+            <circle cx="32" cy="41" r="1.6" class="vn-dot-c" />
+          </svg>
+          <span class="more-map-text">
+            <b>필터로 종목 찾기</b>
+            <small>마켓맵 지도 열기</small>
+          </span>
+          <span class="more-map-chev" aria-hidden="true">›</span>
         </button>
         <!-- 2026-10-06 사용자 요청: 더보기 간소화 — 기관·자산운용사/상승종목/상관관계/섹터승률/투자방법/시장/뉴스/신기술 숨김
              (남는 순서: 관심종목 - 마켓맵 - 간편검색 - 자동추적 - 캘린더 - 화면테마 - 언어 - 상승하락색상 - 공지사항 - 문의하기 - 앱정보).
