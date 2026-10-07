@@ -142,7 +142,9 @@ def kr_filings_chunk(syms, key, bgn, end):
                     break
                 for it in js.get("list") or []:
                     code = (it.get("stock_code") or "").strip()
-                    if code in syms and any(k in (it.get("report_nm") or "") for k in KR_KEYWORDS):
+                    nm = it.get("report_nm") or ""
+                    # [기재정정]·[첨부정정]·[첨부추가]는 예전 보고서 고침이라 새 실적이 아님
+                    if code in syms and any(k in nm for k in KR_KEYWORDS) and not re.search(r"\[(기재정정|첨부정정|첨부추가|발행조건확정)\]", nm):
                         dt = it.get("rcept_dt")
                         out.setdefault(syms[code], []).append(f"{dt[:4]}-{dt[4:6]}-{dt[6:]}")
                 if page >= int(js.get("total_page") or 1):
