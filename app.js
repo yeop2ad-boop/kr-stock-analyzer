@@ -18405,15 +18405,16 @@ function stockCardRowHtml(r) {
   const volumeStr = r.volume === null || r.volume === undefined ? "N/A" : r.volume >= 1e9 ? `${(r.volume / 1e8).toLocaleString("en-US", { maximumFractionDigits: 1 })}억` : r.volume.toLocaleString();
   const code = (r.symbol || "").replace(/\.(KS|KQ)$/, "").replace(/-(USD|KRW)$/, "");
 
+  // 2026-10-08 사용자 요청: 인기종목처럼 이름 | 현재가·등락률 | 1일 그래프 — 등락폭·거래량 칸은 그래프 자리로 뺌
+  queueMicrotask(fillPopularSparks);
   return `
     <div class="idx-row stock-card-row wl-row ticker-link idx-row-clickable" data-ticker="${escapeHtml(r.symbol)}">
       <div class="wl-row-logo">${tickerLogoHtml(r.symbol)}</div>
-      <div class="wl-row-grid">
+      <div class="wl-row-grid wl-grid-spark">
         <div class="wl-name">${escapeHtml(displayName)}${etfSectorTagHtml(r.symbol)}</div>
-        <div class="wl-price ${cls}">${wlNumStr(r.price, r.currency)}</div>
-        <div class="wl-change ${cls}">${arrow ? `<span class="wl-arrow">${arrow}</span>` : ""}${changeAmtStr}</div>
+        <div class="wl-price ${cls}">${wlNumStr(r.price, r.currency)}${arrow ? `<span class="wl-arrow wl-arrow-after">${arrow}</span>` : ""}</div>
+        <div class="wl-spark"><span class="pop-spark-cell" data-spark="${escapeHtml(r.symbol)}"></span></div>
         <div class="wl-sub">${etfParts ? escapeHtml(etfParts.sub) : `${escapeHtml(code)} ${wlMarketLabel(r)}`}</div>
-        <div class="wl-volume">${volumeStr}</div>
         <div class="wl-pct ${cls}">${pctStr}</div>
       </div>
     </div>`;
