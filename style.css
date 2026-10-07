@@ -3981,3 +3981,11 @@ body.on-watchlist .source-note { display: none; }
 .ia-future-legend i { display: inline-block; width: 16px; height: 0; margin-right: 5px; vertical-align: 3px; border-top: 2.6px solid var(--ia-purple); }
 .ia-future-legend i.ia-lg-crash { border-top: 2px dashed #2563eb; }
 .ia-future-note { margin: 8px 0 0; font-size: 11.5px; line-height: 1.5; color: var(--muted); }
+
+/* 인기종목 표 칸 비율(2026-10-08 사용자 요청): 이름은 7~8글자만 보이면 충분 — 현재가·등락률을 조금 가운데로,
+   그래프도 오른쪽 끝에 붙이지 않고 칸 가운데에 */
+table.pop-table col.pop-col-price { width: 30%; }
+table.pop-table col.pop-col-spark { width: 20%; }
+table.pop-table td:nth-child(2) { padding-right: 8px; }
+table.pop-table td.pop-spark-td { padding-right: 0; text-align: center; }
+table.pop-table td.pop-spark-td .pop-spark-cell { justify-content: center; }
