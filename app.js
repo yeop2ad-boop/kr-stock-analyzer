@@ -4953,6 +4953,11 @@ el("searchWizardBody").addEventListener("click", (e) => {
     const market = wizardMarket();
     closeSearchWizard();
     openSReportRank(btn.dataset.srKey, market === "etf" || market === "crypto" ? market : "stocks", market === "kr" ? "kr" : "us");
+    // 2026-10-08 사용자 요청: 간편검색으로 고른 순위 화면에선 상단 탭도 "간편검색"에 불이 들어오게
+    // (순위 화면이 뒤늦게 제목을 다시 쓰는 경우가 있어 조금 뒤에 한 번 더)
+    const markSearchTab = () => document.querySelectorAll("#fhTabs .fh-tab").forEach((b) => b.classList.toggle("active", b.dataset.fhtab === "tab.search"));
+    markSearchTab();
+    setTimeout(markSearchTab, 400);
   } else if (action === "root-a") {
     searchWizardStep = "branchA";
     renderSearchWizardStep();
