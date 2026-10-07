@@ -6897,11 +6897,11 @@ function sReportCoreSpecs(isAsset, isEtf) {
     : { key: "rev", label: "매출성장", sub: "작년 대비", better: "high", band: 3, rel: 0.2, signed: true, fmt: (v, d) => sPct(v, d, true), axis: (v) => v / 50 };
   return [
     // ETF만 🔥 기준이 등수가 아니라 절대값 — 승률 60% 이상, 변동성 0.8% 미만(2026-09-17 사용자 지정)
-    // 2026-10-08 사용자 요청: 오각형·표 이름만 길게(10년평균 승률·연 상승률·일 변동성·매출성장) — 눌렀을 때 설명 제목은 S_REPORT_TITLES 그대로
+    // 2026-10-08 사용자 요청: 오각형·표 이름만 길게(10년평균 승률·연 상승률·1일 변동성·매출성장) — 눌렀을 때 설명 제목은 S_REPORT_TITLES 그대로
     { key: "win", label: "10년평균 승률", sub: "10년 월간", better: "high", band: 2, fmt: (v, d) => sPct(v, d), axis: (v) => (v - 40) / 30, ...(isEtf ? { fireIf: (v) => v >= 60 } : {}) },
     { key: "ret", label: "연 상승률", sub: "연평균", better: "high", band: 2, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true), axis: (v) => v / 50 },
     // 변동성은 등수(상위 N%) 대신 5단계 등급(2026-10-06 사용자 요청) — sReportVolJudge 참고
-    { key: "vol", label: "일 변동성", sub: "3개월 하루", better: "low", isVol: true, band: 0.1, rel: 0.1, fmt: (v, d) => `${v.toFixed(d ? 2 : 1)}%`, axis: (v) => (5 - v) / 4 },
+    { key: "vol", label: "1일 변동성", sub: "3개월 하루", better: "low", isVol: true, band: 0.1, rel: 0.1, fmt: (v, d) => `${v.toFixed(d ? 2 : 1)}%`, axis: (v) => (5 - v) / 4 },
     // 과열도는 낮을수록 좋은 점수(2026-09-16 사용자 요청) — 등수도 낮은 순으로 1위, 레이더에서도 낮을수록 바깥.
     // ETF는 과열도를 일반지표(더보기)로 내리고 그 자리에 규모(순자산)를 둔다(2026-10-06 사용자 요청)
     isEtf ? { key: "aum", label: "규모", sub: "순자산", better: "high", isAum: true, fmt: (v) => etfAumText(v) } : { key: "rsi", label: "과열도(RSI)", better: "low", isRsi: true, fmt: (v, d) => sNum(v, d) },
@@ -9327,7 +9327,20 @@ function stripTags(html) {
 }
 // 표 맨 위 안내(2026-09-10 사용자 요청) — 머리글·아이콘 아무 데나 눌러도 설명이 나온다는 힌트
 // 2026-10-08 사용자 요청: 순위 화면 안내도 번갈아 — 두 번째 문구는 아래에 전체 순위 버튼이 있는 화면에서만(타이머는 POPULAR_HINTS 옆)
-const RANK_HINTS = ["모든 항목은 눌러서 자세한 설명을 볼 수 있습니다.", "현재 시가총액 상위 30위까지의 결과입니다. 전체 순위는 아래 버튼을 눌러 주세요."];
+// 두 번째 문구의 "나머지 N개"는 화면마다(한국·미국·ETF·코인) 아래 전체보기 버튼에서 읽어 채움(2026-10-08 사용자 요청)
+const RANK_HINTS = ["모든 항목은 눌러서 자세한 설명을 볼 수 있습니다.", "아래 전체보기 버튼을 눌러 나머지 종목도 검색해 보세요."];
+function rankMoreHintText(btn, box) {
+  const t = (btn && btn.textContent) || "";
+  let rest = null;
+  const m1 = t.match(/나머지\s*([\d,]+)\s*개/);
+  const m2 = t.match(/전체\s*([\d,]+)\s*개/);
+  if (m1) rest = Number(m1[1].replace(/,/g, ""));
+  else if (m2) {
+    const shown = box ? [...box.querySelectorAll("tbody tr")].filter((tr) => tr.offsetParent !== null).length : 0;
+    rest = Number(m2[1].replace(/,/g, "")) - shown;
+  }
+  return rest > 0 ? `아래 전체보기 버튼을 눌러 나머지 ${rest.toLocaleString()}개를 검색해 보세요.` : RANK_HINTS[1];
+}
 const RANK_HINT_SPAN = `<span class="pop-hint-text" data-hint-set="rank">* ${RANK_HINTS[0]}</span>`;
 const TAP_HINT_HTML = `<p class="tap-hint pop-hint">${RANK_HINT_SPAN}</p>`;
 // 승률 탭 머리줄(2026-09-13 사용자 요청): 안내 + 오른쪽 "+승률이란" — 누르면 바로 아래에 대표자산 승률비교를 펼침(인기종목과 같은 내용)
@@ -11168,11 +11181,12 @@ if (!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)")
         // 같은 결과 묶음 안에 보이는 더보기/전체보기 버튼이 없으면 첫 문구만(바꾸지 않음)
         let box = n.closest(".tap-hint");
         for (let i = 0; i < 3 && box && box.parentElement; i++) box = box.parentElement;
-        const hasMore = box && [...box.querySelectorAll(".load-more-btn")].some((b) => b.offsetParent !== null);
-        if (!hasMore) {
+        const moreBtn = box && [...box.querySelectorAll(".load-more-btn")].find((b) => b.offsetParent !== null);
+        if (!moreBtn) {
           if (n.textContent !== `* ${RANK_HINTS[0]}`) n.textContent = `* ${RANK_HINTS[0]}`;
           return;
         }
+        n.dataset.rankMore = rankMoreHintText(moreBtn, box);
       }
       // 문구 수가 다른 묶음(2개·3개)이 전역 번호 하나를 나눠 쓰면 1→2→1→1처럼 겹쳐 나와서(2026-10-08 사용자 지적)
       // 인기종목(3개, 다시 그려도 이어지게 전역 번호) 말고는 문구마다 자기 번호로 1→2→1→2
@@ -11180,7 +11194,7 @@ if (!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)")
       n.dataset.hintIdx = String(idx);
       n.classList.add("out");
       setTimeout(() => {
-        n.textContent = `* ${set[idx]}`;
+        n.textContent = `* ${set === RANK_HINTS && idx === 1 && n.dataset.rankMore ? n.dataset.rankMore : set[idx]}`;
         n.classList.remove("out");
       }, 350);
     });
