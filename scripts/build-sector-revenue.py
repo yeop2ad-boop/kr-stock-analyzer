@@ -79,9 +79,16 @@ def collect(entries):
     return rows
 
 
+# 같은 회사의 두 번째 상장 주식(2026-10-07 점검): 알파벳 GOOG(C)=GOOGL(A), 폭스 FOX=FOXA, 뉴스코프 NWS=NWSA.
+# 회사 단위 매출이 두 종목에 똑같이 붙어 있어 섹터 합계에 두 번 더해졌다 — 합계에서는 한쪽만 센다(종목 목록에는 그대로 둠)
+SECONDARY_SHARE_CLASS = {"GOOG", "FOX", "NWS"}
+
+
 def group(rows):
     by = defaultdict(list)
     for r in rows:
+        if r.get("symbol") in SECONDARY_SHARE_CLASS:
+            continue
         by[r["sector"]].append(r)
     out = []
     for sector, members in by.items():

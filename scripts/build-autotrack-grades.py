@@ -20,8 +20,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "data", "autotrack-grades.json")
 RATINGS = ["강력매수", "매수", "보유", "매도", "강력매도"]
 # 2026-10-07 사용자 지정(한국, 같은 날 미국도 동일): 성장(매출 증가) · 수익성(순이익 증가·영업이익 증가) · 승률(10년평균 승률) · 가치(ROE·PER) · 모멘텀(한달 상승·52주 위치)
-STOCK_FACTORS = ["성장", "수익성", "승률", "가치", "모멘텀"]
-CRYPTO_FACTORS = ["승률", "장기상승", "모멘텀", "안정성", "규모"]  # 비트코인·ETF(2026-10-07 ETF도 같은 기준)
+# 2026-10-07 사용자 요청: 순서를 승률 - 성장 - 수익성 - 모멘텀 - 가치로
+STOCK_FACTORS = ["승률", "성장", "수익성", "모멘텀", "가치"]
+CRYPTO_FACTORS = ["승률", "상승률", "모멘텀", "안정성", "규모"]  # 2026-10-07 "장기상승" → "상승률"  # 비트코인·ETF(2026-10-07 ETF도 같은 기준)
 STABLE = {"USDT", "USDC", "DAI", "USDE", "FDUSD", "TUSD", "USDS", "PYUSD", "USD1", "BUSD", "USDD", "USDTB", "RLUSD", "USDF", "FRAX", "USD0", "BFUSD", "SUSDS", "SUSDE", "XAUT", "PAXG"}
 EVENT_DAYS = 7
 
@@ -160,7 +161,8 @@ def compute(market, rev=None, extra=None):
         ]
     else:
         path = "sector-map/data/kr-sectors.json" if market == "kr" else "sector-map/data/sp500-sectors.json"
-        comps = [c for c in read_json(path, rev)["companies"] if c.get("marketCap")]
+        # 같은 회사 두 번째 상장 주식(GOOG·FOX·NWS)은 빼서 한 회사가 두 줄로 나오지 않게(2026-10-07)
+        comps = [c for c in read_json(path, rev)["companies"] if c.get("marketCap") and c["symbol"] not in ("GOOG", "FOX", "NWS")]
         scores = wr.get("scoresKr" if market == "kr" else "scores") or {}
         syms = [c["symbol"] for c in comps]
         by = {c["symbol"]: c for c in comps}
@@ -169,11 +171,11 @@ def compute(market, rev=None, extra=None):
         # 2026-10-07 사용자 요청: 한국·미국 같은 구성 — 성장(매출) · 수익성(순이익·영업이익 증가) · 승률 · 가치(ROE·PER) · 모멘텀(한 달·52주)
         opg = (extra or {}).get("opg") or {}
         f = [
+            pct_rank(g("winRateScore")),
             pct_rank(g("revenueGrowth")),
             combine(pct_rank(g("netIncomeGrowth")), pct_rank({s: opg.get(s) for s in syms})),
-            pct_rank(g("winRateScore")),
-            combine(pct_rank(g("roe")), pct_rank(per, higher_better=False)),
             combine(pct_rank({s: mom1(scores.get(s)) for s in syms}), pct_rank(g("week52RangePct"))),
+            combine(pct_rank(g("roe")), pct_rank(per, higher_better=False)),
         ]
     total = {}
     for s in syms:

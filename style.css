@@ -3784,3 +3784,10 @@ table.top30-table.atg-table th:nth-child(2) { width: 84px; }
 .wl-delete-mode .wl-card-wrap { position: relative; }
 .wl-drag { position: absolute; top: 0; right: 0; bottom: 0; width: 56px; display: flex; align-items: center; justify-content: center; background: var(--bg); color: var(--muted); font-size: 22px; cursor: grab; touch-action: none; user-select: none; }
 .wl-card-wrap.wl-dragging { opacity: 0.85; background: var(--subtle-fill); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12); z-index: 2; }
+
+/* 포트폴리오 편집: 균등·시총·갯수 배분 버튼 줄(2026-10-07) */
+.ia-alloc-row { display: flex; gap: 6px; margin-top: 12px; }
+.ia-alloc-row .ia-mini-btn { flex: 1; padding: 8px 6px; font-size: 13px; }
+.ia-alloc-row .ia-mini-btn.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+.ia-item-qty { width: 72px; }
+.ia-item-calc { flex: none; min-width: 48px; text-align: right; font-size: 12.5px; font-weight: 700; color: var(--accent); }

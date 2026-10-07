@@ -6461,7 +6461,7 @@ const S_REPORT_EXPLAIN = {
   rsi: "최근 14주 등락 폭으로 만든 주간 RSI입니다.\n이 종목의 1년 평균보다 높으면 매수우위, 낮으면 매도우위예요.",
   ni: "순이익이 작년보다 몇 % 늘었는지입니다.\n높을수록 남기는 이익이 빠르게 늘어요.",
   om: "매출에서 영업이익이 차지하는 비율입니다.\n높을수록 본업에서 효율적으로 벌어요.",
-  roe: "자기자본 대비 순이익 비율(최근 분기)입니다.\n높을수록 주주 돈으로 이익을 잘 만들어요.",
+  roe: "최근 1년(4개 분기 합계) 순이익 ÷ 자기자본입니다.\n높을수록 주주 돈으로 이익을 잘 만들어요.",
   cf: "영업 현금흐름의 작년 대비 증가율입니다.\n높을수록 실제 현금이 늘고 있어요.",
   debt: "자기자본 대비 부채 비율(최근 분기)입니다.\n낮을수록 빚 부담이 적어 안정적이에요.",
   per: "주가가 주당순이익의 몇 배인지입니다.\n낮을수록 이익에 비해 싸다는 뜻이에요.",
@@ -6482,7 +6482,7 @@ const S_REPORT_TITLES = {
   rsi: "14주 RSI 지수",
   ni: "작년대비 순이익 증가",
   om: "최근 분기 영업이익률",
-  roe: "최근 분기 ROE",
+  roe: "최근 1년 ROE",
   cf: "작년대비 현금흐름 증가",
   debt: "최근 분기 부채비율",
   per: "PER(주가 ÷ 주당순이익)",
@@ -21404,6 +21404,59 @@ function iaEqualize(items) {
   let rest = Math.round((100 - base * items.length) * 10);
   for (let i = 0; rest > 0; i = (i + 1) % items.length, rest--) items[i].weight = Math.round((items[i].weight + 0.1) * 10) / 10;
 }
+// 값(시가총액·보유 금액)의 비율을 소수 첫째 자리 비중으로 — 끝수는 큰 나머지부터 0.1씩 얹어 합이 정확히 100
+function iaWeightsFromValues(items, values) {
+  const total = values.reduce((a, v) => a + (v > 0 ? v : 0), 0);
+  if (!(total > 0)) return false;
+  const raw = values.map((v) => ((v > 0 ? v : 0) / total) * 1000);
+  const base = raw.map((x) => Math.floor(x));
+  let rest = 1000 - base.reduce((a, b) => a + b, 0);
+  raw
+    .map((x, i) => [x - base[i], i])
+    .sort((a, b) => b[0] - a[0])
+    .forEach(([, i]) => {
+      if (rest > 0) {
+        base[i]++;
+        rest--;
+      }
+    });
+  items.forEach((it, i) => (it.weight = base[i] / 10));
+  return true;
+}
+// 시가총액(시총배분, 2026-10-07) — 앱에 이미 있는 자료: 주식 = 지도 스냅샷, ETF = ETF 시총 DB(한국 억원 → 달러 환산), 코인 = 코인 지도
+async function iaMarketCaps(symbols, sec) {
+  const out = new Map();
+  if (sec === "kr" || sec === "us") {
+    const uni = await getSReportUniverse(sec === "kr").catch(() => null);
+    ((uni && uni.companies) || []).forEach((c) => c.marketCap && out.set(c.symbol, c.marketCap));
+  } else if (sec === "etf") {
+    const db = await getEtfMarketCapDb().catch(() => null);
+    ((db && db.kr) || []).forEach((x) => x.s && x.m && out.set(x.s, (x.m * 1e8) / 1400));
+    ((db && db.us) || []).forEach((x) => x.s && x.a && out.set(x.s, x.a));
+  } else if (sec === "crypto") {
+    (await getCryptoMapSnapshot().catch(() => [])).forEach((c) => c.mcap && out.set(c.symbol, c.mcap));
+  }
+  return new Map(symbols.filter((sym) => out.has(sym)).map((sym) => [sym, out.get(sym)]));
+}
+// 현재가(갯수입력용) — 원화로 맞춰서 돌려준다(한 포트폴리오에 한국·미국 ETF가 섞일 수 있어서)
+const iaPriceCache = new Map();
+async function iaPriceKrw(sym) {
+  if (!iaPriceCache.has(sym))
+    iaPriceCache.set(
+      sym,
+      (async () => {
+        const chart = await yahooChart(sym, "5d").catch(() => null);
+        const snap = yahooSnapshot(chart);
+        const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
+        if (!snap || !Number.isFinite(snap.price)) return null;
+        const cur = (meta && meta.currency) || (isKrTicker(sym) ? "KRW" : "USD");
+        if (cur === "KRW") return snap.price;
+        const fx = yahooSnapshot(await yahooChart("KRW=X", "5d").catch(() => null));
+        return snap.price * (fx && fx.price > 0 ? fx.price : 1400);
+      })()
+    );
+  return iaPriceCache.get(sym);
+}
 function iaWeightSum(items) {
   return Math.round(items.reduce((a, it) => a + (Number(it.weight) || 0), 0) * 100) / 100;
 }
@@ -21416,6 +21469,8 @@ function iaOpenEditor(pf) {
     name: (pf && pf.name) || "",
     items: ((pf && pf.items) || []).map((it) => ({ ...it, weight: Number(it.weight) || 0 })),
   };
+  // 갯수 입력 모드(2026-10-07): 비중 대신 보유 주식 수를 넣으면 현재가 × 수량으로 비중을 자동 계산
+  let qtyMode = draft.items.some((it) => Number(it.qty) > 0);
   const sheet = iaOpenSheet(`
     ${iaSheetHead(draft.id ? "포트폴리오 편집" : "포트폴리오 만들기")}
     <label class="ia-field"><span>이름</span><input type="text" id="iaPfName" maxlength="20" placeholder="예) 내 반도체" value="${escapeHtml(draft.name)}" /></label>
@@ -21424,8 +21479,12 @@ function iaOpenEditor(pf) {
       <div class="ia-suggest" id="iaPfSuggest" style="display:none;"></div>
     </div>
     <div class="ia-items" id="iaPfItems"></div>
-    <div class="ia-editor-foot">
+    <div class="ia-alloc-row">
       <button type="button" class="ia-mini-btn" id="iaPfEqual">균등 배분</button>
+      <button type="button" class="ia-mini-btn" id="iaPfCap">시총 배분</button>
+      <button type="button" class="ia-mini-btn" id="iaPfQty">갯수 입력</button>
+    </div>
+    <div class="ia-editor-foot">
       <span class="ia-sum" id="iaPfSum"></span>
       <button type="button" class="ia-save-btn" id="iaPfSave">저장</button>
     </div>`);
@@ -21445,15 +21504,44 @@ function iaOpenEditor(pf) {
           .map(
             (it, i) => `<div class="ia-item">
               <span class="ia-item-name">${escapeHtml(it.name || it.symbol)}<small>${escapeHtml(rankCodeLabel(it.symbol))}</small></span>
-              <input type="number" inputmode="decimal" min="0" max="100" step="0.1" class="ia-item-w" data-ia-w="${i}" value="${it.weight}" /><span class="ia-item-pct">%</span>
+              ${
+                qtyMode
+                  ? `<input type="number" inputmode="decimal" min="0" step="any" class="ia-item-w ia-item-qty" data-ia-q="${i}" value="${it.qty || ""}" placeholder="0" /><span class="ia-item-pct">주</span><span class="ia-item-calc">${
+                      it.weight ? `${it.weight}%` : "-"
+                    }</span>`
+                  : `<input type="number" inputmode="decimal" min="0" max="100" step="0.1" class="ia-item-w" data-ia-w="${i}" value="${it.weight}" /><span class="ia-item-pct">%</span>`
+              }
               <button type="button" class="ia-item-x" data-ia-rm="${i}" aria-label="빼기">✕</button>
             </div>`
           )
           .join("")
       : `<p class="ia-empty">위 검색창에서 종목을 찾아 추가하세요(최대 30개).</p>`;
+    sheet.querySelector("#iaPfQty").textContent = qtyMode ? "비중 입력" : "갯수 입력";
+    sheet.querySelector("#iaPfQty").classList.toggle("on", qtyMode);
+    syncFoot();
+  };
+  // 수량 × 현재가(원화)로 비중 다시 계산
+  let qtySeq = 0;
+  const recalcFromQty = async () => {
+    const my = ++qtySeq;
+    const prices = await Promise.all(draft.items.map((it) => (Number(it.qty) > 0 ? iaPriceKrw(it.symbol) : Promise.resolve(0))));
+    if (my !== qtySeq) return;
+    const values = draft.items.map((it, i) => (Number(it.qty) > 0 && prices[i] ? Number(it.qty) * prices[i] : 0));
+    if (!iaWeightsFromValues(draft.items, values)) draft.items.forEach((it) => (it.weight = 0));
+    itemsEl.querySelectorAll("[data-ia-q]").forEach((inp) => {
+      const calc = inp.parentElement.querySelector(".ia-item-calc");
+      const w = draft.items[Number(inp.dataset.iaQ)].weight;
+      if (calc) calc.textContent = w ? `${w}%` : "-";
+    });
     syncFoot();
   };
   itemsEl.addEventListener("input", (e) => {
+    const q = e.target.closest("[data-ia-q]");
+    if (q) {
+      draft.items[Number(q.dataset.iaQ)].qty = Math.max(0, Number(q.value) || 0);
+      recalcFromQty();
+      return;
+    }
     const inp = e.target.closest("[data-ia-w]");
     if (!inp) return;
     draft.items[Number(inp.dataset.iaW)].weight = Math.max(0, Math.min(100, Number(inp.value) || 0));
@@ -21466,14 +21554,37 @@ function iaOpenEditor(pf) {
     paintItems();
   });
   sheet.querySelector("#iaPfEqual").addEventListener("click", () => {
+    qtyMode = false;
     iaEqualize(draft.items);
     paintItems();
+  });
+  sheet.querySelector("#iaPfCap").addEventListener("click", async () => {
+    if (!draft.items.length) return showToast("먼저 종목을 추가하세요");
+    const caps = await iaMarketCaps(
+      draft.items.map((it) => it.symbol),
+      sec
+    );
+    const missing = draft.items.filter((it) => !caps.has(it.symbol));
+    if (missing.length === draft.items.length) return showToast("시가총액 자료가 있는 종목이 없어요");
+    qtyMode = false;
+    iaWeightsFromValues(
+      draft.items,
+      draft.items.map((it) => caps.get(it.symbol) || 0)
+    );
+    paintItems();
+    if (missing.length) showToast(`시가총액 자료가 없는 ${missing.map((m) => m.name || m.symbol).slice(0, 3).join(", ")}${missing.length > 3 ? " 등" : ""}은 0%예요`);
+  });
+  sheet.querySelector("#iaPfQty").addEventListener("click", () => {
+    qtyMode = !qtyMode;
+    paintItems();
+    if (qtyMode) recalcFromQty();
   });
   const addSymbol = (symbol, name) => {
     if (draft.items.some((it) => it.symbol === symbol)) return showToast("이미 담긴 종목입니다");
     if (draft.items.length >= 30) return showToast("최대 30종목까지 담을 수 있어요");
     draft.items.push({ symbol, name: iaSymbolName(symbol, name), weight: 0 });
-    iaEqualize(draft.items); // 새로 담으면 균등으로 다시 나눔 — 그다음 직접 조정
+    if (qtyMode) recalcFromQty(); // 갯수 모드면 새 종목은 수량을 넣을 때까지 0%
+    else iaEqualize(draft.items); // 새로 담으면 균등으로 다시 나눔 — 그다음 직접 조정
     paintItems();
   };
   iaAttachSuggest(sheet.querySelector("#iaPfSearch"), sheet.querySelector("#iaPfSuggest"), sec, addSymbol);
@@ -21481,7 +21592,7 @@ function iaOpenEditor(pf) {
     const name = sheet.querySelector("#iaPfName").value.trim() || "내 포트폴리오";
     if (Math.abs(iaWeightSum(draft.items) - 100) >= 0.01) return;
     const list = iaLoadPortfolios();
-    const rec = { id: draft.id || `p_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`, section: sec, name, items: draft.items.map((it) => ({ symbol: it.symbol, name: it.name, weight: it.weight })) };
+    const rec = { id: draft.id || `p_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`, section: sec, name, items: draft.items.map((it) => ({ symbol: it.symbol, name: it.name, weight: it.weight, ...(qtyMode && Number(it.qty) > 0 ? { qty: Number(it.qty) } : {}) })) };
     const i = list.findIndex((p) => p.id === rec.id);
     if (i >= 0) list[i] = rec;
     else list.push(rec);
@@ -21593,16 +21704,17 @@ const ATG_RATINGS = ["강력매수", "매수", "보유", "매도", "강력매도
 // 표 머리글 설명과 "+등급기준" 그래프가 함께 쓴다.
 const ATG_CRITERIA = {
   // 2026-10-07 사용자 지정(한국, 미국도 동일)
+  // 2026-10-07 사용자 요청: 순서 승률 - 성장 - 수익성 - 모멘텀 - 가치
   kr: [
+    { f: "승률", items: ["10년평균 승률 ↑"] },
     { f: "성장", items: ["매출 증가율 ↑"] },
     { f: "수익성", items: ["순이익 증가율 ↑", "영업이익 증가율 ↑"] },
-    { f: "승률", items: ["10년평균 승률 ↑"] },
-    { f: "가치", items: ["ROE ↑", "PER ↓"] },
     { f: "모멘텀", items: ["한 달 수익률 ↑", "52주 위치 ↑"] },
+    { f: "가치", items: ["ROE ↑", "PER ↓"] },
   ],
   crypto: [
     { f: "승률", items: ["10년평균 승률 ↑"] },
-    { f: "장기상승", items: ["연평균 상승률 ↑"] },
+    { f: "상승률", items: ["연평균 상승률 ↑"] }, // 2026-10-07 "장기상승" → "상승률"
     { f: "모멘텀", items: ["3개월 수익률 ↑", "52주 위치 ↑"] },
     { f: "안정성", items: ["하루 평균 변동폭 ↓"] },
     { f: "규모", items: ["시가총액 ↑"] },

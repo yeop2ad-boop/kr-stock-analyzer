@@ -170,9 +170,14 @@ def sector_rotation(companies, scores):
     return ko, round(s / w, 2), members
 
 
+# 같은 회사의 두 번째 상장 주식(2026-10-07 점검): GOOG(알파벳 C)=GOOGL(A), FOX=FOXA, NWS=NWSA.
+# 야후 시가총액이 둘 다 "회사 전체"라 시총 비중이 두 배로 잡혔다(S&P500 안 알파벳 11%, 10년 승률 매매 35%) — 한쪽만 쓴다
+SECONDARY_SHARE_CLASS = {"GOOG", "FOX", "NWS"}
+
+
 def stock_section(companies, scores, idx_defs):
     """idx_defs: [(key, label, ticker, members)] — 지수형 2개. 나머지 4개는 바구니형."""
-    comps = [c for c in companies if c.get("marketCap")]
+    comps = [c for c in companies if c.get("marketCap") and c["symbol"] not in SECONDARY_SHARE_CLASS]
     strategies = []
     for key, label, ticker, members, note in idx_defs:
         strategies.append({"key": key, "label": label, "ticker": ticker, "holdings": holding_list(cap_weights(members)), "note": note})
@@ -204,7 +209,7 @@ def main():
     kr_by = {c["symbol"]: c for c in kr}
     k200 = [kr_by[x["symbol"]] for x in uni["kospi200"] if x["symbol"] in kr_by and kr_by[x["symbol"]].get("marketCap")]
     kq150 = [kr_by[x["symbol"]] for x in uni["kosdaq150"] if x["symbol"] in kr_by and kr_by[x["symbol"]].get("marketCap")]
-    us_caps = [c for c in us if c.get("marketCap")]
+    us_caps = [c for c in us if c.get("marketCap") and c["symbol"] not in SECONDARY_SHARE_CLASS]
 
     def etf_holdings(sym):
         hs = (etf.get("us", {}).get(sym) or {}).get("holdings") or []
@@ -227,13 +232,14 @@ def main():
     ])
     sections["us"] = [us_secs[0], nasdaq] + us_secs[1:]
 
-    gold = [{"s": "411060.KS", "n": "금 99.99% 1kg(KRX 금현물)", "w": 100.0}]
+    # 2026-10-07 사용자 요청: KRX 금현물(ACE, 2021년 상장)은 10년 그래프가 안 돼 GLD(SPDR Gold, 2004년 상장)로 교체
+    gold = [{"s": "GLD", "n": "금 현물(SPDR Gold Shares)", "w": 100.0}]
     sections["etf"] = [
         {"key": "spy", "label": "S&P500(SPY)", "ticker": "SPY", "holdings": holding_list(cap_weights(us_caps)), "note": "SPY 시세로 그렸고, 구성종목 비중은 S&P500 시가총액 비중입니다."},
         {"key": "qqq", "label": "나스닥100(QQQ)", "ticker": "QQQ", "holdings": etf_holdings("QQQ"), "note": "QQQ 시세와 보유 내역(상위 20개 공시)입니다."},
         {"key": "sox", "label": "필라델피아 반도체(SOX)", "ticker": "^SOX", "holdings": etf_holdings("SOXX"), "note": "필라델피아 반도체 지수 시세로 그렸고, 구성종목은 지수를 따라가는 SOXX 보유 내역(상위 20개 공시)입니다."},
         {"key": "kodex200", "label": "코스피200(KODEX)", "ticker": "069500.KS", "holdings": holding_list(cap_weights(k200)), "note": "KODEX 200(069500) 시세로 그렸고, 구성종목 비중은 코스피200 시가총액 비중입니다."},
-        {"key": "gold", "label": "KRX금현물(ACE)", "ticker": "411060.KS", "holdings": gold, "note": "ACE KRX금현물(411060) 시세입니다. 실물 금(99.99%)만 담는 상품입니다."},
+        {"key": "gold", "label": "금(GLD)", "ticker": "GLD", "holdings": gold, "note": "SPDR Gold Shares(GLD) 시세입니다. 금고에 보관한 실물 금만 담는 세계 최대 금 ETF입니다."},
     ]
 
     cby = {}

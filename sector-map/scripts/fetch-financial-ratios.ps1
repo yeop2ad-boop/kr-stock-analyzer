@@ -1,4 +1,4 @@
-# 영업이익률·ROE·부채비율·52주최저(구간위치) 4개 신규 지표 수집 스크립트 (2026-08-25 추가)
+﻿# 영업이익률·ROE·부채비율·52주최저(구간위치) 4개 신규 지표 수집 스크립트 (2026-08-25 추가)
 # 기존 fetch-growth-metrics.ps1과 동일한 패턴 — data/sp500-sectors.json, data/kr-sectors.json을 읽어
 # 종목별로 (1)차트 meta(52주 고저+현재가) (2)fundamentals-timeseries(직전분기 영업이익/매출/순이익/자기자본/부채총계)를
 # 조회해 4개 필드를 계산 후 덧붙여 다시 저장한다. 종목당 2회 호출 x 약 850종목이라 시간이 꽤 걸림(백그라운드 실행 권장).
@@ -15,6 +15,15 @@ function Get-LatestValue($series) {
   if (-not $series -or $series.Count -lt 1) { return $null }
   $sorted = $series | Sort-Object asOfDate
   return $sorted[-1].reportedValue.raw
+}
+
+# 최근 4개 분기 합계(TTM) — ROE는 1년 순이익 ÷ 자기자본이라야 한다(2026-10-07: 한 분기 순이익만 써서 구글 17.5%·MS 8.1%처럼
+# 실제의 1/4 수준으로 나오던 문제). 분기가 4개 안 되면 있는 분기 평균 × 4로 연환산.
+function Get-TtmSum($series) {
+  if (-not $series -or $series.Count -lt 1) { return $null }
+  $vals = @($series | Where-Object { $_ -and $_.reportedValue } | Sort-Object asOfDate | Select-Object -Last 4 | ForEach-Object { [double]$_.reportedValue.raw })
+  if ($vals.Count -lt 1) { return $null }
+  return ($vals | Measure-Object -Sum).Sum * 4 / $vals.Count
 }
 
 function Update-Ratios($dataPath) {
@@ -41,14 +50,14 @@ function Update-Ratios($dataPath) {
       $blocks = $fund.timeseries.result
       $opInc = Get-LatestValue ($blocks | Where-Object { $_.quarterlyOperatingIncome }).quarterlyOperatingIncome
       $rev = Get-LatestValue ($blocks | Where-Object { $_.quarterlyTotalRevenue }).quarterlyTotalRevenue
-      $ni = Get-LatestValue ($blocks | Where-Object { $_.quarterlyNetIncome }).quarterlyNetIncome
+      $niTtm = Get-TtmSum ($blocks | Where-Object { $_.quarterlyNetIncome }).quarterlyNetIncome
       $eq = Get-LatestValue ($blocks | Where-Object { $_.quarterlyStockholdersEquity }).quarterlyStockholdersEquity
       $liab = Get-LatestValue ($blocks | Where-Object { $_.quarterlyTotalLiabilitiesNetMinorityInterest }).quarterlyTotalLiabilitiesNetMinorityInterest
 
       $opMargin = $null
       if ($null -ne $opInc -and $rev -and $rev -ne 0) { $opMargin = [math]::Round(($opInc / $rev) * 100, 1) }
       $roe = $null
-      if ($null -ne $ni -and $eq -and $eq -ne 0) { $roe = [math]::Round(($ni / $eq) * 100, 1) }
+      if ($null -ne $niTtm -and $eq -and $eq -ne 0) { $roe = [math]::Round(($niTtm / $eq) * 100, 1) }
       $debtRatio = $null
       if ($null -ne $liab -and $eq -and $eq -ne 0) { $debtRatio = [math]::Round(($liab / $eq) * 100, 1) }
 
