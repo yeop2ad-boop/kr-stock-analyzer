@@ -10901,23 +10901,33 @@ function popularSimpleTableHtml(rows, isKr, opts) {
       <tr data-sym="${escapeHtml(r.symbol)}" data-idx="${i}">
         <td>${opts && opts.etf ? etfRankNameCellHtml(r, isKr) : rankNameCellHtml(r.symbol, logoFn(r), rankDisplayName(r.symbol, r.name, isKr))}</td>
         <td>${rankPriceCellHtml(r.symbol, r.price, r.currency || (isKr ? "KRW" : "USD"), r.changePct)}</td>
-        <td class="pop-alt-td"><span class="pop-alt"><span class="pop-alt-a">${winRatePctCellHtml(r.winRateScore, r.winTotal, false, partialMonthsFor(r.symbol))}</span><span class="pop-alt-b" data-spark="${escapeHtml(
-          r.symbol
-        )}"></span></span></td>
+        <td class="pop-spark-td"><span class="pop-spark-cell" data-spark="${escapeHtml(r.symbol)}"></span></td>
       </tr>`
     )
     .join("");
   queueMicrotask(fillPopularSparks);
   return `
     <table class="top30-table rk-table">
-      <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}<th class="pop-alt-th" data-explain="1일 등락 그래프와 10년평균 승률이 번갈아 나옵니다. 그래프는 오늘(장이 끝났으면 직전 거래일) 하루 주가 흐름, 점선은 전일 종가입니다. 10년평균 승률은 최근 10년 동안 오르며 마감한 달의 비율입니다."><span class="pop-alt"><span class="pop-alt-a">10년평균<br>승률</span><span class="pop-alt-b">1일<br>등락</span></span></th></tr></thead>
       <tbody>${body}</tbody>
     </table>`;
 }
-// 번갈아 보이기: 화면 전체가 같은 박자로 바뀌도록 body 클래스 하나를 4.5초마다 뒤집는다(CSS가 0.6초 페이드)
-// CSS 애니메이션은 브라우저가 문서 시작 시각 기준으로 돌려서 나중에 그린 표와 박자가 어긋났다(2026-10-07 확인)
+// 인기종목 안내 문구 3개를 번갈아(2026-10-07 사용자 요청: 화면에 움직이는 느낌) — 표를 다시 그려도 순서가 이어지도록 번호는 전역
+const POPULAR_HINTS = ["모든 항목은 눌러서 자세히 볼 수 있습니다.", "종목을 클릭하면 미래 예측도 가능합니다.", "종목을 눌러 승률 정보를 꼭 확인해 보세요."];
+let popularHintIdx = 0;
+function popularHintHtml() {
+  return `<span class="tap-hint pop-hint" aria-live="polite"><span class="pop-hint-text">* ${escapeHtml(POPULAR_HINTS[popularHintIdx])}</span></span>`;
+}
 if (!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)) {
-  setInterval(() => document.body.classList.toggle("pop-alt-show-b"), 4500);
+  setInterval(() => {
+    popularHintIdx = (popularHintIdx + 1) % POPULAR_HINTS.length;
+    document.querySelectorAll(".pop-hint-text").forEach((n) => {
+      n.classList.add("out");
+      setTimeout(() => {
+        n.textContent = `* ${POPULAR_HINTS[popularHintIdx]}`;
+        n.classList.remove("out");
+      }, 350);
+    });
+  }, 3500);
 }
 // 1일 미니 그래프 — 표가 그려진 뒤 빈 칸만 채움(종목당 1일 5분봉 1회, 2분 캐시)
 const popularSparkCache = new Map();
@@ -10937,7 +10947,7 @@ function popularSparkSvg(chart) {
   return `<svg class="pop-spark ${up ? "up" : "down"}" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true"><line x1="0" x2="${W}" y1="${y(prev).toFixed(1)}" y2="${y(prev).toFixed(1)}" class="pop-spark-base"/><path d="${d}"/></svg>`;
 }
 function fillPopularSparks() {
-  const cells = [...document.querySelectorAll(".pop-alt-b[data-spark]")].filter((n) => !n.dataset.filled);
+  const cells = [...document.querySelectorAll(".pop-spark-cell[data-spark]")].filter((n) => !n.dataset.filled);
   if (!cells.length) return;
   cells.forEach((n) => (n.dataset.filled = "1"));
   const bySym = new Map();
@@ -11065,7 +11075,7 @@ function paintPopularRows(resultsEl, isKr, rows, extraNoteHtml, opts) {
     resultsEl.innerHTML = `
         ${o.prefixHtml || ""}
         <div class="popular-head-row">
-          <span class="tap-hint">* 모든 항목은 눌러서 자세한 설명을 볼 수 있습니다.</span>
+          ${popularHintHtml()}
           <button type="button" class="score-method-detail-btn popular-delta-btn">${popularShowWinRateInfo ? "−승률이란 닫기" : "+승률이란"}</button>
         </div>
         ${popularShowWinRateInfo ? `<div class="chart-detail-wrap chart-detail-expanded popular-winrate-info">${buildWinRateBenchmarkHtml()}</div>` : ""}
