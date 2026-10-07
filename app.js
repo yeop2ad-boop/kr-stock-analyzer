@@ -11037,14 +11037,17 @@ async function loadPopularMoverRows(section) {
   const withWr = (r) => ({ ...r, winRateScore: wrMap[r.symbol] ? wrMap[r.symbol].score : null, winTotal: wrMap[r.symbol] ? wrMap[r.symbol].total : null });
   if (section === "kr") {
     const [res, uni] = await Promise.all([fetch("https://us-stock.yeop2ad.workers.dev/kr-quotes").then((x) => (x.ok ? x.json() : null)), getSReportUniverse(true)]);
-    const names = new Map(((uni && uni.companies) || []).map((c) => [c.symbol, c.name]));
+    const byKr = new Map(((uni && uni.companies) || []).map((c) => [c.symbol, c]));
     return Object.entries((res && res.quotes) || {})
       .filter(([, v]) => Number.isFinite(v))
-      .map(([sym, chg]) => withWr({ symbol: sym, name: names.get(sym) || TICKER_TO_KOREAN_NAME[sym] || sym, price: null, currency: "KRW", changePct: chg }));
+      .map(([sym, chg]) => {
+        const c = byKr.get(sym) || {};
+        return withWr({ symbol: sym, name: c.name || TICKER_TO_KOREAN_NAME[sym] || sym, price: null, currency: "KRW", changePct: chg, sector: c.sectorKo, cap: c.marketCap });
+      });
   }
   if (section === "us") {
     const uni = await getSReportUniverse(false);
-    const sp = new Map(((uni && uni.companies) || []).map((c) => [c.symbol, c.name]));
+    const sp = new Map(((uni && uni.companies) || []).map((c) => [c.symbol, c]));
     const ids = ["ms_technology", "ms_healthcare", "ms_financial_services", "ms_consumer_cyclical", "ms_consumer_defensive", "ms_communication_services", "ms_industrials", "ms_energy", "ms_utilities", "ms_real_estate", "ms_basic_materials"];
     const lists = await mapWithConcurrency(ids, 4, async (id) => {
       const d = await yahooScreener(id, 250);
@@ -11057,18 +11060,73 @@ async function loadPopularMoverRows(section) {
       const sym = q.symbol.replace(".", "-");
       if (!sp.has(sym) || seen.has(sym) || !Number.isFinite(q.regularMarketChangePercent)) return;
       seen.add(sym);
-      out.push(withWr({ symbol: sym, name: sp.get(sym) || sym, price: q.regularMarketPrice, currency: "USD", changePct: q.regularMarketChangePercent }));
+      const c = sp.get(sym) || {};
+      out.push(withWr({ symbol: sym, name: c.name || sym, price: q.regularMarketPrice, currency: "USD", changePct: q.regularMarketChangePercent, sector: c.sectorKo, cap: c.marketCap }));
     });
     return out;
   }
   if (section === "etf") {
     const rows = await getEtfScanRows(etfPopularRegion);
-    return rows.filter((r) => Number.isFinite(r.changePct)).map((r) => withWr({ symbol: r.symbol, name: r.name, price: r.price, currency: r.currency, changePct: r.changePct }));
+    return rows
+      .filter((r) => Number.isFinite(r.changePct))
+      .map((r) => withWr({ symbol: r.symbol, name: r.name, price: r.price, currency: r.currency, changePct: r.changePct, sector: etfSectorOf(r.symbol, r.name) }));
   }
   const coins = await getCryptoTop100();
   return coins
     .filter((q) => Number.isFinite(q.regularMarketChangePercent))
-    .map((q) => withWr({ symbol: q.symbol, name: cryptoKoName(q.symbol, q.shortName || q.symbol), price: q.regularMarketPrice, currency: "USD", changePct: q.regularMarketChangePercent }));
+    .map((q) =>
+      withWr({
+        symbol: q.symbol,
+        name: cryptoKoName(q.symbol, q.shortName || q.symbol),
+        price: q.regularMarketPrice,
+        currency: "USD",
+        changePct: q.regularMarketChangePercent,
+        sector: cryptoSectorOf(cryptoBaseTicker(q.symbol)),
+        cap: q.marketCap,
+      })
+    );
+}
+// ---------- 인기종목 맨 위 시장 요약 한 줄(2026-10-07 사용자 선택 A안 · 토스증권식 칩 가로 스크롤) ----------
+// 지수 칩(굵게) | 섹터 칩(오늘 등락률, 시가총액 가중 평균 — ETF는 단순 평균) 높은 순
+const MARKET_BAR_INDEXES = {
+  kr: [["^KS11", "코스피"], ["^KQ11", "코스닥"]],
+  us: [["^GSPC", "S&P500"], ["^IXIC", "나스닥"], ["^DJI", "다우"]],
+  etf: [["^GSPC", "S&P500"], ["^IXIC", "나스닥"], ["^KS11", "코스피"], ["^KQ11", "코스닥"]],
+  crypto: [["BTC-USD", "비트코인"], ["ETH-USD", "이더리움"]],
+};
+function marketBarChipHtml(label, pct, strong) {
+  const v = Number.isFinite(pct) ? Math.round(pct * 100) / 100 : null;
+  const cls = v > 0 ? "up" : v < 0 ? "down" : "";
+  return `<span class="mb-chip${strong ? " strong" : ""}"><span>${escapeHtml(label)}</span><b class="${cls}">${v === null ? "-" : `${v > 0 ? "+" : ""}${v.toFixed(2)}%`}</b></span>`;
+}
+async function renderMarketBar(section, rows) {
+  const bar = el("popularMarketBar");
+  if (!bar) return;
+  const idx = await mapWithConcurrency(MARKET_BAR_INDEXES[section] || [], 4, async ([sym, label]) => {
+    const chart = await yahooChart(sym, "5d").catch(() => null);
+    const chg = getDailyChangePercent(chart);
+    const snap = yahooSnapshot(chart);
+    return { label, pct: Number.isFinite(chg) ? chg : snap ? snap.changePct : null };
+  });
+  const agg = new Map();
+  (rows || []).forEach((r) => {
+    if (!r.sector || r.sector === "기타" || !Number.isFinite(r.changePct)) return;
+    const w = section === "etf" ? 1 : Number(r.cap) > 0 ? Number(r.cap) : 0;
+    if (!w) return;
+    const a = agg.get(r.sector) || { s: 0, w: 0, n: 0 };
+    a.s += r.changePct * w;
+    a.w += w;
+    a.n++;
+    agg.set(r.sector, a);
+  });
+  const sectors = [...agg.entries()]
+    .filter(([, a]) => a.n >= 2 && a.w > 0)
+    .map(([k, a]) => ({ label: k, pct: a.s / a.w }))
+    .sort((a, b) => b.pct - a.pct);
+  bar.innerHTML = `<div class="mb-row">${idx
+    .filter(Boolean)
+    .map((x) => marketBarChipHtml(x.label, x.pct, true))
+    .join("")}${sectors.length ? `<span class="mb-sep" aria-hidden="true"></span>` : ""}${sectors.map((x) => marketBarChipHtml(x.label, x.pct, false)).join("")}</div>`;
 }
 async function runPopularMovers() {
   const box = el("popularMovers");
@@ -11079,11 +11137,14 @@ async function runPopularMovers() {
   popularMoversShown.up = 5;
   popularMoversShown.down = 5;
   box.innerHTML = `<p class="muted top30-status" style="display:block;">급등주·급락주를 불러오는 중...</p>`;
+  const bar = el("popularMarketBar");
+  if (bar) bar.innerHTML = `<div class="mb-row"><span class="mb-chip"><span>시장 요약 불러오는 중…</span></span></div>`;
   const asOfSym = section === "crypto" ? "BTC-USD" : isKr ? "^KS11" : "^GSPC";
   let rows = [];
   try {
     const [r, asOf] = await Promise.all([loadPopularMoverRows(section), popularAsOf(asOfSym)]);
     rows = r;
+    if (seq === popularMoversSeq) renderMarketBar(section, rows).catch(() => {});
     popularAsOfHtmlCache = asOf;
     document.querySelectorAll("[data-pop-asof]").forEach((n) => (n.innerHTML = asOf));
   } catch {

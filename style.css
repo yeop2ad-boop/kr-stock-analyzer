@@ -3839,3 +3839,14 @@ table.top30-table.atg-table th:nth-child(2) { width: 84px; }
 .pop-asof { font-size: 12px; color: var(--muted); }
 .pop-asof small { font-size: 11px; }
 .pop-more { display: block; width: 100%; margin-top: 6px; }
+
+/* 인기종목 맨 위 시장 요약 한 줄(2026-10-07 A안) */
+.market-bar { margin: 2px -2px 10px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.market-bar::-webkit-scrollbar { display: none; }
+.mb-row { display: flex; align-items: center; gap: 6px; padding: 2px; white-space: nowrap; }
+.mb-chip { flex: none; display: inline-flex; align-items: baseline; gap: 5px; padding: 6px 11px; border-radius: 999px; background: var(--subtle-fill); font-size: 13px; color: var(--text); }
+.mb-chip.strong { font-weight: 700; }
+.mb-chip b { font-weight: 700; }
+.mb-chip b.up { color: var(--pos); }
+.mb-chip b.down { color: var(--neg); }
+.mb-sep { flex: none; width: 1px; height: 18px; background: var(--border); margin: 0 2px; }
