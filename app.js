@@ -11094,9 +11094,13 @@ if (!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)")
           return;
         }
       }
+      // 문구 수가 다른 묶음(2개·3개)이 전역 번호 하나를 나눠 쓰면 1→2→1→1처럼 겹쳐 나와서(2026-10-08 사용자 지적)
+      // 인기종목(3개, 다시 그려도 이어지게 전역 번호) 말고는 문구마다 자기 번호로 1→2→1→2
+      const idx = set === POPULAR_HINTS ? popularHintIdx : (Number(n.dataset.hintIdx || 0) + 1) % set.length;
+      n.dataset.hintIdx = String(idx);
       n.classList.add("out");
       setTimeout(() => {
-        n.textContent = `* ${set[popularHintIdx % set.length]}`;
+        n.textContent = `* ${set[idx]}`;
         n.classList.remove("out");
       }, 350);
     });
