@@ -3904,3 +3904,32 @@ table.pop-table td:nth-child(2) { padding-right: 2px; }
 
 /* 상단 4탭(인기종목·투자분석·간편검색·관심종목)을 왼쪽 정렬 대신 폭 전체에 균등 배치(2026-10-08) */
 #fhTabs { flex: 1 1 auto; justify-content: space-evenly; gap: 8px; }
+
+/* 관심종목 심플 구조(2026-10-08): 위 한 줄(그룹 칩 + 편집), 정렬은 편집 안, 종목 추가는 목록 맨 아래 줄 */
+.wl-group-row .wl-group-tabs { flex: 1 1 auto; min-width: 0; }
+.wl-group-row .wl-edit-btn { flex: none; margin-left: auto; font-weight: 700; }
+.wl-edit-sort { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 2px 0 8px; font-size: 12.5px; color: var(--muted); }
+.wl-add-row { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; margin: 6px 0 4px; padding: 14px 0; border: none; border-radius: 12px; background: var(--subtle-fill); color: var(--muted); font-size: 14.5px; font-weight: 700; cursor: pointer; }
+.wl-add-row span { font-size: 16px; color: var(--accent); }
+.wl-add-row:active { opacity: 0.8; }
+body.on-watchlist .source-note { display: none; }
+
+/* 관심종목 아래 실적 캘린더 · 뉴스 모아보기(2026-10-08) */
+.wl-ex { margin-top: 26px; }
+.wl-ex-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
+.wl-ex-head b { font-size: 19px; font-weight: 800; letter-spacing: -0.4px; color: var(--text); }
+.wl-ex-more { border: none; background: none; padding: 4px 2px; font-size: 13px; font-weight: 700; color: var(--muted); cursor: pointer; }
+.wl-ex-empty { padding: 10px 0; font-size: 13.5px; }
+.wl-ex-earn-row { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--rk-line, var(--border)); cursor: pointer; text-decoration: none; }
+.wl-ex-earn-row:hover { text-decoration: none; }
+.wl-ex-date { flex: none; width: 42px; display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
+.wl-ex-date b { font-size: 15px; font-weight: 800; color: var(--text); }
+.wl-ex-date small { font-size: 11.5px; color: var(--muted); }
+.wl-ex-logo .ticker-logo-wrap { width: 30px; height: 30px; margin: 0; }
+.wl-ex-earn-body { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.3; }
+.wl-ex-earn-body b { font-size: 15.5px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wl-ex-earn-body small { font-size: 12.5px; color: var(--muted); }
+.wl-ex-dday { flex: none; padding: 3px 9px; border-radius: 999px; background: var(--subtle-fill); font-size: 12.5px; font-weight: 700; color: var(--accent); }
+.wl-ex-news-row { display: block; padding: 12px 0; border-bottom: 1px solid var(--rk-line, var(--border)); text-decoration: none; }
+.wl-ex-news-title { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 15px; font-weight: 600; line-height: 1.45; color: var(--text); }
+.wl-ex-news-meta { display: block; margin-top: 4px; font-size: 12px; color: var(--muted); }

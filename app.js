@@ -2552,6 +2552,7 @@ function switchTab(index) {
   if (fhStar) fhStar.style.display = switchKey === "watchlist" ? "none" : "";
   // 관심종목 화면이면 상단 제목을 "관심종목"+별 아이콘으로, 벗어나면 섹션 표시로 복귀(2026-09-01)
   window.__onWatchlistView = switchKey === "watchlist";
+  document.body.classList.toggle("on-watchlist", switchKey === "watchlist"); // 관심종목 화면에선 아래 안내 박스 숨김(2026-10-08)
   syncSectionHeader();
   // topranking은 기업가치/시장동향 중 어느 쪽인지 activateRankingGroup/goToRankingEntry가 정함
   activeTabIndex = index;
@@ -4589,6 +4590,135 @@ function wlBuyDetailFormHtml(sym, currency) {
     </div>`;
 }
 
+// ---------- 관심종목 아래 실적 캘린더 · 뉴스 모아보기(2026-10-08 사용자 요청) ----------
+// 지금 보이는 관심종목(투자처·그룹 기준)으로 다음 실적발표(추정) 날짜순 5개, 최신 뉴스 5개. "전체 보기"는 캘린더 창·더 많은 뉴스.
+let wlExtrasSeq = 0;
+const wlExtrasCache = new Map(); // "earn:SYM" / "news:SYM" → { at, v }
+async function wlExtrasCached(key, fn) {
+  const hit = wlExtrasCache.get(key);
+  if (hit && Date.now() - hit.at < 10 * 60 * 1000) return hit.v;
+  const v = await fn();
+  wlExtrasCache.set(key, { at: Date.now(), v });
+  return v;
+}
+function wlKoName(sym) {
+  if (/-USD$/.test(sym)) return cryptoKoName(sym, sym.replace(/-USD$/, ""));
+  return TICKER_TO_KOREAN_NAME[sym] || sym;
+}
+async function wlNewsOf(sym) {
+  // 국내 종목·코인은 야후 뉴스가 엉뚱한 기사를 섞어서 한글 이름으로 구글/Bing 뉴스(종목 상세와 같은 방식)
+  if (isKrTicker(sym) || /-USD$/.test(sym)) {
+    const items = await fetchKrCompanyNews(wlKoName(sym)).catch(() => []);
+    return items.slice(0, 6).map((n) => ({ ...n, symbol: sym }));
+  }
+  const data = await yahooSearch(sym).catch(() => null);
+  return ((data && data.news) || []).slice(0, 6).map((n) => ({ ...n, symbol: sym }));
+}
+function wlExtraSectionHtml(key, title, bodyHtml, moreLabel) {
+  return `<section class="wl-ex" data-wl-ex="${key}">
+      <div class="wl-ex-head"><b>${title}</b>${moreLabel ? `<button type="button" class="wl-ex-more" data-wl-ex-more="${key}">${moreLabel} ›</button>` : ""}</div>
+      ${bodyHtml}
+    </section>`;
+}
+async function renderWlExtras(symbols) {
+  const box = el("wlExtras");
+  if (!box) return;
+  const seq = ++wlExtrasSeq;
+  const syms = [...new Set(symbols)].slice(0, 20);
+  if (!syms.length) {
+    box.innerHTML = "";
+    return;
+  }
+  const loading = `<p class="muted wl-ex-empty">불러오는 중...</p>`;
+  box.innerHTML = wlExtraSectionHtml("earn", "실적 캘린더", loading, "") + wlExtraSectionHtml("news", "뉴스 모아보기", loading, "");
+  const bind = () => {
+    box.querySelectorAll("[data-wl-ex-more]").forEach((b) =>
+      b.addEventListener("click", () => {
+        if (b.dataset.wlExMore === "earn") openCalendarPanel();
+        else {
+          wlExtrasNewsShown = wlExtrasNewsShown > 5 ? 5 : 20;
+          paintNews();
+        }
+      })
+    );
+  };
+  let earnHtml = loading;
+  let newsHtml = loading;
+  let newsAll = [];
+  let wlExtrasNewsShown = 5;
+  const paint = () => {
+    if (seq !== wlExtrasSeq) return;
+    box.innerHTML =
+      wlExtraSectionHtml("earn", "실적 캘린더", earnHtml, "캘린더") +
+      wlExtraSectionHtml("news", "뉴스 모아보기", newsHtml, newsAll.length > 5 ? (wlExtrasNewsShown > 5 ? "접기" : "더보기") : "");
+    bind();
+  };
+  const paintNews = () => {
+    const list = newsAll.slice(0, wlExtrasNewsShown);
+    newsHtml = list.length
+      ? `<div class="wl-ex-news">${list
+          .map((n) => {
+            const when = n.providerPublishTime
+              ? new Date(n.providerPublishTime * 1000).toLocaleString("ko-KR", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
+              : "";
+            return `<a class="wl-ex-news-row" href="${escapeHtml(n.link || "#")}" target="_blank" rel="noopener">
+                <span class="wl-ex-news-title">${escapeHtml(n._ko || n.title || "")}</span>
+                <span class="wl-ex-news-meta">${escapeHtml(wlKoName(n.symbol))}${n.publisher ? ` · ${escapeHtml(n.publisher)}` : ""}${when ? ` · ${escapeHtml(when)}` : ""}</span>
+              </a>`;
+          })
+          .join("")}</div>`
+      : `<p class="muted wl-ex-empty">최근 뉴스를 찾지 못했습니다.</p>`;
+    paint();
+  };
+
+  // 실적 캘린더 — 코인은 실적이 없어 제외
+  const earnSyms = syms.filter((x) => !/-USD$/.test(x));
+  const earnP = mapWithConcurrency(earnSyms, 5, (x) => wlExtrasCached(`earn:${x}`, () => estimateNextEarningsDate(x))).then((list) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const rows = list
+      .filter((e) => e && e.date >= today)
+      .sort((a, b) => a.date - b.date)
+      .slice(0, 5);
+    earnHtml = !earnSyms.length
+      ? `<p class="muted wl-ex-empty">코인은 실적 발표가 없습니다.</p>`
+      : rows.length
+      ? `<div class="wl-ex-earn">${rows
+          .map((e) => {
+            const d = e.date;
+            const dday = Math.round((d - today) / 86400000);
+            const dow = ["일", "월", "화", "수", "목", "금", "토"][d.getDay()];
+            return `<div class="wl-ex-earn-row ticker-link" data-ticker="${escapeHtml(e.symbol)}">
+                <span class="wl-ex-date"><b>${d.getMonth() + 1}/${d.getDate()}</b><small>${dow}</small></span>
+                <span class="wl-ex-logo">${tickerLogoHtml(e.symbol)}</span>
+                <span class="wl-ex-earn-body"><b>${escapeHtml(wlKoName(e.symbol))}</b><small>${escapeHtml(e.quarterLabel)} 실적발표(추정)</small></span>
+                <span class="wl-ex-dday">${dday === 0 ? "오늘" : `D-${dday}`}</span>
+              </div>`;
+          })
+          .join("")}</div>`
+      : `<p class="muted wl-ex-empty">예정된 실적 발표를 찾지 못했습니다.</p>`;
+    paint();
+  });
+
+  // 뉴스 모아보기 — 종목별 최신 기사를 모아 최신순, 같은 기사(링크)는 한 번만. 영문 제목은 자동 번역
+  const newsP = mapWithConcurrency(syms, 4, (x) => wlExtrasCached(`news:${x}`, () => wlNewsOf(x))).then(async (lists) => {
+    const seen = new Set();
+    newsAll = lists
+      .flat()
+      .filter(Boolean)
+      .sort((a, b) => (b.providerPublishTime || 0) - (a.providerPublishTime || 0))
+      .filter((n) => n.link && !seen.has(n.link) && seen.add(n.link))
+      .slice(0, 20);
+    await Promise.all(
+      newsAll.map(async (n) => {
+        if (!n.isKorean && !n._ko) n._ko = await translateToKorean(n.title || "").catch(() => n.title);
+      })
+    );
+    paintNews();
+  });
+  await Promise.all([earnP, newsP]);
+}
+
 async function renderWatchlistList() {
   const statusEl = el("watchlistStatus");
   const listEl = el("watchlistList");
@@ -4625,6 +4755,7 @@ async function renderWatchlistList() {
     (w) => sectionOfSymbol(w.symbol) === wlSection
   );
 
+  renderWlExtras(filtered.map((w) => w.symbol)).catch(() => {});
   if (filtered.length === 0) {
     statusEl.style.display = "none";
     listEl.innerHTML = `<p class="muted" style="padding:12px 0;">${WL_SECTION_LABEL[wlSection]} 관심종목이 없습니다. 위의 + 종목 추가 버튼으로 추가해 보세요.</p>`;
