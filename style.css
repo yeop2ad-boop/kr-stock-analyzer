@@ -3791,3 +3791,40 @@ table.top30-table.atg-table th:nth-child(2) { width: 84px; }
 .ia-alloc-row .ia-mini-btn.on { background: var(--navy); border-color: var(--navy); color: #fff; }
 .ia-item-qty { width: 72px; }
 .ia-item-calc { flex: none; min-width: 48px; text-align: right; font-size: 12.5px; font-weight: 700; color: var(--accent); }
+
+/* 투자분석 +편입/퇴출 · +섹터변동(2026-10-07) */
+.ia-detail-head { display: flex; align-items: flex-start; gap: 8px; }
+.ia-detail-head .ia-block-note { flex: 1; margin-top: 2px; }
+.ia-hist-btn { flex: none; padding: 5px 10px; border: 1px solid var(--accent); border-radius: 999px; background: var(--card-bg); color: var(--accent); font-size: 12.5px; font-weight: 800; cursor: pointer; }
+.ia-hist-btn.on { background: var(--accent); color: #fff; }
+.ia-hist { margin: 6px 0 10px; padding: 10px; border-radius: 12px; background: var(--subtle-fill); }
+.ia-hist-empty { margin: 4px 0 0; font-size: 12px; }
+.ia-chg-row + .ia-chg-row { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--rk-line); }
+.ia-chg-head { display: flex; align-items: center; gap: 8px; }
+.ia-chg-head b { flex: none; width: 34px; font-size: 13.5px; color: var(--text); }
+.ia-chg-bars { flex: 1; display: flex; height: 10px; }
+.ia-chg-side { flex: 1; display: flex; }
+.ia-chg-side.out { justify-content: flex-end; border-right: 1.5px solid var(--muted); }
+.ia-chg-side i { display: block; height: 100%; border-radius: 3px; }
+.ia-chg-side.out i { background: var(--neg); }
+.ia-chg-side.in i { background: #2f9e44; }
+.ia-chg-count { flex: none; font-size: 11.5px; color: var(--muted); }
+.ia-chg-count .in { color: #2f9e44; font-weight: 700; }
+.ia-chg-count .out { color: var(--neg); font-weight: 700; }
+.ia-chg-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.ia-chg-chip { padding: 2px 7px; border-radius: 6px; font-size: 11.5px; font-weight: 600; }
+.ia-chg-chip.in { background: color-mix(in srgb, #2f9e44 14%, transparent); color: #2f9e44; }
+.ia-chg-chip.in::before { content: "+ "; }
+.ia-chg-chip.out { background: color-mix(in srgb, var(--neg) 12%, transparent); color: var(--neg); }
+.ia-chg-chip.out::before { content: "− "; }
+.ia-sec-row { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+.ia-sec-month { flex: none; width: 34px; font-size: 13px; }
+.ia-sec-name { flex: none; width: 92px; font-size: 13px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ia-sec-bar { flex: 1; height: 10px; }
+.ia-sec-bar i { display: block; height: 100%; border-radius: 3px; }
+.ia-sec-bar i.up { background: var(--pos); }
+.ia-sec-bar i.down { background: var(--neg); }
+.ia-sec-ret { flex: none; min-width: 52px; text-align: right; font-size: 12.5px; font-weight: 700; }
+.ia-sec-ret .wl-up { color: var(--pos); }
+.ia-sec-ret .wl-down { color: var(--neg); }
+.ia-cash-row td { background: var(--subtle-fill); }

@@ -14,10 +14,10 @@ import json
 import os
 import sys
 import time
-import urllib.parse
-import urllib.request
-from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import strategy_backtest as sb  # noqa: E402  (매달 리밸런싱 백테스트)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "data", "invest-analysis.json")
@@ -38,31 +38,6 @@ def load_crypto_snapshot():
     j = t.find("{", i)
     obj, _ = json.JSONDecoder().raw_decode(t[j:])
     return obj.get("companies", [])
-
-
-def http_json(url, tries=3):
-    for k in range(tries):
-        try:
-            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
-            with urllib.request.urlopen(req, timeout=25) as r:
-                return json.loads(r.read().decode("utf-8"))
-        except Exception:
-            time.sleep(1.5 * (k + 1))
-    return None
-
-
-def chart_points(symbol, rng, interval):
-    url = f"https://query1.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(symbol)}?range={rng}&interval={interval}"
-    d = http_json(url)
-    try:
-        res = d["chart"]["result"][0]
-        ts = res.get("timestamp") or []
-        cl = res["indicators"]["quote"][0].get("close") or []
-    except Exception:
-        return []
-    pts = [(t, c) for t, c in zip(ts, cl) if c is not None and c > 0]
-    pts.sort()
-    return pts
 
 
 def bucket(t, kind):
@@ -140,68 +115,95 @@ def holding_list(weighted, n=TOP_N, total_weight=None):
     return [{"s": r["symbol"], "n": r.get("name") or r["symbol"], "w": round(w, 2)} for r, w in weighted]
 
 
-def pick_weighted(rows):
-    """고른 종목들끼리 시가총액 비중(합 100)"""
-    return holding_list(cap_weights(rows))
-
-
-def sector_rotation(companies, scores):
-    # 직전 완성월(m12의 끝에서 두 번째) 섹터별 시총 가중 수익률 1위 섹터
-    agg = {}
-    for c in companies:
-        e = scores.get(c["symbol"]) or {}
-        m12 = e.get("m12") or []
-        if len(m12) < 2 or not c.get("marketCap") or not c.get("sector"):
-            continue
-        a = agg.setdefault(c["sector"], [0.0, 0.0, c.get("sectorKo") or c["sector"]])
-        a[0] += m12[-2] * c["marketCap"]
-        a[1] += c["marketCap"]
-    # 종목이 몇 개 안 되는 섹터(한국의 유틸리티 등)는 한 종목짜리 바구니가 되므로 5종목 이상인 섹터만 후보
-    counts = {}
-    for c in companies:
-        if c.get("sector"):
-            counts[c["sector"]] = counts.get(c["sector"], 0) + 1
-    agg = {k: v for k, v in agg.items() if counts.get(k, 0) >= 5 and v[1] > 0}
-    if not agg:
-        return None, None, []
-    best = max(agg.items(), key=lambda kv: kv[1][0] / kv[1][1])
-    sec, (s, w, ko) = best
-    members = sorted([c for c in companies if c.get("sector") == sec and c.get("marketCap")], key=lambda c: -c["marketCap"])[:TOP_N]
-    return ko, round(s / w, 2), members
-
-
-# 같은 회사의 두 번째 상장 주식(2026-10-07 점검): GOOG(알파벳 C)=GOOGL(A), FOX=FOXA, NWS=NWSA.
-# 야후 시가총액이 둘 다 "회사 전체"라 시총 비중이 두 배로 잡혔다(S&P500 안 알파벳 11%, 10년 승률 매매 35%) — 한쪽만 쓴다
 SECONDARY_SHARE_CLASS = {"GOOG", "FOX", "NWS"}
 
+# 코인 용도별 분류(지도 sector-map/app.js의 CRYPTO_PURPOSE와 같은 표) — 코인 섹터 순환 매매용
+CRYPTO_PURPOSE = {}
+for _cat, _bases in [
+    ("가치저장", "BTC WBTC CBBTC BTCB LBTC BTCT XAUT PAXG GRAM"),
+    ("결제·송금", "XRP XLM LTC BCH DASH BSV XEC"),
+    ("스테이블코인", "USDT USDC USDS DAI USDE USD USD1 USDT0 USDG PYUSD RLUSD USDY USDD BFUSD SUSDE USDGO USDF USDCE AETHUSDT SYRUPUSDC TUSD FDUSD EURC U"),
+    ("플랫폼·스마트컨트랙트", "ETH SOL ADA TRX AVAX DOT NEAR SUI TON ICP ETC HBAR ALGO ATOM MNT POL KAS XTZ EGLD SEI APT ARB OP PI A BERA CC CFX ELF GAS IOTA LINEA MEGA MINA MON NEO QTUM SOON STX TIA VET XPL ZETA ZIL ZK PLUME PROS"),
+    ("금융서비스", "BNB LEO CRO OKB BGB GT KCS HTX UNI AAVE SKY MKR ONDO ENA MORPHO JLP JST HYPE ASTER WLFI LDO INJ COMP CRV SNX CAKE RAY JUP BTW 1INCH AERO BABY CFG CHIP COW DEEP DRV EDGE ETHFI FF FLUID JTO KMNO LIT ORCA PENDLE RAIN SPK SUN SYRUP XCN ZRX"),
+    ("스테이킹·랩드", "STETH WSTETH WBETH WEETH RSETH RETH LSETH JITOSOL BNSOL WETH AETHWETH WBNB WTRX KHYPE"),
+    ("AI·데이터", "LINK TAO VVV WLD FET GRT RENDER RNDR FIL AR THETA TFUEL AKT ATH AWE BTT DATA GEOD GLM IO KAITO KITE LPT OPEN PYTH SENT TRAC VIRTUAL WAL"),
+    ("프라이버시", "XMR ZEC ZAMA"),
+    ("밈·커뮤니티", "DOGE SHIB PEPE PUMP BONK WIF FLOKI TRUMP FARTCOIN BRETT M PENGU SPX"),
+    ("게임·메타버스", "SAND MANA AXS IMX GALA ENJ RON BEAM SUPER NXPC"),
+    ("NFT", "APE BLUR"),
+]:
+    for _b in _bases.split():
+        CRYPTO_PURPOSE[_b] = _cat
 
-def stock_section(companies, scores, idx_defs):
-    """idx_defs: [(key, label, ticker, members)] — 지수형 2개. 나머지 4개는 바구니형."""
-    comps = [c for c in companies if c.get("marketCap") and c["symbol"] not in SECONDARY_SHARE_CLASS]
-    strategies = []
-    for key, label, ticker, members, note in idx_defs:
-        strategies.append({"key": key, "label": label, "ticker": ticker, "holdings": holding_list(cap_weights(members)), "note": note})
-    with52 = [c for c in comps if c.get("week52RangePct") is not None]
-    hi = sorted(with52, key=lambda c: (-c["week52RangePct"], -c["marketCap"]))[:TOP_N]
-    lo = sorted(with52, key=lambda c: (c["week52RangePct"], -c["marketCap"]))[:TOP_N]
-    strategies.append({"key": "high52", "label": "52주 최고가 매매", "holdings": pick_weighted(hi),
-                       "note": "지금 52주 가격 구간에서 가장 위쪽(최고가 근처)에 있는 30종목을 시가총액 비중으로 담았습니다."})
-    strategies.append({"key": "low52", "label": "52주 최저가 매매", "holdings": pick_weighted(lo),
-                       "note": "지금 52주 가격 구간에서 가장 아래쪽(최저가 근처)에 있는 30종목을 시가총액 비중으로 담았습니다."})
-    sec_ko, sec_ret, members = sector_rotation(comps, scores)
-    strategies.append({"key": "sector", "label": "섹터 순환 매매", "holdings": pick_weighted(members),
-                       "note": f"직전 한 달 수익률 1위 섹터({sec_ko}, {sec_ret:+.1f}%)의 시가총액 상위 30종목입니다." if sec_ko else "직전 한 달 수익률 1위 섹터"})
-    wr = [c for c in comps if (scores.get(c["symbol"]) or {}).get("total", 0) >= 60 and (scores.get(c["symbol"]) or {}).get("score") is not None]
-    wr = sorted(wr, key=lambda c: (-scores[c["symbol"]]["score"], -c["marketCap"]))[:TOP_N]
-    strategies.append({"key": "winrate", "label": "10년 승률 매매", "holdings": pick_weighted(wr),
-                       "note": "10년평균 승률(오르며 마감한 달의 비율, 5년 이상 상장 종목) 상위 30종목을 시가총액 비중으로 담았습니다."})
-    return strategies
+
+def crypto_category(symbol):
+    import re
+    base = re.sub(r"\d+$", "", symbol.upper().replace("-USD", ""))
+    if base in CRYPTO_PURPOSE:
+        return CRYPTO_PURPOSE[base]
+    return "스테이블코인" if "USD" in base else "기타"
+
+
+RULE_NOTES = {
+    "winrate": "매달 1일, 상장 {yrs}년 이상 종목 중 직전 최대 120개월 월간 승률 TOP20을 5%씩 보유합니다.",
+    "high52": "매달 1일, 52주 가격 구간 상단 10% 안(신고가 근처) 종목 중 시가총액 TOP20을 5%씩 보유합니다. 20개가 안 되면 나머지는 현금입니다.",
+    "low52": "매달 1일, 52주 가격 구간 하단 10% 안(신저가 근처) 종목 중 시가총액 TOP20을 5%씩 보유합니다. 20개가 안 되면 나머지는 현금입니다.",
+    "sector": "매달 1일, 지난달 한 달 수익률 1위 섹터의 시가총액 TOP20을 5%씩 보유합니다(20개가 안 되면 종목 수로 균등).",
+}
+LABELS = {"winrate": "10년 승률 매매", "high52": "52주 신고가 매매", "low52": "52주 신저가 매매", "sector": "섹터 순환 매매"}
+
+
+def monthly_strategies(market, universe, *, min_months, sector_min, yrs):
+    """매달 리밸런싱 백테스트로 4개 투자방법 → {key: strategy dict}"""
+    syms = [u["symbol"] for u in universe]
+    names = {u["symbol"]: u["name"] for u in universe}
+    print(f"[{market}] 백테스트용 주봉(전체 기간) {len(syms)}종목", flush=True)
+    weekly = sb.fetch_all(syms, "max", "1wk")
+    picks, sector_hist = sb.backtest(universe, weekly, min_months=min_months, sector_min=sector_min)
+    cur = max(picks["winrate"])
+    recent = set()
+    for p in picks.values():
+        for M, hold in p.items():
+            if M >= cur - 13:
+                recent.update(s for s, _ in hold)
+    print(f"[{market}] 최근 1년 보유 종목 일봉 {len(recent)}종목", flush=True)
+    daily = sb.fetch_all(sorted(recent), "2y", "1d")
+    one_year_ago = time.time() - 365 * 86400
+    out = {}
+    for key in ("winrate", "high52", "sector", "low52"):
+        p = picks[key]
+        s10 = sb.index_series(p, weekly, "w")
+        s1 = [x for x in sb.index_series({M: v for M, v in p.items() if M >= cur - 13}, daily, "d") if x[0] >= one_year_ago]
+        if s1:
+            b = s1[0][1]
+            s1 = [(t, round(v / b * 100, 3)) for t, v in s1]
+        hold = p.get(cur) or []
+        holdings = [{"s": s, "n": names.get(s, s), "w": round(w * 100, 2)} for s, w in sorted(hold, key=lambda x: names.get(x[0], x[0]))]
+        cash = round(100 - sum(h["w"] for h in holdings), 2)
+        if cash >= 0.5:
+            holdings.append({"s": "", "n": "현금", "w": cash})
+        st = {
+            "key": key,
+            "label": LABELS[key],
+            "holdings": holdings,
+            "note": RULE_NOTES[key].format(yrs=yrs),
+            "series": {"1y": {"t": [t for t, _ in s1], "v": [v for _, v in s1]}, "10y": {"t": [t for t, _ in s10], "v": [v for _, v in s10]}},
+            "rebalance": sb.mlabel(cur),
+        }
+        if key == "sector":
+            st["sectorHistory"] = [{"m": sb.mlabel(M - 1), "sector": sector_hist[M][0], "ret": round(sector_hist[M][1], 2)} for M in sorted(sector_hist)[-6:][::-1]]
+            if cur in sector_hist:
+                st["note"] += f" 이번 달은 {sector_hist[cur][0]}({sector_hist[cur][1]:+.1f}%)."
+        else:
+            st["changes"] = sb.changes(p, names, 6)
+        out[key] = st
+        print(f"[{market}] {st['label']}: 이번 달 {len(hold)}종목 · 1년 {s1 and round(s1[-1][1] - 100, 1)}% · 10년 {s10 and round(s10[-1][1] - 100, 1)}%", flush=True)
+    return out
 
 
 def main():
     kr = load("sector-map/data/kr-sectors.json")["companies"]
     us = load("sector-map/data/sp500-sectors.json")["companies"]
-    wr = load("data/winrate-scores-us.json")
     uni = load("data/kr-universe-kospi200-kosdaq150.json")
     etf = load("data/etf-info.json")
     crypto = load_crypto_snapshot()
@@ -214,25 +216,37 @@ def main():
     def etf_holdings(sym):
         hs = (etf.get("us", {}).get(sym) or {}).get("holdings") or []
         rows = [{"s": h["s"], "n": h.get("n") or h["s"], "w": round(h["w"], 2)} for h in hs if h.get("s") and h.get("w")]
-        # 앱이 한글명을 붙일 수 있게 S&P500 짧은 이름이 있으면 그걸 씀
         us_by = {c["symbol"]: c for c in us}
         for r in rows:
             if r["s"] in us_by:
                 r["n"] = us_by[r["s"]].get("name") or r["n"]
         return rows[:TOP_N]
 
-    sections = {}
-    sections["kr"] = stock_section(kr, wr.get("scoresKr") or {}, [
-        ("kospi200", "코스피200", "069500.KS", k200, "코스피200 지수를 따라가는 KODEX 200(069500) 시세로 그렸고(야후에 지수 시세가 없음), 구성종목 비중은 시가총액 비중입니다."),
-        ("kosdaq150", "코스닥150", "229200.KS", kq150, "코스닥150 지수를 따라가는 KODEX 코스닥150(229200) 시세로 그렸고, 구성종목 비중은 시가총액 비중입니다."),
-    ])
-    nasdaq = {"key": "nasdaq100", "label": "나스닥100", "ticker": "^NDX", "holdings": etf_holdings("QQQ"), "note": "나스닥100 지수 시세로 그렸고, 구성종목·비중은 QQQ 보유 내역(상위 20개 공시)입니다."}
-    us_secs = stock_section(us, wr.get("scores") or {}, [
-        ("sp500", "S&P500", "^GSPC", us_caps, "S&P500 지수 시세로 그렸고, 구성종목 비중은 시가총액 비중입니다."),
-    ])
-    sections["us"] = [us_secs[0], nasdaq] + us_secs[1:]
+    def stock_universe(rows):
+        return [{"symbol": c["symbol"], "name": c.get("name") or c["symbol"], "sector": c.get("sectorKo") or c.get("sector"), "cap": c.get("marketCap")} for c in rows if c.get("marketCap")]
 
-    # 2026-10-07 사용자 요청: KRX 금현물(ACE, 2021년 상장)은 10년 그래프가 안 돼 GLD(SPDR Gold, 2004년 상장)로 교체
+    sections = {}
+    # 한국(2026-10-07 사용자 지정 순서): 10년 승률 · 52주 신고가 · 코스피200 · 섹터 순환 · 코스닥150 · 52주 신저가
+    krm = monthly_strategies("kr", stock_universe([c for c in kr if c.get("marketCap")]), min_months=60, sector_min=5, yrs=5)
+    sections["kr"] = [
+        krm["winrate"],
+        krm["high52"],
+        {"key": "kospi200", "label": "코스피200", "ticker": "069500.KS", "holdings": holding_list(cap_weights(k200)), "note": "코스피200 지수를 따라가는 KODEX 200(069500) 시세로 그렸고(야후에 지수 시세가 없음), 구성종목 비중은 시가총액 비중입니다."},
+        krm["sector"],
+        {"key": "kosdaq150", "label": "코스닥150", "ticker": "229200.KS", "holdings": holding_list(cap_weights(kq150)), "note": "코스닥150 지수를 따라가는 KODEX 코스닥150(229200) 시세로 그렸고, 구성종목 비중은 시가총액 비중입니다."},
+        krm["low52"],
+    ]
+    # 미국: 같은 규칙, 비교군 S&P500
+    usm = monthly_strategies("us", stock_universe(us_caps), min_months=60, sector_min=5, yrs=5)
+    sections["us"] = [
+        usm["winrate"],
+        usm["high52"],
+        {"key": "sp500", "label": "S&P500", "ticker": "^GSPC", "holdings": holding_list(cap_weights(us_caps)), "note": "S&P500 지수 시세로 그렸고, 구성종목 비중은 시가총액 비중입니다."},
+        usm["sector"],
+        {"key": "nasdaq100", "label": "나스닥100", "ticker": "^NDX", "holdings": etf_holdings("QQQ"), "note": "나스닥100 지수 시세로 그렸고, 구성종목·비중은 QQQ 보유 내역(상위 20개 공시)입니다."},
+        usm["low52"],
+    ]
+
     gold = [{"s": "GLD", "n": "금 현물(SPDR Gold Shares)", "w": 100.0}]
     sections["etf"] = [
         {"key": "spy", "label": "S&P500(SPY)", "ticker": "SPY", "holdings": holding_list(cap_weights(us_caps)), "note": "SPY 시세로 그렸고, 구성종목 비중은 S&P500 시가총액 비중입니다."},
@@ -252,18 +266,29 @@ def main():
         return [cby[b] for b in bases if b in cby]
 
     cd20 = ["BTC", "ETH", "XRP", "SOL", "BNB", "DOGE", "ADA", "LINK", "XLM", "AVAX", "HBAR", "LTC", "BCH", "DOT", "UNI", "NEAR", "AAVE", "ICP", "APT", "FIL"]
-    bw10 = ["BTC", "ETH", "XRP", "SOL", "ADA", "LINK", "SUI", "AVAX", "LTC", "BCH"]
     nci = ["BTC", "ETH", "XRP", "SOL", "ADA", "LINK", "XLM", "LTC", "AVAX", "UNI", "DOT", "HBAR"]
+    # 코인(2026-10-07 사용자 요청): Bitwise 10 삭제, 주식과 같은 4개 규칙 추가 — 10년 승률은 상장 3년 이상.
+    # 스테이블코인·스테이킹/랩드 토큰(원본 코인과 값이 같음)은 비교군에서 뺀다
+    coin_uni = [
+        {"symbol": c["symbol"], "name": c.get("name") or c["symbol"], "sector": crypto_category(c["symbol"]), "cap": c["marketCap"]}
+        for c in crypto
+        if c.get("marketCap") and crypto_category(c["symbol"]) not in ("스테이블코인", "스테이킹·랩드")
+    ]
+    for u in coin_uni:
+        if u["sector"] == "기타":
+            u["sector"] = None  # 분류가 없는 코인은 섹터 순환 후보에서 제외
+    cm = monthly_strategies("crypto", coin_uni, min_months=36, sector_min=3, yrs=3)
     sections["crypto"] = [
         {"key": "cd20", "label": "CoinDesk 20 Index", "holdings": holding_list(cap_weights(coin_rows(cd20), cap_limit=30)),
          "note": "CoinDesk 20 구성 코인(스테이블코인 제외 대형 20종)을 시가총액 비중(한 코인 최대 30%)으로 담았습니다. 구성은 공개 자료 기준 근사치입니다."},
-        {"key": "bitwise10", "label": "Bitwise 10 Crypto Index", "holdings": holding_list(cap_weights(coin_rows(bw10))),
-         "note": "Bitwise 10 구성 코인 10종을 시가총액 비중으로 담았습니다. 구성은 공개 자료 기준 근사치입니다."},
         {"key": "nci", "label": "Nasdaq Crypto Index", "holdings": holding_list(cap_weights(coin_rows(nci))),
          "note": "나스닥 크립토 지수 구성 코인을 시가총액 비중으로 담았습니다. 구성은 공개 자료 기준 근사치입니다."},
+        cm["winrate"],
+        cm["high52"],
+        cm["sector"],
+        cm["low52"],
     ]
-    # 코인 이름은 한글(스냅샷의 name)로
-    for st in sections["crypto"]:
+    for st in sections["crypto"][:2]:
         for h in st["holdings"]:
             h["n"] = (next((c.get("name") for c in crypto if c["symbol"] == h["s"]), None)) or h["n"]
 
@@ -271,47 +296,28 @@ def main():
         for i, st in enumerate(sec):
             st["color"] = COLORS[i % len(COLORS)]
 
-    # ---- 시세 수집 ----
+    # ---- 지수형·현재 바구니형(코인 지수) 시세 ----
     need = set()
     for sec in sections.values():
         for st in sec:
+            if st.get("series"):
+                continue
             if st.get("ticker"):
                 need.add(st["ticker"])
             else:
                 need.update(h["s"] for h in st["holdings"])
     need = sorted(need)
-    print(f"시세 조회 {len(need)}종목 × 2", flush=True)
-    daily, weekly = {}, {}
-
-    def fetch(sym):
-        return sym, chart_points(sym, "1y", "1d"), chart_points(sym, "10y", "1wk")
-
-    with ThreadPoolExecutor(max_workers=4) as ex:
-        for i, (sym, d, w) in enumerate(ex.map(fetch, need)):
-            daily[sym], weekly[sym] = d, w
-            if (i + 1) % 25 == 0:
-                print(f"  {i + 1}/{len(need)}", flush=True)
-    # 동시 요청이 몰리면 야후가 일부를 거절한다 — 빈 종목만 천천히 한 번씩 더(최대 3바퀴)
-    for rnd in range(3):
-        missing = [s for s in need if not daily.get(s) or not weekly.get(s)]
-        if not missing:
-            break
-        print(f"재시도 {rnd + 1}: {len(missing)}종목", flush=True)
-        time.sleep(5)
-        for sym in missing:
-            _, d, w = fetch(sym)
-            daily[sym] = daily.get(sym) or d
-            weekly[sym] = weekly.get(sym) or w
-            time.sleep(0.6)
-    missing = [s for s in need if not daily.get(s)]
-    if missing:
-        print("시세 없음:", missing, flush=True)
+    print(f"지수·바구니 시세 조회 {len(need)}종목 × 2", flush=True)
+    daily = sb.fetch_all(need, "1y", "1d")
+    weekly = sb.fetch_all(need, "10y", "1wk")
 
     def pack(series):
         return {"t": [t for t, _ in series], "v": [v for _, v in series]}
 
     for name, sec in sections.items():
         for st in sec:
+            if st.get("series"):
+                continue
             if st.get("ticker"):
                 s1 = single_series(daily.get(st["ticker"]) or [], "d")
                 s10 = single_series(weekly.get(st["ticker"]) or [], "w")
@@ -325,13 +331,13 @@ def main():
 
     out = {
         "generatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "description": "투자분석 탭 — 투자처별 투자방법 구성종목(비중순 최대 30)과 1년 일봉·10년 주봉 수익 지수(시작=100). scripts/build-invest-analysis.py",
+        "description": "투자분석 탭 — 투자처별 투자방법 구성종목과 1년 일봉·10년 주봉 수익 지수(시작=100). 승률·신고가·신저가·섹터 순환은 매달 1일 리밸런싱 백테스트(scripts/strategy_backtest.py). scripts/build-invest-analysis.py",
         "sections": sections,
     }
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     print("저장:", OUT, os.path.getsize(OUT) // 1024, "KB")
-    bad = [st["label"] for sec in sections.values() for st in sec if len(st["series"]["1y"]["t"]) < 50 or not st["holdings"]]
+    bad = [st["label"] for sec in sections.values() for st in sec if len(st["series"]["1y"]["t"]) < 50]
     if bad:
         print("⚠️ 데이터 부족:", bad)
         sys.exit(1)

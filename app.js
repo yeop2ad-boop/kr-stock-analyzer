@@ -20612,7 +20612,7 @@ const IA_SECTION_LABEL = { kr: "한국주식", us: "미국주식", etf: "ETF", c
 const IA_PF_KEY = "invest_analysis_portfolios_v1";
 const IA_PF_COLORS = ["#1971c2", "#4dabf7", "#3b5bdb", "#74c0fc", "#1864ab"]; // 내 포트폴리오는 파란 계열
 const IA_KST = 9 * 3600;
-const iaState = { range: "1y", table: false, expanded: new Set(), selected: null, userPicked: false, openDetail: null, seq: 0, ctx: null, plot: null };
+const iaState = { range: "1y", table: false, expanded: new Set(), selected: null, userPicked: false, openDetail: null, histOpen: null, seq: 0, ctx: null, plot: null };
 const iaChartCache = new Map();
 const iaRangeCache = new Map();
 const iaQuoteCache = new Map();
@@ -20669,6 +20669,8 @@ async function iaBuildContext(sec) {
     holdings: st.holdings || [],
     note: st.note || "",
     series: st.series || {},
+    changes: st.changes || null,
+    sectorHistory: st.sectorHistory || null,
   }));
   const pfList = iaLoadPortfolios().filter((p) => p.section === sec);
   const pfs = pfList.map((p, i) => ({
@@ -20741,7 +20743,7 @@ function iaShellHtml(ctx) {
         <span class="ia-add-text"><b>내 포트폴리오 추가하기</b><small>관심종목이나 직접 고른 종목으로 수익률 비교</small></span>
         <span class="ia-add-chev" aria-hidden="true">›</span>
       </button>
-      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 모든 그래프는 기간 시작을 100으로 둔 수익 지수입니다. 투자방법 구성종목·1년/5년/최대(10년) 그래프는 ${dateStr} 배치 기준이고, 1일·1주·1달은 실시간(바구니형은 비중 상위 10종목)으로 계산합니다. 바구니형 투자방법은 <b>지금 고른 종목</b>을 그 비중으로 계속 들고 있었다고 가정한 값이라 과거 성적이 부풀려지는 생존편향이 있고, 상장 10년이 안 된 종목은 상장 시점부터 더해집니다. 수수료·세금·배당은 반영하지 않았으며 투자 자문이 아닙니다.</p>
+      <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 모든 그래프는 기간 시작을 100으로 둔 수익 지수입니다. 투자방법 구성종목·1년/5년/최대(10년) 그래프는 ${dateStr} 배치 기준이고, 1일·1주·1달은 실시간(바구니형은 비중 상위 10종목)으로 계산합니다. 10년 승률·52주 신고가·52주 신저가·섹터 순환은 <b>매달 1일 그 시점 데이터로 다시 골라</b> 한 달씩 들고 간 백테스트이고(과거 시가총액은 지금 시가총액 × 주가 변화로 추정), 비교군이 오늘의 구성종목이라 그 사이 빠진 종목이 없는 생존편향이 있습니다. 코인 지수는 지금 구성 코인을 그 비중으로 들고 있었다고 가정한 값입니다. 수수료·세금·배당은 반영하지 않았으며 투자 자문이 아닙니다.</p>
     </div>`;
 }
 function iaFmtWeight(w) {
@@ -20751,6 +20753,11 @@ function iaFmtWeight(w) {
 }
 function iaHoldingRowHtml(h) {
   const sym = h.s;
+  if (!sym) {
+    return `<tr class="ia-cash-row"><td><span class="ticker-cell rank-logo"><span class="etf-asset-emoji">💵</span><b>${escapeHtml(h.n || "현금")}</b></span></td><td class="ia-price"><span class="muted">-</span></td><td><b class="rank-hl">${iaFmtWeight(
+      h.w
+    )}%</b></td></tr>`;
+  }
   const isCrypto = /-(USD|KRW)$/.test(sym);
   const logo = isCrypto ? cryptoLogoHtml(cryptoBaseTicker(sym)) : tickerLogoHtml(sym);
   const name = isCrypto ? TICKER_TO_KOREAN_NAME[sym] || h.n || sym : rankDisplayName(sym, h.n, isKrTicker(sym));
@@ -20772,14 +20779,71 @@ function iaDetailHtml(line) {
     line.kind === "portfolio"
       ? `<div class="ia-detail-actions"><button type="button" class="ia-mini-btn" data-ia-edit="${escapeHtml(line.pfId)}">편집</button><button type="button" class="ia-mini-btn danger" data-ia-del="${escapeHtml(line.pfId)}">삭제</button></div>`
       : "";
+  // 2026-10-07 사용자 요청: 매달 바뀌는 투자방법은 +편입/퇴출(10년 승률은 최근 6개월, 신고가·신저가는 지난달 대비), 섹터 순환은 +섹터변동
+  const histKind = line.sectorHistory ? "sector" : line.changes ? "changes" : "";
+  const histOpen = histKind && iaState.histOpen === line.id;
+  const histBtn = histKind
+    ? `<button type="button" class="ia-hist-btn${histOpen ? " on" : ""}" data-ia-hist="${escapeHtml(line.id)}">${histOpen ? "−" : "+"}${histKind === "sector" ? "섹터변동" : "편입/퇴출"}</button>`
+    : "";
   return `<div class="ia-detail">
-      ${line.note ? `<p class="ia-block-note">${escapeHtml(line.note)}</p>` : ""}
+      <div class="ia-detail-head">
+        ${line.note ? `<p class="ia-block-note">${escapeHtml(line.note)}</p>` : "<span></span>"}
+        ${histBtn}
+      </div>
+      ${histOpen ? (histKind === "sector" ? iaSectorHistHtml(line) : iaChangesHtml(line)) : ""}
       ${actions}
       <table class="top30-table rk-table ia-table">
         <thead><tr>${RANK_TH_NAME}${RANK_TH_PRICE}<th data-explain="비중 — 이 투자방법(또는 내 포트폴리오) 안에서 그 종목이 차지하는 비율입니다. 투자방법은 시가총액 비중(지수형은 지수 전체 대비), 내 포트폴리오는 직접 정한 값입니다.">비중</th></tr></thead>
         <tbody>${shown.map((h) => iaHoldingRowHtml(h)).join("")}</tbody>
       </table>
       ${list.length > 10 ? `<button type="button" class="cat-btn load-more-btn ia-more-btn" data-ia-more="${escapeHtml(line.id)}">${expanded ? "− 접기" : `+더보기 (${total}종목)`}</button>` : ""}
+    </div>`;
+}
+// +편입/퇴출 — 달마다 들어온 종목(초록)·빠진 종목(빨강)을 가운데 기준 막대 + 이름 칩으로.
+// 10년 승률은 최근 6개월, 52주 신고가·신저가는 지난달 대비만(사용자 지정)
+function iaMonthLabel(m) {
+  return `${Number(String(m).split("-")[1])}월`;
+}
+function iaChangesHtml(line) {
+  const months = (line.changes || []).slice(0, /:winrate$/.test(line.id) ? 6 : 1);
+  if (!months.length) return `<p class="muted ia-hist-empty">변동 기록이 없습니다.</p>`;
+  const max = Math.max(1, ...months.map((m) => Math.max(m.in.length, m.out.length)));
+  const chip = (x, cls) => `<span class="ia-chg-chip ${cls}">${escapeHtml(TICKER_TO_KOREAN_NAME[x.s] || x.n || x.s)}</span>`;
+  return `<div class="ia-hist">
+      ${months
+        .map(
+          (m) => `<div class="ia-chg-row">
+            <div class="ia-chg-head">
+              <b>${iaMonthLabel(m.m)}</b>
+              <span class="ia-chg-bars">
+                <span class="ia-chg-side out"><i style="width:${(m.out.length / max) * 100}%"></i></span>
+                <span class="ia-chg-side in"><i style="width:${(m.in.length / max) * 100}%"></i></span>
+              </span>
+              <span class="ia-chg-count"><span class="out">퇴출 ${m.out.length}</span> · <span class="in">편입 ${m.in.length}</span></span>
+            </div>
+            ${m.in.length || m.out.length ? `<div class="ia-chg-chips">${m.in.map((x) => chip(x, "in")).join("")}${m.out.map((x) => chip(x, "out")).join("")}</div>` : `<p class="muted ia-hist-empty">구성 그대로(${m.count}종목)</p>`}
+          </div>`
+        )
+        .join("")}
+    </div>`;
+}
+// +섹터변동 — 최근 6개월 달마다 수익률 1위 섹터와 그 수익률(가로 막대)
+function iaSectorHistHtml(line) {
+  const rows = line.sectorHistory || [];
+  if (!rows.length) return `<p class="muted ia-hist-empty">섹터 기록이 없습니다.</p>`;
+  const max = Math.max(1, ...rows.map((x) => Math.abs(x.ret)));
+  return `<div class="ia-hist">
+      ${rows
+        .map(
+          (x) => `<div class="ia-sec-row">
+            <b class="ia-sec-month">${iaMonthLabel(x.m)}</b>
+            <span class="ia-sec-name">${escapeHtml(x.sector)}</span>
+            <span class="ia-sec-bar"><i class="${x.ret >= 0 ? "up" : "down"}" style="width:${(Math.abs(x.ret) / max) * 100}%"></i></span>
+            <span class="ia-sec-ret">${iaPctHtml(x.ret)}</span>
+          </div>`
+        )
+        .join("")}
+      <p class="muted ia-hist-empty">그달 한 달 수익률 1위 섹터 → 다음 달 1일에 그 섹터로 갈아탑니다.</p>
     </div>`;
 }
 // 지금 기간의 수익률 순서 — 값이 없는 선은 맨 뒤
@@ -20859,6 +20923,13 @@ function iaBindShell(root) {
       el("iaTableBtn").classList.toggle("active", iaState.table);
       el("iaHero").style.display = iaState.table ? "none" : "";
       iaDrawChart();
+      return;
+    }
+    const hist = e.target.closest("[data-ia-hist]");
+    if (hist) {
+      const id = hist.dataset.iaHist;
+      iaState.histOpen = iaState.histOpen === id ? null : id;
+      iaRenderHeroAndRank(iaState.lastData);
       return;
     }
     const more = e.target.closest("[data-ia-more]");
