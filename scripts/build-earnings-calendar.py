@@ -210,30 +210,76 @@ def parse_prelim_revenue(raw):
     return out
 
 
-def kr_prelim_results(key, today):
-    """최근 45일 잠정실적 공시마다 매출 직전 분기 대비 % → {symbol: {"rep": {...}}}"""
-    out = {}
-    for sym, lst in PRELIM.items():
-        dt, no = max(lst)
-        if (today - date(int(dt[:4]), int(dt[4:6]), int(dt[6:]))).days > 45:
-            continue
+DEBUG = []  # 잠정실적 본문 표 몇 개(키 없음) — 파서 점검용, data/earnings-debug.json
+
+
+def fetch_doc(key, no):
+    try:
+        req = urllib.request.Request(f"https://opendart.fss.or.kr/api/document.xml?crtfc_key={key}&rcept_no={no}", headers={"User-Agent": UA})
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            return resp.read()
+    except Exception as e:
+        print("  잠정실적 본문 실패:", no, type(e).__name__, flush=True)
+        return None
+
+
+def doc_text(raw):
+    import io
+    import zipfile
+    try:
+        z = zipfile.ZipFile(io.BytesIO(raw))
+        return "\n".join(z.read(n).decode("utf-8", "ignore") for n in z.namelist())
+    except Exception:
+        return None
+
+
+def is_monthly(txt):
+    """실적 기간이 한 달짜리(월별 매출 잠정 공시 — 이마트·신세계 등)인지"""
+    plain = re.sub(r"<[^>]+>", " ", txt)
+    for m in re.finditer(r"(\d{4})\s*[.\-년]\s*(\d{1,2})\s*[.\-월]\s*(\d{1,2})\s*일?\s*~\s*(\d{4})\s*[.\-년]\s*(\d{1,2})\s*[.\-월]\s*(\d{1,2})", plain):
         try:
-            req = urllib.request.Request(f"https://opendart.fss.or.kr/api/document.xml?crtfc_key={key}&rcept_no={no}", headers={"User-Agent": UA})
-            with urllib.request.urlopen(req, timeout=60) as resp:
-                raw = resp.read()
-        except Exception as e:
-            print("  잠정실적 본문 실패:", sym, type(e).__name__, flush=True)
+            a = date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+            b = date(int(m.group(4)), int(m.group(5)), int(m.group(6)))
+        except ValueError:
             continue
-        rv = parse_prelim_revenue(raw)
-        if rv:
-            out[sym] = {"date": f"{dt[:4]}-{dt[4:6]}-{dt[6:]}", "qoq": round((rv["cur"] / rv["prev"] - 1) * 100, 2), "src": "잠정"}
-            if rv.get("rev"):
-                out[sym]["rev"] = rv["rev"]
-            if rv.get("ni") is not None:
-                out[sym]["ni"] = rv["ni"]
-        time.sleep(0.3)
-    print(f"한국: 잠정실적 매출 {len(out)}종목", flush=True)
-    return out
+        return 0 <= (b - a).days < 45
+    return bool(re.search(r"월간|월별\s*실적", plain))
+
+
+def kr_prelim_scan(key, today):
+    """최근 60일 잠정실적 공시 본문 → (월간 공시 회사 집합, {symbol: rep})"""
+    monthly, reps = set(), {}
+    for sym, lst in PRELIM.items():
+        for dt, no in sorted(set(lst), reverse=True):
+            d = date(int(dt[:4]), int(dt[4:6]), int(dt[6:]))
+            if (today - d).days > 60:
+                break
+            raw = fetch_doc(key, no)
+            txt = raw and doc_text(raw)
+            time.sleep(0.3)
+            if not txt:
+                continue
+            if len(DEBUG) < 8 and (sym in ("066570.KS", "139480.KS") or len(DEBUG) < 4):
+                rows = []
+                for row in re.findall(r"<TR[^>]*>(.*?)</TR>", txt, re.S | re.I)[:30]:
+                    cells = [re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", c)).strip() for c in re.findall(r"<T[DHEU][^>]*>(.*?)</T[DHEU]>", row, re.S | re.I)]
+                    rows.append(" | ".join(cells))
+                DEBUG.append({"sym": sym, "date": dt, "no": no, "monthly": is_monthly(txt), "rows": rows})
+            if is_monthly(txt):
+                monthly.add(sym)
+                continue
+            if sym in reps or (today - d).days > 45:
+                continue
+            rv = parse_prelim_revenue(raw)
+            if rv:
+                rep = {"date": d.isoformat(), "qoq": round((rv["cur"] / rv["prev"] - 1) * 100, 2), "src": "잠정"}
+                if rv.get("rev"):
+                    rep["rev"] = rv["rev"]
+                if rv.get("ni") is not None:
+                    rep["ni"] = rv["ni"]
+                reps[sym] = rep
+    print(f"한국: 잠정실적 매출 {len(reps)}종목 · 월간 공시 제외 {len(monthly)}종목", flush=True)
+    return monthly, reps
 
 
 def kr_filings_chunk(syms, key, bgn, end):
@@ -276,6 +322,11 @@ def kr_calendar(today, key):
         ly = kr_filings(syms, key, today - timedelta(days=368), today - timedelta(days=305))
     except RuntimeError:
         return None
+    monthly, reps = kr_prelim_scan(key, today)
+    for sym in monthly:
+        drop = {f"{dt[:4]}-{dt[4:6]}-{dt[6:]}" for dt, _ in PRELIM.get(sym, [])}
+        recent[sym] = [d for d in recent.get(sym, []) if d not in drop]
+        ly[sym] = [d for d in ly.get(sym, []) if d not in drop and not (sym in monthly and False)]
     out = {}
     for sym in set(recent) | set(ly):
         e = {}
@@ -291,7 +342,7 @@ def kr_calendar(today, key):
             e["next"], e["nextEst"] = cand[0].isoformat(), True
         if e:
             out[sym] = e
-    for sym, rep in kr_prelim_results(key, today).items():
+    for sym, rep in reps.items():
         out.setdefault(sym, {})["rep"] = rep
     print(f"한국: 최근 실적 공시 {sum(1 for v in out.values() if 'last' in v)}종목 · 다음 발표 예상 {sum(1 for v in out.values() if 'next' in v)}종목", flush=True)
     return out
@@ -322,6 +373,9 @@ def main():
     }
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
+    if DEBUG:
+        with open(os.path.join(ROOT, "data", "earnings-debug.json"), "w", encoding="utf-8") as f:
+            json.dump(DEBUG, f, ensure_ascii=False, indent=1)
     print("저장:", OUT, os.path.getsize(OUT) // 1024, "KB")
 
 
