@@ -21450,7 +21450,13 @@ function iaShellHtml(ctx) {
       <div class="ia-rank" id="iaRank"></div>
       <button type="button" class="ia-add-row" id="iaAddBtn">
         <span class="ia-add-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
-        <span class="ia-add-text"><b>내 포트폴리오 추가하기</b><small>관심종목이나 직접 고른 종목으로 수익률 비교</small></span>
+        ${(() => {
+          // 2026-10-08: 이미 만든 포트폴리오가 있으면 버튼이 "내 포트폴리오 N개"(눌러서 수정·삭제·추가)
+          const mine = iaLoadPortfolios().filter((p) => p.section === ctx.sec);
+          return mine.length
+            ? `<span class="ia-add-text"><b>내 포트폴리오 ${mine.length}개</b><small>${escapeHtml(mine.map((p) => p.name).join(" · "))} — 눌러서 수정·삭제·추가</small></span>`
+            : `<span class="ia-add-text"><b>내 포트폴리오 추가하기</b><small>관심종목이나 직접 고른 종목으로 수익률 비교</small></span>`;
+        })()}
         <span class="ia-add-chev" aria-hidden="true">›</span>
       </button>
       <!-- 2026-10-08 사용자 요청: 아래 설명 문단은 지우고, 같은 크기의 보라색 "미래예측" 버튼 — 누르면 내 포트폴리오 예상 흐름 -->
@@ -21527,12 +21533,14 @@ async function iaRenderFuture(pfId) {
   const pfs = iaLoadPortfolios().filter((p) => p.section === sec);
   const pf = pfs.find((p) => p.id === pfId) || pfs[0];
   if (!pf) return;
-  const chips =
-    pfs.length > 1
-      ? `<div class="ia-future-chips">${pfs
-          .map((p) => `<button type="button" class="cat-btn${p.id === pf.id ? " active" : ""}" data-ia-future-pf="${escapeHtml(p.id)}">${escapeHtml(p.name)}</button>`)
-          .join("")}</div>`
-      : "";
+  const chips = `<div class="ia-future-chips">${pfs
+    .map((p) => `<button type="button" class="cat-btn${p.id === pf.id ? " active" : ""}" data-ia-future-pf="${escapeHtml(p.id)}">${escapeHtml(p.name)}</button>`)
+    .join("")}</div>
+    <div class="ia-future-acts">
+      <button type="button" class="ia-future-act" data-ia-future-act="edit" data-pf="${escapeHtml(pf.id)}">${sheetSvg("edit", 15)} 수정</button>
+      <button type="button" class="ia-future-act danger" data-ia-future-act="del" data-pf="${escapeHtml(pf.id)}">${sheetSvg("trash", 15)} 삭제</button>
+      <button type="button" class="ia-future-act primary" data-ia-future-act="add">${sheetSvg("plus", 15)} 추가</button>
+    </div>`;
   const items = pf.items.filter((it) => it.symbol && Number(it.weight) > 0);
   box.innerHTML = `${chips}<p class="muted ia-future-loading">${escapeHtml(pf.name)} ${items.length}종목의 미래예측을 계산하는 중...</p>`;
   const res = await mapWithConcurrency(items, 4, async (it) => ({ it, f: await iaFutureOf(it.symbol) }));
@@ -21769,7 +21777,9 @@ function iaBindShell(root) {
       }
       return;
     }
-    if (e.target.closest("#iaAddBtn")) return iaOpenAddChoice();
+    if (e.target.closest("#iaAddBtn")) return iaLoadPortfolios().some((p) => p.section === iaCurrentSection()) ? iaOpenPfManager() : iaOpenAddChoice();
+    const fact = e.target.closest("[data-ia-future-act]");
+    if (fact) return iaFutureAction(fact.dataset.iaFutureAct, fact.dataset.pf);
     if (e.target.closest("#iaFutureBtn")) return iaToggleFuture();
     const fpf = e.target.closest("[data-ia-future-pf]");
     if (fpf) return iaRenderFuture(fpf.dataset.iaFuturePf);
@@ -22382,6 +22392,64 @@ function iaCloseSheet() {
 function iaSheetHead(title) {
   const sec = iaCurrentSection();
   return `<div class="ia-sheet-head">${iaSectionMarkHtml(sec)}<b>${escapeHtml(title)}</b><button type="button" class="ia-sheet-x" data-ia-close aria-label="닫기">${sheetSvg("close", 18)}</button></div>`;
+}
+// 내 포트폴리오 관리 시트(2026-10-08 사용자 요청): 등록된 포트폴리오 목록 — 줄마다 수정·삭제, 아래 "새 포트폴리오 추가"
+function iaPfSummary(pf) {
+  const top = [...pf.items].sort((a, b) => (Number(b.weight) || 0) - (Number(a.weight) || 0)).slice(0, 2);
+  const names = top.map((it) => `${iaSymbolName(it.symbol, it.name)} ${Math.round(Number(it.weight) || 0)}%`).join(", ");
+  return `${pf.items.length}종목${names ? ` · ${names}${pf.items.length > 2 ? " 외" : ""}` : ""}`;
+}
+function iaDeletePf(pf, after) {
+  appConfirmSheet({ icon: "trash", danger: true, title: `'${pf.name}' 포트폴리오를 삭제할까요?`, sub: "삭제하면 되돌릴 수 없어요.", okLabel: "삭제" }).then((ok) => {
+    if (ok) {
+      iaSavePortfolios(iaLoadPortfolios().filter((p) => p.id !== pf.id));
+      showToast(`'${pf.name}' 포트폴리오를 삭제했어요`);
+      renderInvestAnalysis();
+    }
+    if (after) after(ok);
+  });
+}
+function iaOpenPfManager() {
+  const sec = iaCurrentSection();
+  const pfs = iaLoadPortfolios().filter((p) => p.section === sec);
+  if (!pfs.length) return iaOpenAddChoice();
+  const sheet = iaOpenSheet(`
+    ${iaSheetHead("내 포트폴리오")}
+    <p class="ia-sheet-sub">${IA_SECTION_LABEL[sec]} 포트폴리오 ${pfs.length}개 · 눌러서 종목과 비중을 고칠 수 있어요.</p>
+    <div class="sheet-list">${pfs
+      .map(
+        (p) => `<div class="sheet-manage-row sheet-pf-row" data-pf="${escapeHtml(p.id)}">
+          ${sheetIc("folder")}
+          <button type="button" class="sheet-pf-main" data-pf-edit="${escapeHtml(p.id)}"><b>${escapeHtml(p.name)}</b><small>${escapeHtml(iaPfSummary(p))}</small></button>
+          <button type="button" class="sheet-icon-btn" data-pf-edit="${escapeHtml(p.id)}" aria-label="수정">${sheetSvg("edit", 19)}</button>
+          <button type="button" class="sheet-icon-btn sheet-icon-danger" data-pf-del="${escapeHtml(p.id)}" aria-label="삭제">${sheetSvg("trash", 19)}</button>
+        </div>`
+      )
+      .join("")}</div>
+    <div class="sheet-actions"><button type="button" class="sheet-btn primary" data-pf-add>${sheetSvg("plus", 18)} 새 포트폴리오 추가</button></div>`);
+  sheet.addEventListener("click", (e) => {
+    const ed = e.target.closest("[data-pf-edit]");
+    if (ed) {
+      const pf = pfs.find((p) => p.id === ed.dataset.pfEdit);
+      if (pf) iaOpenEditor(pf);
+      return;
+    }
+    const del = e.target.closest("[data-pf-del]");
+    if (del) {
+      const pf = pfs.find((p) => p.id === del.dataset.pfDel);
+      if (pf) iaDeletePf(pf, () => iaOpenPfManager());
+      return;
+    }
+    if (e.target.closest("[data-pf-add]")) iaOpenAddChoice();
+  });
+}
+// 미래예측 칸 위 줄: 포트폴리오 고르기 + 수정·삭제·추가
+function iaFutureAction(act, pfId) {
+  const pf = iaLoadPortfolios().find((p) => p.id === pfId);
+  if (act === "add") return iaOpenAddChoice();
+  if (!pf) return;
+  if (act === "edit") iaOpenEditor(pf);
+  else if (act === "del") iaDeletePf(pf);
 }
 function iaOpenAddChoice() {
   const sec = iaCurrentSection();
