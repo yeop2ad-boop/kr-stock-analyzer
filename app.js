@@ -8560,26 +8560,34 @@ function fin2BodyHtml(data, period, currency) {
       colHtml.push(`
         <div class="fin2-col fin2-pair" title="${escapeHtml(`${b.label} 예상 ${fmtAmountUnified(b.rev, currency)} · 실적 ${fmtAmountUnified(nx.rev, currency)}`)}">
           <div class="fin2-plot" style="height:${PLOT_H}px">
-            <span class="fin2-pair-growth" style="bottom:${(top + 4).toFixed(0)}px"><em>예상 ${g(b.growth)}</em><b class="${nx.growth >= 0 ? "fin2-up" : "fin2-down"}">실적 ${g(nx.growth)}</b></span>
+            <span class="fin2-pair-growth" style="bottom:${(top + 4).toFixed(0)}px"><em>예상 ${fin2GrowthText(b.growth) || "-"}</em><b class="${nx.growth >= 0 ? "fin2-up" : "fin2-down"}">실제 ${fin2GrowthText(nx.growth) || "-"}</b></span>
             <span class="fin2-tip">예상 ${escapeHtml(fmtAmountUnified(b.rev, currency))}<br>실적 ${escapeHtml(fmtAmountUnified(nx.rev, currency))}</span>
-            <div class="fin2-bar" style="height:${a.barPx.toFixed(1)}px">${a.inner}</div>
+            <div class="fin2-bar" style="height:${a.barPx.toFixed(1)}px">${a.niPx > 0 ? `<div class="fin2-ni" style="height:${a.niPx.toFixed(1)}px"></div>` : ""}${(() => {
+              // 2026-10-08 사용자 요청: 순이익률을 흰 글씨로 "예상: 21% / 실제: 21%"(조금 넘쳐도 괜찮음)
+              const m = (x) => (Number.isFinite(x.ni) && x.rev > 0 ? `${Math.round((x.ni / x.rev) * 100)}%` : "-");
+              return `<span class="fin2-pair-margin">예상: ${m(b)}<br>실제: ${m(nx)}</span>`;
+            })()}</div>
             <i class="fin2-exp-line" style="bottom:${e.barPx.toFixed(1)}px" title="예상 매출"></i>
             ${e.niPx > 0 ? `<i class="fin2-exp-line fin2-exp-ni" style="bottom:${e.niPx.toFixed(1)}px" title="예상 순이익"></i>` : ""}
           </div>
-          <span class="fin2-xlabel">${escapeHtml(b.label)}<small>실적</small></span>
+          <span class="fin2-xlabel">${escapeHtml(b.label)}<small>실제</small></span>
         </div>`);
       i++;
       continue;
     }
     // 2026-10-08 사용자 요청: 비교 그래프의 다음 분기 예상도 막대 대신 매출·순이익 높이에 빨간 가로 점선(통일)
+    // 2026-10-08 사용자 요청: 다음 분기 예상은 원래 점선 막대 + 매출·순이익 높이 빨간 가로 점선
     if (data.compare && b.est && b.nextEst) {
       const e = barParts(b);
-      const gtxt = Number.isFinite(b.growth) ? `${Math.abs(b.growth) < 0.5 ? "0%" : `${Math.round(Math.abs(b.growth))}%`}${b.growth >= 0 ? "↑" : "↓"}` : "";
+      const gtxt = fin2GrowthText(b.growth);
       colHtml.push(`
-        <div class="fin2-col fin2-pair" title="${escapeHtml(`${b.label} 예상 매출 ${fmtAmountUnified(b.rev, currency)}`)}">
+        <div class="fin2-col est fin2-pair" title="${escapeHtml(`${b.label} 예상 매출 ${fmtAmountUnified(b.rev, currency)}`)}">
           <div class="fin2-plot" style="height:${PLOT_H}px">
-            ${gtxt ? `<span class="fin2-pair-growth" style="bottom:${(e.barPx + 4).toFixed(0)}px"><em>예상 ${gtxt}</em></span>` : ""}
-            <span class="fin2-tip">예상 ${escapeHtml(fmtAmountUnified(b.rev, currency))}</span>
+            <div class="fin2-bar" style="height:${e.barPx.toFixed(1)}px">
+              ${gtxt ? `<span class="fin2-growth ${b.growth >= 0 ? "fin2-up" : "fin2-down"}">예상 ${gtxt}</span>` : ""}
+              <span class="fin2-tip">${escapeHtml(fmtAmountUnified(b.rev, currency))}</span>
+              ${e.inner}
+            </div>
             <i class="fin2-exp-line" style="bottom:${e.barPx.toFixed(1)}px"></i>
             ${e.niPx > 0 ? `<i class="fin2-exp-line fin2-exp-ni" style="bottom:${e.niPx.toFixed(1)}px"></i>` : ""}
           </div>
