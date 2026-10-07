@@ -6788,6 +6788,8 @@ const SR_HINTS = [
   "승률이 높을수록 과거에 안정적으로 우상향했다는 뜻이에요.",
   "상승률이 높을수록 연 수익률이 좋았어요. 눌러서 확인해 보세요.",
 ];
+// 2026-10-08 사용자 요청: 투자분석 맨 위 안내 2개 번갈아(타이머는 POPULAR_HINTS 옆)
+const IA_HINTS = ["내 포트폴리오를 등록해서 수익률을 예측할 수 있습니다.", "고수들의 투자 방법과 하루 변동량을 비교해 보세요."];
 const S_REPORT_TAP_HINT = `<p class="srt-tap-hint pop-hint" aria-live="polite"><span class="pop-hint-text" data-hint-set="sr">* ${SR_HINTS[0]}</span></p>`;
 
 // 핵심 5개 정의 — ETF·코인은 3번이 1년 수익률
@@ -11081,7 +11083,7 @@ if (!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)")
   setInterval(() => {
     popularHintIdx = (popularHintIdx + 1) % POPULAR_HINTS.length;
     document.querySelectorAll(".pop-hint-text").forEach((n) => {
-      let set = n.dataset.hintSet === "sr" ? SR_HINTS : n.dataset.hintSet === "rank" ? RANK_HINTS : POPULAR_HINTS;
+      let set = { sr: SR_HINTS, rank: RANK_HINTS, ia: IA_HINTS }[n.dataset.hintSet] || POPULAR_HINTS;
       if (set === RANK_HINTS) {
         // 같은 결과 묶음 안에 보이는 더보기/전체보기 버튼이 없으면 첫 문구만(바꾸지 않음)
         let box = n.closest(".tap-hint");
@@ -21335,6 +21337,7 @@ function iaShellHtml(ctx) {
   const pills = IA_RANGES.map((r) => `<button type="button" class="ia-pill${r.key === iaState.range ? " active" : ""}" data-ia-range="${r.key}">${r.label}</button>`).join("");
   return `
     <div class="ia-wrap ia-a" data-sec="${ctx.sec}">
+      <p class="tap-hint pop-hint ia-hint"><span class="pop-hint-text" data-hint-set="ia">* ${IA_HINTS[0]}</span></p>
       <div class="ia-top">
         <div class="ia-pills" id="iaRangeNav">${pills}</div>
         <button type="button" class="ia-table-btn${iaState.table ? " active" : ""}" id="iaTableBtn" aria-label="표로 보기" title="표로 보기">
