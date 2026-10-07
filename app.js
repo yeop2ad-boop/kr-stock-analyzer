@@ -2852,6 +2852,13 @@ function bottomNavKeyForSection() {
 document.querySelectorAll(".fh-tab").forEach((btn) => {
   btn.addEventListener("click", () => {
     const key = btn.dataset.fhtab;
+    // 간편검색 탭(2026-10-08)은 화면을 바꾸지 않고 검색 창만 띄움
+    if (key === "tab.search") {
+      closeMorePanel();
+      closeCompanyPanel();
+      openSearchWizard();
+      return;
+    }
     if (typeof clearSrRankTabs === "function") clearSrRankTabs(); // 핵심지표 순위 묶음 보기에서 빠져나옴(2026-09-16)
     // 승률/수익률/변동성/배당률은 투자처마다 다른 화면을 연다(2026-09-12 개편) — 탭 키는 공용(tab.etf*)이고,
     // 지금 섹션이 주식이면 주식 랭킹, ETF면 ETF 랭킹, 비트코인이면 코인 랭킹으로 갈린다
@@ -2923,7 +2930,7 @@ function refreshTopRankingView() {
     return false;
   };
   const visibleTabs = () =>
-    [...document.querySelectorAll("#fhTabs .fh-tab")].filter((b) => b.style.display !== "none" && getComputedStyle(b).display !== "none");
+    [...document.querySelectorAll("#fhTabs .fh-tab")].filter((b) => b.dataset.fhtab !== "tab.search" && b.style.display !== "none" && getComputedStyle(b).display !== "none");
   const setPanelX = (px, transition) => {
     panel.style.transition = transition || "none";
     panel.style.transform = `translateX(${px}px)`;
@@ -3238,7 +3245,9 @@ let __savedLang = null;
 try {
   __savedLang = localStorage.getItem(LANG_KEY);
 } catch (e) {}
-applyLang(__savedLang || detectDefaultLang());
+// 2026-10-08 사용자 요청: 더보기의 언어 선택을 없애고 항상 한국어 — 예전에 영어를 골라 둔 사용자도 한국어로
+applyLang("ko");
+if (__savedLang === "en") setLang("ko");
 langKrBtn.addEventListener("click", () => setLang("ko"));
 langUsBtn.addEventListener("click", () => setLang("en"));
 
@@ -4618,7 +4627,7 @@ async function renderWatchlistList() {
 
   if (filtered.length === 0) {
     statusEl.style.display = "none";
-    listEl.innerHTML = `<p class="muted" style="padding:12px 0;">${iconHtml("star")} ${WL_SECTION_LABEL[wlSection]} 관심종목이 없습니다. 종목 상세 화면에서 별 아이콘을 눌러 추가해보세요.</p>`;
+    listEl.innerHTML = `<p class="muted" style="padding:12px 0;">${WL_SECTION_LABEL[wlSection]} 관심종목이 없습니다. 위의 + 종목 추가 버튼으로 추가해 보세요.</p>`;
     return;
   }
   statusEl.style.display = "block";
@@ -5736,7 +5745,9 @@ function syncSectionHeader() {
   );
   showTab("tab.popular", true);
   showTab("tab.analysis", true);
-  showTab("tab.autotrack", true);
+  // 2026-10-08 사용자 요청: 자동추적 탭 자리에 간편검색 — 자동추적은 더보기에서
+  showTab("tab.autotrack", false);
+  showTab("tab.search", true);
   showTab("tab.watchlist", true);
   // 인사이트 하위 보기도 투자처마다 다름(ETF=변동성 순위만, 비트코인=자산&투자사 제외) — 이 시점엔 인사이트
   // 상태 변수들이 아직 선언 전(TDZ)이라 syncDartTabForMarket과 같은 방식으로 커스텀 이벤트로 느슨하게 연결
@@ -11079,7 +11090,6 @@ function paintPopularRows(resultsEl, isKr, rows, extraNoteHtml, opts) {
         ${o.prefixHtml || ""}
         <div class="popular-head-row">
           ${popularHintHtml()}
-          <button type="button" class="score-method-detail-btn popular-delta-btn">${popularShowWinRateInfo ? "−승률이란 닫기" : "+승률이란"}</button>
         </div>
         ${popularShowWinRateInfo ? `<div class="chart-detail-wrap chart-detail-expanded popular-winrate-info">${buildWinRateBenchmarkHtml()}</div>` : ""}
         <div class="pop-sec-head"><b>인기</b><span class="pop-asof" data-pop-asof>${popularAsOfHtmlCache}</span></div>

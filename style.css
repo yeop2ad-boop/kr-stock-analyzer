@@ -3901,3 +3901,6 @@ table.pop-table td:nth-child(2) { padding-right: 2px; }
 .ia-gate-count { margin-bottom: 14px; font-size: 14px; color: var(--muted); }
 .ia-gate-count b { color: var(--text); font-size: 16px; }
 .ia-gate-btn { width: 100%; }
+
+/* 상단 4탭(인기종목·투자분석·간편검색·관심종목)을 왼쪽 정렬 대신 폭 전체에 균등 배치(2026-10-08) */
+#fhTabs { flex: 1 1 auto; justify-content: space-evenly; gap: 8px; }
