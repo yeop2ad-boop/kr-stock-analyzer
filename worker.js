@@ -1179,6 +1179,278 @@ async function handleAuthAdmin(request, env) {
   return jsonResponse({ status: "ok", approved, pending, visits, adminEmail: AUTH_ADMIN_EMAIL }, 200);
 }
 
+// ---------- AI 분석 채팅(MVP, 2026-10-09) ----------
+// POST /ai-chat {messages:[{role,content}]} → Claude API(tool use)로 종목 질문에 답변. 키는 Worker Secret ANTHROPIC_API_KEY.
+// 모델은 숫자를 지어내지 못하도록 아래 도구(종목찾기·종목데이터)로 가져온 값만 근거로 답한다. 사용량은 IP당 하루 AI_DAILY_LIMIT회로 제한(CHAT_KV 재사용).
+const AI_DAILY_LIMIT = 5;
+const AI_MAX_TOOL_ROUNDS = 5;
+const AI_DEFAULT_MODEL = "claude-haiku-5-5";
+const AI_MAX_OUTPUT_TOKENS = 800;
+const AI_SITE_ORIGIN = "https://marketmap.kr";
+
+const AI_SYSTEM_PROMPT = [
+  "당신은 '마켓맵'의 AI 증권 분석 도우미입니다. 한국어로 간결하게(핵심 위주, 모바일 화면 기준 10줄 이내) 답합니다.",
+  "규칙:",
+  "1) 종목의 가격·재무·승률 등 모든 숫자는 반드시 도구(search_symbol, get_stock_data)로 가져온 값만 사용하고, 도구에 없는 숫자는 지어내지 않습니다. 모르면 모른다고 말합니다.",
+  "2) 종목명이 나오면 먼저 search_symbol로 티커를 찾고, 그다음 get_stock_data로 데이터를 조회합니다. 한국 종목 티커는 .KS(코스피)/.KQ(코스닥)가 붙습니다.",
+  "3) 투자 권유 금지: '사세요/파세요/지금이 기회' 같은 단정적 매수·매도 지시는 하지 않습니다. 장점·위험·지표 해석을 균형 있게 제시하고, 최종 판단은 이용자 몫이라고 짧게 덧붙입니다.",
+  "4) 미래 주가를 예측하거나 수익을 보장하는 표현은 쓰지 않습니다.",
+  "5) 주식·코인·ETF·시장 분석과 무관한 질문에는 정중히 범위 밖이라고 안내합니다.",
+  "6) 지표 설명: 승률=최근 10년 월봉 기준 상승한 달의 비율, RSI는 주간 RSI(70 이상 과열, 30 이하 침체 경향), 영업이익률·ROE·부채비율은 직전 분기 기준입니다.",
+].join("\n");
+
+const AI_TOOLS = [
+  {
+    name: "search_symbol",
+    description: "회사명(한글/영문) 또는 티커로 종목을 찾아 티커 후보를 반환합니다. 종목 데이터를 조회하기 전에 티커가 확실하지 않으면 먼저 호출하세요.",
+    input_schema: { type: "object", properties: { query: { type: "string", description: "회사명 또는 티커 (예: 삼성전자, 애플, NVDA)" } }, required: ["query"] },
+  },
+  {
+    name: "get_stock_data",
+    description: "티커로 현재가·등락률·52주 위치·수익률·재무지표(매출 성장, 영업이익률, ROE, 부채비율, PER)·10년 월봉 승률·주간 RSI를 조회합니다.",
+    input_schema: { type: "object", properties: { symbol: { type: "string", description: "티커 (예: 005930.KS, AAPL, BTC-USD)" } }, required: ["symbol"] },
+    cache_control: { type: "ephemeral" },
+  },
+];
+
+let aiNameMapCache = { at: 0, map: null };
+let aiWinrateCache = { at: 0, db: null };
+
+async function aiGetNameMap() {
+  if (aiNameMapCache.map && Date.now() - aiNameMapCache.at < 3600e3) return aiNameMapCache.map;
+  const map = {};
+  try {
+    const res = await fetch(`${AI_SITE_ORIGIN}/data/ko-company-names.js`);
+    const text = await res.text();
+    const re = /^\s*(?:"([^"]+)"|([^\s:"',/]+))\s*:\s*"([^"]+)"/gm;
+    let m;
+    while ((m = re.exec(text))) map[(m[1] || m[2]).trim()] = m[3];
+  } catch {
+    /* 이름표를 못 받으면 Yahoo 검색만 사용 */
+  }
+  // 국내 종목(코스피200+코스닥150) 이름 — 별칭표에는 미국 종목 위주라 삼성전자·SK하이닉스 같은 국내 이름은 여기서 보충
+  try {
+    const res = await fetch(`${AI_SITE_ORIGIN}/data/kr-universe-kospi200-kosdaq150.json`);
+    const uni = await res.json();
+    for (const it of [...(uni.kospi200 || []), ...(uni.kosdaq150 || [])]) {
+      if (it && it.name && it.symbol && !map[it.name]) map[it.name] = it.symbol;
+    }
+  } catch {
+    /* 무시 */
+  }
+  aiNameMapCache = { at: Date.now(), map };
+  return map;
+}
+
+async function aiGetWinrateDb() {
+  if (aiWinrateCache.db && Date.now() - aiWinrateCache.at < 3600e3) return aiWinrateCache.db;
+  try {
+    const res = await fetch(`${AI_SITE_ORIGIN}/data/winrate-scores-us.json`);
+    const db = await res.json();
+    aiWinrateCache = { at: Date.now(), db };
+    return db;
+  } catch {
+    return aiWinrateCache.db;
+  }
+}
+
+async function aiSearchSymbol(query) {
+  const q = String(query || "").trim().slice(0, 40);
+  if (!q) return { results: [] };
+  const results = [];
+  const seen = new Set();
+  const push = (symbol, name) => {
+    if (symbol && !seen.has(symbol)) {
+      seen.add(symbol);
+      results.push({ symbol, name });
+    }
+  };
+  const names = await aiGetNameMap();
+  const lower = q.toLowerCase();
+  if (names[q]) push(names[q], q);
+  for (const [name, sym] of Object.entries(names)) {
+    if (results.length >= 5) break;
+    if (name.toLowerCase().includes(lower)) push(sym, name);
+  }
+  if (results.length < 3) {
+    try {
+      const res = await fetch(`https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(q)}&quotesCount=5&newsCount=0&lang=ko-KR`, { headers: UPSTREAM_HEADERS });
+      const data = await res.json();
+      for (const it of data.quotes || []) {
+        if (results.length >= 5) break;
+        push(it.symbol, it.shortname || it.longname || it.symbol);
+      }
+    } catch {
+      /* 무시 */
+    }
+  }
+  return { results: results.slice(0, 5) };
+}
+
+function aiSeries(resultArr, key) {
+  const items = [];
+  for (const block of resultArr || []) {
+    for (const it of block[key] || []) {
+      if (it && it.asOfDate && it.reportedValue && it.reportedValue.raw !== undefined) items.push({ date: it.asOfDate, v: it.reportedValue.raw });
+    }
+  }
+  items.sort((a, b) => (a.date < b.date ? -1 : 1));
+  return items;
+}
+
+const aiRound = (n, d = 1) => (n === null || n === undefined || !isFinite(n) ? null : Math.round(n * 10 ** d) / 10 ** d);
+
+async function aiGetStockData(symbol) {
+  const sym = String(symbol || "").trim().toUpperCase().slice(0, 20);
+  if (!/^[A-Z0-9.\-^=]+$/.test(sym)) return { error: "잘못된 티커입니다." };
+  const [chart, fund, db] = await Promise.all([
+    fetchYahooChart(sym, "1y", "1d").catch(() => null),
+    fetchYahooFundamentals(
+      sym,
+      "annualBasicEPS,quarterlyTotalRevenue,quarterlyOperatingIncome,quarterlyNetIncome,quarterlyStockholdersEquity,quarterlyTotalLiabilitiesNetMinorityInterest"
+    ).catch(() => null),
+    aiGetWinrateDb(),
+  ]);
+  const result = chart && chart.chart && chart.chart.result && chart.chart.result[0];
+  if (!result) return { error: `${sym} 시세를 가져오지 못했습니다. 티커를 확인하세요.` };
+  const meta = result.meta;
+  const closes = ((result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || []).filter((c) => c !== null && c !== undefined);
+  const price = meta.regularMarketPrice;
+  const prev = closes.length >= 2 ? closes[closes.length - 2] : null;
+  const ret = (n) => (closes.length > n && closes[closes.length - 1 - n] ? (closes[closes.length - 1] / closes[closes.length - 1 - n] - 1) * 100 : null);
+
+  const arr = (fund && fund.timeseries && fund.timeseries.result) || [];
+  const rev = aiSeries(arr, "quarterlyTotalRevenue");
+  const opi = aiSeries(arr, "quarterlyOperatingIncome");
+  const ni = aiSeries(arr, "quarterlyNetIncome");
+  const eq = aiSeries(arr, "quarterlyStockholdersEquity");
+  const liab = aiSeries(arr, "quarterlyTotalLiabilitiesNetMinorityInterest");
+  const epsArr = aiSeries(arr, "annualBasicEPS");
+  const last = (s) => (s.length ? s[s.length - 1].v : null);
+  const lastRev = last(rev);
+  const revYoY = rev.length >= 5 && rev[rev.length - 5].v ? (rev[rev.length - 1].v / rev[rev.length - 5].v - 1) * 100 : null;
+  const eps = last(epsArr);
+
+  let wr = null;
+  if (db) {
+    for (const k of ["scores", "scoresKr", "scoresEtf", "scoresCrypto"]) {
+      if (db[k] && db[k][sym]) {
+        wr = db[k][sym];
+        break;
+      }
+    }
+  }
+  return {
+    symbol: sym,
+    name: meta.shortName || meta.longName || sym,
+    currency: meta.currency,
+    price: aiRound(price, 2),
+    changePctToday: prev ? aiRound(((price - prev) / prev) * 100, 2) : null,
+    return1mPct: aiRound(ret(21)),
+    return3mPct: aiRound(ret(63)),
+    return1yPct: aiRound(closes.length > 1 ? (closes[closes.length - 1] / closes[0] - 1) * 100 : null),
+    week52High: meta.fiftyTwoWeekHigh ?? null,
+    week52Low: meta.fiftyTwoWeekLow ?? null,
+    week52PositionPct:
+      meta.fiftyTwoWeekHigh > meta.fiftyTwoWeekLow ? aiRound(((price - meta.fiftyTwoWeekLow) / (meta.fiftyTwoWeekHigh - meta.fiftyTwoWeekLow)) * 100, 0) : null,
+    revenueGrowthYoYPct: aiRound(revYoY),
+    operatingMarginPct: lastRev && last(opi) !== null ? aiRound((last(opi) / lastRev) * 100) : null,
+    roeQuarterPct: last(eq) > 0 && last(ni) !== null ? aiRound((last(ni) / last(eq)) * 100) : null,
+    debtRatioPct: last(eq) > 0 && last(liab) !== null ? aiRound((last(liab) / last(eq)) * 100, 0) : null,
+    per: eps > 0 && price ? aiRound(price / eps) : null,
+    latestQuarterEnd: rev.length ? rev[rev.length - 1].date : null,
+    winRate10yPct: wr ? wr.score : null,
+    winRateLast12mPct: wr ? wr.wr1y : null,
+    cagr10yPct: wr ? wr.ret10y : null,
+    weeklyRsi: wr ? wr.rsi : null,
+    monthlyReturnsLast12m: wr ? wr.m12 : null,
+    note: "재무 비율은 직전 분기 기준, 값이 null이면 데이터 없음",
+  };
+}
+
+async function aiRunTool(name, input) {
+  try {
+    if (name === "search_symbol") return await aiSearchSymbol(input && input.query);
+    if (name === "get_stock_data") return await aiGetStockData(input && input.symbol);
+    return { error: "알 수 없는 도구" };
+  } catch (e) {
+    return { error: "도구 실행 실패: " + String(e).slice(0, 100) };
+  }
+}
+
+async function handleAiChat(request, env) {
+  if (request.method !== "POST") return jsonResponse({ error: "POST만 지원합니다." }, 405);
+  if (!env.ANTHROPIC_API_KEY) return jsonResponse({ error: "AI 기능을 준비 중입니다.", code: "not_configured" }, 503);
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonResponse({ error: "잘못된 요청입니다." }, 400);
+  }
+  const raw = Array.isArray(body && body.messages) ? body.messages.slice(-10) : [];
+  const messages = raw
+    .filter((m) => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string" && m.content.trim())
+    .map((m) => ({ role: m.role, content: m.content.slice(0, 600) }));
+  while (messages.length && messages[0].role !== "user") messages.shift();
+  if (!messages.length || messages[messages.length - 1].role !== "user") return jsonResponse({ error: "질문을 입력해주세요." }, 400);
+
+  // 하루 사용 횟수 제한(IP 기준, KST 날짜)
+  const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+  const day = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+  const rlKey = `ai_rl:${ip}:${day}`;
+  let used = 0;
+  if (env.CHAT_KV) {
+    used = parseInt((await env.CHAT_KV.get(rlKey)) || "0", 10) || 0;
+    if (used >= AI_DAILY_LIMIT) return jsonResponse({ error: `오늘 무료 질문 ${AI_DAILY_LIMIT}회를 모두 사용했습니다. 내일 다시 이용해주세요.`, code: "limit", remaining: 0 }, 429);
+    await env.CHAT_KV.put(rlKey, String(used + 1), { expirationTtl: 2 * 86400 });
+  }
+
+  const convo = [...messages];
+  let reply = "";
+  const usage = { input: 0, output: 0 };
+  try {
+    for (let round = 0; round < AI_MAX_TOOL_ROUNDS; round++) {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01" },
+        body: JSON.stringify({
+          model: env.AI_MODEL || AI_DEFAULT_MODEL,
+          max_tokens: AI_MAX_OUTPUT_TOKENS,
+          system: [{ type: "text", text: AI_SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
+          tools: AI_TOOLS,
+          messages: convo,
+        }),
+      });
+      if (!res.ok) {
+        const detail = (await res.text()).slice(0, 200);
+        return jsonResponse({ error: "AI 응답을 가져오지 못했습니다.", detail, status: res.status }, 502);
+      }
+      const data = await res.json();
+      usage.input += (data.usage && data.usage.input_tokens) || 0;
+      usage.output += (data.usage && data.usage.output_tokens) || 0;
+      const blocks = data.content || [];
+      if (data.stop_reason !== "tool_use") {
+        reply = blocks.filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
+        break;
+      }
+      convo.push({ role: "assistant", content: blocks });
+      const toolResults = [];
+      for (const b of blocks) {
+        if (b.type === "tool_use") {
+          const out = await aiRunTool(b.name, b.input);
+          toolResults.push({ type: "tool_result", tool_use_id: b.id, content: JSON.stringify(out).slice(0, 6000) });
+        }
+      }
+      convo.push({ role: "user", content: toolResults });
+    }
+  } catch (e) {
+    return jsonResponse({ error: "AI 처리 중 오류가 발생했습니다.", detail: String(e).slice(0, 120) }, 502);
+  }
+  if (!reply) reply = "답변을 만들지 못했습니다. 질문을 조금 더 구체적으로 다시 해주세요.";
+  return jsonResponse({ reply, remaining: Math.max(0, AI_DAILY_LIMIT - used - 1), usage }, 200);
+}
+
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") {
@@ -1197,6 +1469,10 @@ export default {
 
     if (requestUrl.pathname === "/auth/admin" && request.method === "POST") {
       return handleAuthAdmin(request, env);
+    }
+
+    if (requestUrl.pathname === "/ai-chat") {
+      return handleAiChat(request, env);
     }
 
     if (requestUrl.pathname === "/chat") {

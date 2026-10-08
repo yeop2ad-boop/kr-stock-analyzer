@@ -35,6 +35,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="style.css?v=20261008as" />
+<link rel="stylesheet" href="ai-chat.css?v=20261009a" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -803,6 +804,12 @@
           </span>
           <span class="more-map-chev" aria-hidden="true">›</span>
         </button>
+        <!-- 2026-10-09 AI 분석 채팅(MVP): ai-chat.js가 이 버튼과 #aiChatOverlay를 연결 -->
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelAiBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></svg>
+          <span class="more-panel-item-label">AI 분석 채팅</span>
+          <span class="more-panel-item-badge">NEW</span>
+        </button>
         <!-- 2026-10-06 사용자 요청: 더보기 간소화 — 기관·자산운용사/상승종목/상관관계/섹터승률/투자방법/시장/뉴스/신기술 숨김
              (남는 순서: 관심종목 - 마켓맵 - 간편검색 - 자동추적 - 캘린더 - 화면테마 - 언어 - 상승하락색상 - 공지사항 - 문의하기 - 앱정보).
              상관관계는 자동추적 "+자세히"에서 볼 수 있다. JS가 버튼을 참조하므로 DOM은 유지하고 숨김만 -->
@@ -998,10 +1005,26 @@
   </div>
 
   <!-- 구글 로그인(GSI) 스크립트는 공개 운영 전환(2026-09-10)으로 다시 내림 — 게이트 코드는 app.js에 보존 -->
+  <div id="aiChatOverlay" class="ai-chat-overlay" role="dialog" aria-label="AI 분석 채팅">
+    <div class="ai-chat-head">
+      <div class="ai-chat-title">AI 분석 채팅<small>마켓맵 데이터 기반 · 베타</small></div>
+      <button type="button" id="aiChatClearBtn">새 대화</button>
+      <button type="button" id="aiChatCloseBtn" aria-label="닫기">✕</button>
+    </div>
+    <div class="ai-chat-list" id="aiChatList"></div>
+    <div class="ai-chat-foot">
+      <div class="ai-chat-notice">AI 답변은 참고용 정보이며 투자 권유가 아닙니다. 최종 판단과 책임은 이용자에게 있습니다.<b id="aiChatRemain"></b></div>
+      <form class="ai-chat-form" id="aiChatForm">
+        <textarea id="aiChatInput" rows="1" maxlength="300" placeholder="예: 삼성전자 어때?"></textarea>
+        <button type="submit" id="aiChatSend">보내기</button>
+      </form>
+    </div>
+  </div>
   <script src="data/ko-company-names.js?v=20260911e"></script>
   <script src="data/logo-db.js?v=20260903g"></script>
   <script src="data/etf-meta.js?v=20260912a"></script>
   <script src="winrate-benchmark.js?v=20261007k"></script>
   <script src="app.js?v=20261008as"></script>
+  <script src="ai-chat.js?v=20261009a"></script>
 </body>
 </html>
