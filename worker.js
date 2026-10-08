@@ -1378,11 +1378,18 @@ async function aiRunTool(name, input) {
   }
 }
 
+// Worker 변수 AI_GATEWAY_URL(예: https://gateway.ai.cloudflare.com/v1/<계정ID>/<게이트웨이명>/anthropic)이 있으면 Cloudflare AI Gateway를 거쳐 호출 —
+// Worker가 홍콩 서버에서 실행될 때 Anthropic이 403으로 거부하는 문제를 피하고 요청·비용 로그도 대시보드에서 볼 수 있다. 없으면 직접 호출.
+function aiMessagesUrl(env) {
+  const base = env.AI_GATEWAY_URL ? String(env.AI_GATEWAY_URL).replace(/\/+$/, "") : "https://api.anthropic.com";
+  return base + "/v1/messages";
+}
+
 // Claude API 호출 — Cloudflare Worker의 나가는 주소에 따라 간헐적으로 403(Request not allowed)·5xx가 나므로 짧게 재시도
 async function aiCallClaude(env, payload) {
   let res;
   for (let attempt = 0; attempt < 4; attempt++) {
-    res = await fetch("https://api.anthropic.com/v1/messages", {
+    res = await fetch(aiMessagesUrl(env), {
       method: "POST",
       headers: { "content-type": "application/json", "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01" },
       body: JSON.stringify(payload),
