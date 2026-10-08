@@ -1,0 +1,13 @@
+{
+  "name": "스톡챗",
+  "short_name": "스톡챗",
+  "description": "종목명만 말하면 AI가 시세·재무·승률 데이터로 분석해주는 증권 채팅",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1b2a4a",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
