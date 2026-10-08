@@ -1185,11 +1185,12 @@ async function handleAuthAdmin(request, env) {
 const AI_DAILY_LIMIT_DEFAULT = 5; // Worker 변수 AI_DAILY_LIMIT(숫자)로 코드 배포 없이 조절 가능
 const AI_MAX_TOOL_ROUNDS = 5;
 const AI_DEFAULT_MODEL = "claude-haiku-5-5";
-const AI_MAX_OUTPUT_TOKENS = 800;
+const AI_MAX_OUTPUT_TOKENS = 500;
 const AI_SITE_ORIGIN = "https://marketmap.kr";
 
 const AI_SYSTEM_PROMPT = [
-  "당신은 '마켓맵'의 AI 증권 분석 도우미입니다. 한국어로 간결하게(핵심 위주, 모바일 화면 기준 10줄 이내) 답합니다.",
+  "당신은 '마켓맵'의 AI 증권 분석 도우미입니다. 한국어로 답합니다.",
+  "표시 방식: get_stock_data를 호출하면 1년 주가 차트, 52주 위치, 연간 매출·순이익 막대, 월별 수익률 막대, 핵심 지표 카드가 화면에 자동으로 표시됩니다. 따라서 텍스트는 숫자를 나열하지 말고 2~4문장의 핵심 해석만 쓰세요(카드에 이미 보이는 숫자를 반복하지 않기). 여러 종목 비교는 한 줄 결론 + 차이가 큰 포인트 1~2개만 씁니다.",
   "규칙:",
   "1) 종목의 가격·재무·승률 등 모든 숫자는 반드시 도구(search_symbol, get_stock_data)로 가져온 값만 사용하고, 도구에 없는 숫자는 지어내지 않습니다. 모르면 모른다고 말합니다.",
   "2) 종목명이 나오면 먼저 search_symbol로 티커를 찾고, 그다음 get_stock_data로 데이터를 조회합니다. 한국 종목 티커는 .KS(코스피)/.KQ(코스닥)가 붙습니다.",
@@ -1252,6 +1253,21 @@ async function aiGetWinrateDb() {
   } catch {
     return aiWinrateCache.db;
   }
+}
+
+let aiAnnualCache = { at: 0, us: null, kr: null };
+async function aiGetAnnualFin() {
+  if (aiAnnualCache.us && Date.now() - aiAnnualCache.at < 3600e3) return aiAnnualCache;
+  const get = async (f) => {
+    try {
+      return await (await fetch(`${AI_SITE_ORIGIN}/data/${f}`)).json();
+    } catch {
+      return null;
+    }
+  };
+  const [us, kr] = await Promise.all([get("us-annual-financials.json"), get("kr-annual-financials.json")]);
+  aiAnnualCache = { at: Date.now(), us: us && us.items, kr: kr && kr.items };
+  return aiAnnualCache;
 }
 
 async function aiSearchSymbol(query) {
@@ -1340,7 +1356,7 @@ async function aiGetStockData(symbol) {
       }
     }
   }
-  return {
+  const out = {
     symbol: sym,
     name: meta.shortName || meta.longName || sym,
     currency: meta.currency,
@@ -1364,8 +1380,42 @@ async function aiGetStockData(symbol) {
     cagr10yPct: wr ? wr.ret10y : null,
     weeklyRsi: wr ? wr.rsi : null,
     monthlyReturnsLast12m: wr ? wr.m12 : null,
-    note: "재무 비율은 직전 분기 기준, 값이 null이면 데이터 없음",
+    note: "재무 비율은 직전 분기 기준, 값이 null이면 데이터 없음. 화면에는 차트 카드(1년 주가, 연간 매출·순이익, 월별 수익률, 지표)가 자동으로 함께 표시됨",
   };
+
+  // 화면용 카드(모델에는 전달하지 않고 응답 cards로만 내려감) — 1년 종가 약 70점, 연간 매출·순이익(마켓맵 자체 수집 자료), 월별 수익률
+  const rawClose = (result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
+  const pairs = (result.timestamp || []).map((t, i) => [t, rawClose[i]]).filter((x) => x[1] !== null && x[1] !== undefined);
+  const stepN = Math.max(1, Math.ceil(pairs.length / 70));
+  const series = pairs.filter((_, i) => i % stepN === 0 || i === pairs.length - 1).map((x) => [x[0], aiRound(x[1], 2)]);
+  let fin = null;
+  try {
+    const ann = await aiGetAnnualFin();
+    const row = (ann.kr && ann.kr[sym]) || (ann.us && ann.us[sym]);
+    if (row && row.years) {
+      fin = Object.keys(row.years)
+        .sort()
+        .slice(-8)
+        .map((y) => ({ y, rev: row.years[y].rev, ni: row.years[y].ni }));
+      if (!fin.some((r) => r.rev !== null || r.ni !== null)) fin = null;
+    }
+  } catch {
+    fin = null;
+  }
+  out._card = {
+    symbol: sym,
+    name: out.name,
+    currency: out.currency,
+    price: out.price,
+    changePct: out.changePctToday,
+    week: { low: out.week52Low, high: out.week52High, pos: out.week52PositionPct },
+    returns: { m1: out.return1mPct, m3: out.return3mPct, y1: out.return1yPct },
+    series,
+    metrics: { revGrowth: out.revenueGrowthYoYPct, opMargin: out.operatingMarginPct, roe: out.roeQuarterPct, debt: out.debtRatioPct, per: out.per },
+    win: wr ? { score: wr.score, wr1y: wr.wr1y, cagr: wr.ret10y, rsi: wr.rsi, m12: wr.m12 } : null,
+    fin,
+  };
+  return out;
 }
 
 async function aiRunTool(name, input) {
@@ -1435,6 +1485,7 @@ async function handleAiChat(request, env) {
   };
 
   const convo = [...messages];
+  const cards = [];
   let reply = "";
   const usage = { input: 0, output: 0 };
   try {
@@ -1464,6 +1515,10 @@ async function handleAiChat(request, env) {
       for (const b of blocks) {
         if (b.type === "tool_use") {
           const out = await aiRunTool(b.name, b.input);
+          if (out && out._card) {
+            if (!cards.some((c) => c.symbol === out._card.symbol)) cards.push(out._card);
+            delete out._card;
+          }
           toolResults.push({ type: "tool_result", tool_use_id: b.id, content: JSON.stringify(out).slice(0, 6000) });
         }
       }
@@ -1474,7 +1529,7 @@ async function handleAiChat(request, env) {
     return jsonResponse({ error: "AI 처리 중 오류가 발생했습니다.", detail: String(e).slice(0, 120) }, 502);
   }
   if (!reply) reply = "답변을 만들지 못했습니다. 질문을 조금 더 구체적으로 다시 해주세요.";
-  return jsonResponse({ reply, remaining: Math.max(0, AI_DAILY_LIMIT - used - 1), usage }, 200);
+  return jsonResponse({ reply, cards, remaining: Math.max(0, AI_DAILY_LIMIT - used - 1), usage }, 200);
 }
 
 export default {

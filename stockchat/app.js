@@ -18,6 +18,8 @@
     try {
       const v = JSON.parse(localStorage.getItem(STORE_KEY) || "[]");
       if (Array.isArray(v)) history = v.filter((m) => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string").slice(-MAX_KEEP);
+      // 저장 용량 보호: 최근 4개 답변의 카드만 유지
+      history.filter((m) => m.cards && m.cards.length).slice(0, -4).forEach((m) => delete m.cards);
     } catch (e) {
       history = [];
     }
@@ -86,7 +88,23 @@
       });
       listEl.appendChild(intro);
     }
-    history.forEach((m) => bubble(m.role, m.role === "user" ? esc(m.content) : render(m.content)));
+    history.forEach((m) => {
+      if (m.role === "assistant" && m.cards && m.cards.length) addCards(m.cards);
+      bubble(m.role, m.role === "user" ? esc(m.content) : render(m.content));
+    });
+  }
+
+  // 차트 카드 묶음(말풍선 위에 표시) — pendingEl이 있으면 그 앞에 끼워 넣음
+  function addCards(cards, beforeEl) {
+    if (!window.StockCards) return;
+    const html = window.StockCards.render(cards);
+    if (!html) return;
+    const wrap = document.createElement("div");
+    wrap.className = "cards";
+    wrap.innerHTML = html;
+    if (beforeEl) listEl.insertBefore(wrap, beforeEl);
+    else listEl.appendChild(wrap);
+    listEl.scrollTop = listEl.scrollHeight;
   }
 
   // 답변이 글자 단위로 나타나는 효과(서버 응답은 한 번에 오지만 읽기 편하게)
@@ -129,7 +147,7 @@
       const res = await fetch(API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history.slice(-8) }),
+        body: JSON.stringify({ messages: history.slice(-8).map((m) => ({ role: m.role, content: m.content })) }),
       });
       const data = await res.json().catch(() => ({}));
       pending.classList.remove("msg-pending");
@@ -139,8 +157,10 @@
         pending.classList.add("msg-error");
         pending.textContent = data.error || "답변을 가져오지 못했습니다. 잠시 후 다시 시도해주세요.";
       } else {
-        history.push({ role: "assistant", content: data.reply });
+        const cards = Array.isArray(data.cards) ? data.cards : [];
+        history.push({ role: "assistant", content: data.reply, cards });
         save();
+        addCards(cards, pending);
         await reveal(pending, data.reply);
       }
     } catch (e) {
