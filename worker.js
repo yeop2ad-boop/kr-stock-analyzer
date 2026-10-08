@@ -1190,7 +1190,7 @@ const AI_SITE_ORIGIN = "https://marketmap.kr";
 
 const AI_SYSTEM_PROMPT = [
   "당신은 '마켓맵'의 AI 증권 분석 도우미입니다. 한국어로 답합니다.",
-  "표시 방식: get_stock_data를 호출하면 1년 주가 차트, 52주 위치, 연간 매출·순이익 막대, 월별 수익률 막대, 핵심 지표 카드가 화면에 자동으로 표시됩니다. 따라서 텍스트는 숫자를 나열하지 말고 2~4문장의 핵심 해석만 쓰세요(카드에 이미 보이는 숫자를 반복하지 않기). 여러 종목 비교는 한 줄 결론 + 차이가 큰 포인트 1~2개만 씁니다.",
+  "표시 방식: get_stock_data를 호출하면 1년 주가 차트, 52주 위치, 연간 매출·순이익 막대, 월별 수익률 막대, 핵심 지표 카드가 화면에 자동으로 표시됩니다. 따라서 텍스트는 숫자를 나열하지 말고 최대 3문장의 핵심 해석만 쓰세요(조회 기간 같은 기술적 표현 없이 쉬운 말로)(카드에 이미 보이는 숫자를 반복하지 않기). 여러 종목 비교는 한 줄 결론 + 차이가 큰 포인트 1~2개만 씁니다.",
   "규칙:",
   "1) 종목의 가격·재무·승률 등 모든 숫자는 반드시 도구(search_symbol, get_stock_data)로 가져온 값만 사용하고, 도구에 없는 숫자는 지어내지 않습니다. 모르면 모른다고 말합니다.",
   "2) 종목명이 나오면 먼저 search_symbol로 티커를 찾고, 그다음 get_stock_data로 데이터를 조회합니다. 한국 종목 티커는 .KS(코스피)/.KQ(코스닥)가 붙습니다.",
@@ -1239,7 +1239,9 @@ async function aiGetNameMap() {
   } catch {
     /* 무시 */
   }
-  aiNameMapCache = { at: Date.now(), map };
+  const rev = {};
+  for (const [name, sym] of Object.entries(map)) if (!rev[sym]) rev[sym] = name;
+  aiNameMapCache = { at: Date.now(), map, rev };
   return map;
 }
 
@@ -1317,6 +1319,7 @@ function aiSeries(resultArr, key) {
 const aiRound = (n, d = 1) => (n === null || n === undefined || !isFinite(n) ? null : Math.round(n * 10 ** d) / 10 ** d);
 
 async function aiGetStockData(symbol) {
+  await aiGetNameMap();
   const sym = String(symbol || "").trim().toUpperCase().slice(0, 20);
   if (!/^[A-Z0-9.\-^=]+$/.test(sym)) return { error: "잘못된 티커입니다." };
   const [chart, fund, db] = await Promise.all([
@@ -1358,7 +1361,7 @@ async function aiGetStockData(symbol) {
   }
   const out = {
     symbol: sym,
-    name: meta.shortName || meta.longName || sym,
+    name: (aiNameMapCache.rev && aiNameMapCache.rev[sym]) || meta.shortName || meta.longName || sym,
     currency: meta.currency,
     price: aiRound(price, 2),
     changePctToday: prev ? aiRound(((price - prev) / prev) * 100, 2) : null,

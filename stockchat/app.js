@@ -139,6 +139,7 @@
     sendBtn.disabled = true;
     inputEl.value = "";
     grow();
+    requestAnimationFrame(grow);
     if (!history.length) listEl.innerHTML = "";
     history.push({ role: "user", content: text });
     bubble("user", esc(text));
