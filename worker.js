@@ -1182,7 +1182,7 @@ async function handleAuthAdmin(request, env) {
 // ---------- AI 분석 채팅(MVP, 2026-10-09) ----------
 // POST /ai-chat {messages:[{role,content}]} → Claude API(tool use)로 종목 질문에 답변. 키는 Worker Secret ANTHROPIC_API_KEY.
 // 모델은 숫자를 지어내지 못하도록 아래 도구(종목찾기·종목데이터)로 가져온 값만 근거로 답한다. 사용량은 IP당 하루 AI_DAILY_LIMIT회로 제한(CHAT_KV 재사용).
-const AI_DAILY_LIMIT = 5;
+const AI_DAILY_LIMIT_DEFAULT = 5; // Worker 변수 AI_DAILY_LIMIT(숫자)로 코드 배포 없이 조절 가능
 const AI_MAX_TOOL_ROUNDS = 5;
 const AI_DEFAULT_MODEL = "claude-haiku-5-5";
 const AI_MAX_OUTPUT_TOKENS = 800;
@@ -1411,6 +1411,7 @@ async function handleAiChat(request, env) {
   if (!messages.length || messages[messages.length - 1].role !== "user") return jsonResponse({ error: "질문을 입력해주세요." }, 400);
 
   // 하루 사용 횟수 제한(IP 기준, KST 날짜)
+  const AI_DAILY_LIMIT = parseInt(env.AI_DAILY_LIMIT, 10) > 0 ? parseInt(env.AI_DAILY_LIMIT, 10) : AI_DAILY_LIMIT_DEFAULT;
   const ip = request.headers.get("CF-Connecting-IP") || "unknown";
   const day = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
   const rlKey = `ai_rl:${ip}:${day}`;
