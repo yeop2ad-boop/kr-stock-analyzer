@@ -1538,6 +1538,33 @@ async function handleAiChat(request, env) {
   return jsonResponse({ reply, cards, stop: lastStop, remaining: Math.max(0, AI_DAILY_LIMIT - used - 1), usage }, 200);
 }
 
+// GET /stock-card?symbol=005930.KS — AI 없이 종목 카드 데이터(1년 주가·지표·연간 매출/순이익·승률)만 돌려줌. 스톡챗의 버튼 선택 화면용(5분 캐시).
+async function handleStockCard(request) {
+  const sym = (new URL(request.url).searchParams.get("symbol") || "").trim().toUpperCase();
+  if (!/^[A-Z0-9.\-^=]{1,20}$/.test(sym)) return jsonResponse({ error: "잘못된 티커입니다." }, 400);
+  let cache = null;
+  let key = null;
+  try {
+    cache = caches.default;
+    key = new Request("https://stockchat-cache.invalid/card/" + encodeURIComponent(sym));
+    const hit = await cache.match(key);
+    if (hit) return new Response(hit.body, { status: 200, headers: { "Content-Type": "application/json", ...CORS_HEADERS } });
+  } catch {
+    cache = null;
+  }
+  const out = await aiGetStockData(sym);
+  if (out.error || !out._card) return jsonResponse({ error: out.error || "데이터를 가져오지 못했습니다." }, 404);
+  const body = JSON.stringify({ card: out._card });
+  if (cache && key) {
+    try {
+      await cache.put(key, new Response(body, { status: 200, headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=300" } }));
+    } catch {
+      /* 캐시를 못 써도 응답은 그대로 */
+    }
+  }
+  return new Response(body, { status: 200, headers: { "Content-Type": "application/json", ...CORS_HEADERS } });
+}
+
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") {
@@ -1556,6 +1583,10 @@ export default {
 
     if (requestUrl.pathname === "/auth/admin" && request.method === "POST") {
       return handleAuthAdmin(request, env);
+    }
+
+    if (requestUrl.pathname === "/stock-card") {
+      return handleStockCard(request);
     }
 
     if (requestUrl.pathname === "/ai-chat") {

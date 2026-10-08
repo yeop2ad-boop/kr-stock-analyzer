@@ -73,19 +73,17 @@
 
   function renderAll() {
     listEl.innerHTML = "";
+    if (window.SCFlow) window.SCFlow.reset();
     if (!history.length) {
       const intro = document.createElement("div");
       intro.className = "intro";
-      intro.innerHTML = "<h1>종목, 물어보면 바로 분석해요</h1><p>종목명을 말하면 시세·재무·10년 승률 데이터를<br>바탕으로 정리해드려요.</p><div class=\"chips\"></div>";
-      const chips = intro.querySelector(".chips");
-      SUGGESTIONS.forEach((q) => {
-        const b = document.createElement("button");
-        b.type = "button";
-        b.className = "chip";
-        b.textContent = q;
-        b.addEventListener("click", () => send(q));
-        chips.appendChild(b);
-      });
+      intro.innerHTML =
+        '<h1>종목, 이제 쉽게 찾고 분석해요</h1><p>버튼으로 고르면 마켓맵 자료를 바로 보여드려요.<br>궁금한 건 아래에 직접 물어보면 AI가 답해요.</p>' +
+        '<div class="home-tiles">' +
+        '<button type="button" class="home-tile" data-flow="search"><span class="ht-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="20" y1="20" x2="15.3" y2="15.3"/></svg></span><b>간편검색</b><small>내투자를 찾고있어요</small></button>' +
+        '<button type="button" class="home-tile alt" data-flow="analyze"><span class="ht-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,17 9,11 13,15 21,6"/><polyline points="15,6 21,6 21,12"/></svg></span><b>투자분석</b><small>내투자를 분석해주세요</small></button>' +
+        "</div>";
+      intro.querySelectorAll(".home-tile").forEach((b) => b.addEventListener("click", () => window.SCFlow && window.SCFlow.start(b.dataset.flow)));
       listEl.appendChild(intro);
     }
     history.forEach((m) => {
@@ -140,7 +138,8 @@
     inputEl.value = "";
     grow();
     requestAnimationFrame(grow);
-    if (!history.length) listEl.innerHTML = "";
+    const introEl = listEl.querySelector(".intro");
+    if (introEl) introEl.remove();
     history.push({ role: "user", content: text });
     bubble("user", esc(text));
     const pending = bubble("assistant", '<span class="dots"><span></span><span></span><span></span></span>', "msg-pending");

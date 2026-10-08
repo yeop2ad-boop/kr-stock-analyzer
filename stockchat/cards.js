@@ -229,5 +229,5 @@ window.StockCards = (function () {
     return html;
   }
 
-  return { render: render };
+  return { render: render, fmt: { pct: pct, plain: plain, dir: dir, price: price, money: money, esc: esc, isNum: isNum } };
 })();
