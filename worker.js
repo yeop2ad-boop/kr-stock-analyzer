@@ -1378,6 +1378,21 @@ async function aiRunTool(name, input) {
   }
 }
 
+// Claude API 호출 — Cloudflare Worker의 나가는 주소에 따라 간헐적으로 403(Request not allowed)·5xx가 나므로 짧게 재시도
+async function aiCallClaude(env, payload) {
+  let res;
+  for (let attempt = 0; attempt < 4; attempt++) {
+    res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01" },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok || !(res.status === 403 || res.status === 429 || res.status >= 500)) return res;
+    await new Promise((r) => setTimeout(r, 250 * (attempt + 1)));
+  }
+  return res;
+}
+
 async function handleAiChat(request, env) {
   if (request.method !== "POST") return jsonResponse({ error: "POST만 지원합니다." }, 405);
   if (!env.ANTHROPIC_API_KEY) return jsonResponse({ error: "AI 기능을 준비 중입니다.", code: "not_configured" }, 503);
@@ -1406,24 +1421,26 @@ async function handleAiChat(request, env) {
     await env.CHAT_KV.put(rlKey, String(used + 1), { expirationTtl: 2 * 86400 });
   }
 
+  // 답변을 못 만든 경우엔 차감한 횟수를 돌려줌
+  const refundQuota = async () => {
+    if (env.CHAT_KV) await env.CHAT_KV.put(rlKey, String(used), { expirationTtl: 2 * 86400 }).catch(() => {});
+  };
+
   const convo = [...messages];
   let reply = "";
   const usage = { input: 0, output: 0 };
   try {
     for (let round = 0; round < AI_MAX_TOOL_ROUNDS; round++) {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "content-type": "application/json", "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01" },
-        body: JSON.stringify({
-          model: env.AI_MODEL || AI_DEFAULT_MODEL,
-          max_tokens: AI_MAX_OUTPUT_TOKENS,
-          system: [{ type: "text", text: AI_SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
-          tools: AI_TOOLS,
-          messages: convo,
-        }),
+      const res = await aiCallClaude(env, {
+        model: env.AI_MODEL || AI_DEFAULT_MODEL,
+        max_tokens: AI_MAX_OUTPUT_TOKENS,
+        system: [{ type: "text", text: AI_SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
+        tools: AI_TOOLS,
+        messages: convo,
       });
       if (!res.ok) {
         const detail = (await res.text()).slice(0, 200);
+        await refundQuota();
         return jsonResponse({ error: "AI 응답을 가져오지 못했습니다.", detail, status: res.status }, 502);
       }
       const data = await res.json();
@@ -1445,6 +1462,7 @@ async function handleAiChat(request, env) {
       convo.push({ role: "user", content: toolResults });
     }
   } catch (e) {
+    await refundQuota();
     return jsonResponse({ error: "AI 처리 중 오류가 발생했습니다.", detail: String(e).slice(0, 120) }, 502);
   }
   if (!reply) reply = "답변을 만들지 못했습니다. 질문을 조금 더 구체적으로 다시 해주세요.";
