@@ -1185,7 +1185,7 @@ async function handleAuthAdmin(request, env) {
 const AI_DAILY_LIMIT_DEFAULT = 5; // Worker 변수 AI_DAILY_LIMIT(숫자)로 코드 배포 없이 조절 가능
 const AI_MAX_TOOL_ROUNDS = 5;
 const AI_DEFAULT_MODEL = "claude-haiku-5-5";
-const AI_MAX_OUTPUT_TOKENS = 500;
+const AI_MAX_OUTPUT_TOKENS = 1500; // 답변은 짧게 쓰게 하지만, 모델 내부 처리에 쓰는 토큰 때문에 한도가 낮으면 답변이 중간에 끊김
 const AI_SITE_ORIGIN = "https://marketmap.kr";
 
 const AI_SYSTEM_PROMPT = [
@@ -1491,6 +1491,7 @@ async function handleAiChat(request, env) {
   const convo = [...messages];
   const cards = [];
   let reply = "";
+  let lastStop = "";
   const usage = { input: 0, output: 0 };
   try {
     for (let round = 0; round < AI_MAX_TOOL_ROUNDS; round++) {
@@ -1510,6 +1511,7 @@ async function handleAiChat(request, env) {
       usage.input += (data.usage && data.usage.input_tokens) || 0;
       usage.output += (data.usage && data.usage.output_tokens) || 0;
       const blocks = data.content || [];
+      lastStop = data.stop_reason;
       if (data.stop_reason !== "tool_use") {
         reply = blocks.filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
         break;
@@ -1533,7 +1535,7 @@ async function handleAiChat(request, env) {
     return jsonResponse({ error: "AI 처리 중 오류가 발생했습니다.", detail: String(e).slice(0, 120) }, 502);
   }
   if (!reply) reply = "답변을 만들지 못했습니다. 질문을 조금 더 구체적으로 다시 해주세요.";
-  return jsonResponse({ reply, cards, remaining: Math.max(0, AI_DAILY_LIMIT - used - 1), usage }, 200);
+  return jsonResponse({ reply, cards, stop: lastStop, remaining: Math.max(0, AI_DAILY_LIMIT - used - 1), usage }, 200);
 }
 
 export default {
