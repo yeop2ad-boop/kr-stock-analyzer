@@ -1746,7 +1746,7 @@ function divFrequencyLabel(n) {
 async function handleDividends(request, env, url) {
   const symbol = (url.searchParams.get("symbol") || "").trim().toUpperCase().slice(0, 20);
   if (!symbol) return jsonResponse({ error: "symbol이 필요합니다." }, 400);
-  const cacheKey = new Request("https://dividends.cache/" + encodeURIComponent(symbol));
+  const cacheKey = new Request("https://dividends.cache/v2/" + encodeURIComponent(symbol));
   const cache = caches.default;
   const hit = await cache.match(cacheKey);
   if (hit) return new Response(hit.body, { status: 200, headers: { "Content-Type": "application/json", "X-Cache": "HIT", ...CORS_HEADERS } });
@@ -1838,6 +1838,43 @@ async function handleDividends(request, env, url) {
   upcoming.forEach((u) => {
     if (!shown.some((r) => r.exDate === u.exDate)) shown.unshift({ exDate: u.exDate, payDate: u.payDate, amount: u.amount, price: null, yieldPct: null, changePct: null, tag: "", special: false, upcoming: true });
   });
+
+  // 다음 배당이 아직 공시되지 않았으면 지난 주기·금액으로 "예상" 한 줄을 만든다(확정이 아니라 estimated 표시)
+  const priceNow0 = res0.meta && res0.meta.regularMarketPrice;
+  if (!shown.some((r) => r.upcoming)) {
+    const gaps = [];
+    for (let i = 1; i < all.length; i++) gaps.push((all[i].ts - all[i - 1].ts) / 86400);
+    const tail = gaps.slice(-Math.max(1, Math.min(gaps.length, perYear))).sort((a, b) => a - b);
+    const gap = perYear <= 2 ? 365 / perYear : tail.length ? tail[Math.floor(tail.length / 2)] : 365 / perYear;
+    const L = all.length;
+    let nextTs = perYear <= 2 && L - perYear >= 0 ? all[L - perYear].ts + 365 * 86400 : all[L - 1].ts + gap * 86400;
+    while (nextTs <= now) nextTs += gap * 86400;
+    let estAmt = null;
+    if (perYear <= 2 && L - perYear >= 0) estAmt = all[L - perYear].amount; // 드물게 주면 작년 같은 때 금액
+    else for (let k = L - 1; k >= 0; k--) if (!isSpecial(all[k].amount)) { estAmt = all[k].amount; break; }
+    if (estAmt == null) estAmt = all[L - 1].amount;
+    const lags = [];
+    all.slice(-perYear - 1).forEach((d) => {
+      const ex = isoOf(d.ts);
+      const pay = payByEx.get(ex);
+      if (pay) lags.push((Date.parse(pay) - Date.parse(ex)) / 86400000);
+    });
+    lags.sort((a, b) => a - b);
+    const lag = lags.length ? lags[Math.floor(lags.length / 2)] : null;
+    const exIso = isoOf(nextTs);
+    shown.unshift({
+      exDate: exIso,
+      payDate: lag != null ? new Date(Date.parse(exIso) + lag * 86400000).toISOString().slice(0, 10) : null,
+      amount: estAmt,
+      price: priceNow0 || null,
+      yieldPct: priceNow0 ? (estAmt / priceNow0) * 100 : null,
+      changePct: null,
+      tag: "",
+      special: false,
+      upcoming: true,
+      estimated: true,
+    });
+  }
 
   const lastTs = recent.length ? recent[recent.length - 1].ts : all[all.length - 1].ts;
   const expectedGapDays = 365 / perYear;

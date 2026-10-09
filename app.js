@@ -7923,7 +7923,8 @@ function dividendPanelHtml(d, companyName) {
   const md = (iso) => (iso ? `${iso.slice(2, 4)}.${iso.slice(5, 7)}.${iso.slice(8, 10)}` : "");
   const tagHtml = (r) => {
     const out = [];
-    if (r.upcoming) out.push(`<span class="div-tag div-up-coming">예정</span>`);
+    if (r.upcoming && r.estimated) out.push(`<span class="div-tag div-est">예상 · 아직 공시 전이에요. 주가는 현재가, 날짜·금액은 지난 주기와 금액으로 추정한 값(확정 아님)</span>`);
+    else if (r.upcoming) out.push(`<span class="div-tag div-up-coming">예정 · 회사가 공시한 배당</span>`);
     if (r.tag === "cut") out.push(`<span class="div-tag div-cut">🚨 배당 컷 ${r.changePct.toFixed(0)}% (이전 정기 배당 대비)</span>`);
     else if (r.tag === "down") out.push(`<span class="div-tag div-down">⚠️ 배당 감소 ${r.changePct.toFixed(0)}%</span>`);
     else if (r.tag === "up") out.push(`<span class="div-tag div-up">▲ 배당 증가 +${r.changePct.toFixed(0)}%</span>`);
@@ -7932,12 +7933,13 @@ function dividendPanelHtml(d, companyName) {
   };
   const rowsHtml = (d.rows || [])
     .map((r) => {
-      const dates = `<span class="div-d">배당락 ${escapeHtml(md(r.exDate))}</span><span class="div-d">${r.payDate ? `지급 ${escapeHtml(md(r.payDate))}` : d.payDateAvailable ? "지급일 미정" : "지급일 공시 확인"}</span>`;
+      const est = r.estimated ? "예상 " : "";
+      const dates = `<span class="div-d">${est}배당락 ${escapeHtml(md(r.exDate))}</span><span class="div-d">${r.payDate ? `${est}지급 ${escapeHtml(md(r.payDate))}` : d.payDateAvailable ? "지급일 미정" : "지급일 공시 확인"}</span>`;
       const yieldTxt = r.yieldPct != null ? ` <small>(${r.yieldPct.toFixed(2)}%)</small>` : "";
-      return `<div class="div-row${r.tag === "cut" ? " is-cut" : ""}${r.upcoming ? " is-upcoming" : ""}">
+      return `<div class="div-row${r.tag === "cut" ? " is-cut" : ""}${r.upcoming ? " is-upcoming" : ""}${r.estimated ? " is-estimated" : ""}">
         <div class="div-cells">
           <div class="div-c1">${priceTxt(r.price)}</div>
-          <div class="div-c2"><b>${money(r.amount)}</b>${yieldTxt}</div>
+          <div class="div-c2"><b>${r.estimated ? "약 " : ""}${money(r.amount)}</b>${yieldTxt}</div>
           <div class="div-c3">${dates}</div>
         </div>
         ${tagHtml(r)}
@@ -7957,7 +7959,7 @@ function dividendPanelHtml(d, companyName) {
       ${d.delayed ? `<p class="div-warn">⚠️ 평소 배당 주기보다 늦어지고 있어요. 배당이 미뤄지거나 중단됐을 수 있으니 공시를 확인해 보세요.</p>` : ""}
       <div class="div-head"><span>주가<small>배당락일 전 종가</small></span><span>배당금<small>(배당률)</small></span><span>배당락일<small>/ 지급일</small></span></div>
       ${rowsHtml}
-      <p class="div-note">최근 1년, 최근 배당이 위에 있습니다. <b>배당락일 전날까지</b> 주식을 사야 해당 배당을 받고, 실제 입금은 지급일입니다. 배당률 = 배당금 ÷ 배당락일 전 종가(한 번 기준). 지급일은 미국 종목만 제공하며 한국 종목은 기업 공시를 확인하세요. 투자 참고용 정보이며 투자 권유가 아닙니다.</p>
+
     </div>`;
 }
 
