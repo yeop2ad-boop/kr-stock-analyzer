@@ -480,12 +480,11 @@ window.SCFlow = (function () {
   }
 
   // ---------- 종목 고르기(관심종목 + 직접 검색, AI 아님) ----------
-  // 종목 고르기: 맨 위 종목 검색 → 내 관심종목 4 → 최근 검색 4 → 인기 종목 4(모두 로고 포함)
+  // 종목 고르기: 맨 위 종목 검색 → 최근 검색 4 → 인기 종목 4(모두 로고 포함)
   function chooseStock() {
     return new Promise(async (resolve) => {
       const w = document.createElement("div");
       w.className = "fl-pick";
-      const wl = SCData.watchlist().slice(0, 4);
       let recent = [];
       try {
         // 같은 브라우저의 최근 검색(앱 본체와 공유)
@@ -496,7 +495,6 @@ window.SCFlow = (function () {
       }
       w.innerHTML =
         '<div class="fl-sub">종목 검색</div><div class="fl-search"><input type="text" placeholder="종목명이나 티커 (예: 삼성전자, AAPL)" autocomplete="off"/><div class="fl-suggest"></div></div>' +
-        (wl.length ? '<div class="fl-sub">내 관심종목</div><div class="fl-choices chips-mode cols-2 g-wl"></div>' : "") +
         (recent.length ? '<div class="fl-sub">최근 검색</div><div class="fl-choices chips-mode cols-2 g-recent"></div>' : "") +
         '<div class="fl-sub g-pop-t" style="display:none">인기 종목</div><div class="fl-choices chips-mode cols-2 g-pop"></div>';
       listEl().appendChild(w);
@@ -528,7 +526,6 @@ window.SCFlow = (function () {
           box.appendChild(b);
         });
       };
-      fill(w.querySelector(".g-wl"), wl);
       fill(w.querySelector(".g-recent"), recent);
       // 인기 종목: 전체 이용자의 최근 24시간 검색 집계(없으면 이 구역은 숨김)
       fetch(WORKER + "/search-popular")
