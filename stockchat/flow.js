@@ -346,42 +346,48 @@ window.SCFlow = (function () {
     el.classList.remove("msg-pending");
     return { el, res };
   }
-  async function newsFlow(symbol, name, t) {
-    if (!(await announce(stockHead(symbol, name, PLAIN.news.what), t))) return;
-    const req = fetch(WORKER + "/news-summary?symbol=" + encodeURIComponent(symbol) + "&name=" + encodeURIComponent(name))
+  // offset: 0 = 최근 5건, 5 = 그다음 5건 … (더보기를 누를 때마다 다음 5건을 AI가 같은 형식으로 요약)
+  async function newsFlow(symbol, name, t, offset) {
+    offset = offset || 0;
+    const head = offset ? "<b>" + esc(name) + "</b>의 이전 뉴스 " + (offset + 1) + "~" + (offset + 5) + "번째를 정리해요" : stockHead(symbol, name, PLAIN.news.what);
+    if (!(await announce(head, t))) return;
+    const req = fetch(WORKER + "/news-summary?symbol=" + encodeURIComponent(symbol) + "&name=" + encodeURIComponent(name) + "&offset=" + offset)
       .then((r) => (r.ok ? r.json() : null))
       .catch(() => null);
     const { el, res } = await botWhile(req, t);
     if (!el) return;
     if (res && res.empty) {
-      el.textContent = "최근 1개월 안의 뉴스를 찾지 못했어요.";
+      el.textContent = offset ? "더 오래된 뉴스는 없어요. 최근 1개월 안의 뉴스는 모두 정리했어요." : "최근 1개월 안의 뉴스를 찾지 못했어요.";
       return;
     }
     if (!res || !res.summary) {
-      el.textContent = "AI 요약을 지금은 만들 수 없어요. 뉴스 목록을 바로 보여드릴게요.";
-      embed({ view: "detail", ticker: symbol, sub: "news" });
+      el.textContent = "AI 뉴스 요약을 지금은 만들 수 없어요. 잠시 후 다시 눌러주세요.";
       return;
     }
+    if (window.SCUsage && res.usage) window.SCUsage.add(res.usage.tokens, "뉴스 요약");
     const items = (res.items || [])
       .map(
         (it, i) =>
-          '<li><a href="' + esc(safeUrl(it.link)) + '" target="_blank" rel="noopener"><b>' + esc(it.title) + "</b></a>" +
+          '<li value="' + (offset + i + 1) + '"><b>' + esc(it.title) + "</b>" +
           (it.gist ? "<br><span>" + esc(it.gist) + "</span>" : "") +
-          '<small>' + esc([it.publisher, shortDate(it.date)].filter(Boolean).join(" · ")) + "</small></li>"
+          "<small>" + esc([it.publisher, shortDate(it.date)].filter(Boolean).join(" · ")) +
+          '<a class="news-go" href="' + esc(safeUrl(it.link)) + '" target="_blank" rel="noopener" aria-label="원문 보기" title="원문(출처)으로 이동"><svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></a></small></li>'
       )
       .join("");
     el.innerHTML =
-      "<b>AI가 최근 뉴스 " + (res.items || []).length + "건을 읽고 정리했어요</b>" +
+      "<b>AI가 " + (offset ? "이전 " : "최근 ") + "뉴스 " + (res.items || []).length + "건을 읽고 정리했어요</b>" +
       '<p class="news-sum">' + esc(res.summary) + "</p>" +
       '<ol class="news-ai">' + items + "</ol>" +
       '<p class="news-note">AI가 기사 제목을 바탕으로 정리한 내용이라 정확한 내용은 원문에서 확인하세요. 투자 권유가 아닙니다.</p>';
     scroll();
-    // 더보기: 마켓맵의 뉴스 목록(최대 10건) — 다른 흐름을 끊지 않도록 따로 기다린다
-    choose([{ id: "more", label: "뉴스 더보기", sub: "이 회사의 최근 뉴스 목록(최대 10건)", accent: true, redo: () => showNewsList(symbol, name) }], { cols: 1, stack: true }).then(() => showNewsList(symbol, name));
-  }
-  async function showNewsList(symbol, name) {
-    const t = token;
-    if (await announce("<b>" + esc(name) + "</b> 뉴스 목록을 가져와요", t)) embed({ view: "detail", ticker: symbol, sub: "news" });
+    if (res.hasMore) {
+      // 더보기: 그다음 5건을 같은 방식으로 요약 — 다른 흐름을 끊지 않도록 따로 기다린다
+      const next = () => {
+        const t2 = token;
+        newsFlow(symbol, name, t2, offset + 5);
+      };
+      choose([{ id: "more", label: "뉴스 더보기", sub: "그다음 뉴스 5건도 AI가 정리해줘요", accent: true, redo: next }], { cols: 1, stack: true }).then(next);
+    }
   }
 
   // 종목 상세 화면 하나를 올린다(지나간 버튼을 다시 눌렀을 때도 사용)

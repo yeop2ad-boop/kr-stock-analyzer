@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.json" />
 <link rel="icon" href="icon.svg" type="image/svg+xml" />
 <link rel="apple-touch-icon" href="icon.svg" />
-<link rel="stylesheet" href="style.css?v=20" />
+<link rel="stylesheet" href="style.css?v=22" />
 </head>
 <body>
 <div class="app">
@@ -24,6 +24,7 @@
   <main id="list" class="list" aria-live="polite"></main>
 
   <footer class="foot">
+    <div class="usage" id="usage" aria-live="polite"><div class="u-row"><span class="u-label">오늘 AI 사용량</span><span class="u-num"></span></div><div class="u-bar"><i></i></div></div>
     <form id="form" class="form">
       <textarea id="input" rows="1" maxlength="300" placeholder="종목이나 궁금한 점을 물어보세요 (AI)" enterkeyhint="send"></textarea>
       <button type="submit" id="send" aria-label="보내기">
@@ -35,7 +36,7 @@
 </div>
 <script src="cards.js?v=3"></script>
 <script src="data.js?v=3"></script>
-<script src="flow.js?v=36"></script>
-<script src="app.js?v=13"></script>
+<script src="flow.js?v=38"></script>
+<script src="app.js?v=14"></script>
 </body>
 </html>

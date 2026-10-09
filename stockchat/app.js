@@ -14,6 +14,65 @@
   let history = [];
   let busy = false;
 
+  // ---------- 하루 AI 사용량(토큰) 게이지 ----------
+  // 앞으로 토큰 방식으로 가는 것을 미리 보여주는 화면 효과다. 지금은 테스트 중이라 실제로 막지는 않고,
+  // AI를 많이 쓰는 기능(뉴스 요약 등)일수록 게이지가 빨리 차서 한도에 가까워지는 모습만 보여준다.
+  const USAGE_KEY = "stockchat_usage_v1";
+  const TEST_DAILY_TOKENS = 20000;
+  const kstDay = () => new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+  const fmtTok = (n) => Math.round(n).toLocaleString("ko-KR");
+  const tokensOf = (u) => Math.round((u.input || 0) + (u.output || 0) + (u.cacheWrite || 0) + (u.cacheRead || 0) * 0.1);
+  function loadUsage() {
+    try {
+      const v = JSON.parse(localStorage.getItem(USAGE_KEY) || "null");
+      if (v && v.day === kstDay()) return v;
+    } catch (e) {
+      /* 저장소를 못 읽어도 화면은 동작 */
+    }
+    return { day: kstDay(), used: 0, warned: false };
+  }
+  const usage = loadUsage();
+  function renderUsage() {
+    const box = document.getElementById("usage");
+    if (!box) return;
+    const pct = Math.min(100, (usage.used / TEST_DAILY_TOKENS) * 100);
+    box.querySelector(".u-bar i").style.width = pct + "%";
+    box.querySelector(".u-num").textContent = fmtTok(usage.used) + " / " + fmtTok(TEST_DAILY_TOKENS) + " 토큰";
+    box.classList.toggle("warn", pct >= 70 && pct < 100);
+    box.classList.toggle("full", pct >= 100);
+    box.querySelector(".u-label").textContent = pct >= 100 ? "오늘 한도에 도달했어요" : pct >= 70 ? "오늘 한도에 가까워요" : "오늘 AI 사용량";
+  }
+  window.SCUsage = {
+    add(tokens, label) {
+      tokens = Math.round(tokens || 0);
+      if (tokens <= 0) return;
+      usage.used += tokens;
+      try {
+        localStorage.setItem(USAGE_KEY, JSON.stringify(usage));
+      } catch (e) {
+        /* 저장 실패해도 계속 */
+      }
+      renderUsage();
+      const box = document.getElementById("usage");
+      if (box) {
+        const pop = document.createElement("span");
+        pop.className = "u-pop";
+        pop.textContent = "+" + fmtTok(tokens) + (label ? " · " + label : "");
+        box.appendChild(pop);
+        setTimeout(() => pop.remove(), 1800);
+      }
+      if (usage.used >= TEST_DAILY_TOKENS && !usage.warned) {
+        usage.warned = true;
+        try {
+          localStorage.setItem(USAGE_KEY, JSON.stringify(usage));
+        } catch (e) {
+          /* ignore */
+        }
+        bubble("assistant", "<b>오늘 AI 사용 한도에 도달했어요</b><br>정식 서비스에서는 여기서 내일까지 AI 답변·뉴스 요약이 잠깁니다. 지금은 테스트 중이라 제한 없이 계속 쓸 수 있어요. 마켓맵 화면(순위·차트 등)은 AI를 쓰지 않아 한도와 상관없이 볼 수 있어요.");
+      }
+    },
+  };
+
   function load() {
     try {
       const v = JSON.parse(localStorage.getItem(STORE_KEY) || "[]");
@@ -122,8 +181,8 @@
     });
   }
 
-  function setRemain(n) {
-    remainEl.textContent = "오늘 남은 질문 " + n + "회";
+  function setRemain() {
+    remainEl.textContent = ""; // 질문 횟수 대신 토큰 게이지(#usage)를 쓴다
   }
   function grow() {
     inputEl.style.height = "auto";
@@ -220,6 +279,7 @@
         pending.classList.add("msg-error");
         pending.textContent = data.error || "답변을 가져오지 못했습니다. 잠시 후 다시 시도해주세요.";
       } else {
+        if (data.usage) window.SCUsage.add(tokensOf(data.usage), "AI 답변");
         data.reply = String(data.reply).replace(/^\[요약\]\s*\n+/, "[요약] "); // [요약]만 한 줄 차지하지 않게
         const cards = Array.isArray(data.cards) ? data.cards : [];
         history.push({ role: "assistant", content: data.reply, cards });
@@ -263,4 +323,5 @@
 
   load();
   renderAll();
+  renderUsage();
 })();

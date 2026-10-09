@@ -1627,7 +1627,8 @@ async function handleNewsSummary(request, env, url) {
   const name = (url.searchParams.get("name") || "").trim().slice(0, 40);
   if (!symbol) return jsonResponse({ error: "symbol이 필요합니다." }, 400);
 
-  const cacheKey = new Request("https://news-summary.cache/" + encodeURIComponent(symbol));
+  const offset = Math.min(15, Math.max(0, parseInt(url.searchParams.get("offset") || "0", 10) || 0)); // 0, 5, 10, 15 — 더보기마다 다음 5건
+  const cacheKey = new Request("https://news-summary.cache/" + encodeURIComponent(symbol) + "/" + offset);
   const cache = caches.default;
   const hit = await cache.match(cacheKey);
   if (hit) return new Response(hit.body, { status: 200, headers: { "Content-Type": "application/json", "X-Cache": "HIT", ...CORS_HEADERS } });
@@ -1636,8 +1637,8 @@ async function handleNewsSummary(request, env, url) {
   const all = (await fetchNewsForSymbol(symbol, name))
     .filter((n) => n.title && (!n.time || n.time >= monthAgo))
     .sort((a, b) => (b.time || 0) - (a.time || 0));
-  const top = all.slice(0, 5);
-  if (!top.length) return jsonResponse({ symbol, name, empty: true, summary: "", items: [] }, 200);
+  const top = all.slice(offset, offset + 5);
+  if (!top.length) return jsonResponse({ symbol, name, empty: true, done: offset > 0, summary: "", items: [] }, 200);
 
   const payload = {
     model: env.AI_MODEL || AI_DEFAULT_MODEL,
@@ -1679,6 +1680,13 @@ async function handleNewsSummary(request, env, url) {
       };
     }),
     total: all.length,
+    offset,
+    hasMore: all.length > offset + 5,
+    // 스톡챗 하루 토큰 게이지용(입력+출력+캐시 쓰기, 캐시 읽기는 10%로 환산)
+    usage: (() => {
+      const u = data.usage || {};
+      return { tokens: Math.round((u.input_tokens || 0) + (u.output_tokens || 0) + (u.cache_creation_input_tokens || 0) + (u.cache_read_input_tokens || 0) * 0.1) };
+    })(),
   };
   const resp = new Response(JSON.stringify(out), { status: 200, headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=900", ...CORS_HEADERS } });
   await cache.put(cacheKey, resp.clone());
