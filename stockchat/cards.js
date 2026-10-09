@@ -218,15 +218,11 @@ window.StockCards = (function () {
     return html + "</section>";
   }
 
+  // 답변마다 카드는 1개만: 한 종목이면 가격·차트 카드, 둘 이상이면 비교 카드.
+  // 재무·핵심지표·리스크·뉴스는 답변 아래 버튼으로 마켓맵 화면을 그대로 열어 본다.
   function render(cards) {
     if (!cards || !cards.length) return "";
-    let html = "";
-    if (cards.length >= 2) html += compareCard(cards);
-    // 한 종목이면 상세(차트·지표·연간 매출/순이익·월별 수익률), 비교(2개 이상)면 비교 카드 + 종목별 차트만 보여 길이를 줄임
-    cards.forEach((c) => {
-      html += cards.length >= 2 ? stockCard(c) : stockCard(c) + metricCard(c) + finCard(c) + winCard(c);
-    });
-    return html;
+    return cards.length >= 2 ? compareCard(cards) : stockCard(cards[0]);
   }
 
   return { render: render, fmt: { pct: pct, plain: plain, dir: dir, price: price, money: money, esc: esc, isNum: isNum } };

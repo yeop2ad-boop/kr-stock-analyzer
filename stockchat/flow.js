@@ -163,19 +163,21 @@ window.SCFlow = (function () {
 
   // ---------- 종목 → 핵심정보 / 리스크점검 ----------
   async function stockMenu(symbol, name, t, fromRank) {
+    const info = await SCData.lookup(symbol);
+    const isStock = !info || info.market === "kr" || info.market === "us";
     for (;;) {
       await bot(esc(name) + " — 무엇을 볼까요?", t);
       if (!alive(t)) return;
       const act = await choose(
         [
           { id: "sreport", label: "핵심정보", sub: "핵심 5개 지표·순위" },
-          { id: "risk", label: "리스크점검", sub: "위험·주의·양호 점검" },
+          isStock && { id: "risk", label: "리스크점검", sub: "위험·주의·양호 점검" },
           { id: "summary", label: "개요", sub: "시세·차트" },
-        ],
-        { cols: 3 }
+        ].filter(Boolean),
+        { cols: isStock ? 3 : 2 }
       );
       if (!alive(t)) return;
-      await bot(esc(name) + " " + act.label + "을(를) 가져와요", t, 260);
+      await bot(esc(name) + " " + act.label + " 화면을 가져와요", t, 260);
       if (!alive(t)) return;
       embed({ view: "detail", ticker: symbol, sub: act.id });
       await bot("이어서 볼까요?", t, 500);
@@ -359,17 +361,21 @@ window.SCFlow = (function () {
     const sym = String(st.symbol || "");
     const market = item ? item.market : /\.(KS|KQ)$/.test(sym) ? "kr" : /-USD$/.test(sym) ? "crypto" : "us";
     const region = item && item.region ? item.region : null;
+    // 마켓맵 상세 화면에는 코인·ETF에 재무제표(매출·순이익)·리스크 항목이 없어서 주식일 때만 보여준다
+    const isStock = market === "kr" || market === "us";
     const all = [
-      { id: "sreport", label: st.name + " 핵심지표" },
-      { id: "risk", label: st.name + " 리스크" },
-    ];
+      isStock && { id: "revenue", label: "재무제표 확인하기", what: "재무제표" },
+      { id: "sreport", label: "핵심지표 보기", what: "핵심지표" },
+      isStock && { id: "risk", label: "리스크 점검하기", what: "리스크 점검" },
+      { id: "news", label: "주요 뉴스보기", what: "주요 뉴스" },
+    ].filter(Boolean);
     if (m && m.keys[market]) all.push({ id: "rank", label: MARKET_NAME[market] + (market === "etf" && region ? " " + (region === "kr" ? "한국" : "미국") : "") + " " + labelOf(market, m.keys[market]) + " 순위", key: m.keys[market] });
     const done = new Set();
     let first = true;
     for (;;) {
       const left = all.filter((i) => !done.has(i.id));
       if (!left.length) return;
-      await bot(first ? esc(st.name) + " — 더 자세히 볼까요?" : "이어서 볼까요?", t, 300);
+      await bot(first ? esc(st.name) + " — 더 볼까요?" : "이어서 볼까요?", t, 300);
       first = false;
       if (!alive(t)) return;
       const pick = await choose(left.concat([{ id: "home", label: "처음으로", accent: true }]), { cols: 1 });
@@ -377,7 +383,7 @@ window.SCFlow = (function () {
       if (pick.id === "home") return home();
       done.add(pick.id);
       if (pick.id === "rank") return searchFlow({ market, key: pick.key, region });
-      await bot(esc(st.name) + " " + (pick.id === "risk" ? "리스크점검" : "핵심지표") + "를 가져와요", t, 260);
+      await bot(esc(st.name) + " " + esc(pick.what) + " 화면을 가져와요", t, 260);
       if (!alive(t)) return;
       embed({ view: "detail", ticker: st.symbol, sub: pick.id });
     }

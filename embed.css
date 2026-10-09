@@ -24,3 +24,5 @@ html[data-embed-sub] #summarySubtabNav { display: none !important; }
 html[data-embed-sub="sreport"] [data-summary-subtabpanel]:not([data-summary-subtabpanel="sreport"]) { display: none !important; }
 html[data-embed-sub="risk"] [data-summary-subtabpanel]:not([data-summary-subtabpanel="risk"]) { display: none !important; }
 html[data-embed-sub="summary"] [data-summary-subtabpanel]:not([data-summary-subtabpanel="summary"]) { display: none !important; }
+html[data-embed-sub="revenue"] [data-summary-subtabpanel]:not([data-summary-subtabpanel="revenue"]) { display: none !important; }
+html[data-embed-sub="news"] [data-summary-subtabpanel]:not([data-summary-subtabpanel="news"]) { display: none !important; }
