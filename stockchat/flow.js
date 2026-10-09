@@ -146,6 +146,8 @@ window.SCFlow = (function () {
       em.wrap.classList.add("ready");
       if (em.capped) em.wrap.classList.toggle("overflow", d.h > CAP_H + 30); // 한 화면 분량을 넘을 때만 "더보기"
       if (em.stick) scroll();
+    } else if (d.type === "scan") {
+      scanMark(em, d);
     } else if (d.type === "rows") {
       em.total = d.total;
       syncMore(em);
@@ -153,12 +155,48 @@ window.SCFlow = (function () {
       em.onOpen(d.symbol);
     }
   });
+  // ---------- 전체 검색 진행 책갈피: 오른쪽 가장자리에 붙어 있고 누르면 그 화면으로 이동, 색이 차오르다 끝나면 완료 표시 ----------
+  let mark = null;
+  function scanMark(em, d) {
+    if (d.state === "run") {
+      if (!mark || mark.em !== em) {
+        if (mark) mark.el.remove();
+        const el = document.createElement("button");
+        el.type = "button";
+        el.className = "scan-mark";
+        el.setAttribute("aria-label", "전체 검색 진행 상황, 누르면 검색 화면으로 이동");
+        el.innerHTML = '<span class="sm-fill"></span><svg class="sm-logo" viewBox="0 0 64 64" aria-hidden="true"><polyline points="14,47 27,31 36,40 50,18" fill="none" stroke="#fffaf3" stroke-width="8" stroke-linejoin="miter" stroke-linecap="butt"/></svg><span class="sm-txt"></span>';
+        el.addEventListener("click", () => {
+          em.wrap.scrollIntoView({ block: "start", behavior: "smooth" });
+          if (el.classList.contains("done")) {
+            el.remove();
+            if (mark && mark.el === el) mark = null;
+          }
+        });
+        document.querySelector(".app").appendChild(el);
+        mark = { em, el };
+      }
+      const el = mark.el;
+      el.classList.remove("done");
+      const pct = d.total ? Math.min(100, Math.round((d.done / d.total) * 100)) : null;
+      el.classList.toggle("indet", pct == null);
+      el.querySelector(".sm-fill").style.height = (pct == null ? 100 : pct) + "%";
+      el.title = pct == null ? "전체 검색 중" : "전체 검색 중 " + pct + "%";
+    } else if (d.state === "done" && mark && mark.em === em) {
+      mark.el.classList.remove("indet");
+      mark.el.classList.add("done");
+      mark.el.querySelector(".sm-fill").style.height = "100%";
+      mark.el.title = "검색 완료 — 눌러서 보기";
+    }
+  }
   // 순위 표 "더보기" 버튼 상태: 남은 줄이 있으면 "더보기 (+N개)", 다 보였으면 "접기"
   function syncMore(em) {
     const more = em.wrap.querySelector(".embed-more");
     if (!more) return;
     em.wrap.classList.toggle("has-more", em.total > ROW_FIRST);
-    more.textContent = em.limit >= em.total ? "접기" : "더보기 (+" + Math.min(ROW_STEP, em.total - em.limit) + "개)";
+    const all = em.limit >= em.total;
+    em.wrap.classList.toggle("all", all);
+    more.textContent = all ? "접기" : Math.min(ROW_STEP, em.total - em.limit) + "개 더보기";
   }
   // params: {view, market, item, region, ticker, sub} — 마켓맵 본체의 ?embed= 주소로 불러온다
   function embed(params, onOpen) {
@@ -817,6 +855,10 @@ window.SCFlow = (function () {
     else analyzeFlow();
   }
   function reset() {
+    if (mark) {
+      mark.el.remove();
+      mark = null;
+    }
     token++;
   }
   return { matchFullView, fullViewNow, matchScreen, screenFlow, matchStockAction, stockActionShow, start, reset, home, matchRanking, findMention, rankFromText, offerForStock, matchBuySell, buySellSummary, matchExplain, explainShow };

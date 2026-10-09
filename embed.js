@@ -111,6 +111,32 @@
     if (btn) btn.click();
   });
 
+  // 전체 검색(350·500종목)이 진행 중이면 "n/500 종목 전체 검색 중" 문구를 읽어 부모에 진행률을 알린다(숫자 없는 화면은 진행 중/끝만)
+  var scanning = false, lastScan = "";
+  function scanProgress() {
+    var found = null;
+    document.querySelectorAll(".top30-status").forEach(function (el) {
+      if (found || el.offsetParent === null) return;
+      var t = el.textContent || "";
+      if (t.indexOf("전체 검색 중") >= 0) found = t;
+    });
+    if (found) {
+      var m = found.match(/(\d+)\s*\/\s*(\d+)\s*종목/);
+      var msg = m ? { done: +m[1], total: +m[2] } : { done: 0, total: 0 };
+      var key = msg.done + "/" + msg.total;
+      if (!scanning || key !== lastScan) {
+        scanning = true;
+        lastScan = key;
+        post({ type: "scan", state: "run", done: msg.done, total: msg.total });
+      }
+    } else if (scanning) {
+      scanning = false;
+      lastScan = "";
+      post({ type: "scan", state: "done" });
+    }
+  }
+  setInterval(scanProgress, 400);
+
   // 순위 표는 처음엔 N줄만 보이고 부모(스톡챗)의 "더보기"로 10줄씩 늘린다(?limit=6, 이후 message {type:"limit"})
   var limitN = q.get("limit") ? parseInt(q.get("limit"), 10) : null;
   var lastTotal = -1;

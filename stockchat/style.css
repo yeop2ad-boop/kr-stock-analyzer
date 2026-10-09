@@ -266,3 +266,43 @@ body {
 .embed-more { display: none; }
 .embed-block.rows .embed-more { position: relative; height: auto; padding: 13px 0; background: var(--card); border-top: 1px solid var(--tile); }
 .embed-block.rows.has-more .embed-more { display: flex; align-items: center; justify-content: center; }
+
+/* 전체 검색 진행 책갈피(오른쪽 가장자리) */
+.app { position: relative; }
+.scan-mark { position: absolute; right: 0; top: 46%; z-index: 20; width: 30px; height: 112px; padding: 0; border: 0; border-radius: 12px 0 0 12px; overflow: hidden; background: var(--tile); color: var(--text); box-shadow: -2px 2px 10px rgba(0, 0, 0, 0.14); cursor: pointer; }
+.scan-mark .sm-fill { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background: var(--accent); opacity: 0.85; transition: height 0.5s ease; }
+.scan-mark .sm-txt { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl; font-size: 12px; font-weight: 800; letter-spacing: 0.04em; color: var(--text); mix-blend-mode: normal; text-shadow: 0 0 3px var(--tile); }
+.scan-mark.indet .sm-fill { animation: smPulse 1.4s ease-in-out infinite; }
+.scan-mark.done { background: #2e9e6b; }
+.scan-mark.done .sm-fill { background: #2e9e6b; opacity: 1; }
+.scan-mark.done .sm-txt { color: #fff; text-shadow: none; }
+@keyframes smPulse { 0% { opacity: 0.25; } 50% { opacity: 0.85; } 100% { opacity: 0.25; } }
+
+/* ChatGPT·Claude 같은 얇은 스크롤: 트랙은 투명, 막대는 둥글고 연한 회색(마우스를 올리면 진해짐) */
+.list, .embed-block, textarea { scrollbar-width: thin; scrollbar-color: rgba(120, 118, 112, 0.35) transparent; }
+.list::-webkit-scrollbar { width: 8px; }
+.list::-webkit-scrollbar-track { background: transparent; }
+.list::-webkit-scrollbar-thumb { background: rgba(120, 118, 112, 0.32); border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
+.list:hover::-webkit-scrollbar-thumb { background: rgba(120, 118, 112, 0.5); background-clip: padding-box; }
+.list::-webkit-scrollbar-thumb:hover { background: rgba(120, 118, 112, 0.7); background-clip: padding-box; }
+textarea::-webkit-scrollbar { width: 6px; }
+textarea::-webkit-scrollbar-thumb { background: rgba(120, 118, 112, 0.32); border-radius: 999px; }
+
+/* 책갈피를 스톡챗 로고 모양으로 작게: 회색 로고에 주황색이 아래에서 차오르고, 다 차면 완료 */
+.scan-mark { top: 46%; right: 6px; width: 30px; height: 30px; border-radius: 9px; background: #d8d4ca; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18); }
+.scan-mark .sm-fill { opacity: 1; background: var(--accent); }
+.scan-mark .sm-logo { position: absolute; inset: 0; width: 100%; height: 100%; }
+.scan-mark .sm-txt { display: none; }
+.scan-mark.done { background: var(--accent); animation: smPop 0.5s ease; }
+.scan-mark.done .sm-fill { background: var(--accent); }
+@keyframes smPop { 0% { transform: scale(1); } 40% { transform: scale(1.3); } 100% { transform: scale(1); } }
+@media (prefers-color-scheme: dark) { .scan-mark { background: #4a4843; } }
+
+/* 더보기 버튼: 스톡챗 칩 스타일(연한 타일 배경 · 둥근 모서리 · 주황 글씨 · 화살표) */
+.embed-block.rows .embed-more, .embed-block.capped.open .embed-more { position: relative; left: auto; right: auto; bottom: auto; height: 44px; width: calc(100% - 24px); margin: 6px 12px 12px; padding: 0; border: 0; border-radius: 14px; background: var(--tile); color: var(--accent); font-size: 14px; font-weight: 700; gap: 6px; align-items: center; justify-content: center; transition: transform 0.12s ease, filter 0.12s ease; }
+.embed-block.capped:not(.open) .embed-more { color: var(--accent); font-weight: 700; }
+.embed-more::after { content: ""; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform 0.2s ease; }
+.embed-block.all .embed-more::after, .embed-block.capped.open .embed-more::after { transform: translateY(2px) rotate(225deg); }
+.embed-block.rows .embed-more:hover, .embed-block.capped.open .embed-more:hover { filter: brightness(0.97); }
+.embed-block.rows .embed-more:active, .embed-block.capped.open .embed-more:active { transform: scale(0.98); }
+.embed-block.rows.has-more .embed-more, .embed-block.capped.overflow .embed-more { display: flex; }
