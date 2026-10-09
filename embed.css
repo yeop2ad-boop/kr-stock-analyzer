@@ -26,3 +26,15 @@ html[data-embed-sub="risk"] [data-summary-subtabpanel]:not([data-summary-subtabp
 html[data-embed-sub="summary"] [data-summary-subtabpanel]:not([data-summary-subtabpanel="summary"]) { display: none !important; }
 html[data-embed-sub="revenue"] [data-summary-subtabpanel]:not([data-summary-subtabpanel="revenue"]) { display: none !important; }
 html[data-embed-sub="news"] [data-summary-subtabpanel]:not([data-summary-subtabpanel="news"]) { display: none !important; }
+
+/* 요약(개요) 화면 맨 위: 이름 · 현재가 · 등락을 상세 상단처럼 크게(뒤로가기·검색·알림 아이콘은 숨김) */
+html.embed-detail #companyPanelCloseBtn,
+html.embed-detail #companyPanel .detail-bar-actions { display: none !important; }
+html.embed-detail[data-embed-sub="summary"] #companyPanel .company-panel-bar { display: flex !important; background: transparent !important; padding: 16px 16px 6px !important; border: none !important; }
+html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity { gap: 12px; }
+html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-logo .ticker-logo-wrap { width: 46px !important; height: 46px !important; }
+html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-name { font-size: 19px !important; font-weight: 800 !important; }
+html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-priceline { overflow: visible !important; align-items: baseline !important; gap: 8px !important; }
+html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-priceline .detail-identity-price { font-size: 30px !important; font-weight: 800 !important; letter-spacing: -0.8px !important; line-height: 1.15; }
+html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-priceline .detail-identity-change { font-size: 16px !important; font-weight: 700 !important; letter-spacing: -0.3px !important; }
+
