@@ -1,6 +1,6 @@
 {
-  "name": "스톡챗",
-  "short_name": "스톡챗",
+  "name": "StockCHAT",
+  "short_name": "StockCHAT",
   "description": "종목명만 말하면 AI가 시세·재무·승률 데이터로 분석해주는 증권 채팅",
   "start_url": "./",
   "scope": "./",
