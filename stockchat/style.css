@@ -317,3 +317,12 @@ textarea::-webkit-scrollbar-thumb { background: rgba(120, 118, 112, 0.32); borde
 .fl-choices.stack .fl-btn { flex-direction: column; align-items: flex-start; gap: 3px; }
 .fl-choices.stack .fl-btn small { text-align: left; }
 .st-ld { color: var(--muted); font-weight: 600; animation: fadeIn 0.3s ease; } @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* AI 뉴스 요약 말풍선 */
+.news-sum { margin: 8px 0 10px; line-height: 1.6; }
+.news-ai { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 10px; }
+.news-ai li { line-height: 1.45; }
+.news-ai li a { color: var(--text); text-decoration: none; }
+.news-ai li span { font-size: 13.5px; color: var(--muted); }
+.news-ai li small { display: block; margin-top: 2px; font-size: 12px; color: var(--muted); }
+.news-note { margin: 12px 0 0; font-size: 12px; color: var(--muted); }

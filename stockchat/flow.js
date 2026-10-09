@@ -328,9 +328,66 @@ window.SCFlow = (function () {
     summary: { id: "summary", label: "지금 주가랑 차트 보여줘", sub: "현재 가격과 지금까지의 흐름", what: "현재 주가·차트(개요)" },
   };
 
+  // ---------- 주요 뉴스: AI가 최근 5건을 쉬운 말로 요약 + "뉴스 더보기"(마켓맵 뉴스 목록) ----------
+  // 요약은 Worker(/news-summary)가 기사 제목을 근거로 만든다(15분 재사용). 실패하면 마켓맵 뉴스 목록을 바로 보여준다.
+  const safeUrl = (u) => (/^https?:\/\//i.test(String(u || "")) ? u : "#");
+  const shortDate = (d) => (d ? String(d).slice(5).replace("-", "/") : "");
+  async function botWhile(promise, t) {
+    const el = document.createElement("div");
+    el.className = "msg msg-assistant msg-pending";
+    el.innerHTML = DOTS;
+    listEl().appendChild(el);
+    scroll();
+    const res = await promise;
+    if (!alive(t)) {
+      el.remove();
+      return { el: null, res };
+    }
+    el.classList.remove("msg-pending");
+    return { el, res };
+  }
+  async function newsFlow(symbol, name, t) {
+    if (!(await announce(stockHead(symbol, name, PLAIN.news.what), t))) return;
+    const req = fetch(WORKER + "/news-summary?symbol=" + encodeURIComponent(symbol) + "&name=" + encodeURIComponent(name))
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+    const { el, res } = await botWhile(req, t);
+    if (!el) return;
+    if (res && res.empty) {
+      el.textContent = "최근 1개월 안의 뉴스를 찾지 못했어요.";
+      return;
+    }
+    if (!res || !res.summary) {
+      el.textContent = "AI 요약을 지금은 만들 수 없어요. 뉴스 목록을 바로 보여드릴게요.";
+      embed({ view: "detail", ticker: symbol, sub: "news" });
+      return;
+    }
+    const items = (res.items || [])
+      .map(
+        (it, i) =>
+          '<li><a href="' + esc(safeUrl(it.link)) + '" target="_blank" rel="noopener"><b>' + esc(it.title) + "</b></a>" +
+          (it.gist ? "<br><span>" + esc(it.gist) + "</span>" : "") +
+          '<small>' + esc([it.publisher, shortDate(it.date)].filter(Boolean).join(" · ")) + "</small></li>"
+      )
+      .join("");
+    el.innerHTML =
+      "<b>AI가 최근 뉴스 " + (res.items || []).length + "건을 읽고 정리했어요</b>" +
+      '<p class="news-sum">' + esc(res.summary) + "</p>" +
+      '<ol class="news-ai">' + items + "</ol>" +
+      '<p class="news-note">AI가 기사 제목을 바탕으로 정리한 내용이라 정확한 내용은 원문에서 확인하세요. 투자 권유가 아닙니다.</p>';
+    scroll();
+    // 더보기: 마켓맵의 뉴스 목록(최대 10건) — 다른 흐름을 끊지 않도록 따로 기다린다
+    choose([{ id: "more", label: "뉴스 더보기", sub: "이 회사의 최근 뉴스 목록(최대 10건)", accent: true, redo: () => showNewsList(symbol, name) }], { cols: 1, stack: true }).then(() => showNewsList(symbol, name));
+  }
+  async function showNewsList(symbol, name) {
+    const t = token;
+    if (await announce("<b>" + esc(name) + "</b> 뉴스 목록을 가져와요", t)) embed({ view: "detail", ticker: symbol, sub: "news" });
+  }
+
   // 종목 상세 화면 하나를 올린다(지나간 버튼을 다시 눌렀을 때도 사용)
   async function detailOne(symbol, name, a) {
     const t = token;
+    if (a.id === "news") return newsFlow(symbol, name, t);
     if (await announce(stockHead(symbol, name, a.what || a.label), t)) embed({ view: "detail", ticker: symbol, sub: a.id });
   }
 
@@ -635,6 +692,10 @@ window.SCFlow = (function () {
       if (pick.id === "home") return home();
       done.add(pick.id);
       if (pick.id === "rank") return searchFlow({ market, key: pick.key, region });
+      if (pick.id === "news") {
+        await newsFlow(st.symbol, st.name, t);
+        continue;
+      }
       await announce(stockHead(st.symbol, st.name, pick.what), t);
       if (!alive(t)) return;
       embed({ view: "detail", ticker: st.symbol, sub: pick.id });
@@ -684,7 +745,7 @@ window.SCFlow = (function () {
       line = "";
     }
     if (!alive(t)) return;
-    await bot((line ? esc(line) + "<br>" : "") + "매수·매도 판단은 직접 해주세요.", t, 700);
+    await bot((line ? esc(line) + "<br>" : "") + "참고용 정보예요. 충분히 살펴보시고, 투자 결정은 본인 판단으로 편하게 정해 주세요.", t, 700);
     if (!alive(t)) return;
     return offerForStock(st, null);
   }
@@ -886,6 +947,10 @@ window.SCFlow = (function () {
     token++;
     const t = token;
     clearIntro();
+    if (f.act.sub === "news") {
+      await newsFlow(f.st.symbol, f.st.name, t);
+      return offerForStock(f.st, null);
+    }
     await announce(stockHead(f.st.symbol, f.st.name, f.act.label), t);
     if (!alive(t)) return;
     embed({ view: "detail", ticker: f.st.symbol, sub: f.act.sub });

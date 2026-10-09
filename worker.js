@@ -1198,7 +1198,7 @@ const AI_SYSTEM_PROMPT = [
   "3) 투자 권유 금지: '사세요/파세요/지금이 기회' 같은 단정적 매수·매도 지시는 하지 않습니다. 장점·위험·지표 해석을 균형 있게 제시하고, 최종 판단은 이용자 몫이라고 짧게 덧붙입니다.",
   "4) 미래 주가를 예측하거나 수익을 보장하는 표현은 쓰지 않습니다.",
   "5) 주식·코인·ETF·시장 분석과 무관한 질문에는 정중히 범위 밖이라고 안내합니다.",
-  "7) '사야 해?/팔아야 해?/살까/팔까/매수/매도/들어가도 될까' 처럼 매매 판단을 묻는 질문에는 사라·팔라는 결론을 내리지 않습니다. 답변은 반드시 '[요약] 현재 ~한 상태입니다.' 로 시작해 같은 줄에 이어 쓰고(줄바꿈 금지), 도구 데이터가 보여주는 현재 상태(가격 위치·과열도·최근 추세·리스크 중 핵심 2가지)를 한 문장으로 말한 뒤, 마지막에 '매수·매도 판단은 직접 해주세요.'만 덧붙입니다. 전체 3문장·200자 이내.",
+  "7) '사야 해?/팔아야 해?/살까/팔까/매수/매도/들어가도 될까' 처럼 매매 판단을 묻는 질문에는 사라·팔라는 결론을 내리지 않습니다. 답변은 반드시 '[요약] 현재 ~한 상태입니다.' 로 시작해 같은 줄에 이어 쓰고(줄바꿈 금지), 도구 데이터가 보여주는 현재 상태(가격 위치·과열도·최근 추세·리스크 중 핵심 2가지)를 한 문장으로 말한 뒤, 마지막에 '참고용 정보예요. 충분히 살펴보시고, 투자 결정은 본인 판단으로 편하게 정해 주세요.'만 덧붙입니다. 전체 3문장·200자 이내.",
   "6) 지표 설명: 승률=최근 10년 월봉 기준 상승한 달의 비율, RSI는 주간 RSI(70 이상 과열, 30 이하 침체 경향), 영업이익률·ROE·부채비율은 직전 분기 기준입니다.",
 ].join("\n");
 
@@ -1557,6 +1557,134 @@ async function handleAiChat(request, env) {
   return jsonResponse({ reply, cards, stop: lastStop, remaining: Math.max(0, AI_DAILY_LIMIT - used - 1), usage }, 200);
 }
 
+// ---------- GET /news-summary?symbol=AAPL&name=애플 — 최근 뉴스 5건을 AI가 쉬운 말로 요약 ----------
+// 뉴스 목록은 마켓맵 상세의 "주요 뉴스"와 같은 출처(국내: 구글 뉴스 RSS → Bing 폴백, 그 외: Yahoo Finance)를 쓰고,
+// 기사 제목만 근거로 정리한다(본문은 읽지 않음). 같은 종목은 15분 동안 결과를 재사용해 AI 호출을 아낀다.
+function newsXmlTag(block, tag) {
+  const m = block.match(new RegExp("<" + tag + "[^>]*>([\\s\\S]*?)</" + tag + ">", "i"));
+  if (!m) return "";
+  return m[1].replace(/^<!\[CDATA\[|\]\]>$/g, "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim();
+}
+function parseNewsRss(xml, isBing) {
+  const items = [];
+  const re = /<item>([\s\S]*?)<\/item>/gi;
+  let m;
+  while ((m = re.exec(xml))) {
+    const block = m[1];
+    const link = newsXmlTag(block, "link");
+    let publisher = newsXmlTag(block, "source");
+    let title = newsXmlTag(block, "title");
+    while (publisher && title.endsWith(" - " + publisher)) title = title.slice(0, -(publisher.length + 3));
+    if (isBing && !publisher) {
+      try {
+        const inner = new URL(link).searchParams.get("url");
+        if (inner) publisher = new URL(inner).hostname.replace(/^www\./, "");
+      } catch {}
+    }
+    const t = Date.parse(newsXmlTag(block, "pubDate"));
+    items.push({ title, link, publisher, time: isNaN(t) ? 0 : Math.floor(t / 1000) });
+  }
+  return items;
+}
+async function fetchNewsForSymbol(symbol, name) {
+  const isKr = /\.(KS|KQ)$/i.test(symbol);
+  if (isKr && name) {
+    try {
+      const r = await fetch(`https://news.google.com/rss/search?q=${encodeURIComponent('"' + name + '"')}&hl=ko&gl=KR&ceid=KR:ko`, { headers: UPSTREAM_HEADERS });
+      if (r.ok) {
+        const items = parseNewsRss(await r.text(), false);
+        if (items.length) return items;
+      }
+    } catch {}
+    try {
+      const r = await fetch(`https://www.bing.com/news/search?q=${encodeURIComponent(name)}&format=RSS&mkt=ko-KR&setlang=ko`, { headers: UPSTREAM_HEADERS });
+      if (r.ok) return parseNewsRss(await r.text(), true);
+    } catch {}
+    return [];
+  }
+  try {
+    const r = await fetch(`https://query1.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(symbol)}&newsCount=20&quotesCount=1`, { headers: UPSTREAM_HEADERS });
+    if (!r.ok) return [];
+    const j = await r.json();
+    return ((j && j.news) || []).map((n) => ({ title: n.title || "", link: n.link || "", publisher: n.publisher || "", time: n.providerPublishTime || 0 }));
+  } catch {
+    return [];
+  }
+}
+const NEWS_SYSTEM_PROMPT = [
+  "당신은 주식을 처음 접하는 사람(주린이)에게 최근 뉴스를 쉽게 설명해 주는 도우미입니다. 한국어로 답합니다.",
+  "입력: 회사명, 티커, 최근 뉴스 목록(제목·출처·날짜). 기사 본문은 없고 제목만 있습니다.",
+  "출력은 JSON 하나만(설명·코드블록 없이): {\"summary\":\"...\",\"items\":[{\"i\":1,\"ko\":\"...\",\"gist\":\"...\"}]}",
+  "- summary: 이 회사에 최근 어떤 일이 있는지 핵심 흐름을 3~4문장으로. 전문 용어는 풀어서 쓰고, '그래서 투자자가 알아둘 점'을 한 문장 넣습니다.",
+  "- items: 입력 뉴스마다 하나씩. ko = 한국어 제목(영어면 자연스럽게 번역, 한국어면 그대로), gist = 이 기사가 무슨 내용인지 40자 안팎의 쉬운 한 줄.",
+  "- 제목에 없는 사실·원인·숫자를 지어내지 않습니다. 모르면 '제목만으로는 자세한 내용을 알 수 없어요'라고 씁니다.",
+  "- 매수·매도 권유, 주가 예측, 수익 보장 표현은 쓰지 않습니다.",
+].join("\n");
+
+async function handleNewsSummary(request, env, url) {
+  if (!env.ANTHROPIC_API_KEY) return jsonResponse({ error: "AI 기능을 준비 중입니다.", code: "not_configured" }, 503);
+  const symbol = (url.searchParams.get("symbol") || "").trim().slice(0, 20);
+  const name = (url.searchParams.get("name") || "").trim().slice(0, 40);
+  if (!symbol) return jsonResponse({ error: "symbol이 필요합니다." }, 400);
+
+  const cacheKey = new Request("https://news-summary.cache/" + encodeURIComponent(symbol));
+  const cache = caches.default;
+  const hit = await cache.match(cacheKey);
+  if (hit) return new Response(hit.body, { status: 200, headers: { "Content-Type": "application/json", "X-Cache": "HIT", ...CORS_HEADERS } });
+
+  const monthAgo = Date.now() / 1000 - 30 * 86400;
+  const all = (await fetchNewsForSymbol(symbol, name))
+    .filter((n) => n.title && (!n.time || n.time >= monthAgo))
+    .sort((a, b) => (b.time || 0) - (a.time || 0));
+  const top = all.slice(0, 5);
+  if (!top.length) return jsonResponse({ symbol, name, empty: true, summary: "", items: [] }, 200);
+
+  const payload = {
+    model: env.AI_MODEL || AI_DEFAULT_MODEL,
+    max_tokens: 1500,
+    system: [{ type: "text", text: NEWS_SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
+    messages: [
+      {
+        role: "user",
+        content: JSON.stringify({
+          회사명: name || symbol,
+          티커: symbol,
+          뉴스: top.map((n, i) => ({ i: i + 1, 제목: n.title, 출처: n.publisher, 날짜: n.time ? new Date(n.time * 1000).toISOString().slice(0, 10) : "" })),
+        }),
+      },
+    ],
+  };
+  const res = await aiCallClaude(env, payload);
+  if (!res.ok) return jsonResponse({ error: "AI 요약을 만들지 못했습니다.", status: res.status }, 502);
+  const data = await res.json();
+  const text = (data.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n");
+  let parsed = null;
+  try {
+    parsed = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1));
+  } catch {}
+  if (!parsed || typeof parsed.summary !== "string") return jsonResponse({ error: "AI 요약 형식을 읽지 못했습니다." }, 502);
+  const byI = new Map((Array.isArray(parsed.items) ? parsed.items : []).map((x) => [x.i, x]));
+  const out = {
+    symbol,
+    name,
+    summary: parsed.summary,
+    items: top.map((n, i) => {
+      const x = byI.get(i + 1) || {};
+      return {
+        title: (x.ko || n.title || "").slice(0, 200),
+        gist: (x.gist || "").slice(0, 120),
+        link: n.link,
+        publisher: n.publisher,
+        date: n.time ? new Date(n.time * 1000).toISOString().slice(0, 10) : "",
+      };
+    }),
+    total: all.length,
+  };
+  const resp = new Response(JSON.stringify(out), { status: 200, headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=900", ...CORS_HEADERS } });
+  await cache.put(cacheKey, resp.clone());
+  return resp;
+}
+
 // GET /stock-card?symbol=005930.KS — AI 없이 종목 카드 데이터(1년 주가·지표·연간 매출/순이익·승률)만 돌려줌. 스톡챗의 버튼 선택 화면용(5분 캐시).
 async function handleStockCard(request) {
   const sym = (new URL(request.url).searchParams.get("symbol") || "").trim().toUpperCase();
@@ -1602,6 +1730,10 @@ export default {
 
     if (requestUrl.pathname === "/auth/admin" && request.method === "POST") {
       return handleAuthAdmin(request, env);
+    }
+
+    if (requestUrl.pathname === "/news-summary") {
+      return handleNewsSummary(request, env, requestUrl);
     }
 
     if (requestUrl.pathname === "/stock-card") {
