@@ -204,6 +204,13 @@ window.SCFlow = (function () {
     { id: "etf", label: "ETF", sub: "한국·미국 상장지수펀드 200종목", mark: "ETF" },
     { id: "crypto", label: "비트코인", sub: "암호화폐 시가총액 상위 200", mark: "₿" },
   ];
+  // 순위 화면 아래에 붙이는 안내(마켓맵 순위 화면은 시가총액 상위 30개를 먼저 보여주고 "전체보기"로 나머지를 검색한다)
+  const RANK_NOTE = {
+    kr: "해당 순위는 시가총액 30위까지의 결과입니다. 코스피200+코스닥150 총 350종목으로 비교를 원하시면 표 아래 전체보기를 눌러주세요.",
+    us: "해당 순위는 시가총액 30위까지의 결과입니다. S&P500 총 500종목으로 비교를 원하시면 표 아래 전체보기를 눌러주세요.",
+    etf: "해당 순위는 상위 종목만 먼저 보여드린 결과입니다. ETF 전체로 비교를 원하시면 표 아래 전체보기를 눌러주세요.",
+    crypto: "해당 순위는 시가총액 30위까지의 결과입니다. 코인 200종목으로 비교를 원하시면 표 아래 전체보기를 눌러주세요.",
+  };
   const MARKET_NAME = { kr: "한국주식", us: "미국주식", etf: "ETF", crypto: "비트코인" };
   const labelOf = (m, k) => (m === "kr" || m === "us" ? STOCK_LABEL[k] : ASSET_LABEL[k]);
   const groupsOf = (m) => (m === "kr" || m === "us" ? GROUPS.stock : GROUPS[m]);
@@ -330,7 +337,7 @@ window.SCFlow = (function () {
           user(name);
           stockMenu(sym, name, t, true);
         });
-        await bot("종목을 누르면 자세히 볼 수 있어요. 다른 순위도 볼까요?", t, 500);
+        await bot(esc(RANK_NOTE[market] || "") + "<br>종목을 누르면 자세히 볼 수 있어요. 다른 순위도 볼까요?", t, 500);
         const same = groupsOf(market).find(([, ks]) => ks.includes(key))[1].filter((k) => k !== key);
         const next = await choose(
           same.map((k) => ({ id: "k:" + k, label: labelOf(market, k), redo: () => fresh(() => searchFlow({ market, region, key: k })) })).concat([{ id: "market", label: "다른 투자처", accent: true }, { id: "home", label: "처음으로", accent: true }]),
