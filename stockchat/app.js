@@ -175,7 +175,8 @@
         await reveal(pending, data.reply);
         // 질문에 순위 항목 이름(예: 상승률)이 들어 있으면 답변 뒤에 투자처별 순위 버튼을 이어서 보여줌
         const mention = window.SCFlow && window.SCFlow.findMention(text);
-        if (mention) window.SCFlow.rankFromText(mention, { followUp: true });
+        if (mention && cards.length === 1) window.SCFlow.offerForStock({ symbol: cards[0].symbol, name: cards[0].name }, mention);
+        else if (mention) window.SCFlow.rankFromText(mention, { followUp: true });
       }
     } catch (e) {
       history.pop();

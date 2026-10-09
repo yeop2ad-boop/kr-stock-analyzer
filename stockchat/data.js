@@ -145,5 +145,15 @@ window.SCData = (function () {
     return fallback || symbol;
   }
 
-  return { loadMarket, withVol, loadAll, search, watchlist, nameOf };
+  // 티커 하나의 자료(투자처·지역 포함) — 못 찾으면 null
+  async function lookup(symbol) {
+    try {
+      const all = await loadAll();
+      return all.find((it) => it.symbol === symbol) || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  return { lookup, loadMarket, withVol, loadAll, search, watchlist, nameOf };
 })();

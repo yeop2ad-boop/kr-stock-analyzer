@@ -249,6 +249,7 @@ window.SCFlow = (function () {
     if (preset) {
       market = preset.market;
       key = preset.key;
+      region = preset.region || null;
     } else {
       user("간편검색");
       await bot("어떤 투자처를 찾아볼까요?", t);
@@ -349,6 +350,39 @@ window.SCFlow = (function () {
     return searchFlow({ market: pick.id, key: m.keys[pick.id] });
   }
 
+  // 질문에 종목과 순위 항목이 함께 있을 때(예: "삼성전자 상승률 어때") — [종목 핵심지표] [종목 리스크] [투자처 항목 순위]
+  async function offerForStock(st, m) {
+    token++;
+    const t = token;
+    clearIntro();
+    const item = await SCData.lookup(st.symbol);
+    const sym = String(st.symbol || "");
+    const market = item ? item.market : /\.(KS|KQ)$/.test(sym) ? "kr" : /-USD$/.test(sym) ? "crypto" : "us";
+    const region = item && item.region ? item.region : null;
+    const all = [
+      { id: "sreport", label: st.name + " 핵심지표" },
+      { id: "risk", label: st.name + " 리스크" },
+    ];
+    if (m && m.keys[market]) all.push({ id: "rank", label: MARKET_NAME[market] + (market === "etf" && region ? " " + (region === "kr" ? "한국" : "미국") : "") + " " + labelOf(market, m.keys[market]) + " 순위", key: m.keys[market] });
+    const done = new Set();
+    let first = true;
+    for (;;) {
+      const left = all.filter((i) => !done.has(i.id));
+      if (!left.length) return;
+      await bot(first ? esc(st.name) + " — 더 자세히 볼까요?" : "이어서 볼까요?", t, 300);
+      first = false;
+      if (!alive(t)) return;
+      const pick = await choose(left.concat([{ id: "home", label: "처음으로", accent: true }]), { cols: 1 });
+      if (!alive(t)) return;
+      if (pick.id === "home") return home();
+      done.add(pick.id);
+      if (pick.id === "rank") return searchFlow({ market, key: pick.key, region });
+      await bot(esc(st.name) + " " + (pick.id === "risk" ? "리스크점검" : "핵심지표") + "를 가져와요", t, 260);
+      if (!alive(t)) return;
+      embed({ view: "detail", ticker: st.symbol, sub: pick.id });
+    }
+  }
+
   // ---------- 2. 투자분석 ----------
   async function analyzeFlow() {
     const t = token;
@@ -411,5 +445,5 @@ window.SCFlow = (function () {
   function reset() {
     token++;
   }
-  return { start, reset, home, matchRanking, findMention, rankFromText };
+  return { start, reset, home, matchRanking, findMention, rankFromText, offerForStock };
 })();
