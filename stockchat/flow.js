@@ -480,26 +480,46 @@ window.SCFlow = (function () {
   }
 
   // ---------- 종목 고르기(관심종목 + 직접 검색, AI 아님) ----------
+  // 종목 고르기: 맨 위 종목 검색 → 내 관심종목 4 → 최근 검색 4 → 인기 종목 4(모두 로고 포함)
   function chooseStock() {
     return new Promise(async (resolve) => {
       const w = document.createElement("div");
       w.className = "fl-pick";
-      const wl = SCData.watchlist().slice(0, 12);
+      const wl = SCData.watchlist().slice(0, 4);
+      let recent = [];
+      try {
+        // 같은 브라우저의 최근 검색(앱 본체와 공유)
+        const raw = JSON.parse(localStorage.getItem("recentSearches") || "[]");
+        recent = (Array.isArray(raw) ? raw : []).slice(0, 4).map((s) => ({ symbol: String(s).toUpperCase(), name: String(s) }));
+      } catch (e) {
+        recent = [];
+      }
       w.innerHTML =
-        (wl.length ? '<div class="fl-sub">내 관심종목</div><div class="fl-choices chips-mode cols-2 wl"></div>' : "") +
-        '<div class="fl-sub">종목 검색</div><div class="fl-search"><input type="text" placeholder="종목명이나 티커 (예: 삼성전자, AAPL)" autocomplete="off"/><div class="fl-suggest"></div></div>';
+        '<div class="fl-sub">종목 검색</div><div class="fl-search"><input type="text" placeholder="종목명이나 티커 (예: 삼성전자, AAPL)" autocomplete="off"/><div class="fl-suggest"></div></div>' +
+        (wl.length ? '<div class="fl-sub">내 관심종목</div><div class="fl-choices chips-mode cols-2 g-wl"></div>' : "") +
+        (recent.length ? '<div class="fl-sub">최근 검색</div><div class="fl-choices chips-mode cols-2 g-recent"></div>' : "") +
+        '<div class="fl-sub g-pop-t" style="display:none">인기 종목</div><div class="fl-choices chips-mode cols-2 g-pop"></div>';
       listEl().appendChild(w);
       scroll();
       const done = (it) => {
         if (w.classList.contains("done")) return;
         w.classList.add("done");
         user(it.name);
+        try {
+          // 앱 본체의 최근 검색에 합치고, 인기 검색 집계에도 알린다
+          const raw = JSON.parse(localStorage.getItem("recentSearches") || "[]");
+          const next = [it.symbol, ...(Array.isArray(raw) ? raw : []).filter((s) => s !== it.symbol)].slice(0, 5);
+          localStorage.setItem("recentSearches", JSON.stringify(next));
+        } catch (e) {
+          /* 저장 실패는 무시 */
+        }
+        fetch(WORKER + "/search-log", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ symbol: it.symbol }) }).catch(() => {});
         resolve(it);
       };
-      const box = w.querySelector(".wl");
-      if (box) {
-        const names = await Promise.all(wl.map((x) => SCData.nameOf(x.symbol, x.name)));
-        wl.forEach((x, i) => {
+      const fill = async (box, list) => {
+        if (!box) return;
+        const names = await Promise.all(list.map((x) => SCData.nameOf(x.symbol, x.name)));
+        list.forEach((x, i) => {
           const b = document.createElement("button");
           b.type = "button";
           b.className = "fl-btn";
@@ -507,7 +527,19 @@ window.SCFlow = (function () {
           b.addEventListener("click", () => done({ symbol: x.symbol, name: names[i] }));
           box.appendChild(b);
         });
-      }
+      };
+      fill(w.querySelector(".g-wl"), wl);
+      fill(w.querySelector(".g-recent"), recent);
+      // 인기 종목: 전체 이용자의 최근 24시간 검색 집계(없으면 이 구역은 숨김)
+      fetch(WORKER + "/search-popular")
+        .then((r) => r.json())
+        .then((d) => {
+          const list = ((d && d.popular) || []).slice(0, 4).map((p) => ({ symbol: String(p.symbol).toUpperCase(), name: String(p.symbol) }));
+          if (!list.length) return;
+          w.querySelector(".g-pop-t").style.display = "";
+          fill(w.querySelector(".g-pop"), list);
+        })
+        .catch(() => {});
       const input = w.querySelector("input");
       const sug = w.querySelector(".fl-suggest");
       let timer = null;
