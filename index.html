@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20261008as" />
+<link rel="stylesheet" href="style.css?v=20261009b" />
 <link rel="stylesheet" href="ai-chat.css?v=20261009a" />
 <link rel="stylesheet" href="embed.css?v=5" />
 <script>
@@ -323,8 +323,12 @@
 
         <section class="flush-section" id="futureInlineWrap" style="display:none;">
           <p id="futureStatus" class="status-box" style="display:none;"></p>
-          <p class="future-beta-warning">⚠️ 예측 결과는 참고용이며, 실제 주가 흐름과 다를 수 있습니다.</p>
+          <!-- 2026-10-09: 맨 위 경고 문구는 그래프 아래 설명과 합쳐 아래로 옮기고, 위에는 제목 + 결과(6개월 후 예상 변동량)를 둠 -->
           <div id="futureResultsSection" class="future-inline-card" style="display:none;">
+            <div class="future-headline">
+              <div class="future-headline-title" id="futureHeadlineTitle">과거 4년 계절성 흐름 기울기 평균</div>
+              <div class="future-headline-result" id="futureHeadlineResult"></div>
+            </div>
             <div class="future-inline-header">
               <span id="futureChartModalTitle" class="chart-modal-title"></span>
             </div>
@@ -1044,7 +1048,7 @@
   <script src="data/logo-db.js?v=20260903g"></script>
   <script src="data/etf-meta.js?v=20260912a"></script>
   <script src="winrate-benchmark.js?v=20261007k"></script>
-  <script src="app.js?v=20261008as"></script>
+  <script src="app.js?v=20261009b"></script>
   <script src="embed.js?v=1"></script>
   <script src="ai-chat.js?v=20261009a"></script>
 </body>

@@ -19628,13 +19628,20 @@ function renderFutureChart(data) {
   const yearsNote = data.historicalBuckets.length
     ? `회색: 과거 ${data.historicalBuckets.length}개년(전후 6개월) 계절성 흐름 · `
     : `과거 데이터가 부족해 계절성 비교 없이 최근 추세만 표시했습니다 · `;
-  const baseNote = `${data.ticker} · ${yearsNote}빨간 실선: 최근 6개월 실제 흐름 · 빨간 점선: ${data.hasForwardData ? "과거 흐름의 평균 기울기로 추정한 " : ""}향후 6개월 예상(참고용, 실제와 다를 수 있습니다)`;
-  let forecastNote = "";
-  if (data.currentPrice && data.forecast.price) {
-    const pctFromToday = (data.forecast.price / data.currentPrice - 1) * 100;
-    forecastNote = ` · <span style="color:var(--warn);font-weight:700;">6개월 후 예상 변동량: ${pctFromToday >= 0 ? "+" : ""}${pctFromToday.toFixed(1)}%</span>`;
+  const baseNote = `${data.ticker} · ${yearsNote}빨간 실선: 최근 6개월 실제 흐름 · 빨간 점선: ${data.hasForwardData ? "과거 흐름의 평균 기울기로 추정한 " : ""}향후 6개월 예상`;
+  // 2026-10-09 사용자 요청: 맨 위에 "과거 N년 계절성 흐름 기울기 평균 / 결과: 6개월후 +46.2%", 그래프 아래엔 두 경고 문구를 하나로 합쳐 표시
+  const titleEl = el("futureHeadlineTitle");
+  const resultEl = el("futureHeadlineResult");
+  if (titleEl) titleEl.textContent = data.historicalBuckets.length ? `과거 ${data.historicalBuckets.length}년 계절성 흐름 기울기 평균` : "최근 추세 기울기";
+  if (resultEl) {
+    if (data.currentPrice && data.forecast.price) {
+      const pctFromToday = (data.forecast.price / data.currentPrice - 1) * 100;
+      resultEl.innerHTML = `결과: 6개월후 <b class="${pctFromToday >= 0 ? "fh-up" : "fh-down"}">${pctFromToday >= 0 ? "+" : ""}${pctFromToday.toFixed(1)}%</b>`;
+    } else {
+      resultEl.textContent = "결과: 예상값을 계산할 수 없습니다";
+    }
   }
-  el("futureChartCaption").innerHTML = `<span style="color:var(--warn);font-weight:700;">*그래프 4개 편차가 심할 경우 예측과 다를 가능성이 높습니다.</span><br>${escapeHtml(baseNote)}${forecastNote}`;
+  el("futureChartCaption").innerHTML = `<span style="color:var(--warn);font-weight:700;">*그래프 4개 편차가 심할 경우 예측과 다를 가능성이 높습니다. ⚠️ 예측 결과는 참고용이며, 실제 주가 흐름과 다를 수 있습니다.</span><br>${escapeHtml(baseNote)}`;
   el("futureResultsSection").style.display = "block"; // 전체화면 모달 대신 탭 화면 안에 그대로 이어붙여 표시
 }
 

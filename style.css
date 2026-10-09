@@ -4126,3 +4126,11 @@ table.earn-table tr.earn-chart-row td { padding: 6px 0 14px; white-space: normal
 /* 실적 칸 막대 안 순이익률 두 줄(흰 글씨, 막대보다 넓어도 됨) */
 .fin2-pair-margin { position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%); z-index: 2; color: #fff; font-size: 9.5px; font-weight: 800; line-height: 1.25; white-space: nowrap; text-align: center; text-shadow: 0 0 2px rgba(0, 0, 0, 0.45); }
 .fin2-pair-growth { font-size: 10.5px; }
+
+/* 미래예측 상단 제목 + 결과(2026-10-09) */
+.future-headline { text-align: center; padding: 14px 12px 4px; }
+.future-headline-title { font-size: 13.5px; font-weight: 700; color: var(--muted); letter-spacing: -0.2px; }
+.future-headline-result { margin-top: 4px; font-size: 20px; font-weight: 800; letter-spacing: -0.4px; color: var(--text); }
+.future-headline-result b { font-weight: 800; }
+.future-headline-result .fh-up { color: var(--pos); }
+.future-headline-result .fh-down { color: var(--neg); }
