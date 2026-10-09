@@ -34,7 +34,7 @@ html, body { height: 100%; margin: 0; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: -apple-system, "Segoe UI", "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+  font-family: ui-sans-serif, -apple-system, system-ui, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
   -webkit-text-size-adjust: 100%;
 }
 .app { display: flex; flex-direction: column; height: 100dvh; max-width: 760px; margin: 0 auto; }
@@ -63,7 +63,7 @@ body {
 @keyframes blink { 0%, 80%, 100% { opacity: 0.2; } 40% { opacity: 1; } }
 
 .intro { margin: auto 0; text-align: center; padding: 0 4px 30px; }
-.intro h1 { font-family: "Iowan Old Style", "Noto Serif KR", Georgia, "Times New Roman", serif; font-size: 30px; font-weight: 500; line-height: 1.35; letter-spacing: -0.02em; margin: 0 0 12px; word-break: keep-all; text-wrap: balance; }
+.intro h1 { font-family: inherit; font-size: 28px; font-weight: 600; line-height: 1.35; letter-spacing: -0.02em; margin: 0 0 12px; word-break: keep-all; text-wrap: balance; }
 .intro p { font-size: 14.5px; color: var(--muted); margin: 0 0 26px; line-height: 1.6; }
 .chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
 .chip { border: none; background: var(--tile); color: var(--text); border-radius: 16px; padding: 12px 17px; font-size: 14px; font-weight: 500; cursor: pointer; }
