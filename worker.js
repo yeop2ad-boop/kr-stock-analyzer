@@ -1512,7 +1512,10 @@ async function handleAiChat(request, env) {
         tools: AI_TOOLS,
         messages: convo,
       };
-      if (["low", "medium", "high"].indexOf(env.AI_EFFORT) >= 0) payload.output_config = { effort: env.AI_EFFORT };
+      // 추론 강도: 요청이 low/medium을 직접 지정(시험용, 비용이 올라가는 high는 불허)하거나 Worker 변수 AI_EFFORT를 따름
+      const reqEffort = body && ["low", "medium"].indexOf(body.effort) >= 0 ? body.effort : null;
+      const effort = reqEffort || (["low", "medium", "high"].indexOf(env.AI_EFFORT) >= 0 ? env.AI_EFFORT : null);
+      if (effort) payload.output_config = { effort };
       const res = await aiCallClaude(env, payload);
       if (!res.ok) {
         const detail = (await res.text()).slice(0, 200);
