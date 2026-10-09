@@ -180,57 +180,86 @@ window.SCFlow = (function () {
     }
   });
   // ---------- 전체 검색 진행 책갈피: 오른쪽 가장자리에 붙어 있고 누르면 그 화면으로 이동, 색이 차오르다 끝나면 완료 표시 ----------
-  let mark = null;
-  // 책갈피는 검색 중인 화면 옆에 붙어 같이 움직인다(스크롤하면 같이 올라가고 내려감).
-  // 화면이 위·아래로 벗어나면 가장자리에 붙어 남아 있어서, 눌러서 바로 돌아갈 수 있다.
+  // 책갈피는 해당 화면·말풍선 옆에 붙어 같이 움직인다(스크롤하면 같이 올라가고 내려감).
+  // 화면이 위·아래로 벗어나면 가장자리에 붙어 남아 있어서, 눌러서 바로 돌아갈 수 있다. 완료 후 누르면 사라진다.
+  // 전체 검색(350·500종목)과 AI 뉴스 요약처럼 시간이 걸리는 일마다 하나씩 생긴다.
+  const marks = [];
   function placeMark() {
-    if (!mark) return;
+    if (!marks.length) return;
     const list = listEl();
     const lr = list.getBoundingClientRect();
     const ar = list.parentElement.getBoundingClientRect();
-    const wr = mark.em.wrap.getBoundingClientRect();
-    const h = mark.el.offsetHeight || 30;
+    const h = 30;
     const minTop = lr.top - ar.top + 6;
     const maxTop = lr.bottom - ar.top - h - 6;
-    const want = wr.top - ar.top + 14;
-    mark.el.style.top = Math.round(Math.max(minTop, Math.min(maxTop, want))) + "px";
-    const off = wr.bottom < lr.top + 40 ? "above" : wr.top > lr.bottom - 40 ? "below" : "";
-    mark.el.dataset.off = off;
+    const rows = marks.map((m) => {
+      const wr = m.anchor.getBoundingClientRect();
+      m.el.dataset.off = wr.bottom < lr.top + 40 ? "above" : wr.top > lr.bottom - 40 ? "below" : "";
+      return { m, top: Math.max(minTop, Math.min(maxTop, wr.top - ar.top + 14)) };
+    });
+    rows.sort((a, b) => a.top - b.top);
+    let last = -1e9;
+    rows.forEach((r) => {
+      let top = Math.max(r.top, last + h + 6); // 겹치지 않게 아래로 밀기
+      top = Math.min(top, maxTop);
+      r.m.el.style.top = Math.round(top) + "px";
+      last = top;
+    });
   }
   setInterval(placeMark, 150);
   window.addEventListener("resize", placeMark);
   document.addEventListener("scroll", placeMark, true);
+  function removeMark(m) {
+    m.el.remove();
+    const k = marks.indexOf(m);
+    if (k >= 0) marks.splice(k, 1);
+  }
+  // 책갈피 하나 만들기: ctl.set(퍼센트|null, 설명) / ctl.done(설명) / ctl.remove()
+  function addMark(anchor, label) {
+    const el = document.createElement("button");
+    el.type = "button";
+    el.className = "scan-mark";
+    el.setAttribute("aria-label", label + " 진행 상황, 누르면 해당 화면으로 이동");
+    el.innerHTML = '<span class="sm-fill"></span><svg class="sm-logo" viewBox="0 0 64 64" aria-hidden="true"><polyline points="14,47 27,31 36,40 50,18" fill="none" stroke="#fffaf3" stroke-width="8" stroke-linejoin="miter" stroke-linecap="butt"/></svg><span class="sm-txt"></span>';
+    const m = { anchor, el };
+    el.addEventListener("click", () => {
+      anchor.scrollIntoView({ block: "start", behavior: "smooth" });
+      if (el.classList.contains("done")) removeMark(m); // 완료 후 누르면 사라진다
+    });
+    document.querySelector(".app").appendChild(el);
+    marks.push(m);
+    placeMark();
+    return {
+      m,
+      set(pct, title) {
+        el.classList.remove("done");
+        el.classList.toggle("indet", pct == null);
+        el.querySelector(".sm-fill").style.height = (pct == null ? 100 : pct) + "%";
+        el.title = title || label;
+      },
+      done(title) {
+        el.classList.remove("indet");
+        el.classList.add("done");
+        el.querySelector(".sm-fill").style.height = "100%";
+        el.title = title || label + " 완료 — 눌러서 보기";
+      },
+      remove() {
+        removeMark(m);
+      },
+    };
+  }
   function scanMark(em, d) {
+    let m = marks.find((x) => x.anchor === em.wrap);
     if (d.state === "run") {
-      if (!mark || mark.em !== em) {
-        if (mark) mark.el.remove();
-        const el = document.createElement("button");
-        el.type = "button";
-        el.className = "scan-mark";
-        el.setAttribute("aria-label", "전체 검색 진행 상황, 누르면 검색 화면으로 이동");
-        el.innerHTML = '<span class="sm-fill"></span><svg class="sm-logo" viewBox="0 0 64 64" aria-hidden="true"><polyline points="14,47 27,31 36,40 50,18" fill="none" stroke="#fffaf3" stroke-width="8" stroke-linejoin="miter" stroke-linecap="butt"/></svg><span class="sm-txt"></span>';
-        el.addEventListener("click", () => {
-          em.wrap.scrollIntoView({ block: "start", behavior: "smooth" });
-          if (el.classList.contains("done")) {
-            el.remove();
-            if (mark && mark.el === el) mark = null;
-          }
-        });
-        document.querySelector(".app").appendChild(el);
-        mark = { em, el };
-        placeMark();
+      if (!m) {
+        const c = addMark(em.wrap, "전체 검색");
+        m = c.m;
+        m.ctl = c;
       }
-      const el = mark.el;
-      el.classList.remove("done");
       const pct = d.total ? Math.min(100, Math.round((d.done / d.total) * 100)) : null;
-      el.classList.toggle("indet", pct == null);
-      el.querySelector(".sm-fill").style.height = (pct == null ? 100 : pct) + "%";
-      el.title = pct == null ? "전체 검색 중" : "전체 검색 중 " + pct + "%";
-    } else if (d.state === "done" && mark && mark.em === em) {
-      mark.el.classList.remove("indet");
-      mark.el.classList.add("done");
-      mark.el.querySelector(".sm-fill").style.height = "100%";
-      mark.el.title = "검색 완료 — 눌러서 보기";
+      m.ctl.set(pct, pct == null ? "전체 검색 중" : "전체 검색 중 " + pct + "%");
+    } else if (d.state === "done" && m && m.ctl) {
+      m.ctl.done("검색 완료 — 눌러서 보기");
     }
   }
   // 순위 표 "더보기" 버튼 상태: 남은 줄이 있으면 "더보기 (+N개)", 다 보였으면 "접기"
@@ -332,12 +361,13 @@ window.SCFlow = (function () {
   // 요약은 Worker(/news-summary)가 기사 제목을 근거로 만든다(15분 재사용). 실패하면 마켓맵 뉴스 목록을 바로 보여준다.
   const safeUrl = (u) => (/^https?:\/\//i.test(String(u || "")) ? u : "#");
   const shortDate = (d) => (d ? String(d).slice(5).replace("-", "/") : "");
-  async function botWhile(promise, t) {
+  async function botWhile(promise, t, onEl) {
     const el = document.createElement("div");
     el.className = "msg msg-assistant msg-pending";
     el.innerHTML = DOTS;
     listEl().appendChild(el);
     scroll();
+    if (onEl) onEl(el);
     const res = await promise;
     if (!alive(t)) {
       el.remove();
@@ -356,7 +386,21 @@ window.SCFlow = (function () {
     const req = fetch(WORKER + "/news-summary?symbol=" + encodeURIComponent(symbol) + "&name=" + encodeURIComponent(name) + "&offset=" + offset, { signal: AbortSignal.timeout(10000) })
       .then((r) => (r.ok ? r.json() : null))
       .catch(() => null);
-    const { el, res } = await botWhile(req, t);
+    // 요약이 만들어지는 동안 책갈피(로고)가 10초 기준으로 차오르다가, 끝나면 완료 표시. 누르면 이 요약으로 이동하고 사라진다
+    let ctl = null;
+    let timer = null;
+    const t0 = Date.now();
+    const { el, res } = await botWhile(req, t, (bubble) => {
+      ctl = addMark(bubble, "뉴스 요약");
+      ctl.set(0, "뉴스 요약 중");
+      timer = setInterval(() => ctl && ctl.set(Math.min(92, Math.round(((Date.now() - t0) / 9000) * 92)), "뉴스 요약 중"), 200);
+    });
+    clearInterval(timer);
+    if (!el || !res || !res.summary) {
+      if (ctl) ctl.remove(); // 실패·취소면 책갈피를 남기지 않는다
+    } else if (ctl) {
+      ctl.done("뉴스 요약 완료 — 눌러서 보기");
+    }
     if (!el) return;
     if (res && res.empty) {
       el.textContent = offset ? "더 오래된 뉴스는 없어요. 최근 1개월 안의 뉴스는 모두 정리했어요." : "최근 1개월 안의 뉴스를 찾지 못했어요.";
@@ -978,10 +1022,7 @@ window.SCFlow = (function () {
     else analyzeFlow();
   }
   function reset() {
-    if (mark) {
-      mark.el.remove();
-      mark = null;
-    }
+    marks.slice().forEach(removeMark);
     token++;
   }
   return { matchFullView, fullViewNow, matchScreen, screenFlow, matchStockAction, stockActionShow, start, reset, home, matchRanking, findMention, rankFromText, offerForStock, matchBuySell, buySellSummary, matchExplain, explainShow };
