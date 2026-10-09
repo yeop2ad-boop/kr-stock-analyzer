@@ -36,12 +36,32 @@
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="style.css?v=20261008as" />
 <link rel="stylesheet" href="ai-chat.css?v=20261009a" />
+<link rel="stylesheet" href="embed.css?v=1" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
     try {
       var saved = localStorage.getItem("theme");
       if (saved === "dark") document.documentElement.setAttribute("data-theme", "dark");
+    } catch (e) {}
+  })();
+</script>
+<script>
+  // 스톡챗 끼워 넣기 모드(?embed=1): 기본 시작 화면이 덮어쓰지 않게 표시하고, 부모 화면 테마(?theme=)에 맞춤
+  (function () {
+    try {
+      var q = new URLSearchParams(location.search);
+      if (!q.get("embed")) return;
+      window.__deepLinkOpen = "embed";
+      // iframe 안의 history 조작(뒤로가기 등)은 바깥 창(스톡챗)의 기록까지 건드리므로 끼워 넣기 모드에서는 막음
+      var noop = function () {};
+      ["pushState", "replaceState", "back", "forward", "go"].forEach(function (k) {
+        try {
+          history[k] = noop;
+        } catch (e) {}
+      });
+      if (q.get("theme") === "dark") document.documentElement.setAttribute("data-theme", "dark");
+      else if (q.get("theme") === "light") document.documentElement.removeAttribute("data-theme");
     } catch (e) {}
   })();
 </script>
@@ -1025,6 +1045,7 @@
   <script src="data/etf-meta.js?v=20260912a"></script>
   <script src="winrate-benchmark.js?v=20261007k"></script>
   <script src="app.js?v=20261008as"></script>
+  <script src="embed.js?v=1"></script>
   <script src="ai-chat.js?v=20261009a"></script>
 </body>
 </html>

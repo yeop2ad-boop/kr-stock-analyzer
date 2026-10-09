@@ -6038,7 +6038,7 @@ document.addEventListener("click", (e) => {
   // 필요한 일부 const가 이 시점엔 아직 선언 전(TDZ)이라 스크립트 전체 실행이 끝난 다음 틱으로 미룸
   // 시작화면(2026-09-01 사용자 확정): 한국주식 섹션의 인기종목 — 단, 화면을 직접 여는 딥링크로 들어온 경우엔 덮어쓰지 않음
   setTimeout(() => {
-    if (["watchlist", "etf", "crypto", "ranking-kr", "ranking-us", "ranking"].includes(window.__deepLinkOpen)) return;
+    if (["watchlist", "etf", "crypto", "ranking-kr", "ranking-us", "ranking", "embed"].includes(window.__deepLinkOpen)) return;
     appSectionMode = "stocks";
     setAppMarketMode("kr");
     setHeaderToneForSection("kr"); // 시작은 남색
