@@ -4165,3 +4165,8 @@ table.earn-table tr.earn-chart-row td { padding: 6px 0 14px; white-space: normal
 .div-special { color: #7a55c8; background: rgba(122, 85, 200, 0.14); }
 .div-up-coming { color: #2e7dd1; background: rgba(46, 125, 209, 0.14); }
 .div-note { margin: 12px 2px 0; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.div-now { display: flex; align-items: baseline; gap: 8px; margin: 2px 0 6px; }
+.div-now span { font-size: 13px; font-weight: 700; color: var(--muted); }
+.div-now b { font-size: 26px; font-weight: 800; letter-spacing: -0.6px; font-variant-numeric: tabular-nums; }
+.div-logo { display: inline-flex; width: 30px; height: 30px; flex: none; }
+.div-logo .ticker-logo-wrap { width: 30px !important; height: 30px !important; }

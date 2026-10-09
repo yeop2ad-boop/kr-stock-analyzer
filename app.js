@@ -7947,7 +7947,9 @@ function dividendPanelHtml(d, companyName) {
   const annualTxt = d.annualYieldPct != null ? `연 배당률 <b>${d.annualYieldPct.toFixed(2)}%</b> · 지난 1년 배당금 합계 <b>${money(d.annualAmount)}</b>` : "";
   return `
     <div class="div-wrap">
+      ${d.price != null ? `<div class="div-now"><span>현재 주가</span><b>${priceTxt(d.price)}</b></div>` : ""}
       <div class="div-top">
+        <span class="div-logo">${tickerLogoHtml(d.symbol)}</span>
         <span class="div-name">${escapeHtml(companyName || d.symbol)}</span>
         <span class="div-freq">${escapeHtml(d.frequency || "")}</span>
       </div>
