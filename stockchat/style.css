@@ -246,3 +246,5 @@ body {
 .embed-loading i:nth-child(1) { width: 72%; } .embed-loading i:nth-child(2) { width: 100%; animation-delay: 0.15s; } .embed-loading i:nth-child(3) { width: 58%; animation-delay: 0.3s; }
 .embed-block.ready .embed-loading { display: none; }
 @keyframes shimmer { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
+.notice a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.notice b { display: block; margin: 2px 0 0; }
