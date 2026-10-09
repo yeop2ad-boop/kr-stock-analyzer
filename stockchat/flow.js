@@ -347,11 +347,13 @@ window.SCFlow = (function () {
     return { el, res };
   }
   // offset: 0 = 최근 5건, 5 = 그다음 5건 … (더보기를 누를 때마다 다음 5건을 AI가 같은 형식으로 요약)
+  const NEWS_BATCH = 3;
   async function newsFlow(symbol, name, t, offset) {
     offset = offset || 0;
-    const head = offset ? "<b>" + esc(name) + "</b>의 이전 뉴스 " + (offset + 1) + "~" + (offset + 5) + "번째를 정리해요" : stockHead(symbol, name, PLAIN.news.what);
+    const head = offset ? "<b>" + esc(name) + "</b>의 이전 뉴스 " + (offset + 1) + "~" + (offset + NEWS_BATCH) + "번째를 정리해요" : stockHead(symbol, name, PLAIN.news.what);
     if (!(await announce(head, t))) return;
-    const req = fetch(WORKER + "/news-summary?symbol=" + encodeURIComponent(symbol) + "&name=" + encodeURIComponent(name) + "&offset=" + offset)
+    // 10초 안에 못 끝나면 기다리지 않고 안내(뉴스 요약은 한 번에 3건만)
+    const req = fetch(WORKER + "/news-summary?symbol=" + encodeURIComponent(symbol) + "&name=" + encodeURIComponent(name) + "&offset=" + offset, { signal: AbortSignal.timeout(10000) })
       .then((r) => (r.ok ? r.json() : null))
       .catch(() => null);
     const { el, res } = await botWhile(req, t);
@@ -361,7 +363,7 @@ window.SCFlow = (function () {
       return;
     }
     if (!res || !res.summary) {
-      el.textContent = "AI 뉴스 요약을 지금은 만들 수 없어요. 잠시 후 다시 눌러주세요.";
+      el.textContent = "뉴스 요약이 오래 걸리고 있어요. 잠시 후 '뉴스'를 다시 눌러주세요.";
       return;
     }
     if (window.SCUsage && res.usage) window.SCUsage.add(res.usage.tokens, "뉴스 요약");
@@ -384,9 +386,9 @@ window.SCFlow = (function () {
       // 더보기: 그다음 5건을 같은 방식으로 요약 — 다른 흐름을 끊지 않도록 따로 기다린다
       const next = () => {
         const t2 = token;
-        newsFlow(symbol, name, t2, offset + 5);
+        newsFlow(symbol, name, t2, offset + NEWS_BATCH);
       };
-      choose([{ id: "more", label: "뉴스 더보기", sub: "그다음 뉴스 5건도 AI가 정리해줘요", accent: true, redo: next }], { cols: 1, stack: true }).then(next);
+      choose([{ id: "more", label: "뉴스 더보기", sub: "그다음 뉴스 3건도 AI가 정리해줘요", accent: true, redo: next }], { cols: 1, stack: true }).then(next);
     }
   }
 

@@ -1450,13 +1450,15 @@ function aiMessagesUrl(env) {
 }
 
 // Claude API 호출 — Cloudflare Worker의 나가는 주소에 따라 간헐적으로 403(Request not allowed)·5xx가 나므로 짧게 재시도
-async function aiCallClaude(env, payload) {
+async function aiCallClaude(env, payload, opts) {
+  const attempts = (opts && opts.attempts) || 4;
   let res;
-  for (let attempt = 0; attempt < 4; attempt++) {
+  for (let attempt = 0; attempt < attempts; attempt++) {
     res = await fetch(aiMessagesUrl(env), {
       method: "POST",
       headers: { "content-type": "application/json", "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01" },
       body: JSON.stringify(payload),
+      ...(opts && opts.timeoutMs ? { signal: AbortSignal.timeout(opts.timeoutMs) } : {}),
     });
     if (res.ok || !(res.status === 403 || res.status === 429 || res.status >= 500)) return res;
     await new Promise((r) => setTimeout(r, 250 * (attempt + 1)));
@@ -1590,20 +1592,20 @@ async function fetchNewsForSymbol(symbol, name) {
   const isKr = /\.(KS|KQ)$/i.test(symbol);
   if (isKr && name) {
     try {
-      const r = await fetch(`https://news.google.com/rss/search?q=${encodeURIComponent('"' + name + '"')}&hl=ko&gl=KR&ceid=KR:ko`, { headers: UPSTREAM_HEADERS });
+      const r = await fetch(`https://news.google.com/rss/search?q=${encodeURIComponent('"' + name + '"')}&hl=ko&gl=KR&ceid=KR:ko`, { headers: UPSTREAM_HEADERS, signal: AbortSignal.timeout(2500) });
       if (r.ok) {
         const items = parseNewsRss(await r.text(), false);
         if (items.length) return items;
       }
     } catch {}
     try {
-      const r = await fetch(`https://www.bing.com/news/search?q=${encodeURIComponent(name)}&format=RSS&mkt=ko-KR&setlang=ko`, { headers: UPSTREAM_HEADERS });
+      const r = await fetch(`https://www.bing.com/news/search?q=${encodeURIComponent(name)}&format=RSS&mkt=ko-KR&setlang=ko`, { headers: UPSTREAM_HEADERS, signal: AbortSignal.timeout(2500) });
       if (r.ok) return parseNewsRss(await r.text(), true);
     } catch {}
     return [];
   }
   try {
-    const r = await fetch(`https://query1.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(symbol)}&newsCount=20&quotesCount=1`, { headers: UPSTREAM_HEADERS });
+    const r = await fetch(`https://query1.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(symbol)}&newsCount=20&quotesCount=1`, { headers: UPSTREAM_HEADERS, signal: AbortSignal.timeout(3000) });
     if (!r.ok) return [];
     const j = await r.json();
     return ((j && j.news) || []).map((n) => ({ title: n.title || "", link: n.link || "", publisher: n.publisher || "", time: n.providerPublishTime || 0 }));
@@ -1615,7 +1617,7 @@ const NEWS_SYSTEM_PROMPT = [
   "당신은 주식을 처음 접하는 사람(주린이)에게 최근 뉴스를 쉽게 설명해 주는 도우미입니다. 한국어로 답합니다.",
   "입력: 회사명, 티커, 최근 뉴스 목록(제목·출처·날짜). 기사 본문은 없고 제목만 있습니다.",
   "출력은 JSON 하나만(설명·코드블록 없이): {\"summary\":\"...\",\"items\":[{\"i\":1,\"ko\":\"...\",\"gist\":\"...\"}]}",
-  "- summary: 이 회사에 최근 어떤 일이 있는지 핵심 흐름을 3~4문장으로. 전문 용어는 풀어서 쓰고, '그래서 투자자가 알아둘 점'을 한 문장 넣습니다.",
+  "- summary: 이 회사에 최근 어떤 일이 있는지 핵심 흐름을 2~3문장으로(짧게). 전문 용어는 풀어서 쓰고, '그래서 투자자가 알아둘 점'을 한 문장 넣습니다.",
   "- items: 입력 뉴스마다 하나씩. ko = 한국어 제목(영어면 자연스럽게 번역, 한국어면 그대로), gist = 이 기사가 무슨 내용인지 40자 안팎의 쉬운 한 줄.",
   "- 제목에 없는 사실·원인·숫자를 지어내지 않습니다. 모르면 '제목만으로는 자세한 내용을 알 수 없어요'라고 씁니다.",
   "- 매수·매도 권유, 주가 예측, 수익 보장 표현은 쓰지 않습니다.",
@@ -1627,7 +1629,8 @@ async function handleNewsSummary(request, env, url) {
   const name = (url.searchParams.get("name") || "").trim().slice(0, 40);
   if (!symbol) return jsonResponse({ error: "symbol이 필요합니다." }, 400);
 
-  const offset = Math.min(15, Math.max(0, parseInt(url.searchParams.get("offset") || "0", 10) || 0)); // 0, 5, 10, 15 — 더보기마다 다음 5건
+  const NEWS_BATCH = 3; // 한 번에 2~3건만 요약해 10초 안에 끝낸다
+  const offset = Math.min(18, Math.max(0, parseInt(url.searchParams.get("offset") || "0", 10) || 0)); // 0, 3, 6, … — 더보기마다 다음 3건
   const cacheKey = new Request("https://news-summary.cache/" + encodeURIComponent(symbol) + "/" + offset);
   const cache = caches.default;
   const hit = await cache.match(cacheKey);
@@ -1637,12 +1640,12 @@ async function handleNewsSummary(request, env, url) {
   const all = (await fetchNewsForSymbol(symbol, name))
     .filter((n) => n.title && (!n.time || n.time >= monthAgo))
     .sort((a, b) => (b.time || 0) - (a.time || 0));
-  const top = all.slice(offset, offset + 5);
+  const top = all.slice(offset, offset + NEWS_BATCH);
   if (!top.length) return jsonResponse({ symbol, name, empty: true, done: offset > 0, summary: "", items: [] }, 200);
 
   const payload = {
     model: env.AI_MODEL || AI_DEFAULT_MODEL,
-    max_tokens: 1500,
+    max_tokens: 700,
     system: [{ type: "text", text: NEWS_SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
     messages: [
       {
@@ -1655,7 +1658,12 @@ async function handleNewsSummary(request, env, url) {
       },
     ],
   };
-  const res = await aiCallClaude(env, payload);
+  let res;
+  try {
+    res = await aiCallClaude(env, payload, { attempts: 2, timeoutMs: 6500 }); // 전체 10초 안에 끝내기 위해 짧게
+  } catch (e) {
+    return jsonResponse({ error: "AI 요약이 오래 걸려 중단했습니다.", code: "timeout" }, 504);
+  }
   if (!res.ok) return jsonResponse({ error: "AI 요약을 만들지 못했습니다.", status: res.status }, 502);
   const data = await res.json();
   const text = (data.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n");
@@ -1681,7 +1689,7 @@ async function handleNewsSummary(request, env, url) {
     }),
     total: all.length,
     offset,
-    hasMore: all.length > offset + 5,
+    hasMore: all.length > offset + NEWS_BATCH,
     // 스톡챗 하루 토큰 게이지용(입력+출력+캐시 쓰기, 캐시 읽기는 10%로 환산)
     usage: (() => {
       const u = data.usage || {};

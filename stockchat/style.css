@@ -346,3 +346,4 @@ textarea::-webkit-scrollbar-thumb { background: rgba(120, 118, 112, 0.32); borde
 .news-go { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--tile); color: var(--accent); text-decoration: none; flex: none; transition: background 0.15s, color 0.15s, transform 0.12s; }
 .news-go:hover { background: var(--accent); color: #fff; }
 .news-go:active { transform: scale(0.92); }
+.usage { display: none; } .usage.show { display: block; }

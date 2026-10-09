@@ -38,9 +38,10 @@
     const pct = Math.min(100, (usage.used / TEST_DAILY_TOKENS) * 100);
     box.querySelector(".u-bar i").style.width = pct + "%";
     box.querySelector(".u-num").textContent = fmtTok(usage.used) + " / " + fmtTok(TEST_DAILY_TOKENS) + " 토큰";
-    box.classList.toggle("warn", pct >= 70 && pct < 100);
+    box.classList.toggle("show", pct >= 80); // 80% 이상일 때만 게이지와 멘트를 보여준다
+    box.classList.toggle("warn", pct >= 80 && pct < 100);
     box.classList.toggle("full", pct >= 100);
-    box.querySelector(".u-label").textContent = pct >= 100 ? "오늘 한도에 도달했어요" : pct >= 70 ? "오늘 한도에 가까워요" : "오늘 AI 사용량";
+    box.querySelector(".u-label").textContent = pct >= 100 ? "오늘 한도에 도달했어요" : "오늘 한도에 가까워요";
   }
   window.SCUsage = {
     add(tokens, label) {
