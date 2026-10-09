@@ -444,32 +444,38 @@ window.SCFlow = (function () {
     if (await announce(stockHead(symbol, name, a.what || a.label), t)) embed({ view: "detail", ticker: symbol, sub: a.id });
   }
 
-  // ---------- 종목 → 핵심정보 / 리스크점검 ----------
+  // ---------- 종목을 고르면: 현재 주가·차트를 먼저 보여주고, 궁금한 걸 바로 아래 버튼으로 ----------
   async function stockMenu(symbol, name, t, fromRank) {
     const info = await SCData.lookup(symbol);
     const isStock = !info || info.market === "kr" || info.market === "us";
+    // 1) 주가와 차트(개요) 먼저
+    if (!(await announce(stockHead(symbol, name, PLAIN.summary.what), t))) return;
+    embed({ view: "detail", ticker: symbol, sub: "summary" });
+    // 2) 그다음 궁금한 것(매출·성적표·위험·뉴스) 버튼 — 눌러서 본 것은 목록에서 빠진다
+    const done = new Set();
+    let first = true;
     for (;;) {
-      await bot(stockHead(symbol, name, "분석 항목") .replace("에 대한 분석 항목입니다", "") + " — 무엇을 볼까요?", t);
+      const left = [isStock && PLAIN.revenue, PLAIN.sreport, isStock && PLAIN.risk, PLAIN.news].filter((a) => a && !done.has(a.id));
+      await bot(first ? "더 궁금한 걸 골라주세요" : "이어서 볼까요?", t, 450);
+      first = false;
       if (!alive(t)) return;
-      const act = await choose(
-        [
-          PLAIN.sreport,
-          isStock && PLAIN.risk,
-          PLAIN.summary,
-        ].filter(Boolean).map((a) => ({ ...a, redo: () => fresh(() => detailOne(symbol, name, a)) })),
-        { cols: 1, stack: true }
-      );
+      const items = left
+        .map((a) => ({ ...a, redo: () => fresh(() => detailOne(symbol, name, a)) }))
+        .concat([
+          { id: "other", label: fromRank ? "다른 종목 순위" : "다른 종목 보기", accent: true },
+          { id: "home", label: "처음으로", accent: true },
+        ]);
+      const pick = await choose(items, { cols: 1, stack: true });
       if (!alive(t)) return;
-      if (!(await announce(stockHead(symbol, name, act.what), t))) return;
-      embed({ view: "detail", ticker: symbol, sub: act.id });
-      await bot("이어서 볼까요?", t, 500);
-      const next = await choose(
-        [{ id: "again", label: "다른 항목 보기" }, { id: "other", label: fromRank ? "다른 종목 순위" : "다른 종목", accent: true }, { id: "home", label: "처음으로", accent: true }],
-        { cols: 3, chips: true }
-      );
-      if (!alive(t)) return;
-      if (next.id === "home") return home();
-      if (next.id === "other") return "other";
+      if (pick.id === "home") return home();
+      if (pick.id === "other") return "other";
+      done.add(pick.id);
+      if (pick.id === "news") {
+        await newsFlow(symbol, name, t);
+        continue;
+      }
+      if (!(await announce(stockHead(symbol, name, pick.what), t))) return;
+      embed({ view: "detail", ticker: symbol, sub: pick.id });
     }
   }
 
