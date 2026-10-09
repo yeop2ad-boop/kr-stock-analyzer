@@ -133,6 +133,17 @@
   async function send(text) {
     text = (text || "").trim();
     if (!text || busy) return;
+    // "상승률"처럼 순위 항목 이름만 친 경우: AI 대신 투자처별 순위 버튼 4개(마켓맵 순위 화면으로 연결)
+    const rk = window.SCFlow && window.SCFlow.matchRanking(text);
+    if (rk) {
+      inputEl.value = "";
+      grow();
+      const introEl0 = listEl.querySelector(".intro");
+      if (introEl0) introEl0.remove();
+      bubble("user", esc(text));
+      window.SCFlow.rankFromText(rk);
+      return;
+    }
     busy = true;
     sendBtn.disabled = true;
     inputEl.value = "";

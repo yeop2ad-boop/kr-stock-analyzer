@@ -243,21 +243,28 @@ window.SCFlow = (function () {
   }
 
   // ---------- 1. 간편검색 ----------
-  async function searchFlow() {
+  async function searchFlow(preset) {
     const t = token;
-    user("간편검색");
-    await bot("어떤 투자처를 찾아볼까요?", t);
-    if (!alive(t)) return;
-    let market = (await choose(MARKETS.map((m) => ({ ...m, chat: m.label })), { cols: 1 })).id;
-    let region = null;
+    let market, region = null, key = null;
+    if (preset) {
+      market = preset.market;
+      key = preset.key;
+    } else {
+      user("간편검색");
+      await bot("어떤 투자처를 찾아볼까요?", t);
+      if (!alive(t)) return;
+      market = (await choose(MARKETS.map((m) => ({ ...m, chat: m.label })), { cols: 1 })).id;
+    }
     for (;;) {
       if (market === "etf" && !region) {
         await bot("어느 시장의 ETF를 볼까요?", t);
         region = (await choose([{ id: "kr", label: "한국 ETF" }, { id: "us", label: "미국 ETF" }], { cols: 2 })).id;
       }
-      await bot("[" + MARKET_NAME[market] + (region ? " · " + (region === "kr" ? "한국" : "미국") : "") + "] 어떤 순위를 볼까요?", t);
-      if (!alive(t)) return;
-      let key = (await chooseGrouped(groupsOf(market).map(([title, keys]) => [title, keys.map((k) => ({ id: k, label: labelOf(market, k) }))]))).id;
+      if (!key) {
+        await bot("[" + MARKET_NAME[market] + (region ? " · " + (region === "kr" ? "한국" : "미국") : "") + "] 어떤 순위를 볼까요?", t);
+        if (!alive(t)) return;
+        key = (await chooseGrouped(groupsOf(market).map(([title, keys]) => [title, keys.map((k) => ({ id: k, label: labelOf(market, k) }))]))).id;
+      }
       for (;;) {
         await bot("[" + MARKET_NAME[market] + "] " + labelOf(market, key) + " 순위를 가져와요", t, 300);
         if (!alive(t)) return;
@@ -278,11 +285,54 @@ window.SCFlow = (function () {
           await bot("어떤 투자처를 찾아볼까요?", t);
           market = (await choose(MARKETS.map((m) => ({ ...m, chat: m.label })), { cols: 1 })).id;
           region = null;
+          key = null;
           break;
         }
         key = next.id.slice(2);
       }
     }
+  }
+
+  // ---------- 글로 친 순위 항목 이름(예: "상승률") → 투자처별 순위 버튼 ----------
+  const ALL4 = (k) => ({ kr: k, us: k, etf: k, crypto: k });
+  const RANK_WORDS = [
+    { label: "승률", words: ["승률", "10년승률", "10년평균승률"], keys: ALL4("win") },
+    { label: "상승률", words: ["상승률", "연평균상승", "연평균상승률"], keys: ALL4("ret") },
+    { label: "수익률", words: ["수익률"], keys: { kr: "ret", us: "ret", etf: "rev", crypto: "rev" } },
+    { label: "변동성", words: ["변동성"], keys: ALL4("vol") },
+    { label: "과열도", words: ["과열도", "과열", "rsi"], keys: ALL4("rsi") },
+    { label: "52주구간", words: ["52주구간", "52주", "52주최저", "52주최고"], keys: ALL4("w52") },
+    { label: "시가총액", words: ["시가총액", "시총", "규모"], keys: { kr: "mcap", us: "mcap", etf: "aum", crypto: "mcap" } },
+    { label: "매출액", words: ["매출액", "매출", "매출성장", "매출증가"], keys: { kr: "rev", us: "rev" } },
+    { label: "순이익", words: ["순이익", "순이익증가"], keys: { kr: "ni", us: "ni" } },
+    { label: "영업이익", words: ["영업이익", "영업이익률"], keys: { kr: "om", us: "om" } },
+    { label: "ROE", words: ["roe"], keys: { kr: "roe", us: "roe" } },
+    { label: "현금흐름", words: ["현금흐름", "현금흐름증가"], keys: { kr: "cf", us: "cf" } },
+    { label: "부채비율", words: ["부채비율", "부채"], keys: { kr: "debt", us: "debt" } },
+    { label: "거래대금", words: ["거래대금", "거래량"], keys: { kr: "dv", us: "dv" } },
+    { label: "PER", words: ["per"], keys: { kr: "per", us: "per" } },
+    { label: "배당률", words: ["배당률", "배당", "배당수익률"], keys: { kr: "div", us: "div", etf: "div" } },
+    { label: "운용보수", words: ["운용보수", "보수"], keys: { etf: "fee" } },
+  ];
+  // "순위·보여줘" 같은 꼬리말만 붙은 짧은 요청일 때만 버튼으로 처리하고, 뜻을 묻거나 종목이 섞인 질문은 AI에게 맡긴다
+  const TAIL = "(?:순위|랭킹|top\\d*|상위|보기|보여줘|알려줘|찾아줘|찾기|높은종목|높은순|많은종목|종목|주식|리스트|목록|줘|좀|요|를|을|은|는|이|가|도)*";
+  const RANK_RE = RANK_WORDS.map((m) => ({ m, re: new RegExp("^(?:" + m.words.slice().sort((a, b) => b.length - a.length).join("|") + ")" + TAIL + "$", "i") }));
+  function matchRanking(text) {
+    const s = String(text || "").toLowerCase().replace(/[\s?!.,~]/g, "");
+    if (!s || s.length > 24) return null;
+    const hit = RANK_RE.find((x) => x.re.test(s));
+    return hit ? hit.m : null;
+  }
+  async function rankFromText(m) {
+    token++;
+    const t = token;
+    clearIntro();
+    await bot("어느 투자처의 <b>" + esc(m.label) + "</b> 순위를 볼까요?", t);
+    if (!alive(t)) return;
+    const items = ["kr", "us", "etf", "crypto"].filter((k) => m.keys[k]).map((k) => ({ id: k, label: MARKET_NAME[k] + " " + labelOf(k, m.keys[k]) + " 순위" }));
+    const pick = await choose(items, { cols: 2 });
+    if (!alive(t)) return;
+    return searchFlow({ market: pick.id, key: m.keys[pick.id] });
   }
 
   // ---------- 2. 투자분석 ----------
@@ -347,5 +397,5 @@ window.SCFlow = (function () {
   function reset() {
     token++;
   }
-  return { start, reset, home };
+  return { start, reset, home, matchRanking, rankFromText };
 })();
