@@ -302,7 +302,7 @@ window.SCFlow = (function () {
     { label: "변동성", words: ["변동성"], keys: ALL4("vol") },
     { label: "과열도", words: ["과열도", "과열", "rsi"], keys: ALL4("rsi") },
     { label: "52주구간", words: ["52주구간", "52주", "52주최저", "52주최고"], keys: ALL4("w52") },
-    { label: "시가총액", words: ["시가총액", "시총", "규모"], keys: { kr: "mcap", us: "mcap", etf: "aum", crypto: "mcap" } },
+    { label: "시가총액", noMention: ["규모"], words: ["시가총액", "시총", "규모"], keys: { kr: "mcap", us: "mcap", etf: "aum", crypto: "mcap" } },
     { label: "매출액", words: ["매출액", "매출", "매출성장", "매출증가"], keys: { kr: "rev", us: "rev" } },
     { label: "순이익", words: ["순이익", "순이익증가"], keys: { kr: "ni", us: "ni" } },
     { label: "영업이익", words: ["영업이익", "영업이익률"], keys: { kr: "om", us: "om" } },
@@ -312,7 +312,7 @@ window.SCFlow = (function () {
     { label: "거래대금", words: ["거래대금", "거래량"], keys: { kr: "dv", us: "dv" } },
     { label: "PER", words: ["per"], keys: { kr: "per", us: "per" } },
     { label: "배당률", words: ["배당률", "배당", "배당수익률"], keys: { kr: "div", us: "div", etf: "div" } },
-    { label: "운용보수", words: ["운용보수", "보수"], keys: { etf: "fee" } },
+    { label: "운용보수", noMention: ["보수"], words: ["운용보수", "보수"], keys: { etf: "fee" } },
   ];
   // "순위·보여줘" 같은 꼬리말만 붙은 짧은 요청일 때만 버튼으로 처리하고, 뜻을 묻거나 종목이 섞인 질문은 AI에게 맡긴다
   const TAIL = "(?:순위|랭킹|top\\d*|상위|보기|보여줘|알려줘|찾아줘|찾기|높은종목|높은순|많은종목|종목|주식|리스트|목록|줘|좀|요|를|을|은|는|이|가|도)*";
@@ -323,11 +323,25 @@ window.SCFlow = (function () {
     const hit = RANK_RE.find((x) => x.re.test(s));
     return hit ? hit.m : null;
   }
-  async function rankFromText(m) {
+  // 문장 속에 순위 항목 이름이 들어 있는지(AI 답변 뒤에 순위 버튼을 이어 붙일 때 사용) — 가장 긴 이름을 우선
+  function findMention(text) {
+    const s = String(text || "").toLowerCase();
+    let best = null;
+    RANK_WORDS.forEach((m) =>
+      m.words.forEach((w) => {
+        if (m.noMention && m.noMention.indexOf(w) >= 0) return;
+        const hit = /^[a-z0-9]+$/.test(w) ? new RegExp("(^|[^a-z0-9])" + w + "([^a-z0-9]|$)").test(s) : s.indexOf(w) >= 0;
+        if (hit && (!best || w.length > best.len)) best = { m: m, len: w.length };
+      })
+    );
+    return best ? best.m : null;
+  }
+  async function rankFromText(m, opts) {
     token++;
     const t = token;
     clearIntro();
-    await bot("어느 투자처의 <b>" + esc(m.label) + "</b> 순위를 볼까요?", t);
+    const follow = opts && opts.followUp;
+    await bot(follow ? "<b>" + esc(m.label) + "</b> 순위도 바로 볼 수 있어요. 어느 투자처를 볼까요?" : "어느 투자처의 <b>" + esc(m.label) + "</b> 순위를 볼까요?", t, follow ? 300 : 420);
     if (!alive(t)) return;
     const items = ["kr", "us", "etf", "crypto"].filter((k) => m.keys[k]).map((k) => ({ id: k, label: MARKET_NAME[k] + " " + labelOf(k, m.keys[k]) + " 순위" }));
     const pick = await choose(items, { cols: 2 });
@@ -397,5 +411,5 @@ window.SCFlow = (function () {
   function reset() {
     token++;
   }
-  return { start, reset, home, matchRanking, rankFromText };
+  return { start, reset, home, matchRanking, findMention, rankFromText };
 })();
