@@ -1502,24 +1502,30 @@ async function handleAiChat(request, env) {
   const cards = [];
   let reply = "";
   let lastStop = "";
-  const usage = { input: 0, output: 0 };
+  const usage = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, rounds: 0 };
   try {
     for (let round = 0; round < AI_MAX_TOOL_ROUNDS; round++) {
-      const res = await aiCallClaude(env, {
+      const payload = {
         model: env.AI_MODEL || AI_DEFAULT_MODEL,
         max_tokens: AI_MAX_OUTPUT_TOKENS,
         system: [{ type: "text", text: AI_SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
         tools: AI_TOOLS,
         messages: convo,
-      });
+      };
+      if (["low", "medium", "high"].indexOf(env.AI_EFFORT) >= 0) payload.output_config = { effort: env.AI_EFFORT };
+      const res = await aiCallClaude(env, payload);
       if (!res.ok) {
         const detail = (await res.text()).slice(0, 200);
         await refundQuota();
         return jsonResponse({ error: "AI 응답을 가져오지 못했습니다.", detail, status: res.status }, 502);
       }
       const data = await res.json();
-      usage.input += (data.usage && data.usage.input_tokens) || 0;
-      usage.output += (data.usage && data.usage.output_tokens) || 0;
+      const u = data.usage || {};
+      usage.input += u.input_tokens || 0;
+      usage.output += u.output_tokens || 0;
+      usage.cacheRead += u.cache_read_input_tokens || 0;
+      usage.cacheWrite += u.cache_creation_input_tokens || 0;
+      usage.rounds += 1;
       const blocks = data.content || [];
       lastStop = data.stop_reason;
       if (data.stop_reason !== "tool_use") {
