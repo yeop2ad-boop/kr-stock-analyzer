@@ -1615,10 +1615,11 @@ async function fetchNewsForSymbol(symbol, name) {
 }
 const NEWS_SYSTEM_PROMPT = [
   "당신은 주식을 처음 접하는 사람(주린이)에게 최근 뉴스를 쉽게 설명해 주는 도우미입니다. 한국어로 답합니다.",
-  "입력: 회사명, 티커, 최근 뉴스 목록(제목·출처·날짜). 기사 본문은 없고 제목만 있습니다.",
-  "출력은 JSON 하나만(설명·코드블록 없이): {\"summary\":\"...\",\"items\":[{\"i\":1,\"ko\":\"...\",\"gist\":\"...\"}]}",
-  "- summary: 이 회사에 최근 어떤 일이 있는지 핵심 흐름을 2~3문장으로(짧게). 전문 용어는 풀어서 쓰고, '그래서 투자자가 알아둘 점'을 한 문장 넣습니다.",
-  "- items: 입력 뉴스마다 하나씩. ko = 한국어 제목(영어면 자연스럽게 번역, 한국어면 그대로), gist = 이 기사가 무슨 내용인지 40자 안팎의 쉬운 한 줄.",
+  "입력: 회사명, 티커, 최근 뉴스 목록(번호·제목·출처·날짜). 기사 본문은 없고 제목만 있습니다.",
+  "출력 형식(이 형식만, 다른 말·코드블록 금지):",
+  "첫 줄: 요약: (이 회사에 최근 어떤 일이 있는지 핵심을 2~3문장으로 짧고 쉬운 말로, 마지막에 투자자가 알아둘 점 한 문장)",
+  "그다음 뉴스마다 한 줄: 번호|한국어 제목|한 줄 쉬운 설명(30자 안팎)",
+  "- 제목이 영어면 자연스럽게 번역하고, 한국어면 그대로 씁니다. '|' 문자는 내용에 쓰지 않습니다.",
   "- 제목에 없는 사실·원인·숫자를 지어내지 않습니다. 모르면 '제목만으로는 자세한 내용을 알 수 없어요'라고 씁니다.",
   "- 매수·매도 권유, 주가 예측, 수익 보장 표현은 쓰지 않습니다.",
 ].join("\n");
@@ -1645,7 +1646,8 @@ async function handleNewsSummary(request, env, url) {
 
   const payload = {
     model: env.AI_MODEL || AI_DEFAULT_MODEL,
-    max_tokens: 700,
+    max_tokens: 1200, // 모델 내부 처리에 쓰는 토큰이 포함돼 너무 낮으면 답이 중간에 끊긴다
+    output_config: { effort: "low" }, // 추론을 줄여 10초 안에 끝낸다
     system: [{ type: "text", text: NEWS_SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
     messages: [
       {
@@ -1660,25 +1662,35 @@ async function handleNewsSummary(request, env, url) {
   };
   let res;
   try {
-    res = await aiCallClaude(env, payload, { attempts: 2, timeoutMs: 6500 }); // 전체 10초 안에 끝내기 위해 짧게
+    res = await aiCallClaude(env, payload, { attempts: 2, timeoutMs: 8000 }); // 전체 10초 안에 끝내기 위해 짧게
   } catch (e) {
     return jsonResponse({ error: "AI 요약이 오래 걸려 중단했습니다.", code: "timeout" }, 504);
   }
   if (!res.ok) return jsonResponse({ error: "AI 요약을 만들지 못했습니다.", status: res.status }, 502);
   const data = await res.json();
   const text = (data.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n");
-  let parsed = null;
-  try {
-    parsed = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1));
-  } catch {}
-  if (!parsed || typeof parsed.summary !== "string") return jsonResponse({ error: "AI 요약 형식을 읽지 못했습니다." }, 502);
-  const byI = new Map((Array.isArray(parsed.items) ? parsed.items : []).map((x) => [x.i, x]));
+  // 줄 형식 파싱: "요약: …" + "번호|제목|설명" (JSON보다 어긋날 일이 적다)
+  let summary = "";
+  const byI = new Map();
+  for (const line of text.split("\n")) {
+    const s = line.trim();
+    if (!s) continue;
+    const ms = s.match(/^요약\s*[:：]\s*(.+)$/);
+    if (ms) {
+      summary = ms[1].trim();
+      continue;
+    }
+    const mi = s.match(/^(\d+)\s*[.)]?\s*\|\s*(.+?)\s*\|\s*(.+)$/);
+    if (mi) byI.set(parseInt(mi[1], 10), { ko: mi[2].trim(), gist: mi[3].trim() });
+  }
+  if (!summary) return jsonResponse({ error: "AI 요약 형식을 읽지 못했습니다.", stop: data.stop_reason, got: text.slice(0, 200) }, 502);
+  const parsed = { summary };
   const out = {
     symbol,
     name,
     summary: parsed.summary,
     items: top.map((n, i) => {
-      const x = byI.get(i + 1) || {};
+      const x = byI.get(i + 1) || byI.get(i) || {};
       return {
         title: (x.ko || n.title || "").slice(0, 200),
         gist: (x.gist || "").slice(0, 120),
