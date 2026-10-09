@@ -69,7 +69,7 @@
         } catch (e) {
           /* ignore */
         }
-        bubble("assistant", "<b>오늘 AI 사용 한도에 도달했어요</b><br>정식 서비스에서는 여기서 내일까지 AI 답변·뉴스 요약이 잠깁니다. 지금은 테스트 중이라 제한 없이 계속 쓸 수 있어요. 마켓맵 화면(순위·차트 등)은 AI를 쓰지 않아 한도와 상관없이 볼 수 있어요.");
+        bubble("assistant", "<b>오늘 AI 사용 한도에 도달했어요</b><br>정식 서비스에서는 여기서 내일까지 AI 답변·뉴스 요약이 잠깁니다. 지금은 테스트 중이라 제한 없이 계속 쓸 수 있어요. 공시정보 화면(순위·차트 등)은 AI를 쓰지 않아 한도와 상관없이 볼 수 있어요.");
       }
     },
   };
@@ -138,7 +138,7 @@
       const intro = document.createElement("div");
       intro.className = "intro";
       intro.innerHTML =
-        '<h1>종목, 이제 쉽게 찾고 분석해요</h1><p>버튼으로 고르면 마켓맵 자료를 바로 보여드려요.<br>궁금한 건 아래에 직접 물어보면 AI가 답해요.</p>' +
+        '<h1>종목, 이제 쉽게 찾고 분석해요</h1><p>버튼으로 고르면 공시정보 자료를 바로 보여드려요.<br>궁금한 건 아래에 직접 물어보면 AI가 답해요.</p>' +
         '<div class="home-tiles">' +
         '<button type="button" class="home-tile" data-flow="search"><span class="ht-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="20" y1="20" x2="15.3" y2="15.3"/></svg></span><b>간편검색</b><small>내투자를 찾고있어요</small></button>' +
         '<button type="button" class="home-tile alt" data-flow="analyze"><span class="ht-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,17 9,11 13,15 21,6"/><polyline points="15,6 21,6 21,12"/></svg></span><b>투자분석</b><small>내투자를 분석해주세요</small></button>' +
@@ -324,13 +324,20 @@
 
   // 하단 안내문 "자세히" 펼치기/접기
   const noticeMore = document.getElementById("noticeMore");
-  if (noticeMore) {
-    noticeMore.addEventListener("click", () => {
-      const full = document.getElementById("noticeFull");
-      const open = full.hidden;
-      full.hidden = !open;
+  const noticeFull = document.getElementById("noticeFull");
+  if (noticeMore && noticeFull) {
+    const setNotice = (open) => {
+      noticeFull.hidden = !open;
       noticeMore.setAttribute("aria-expanded", String(open));
       noticeMore.textContent = open ? "접기" : "자세히";
+    };
+    noticeMore.addEventListener("click", (e) => {
+      e.stopPropagation();
+      setNotice(noticeFull.hidden);
+    });
+    noticeFull.addEventListener("click", () => setNotice(false)); // 전문 아무 곳이나 눌러도 접힌다
+    document.addEventListener("click", (e) => {
+      if (!noticeFull.hidden && !e.target.closest("#notice")) setNotice(false); // 바깥을 눌러도 접힌다
     });
   }
 

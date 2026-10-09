@@ -286,7 +286,7 @@ window.SCFlow = (function () {
     wrap.innerHTML = '<div class="embed-loading"><i></i><i></i><i></i></div>';
     const frame = document.createElement("iframe");
     frame.className = "embed-frame";
-    frame.title = "마켓맵 화면";
+    frame.title = "공시정보 화면";
     frame.loading = "eager";
     frame.src = url.href;
     wrap.appendChild(frame);
@@ -821,7 +821,7 @@ window.SCFlow = (function () {
     token++;
     const t = token;
     clearIntro();
-    await bot("마켓맵의 <b>승률이란?</b>이에요", t, 300);
+    await bot("공시정보의 <b>승률이란?</b>이에요", t, 300);
     if (!alive(t)) return;
     embed({ view: "info", topic: "winrate" });
     await bot("<b>승률</b> 순위도 바로 볼 수 있어요. 어느 투자처를 볼까요?", t, 500);
@@ -856,7 +856,7 @@ window.SCFlow = (function () {
         if (r !== "other") return;
       }
     } else {
-      await bot("내 포트폴리오를 점검해요. 마켓맵의 관심종목 기준으로 보여드려요.", t);
+      await bot("내 포트폴리오를 점검해요. 공시정보의 관심종목 기준으로 보여드려요.", t);
       if (!alive(t)) return;
       embed({ view: "analysis" }, async (sym) => {
         const name = await SCData.nameOf(sym, sym);
