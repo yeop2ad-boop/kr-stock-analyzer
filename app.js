@@ -7916,6 +7916,14 @@ async function fetchDividends(symbol) {
     return null;
   }
 }
+// 기업명은 한글 이름 우선(검색 결과 줄과 같은 규칙: ETF 상품명 → 한글 종목명 → 상세 화면 이름)
+function dividendKoName(symbol, fallback) {
+  try {
+    const parts = typeof etfDisplayParts === "function" ? etfDisplayParts(symbol) : null;
+    if (parts && parts.main) return parts.main;
+  } catch {}
+  return TICKER_TO_KOREAN_NAME[symbol] || fallback || symbol;
+}
 function dividendPanelHtml(d, companyName) {
   const isKrw = d.currency === "KRW";
   const money = (v) => (v == null ? "—" : isKrw ? `${Math.round(v).toLocaleString("ko-KR")}원` : `${d.currency === "USD" || !d.currency ? "$" : ""}${v < 1 ? v.toFixed(3) : v.toFixed(2)}`);
@@ -7923,8 +7931,8 @@ function dividendPanelHtml(d, companyName) {
   const md = (iso) => (iso ? `${iso.slice(2, 4)}.${iso.slice(5, 7)}.${iso.slice(8, 10)}` : "");
   const tagHtml = (r) => {
     const out = [];
-    if (r.upcoming && r.estimated) out.push(`<span class="div-tag div-est">예상 · 아직 공시 전이에요. 주가는 현재가, 날짜·금액은 지난 주기와 금액으로 추정한 값(확정 아님)</span>`);
-    else if (r.upcoming) out.push(`<span class="div-tag div-up-coming">예정 · 회사가 공시한 배당</span>`);
+    if (r.upcoming) out.push(`<span class="div-tag div-up-coming">예정</span>`);
+    if (r.upcoming && r.estimated) out.push(`<span class="div-estnote">*아직 공시 전이라 날짜 금액은 달라질 수 있습니다.</span>`);
     if (r.tag === "cut") out.push(`<span class="div-tag div-cut">🚨 배당 컷 ${r.changePct.toFixed(0)}% (이전 정기 배당 대비)</span>`);
     else if (r.tag === "down") out.push(`<span class="div-tag div-down">⚠️ 배당 감소 ${r.changePct.toFixed(0)}%</span>`);
     else if (r.tag === "up") out.push(`<span class="div-tag div-up">▲ 배당 증가 +${r.changePct.toFixed(0)}%</span>`);
@@ -7952,7 +7960,7 @@ function dividendPanelHtml(d, companyName) {
       ${d.price != null ? `<div class="div-now"><span>현재 주가</span><b>${priceTxt(d.price)}</b></div>` : ""}
       <div class="div-top">
         <span class="div-logo">${tickerLogoHtml(d.symbol)}</span>
-        <span class="div-name">${escapeHtml(companyName || d.symbol)}</span>
+        <span class="div-name">${escapeHtml(dividendKoName(d.symbol, companyName))}</span>
         <span class="div-freq">${escapeHtml(d.frequency || "")}</span>
       </div>
       ${annualTxt ? `<p class="div-annual">${annualTxt}</p>` : ""}
