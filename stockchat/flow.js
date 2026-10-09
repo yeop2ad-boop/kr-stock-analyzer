@@ -157,6 +157,25 @@ window.SCFlow = (function () {
   });
   // ---------- 전체 검색 진행 책갈피: 오른쪽 가장자리에 붙어 있고 누르면 그 화면으로 이동, 색이 차오르다 끝나면 완료 표시 ----------
   let mark = null;
+  // 책갈피는 검색 중인 화면 옆에 붙어 같이 움직인다(스크롤하면 같이 올라가고 내려감).
+  // 화면이 위·아래로 벗어나면 가장자리에 붙어 남아 있어서, 눌러서 바로 돌아갈 수 있다.
+  function placeMark() {
+    if (!mark) return;
+    const list = listEl();
+    const lr = list.getBoundingClientRect();
+    const ar = list.parentElement.getBoundingClientRect();
+    const wr = mark.em.wrap.getBoundingClientRect();
+    const h = mark.el.offsetHeight || 30;
+    const minTop = lr.top - ar.top + 6;
+    const maxTop = lr.bottom - ar.top - h - 6;
+    const want = wr.top - ar.top + 14;
+    mark.el.style.top = Math.round(Math.max(minTop, Math.min(maxTop, want))) + "px";
+    const off = wr.bottom < lr.top + 40 ? "above" : wr.top > lr.bottom - 40 ? "below" : "";
+    mark.el.dataset.off = off;
+  }
+  setInterval(placeMark, 150);
+  window.addEventListener("resize", placeMark);
+  document.addEventListener("scroll", placeMark, true);
   function scanMark(em, d) {
     if (d.state === "run") {
       if (!mark || mark.em !== em) {
@@ -175,6 +194,7 @@ window.SCFlow = (function () {
         });
         document.querySelector(".app").appendChild(el);
         mark = { em, el };
+        placeMark();
       }
       const el = mark.el;
       el.classList.remove("done");

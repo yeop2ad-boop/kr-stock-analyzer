@@ -61,3 +61,5 @@ html.embed-mode:not(.embed-market) #marketPanel { display: none !important; }
 html.embed-entry #topRankingSubNav, html.embed-tab #topRankingSubNav, html.embed-popular #topRankingSubNav { display: none !important; }
 /* 순위 화면: 표 아래 마켓맵 전체보기 버튼은 스톡챗의 "전체보기"/"더보기"가 대신하므로 숨김(스톡챗이 코드로 눌러줌) */
 html.embed-rank .load-more-btn, html.embed-entry .load-more-btn { display: none !important; }
+/* 끼워 넣은 화면 안에는 자체 스크롤바를 두지 않는다 — 스크롤바가 켜졌다 꺼질 때 차트 폭·높이가 계속 바뀌어 화면이 깜빡이던 문제(투자분석) */
+html.embed-mode, html.embed-mode body { overflow: hidden !important; }

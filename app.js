@@ -21976,7 +21976,8 @@ async function renderInvestAnalysis() {
 
 // 2026-10-08 사용자 요청: 관심종목이 5개 미만이면 투자분석 화면을 흐리게 덮고 "최소 5개 종목을 등록하세요" —
 // 종목을 추가해 5개가 되면 바로 풀림(saveWatchlist가 다시 부름)
-const IA_GATE_MIN = 5;
+// 2026-10-09 사용자 요청: "최소 5개 종목을 등록하세요" 잠금 화면 제거 — 종목 수와 상관없이 투자분석을 바로 보여준다(0이면 잠기지 않음)
+const IA_GATE_MIN = 0;
 function iaApplyGate() {
   const results = el("analysisResults");
   if (!results || !results.firstElementChild) return;
