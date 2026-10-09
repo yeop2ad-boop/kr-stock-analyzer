@@ -425,7 +425,7 @@ window.SCFlow = (function () {
     clearIntro();
     await bot("<b>" + esc(st.name) + "</b>의 마켓맵 [요약]이에요", t, 300);
     if (!alive(t)) return;
-    embed({ view: "detail", ticker: st.symbol, sub: "sreport" });
+    embed({ view: "detail", ticker: st.symbol, sub: "summary" }); // 마켓맵 상세 맨 위: 그래프·기본정보·과거분석/미래예측/공포지수 버튼
     let line = "";
     try {
       line = stateSentence(await fetchCard(st.symbol));
