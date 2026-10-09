@@ -33,14 +33,15 @@ window.SCFlow = (function () {
 
   // ---------- 단일 종목 화면 머리말: [로고] 이름(티커)에 대한 ○○입니다 ----------
   const tickerOf = (sym) => String(sym || "").replace(/\.(KS|KQ)$/i, "").replace(/-USD$/i, "");
-  function stockHead(symbol, name, what) {
+  // 회사 로고(없으면 글자 배지) — 머리말·관심종목·검색 목록에서 공통으로 쓴다
+  function logoHtml(symbol, name) {
     const sym = String(symbol || "");
     const fmp = "https://financialmodelingprep.com/image-stock/" + encodeURIComponent(/-USD$/i.test(sym) ? sym.replace(/-USD$/i, "USD") : sym) + ".png";
     const badge = esc(String(name || sym).replace(/\s/g, "").slice(0, 2));
-    return (
-      '<span class="st-logo"><img src="' + esc(fmp) + '" alt="" loading="lazy" onerror="this.style.display=&quot;none&quot;;this.nextElementSibling.style.display=&quot;flex&quot;" /><i>' + badge + "</i></span>" +
-      "<b>" + esc(name) + "</b> <span class=\"st-tk\">(" + esc(tickerOf(sym)) + ")</span>에 대한 " + esc(what) + "입니다"
-    );
+    return '<span class="st-logo"><img src="' + esc(fmp) + '" alt="" loading="lazy" onerror="this.style.display=&quot;none&quot;;this.nextElementSibling.style.display=&quot;flex&quot;" /><i>' + badge + "</i></span>";
+  }
+  function stockHead(symbol, name, what) {
+    return logoHtml(symbol, name) + "<b>" + esc(name) + "</b> <span class=\"st-tk\">(" + esc(tickerOf(symbol)) + ")</span>에 대한 " + esc(what) + "입니다";
   }
 
   // 지나간 버튼을 다시 눌렀을 때: 새 흐름으로 그 항목을 처음부터 만든다
@@ -496,7 +497,7 @@ window.SCFlow = (function () {
           const b = document.createElement("button");
           b.type = "button";
           b.className = "fl-btn";
-          b.innerHTML = "<b>" + esc(names[i]) + "</b>";
+          b.innerHTML = "<b>" + logoHtml(x.symbol, names[i]) + esc(names[i]) + "</b>";
           b.addEventListener("click", () => done({ symbol: x.symbol, name: names[i] }));
           box.appendChild(b);
         });
@@ -514,7 +515,7 @@ window.SCFlow = (function () {
           }
           const res = await SCData.search(q, 8);
           sug.innerHTML = res.length
-            ? res.map((it) => '<button type="button" class="fl-sg" data-sym="' + esc(it.symbol) + '" data-name="' + esc(it.name) + '"><b>' + esc(it.name) + "</b><small>" + esc(it.sub) + "</small></button>").join("")
+            ? res.map((it) => '<button type="button" class="fl-sg" data-sym="' + esc(it.symbol) + '" data-name="' + esc(it.name) + '">' + logoHtml(it.symbol, it.name) + '<span class="fl-sg-t"><b>' + esc(it.name) + "</b><small>" + esc(it.sub) + "</small></span></button>").join("")
             : '<div class="fl-none">일치하는 종목이 없어요</div>';
         }, 160);
       });
