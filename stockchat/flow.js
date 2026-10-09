@@ -354,6 +354,7 @@ window.SCFlow = (function () {
     revenue: { id: "revenue", label: "회사 매출 상태 확인해줘", sub: "돈을 잘 벌고 있는지 (매출·순이익)", what: "매출·이익 상태(재무제표)" },
     sreport: { id: "sreport", label: "이 종목 성적표 보여줘", sub: "오래 들고 있으면 어땠는지 등 핵심 5가지", what: "성적표(핵심지표)" },
     risk: { id: "risk", label: "위험한 점은 없는지 점검해줘", sub: "빚·적자·급락 같은 위험 신호 체크", what: "위험 신호 점검(리스크)" },
+    dividend: { id: "dividend", label: "배당은 얼마나 주는지 알려줘", sub: "배당금·배당락일·지급일 (최근 1년)", what: "배당 내역(배당금·배당락일·지급일)" },
     news: { id: "news", label: "요즘 무슨 일 있는지 알려줘", sub: "이 회사의 최근 뉴스", what: "최근 소식(뉴스)" },
     summary: { id: "summary", label: "지금 주가랑 차트 보여줘", sub: "현재 가격과 지금까지의 흐름", what: "현재 주가·차트(개요)" },
   };
@@ -437,6 +438,20 @@ window.SCFlow = (function () {
     }
   }
 
+  // 배당을 주는 종목인지(주식·ETF만 확인, 코인 제외). 결과는 기억해 두고, 4초 안에 답이 없으면 없는 걸로 본다
+  const divMemo = new Map();
+  async function hasDividend(symbol) {
+    const s = String(symbol || "").toUpperCase();
+    if (/-USD$/.test(s)) return false;
+    if (divMemo.has(s)) return divMemo.get(s);
+    const p = fetch(WORKER + "/dividends?symbol=" + encodeURIComponent(s), { signal: AbortSignal.timeout(4000) })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => !!(d && d.hasDividend))
+      .catch(() => false);
+    divMemo.set(s, p);
+    return p;
+  }
+
   // 종목 상세 화면 하나를 올린다(지나간 버튼을 다시 눌렀을 때도 사용)
   async function detailOne(symbol, name, a) {
     const t = token;
@@ -448,14 +463,16 @@ window.SCFlow = (function () {
   async function stockMenu(symbol, name, t, fromRank) {
     const info = await SCData.lookup(symbol);
     const isStock = !info || info.market === "kr" || info.market === "us";
+    const divOkP = hasDividend(symbol); // 배당 주는 종목이면 '배당' 버튼도 보여주려고 미리 확인
     // 1) 주가와 차트(개요) 먼저
     if (!(await announce(stockHead(symbol, name, PLAIN.summary.what), t))) return;
     embed({ view: "detail", ticker: symbol, sub: "summary" });
     // 2) 그다음 궁금한 것(매출·성적표·위험·뉴스) 버튼 — 눌러서 본 것은 목록에서 빠진다
     const done = new Set();
     let first = true;
+    const divOk = await divOkP;
     for (;;) {
-      const left = [isStock && PLAIN.revenue, PLAIN.sreport, isStock && PLAIN.risk, PLAIN.news].filter((a) => a && !done.has(a.id));
+      const left = [isStock && PLAIN.revenue, divOk && PLAIN.dividend, PLAIN.sreport, isStock && PLAIN.risk, PLAIN.news].filter((a) => a && !done.has(a.id));
       await bot(first ? "더 궁금한 걸 골라주세요" : "이어서 볼까요?", t, 450);
       first = false;
       if (!alive(t)) return;
@@ -760,8 +777,10 @@ window.SCFlow = (function () {
     const region = item && item.region ? item.region : null;
     // 마켓맵 상세 화면에는 코인·ETF에 재무제표(매출·순이익)·리스크 항목이 없어서 주식일 때만 보여준다
     const isStock = market === "kr" || market === "us";
+    const divOk = await hasDividend(st.symbol);
     const all = [
       isStock && PLAIN.revenue,
+      divOk && PLAIN.dividend,
       PLAIN.sreport,
       isStock && PLAIN.risk,
       PLAIN.news,
@@ -1008,6 +1027,7 @@ window.SCFlow = (function () {
   const STOCK_ACTIONS = [
     { sub: "news", label: PLAIN.news.what, words: ["뉴스", "악재", "호재", "소식", "이슈", "최근기사"] },
     { sub: "risk", label: PLAIN.risk.what, words: ["리스크", "위험신호", "위험", "안전한가", "상장폐지"] },
+    { sub: "dividend", label: PLAIN.dividend.what, words: ["배당금", "배당락", "배당일", "지급일", "배당"] },
     { sub: "revenue", label: PLAIN.revenue.what, words: ["재무제표", "재무", "매출", "순이익", "영업이익", "적자", "흑자", "현금흐름"] },
     { sub: "summary", label: PLAIN.summary.what, words: ["차트", "시세", "현재가", "기본정보", "미래예측", "6개월후", "계절성"] },
     { sub: "sreport", label: PLAIN.sreport.what, words: ["핵심지표", "핵심정보"] },
@@ -1037,6 +1057,10 @@ window.SCFlow = (function () {
     clearIntro();
     if (f.act.sub === "news") {
       await newsFlow(f.st.symbol, f.st.name, t);
+      return offerForStock(f.st, null);
+    }
+    if (f.act.sub === "dividend" && !(await hasDividend(f.st.symbol))) {
+      await bot("<b>" + esc(f.st.name) + "</b>은(는) 최근 1년 동안 배당 내역이 없어요.", t, 400);
       return offerForStock(f.st, null);
     }
     await announce(stockHead(f.st.symbol, f.st.name, f.act.label), t);

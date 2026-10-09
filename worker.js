@@ -1713,6 +1713,155 @@ async function handleNewsSummary(request, env, url) {
   return resp;
 }
 
+// ---------- GET /dividends?symbol=AAPL — 최근 1년 배당 내역(배당락일·배당금·배당률·지급일·컷 표시) ----------
+// 배당금·배당락일·주가는 Yahoo 차트의 배당 이벤트(한국·미국 공통), 지급일은 미국 종목에 한해 Nasdaq 배당 일정에서 맞춰 붙인다
+// (한국 종목은 지급일을 알려주는 무료 자료가 없어 비워 둔다). 컷 판정은 2년치로 하되 화면에는 1년치만 내려준다. 6시간 재사용.
+function divIsoFromMdy(s) {
+  const m = String(s || "").match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  return m ? `${m[3]}-${m[1]}-${m[2]}` : "";
+}
+async function fetchNasdaqDividendRows(symbol) {
+  for (const cls of ["stocks", "etf"]) {
+    try {
+      const r = await fetch(`https://api.nasdaq.com/api/quote/${encodeURIComponent(symbol)}/dividends?assetclass=${cls}`, {
+        headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36", Accept: "application/json" },
+        signal: AbortSignal.timeout(3500),
+      });
+      if (!r.ok) continue;
+      const j = await r.json();
+      const rows = j && j.data && j.data.dividends && j.data.dividends.rows;
+      if (rows && rows.length) return rows;
+    } catch {}
+  }
+  return null;
+}
+function divFrequencyLabel(n) {
+  if (n >= 9) return "월배당";
+  if (n >= 6) return "격월배당";
+  if (n >= 3) return "분기배당";
+  if (n === 2) return "반기배당";
+  if (n === 1) return "연배당";
+  return "불규칙 배당";
+}
+async function handleDividends(request, env, url) {
+  const symbol = (url.searchParams.get("symbol") || "").trim().toUpperCase().slice(0, 20);
+  if (!symbol) return jsonResponse({ error: "symbol이 필요합니다." }, 400);
+  const cacheKey = new Request("https://dividends.cache/" + encodeURIComponent(symbol));
+  const cache = caches.default;
+  const hit = await cache.match(cacheKey);
+  if (hit) return new Response(hit.body, { status: 200, headers: { "Content-Type": "application/json", "X-Cache": "HIT", ...CORS_HEADERS } });
+
+  let chart;
+  try {
+    const r = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=2y&interval=1d&events=div`, { headers: UPSTREAM_HEADERS, signal: AbortSignal.timeout(5000) });
+    if (!r.ok) return jsonResponse({ symbol, hasDividend: false, error: "시세 자료를 가져오지 못했습니다." }, 200);
+    chart = await r.json();
+  } catch {
+    return jsonResponse({ symbol, hasDividend: false, error: "시세 자료를 가져오지 못했습니다." }, 200);
+  }
+  const res0 = chart && chart.chart && chart.chart.result && chart.chart.result[0];
+  const evs = res0 && res0.events && res0.events.dividends ? Object.values(res0.events.dividends) : [];
+  if (!res0 || !evs.length) return jsonResponse({ symbol, hasDividend: false }, 200);
+
+  const ts = res0.timestamp || [];
+  const closes = (res0.indicators && res0.indicators.quote && res0.indicators.quote[0] && res0.indicators.quote[0].close) || [];
+  const isoOf = (sec) => new Date(sec * 1000).toISOString().slice(0, 10);
+  // 배당락일 직전 거래일 종가(없으면 그날 종가)
+  const priceBefore = (sec) => {
+    let best = null;
+    let same = null;
+    for (let i = 0; i < ts.length; i++) {
+      if (closes[i] == null) continue;
+      if (ts[i] < sec - 3600) best = closes[i];
+      else if (Math.abs(ts[i] - sec) <= 86400) same = closes[i];
+    }
+    return best != null ? best : same;
+  };
+  const all = evs.map((e) => ({ ts: e.date, amount: e.amount })).sort((a, b) => a.ts - b.ts); // 오래된 → 최근
+  const now = Date.now() / 1000;
+  const yearAgo = now - 365 * 86400;
+  const recent = all.filter((d) => d.ts >= yearAgo);
+  const n = Math.max(1, recent.length);
+  const perYear = Math.min(12, n);
+  const amounts = recent.map((d) => d.amount).sort((a, b) => a - b);
+  const median = amounts.length ? amounts[Math.floor(amounts.length / 2)] : 0;
+
+  // 미국: Nasdaq에서 지급일·예정 배당 붙이기
+  const isKr = /\.(KS|KQ)$/i.test(symbol);
+  const isUsLike = !isKr && !/-USD$/i.test(symbol) && !/[\^=]/.test(symbol);
+  const nas = isUsLike ? await fetchNasdaqDividendRows(symbol) : null;
+  const payByEx = new Map();
+  const upcoming = [];
+  const todayIso = new Date().toISOString().slice(0, 10);
+  (nas || []).forEach((r) => {
+    const ex = divIsoFromMdy(r.exOrEffDate);
+    const pay = divIsoFromMdy(r.paymentDate);
+    const amt = parseFloat(String(r.amount || "").replace(/[^0-9.]/g, ""));
+    if (ex) payByEx.set(ex, pay);
+    if (ex && ex >= todayIso && Number.isFinite(amt)) upcoming.push({ exDate: ex, payDate: pay || null, amount: amt });
+  });
+
+  const isSpecial = (amt) => median > 0 && amt >= median * 1.4; // 평소보다 훨씬 큰 배당(결산·특별배당 등)
+  const rows = all.map((d, i) => {
+    // 자주 주면 직전 '정기' 배당과, 드물게 주면 작년 같은 때와 비교(특별배당은 비교 기준에서 뺀다)
+    let base = null;
+    if (perYear >= 3) {
+      for (let k = i - 1; k >= 0; k--) {
+        if (!isSpecial(all[k].amount)) {
+          base = all[k].amount;
+          break;
+        }
+      }
+    } else if (i - perYear >= 0) base = all[i - perYear].amount;
+    const chg = base ? ((d.amount - base) / base) * 100 : null;
+    const price = priceBefore(d.ts);
+    const exDate = isoOf(d.ts);
+    let tag = "";
+    if (chg != null && !isSpecial(d.amount)) {
+      if (chg <= -30) tag = "cut"; // 배당 컷
+      else if (chg <= -10) tag = "down";
+      else if (chg >= 10) tag = "up";
+    }
+    const special = isSpecial(d.amount);
+    return {
+      exDate,
+      payDate: payByEx.get(exDate) || null,
+      amount: d.amount,
+      price: price != null ? price : null,
+      yieldPct: price ? (d.amount / price) * 100 : null,
+      changePct: chg,
+      tag,
+      special,
+    };
+  });
+  const shown = rows.filter((r) => r.exDate >= isoOf(yearAgo)).reverse(); // 최근이 위
+  upcoming.forEach((u) => {
+    if (!shown.some((r) => r.exDate === u.exDate)) shown.unshift({ exDate: u.exDate, payDate: u.payDate, amount: u.amount, price: null, yieldPct: null, changePct: null, tag: "", special: false, upcoming: true });
+  });
+
+  const lastTs = recent.length ? recent[recent.length - 1].ts : all[all.length - 1].ts;
+  const expectedGapDays = 365 / perYear;
+  const delayed = (now - lastTs) / 86400 > expectedGapDays * 1.6 && !upcoming.length; // 예정보다 오래 안 줌
+  const priceNow = res0.meta && res0.meta.regularMarketPrice;
+  const annual = recent.reduce((s, d) => s + d.amount, 0);
+  const out = {
+    symbol,
+    hasDividend: shown.length > 0,
+    currency: (res0.meta && res0.meta.currency) || "",
+    frequency: divFrequencyLabel(recent.length),
+    countLastYear: recent.length,
+    price: priceNow || null,
+    annualAmount: annual,
+    annualYieldPct: priceNow ? (annual / priceNow) * 100 : null,
+    delayed,
+    payDateAvailable: !!nas,
+    rows: shown,
+  };
+  const resp = new Response(JSON.stringify(out), { status: 200, headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=21600", ...CORS_HEADERS } });
+  await cache.put(cacheKey, resp.clone());
+  return resp;
+}
+
 // GET /stock-card?symbol=005930.KS — AI 없이 종목 카드 데이터(1년 주가·지표·연간 매출/순이익·승률)만 돌려줌. 스톡챗의 버튼 선택 화면용(5분 캐시).
 async function handleStockCard(request) {
   const sym = (new URL(request.url).searchParams.get("symbol") || "").trim().toUpperCase();
@@ -1762,6 +1911,10 @@ export default {
 
     if (requestUrl.pathname === "/news-summary") {
       return handleNewsSummary(request, env, requestUrl);
+    }
+
+    if (requestUrl.pathname === "/dividends") {
+      return handleDividends(request, env, requestUrl);
     }
 
     if (requestUrl.pathname === "/stock-card") {

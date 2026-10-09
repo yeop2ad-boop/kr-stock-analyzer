@@ -4138,3 +4138,30 @@ table.earn-table tr.earn-chart-row td { padding: 6px 0 14px; white-space: normal
 /* 더보기 > 공포지수 화면 */
 .fear-panel-note { margin: 10px 2px 8px; font-size: 12.5px; line-height: 1.5; }
 #fearPanelHost .flush-section { margin-top: 4px; }
+
+/* 배당(2026-10-09): 기업명·주기 → 주가 / 배당금(배당률) / 배당락일·지급일 3단계 표, 줄마다 컷·증가·특별배당 표시 */
+.div-wrap { padding: 4px 2px 6px; }
+.div-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 6px 0 2px; }
+.div-name { font-size: 18px; font-weight: 800; letter-spacing: -0.4px; }
+.div-freq { font-size: 12px; font-weight: 800; color: #fff; background: #2e7dd1; border-radius: 999px; padding: 3px 10px; }
+.div-annual { margin: 4px 0 10px; font-size: 13.5px; color: var(--muted); }
+.div-annual b { color: var(--text); }
+.div-warn { margin: 0 0 10px; padding: 9px 11px; border-radius: 10px; background: rgba(224, 160, 48, 0.16); font-size: 13px; line-height: 1.45; }
+.div-head, .div-cells { display: grid; grid-template-columns: 1fr 1.15fr 1.1fr; gap: 6px; align-items: center; }
+.div-head { padding: 7px 4px; font-size: 12px; font-weight: 700; color: var(--muted); border-bottom: 1px solid var(--rk-line, rgba(128, 128, 128, 0.25)); }
+.div-head small { display: block; font-size: 10.5px; font-weight: 500; }
+.div-row { padding: 10px 4px; border-bottom: 1px solid var(--rk-line, rgba(128, 128, 128, 0.18)); }
+.div-row.is-cut { background: rgba(214, 69, 61, 0.07); border-radius: 8px; }
+.div-row.is-upcoming { background: rgba(46, 125, 209, 0.07); border-radius: 8px; }
+.div-c1 { font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.div-c2 b { font-size: 14.5px; }
+.div-c2 small { color: var(--muted); font-size: 12px; }
+.div-c3 { display: flex; flex-direction: column; gap: 1px; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.div-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.div-tag { font-size: 11.5px; font-weight: 700; border-radius: 6px; padding: 2px 8px; background: rgba(128, 128, 128, 0.14); }
+.div-cut { color: #d6453d; background: rgba(214, 69, 61, 0.14); }
+.div-down { color: #b9801f; background: rgba(224, 160, 48, 0.18); }
+.div-up { color: #2e9e6b; background: rgba(46, 158, 107, 0.14); }
+.div-special { color: #7a55c8; background: rgba(122, 85, 200, 0.14); }
+.div-up-coming { color: #2e7dd1; background: rgba(46, 125, 209, 0.14); }
+.div-note { margin: 12px 2px 0; font-size: 12px; line-height: 1.5; color: var(--muted); }

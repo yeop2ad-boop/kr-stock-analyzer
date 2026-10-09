@@ -63,3 +63,12 @@ html.embed-entry #topRankingSubNav, html.embed-tab #topRankingSubNav, html.embed
 html.embed-rank .load-more-btn, html.embed-entry .load-more-btn { display: none !important; }
 /* 끼워 넣은 화면 안에는 자체 스크롤바를 두지 않는다 — 스크롤바가 켜졌다 꺼질 때 차트 폭·높이가 계속 바뀌어 화면이 깜빡이던 문제(투자분석) */
 html.embed-mode, html.embed-mode body { overflow: hidden !important; }
+
+/* 종목 상세 "배당": 배당 내역(기업명·주기·3단계 표)만 보이게 — 차트·요약 머리글·버튼 줄은 숨김(배당 버튼은 embed.js가 대신 눌러 준다) */
+html[data-embed-sub="dividend"] [data-summary-subtabpanel]:not([data-summary-subtabpanel="summary"]) { display: none !important; }
+html[data-embed-sub="dividend"] .summary-chart-wrap,
+html[data-embed-sub="dividend"] #summaryChartPeriodNav,
+html[data-embed-sub="dividend"] #summaryScoreRow,
+html[data-embed-sub="dividend"] .summary-main,
+html[data-embed-sub="dividend"] #etfHoldingsBlock,
+html[data-embed-sub="dividend"] #tickerHistoricalRow { display: none !important; }

@@ -34,9 +34,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20261009d" />
+<link rel="stylesheet" href="style.css?v=20261009e" />
 <link rel="stylesheet" href="ai-chat.css?v=20261009a" />
-<link rel="stylesheet" href="embed.css?v=11" />
+<link rel="stylesheet" href="embed.css?v=12" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -346,6 +346,9 @@
             </div>
           </div>
         </section>
+
+        <!-- 배당(2026-10-09): 미래예측 오른쪽 버튼 — 최근 1년 배당 내역(주가·배당금(배당률)·배당락일/지급일, 컷 표시) -->
+        <section class="flush-section" id="dividendInlineWrap" style="display:none;"></section>
 
         <!-- 전체 S리포트 표 — 2026-09-15부터는 S리포트 요약 카드의 "더보기"를 누르면 그 카드 아래에 펼쳐짐(runSReport/runAssetSReport가 채움) -->
         <section class="flush-section" id="sReportInlineWrap" style="display:none;"></section>
@@ -1076,8 +1079,8 @@
   <script src="data/logo-db.js?v=20260903g"></script>
   <script src="data/etf-meta.js?v=20260912a"></script>
   <script src="winrate-benchmark.js?v=20261007k"></script>
-  <script src="app.js?v=20261009e"></script>
-  <script src="embed.js?v=9"></script>
+  <script src="app.js?v=20261009g"></script>
+  <script src="embed.js?v=11"></script>
   <script src="ai-chat.js?v=20261009a"></script>
 </body>
 </html>

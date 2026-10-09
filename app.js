@@ -7772,6 +7772,7 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
         ${/* 2026-09-15 사용자 요청: 버튼 = 과거분석(12개월 승률 카드) · 미래예측 · 공포지수(코인은 알트시즌지수). S리포트는 버튼 대신 아래 요약 카드로 펼쳐 둠 */ ""}
         <button type="button" class="summary-action-btn" id="tickerHistoricalToggleBtn" data-ticker="${escapeHtml(symbol)}">🕰️ 과거분석</button>
         <button type="button" class="summary-action-btn" id="tickerFutureToggleBtn" data-ticker="${escapeHtml(symbol)}">🔮 미래예측</button>
+        <button type="button" class="summary-action-btn" id="tickerDividendToggleBtn" style="display:none;">💰 배당</button>
         <button type="button" class="summary-action-btn" id="tickerFearToggleBtn" style="display:none;">${summaryAssetSection === "crypto" ? "🪙 알트시즌지수" : "😱 공포지수"}</button>
         ${/* 보유 종목은 버튼 대신 하위 탭 "보유종목"(주식의 매출액 자리)에 바로 펼쳐 둔다 — 2026-09-16 사용자 요청 */ ""}
       </div>
@@ -7787,7 +7788,7 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   // 2026-09-13 사용자 요청: ETF는 버튼 아래에 보유종목 TOP10 블록이 있어 그 밑에서 열렸음 → 보유종목 블록 "앞"(버튼 바로 아래)에 끼움
   const holdingsAnchor = el("etfHoldingsBlock");
   if (holdingsAnchor) el("summarySection").insertBefore(el("tickerHistoricalRow"), holdingsAnchor);
-  [futureInlineWrap, oxInlineWrap, fearInlineWrap].forEach((wrap) => {
+  [futureInlineWrap, oxInlineWrap, fearInlineWrap, ensureDividendWrap()].forEach((wrap) => {
     wrap.style.display = "none";
     wrap.classList.remove("section-expanded");
     if (holdingsAnchor) el("summarySection").insertBefore(wrap, holdingsAnchor);
@@ -7807,6 +7808,8 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   const historicalToggleBtn = el("tickerHistoricalToggleBtn");
   const fearToggleBtn = el("tickerFearToggleBtn");
   const holdingsToggleBtn = el("tickerHoldingsToggleBtn");
+  const dividendToggleBtn = el("tickerDividendToggleBtn");
+  const dividendWrap = ensureDividendWrap();
 
   const sections = [
     { btn: historicalToggleBtn, els: [oxInlineWrap] },
@@ -7814,6 +7817,7 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     { btn: fearToggleBtn, els: [fearInlineWrap] },
   ];
   if (holdingsToggleBtn) sections.push({ btn: holdingsToggleBtn, els: [holdingsAnchor] });
+  if (dividendToggleBtn && dividendWrap) sections.push({ btn: dividendToggleBtn, els: [dividendWrap] });
   // 과거분석(=12개월 승률 카드)·공포지수·보유 종목 — 누르면 버튼 바로 아래에 펼침
   // (2026-09-15 사용자 요청: 과거분석의 한달/1년 상승·하락 비교는 없애고 12개월 승률 카드로 대체)
   const bindSimpleToggle = (btn, wrap, onOpen) => {
@@ -7835,6 +7839,15 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     if (!oxInlineWrap.innerHTML.trim()) oxInlineWrap.innerHTML = `<p class="muted" style="padding:10px 2px;margin:0;">최근 12개월 승패 데이터가 아직 없습니다.</p>`;
   });
   bindSimpleToggle(fearToggleBtn, fearInlineWrap);
+  // 배당: 배당을 주는 종목(주식·ETF)에서만 버튼을 보여주고, 누르면 최근 1년 배당 내역을 펼친다(코인은 해당 없음)
+  bindSimpleToggle(dividendToggleBtn, dividendWrap);
+  if (dividendToggleBtn && dividendWrap && summaryAssetSection !== "crypto") {
+    fetchDividends(symbol).then((d) => {
+      if (!d || !d.hasDividend || !dividendToggleBtn.isConnected) return;
+      dividendWrap.innerHTML = dividendPanelHtml(d, companyName);
+      dividendToggleBtn.style.display = "";
+    });
+  }
   bindSimpleToggle(holdingsToggleBtn, holdingsAnchor, () => {
     if (!holdingsAnchor.innerHTML.trim()) holdingsAnchor.innerHTML = `<p class="muted" style="padding:10px 2px;margin:0;">보유 종목 정보가 없습니다.</p>`;
   });
@@ -7874,6 +7887,76 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   // 요약 탭 상단 가격 차트: 새 종목 조회 시 기간 버튼을 기본값(1년)으로 되돌리고 다시 그림
   Array.from(summaryChartPeriodNav.children).forEach((b) => b.classList.toggle("active", b.dataset.chartPeriod === "1y"));
   runSummaryChart(symbol, "1y");
+}
+
+// ---------- 배당(2026-10-09 사용자 요청) ----------
+// 상세의 "미래예측" 오른쪽 "배당" 버튼 — 배당을 주는 종목만. 최근 1년 배당을 최근 순으로 3단계(주가 · 배당금(배당률) · 배당락일/지급일)로 보여주고,
+// 줄마다 컷(감소)·증가·특별배당·예정 표시를 붙인다. 맨 위엔 기업명과 월배당/분기배당 같은 배당 주기.
+const dividendCache = new Map();
+// 배당 영역(#dividendInlineWrap)이 없는 예전 index.html(캐시)과 새 app.js가 섞여도 깨지지 않게 없으면 만든다
+function ensureDividendWrap() {
+  let w = el("dividendInlineWrap");
+  if (!w) {
+    w = document.createElement("section");
+    w.id = "dividendInlineWrap";
+    w.className = "flush-section";
+    w.style.display = "none";
+    document.body.appendChild(w);
+  }
+  return w;
+}
+async function fetchDividends(symbol) {
+  if (dividendCache.has(symbol)) return dividendCache.get(symbol);
+  try {
+    const res = await fetch(`${AUTH_ORIGIN}/dividends?symbol=${encodeURIComponent(symbol)}`);
+    const d = res.ok ? await res.json() : null;
+    dividendCache.set(symbol, d);
+    return d;
+  } catch {
+    return null;
+  }
+}
+function dividendPanelHtml(d, companyName) {
+  const isKrw = d.currency === "KRW";
+  const money = (v) => (v == null ? "—" : isKrw ? `${Math.round(v).toLocaleString("ko-KR")}원` : `${d.currency === "USD" || !d.currency ? "$" : ""}${v < 1 ? v.toFixed(3) : v.toFixed(2)}`);
+  const priceTxt = (v) => (v == null ? "—" : isKrw ? `${Math.round(v).toLocaleString("ko-KR")}원` : `${d.currency === "USD" || !d.currency ? "$" : ""}${v.toFixed(2)}`);
+  const md = (iso) => (iso ? `${iso.slice(2, 4)}.${iso.slice(5, 7)}.${iso.slice(8, 10)}` : "");
+  const tagHtml = (r) => {
+    const out = [];
+    if (r.upcoming) out.push(`<span class="div-tag div-up-coming">예정</span>`);
+    if (r.tag === "cut") out.push(`<span class="div-tag div-cut">🚨 배당 컷 ${r.changePct.toFixed(0)}% (이전 정기 배당 대비)</span>`);
+    else if (r.tag === "down") out.push(`<span class="div-tag div-down">⚠️ 배당 감소 ${r.changePct.toFixed(0)}%</span>`);
+    else if (r.tag === "up") out.push(`<span class="div-tag div-up">▲ 배당 증가 +${r.changePct.toFixed(0)}%</span>`);
+    if (r.special) out.push(`<span class="div-tag div-special">★ 평소보다 큰 배당(특별·결산 배당일 수 있음)</span>`);
+    return out.length ? `<div class="div-tags">${out.join("")}</div>` : "";
+  };
+  const rowsHtml = (d.rows || [])
+    .map((r) => {
+      const dates = `<span class="div-d">배당락 ${escapeHtml(md(r.exDate))}</span><span class="div-d">${r.payDate ? `지급 ${escapeHtml(md(r.payDate))}` : d.payDateAvailable ? "지급일 미정" : "지급일 공시 확인"}</span>`;
+      const yieldTxt = r.yieldPct != null ? ` <small>(${r.yieldPct.toFixed(2)}%)</small>` : "";
+      return `<div class="div-row${r.tag === "cut" ? " is-cut" : ""}${r.upcoming ? " is-upcoming" : ""}">
+        <div class="div-cells">
+          <div class="div-c1">${priceTxt(r.price)}</div>
+          <div class="div-c2"><b>${money(r.amount)}</b>${yieldTxt}</div>
+          <div class="div-c3">${dates}</div>
+        </div>
+        ${tagHtml(r)}
+      </div>`;
+    })
+    .join("");
+  const annualTxt = d.annualYieldPct != null ? `연 배당률 <b>${d.annualYieldPct.toFixed(2)}%</b> · 지난 1년 배당금 합계 <b>${money(d.annualAmount)}</b>` : "";
+  return `
+    <div class="div-wrap">
+      <div class="div-top">
+        <span class="div-name">${escapeHtml(companyName || d.symbol)}</span>
+        <span class="div-freq">${escapeHtml(d.frequency || "")}</span>
+      </div>
+      ${annualTxt ? `<p class="div-annual">${annualTxt}</p>` : ""}
+      ${d.delayed ? `<p class="div-warn">⚠️ 평소 배당 주기보다 늦어지고 있어요. 배당이 미뤄지거나 중단됐을 수 있으니 공시를 확인해 보세요.</p>` : ""}
+      <div class="div-head"><span>주가<small>배당락일 전 종가</small></span><span>배당금<small>(배당률)</small></span><span>배당락일<small>/ 지급일</small></span></div>
+      ${rowsHtml}
+      <p class="div-note">최근 1년, 최근 배당이 위에 있습니다. <b>배당락일 전날까지</b> 주식을 사야 해당 배당을 받고, 실제 입금은 지급일입니다. 배당률 = 배당금 ÷ 배당락일 전 종가(한 번 기준). 지급일은 미국 종목만 제공하며 한국 종목은 기업 공시를 확인하세요. 투자 참고용 정보이며 투자 권유가 아닙니다.</p>
+    </div>`;
 }
 
 // 차트보기 옆 "과거분석" 버튼용 — 해당 종목 1개만 기존 과거분석과 동일한 방식(현재 vs 1년 전 스냅샷)으로 비교
