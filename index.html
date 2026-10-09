@@ -34,9 +34,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20261009b" />
+<link rel="stylesheet" href="style.css?v=20261009d" />
 <link rel="stylesheet" href="ai-chat.css?v=20261009a" />
-<link rel="stylesheet" href="embed.css?v=5" />
+<link rel="stylesheet" href="embed.css?v=7" />
 <script>
   // 저장된 화면 테마(화이트/블랙)를 CSS 적용 전에 미리 심어 첫 렌더 시 색이 튀는 현상(FOUC)을 막음
   (function () {
@@ -519,6 +519,23 @@
     </div>
   </div>
 
+  <!-- 더보기 > 공포지수 전용 창(2026-10-09): 종목 상세 안의 공포지수 섹션(#fearInlineWrap)을 열 때 이 안으로 옮겨 쓴다 -->
+  <div id="fearPanel" class="company-panel" style="display:none;">
+    <div class="company-panel-bar">
+      <button type="button" id="fearPanelCloseBtn" class="search-overlay-back" aria-label="닫기"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="20" y1="12" x2="5" y2="12"/><polyline points="11 5 4 12 11 19"/></svg></button>
+      <h2 class="search-overlay-title">거시경제 · 공포지수</h2>
+    </div>
+    <div class="company-panel-body">
+      <div class="top30-sub-nav" id="fearMarketNav">
+        <button type="button" class="cat-btn active" data-fear-market="kr">코스피 공포지수</button>
+        <button type="button" class="cat-btn" data-fear-market="us">S&amp;P 공포지수</button>
+        <button type="button" class="cat-btn" data-fear-market="crypto">알트코인 시즌지수</button>
+      </div>
+      <p class="muted fear-panel-note" id="fearPanelNote"></p>
+      <div id="fearPanelHost"></div>
+    </div>
+  </div>
+
   <!-- 더보기 > 뉴스·브랜드평판순(다트공시)·신기술 전용 창(2026-09-11 사용자 요청) — 캘린더·시장처럼 별도 화면으로 뜬다.
        인사이트 화면의 결과 영역(#insightStatus/#insightResults/#insightBrandNav)을 열 때 이 안으로 옮겨 쓰고, 닫으면 제자리로 돌려놓는다. -->
   <div id="insightOverlayPanel" class="company-panel" style="display:none;">
@@ -892,6 +909,17 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.3" y="5.5" width="17.4" height="15" rx="2" /><line x1="3.3" y1="10" x2="20.7" y2="10" /><line x1="7.2" y1="2.8" x2="7.2" y2="7.4" /><line x1="14.8" y1="2.8" x2="14.8" y2="7.4" /></svg>
           <span class="more-panel-item-label" data-i18n="nav.calendar">캘린더</span>
         </button>
+        <!-- 거시경제 · 공포지수 · 투자시기(2026-10-09 사용자 요청): 종목 상세 버튼에서 더보기로 옮겨 하나의 그룹으로 — 누르면 코스피 공포지수 / S&P 공포지수 / 알트코인 시즌지수가 펼쳐짐 -->
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelFearBtn" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17a8 8 0 1 1 16 0" /><line x1="12" y1="17" x2="16" y2="11" /><circle cx="12" cy="17" r="1.2" fill="currentColor" /></svg>
+          <span class="more-panel-item-label">거시경제 · 공포지수</span>
+          <span class="more-panel-item-badge more-panel-item-badge-new">NEW</span>
+        </button>
+        <div class="more-panel-subnav" id="morePanelFearSub" style="display:none;">
+          <button type="button" class="cat-btn" data-fear-open="kr">코스피 공포지수</button>
+          <button type="button" class="cat-btn" data-fear-open="us">S&amp;P 공포지수</button>
+          <button type="button" class="cat-btn" data-fear-open="crypto">알트코인 시즌지수</button>
+        </div>
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelNewsInsightBtn" style="display:none;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h9l7 7v9H4V4Z" /><path d="M13 4v7h7" /></svg>
           <span class="more-panel-item-label" data-i18n="more.news">뉴스</span>
@@ -1048,8 +1076,8 @@
   <script src="data/logo-db.js?v=20260903g"></script>
   <script src="data/etf-meta.js?v=20260912a"></script>
   <script src="winrate-benchmark.js?v=20261007k"></script>
-  <script src="app.js?v=20261009b"></script>
-  <script src="embed.js?v=1"></script>
+  <script src="app.js?v=20261009d"></script>
+  <script src="embed.js?v=3"></script>
   <script src="ai-chat.js?v=20261009a"></script>
 </body>
 </html>

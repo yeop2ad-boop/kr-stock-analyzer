@@ -133,6 +133,17 @@
   async function send(text) {
     text = (text || "").trim();
     if (!text || busy) return;
+    // "승률이 뭐야" 같은 뜻 질문(종목 없음): AI 대신 마켓맵의 "승률이란?" 내용을 그대로 보여줌
+    const ex = window.SCFlow ? await window.SCFlow.matchExplain(text) : null;
+    if (ex) {
+      inputEl.value = "";
+      grow();
+      const introEl2 = listEl.querySelector(".intro");
+      if (introEl2) introEl2.remove();
+      bubble("user", esc(text));
+      window.SCFlow.explainShow();
+      return;
+    }
     // "삼성전자 지금 사야해?"처럼 종목이 들어 있는 매수·매도 질문: AI 글 대신 마켓맵 [요약]을 그대로 보여줌
     const bs = window.SCFlow ? await window.SCFlow.matchBuySell(text) : null;
     if (bs) {

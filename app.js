@@ -154,7 +154,7 @@ el("futureMacroChartDetailBtn").addEventListener("click", () => {
   wrap.classList.toggle("chart-detail-expanded", !isOpen);
   btn.textContent = isOpen ? "+자세히" : "-접기";
   if (!isOpen) {
-    const ticker = new URLSearchParams(location.search).get("ticker") || tickerInput.value;
+    const ticker = window.__fearTickerOverride || new URLSearchParams(location.search).get("ticker") || tickerInput.value;
     if (sectionOfSymbol(ticker) === "crypto") renderAltSeasonHistoryChart();
     else if (isKrTicker(ticker)) renderKrMacroScoreChart();
     else renderMacroScoreChart();
@@ -3104,6 +3104,70 @@ el("morePanelCalendarOverlayBtn").addEventListener("click", () => {
   closeCompanyPanel();
   closeMarketPanel();
   openCalendarPanel();
+});
+// ---------- 더보기 > 거시경제 · 공포지수(2026-10-09 사용자 요청) ----------
+// 종목 상세의 공포지수 버튼을 없애고 더보기의 하나의 그룹으로 모음: 1) 코스피 공포지수 2) S&P 공포지수 3) 알트코인 시즌지수.
+// 내용은 기존 공포지수 섹션(#fearInlineWrap, renderMacro가 채움)을 이 화면으로 옮겨 그대로 쓰고, 지수별 대표 티커로 그린다.
+// (ETF는 별도 항목 없이 투자 대상 시장의 지수를 따른다 — 한국 ETF=코스피, 미국 ETF=S&P)
+const FEAR_REP_TICKER = { kr: "005930.KS", us: "AAPL", crypto: "BTC-USD" };
+const FEAR_NOTE = {
+  kr: "코스피 공포지수(자체 개발)예요. 종목과 무관한 시장 전체 지표이고, 한국 주식·ETF 투자시기를 볼 때 참고해요.",
+  us: "S&P500 변동성지수(VIX) 기반 투자시점 점검표예요. 종목과 무관한 시장 전체 지표이고, 미국 주식·ETF 투자시기를 볼 때 참고해요.",
+  crypto: "코인 시장 전체의 쏠림을 보는 알트코인 시즌지수예요.",
+};
+let fearMarket = "kr";
+function renderFearPanel() {
+  const host = el("fearPanelHost");
+  if (!host.contains(fearInlineWrap)) host.appendChild(fearInlineWrap);
+  fearInlineWrap.style.display = "block";
+  fearInlineWrap.classList.add("section-expanded");
+  // 지수를 바꿀 때마다 "+자세히" 차트는 접힌 상태로
+  const detailWrap = el("futureMacroChartDetailWrap");
+  detailWrap.style.display = "none";
+  detailWrap.classList.remove("chart-detail-expanded");
+  el("futureMacroChartDetailBtn").textContent = "+자세히";
+  document.querySelectorAll("#fearMarketNav [data-fear-market]").forEach((b) => b.classList.toggle("active", b.dataset.fearMarket === fearMarket));
+  el("fearPanelNote").textContent = FEAR_NOTE[fearMarket] || "";
+  const rep = FEAR_REP_TICKER[fearMarket];
+  window.__fearTickerOverride = rep;
+  renderMacro(rep);
+}
+function openFearPanel(market) {
+  if (FEAR_REP_TICKER[market]) fearMarket = market;
+  el("fearPanel").style.display = "flex";
+  requestAnimationFrame(() => el("fearPanel").classList.add("open"));
+  renderFearPanel();
+}
+function closeFearPanel() {
+  el("fearPanel").classList.remove("open");
+  window.setTimeout(() => {
+    el("fearPanel").style.display = "none";
+  }, 280);
+  window.__fearTickerOverride = null;
+  fearInlineWrap.style.display = "none";
+  setBottomNavActive("home");
+}
+el("fearPanelCloseBtn").addEventListener("click", closeFearPanel);
+el("fearMarketNav").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-fear-market]");
+  if (!b) return;
+  fearMarket = b.dataset.fearMarket;
+  renderFearPanel();
+});
+// 더보기: 그룹을 누르면 세 지수가 펼쳐지고, 지수를 누르면 그 화면이 열림
+el("morePanelFearBtn").addEventListener("click", () => {
+  const sub = el("morePanelFearSub");
+  const open = sub.style.display === "none";
+  sub.style.display = open ? "flex" : "none";
+  el("morePanelFearBtn").setAttribute("aria-expanded", open ? "true" : "false");
+});
+el("morePanelFearSub").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-fear-open]");
+  if (!b) return;
+  closeMorePanel();
+  closeCompanyPanel();
+  closeMarketPanel();
+  openFearPanel(b.dataset.fearOpen);
 });
 // 2026-09-11 사용자 요청: 뉴스·브랜드평판순(다트공시)·신기술은 인사이트 화면 안이 아니라 캘린더처럼 별도 창으로 띄움
 el("morePanelNewsInsightBtn").addEventListener("click", () => {
@@ -7708,7 +7772,7 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
         ${/* 2026-09-15 사용자 요청: 버튼 = 과거분석(12개월 승률 카드) · 미래예측 · 공포지수(코인은 알트시즌지수). S리포트는 버튼 대신 아래 요약 카드로 펼쳐 둠 */ ""}
         <button type="button" class="summary-action-btn" id="tickerHistoricalToggleBtn" data-ticker="${escapeHtml(symbol)}">🕰️ 과거분석</button>
         <button type="button" class="summary-action-btn" id="tickerFutureToggleBtn" data-ticker="${escapeHtml(symbol)}">🔮 미래예측</button>
-        <button type="button" class="summary-action-btn" id="tickerFearToggleBtn">${summaryAssetSection === "crypto" ? "🪙 알트시즌지수" : "😱 공포지수"}</button>
+        <button type="button" class="summary-action-btn" id="tickerFearToggleBtn" style="display:none;">${summaryAssetSection === "crypto" ? "🪙 알트시즌지수" : "😱 공포지수"}</button>
         ${/* 보유 종목은 버튼 대신 하위 탭 "보유종목"(주식의 매출액 자리)에 바로 펼쳐 둔다 — 2026-09-16 사용자 요청 */ ""}
       </div>
     </div>
@@ -10336,7 +10400,10 @@ async function renderAltSeasonHistoryChart() {
 }
 
 // ---------- 7. 투자황금기 점수(공포지수연동) — VIX(CBOE 변동성지수)가 높을수록(시장 패닉) 역발상 매수 기회로 보고 점수를 올림, 종목과 무관 ----------
+// 공포지수를 빠르게 다른 지수로 바꿀 때 늦게 도착한 이전 지수 결과가 덮어쓰지 않도록 가장 최근 요청만 반영(2026-10-09)
+let macroRenderSeq = 0;
 async function renderMacro(ticker) {
+  const mySeq = ++macroRenderSeq;
   el("macroSection").innerHTML = `<p class="muted">불러오는 중...</p>`;
 
   const isKr = isKrTicker(ticker);
@@ -10367,12 +10434,14 @@ async function renderMacro(ticker) {
     el("macroSection").innerHTML = shell("…", "계산 중", "", "", null, "");
     getAltSeasonIndex()
       .then((idx) => {
+        if (mySeq !== macroRenderSeq) return;
         const score = Math.round(idx.score);
         const grade = altSeasonGrade(idx.score);
         const line = `<p class="score-macro-vix-line">🪙 알트코인 시즌지수(최근 90일 기준)<br>${idx.total}개 중 ${idx.beatCount}개가 비트코인보다 많이 올랐습니다</p>`;
         el("macroSection").innerHTML = shell(score, grade.label, scoreBgStyleAttr(score, 0, 100, "fear"), macroGaugeHtml(score, 0, 100, ALTSEASON_ZONES), idx, line);
       })
       .catch((e) => {
+        if (mySeq !== macroRenderSeq) return;
         el("macroSection").innerHTML = shell("N/A", "계산 실패", "", "", null, `<p class="score-macro-vix-line">🪙 알트코인 시즌지수 — ${escapeHtml(e.message || "계산하지 못했습니다.")}</p>`);
       });
     return;
@@ -10380,6 +10449,7 @@ async function renderMacro(ticker) {
 
   if (isKr) {
     const fomo = await getKrFomoMetrics().catch(() => ({ score: null, changeAbs: null, date: null }));
+    if (mySeq !== macroRenderSeq) return;
     const grade = fomoGrade(fomo.score);
     const liveLine =
       fomo.score !== null
@@ -10419,6 +10489,7 @@ async function renderMacro(ticker) {
   }
 
   const { vix, vixChangePct } = await getMacroMetrics();
+  if (mySeq !== macroRenderSeq) return;
   const grade = vixGrade(vix);
   const vixPctStr =
     vixChangePct !== null && vixChangePct !== undefined && Number.isFinite(vixChangePct)

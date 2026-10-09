@@ -38,3 +38,16 @@ html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-price
 html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-priceline .detail-identity-price { font-size: 30px !important; font-weight: 800 !important; letter-spacing: -0.8px !important; line-height: 1.15; }
 html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-priceline .detail-identity-change { font-size: 16px !important; font-weight: 700 !important; letter-spacing: -0.3px !important; }
 html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-logo { display: none !important; } /* 아래 기본정보에 로고가 있어 중복 */
+
+/* 공포지수 화면(더보기 > 공포지수): 전체화면 오버레이를 문서 흐름 안의 블록으로, 시장 선택은 채팅 버튼이 하므로 상단 시장 줄은 숨김 */
+html.embed-fear .container { display: none !important; }
+html.embed-fear #fearPanel { position: static !important; inset: auto !important; transform: none !important; display: flex !important; height: auto !important; min-height: 0 !important; z-index: auto !important; transition: none !important; }
+html.embed-fear #fearPanel .company-panel-bar,
+html.embed-fear #fearMarketNav { display: none !important; }
+html.embed-fear #fearPanel .company-panel-body { overflow: visible !important; flex: none !important; padding: 8px 14px 14px !important; max-width: none; }
+
+/* 순위 화면의 "+승률이란" 내용(설명 + 대표자산 승률 비교)만 보여주는 화면 */
+html.embed-info .container { display: none !important; }
+html.embed-info #embedInfo { margin: 0 !important; padding: 16px 14px 14px !important; }
+html.embed-info .embed-info-title { font-size: 17px; font-weight: 800; margin: 0 0 10px; letter-spacing: -0.3px; }
+

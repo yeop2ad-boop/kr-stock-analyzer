@@ -1,6 +1,8 @@
 // 스톡챗 끼워 넣기 모드 — 주소에 ?embed=1이 있을 때만 동작하고, 평소 마켓맵 사용에는 아무 영향이 없다.
 //   ?embed=1&view=rank&market=kr|us|etf|crypto&item=win&region=kr|us   → 간편검색 순위 화면 그대로
 //   ?embed=1&view=detail&ticker=005930.KS&sub=sreport|risk|summary       → 종목 상세(핵심지표/리스크) 그대로
+//   ?embed=1&view=info&topic=winrate                                    → 순위 화면의 "+승률이란" 내용 그대로
+//   ?embed=1&view=fear&market=kr|us|crypto         → 더보기 공포지수 화면 그대로
 //   ?embed=1&view=analysis                                                → 투자분석 탭(투자방법 비교·내 포트폴리오) 그대로
 // 부모(스톡챗)에는 postMessage로 ①화면 높이 ②종목을 눌렀다는 신호만 보낸다.
 (function () {
@@ -67,6 +69,15 @@
         openSReportRank(q.get("item"), market === "etf" || market === "crypto" ? market : "stocks", market === "kr" ? "kr" : "us");
       } else if (view === "detail") {
         navigateToTicker(q.get("ticker"), { push: false });
+      } else if (view === "info") {
+        // 마켓맵 순위 화면의 "+승률이란"을 눌렀을 때 펼쳐지는 내용(설명 + 대표자산 10년평균 승률 비교)을 그대로
+        var box = document.createElement("div");
+        box.id = "embedInfo";
+        box.className = "chart-detail-wrap chart-detail-expanded popular-winrate-info";
+        box.innerHTML = '<div class="embed-info-title">승률이란?</div>' + buildWinRateBenchmarkHtml();
+        document.body.appendChild(box);
+      } else if (view === "fear") {
+        openFearPanel(q.get("market") || "kr");
       } else if (view === "analysis") {
         var tab = document.querySelector('[data-fhtab="tab.analysis"]');
         if (tab) tab.click();

@@ -317,6 +317,8 @@ window.SCFlow = (function () {
     { label: "PER", words: ["per"], keys: { kr: "per", us: "per" } },
     { label: "배당률", words: ["배당률", "배당", "배당수익률"], keys: { kr: "div", us: "div", etf: "div" } },
     { label: "운용보수", noMention: ["보수"], words: ["운용보수", "보수"], keys: { etf: "fee" } },
+    // 거시경제 · 공포지수 · 투자시기 → 코스피 공포지수 / S&P 공포지수 / 알트코인 시즌지수 (마켓맵 더보기의 같은 그룹)
+    { label: "공포지수", fear: true, noMention: ["공포", "타이밍", "거시경제"], words: ["거시경제지표", "거시경제", "공포지수", "공포", "vix", "알트시즌지수", "알트코인시즌지수", "알트시즌", "알트코인시즌", "투자시기", "투자시점", "투자타이밍", "타이밍", "포모지수", "fomo지수"], keys: { kr: "fear", us: "fear", crypto: "fear" } },
   ];
   // "순위·보여줘" 같은 꼬리말만 붙은 짧은 요청일 때만 버튼으로 처리하고, 뜻을 묻거나 종목이 섞인 질문은 AI에게 맡긴다
   const TAIL = "(?:순위|랭킹|top\\d*|상위|보기|보여줘|알려줘|찾아줘|찾기|높은종목|높은순|많은종목|종목|주식|리스트|목록|줘|좀|요|를|을|은|는|이|가|도)*";
@@ -347,10 +349,35 @@ window.SCFlow = (function () {
     const follow = opts && opts.followUp;
     await bot(follow ? "<b>" + esc(m.label) + "</b> 순위도 바로 볼 수 있어요. 어느 투자처를 볼까요?" : "어느 투자처의 <b>" + esc(m.label) + "</b> 순위를 볼까요?", t, follow ? 300 : 420);
     if (!alive(t)) return;
+    if (m.fear) return fearFlow(t);
     const items = ["kr", "us", "etf", "crypto"].filter((k) => m.keys[k]).map((k) => ({ id: k, label: MARKET_NAME[k] + " " + labelOf(k, m.keys[k]) + " 순위" }));
     const pick = await choose(items, { cols: 2 });
     if (!alive(t)) return;
     return searchFlow({ market: pick.id, key: m.keys[pick.id] });
+  }
+
+  // 거시경제 · 공포지수 · 투자시기: 세 지수를 버튼으로 고르면 마켓맵 화면 그대로
+  const FEAR_ITEMS = [
+    { id: "kr", label: "코스피 공포지수" },
+    { id: "us", label: "S&P 공포지수" },
+    { id: "crypto", label: "알트코인 시즌지수" },
+  ];
+  async function fearFlow(t) {
+    const done = new Set();
+    for (;;) {
+      const left = FEAR_ITEMS.filter((i) => !done.has(i.id));
+      if (!left.length) return;
+      if (!done.size) await bot("어느 지수를 볼까요? (투자시기 점검)", t, 300);
+      else await bot("다른 지수도 볼까요?", t, 300);
+      if (!alive(t)) return;
+      const pick = await choose(left.concat(done.size ? [{ id: "home", label: "처음으로", accent: true }] : []), { cols: 1 });
+      if (!alive(t)) return;
+      if (pick.id === "home") return home();
+      done.add(pick.id);
+      await bot("<b>" + esc(pick.label) + "</b> 화면을 가져와요", t, 260);
+      if (!alive(t)) return;
+      embed({ view: "fear", market: pick.id });
+    }
   }
 
   // 질문에 종목과 순위 항목이 함께 있을 때(예: "삼성전자 상승률 어때") — [종목 핵심지표] [종목 리스크] [투자처 항목 순위]
@@ -370,7 +397,7 @@ window.SCFlow = (function () {
       isStock && { id: "risk", label: "리스크 점검하기", what: "리스크 점검" },
       { id: "news", label: "주요 뉴스보기", what: "주요 뉴스" },
     ].filter(Boolean);
-    if (m && m.keys[market]) all.push({ id: "rank", label: MARKET_NAME[market] + (market === "etf" && region ? " " + (region === "kr" ? "한국" : "미국") : "") + " " + labelOf(market, m.keys[market]) + " 순위", key: m.keys[market] });
+    if (m && !m.fear && m.keys[market]) all.push({ id: "rank", label: MARKET_NAME[market] + (market === "etf" && region ? " " + (region === "kr" ? "한국" : "미국") : "") + " " + labelOf(market, m.keys[market]) + " 순위", key: m.keys[market] });
     const done = new Set();
     let first = true;
     for (;;) {
@@ -438,6 +465,37 @@ window.SCFlow = (function () {
     return offerForStock(st, null);
   }
 
+  // ---------- "승률이 뭐야" → 마켓맵의 "+승률이란" 내용 그대로 ----------
+  // 승률(10년 평균 승률)의 뜻을 묻는 질문이고 특정 종목이 섞여 있지 않으면, AI 대신 마켓맵에 만들어 둔 "승률이란?" 화면을 보여준다.
+  // "상승률"은 다른 지표라 제외한다.
+  const WIN_WORD = /(^|[^상])(10년평균승률|10년승률|평균승률|승률)/;
+  const DEFINE_WORD = /(뭐야|뭐지|뭔데|뭔가요|뭐예요|뭐에요|무엇|뜻|의미|정의|설명|란$|이란|란\?|계산|산출)/;
+  async function matchExplain(text) {
+    const s = String(text || "").toLowerCase().replace(/[\s?!.,~]/g, "");
+    if (!s || s.length > 30 || !WIN_WORD.test(s) || !DEFINE_WORD.test(s)) return null;
+    try {
+      if (await SCData.findInText(text)) return null; // 종목이 들어 있으면 AI가 그 종목 기준으로 답한다
+    } catch (e) {
+      /* 이름표를 못 읽어도 설명은 보여줌 */
+    }
+    return { topic: "winrate" };
+  }
+  async function explainShow() {
+    token++;
+    const t = token;
+    clearIntro();
+    await bot("마켓맵의 <b>승률이란?</b>이에요", t, 300);
+    if (!alive(t)) return;
+    embed({ view: "info", topic: "winrate" });
+    await bot("<b>승률</b> 순위도 바로 볼 수 있어요. 어느 투자처를 볼까요?", t, 500);
+    if (!alive(t)) return;
+    const m = RANK_WORDS.find((x) => x.label === "승률");
+    const items = ["kr", "us", "etf", "crypto"].filter((k) => m.keys[k]).map((k) => ({ id: k, label: MARKET_NAME[k] + " " + labelOf(k, m.keys[k]) + " 순위" }));
+    const pick = await choose(items, { cols: 2 });
+    if (!alive(t)) return;
+    return searchFlow({ market: pick.id, key: m.keys[pick.id] });
+  }
+
   // ---------- 2. 투자분석 ----------
   async function analyzeFlow() {
     const t = token;
@@ -500,5 +558,5 @@ window.SCFlow = (function () {
   function reset() {
     token++;
   }
-  return { start, reset, home, matchRanking, findMention, rankFromText, offerForStock, matchBuySell, buySellSummary };
+  return { start, reset, home, matchRanking, findMention, rankFromText, offerForStock, matchBuySell, buySellSummary, matchExplain, explainShow };
 })();

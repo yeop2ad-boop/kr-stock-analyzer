@@ -4134,3 +4134,7 @@ table.earn-table tr.earn-chart-row td { padding: 6px 0 14px; white-space: normal
 .future-headline-result b { font-weight: 800; }
 .future-headline-result .fh-up { color: var(--pos); }
 .future-headline-result .fh-down { color: var(--neg); }
+
+/* 더보기 > 공포지수 화면 */
+.fear-panel-note { margin: 10px 2px 8px; font-size: 12.5px; line-height: 1.5; }
+#fearPanelHost .flush-section { margin-top: 4px; }
