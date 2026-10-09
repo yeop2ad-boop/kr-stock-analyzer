@@ -322,6 +322,18 @@
     renderAll();
   });
 
+  // 하단 안내문 "자세히" 펼치기/접기
+  const noticeMore = document.getElementById("noticeMore");
+  if (noticeMore) {
+    noticeMore.addEventListener("click", () => {
+      const full = document.getElementById("noticeFull");
+      const open = full.hidden;
+      full.hidden = !open;
+      noticeMore.setAttribute("aria-expanded", String(open));
+      noticeMore.textContent = open ? "접기" : "자세히";
+    });
+  }
+
   load();
   renderAll();
   renderUsage();
