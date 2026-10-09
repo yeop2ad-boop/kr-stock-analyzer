@@ -1060,7 +1060,7 @@ window.SCFlow = (function () {
       return offerForStock(f.st, null);
     }
     if (f.act.sub === "dividend" && !(await hasDividend(f.st.symbol))) {
-      await bot("<b>" + esc(f.st.name) + "</b>은(는) 최근 1년 동안 배당 내역이 없어요.", t, 400);
+      await bot("<b>" + esc(f.st.name) + "</b> — 최근 1년 동안 배당 내역이 없어요.", t, 400);
       return offerForStock(f.st, null);
     }
     await announce(stockHead(f.st.symbol, f.st.name, f.act.label), t);
