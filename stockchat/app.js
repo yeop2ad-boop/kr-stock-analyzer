@@ -168,6 +168,7 @@
         pending.classList.add("msg-error");
         pending.textContent = data.error || "답변을 가져오지 못했습니다. 잠시 후 다시 시도해주세요.";
       } else {
+        data.reply = String(data.reply).replace(/^\[요약\]\s*\n+/, "[요약] "); // [요약]만 한 줄 차지하지 않게
         const cards = Array.isArray(data.cards) ? data.cards : [];
         history.push({ role: "assistant", content: data.reply, cards });
         save();
