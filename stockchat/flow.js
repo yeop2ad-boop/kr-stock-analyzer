@@ -73,7 +73,7 @@ window.SCFlow = (function () {
     opts = opts || {};
     return new Promise((resolve) => {
       const w = document.createElement("div");
-      w.className = "fl-choices cols-" + (opts.cols || 2) + (opts.chips ? " chips-mode" : "");
+      w.className = "fl-choices cols-" + (opts.cols || 2) + (opts.chips ? " chips-mode" : "") + (opts.stack ? " stack" : "");
       items.forEach((it) => {
         const b = document.createElement("button");
         b.type = "button";
@@ -307,10 +307,19 @@ window.SCFlow = (function () {
   const labelOf = (m, k) => (m === "kr" || m === "us" ? STOCK_LABEL[k] : ASSET_LABEL[k]);
   const groupsOf = (m) => (m === "kr" || m === "us" ? GROUPS.stock : GROUPS[m]);
 
+  // 종목 하위 항목 버튼: 증권을 처음 접하는 사람도 알 수 있게 "~해줘" 말투로 풀어 쓰고, 어려운 이름은 괄호로 함께 알려준다
+  const PLAIN = {
+    revenue: { id: "revenue", label: "회사 매출 상태 확인해줘", sub: "돈을 잘 벌고 있는지 (매출·순이익)", what: "매출·이익 상태(재무제표)" },
+    sreport: { id: "sreport", label: "이 종목 성적표 보여줘", sub: "오래 들고 있으면 어땠는지 등 핵심 5가지", what: "성적표(핵심지표)" },
+    risk: { id: "risk", label: "위험한 점은 없는지 점검해줘", sub: "빚·적자·급락 같은 위험 신호 체크", what: "위험 신호 점검(리스크)" },
+    news: { id: "news", label: "요즘 무슨 일 있는지 알려줘", sub: "이 회사의 최근 뉴스", what: "최근 소식(뉴스)" },
+    summary: { id: "summary", label: "지금 주가랑 차트 보여줘", sub: "현재 가격과 지금까지의 흐름", what: "현재 주가·차트(개요)" },
+  };
+
   // 종목 상세 화면 하나를 올린다(지나간 버튼을 다시 눌렀을 때도 사용)
   async function detailOne(symbol, name, a) {
     const t = token;
-    await bot(stockHead(symbol, name, a.label), t, 260);
+    await bot(stockHead(symbol, name, a.what || a.label), t, 260);
     if (alive(t)) embed({ view: "detail", ticker: symbol, sub: a.id });
   }
 
@@ -323,14 +332,14 @@ window.SCFlow = (function () {
       if (!alive(t)) return;
       const act = await choose(
         [
-          { id: "sreport", label: "핵심정보", sub: "핵심 5개 지표·순위" },
-          isStock && { id: "risk", label: "리스크점검", sub: "위험·주의·양호 점검" },
-          { id: "summary", label: "개요", sub: "시세·차트" },
+          PLAIN.sreport,
+          isStock && PLAIN.risk,
+          PLAIN.summary,
         ].filter(Boolean).map((a) => ({ ...a, redo: () => fresh(() => detailOne(symbol, name, a)) })),
-        { cols: isStock ? 3 : 2 }
+        { cols: 1, stack: true }
       );
       if (!alive(t)) return;
-      await bot(stockHead(symbol, name, act.label), t, 260);
+      await bot(stockHead(symbol, name, act.what), t, 260);
       if (!alive(t)) return;
       embed({ view: "detail", ticker: symbol, sub: act.id });
       await bot("이어서 볼까요?", t, 500);
@@ -598,10 +607,10 @@ window.SCFlow = (function () {
     // 마켓맵 상세 화면에는 코인·ETF에 재무제표(매출·순이익)·리스크 항목이 없어서 주식일 때만 보여준다
     const isStock = market === "kr" || market === "us";
     const all = [
-      isStock && { id: "revenue", label: "재무제표 확인하기", what: "재무제표" },
-      { id: "sreport", label: "핵심지표 보기", what: "핵심지표" },
-      isStock && { id: "risk", label: "리스크 점검하기", what: "리스크 점검" },
-      { id: "news", label: "주요 뉴스보기", what: "주요 뉴스" },
+      isStock && PLAIN.revenue,
+      PLAIN.sreport,
+      isStock && PLAIN.risk,
+      PLAIN.news,
     ].filter(Boolean);
     if (m && !m.fear && m.keys[market]) all.push({ id: "rank", label: MARKET_NAME[market] + (market === "etf" && region ? " " + (region === "kr" ? "한국" : "미국") : "") + " " + labelOf(market, m.keys[market]) + " 순위", key: m.keys[market] });
     const done = new Set();
@@ -612,7 +621,7 @@ window.SCFlow = (function () {
       await bot(first ? stockHead(st.symbol, st.name, "정보").replace("에 대한 정보입니다", "") + " — 더 볼까요?" : "이어서 볼까요?", t, 300);
       first = false;
       if (!alive(t)) return;
-      const pick = await choose(left.map((i) => ({ ...i, redo: () => fresh(() => (i.id === "rank" ? searchFlow({ market, key: i.key, region }) : detailOne(st.symbol, st.name, { id: i.id, label: i.what }))) })).concat([{ id: "home", label: "처음으로", accent: true }]), { cols: 1 });
+      const pick = await choose(left.map((i) => ({ ...i, redo: () => fresh(() => (i.id === "rank" ? searchFlow({ market, key: i.key, region }) : detailOne(st.symbol, st.name, { id: i.id, label: i.what }))) })).concat([{ id: "home", label: "처음으로", accent: true }]), { cols: 1, stack: true });
       if (!alive(t)) return;
       if (pick.id === "home") return home();
       done.add(pick.id);
@@ -839,11 +848,11 @@ window.SCFlow = (function () {
 
   // ---------- 종목 + 뉴스/리스크/재무/차트 → 해당 화면 바로 ----------
   const STOCK_ACTIONS = [
-    { sub: "news", label: "주요 뉴스", words: ["뉴스", "악재", "호재", "소식", "이슈", "최근기사"] },
-    { sub: "risk", label: "리스크 점검", words: ["리스크", "위험신호", "위험", "안전한가", "상장폐지"] },
-    { sub: "revenue", label: "재무제표", words: ["재무제표", "재무", "매출", "순이익", "영업이익", "적자", "흑자", "현금흐름"] },
-    { sub: "summary", label: "개요", words: ["차트", "시세", "현재가", "기본정보", "미래예측", "6개월후", "계절성"] },
-    { sub: "sreport", label: "핵심지표", words: ["핵심지표", "핵심정보"] },
+    { sub: "news", label: PLAIN.news.what, words: ["뉴스", "악재", "호재", "소식", "이슈", "최근기사"] },
+    { sub: "risk", label: PLAIN.risk.what, words: ["리스크", "위험신호", "위험", "안전한가", "상장폐지"] },
+    { sub: "revenue", label: PLAIN.revenue.what, words: ["재무제표", "재무", "매출", "순이익", "영업이익", "적자", "흑자", "현금흐름"] },
+    { sub: "summary", label: PLAIN.summary.what, words: ["차트", "시세", "현재가", "기본정보", "미래예측", "6개월후", "계절성"] },
+    { sub: "sreport", label: PLAIN.sreport.what, words: ["핵심지표", "핵심정보"] },
   ];
   async function matchStockAction(text) {
     const raw = String(text || "").toLowerCase().replace(/[\s?!.,~]/g, "");
