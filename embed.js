@@ -50,7 +50,8 @@
   // 높이 보고 — 내용이 바뀔 때마다(데이터가 늘어나는 3단계 로딩 포함) 부모가 iframe 높이를 맞춘다
   var lastH = 0;
   function report() {
-    var h = Math.ceil(Math.max(document.body.scrollHeight, root.scrollHeight, document.body.offsetHeight));
+    // root.scrollHeight는 iframe 자신의 높이 이상이라 내용이 줄어도 줄지 않는다(검색 중 흰 화면의 원인) → 내용(body) 높이만 잰다
+    var h = Math.ceil(Math.max(document.body.scrollHeight, document.body.offsetHeight));
     if (h && Math.abs(h - lastH) > 1) {
       lastH = h;
       post({ type: "height", h: h });
@@ -102,6 +103,47 @@
       openMarketPanel();
     }
   }
+
+  // 부모(스톡챗)가 "전체보기"를 요청하면 이 화면의 전체보기(나머지 종목 검색) 버튼을 대신 눌러준다
+  window.addEventListener("message", function (ev) {
+    if (ev.origin !== location.origin || !ev.data || !ev.data.sc || ev.data.type !== "loadAll") return;
+    var btn = document.querySelector(".load-more-btn");
+    if (btn) btn.click();
+  });
+
+  // 순위 표는 처음엔 N줄만 보이고 부모(스톡챗)의 "더보기"로 10줄씩 늘린다(?limit=6, 이후 message {type:"limit"})
+  var limitN = q.get("limit") ? parseInt(q.get("limit"), 10) : null;
+  var lastTotal = -1;
+  function applyLimit() {
+    if (limitN == null) return;
+    var bestN = 0;
+    var tabs = document.querySelectorAll(".container table.rk-table"); // 순위 표(보이지 않는 다른 탭의 표는 제외)
+    if (!tabs.length) tabs = document.querySelectorAll(".container table");
+    tabs.forEach(function (t) {
+      if (t.offsetParent === null) return;
+      var rows = t.querySelectorAll("tbody tr");
+      if (rows.length > bestN) bestN = rows.length;
+      rows.forEach(function (r, i) {
+        var want = i < limitN ? "" : "none";
+        if (r.style.display !== want) r.style.display = want;
+      });
+    });
+    if (bestN && bestN !== lastTotal) {
+      lastTotal = bestN;
+      post({ type: "rows", total: bestN });
+    }
+  }
+  if (limitN != null) {
+    new MutationObserver(applyLimit).observe(document.body, { childList: true, subtree: true });
+    setInterval(applyLimit, 400);
+  }
+  window.addEventListener("message", function (ev) {
+    if (ev.origin !== location.origin || !ev.data || !ev.data.sc || ev.data.type !== "limit") return;
+    limitN = parseInt(ev.data.n, 10);
+    lastTotal = -1;
+    applyLimit();
+    report();
+  });
 
   function run() {
     applyTheme();

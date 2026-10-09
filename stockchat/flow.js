@@ -129,6 +129,9 @@ window.SCFlow = (function () {
   }
 
   // ---------- 마켓맵 화면 끼워 넣기(iframe) ----------
+  const ROW_VIEWS = ["rank", "entry"];
+  const ROW_FIRST = 6;
+  const ROW_STEP = 10;
   const CAP_H = 480;
   const CAP_VIEWS = ["rank", "entry", "popular", "tab", "insight", "overlay", "calendar", "market"];
   let embedSeq = 0;
@@ -143,13 +146,25 @@ window.SCFlow = (function () {
       em.wrap.classList.add("ready");
       if (em.capped) em.wrap.classList.toggle("overflow", d.h > CAP_H + 30); // 한 화면 분량을 넘을 때만 "더보기"
       if (em.stick) scroll();
+    } else if (d.type === "rows") {
+      em.total = d.total;
+      syncMore(em);
     } else if (d.type === "open" && em.onOpen) {
       em.onOpen(d.symbol);
     }
   });
+  // 순위 표 "더보기" 버튼 상태: 남은 줄이 있으면 "더보기 (+N개)", 다 보였으면 "접기"
+  function syncMore(em) {
+    const more = em.wrap.querySelector(".embed-more");
+    if (!more) return;
+    em.wrap.classList.toggle("has-more", em.total > ROW_FIRST);
+    more.textContent = em.limit >= em.total ? "접기" : "더보기 (+" + Math.min(ROW_STEP, em.total - em.limit) + "개)";
+  }
   // params: {view, market, item, region, ticker, sub} — 마켓맵 본체의 ?embed= 주소로 불러온다
   function embed(params, onOpen) {
     const id = "e" + ++embedSeq;
+    const rowMode = ROW_VIEWS.indexOf(params.view) >= 0; // 순위 표: 처음 6줄 → 더보기로 10줄씩
+    if (rowMode) params = Object.assign({}, params, { limit: ROW_FIRST });
     const url = new URL("../index.html", document.baseURI);
     url.searchParams.set("embed", "1");
     url.searchParams.set("id", id);
@@ -166,21 +181,28 @@ window.SCFlow = (function () {
     wrap.appendChild(frame);
     listEl().appendChild(wrap);
     // 목록형 화면은 처음엔 한 화면(종목 5~6개)만 보여주고 나머지는 "더보기"로 펼친다(종목 상세·설명 화면은 그대로)
-    const capped = CAP_VIEWS.indexOf(params.view) >= 0;
+    const capped = rowMode || CAP_VIEWS.indexOf(params.view) >= 0;
     if (capped) {
-      wrap.classList.add("capped");
+      wrap.classList.add(rowMode ? "rows" : "capped");
       const more = document.createElement("button");
       more.type = "button";
       more.className = "embed-more";
       more.textContent = "더보기";
       more.addEventListener("click", () => {
+        if (rowMode) {
+          const em = embeds[id];
+          em.limit = em.limit >= em.total ? ROW_FIRST : em.limit + ROW_STEP; // 다 보이면 다시 접는다
+          em.frame.contentWindow.postMessage({ sc: true, type: "limit", n: em.limit }, location.origin);
+          syncMore(em);
+          return;
+        }
         const open = wrap.classList.toggle("open");
         more.textContent = open ? "접기" : "더보기";
         if (!open) wrap.scrollIntoView({ block: "start", behavior: "smooth" });
       });
       wrap.appendChild(more);
     }
-    embeds[id] = { wrap, frame, onOpen, stick: true, capped };
+    embeds[id] = { wrap, frame, onOpen, stick: true, capped, rowMode, limit: ROW_FIRST, total: 0 };
     setTimeout(() => embeds[id] && (embeds[id].stick = false), 4000);
     scroll();
     return embeds[id];
@@ -206,10 +228,10 @@ window.SCFlow = (function () {
   ];
   // 순위 화면 아래에 붙이는 안내(마켓맵 순위 화면은 시가총액 상위 30개를 먼저 보여주고 "전체보기"로 나머지를 검색한다)
   const RANK_NOTE = {
-    kr: "해당 순위는 시가총액 30위까지의 결과입니다. 코스피200+코스닥150 총 350종목으로 비교를 원하시면 표 아래 전체보기를 눌러주세요.",
-    us: "해당 순위는 시가총액 30위까지의 결과입니다. S&P500 총 500종목으로 비교를 원하시면 표 아래 전체보기를 눌러주세요.",
-    etf: "해당 순위는 상위 종목만 먼저 보여드린 결과입니다. ETF 전체로 비교를 원하시면 표 아래 전체보기를 눌러주세요.",
-    crypto: "해당 순위는 시가총액 30위까지의 결과입니다. 코인 200종목으로 비교를 원하시면 표 아래 전체보기를 눌러주세요.",
+    kr: "해당 순위는 시가총액 30위까지의 결과입니다. 코스피200+코스닥150 총 350종목으로 비교하는 전체보기를 원하시면 아래 버튼을 눌러주세요.",
+    us: "해당 순위는 시가총액 30위까지의 결과입니다. S&P500 총 500종목으로 비교하는 전체보기를 원하시면 아래 버튼을 눌러주세요.",
+    etf: "해당 순위는 상위 종목만 먼저 보여드린 결과입니다. ETF 전체로 비교하는 전체보기를 원하시면 아래 버튼을 눌러주세요.",
+    crypto: "해당 순위는 시가총액 30위까지의 결과입니다. 코인 200종목으로 비교하는 전체보기를 원하시면 아래 버튼을 눌러주세요.",
   };
   const MARKET_NAME = { kr: "한국주식", us: "미국주식", etf: "ETF", crypto: "비트코인" };
   const labelOf = (m, k) => (m === "kr" || m === "us" ? STOCK_LABEL[k] : ASSET_LABEL[k]);
@@ -305,6 +327,26 @@ window.SCFlow = (function () {
     });
   }
 
+  // ---------- 전체보기: 마지막으로 올린 순위 화면에서 마켓맵의 "전체보기"(나머지 종목 검색)를 실행 ----------
+  let lastRank = null;
+  async function fullView(t) {
+    const em = lastRank;
+    if (!em || !em.frame.contentWindow) return false;
+    em.limit = ROW_FIRST; // 500개를 검색해도 처음엔 6줄만, 나머지는 더보기로
+    em.frame.contentWindow.postMessage({ sc: true, type: "limit", n: ROW_FIRST }, location.origin);
+    em.wrap.scrollIntoView({ block: "start", behavior: "smooth" });
+    em.frame.contentWindow.postMessage({ sc: true, type: "loadAll" }, location.origin);
+    await bot("전체 종목을 검색하고 있어요. 약 1분 걸려요. 결과가 나오면 6개만 먼저 보여드리고, 더보기로 10개씩 더 볼 수 있어요.", t == null ? token : t, 300);
+    return true;
+  }
+  // 글로 "전체보기"라고 친 경우
+  function matchFullView(text) {
+    return !!lastRank && /^(?:(?:전체보기|전체비교|전체종목|전체)(?:눌러줘|눌러주세요|눌러|눌러봐|해줘|보여줘|보기)?|눌러줘|눌러주세요|눌러|눌러봐)$/.test(String(text || "").replace(/[\s?!.,~]/g, ""));
+  }
+  function fullViewNow() {
+    return fullView(token);
+  }
+
   // ---------- 1. 간편검색 ----------
   async function searchFlow(preset) {
     const t = token;
@@ -332,18 +374,25 @@ window.SCFlow = (function () {
       for (;;) {
         await bot("[" + MARKET_NAME[market] + "] " + labelOf(market, key) + " 순위를 가져와요", t, 300);
         if (!alive(t)) return;
-        embed({ view: "rank", market, item: key, region }, async (sym) => {
+        lastRank = embed({ view: "rank", market, item: key, region }, async (sym) => {
           const name = await SCData.nameOf(sym, sym);
           user(name);
           stockMenu(sym, name, t, true);
         });
         await bot(esc(RANK_NOTE[market] || "") + "<br>종목을 누르면 자세히 볼 수 있어요. 다른 순위도 볼까요?", t, 500);
         const same = groupsOf(market).find(([, ks]) => ks.includes(key))[1].filter((k) => k !== key);
-        const next = await choose(
-          same.map((k) => ({ id: "k:" + k, label: labelOf(market, k), redo: () => fresh(() => searchFlow({ market, region, key: k })) })).concat([{ id: "market", label: "다른 투자처", accent: true }, { id: "home", label: "처음으로", accent: true }]),
+        let next;
+        for (;;) {
+          next = await choose(
+          [{ id: "full", label: "전체보기", accent: true }].concat(same.map((k) => ({ id: "k:" + k, label: labelOf(market, k), redo: () => fresh(() => searchFlow({ market, region, key: k })) })).concat([{ id: "market", label: "다른 투자처", accent: true }, { id: "home", label: "처음으로", accent: true }])),
           { cols: 3, chips: true }
-        );
-        if (!alive(t)) return;
+          );
+          if (!alive(t)) return;
+          if (next.id !== "full") break;
+          await fullView(t);
+          await bot("다른 순위도 볼까요?", t, 300);
+          if (!alive(t)) return;
+        }
         if (next.id === "home") return home();
         if (next.id === "market") {
           await bot("어떤 투자처를 찾아볼까요?", t);
@@ -770,5 +819,5 @@ window.SCFlow = (function () {
   function reset() {
     token++;
   }
-  return { matchScreen, screenFlow, matchStockAction, stockActionShow, start, reset, home, matchRanking, findMention, rankFromText, offerForStock, matchBuySell, buySellSummary, matchExplain, explainShow };
+  return { matchFullView, fullViewNow, matchScreen, screenFlow, matchStockAction, stockActionShow, start, reset, home, matchRanking, findMention, rankFromText, offerForStock, matchBuySell, buySellSummary, matchExplain, explainShow };
 })();

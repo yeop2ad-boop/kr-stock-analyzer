@@ -155,6 +155,14 @@
       window.SCFlow.buySellSummary(bs);
       return;
     }
+    // 순위 화면 뒤에 "전체보기"라고 친 경우: 그 순위 화면의 나머지 종목 검색을 실행
+    if (window.SCFlow && window.SCFlow.matchFullView(text)) {
+      inputEl.value = "";
+      grow();
+      bubble("user", esc(text));
+      window.SCFlow.fullViewNow();
+      return;
+    }
     // "삼성전자 뉴스/리스크/재무제표/차트"처럼 종목 + 하위 항목: AI 없이 해당 마켓맵 화면 바로
     const sa = window.SCFlow ? await window.SCFlow.matchStockAction(text) : null;
     if (sa) {

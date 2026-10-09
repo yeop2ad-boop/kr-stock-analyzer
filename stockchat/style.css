@@ -262,3 +262,7 @@ body {
 .fl-choices.done .fl-btn.redo { cursor: pointer; }
 .fl-groups.done { pointer-events: auto; }
 .fl-groups.done .fl-btn.redo { cursor: pointer; }
+/* 순위 표(6줄 + 더보기 10줄씩): 버튼은 표 아래 일반 줄로 */
+.embed-more { display: none; }
+.embed-block.rows .embed-more { position: relative; height: auto; padding: 13px 0; background: var(--card); border-top: 1px solid var(--tile); }
+.embed-block.rows.has-more .embed-more { display: flex; align-items: center; justify-content: center; }

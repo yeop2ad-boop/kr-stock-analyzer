@@ -59,3 +59,5 @@ html.embed-mode:not(.embed-insight):not(.embed-overlay) #insightOverlayPanel,
 html.embed-mode:not(.embed-market) #marketPanel { display: none !important; }
 /* 항목 이름 줄(서브내비)은 채팅 버튼이 대신하므로 숨김 */
 html.embed-entry #topRankingSubNav, html.embed-tab #topRankingSubNav, html.embed-popular #topRankingSubNav { display: none !important; }
+/* 순위 화면: 표 아래 마켓맵 전체보기 버튼은 스톡챗의 "전체보기"/"더보기"가 대신하므로 숨김(스톡챗이 코드로 눌러줌) */
+html.embed-rank .load-more-btn, html.embed-entry .load-more-btn { display: none !important; }
