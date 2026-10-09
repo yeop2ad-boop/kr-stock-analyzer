@@ -155,5 +155,29 @@ window.SCData = (function () {
     }
   }
 
-  return { lookup, loadMarket, withVol, loadAll, search, watchlist, nameOf };
+  // 문장 속에서 종목 찾기(예: "삼성전자 지금 사야해?" → 삼성전자) — 가장 긴 이름 우선, 없으면 영문 티커
+  async function findInText(text) {
+    const raw = String(text || "");
+    const s = raw.toLowerCase().replace(/\s+/g, "");
+    if (!s) return null;
+    const [all, alias] = await Promise.all([loadAll(), loadAliases()]);
+    let best = null;
+    const consider = (name, symbol, shown) => {
+      const n = String(name).toLowerCase().replace(/\s+/g, "");
+      if (n.length >= 2 && s.indexOf(n) >= 0 && (!best || n.length > best.len)) best = { len: n.length, symbol: symbol, name: shown };
+    };
+    Object.entries(alias).forEach(([name, sym]) => consider(name, sym, name));
+    all.forEach((it) => consider(it.name, it.symbol, it.name));
+    if (!best) {
+      const bySym = new Map(all.map((i) => [i.symbol.toUpperCase(), i]));
+      const toks = (raw.match(/[A-Za-z0-9.-]{2,}/g) || []).map((x) => x.toUpperCase());
+      for (const tk of toks) {
+        const it = bySym.get(tk) || bySym.get(tk + "-USD");
+        if (it) best = { len: tk.length, symbol: it.symbol, name: it.name };
+      }
+    }
+    return best ? { symbol: best.symbol, name: best.name } : null;
+  }
+
+  return { findInText, lookup, loadMarket, withVol, loadAll, search, watchlist, nameOf };
 })();

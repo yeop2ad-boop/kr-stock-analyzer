@@ -4,6 +4,7 @@
 //  · 이 파일은 "어떤 화면을 언제 올릴지"(질문→선택→화면)만 맡는다.
 // 글로 직접 묻는 질문은 app.js의 AI 채팅(/ai-chat)이 따로 처리한다.
 window.SCFlow = (function () {
+  const WORKER = "https://us-stock.yeop2ad.workers.dev";
   const esc = (s) => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const listEl = () => document.getElementById("list");
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -389,6 +390,54 @@ window.SCFlow = (function () {
     }
   }
 
+  // ---------- 매수·매도 질문 → 마켓맵 [요약] 그대로 ----------
+  // "삼성전자 지금 사야해?"처럼 매매 판단을 묻는 질문은 AI의 글 대신 마켓맵의 S리포트 요약(핵심 5개 지표·평가 한 줄)을
+  // 그대로 보여주고, 그 아래에 데이터로만 만든 "현재 ~ 상태입니다" 한 문장과 하위 항목 버튼을 붙인다(사라/팔라는 말은 하지 않음).
+  const BUYSELL = /(사야|사도|살까|살만|사볼|매수|팔아야|팔까|팔아도|매도|들어가도|들어갈까|담아도|손절|익절|물타기|존버)/;
+  async function matchBuySell(text) {
+    if (!BUYSELL.test(String(text || ""))) return null;
+    try {
+      return await SCData.findInText(text);
+    } catch (e) {
+      return null;
+    }
+  }
+  async function fetchCard(sym) {
+    const res = await fetch(WORKER + "/stock-card?symbol=" + encodeURIComponent(sym));
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.card) throw new Error(data.error || "no card");
+    return data.card;
+  }
+  function stateSentence(c) {
+    const n = (v) => typeof v === "number" && isFinite(v);
+    const parts = [];
+    const pos = c.week && c.week.pos;
+    if (n(pos)) parts.push("1년 가격 범위의 " + Math.round(pos) + "% 지점(" + (pos >= 80 ? "고점 부근" : pos <= 20 ? "저점 부근" : "중간대") + ")에 있고");
+    const rsi = c.win && c.win.rsi;
+    if (n(rsi)) parts.push("과열도는 " + (rsi >= 70 ? "높은 편" : rsi <= 30 ? "낮은 침체 구간" : "보통") + "(RSI " + Math.round(rsi) + ")이며");
+    const m3 = c.returns && c.returns.m3;
+    if (n(m3)) parts.push("최근 3개월은 " + (m3 >= 10 ? "상승 흐름" : m3 <= -10 ? "하락 흐름" : "횡보") + "(" + (m3 > 0 ? "+" : "") + m3.toFixed(1) + "%)인");
+    return parts.length ? "현재 " + parts.join(" ") + " 상태입니다." : "";
+  }
+  async function buySellSummary(st) {
+    token++;
+    const t = token;
+    clearIntro();
+    await bot("<b>" + esc(st.name) + "</b>의 마켓맵 [요약]이에요", t, 300);
+    if (!alive(t)) return;
+    embed({ view: "detail", ticker: st.symbol, sub: "sreport" });
+    let line = "";
+    try {
+      line = stateSentence(await fetchCard(st.symbol));
+    } catch (e) {
+      line = "";
+    }
+    if (!alive(t)) return;
+    await bot((line ? esc(line) + "<br>" : "") + "매수·매도 판단은 직접 해주세요.", t, 700);
+    if (!alive(t)) return;
+    return offerForStock(st, null);
+  }
+
   // ---------- 2. 투자분석 ----------
   async function analyzeFlow() {
     const t = token;
@@ -451,5 +500,5 @@ window.SCFlow = (function () {
   function reset() {
     token++;
   }
-  return { start, reset, home, matchRanking, findMention, rankFromText, offerForStock };
+  return { start, reset, home, matchRanking, findMention, rankFromText, offerForStock, matchBuySell, buySellSummary };
 })();

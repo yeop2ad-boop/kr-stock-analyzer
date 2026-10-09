@@ -133,6 +133,17 @@
   async function send(text) {
     text = (text || "").trim();
     if (!text || busy) return;
+    // "삼성전자 지금 사야해?"처럼 종목이 들어 있는 매수·매도 질문: AI 글 대신 마켓맵 [요약]을 그대로 보여줌
+    const bs = window.SCFlow ? await window.SCFlow.matchBuySell(text) : null;
+    if (bs) {
+      inputEl.value = "";
+      grow();
+      const introEl1 = listEl.querySelector(".intro");
+      if (introEl1) introEl1.remove();
+      bubble("user", esc(text));
+      window.SCFlow.buySellSummary(bs);
+      return;
+    }
     // "상승률"처럼 순위 항목 이름만 친 경우: AI 대신 투자처별 순위 버튼 4개(마켓맵 순위 화면으로 연결)
     const rk = window.SCFlow && window.SCFlow.matchRanking(text);
     if (rk) {
