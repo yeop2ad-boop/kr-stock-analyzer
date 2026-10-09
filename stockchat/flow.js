@@ -19,6 +19,18 @@ window.SCFlow = (function () {
     crypto: `<svg viewBox="0 0 21 14" width="21" height="14"><circle cx="10.5" cy="7" r="6.6" fill="#f7931a"/><text x="10.6" y="9.9" text-anchor="middle" font-size="9" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif">₿</text></svg>`,
   };
   const iconOf = (k) => (MARK_ICON[k] ? '<span class="fl-ico">' + MARK_ICON[k] + "</span>" : "");
+  // ---------- 단일 종목 화면 머리말: [로고] 이름(티커)에 대한 ○○입니다 ----------
+  const tickerOf = (sym) => String(sym || "").replace(/\.(KS|KQ)$/i, "").replace(/-USD$/i, "");
+  function stockHead(symbol, name, what) {
+    const sym = String(symbol || "");
+    const fmp = "https://financialmodelingprep.com/image-stock/" + encodeURIComponent(/-USD$/i.test(sym) ? sym.replace(/-USD$/i, "USD") : sym) + ".png";
+    const badge = esc(String(name || sym).replace(/\s/g, "").slice(0, 2));
+    return (
+      '<span class="st-logo"><img src="' + esc(fmp) + '" alt="" loading="lazy" onerror="this.style.display=&quot;none&quot;;this.nextElementSibling.style.display=&quot;flex&quot;" /><i>' + badge + "</i></span>" +
+      "<b>" + esc(name) + "</b> <span class=\"st-tk\">(" + esc(tickerOf(sym)) + ")</span>에 대한 " + esc(what) + "입니다"
+    );
+  }
+
   // 지나간 버튼을 다시 눌렀을 때: 새 흐름으로 그 항목을 처음부터 만든다
   const fresh = (fn) => {
     token++;
@@ -298,7 +310,7 @@ window.SCFlow = (function () {
   // 종목 상세 화면 하나를 올린다(지나간 버튼을 다시 눌렀을 때도 사용)
   async function detailOne(symbol, name, a) {
     const t = token;
-    await bot(esc(name) + " " + esc(a.label) + " 화면을 가져와요", t, 260);
+    await bot(stockHead(symbol, name, a.label), t, 260);
     if (alive(t)) embed({ view: "detail", ticker: symbol, sub: a.id });
   }
 
@@ -307,7 +319,7 @@ window.SCFlow = (function () {
     const info = await SCData.lookup(symbol);
     const isStock = !info || info.market === "kr" || info.market === "us";
     for (;;) {
-      await bot(esc(name) + " — 무엇을 볼까요?", t);
+      await bot(stockHead(symbol, name, "분석 항목") .replace("에 대한 분석 항목입니다", "") + " — 무엇을 볼까요?", t);
       if (!alive(t)) return;
       const act = await choose(
         [
@@ -318,7 +330,7 @@ window.SCFlow = (function () {
         { cols: isStock ? 3 : 2 }
       );
       if (!alive(t)) return;
-      await bot(esc(name) + " " + act.label + " 화면을 가져와요", t, 260);
+      await bot(stockHead(symbol, name, act.label), t, 260);
       if (!alive(t)) return;
       embed({ view: "detail", ticker: symbol, sub: act.id });
       await bot("이어서 볼까요?", t, 500);
@@ -597,7 +609,7 @@ window.SCFlow = (function () {
     for (;;) {
       const left = all.filter((i) => !done.has(i.id));
       if (!left.length) return;
-      await bot(first ? esc(st.name) + " — 더 볼까요?" : "이어서 볼까요?", t, 300);
+      await bot(first ? stockHead(st.symbol, st.name, "정보").replace("에 대한 정보입니다", "") + " — 더 볼까요?" : "이어서 볼까요?", t, 300);
       first = false;
       if (!alive(t)) return;
       const pick = await choose(left.map((i) => ({ ...i, redo: () => fresh(() => (i.id === "rank" ? searchFlow({ market, key: i.key, region }) : detailOne(st.symbol, st.name, { id: i.id, label: i.what }))) })).concat([{ id: "home", label: "처음으로", accent: true }]), { cols: 1 });
@@ -605,7 +617,7 @@ window.SCFlow = (function () {
       if (pick.id === "home") return home();
       done.add(pick.id);
       if (pick.id === "rank") return searchFlow({ market, key: pick.key, region });
-      await bot(esc(st.name) + " " + esc(pick.what) + " 화면을 가져와요", t, 260);
+      await bot(stockHead(st.symbol, st.name, pick.what), t, 260);
       if (!alive(t)) return;
       embed({ view: "detail", ticker: st.symbol, sub: pick.id });
     }
@@ -644,7 +656,7 @@ window.SCFlow = (function () {
     token++;
     const t = token;
     clearIntro();
-    await bot("<b>" + esc(st.name) + "</b>의 마켓맵 [요약]이에요", t, 300);
+    await bot(stockHead(st.symbol, st.name, "[요약]"), t, 300);
     if (!alive(t)) return;
     embed({ view: "detail", ticker: st.symbol, sub: "summary" }); // 마켓맵 상세 맨 위: 그래프·기본정보·과거분석/미래예측/공포지수 버튼
     let line = "";
@@ -856,7 +868,7 @@ window.SCFlow = (function () {
     token++;
     const t = token;
     clearIntro();
-    await bot("<b>" + esc(f.st.name) + "</b> " + esc(f.act.label) + " 화면이에요", t, 300);
+    await bot(stockHead(f.st.symbol, f.st.name, f.act.label), t, 300);
     if (!alive(t)) return;
     embed({ view: "detail", ticker: f.st.symbol, sub: f.act.sub });
     return offerForStock(f.st, null);

@@ -306,3 +306,9 @@ textarea::-webkit-scrollbar-thumb { background: rgba(120, 118, 112, 0.32); borde
 .embed-block.rows .embed-more:hover, .embed-block.capped.open .embed-more:hover { filter: brightness(0.97); }
 .embed-block.rows .embed-more:active, .embed-block.capped.open .embed-more:active { transform: scale(0.98); }
 .embed-block.rows.has-more .embed-more, .embed-block.capped.overflow .embed-more { display: flex; }
+
+/* 단일 종목 머리말: 회사 로고(없으면 글자 배지) + 이름(티커) */
+.st-logo { display: inline-flex; width: 22px; height: 22px; margin-right: 7px; vertical-align: -5px; border-radius: 50%; overflow: hidden; background: #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08); align-items: center; justify-content: center; }
+.st-logo img { width: 100%; height: 100%; object-fit: contain; }
+.st-logo i { display: none; width: 100%; height: 100%; align-items: center; justify-content: center; font-style: normal; font-size: 10px; font-weight: 800; background: var(--tile); color: var(--text); }
+.st-tk { color: var(--muted); font-weight: 600; }
