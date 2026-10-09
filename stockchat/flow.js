@@ -19,6 +19,18 @@ window.SCFlow = (function () {
     crypto: `<svg viewBox="0 0 21 14" width="21" height="14"><circle cx="10.5" cy="7" r="6.6" fill="#f7931a"/><text x="10.6" y="9.9" text-anchor="middle" font-size="9" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif">₿</text></svg>`,
   };
   const iconOf = (k) => (MARK_ICON[k] ? '<span class="fl-ico">' + MARK_ICON[k] + "</span>" : "");
+  // 화면을 올리기 직전 안내: 말풍선이 먼저 나오고 → "불러옵니다"가 붙고 → 잠깐 뒤에 마켓맵 화면이 올라온다(너무 빠르게 올라오지 않게)
+  async function announce(html, t) {
+    const el = await bot(html, t, 550);
+    if (!el || !alive(t)) return null;
+    await sleep(450);
+    if (!alive(t)) return null;
+    if (html.indexOf("가져와요") < 0) el.innerHTML = html + ' <span class="st-ld">— 불러옵니다…</span>';
+    scroll();
+    await sleep(650);
+    return alive(t) ? el : null;
+  }
+
   // ---------- 단일 종목 화면 머리말: [로고] 이름(티커)에 대한 ○○입니다 ----------
   const tickerOf = (sym) => String(sym || "").replace(/\.(KS|KQ)$/i, "").replace(/-USD$/i, "");
   function stockHead(symbol, name, what) {
@@ -319,8 +331,7 @@ window.SCFlow = (function () {
   // 종목 상세 화면 하나를 올린다(지나간 버튼을 다시 눌렀을 때도 사용)
   async function detailOne(symbol, name, a) {
     const t = token;
-    await bot(stockHead(symbol, name, a.what || a.label), t, 260);
-    if (alive(t)) embed({ view: "detail", ticker: symbol, sub: a.id });
+    if (await announce(stockHead(symbol, name, a.what || a.label), t)) embed({ view: "detail", ticker: symbol, sub: a.id });
   }
 
   // ---------- 종목 → 핵심정보 / 리스크점검 ----------
@@ -339,8 +350,7 @@ window.SCFlow = (function () {
         { cols: 1, stack: true }
       );
       if (!alive(t)) return;
-      await bot(stockHead(symbol, name, act.what), t, 260);
-      if (!alive(t)) return;
+      if (!(await announce(stockHead(symbol, name, act.what), t))) return;
       embed({ view: "detail", ticker: symbol, sub: act.id });
       await bot("이어서 볼까요?", t, 500);
       const next = await choose(
@@ -451,7 +461,7 @@ window.SCFlow = (function () {
         key = (await chooseGrouped(groupsOf(market).map(([title, keys]) => [title, keys.map((k) => ({ id: k, label: labelOf(market, k), redo: () => fresh(() => searchFlow({ market, region, key: k })) }))]))).id;
       }
       for (;;) {
-        await bot("[" + MARKET_NAME[market] + "] " + labelOf(market, key) + " 순위를 가져와요", t, 300);
+        await announce("[" + MARKET_NAME[market] + "] " + labelOf(market, key) + " 순위를 가져와요", t);
         if (!alive(t)) return;
         lastRank = embed({ view: "rank", market, item: key, region }, async (sym) => {
           const name = await SCData.nameOf(sym, sym);
@@ -574,8 +584,7 @@ window.SCFlow = (function () {
   ];
   async function fearOne(i) {
     const t = token;
-    await bot("<b>" + esc(i.label) + "</b> 화면을 가져와요", t, 260);
-    if (alive(t)) embed({ view: "fear", market: i.id });
+    if (await announce("<b>" + esc(i.label) + "</b> 화면을 가져와요", t)) embed({ view: "fear", market: i.id });
   }
   async function fearFlow(t) {
     const done = new Set();
@@ -589,7 +598,7 @@ window.SCFlow = (function () {
       if (!alive(t)) return;
       if (pick.id === "home") return home();
       done.add(pick.id);
-      await bot("<b>" + esc(pick.label) + "</b> 화면을 가져와요", t, 260);
+      await announce("<b>" + esc(pick.label) + "</b> 화면을 가져와요", t);
       if (!alive(t)) return;
       embed({ view: "fear", market: pick.id });
     }
@@ -626,7 +635,7 @@ window.SCFlow = (function () {
       if (pick.id === "home") return home();
       done.add(pick.id);
       if (pick.id === "rank") return searchFlow({ market, key: pick.key, region });
-      await bot(stockHead(st.symbol, st.name, pick.what), t, 260);
+      await announce(stockHead(st.symbol, st.name, pick.what), t);
       if (!alive(t)) return;
       embed({ view: "detail", ticker: st.symbol, sub: pick.id });
     }
@@ -665,7 +674,7 @@ window.SCFlow = (function () {
     token++;
     const t = token;
     clearIntro();
-    await bot(stockHead(st.symbol, st.name, "[요약]"), t, 300);
+    await announce(stockHead(st.symbol, st.name, "[요약]"), t);
     if (!alive(t)) return;
     embed({ view: "detail", ticker: st.symbol, sub: "summary" }); // 마켓맵 상세 맨 위: 그래프·기본정보·과거분석/미래예측/공포지수 버튼
     let line = "";
@@ -827,7 +836,7 @@ window.SCFlow = (function () {
       }
     }
     for (;;) {
-      await bot("<b>" + esc((market ? MARKET_NAME[market] + " " : "") + sc.label) + "</b> 화면을 가져와요", t, 300);
+      await announce("<b>" + esc((market ? MARKET_NAME[market] + " " : "") + sc.label) + "</b> 화면을 가져와요", t);
       if (!alive(t)) return;
       embed(sc.embed(market), async (sym) => {
         const name = await SCData.nameOf(sym, sym);
@@ -877,7 +886,7 @@ window.SCFlow = (function () {
     token++;
     const t = token;
     clearIntro();
-    await bot(stockHead(f.st.symbol, f.st.name, f.act.label), t, 300);
+    await announce(stockHead(f.st.symbol, f.st.name, f.act.label), t);
     if (!alive(t)) return;
     embed({ view: "detail", ticker: f.st.symbol, sub: f.act.sub });
     return offerForStock(f.st, null);

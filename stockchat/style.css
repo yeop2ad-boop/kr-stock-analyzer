@@ -316,3 +316,4 @@ textarea::-webkit-scrollbar-thumb { background: rgba(120, 118, 112, 0.32); borde
 /* 제목 아래 줄에 설명이 오는 버튼(주린이용 풀어쓴 문구) */
 .fl-choices.stack .fl-btn { flex-direction: column; align-items: flex-start; gap: 3px; }
 .fl-choices.stack .fl-btn small { text-align: left; }
+.st-ld { color: var(--muted); font-weight: 600; animation: fadeIn 0.3s ease; } @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
