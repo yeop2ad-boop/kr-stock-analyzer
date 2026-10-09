@@ -11,6 +11,14 @@ window.SCFlow = (function () {
   let token = 0;
   const alive = (t) => t === token;
 
+  // 마켓맵의 투자처 마크(한국·미국 국기, ETF, 비트코인)
+  const MARK_ICON = {
+    kr: `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#fff" stroke="rgba(0,0,0,0.22)"/><g transform="translate(10.5,7) scale(0.155)"><g stroke="#000" stroke-width="4" fill="none"><path transform="rotate(33.69)" d="M-50-12v24m6 0v-24m6 0v24m76 0V1m0-2v-11m6 0v11m0 2v11m6 0V1m0-2v-11"/><path transform="rotate(-33.69)" d="M-50-12v24m6 0V1m0-2v-11m6 0v24m76 0V1m0-2v-11m6 0v24m6 0V1m0-2v-11"/></g><g transform="rotate(33.69)"><path fill="#cd2e3a" d="M12 0a18 18 0 11-36 0 24 24 0 1148 0"/><path fill="#0047a0" d="M-24 0a24 24 0 1048 0A12 12 0 100 0a12 12 0 11-24 0"/></g></g></svg>`,
+    us: `<svg viewBox="0 0 21 14" width="21" height="14"><defs><clipPath id="scUsFlag"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5"/></clipPath></defs><g clip-path="url(#scUsFlag)"><rect x="0" y="0" width="21" height="14" fill="#fff"/><rect x="0" y="0.5" width="21" height="1.9" fill="#b22234"/><rect x="0" y="4.3" width="21" height="1.9" fill="#b22234"/><rect x="0" y="8.1" width="21" height="1.9" fill="#b22234"/><rect x="0" y="11.9" width="21" height="1.9" fill="#b22234"/><rect x="0" y="0" width="9.5" height="6.2" fill="#3c3b6e"/><g fill="#fff"><circle cx="2.4" cy="1.8" r="0.55"/><circle cx="4.8" cy="1.8" r="0.55"/><circle cx="7.2" cy="1.8" r="0.55"/><circle cx="2.4" cy="4.2" r="0.55"/><circle cx="4.8" cy="4.2" r="0.55"/><circle cx="7.2" cy="4.2" r="0.55"/></g></g><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="none" stroke="rgba(0,0,0,0.22)"/></svg>`,
+    etf: `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#2f6bd8" stroke="rgba(0,0,0,0.15)"/><text x="10.5" y="10" text-anchor="middle" font-size="7" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif" letter-spacing="0.3">ETF</text></svg>`,
+    crypto: `<svg viewBox="0 0 21 14" width="21" height="14"><circle cx="10.5" cy="7" r="6.6" fill="#f7931a"/><text x="10.6" y="9.9" text-anchor="middle" font-size="9" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif">₿</text></svg>`,
+  };
+  const iconOf = (k) => (MARK_ICON[k] ? '<span class="fl-ico">' + MARK_ICON[k] + "</span>" : "");
   // ---------- 말풍선·블록 ----------
   const DOTS = '<span class="dots"><span></span><span></span><span></span></span>';
   function scroll() {
@@ -52,7 +60,7 @@ window.SCFlow = (function () {
         const b = document.createElement("button");
         b.type = "button";
         b.className = "fl-btn" + (it.accent ? " accent" : "");
-        b.innerHTML = (it.mark ? '<span class="fl-mark">' + esc(it.mark) + "</span>" : "") + "<b>" + esc(it.label) + "</b>" + (it.sub ? "<small>" + esc(it.sub) + "</small>" : "");
+        b.innerHTML = (it.mark && !it.icon ? '<span class="fl-mark">' + esc(it.mark) + "</span>" : "") + "<b>" + (it.icon ? iconOf(it.icon) : "") + esc(it.label) + "</b>" + (it.sub ? "<small>" + esc(it.sub) + "</small>" : "");
         b.addEventListener("click", () => {
           if (w.classList.contains("done")) return;
           w.classList.add("done");
@@ -101,6 +109,8 @@ window.SCFlow = (function () {
   }
 
   // ---------- 마켓맵 화면 끼워 넣기(iframe) ----------
+  const CAP_H = 480;
+  const CAP_VIEWS = ["rank", "entry", "popular", "tab", "insight", "overlay", "calendar", "market"];
   let embedSeq = 0;
   const embeds = {};
   window.addEventListener("message", (e) => {
@@ -111,6 +121,7 @@ window.SCFlow = (function () {
     if (d.type === "height" && d.h > 40) {
       em.frame.style.height = d.h + "px";
       em.wrap.classList.add("ready");
+      if (em.capped) em.wrap.classList.toggle("overflow", d.h > CAP_H + 30); // 한 화면 분량을 넘을 때만 "더보기"
       if (em.stick) scroll();
     } else if (d.type === "open" && em.onOpen) {
       em.onOpen(d.symbol);
@@ -134,7 +145,22 @@ window.SCFlow = (function () {
     frame.src = url.href;
     wrap.appendChild(frame);
     listEl().appendChild(wrap);
-    embeds[id] = { wrap, frame, onOpen, stick: true };
+    // 목록형 화면은 처음엔 한 화면(종목 5~6개)만 보여주고 나머지는 "더보기"로 펼친다(종목 상세·설명 화면은 그대로)
+    const capped = CAP_VIEWS.indexOf(params.view) >= 0;
+    if (capped) {
+      wrap.classList.add("capped");
+      const more = document.createElement("button");
+      more.type = "button";
+      more.className = "embed-more";
+      more.textContent = "더보기";
+      more.addEventListener("click", () => {
+        const open = wrap.classList.toggle("open");
+        more.textContent = open ? "접기" : "더보기";
+        if (!open) wrap.scrollIntoView({ block: "start", behavior: "smooth" });
+      });
+      wrap.appendChild(more);
+    }
+    embeds[id] = { wrap, frame, onOpen, stick: true, capped };
     setTimeout(() => embeds[id] && (embeds[id].stick = false), 4000);
     scroll();
     return embeds[id];
@@ -257,12 +283,12 @@ window.SCFlow = (function () {
       user("간편검색");
       await bot("어떤 투자처를 찾아볼까요?", t);
       if (!alive(t)) return;
-      market = (await choose(MARKETS.map((m) => ({ ...m, chat: m.label })), { cols: 1 })).id;
+      market = (await choose(MARKETS.map((m) => ({ ...m, icon: m.id, chat: m.label })), { cols: 1 })).id;
     }
     for (;;) {
       if (market === "etf" && !region) {
         await bot("어느 시장의 ETF를 볼까요?", t);
-        region = (await choose([{ id: "kr", label: "한국 ETF" }, { id: "us", label: "미국 ETF" }], { cols: 2 })).id;
+        region = (await choose([{ id: "kr", icon: "kr", label: "한국 ETF" }, { id: "us", icon: "us", label: "미국 ETF" }], { cols: 2 })).id;
       }
       if (!key) {
         await bot("[" + MARKET_NAME[market] + (region ? " · " + (region === "kr" ? "한국" : "미국") : "") + "] 어떤 순위를 볼까요?", t);
@@ -287,7 +313,7 @@ window.SCFlow = (function () {
         if (next.id === "home") return home();
         if (next.id === "market") {
           await bot("어떤 투자처를 찾아볼까요?", t);
-          market = (await choose(MARKETS.map((m) => ({ ...m, chat: m.label })), { cols: 1 })).id;
+          market = (await choose(MARKETS.map((m) => ({ ...m, icon: m.id, chat: m.label })), { cols: 1 })).id;
           region = null;
           key = null;
           break;
@@ -372,7 +398,7 @@ window.SCFlow = (function () {
     if (!alive(t)) return;
     if (m.fear) return fearFlow(t);
     if (m.presetMarket) return searchFlow({ market: m.presetMarket, key: m.keys[m.presetMarket] });
-    const items = ["kr", "us", "etf", "crypto"].filter((k) => m.keys[k]).map((k) => ({ id: k, label: MARKET_NAME[k] + " " + labelOf(k, m.keys[k]) + " 순위" }));
+    const items = ["kr", "us", "etf", "crypto"].filter((k) => m.keys[k]).map((k) => ({ id: k, icon: k, label: MARKET_NAME[k] + " " + labelOf(k, m.keys[k]) + " 순위" }));
     const pick = await choose(items, { cols: 2 });
     if (!alive(t)) return;
     return searchFlow({ market: pick.id, key: m.keys[pick.id] });
@@ -512,7 +538,7 @@ window.SCFlow = (function () {
     await bot("<b>승률</b> 순위도 바로 볼 수 있어요. 어느 투자처를 볼까요?", t, 500);
     if (!alive(t)) return;
     const m = RANK_WORDS.find((x) => x.label === "승률");
-    const items = ["kr", "us", "etf", "crypto"].filter((k) => m.keys[k]).map((k) => ({ id: k, label: MARKET_NAME[k] + " " + labelOf(k, m.keys[k]) + " 순위" }));
+    const items = ["kr", "us", "etf", "crypto"].filter((k) => m.keys[k]).map((k) => ({ id: k, icon: k, label: MARKET_NAME[k] + " " + labelOf(k, m.keys[k]) + " 순위" }));
     const pick = await choose(items, { cols: 2 });
     if (!alive(t)) return;
     return searchFlow({ market: pick.id, key: m.keys[pick.id] });
@@ -582,7 +608,7 @@ window.SCFlow = (function () {
     { id: "tech", label: "신기술", words: ["신기술", "기술뉴스", "신기술뉴스"], markets: null, embed: () => ({ view: "overlay", cat: "tech", market: "us" }) },
     { id: "brand", label: "브랜드평판", words: ["브랜드평판", "평판순", "브랜드순위", "해리스", "reptrak", "yougov"], markets: null, embed: () => ({ view: "overlay", cat: "brand", market: "us" }) },
     { id: "dart", label: "다트공시(연봉·근속·인원·자사주)", words: ["다트공시", "다트", "평균연봉", "연봉순위", "연봉", "근속연수", "평균근속", "인원감축", "인원변동", "직원수", "자사주매입", "자사주", "임금"], markets: null, embed: () => ({ view: "overlay", cat: "brand", market: "kr" }) },
-    { id: "firms", label: "기관·자산운용사 보유", words: ["기관투자자", "자산운용사", "기관보유", "13f", "블랙록", "뱅가드", "버크셔", "국민연금", "삼성자산운용", "미래에셋자산운용", "큰손", "기관"], markets: ["kr", "us"], embed: (m) => ({ view: "insight", cat: "firms", market: m }) },
+    { id: "firms", noStock: true, label: "기관·자산운용사 보유", words: ["기관투자자", "자산운용사", "기관보유", "13f", "블랙록", "뱅가드", "버크셔", "국민연금", "삼성자산운용", "미래에셋자산운용", "큰손", "기관"], markets: ["kr", "us"], embed: (m) => ({ view: "insight", cat: "firms", market: m }) },
     { id: "rankup", label: "시총 순위 상승", words: ["순위상승", "시총순위상승", "순위급상승", "시총순위"], markets: ["kr", "us", "crypto"], embed: (m) => ({ view: "insight", cat: "rankup", market: m }) },
     { id: "corr", label: "상관관계", words: ["상관관계", "상관관계도", "적중순위"], markets: ["kr", "us", "crypto"], embed: (m) => ({ view: "insight", cat: "corr", market: m }) },
     { id: "sectorWin", label: "섹터 승률", words: ["섹터승률", "섹터별승률", "업종승률", "섹터순위", "섹터"], markets: ["kr", "us", "crypto"], embed: (m) => ({ view: "insight", cat: "sectorWin", market: m }) },
@@ -590,6 +616,8 @@ window.SCFlow = (function () {
     { id: "method", label: "투자방법 비교", words: ["투자방법", "투자방법비교", "투자전략", "전략비교", "투자법"], markets: null, embed: () => ({ view: "analysis" }) },
     { id: "pf", label: "내 포트폴리오", words: ["내포트폴리오", "포트폴리오", "포트폴리오점검", "내자산", "내주식점검"], markets: null, embed: () => ({ view: "analysis" }) },
   ];
+  // 종목 이름이 섞이면 종목 중심으로 처리해야 하는 화면(뉴스·실적·일정·급등락 등). 나머지(기관·섹터 등)는 종목 확인을 하지 않는다
+  const STOCK_CHECK = ["surge", "plunge", "popular", "earnings", "ipo", "calendar", "news"];
   const SCREEN_TAIL = /(보여줘|보여|알려줘|알려|보기|궁금|어때|어디|뭐야|뭐있어|있어|언제|뭐가|좀|줘|요|는|은|이|가|를|을|도|\?)/g;
   async function matchScreen(text) {
     const raw = String(text || "").toLowerCase().replace(/[\s?!.,~]/g, "");
@@ -605,7 +633,7 @@ window.SCFlow = (function () {
     // 화면 이름과 말머리(투자처)·꼬리말을 뺀 나머지가 길면(복잡한 질문) 화면 연결이 아니라 AI에게
     const sp = splitMarket(raw.replace(hit.w, ""));
     if (sp.rest.replace(SCREEN_TAIL, "").replace(/(오늘|이번주|이번달|이번|요즘|지금|최근|주식|종목|일정)/g, "").length > 3) return null;
-    if (!(sp.market && !sp.rest.replace(SCREEN_TAIL, ""))) {
+    if (STOCK_CHECK.indexOf(hit.sc.id) >= 0 && !(sp.market && !sp.rest.replace(SCREEN_TAIL, ""))) {
       try {
         if (await SCData.findInText(text)) return null; // 종목이 섞이면 종목 중심(AI·버튼)으로
       } catch (e) {
@@ -626,7 +654,7 @@ window.SCFlow = (function () {
       else {
         await bot("어느 투자처의 <b>" + esc(sc.label) + "</b>을(를) 볼까요?", t, 360);
         if (!alive(t)) return;
-        const pick = await choose(sc.markets.map((k) => ({ id: k, label: MARKET_NAME[k] + " " + sc.label })), { cols: 2 });
+        const pick = await choose(sc.markets.map((k) => ({ id: k, icon: k, label: MARKET_NAME[k] + " " + sc.label })), { cols: 2 });
         if (!alive(t)) return;
         market = pick.id;
       }
@@ -642,7 +670,7 @@ window.SCFlow = (function () {
       const others = sc.markets && sc.markets.length > 1 ? sc.markets.filter((k) => k !== market) : [];
       await bot(sc.markets ? "종목을 누르면 자세히 볼 수 있어요." : "이어서 볼까요?", t, 500);
       const next = await choose(
-        others.map((k) => ({ id: "m:" + k, label: MARKET_NAME[k] + " " + sc.label })).concat([{ id: "home", label: "처음으로", accent: true }]),
+        others.map((k) => ({ id: "m:" + k, icon: k, label: MARKET_NAME[k] + " " + sc.label })).concat([{ id: "home", label: "처음으로", accent: true }]),
         { cols: 2, chips: true }
       );
       if (!alive(t)) return;

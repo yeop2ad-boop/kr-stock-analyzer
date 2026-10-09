@@ -248,3 +248,10 @@ body {
 @keyframes shimmer { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
 .notice a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 .notice b { display: block; margin: 2px 0 0; }
+
+/* 목록형 마켓맵 화면: 처음엔 한 화면 분량(종목 5~6개)만, "더보기"로 전체 */
+.embed-block.capped:not(.open) { max-height: 480px; }
+.embed-more { display: none; position: absolute; left: 0; right: 0; bottom: 0; height: 64px; border: 0; cursor: pointer; font: inherit; font-size: 14px; font-weight: 700; color: var(--text); background: linear-gradient(to bottom, rgba(255,255,255,0), var(--card) 62%); align-items: flex-end; justify-content: center; padding-bottom: 10px; }
+.embed-block.capped.overflow .embed-more { display: flex; }
+.embed-block.capped.open .embed-more { position: relative; height: auto; padding: 12px 0; background: var(--card); align-items: center; }
+.fl-ico { display: inline-flex; vertical-align: middle; margin-right: 7px; line-height: 0; } .fl-ico svg { width: 21px; height: 14px; }
