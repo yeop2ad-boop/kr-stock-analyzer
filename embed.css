@@ -37,4 +37,4 @@ html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-name 
 html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-priceline { overflow: visible !important; align-items: baseline !important; gap: 8px !important; }
 html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-priceline .detail-identity-price { font-size: 30px !important; font-weight: 800 !important; letter-spacing: -0.8px !important; line-height: 1.15; }
 html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-priceline .detail-identity-change { font-size: 16px !important; font-weight: 700 !important; letter-spacing: -0.3px !important; }
-
+html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-logo { display: none !important; } /* 아래 기본정보에 로고가 있어 중복 */
