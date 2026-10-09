@@ -60,6 +60,49 @@
   new MutationObserver(report).observe(document.body, { childList: true, subtree: true, attributes: true });
   setInterval(report, 500);
 
+
+  // ---- 마켓맵 화면을 더 끼워 넣기: 인기종목·급등/급락·실적·IPO·자동추적·인사이트·캘린더·뉴스 등 ----
+  //   ?embed=1&view=popular|entry|tab|insight|overlay|calendar|market&market=kr|us|etf|crypto
+  //     entry: label=상승률|하락률|거래대금|시가총액|PER|ROE|영업이익률|현금흐름 증가 …(RANKING_ENTRIES 이름)
+  //     tab:   name=earnings|ipo|autotrack|drawdown
+  //     insight: cat=firms|rankup|corr|sectorWin  / overlay: cat=news|brand|tech
+  function setMarket(m) {
+    if (m === "kr") bottomNavKrBtn.click();
+    else if (m === "etf") bottomNavButtons.etf.click();
+    else if (m === "crypto") bottomNavButtons.crypto.click();
+    else bottomNavUsBtn.click();
+  }
+  function runExtra() {
+    var m = q.get("market") || "us";
+    if (view === "popular") {
+      setMarket(m);
+    } else if (view === "entry") {
+      setMarket(m);
+      var label = q.get("label");
+      var idx = RANKING_ENTRIES.findIndex(function (e) { return e.label === label; });
+      if (idx >= 0) setTimeout(function () { goToRankingEntry(idx); }, 120);
+    } else if (view === "tab") {
+      setMarket(m);
+      var name = q.get("name");
+      setTimeout(function () {
+        if (name === "earnings") showOnlyCarouselView(function () { openEarningsTab(); });
+        else if (name === "ipo") showOnlyCarouselView(function () { openIpoList(); });
+        else if (name === "autotrack") goAutoTrackSection(m);
+        else if (name === "drawdown") showOnlyCarouselView(function () { openCryptoMetricTab("drawdown"); });
+      }, 120);
+    } else if (view === "insight") {
+      openInsightSectionOverlay(m, q.get("cat"));
+    } else if (view === "overlay") {
+      var cat = q.get("cat");
+      if (cat === "brand") setMarket(m);
+      openInsightOverlay(cat, cat === "news" ? "뉴스" : cat === "tech" ? "신기술" : m === "kr" ? "다트공시" : "브랜드평판순");
+    } else if (view === "calendar") {
+      openCalendarPanel();
+    } else if (view === "market") {
+      openMarketPanel();
+    }
+  }
+
   function run() {
     applyTheme();
     try {
@@ -81,6 +124,8 @@
       } else if (view === "analysis") {
         var tab = document.querySelector('[data-fhtab="tab.analysis"]');
         if (tab) tab.click();
+      } else {
+        runExtra();
       }
     } catch (e) {
       post({ type: "error", message: String(e && e.message ? e.message : e) });

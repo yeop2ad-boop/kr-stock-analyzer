@@ -321,13 +321,34 @@ window.SCFlow = (function () {
     { label: "공포지수", fear: true, noMention: ["공포", "타이밍", "거시경제"], words: ["거시경제지표", "거시경제", "공포지수", "공포", "vix", "알트시즌지수", "알트코인시즌지수", "알트시즌", "알트코인시즌", "투자시기", "투자시점", "투자타이밍", "타이밍", "포모지수", "fomo지수"], keys: { kr: "fear", us: "fear", crypto: "fear" } },
   ];
   // "순위·보여줘" 같은 꼬리말만 붙은 짧은 요청일 때만 버튼으로 처리하고, 뜻을 묻거나 종목이 섞인 질문은 AI에게 맡긴다
-  const TAIL = "(?:순위|랭킹|top\\d*|상위|보기|보여줘|알려줘|찾아줘|찾기|높은종목|높은순|많은종목|종목|주식|리스트|목록|줘|좀|요|를|을|은|는|이|가|도)*";
+  //  · "미국 PER 낮은 종목"처럼 투자처 말머리·방향 말(낮은/높은)이 붙어도 인식한다. 방향이 마켓맵 화면(고정 방향)과 반대면 AI에게 넘긴다.
+  const TAIL = "(?:순위|랭킹|top\\d*|상위|보기|보여줘|알려줘|찾아줘|찾기|높은종목|높은순|많은종목|종목|주식|리스트|목록|줘|좀|요|를|을|은|는|이|가|도|낮은|높은|많은|큰|작은|적은|좋은|싼|저평가된|과열된|오늘|요즘|지금|회사|기업|근처|부근|최저가|최고가)*";
   const RANK_RE = RANK_WORDS.map((m) => ({ m, re: new RegExp("^(?:" + m.words.slice().sort((a, b) => b.length - a.length).join("|") + ")" + TAIL + "$", "i") }));
+  const MARKET_PREFIX = [
+    ["kr", ["한국주식", "국내주식", "코스피", "코스닥", "한국", "국내"]],
+    ["us", ["미국주식", "해외주식", "나스닥", "미국", "해외"]],
+    ["etf", ["etf"]],
+    ["crypto", ["비트코인", "암호화폐", "코인"]],
+  ];
+  function splitMarket(s) {
+    for (const [id, ws] of MARKET_PREFIX) for (const w of ws) if (s.startsWith(w)) return { market: id, rest: s.slice(w.length).replace(/^(주식|종목)/, "") };
+    return { market: null, rest: s };
+  }
+  const WANT_LOW = /(낮은|작은|적은|싼|저평가)/;
+  const WANT_HIGH = /(높은|많은|큰|좋은)/;
+  // 마켓맵 순위 화면의 정렬 방향(고정): high=큰 값이 위, low=작은 값이 위
+  const DIR = { 승률: "high", 상승률: "high", 수익률: "high", 과열도: "high", 시가총액: "high", 매출액: "high", 순이익: "high", 영업이익: "high", ROE: "high", 현금흐름: "high", 거래대금: "high", 배당률: "high", PER: "low", 부채비율: "low", 운용보수: "low", "52주구간": "low" };
   function matchRanking(text) {
-    const s = String(text || "").toLowerCase().replace(/[\s?!.,~]/g, "");
-    if (!s || s.length > 24) return null;
+    let s = String(text || "").toLowerCase().replace(/[\s?!.,~]/g, "");
+    if (!s || s.length > 30) return null;
+    const sp = splitMarket(s);
+    s = sp.rest || s;
     const hit = RANK_RE.find((x) => x.re.test(s));
-    return hit ? hit.m : null;
+    if (!hit) return null;
+    const want = DIR[hit.m.label];
+    if ((want === "high" && WANT_LOW.test(s)) || (want === "low" && WANT_HIGH.test(s))) return null; // 반대 방향 순위는 아직 화면이 없어 AI에게
+    if (!want && (WANT_LOW.test(s) || WANT_HIGH.test(s))) return null;
+    return sp.market && hit.m.keys[sp.market] ? Object.assign({}, hit.m, { presetMarket: sp.market }) : hit.m;
   }
   // 문장 속에 순위 항목 이름이 들어 있는지(AI 답변 뒤에 순위 버튼을 이어 붙일 때 사용) — 가장 긴 이름을 우선
   function findMention(text) {
@@ -347,9 +368,10 @@ window.SCFlow = (function () {
     const t = token;
     clearIntro();
     const follow = opts && opts.followUp;
-    await bot(follow ? "<b>" + esc(m.label) + "</b> 순위도 바로 볼 수 있어요. 어느 투자처를 볼까요?" : "어느 투자처의 <b>" + esc(m.label) + "</b> 순위를 볼까요?", t, follow ? 300 : 420);
+    await bot(m.presetMarket ? "<b>" + esc(MARKET_NAME[m.presetMarket]) + " " + esc(m.label) + "</b> 순위를 가져와요" : follow ? "<b>" + esc(m.label) + "</b> 순위도 바로 볼 수 있어요. 어느 투자처를 볼까요?" : "어느 투자처의 <b>" + esc(m.label) + "</b> 순위를 볼까요?", t, follow ? 300 : 420);
     if (!alive(t)) return;
     if (m.fear) return fearFlow(t);
+    if (m.presetMarket) return searchFlow({ market: m.presetMarket, key: m.keys[m.presetMarket] });
     const items = ["kr", "us", "etf", "crypto"].filter((k) => m.keys[k]).map((k) => ({ id: k, label: MARKET_NAME[k] + " " + labelOf(k, m.keys[k]) + " 순위" }));
     const pick = await choose(items, { cols: 2 });
     if (!alive(t)) return;
@@ -543,6 +565,129 @@ window.SCFlow = (function () {
     }
   }
 
+  // ---------- 마켓맵 화면을 글로 바로 열기(AI 0원) ----------
+  // 급등주·급락주·인기종목·실적·IPO·캘린더·뉴스·자동추적·기관보유·섹터승률·상관관계·시총순위상승·다트공시·신기술·브랜드평판·최대낙폭·시장지수·투자방법/포트폴리오
+  // 짧은 질문에 이 이름이 들어 있고 종목이 섞이지 않았을 때, 투자처를 고르게 한 뒤 마켓맵 화면을 그대로 끼워 넣는다.
+  const ALL_M = ["kr", "us", "etf", "crypto"];
+  const SCREENS = [
+    { id: "surge", label: "급등주", words: ["급등주", "급등", "오늘오른", "많이오른", "오늘상승", "상승종목", "상한가"], markets: ["kr", "us"], embed: (m) => ({ view: "entry", market: m, label: "상승률" }) },
+    { id: "plunge", label: "급락주", words: ["급락주", "급락", "폭락", "오늘하락", "오늘떨어진", "많이떨어진", "하락종목", "하한가"], markets: ["kr", "us"], embed: (m) => ({ view: "entry", market: m, label: "하락률" }) },
+    { id: "popular", label: "인기종목", words: ["인기종목", "인기주", "인기검색", "핫한종목", "요즘뜨는", "뜨는종목", "화제종목"], markets: ALL_M, embed: (m) => ({ view: "popular", market: m }) },
+    { id: "earnings", label: "실적 일정", words: ["실적발표", "실적일정", "어닝", "실적시즌", "최근실적", "실적언제"], markets: ["kr", "us"], embed: (m) => ({ view: "tab", name: "earnings", market: m }) },
+    { id: "ipo", label: "신규상장(IPO)", words: ["ipo", "신규상장", "공모주", "상장일정", "신규상장주", "새로상장"], markets: ["kr", "us"], embed: (m) => ({ view: "tab", name: "ipo", market: m }) },
+    { id: "autotrack", label: "자동추적", words: ["자동추적", "신호등", "매수신호", "매도신호"], markets: ALL_M, embed: (m) => ({ view: "tab", name: "autotrack", market: m }) },
+    { id: "drawdown", label: "최대낙폭", words: ["최대낙폭", "낙폭", "mdd"], markets: ["crypto"], embed: (m) => ({ view: "tab", name: "drawdown", market: m }) },
+    { id: "calendar", label: "캘린더", words: ["캘린더", "경제일정", "투자일정", "fomc", "금리발표", "cpi발표", "고용지표", "이번주일정", "이번달일정"], markets: null, embed: () => ({ view: "calendar" }) },
+    { id: "news", label: "시장 뉴스", words: ["시장뉴스", "오늘뉴스", "주요뉴스", "속보", "관심종목뉴스", "최신뉴스", "뉴스모아", "뉴스"], markets: null, embed: () => ({ view: "overlay", cat: "news", market: "us" }) },
+    { id: "tech", label: "신기술", words: ["신기술", "기술뉴스", "신기술뉴스"], markets: null, embed: () => ({ view: "overlay", cat: "tech", market: "us" }) },
+    { id: "brand", label: "브랜드평판", words: ["브랜드평판", "평판순", "브랜드순위", "해리스", "reptrak", "yougov"], markets: null, embed: () => ({ view: "overlay", cat: "brand", market: "us" }) },
+    { id: "dart", label: "다트공시(연봉·근속·인원·자사주)", words: ["다트공시", "다트", "평균연봉", "연봉순위", "연봉", "근속연수", "평균근속", "인원감축", "인원변동", "직원수", "자사주매입", "자사주", "임금"], markets: null, embed: () => ({ view: "overlay", cat: "brand", market: "kr" }) },
+    { id: "firms", label: "기관·자산운용사 보유", words: ["기관투자자", "자산운용사", "기관보유", "13f", "블랙록", "뱅가드", "버크셔", "국민연금", "삼성자산운용", "미래에셋자산운용", "큰손", "기관"], markets: ["kr", "us"], embed: (m) => ({ view: "insight", cat: "firms", market: m }) },
+    { id: "rankup", label: "시총 순위 상승", words: ["순위상승", "시총순위상승", "순위급상승", "시총순위"], markets: ["kr", "us", "crypto"], embed: (m) => ({ view: "insight", cat: "rankup", market: m }) },
+    { id: "corr", label: "상관관계", words: ["상관관계", "상관관계도", "적중순위"], markets: ["kr", "us", "crypto"], embed: (m) => ({ view: "insight", cat: "corr", market: m }) },
+    { id: "sectorWin", label: "섹터 승률", words: ["섹터승률", "섹터별승률", "업종승률", "섹터순위", "섹터"], markets: ["kr", "us", "crypto"], embed: (m) => ({ view: "insight", cat: "sectorWin", market: m }) },
+    { id: "index", label: "시장 지수 현황", words: ["시장지수", "지수현황", "시장현황", "코스피지수", "나스닥지수", "오늘지수"], markets: null, embed: () => ({ view: "market" }) },
+    { id: "method", label: "투자방법 비교", words: ["투자방법", "투자방법비교", "투자전략", "전략비교", "투자법"], markets: null, embed: () => ({ view: "analysis" }) },
+    { id: "pf", label: "내 포트폴리오", words: ["내포트폴리오", "포트폴리오", "포트폴리오점검", "내자산", "내주식점검"], markets: null, embed: () => ({ view: "analysis" }) },
+  ];
+  const SCREEN_TAIL = /(보여줘|보여|알려줘|알려|보기|궁금|어때|어디|뭐야|뭐있어|있어|언제|뭐가|좀|줘|요|는|은|이|가|를|을|도|\?)/g;
+  async function matchScreen(text) {
+    const raw = String(text || "").toLowerCase().replace(/[\s?!.,~]/g, "");
+    if (!raw || raw.length > 28) return null;
+    if (/(뜻|의미|란$|이란|설명|이유|원인|왜)/.test(raw)) return null; // 설명·이유를 묻는 말은 AI가
+    let hit = null;
+    SCREENS.forEach((sc) =>
+      sc.words.forEach((w) => {
+        if (raw.indexOf(w) >= 0 && (!hit || w.length > hit.len)) hit = { sc, w, len: w.length };
+      })
+    );
+    if (!hit) return null;
+    // 화면 이름과 말머리(투자처)·꼬리말을 뺀 나머지가 길면(복잡한 질문) 화면 연결이 아니라 AI에게
+    const sp = splitMarket(raw.replace(hit.w, ""));
+    if (sp.rest.replace(SCREEN_TAIL, "").replace(/(오늘|이번주|이번달|이번|요즘|지금|최근|주식|종목|일정)/g, "").length > 3) return null;
+    if (!(sp.market && !sp.rest.replace(SCREEN_TAIL, ""))) {
+      try {
+        if (await SCData.findInText(text)) return null; // 종목이 섞이면 종목 중심(AI·버튼)으로
+      } catch (e) {
+        /* 이름표를 못 읽어도 화면 연결은 가능 */
+      }
+    }
+    const pre = splitMarket(raw).market || sp.market;
+    return { sc: hit.sc, market: pre && hit.sc.markets && hit.sc.markets.indexOf(pre) >= 0 ? pre : null };
+  }
+  async function screenFlow(found) {
+    token++;
+    const t = token;
+    clearIntro();
+    const sc = found.sc;
+    let market = found.market;
+    if (sc.markets && !market) {
+      if (sc.markets.length === 1) market = sc.markets[0];
+      else {
+        await bot("어느 투자처의 <b>" + esc(sc.label) + "</b>을(를) 볼까요?", t, 360);
+        if (!alive(t)) return;
+        const pick = await choose(sc.markets.map((k) => ({ id: k, label: MARKET_NAME[k] + " " + sc.label })), { cols: 2 });
+        if (!alive(t)) return;
+        market = pick.id;
+      }
+    }
+    for (;;) {
+      await bot("<b>" + esc((market ? MARKET_NAME[market] + " " : "") + sc.label) + "</b> 화면을 가져와요", t, 300);
+      if (!alive(t)) return;
+      embed(sc.embed(market), async (sym) => {
+        const name = await SCData.nameOf(sym, sym);
+        user(name);
+        stockMenu(sym, name, t, true);
+      });
+      const others = sc.markets && sc.markets.length > 1 ? sc.markets.filter((k) => k !== market) : [];
+      await bot(sc.markets ? "종목을 누르면 자세히 볼 수 있어요." : "이어서 볼까요?", t, 500);
+      const next = await choose(
+        others.map((k) => ({ id: "m:" + k, label: MARKET_NAME[k] + " " + sc.label })).concat([{ id: "home", label: "처음으로", accent: true }]),
+        { cols: 2, chips: true }
+      );
+      if (!alive(t)) return;
+      if (next.id === "home") return home();
+      market = next.id.slice(2);
+    }
+  }
+
+  // ---------- 종목 + 뉴스/리스크/재무/차트 → 해당 화면 바로 ----------
+  const STOCK_ACTIONS = [
+    { sub: "news", label: "주요 뉴스", words: ["뉴스", "악재", "호재", "소식", "이슈", "최근기사"] },
+    { sub: "risk", label: "리스크 점검", words: ["리스크", "위험신호", "위험", "안전한가", "상장폐지"] },
+    { sub: "revenue", label: "재무제표", words: ["재무제표", "재무", "매출", "순이익", "영업이익", "적자", "흑자", "현금흐름"] },
+    { sub: "summary", label: "개요", words: ["차트", "시세", "현재가", "기본정보", "미래예측", "6개월후", "계절성"] },
+    { sub: "sreport", label: "핵심지표", words: ["핵심지표", "핵심정보"] },
+  ];
+  async function matchStockAction(text) {
+    const raw = String(text || "").toLowerCase().replace(/[\s?!.,~]/g, "");
+    if (!raw || raw.length > 36 || BUYSELL.test(raw)) return null;
+    if (/(뜻|의미|설명|이유|원인|왜|비교|vs|랑|하고)/.test(raw)) return null;
+    let act = null;
+    STOCK_ACTIONS.forEach((a) =>
+      a.words.forEach((w) => {
+        if (raw.indexOf(w) >= 0 && (!act || w.length > act.len)) act = { a, len: w.length };
+      })
+    );
+    if (!act) return null;
+    let st = null;
+    try {
+      st = await SCData.findInText(text);
+    } catch (e) {
+      st = null;
+    }
+    return st ? { st, act: act.a } : null;
+  }
+  async function stockActionShow(f) {
+    token++;
+    const t = token;
+    clearIntro();
+    await bot("<b>" + esc(f.st.name) + "</b> " + esc(f.act.label) + " 화면이에요", t, 300);
+    if (!alive(t)) return;
+    embed({ view: "detail", ticker: f.st.symbol, sub: f.act.sub });
+    return offerForStock(f.st, null);
+  }
+
   // ---------- 진입 ----------
   function home() {
     token++;
@@ -558,5 +703,5 @@ window.SCFlow = (function () {
   function reset() {
     token++;
   }
-  return { start, reset, home, matchRanking, findMention, rankFromText, offerForStock, matchBuySell, buySellSummary, matchExplain, explainShow };
+  return { matchScreen, screenFlow, matchStockAction, stockActionShow, start, reset, home, matchRanking, findMention, rankFromText, offerForStock, matchBuySell, buySellSummary, matchExplain, explainShow };
 })();

@@ -155,6 +155,28 @@
       window.SCFlow.buySellSummary(bs);
       return;
     }
+    // "삼성전자 뉴스/리스크/재무제표/차트"처럼 종목 + 하위 항목: AI 없이 해당 마켓맵 화면 바로
+    const sa = window.SCFlow ? await window.SCFlow.matchStockAction(text) : null;
+    if (sa) {
+      inputEl.value = "";
+      grow();
+      const introEl3 = listEl.querySelector(".intro");
+      if (introEl3) introEl3.remove();
+      bubble("user", esc(text));
+      window.SCFlow.stockActionShow(sa);
+      return;
+    }
+    // "급등주/실적 일정/캘린더/뉴스…"처럼 마켓맵 화면 이름을 친 경우: AI 없이 그 화면(투자처 고르기 포함)
+    const sc = window.SCFlow ? await window.SCFlow.matchScreen(text) : null;
+    if (sc) {
+      inputEl.value = "";
+      grow();
+      const introEl4 = listEl.querySelector(".intro");
+      if (introEl4) introEl4.remove();
+      bubble("user", esc(text));
+      window.SCFlow.screenFlow(sc);
+      return;
+    }
     // "상승률"처럼 순위 항목 이름만 친 경우: AI 대신 투자처별 순위 버튼 4개(마켓맵 순위 화면으로 연결)
     const rk = window.SCFlow && window.SCFlow.matchRanking(text);
     if (rk) {

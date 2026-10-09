@@ -8,9 +8,6 @@ html.embed-mode #morePanel,
 html.embed-mode #aiChatOverlay,
 html.embed-mode .source-note,
 html.embed-mode .site-footer,
-html.embed-mode #marketPanel,
-html.embed-mode #calendarPanel,
-html.embed-mode #insightOverlayPanel,
 html.embed-mode #searchWizardPanel { display: none !important; }
 html.embed-mode .container { padding-top: 4px !important; padding-bottom: 14px !important; padding-left: 14px; padding-right: 14px; max-width: none; }
 
@@ -51,3 +48,14 @@ html.embed-info .container { display: none !important; }
 html.embed-info #embedInfo { margin: 0 !important; padding: 16px 14px 14px !important; }
 html.embed-info .embed-info-title { font-size: 17px; font-weight: 800; margin: 0 0 10px; letter-spacing: -0.3px; }
 
+
+/* 캘린더·인사이트·뉴스·시장 지수: 전체화면 오버레이를 문서 흐름 안의 블록으로 */
+html.embed-calendar .container, html.embed-insight .container, html.embed-overlay .container, html.embed-market .container { display: none !important; }
+html.embed-calendar #calendarPanel, html.embed-insight #insightOverlayPanel, html.embed-overlay #insightOverlayPanel, html.embed-market #marketPanel { position: static !important; inset: auto !important; transform: none !important; display: flex !important; height: auto !important; min-height: 0 !important; z-index: auto !important; transition: none !important; }
+html.embed-calendar #calendarPanel .company-panel-bar, html.embed-insight #insightOverlayPanel .company-panel-bar, html.embed-overlay #insightOverlayPanel .company-panel-bar, html.embed-market #marketPanel .company-panel-bar { display: none !important; }
+html.embed-calendar .company-panel-body, html.embed-insight .company-panel-body, html.embed-overlay .company-panel-body, html.embed-market .company-panel-body { overflow: visible !important; flex: none !important; padding: 8px 14px 14px !important; max-width: none; }
+html.embed-mode:not(.embed-calendar):not(.embed-insight):not(.embed-overlay):not(.embed-market) #calendarPanel,
+html.embed-mode:not(.embed-insight):not(.embed-overlay) #insightOverlayPanel,
+html.embed-mode:not(.embed-market) #marketPanel { display: none !important; }
+/* 항목 이름 줄(서브내비)은 채팅 버튼이 대신하므로 숨김 */
+html.embed-entry #topRankingSubNav, html.embed-tab #topRankingSubNav, html.embed-popular #topRankingSubNav { display: none !important; }
