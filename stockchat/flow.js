@@ -167,8 +167,8 @@ window.SCFlow = (function () {
   }
 
   // ---------- 간편검색 항목(마켓맵 간편검색과 동일) ----------
-  const STOCK_LABEL = { win: "승률", ret: "상승률", rev: "매출액", vol: "변동성", rsi: "과열도", ni: "순이익", om: "영업이익", roe: "ROE", cf: "현금흐름", debt: "부채비율", mcap: "시가총액", dv: "거래대금", w52: "52주구간", per: "PER", div: "배당률" };
-  const ASSET_LABEL = { win: "승률", ret: "상승률", rev: "수익률", vol: "변동성", rsi: "과열도", div: "배당률", fee: "운용보수", mcap: "규모", aum: "규모", w52: "52주구간" };
+  const STOCK_LABEL = { win: "10년평균 승률", ret: "상승률", rev: "매출액", vol: "변동성", rsi: "과열도", ni: "순이익", om: "영업이익", roe: "ROE", cf: "현금흐름", debt: "부채비율", mcap: "시가총액", dv: "거래대금", w52: "52주구간", per: "PER", div: "배당률" };
+  const ASSET_LABEL = { win: "10년평균 승률", ret: "상승률", rev: "수익률", vol: "변동성", rsi: "과열도", div: "배당률", fee: "운용보수", mcap: "규모", aum: "규모", w52: "52주구간" };
   const GROUPS = {
     stock: [
       ["성장 · 추세", ["win", "ret", "rev", "vol", "rsi"]],
@@ -326,7 +326,7 @@ window.SCFlow = (function () {
   // ---------- 글로 친 순위 항목 이름(예: "상승률") → 투자처별 순위 버튼 ----------
   const ALL4 = (k) => ({ kr: k, us: k, etf: k, crypto: k });
   const RANK_WORDS = [
-    { label: "승률", words: ["승률", "10년승률", "10년평균승률"], keys: ALL4("win") },
+    { label: "10년평균 승률", words: ["승률", "10년승률", "10년평균승률"], keys: ALL4("win") },
     { label: "상승률", words: ["상승률", "연평균상승", "연평균상승률"], keys: ALL4("ret") },
     { label: "수익률", words: ["수익률"], keys: { kr: "ret", us: "ret", etf: "rev", crypto: "rev" } },
     { label: "변동성", words: ["변동성"], keys: ALL4("vol") },
@@ -363,7 +363,7 @@ window.SCFlow = (function () {
   const WANT_LOW = /(낮은|작은|적은|싼|저평가)/;
   const WANT_HIGH = /(높은|많은|큰|좋은)/;
   // 마켓맵 순위 화면의 정렬 방향(고정): high=큰 값이 위, low=작은 값이 위
-  const DIR = { 승률: "high", 상승률: "high", 수익률: "high", 과열도: "high", 시가총액: "high", 매출액: "high", 순이익: "high", 영업이익: "high", ROE: "high", 현금흐름: "high", 거래대금: "high", 배당률: "high", PER: "low", 부채비율: "low", 운용보수: "low", "52주구간": "low" };
+  const DIR = { "10년평균 승률": "high", 상승률: "high", 수익률: "high", 과열도: "high", 시가총액: "high", 매출액: "high", 순이익: "high", 영업이익: "high", ROE: "high", 현금흐름: "high", 거래대금: "high", 배당률: "high", PER: "low", 부채비율: "low", 운용보수: "low", "52주구간": "low" };
   function matchRanking(text) {
     let s = String(text || "").toLowerCase().replace(/[\s?!.,~]/g, "");
     if (!s || s.length > 30) return null;
@@ -537,7 +537,7 @@ window.SCFlow = (function () {
     embed({ view: "info", topic: "winrate" });
     await bot("<b>승률</b> 순위도 바로 볼 수 있어요. 어느 투자처를 볼까요?", t, 500);
     if (!alive(t)) return;
-    const m = RANK_WORDS.find((x) => x.label === "승률");
+    const m = RANK_WORDS.find((x) => x.label === "10년평균 승률");
     const items = ["kr", "us", "etf", "crypto"].filter((k) => m.keys[k]).map((k) => ({ id: k, icon: k, label: MARKET_NAME[k] + " " + labelOf(k, m.keys[k]) + " 순위" }));
     const pick = await choose(items, { cols: 2 });
     if (!alive(t)) return;
