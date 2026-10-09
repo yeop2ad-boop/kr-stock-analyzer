@@ -255,3 +255,10 @@ body {
 .embed-block.capped.overflow .embed-more { display: flex; }
 .embed-block.capped.open .embed-more { position: relative; height: auto; padding: 12px 0; background: var(--card); align-items: center; }
 .fl-ico { display: inline-flex; vertical-align: middle; margin-right: 7px; line-height: 0; } .fl-ico svg { width: 21px; height: 14px; }
+/* 이미 누른 묶음이라도 다시 만들 수 있는(redo) 버튼은 계속 눌린다 */
+.fl-choices.done { pointer-events: auto; }
+.fl-choices.done .fl-btn:not(.redo) { pointer-events: none; }
+.fl-choices.done .fl-btn.redo:not(.on) { pointer-events: auto; cursor: pointer; }
+.fl-choices.done .fl-btn.redo { cursor: pointer; }
+.fl-groups.done { pointer-events: auto; }
+.fl-groups.done .fl-btn.redo { cursor: pointer; }

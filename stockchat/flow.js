@@ -19,6 +19,12 @@ window.SCFlow = (function () {
     crypto: `<svg viewBox="0 0 21 14" width="21" height="14"><circle cx="10.5" cy="7" r="6.6" fill="#f7931a"/><text x="10.6" y="9.9" text-anchor="middle" font-size="9" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif">₿</text></svg>`,
   };
   const iconOf = (k) => (MARK_ICON[k] ? '<span class="fl-ico">' + MARK_ICON[k] + "</span>" : "");
+  // 지나간 버튼을 다시 눌렀을 때: 새 흐름으로 그 항목을 처음부터 만든다
+  const fresh = (fn) => {
+    token++;
+    return fn();
+  };
+
   // ---------- 말풍선·블록 ----------
   const DOTS = '<span class="dots"><span></span><span></span><span></span></span>';
   function scroll() {
@@ -61,8 +67,15 @@ window.SCFlow = (function () {
         b.type = "button";
         b.className = "fl-btn" + (it.accent ? " accent" : "");
         b.innerHTML = (it.mark && !it.icon ? '<span class="fl-mark">' + esc(it.mark) + "</span>" : "") + "<b>" + (it.icon ? iconOf(it.icon) : "") + esc(it.label) + "</b>" + (it.sub ? "<small>" + esc(it.sub) + "</small>" : "");
+        if (it.redo) b.classList.add("redo");
         b.addEventListener("click", () => {
-          if (w.classList.contains("done")) return;
+          if (w.classList.contains("done")) {
+            if (it.redo) {
+              user(it.chat || it.label);
+              it.redo(); // 이미 지나간 버튼도 다시 누르면 그 항목을 새로 만든다
+            }
+            return;
+          }
           w.classList.add("done");
           b.classList.add("on");
           if (!opts.silent) user(it.chat || it.label);
@@ -91,8 +104,15 @@ window.SCFlow = (function () {
           b.type = "button";
           b.className = "fl-btn";
           b.innerHTML = "<b>" + esc(it.label) + "</b>";
+          if (it.redo) b.classList.add("redo");
           b.addEventListener("click", () => {
-            if (wrap.classList.contains("done")) return;
+            if (wrap.classList.contains("done")) {
+              if (it.redo) {
+                user(it.label);
+                it.redo();
+              }
+              return;
+            }
             wrap.classList.add("done");
             b.classList.add("on");
             user(it.label);
@@ -167,8 +187,8 @@ window.SCFlow = (function () {
   }
 
   // ---------- 간편검색 항목(마켓맵 간편검색과 동일) ----------
-  const STOCK_LABEL = { win: "10년평균 승률", ret: "상승률", rev: "매출액", vol: "변동성", rsi: "과열도", ni: "순이익", om: "영업이익", roe: "ROE", cf: "현금흐름", debt: "부채비율", mcap: "시가총액", dv: "거래대금", w52: "52주구간", per: "PER", div: "배당률" };
-  const ASSET_LABEL = { win: "10년평균 승률", ret: "상승률", rev: "수익률", vol: "변동성", rsi: "과열도", div: "배당률", fee: "운용보수", mcap: "규모", aum: "규모", w52: "52주구간" };
+  const STOCK_LABEL = { win: "10년평균 승률", ret: "연평균 상승률", rev: "매출액", vol: "1일 변동성", rsi: "과열도", ni: "순이익", om: "영업이익", roe: "ROE", cf: "현금흐름", debt: "부채비율", mcap: "시가총액", dv: "거래대금", w52: "52주구간", per: "PER", div: "배당률" };
+  const ASSET_LABEL = { win: "10년평균 승률", ret: "연평균 상승률", rev: "수익률", vol: "1일 변동성", rsi: "과열도", div: "배당률", fee: "운용보수", mcap: "규모", aum: "규모", w52: "52주구간" };
   const GROUPS = {
     stock: [
       ["성장 · 추세", ["win", "ret", "rev", "vol", "rsi"]],
@@ -188,6 +208,13 @@ window.SCFlow = (function () {
   const labelOf = (m, k) => (m === "kr" || m === "us" ? STOCK_LABEL[k] : ASSET_LABEL[k]);
   const groupsOf = (m) => (m === "kr" || m === "us" ? GROUPS.stock : GROUPS[m]);
 
+  // 종목 상세 화면 하나를 올린다(지나간 버튼을 다시 눌렀을 때도 사용)
+  async function detailOne(symbol, name, a) {
+    const t = token;
+    await bot(esc(name) + " " + esc(a.label) + " 화면을 가져와요", t, 260);
+    if (alive(t)) embed({ view: "detail", ticker: symbol, sub: a.id });
+  }
+
   // ---------- 종목 → 핵심정보 / 리스크점검 ----------
   async function stockMenu(symbol, name, t, fromRank) {
     const info = await SCData.lookup(symbol);
@@ -200,7 +227,7 @@ window.SCFlow = (function () {
           { id: "sreport", label: "핵심정보", sub: "핵심 5개 지표·순위" },
           isStock && { id: "risk", label: "리스크점검", sub: "위험·주의·양호 점검" },
           { id: "summary", label: "개요", sub: "시세·차트" },
-        ].filter(Boolean),
+        ].filter(Boolean).map((a) => ({ ...a, redo: () => fresh(() => detailOne(symbol, name, a)) })),
         { cols: isStock ? 3 : 2 }
       );
       if (!alive(t)) return;
@@ -283,17 +310,17 @@ window.SCFlow = (function () {
       user("간편검색");
       await bot("어떤 투자처를 찾아볼까요?", t);
       if (!alive(t)) return;
-      market = (await choose(MARKETS.map((m) => ({ ...m, icon: m.id, chat: m.label })), { cols: 1 })).id;
+      market = (await choose(MARKETS.map((m) => ({ ...m, icon: m.id, chat: m.label, redo: () => fresh(() => searchFlow({ market: m.id })) })), { cols: 1 })).id;
     }
     for (;;) {
       if (market === "etf" && !region) {
         await bot("어느 시장의 ETF를 볼까요?", t);
-        region = (await choose([{ id: "kr", icon: "kr", label: "한국 ETF" }, { id: "us", icon: "us", label: "미국 ETF" }], { cols: 2 })).id;
+        region = (await choose([{ id: "kr", icon: "kr", label: "한국 ETF", redo: () => fresh(() => searchFlow({ market: "etf", region: "kr" })) }, { id: "us", icon: "us", label: "미국 ETF", redo: () => fresh(() => searchFlow({ market: "etf", region: "us" })) }], { cols: 2 })).id;
       }
       if (!key) {
         await bot("[" + MARKET_NAME[market] + (region ? " · " + (region === "kr" ? "한국" : "미국") : "") + "] 어떤 순위를 볼까요?", t);
         if (!alive(t)) return;
-        key = (await chooseGrouped(groupsOf(market).map(([title, keys]) => [title, keys.map((k) => ({ id: k, label: labelOf(market, k) }))]))).id;
+        key = (await chooseGrouped(groupsOf(market).map(([title, keys]) => [title, keys.map((k) => ({ id: k, label: labelOf(market, k), redo: () => fresh(() => searchFlow({ market, region, key: k })) }))]))).id;
       }
       for (;;) {
         await bot("[" + MARKET_NAME[market] + "] " + labelOf(market, key) + " 순위를 가져와요", t, 300);
@@ -306,14 +333,14 @@ window.SCFlow = (function () {
         await bot("종목을 누르면 자세히 볼 수 있어요. 다른 순위도 볼까요?", t, 500);
         const same = groupsOf(market).find(([, ks]) => ks.includes(key))[1].filter((k) => k !== key);
         const next = await choose(
-          same.map((k) => ({ id: "k:" + k, label: labelOf(market, k) })).concat([{ id: "market", label: "다른 투자처", accent: true }, { id: "home", label: "처음으로", accent: true }]),
+          same.map((k) => ({ id: "k:" + k, label: labelOf(market, k), redo: () => fresh(() => searchFlow({ market, region, key: k })) })).concat([{ id: "market", label: "다른 투자처", accent: true }, { id: "home", label: "처음으로", accent: true }]),
           { cols: 3, chips: true }
         );
         if (!alive(t)) return;
         if (next.id === "home") return home();
         if (next.id === "market") {
           await bot("어떤 투자처를 찾아볼까요?", t);
-          market = (await choose(MARKETS.map((m) => ({ ...m, icon: m.id, chat: m.label })), { cols: 1 })).id;
+          market = (await choose(MARKETS.map((m) => ({ ...m, icon: m.id, chat: m.label, redo: () => fresh(() => searchFlow({ market: m.id })) })), { cols: 1 })).id;
           region = null;
           key = null;
           break;
@@ -327,9 +354,9 @@ window.SCFlow = (function () {
   const ALL4 = (k) => ({ kr: k, us: k, etf: k, crypto: k });
   const RANK_WORDS = [
     { label: "10년평균 승률", words: ["승률", "10년승률", "10년평균승률"], keys: ALL4("win") },
-    { label: "상승률", words: ["상승률", "연평균상승", "연평균상승률"], keys: ALL4("ret") },
+    { label: "연평균 상승률", words: ["상승률", "연평균상승", "연평균상승률"], keys: ALL4("ret") },
     { label: "수익률", words: ["수익률"], keys: { kr: "ret", us: "ret", etf: "rev", crypto: "rev" } },
-    { label: "변동성", words: ["변동성"], keys: ALL4("vol") },
+    { label: "1일 변동성", words: ["변동성"], keys: ALL4("vol") },
     { label: "과열도", words: ["과열도", "과열", "rsi"], keys: ALL4("rsi") },
     { label: "52주구간", words: ["52주구간", "52주", "52주최저", "52주최고"], keys: ALL4("w52") },
     { label: "시가총액", noMention: ["규모"], words: ["시가총액", "시총", "규모"], keys: { kr: "mcap", us: "mcap", etf: "aum", crypto: "mcap" } },
@@ -363,7 +390,7 @@ window.SCFlow = (function () {
   const WANT_LOW = /(낮은|작은|적은|싼|저평가)/;
   const WANT_HIGH = /(높은|많은|큰|좋은)/;
   // 마켓맵 순위 화면의 정렬 방향(고정): high=큰 값이 위, low=작은 값이 위
-  const DIR = { "10년평균 승률": "high", 상승률: "high", 수익률: "high", 과열도: "high", 시가총액: "high", 매출액: "high", 순이익: "high", 영업이익: "high", ROE: "high", 현금흐름: "high", 거래대금: "high", 배당률: "high", PER: "low", 부채비율: "low", 운용보수: "low", "52주구간": "low" };
+  const DIR = { "10년평균 승률": "high", "연평균 상승률": "high", 수익률: "high", 과열도: "high", 시가총액: "high", 매출액: "high", 순이익: "high", 영업이익: "high", ROE: "high", 현금흐름: "high", 거래대금: "high", 배당률: "high", PER: "low", 부채비율: "low", 운용보수: "low", "52주구간": "low" };
   function matchRanking(text) {
     let s = String(text || "").toLowerCase().replace(/[\s?!.,~]/g, "");
     if (!s || s.length > 30) return null;
@@ -398,7 +425,7 @@ window.SCFlow = (function () {
     if (!alive(t)) return;
     if (m.fear) return fearFlow(t);
     if (m.presetMarket) return searchFlow({ market: m.presetMarket, key: m.keys[m.presetMarket] });
-    const items = ["kr", "us", "etf", "crypto"].filter((k) => m.keys[k]).map((k) => ({ id: k, icon: k, label: MARKET_NAME[k] + " " + labelOf(k, m.keys[k]) + " 순위" }));
+    const items = ["kr", "us", "etf", "crypto"].filter((k) => m.keys[k]).map((k) => ({ id: k, icon: k, label: MARKET_NAME[k] + " " + labelOf(k, m.keys[k]) + " 순위", redo: () => fresh(() => searchFlow({ market: k, key: m.keys[k] })) }));
     const pick = await choose(items, { cols: 2 });
     if (!alive(t)) return;
     return searchFlow({ market: pick.id, key: m.keys[pick.id] });
@@ -410,6 +437,11 @@ window.SCFlow = (function () {
     { id: "us", label: "S&P 공포지수" },
     { id: "crypto", label: "알트코인 시즌지수" },
   ];
+  async function fearOne(i) {
+    const t = token;
+    await bot("<b>" + esc(i.label) + "</b> 화면을 가져와요", t, 260);
+    if (alive(t)) embed({ view: "fear", market: i.id });
+  }
   async function fearFlow(t) {
     const done = new Set();
     for (;;) {
@@ -418,7 +450,7 @@ window.SCFlow = (function () {
       if (!done.size) await bot("어느 지수를 볼까요? (투자시기 점검)", t, 300);
       else await bot("다른 지수도 볼까요?", t, 300);
       if (!alive(t)) return;
-      const pick = await choose(left.concat(done.size ? [{ id: "home", label: "처음으로", accent: true }] : []), { cols: 1 });
+      const pick = await choose(left.map((i) => ({ ...i, redo: () => fresh(() => fearOne(i)) })).concat(done.size ? [{ id: "home", label: "처음으로", accent: true }] : []), { cols: 1 });
       if (!alive(t)) return;
       if (pick.id === "home") return home();
       done.add(pick.id);
@@ -454,7 +486,7 @@ window.SCFlow = (function () {
       await bot(first ? esc(st.name) + " — 더 볼까요?" : "이어서 볼까요?", t, 300);
       first = false;
       if (!alive(t)) return;
-      const pick = await choose(left.concat([{ id: "home", label: "처음으로", accent: true }]), { cols: 1 });
+      const pick = await choose(left.map((i) => ({ ...i, redo: () => fresh(() => (i.id === "rank" ? searchFlow({ market, key: i.key, region }) : detailOne(st.symbol, st.name, { id: i.id, label: i.what }))) })).concat([{ id: "home", label: "처음으로", accent: true }]), { cols: 1 });
       if (!alive(t)) return;
       if (pick.id === "home") return home();
       done.add(pick.id);
@@ -538,7 +570,7 @@ window.SCFlow = (function () {
     await bot("<b>승률</b> 순위도 바로 볼 수 있어요. 어느 투자처를 볼까요?", t, 500);
     if (!alive(t)) return;
     const m = RANK_WORDS.find((x) => x.label === "10년평균 승률");
-    const items = ["kr", "us", "etf", "crypto"].filter((k) => m.keys[k]).map((k) => ({ id: k, icon: k, label: MARKET_NAME[k] + " " + labelOf(k, m.keys[k]) + " 순위" }));
+    const items = ["kr", "us", "etf", "crypto"].filter((k) => m.keys[k]).map((k) => ({ id: k, icon: k, label: MARKET_NAME[k] + " " + labelOf(k, m.keys[k]) + " 순위", redo: () => fresh(() => searchFlow({ market: k, key: m.keys[k] })) }));
     const pick = await choose(items, { cols: 2 });
     if (!alive(t)) return;
     return searchFlow({ market: pick.id, key: m.keys[pick.id] });
@@ -654,7 +686,7 @@ window.SCFlow = (function () {
       else {
         await bot("어느 투자처의 <b>" + esc(sc.label) + "</b>을(를) 볼까요?", t, 360);
         if (!alive(t)) return;
-        const pick = await choose(sc.markets.map((k) => ({ id: k, icon: k, label: MARKET_NAME[k] + " " + sc.label })), { cols: 2 });
+        const pick = await choose(sc.markets.map((k) => ({ id: k, icon: k, label: MARKET_NAME[k] + " " + sc.label, redo: () => fresh(() => screenFlow({ sc, market: k })) })), { cols: 2 });
         if (!alive(t)) return;
         market = pick.id;
       }
@@ -670,7 +702,7 @@ window.SCFlow = (function () {
       const others = sc.markets && sc.markets.length > 1 ? sc.markets.filter((k) => k !== market) : [];
       await bot(sc.markets ? "종목을 누르면 자세히 볼 수 있어요." : "이어서 볼까요?", t, 500);
       const next = await choose(
-        others.map((k) => ({ id: "m:" + k, icon: k, label: MARKET_NAME[k] + " " + sc.label })).concat([{ id: "home", label: "처음으로", accent: true }]),
+        others.map((k) => ({ id: "m:" + k, icon: k, label: MARKET_NAME[k] + " " + sc.label, redo: () => fresh(() => screenFlow({ sc, market: k })) })).concat([{ id: "home", label: "처음으로", accent: true }]),
         { cols: 2, chips: true }
       );
       if (!alive(t)) return;
