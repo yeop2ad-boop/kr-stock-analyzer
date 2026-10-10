@@ -1085,6 +1085,8 @@ window.SCFlow = (function () {
   }
   const fmtMoney = (v, cur) => (v == null || !isFinite(v) ? "—" : cur === "KRW" ? Math.round(v).toLocaleString("ko-KR") + "원" : (cur === "USD" || !cur ? "$" : "") + (Math.abs(v) < 1 ? v.toFixed(3) : v.toFixed(2)));
   const fmtPctSigned = (v) => (v == null || !isFinite(v) ? "—" : (v > 0 ? "+" : "") + v.toFixed(1) + "%");
+  // **굵게** 표시를 <b>로(먼저 이스케이프해서 안전)
+  const boldHtml = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
   const ulHtml = (arr) => (arr && arr.length ? '<ul class="ol-ul">' + arr.map((x) => "<li>" + esc(x) + "</li>").join("") + "</ul>" : "");
 
   async function outlookFlow(f) {
@@ -1119,7 +1121,7 @@ window.SCFlow = (function () {
     if (ctl) ctl.done("전망 정리 완료 — 눌러서 보기");
     if (window.SCUsage && res.usage) window.SCUsage.add(res.usage.tokens, "전망");
     // 요약
-    el.innerHTML = '<div class="ol-h">요약</div><p class="ol-sum">' + esc(res.summary) + "</p>" + (res.numbers && res.numbers.nextEarnings ? '<div class="ol-chip">다음 실적 발표 ' + esc(String(res.numbers.nextEarnings).slice(5).replace("-", "/")) + "</div>" : "");
+    el.innerHTML = (res.headline ? '<div class="ol-head">' + esc(res.headline) + "</div>" : '<div class="ol-h">요약</div>') + '<p class="ol-sum">' + boldHtml(res.summary) + "</p>" + (res.numbers && res.numbers.nextEarnings ? '<div class="ol-chip">다음 실적 발표 ' + esc(String(res.numbers.nextEarnings).slice(5).replace("-", "/")) + "</div>" : "");
     scroll();
     await sleep(500);
     if (!alive(t)) return;
@@ -1213,7 +1215,7 @@ window.SCFlow = (function () {
     el.innerHTML =
       '<div class="ol-h">내 상황에 맞춘 ' + esc(st.name) + " 전망</div>" +
       '<div class="ol-chips">' + chips.map(([k, v]) => '<div class="ol-stat"><small>' + esc(k) + "</small><b>" + esc(v) + "</b></div>").join("") + "</div>" +
-      '<p class="ol-sum">' + esc(res.conclusion) + "</p>" +
+      '<p class="ol-sum">' + boldHtml(res.conclusion) + "</p>" +
       (res.points && res.points.length ? '<div class="ol-tag">내 상황에서 볼 점</div>' + ulHtml(res.points) : "") +
       (res.checks && res.checks.length ? '<div class="ol-tag">앞으로 확인할 것</div>' + ulHtml(res.checks) : "") +
       '<p class="ol-note">*참고용 분석이며 투자 권유가 아닙니다.</p>';

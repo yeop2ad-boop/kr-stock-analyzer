@@ -1906,7 +1906,8 @@ const OUTLOOK_SYSTEM_GENERAL = [
   "당신은 주식을 처음 접하는 사람(주린이)에게 종목의 앞으로 전망을 쉽게 설명해 주는 도우미입니다. 한국어로 답합니다.",
   "입력: JSON(종목명, 티커, 시세·재무·승률 지표, 다음 실적 발표일, 최근 뉴스 제목들).",
   "출력 형식(이 형식만, 다른 말·코드블록 금지):",
-  "요약: (이 종목의 앞으로 흐름에서 가장 중요한 점을 2~3문장으로, 쉬운 말로)",
+  "한줄: (이 종목 전망에서 가장 중요한 내용을 한 줄로, 45자 안팎. 결론이 먼저 보이게)",
+  "요약: (이 종목의 앞으로 흐름에서 가장 중요한 점을 2~3문장으로, 쉬운 말로. 가장 중요한 말 2~3군데를 **이렇게** 별표 두 개로 감싸 굵게 표시)",
   "상황|(최근 상황 한 줄, 60자 이내) — 3줄",
   "상승|(주가가 오를 수 있는 요인 한 줄) — 2~3줄",
   "위험|(주가가 내릴 수 있는 위험 한 줄) — 2~3줄",
@@ -1919,7 +1920,7 @@ const OUTLOOK_SYSTEM_PERSONAL = [
   "당신은 주식을 처음 접하는 사람(주린이)에게, 그 사람의 상황에 맞춰 종목을 어떻게 보면 좋은지 쉽게 알려 주는 도우미입니다. 한국어로 답합니다.",
   "입력: JSON(종목명, 티커, 시세·재무·승률 지표, 다음 실적 발표일, 최근 뉴스 제목들, 이용자 상황과 계산값).",
   "출력 형식(이 형식만, 다른 말·코드블록 금지):",
-  "결론: (이 이용자 상황에서 이 종목을 볼 때 가장 중요한 점 1~2문장)",
+  "결론: (이 이용자 상황에서 이 종목을 볼 때 가장 중요한 점 1~2문장. 핵심 말 1~2군데를 **이렇게** 별표 두 개로 감싸 굵게 표시)",
   "포인트|(상황에 맞는 해석 한 줄) — 3~4줄. 투자 기간에 맞는 볼 거리, 감내 가능한 하락폭과 이 종목의 변동성·52주 낙폭 비교, 보유 단가가 있으면 현재가와의 위치를 다룹니다.",
   "체크|(앞으로 확인하면 좋은 일정·지표 한 줄) — 2~3줄",
   "규칙:",
@@ -1940,12 +1941,13 @@ async function outlookNextEarnings(symbol) {
   }
 }
 function outlookParseLines(text) {
-  const out = { summary: "", conclusion: "", situation: [], upsides: [], risks: [], points: [], checks: [] };
+  const out = { headline: "", summary: "", conclusion: "", situation: [], upsides: [], risks: [], points: [], checks: [] };
   for (const line of String(text || "").split("\n")) {
     const s = line.trim();
     if (!s) continue;
     let m;
-    if ((m = s.match(/^요약\s*[:：]\s*(.+)$/))) out.summary = m[1].trim();
+    if ((m = s.match(/^한줄\s*[:：]\s*(.+)$/))) out.headline = m[1].trim().replace(/\*\*/g, "");
+    else if ((m = s.match(/^요약\s*[:：]\s*(.+)$/))) out.summary = m[1].trim();
     else if ((m = s.match(/^결론\s*[:：]\s*(.+)$/))) out.conclusion = m[1].trim();
     else if ((m = s.match(/^상황\s*\|\s*(.+)$/))) out.situation.push(m[1].trim());
     else if ((m = s.match(/^상승\s*\|\s*(.+)$/))) out.upsides.push(m[1].trim());
@@ -1969,7 +1971,7 @@ async function handleOutlook(request, env, url) {
   const costRaw = parseFloat(url.searchParams.get("cost") || "");
   const cost = Number.isFinite(costRaw) && costRaw > 0 ? costRaw : null;
 
-  const cacheKey = new Request("https://outlook.cache/v1/" + encodeURIComponent(symbol));
+  const cacheKey = new Request("https://outlook.cache/v2/" + encodeURIComponent(symbol));
   const cache = caches.default;
   if (mode === "general") {
     const hit = await cache.match(cacheKey);

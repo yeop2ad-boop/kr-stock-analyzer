@@ -393,3 +393,5 @@ textarea::-webkit-scrollbar-thumb { background: rgba(120, 118, 112, 0.32); borde
 .of-go { width: 100%; margin-top: 12px; border: 0; border-radius: 14px; padding: 14px; font-size: 15px; font-weight: 800; font-family: inherit; color: #fff; background: #1f1e1d; cursor: pointer; }
 .of-go:active { transform: scale(0.99); }
 .of-form.sent { opacity: 0.55; pointer-events: none; }
+.ol-head { font-size: 19px; font-weight: 800; line-height: 1.4; letter-spacing: -0.4px; margin-bottom: 8px; }
+.ol-sum b { font-weight: 800; }
