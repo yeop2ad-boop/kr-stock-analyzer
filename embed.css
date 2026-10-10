@@ -72,3 +72,16 @@ html[data-embed-sub="dividend"] #summaryScoreRow,
 html[data-embed-sub="dividend"] .summary-main,
 html[data-embed-sub="dividend"] #etfHoldingsBlock,
 html[data-embed-sub="dividend"] #tickerHistoricalRow { display: none !important; }
+
+/* 종목 상세 "개요 + 핵심지표" 합본(스톡챗 전망 3번): 개요(주가 차트·기본정보)와 핵심지표 두 영역만 이어서 보여준다 */
+html[data-embed-sub="combo"] [data-summary-subtabpanel="revenue"],
+html[data-embed-sub="combo"] [data-summary-subtabpanel="risk"],
+html[data-embed-sub="combo"] [data-summary-subtabpanel="news"] { display: none !important; }
+/* 종목 상세 "미래예측": 미래예측 그래프만(배당과 같은 방식) */
+html[data-embed-sub="future"] [data-summary-subtabpanel]:not([data-summary-subtabpanel="summary"]) { display: none !important; }
+html[data-embed-sub="future"] .summary-chart-wrap,
+html[data-embed-sub="future"] #summaryChartPeriodNav,
+html[data-embed-sub="future"] #summaryScoreRow,
+html[data-embed-sub="future"] .summary-main,
+html[data-embed-sub="future"] #etfHoldingsBlock,
+html[data-embed-sub="future"] #tickerHistoricalRow { display: none !important; }

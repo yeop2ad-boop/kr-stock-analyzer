@@ -1899,6 +1899,149 @@ async function handleDividends(request, env, url) {
   return resp;
 }
 
+// ---------- GET /outlook?symbol=TSLA&name=테슬라&mode=general|personal — 종목 전망(주린이용 요약) ----------
+// general: 요약 + 최근 상황 3줄 + 상승 요인 + 하락 위험. personal: 이용자의 상황(보유 상태·투자 기간·감내 하락·보유 단가)에 맞춘 결론·포인트·체크.
+// 근거는 시세·재무·승률(aiGetStockData) + 최근 뉴스 제목 + 다음 실적 발표일뿐이고, 목표주가·가격 예측은 하지 않는다. general은 20분 재사용.
+const OUTLOOK_SYSTEM_GENERAL = [
+  "당신은 주식을 처음 접하는 사람(주린이)에게 종목의 앞으로 전망을 쉽게 설명해 주는 도우미입니다. 한국어로 답합니다.",
+  "입력: JSON(종목명, 티커, 시세·재무·승률 지표, 다음 실적 발표일, 최근 뉴스 제목들).",
+  "출력 형식(이 형식만, 다른 말·코드블록 금지):",
+  "요약: (이 종목의 앞으로 흐름에서 가장 중요한 점을 2~3문장으로, 쉬운 말로)",
+  "상황|(최근 상황 한 줄, 60자 이내) — 3줄",
+  "상승|(주가가 오를 수 있는 요인 한 줄) — 2~3줄",
+  "위험|(주가가 내릴 수 있는 위험 한 줄) — 2~3줄",
+  "규칙:",
+  "- 입력에 있는 사실·숫자만 씁니다. 없는 숫자·날짜·원인을 지어내지 않습니다. 모르면 생략합니다.",
+  "- 목표주가·가격 예측·수익 보장·매수/매도 권유는 쓰지 않습니다. '오를 수 있다/내릴 수 있다' 같은 가능성 표현만 씁니다.",
+  "- 전문 용어는 풀어서 씁니다(예: PER은 이익 대비 주가가 비싼 정도). '|' 문자는 내용에 쓰지 않습니다.",
+].join("\n");
+const OUTLOOK_SYSTEM_PERSONAL = [
+  "당신은 주식을 처음 접하는 사람(주린이)에게, 그 사람의 상황에 맞춰 종목을 어떻게 보면 좋은지 쉽게 알려 주는 도우미입니다. 한국어로 답합니다.",
+  "입력: JSON(종목명, 티커, 시세·재무·승률 지표, 다음 실적 발표일, 최근 뉴스 제목들, 이용자 상황과 계산값).",
+  "출력 형식(이 형식만, 다른 말·코드블록 금지):",
+  "결론: (이 이용자 상황에서 이 종목을 볼 때 가장 중요한 점 1~2문장)",
+  "포인트|(상황에 맞는 해석 한 줄) — 3~4줄. 투자 기간에 맞는 볼 거리, 감내 가능한 하락폭과 이 종목의 변동성·52주 낙폭 비교, 보유 단가가 있으면 현재가와의 위치를 다룹니다.",
+  "체크|(앞으로 확인하면 좋은 일정·지표 한 줄) — 2~3줄",
+  "규칙:",
+  "- 입력에 있는 사실·숫자와 계산값만 씁니다. 지어내지 않습니다.",
+  "- 목표주가·가격 예측·수익 보장은 쓰지 않고, '사세요/파세요/더 사야 한다' 같은 매수·매도 지시도 하지 않습니다. 판단 재료만 줍니다.",
+  "- 전문 용어는 풀어서 씁니다. '|' 문자는 내용에 쓰지 않습니다. 마지막에 면책 문구는 따로 쓰지 않습니다(화면이 붙입니다).",
+].join("\n");
+
+async function outlookNextEarnings(symbol) {
+  try {
+    const r = await fetch("https://marketmap.kr/data/earnings-calendar.json", { signal: AbortSignal.timeout(2500) });
+    if (!r.ok) return null;
+    const j = await r.json();
+    const e = (j.us && j.us[symbol]) || (j.kr && j.kr[symbol]);
+    return e && e.next ? e.next : null;
+  } catch {
+    return null;
+  }
+}
+function outlookParseLines(text) {
+  const out = { summary: "", conclusion: "", situation: [], upsides: [], risks: [], points: [], checks: [] };
+  for (const line of String(text || "").split("\n")) {
+    const s = line.trim();
+    if (!s) continue;
+    let m;
+    if ((m = s.match(/^요약\s*[:：]\s*(.+)$/))) out.summary = m[1].trim();
+    else if ((m = s.match(/^결론\s*[:：]\s*(.+)$/))) out.conclusion = m[1].trim();
+    else if ((m = s.match(/^상황\s*\|\s*(.+)$/))) out.situation.push(m[1].trim());
+    else if ((m = s.match(/^상승\s*\|\s*(.+)$/))) out.upsides.push(m[1].trim());
+    else if ((m = s.match(/^위험\s*\|\s*(.+)$/))) out.risks.push(m[1].trim());
+    else if ((m = s.match(/^포인트\s*\|\s*(.+)$/))) out.points.push(m[1].trim());
+    else if ((m = s.match(/^체크\s*\|\s*(.+)$/))) out.checks.push(m[1].trim());
+  }
+  return out;
+}
+async function handleOutlook(request, env, url) {
+  if (!env.ANTHROPIC_API_KEY) return jsonResponse({ error: "AI 기능을 준비 중입니다.", code: "not_configured" }, 503);
+  const symbol = (url.searchParams.get("symbol") || "").trim().toUpperCase().slice(0, 20);
+  const nameIn = (url.searchParams.get("name") || "").trim().slice(0, 40);
+  const mode = url.searchParams.get("mode") === "personal" ? "personal" : "general";
+  if (!symbol) return jsonResponse({ error: "symbol이 필요합니다." }, 400);
+
+  // 이용자 상황(personal)
+  const status = ["holding", "considering", "adding"].includes(url.searchParams.get("status")) ? url.searchParams.get("status") : "holding";
+  const horizon = ["short", "mid", "long"].includes(url.searchParams.get("horizon")) ? url.searchParams.get("horizon") : "mid";
+  const riskPct = Math.min(80, Math.max(5, parseInt(url.searchParams.get("risk") || "25", 10) || 25));
+  const costRaw = parseFloat(url.searchParams.get("cost") || "");
+  const cost = Number.isFinite(costRaw) && costRaw > 0 ? costRaw : null;
+
+  const cacheKey = new Request("https://outlook.cache/v1/" + encodeURIComponent(symbol));
+  const cache = caches.default;
+  if (mode === "general") {
+    const hit = await cache.match(cacheKey);
+    if (hit) return new Response(hit.body, { status: 200, headers: { "Content-Type": "application/json", "X-Cache": "HIT", ...CORS_HEADERS } });
+  }
+
+  const monthAgo = Date.now() / 1000 - 30 * 86400;
+  const [sd, newsAll, nextEarn] = await Promise.all([aiGetStockData(symbol).catch(() => null), fetchNewsForSymbol(symbol, nameIn).catch(() => []), outlookNextEarnings(symbol)]);
+  if (!sd || sd.error) return jsonResponse({ error: (sd && sd.error) || "종목 자료를 가져오지 못했습니다." }, 502);
+  delete sd._card;
+  delete sd.note;
+  const news = (newsAll || [])
+    .filter((n) => n.title && (!n.time || n.time >= monthAgo))
+    .sort((a, b) => (b.time || 0) - (a.time || 0))
+    .slice(0, 6)
+    .map((n) => ({ 제목: n.title, 출처: n.publisher, 날짜: n.time ? new Date(n.time * 1000).toISOString().slice(0, 10) : "" }));
+  const name = nameIn || sd.name || symbol;
+
+  const input = { 종목명: name, 티커: symbol, 지표: sd, 다음실적발표일: nextEarn, 최근뉴스: news };
+  // 계산값(이용자 화면에도 쓰임)
+  const price = sd.price;
+  const numbers = {
+    price,
+    currency: sd.currency,
+    nextEarnings: nextEarn,
+    w52High: sd.week52High,
+    w52Low: sd.week52Low,
+    fromHighPct: sd.week52High && price ? ((price / sd.week52High - 1) * 100) : null,
+    fromLowPct: sd.week52Low && price ? ((price / sd.week52Low - 1) * 100) : null,
+  };
+  if (mode === "personal") {
+    const statusKo = { holding: "이미 보유 중", considering: "신규 매수를 고민 중", adding: "보유 중이며 추가 매수 고민 중" }[status];
+    const horizonKo = { short: "단기(1~3개월)", mid: "중기(6개월~1년)", long: "장기(3년 이상)" }[horizon];
+    numbers.riskPct = riskPct;
+    numbers.toleranceLowPrice = price ? price * (1 - riskPct / 100) : null;
+    numbers.cost = cost;
+    numbers.costPnlPct = cost && price ? ((price / cost - 1) * 100) : null;
+    input.이용자상황 = { 투자상태: statusKo, 투자기간: horizonKo, 감내가능하락폭퍼센트: riskPct, 보유단가: cost, 계산값: { 현재가: price, 감내하락시가격: numbers.toleranceLowPrice, 보유단가대비손익퍼센트: numbers.costPnlPct, 최근1년변동폭_52주고점대비퍼센트: numbers.fromHighPct } };
+  }
+
+  const payload = {
+    model: env.AI_MODEL || AI_DEFAULT_MODEL,
+    max_tokens: 1200,
+    output_config: { effort: "low" },
+    system: [{ type: "text", text: mode === "personal" ? OUTLOOK_SYSTEM_PERSONAL : OUTLOOK_SYSTEM_GENERAL, cache_control: { type: "ephemeral" } }],
+    messages: [{ role: "user", content: JSON.stringify(input) }],
+  };
+  let res;
+  try {
+    res = await aiCallClaude(env, payload, { attempts: 2, timeoutMs: 8500 });
+  } catch (e) {
+    return jsonResponse({ error: "AI 전망이 오래 걸려 중단했습니다.", code: "timeout" }, 504);
+  }
+  if (!res.ok) return jsonResponse({ error: "AI 전망을 만들지 못했습니다.", status: res.status }, 502);
+  const data = await res.json();
+  const text = (data.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n");
+  const p = outlookParseLines(text);
+  if (mode === "general" ? !p.summary : !p.conclusion) return jsonResponse({ error: "AI 전망 형식을 읽지 못했습니다.", stop: data.stop_reason, got: text.slice(0, 200) }, 502);
+  const u = data.usage || {};
+  const out = {
+    symbol,
+    name,
+    mode,
+    ...p,
+    numbers,
+    usage: { tokens: Math.round((u.input_tokens || 0) + (u.output_tokens || 0) + (u.cache_creation_input_tokens || 0) + (u.cache_read_input_tokens || 0) * 0.1) },
+  };
+  const resp = new Response(JSON.stringify(out), { status: 200, headers: { "Content-Type": "application/json", ...(mode === "general" ? { "Cache-Control": "public, max-age=1200" } : {}), ...CORS_HEADERS } });
+  if (mode === "general") await cache.put(cacheKey, resp.clone());
+  return resp;
+}
+
 // GET /stock-card?symbol=005930.KS — AI 없이 종목 카드 데이터(1년 주가·지표·연간 매출/순이익·승률)만 돌려줌. 스톡챗의 버튼 선택 화면용(5분 캐시).
 async function handleStockCard(request) {
   const sym = (new URL(request.url).searchParams.get("symbol") || "").trim().toUpperCase();
@@ -1952,6 +2095,10 @@ export default {
 
     if (requestUrl.pathname === "/dividends") {
       return handleDividends(request, env, requestUrl);
+    }
+
+    if (requestUrl.pathname === "/outlook") {
+      return handleOutlook(request, env, requestUrl);
     }
 
     if (requestUrl.pathname === "/stock-card") {

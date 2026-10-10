@@ -1069,6 +1069,170 @@ window.SCFlow = (function () {
     return offerForStock(f.st, null);
   }
 
+  // ---------- 종목 전망: 요약 → 1.최근 상황 → 2.상승 요인과 하락 위험 → 3.시장 상황과 핵심지표 → 4.내 상황에 맞는 전망 ----------
+  // "테슬라 전망 알려줘"처럼 종목 + '전망'을 물으면 AI 글(요약·상황·상승 요인·하락 위험)을 공시정보 화면(재무 그래프·리스크 점검·개요+핵심지표)과 함께 보여주고,
+  // 아래에 4가지 선택(보유 상태·투자 기간·감내 하락폭·보유 단가)을 받아 "내 상황에 맞는 전망"(+공시정보 미래예측 그래프)을 만든다.
+  async function matchOutlook(text) {
+    const raw = String(text || "").toLowerCase().replace(/[\s?!.,~]/g, "");
+    if (!raw || raw.length > 30 || raw.indexOf("전망") < 0 || BUYSELL.test(raw)) return null;
+    if (/(뜻|의미|설명|이유|원인|왜|비교|vs|랑|하고)/.test(raw)) return null;
+    try {
+      const st = await SCData.findInText(text);
+      return st ? { st } : null;
+    } catch (e) {
+      return null;
+    }
+  }
+  const fmtMoney = (v, cur) => (v == null || !isFinite(v) ? "—" : cur === "KRW" ? Math.round(v).toLocaleString("ko-KR") + "원" : (cur === "USD" || !cur ? "$" : "") + (Math.abs(v) < 1 ? v.toFixed(3) : v.toFixed(2)));
+  const fmtPctSigned = (v) => (v == null || !isFinite(v) ? "—" : (v > 0 ? "+" : "") + v.toFixed(1) + "%");
+  const ulHtml = (arr) => (arr && arr.length ? '<ul class="ol-ul">' + arr.map((x) => "<li>" + esc(x) + "</li>").join("") + "</ul>" : "");
+
+  async function outlookFlow(f) {
+    token++;
+    const t = token;
+    clearIntro();
+    const st = f.st;
+    const info = await SCData.lookup(st.symbol);
+    const isStock = !info || info.market === "kr" || info.market === "us";
+    if (!(await announce(stockHead(st.symbol, st.name, "전망"), t))) return;
+    const req = fetch(WORKER + "/outlook?symbol=" + encodeURIComponent(st.symbol) + "&name=" + encodeURIComponent(st.name), { signal: AbortSignal.timeout(14000) })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+    let ctl = null;
+    let timer = null;
+    const t0 = Date.now();
+    const { el, res } = await botWhile(req, t, (bubble) => {
+      ctl = addMark(bubble, "전망 정리");
+      ctl.set(0, "전망을 정리하는 중");
+      timer = setInterval(() => ctl && ctl.set(Math.min(92, Math.round(((Date.now() - t0) / 10000) * 92)), "전망을 정리하는 중"), 200);
+    });
+    clearInterval(timer);
+    if (!el) {
+      if (ctl) ctl.remove();
+      return;
+    }
+    if (!res || !res.summary) {
+      if (ctl) ctl.remove();
+      el.textContent = "전망 정리가 오래 걸리고 있어요. 잠시 후 다시 물어봐 주세요.";
+      return;
+    }
+    if (ctl) ctl.done("전망 정리 완료 — 눌러서 보기");
+    if (window.SCUsage && res.usage) window.SCUsage.add(res.usage.tokens, "전망");
+    // 요약
+    el.innerHTML = '<div class="ol-h">요약</div><p class="ol-sum">' + esc(res.summary) + "</p>" + (res.numbers && res.numbers.nextEarnings ? '<div class="ol-chip">다음 실적 발표 ' + esc(String(res.numbers.nextEarnings).slice(5).replace("-", "/")) + "</div>" : "");
+    scroll();
+    await sleep(500);
+    if (!alive(t)) return;
+    // 1. 최근 상황 (+ 공시정보 재무 그래프)
+    await bot('<div class="ol-h">1. 최근 ' + esc(st.name) + " 상황</div>" + ulHtml(res.situation), t, 350);
+    if (!alive(t)) return;
+    if (isStock) embed({ view: "detail", ticker: st.symbol, sub: "revenue" });
+    await sleep(500);
+    // 2. 상승 요인과 하락 위험 (+ 리스크 점검)
+    await bot('<div class="ol-h">2. 주가 상승 요인과 하락 위험</div><div class="ol-tag up">상승 요인</div>' + ulHtml(res.upsides) + '<div class="ol-tag down">하락 위험</div>' + ulHtml(res.risks), t, 350);
+    if (!alive(t)) return;
+    if (isStock) embed({ view: "detail", ticker: st.symbol, sub: "risk" });
+    await sleep(500);
+    // 3. 시장 상황과 핵심지표 (공시정보 개요 + 핵심지표)
+    await bot('<div class="ol-h">3. 시장 상황과 핵심지표</div><p class="ol-sub">주가 흐름과 기본 정보(개요), 그리고 핵심 5가지 지표입니다.</p>', t, 350);
+    if (!alive(t)) return;
+    embed({ view: "detail", ticker: st.symbol, sub: "combo" });
+    await sleep(600);
+    // 4. 내 상황에 맞는 전망
+    outlookForm(st, t);
+  }
+
+  // ChatGPT 형식의 4가지 선택 → "내 상황에 맞는 ○○ 전망 보기"
+  let outlookFormSeq = 0;
+  async function outlookForm(st, t) {
+    const uid = "of" + ++outlookFormSeq;
+    const grp = (title, key, items, def) =>
+      '<div class="of-g"><div class="of-t">' + esc(title) + "</div>" +
+      items.map(([v, l]) => '<label class="of-r"><input type="radio" name="' + uid + "-" + key + '" value="' + v + '"' + (v === def ? " checked" : "") + '><i class="of-dot"></i><span>' + esc(l) + "</span></label>").join("") +
+      "</div>";
+    const html =
+      '<div class="ol-h">4. 내 상황에 맞춰 더 구체적으로 볼까요?</div><p class="ol-sub">투자 기간과 보유 여부에 따라 ' + esc(st.name) + " 전망은 크게 달라져요.</p>" +
+      '<div class="of-form" id="' + uid + '">' +
+      grp("1. 현재 투자 상태", "status", [["holding", "이미 보유 중"], ["considering", "지금 신규 매수를 고민 중"], ["adding", "보유 중이며 추가 매수 고민 중"]], "holding") +
+      grp("2. 투자 기간", "horizon", [["short", "단기 (1~3개월)"], ["mid", "중기 (6개월~1년)"], ["long", "장기 (3년 이상)"]], "mid") +
+      grp("3. 감내할 수 있는 주가 하락 수준", "risk", [["10", "10% 안팎의 하락도 부담"], ["25", "20~30% 조정까지 감내 가능"], ["50", "큰 변동을 감수하고 장기 성장에 투자"]], "25") +
+      '<div class="of-g"><div class="of-t">4. 현재 보유 단가 (선택)</div><input class="of-cost" type="text" inputmode="decimal" placeholder="예: 350달러 또는 480,000원" autocomplete="off"></div>' +
+      '<button type="button" class="of-go">내 상황에 맞는 ' + esc(st.name) + " 전망 보기</button></div>";
+    const el = await bot(html, t, 400);
+    if (!el) return;
+    const form = el.querySelector(".of-form");
+    form.querySelector(".of-go").addEventListener("click", () => {
+      if (form.classList.contains("sent")) return;
+      const pick = (k) => (form.querySelector('input[name="' + uid + "-" + k + '"]:checked') || {}).value;
+      const costTxt = form.querySelector(".of-cost").value.trim();
+      const cost = parseFloat(costTxt.replace(/[^0-9.]/g, ""));
+      const sel = { status: pick("status"), horizon: pick("horizon"), risk: pick("risk"), cost: isFinite(cost) && cost > 0 ? cost : null, costTxt };
+      form.classList.add("sent");
+      form.querySelectorAll("input,button").forEach((x) => (x.disabled = true));
+      const L = { holding: "이미 보유 중", considering: "신규 매수 고민 중", adding: "추가 매수 고민 중", short: "단기", mid: "중기", long: "장기", 10: "10% 안팎 하락도 부담", 25: "20~30% 감내", 50: "큰 변동 감수" };
+      user([L[sel.status], L[sel.horizon], L[sel.risk], sel.cost ? "보유 단가 " + costTxt : null].filter(Boolean).join(" · "));
+      outlookPersonal(st, sel);
+    });
+  }
+
+  async function outlookPersonal(st, sel) {
+    token++;
+    const t = token;
+    if (!(await announce("<b>" + esc(st.name) + "</b> — 공시정보 투자전망을 내 상황에 맞춰 정리해서 가져와요", t))) return;
+    const qs = "?symbol=" + encodeURIComponent(st.symbol) + "&name=" + encodeURIComponent(st.name) + "&mode=personal&status=" + sel.status + "&horizon=" + sel.horizon + "&risk=" + sel.risk + (sel.cost ? "&cost=" + sel.cost : "");
+    const req = fetch(WORKER + "/outlook" + qs, { signal: AbortSignal.timeout(14000) })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+    let ctl = null;
+    let timer = null;
+    const t0 = Date.now();
+    const { el, res } = await botWhile(req, t, (bubble) => {
+      ctl = addMark(bubble, "내 전망");
+      ctl.set(0, "내 상황에 맞춰 정리하는 중");
+      timer = setInterval(() => ctl && ctl.set(Math.min(92, Math.round(((Date.now() - t0) / 10000) * 92)), "내 상황에 맞춰 정리하는 중"), 200);
+    });
+    clearInterval(timer);
+    if (!el) {
+      if (ctl) ctl.remove();
+      return;
+    }
+    if (!res || !res.conclusion) {
+      if (ctl) ctl.remove();
+      el.textContent = "내 상황에 맞춘 전망이 오래 걸리고 있어요. 잠시 후 다시 눌러 주세요.";
+      return;
+    }
+    if (ctl) ctl.done("내 전망 완료 — 눌러서 보기");
+    if (window.SCUsage && res.usage) window.SCUsage.add(res.usage.tokens, "내 전망");
+    const n = res.numbers || {};
+    const chips = [
+      ["현재가", fmtMoney(n.price, n.currency)],
+      n.cost ? ["내 단가 대비", fmtPctSigned(n.costPnlPct)] : null,
+      ["감내 하락 시 가격", fmtMoney(n.toleranceLowPrice, n.currency) + " (-" + n.riskPct + "%)"],
+      n.fromHighPct != null ? ["52주 고점 대비", fmtPctSigned(n.fromHighPct)] : null,
+    ].filter(Boolean);
+    el.innerHTML =
+      '<div class="ol-h">내 상황에 맞춘 ' + esc(st.name) + " 전망</div>" +
+      '<div class="ol-chips">' + chips.map(([k, v]) => '<div class="ol-stat"><small>' + esc(k) + "</small><b>" + esc(v) + "</b></div>").join("") + "</div>" +
+      '<p class="ol-sum">' + esc(res.conclusion) + "</p>" +
+      (res.points && res.points.length ? '<div class="ol-tag">내 상황에서 볼 점</div>' + ulHtml(res.points) : "") +
+      (res.checks && res.checks.length ? '<div class="ol-tag">앞으로 확인할 것</div>' + ulHtml(res.checks) : "") +
+      '<p class="ol-note">*참고용 분석이며 투자 권유가 아닙니다.</p>';
+    scroll();
+    await sleep(500);
+    if (!alive(t)) return;
+    if (await announce("공시정보 <b>미래예측</b>(과거 4년 같은 시기 흐름)도 함께 가져와요", t)) embed({ view: "detail", ticker: st.symbol, sub: "future" });
+    await sleep(400);
+    return offerForStock(st, null);
+  }
+
+  // AI 답변 앞에 붙던 AI 카드 대신, 공시정보의 종목 개요(주가 차트·기본정보)를 그대로 보여준다(beforeEl 앞에 끼워 넣음)
+  function showOverview(card, beforeEl) {
+    if (!card || !card.symbol) return null;
+    const em = embed({ view: "detail", ticker: card.symbol, sub: "summary" });
+    if (beforeEl && em && em.wrap) listEl().insertBefore(em.wrap, beforeEl);
+    return em;
+  }
+
   // ---------- 진입 ----------
   function home() {
     token++;
@@ -1085,5 +1249,5 @@ window.SCFlow = (function () {
     marks.slice().forEach(removeMark);
     token++;
   }
-  return { matchFullView, fullViewNow, matchScreen, screenFlow, matchStockAction, stockActionShow, start, reset, home, matchRanking, findMention, rankFromText, offerForStock, matchBuySell, buySellSummary, matchExplain, explainShow };
+  return { matchOutlook, outlookFlow, showOverview, matchFullView, fullViewNow, matchScreen, screenFlow, matchStockAction, stockActionShow, start, reset, home, matchRanking, findMention, rankFromText, offerForStock, matchBuySell, buySellSummary, matchExplain, explainShow };
 })();

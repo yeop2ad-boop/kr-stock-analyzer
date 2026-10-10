@@ -147,7 +147,6 @@
       listEl.appendChild(intro);
     }
     history.forEach((m) => {
-      if (m.role === "assistant" && m.cards && m.cards.length) addCards(m.cards);
       bubble(m.role, m.role === "user" ? esc(m.content) : render(m.content));
     });
   }
@@ -224,6 +223,17 @@
       return;
     }
     // "삼성전자 뉴스/리스크/재무제표/차트"처럼 종목 + 하위 항목: AI 없이 해당 마켓맵 화면 바로
+    // "테슬라 전망 알려줘": 요약 → 1.최근 상황 → 2.상승 요인·하락 위험 → 3.개요+핵심지표 → 4.내 상황에 맞는 전망
+    const ol = window.SCFlow ? await window.SCFlow.matchOutlook(text) : null;
+    if (ol) {
+      inputEl.value = "";
+      grow();
+      const introEl5 = listEl.querySelector(".intro");
+      if (introEl5) introEl5.remove();
+      bubble("user", esc(text));
+      window.SCFlow.outlookFlow(ol);
+      return;
+    }
     const sa = window.SCFlow ? await window.SCFlow.matchStockAction(text) : null;
     if (sa) {
       inputEl.value = "";
@@ -285,7 +295,7 @@
         const cards = Array.isArray(data.cards) ? data.cards : [];
         history.push({ role: "assistant", content: data.reply, cards });
         save();
-        addCards(cards, pending);
+        if (cards.length && window.SCFlow) window.SCFlow.showOverview(cards[0], pending); // AI가 만든 카드 대신 공시정보 개요(주가 차트·기본정보)
         await reveal(pending, data.reply);
         // 질문에 순위 항목 이름(예: 상승률)이 들어 있으면 답변 뒤에 투자처별 순위 버튼을 이어서 보여줌
         const mention = window.SCFlow && window.SCFlow.findMention(text);

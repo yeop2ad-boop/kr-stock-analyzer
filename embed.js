@@ -180,20 +180,21 @@
         openSReportRank(q.get("item"), market === "etf" || market === "crypto" ? market : "stocks", market === "kr" ? "kr" : "us");
       } else if (view === "detail") {
         navigateToTicker(q.get("ticker"), { push: false });
-        if (q.get("sub") === "dividend") {
-          // 배당 내역은 상세 화면이 그려진 뒤(배당 자료가 와서 버튼이 나타난 뒤) 열어 준다. 화면이 다시 그려지며 닫히는 경우가 있어
-          // 20초 동안은 닫혀 있으면 다시 열어 준다. 끝내 버튼이 안 나오면 배당이 없는 종목으로 알린다.
+        var autoOpen = { dividend: ["tickerDividendToggleBtn", "dividendInlineWrap"], future: ["tickerFutureToggleBtn", "futureInlineWrap"] }[q.get("sub")];
+        if (autoOpen) {
+          // 배당·미래예측은 상세 화면이 그려진 뒤(버튼이 나타난 뒤) 버튼을 대신 눌러 열어 준다. 화면이 다시 그려지며 닫히는 경우가 있어
+          // 20초 동안은 닫혀 있으면 다시 열어 준다. 끝내 버튼이 안 나오면 해당 내용이 없는 종목으로 알린다.
           var tries = 0;
           var seenBtn = false;
-          var openDiv = setInterval(function () {
-            var b = document.getElementById("tickerDividendToggleBtn");
-            var wrap = document.getElementById("dividendInlineWrap");
+          var openIt = setInterval(function () {
+            var b = document.getElementById(autoOpen[0]);
+            var wrap = document.getElementById(autoOpen[1]);
             if (b && b.style.display !== "none") {
               seenBtn = true;
               if (wrap && wrap.style.display === "none") b.click();
             }
             if (++tries > 80) {
-              clearInterval(openDiv);
+              clearInterval(openIt);
               if (!seenBtn) post({ type: "nodividend" });
             }
           }, 250);
