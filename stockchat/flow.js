@@ -1123,20 +1123,20 @@ window.SCFlow = (function () {
     scroll();
     await sleep(500);
     if (!alive(t)) return;
-    // 1. 최근 상황 (+ 공시정보 재무 그래프)
-    await bot('<div class="ol-h">1. 최근 ' + esc(st.name) + " 상황</div>" + ulHtml(res.situation), t, 350);
+    // 1. 시장 상황과 핵심지표 (공시정보 개요 + 핵심지표)
+    await bot('<div class="ol-h">1. 시장 상황과 핵심지표</div><p class="ol-sub">주가 흐름과 기본 정보(개요), 그리고 핵심 5가지 지표입니다.</p>', t, 350);
+    if (!alive(t)) return;
+    embed({ view: "detail", ticker: st.symbol, sub: "combo" });
+    await sleep(500);
+    // 2. 최근 상황 (+ 공시정보 재무 그래프)
+    await bot('<div class="ol-h">2. 최근 ' + esc(st.name) + " 상황</div>" + ulHtml(res.situation), t, 350);
     if (!alive(t)) return;
     if (isStock) embed({ view: "detail", ticker: st.symbol, sub: "revenue" });
     await sleep(500);
-    // 2. 상승 요인과 하락 위험 (+ 리스크 점검)
-    await bot('<div class="ol-h">2. 주가 상승 요인과 하락 위험</div><div class="ol-tag up">상승 요인</div>' + ulHtml(res.upsides) + '<div class="ol-tag down">하락 위험</div>' + ulHtml(res.risks), t, 350);
+    // 3. 상승 요인과 하락 위험 (+ 리스크 점검)
+    await bot('<div class="ol-h">3. 주가 상승 요인과 하락 위험</div><div class="ol-tag up">상승 요인</div>' + ulHtml(res.upsides) + '<div class="ol-tag down">하락 위험</div>' + ulHtml(res.risks), t, 350);
     if (!alive(t)) return;
     if (isStock) embed({ view: "detail", ticker: st.symbol, sub: "risk" });
-    await sleep(500);
-    // 3. 시장 상황과 핵심지표 (공시정보 개요 + 핵심지표)
-    await bot('<div class="ol-h">3. 시장 상황과 핵심지표</div><p class="ol-sub">주가 흐름과 기본 정보(개요), 그리고 핵심 5가지 지표입니다.</p>', t, 350);
-    if (!alive(t)) return;
-    embed({ view: "detail", ticker: st.symbol, sub: "combo" });
     await sleep(600);
     // 4. 내 상황에 맞는 전망
     outlookForm(st, t);
