@@ -7875,6 +7875,7 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     futureInlineWrap.style.display = "block";
     futureInlineWrap.classList.add("section-expanded");
     futureToggleBtn.classList.add("active");
+    refitFutureChart(); // 보이는 폭에 맞춰 스크롤 없이 한눈에
     scrollChartToRight(el("futureChartContainer")); // 이미 그려져 있던 경우에도 오른쪽 끝부터
     if (!futureLoaded) {
       futureLoaded = true;
@@ -19179,7 +19180,7 @@ bindTrend(trendButtons.krEtf, runTrendKrEtf);
 const FUTURE_YEARS_BACK = 4;
 const FUTURE_MONTH_NAMES_KO = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
 // 흰 배경(2026-09-10 사용자 요청)에서 보이도록 과거 연도 선은 옅은 회색 → 중간 회색 계열로
-const FUTURE_LINE_COLORS = ["#aeb5c4", "#8f97a9", "#727b8f", "#575f73"];
+const FUTURE_LINE_COLORS = ["#d3d7de", "#cdd1d9", "#c7ccd5", "#c1c6d0"]; // 과거 연도선: 흰색에 가까운 연한 회색(예상 빨간 점선이 돋보이게)
 
 function addMonths(date, months) {
   const d = new Date(date.getTime());
@@ -19707,21 +19708,56 @@ summaryChartTypeBtn.addEventListener("click", () => {
   renderSummaryChartPairs(summaryChartCurrentPairs, summaryChartCurrentPeriod, summaryChartCurrentSymbol);
 });
 
-function buildFutureChartSvg(data) {
-  const W = 780,
-    H = 470;
-  const ML = 44,
-    MR = 132, // "예상" 아래 예상가($XX.XX(+YY%)) 줄이 길어져도(모바일에서 잘리지 않도록) 넉넉히 확보
-    MT = 22,
-    MB = 56; // (현재) 아래 오늘 기준 현재가를 한 줄 더 넣을 공간
+function buildFutureChartSvg(data, availWidth) {
+  // 2026-10-10 사용자 요청: 미래예측은 "향후 6개월"만, 현재 시점을 0%의 중심점(출발점)으로 잡아 스크롤 없이 한눈에 보이게.
+  //  · 가로: 지금(왼쪽 끝) → 6개월 뒤(오른쪽 끝)   · 세로: 현재 대비 변동률(현재 = 0%)
+  //  · 회색선: 과거 같은 시기(향후 6개월) 흐름을 현재 기준으로 다시 맞춘 것   · 빨간 점선: 과거 평균 기울기로 추정한 예상
+  // 데이터는 "6개월 전 ~ 6개월 뒤" 12개월 창(frac 0~1, 현재 = 0.5)이라, 현재(0.5) 값으로 나눠 다시 맞춘다.
+  const wide = !availWidth || availWidth >= 560;
+  const W = availWidth ? Math.min(780, Math.max(280, Math.round(availWidth))) : 360;
+  const H = wide ? Math.round(W * 0.56) : Math.round(W * 0.92);
+  const FS = wide ? 11 : 11; // 보조 글자
+  const FSB = wide ? 12 : 12; // 강조 글자
+  const ML = 40,
+    MR = wide ? 120 : 84, // 오른쪽 끝의 "예상 / 예상가(±%)" 라벨 자리
+    MT = 16,
+    MB = 54; // 아래: 월 라벨 + (현재) + 현재가
   const PW = W - ML - MR;
   const PH = H - MT - MB;
 
-  const allPct = [];
-  data.historicalBuckets.forEach((s) => s.points.forEach((p) => allPct.push(p.pct)));
-  data.currentBucket.points.forEach((p) => allPct.push(p.pct));
-  allPct.push(data.forecast.endPct);
+  // 12개월 창의 어느 지점(frac)에서의 값(pct)을 선형 보간
+  const valueAt = (pts, f) => {
+    if (!pts || !pts.length) return null;
+    let prev = pts[0];
+    for (let k = 0; k < pts.length; k++) {
+      const p = pts[k];
+      if (p.frac >= f) {
+        if (k === 0 || p.frac === f) return p.pct;
+        const span = p.frac - prev.frac || 1;
+        return prev.pct + ((p.pct - prev.pct) * (f - prev.frac)) / span;
+      }
+      prev = p;
+    }
+    return pts[pts.length - 1].pct;
+  };
+  // 창 시작 대비 %(pct)를 "현재(base) 대비 %"로
+  const rebase = (pct, base) => ((100 + pct) / (100 + base) - 1) * 100;
+  const rebasedSeries = (pts) => {
+    const base = valueAt(pts, 0.5);
+    if (base === null) return null;
+    const out = [{ frac: 0, pct: 0 }];
+    pts.forEach((p) => {
+      if (p.frac > 0.5) out.push({ frac: (p.frac - 0.5) * 2, pct: rebase(p.pct, base) });
+    });
+    return out.length > 1 ? out : null;
+  };
 
+  const hist = data.historicalBuckets.map((s) => ({ year: s.year, pts: rebasedSeries(s.points) })).filter((s) => s.pts);
+  const curBase = valueAt(data.currentBucket.points, 0.5) ?? data.currentBucket.points[data.currentBucket.points.length - 1].pct;
+  const fEnd = rebase(data.forecast.endPct, curBase);
+
+  const allPct = [0, fEnd];
+  hist.forEach((s) => s.pts.forEach((p) => allPct.push(p.pct)));
   const { lo, hi, step } = niceAxisBounds(Math.min(...allPct), Math.max(...allPct));
   const xFn = (frac) => ML + frac * PW;
   const yFn = (val) => MT + (1 - (val - lo) / (hi - lo)) * PH;
@@ -19729,53 +19765,52 @@ function buildFutureChartSvg(data) {
   let gridSvg = "";
   for (let v = Math.ceil(lo / step) * step; v <= hi + 0.001; v += step) {
     const y = yFn(v);
-    const emphasize = Math.abs(v) < 0.001;
-    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${ML + PW}" y2="${y.toFixed(1)}" stroke="${emphasize ? "#9aa1b2" : "#e6e8ee"}" stroke-width="${emphasize ? 1.4 : 1}" />`;
-    gridSvg += `<text x="${ML - 8}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="#6b7280">${v > 0 ? "+" : ""}${Math.round(v)}%</text>`;
+    const zero = Math.abs(v) < 0.001;
+    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${ML + PW}" y2="${y.toFixed(1)}" stroke="${zero ? "#e08a00" : "#e6e8ee"}" stroke-width="${zero ? 1.6 : 1}" ${zero ? 'stroke-dasharray="5,4"' : ""} />`;
+    gridSvg += `<text x="${ML - 6}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="${FS}" fill="${zero ? "#e08a00" : "#6b7280"}" font-weight="${zero ? "700" : "400"}">${v > 0 ? "+" : ""}${Math.round(v)}%</text>`;
   }
 
+  // 가로축: 지금 → +6개월(월 라벨). 좁으면 1개월 건너 표시
   let axisSvg = "";
-  for (let m = 0; m <= 12; m++) {
-    const frac = m / 12;
-    const x = xFn(frac);
-    const labelDate = addMonths(data.axisMonthStart, m);
-    const isNow = m === 6;
-    axisSvg += `<line x1="${x.toFixed(1)}" y1="${MT}" x2="${x.toFixed(1)}" y2="${MT + PH}" stroke="${isNow ? "#e08a00" : "#eceef3"}" stroke-width="${isNow ? 1.6 : 1}" ${isNow ? "" : 'stroke-dasharray="2,3"'} />`;
-    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 16).toFixed(1)}" text-anchor="middle" font-size="11" fill="${isNow ? "#e08a00" : "#6b7280"}" font-weight="${isNow ? "700" : "400"}">${FUTURE_MONTH_NAMES_KO[labelDate.getMonth()]}</text>`;
+  for (let m = 0; m <= 6; m++) {
+    const x = xFn(m / 6);
+    const labelDate = addMonths(data.axisMonthStart, 6 + m);
+    const isNow = m === 0;
+    axisSvg += `<line x1="${x.toFixed(1)}" y1="${MT}" x2="${x.toFixed(1)}" y2="${MT + PH}" stroke="${isNow ? "#e08a00" : "#eceef3"}" stroke-width="${isNow ? 1.8 : 1}" ${isNow ? "" : 'stroke-dasharray="2,3"'} />`;
+    if (!wide && m % 2 === 1 && m !== 6) continue;
+    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 16).toFixed(1)}" text-anchor="${isNow ? "start" : "middle"}" font-size="${FS}" fill="${isNow ? "#e08a00" : "#6b7280"}" font-weight="${isNow ? "700" : "400"}">${FUTURE_MONTH_NAMES_KO[labelDate.getMonth()]}</text>`;
   }
-  axisSvg += `<text x="${xFn(0.5).toFixed(1)}" y="${(MT + PH + 32).toFixed(1)}" text-anchor="middle" font-size="11" fill="#e08a00" font-weight="700">(현재)</text>`;
+  axisSvg += `<text x="${ML}" y="${(MT + PH + 32).toFixed(1)}" text-anchor="start" font-size="${FS}" fill="#e08a00" font-weight="700">(현재)</text>`;
   if (data.currentPrice !== null && data.currentPrice !== undefined) {
-    axisSvg += `<text x="${xFn(0.5).toFixed(1)}" y="${(MT + PH + 48).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="#e08a00">${escapeHtml(fmtPriceFull(data.currentPrice, data.currency))}</text>`;
+    axisSvg += `<text x="${ML}" y="${(MT + PH + 48).toFixed(1)}" text-anchor="start" font-size="${FSB}" font-weight="800" fill="#e08a00">${escapeHtml(fmtPriceFull(data.currentPrice, data.currency))}</text>`;
   }
 
   let linesSvg = "";
-  data.historicalBuckets.forEach((s, i) => {
-    const color = FUTURE_LINE_COLORS[i % FUTURE_LINE_COLORS.length];
-    linesSvg += `<path d="${pathFromPoints(s.points, xFn, yFn)}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" />`;
-    const last = s.points[s.points.length - 1];
-    linesSvg += `<text x="${(xFn(last.frac) + 6).toFixed(1)}" y="${(yFn(last.pct) + 4).toFixed(1)}" font-size="12" font-weight="700" fill="${color}">${String(s.year).slice(2)}</text>`;
+  hist.forEach((s, k) => {
+    const color = FUTURE_LINE_COLORS[k % FUTURE_LINE_COLORS.length];
+    linesSvg += `<path d="${pathFromPoints(s.pts, xFn, yFn)}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" />`;
+    const last = s.pts[s.pts.length - 1];
+    const ly = yFn(last.pct);
+    linesSvg += `<text x="${(xFn(last.frac) + 5).toFixed(1)}" y="${(ly + 4).toFixed(1)}" font-size="${FSB}" font-weight="700" fill="#9aa1ad">${String(s.year).slice(2)}</text>`;
   });
 
-  const curPoints = data.currentBucket.points;
-  linesSvg += `<path d="${pathFromPoints(curPoints, xFn, yFn)}" fill="none" stroke="#e5342f" stroke-width="2.6" stroke-linejoin="round" />`;
-
-  const lastReal = curPoints[curPoints.length - 1];
-  const fx0 = xFn(lastReal.frac),
-    fy0 = yFn(lastReal.pct);
+  // 예상(빨간 점선): 현재(0%) → 6개월 뒤 예상
   const fx1 = xFn(1),
-    fy1 = yFn(data.forecast.endPct);
-  linesSvg += `<line x1="${fx0.toFixed(1)}" y1="${fy0.toFixed(1)}" x2="${fx1.toFixed(1)}" y2="${fy1.toFixed(1)}" stroke="#e5342f" stroke-width="2.6" stroke-dasharray="7,6" stroke-linecap="round" />`;
-  linesSvg += `<circle cx="${fx0.toFixed(1)}" cy="${fy0.toFixed(1)}" r="3.2" fill="#e5342f" />`;
-  linesSvg += `<text x="${(fx1 + 6).toFixed(1)}" y="${(fy1 + 4).toFixed(1)}" font-size="12" font-weight="700" fill="#e5342f">예상</text>`;
+    fy1 = yFn(fEnd),
+    fx0 = xFn(0),
+    fy0 = yFn(0);
+  linesSvg += `<line x1="${fx0.toFixed(1)}" y1="${fy0.toFixed(1)}" x2="${fx1.toFixed(1)}" y2="${fy1.toFixed(1)}" stroke="#e5342f" stroke-width="3" stroke-dasharray="7,6" stroke-linecap="round" />`;
+  linesSvg += `<circle cx="${fx0.toFixed(1)}" cy="${fy0.toFixed(1)}" r="4.5" fill="#e08a00" stroke="#fff" stroke-width="1.5" />`;
+  linesSvg += `<circle cx="${fx1.toFixed(1)}" cy="${fy1.toFixed(1)}" r="3.6" fill="#e5342f" />`;
+  linesSvg += `<text x="${(fx1 + 6).toFixed(1)}" y="${(fy1 - 3).toFixed(1)}" font-size="${FSB}" font-weight="800" fill="#e5342f" stroke="#fff" stroke-width="3" paint-order="stroke">예상</text>`;
   if (data.forecast.price !== null && data.forecast.price !== undefined) {
-    // 괄호 안 퍼센트는 y축 기준(6개월 전 대비)이 아니라 "오늘 현재가 대비 예상가"의 실제 변동률이어야
-    // 달러 표기($XX.XX)와 퍼센트가 서로 어긋나 보이지 않음(예: 오늘보다 비싸졌는데 마이너스로 보이는 문제 방지)
-    const pctFromToday = data.currentPrice ? (data.forecast.price / data.currentPrice - 1) * 100 : data.forecast.endPct;
+    const pctFromToday = data.currentPrice ? (data.forecast.price / data.currentPrice - 1) * 100 : fEnd;
     const pctSign = pctFromToday >= 0 ? "+" : "";
-    linesSvg += `<text x="${(fx1 + 6).toFixed(1)}" y="${(fy1 + 18).toFixed(1)}" font-size="11" font-weight="700" fill="#e5342f">${escapeHtml(fmtPriceFull(data.forecast.price, data.currency))}(${pctSign}${pctFromToday.toFixed(1)}%)</text>`;
+    linesSvg += `<text x="${(fx1 + 6).toFixed(1)}" y="${(fy1 + 12).toFixed(1)}" font-size="${FS}" font-weight="700" fill="#e5342f" stroke="#fff" stroke-width="3" paint-order="stroke">${escapeHtml(fmtPriceFull(data.forecast.price, data.currency))}</text>`;
+    linesSvg += `<text x="${(fx1 + 6).toFixed(1)}" y="${(fy1 + 26).toFixed(1)}" font-size="${FS}" font-weight="700" fill="#e5342f" stroke="#fff" stroke-width="3" paint-order="stroke">(${pctSign}${pctFromToday.toFixed(1)}%)</text>`;
   }
 
-  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHtml(data.ticker)} 미래예측 차트">
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHtml(data.ticker)} 향후 6개월 미래예측 차트">
     <rect x="0" y="0" width="${W}" height="${H}" fill="#fff" />
     ${gridSvg}
     ${axisSvg}
@@ -19783,18 +19818,38 @@ function buildFutureChartSvg(data) {
   </svg>`;
 }
 
+// 미래예측 차트를 보이는 폭에 맞춰 다시 그린다(미리 숨겨진 상태에서 그려지면 폭을 모르기 때문) — 펼칠 때·화면 폭이 바뀔 때 호출
+let futureChartLastData = null;
+let futureChartLastWidth = -1;
+function refitFutureChart() {
+  const box = el("futureChartContainer");
+  if (!futureChartLastData || !box) return;
+  const w = box.clientWidth;
+  const svg = box.querySelector("svg");
+  const drawn = svg ? parseFloat((svg.getAttribute("viewBox") || "0 0 0").split(" ")[2]) : 0;
+  if (!w || Math.abs(w - drawn) < 4) return;
+  futureChartLastWidth = w;
+  box.innerHTML = buildFutureChartSvg(futureChartLastData, w);
+  scrollChartToRight(box);
+}
+window.addEventListener("resize", () => refitFutureChart());
 function renderFutureChart(data) {
+  futureChartLastData = data;
   // 비교 그래프(매출액vs주가vs순이익)용 1년·5년·10년 탭과 제목은 이 그래프에선 쓰지 않으므로 숨김(2026-09-10)
   const cmpTabs = el("futureCmpTabs");
   if (cmpTabs) cmpTabs.style.display = "none";
   const cmpHeading = el("futureCmpHeading");
   if (cmpHeading) cmpHeading.style.display = "none";
-  el("futureChartContainer").innerHTML = buildFutureChartSvg(data);
+  const fcBox = el("futureChartContainer");
+  futureChartLastWidth = fcBox.clientWidth || -1;
+  fcBox.innerHTML = buildFutureChartSvg(data, fcBox.clientWidth || 0);
+  setTimeout(refitFutureChart, 50);
+  setTimeout(refitFutureChart, 600);
   scrollChartToRight(el("futureChartContainer")); // 처음 열 때 가장 최근(오른쪽 끝)부터 보이게
   const yearsNote = data.historicalBuckets.length
-    ? `회색: 과거 ${data.historicalBuckets.length}개년(전후 6개월) 계절성 흐름 · `
+    ? `회색: 과거 ${data.historicalBuckets.length}개년 같은 시기(향후 6개월) 흐름 · `
     : `과거 데이터가 부족해 계절성 비교 없이 최근 추세만 표시했습니다 · `;
-  const baseNote = `${data.ticker} · ${yearsNote}빨간 실선: 최근 6개월 실제 흐름 · 빨간 점선: ${data.hasForwardData ? "과거 흐름의 평균 기울기로 추정한 " : ""}향후 6개월 예상`;
+  const baseNote = `${data.ticker} · 현재를 0%로 잡고 향후 6개월만 표시 · ${yearsNote}빨간 점선: ${data.hasForwardData ? "과거 흐름의 평균 기울기로 추정한 " : ""}향후 6개월 예상`;
   // 2026-10-09 사용자 요청: 맨 위에 "과거 N년 계절성 흐름 기울기 평균 / 결과: 6개월후 +46.2%", 그래프 아래엔 두 경고 문구를 하나로 합쳐 표시
   const titleEl = el("futureHeadlineTitle");
   const resultEl = el("futureHeadlineResult");

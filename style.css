@@ -4177,3 +4177,8 @@ table.earn-table tr.earn-chart-row td { padding: 6px 0 14px; white-space: normal
 .div-row.is-estimated { border: 0; border-bottom: 1px solid var(--rk-line, rgba(128, 128, 128, 0.18)); border-radius: 8px; margin: 0; background: rgba(46, 125, 209, 0.07); }
 .div-row.is-estimated .div-c1, .div-row.is-estimated .div-c2, .div-row.is-estimated .div-c3 { opacity: 1; }
 .div-estnote { align-self: center; font-size: 11.5px; color: var(--muted); }
+
+/* 미래예측 차트: 가로 스크롤 없이 한눈에(폭에 맞춰 JS가 다시 그림) — "좌우 스크롤" 안내도 숨김 */
+#futureInlineWrap .future-chart-container { overflow-x: visible; max-width: none; }
+#futureInlineWrap .future-chart-container svg { min-width: 0; width: 100%; }
+#futureInlineWrap .chart-scroll-hint { display: none; }
