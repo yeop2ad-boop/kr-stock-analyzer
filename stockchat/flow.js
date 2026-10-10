@@ -1124,7 +1124,7 @@ window.SCFlow = (function () {
     await sleep(500);
     if (!alive(t)) return;
     // 1. 시장 상황과 핵심지표 (공시정보 개요 + 핵심지표)
-    await bot('<div class="ol-h">1. 시장 상황과 핵심지표</div><p class="ol-sub">주가 흐름과 기본 정보(개요), 그리고 핵심 5가지 지표입니다.</p>', t, 350);
+    await bot('<div class="ol-h">1. 현재 주가와 핵심지표</div><p class="ol-sub">주가 흐름과 기본 정보, 핵심 5가지 지표를 한눈에 볼 수 있어요.</p>', t, 350);
     if (!alive(t)) return;
     embed({ view: "detail", ticker: st.symbol, sub: "combo" });
     await sleep(500);
