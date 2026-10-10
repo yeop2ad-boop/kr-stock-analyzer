@@ -19719,9 +19719,9 @@ function buildFutureChartSvg(data, availWidth) {
   const FS = wide ? 11 : 11; // 보조 글자
   const FSB = wide ? 12 : 12; // 강조 글자
   const ML = 40,
-    MR = wide ? 120 : 84, // 오른쪽 끝의 "예상 / 예상가(±%)" 라벨 자리
+    MR = 16, // 그래프를 좌우로 최대한 넓게(예상 라벨은 아래 가로축에 적음)
     MT = 16,
-    MB = 54; // 아래: 월 라벨 + (현재) + 현재가
+    MB = 68; // 아래: 월 라벨 + (현재/예상) + 가격(+%)
   const PW = W - ML - MR;
   const PH = H - MT - MB;
 
@@ -19776,22 +19776,28 @@ function buildFutureChartSvg(data, availWidth) {
     const x = xFn(m / 6);
     const labelDate = addMonths(data.axisMonthStart, 6 + m);
     const isNow = m === 0;
+    const isEnd = m === 6;
     axisSvg += `<line x1="${x.toFixed(1)}" y1="${MT}" x2="${x.toFixed(1)}" y2="${MT + PH}" stroke="${isNow ? "#e08a00" : "#eceef3"}" stroke-width="${isNow ? 1.8 : 1}" ${isNow ? "" : 'stroke-dasharray="2,3"'} />`;
     if (!wide && m % 2 === 1 && m !== 6) continue;
-    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 16).toFixed(1)}" text-anchor="${isNow ? "start" : "middle"}" font-size="${FS}" fill="${isNow ? "#e08a00" : "#6b7280"}" font-weight="${isNow ? "700" : "400"}">${FUTURE_MONTH_NAMES_KO[labelDate.getMonth()]}</text>`;
+    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 16).toFixed(1)}" text-anchor="${isNow ? "start" : isEnd ? "end" : "middle"}" font-size="${FS}" fill="${isNow ? "#e08a00" : isEnd ? "#e5342f" : "#6b7280"}" font-weight="${isNow || isEnd ? "700" : "400"}">${FUTURE_MONTH_NAMES_KO[labelDate.getMonth()]}</text>`;
   }
   axisSvg += `<text x="${ML}" y="${(MT + PH + 32).toFixed(1)}" text-anchor="start" font-size="${FS}" fill="#e08a00" font-weight="700">(현재)</text>`;
   if (data.currentPrice !== null && data.currentPrice !== undefined) {
     axisSvg += `<text x="${ML}" y="${(MT + PH + 48).toFixed(1)}" text-anchor="start" font-size="${FSB}" font-weight="800" fill="#e08a00">${escapeHtml(fmtPriceFull(data.currentPrice, data.currency))}</text>`;
   }
 
+  if (data.forecast.price !== null && data.forecast.price !== undefined) {
+    const ex = ML + PW + MR - 2;
+    const pf = data.currentPrice ? (data.forecast.price / data.currentPrice - 1) * 100 : fEnd;
+    axisSvg += `<text x="${ex}" y="${(MT + PH + 32).toFixed(1)}" text-anchor="end" font-size="${FS}" fill="#e5342f" font-weight="700">(예상)</text>`;
+    axisSvg += `<text x="${ex}" y="${(MT + PH + 48).toFixed(1)}" text-anchor="end" font-size="${FSB}" font-weight="800" fill="#e5342f">${escapeHtml(fmtPriceFull(data.forecast.price, data.currency))}</text>`;
+    axisSvg += `<text x="${ex}" y="${(MT + PH + 62).toFixed(1)}" text-anchor="end" font-size="${FS}" font-weight="700" fill="#e5342f">(${pf >= 0 ? "+" : ""}${pf.toFixed(1)}%)</text>`;
+  }
+
   let linesSvg = "";
   hist.forEach((s, k) => {
     const color = FUTURE_LINE_COLORS[k % FUTURE_LINE_COLORS.length];
     linesSvg += `<path d="${pathFromPoints(s.pts, xFn, yFn)}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" />`;
-    const last = s.pts[s.pts.length - 1];
-    const ly = yFn(last.pct);
-    linesSvg += `<text x="${(xFn(last.frac) + 5).toFixed(1)}" y="${(ly + 4).toFixed(1)}" font-size="${FSB}" font-weight="700" fill="#9aa1ad">${String(s.year).slice(2)}</text>`;
   });
 
   // 예상(빨간 점선): 현재(0%) → 6개월 뒤 예상
@@ -19802,13 +19808,6 @@ function buildFutureChartSvg(data, availWidth) {
   linesSvg += `<line x1="${fx0.toFixed(1)}" y1="${fy0.toFixed(1)}" x2="${fx1.toFixed(1)}" y2="${fy1.toFixed(1)}" stroke="#e5342f" stroke-width="3" stroke-dasharray="7,6" stroke-linecap="round" />`;
   linesSvg += `<circle cx="${fx0.toFixed(1)}" cy="${fy0.toFixed(1)}" r="4.5" fill="#e08a00" stroke="#fff" stroke-width="1.5" />`;
   linesSvg += `<circle cx="${fx1.toFixed(1)}" cy="${fy1.toFixed(1)}" r="3.6" fill="#e5342f" />`;
-  linesSvg += `<text x="${(fx1 + 6).toFixed(1)}" y="${(fy1 - 3).toFixed(1)}" font-size="${FSB}" font-weight="800" fill="#e5342f" stroke="#fff" stroke-width="3" paint-order="stroke">예상</text>`;
-  if (data.forecast.price !== null && data.forecast.price !== undefined) {
-    const pctFromToday = data.currentPrice ? (data.forecast.price / data.currentPrice - 1) * 100 : fEnd;
-    const pctSign = pctFromToday >= 0 ? "+" : "";
-    linesSvg += `<text x="${(fx1 + 6).toFixed(1)}" y="${(fy1 + 12).toFixed(1)}" font-size="${FS}" font-weight="700" fill="#e5342f" stroke="#fff" stroke-width="3" paint-order="stroke">${escapeHtml(fmtPriceFull(data.forecast.price, data.currency))}</text>`;
-    linesSvg += `<text x="${(fx1 + 6).toFixed(1)}" y="${(fy1 + 26).toFixed(1)}" font-size="${FS}" font-weight="700" fill="#e5342f" stroke="#fff" stroke-width="3" paint-order="stroke">(${pctSign}${pctFromToday.toFixed(1)}%)</text>`;
-  }
 
   return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHtml(data.ticker)} 향후 6개월 미래예측 차트">
     <rect x="0" y="0" width="${W}" height="${H}" fill="#fff" />
