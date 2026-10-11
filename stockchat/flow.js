@@ -1387,14 +1387,17 @@ window.SCFlow = (function () {
       }
     }
     pool.sort((a, b) => b.l - a.l || a.it.번호 - b.it.번호);
+    // 질문과 확실히 맞는 자료만(가장 잘 맞는 검색어와 비슷한 길이로 맞은 것, 최대 3개) — 이것저것 덧붙이지 않는다
+    const bestL = pool.length ? pool[0].l : 0;
     const items = [];
     pool.forEach((x) => {
-      if (items.length < 3 && !items.find((i) => i.id === x.it.id)) items.push(x.it);
+      if (x.l >= bestL - 1 && items.length < 3 && !items.find((i) => i.id === x.it.id)) items.push(x.it);
     });
-    if (st) {
+    if (st && !items.length) {
+      // 종목만 말한 질문(예: "삼성전자 어때")은 기본 3가지(개요·핵심지표·리스크)
       ["stock-summary", "stock-sreport", "stock-risk"].forEach((id) => {
         const it = man.find((m) => m.id === id);
-        if (it && items.length < 3 && !items.find((i) => i.id === id)) items.push(it);
+        if (it) items.push(it);
       });
     }
     return items.length ? { st, items } : null;
@@ -1407,11 +1410,28 @@ window.SCFlow = (function () {
       const info = await SCData.lookup(st.symbol);
       if (info) {
         const rows = [];
+        const NEED = { dividend: ["div"], sreport: ["win", "ret", "revG", "rsi"], revenue: ["revG", "niG", "opm", "roe"], risk: ["debt", "w52", "chg"], summary: ["chg", "mcap", "w52", "per"], future: ["win", "ret", "rsi"] };
+        const want = new Set();
+        items.forEach((it) => (NEED[it.id.slice(6)] || []).forEach((k) => want.add(k)));
         [["win", "10년평균 승률", "%"], ["ret", "연평균 상승률", "%"], ["revG", "매출 성장률", "%"], ["niG", "순이익 증가율", "%"], ["opm", "영업이익률", "%"], ["roe", "ROE", "%"], ["debt", "부채비율", "%"], ["per", "PER", "배"], ["div", "배당률", "%"], ["w52", "52주 구간 위치", "%"], ["rsi", "과열도(RSI)", ""], ["chg", "오늘 등락률", "%"], ["mcap", "시가총액", ""]].forEach(([k, lab, u]) => {
+          if (want.size && !want.has(k)) return; // 질문과 관계없는 지표는 AI에 보내지 않는다
           const v = anNum(info[k], u);
           if (v != null) rows.push({ 지표: lab, 값: v });
         });
         if (rows.length) facts.push({ 종목: st.name, 통화: info.currency, 지표: rows });
+        if (items.some((i) => i.id === "stock-dividend")) {
+          // 배당 질문: 최근 1년 배당 내역(주기·연 합계·최근 지급·다음 예정)
+          try {
+            const d = await fetch(WORKER + "/dividends?symbol=" + encodeURIComponent(st.symbol), { signal: AbortSignal.timeout(4000) }).then((r) => (r.ok ? r.json() : null));
+            if (d && d.hasDividend) {
+              facts.push({
+                배당: { 주기: d.frequency, 최근1년_횟수: d.countLastYear, 연간_배당금합계: d.annualAmount != null ? Math.round(d.annualAmount * 100) / 100 : null, 연_배당수익률퍼센트: d.annualYieldPct != null ? Math.round(d.annualYieldPct * 100) / 100 : null, 통화: d.currency, 최근_지급: (d.rows || []).filter((r) => !r.upcoming).slice(0, 3).map((r) => ({ 배당락일: r.exDate, 지급일: r.payDate, 금액: r.amount })), 다음_예정: (d.rows || []).filter((r) => r.upcoming).slice(0, 1).map((r) => ({ 배당락일: r.exDate, 예상금액: r.amount })) },
+              });
+            }
+          } catch (e) {
+            /* 배당 내역을 못 받으면 수치 없이 진행 */
+          }
+        }
       }
       return facts;
     }
@@ -1469,16 +1489,14 @@ window.SCFlow = (function () {
     }
     const sec = (cls, tag, arr) => (arr && arr.length ? '<div class="an-sc"><div class="ol-tag ' + cls + '">' + tag + "</div>" + anUl(arr) + "</div>" : "");
     if (res && res.understand) {
-      el.innerHTML = '<div class="ol-h">1. 질문 이해와 자료 요약</div><p class="ol-sum">' + anBold(res.understand) + "</p>" + anUl(res.summary) + (outlook ? sec("up", "낙관 시나리오", res.best) + sec("down", "비관 시나리오", res.worst) : "");
+      el.innerHTML = '<p class="ol-sum">' + anBold(res.understand) + "</p>" + anUl(res.summary) + (outlook ? sec("up", "낙관 시나리오", res.best) + sec("down", "비관 시나리오", res.worst) : "");
     } else {
-      el.innerHTML = '<div class="ol-h">1. 질문 이해</div><p class="ol-sum">' + esc(text) + " — 관련 자료를 모아 보여드릴게요.</p>";
+      el.innerHTML = '<p class="ol-sum">' + esc(text) + " — 관련 자료를 모아 보여드릴게요.</p>";
     }
     scroll();
     await sleep(500);
     if (!alive(t)) return;
     // 2단계
-    await bot('<div class="ol-h">2. 가장 관련 있는 자료</div><p class="ol-sub">' + names.map((n) => esc(n)).join(" · ") + "</p>", t, 350);
-    if (!alive(t)) return;
     for (const it of items) {
       if (!alive(t)) return;
       if (it.id === "stock-news") {
@@ -1511,7 +1529,7 @@ window.SCFlow = (function () {
     (st ? ["stock-future", "stock-dividend", "stock-revenue", "stock-news"] : ["popular-kr", "popular-us", "rank-kr-win", "calendar"]).forEach(addRel);
     const pick3 = rel.slice(0, 3);
     if (!pick3.length) return;
-    await bot('<div class="ol-h">3. 이어서 궁금하다면</div>', t, 350);
+    await bot("이어서 궁금하다면 눌러보세요.", t, 350);
     if (!alive(t)) return;
     const mk = (id) => ({ id, label: anLabel(byId[id], st), redo: () => fresh(() => answerFlow({ st, items: [byId[id]] }, anLabel(byId[id], st))) });
     const pick = await choose(pick3.map(mk), { cols: 1, stack: true });
