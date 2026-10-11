@@ -268,6 +268,17 @@
       window.SCFlow.rankFromText(rk);
       return;
     }
+    // 마켓맵자료 목록의 연관 검색어로 찾기(예: "우상향 종목")
+    const pk = window.SCFlow ? await window.SCFlow.matchPack(mt) : null;
+    if (pk) {
+      inputEl.value = "";
+      grow();
+      const introEl6 = listEl.querySelector(".intro");
+      if (introEl6) introEl6.remove();
+      bubble("user", esc(text));
+      pk.run();
+      return;
+    }
     busy = true;
     sendBtn.disabled = true;
     inputEl.value = "";

@@ -1254,9 +1254,79 @@ window.SCFlow = (function () {
     marks.slice().forEach(removeMark);
     token++;
   }
+  // ---------- 마켓맵자료 목록(manifest.json)의 연관 검색어로 찾기 ----------
+  // 기존 인식으로 안 걸린 말(예: "우상향 종목")을 자료 목록의 연관 검색어와 맞춰 해당 화면으로 연결한다. 가장 긴 검색어가 이기고,
+  // 종목 이름이 들어 있으면 종목 자료(핵심지표 등)를, 없으면 시장 자료(순위·화면)를 고른다. 애매하면 AI에게 넘긴다.
+  let packManifest = null;
+  function loadPackManifest() {
+    return packManifest || (packManifest = fetch("마켓맵자료/manifest.json").then((r) => r.json()).then((arr) => arr.map((it) => Object.assign({}, it, { als: it.연관검색어.map((a) => String(a).toLowerCase().replace(/[\s?!.,~]/g, "")).filter((a) => a.length >= 2) }))).catch(() => []));
+  }
+  const PACK_SCREEN = { entry: null, popular: "popular", earnings: "earnings", ipo: "ipo", autotrack: "autotrack", drawdown: "drawdown", calendar: "calendar", index: "index", brand: "brand", dart: "dart", firms: "firms", rankup: "rankup", corr: "corr", sectorwin: "sectorWin", analysis: "method" };
+  const PACK_TAIL = /(순위|랭킹|보여줘|알려줘|찾아줘|보기|뭐야|뭐|줘|좀|요|를|을|은|는|이|가|도|종목|주식|리스트|목록|높은|낮은|많은|오늘|요즘|지금|회사|기업|어디|있어|어때|\?)/g;
+  async function matchPack(text) {
+    const raw = String(text || "").toLowerCase().replace(/[\s?!.,~]/g, "");
+    if (!raw || raw.length > 36 || BUYSELL.test(raw) || /(뜻|의미|설명|이유|원인|왜|비교|vs|랑|하고)/.test(raw)) return null;
+    const man = await loadPackManifest();
+    let best = 0;
+    let hits = [];
+    man.forEach((it) => {
+      const l = it.als.reduce((mx, a) => (raw.indexOf(a) >= 0 && a.length > mx ? a.length : mx), 0);
+      if (!l) return;
+      if (l > best) {
+        best = l;
+        hits = [it];
+      } else if (l === best) hits.push(it);
+    });
+    if (!hits.length) return null;
+    let st = null;
+    try {
+      st = await SCData.findInText(text);
+    } catch (e) {
+      st = null;
+    }
+    const sp = splitMarket(raw);
+    if (st) {
+      const pick = hits.find((h) => h.id.indexOf("stock-") === 0);
+      if (!pick) return null; // 종목이 섞인 시장 질문은 AI가
+      const sub = pick.id.slice(6);
+      if (sub === "combo") return { run: () => outlookFlow({ st }) };
+      const lab = PLAIN[sub] ? PLAIN[sub].what : sub === "future" ? "미래예측" : sub;
+      return { run: () => stockActionShow({ st, act: { sub, label: lab } }) };
+    }
+    hits = hits.filter((h) => h.id.indexOf("stock-") !== 0);
+    if (!hits.length) return null;
+    if (sp.market) {
+      const same = hits.filter((h) => !h.시장 || h.시장 === sp.market);
+      if (same.length) hits = same;
+    }
+    // 남은 말이 길면(복잡한 질문) AI에게
+    let rest = raw;
+    hits.forEach((h) => h.als.forEach((a) => (rest = rest.split(a).join(""))));
+    MARKET_PREFIX.forEach(([, ws]) => ws.forEach((w) => (rest = rest.split(w).join(""))));
+    if (rest.replace(PACK_TAIL, "").length > 2) return null;
+    const kind = (h) => h.id.split("-")[0];
+    const k0 = kind(hits[0]);
+    if (hits.some((h) => kind(h) !== k0)) return null;
+    if (k0 === "rank") {
+      const keys = new Set(hits.map((h) => h.id.split("-")[2]));
+      if (keys.size !== 1) return null;
+      const key = [...keys][0];
+      const markets = hits.map((h) => h.id.split("-")[1]);
+      const m2 = RANK_WORDS.find((m) => markets.every((mk) => m.keys[mk] === key));
+      if (!m2) return null;
+      return { run: () => rankFromText(markets.length === 1 ? Object.assign({}, m2, { presetMarket: markets[0] }) : m2) };
+    }
+    if (k0 === "fear") return { run: () => rankFromText(RANK_WORDS.find((m) => m.fear)) };
+    if (k0 === "info") return { run: () => explainShow() };
+    const sid = hits[0].id === "news-market" ? "news" : hits[0].id === "news-tech" ? "tech" : hits[0].id.indexOf("entry-") === 0 ? hits[0].id.split("-")[2] : PACK_SCREEN[k0];
+    const sc = SCREENS.find((s) => s.id === sid);
+    if (!sc) return null;
+    const ms = [...new Set(hits.map((h) => h.시장).filter(Boolean))];
+    return { run: () => screenFlow({ sc, market: ms.length === 1 ? ms[0] : undefined }) };
+  }
   // 철자 실수(ㅐ/ㅔ, 률/율)로 어떤 화면 연결에도 안 걸리면, 글자를 바꾼 말 중 걸리는 것을 돌려준다(없으면 원문)
   async function fuzzyText(text) {
-    const hit = async (t) => !!((await matchExplain(t)) || (await matchBuySell(t)) || matchFullView(t) || (await matchOutlook(t)) || (await matchStockAction(t)) || (await matchScreen(t)) || matchRanking(t));
+    const hit = async (t) => !!((await matchExplain(t)) || (await matchBuySell(t)) || matchFullView(t) || (await matchOutlook(t)) || (await matchStockAction(t)) || (await matchScreen(t)) || matchRanking(t) || (await matchPack(t)));
     try {
       if (await hit(text)) return text;
       for (const v of SCData.variants(text)) if (await hit(v)) return v;
@@ -1265,5 +1335,5 @@ window.SCFlow = (function () {
     }
     return text;
   }
-  return { fuzzyText, matchOutlook, outlookFlow, showOverview, matchFullView, fullViewNow, matchScreen, screenFlow, matchStockAction, stockActionShow, start, reset, home, matchRanking, findMention, rankFromText, offerForStock, matchBuySell, buySellSummary, matchExplain, explainShow };
+  return { matchPack, fuzzyText, matchOutlook, outlookFlow, showOverview, matchFullView, fullViewNow, matchScreen, screenFlow, matchStockAction, stockActionShow, start, reset, home, matchRanking, findMention, rankFromText, offerForStock, matchBuySell, buySellSummary, matchExplain, explainShow };
 })();
