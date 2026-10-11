@@ -192,8 +192,10 @@
   async function send(text) {
     text = (text || "").trim();
     if (!text || busy) return;
+    // ㅐ/ㅔ를 헷갈려 써도(예: "에플 주가") 같은 뜻으로 찾는다 — 원문으로 안 걸리면 글자를 바꾼 말 중 걸리는 것을 매칭에만 쓴다
+    const mt = window.SCFlow ? await window.SCFlow.fuzzyText(text) : text;
     // "승률이 뭐야" 같은 뜻 질문(종목 없음): AI 대신 마켓맵의 "승률이란?" 내용을 그대로 보여줌
-    const ex = window.SCFlow ? await window.SCFlow.matchExplain(text) : null;
+    const ex = window.SCFlow ? await window.SCFlow.matchExplain(mt) : null;
     if (ex) {
       inputEl.value = "";
       grow();
@@ -204,7 +206,7 @@
       return;
     }
     // "삼성전자 지금 사야해?"처럼 종목이 들어 있는 매수·매도 질문: AI 글 대신 마켓맵 [요약]을 그대로 보여줌
-    const bs = window.SCFlow ? await window.SCFlow.matchBuySell(text) : null;
+    const bs = window.SCFlow ? await window.SCFlow.matchBuySell(mt) : null;
     if (bs) {
       inputEl.value = "";
       grow();
@@ -215,7 +217,7 @@
       return;
     }
     // 순위 화면 뒤에 "전체보기"라고 친 경우: 그 순위 화면의 나머지 종목 검색을 실행
-    if (window.SCFlow && window.SCFlow.matchFullView(text)) {
+    if (window.SCFlow && window.SCFlow.matchFullView(mt)) {
       inputEl.value = "";
       grow();
       bubble("user", esc(text));
@@ -224,7 +226,7 @@
     }
     // "삼성전자 뉴스/리스크/재무제표/차트"처럼 종목 + 하위 항목: AI 없이 해당 마켓맵 화면 바로
     // "테슬라 전망 알려줘": 요약 → 1.최근 상황 → 2.상승 요인·하락 위험 → 3.개요+핵심지표 → 4.내 상황에 맞는 전망
-    const ol = window.SCFlow ? await window.SCFlow.matchOutlook(text) : null;
+    const ol = window.SCFlow ? await window.SCFlow.matchOutlook(mt) : null;
     if (ol) {
       inputEl.value = "";
       grow();
@@ -234,7 +236,7 @@
       window.SCFlow.outlookFlow(ol);
       return;
     }
-    const sa = window.SCFlow ? await window.SCFlow.matchStockAction(text) : null;
+    const sa = window.SCFlow ? await window.SCFlow.matchStockAction(mt) : null;
     if (sa) {
       inputEl.value = "";
       grow();
@@ -245,7 +247,7 @@
       return;
     }
     // "급등주/실적 일정/캘린더/뉴스…"처럼 마켓맵 화면 이름을 친 경우: AI 없이 그 화면(투자처 고르기 포함)
-    const sc = window.SCFlow ? await window.SCFlow.matchScreen(text) : null;
+    const sc = window.SCFlow ? await window.SCFlow.matchScreen(mt) : null;
     if (sc) {
       inputEl.value = "";
       grow();
@@ -256,7 +258,7 @@
       return;
     }
     // "상승률"처럼 순위 항목 이름만 친 경우: AI 대신 투자처별 순위 버튼 4개(마켓맵 순위 화면으로 연결)
-    const rk = window.SCFlow && window.SCFlow.matchRanking(text);
+    const rk = window.SCFlow && window.SCFlow.matchRanking(mt);
     if (rk) {
       inputEl.value = "";
       grow();

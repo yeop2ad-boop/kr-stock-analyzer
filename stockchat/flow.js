@@ -1254,5 +1254,16 @@ window.SCFlow = (function () {
     marks.slice().forEach(removeMark);
     token++;
   }
-  return { matchOutlook, outlookFlow, showOverview, matchFullView, fullViewNow, matchScreen, screenFlow, matchStockAction, stockActionShow, start, reset, home, matchRanking, findMention, rankFromText, offerForStock, matchBuySell, buySellSummary, matchExplain, explainShow };
+  // 철자 실수(ㅐ/ㅔ, 률/율)로 어떤 화면 연결에도 안 걸리면, 글자를 바꾼 말 중 걸리는 것을 돌려준다(없으면 원문)
+  async function fuzzyText(text) {
+    const hit = async (t) => !!((await matchExplain(t)) || (await matchBuySell(t)) || matchFullView(t) || (await matchOutlook(t)) || (await matchStockAction(t)) || (await matchScreen(t)) || matchRanking(t));
+    try {
+      if (await hit(text)) return text;
+      for (const v of SCData.variants(text)) if (await hit(v)) return v;
+    } catch (e) {
+      /* 실패하면 원문 그대로 */
+    }
+    return text;
+  }
+  return { fuzzyText, matchOutlook, outlookFlow, showOverview, matchFullView, fullViewNow, matchScreen, screenFlow, matchStockAction, stockActionShow, start, reset, home, matchRanking, findMention, rankFromText, offerForStock, matchBuySell, buySellSummary, matchExplain, explainShow };
 })();

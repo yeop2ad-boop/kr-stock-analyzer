@@ -95,8 +95,43 @@ window.SCData = (function () {
     return allCache;
   }
 
-  // 종목 검색(한글·영문·티커) — 간단한 포함 검색, AI를 쓰지 않는다
+  // 헷갈려 쓰는 한글(ㅐ↔ㅔ, 률↔율)을 바꾼 변형 문장을 만든다(원문 제외, 최대 32개) — 검색·질문 인식이 철자 실수에 걸리지 않게
+  function variants(text, cap) {
+    const s = String(text || "");
+    const BASE = 0xac00, NJ = 21 * 28; // 한글 음절 = 초성*588 + 중성*28 + 종성, 중성 ㅐ=1 ㅔ=5
+    const swap = (ch) => {
+      if (ch === "률") return "율";
+      if (ch === "율") return "률";
+      const c = ch.charCodeAt(0) - BASE;
+      if (c < 0 || c >= 11172) return null;
+      const m = Math.floor((c % NJ) / 28);
+      return m === 1 ? String.fromCharCode(BASE + c + 4 * 28) : m === 5 ? String.fromCharCode(BASE + c - 4 * 28) : null;
+    };
+    const pos = [];
+    for (let i = 0; i < s.length; i++) if (swap(s[i])) pos.push(i);
+    const use = pos.slice(0, 6);
+    const out = [];
+    for (let mask = 1; mask < 1 << use.length; mask++) {
+      const arr = s.split("");
+      use.forEach((p, k) => {
+        if (mask & (1 << k)) arr[p] = swap(s[p]);
+      });
+      out.push(arr.join(""));
+    }
+    return out.slice(0, cap || 32);
+  }
+
+  // 종목 검색(한글·영문·티커) — 간단한 포함 검색, AI를 쓰지 않는다. 결과가 없으면 ㅐ/ㅔ를 바꾼 말로도 찾는다
   async function search(q, limit) {
+    const first = await searchOnce(q, limit);
+    if (first.length) return first;
+    for (const v of variants(q)) {
+      const r = await searchOnce(v, limit);
+      if (r.length) return r;
+    }
+    return first;
+  }
+  async function searchOnce(q, limit) {
     q = String(q || "").trim().toLowerCase();
     if (!q) return [];
     const [all, alias] = await Promise.all([loadAll(), loadAliases()]);
@@ -179,5 +214,5 @@ window.SCData = (function () {
     return best ? { symbol: best.symbol, name: best.name } : null;
   }
 
-  return { findInText, lookup, loadMarket, withVol, loadAll, search, watchlist, nameOf };
+  return { findInText, lookup, loadMarket, withVol, loadAll, search, watchlist, nameOf, variants };
 })();
