@@ -1324,10 +1324,214 @@ window.SCFlow = (function () {
     const ms = [...new Set(hits.map((h) => h.시장).filter(Boolean))];
     return { run: () => screenFlow({ sc, market: ms.length === 1 ? ms[0] : undefined }) };
   }
+  // ---------- 3단계 답변 ----------
+  // 1. 질문 이해 + 우리 자료 요약(AI, 요약만 — 전망·예측을 물을 때만 낙관·비관 시나리오 각 최대 6줄)
+  // 2. 질문과 가장 관련 높은 자료(마켓맵자료 목록에서 최대 3개)  3. 이어서 궁금할 만한 자료 버튼 3개(AI 없이 자료 목록의 '이어 볼 자료')
+  const AN_OUTLOOK_RE = /(전망|예측|미래|앞으로|향후|오를까|내릴까|떨어질까|시나리오)/;
+  const AN_FACT = {
+    win: ["10년평균 승률", "win", "%"], ret: ["연평균 상승률", "ret", "%"], rev: ["매출 성장률", "revG", "%"], vol: ["1일 변동성", "vol", "%"],
+    rsi: ["과열도(RSI)", "rsi", ""], ni: ["순이익 증가율", "niG", "%"], om: ["영업이익률", "opm", "%"], roe: ["ROE", "roe", "%"],
+    cf: ["현금흐름 증가율", "cfG", "%"], debt: ["부채비율", "debt", "%"], mcap: ["시가총액", "mcap", ""], dv: ["거래대금", "dv", ""],
+    w52: ["52주 구간 위치", "w52", "%"], per: ["PER", "per", "배"], div: ["배당률", "div", "%"], aum: ["규모", "mcap", ""],
+  };
+  const anNum = (v, u) => {
+    if (v == null || !isFinite(v)) return null;
+    const a = Math.abs(v);
+    if (u === "" && a >= 1e12) return (v / 1e12).toFixed(1) + "조";
+    if (u === "" && a >= 1e8) return Math.round(v / 1e8).toLocaleString("ko-KR") + "억";
+    return Math.round(v * 10) / 10 + u;
+  };
+  const anBold = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+  const anUl = (arr) => (arr && arr.length ? '<ul class="ol-ul">' + arr.map((x) => "<li>" + anBold(x) + "</li>").join("") + "</ul>" : "");
+  const anLabel = (it, st) => (st ? st.name + " " + it.이름.replace(/^종목 /, "") : it.이름);
+  const isStockItem = (it) => it.id.indexOf("stock-") === 0;
+
+  async function answerPlan(text) {
+    const raw = String(text || "").toLowerCase().replace(/[\s?!.,~]/g, "");
+    if (!raw || raw.length > 60) return null;
+    const man = await loadPackManifest();
+    if (!man.length) return null;
+    let st = null;
+    try {
+      st = await SCData.findInText(text);
+    } catch (e) {
+      st = null;
+    }
+    const sp = splitMarket(raw);
+    let pool = [];
+    man.forEach((it) => {
+      if (it.id === "stock-combo") return; // 개요+핵심지표 묶음은 개요·핵심지표로 대신 보여준다
+      if (!!st !== isStockItem(it)) return;
+      let l = 0;
+      let hit = "";
+      it.als.forEach((a) => {
+        if (raw.indexOf(a) >= 0 && a.length > l) {
+          l = a.length;
+          hit = a;
+        }
+      });
+      if (l) pool.push({ it, l, hit });
+    });
+    if (!st) {
+      if (sp.market) {
+        const same = pool.filter((x) => !x.it.시장 || x.it.시장 === sp.market);
+        if (same.length) pool = same;
+      }
+      const best = pool.reduce((m, x) => Math.max(m, x.l), 0);
+      if (best && best < 3) {
+        // 짧은 말(예: "이익")은 문장 전체가 그 말뿐일 때만 — 일반 질문을 잘못 끌어오지 않도록
+        let rest = raw;
+        pool.forEach((x) => (rest = rest.split(x.hit).join("")));
+        MARKET_PREFIX.forEach(([, ws]) => ws.forEach((w) => (rest = rest.split(w).join(""))));
+        if (rest.replace(PACK_TAIL, "").length > 2) return null;
+      }
+    }
+    pool.sort((a, b) => b.l - a.l || a.it.번호 - b.it.번호);
+    const items = [];
+    pool.forEach((x) => {
+      if (items.length < 3 && !items.find((i) => i.id === x.it.id)) items.push(x.it);
+    });
+    if (st) {
+      ["stock-summary", "stock-sreport", "stock-risk"].forEach((id) => {
+        const it = man.find((m) => m.id === id);
+        if (it && items.length < 3 && !items.find((i) => i.id === id)) items.push(it);
+      });
+    }
+    return items.length ? { st, items } : null;
+  }
+
+  // 1단계에 쓸 우리 자료 수치 — 종목이면 그 종목 지표, 순위 자료면 값이 큰·작은 쪽 3개씩
+  async function answerFacts(items, st) {
+    const facts = [];
+    if (st) {
+      const info = await SCData.lookup(st.symbol);
+      if (info) {
+        const rows = [];
+        [["win", "10년평균 승률", "%"], ["ret", "연평균 상승률", "%"], ["revG", "매출 성장률", "%"], ["niG", "순이익 증가율", "%"], ["opm", "영업이익률", "%"], ["roe", "ROE", "%"], ["debt", "부채비율", "%"], ["per", "PER", "배"], ["div", "배당률", "%"], ["w52", "52주 구간 위치", "%"], ["rsi", "과열도(RSI)", ""], ["chg", "오늘 등락률", "%"], ["mcap", "시가총액", ""]].forEach(([k, lab, u]) => {
+          const v = anNum(info[k], u);
+          if (v != null) rows.push({ 지표: lab, 값: v });
+        });
+        if (rows.length) facts.push({ 종목: st.name, 통화: info.currency, 지표: rows });
+      }
+      return facts;
+    }
+    for (const it of items) {
+      const m = it.id.match(/^rank-(\w+)-(\w+)$/);
+      if (!m || !AN_FACT[m[2]]) continue;
+      const [lab, field, u] = AN_FACT[m[2]];
+      let list = await SCData.loadMarket(m[1]);
+      if (m[2] === "vol") list = await SCData.withVol(list);
+      const vals = list.filter((x) => x[field] != null && isFinite(x[field])).sort((a, b) => b[field] - a[field]);
+      if (vals.length < 6) continue;
+      const fmt = (x) => x.name + " " + anNum(x[field], u);
+      facts.push({ 항목: it.이름, 지표: lab, 값이_큰_3: vals.slice(0, 3).map(fmt), 값이_작은_3: vals.slice(-3).map(fmt), 종목수: vals.length });
+    }
+    return facts;
+  }
+
+  async function answerFlow(plan, text) {
+    token++;
+    const t = token;
+    clearIntro();
+    const { st, items } = plan;
+    const man = await loadPackManifest();
+    const byId = Object.fromEntries(man.map((i) => [i.id, i]));
+    const outlook = AN_OUTLOOK_RE.test(String(text || ""));
+    // 1단계
+    const facts = await answerFacts(items, st).catch(() => []);
+    const names = items.map((i) => anLabel(i, st));
+    let res = null;
+    let el = null;
+    if (facts.length) {
+      const req = fetch(WORKER + "/answer", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: String(text).slice(0, 200), mode: outlook ? "outlook" : "summary", facts }), signal: AbortSignal.timeout(11000) })
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null);
+      let ctl = null;
+      let timer = null;
+      const t0 = Date.now();
+      const w = await botWhile(req, t, (bubble) => {
+        ctl = addMark(bubble, "답변 정리");
+        ctl.set(0, "자료를 요약하는 중");
+        timer = setInterval(() => ctl && ctl.set(Math.min(92, Math.round(((Date.now() - t0) / 10000) * 92)), "자료를 요약하는 중"), 200);
+      });
+      clearInterval(timer);
+      if (!w.el) {
+        if (ctl) ctl.remove();
+        return;
+      }
+      el = w.el;
+      res = w.res;
+      if (ctl) (res && res.understand ? ctl.done("요약 완료 — 눌러서 보기") : ctl.remove());
+      if (res && res.usage && window.SCUsage) window.SCUsage.add(res.usage.tokens, "답변 요약");
+    } else {
+      el = await bot("", t, 350);
+      if (!el) return;
+    }
+    const sec = (cls, tag, arr) => (arr && arr.length ? '<div class="an-sc"><div class="ol-tag ' + cls + '">' + tag + "</div>" + anUl(arr) + "</div>" : "");
+    if (res && res.understand) {
+      el.innerHTML = '<div class="ol-h">1. 질문 이해와 자료 요약</div><p class="ol-sum">' + anBold(res.understand) + "</p>" + anUl(res.summary) + (outlook ? sec("up", "낙관 시나리오", res.best) + sec("down", "비관 시나리오", res.worst) : "");
+    } else {
+      el.innerHTML = '<div class="ol-h">1. 질문 이해</div><p class="ol-sum">' + esc(text) + " — 관련 자료를 모아 보여드릴게요.</p>";
+    }
+    scroll();
+    await sleep(500);
+    if (!alive(t)) return;
+    // 2단계
+    await bot('<div class="ol-h">2. 가장 관련 있는 자료</div><p class="ol-sub">' + names.map((n) => esc(n)).join(" · ") + "</p>", t, 350);
+    if (!alive(t)) return;
+    for (const it of items) {
+      if (!alive(t)) return;
+      if (it.id === "stock-news") {
+        await newsFlow(st.symbol, st.name, t);
+        continue;
+      }
+      if (it.id === "stock-dividend" && !(await hasDividend(st.symbol))) {
+        await bot("<b>" + esc(st.name) + "</b> — 최근 1년 동안 배당 내역이 없어요.", t, 300);
+        continue;
+      }
+      if (!(await announce("<b>" + esc(anLabel(it, st)) + "</b>", t))) return;
+      const params = Object.assign({}, it.params);
+      if (st && params.ticker) params.ticker = st.symbol;
+      embed(params, async (sym) => {
+        const nm = await SCData.nameOf(sym, sym);
+        user(nm);
+        stockMenu(sym, nm, t, true);
+      });
+      await sleep(450);
+    }
+    if (!alive(t)) return;
+    // 3단계(AI 없이 자료 목록의 연관 자료)
+    const shown = new Set(items.map((i) => i.id));
+    const rel = [];
+    const addRel = (id) => {
+      const it = byId[id];
+      if (it && id !== "stock-combo" && !shown.has(id) && !rel.includes(id) && !!st === isStockItem(it)) rel.push(id);
+    };
+    items.forEach((it) => (it.이어볼자료 || []).forEach(addRel));
+    (st ? ["stock-future", "stock-dividend", "stock-revenue", "stock-news"] : ["popular-kr", "popular-us", "rank-kr-win", "calendar"]).forEach(addRel);
+    const pick3 = rel.slice(0, 3);
+    if (!pick3.length) return;
+    await bot('<div class="ol-h">3. 이어서 궁금하다면</div>', t, 350);
+    if (!alive(t)) return;
+    const mk = (id) => ({ id, label: anLabel(byId[id], st), redo: () => fresh(() => answerFlow({ st, items: [byId[id]] }, anLabel(byId[id], st))) });
+    const pick = await choose(pick3.map(mk), { cols: 1, stack: true });
+    if (!alive(t)) return;
+    answerFlow({ st, items: [byId[pick.id]] }, anLabel(byId[pick.id], st));
+  }
+
   // 철자 실수(ㅐ/ㅔ, 률/율)로 어떤 화면 연결에도 안 걸리면, 글자를 바꾼 말 중 걸리는 것을 돌려준다(없으면 원문)
   async function fuzzyText(text) {
-    const hit = async (t) => !!((await matchExplain(t)) || (await matchBuySell(t)) || matchFullView(t) || (await matchOutlook(t)) || (await matchStockAction(t)) || (await matchScreen(t)) || matchRanking(t) || (await matchPack(t)));
+    const hit = async (t) => !!((await matchExplain(t)) || (await matchBuySell(t)) || matchFullView(t) || (await matchOutlook(t)) || (await matchStockAction(t)) || (await matchScreen(t)) || matchRanking(t) || (await matchPack(t)) || !!(await answerPlan(t)));
+    const stOf = async (t) => {
+      try {
+        return await SCData.findInText(t);
+      } catch (e) {
+        return null;
+      }
+    };
     try {
+      // 종목 이름을 철자 실수로 쳤을 수 있으니(예: "에플") 원문에서 종목이 안 보이면 글자를 바꾼 말에서 종목이 보이는지 먼저 본다
+      if (!(await stOf(text))) for (const v of SCData.variants(text)) if (await stOf(v)) return v;
       if (await hit(text)) return text;
       for (const v of SCData.variants(text)) if (await hit(v)) return v;
     } catch (e) {
@@ -1335,5 +1539,5 @@ window.SCFlow = (function () {
     }
     return text;
   }
-  return { matchPack, fuzzyText, matchOutlook, outlookFlow, showOverview, matchFullView, fullViewNow, matchScreen, screenFlow, matchStockAction, stockActionShow, start, reset, home, matchRanking, findMention, rankFromText, offerForStock, matchBuySell, buySellSummary, matchExplain, explainShow };
+  return { answerPlan, answerFlow, matchPack, fuzzyText, matchOutlook, outlookFlow, showOverview, matchFullView, fullViewNow, matchScreen, screenFlow, matchStockAction, stockActionShow, start, reset, home, matchRanking, findMention, rankFromText, offerForStock, matchBuySell, buySellSummary, matchExplain, explainShow };
 })();

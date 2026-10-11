@@ -2071,6 +2071,72 @@ async function handleStockCard(request) {
   return new Response(body, { status: 200, headers: { "Content-Type": "application/json", ...CORS_HEADERS } });
 }
 
+// POST /answer — 스톡챗 3단계 답변의 1단계: 질문 이해 + 우리 자료 요약. 전망·예측을 물은 경우(mode=outlook)에만 낙관·비관(베스트·워스트) 시나리오를 각 최대 6줄 덧붙인다.
+// 스톡챗이 보낸 자료 수치만 근거로 쓴다.
+const ANSWER_BASE = [
+  "당신은 증권 정보 앱 StockCHAT의 답변 도우미입니다. 사용자가 투자 초보일 수 있으니 쉬운 한국어로 짧게 답합니다.",
+  "입력(JSON): 질문, 자료(우리가 가진 수치·목록). 자료에 있는 숫자와 사실만 근거로 쓰고, 자료에 없는 숫자·사실·전망 수치는 만들지 않습니다.",
+  "출력 형식(이 형식만, 다른 말·코드블록 금지):",
+  "이해: (질문이 무엇을 알고 싶은 것인지 1문장으로 풀어 씀. 핵심 말 1~2군데를 **이렇게** 굵게)",
+].join("\n");
+const ANSWER_SUMMARY = ANSWER_BASE + "\n" + [
+  "요약|(자료에 근거한 핵심 내용 한 줄. 최대 6줄까지 줄마다 이 형식으로. 중요한 부분은 **굵게**)",
+  "규칙: 요약은 6줄을 넘기지 않습니다. 자료가 전혀 없으면 요약 줄은 쓰지 않습니다. 전망·예측·시나리오는 쓰지 않고 지금 자료로 알 수 있는 사실만 요약합니다.",
+  "매수·매도를 권유하거나 목표주가·수익을 단정하지 않습니다.",
+].join("\n");
+const ANSWER_OUTLOOK = ANSWER_BASE + "\n" + [
+  "낙관|(자료에 근거한 긍정적 시나리오(베스트) 한 줄. 최대 6줄까지 줄마다 이 형식으로. 중요한 부분은 **굵게**)",
+  "비관|(자료에 근거한 부정적 시나리오(워스트)·위험 한 줄. 최대 6줄까지 줄마다 이 형식으로. 중요한 부분은 **굵게**)",
+  "규칙: 낙관·비관은 각각 6줄을 넘기지 않습니다. 자료가 빈약하면 줄 수를 줄이고, 자료가 전혀 없으면 낙관·비관 줄은 쓰지 않습니다.",
+  "매수·매도를 권유하거나 목표주가·수익을 단정하지 않습니다. '~할 수 있어요' 같은 가능성 표현을 씁니다.",
+].join("\n");
+function answerParse(text) {
+  const out = { understand: "", summary: [], best: [], worst: [] };
+  String(text || "").split(/\r?\n/).forEach((line) => {
+    const s = line.trim();
+    let m;
+    if ((m = s.match(/^이해\s*[:：]\s*(.+)$/))) out.understand = m[1].trim();
+    else if ((m = s.match(/^요약\s*[|:：]\s*(.+)$/)) && out.summary.length < 6) out.summary.push(m[1].trim());
+    else if ((m = s.match(/^낙관\s*[|:：]\s*(.+)$/)) && out.best.length < 6) out.best.push(m[1].trim());
+    else if ((m = s.match(/^비관\s*[|:：]\s*(.+)$/)) && out.worst.length < 6) out.worst.push(m[1].trim());
+  });
+  return out;
+}
+async function handleAnswer(request, env) {
+  if (request.method !== "POST") return jsonResponse({ error: "POST만 지원합니다." }, 405);
+  if (!env.ANTHROPIC_API_KEY) return jsonResponse({ error: "AI 기능을 준비 중입니다.", code: "not_configured" }, 503);
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonResponse({ error: "잘못된 요청입니다." }, 400);
+  }
+  const question = String((body && body.question) || "").trim().slice(0, 300);
+  if (!question) return jsonResponse({ error: "질문이 필요합니다." }, 400);
+  const outlookMode = !!(body && body.mode === "outlook");
+  const facts = JSON.stringify((body && body.facts) || []).slice(0, 4000);
+  const payload = {
+    model: env.AI_MODEL || AI_DEFAULT_MODEL,
+    max_tokens: 900,
+    output_config: { effort: "low" },
+    system: [{ type: "text", text: outlookMode ? ANSWER_OUTLOOK : ANSWER_SUMMARY, cache_control: { type: "ephemeral" } }],
+    messages: [{ role: "user", content: JSON.stringify({ 질문: question, 자료: JSON.parse(facts) }) }],
+  };
+  let res;
+  try {
+    res = await aiCallClaude(env, payload, { attempts: 2, timeoutMs: 8500 });
+  } catch (e) {
+    return jsonResponse({ error: "AI 요약이 오래 걸려 중단했습니다.", code: "timeout" }, 504);
+  }
+  if (!res.ok) return jsonResponse({ error: "AI 요약을 만들지 못했습니다.", status: res.status }, 502);
+  const data = await res.json();
+  const text = (data.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n");
+  const p = answerParse(text);
+  if (!p.understand) return jsonResponse({ error: "AI 요약 형식을 읽지 못했습니다.", got: text.slice(0, 200) }, 502);
+  const u = data.usage || {};
+  return new Response(JSON.stringify({ ...p, usage: { tokens: Math.round((u.input_tokens || 0) + (u.output_tokens || 0) + (u.cache_creation_input_tokens || 0) + (u.cache_read_input_tokens || 0) * 0.1) } }), { status: 200, headers: { "Content-Type": "application/json", ...CORS_HEADERS } });
+}
+
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") {
@@ -2101,6 +2167,10 @@ export default {
 
     if (requestUrl.pathname === "/outlook") {
       return handleOutlook(request, env, requestUrl);
+    }
+
+    if (requestUrl.pathname === "/answer") {
+      return handleAnswer(request, env);
     }
 
     if (requestUrl.pathname === "/stock-card") {
