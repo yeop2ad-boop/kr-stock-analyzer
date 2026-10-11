@@ -277,7 +277,9 @@ window.SCFlow = (function () {
     const id = "e" + ++embedSeq;
     const rowMode = ROW_VIEWS.indexOf(params.view) >= 0; // 순위 표: 처음 6줄 → 더보기로 10줄씩
     if (rowMode) params = Object.assign({}, params, { limit: ROW_FIRST });
-    const url = new URL("../index.html", document.baseURI);
+    // 마켓맵자료 폴더에 옮겨 둔 화면은 마켓맵 본체 대신 그 폴더의 복사본 화면을 쓴다(지금: 1번 종목 개요)
+    const packed = params.view === "detail" && params.sub === "summary";
+    const url = new URL(packed ? "마켓맵자료/stock-summary/index.html" : "../index.html", document.baseURI);
     url.searchParams.set("embed", "1");
     url.searchParams.set("id", id);
     url.searchParams.set("theme", window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
