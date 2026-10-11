@@ -2158,8 +2158,7 @@ async function handleAnswer(request, env) {
     const parts = answerPartsParse(ptext);
     // AI가 부분 이름을 엉뚱하게 쓴 경우(예: 질문을 되풀이) — 필요한 부분이 하나면 '|' 뒤 내용을 그 부분으로
     if (need.length === 1 && !parts[need[0]]) {
-      const ln = ptext.split(/?
-/).map((x) => x.trim()).find((x) => x.includes("|"));
+      const ln = ptext.split(/\r?\n/).map((x) => x.trim()).find((x) => x.includes("|"));
       if (ln) parts[need[0]] = ln.slice(ln.indexOf("|") + 1).trim();
     }
     if (!Object.keys(parts).length) return jsonResponse({ error: "AI 설명 형식을 읽지 못했습니다.", got: ptext.slice(0, 200) }, 502);
