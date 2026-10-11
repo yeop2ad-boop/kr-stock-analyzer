@@ -2110,7 +2110,7 @@ const ANSWER_PARTS = [
   "입력(JSON): 질문, 종목, 필요한_부분(쓸 부분 이름 목록), 자료. 자료에 있는 숫자와 사실만 근거로 쓰고 없는 숫자는 만들지 않습니다.",
   "문장에 '자료에 있는', '자료에는', '제공된 자료' 같은 출처 언급을 쓰지 않고 사실만 바로 말합니다. 정보가 없으면 그 내용은 언급하지 않습니다.",
   "숫자를 나열하지 말고 주요한 것만 문장으로 풀어 씁니다. 부분마다 1~2문장, 중요한 부분은 **굵게**. 매수·매도를 권유하거나 목표주가를 단정하지 않습니다.",
-  "출력 형식(필요한_부분에 있는 것만, 이 형식만, 다른 말·코드블록 금지): 부분이름|내용   (한 줄에 한 부분)",
+  "출력 형식(필요한_부분에 있는 것만, 이 형식만, 다른 말·코드블록 금지): 부분이름|내용   (한 줄에 한 부분. 부분이름은 반드시 필요한_부분에 적힌 이름 그대로, 질문을 되풀이하지 않음)",
   "앞|현재 주가에 대한 한 줄 설명(현재가·오늘 등락·52주 가격대 위치 중 핵심). 질문이 '사도 되나·팔까' 같은 매수·매도 판단이면 문장 맨 앞에 '삼성전자를 지금 사도 되는지에 대한 결정은 할 수 없지만, 참고하실 만한 내용을 보여드릴게요.' 형태(종목·행동은 질문에 맞게)를 먼저 쓰고 이어서 현재 주가 1줄.",
   "핵심지표|입력의 핵심지표에서 경고(⚠️) 표시가 있으면 먼저 '현재 1일 변동성이 3.8%로 매우 높아 투자에 유의하시기 바랍니다.'처럼 유의하라고 짚고, 이어서 좋음(🔥) 표시가 있으면 '하지만 매출 성장이 +130%로 좋은 편이에요.'처럼 장점을 연결합니다. 둘 다 없으면 눈에 띄는 수치 1~2개만 높은 편/낮은 편으로 풀어 줍니다.",
   "리스크|입력의 리스크에서 위험·주의로 표시된 것만 짚습니다(양호 항목은 말하지 않음). 위험·주의가 하나도 없으면 '뚜렷한 위험 신호는 없어요.' 한 문장.",
@@ -2156,6 +2156,12 @@ async function handleAnswer(request, env) {
     const pd = await pr.json();
     const ptext = (pd.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n");
     const parts = answerPartsParse(ptext);
+    // AI가 부분 이름을 엉뚱하게 쓴 경우(예: 질문을 되풀이) — 필요한 부분이 하나면 '|' 뒤 내용을 그 부분으로
+    if (need.length === 1 && !parts[need[0]]) {
+      const ln = ptext.split(/?
+/).map((x) => x.trim()).find((x) => x.includes("|"));
+      if (ln) parts[need[0]] = ln.slice(ln.indexOf("|") + 1).trim();
+    }
     if (!Object.keys(parts).length) return jsonResponse({ error: "AI 설명 형식을 읽지 못했습니다.", got: ptext.slice(0, 200) }, 502);
     const pu = pd.usage || {};
     return new Response(JSON.stringify({ parts, usage: { tokens: Math.round((pu.input_tokens || 0) + (pu.output_tokens || 0) + (pu.cache_creation_input_tokens || 0) + (pu.cache_read_input_tokens || 0) * 0.1) } }), { status: 200, headers: { "Content-Type": "application/json", ...CORS_HEADERS } });
