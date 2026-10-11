@@ -1449,56 +1449,132 @@ window.SCFlow = (function () {
     return facts;
   }
 
-  async function answerFlow(plan, text) {
-    token++;
-    const t = token;
-    clearIntro();
-    const { st, items } = plan;
-    const man = await loadPackManifest();
-    const byId = Object.fromEntries(man.map((i) => [i.id, i]));
-    const outlook = AN_OUTLOOK_RE.test(String(text || ""));
-    // 1단계
-    const facts = await answerFacts(items, st).catch(() => []);
-    const names = items.map((i) => anLabel(i, st));
-    let res = null;
-    let el = null;
-    if (facts.length) {
-      const req = fetch(WORKER + "/answer", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: String(text).slice(0, 200), mode: outlook ? "outlook" : "summary", facts, focus: BUYSELL.test(String(text).replace(/\s/g, "")) ? "매수·매도 판단 질문: 결정은 할 수 없다고 먼저 말하고, 참고할 수치를 높은 편/낮은 편으로 풀어 줌" : items.some((i) => i.id === "stock-dividend") ? "현재 주가 → 연 배당수익률 → 그래서 1주당 1년에 받을 것으로 예상되는 배당금(최근 1년 지급 합계 기준, 다음 예정이 있으면 함께). 짧게 3~4줄" : "" }), signal: AbortSignal.timeout(11000) })
-        .then((r) => (r.ok ? r.json() : null))
-        .catch(() => null);
-      let ctl = null;
-      let timer = null;
+  // ---------- 종목 질문 답변: 한꺼번에 요약하지 않고 화면마다 위에 주요 내용만 짧게 ----------
+  // 맨 앞: 현재 주가 한 줄(매수·매도 질문이면 "결정은 할 수 없지만…") → 개요 · 핵심지표(경고 먼저, 이어 장점) · 리스크 점검(위험·주의만) 각각 위에 1~2문장
+  const AN_PART = { "stock-summary": "앞", "stock-sreport": "핵심지표", "stock-risk": "리스크", "stock-dividend": "배당", "stock-revenue": "재무" };
+  // 보이지 않는 화면을 잠깐 띄워 마켓맵자료 화면이 계산한 값(경고 표시 등)을 읽어 온다(같은 도메인이라 읽을 수 있다)
+  function scrapeEmbed(packId, params, fn, ms) {
+    return new Promise((resolve) => {
+      const fr = document.createElement("iframe");
+      fr.style.cssText = "position:fixed;left:-9999px;top:0;width:390px;height:900px;border:0;visibility:hidden";
+      const url = new URL("마켓맵자료/" + packId + "/index.html", document.baseURI);
+      url.searchParams.set("embed", "1");
+      url.searchParams.set("id", "scrape");
+      Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+      fr.src = url.href;
+      document.body.appendChild(fr);
       const t0 = Date.now();
-      const w = await botWhile(req, t, (bubble) => {
-        ctl = addMark(bubble, "답변 정리");
-        ctl.set(0, "자료를 요약하는 중");
-        timer = setInterval(() => ctl && ctl.set(Math.min(92, Math.round(((Date.now() - t0) / 10000) * 92)), "자료를 요약하는 중"), 200);
-      });
-      clearInterval(timer);
-      if (!w.el) {
-        if (ctl) ctl.remove();
-        return;
+      const iv = setInterval(() => {
+        let r = null;
+        try {
+          r = fn(fr.contentDocument);
+        } catch (e) {
+          r = null;
+        }
+        if (r || Date.now() - t0 > ms) {
+          clearInterval(iv);
+          fr.remove();
+          resolve(r);
+        }
+      }, 300);
+    });
+  }
+  const MARKS = /[\u26A0\uFE0F\u{1F525}]/gu;
+  const scrapeSreport = (doc) => {
+    const L = doc.querySelectorAll(".srt-rd-label");
+    const V = doc.querySelectorAll(".srt-rd-value");
+    if (V.length < 4 || L.length < V.length) return null;
+    return [...V].map((v, i) => {
+      const c = String(v.getAttribute("class") || "");
+      return { 지표: L[i].textContent.trim(), 값: v.textContent.replace(MARKS, "").trim(), 표시: /srt-rd-warn/.test(c) ? "경고" : /srt-rd-fire/.test(c) ? "좋음" : "보통" };
+    });
+  };
+  const scrapeRisk = (doc) => {
+    if (!doc.querySelector(".risk-sum-counts")) return null;
+    const rows = [...doc.querySelectorAll(".risk-sum-row")];
+    if (!rows.length) return null;
+    const tx = (r, s) => (r.querySelector(s) ? r.querySelector(s).textContent.trim() : "");
+    return rows.map((r) => ({ 항목: tx(r, ".risk-sum-label"), 값: tx(r, ".risk-sum-value"), 수준: r.classList.contains("is-danger") ? "위험" : r.querySelector(".risk-warn") ? "주의" : "양호" }));
+  };
+  async function quoteOf(symbol) {
+    try {
+      const j = await fetch(WORKER + "/?url=" + encodeURIComponent("https://query1.finance.yahoo.com/v8/finance/chart/" + encodeURIComponent(symbol) + "?range=1d&interval=5m"), { signal: AbortSignal.timeout(6000) }).then((r) => r.json());
+      const m = j.chart.result[0].meta;
+      const p = m.regularMarketPrice;
+      const prev = m.chartPreviousClose;
+      return { price: p, chg: p != null && prev ? (p / prev - 1) * 100 : null, cur: m.currency };
+    } catch (e) {
+      return null;
+    }
+  }
+  const anPrice = (v, cur) => (v == null ? "" : cur === "KRW" ? Math.round(v).toLocaleString("ko-KR") + "원" : (cur === "USD" || !cur ? "$" : "") + v.toFixed(2));
+  // 말투를 AI가 못 만들었을 때(시간 초과 등) 쓰는 기본 문장
+  function anLocalCaption(part, ctx) {
+    const { st, q, sr, rk } = ctx;
+    if (part === "앞") return q && q.price != null ? "**" + st.name + "** 현재 주가는 **" + anPrice(q.price, q.cur) + "**" + (q.chg != null ? "(오늘 " + (q.chg >= 0 ? "+" : "") + q.chg.toFixed(1) + "%)" : "") + "입니다." : "";
+    if (part === "핵심지표" && sr) {
+      const w = sr.filter((x) => x.표시 === "경고").map((x) => x.지표 + " " + x.값);
+      const g = sr.filter((x) => x.표시 === "좋음").map((x) => x.지표 + " " + x.값);
+      return (w.length ? "**" + w.join(", ") + "**은(는) 주의가 필요하니 투자에 유의하시기 바랍니다." : "") + (g.length ? (w.length ? " 하지만 " : "") + g.join(", ") + "은(는) 좋은 편이에요." : "") || "";
+    }
+    if (part === "리스크" && rk) {
+      const bad = rk.filter((x) => x.수준 !== "양호");
+      return bad.length ? "위험·주의 신호는 **" + bad.map((x) => x.항목 + " " + x.값).join(", ") + "**입니다." : "뚜렷한 위험 신호는 없어요.";
+    }
+    return "";
+  }
+  async function stockAnswerBody(plan, text, t) {
+    const { st, items } = plan;
+    const has = (id) => items.some((i) => i.id === id);
+    const need = [...new Set(items.map((i) => AN_PART[i.id]).filter(Boolean))];
+    if (!need.includes("앞") && (BUYSELL.test(String(text).replace(/\s/g, "")) || has("stock-summary"))) need.unshift("앞");
+    const gather = Promise.all([
+      quoteOf(st.symbol),
+      has("stock-sreport") ? scrapeEmbed("stock-sreport", { view: "detail", sub: "sreport", ticker: st.symbol }, scrapeSreport, 14000) : null,
+      has("stock-risk") ? scrapeEmbed("stock-risk", { view: "detail", sub: "risk", ticker: st.symbol }, scrapeRisk, 14000) : null,
+      answerFacts(items, st).catch(() => []),
+    ]);
+    let ctl = null;
+    let timer = null;
+    const t0 = Date.now();
+    const w = await botWhile(gather, t, (bubble) => {
+      ctl = addMark(bubble, "답변 정리");
+      ctl.set(0, "자료를 확인하는 중");
+      timer = setInterval(() => ctl && ctl.set(Math.min(92, Math.round(((Date.now() - t0) / 12000) * 92)), "자료를 확인하는 중"), 200);
+    });
+    clearInterval(timer);
+    if (!w.el) {
+      if (ctl) ctl.remove();
+      return false;
+    }
+    const [q, sr, rk, baseFacts] = w.res;
+    const ctx = { st, q, sr, rk };
+    const facts = (baseFacts || []).slice();
+    if (q) facts.push({ 현재가: anPrice(q.price, q.cur), 오늘등락률퍼센트: q.chg != null ? Math.round(q.chg * 100) / 100 : null });
+    if (sr) facts.push({ 핵심지표: sr });
+    if (rk) facts.push({ 리스크: { 위험_주의: rk.filter((x) => x.수준 !== "양호"), 양호_개수: rk.filter((x) => x.수준 === "양호").length } });
+    let parts = {};
+    if (need.length) {
+      const focus = BUYSELL.test(String(text).replace(/\s/g, "")) ? "buysell" : "";
+      const r = await fetch(WORKER + "/answer", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: String(text).slice(0, 200), mode: "parts", name: st.name, need, facts, focus }), signal: AbortSignal.timeout(11000) })
+        .then((x) => (x.ok ? x.json() : null))
+        .catch(() => null);
+      if (r && r.parts) {
+        parts = r.parts;
+        if (r.usage && window.SCUsage) window.SCUsage.add(r.usage.tokens, "답변 설명");
       }
-      el = w.el;
-      res = w.res;
-      if (ctl) (res && res.understand ? ctl.done("요약 완료 — 눌러서 보기") : ctl.remove());
-      if (res && res.usage && window.SCUsage) window.SCUsage.add(res.usage.tokens, "답변 요약");
-    } else {
-      el = await bot("", t, 350);
-      if (!el) return;
     }
-    const sec = (cls, tag, arr) => (arr && arr.length ? '<div class="an-sc"><div class="ol-tag ' + cls + '">' + tag + "</div>" + anUl(arr) + "</div>" : "");
-    if (res && res.understand) {
-      el.innerHTML = '<p class="ol-sum">' + anBold(res.understand) + "</p>" + anUl(res.summary) + (outlook ? sec("up", "낙관 시나리오", res.best) + sec("down", "비관 시나리오", res.worst) : "");
-    } else {
-      el.innerHTML = '<p class="ol-sum">' + esc(text) + " — 관련 자료를 모아 보여드릴게요.</p>";
-    }
+    if (ctl) ctl.done("정리 완료 — 눌러서 보기");
+    const cap = (part) => parts[part] || anLocalCaption(part, ctx);
+    // 맨 앞: 현재 주가 한 줄
+    const top = need.includes("앞") ? cap("앞") : "";
+    if (top) w.el.innerHTML = '<p class="ol-sum">' + anBold(top) + "</p>";
+    else w.el.remove();
     scroll();
-    await sleep(500);
-    if (!alive(t)) return;
-    // 2단계
+    await sleep(400);
     for (const it of items) {
-      if (!alive(t)) return;
+      if (!alive(t)) return false;
+      const part = AN_PART[it.id];
       if (it.id === "stock-news") {
         await newsFlow(st.symbol, st.name, t);
         continue;
@@ -1507,15 +1583,90 @@ window.SCFlow = (function () {
         await bot("<b>" + esc(st.name) + "</b> — 최근 1년 동안 배당 내역이 없어요.", t, 300);
         continue;
       }
-      if (!(await announce("<b>" + esc(anLabel(it, st)) + "</b>", t))) return;
+      const c = part && part !== "앞" ? cap(part) : "";
+      if (c) {
+        if (!(await bot('<p class="ol-sum">' + anBold(c) + "</p>", t, 350))) return false;
+      } else if (!(part === "앞" && top) && !(await announce("<b>" + esc(anLabel(it, st)) + "</b>", t))) return false;
       const params = Object.assign({}, it.params);
-      if (st && params.ticker) params.ticker = st.symbol;
-      embed(params, async (sym) => {
-        const nm = await SCData.nameOf(sym, sym);
-        user(nm);
-        stockMenu(sym, nm, t, true);
-      });
+      if (params.ticker) params.ticker = st.symbol;
+      embed(params, null);
       await sleep(450);
+    }
+    return true;
+  }
+
+  async function answerFlow(plan, text) {
+    token++;
+    const t = token;
+    clearIntro();
+    const { st, items } = plan;
+    const man = await loadPackManifest();
+    const byId = Object.fromEntries(man.map((i) => [i.id, i]));
+    if (st && items.every(isStockItem)) {
+      if (!(await stockAnswerBody(plan, text, t))) return;
+    } else {
+      const outlook = AN_OUTLOOK_RE.test(String(text || ""));
+      // 1단계
+      const facts = await answerFacts(items, st).catch(() => []);
+      const names = items.map((i) => anLabel(i, st));
+      let res = null;
+      let el = null;
+      if (facts.length) {
+        const req = fetch(WORKER + "/answer", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: String(text).slice(0, 200), mode: outlook ? "outlook" : "summary", facts, focus: BUYSELL.test(String(text).replace(/\s/g, "")) ? "매수·매도 판단 질문: 결정은 할 수 없다고 먼저 말하고, 참고할 수치를 높은 편/낮은 편으로 풀어 줌" : items.some((i) => i.id === "stock-dividend") ? "현재 주가 → 연 배당수익률 → 그래서 1주당 1년에 받을 것으로 예상되는 배당금(최근 1년 지급 합계 기준, 다음 예정이 있으면 함께). 짧게 3~4줄" : "" }), signal: AbortSignal.timeout(11000) })
+          .then((r) => (r.ok ? r.json() : null))
+          .catch(() => null);
+        let ctl = null;
+        let timer = null;
+        const t0 = Date.now();
+        const w = await botWhile(req, t, (bubble) => {
+          ctl = addMark(bubble, "답변 정리");
+          ctl.set(0, "자료를 요약하는 중");
+          timer = setInterval(() => ctl && ctl.set(Math.min(92, Math.round(((Date.now() - t0) / 10000) * 92)), "자료를 요약하는 중"), 200);
+        });
+        clearInterval(timer);
+        if (!w.el) {
+          if (ctl) ctl.remove();
+          return;
+        }
+        el = w.el;
+        res = w.res;
+        if (ctl) (res && res.understand ? ctl.done("요약 완료 — 눌러서 보기") : ctl.remove());
+        if (res && res.usage && window.SCUsage) window.SCUsage.add(res.usage.tokens, "답변 요약");
+      } else {
+        el = await bot("", t, 350);
+        if (!el) return;
+      }
+      const sec = (cls, tag, arr) => (arr && arr.length ? '<div class="an-sc"><div class="ol-tag ' + cls + '">' + tag + "</div>" + anUl(arr) + "</div>" : "");
+      if (res && res.understand) {
+        el.innerHTML = '<p class="ol-sum">' + anBold(res.understand) + "</p>" + anUl(res.summary) + (outlook ? sec("up", "낙관 시나리오", res.best) + sec("down", "비관 시나리오", res.worst) : "");
+      } else {
+        el.innerHTML = '<p class="ol-sum">' + esc(text) + " — 관련 자료를 모아 보여드릴게요.</p>";
+      }
+      scroll();
+      await sleep(500);
+      if (!alive(t)) return;
+      // 2단계
+      for (const it of items) {
+        if (!alive(t)) return;
+        if (it.id === "stock-news") {
+          await newsFlow(st.symbol, st.name, t);
+          continue;
+        }
+        if (it.id === "stock-dividend" && !(await hasDividend(st.symbol))) {
+          await bot("<b>" + esc(st.name) + "</b> — 최근 1년 동안 배당 내역이 없어요.", t, 300);
+          continue;
+        }
+        if (!(await announce("<b>" + esc(anLabel(it, st)) + "</b>", t))) return;
+        const params = Object.assign({}, it.params);
+        if (st && params.ticker) params.ticker = st.symbol;
+        embed(params, async (sym) => {
+          const nm = await SCData.nameOf(sym, sym);
+          user(nm);
+          stockMenu(sym, nm, t, true);
+        });
+        await sleep(450);
+      }
+
     }
     if (!alive(t)) return;
     // 3단계(AI 없이 자료 목록의 연관 자료)
