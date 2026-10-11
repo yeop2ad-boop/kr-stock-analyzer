@@ -4182,3 +4182,9 @@ table.earn-table tr.earn-chart-row td { padding: 6px 0 14px; white-space: normal
 #futureInlineWrap .future-chart-container { overflow-x: visible; max-width: none; }
 #futureInlineWrap .future-chart-container svg { min-width: 0; width: 100%; }
 #futureInlineWrap .chart-scroll-hint { display: none; }
+
+/* 마켓맵자료 stock-dividend: 배당금 막대그래프(모바일 기준) */
+.div-bars { margin: 10px 0 14px; padding: 12px 10px 6px; border-radius: 14px; background: #f6f8fc; }
+.div-bars-t { font-size: 14px; font-weight: 800; margin: 0 4px 2px; }
+.div-bars-t small { font-size: 12px; font-weight: 600; color: #7a8090; }
+.div-bars svg { width: 100%; height: auto; display: block; }

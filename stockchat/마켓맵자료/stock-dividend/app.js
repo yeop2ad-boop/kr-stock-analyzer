@@ -7955,6 +7955,29 @@ function dividendPanelHtml(d, companyName) {
       </div>`;
     })
     .join("");
+  // 배당금 막대그래프(모바일에서 한눈에): 오래된 배당 → 최근 → 예정(연한 파란 막대) 순서로 왼쪽에서 오른쪽
+  const barsHtml = (() => {
+    const rows = (d.rows || []).filter((r) => r.amount != null && r.exDate).slice(0, 8).reverse();
+    if (rows.length < 2) return "";
+    const W = 340, H = 196, ML = 8, MR = 8, MT = 30, MB = 44;
+    const PW = W - ML - MR, PH = H - MT - MB;
+    const max = Math.max(...rows.map((r) => r.amount)) || 1;
+    const slot = PW / rows.length;
+    const bw = Math.min(46, slot * 0.62);
+    const amt = (v) => (isKrw ? Math.round(v).toLocaleString("ko-KR") + "원" : (d.currency === "USD" || !d.currency ? "$" : "") + (v < 1 ? v.toFixed(2) : v.toFixed(2)));
+    let g = `<line x1="${ML}" x2="${W - MR}" y1="${MT + PH}" y2="${MT + PH}" stroke="#d8dce6" stroke-width="1.5" />`;
+    rows.forEach((r, i) => {
+      const h = Math.max(4, (r.amount / max) * PH);
+      const x = ML + slot * i + (slot - bw) / 2;
+      const y = MT + PH - h;
+      const up = !!r.upcoming;
+      g += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="5" fill="${up ? "#bcd5ff" : "#2f6fed"}" ${up ? 'stroke="#2f6fed" stroke-dasharray="4,3" stroke-width="1.5"' : ""} />`;
+      g += `<text x="${(x + bw / 2).toFixed(1)}" y="${(y - 7).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="800" fill="${up ? "#2f6fed" : "#1c1b1a"}">${escapeHtml(amt(r.amount))}</text>`;
+      g += `<text x="${(x + bw / 2).toFixed(1)}" y="${MT + PH + 18}" text-anchor="middle" font-size="12.5" font-weight="700" fill="#4b5160">${r.exDate.slice(2, 4)}.${r.exDate.slice(5, 7)}</text>`;
+      g += `<text x="${(x + bw / 2).toFixed(1)}" y="${MT + PH + 34}" text-anchor="middle" font-size="11.5" font-weight="${up ? 800 : 500}" fill="${up ? "#2f6fed" : "#8a90a0"}">${up ? "예정" : "배당락"}</text>`;
+    });
+    return `<div class="div-bars"><div class="div-bars-t">1주당 배당금 <small>(배당락일 기준)</small></div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="배당금 막대그래프">${g}</svg></div>`;
+  })();
   const annualTxt = d.annualYieldPct != null ? `연 배당률 <b>${d.annualYieldPct.toFixed(2)}%</b> · 지난 1년 배당금 합계 <b>${money(d.annualAmount)}</b>` : "";
   return `
     <div class="div-wrap">
@@ -7965,6 +7988,7 @@ function dividendPanelHtml(d, companyName) {
         <span class="div-freq">${escapeHtml(d.frequency || "")}</span>
       </div>
       ${annualTxt ? `<p class="div-annual">${annualTxt}</p>` : ""}
+      ${barsHtml}
       ${d.delayed ? `<p class="div-warn">⚠️ 평소 배당 주기보다 늦어지고 있어요. 배당이 미뤄지거나 중단됐을 수 있으니 공시를 확인해 보세요.</p>` : ""}
       <div class="div-head"><span>주가<small>배당락일 전 종가</small></span><span>배당금<small>(배당률)</small></span><span>배당락일<small>/ 지급일</small></span></div>
       ${rowsHtml}
