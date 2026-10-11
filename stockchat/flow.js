@@ -1463,7 +1463,7 @@ window.SCFlow = (function () {
     let res = null;
     let el = null;
     if (facts.length) {
-      const req = fetch(WORKER + "/answer", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: String(text).slice(0, 200), mode: outlook ? "outlook" : "summary", facts, focus: items.some((i) => i.id === "stock-dividend") ? "현재 주가 → 연 배당수익률 → 그래서 1주당 1년에 받을 것으로 예상되는 배당금(최근 1년 지급 합계 기준, 다음 예정이 있으면 함께). 짧게 3~4줄" : "" }), signal: AbortSignal.timeout(11000) })
+      const req = fetch(WORKER + "/answer", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: String(text).slice(0, 200), mode: outlook ? "outlook" : "summary", facts, focus: BUYSELL.test(String(text).replace(/\s/g, "")) ? "매수·매도 판단 질문: 결정은 할 수 없다고 먼저 말하고, 참고할 수치를 높은 편/낮은 편으로 풀어 줌" : items.some((i) => i.id === "stock-dividend") ? "현재 주가 → 연 배당수익률 → 그래서 1주당 1년에 받을 것으로 예상되는 배당금(최근 1년 지급 합계 기준, 다음 예정이 있으면 함께). 짧게 3~4줄" : "" }), signal: AbortSignal.timeout(11000) })
         .then((r) => (r.ok ? r.json() : null))
         .catch(() => null);
       let ctl = null;
