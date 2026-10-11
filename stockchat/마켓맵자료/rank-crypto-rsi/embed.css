@@ -1,0 +1,87 @@
+/* 스톡챗 끼워 넣기 모드(?embed=1) 전용 — html.embed-mode가 붙었을 때만 적용되어 평소 마켓맵 화면에는 영향이 없다.
+   머리글·하단 메뉴·스플래시를 숨기고, 결과 영역만 채팅 안에 그대로 보여준다(디자인·동작은 마켓맵 본체 그대로). */
+html.embed-mode body { background: var(--bg); }
+html.embed-mode .fixed-header,
+html.embed-mode .bottom-nav,
+html.embed-mode #loadingSplash,
+html.embed-mode #morePanel,
+html.embed-mode #aiChatOverlay,
+html.embed-mode .source-note,
+html.embed-mode .site-footer,
+html.embed-mode #searchWizardPanel { display: none !important; }
+html.embed-mode .container { padding-top: 4px !important; padding-bottom: 14px !important; padding-left: 14px; padding-right: 14px; max-width: none; }
+
+/* 종목 상세: 전체화면 오버레이를 문서 흐름 안의 일반 블록으로 */
+html.embed-detail .container { display: none !important; }
+html.embed-detail #companyPanel { position: static !important; inset: auto !important; transform: none !important; display: flex !important; height: auto !important; min-height: 0 !important; z-index: auto !important; transition: none !important; }
+html.embed-detail #companyPanel .company-panel-bar { display: none !important; }
+html.embed-detail #companyPanel .company-panel-body { overflow: visible !important; flex: none !important; padding: 6px 14px 14px !important; max-width: none; }
+/* 한 번에 한 영역만(핵심정보 or 리스크점검) 보여줄 때 */
+html[data-embed-sub] #summarySubtabNav { display: none !important; }
+html[data-embed-sub="sreport"] [data-summary-subtabpanel]:not([data-summary-subtabpanel="sreport"]) { display: none !important; }
+html[data-embed-sub="risk"] [data-summary-subtabpanel]:not([data-summary-subtabpanel="risk"]) { display: none !important; }
+html[data-embed-sub="summary"] [data-summary-subtabpanel]:not([data-summary-subtabpanel="summary"]) { display: none !important; }
+html[data-embed-sub="revenue"] [data-summary-subtabpanel]:not([data-summary-subtabpanel="revenue"]) { display: none !important; }
+html[data-embed-sub="news"] [data-summary-subtabpanel]:not([data-summary-subtabpanel="news"]) { display: none !important; }
+
+/* 요약(개요) 화면 맨 위: 이름 · 현재가 · 등락을 상세 상단처럼 크게(뒤로가기·검색·알림 아이콘은 숨김) */
+html.embed-detail #companyPanelCloseBtn,
+html.embed-detail #companyPanel .detail-bar-actions { display: none !important; }
+html.embed-detail[data-embed-sub="summary"] #companyPanel .company-panel-bar { display: flex !important; background: transparent !important; padding: 16px 16px 6px !important; border: none !important; }
+html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity { gap: 12px; }
+html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-logo .ticker-logo-wrap { width: 46px !important; height: 46px !important; }
+html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-name { font-size: 19px !important; font-weight: 800 !important; }
+html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-priceline { overflow: visible !important; align-items: baseline !important; gap: 8px !important; }
+html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-priceline .detail-identity-price { font-size: 30px !important; font-weight: 800 !important; letter-spacing: -0.8px !important; line-height: 1.15; }
+html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-priceline .detail-identity-change { font-size: 16px !important; font-weight: 700 !important; letter-spacing: -0.3px !important; }
+html.embed-detail[data-embed-sub="summary"] #companyPanel .detail-identity-logo { display: none !important; } /* 아래 기본정보에 로고가 있어 중복 */
+
+/* 공포지수 화면(더보기 > 공포지수): 전체화면 오버레이를 문서 흐름 안의 블록으로, 시장 선택은 채팅 버튼이 하므로 상단 시장 줄은 숨김 */
+html.embed-fear .container { display: none !important; }
+html.embed-fear #fearPanel { position: static !important; inset: auto !important; transform: none !important; display: flex !important; height: auto !important; min-height: 0 !important; z-index: auto !important; transition: none !important; }
+html.embed-fear #fearPanel .company-panel-bar,
+html.embed-fear #fearMarketNav { display: none !important; }
+html.embed-fear #fearPanel .company-panel-body { overflow: visible !important; flex: none !important; padding: 8px 14px 14px !important; max-width: none; }
+
+/* 순위 화면의 "+승률이란" 내용(설명 + 대표자산 승률 비교)만 보여주는 화면 */
+html.embed-info .container { display: none !important; }
+html.embed-info #embedInfo { margin: 0 !important; padding: 16px 14px 14px !important; }
+html.embed-info .embed-info-title { font-size: 17px; font-weight: 800; margin: 0 0 10px; letter-spacing: -0.3px; }
+
+
+/* 캘린더·인사이트·뉴스·시장 지수: 전체화면 오버레이를 문서 흐름 안의 블록으로 */
+html.embed-calendar .container, html.embed-insight .container, html.embed-overlay .container, html.embed-market .container { display: none !important; }
+html.embed-calendar #calendarPanel, html.embed-insight #insightOverlayPanel, html.embed-overlay #insightOverlayPanel, html.embed-market #marketPanel { position: static !important; inset: auto !important; transform: none !important; display: flex !important; height: auto !important; min-height: 0 !important; z-index: auto !important; transition: none !important; }
+html.embed-calendar #calendarPanel .company-panel-bar, html.embed-insight #insightOverlayPanel .company-panel-bar, html.embed-overlay #insightOverlayPanel .company-panel-bar, html.embed-market #marketPanel .company-panel-bar { display: none !important; }
+html.embed-calendar .company-panel-body, html.embed-insight .company-panel-body, html.embed-overlay .company-panel-body, html.embed-market .company-panel-body { overflow: visible !important; flex: none !important; padding: 8px 14px 14px !important; max-width: none; }
+html.embed-mode:not(.embed-calendar):not(.embed-insight):not(.embed-overlay):not(.embed-market) #calendarPanel,
+html.embed-mode:not(.embed-insight):not(.embed-overlay) #insightOverlayPanel,
+html.embed-mode:not(.embed-market) #marketPanel { display: none !important; }
+/* 항목 이름 줄(서브내비)은 채팅 버튼이 대신하므로 숨김 */
+html.embed-entry #topRankingSubNav, html.embed-tab #topRankingSubNav, html.embed-popular #topRankingSubNav { display: none !important; }
+/* 순위 화면: 표 아래 마켓맵 전체보기 버튼은 스톡챗의 "전체보기"/"더보기"가 대신하므로 숨김(스톡챗이 코드로 눌러줌) */
+html.embed-rank .load-more-btn, html.embed-entry .load-more-btn { display: none !important; }
+/* 끼워 넣은 화면 안에는 자체 스크롤바를 두지 않는다 — 스크롤바가 켜졌다 꺼질 때 차트 폭·높이가 계속 바뀌어 화면이 깜빡이던 문제(투자분석) */
+html.embed-mode, html.embed-mode body { overflow: hidden !important; }
+
+/* 종목 상세 "배당": 배당 내역(기업명·주기·3단계 표)만 보이게 — 차트·요약 머리글·버튼 줄은 숨김(배당 버튼은 embed.js가 대신 눌러 준다) */
+html[data-embed-sub="dividend"] [data-summary-subtabpanel]:not([data-summary-subtabpanel="summary"]) { display: none !important; }
+html[data-embed-sub="dividend"] .summary-chart-wrap,
+html[data-embed-sub="dividend"] #summaryChartPeriodNav,
+html[data-embed-sub="dividend"] #summaryScoreRow,
+html[data-embed-sub="dividend"] .summary-main,
+html[data-embed-sub="dividend"] #etfHoldingsBlock,
+html[data-embed-sub="dividend"] #tickerHistoricalRow { display: none !important; }
+
+/* 종목 상세 "개요 + 핵심지표" 합본(스톡챗 전망 3번): 개요(주가 차트·기본정보)와 핵심지표 두 영역만 이어서 보여준다 */
+html[data-embed-sub="combo"] [data-summary-subtabpanel="revenue"],
+html[data-embed-sub="combo"] [data-summary-subtabpanel="risk"],
+html[data-embed-sub="combo"] [data-summary-subtabpanel="news"] { display: none !important; }
+/* 종목 상세 "미래예측": 미래예측 그래프만(배당과 같은 방식) */
+html[data-embed-sub="future"] [data-summary-subtabpanel]:not([data-summary-subtabpanel="summary"]) { display: none !important; }
+html[data-embed-sub="future"] .summary-chart-wrap,
+html[data-embed-sub="future"] #summaryChartPeriodNav,
+html[data-embed-sub="future"] #summaryScoreRow,
+html[data-embed-sub="future"] .summary-main,
+html[data-embed-sub="future"] #etfHoldingsBlock,
+html[data-embed-sub="future"] #tickerHistoricalRow { display: none !important; }
