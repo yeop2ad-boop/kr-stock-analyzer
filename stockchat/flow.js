@@ -1507,6 +1507,11 @@ window.SCFlow = (function () {
       return null;
     }
   }
+  // 받침 유무에 따라 을/를 선택
+  const anJosa = (w, a, b) => {
+    const c = String(w).replace(/[^가-힣A-Za-z0-9]/g, "").slice(-1).charCodeAt(0);
+    return c >= 0xac00 && c <= 0xd7a3 ? ((c - 0xac00) % 28 ? a : b) : b;
+  };
   const anPrice = (v, cur) => (v == null ? "" : cur === "KRW" ? Math.round(v).toLocaleString("ko-KR") + "원" : (cur === "USD" || !cur ? "$" : "") + v.toFixed(2));
   // 말투를 AI가 못 만들었을 때(시간 초과 등) 쓰는 기본 문장
   function anLocalCaption(part, ctx) {
@@ -1567,7 +1572,10 @@ window.SCFlow = (function () {
     if (ctl) ctl.done("정리 완료 — 눌러서 보기");
     const cap = (part) => parts[part] || anLocalCaption(part, ctx);
     // 맨 앞: 현재 주가 한 줄
-    const top = need.includes("앞") ? cap("앞") : "";
+    let top = need.includes("앞") ? cap("앞") : "";
+    // 매수·매도 판단 질문: 결정은 할 수 없다는 말을 항상 맨 앞에(AI가 빠뜨려도)
+    const bsq = String(text).replace(/\s/g, "");
+    if (BUYSELL.test(bsq) && top.indexOf("결정은 할 수 없") < 0) top = st.name + anJosa(st.name, "을", "를") + " 지금 " + (/(팔|매도|손절|익절)/.test(bsq) ? "팔아도" : "사도") + " 되는지에 대한 **결정은 할 수 없지만**, 참고하실 만한 내용을 보여드릴게요. " + top;
     if (top) w.el.innerHTML = '<p class="ol-sum">' + anBold(top) + "</p>";
     else w.el.remove();
     scroll();
