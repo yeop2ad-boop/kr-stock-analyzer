@@ -2076,6 +2076,7 @@ async function handleStockCard(request) {
 const ANSWER_BASE = [
   "당신은 증권 정보 앱 StockCHAT의 답변 도우미입니다. 사용자가 투자 초보일 수 있으니 쉬운 한국어로 짧게 답합니다.",
   "입력(JSON): 질문, 자료(우리가 가진 수치·목록). 자료에 있는 숫자와 사실만 근거로 쓰고, 자료에 없는 숫자·사실·전망 수치는 만들지 않습니다.",
+  "입력에 요약초점이 있으면 요약 줄을 그 순서·초점대로 씁니다(예: 현재 주가 → 배당률 → 그래서 받을 것으로 예상되는 금액).",
   "문장에 '자료에 있는', '자료에는', '자료에 따르면', '제공된 자료' 같은 출처·자료 언급을 쓰지 않고 사실만 바로 말합니다. 정보가 없는 항목은 아예 언급하지 않습니다('없습니다'라고 쓰지 않음). 질문과 관계없는 수치는 덧붙이지 않습니다.",
   "출력 형식(이 형식만, 다른 말·코드블록 금지):",
   "이해: (질문이 무엇을 알고 싶은 것인지 1문장으로 풀어 씀. 핵심 말 1~2군데를 **이렇게** 굵게)",
@@ -2115,13 +2116,14 @@ async function handleAnswer(request, env) {
   const question = String((body && body.question) || "").trim().slice(0, 300);
   if (!question) return jsonResponse({ error: "질문이 필요합니다." }, 400);
   const outlookMode = !!(body && body.mode === "outlook");
+  const focus = String((body && body.focus) || "").slice(0, 160);
   const facts = JSON.stringify((body && body.facts) || []).slice(0, 4000);
   const payload = {
     model: env.AI_MODEL || AI_DEFAULT_MODEL,
     max_tokens: 900,
     output_config: { effort: "low" },
     system: [{ type: "text", text: outlookMode ? ANSWER_OUTLOOK : ANSWER_SUMMARY, cache_control: { type: "ephemeral" } }],
-    messages: [{ role: "user", content: JSON.stringify({ 질문: question, 자료: JSON.parse(facts) }) }],
+    messages: [{ role: "user", content: JSON.stringify({ 질문: question, ...(focus ? { 요약초점: focus } : {}), 자료: JSON.parse(facts) }) }],
   };
   let res;
   try {

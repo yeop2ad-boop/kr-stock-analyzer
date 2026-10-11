@@ -1425,7 +1425,7 @@ window.SCFlow = (function () {
             const d = await fetch(WORKER + "/dividends?symbol=" + encodeURIComponent(st.symbol), { signal: AbortSignal.timeout(4000) }).then((r) => (r.ok ? r.json() : null));
             if (d && d.hasDividend) {
               facts.push({
-                배당: { 주기: d.frequency, 최근1년_횟수: d.countLastYear, 연간_배당금합계: d.annualAmount != null ? Math.round(d.annualAmount * 100) / 100 : null, 연_배당수익률퍼센트: d.annualYieldPct != null ? Math.round(d.annualYieldPct * 100) / 100 : null, 통화: d.currency, 최근_지급: (d.rows || []).filter((r) => !r.upcoming).slice(0, 3).map((r) => ({ 배당락일: r.exDate, 지급일: r.payDate, 금액: r.amount })), 다음_예정: (d.rows || []).filter((r) => r.upcoming).slice(0, 1).map((r) => ({ 배당락일: r.exDate, 예상금액: r.amount })) },
+                배당: { 현재주가: d.price, 주기: d.frequency, 최근1년_횟수: d.countLastYear, 연간_배당금합계: d.annualAmount != null ? Math.round(d.annualAmount * 100) / 100 : null, 연_배당수익률퍼센트: d.annualYieldPct != null ? Math.round(d.annualYieldPct * 100) / 100 : null, 통화: d.currency, 최근_지급: (d.rows || []).filter((r) => !r.upcoming).slice(0, 3).map((r) => ({ 배당락일: r.exDate, 지급일: r.payDate, 금액: r.amount })), 다음_예정: (d.rows || []).filter((r) => r.upcoming).slice(0, 1).map((r) => ({ 배당락일: r.exDate, 예상금액: r.amount })) },
               });
             }
           } catch (e) {
@@ -1463,7 +1463,7 @@ window.SCFlow = (function () {
     let res = null;
     let el = null;
     if (facts.length) {
-      const req = fetch(WORKER + "/answer", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: String(text).slice(0, 200), mode: outlook ? "outlook" : "summary", facts }), signal: AbortSignal.timeout(11000) })
+      const req = fetch(WORKER + "/answer", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: String(text).slice(0, 200), mode: outlook ? "outlook" : "summary", facts, focus: items.some((i) => i.id === "stock-dividend") ? "현재 주가 → 연 배당수익률 → 그래서 1주당 1년에 받을 것으로 예상되는 배당금(최근 1년 지급 합계 기준, 다음 예정이 있으면 함께). 짧게 3~4줄" : "" }), signal: AbortSignal.timeout(11000) })
         .then((r) => (r.ok ? r.json() : null))
         .catch(() => null);
       let ctl = null;
