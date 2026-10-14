@@ -22139,9 +22139,9 @@ function getAiTodayData() {
 }
 const TODAY_NEWS_TITLE = {
   kr: "한국 증시 · 오늘의 기업 공시 TOP5",
-  us: "미국 증시 · 오늘의 기업 공시 TOP5",
+  us: "미국 증시 · 오늘의 시장 TOP5",
   crypto: "비트코인 · 오늘의 시장 지표 TOP5",
-  etf: "ETF · 한국 5 + 미국 5 기업 공시 TOP10",
+  etf: "ETF · 한국 공시 5 + 미국 시장 5 TOP10",
 };
 function todayTimeLabel(iso, withDate) {
   const d = new Date(iso);
@@ -22150,7 +22150,13 @@ function todayTimeLabel(iso, withDate) {
   if (withDate && (d.getTime() + 9 * 3600e3) % 86400000 === 0) return d.toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul", month: "numeric", day: "numeric" });
   return d.toLocaleString("ko-KR", { timeZone: "Asia/Seoul", ...(withDate ? { month: "numeric", day: "numeric" } : {}), hour: "2-digit", minute: "2-digit", hour12: false });
 }
-function todayNewsRowHtml(n, rank, badge, linkLabel) {
+// 항목 출처에 따라 "원문 보기" 글자를 바꿈(공시 / 시세 / 정부 자료 / 종목)
+function todayLinkLabel(n) {
+  const s = n.source || "";
+  return /DART|SEC/.test(s) ? "공시 원문" : /Yahoo/.test(s) ? "시세 보기" : /GDELT/.test(s) ? "종목 보기" : "자료 원문";
+}
+function todayNewsRowHtml(n, rank, badge) {
+  const linkLabel = todayLinkLabel(n);
   return `<a class="today-news-row" href="${escapeHtml(n.link)}" target="_blank" rel="noopener">
       <span class="today-news-rank">${rank}</span>
       <span class="today-news-body">
@@ -22190,13 +22196,17 @@ async function renderToday() {
       <p class="today-note">${
         sec === "crypto"
           ? "시세와 공포탐욕지수(출처: Yahoo Finance, Alternative.me) 숫자를 AI가 쉬운 말로 풀어 쓴 지표입니다."
-          : "매일 아침 AI가 DART 전자공시·SEC 공시에서 중요한 공시를 골라 쉬운 말로 풀어 씁니다."
+          : sec === "us"
+          ? "시장 숫자, 미국 정부 자료(노동통계국·연준), 공개 뉴스 데이터(GDELT Project)를 AI가 쉬운 말로 풀어 씁니다."
+          : sec === "etf"
+          ? "한국은 DART 전자공시, 미국은 시장 숫자·정부 자료·GDELT 공개 데이터를 AI가 쉬운 말로 풀어 씁니다."
+          : "매일 아침 AI가 DART 전자공시에서 중요한 공시를 골라 쉬운 말로 풀어 씁니다."
       }${stamp ? ` (${escapeHtml(todayTimeLabel(stamp, true))} 업데이트)` : ""}</p>
-      <div class="today-news-list">${rows.map((r, i) => todayNewsRowHtml(r.n, i + 1, r.badge, sec === "crypto" ? "시세 보기" : "공시 원문")).join("")}</div>
+      <div class="today-news-list">${rows.map((r, i) => todayNewsRowHtml(r.n, i + 1, r.badge)).join("")}</div>
       <p class="disclaimer tab-note">📢 ${
         sec === "crypto"
           ? "시세 숫자를 AI가 설명한 내용이며 틀릴 수 있습니다. 투자 권유가 아닙니다."
-          : "공시 제목·항목을 AI가 쉬운 말로 풀어 쓴 내용이며 틀릴 수 있습니다. 정확한 내용은 공시 원문에서 확인하세요. 투자 권유가 아닙니다."
+          : "공시·정부 자료·공개 데이터를 AI가 쉬운 말로 풀어 쓴 내용이며 틀릴 수 있습니다. 정확한 내용은 원문에서 확인하세요. 투자 권유가 아닙니다."
       }</p>`;
   } else {
     newsHtml = `<p class="muted today-empty">🚧 오늘의 정리를 준비 중입니다. 매일 아침 자동으로 만들어집니다.</p>`;

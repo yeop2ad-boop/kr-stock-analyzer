@@ -1,15 +1,18 @@
 # "AI투데이" — 매일 아침 한국 증시 / 미국 증시 / 비트코인의 오늘 이슈 TOP5를 AI로 정리해 data/ai-today.json 으로 저장.
-# 2026-10-14: 언론사 RSS·기사는 약관상 자동 수집·AI 요약·재게시가 막혀 있어(코인 매체는 명시적 금지) 쓰지 않는다. 대신
-#   · 한국 증시  = DART 전자공시(법정 공시) 중 코스피200·코스닥150 기업의 중요한 공시
-#   · 미국 증시  = SEC EDGAR 8-K 공시(법정 공시) 중 S&P500 기업의 중요한 공시
-#   · 비트코인   = 시세·공포탐욕지수 같은 시장 숫자(기사 문장은 쓰지 않음)
-# 를 재료로 쓰고, AI는 제목·항목명·숫자만 보고 쉬운 말로 풀어쓴다. ETF는 화면에서 한국 5 + 미국 5를 합쳐 TOP10으로 보여준다.
+# 언론사 RSS·기사는 약관상 자동 수집·AI 요약·재게시가 막혀 있어(코인 매체는 명시적 금지) 쓰지 않는다. 대신 저작권 걱정이 없는 재료만 쓴다.
+#   · 한국 증시  = DART 전자공시(법정 공시) 중 코스피200·코스닥150 기업의 중요한 공시                       (TOP5)
+#   · 미국 증시  = ① 시장 숫자 1개(지수·금리·VIX·달러·유가) + ② 미국 정부 자료 2개(BLS 경제지표 · 연준 발표)
+#                  + ③ GDELT 공개 데이터로 본 "오늘 뉴스에 많이 언급된 S&P500 기업" 2개                       (TOP5)
+#   · 비트코인   = 시세·공포탐욕지수 같은 시장 숫자                                                       (TOP5)
+# AI는 제목·숫자·정부 자료만 보고 쉬운 말로 풀어쓴다(기사 문장은 쓰지 않음). ETF는 화면에서 한국 5 + 미국 5를 합쳐 TOP10으로 보여준다.
+# · 미국 연방정부 저작물(BLS·연준)은 저작권이 없는 공공 영역, GDELT는 상업적 이용·재배포 허용(출처 표기 조건: GDELT Project, gdeltproject.org).
 # GitHub Actions(.github/workflows/ai-today-daily.yml)에서 매일 실행. 표준 라이브러리만 사용.
 #
 # 로컬 수동 실행: DART_API_KEY=... ANTHROPIC_API_KEY=... python scripts/scan-ai-today.py
-#   (DART_API_KEY가 없으면 DART 공개 RSS(최근 50건)로 대신하고, --candidates 를 주면 AI를 부르지 않고 후보만 JSON으로 출력)
+#   (DART_API_KEY가 없으면 DART 공개 RSS(최근 50건)로 대신하고, --candidates 를 주면 AI를 부르지 않고 재료만 JSON으로 출력)
+import csv
 import html
-import http.cookiejar
+import io
 import json
 import os
 import re
@@ -18,7 +21,10 @@ import sys
 import time
 import urllib.parse
 import urllib.request
+import zipfile
+from collections import defaultdict
 from datetime import datetime, timedelta, timezone
+from email.utils import parsedate_to_datetime
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 OUT_FILE = os.path.join(ROOT, "data", "ai-today.json")
@@ -26,7 +32,8 @@ MODEL = os.environ.get("AI_MODEL") or "claude-haiku-5-5"  # 앱의 다른 AI 기
 TOP_N = 5
 KST = timezone(timedelta(hours=9))
 UA = {"User-Agent": "Mozilla/5.0 (compatible; marketmap-ai-today-bot; contact hyhykhy6@gmail.com)"}
-SEC_UA = {"User-Agent": "marketmap-ai-today-bot hyhykhy6@gmail.com", "Accept-Encoding": "identity"}
+GOV_UA = {"User-Agent": "marketmap-ai-today-bot hyhykhy6@gmail.com"}
+csv.field_size_limit(10 ** 9)
 
 
 def read_json(path):
@@ -50,6 +57,10 @@ def tag(block, name):
     return m.group(1) if m else ""
 
 
+def iso(ts):
+    return datetime.fromtimestamp(ts, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 # ---------------------------------------------------------------- 한국: DART 공시
 # 중요도가 낮은 정형 공시(투자설명서·증권발행실적·감사보고서·지분 변동 보고 등)는 후보에서 뺀다
 KR_SKIP = ("투자설명서", "증권발행실적", "감사보고서", "대규모기업집단", "특수관계인", "주식등의대량보유", "임원ㆍ주요주주특정증권등소유", "임원·주요주주특정증권등소유", "기업설명회", "주주총회소집", "효력발생안내", "일괄신고", "결산실적공시예고", "의결권대리행사")
@@ -58,8 +69,7 @@ KR_SKIP = ("투자설명서", "증권발행실적", "감사보고서", "대규�
 def kr_universe():
     u = read_json(os.path.join(ROOT, "data", "kr-universe-kospi200-kosdaq150.json"))
     ents = (u.get("kospi200") or []) + (u.get("kosdaq150") or [])
-    by_code = {e["symbol"].split(".")[0]: e["name"] for e in ents}
-    return by_code
+    return {e["symbol"].split(".")[0]: e["name"] for e in ents}
 
 
 def kr_candidates():
@@ -111,163 +121,172 @@ def kr_candidates():
     return uniq[:60]
 
 
-# ---------------------------------------------------------------- 미국: SEC EDGAR 8-K
-SEC_ITEM_KO = {
-    "1.01": "중요 계약 체결", "1.02": "중요 계약 해지", "1.03": "파산·법정관리", "1.05": "사이버 보안 사고", "2.01": "자산 인수·처분 완료",
-    "2.02": "실적 발표", "2.03": "채무 발생", "2.05": "구조조정 비용", "2.06": "자산 손상", "3.01": "상장 유지 관련 통지", "3.02": "미등록 주식 발행",
-    "4.01": "감사인 변경", "4.02": "과거 재무제표 수정", "5.01": "경영권 변동", "5.02": "임원·이사 변동", "5.03": "정관 변경", "5.07": "주주총회 결과",
-    "7.01": "공정공시(Reg FD)", "8.01": "기타 사건", "9.01": "재무제표·첨부",
-}
-
-
-def us_candidates():
-    comps = read_json(os.path.join(ROOT, "sector-map", "data", "sp500-sectors.json"))["companies"]
-    sp = {c["symbol"].replace(".", "-"): c["name"] for c in comps}
-    tk = json.loads(http_get("https://www.sec.gov/files/company_tickers.json", SEC_UA).decode("utf-8"))
-    cik_to = {}
-    for v in tk.values():
-        t = v["ticker"].upper()
-        if t in sp:
-            cik_to[int(v["cik_str"])] = t
-    out, seen = [], set()
-    for start in range(0, 1200, 100):
-        url = "https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&company=&dateb=&owner=include&count=100&output=atom&start=%d" % start
-        try:
-            xml = http_get(url, SEC_UA).decode("utf-8", "replace")
-        except Exception as e:
-            print("  EDGAR 페이지 실패(%d): %s" % (start, e), flush=True)
-            break
-        ents = re.findall(r"<entry>(.*?)</entry>", xml, re.S)
-        if not ents:
-            break
-        for b in ents:
-            title = clean(tag(b, "title"))
-            m = re.search(r"\((\d{10})\)", title)
-            acc = re.search(r"accession-number=([\d-]+)", b)
-            if not m or not acc or int(m.group(1)) not in cik_to or acc.group(1) in seen:
-                continue
-            seen.add(acc.group(1))
-            sym = cik_to[int(m.group(1))]
-            summ = html.unescape(tag(b, "summary"))
-            items = []
-            for im in re.finditer(r"Item\s+(\d\.\d\d):\s*([^<\n]+)", summ):
-                code = im.group(1)
-                if code != "9.01":
-                    items.append("%s %s" % (code, SEC_ITEM_KO.get(code, im.group(2).strip()[:40])))
-            link = re.search(r'href="([^"]+)"', b)
-            upd = clean(tag(b, "updated"))
-            try:
-                t = datetime.fromisoformat(upd).astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-            except Exception:
-                continue
-            out.append({"company": sp[sym], "ticker": sym, "title": "8-K · " + (", ".join(items) if items else "기타"), "link": link.group(1) if link else "", "time": t})
-        time.sleep(0.3)
-    # 경영진 변동·실적·계약·인수 같은 항목이 든 공시를 앞으로
-    def score(c):
-        s = 0
-        for k, w in (("2.02", 5), ("1.01", 4), ("2.01", 4), ("5.02", 3), ("1.05", 4), ("4.02", 4), ("2.06", 3), ("1.03", 5), ("3.01", 3), ("5.01", 3), ("2.05", 3), ("8.01", 1)):
-            if k in c["title"]:
-                s += w
-        return s
-    out = [c for c in out if c["link"] and score(c) > 0]
-    out.sort(key=lambda c: (score(c), c["time"]), reverse=True)
-    print("  EDGAR 기준 대상 종목 공시 %d건" % len(out), flush=True)
-    return out[:60]
-
-
-# ---------------------------------------------------------------- 미국: 선정된 공시 보강(원문 수치 · 예상 대비 · 공시 후 주가)
-_yahoo = {}
-
-
-def yahoo_get(url):
-    if "op" not in _yahoo:
-        op = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
-        op.addheaders = [("User-Agent", "Mozilla/5.0")]
-        try:
-            op.open("https://fc.yahoo.com", timeout=20)
-        except Exception:
-            pass
-        _yahoo["op"] = op
-        _yahoo["crumb"] = op.open("https://query1.finance.yahoo.com/v1/test/getcrumb", timeout=20).read().decode()
-    sep = "&" if "?" in url else "?"
-    full = url + sep + "crumb=" + urllib.parse.quote(_yahoo["crumb"]) if "quoteSummary" in url else url
-    return json.loads(_yahoo["op"].open(full, timeout=30).read().decode("utf-8"))
-
-
-def us_eps_surprise(sym, filed_utc):
-    """직전 분기 실제 EPS vs 월가 예상(Yahoo earningsHistory) — 공시 시점 근처 분기만 사용"""
-    j = yahoo_get("https://query1.finance.yahoo.com/v10/finance/quoteSummary/%s?modules=earningsHistory" % sym)
-    hist = j["quoteSummary"]["result"][0]["earningsHistory"]["history"]
-    best = None
-    for h in hist:
-        q = (h.get("quarter") or {}).get("fmt")
-        if not q or h.get("epsActual", {}).get("raw") is None or h.get("epsEstimate", {}).get("raw") is None:
-            continue
-        qd = datetime.strptime(q, "%Y-%m-%d").replace(tzinfo=timezone.utc)
-        if timedelta(days=0) <= filed_utc - qd <= timedelta(days=75):  # 분기 말 후 75일 안에 낸 실적만
-            best = {"quarter": q, "actual": h["epsActual"]["raw"], "estimate": h["epsEstimate"]["raw"], "surprisePct": round((h.get("surprisePercent", {}).get("raw") or 0) * 100, 1)}
-    return best
-
-
-def us_price_reaction(sym, filed_utc):
-    """공시 직전 가격 → 가장 최근 가격(장외 포함 5분봉) 변동률"""
-    j = yahoo_get("https://query1.finance.yahoo.com/v8/finance/chart/%s?range=5d&interval=5m&includePrePost=true" % sym)
-    r = j["chart"]["result"][0]
-    pts = [(t, c) for t, c in zip(r["timestamp"], r["indicators"]["quote"][0]["close"]) if c]
-    tf = int(filed_utc.timestamp())
-    base = None
-    for t, c in pts:
-        if t <= tf:
-            base = c
-    if base is None or not pts:
-        return None
-    return {"pct": round((pts[-1][1] / base - 1) * 100, 2), "base": round(base, 2), "last": round(pts[-1][1], 2)}
-
-
-def us_exhibit_text(link, limit=5500):
-    """공시 첨부 보도자료(EX-99.1) 앞부분 텍스트 — 실적 요약·핵심 수치가 들어 있는 부분"""
-    idx = http_get(link, SEC_UA).decode("utf-8", "replace")
-    href = None
-    for row in re.findall(r"<tr[^>]*>(.*?)</tr>", idx, re.S | re.I):
-        if re.search(r"EX-99\.1", row):
-            m = re.search(r'href="(/Archives/[^"]+\.htm)"', row)
-            if m:
-                href = m.group(1)
-                break
-    if not href:
-        m = re.search(r'href="(/Archives/[^"]*(?:99|ex)[^"]*\.htm)"', idx, re.I) or re.search(r'href="(/Archives/[^"]+\.htm)"', idx)
-        href = m.group(1) if m else None
-    if not href:
-        return ""
-    t = http_get("https://www.sec.gov" + href, SEC_UA, 40).decode("utf-8", "replace")
-    t = re.sub(r"<(script|style).*?</\1>", " ", t, flags=re.S | re.I)
-    return clean(t)[:limit]
-
-
-def us_enrich(c):
-    filed = datetime.strptime(c["time"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
-    f = {"company": c["company"], "ticker": c["ticker"], "filing": c["title"], "filedUtc": c["time"]}
-    for key, fn in (("pressRelease", lambda: us_exhibit_text(c["link"])), ("epsVsEstimate", lambda: us_eps_surprise(c["ticker"], filed)), ("price", lambda: us_price_reaction(c["ticker"], filed))):
-        try:
-            f[key] = fn()
-        except Exception as e:
-            print("  보강 실패(%s %s): %s" % (c["ticker"], key, e), flush=True)
-            f[key] = None
-        time.sleep(0.3)
-    return f
-
-
-# ---------------------------------------------------------------- 비트코인: 시장 숫자
-def yahoo_closes(sym):
-    js = json.loads(http_get("https://query1.finance.yahoo.com/v8/finance/chart/%s?range=1y&interval=1d" % sym).decode("utf-8"))
+# ---------------------------------------------------------------- 공통: Yahoo 일봉(지수·종목·코인)
+def yahoo_daily(sym, rng="1y"):
+    js = json.loads(http_get("https://query1.finance.yahoo.com/v8/finance/chart/%s?range=%s&interval=1d" % (urllib.parse.quote(sym), rng)).decode("utf-8"))
     r = js["chart"]["result"][0]
     pts = [(t, c) for t, c in zip(r["timestamp"], r["indicators"]["quote"][0]["close"]) if c]
     return pts, r["meta"]
 
 
+def day_change(sym):
+    """최근 종가와 전일 대비 변동률"""
+    pts, meta = yahoo_daily(sym, "5d")
+    last, prev = pts[-1][1], pts[-2][1]
+    return {"last": round(last, 2), "prev": round(prev, 2), "pct": round((last / prev - 1) * 100, 2), "date": datetime.fromtimestamp(pts[-1][0], timezone.utc).strftime("%Y-%m-%d")}
+
+
+# ---------------------------------------------------------------- 미국 ① 시장 숫자
+US_MARKET_SYMS = (("sp500", "S&P500", "^GSPC"), ("nasdaq", "나스닥종합", "^IXIC"), ("dow", "다우존스", "^DJI"), ("us10y", "미국 10년물 금리(%)", "^TNX"), ("vix", "VIX 변동성지수", "^VIX"), ("dollar", "달러지수", "DX-Y.NYB"), ("wti", "WTI 유가(달러)", "CL=F"))
+
+
+def us_market_facts():
+    out = {}
+    for key, label, sym in US_MARKET_SYMS:
+        try:
+            d = day_change(sym)
+            if key == "us10y":  # 금리는 %가 아니라 %p(베이시스포인트) 변화가 의미 있음
+                d["changeBp"] = round((d["last"] - d["prev"]) * 100, 1)
+            out[key] = dict(d, label=label)
+        except Exception as e:
+            print("  시장 숫자 실패(%s): %s" % (sym, e), flush=True)
+    if len(out) < 4:
+        raise RuntimeError("시장 숫자가 너무 적음(%d개)" % len(out))
+    print("  시장 숫자:", {k: v["pct"] for k, v in out.items()}, flush=True)
+    return out
+
+
+# ---------------------------------------------------------------- 미국 ② 정부 자료(BLS 경제지표 · 연준 발표)
+def bls_facts():
+    xml = http_get("https://www.bls.gov/feed/bls_latest.rss", GOV_UA).decode("utf-8", "replace")
+    text = clean(xml)
+    lines = []
+    for m in re.finditer(r"([A-Z][A-Za-z \-\(\)&]+?):\s*([+\-]?[$\d.,%()a-z]+(?:\s*\(p\))?\s+in\s+[A-Za-z0-9 ]+?)\s+News Release", text):
+        name = re.sub(r"^(Historical Data\s+)+", "", m.group(1).strip())  # 앞 지표의 "Historical Data" 링크 글자가 붙어 나오는 것을 제거
+        lines.append("%s: %s" % (name, re.sub(r"\s+", " ", m.group(2)).strip()))
+    if len(lines) < 3:
+        raise RuntimeError("BLS 지표를 읽지 못함")
+    pub = re.search(r"<pubDate>(.*?)</pubDate>", xml, re.S)
+    ts = parsedate_to_datetime(clean(pub.group(1))).timestamp() if pub else time.time()
+    print("  BLS 지표 %d개" % len(lines), flush=True)
+    return {"indicators": lines, "link": "https://www.bls.gov/bls/newsrels.htm", "time": iso(ts)}
+
+
+FED_SKIP = ("approval of application", "orders on", "announces approval", "termination of enforcement", "reappointment", "consumer compliance", "community reinvestment")
+
+
+def fed_candidates():
+    out, seen = [], set()
+    for url in ("https://www.federalreserve.gov/feeds/press_all.xml", "https://www.federalreserve.gov/feeds/speeches_and_testimony.xml"):
+        try:
+            xml = http_get(url, GOV_UA).decode("utf-8", "replace")
+        except Exception as e:
+            print("  연준 피드 실패:", e, flush=True)
+            continue
+        for m in re.finditer(r"<item[ >].*?</item>", xml, re.S):
+            b = m.group(0)
+            title, link = clean(tag(b, "title")), clean(tag(b, "link"))
+            try:
+                ts = parsedate_to_datetime(clean(tag(b, "pubDate"))).timestamp()
+            except Exception:
+                continue
+            if not title or not link.startswith("http") or link in seen or time.time() - ts > 10 * 86400:
+                continue
+            if any(k in title.lower() for k in FED_SKIP):
+                continue
+            seen.add(link)
+            out.append({"title": title, "link": link, "time": iso(ts), "ts": ts})
+    out.sort(key=lambda c: -c["ts"])
+    out = out[:12]
+    # 앞쪽 몇 건은 본문 앞부분도 읽어 AI가 내용을 알 수 있게 함(연방정부 자료)
+    for c in out[:6]:
+        try:
+            t = http_get(c["link"], GOV_UA).decode("utf-8", "replace")
+            t = re.sub(r"<(script|style|nav|header|footer).*?</\1>", " ", t, flags=re.S | re.I)
+            t = clean(t)
+            dm = re.search(r"(January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}", t)
+            c["body"] = (t[dm.start():] if dm else t)[:3000]  # 메뉴·머리글 글자를 건너뛰고 발표일부터 본문 시작
+        except Exception:
+            pass
+        time.sleep(0.3)
+    print("  연준 발표 후보 %d건" % len(out), flush=True)
+    return out
+
+
+# ---------------------------------------------------------------- 미국 ③ GDELT: 오늘 뉴스에서 많이 언급된 S&P500 기업
+_SUF = re.compile(r"\b(incorporated|inc|corporation|corp|company|co|ltd|plc|holdings|holding|group|class [abc]|the)\b\.?", re.I)
+# 이름이 흔한 단어이거나 시장(거래소) 자체를 가리키는 말은 기업 언급으로 세지 않는다
+_EXCL = {"target", "visa", "ford", "general", "gap", "best", "state", "first", "fox", "news", "sealed air", "ball", "match", "paycom", "hess", "dow", "mid", "cf", "ross", "nasdaq", "cboe", "cme", "ice"}
+_ALIAS = {"google": "GOOGL", "alphabet": "GOOGL", "facebook": "META", "meta": "META", "meta platforms": "META", "jpmorgan": "JPM", "jp morgan": "JPM", "morgan stanley": "MS", "goldman sachs": "GS",
+          "bank of america": "BAC", "wells fargo": "WFC", "berkshire hathaway": "BRK-B", "general motors": "GM", "walmart": "WMT", "disney": "DIS", "advanced micro devices": "AMD", "amd": "AMD",
+          "exxon mobil": "XOM", "exxonmobil": "XOM", "unitedhealth": "UNH", "johnson & johnson": "JNJ", "eli lilly": "LLY", "nvidia": "NVDA", "tesla": "TSLA", "apple": "AAPL", "microsoft": "MSFT",
+          "amazon": "AMZN", "palantir": "PLTR", "micron": "MU", "delta air lines": "DAL", "blackrock": "BLK", "citigroup": "C", "citi": "C"}
+
+
+def _norm(n):
+    return re.sub(r"\s+", " ", _SUF.sub(" ", re.sub(r"[.,]", " ", n.lower()))).strip()
+
+
+def gdelt_top(n=2, samples=8, step_hours=3):
+    comps = read_json(os.path.join(ROOT, "sector-map", "data", "sp500-sectors.json"))["companies"]
+    name2t, tick2name = {}, {c["symbol"]: c["name"] for c in comps}
+    for c in comps:
+        k = _norm(c["name"])
+        if k and k not in _EXCL and len(k) >= 4:
+            name2t[k] = c["symbol"]
+    name2t.update({k: v for k, v in _ALIAS.items() if v in tick2name})
+    last = http_get("https://data.gdeltproject.org/gdeltv2/lastupdate.txt").decode().split("\n")[2].split()[2]
+    t0 = datetime.strptime(re.search(r"/(\d{14})\.", last).group(1), "%Y%m%d%H%M%S")
+    count, tone, seen, arts, files = defaultdict(set), defaultdict(list), set(), 0, 0
+    for i in range(samples):
+        ts = (t0 - timedelta(hours=step_hours * i)).strftime("%Y%m%d%H%M%S")
+        try:
+            raw = http_get("http://data.gdeltproject.org/gdeltv2/%s.gkg.csv.zip" % ts, GOV_UA, 120)
+            z = zipfile.ZipFile(io.BytesIO(raw))
+            txt = z.read(z.namelist()[0]).decode("utf-8", "replace")
+        except Exception as e:
+            print("  GDELT 파일 건너뜀(%s): %s" % (ts, e), flush=True)
+            continue
+        files += 1
+        for row in csv.reader(io.StringIO(txt), delimiter="\t", quoting=csv.QUOTE_NONE):
+            if len(row) < 16 or "ECON_STOCKMARKET" not in row[7] + row[8] or row[4] in seen:
+                continue
+            seen.add(row[4])
+            arts += 1
+            try:
+                tv = float(row[15].split(",")[0])
+            except Exception:
+                tv = None
+            for t in {name2t[x] for x in {_norm(o.split(",")[0]) for o in row[13].split(";") if o} if x in name2t}:
+                count[t].add(row[4])
+                if tv is not None:
+                    tone[t].append(tv)
+        time.sleep(0.5)
+    if files < 4 or arts < 100:
+        raise RuntimeError("GDELT 표본이 부족함(파일 %d개, 기사 %d건)" % (files, arts))
+    ranked = [t for t, u in sorted(count.items(), key=lambda x: -len(x[1])) if len(u) >= 5][:n]
+    out = []
+    for t in ranked:
+        d = {"ticker": t, "company": tick2name[t], "articles": len(count[t]), "tone": round(sum(tone[t]) / max(1, len(tone[t])), 2), "sampleArticles": arts, "sampleFiles": files}
+        try:
+            d["price"] = day_change(t)
+        except Exception as e:
+            print("  주가 조회 실패(%s): %s" % (t, e), flush=True)
+        out.append(d)
+    print("  GDELT 표본: 파일 %d개 · 주식시장 기사 %d건 → 상위 %s" % (files, arts, [(d["ticker"], d["articles"]) for d in out]), flush=True)
+    if len(out) < n:
+        raise RuntimeError("언급량 상위 기업이 부족함")
+    return out
+
+
+def us_materials():
+    return {"market": us_market_facts(), "bls": bls_facts(), "fed": fed_candidates(), "gdelt": gdelt_top()}
+
+
+# ---------------------------------------------------------------- 비트코인: 시장 숫자
 def crypto_facts():
-    btc, meta = yahoo_closes("BTC-USD")
-    eth, _ = yahoo_closes("ETH-USD")
+    btc, meta = yahoo_daily("BTC-USD")
+    eth, _ = yahoo_daily("ETH-USD")
     px = [c for _, c in btc]
     last = meta.get("regularMarketPrice") or px[-1]
 
@@ -297,29 +316,28 @@ def crypto_facts():
 
 
 # ---------------------------------------------------------------- AI 정리
-COMMON_RULES = """- headline: 25자 안팎의 한국어 제목(회사명을 넣습니다).
-- summary: 한국어 두 문장 이내(120자 안팎). 주어진 제목·항목명·숫자에 있는 내용만 쓰고, 금액·원인·영향·전망을 지어내지 않습니다. 모르는 부분은 쓰지 않습니다.
-- 투자 권유·매수/매도 의견·가격 예측 표현을 쓰지 않습니다. 공시는 "~했다고 공시했습니다"처럼 사실만 전합니다.
+COMMON_RULES = """- headline: 25~30자 안팎의 한국어 제목.
+- summary: 한국어 두세 문장(120~170자). 주어진 자료에 있는 내용만 쓰고, 금액·원인·영향·전망을 지어내지 않습니다. 모르는 부분은 쓰지 않습니다.
+- 투자 권유·매수/매도 의견·가격 예측 표현을 쓰지 않습니다.
 - 반드시 아래 JSON만 출력합니다(설명·코드블록 금지)."""
 
 PROMPTS = {
     "kr": ("한국 증시", "당신은 투자 정보 앱의 아침 에디터입니다. 아래는 코스피200·코스닥150 기업이 DART에 낸 공시 목록(회사명·공시 제목)입니다. 투자자가 오늘 꼭 알아야 할 공시 TOP5를 골라 쉬운 말로 풀어 쓰세요.\n"
-           "- 같은 회사 공시는 하나만, 서로 다른 회사 5곳을 고릅니다. 횡령·배임, 유상증자·자사주, 대규모 계약, 실적, 경영권·최대주주 변동처럼 주가에 영향이 큰 공시를 우선합니다.\n- idx: 고른 후보의 번호.\n" + COMMON_RULES + ' {"items":[{"idx":번호,"headline":"...","summary":"..."}]}'),
-    "us": ("미국 증시", "당신은 투자 정보 앱의 아침 에디터입니다. 아래는 S&P500 기업이 SEC에 낸 8-K 공시 목록(회사명·티커·공시 항목)입니다. 투자자가 알아야 할 공시 TOP5를 골라 쉬운 말로 풀어 쓰세요.\n"
-           "- 서로 다른 회사 5곳을 고릅니다. 실적 발표, 경영진 변동, 대형 계약·인수, 보안 사고처럼 영향이 큰 항목을 우선합니다. 항목 번호만으로는 구체 내용을 알 수 없으니 \"~항목으로 8-K를 제출했습니다\" 수준으로만 설명합니다.\n- idx: 고른 후보의 번호.\n" + COMMON_RULES + ' {"items":[{"idx":번호,"headline":"...","summary":"..."}]}'),
-    "us2": ("미국 증시", "당신은 투자 정보 앱의 아침 에디터입니다. 아래는 S&P500 기업이 SEC에 낸 8-K 공시와, 같이 낸 보도자료 앞부분·월가 예상 대비 결과(EPS)·공시 이후 주가 변동입니다. 회사마다 쉬운 한국어로 정리하세요.\n"
-            "- headline: 30자 안팎. 회사명과 핵심 숫자 한 가지를 넣습니다(예: \"JP모건 3분기 순이익 153억 달러\").\n"
-            "- summary: 한국어 세 문장 이내(170자 안팎). ①핵심 실적·결정 수치(매출·순이익·EPS·가이던스 등, 보도자료에 있는 숫자만) ②수준 평가: 월가 예상 EPS 대비 몇 % 높거나 낮은지(주어진 값이 있을 때만), 전년 동기 대비 증감(보도자료에 있을 때만) ③공시 이후 주가가 몇 % 움직였는지(price.pct, 주어진 값 그대로). 주가 변동의 원인을 단정하지 말고 \"공시 이후 ~% 올랐습니다/내렸습니다\"처럼 사실만 씁니다.\n"
-            "- 주어진 자료에 없는 숫자·원인·전망은 쓰지 않습니다. 비교 기준이 없으면 그 부분은 쓰지 않습니다. 투자 권유·매수/매도 의견을 쓰지 않습니다.\n"
-            "- idx: 입력에 붙은 번호를 그대로 돌려줍니다.\n"
-            "- 반드시 아래 JSON만 출력합니다(설명·코드블록 금지): " + '{"items":[{"idx":번호,"headline":"...","summary":"..."}]}'),
+           "- 같은 회사 공시는 하나만, 서로 다른 회사 5곳을 고릅니다. 횡령·배임, 유상증자·자사주, 대규모 계약, 실적, 경영권·최대주주 변동처럼 주가에 영향이 큰 공시를 우선합니다.\n- idx: 고른 후보의 번호.\n"
+           + COMMON_RULES + ' {"items":[{"idx":번호,"headline":"...","summary":"..."}]}'),
+    "us": ("미국 증시", "당신은 투자 정보 앱의 아침 에디터입니다. 아래 자료로 미국 증시 투자자를 위한 항목 5개를 쉬운 한국어로 만드세요. 항목 순서와 종류는 고정입니다.\n"
+           "1) slot=market: 어제 미국 증시 마감 요약. S&P500·나스닥·다우 등락률과 10년물 금리(변동은 bp), VIX, 달러, 유가 중 의미 있는 것을 숫자 그대로 인용합니다.\n"
+           "2) slot=bls: 미국 노동통계국(BLS)의 최신 경제지표(물가·실업률·고용 등)를 숫자 그대로 풀어 씁니다. 지표 이름의 뜻을 짧게 곁들입니다.\n"
+           "3) slot=fed: 연준 발표 후보 중 시장에 가장 중요한 1건을 골라(fedIdx=후보 번호) 본문에 있는 내용만으로 요약합니다. 본문이 없으면 제목에 있는 사실만 씁니다.\n"
+           "4) slot=gdelt1, 5) slot=gdelt2: 최근 24시간 주식시장 관련 영문 뉴스(표본)에서 많이 언급된 기업입니다. 기업명, 언급 기사 수(articles, sampleArticles는 표본 전체 기사 수), 기사 어조 점수(tone: 0 근처는 중립, 음수일수록 부정적 보도), 전일 종가 대비 주가 변동(price.pct)을 쉬운 말로 설명합니다. 언급된 이유나 기사 내용은 모르므로 쓰지 않고, 표본 기준임을 밝힙니다.\n"
+           + COMMON_RULES + ' {"items":[{"slot":"market","headline":"...","summary":"..."},{"slot":"bls",...},{"slot":"fed","fedIdx":번호,...},{"slot":"gdelt1",...},{"slot":"gdelt2",...}]}'),
     "crypto": ("비트코인", "당신은 투자 정보 앱의 아침 에디터입니다. 아래는 오늘의 비트코인 시장 숫자입니다. 이 숫자만으로 오늘 알아둘 점 5가지를 쉬운 말로 풀어 쓰세요(가격과 하루 변동 / 최근 7일·30일·90일 흐름 / 1년 고점·저점 대비 위치 / 최근 30일 변동성 / 공포탐욕지수·이더리움과 비교 중 5가지).\n"
                "- 주어진 숫자만 쓰고 원인·뉴스·전망은 쓰지 않습니다. 숫자는 그대로 인용합니다.\n" + COMMON_RULES + ' {"items":[{"headline":"...","summary":"..."}]}'),
 }
 
 
 def claude_json(system, user):
-    body = {"model": MODEL, "max_tokens": 2500, "output_config": {"effort": "low"}, "system": system, "messages": [{"role": "user", "content": user}]}
+    body = {"model": MODEL, "max_tokens": 3000, "output_config": {"effort": "low"}, "system": system, "messages": [{"role": "user", "content": user}]}
     last = None
     for attempt in range(3):
         try:
@@ -337,14 +355,47 @@ def claude_json(system, user):
     raise last
 
 
+def us_items(mat, j):
+    """AI가 쓴 5개(market·bls·fed·gdelt1·gdelt2)에 링크·출처·시각·주가 변동을 코드가 붙여 완성"""
+    by = {it.get("slot"): it for it in j.get("items", [])}
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    items = []
+    for slot in ("market", "bls", "fed", "gdelt1", "gdelt2"):
+        it = by.get(slot)
+        if not it or not it.get("headline") or not it.get("summary"):
+            continue
+        row = {"headline": str(it["headline"]).strip(), "summary": str(it["summary"]).strip()}
+        if slot == "market":
+            row.update(source="Yahoo Finance 시세", link="https://finance.yahoo.com/quote/%5EGSPC", time=now)
+        elif slot == "bls":
+            row.update(source="미국 노동통계국(BLS)", link=mat["bls"]["link"], time=mat["bls"]["time"])
+        elif slot == "fed":
+            try:
+                c = mat["fed"][int(it.get("fedIdx"))]
+            except Exception:
+                continue
+            row.update(source="미국 연방준비제도(Fed)", link=c["link"], time=c["time"])
+        else:
+            g = mat["gdelt"][0 if slot == "gdelt1" else 1]
+            row.update(source="GDELT Project (gdeltproject.org)", link="https://marketmap.kr/?ticker=" + urllib.parse.quote(g["ticker"]), time=now)
+            if g.get("price"):
+                row["px"] = {"pct": g["price"]["pct"], "label": "전일 대비"}
+        items.append(row)
+    return items
+
+
 def pick_items(key, cands):
     label, system = PROMPTS[key]
     if key == "crypto":
         j = claude_json(system, "오늘의 비트코인 시장 숫자:\n" + json.dumps(cands, ensure_ascii=False, indent=1))
         src = {"source": "Yahoo Finance 시세 · Alternative.me", "link": "https://finance.yahoo.com/quote/BTC-USD", "time": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}
         items = [dict(headline=str(i["headline"]).strip(), summary=str(i["summary"]).strip(), **src) for i in j.get("items", []) if i.get("headline") and i.get("summary")]
+    elif key == "us":
+        slim = dict(cands, fed=[{"idx": i, "title": c["title"], "date": c["time"][:10], "body": c.get("body", "")} for i, c in enumerate(cands["fed"])])
+        j = claude_json(system, "자료:\n" + json.dumps(slim, ensure_ascii=False, indent=1))
+        items = us_items(cands, j)
     else:
-        lst = "\n".join("[%d] %s%s — %s" % (i, c["company"], (" (%s)" % c["ticker"]) if c.get("ticker") else "", c["title"]) for i, c in enumerate(cands))
+        lst = "\n".join("[%d] %s — %s" % (i, c["company"], c["title"]) for i, c in enumerate(cands))
         j = claude_json(system, "후보 공시:\n%s\n\nTOP%d을 JSON으로 출력하세요." % (lst, TOP_N))
         items, used = [], set()
         for it in j.get("items", []):
@@ -356,45 +407,10 @@ def pick_items(key, cands):
                 continue
             used.add(idx)
             c = cands[idx]
-            items.append({"headline": str(it["headline"]).strip(), "summary": str(it["summary"]).strip(), "source": "DART 전자공시" if key == "kr" else "SEC EDGAR", "link": c["link"], "time": c["time"]})
-    if len(items) < 3:
+            items.append({"headline": str(it["headline"]).strip(), "summary": str(it["summary"]).strip(), "source": "DART 전자공시", "link": c["link"], "time": c["time"]})
+    if len(items) < (5 if key == "us" else 3):
         raise RuntimeError("유효한 항목 %d개뿐" % len(items))
-    items = items[:TOP_N]
-    if key == "us":
-        items = us_rewrite(items, cands, used)
-    return items
-
-
-def us_rewrite(items, cands, used):
-    """선정된 미국 공시마다 보도자료·예상 대비·주가 반응을 붙여 headline/summary를 다시 쓴다(실패하면 1단계 결과 유지)"""
-    order = [i for i in sorted(used)][: len(items)]
-    chosen = [cands[i] for i in order]
-    facts = [us_enrich(c) for c in chosen]
-    lst = []
-    for n, f in enumerate(facts):
-        lst.append("[%d] %s" % (n, json.dumps(f, ensure_ascii=False)))
-    try:
-        j = claude_json(PROMPTS["us2"][1], "공시 자료:" + chr(10) + chr(10).join(lst) + chr(10) + chr(10) + "회사마다 JSON으로 출력하세요.")
-    except Exception as e:
-        print("  미국 2단계 정리 실패(1단계 결과 유지):", e, flush=True)
-        return items
-    by = {}
-    for it in j.get("items", []):
-        try:
-            by[int(it.get("idx"))] = it
-        except Exception:
-            pass
-    out = []
-    for n, (c, f) in enumerate(zip(chosen, facts)):
-        it = by.get(n)
-        base = next((x for x in items if x["link"] == c["link"]), None) or {"headline": c["company"], "summary": c["title"], "source": "SEC EDGAR", "link": c["link"], "time": c["time"]}
-        if it and it.get("headline") and it.get("summary"):
-            base = dict(base, headline=str(it["headline"]).strip(), summary=str(it["summary"]).strip())
-        px = (f.get("price") or {}).get("pct")
-        if px is not None:
-            base["px"] = {"pct": px, "label": "공시 후"}
-        out.append(base)
-    return out
+    return items[:TOP_N]
 
 
 def main():
@@ -408,8 +424,8 @@ def main():
     except Exception:
         pass
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    out = {"generatedAt": now, "model": MODEL, "kind": "disclosure-v1", "markets": dict(prev.get("markets") or {})}
-    collectors = {"kr": kr_candidates, "us": us_candidates, "crypto": crypto_facts}
+    out = {"generatedAt": now, "model": MODEL, "kind": "gov-gdelt-v1", "markets": dict(prev.get("markets") or {})}
+    collectors = {"kr": kr_candidates, "us": us_materials, "crypto": crypto_facts}
     failed = 0
     dump = {}
     for key, fn in collectors.items():
@@ -419,7 +435,7 @@ def main():
             dump[key] = cands
             if only_cands:
                 continue
-            if key != "crypto" and len(cands) < 3:
+            if key == "kr" and len(cands) < 3:
                 raise RuntimeError("후보 공시가 너무 적음(%d건)" % len(cands))
             items = pick_items(key, cands)
             out["markets"][key] = {"generatedAt": now, "items": items}
