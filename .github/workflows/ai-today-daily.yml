@@ -1,4 +1,4 @@
-name: AI투데이 뉴스 TOP5 자동 생성(한국·미국·비트코인)
+name: AI투데이 자동 생성(한국 공시·미국 공시·비트코인 지표)
 
 on:
   schedule:
@@ -19,11 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: 뉴스 TOP5 선정·요약(공식 RSS + Claude)
+      # 2026-10-14: 언론사 기사 대신 DART 공시·SEC 8-K 공시·시세 숫자를 재료로 씀(언론사 약관상 자동 수집·AI 요약·재게시 불가)
+      - name: 공시·시장 지표 TOP5 선정·정리(Claude)
         id: scan
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DART_API_KEY: ${{ secrets.DART_API_KEY }}
         run: python3 scripts/scan-ai-today.py
 
       - name: 변경사항 커밋 및 푸시
@@ -34,7 +36,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "변경된 데이터 없음"
           else
-            git commit -m "AI투데이: 뉴스 TOP5 자동 갱신 ($(date -u +%Y-%m-%d))"
+            git commit -m "AI투데이: 공시·지표 TOP5 자동 갱신 ($(date -u +%Y-%m-%d))"
             git pull --rebase -X theirs origin main
             git push
           fi
@@ -43,5 +45,5 @@ jobs:
       - name: 실패 알림
         if: steps.scan.outcome == 'failure'
         run: |
-          echo "AI투데이 뉴스 생성이 실패했습니다. 위 로그를 확인하세요."
+          echo "AI투데이 생성이 실패했습니다. 위 로그를 확인하세요."
           exit 1

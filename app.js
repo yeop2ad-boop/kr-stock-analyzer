@@ -22125,8 +22125,9 @@ function openInvestAnalysis() {
 }
 
 // ---------- 투데이: AI투데이(시장별 뉴스 TOP5) + 신기술 ----------
-// data/ai-today.json 은 GitHub Actions(ai-today-daily.yml, scripts/scan-ai-today.py)가 매일 아침 공식 RSS 기사에서 한국·미국·비트코인
-// TOP5를 골라 AI로 요약해 저장한다. ETF 화면은 한국 5 + 미국 5를 합쳐 TOP10으로 보여준다. 신기술은 투자처와 상관없이 모두 같은 목록.
+// data/ai-today.json 은 GitHub Actions(ai-today-daily.yml, scripts/scan-ai-today.py)가 매일 아침 만든다 — 언론사 기사는 약관상 쓸 수 없어서
+// 한국=DART 전자공시, 미국=SEC 8-K 공시에서 중요한 것 TOP5, 비트코인=시세·공포탐욕지수 숫자 TOP5를 AI가 쉬운 말로 풀어 쓴다.
+// ETF 화면은 한국 5 + 미국 5를 합쳐 TOP10으로 보여준다. 신기술은 투자처와 상관없이 모두 같은 목록.
 let aiTodayPromise = null;
 function getAiTodayData() {
   if (!aiTodayPromise) {
@@ -22137,23 +22138,25 @@ function getAiTodayData() {
   return aiTodayPromise;
 }
 const TODAY_NEWS_TITLE = {
-  kr: "한국 증시 TOP5 뉴스",
-  us: "미국 증시 TOP5 뉴스",
-  crypto: "비트코인 TOP5 뉴스",
-  etf: "ETF TOP10 뉴스 (한국 5 + 미국 5)",
+  kr: "한국 증시 · 오늘의 기업 공시 TOP5",
+  us: "미국 증시 · 오늘의 기업 공시 TOP5",
+  crypto: "비트코인 · 오늘의 시장 지표 TOP5",
+  etf: "ETF · 한국 5 + 미국 5 기업 공시 TOP10",
 };
 function todayTimeLabel(iso, withDate) {
   const d = new Date(iso);
   if (isNaN(d)) return "";
+  // DART 공시처럼 날짜만 있는 항목(한국시간 00:00)은 시각 없이 날짜만 표시
+  if (withDate && (d.getTime() + 9 * 3600e3) % 86400000 === 0) return d.toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul", month: "numeric", day: "numeric" });
   return d.toLocaleString("ko-KR", { timeZone: "Asia/Seoul", ...(withDate ? { month: "numeric", day: "numeric" } : {}), hour: "2-digit", minute: "2-digit", hour12: false });
 }
-function todayNewsRowHtml(n, rank, badge) {
+function todayNewsRowHtml(n, rank, badge, linkLabel) {
   return `<a class="today-news-row" href="${escapeHtml(n.link)}" target="_blank" rel="noopener">
       <span class="today-news-rank">${rank}</span>
       <span class="today-news-body">
         <b class="today-news-headline">${badge ? `<i class="today-news-badge">${badge}</i>` : ""}${escapeHtml(n.headline)}</b>
         <span class="today-news-summary">${escapeHtml(n.summary)}</span>
-        <small class="today-news-meta">${escapeHtml(n.source)} · ${escapeHtml(todayTimeLabel(n.time, true))} · 원문 보기 →</small>
+        <small class="today-news-meta">${escapeHtml(n.source)} · ${escapeHtml(todayTimeLabel(n.time, true))} · ${linkLabel} →</small>
       </span>
     </a>`;
 }
@@ -22184,11 +22187,19 @@ async function renderToday() {
   }
   if (rows.length) {
     newsHtml = `<h4 class="today-sub">${TODAY_NEWS_TITLE[sec]}</h4>
-      <p class="today-note">매일 아침 AI가 주요 언론사 기사에서 중요한 뉴스를 골라 정리합니다.${stamp ? ` (${escapeHtml(todayTimeLabel(stamp, true))} 업데이트)` : ""}</p>
-      <div class="today-news-list">${rows.map((r, i) => todayNewsRowHtml(r.n, i + 1, r.badge)).join("")}</div>
-      <p class="disclaimer tab-note">📢 AI가 기사 제목·요약문을 바탕으로 다시 쓴 내용이며 틀릴 수 있습니다. 정확한 내용은 원문에서 확인하세요. 투자 권유가 아닙니다.</p>`;
+      <p class="today-note">${
+        sec === "crypto"
+          ? "시세와 공포탐욕지수(출처: Yahoo Finance, Alternative.me) 숫자를 AI가 쉬운 말로 풀어 쓴 지표입니다."
+          : "매일 아침 AI가 DART 전자공시·SEC 공시에서 중요한 공시를 골라 쉬운 말로 풀어 씁니다."
+      }${stamp ? ` (${escapeHtml(todayTimeLabel(stamp, true))} 업데이트)` : ""}</p>
+      <div class="today-news-list">${rows.map((r, i) => todayNewsRowHtml(r.n, i + 1, r.badge, sec === "crypto" ? "시세 보기" : "공시 원문")).join("")}</div>
+      <p class="disclaimer tab-note">📢 ${
+        sec === "crypto"
+          ? "시세 숫자를 AI가 설명한 내용이며 틀릴 수 있습니다. 투자 권유가 아닙니다."
+          : "공시 제목·항목을 AI가 쉬운 말로 풀어 쓴 내용이며 틀릴 수 있습니다. 정확한 내용은 공시 원문에서 확인하세요. 투자 권유가 아닙니다."
+      }</p>`;
   } else {
-    newsHtml = `<p class="muted today-empty">🚧 오늘의 뉴스를 준비 중입니다. 매일 아침 자동으로 정리됩니다.</p>`;
+    newsHtml = `<p class="muted today-empty">🚧 오늘의 정리를 준비 중입니다. 매일 아침 자동으로 만들어집니다.</p>`;
   }
 
   const techItems = Array.isArray(tech) ? tech : [];
