@@ -22166,6 +22166,10 @@ function todayNewsRowHtml(n, rank, badge) {
       </span>
     </a>`;
 }
+// 브리핑 본문의 **굵게** 표시만 허용하고 나머지 글자는 모두 이스케이프
+function todayBoldHtml(text) {
+  return escapeHtml(text).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+}
 let todaySeq = 0;
 let todayTechShown = 5;
 async function renderToday() {
@@ -22180,37 +22184,56 @@ async function renderToday() {
   let newsHtml;
   let stamp = "";
   const mk = (ai && ai.markets) || {};
-  let rows = [];
-  if (sec === "etf") {
-    rows = [
-      ...(((mk.kr && mk.kr.items) || []).slice(0, 5).map((n) => ({ n, badge: "한국" }))),
-      ...(((mk.us && mk.us.items) || []).slice(0, 5).map((n) => ({ n, badge: "미국" }))),
-    ];
-    stamp = (mk.kr && mk.kr.generatedAt) || (mk.us && mk.us.generatedAt) || "";
-  } else {
-    rows = (((mk[sec] && mk[sec].items) || []).slice(0, 5)).map((n) => ({ n, badge: "" }));
-    stamp = (mk[sec] && mk[sec].generatedAt) || "";
+  const part = (k) => mk[k] || {};
+  // 항목(근거 자료) · 브리핑 구역 · 뉴스 제목 — ETF는 한국 + 미국을 이어 붙임
+  const srcs = sec === "etf" ? [["kr", "한국"], ["us", "미국"]] : [[sec, ""]];
+  const rows = srcs.flatMap(([k, badge]) => (part(k).items || []).slice(0, 5).map((n) => ({ n, badge })));
+  const sections = srcs.flatMap(([k, badge]) => (((part(k).briefing || {}).sections) || []).map((s) => ({ title: (badge ? badge + " · " : "") + s.title, body: s.body })));
+  const heads = srcs.flatMap(([k, badge]) => (part(k).headlines || []).slice(0, sec === "etf" ? 5 : 10).map((h) => ({ h, badge })));
+  stamp = part(srcs[0][0]).generatedAt || "";
+  const noteText =
+    sec === "crypto"
+      ? "시세와 공포탐욕지수(출처: Yahoo Finance, Alternative.me) 숫자를 AI가 쉬운 말로 풀어 쓴 지표입니다."
+      : sec === "us"
+      ? "시장 숫자, 미국 정부 자료(노동통계국·연준), 공개 뉴스 데이터(GDELT Project)를 AI가 쉬운 말로 풀어 씁니다."
+      : sec === "etf"
+      ? "한국은 DART 전자공시, 미국은 시장 숫자·정부 자료·GDELT 공개 데이터를 AI가 쉬운 말로 풀어 씁니다."
+      : "시장 숫자와 DART 전자공시를 AI가 쉬운 말로 풀어 씁니다.";
+  const briefTitle = { kr: "한국 증시 브리핑", us: "미국 증시 브리핑", crypto: "비트코인 브리핑", etf: "ETF 브리핑 (한국 + 미국)" }[sec];
+  const parts = [];
+  if (sections.length) {
+    parts.push(`<h4 class="today-sub">${briefTitle}</h4>
+      <p class="today-note">${noteText}${stamp ? ` (${escapeHtml(todayTimeLabel(stamp, true))} 업데이트)` : ""}</p>
+      ${sections.map((s) => `<h5 class="brief-h">${escapeHtml(s.title)}</h5><p class="brief-p">${todayBoldHtml(s.body)}</p>`).join("")}`);
+  }
+  if (heads.length) {
+    parts.push(`<h4 class="today-sub today-heads-title">${sec === "etf" ? "주요 뉴스 제목 (한국 5 + 미국 5)" : `주요 뉴스 제목 TOP${heads.length}`}</h4>
+      <p class="today-note">제목은 각 언론사 원문 그대로이며, 누르면 해당 언론사로 이동합니다.</p>
+      <div class="head-list">${heads
+        .map(
+          ({ h, badge }, i) => `<a class="head-row" href="${escapeHtml(h.link)}" target="_blank" rel="noopener">
+            <span class="head-rank">${i + 1}</span>
+            <span class="head-title">${badge ? `<i class="today-news-badge">${badge}</i>` : ""}${escapeHtml(h.title)}</span>
+            <small class="head-src">${escapeHtml(h.source)}</small>
+          </a>`
+        )
+        .join("")}</div>`);
   }
   if (rows.length) {
-    newsHtml = `<h4 class="today-sub">${TODAY_NEWS_TITLE[sec]}</h4>
-      <p class="today-note">${
-        sec === "crypto"
-          ? "시세와 공포탐욕지수(출처: Yahoo Finance, Alternative.me) 숫자를 AI가 쉬운 말로 풀어 쓴 지표입니다."
-          : sec === "us"
-          ? "시장 숫자, 미국 정부 자료(노동통계국·연준), 공개 뉴스 데이터(GDELT Project)를 AI가 쉬운 말로 풀어 씁니다."
-          : sec === "etf"
-          ? "한국은 DART 전자공시, 미국은 시장 숫자·정부 자료·GDELT 공개 데이터를 AI가 쉬운 말로 풀어 씁니다."
-          : "매일 아침 AI가 DART 전자공시에서 중요한 공시를 골라 쉬운 말로 풀어 씁니다."
-      }${stamp ? ` (${escapeHtml(todayTimeLabel(stamp, true))} 업데이트)` : ""}</p>
-      <div class="today-news-list">${rows.map((r, i) => todayNewsRowHtml(r.n, i + 1, r.badge)).join("")}</div>
-      <p class="disclaimer tab-note">📢 ${
-        sec === "crypto"
-          ? "시세 숫자를 AI가 설명한 내용이며 틀릴 수 있습니다. 투자 권유가 아닙니다."
-          : "공시·정부 자료·공개 데이터를 AI가 쉬운 말로 풀어 쓴 내용이며 틀릴 수 있습니다. 정확한 내용은 원문에서 확인하세요. 투자 권유가 아닙니다."
-      }</p>`;
-  } else {
-    newsHtml = `<p class="muted today-empty">🚧 오늘의 정리를 준비 중입니다. 매일 아침 자동으로 만들어집니다.</p>`;
+    if (!sections.length) {
+      parts.push(`<h4 class="today-sub">${TODAY_NEWS_TITLE[sec]}</h4><p class="today-note">${noteText}${stamp ? ` (${escapeHtml(todayTimeLabel(stamp, true))} 업데이트)` : ""}</p>
+        <div class="today-news-list">${rows.map((r, i) => todayNewsRowHtml(r.n, i + 1, r.badge)).join("")}</div>`);
+    } else {
+      parts.push(`<details class="brief-refs"><summary>브리핑 근거 자료 ${rows.length}건</summary>
+        <div class="today-news-list">${rows.map((r, i) => todayNewsRowHtml(r.n, i + 1, r.badge)).join("")}</div></details>`);
+    }
+    parts.push(`<p class="disclaimer tab-note">📢 ${
+      sec === "crypto"
+        ? "시세 숫자를 AI가 설명한 내용이며 틀릴 수 있습니다. 투자 권유가 아닙니다."
+        : "공시·정부 자료·공개 데이터를 AI가 쉬운 말로 풀어 쓴 내용이며 틀릴 수 있습니다. 정확한 내용은 원문에서 확인하세요. 투자 권유가 아닙니다."
+    }</p>`);
   }
+  newsHtml = parts.length ? parts.join("") : `<p class="muted today-empty">🚧 오늘의 정리를 준비 중입니다. 매일 아침 자동으로 만들어집니다.</p>`;
 
   const techItems = Array.isArray(tech) ? tech : [];
   const techShown = techItems.slice(0, todayTechShown);

@@ -4204,3 +4204,15 @@ html.embed-analysis #wlCompare .wl-ex-head { display: none; }
 .today-px { font-weight: 800; }
 .today-px.up { color: var(--pos, #e04600); }
 .today-px.down { color: var(--neg, #2563eb); }
+/* AI투데이 브리핑(구역별 소제목 + 굵은 핵심) · 뉴스 제목 목록 · 근거 자료(2026-10-15) */
+.brief-h { margin: 16px 0 4px; font-size: 14px; font-weight: 800; color: var(--accent); letter-spacing: -0.2px; }
+.brief-p { margin: 0; font-size: 14.5px; line-height: 1.7; color: var(--text); }
+.brief-p b { font-weight: 800; }
+.today-heads-title { margin-top: 24px; }
+.head-row { display: flex; align-items: baseline; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--rk-line, var(--border)); text-decoration: none; color: inherit; }
+.head-rank { flex: none; width: 20px; font-size: 14px; font-weight: 800; color: var(--accent); }
+.head-title { flex: 1; min-width: 0; font-size: 14px; line-height: 1.45; font-weight: 600; color: var(--text); }
+.head-src { flex: none; max-width: 84px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10.5px; color: var(--muted); }
+.brief-refs { margin-top: 16px; }
+.brief-refs summary { cursor: pointer; font-size: 13px; font-weight: 700; color: var(--muted); padding: 6px 0; }
+

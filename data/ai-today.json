@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-10-14T14:25:18Z",
+  "generatedAt": "2026-10-14T15:06:18Z",
   "model": "claude (수동 생성 2026-10-14)",
   "kind": "gov-gdelt-v1",
   "markets": {
     "kr": {
-      "generatedAt": "2026-10-14T14:25:18Z",
+      "generatedAt": "2026-10-14T15:06:18Z",
       "items": [
         {
           "headline": "LG에너지솔루션, 횡령·배임 혐의 발생 공시",
@@ -41,17 +41,91 @@
           "link": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261014800640",
           "time": "2026-10-13T15:00:00Z"
         }
+      ],
+      "briefing": {
+        "sections": [
+          {
+            "title": "증시",
+            "body": "코스피는 최근 거래일(10/13) **5.46% 급락한 6,035.35**로 마감했고 코스닥도 **1.43% 내린 837.03**입니다. **원/달러 환율은 1,342.83원으로 0.65% 올랐습니다**."
+          },
+          {
+            "title": "산업·기업",
+            "body": "**LG에너지솔루션과 LG디스플레이가 각각 횡령·배임 혐의 발생을 공시**했습니다(금액·내용은 공시 원문 확인). 셀트리온은 **짐펜트라(CTP13 SC)의 한국 임상 3상 시험계획 승인**을 알렸고, 에스원은 **자기주식 취득을 결정**했습니다. 두산에너빌리티는 종속회사의 주요 경영사항을 공시했습니다."
+          }
+        ]
+      },
+      "headlines": [
+        {
+          "title": "끝없는 코스피 탈출 행렬…200조원 팔아치운 외국인 어디로",
+          "source": "한국경제",
+          "link": "https://www.hankyung.com/article/202610141350i",
+          "time": "2026-10-14T07:36:23Z"
+        },
+        {
+          "title": "\"더 물타기 할 돈도 없다\"…개미 실탄 고갈에 6천피 붕괴 '초읽기' [분석+]",
+          "source": "한국경제",
+          "link": "https://www.hankyung.com/article/2026101418086",
+          "time": "2026-10-14T13:00:02Z"
+        },
+        {
+          "title": "英팰리서 \"삼전, 우선주부터 매입·소각하라\"",
+          "source": "매일경제",
+          "link": "https://www.mk.co.kr/news/stock/12176004",
+          "time": "2026-10-14T08:44:38Z"
+        },
+        {
+          "title": "에스원, 기존 자사주 전량소각·4500억 추가 매입",
+          "source": "매일경제",
+          "link": "https://www.mk.co.kr/news/stock/12176126",
+          "time": "2026-10-14T11:21:16Z"
+        },
+        {
+          "title": "당국 \"금융사 침해사고 발생 총 16곳…약 10만건 유출\"(종합2보)",
+          "source": "연합뉴스",
+          "link": "https://www.yna.co.kr/view/AKR20261014134852002",
+          "time": "2026-10-14T10:23:59Z"
+        },
+        {
+          "title": "'승자의 저주' 걱정에…롯데손보 삼킨 신한지주 급락",
+          "source": "한국경제",
+          "link": "https://www.hankyung.com/article/202610141870i",
+          "time": "2026-10-14T07:29:45Z"
+        },
+        {
+          "title": "중동발 운임 급등세에 '하락 파도' 넘은 해운株",
+          "source": "매일경제",
+          "link": "https://www.mk.co.kr/news/stock/12175977",
+          "time": "2026-10-14T08:39:43Z"
+        },
+        {
+          "title": "취임 6주년 정의선 \"인도서 자동차 넘어 인프라·에너지 투자\"(종합)",
+          "source": "연합뉴스",
+          "link": "https://www.yna.co.kr/view/AKR20261014179651003",
+          "time": "2026-10-14T13:14:53Z"
+        },
+        {
+          "title": "美 은행주 약세…고금리發 채권거래 감소 직격탄",
+          "source": "한국경제",
+          "link": "https://www.hankyung.com/article/2026101421521",
+          "time": "2026-10-14T08:46:08Z"
+        },
+        {
+          "title": "창구서 계좌 개설땐 수수료 13배 … 증권사 차등부과 관행 손본다",
+          "source": "매일경제",
+          "link": "https://www.mk.co.kr/news/stock/12176005",
+          "time": "2026-10-14T08:44:38Z"
+        }
       ]
     },
     "us": {
-      "generatedAt": "2026-10-14T14:49:29Z",
+      "generatedAt": "2026-10-14T15:06:18Z",
       "items": [
         {
-          "headline": "미국 증시 약세 속 금리·달러·유가 상승",
-          "summary": "10/14 장중 기준 S&P500은 -0.65%(7,754), 나스닥은 -0.81%, 다우는 -0.08%입니다. 10년물 금리는 5.26%로 4bp 올랐고 달러지수(+0.62%)와 WTI 유가(95.28달러, +1.21%)도 올랐으며 VIX는 15.69입니다.",
+          "headline": "미국 증시 하락, 금리·달러·유가 상승",
+          "summary": "10/14 종가 기준 S&P500 -0.79%(7,743), 나스닥 -1.06%, 다우 -0.15%입니다. 10년물 금리는 5.26%로 4bp 올랐고 달러지수(+0.66%)와 WTI 유가(94.99달러)도 올랐으며 VIX는 15.82입니다.",
           "source": "Yahoo Finance 시세",
           "link": "https://finance.yahoo.com/quote/%5EGSPC",
-          "time": "2026-10-14T14:49:29Z"
+          "time": "2026-10-14T15:06:18Z"
         },
         {
           "headline": "미국 9월 물가 +0.6%, 실업률 4.2%",
@@ -69,65 +143,199 @@
         },
         {
           "headline": "블랙록, 주식시장 뉴스 언급 1위(표본)",
-          "summary": "최근 24시간 주식시장 관련 영문 뉴스 표본 690건 중 44건에 블랙록이 등장해 가장 많았습니다. 기사 어조 점수는 +0.3으로 중립에 가깝고, 주가는 전일 대비 +1.07%입니다.",
+          "summary": "최근 24시간 주식시장 관련 영문 뉴스 표본 608건 중 42건에 블랙록가 등장했습니다. 기사 어조 점수는 +0.1로 중립에 가깝고, 주가는 전일 대비 +0.86%입니다.",
           "source": "GDELT Project (gdeltproject.org)",
           "link": "https://marketmap.kr/?ticker=BLK",
-          "time": "2026-10-14T14:49:29Z",
+          "time": "2026-10-14T15:06:18Z",
           "px": {
-            "pct": 1.1,
+            "pct": 0.9,
             "label": "전일 대비"
           }
         },
         {
-          "headline": "골드만삭스, 뉴스 언급 2위(표본)",
-          "summary": "같은 표본 690건 중 36건에 골드만삭스가 등장해 두 번째로 많았습니다. 기사 어조 점수는 +0.3으로 중립에 가깝고, 주가는 전일 대비 -0.69%입니다.",
+          "headline": "씨티그룹, 주식시장 뉴스 언급 2위(표본)",
+          "summary": "최근 24시간 주식시장 관련 영문 뉴스 표본 608건 중 27건에 씨티그룹가 등장했습니다. 기사 어조 점수는 +1.2로 약간 긍정 쪽이고, 주가는 전일 대비 -1.39%입니다.",
           "source": "GDELT Project (gdeltproject.org)",
-          "link": "https://marketmap.kr/?ticker=GS",
-          "time": "2026-10-14T14:49:29Z",
+          "link": "https://marketmap.kr/?ticker=C",
+          "time": "2026-10-14T15:06:18Z",
           "px": {
-            "pct": -0.7,
+            "pct": -1.4,
             "label": "전일 대비"
           }
+        }
+      ],
+      "briefing": {
+        "sections": [
+          {
+            "title": "경제·금융",
+            "body": "노동통계국 지표에서 **9월 소비자물가가 한 달 전보다 0.6% 올랐고** 실업률은 **4.2%**였습니다. 9월 일자리 증가는 **2만 9천 개(잠정)**로 작았습니다. 연준 월러 이사는 **9월에 기준금리를 3.75~4.00%로 0.25%p 올린 것**은 여러 달 쌓인 물가 근거 때문이라고 설명했습니다."
+          },
+          {
+            "title": "증시",
+            "body": "10/14 종가 기준 **S&P500은 0.79%, 나스닥은 1.06%** 내렸고 다우는 0.15% 하락했습니다. **10년물 금리는 5.26%로 4bp 올랐고** 달러지수는 0.66%, WTI 유가는 94.99달러로 올랐습니다. 변동성지수(VIX)는 15.82입니다."
+          },
+          {
+            "title": "기업·이슈",
+            "body": "최근 24시간 주식시장 영문 뉴스 표본(608건)에서 **블랙록이 42건으로 가장 많이** 언급됐고 주가는 전일 대비 +0.86%입니다. **씨티그룹은 27건**이며 주가는 -1.39%입니다. 기사 어조는 두 곳 모두 중립에서 약간 긍정 사이입니다."
+          }
+        ]
+      },
+      "headlines": [
+        {
+          "title": "Consumer prices rose 3.7% annually in September as gas prices skyrocket",
+          "source": "CNBC",
+          "link": "https://www.cnbc.com/2026/10/14/cpi-inflation-report-september-2026.html",
+          "time": "2026-10-14T13:53:28Z"
+        },
+        {
+          "title": "10-year Treasury yield jumps as September core inflation comes in hotter than expected",
+          "source": "CNBC",
+          "link": "https://www.cnbc.com/2026/10/14/us-treasury-yields-cpi-inflation-report.html",
+          "time": "2026-10-14T13:48:01Z"
+        },
+        {
+          "title": "Bank of America shares drop 8% after third-quarter revenue miss and regulatory penalty",
+          "source": "CNBC",
+          "link": "https://www.cnbc.com/2026/10/14/bank-of-america-bac-q3-2026-earnings.html",
+          "time": "2026-10-14T15:00:33Z"
+        },
+        {
+          "title": "Morgan Stanley tops estimates as equities trading revenue beats expectations by $909 million",
+          "source": "CNBC",
+          "link": "https://www.cnbc.com/2026/10/14/morgan-stanley-ms-q3-2026-earnings.html",
+          "time": "2026-10-14T13:11:07Z"
+        },
+        {
+          "title": "Williams says Fed may not have to hike rates in 2027, at odds with traders",
+          "source": "CNBC",
+          "link": "https://www.cnbc.com/2026/10/13/john-williams-fed-rate-hikes-2027.html",
+          "time": "2026-10-13T19:46:12Z"
+        },
+        {
+          "title": "Oil prices rise after IEA warns on market constraints; Saudi officials say Aramco facilities attacked",
+          "source": "CNBC",
+          "link": "https://www.cnbc.com/2026/10/14/oil-rises-amid-growing-tensions-between-saudis-and-iran-backed-houthis.html",
+          "time": "2026-10-14T14:08:16Z"
+        },
+        {
+          "title": "A second major Wall Street bank this week is telling clients to cash in tech stocks. Here's why",
+          "source": "CNBC",
+          "link": "https://www.cnbc.com/2026/10/14/a-second-major-wall-street-bank-this-week-is-telling-clients-to-cash-in-tech-stocks-heres-why-.html",
+          "time": "2026-10-14T14:14:49Z"
+        },
+        {
+          "title": "BlackRock draws $205 billion in client funds as quarterly profit beats estimates",
+          "source": "CNBC",
+          "link": "https://www.cnbc.com/2026/10/14/blackrock-profit-jumps-as-resilient-markets-boost-fees.html",
+          "time": "2026-10-14T11:57:19Z"
+        },
+        {
+          "title": "ASML says it's getting order interest through 2030 as profit smashes expectations",
+          "source": "CNBC",
+          "link": "https://www.cnbc.com/2026/10/14/asml-3q-earnings-ai-demand-orders-capacity.html",
+          "time": "2026-10-14T08:45:13Z"
+        },
+        {
+          "title": "Netflix to lay off roughly 1,000 employees, or 6% of workforce",
+          "source": "CNBC",
+          "link": "https://www.cnbc.com/2026/10/14/netflix-layoffs.html",
+          "time": "2026-10-14T15:03:59Z"
         }
       ]
     },
     "crypto": {
-      "generatedAt": "2026-10-14T14:25:18Z",
+      "generatedAt": "2026-10-14T15:06:18Z",
       "items": [
         {
-          "headline": "비트코인 8만 1,965달러, 하루 1.4% 하락",
-          "summary": "비트코인 가격은 약 8만 1,965달러로, 하루 전보다 1.4% 내렸습니다.",
+          "headline": "비트코인 81,776달러, 하루 1.6% 하락",
+          "summary": "비트코인 가격은 약 81,776달러로, 하루 전보다 1.6% 내렸습니다.",
           "source": "Yahoo Finance 시세 · Alternative.me",
           "link": "https://finance.yahoo.com/quote/BTC-USD",
-          "time": "2026-10-14T14:25:18Z"
+          "time": "2026-10-14T15:06:18Z"
         },
         {
-          "headline": "30일 4.9% 상승, 이더리움은 3.2% 하락",
-          "summary": "비트코인은 7일 동안 1.6% 내렸지만 30일로는 4.9%, 90일로는 28.5% 올랐습니다. 같은 30일 동안 이더리움은 3.2% 내렸습니다.",
+          "headline": "30일 4.6% 상승, 이더리움은 3.4% 하락",
+          "summary": "비트코인은 7일 동안 1.8% 내렸지만 30일로는 4.6%, 90일로는 28.2% 올랐습니다. 같은 30일 동안 이더리움은 3.4% 내렸습니다.",
           "source": "Yahoo Finance 시세 · Alternative.me",
           "link": "https://finance.yahoo.com/quote/BTC-USD",
-          "time": "2026-10-14T14:25:18Z"
+          "time": "2026-10-14T15:06:18Z"
         },
         {
-          "headline": "1년 고점 대비 28.4% 아래",
-          "summary": "최근 1년 최고가(약 11만 4,472달러)보다 28.4% 낮고, 1년 최저가(약 5만 8,559달러)보다는 40.0% 높은 위치입니다.",
+          "headline": "1년 고점 대비 28.6% 아래",
+          "summary": "최근 1년 최고가(약 114,472달러)보다 28.6% 낮고, 1년 최저가(약 58,559달러)보다는 39.6% 높은 위치입니다.",
           "source": "Yahoo Finance 시세 · Alternative.me",
           "link": "https://finance.yahoo.com/quote/BTC-USD",
-          "time": "2026-10-14T14:25:18Z"
+          "time": "2026-10-14T15:06:18Z"
         },
         {
           "headline": "최근 30일 하루 변동폭 약 2.1%",
           "summary": "최근 30일 동안 비트코인의 하루 등락률 표준편차는 약 2.1%였습니다. 하루에 이 정도씩 오르내렸다는 뜻입니다.",
           "source": "Yahoo Finance 시세 · Alternative.me",
           "link": "https://finance.yahoo.com/quote/BTC-USD",
-          "time": "2026-10-14T14:25:18Z"
+          "time": "2026-10-14T15:06:18Z"
         },
         {
           "headline": "공포탐욕지수 62, '탐욕' 구간",
           "summary": "공포탐욕지수는 62로 '탐욕' 구간이며, 하루 전(57)보다 올랐습니다. 지수가 높을수록 시장 분위기가 낙관적이라는 뜻입니다.",
           "source": "Yahoo Finance 시세 · Alternative.me",
           "link": "https://finance.yahoo.com/quote/BTC-USD",
-          "time": "2026-10-14T14:25:18Z"
+          "time": "2026-10-14T15:06:18Z"
+        }
+      ],
+      "briefing": {
+        "sections": [
+          {
+            "title": "시세",
+            "body": "비트코인은 **약 81,776달러로 하루 사이 1.6% 내렸습니다**. 7일로는 1.8% 내렸지만 **30일로는 4.6%, 90일로는 28.2% 올랐고** 같은 30일 동안 이더리움은 3.4% 내렸습니다."
+          },
+          {
+            "title": "심리·지표",
+            "body": "**공포탐욕지수는 62로 '탐욕' 구간**이고 하루 전(57)보다 높아졌습니다. 가격은 1년 최고가보다 **28.6% 낮은 자리**이고, 최근 30일 하루 평균 변동폭은 약 2.1%입니다."
+          }
+        ]
+      },
+      "headlines": [
+        {
+          "title": "Hot CPI Halts Bitcoin's Rebound",
+          "source": "finanznachrichten.de",
+          "link": "https://www.finanznachrichten.de/nachrichten-2026-10/69837808-hot-cpi-halts-bitcoin-s-rebound-020.htm",
+          "time": "2026-10-14T15:15:00Z"
+        },
+        {
+          "title": "Bitcoin Hovers Below $84,000 Ahead of Key Inflation Data",
+          "source": "morningstar.com",
+          "link": "https://www.morningstar.com/news/dow-jones/202610141822/bitcoin-hovers-below-84000-ahead-of-key-inflation-data",
+          "time": "2026-10-14T09:15:00Z"
+        },
+        {
+          "title": "Bitcoin Treads Water At $83,000 As Market Looks For Direction",
+          "source": "baystreet.ca",
+          "link": "https://baystreet.ca/cryptonews/1408/Bitcoin-Treads-Water-At-83000-As-Market-Looks-For-Direction",
+          "time": "2026-10-14T15:15:00Z"
+        },
+        {
+          "title": "One year after bitcoin's all-time high… what comes next?, by etoro analyst Javier Molina – Nine O' Clock – first exclusively daily publication to appear in English language in Romania",
+          "source": "nineoclock.ro",
+          "link": "https://nineoclock.ro/one-year-after-bitcoins-all-time-high-what-comes-next-by-etoro-analyst-javier-molina/",
+          "time": "2026-10-14T15:15:00Z"
+        },
+        {
+          "title": "Top bidders to attend Trump meme coin dinner appear to be based in foreign countries",
+          "source": "cbsnews.com",
+          "link": "https://www.cbsnews.com/news/trump-meme-coin-dinner-foreign-top-bidders/",
+          "time": "2026-10-14T12:15:00Z"
+        },
+        {
+          "title": "Zcash Continues to Outperform Every Other Major Cryptocurrency This Year. So Is ZEC Now a Buy?",
+          "source": "fool.com",
+          "link": "https://www.fool.com/investing/2026/10/13/zcash-continues-to-outperform-other-major-cryptos/?source=iedfolrf0000001",
+          "time": "2026-10-13T18:15:00Z"
+        },
+        {
+          "title": "Particula Assigns AAA-Rating to WisdomTree's $1.2B Tokenized Money Market Fund",
+          "source": "manilatimes.net",
+          "link": "https://www.manilatimes.net/2026/10/14/tmt-newswire/globenewswire/particula-assigns-aaa-rating-to-wisdomtrees-12b-tokenized-money-market-fund/2445176",
+          "time": "2026-10-14T03:15:00Z"
         }
       ]
     }

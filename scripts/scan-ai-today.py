@@ -223,6 +223,10 @@ _ALIAS = {"google": "GOOGL", "alphabet": "GOOGL", "facebook": "META", "meta": "M
           "amazon": "AMZN", "palantir": "PLTR", "micron": "MU", "delta air lines": "DAL", "blackrock": "BLK", "citigroup": "C", "citi": "C"}
 
 
+_CRYPTO_TITLES = {}  # GDELT 표본에서 모은 비트코인·암호화폐 기사 제목(gdelt_top이 채우고 비트코인 제목 구역이 읽음)
+_CRYPTO_SPAM = re.compile(r"presale|purchases? [\d,]+ shares|sells? [\d,]+ shares|acquires? [\d,]+ shares|price prediction", re.I)
+
+
 def _norm(n):
     return re.sub(r"\s+", " ", _SUF.sub(" ", re.sub(r"[.,]", " ", n.lower()))).strip()
 
@@ -249,6 +253,14 @@ def gdelt_top(n=2, samples=8, step_hours=3):
             continue
         files += 1
         for row in csv.reader(io.StringIO(txt), delimiter="\t", quoting=csv.QUOTE_NONE):
+            if len(row) > 26 and row[4] not in _CRYPTO_TITLES and ("ECON_BITCOIN" in row[7] + row[8] or "CRYPTOCURRENCY" in row[7] + row[8]):
+                mt = re.search(r"<PAGE_TITLE>(.*?)</PAGE_TITLE>", row[26], re.S)
+                if mt:
+                    try:
+                        cts = datetime.strptime(row[1][:14], "%Y%m%d%H%M%S").replace(tzinfo=timezone.utc).timestamp()
+                    except Exception:
+                        cts = time.time()
+                    _CRYPTO_TITLES[row[4]] = {"title": clean(mt.group(1)), "source": row[3], "link": row[4], "ts": cts}
             if len(row) < 16 or "ECON_STOCKMARKET" not in row[7] + row[8] or row[4] in seen:
                 continue
             seen.add(row[4])
@@ -281,6 +293,115 @@ def gdelt_top(n=2, samples=8, step_hours=3):
 
 def us_materials():
     return {"market": us_market_facts(), "bls": bls_facts(), "fed": fed_candidates(), "gdelt": gdelt_top()}
+
+
+# ---------------------------------------------------------------- 브리핑: 구역별 소제목 + 굵은 핵심(2026-10-15)
+# 위 TOP5 항목(근거 자료)과 같은 재료로, 자료에 나온 순서가 아니라 중요도 순으로 새로 배열한 구역별 글을 만든다.
+def kr_market_facts():
+    out = {}
+    for key, label, sym in (("kospi", "코스피", "^KS11"), ("kosdaq", "코스닥", "^KQ11"), ("usdkrw", "원/달러 환율", "KRW=X")):
+        try:
+            out[key] = dict(day_change(sym), label=label)
+        except Exception as e:
+            print("  한국 시장 숫자 실패(%s): %s" % (sym, e), flush=True)
+    return out
+
+
+# ---------------------------------------------------------------- 주요 뉴스 제목(2026-10-15): 기사 내용은 쓰지 않고 제목·링크·출처만
+# 언론사 공식 RSS에서 제목만 읽어 AI가 "어느 제목을 보여줄지"만 고른다. 제목은 다시 쓰지 않고 그대로 표시하며 누르면 원문으로 이동한다.
+# 코인 매체(CoinDesk·Cointelegraph)는 약관이 자동 수집을 명시적으로 금지해서 제외한다.
+NEWS_FEEDS = {
+    "kr": [("연합뉴스", "https://www.yna.co.kr/rss/economy.xml"), ("한국경제", "https://www.hankyung.com/feed/finance"), ("매일경제", "https://www.mk.co.kr/rss/50200011/")],
+    "us": [("CNBC", "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258"), ("CNBC", "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100003114"),
+           ("MarketWatch", "https://feeds.marketwatch.com/marketwatch/topstories/")],
+}
+
+
+def headline_candidates(key, max_age_hours=30, limit=40):
+    if key == "crypto":  # 코인 매체 RSS는 약관상 쓰지 않고 GDELT 공개 데이터의 기사 제목만 사용
+        kw = re.compile(r"bitcoin|crypto|btc|ether|\bcoin|token|stablecoin|blockchain|ibit", re.I)
+        seen, out = set(), []
+        for c in sorted(_CRYPTO_TITLES.values(), key=lambda c: -c["ts"]):
+            k = re.sub(r"\s+", "", c["title"])[:24]
+            if any(d in c["source"] for d in ("cointelegraph.com", "coindesk.com")):
+                continue  # 이 두 코인 매체는 약관이 자동 수집·AI 활용을 명시적으로 금지하므로 GDELT를 거쳐도 쓰지 않는다
+            if kw.search(c["title"]) and not _CRYPTO_SPAM.search(c["title"]) and k not in seen:
+                seen.add(k)
+                out.append(c)
+        return out[:limit]
+    allv = []
+    for name, url in NEWS_FEEDS.get(key, []):
+        try:
+            xml = http_get(url).decode("utf-8", "replace")
+        except Exception as e:
+            print("  뉴스 피드 실패(%s): %s" % (name, e), flush=True)
+            continue
+        for m in re.finditer(r"<item[\s>].*?</item>", xml, re.S | re.I):
+            b = m.group(0)
+            title, link = clean(tag(b, "title")), clean(tag(b, "link"))
+            try:
+                ts = parsedate_to_datetime(clean(tag(b, "pubDate"))).timestamp()
+            except Exception:
+                continue
+            if title and link.startswith("http") and time.time() - max_age_hours * 3600 <= ts <= time.time() + 3600:
+                allv.append({"title": title, "source": name, "link": link, "ts": ts})
+    seen, uniq = set(), []
+    for n in sorted(allv, key=lambda n: -n["ts"]):
+        k = re.sub(r"\s+", "", n["title"])[:24]
+        if k not in seen:
+            seen.add(k)
+            uniq.append(n)
+    by = defaultdict(list)
+    for n in uniq:
+        by[n["source"]].append(n)
+    mixed, i = [], 0
+    while len(mixed) < limit and any(i < len(v) for v in by.values()):
+        for v in by.values():
+            if i < len(v) and len(mixed) < limit:
+                mixed.append(v[i])
+        i += 1
+    return mixed
+
+
+def pick_headlines(key, n=10):
+    cands = headline_candidates(key)
+    if len(cands) < (4 if key == "crypto" else 8):
+        raise RuntimeError("뉴스 제목 후보가 너무 적음(%d건)" % len(cands))
+    lst = "\n".join("[%d] (%s) %s" % (i, c["source"], c["title"]) for i, c in enumerate(cands))
+    j = claude_json("투자 정보 앱의 아침 에디터로서, 아래 제목 목록에서 투자자에게 가장 중요한 뉴스 최대 %d건의 번호를 중요한 순서대로 고르세요(관련 제목이 부족하면 적게 골라도 됩니다). 같은 사건은 하나만, 서로 다른 주제로 고릅니다. 제목을 고쳐 쓰지 않습니다. JSON만 출력: {\"idx\":[번호,...]}" % n, lst)
+    out, used = [], set()
+    for x in j.get("idx", []):
+        try:
+            x = int(x)
+        except Exception:
+            continue
+        if 0 <= x < len(cands) and x not in used:
+            used.add(x)
+            c = cands[x]
+            out.append({"title": c["title"], "source": c["source"], "link": c["link"], "time": iso(c["ts"])})
+    if len(out) < 3:
+        raise RuntimeError("고른 제목이 부족함")
+    return out[:n]
+
+
+BRIEF_SYSTEM = """당신은 투자 정보 앱의 아침 브리핑 에디터입니다. 아래 자료만으로 오늘의 브리핑을 구역별로 씁니다.
+- 구역(sections)은 자료가 있는 것만 고릅니다: 증시 / 산업·기업 / 금융·경제 (비트코인은 시세 / 심리·지표).
+- 구역 순서와 구역 안 문장 순서는 자료에 나온 순서를 따르지 말고, 투자자에게 중요한 순서대로 새로 배열합니다.
+- 구역마다 2~4문장. 핵심 사실·수치는 **굵게**(별표 두 개로 감쌈) 표시하고, 구역당 굵은 표시는 2~3곳으로 합니다.
+- 주어진 자료에 있는 내용만 쓰고 원인·전망·금액을 지어내지 않습니다. 투자 권유·매수/매도 의견·가격 예측 표현을 쓰지 않습니다. 쉬운 말로 씁니다.
+- 반드시 아래 JSON만 출력합니다(설명·코드블록 금지): {"sections":[{"title":"증시","body":"..."}]}"""
+
+
+def make_briefing(key, cands, items):
+    if key == "kr":
+        mat = {"시장": kr_market_facts(), "오늘의 공시": [{"회사": c["company"], "공시": c["title"]} for c in cands[:15]], "선정된 항목": [i["headline"] for i in items]}
+    elif key == "us":
+        mat = {"시장": cands["market"], "BLS 경제지표": cands["bls"]["indicators"], "연준": [{"제목": c["title"], "본문": c.get("body", "")[:1200]} for c in cands["fed"][:3]], "뉴스 언급 상위 기업(GDELT 표본)": cands["gdelt"]}
+    else:
+        mat = cands
+    j = claude_json(BRIEF_SYSTEM, "자료:\n" + json.dumps(mat, ensure_ascii=False, indent=1))
+    secs = [{"title": str(s["title"]).strip(), "body": str(s["body"]).strip()} for s in j.get("sections", []) if s.get("title") and s.get("body")]
+    return {"sections": secs} if len(secs) >= 2 else None
 
 
 # ---------------------------------------------------------------- 비트코인: 시장 숫자
@@ -438,7 +559,19 @@ def main():
             if key == "kr" and len(cands) < 3:
                 raise RuntimeError("후보 공시가 너무 적음(%d건)" % len(cands))
             items = pick_items(key, cands)
-            out["markets"][key] = {"generatedAt": now, "items": items}
+            entry = {"generatedAt": now, "items": items}
+            try:
+                br = make_briefing(key, cands, items)
+                if br:
+                    entry["briefing"] = br
+            except Exception as e:
+                print("  브리핑 생성 실패(항목 목록만 저장):", e, flush=True)
+            if key in ("kr", "us", "crypto"):
+                try:
+                    entry["headlines"] = pick_headlines(key)
+                except Exception as e:
+                    print("  뉴스 제목 선정 실패(제목 구역 없이 저장):", e, flush=True)
+            out["markets"][key] = entry
             print("  → %d건 저장" % len(items), flush=True)
         except Exception as e:
             failed += 1
