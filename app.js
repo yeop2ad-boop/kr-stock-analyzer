@@ -22207,7 +22207,7 @@ async function renderToday() {
       ${sections.map((s) => `<h5 class="brief-h">${escapeHtml(s.title)}</h5><p class="brief-p">${todayBoldHtml(s.body)}</p>`).join("")}`);
   }
   if (heads.length) {
-    parts.push(`<h4 class="today-sub today-heads-title">${sec === "etf" ? "주요 뉴스 제목 (한국 5 + 미국 5)" : `주요 뉴스 제목 TOP${heads.length}`}</h4>
+    parts.push(`<h4 class="today-sub today-heads-title">${sec === "etf" ? "주요 뉴스 (한국 5 + 미국 5)" : `주요 뉴스 TOP${heads.length}`}</h4>
       <p class="today-note">제목은 각 언론사 원문 그대로이며, 누르면 해당 언론사로 이동합니다.</p>
       <div class="head-list">${heads
         .map(
