@@ -14,3 +14,10 @@ sector-map/scripts/strategy-series-cache.json
 sector-map/scripts/ipo-universe-cache.json
 sector-map/scripts/ipo-raw.json
 __pycache__/
+
+# 테스터 이메일(개인정보) — 저장소에 올리지 않음
+tester-emails*.csv
+# 스토어용 캡처·설명 초안(제작물, 저장소에 올리지 않음)
+store-screenshots/
+store-description.txt
+logo-preview-stockchat.png
