@@ -1,8 +1,10 @@
 name: 신기술 인사이트 자동 생성
 
 on:
-  # 2026-08-26: Anthropic/OpenAI API 종량제 비용 문제로 자동 스케줄 중지(사용자 요청).
-  # 필요 시 Actions 탭에서 이 워크플로를 "Run workflow"로 수동 실행은 여전히 가능.
+  schedule:
+    # 2026-10-14 사용자 요청으로 다시 켬(8/26에 Anthropic/OpenAI 비용 때문에 중지했었음).
+    # 매일 21:07 UTC = 한국시간(KST) 오전 6시 7분 — GitHub 예약 실행이 보통 1~2시간 늦게 시작하므로 오전 7시 전후에 반영
+    - cron: "7 21 * * *"
   workflow_dispatch: {}
 
 permissions:

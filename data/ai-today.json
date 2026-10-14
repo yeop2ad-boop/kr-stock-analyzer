@@ -1,0 +1,126 @@
+{
+  "generatedAt": "2026-10-14T14:12:29Z",
+  "model": "claude (수동 생성 2026-10-14)",
+  "markets": {
+    "kr": {
+      "generatedAt": "2026-10-14T14:12:29Z",
+      "items": [
+        {
+          "headline": "중국 D램 도발에 코스피 급락",
+          "summary": "중국 창신메모리(CXMT)가 삼성전자보다 먼저 차세대 D램을 내놓겠다고 밝히면서 코스피가 크게 흔들렸습니다. 반도체 업황 우려가 시장을 눌렀습니다.",
+          "source": "매일경제",
+          "link": "https://www.mk.co.kr/news/stock/12175273",
+          "time": "2026-10-14T09:40:47Z"
+        },
+        {
+          "headline": "외국인, 올해만 200조원 순매도",
+          "summary": "외국인이 올해 국내 증시에서 200조원 넘게 팔았다는 보도입니다. 코스피를 떠난 외국인 자금의 행방에 관심이 쏠립니다.",
+          "source": "한국경제",
+          "link": "https://www.hankyung.com/article/202610141350i",
+          "time": "2026-10-14T07:36:23Z"
+        },
+        {
+          "headline": "개인 투자자 매수 여력 바닥",
+          "summary": "개인 투자자의 추가 매수 자금이 말라 코스피 6천 선이 무너질 수 있다는 분석이 나왔습니다.",
+          "source": "한국경제",
+          "link": "https://www.hankyung.com/article/2026101418086",
+          "time": "2026-10-14T13:00:02Z"
+        },
+        {
+          "headline": "현대차 주가 반토막, 목표가 줄하향",
+          "summary": "넉 달 전 고점 대비 주가가 반토막 난 현대차는 외국인이 14거래일 연속 팔았습니다. KB증권은 목표가를 90만원에서 70만원으로 낮췄습니다.",
+          "source": "매일경제",
+          "link": "https://www.mk.co.kr/news/stock/12175493",
+          "time": "2026-10-14T13:30:02Z"
+        },
+        {
+          "headline": "삼성전자에 우선주 중심 소각 요구",
+          "summary": "삼성전자가 최대 110조원의 주주환원 계획을 내놓자 팰리서캐피털 등 행동주의 펀드가 우선주 중심의 자사주 매입·소각을 요구하고 있습니다.",
+          "source": "매일경제",
+          "link": "https://www.mk.co.kr/news/stock/12175428",
+          "time": "2026-10-14T11:26:56Z"
+        }
+      ]
+    },
+    "us": {
+      "generatedAt": "2026-10-14T14:12:29Z",
+      "items": [
+        {
+          "headline": "미국 9월 물가 3.7% 상승, 예상 상회",
+          "summary": "9월 소비자물가가 전년 대비 3.7% 올라 시장 예상(3.6%)보다 높았습니다. 휘발유 가격 급등이 영향을 줬습니다.",
+          "source": "CNBC",
+          "link": "https://www.cnbc.com/2026/10/14/cpi-inflation-report-september-2026.html",
+          "time": "2026-10-14T13:53:28Z"
+        },
+        {
+          "headline": "BofA 주가 8% 급락",
+          "summary": "뱅크오브아메리카가 3분기 트레이딩 매출이 예상에 못 미친 데다 규제 당국 과징금까지 겹치며 주가가 8% 떨어졌습니다.",
+          "source": "CNBC",
+          "link": "https://www.cnbc.com/2026/10/14/bank-of-america-bac-q3-2026-earnings.html",
+          "time": "2026-10-14T14:07:44Z"
+        },
+        {
+          "headline": "모건스탠리, 주식 트레이딩 호조로 예상 상회",
+          "summary": "모건스탠리가 3분기 매출과 이익 모두 예상을 웃돌았습니다. 주식 트레이딩 수익이 예상보다 9억 900만 달러 많았습니다.",
+          "source": "CNBC",
+          "link": "https://www.cnbc.com/2026/10/14/morgan-stanley-ms-q3-2026-earnings.html",
+          "time": "2026-10-14T13:11:07Z"
+        },
+        {
+          "headline": "중동 긴장에 국제유가 상승",
+          "summary": "국제에너지기구(IEA)의 공급 제약 경고와 사우디 아람코 시설 공격 소식에 유가가 올랐습니다.",
+          "source": "CNBC",
+          "link": "https://www.cnbc.com/2026/10/14/oil-rises-amid-growing-tensions-between-saudis-and-iran-backed-houthis.html",
+          "time": "2026-10-14T14:08:16Z"
+        },
+        {
+          "headline": "연준 윌리엄스 \"내년 추가 인상 없을 수도\"",
+          "summary": "뉴욕 연은 윌리엄스 총재는 올해 한 차례 더 올릴 수 있지만 2027년에는 추가 인상이 필요 없을 수 있다고 밝혔습니다. 시장 참가자들의 전망과는 차이가 있습니다.",
+          "source": "CNBC",
+          "link": "https://www.cnbc.com/2026/10/13/john-williams-fed-rate-hikes-2027.html",
+          "time": "2026-10-13T19:46:12Z"
+        }
+      ]
+    },
+    "crypto": {
+      "generatedAt": "2026-10-14T14:12:29Z",
+      "items": [
+        {
+          "headline": "물가 지표 쇼크에 비트코인 급락",
+          "summary": "미국 9월 소비자물가가 예상보다 높게 나오자 비트코인이 크게 하락했습니다. 연준의 추가 금리 인상 가능성이 다시 거론됩니다.",
+          "source": "CoinDesk",
+          "link": "https://www.coindesk.com/markets/2026/10/14/u-s-september-cpi-comes-in-hot-sending-bitcoin-sharply-lower",
+          "time": "2026-10-14T12:33:56Z"
+        },
+        {
+          "headline": "비트코인 8만4천 달러 부근 반등",
+          "summary": "연준 윌리엄스 총재가 2027년 금리 인상이 없을 수 있다고 하자 비트코인이 8만4천 달러 쪽으로 올랐습니다. 주요 알트코인도 함께 반등했습니다.",
+          "source": "CoinDesk",
+          "link": "https://www.coindesk.com/markets/2026/10/14/bitcoin-climbs-toward-usd84-000-after-fed-s-williams-sees-no-rate-hikes-in-2027",
+          "time": "2026-10-14T03:50:54Z"
+        },
+        {
+          "headline": "크라켄 모회사, 유럽 은행 인수",
+          "summary": "크라켄 모회사 페이워드가 리투아니아의 살도뱅크를 인수하기로 했습니다. 가상자산 업체가 유럽 은행을 사는 첫 사례로 예금·대출 영역으로 확장합니다.",
+          "source": "CoinDesk",
+          "link": "https://www.coindesk.com/business/2026/10/14/kraken-parent-payward-to-become-first-crypto-firm-to-buy-a-eu-bank-as-it-expands-into-deposits-lending",
+          "time": "2026-10-14T13:07:45Z"
+        },
+        {
+          "headline": "스트라이브, 5억 달러로 비트코인 추가 매수",
+          "summary": "스트라이브가 새 우선주를 발행해 5억 달러를 모아 비트코인을 더 사들일 계획입니다. 이 우선주는 연 15% 고정 배당을 제시합니다.",
+          "source": "CoinDesk",
+          "link": "https://www.coindesk.com/markets/2026/10/13/strive-to-ipo-second-preferred-share-class-as-it-looks-to-further-build-bitcoin-treasury",
+          "time": "2026-10-13T23:23:05Z"
+        },
+        {
+          "headline": "렛저, 변조 의혹에 동남아 판매 중단 요청",
+          "summary": "하드웨어 지갑 업체 렛저가 변조 조사가 진행되는 동안 동남아시아·홍콩 판매업체에 제품 회수를 요청했습니다.",
+          "source": "Cointelegraph",
+          "link": "https://cointelegraph.com/news/ledger-asks-resellers-to-halt-sales-in-southeast-asia-and-hong-kong?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+          "time": "2026-10-13T23:28:19Z"
+        }
+      ]
+    }
+  }
+}
