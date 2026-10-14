@@ -10903,6 +10903,48 @@ function beginLoadMoreScan(resultsEl, statusEl) {
 function endLoadMoreScan(resultsEl) {
   delete resultsEl.dataset.scanning;
 }
+
+// 종목 "전체보기"(한국 코스피200+코스닥150 350종목 / 미국 S&P500 500종목 전체 검색)는 하루 30회까지(2026-10-14 사용자 요청).
+// 남은 횟수는 화면에 보여주지 않고, 31번째부터 "내일 00:00 이후 가능" 안내만 띄움. 기준일은 한국시간 00:00,
+// 횟수는 이 브라우저(localStorage)에 저장 — 스톡챗 안의 임베드 화면도 같은 도메인이라 같은 횟수를 공유함.
+// ETF·코인·IPO 전체보기와 "더보기(30개씩)"는 대상 아님. 모든 종목 전체보기 버튼이 클릭 이벤트 하나로 모이므로 캡처 단계에서 한 번에 막음.
+const FULL_SCAN_DAILY_LIMIT = 30;
+const FULL_SCAN_QUOTA_KEY = "full_scan_quota_v1";
+const FULL_SCAN_LIMIT_MSG = "오늘 전체 검색 30회를 모두 사용했어요. 00:00 이후에 다시 이용할 수 있어요.";
+function isStockFullScanBtn(btn) {
+  if (!btn || !btn.classList || !btn.classList.contains("load-more-btn")) return false;
+  const t = (btn.textContent || "").trim();
+  if (!t.startsWith("전체보기")) return false;
+  return t.includes("나머지") || btn.classList.contains("stock-vol-more-btn");
+}
+function consumeFullScanQuota() {
+  const today = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+  let q = null;
+  try {
+    q = JSON.parse(localStorage.getItem(FULL_SCAN_QUOTA_KEY) || "null");
+  } catch {}
+  if (!q || q.day !== today) q = { day: today, n: 0 };
+  if (q.n >= FULL_SCAN_DAILY_LIMIT) return false;
+  q.n += 1;
+  try {
+    localStorage.setItem(FULL_SCAN_QUOTA_KEY, JSON.stringify(q));
+  } catch {}
+  return true;
+}
+document.addEventListener(
+  "click",
+  (e) => {
+    const btn = e.target && e.target.closest ? e.target.closest(".load-more-btn") : null;
+    if (!isStockFullScanBtn(btn)) return;
+    if (consumeFullScanQuota()) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    btn.textContent = FULL_SCAN_LIMIT_MSG;
+    btn.disabled = true;
+    showToast(FULL_SCAN_LIMIT_MSG);
+  },
+  true
+);
 // 랭킹 서브버튼 재클릭용 가드 — 이미 그 결과영역에서 스캔이 돌고 있으면 토스트만 띄우고 무시
 function guardRankingScan(resultsEl) {
   if (resultsEl.dataset.scanning === "1") {
