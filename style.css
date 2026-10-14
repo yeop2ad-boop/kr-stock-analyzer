@@ -4201,3 +4201,6 @@ table.earn-table tr.earn-chart-row td { padding: 6px 0 14px; white-space: normal
 html.embed-analysis #panelWatchlist > *:not(#wlCompare) { display: none !important; }
 html.embed-analysis #wlCompare { margin-top: 0; }
 html.embed-analysis #wlCompare .wl-ex-head { display: none; }
+.today-px { font-weight: 800; }
+.today-px.up { color: var(--pos, #e04600); }
+.today-px.down { color: var(--neg, #2563eb); }

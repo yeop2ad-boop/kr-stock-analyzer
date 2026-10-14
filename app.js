@@ -22156,7 +22156,7 @@ function todayNewsRowHtml(n, rank, badge, linkLabel) {
       <span class="today-news-body">
         <b class="today-news-headline">${badge ? `<i class="today-news-badge">${badge}</i>` : ""}${escapeHtml(n.headline)}</b>
         <span class="today-news-summary">${escapeHtml(n.summary)}</span>
-        <small class="today-news-meta">${escapeHtml(n.source)} · ${escapeHtml(todayTimeLabel(n.time, true))} · ${linkLabel} →</small>
+        <small class="today-news-meta">${n.px && Number.isFinite(n.px.pct) ? `<b class="today-px ${n.px.pct > 0 ? "up" : n.px.pct < 0 ? "down" : ""}">${escapeHtml(n.px.label || "공시 후")} ${n.px.pct > 0 ? "+" : ""}${n.px.pct.toFixed(1)}%</b> · ` : ""}${escapeHtml(n.source)} · ${escapeHtml(todayTimeLabel(n.time, true))} · ${linkLabel} →</small>
       </span>
     </a>`;
 }
