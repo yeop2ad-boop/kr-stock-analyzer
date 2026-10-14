@@ -11649,15 +11649,18 @@ function popularSparkSvg(chart) {
   const closes = ((res.indicators && res.indicators.quote && res.indicators.quote[0] && res.indicators.quote[0].close) || []).filter((c) => Number.isFinite(c));
   const prev = res.meta && Number.isFinite(res.meta.chartPreviousClose) ? res.meta.chartPreviousClose : closes[0];
   if (closes.length < 2 || !Number.isFinite(prev)) return "";
-  const W = 56,
-    H = 24;
+  const W = 60,
+    H = 28;
   const lo = Math.min(prev, ...closes);
   const hi = Math.max(prev, ...closes);
   const y = (v) => (hi > lo ? H - 2 - ((v - lo) / (hi - lo)) * (H - 4) : H / 2);
   const d = closes.map((c, i) => `${i ? "L" : "M"}${((i / (closes.length - 1)) * W).toFixed(1)},${y(c).toFixed(1)}`).join(" ");
   const up = closes[closes.length - 1] >= prev;
-  return `<svg class="pop-spark ${up ? "up" : "down"}" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true"><line x1="0" x2="${W}" y1="${y(prev).toFixed(1)}" y2="${y(prev).toFixed(1)}" class="pop-spark-base"/><path d="${d}"/></svg>`;
+  // 2026-10-15 사용자 선택 C안: 선 아래를 그라데이션으로 채운 면적 그래프(위 시장 요약 패널과 같은 모양)
+  const gid = `psg${++popularSparkGradSeq}`;
+  return `<svg class="pop-spark ${up ? "up" : "down"}" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true"><defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".24"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient></defs><line x1="0" x2="${W}" y1="${y(prev).toFixed(1)}" y2="${y(prev).toFixed(1)}" class="pop-spark-base"/><path d="${d} L${W},${H} L0,${H} Z" style="fill:url(#${gid});stroke:none"/><path d="${d}"/></svg>`;
 }
+let popularSparkGradSeq = 0;
 function fillPopularSparks() {
   const cells = [...document.querySelectorAll(".pop-spark-cell[data-spark]")].filter((n) => !n.dataset.filled);
   if (!cells.length) return;
@@ -11892,47 +11895,68 @@ async function loadPopularMoverRows(section) {
       })
     );
 }
-// ---------- 인기종목 맨 위 시장 요약 한 줄(2026-10-07 사용자 선택 A안 · 토스증권식 칩 가로 스크롤) ----------
-// 지수 칩(굵게) | 섹터 칩(오늘 등락률, 시가총액 가중 평균 — ETF는 단순 평균) 높은 순
+// ---------- 인기종목 맨 위 시장 요약(2026-10-15 사용자 선택 C안: 한 패널 3열 · 등락률 크게 + 일일 면적 그래프) ----------
+// 투자처마다 3개만: 한국=코스피·코스닥·원/달러, 미국=S&P500·나스닥·다우, ETF=S&P500·나스닥·코스피, 비트코인=비트코인·이더리움·원/달러.
+// 섹터별 칩은 삭제. 그래프는 오늘 하루 5분 단위 흐름이고 점선은 전일 종가.
 const MARKET_BAR_INDEXES = {
-  kr: [["^KS11", "코스피"], ["^KQ11", "코스닥"]],
+  kr: [["^KS11", "코스피"], ["^KQ11", "코스닥"], ["KRW=X", "원/달러"]],
   us: [["^GSPC", "S&P500"], ["^IXIC", "나스닥"], ["^DJI", "다우"]],
-  etf: [["^GSPC", "S&P500"], ["^IXIC", "나스닥"], ["^KS11", "코스피"], ["^KQ11", "코스닥"]],
-  crypto: [["BTC-USD", "비트코인"], ["ETH-USD", "이더리움"]],
+  etf: [["^GSPC", "S&P500"], ["^IXIC", "나스닥"], ["^KS11", "코스피"]],
+  crypto: [["BTC-USD", "비트코인"], ["ETH-USD", "이더리움"], ["KRW=X", "원/달러"]],
 };
-function marketBarChipHtml(label, pct, strong) {
-  const v = Number.isFinite(pct) ? Math.round(pct * 100) / 100 : null;
-  const cls = v > 0 ? "up" : v < 0 ? "down" : "";
-  return `<span class="mb-chip${strong ? " strong" : ""}"><span>${escapeHtml(label)}</span><b class="${cls}">${v === null ? "-" : `${v > 0 ? "+" : ""}${v.toFixed(2)}%`}</b></span>`;
+function marketBarValueText(sym, price) {
+  if (!Number.isFinite(price)) return "";
+  const n = (d) => price.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
+  if (sym === "KRW=X") return `${n(2)}원`;
+  if (sym === "BTC-USD" || sym === "ETH-USD") return `$${n(0)}`;
+  return n(2);
 }
-async function renderMarketBar(section, rows) {
+let marketBarGradSeq = 0;
+function marketBarColumnHtml(x) {
+  const p = Number.isFinite(x.pct) ? Math.round(x.pct * 100) / 100 : null;
+  const cls = p > 0 ? "up" : p < 0 ? "down" : "";
+  const arrow = p > 0 ? "▲" : p < 0 ? "▼" : "";
+  let spark = "";
+  const s = x.series;
+  if (s && s.length >= 3) {
+    const W = 100;
+    const H = 38;
+    const base = Number.isFinite(x.base) ? x.base : s[0];
+    const lo = Math.min(...s, base);
+    const hi = Math.max(...s, base);
+    const rng = hi - lo || 1;
+    const y = (v) => H - 3 - ((v - lo) / rng) * (H - 6);
+    const pts = s.map((v, i) => `${((i * W) / (s.length - 1)).toFixed(1)},${y(v).toFixed(1)}`);
+    const gid = `mbg${++marketBarGradSeq}`;
+    spark = `<svg class="mb3-spark ${cls}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+      <defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".22"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient></defs>
+      <line x1="0" x2="${W}" y1="${y(base).toFixed(1)}" y2="${y(base).toFixed(1)}" class="mb3-base"/>
+      <path d="M${pts.join(" L")} L${W},${H} L0,${H} Z" fill="url(#${gid})"/>
+      <path d="M${pts.join(" L")}" class="mb3-line"/></svg>`;
+  }
+  return `<div class="mb3-col"><div class="mb3-t"><span class="mb3-nm">${escapeHtml(x.label)}</span><b class="mb3-p ${cls}">${p === null ? "-" : `${arrow ? arrow + " " : ""}${Math.abs(p).toFixed(2)}%`}</b><span class="mb3-v">${escapeHtml(x.valueText || "")}</span></div>${spark}</div>`;
+}
+async function renderMarketBar(section) {
   const bar = el("popularMarketBar");
   if (!bar) return;
-  const idx = await mapWithConcurrency(MARKET_BAR_INDEXES[section] || [], 4, async ([sym, label]) => {
-    const chart = await yahooChart(sym, "5d").catch(() => null);
-    const chg = getDailyChangePercent(chart);
-    const snap = yahooSnapshot(chart);
-    return { label, pct: Number.isFinite(chg) ? chg : snap ? snap.changePct : null };
+  const idx = await mapWithConcurrency(MARKET_BAR_INDEXES[section] || [], 3, async ([sym, label]) => {
+    const chart = await yahooChart(sym, "1d", "5m").catch(() => null);
+    const result = chart && chart.chart && chart.chart.result && chart.chart.result[0];
+    if (!result) return null;
+    const meta = result.meta || {};
+    const closes = ((result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || []).filter((v) => Number.isFinite(v));
+    const price = Number.isFinite(meta.regularMarketPrice) ? meta.regularMarketPrice : closes[closes.length - 1];
+    let pct = getDailyChangePercent(chart);
+    if (!Number.isFinite(pct) && Number.isFinite(meta.chartPreviousClose) && meta.chartPreviousClose > 0 && Number.isFinite(price)) pct = (price / meta.chartPreviousClose - 1) * 100;
+    // 전일 종가 기준선은 등락률에서 거꾸로 계산(1일치 5분봉의 chartPreviousClose는 일부 종목에서 현재가와 같게 깨져 나옴)
+    const base = Number.isFinite(pct) && Number.isFinite(price) ? price / (1 + pct / 100) : null;
+    const step = Math.max(1, Math.floor(closes.length / 60));
+    const series = closes.filter((_, i) => i % step === 0);
+    if (closes.length && series[series.length - 1] !== closes[closes.length - 1]) series.push(closes[closes.length - 1]);
+    return { label, pct: Number.isFinite(pct) ? pct : null, valueText: marketBarValueText(sym, price), series, base };
   });
-  const agg = new Map();
-  (rows || []).forEach((r) => {
-    if (!r.sector || r.sector === "기타" || !Number.isFinite(r.changePct)) return;
-    const w = section === "etf" ? 1 : Number(r.cap) > 0 ? Number(r.cap) : 0;
-    if (!w) return;
-    const a = agg.get(r.sector) || { s: 0, w: 0, n: 0 };
-    a.s += r.changePct * w;
-    a.w += w;
-    a.n++;
-    agg.set(r.sector, a);
-  });
-  const sectors = [...agg.entries()]
-    .filter(([, a]) => a.n >= 2 && a.w > 0)
-    .map(([k, a]) => ({ label: k, pct: a.s / a.w }))
-    .sort((a, b) => b.pct - a.pct);
-  bar.innerHTML = `<div class="mb-row">${idx
-    .filter(Boolean)
-    .map((x) => marketBarChipHtml(x.label, x.pct, true))
-    .join("")}${sectors.length ? `<span class="mb-sep" aria-hidden="true"></span>` : ""}${sectors.map((x) => marketBarChipHtml(x.label, x.pct, false)).join("")}</div>`;
+  const cols = idx.filter(Boolean);
+  bar.innerHTML = cols.length >= 2 ? `<div class="mb3">${cols.map(marketBarColumnHtml).join("")}</div>` : "";
 }
 async function renderPopularRecent(section) {
   const box = el("popularRecent");
@@ -11976,14 +12000,14 @@ async function runPopularMovers() {
   popularMoversShown.down = 5;
   box.innerHTML = `<p class="muted top30-status" style="display:block;">급등주·급락주를 불러오는 중...</p>`;
   const bar = el("popularMarketBar");
-  if (bar) bar.innerHTML = `<div class="mb-row"><span class="mb-chip"><span>시장 요약 불러오는 중…</span></span></div>`;
+  if (bar) bar.innerHTML = `<div class="mb3 mb3-loading"><span>시장 요약 불러오는 중…</span></div>`;
   const asOfSym = section === "crypto" ? "BTC-USD" : isKr ? "^KS11" : "^GSPC";
   renderPopularRecent(section).catch(() => {});
   let rows = [];
   try {
     const [r, asOf] = await Promise.all([loadPopularMoverRows(section), popularAsOf(asOfSym)]);
     rows = r;
-    if (seq === popularMoversSeq) renderMarketBar(section, rows).catch(() => {});
+    if (seq === popularMoversSeq) renderMarketBar(section).catch(() => {});
     popularAsOfHtmlCache = asOf;
     document.querySelectorAll("[data-pop-asof]").forEach((n) => (n.innerHTML = asOf));
   } catch {

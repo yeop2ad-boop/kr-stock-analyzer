@@ -132,8 +132,18 @@ def yahoo_daily(sym, rng="1y"):
 def day_change(sym):
     """최근 종가와 전일 대비 변동률"""
     pts, meta = yahoo_daily(sym, "5d")
-    last, prev = pts[-1][1], pts[-2][1]
-    return {"last": round(last, 2), "prev": round(prev, 2), "pct": round((last / prev - 1) * 100, 2), "date": datetime.fromtimestamp(pts[-1][0], timezone.utc).strftime("%Y-%m-%d")}
+    # 2026-10-15: 마지막 두 일봉을 비교하면 오늘 일봉이 아직 없을 때 이틀 전 종가와 비교하게 됨(코스피 -0.44%가 -5.46%로 나온 사례).
+    # Yahoo가 현재가와 함께 주는 당일 등락률을 우선 쓰고, 없을 때만 일봉으로 계산한다.
+    last = meta.get("regularMarketPrice") or pts[-1][1]
+    pct = meta.get("regularMarketChangePercent")
+    if pct is None:
+        rt = meta.get("regularMarketTime") or pts[-1][0]
+        day = lambda t: datetime.fromtimestamp(t, timezone.utc).strftime("%Y-%m-%d")
+        prev_bar = pts[-2][1] if day(pts[-1][0]) == day(rt) and len(pts) >= 2 else pts[-1][1]  # 마지막 봉이 오늘이면 그 앞 봉, 아니면 마지막 봉이 전일 종가
+        pct = (last / prev_bar - 1) * 100
+    prev = last / (1 + pct / 100)
+    rt = meta.get("regularMarketTime") or pts[-1][0]
+    return {"last": round(last, 2), "prev": round(prev, 2), "pct": round(pct, 2), "date": datetime.fromtimestamp(rt, timezone.utc).strftime("%Y-%m-%d")}
 
 
 # ---------------------------------------------------------------- 미국 ① 시장 숫자

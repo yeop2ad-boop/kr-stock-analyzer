@@ -783,11 +783,18 @@ async function fetchKrQuoteChangePct(symbol) {
     const result = chart && chart.chart && chart.chart.result && chart.chart.result[0];
     const meta = result && result.meta;
     if (!meta) return null;
+    // 2026-10-15: 종목 상세(앱 getDailyChangePercent)와 같은 값이 나오도록 Yahoo가 직접 주는 당일 등락률을 우선 사용한다.
+    // 예전엔 "일봉 뒤에서 두 번째 종가"를 전일 종가로 가정했는데, 한국 종목은 마지막 일봉이 어제(10/13)이고 현재가는 오늘(10/14)인 시간대가
+    // 있어서 이틀 전 종가와 비교(예: SK이노베이션 상세 +4.08%인데 목록은 +6.81%, SK스퀘어 -0.58%인데 -13.41%)되는 오류가 있었음
+    if (Number.isFinite(meta.regularMarketChangePercent)) return meta.regularMarketChangePercent;
     const pairs = chartClosePairsWorker(chart);
     if (!pairs.length) return null;
     const latest = pairs[pairs.length - 1];
-    const prevClose = pairs.length >= 2 ? pairs[pairs.length - 2].c : meta.chartPreviousClose ?? null;
     const price = meta.regularMarketPrice ?? latest.c;
+    // 보조 계산: 마지막 일봉이 현재가와 같은 거래일(regularMarketTime의 한국 날짜)이면 그 앞 봉이, 아니면 마지막 일봉이 전일 종가
+    const kstDay = (sec) => new Date((sec + 9 * 3600) * 1000).toISOString().slice(0, 10);
+    const lastIsToday = Number.isFinite(meta.regularMarketTime) && kstDay(latest.t) === kstDay(meta.regularMarketTime);
+    const prevClose = lastIsToday ? (pairs.length >= 2 ? pairs[pairs.length - 2].c : meta.chartPreviousClose ?? null) : latest.c;
     if (prevClose === null || prevClose === undefined || price === null || price === undefined || !prevClose) return null;
     return ((price - prevClose) / prevClose) * 100;
   } catch {
