@@ -185,61 +185,71 @@
           "title": "Consumer prices rose 3.7% annually in September as gas prices skyrocket",
           "source": "CNBC",
           "link": "https://www.cnbc.com/2026/10/14/cpi-inflation-report-september-2026.html",
-          "time": "2026-10-14T13:53:28Z"
+          "time": "2026-10-14T13:53:28Z",
+          "titleKo": "9월 소비자물가 연 3.7% 상승…휘발유 가격 급등"
         },
         {
           "title": "10-year Treasury yield jumps as September core inflation comes in hotter than expected",
           "source": "CNBC",
           "link": "https://www.cnbc.com/2026/10/14/us-treasury-yields-cpi-inflation-report.html",
-          "time": "2026-10-14T13:48:01Z"
+          "time": "2026-10-14T13:48:01Z",
+          "titleKo": "9월 근원 물가가 예상보다 높게 나오며 10년물 국채 금리 급등"
         },
         {
           "title": "Bank of America shares drop 8% after third-quarter revenue miss and regulatory penalty",
           "source": "CNBC",
           "link": "https://www.cnbc.com/2026/10/14/bank-of-america-bac-q3-2026-earnings.html",
-          "time": "2026-10-14T15:00:33Z"
+          "time": "2026-10-14T15:00:33Z",
+          "titleKo": "뱅크오브아메리카, 3분기 매출 부진과 규제 과징금에 주가 8% 급락"
         },
         {
           "title": "Morgan Stanley tops estimates as equities trading revenue beats expectations by $909 million",
           "source": "CNBC",
           "link": "https://www.cnbc.com/2026/10/14/morgan-stanley-ms-q3-2026-earnings.html",
-          "time": "2026-10-14T13:11:07Z"
+          "time": "2026-10-14T13:11:07Z",
+          "titleKo": "모건스탠리, 주식 트레이딩 수익이 예상보다 9억 900만 달러 많아 예상치 상회"
         },
         {
           "title": "Williams says Fed may not have to hike rates in 2027, at odds with traders",
           "source": "CNBC",
           "link": "https://www.cnbc.com/2026/10/13/john-williams-fed-rate-hikes-2027.html",
-          "time": "2026-10-13T19:46:12Z"
+          "time": "2026-10-13T19:46:12Z",
+          "titleKo": "윌리엄스 \"연준, 2027년엔 금리 인상 안 해도 될 수 있어\"…시장 전망과는 달라"
         },
         {
           "title": "Oil prices rise after IEA warns on market constraints; Saudi officials say Aramco facilities attacked",
           "source": "CNBC",
           "link": "https://www.cnbc.com/2026/10/14/oil-rises-amid-growing-tensions-between-saudis-and-iran-backed-houthis.html",
-          "time": "2026-10-14T14:08:16Z"
+          "time": "2026-10-14T14:08:16Z",
+          "titleKo": "IEA의 시장 제약 경고에 유가 상승…사우디 \"아람코 시설 공격받았다\""
         },
         {
           "title": "A second major Wall Street bank this week is telling clients to cash in tech stocks. Here's why",
           "source": "CNBC",
           "link": "https://www.cnbc.com/2026/10/14/a-second-major-wall-street-bank-this-week-is-telling-clients-to-cash-in-tech-stocks-heres-why-.html",
-          "time": "2026-10-14T14:14:49Z"
+          "time": "2026-10-14T14:14:49Z",
+          "titleKo": "이번 주 두 번째 월가 대형 은행이 고객에게 기술주 차익 실현 권고…그 이유는"
         },
         {
           "title": "BlackRock draws $205 billion in client funds as quarterly profit beats estimates",
           "source": "CNBC",
           "link": "https://www.cnbc.com/2026/10/14/blackrock-profit-jumps-as-resilient-markets-boost-fees.html",
-          "time": "2026-10-14T11:57:19Z"
+          "time": "2026-10-14T11:57:19Z",
+          "titleKo": "블랙록, 분기 이익이 예상 상회…고객 자금 2,050억 달러 유입"
         },
         {
           "title": "ASML says it's getting order interest through 2030 as profit smashes expectations",
           "source": "CNBC",
           "link": "https://www.cnbc.com/2026/10/14/asml-3q-earnings-ai-demand-orders-capacity.html",
-          "time": "2026-10-14T08:45:13Z"
+          "time": "2026-10-14T08:45:13Z",
+          "titleKo": "ASML, 이익이 예상 크게 웃돌아…2030년까지 주문 관심 있다고 밝혀"
         },
         {
           "title": "Netflix to lay off roughly 1,000 employees, or 6% of workforce",
           "source": "CNBC",
           "link": "https://www.cnbc.com/2026/10/14/netflix-layoffs.html",
-          "time": "2026-10-14T15:03:59Z"
+          "time": "2026-10-14T15:03:59Z",
+          "titleKo": "넷플릭스, 직원 약 1,000명(전체의 6%) 감원"
         }
       ]
     },
@@ -299,43 +309,50 @@
           "title": "Hot CPI Halts Bitcoin's Rebound",
           "source": "finanznachrichten.de",
           "link": "https://www.finanznachrichten.de/nachrichten-2026-10/69837808-hot-cpi-halts-bitcoin-s-rebound-020.htm",
-          "time": "2026-10-14T15:15:00Z"
+          "time": "2026-10-14T15:15:00Z",
+          "titleKo": "뜨거운 물가 지표에 비트코인 반등 멈춰"
         },
         {
           "title": "Bitcoin Hovers Below $84,000 Ahead of Key Inflation Data",
           "source": "morningstar.com",
           "link": "https://www.morningstar.com/news/dow-jones/202610141822/bitcoin-hovers-below-84000-ahead-of-key-inflation-data",
-          "time": "2026-10-14T09:15:00Z"
+          "time": "2026-10-14T09:15:00Z",
+          "titleKo": "비트코인, 핵심 물가 지표 발표 앞두고 8만 4천 달러 아래서 맴돌아"
         },
         {
           "title": "Bitcoin Treads Water At $83,000 As Market Looks For Direction",
           "source": "baystreet.ca",
           "link": "https://baystreet.ca/cryptonews/1408/Bitcoin-Treads-Water-At-83000-As-Market-Looks-For-Direction",
-          "time": "2026-10-14T15:15:00Z"
+          "time": "2026-10-14T15:15:00Z",
+          "titleKo": "비트코인, 8만 3천 달러에서 제자리…시장은 방향 탐색 중"
         },
         {
-          "title": "One year after bitcoin's all-time high… what comes next?, by etoro analyst Javier Molina – Nine O' Clock – first exclusively daily publication to appear in English language in Romania",
+          "title": "One year after bitcoin's all-time high… what comes next?",
           "source": "nineoclock.ro",
           "link": "https://nineoclock.ro/one-year-after-bitcoins-all-time-high-what-comes-next-by-etoro-analyst-javier-molina/",
-          "time": "2026-10-14T15:15:00Z"
+          "time": "2026-10-14T15:15:00Z",
+          "titleKo": "비트코인 사상 최고가 1년 뒤…다음은 어디로? (이토로 애널리스트 하비에르 몰리나)"
         },
         {
           "title": "Top bidders to attend Trump meme coin dinner appear to be based in foreign countries",
           "source": "cbsnews.com",
           "link": "https://www.cbsnews.com/news/trump-meme-coin-dinner-foreign-top-bidders/",
-          "time": "2026-10-14T12:15:00Z"
+          "time": "2026-10-14T12:15:00Z",
+          "titleKo": "트럼프 밈코인 만찬 참석 상위 입찰자들, 해외 거주자로 보여"
         },
         {
           "title": "Zcash Continues to Outperform Every Other Major Cryptocurrency This Year. So Is ZEC Now a Buy?",
           "source": "fool.com",
           "link": "https://www.fool.com/investing/2026/10/13/zcash-continues-to-outperform-other-major-cryptos/?source=iedfolrf0000001",
-          "time": "2026-10-13T18:15:00Z"
+          "time": "2026-10-13T18:15:00Z",
+          "titleKo": "올해 주요 암호화폐 중 가장 좋은 성과를 이어가는 지캐시, 지금 사야 할까?"
         },
         {
           "title": "Particula Assigns AAA-Rating to WisdomTree's $1.2B Tokenized Money Market Fund",
           "source": "manilatimes.net",
           "link": "https://www.manilatimes.net/2026/10/14/tmt-newswire/globenewswire/particula-assigns-aaa-rating-to-wisdomtrees-12b-tokenized-money-market-fund/2445176",
-          "time": "2026-10-14T03:15:00Z"
+          "time": "2026-10-14T03:15:00Z",
+          "titleKo": "파티큘라, 위즈덤트리의 12억 달러 토큰화 머니마켓펀드에 AAA 등급 부여"
         }
       ]
     }

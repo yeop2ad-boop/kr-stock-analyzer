@@ -381,7 +381,17 @@ def pick_headlines(key, n=10):
             out.append({"title": c["title"], "source": c["source"], "link": c["link"], "time": iso(c["ts"])})
     if len(out) < 3:
         raise RuntimeError("고른 제목이 부족함")
-    return out[:n]
+    out = out[:n]  # 비트코인은 관련 제목이 적으면 10개보다 적게 나올 수 있음
+    if key != "kr":  # 영문 제목은 한국어로 번역해 titleKo에 담는다(원문 title과 링크는 그대로 둠, 번역 실패 시 영문 그대로 표시)
+        try:
+            tj = claude_json("영문 뉴스 제목을 자연스러운 한국어 제목으로 번역하세요. 숫자·고유명사는 그대로 살리고 내용을 덧붙이거나 빼지 않습니다. 같은 순서로 JSON만 출력: " + '{"titles":["...","..."]}', "\n".join("%d. %s" % (i, o["title"]) for i, o in enumerate(out)))
+            ko = tj.get("titles") or []
+            if len(ko) == len(out):
+                for o, t in zip(out, ko):
+                    o["titleKo"] = str(t).strip()
+        except Exception as e:
+            print("  제목 번역 실패(영문 그대로 표시):", e, flush=True)
+    return out
 
 
 BRIEF_SYSTEM = """당신은 투자 정보 앱의 아침 브리핑 에디터입니다. 아래 자료만으로 오늘의 브리핑을 구역별로 씁니다.

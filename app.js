@@ -22213,7 +22213,7 @@ async function renderToday() {
         .map(
           ({ h, badge }, i) => `<a class="head-row" href="${escapeHtml(h.link)}" target="_blank" rel="noopener">
             <span class="head-rank">${i + 1}</span>
-            <span class="head-title">${badge ? `<i class="today-news-badge">${badge}</i>` : ""}${escapeHtml(h.title)}</span>
+            <span class="head-title" title="${escapeHtml(h.title)}">${badge ? `<i class="today-news-badge">${badge}</i>` : ""}${escapeHtml(h.titleKo || h.title)}</span>
             <small class="head-src">${escapeHtml(h.source)}</small>
           </a>`
         )
