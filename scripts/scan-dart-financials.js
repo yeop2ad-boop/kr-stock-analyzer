@@ -88,7 +88,7 @@ async function getCorpCodeMap(tickers) {
   const xml = extractSingleFileZip(buf).toString("utf8");
   const tickerSet = new Set(tickers);
   const map = {};
-  const re = /<corp_code>(\d+)<\/corp_code>\s*<corp_name>([^<]*)<\/corp_name>\s*<corp_eng_name>[^<]*<\/corp_eng_name>\s*<stock_code>\s*(\d*)\s*<\/stock_code>/g;
+  const re = /<corp_code>(\d+)<\/corp_code>\s*<corp_name>([^<]*)<\/corp_name>\s*<corp_eng_name>[^<]*<\/corp_eng_name>\s*<stock_code>\s*([0-9A-Za-z]*)\s*<\/stock_code>/g; // 2026-10-14: 신규 종목코드(0126Z0 등 영문 섞임)도 매칭
   let m;
   while ((m = re.exec(xml))) {
     const stockCode = m[3].trim();

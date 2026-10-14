@@ -143,16 +143,21 @@ def fill_one(sym, item, name):
     return f"{name}: {', '.join(filled)}" if filled else None
 
 
+CRASH_LAST_ERR = [""]  # 급락률 조회가 마지막으로 실패한 이유(진단용)
+
+
 def y_crash(symbol):
     """급락률: 최근 52주 일봉에서 5거래일 안에 가장 크게 떨어진 구간(%)"""
-    url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?range=1y&interval=1d"
     js = None
-    for _ in range(3):
+    for n in range(4):
+        # 서버(GitHub 러너)에서 한쪽 호스트가 막히거나 429를 줄 수 있어 query1/query2를 번갈아 시도
+        url = f"https://query{1 + n % 2}.finance.yahoo.com/v8/finance/chart/{symbol}?range=1y&interval=1d"
         try:
             js = json.load(urllib.request.urlopen(urllib.request.Request(url, headers=YUA), timeout=30))
             break
-        except Exception:
-            time.sleep(1.5)
+        except Exception as e:
+            CRASH_LAST_ERR[0] = f"{symbol}: {e}"
+            time.sleep(1.5 * (n + 1))
     try:
         res = js["chart"]["result"][0]
         pts = [(t, c) for t, c in zip(res["timestamp"], res["indicators"]["quote"][0]["close"]) if c]
@@ -199,6 +204,9 @@ def run_kr():
             i["crash"] = c
             ok += 1
     print("급락률 갱신", ok, "/", len(items), flush=True)
+    crash_ok = ok >= len(items) * 0.9
+    if not crash_ok:
+        print("⚠ 급락률 갱신 실패 — 마지막 오류:", CRASH_LAST_ERR[0], flush=True)
     todo = [i for i in items if (i.get("quarter") or {}).get("revenue") is None or (i.get("quarter") or {}).get("netIncome") is None or (i.get("debt") or {}).get("changePp") is None or (i.get("eps") or {}).get("current") is None]
     print("한국 보완 대상", len(todo), flush=True)
     with ThreadPoolExecutor(4) as ex:
@@ -222,8 +230,12 @@ def run_us():
 
 if __name__ == "__main__":
     which = sys.argv[1] if len(sys.argv) > 1 else "all"
+    crash_ok = True
     if which in ("kr", "all"):
-        run_kr()
+        crash_ok = run_kr()
     if which in ("us", "all"):
         run_us()
     print("완료")
+    # 데이터 파일은 이미 저장했으니 워크플로가 커밋은 하되, 급락률이 갱신 안 됐으면 실행을 실패로 표시해 알림이 오게 함(2026-10-14)
+    if not crash_ok:
+        sys.exit(1)
