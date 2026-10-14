@@ -4182,3 +4182,22 @@ table.earn-table tr.earn-chart-row td { padding: 6px 0 14px; white-space: normal
 #futureInlineWrap .future-chart-container { overflow-x: visible; max-width: none; }
 #futureInlineWrap .future-chart-container svg { min-width: 0; width: 100%; }
 #futureInlineWrap .chart-scroll-hint { display: none; }
+
+/* 2026-10-14: 소제목(관심종목 맨 위 · 투데이 AI투데이/신기술) + 투데이 뉴스 TOP5 */
+.sec-title { margin: 0 0 10px; font-size: 19px; font-weight: 800; letter-spacing: -0.4px; color: var(--text); }
+.wl-top-title { margin: 4px 0 12px; }
+.today-sub { margin: 4px 0 4px; font-size: 15px; font-weight: 800; color: var(--text); }
+.today-note { margin: 0 0 8px; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
+.today-empty { padding: 10px 0; font-size: 13.5px; }
+.today-tech-title { margin-top: 30px; }
+.today-news-row { display: flex; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--rk-line, var(--border)); text-decoration: none; color: inherit; }
+.today-news-rank { flex: none; width: 22px; font-size: 17px; font-weight: 800; color: var(--accent); line-height: 1.35; }
+.today-news-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.today-news-headline { font-size: 15.5px; font-weight: 700; line-height: 1.4; color: var(--text); }
+.today-news-badge { display: inline-block; margin-right: 6px; padding: 1px 6px; border-radius: 6px; background: var(--subtle-fill); font-style: normal; font-size: 11px; font-weight: 700; color: var(--muted); vertical-align: 1px; }
+.today-news-summary { font-size: 13.5px; line-height: 1.55; color: var(--text); opacity: 0.82; }
+.today-news-meta { font-size: 11.5px; color: var(--muted); }
+/* 스톡챗 끼워 넣기(view=analysis): 관심종목 탭 안의 수익률비교만 보여줌 */
+html.embed-analysis #panelWatchlist > *:not(#wlCompare) { display: none !important; }
+html.embed-analysis #wlCompare { margin-top: 0; }
+html.embed-analysis #wlCompare .wl-ex-head { display: none; }

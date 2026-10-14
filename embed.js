@@ -3,7 +3,7 @@
 //   ?embed=1&view=detail&ticker=005930.KS&sub=sreport|risk|summary       → 종목 상세(핵심지표/리스크) 그대로
 //   ?embed=1&view=info&topic=winrate                                    → 순위 화면의 "+승률이란" 내용 그대로
 //   ?embed=1&view=fear&market=kr|us|crypto         → 더보기 공포지수 화면 그대로
-//   ?embed=1&view=analysis                                                → 투자분석 탭(투자방법 비교·내 포트폴리오) 그대로
+//   ?embed=1&view=analysis                                                → 관심종목 탭의 수익률비교(투자방법 비교·내 포트폴리오) 그대로
 // 부모(스톡챗)에는 postMessage로 ①화면 높이 ②종목을 눌렀다는 신호만 보낸다.
 (function () {
   var q = new URLSearchParams(location.search);
@@ -209,7 +209,7 @@
       } else if (view === "fear") {
         openFearPanel(q.get("market") || "kr");
       } else if (view === "analysis") {
-        var tab = document.querySelector('[data-fhtab="tab.analysis"]');
+        var tab = document.querySelector('[data-fhtab="tab.watchlist"]'); // 2026-10-14: 투자분석(그래프·순위·미래예측)이 관심종목 탭의 수익률비교로 이동
         if (tab) tab.click();
       } else {
         runExtra();

@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20261010a" />
+<link rel="stylesheet" href="style.css?v=20261014a" />
 <link rel="stylesheet" href="ai-chat.css?v=20261009a" />
 <link rel="stylesheet" href="embed.css?v=13" />
 <script>
@@ -99,13 +99,13 @@
         <button type="button" class="fh-tab" data-fhtab="tab.popular" data-i18n="tab.popular">인기종목</button>
         <!-- 2026-10-06 사용자 요청: 상단 탭은 인기종목 - 투자분석 - (지도)종목찾기 3개만. 투자분석은 투자방법별 수익 비교 + 내 포트폴리오,
              종목찾기는 마켓맵(지도)으로 이동. 나머지 탭(승률·수익률·변동성·배당률·IPO 등)은 JS가 참조하므로 DOM만 남기고 숨김 -->
-        <button type="button" class="fh-tab" data-fhtab="tab.analysis" data-i18n="tab.analysis">투자분석</button>
+        <button type="button" class="fh-tab" data-fhtab="tab.analysis" data-i18n="tab.analysis">투데이</button>
         <!-- 2026-10-06 사용자 요청: 인기종목 - 투자분석 - 자동추적 - ★관심종목(종목찾기 탭은 삭제, 마켓맵은 더보기에서) -->
         <!-- 2026-10-08 사용자 요청: 자동추적 자리에 간편검색(누르면 검색 창), 자동추적은 더보기로. 관심종목 별 아이콘 삭제 -->
         <button type="button" class="fh-tab" data-fhtab="tab.autotrack" data-i18n="tab.autotrack" style="display:none;">자동추적</button>
         <!-- 2026-10-08 사용자 요청: 투자분석과 간편검색 사이에 실적발표(예정 7일 · 발표 7일) -->
         <button type="button" class="fh-tab" data-fhtab="tab.earnings" data-i18n="tab.earnings">실적</button>
-        <button type="button" class="fh-tab" data-fhtab="tab.search" data-i18n="tab.search">간편검색</button>
+        <button type="button" class="fh-tab" data-fhtab="tab.search" data-i18n="tab.search">순위검색</button>
         <button type="button" class="fh-tab" data-fhtab="tab.watchlist" data-i18n="tab.watchlist">관심종목</button>
         <!-- 자동추적: 상단 4탭(인기종목/기업가치/미래예측/인사이트)만 남기고 더보기 패널로 이동(2026-09-10 사용자 요청) —
              JS(openAutoTrack·setCarouselViewTitle)가 이 버튼을 참조하므로 DOM은 유지하고 숨김만 -->
@@ -135,7 +135,7 @@
     <!-- 상단 탭바 — 관심목록/기업가치/시장동향/인사이트가 전부 더보기 패널로 이동해 숨김(버튼 자체는 JS가 참조하므로 DOM엔 유지) -->
     <div class="tab-bar" id="tabBar" style="display:none;">
       <button type="button" class="cat-btn" data-tab="watchlist" id="watchlistTabBtn"><span class="tab-emoji btn-icon" data-icon="star" aria-hidden="true"></span><span class="tab-label" data-i18n="tab.watchlist">관심종목</span></button>
-      <button type="button" class="cat-btn" id="searchTabBtn"><span class="tab-emoji btn-icon" data-icon="search" aria-hidden="true"></span><span class="tab-label" data-i18n="tab.search">간편검색</span></button>
+      <button type="button" class="cat-btn" id="searchTabBtn"><span class="tab-emoji btn-icon" data-icon="search" aria-hidden="true"></span><span class="tab-label" data-i18n="tab.search">순위검색</span></button>
       <button type="button" class="cat-btn" data-tab="topranking" id="tabValuationBtn"><span class="tab-label" data-i18n="tab.valuation">실적비교</span></button>
       <button type="button" class="cat-btn" id="tabTrendBtn"><span class="tab-label" data-i18n="tab.trend">증시동향</span></button>
       <button type="button" class="cat-btn" data-tab="insight" id="tabInsightBtn"><span class="tab-label" data-i18n="tab.insight">인사이트</span></button>
@@ -497,7 +497,7 @@
   <div id="searchWizardPanel" class="company-panel" style="display:none;">
     <div class="company-panel-bar">
       <button type="button" id="searchWizardCloseBtn" class="search-overlay-back" aria-label="닫기"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="20" y1="12" x2="5" y2="12"/><polyline points="11 5 4 12 11 19"/></svg></button>
-      <h2 class="search-overlay-title">간편검색</h2>
+      <h2 class="search-overlay-title">순위검색</h2>
     </div>
     <div class="company-panel-body">
       <div class="fh-search search-overlay-search wizard-ticker-search">
@@ -553,6 +553,7 @@
     <div class="carousel-viewport" id="carouselViewport">
 
       <div class="carousel-panel" data-panel="watchlist" id="panelWatchlist">
+        <h3 class="sec-title wl-top-title">관심종목</h3>
         <button type="button" class="self-test-banner-btn" id="selfTestOpenBtn">
           <span class="self-test-banner-icon">🧭</span>
           <span class="self-test-banner-text">
@@ -596,6 +597,12 @@
         <div id="watchlistList"></div>
         <button type="button" class="wl-add-row" id="wlAddStockBtn"><span aria-hidden="true">＋</span> 종목 추가</button>
         <!-- 2026-10-08 사용자 요청: 관심종목 아래에 실적 캘린더 · 뉴스 모아보기(각각 한 덩어리) — renderWlExtras가 채움 -->
+        <!-- 2026-10-14 사용자 요청: 예전 투자분석 탭의 그래프·순위·미래예측을 관심종목 탭 실적 캘린더 위로 옮김(renderInvestAnalysis가 채움) -->
+        <section class="wl-ex wl-compare" id="wlCompare">
+          <div class="wl-ex-head"><b>수익률비교</b></div>
+          <p id="analysisStatus" class="muted top30-status" style="display:none;"></p>
+          <div id="analysisResults"></div>
+        </section>
         <div id="wlExtras"></div>
       </div>
 
@@ -709,9 +716,9 @@
           <div id="earningsResults"></div>
         </div>
 
+        <!-- 투데이(2026-10-14): AI투데이(뉴스 TOP5) + 신기술 — renderToday가 채움 -->
         <div id="analysisGroup" style="display:none;">
-          <p id="analysisStatus" class="muted top30-status" style="display:none;"></p>
-          <div id="analysisResults"></div>
+          <div id="todayRoot"></div>
         </div>
 
         <div id="popularGroup" style="display:none;">
@@ -900,7 +907,7 @@
         <!-- 2026-10-08: 간편검색은 상단 탭으로 올라가서 더보기에서는 숨김 -->
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelWizardBtn" style="display:none;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <span class="more-panel-item-label" data-i18n="tab.search">간편검색</span>
+          <span class="more-panel-item-label" data-i18n="tab.search">순위검색</span>
         </button>
         <!-- 자동추적: 상단 탭에서 더보기로 이동(2026-09-10 사용자 요청) — 누르면 투자처(한국주식/미국주식/ETF/비트코인)를 고르는 줄이 펼쳐짐 -->
         <button type="button" class="more-panel-item more-panel-item-active" id="morePanelAutoTrackBtn" aria-expanded="false">
@@ -1079,8 +1086,8 @@
   <script src="data/logo-db.js?v=20260903g"></script>
   <script src="data/etf-meta.js?v=20260912a"></script>
   <script src="winrate-benchmark.js?v=20261007k"></script>
-  <script src="app.js?v=20261014a"></script>
-  <script src="embed.js?v=12"></script>
+  <script src="app.js?v=20261014b"></script>
+  <script src="embed.js?v=13"></script>
   <script src="ai-chat.js?v=20261009a"></script>
 </body>
 </html>

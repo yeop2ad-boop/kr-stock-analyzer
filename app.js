@@ -2899,7 +2899,10 @@ function refreshTopRankingView() {
   showToast("실시간 데이터로 다시 검색합니다");
   const tab = [...document.querySelectorAll("#fhTabs .fh-tab.active")][0];
   const key = tab ? tab.dataset.fhtab : "";
-  if (key === "tab.analysis") investAnalysisResetCaches();
+  if (key === "tab.analysis" || key === "tab.watchlist") {
+    investAnalysisResetCaches();
+    wlCompareAt = 0;
+  }
   // 기업가치·(주식)미래예측은 탭을 다시 누르면 첫 서브항목으로 돌아가므로, 보고 있던 서브항목을 그대로 다시 실행
   if (key === "tab.valuation" || (key === "tab.trend" && appSectionMode === "stocks")) runRankingEntry(topRankingActiveIdx);
   else if (tab) tab.click();
@@ -3235,13 +3238,13 @@ const I18N = {
   "tab.watchlist": { ko: "관심종목", en: "Watchlist" },
   "tab.popular": { ko: "인기종목", en: "Popular" },
   "tab.autotrack": { ko: "자동추적", en: "Auto Track" },
-  "tab.search": { ko: "간편검색", en: "Search" },
+  "tab.search": { ko: "순위검색", en: "Rank Search" },
   "tab.earnings": { ko: "실적", en: "Earnings" }, // 2026-10-08 사용자 요청: 실적발표 → 실적
   "tab.etfAum": { ko: "규모", en: "Size" }, // 2026-10-08: 실적 예정·발표 종목
   "tab.valuation": { ko: "기업가치", en: "Value" }, // 2026-09-10 사용자 요청: 실적→기업가치
   "tab.trend": { ko: "시장분석", en: "Market" }, // 2026-09-11 사용자 요청: 미래예측→시장분석
   "tab.ipo": { ko: "IPO", en: "IPO" }, // 2026-09-11: 최근 5년 신규 상장
-  "tab.analysis": { ko: "투자분석", en: "Analysis" }, // 2026-10-06: 투자방법별 수익 비교 + 내 포트폴리오
+  "tab.analysis": { ko: "투데이", en: "Today" }, // 2026-10-06: 투자방법별 수익 비교 + 내 포트폴리오
   // ETF 전용 상단 탭(2026-09-11 사용자 요청) — 시장분석·인사이트를 빼고 그 안에 있던 항목들을 위로 올림
   "tab.etfWinrate": { ko: "승률", en: "Win rate" },
   "tab.etfReturn": { ko: "수익률", en: "Return" },
@@ -4737,6 +4740,21 @@ function wlBuyDetailFormHtml(sym, currency) {
     </div>`;
 }
 
+// ---------- 관심종목 탭의 "수익률비교"(2026-10-14 사용자 요청) — 예전 투자분석 탭의 그래프·순위·미래예측을 그대로 가져옴 ----------
+// 관심종목 목록을 다시 그릴 때마다 무겁게 다시 그리지 않도록, 결과가 비었거나 투자처가 바뀌었거나 5분이 지났을 때만 새로 그림
+let wlCompareAt = 0;
+function renderWlCompare() {
+  if (!document.body.classList.contains("on-watchlist")) return;
+  const results = el("analysisResults");
+  if (!results || typeof renderInvestAnalysis !== "function") return;
+  try {
+    const stale = !results.innerHTML || !iaState.ctx || iaState.ctx.sec !== iaCurrentSection() || Date.now() - wlCompareAt > 5 * 60 * 1000;
+    if (!stale) return;
+    wlCompareAt = Date.now();
+    renderInvestAnalysis().catch(() => {});
+  } catch {} // 스크립트 초기화 도중(iaState 선언 전)에 불리면 건너뜀
+}
+
 // ---------- 관심종목 아래 실적 캘린더 · 뉴스 모아보기(2026-10-08 사용자 요청) ----------
 // 지금 보이는 관심종목(투자처·그룹 기준)으로 다음 실적발표(추정) 날짜순 5개, 최신 뉴스 5개. "전체 보기"는 캘린더 창·더 많은 뉴스.
 let wlExtrasSeq = 0;
@@ -4903,6 +4921,7 @@ async function renderWatchlistList() {
   );
 
   renderWlExtras(filtered.map((w) => w.symbol)).catch(() => {});
+  renderWlCompare();
   if (filtered.length === 0) {
     statusEl.style.display = "none";
     listEl.innerHTML = `<p class="muted" style="padding:12px 0;">${WL_SECTION_LABEL[wlSection]} 관심종목이 없습니다. 위의 + 종목 추가 버튼으로 추가해 보세요.</p>`;
@@ -22093,6 +22112,8 @@ async function renderEarningsTab() {
   paint();
   fillRevenue();
 }
+// 2026-10-14 사용자 요청: 투자분석 탭은 "투데이"(AI투데이 뉴스 TOP5 + 신기술)로 바뀌고, 예전 투자분석 화면(그래프·순위·미래예측)은
+// 관심종목 탭의 "수익률비교"로 옮겼다(renderInvestAnalysis는 그대로, 결과 영역만 관심종목 탭 안에 있음). 함수 이름은 호출부 때문에 유지.
 function openInvestAnalysis() {
   switchTab(TAB_ORDER.indexOf("topranking"));
   el("tabValuationBtn").classList.remove("active");
@@ -22100,8 +22121,101 @@ function openInvestAnalysis() {
   setCarouselViewTitle("tab.analysis");
   el("topRankingSubNav").innerHTML = "";
   showRankingGroup("analysis");
-  renderInvestAnalysis();
+  renderToday();
 }
+
+// ---------- 투데이: AI투데이(시장별 뉴스 TOP5) + 신기술 ----------
+// data/ai-today.json 은 GitHub Actions(ai-today-daily.yml, scripts/scan-ai-today.py)가 매일 아침 공식 RSS 기사에서 한국·미국·비트코인
+// TOP5를 골라 AI로 요약해 저장한다. ETF 화면은 한국 5 + 미국 5를 합쳐 TOP10으로 보여준다. 신기술은 투자처와 상관없이 모두 같은 목록.
+let aiTodayPromise = null;
+function getAiTodayData() {
+  if (!aiTodayPromise) {
+    aiTodayPromise = fetch("data/ai-today.json", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+  }
+  return aiTodayPromise;
+}
+const TODAY_NEWS_TITLE = {
+  kr: "한국 증시 TOP5 뉴스",
+  us: "미국 증시 TOP5 뉴스",
+  crypto: "비트코인 TOP5 뉴스",
+  etf: "ETF TOP10 뉴스 (한국 5 + 미국 5)",
+};
+function todayTimeLabel(iso, withDate) {
+  const d = new Date(iso);
+  if (isNaN(d)) return "";
+  return d.toLocaleString("ko-KR", { timeZone: "Asia/Seoul", ...(withDate ? { month: "numeric", day: "numeric" } : {}), hour: "2-digit", minute: "2-digit", hour12: false });
+}
+function todayNewsRowHtml(n, rank, badge) {
+  return `<a class="today-news-row" href="${escapeHtml(n.link)}" target="_blank" rel="noopener">
+      <span class="today-news-rank">${rank}</span>
+      <span class="today-news-body">
+        <b class="today-news-headline">${badge ? `<i class="today-news-badge">${badge}</i>` : ""}${escapeHtml(n.headline)}</b>
+        <span class="today-news-summary">${escapeHtml(n.summary)}</span>
+        <small class="today-news-meta">${escapeHtml(n.source)} · ${escapeHtml(todayTimeLabel(n.time, true))} · 원문 보기 →</small>
+      </span>
+    </a>`;
+}
+let todaySeq = 0;
+let todayTechShown = 5;
+async function renderToday() {
+  const root = el("todayRoot");
+  if (!root) return;
+  const seq = ++todaySeq;
+  const sec = iaCurrentSection();
+  root.innerHTML = `<h3 class="sec-title">AI투데이</h3><p class="muted today-empty">불러오는 중...</p>`;
+  const [ai, tech] = await Promise.all([getAiTodayData(), getTechInsightData()]);
+  if (seq !== todaySeq) return;
+
+  let newsHtml;
+  let stamp = "";
+  const mk = (ai && ai.markets) || {};
+  let rows = [];
+  if (sec === "etf") {
+    rows = [
+      ...(((mk.kr && mk.kr.items) || []).slice(0, 5).map((n) => ({ n, badge: "한국" }))),
+      ...(((mk.us && mk.us.items) || []).slice(0, 5).map((n) => ({ n, badge: "미국" }))),
+    ];
+    stamp = (mk.kr && mk.kr.generatedAt) || (mk.us && mk.us.generatedAt) || "";
+  } else {
+    rows = (((mk[sec] && mk[sec].items) || []).slice(0, 5)).map((n) => ({ n, badge: "" }));
+    stamp = (mk[sec] && mk[sec].generatedAt) || "";
+  }
+  if (rows.length) {
+    newsHtml = `<h4 class="today-sub">${TODAY_NEWS_TITLE[sec]}</h4>
+      <p class="today-note">매일 아침 AI가 주요 언론사 기사에서 중요한 뉴스를 골라 정리합니다.${stamp ? ` (${escapeHtml(todayTimeLabel(stamp, true))} 업데이트)` : ""}</p>
+      <div class="today-news-list">${rows.map((r, i) => todayNewsRowHtml(r.n, i + 1, r.badge)).join("")}</div>
+      <p class="disclaimer tab-note">📢 AI가 기사 제목·요약문을 바탕으로 다시 쓴 내용이며 틀릴 수 있습니다. 정확한 내용은 원문에서 확인하세요. 투자 권유가 아닙니다.</p>`;
+  } else {
+    newsHtml = `<p class="muted today-empty">🚧 오늘의 뉴스를 준비 중입니다. 매일 아침 자동으로 정리됩니다.</p>`;
+  }
+
+  const techItems = Array.isArray(tech) ? tech : [];
+  const techShown = techItems.slice(0, todayTechShown);
+  const techLatest = techItems.length ? techItems.map((t) => t.publishedAt || t.createdAt || "").sort().pop() : "";
+  const techHtml = techItems.length
+    ? `<p class="today-note">MIT Technology Review·McKinsey·IEEE Spectrum·OECD의 최신 글 핵심을 자체적으로 요약·재구성했습니다.${techLatest ? ` (최근 글 ${escapeHtml(String(techLatest).slice(0, 10))})` : ""}</p>
+       <div class="tech-insight-list">${techShown.map(techInsightCardHtml).join("")}</div>
+       ${techItems.length > 5 ? `<button type="button" class="cat-btn load-more-btn today-tech-more">${todayTechShown > 5 ? "− 접기" : `+더보기 (${techItems.length}개)`}</button>` : ""}`
+    : `<p class="muted today-empty">🚧 신기술은 준비 중입니다.</p>`;
+
+  root.innerHTML = `<h3 class="sec-title">AI투데이</h3>${newsHtml}<h3 class="sec-title today-tech-title">신기술</h3>${techHtml}`;
+  const more = root.querySelector(".today-tech-more");
+  if (more)
+    more.addEventListener("click", (e) => {
+      e.stopPropagation();
+      todayTechShown = todayTechShown > 5 ? 5 : techItems.length;
+      renderToday();
+    });
+}
+// 투데이 화면을 보는 중에 투자처(한국/미국/ETF/비트코인)를 바꾸면 그 투자처 뉴스로 다시 그림
+function todayIsActive() {
+  const g = el("analysisGroup");
+  return !!(g && g.style.display === "block" && document.querySelector('#fhTabs .fh-tab.active[data-fhtab="tab.analysis"]'));
+}
+document.addEventListener("marketmodechange", () => todayIsActive() && renderToday());
+document.addEventListener("appsectionchange", () => todayIsActive() && renderToday());
 
 async function iaBuildContext(sec) {
   const db = await getInvestAnalysisDb();
@@ -22147,7 +22261,7 @@ async function renderInvestAnalysis() {
   let ctx;
   try {
     ctx = await iaBuildContext(sec);
-    if (!ctx.lines.length) throw new Error("이 투자처의 투자분석 데이터가 아직 없습니다.");
+    if (!ctx.lines.length) throw new Error("이 투자처의 수익률비교 데이터가 아직 없습니다.");
   } catch (e) {
     if (seq !== iaState.seq) return;
     status.innerHTML = `❌ ${escapeHtml((e && e.message) || "투자분석 데이터를 불러오지 못했습니다.")} <button type="button" class="cat-btn corr-retry-btn" style="margin-left:6px;">다시 시도</button>`;

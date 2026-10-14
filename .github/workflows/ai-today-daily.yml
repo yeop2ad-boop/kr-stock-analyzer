@@ -1,0 +1,47 @@
+name: AI투데이 뉴스 TOP5 자동 생성(한국·미국·비트코인)
+
+on:
+  schedule:
+    # 매일 20:17 UTC = 한국시간(KST) 새벽 5시 17분 — GitHub 예약 실행이 보통 1~3시간 늦게 시작하므로 오전 7시 전후에 반영되도록 일찍 잡음
+    - cron: "17 20 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ai-today
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: 뉴스 TOP5 선정·요약(공식 RSS + Claude)
+        id: scan
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python3 scripts/scan-ai-today.py
+
+      - name: 변경사항 커밋 및 푸시
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ai-today.json
+          if git diff --cached --quiet; then
+            echo "변경된 데이터 없음"
+          else
+            git commit -m "AI투데이: 뉴스 TOP5 자동 갱신 ($(date -u +%Y-%m-%d))"
+            git pull --rebase -X theirs origin main
+            git push
+          fi
+
+      # 일부 시장이라도 실패했으면(성공한 부분은 위에서 이미 커밋) 실행을 실패로 표시해 GitHub 알림이 오게 함
+      - name: 실패 알림
+        if: steps.scan.outcome == 'failure'
+        run: |
+          echo "AI투데이 뉴스 생성이 실패했습니다. 위 로그를 확인하세요."
+          exit 1
