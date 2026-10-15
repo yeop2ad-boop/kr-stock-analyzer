@@ -4324,3 +4324,52 @@ html.embed-analysis #wlCompare .wl-ex-head { display: none; }
 .mi-final .mi-primary { width: 100%; }
 .mi-del { border: none; background: none; color: #e03131; font-size: 13px; font-weight: 700; padding: 8px; cursor: pointer; }
 .mi-amount input, .mi-rate input { font-family: inherit; }
+
+/* ===== 내투자 > 투자기록 (2026-10-15) ===== */
+.mi-rec-head { margin-top: 6px; }
+.mi-caption { margin: -4px 0 12px; font-size: 11.5px; color: var(--muted); }
+.mi-rec-empty { border: 1px dashed var(--border); border-radius: 14px; padding: 20px 14px; text-align: center; font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+.mi-rec-empty b { display: block; color: var(--text); font-size: 14.5px; margin-bottom: 6px; }
+.mi-rec-empty p { margin: 0; }
+.mi-summary { border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 10px; }
+.mi-asset small { display: block; font-size: 12px; color: var(--muted); }
+.mi-asset b { display: block; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin-top: 2px; }
+.mi-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; margin-top: 12px; }
+.mi-stats small { display: block; font-size: 10.5px; color: var(--muted); }
+.mi-stats b { display: block; font-size: 13px; font-weight: 800; margin-top: 1px; }
+.mi-stats b.up { color: #e03131; }
+.mi-stats b.down { color: #2563eb; }
+.mi-fine { margin: 10px 0 0; font-size: 10.5px; color: var(--muted); line-height: 1.5; }
+.mi-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 14px; }
+.mi-act { flex: 1 1 auto; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 12px; cursor: pointer; }
+.mi-act-main { flex-basis: 100%; background: var(--text); color: var(--bg); border-color: var(--text); font-weight: 800; }
+.mi-act:disabled { opacity: 0.5; }
+.mi-month { border: 1px solid var(--border); border-radius: 14px; padding: 10px 12px; margin-bottom: 10px; }
+.mi-month-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+.mi-month-head b { font-size: 15px; font-weight: 800; }
+.mi-month-head span { flex: 1; font-size: 11.5px; color: var(--muted); }
+.mi-month-edit { border: none; background: var(--subtle-fill); color: var(--muted); font-size: 11.5px; font-weight: 700; padding: 4px 9px; border-radius: 999px; cursor: pointer; }
+.mi-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.mi-table th { text-align: right; font-weight: 700; color: var(--muted); font-size: 10.5px; padding: 3px 0; }
+.mi-table td { text-align: right; padding: 5px 0; border-top: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+.mi-table th.n, .mi-table td.n { text-align: left; font-weight: 700; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mi-month-input { width: 100%; box-sizing: border-box; border: 1.5px solid var(--border); background: var(--bg); color: var(--text); font-size: 16px; font-family: inherit; padding: 10px 12px; border-radius: 12px; }
+.mi-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; }
+.mi-row-name { flex: 1; min-width: 0; position: relative; }
+.mi-row input { box-sizing: border-box; width: 100%; border: 1.5px solid var(--border); background: var(--bg); color: var(--text); font-family: inherit; font-size: 15px; padding: 9px 10px; border-radius: 10px; min-width: 0; }
+.mi-row .mi-shares { width: 92px; flex: none; text-align: right; }
+.mi-rm { flex: none; border: none; background: none; color: var(--muted); font-size: 15px; padding: 9px 4px; cursor: pointer; }
+.mi-suggest { display: flex; flex-direction: column; }
+.mi-sg { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; border: none; border-bottom: 1px solid var(--border); background: var(--subtle-fill); color: var(--text); text-align: left; padding: 8px 10px; cursor: pointer; font-family: inherit; }
+.mi-sg b { font-size: 13px; }
+.mi-sg small { font-size: 11px; color: var(--muted); }
+.mi-addrow { border: 1px dashed var(--border); background: none; color: var(--text); font-size: 13px; font-weight: 700; padding: 9px; border-radius: 10px; width: 100%; cursor: pointer; }
+.mi-paste { box-sizing: border-box; width: 100%; border: 1.5px solid var(--border); background: var(--bg); color: var(--text); font-family: inherit; font-size: 14px; padding: 10px; border-radius: 12px; }
+.mi-tabs { display: flex; gap: 6px; margin: 6px 0 12px; }
+.mi-tab { flex: 1; border: 1.5px solid var(--border); background: var(--bg); color: var(--muted); font-size: 14px; font-weight: 800; padding: 9px; border-radius: 12px; cursor: pointer; }
+.mi-tab.active { border-color: var(--text); color: var(--text); background: var(--subtle-fill); }
+.mi-brokers { display: flex; flex-direction: column; gap: 8px; }
+.mi-broker { display: grid; grid-template-columns: 1fr auto; gap: 1px 10px; align-items: baseline; border: 1px solid var(--border); border-radius: 12px; padding: 11px 13px; color: var(--text); text-decoration: none; }
+.mi-broker b { font-size: 15px; }
+.mi-broker small { grid-column: 1; font-size: 11.5px; color: var(--muted); }
+.mi-broker span { grid-row: 1 / span 2; grid-column: 2; font-size: 12px; font-weight: 700; color: var(--muted); }

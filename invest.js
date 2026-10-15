@@ -18,7 +18,7 @@ const MI_RISK_TYPES = [
 function miLoad() {
   try {
     const v = JSON.parse(localStorage.getItem(MI_KEY) || "null");
-    if (v && Array.isArray(v.goals)) return { goals: v.goals, selected: v.selected || null, records: v.records || {}, extra: v.extra || 0 };
+    if (v && Array.isArray(v.goals)) return { goals: v.goals, selected: v.selected || null, records: v.records || {}, extra: v.extra || 0, totals: v.totals || {}, currentValue: v.currentValue || 0, updatedAt: v.updatedAt || 0 };
   } catch {}
   return { goals: [], selected: null, records: {}, extra: 0 };
 }
