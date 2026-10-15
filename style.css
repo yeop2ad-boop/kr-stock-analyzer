@@ -4235,3 +4235,92 @@ html.embed-analysis #wlCompare .wl-ex-head { display: none; }
 .mb3-base { stroke: var(--border); stroke-width: 1; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
 .mb3-line { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 
+/* 2026-10-15 하단 메뉴 개편: 내투자 · 인사이트 탭 페이지(하단 네비 위에서 열림 — 고정 헤더(z100)보다 위, 상세·더보기 패널보다 아래) */
+.tab-page { position: fixed; left: 0; right: 0; top: 0; bottom: 64px; z-index: 120; background: var(--bg); flex-direction: column; }
+.tab-page-bar { flex: none; padding: calc(14px + env(safe-area-inset-top, 0px)) 18px 10px; border-bottom: 1px solid var(--border); background: var(--bg); }
+.tab-page-title { margin: 0; font-size: 21px; font-weight: 800; letter-spacing: -0.4px; color: var(--text); }
+.tab-page-body { flex: 1; min-height: 0; overflow-y: auto; padding: 14px 16px 28px; -webkit-overflow-scrolling: touch; }
+.insight-chips { display: flex; gap: 8px; margin: 0 0 16px; overflow-x: auto; scrollbar-width: none; }
+.insight-chips::-webkit-scrollbar { display: none; }
+.insight-chip { flex: none; border: 1px solid var(--border); background: var(--bg); color: var(--muted); font-size: 13.5px; font-weight: 700; padding: 7px 14px; border-radius: 999px; cursor: pointer; }
+.insight-chip.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+/* ===== 내투자 탭(2026-10-15) ===== */
+.mi-sec-head { display: flex; align-items: center; justify-content: space-between; margin: 4px 0 10px; }
+.mi-h { margin: 0; font-size: 19px; font-weight: 800; letter-spacing: -0.4px; color: var(--text); }
+.mi-mini { border: none; background: var(--subtle-fill); color: var(--text); font-size: 12.5px; font-weight: 700; padding: 6px 11px; border-radius: 999px; cursor: pointer; }
+.mi-goals { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.mi-goal { display: flex; align-items: stretch; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: var(--bg); }
+.mi-goal.active { border-color: var(--text); }
+.mi-goal-main { flex: 1; min-width: 0; display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; text-align: left; padding: 10px 12px; border: none; background: none; cursor: pointer; color: var(--text); }
+.mi-goal-name { font-size: 14px; font-weight: 800; }
+.mi-goal-amt { font-size: 14px; font-weight: 800; text-align: right; }
+.mi-goal-when { grid-column: 1 / -1; font-size: 12px; color: var(--muted); }
+.mi-goal-edit { flex: none; border: none; border-left: 1px solid var(--border); background: var(--subtle-fill); color: var(--muted); font-size: 12px; font-weight: 700; padding: 0 13px; cursor: pointer; }
+.mi-chart-wrap { position: relative; border: 1px solid var(--border); border-radius: 16px; padding: 8px 4px 2px; background: var(--bg); }
+.mi-chart { display: block; width: 100%; height: auto; }
+.mi-grid { stroke: var(--border); stroke-width: 1; opacity: 0.7; }
+.mi-axis { fill: var(--muted); font-size: 10px; }
+.mi-line-goal { fill: none; stroke: #9aa0a6; stroke-width: 2.2; stroke-dasharray: 6 5; stroke-linecap: round; stroke-linejoin: round; }
+.mi-line-me { fill: none; stroke: #2563eb; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.mi-me-dot { fill: #2563eb; stroke: var(--bg); stroke-width: 2; }
+.mi-target { stroke: #e03131; stroke-width: 1.6; }
+.mi-target-v { stroke: #e03131; stroke-width: 1; stroke-dasharray: 3 3; opacity: 0.7; }
+.mi-target-dot { fill: #e03131; stroke: var(--bg); stroke-width: 2; }
+.mi-target-t { fill: #e03131; font-size: 10.5px; font-weight: 800; }
+.mi-target-t2 { fill: #e03131; font-size: 10px; font-weight: 700; }
+.mi-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; background: color-mix(in srgb, var(--bg) 86%, transparent); border-radius: 16px; text-align: center; font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+.mi-empty p { margin: 0; }
+.mi-legend { display: flex; justify-content: center; gap: 14px; margin: 8px 0 22px; font-size: 11.5px; color: var(--muted); }
+.mi-legend .lg { display: inline-block; width: 18px; height: 0; margin-right: 5px; vertical-align: middle; border-top: 2.5px solid; }
+.mi-legend .lg-goal { border-top-style: dashed; border-color: #9aa0a6; }
+.mi-legend .lg-me { border-color: #2563eb; }
+.mi-legend .lg-target { border-color: #e03131; }
+.mi-primary { border: none; background: var(--text); color: var(--bg); font-size: 15px; font-weight: 800; padding: 13px 22px; border-radius: 14px; cursor: pointer; }
+.mi-primary:disabled { opacity: 0.35; cursor: default; }
+/* 목표 입력 시트(PASS처럼 위에서부터 한 단계씩) */
+.mi-sheet-back { position: fixed; inset: 0; z-index: 620; background: rgba(0, 0, 0, 0.42); display: flex; align-items: flex-end; justify-content: center; }
+.mi-sheet { width: 100%; max-width: 560px; max-height: 92vh; display: flex; flex-direction: column; background: var(--bg); border-radius: 22px 22px 0 0; padding-bottom: env(safe-area-inset-bottom, 0px); animation: miUp 0.26s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes miUp { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+.mi-sheet-grab { width: 38px; height: 4px; border-radius: 4px; background: var(--border); margin: 8px auto 0; }
+.mi-sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px 6px; }
+.mi-sheet-head h3 { margin: 0; font-size: 18px; font-weight: 800; }
+.mi-x { border: none; background: none; font-size: 18px; color: var(--muted); cursor: pointer; padding: 6px; }
+.mi-sheet-body { overflow-y: auto; padding: 4px 20px 22px; }
+.mi-step { padding: 16px 0 14px; border-bottom: 1px solid var(--border); }
+.mi-in { animation: miIn 0.3s ease; }
+@keyframes miIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.mi-step-title { display: flex; align-items: center; gap: 11px; margin-bottom: 12px; }
+.mi-step-n { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--text); color: var(--bg); font-size: 12.5px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
+.mi-step-title b { display: block; font-size: 16px; font-weight: 800; }
+.mi-step-title small { display: block; margin-top: 1px; font-size: 12px; color: var(--muted); }
+.mi-amount { display: flex; gap: 10px; }
+.mi-amount label { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 6px; border-bottom: 2px solid var(--border); padding: 4px 2px; }
+.mi-amount label:focus-within { border-color: var(--text); }
+.mi-amount input { flex: 1; width: 0; min-width: 0; border: none; outline: none; background: none; font-size: 24px; font-weight: 800; color: var(--text); text-align: right; }
+.mi-amount span { font-size: 15px; font-weight: 700; color: var(--muted); }
+.mi-next { display: block; width: 100%; margin-top: 14px; border: none; border-radius: 12px; background: var(--text); color: var(--bg); font-size: 14.5px; font-weight: 800; padding: 12px; cursor: pointer; }
+.mi-next:disabled { opacity: 0.3; cursor: default; }
+.mi-dial { position: relative; height: 160px; border-radius: 14px; background: var(--subtle-fill); overflow: hidden; }
+.mi-dial-mark { position: absolute; left: 0; right: 0; top: 60px; height: 40px; border-top: 1.5px solid var(--text); border-bottom: 1.5px solid var(--text); pointer-events: none; opacity: 0.55; }
+.mi-dial-list { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; padding: 60px 0; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.mi-dial-list::-webkit-scrollbar { display: none; }
+.mi-dial-item { height: 40px; line-height: 40px; text-align: center; scroll-snap-align: center; font-size: 15px; color: var(--muted); }
+.mi-dial-item.on { color: var(--text); font-weight: 800; font-size: 17px; }
+.mi-dial-value { margin-top: 10px; text-align: center; font-size: 15px; font-weight: 800; }
+.mi-rate { display: flex; align-items: baseline; gap: 6px; border-bottom: 2px solid var(--border); padding: 4px 2px; margin-bottom: 12px; }
+.mi-rate:focus-within { border-color: var(--text); }
+.mi-rate input { flex: 1; width: 0; min-width: 0; border: none; outline: none; background: none; font-size: 24px; font-weight: 800; color: var(--text); text-align: right; }
+.mi-rate span { font-size: 15px; font-weight: 700; color: var(--muted); }
+.mi-risks { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.mi-risk { display: grid; grid-template-columns: 26px auto 1fr auto; align-items: baseline; gap: 4px 10px; text-align: left; border: 1.5px solid var(--border); background: var(--bg); color: var(--text); border-radius: 12px; padding: 10px 12px; cursor: pointer; }
+.mi-risk.active { border-color: var(--text); background: var(--subtle-fill); }
+.mi-risk i { font-style: normal; font-size: 12px; font-weight: 800; width: 22px; height: 22px; border-radius: 50%; background: var(--subtle-fill-2); display: inline-flex; align-items: center; justify-content: center; align-self: center; }
+.mi-risk b { font-size: 14.5px; font-weight: 800; }
+.mi-risk em { font-style: normal; font-size: 15px; font-weight: 800; color: var(--pos); text-align: right; }
+.mi-risk small { grid-column: 4; font-size: 11px; color: var(--muted); text-align: right; white-space: nowrap; }
+.mi-note { margin: 10px 0 0; font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+.mi-final { padding: 18px 0 4px; display: flex; flex-direction: column; gap: 10px; }
+.mi-final .mi-primary { width: 100%; }
+.mi-del { border: none; background: none; color: #e03131; font-size: 13px; font-weight: 700; padding: 8px; cursor: pointer; }
+.mi-amount input, .mi-rate input { font-family: inherit; }

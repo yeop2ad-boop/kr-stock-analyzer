@@ -3010,6 +3010,16 @@ document.getElementById("bottomNavUsBtn2").addEventListener("click", () => goToM
 document.getElementById("bottomNavEtfBtn2").addEventListener("click", () => goToMainSite("etf"));
 document.getElementById("bottomNavCryptoBtn2").addEventListener("click", () => goToMainSite("crypto"));
 // 더보기 버튼은 본체 상단으로 이동(2026-09-08) — 지도 하단에서는 제거
+// 2026-10-15 하단 메뉴 개편: 지도(지금 화면) - 내투자 - 인사이트 - 더보기
+const _mapBtn2 = document.getElementById("bottomNavMapBtn2");
+if (_mapBtn2) {
+  _mapBtn2.classList.add("active");
+  _mapBtn2.addEventListener("click", () => {}); // 이미 지도 화면
+}
+const _investBtn2 = document.getElementById("bottomNavInvestBtn2");
+if (_investBtn2) _investBtn2.addEventListener("click", () => goToMainSite("invest"));
+const _insightBtn2 = document.getElementById("bottomNavInsightBtn2");
+if (_insightBtn2) _insightBtn2.addEventListener("click", () => goToMainSite("insight"));
 const _moreBtn2 = document.getElementById("bottomNavMoreBtn2");
 if (_moreBtn2) _moreBtn2.addEventListener("click", () => goToMainSite("more"));
 

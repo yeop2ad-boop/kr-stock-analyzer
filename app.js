@@ -2786,6 +2786,10 @@ const bottomNavButtons = {
   etf: el("bottomNavEtfBtn"),
   crypto: el("bottomNavCryptoBtn"),
   more: el("bottomNavMoreBtn"),
+  // 2026-10-15 하단 메뉴 개편: 지도 - 내투자 - 인사이트 - 더보기(한국/미국/ETF/비트코인 버튼은 숨김 상태로 유지, 더보기 패널이 대신 누름)
+  map: el("bottomNavMapBtn"),
+  invest: el("bottomNavInvestBtn"),
+  insight: el("bottomNavInsightBtn"),
 };
 const bottomNavKrBtn = bottomNavButtons.kr;
 const bottomNavUsBtn = bottomNavButtons.us;
@@ -2824,6 +2828,9 @@ document.querySelectorAll(".more-panel-item:not(.more-panel-theme-row):not(.more
 });
 // 상단 탭바에서 더보기로 이동한 4개 화면 + 캘린더 — 각 항목을 열면 그 화면만 보이도록 오버레이(시장/캘린더/기업상세)를 먼저 닫음
 function showOnlyCarouselView(fn) {
+  try {
+    closeTabPages();
+  } catch {} // 초기화 도중(TAB_PAGES 선언 전)에 불리면 건너뜀
   closeMorePanel();
   closeCompanyPanel();
   closeMarketPanel();
@@ -3303,7 +3310,7 @@ function applyLang(lang) {
   // 종목 상세(예: "AAPL 분석 - 굴려볼까" / "AAPL Analysis - Marketmap")를 보고 있는 중이 아닐 때만 앱 이름/슬로건 타이틀을 언어에 맞춰 갱신
   // (새 슬로건 자체에 " - "가 들어가므로 "분석 - "/"Analysis - " 패턴으로만 종목 상세를 판별)
   if (!/분석 - |Analysis - /.test(document.title)) {
-    document.title = isEn ? "Stock Info, Earnings, ETF Rankings: MarketMap" : "주식정보,실적발표,ETF순위:마켓맵";
+    document.title = isEn ? "MarketMap - See the Stock Market as a Map" : "마켓맵 - 주식시장을 지도로 본다";
   }
 }
 function setLang(lang) {
@@ -3440,6 +3447,79 @@ bottomNavButtons.more.addEventListener("click", () => {
   openMorePanel();
 });
 
+// ---------- 2026-10-15 하단 메뉴 개편: 지도 - 내투자 - 인사이트 - 더보기 ----------
+const TAB_PAGES = { invest: el("tabPageInvest"), insight: el("tabPageInsight") };
+function closeTabPages() {
+  Object.values(TAB_PAGES).forEach((p) => p && (p.style.display = "none"));
+}
+function openTabPage(key) {
+  closeMorePanel();
+  closeCompanyPanel();
+  closeMarketPanel();
+  closeCalendarPanel();
+  closeTabPages();
+  const page = TAB_PAGES[key];
+  if (!page) return;
+  const nav = el("bottomNav");
+  page.style.bottom = `${(nav ? nav.offsetHeight : 64) + (parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--vv-bottom-gap")) || 0)}px`;
+  page.style.display = "flex";
+  setBottomNavActive(key);
+  if (key === "invest") renderMyInvest();
+  else renderInsightPage();
+}
+el("bottomNavMapBtn").addEventListener("click", () => {
+  const market = appSectionMode === "etf" ? "etf" : appSectionMode === "crypto" ? "crypto" : getWatchlistActiveMarket() === "KR" ? "domestic" : "overseas";
+  window.location.href = `sector-map/index.html?market=${market}`;
+});
+el("bottomNavInvestBtn").addEventListener("click", () => openTabPage("invest"));
+el("bottomNavInsightBtn").addEventListener("click", () => openTabPage("insight"));
+// 더보기 패널 맨 위의 한국주식·미국주식·ETF·비트코인 = 예전 하단 버튼(숨김)을 대신 눌러 기존 화면을 그대로 연다. 아이콘은 그 버튼의 아이콘을 복제
+[["morePanelKrBtn", "bottomNavKrBtn"], ["morePanelUsBtn", "bottomNavUsBtn"], ["morePanelEtfBtn", "bottomNavEtfBtn"], ["morePanelCryptoBtn", "bottomNavCryptoBtn"]].forEach(([itemId, legacyId]) => {
+  const item = el(itemId);
+  const legacy = el(legacyId);
+  if (!item || !legacy) return;
+  const svg = legacy.querySelector("svg");
+  if (svg) {
+    const copy = svg.cloneNode(true);
+    copy.removeAttribute("class");
+    copy.setAttribute("style", "width:27px;height:18px;flex:none");
+    item.insertBefore(copy, item.firstChild);
+  }
+  item.addEventListener("click", () => {
+    closeTabPages();
+    legacy.click();
+  });
+});
+
+// ---------- 인사이트 탭: AI투데이 + 신기술(2026-10-15) ----------
+const INSIGHT_SECS = [["kr", "한국주식"], ["us", "미국주식"], ["etf", "ETF"], ["crypto", "비트코인"]];
+let insightSec = "kr";
+try {
+  const saved = localStorage.getItem("insight_sec_v1");
+  if (INSIGHT_SECS.some(([k]) => k === saved)) insightSec = saved;
+} catch {}
+function renderInsightPage() {
+  const chips = el("insightChips");
+  if (chips) {
+    chips.innerHTML = INSIGHT_SECS.map(([k, label]) => `<button type="button" class="insight-chip${k === insightSec ? " active" : ""}" data-sec="${k}">${label}</button>`).join("");
+    chips.querySelectorAll(".insight-chip").forEach((b) =>
+      b.addEventListener("click", () => {
+        insightSec = b.dataset.sec;
+        try {
+          localStorage.setItem("insight_sec_v1", insightSec);
+        } catch {}
+        renderInsightPage();
+      })
+    );
+  }
+  renderTodayInto("insightRoot", insightSec).catch(() => {});
+}
+// 내투자 탭(다음 단계에서 목표·투자기록 화면으로 채움)
+function renderMyInvest() {
+  const root = el("myInvestRoot");
+  if (root && !root.innerHTML) root.innerHTML = `<p class="muted today-empty">내투자 화면을 준비 중입니다.</p>`;
+}
+
 // 섹터맵(지도) 하단 네비 버튼에서 넘어온 경우 해당 화면을 바로 열어줌(?open=market|calendar|more|search|wizard)
 // 지도에서 이미 한 번 로드된 세션이라 스플래시 로딩 화면(z-index 300, 데이터 로드 끝나야 사라짐)까지 다시 기다릴 필요가
 // 없으므로, 이 경우엔 스플래시를 즉시 건너뛰어 패널이 지연 없이 바로 보이도록 함(체감상 "바로 안 열린다"는 느낌 해소)
@@ -3461,6 +3541,8 @@ bottomNavButtons.more.addEventListener("click", () => {
         openCalendarPanel();
       },
       more: () => bottomNavButtons.more.click(),
+      invest: () => openTabPage("invest"), // 지도 하단 메뉴 → 내투자(2026-10-15)
+      insight: () => openTabPage("insight"),
       search: () => searchOpenBtn.click(), // 지도 상단 돋보기 → 티커 검색 오버레이
       wizard: () => {
         // 간편검색 딥링크 — 하단 버튼이 더보기로 이동(2026-08-31)해 직접 위저드를 염
@@ -3535,7 +3617,7 @@ function closeCompanyPanel({ push = true } = {}) {
     // 주소로 바로 들어온 상세는 항목을 새로 쌓지 않고 주소만 바꿈 — 뒤로가기를 눌렀을 때 닫았던 상세가 다시 열리지 않게
     if (history.state && history.state.ticker && history.state.fromApp) history.back();
     else history.replaceState(history.state, "", location.pathname);
-    document.title = document.documentElement.lang === "en" ? "Stock Info, Earnings, ETF Rankings: MarketMap" : "주식정보,실적발표,ETF순위:마켓맵";
+    document.title = document.documentElement.lang === "en" ? "MarketMap - See the Stock Market as a Map" : "마켓맵 - 주식시장을 지도로 본다";
   }
 }
 companyPanelCloseBtn.addEventListener("click", () => closeCompanyPanel());
@@ -22196,14 +22278,17 @@ function todayBoldHtml(text) {
 }
 let todaySeq = 0;
 let todayTechShown = 5;
-async function renderToday() {
-  const root = el("todayRoot");
+function renderToday() {
+  return renderTodayInto("todayRoot", iaCurrentSection());
+}
+const todaySeqByRoot = {};
+async function renderTodayInto(rootId, sec) {
+  const root = el(rootId);
   if (!root) return;
-  const seq = ++todaySeq;
-  const sec = iaCurrentSection();
+  const seq = (todaySeqByRoot[rootId] = (todaySeqByRoot[rootId] || 0) + 1);
   root.innerHTML = `<h3 class="sec-title">AI투데이</h3><p class="muted today-empty">불러오는 중...</p>`;
   const [ai, tech] = await Promise.all([getAiTodayData(), getTechInsightData()]);
-  if (seq !== todaySeq) return;
+  if (seq !== todaySeqByRoot[rootId]) return;
 
   let newsHtml;
   let stamp = "";
@@ -22274,7 +22359,7 @@ async function renderToday() {
     more.addEventListener("click", (e) => {
       e.stopPropagation();
       todayTechShown = todayTechShown > 5 ? 5 : techItems.length;
-      renderToday();
+      renderTodayInto(rootId, sec);
     });
 }
 // 투데이 화면을 보는 중에 투자처(한국/미국/ETF/비트코인)를 바꾸면 그 투자처 뉴스로 다시 그림

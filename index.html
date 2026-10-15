@@ -5,12 +5,12 @@
 <!-- 첫 진입 섹터맵 리다이렉트 폐지(2026-09-01 사용자 확정) — 시작화면은 본체 한국주식 인기종목(initApp 참고) -->
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>주식정보,실적발표,ETF순위:마켓맵</title>
+<title>마켓맵 - 주식시장을 지도로 본다</title>
 <meta name="description" content="한국·미국주식, ETF, 코인을 10년평균 승률 하나로 비교하는 투자 지도. 인기종목·자동추적·상관관계·마켓맵 지도" />
 
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="마켓맵 (MarketMap)" />
-<meta property="og:title" content="주식정보,실적발표,ETF순위:마켓맵" />
+<meta property="og:title" content="마켓맵 - 주식시장을 지도로 본다" />
 <meta property="og:description" content="한국·미국주식, ETF, 코인을 10년평균 승률 하나로 비교하는 투자 지도. 인기종목·자동추적·상관관계·마켓맵 지도" />
 <meta property="og:url" content="https://marketmap.kr/" />
 <meta property="og:image" content="https://marketmap.kr/og-image.png?v=20260908b" />
@@ -28,13 +28,13 @@
 <meta name="apple-mobile-web-app-title" content="마켓맵" />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="주식정보,실적발표,ETF순위:마켓맵" />
+<meta name="twitter:title" content="마켓맵 - 주식시장을 지도로 본다" />
 <meta name="twitter:description" content="한국·미국주식, ETF, 코인을 10년평균 승률 하나로 비교하는 투자 지도. 인기종목·자동추적·상관관계·마켓맵 지도" />
 <meta name="twitter:image" content="https://marketmap.kr/og-image.png?v=20260908b" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20261015c" />
+<link rel="stylesheet" href="style.css?v=20261015f" />
 <link rel="stylesheet" href="ai-chat.css?v=20261009a" />
 <link rel="stylesheet" href="embed.css?v=13" />
 <script>
@@ -783,26 +783,52 @@
     </p>
   </div>
 
+  <!-- 2026-10-15 하단 메뉴 개편: 내투자 · 인사이트 탭 페이지(하단 네비는 가리지 않음) -->
+  <section id="tabPageInvest" class="tab-page" style="display:none;">
+    <div class="tab-page-bar"><h1 class="tab-page-title">내투자</h1></div>
+    <div class="tab-page-body" id="myInvestRoot"></div>
+  </section>
+  <section id="tabPageInsight" class="tab-page" style="display:none;">
+    <div class="tab-page-bar"><h1 class="tab-page-title">인사이트</h1></div>
+    <div class="tab-page-body">
+      <div class="insight-chips" id="insightChips"></div>
+      <div id="insightRoot"></div>
+    </div>
+  </section>
+
   <nav id="bottomNav" class="bottom-nav">
     <!-- 하단 네비(2026-09-01 개편): 국내-해외-시장-관심종목-더보기, 지도 버튼은 더보기 패널로 이동 -->
     <!-- 국내/해외 아이콘: 상단 시장 표시와 동일한 컬러 네모 국기로 통일(2026-09-01) — 비활성 시 CSS로 흑백 처리 -->
-    <button type="button" class="bottom-nav-btn" id="bottomNavKrBtn" aria-label="한국주식 랭킹">
+    <button type="button" class="bottom-nav-btn bottom-nav-legacy" style="display:none" id="bottomNavKrBtn" aria-label="한국주식 랭킹">
       <!-- 태극기: 공식 국기 작도 그대로(태극 33.69° S자 + 건곤감리 4괘, 2026-09-03 사용자 요청) -->
       <svg class="bottom-nav-flag" viewBox="0 0 21 14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#fff" stroke="rgba(0,0,0,0.25)"/><g transform="translate(10.5,7) scale(0.155)"><g stroke="#000" stroke-width="4" fill="none"><path transform="rotate(33.69)" d="M-50-12v24m6 0v-24m6 0v24m76 0V1m0-2v-11m6 0v11m0 2v11m6 0V1m0-2v-11"/><path transform="rotate(-33.69)" d="M-50-12v24m6 0V1m0-2v-11m6 0v24m76 0V1m0-2v-11m6 0v24m6 0V1m0-2v-11"/></g><g transform="rotate(33.69)"><path fill="#cd2e3a" d="M12 0a18 18 0 11-36 0 24 24 0 1148 0"/><path fill="#0047a0" d="M-24 0a24 24 0 1048 0A12 12 0 100 0a12 12 0 11-24 0"/></g></g></svg>
       <span data-i18n="market.kr">한국주식</span>
     </button>
-    <button type="button" class="bottom-nav-btn" id="bottomNavUsBtn" aria-label="미국주식 랭킹">
+    <button type="button" class="bottom-nav-btn bottom-nav-legacy" style="display:none" id="bottomNavUsBtn" aria-label="미국주식 랭킹">
       <svg class="bottom-nav-flag" viewBox="0 0 21 14"><defs><clipPath id="navUsFlagClip"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5"/></clipPath></defs><g clip-path="url(#navUsFlagClip)"><rect x="0" y="0" width="21" height="14" fill="#fff"/><rect x="0" y="0.5" width="21" height="1.9" fill="#b22234"/><rect x="0" y="4.3" width="21" height="1.9" fill="#b22234"/><rect x="0" y="8.1" width="21" height="1.9" fill="#b22234"/><rect x="0" y="11.9" width="21" height="1.9" fill="#b22234"/><rect x="0" y="0" width="9.5" height="6.2" fill="#3c3b6e"/><g fill="#fff"><circle cx="2.4" cy="1.8" r="0.55"/><circle cx="4.8" cy="1.8" r="0.55"/><circle cx="7.2" cy="1.8" r="0.55"/><circle cx="2.4" cy="4.2" r="0.55"/><circle cx="4.8" cy="4.2" r="0.55"/><circle cx="7.2" cy="4.2" r="0.55"/></g></g><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="none" stroke="rgba(0,0,0,0.25)"/></svg>
       <span data-i18n="market.us">미국주식</span>
     </button>
     <!-- 시장·관심종목은 더보기 패널로 이동, 그 자리에 ETF·비트코인 섹션 버튼 신설(2026-09-01) -->
-    <button type="button" class="bottom-nav-btn" id="bottomNavEtfBtn" aria-label="ETF">
+    <button type="button" class="bottom-nav-btn bottom-nav-legacy" style="display:none" id="bottomNavEtfBtn" aria-label="ETF">
       <svg class="bottom-nav-flag" viewBox="0 0 21 14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#2f6bd8" stroke="rgba(0,0,0,0.15)"/><text x="10.5" y="10" text-anchor="middle" font-size="7" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif" letter-spacing="0.3">ETF</text></svg>
       <span data-i18n="nav.etf">ETF</span>
     </button>
-    <button type="button" class="bottom-nav-btn" id="bottomNavCryptoBtn" aria-label="비트코인">
+    <button type="button" class="bottom-nav-btn bottom-nav-legacy" style="display:none" id="bottomNavCryptoBtn" aria-label="비트코인">
       <svg class="bottom-nav-flag" viewBox="0 0 21 14"><circle cx="10.5" cy="7" r="6.6" fill="#f7931a"/><text x="10.6" y="9.9" text-anchor="middle" font-size="9" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif">₿</text></svg>
       <span data-i18n="nav.crypto">비트코인</span>
+    </button>
+    <!-- 2026-10-15 하단 메뉴 개편: 지도 - 내투자 - 인사이트 - 더보기(위 한국/미국/ETF/비트코인 버튼은 더보기 패널로 이동) -->
+    <button type="button" class="bottom-nav-btn" id="bottomNavMapBtn" aria-label="지도">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M3 6.5l6-2.5 6 2.5 6-2.5v13.5l-6 2.5-6-2.5-6 2.5V6.5Z"/><path d="M9 4v13.5M15 6.5V20"/></svg>
+      <span>지도</span>
+    </button>
+    <button type="button" class="bottom-nav-btn" id="bottomNavInvestBtn" aria-label="내투자">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M3 17l5.5-5.5 4 3L20 7"/><path d="M15 7h5v5"/></svg>
+      <span>내투자</span>
+    </button>
+    <button type="button" class="bottom-nav-btn" id="bottomNavInsightBtn" aria-label="인사이트">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3Z"/></svg>
+      <span>인사이트</span>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavMoreBtn" aria-label="더보기">
       <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="3" rx="1.5" fill="currentColor"/><rect x="4" y="10.5" width="16" height="3" rx="1.5" fill="currentColor"/><rect x="4" y="15" width="16" height="3" rx="1.5" fill="currentColor"/></svg>
@@ -830,6 +856,11 @@
       <button type="button" class="more-panel-close" id="morePanelCloseBtn" aria-label="닫기">✕</button>
       <h2 class="search-overlay-title more-panel-title" data-i18n="nav.more">더보기</h2>
       <div class="more-panel-list">
+        <!-- 2026-10-15: 하단 메뉴에서 빠진 한국주식·미국주식·ETF·비트코인 (기존 인기종목·투데이·실적·순위검색 화면으로 이동) -->
+        <button type="button" class="more-panel-item more-panel-item-active more-panel-section-item" id="morePanelKrBtn"><span class="more-panel-item-label">한국주식</span></button>
+        <button type="button" class="more-panel-item more-panel-item-active more-panel-section-item" id="morePanelUsBtn"><span class="more-panel-item-label">미국주식</span></button>
+        <button type="button" class="more-panel-item more-panel-item-active more-panel-section-item" id="morePanelEtfBtn"><span class="more-panel-item-label">ETF</span></button>
+        <button type="button" class="more-panel-item more-panel-item-active more-panel-section-item" id="morePanelCryptoBtn"><span class="more-panel-item-label">비트코인</span></button>
         <!-- Pro 멤버십은 2026-09-09 사용자 결정(비공개·승인제 운영)으로 제거 -->
         <!-- 관심종목을 맨 위로(2026-09-16 사용자 요청) -->
         <!-- 관심종목은 상단 ★관심종목 탭으로 충분해 더보기에서 숨김(2026-10-07 사용자 요청) — JS가 참조하므로 DOM 유지 -->
@@ -1024,7 +1055,7 @@
     <div class="info-modal-body about-body">
       <img src="logos/marketmap-192.png?v=20260908b" class="about-logo" alt="마켓맵" />
       <h3 class="about-name">마켓맵</h3>
-      <p class="about-slogan">주식정보,실적발표,ETF순위</p>
+      <p class="about-slogan">주식시장을 지도로 본다</p>
       <div class="about-rows">
         <div><span>버전</span><span>1.1.1</span></div>
         <div><span>개발</span><span>Marketmap Lab</span></div>
@@ -1086,7 +1117,8 @@
   <script src="data/logo-db.js?v=20260903g"></script>
   <script src="data/etf-meta.js?v=20260912a"></script>
   <script src="winrate-benchmark.js?v=20261007k"></script>
-  <script src="app.js?v=20261015f"></script>
+  <script src="app.js?v=20261015h"></script>
+  <script src="invest.js?v=20261015b"></script>
   <script src="embed.js?v=13"></script>
   <script src="ai-chat.js?v=20261009a"></script>
 </body>
