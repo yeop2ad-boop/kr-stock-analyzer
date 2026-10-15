@@ -1,169 +1,169 @@
 {
-  "generatedAt": "2026-10-14T23:16:05Z",
+  "generatedAt": "2026-10-15T23:05:23Z",
   "model": "claude-haiku-5-5",
   "kind": "gov-gdelt-v1",
   "markets": {
     "kr": {
-      "generatedAt": "2026-10-14T23:16:05Z",
+      "generatedAt": "2026-10-15T23:05:23Z",
       "items": [
         {
-          "headline": "LG디스플레이, 횡령·배임 혐의 발생 공시",
-          "summary": "LG디스플레이가 횡령·배임 혐의 발생 사실을 공시했습니다. 제공된 자료에는 공시 제목만 있어 혐의 규모, 관련자, 회사의 대응 계획은 확인할 수 없습니다. 같은 회사의 풍문·보도 관련 조회공시요구 공시도 함께 올라와 있습니다.",
+          "headline": "대한항공, 영업실적 잠정치 공정공시",
+          "summary": "대한항공이 영업실적 잠정치를 공정공시 방식으로 공개했습니다. 잠정치는 감사 등을 거쳐 확정되기 전의 수치이므로 최종 확정 결과와 차이가 날 수 있습니다. 구체적인 매출과 영업이익 수치는 공시 원문에서 확인하시기 바랍니다.",
           "source": "DART 전자공시",
-          "link": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261014800643",
-          "time": "2026-10-13T15:00:00Z"
+          "link": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261015800437",
+          "time": "2026-10-14T15:00:00Z"
         },
         {
-          "headline": "LG에너지솔루션, 횡령·배임 혐의 발생 공시",
-          "summary": "LG에너지솔루션이 횡령·배임 혐의 발생 사실을 공시했습니다. 자료에는 공시 제목만 있어 혐의 규모, 관련 인물, 회사의 대응 계획은 확인할 수 없습니다. 같은 회사의 풍문·보도 관련 조회공시요구 공시도 함께 확인됩니다.",
+          "headline": "한미사이언스, 최대주주 지분 변동 신고",
+          "summary": "한미사이언스가 최대주주등 소유주식 변동을 신고하는 공시를 냈습니다. 변동된 주식 수와 지분율 등 세부 내용은 신고서 원문에서 확인할 수 있습니다. 공시 제목만으로는 변동의 배경이나 의도를 알 수 없습니다.",
           "source": "DART 전자공시",
-          "link": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261014800616",
-          "time": "2026-10-13T15:00:00Z"
+          "link": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261015800523",
+          "time": "2026-10-14T15:00:00Z"
         },
         {
-          "headline": "위메이드, 최대주주 변경 주식양수도 계약 체결",
-          "summary": "위메이드가 최대주주 변경을 수반하는 주식 양수도 계약을 체결했다고 공시했습니다. 이번 공시는 기재정정 형식으로 다시 제출된 것입니다. 계약 상대방, 주식 수, 대금 등 세부 조건은 제목만으로는 확인되지 않습니다.",
+          "headline": "이마트, 자기주식 소각 결정 공시",
+          "summary": "이마트가 보유 중인 자기주식을 소각하기로 결정했다는 공시를 냈습니다. 자기주식 소각은 발행 주식 수를 줄이는 조치입니다. 소각 규모와 세부 일정은 공시 원문에서 확인할 수 있습니다.",
           "source": "DART 전자공시",
-          "link": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261014900192",
-          "time": "2026-10-13T15:00:00Z"
+          "link": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261015800412",
+          "time": "2026-10-14T15:00:00Z"
         },
         {
-          "headline": "에스원, 자기주식 취득 결정 공시",
-          "summary": "에스원이 자기주식 취득을 결정했다는 주요사항보고서를 제출했습니다. 취득 예정 수량, 금액, 기간, 목적 등 세부 내용은 제공된 자료에 없어 확인할 수 없습니다. 같은 회사의 공개매수 관련 공시와 잠정 실적 공시도 함께 올라와 있습니다.",
+          "headline": "롯데케미칼 종속회사 중대재해 발생",
+          "summary": "롯데케미칼의 종속회사에서 중대재해가 발생했다는 내용의 공시입니다. 사고의 세부 경위, 피해 규모, 회사의 후속 조치는 공시 원문에서 확인해야 합니다. 현재 공시 제목만으로는 실적이나 사업에 미칠 영향을 판단하기 어렵습니다.",
           "source": "DART 전자공시",
-          "link": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261014000434",
-          "time": "2026-10-13T15:00:00Z"
+          "link": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261015800388",
+          "time": "2026-10-14T15:00:00Z"
         },
         {
-          "headline": "현대로템, 단일판매·공급계약 정정 공시",
-          "summary": "현대로템이 단일판매·공급계약 체결 내용을 정정해 다시 공시했습니다. 계약 상대방, 계약 금액, 계약 기간, 납품 대상은 자료에 나와 있지 않아 확인할 수 없습니다. 정정 사유도 제목 외에는 알 수 없습니다.",
+          "headline": "HD한국조선해양 자회사 대형 공급계약",
+          "summary": "HD한국조선해양의 자회사가 단일 판매·공급계약을 체결했다는 공시입니다. 계약 상대방, 금액, 계약 기간 등 세부 내용은 공시 원문에서 확인할 수 있습니다. 이 계약이 회사 실적에 미칠 영향은 공시 제목만으로는 알 수 없습니다.",
           "source": "DART 전자공시",
-          "link": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261014800442",
-          "time": "2026-10-13T15:00:00Z"
+          "link": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261015800358",
+          "time": "2026-10-14T15:00:00Z"
         }
       ],
       "briefing": {
         "sections": [
           {
             "title": "증시",
-            "body": "코스피는 **6,008.81**으로 전일보다 **0.44%** 내렸습니다. 코스닥은 823.88로 **1.57%** 하락해 하락 폭이 더 컸습니다. 두 시장이 모두 약세를 보였습니다."
+            "body": "코스피는 **5,554.22**로 전일(6,008.78) 대비 **7.57%** 하락했고, 코스닥은 **760.82**로 **7.65%** 내렸습니다(기준일 2026-10-15). 두 시장이 모두 큰 폭으로 떨어져 하락이 시장 전반에 걸쳐 나타났습니다."
           },
           {
             "title": "산업·기업",
-            "body": "LG디스플레이와 LG에너지솔루션은 각각 **횡령·배임 혐의 발생**을 공시했습니다. 셀트리온은 CTP13 SC(짐펜트라)의 **한국 임상 3상 시험계획 승인** 사실을 알렸습니다. 위메이드는 **최대주주 변경을 수반하는 주식양수도 계약**을 체결했다고 밝혔고, 두산에너빌리티도 종속회사 관련 주요 경영사항을 공시했습니다."
+            "body": "대한항공은 영업(잠정)실적을 공정공시했고, 이마트는 **주식소각**을 결정했습니다. 롯데케미칼은 종속회사에서 **중대재해**가 발생했다고 공시했으며, 한미사이언스는 최대주주 지분 변동을 신고했습니다. HD한국조선해양은 자회사의 **대형 공급계약** 소식이 선정 항목에 포함됐습니다."
           },
           {
             "title": "금융·경제",
-            "body": "원/달러 환율은 **1,341.11원**으로 전일보다 **0.02%** 올랐습니다. 변동 폭이 매우 작았습니다."
+            "body": "원/달러 환율은 **1,340.95원**으로 전일(1,341.19원) 대비 **0.02%** 소폭 내렸습니다. 환율 변동폭은 작아 같은 날 증시의 큰 하락과 대비됩니다."
           }
         ]
       },
       "headlines": [
         {
-          "title": "美 물가 충격에 3대 지수 하락…나스닥 1.9%↓ [뉴욕증시 브리핑]",
-          "source": "한국경제",
-          "link": "https://www.hankyung.com/article/2026101527736",
-          "time": "2026-10-14T22:20:27Z"
+          "title": "물가·AI공포 겹악재… 5600 무너진 코스피",
+          "source": "매일경제",
+          "link": "https://www.mk.co.kr/news/stock/12177086",
+          "time": "2026-10-15T17:46:54Z"
         },
         {
-          "title": "코어위브 15% 급락…AI 부채 공포, 네오클라우드·반도체 덮쳤다",
-          "source": "한국경제",
-          "link": "https://www.hankyung.com/article/202610152758i",
-          "time": "2026-10-14T22:09:48Z"
+          "title": "'AI 빚잔치' 도미노…美 코어위브 15% 폭락에 亞증시 패닉",
+          "source": "매일경제",
+          "link": "https://www.mk.co.kr/news/stock/12177059",
+          "time": "2026-10-15T17:40:04Z"
         },
         {
-          "title": "[마켓뷰] 또 고개 든 AI 수익성 논란…설상가상 반도체주",
+          "title": "물가 최고치 찍었는데 증시 반등…시장 여전히 'Fed 금리동결'에 무게",
+          "source": "한국경제",
+          "link": "https://www.hankyung.com/article/202610165216i",
+          "time": "2026-10-15T21:40:58Z"
+        },
+        {
+          "title": "\"이상하네, 금리 왜 이래?\"…美시장서 포착된 심상찮은 시그널 [분석+]",
+          "source": "한국경제",
+          "link": "https://www.hankyung.com/article/2026101549476",
+          "time": "2026-10-15T21:30:02Z"
+        },
+        {
+          "title": "美 국채금리 하락에 3대 지수 반등…다우 1.08% 상승 [뉴욕증시 브리핑]",
+          "source": "한국경제",
+          "link": "https://www.hankyung.com/article/2026101652966",
+          "time": "2026-10-15T22:41:46Z"
+        },
+        {
+          "title": "\"폭락한 삼전닉스, 일시적 가격 왜곡…지금은 투자 기회\"",
+          "source": "한국경제",
+          "link": "https://www.hankyung.com/article/2026101652956",
+          "time": "2026-10-15T22:42:03Z"
+        },
+        {
+          "title": "\"바닥인 줄 알고 샀는데 지하로 추락\"…빚투 개미들 '비명' [분석+]",
+          "source": "한국경제",
+          "link": "https://www.hankyung.com/article/2026101544246",
+          "time": "2026-10-15T21:30:04Z"
+        },
+        {
+          "title": "환율 내렸지만 유가 올라서…9월 수입물가 넉 달만에 상승",
           "source": "연합뉴스",
-          "link": "https://www.yna.co.kr/view/AKR20261015018100008",
-          "time": "2026-10-14T22:57:29Z"
+          "link": "https://www.yna.co.kr/view/AKR20261015160300002",
+          "time": "2026-10-15T21:00:01Z"
         },
         {
-          "title": "이대로 가면 '육천피' 붕괴…\"개미들, 물타기 할 돈도 없다\" [분석+]",
+          "title": "애플, 시총 5조弗 돌파…엔비디아 이어 두번째",
           "source": "한국경제",
-          "link": "https://www.hankyung.com/article/2026101418086",
-          "time": "2026-10-14T13:00:02Z"
+          "link": "https://www.hankyung.com/article/2026101548181",
+          "time": "2026-10-15T08:46:01Z"
         },
         {
-          "title": "\"빚내서 SK하닉 샀는데\"…두 달 만에 '600억' 결국 멘붕",
-          "source": "한국경제",
-          "link": "https://www.hankyung.com/article/2026101425447",
-          "time": "2026-10-14T12:30:40Z"
-        },
-        {
-          "title": "英팰리서 \"삼전, 우선주부터 매입·소각하라\"",
+          "title": "경영권 분쟁 한미사이언스 … 신동국 의결권 제한되나",
           "source": "매일경제",
-          "link": "https://www.mk.co.kr/news/stock/12176004",
-          "time": "2026-10-14T17:44:38Z"
-        },
-        {
-          "title": "\"1년 안에 다시 9천피 간다\"…월가 거물 '이 종목' 콕 찍었다",
-          "source": "한국경제",
-          "link": "https://www.hankyung.com/article/2026101421541",
-          "time": "2026-10-14T22:00:08Z"
-        },
-        {
-          "title": "[단독] “코스피 떠나는 이들, 뭔가 잊은 것 같다”…비관론 개의치 말라는 월가 스타",
-          "source": "매일경제",
-          "link": "https://www.mk.co.kr/news/stock/12176048",
-          "time": "2026-10-14T18:08:34Z"
-        },
-        {
-          "title": "美 은행주 약세…고금리發 채권거래 감소 직격탄",
-          "source": "한국경제",
-          "link": "https://www.hankyung.com/article/2026101421521",
-          "time": "2026-10-14T08:46:08Z"
-        },
-        {
-          "title": "에스원, 기존 자사주 전량소각·4500억 추가 매입",
-          "source": "매일경제",
-          "link": "https://www.mk.co.kr/news/stock/12176126",
-          "time": "2026-10-14T20:21:16Z"
+          "link": "https://www.mk.co.kr/news/stock/12177064",
+          "time": "2026-10-15T17:40:46Z"
         }
       ]
     },
     "us": {
-      "generatedAt": "2026-10-14T23:16:05Z",
+      "generatedAt": "2026-10-15T23:05:23Z",
       "items": [
         {
-          "headline": "미국 증시 하락, 나스닥 -1.88% 마감",
-          "summary": "10월 14일 미국 증시는 하락 마감했습니다. S&P500은 -1.11%(7,718.94), 나스닥종합은 -1.88%(26,692.87), 다우존스는 -0.09%(51,621.48)를 기록했습니다. 미국 10년물 금리는 5.19%로 3bp 내렸고, VIX는 16.87로 10.48% 올랐습니다. WTI 유가는 94.9달러(-0.2%)입니다.",
+          "headline": "뉴욕증시 혼조 속 다우 1.08% 상승",
+          "summary": "10월 15일 마감 기준 다우존스는 52177.69로 1.08% 올랐고, S&P500은 7744.06으로 0.33%, 나스닥종합은 26713.03으로 0.08% 상승했습니다. 미국 10년물 금리는 5.09%로 전일보다 10bp 낮아졌고, VIX는 16.46으로 2.43% 내렸습니다. 달러지수는 102.0으로 0.54%, WTI 유가는 96.24달러로 0.27% 하락했습니다.",
           "source": "Yahoo Finance 시세",
           "link": "https://finance.yahoo.com/quote/%5EGSPC",
-          "time": "2026-10-14T23:17:14Z"
+          "time": "2026-10-15T23:06:16Z"
         },
         {
           "headline": "9월 물가 0.6% 상승, 실업률 4.2%",
-          "summary": "미국 노동통계국(BLS)에 따르면 9월 소비자물가지수(CPI)는 0.6% 올랐습니다. 실업률은 4.2%, 비농업 고용은 2.9만 명(잠정) 늘었고, 시간당 평균 임금은 0.05달러(잠정) 올랐습니다. CPI는 소비자가 사는 상품과 서비스 가격의 변화를 보여주는 물가지표입니다.",
+          "summary": "미국 노동통계국(BLS) 발표에 따르면 9월 소비자물가지수(CPI)는 전월 대비 0.6% 올랐습니다. CPI는 소비자가 사는 상품과 서비스 가격의 변화를 보여주는 지표입니다. 9월 실업률은 4.2%, 비농업 고용은 2.9만 명 늘었고(잠정치), 생산자물가지수(PPI)는 1.3% 상승했습니다(잠정치).",
           "source": "미국 노동통계국(BLS)",
           "link": "https://www.bls.gov/bls/newsrels.htm",
-          "time": "2026-10-14T12:30:14Z"
+          "time": "2026-10-15T12:31:45Z"
         },
         {
-          "headline": "연준 기준금리 3.75~4%로 인상",
-          "summary": "월러 연준 이사는 9월 FOMC가 기준금리를 0.25%포인트 올려 3.75~4%로 정했다고 밝혔습니다. 금리는 9개월 동안 동결된 뒤 인상된 것입니다. 그는 지난해 9월부터 12월까지 FOMC가 금리를 0.75%포인트 낮췄다는 점도 언급했습니다.",
+          "headline": "웰러 연준 이사, 9월 금리 인상 배경 설명",
+          "summary": "웰러 연준 이사는 9월 FOMC에서 기준금리를 0.25%포인트 올려 3.75~4%로 인상했다고 밝혔습니다. 9개월간 동결한 뒤의 인상이며, 올해 상반기 노동시장이 안정된 반면 중동 갈등에 따른 에너지 가격 상승으로 물가 개선이 멈췄다고 설명했습니다.",
           "source": "미국 연방준비제도(Fed)",
           "link": "https://www.federalreserve.gov/newsevents/speech/waller20261008a.htm",
           "time": "2026-10-08T08:30:00Z"
         },
         {
-          "headline": "블랙록, 표본 뉴스 언급 상위권",
-          "summary": "최근 24시간 주식시장 영문 뉴스 표본(469건) 기준으로 블랙록은 18건의 기사에서 언급됐습니다. 기사 어조 점수는 -0.65로, 0 근처인 중립보다 부정적입니다. 전일 종가 대비 주가는 0.72% 올라 1,073.79입니다. 언급 이유와 기사 내용은 자료에 없습니다.",
+          "headline": "엔비디아, 주식시장 뉴스 언급 1위권",
+          "summary": "최근 24시간 주식시장 영문 뉴스 표본 587건 중 엔비디아(NVDA)가 35건에서 언급됐습니다. 기사 어조 점수는 -1.3으로 부정적 보도 쪽에 가깝습니다. 전일 종가 대비 주가는 217.23달러로 1.84% 하락했습니다. 언급 이유는 자료에 없어 다루지 않았습니다.",
           "source": "GDELT Project (gdeltproject.org)",
-          "link": "https://marketmap.kr/?ticker=BLK",
-          "time": "2026-10-14T23:17:14Z",
+          "link": "https://marketmap.kr/?ticker=NVDA",
+          "time": "2026-10-15T23:06:16Z",
           "px": {
-            "pct": 0.72,
+            "pct": -1.84,
             "label": "전일 대비"
           }
         },
         {
-          "headline": "골드만삭스, 표본 뉴스 언급 상위권",
-          "summary": "최근 24시간 주식시장 영문 뉴스 표본(469건) 기준으로 골드만삭스는 17건의 기사에서 언급됐습니다. 기사 어조 점수는 -0.31로, 0 근처인 중립에 가깝지만 약간 부정적입니다. 전일 종가 대비 주가는 1.48% 내려 878.72입니다. 언급 이유와 기사 내용은 자료에 없습니다.",
+          "headline": "알파벳, 긍정적 어조 기사 주목",
+          "summary": "최근 24시간 주식시장 영문 뉴스 표본 587건 중 알파벳(GOOGL)이 13건에서 언급됐습니다. 기사 어조 점수는 1.33으로 중립보다 긍정적인 편입니다. 전일 종가 대비 주가는 349.22달러로 0.45% 올랐습니다. 이는 표본 기준이며, 기사 내용은 자료에 없어 다루지 않았습니다.",
           "source": "GDELT Project (gdeltproject.org)",
-          "link": "https://marketmap.kr/?ticker=GS",
-          "time": "2026-10-14T23:17:14Z",
+          "link": "https://marketmap.kr/?ticker=GOOGL",
+          "time": "2026-10-15T23:06:16Z",
           "px": {
-            "pct": -1.48,
+            "pct": 0.45,
             "label": "전일 대비"
           }
         }
@@ -172,163 +172,205 @@
         "sections": [
           {
             "title": "증시",
-            "body": "미국 증시는 나스닥과 S&P500이 하락 마감했습니다. **나스닥종합은 -1.88%**를 기록했고, S&P500은 1.11% 내린 7718.94, 다우존스는 0.09% 내린 51621.48로 마감했습니다. 변동성 지수인 VIX는 **10.48% 오른 16.87**을 기록했고, 미국 10년물 금리는 5.19%로 0.03%p 내렸습니다. WTI 유가는 0.2% 내린 94.9달러였습니다."
-          },
-          {
-            "title": "산업·기업",
-            "body": "뉴스 표본에서 언급이 많았던 기업 중 블랙록은 0.72% 오른 1073.79달러로 마감했고, 골드만삭스는 **1.48% 내린 878.72달러**를 기록했습니다. 두 기업 모두 관련 기사의 톤이 부정적으로 나타났으며, 블랙록은 18건, 골드만삭스는 17건의 기사에서 언급됐습니다. 연준은 10월 8일 아메리칸익스프레스에 **자금세탁 의심 거래 탐지와 보고가 미흡했다**는 이유로 집행 조치를 발표했습니다."
+            "body": "10월 15일 기준 다우존스는 **1.08% 오른 52,177.69**로 마감했고, S&P500은 0.33% 상승한 7,744.06, 나스닥종합은 0.08% 오른 26,713.03이었습니다. 미국 10년물 국채금리는 5.09%로 전일보다 10bp 내렸고, VIX 변동성지수는 16.46으로 하락했습니다. 달러지수는 102.0으로 0.54% 떨어졌고, WTI 유가는 배럴당 96.24달러로 0.27% 내렸습니다."
           },
           {
             "title": "금융·경제",
-            "body": "9월 소비자물가지수(CPI)는 **0.6% 상승**했고, 9월 실업률은 **4.2%**, 비농업 고용은 **2.9만 명 증가**(잠정)했습니다. 9월 시간당 평균 임금은 0.05달러 올랐고(잠정), 8월 생산자물가지수(PPI)는 0.4% 올랐습니다(잠정). 연준은 10월 9일 2025년 소비자금융조사 결과를 발표했으며, 2022~2025년 사이 실질 중간 가구소득은 7% 늘어 **8만 2200달러**가 됐고 실질 평균 가구소득은 6% 줄었다고 밝혔습니다."
+            "body": "9월 소비자물가지수(CPI)는 전월 대비 **0.6% 상승**했고, 실업률은 **4.2%**였습니다. 9월 비농업 고용은 잠정치로 2만 9천 명 증가했고, 생산자물가지수(PPI)는 잠정치로 1.3% 올랐습니다. 연준에서는 바우먼 부의장이 실리콘밸리은행(SVB) 파산에 대한 독립 평가를 바탕으로 적시 감독의 중요성을 강조했고, 연준의 2025년 소비자금융조사에서는 실질 중간 가구소득이 2022년 대비 **7% 늘어난 8만 2,200달러**로 나타났습니다."
+          },
+          {
+            "title": "산업·기업",
+            "body": "엔비디아는 **217.23달러로 1.84% 하락**했고, 알파벳(구글)은 349.22달러로 0.45% 상승했습니다. GDELT 뉴스 표본에서 엔비디아는 기사 35건에서 언급됐고 어조 지수는 -1.3, 알파벳은 13건에서 언급되며 어조 지수는 1.33으로 집계됐습니다. 이 수치는 뉴스 언급 빈도와 어조를 보여줄 뿐이며, 주가 움직임의 원인을 설명하지는 않습니다."
           }
         ]
       },
       "headlines": [
         {
-          "title": "Iran says it’s ‘counting the moments’ until it can strike U.S. warships; Saudi Aramco facilities attacked",
+          "title": "Nvidia, AMD, Dell sink in global tech rout on AI funding worries",
           "source": "CNBC",
-          "link": "https://www.cnbc.com/2026/10/14/us-iran-war-trump-hormuz-saudi.html",
-          "time": "2026-10-14T17:12:20Z",
-          "titleKo": "이란, 미군 함정 공격 가능한 순간을 '헤아리고 있다'고 밝혀... 사우디 아람코 시설도 공격받아"
+          "link": "https://www.cnbc.com/2026/10/15/sk-hynix-samsung-softbank-stocks-asia-tech-rout-ai-funding-worries.html",
+          "time": "2026-10-15T20:33:24Z",
+          "titleKo": "엔비디아, AMD, 델, AI 자금 우려에 글로벌 기술주 급락"
         },
         {
-          "title": "CoreWeave shares tumble as bond yields near 15% on concern about AI borrowing binge",
+          "title": "Wholesale prices jumped 6.3% annually in September, biggest gain since 2022",
           "source": "CNBC",
-          "link": "https://www.cnbc.com/2026/10/14/coreweave-stock-bond-yields-ai-debt.html",
-          "time": "2026-10-14T20:46:32Z",
-          "titleKo": "CoreWeave 주가 급락... 채권 수익률 15% 근접, AI 차입 열풍 우려 때문"
+          "link": "https://www.cnbc.com/2026/10/15/september-producer-price-index-retail-sales-data.html",
+          "time": "2026-10-15T16:15:44Z",
+          "titleKo": "9월 도매물가 전년 대비 6.3% 상승…2022년 이후 최대 폭"
         },
         {
-          "title": "AI infrastructure stocks tumble. Here's a few reasons for the sell-off",
+          "title": "CoreWeave credit default swaps hit distress levels as investors sour on AI debt",
           "source": "CNBC",
-          "link": "https://www.cnbc.com/investingclub/2026/10/14/ai-infrastructure-stocks-tumble-heres-a-few-reasons-for-the-sell-off-.html",
-          "time": "2026-10-14T18:41:11Z",
-          "titleKo": "AI 인프라 株 급락... 매도세의 몇 가지 이유"
+          "link": "https://www.cnbc.com/2026/10/15/coreweave-credit-default-swaps-hit-distress-levels-as-investors-sour-on-ai-debt.html",
+          "time": "2026-10-15T21:33:24Z",
+          "titleKo": "AI 부채에 투자자 이탈하며 코어위브 신용부도스왑, 부실 수준 진입"
         },
         {
-          "title": "Bank of America shares drop after third-quarter revenue miss and regulatory penalty",
+          "title": "Dow rises more than 500 points as investors rotate away from AI trade: Live updates",
           "source": "CNBC",
-          "link": "https://www.cnbc.com/2026/10/14/bank-of-america-bac-q3-2026-earnings.html",
-          "time": "2026-10-14T20:20:46Z",
-          "titleKo": "뱅크오브아메리카 주가 하락... 3분기 매출 미달 및 규제 당국 제재 영향"
+          "link": "https://www.cnbc.com/2026/10/14/stock-market-today-live-updates.html",
+          "time": "2026-10-15T21:05:54Z",
+          "titleKo": "AI 거래에서 자금 이동하며 다우 500포인트 이상 상승: 실시간 업데이트"
         },
         {
-          "title": "Here's the inflation breakdown for September 2026 — in one chart",
-          "source": "CNBC",
-          "link": "https://www.cnbc.com/2026/10/14/cpi-inflation-breakdown-september-2026.html",
-          "time": "2026-10-14T14:56:25Z",
-          "titleKo": "2026년 9월 물가 상승 내역, 차트 한 장으로 보기"
-        },
-        {
-          "title": "Fannie Mae sharply raises mortgage rate forecast for 2027",
-          "source": "CNBC",
-          "link": "https://www.cnbc.com/2026/10/14/fannie-mae-sharply-raises-mortgage-rate-forecast-for-2027-.html",
-          "time": "2026-10-14T17:08:07Z",
-          "titleKo": "패니메이, 2027년 모기지 금리 전망치 대폭 상향"
-        },
-        {
-          "title": "Social Security Administration announces 3.6% cost-of-living adjustment for 2027",
-          "source": "CNBC",
-          "link": "https://www.cnbc.com/2026/10/14/social-security-cola-2027.html",
-          "time": "2026-10-14T17:54:01Z",
-          "titleKo": "사회보장국, 2027년 생계비 조정(COLA) 3.6% 발표"
-        },
-        {
-          "title": "BlackRock's Larry Fink warns a data center moratorium could trigger a recession",
-          "source": "CNBC",
-          "link": "https://www.cnbc.com/2026/10/14/blackrocks-fink-warns-data-center-moratorium-could-spark-a-recession.html",
-          "time": "2026-10-14T16:27:12Z",
-          "titleKo": "블랙록 래리 핑크 'データ센터 모라토리엄이 경기침체를 촉발할 수 있다' 경고"
-        },
-        {
-          "title": "Bending Spoons skyrockets 41% as Berkshire Hathaway makes $330 million investment",
-          "source": "CNBC",
-          "link": "https://www.cnbc.com/2026/10/14/berkshire-hathaway-investment-bending-spoons.html",
-          "time": "2026-10-14T20:01:26Z",
-          "titleKo": "Bending Spoons 주가 41% 급등... 버크셔 해서웨이 3억 3천만 달러 투자"
-        },
-        {
-          "title": "From a record high to a 10% drop in just two months: Why small-cap stocks have unraveled so fast",
+          "title": "How a midterm sweep by Democrats could turn this tech selloff into a tech crash",
           "source": "MarketWatch",
-          "link": "https://www.marketwatch.com/story/from-a-record-high-to-a-10-drop-in-just-two-months-why-small-cap-stocks-have-unraveled-so-fast-1cf0f4d5?mod=mw_rss_topstories",
-          "time": "2026-10-14T21:54:00Z",
-          "titleKo": "최고가에서 두 달 만에 10% 하락... 소형주가 이렇게 빨리 무너진 이유"
+          "link": "https://www.marketwatch.com/story/how-a-midterm-sweep-by-democrats-could-turn-this-tech-selloff-into-a-tech-crash-a1d1a82f?mod=mw_rss_topstories",
+          "time": "2026-10-15T21:56:00Z",
+          "titleKo": "민주당의 중간선거 석권이 이번 기술주 매도를 기술주 폭락으로 바꿀 수 있는 이유"
+        },
+        {
+          "title": "Harvard’s endowment jumps 27% in fiscal 2026, lifted by SpaceX as top holding",
+          "source": "CNBC",
+          "link": "https://www.cnbc.com/2026/10/15/harvards-endowment-jumps-27percent-with-spacex-as-top-holding.html",
+          "time": "2026-10-15T19:53:49Z",
+          "titleKo": "하버드 기금, 2026 회계연도 27% 상승…최대 보유 종목 스페이스X 덕분"
+        },
+        {
+          "title": "Brian Sullivan: Why the 'real' price of oil is likely $30-$40 higher than where it is now",
+          "source": "CNBC",
+          "link": "https://www.cnbc.com/2026/10/15/brian-sullivan-why-the-real-price-of-oil-is-likely-30-40-higher-than-where-it-is-now.html",
+          "time": "2026-10-15T19:53:29Z",
+          "titleKo": "브라이언 설리번: '실질' 유가는 현재보다 배럴당 30~40달러 높을 가능성이 큰 이유"
+        },
+        {
+          "title": "Penske Automotive agrees to be taken private by Penske, Mitsui",
+          "source": "CNBC",
+          "link": "https://www.cnbc.com/2026/10/15/penske-automotive-agrees-to-be-taken-private-by-penske-mitsui.html",
+          "time": "2026-10-15T21:08:24Z",
+          "titleKo": "펜스케 오토모티브, 펜스케·미쓰이에 의해 비상장화 합의"
+        },
+        {
+          "title": "Retirees can take these steps to shore up income as yields rise and some dividend-paying sectors slip",
+          "source": "CNBC",
+          "link": "https://www.cnbc.com/2026/10/15/retirees-can-take-these-steps-to-shore-up-income-as-yields-rise.html",
+          "time": "2026-10-15T20:30:23Z",
+          "titleKo": "수익률 상승과 일부 배당 섹터 부진 속 은퇴자들이 소득을 지키기 위해 취할 수 있는 방법들"
+        },
+        {
+          "title": "Big pharma stocks close near all-time highs as tech selloff pushes investors toward safer bets",
+          "source": "MarketWatch",
+          "link": "https://www.marketwatch.com/story/big-pharma-stocks-near-all-time-highs-as-tech-selloff-pushes-investors-toward-safer-bets-0a5d5d07?mod=mw_rss_topstories",
+          "time": "2026-10-15T20:29:00Z",
+          "titleKo": "기술주 매도로 투자자들이 안전자산으로 쏠리며 빅파마 주가 사상 최고가 근처에서 마감"
         }
       ]
     },
     "crypto": {
-      "generatedAt": "2026-10-14T23:16:05Z",
+      "generatedAt": "2026-10-15T23:05:23Z",
       "items": [
         {
-          "headline": "비트코인 81,601달러, 하루 1.80% 하락",
-          "summary": "오늘 비트코인 가격은 81,601.29달러이고, 하루 전과 비교한 변화율은 -1.80%입니다. 기준일은 2026년 10월 14일입니다. 하루 동안 가격이 소폭 내려간 상태라는 점을 숫자로 확인할 수 있습니다.",
+          "headline": "비트코인 하루 0.81% 상승, 8만2천달러대",
+          "summary": "오늘 비트코인 가격은 82,223.38달러이며, 하루 전보다 0.81% 올랐습니다. 자료 기준일은 2026년 10월 15일입니다. 이 숫자는 하루 단위의 등락만 보여 주므로, 이 짧은 기간의 변화만으로 흐름 전체를 판단하기는 어렵습니다.",
           "source": "Yahoo Finance 시세 · Alternative.me",
           "link": "https://finance.yahoo.com/quote/BTC-USD",
-          "time": "2026-10-14T23:18:03Z"
+          "time": "2026-10-15T23:06:49Z"
         },
         {
-          "headline": "최근 7일은 하락, 30일과 90일은 상승",
-          "summary": "최근 7일 변화율은 -2.01%로 하락했습니다. 반면 30일 변화율은 +4.40%, 90일 변화율은 +27.92%로 상승을 나타냅니다. 기간마다 방향이 다르게 나타나는 숫자입니다.",
+          "headline": "7일 0.67%·30일 8.74%·90일 28.68% 상승",
+          "summary": "최근 7일 수익률은 0.67%, 30일은 8.74%, 90일은 28.68%로 모두 상승을 나타냅니다. 기간이 길수록 수치가 커져, 90일 상승 폭이 가장 큽니다. 7일 상승률은 30일과 90일에 비해 낮은 편입니다.",
           "source": "Yahoo Finance 시세 · Alternative.me",
           "link": "https://finance.yahoo.com/quote/BTC-USD",
-          "time": "2026-10-14T23:18:03Z"
+          "time": "2026-10-15T23:06:49Z"
         },
         {
-          "headline": "1년 고점보다 28.72% 낮은 위치",
-          "summary": "1년 최고가는 114,472.45달러, 최저가는 58,558.86달러입니다. 현재 가격은 1년 고점보다 28.72% 낮고, 1년 저점보다는 39.35% 높은 위치에 있습니다. 두 기준 사이에서 현재 위치를 숫자로 보여주는 항목입니다.",
+          "headline": "1년 최고가 대비 28% 낮은 위치",
+          "summary": "현재 가격은 1년 최고가 114,472.45달러보다 28.17% 낮습니다. 1년 최저가 58,558.86달러보다는 40.41% 높은 위치입니다. 현재 가격은 1년 최고가와 최저가 사이에 있으며, 이 위치만으로 이후 방향을 단정할 수는 없습니다.",
           "source": "Yahoo Finance 시세 · Alternative.me",
           "link": "https://finance.yahoo.com/quote/BTC-USD",
-          "time": "2026-10-14T23:18:03Z"
+          "time": "2026-10-15T23:06:49Z"
         },
         {
-          "headline": "최근 30일 변동성 지표 2.07 기록",
-          "summary": "최근 30일 변동성 지표는 2.07입니다. 이 값은 같은 기간 가격이 얼마나 움직였는지를 보여주는 수치입니다. 자료에는 단위와 계산 방식이 함께 적혀 있지 않으니, 숫자 자체만 참고하면 됩니다.",
+          "headline": "최근 30일 변동성 수치 1.97",
+          "summary": "최근 30일 변동성 수치는 1.97입니다. 자료에는 단위 설명이 없어, 수치는 표기된 그대로만 전합니다. 하루 등락률 0.81%와 함께 보면 최근 가격 움직임의 폭을 가늠하는 참고 자료가 됩니다.",
           "source": "Yahoo Finance 시세 · Alternative.me",
           "link": "https://finance.yahoo.com/quote/BTC-USD",
-          "time": "2026-10-14T23:18:03Z"
+          "time": "2026-10-15T23:06:49Z"
         },
         {
-          "headline": "공포탐욕지수 62, 전날 57에서 상승",
-          "summary": "공포탐욕지수는 62로 'Greed(탐욕)' 구간이며, 전날 57보다 높습니다. 같은 날 이더리움 가격은 2,420.23달러이고, 최근 30일 변화율은 -3.75%입니다. 비트코인의 30일 변화율 +4.40%와는 방향이 다르게 나타납니다.",
+          "headline": "공포탐욕지수 53, 중립 단계로 하락",
+          "summary": "공포탐욕지수는 53으로 '중립(Neutral)' 단계이며, 전일 62에서 낮아졌습니다. 같은 기간 이더리움 가격은 2,447.15달러이고 30일 수익률은 2.00%로, 비트코인 30일 수익률 8.74%보다 낮습니다.",
           "source": "Yahoo Finance 시세 · Alternative.me",
           "link": "https://finance.yahoo.com/quote/BTC-USD",
-          "time": "2026-10-14T23:18:03Z"
+          "time": "2026-10-15T23:06:49Z"
         }
       ],
       "briefing": {
         "sections": [
           {
             "title": "시세",
-            "body": "비트코인은 현재 **81,601.29달러**로, 하루 전보다 1.80%, 최근 7일 기준으로는 2.01% 낮습니다. 다만 30일 기준으로는 4.40%, 90일 기준으로는 27.92% 올랐습니다. 52주 최고가(114,472달러)보다는 **28.72%** 낮고, 최저가(58,559달러)보다는 39.35% 높은 수준입니다. 같은 30일 동안 이더리움(2,420.23달러)은 **3.75%** 하락했습니다."
+            "body": "비트코인은 현재 **8만 2,223달러**로, 하루 전보다 0.81% 올랐습니다. 최근 30일 동안은 **8.74% 상승**했고, 90일 동안은 28.68% 올랐습니다. 다만 52주 최고가인 약 11만 4,472달러보다는 **28.17% 낮은** 수준입니다. 같은 기간 이더리움은 약 2,447달러로 30일 동안 2.00% 올랐습니다. (기준일 2026년 10월 15일)"
           },
           {
             "title": "심리·지표",
-            "body": "공포·탐욕 지수는 **62**로 '탐욕' 단계이며, 전날 57에서 올랐습니다. 이 지수는 시장 참여자들의 심리 상태를 점수로 나타낸 참고 지표입니다. 지수 하나만으로 앞으로의 가격 방향을 판단하기는 어렵습니다."
+            "body": "공포·탐욕 지수는 **53(중립)**으로, 전날의 62보다 낮아졌습니다. 중립은 투자 심리가 공포와 탐욕 어느 한쪽으로 크게 기울지 않은 상태를 뜻합니다. 이 지수가 움직인 이유를 설명하는 자료는 없습니다."
           }
         ]
       },
       "headlines": [
         {
-          "title": "Bitcoin's Recovery and ETF Outflows Raise Questions About Institutional Crypto Adoption",
-          "source": "investorideas.com",
-          "link": "https://www.investorideas.com/news/2026/cryptocurrency/10141-bitcoins-recovery-and-etf-outflows-raise-questions-about-institutional-crypto-adoption.asp",
-          "time": "2026-10-14T17:15:00Z",
-          "titleKo": "비트코인 반등과 ETF 자금 유출, 기관 투자자의 암호화폐 도입에 대한 의문 제기"
+          "title": "Bitcoin sinks after the US CPI as markets get increasingly worried about the growth outlook",
+          "source": "investinglive.com",
+          "link": "https://investinglive.com/cryptocurrency/bitcoin-sinks-after-the-us-cpi-as-markets-get-increasingly-worried-about-the-growth-outlook/",
+          "time": "2026-10-15T11:15:00Z",
+          "titleKo": "미국 CPI 발표 후 비트코인 하락, 성장 전망에 대한 시장 우려 커져"
         },
         {
-          "title": "A New Visa Survey Says 56% of Americans Are Open to the Idea of Using Stablecoins. Here's What Crypto Investors Need to Know.",
+          "title": "Why Is Crypto Down Today? Nearly $1 Billion in Leveraged Positions Just Got Wiped Out.",
+          "source": "247wallst.com",
+          "link": "https://247wallst.com/investing/cryptocurrency/2026/10/15/why-is-crypto-down-today-nearly-1-billion-in-leveraged-positions-just-got-wiped-out/",
+          "time": "2026-10-15T14:15:00Z",
+          "titleKo": "오늘 암호화폐가 하락하는 이유는? 약 10억 달러 규모의 레버리지 포지션 청산"
+        },
+        {
+          "title": "Citigroup Raises Its 12-Month Price Target for Bitcoin to $113,000. These Are the 3 Catalysts Investors Need to Watch.",
           "source": "fool.com",
-          "link": "https://www.fool.com/investing/2026/10/14/visa-survey-56-of-americans-open-to-stablecoins/",
-          "time": "2026-10-14T17:15:00Z",
-          "titleKo": "비자 새 설문조사, 미국인 56%가 스테이블코인 사용에 열려 있다고 응답… 암호화폐 투자자가 알아야 할 점"
+          "link": "https://www.fool.com/investing/2026/10/15/citigroup-raises-its-12-month-price-target-for-bit/?source=iedfolrf0000001",
+          "time": "2026-10-15T11:15:00Z",
+          "titleKo": "씨티그룹, 비트코인 12개월 목표가 11만 3천 달러로 상향… 투자자가 주목해야 할 3가지 촉매"
         },
         {
-          "title": "Crypto bosses, CEOs and F1: Singapore events boom gathers pace",
-          "source": "cnbc.com",
-          "link": "https://www.cnbc.com/2026/10/14/crypto-bosses-ceos-and-f1-singapore-events-boom-gathers-pace-.html",
-          "time": "2026-10-14T05:15:00Z",
-          "titleKo": "암호화폐 대표, CEO, F1까지… 싱가포르 행사 붐이 속도를 내다"
+          "title": "Top cryptocurrency White House adviser announces departure from the administration",
+          "source": "komonews.com",
+          "link": "https://komonews.com/news/nation-world/top-cryptocurrency-white-house-adviser-announces-departure-from-the-administration-donald-trump-america",
+          "time": "2026-10-15T20:15:00Z",
+          "titleKo": "백악관 최고 암호화폐 자문관, 행정부 퇴임 발표"
+        },
+        {
+          "title": "Australia proposes mandatory crypto tax reporting from 2027",
+          "source": "thearabianpost.com",
+          "link": "https://thearabianpost.com/australia-proposes-mandatory-crypto-tax-reporting-from-2027/",
+          "time": "2026-10-15T20:15:00Z",
+          "titleKo": "호주, 2027년부터 암호화폐 세금 신고 의무화 추진"
+        },
+        {
+          "title": "Strategy (NASDAQ: MSTR) Chairman Michael Saylor Declares Bitcoin (CRYPTO: BTC) Bull Market Has Begun",
+          "source": "foreignpolicyjournal.com",
+          "link": "https://www.foreignpolicyjournal.com/2026/10/15/strategy-nasdaq-mstr-chairman-michael-saylor-declares-bitcoin-crypto-btc-bull-market-has-begun/",
+          "time": "2026-10-15T17:15:00Z",
+          "titleKo": "Strategy(NASDAQ: MSTR) 마이클 세일러 회장 \"비트코인(CRYPTO: BTC) 강세장 시작됐다\" 선언"
+        },
+        {
+          "title": "How two crypto billionaires are making British politics more American",
+          "source": "nzherald.co.nz",
+          "link": "https://www.nzherald.co.nz/world/how-two-crypto-billionaires-are-making-british-politics-more-american/premium/QTR4RINWLNBAFK34ZNIIIAED2A/",
+          "time": "2026-10-15T23:15:00Z",
+          "titleKo": "두 암호화폐 억만장자가 영국 정치를 더 미국식으로 만들고 있는 방법"
+        },
+        {
+          "title": "Can AI break encryption? OpenAI's new math has cryptographers divided",
+          "source": "scientificamerican.com",
+          "link": "https://www.scientificamerican.com/article/can-ai-break-encryption-openai-new-math-has-cryptographers-divided/",
+          "time": "2026-10-15T17:15:00Z",
+          "titleKo": "AI가 암호화를 깰 수 있을까? 오픈AI의 새로운 수학에 암호학자들 의견 갈려"
+        },
+        {
+          "title": "AI Agents Can Already Pay in Crypto. Can a Website Tell Who They're Working For?",
+          "source": "247wallst.com",
+          "link": "https://247wallst.com/investing/cryptocurrency/2026/10/15/ai-agents-can-already-pay-in-crypto-can-a-website-tell-who-theyre-working-for/",
+          "time": "2026-10-15T14:15:00Z",
+          "titleKo": "AI 에이전트는 이미 암호화폐로 결제할 수 있다. 웹사이트는 그들이 누구를 위해 일하는지 알 수 있을까?"
         }
       ]
     }
