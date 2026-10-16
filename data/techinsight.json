@@ -1,5 +1,53 @@
 [
   {
+    "id": "62145d24f47c",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "시뮬레이션 앱으로 전기 트럭 배터리 설계 속도 높인다",
+    "originalTitle": "Simulation App Speeds Up Electric Truck Battery Design",
+    "link": "https://spectrum.ieee.org/electric-truck-battery-design-simulation",
+    "summary": "볼보 트럭을 포함한 컨소시엄이 레이저 용접 시뮬레이션 앱을 개발해 전기 트럭 배터리 팩 설계를 가속화했다. 레이저 용접은 배터리 성능에 직접적인 영향을 미치기 때문에 정확한 모델링이 중요한데, COMSOL 소프트웨어를 활용한 멀티스케일 시뮬레이션으로 배터리 수명과 견고성을 최적화할 수 있었다. 개발된 커스텀 앱은 R&D 부서가 배터리 성능을 효과적으로 테스트하고 버스바 탭 구성을 최적화하는 데 도움을 준다. 이를 통해 전기 트럭의 장거리 주행을 가능하게 하는 장수명, 고성능 배터리 개발이 현실화되고 있다. 2022년 5월부터 2025년 5월까지 진행된 라저배트맨 프로젝트는 배터리 제조 공정의 신뢰성을 높여 전기 물류 차량의 상용화를 앞당기는 데 기여하고 있다.",
+    "image": "data/techinsight-images/62145d24f47c.webp",
+    "publishedAt": "2026-10-16T16:49:18.000Z",
+    "createdAt": "2026-10-16T23:31:54.609Z"
+  },
+  {
+    "id": "f1c9f97326da",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "소셜미디어 미성년자 금지 정책의 한계와 반려동물 수명 연장 기술의 등장",
+    "originalTitle": "The Download: failed social media bans, and extending pets’ lives",
+    "link": "https://www.technologyreview.com/2026/10/16/1146864/the-download-failed-social-media-bans-and-extending-pets-lives/",
+    "summary": "전 세계적으로 미성년자의 소셜미디어 접근을 제한하는 법안이 추진되고 있지만, 호주의 사례에서 보듯이 이러한 규제는 쉽게 우회될 수 있다는 문제가 지적되고 있다. 한편 반려동물의 수명을 연장하기 위한 생명공학 기술들, 예를 들어 약물, 복제, 극저온 냉동 등이 빠르게 발전하고 있으며, 반려동물 소유자들에게 새로운 선택지를 제공하고 있다. AI 기업들이 직면한 주요 과제는 보험 문제로, 제품으로 인한 손해배상 책임이 적립되고 있으며 규제당국도 소비자 피해에 대한 조사를 강화하고 있다. 이 외에도 정부의 스파이웨어 사용, AI 딥페이크, 메모리 부족에 따른 교육 기기 공급 문제 등 다양한 기술 관련 이슈들이 제기되고 있다.",
+    "image": "data/techinsight-images/f1c9f97326da.webp",
+    "publishedAt": "2026-10-16T12:10:00.000Z",
+    "createdAt": "2026-10-16T23:31:34.736Z"
+  },
+  {
+    "id": "7bda5edfccc8",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "스마트 도시를 꿈꾸는 지자체를 위한 IEEE의 확대된 서비스",
+    "originalTitle": "IEEE Offers More Services to Cities That Want to Be Smarter",
+    "link": "https://spectrum.ieee.org/ieee-smart-cities-new-services",
+    "summary": "전 세계 도시들이 스마트 기술을 도입하여 주민의 삶의 질을 높이려는 노력을 기울이고 있지만, 표준 부재, 사생활 침해, 주민과 관계자 간의 신뢰 문제 등 여러 과제에 직면해 있다. IEEE는 이러한 문제를 해결하기 위해 2013년 스마트 시티 기술 커뮤니티를 설립했고, 국제 컨퍼런스, 교육 자료 제공, 우수 프로젝트 공모 등의 서비스를 제공해왔다. 2025년 11월 IEEE 스마트 시티는 공식적인 기술 커뮤니티 지위를 획득했으며, 이를 통해 도시 지도자, 엔지니어, 연구자들이 경험을 나누고 협력할 수 있는 글로벌 플랫폼으로서의 역할을 강화하고 있다.",
+    "image": "data/techinsight-images/7bda5edfccc8.webp",
+    "publishedAt": "2026-10-16T18:00:03.000Z",
+    "createdAt": "2026-10-16T23:31:33.057Z"
+  },
+  {
+    "id": "85ddbdc7a76d",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "AI가 설계한 바이러스의 창시자와의 대화",
+    "originalTitle": "Roundtables: A Conversation With the Creator of AI-Designed Viruses",
+    "link": "https://www.technologyreview.com/2026/10/16/1146224/roundtables-a-conversation-with-the-creator-of-ai-designed-viruses/",
+    "summary": "스탠퍼드 대학의 박사과정 학생 새뮤얼 킹은 생성형 AI 모델을 사용하여 미세한 바이러스의 유전자 청사진을 제시했다. 이는 아직 완전한 AI 생성 생명체는 아니지만 향후 그러한 성과로 이어질 가능성을 보여준다. MIT 테크놀로지 리뷰의 35세 이하 혁신가 중 한 명으로 선정된 킹의 연구는 AI가 새로운 생명 형태를 설계할 수 있는지라는 근본적인 질문에 예비적 답변을 제공한다. 이 대화 세션에서는 AI 기자 제임스 오도넬이 킹의 업적과 생물학을 보는 새로운 방식에 대해 인터뷰한다.",
+    "image": "data/techinsight-images/85ddbdc7a76d.webp",
+    "publishedAt": "2026-10-16T18:00:00.000Z",
+    "createdAt": "2026-10-16T23:31:32.344Z"
+  },
+  {
     "id": "fdc608a0fe34",
     "sourceKey": "ieee",
     "source": "IEEE Spectrum",
