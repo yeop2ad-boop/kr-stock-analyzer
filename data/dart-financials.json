@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-10-16T13:41:40.665Z",
+  "updatedAt": "2026-10-17T12:38:57.778Z",
   "dataYear": 2025,
   "buybackPeriod": {
-    "from": "20251016",
-    "to": "20261016"
+    "from": "20251017",
+    "to": "20261017"
   },
   "source": "DART Open API(opendart.fss.or.kr) — 사업보고서 임직원 현황(empSttus), 자기주식취득결정(tsstkAqDecsn)",
   "items": [
@@ -36,8 +36,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -134,8 +134,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 1,
           "amount": 40023070290000,
@@ -232,8 +232,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -330,8 +330,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -428,8 +428,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -526,8 +526,8 @@
         "reportCode": "11011"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -626,8 +626,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -726,8 +726,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -824,8 +824,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -922,8 +922,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1020,8 +1020,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1118,8 +1118,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1216,8 +1216,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1316,8 +1316,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1414,8 +1414,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1512,8 +1512,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 1,
           "amount": 1480899838000,
@@ -1610,8 +1610,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1710,8 +1710,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1808,8 +1808,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1906,8 +1906,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2006,8 +2006,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2104,8 +2104,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2204,8 +2204,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2302,8 +2302,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2400,8 +2400,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2498,8 +2498,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 1,
           "amount": 2664980000000,
@@ -2596,8 +2596,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2694,8 +2694,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2792,8 +2792,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2890,8 +2890,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2988,8 +2988,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3087,8 +3087,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3185,8 +3185,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3283,8 +3283,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3381,8 +3381,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3479,8 +3479,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3577,8 +3577,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 1,
           "amount": 531968150000,
@@ -3675,8 +3675,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3773,8 +3773,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3871,8 +3871,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3969,8 +3969,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4068,8 +4068,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4166,8 +4166,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4264,8 +4264,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4362,8 +4362,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4460,8 +4460,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4558,8 +4558,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 1,
           "amount": 2833562221325,
@@ -4656,8 +4656,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4754,8 +4754,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4854,8 +4854,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4952,8 +4952,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5050,8 +5050,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5148,8 +5148,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5248,8 +5248,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5346,8 +5346,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5444,8 +5444,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5544,8 +5544,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5642,8 +5642,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5740,8 +5740,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5838,8 +5838,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5936,8 +5936,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6034,8 +6034,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6132,8 +6132,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6230,8 +6230,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6330,8 +6330,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6428,8 +6428,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6528,8 +6528,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6626,8 +6626,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6724,8 +6724,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6822,8 +6822,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6920,8 +6920,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7018,8 +7018,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7116,8 +7116,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 1,
           "amount": 1171300000000,
@@ -7214,8 +7214,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7312,8 +7312,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7410,8 +7410,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7508,8 +7508,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7606,8 +7606,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7706,8 +7706,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 1,
           "amount": 399999989600,
@@ -7806,8 +7806,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7904,8 +7904,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8002,8 +8002,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8100,8 +8100,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8200,8 +8200,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8298,8 +8298,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8396,8 +8396,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8494,8 +8494,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8592,8 +8592,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8690,8 +8690,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8788,8 +8788,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8886,8 +8886,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8984,8 +8984,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9082,8 +9082,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9180,8 +9180,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9278,8 +9278,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9378,8 +9378,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9476,8 +9476,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9574,8 +9574,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9672,8 +9672,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9770,8 +9770,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9868,8 +9868,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9966,8 +9966,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10064,8 +10064,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10162,8 +10162,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10260,8 +10260,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10360,8 +10360,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10458,8 +10458,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10556,8 +10556,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 1,
           "amount": 1167135000000,
@@ -10654,8 +10654,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10752,8 +10752,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10850,8 +10850,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10948,8 +10948,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11046,8 +11046,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11144,8 +11144,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11242,8 +11242,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11342,8 +11342,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11440,8 +11440,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11538,8 +11538,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11636,8 +11636,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11734,8 +11734,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11832,8 +11832,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11930,8 +11930,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12028,8 +12028,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12126,8 +12126,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12224,8 +12224,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12322,8 +12322,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12420,8 +12420,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12518,8 +12518,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12616,8 +12616,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12714,8 +12714,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12812,8 +12812,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12910,8 +12910,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13008,8 +13008,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13106,8 +13106,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13204,8 +13204,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13302,8 +13302,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13400,8 +13400,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13500,8 +13500,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13598,8 +13598,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13696,8 +13696,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13794,8 +13794,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13892,8 +13892,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13990,8 +13990,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14088,8 +14088,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14186,8 +14186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14284,8 +14284,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14382,8 +14382,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14480,8 +14480,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14578,8 +14578,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14676,8 +14676,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14775,8 +14775,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14873,8 +14873,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14971,8 +14971,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15069,8 +15069,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15167,8 +15167,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15265,8 +15265,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15363,8 +15363,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15461,8 +15461,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15559,8 +15559,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15657,8 +15657,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15755,8 +15755,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15853,8 +15853,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15951,8 +15951,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16049,8 +16049,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16147,8 +16147,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16245,8 +16245,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16343,8 +16343,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16441,8 +16441,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16539,8 +16539,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16637,8 +16637,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16735,8 +16735,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16833,8 +16833,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16931,8 +16931,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17029,8 +17029,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17127,8 +17127,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17225,8 +17225,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17323,8 +17323,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17421,8 +17421,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17519,8 +17519,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17617,8 +17617,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17715,8 +17715,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17813,8 +17813,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17911,8 +17911,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18009,8 +18009,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18107,8 +18107,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18205,8 +18205,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18303,8 +18303,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18401,8 +18401,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18499,8 +18499,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18597,8 +18597,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18695,8 +18695,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18793,8 +18793,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18891,8 +18891,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18989,8 +18989,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -19087,8 +19087,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -19185,8 +19185,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -19283,8 +19283,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -19381,8 +19381,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -19479,8 +19479,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -19561,8 +19561,8 @@
       "recent": null,
       "recentPrev": null,
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -19620,8 +19620,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 4,
           "amount": 199999362290,
@@ -19718,8 +19718,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -19816,8 +19816,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 1,
           "amount": 886138605000,
@@ -19914,8 +19914,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -20012,8 +20012,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -20110,8 +20110,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -20208,8 +20208,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -20306,8 +20306,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -20404,8 +20404,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -20502,8 +20502,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -20600,8 +20600,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 1,
           "amount": 21724422700,
@@ -20698,8 +20698,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -20796,8 +20796,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -20894,8 +20894,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -20992,8 +20992,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 1,
           "amount": 329999677600,
@@ -21090,8 +21090,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -21188,8 +21188,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -21286,8 +21286,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -21384,8 +21384,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -21482,8 +21482,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -21580,8 +21580,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -21678,8 +21678,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 1,
           "amount": 180000016200,
@@ -21776,8 +21776,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -21874,8 +21874,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -21972,8 +21972,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 2,
           "amount": 110758162833,
@@ -22072,8 +22072,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -22170,8 +22170,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -22268,8 +22268,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -22366,8 +22366,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 1,
           "amount": 299999970000,
@@ -22464,8 +22464,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -22562,8 +22562,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -22660,8 +22660,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -22758,8 +22758,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -22856,8 +22856,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -22954,8 +22954,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -23052,8 +23052,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -23150,8 +23150,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -23248,8 +23248,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -23346,8 +23346,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -23444,8 +23444,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 2,
           "amount": 144999445125,
@@ -23542,8 +23542,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -23640,8 +23640,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -23738,8 +23738,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -23836,8 +23836,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -23934,8 +23934,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -24032,8 +24032,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -24130,8 +24130,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -24228,8 +24228,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -24326,8 +24326,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 1,
           "amount": 14999913600,
@@ -24424,8 +24424,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -24522,8 +24522,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -24620,8 +24620,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -24718,8 +24718,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -24816,8 +24816,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -24914,8 +24914,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -25012,8 +25012,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -25110,8 +25110,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -25208,8 +25208,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -25306,8 +25306,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -25404,8 +25404,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -25502,8 +25502,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 2,
           "amount": 2999998600,
@@ -25600,8 +25600,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -25698,8 +25698,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 1,
           "amount": 113186700000,
@@ -25796,8 +25796,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -25894,8 +25894,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -25992,8 +25992,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -26090,8 +26090,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -26188,8 +26188,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -26286,8 +26286,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -26384,8 +26384,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -26482,8 +26482,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -26580,8 +26580,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -26678,8 +26678,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 3,
           "amount": 139999975224,
@@ -26776,8 +26776,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -26874,8 +26874,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -26972,8 +26972,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -27070,8 +27070,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -27168,8 +27168,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -27266,8 +27266,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -27366,8 +27366,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -27465,8 +27465,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -27563,8 +27563,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -27661,8 +27661,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -27759,8 +27759,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -27857,8 +27857,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -27955,8 +27955,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -28053,8 +28053,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -28151,8 +28151,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -28249,8 +28249,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -28347,8 +28347,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -28445,8 +28445,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -28543,8 +28543,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -28641,8 +28641,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -28739,8 +28739,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -28837,8 +28837,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -28935,8 +28935,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 1,
           "amount": 239999992438,
@@ -29033,8 +29033,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -29131,8 +29131,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -29229,8 +29229,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -29329,8 +29329,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -29427,8 +29427,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -29525,8 +29525,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -29623,8 +29623,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -29721,8 +29721,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -29819,8 +29819,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -29917,8 +29917,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 1,
           "amount": 13999964888,
@@ -30015,8 +30015,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -30113,8 +30113,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -30211,8 +30211,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -30309,8 +30309,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -30407,8 +30407,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -30505,8 +30505,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -30603,8 +30603,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -30701,8 +30701,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -30799,8 +30799,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -30897,8 +30897,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -30995,8 +30995,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -31093,8 +31093,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -31191,8 +31191,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -31289,8 +31289,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -31387,8 +31387,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -31485,8 +31485,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -31583,8 +31583,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -31681,8 +31681,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -31779,8 +31779,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -31877,8 +31877,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -31977,8 +31977,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32075,8 +32075,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32173,8 +32173,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32271,8 +32271,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32369,8 +32369,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32467,8 +32467,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32565,8 +32565,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32663,8 +32663,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32761,8 +32761,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32859,8 +32859,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32957,8 +32957,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -33055,8 +33055,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 1,
           "amount": 17299979278,
@@ -33153,8 +33153,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -33251,8 +33251,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -33349,8 +33349,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -33447,8 +33447,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -33545,8 +33545,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -33643,8 +33643,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -33741,8 +33741,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -33839,8 +33839,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -33937,8 +33937,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -34035,8 +34035,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -34133,8 +34133,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -34215,8 +34215,8 @@
       "recent": null,
       "recentPrev": null,
       "issuance": {
-        "windowFrom": "2025-10-16",
-        "windowTo": "2026-10-16",
+        "windowFrom": "2025-10-17",
+        "windowTo": "2026-10-17",
         "rights": {
           "count": 0,
           "amount": 0,
