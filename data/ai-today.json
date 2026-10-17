@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-16T22:52:37Z",
+  "generatedAt": "2026-10-17T22:21:39Z",
   "model": "claude-haiku-5-5",
   "kind": "gov-gdelt-v1",
   "markets": {
@@ -254,77 +254,84 @@
       ]
     },
     "crypto": {
-      "generatedAt": "2026-10-16T22:52:37Z",
+      "generatedAt": "2026-10-17T22:21:39Z",
       "items": [
         {
-          "headline": "비트코인 하루 0.56% 하락, 81,680.32",
-          "summary": "오늘 비트코인 가격은 81,680.32이고, 하루 변동률은 -0.56%입니다. 최근 7일 변동률은 -1.05%이며, 최근 30일은 +7.26%, 90일은 +26.06%입니다. 짧은 기간은 소폭 하락, 긴 기간은 상승한 흐름입니다.",
+          "headline": "비트코인 8만1천 달러대, 하루 0.41% 하락",
+          "summary": "기준일(2026년 10월 17일) 비트코인 가격은 81,165.25달러로, 하루 전보다 0.41% 낮습니다. 가격과 하루 변동률은 이 두 숫자로 확인할 수 있습니다. 아래 항목은 같은 자료의 다른 지표를 정리한 것입니다.",
           "source": "Yahoo Finance 시세 · Alternative.me",
           "link": "https://finance.yahoo.com/quote/BTC-USD",
-          "time": "2026-10-16T22:54:14Z"
+          "time": "2026-10-17T22:22:19Z"
         },
         {
-          "headline": "1년 고점 대비 28.65% 낮은 위치",
-          "summary": "1년 최고가는 114,472.45, 최저가는 58,558.86입니다. 현재 가격은 최고가보다 28.65% 낮고, 최저가보다 39.48% 높은 위치에 있습니다. 1년 가격 범위 안에서 현재 위치를 숫자로 확인할 수 있습니다.",
+          "headline": "비트코인 최근 흐름: 7일 하락, 30일·90일 상승",
+          "summary": "최근 7일 수익률은 -2.11%, 30일은 +6.23%, 90일은 +25.47%입니다. 단기는 내렸고 30일과 90일 기간은 올랐습니다. 같은 30일 기간 이더리움 수익률은 -2.44%입니다.",
           "source": "Yahoo Finance 시세 · Alternative.me",
           "link": "https://finance.yahoo.com/quote/BTC-USD",
-          "time": "2026-10-16T22:54:14Z"
+          "time": "2026-10-17T22:22:19Z"
         },
         {
-          "headline": "최근 30일 변동성은 1.98%",
-          "summary": "최근 30일 변동성은 1.98%로 표시되어 있습니다. 이 값은 가격 변동 폭을 가늠하는 참고 숫자입니다. 같은 자료의 하루 변동률 -0.56%와 함께 보면 오늘의 움직임을 최근 흐름과 비교할 수 있습니다.",
+          "headline": "1년 고점 대비 29% 낮고 저점보다 38% 높아",
+          "summary": "1년 고점은 114,472.45달러, 저점은 58,558.86달러입니다. 현재 가격은 고점보다 29.10% 낮고, 저점보다 38.60% 높은 위치에 있습니다. 두 기준을 함께 보면 가격이 고점과 저점 사이 어디쯤 있는지 알 수 있습니다.",
           "source": "Yahoo Finance 시세 · Alternative.me",
           "link": "https://finance.yahoo.com/quote/BTC-USD",
-          "time": "2026-10-16T22:54:14Z"
+          "time": "2026-10-17T22:22:19Z"
         },
         {
-          "headline": "공포탐욕지수 63, 전날 53에서 상승",
-          "summary": "공포탐욕지수는 63으로 '탐욕(Greed)' 단계입니다. 전날 지수는 53이었습니다. 지수 값은 자료에 적힌 숫자 그대로이며, 시장 심리를 가늠하는 참고 지표로 볼 수 있습니다.",
+          "headline": "최근 30일 변동성 지표는 1.98로 집계됐습니다",
+          "summary": "자료에 제시된 최근 30일 변동성 지표는 1.98입니다. 이 자료에는 지표의 단위나 산출 기준 설명이 없어, 숫자 그대로만 전합니다. 같은 기간 30일 가격 수익률은 +6.23%입니다.",
           "source": "Yahoo Finance 시세 · Alternative.me",
           "link": "https://finance.yahoo.com/quote/BTC-USD",
-          "time": "2026-10-16T22:54:14Z"
+          "time": "2026-10-17T22:22:19Z"
         },
         {
-          "headline": "이더리움 30일 +0.20%, 비트코인과 비교",
-          "summary": "이더리움 가격은 2,420.91이고 최근 30일 변동률은 +0.20%입니다. 같은 기간 비트코인 30일 변동률은 +7.26%였습니다. 두 자산의 30일 흐름 차이를 숫자로 확인할 수 있습니다.",
+          "headline": "공포탐욕지수 55, 탐욕 구간으로 전날보다 낮아",
+          "summary": "공포탐욕지수는 55이며 라벨은 'Greed(탐욕)'입니다. 전날 지수는 63이었습니다. 이더리움은 2,387.49달러이고 30일 수익률은 -2.44%로, 비트코인 30일 수익률 +6.23%와 방향이 다릅니다.",
           "source": "Yahoo Finance 시세 · Alternative.me",
           "link": "https://finance.yahoo.com/quote/BTC-USD",
-          "time": "2026-10-16T22:54:14Z"
+          "time": "2026-10-17T22:22:19Z"
         }
       ],
       "briefing": {
         "sections": [
           {
             "title": "비트코인 시세",
-            "body": "기준일(2026-10-16) 비트코인은 **81,680.32달러**로, 하루 전보다 **0.56% 하락**했습니다. 최근 7일 기준으로는 1.05% 내렸지만, 30일 기준으로는 **7.26% 상승**, 90일 기준으로는 **26.06% 상승**했습니다. 52주 최고가(114,472달러)보다는 28.65% 낮고, 52주 최저가(58,559달러)보다는 39.48% 높은 수준입니다. 이더리움은 2,420.91달러로 30일간 19.83% 올랐습니다."
+            "body": "비트코인은 현재 **81,165달러**로 하루 전보다 0.41% 내렸습니다. 최근 7일간은 2.11% 하락했지만, 30일간 6.23%, 90일간 25.47% 올랐습니다. 52주 최고가보다는 **29.10% 낮고**, 52주 최저가보다는 **38.60% 높은** 수준입니다. 같은 기간 이더리움은 2,387.49달러로 30일 전보다 2.44% 낮습니다."
           },
           {
             "title": "심리·지표",
-            "body": "공포·탐욕 지수는 **63으로 '탐욕'(Greed) 구간**에 들어가 있으며, 전날의 53에서 올랐습니다. 이 지수는 시장 참여자들의 심리 상태를 0~100으로 나타낸 참고 지표입니다. 30일 변동성 지표는 **1.98**로 집계됐습니다."
+            "body": "공포·탐욕 지수는 **55(탐욕)**로 탐욕 구간에 머물러 있습니다. 다만 전날 63보다 **8포인트 낮아져** 탐욕의 정도가 다소 약해졌습니다."
           }
         ]
       },
       "headlines": [
         {
-          "title": "XRP ETF Inflows - Bitcoin Funds Bleed -Can XRP Reclaim $1.40?",
-          "source": "finanznachrichten.de",
-          "link": "https://www.finanznachrichten.de/nachrichten-2026-10/69860888-xrp-etf-inflows-bitcoin-funds-bleed-can-xrp-reclaim-dollar-1-40-385.htm",
-          "time": "2026-10-16T17:00:00Z",
-          "titleKo": "XRP ETF 자금 유입, 비트코인 펀드는 자금 이탈 - XRP가 1.40달러를 되찾을 수 있을까?"
+          "title": "Experts Weigh Impact of Crypto Regulations on Adoption – THISDAYLIVE",
+          "source": "thisdaylive.com",
+          "link": "https://www.thisdaylive.com/2026/10/17/experts-weigh-impact-of-crypto-regulations-on-adoption/",
+          "time": "2026-10-17T01:30:00Z",
+          "titleKo": "암호화폐 규제가 도입에 미치는 영향에 대해 전문가들이 분석하다 – THISDAYLIVE"
         },
         {
-          "title": "CME Is Launching Uniswap and Bitcoin Cash Futures. Do Futures Actually Move Prices?",
-          "source": "aol.com",
-          "link": "https://www.aol.com/articles/cme-launching-uniswap-bitcoin-cash-100030000.html",
-          "time": "2026-10-16T11:00:00Z",
-          "titleKo": "CME, 유니스왑 및 비트코인캐시 선물 출시 예정… 선물이 실제로 가격을 움직일까?"
+          "title": "Don't Let a Crypto Inheritance Get Stuck on the Blockchain",
+          "source": "wired.com",
+          "link": "https://www.wired.com/story/crypto-inheritance-how-to/",
+          "time": "2026-10-17T13:30:00Z",
+          "titleKo": "블록체인에 막히지 않도록 암호화폐 상속 준비하기"
         },
         {
-          "title": "Coinbase Lays Out How It Thinks Bitcoin Should Prepare for the Quantum Threat",
-          "source": "aol.com",
-          "link": "https://www.aol.com/articles/coinbase-lays-thinks-bitcoin-prepare-002640000.html",
-          "time": "2026-10-16T02:00:00Z",
-          "titleKo": "코인베이스, 양자 위협에 대비해 비트코인이 준비해야 할 방향 제시"
+          "title": "₹25 lakh robbery under guise of cryptocurrency deal; five arrested, ₹11.5 lakh recovered",
+          "source": "thehindu.com",
+          "link": "https://www.thehindu.com/news/national/telangana/25-lakh-robbery-under-guise-of-cryptocurrency-deal-five-arrested-115-lakh-recovered/article71596813.ece",
+          "time": "2026-10-17T19:30:00Z",
+          "titleKo": "암호화폐 거래를 가장한 2,500,000루피 강도 사건… 5명 체포, 1,150,000루피 회수"
+        },
+        {
+          "title": "SHIB and PEPE Made Meme Coin History - Could Apeing Be the Next",
+          "source": "openpr.com",
+          "link": "https://www.openpr.com/news/4664678/shib-and-pepe-made-meme-coin-history-could-apeing-be-the-next",
+          "time": "2026-10-17T07:30:00Z",
+          "titleKo": "SHIB와 PEPE가 밈코인 역사를 새로 쓰다 – 다음은 '아핑'일까?"
         }
       ]
     }
