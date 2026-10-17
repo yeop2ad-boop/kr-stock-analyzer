@@ -1,5 +1,53 @@
 [
   {
+    "id": "ff71041f971e",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "RF 테스트를 위한 소형 아날로그 신호 발생기의 활용",
+    "originalTitle": "Compact Analog Signal Generators for Fast RF Testing",
+    "link": "https://content.knowledgehub.wiley.com/fast-rf-device-testing-with-analog-sources-a-practical-guide-to-amplifier-and-receiver-characterization/",
+    "summary": "소형 아날로그 신호 발생기가 RF 및 마이크로파 엔지니어들의 증폭기와 수신기 테스트에 어떻게 활용되는지를 다룬 실용 가이드이다. 이 백서는 이득과 왜곡 측정을 포함한 핵심 증폭기 및 수신기 테스트 작업을 신속하게 수행할 수 있도록 소형 아날로그 신호 발생기의 역할을 설명한다. RF 테스트 엔지니어와 기술자들이 컴팩트한 신호 발생 장비를 통해 더 효율적인 측정과 특성화를 수행할 수 있는 실제 적용 방법을 제시한다.",
+    "image": "data/techinsight-images/ff71041f971e.webp",
+    "publishedAt": "2026-10-15T10:00:04.000Z",
+    "createdAt": "2026-10-17T23:04:29.883Z"
+  },
+  {
+    "id": "f5f0086a8065",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "숨겨진 전력 절감 장치, 미국 전력망에 기가와트 규모의 여유 전력 확보할 수 있어",
+    "originalTitle": "This Hidden Device Could Free Up Gigawatts of Grid Power",
+    "link": "https://spectrum.ieee.org/variable-frequency-drives",
+    "summary": "미국 경제 전역의 5천만 개 전동모터는 전체 전력 수요의 3분의 1에 해당하는 전기를 소비하지만 실제 필요량보다 훨씬 많은 에너지를 낭비하고 있다. 변주파수드라이브(VFD)라는 전자 제어장치를 설치하면 모터의 에너지 사용을 40~60% 감소시킬 수 있으나 산업시설의 16%, 상업용 모터의 4%만 이를 채택하고 있다. VFD 기술의 도입을 확대하면 데이터센터와 전기자동차 같은 대형 전력 사용처를 위해 전력망 용량을 확보할 수 있고 산업의 전기화 비용도 절감할 수 있다. 최근 VFD 기술은 더욱 정교해지고 설치 비용도 낮아져 연방 정부와 전력회사의 재정 지원과 효율 기준 강화를 통해 광범위한 보급이 충분히 가능해진 상태다.",
+    "image": "data/techinsight-images/f5f0086a8065.webp",
+    "publishedAt": "2026-10-17T13:00:02.000Z",
+    "createdAt": "2026-10-17T23:04:11.872Z"
+  },
+  {
+    "id": "bb62f8b7f627",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "망막변성증 환자의 시력을 되찾아주는 망막 임플란트 기술",
+    "originalTitle": "This implant can restore sight for patients with macular degeneration",
+    "link": "https://www.technologyreview.com/2026/10/16/1145840/prima-implant-restores-sight-macular-degeneration-patients/",
+    "summary": "지리적 위축이라 불리는 진행성 황반변성으로 인해 망막 세포가 손상된 환자들을 위해 PRIMA 시스템이 개발되었다. 이 시스템은 망막 임플란트와 카메라 장착 안경을 결합하여 시력 복구를 가능하게 하며, 유럽에서 승인받았고 미국의 FDA 승인을 기다리고 있다. 안경의 카메라가 영상을 포착하면 휴대용 프로세서가 이를 근적외선 신호로 변환하고, 안경의 레이저 프로젝터가 378개 픽셀로 이루어진 망막 임플란트에 신호를 전송한다. 각 픽셀의 광전지가 빛을 전류로 변환하면서 동시에 칩에 전력을 공급하므로 별도의 배터리가 필요 없다. 훈련 후 80% 이상의 사용자가 읽기, 십자말풀이, 휴대폰 사용이 가능해졌다.",
+    "image": "data/techinsight-images/bb62f8b7f627.webp",
+    "publishedAt": "2026-10-16T09:00:00.000Z",
+    "createdAt": "2026-10-17T23:04:10.654Z"
+  },
+  {
+    "id": "284c47b12cd5",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "사랑은 인프라다",
+    "originalTitle": "Love is infrastructure",
+    "link": "https://www.technologyreview.com/2026/10/16/1145845/love-is-infrastructure-fiction-charlie-jane-anders/",
+    "summary": "자아를 가진 두 도시 메인스프링과 세인트 바나바스는 처음엔 서로를 무시하다가 지리학자 모임을 유치하기 위해 경쟁하면서 만난다. 주민들의 일상적인 투표와 제안들이 모여 두 도시가 자의식을 갖춘 생명체로 진화하게 되고, 도서관 사서 산디나 바텐더 레이포드 같은 주민들의 지속적인 관찰과 의견 제시가 도시의 사고를 형성하는 기반이 된다. 도시는 주민들의 목소리를 통해 더 나은 공간으로 개선되며, 결국 개인의 작은 참여와 돌봄이 모여 도시 전체를 움직이는 거대한 힘이 된다는 메시지를 담고 있다.",
+    "image": "data/techinsight-images/284c47b12cd5.webp",
+    "publishedAt": "2026-10-16T09:00:00.000Z",
+    "createdAt": "2026-10-17T23:04:08.451Z"
+  },
+  {
     "id": "62145d24f47c",
     "sourceKey": "ieee",
     "source": "IEEE Spectrum",
