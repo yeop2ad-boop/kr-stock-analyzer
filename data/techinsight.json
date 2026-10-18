@@ -1,5 +1,53 @@
 [
   {
+    "id": "001c1dd2389f",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "휴머노이드 로봇의 전문적 움직임: 적응형 동작 계획 및 추적 기술",
+    "originalTitle": "Learning to Play Like a Pro: Adaptive Motion Planning and Tracking for Humanoid Robots",
+    "link": "https://content.knowledgehub.wiley.com/learning-to-play-like-a-pro-adaptive-motion-planning-and-tracking-for-humanoid-robots/",
+    "summary": "이 백서는 휴머노이드 로봇이 인간 수준의 운동 능력을 습득하기 위한 적응형 동작 계획 및 추적 기술을 다룬다. 로봇이 복잡한 신체 움직임을 학습하고 실시간으로 조정할 수 있는 방법론을 제시한다. 이러한 기술은 로봇의 동작을 더욱 자연스럽고 효율적으로 만들어 다양한 실환경 작업 수행을 가능하게 한다. 머신러닝과 제어 이론을 결합한 접근 방식으로 로봇의 적응 능력을 향상시킨다. 결과적으로 휴머노이드 로봇이 전문가 수준의 정밀한 동작을 수행할 수 있게 된다.",
+    "image": "data/techinsight-images/001c1dd2389f.webp",
+    "publishedAt": "2026-10-12T10:00:03.000Z",
+    "createdAt": "2026-10-18T23:04:34.807Z"
+  },
+  {
+    "id": "36209e2ea5ff",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "반려동물과의 이별을 거부하는 당신을 위한 생명공학 솔루션",
+    "originalTitle": "Can’t bear to say goodbye to your pet? Biotech’s got you covered.",
+    "link": "https://www.technologyreview.com/2026/10/16/1146766/pet-biotech-longevity-cloning-cryonics/",
+    "summary": "반려동물의 수명을 연장하려는 수요가 증가하면서 제약, 복제, 동결보존 등 다양한 생명공학 기술이 등장하고 있다. 로열(Loyal)을 비롯한 여러 바이오테크 기업들은 개와 고양이의 노화 관련 질병을 치료하는 장수 약물 개발에 나서고 있으며, 비아겐 펫츠 같은 회사는 $50,000에 반려동물 복제 서비스를 제공하고 있다. 펫 복제와 동결보존 기술이 애완동물 상실의 슬픔을 달래는 방법이 될 수 있지만, 특히 아이들에게는 죽음이 피할 수 없는 자연현상임을 배우는 기회를 빼앗을 수 있다는 윤리적 우려가 제기된다. 장수 약물은 반려동물의 건강을 개선하는 긍정적인 선택지가 될 수 있지만, 복제나 동결보존은 죽음의 최종성을 부정하고 개인의 대체 가능성을 암시한다는 점에서 신중한 검토가 필요하다.",
+    "image": "data/techinsight-images/36209e2ea5ff.webp",
+    "publishedAt": "2026-10-16T09:00:00.000Z",
+    "createdAt": "2026-10-18T23:04:17.414Z"
+  },
+  {
+    "id": "5a7f7575a820",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "미국 최초 상용급 향상 지열발전소 본격 가동",
+    "originalTitle": "First Utility-Scale Enhanced Geothermal Plant Goes Live",
+    "link": "https://spectrum.ieee.org/fervo-cape-station-geothermal",
+    "summary": "페르보 에너지가 유타주에 건설한 케이프 스테이션 지열발전소의 첫 번째 33메가와트 발전 단위가 9월 24일 전력망에 연결되어 상용 운영을 시작했다. 기존 천연 열수와 증기를 이용하는 전통 지열발전과 달리 페르보는 석유·가스 채굴 기술을 활용해 지하 암석에 인공 저수지를 조성하는 차세대 기술을 적용했다. 최종적으로 500메가와트 규모로 확대될 이 프로젝트는 구글과의 새로운 계약으로 지원되며 2028년까지 단계적으로 가동될 예정이다. 현재 미국 전력 생산의 0.4%에 불과한 지열에너지의 비중을 높이기 위해서는 초기 시추 비용 절감과 규제 개선 등 여러 과제를 해결해야 한다. 이번 성공은 탄소 없는 안정적인 전력 공급원으로서 지열에너지의 잠재력을 입증하는 중요한 이정표가 되고 있다.",
+    "image": "data/techinsight-images/5a7f7575a820.webp",
+    "publishedAt": "2026-10-12T13:00:02.000Z",
+    "createdAt": "2026-10-18T23:04:16.722Z"
+  },
+  {
+    "id": "bdad458aadf3",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "아이들의 소셜미디어 우회 행동은 막아야 할 문제가 아니다",
+    "originalTitle": "Kids are outsmarting social media bans. That’s not a problem we need to solve.",
+    "link": "https://www.technologyreview.com/2026/10/16/1146834/kids-are-outsmarting-social-media-bans-thats-not-a-problem-we-need-to-solve/",
+    "summary": "전 세계적으로 미성년자의 소셜미디어 접근을 제한하는 정책이 확산하고 있지만, 호주의 사례에서 보듯 십대들은 쉽게 이러한 규제를 우회하고 있다. 규제를 강화하려는 시도는 오히려 역효과를 초래해 아이들을 더 위험한 미검증 플랫폼으로 몰아낼 수 있다. 많은 부모들이 자녀의 소셜미디어 접근을 돕는 것이 책임 있는 양육이라 믿으며, 나이 확인을 위한 개인정보 수집은 모든 사용자의 보안을 위협한다. 정부는 나이 제한보다 기업의 데이터 수집 제한이나 가족이 직접 통제할 수 있는 도구 제공과 같은 더 실질적인 정책을 추진해야 한다.",
+    "image": "data/techinsight-images/bdad458aadf3.webp",
+    "publishedAt": "2026-10-16T07:56:32.000Z",
+    "createdAt": "2026-10-18T23:04:14.108Z"
+  },
+  {
     "id": "ff71041f971e",
     "sourceKey": "ieee",
     "source": "IEEE Spectrum",
