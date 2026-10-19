@@ -336,8 +336,8 @@ const MAP_VIEWS = {
   // custom(ETF·코인)과 달리 필터 칩은 주식 보기 그대로 전부 쓴다.
   // 2026-09-14 사용자 요청: IPO도 시가총액 상위 200개만(한국IPO200·미국IPO200) — IPO_VIEW_LIMIT 참고
   // 2026-10-06 사용자 요청: "IPO200" → "신규상장200", 한국·미국은 국기 이모지로 구분(국기 마크와 겹치지 않게 mark 없음)
-  krIpo: { label: "🇰🇷 신규상장200", market: "domestic", ipo: "kr" },
-  usIpo: { label: "🇺🇸 신규상장200", market: "overseas", ipo: "us" },
+  krIpo: { label: "신규상장200", mark: "kr", market: "domestic", ipo: "kr" }, // 2026-10-19: 글자 KR로 깨져 보이는 국기 이모지 대신 다른 보기와 같은 국기 마크
+  usIpo: { label: "신규상장200", mark: "us", market: "overseas", ipo: "us" },
 };
 // IPO 지도에 올릴 종목 수 — 데이터 파일(ipo-map.js)은 S리포트 IPO 비교군으로도 쓰여 전체를 그대로 두고, 지도에서만 시총 상위로 자름
 const IPO_VIEW_LIMIT = 200;
@@ -1538,6 +1538,33 @@ function updateSheetLiveValues(symbol) {
     .catch(() => {});
 }
 
+// 시트의 "거래대금" = 1일 거래대금 ÷ 20거래일 거래대금(몇 배). 장중엔 같은 시각까지 비교(지도 "대금" 모드와 같은 값)
+async function updateSheetVolRatio(d) {
+  const sym = d.symbol;
+  const el = () => (currentSheetSymbol === sym ? document.getElementById("sheetVolValue") : null);
+  try {
+    await loadVolProfile();
+    let c = ACTIVE_DATA.companies.find((x) => x.symbol === sym) || d;
+    if (!c.volLive) {
+      // 아직 실시간 거래대금이 없는 보기(ETF·코인 등) — 이 종목 하나만 워커에 물어 채움
+      const res = await fetch(`https://us-stock.yeop2ad.workers.dev/day-vals?symbols=${encodeURIComponent(sym)}`);
+      const data = res.ok ? await res.json() : null;
+      const v = data && data.vals && data.vals[sym];
+      if (v > 0) {
+        c.dollarVolume = v;
+        c.volLive = true;
+      }
+    }
+    const r = volRatioOf(c);
+    const node = el();
+    if (!node) return;
+    node.textContent = Number.isFinite(r) ? fmtVolRatio(r) : "-";
+    node.style.color = Number.isFinite(r) ? volTextColor(r) : "";
+  } catch {
+    const node = el();
+    if (node) node.textContent = "-";
+  }
+}
 function openCompanySheet(d) {
   currentSheetSymbol = d.symbol;
   currentSheetCurrency = d.currency || (ACTIVE_MARKET === "domestic" ? "KRW" : "USD");
@@ -1580,6 +1607,10 @@ function openCompanySheet(d) {
         <div class="sheet-stat-value" id="sheetChangeValue" style="color:${chgTextColor};">${chgText}</div>
       </div>
       <div>
+        <div class="sheet-stat-label">거래대금</div>
+        <div class="sheet-stat-value" id="sheetVolValue">-</div>
+      </div>
+      <div>
         <div class="sheet-stat-label">섹터</div>
         <div class="sheet-stat-value">${d.sectorKo}</div>
       </div>
@@ -1590,6 +1621,7 @@ function openCompanySheet(d) {
   // 오래된 값일 수 있던 문제 해결(레이아웃은 기존 그대로, 숫자만 실시간 반영). 시트가 열려있는 동안은
   // refreshAllBubbleColors()가 지도 색상을 새로고침할 때마다 updateSheetLiveValues가 다시 호출되어 계속 동기화됨
   updateSheetLiveValues(d.symbol);
+  updateSheetVolRatio(d);
   document.getElementById("sheetCloseBtn").addEventListener("click", closeCompanySheet);
   const watchBtn = document.getElementById("sheetWatchBtn");
   watchBtn.addEventListener("click", (e) => {
@@ -1936,21 +1968,19 @@ function buildMetrics(market) {
       domainMax: 100,
     },
     popularStocks: {
-      label: "거래대금",
+      label: "거래대금 증감",
       hasData: true,
-      needsLive: !isKr,
-      // 순위를 "상위 몇 %"로 환산 — 축소/전체보기와 무관하게 항상 상위 1%~100% 스케일
-      // (1위가 1% 미만이 되면 전체 범위에서도 잘려나가므로 근소 1%로 클램프)
+      needsLive: true,
+      // 2026-10-19 사용자 요청: 거래대금은 순위가 아니라 "1일 거래대금 증감"(오늘 ÷ 직전 20거래일 평균, 몇 배) — 대금 버튼과 같은 값.
+      // 5배 이상은 5배로 묶어 슬라이더를 0~5배로 고정
       get: (c) => {
-        const rank = popularRank.map.get(c.symbol);
-        const total = popularRank.map.size;
-        if (!rank || !total) return undefined;
-        return Math.max(1, (rank / total) * 100);
+        const r = volRatioOf(c);
+        return Number.isFinite(r) ? Math.min(5, r) : undefined;
       },
-      fmt: (v) => `상위 ${Math.max(1, Math.round(v))}%`,
-      fixedDomain: [1, 100],
-      refreshRank: popularRank.refresh,
-      getRankCount: () => popularRank.map.size,
+      fmt: (v) => (v >= 5 ? "5배↑" : `${v.toFixed(1)}배`),
+      fixedDomain: [0, 5],
+      refreshRank: () => {},
+      getRankCount: () => ACTIVE_DATA.companies.filter((c) => Number.isFinite(volRatioOf(c))).length,
     },
     // 본체(app.js)의 computeAttractivenessScore·computeRiskScore와 동일 공식으로 배치 계산해둔 값
     // (sector-map/scripts/fetch-momentum-scores.ps1, data/*-sectors.json에 pressureScore/stabilityScore로 저장)
@@ -2212,7 +2242,7 @@ const METRIC_DESCS = {
   ret10yAvg: "최근 10년 연복리 수익률(CAGR) — 매년 평균 몇 %씩 올랐는지예요.\n높을수록 오래 크게 오른 종목이라는 의미예요.",
   revenueGrowth: "최근 분기 매출 ÷ 1년 전 같은 분기 매출 − 1이에요.\n높을수록 사업이 빠르게 커지고 있다는 의미예요.",
   changePct: "오늘 주가 ÷ 전일 종가 − 1이에요.\n높을수록 오늘 많이 올랐다는 의미예요.",
-  popularStocks: "오늘 거래대금(사고판 금액) 순위예요.\n상위일수록 돈과 관심이 몰렸다는 의미예요.",
+  popularStocks: "1일 거래대금 ÷ 20거래일 거래대금이에요(장중에는 같은 시각까지 비교).\n클수록 평소보다 돈이 크게 몰렸다는 의미예요.",
   rsiWeekly: "주간 RSI(14) — 최근 14주 상승폭 ÷ (상승폭+하락폭) × 100이에요.\n높을수록 과열(70↑), 낮을수록 침체(30↓)라는 의미예요.",
   per: "주가 ÷ 주당순이익(EPS)이에요.\n높을수록 이익 대비 비싸게 거래된다는 의미예요.",
   dividendYield: "최근 1년 배당금 ÷ 현재 주가예요.\n높을수록 주가 대비 배당을 많이 준다는 의미예요.",
@@ -2257,6 +2287,13 @@ function openRangeSheet(key) {
   if (SCORE_INFO_CONTENT[key]) detailBtn.textContent = SCORE_INFO_CONTENT[key].button || "+자세히";
   quickSliderCtrl.refresh();
   rangeSheet.classList.add("open");
+  if (key === "popularStocks") {
+    // 거래대금 증감 슬라이더: 기준선(20거래일)과 실시간 거래대금이 준비되면 다시 그림
+    Promise.all([loadVolProfile(), ensureVolLive()]).then(() => {
+      if (quickSheetKey === "popularStocks") quickSliderCtrl.refresh();
+      applyAllFilters();
+    });
+  }
 }
 
 function closeRangeSheet() {

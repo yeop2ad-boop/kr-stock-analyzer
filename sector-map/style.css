@@ -1247,3 +1247,5 @@ body[data-map-view-kind="asset"] .metric-chip[data-metric="changePct"]:not(.asse
 .bottom-nav-btn { color: #8b95a1; font-weight: 500; }
 .bottom-nav-btn svg, #bottomNavMoreBtn2 svg { width: 24px; height: 24px; margin: 5px 0 0; }
 .bottom-nav-btn.active { font-weight: 600; }
+/* 시트 통계 5칸(거래대금 추가, 2026-10-19) — 좁으면 줄바꿈 */
+.sheet-stats { gap: 10px 16px; flex-wrap: wrap; }
