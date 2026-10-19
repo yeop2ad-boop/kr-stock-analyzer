@@ -4309,3 +4309,4 @@ html, body, button, input, select, textarea { font-family: "Pretendard Variable"
 .srt-rd-self { fill: rgba(114, 48, 240, 0.18); stroke: #7230f0; }
 .srt-rd-dot { fill: #7230f0; }
 .srt-rd-dot.srt-tone-bad { fill: #e03131; }
+.srt-lg-self { background: #7230f0; }
