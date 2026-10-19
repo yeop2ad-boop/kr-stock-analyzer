@@ -1652,8 +1652,9 @@ mapViewport.addEventListener("pointerdown", (e) => {
 // ---------- 5) 상단/하단 임시 버튼 토스트 + 국내/해외 토글 ----------
 const toastEl = document.getElementById("toast");
 let toastTimer = null;
-function showToast(text) {
-  toastEl.textContent = text;
+function showToast(text, html) {
+  if (html) toastEl.innerHTML = html;
+  else toastEl.textContent = text;
   toastEl.classList.add("show");
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1600);
@@ -1776,6 +1777,19 @@ function applyVolMode() {
     }
   }
   mapWorld.classList.toggle("vol-mode", volModeOn);
+  // 왼쪽 아래 가로 막대 밑에 작게 "거래대금 증감"(대금 모드일 때만)
+  const blc = document.querySelector(".bottom-left-controls");
+  if (blc) {
+    let note = document.getElementById("volLegendNote");
+    if (!note) {
+      note = document.createElement("div");
+      note.id = "volLegendNote";
+      note.textContent = "거래대금 증감";
+      note.style.cssText = "font-size:10px;font-weight:600;color:var(--text-mid);margin:-2px 0 0 14px;display:none";
+      blc.appendChild(note);
+    }
+    note.style.display = volModeOn ? "block" : "none";
+  }
   for (const c of ACTIVE_DATA.companies) {
     const el = bubbleBySymbol.get(c.symbol);
     if (!el) continue;
@@ -1794,6 +1808,7 @@ function applyVolMode() {
       if (label) label.style.removeProperty("color");
     }
   }
+  if (changeModeOn) applyChangeModeToSectorBubbles(); // "등락" 버튼이 켜져 있으면 섹터 원 평균도 대금 기준으로 다시
 }
 // ETF·코인 보기용 실시간 거래대금 — 워커 /day-vals(현재가 × 당일 누적 거래량, 코인은 24시간 거래대금)
 async function refreshCustomVals() {
@@ -1852,9 +1867,8 @@ document.getElementById("volModeBtn").addEventListener("click", async (e) => {
     showToast("이 보기는 실시간 거래대금을 아직 받지 못했어요");
     return;
   }
-  const kinds = new Set(ACTIVE_DATA.companies.map((c) => volKindOf(c.symbol)));
-  const open = [...kinds].some((k) => volSession(k).open);
-  showToast(open ? "장 시작~지금까지 거래대금 ÷ 20일 같은 시각 평균" : "오늘 거래대금 ÷ 20일 평균");
+  // 2026-10-19: 멘트는 "1일 거래대금 / 20거래일 거래대금", 뒤쪽은 작게
+  showToast("", `1일 거래대금 <small style="font-size:0.78em;opacity:0.85;font-weight:500">/ 20거래일 거래대금</small>`);
 });
 
 // (원형/사각 토글 버튼은 2026-08-31 폐기 — 사각 고정)
@@ -2954,6 +2968,28 @@ function fmtIdxChg(pct) {
 
 // 지금 지도에 로드된 종목들의 changePercent(타일 색상과 동일한 소스)를 섹터별로 평균 — 별도 실시간 파이프라인을 새로 만들지 않고
 // 이미 로드된 스냅샷을 그대로 집계하므로 타일 색상과 항상 일치함. 섹터 영어 키(sectorNode.data.name) 기준으로 바로 찾아 쓰도록 Map으로 반환
+function computeSectorVolAverages() {
+  const useCap = sizeMode === "marketCap";
+  const acc = new Map();
+  for (const c of ACTIVE_DATA.companies) {
+    const r = volRatioOf(c);
+    if (!Number.isFinite(r)) continue;
+    const w = useCap ? (typeof c.marketCap === "number" && c.marketCap > 0 ? c.marketCap : 0) : 1;
+    if (!w) continue;
+    const sec = canonicalSector(c.sector);
+    const a = acc.get(sec) || { sum: 0, w: 0 };
+    a.sum += r * w;
+    a.w += w;
+    acc.set(sec, a);
+  }
+  const out = new Map();
+  acc.forEach((a, sec) => a.w > 0 && out.set(sec, a.sum / a.w));
+  return out;
+}
+function volTextColor(r) {
+  if (!Number.isFinite(r)) return "var(--text-mid)";
+  return r >= 2 ? "#b91c1c" : r >= 1.3 ? "#a16207" : r >= 0.75 ? "#374151" : "#6b7280";
+}
 function computeSectorAverages() {
   const bySector = new Map();
   for (const c of ACTIVE_DATA.companies) {
@@ -2973,7 +3009,7 @@ function computeSectorAverages() {
 // ---------- "등락" 버튼 — 누르면 섹터별 큰 원이 등락률에 따라 색이 채워지고 가운데 평균 등락률이 표시됨(+티커 테이프도 함께 토글) ----------
 let changeModeOn = false;
 function applyChangeModeToSectorBubbles() {
-  const avgBySector = changeModeOn ? computeSectorAverages() : null;
+  const avgBySector = changeModeOn ? (volModeOn ? computeSectorVolAverages() : computeSectorAverages()) : null;
   document.querySelectorAll(".sector-bubble").forEach((bubble) => {
     const changeEl = bubble.querySelector(".sector-bubble-change");
     if (!changeModeOn) {
@@ -2983,6 +3019,17 @@ function applyChangeModeToSectorBubbles() {
       return;
     }
     const avg = avgBySector.get(bubble.dataset.sector);
+    if (volModeOn) {
+      // 대금 모드: 섹터 원도 거래대금 증감(배수) 평균 — 색은 대금 색을 연하게 깔고 숫자는 진하게
+      const rgb = volColor(avg);
+      bubble.classList.add("sector-bubble-filled");
+      bubble.style.setProperty("--chg-fill", rgb ? `rgb(${mixRgb(CHG_BG, rgb, 0.4).join(",")})` : `rgb(${CHG_BG.join(",")})`);
+      if (changeEl) {
+        changeEl.textContent = avg === undefined ? "N/A" : fmtVolRatio(avg);
+        changeEl.style.color = volTextColor(avg);
+      }
+      return;
+    }
     const chg = changeColor(avg);
     bubble.classList.add("sector-bubble-filled");
     // 배경은 방향색의 은은한 틴트로만 깔고, 숫자는 진한 등락색으로 크게 — 같은 색 배경에 같은 색 글씨가 묻히지 않도록 분리
