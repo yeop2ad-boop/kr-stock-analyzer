@@ -47,6 +47,23 @@
   })();
 </script>
 <script>
+  // 2026-10-19: 처음 들어오면 메인 화면은 "시장"(지도) — 이 세션에서 아직 본체(별별순위·실적 등)를 연 적이 없으면 지도로 보낸다.
+  // 지도 쪽 하단 메뉴가 본체로 올 때 ntj_skip_map_redirect를 켜 두고, 여기서도 한 번 열리면 켜서 뒤로가기가 지도로 되튕기지 않게 함.
+  // 종목 링크(?ticker=)·딥링크(?open=)·끼워 넣기(?embed=)는 그대로 둔다.
+  (function () {
+    try {
+      var q = new URLSearchParams(location.search);
+      var passthrough = q.get("ticker") || q.get("open") || q.get("embed");
+      if (!passthrough && !sessionStorage.getItem("ntj_skip_map_redirect")) {
+        var kr = (Intl.DateTimeFormat().resolvedOptions().timeZone || "") === "Asia/Seoul" || /^ko/i.test(navigator.language || "");
+        location.replace("sector-map/index.html" + (kr ? "?market=domestic" : ""));
+        return;
+      }
+      sessionStorage.setItem("ntj_skip_map_redirect", "1");
+    } catch (e) {}
+  })();
+</script>
+<script>
   // 스톡챗 끼워 넣기 모드(?embed=1): 기본 시작 화면이 덮어쓰지 않게 표시하고, 부모 화면 테마(?theme=)에 맞춤
   (function () {
     try {
