@@ -4265,3 +4265,5 @@ body[data-header-tone="dark"] .fh-sec-chevron { color: #fff; }
 /* 과거분석 12개월 — 이번 달(진행 중) 칸은 흐리게 */
 .oxb-partial .oxb-bar { opacity: 0.55; }
 .oxb-note { margin: 6px 0 0; font-size: 11px; color: var(--muted); }
+/* 하단 메뉴 아이콘 정리(2026-10-19, 토스 느낌): 모두 같은 크기·같은 선 굵기, 더보기는 점 3개 */
+#bottomNavMoreBtn svg, #bottomNavMoreBtn2 svg { width: 26px; height: 26px; margin: 4px 0 0; }

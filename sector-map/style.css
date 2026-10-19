@@ -1232,3 +1232,5 @@ body[data-map-view-kind="asset"] .metric-chip[data-metric="changePct"]:not(.asse
 .map-add-name { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; color: var(--text-dark); }
 .map-add-toggle { border: 1.5px solid var(--navy); background: transparent; color: var(--navy); font-size: 13px; font-weight: 800; padding: 7px 14px; border-radius: 999px; cursor: pointer; }
 .map-add-toggle.on { background: var(--navy); color: #fff; }
+/* 하단 메뉴 아이콘 정리(2026-10-19, 토스 느낌): 모두 같은 크기·같은 선 굵기, 더보기는 점 3개 */
+#bottomNavMoreBtn svg, #bottomNavMoreBtn2 svg { width: 26px; height: 26px; margin: 4px 0 0; }
