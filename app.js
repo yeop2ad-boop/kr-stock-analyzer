@@ -2891,7 +2891,6 @@ document.querySelectorAll(".fh-tab").forEach((btn) => {
     }
     else if (key === "tab.earnings") showOnlyCarouselView(() => openEarningsTab());
     else if (key === "tab.ipo") showOnlyCarouselView(() => openIpoList());
-    else if (key === "tab.popular") showOnlyCarouselView(() => openPopularStocks());
     else if (key === "tab.autotrack") showOnlyCarouselView(() => openAutoTrack());
     else if (key === "tab.valuation") showOnlyCarouselView(() => activateRankingGroup("disclosure"));
     else if (key === "tab.trend")
@@ -3245,7 +3244,6 @@ const MORE_FEATURES = [
   { name: "별별순위", sub: "순위검색 · 투자군별 종목 순위", kw: ["순위", "순위검색", "랭킹", "승률", "상승률", "변동성", "과열도", "RSI", "배당", "시가총액", "거래대금", "per", "roe", "부채비율", "순이익", "매출", "52주"], run: () => bottomNavButtons.rank.click() },
   { name: "실적", sub: "실적 발표 일정과 결과", kw: ["실적발표", "어닝", "어닝쇼크", "분기", "매출", "영업이익", "발표"], run: () => bottomNavButtons.earn.click() },
   { name: "신기술", sub: "해외 연구기관 최신 기술 동향", kw: ["기술", "AI", "인공지능", "mit", "맥킨지", "ieee", "oecd", "테크", "트렌드"], run: () => bottomNavButtons.tech.click() },
-  { name: "인기종목", sub: "급등주 · 급락주 · 거래대금 상위", kw: ["급등", "급락", "급등주", "급락주", "인기", "핫", "거래대금", "상승", "하락", "오늘"], run: () => showOnlyCarouselView(() => openPopularStocks()) },
   { name: "관심종목", sub: "내 관심종목 · 수익률비교", kw: ["즐겨찾기", "별", "포트폴리오", "수익률비교", "관심", "내종목", "저장"], run: () => goHidden("morePanelWatchlistBtn") },
   { name: "자기진단 (투자성향)", sub: "내 투자성향을 30초 만에 확인", kw: ["성향", "진단", "테스트", "투자성향", "위험성향"], run: () => { goHidden("morePanelWatchlistBtn"); setTimeout(() => goHidden("selfTestOpenBtn"), 400); } },
   { name: "자동추적", sub: "신호등으로 보는 종목 점검", kw: ["신호등", "추적", "상관관계", "등급", "자동"], run: () => goHidden("morePanelAutoTrackBtn") },
@@ -3343,7 +3341,6 @@ const I18N = {
   "market.kr": { ko: "한국주식", en: "KR" },
   "market.us": { ko: "미국주식", en: "US" },
   "tab.watchlist": { ko: "관심종목", en: "Watchlist" },
-  "tab.popular": { ko: "인기종목", en: "Popular" },
   "tab.autotrack": { ko: "자동추적", en: "Auto Track" },
   "tab.search": { ko: "순위검색", en: "Rank Search" },
   "tab.earnings": { ko: "실적", en: "Earnings" }, // 2026-10-08 사용자 요청: 실적발표 → 실적
@@ -3473,15 +3470,8 @@ function setHeaderToneForSection(section) {
   document.body.dataset.headerTone = "dark";
 }
 
-// 좌상단 로고(2026-09-02 사용자 요청): 누르면 시작화면(한국주식 인기종목)으로 복귀
-document.querySelector(".fh-banner").addEventListener("click", () => {
-  appSectionMode = "stocks";
-  setAppMarketMode("kr");
-  setHeaderToneForSection("kr");
-  showOnlyCarouselView(() => openPopularStocks());
-  setBottomNavActive("kr");
-  syncSectionHeader();
-});
+// 좌상단 로고: 누르면 시작화면인 시장(지도)으로 (2026-10-20 인기종목 화면 삭제)
+document.querySelector(".fh-banner").addEventListener("click", () => el("bottomNavMapBtn").click());
 
 // 지도는 하단 네비에서 더보기 패널 항목으로 이동(2026-09-01) — 본체에서 보던 시장 그대로 지도 보기 연동
 el("morePanelMapBtn").addEventListener("click", () => {
@@ -3495,33 +3485,25 @@ bottomNavKrBtn.addEventListener("click", () => {
   appSectionMode = "stocks";
   setAppMarketMode("kr");
   setHeaderToneForSection("kr");
-  showOnlyCarouselView(() => openPopularStocks());
-  setBottomNavActive("kr");
-  syncSectionHeader();
+  openRankTab();
 });
 bottomNavUsBtn.addEventListener("click", () => {
   appSectionMode = "stocks";
   setAppMarketMode("us");
   setHeaderToneForSection("us");
-  showOnlyCarouselView(() => openPopularStocks());
-  setBottomNavActive("us");
-  syncSectionHeader();
+  openRankTab();
 });
 // 하단 ETF/비트코인(2026-09-01 신설) — 각자 섹션 모드로 전환하고 인기종목 화면부터 보여줌
 bottomNavButtons.etf.addEventListener("click", () => {
   appSectionMode = "etf";
   etfPopularRegion = getWatchlistActiveMarket() === "KR" ? "kr" : "us";
   setHeaderToneForSection("etf");
-  showOnlyCarouselView(() => openPopularStocks());
-  setBottomNavActive("etf");
-  syncSectionHeader();
+  openRankTab();
 });
 bottomNavButtons.crypto.addEventListener("click", () => {
   appSectionMode = "crypto";
   setHeaderToneForSection("crypto");
-  showOnlyCarouselView(() => openPopularStocks());
-  setBottomNavActive("crypto");
-  syncSectionHeader();
+  openRankTab();
 });
 // 간편검색은 하단 네비에서 더보기 패널 항목으로 이동(2026-08-31)
 el("morePanelWizardBtn").addEventListener("click", () => {
@@ -3771,7 +3753,25 @@ function closeCompanyPanel({ push = true } = {}) {
     document.title = document.documentElement.lang === "en" ? "MarketMap - Stocks, Earnings, Heatmap" : "마켓맵 - 주식정보, 실적, 히트맵";
   }
 }
-companyPanelCloseBtn.addEventListener("click", () => closeCompanyPanel());
+companyPanelCloseBtn.addEventListener("click", () => {
+  // 2026-10-20 사용자 요청: 상세에서 닫으면 인기종목이 아니라 원래 있던 곳으로.
+  // 지도 등 다른 화면에서 링크로 바로 열린 상세(앱 안에서 쌓은 기록이 없음)는 온 곳으로 되돌아가고, 온 곳을 알 수 없으면 별별순위
+  const landed = window.__landedOnDetail && !(history.state && history.state.fromApp);
+  if (landed) {
+    let internal = false;
+    try {
+      internal = !!document.referrer && new URL(document.referrer).origin === location.origin;
+    } catch {}
+    if (internal && history.length > 1) {
+      history.back();
+      return;
+    }
+    closeCompanyPanel();
+    openRankTab();
+    return;
+  }
+  closeCompanyPanel();
+});
 companyPanelSearchBtn.addEventListener("click", openSearchOverlay);
 companyPanelAlertBtn.addEventListener("click", () => alert("가격 알림 기능은 준비 중입니다."));
 
@@ -6293,7 +6293,6 @@ function syncSectionHeader() {
   ["tab.valuation", "tab.trend", "tab.insight", "tab.ipo", "tab.etfWinrate", "tab.etfReturn", "tab.etfVolatility", "tab.etfDividend", "tab.etfFee", "tab.cryptoCap", "tab.cryptoDrawdown"].forEach((k) =>
     showTab(k, false)
   );
-  showTab("tab.popular", true);
   showTab("tab.earnings", appSectionMode !== "etf" && appSectionMode !== "crypto"); // ETF·코인은 실적이 없어 탭 숨김(2026-10-08)
   // 2026-10-08 사용자 요청: 자동추적 탭 자리에 간편검색 — 자동추적은 더보기에서
   showTab("tab.autotrack", false);
@@ -6356,12 +6355,15 @@ document.addEventListener("click", (e) => {
   setTimeout(() => {
     // 2026-10-19: 하단 메뉴 딥링크(rank/earn/tech/wizard 등)도 기본 화면(인기종목)이 덮어쓰지 않게 — 안 그러면 별별순위·실적 위에 인기종목이 같이 떴다
     if (["watchlist", "etf", "crypto", "ranking-kr", "ranking-us", "ranking", "embed", "rank", "earn", "tech", "wizard", "market", "calendar", "more", "search"].includes(window.__deepLinkOpen)) return;
+    // 종목 링크(?ticker=)로 바로 들어오면 그 뒤에 아무 화면도 깔지 않는다 — 닫을 때 온 곳으로 돌려보냄(위 X 버튼 처리)
+    if (new URLSearchParams(location.search).get("ticker")) {
+      window.__landedOnDetail = true;
+      return;
+    }
     appSectionMode = "stocks";
     setAppMarketMode("kr");
-    setHeaderToneForSection("kr"); // 시작은 남색
-    openPopularStocks();
-    setBottomNavActive("kr");
-    syncSectionHeader();
+    setHeaderToneForSection("kr");
+    openRankTab(); // 2026-10-20: 인기종목 화면 삭제 — 시작 화면은 별별순위
   }, 0);
 
   const params = new URLSearchParams(location.search);
@@ -9109,6 +9111,10 @@ function fin2BodyHtml(data, period, currency) {
     if (data.compare && b.est && !b.nextEst && nx && !nx.est && nx.label === b.label) {
       const e = barParts(b);
       const a = barParts(nx);
+      // 2026-10-20 사용자 요청: 순이익 점선이 실제 주황 막대와 같은 높이로 겹쳐 보이던 문제 — 예상 순이익도 주황 막대와 같은 기준(막대 안 % = 순이익률)으로,
+      // 실제 매출 막대 높이 × 예상 순이익률 위치에 그린다(예상 매출 점선은 그대로 예상 매출 높이). 예: 실제 17% · 예상 10% → 점선이 주황 막대보다 낮게
+      const expMargin = Number.isFinite(b.ni) && Number.isFinite(b.rev) && b.rev > 0 ? (b.ni / b.rev) * 100 : null;
+      const expNiPx = expMargin !== null && expMargin > 0 ? Math.min(a.barPx, (a.barPx * expMargin) / 100) : 0;
       const top = Math.max(e.barPx, a.barPx);
       const g = (v) => (Number.isFinite(v) ? `${Math.abs(v) < 0.5 ? "0%" : `${Math.round(Math.abs(v))}%`}${v >= 0 ? "↑" : "↓"}` : "-");
       // 2026-10-08 사용자 요청(반으로 자르니 이상함): 실적 막대 하나만, 예상은 매출·순이익 높이에 빨간 가로 점선
@@ -9125,7 +9131,7 @@ function fin2BodyHtml(data, period, currency) {
             ${(() => {
               // 2026-10-19 사용자 요청: 순이익률(예상/실제)은 주황 막대·빨간 점선과 겹치지 않게 그 바로 위(노란 막대 안쪽)에
               const m = (x) => (Number.isFinite(x.ni) && x.rev > 0 ? `${Math.round((x.ni / x.rev) * 100)}%` : "-");
-              const niTop = Math.max(a.niPx || 0, e.niPx || 0); // 실제·예상 순이익 중 더 높은 쪽(주황 막대·빨간 점선) 위로
+              const niTop = Math.max(a.niPx || 0, expNiPx || 0); // 실제·예상 순이익 중 더 높은 쪽(주황 막대·빨간 점선) 위로
               const mv = (x) => (Number.isFinite(x.ni) && x.rev > 0 ? x.ni / x.rev : null);
               const actFirst = mv(nx) !== null && (mv(b) === null || mv(nx) > mv(b));
               const lines = actFirst ? [`실제 ${m(nx)}`, `예상 ${m(b)}`] : [`예상 ${m(b)}`, `실제 ${m(nx)}`];
@@ -9134,7 +9140,7 @@ function fin2BodyHtml(data, period, currency) {
             <span class="fin2-tip">예상 ${escapeHtml(fmtAmountUnified(b.rev, currency))}<br>실적 ${escapeHtml(fmtAmountUnified(nx.rev, currency))}</span>
             <div class="fin2-bar" style="height:${a.barPx.toFixed(1)}px">${a.niPx > 0 ? `<div class="fin2-ni" style="height:${a.niPx.toFixed(1)}px"></div>` : ""}</div>
             <i class="fin2-exp-line" style="bottom:${e.barPx.toFixed(1)}px" title="예상 매출"></i>
-            ${e.niPx > 0 ? `<i class="fin2-exp-line fin2-exp-ni" style="bottom:${e.niPx.toFixed(1)}px" title="예상 순이익"></i>` : ""}
+            ${expNiPx > 0 ? `<i class="fin2-exp-line fin2-exp-ni" style="bottom:${expNiPx.toFixed(1)}px" title="예상 순이익률"></i>` : ""}
           </div>
           <span class="fin2-xlabel">${escapeHtml(b.label)}<small>실제</small></span>
         </div>`);
@@ -13056,21 +13062,6 @@ el("popularResults").addEventListener("click", (e) => {
   runEtfPopular();
   runPopularMovers();
 });
-
-// 인기종목 화면 진입 — topranking 패널을 빌려 쓰되 서브내비(랭킹 칩)는 비우고 제목줄 탭만 활성화.
-// 섹션 모드에 따라 주식(상승압력+투자안정 TOP30)/ETF 랭킹/암호화폐 시세로 내용이 달라짐(2026-09-01)
-function openPopularStocks() {
-  switchTab(TAB_ORDER.indexOf("topranking"));
-  el("tabValuationBtn").classList.remove("active");
-  tabTrendBtn.classList.remove("active");
-  setCarouselViewTitle("tab.popular");
-  el("topRankingSubNav").innerHTML = "";
-  showRankingGroup("popular");
-  if (appSectionMode === "etf") runEtfPopular();
-  else if (appSectionMode === "crypto") runCryptoPopular();
-  else runPopularStocks();
-  runPopularMovers(); // 급등주·급락주(2026-10-07)
-}
 
 // ---------- IPO(2026-09-11 사용자 요청): 최근 5년 미국 신규 상장 종목 ----------
 // 값은 배치(sector-map/scripts/fetch-ipo-list.ps1)가 나스닥 IPO 캘린더 + 야후 월봉으로 만들어둔 data/ipo-list.json.
@@ -21135,6 +21126,17 @@ function handleBackNavigation() {
     return;
   }
   const ticker = new URLSearchParams(location.search).get("ticker");
+  // 2026-10-20: 지도 등 다른 화면에서 링크로 열린 상세 — 가드를 걷어낸 뒤 시작 항목(mmRoot)에 닿으면 한 번 더 뒤로 가서 온 곳으로 보냄
+  if (ticker && window.__landedOnDetail && history.state && history.state.mmRoot && !history.state.fromApp) {
+    let internal = false;
+    try {
+      internal = !!document.referrer && new URL(document.referrer).origin === location.origin;
+    } catch {}
+    if (internal) {
+      history.back();
+      return;
+    }
+  }
   if (ticker) {
     const panelOpen = companyPanel.style.display !== "none" && companyPanel.style.display !== "";
     if (!(panelOpen && currentDetailSymbol && currentDetailSymbol.toUpperCase() === ticker.toUpperCase())) navigateToTicker(ticker, { push: false });
