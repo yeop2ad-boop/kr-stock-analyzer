@@ -7877,7 +7877,23 @@ async function renderSReportMore(ticker, scoreMode, coreItems, group, self, curr
       })
     );
   }
-  const groups = specGroups.map((g) => ({ title: g.title, items: g.specs.map((s) => sReportMakeItem(s, values[s.key], group, currency, self.rsiAvg)) }));
+  // 거래대금 줄은 금액 대신 1일 거래대금 증감(몇 배) — 순위 비교군이 없어 값만 보여준다(2026-10-19)
+  let dvRatio;
+  if (!isAsset && specGroups.some((g) => g.specs.some((s) => s.key === "dv"))) {
+    try {
+      await volrLoad();
+      const dv = (await volrFetchDayVals([ticker]))[ticker];
+      dvRatio = volrRatio(ticker, dv);
+    } catch {}
+  }
+  const groups = specGroups.map((g) => ({
+    title: g.title,
+    items: g.specs.map((s) =>
+      s.key === "dv"
+        ? sReportMakeItem({ ...s, label: "거래대금 증감", unit: "times", fmt: (v) => fmtVolr(v) }, dvRatio, { ...(group || {}), dist: { ...((group && group.dist) || {}), dv: null } }, currency, self.rsiAvg)
+        : sReportMakeItem(s, values[s.key], group, currency, self.rsiAvg)
+    ),
+  }));
 
   // 요약 한 줄 — 상위 10%(🔥)·하위 10%(⚠️) 항목 모음
   const ranked = coreItems.concat(groups.flatMap((g) => g.items)).filter((it) => it.rank);
@@ -19034,6 +19050,81 @@ async function runTrendDividend() {
 }
 
 // ---------- 거래량(구 인기종목): 당일 거래대금(가격 × 거래량) 상위 20개, 접속 시 10개만 먼저 표시(옛 틀고정 "인기종목" 탭이 여기로 통합됨) ----------
+// ---------- 1일 거래대금 증감(배수) — 지도 "대금" 모드와 같은 계산(2026-10-19 사용자 요청: 거래대금은 모두 이 값으로) ----------
+// 오늘(장중엔 장 시작~지금) 거래대금 ÷ 직전 20거래일(같은 시각까지) 평균. 기준선은 data/volume-profile.json(하루 한 번 자동 계산).
+let volrProfile = null;
+let volrPromise = null;
+function volrLoad() {
+  if (!volrPromise) {
+    volrPromise = fetch(`data/volume-profile.json?d=${new Date().toISOString().slice(0, 13)}`, { cache: "no-cache" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => (volrProfile = d && d.v ? d : null))
+      .catch(() => null);
+  }
+  return volrPromise;
+}
+function volrKind(sym) {
+  if (/\.(KS|KQ)$/.test(sym)) return "kr";
+  if (/-(USD|KRW|USDT)$/.test(sym)) return "crypto";
+  return "us";
+}
+const VOLR_SESSION = { kr: { tz: "Asia/Seoul", start: 540, len: 390 }, us: { tz: "America/New_York", start: 570, len: 390 }, crypto: { tz: "UTC", start: 0, len: 1440 } };
+function volrPrevWeekday(dateStr) {
+  const d = new Date(`${dateStr}T00:00:00Z`);
+  do d.setUTCDate(d.getUTCDate() - 1);
+  while (d.getUTCDay() === 0 || d.getUTCDay() === 6);
+  return d.toISOString().slice(0, 10);
+}
+function volrSession(kind) {
+  const cfg = VOLR_SESSION[kind];
+  const parts = {};
+  new Intl.DateTimeFormat("en-CA", { timeZone: cfg.tz, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", weekday: "short", hour12: false })
+    .formatToParts(new Date())
+    .forEach((p) => (parts[p.type] = p.value));
+  const date = `${parts.year}-${parts.month}-${parts.day}`;
+  const mins = (Number(parts.hour) % 24) * 60 + Number(parts.minute);
+  if (kind === "crypto") return { date, elapsed: cfg.len, len: cfg.len };
+  if (parts.weekday === "Sat" || parts.weekday === "Sun") return { date: volrPrevWeekday(date), elapsed: cfg.len, len: cfg.len };
+  if (mins < cfg.start) return { date: volrPrevWeekday(date), elapsed: cfg.len, len: cfg.len };
+  if (mins >= cfg.start + cfg.len) return { date, elapsed: cfg.len, len: cfg.len };
+  return { date, elapsed: mins - cfg.start, len: cfg.len };
+}
+function volrInterp(arr, elapsed, len) {
+  if (elapsed >= len) return arr[arr.length - 1];
+  const i = Math.floor(elapsed / 60);
+  const lower = i === 0 ? 0 : arr[i - 1];
+  const upper = arr[i];
+  const span = Math.min(60 * (i + 1), len) - i * 60;
+  return lower + ((upper - lower) * (elapsed - i * 60)) / span;
+}
+// value = 오늘 지금까지 거래대금(현재가 × 당일 누적 거래량). 계산 못 하면 undefined
+function volrRatio(sym, value) {
+  const ent = volrProfile && volrProfile.v[sym];
+  if (!ent || !(value > 0)) return undefined;
+  const kind = volrKind(sym);
+  const ses = volrSession(kind);
+  const base = (volrProfile.asOf && volrProfile.asOf[kind]) === ses.date ? ent[0] : ent[1];
+  if (ses.elapsed < 10) return undefined;
+  const exp = volrInterp(base, ses.elapsed, ses.len);
+  return exp > 0 ? value / exp : undefined;
+}
+function fmtVolr(r) {
+  return Number.isFinite(r) ? `${r >= 10 ? r.toFixed(0) : r.toFixed(1)}배` : "N/A";
+}
+// 워커 /day-vals — 호출 하나에 바깥 요청 50개 한도라 45종목씩 나눠 동시에
+async function volrFetchDayVals(symbols) {
+  const out = {};
+  const chunks = [];
+  for (let i = 0; i < symbols.length; i += 45) chunks.push(symbols.slice(i, i + 45));
+  await mapWithConcurrency(chunks, 6, async (chunk) => {
+    try {
+      const res = await fetch(`https://us-stock.yeop2ad.workers.dev/day-vals?symbols=${encodeURIComponent(chunk.join(","))}`);
+      const data = res.ok ? await res.json() : null;
+      Object.assign(out, (data && data.vals) || {});
+    } catch {}
+  });
+  return out;
+}
 async function runTrendVolume() {
   setTrendActive(trendButtons.volume);
   trendResults.innerHTML = "";
@@ -19046,52 +19137,66 @@ async function runTrendVolume() {
     // 기본 스캔 규모(30개)와 맞춰 로딩 시간이 크게 늘지 않도록 함)
     // 2026-09-16 사용자 요청: 셋째 칸은 그 화면의 기준값 — 거래대금 순위이므로 거래대금을 그대로 보여준다
     // (예전엔 상승 압력 점수를 보여주느라 30종목 재무제표를 통째로 더 조회해 1분 넘게 걸렸다)
-    await renderKrRanking(getKrDailyChanges, "거래량", trendStatus, trendResults, {
-      mapFn: (list) => list.slice().sort((a, b) => (b.dollarVolume ?? 0) - (a.dollarVolume ?? 0)).slice(0, 30),
-      sortFn: (a, b) => (b.dollarVolume ?? 0) - (a.dollarVolume ?? 0),
-      metricHeaderHtml: `거래대금${THEAD_SUB("하루")}`,
-      metricCellFn: (r) => (Number.isFinite(r.dollarVolume) ? `<b class="rank-hl">${fmtAmountUnified(r.dollarVolume, "KRW")}</b>` : "N/A"),
-      prefixHtml: (rows) => volumeDateNoteHtml(rows),
-      noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 순위는 당일 거래대금(거래량 × 현재가) 기준이며, 코스피200+코스닥150(약 350종목) 중 상위 30개입니다. 투자 자문이 아닙니다.</p>`,
+    // 2026-10-19 사용자 요청: 거래대금 순위는 금액이 아니라 "1일 거래대금 증감"(1일 ÷ 20거래일, 몇 배) 기준
+    await volrLoad();
+    await renderKrRanking(getKrDailyChanges, "거래대금 증감", trendStatus, trendResults, {
+      mapFn: (list) =>
+        list
+          .map((r) => ({ ...r, volRatio: volrRatio(r.symbol, r.dollarVolume) }))
+          .filter((r) => Number.isFinite(r.volRatio))
+          .sort((a, b) => b.volRatio - a.volRatio)
+          .slice(0, 30),
+      sortFn: (a, b) => b.volRatio - a.volRatio,
+      metricHeaderHtml: `거래대금<br>증감`,
+      metricExplain: "1일 거래대금 ÷ 20거래일 거래대금 — 장중에는 장 시작부터 지금까지를 20일 같은 시각 평균과 비교해요.",
+      metricCellFn: (r) => `<b class="rank-hl">${fmtVolr(r.volRatio)}</b>`,
+      noteHtml: `<p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> 순위는 1일 거래대금 ÷ 20거래일 거래대금(몇 배) 기준이며, 코스피200+코스닥150(약 350종목) 중 상위 30개입니다. 투자 자문이 아닙니다.</p>`,
     });
     return;
   }
 
   trendStatus.style.display = "block";
-  trendStatus.textContent = "인기종목을 불러오는 중...";
+  trendStatus.textContent = "거래대금 증감을 계산하는 중...";
 
   try {
     const marketReturnsPromise = getMarketReturns();
-    const data = await yahooMostActive(50);
-    const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
-    if (quotes.length === 0) throw new Error("인기종목 데이터를 가져오지 못했습니다.");
-
-    const ranked = quotes
-      .filter((q) => q && q.symbol && q.regularMarketPrice !== undefined && q.regularMarketVolume !== undefined)
-      .map((q) => ({
-        symbol: q.symbol,
-        name: q.shortName || q.longName || q.symbol,
-        price: q.regularMarketPrice,
-        changePct: q.regularMarketChangePercent,
-        volume: q.regularMarketVolume,
-        dollarVolume: (q.regularMarketPrice || 0) * (q.regularMarketVolume || 0),
-        dollarVolumeAt: Number.isFinite(q.regularMarketTime) ? q.regularMarketTime : null, // 어느 거래일 값인지(2026-09-16)
-      }))
-      .sort((a, b) => b.dollarVolume - a.dollarVolume)
+    await volrLoad();
+    const uni = await getSReportUniverse(false);
+    const companies = (uni && uni.companies) || [];
+    if (!companies.length) throw new Error("S&P500 종목 목록을 가져오지 못했습니다.");
+    const syms = companies.map((c) => c.symbol);
+    const nameOf = new Map(companies.map((c) => [c.symbol, c.name]));
+    const vals = await volrFetchDayVals(syms);
+    const top = syms
+      .map((symbol) => ({ symbol, dollarVolume: vals[symbol], volRatio: volrRatio(symbol, vals[symbol]) }))
+      .filter((r) => Number.isFinite(r.volRatio))
+      .sort((x, y) => y.volRatio - x.volRatio)
       .slice(0, 20);
-
+    if (!top.length) throw new Error("거래대금 증감 데이터를 가져오지 못했습니다.");
+    // 현재가·등락률은 상위 20개만 따로 조회
+    await mapWithConcurrency(top, 5, async (r) => {
+      try {
+        const ch = await yahooChart(r.symbol, "5d", "1d");
+        const meta = ch && ch.chart && ch.chart.result && ch.chart.result[0] && ch.chart.result[0].meta;
+        r.price = meta ? meta.regularMarketPrice : null;
+        r.changePct = meta && Number.isFinite(meta.regularMarketChangePercent) ? meta.regularMarketChangePercent : null;
+        r.volume = meta ? meta.regularMarketVolume : null;
+        r.dollarVolumeAt = meta && Number.isFinite(meta.regularMarketTime) ? meta.regularMarketTime : null;
+      } catch {}
+    });
+    const ranked = top.filter((r) => Number.isFinite(r.price)).map((r) => ({ ...r, name: TICKER_TO_KOREAN_NAME[r.symbol] || nameOf.get(r.symbol) || r.symbol }));
     await scoreAndRenderMovers(ranked, marketReturnsPromise, {
       statusEl: trendStatus,
       resultsEl: trendResults,
-      rankNote: "순위는 거래대금(거래량 × 현재가 추정) 기준입니다.",
-      prefixHtml: volumeDateNoteHtml(ranked),
-      metric: { header: "거래대금<br>(하루)", cell: (r) => (Number.isFinite(r.dollarVolume) ? `<b class="rank-hl">${fmtCompactCurrency(r.dollarVolume, "USD")}</b>` : "N/A") },
+      rankNote: "순위는 1일 거래대금 ÷ 20거래일 거래대금(몇 배, S&P500 기준) 입니다.",
+      prefixHtml: "",
+      metric: { header: "거래대금<br>증감", cell: (r) => `<b class="rank-hl">${fmtVolr(r.volRatio)}</b>` },
       initialCount: 10,
       fullCount: 20,
-      capTotal: quotes.length, // 거래활발 상위 목록 중 20개만 표시 중이라는 경고(2026-09-03)
+      capTotal: syms.length,
     });
   } catch (err) {
-    trendStatus.textContent = `❌ ${err.message || "인기종목을 가져오지 못했습니다."}`;
+    trendStatus.textContent = `❌ ${err.message || "거래대금 증감을 가져오지 못했습니다."}`;
   }
 }
 
