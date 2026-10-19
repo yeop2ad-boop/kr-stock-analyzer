@@ -8046,9 +8046,9 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
       </div>
       <div class="summary-action-row">
         ${/* 2026-09-15 사용자 요청: 버튼 = 과거분석(12개월 승률 카드) · 미래예측 · 공포지수(코인은 알트시즌지수). S리포트는 버튼 대신 아래 요약 카드로 펼쳐 둠 */ ""}
-        <button type="button" class="summary-action-btn" id="tickerHistoricalToggleBtn" data-ticker="${escapeHtml(symbol)}">🕰️ 과거분석</button>
-        <button type="button" class="summary-action-btn" id="tickerFutureToggleBtn" data-ticker="${escapeHtml(symbol)}">🔮 미래예측</button>
-        <button type="button" class="summary-action-btn" id="tickerCrashToggleBtn" data-ticker="${escapeHtml(symbol)}">📉 52주 최대 하락폭</button>
+        <button type="button" class="summary-action-btn" id="tickerHistoricalToggleBtn" data-ticker="${escapeHtml(symbol)}">🕰️ 월간승률</button>
+        <button type="button" class="summary-action-btn" id="tickerFutureToggleBtn" data-ticker="${escapeHtml(symbol)}">🔮 계절성 예측</button>
+        <button type="button" class="summary-action-btn" id="tickerCrashToggleBtn" data-ticker="${escapeHtml(symbol)}">📉 급락 리스크</button>
         <button type="button" class="summary-action-btn" id="tickerDividendToggleBtn" style="display:none;">💰 배당</button>
         <button type="button" class="summary-action-btn" id="tickerFearToggleBtn" style="display:none;">${summaryAssetSection === "crypto" ? "🪙 알트시즌지수" : "😱 공포지수"}</button>
         ${/* 보유 종목은 버튼 대신 하위 탭 "보유종목"(주식의 매출액 자리)에 바로 펼쳐 둔다 — 2026-09-16 사용자 요청 */ ""}
