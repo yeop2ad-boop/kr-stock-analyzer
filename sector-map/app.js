@@ -3401,6 +3401,15 @@ setMapView(initialViewSafe, false).finally(() => {
   // 실시간 시세/색상은 loadMarket 내부에서 이어서 비동기로 불러오지만, 스플래시까지 그걸 기다리진 않음(본체와 동일한 패턴)
   const mapLoadingSplashEl = document.getElementById("mapLoadingSplash");
   if (mapLoadingSplashEl) mapLoadingSplashEl.style.display = "none";
+  // 본체 별별순위·실적·신기술·더보기의 별(★)에서 넘어오면 관심목록을 바로 열어줌(2026-10-20)
+  try {
+    const q = new URLSearchParams(window.location.search);
+    if (q.get("open") === "watchlist") {
+      q.delete("open");
+      history.replaceState(null, "", window.location.pathname + (q.toString() ? "?" + q.toString() : ""));
+      openWatchlistSheet();
+    }
+  } catch {}
 });
 
 // 국내/해외 전환 시 로고가 다시 느리게 뜨지 않도록 반대쪽 시장 로고를 미리 캐시에 받아둔다.

@@ -4310,3 +4310,8 @@ html, body, button, input, select, textarea { font-family: "Pretendard Variable"
 .srt-rd-dot { fill: #7230f0; }
 .srt-rd-dot.srt-tone-bad { fill: #e03131; }
 .srt-lg-self { background: #7230f0; }
+/* 신기술 막대 오른쪽의 돋보기·별(2026-10-20) — 메인 헤더와 같은 모양 */
+.tab-page-actions { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+.tab-page-actions .header-icon-btn { width: 30px; height: 30px; border-radius: 50%; color: #fff; }
+.tab-page-actions .header-icon-btn svg { width: 19px; height: 19px; }
+.tab-page-actions .header-icon-btn:active { background: rgba(255, 255, 255, 0.18); }
