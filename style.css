@@ -4282,3 +4282,15 @@ body[data-header-tone="dark"] .fixed-header { background: var(--brand); border-b
 .tab-page-bar { display: flex; align-items: center; gap: 10px; background: var(--brand); border-bottom: none; padding: calc(6px + env(safe-area-inset-top, 0px)) 14px 6px; min-height: 44px; box-sizing: border-box; }
 .tab-page-title { font-size: 17px; font-weight: 800; letter-spacing: -0.3px; color: #ffffff; }
 .tab-page-bar .fh-banner { cursor: default; }
+
+/* 신기술 보기 방식 버튼(요약 ▦ / 전체 ☰) + 요약 그리드(2026-10-19) */
+.tech-view-bar { display: flex; justify-content: flex-end; gap: 6px; margin: 0 0 8px; }
+.tech-view-btn { width: 36px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 9px; background: var(--bg); color: #8b95a1; cursor: pointer; }
+.tech-view-btn.active { color: var(--brand, #7230f0); border-color: var(--brand, #7230f0); background: rgba(114, 48, 240, 0.08); }
+.tech-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.tech-grid-card { display: flex; flex-direction: column; gap: 8px; padding: 0; border: none; background: none; text-align: left; color: var(--text); cursor: pointer; font-family: inherit; }
+.tech-grid-card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 12px; background: var(--subtle-fill); display: block; }
+.tech-grid-title { font-size: 13.5px; font-weight: 700; line-height: 1.4; letter-spacing: -0.2px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.tech-view-btn svg { width: 20px; height: 20px; display: block; flex: none; }
+.tech-grid-card { min-width: 0; width: 100%; }
+.tech-grid-title { white-space: normal; word-break: keep-all; overflow-wrap: anywhere; }

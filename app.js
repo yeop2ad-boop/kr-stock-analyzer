@@ -22384,6 +22384,54 @@ function openEarningsTab() {
   showRankingGroup("earnings");
   renderEarningsTab();
 }
+// ---------- 실적 화면 DB(2026-10-19 사용자 요청) ----------
+// 누를 때마다 종목마다 분기 재무를 새로 가져와서 늦었다 → 하루 두 번(GitHub Actions, scripts/build-earnings-view.js) 최근실적·예정 종목의
+// 매출 예상/실제와 분기 그래프 데이터를 미리 계산해 data/earnings-view.json에 저장해 두고, 화면은 그 파일 하나만 읽어 바로 그린다.
+// DB에 없는 종목만 예전처럼 그 자리에서 계산한다.
+let earningsDbPromise = null;
+function getEarningsDb() {
+  if (!earningsDbPromise) {
+    earningsDbPromise = fetch("data/earnings-view.json", { cache: "no-cache" })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+  }
+  return earningsDbPromise;
+}
+// 지금 보이는 시장의 '최근실적'(지난 7일)·'예정'(한국 3주·미국 2주) 종목 목록 — 화면과 DB 빌더가 같은 기준을 쓴다
+function earnWindowRows(cal, isKr) {
+  const src = (cal && (isKr ? cal.kr : cal.us)) || {};
+  const soon = [];
+  const done = [];
+  Object.entries(src).forEach(([sym, e]) => {
+    if (e.next) {
+      const d = -earnDaysSince(e.next);
+      if (d >= 0 && d <= (isKr ? 21 : 14)) soon.push({ symbol: sym, date: e.next, days: d, time: e.nextTime || "", est: !!e.nextEst });
+    }
+    if (e.last) {
+      const d = earnDaysSince(e.last);
+      if (d >= 0 && d <= 7) done.push({ symbol: sym, date: e.last, days: d });
+    }
+  });
+  return { soon, done };
+}
+window.__buildEarningsDb = async function () {
+  const cal = await getEarningsCal();
+  const out = { generatedAt: new Date().toISOString(), kr: {}, us: {} };
+  for (const isKr of [true, false]) {
+    const { soon, done } = earnWindowRows(cal, isKr);
+    const jobs = [...soon.map((r) => ({ ...r, kind: "soon" })), ...done.map((r) => ({ ...r, kind: "done" }))];
+    const store = isKr ? out.kr : out.us;
+    await mapWithConcurrency(jobs, 4, async (j) => {
+      try {
+        const data = j.kind === "done" ? (await earnCompareData(j.symbol, j.date)) || (await earnQuarterData(j.symbol)) : await earnQuarterData(j.symbol);
+        if (!data) return;
+        const rec = (store[j.symbol] = store[j.symbol] || {});
+        rec[j.kind] = j.kind === "done" ? { date: j.date, data } : { data };
+      } catch {}
+    });
+  }
+  return JSON.parse(JSON.stringify(out));
+};
 const earnShown = { soon: 10, done: 10 };
 let earnSeq = 0;
 async function renderEarningsTab() {
@@ -22397,23 +22445,18 @@ async function renderEarningsTab() {
   }
   const isKr = sec === "kr";
   box.innerHTML = `<p class="muted earn-empty">실적 일정을 불러오는 중...</p>`;
-  const [cal, uni] = await Promise.all([getEarningsCal(), getSReportUniverse(isKr).catch(() => null)]);
+  const [cal, uni, edb] = await Promise.all([getEarningsCal(), getSReportUniverse(isKr).catch(() => null), getEarningsDb()]);
   if (seq !== earnSeq) return;
   const names = new Map(((uni && uni.companies) || []).map((c) => [c.symbol, c.name]));
-  const src = (cal && (isKr ? cal.kr : cal.us)) || {};
-  const soon = [];
-  const done = [];
-  Object.entries(src).forEach(([sym, e]) => {
-    // 2026-10-08 사용자 요청: 발표 예정은 한국 3주 · 미국 2주까지 목록에(이름 옆 '예정' 마크는 그대로 7일 안만)
-    if (e.next) {
-      const d = -earnDaysSince(e.next);
-      if (d >= 0 && d <= (isKr ? 21 : 14)) soon.push({ symbol: sym, date: e.next, days: d, time: e.nextTime || "", est: !!e.nextEst });
-    }
-    if (e.last) {
-      const d = earnDaysSince(e.last);
-      if (d >= 0 && d <= 7) done.push({ symbol: sym, date: e.last, days: d });
-    }
-  });
+  // 2026-10-08 사용자 요청: 발표 예정은 한국 3주 · 미국 2주까지 목록에(이름 옆 '예정' 마크는 그대로 7일 안만)
+  const { soon, done } = earnWindowRows(cal, isKr);
+  const dbMap = (edb && (isKr ? edb.kr : edb.us)) || {};
+  // 미리 계산해 둔 값(DB) — 없으면 undefined, 화면이 그 자리에서 계산
+  const dbData = (sym, kind, date) => {
+    const rec = dbMap[sym] && dbMap[sym][kind];
+    if (!rec) return undefined;
+    return kind === "done" ? (rec.date === date ? rec.data : undefined) : rec.data;
+  };
   soon.sort((a, b) => a.date.localeCompare(b.date) || (names.get(a.symbol) || "").localeCompare(names.get(b.symbol) || ""));
   done.sort((a, b) => b.date.localeCompare(a.date) || (names.get(a.symbol) || "").localeCompare(names.get(b.symbol) || ""));
   const dow = (iso) => ["일", "월", "화", "수", "목", "금", "토"][new Date(iso + "T00:00:00").getDay()];
@@ -22427,6 +22470,10 @@ async function renderEarningsTab() {
     return `${earnPctHtml(n.exp, "예상", "rk-l1")}${n.stale ? `<span class="rk-l2 muted">실제 반영 전</span>` : earnPctHtml(n.act, "실제", "rk-l2")}`;
   };
   const revDone = new Map();
+  [...soon.map((r) => [r, "soon"]), ...done.map((r) => [r, "done"])].forEach(([r, k]) => {
+    const d = dbData(r.symbol, k, r.date);
+    if (d && !revDone.has(r.symbol)) revDone.set(r.symbol, d);
+  });
   const tableHtml = (rows, kind) => {
     const n = earnShown[kind];
     const list = rows.slice(0, n);
@@ -22467,7 +22514,7 @@ async function renderEarningsTab() {
     );
   };
   const fillRevenue = () => {
-    const need = [...soon.slice(0, earnShown.soon).map((r) => [r, "soon"]), ...done.slice(0, earnShown.done).map((r) => [r, "done"])].filter(([r]) => !revDone.has(r.symbol + "|"));
+    const need = [...soon.slice(0, earnShown.soon).map((r) => [r, "soon"]), ...done.slice(0, earnShown.done).map((r) => [r, "done"])].filter(([r]) => !revDone.has(r.symbol));
     mapWithConcurrency(need, 4, async ([row, kind]) => {
       const data = kind === "done" ? (await earnCompareData(row.symbol, row.date)) || (await earnQuarterData(row.symbol)) : await earnQuarterData(row.symbol);
       revDone.set(row.symbol, data);
@@ -22491,7 +22538,9 @@ async function renderEarningsTab() {
         chartTr.className = "earn-chart-row";
         chartTr.innerHTML = `<td colspan="3"><div class="earn-chart"><p class="muted" style="padding:10px 0;">분기 실적을 불러오는 중...</p></div></td>`;
         tr.after(chartTr);
-        const data = tr.dataset.kind === "done" ? (await earnCompareData(sym, tr.dataset.date)) || (await earnQuarterData(sym)) : await earnQuarterData(sym);
+        const data =
+          dbData(sym, tr.dataset.kind, tr.dataset.date) ||
+          (tr.dataset.kind === "done" ? (await earnCompareData(sym, tr.dataset.date)) || (await earnQuarterData(sym)) : await earnQuarterData(sym));
         const holder = chartTr.querySelector(".earn-chart");
         if (!holder) return;
         holder.innerHTML = data
@@ -22514,7 +22563,16 @@ async function renderEarningsTab() {
 // ---------- 신기술(2026-10-19 개편: 하단 메뉴 "신기술" 탭) ----------
 // AI투데이(뉴스·브리핑)는 사용자 요청으로 완전히 없앴다. 신기술 카드만 보여준다 — 투자군과 상관없이 모두 같은 목록.
 let todayTechShown = 5;
-async function renderTechInto(rootId) {
+// 신기술 보기 방식(2026-10-19 사용자 요청): 요약(사진+제목만, 2열) / 전체(지금처럼 줄글) — 고른 방식은 이 기기에 기억
+const TECH_VIEW_KEY = "tech_view_v1";
+function getTechView() {
+  try {
+    return localStorage.getItem(TECH_VIEW_KEY) === "grid" ? "grid" : "list";
+  } catch {
+    return "list";
+  }
+}
+async function renderTechInto(rootId, scrollToIdx) {
   const root = el(rootId);
   if (!root) return;
   root.innerHTML = `<p class="muted today-empty">불러오는 중...</p>`;
@@ -22522,9 +22580,19 @@ async function renderTechInto(rootId) {
   const techItems = Array.isArray(tech) ? tech : [];
   const techShown = techItems.slice(0, todayTechShown);
   const techLatest = techItems.length ? techItems.map((t) => t.publishedAt || t.createdAt || "").sort().pop() : "";
+  const view = getTechView();
+  const gridIcon = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>`;
+  const listIcon = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>`;
+  const toolbar = `<div class="tech-view-bar"><button type="button" class="tech-view-btn${view === "grid" ? " active" : ""}" data-tech-view="grid" aria-label="요약 보기(사진과 제목)">${gridIcon}</button><button type="button" class="tech-view-btn${view === "list" ? " active" : ""}" data-tech-view="list" aria-label="전체 보기(줄글)">${listIcon}</button></div>`;
+  const gridHtml = `<div class="tech-grid">${techShown
+    .map(
+      (it, i) => `<button type="button" class="tech-grid-card" data-tech-i="${i}"><img src="${escapeHtml(it.image)}" alt="" loading="lazy" /><span class="tech-grid-title">${escapeHtml(it.title)}</span></button>`
+    )
+    .join("")}</div>`;
+  const listHtml = `<div class="tech-insight-list">${techShown.map((it, i) => `<div data-tech-card="${i}">${techInsightCardHtml(it)}</div>`).join("")}</div>`;
   root.innerHTML = techItems.length
-    ? `<p class="today-note">MIT Technology Review·McKinsey·IEEE Spectrum·OECD의 최신 글 핵심을 자체적으로 요약·재구성했습니다.${techLatest ? ` (최근 글 ${escapeHtml(String(techLatest).slice(0, 10))})` : ""}</p>
-       <div class="tech-insight-list">${techShown.map(techInsightCardHtml).join("")}</div>
+    ? `${toolbar}<p class="today-note">MIT Technology Review·McKinsey·IEEE Spectrum·OECD의 최신 글 핵심을 자체적으로 요약·재구성했습니다.${techLatest ? ` (최근 글 ${escapeHtml(String(techLatest).slice(0, 10))})` : ""}</p>
+       ${view === "grid" ? gridHtml : listHtml}
        ${techItems.length > 5 ? `<button type="button" class="cat-btn load-more-btn today-tech-more">${todayTechShown > 5 ? "− 접기" : `+더보기 (${techItems.length}개)`}</button>` : ""}
        <p class="disclaimer tab-note">📢 정확한 내용은 원문 링크에서 확인하세요. 삽화는 AI로 생성되어 실제 사진과 다를 수 있습니다.</p>`
     : `<p class="muted today-empty">🚧 신기술은 준비 중입니다.</p>`;
@@ -22535,6 +22603,27 @@ async function renderTechInto(rootId) {
       todayTechShown = todayTechShown > 5 ? 5 : techItems.length;
       renderTechInto(rootId);
     });
+  root.querySelectorAll("[data-tech-view]").forEach((b) =>
+    b.addEventListener("click", () => {
+      try {
+        localStorage.setItem(TECH_VIEW_KEY, b.dataset.techView);
+      } catch {}
+      renderTechInto(rootId);
+    })
+  );
+  // 요약 보기에서 카드를 누르면 전체(줄글) 보기로 바꾸고 그 글 위치로
+  root.querySelectorAll("[data-tech-i]").forEach((b) =>
+    b.addEventListener("click", () => {
+      try {
+        localStorage.setItem(TECH_VIEW_KEY, "list");
+      } catch {}
+      renderTechInto(rootId, Number(b.dataset.techI));
+    })
+  );
+  if (scrollToIdx !== undefined) {
+    const card = root.querySelector(`[data-tech-card="${scrollToIdx}"]`);
+    if (card) card.scrollIntoView({ block: "start" });
+  }
 }
 
 async function iaBuildContext(sec) {
