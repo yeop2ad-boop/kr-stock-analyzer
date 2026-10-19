@@ -4278,3 +4278,7 @@ body[data-header-tone="dark"] .fixed-header { background: var(--brand); border-b
 .bottom-nav-btn { color: #8b95a1; font-weight: 500; }
 .bottom-nav-btn svg, #bottomNavMoreBtn svg { width: 24px; height: 24px; margin: 5px 0 0; }
 .bottom-nav-btn.active { font-weight: 600; }
+/* 신기술 화면 상단도 다른 화면과 같은 보라 헤더로(2026-10-19) — 로고 마크 + 제목 */
+.tab-page-bar { display: flex; align-items: center; gap: 10px; background: var(--brand); border-bottom: none; padding: calc(6px + env(safe-area-inset-top, 0px)) 14px 6px; min-height: 44px; box-sizing: border-box; }
+.tab-page-title { font-size: 17px; font-weight: 800; letter-spacing: -0.3px; color: #ffffff; }
+.tab-page-bar .fh-banner { cursor: default; }
