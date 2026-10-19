@@ -9115,12 +9115,21 @@ function fin2BodyHtml(data, period, currency) {
       colHtml.push(`
         <div class="fin2-col fin2-pair" title="${escapeHtml(`${b.label} 예상 ${fmtAmountUnified(b.rev, currency)} · 실적 ${fmtAmountUnified(nx.rev, currency)}`)}">
           <div class="fin2-plot" style="height:${PLOT_H}px">
-            <span class="fin2-pair-growth" style="bottom:${(top + 4).toFixed(0)}px"><em>예상 ${fin2GrowthText(b.growth) || "-"}</em><b class="${nx.growth >= 0 ? "fin2-up" : "fin2-down"}">실제 ${fin2GrowthText(nx.growth) || "-"}</b></span>
+            ${(() => {
+              // 2026-10-19 사용자 요청: 예상·실제 중 더 높은 값이 위로(예상이 더 높고 실제가 낮으면 예상이 위, 실제가 아래)
+              const expH = `<em>예상 ${fin2GrowthText(b.growth) || "-"}</em>`;
+              const actH = `<b class="${nx.growth >= 0 ? "fin2-up" : "fin2-down"}">실제 ${fin2GrowthText(nx.growth) || "-"}</b>`;
+              const actFirst = Number.isFinite(nx.growth) && (!Number.isFinite(b.growth) || nx.growth > b.growth);
+              return `<span class="fin2-pair-growth" style="bottom:${(top + 4).toFixed(0)}px">${actFirst ? actH + expH : expH + actH}</span>`;
+            })()}
             ${(() => {
               // 2026-10-19 사용자 요청: 순이익률(예상/실제)은 주황 막대·빨간 점선과 겹치지 않게 그 바로 위(노란 막대 안쪽)에
               const m = (x) => (Number.isFinite(x.ni) && x.rev > 0 ? `${Math.round((x.ni / x.rev) * 100)}%` : "-");
               const niTop = Math.max(a.niPx || 0, e.niPx || 0); // 실제·예상 순이익 중 더 높은 쪽(주황 막대·빨간 점선) 위로
-              return `<span class="fin2-pair-margin" style="bottom:${(niTop + 4).toFixed(0)}px">예상 ${m(b)}<br>실제 ${m(nx)}</span>`;
+              const mv = (x) => (Number.isFinite(x.ni) && x.rev > 0 ? x.ni / x.rev : null);
+              const actFirst = mv(nx) !== null && (mv(b) === null || mv(nx) > mv(b));
+              const lines = actFirst ? [`실제 ${m(nx)}`, `예상 ${m(b)}`] : [`예상 ${m(b)}`, `실제 ${m(nx)}`];
+              return `<span class="fin2-pair-margin" style="bottom:${(niTop + 4).toFixed(0)}px">${lines.join("<br>")}</span>`;
             })()}
             <span class="fin2-tip">예상 ${escapeHtml(fmtAmountUnified(b.rev, currency))}<br>실적 ${escapeHtml(fmtAmountUnified(nx.rev, currency))}</span>
             <div class="fin2-bar" style="height:${a.barPx.toFixed(1)}px">${a.niPx > 0 ? `<div class="fin2-ni" style="height:${a.niPx.toFixed(1)}px"></div>` : ""}</div>
