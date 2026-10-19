@@ -12204,12 +12204,27 @@ async function popularAsOf(sym) {
   const delay = open ? Number(meta.exchangeDataDelayedBy) || (/\.KS$|\.KQ$|^\^KS11$|^\^KQ11$/.test(sym) ? 20 : 0) : 0;
   return popularAsOfLabel(meta.regularMarketTime, delay);
 }
+// 워커 /kr-quotes는 호출 하나에 45종목씩만 훑을 수 있어(바깥 요청 50개 한도) ?part=0..7로 나눠 받아 합친다(2026-10-19).
+// 예전엔 앞 50종목만 와서 급등주·급락주가 시총 상위 50개 안에서만 골라졌다.
+async function fetchKrQuotesAll() {
+  const base = "https://us-stock.yeop2ad.workers.dev/kr-quotes";
+  const parts = await Promise.all(
+    Array.from({ length: 8 }, (_, i) =>
+      fetch(`${base}?part=${i}`)
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null)
+    )
+  );
+  const quotes = {};
+  for (const p of parts) if (p && p.quotes) Object.assign(quotes, p.quotes);
+  return Object.keys(quotes).length ? { quotes } : null;
+}
 async function loadPopularMoverRows(section) {
   const wrDb = await getWinRateDb().catch(() => null);
   const wrMap = (wrDb && (section === "kr" ? wrDb.scoresKr : section === "etf" ? wrDb.scoresEtf : section === "crypto" ? wrDb.scoresCrypto : wrDb.scores)) || {};
   const withWr = (r) => ({ ...r, winRateScore: wrMap[r.symbol] ? wrMap[r.symbol].score : null, winTotal: wrMap[r.symbol] ? wrMap[r.symbol].total : null });
   if (section === "kr") {
-    const [res, uni] = await Promise.all([fetch("https://us-stock.yeop2ad.workers.dev/kr-quotes").then((x) => (x.ok ? x.json() : null)), getSReportUniverse(true)]);
+    const [res, uni] = await Promise.all([fetchKrQuotesAll(), getSReportUniverse(true)]);
     const byKr = new Map(((uni && uni.companies) || []).map((c) => [c.symbol, c]));
     return Object.entries((res && res.quotes) || {})
       .filter(([, v]) => Number.isFinite(v))

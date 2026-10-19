@@ -1797,21 +1797,26 @@ async function refreshCustomVals() {
   const syms = ACTIVE_DATA.companies.map((c) => c.symbol);
   const bySym = new Map(ACTIVE_DATA.companies.map((c) => [c.symbol, c]));
   let got = 0;
-  for (let i = 0; i < syms.length; i += 200) {
-    try {
-      const res = await fetch(`https://us-stock.yeop2ad.workers.dev/day-vals?symbols=${encodeURIComponent(syms.slice(i, i + 200).join(","))}`);
-      if (!res.ok) continue;
-      const data = await res.json();
-      for (const [sym, v] of Object.entries((data && data.vals) || {})) {
-        const c = bySym.get(sym);
-        if (c && v > 0) {
-          c.dollarVolume = v;
-          c.volLive = true;
-          got++;
+  // 워커는 호출 하나에서 바깥 요청 50개까지만 보낼 수 있어 45종목씩 나눠 동시에 부른다
+  const chunks = [];
+  for (let i = 0; i < syms.length; i += 45) chunks.push(syms.slice(i, i + 45));
+  await Promise.all(
+    chunks.map(async (chunk) => {
+      try {
+        const res = await fetch(`https://us-stock.yeop2ad.workers.dev/day-vals?symbols=${encodeURIComponent(chunk.join(","))}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        for (const [sym, v] of Object.entries((data && data.vals) || {})) {
+          const c = bySym.get(sym);
+          if (c && v > 0) {
+            c.dollarVolume = v;
+            c.volLive = true;
+            got++;
+          }
         }
-      }
-    } catch {}
-  }
+      } catch {}
+    })
+  );
   return got > 0;
 }
 // 지금 보기에 실시간 거래대금이 없으면 한 번 받아 옴
@@ -2627,13 +2632,30 @@ async function refreshLiveData() {
 
 // 국내(코스피200+코스닥150)는 Yahoo 스크리너가 없어 Worker(/kr-quotes, KR_FOMO_UNIVERSE 재사용 + 15분 캐시)가
 // 대신 훑어둔 등락률 요약을 받아옴 — 해외의 refreshLiveData와 같은 "적용" 마무리 로직을 그대로 재사용
+// 워커는 한 번에 45종목씩만 훑을 수 있어(요청 50개 한도) ?part=0..7로 나눠 받아 합친다(2026-10-19)
+async function fetchKrQuotesAll() {
+  const base = "https://us-stock.yeop2ad.workers.dev/kr-quotes";
+  const parts = await Promise.all(
+    Array.from({ length: 8 }, (_, i) =>
+      fetch(`${base}?part=${i}`)
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null)
+    )
+  );
+  const quotes = {};
+  const vals = {};
+  for (const p of parts) {
+    if (!p) continue;
+    Object.assign(quotes, p.quotes || {});
+    Object.assign(vals, p.vals || {});
+  }
+  return { quotes, vals };
+}
 async function refreshDomesticLiveData() {
   try {
-    const [res, indexAsOf] = await Promise.all([fetch("https://us-stock.yeop2ad.workers.dev/kr-quotes"), fetchIndexAsOfTime("^KS11")]);
-    if (!res.ok) return false;
-    const data = await res.json();
+    const [data, indexAsOf] = await Promise.all([fetchKrQuotesAll(), fetchIndexAsOfTime("^KS11")]);
     const quotes = data && data.quotes;
-    if (!quotes) return false;
+    if (!quotes || !Object.keys(quotes).length) return false;
     const companyBySymbol = new Map(ACTIVE_DATA.companies.map((c) => [c.symbol, c]));
     const vals = (data && data.vals) || {};
     let updated = 0;

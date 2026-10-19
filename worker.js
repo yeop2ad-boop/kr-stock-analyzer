@@ -838,15 +838,25 @@ async function handleDayVals(requestUrl, env) {
   return jsonResponse(payload, Object.keys(vals).length ? 200 : 502);
 }
 
-async function handleKrQuotes(env) {
+// 2026-10-19: 워커 한 번 호출에서 바깥으로 나가는 요청은 50개까지라 350종목을 한 번에 훑으면 50개만 채워졌다(확인함).
+// 그래서 ?part=0,1,2,… 로 45종목씩 나눠 받고(호출마다 따로 50개 한도), 클라이언트가 전부 불러 합친다. part 없이 부르면 0번(앞 45개).
+const KR_QUOTES_PART_SIZE = 45;
+async function handleKrQuotes(env, requestUrl) {
   if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
 
-  const cached = await env.CHAT_KV.get(KR_QUOTES_CACHE_KEY, "json");
+  const partRaw = requestUrl ? Number(requestUrl.searchParams.get("part")) : 0;
+  const part = Number.isInteger(partRaw) && partRaw >= 0 ? partRaw : 0;
+  const universe = KR_FOMO_UNIVERSE.slice(part * KR_QUOTES_PART_SIZE, (part + 1) * KR_QUOTES_PART_SIZE);
+  const totalParts = Math.ceil(KR_FOMO_UNIVERSE.length / KR_QUOTES_PART_SIZE);
+  if (!universe.length) return jsonResponse({ quotes: {}, vals: {}, part, totalParts, fetchedAt: Date.now() }, 200);
+  const cacheKey = `${KR_QUOTES_CACHE_KEY}_p${part}`;
+
+  const cached = await env.CHAT_KV.get(cacheKey, "json");
   if (cached && Date.now() - cached.fetchedAt < KR_QUOTES_CACHE_TTL_MS) {
     return jsonResponse(cached, 200);
   }
 
-  const results = await mapWithConcurrencyWorker(KR_FOMO_UNIVERSE, 16, async (symbol) => {
+  const results = await mapWithConcurrencyWorker(universe, 16, async (symbol) => {
     const snap = await fetchKrQuoteSnap(symbol);
     return snap === null ? null : [symbol, Math.round(snap.chg * 100) / 100, snap.val];
   });
@@ -859,8 +869,8 @@ async function handleKrQuotes(env) {
     }
   }
   if (Object.keys(quotes).length > 0) {
-    const payload = { quotes, vals, fetchedAt: Date.now() };
-    await env.CHAT_KV.put(KR_QUOTES_CACHE_KEY, JSON.stringify(payload));
+    const payload = { quotes, vals, part, totalParts, fetchedAt: Date.now() };
+    await env.CHAT_KV.put(cacheKey, JSON.stringify(payload));
     return jsonResponse(payload, 200);
   }
   if (cached) return jsonResponse(cached, 200); // 갱신 실패해도 기존 캐시가 있으면 그거라도 반환
@@ -2310,7 +2320,7 @@ export default {
     }
 
     if (requestUrl.pathname === "/kr-quotes") {
-      return handleKrQuotes(env);
+      return handleKrQuotes(env, requestUrl);
     }
 
     if (requestUrl.pathname === "/day-vals") {
