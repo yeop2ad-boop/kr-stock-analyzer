@@ -4274,3 +4274,7 @@ body[data-header-tone="dark"] .fixed-header { background: var(--brand); border-b
 .fh-banner { border-radius: 0; height: 26px; }
 .bottom-nav-btn.active, .bottom-nav-btn.active svg { color: var(--brand); }
 .bottom-nav { border-top: 1px solid var(--border); }
+/* 하단 메뉴를 시안 A와 똑같이(2026-10-19): 24px 얇은 선 아이콘, 흐린 회색(#8b95a1), 라벨은 가볍게 */
+.bottom-nav-btn { color: #8b95a1; font-weight: 500; }
+.bottom-nav-btn svg, #bottomNavMoreBtn svg { width: 24px; height: 24px; margin: 5px 0 0; }
+.bottom-nav-btn.active { font-weight: 600; }
