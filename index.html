@@ -54,12 +54,18 @@
     try {
       var q = new URLSearchParams(location.search);
       var passthrough = q.get("ticker") || q.get("open") || q.get("embed");
-      if (!passthrough && !sessionStorage.getItem("ntj_skip_map_redirect")) {
+      // 우리 사이트 안에서 넘어온 게 아니라(참조 주소가 같은 사이트가 아님) 새로 들어온 경우만 지도로 — 앱 아이콘·주소 입력·검색·카톡 링크가 여기에 해당.
+      // (예전엔 탭 세션 값으로 판단해서, 앱을 한 번 연 뒤엔 계속 본체로 들어오는 문제가 있었다)
+      var ref = document.referrer || "";
+      var internal = false;
+      try {
+        internal = !!ref && new URL(ref).origin === location.origin;
+      } catch (e2) {}
+      if (!passthrough && !internal) {
         var kr = (Intl.DateTimeFormat().resolvedOptions().timeZone || "") === "Asia/Seoul" || /^ko/i.test(navigator.language || "");
         location.replace("sector-map/index.html" + (kr ? "?market=domestic" : ""));
         return;
       }
-      sessionStorage.setItem("ntj_skip_map_redirect", "1");
     } catch (e) {}
   })();
 </script>
