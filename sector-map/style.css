@@ -1249,3 +1249,7 @@ body[data-map-view-kind="asset"] .metric-chip[data-metric="changePct"]:not(.asse
 .bottom-nav-btn.active { font-weight: 600; }
 /* 시트 통계 5칸(거래대금 추가, 2026-10-19) — 좁으면 줄바꿈 */
 .sheet-stats { gap: 10px 16px; flex-wrap: wrap; }
+
+/* 글꼴 — Pretendard 실제 적용(2026-10-19) */
+html, body, button, input, select, textarea { font-family: "Pretendard Variable", "Pretendard", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+.map-view-btn { font-weight: 800; letter-spacing: -0.4px; }

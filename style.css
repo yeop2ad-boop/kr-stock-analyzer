@@ -4294,3 +4294,7 @@ body[data-header-tone="dark"] .fixed-header { background: var(--brand); border-b
 .tech-view-btn svg { width: 20px; height: 20px; display: block; flex: none; }
 .tech-grid-card { min-width: 0; width: 100%; }
 .tech-grid-title { white-space: normal; word-break: keep-all; overflow-wrap: anywhere; }
+
+/* 글꼴 — 국내 금융 앱에서 널리 쓰는 Pretendard를 실제로 불러와 적용(2026-10-19). 예전엔 이름만 적혀 있고 불러오지 않아 기본 고딕으로 보였다 */
+html, body, button, input, select, textarea { font-family: "Pretendard Variable", "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", -apple-system, BlinkMacSystemFont, sans-serif; }
+.fh-market-label, .tab-page-title { font-weight: 800; letter-spacing: -0.4px; }
