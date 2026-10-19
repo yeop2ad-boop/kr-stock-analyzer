@@ -9130,7 +9130,8 @@ function fin2BodyHtml(data, period, currency) {
             })()}
             ${(() => {
               // 2026-10-19 사용자 요청: 순이익률(예상/실제)은 주황 막대·빨간 점선과 겹치지 않게 그 바로 위(노란 막대 안쪽)에
-              const m = (x) => (Number.isFinite(x.ni) && x.rev > 0 ? `${Math.round((x.ni / x.rev) * 100)}%` : "-");
+              // 2026-10-20 사용자 요청: 실제 순이익이 아직 공시 전(예: 잠정실적에 순이익이 없는 회사)이면 "-" 대신 "미공시"
+              const m = (x) => (Number.isFinite(x.ni) && x.rev > 0 ? `${Math.round((x.ni / x.rev) * 100)}%` : x === nx ? "미공시" : "-");
               const niTop = Math.max(a.niPx || 0, expNiPx || 0); // 실제·예상 순이익 중 더 높은 쪽(주황 막대·빨간 점선) 위로
               const mv = (x) => (Number.isFinite(x.ni) && x.rev > 0 ? x.ni / x.rev : null);
               const actFirst = mv(nx) !== null && (mv(b) === null || mv(nx) > mv(b));
