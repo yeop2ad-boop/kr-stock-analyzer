@@ -4301,3 +4301,5 @@ html, body, button, input, select, textarea { font-family: "Pretendard Variable"
 /* 비교 그래프: 순이익률(예상/실제)을 막대 위로 — 검은 글씨(주황 막대·점선과 안 겹침) */
 .fin2-pair-margin { color: var(--text); text-shadow: none; font-size: 10px; font-weight: 800; line-height: 1.2; z-index: 2; }
 .fin2-pair-margin small { display: block; font-size: 9px; font-weight: 700; color: #b45309; letter-spacing: -0.3px; }
+/* 순이익률 글씨는 노란 막대 위에 얹히므로 진한 갈색 */
+.fin2-pair-margin { color: #4a2f00; }

@@ -9082,7 +9082,7 @@ function fin2BodyHtml(data, period, currency) {
   let maxNegPx = 0;
   // 막대 하나(매출 막대 + 순이익 + 순이익률) — 비교 칸에서는 반쪽 폭으로 둘을 붙여 그린다
   const barParts = (b) => {
-    const barPx = Number.isFinite(b.rev) && b.rev > 0 ? Math.max(4, (b.rev / maxRev) * PLOT_H * (data.compare ? 0.6 : 0.78)) : 4;
+    const barPx = Number.isFinite(b.rev) && b.rev > 0 ? Math.max(4, (b.rev / maxRev) * PLOT_H * 0.78) : 4;
     const margin = Number.isFinite(b.ni) && Number.isFinite(b.rev) && b.rev > 0 ? (b.ni / b.rev) * 100 : null;
     const niPx = margin !== null && margin > 0 ? Math.min(barPx, (barPx * margin) / 100) : 0;
     const negPx = margin !== null && margin < 0 ? Math.max(3, Math.min(barPx, (barPx * -margin) / 100)) : 0;
@@ -9115,11 +9115,12 @@ function fin2BodyHtml(data, period, currency) {
       colHtml.push(`
         <div class="fin2-col fin2-pair" title="${escapeHtml(`${b.label} 예상 ${fmtAmountUnified(b.rev, currency)} · 실적 ${fmtAmountUnified(nx.rev, currency)}`)}">
           <div class="fin2-plot" style="height:${PLOT_H}px">
-            <span class="fin2-pair-growth" style="bottom:${(top + 38).toFixed(0)}px"><em>예상 ${fin2GrowthText(b.growth) || "-"}</em><b class="${nx.growth >= 0 ? "fin2-up" : "fin2-down"}">실제 ${fin2GrowthText(nx.growth) || "-"}</b></span>
+            <span class="fin2-pair-growth" style="bottom:${(top + 4).toFixed(0)}px"><em>예상 ${fin2GrowthText(b.growth) || "-"}</em><b class="${nx.growth >= 0 ? "fin2-up" : "fin2-down"}">실제 ${fin2GrowthText(nx.growth) || "-"}</b></span>
             ${(() => {
-              // 2026-10-19 사용자 요청: 순이익률(예상/실제)은 주황 막대·빨간 점선과 겹치지 않게 막대 위로(증감 글씨 아래)
+              // 2026-10-19 사용자 요청: 순이익률(예상/실제)은 주황 막대·빨간 점선과 겹치지 않게 그 바로 위(노란 막대 안쪽)에
               const m = (x) => (Number.isFinite(x.ni) && x.rev > 0 ? `${Math.round((x.ni / x.rev) * 100)}%` : "-");
-              return `<span class="fin2-pair-margin" style="bottom:${(top + 4).toFixed(0)}px"><small>순이익률</small>예상 ${m(b)}<br>실제 ${m(nx)}</span>`;
+              const niTop = Math.max(a.niPx || 0, e.niPx || 0); // 실제·예상 순이익 중 더 높은 쪽(주황 막대·빨간 점선) 위로
+              return `<span class="fin2-pair-margin" style="bottom:${(niTop + 4).toFixed(0)}px">예상 ${m(b)}<br>실제 ${m(nx)}</span>`;
             })()}
             <span class="fin2-tip">예상 ${escapeHtml(fmtAmountUnified(b.rev, currency))}<br>실적 ${escapeHtml(fmtAmountUnified(nx.rev, currency))}</span>
             <div class="fin2-bar" style="height:${a.barPx.toFixed(1)}px">${a.niPx > 0 ? `<div class="fin2-ni" style="height:${a.niPx.toFixed(1)}px"></div>` : ""}</div>
