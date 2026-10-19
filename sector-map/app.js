@@ -1675,7 +1675,7 @@ document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#sha
 mapWorld.classList.add("color-only");
 
 // ---------- "대금" 버튼(2026-10-19 신설, 예전 "고정" 자리) ----------
-// 타일 색을 "오늘 거래대금 ÷ 직전 20거래일 평균"으로 칠한다 — 3배 이상 주황, 1배 흰색, 0.5배 이하 회색(적을수록 회색, 사이는 부드럽게 섞음).
+// 타일 색을 "오늘 거래대금 ÷ 직전 20거래일 평균"으로 칠한다 — 3배 이상 빨강, 2배 노랑, 1배 흰색, 0.5배 이하 회색(적을수록 회색, 사이는 부드럽게 섞음).
 // 장이 열려 있는 동안에는 하루 전체가 아니라 "장 시작 ~ 지금 시각"까지의 누적 거래대금을 "직전 20거래일의 같은 시각까지 누적 평균"과 비교한다
 // (기준선은 data/volume-profile.json — scripts/build-volume-profile.py가 야후 1시간봉으로 매일 계산, 시간 사이는 직선 보간).
 // 오늘 값: 미국 = 실시간 스크리너(refreshLiveData), 한국 = 워커 /kr-quotes의 vals. 실시간 값이 아직 없는 보기(ETF·코인 스냅샷 등)는 하루 전체끼리 비교한다.
@@ -1742,13 +1742,16 @@ function volRatioOf(c) {
   const exp = volInterp(base, elapsed, ses.len);
   return exp > 0 ? val / exp : undefined;
 }
+// 회색(0.5배 이하) → 흰색(1배) → 노랑(2배) → 빨강(3배 이상) — 2026-10-19 사용자 선택
 const VOL_GRAY = [156, 163, 175];
 const VOL_WHITE = [255, 255, 255];
-const VOL_ORANGE = [249, 115, 22];
+const VOL_YELLOW = [253, 224, 71];
+const VOL_RED = [220, 38, 38];
 function volColor(r) {
   if (r === undefined || !Number.isFinite(r)) return null;
-  if (r >= 3) return VOL_ORANGE;
-  if (r >= 1) return mixRgb(VOL_WHITE, VOL_ORANGE, (r - 1) / 2);
+  if (r >= 3) return VOL_RED;
+  if (r >= 2) return mixRgb(VOL_YELLOW, VOL_RED, r - 2);
+  if (r >= 1) return mixRgb(VOL_WHITE, VOL_YELLOW, r - 1);
   if (r > 0.5) return mixRgb(VOL_GRAY, VOL_WHITE, (r - 0.5) / 0.5);
   return VOL_GRAY;
 }
@@ -1765,7 +1768,7 @@ function applyVolMode() {
     if (volModeOn) {
       if (labels[0]) labels[0].textContent = "0.5배↓";
       if (labels[1]) labels[1].textContent = "3배↑";
-      if (bar) bar.style.background = `linear-gradient(90deg, rgb(${VOL_GRAY.join(",")}) 0%, rgb(${VOL_WHITE.join(",")}) 36%, rgb(${VOL_ORANGE.join(",")}) 100%)`;
+      if (bar) bar.style.background = `linear-gradient(90deg, rgb(${VOL_GRAY.join(",")}) 0%, rgb(${VOL_WHITE.join(",")}) 20%, rgb(${VOL_YELLOW.join(",")}) 60%, rgb(${VOL_RED.join(",")}) 100%)`;
     } else {
       if (labels[0]) labels[0].textContent = "-3%";
       if (labels[1]) labels[1].textContent = "+3%";
