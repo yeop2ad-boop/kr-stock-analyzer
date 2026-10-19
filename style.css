@@ -4267,3 +4267,10 @@ body[data-header-tone="dark"] .fh-sec-chevron { color: #fff; }
 .oxb-note { margin: 6px 0 0; font-size: 11px; color: var(--muted); }
 /* 하단 메뉴 아이콘 정리(2026-10-19, 토스 느낌): 모두 같은 크기·같은 선 굵기, 더보기는 점 3개 */
 #bottomNavMoreBtn svg, #bottomNavMoreBtn2 svg { width: 26px; height: 26px; margin: 4px 0 0; }
+
+/* ===== 2026-10-19 B안(보라 헤더 + 흰 하단바) ===== */
+:root { --brand: #7230f0; }
+body[data-header-tone="dark"] .fixed-header { background: var(--brand); border-bottom: none; }
+.fh-banner { border-radius: 0; height: 26px; }
+.bottom-nav-btn.active, .bottom-nav-btn.active svg { color: var(--brand); }
+.bottom-nav { border-top: 1px solid var(--border); }

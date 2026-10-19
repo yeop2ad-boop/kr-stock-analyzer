@@ -3149,7 +3149,7 @@ function loadMarket(mode, animate) {
   updateActiveDataForUniverseState();
   METRICS = buildMetrics(mode);
   activeFilters.clear(); // 시장이 바뀌면 종목 구성 자체가 달라지므로 필터는 초기화
-  document.querySelector(".top-bar").classList.toggle("is-overseas", mode === "overseas");
+  document.querySelector(".top-bar").classList.toggle("is-overseas", false); // 2026-10-19: 상단은 항상 브랜드 보라
   syncMapViewUi();
 
   rerenderMap(animate);

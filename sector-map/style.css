@@ -1234,3 +1234,12 @@ body[data-map-view-kind="asset"] .metric-chip[data-metric="changePct"]:not(.asse
 .map-add-toggle.on { background: var(--navy); color: #fff; }
 /* 하단 메뉴 아이콘 정리(2026-10-19, 토스 느낌): 모두 같은 크기·같은 선 굵기, 더보기는 점 3개 */
 #bottomNavMoreBtn svg, #bottomNavMoreBtn2 svg { width: 26px; height: 26px; margin: 4px 0 0; }
+
+/* ===== 2026-10-19 B안(보라 헤더 + 흰 하단바) ===== */
+:root { --brand: #7230f0; }
+.top-bar { background: var(--brand); }
+.map-brand-logo { border-radius: 0; height: 26px; }
+.bottom-nav-btn.active, .bottom-nav-btn.active svg { color: var(--brand); }
+.map-view-item.active { background: var(--brand); }
+.side-btn.active { background: var(--brand); border-color: var(--brand); }
+.filter-chip.active, .filter-chip.boot-active { border-color: var(--brand); background: var(--brand); color: #ffffff; }

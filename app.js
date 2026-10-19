@@ -3468,14 +3468,9 @@ colorSchemeGlobalBtn.addEventListener("click", () => setColorScheme("global"));
 // 넘어갈 때마다 남색↔흰색이 무조건 번갈아 바뀜(어느 섹션이냐가 아니라 "전환 횟수"로 결정). 시작은 남색.
 let currentNavSection = null;
 function setHeaderToneForSection(section) {
-  if (section === currentNavSection) return;
-  const isFirst = currentNavSection === null;
+  // 2026-10-19: 상단은 항상 브랜드 보라(예전엔 투자군이 바뀔 때마다 남색↔흰색이 번갈아 바뀜)
   currentNavSection = section;
-  if (isFirst) {
-    document.body.dataset.headerTone = "dark"; // 시작화면(한국주식)은 남색
-    return;
-  }
-  document.body.dataset.headerTone = document.body.dataset.headerTone === "dark" ? "light" : "dark";
+  document.body.dataset.headerTone = "dark";
 }
 
 // 좌상단 로고(2026-09-02 사용자 요청): 누르면 시작화면(한국주식 인기종목)으로 복귀
