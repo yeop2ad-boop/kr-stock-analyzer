@@ -50,12 +50,6 @@ jobs:
         continue-on-error: true
         run: python3 sector-map/scripts/build-sreport-baseline.py
 
-      - name: 투자방법 비교(10년 백테스트) 갱신 — 인사이트 화면용
-        shell: pwsh
-        working-directory: sector-map
-        continue-on-error: true
-        run: ./scripts/fetch-strategy-compare.ps1
-
       - name: ETF 운용보수·보유종목 갱신 — ETF 화면용
         shell: pwsh
         working-directory: sector-map/scripts
@@ -66,10 +60,6 @@ jobs:
       - name: 한국 ETF 보유비중(funetf) 적용·일부 갱신
         continue-on-error: true
         run: python3 scripts/build-etf-holdings.py
-
-      - name: 투자분석 탭(투자방법별 구성종목·1년/10년 수익 지수) 갱신
-        continue-on-error: true
-        run: python3 scripts/build-invest-analysis.py
 
       - name: 지도가 실제 로드하는 core/extra 데이터 파일에 병합
         shell: pwsh
@@ -86,7 +76,7 @@ jobs:
           # 같은 이유로 매일 실패(승률·RSI DB가 9/10에 멈춤) → 두 파일 추가 + 커밋 뒤 남은 변경은 stash로 치워 pull이 다시는 막히지 않게
           # 2026-10-06: 그런데 strategy-series-cache.json은 .gitignore 대상이라 git add가 "ignored 경로" 오류로 exit 1 →
           # 9/15~10/5 매일 이 단계에서 실패(승률·ETF·코인 지도 3주 정지). 목록에서 뺐다 — 무시 대상 파일을 여기 넣지 말 것
-          git add -A sector-map/data data/winrate-scores-us.json data/etf-info.json data/sreport-baseline.json data/strategy-compare.json data/invest-analysis.json data/etf-holdings-kr.json data/etf-holding-names.json scripts/kr-suffix-cache.json
+          git add -A sector-map/data data/winrate-scores-us.json data/etf-info.json data/sreport-baseline.json data/etf-holdings-kr.json data/etf-holding-names.json scripts/kr-suffix-cache.json
           if git diff --cached --quiet; then
             echo "변경된 데이터 없음"
           else
@@ -102,7 +92,7 @@ jobs:
               git rebase --abort || true
               git fetch origin main
               git reset --soft origin/main
-              git add -A sector-map/data data/winrate-scores-us.json data/etf-info.json data/sreport-baseline.json data/strategy-compare.json data/invest-analysis.json data/etf-holdings-kr.json data/etf-holding-names.json scripts/kr-suffix-cache.json
+              git add -A sector-map/data data/winrate-scores-us.json data/etf-info.json data/sreport-baseline.json data/etf-holdings-kr.json data/etf-holding-names.json scripts/kr-suffix-cache.json
               git commit -m "섹터맵 데이터 자동 갱신 ($(date -u +%Y-%m-%d))" || true
             }
             git push

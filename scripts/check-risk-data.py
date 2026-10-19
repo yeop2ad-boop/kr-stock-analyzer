@@ -10,7 +10,6 @@ import sys
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 KR = os.path.join(ROOT, "data", "dart-financials.json")
 US = os.path.join(ROOT, "data", "us-workforce.json")
-SR = os.path.join(ROOT, "data", "sector-revenue.json")
 
 # 항목별 최소 기대치(이보다 적으면 수집이 망가진 것으로 본다)
 MIN_KR = {"임금": 300, "인원": 330, "유상증자·전환사채": 340, "EPS 값": 320, "분기 매출": 300, "분기 순이익": 330, "부채비율": 330, "급락률": 340, "업종": 340}
@@ -36,7 +35,6 @@ def report(title, counts, minimums, total):
 def main():
     kr = load(KR)["items"]
     us = load(US)["items"]
-    sr = load(SR)
     fails = []
 
     kr_counts = {
@@ -64,8 +62,6 @@ def main():
         "업종": sum(1 for v in us.values() if v.get("sector")),
     }
     fails += report("미국", us_counts, MIN_US, len(us))
-
-    print(f"\n■ 섹터 매출: 한국 {len(sr['kr']['companies'])}곳 / {len(sr['kr']['sectors'])}섹터 · 미국 {len(sr['us']['companies'])}곳 / {len(sr['us']['sectors'])}섹터")
 
     # 이상값 — 단위 오류나 기간 불일치를 잡는 상식 범위
     print("\n■ 이상값")
