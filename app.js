@@ -4767,7 +4767,7 @@ const S_REPORT_EXPLAIN = {
   div: "최근 1년 배당금 합계를 현재가로 나눈 값입니다.\n높을수록 들고만 있어도 받는 현금이 많아요.",
   fee: "ETF를 1년 들고 있으면 빠져나가는 연간 총보수입니다.\n낮을수록 오래 보유하기 유리해요.",
   mcap: "가격 × 발행주식수(코인은 유통량)입니다.\n클수록 규모가 큰 대형 종목이에요.",
-  dv: "최근 5거래일 평균 거래대금입니다.\n클수록 사고팔기 쉬운 종목이에요.",
+  dv: "오늘 거래대금이 최근 20거래일 평균의 몇 배인지입니다.\n1배는 평소, 3배 이상이면 평소보다 크게 몰린 날이에요.",
   w52: "52주 최저 0%, 최고 100% 사이 지금 위치입니다.\n높을수록 1년 고점에 가까워요.",
 };
 // 항목을 누르면 설명 맨 위에 붙는 제목(2026-09-16 사용자 지정) — 화면의 항목 이름·차트 축·목록 제목은 전부 짧은 이름을 쓰고,
@@ -4788,13 +4788,166 @@ const S_REPORT_TITLES = {
   div: "최근 1년 배당률",
   fee: "연간 운용보수(총보수)",
   mcap: "시가총액",
-  dv: "5일 평균 거래대금",
+  dv: "거래대금 증감(오늘 ÷ 20일 평균)",
   w52: "52주 구간 위치",
   hold: "보유 상위 종목",
   aum: "순자산 규모",
 };
 // 설명 안에서 "+예시"로 펼쳐 볼 수 있는 항목(2026-09-16 사용자 요청)
-const S_REPORT_EXAMPLES = { win: "대표자산 10년월간승률 비교", rsi: "SPY 5년 주봉과 주간 RSI" };
+const S_REPORT_EXAMPLES = {
+  win: "대표자산 10년월간승률 비교",
+  rsi: "SPY 5년 주봉과 주간 RSI",
+  // 2026-10-20 사용자 요청: 연 상승률 ~ 현금흐름도 "+예시" — 대표종목 비교 막대(값은 S리포트 비교 DB)
+  ret: "대표종목 연 상승률",
+  vol: "대표종목 1일 변동성",
+  rev: "대표종목 매출성장",
+  ni: "대표종목 순이익 증가",
+  om: "대표종목 영업이익률",
+  roe: "대표종목 ROE",
+  cf: "대표종목 현금흐름 증가",
+  // 2026-10-20 사용자 요청: "시장" 묶음(시가총액·거래대금·52주 구간 위치)도 같은 방식
+  ret1y: "대표종목 1년 수익률",
+  mcap: "대표종목 시가총액",
+  dv: "대표종목 거래대금",
+  w52: "대표종목 52주 구간 위치",
+};
+
+// ---------- 핵심지표 "+예시"(2026-10-20): 연 상승률·변동성·매출성장·순이익·영업이익률·ROE·현금흐름 ----------
+// 누구나 아는 대표종목 5~6개의 값을 가로 막대로 나란히 보여주고, 비교군 평균선(점선)과 "읽는 법" 예시 한 줄을 붙인다.
+// 값은 매일 갱신되는 S리포트 비교 DB(data/sreport-baseline.json)에서 바로 읽어 별도 조회가 없다.
+const SR_EXAMPLE_REPS = {
+  kr: ["000660.KS", "005930.KS", "035420.KS", "005380.KS", "051910.KS", "105560.KS"],
+  us: ["NVDA", "AAPL", "MSFT", "AMZN", "KO", "TSLA"],
+  etf: ["QQQ", "SPY", "VOO", "360750.KS", "069500.KS"],
+  crypto: ["BTC-USD", "ETH-USD", "SOL-USD", "BNB-USD", "XRP-USD", "DOGE-USD"],
+};
+const SR_EXAMPLE_NAMES = { QQQ: "QQQ(나스닥100)", SPY: "SPY(S&P500)", VOO: "VOO(S&P500)", "360750.KS": "TIGER 미국S&P500", "069500.KS": "KODEX 200" };
+const SR_EXAMPLE_SPECS = {
+  ret: { title: "대표종목 연 상승률", sub: "최근 10년 평균(연복리)", cap: 70, lower: false },
+  vol: { title: "대표종목 1일 변동성", sub: "최근 3개월 하루 평균 등락 폭", cap: 5, lower: true, plain: true },
+  rev: { title: "대표종목 매출성장", sub: "작년 대비", assetTitle: "대표종목 1년 수익률", assetSub: "1년 전 가격 대비", cap: 150, assetCap: 60 },
+  ni: { title: "대표종목 순이익 증가", sub: "작년 대비", cap: 150 },
+  om: { title: "대표종목 영업이익률", sub: "매출 100원 중 남는 영업이익", cap: 80, plain: true },
+  roe: { title: "대표종목 ROE", sub: "최근 1년 순이익 ÷ 자기자본", cap: 100, plain: true },
+  cf: { title: "대표종목 현금흐름 증가", sub: "영업 현금흐름 · 작년 대비", cap: 150 },
+  // amount: 금액이라 크기 차이가 커서 막대는 제곱근 눈금으로 그린다
+  mcap: { title: "대표종목 시가총액", sub: "주가 × 발행주식수", amount: true },
+  dv: { title: "대표종목 하루 거래대금", sub: "최근 5거래일 평균", amount: true },
+  w52: { title: "대표종목 52주 구간 위치", sub: "최저 0% ~ 최고 100%", cap: 100, plain: true, fixed01: true },
+};
+SR_EXAMPLE_SPECS.ret1y = SR_EXAMPLE_SPECS.rev; // ETF·코인의 "1년 수익률"은 같은 DB 칸(rev)
+function srExFmt(v, plain) {
+  if (!Number.isFinite(v)) return "-";
+  const a = Math.abs(v);
+  const t = a >= 100 ? Math.round(a).toLocaleString() : a >= 10 ? a.toFixed(0) : a.toFixed(1);
+  return `${plain ? (v < 0 ? "-" : "") : v < 0 ? "-" : "+"}${t}%`;
+}
+function srExMoney(manwon) {
+  if (manwon >= 10000) return `${(manwon / 10000).toFixed(manwon >= 100000 ? 0 : 1)}억원`;
+  return `${Math.round(manwon).toLocaleString()}만원`;
+}
+function srExName(t, section) {
+  if (SR_EXAMPLE_NAMES[t]) return SR_EXAMPLE_NAMES[t];
+  if (section === "crypto") return cryptoKoName(t, t);
+  return TICKER_TO_KOREAN_NAME[t] || t;
+}
+async function buildSrExampleHtml(key) {
+  if (key === "ret1y") key = "rev";
+  const spec = SR_EXAMPLE_SPECS[key];
+  const baseline = await getSReportBaseline();
+  if (!spec || !baseline || !baseline.members) return `<p class="muted" style="padding:8px 2px;">예시 데이터를 불러오지 못했어요.</p>`;
+  const section = srDetailSection();
+  const asset = section !== "stocks";
+  const cur = currentDetailSymbol || "";
+  const reps = section === "crypto" ? SR_EXAMPLE_REPS.crypto : section === "etf" ? SR_EXAMPLE_REPS.etf : isKrTicker(cur) ? SR_EXAMPLE_REPS.kr : SR_EXAMPLE_REPS.us;
+  const rows = [];
+  const add = (t, me) => {
+    const m = baseline.members[t];
+    if (!m || !Number.isFinite(m[key])) return;
+    if (rows.some((r) => r.t === t)) {
+      if (me) rows.find((r) => r.t === t).me = true;
+      return;
+    }
+    rows.push({ t, name: srExName(t, section), val: m[key], me: !!me });
+  };
+  reps.forEach((t) => add(t, t.toUpperCase() === cur.toUpperCase()));
+  if (cur) add(cur, true);
+  if (rows.length < 3) return `<p class="muted" style="padding:8px 2px;">이 항목은 보여드릴 대표종목 값이 아직 없어요.</p>`;
+  rows.sort((a, b) => (spec.lower ? a.val - b.val : b.val - a.val));
+  const cap = asset && spec.assetCap ? spec.assetCap : spec.cap;
+  const member = baseline.members[cur];
+  const gKey = member ? member.g : section === "crypto" ? "crypto200" : section === "etf" ? (isKrTicker(cur) ? "etfKr" : "etfUs") : isKrTicker(cur) ? "kr350" : "sp500";
+  const grp = baseline.groups && baseline.groups[gKey];
+  const avg = grp && grp.ref && Number.isFinite(grp.ref[key]) ? grp.ref[key] : null;
+  const vals = rows.map((r) => r.val).concat(avg !== null ? [avg] : []);
+  const isAmt = !!spec.amount;
+  const curOf = (t) => (isKrTicker(t) ? "KRW" : "USD");
+  const fmtVal = (v, t) => (isAmt ? fmtAmountUnified(v, curOf(t)) : srExFmt(v, !!spec.plain));
+  let lo = Math.min(0, Math.max(-cap, Math.min(...vals)));
+  let hi = Math.max(0, Math.min(cap, Math.max(...vals)));
+  if (spec.fixed01) {
+    lo = 0;
+    hi = 100;
+  }
+  const sqrtMax = isAmt ? Math.sqrt(Math.max(...vals)) : 1;
+  const span = hi - lo || 1;
+  const pos = isAmt ? (v) => (Math.sqrt(Math.max(v, 0)) / sqrtMax) * 100 : (v) => ((Math.max(lo, Math.min(hi, v)) - lo) / span) * 100;
+  const zero = isAmt ? 0 : pos(0);
+  const plain = !!spec.plain;
+  const rowHtml = rows
+    .map((r) => {
+      const p = pos(r.val);
+      const left = Math.min(zero, p);
+      const width = Math.max(1.2, Math.abs(p - zero));
+      const capped = !isAmt && Math.abs(r.val) > cap ? " ▶" : "";
+      return `<div class="srx-row${r.me ? " srx-me" : ""}">
+        <span class="srx-name">${r.me ? "★ " : ""}${escapeHtml(r.name)}</span>
+        <span class="srx-track">${zero > 0.5 && zero < 99.5 ? `<i class="srx-zero" style="left:${zero.toFixed(1)}%"></i>` : ""}${avg !== null ? `<i class="srx-avg" style="left:${pos(avg).toFixed(1)}%"></i>` : ""}<i class="srx-bar${r.val < 0 ? " srx-neg" : ""}" style="left:${left.toFixed(1)}%;width:${width.toFixed(1)}%"></i></span>
+        <b class="srx-val${!plain && r.val < 0 ? " srx-val-neg" : ""}">${fmtVal(r.val, r.t)}${capped}</b>
+      </div>`;
+    })
+    .join("");
+  // 읽는 법 — 값이 중간쯤인 대표종목 하나를 골라 구체적인 숫자로 풀어 줌
+  const sorted = rows.slice().sort((a, b) => a.val - b.val);
+  const mid = (arr) => arr[Math.floor((arr.length - 1) / 2)];
+  const posRows = sorted.filter((r) => r.val > 0);
+  const meRow = rows.find((r) => r.me && r.val > 0);
+  const sample = meRow ? meRow : key === "ret" ? mid(posRows.filter((r) => r.val < 40).length ? posRows.filter((r) => r.val < 40) : posRows) : posRows.length ? mid(posRows) : sorted[sorted.length - 1];
+  const neg = sorted.find((r) => r.val < 0);
+  const v = sample.val;
+  const f1 = (x) => (Math.abs(x) >= 100 ? Math.round(x).toLocaleString() : Number(x.toFixed(1)).toString());
+  let how = "";
+  if (key === "ret") how = `최근 10년 동안 매년 평균 얼마씩 올랐는지(연복리)예요.\n예) ${sample.name}: 연 ${f1(v)}% → 10년 전 100만원이 지금 약 ${srExMoney(100 * Math.pow(1 + v / 100, 10))}.`;
+  else if (key === "vol") {
+    const calm = rows[0];
+    const wild = rows[rows.length - 1];
+    how = `최근 3개월 동안 하루에 평균 얼마나 오르내렸는지예요. 숫자가 작을수록 잔잔해요.\n예) ${calm.name}: 하루 ±${f1(calm.val)}% → 100만원이 하루 약 ±${Math.round(calm.val * 10000).toLocaleString()}원 움직여요. 반면 ${wild.name}: ±${f1(wild.val)}% → 약 ±${Math.round(wild.val * 10000).toLocaleString()}원.`;
+  } else if (key === "rev" && asset) how = `1년 전 가격과 비교해 지금 몇 % 올랐는지예요. 마이너스면 내렸다는 뜻이에요.\n예) ${sample.name}: ${srExFmt(v)} → 1년 전 100만원이 지금 약 ${f1(100 + v)}만원.`;
+  else if (key === "rev") how = `작년보다 매출이 몇 % 늘었는지예요.\n예) ${sample.name}: ${srExFmt(v)} → 작년에 100억원을 팔았다면 올해 약 ${f1(100 + v)}억원.`;
+  else if (key === "ni") how = `순이익이 작년보다 몇 % 늘었는지예요. 마이너스면 작년보다 줄었다는 뜻이에요.\n예) ${sample.name}: ${srExFmt(v)} → 작년 순이익 100원이 올해 약 ${f1(100 + v)}원.${neg ? ` ${neg.name}(${srExFmt(neg.val)})처럼 마이너스면 작년보다 줄어든 거예요.` : ""}`;
+  else if (key === "om") how = `매출 100원 중 본업으로 남는 영업이익이에요.\n예) ${sample.name}: ${f1(v)}% → 100원어치 팔면 약 ${f1(v)}원이 남아요.`;
+  else if (key === "roe") how = `주주(자기자본) 100원으로 1년 동안 번 순이익이에요.\n예) ${sample.name}: ${f1(v)}% → 100원을 맡기면 1년에 약 ${f1(v)}원을 벌어요.${neg ? ` ${neg.name}(${srExFmt(neg.val, true)})처럼 마이너스면 오히려 손실이에요.` : ""}`;
+  else if (key === "mcap") {
+    const big = rows[0];
+    const small = rows[rows.length - 1];
+    how = `주가 × 발행주식수, 즉 회사 전체의 몸값이에요. 클수록 덩치 큰 대형주예요.\n예) ${big.name}: ${fmtVal(big.val, big.t)} → ${small.name}(${fmtVal(small.val, small.t)})의 약 ${Math.round(big.val / small.val).toLocaleString()}배 규모.`;
+  } else if (key === "dv") {
+    const s0 = meRow || rows[Math.floor(rows.length / 2)];
+    how = `하루에 오가는 거래 금액(5거래일 평균)이에요. 클수록 사고팔기 쉬워요.\n위쪽 '거래대금 증감'은 오늘 거래대금이 최근 20거래일 평균의 몇 배인지예요. 1배 = 평소, 3배 이상 = 평소보다 크게 몰린 날.\n예) ${s0.name}: 평소 하루 ${fmtVal(s0.val, s0.t)} → 오늘 3배면 약 ${fmtVal(s0.val * 3, s0.t)}.`;
+  } else if (key === "w52") {
+    const where = v >= 70 ? "1년 중 높은 쪽(고점 가까이)" : v <= 30 ? "1년 중 낮은 쪽(저점 가까이)" : "1년 중 중간쯤";
+    how = `최근 52주 중 가장 쌌던 날을 0%, 가장 비쌌던 날을 100%로 놓고 지금 가격이 어디쯤인지예요.\n예) ${sample.name}: ${f1(v)}% → ${where}에 있어요.`;
+  } else if (key === "cf") how = `영업(장사)으로 실제 들어온 현금이 작년보다 몇 % 늘었는지예요.\n예) ${sample.name}: ${srExFmt(v)} → 작년 현금 100원이 올해 약 ${f1(100 + v)}원.${neg ? ` ${neg.name}(${srExFmt(neg.val)})처럼 마이너스면 줄어든 거예요.` : ""}`;
+  const title = asset && spec.assetTitle ? spec.assetTitle : spec.title;
+  const sub = asset && spec.assetSub ? spec.assetSub : spec.sub;
+  const avgName = grp && grp.refName ? grp.refName : "비교군 평균";
+  return `<div class="srx">
+    <div class="srx-head"><b>${escapeHtml(title)}</b><span>${escapeHtml(sub)}</span></div>
+    <div class="srx-rows">${rowHtml}</div>
+    ${avg !== null ? `<div class="srx-legend"><i class="srx-avg-key"></i>점선 = ${escapeHtml(avgName)} ${isAmt ? fmtAmountUnified(avg, curOf(cur || reps[0])) : srExFmt(avg, plain)}${isAmt ? " · 막대는 제곱근 눈금" : ""}</div>` : ""}
+    <p class="srx-how">${escapeHtml(how).replace(/\n/g, "<br>")}</p>
+  </div>`;
+}
 
 // 2026-10-08 사용자 요청: 핵심지표 아래 안내도 인기종목처럼 3개 문구가 번갈아(번갈아 바꾸는 타이머는 POPULAR_HINTS 옆)
 const SR_HINTS = [
@@ -5264,7 +5417,7 @@ document.addEventListener("click", (e) => {
       openSReportRank(key, sec, isKrTicker(currentDetailSymbol || "") ? "kr" : "us");
       return;
     }
-    // +예시 — 승률·RSI만 있고, 같은 버튼을 다시 누르면 접힘
+    // +예시 — 승률·RSI·연 상승률~현금흐름, 같은 버튼을 다시 누르면 접힘
     const box = chip.closest(".srf-explain");
     const slot = box && box.querySelector(".srf-example");
     if (!slot) return;
@@ -5277,6 +5430,11 @@ document.addEventListener("click", (e) => {
       else if (key === "rsi") {
         slot.innerHTML = `<p class="muted" style="padding:8px 2px;">예시 차트를 불러오는 중...</p>`;
         buildRsiSpyDetailHtml().then((html) => {
+          if (slot.dataset.open === "1") slot.innerHTML = html;
+        });
+      } else if (SR_EXAMPLE_SPECS[key]) {
+        slot.innerHTML = `<p class="muted" style="padding:8px 2px;">예시를 불러오는 중...</p>`;
+        buildSrExampleHtml(key).then((html) => {
           if (slot.dataset.open === "1") slot.innerHTML = html;
         });
       }

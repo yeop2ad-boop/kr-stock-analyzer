@@ -2582,3 +2582,21 @@ html, body, button, input, select, textarea { font-family: "Pretendard Variable"
 .tab-page-actions .header-icon-btn { width: 30px; height: 30px; border-radius: 50%; color: #fff; }
 .tab-page-actions .header-icon-btn svg { width: 19px; height: 19px; }
 .tab-page-actions .header-icon-btn:active { background: rgba(255, 255, 255, 0.18); }
+/* 핵심지표 "+예시" 대표종목 비교 막대(2026-10-20) */
+.srx-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.srx-head b { font-size: 12.5px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+.srx-head span { font-size: 11px; color: var(--muted); text-align: right; }
+.srx-row { display: grid; grid-template-columns: 92px 1fr 54px; align-items: center; gap: 6px; padding: 3px 0; }
+.srx-name { font-size: 12px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; letter-spacing: -0.3px; }
+.srx-me .srx-name { font-weight: 800; color: #7230f0; }
+.srx-track { position: relative; height: 12px; border-radius: 6px; background: var(--subtle-fill); }
+.srx-bar { position: absolute; top: 0; bottom: 0; border-radius: 6px; background: #7230f0; opacity: 0.78; }
+.srx-me .srx-bar { opacity: 1; }
+.srx-bar.srx-neg { background: var(--neg); opacity: 0.85; }
+.srx-zero { position: absolute; top: -2px; bottom: -2px; width: 1px; background: var(--muted); opacity: 0.55; }
+.srx-avg { position: absolute; top: -3px; bottom: -3px; width: 0; border-left: 2px dashed #f59e0b; z-index: 1; }
+.srx-val { font-size: 12px; font-weight: 800; text-align: right; color: var(--text); font-variant-numeric: tabular-nums; }
+.srx-val-neg { color: var(--neg); }
+.srx-legend { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 11px; color: var(--muted); }
+.srx-avg-key { display: inline-block; height: 12px; border-left: 2px dashed #f59e0b; }
+.srx-how { margin: 8px 0 0; font-size: 12px; line-height: 1.6; color: var(--muted); }
