@@ -7456,7 +7456,7 @@ function sReportRadarSvg(items) {
         <text x="${labelMid.toFixed(1)}" y="${(y + dy + 15).toFixed(1)}" text-anchor="middle" class="srt-rd-value srt-rd-${it.mark || "neutral"}">${warn}${escapeHtml(val)}${partialTag ? `<tspan class="srt-rd-partial">${partialTag}</tspan>` : ""}${/* 오각형에는 현재 RSI만(1년 평균은 아래 항목 줄에 "/72(평균)"로 표시) — 2026-09-16 사용자 요청 */ ""}</text>`;
     })
     .join("");
-  return `<svg class="srt-radar" viewBox="0 0 ${W} ${H}" role="img" aria-label="핵심 5개 지표 레이더 차트">${rings}${spokes}${avgPoly}${selfPoly}${avgDots}${dots}${labels}</svg>`;
+  return `<svg class="srt-radar" viewBox="0 0 ${W} ${H}" role="img" aria-label="핵심지표 레이더 차트">${rings}${spokes}${avgPoly}${selfPoly}${avgDots}${dots}${labels}</svg>`;
 }
 
 // ---------- 핵심지표 항목 → 순위 화면(2026-09-16 사용자 요청) ----------
@@ -7792,7 +7792,7 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
     section.innerHTML = `
       <div class="srt-card">
         <div class="srt-radar-head">
-          <span class="srt-radar-title">핵심 5개 지표${asOfText ? `<span class="srt-asof">${asOfText}</span>` : ""}</span>
+          <span class="srt-radar-title">핵심지표${asOfText ? `<span class="srt-asof">${asOfText}</span>` : ""}</span>
           <span class="srt-legend"><i class="srt-lg-self"></i>이 종목 <i class="srt-lg-avg"></i>${escapeHtml(group ? group.refName : "비교 기준")}</span>
         </div>
         ${S_REPORT_TAP_HINT}

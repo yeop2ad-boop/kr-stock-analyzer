@@ -4305,3 +4305,7 @@ html, body, button, input, select, textarea { font-family: "Pretendard Variable"
 .fin2-pair-margin { color: #4a2f00; }
 /* 배당 패널도 급락 리스크 카드처럼 테두리 박스로(2026-10-19) */
 .div-wrap { border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin: 10px 0 12px; }
+/* 핵심지표 오각형 그래프를 마켓맵 보라색으로(2026-10-19) */
+.srt-rd-self { fill: rgba(114, 48, 240, 0.18); stroke: #7230f0; }
+.srt-rd-dot { fill: #7230f0; }
+.srt-rd-dot.srt-tone-bad { fill: #e03131; }
