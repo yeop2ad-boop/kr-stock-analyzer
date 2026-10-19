@@ -353,12 +353,47 @@ function viewMarkHtml(viewKey) {
   const v = MAP_VIEWS[viewKey];
   return v && VIEW_MARK_SVG[v.mark] ? `<span class="map-view-mark">${VIEW_MARK_SVG[v.mark]}</span>` : "";
 }
-// 드롭다운 메뉴 항목 앞에 마크를 한 번만 붙임
-document.querySelectorAll("#mapViewMenu .map-view-item").forEach((b) => {
-  const v = MAP_VIEWS[b.dataset.view];
-  if (!v) return;
-  b.innerHTML = `${viewMarkHtml(b.dataset.view)}<span>${v.label}</span>`;
-});
+// ---------- 지도 보기 목록(2026-10-19 개편) ----------
+// 기본은 대표 자산 4개(코스피 200 · S&P200 · ETF200 · 비트코인200)만. 맨 아래 + 버튼으로 코스닥 150·S&P500·나스닥 100·신규상장200을
+// 더할 수 있고, 더한 것도 항상 한국주식 → 미국주식 → ETF → 비트코인 순으로 정렬된다.
+const MAP_VIEW_DEFAULTS = ["kospi200", "sp200", "etf200", "crypto100"];
+const MAP_VIEW_ORDER = ["kospi200", "kosdaq150", "krIpo", "sp200", "sp500", "ndx100", "usIpo", "etf200", "crypto100"];
+const MAP_VIEW_OPTIONAL = MAP_VIEW_ORDER.filter((k) => !MAP_VIEW_DEFAULTS.includes(k));
+const MAP_VIEW_EXTRA_KEY = "map_views_extra_v1";
+function loadMapViewExtras() {
+  try {
+    const v = JSON.parse(localStorage.getItem(MAP_VIEW_EXTRA_KEY) || "[]");
+    return Array.isArray(v) ? v.filter((k) => MAP_VIEW_OPTIONAL.includes(k)) : [];
+  } catch {
+    return [];
+  }
+}
+function saveMapViewExtras(list) {
+  try {
+    localStorage.setItem(MAP_VIEW_EXTRA_KEY, JSON.stringify(list));
+  } catch {}
+}
+function visibleMapViews() {
+  const extras = loadMapViewExtras();
+  return MAP_VIEW_ORDER.filter((k) => MAP_VIEW_DEFAULTS.includes(k) || extras.includes(k));
+}
+function renderMapViewMenu() {
+  const menu = document.getElementById("mapViewMenu");
+  if (!menu) return;
+  menu.innerHTML =
+    visibleMapViews()
+      .map((k) => `<button type="button" class="map-view-item${k === ACTIVE_VIEW ? " active" : ""}" data-view="${k}">${viewMarkHtml(k)}<span>${MAP_VIEWS[k].label}</span></button>`)
+      .join("") + `<button type="button" class="map-view-add" id="mapViewAddBtn" aria-label="보기 추가">＋</button>`;
+}
+function renderMapAddList() {
+  const extras = loadMapViewExtras();
+  const list = document.getElementById("mapAddList");
+  if (!list) return;
+  list.innerHTML = MAP_VIEW_OPTIONAL.map((k) => {
+    const on = extras.includes(k);
+    return `<div class="map-add-row"><span class="map-add-name">${viewMarkHtml(k)}<span>${MAP_VIEWS[k].label}</span></span><button type="button" class="map-add-toggle${on ? " on" : ""}" data-view="${k}">${on ? "추가됨 ✓" : "추가"}</button></div>`;
+  }).join("");
+}
 let ACTIVE_VIEW = "sp200";
 const extraDataLoadPromises = {};
 function loadScriptOnce(src) {
@@ -562,9 +597,7 @@ function syncMapViewUi() {
   if (label) label.textContent = MAP_VIEWS[ACTIVE_VIEW].label;
   const mark = document.getElementById("mapViewBtnMark");
   if (mark) mark.innerHTML = viewMarkHtml(ACTIVE_VIEW);
-  document.querySelectorAll("#mapViewMenu .map-view-item").forEach((b) => {
-    b.classList.toggle("active", b.dataset.view === ACTIVE_VIEW);
-  });
+  renderMapViewMenu();
 }
 
 // 지도 맨 위에 실제 지수 카드(국기·이름/지수값/등락/미니그래프)가 들어갈 띠 높이(월드 좌표) — 섹터 원들은 이 아래로 배치됨.
@@ -1630,7 +1663,7 @@ document.addEventListener("click", (e) => {
   if (btn) showToast(btn.dataset.toast);
 });
 
-document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#shapeModeBtn):not(#watchFilterBtn):not(#lockModeBtn)").forEach((btn) => {
+document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#shapeModeBtn):not(#watchFilterBtn):not(#volModeBtn)").forEach((btn) => {
   btn.addEventListener("click", () => {
     const group = btn.parentElement;
     group.querySelectorAll(".active").forEach((b) => b.classList.remove("active"));
@@ -1641,12 +1674,179 @@ document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#sha
 // 로고 모드는 사각 히트맵 전환(2026-08-30)과 함께 폐기 — 사각: 종목명+등락률 텍스트, 원형: 텍스트 배지(color-only CSS 재사용)
 mapWorld.classList.add("color-only");
 
-// "고정" — 누르면 해제할 때까지 지도 화면(위치/배율)이 잠기고,
-// 상단 툴바·하단 네비·사이드 버튼·전체보기·시계·범례가 전부 투명하게 밀려나 지도+고정 버튼만 남음(클린 뷰)
-document.getElementById("lockModeBtn").addEventListener("click", (e) => {
-  mapLocked = !mapLocked;
-  e.currentTarget.classList.toggle("active", mapLocked);
-  document.body.classList.toggle("map-fixed-mode", mapLocked);
+// ---------- "대금" 버튼(2026-10-19 신설, 예전 "고정" 자리) ----------
+// 타일 색을 "오늘 거래대금 ÷ 직전 20거래일 평균"으로 칠한다 — 3배 이상 주황, 1배 흰색, 0.5배 이하 회색(적을수록 회색, 사이는 부드럽게 섞음).
+// 장이 열려 있는 동안에는 하루 전체가 아니라 "장 시작 ~ 지금 시각"까지의 누적 거래대금을 "직전 20거래일의 같은 시각까지 누적 평균"과 비교한다
+// (기준선은 data/volume-profile.json — scripts/build-volume-profile.py가 야후 1시간봉으로 매일 계산, 시간 사이는 직선 보간).
+// 오늘 값: 미국 = 실시간 스크리너(refreshLiveData), 한국 = 워커 /kr-quotes의 vals. 실시간 값이 아직 없는 보기(ETF·코인 스냅샷 등)는 하루 전체끼리 비교한다.
+let volModeOn = false;
+let VOL_PROFILE = null;
+let volProfilePromise = null;
+const VOL_SESSION = { kr: { tz: "Asia/Seoul", start: 540, len: 390 }, us: { tz: "America/New_York", start: 570, len: 390 }, crypto: { tz: "UTC", start: 0, len: 1440 } };
+function loadVolProfile() {
+  if (!volProfilePromise) {
+    volProfilePromise = fetch(`../data/volume-profile.json?d=${new Date().toISOString().slice(0, 13)}`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => (VOL_PROFILE = d && d.v ? d : null))
+      .catch(() => null);
+  }
+  return volProfilePromise;
+}
+function volKindOf(sym) {
+  if (/\.(KS|KQ)$/.test(sym)) return "kr";
+  if (/-(USD|KRW|USDT)$/.test(sym)) return "crypto";
+  return "us";
+}
+function volPrevWeekday(dateStr) {
+  const d = new Date(`${dateStr}T00:00:00Z`);
+  do d.setUTCDate(d.getUTCDate() - 1);
+  while (d.getUTCDay() === 0 || d.getUTCDay() === 6);
+  return d.toISOString().slice(0, 10);
+}
+// 지금 그 시장의 "가장 최근 거래일 날짜"와 장 시작 후 흐른 분(장이 닫혀 있으면 하루 전체)
+function volSession(kind) {
+  const cfg = VOL_SESSION[kind];
+  const parts = {};
+  new Intl.DateTimeFormat("en-CA", { timeZone: cfg.tz, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", weekday: "short", hour12: false })
+    .formatToParts(new Date())
+    .forEach((p) => (parts[p.type] = p.value));
+  const date = `${parts.year}-${parts.month}-${parts.day}`;
+  const mins = (Number(parts.hour) % 24) * 60 + Number(parts.minute);
+  if (kind === "crypto") return { date, elapsed: mins, len: cfg.len, open: true };
+  const weekend = parts.weekday === "Sat" || parts.weekday === "Sun";
+  if (weekend) return { date: volPrevWeekday(date), elapsed: cfg.len, len: cfg.len, open: false }; // 주말이면 직전 금요일의 하루 전체
+  if (mins < cfg.start) return { date: volPrevWeekday(date), elapsed: cfg.len, len: cfg.len, open: false };
+  if (mins >= cfg.start + cfg.len) return { date, elapsed: cfg.len, len: cfg.len, open: false };
+  return { date, elapsed: mins - cfg.start, len: cfg.len, open: true };
+}
+// 60분 단위 누적 배열을 지금 시각(분)까지 직선으로 이어 값을 구함
+function volInterp(arr, elapsed, len) {
+  if (elapsed >= len) return arr[arr.length - 1];
+  const i = Math.floor(elapsed / 60);
+  const lower = i === 0 ? 0 : arr[i - 1];
+  const upper = arr[i];
+  const span = Math.min(60 * (i + 1), len) - i * 60;
+  return lower + ((upper - lower) * (elapsed - i * 60)) / span;
+}
+// 종목 하나의 대금 배수(오늘 ÷ 기준) — 계산할 수 없으면 undefined
+function volRatioOf(c) {
+  if (!VOL_PROFILE) return undefined;
+  const ent = VOL_PROFILE.v[c.symbol];
+  const val = c.dollarVolume;
+  if (!ent || !c.volLive || !(val > 0)) return undefined; // 배치 스냅샷(며칠 전 값)은 오늘 값이 아니라서 쓰지 않음 — 실시간 값만
+  const kind = volKindOf(c.symbol);
+  const ses = volSession(kind);
+  const base = (VOL_PROFILE.asOf && VOL_PROFILE.asOf[kind]) === ses.date ? ent[0] : ent[1]; // 기준선이 오늘을 이미 포함하면 오늘을 뺀 쪽
+  const elapsed = kind === "crypto" ? ses.len : ses.elapsed; // 코인은 24시간 거래대금이라 하루 전체 평균과 비교
+  if (elapsed < 10) return undefined; // 장 시작 직후 몇 분은 기준이 너무 작아 값이 널뛰므로 집계 대기
+  const exp = volInterp(base, elapsed, ses.len);
+  return exp > 0 ? val / exp : undefined;
+}
+const VOL_GRAY = [156, 163, 175];
+const VOL_WHITE = [255, 255, 255];
+const VOL_ORANGE = [249, 115, 22];
+function volColor(r) {
+  if (r === undefined || !Number.isFinite(r)) return null;
+  if (r >= 3) return VOL_ORANGE;
+  if (r >= 1) return mixRgb(VOL_WHITE, VOL_ORANGE, (r - 1) / 2);
+  if (r > 0.5) return mixRgb(VOL_GRAY, VOL_WHITE, (r - 0.5) / 0.5);
+  return VOL_GRAY;
+}
+function fmtVolRatio(r) {
+  if (r === undefined || !Number.isFinite(r)) return "";
+  return `${r >= 10 ? r.toFixed(0) : r.toFixed(1)}배`;
+}
+// 켜져 있는 동안 모든 타일에 대금 색·배수를 칠함(꺼지면 등락 색으로 복원)
+function applyVolMode() {
+  const legend = document.querySelector(".change-legend");
+  if (legend) {
+    const labels = legend.querySelectorAll(".change-legend-label");
+    const bar = legend.querySelector(".change-legend-bar");
+    if (volModeOn) {
+      if (labels[0]) labels[0].textContent = "0.5배↓";
+      if (labels[1]) labels[1].textContent = "3배↑";
+      if (bar) bar.style.background = `linear-gradient(90deg, rgb(${VOL_GRAY.join(",")}) 0%, rgb(${VOL_WHITE.join(",")}) 36%, rgb(${VOL_ORANGE.join(",")}) 100%)`;
+    } else {
+      if (labels[0]) labels[0].textContent = "-3%";
+      if (labels[1]) labels[1].textContent = "+3%";
+      if (bar) bar.style.background = `linear-gradient(90deg, rgb(${CHG_NEG_MAX.join(",")}) 0%, rgb(${CHG_BG.join(",")}) 50%, rgb(${CHG_POS_MAX.join(",")}) 100%)`;
+    }
+  }
+  mapWorld.classList.toggle("vol-mode", volModeOn);
+  for (const c of ACTIVE_DATA.companies) {
+    const el = bubbleBySymbol.get(c.symbol);
+    if (!el) continue;
+    const label = el.querySelector(".company-tile-label");
+    const chgTextEl = el.querySelector(".company-tile-chg");
+    if (volModeOn) {
+      const r = volRatioOf(c);
+      const rgb = volColor(r);
+      el.style.setProperty("--chg", rgb ? `rgb(${rgb.join(",")})` : "rgb(229,231,235)");
+      if (chgTextEl) chgTextEl.textContent = rgb ? fmtVolRatio(r) : "-";
+      if (label) label.style.color = "#14161c"; // 흰색~주황~회색 타일 위에서는 어두운 글자
+    } else {
+      const chg = changeColor(c.changePercent);
+      el.style.setProperty("--chg", chg.css);
+      if (chgTextEl) chgTextEl.textContent = fmtTileChg(c.changePercent);
+      if (label) label.style.removeProperty("color");
+    }
+  }
+}
+// ETF·코인 보기용 실시간 거래대금 — 워커 /day-vals(현재가 × 당일 누적 거래량, 코인은 24시간 거래대금)
+async function refreshCustomVals() {
+  const syms = ACTIVE_DATA.companies.map((c) => c.symbol);
+  const bySym = new Map(ACTIVE_DATA.companies.map((c) => [c.symbol, c]));
+  let got = 0;
+  for (let i = 0; i < syms.length; i += 200) {
+    try {
+      const res = await fetch(`https://us-stock.yeop2ad.workers.dev/day-vals?symbols=${encodeURIComponent(syms.slice(i, i + 200).join(","))}`);
+      if (!res.ok) continue;
+      const data = await res.json();
+      for (const [sym, v] of Object.entries((data && data.vals) || {})) {
+        const c = bySym.get(sym);
+        if (c && v > 0) {
+          c.dollarVolume = v;
+          c.volLive = true;
+          got++;
+        }
+      }
+    } catch {}
+  }
+  return got > 0;
+}
+// 지금 보기에 실시간 거래대금이 없으면 한 번 받아 옴
+async function ensureVolLive() {
+  if (ACTIVE_DATA.companies.some((c) => c.volLive)) return true;
+  if (MAP_VIEWS[ACTIVE_VIEW] && MAP_VIEWS[ACTIVE_VIEW].custom) return refreshCustomVals();
+  if (MAP_VIEWS[ACTIVE_VIEW] && MAP_VIEWS[ACTIVE_VIEW].ipo) return false;
+  await refreshActiveMarketLiveData({ silent: true });
+  return ACTIVE_DATA.companies.some((c) => c.volLive);
+}
+document.getElementById("volModeBtn").addEventListener("click", async (e) => {
+  const btn = e.currentTarget;
+  if (volModeOn) {
+    volModeOn = false;
+    btn.classList.remove("active");
+    applyVolMode();
+    return;
+  }
+  btn.disabled = true;
+  const [data, live] = await Promise.all([loadVolProfile(), ensureVolLive()]);
+  btn.disabled = false;
+  if (!data) {
+    showToast("대금 기준 데이터를 불러오지 못했어요");
+    return;
+  }
+  volModeOn = true;
+  btn.classList.add("active");
+  applyVolMode();
+  if (!live) {
+    showToast("이 보기는 실시간 거래대금을 아직 받지 못했어요");
+    return;
+  }
+  const kinds = new Set(ACTIVE_DATA.companies.map((c) => volKindOf(c.symbol)));
+  const open = [...kinds].some((k) => volSession(k).open);
+  showToast(open ? "장 시작~지금까지 거래대금 ÷ 20일 같은 시각 평균" : "오늘 거래대금 ÷ 20일 평균");
 });
 
 // (원형/사각 토글 버튼은 2026-08-31 폐기 — 사각 고정)
@@ -1732,11 +1932,11 @@ function buildMetrics(market) {
     },
     // 본체(app.js)의 computeAttractivenessScore·computeRiskScore와 동일 공식으로 배치 계산해둔 값
     // (sector-map/scripts/fetch-momentum-scores.ps1, data/*-sectors.json에 pressureScore/stabilityScore로 저장)
-    // 2026-09-04 개편: 상승압력 → 연평균 상승(fetch-winrate-scores.ps1이 ret10yAvg로 병합), 투자안정 삭제(10년평균승률로 대체)
+    // 2026-09-04 개편: 상승압력 → 연평균 상승(fetch-winrate-scores.ps1이 ret10yAvg로 병합), 투자안정 삭제(10년월간승률로 대체)
     ret10yAvg: { label: "연평균 상승률", hasData: true, get: (c) => c.ret10yAvg, fmt: (v) => `${v > 0 ? "+" : ""}${v.toFixed(1)}%`, domainMin: -20, domainMax: 80 },
-    // 10년평균승률·주간RSI(2026-09-02, 같은 날 국내·ETF·코인 확장): 본체 승률점수와 같은 배치(fetch-winrate-scores.ps1)가
+    // 10년월간승률·주간RSI(2026-09-02, 같은 날 국내·ETF·코인 확장): 본체 승률점수와 같은 배치(fetch-winrate-scores.ps1)가
     // sp500-sectors.json/kr-sectors.json/etf-crypto-map.js에 winRateScore/rsiWeekly로 병합 — 나스닥100 보기만 칩 숨김
-    winRateScore: { label: "10년평균 승률", hasData: true, get: (c) => c.winRateScore, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 100 },
+    winRateScore: { label: "10년월간승률", hasData: true, get: (c) => c.winRateScore, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 100 },
     rsiWeekly: { label: "RSI", hasData: true, get: (c) => c.rsiWeekly, fmt: (v) => `${v.toFixed(1)}`, domainMin: 0, domainMax: 100 },
     // 상승률/하락률을 하나로 합쳐 근저(가장 큰 하락)~근고(가장 큰 상승)가 한 슬라이더 안에 전부 보이도록 함
     changePct: { label: "등락률", hasData: true, live: !isKr, get: (c) => c.changePercent, fmt: (v) => `${v.toFixed(1)}%` },
@@ -2011,7 +2211,7 @@ const SCORE_INFO_CONTENT = {
         (b, i) => `<tr><td>${i + 1}</td><td><span class="wr-bench-dot" style="background:${b.color};"></span><b>${b.name}</b></td><td>${b.up}회</td><td>${b.down}회</td><td><b class="wr-pct">${b.score.toFixed(1)}%</b></td></tr>`
       ).join("");
       return `${WINRATE_INTRO_HTML}
-        <h3 class="wr-bench-title">대표자산 10년평균 승률비교</h3>
+        <h3 class="wr-bench-title">대표자산 10년월간승률비교</h3>
         ${buildWinRateBenchmarkSvg()}
         <table class="wr-bench-table">
           <thead><tr><th>순위</th><th>이름</th><th>상승</th><th>하락</th><th>승률</th></tr></thead>
@@ -2238,7 +2438,7 @@ document.querySelectorAll(".metric-chip").forEach((btn) => {
 
 // 첫 접속 시 등락률·거래대금 칩만 눌린 모양(남색 배경+흰 글씨)으로 표시(2026-08-31 사용자 요청) —
 // 실제 필터는 걸지 않아 구간은 전체 그대로이고, 해당 칩을 처음 누르는 순간 표시가 걷히며 실제 상태로 복귀
-for (const bootKey of ["winRateScore"]) { // 2026-09-08 사용자 요청: 첫 접속엔 10년평균승률 칩 1개만 눌린 표시
+for (const bootKey of ["winRateScore"]) { // 2026-09-08 사용자 요청: 첫 접속엔 10년월간승률 칩 1개만 눌린 표시
   const bootChip = document.querySelector(`.metric-chip[data-metric="${bootKey}"]`);
   if (bootChip) bootChip.classList.add("boot-active");
 }
@@ -2386,6 +2586,7 @@ async function refreshLiveData() {
       if (typeof q.regularMarketChangePercent === "number") c.changePercent = q.regularMarketChangePercent;
       if (typeof q.regularMarketPrice === "number" && typeof q.regularMarketVolume === "number") {
         c.dollarVolume = q.regularMarketPrice * q.regularMarketVolume;
+        c.volLive = true; // 대금 모드가 "지금 시각까지 누적"으로 비교할 수 있는 실시간 값
       }
       updated++;
     }
@@ -2434,11 +2635,16 @@ async function refreshDomesticLiveData() {
     const quotes = data && data.quotes;
     if (!quotes) return false;
     const companyBySymbol = new Map(ACTIVE_DATA.companies.map((c) => [c.symbol, c]));
+    const vals = (data && data.vals) || {};
     let updated = 0;
     for (const [symbol, chg] of Object.entries(quotes)) {
       const c = companyBySymbol.get(symbol);
       if (!c) continue;
       c.changePercent = chg;
+      if (typeof vals[symbol] === "number" && vals[symbol] > 0) {
+        c.dollarVolume = vals[symbol]; // 오늘 지금까지 거래대금(원) — 워커가 현재가 × 당일 누적 거래량으로 계산
+        c.volLive = true;
+      }
       updated++;
     }
     if (updated === 0) return false;
@@ -2616,6 +2822,7 @@ document.getElementById("aiFabTime").addEventListener("click", async () => {
 async function refreshActiveMarketLiveData({ silent = false } = {}) {
   // ETF200/비트코인50 보기는 배치 스냅샷 기반이라 주식용 실시간 갱신(스크리너/국내 워커)이 적용되지 않음 — 건너뜀
   if (MAP_VIEWS[ACTIVE_VIEW] && MAP_VIEWS[ACTIVE_VIEW].custom) {
+    if (volModeOn && (await refreshCustomVals())) refreshAllBubbleColors(); // 대금 모드는 ETF·코인도 실시간 거래대금으로 다시 칠함
     renderAiFabTimestamp();
     return false;
   }
@@ -2630,13 +2837,17 @@ async function refreshActiveMarketLiveData({ silent = false } = {}) {
 
 // 원 배경/테두리 색을 근신 changePercent 기준으로 다시 칠함(값 자체는 그대로 두고 색만 갱신)
 function refreshAllBubbleColors() {
-  for (const c of ACTIVE_DATA.companies) {
-    const el = bubbleBySymbol.get(c.symbol);
-    if (!el) continue;
-    const chg = changeColor(c.changePercent);
-    el.style.setProperty("--chg", chg.css);
-    const chgTextEl = el.querySelector(".company-tile-chg");
-    if (chgTextEl) chgTextEl.textContent = fmtTileChg(c.changePercent);
+  if (volModeOn) {
+    applyVolMode(); // 대금 모드에서는 등락 색 대신 대금 색을 다시 칠함
+  } else {
+    for (const c of ACTIVE_DATA.companies) {
+      const el = bubbleBySymbol.get(c.symbol);
+      if (!el) continue;
+      const chg = changeColor(c.changePercent);
+      el.style.setProperty("--chg", chg.css);
+      const chgTextEl = el.querySelector(".company-tile-chg");
+      if (chgTextEl) chgTextEl.textContent = fmtTileChg(c.changePercent);
+    }
   }
   refreshMarketIndexLabels(); // 상단 시장 이름 옆 평균 등락률도 근신 값으로
   // 지도 타일 색상이 새로 갱신될 때, 지금 상세시트가 열려서 보고 있는 종목이 있다면 그 시트의 현재가/등락률도 같이 근신화
@@ -2661,6 +2872,7 @@ function rerenderMap(animate) {
   fitToViewport(!!animate);
   applyAllFilters(); // 균등/시총 전환처럼 데이터셋은 그대로인 경우, 새로 그려진 원에도 기존 필터를 다시 적용
   applyChangeModeToSectorBubbles(); // 등락 모드가 켜져 있었다면 새로 만든 섹터 원에도 채색·평균값을 다시 적용(시총/균등 가중 방식도 반영)
+  if (volModeOn) applyVolMode(); // 대금 모드도 새로 그린 타일에 다시 적용
 }
 
 // 버튼 라벨은 "현재 모드"를 표시(균등↔시총) — 누르면 반대 모드로 전환되며 라벨도 함께 바뀜(사용자 확정 방식)
@@ -2966,9 +3178,10 @@ async function setMapView(viewKey, animate) {
   ACTIVE_VIEW = viewKey;
   // ETF200/비트코인50은 상단 필터 칩을 52주최저~투자안정 6개만 노출(CSS가 body[data-map-view-kind]로 전환)
   document.body.dataset.mapViewKind = v.custom ? "asset" : "stock";
-  // 10년평균승률·RSI 칩은 S&P200/S&P500 보기 전용(us-stock-only-chip) — CSS가 body[data-map-view]로 전환(2026-09-02)
+  // 10년월간승률·RSI 칩은 S&P200/S&P500 보기 전용(us-stock-only-chip) — CSS가 body[data-map-view]로 전환(2026-09-02)
   document.body.dataset.mapView = viewKey;
   loadMarket(v.market, animate); // 내부에서 updateActiveDataForUniverseState + syncMapViewUi 호출
+  if (volModeOn) ensureVolLive().then(() => applyVolMode()); // 대금 모드로 보기를 바꾸면 새 보기의 실시간 거래대금을 받아 다시 칠함
 }
 
 const mapViewSelectEl = document.getElementById("mapViewSelect");
@@ -2977,6 +3190,12 @@ document.getElementById("mapViewBtn").addEventListener("click", (e) => {
   mapViewSelectEl.classList.toggle("open");
 });
 document.getElementById("mapViewMenu").addEventListener("click", (e) => {
+  if (e.target.closest("#mapViewAddBtn")) {
+    mapViewSelectEl.classList.remove("open");
+    renderMapAddList();
+    document.getElementById("mapAddBack").style.display = "flex";
+    return;
+  }
   const item = e.target.closest(".map-view-item");
   if (!item) return;
   mapViewSelectEl.classList.remove("open");
@@ -2987,6 +3206,28 @@ document.getElementById("mapViewMenu").addEventListener("click", (e) => {
 document.addEventListener("click", (e) => {
   if (!mapViewSelectEl.contains(e.target)) mapViewSelectEl.classList.remove("open");
 });
+// 보기 추가 창 — 추가/제거를 누르면 바로 저장되고 목록이 갱신됨
+(function initMapAddModal() {
+  const back = document.getElementById("mapAddBack");
+  const close = () => {
+    back.style.display = "none";
+    renderMapViewMenu();
+  };
+  document.getElementById("mapAddCloseBtn").addEventListener("click", close);
+  back.addEventListener("click", (e) => {
+    if (e.target === back) close();
+  });
+  document.getElementById("mapAddList").addEventListener("click", (e) => {
+    const b = e.target.closest(".map-add-toggle");
+    if (!b) return;
+    const k = b.dataset.view;
+    const extras = loadMapViewExtras();
+    const next = extras.includes(k) ? extras.filter((x) => x !== k) : [...extras, k];
+    saveMapViewExtras(next);
+    renderMapAddList();
+    if (!next.includes(k) && ACTIVE_VIEW === k) setMapView("sp200", true); // 지금 보던 보기를 빼면 기본 보기로
+  });
+})();
 
 // 지도를 떠날 때 현재 보기(코스피200/S&P500/ETF200 등)를 저장 — 뒤로가기로 돌아오면(브라우저가 페이지를
 // 새로 로드하는 경우에도) 기본 보기 대신 보던 보기로 복원(2026-09-03 사용자 요청). bfcache로 돌아오면
@@ -3010,18 +3251,13 @@ document.getElementById("bottomNavUsBtn2").addEventListener("click", () => goToM
 document.getElementById("bottomNavEtfBtn2").addEventListener("click", () => goToMainSite("etf"));
 document.getElementById("bottomNavCryptoBtn2").addEventListener("click", () => goToMainSite("crypto"));
 // 더보기 버튼은 본체 상단으로 이동(2026-09-08) — 지도 하단에서는 제거
-// 2026-10-15 하단 메뉴 개편: 지도(지금 화면) - 내투자 - 인사이트 - 더보기
+// 2026-10-19 하단 메뉴 개편: 시장(지금 화면) - 별별순위 - 실적 - 신기술 - 더보기
 const _mapBtn2 = document.getElementById("bottomNavMapBtn2");
-if (_mapBtn2) {
-  _mapBtn2.classList.add("active");
-  _mapBtn2.addEventListener("click", () => {}); // 이미 지도 화면
-}
-const _investBtn2 = document.getElementById("bottomNavInvestBtn2");
-if (_investBtn2) _investBtn2.addEventListener("click", () => goToMainSite("invest"));
-const _insightBtn2 = document.getElementById("bottomNavInsightBtn2");
-if (_insightBtn2) _insightBtn2.addEventListener("click", () => goToMainSite("insight"));
-const _moreBtn2 = document.getElementById("bottomNavMoreBtn2");
-if (_moreBtn2) _moreBtn2.addEventListener("click", () => goToMainSite("more"));
+if (_mapBtn2) _mapBtn2.classList.add("active"); // 이미 시장 화면
+[["bottomNavRankBtn2", "rank"], ["bottomNavEarnBtn2", "earn"], ["bottomNavTechBtn2", "tech"], ["bottomNavMoreBtn2", "more"]].forEach(([id, target]) => {
+  const btn = document.getElementById(id);
+  if (btn) btn.addEventListener("click", () => goToMainSite(target));
+});
 
 // ---------- 초기화 ----------
 window.addEventListener("resize", () => fitToViewport(false));
@@ -3046,7 +3282,10 @@ const initialView =
   (requestedMarket === "domestic" && typeof KR_CORE_DATA !== "undefined" && KR_CORE_DATA.companies && KR_CORE_DATA.companies.length
     ? "kospi200"
     : "sp200");
-setMapView(initialView, false).finally(() => {
+// 목록에 없는 보기(추가하지 않았거나 뺀 보기)로 들어오면 기본 보기로
+const initialViewSafe = visibleMapViews().includes(initialView) ? initialView : initialView === "kosdaq150" || initialView === "krIpo" ? "kospi200" : "sp200";
+renderMapViewMenu();
+setMapView(initialViewSafe, false).finally(() => {
   renderTickerTape().catch(() => {});
   loadingIndicator.classList.add("hidden");
   // 지도 자체 첫 렌더(타일 배치까지)가 끝났으므로 본체 첫 화면과 같은 전체화면 스플래시를 내림 —

@@ -1131,7 +1131,7 @@ body {
 }
 body.map-fixed-mode .top-bar { opacity: 0; transform: translateY(-100%); pointer-events: none; }
 body.map-fixed-mode .bottom-nav { opacity: 0; transform: translateY(100%); pointer-events: none; }
-body.map-fixed-mode .map-side-buttons .side-btn:not(#lockModeBtn) { opacity: 0; transform: translateX(18px); pointer-events: none; }
+body.map-fixed-mode .map-side-buttons .side-btn:not(#volModeBtn) { opacity: 0; transform: translateX(18px); pointer-events: none; }
 body.map-fixed-mode .ai-fab-row,
 body.map-fixed-mode .locate-fab,
 body.map-fixed-mode .bottom-left-controls { opacity: 0; pointer-events: none; }
@@ -1219,3 +1219,16 @@ body[data-map-view-kind="asset"] .metric-chip[data-metric="changePct"]:not(.asse
 /* 눌린(활성) 칩 색 — 검정에 가까운 네이비라 잘 안 보인다는 사용자 의견(2026-10-06)으로 마켓맵 로고의 초록(#16a34a) */
 .filter-chip.active,
 .filter-chip.boot-active { border-color: #16a34a; background: #16a34a; color: #ffffff; }
+
+/* ===== 2026-10-19 개편: 보기 목록 맨 아래 + 버튼, 보기 추가 창 ===== */
+.map-view-add { margin-top: 4px; border: 1px dashed rgba(0,0,0,0.25); background: transparent; color: var(--text-dark); font-size: 18px; font-weight: 800; line-height: 1; padding: 8px 0; border-radius: 10px; cursor: pointer; }
+.map-view-add:active { background: rgba(0,0,0,0.06); }
+.map-add-back { position: fixed; inset: 0; z-index: 700; background: rgba(0,0,0,0.42); align-items: flex-end; justify-content: center; }
+.map-add-sheet { width: 100%; max-width: 520px; background: var(--white); border-radius: 22px 22px 0 0; padding: 18px 20px calc(22px + env(safe-area-inset-bottom, 0px)); }
+.map-add-head { display: flex; align-items: center; justify-content: space-between; font-size: 18px; color: var(--text-dark); }
+.map-add-head button { border: none; background: none; font-size: 18px; color: var(--text-mid); cursor: pointer; padding: 6px; }
+.map-add-note { margin: 6px 0 12px; font-size: 12px; color: var(--text-mid); line-height: 1.5; }
+.map-add-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 2px; border-bottom: 1px solid rgba(0,0,0,0.08); }
+.map-add-name { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; color: var(--text-dark); }
+.map-add-toggle { border: 1.5px solid var(--navy); background: transparent; color: var(--navy); font-size: 13px; font-weight: 800; padding: 7px 14px; border-radius: 999px; cursor: pointer; }
+.map-add-toggle.on { background: var(--navy); color: #fff; }

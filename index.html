@@ -6,12 +6,12 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>마켓맵 - 모든 주식을 지도 위에서</title>
-<meta name="description" content="한국·미국주식, ETF, 코인을 10년평균 승률 하나로 비교하는 투자 지도. 인기종목·자동추적·상관관계·마켓맵 지도" />
+<meta name="description" content="한국·미국주식, ETF, 코인을 10년월간승률 하나로 비교하는 투자 지도. 인기종목·자동추적·상관관계·마켓맵 지도" />
 
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="마켓맵 (MarketMap)" />
 <meta property="og:title" content="마켓맵 - 모든 주식을 지도 위에서" />
-<meta property="og:description" content="한국·미국주식, ETF, 코인을 10년평균 승률 하나로 비교하는 투자 지도. 인기종목·자동추적·상관관계·마켓맵 지도" />
+<meta property="og:description" content="한국·미국주식, ETF, 코인을 10년월간승률 하나로 비교하는 투자 지도. 인기종목·자동추적·상관관계·마켓맵 지도" />
 <meta property="og:url" content="https://marketmap.kr/" />
 <meta property="og:image" content="https://marketmap.kr/og-image.png?v=20260908b" />
 <meta property="og:image:width" content="1024" />
@@ -29,12 +29,12 @@
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="마켓맵 - 모든 주식을 지도 위에서" />
-<meta name="twitter:description" content="한국·미국주식, ETF, 코인을 10년평균 승률 하나로 비교하는 투자 지도. 인기종목·자동추적·상관관계·마켓맵 지도" />
+<meta name="twitter:description" content="한국·미국주식, ETF, 코인을 10년월간승률 하나로 비교하는 투자 지도. 인기종목·자동추적·상관관계·마켓맵 지도" />
 <meta name="twitter:image" content="https://marketmap.kr/og-image.png?v=20260908b" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=20261015g" />
+<link rel="stylesheet" href="style.css?v=20261019a" />
 <link rel="stylesheet" href="ai-chat.css?v=20261009a" />
 <link rel="stylesheet" href="embed.css?v=13" />
 <script>
@@ -77,9 +77,15 @@
       <!-- 헤더는 남색 배경이라 흰 링을 두른 전용 마크(2026-09-08 로고 교체) -->
       <img src="logos/marketmap-header.png?v=20260908b" alt="마켓맵" class="fh-banner" />
       <!-- 로고 옆 현재 시장 표시(2026-08-31): 국내 모드면 "국내", 해외 모드면 "해외" — syncMarketModeUI가 갱신 -->
-      <span id="fhMarketLabel" class="fh-market-label">해외</span>
-      <!-- 시장 표시 옆 네모 국기(2026-09-01 사용자 요청): 국내=태극기, 해외=성조기 — syncMarketModeUI가 채움 -->
-      <span id="fhMarketFlag" class="fh-market-flag" aria-hidden="true"></span>
+      <!-- 2026-10-19 개편: 별별순위(검색 후)·실적에서는 로고 옆 투자군 이름을 눌러 아래로 내려 고름, 신기술에서는 "신기술" 글자만 -->
+      <div class="fh-sec-select" id="fhSecSelect">
+        <button type="button" class="fh-sec-btn" id="fhSecBtn" aria-haspopup="true">
+          <span id="fhMarketLabel" class="fh-market-label">해외</span>
+          <span id="fhMarketFlag" class="fh-market-flag" aria-hidden="true"></span>
+          <svg class="fh-sec-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="fh-sec-menu" id="fhSecMenu"></div>
+      </div>
       <!-- 상단 국내/해외 토글은 하단 네비 국내/해외 버튼으로 이동(2026-08-31) — JS(setAppMarketMode 등)가 참조하므로 DOM은 숨김 유지 -->
       <div class="market-mode-toggle" id="marketModeToggle" role="group" aria-label="국내/해외 전환" style="display:none;">
         <button type="button" class="market-mode-btn market-mode-btn-kr" id="marketModeKrBtn" data-mode="kr" data-i18n="market.kr">국내</button>
@@ -99,7 +105,6 @@
         <button type="button" class="fh-tab" data-fhtab="tab.popular" data-i18n="tab.popular">인기종목</button>
         <!-- 2026-10-06 사용자 요청: 상단 탭은 인기종목 - 투자분석 - (지도)종목찾기 3개만. 투자분석은 투자방법별 수익 비교 + 내 포트폴리오,
              종목찾기는 마켓맵(지도)으로 이동. 나머지 탭(승률·수익률·변동성·배당률·IPO 등)은 JS가 참조하므로 DOM만 남기고 숨김 -->
-        <button type="button" class="fh-tab" data-fhtab="tab.analysis" data-i18n="tab.analysis">투데이</button>
         <!-- 2026-10-06 사용자 요청: 인기종목 - 투자분석 - 자동추적 - ★관심종목(종목찾기 탭은 삭제, 마켓맵은 더보기에서) -->
         <!-- 2026-10-08 사용자 요청: 자동추적 자리에 간편검색(누르면 검색 창), 자동추적은 더보기로. 관심종목 별 아이콘 삭제 -->
         <button type="button" class="fh-tab" data-fhtab="tab.autotrack" data-i18n="tab.autotrack" style="display:none;">자동추적</button>
@@ -120,7 +125,7 @@
         <button type="button" class="fh-tab" data-fhtab="tab.cryptoCap" data-i18n="tab.cryptoCap" style="display:none;">시가총액</button>
         <button type="button" class="fh-tab" data-fhtab="tab.cryptoDrawdown" data-i18n="tab.cryptoDrawdown" style="display:none;">최대낙폭</button>
         <!-- 미래예측(시장동향)·인사이트는 상단 탭에서 내림(2026-09-12 사용자 요청) — 인사이트는 더보기로,
-             미래예측 항목(10년평균 승률·연평균 상승)은 승률·수익률 탭으로 올라갔다. JS가 참조하므로 DOM은 유지하고 숨김만 -->
+             미래예측 항목(10년월간승률·연평균 상승)은 승률·수익률 탭으로 올라갔다. JS가 참조하므로 DOM은 유지하고 숨김만 -->
         <button type="button" class="fh-tab" data-fhtab="tab.trend" data-i18n="tab.trend" style="display:none;">미래예측</button>
         <!-- IPO(2026-09-11 사용자 요청): 최근 5년 신규 상장 종목 — 주식 섹션 전용 -->
         <button type="button" class="fh-tab" data-fhtab="tab.ipo" data-i18n="tab.ipo">IPO</button>
@@ -279,8 +284,6 @@
           <!-- 2026-09-15 사용자 요청: 하위 보기 = 개요 - S리포트 - 매출액 - 뉴스 (invest점수 탭 삭제) -->
           <button type="button" class="cat-btn" id="summarySubtabSReportBtn" data-summary-subtab="sreport"><span class="tab-label">핵심지표</span></button>
           <button type="button" class="cat-btn" id="summarySubtabRevenueBtn" data-summary-subtab="revenue"><span class="tab-label">매출액</span></button>
-          <!-- 2026-09-19 사용자 요청: 매출액 다음에 리스크 점검(국내부터 — 임금 감소·동결, 인원 감축) -->
-          <button type="button" class="cat-btn" id="summarySubtabRiskBtn" data-summary-subtab="risk"><span class="tab-label">리스크</span></button>
           <button type="button" class="cat-btn" id="summarySubtabNewsBtn" data-summary-subtab="news"><span class="tab-label">뉴스</span></button>
         </div>
 
@@ -393,21 +396,21 @@
 
         <!-- invest점수 탭은 2026-09-15 사용자 요청으로 삭제 — 아래 섹션은 다른 코드가 요소를 참조해서 DOM만 숨겨 둠 -->
         <div class="summary-subtab-panel" data-summary-subtabpanel="investscore" style="display:none;">
-        <!-- 상승압력도·투자안정성 섹션은 2026-09-04 사용자 요청으로 삭제 — 개요의 9칸 지표 표(10년평균 승률/상승률/RSI)로 대체 -->
+        <!-- 상승압력도·투자안정성 섹션은 2026-09-04 사용자 요청으로 삭제 — 개요의 9칸 지표 표(10년월간승률/상승률/RSI)로 대체 -->
 
         <!-- 승률점수(2026-09-02): 최근 10년 월간 상승 개월수/총 개월수*100 — S&P500 미국주식 전용(DB에 없는 종목은 섹션째 숨김) -->
         <section class="flush-section" id="winRateFlushSection" style="display:none;">
           <div class="section-heading-row">
-            <h2 class="invest-score-h2">10년평균 승률</h2>
+            <h2 class="invest-score-h2">10년월간승률</h2>
             <button type="button" id="winRateDetailBtn" class="score-method-detail-btn">+자세히</button>
           </div>
-          <!-- +자세히(2026-09-03): 대표 자산 11종의 10년평균 승률 벤치마크(0~100 가로선+점 + 순위표) — renderWinRateBenchmarkDetail이 채움 -->
+          <!-- +자세히(2026-09-03): 대표 자산 11종의 10년월간승률 벤치마크(0~100 가로선+점 + 순위표) — renderWinRateBenchmarkDetail이 채움 -->
           <div id="winRateDetailWrap" class="chart-detail-wrap" style="display:none;"></div>
           <div id="winRateSection" class="section-body"></div>
         </section>
 
         <!-- 연평균 상승(2026-09-12 사용자 요청): INVEST점수에서 빠져 있던 파란 원판 — 배치 DB의 ret10y(연복리 수익률).
-             10년평균 승률 섹션과 같은 틀이고, 대표 자산 비교 같은 "+자세히"는 두지 않는다(renderRet10이 채움) -->
+             10년월간승률 섹션과 같은 틀이고, 대표 자산 비교 같은 "+자세히"는 두지 않는다(renderRet10이 채움) -->
         <section class="flush-section" id="ret10FlushSection" style="display:none;">
           <div class="section-heading-row">
             <h2 class="invest-score-h2">연평균 상승</h2>
@@ -428,13 +431,8 @@
 
         </div>
 
-        <!-- 리스크 점검(2026-09-19): DART 사업보고서 임직원 현황(data/dart-financials.json) 기준 — renderRiskPanel이 채움 -->
-        <div class="summary-subtab-panel" data-summary-subtabpanel="risk">
-        <section class="flush-section">
-          <h2 id="riskHeading">리스크 점검</h2>
-          <div id="riskSection" class="section-body"></div>
-        </section>
-        </div>
+        <!-- 2026-10-19: 리스크 점검 탭은 없앴다(52주 최대 하락폭은 개요의 "미래예측" 옆 버튼으로). 옛 렌더 함수가 이 자리를 참조해 숨김으로만 남김 -->
+        <div style="display:none;"><span id="riskHeading"></span><div id="riskSection"></div></div>
 
         <div class="summary-subtab-panel" data-summary-subtabpanel="news">
         <section class="flush-section">
@@ -716,11 +714,6 @@
           <div id="earningsResults"></div>
         </div>
 
-        <!-- 투데이(2026-10-14): AI투데이(뉴스 TOP5) + 신기술 — renderToday가 채움 -->
-        <div id="analysisGroup" style="display:none;">
-          <div id="todayRoot"></div>
-        </div>
-
         <div id="popularGroup" style="display:none;">
           <!-- 상단 대표 2종목 예시 표(삼성전자·SK하이닉스 / 엔비디아·애플 등)는 2026-09-10 사용자 요청으로 삭제 —
                인기종목 목록 표가 같은 구성이라 중복이었음 -->
@@ -783,16 +776,11 @@
     </p>
   </div>
 
-  <!-- 2026-10-15 하단 메뉴 개편: 내투자 · 인사이트 탭 페이지(하단 네비는 가리지 않음) -->
-  <section id="tabPageInvest" class="tab-page" style="display:none;">
-    <div class="tab-page-bar"><h1 class="tab-page-title">내투자</h1></div>
-    <div class="tab-page-body" id="myInvestRoot"></div>
-  </section>
-  <section id="tabPageInsight" class="tab-page" style="display:none;">
-    <div class="tab-page-bar"><h1 class="tab-page-title">인사이트</h1></div>
+  <!-- 2026-10-19 개편: 신기술 탭 페이지(하단 네비는 가리지 않음) -->
+  <section id="tabPageTech" class="tab-page" style="display:none;">
+    <div class="tab-page-bar"><h1 class="tab-page-title">신기술</h1></div>
     <div class="tab-page-body">
-      <div class="insight-chips" id="insightChips"></div>
-      <div id="insightRoot"></div>
+      <div id="techRoot"></div>
     </div>
   </section>
 
@@ -817,18 +805,22 @@
       <svg class="bottom-nav-flag" viewBox="0 0 21 14"><circle cx="10.5" cy="7" r="6.6" fill="#f7931a"/><text x="10.6" y="9.9" text-anchor="middle" font-size="9" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif">₿</text></svg>
       <span data-i18n="nav.crypto">비트코인</span>
     </button>
-    <!-- 2026-10-15 하단 메뉴 개편: 지도 - 내투자 - 인사이트 - 더보기(위 한국/미국/ETF/비트코인 버튼은 더보기 패널로 이동) -->
-    <button type="button" class="bottom-nav-btn" id="bottomNavMapBtn" aria-label="지도">
+    <!-- 2026-10-19 하단 메뉴 개편: 시장 - 별별순위 - 실적 - 신기술 - 더보기 (위 한국/미국/ETF/비트코인 버튼은 숨김 상태로 유지, 화면 전환 코드가 대신 누름) -->
+    <button type="button" class="bottom-nav-btn" id="bottomNavMapBtn" aria-label="시장">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M3 6.5l6-2.5 6 2.5 6-2.5v13.5l-6 2.5-6-2.5-6 2.5V6.5Z"/><path d="M9 4v13.5M15 6.5V20"/></svg>
-      <span>지도</span>
+      <span>시장</span>
     </button>
-    <button type="button" class="bottom-nav-btn" id="bottomNavInvestBtn" aria-label="내투자">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M3 17l5.5-5.5 4 3L20 7"/><path d="M15 7h5v5"/></svg>
-      <span>내투자</span>
+    <button type="button" class="bottom-nav-btn" id="bottomNavRankBtn" aria-label="별별순위">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z"/></svg>
+      <span>별별순위</span>
     </button>
-    <button type="button" class="bottom-nav-btn" id="bottomNavInsightBtn" aria-label="인사이트">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3Z"/></svg>
-      <span>인사이트</span>
+    <button type="button" class="bottom-nav-btn" id="bottomNavEarnBtn" aria-label="실적">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M4 20h16"/><rect x="5" y="11" width="3.4" height="9" rx="0.8"/><rect x="10.3" y="6" width="3.4" height="14" rx="0.8"/><rect x="15.6" y="13" width="3.4" height="7" rx="0.8"/></svg>
+      <span>실적</span>
+    </button>
+    <button type="button" class="bottom-nav-btn" id="bottomNavTechBtn" aria-label="신기술">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="0.8"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></svg>
+      <span>신기술</span>
     </button>
     <button type="button" class="bottom-nav-btn" id="bottomNavMoreBtn" aria-label="더보기">
       <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="3" rx="1.5" fill="currentColor"/><rect x="4" y="10.5" width="16" height="3" rx="1.5" fill="currentColor"/><rect x="4" y="15" width="16" height="3" rx="1.5" fill="currentColor"/></svg>
@@ -856,6 +848,25 @@
       <button type="button" class="more-panel-close" id="morePanelCloseBtn" aria-label="닫기">✕</button>
       <h2 class="search-overlay-title more-panel-title" data-i18n="nav.more">더보기</h2>
       <div class="more-panel-list">
+        <!-- 2026-10-19 개편: 더보기는 검색창 + 공지사항·문의하기·앱 정보만. 나머지 기능은 아래 숨김 영역(JS가 버튼을 참조)에 남기고 검색창으로 이름·연관어를 찾아 연다 -->
+        <div class="more-search">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="20" y1="20" x2="15.3" y2="15.3"/></svg>
+          <input type="search" id="moreSearchInput" placeholder="기능 검색 (예: 관심종목, 급등, 공포지수)" autocomplete="off" enterkeyhint="search" />
+        </div>
+        <div class="more-search-results" id="moreSearchResults"></div>
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelNoticeBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h13l3 3-3 3H4V5Z" /><path d="M7 5v15" /></svg>
+          <span class="more-panel-item-label" data-i18n="more.notice">공지사항</span>
+        </button>
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelContactBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2" /><path d="M3.5 6.5 12 13l8.5-6.5" /></svg>
+          <span class="more-panel-item-label" data-i18n="more.contact">문의하기</span>
+        </button>
+        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelAboutBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" /><path d="M12 11v5.5M12 8v.01" /></svg>
+          <span class="more-panel-item-label" data-i18n="more.about">앱 정보</span>
+        </button>
+        <div id="moreLegacy" style="display:none;">
         <!-- 2026-10-15: 하단 메뉴에서 빠진 한국주식·미국주식·ETF·비트코인 (기존 인기종목·투데이·실적·순위검색 화면으로 이동) -->
         <button type="button" class="more-panel-item more-panel-item-active more-panel-section-item" id="morePanelKrBtn"><span class="more-panel-item-label">한국주식</span></button>
         <button type="button" class="more-panel-item more-panel-item-active more-panel-section-item" id="morePanelUsBtn"><span class="more-panel-item-label">미국주식</span></button>
@@ -1009,18 +1020,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M3.5 20c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M16 11l2 2 4-4"/></svg>
           <span class="more-panel-item-label">접속자 관리</span>
         </button>
-        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelNoticeBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h13l3 3-3 3H4V5Z" /><path d="M7 5v15" /></svg>
-          <span class="more-panel-item-label" data-i18n="more.notice">공지사항</span>
-        </button>
-        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelContactBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2" /><path d="M3.5 6.5 12 13l8.5-6.5" /></svg>
-          <span class="more-panel-item-label" data-i18n="more.contact">문의하기</span>
-        </button>
-        <button type="button" class="more-panel-item more-panel-item-active" id="morePanelAboutBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" /><path d="M12 11v5.5M12 8v.01" /></svg>
-          <span class="more-panel-item-label" data-i18n="more.about">앱 정보</span>
-        </button>
+        </div>
       </div>
     </div>
   </div>
@@ -1117,9 +1117,7 @@
   <script src="data/logo-db.js?v=20260903g"></script>
   <script src="data/etf-meta.js?v=20260912a"></script>
   <script src="winrate-benchmark.js?v=20261007k"></script>
-  <script src="app.js?v=20261015j"></script>
-  <script src="invest.js?v=20261015c"></script>
-  <script src="invest-records.js?v=20261015a"></script>
+  <script src="app.js?v=20261019a"></script>
   <script src="embed.js?v=13"></script>
   <script src="ai-chat.js?v=20261009a"></script>
 </body>

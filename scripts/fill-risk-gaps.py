@@ -228,8 +228,31 @@ def run_us():
     json.dump(data, open(US_FILE, "w", encoding="utf-8", newline="\n"), ensure_ascii=False, indent=1)
 
 
+def run_us_crash():
+    """미국 종목의 52주 최대 하락폭(급락률)만 매일 새로 계산한다(2026-10-19) — 한국은 run_kr이 이미 매일 갱신.
+    종목 상세의 "52주 최대 하락폭" 전체 분포·순위가 어제·그제 값이 아니라 오늘 값이 되도록."""
+    data = json.load(open(US_FILE, encoding="utf-8-sig"))
+    items = data["items"]
+    syms = list(items.keys())
+    with ThreadPoolExecutor(4) as ex:
+        crashes = list(ex.map(y_crash, syms))
+    ok = 0
+    for sym, c in zip(syms, crashes):
+        if c:
+            items[sym]["crash"] = c
+            ok += 1
+    print("미국 급락률 갱신", ok, "/", len(syms), flush=True)
+    good = ok >= len(syms) * 0.9
+    if not good:
+        print("⚠ 미국 급락률 갱신 실패 — 마지막 오류:", CRASH_LAST_ERR[0], flush=True)
+    json.dump(data, open(US_FILE, "w", encoding="utf-8", newline="\n"), ensure_ascii=False, indent=1)
+    return good
+
+
 if __name__ == "__main__":
     which = sys.argv[1] if len(sys.argv) > 1 else "all"
+    if which == "us-crash":
+        sys.exit(0 if run_us_crash() else 1)
     crash_ok = True
     if which in ("kr", "all"):
         crash_ok = run_kr()

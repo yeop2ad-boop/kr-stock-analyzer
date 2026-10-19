@@ -200,7 +200,7 @@
           }, 250);
         }
       } else if (view === "info") {
-        // 마켓맵 순위 화면의 "+승률이란"을 눌렀을 때 펼쳐지는 내용(설명 + 대표자산 10년평균 승률 비교)을 그대로
+        // 마켓맵 순위 화면의 "+승률이란"을 눌렀을 때 펼쳐지는 내용(설명 + 대표자산 10년월간승률 비교)을 그대로
         var box = document.createElement("div");
         box.id = "embedInfo";
         box.className = "chart-detail-wrap chart-detail-expanded popular-winrate-info";

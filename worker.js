@@ -774,19 +774,22 @@ async function handleFutureRunNow(env) {
 // Yahoo의 배치 시세(v7/finance/quote)는 최근 인증(crumb)이 필요해져 브라우저에서 직접 호출할 수 없게 됐다(확인함).
 // 해외(S&P500)는 스크리너 API 한 번으로 전체를 받아오지만 KRX용 스크리너는 없어서, 이미 FOMO지수 계산에 쓰고 있는
 // KR_FOMO_UNIVERSE(약 350종목)를 재사용해 서버에서 종목별로 훑은 뒤 등락률만 모아 KV에 15분 캐시해둔다.
-const KR_QUOTES_CACHE_KEY = "kr_quotes_cache";
+const KR_QUOTES_CACHE_KEY = "kr_quotes_cache_v2"; // 2026-10-19: 거래대금(vals) 추가로 키 변경(옛 캐시엔 vals가 없음)
 const KR_QUOTES_CACHE_TTL_MS = 15 * 60 * 1000;
 
-async function fetchKrQuoteChangePct(symbol) {
+// 종목 하나의 오늘 등락률 + 오늘 지금까지의 거래대금 근사값(현재가 × 당일 누적 거래량).
+// 거래대금은 지도 "대금" 모드가 직전 20거래일 같은 시각 기준선(data/volume-profile.json)과 비교하는 데 쓴다(2026-10-19)
+async function fetchKrQuoteSnap(symbol) {
   try {
     const chart = await fetchYahooChart(symbol, "5d", "1d");
     const result = chart && chart.chart && chart.chart.result && chart.chart.result[0];
     const meta = result && result.meta;
     if (!meta) return null;
+    const val = Number.isFinite(meta.regularMarketPrice) && Number.isFinite(meta.regularMarketVolume) ? Math.round(meta.regularMarketPrice * meta.regularMarketVolume) : null;
     // 2026-10-15: 종목 상세(앱 getDailyChangePercent)와 같은 값이 나오도록 Yahoo가 직접 주는 당일 등락률을 우선 사용한다.
     // 예전엔 "일봉 뒤에서 두 번째 종가"를 전일 종가로 가정했는데, 한국 종목은 마지막 일봉이 어제(10/13)이고 현재가는 오늘(10/14)인 시간대가
     // 있어서 이틀 전 종가와 비교(예: SK이노베이션 상세 +4.08%인데 목록은 +6.81%, SK스퀘어 -0.58%인데 -13.41%)되는 오류가 있었음
-    if (Number.isFinite(meta.regularMarketChangePercent)) return meta.regularMarketChangePercent;
+    if (Number.isFinite(meta.regularMarketChangePercent)) return { chg: meta.regularMarketChangePercent, val };
     const pairs = chartClosePairsWorker(chart);
     if (!pairs.length) return null;
     const latest = pairs[pairs.length - 1];
@@ -796,10 +799,43 @@ async function fetchKrQuoteChangePct(symbol) {
     const lastIsToday = Number.isFinite(meta.regularMarketTime) && kstDay(latest.t) === kstDay(meta.regularMarketTime);
     const prevClose = lastIsToday ? (pairs.length >= 2 ? pairs[pairs.length - 2].c : meta.chartPreviousClose ?? null) : latest.c;
     if (prevClose === null || prevClose === undefined || price === null || price === undefined || !prevClose) return null;
-    return ((price - prevClose) / prevClose) * 100;
+    return { chg: ((price - prevClose) / prevClose) * 100, val };
   } catch {
     return null;
   }
+}
+
+// ---------- 지도 "대금" 모드(ETF·코인 보기) — 오늘 지금까지의 거래대금을 종목 목록으로 조회 ----------
+// /day-vals?symbols=VOO,069500.KS,BTC-USD … (최대 250개). 주식·ETF는 현재가 × 당일 누적 거래량, 코인은 야후 거래량이 이미 달러 거래대금(24시간)이라 그대로.
+// 같은 목록 요청은 10분간 KV에 캐시한다.
+async function handleDayVals(requestUrl, env) {
+  const raw = (requestUrl.searchParams.get("symbols") || "").split(",").map((x) => x.trim()).filter(Boolean);
+  const symbols = [...new Set(raw)].filter((x) => /^[A-Za-z0-9.\-=^]{1,24}$/.test(x)).slice(0, 250);
+  if (!symbols.length) return jsonResponse({ error: "symbols 파라미터가 필요합니다." }, 400);
+  let h = 5381;
+  for (const ch of symbols.join(",")) h = ((h << 5) + h + ch.charCodeAt(0)) | 0;
+  const cacheKey = `day_vals_${(h >>> 0).toString(36)}_${symbols.length}`;
+  if (env.CHAT_KV) {
+    const cached = await env.CHAT_KV.get(cacheKey, "json");
+    if (cached && Date.now() - cached.fetchedAt < 10 * 60 * 1000) return jsonResponse(cached, 200);
+  }
+  const results = await mapWithConcurrencyWorker(symbols, 16, async (sym) => {
+    try {
+      const chart = await fetchYahooChart(sym, "5d", "1d");
+      const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
+      if (!meta || !Number.isFinite(meta.regularMarketVolume)) return null;
+      const isCrypto = /-(USD|KRW|USDT)$/.test(sym);
+      if (!isCrypto && !Number.isFinite(meta.regularMarketPrice)) return null;
+      return [sym, Math.round(isCrypto ? meta.regularMarketVolume : meta.regularMarketPrice * meta.regularMarketVolume)];
+    } catch {
+      return null;
+    }
+  });
+  const vals = {};
+  for (const r of results) if (r) vals[r[0]] = r[1];
+  const payload = { vals, fetchedAt: Date.now() };
+  if (Object.keys(vals).length && env.CHAT_KV) await env.CHAT_KV.put(cacheKey, JSON.stringify(payload), { expirationTtl: 3600 });
+  return jsonResponse(payload, Object.keys(vals).length ? 200 : 502);
 }
 
 async function handleKrQuotes(env) {
@@ -811,15 +847,19 @@ async function handleKrQuotes(env) {
   }
 
   const results = await mapWithConcurrencyWorker(KR_FOMO_UNIVERSE, 16, async (symbol) => {
-    const chg = await fetchKrQuoteChangePct(symbol);
-    return chg === null ? null : [symbol, Math.round(chg * 100) / 100];
+    const snap = await fetchKrQuoteSnap(symbol);
+    return snap === null ? null : [symbol, Math.round(snap.chg * 100) / 100, snap.val];
   });
   const quotes = {};
+  const vals = {}; // 심볼 -> 오늘 지금까지 거래대금(원) 근사값
   for (const r of results) {
-    if (r) quotes[r[0]] = r[1];
+    if (r) {
+      quotes[r[0]] = r[1];
+      if (Number.isFinite(r[2])) vals[r[0]] = r[2];
+    }
   }
   if (Object.keys(quotes).length > 0) {
-    const payload = { quotes, fetchedAt: Date.now() };
+    const payload = { quotes, vals, fetchedAt: Date.now() };
     await env.CHAT_KV.put(KR_QUOTES_CACHE_KEY, JSON.stringify(payload));
     return jsonResponse(payload, 200);
   }
@@ -2084,7 +2124,7 @@ const ANSWER_BASE = [
   "당신은 증권 정보 앱 StockCHAT의 답변 도우미입니다. 사용자가 투자 초보일 수 있으니 쉬운 한국어로 짧게 답합니다.",
   "입력(JSON): 질문, 자료(우리가 가진 수치·목록). 자료에 있는 숫자와 사실만 근거로 쓰고, 자료에 없는 숫자·사실·전망 수치는 만들지 않습니다.",
   "입력에 요약초점이 있으면 요약 줄을 그 순서·초점대로 씁니다(예: 현재 주가 → 배당률 → 그래서 받을 것으로 예상되는 금액).",
-  "수치는 숫자만 나열하지 말고 그래서 높은 편인지 낮은 편인지 쉬운 말로 한 마디 풀어 줍니다. 일반적인 기준: 부채비율 100% 이하 낮은 편(안정적)·200% 이상 높은 편(빚이 많은 편), PER 10배 미만 낮은 편(싸다는 뜻)·25배 이상 높은 편(비싸다는 뜻), 10년평균 승률 60% 이상 높은 편·50% 안팎 보통, 52주 구간 위치 20% 이하 바닥 근처·80% 이상 고점 근처, 과열도(RSI) 30 이하 침체·70 이상 과열, 배당률 1% 미만 낮은 편·3% 이상 높은 편, ROE 10% 이상 양호. 같은 종류의 수치는 한 줄로 묶어 6줄 안에 정리합니다.",
+  "수치는 숫자만 나열하지 말고 그래서 높은 편인지 낮은 편인지 쉬운 말로 한 마디 풀어 줍니다. 일반적인 기준: 부채비율 100% 이하 낮은 편(안정적)·200% 이상 높은 편(빚이 많은 편), PER 10배 미만 낮은 편(싸다는 뜻)·25배 이상 높은 편(비싸다는 뜻), 10년월간승률 60% 이상 높은 편·50% 안팎 보통, 52주 구간 위치 20% 이하 바닥 근처·80% 이상 고점 근처, 과열도(RSI) 30 이하 침체·70 이상 과열, 배당률 1% 미만 낮은 편·3% 이상 높은 편, ROE 10% 이상 양호. 같은 종류의 수치는 한 줄로 묶어 6줄 안에 정리합니다.",
   "문장에 '자료에 있는', '자료에는', '자료에 따르면', '제공된 자료' 같은 출처·자료 언급을 쓰지 않고 사실만 바로 말합니다. 정보가 없는 항목은 아예 언급하지 않습니다('없습니다'라고 쓰지 않음). 질문과 관계없는 수치는 덧붙이지 않습니다.",
   "출력 형식(이 형식만, 다른 말·코드블록 금지):",
   "이해: (질문이 무엇을 알고 싶은 것인지 1문장으로 풀어 씀. '자료'·'지표로 판단' 같은 말 없이 질문 내용만. 핵심 말 1~2군데를 **이렇게** 굵게. 질문이 '사도 되나·팔까·들어가도 되나' 같은 매수·매도 판단이면 반드시 이 형태로: '삼성전자를 지금 사도 되는지에 대한 결정은 할 수 없지만, 참고하실 만한 관련 내용을 보여드릴게요.' (종목·행동은 질문에 맞게))",
@@ -2123,7 +2163,7 @@ const ANSWER_PARTS = [
   "리스크|입력의 리스크에서 위험·주의로 표시된 것만 짚습니다(양호 항목은 말하지 않음). 위험·주의가 하나도 없으면 '뚜렷한 위험 신호는 없어요.' 한 문장.",
   "배당|현재 주가 → 연 배당수익률 → 그래서 1주당 1년에 받을 것으로 예상되는 배당금(최근 1년 합계 기준) 순서로 2문장.",
   "재무|매출·이익 성장 수치 중 핵심만, 좋은 점과 유의할 점을 한 문장씩.",
-  "기준: 부채비율 100% 이하 낮은 편·200% 이상 높은 편, PER 10배 미만 낮은 편·25배 이상 높은 편, 10년평균 승률 60% 이상 높은 편·50% 안팎 보통, 52주 구간 위치 20% 이하 바닥 근처·80% 이상 고점 근처, 배당률 1% 미만 낮은 편·3% 이상 높은 편.",
+  "기준: 부채비율 100% 이하 낮은 편·200% 이상 높은 편, PER 10배 미만 낮은 편·25배 이상 높은 편, 10년월간승률 60% 이상 높은 편·50% 안팎 보통, 52주 구간 위치 20% 이하 바닥 근처·80% 이상 고점 근처, 배당률 1% 미만 낮은 편·3% 이상 높은 편.",
 ].join("\n");
 function answerPartsParse(text) {
   const out = {};
@@ -2271,6 +2311,10 @@ export default {
 
     if (requestUrl.pathname === "/kr-quotes") {
       return handleKrQuotes(env);
+    }
+
+    if (requestUrl.pathname === "/day-vals") {
+      return handleDayVals(requestUrl, env);
     }
 
     if (requestUrl.pathname === "/auth/kakao" && request.method === "POST") {

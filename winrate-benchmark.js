@@ -1,4 +1,4 @@
-// 대표자산 10년평균 승률 비교(데이터 + 그래프) — 본체(app.js)의 INVEST점수 +자세히·인기종목 +승률이란과
+// 대표자산 10년월간승률 비교(데이터 + 그래프) — 본체(app.js)의 INVEST점수 +자세히·인기종목 +승률이란과
 // 마켓맵(sector-map) 승률 버튼의 "+승률이란?"이 같이 쓴다(2026-10-06 공용 파일로 분리). 두 페이지 모두 app.js보다 먼저 불러온다.
 // 2026-10-07 사용자 요청: 이름을 티커 대신 우리말로(S&P500·나스닥100·반도체지수·비트코인·이더리움)
 const WINRATE_BENCHMARKS = [
@@ -48,7 +48,7 @@ function buildWinRateBenchmarkSvg() {
     })
     .join("");
   const svg = `
-    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" role="img" aria-label="대표 자산 10년평균 승률 비교 막대그래프">
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" role="img" aria-label="대표 자산 10년월간승률 비교 막대그래프">
       ${grid}${bars}
     </svg>
     <p style="margin:4px 0 0;font-size:11px;opacity:0.65;text-align:right;">점선 = 50%(오른 달·내린 달이 반반)</p>`;
@@ -57,6 +57,6 @@ function buildWinRateBenchmarkSvg() {
 // 맨 위 설명 문구(2026-09-13 사용자 지정)
 const WINRATE_INTRO_HTML = `
     <div class="wr-intro">
-      <p class="wr-intro-q">10년평균 승률이란?</p>
+      <p class="wr-intro-q">10년월간승률이란?</p>
       <p class="wr-intro-def">최근 10년(최대 120개월) 동안 <b>전달보다 오르며 마감한 달의 비율</b>입니다. 수익률의 크기가 아니라 <b>이긴 횟수</b>라, <b class="wr-intro-key">높을수록 꾸준히 우상향했다는 뜻입니다.</b></p>
     </div>`;

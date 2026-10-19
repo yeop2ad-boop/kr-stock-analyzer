@@ -243,7 +243,7 @@ def snapshot_strategies(companies, scores, *, min_total, sector_min, yrs, unit="
     wr = [c for c in comps if (scores.get(c["symbol"]) or {}).get("total", 0) >= min_total and (scores.get(c["symbol"]) or {}).get("score") is not None]
     wr = sorted(wr, key=lambda c: (-scores[c["symbol"]]["score"], -c["marketCap"]))[:TOP_N]
     out["winrate"] = {"key": "winrate", "label": LABELS["winrate"], "holdings": holding_list(cap_weights(wr)),
-                      "note": f"10년평균 승률(오르며 마감한 달의 비율, {yrs}년 이상 상장 {unit.replace("개 ", "")}) 상위 30{unit}을 시가총액 비중으로 담았습니다."}
+                      "note": f"10년월간승률(오르며 마감한 달의 비율, {yrs}년 이상 상장 {unit.replace("개 ", "")}) 상위 30{unit}을 시가총액 비중으로 담았습니다."}
     return out
 
 
