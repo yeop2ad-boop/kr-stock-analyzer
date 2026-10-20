@@ -2622,3 +2622,11 @@ html, body, button, input, select, textarea { font-family: "Pretendard Variable"
 /* 실적 맨 위 '관심'(2026-10-20) */
 .earn-watch-add { display: block; width: 100%; margin: 4px 0 2px; padding: 14px 12px; border: 1.5px dashed #7230f0; border-radius: 12px; background: rgba(114, 48, 240, 0.06); color: #7230f0; font-size: 13.5px; font-weight: 800; letter-spacing: -0.3px; cursor: pointer; }
 .earn-watch-add:active { background: rgba(114, 48, 240, 0.14); }
+/* 신기술 연구기관 안내: 한 줄 + +자세히 (2026-10-20) */
+.tech-orgs-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 0; }
+.tech-orgs-head span { flex: 1; min-width: 0; font-size: 12.5px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; line-height: 1.5; }
+.tech-orgs-toggle { flex: none; padding: 3px 9px; border-radius: 99px; border: 1px solid var(--border); background: var(--bg); font-size: 11.5px; font-weight: 800; color: var(--text); cursor: pointer; }
+.tech-orgs-list { margin-top: 8px; }
+.tech-orgs-latest { margin: 6px 0 0; font-size: 11px; color: var(--muted); }
+/* 요약(그림) 보기: 제목 아래 출처(저널) 표기 */
+.tech-grid-src { display: block; margin-top: 3px; font-size: 10.5px; font-weight: 700; color: #7230f0; letter-spacing: -0.2px; text-align: left; }

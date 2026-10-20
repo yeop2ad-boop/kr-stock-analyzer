@@ -13395,7 +13395,7 @@ async function renderTechInto(rootId, scrollToIdx) {
   const toolbar = `<div class="tech-view-bar"><button type="button" class="tech-view-btn${view === "grid" ? " active" : ""}" data-tech-view="grid" aria-label="요약 보기(사진과 제목)">${gridIcon}</button><button type="button" class="tech-view-btn${view === "list" ? " active" : ""}" data-tech-view="list" aria-label="전체 보기(줄글)">${listIcon}</button></div>`;
   const gridHtml = `<div class="tech-grid">${techShown
     .map(
-      (it, i) => `<button type="button" class="tech-grid-card" data-tech-i="${i}"><img src="${escapeHtml(it.image)}" alt="" loading="lazy" /><span class="tech-grid-title">${escapeHtml(it.title)}</span></button>`
+      (it, i) => `<button type="button" class="tech-grid-card" data-tech-i="${i}"><img src="${escapeHtml(it.image)}" alt="" loading="lazy" /><span class="tech-grid-title">${escapeHtml(it.title)}</span><span class="tech-grid-src">${escapeHtml(it.source || "")}</span></button>`
     )
     .join("")}</div>`;
   const listHtml = `<div class="tech-insight-list">${techShown.map((it, i) => `<div data-tech-card="${i}">${techInsightCardHtml(it)}</div>`).join("")}</div>`;
@@ -13408,15 +13408,25 @@ async function renderTechInto(rootId, scrollToIdx) {
   ];
   const techOrgCount = {};
   techItems.forEach((t) => (techOrgCount[t.source] = (techOrgCount[t.source] || 0) + 1));
-  const orgHtml = `<div class="tech-orgs"><div class="tech-orgs-head">🌐 글로벌 연구기관 · 매체 ${TECH_ORG_INFO.length}곳의 글을 모아 요약합니다</div>${TECH_ORG_INFO.map(
+  // 2026-10-20 사용자 요청: 맨 위엔 한 줄 안내 + "+자세히"(누르면 기관 목록) — 아래 작은 설명은 중복이라 삭제
+  const orgHtml = `<div class="tech-orgs"><div class="tech-orgs-head"><span>🌐 글로벌 연구기관 ${TECH_ORG_INFO.length}곳의 최신 글 내용을 요약·재구성했습니다.</span><button type="button" class="tech-orgs-toggle" aria-expanded="false">+자세히</button></div><div class="tech-orgs-list" style="display:none;">${TECH_ORG_INFO.map(
     ([name, desc]) => `<div class="tech-org-row${techOrgCount[name] ? "" : " tech-org-off"}"><b>${escapeHtml(name)}</b><span>${escapeHtml(desc)}</span><em>${techOrgCount[name] ? `${techOrgCount[name]}건` : "준비 중"}</em></div>`
-  ).join("")}</div>`;
+  ).join("")}${techLatest ? `<p class="tech-orgs-latest">최근 글 ${escapeHtml(String(techLatest).slice(0, 10))}</p>` : ""}</div></div>`;
   root.innerHTML = techItems.length
-    ? `${toolbar}${orgHtml}<p class="today-note">MIT Technology Review·McKinsey·IEEE Spectrum·OECD의 최신 글 핵심을 자체적으로 요약·재구성했습니다.${techLatest ? ` (최근 글 ${escapeHtml(String(techLatest).slice(0, 10))})` : ""}</p>
+    ? `${toolbar}${orgHtml}
        ${view === "grid" ? gridHtml : listHtml}
        ${techItems.length > 5 ? `<button type="button" class="cat-btn load-more-btn today-tech-more">${todayTechShown > 5 ? "− 접기" : `+더보기 (${techItems.length}개)`}</button>` : ""}
        <p class="disclaimer tab-note">📢 정확한 내용은 원문 링크에서 확인하세요. 삽화는 AI로 생성되어 실제 사진과 다를 수 있습니다.</p>`
     : `<p class="muted today-empty">🚧 신기술은 준비 중입니다.</p>`;
+  const orgToggle = root.querySelector(".tech-orgs-toggle");
+  if (orgToggle)
+    orgToggle.addEventListener("click", () => {
+      const list = root.querySelector(".tech-orgs-list");
+      const open = list.style.display === "none";
+      list.style.display = open ? "block" : "none";
+      orgToggle.textContent = open ? "-접기" : "+자세히";
+      orgToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    });
   const more = root.querySelector(".today-tech-more");
   if (more)
     more.addEventListener("click", (e) => {
