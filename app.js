@@ -2903,6 +2903,9 @@ function isWatchlisted(symbol) {
 }
 function saveWatchlist(list, market = getWatchlistActiveMarket()) {
   localStorage.setItem(wlKey("watchlist_v1", market), JSON.stringify(list));
+  try {
+    document.dispatchEvent(new CustomEvent("watchlistchange")); // 실적 화면의 '관심'이 즉시 따라가게(2026-10-20)
+  } catch {}
   tabLoadPromises.watchlist = null; // 다음에 관심종목 탭에 들어갈 때 최신 목록으로 다시 렌더링되도록 캐시 무효화
 }
 
@@ -13167,7 +13170,7 @@ window.__buildEarningsDb = async function () {
   }
   return JSON.parse(JSON.stringify(out));
 };
-const earnShown = { soon: 10, done: 10 };
+const earnShown = { soon: 10, done: 10, watch: 6 }; // watch = 맨 위 '관심'(2026-10-20): 6개만, 더보기로 전부
 let earnSeq = 0;
 async function renderEarningsTab() {
   const box = el("earningsResults");
@@ -13180,9 +13183,9 @@ async function renderEarningsTab() {
   }
   const isKr = sec === "kr";
   box.innerHTML = `<p class="muted earn-empty">실적 일정을 불러오는 중...</p>`;
-  const [cal, uni, edb] = await Promise.all([getEarningsCal(), getSReportUniverse(isKr).catch(() => null), getEarningsDb()]);
+  const [cal, uni, edb, uniOther] = await Promise.all([getEarningsCal(), getSReportUniverse(isKr).catch(() => null), getEarningsDb(), getSReportUniverse(!isKr).catch(() => null)]);
   if (seq !== earnSeq) return;
-  const names = new Map(((uni && uni.companies) || []).map((c) => [c.symbol, c.name]));
+  const names = new Map([...((uniOther && uniOther.companies) || []), ...((uni && uni.companies) || [])].map((c) => [c.symbol, c.name]));
   // 2026-10-08 사용자 요청: 발표 예정은 한국 3주 · 미국 2주까지 목록에(이름 옆 '예정' 마크는 그대로 7일 안만)
   const { soon, done } = earnWindowRows(cal, isKr);
   const dbMap = (edb && (isKr ? edb.kr : edb.us)) || {};
@@ -13194,6 +13197,26 @@ async function renderEarningsTab() {
   };
   soon.sort((a, b) => a.date.localeCompare(b.date) || (names.get(a.symbol) || "").localeCompare(names.get(b.symbol) || ""));
   done.sort((a, b) => b.date.localeCompare(a.date) || (names.get(a.symbol) || "").localeCompare(names.get(b.symbol) || ""));
+  // 2026-10-20 사용자 요청: 맨 위 "관심" — 내 관심종목의 예정 + 최근 발표를 합쳐서(예정일 순, 종목당 한 줄)
+  const watchRows = [];
+  const wlSyms = getWatchlist().map((w) => w.symbol);
+  wlSyms.forEach((sym) => {
+    const kr = isKrTicker(sym);
+    const e = ((cal && (kr ? cal.kr : cal.us)) || {})[sym];
+    if (!e) return;
+    if (e.next) {
+      const d = -earnDaysSince(e.next);
+      if (d >= 0 && d <= (kr ? 21 : 14)) {
+        watchRows.push({ symbol: sym, date: e.next, days: d, time: e.nextTime || "", est: !!e.nextEst, kind: "soon" });
+        return;
+      }
+    }
+    if (e.last) {
+      const d = earnDaysSince(e.last);
+      if (d >= 0 && d <= 14) watchRows.push({ symbol: sym, date: e.last, days: d, kind: "done" });
+    }
+  });
+  watchRows.sort((a, b) => (a.kind === b.kind ? (a.kind === "soon" ? a.date.localeCompare(b.date) : b.date.localeCompare(a.date)) : a.kind === "soon" ? -1 : 1));
   const dow = (iso) => ["일", "월", "화", "수", "목", "금", "토"][new Date(iso + "T00:00:00").getDay()];
   const md = (iso) => `${Number(iso.slice(5, 7))}/${Number(iso.slice(8, 10))}`;
   // 2026-10-08 사용자 요청: 예정은 "+00% 예상"(지난 분기 대비), 발표는 "+00% 예상 / +00% 실제"
@@ -13205,57 +13228,74 @@ async function renderEarningsTab() {
     return `${earnPctHtml(n.exp, "예상", "rk-l1")}${n.stale ? `<span class="rk-l2 muted">실제 반영 전</span>` : earnPctHtml(n.act, "실제", "rk-l2")}`;
   };
   const revDone = new Map();
-  [...soon.map((r) => [r, "soon"]), ...done.map((r) => [r, "done"])].forEach(([r, k]) => {
+  [...watchRows.map((r) => [r, r.kind]), ...soon.map((r) => [r, "soon"]), ...done.map((r) => [r, "done"])].forEach(([r, k]) => {
     const d = dbData(r.symbol, k, r.date);
     if (d && !revDone.has(r.symbol)) revDone.set(r.symbol, d);
   });
   const tableHtml = (rows, kind) => {
     const n = earnShown[kind];
+    const base = kind === "watch" ? 6 : 10;
     const list = rows.slice(0, n);
     const body = list
       .map((row) => {
+        const rk = kind === "watch" ? row.kind : kind; // 관심 묶음은 줄마다 예정/발표가 다름
         const name = rankDisplayName(row.symbol, names.get(row.symbol) || row.symbol, isKr);
         const sub =
-          kind === "soon"
+          rk === "soon"
             ? `${row.days === 0 ? "오늘" : `D-${row.days}`}${row.est ? " · 추정" : EARN_TIME_LABEL[row.time] ? ` · ${EARN_TIME_LABEL[row.time].replace("장 시작 전", "장 전").replace("장 마감 후", "장 후")}` : ""}`
             : row.days === 0
             ? "오늘"
             : `${row.days}일 전`;
-        return `<tr class="earn-row" data-sym="${escapeHtml(row.symbol)}" data-kind="${kind}" data-date="${row.date}">
+        return `<tr class="earn-row" data-sym="${escapeHtml(row.symbol)}" data-kind="${rk}" data-date="${row.date}">
           <td>${rankNameCellHtml(row.symbol, tickerLogoHtml(row.symbol), name, undefined, "", true).replace("ticker-link rk-name", "rk-name")}</td>
           <td><span class="rk-l1">${md(row.date)}(${dow(row.date)})</span><span class="rk-l2 muted">${sub}</span></td>
-          <td data-earn-rev="${escapeHtml(row.symbol)}">${revCell(revDone.get(row.symbol), row, kind)}</td>
+          <td data-earn-rev="${escapeHtml(row.symbol)}">${revCell(revDone.get(row.symbol), row, rk)}</td>
         </tr>`;
       })
       .join("");
     return list.length
       ? `<table class="top30-table rk-table earn-table"><colgroup><col><col class="earn-col-date"><col class="earn-col-rev"></colgroup><tbody>${body}</tbody></table>
-         ${rows.length > 10 ? `<button type="button" class="cat-btn load-more-btn pop-more" data-earn-more="${kind}">${n > 10 ? "− 접기" : `+더보기 (${rows.length}개)`}</button>` : ""}`
+         ${rows.length > base ? `<button type="button" class="cat-btn load-more-btn pop-more" data-earn-more="${kind}">${n > base ? "− 접기" : `+더보기 (${rows.length}개)`}</button>` : ""}`
       : `<p class="muted earn-empty">${kind === "soon" ? `앞으로 ${isKr ? "3주" : "2주"} 안에 실적 발표 예정인 종목이 없습니다.` : "지난 7일 동안 실적을 발표한 종목이 없습니다."}</p>`;
   };
   const paint = () => {
     if (seq !== earnSeq) return;
+    const watchSec = !wlSyms.length
+      ? `<section class="pop-sec" data-earn-sec="watch"><div class="pop-sec-head"><b>⭐ 관심</b></div><button type="button" class="earn-watch-add" data-earn-add="1">+ 관심종목을 추가해서 실적발표 일정을 알아보세요.</button></section>`
+      : `<section class="pop-sec" data-earn-sec="watch"><div class="pop-sec-head"><b>⭐ 관심</b><span class="pop-asof">예정 · 최근 발표 · ${watchRows.length}종목</span></div>${
+          watchRows.length ? tableHtml(watchRows, "watch") : `<p class="muted earn-empty">관심종목 중 앞으로 3주 안에 실적 발표 예정이거나 최근 2주 안에 발표한 종목이 없습니다.</p><button type="button" class="earn-watch-add" data-earn-add="1">+ 관심종목을 더 추가하기</button>`
+        }</section>`;
     box.innerHTML = `
+      ${watchSec}
       <section class="pop-sec" data-earn-sec="done"><div class="pop-sec-head"><b>최근실적</b><span class="pop-asof">지난 7일 · ${done.length}종목</span></div>${tableHtml(done, "done")}</section>
       <section class="pop-sec" data-earn-sec="soon"><div class="pop-sec-head"><b>예정</b><span class="pop-asof">앞으로 ${isKr ? "3주" : "2주"} · ${soon.length}종목${isKr ? " · 추정" : ""}</span></div>${tableHtml(soon, "soon")}</section>`;
     bindEarnRows();
+    box.querySelectorAll("[data-earn-add]").forEach((b) => b.addEventListener("click", () => openSearchOverlay())); // 검색을 켜서 관심종목 추가
     box.querySelectorAll("[data-earn-more]").forEach((b) =>
       b.addEventListener("click", () => {
         const k = b.dataset.earnMore;
-        earnShown[k] = earnShown[k] > 10 ? 10 : 60;
+        const base = k === "watch" ? 6 : 10;
+        earnShown[k] = earnShown[k] > base ? base : 999;
         paint();
         fillRevenue();
       })
     );
   };
   const fillRevenue = () => {
-    const need = [...soon.slice(0, earnShown.soon).map((r) => [r, "soon"]), ...done.slice(0, earnShown.done).map((r) => [r, "done"])].filter(([r]) => !revDone.has(r.symbol));
+    const need = [
+      ...watchRows.slice(0, earnShown.watch).map((r) => [r, r.kind]),
+      ...soon.slice(0, earnShown.soon).map((r) => [r, "soon"]),
+      ...done.slice(0, earnShown.done).map((r) => [r, "done"]),
+    ].filter(([r], i, arr) => !revDone.has(r.symbol) && arr.findIndex(([x]) => x.symbol === r.symbol) === i);
     mapWithConcurrency(need, 4, async ([row, kind]) => {
       const data = kind === "done" ? (await earnCompareData(row.symbol, row.date)) || (await earnQuarterData(row.symbol)) : await earnQuarterData(row.symbol);
       revDone.set(row.symbol, data);
       if (seq !== earnSeq) return;
-      const td = box.querySelector(`tr[data-sym="${CSS.escape(row.symbol)}"][data-kind="${kind}"] [data-earn-rev]`);
-      if (td) td.innerHTML = revCell(data, row, kind);
+      box.querySelectorAll(`tr[data-sym="${CSS.escape(row.symbol)}"] [data-earn-rev]`).forEach((td) => {
+        const tr = td.closest("tr");
+        const k = tr ? tr.dataset.kind : kind;
+        td.innerHTML = revCell(data, { ...row, kind: k }, k);
+      });
     });
   };
   // 줄을 누르면 바로 아래에 재무정보와 같은 분기 그래프(다시 누르면 접힘)
@@ -13295,6 +13335,9 @@ async function renderEarningsTab() {
   paint();
   fillRevenue();
 }
+document.addEventListener("watchlistchange", () => {
+  if (typeof navMode !== "undefined" && navMode === "earn") renderEarningsTab();
+});
 // ---------- 신기술(2026-10-19 개편: 하단 메뉴 "신기술" 탭) ----------
 // AI투데이(뉴스·브리핑)는 사용자 요청으로 완전히 없앴다. 신기술 카드만 보여준다 — 투자군과 상관없이 모두 같은 목록.
 let todayTechShown = 5;
