@@ -1,5 +1,53 @@
 [
   {
+    "id": "b657bbd1f782",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "예상과 달리 현실성을 택한 휴머노이드 로봇의 탄생",
+    "originalTitle": "The Robot I Didn’t Expect to Build",
+    "link": "https://spectrum.ieee.org/agility-robotics-digit-5-redesign",
+    "summary": "애질리티 로보틱스의 공동창립자인 조너선 허스트는 우아하고 자연스러운 동작의 휴머노이드 로봇을 꿈꿨지만, 현실적인 상용화를 위해 다른 길을 걷게 되었다. 최근 출시한 디짓 5는 23킬로그램의 짐을 높은 선반에 올릴 수 있고 9분 충전으로 90분간 작동하는 실용적인 창고 작업용 로봇이다. 이는 인간이 하기 싫어하는 육체적으로 힘든 반복 작업을 대체하기 위해 설계되었다. 당초 꿈꾼 우아한 로봇과는 거리가 있지만, 수만 대의 휴머노이드 로봇을 실제 세계에 배치한다는 실질적 목표를 달성하기 위한 선택이었다.",
+    "image": "data/techinsight-images/b657bbd1f782.webp",
+    "publishedAt": "2026-10-19T13:00:03.000Z",
+    "createdAt": "2026-10-20T00:17:10.096Z"
+  },
+  {
+    "id": "fbbcdbe57add",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "AI 에이전트를 위해 인터넷을 개선하면 일반 사용자에게는 악영향을 미칠 수 있다",
+    "originalTitle": "Making the internet better for AI agents might make it worse for everyone else",
+    "link": "https://www.technologyreview.com/2026/10/19/1147186/making-the-internet-better-for-ai-agents-might-make-it-worse-for-everyone-else/",
+    "summary": "OpenAI의 Dots, Meta의 Muse 같은 개인용 AI 에이전트의 확산으로 인간 중심으로 설계된 인터넷이 변화하고 있다. 현재 많은 웹사이트들이 AI 에이전트를 차단하고 있지만, 수요가 계속 증가하면 플랫폼들은 에이전트를 수용하기 시작할 것으로 예상된다. Shopify처럼 이미 AI 에이전트를 위한 별도의 결제 통로를 제공하는 기업들이 나타나고 있다. 만약 인터넷이 에이전트 중심으로 재설계되면 인간 사용자는 더 나쁜 인터페이스, 개인화된 가격 책정, 끊임없는 인증 요구 등을 겪게 될 가능성이 높다. 에이전트 규제 규칙이 어떻게 설정되는지에 따라 소비자 권리 강화 또는 침해가 결정될 것이다.",
+    "image": "data/techinsight-images/fbbcdbe57add.webp",
+    "publishedAt": "2026-10-19T18:22:47.000Z",
+    "createdAt": "2026-10-20T00:16:53.590Z"
+  },
+  {
+    "id": "153fcac26eb5",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "IEEE 회원들의 공익을 위한 기술 활동 사례들 조명",
+    "originalTitle": "IEEE Report Highlights How Members Are Engineering for Public Good",
+    "link": "https://spectrum.ieee.org/ieee-report-engineering-public-good",
+    "summary": "IEEE는 최근 2025년 사회적 영향 보고서를 발표하며 50만 명 이상의 회원들이 추진하는 다양한 공익 프로젝트들을 소개했다. 아동 온라인 보호를 위한 국제 표준 개발부터 긴급 상황에서 지원하는 이동식 교육 차량(MOVE), 기술 역사를 알리는 IEEE 글로벌 박물관 등 여러 이니셔티브가 진행 중이다. EPICS 프로그램은 대학생들에게 실무 경험을 제공하면서 비영리 단체를 지원하고, TryEngineering은 청소년들의 기술 및 공학 진로 탐색을 돕고 있다. 이러한 프로젝트들은 기술을 통해 인류의 이익을 추구하는 IEEE의 공익 미션을 실현하는 구체적인 사례들이다.",
+    "image": "data/techinsight-images/153fcac26eb5.webp",
+    "publishedAt": "2026-10-19T18:00:03.000Z",
+    "createdAt": "2026-10-20T00:16:53.589Z"
+  },
+  {
+    "id": "7216fffbb8a1",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "AI 연구자가 주장하는 \"우리가 잘못 봤다\"...신경망 이해의 패러다임 전환",
+    "originalTitle": "“We were looking at it wrong”: The explosive claim that’s upended the AI world",
+    "link": "https://www.technologyreview.com/2026/10/19/1147149/we-were-looking-at-it-wrong-the-explosive-claim-thats-upended-the-ai-world/",
+    "summary": "AI 스타트업 굿파이어의 연구자 닉 카마라타가 발표한 2만6000단어 분량의 블로그 글이 AI 업계에 파장을 일으키고 있다. 그는 대형언어모델이 기존의 생각보다 훨씬 이해하기 쉬울 수 있으며, 따라서 감시와 통제가 가능할 수도 있다고 주장한다. 카마라타는 신경망 내부의 뉴런들을 오랜 시간 관찰한 결과 겉보기에 무질서해 보이는 구조 속에도 논리적 패턴이 존재한다는 것을 발견했으며, 초기 연구들이 확인 편향에 빠져 신경망의 복잡성을 과대평가했을 가능성을 제시한다. 다만 스탠포드 대학의 크리스 포츠 교수 등 일부 전문가들은 이것이 검증되지 않은 추측에 불과하며 실질적으로 문제를 해결하지 못한다고 지적하고 있다.",
+    "image": "data/techinsight-images/7216fffbb8a1.webp",
+    "publishedAt": "2026-10-19T17:45:55.000Z",
+    "createdAt": "2026-10-20T00:16:50.492Z"
+  },
+  {
     "id": "001c1dd2389f",
     "sourceKey": "ieee",
     "source": "IEEE Spectrum",
@@ -190,53 +238,5 @@
     "image": "data/techinsight-images/2fe8eae18f46.webp",
     "publishedAt": "2026-10-15T10:00:00.000Z",
     "createdAt": "2026-10-15T23:39:59.118Z"
-  },
-  {
-    "id": "0ed98d3b2521",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "인류애적 AI를 지키는 안트로픽 엔지니어",
-    "originalTitle": "Meet the Anthropic Engineer Keeping Its AI Agent Trustworthy",
-    "link": "https://spectrum.ieee.org/anthropic-engineer-ai-agent",
-    "summary": "IEEE 시니어 멤버인 구르미트 사란은 AI 챗봇 Claude의 동작 메커니즘을 이해하고 신뢰할 수 있는 출력을 보장하는 데이터 인프라를 개발하고 있다. 그는 데이터의 정확성과 구조화, 개인정보 보호가 아키텍처 초기부터 통합되어야 한다고 강조하며, 이는 AI의 안전성과 윤리성 확보에 필수적이라고 본다. Yahoo, Intuit, Meta 등에서 데이터 품질 문제를 해결한 경험을 바탕으로 대규모 언어모델의 행동을 관찰하고 모니터링할 수 있는 도구 개발에 주력하고 있다. 사란은 어린 시절 컴퓨터의 정확한 명령 실행에 매료되어 이 분야에 입문했으며, 데이터 일관성 문제 해결을 통해 조직 의사결정의 신뢰성을 높이는 데 기여해왔다.",
-    "image": "data/techinsight-images/0ed98d3b2521.webp",
-    "publishedAt": "2026-10-12T18:00:02.000Z",
-    "createdAt": "2026-10-14T23:54:11.261Z"
-  },
-  {
-    "id": "92e983a3da8f",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "IEEE, 2028년 지역 재편성 준비 계속 진행",
-    "originalTitle": "IEEE Continues Preparations for the Realignment of Its Regions",
-    "link": "https://spectrum.ieee.org/realignment-ieee-regions",
-    "summary": "IEEE는 2028년 1월 1일부터 시행될 지역 구조 개편을 준비 중이다. 주요 변화로는 기존 1지역과 2지역이 통합되어 새로운 2지역(미국 동북부 및 동부)이 되고, 아시아태평양 지역인 10지역이 북아시아를 담당하는 10지역과 남아시아 태평양을 담당하는 11지역으로 분리된다. 현재 IEEE 회원 및 지리적 활동(MGA) 부서와 조직 전역에서 시스템 개선, 선거, 거버넌스 업데이트, 커뮤니케이션 등 다양한 준비 활동이 진행 중이다. 이러한 변화는 기존의 회원 자격이나 지역 섹션 및 챕터에는 영향을 주지 않는다.",
-    "image": "data/techinsight-images/92e983a3da8f.webp",
-    "publishedAt": "2026-10-14T18:00:03.000Z",
-    "createdAt": "2026-10-14T23:53:52.568Z"
-  },
-  {
-    "id": "a81aeed3bf8e",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "인공 혈액 개발부터 차세대 배터리까지, 군사·에너지 기술의 미래",
-    "originalTitle": "The Download: faking blood and the future of batteries",
-    "link": "https://www.technologyreview.com/2026/10/14/1146452/the-download-military-fake-blood-future-batteries/",
-    "summary": "미국 국방부는 전장에서의 혈액 수급 문제를 해결하기 위해 7,300만 달러를 투입해 보관 기간이 긴 인공 혈액 개발에 착수했으며, 2029년까지 현장 배치를 목표로 하고 있다. 중국의 반도체 배터리 기업 웰리온은 액체-고체 하이브리드 방식의 고용량 배터리로 전기차의 주행거리를 1,000km 이상 확대했고, 더욱 높은 에너지 밀도의 배터리 개발을 진행 중이다. 한편 GLP-1 체중감량 약물이 노화 속도를 늦출 수 있다는 제약사들의 주장이 제기되면서 이것이 단순한 다이어트 약을 넘어 수명 연장 치료제로 작용할 가능성이 커지고 있다.",
-    "image": "data/techinsight-images/a81aeed3bf8e.webp",
-    "publishedAt": "2026-10-14T12:10:00.000Z",
-    "createdAt": "2026-10-14T23:53:51.410Z"
-  },
-  {
-    "id": "26a7b2e97851",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "미군, 인공혈액 개발 경쟁 본격화",
-    "originalTitle": "The US military’s race to make fake blood",
-    "link": "https://www.technologyreview.com/2026/10/14/1145807/us-military-race-to-make-fake-blood/",
-    "summary": "미군은 전장에서의 혈액 부족 문제를 해결하기 위해 DARPA의 7,300만 달러 규모 RAPIID 프로젝트를 통해 보관이 용이한 인공혈액 개발에 나서고 있다. 현재 혈액은 냉동 보관해도 35일 이내에 변질되고, 혈소판은 일주일 이내에 부패하는 등 보관의 한계가 있어 전투 지역에서 응급 수혈이 필요한 상황에 대응하기 어렵다. 연구팀은 플라즈마, 혈소판, 적혈구의 세 가지 주요 혈액 성분을 보관 가능한 형태로 만드는 것을 목표로 하고 있으며, 2029년까지 동결 건조 혈액 제품을 전장에 배치할 계획이다. 현재 플라즈마는 1930년대부터 동결 건조 기술이 알려져 있어 비교적 가능성이 높으며, 혈소판과 적혈구는 아직 개발 단계에 있다.",
-    "image": "data/techinsight-images/26a7b2e97851.webp",
-    "publishedAt": "2026-10-14T09:00:00.000Z",
-    "createdAt": "2026-10-14T23:53:50.517Z"
   }
 ]
