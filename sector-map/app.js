@@ -2150,7 +2150,10 @@ function createSliderController(getKey, els, onNoDataChange) {
       const full = isFullRange(key, [selMin, selMax]);
       els.valueLabel.textContent = full ? "전체" : `${m.fmt(selMin)} 이상 ${m.fmt(selMax)} 이하`;
       // 바텀시트 위쪽 "전체" 버튼은 아래 값 표시("전체")와 겹쳐 두 번 보였음 → 걸린 필터가 있을 때만 "초기화"로 보이게(2026-10-20)
-      if (els.valueLabel.id === "rangeSheetValue") rangeSheetResetBtn.style.visibility = full ? "hidden" : "visible";
+      if (els.valueLabel.id === "rangeSheetValue") {
+        rangeSheetResetBtn.style.visibility = full ? "hidden" : "visible";
+        els.valueLabel.style.display = full ? "none" : ""; // 아무 필터도 안 걸렸을 땐 "전체" 글자도 필요 없어 숨김
+      }
     }
   }
 
@@ -2248,19 +2251,75 @@ const quickSliderCtrl = createSliderController(
 // 칩 바텀시트에 표시할 지표 한 줄 설명 — 상승압력/투자안정은 "+자세히"로 배점 방식(본체 +자세히와 동일 공식)까지 안내
 // 칩 바텀시트 설명 — 2026-10-06 사용자 요청: 모두 2줄(①공식/정의 ②"높을수록 ~한다는 의미예요")로 통일
 const METRIC_DESCS = {
-  winRateScore: "최근 10년(120개월) 중 전달보다 오르며 마감한 달의 비율이에요.\n높을수록 꾸준히 우상향했다는 의미예요.",
-  ret10yAvg: "최근 10년 연복리 수익률(CAGR) — 매년 평균 몇 %씩 올랐는지예요.\n높을수록 오래 크게 오른 종목이라는 의미예요.",
-  revenueGrowth: "최근 분기 매출 ÷ 1년 전 같은 분기 매출 − 1이에요.\n높을수록 사업이 빠르게 커지고 있다는 의미예요.",
-  changePct: "오늘 주가 ÷ 전일 종가 − 1이에요.\n높을수록 오늘 많이 올랐다는 의미예요.",
-  popularStocks: "1일 거래대금 ÷ 20거래일 거래대금이에요(장중에는 같은 시각까지 비교).\n클수록 평소보다 돈이 크게 몰렸다는 의미예요.",
-  rsiWeekly: "주간 RSI(14) — 최근 14주 상승폭 ÷ (상승폭+하락폭) × 100이에요.\n높을수록 과열(70↑), 낮을수록 침체(30↓)라는 의미예요.",
-  per: "주가 ÷ 주당순이익(EPS)이에요.\n높을수록 이익 대비 비싸게 거래된다는 의미예요.",
-  dividendYield: "최근 1년 배당금 ÷ 현재 주가예요.\n높을수록 주가 대비 배당을 많이 준다는 의미예요.",
-  week52RangePct: "(현재가 − 52주 최저) ÷ (52주 최고 − 52주 최저)예요.\n높을수록 52주 최고가에 가깝다는 의미예요.",
-  netIncomeGrowth: "최근 분기 순이익 ÷ 1년 전 같은 분기 순이익 − 1이에요.\n높을수록 이익이 빠르게 늘고 있다는 의미예요.",
-  debtRatio: "부채총계 ÷ 자본총계예요.\n높을수록 빚 부담이 크다는 의미예요.",
-  cashFlowGrowth: "영업활동 현금흐름 ÷ 1년 전 영업활동 현금흐름 − 1이에요.\n높을수록 실제로 들어오는 현금이 늘고 있다는 의미예요.",
+  winRateScore: "최근 10년 중 전달보다 오른 달의 비율이에요.\n높을수록 꾸준히 우상향했다는 뜻이에요.",
+  ret10yAvg: "최근 10년 연복리 수익률(CAGR)이에요.\n높을수록 오래 크게 오른 종목이에요.",
+  revenueGrowth: "최근 분기 매출 ÷ 1년 전 같은 분기 − 1이에요.\n높을수록 사업이 빠르게 커지는 중이에요.",
+  changePct: "오늘 주가 ÷ 전일 종가 − 1이에요.\n높을수록 오늘 많이 올랐다는 뜻이에요.",
+  popularStocks: "오늘 거래대금 ÷ 20거래일 평균이에요.\n클수록 평소보다 돈이 몰렸다는 뜻이에요.",
+  rsiWeekly: "주간 RSI(14) — 상승폭 ÷ (상승+하락폭) × 100.\n70↑ 과열, 30↓ 침체를 뜻해요.",
+  per: "주가 ÷ 주당순이익(EPS)이에요.\n높을수록 이익 대비 비싸다는 뜻이에요.",
+  dividendYield: "최근 1년 배당금 ÷ 현재 주가예요.\n높을수록 배당을 많이 준다는 뜻이에요.",
+  week52RangePct: "(현재가 − 52주 최저) ÷ (최고 − 최저)예요.\n높을수록 52주 최고가에 가까워요.",
+  netIncomeGrowth: "최근 분기 순이익 ÷ 1년 전 같은 분기 − 1이에요.\n높을수록 이익이 빠르게 늘고 있어요.",
+  debtRatio: "부채총계 ÷ 자본총계예요.\n높을수록 빚 부담이 크다는 뜻이에요.",
+  cashFlowGrowth: "영업현금흐름 ÷ 1년 전 영업현금흐름 − 1이에요.\n높을수록 들어오는 현금이 늘고 있어요.",
 };
+
+// 각 지표 시트의 "+○○이란" — 대표 종목들의 현재 값을 색깔별 막대로 비교(2026-10-20 사용자 요청). 승률은 기존 대표자산 비교(SCORE_INFO_CONTENT)를 그대로 씀
+const METRIC_EXPLAIN_NAME = {
+  week52RangePct: "52주 구간", popularStocks: "거래대금", ret10yAvg: "연상승률", rsiWeekly: "RSI", changePct: "등락률", revenueGrowth: "매출성장률",
+  netIncomeGrowth: "순이익", dividendYield: "배당률", debtRatio: "부채비율", cashFlowGrowth: "현금흐름", per: "PER",
+};
+const METRIC_REP_SYMBOLS = ["AAPL", "MSFT", "NVDA", "TSLA", "KO", "JPM", "XOM", "JNJ", "005930.KS", "000660.KS", "005380.KS", "035420.KS", "373220.KS", "207940.KS", "SPY", "QQQ", "BTC-USD", "ETH-USD", "KRW-BTC", "KRW-ETH"];
+const METRIC_REP_COLORS = ["#ef4444", "#3b82f6", "#16a34a", "#f59e0b", "#8b5cf6", "#ec4899", "#0ea5e9", "#84cc16"];
+function metricExplainButtonText(key) {
+  if (SCORE_INFO_CONTENT[key]) return SCORE_INFO_CONTENT[key].button || "+자세히";
+  const nm = METRIC_EXPLAIN_NAME[key] || METRICS[key].label;
+  const last = nm.charCodeAt(nm.length - 1);
+  const hasBatchim = last >= 0xac00 && last <= 0xd7a3 && (last - 0xac00) % 28 !== 0;
+  return `+${nm}${hasBatchim ? "이란" : "란"}`;
+}
+function buildMetricExplainInfo(key) {
+  const m = METRICS[key];
+  const nm = METRIC_EXPLAIN_NAME[key] || m.label;
+  const comps = ACTIVE_DATA.companies.filter((c) => Number.isFinite(m.get(c)));
+  const picked = [];
+  METRIC_REP_SYMBOLS.forEach((sym) => {
+    const c = comps.find((x) => x.symbol === sym);
+    if (c && picked.length < 8) picked.push(c);
+  });
+  if (picked.length < 6) {
+    [...comps]
+      .sort((a, b) => (b.marketCap || 0) - (a.marketCap || 0))
+      .forEach((c) => {
+        if (picked.length < 8 && !picked.includes(c)) picked.push(c);
+      });
+  }
+  const last = nm.charCodeAt(nm.length - 1);
+  const hasBatchim = last >= 0xac00 && last <= 0xd7a3 && (last - 0xac00) % 28 !== 0;
+  const title = `${nm}${hasBatchim ? "이란" : "란"}?`;
+  const intro = `<p>${mapEscapeHtml(METRIC_DESCS[key] || "").replace(/\n/g, "<br>")}</p>`;
+  if (picked.length < 3) return { title, html: `${intro}<p class="score-info-note">비교할 대표 종목 값을 아직 불러오지 못했어요.</p>` };
+  const vals = picked.map((c) => m.get(c));
+  const vmin = Math.min(0, ...vals);
+  const vmax = Math.max(0, ...vals);
+  const span = vmax - vmin || 1;
+  const zeroPct = ((0 - vmin) / span) * 100;
+  const rows = picked
+    .map((c, i) => ({ c, v: vals[i], color: METRIC_REP_COLORS[i % METRIC_REP_COLORS.length] }))
+    .sort((a, b) => b.v - a.v)
+    .map(({ c, v, color }) => {
+      const x = ((v - vmin) / span) * 100;
+      const left = Math.min(x, zeroPct);
+      const width = Math.max(1.2, Math.abs(x - zeroPct));
+      return `<div class="mx-row"><span class="mx-name"><i style="background:${color}"></i>${mapEscapeHtml(koNameOf(c.symbol, c.name))}</span><span class="mx-track"><span class="mx-zero" style="left:${zeroPct.toFixed(1)}%"></span><span class="mx-bar" style="left:${left.toFixed(1)}%;width:${width.toFixed(1)}%;background:${color}"></span></span><b class="mx-val">${m.fmt(v)}</b></div>`;
+    })
+    .join("");
+  return {
+    title,
+    html: `${intro}<h3 class="wr-bench-title">대표 종목 ${nm} 비교</h3><div class="mx-chart">${rows}</div><p class="wr-bench-note">현재 보고 있는 시장의 대표 종목 값이에요. 과거·현재 데이터이며 미래 수익을 보장하지 않고 투자 자문이 아닙니다.</p>`,
+  };
+}
 // 2026-09-04 개편: 상승압력·투자안정 삭제로 +자세히 배점 안내가 필요한 지표가 없어짐(버튼은 자동 숨김)
 const SCORE_INFO_CONTENT = {
   // 2026-10-06 사용자 요청: 승률 칩 시트에 "+승률이란?" — 본체 인기종목 "+승률이란"과 같은 내용(공용 winrate-benchmark.js)
@@ -2293,8 +2352,8 @@ function openRangeSheet(key) {
   rangeSheetTitle.textContent = METRICS[key].label;
   document.getElementById("rangeSheetDescText").textContent = METRIC_DESCS[key] || "";
   const detailBtn = document.getElementById("rangeSheetDetailBtn");
-  detailBtn.style.display = SCORE_INFO_CONTENT[key] ? "" : "none";
-  if (SCORE_INFO_CONTENT[key]) detailBtn.textContent = SCORE_INFO_CONTENT[key].button || "+자세히";
+  detailBtn.style.display = "";
+  detailBtn.textContent = metricExplainButtonText(key);
   quickSliderCtrl.refresh();
   rangeSheet.classList.add("open");
   if (key === "popularStocks") {
@@ -2312,8 +2371,7 @@ function closeRangeSheet() {
 
 // "+자세히" — 상승압력/투자안정 배점 방식 안내 모달
 document.getElementById("rangeSheetDetailBtn").addEventListener("click", () => {
-  const info = SCORE_INFO_CONTENT[quickSheetKey];
-  if (!info) return;
+  const info = SCORE_INFO_CONTENT[quickSheetKey] || buildMetricExplainInfo(quickSheetKey);
   document.getElementById("scoreInfoTitle").textContent = info.title;
   document.getElementById("scoreInfoBody").innerHTML = info.html;
   document.getElementById("scoreInfoModal").style.display = "flex";
