@@ -4878,7 +4878,8 @@ async function buildSrExampleHtml(key) {
   const member = baseline.members[cur];
   const gKey = member ? member.g : section === "crypto" ? "crypto200" : section === "etf" ? (isKrTicker(cur) ? "etfKr" : "etfUs") : isKrTicker(cur) ? "kr350" : "sp500";
   const grp = baseline.groups && baseline.groups[gKey];
-  const avg = grp && grp.ref && Number.isFinite(grp.ref[key]) ? grp.ref[key] : null;
+  const medVal = grp && grp.dist ? sReportMedianOf(grp.dist[key]) : null;
+  const avg = medVal !== null ? medVal : grp && grp.ref && Number.isFinite(grp.ref[key]) ? grp.ref[key] : null;
   const vals = rows.map((r) => r.val).concat(avg !== null ? [avg] : []);
   const isAmt = !!spec.amount;
   const curOf = (t) => (isKrTicker(t) ? "KRW" : "USD");
@@ -4940,7 +4941,7 @@ async function buildSrExampleHtml(key) {
   } else if (key === "cf") how = `영업(장사)으로 실제 들어온 현금이 작년보다 몇 % 늘었는지예요.\n예) ${sample.name}: ${srExFmt(v)} → 작년 현금 100원이 올해 약 ${f1(100 + v)}원.${neg ? ` ${neg.name}(${srExFmt(neg.val)})처럼 마이너스면 줄어든 거예요.` : ""}`;
   const title = asset && spec.assetTitle ? spec.assetTitle : spec.title;
   const sub = asset && spec.assetSub ? spec.assetSub : spec.sub;
-  const avgName = grp && grp.refName ? grp.refName : "비교군 평균";
+  const avgName = grp ? sReportMedName(grp) : "비교군 중위값";
   return `<div class="srx">
     <div class="srx-head"><b>${escapeHtml(title)}</b><span>${escapeHtml(sub)}</span></div>
     <div class="srx-rows">${rowHtml}</div>
@@ -5083,11 +5084,25 @@ function rsiAxisScore(v, ref) {
 
 // 항목 하나 계산 — 기준값(ref)·분포(dist)는 배치 DB의 비교군 값
 // RSI만은 비교군 평균이 아니라 이 종목 자신의 직전 1년(52주) 평균 RSI가 기준(ownRef, 2026-09-15 사용자 요청)
+// 2026-10-20 사용자 요청: 비교군의 "평균" 대신 "중위값"(전체 종목을 줄 세웠을 때 한가운데 등수의 값)을 기준선으로
+function sReportMedianOf(dist) {
+  if (!Array.isArray(dist) || !dist.length) return null;
+  const a = dist.filter((x) => Number.isFinite(x)).sort((x, y) => x - y);
+  if (!a.length) return null;
+  const n = a.length;
+  return n % 2 ? a[(n - 1) / 2] : (a[n / 2 - 1] + a[n / 2]) / 2;
+}
+function sReportMedName(group) {
+  if (!group) return "비교군 중위값";
+  const rn = String(group.refName || "");
+  return rn.includes("평균") && !/^etf/i.test(String(group.key || "")) && group.label !== "ETF200" ? rn.replace("평균", "중위값") : `${group.label || "비교군"} 중위값`;
+}
 function sReportMakeItem(spec, value, group, currency, ownRef) {
   const useOwn = spec.isRsi;
   const axisOf = spec.axis ? (v) => (Number.isFinite(v) ? Math.min(1, Math.max(0, spec.axis(v))) : null) : null;
-  const ref = useOwn ? ownRef : group && group.ref ? group.ref[spec.key] : null;
   const dist = group && group.dist ? group.dist[spec.key] : null;
+  const medianRef = useOwn ? null : sReportMedianOf(dist);
+  const ref = useOwn ? ownRef : medianRef !== null ? medianRef : group && group.ref ? group.ref[spec.key] : null;
   const dir = spec.better === "low" ? "low" : "high";
   const fmt =
     spec.fmt ||
@@ -5119,7 +5134,7 @@ function sReportMakeItem(spec, value, group, currency, ownRef) {
     fmt,
     value: Number.isFinite(value) ? value : null,
     avg: Number.isFinite(ref) ? ref : null,
-    avgName: useOwn ? "1년 평균 RSI" : group ? group.refName : "",
+    avgName: useOwn ? "1년 평균 RSI" : sReportMedName(group),
     avgShort: useOwn ? "이 종목 1년 평균" : group ? (group.refName === "SPY" ? "SPY" : group.label) : "",
     rank,
     total,
@@ -5179,7 +5194,7 @@ function sReportRadarSvg(items) {
       // 승률의 상장 기간 경고(⚠️) + 비교군 안 순위 표시 — 상위 10% 🔥 · 하위 10% ⚠️(2026-09-16 사용자 요청)
       // 상장 기간 경고는 ⚠️ 대신 값 뒤에 작은 "(10년미만)" 글씨로(2026-10-06 사용자 요청) — 불·경고 마크는 그대로 안 붙임
       const partialTag = srPartialTag(it);
-      const warn = partialTag ? "" : it.mark === "fire" ? "🔥" : it.mark === "warn" ? "⚠️" : "";
+      const warn = partialTag ? "" : it.mark === "warn" ? "⚠️" : ""; // 2026-10-20 사용자 요청: 🔥 삭제, ⚠️ 유지
       const val = (it.value === null ? "N/A" : it.fmt(it.value, 0));
       const axisLabel = it.isRsi ? String(it.label).replace(/\s*\(RSI\)\s*$/, "") : it.label; // 오각형은 "과열도"만(2026-09-17)
       // 값은 라벨 한가운데에 오게(2026-09-17 사용자 요청) — 좌우 축은 라벨이 끝 기준이라 값이 한쪽으로 쏠려 보였다.
@@ -5243,9 +5258,12 @@ const SR_ASSET_RANK = {
 // 2026-10-08 사용자 요청: 주식처럼 ETF·코인 순위에도 위에 묶음 버튼 — ETF 승률·상승률·변동성·규모·운용보수 / 과열도·수익률·배당률·52주구간,
 // 코인 승률·상승률·변동성·규모 / 과열도·수익률·52주구간. ETF는 그 아래 한국 ETF·미국 ETF 줄
 const SR_ASSET_GROUPS = {
-  etf: [["win", "ret", "vol", "aum", "fee"], ["rsi", "rev", "div", "w52"]],
-  crypto: [["win", "ret", "vol", "mcap"], ["rsi", "rev", "w52"]],
+  // 2026-10-20 사용자 요청: 성장·추세 / 시장 두 묶음으로 나눠 상단 버튼 줄에 제목을 붙임
+  etf: [["win", "ret", "rev", "vol", "rsi"], ["aum", "fee", "div", "w52"]],
+  crypto: [["win", "ret", "rev", "vol", "rsi"], ["mcap", "w52"]],
 };
+const SR_ASSET_GROUP_TITLES = ["성장 · 추세", "시장"];
+const SR_STOCK_GROUP_TITLES = { growth: "성장 · 추세", profit: "수익성 · 재무", market: "시장" };
 const SR_ASSET_ITEM_ORDER = { etf: SR_ASSET_GROUPS.etf.flat(), crypto: SR_ASSET_GROUPS.crypto.flat() };
 const SR_ASSET_ITEM_LABEL = {
   win: "승률", ret: "상승률", rev: "수익률", vol: "변동성", rsi: "과열도",
@@ -5260,12 +5278,17 @@ function applySrRankTabs() {
   if (nav && srRankActive && srRankActive.asset) {
     // ETF·코인 묶음 + (ETF) 한국/미국 줄 — 결과 안에 있던 지역 버튼은 숨김(CSS)
     const asset = srRankActive.asset;
-    const group = SR_ASSET_ITEM_ORDER[asset] || []; // 2026-10-19: 묶음 없이 모든 항목을 좌우 스크롤로
+    const groups = SR_ASSET_GROUPS[asset] || [];
     nav.classList.add("sr-rank-nav", "sr-asset-nav");
     nav.classList.remove("sr-scroll-nav");
     nav.innerHTML =
-      `<div class="sr-scroll-row">${group
-        .map((k) => `<button type="button" class="cat-btn${k === srRankActive.k ? " active" : ""}" data-sr-tab="${k}" data-sr-asset="${asset}">${escapeHtml(SR_ASSET_ITEM_LABEL[k] || k)}</button>`)
+      `<div class="sr-scroll-row">${groups
+        .map(
+          (keys, gi) =>
+            `<div class="sr-grp"><span class="sr-grp-title">${escapeHtml(SR_ASSET_GROUP_TITLES[gi] || "")}</span><div class="sr-grp-btns">${keys
+              .map((k) => `<button type="button" class="cat-btn${k === srRankActive.k ? " active" : ""}" data-sr-tab="${k}" data-sr-asset="${asset}">${escapeHtml(SR_ASSET_ITEM_LABEL[k] || k)}</button>`)
+              .join("")}</div></div>`
+        )
         .join("")}</div>` +
       (asset === "etf"
         ? `<div class="sr-region-row">${[["kr", "한국 ETF"], ["us", "미국 ETF"]]
@@ -5278,9 +5301,12 @@ function applySrRankTabs() {
   const group = srRankActive ? SR_RANK_GROUPS.find((g) => g.key === srRankActive.group) : null;
   if (!nav || !group) return;
   nav.classList.add("sr-rank-nav", "sr-scroll-nav"); // 2026-10-19: 묶음 5개가 아니라 모든 항목(15개)을 좌우 스크롤로
-  nav.innerHTML = SR_RANK_GROUPS.flatMap((g) => g.items)
-    .map((it) => `<button type="button" class="cat-btn${it.k === srRankActive.k ? " active" : ""}" data-sr-tab="${escapeHtml(it.k)}">${escapeHtml(it.label)}</button>`)
-    .join("");
+  nav.innerHTML = SR_RANK_GROUPS.map(
+    (g) =>
+      `<div class="sr-grp"><span class="sr-grp-title">${escapeHtml(SR_STOCK_GROUP_TITLES[g.key] || "")}</span><div class="sr-grp-btns">${g.items
+        .map((it) => `<button type="button" class="cat-btn${it.k === srRankActive.k ? " active" : ""}" data-sr-tab="${escapeHtml(it.k)}">${escapeHtml(it.label)}</button>`)
+        .join("")}</div></div>`
+  ).join("");
 }
 function clearSrRankTabs() {
   srRankActive = null;
@@ -5355,7 +5381,7 @@ document.addEventListener("click", (e) => {
 function sReportLineHtml(it) {
   const tone = it.judge ? it.judge.tone : "neutral";
   const has = it.value !== null;
-  const markHtml = it.mark === "fire" ? `<i class="srf-mark">🔥</i>` : it.mark === "warn" ? `<i class="srf-mark">⚠️</i>` : "";
+  const markHtml = it.mark === "warn" ? `<i class="srf-mark">⚠️</i>` : ""; // 2026-10-20 사용자 요청: 🔥 삭제, ⚠️ 유지
   let rankHtml;
   let shortHtml;
   // 2026-09-17 사용자 요청: 비교군 안 위치(상위 N%)를 크게, 실제 등수(40위/349)는 그 아래 작게
@@ -5528,7 +5554,7 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
       <div class="srt-card">
         <div class="srt-radar-head">
           <span class="srt-radar-title">핵심지표${asOfText ? `<span class="srt-asof">${asOfText}</span>` : ""}</span>
-          <span class="srt-legend"><i class="srt-lg-self"></i>이 종목 <i class="srt-lg-avg"></i>${escapeHtml(group ? group.refName : "비교 기준")}</span>
+          <span class="srt-legend"><i class="srt-lg-self"></i>이 종목 <i class="srt-lg-avg"></i>${escapeHtml(group ? sReportMedName(group) : "비교 기준")}</span>
         </div>
         ${S_REPORT_TAP_HINT}
         ${group ? sReportRadarSvg(items) : `<p class="muted" style="padding:10px 0;">비교 기준 데이터를 불러오지 못했습니다. 잠시 후 다시 열어 주세요.</p>`}
@@ -5632,13 +5658,12 @@ async function renderSReportMore(ticker, scoreMode, coreItems, group, self, curr
 
   // 요약 한 줄 — 상위 10%(🔥)·하위 10%(⚠️) 항목 모음
   const ranked = coreItems.concat(groups.flatMap((g) => g.items)).filter((it) => it.rank);
-  const fire = ranked.filter((it) => it.mark === "fire");
   const warn = ranked.filter((it) => it.mark === "warn");
   const names = (arr) => arr.map((it) => escapeHtml(it.label)).join(", ");
 
   wrap.innerHTML = `
     ${groups.map((g) => `<p class="srf-group">${escapeHtml(g.title)}</p><div class="srf-list">${g.items.map(sReportLineHtml).join("")}</div>`).join("")}
-    <p class="srf-verdict"><b>🔥 상위 10% ${fire.length}개 · ⚠️ 하위 10% ${warn.length}개</b>${fire.length ? `<span class="srf-verdict-sub">🔥 ${names(fire)}</span>` : ""}${
+    <p class="srf-verdict"><b>⚠️ 하위 10% ${warn.length}개</b>${
     warn.length ? `<span class="srf-verdict-sub">⚠️ ${names(warn)}</span>` : ""
   }</p>`;
   fitSReportRoundCells(wrap);
@@ -11834,21 +11859,30 @@ async function computeFuturePrediction(ticker) {
 
   const currentPct = currentBucket.points[currentBucket.points.length - 1].pct;
 
-  // "4년 평균 기울기" = 과거 각 해의 후반부(창의 6개월 지점→12개월 지점) 변화폭의 평균
+  // 2026-10-20 사용자 요청: 예측 = 과거 4개 그래프(오늘 시점을 0%로 맞춘 향후 6개월 흐름, 처음 → 끝)의 평균.
+  // 예전엔 과거 후반부 변화폭(%p)을 현재 값에 더해서, 지금 주가가 크게 빠져 있으면 4개 그래프보다 월등히 높게 나왔다.
+  const valueAtFrac = (pts, f) => {
+    let prev = pts[0];
+    for (const p of pts) {
+      if (p.frac >= f) {
+        const span = p.frac - prev.frac || 1;
+        return prev.pct + ((p.pct - prev.pct) * (f - prev.frac)) / span;
+      }
+      prev = p;
+    }
+    return pts[pts.length - 1].pct;
+  };
   const forwardDeltas = historicalBuckets
     .map((s) => {
-      let mid = s.points[0];
-      for (const p of s.points) {
-        if (Math.abs(p.frac - 0.5) < Math.abs(mid.frac - 0.5)) mid = p;
-      }
       const end = s.points[s.points.length - 1];
-      if (end.frac < 0.9) return null; // 후반부가 거의 없는 해는 기울기 계산에서 제외
-      return end.pct - mid.pct;
+      if (end.frac < 0.9) return null; // 후반부가 거의 없는 해는 평균에서 제외
+      const mid = valueAtFrac(s.points, 0.5);
+      return ((100 + end.pct) / (100 + mid) - 1) * 100; // 그 해의 "오늘 시점 → 6개월 뒤" 변화율(%)
     })
-    .filter((v) => v !== null);
+    .filter((v) => v !== null && Number.isFinite(v));
 
-  const avgForwardDelta = forwardDeltas.length ? forwardDeltas.reduce((a, b) => a + b, 0) / forwardDeltas.length : 0;
-  const projectedEndPct = currentPct + avgForwardDelta;
+  const avgForwardRel = forwardDeltas.length ? forwardDeltas.reduce((a, b) => a + b, 0) / forwardDeltas.length : 0;
+  const projectedEndPct = (100 + currentPct) * (1 + avgForwardRel / 100) - 100;
 
   const currentPrice = currentBasePrice !== null ? currentBasePrice * (1 + currentPct / 100) : null;
   const forecastPrice = currentBasePrice !== null ? currentBasePrice * (1 + projectedEndPct / 100) : null;
@@ -12429,7 +12463,7 @@ function renderFutureChart(data) {
   const yearsNote = data.historicalBuckets.length
     ? `회색: 과거 ${data.historicalBuckets.length}개년 같은 시기(향후 6개월) 흐름 · `
     : `과거 데이터가 부족해 계절성 비교 없이 최근 추세만 표시했습니다 · `;
-  const baseNote = `${data.ticker} · 현재를 0%로 잡고 향후 6개월만 표시 · ${yearsNote}빨간 점선: ${data.hasForwardData ? "과거 흐름의 평균 기울기로 추정한 " : ""}향후 6개월 예상`;
+  const baseNote = `${data.ticker} · 현재를 0%로 잡고 향후 6개월만 표시 · ${yearsNote}빨간 점선: ${data.hasForwardData ? "과거 그래프들의 처음→끝 평균으로 추정한 " : ""}향후 6개월 예상`;
   // 2026-10-09 사용자 요청: 맨 위에 "과거 N년 계절성 흐름 기울기 평균 / 결과: 6개월후 +46.2%", 그래프 아래엔 두 경고 문구를 하나로 합쳐 표시
   const titleEl = el("futureHeadlineTitle");
   const resultEl = el("futureHeadlineResult");
@@ -13291,8 +13325,20 @@ async function renderTechInto(rootId, scrollToIdx) {
     )
     .join("")}</div>`;
   const listHtml = `<div class="tech-insight-list">${techShown.map((it, i) => `<div data-tech-card="${i}">${techInsightCardHtml(it)}</div>`).join("")}</div>`;
+  // 2026-10-20 사용자 요청: 맨 위에 글로벌 연구기관(출처) 요약 — 어떤 기관의 글을 모았는지 한눈에
+  const TECH_ORG_INFO = [
+    ["MIT Technology Review", "미국 MIT가 발행하는 기술 전문 매체 — AI·바이오·에너지 신기술"],
+    ["IEEE Spectrum", "세계 최대 전기·전자공학 학회(IEEE)의 매거진 — 로봇·반도체·통신"],
+    ["McKinsey", "글로벌 컨설팅사 맥킨지의 산업·기술 리포트"],
+    ["OECD", "OECD(경제협력개발기구)의 AI 정책 블로그"],
+  ];
+  const techOrgCount = {};
+  techItems.forEach((t) => (techOrgCount[t.source] = (techOrgCount[t.source] || 0) + 1));
+  const orgHtml = `<div class="tech-orgs"><div class="tech-orgs-head">🌐 글로벌 연구기관 · 매체 ${TECH_ORG_INFO.length}곳의 글을 모아 요약합니다</div>${TECH_ORG_INFO.map(
+    ([name, desc]) => `<div class="tech-org-row${techOrgCount[name] ? "" : " tech-org-off"}"><b>${escapeHtml(name)}</b><span>${escapeHtml(desc)}</span><em>${techOrgCount[name] ? `${techOrgCount[name]}건` : "준비 중"}</em></div>`
+  ).join("")}</div>`;
   root.innerHTML = techItems.length
-    ? `${toolbar}<p class="today-note">MIT Technology Review·McKinsey·IEEE Spectrum·OECD의 최신 글 핵심을 자체적으로 요약·재구성했습니다.${techLatest ? ` (최근 글 ${escapeHtml(String(techLatest).slice(0, 10))})` : ""}</p>
+    ? `${toolbar}${orgHtml}<p class="today-note">MIT Technology Review·McKinsey·IEEE Spectrum·OECD의 최신 글 핵심을 자체적으로 요약·재구성했습니다.${techLatest ? ` (최근 글 ${escapeHtml(String(techLatest).slice(0, 10))})` : ""}</p>
        ${view === "grid" ? gridHtml : listHtml}
        ${techItems.length > 5 ? `<button type="button" class="cat-btn load-more-btn today-tech-more">${todayTechShown > 5 ? "− 접기" : `+더보기 (${techItems.length}개)`}</button>` : ""}
        <p class="disclaimer tab-note">📢 정확한 내용은 원문 링크에서 확인하세요. 삽화는 AI로 생성되어 실제 사진과 다를 수 있습니다.</p>`
