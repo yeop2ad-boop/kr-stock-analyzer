@@ -497,6 +497,7 @@ window.addEventListener("pointercancel", mineEndGesture);
 
 // ---- 종목 검색·추가 시트 ----
 const MINE_TABS = [["kr", "한국주식"], ["us", "미국주식"], ["etf", "ETF"], ["crypto", "비트코인"]];
+const MINE_PAGE = 30; // 종목 목록은 30개씩, 아래 "더보기"로 계속
 let mineAddState = null; // { secId, tab, selected:Set, query }
 function mineTabCompanies(tab) {
   const get = (d) => (typeof d !== "undefined" && d && d.companies ? d.companies : []);
@@ -513,7 +514,7 @@ function mineTabOf(c) {
 function mineOpenAddSheet(secId) {
   const sec = mineDraft.sectors.find((s) => s.id === secId);
   if (!sec) return;
-  mineAddState = { secId, tab: "kr", selected: new Set(sec.symbols), query: "" };
+  mineAddState = { secId, tab: "kr", selected: new Set(sec.symbols), query: "", shown: MINE_PAGE };
   document.getElementById("mineSearchInput").value = "";
   document.getElementById("mineAddBack").classList.add("open");
   mineRenderAddSheet();
@@ -540,10 +541,12 @@ function mineRenderAddSheet() {
   let list;
   if (st.query) {
     const q = st.query.toLowerCase();
-    list = [...idx.values()].filter((c) => (c.symbol || "").toLowerCase().includes(q) || (koNameOf(c.symbol, c.name) || "").toLowerCase().includes(q) || (c.name || "").toLowerCase().includes(q)).sort((a, b) => mineUsdCap(b) - mineUsdCap(a)).slice(0, 50);
+    list = [...idx.values()].filter((c) => (c.symbol || "").toLowerCase().includes(q) || (koNameOf(c.symbol, c.name) || "").toLowerCase().includes(q) || (c.name || "").toLowerCase().includes(q)).sort((a, b) => mineUsdCap(b) - mineUsdCap(a));
   } else {
-    list = mineTabCompanies(st.tab).slice(0, 50);
+    list = mineTabCompanies(st.tab);
   }
+  const total = list.length;
+  list = list.slice(0, st.shown);
   const box = document.getElementById("mineAddList2");
   if (!list.length) {
     const loading = !st.query && ((st.tab === "etf" || st.tab === "crypto") && typeof ETF_MAP_DATA === "undefined");
@@ -556,6 +559,7 @@ function mineRenderAddSheet() {
         return `<div class="mine-row" data-sym="${mineEsc(c.symbol)}"><img class="mine-logo" loading="lazy" alt="" src="${mineEsc(logoUrl(c.symbol, "low"))}" onerror="this.style.visibility='hidden'" /><div class="mine-row-name"><b>${mineEsc(name)}</b><span>${mineEsc(c.sectorKo || c.sector || "")}</span></div><button type="button" class="mine-row-add${on ? " on" : ""}">${on ? "✓ 추가됨" : "추가"}</button></div>`;
       })
       .join("");
+    if (total > list.length) box.innerHTML += `<button type="button" class="mine-more" id="mineMoreBtn">더보기 (${list.length}/${total})</button>`;
   }
   const n = st.selected.size;
   document.getElementById("mineAddConfirm").textContent = n ? `추가하기 (${n})` : "추가하기";
@@ -642,15 +646,25 @@ function mineBindUi() {
     if (!b || !mineAddState) return;
     mineAddState.tab = b.dataset.tab;
     mineAddState.query = "";
+    mineAddState.shown = MINE_PAGE;
     $("mineSearchInput").value = "";
     mineRenderAddSheet();
   });
   $("mineSearchInput").addEventListener("input", (e) => {
     if (!mineAddState) return;
     mineAddState.query = e.target.value.trim();
+    mineAddState.shown = MINE_PAGE;
     mineRenderAddSheet();
   });
   $("mineAddList2").addEventListener("click", (e) => {
+    if (e.target.closest(".mine-more") && mineAddState) {
+      const box = $("mineAddList2");
+      const top = box.scrollTop;
+      mineAddState.shown += MINE_PAGE;
+      mineRenderAddSheet();
+      box.scrollTop = top; // 늘어난 줄만 아래에 붙고 보던 자리는 그대로
+      return;
+    }
     const row = e.target.closest(".mine-row");
     if (!row || !mineAddState) return;
     const sym = row.dataset.sym;

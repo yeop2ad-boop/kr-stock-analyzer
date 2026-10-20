@@ -1786,7 +1786,7 @@ function volRatioOf(c) {
 }
 // 회색(0.5배 이하) → 흰색(1배) → 노랑(2배) → 빨강(3배 이상) — 2026-10-19 사용자 선택
 const VOL_GRAY = [156, 163, 175];
-const VOL_WHITE = [255, 255, 255];
+const VOL_WHITE = CHG_BG; // 1배 기준색 — 화이트 테마는 흰색, 블랙 테마는 지도 배경과 같은 검정(2026-10-20)
 const VOL_YELLOW = [253, 224, 71];
 const VOL_RED = [220, 38, 38];
 function volColor(r) {
@@ -1839,9 +1839,9 @@ function applyVolMode() {
     if (volModeOn) {
       const r = volRatioOf(c);
       const rgb = volColor(r);
-      el.style.setProperty("--chg", rgb ? `rgb(${rgb.join(",")})` : "rgb(229,231,235)");
+      el.style.setProperty("--chg", rgb ? `rgb(${rgb.join(",")})` : CHG_BG[0] === 0 ? "rgb(38,41,50)" : "rgb(229,231,235)");
       if (chgTextEl) chgTextEl.textContent = rgb ? fmtVolRatio(r) : "-";
-      if (label) label.style.color = "#14161c"; // 흰색~주황~회색 타일 위에서는 어두운 글자
+      if (label) label.style.color = rgb && rgb[0] * 0.3 + rgb[1] * 0.59 + rgb[2] * 0.11 < 110 ? "#ffffff" : "#14161c"; // 흰색~주황~회색 타일 위에서는 어두운 글자, 검정 타일(블랙 테마 1배 부근)에선 흰 글자
     } else {
       const chg = changeColor(c.changePercent);
       el.style.setProperty("--chg", chg.css);
@@ -2147,9 +2147,10 @@ function createSliderController(getKey, els, onNoDataChange) {
     els.fill.style.left = `${tMin * 100}%`;
     els.fill.style.right = `${(1 - tMax) * 100}%`;
     if (els.valueLabel) {
-      els.valueLabel.textContent = isFullRange(key, [selMin, selMax])
-        ? "전체"
-        : `${m.fmt(selMin)} 이상 ${m.fmt(selMax)} 이하`;
+      const full = isFullRange(key, [selMin, selMax]);
+      els.valueLabel.textContent = full ? "전체" : `${m.fmt(selMin)} 이상 ${m.fmt(selMax)} 이하`;
+      // 바텀시트 위쪽 "전체" 버튼은 아래 값 표시("전체")와 겹쳐 두 번 보였음 → 걸린 필터가 있을 때만 "초기화"로 보이게(2026-10-20)
+      if (els.valueLabel.id === "rangeSheetValue") rangeSheetResetBtn.style.visibility = full ? "hidden" : "visible";
     }
   }
 

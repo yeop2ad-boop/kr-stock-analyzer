@@ -2458,14 +2458,30 @@ el("morePanelContactBtn").addEventListener("click", () => {
   window.location.href = "mailto:yeop2ad@gmail.com?subject=" + encodeURIComponent("[마켓맵 문의]");
 });
 
+const THEME_KEY = "theme"; // 화이트/블랙 선택 저장(지도 페이지와 공유)
 function applyTheme(theme) {
   if (theme === "dark") {
     document.documentElement.setAttribute("data-theme", "dark");
   } else {
     document.documentElement.removeAttribute("data-theme");
   }
+  document.querySelectorAll("[data-theme-choice]").forEach((b) => b.classList.toggle("active", b.dataset.themeChoice === (theme === "dark" ? "dark" : "light")));
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute("content", "#7230f0");
+  try {
+    // 계절성 예측 차트는 색이 SVG 안에 들어 있어 테마가 바뀌면 다시 그린다(첫 호출 땐 아직 선언 전이라 예외 → 무시)
+    const fcBox = document.getElementById("futureChartContainer");
+    if (futureChartLastData && fcBox && fcBox.querySelector("svg")) fcBox.innerHTML = buildFutureChartSvg(futureChartLastData, fcBox.clientWidth || 0);
+  } catch (e) {}
+}
+function setTheme(theme) {
+  applyTheme(theme);
+  try {
+    localStorage.setItem(THEME_KEY, theme);
+  } catch (e) {}
 }
 applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light");
+document.querySelectorAll("[data-theme-choice]").forEach((b) => b.addEventListener("click", () => setTheme(b.dataset.themeChoice)));
 // ---------- 언어(한국어/영문) — 접속 지역(타임존/브라우저 언어)에 따라 기본값 추정, 명시적으로 고른 뒤에만 저장 ----------
 const I18N = {
   "market.kr": { ko: "한국주식", en: "KR" },
@@ -11835,7 +11851,8 @@ bindTrend(trendButtons.krEtf, runTrendKrEtf);
 const FUTURE_YEARS_BACK = 4;
 const FUTURE_MONTH_NAMES_KO = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
 // 흰 배경(2026-09-10 사용자 요청)에서 보이도록 과거 연도 선은 옅은 회색 → 중간 회색 계열로
-const FUTURE_LINE_COLORS = ["#d3d7de", "#cdd1d9", "#c7ccd5", "#c1c6d0"]; // 과거 연도선: 흰색에 가까운 연한 회색(예상 빨간 점선이 돋보이게)
+const FUTURE_LINE_COLORS = ["#d3d7de", "#cdd1d9", "#c7ccd5", "#c1c6d0"];
+const FUTURE_LINE_COLORS_DARK = ["#5d6577", "#566073", "#4f596c", "#485265"]; // 과거 연도선: 흰색에 가까운 연한 회색(예상 빨간 점선이 돋보이게)
 
 function addMonths(date, months) {
   const d = new Date(date.getTime());
@@ -12411,12 +12428,16 @@ function buildFutureChartSvg(data, availWidth) {
   const xFn = (frac) => ML + frac * PW;
   const yFn = (val) => MT + (1 - (val - lo) / (hi - lo)) * PH;
 
+  const dk = isDarkTheme();
+  const FC_GRID = dk ? "#2a2e3a" : "#e6e8ee";
+  const FC_VGRID = dk ? "#262a35" : "#eceef3";
+  const FC_TXT = dk ? "#9aa3b2" : "#6b7280";
   let gridSvg = "";
   for (let v = Math.ceil(lo / step) * step; v <= hi + 0.001; v += step) {
     const y = yFn(v);
     const zero = Math.abs(v) < 0.001;
-    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${ML + PW}" y2="${y.toFixed(1)}" stroke="${zero ? "#e08a00" : "#e6e8ee"}" stroke-width="${zero ? 1.6 : 1}" ${zero ? 'stroke-dasharray="5,4"' : ""} />`;
-    gridSvg += `<text x="${ML - 6}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="${FS}" fill="${zero ? "#e08a00" : "#6b7280"}" font-weight="${zero ? "700" : "400"}">${v > 0 ? "+" : ""}${Math.round(v)}%</text>`;
+    gridSvg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${ML + PW}" y2="${y.toFixed(1)}" stroke="${zero ? "#e08a00" : FC_GRID}" stroke-width="${zero ? 1.6 : 1}" ${zero ? 'stroke-dasharray="5,4"' : ""} />`;
+    gridSvg += `<text x="${ML - 6}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="${FS}" fill="${zero ? "#e08a00" : FC_TXT}" font-weight="${zero ? "700" : "400"}">${v > 0 ? "+" : ""}${Math.round(v)}%</text>`;
   }
 
   // 가로축: 지금 → +6개월(월 라벨). 좁으면 1개월 건너 표시
@@ -12426,9 +12447,9 @@ function buildFutureChartSvg(data, availWidth) {
     const labelDate = addMonths(data.axisMonthStart, 6 + m);
     const isNow = m === 0;
     const isEnd = m === 6;
-    axisSvg += `<line x1="${x.toFixed(1)}" y1="${MT}" x2="${x.toFixed(1)}" y2="${MT + PH}" stroke="${isNow ? "#e08a00" : "#eceef3"}" stroke-width="${isNow ? 1.8 : 1}" ${isNow ? "" : 'stroke-dasharray="2,3"'} />`;
+    axisSvg += `<line x1="${x.toFixed(1)}" y1="${MT}" x2="${x.toFixed(1)}" y2="${MT + PH}" stroke="${isNow ? "#e08a00" : FC_VGRID}" stroke-width="${isNow ? 1.8 : 1}" ${isNow ? "" : 'stroke-dasharray="2,3"'} />`;
     if (!wide && m % 2 === 1 && m !== 6) continue;
-    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 16).toFixed(1)}" text-anchor="${isNow ? "start" : isEnd ? "end" : "middle"}" font-size="${FS}" fill="${isNow ? "#e08a00" : isEnd ? "#e5342f" : "#6b7280"}" font-weight="${isNow || isEnd ? "700" : "400"}">${FUTURE_MONTH_NAMES_KO[labelDate.getMonth()]}</text>`;
+    axisSvg += `<text x="${x.toFixed(1)}" y="${(MT + PH + 16).toFixed(1)}" text-anchor="${isNow ? "start" : isEnd ? "end" : "middle"}" font-size="${FS}" fill="${isNow ? "#e08a00" : isEnd ? "#e5342f" : FC_TXT}" font-weight="${isNow || isEnd ? "700" : "400"}">${FUTURE_MONTH_NAMES_KO[labelDate.getMonth()]}</text>`;
   }
   axisSvg += `<text x="${ML}" y="${(MT + PH + 32).toFixed(1)}" text-anchor="start" font-size="${FS}" fill="#e08a00" font-weight="700">(현재)</text>`;
   if (data.currentPrice !== null && data.currentPrice !== undefined) {
@@ -12445,7 +12466,8 @@ function buildFutureChartSvg(data, availWidth) {
 
   let linesSvg = "";
   hist.forEach((s, k) => {
-    const color = FUTURE_LINE_COLORS[k % FUTURE_LINE_COLORS.length];
+    const palette = dk ? FUTURE_LINE_COLORS_DARK : FUTURE_LINE_COLORS;
+    const color = palette[k % palette.length];
     linesSvg += `<path d="${pathFromPoints(s.pts, xFn, yFn)}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" />`;
   });
 
@@ -12455,11 +12477,11 @@ function buildFutureChartSvg(data, availWidth) {
     fx0 = xFn(0),
     fy0 = yFn(0);
   linesSvg += `<line x1="${fx0.toFixed(1)}" y1="${fy0.toFixed(1)}" x2="${fx1.toFixed(1)}" y2="${fy1.toFixed(1)}" stroke="#e5342f" stroke-width="3" stroke-dasharray="7,6" stroke-linecap="round" />`;
-  linesSvg += `<circle cx="${fx0.toFixed(1)}" cy="${fy0.toFixed(1)}" r="4.5" fill="#e08a00" stroke="#fff" stroke-width="1.5" />`;
+  linesSvg += `<circle cx="${fx0.toFixed(1)}" cy="${fy0.toFixed(1)}" r="4.5" fill="#e08a00" stroke="${dk ? "#12141a" : "#fff"}" stroke-width="1.5" />`;
   linesSvg += `<circle cx="${fx1.toFixed(1)}" cy="${fy1.toFixed(1)}" r="3.6" fill="#e5342f" />`;
 
   return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHtml(data.ticker)} 향후 6개월 미래예측 차트">
-    <rect x="0" y="0" width="${W}" height="${H}" fill="#fff" />
+    <rect x="0" y="0" width="${W}" height="${H}" fill="${dk ? "#1c1f27" : "#fff"}" />
     ${gridSvg}
     ${axisSvg}
     ${linesSvg}
