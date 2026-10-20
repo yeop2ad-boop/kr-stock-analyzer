@@ -1705,7 +1705,7 @@ document.addEventListener("click", (e) => {
   if (btn) showToast(btn.dataset.toast);
 });
 
-document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#shapeModeBtn):not(#watchFilterBtn):not(#volModeBtn)").forEach((btn) => {
+document.querySelectorAll(".bottom-nav-btn, .side-btn:not(#sizeModeBtn):not(#shapeModeBtn):not(#watchFilterBtn):not(#volModeBtn):not(#mineEditBtn)").forEach((btn) => {
   btn.addEventListener("click", () => {
     const group = btn.parentElement;
     group.querySelectorAll(".active").forEach((b) => b.classList.remove("active"));

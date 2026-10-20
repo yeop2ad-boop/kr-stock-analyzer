@@ -592,8 +592,8 @@ function mineBindUi() {
     mineSave();
     mineRegisterViews();
     $("mapAddBack").style.display = "none";
-    await setMapView(mineViewKey(m.id), false); // 먼저 오른쪽 위 주황 '수정' 버튼이 생기고, 그걸 누르면 편집 모드로
-    showToast("오른쪽 위 '수정'을 눌러 시장을 꾸며 보세요");
+    await setMapView(mineViewKey(m.id), false);
+    mineEnterEdit(); // 2026-10-20 사용자 요청: 만들자마자 자동으로 수정 모드(섹터 원이 화면에 가득)
   });
   $("mineEditBtn").addEventListener("click", () => {
     if (mineEditing) mineExitEdit(true);
