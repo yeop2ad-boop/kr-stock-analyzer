@@ -2422,6 +2422,37 @@ el("morePanelAboutBtn").addEventListener("click", () => {
 el("aboutModalCloseBtn").addEventListener("click", () => {
   el("aboutModal").style.display = "none";
 });
+// 설정 초기화(2026-10-20 사용자 요청): 경고를 보여 주고 "초기화"라고 직접 입력해야 실행. 관심종목·그룹은 지우지 않음
+const RESET_SETTING_KEYS = [
+  "theme", "app_lang", "color_scheme", "tech_view_v1", "watchlist_active_market_v1", "recentSearches", "recent_viewed_v1",
+  "map_views_extra_v1", "map_chip_order_v1", "map_custom_markets_v1", "market_widget_symbols_v1", "full_scan_quota_v1",
+  "watchlist_sort_v1", "watchlist_sort_v1_all", "watchlist_sort_v1_us", "watchlist_sort_v1_kr", "watchlist_active_group_v1", "watchlist_active_group_v1_all", "watchlist_active_group_v1_us",
+];
+el("morePanelResetBtn").addEventListener("click", async () => {
+  closeMorePanel();
+  const v = await appPromptSheet({
+    title: "설정 초기화",
+    sub: "⚠️ 지도 보기·상단 버튼 순서·내 시장·화면 설정이 모두 처음 상태로 돌아가요. (관심종목은 지워지지 않아요)<br>계속하려면 아래 칸에 <b>초기화</b> 라고 입력해 주세요.",
+    placeholder: "초기화",
+    okLabel: "초기화",
+    maxLength: 6,
+  });
+  if (v === null) return;
+  if (v !== "초기화") {
+    showToast("'초기화'라고 정확히 입력해야 해요");
+    return;
+  }
+  RESET_SETTING_KEYS.forEach((k) => {
+    try {
+      localStorage.removeItem(k);
+    } catch {}
+  });
+  try {
+    sessionStorage.clear();
+  } catch {}
+  showToast("설정을 초기화했어요");
+  setTimeout(() => (location.href = location.pathname), 700);
+});
 el("morePanelContactBtn").addEventListener("click", () => {
   closeMorePanel();
   window.location.href = "mailto:yeop2ad@gmail.com?subject=" + encodeURIComponent("[마켓맵 문의]");
