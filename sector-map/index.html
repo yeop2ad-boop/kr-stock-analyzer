@@ -45,10 +45,10 @@
 <meta name="apple-mobile-web-app-title" content="마켓맵" />
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" />
-<link rel="stylesheet" href="style.css?v=20261021a" />
+<link rel="stylesheet" href="style.css?v=20261022a" />
 <!-- 지도가 떠 있는 동안 본체 파일을 미리 받아둠 — 간편검색/시장/더보기로 처음 넘어갈 때 로딩 체감 단축 -->
-<link rel="prefetch" href="../app.js?v=20261021a" />
-<link rel="prefetch" href="../style.css?v=20261021a" />
+<link rel="prefetch" href="../app.js?v=20261022a" />
+<link rel="prefetch" href="../style.css?v=20261022a" />
 <link rel="prefetch" href="../index.html" />
 </head>
 <body>
@@ -304,10 +304,13 @@
   <div class="map-add-back" id="mapAddBack" style="display:none;">
     <div class="map-add-sheet">
       <div class="map-add-head"><b>보기 추가</b><button type="button" id="mapAddCloseBtn" aria-label="닫기">✕</button></div>
-      <button type="button" class="mine-create-btn" id="mineCreateBtn">+ 내 시장 만들기</button>
-      <p class="mine-create-note">*나만의 시장을 만들어 보세요.</p>
-      <p class="map-add-note">추가한 보기는 왼쪽 위 목록에 한국주식 → 미국주식 → ETF → 비트코인 순으로 정렬돼요.</p>
-      <div class="map-add-list" id="mapAddList"></div>
+      <div class="map-add-scroll">
+        <button type="button" class="mine-create-btn" id="mineCreateBtn">+ 내 시장 만들기</button>
+        <p class="mine-create-note">*나만의 시장을 만들어 보세요.</p>
+        <p class="map-add-note">추가한 보기는 왼쪽 위 목록에 한국주식 → 미국주식 → ETF → 비트코인 순으로 정렬돼요.</p>
+        <div class="map-add-list" id="mapAddList"></div>
+      </div>
+      <button type="button" class="map-add-done" id="mapAddDoneBtn">완료</button>
     </div>
   </div>
 
@@ -326,15 +329,15 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
-<script src="../data/ko-company-names.js?v=20260911e"></script>
+<script src="../data/ko-company-names.js?v=20261022a"></script>
 <script src="data/sp500-data-core.js?v=20260904h"></script>
 <script src="data/kr-data-core.js?v=20260904h" onerror="window.KR_CORE_DATA = { companies: [] };"></script>
 <script src="../winrate-benchmark.js?v=20261007k"></script>
-<script src="data/tech-groups.js?v=20261021a"></script>
-<script src="data/themes.js?v=20261021a"></script>
-<script src="my-market.js?v=20261021a"></script>
-<script src="app.js?v=20261021a"></script>
-<script src="rt-rank.js?v=20261021a"></script>
-<script src="../app-gate.js?v=20261021a"></script>
+<script src="data/tech-groups.js?v=20261022a"></script>
+<script src="data/themes.js?v=20261022a"></script>
+<script src="my-market.js?v=20261022a"></script>
+<script src="app.js?v=20261022a"></script>
+<script src="rt-rank.js?v=20261022a"></script>
+<script src="../app-gate.js?v=20261022a"></script>
 </body>
 </html>

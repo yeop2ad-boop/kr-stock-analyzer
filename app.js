@@ -7414,10 +7414,19 @@ let rsiSpyDetailPromise = null;
 // 2026-09-16: 만든 HTML을 돌려주는 형태로 바꿈 — INVEST점수 "+자세히"와 핵심지표 설명의 "+예시"가 같은 내용을 함께 쓴다
 function buildRsiSpyDetailHtml() {
   if (!rsiSpyDetailPromise) {
-    rsiSpyDetailPromise = (async () => {
-      const chart = await yahooChart("SPY", "5y", "1wk");
+    // 2026-10-21 사용자 요청: 그래프 1개(SPY) → 3개(SPY·비트코인·삼성전자). 각 그래프 맨 아래에 현재 RSI 점수를 빨간색으로 표시
+    const targets = [
+      { sym: "SPY", name: "SPY(S&amp;P500)", priceLabel: "SPY 주가(주봉 종가)", lowWindows: [
+        { label: "25년 4월", from: Date.UTC(2025, 2, 1) / 1000, to: Date.UTC(2025, 4, 31) / 1000 },
+        { label: "26년 3월", from: Date.UTC(2026, 1, 1) / 1000, to: Date.UTC(2026, 3, 30) / 1000 },
+      ] },
+      { sym: "BTC-USD", name: "비트코인", priceLabel: "비트코인 주가(주봉 종가)" },
+      { sym: "005930.KS", name: "삼성전자", priceLabel: "삼성전자 주가(주봉 종가)" },
+    ];
+    const buildOne = async (t) => {
+      const chart = await yahooChart(t.sym, "5y", "1wk");
       const pairs = chartClosePairs(chart);
-      if (pairs.length < 30) throw new Error("SPY 주봉 데이터를 가져오지 못했습니다.");
+      if (pairs.length < 30) throw new Error(`${t.name} 주봉 데이터를 가져오지 못했습니다.`);
       const closes = pairs.map((p) => p.c);
       const rsiSeries = computeWilderRsiSeries(closes, 14);
 
@@ -7430,7 +7439,7 @@ function buildRsiSpyDetailHtml() {
       const rsiBottom = 236;
       const t0 = pairs[0].t;
       const t1 = pairs[pairs.length - 1].t;
-      const xOf = (t) => PX0 + ((t - t0) / (t1 - t0)) * (PX1 - PX0);
+      const xOf = (tt) => PX0 + ((tt - t0) / (t1 - t0)) * (PX1 - PX0);
       const minC = Math.min(...closes);
       const maxC = Math.max(...closes);
       const yOfPrice = (c) => priceBottom - ((c - minC) / (maxC - minC)) * (priceBottom - priceTop);
@@ -7443,21 +7452,33 @@ function buildRsiSpyDetailHtml() {
         .map((pt, i) => `${i === 0 ? "M" : "L"}${pt}`)
         .join("");
 
-      // 두 차례 큰 하락 구간(2025년 4월·2026년 3월) 부근에서 RSI 최저점을 찾아 점으로 표시
-      const lowWindows = [
-        { label: "25년 4월", from: Date.UTC(2025, 2, 1) / 1000, to: Date.UTC(2025, 4, 31) / 1000 },
-        { label: "26년 3월", from: Date.UTC(2026, 1, 1) / 1000, to: Date.UTC(2026, 3, 30) / 1000 },
-      ];
-      const lowMarks = lowWindows
-        .map((w) => {
-          let best = null;
-          for (let i = 0; i < pairs.length; i++) {
-            if (rsiSeries[i] === null || pairs[i].t < w.from || pairs[i].t > w.to) continue;
-            if (!best || rsiSeries[i] < best.rsi) best = { t: pairs[i].t, rsi: rsiSeries[i], price: pairs[i].c };
-          }
-          return best ? { ...best, label: w.label } : null;
-        })
-        .filter(Boolean);
+      // RSI가 가장 낮았던 두 지점(서로 20주 이상 떨어진 곳)을 빨간 점으로 표시 — SPY는 큰 하락 구간(25년 4월·26년 3월) 부근
+      let lowMarks;
+      if (t.lowWindows) {
+        lowMarks = t.lowWindows
+          .map((w) => {
+            let best = null;
+            for (let i = 0; i < pairs.length; i++) {
+              if (rsiSeries[i] === null || pairs[i].t < w.from || pairs[i].t > w.to) continue;
+              if (!best || rsiSeries[i] < best.rsi) best = { t: pairs[i].t, rsi: rsiSeries[i], price: pairs[i].c };
+            }
+            return best ? { ...best, label: w.label } : null;
+          })
+          .filter(Boolean);
+      } else {
+        const idx = pairs.map((_, i) => i).filter((i) => rsiSeries[i] !== null).sort((x, y) => rsiSeries[x] - rsiSeries[y]);
+        const picked = [];
+        for (const i of idx) {
+          if (picked.every((j) => Math.abs(j - i) >= 20)) picked.push(i);
+          if (picked.length >= 2) break;
+        }
+        lowMarks = picked
+          .sort((x, y) => x - y)
+          .map((i) => {
+            const d = new Date(pairs[i].t * 1000);
+            return { t: pairs[i].t, rsi: rsiSeries[i], price: pairs[i].c, label: `${String(d.getUTCFullYear()).slice(2)}년 ${d.getUTCMonth() + 1}월` };
+          });
+      }
       const lowMarkSvg = lowMarks
         .map((mk) => {
           const x = xOf(mk.t);
@@ -7470,6 +7491,11 @@ function buildRsiSpyDetailHtml() {
             <text x="${tx.toFixed(1)}" y="${(y - 9).toFixed(1)}" text-anchor="${anchor}" font-size="11.5" font-weight="800" fill="#ef4444">${mk.label} RSI ${mk.rsi.toFixed(1)}</text>`;
         })
         .join("");
+      // 맨 아래: 지금(가장 최근 주) RSI 점수를 빨간색으로
+      const lastIdx = rsiSeries.map((v, i) => (v === null ? -1 : i)).filter((i) => i >= 0).pop();
+      const nowRsi = lastIdx === undefined ? null : rsiSeries[lastIdx];
+      const nowSvg = nowRsi === null ? "" : `<circle cx="${xOf(pairs[lastIdx].t).toFixed(1)}" cy="${yOfRsi(nowRsi).toFixed(1)}" r="4.5" fill="#ef4444" stroke="#fff" stroke-width="1.5"/>`;
+      const nowText = nowRsi === null ? "" : `<text x="${PX1}" y="${rsiBottom + 14}" text-anchor="end" font-size="12.5" font-weight="900" fill="#ef4444">지금 RSI ${nowRsi.toFixed(1)}</text>`;
 
       const yearTicks = [];
       for (let y = new Date(t0 * 1000).getUTCFullYear() + 1; y <= new Date(t1 * 1000).getUTCFullYear(); y++) {
@@ -7478,10 +7504,10 @@ function buildRsiSpyDetailHtml() {
       }
 
       return `
-        <h3 class="future-chart-subheading">📉 예시: SPY(S&amp;P500) 5년 주봉과 주간 RSI(14)</h3>
-        <svg viewBox="0 0 ${W} 258" style="width:100%;height:auto;display:block;" role="img" aria-label="SPY 5년 차트와 주간 RSI">
+        <h3 class="future-chart-subheading">📉 예시: ${t.name} 5년 주봉과 주간 RSI(14)</h3>
+        <svg viewBox="0 0 ${W} 258" style="width:100%;height:auto;display:block;" role="img" aria-label="${t.name} 5년 차트와 주간 RSI">
           ${yearTicks.join("")}
-          <text x="${PX0}" y="${priceTop - 2}" font-size="10.5" fill="var(--muted)">SPY 주가(주봉 종가)</text>
+          <text x="${PX0}" y="${priceTop - 2}" font-size="10.5" fill="var(--muted)">${t.priceLabel}</text>
           <path d="${pricePath}" fill="none" stroke="#5b8def" stroke-width="2" stroke-linejoin="round"/>
           <text x="${PX0}" y="${rsiTop - 5}" font-size="10.5" fill="var(--muted)">주간 RSI(14)</text>
           <line x1="${PX0}" y1="${yOfRsi(70).toFixed(1)}" x2="${PX1}" y2="${yOfRsi(70).toFixed(1)}" stroke="#ef4444" stroke-width="1" stroke-dasharray="4 3" opacity="0.55"/>
@@ -7490,17 +7516,27 @@ function buildRsiSpyDetailHtml() {
           <text x="${PX1}" y="${(yOfRsi(30) + 11).toFixed(1)}" text-anchor="end" font-size="9.5" fill="#22a866">30 과매도</text>
           <path d="${rsiPath}" fill="none" stroke="#6d28d9" stroke-width="1.8" stroke-linejoin="round"/>
           ${lowMarkSvg}
-        </svg>
+          ${nowSvg}
+          ${nowText}
+        </svg>`;
+    };
+    rsiSpyDetailPromise = (async () => {
+      const results = await Promise.allSettled(targets.map(buildOne));
+      const ok = results.filter((r) => r.status === "fulfilled").map((r) => r.value);
+      if (!ok.length) throw new Error("예시 주봉 데이터를 가져오지 못했습니다.");
+      return `
+        ${ok.join("")}
         <p class="disclaimer" style="margin-top:8px;">
           💡 <b>RSI(상대강도지수)</b>는 최근 14주 동안 오른 폭과 내린 폭의 비율로 "지금 얼마나 과열/침체됐는지"를 0~100으로 나타내는
           기술적 지표입니다. <b style="color:#22a866;">30 미만이면 과매도(많이 내려 침체)</b>,
-          <b style="color:#ef4444;">70 이상이면 과매수(많이 올라 과열)</b>로 봅니다. 위 SPY 예시처럼 큰 하락 구간(빨간 점)에서
+          <b style="color:#ef4444;">70 이상이면 과매수(많이 올라 과열)</b>로 봅니다. 위 예시들처럼 큰 하락 구간(빨간 점)에서
           주간 RSI가 30 부근까지 내려간 뒤 반등한 사례가 있지만, 항상 반복된다는 보장은 없으며 투자 자문이 아닙니다.
+          각 그래프 맨 아래 빨간 글씨는 가장 최근 주의 RSI 점수예요.
         </p>
       `;
     })().catch((e) => {
       rsiSpyDetailPromise = null;
-      return `<p class="error-inline">SPY 예시 차트를 가져오지 못했습니다: ${escapeHtml(e.message || "")}</p>`;
+      return `<p class="error-inline">예시 차트를 가져오지 못했습니다: ${escapeHtml(e.message || "")}</p>`;
     });
   }
   return rsiSpyDetailPromise;
@@ -7808,7 +7844,7 @@ function endLoadMoreScan(resultsEl) {
 // 남은 횟수는 화면에 보여주지 않고, 31번째부터 "내일 00:00 이후 가능" 안내만 띄움. 기준일은 한국시간 00:00,
 // 횟수는 이 브라우저(localStorage)에 저장 — 스톡챗 안의 임베드 화면도 같은 도메인이라 같은 횟수를 공유함.
 // ETF·코인·IPO 전체보기와 "더보기(30개씩)"는 대상 아님. 모든 종목 전체보기 버튼이 클릭 이벤트 하나로 모이므로 캡처 단계에서 한 번에 막음.
-const FULL_SCAN_DAILY_LIMIT = 30;
+const FULL_SCAN_DAILY_LIMIT = Infinity; // 2026-10-21 사용자 요청: 하루 30회 제한 삭제(제한 없음)
 const FULL_SCAN_QUOTA_KEY = "full_scan_quota_v1";
 const FULL_SCAN_LIMIT_MSG = "오늘 전체 검색 30회를 모두 사용했어요. 00:00 이후에 다시 이용할 수 있어요.";
 function isStockFullScanBtn(btn) {

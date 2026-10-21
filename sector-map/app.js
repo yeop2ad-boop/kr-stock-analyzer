@@ -3857,6 +3857,7 @@ document.addEventListener("click", (e) => {
     renderMapViewMenu();
   };
   document.getElementById("mapAddCloseBtn").addEventListener("click", close);
+  document.getElementById("mapAddDoneBtn").addEventListener("click", close);
   back.addEventListener("click", (e) => {
     if (e.target === back) close();
   });
