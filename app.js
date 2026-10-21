@@ -202,7 +202,18 @@ function sleep(ms) {
 }
 
 // 프록시가 일시적으로 요청량 제한에 걸릴 수 있어, 전체 프록시를 한 바퀴 실패하면 잠깐 쉬었다 한 번 더 시도
-async function proxyFetchJson(targetUrl, retries = 1) {
+// 2026-10-22 속도 개선: 같은 주소를 동시에/짧은 시간에 여러 번 요청하던 것(검색상세 열 때 AAPL 1년 차트가 4번 중복)을 한 번만 받고 나눠 씀(60초)
+const PROXY_JSON_CACHE = new Map();
+function proxyFetchJson(targetUrl, retries = 1) {
+  const hit = PROXY_JSON_CACHE.get(targetUrl);
+  if (hit && Date.now() - hit.t < 60000) return hit.p.then((v) => (typeof structuredClone === "function" ? structuredClone(v) : v));
+  const p = proxyFetchJsonRaw(targetUrl, retries);
+  PROXY_JSON_CACHE.set(targetUrl, { t: Date.now(), p });
+  p.catch(() => PROXY_JSON_CACHE.delete(targetUrl));
+  if (PROXY_JSON_CACHE.size > 200) PROXY_JSON_CACHE.delete(PROXY_JSON_CACHE.keys().next().value);
+  return p.then((v) => (typeof structuredClone === "function" ? structuredClone(v) : v));
+}
+async function proxyFetchJsonRaw(targetUrl, retries = 1) {
   let lastErr;
   for (const proxy of PROXIES) {
     try {
@@ -213,7 +224,7 @@ async function proxyFetchJson(targetUrl, retries = 1) {
   }
   if (retries > 0) {
     await sleep(1200);
-    return proxyFetchJson(targetUrl, retries - 1);
+    return proxyFetchJsonRaw(targetUrl, retries - 1);
   }
   throw new Error("데이터 소스에 연결하지 못했습니다. 잠시 후 다시 시도해주세요. (" + (lastErr?.message || "") + ")");
 }

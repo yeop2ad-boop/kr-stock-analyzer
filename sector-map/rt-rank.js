@@ -5,24 +5,27 @@
 // app.js 다음에 불러온다(app.js의 함수·데이터를 그대로 사용).
 
 const RT_API = "https://us-stock.yeop2ad.workers.dev";
-const RT_GROUPS = [["kr", "한국주식"], ["us", "미국주식"], ["etf", "ETF"], ["crypto", "비트코인"]];
+const RT_GROUPS = [["all", "통합"], ["kr", "한국주식"], ["us", "미국주식"], ["etf", "ETF"], ["crypto", "비트코인"]];
+const RT_MARK = { all: "mix", kr: "kr", us: "us", etf: "etf", crypto: "crypto" }; // 앱 안에서 쓰는 시장 마크(VIEW_MARK_SVG)
+const RT_PAGE = 20; // 처음 20개, "더보기"를 누르면 최대 40개
+const RT_MAX = 40;
 const RT_TABS = [["popular", "인기"], ["volume", "거래량"], ["up", "상승"], ["down", "하락"]];
 // 아직 조회가 쌓이지 않았을 때 1~10위를 채우는 기본 종목(시가총액 큰 순)
 const RT_FALLBACK = ["005930.KS", "NVDA", "000660.KS", "TSLA", "AAPL", "MSFT", "035420.KS", "GOOGL", "AMZN", "META"];
 
-// 2026-10-21 사용자 요청: 왼쪽 위 롤링 문구는 지금 보고 있는 시장에 맞춰 — 한국주식 인기순위 / 미국 인기순위 / ETF인기순위 / 비트코인 순위
-const RT_VIEW_LABEL = { kr: "한국주식 인기순위", us: "미국 인기순위", etf: "ETF인기순위", crypto: "비트코인 순위" };
+// 지금 보고 있는 시장(한국·미국·ETF·코인) — 우량주 모음·내 시장처럼 하나로 안 정해지면 null
 function rtViewGroup() {
   try {
     const m = MAP_VIEWS[ACTIVE_VIEW] && MAP_VIEWS[ACTIVE_VIEW].mark;
-    return m === "kr" || m === "us" || m === "etf" || m === "crypto" ? m : null; // 우량주 모음·내 시장은 전체 인기순위
+    return m === "kr" || m === "us" || m === "etf" || m === "crypto" ? m : null;
   } catch {
     return null;
   }
 }
-let rtTickerGroup = undefined;
-let rtGroup = "kr";
+let rtGroup = "all";
 let rtTab = "popular";
+let rtShown = RT_PAGE;
+let rtRowsHtml = [];
 let rtPopular = null; // [{symbol, count}] 최근 24시간 전체
 let rtPopularAt = 0;
 let rtTickerList = [];
@@ -64,42 +67,22 @@ function rtNameFrom(sym, c, full) {
   return n === sym ? sym.replace(/-(USD|KRW|USDT)$/, "").replace(/^KRW-/, "").replace(/\.(KS|KQ)$/, "") : n;
 }
 function rtNameOf(sym) {
-  return rtNameFrom(sym, rtTickerMap && rtTickerMap.get(sym));
+  return rtNameFrom(sym, null);
 }
-let rtTickerMap = null;
+// 2026-10-22 사용자 요청: 시장별 문구는 되돌리고, 예전처럼 "실시간" + 모든 종목 통합 1~10위
 async function rtRefreshTicker() {
-  const g = rtViewGroup();
-  rtTickerGroup = g;
-  const lab = document.querySelector("#rtTicker .rt-label");
-  if (lab) lab.textContent = g ? RT_VIEW_LABEL[g] : "실시간 인기순위";
   const pop = await rtFetchPopular(true);
-  let list = [];
-  rtTickerMap = null;
-  if (g) {
-    // 이 시장에 속한 종목만: 조회수 순 → 모자라면 시가총액 큰 순으로 채움
-    const uni = await rtLoadUniverse(g).catch(() => []);
-    const bySym = new Map(uni.map((c) => [c.symbol, c]));
-    rtTickerMap = bySym;
-    list = pop.map((p) => p.symbol).filter((s) => bySym.has(s)).slice(0, 10);
-    const filler = uni.filter((c) => !list.includes(c.symbol) && c.marketCap > 0).sort((x, y) => capUsdOf(y) - capUsdOf(x));
-    for (const c of filler) {
-      if (list.length >= 10) break;
-      list.push(c.symbol);
-    }
-  } else {
-    list = pop.map((p) => p.symbol).slice(0, 10);
-    RT_FALLBACK.forEach((s) => list.length < 10 && !list.includes(s) && list.push(s));
-    // 핵심 목록(core)에 없어 이름을 못 찾는 종목이 있으면 그 시장의 전체 목록만 조용히 불러와 이름표를 다시 만듦(코스닥 등)
-    const unknown = list.filter((sym) => koNameOf(sym, sym) === sym && !/-(USD|KRW|USDT)$/.test(sym) && !/^KRW-/.test(sym));
-    const loads = [];
-    if (unknown.some((sym) => /\.(KS|KQ)$/.test(sym)) && typeof KR_EXTRA_DATA === "undefined") loads.push(ensureExtraDataLoaded("domestic").catch(() => {}));
-    if (unknown.some((sym) => !/\.(KS|KQ)$/.test(sym)) && !extraDataFor("overseas")) loads.push(ensureExtraDataLoaded("overseas").catch(() => {}));
-    if (loads.length) {
-      await Promise.all(loads);
-      ALL_DATASET_NAMES = null;
-    }
+  const list = pop.map((p) => p.symbol).slice(0, 10);
+  RT_FALLBACK.forEach((s) => list.length < 10 && !list.includes(s) && list.push(s));
+  // 핵심 목록(core)에 없어 이름을 못 찾는 종목이 있으면 그 시장의 전체 목록만 조용히 불러와 이름표를 다시 만듦(코스닥 등)
+  const unknown = list.filter((sym) => koNameOf(sym, sym) === sym && !/-(USD|KRW|USDT)$/.test(sym) && !/^KRW-/.test(sym));
+  const loads = [];
+  if (unknown.some((sym) => /\.(KS|KQ)$/.test(sym)) && typeof KR_EXTRA_DATA === "undefined") loads.push(ensureExtraDataLoaded("domestic").catch(() => {}));
+  if (unknown.some((sym) => !/\.(KS|KQ)$/.test(sym)) && !extraDataFor("overseas")) loads.push(ensureExtraDataLoaded("overseas").catch(() => {}));
+  if (loads.length) {
+    await Promise.all(loads);
+    ALL_DATASET_NAMES = null;
   }
-  if (rtTickerGroup !== rtViewGroup()) return; // 그 사이 시장이 또 바뀌었으면 이 결과는 버림
   rtTickerList = list.slice(0, 10);
   if (!rtTickerList[rtTickerIdx]) rtTickerIdx = 0;
 }
@@ -131,6 +114,12 @@ function rtStartTicker() {
 
 // ---- 페이지 ----
 async function rtLoadUniverse(g) {
+  if (g === "all") {
+    // 한국·미국·ETF·코인을 한데 모음(인기 탭 통합 순위용)
+    const parts = await Promise.all(["kr", "us", "etf", "crypto"].map((k) => rtLoadUniverse(k).catch(() => [])));
+    const seen = new Set();
+    return parts.flat().filter((c) => c && !seen.has(c.symbol) && seen.add(c.symbol));
+  }
   if (g === "kr") {
     if (typeof KR_EXTRA_DATA === "undefined") await ensureExtraDataLoaded("domestic").catch(() => {});
     return allKrStocks();
@@ -197,15 +186,52 @@ function rtFmtVal(sym, v) {
   const b = 1e9;
   return v >= b ? `$${(v / b).toFixed(1)}B` : `$${(v / 1e6).toFixed(0)}M`;
 }
-function rtLogoHtml(sym, name) {
+function rtLogoHtml(sym, name, c) {
   const ch = mineEsc(String(name || sym).replace(/^KODEX|^TIGER|^ACE|^SOL|^RISE|^KBSTAR|^HANARO/i, "").trim().charAt(0) || "?");
-  // 로고가 없거나 깨지면 이미지는 숨기고 글자 사각형으로(검색상세처럼)
-  return `<span class="rt-logo"><img loading="lazy" alt="" src="${mineEsc(logoUrl(sym, "low"))}" onerror="this.parentNode.classList.add('nologo');this.remove()" /><i>${ch}</i></span>`;
+  // 2026-10-22: 로고가 안 뜨던 문제 — 내 서버 로고(low) → 선명한 로고(mid) → 외부 로고(미국 종목만) 순으로 차례로 시도하고, 다 안 되면 글자 사각형(검색상세처럼)
+  const chain = rtLogoChain(sym, name, c);
+  return `<span class="rt-logo"><img decoding="async" alt="" data-sym="${mineEsc(sym)}" data-step="0" src="${mineEsc(chain[0])}" onerror="rtLogoErr(this)" /><i>${ch}</i></span>`;
 }
+// 종목 종류마다 로고가 있는 곳이 달라서(코인·한국 ETF는 ../logos 아래 별도 폴더) 후보를 순서대로 모아 둔다
+const RT_KR_ETF_LOGO = { KODEX: "kodex.png", TIGER: "tiger.png", RISE: "rise.png", KBSTAR: "rise.png", ACE: "ace.png", PLUS: "plus.png", ARIRANG: "plus.png", KIWOOM: "kiwoom.png", KOSEF: "kiwoom.png", FOCUS: "focus.png", TREX: "trex.png", "파워": "power.png", SOL: "sol.png", HANARO: "hanaro.png", "1Q": "oneq.svg", KoAct: "koact.svg", TIME: "time.png", TIMEFOLIO: "time.png", WON: "won.png", IBK: "ibk.svg" };
+const RT_LOGO_OVERRIDE = { "323410.KS": "kakaobank.png", "000660.KS": "skhynix.png", "000880.KS": "hanwha.png", "042660.KS": "hanwha-ocean.png", "298040.KS": "hyosung-heavy.png", "010950.KS": "soil.png", "011200.KS": "hmm.png", "018260.KS": "samsung-sds.png", "120110.KS": "kolon.png", "000240.KS": "hankook-company.png", "000720.KS": "hyundai-enc.png", "064350.KS": "hyundai-rotem.png", "081660.KS": "fila-holdings.png", "112610.KS": "cswind.png", "003030.KS": "seah-steel.png", "003550.KS": "lg.svg", "012750.KS": "s1-corp.png", "251270.KS": "netmarble.png", "010120.KS": "ls-electric.png", "011210.KS": "hyundai-wia.png", "069620.KS": "daewoong.png" };
+const rtLogoChains = {};
+function rtLogoChain(sym, name, c) {
+  if (rtLogoChains[sym]) return rtLogoChains[sym];
+  const enc = encodeURIComponent(sym);
+  const chain = [];
+  if (/-USD$/.test(sym) || /^KRW-/.test(sym)) {
+    // 코인: 내려받아 둔 코인 로고(../logos/crypto/BTC.png)
+    const base = sym.replace(/^KRW-/, "").replace(/-USD$/, "").toUpperCase().replace(/\d+$/, "");
+    chain.push(`../logos/crypto/${encodeURIComponent(base)}.png`, `../logos/crypto/${encodeURIComponent(sym.replace(/-USD$/, "").toUpperCase())}.png`);
+  } else if (/\.(KS|KQ)$/.test(sym)) {
+    if (RT_LOGO_OVERRIDE[sym]) chain.push(`../logos/${RT_LOGO_OVERRIDE[sym]}`);
+    const brand = String((c && c.name) || name || "").split(" ")[0];
+    if (RT_KR_ETF_LOGO[brand]) chain.push(`../logos/etf/${RT_KR_ETF_LOGO[brand]}`);
+    chain.push(logoUrl(sym, "low"), logoUrl(sym, "mid"));
+    chain.push(`https://ssl.pstatic.net/imgstock/fn/real/logo/stock/Stock${sym.slice(0, 6)}.svg`); // 코스닥 소형주 등 내 로고 모음에 없는 종목
+  } else {
+    chain.push(logoUrl(sym, "low"), logoUrl(sym, "mid"));
+    if (/^[A-Z.\-]{1,6}$/.test(sym)) chain.push(logoUrlFallback(sym));
+  }
+  rtLogoChains[sym] = chain;
+  return chain;
+}
+function rtLogoErr(img) {
+  const chain = rtLogoChains[img.dataset.sym] || [];
+  const step = +img.dataset.step + 1;
+  img.dataset.step = step;
+  if (chain[step]) img.src = chain[step];
+  else {
+    img.parentNode.classList.add("nologo");
+    img.remove();
+  }
+}
+window.rtLogoErr = rtLogoErr;
 function rtRowHtml(i, c, right, rightCls) {
   const name = rtNameFrom(c.symbol, c, true);
   const sub = /\.KS$/.test(c.symbol) ? "코스피" : /\.KQ$/.test(c.symbol) ? "코스닥" : /^KRW-/.test(c.symbol) || /-(USD|KRW|USDT)$/.test(c.symbol) ? c.symbol.replace(/-(USD|KRW|USDT)$/, "").replace(/^KRW-/, "") : c.symbol;
-  return `<button type="button" class="rt-row" data-sym="${mineEsc(c.symbol)}"><span class="rt-rk${i < 3 ? " top" : ""}">${i + 1}</span>${rtLogoHtml(c.symbol, name)}<span class="rt-nm2"><b>${mineEsc(name)}</b><small>${mineEsc(sub)}</small></span><span class="rt-val ${rightCls || ""}">${right}</span></button>`;
+  return `<button type="button" class="rt-row" data-sym="${mineEsc(c.symbol)}"><span class="rt-rk${i < 3 ? " top" : ""}">${i + 1}</span>${rtLogoHtml(c.symbol, name, c)}<span class="rt-nm2"><b>${mineEsc(name)}</b><small>${mineEsc(sub)}</small></span><span class="rt-val ${rightCls || ""}">${right}</span></button>`;
 }
 let rtRenderToken = 0;
 async function rtRenderList() {
@@ -220,13 +246,13 @@ async function rtRenderList() {
   if (rtTab === "popular") {
     const pop = await rtFetchPopular(true);
     if (token !== rtRenderToken) return;
-    const ranked = pop.filter((p) => bySym.has(p.symbol)).slice(0, 20);
+    const ranked = pop.filter((p) => bySym.has(p.symbol)).slice(0, RT_MAX);
     const used = new Set(ranked.map((p) => p.symbol));
-    // 조회가 20개에 못 미치면 시가총액 큰 종목으로 채움(조회수 0회)
+    // 조회가 40개에 못 미치면 시가총액 큰 종목으로 채움(조회수 0회)
     const filler = list.filter((c) => !used.has(c.symbol) && c.marketCap > 0).sort((a, b) => capUsdOf(b) - capUsdOf(a));
     const merged = ranked.map((p) => ({ c: bySym.get(p.symbol), n: p.count }));
     for (const c of filler) {
-      if (merged.length >= 20) break;
+      if (merged.length >= RT_MAX) break;
       merged.push({ c, n: 0 });
     }
     rows = merged.map((m, i) => rtRowHtml(i, m.c, `${m.n.toLocaleString()}회`, ""));
@@ -243,18 +269,33 @@ async function rtRenderList() {
     if (rtTab === "volume") items.sort((a, b) => usd(b) - usd(a));
     else if (rtTab === "up") items.sort((a, b) => b.chg - a.chg);
     else items.sort((a, b) => a.chg - b.chg);
-    rows = items.slice(0, 20).map((x, i) =>
+    rows = items.slice(0, RT_MAX).map((x, i) =>
       rtTab === "volume"
         ? rtRowHtml(i, x.c, rtFmtVal(x.c.symbol, x.val), "")
         : rtRowHtml(i, x.c, `${x.chg >= 0 ? "+" : ""}${x.chg.toFixed(2)}%`, x.chg >= 0 ? "rt-up" : "rt-down")
     );
   }
-  box.innerHTML = rows.length ? rows.join("") : `<p class="rt-empty">표시할 종목이 없어요</p>`;
+  rtRowsHtml = rows;
+  rtPaint();
 }
+// 처음 20개만 보여주고, 아래 "더보기"를 누르면 최대 40개까지
+function rtPaint() {
+  const box = rtEl("rtList");
+  if (!rtRowsHtml.length) {
+    box.innerHTML = `<p class="rt-empty">표시할 종목이 없어요</p>`;
+    return;
+  }
+  const more = rtShown < Math.min(RT_MAX, rtRowsHtml.length);
+  box.innerHTML = rtRowsHtml.slice(0, rtShown).join("") + (more ? `<button type="button" class="rt-more" id="rtMoreBtn">더보기 (${rtShown}/${Math.min(RT_MAX, rtRowsHtml.length)})</button>` : "");
+}
+const rtMarkHtml = (g) => `<span class="rt-mark">${(typeof VIEW_MARK_SVG !== "undefined" && VIEW_MARK_SVG[RT_MARK[g]]) || ""}</span>`;
 function rtSyncHead() {
-  rtEl("rtRegionLabel").textContent = (RT_GROUPS.find((x) => x[0] === rtGroup) || [])[1];
+  // 통합은 인기 탭에서만 — 거래량·상승·하락은 시장 하나를 골라 비교
+  const groups = RT_GROUPS.filter(([k]) => k !== "all" || rtTab === "popular");
+  const cur = RT_GROUPS.find((x) => x[0] === rtGroup) || RT_GROUPS[0];
+  rtEl("rtRegionLabel").innerHTML = `${rtMarkHtml(cur[0])}<span>${cur[1]}</span>`;
   rtEl("rtTabs").innerHTML = RT_TABS.map(([k, l]) => `<button type="button" class="rt-tab${k === rtTab ? " active" : ""}" data-tab="${k}">${l}</button>`).join("");
-  rtEl("rtRegionMenu").innerHTML = RT_GROUPS.map(([k, l]) => `<button type="button" class="rt-region-item${k === rtGroup ? " active" : ""}" data-group="${k}">${l}</button>`).join("");
+  rtEl("rtRegionMenu").innerHTML = groups.map(([k, l]) => `<button type="button" class="rt-region-item${k === rtGroup ? " active" : ""}" data-group="${k}">${rtMarkHtml(k)}<span>${l}</span></button>`).join("");
   rtEl("rtSub").textContent =
     rtTab === "popular"
       ? "최근 24시간 · 검색 + 시장 종목 클릭 + 관심 등록"
@@ -265,8 +306,10 @@ function rtSyncHead() {
       : "오늘 가장 많이 내린 순서 (실시간)";
 }
 function rtOpen() {
-  const vg = rtViewGroup();
-  if (vg) rtGroup = vg; // 지금 보던 시장의 순위로 바로
+  // 처음 열면 맨 앞 "인기" = 한국·미국·ETF·코인 통합. 거래량·상승·하락을 누르면 보던 시장의 순위부터 보여줌
+  rtTab = "popular";
+  rtGroup = "all";
+  rtShown = RT_PAGE;
   rtEl("rtPage").classList.add("open");
   rtSyncHead();
   rtRenderList();
@@ -284,6 +327,9 @@ function rtInit() {
     const b = e.target.closest(".rt-tab");
     if (!b) return;
     rtTab = b.dataset.tab;
+    rtShown = RT_PAGE;
+    if (rtTab === "popular") rtGroup = "all";
+    else if (rtGroup === "all") rtGroup = rtViewGroup() || "kr"; // 지금 보던 시장(미국을 보다 왔으면 미국주식)의 거래량·상승·하락
     rtSyncHead();
     rtRenderList();
   });
@@ -295,12 +341,20 @@ function rtInit() {
     const b = e.target.closest(".rt-region-item");
     if (!b) return;
     rtGroup = b.dataset.group;
+    rtShown = RT_PAGE;
     rtEl("rtRegion").classList.remove("open");
     rtSyncHead();
     rtRenderList();
   });
   rtEl("rtPage").addEventListener("click", (e) => {
     if (!e.target.closest("#rtRegion")) rtEl("rtRegion").classList.remove("open");
+    if (e.target.closest("#rtMoreBtn")) {
+      const top = rtEl("rtList").scrollTop;
+      rtShown = RT_MAX;
+      rtPaint();
+      rtEl("rtList").scrollTop = top;
+      return;
+    }
     const row = e.target.closest(".rt-row");
     if (row) openDetailFromMap(row.dataset.sym); // 종목 상세(검색상세)로
   });
@@ -312,19 +366,6 @@ function rtInit() {
     rtShowTicker(false);
   });
   setInterval(() => rtRefreshTicker().catch(() => {}), 5 * 60 * 1000);
-  // 지도에서 보기(시장)를 바꾸면 문구·목록도 그 시장에 맞게 바로 바꿈
-  setInterval(() => {
-    const g = rtViewGroup();
-    if (g !== rtTickerGroup) {
-      rtTickerGroup = g;
-      const lab = document.querySelector("#rtTicker .rt-label");
-      if (lab) lab.textContent = g ? RT_VIEW_LABEL[g] : "실시간 인기순위";
-      rtRefreshTicker().then(() => {
-        rtTickerIdx = 0;
-        rtShowTicker(false);
-      }).catch(() => {});
-    }
-  }, 700);
   // 뒤로가기(휴대폰 뒤로 버튼)로 페이지 닫기
   window.__rtPageOpen = () => rtEl("rtPage").classList.contains("open");
   window.__rtPageClose = rtClose;

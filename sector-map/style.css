@@ -1528,3 +1528,46 @@ body.mine-editing .mine-stock { cursor: pointer; }
 .rt-val.rt-up { color: #e61919; }
 .rt-val.rt-down { color: #1547c7; }
 .rt-empty { text-align: center; padding: 40px 0; color: var(--text-mid); font-size: 13px; font-weight: 600; }
+/* 2026-10-22: 실시간 랭킹 — 더보기(20→40), 시장 로고 붙은 지역 선택, 글자 겹침 방지 */
+.rt-more { display: block; width: calc(100% - 12px); margin: 14px 6px 6px; padding: 13px 0; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--text-dark); font-size: 14px; font-weight: 800; cursor: pointer; }
+.rt-more:active { background: rgba(114,48,240,0.08); }
+.rt-mark { display: inline-flex; align-items: center; flex: none; }
+.rt-mark svg { display: block; width: 21px; height: 14px; }
+.rt-region-btn > span:first-child, .rt-region-btn #rtRegionLabel { display: inline-flex; align-items: center; gap: 6px; }
+.rt-region-item { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.rt-region-item.active .rt-mark svg { filter: none; }
+.rt-label { white-space: nowrap; }
+.rt-nm { min-width: 0; white-space: nowrap; }
+.rt-line { min-width: 0; }
+
+/* 2026-10-22: 상단 버튼 편집 — 뺀 버튼은 숨기고, 편집 목록은 시장 편집처럼 ▲▼ − ＋ */
+.metric-chip.chip-user-hidden { display: none !important; }
+.order-row .mv-edit-btns { display: inline-flex; gap: 6px; flex: none; }
+.order-row .mv-move, .order-row .mv-del { width: 38px; height: 38px; border-radius: 12px; border: none; background: var(--surface); color: var(--text-dark); font-size: 15px; font-weight: 800; cursor: pointer; }
+.order-row .mv-move:disabled { opacity: 0.3; cursor: default; }
+.order-row .mv-del { background: rgba(230, 25, 25, 0.12); color: #e61919; font-size: 20px; }
+.order-add-title { margin-top: 18px; font-weight: 800; color: var(--text-dark); }
+.order-row-off { opacity: 0.85; }
+.order-add { flex: none; border: 1.5px solid #7230f0; background: transparent; color: #7230f0; border-radius: 999px; padding: 8px 14px; font-size: 13px; font-weight: 800; cursor: pointer; }
+
+/* 2026-10-22: 튜토리얼 — 어두운 화면 + 밝은 구멍 + 통통 튀는 빨간 화살표 + 한 줄 말풍선 */
+.tut-root { position: fixed; inset: 0; z-index: 10000; touch-action: manipulation; }
+.tut-hole { position: fixed; border-radius: 999px; box-shadow: 0 0 0 100vmax rgba(8, 10, 24, 0.68); outline: 3px solid #ff2d2d; outline-offset: 0; transition: left 0.3s ease, top 0.3s ease, width 0.3s ease, height 0.3s ease; animation: tut-pulse 1.2s ease-in-out infinite; pointer-events: none; }
+@keyframes tut-pulse { 0%, 100% { outline-color: #ff2d2d; outline-width: 3px; } 50% { outline-color: rgba(255, 45, 45, 0.35); outline-width: 6px; } }
+.tut-arrow { position: fixed; width: 44px; height: 52px; transform: rotate(var(--rot, 0deg)); transition: left 0.3s ease, top 0.3s ease; pointer-events: none; filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.45)); }
+.tut-arrow svg { display: block; animation: tut-bounce 0.7s ease-in-out infinite; }
+@keyframes tut-bounce { 0%, 100% { transform: translateY(-5px); } 50% { transform: translateY(8px); } }
+.tut-bubble { position: fixed; box-sizing: border-box; padding: 12px 16px 11px; border-radius: 16px; background: #fff; color: #111827; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35); display: flex; flex-direction: column; gap: 4px; pointer-events: none; transition: left 0.3s ease, top 0.3s ease; }
+.tut-step { font-size: 11px; font-weight: 800; color: #ef4444; letter-spacing: -0.2px; }
+.tut-text { font-size: 15px; font-weight: 800; line-height: 1.4; letter-spacing: -0.3px; word-break: keep-all; }
+.tut-next { font-size: 11px; font-weight: 700; color: #6b7280; margin-top: 2px; }
+.tut-x { position: fixed; top: calc(10px + env(safe-area-inset-top)); right: 12px; width: 40px; height: 40px; border-radius: 999px; border: none; background: rgba(255, 255, 255, 0.95); color: #111827; font-size: 18px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35); z-index: 2; }
+.tut-confirm { position: fixed; inset: 0; z-index: 3; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; padding: 24px; }
+.tut-confirm-box { width: min(320px, 100%); background: #fff; color: #111827; border-radius: 18px; padding: 22px 18px 16px; text-align: center; box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4); }
+.tut-confirm-box b { display: block; font-size: 16px; font-weight: 900; margin-bottom: 16px; }
+.tut-confirm-btns { display: flex; gap: 8px; }
+.tut-confirm-btns button { flex: 1; padding: 12px 0; border-radius: 12px; border: none; background: #eef0f4; color: #111827; font-size: 14px; font-weight: 800; cursor: pointer; }
+.tut-confirm-btns button.primary { background: #ef4444; color: #fff; }
+.order-name b { white-space: nowrap; flex: none; }
+.order-row .mv-edit-btns { gap: 5px; }
+.order-row .mv-move, .order-row .mv-del { width: 36px; height: 36px; }

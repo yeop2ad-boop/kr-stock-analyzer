@@ -98,11 +98,11 @@ const SECTOR_COLOR_VAR = {
   "게임·메타버스": "--sector-industrials",
   NFT: "--sector-materials",
   기타: "--sector-real-estate",
-  "한국주식 TOP50": "--sector-technology",
-  "미국주식 TOP100": "--sector-communication",
-  "한국ETF TOP20": "--sector-healthcare",
-  "미국ETF TOP20": "--sector-consumer-discretionary",
-  "비트코인 TOP10": "--sector-materials",
+  "한국주식 TOP": "--sector-technology",
+  "미국주식 TOP": "--sector-communication",
+  "한국ETF TOP": "--sector-healthcare",
+  "미국ETF TOP": "--sector-consumer-discretionary",
+  "비트코인 TOP": "--sector-materials",
   "Information Technology": "--sector-technology",
   "Health Care": "--sector-healthcare",
   Financials: "--sector-financials",
@@ -265,6 +265,8 @@ function datasetNameOf(symbol) {
     const sets = [
       typeof KR_CORE_DATA !== "undefined" ? KR_CORE_DATA : null,
       typeof SP500_CORE_DATA !== "undefined" ? SP500_CORE_DATA : null,
+      typeof KR_EXTRA_DATA !== "undefined" ? KR_EXTRA_DATA : null, // 코스닥 등 핵심 목록에 없는 종목 이름(실시간 랭킹 티커)
+      typeof SP500_EXTRA_DATA !== "undefined" ? SP500_EXTRA_DATA : null,
       typeof ETF_MAP_DATA !== "undefined" ? ETF_MAP_DATA : null,
       typeof CRYPTO_MAP_DATA !== "undefined" ? CRYPTO_MAP_DATA : null,
     ];
@@ -354,6 +356,8 @@ const MAP_VIEWS = {
   blueChip: { label: "우량주 모음", mark: "mix", market: "overseas", needAll: true, build: () => buildBlueChipData() },
   krTech: { label: "한국 기술주", mark: "kr", market: "domestic", needExtra: true, build: () => buildTechData("kr") },
   usTech: { label: "미국 기술주", mark: "us", market: "overseas", needExtra: true, build: () => buildTechData("us") },
+  // 2026-10-22 사용자 요청: 시장 목록의 "튜토리얼" — 지도를 바꾸지 않고 누르면 튜토리얼(tutorial.js)이 시작된다. 다른 시장처럼 추가·삭제 가능
+  tutorial: { label: "튜토리얼", mark: "tut", tutorial: true },
 };
 // IPO 지도에 올릴 종목 수 — 데이터 파일(ipo-map.js)은 S리포트 IPO 비교군으로도 쓰여 전체를 그대로 두고, 지도에서만 시총 상위로 자름
 const IPO_VIEW_LIMIT = 200;
@@ -365,6 +369,7 @@ const VIEW_MARK_SVG = {
   etf: `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#2f6bd8" stroke="rgba(0,0,0,0.15)"/><text x="10.5" y="10" text-anchor="middle" font-size="7" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif" letter-spacing="0.3">ETF</text></svg>`,
   crypto: `<svg viewBox="0 0 21 14" width="21" height="14"><circle cx="10.5" cy="7" r="6.6" fill="#f7931a"/><text x="10.6" y="9.9" text-anchor="middle" font-size="9" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif">₿</text></svg>`,
   mix: `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#f59e0b"/><path d="M10.5 2.6l1.5 3.1 3.4.5-2.5 2.4.6 3.4-3-1.6-3 1.6.6-3.4-2.5-2.4 3.4-.5z" fill="#fff"/></svg>`,
+  tut: `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#ef4444"/><path d="M10.5 11V4.4M7.6 7.2l2.9-3.3 2.9 3.3" stroke="#fff" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   mine: `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#7230f0"/><circle cx="7.2" cy="7.2" r="3.2" fill="#fff" opacity="0.95"/><circle cx="13.6" cy="5.4" r="2.2" fill="#fff" opacity="0.75"/><circle cx="14" cy="9.6" r="1.7" fill="#fff" opacity="0.6"/></svg>`,
 };
 function viewMarkHtml(viewKey) {
@@ -375,8 +380,8 @@ function viewMarkHtml(viewKey) {
 // 기본은 대표 자산 4개(코스피 200 · S&P200 · ETF200 · 비트코인200). 드롭다운 맨 아래 ＋로 다른 보기를 더하고, ✎(편집)으로
 // 기본 4개를 포함한 모든 보기의 순서를 바꾸거나(▲▼) 뺄 수 있다(−). 순서·구성은 이 기기에 저장(map_views_order_v2).
 // 내 시장은 목록에 자동으로 붙고, 편집에서 −를 누르면 그 시장 자체를 삭제한다(확인 후).
-const MAP_VIEW_DEFAULTS = ["kospi200", "sp200", "etf200", "crypto100"];
-const MAP_VIEW_ORDER = ["kospi200", "kosdaq150", "krIpo", "sp200", "sp500", "ndx100", "usIpo", "etf200", "crypto100", "blueChip", "krTech", "usTech"];
+const MAP_VIEW_DEFAULTS = ["kospi200", "sp200", "etf200", "crypto100", "tutorial"];
+const MAP_VIEW_ORDER = ["kospi200", "kosdaq150", "krIpo", "sp200", "sp500", "ndx100", "usIpo", "etf200", "crypto100", "blueChip", "krTech", "usTech", "tutorial"];
 const MAP_VIEW_OPTIONAL = MAP_VIEW_ORDER.filter((k) => !MAP_VIEW_DEFAULTS.includes(k));
 const MAP_VIEW_EXTRA_KEY = "map_views_extra_v1"; // 예전(2026-10-19) 저장값 — 첫 실행 때 새 순서 목록으로 옮겨 담음
 const MAP_VIEW_ORDER_KEY = "map_views_order_v2";
@@ -420,7 +425,19 @@ function visibleMapViews() {
   mine.forEach((k) => {
     if (!list.includes(k)) list.push(k);
   });
+  // 튜토리얼 시장은 처음엔 누구에게나 목록에 들어 있다(이미 목록을 저장해 둔 사용자에게도 딱 한 번 맨 끝에 붙이고, 이후 빼면 다시 안 붙임)
+  let tutAdded = false;
+  try {
+    if (!localStorage.getItem("map_tutorial_listed_v1")) {
+      localStorage.setItem("map_tutorial_listed_v1", "1");
+      if (!list.includes("tutorial")) {
+        list.push("tutorial");
+        tutAdded = true;
+      }
+    }
+  } catch {}
   list = [...new Set(list)];
+  if (tutAdded) writeMapViewOrder(list);
   mapViewListCache = list;
   return list;
 }
@@ -646,11 +663,11 @@ function buildBlueChipData() {
     const isKrEtf = (c) => /\.(KS|KQ)$/i.test(c.symbol);
     return {
       companies: [
-        ...tag(top(kr, 50), "한국주식 TOP50"),
-        ...tag(top(us, 100), "미국주식 TOP100"),
-        ...tag(top(etf.filter(isKrEtf), 20), "한국ETF TOP20"),
-        ...tag(top(etf.filter((c) => !isKrEtf(c)), 20), "미국ETF TOP20"),
-        ...tag(top(coin, 10), "비트코인 TOP10"),
+        ...tag(top(kr, 50), "한국주식 TOP"),
+        ...tag(top(us, 100), "미국주식 TOP"),
+        ...tag(top(etf.filter(isKrEtf), 20), "한국ETF TOP"),
+        ...tag(top(etf.filter((c) => !isKrEtf(c)), 20), "미국ETF TOP"),
+        ...tag(top(coin, 10), "비트코인 TOP"),
       ],
     };
   });
@@ -1907,11 +1924,11 @@ function volRatioOf(c) {
   const exp = volInterp(base, elapsed, ses.len);
   return exp > 0 ? val / exp : undefined;
 }
-// 0.5배 이하·1배 = 배경색(라이트 흰색 / 다크 검정) → 노랑(2배) → 주황(3배 이상) — 2026-10-21 사용자 선택
+// 0.5배 이하·1배 = 배경색(라이트 흰색 / 다크 검정) → 노랑(2배) → 빨강(3배 이상) — 2026-10-21 사용자 선택
 const VOL_GRAY = CHG_BG; // 2026-10-21: 0.5배 이하도 배경색(라이트=흰색, 다크=완전 검정)
 const VOL_WHITE = CHG_BG; // 1배 기준색 — 화이트 테마는 흰색, 블랙 테마는 지도 배경과 같은 검정(2026-10-20)
 const VOL_YELLOW = [253, 224, 71];
-const VOL_RED = [249, 115, 22]; // 3배 이상 = 주황
+const VOL_RED = [239, 68, 68]; // 3배 이상 = 빨강(2026-10-22 사용자 요청: 주황 → 빨강)
 function volColor(r) {
   if (r === undefined || !Number.isFinite(r)) return null;
   if (r >= 3) return VOL_RED;
@@ -2909,75 +2926,99 @@ let chipOrderMode = false;
 function mapEscapeHtml(v) {
   return String(v).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
-// 끌어서 순서 바꾸기 — 토스 편집처럼 손잡이(≡)를 잡고 위아래로 옮기면 사이 줄들이 비켜 준다
+// 상단 버튼 편집(2026-10-22 사용자 요청): 시장 보기 편집처럼 ▲▼로 순서를 바꾸고, −로 빼고, 아래 "추가할 버튼"에서 ＋로 다시 넣는다
+const CHIP_HIDDEN_KEY = "map_chip_hidden_v1";
+function readHiddenChips() {
+  try {
+    const a = JSON.parse(localStorage.getItem(CHIP_HIDDEN_KEY));
+    return Array.isArray(a) ? a : [];
+  } catch {
+    return [];
+  }
+}
+function writeHiddenChips(list) {
+  try {
+    localStorage.setItem(CHIP_HIDDEN_KEY, JSON.stringify(list));
+  } catch {}
+  applyHiddenChips();
+}
+function applyHiddenChips() {
+  const hid = new Set(readHiddenChips());
+  document.querySelectorAll(".metric-chip").forEach((b) => b.classList.toggle("chip-user-hidden", hid.has(b.dataset.metric)));
+}
+// 이 보기에서 원래 쓰이는 칩인지(사용자가 뺀 것과 상관없이) — 보기 종류 때문에 숨겨진 칩은 편집 목록에도 안 나온다
+function chipRelevant(b) {
+  const had = b.classList.contains("chip-user-hidden");
+  b.classList.remove("chip-user-hidden");
+  const ok = getComputedStyle(b).display !== "none";
+  if (had) b.classList.add("chip-user-hidden");
+  return ok;
+}
 function buildChipOrderList() {
   allFiltersBody.innerHTML = "";
-  const visible = orderedMetricButtons().filter(chipVisible);
+  const hidden = new Set(readHiddenChips());
+  const all = orderedMetricButtons().filter(chipRelevant);
+  const shown = all.filter((b) => !hidden.has(b.dataset.metric));
+  const removed = all.filter((b) => hidden.has(b.dataset.metric));
+  const nameOf = (b) => {
+    const key = b.dataset.metric;
+    return { short: b.firstChild.textContent.trim(), label: (METRICS[key] && METRICS[key].label) || b.firstChild.textContent.trim() };
+  };
   const list = document.createElement("div");
   list.className = "order-list";
-  list.innerHTML = `<p class="order-hint">줄 오른쪽의 ≡ 를 잡고 끌어서 순서를 바꾸세요. 위에서부터 상단 버튼이 왼쪽부터 같은 순서로 나열돼요.</p>` + visible
-    .map((b) => {
-      const key = b.dataset.metric;
-      const label = (METRICS[key] && METRICS[key].label) || b.firstChild.textContent.trim();
-      const short = b.firstChild.textContent.trim();
-      return `<div class="order-row" data-metric="${key}"><span class="order-name"><b>${mapEscapeHtml(short)}</b><em>${mapEscapeHtml(label)}</em></span><span class="order-handle" aria-label="끌어서 이동"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="8" x2="19" y2="8"/><line x1="5" y1="12" x2="19" y2="12"/><line x1="5" y1="16" x2="19" y2="16"/></svg></span></div>`;
-    })
-    .join("");
+  list.innerHTML =
+    `<p class="order-hint">▲▼로 순서를 바꾸고 −로 빼세요. 위에서부터 상단 버튼이 왼쪽부터 같은 순서로 나열돼요.</p>` +
+    shown
+      .map((b, i) => {
+        const key = b.dataset.metric;
+        const n = nameOf(b);
+        return `<div class="order-row" data-metric="${key}"><span class="order-name"><b>${mapEscapeHtml(n.short)}</b><em>${mapEscapeHtml(n.label)}</em></span><span class="mv-edit-btns"><button type="button" class="mv-move" data-move="up" data-metric="${key}" aria-label="위로"${i === 0 ? " disabled" : ""}>▲</button><button type="button" class="mv-move" data-move="down" data-metric="${key}" aria-label="아래로"${i === shown.length - 1 ? " disabled" : ""}>▼</button><button type="button" class="mv-del" data-del="${key}" aria-label="빼기">−</button></span></div>`;
+      })
+      .join("") +
+    (removed.length
+      ? `<p class="order-hint order-add-title">추가할 버튼</p>` +
+        removed
+          .map((b) => {
+            const key = b.dataset.metric;
+            const n = nameOf(b);
+            return `<div class="order-row order-row-off" data-metric="${key}"><span class="order-name"><b>${mapEscapeHtml(n.short)}</b><em>${mapEscapeHtml(n.label)}</em></span><button type="button" class="order-add" data-add="${key}">＋ 추가</button></div>`;
+          })
+          .join("")
+      : "");
   allFiltersBody.appendChild(list);
-  let drag = null;
-  list.addEventListener("pointerdown", (e) => {
-    const handle = e.target.closest(".order-handle");
-    if (!handle) return;
-    const row = handle.closest(".order-row");
-    const rows = [...list.querySelectorAll(".order-row")];
-    drag = { row, rows, idx: rows.indexOf(row), startY: e.clientY, h: row.offsetHeight, pid: e.pointerId, newIdx: rows.indexOf(row) };
-    row.classList.add("dragging");
-    try {
-      handle.setPointerCapture(e.pointerId);
-    } catch {}
-    e.preventDefault();
+  list.addEventListener("click", (e) => {
+    const mv = e.target.closest(".mv-move");
+    const del = e.target.closest(".mv-del");
+    const add = e.target.closest(".order-add");
+    if (mv) {
+      const keys = shown.map((b) => b.dataset.metric);
+      const i = keys.indexOf(mv.dataset.metric);
+      const j = mv.dataset.move === "up" ? i - 1 : i + 1;
+      if (i < 0 || j < 0 || j >= keys.length) return;
+      [keys[i], keys[j]] = [keys[j], keys[i]];
+      // 화면에 보이는 칩들의 새 순서를 전체 순서(숨겨진 칩 포함)에 끼워 넣어 저장
+      const full = currentChipOrder();
+      const visSet = new Set(keys);
+      let vi = 0;
+      const merged = full.map((k) => (visSet.has(k) ? keys[vi++] : k));
+      try {
+        localStorage.setItem(CHIP_ORDER_KEY, JSON.stringify(merged));
+      } catch {}
+      applyChipOrder();
+      buildChipOrderList();
+    } else if (del) {
+      if (shown.length <= 1) return showToast("버튼은 최소 1개가 필요해요");
+      writeHiddenChips([...new Set([...readHiddenChips(), del.dataset.del])]);
+      buildChipOrderList();
+    } else if (add) {
+      writeHiddenChips(readHiddenChips().filter((k) => k !== add.dataset.add));
+      buildChipOrderList();
+    }
   });
-  list.addEventListener("pointermove", (e) => {
-    if (!drag || e.pointerId !== drag.pid) return;
-    const dy = e.clientY - drag.startY;
-    drag.row.style.transform = `translateY(${dy}px)`;
-    const n = drag.rows.length;
-    drag.newIdx = Math.max(0, Math.min(n - 1, Math.round(drag.idx + dy / drag.h)));
-    drag.rows.forEach((r, i) => {
-      if (r === drag.row) return;
-      let shift = 0;
-      if (drag.idx < drag.newIdx && i > drag.idx && i <= drag.newIdx) shift = -drag.h;
-      else if (drag.idx > drag.newIdx && i >= drag.newIdx && i < drag.idx) shift = drag.h;
-      r.style.transform = shift ? `translateY(${shift}px)` : "";
-    });
-  });
-  const finish = (e) => {
-    if (!drag || (e && e.pointerId !== drag.pid)) return;
-    const d = drag;
-    drag = null;
-    d.rows.forEach((r) => (r.style.transform = ""));
-    d.row.classList.remove("dragging");
-    const arr = d.rows.slice();
-    arr.splice(d.idx, 1);
-    arr.splice(d.newIdx, 0, d.row);
-    arr.forEach((r) => list.appendChild(r));
-    // 화면에 보이는 칩들의 새 순서를 전체 순서(숨겨진 칩 포함)에 끼워 넣어 저장
-    const newVisible = arr.map((r) => r.dataset.metric);
-    const full = currentChipOrder();
-    const visSet = new Set(newVisible);
-    let vi = 0;
-    const merged = full.map((k) => (visSet.has(k) ? newVisible[vi++] : k));
-    try {
-      localStorage.setItem(CHIP_ORDER_KEY, JSON.stringify(merged));
-    } catch {}
-    applyChipOrder();
-  };
-  list.addEventListener("pointerup", finish);
-  list.addEventListener("pointercancel", finish);
 }
 function setChipOrderMode(on) {
   chipOrderMode = on;
-  document.getElementById("chipOrderBtn").textContent = on ? "완료" : "버튼순서 수정";
+  document.getElementById("chipOrderBtn").textContent = on ? "완료" : "편집";
   document.getElementById("chipOrderBtn").classList.toggle("on", on);
   if (on) buildChipOrderList();
   else buildAllFiltersPanel();
@@ -3034,7 +3075,7 @@ function openAllFiltersPanel() {
   closeCompanySheet();
   closeRangeSheet();
   chipOrderMode = false;
-  document.getElementById("chipOrderBtn").textContent = "버튼순서 수정";
+  document.getElementById("chipOrderBtn").textContent = "편집";
   document.getElementById("chipOrderBtn").classList.remove("on");
   buildAllFiltersPanel();
   allFiltersBackdrop.classList.add("open");
@@ -3047,6 +3088,7 @@ function closeAllFiltersPanel() {
 document.getElementById("allFiltersBtn").addEventListener("click", openAllFiltersPanel);
 document.getElementById("chipOrderBtn").addEventListener("click", () => setChipOrderMode(!chipOrderMode));
 applyChipOrder();
+applyHiddenChips();
 document.getElementById("allFiltersCloseBtn").addEventListener("click", closeAllFiltersPanel);
 allFiltersBackdrop.addEventListener("click", closeAllFiltersPanel);
 
@@ -3501,7 +3543,7 @@ function computeSectorVolAverages() {
 function volTextColor(r) {
   if (!Number.isFinite(r)) return "var(--text-mid)";
   const dark = document.documentElement.getAttribute("data-theme") === "dark";
-  return r >= 2 ? (dark ? "#fb923c" : "#c2410c") : r >= 1.3 ? (dark ? "#facc15" : "#a16207") : r >= 0.75 ? (dark ? "#e5e7eb" : "#374151") : dark ? "#9ca3af" : "#6b7280";
+  return r >= 2 ? (dark ? "#f87171" : "#dc2626") : r >= 1.3 ? (dark ? "#facc15" : "#a16207") : r >= 0.75 ? (dark ? "#e5e7eb" : "#374151") : dark ? "#9ca3af" : "#6b7280";
 }
 function computeSectorAverages() {
   const bySector = new Map();
@@ -3735,6 +3777,11 @@ setInterval(renderAiFabTimestamp, 1000);
 async function setMapView(viewKey, animate) {
   const v = MAP_VIEWS[viewKey];
   if (!v) return;
+  if (v.tutorial) {
+    // 튜토리얼은 지도를 바꾸지 않고 안내만 시작
+    if (typeof startTutorial === "function") startTutorial();
+    return;
+  }
   if (typeof mineBeforeSetView === "function" && !(await mineBeforeSetView(viewKey))) return; // 내 시장: 편집 종료·데이터 선로딩
   // IPO 보기는 전용 데이터를 쓰므로 국내 core 데이터가 없어도 열 수 있다
   if (!v.ipo && v.market === "domestic" && (typeof KR_CORE_DATA === "undefined" || !KR_CORE_DATA.companies || !KR_CORE_DATA.companies.length)) {

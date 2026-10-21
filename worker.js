@@ -1525,6 +1525,16 @@ export default {
           ...(isPost ? { "Content-Type": "application/json" } : {}),
         },
         body: isPost ? await request.text() : undefined,
+        // 2026-10-22 속도 개선: 야후 시세·재무 응답을 Cloudflare 가장자리에 잠깐 보관(같은 종목을 다시 열면 즉시) — 장중 시세(1일·분봉)는 45초, 재무는 6시간, 나머지 차트·검색은 10분
+        ...(isPost || !/(^|\.)finance\.yahoo\.com$/.test(parsedTarget.hostname) ? {} : {
+          cf: {
+            cacheEverything: true,
+            cacheTtlByStatus: {
+              "200-299": parsedTarget.pathname.includes("fundamentals-timeseries") ? 21600 : /[?&]range=(1d|5d)\b|[?&]interval=(1|2|5|15|30|60)m\b/.test(parsedTarget.search) ? 45 : 600,
+              "300-599": 0,
+            },
+          },
+        }),
       });
       // 응답을 문자열로 통째로 버퍼링하지 않고 그대로 스트리밍해서 큰 응답(FRED 등)도 가볍게 처리
       return new Response(upstream.body, {

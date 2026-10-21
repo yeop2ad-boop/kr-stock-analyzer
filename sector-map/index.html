@@ -45,10 +45,10 @@
 <meta name="apple-mobile-web-app-title" content="마켓맵" />
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" />
-<link rel="stylesheet" href="style.css?v=20261022a" />
+<link rel="stylesheet" href="style.css?v=20261022e" />
 <!-- 지도가 떠 있는 동안 본체 파일을 미리 받아둠 — 간편검색/시장/더보기로 처음 넘어갈 때 로딩 체감 단축 -->
-<link rel="prefetch" href="../app.js?v=20261022a" />
-<link rel="prefetch" href="../style.css?v=20261022a" />
+<link rel="prefetch" href="../app.js?v=20261022e" />
+<link rel="prefetch" href="../style.css?v=20261022e" />
 <link rel="prefetch" href="../index.html" />
 </head>
 <body>
@@ -178,7 +178,7 @@
     <div class="all-filters-sheet" id="allFiltersSheet">
       <div class="range-sheet-handle"></div>
       <div class="all-filters-header">
-        <div class="afh-left"><span>전체 설정</span><button type="button" id="chipOrderBtn" class="afh-sub-btn">버튼순서 수정</button></div>
+        <div class="afh-left"><span>전체 설정</span><button type="button" id="chipOrderBtn" class="afh-sub-btn">편집</button></div>
         <button type="button" id="allFiltersCloseBtn" aria-label="닫기">&times;</button>
       </div>
       <div class="all-filters-body" id="allFiltersBody"></div>
@@ -197,7 +197,7 @@
       <button type="button" class="rt-back" id="rtBackBtn" aria-label="뒤로"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="20" y1="12" x2="5" y2="12"/><polyline points="11 6 5 12 11 18"/></svg></button>
       <b class="rt-title">실시간 랭킹</b>
       <div class="rt-region" id="rtRegion">
-        <button type="button" class="rt-region-btn" id="rtRegionBtn"><span id="rtRegionLabel">한국주식</span><svg viewBox="0 0 24 24" width="14" height="14" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="rt-region-btn" id="rtRegionBtn"><span id="rtRegionLabel">통합</span><svg viewBox="0 0 24 24" width="14" height="14" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div class="rt-region-menu" id="rtRegionMenu"></div>
       </div>
     </div>
@@ -329,15 +329,16 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
-<script src="../data/ko-company-names.js?v=20261022a"></script>
+<script src="../data/ko-company-names.js?v=20261022e"></script>
 <script src="data/sp500-data-core.js?v=20260904h"></script>
 <script src="data/kr-data-core.js?v=20260904h" onerror="window.KR_CORE_DATA = { companies: [] };"></script>
 <script src="../winrate-benchmark.js?v=20261007k"></script>
-<script src="data/tech-groups.js?v=20261022a"></script>
-<script src="data/themes.js?v=20261022a"></script>
-<script src="my-market.js?v=20261022a"></script>
-<script src="app.js?v=20261022a"></script>
-<script src="rt-rank.js?v=20261022a"></script>
-<script src="../app-gate.js?v=20261022a"></script>
+<script src="data/tech-groups.js?v=20261022e"></script>
+<script src="data/themes.js?v=20261022e"></script>
+<script src="my-market.js?v=20261022e"></script>
+<script src="app.js?v=20261022e"></script>
+<script src="rt-rank.js?v=20261022e"></script>
+<script src="tutorial.js?v=20261022e"></script>
+<script src="../app-gate.js?v=20261022e"></script>
 </body>
 </html>

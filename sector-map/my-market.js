@@ -131,8 +131,9 @@ async function mineEnsureViewData(viewKey) {
 
 // ---- 레이아웃: 저장된 섹터 위치·크기대로 원을 놓고, 그 안에 종목 원을 채운다 ----
 function mineAutoRadius(n) {
-  if (!n) return 620; // 비어 있는 임시 섹터는 화면에 가득 차게 크게
-  return Math.max(260, Math.min(900, 170 + 64 * Math.sqrt(n)));
+  // 2026-10-22: 빈 섹터가 너무 커 보이던 문제 — 작게 시작해서 종목 수에 맞춰 조금씩 커진다(면적이 종목 수에 비례)
+  if (!n) return 190;
+  return Math.max(200, Math.min(1100, 130 + 70 * Math.sqrt(n)));
 }
 function buildMineRoot(data) {
   const market = mineMarketOf();
@@ -142,20 +143,38 @@ function buildMineRoot(data) {
     bySector.get(c.sector).push(c);
   });
   const children = [];
+  const equal = sizeMode === "equal";
+  const packs = [];
   for (const sec of (market && market.sectors) || []) {
     const comps = (bySector.get(sec.name) || []).filter((c) => mineUsdCap(c) > 0);
     const inner = sec.r * 0.9;
-    const kids = comps.map((c) => ({ data: { ...c, value: sizeMode === "equal" ? 1 : mineUsdCap(c) }, x: 0, y: 0, r: 0 }));
+    const kids = comps.map((c) => ({ data: { ...c, value: equal ? 1 : mineUsdCap(c) }, x: 0, y: 0, r: 0 }));
+    let h = null;
     if (kids.length) {
-      const h = d3.hierarchy({ children: kids.map((k) => k.data) }).sum((d) => (d.value ? d.value : 0));
+      h = d3.hierarchy({ children: kids.map((k) => k.data) }).sum((d) => (d.value ? d.value : 0));
       d3.pack().size([inner * 2, inner * 2]).padding(2)(h);
-      h.children.forEach((n, i) => {
-        kids[i].x = sec.x - inner + n.x;
-        kids[i].y = sec.y - inner + n.y;
-        kids[i].r = n.r;
-      });
     }
-    children.push({ data: { name: sec.name, sectorKo: sec.name, color: sec.color, mineId: sec.id }, x: sec.x, y: sec.y, r: sec.r, children: kids });
+    packs.push({ sec, kids, h, inner });
+  }
+  // 균등 모드(2026-10-22 사용자 요청): 섹터가 달라도 모든 종목 원이 똑같은 크기가 되도록, 가장 촘촘한 섹터의 종목 크기에 전부 맞춘다.
+  // 종목이 적은 섹터는 안쪽을 그만큼 줄여(원 크기도 같은 비율로) 종목들이 한가운데 모이게 한다.
+  let uniform = 0;
+  if (equal) {
+    const rs = packs.filter((p) => p.h).map((p) => p.h.children[0].r);
+    uniform = rs.length ? Math.min(...rs) : 0;
+  }
+  for (const { sec, kids, h, inner } of packs) {
+    let secR = sec.r;
+    if (h) {
+      const f = equal && uniform ? uniform / h.children[0].r : 1;
+      h.children.forEach((n, i) => {
+        kids[i].x = sec.x + (n.x - inner) * f;
+        kids[i].y = sec.y + (n.y - inner) * f;
+        kids[i].r = n.r * f;
+      });
+      if (equal && !mineEditing) secR = Math.max(40, sec.r * f); // 보기 모드에서는 바깥 원도 같은 비율로 줄여 빈 공간을 없앤다
+    }
+    children.push({ data: { name: sec.name, sectorKo: sec.name, color: sec.color, mineId: sec.id }, x: sec.x, y: sec.y, r: secR, children: kids });
   }
   const root = { data: { name: "root" }, children };
   root.descendants = () => [root, ...children, ...children.flatMap((s) => s.children)];
@@ -498,6 +517,7 @@ function mineBuildBar() {
   bar.innerHTML =
     `<div class="mine-bar-row">` +
     `<button type="button" class="mine-bar-btn" id="mineAddSectorBtn">＋ 섹터</button>` +
+    `<button type="button" class="mine-bar-btn danger" id="mineDelSectorBtn">－ 섹터 삭제</button>` +
     `<button type="button" class="mine-bar-btn" id="mineCopyBtn">⧉ 시장 복사</button>` +
     `<button type="button" class="mine-bar-btn" id="mineThemeBtn">▦ 테마</button>` +
     `<button type="button" class="mine-bar-btn" id="mineMoveBtn">✥ 이동</button>` +
@@ -532,7 +552,7 @@ function mineUniqueName(base) {
 }
 function mineNewSector(name, color) {
   const idx = mineDraft.sectors.length;
-  return { id: mineUid(), name: mineUniqueName(name || `섹터 ${idx + 1}`), color: color || MINE_COLORS[idx % MINE_COLORS.length], x: MINE_WORLD / 2, y: MINE_WORLD / 2, r: idx ? 340 : 620, symbols: [] };
+  return { id: mineUid(), name: mineUniqueName(name || `섹터 ${idx + 1}`), color: color || MINE_COLORS[idx % MINE_COLORS.length], x: MINE_WORLD / 2, y: MINE_WORLD / 2, r: mineAutoRadius(0), symbols: [] };
 }
 
 // ---- 작은 입력/확인 창 ----
@@ -894,7 +914,7 @@ function mineOpenAddSectorModal() {
 // 가져온 섹터가 위에, 기존 섹터와 앞으로 추가할 섹터는 그 아래에 놓인다.
 function mineOpenCopySheet() {
   if (!mineDraft) return;
-  const keys = [...MAP_VIEW_ORDER, ...mineViewKeys().filter((k) => k !== mineViewKey(mineDraft.id))].filter((k) => MAP_VIEWS[k]);
+  const keys = [...MAP_VIEW_ORDER, ...mineViewKeys().filter((k) => k !== mineViewKey(mineDraft.id))].filter((k) => MAP_VIEWS[k] && !MAP_VIEWS[k].tutorial);
   const { box, close } = mineModal(
     `<b>복사할 시장을 고르세요</b>
      <div class="mine-copy-list">${keys.map((k) => `<button type="button" class="mine-copy-item" data-view="${mineEsc(k)}">${viewMarkHtml(k)}<span>${mineEsc(MAP_VIEWS[k].label)}</span></button>`).join("")}</div>
@@ -1199,6 +1219,20 @@ function mineBindUi() {
   });
   $("mineBar").addEventListener("click", (e) => {
     if (e.target.closest("#mineAddSectorBtn")) return mineOpenAddSectorModal();
+    if (e.target.closest("#mineDelSectorBtn")) {
+      // 2026-10-22 사용자 요청: 수정 모드에서 선택한 섹터를 지우는 버튼
+      const sec = mineSelectedSector();
+      if (!sec) return showToast("지울 섹터를 먼저 눌러 선택하세요");
+      const n = sec.symbols.length;
+      return mineConfirm(`'${sec.name}' 섹터를 삭제할까요?${n ? ` 안의 종목 ${n}개도 함께 빠져요.` : ""}`, "삭제", () => {
+        mineDraft.sectors = mineDraft.sectors.filter((s) => s.id !== sec.id);
+        mineSelectedSectorId = mineDraft.sectors[0] ? mineDraft.sectors[0].id : null;
+        mineRefresh();
+        mineBuildBar();
+        if (mineDraft.sectors.length > 1) mineFitView(true);
+        showToast("섹터를 삭제했어요");
+      });
+    }
     if (e.target.closest("#mineCopyBtn")) return mineOpenCopySheet();
     if (e.target.closest("#mineThemeBtn")) return mineOpenThemeSheet();
     if (e.target.closest("#mineMergeBtn")) return mineOpenMergeModal();
