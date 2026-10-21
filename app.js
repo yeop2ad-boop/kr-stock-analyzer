@@ -2279,6 +2279,11 @@ function refreshTopRankingView() {
     showToast("검색 중입니다. 잠시만 기다려주세요");
     return false;
   }
+  if (typeof srRankActive !== "undefined" && srRankActive && typeof fastRankRefresh === "function") {
+    showToast("실시간 데이터로 다시 불러옵니다");
+    fastRankRefresh(); // 별별순위: 실시간 값을 새로 받아 다시 매김
+    return true;
+  }
   RANK_SCAN_RESETTERS.forEach((reset) => { try { reset(); } catch {} });
   dividendRiskMetricsCache.clear();
   popularSnapshotResetCaches();
@@ -3314,6 +3319,16 @@ function wizardGoAssetRanking(metricKey) {
   syncSectionHeader();
 }
 
+// 투자처를 고른 뒤 그 투자처의 순위 페이지로(항목은 기본 승률)
+function wizardOpenRank(itemKey) {
+  const market = wizardMarket();
+  closeSearchWizard();
+  openSReportRank(itemKey, market === "etf" || market === "crypto" ? market : "stocks", market === "kr" ? "kr" : "us");
+  // 2026-10-08 사용자 요청: 간편검색으로 고른 순위 화면에선 상단 탭도 "간편검색"에 불이 들어오게
+  const markSearchTab = () => document.querySelectorAll("#fhTabs .fh-tab").forEach((b) => b.classList.toggle("active", b.dataset.fhtab === "tab.search"));
+  markSearchTab();
+  setTimeout(markSearchTab, 400);
+}
 // 패널 오픈 시가 아니라 스크립트 로딩 시 1회만 위임 리스너를 붙여서, innerHTML 교체마다 재바인딩할 필요가 없게 함
 el("searchWizardBody").addEventListener("click", (e) => {
   const btn = e.target.closest("[data-wizard-action]");
@@ -3323,11 +3338,12 @@ el("searchWizardBody").addEventListener("click", (e) => {
     searchWizardStep = btn.dataset.wizardBackStep;
     renderSearchWizardStep();
   } else if (action === "market-pick") {
-    // 2026-09-16: 랭킹검색만 남겨 투자처를 고르면 곧바로 항목 목록으로
+    // 2026-10-21 사용자 요청: 투자처를 고르면 항목 고르는 화면(관심 항목 선정)을 건너뛰고 곧바로 순위 페이지 — 맨 앞은 승률
     searchWizardAnswers = { market: btn.dataset.market };
-    searchWizardStep = "branchA";
-    renderSearchWizardStep();
+    wizardOpenRank("win");
   } else if (action === "sr-rank") {
+    wizardOpenRank(btn.dataset.srKey);
+  } else if (action === "__legacy-sr-rank") {
     const market = wizardMarket();
     closeSearchWizard();
     openSReportRank(btn.dataset.srKey, market === "etf" || market === "crypto" ? market : "stocks", market === "kr" ? "kr" : "us");
@@ -4524,13 +4540,13 @@ async function runAnalysis(ticker) {
         await getEarningsCal();
         const e = earningsEntry(headTicker);
         const md = (d) => `${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
-        // 2026-10-08 사용자 요청: 한국·미국 모두 오른쪽엔 '최근' 실적 발표일 + 마크(실적/예정). 최근 기록이 없을 때만 다음 발표일
+        // 2026-10-21 사용자 요청: 재무정보 옆에 "최근실적: 발표일 · 다음실적: 발표일" 두 가지 모두(마크 실적/예정은 그대로)
+        const lastText = e && e.last ? md(new Date(e.last + "T00:00:00")) : "";
+        const n = await nextEarningsInfo(headTicker).catch(() => null);
+        const nextText = n ? `${md(n.date)}${n.exact ? "" : "(추정)"}` : "";
         let html = "";
-        if (e && e.last) {
-          html = `<span class="fin-earn">최근 실적발표 ${md(new Date(e.last + "T00:00:00"))}</span>${earnBadgeHtml(headTicker)}`;
-        } else {
-          const n = await nextEarningsInfo(headTicker).catch(() => null);
-          if (n) html = `<span class="fin-earn">다음 실적발표 ${md(n.date)}${n.exact ? "" : "(추정)"}</span>${earnBadgeHtml(headTicker)}`;
+        if (lastText || nextText) {
+          html = `<span class="fin-earn-wrap"><span class="fin-earn">최근실적: ${lastText || "-"}</span><span class="fin-earn">다음실적: ${nextText || "-"}</span></span>${earnBadgeHtml(headTicker)}`;
         }
         const h = el("financialsHeading");
         if (h && html && window.__finHeadTicker === headTicker) h.innerHTML = `재무정보${html}`;
@@ -5427,42 +5443,43 @@ function openSReportRank(itemKey, section, market) {
   // 상세 화면은 주소(?ticker=)를 남긴 채 닫는다 — 뒤로가기 한 번이면 보던 종목으로 그대로 돌아온다(2026-09-16 사용자 요청)
   if (companyPanel.style.display !== "none" && companyPanel.style.display !== "") closeCompanyPanel({ push: false });
   closeAllExplainNotes(null);
+  // 2026-10-21: 모든 순위는 빠른 엔진(rank-fast.js) — 전체 종목 중 순위, 30위씩 더보기, 값은 DB + 실시간 6항목
+  const goRank = (title) => {
+    setCarouselViewTitleText(title);
+    switchTab(TAB_ORDER.indexOf("topranking"));
+    el("tabValuationBtn").classList.remove("active");
+    tabTrendBtn.classList.remove("active");
+    el("topRankingSubNav").classList.remove("sr-rank-nav");
+    showRankingGroup("trend");
+  };
   if (section === "etf" || section === "crypto") {
     srRankActive = { asset: section, k: itemKey };
     appSectionMode = section;
     // 2026-10-08: ETF 순위는 한국 ETF / 미국 ETF 중 하나(통합 '전체'는 없앰) — 고른 적 없으면 지금 시장 기준
     if (section === "etf" && etfPopularRegion !== "kr" && etfPopularRegion !== "us") etfPopularRegion = getWatchlistActiveMarket() === "KR" ? "kr" : "us";
     setHeaderToneForSection(section);
-    const conf = (SR_ASSET_RANK[section] || {})[itemKey] || ["tab", "winrate"];
-    if (conf[0] === "tab") (section === "etf" ? openEtfMetricTab : openCryptoMetricTab)(conf[1]);
-    else {
-      assetTrendMetric = conf[1];
-      (section === "etf" ? openEtfTrend : openCryptoTrend)();
-    }
+    goRank(SR_ASSET_ITEM_LABEL[itemKey] || "순위");
     setBottomNavActive(section);
     syncSectionHeader();
     applySrRankTabs();
     scrollSrActiveIntoView();
+    fastRankOpen(itemKey, section, market);
     return;
   }
   const item = SR_RANK_ITEM_BY_KEY.get(itemKey);
   if (!item) return;
   srRankActive = { group: item.group, k: item.k };
-  setCarouselViewTitleText(item.label); // 제목이 "인기종목"에 머물던 문제(2026-09-16) — 이름은 짧게
   appSectionMode = "stocks";
   if (market === "kr" || market === "us") {
     setWatchlistActiveMarket(market === "kr" ? "KR" : "US");
     setHeaderToneForSection(market);
   }
-  switchTab(TAB_ORDER.indexOf("topranking"));
-  el("tabValuationBtn").classList.remove("active");
-  tabTrendBtn.classList.remove("active");
-  showRankingGroup(item.tab);
-  item.run();
+  goRank(item.label); // 제목이 "인기종목"에 머물던 문제(2026-09-16) — 이름은 짧게
   setBottomNavActive(bottomNavKeyForSection());
   syncSectionHeader();
   applySrRankTabs(); // 결과 위 하위 버튼 줄(모든 항목, 좌우 스크롤)
   scrollSrActiveIntoView();
+  fastRankOpen(itemKey, "stocks", getWatchlistActiveMarket() === "KR" ? "kr" : "us");
 }
 // 하위 버튼 줄에서 지금 고른 항목이 보이도록 가운데로 스크롤
 function scrollSrActiveIntoView() {
@@ -5561,18 +5578,11 @@ document.addEventListener("click", (e) => {
     slot.style.display = isOpen ? "none" : "block";
     chip.classList.toggle("srf-chip-on", !isOpen);
     if (!isOpen && !slot.innerHTML) {
-      if (key === "win") slot.innerHTML = buildWinRateBenchmarkHtml();
-      else if (key === "rsi") {
-        slot.innerHTML = `<p class="muted" style="padding:8px 2px;">예시 차트를 불러오는 중...</p>`;
-        buildRsiSpyDetailHtml().then((html) => {
-          if (slot.dataset.open === "1") slot.innerHTML = html;
-        });
-      } else if (SR_EXAMPLE_SPECS[key]) {
-        slot.innerHTML = `<p class="muted" style="padding:8px 2px;">예시를 불러오는 중...</p>`;
-        buildSrExampleHtml(key).then((html) => {
-          if (slot.dataset.open === "1") slot.innerHTML = html;
-        });
-      }
+      slot.innerHTML = `<p class="muted" style="padding:8px 2px;">불러오는 중...</p>`;
+      const sec = srDetailSection() === "stocks" ? (isKrTicker(currentDetailSymbol || "") ? "kr" : "us") : srDetailSection();
+      buildMetricExplainHtml(key, sec).then((html) => {
+        if (slot.dataset.open === "1") slot.innerHTML = html;
+      });
     }
     return;
   }
@@ -5591,8 +5601,10 @@ document.addEventListener("click", (e) => {
   const key = line.dataset.srKey || "";
   const title = line.dataset.srTitle || "";
   const text = line.dataset.srExplain || "";
-  const example = S_REPORT_EXAMPLES[key]
-    ? `<button type="button" class="srf-chip" data-sr-chip="example" data-sr-chip-key="${escapeHtml(key)}">${key === "win" ? "+승률이란" : "+예시"}</button>`
+  // 2026-10-21 사용자 요청: "+예시" 대신 지도와 같은 "+RSI란"·"+상승률이란" — 설명과 대표 종목 색깔 막대 비교(rank-fast.js)
+  const explainSection = srDetailSection() === "stocks" ? (isKrTicker(currentDetailSymbol || "") ? "kr" : "us") : srDetailSection();
+  const example = typeof rfExplainLabel === "function" && RF_EXPLAIN_NAME[key]
+    ? `<button type="button" class="srf-chip" data-sr-chip="example" data-sr-chip-key="${escapeHtml(key)}">${rfExplainLabel(key, explainSection)}</button>`
     : "";
   const rank = SR_RANK_ITEM_BY_KEY.has(key) || (SR_ASSET_RANK[srDetailSection()] || {})[key]
     ? `<button type="button" class="srf-chip" data-sr-chip="rank" data-sr-chip-key="${escapeHtml(key)}">+순위</button>`
@@ -6930,6 +6942,36 @@ async function fetchNaverQuarterlyFinance(ticker) {
   }));
 }
 
+// 뉴스 날짜를 "1시간전"·"20시간전"·"1일전"처럼, 출처는 주소가 아니라 신문사 이름으로(2026-10-21 사용자 요청)
+function newsAgoText(sec) {
+  if (!sec) return "";
+  const m = Math.max(0, Math.floor((Date.now() / 1000 - sec) / 60));
+  if (m < 60) return `${Math.max(1, m)}분전`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}시간전`;
+  const d = Math.floor(h / 24);
+  return d < 30 ? `${d}일전` : `${Math.floor(d / 30)}개월전`;
+}
+// Bing 뉴스처럼 출처가 도메인으로만 오는 경우를 신문사 한글 이름으로
+const NEWS_KO_SOURCES = {
+  "chosun.com": "조선일보", "joongang.co.kr": "중앙일보", "donga.com": "동아일보", "hani.co.kr": "한겨레", "khan.co.kr": "경향신문", "hankookilbo.com": "한국일보",
+  "mk.co.kr": "매일경제", "hankyung.com": "한국경제", "sedaily.com": "서울경제", "edaily.co.kr": "이데일리", "mt.co.kr": "머니투데이", "fnnews.com": "파이낸셜뉴스",
+  "asiae.co.kr": "아시아경제", "heraldcorp.com": "헤럴드경제", "etnews.com": "전자신문", "zdnet.co.kr": "지디넷코리아", "newsis.com": "뉴시스", "yna.co.kr": "연합뉴스",
+  "yonhapnews.co.kr": "연합뉴스", "news1.kr": "뉴스1", "kbs.co.kr": "KBS", "mbc.co.kr": "MBC", "sbs.co.kr": "SBS", "ytn.co.kr": "YTN", "jtbc.co.kr": "JTBC",
+  "biz.chosun.com": "조선비즈", "thebell.co.kr": "더벨", "inews24.com": "아이뉴스24", "busan.com": "부산일보", "imaeil.com": "매일신문", "segye.com": "세계일보",
+  "munhwa.com": "문화일보", "kmib.co.kr": "국민일보", "seoul.co.kr": "서울신문", "nocutnews.co.kr": "노컷뉴스", "ohmynews.com": "오마이뉴스", "pressian.com": "프레시안",
+  "bloter.net": "블로터", "dt.co.kr": "디지털타임스", "ajunews.com": "아주경제", "businesspost.co.kr": "비즈니스포스트", "thelec.kr": "디일렉", "naver.com": "네이버뉴스",
+};
+function newsSourceName(n) {
+  const p = String(n.publisher || "").trim();
+  if (/^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(p)) {
+    const host = p.replace(/^www\./i, "").toLowerCase();
+    const hit = Object.keys(NEWS_KO_SOURCES).find((k) => host === k || host.endsWith("." + k));
+    if (hit) return NEWS_KO_SOURCES[hit];
+    return n.isKorean ? host.split(".")[0] : host; // 알려진 신문사가 아니면 도메인 첫 마디
+  }
+  return p || "출처 미상";
+}
 // ---------- 4. 주요 뉴스: 최근 1개월 이내, 최대 10건 ----------
 // containerEl을 받을 수 있게 해서(기본값 newsSection) 원자재/채권/외환 상세페이지(assetDetailNews)에서도 재사용
 async function renderNews(searchData, containerEl = el("newsSection")) {
@@ -6953,14 +6995,14 @@ async function renderNews(searchData, containerEl = el("newsSection")) {
 
   const items = news
     .map((n, i) => {
-      const date = n.providerPublishTime ? new Date(n.providerPublishTime * 1000).toLocaleDateString("ko-KR") : "";
+      const ago = newsAgoText(n.providerPublishTime);
+      const src = newsSourceName(n);
       const koTitle = translatedTitles[i] || n.title || "제목 없음";
       return `
       <div class="news-item">
         <div class="news-title"><a href="${escapeHtml(n.link || "#")}" target="_blank" rel="noopener">${escapeHtml(koTitle)}</a></div>
-        <div class="news-meta">${escapeHtml(date)}</div>
+        <div class="news-meta">${escapeHtml(ago)}${ago && src ? " · " : ""}${escapeHtml(src)}</div>
         ${n.isKorean ? "" : `<div class="news-original">원문: ${escapeHtml(n.title || "")}</div>`}
-        <div class="news-source">출처: ${escapeHtml(n.publisher || "알 수 없음")}</div>
       </div>`;
     })
     .join("");
@@ -7035,10 +7077,17 @@ function stockRet10CellHtml(symbol) {
 // 연평균 상승은 상장 후 기간만 연율화한 값이라(예: 센디스크 18개월 36배 → 연 1,001%) 10년치가 아님을 알리는 용도
 // minMonths: 이 개월수 미만이면 경고 — 주식·ETF 120(10년 미만), 코인 85(7년 이하, 2026-09-13 사용자 요청: 코인은 역사가 짧아 7년 이하만 경고)
 // 핵심지표 승률의 상장 기간 표시(2026-10-06 사용자 요청: ⚠️ 대신 작은 글씨) — 주식·ETF는 10년, 코인은 7년 기준
+// 상장 기간(개월)을 "7년2개월"·"2년10개월"·"8개월"처럼(2026-10-21 사용자 요청: "(10년미만)" 대신 실제 승률 기간)
+function srMonthsText(total) {
+  const t = Math.max(1, Math.round(total));
+  const y = Math.floor(t / 12);
+  const m = t % 12;
+  return `${y ? y + "년" : ""}${m ? m + "개월" : ""}`;
+}
 function srPartialTag(it) {
   const min = it.partialMin || 120;
   if (!Number.isFinite(it.partialTotal) || it.partialTotal >= min) return "";
-  return min >= 120 ? "(10년미만)" : "(7년미만)";
+  return `(${srMonthsText(it.partialTotal)})`;
 }
 function partialMarkHtml(total, cls, minMonths = 120) {
   if (!Number.isFinite(total) || total >= minMonths) return "";
@@ -7060,6 +7109,10 @@ function stripTags(html) {
 const RANK_HINTS = ["모든 항목은 눌러서 자세한 설명을 볼 수 있습니다.", "아래 전체보기 버튼을 눌러 나머지 종목도 검색해 보세요."];
 function rankMoreHintText(btn, box) {
   const t = (btn && btn.textContent) || "";
+  if (btn && btn.classList && btn.classList.contains("rf-more")) {
+    const m = t.match(/전체\s*([\d,]+)\s*개/);
+    return m ? `아래 더보기 버튼을 눌러 ${m[1]}개 전체 순위를 30위씩 더 볼 수 있어요.` : "아래 더보기 버튼을 눌러 다음 순위를 확인해 보세요.";
+  }
   let rest = null;
   const m1 = t.match(/나머지\s*([\d,]+)\s*개/);
   const m2 = t.match(/전체\s*([\d,]+)\s*개/);
@@ -9679,11 +9732,11 @@ function techAgoText(item) {
   const t = Date.parse(item.publishedAt || item.createdAt || "");
   if (!t) return "";
   const m = Math.max(0, Math.floor((Date.now() - t) / 60000));
-  if (m < 60) return `${Math.max(1, m)}분 전`;
+  if (m < 60) return `${Math.max(1, m)}분전`;
   const h = Math.floor(m / 60);
-  if (h < 24) return `${h}시간 전`;
+  if (h < 24) return `${h}시간전`;
   const d = Math.floor(h / 24);
-  return d < 30 ? `${d}일 전` : `${Math.floor(d / 30)}개월 전`;
+  return d < 30 ? `${d}일전` : `${Math.floor(d / 30)}개월전`;
 }
 function techInsightCardHtml(item) {
   const sourceLabel = TECH_SOURCE_LABEL[item.sourceKey] || item.source;

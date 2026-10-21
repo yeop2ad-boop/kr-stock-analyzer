@@ -304,6 +304,92 @@ async function handleDayVals(requestUrl, env) {
   return jsonResponse(payload, Object.keys(vals).length ? 200 : 502);
 }
 
+
+// ---------- 별별순위 실시간 값(2026-10-21) — 종목 목록(≤30개)의 현재가·등락률·거래대금·52주 고저·3개월 변동성·주간 RSI를 한 번에 ----------
+// 하루 두 번 갱신되는 DB(sreport-baseline)로 순위를 매기되, 실시간이 필요한 6개 항목(52주 구간·거래대금·PER·변동성·과열도·등락률)은
+// 이 경로로 목록 전체를 병렬 조회해 덮어쓴다. 6개월 일봉 하나에서 전부 뽑아 종목당 바깥 요청 1건. 3분 캐시.
+// 응답: { v: { 심볼: [현재가, 등락률%, 거래대금, 52주최고, 52주최저, 변동성%, 주간RSI, 종목명] }, fetchedAt }
+function rankWeeklyRsi(closesByWeek, period = 14) {
+  if (closesByWeek.length < period + 1) return null;
+  let gain = 0;
+  let loss = 0;
+  for (let i = 1; i <= period; i++) {
+    const d = closesByWeek[i] - closesByWeek[i - 1];
+    if (d > 0) gain += d;
+    else loss -= d;
+  }
+  let ag = gain / period;
+  let al = loss / period;
+  for (let i = period + 1; i < closesByWeek.length; i++) {
+    const d = closesByWeek[i] - closesByWeek[i - 1];
+    ag = (ag * (period - 1) + (d > 0 ? d : 0)) / period;
+    al = (al * (period - 1) + (d < 0 ? -d : 0)) / period;
+  }
+  if (al === 0) return 100;
+  return 100 - 100 / (1 + ag / al);
+}
+async function handleRankLive(requestUrl, env) {
+  const raw = (requestUrl.searchParams.get("symbols") || "").split(",").map((x) => x.trim()).filter(Boolean);
+  const symbols = [...new Set(raw)].filter((x) => /^[A-Za-z0-9.\-=^]{1,24}$/.test(x)).slice(0, 30);
+  if (!symbols.length) return jsonResponse({ error: "symbols 파라미터가 필요합니다." }, 400);
+  let h = 5381;
+  for (const ch of symbols.join(",")) h = ((h << 5) + h + ch.charCodeAt(0)) | 0;
+  const cacheKey = `rank_live_${(h >>> 0).toString(36)}_${symbols.length}`;
+  if (env.CHAT_KV) {
+    const cached = await env.CHAT_KV.get(cacheKey, "json");
+    if (cached && Date.now() - cached.fetchedAt < 3 * 60 * 1000) return jsonResponse(cached, 200);
+  }
+  const results = await mapWithConcurrencyWorker(symbols, 16, async (sym) => {
+    try {
+      const chart = await fetchYahooChart(sym, "6mo", "1d");
+      const r0 = chart && chart.chart && chart.chart.result && chart.chart.result[0];
+      const meta = r0 && r0.meta;
+      if (!meta || !Number.isFinite(meta.regularMarketPrice)) return null;
+      const isCrypto = /-(USD|KRW|USDT)$/.test(sym);
+      const ts = r0.timestamp || [];
+      const q = (r0.indicators && r0.indicators.quote && r0.indicators.quote[0]) || {};
+      const bars = [];
+      for (let i = 0; i < ts.length; i++) if (Number.isFinite(q.close && q.close[i])) bars.push({ t: ts[i], c: q.close[i] });
+      const price = meta.regularMarketPrice;
+      const latest = bars[bars.length - 1];
+      const off = Number.isFinite(meta.gmtoffset) ? meta.gmtoffset : 0;
+      const dayOf = (sec) => Math.floor((sec + off) / 86400);
+      const lastIsToday = latest && Number.isFinite(meta.regularMarketTime) && dayOf(latest.t) === dayOf(meta.regularMarketTime);
+      const prev = lastIsToday ? (bars.length >= 2 ? bars[bars.length - 2].c : meta.chartPreviousClose) : latest && latest.c;
+      let chg = prev ? ((price - prev) / prev) * 100 : null;
+      if (Number.isFinite(meta.regularMarketChangePercent)) chg = meta.regularMarketChangePercent;
+      const volume = Number.isFinite(meta.regularMarketVolume) ? meta.regularMarketVolume : null;
+      const val = volume === null ? null : isCrypto ? volume : price * volume;
+      // 3개월(약 63거래일) 하루 평균 변동폭 |일간 등락률|
+      const lastN = bars.slice(-64);
+      let sum = 0;
+      let n = 0;
+      for (let i = 1; i < lastN.length; i++) {
+        if (lastN[i - 1].c) {
+          sum += Math.abs(lastN[i].c / lastN[i - 1].c - 1) * 100;
+          n++;
+        }
+      }
+      const vol = n >= 20 ? sum / n : null;
+      // 주간 종가(주의 마지막 일봉)로 와일더 RSI(14) — 진행 중인 이번 주는 현재가로 마감한 것으로 계산
+      const weeks = new Map();
+      for (const b of bars) weeks.set(Math.floor((dayOf(b.t) + 3) / 7), b.c); // 1970-01-01은 목요일 → +3으로 월요일 시작 주
+      const weekly = [...weeks.entries()].sort((a, b) => a[0] - b[0]).map((e) => e[1]);
+      if (weekly.length) weekly[weekly.length - 1] = price;
+      const rsi = rankWeeklyRsi(weekly);
+      const r2 = (x, d = 2) => (Number.isFinite(x) ? Math.round(x * 10 ** d) / 10 ** d : null);
+      return [sym, [r2(price, 4), r2(chg), val === null ? null : Math.round(val), r2(meta.fiftyTwoWeekHigh, 4), r2(meta.fiftyTwoWeekLow, 4), r2(vol), r2(rsi, 1), meta.shortName || meta.longName || null]];
+    } catch {
+      return null;
+    }
+  });
+  const v = {};
+  for (const r of results) if (r) v[r[0]] = r[1];
+  const payload = { v, fetchedAt: Date.now() };
+  if (Object.keys(v).length && env.CHAT_KV) await env.CHAT_KV.put(cacheKey, JSON.stringify(payload), { expirationTtl: 1800 });
+  return jsonResponse(payload, Object.keys(v).length ? 200 : 502);
+}
+
 // 2026-10-19: 워커 한 번 호출에서 바깥으로 나가는 요청은 50개까지라 350종목을 한 번에 훑으면 50개만 채워졌다(확인함).
 // 그래서 ?part=0,1,2,… 로 45종목씩 나눠 받고(호출마다 따로 50개 한도), 클라이언트가 전부 불러 합친다. part 없이 부르면 0번(앞 45개).
 const KR_QUOTES_PART_SIZE = 45;
@@ -1400,6 +1486,10 @@ export default {
 
     if (requestUrl.pathname === "/day-vals") {
       return handleDayVals(requestUrl, env);
+    }
+
+    if (requestUrl.pathname === "/rank-live") {
+      return handleRankLive(requestUrl, env);
     }
 
     if (requestUrl.pathname === "/search-log" && request.method === "POST") {

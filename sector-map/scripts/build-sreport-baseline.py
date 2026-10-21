@@ -97,6 +97,10 @@ def stock_values(row, entry):
         if k == "per" and x is not None and x <= 0:
             x = None
         v[k] = x
+    # 2026-10-21: 별별순위의 PER을 실시간(현재가 ÷ EPS)으로 계산하려고 EPS도 함께 저장
+    eps = num(row.get("eps"))
+    if eps is not None:
+        v["eps"] = eps
     return v
 
 

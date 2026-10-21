@@ -2,7 +2,7 @@
   "name": "마켓맵 - 주식정보, 실적, 히트맵",
   "short_name": "마켓맵",
   "description": "마켓맵 - 주식정보, 실적, 히트맵 — 한국·미국주식, ETF, 코인을 10년 승률 하나로 비교하는 투자 지도. 인기종목·자동추적·상관관계·섹터맵",
-  "start_url": "/",
+  "start_url": "/?app=2",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",

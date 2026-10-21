@@ -2419,6 +2419,25 @@ function metricExplainButtonText(key) {
   const hasBatchim = last >= 0xac00 && last <= 0xd7a3 && (last - 0xac00) % 28 !== 0;
   return `+${nm}${hasBatchim ? "이란" : "란"}`;
 }
+// ETF는 이름이 길어 막대 옆에서 잘리므로 "티커 · 간단 설명"만(2026-10-21 사용자 요청)
+const MAP_ETF_SHORT = {
+  SPY: "S&P500", VOO: "S&P500", IVV: "S&P500", SPLG: "S&P500", QQQ: "나스닥100", QQQM: "나스닥100", VTI: "미국 전체", VT: "전세계", SCHD: "배당성장", VYM: "고배당",
+  TLT: "미국 장기채", IEF: "미국 중기채", BND: "미국 종합채권", AGG: "미국 종합채권", GLD: "금", IAU: "금", SLV: "은", IBIT: "비트코인", FBTC: "비트코인", ETHA: "이더리움",
+  JEPI: "월배당 커버드콜", JEPQ: "나스닥 커버드콜", QYLD: "나스닥 커버드콜", ARKK: "혁신성장", XLK: "기술주", XLF: "금융주", XLE: "에너지", XLV: "헬스케어", SMH: "반도체",
+  SOXX: "반도체", SOXL: "반도체 3배", TQQQ: "나스닥 3배", SQQQ: "나스닥 인버스3배", EEM: "신흥국", VWO: "신흥국", VEA: "선진국", EFA: "선진국", IWM: "러셀2000",
+  IWF: "미국 성장주", VUG: "미국 성장주", VTV: "미국 가치주", DIA: "다우존스", USO: "원유", LQD: "투자등급 회사채", HYG: "하이일드",
+  "069500.KS": "코스피200", "102110.KS": "코스피200", "360750.KS": "미국 S&P500", "133690.KS": "미국 나스닥100", "305720.KS": "2차전지", "091160.KS": "반도체",
+  "229200.KS": "코스닥150", "114800.KS": "코스피 인버스", "122630.KS": "코스피 레버리지",
+};
+function mapEtfShortLabel(c) {
+  const code = String(c.symbol).replace(/\.(KS|KQ)$/, "");
+  let desc = MAP_ETF_SHORT[c.symbol];
+  if (!desc) {
+    const nm = String(c.displayName && !/^[A-Z0-9.]+$/.test(c.displayName) ? c.displayName : c.name || "");
+    desc = nm.replace(/^(KODEX|TIGER|ACE|KBSTAR|SOL|HANARO|ARIRANG|KOSEF|PLUS|RISE)\s*/i, "").slice(0, 10);
+  }
+  return desc && desc !== code ? `${code} · ${desc}` : code;
+}
 function buildMetricExplainInfo(key) {
   const m = METRICS[key];
   const nm = METRIC_EXPLAIN_NAME[key] || m.label;
@@ -2452,7 +2471,8 @@ function buildMetricExplainInfo(key) {
       const x = ((v - vmin) / span) * 100;
       const left = Math.min(x, zeroPct);
       const width = Math.max(1.2, Math.abs(x - zeroPct));
-      return `<div class="mx-row"><span class="mx-name"><i style="background:${color}"></i>${mapEscapeHtml(koNameOf(c.symbol, c.name))}</span><span class="mx-track"><span class="mx-zero" style="left:${zeroPct.toFixed(1)}%"></span><span class="mx-bar" style="left:${left.toFixed(1)}%;width:${width.toFixed(1)}%;background:${color}"></span></span><b class="mx-val">${m.fmt(v)}</b></div>`;
+      const rowName = wlCategoryOf(c.symbol, c.name) === "etf" ? mapEtfShortLabel(c) : koNameOf(c.symbol, c.name);
+      return `<div class="mx-row"><span class="mx-name"><i style="background:${color}"></i>${mapEscapeHtml(rowName)}</span><span class="mx-track"><span class="mx-zero" style="left:${zeroPct.toFixed(1)}%"></span><span class="mx-bar" style="left:${left.toFixed(1)}%;width:${width.toFixed(1)}%;background:${color}"></span></span><b class="mx-val">${m.fmt(v)}</b></div>`;
     })
     .join("");
   return {

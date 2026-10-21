@@ -1,0 +1,5 @@
+{
+  "minTwaVersion": 1,
+  "playUrl": "https://play.google.com/store/apps/details?id=kr.marketmap.app",
+  "note": "새 안드로이드 앱(아이콘 변경판, 시작 주소 ?app=2)이 플레이스토어에 올라간 뒤에만 minTwaVersion을 2로 올리세요. 올리면 예전 앱으로 들어온 사람에게 '업데이트' 안내 화면이 뜹니다."
+}
