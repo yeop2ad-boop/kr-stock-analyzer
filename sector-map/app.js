@@ -2342,6 +2342,25 @@ function createSliderController(getKey, els, onNoDataChange) {
   }
   bindThumb(els.thumbMin, "min");
   bindThumb(els.thumbMax, "max");
+  // 막대(트랙)를 눌러도 가까운 손잡이가 그 자리로 와서 바로 끌 수 있게(2026-10-22 사용자 요청: 좌우로 잘 안 움직임)
+  els.slider.addEventListener("pointerdown", (e) => {
+    if (e.target === els.thumbMin || e.target === els.thumbMax) return;
+    const key = getKey();
+    if (!key) return;
+    const range = currentRange();
+    const v = pointerToValue(e.clientX);
+    const which = Math.abs(v - range[0]) <= Math.abs(v - range[1]) ? "min" : "max";
+    if (which === "min") range[0] = Math.min(v, range[1]);
+    else range[1] = Math.max(v, range[0]);
+    setFilterRange(key, range);
+    updateVisual();
+    dragging = which;
+    const thumb = which === "min" ? els.thumbMin : els.thumbMax;
+    try {
+      thumb.setPointerCapture(e.pointerId);
+    } catch {}
+    e.stopPropagation();
+  });
 
   els.slider.addEventListener("pointermove", (e) => {
     if (!dragging) return;

@@ -1571,3 +1571,10 @@ body.mine-editing .mine-stock { cursor: pointer; }
 .order-name b { white-space: nowrap; flex: none; }
 .order-row .mv-edit-btns { gap: 5px; }
 .order-row .mv-move, .order-row .mv-del { width: 36px; height: 36px; }
+
+/* 2026-10-22: 전체 설정·빠른 필터 슬라이더가 손가락으로 잘 안 움직이던 문제 — 시트가 세로 스크롤이라 가로로 끌면 브라우저가 스크롤로 가로채 끌기가 끊겼다.
+   슬라이더 영역은 터치 스크롤을 끄고(touch-action: none), 손잡이 터치 영역을 44px로 넓힘 */
+.range-slider { touch-action: none; height: 40px; user-select: none; -webkit-user-select: none; }
+.range-slider-thumb { touch-action: none; width: 26px; height: 26px; }
+.range-slider-thumb::before { content: ""; position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; transform: translate(-50%, -50%); border-radius: 50%; }
+.all-filters-body { overflow-x: hidden; }
