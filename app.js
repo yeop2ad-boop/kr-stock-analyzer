@@ -3219,8 +3219,15 @@ function toggleWatchlist(symbol) {
     updateCompanyPanelWatchlistBtn(symbol);
     return;
   }
-  // 별을 누르면 어디서든 항상 "어느 관심목록에 담을지" 아래 시트로 물어봄(2026-09-13 사용자 요청 — 예전엔 그룹 2개 이상일 때만)
-  openWlGroupPickSheet(symbol);
+  // 2026-10-22 사용자 요청: 어느 목록인지 묻지 않고 바로 담는다 — 마지막으로 보던 관심목록(없거나 "전체"면 첫 목록)에 자동으로
+  const market = watchlistMarketOf(symbol);
+  const sec = sectionOfSymbol(symbol);
+  const groups = wlGroupsForSection(sec);
+  const active = getActiveWatchlistGroup(market);
+  const g = groups.find((x) => x.id === active) || groups[0];
+  addToWatchlist(symbol, [g.id]);
+  syncWatchStars(symbol);
+  showToast(`관심목록 '${wlGroupLabel(g, sec)}'에 담았습니다`);
 }
 // 시트에서 고른 뒤 화면에 떠 있는 같은 종목의 별 버튼(상세·검색 결과)을 모두 갱신
 function syncWatchStars(symbol) {

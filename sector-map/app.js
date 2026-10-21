@@ -1784,7 +1784,13 @@ function openCompanySheet(d) {
       setActive(false);
       return;
     }
-    openMapGroupPickSheet(d.symbol, () => setActive(true));
+    // 2026-10-22 사용자 요청: 어느 목록인지 묻지 않고 마지막으로 보던 관심목록(없으면 첫 목록)에 바로 담는다
+    const groups = readWatchlistGroups();
+    const active = localStorage.getItem("watchlist_active_group_v1_all");
+    const g = groups.find((x) => x.id === active) || groups[0];
+    addSheetWatchlist(d.symbol, [g.id]);
+    setActive(true);
+    showToast(`관심목록 '${g.name || "기본"}'에 담았습니다`);
   });
   // 종목명을 누르면 본체(내투자닷컴)의 검색 상세 페이지로 이동 — 지도에선 요약 정보만 보여주므로 더 자세히 보려면 여기로
   const nameLink = document.getElementById("sheetNameLink");
