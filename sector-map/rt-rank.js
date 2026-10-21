@@ -44,6 +44,15 @@ async function rtRefreshTicker() {
   RT_FALLBACK.forEach((s) => list.length < 10 && !list.includes(s) && list.push(s));
   rtTickerList = list.slice(0, 10);
   if (!rtTickerList[rtTickerIdx]) rtTickerIdx = 0;
+  // 핵심 목록(core)에 없어 이름을 못 찾는 종목이 있으면 그 시장의 전체 목록만 조용히 불러와 이름표를 다시 만듦(코스닥 등)
+  const unknown = rtTickerList.filter((sym) => koNameOf(sym, sym) === sym && !/-(USD|KRW|USDT)$/.test(sym) && !/^KRW-/.test(sym));
+  const loads = [];
+  if (unknown.some((sym) => /\.(KS|KQ)$/.test(sym)) && typeof KR_EXTRA_DATA === "undefined") loads.push(ensureExtraDataLoaded("domestic").catch(() => {}));
+  if (unknown.some((sym) => !/\.(KS|KQ)$/.test(sym)) && !extraDataFor("overseas")) loads.push(ensureExtraDataLoaded("overseas").catch(() => {}));
+  if (loads.length) {
+    await Promise.all(loads);
+    ALL_DATASET_NAMES = null;
+  }
 }
 function rtShowTicker(animate) {
   const slot = rtEl("rtTickerSlot");

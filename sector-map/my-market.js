@@ -1000,7 +1000,7 @@ function mineOpenThemeSheet() {
       .join("")}</div></div>`;
   const { box, close } = mineModal(
     `<b>테마로 가져오기</b><p class="mine-theme-note">체크한 테마마다 섹터가 만들어져요. 한 종목은 가장 대표적인 테마 1곳에만 들어 있고, 어느 테마에도 안 맞는 종목은 넣지 않았어요.</p>
-     ${section("🇰🇷 한국 테마", "kr")}${section("🇺🇸 미국 테마", "us")}
+     ${section("한국 테마", "kr")}${section("미국 테마", "us")}
      <div class="mine-modal-actions"><button type="button" data-no>취소</button><button type="button" data-ok class="primary">추가하기</button></div>`,
     true
   );
