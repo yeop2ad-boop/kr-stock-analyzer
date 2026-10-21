@@ -42,9 +42,9 @@ async function getSearchLogEvents(env) {
   return events.filter((e) => e && typeof e.t === "number" && e.t >= cutoff && typeof e.symbol === "string");
 }
 
-// 같은 사람(IP)이 한 종목을 아무리 많이 눌러도 24시간 안에 최대 10회까지만 조회수로 센다(2026-10-21).
+// 같은 사람(IP)이 아무리 많이 눌러도 24시간 안에 전체 합쳐 최대 30회까지만 조회수로 센다(2026-10-21, 사용자 요청: IP당 하루 30회).
 // 조회수 = 검색 + 시장(지도)에서 종목 클릭 + 관심 등록. IP는 원문이 아니라 짧은 해시로만 저장한다.
-const VIEW_PER_IP_MAX = 10;
+const VIEW_PER_IP_MAX = 30;
 const VIEW_KINDS = ["search", "click", "watch"];
 function ipHashOf(request) {
   const ip = request.headers.get("CF-Connecting-IP") || request.headers.get("X-Forwarded-For") || "";
@@ -68,8 +68,8 @@ async function handleSearchLog(request, env) {
   const ip = ipHashOf(request);
 
   const events = await getSearchLogEvents(env);
-  const mine = events.reduce((n, e) => (e.ip === ip && e.symbol === symbol ? n + 1 : n), 0);
-  if (mine >= VIEW_PER_IP_MAX) return jsonResponse({ ok: true, counted: false }, 200); // 한 IP당 종목별 최대 10회
+  const mine = events.reduce((n, e) => (e.ip === ip ? n + 1 : n), 0);
+  if (mine >= VIEW_PER_IP_MAX) return jsonResponse({ ok: true, counted: false }, 200); // 한 IP당 24시간 최대 30회(전체 합계)
   events.push({ symbol, t: Date.now(), kind, ip });
   const trimmed = events.slice(-SEARCH_LOG_MAX);
   await env.CHAT_KV.put(SEARCH_LOG_KEY, JSON.stringify(trimmed), { expirationTtl: SEARCH_LOG_RETENTION_SEC });

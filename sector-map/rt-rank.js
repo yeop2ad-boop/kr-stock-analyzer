@@ -1,7 +1,7 @@
 // ---------- 실시간 랭킹 (2026-10-21 사용자 요청) ----------
 // 시장(지도) 왼쪽 위 시계 위에 "실시간 1 종목명 ›" 버튼이 1위~10위를 위로 올라오며 돌아가고, 누르면 실시간 랭킹 페이지로.
 // 페이지: 인기 / 거래량 / 상승 / 하락 — 각 20개, 오른쪽 위 지역 선택으로 한국주식·미국주식·ETF·비트코인 중에서 순위.
-// 조회수 = 최근 24시간 [검색 + 시장에서 종목 클릭 + 관심 등록], 한 IP가 한 종목에 최대 10회까지만 셈(서버 /search-log, /search-popular).
+// 조회수 = 최근 24시간 [검색 + 시장에서 종목 클릭 + 관심 등록], 한 IP당 24시간에 최대 30회까지만 셈(서버 /search-log, /search-popular).
 // app.js 다음에 불러온다(app.js의 함수·데이터를 그대로 사용).
 
 const RT_API = "https://us-stock.yeop2ad.workers.dev";
@@ -202,7 +202,7 @@ function rtSyncHead() {
   rtEl("rtRegionMenu").innerHTML = RT_GROUPS.map(([k, l]) => `<button type="button" class="rt-region-item${k === rtGroup ? " active" : ""}" data-group="${k}">${l}</button>`).join("");
   rtEl("rtSub").textContent =
     rtTab === "popular"
-      ? "최근 24시간 · 검색 + 시장 종목 클릭 + 관심 등록 · 한 사람이 종목당 최대 10회까지만 집계"
+      ? "최근 24시간 · 검색 + 시장 종목 클릭 + 관심 등록 · 한 사람이 하루 최대 30회까지만 집계"
       : rtTab === "volume"
       ? "지금까지 거래대금이 큰 순서 (실시간)"
       : rtTab === "up"
