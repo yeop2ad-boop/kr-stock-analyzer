@@ -6490,7 +6490,7 @@ async function renderFin2Period(token) {
   section.innerHTML = fin2ToggleHtml(period) + `<p class="muted" style="padding:10px 0;">불러오는 중...</p>`;
   bindFin2Section(section);
   try {
-    if (!FIN2_STATE.cache[period]) FIN2_STATE.cache[period] = period === "annual" ? loadFin2Annual(ticker, currency) : loadFin2QuarterLive(ticker, currency);
+    if (!FIN2_STATE.cache[period]) FIN2_STATE.cache[period] = period === "annual" ? loadFin2Annual(ticker, currency) : loadFin2QuarterDetail(ticker, currency);
     const data = await FIN2_STATE.cache[period];
     if (stale()) return;
     section.innerHTML = fin2ToggleHtml(period) + fin2BodyHtml(data, period, currency);
@@ -6649,6 +6649,23 @@ async function loadFin2QuarterLive(ticker, currency) {
   const nx = new Date(due.getFullYear(), due.getMonth() + 3, 1);
   const est = Number.isFinite(estRev) && estRev > 0 ? fin2WithGrowth([{ label: fin2QuarterLabel(nx.getFullYear(), nx.getMonth() + 1), rev: estRev, ni: projectNextNetIncome(shown, estRev), est: true }], nb.rev) : [];
   return { ...data, bars: [...shown, ...est], estSource: "추세 예상", source: `${data.source} · 최근 분기는 ${rep.src === "잠정" ? "DART 잠정실적" : "실적 발표(야후)"}` };
+}
+// 2026-10-22 사용자 요청: 검색상세 분기 그래프 — 가장 최근에 발표된 분기는 예상·실제를 함께(실적 페이지의 비교 그래프), 못 만들면 기존 분기 그래프
+async function loadFin2QuarterDetail(ticker, currency) {
+  try {
+    await getEarningsCal();
+    const e = earningsEntry(ticker);
+    if (e && e.last && (isKrTicker(ticker) ? "KRW" : "USD") === currency) {
+      const cmp = await earnCompareData(ticker, e.last);
+      const act = cmp && cmp.bars.find((b) => !b.est && b.prelim);
+      const aEnd = act && earnQuarterEnd(act.label);
+      const rel = new Date(e.last + "T00:00:00");
+      const due = new Date(rel.getFullYear(), Math.floor(rel.getMonth() / 3) * 3, 0);
+      // 발표일 직전에 끝난 분기와 같은 분기여야 함(오래된 발표일이 새 분기에 잘못 붙는 것 방지)
+      if (cmp && aEnd && Math.abs(aEnd - due) < 45 * 86400000) return cmp;
+    }
+  } catch {}
+  return loadFin2QuarterLive(ticker, currency);
 }
 async function loadFin2Quarter(ticker, currency) {
   // 국내: 네이버 증권 분기 재무(최신 분기 실적 + 다음 분기 애널리스트 컨센서스) — 실패하면 Yahoo
@@ -6842,30 +6859,11 @@ function fin2BodyHtml(data, period, currency) {
       i++;
       continue;
     }
-    // 2026-10-08 사용자 요청: 비교 그래프의 다음 분기 예상도 막대 대신 매출·순이익 높이에 빨간 가로 점선(통일)
-    // 2026-10-08 사용자 요청: 다음 분기 예상은 원래 점선 막대 + 매출·순이익 높이 빨간 가로 점선
-    if (data.compare && b.est && b.nextEst) {
-      const e = barParts(b);
-      const gtxt = fin2GrowthText(b.growth);
-      colHtml.push(`
-        <div class="fin2-col est fin2-pair" title="${escapeHtml(`${b.label} 예상 매출 ${fmtAmountUnified(b.rev, currency)}`)}">
-          <div class="fin2-plot" style="height:${PLOT_H}px">
-            <div class="fin2-bar" style="height:${e.barPx.toFixed(1)}px">
-              ${gtxt ? `<span class="fin2-growth ${b.growth >= 0 ? "fin2-up" : "fin2-down"}">예상 ${gtxt}</span>` : ""}
-              <span class="fin2-tip">${escapeHtml(fmtAmountUnified(b.rev, currency))}</span>
-              ${e.inner}
-            </div>
-            <i class="fin2-exp-line" style="bottom:${e.barPx.toFixed(1)}px"></i>
-            ${e.niPx > 0 ? `<i class="fin2-exp-line fin2-exp-ni" style="bottom:${e.niPx.toFixed(1)}px"></i>` : ""}
-          </div>
-          <span class="fin2-xlabel">${escapeHtml(b.label)}<small>다음 예상</small></span>
-        </div>`);
-      continue;
-    }
+    // 2026-10-22 사용자 요청: 다음 분기 예상은 점선·'예상' 글자 없이 그냥 막대와 %만 — 아래 일반 막대 그리기로 처리
     const { barPx, inner } = barParts(b);
     const growthTxt = fin2GrowthText(b.growth);
     colHtml.push(`
-        <div class="fin2-col${b.est ? " est" : ""}" title="${escapeHtml(`${b.label}${b.est ? " 예상" : ""} 매출 ${fmtAmountUnified(b.rev, currency)}`)}">
+        <div class="fin2-col" title="${escapeHtml(`${b.label} 매출 ${fmtAmountUnified(b.rev, currency)}`)}">
           <div class="fin2-plot" style="height:${PLOT_H}px">
             <div class="fin2-bar" style="height:${barPx.toFixed(1)}px">
               ${growthTxt ? `<span class="fin2-growth ${b.growth >= 0 ? "fin2-up" : "fin2-down"}">${growthTxt}</span>` : ""}
@@ -6873,15 +6871,15 @@ function fin2BodyHtml(data, period, currency) {
               ${inner}
             </div>
           </div>
-          <span class="fin2-xlabel">${escapeHtml(b.label)}${b.est ? `<small>${b.nextEst ? "다음 예상" : estSource === "컨센서스" ? "컨센서스" : "예상"}</small>` : b.prelim ? `<small>${escapeHtml(b.prelim)}</small>` : ""}</span>
+          <span class="fin2-xlabel">${escapeHtml(b.label)}${!b.est && b.prelim ? `<small>${escapeHtml(b.prelim)}</small>` : ""}</span>
         </div>`);
   }
   const cols = colHtml.join("");
 
-  const estNote = estBar && !data.compare
+  const estNote = estBar
     ? estSource === "컨센서스"
-      ? ` 점선 막대는 증권사 컨센서스(전망 평균)입니다.`
-      : ` 점선 막대는 최근 실적 추세로 계산한 예상치이며 회사 공식 가이던스가 아닙니다.`
+      ? ` 마지막 막대는 증권사 컨센서스(전망 평균)입니다.`
+      : ` 마지막 막대는 최근 실적 추세로 계산한 값이며 회사 공식 가이던스가 아닙니다.`
     : "";
   return `
     ${summaryHtml}
@@ -6890,7 +6888,7 @@ function fin2BodyHtml(data, period, currency) {
       <span><i class="fin2-dot fin2-dot-ni"></i>순이익 <em>(막대 안 % = 순이익률)</em></span>
     </div>
     <div class="fin2-chart${hasNeg ? " has-neg" : ""}" style="grid-template-columns:repeat(${colHtml.length},1fr);--fin2-neg-space:${Math.round(maxNegPx + 20)}px">${cols}</div>
-    <p class="fin2-caption">막대를 누르면 매출액이 표시됩니다. 막대 위 %는 ${isAnnual ? "작년" : "전분기"} 대비 매출 증감입니다.${data.compare ? " 빨간 점선은 예상(매출액·순이익)입니다 — 실적 칸은 발표 전 예상, 마지막 칸은 다음 분기 예상." : ""}${estNote} 출처: ${escapeHtml(source)}.</p>`;
+    <p class="fin2-caption">막대를 누르면 매출액이 표시됩니다. 막대 위 %는 ${isAnnual ? "작년" : "전분기"} 대비 매출 증감입니다.${data.compare ? " 최근 실적 칸의 빨간 점선은 발표 전 예상(매출액·순이익), 막대는 실제입니다." : ""}${estNote} 출처: ${escapeHtml(source)}.</p>`;
 }
 
 // ---------- 2+. 최근 분기 실적(최근 3개) + 다음 분기 가이던스(1개) ----------
@@ -9880,6 +9878,20 @@ function fiscalQuarterLabel(date) {
 // 관심종목(대형주)의 다음 분기 마감일 기준 발표 예정일을 근사 추정(회계분기 마감 + 약 1개월 뒤) — 정확한 발표일은
 // quoteSummary(calendarEvents)가 이 앱의 무인증 프록시에서 "Invalid Crumb" 오류로 막혀 있어 가져올 수 없음
 async function estimateNextEarningsDate(symbol) {
+  const est = await estimateNextEarningsDateRaw(symbol);
+  // 2026-10-22 사용자 요청(넷플릭스): 3분기 실적이 이미 나왔는데 다음이 3분기로 나오던 문제 — 야후 분기 재무는 늦게 반영되므로
+  // 실적 일정 데이터의 최근 발표일(last)이 있으면 그 13주(91일) 뒤를 다음 실적으로 추정하고, 분기 이름도 그에 맞춘다(둘 중 더 늦은 날짜)
+  try {
+    await getEarningsCal();
+    const e = earningsEntry(symbol);
+    if (e && e.last && !e.next) {
+      const d = new Date(new Date(e.last + "T00:00:00").getTime() + 91 * 86400000);
+      if (d >= new Date() && (!est || d > est.date)) return { symbol, date: d, quarterLabel: fiscalQuarterLabel(addMonths(d, -1)) };
+    }
+  } catch {}
+  return est;
+}
+async function estimateNextEarningsDateRaw(symbol) {
   try {
     const data = await yahooFundamentals(symbol, "quarterlyTotalRevenue");
     const resultArr = data && data.timeseries && data.timeseries.result;
