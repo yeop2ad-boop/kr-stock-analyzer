@@ -2114,11 +2114,12 @@ async function renderPopularSearches() {
   }
 }
 // 검색 성공 시 서버에 기록(실패해도 UI에 영향 없도록 조용히 무시) — 최근 24시간 인기 검색어 집계용
-function logSearchEvent(symbol) {
+// kind: search(검색·상세 열기) / click(시장 지도에서 종목 클릭) / watch(관심 등록) — 실시간 랭킹 조회수 = 이 셋의 합(24시간, IP당 종목별 최대 10회는 서버가 처리)
+function logSearchEvent(symbol, kind) {
   fetch(`${AUTH_ORIGIN}/search-log`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ symbol }),
+    body: JSON.stringify({ symbol, kind: kind || "search" }),
   }).catch(() => {});
 }
 function openSearchOverlay() {
@@ -2147,10 +2148,40 @@ function closeSearchOverlay() {
 }
 searchOpenBtn.addEventListener("click", openSearchOverlay);
 // 2026-10-20 사용자 요청: 별별순위·실적·신기술 어디서든 돋보기 옆 별 → 시장(지도)의 관심목록(본체의 옛 관심종목 화면은 삭제)
+// 2026-10-21 사용자 요청: 지금 보던 화면을 유지한 채 관심목록만 위에 겹쳐 띄움(시장 지도로 이동하지 않음)
+let ovFrame = null;
+function closeOvFrame() {
+  if (ovFrame) {
+    ovFrame.remove();
+    ovFrame = null;
+  }
+}
+function openOvFrame(src) {
+  closeOvFrame();
+  const f = document.createElement("iframe");
+  f.className = "ov-frame";
+  f.id = "ovFrame";
+  f.style.display = "block";
+  f.setAttribute("title", "관심목록");
+  f.src = src;
+  document.body.appendChild(f);
+  ovFrame = f;
+}
 function openMapWatchlist() {
   const market = appSectionMode === "etf" ? "etf" : appSectionMode === "crypto" ? "crypto" : getWatchlistActiveMarket() === "KR" ? "domestic" : "overseas";
-  window.location.href = `sector-map/index.html?market=${market}&open=watchlist`;
+  openOvFrame(`sector-map/index.html?market=${market}&ov=watchlist`);
 }
+window.addEventListener("message", (e) => {
+  if (e.origin !== location.origin || !e.data || !e.data.mm) return;
+  if (e.data.mm === "close") closeOvFrame();
+  else if (e.data.mm === "open-ticker" && e.data.symbol) {
+    closeOvFrame();
+    navigateToTicker(e.data.symbol);
+  } else if (e.data.mm === "open-search") {
+    closeOvFrame();
+    openSearchOverlay();
+  }
+});
 el("watchOpenBtn").addEventListener("click", openMapWatchlist);
 el("techWatchBtn").addEventListener("click", openMapWatchlist);
 el("techSearchBtn").addEventListener("click", openSearchOverlay);
@@ -2204,10 +2235,18 @@ function openMorePanel() {
   morePanel.style.display = "block";
   requestAnimationFrame(() => morePanel.classList.add("open"));
 }
+// 지도 위에 겹쳐 띄운 모드(?ov=1): 부모(지도)에 메시지를 보내 겹침 창을 닫거나 다른 동작을 시킴
+const OV_EMBED = document.documentElement.classList.contains("ov-embed");
+function ovPost(kind, extra) {
+  try {
+    parent.postMessage({ mm: kind, ...(extra || {}) }, location.origin);
+  } catch (e) {}
+}
 function closeMorePanel() {
   morePanel.classList.remove("open");
   window.setTimeout(() => {
     morePanel.style.display = "none";
+    if (OV_EMBED && !window.__ovKeep && !el("calendarPanel").classList.contains("open") && el("noticeModal").style.display === "none" && el("aboutModal").style.display === "none") ovPost("close");
   }, 280);
 }
 morePanelBackdrop.addEventListener("click", closeMorePanel);
@@ -2399,6 +2438,10 @@ function refreshTopRankingView() {
   panel.addEventListener("touchcancel", endGesture);
 })();
 el("morePanelWatchlistBtn").addEventListener("click", () => {
+  if (OV_EMBED) {
+    ovPost("open-watchlist");
+    return;
+  }
   closeMorePanel();
   openMapWatchlist();
 });
@@ -2414,6 +2457,7 @@ el("morePanelNoticeBtn").addEventListener("click", () => {
 });
 el("noticeModalCloseBtn").addEventListener("click", () => {
   el("noticeModal").style.display = "none";
+  if (OV_EMBED) ovPost("close");
 });
 el("morePanelAboutBtn").addEventListener("click", () => {
   closeMorePanel();
@@ -2421,6 +2465,7 @@ el("morePanelAboutBtn").addEventListener("click", () => {
 });
 el("aboutModalCloseBtn").addEventListener("click", () => {
   el("aboutModal").style.display = "none";
+  if (OV_EMBED) ovPost("close");
 });
 // 설정 초기화(2026-10-20 사용자 요청): 경고를 보여 주고 "초기화"라고 직접 입력해야 실행. 관심종목·그룹은 지우지 않음
 const RESET_SETTING_KEYS = [
@@ -2429,6 +2474,7 @@ const RESET_SETTING_KEYS = [
   "watchlist_sort_v1", "watchlist_sort_v1_all", "watchlist_sort_v1_us", "watchlist_sort_v1_kr", "watchlist_active_group_v1", "watchlist_active_group_v1_all", "watchlist_active_group_v1_us",
 ];
 el("morePanelResetBtn").addEventListener("click", async () => {
+  if (OV_EMBED) window.__ovKeep = true; // 입력창이 떠 있는 동안 겹침 창이 닫히지 않게
   closeMorePanel();
   const v = await appPromptSheet({
     title: "설정 초기화",
@@ -2437,9 +2483,15 @@ el("morePanelResetBtn").addEventListener("click", async () => {
     okLabel: "초기화",
     maxLength: 6,
   });
-  if (v === null) return;
+  if (v === null) {
+    window.__ovKeep = false;
+    if (OV_EMBED) ovPost("close");
+    return;
+  }
   if (v !== "초기화") {
     showToast("'초기화'라고 정확히 입력해야 해요");
+    window.__ovKeep = false;
+    if (OV_EMBED) setTimeout(() => ovPost("close"), 1200);
     return;
   }
   RESET_SETTING_KEYS.forEach((k) => {
@@ -2479,6 +2531,7 @@ function setTheme(theme) {
   try {
     localStorage.setItem(THEME_KEY, theme);
   } catch (e) {}
+  if (OV_EMBED) ovPost("theme", { theme });
 }
 applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light");
 document.querySelectorAll("[data-theme-choice]").forEach((b) => b.addEventListener("click", () => setTheme(b.dataset.themeChoice)));
@@ -2513,8 +2566,8 @@ const I18N = {
   "nav.crypto": { ko: "비트코인", en: "Bitcoin" },
   "nav.more": { ko: "더보기", en: "More" },
   "more.theme": { ko: "화면 테마", en: "Theme" },
-  "more.theme.light": { ko: "화이트", en: "White" },
-  "more.theme.dark": { ko: "블랙", en: "Black" },
+  "more.theme.light": { ko: "라이트", en: "Light" },
+  "more.theme.dark": { ko: "다크", en: "Dark" },
   "more.lang": { ko: "언어", en: "Language" },
   "more.color": { ko: "상승·하락 색상", en: "Up/Down Colors" },
   "more.color.kr": { ko: "빨강·파랑", en: "Red·Blue" },
@@ -2730,6 +2783,10 @@ el("fhSecMenu").addEventListener("click", (e) => {
   const openParam = new URLSearchParams(window.location.search).get("open");
   if (!openParam) return;
   window.__deepLinkOpen = openParam; // initApp의 기본 화면(기업가치) 부팅이 딥링크 화면을 덮어쓰지 않도록 표시
+  if (openParam === "more" && document.documentElement.classList.contains("ov-embed")) {
+    // 지도 위에 겹쳐 띄우는 더보기 — 서랍이 열려 있는 동안 뒤 화면(별별순위 등)이 보이지 않게 투명 처리됨
+    setTimeout(() => openMorePanel(), 0);
+  }
   loadingSplash.style.display = "none";
   history.replaceState(null, "", window.location.pathname); // 새로고침 시 다시 안 열리도록 쿼리스트링 제거
   // 이 아래 스크립트에 아직 초기화되지 않은 const(companyPanel 등)를 클릭 핸들러가 참조하므로,
@@ -2740,7 +2797,7 @@ el("fhSecMenu").addEventListener("click", (e) => {
         closeCompanyPanel();
         openCalendarPanel();
       },
-      more: () => bottomNavButtons.more.click(),
+      more: () => bottomNavButtons.more.click(), // (ov 모드는 위에서 이미 열었으므로 한 번 더 열어도 무해)
       rank: () => openRankTab(), // 지도 하단 메뉴 → 별별순위·실적·신기술(2026-10-19)
       earn: () => openEarnTab(),
       tech: () => openTabPage("tech"),
@@ -2779,6 +2836,7 @@ function closeCalendarPanel() {
   el("calendarPanel").classList.remove("open");
   window.setTimeout(() => { el("calendarPanel").style.display = "none"; }, 280);
   setBottomNavActive("home");
+  if (OV_EMBED) ovPost("close");
 }
 el("calendarPanelCloseBtn").addEventListener("click", closeCalendarPanel);
 
@@ -3030,6 +3088,7 @@ function addToWatchlist(symbol, groupId) {
     return;
   }
   saveWatchlist([...list, { symbol: sym, addedAt: Date.now(), groupIds: gids, groupId: gids[0] }], market);
+  logSearchEvent(sym, "watch"); // 새로 관심 등록 → 조회수 +1
 }
 function removeFromWatchlist(symbol) {
   const sym = symbol.toUpperCase();
@@ -9615,13 +9674,25 @@ function getTechInsightData() {
   return techInsightDataPromise;
 }
 
+// 올라온 시각을 "1시간 전"·"2일 전"처럼 표기(원문 게시 시각, 없으면 수집 시각)
+function techAgoText(item) {
+  const t = Date.parse(item.publishedAt || item.createdAt || "");
+  if (!t) return "";
+  const m = Math.max(0, Math.floor((Date.now() - t) / 60000));
+  if (m < 60) return `${Math.max(1, m)}분 전`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}시간 전`;
+  const d = Math.floor(h / 24);
+  return d < 30 ? `${d}일 전` : `${Math.floor(d / 30)}개월 전`;
+}
 function techInsightCardHtml(item) {
   const sourceLabel = TECH_SOURCE_LABEL[item.sourceKey] || item.source;
+  const agoText = techAgoText(item);
   return `
     <div class="tech-insight-card">
       <img class="tech-insight-img" src="${escapeHtml(item.image)}" alt="" loading="lazy" />
       <div class="tech-insight-body">
-        <span class="tech-insight-source">${escapeHtml(sourceLabel)}</span>
+        <span class="tech-insight-source">${escapeHtml(sourceLabel)}${agoText ? ` <span class="tech-ago">· ${agoText}</span>` : ""}</span>
         <h3 class="tech-insight-title">${escapeHtml(item.title)}</h3>
         <p class="tech-insight-summary">${escapeHtml(item.summary).replace(/\n/g, "<br>")}</p>
         <a class="tech-insight-link" href="${escapeHtml(item.link)}" target="_blank" rel="noopener">원문 보기(${escapeHtml(sourceLabel)}) →</a>
@@ -12636,6 +12707,7 @@ async function runFuturePrediction(ticker, metricsPromise, marketReturnsPromise,
 //     2초 안에 다시 누르면 history.back()으로 실제 종료(앱은 닫히고, 브라우저는 이전 사이트로).
 const BACK_OVERLAYS = [
   // 위에 뜨는 것부터 — 열려 있는 첫 항목 하나만 닫음
+  { id: "ovFrame", close: () => closeOvFrame() }, // 지도 관심목록 겹침 창(2026-10-21)
   { id: "chartModal", close: () => closeChartModal() },
   { id: "wlGroupPickSheet", close: () => closeWlGroupPickSheet() },
   { id: "groundModal", close: () => closeGroundModal() },
@@ -13408,7 +13480,9 @@ async function renderTechInto(rootId, scrollToIdx) {
   if (!root) return;
   root.innerHTML = `<p class="muted today-empty">불러오는 중...</p>`;
   const tech = await getTechInsightData();
-  const techItems = Array.isArray(tech) ? tech : [];
+  const techItems = (Array.isArray(tech) ? tech : [])
+    .slice()
+    .sort((a, b) => (Date.parse(b.publishedAt || b.createdAt) || 0) - (Date.parse(a.publishedAt || a.createdAt) || 0));
   const techShown = techItems.slice(0, todayTechShown);
   const techLatest = techItems.length ? techItems.map((t) => t.publishedAt || t.createdAt || "").sort().pop() : "";
   const view = getTechView();
@@ -13417,7 +13491,7 @@ async function renderTechInto(rootId, scrollToIdx) {
   const toolbar = `<div class="tech-view-bar"><button type="button" class="tech-view-btn${view === "grid" ? " active" : ""}" data-tech-view="grid" aria-label="요약 보기(사진과 제목)">${gridIcon}</button><button type="button" class="tech-view-btn${view === "list" ? " active" : ""}" data-tech-view="list" aria-label="전체 보기(줄글)">${listIcon}</button></div>`;
   const gridHtml = `<div class="tech-grid">${techShown
     .map(
-      (it, i) => `<button type="button" class="tech-grid-card" data-tech-i="${i}"><img src="${escapeHtml(it.image)}" alt="" loading="lazy" /><span class="tech-grid-title">${escapeHtml(it.title)}</span><span class="tech-grid-src">${escapeHtml(it.source || "")}</span></button>`
+      (it, i) => `<button type="button" class="tech-grid-card" data-tech-i="${i}"><img src="${escapeHtml(it.image)}" alt="" loading="lazy" /><span class="tech-grid-title">${escapeHtml(it.title)}</span><span class="tech-grid-src">${escapeHtml(it.source || "")}${techAgoText(it) ? ` <span class="tech-ago">· ${techAgoText(it)}</span>` : ""}</span></button>`
     )
     .join("")}</div>`;
   const listHtml = `<div class="tech-insight-list">${techShown.map((it, i) => `<div data-tech-card="${i}">${techInsightCardHtml(it)}</div>`).join("")}</div>`;
@@ -13431,7 +13505,7 @@ async function renderTechInto(rootId, scrollToIdx) {
   const techOrgCount = {};
   techItems.forEach((t) => (techOrgCount[t.source] = (techOrgCount[t.source] || 0) + 1));
   // 2026-10-20 사용자 요청: 맨 위엔 한 줄 안내 + "+자세히"(누르면 기관 목록) — 아래 작은 설명은 중복이라 삭제
-  const orgHtml = `<div class="tech-orgs"><div class="tech-orgs-head"><span>🌐 글로벌 연구기관 ${TECH_ORG_INFO.length}곳의 최신 글 내용을 요약·재구성했습니다.</span><button type="button" class="tech-orgs-toggle" aria-expanded="false">+자세히</button></div><div class="tech-orgs-list" style="display:none;">${TECH_ORG_INFO.map(
+  const orgHtml = `<div class="tech-orgs"><div class="tech-orgs-head"><span>🌐 AI가 글로벌 연구기관 최신 글 내용을 요약합니다.</span><button type="button" class="tech-orgs-toggle" aria-expanded="false">+자세히</button></div><div class="tech-orgs-list" style="display:none;">${TECH_ORG_INFO.map(
     ([name, desc]) => `<div class="tech-org-row${techOrgCount[name] ? "" : " tech-org-off"}"><b>${escapeHtml(name)}</b><span>${escapeHtml(desc)}</span><em>${techOrgCount[name] ? `${techOrgCount[name]}건` : "준비 중"}</em></div>`
   ).join("")}${techLatest ? `<p class="tech-orgs-latest">최근 글 ${escapeHtml(String(techLatest).slice(0, 10))}</p>` : ""}</div></div>`;
   root.innerHTML = techItems.length

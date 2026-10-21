@@ -98,6 +98,11 @@ const SECTOR_COLOR_VAR = {
   "게임·메타버스": "--sector-industrials",
   NFT: "--sector-materials",
   기타: "--sector-real-estate",
+  "한국주식 TOP50": "--sector-technology",
+  "미국주식 TOP100": "--sector-communication",
+  "한국ETF TOP20": "--sector-healthcare",
+  "미국ETF TOP20": "--sector-consumer-discretionary",
+  "비트코인 TOP10": "--sector-materials",
   "Information Technology": "--sector-technology",
   "Health Care": "--sector-healthcare",
   Financials: "--sector-financials",
@@ -111,8 +116,15 @@ const SECTOR_COLOR_VAR = {
   Materials: "--sector-materials",
 };
 
+const SECTOR_HASH_VARS = ["--sector-technology", "--sector-healthcare", "--sector-financials", "--sector-consumer-discretionary", "--sector-consumer-staples", "--sector-communication", "--sector-energy", "--sector-utilities", "--sector-real-estate", "--sector-materials", "--sector-industrials"];
 function sectorColor(sector) {
-  const varName = SECTOR_COLOR_VAR[sector] || "--sector-industrials";
+  let varName = SECTOR_COLOR_VAR[sector];
+  if (!varName) {
+    // 새 보기(기술주 업종·우량주 묶음 등)의 이름은 이름으로 고정 색을 고름 — 같은 이름은 항상 같은 색
+    let h = 7;
+    for (const ch of String(sector)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    varName = SECTOR_HASH_VARS[h % SECTOR_HASH_VARS.length];
+  }
   return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || "#888";
 }
 
@@ -338,6 +350,10 @@ const MAP_VIEWS = {
   // 2026-10-06 사용자 요청: "IPO200" → "신규상장200", 한국·미국은 국기 이모지로 구분(국기 마크와 겹치지 않게 mark 없음)
   krIpo: { label: "신규상장200", mark: "kr", market: "domestic", ipo: "kr" }, // 2026-10-19: 글자 KR로 깨져 보이는 국기 이모지 대신 다른 보기와 같은 국기 마크
   usIpo: { label: "신규상장200", mark: "us", market: "overseas", ipo: "us" },
+  // 2026-10-21 사용자 요청: 시장 보기 3개 추가 — 우량주 모음(한국·미국 주식 + ETF + 비트코인 대표 묶음), 한국 기술주 78, 미국 기술주 73
+  blueChip: { label: "우량주 모음", mark: "mix", market: "overseas", needAll: true, build: () => buildBlueChipData() },
+  krTech: { label: "한국 기술주", mark: "kr", market: "domestic", needExtra: true, build: () => buildTechData("kr") },
+  usTech: { label: "미국 기술주", mark: "us", market: "overseas", needExtra: true, build: () => buildTechData("us") },
 };
 // IPO 지도에 올릴 종목 수 — 데이터 파일(ipo-map.js)은 S리포트 IPO 비교군으로도 쓰여 전체를 그대로 두고, 지도에서만 시총 상위로 자름
 const IPO_VIEW_LIMIT = 200;
@@ -348,19 +364,22 @@ const VIEW_MARK_SVG = {
   us: `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#fff"/><rect x="0.5" y="1" width="20" height="1.6" fill="#b22234"/><rect x="0.5" y="4.4" width="20" height="1.6" fill="#b22234"/><rect x="0.5" y="7.8" width="20" height="1.6" fill="#b22234"/><rect x="0.5" y="11.2" width="20" height="1.6" fill="#b22234"/><rect x="0.5" y="0.5" width="9" height="6.4" rx="1.5" fill="#3c3b6e"/><g fill="#fff"><circle cx="2.6" cy="2" r="0.55"/><circle cx="5" cy="2" r="0.55"/><circle cx="7.4" cy="2" r="0.55"/><circle cx="2.6" cy="4.4" r="0.55"/><circle cx="5" cy="4.4" r="0.55"/><circle cx="7.4" cy="4.4" r="0.55"/></g><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="none" stroke="rgba(0,0,0,0.22)"/></svg>`,
   etf: `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#2f6bd8" stroke="rgba(0,0,0,0.15)"/><text x="10.5" y="10" text-anchor="middle" font-size="7" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif" letter-spacing="0.3">ETF</text></svg>`,
   crypto: `<svg viewBox="0 0 21 14" width="21" height="14"><circle cx="10.5" cy="7" r="6.6" fill="#f7931a"/><text x="10.6" y="9.9" text-anchor="middle" font-size="9" font-weight="800" fill="#fff" font-family="-apple-system,'Segoe UI',sans-serif">₿</text></svg>`,
+  mix: `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#f59e0b"/><path d="M10.5 2.6l1.5 3.1 3.4.5-2.5 2.4.6 3.4-3-1.6-3 1.6.6-3.4-2.5-2.4 3.4-.5z" fill="#fff"/></svg>`,
   mine: `<svg viewBox="0 0 21 14" width="21" height="14"><rect x="0.5" y="0.5" width="20" height="13" rx="2.5" fill="#7230f0"/><circle cx="7.2" cy="7.2" r="3.2" fill="#fff" opacity="0.95"/><circle cx="13.6" cy="5.4" r="2.2" fill="#fff" opacity="0.75"/><circle cx="14" cy="9.6" r="1.7" fill="#fff" opacity="0.6"/></svg>`,
 };
 function viewMarkHtml(viewKey) {
   const v = MAP_VIEWS[viewKey];
   return v && VIEW_MARK_SVG[v.mark] ? `<span class="map-view-mark">${VIEW_MARK_SVG[v.mark]}</span>` : "";
 }
-// ---------- 지도 보기 목록(2026-10-19 개편) ----------
-// 기본은 대표 자산 4개(코스피 200 · S&P200 · ETF200 · 비트코인200)만. 맨 아래 + 버튼으로 코스닥 150·S&P500·나스닥 100·신규상장200을
-// 더할 수 있고, 더한 것도 항상 한국주식 → 미국주식 → ETF → 비트코인 순으로 정렬된다.
+// ---------- 지도 보기 목록(2026-10-21 개편) ----------
+// 기본은 대표 자산 4개(코스피 200 · S&P200 · ETF200 · 비트코인200). 드롭다운 맨 아래 ＋로 다른 보기를 더하고, ✎(편집)으로
+// 기본 4개를 포함한 모든 보기의 순서를 바꾸거나(▲▼) 뺄 수 있다(−). 순서·구성은 이 기기에 저장(map_views_order_v2).
+// 내 시장은 목록에 자동으로 붙고, 편집에서 −를 누르면 그 시장 자체를 삭제한다(확인 후).
 const MAP_VIEW_DEFAULTS = ["kospi200", "sp200", "etf200", "crypto100"];
-const MAP_VIEW_ORDER = ["kospi200", "kosdaq150", "krIpo", "sp200", "sp500", "ndx100", "usIpo", "etf200", "crypto100"];
+const MAP_VIEW_ORDER = ["kospi200", "kosdaq150", "krIpo", "sp200", "sp500", "ndx100", "usIpo", "etf200", "crypto100", "blueChip", "krTech", "usTech"];
 const MAP_VIEW_OPTIONAL = MAP_VIEW_ORDER.filter((k) => !MAP_VIEW_DEFAULTS.includes(k));
-const MAP_VIEW_EXTRA_KEY = "map_views_extra_v1";
+const MAP_VIEW_EXTRA_KEY = "map_views_extra_v1"; // 예전(2026-10-19) 저장값 — 첫 실행 때 새 순서 목록으로 옮겨 담음
+const MAP_VIEW_ORDER_KEY = "map_views_order_v2";
 function loadMapViewExtras() {
   try {
     const v = JSON.parse(localStorage.getItem(MAP_VIEW_EXTRA_KEY) || "[]");
@@ -374,24 +393,63 @@ function saveMapViewExtras(list) {
     localStorage.setItem(MAP_VIEW_EXTRA_KEY, JSON.stringify(list));
   } catch {}
 }
-function visibleMapViews() {
-  const extras = loadMapViewExtras();
-  return MAP_VIEW_ORDER.filter((k) => MAP_VIEW_DEFAULTS.includes(k) || extras.includes(k)).concat(typeof mineViewKeys === "function" ? mineViewKeys() : []); // 내 시장은 맨 뒤
+let mapViewListCache = null;
+function readMapViewOrder() {
+  try {
+    const a = JSON.parse(localStorage.getItem(MAP_VIEW_ORDER_KEY));
+    if (Array.isArray(a)) return a.filter((k) => typeof k === "string");
+  } catch {}
+  return null;
 }
+function writeMapViewOrder(list) {
+  mapViewListCache = list.slice();
+  try {
+    localStorage.setItem(MAP_VIEW_ORDER_KEY, JSON.stringify(list));
+  } catch {}
+}
+function visibleMapViews() {
+  let list = mapViewListCache || readMapViewOrder();
+  if (!list) {
+    // 처음: 예전 규칙(기본 4개 + 추가한 것, 한국→미국→ETF→코인 순)을 그대로 옮겨 담음
+    const extras = loadMapViewExtras();
+    list = MAP_VIEW_ORDER.filter((k) => MAP_VIEW_DEFAULTS.includes(k) || extras.includes(k));
+  }
+  const mine = typeof mineViewKeys === "function" ? mineViewKeys() : [];
+  // 없어진 보기는 걸러내고, 새로 만든 내 시장은 맨 뒤에 붙임
+  list = list.filter((k) => MAP_VIEWS[k] && (!k.startsWith("my_") || mine.includes(k)));
+  mine.forEach((k) => {
+    if (!list.includes(k)) list.push(k);
+  });
+  list = [...new Set(list)];
+  mapViewListCache = list;
+  return list;
+}
+let mapViewEditing = false;
 function renderMapViewMenu() {
   const menu = document.getElementById("mapViewMenu");
   if (!menu) return;
-  menu.innerHTML =
-    visibleMapViews()
-      .map((k) => `<button type="button" class="map-view-item${k === ACTIVE_VIEW ? " active" : ""}" data-view="${k}">${viewMarkHtml(k)}<span>${MAP_VIEWS[k].label}</span></button>`)
-      .join("") + `<button type="button" class="map-view-add" id="mapViewAddBtn" aria-label="보기 추가">＋</button>`;
+  const list = visibleMapViews();
+  const rows = list
+    .map((k, i) => {
+      const label = MAP_VIEWS[k].label;
+      if (mapViewEditing) {
+        return `<div class="map-view-item map-view-edit-row" data-view="${k}"><span class="mv-edit-name">${viewMarkHtml(k)}<span>${label}</span></span><span class="mv-edit-btns"><button type="button" class="mv-move" data-move="up" data-view="${k}" aria-label="위로"${i === 0 ? " disabled" : ""}>▲</button><button type="button" class="mv-move" data-move="down" data-view="${k}" aria-label="아래로"${i === list.length - 1 ? " disabled" : ""}>▼</button><button type="button" class="mv-del" data-del="${k}" aria-label="삭제">−</button></span></div>`;
+      }
+      return `<button type="button" class="map-view-item${k === ACTIVE_VIEW ? " active" : ""}" data-view="${k}">${viewMarkHtml(k)}<span>${label}</span></button>`;
+    })
+    .join("");
+  const foot = mapViewEditing
+    ? `<button type="button" class="map-view-add map-view-done" id="mapViewDoneBtn">완료</button>`
+    : `<div class="map-view-foot"><button type="button" class="map-view-add" id="mapViewAddBtn" aria-label="보기 추가">＋</button><button type="button" class="map-view-add map-view-editbtn" id="mapViewEditBtn" aria-label="보기 편집">✎ 편집</button></div>`;
+  menu.innerHTML = rows + foot;
+  menu.classList.toggle("editing", mapViewEditing);
 }
 function renderMapAddList() {
-  const extras = loadMapViewExtras();
+  const cur = visibleMapViews();
   const list = document.getElementById("mapAddList");
   if (!list) return;
-  list.innerHTML = MAP_VIEW_OPTIONAL.map((k) => {
-    const on = extras.includes(k);
+  list.innerHTML = MAP_VIEW_ORDER.map((k) => {
+    const on = cur.includes(k);
     return `<div class="map-add-row"><span class="map-add-name">${viewMarkHtml(k)}<span>${MAP_VIEWS[k].label}</span></span><button type="button" class="map-add-toggle${on ? " on" : ""}" data-view="${k}">${on ? "추가됨 ✓" : "추가"}</button></div>`;
   }).join("");
 }
@@ -556,23 +614,69 @@ function categorizeAssetMapData(data, kind) {
   return data;
 }
 
+// ---------- 우량주 모음 · 한국/미국 기술주(2026-10-21 사용자 요청) ----------
+// 원본 종목 객체를 바꾸지 않도록 복사본(섹터만 다르게)을 만들어 보기마다 한 번만 만들어 두고 재사용(실시간 갱신 값이 유지됨)
+const VIEW_CLONE_CACHE = {};
+function viewClonesFor(cacheKey, signature, make) {
+  const hit = VIEW_CLONE_CACHE[cacheKey];
+  if (hit && hit.sig === signature) return hit.data;
+  const data = make();
+  VIEW_CLONE_CACHE[cacheKey] = { sig: signature, data };
+  return data;
+}
+function allKrStocks() {
+  const core = typeof KR_CORE_DATA !== "undefined" && KR_CORE_DATA.companies ? KR_CORE_DATA.companies : [];
+  const extra = typeof KR_EXTRA_DATA !== "undefined" && KR_EXTRA_DATA.companies ? KR_EXTRA_DATA.companies : [];
+  return core.concat(extra);
+}
+function allUsStocks() {
+  const core = typeof SP500_CORE_DATA !== "undefined" && SP500_CORE_DATA.companies ? SP500_CORE_DATA.companies : [];
+  const extra = typeof SP500_EXTRA_DATA !== "undefined" && SP500_EXTRA_DATA.companies ? SP500_EXTRA_DATA.companies : [];
+  return core.concat(extra);
+}
+function buildBlueChipData() {
+  const kr = allKrStocks();
+  const us = allUsStocks();
+  const etf = typeof ETF_MAP_DATA !== "undefined" && ETF_MAP_DATA.companies ? ETF_MAP_DATA.companies : [];
+  const coin = typeof CRYPTO_MAP_DATA !== "undefined" && CRYPTO_MAP_DATA.companies ? CRYPTO_MAP_DATA.companies : [];
+  const sig = [kr.length, us.length, etf.length, coin.length].join("/");
+  return viewClonesFor("blueChip", sig, () => {
+    const top = (list, n) => list.filter((c) => c && c.symbol && c.marketCap > 0).sort((a, b) => capUsdOf(b) - capUsdOf(a)).slice(0, n);
+    const tag = (list, name) => list.map((c) => ({ ...c, sector: name, sectorKo: name, displayName: typeof mineDisplayName === "function" ? mineDisplayName(c) : c.displayName }));
+    const isKrEtf = (c) => /\.(KS|KQ)$/i.test(c.symbol);
+    return {
+      companies: [
+        ...tag(top(kr, 50), "한국주식 TOP50"),
+        ...tag(top(us, 100), "미국주식 TOP100"),
+        ...tag(top(etf.filter(isKrEtf), 20), "한국ETF TOP20"),
+        ...tag(top(etf.filter((c) => !isKrEtf(c)), 20), "미국ETF TOP20"),
+        ...tag(top(coin, 10), "비트코인 TOP10"),
+      ],
+    };
+  });
+}
+function buildTechData(kind) {
+  const list = (kind === "kr" ? allKrStocks() : allUsStocks()).filter((c) => c.sector === "Information Technology");
+  const groups = (typeof TECH_GROUPS !== "undefined" && TECH_GROUPS[kind]) || {};
+  return viewClonesFor("tech_" + kind, String(list.length), () => ({
+    companies: list.map((c) => {
+      const g = groups[c.symbol] || "기타 IT";
+      return { ...c, sector: g, sectorKo: g };
+    }),
+  }));
+}
+
 // 현재 선택된 보기(ACTIVE_VIEW)에 맞게 ACTIVE_DATA를 다시 계산 — extra가 아직 안 불러와진 상태면(로딩 실패 등)
 // core에 있는 종목만이라도 보여줌
-function updateActiveDataForUniverseState() {
-  const v = MAP_VIEWS[ACTIVE_VIEW];
-  if (v.mine) {
-    ACTIVE_DATA = mineBuildActiveData(mineMarketOf());
-    return;
-  }
+// 어떤 보기의 종목 목록(필요한 데이터가 이미 불러와진 경우) — 지금 보기뿐 아니라 '시장 복사'처럼 다른 보기를 읽을 때도 씀
+function computeViewData(viewKey) {
+  const v = MAP_VIEWS[viewKey];
+  if (!v) return { companies: [] };
+  if (v.mine) return mineBuildActiveData(mineMarketOf(viewKey));
+  if (v.build) return v.build(); // 우량주 모음·한국/미국 기술주(2026-10-21)
   // ETF200/비트코인100: 전용 배치 데이터 사용(주식 core/extra와 무관) — 표시 전 카테고리 분류(2026-09-02)
-  if (v.custom === "etf") {
-    ACTIVE_DATA = typeof ETF_MAP_DATA !== "undefined" ? categorizeAssetMapData(ETF_MAP_DATA, "etf") : { companies: [] };
-    return;
-  }
-  if (v.custom === "crypto") {
-    ACTIVE_DATA = typeof CRYPTO_MAP_DATA !== "undefined" ? categorizeAssetMapData(CRYPTO_MAP_DATA, "crypto") : { companies: [] };
-    return;
-  }
+  if (v.custom === "etf") return typeof ETF_MAP_DATA !== "undefined" ? categorizeAssetMapData(ETF_MAP_DATA, "etf") : { companies: [] };
+  if (v.custom === "crypto") return typeof CRYPTO_MAP_DATA !== "undefined" ? categorizeAssetMapData(CRYPTO_MAP_DATA, "crypto") : { companies: [] };
   // IPO 보기: 신규 상장 전용 데이터. 섹터는 배치가 이미 한글로 넣어둬서 추가 분류가 필요 없다
   if (v.ipo) {
     const src = typeof IPO_MAP_DATA !== "undefined" ? IPO_MAP_DATA[v.ipo] : null;
@@ -580,13 +684,12 @@ function updateActiveDataForUniverseState() {
       .filter((c) => c.marketCap > 0)
       .sort((a, b) => b.marketCap - a.marketCap)
       .slice(0, IPO_VIEW_LIMIT);
-    ACTIVE_DATA = { companies: top };
-    return;
+    return { companies: top };
   }
-  const core = coreDataFor(ACTIVE_MARKET);
+  const core = coreDataFor(v.market);
   let companies = core.companies;
   if (v.needExtra) {
-    const extra = extraDataFor(ACTIVE_MARKET);
+    const extra = extraDataFor(v.market);
     if (extra) companies = [...companies, ...extra.companies];
   }
   // 나스닥 100 보기: S&P500 비편입 15종목(ndx-extra.js)을 합친 뒤 나스닥 구성종목으로만 필터
@@ -594,7 +697,10 @@ function updateActiveDataForUniverseState() {
     companies = [...companies, ...NDX_EXTRA_DATA.companies];
   }
   if (v.filter) companies = companies.filter(v.filter);
-  ACTIVE_DATA = { ...core, companies };
+  return { ...core, companies };
+}
+function updateActiveDataForUniverseState() {
+  ACTIVE_DATA = computeViewData(ACTIVE_VIEW);
 }
 // 드롭다운 버튼 라벨·메뉴 활성 표시를 현재 보기에 맞춤
 function syncMapViewUi() {
@@ -719,7 +825,7 @@ function buildPackedRoot(data) {
   const children = [...bySector.entries()].map(([sector, companies]) => ({
     name: sector,
     sectorKo: companies[0].sectorKo,
-    children: companies.map((c) => ({ ...c, value: sizeMode === "equal" ? 1 : c.marketCap })),
+    children: companies.map((c) => ({ ...c, value: sizeMode === "equal" ? 1 : capUsdOf(c) })),
   }));
 
   const root = d3.hierarchy({ name: "root", children }).sum((d) => d.value).sort((a, b) => b.value - a.value);
@@ -757,13 +863,18 @@ function buildPackedRoot(data) {
 // 섹터들 위(지도 안 월드 좌표)에 전체 시장 이름+평균 등락률 표시 — 버튼이 아니라 지도 요소.
 // 국내: 코스피100/코스닥50(축소) ↔ 코스피200/코스닥150(전체보기), 해외: S&P200(축소) ↔ S&P500(전체보기)
 // 등락률 집계 공용 헬퍼 — 균등 모드: 단순 평균 / 시총 모드: 시총 가중 평균(전체 시총 중 몇 %가 움직였는지)
+// 한국(원)·미국(달러)이 섞인 보기에서도 같은 단위로 비교하도록 시가총액을 달러로 환산(원화는 1400원 기준)
+function capUsdOf(c) {
+  const cap = typeof c.marketCap === "number" ? c.marketCap : 0;
+  return /\.(KS|KQ)$/i.test(c.symbol || "") || c.currency === "KRW" ? cap / 1400 : cap;
+}
 function avgChangeOf(list) {
   const useCap = true; // 2026-10-20 사용자 요청: 균등/시총 어느 쪽이든 등락 평균은 시총 비율로 계산해 같은 값을 보여줌
   let sum = 0;
   let weightTotal = 0;
   for (const c of list) {
     if (typeof c.changePercent !== "number" || !Number.isFinite(c.changePercent)) continue;
-    const w = useCap ? (typeof c.marketCap === "number" && c.marketCap > 0 ? c.marketCap : 0) : 1;
+    const w = useCap ? capUsdOf(c) : 1;
     if (!w) continue;
     sum += c.changePercent * w;
     weightTotal += w;
@@ -1108,7 +1219,7 @@ function renderCompanyBubble(leaf, sectorColorValue) {
   el.dataset.r = leaf.r;
 
   const isKrView = ACTIVE_MARKET === "domestic";
-  const nameText = isKrView ? d.name : d.symbol;
+  const nameText = d.displayName || (isKrView ? d.name : d.symbol); // 한국·미국이 섞인 보기(우량주 모음·내 시장)·ETF·코인은 배치가 정한 표시명
   const minDim = Math.min(w, h);
 
   const label = document.createElement("div");
@@ -1344,6 +1455,16 @@ function sheetGroupIdsOf(w) {
   if (Array.isArray(w.groupIds) && w.groupIds.length) return w.groupIds;
   return [w.groupId || "default"];
 }
+// 조회수 기록(실시간 랭킹): 시장에서 종목 클릭 / 관심 등록 — 실패해도 화면엔 영향 없음
+function logViewEvent(symbol, kind) {
+  try {
+    fetch("https://us-stock.yeop2ad.workers.dev/search-log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ symbol: String(symbol).toUpperCase(), kind }),
+    }).catch(() => {});
+  } catch {}
+}
 function addSheetWatchlist(symbol, groupIds) {
   const list = readUnifiedWatchlist();
   const gids = (Array.isArray(groupIds) ? groupIds : [groupIds]).filter(Boolean);
@@ -1355,6 +1476,7 @@ function addSheetWatchlist(symbol, groupIds) {
     cur.groupId = merged[0];
   } else {
     list.push({ symbol, addedAt: Date.now(), groupIds: next, groupId: next[0] });
+    logViewEvent(symbol, "watch");
   }
   localStorage.setItem("watchlist_v1_all", JSON.stringify(list));
 }
@@ -1575,6 +1697,7 @@ async function updateSheetVolRatio(d) {
   }
 }
 function openCompanySheet(d) {
+  logViewEvent(d.symbol, "click"); // 시장에서 종목을 눌렀다 → 실시간 랭킹 조회수 +1
   currentSheetSymbol = d.symbol;
   currentSheetCurrency = d.currency || (ACTIVE_MARKET === "domestic" ? "KRW" : "USD");
   const color = sectorColor(d.sector);
@@ -1784,11 +1907,11 @@ function volRatioOf(c) {
   const exp = volInterp(base, elapsed, ses.len);
   return exp > 0 ? val / exp : undefined;
 }
-// 회색(0.5배 이하) → 흰색(1배) → 노랑(2배) → 빨강(3배 이상) — 2026-10-19 사용자 선택
-const VOL_GRAY = [156, 163, 175];
+// 0.5배 이하·1배 = 배경색(라이트 흰색 / 다크 검정) → 노랑(2배) → 주황(3배 이상) — 2026-10-21 사용자 선택
+const VOL_GRAY = CHG_BG; // 2026-10-21: 0.5배 이하도 배경색(라이트=흰색, 다크=완전 검정)
 const VOL_WHITE = CHG_BG; // 1배 기준색 — 화이트 테마는 흰색, 블랙 테마는 지도 배경과 같은 검정(2026-10-20)
 const VOL_YELLOW = [253, 224, 71];
-const VOL_RED = [220, 38, 38];
+const VOL_RED = [249, 115, 22]; // 3배 이상 = 주황
 function volColor(r) {
   if (r === undefined || !Number.isFinite(r)) return null;
   if (r >= 3) return VOL_RED;
@@ -1851,6 +1974,12 @@ function applyVolMode() {
   }
   if (changeModeOn) applyChangeModeToSectorBubbles(); // "등락" 버튼이 켜져 있으면 섹터 원 평균도 대금 기준으로 다시
 }
+// 복사본(내 시장·우량주 모음)이 다시 만들어져도 방금 받은 실시간 값을 잃지 않도록 종목별로 따로 기억
+const LIVE_OVERLAY = new Map();
+function liveOverlayOf(sym) {
+  if (!LIVE_OVERLAY.has(sym)) LIVE_OVERLAY.set(sym, {});
+  return LIVE_OVERLAY.get(sym);
+}
 // ETF·코인 보기용 실시간 거래대금 — 워커 /day-vals(현재가 × 당일 누적 거래량, 코인은 24시간 거래대금)
 async function refreshCustomVals() {
   const syms = ACTIVE_DATA.companies.map((c) => c.symbol);
@@ -1870,6 +1999,17 @@ async function refreshCustomVals() {
           if (c && v > 0) {
             c.dollarVolume = v;
             c.volLive = true;
+            liveOverlayOf(sym).dollarVolume = v;
+            liveOverlayOf(sym).volLive = true;
+            got++;
+          }
+        }
+        // 워커가 등락률(chgs)도 보내 주면(2026-10-21 재배포 후) 타일 색·섹터 평균도 지금 값으로
+        for (const [sym, pct] of Object.entries((data && data.chgs) || {})) {
+          const c = bySym.get(sym);
+          if (c && Number.isFinite(pct)) {
+            c.changePercent = pct;
+            liveOverlayOf(sym).changePercent = pct;
             got++;
           }
         }
@@ -2422,8 +2562,15 @@ enableSheetDragToClose(rangeSheet, rangeSheet.querySelector(".range-sheet-header
 const watchlistSheet = document.getElementById("watchlistSheet");
 const watchlistSheetList = document.getElementById("watchlistSheetList");
 
+const OV_MODE = new URLSearchParams(window.location.search).get("ov") || ""; // 본체 위에 겹쳐 띄운 관심목록이면 "watchlist"
+function ovPostParent(kind, extra) {
+  try {
+    parent.postMessage({ mm: kind, ...(extra || {}) }, location.origin);
+  } catch (e) {}
+}
 function closeWatchlistSheet() {
   watchlistSheet.classList.remove("open");
+  if (OV_MODE) ovPostParent("close");
 }
 
 function findLeafBySymbol(symbol) {
@@ -2456,6 +2603,10 @@ function wlCategoryOf(symbol, name) {
   return "us";
 }
 function openDetailFromMap(symbol) {
+  if (OV_MODE) {
+    ovPostParent("open-ticker", { symbol }); // 겹침 창이면 본체가 상세를 열어 줌(지도로 이동하지 않음)
+    return;
+  }
   try {
     sessionStorage.setItem("ntj_skip_map_redirect", "1");
     saveMapRestoreState(); // 상세에서 뒤로가기로 돌아오면 보던 지도 보기를 그대로 복원
@@ -2499,6 +2650,23 @@ function renderWatchlistSheet() {
     const catName = { all: "", kr: "한국 ", us: "미국 ", etf: "ETF ", crypto: "코인 " }[wlCat];
     empty.textContent = isEn ? "No stocks in your watchlist yet. Tap the ★ on a stock to add it." : symbols.length ? `${catName}관심종목이 없어요.` : "관심목록에 담긴 종목이 없습니다. 종목 상세에서 ★을 눌러 추가해보세요.";
     watchlistSheetList.appendChild(empty);
+    // 2026-10-21 사용자 요청: 관심종목이 하나도 없으면 + 버튼 → 누르면 검색 화면
+    if (!symbols.length) {
+      const plus = document.createElement("button");
+      plus.type = "button";
+      plus.className = "wl-empty-plus";
+      plus.setAttribute("aria-label", "종목 검색해서 추가");
+      plus.textContent = "+";
+      plus.addEventListener("click", () => {
+        if (OV_MODE) ovPostParent("open-search");
+        else goToMainSite("search");
+      });
+      watchlistSheetList.appendChild(plus);
+      const note = document.createElement("p");
+      note.className = "wl-empty-note";
+      note.textContent = "눌러서 종목을 검색하고 추가하세요";
+      watchlistSheetList.appendChild(note);
+    }
   }
   for (const { symbol, c, name } of list) {
     const row = document.createElement("button");
@@ -3174,8 +3342,17 @@ document.getElementById("aiFabTime").addEventListener("click", async () => {
 // 국내/해외 어느 쪽이 활성인지에 맞춰 알맞은 실시간 갱신 함수를 호출하고, 성공 시 AI 버튼의 갱신 시각을 함께 업데이트
 async function refreshActiveMarketLiveData({ silent = false } = {}) {
   // ETF200/비트코인50 보기는 배치 스냅샷 기반이라 주식용 실시간 갱신(스크리너/국내 워커)이 적용되지 않음 — 건너뜀
-  if (MAP_VIEWS[ACTIVE_VIEW] && (MAP_VIEWS[ACTIVE_VIEW].custom || MAP_VIEWS[ACTIVE_VIEW].mine)) {
-    if (volModeOn && (await refreshCustomVals())) refreshAllBubbleColors(); // 대금 모드는 ETF·코인도 실시간 거래대금으로 다시 칠함
+  const _av = MAP_VIEWS[ACTIVE_VIEW];
+  if (_av && (_av.custom || _av.mine || _av.needAll)) {
+    // 2026-10-21 사용자 요청: ETF·코인·내 시장·우량주 모음도 어제 값이 아니라 지금 값 — 워커 /day-vals로 현재 등락·거래대금을 받아 다시 칠함
+    if (await refreshCustomVals()) {
+      lastColorRefreshAt = Date.now();
+      refreshAllBubbleColors();
+      for (const key of ["changePct"]) if (METRICS[key]) delete METRICS[key].domain;
+      applyAllFilters();
+      applyChangeModeToSectorBubbles();
+      if (!silent) showToast("실시간 시세로 갱신됨");
+    }
     renderAiFabTimestamp();
     return false;
   }
@@ -3289,7 +3466,7 @@ function computeSectorVolAverages() {
   for (const c of ACTIVE_DATA.companies) {
     const r = volRatioOf(c);
     if (!Number.isFinite(r)) continue;
-    const w = useCap ? (typeof c.marketCap === "number" && c.marketCap > 0 ? c.marketCap : 0) : 1;
+    const w = useCap ? capUsdOf(c) : 1;
     if (!w) continue;
     const sec = canonicalSector(c.sector);
     const a = acc.get(sec) || { sum: 0, w: 0 };
@@ -3303,7 +3480,8 @@ function computeSectorVolAverages() {
 }
 function volTextColor(r) {
   if (!Number.isFinite(r)) return "var(--text-mid)";
-  return r >= 2 ? "#b91c1c" : r >= 1.3 ? "#a16207" : r >= 0.75 ? "#374151" : "#6b7280";
+  const dark = document.documentElement.getAttribute("data-theme") === "dark";
+  return r >= 2 ? (dark ? "#fb923c" : "#c2410c") : r >= 1.3 ? (dark ? "#facc15" : "#a16207") : r >= 0.75 ? (dark ? "#e5e7eb" : "#374151") : dark ? "#9ca3af" : "#6b7280";
 }
 function computeSectorAverages() {
   const bySector = new Map();
@@ -3547,7 +3725,8 @@ async function setMapView(viewKey, animate) {
   const needNdxLoad = v.needNdx && typeof NDX_EXTRA_DATA === "undefined";
   const needAssetLoad = v.custom && typeof ETF_MAP_DATA === "undefined";
   const needIpoLoad = v.ipo && typeof IPO_MAP_DATA === "undefined";
-  if (needExtraLoad || needNdxLoad || needAssetLoad || needIpoLoad) {
+  const needAllLoad = v.needAll && (typeof ETF_MAP_DATA === "undefined" || !extraDataFor("domestic") || !extraDataFor("overseas"));
+  if (needExtraLoad || needNdxLoad || needAssetLoad || needIpoLoad || needAllLoad) {
     const label = document.getElementById("mapViewBtnLabel");
     if (label) label.textContent = "불러오는 중...";
     try {
@@ -3556,6 +3735,7 @@ async function setMapView(viewKey, animate) {
         needNdxLoad ? ensureNdxDataLoaded() : Promise.resolve(),
         needAssetLoad ? ensureEtfCryptoDataLoaded() : Promise.resolve(),
         needIpoLoad ? ensureIpoMapDataLoaded() : Promise.resolve(),
+        needAllLoad ? mineEnsureData() : Promise.resolve(), // 우량주 모음: 한국·미국 전체 + ETF·코인 데이터
       ]);
     } catch {
       showToast("전체 목록을 불러오지 못했어요. 다시 시도해주세요");
@@ -3585,15 +3765,69 @@ document.getElementById("mapViewMenu").addEventListener("click", (e) => {
     document.getElementById("mapAddBack").style.display = "flex";
     return;
   }
+  // 편집(2026-10-21): 순서 바꾸기(▲▼)와 빼기(−) — 기본 4개도 포함. 메뉴는 열어 둔 채 다시 그림
+  if (e.target.closest("#mapViewEditBtn")) {
+    e.stopPropagation();
+    mapViewEditing = true;
+    renderMapViewMenu();
+    return;
+  }
+  if (e.target.closest("#mapViewDoneBtn")) {
+    e.stopPropagation();
+    mapViewEditing = false;
+    renderMapViewMenu();
+    return;
+  }
+  const mv = e.target.closest(".mv-move");
+  if (mv) {
+    e.stopPropagation();
+    const list = visibleMapViews().slice();
+    const i = list.indexOf(mv.dataset.view);
+    const j = mv.dataset.move === "up" ? i - 1 : i + 1;
+    if (i < 0 || j < 0 || j >= list.length) return;
+    [list[i], list[j]] = [list[j], list[i]];
+    writeMapViewOrder(list);
+    renderMapViewMenu();
+    return;
+  }
+  const del = e.target.closest(".mv-del");
+  if (del) {
+    e.stopPropagation();
+    const key = del.dataset.del;
+    const list = visibleMapViews().slice();
+    if (list.length <= 1) {
+      showToast("보기는 최소 1개가 필요해요");
+      return;
+    }
+    const doRemove = async () => {
+      const next = list.filter((k) => k !== key);
+      writeMapViewOrder(next);
+      if (key.startsWith("my_") && typeof mineDeleteMarketById === "function") mineDeleteMarketById(key.slice(3));
+      if (ACTIVE_VIEW === key) await setMapView(next[0], true);
+      renderMapViewMenu();
+    };
+    if (key.startsWith("my_")) {
+      mineConfirm(`'${MAP_VIEWS[key].label}' 시장을 삭제할까요? 만든 내용이 사라져요.`, "삭제", doRemove);
+    } else {
+      doRemove();
+    }
+    return;
+  }
   const item = e.target.closest(".map-view-item");
-  if (!item) return;
+  if (!item || mapViewEditing) return;
   mapViewSelectEl.classList.remove("open");
   if (item.dataset.view === ACTIVE_VIEW) return;
   setMapView(item.dataset.view, true);
 });
 // 메뉴 밖 아무 곳이나 누르면 닫힘
 document.addEventListener("click", (e) => {
-  if (!mapViewSelectEl.contains(e.target)) mapViewSelectEl.classList.remove("open");
+  if (!mapViewSelectEl.contains(e.target)) {
+    mapViewSelectEl.classList.remove("open");
+    if (mapViewEditing) {
+      mapViewEditing = false;
+      renderMapViewMenu();
+    }
+  }
 });
 // 보기 추가 창 — 추가/제거를 누르면 바로 저장되고 목록이 갱신됨
 (function initMapAddModal() {
@@ -3610,11 +3844,18 @@ document.addEventListener("click", (e) => {
     const b = e.target.closest(".map-add-toggle");
     if (!b) return;
     const k = b.dataset.view;
-    const extras = loadMapViewExtras();
-    const next = extras.includes(k) ? extras.filter((x) => x !== k) : [...extras, k];
-    saveMapViewExtras(next);
-    renderMapAddList();
-    if (!next.includes(k) && ACTIVE_VIEW === k) setMapView("sp200", true); // 지금 보던 보기를 빼면 기본 보기로
+    const cur = visibleMapViews().slice();
+    if (cur.includes(k)) {
+      if (cur.length <= 1) return showToast("보기는 최소 1개가 필요해요");
+      const next = cur.filter((x) => x !== k);
+      writeMapViewOrder(next);
+      renderMapAddList();
+      if (ACTIVE_VIEW === k) setMapView(next[0], true); // 지금 보던 보기를 빼면 목록 맨 앞 보기로
+    } else {
+      cur.push(k); // 새로 더한 보기는 목록 맨 아래에(순서는 ✎ 편집에서 바꿀 수 있음)
+      writeMapViewOrder(cur);
+      renderMapAddList();
+    }
   });
 })();
 
@@ -3643,9 +3884,52 @@ document.getElementById("bottomNavCryptoBtn2").addEventListener("click", () => g
 // 2026-10-19 하단 메뉴 개편: 시장(지금 화면) - 별별순위 - 실적 - 신기술 - 더보기
 const _mapBtn2 = document.getElementById("bottomNavMapBtn2");
 if (_mapBtn2) _mapBtn2.classList.add("active"); // 이미 시장 화면
-[["bottomNavRankBtn2", "rank"], ["bottomNavEarnBtn2", "earn"], ["bottomNavTechBtn2", "tech"], ["bottomNavMoreBtn2", "more"]].forEach(([id, target]) => {
+[["bottomNavRankBtn2", "rank"], ["bottomNavEarnBtn2", "earn"], ["bottomNavTechBtn2", "tech"]].forEach(([id, target]) => {
   const btn = document.getElementById(id);
   if (btn) btn.addEventListener("click", () => goToMainSite(target));
+});
+
+// 2026-10-21 사용자 요청: 더보기를 눌러도 시장 화면을 유지 — 본체 더보기 서랍을 지도 위에 겹쳐 띄움(이동 없음)
+let moreFrame = null;
+let moreThemeAtOpen = null;
+function closeMoreFrame() {
+  if (!moreFrame) return;
+  moreFrame.remove();
+  moreFrame = null;
+  let now = "";
+  try {
+    now = localStorage.getItem("theme") === "dark" ? "dark" : "light";
+  } catch (e) {}
+  if (moreThemeAtOpen !== null && now !== moreThemeAtOpen) {
+    // 화면 모드가 바뀌었으면 지도 색을 새로 입히기 위해 보던 보기를 저장한 채 다시 불러옴
+    saveMapRestoreState();
+    location.reload();
+  }
+}
+function openMoreFrame() {
+  closeMoreFrame();
+  try {
+    moreThemeAtOpen = localStorage.getItem("theme") === "dark" ? "dark" : "light";
+  } catch (e) {
+    moreThemeAtOpen = null;
+  }
+  const f = document.createElement("iframe");
+  f.className = "ov-frame";
+  f.id = "moreFrame";
+  f.setAttribute("title", "더보기");
+  f.src = "../index.html?open=more&ov=1";
+  document.body.appendChild(f);
+  moreFrame = f;
+}
+const _moreBtn2 = document.getElementById("bottomNavMoreBtn2");
+if (_moreBtn2) _moreBtn2.addEventListener("click", openMoreFrame);
+window.addEventListener("message", (e) => {
+  if (e.origin !== location.origin || !e.data || !e.data.mm) return;
+  if (e.data.mm === "close") closeMoreFrame();
+  else if (e.data.mm === "open-watchlist") {
+    closeMoreFrame();
+    openWatchlistSheet();
+  }
 });
 
 // ---------- 초기화 ----------
@@ -3682,6 +3966,13 @@ setMapView(initialViewSafe, false).finally(() => {
   // 실시간 시세/색상은 loadMarket 내부에서 이어서 비동기로 불러오지만, 스플래시까지 그걸 기다리진 않음(본체와 동일한 패턴)
   const mapLoadingSplashEl = document.getElementById("mapLoadingSplash");
   if (mapLoadingSplashEl) mapLoadingSplashEl.style.display = "none";
+  // 본체 위에 겹쳐 띄운 관심목록(?ov=watchlist): 서랍을 바로 열고, 서랍 밖을 누르면 닫음(2026-10-21)
+  if (OV_MODE === "watchlist") {
+    openWatchlistSheet();
+    document.addEventListener("pointerdown", (ev) => {
+      if (!ev.target.closest("#watchlistSheet")) ovPostParent("close");
+    });
+  }
   // 본체 별별순위·실적·신기술·더보기의 별(★)에서 넘어오면 관심목록을 바로 열어줌(2026-10-20)
   try {
     const q = new URLSearchParams(window.location.search);
@@ -3741,6 +4032,8 @@ function scheduleInactiveMarketPreload() {
     () => { const s = document.getElementById("scoreInfoModal"); if (s && s.style.display !== "none" && s.style.display !== "") { s.style.display = "none"; return true; } return false; },
     () => { if (isOpen(companySheet)) { closeCompanySheet(); return true; } return false; },
     () => { if (isOpen(rangeSheet)) { closeRangeSheet(); return true; } return false; },
+    () => { if (moreFrame) { closeMoreFrame(); return true; } return false; },
+    () => { if (window.__rtPageOpen && window.__rtPageOpen()) { window.__rtPageClose(); return true; } return false; },
     () => { if (isOpen(watchlistSheet)) { closeWatchlistSheet(); return true; } return false; },
     () => { if (isOpen(allFiltersSheet)) { closeAllFiltersPanel(); return true; } return false; },
   ];

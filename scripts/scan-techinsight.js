@@ -18,6 +18,7 @@ const SEEN_FILE = path.join(DATA_DIR, "techinsight-seen.json");
 const RETENTION_DAYS = 30; // 이보다 오래된 항목/이미지는 매 실행마다 정리(레포 용량 억제)
 const MAX_ITEMS = 20; // 30일이 안 지났어도 최신순으로 이 개수를 넘으면 오래된 것부터 정리(보관량 상한)
 const SEEN_MAX = 400;
+const MAX_AGE_DAYS = 14; // 이보다 오래전에 올라온 글은 후보에서 제외(옛 글이 최신 칸을 채우지 않게)
 
 const UA_HEADERS = { "User-Agent": "netuja.com techinsight-bot contact@netuja.com" };
 
@@ -29,6 +30,7 @@ const RSS_SOURCES = [
   { key: "mckinsey", name: "McKinsey", url: "https://www.mckinsey.com/insights/rss" },
   { key: "ieee", name: "IEEE Spectrum", url: "https://spectrum.ieee.org/feeds/feed.rss" },
 ];
+const MCK_TECH_RE = /tech-and-ai|mckinsey-digital|(?:^|[^a-z])ai(?:[^a-z]|$)|agentic|quantum|semiconductor|robot|software|cyber|data|cloud|digital|automation|energy-transition|space/i;
 const OECD_WONK_URL = "https://oecd.ai/en/wonk";
 const OECD_SOURCE = { key: "oecd", name: "OECD" };
 
@@ -88,7 +90,8 @@ function parseFeed(xml, sourceName) {
     }
     const dateStr = extractTag(block, "pubDate") || extractTag(block, "updated") || extractTag(block, "published");
     const publishedAt = dateStr && !isNaN(Date.parse(dateStr)) ? new Date(dateStr).toISOString() : null;
-    if (title && link) items.push({ title, link: link.trim(), publishedAt, source: sourceName });
+    const description = extractTag(block, "description");
+    if (title && link) items.push({ title, link: link.trim(), publishedAt, source: sourceName, description });
   }
   return items;
 }
@@ -97,7 +100,10 @@ async function harvestRssSource(src) {
   const res = await fetchWithTimeout(src.url, { headers: UA_HEADERS }, 15000);
   if (!res.ok) throw new Error(`${res.status}`);
   const xml = await res.text();
-  return parseFeed(xml, src.name);
+  const items = parseFeed(xml, src.name);
+  // McKinsey 피드는 전 산업 글이 섞여 있어 기술·AI 관련 글만 후보로 둠
+  if (src.key === "mckinsey") return items.filter((it) => MCK_TECH_RE.test(`${it.link} ${it.title}`));
+  return items;
 }
 
 // OECD "The AI Wonk"는 RSS가 없어 서버렌더링된 목록 페이지 HTML에서 /en/wonk/<slug> 링크 + 카드 제목을 직접 추출
@@ -105,11 +111,12 @@ async function harvestOecdWonk() {
   const res = await fetchWithTimeout(OECD_WONK_URL, { headers: UA_HEADERS }, 15000);
   if (!res.ok) throw new Error(`${res.status}`);
   const html = await res.text();
-  const linkRe = /href="(https:\/\/oecd\.ai\/en\/wonk\/[a-z0-9-]+)"[^>]*>\s*<[^>]*>?\s*([^<]{8,140})</gi;
+  // 2026-10-21: 사이트가 상대경로(/en/wonk/<slug>) + <h4> 제목 구조로 바뀌어 예전 정규식이 0건이었음
+  const linkRe = /href="(\/en\/wonk\/[a-z0-9-]+)"[^>]*>(?:<!---->)?\s*<h4[^>]*>\s*([^<]{8,200}?)\s*<\/h4>/gi;
   const seenLinks = new Set();
   const items = [];
   for (const m of html.matchAll(linkRe)) {
-    const link = m[1];
+    const link = "https://oecd.ai" + m[1];
     const title = decodeEntities(m[2]).trim();
     if (seenLinks.has(link) || !title) continue;
     seenLinks.add(link);
@@ -266,7 +273,8 @@ async function main() {
       const list = candidatesBySource[key];
       while (cursors[key] < list.length) {
         const cand = list[cursors[key]++];
-        if (!seenLinks.has(cand.link)) {
+        const ageMs = cand.publishedAt ? Date.now() - Date.parse(cand.publishedAt) : 0;
+        if (!seenLinks.has(cand.link) && ageMs < MAX_AGE_DAYS * 86400000) {
           selected.push({ ...cand, sourceKey: key });
           progressed = true;
           break;
@@ -292,7 +300,15 @@ async function main() {
 
   const processed = await mapWithConcurrency(selected, CONCURRENCY, async (cand) => {
     try {
-      const bodyText = await fetchArticleText(cand.link);
+      // 원문 페이지가 봇을 막는 곳(McKinsey 등)은 피드의 소개 문장으로 대신 요약
+      let bodyText = "";
+      try {
+        bodyText = await fetchArticleText(cand.link);
+      } catch (err) {
+        if (!cand.description || cand.description.length < 60) throw err;
+        console.log(`[원문 대신 피드 소개문 사용] ${cand.source} — ${err.message}`);
+        bodyText = cand.description;
+      }
       const { titleKo, summaryKo } = await summarizeKo(cand.title, bodyText);
       const imageBuffer = await generateImage(cand.sourceKey, cand.title);
       const id = makeId(cand.link);
@@ -319,7 +335,9 @@ async function main() {
   for (const item of newItems) seen.push({ link: item.link, usedAt: item.createdAt });
 
   const merged = [...newItems, ...existingItems];
-  merged.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
+  // 최신 글이 위로 오도록 원문 게시 시각(없으면 수집 시각) 기준 정렬
+  const stamp = (x) => Date.parse(x.publishedAt || x.createdAt) || 0;
+  merged.sort((a, b) => stamp(b) - stamp(a));
   const pruned = pruneOldItems(merged);
 
   fs.writeFileSync(ITEMS_FILE, JSON.stringify(pruned, null, 2));

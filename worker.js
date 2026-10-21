@@ -20,7 +20,7 @@ const CORS_HEADERS = {
 
 // ---------- 인기 검색어: 방문자 전체의 검색을 KV에 기록해 최근 24시간 기준으로 집계(검색 오버레이의 "인기 검색") ----------
 const SEARCH_LOG_KEY = "search_log_events";
-const SEARCH_LOG_MAX = 3000; // 저장 이벤트 상한(오래된 것부터 정리)
+const SEARCH_LOG_MAX = 8000; // 저장 이벤트 상한(오래된 것부터 정리)
 const SEARCH_LOG_RETENTION_SEC = 24 * 60 * 60; // 24시간
 const SEARCH_POPULAR_MAX = 10;
 
@@ -42,6 +42,17 @@ async function getSearchLogEvents(env) {
   return events.filter((e) => e && typeof e.t === "number" && e.t >= cutoff && typeof e.symbol === "string");
 }
 
+// 같은 사람(IP)이 한 종목을 아무리 많이 눌러도 24시간 안에 최대 10회까지만 조회수로 센다(2026-10-21).
+// 조회수 = 검색 + 시장(지도)에서 종목 클릭 + 관심 등록. IP는 원문이 아니라 짧은 해시로만 저장한다.
+const VIEW_PER_IP_MAX = 10;
+const VIEW_KINDS = ["search", "click", "watch"];
+function ipHashOf(request) {
+  const ip = request.headers.get("CF-Connecting-IP") || request.headers.get("X-Forwarded-For") || "";
+  let h = 5381;
+  for (let i = 0; i < ip.length; i++) h = ((h << 5) + h + ip.charCodeAt(i)) | 0;
+  return (h >>> 0).toString(36);
+}
+
 async function handleSearchLog(request, env) {
   if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
 
@@ -53,25 +64,32 @@ async function handleSearchLog(request, env) {
   }
   const symbol = body && body.symbol ? String(body.symbol).toUpperCase().trim() : "";
   if (!isValidTickerSymbol(symbol)) return jsonResponse({ error: "잘못된 티커입니다." }, 400);
+  const kind = VIEW_KINDS.includes(body && body.kind) ? body.kind : "search";
+  const ip = ipHashOf(request);
 
   const events = await getSearchLogEvents(env);
-  events.push({ symbol, t: Date.now() });
+  const mine = events.reduce((n, e) => (e.ip === ip && e.symbol === symbol ? n + 1 : n), 0);
+  if (mine >= VIEW_PER_IP_MAX) return jsonResponse({ ok: true, counted: false }, 200); // 한 IP당 종목별 최대 10회
+  events.push({ symbol, t: Date.now(), kind, ip });
   const trimmed = events.slice(-SEARCH_LOG_MAX);
   await env.CHAT_KV.put(SEARCH_LOG_KEY, JSON.stringify(trimmed), { expirationTtl: SEARCH_LOG_RETENTION_SEC });
-  return jsonResponse({ ok: true }, 200);
+  return jsonResponse({ ok: true, counted: true }, 200);
 }
 
-async function handleSearchPopular(env) {
+// ?n=100 처럼 많이 달라고 하면 실시간 랭킹 화면이 투자처별로 걸러 쓴다(기본은 인기 검색 10개)
+async function handleSearchPopular(env, requestUrl) {
   if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
 
+  const nRaw = requestUrl ? Number(requestUrl.searchParams.get("n")) : 0;
+  const limit = Number.isInteger(nRaw) && nRaw > 0 ? Math.min(nRaw, 300) : SEARCH_POPULAR_MAX;
   const events = await getSearchLogEvents(env);
   const counts = {};
   for (const e of events) counts[e.symbol] = (counts[e.symbol] || 0) + 1;
   const popular = Object.entries(counts)
     .map(([symbol, count]) => ({ symbol, count }))
     .sort((a, b) => b.count - a.count)
-    .slice(0, SEARCH_POPULAR_MAX);
-  return jsonResponse({ popular }, 200);
+    .slice(0, limit);
+  return jsonResponse({ popular, since: Date.now() - SEARCH_LOG_RETENTION_SEC * 1000 }, 200);
 }
 
 // ---------- 포모지수(국내 전용 "공포·과열" 지표) — VIX 대신 코스피200+코스닥150(약 350종목)의 52주 신고가/신저가 종목수 비율로 매일 계산 ----------
@@ -242,26 +260,46 @@ async function handleDayVals(requestUrl, env) {
   if (!symbols.length) return jsonResponse({ error: "symbols 파라미터가 필요합니다." }, 400);
   let h = 5381;
   for (const ch of symbols.join(",")) h = ((h << 5) + h + ch.charCodeAt(0)) | 0;
-  const cacheKey = `day_vals_${(h >>> 0).toString(36)}_${symbols.length}`;
+  const cacheKey = `day_vals2_${(h >>> 0).toString(36)}_${symbols.length}`; // v2: 등락률(chgs) 포함
   if (env.CHAT_KV) {
     const cached = await env.CHAT_KV.get(cacheKey, "json");
-    if (cached && Date.now() - cached.fetchedAt < 10 * 60 * 1000) return jsonResponse(cached, 200);
+    if (cached && Date.now() - cached.fetchedAt < 5 * 60 * 1000) return jsonResponse(cached, 200);
   }
   const results = await mapWithConcurrencyWorker(symbols, 16, async (sym) => {
     try {
       const chart = await fetchYahooChart(sym, "5d", "1d");
-      const meta = chart && chart.chart && chart.chart.result && chart.chart.result[0] && chart.chart.result[0].meta;
+      const r0 = chart && chart.chart && chart.chart.result && chart.chart.result[0];
+      const meta = r0 && r0.meta;
       if (!meta || !Number.isFinite(meta.regularMarketVolume)) return null;
       const isCrypto = /-(USD|KRW|USDT)$/.test(sym);
       if (!isCrypto && !Number.isFinite(meta.regularMarketPrice)) return null;
-      return [sym, Math.round(isCrypto ? meta.regularMarketVolume : meta.regularMarketPrice * meta.regularMarketVolume)];
+      // 등락률(2026-10-21): 마지막 일봉이 오늘이면 그 앞 봉이, 아니면 마지막 일봉이 전일 종가
+      let chg = null;
+      try {
+        const ts = r0.timestamp || [];
+        const closes = (r0.indicators && r0.indicators.quote && r0.indicators.quote[0] && r0.indicators.quote[0].close) || [];
+        const pairs = ts.map((t, i) => ({ t, c: closes[i] })).filter((p) => p.c !== null && p.c !== undefined);
+        const latest = pairs[pairs.length - 1];
+        const off = Number.isFinite(meta.gmtoffset) ? meta.gmtoffset : 0;
+        const dayOf = (sec) => Math.floor((sec + off) / 86400);
+        const lastIsToday = latest && Number.isFinite(meta.regularMarketTime) && dayOf(latest.t) === dayOf(meta.regularMarketTime);
+        const prev = lastIsToday ? (pairs.length >= 2 ? pairs[pairs.length - 2].c : meta.chartPreviousClose) : latest && latest.c;
+        if (prev && Number.isFinite(meta.regularMarketPrice)) chg = Math.round(((meta.regularMarketPrice - prev) / prev) * 10000) / 100;
+        if (Number.isFinite(meta.regularMarketChangePercent)) chg = Math.round(meta.regularMarketChangePercent * 100) / 100;
+      } catch {}
+      return [sym, Math.round(isCrypto ? meta.regularMarketVolume : meta.regularMarketPrice * meta.regularMarketVolume), chg];
     } catch {
       return null;
     }
   });
   const vals = {};
-  for (const r of results) if (r) vals[r[0]] = r[1];
-  const payload = { vals, fetchedAt: Date.now() };
+  const chgs = {};
+  for (const r of results) {
+    if (!r) continue;
+    vals[r[0]] = r[1];
+    if (Number.isFinite(r[2])) chgs[r[0]] = r[2];
+  }
+  const payload = { vals, chgs, fetchedAt: Date.now() };
   if (Object.keys(vals).length && env.CHAT_KV) await env.CHAT_KV.put(cacheKey, JSON.stringify(payload), { expirationTtl: 3600 });
   return jsonResponse(payload, Object.keys(vals).length ? 200 : 502);
 }
@@ -1369,7 +1407,7 @@ export default {
     }
 
     if (requestUrl.pathname === "/search-popular") {
-      return handleSearchPopular(env);
+      return handleSearchPopular(env, requestUrl);
     }
 
     const targetUrl = requestUrl.searchParams.get("url");

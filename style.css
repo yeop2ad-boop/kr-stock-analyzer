@@ -2637,3 +2637,19 @@ html, body, button, input, select, textarea { font-family: "Pretendard Variable"
 .theme-toggle-btn.active { background: #7230f0; color: #fff; }
 /* 블랙 테마: 하단 메뉴 활성 글자(브랜드 보라 #7230f0)가 검정 위에서 대비 2.7:1로 흐려 밝은 보라로 */
 :root[data-theme="dark"] .bottom-nav-btn.active, :root[data-theme="dark"] .bottom-nav-btn.active svg { color: #a78bfa; }
+
+.tech-ago { font-weight: 600; color: var(--muted); }
+.tech-grid-src .tech-ago { color: var(--muted); }
+
+/* ===== 2026-10-21: 하단 메뉴 활성색(라이트=검정/다크=흰색)·3px 위로 ===== */
+.bottom-nav { padding-bottom: calc(4px + env(safe-area-inset-bottom, 0px)); }
+.bottom-nav-btn.active, .bottom-nav-btn.active svg { color: #14161c; }
+:root[data-theme="dark"] .bottom-nav-btn.active, :root[data-theme="dark"] .bottom-nav-btn.active svg { color: #ffffff; }
+
+/* ===== 2026-10-21: 지도 위에 겹쳐 띄우는 더보기(?ov=1) — 더보기 서랍만 보이고 나머지는 투명 ===== */
+html.ov-embed, html.ov-embed body { background: transparent !important; }
+html.ov-embed #loadingSplash, html.ov-embed #fixedHeader, html.ov-embed #mainContainer, html.ov-embed #bottomNav,
+html.ov-embed #tabPageTech, html.ov-embed .site-footer, html.ov-embed #companyPanel, html.ov-embed #searchWizardPanel { display: none !important; }
+
+/* 지도의 관심목록을 현재 화면 위에 겹쳐 띄우는 창(2026-10-21) */
+.ov-frame { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; z-index: 5000; background: transparent; color-scheme: normal; }
