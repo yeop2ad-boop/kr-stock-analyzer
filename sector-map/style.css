@@ -661,7 +661,8 @@ body {
   width: 72px;
   height: 6px;
   border-radius: 999px;
-  border: 1px solid rgba(15,23,42,0.08);
+  border: 0; /* 2026-10-22: 테두리가 있으면 그라데이션이 테두리 칸에 반복돼 양 끝에 반대편 색이 비쳤다 → 테두리 대신 바깥 그림자 */
+  box-shadow: 0 0 0 1px rgba(15,23,42,0.1);
   background: linear-gradient(90deg, #1547c7 0%, #ffffff 50%, #e61919 100%);
 }
 
@@ -1364,7 +1365,7 @@ body.mine-editing .mine-bar { display: flex; }
 
 /* ---------- 블랙 테마 보정(2026-10-20) ---------- */
 :root[data-theme="dark"] .change-legend { box-shadow: none; }
-:root[data-theme="dark"] .change-legend-bar { background: linear-gradient(90deg, #1547c7 0%, #000000 50%, #e61919 100%); border-color: rgba(255,255,255,0.14); }
+:root[data-theme="dark"] .change-legend-bar { background: linear-gradient(90deg, #1547c7 0%, #000000 50%, #e61919 100%); border-color: transparent; box-shadow: 0 0 0 1px rgba(255,255,255,0.14); }
 :root[data-theme="dark"] .map-view-item.active,
 :root[data-theme="dark"] .side-btn.active,
 :root[data-theme="dark"] .universe-toggle-btn.active,
