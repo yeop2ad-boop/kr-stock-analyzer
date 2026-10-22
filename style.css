@@ -2668,3 +2668,8 @@ html.ov-embed #tabPageTech, html.ov-embed .site-footer, html.ov-embed #companyPa
 /* 재무정보 옆 최근실적·다음실적(2026-10-21) */
 .fin-earn-wrap { display: inline-flex; flex-wrap: wrap; gap: 0 8px; margin-left: 8px; vertical-align: 2px; }
 .fin-earn-wrap .fin-earn { margin-left: 0; font-size: 12px; }
+
+/* 별별순위: 상장 기간 작은 줄(2026-10-22) · 뒤에서부터 보기 버튼 */
+.rf-period { display: inline-block; margin-top: 1px; font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: -0.3px; }
+.rf-head-btns { display: inline-flex; gap: 6px; flex: none; }
+.rf-rev-btn.on { background: var(--text); color: var(--bg); border-color: var(--text); }

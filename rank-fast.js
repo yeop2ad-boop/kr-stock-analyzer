@@ -32,7 +32,7 @@ const RF_ITEMS = {
   aum: { label: "규모", dir: "desc", th: `규모${THEAD_SUB("순자산")}` },
 };
 // 데이터에 이 값이 없을 때(예: ETF 규모) 쓰는 별도 공급자
-const rfState = { sec: "stocks", market: "kr", key: "win", shown: RF_PAGE, rows: null, token: 0, liveFailed: false };
+const rfState = { sec: "stocks", market: "kr", key: "win", shown: RF_PAGE, rows: null, token: 0, liveFailed: false, reverse: false };
 
 function rfLiveMsGet() {
   try {
@@ -152,16 +152,25 @@ function rfBuildRows(baseline) {
 
 // ---- 셀 ----
 function rfWrTotal(sym) {
-  const e = typeof stockWrEntryOf === "function" ? stockWrEntryOf(sym) : null;
+  const db = typeof winRateDbResolved !== "undefined" ? winRateDbResolved : null;
+  if (!db) return null;
+  const map = rfState.sec === "etf" ? db.scoresEtf : rfState.sec === "crypto" ? db.scoresCrypto : isKrTicker(sym) ? db.scoresKr : db.scores;
+  const e = map && map[sym];
   return e && Number.isFinite(e.total) ? e.total : null;
+}
+// 2026-10-22 사용자 요청: 상장 10년(코인 7년) 미만이면 ⚠️ 대신 값 아래 줄에 작게 "(2년10개월)" — 몇 년 평균인지
+function rfPeriodLine(sym) {
+  const total = rfWrTotal(sym);
+  if (!Number.isFinite(total) || total >= partialMonthsFor(sym)) return "";
+  return `<br><span class="rf-period">(${srMonthsText(total)})</span>`;
 }
 function rfCell(key, v, sym) {
   const cur = rfCurrencyOf(sym);
   switch (key) {
     case "win":
-      return winRatePctCellHtml(v, rfWrTotal(sym), false, partialMonthsFor(sym));
+      return `${winRatePctCellHtml(v, null, false)}${rfPeriodLine(sym)}`;
     case "ret":
-      return `${partialMarkHtml(rfWrTotal(sym), "wr-mark-front", partialMonthsFor(sym))}${ret1yCellHtml(v)}`;
+      return `${ret1yCellHtml(v)}${rfPeriodLine(sym)}`;
     case "rev":
       return rfState.sec === "stocks" ? fmtGrowthCell(v) : ret1yCellHtml(v);
     case "ni":
@@ -289,7 +298,8 @@ async function rfPaint() {
     resultsEl.innerHTML = `<p class="muted">순위를 계산하지 못했습니다. 잠시 후 다시 시도해주세요.</p>`;
     return;
   }
-  const shown = rows.slice(0, rfState.shown);
+  const ordered = rfState.reverse ? rows.slice().reverse() : rows; // 뒤에서부터 보기(꼴찌부터)
+  const shown = ordered.slice(0, rfState.shown);
   const isAsset = rfState.sec !== "stocks";
   const body = (
     await Promise.all(
@@ -315,13 +325,14 @@ async function rfPaint() {
       <thead><tr>${isAsset ? RANK_TH_NAME_ETF : RANK_TH_NAME}${RANK_TH_PRICE}${thHtml}</tr></thead>
       <tbody>${body}</tbody>
     </table>
-    ${more ? `<button type="button" class="cat-btn load-more-btn rf-more">더보기 (${nextN}개 더 · 전체 ${total.toLocaleString()}개 중 ${shown.length}위까지)</button>` : ""}
+    ${more ? `<button type="button" class="cat-btn load-more-btn rf-more">더보기 (${nextN}개 더 · 전체 ${total.toLocaleString()}개 중 ${rfState.reverse ? `뒤에서 ${shown.length}위까지` : `${shown.length}위까지`})</button>` : ""}
     <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${groupLabel} ${total.toLocaleString()}개 전체를 대상으로 매긴 순위(${liveNote})이며, 현재가·등락률은 실시간입니다.${rfState.liveFailed ? " <b>※ 지금은 실시간 값을 못 받아 최근 갱신 값으로 매겼어요.</b>" : ""} 투자 자문이 아닙니다.</p>`;
 }
 // 머리줄: 안내 + 오른쪽 "+○○이란" (승률은 기존 "+승률이란" 자리 그대로)
 function rfHeadHtml(key) {
   const btn = `<button type="button" class="score-method-detail-btn metric-explain-btn" data-rf-explain="${key}">${rfExplainLabel(key)}</button>`;
-  return `<div class="popular-head-row"><span class="tap-hint pop-hint">${RANK_HINT_SPAN}</span>${btn}</div>`;
+  const rev = `<button type="button" class="score-method-detail-btn rf-rev-btn${rfState.reverse ? " on" : ""}" data-rf-reverse="1">${rfState.reverse ? "앞에서부터" : "뒤에서부터"}</button>`;
+  return `<div class="popular-head-row"><span class="tap-hint pop-hint">${RANK_HINT_SPAN}</span><span class="rf-head-btns">${rev}${btn}</span></div>`;
 }
 function rfHasBatchim(nm) {
   const last = nm.charCodeAt(nm.length - 1);
@@ -336,6 +347,7 @@ function fastRankOpen(itemKey, section, market) {
   if (!RF_ITEMS[itemKey]) itemKey = "win";
   rfState.key = itemKey;
   rfState.shown = RF_PAGE;
+  rfState.reverse = false;
   rfRender();
 }
 function fastRankRefresh() {
@@ -348,7 +360,21 @@ document.addEventListener("click", async (e) => {
     more.disabled = true;
     more.textContent = "불러오는 중...";
     rfState.shown += RF_PAGE;
-    const visible = (rfState.rows || []).slice(0, rfState.shown).map((r) => r.symbol);
+    const ord2 = rfState.reverse ? (rfState.rows || []).slice().reverse() : rfState.rows || [];
+    const visible = ord2.slice(0, rfState.shown).map((r) => r.symbol);
+    const ok = await rfFetchLive(visible, null, false).catch(() => false);
+    if (!ok) await rfFallbackQuotes(visible);
+    await rfPaint();
+    return;
+  }
+  const rv = e.target.closest("[data-rf-reverse]");
+  if (rv) {
+    e.preventDefault();
+    e.stopPropagation();
+    rfState.reverse = !rfState.reverse;
+    rfState.shown = RF_PAGE;
+    const ord = rfState.reverse ? (rfState.rows || []).slice().reverse() : rfState.rows || [];
+    const visible = ord.slice(0, RF_PAGE).map((r) => r.symbol);
     const ok = await rfFetchLive(visible, null, false).catch(() => false);
     if (!ok) await rfFallbackQuotes(visible);
     await rfPaint();

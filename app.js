@@ -5461,6 +5461,10 @@ function openSReportRank(itemKey, section, market) {
   // 상세 화면은 주소(?ticker=)를 남긴 채 닫는다 — 뒤로가기 한 번이면 보던 종목으로 그대로 돌아온다(2026-09-16 사용자 요청)
   if (companyPanel.style.display !== "none" && companyPanel.style.display !== "") closeCompanyPanel({ push: false });
   closeAllExplainNotes(null);
+  // 2026-10-22: 신기술 화면에서 열었던 상태(navMode=tech)가 남아 있으면 헤더가 "신기술"로 보였다 — 별별순위 화면으로 정리
+  closeTabPages();
+  closeMorePanel();
+  navMode = "rank";
   // 2026-10-21: 모든 순위는 빠른 엔진(rank-fast.js) — 전체 종목 중 순위, 30위씩 더보기, 값은 DB + 실시간 6항목
   const goRank = (title) => {
     setCarouselViewTitleText(title);
@@ -5482,6 +5486,7 @@ function openSReportRank(itemKey, section, market) {
     applySrRankTabs();
     scrollSrActiveIntoView();
     fastRankOpen(itemKey, section, market);
+    syncNavHeader();
     return;
   }
   const item = SR_RANK_ITEM_BY_KEY.get(itemKey);
@@ -5498,6 +5503,7 @@ function openSReportRank(itemKey, section, market) {
   applySrRankTabs(); // 결과 위 하위 버튼 줄(모든 항목, 좌우 스크롤)
   scrollSrActiveIntoView();
   fastRankOpen(itemKey, "stocks", getWatchlistActiveMarket() === "KR" ? "kr" : "us");
+  syncNavHeader();
 }
 // 하위 버튼 줄에서 지금 고른 항목이 보이도록 가운데로 스크롤
 function scrollSrActiveIntoView() {
@@ -6642,7 +6648,8 @@ async function loadFin2QuarterLive(ticker, currency) {
   const rel = new Date(rep.date + "T00:00:00");
   const due = new Date(rel.getFullYear(), Math.floor(rel.getMonth() / 3) * 3, 0);
   if (!last || (lastEnd && lastEnd >= due)) return data; // 이미 분기 재무에 들어와 있음
-  const nb = { label: fin2QuarterLabel(due.getFullYear(), due.getMonth() + 1), rev: rep.rev, ni: Number.isFinite(rep.ni) ? rep.ni : null, est: false, prelim: rep.src === "잠정" ? "잠정" : "실제" };
+  const nbLabel = fin2QuarterLabel(due.getFullYear(), due.getMonth() + 1);
+  const nb = { label: nbLabel, rev: rep.rev, ni: Number.isFinite(rep.ni) ? rep.ni : await krActualNiFor(ticker, nbLabel), est: false, prelim: rep.src === "잠정" ? "잠정" : "실제" };
   const all = [...actual.map(({ growth, ...b }) => b), nb];
   const shown = fin2WithGrowth(all.slice(-4), all.length > 4 ? all[all.length - 5].rev : null);
   const estRev = projectNextQuarter(shown, "rev");
@@ -6842,12 +6849,15 @@ function fin2BodyHtml(data, period, currency) {
             ${(() => {
               // 2026-10-19 사용자 요청: 순이익률(예상/실제)은 주황 막대·빨간 점선과 겹치지 않게 그 바로 위(노란 막대 안쪽)에
               // 2026-10-20 사용자 요청: 실제 순이익이 아직 공시 전(예: 잠정실적에 순이익이 없는 회사)이면 "-" 대신 "미공시"
-              const m = (x) => (Number.isFinite(x.ni) && x.rev > 0 ? `${Math.round((x.ni / x.rev) * 100)}%` : x === nx ? "미공시" : "-");
+              const m = (x) => (Number.isFinite(x.ni) && x.rev > 0 ? `${Math.round((x.ni / x.rev) * 100)}%` : x === nx ? "확정 전" : "-");
               const niTop = Math.max(a.niPx || 0, expNiPx || 0); // 실제·예상 순이익 중 더 높은 쪽(주황 막대·빨간 점선) 위로
               const mv = (x) => (Number.isFinite(x.ni) && x.rev > 0 ? x.ni / x.rev : null);
               const actFirst = mv(nx) !== null && (mv(b) === null || mv(nx) > mv(b));
               const lines = actFirst ? [`실제 ${m(nx)}`, `예상 ${m(b)}`] : [`예상 ${m(b)}`, `실제 ${m(nx)}`];
-              return `<span class="fin2-pair-margin" style="bottom:${(niTop + 4).toFixed(0)}px">${lines.join("<br>")}</span>`;
+              // 2026-10-22 사용자 요청: 순이익률이 50% 이상이면 막대 윗선이 위의 "%상승" 글씨와 겹치므로 선 아래(막대 안쪽)에 적는다
+              const high = Math.max(mv(nx) ?? 0, mv(b) ?? 0) >= 0.5;
+              const bottomPx = high ? Math.max(2, niTop - 30) : niTop + 4;
+              return `<span class="fin2-pair-margin${high ? " fin2-pair-margin-in" : ""}" style="bottom:${bottomPx.toFixed(0)}px">${lines.join("<br>")}</span>`;
             })()}
             <span class="fin2-tip">예상 ${escapeHtml(fmtAmountUnified(b.rev, currency))}<br>실적 ${escapeHtml(fmtAmountUnified(nx.rev, currency))}</span>
             <div class="fin2-bar" style="height:${a.barPx.toFixed(1)}px">${a.niPx > 0 ? `<div class="fin2-ni" style="height:${a.niPx.toFixed(1)}px"></div>` : ""}</div>
@@ -6863,7 +6873,7 @@ function fin2BodyHtml(data, period, currency) {
     const { barPx, inner } = barParts(b);
     const growthTxt = fin2GrowthText(b.growth);
     colHtml.push(`
-        <div class="fin2-col" title="${escapeHtml(`${b.label} 매출 ${fmtAmountUnified(b.rev, currency)}`)}">
+        <div class="fin2-col${b.est ? " est" : ""}" title="${escapeHtml(`${b.label}${b.est ? " 예상" : ""} 매출 ${fmtAmountUnified(b.rev, currency)}`)}">
           <div class="fin2-plot" style="height:${PLOT_H}px">
             <div class="fin2-bar" style="height:${barPx.toFixed(1)}px">
               ${growthTxt ? `<span class="fin2-growth ${b.growth >= 0 ? "fin2-up" : "fin2-down"}">${growthTxt}</span>` : ""}
@@ -13313,6 +13323,17 @@ function earnPctHtml(v, word, cls) {
 // 발표 종목 비교 그래프: 직전 분기들 + [그 분기 예상] + [그 분기 실제] — 예상은 발표 전 기준(분기 재무가 옛 분기면 그 '다음 분기 예상',
 // 이미 들어왔으면 그 분기를 빼고 다시 낸 추세 예상), 실제는 분기 재무 또는 발표 당일 값
 const earnRawQCache = new Map();
+// 한국 대형주는 잠정실적 공정공시에 순이익이 없는 경우가 많다(삼성전자·LG전자·삼성바이오 등) — 네이버 분기 재무에 그 분기 '확정 실적'이 올라오면 거기서 순이익을 가져온다
+async function krActualNiFor(sym, label) {
+  if (!isKrTicker(sym)) return null;
+  try {
+    const all = await fetchNaverQuarterlyFinance(sym);
+    const q = all.find((x) => !x.isConsensus && fin2QuarterLabel(Number(x.key.slice(0, 4)), Number(x.key.slice(4, 6))) === label && Number.isFinite(x.net));
+    return q ? q.net : null;
+  } catch {
+    return null;
+  }
+}
 async function earnCompareData(sym, rowDate) {
   const cur = isKrTicker(sym) ? "KRW" : "USD";
   if (!earnRawQCache.has(sym)) earnRawQCache.set(sym, loadFin2Quarter(sym, cur).catch(() => null));
@@ -13337,7 +13358,7 @@ async function earnCompareData(sym, rowDate) {
     if (!rep || !estBar) return null;
     before = actual;
     exp = { label: estBar.label, rev: estBar.rev, ni: estBar.ni, est: true };
-    act = { label: estBar.label, rev: rep.rev, ni: Number.isFinite(rep.ni) ? rep.ni : null, est: false, prelim: rep.src === "잠정" ? "잠정" : "실제" };
+    act = { label: estBar.label, rev: rep.rev, ni: Number.isFinite(rep.ni) ? rep.ni : await krActualNiFor(sym, estBar.label), est: false, prelim: rep.src === "잠정" ? "잠정" : "실제" };
   }
   if (!exp || !act) return null;
   const prev = before.slice(-3);
