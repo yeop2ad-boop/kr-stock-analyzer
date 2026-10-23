@@ -1,5 +1,65 @@
 [
   {
+    "id": "25d791239c29",
+    "sourceKey": "oecd",
+    "source": "OECD",
+    "title": "투명성 의무를 경쟁 우위로 전환하는 히로시마 AI 프로세스",
+    "originalTitle": "HAIP is transforming transparency from a compliance burden to a competitive advantage",
+    "link": "https://oecd.ai/en/wonk/haip-transforming-transparency-from-ai-compliance-burden-to-competitive-advantage",
+    "summary": "OECD의 히로시마 AI 프로세스(HAIP) 보고 프레임워크는 AI 투명성을 규제 부담에서 경쟁 이점으로 전환하고 있다. 자율 AI 에이전트 시대로의 진입으로 모델 개발자부터 최종 사용자까지 AI 가치사슬이 확대되면서 책임성 격차와 의사결정 불투명성 문제가 심화되고 있다. 각 국가의 상이한 AI 규제 체계는 중소기업에게 시장 진입 장벽이 되고 있으며, 글로벌 조화된 기준 마련이 책임감 있는 AI 경제 참여를 확대할 수 있다. 공통 프레임워크와 표준화된 언어는 기업들이 신뢰할 수 있는 AI 개발 경로를 명확히 하는 데 필수적이다. HAIP 보고 프레임워크는 규제 단편화를 극복하고 진정한 인간 통제를 보장하는 거버넌스 구조를 구축하는 데 핵심 역할을 한다.",
+    "image": "data/techinsight-images/25d791239c29.webp",
+    "publishedAt": null,
+    "createdAt": "2026-10-23T23:50:43.034Z"
+  },
+  {
+    "id": "57d1526d44c4",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "칩 설계자에서 무대의 주인공으로: 아날로그 회로 설계 분야의 여성 엔지니어",
+    "originalTitle": "From Chip Lab to Center Stage",
+    "link": "https://spectrum.ieee.org/preethi-ashwath-chip-designer",
+    "summary": "아날로그 반도체 설계 분야의 여성 엔지니어인 프리티 아슈와스는 칩 개발 실험실에서의 기술적 업무를 넘어 소비자와 직접 소통하는 역할로 나아갔다. 아날로그 디바이스에서 개발한 귀걸이형 웨어러블 기기를 CES에서 시연하며 복잡한 기술을 쉽게 설명하는 능력을 입증한 후, 업계 행사와 기술 강연에서 회사를 대표하게 되었다. 공학 커뮤니티 활성화와 학문 발전에 기여하는 방식으로 강연과 패널 토론 참여를 보람 있게 여기는 그녀는 IEEE 회로 및 시스템 학회의 활동적인 자원봉사자이기도 하다. 인도에서의 물리학 교습과 대학 시절 인텔 인턴십을 통해 회로 설계의 매력을 발견한 그녀는 기술 개발의 전 과정을 이해하고 창의적 문제해결의 만족감을 추구하는 엔지니어로 성장했다.",
+    "image": "data/techinsight-images/57d1526d44c4.webp",
+    "publishedAt": "2026-10-23T18:00:03.000Z",
+    "createdAt": "2026-10-23T23:50:44.328Z"
+  },
+  {
+    "id": "795b54b85a06",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "기술 약속 6가지 검증과 바이오텍의 사각지대",
+    "originalTitle": "The Download: testing six tech promises and biotech’s blind spots",
+    "link": "https://www.technologyreview.com/2026/10/23/1147628/the-download-testing-tech-promises-science-blind-spots/",
+    "summary": "MIT 테크놀로지 리뷰는 수십 년간 '곧 실현될' 것으로 약속된 6가지 주요 기술이 실제로 얼마나 진전했는지 전문가들을 통해 검증했다. 약물 형태의 운동부터 핵추진 우주선까지 각 기술이 직면한 장애물과 현재 진행 상황을 점검했다. 한편 바이오텍 산업에서는 매력적인 이야기에 현혹되기 쉬우며, 엘리자베스 홈스 사건 같은 사례는 과학 보도의 신뢰성 문제를 다시 일깨웠다. 이 외에도 유전자 편집 개를 개발하는 스타트업, mRNA 암 백신의 효과, 신약 유전자 편집 기술 등 다양한 바이오텍 뉴스가 전해졌다. 기술 보도의 투명성과 검증 강화의 필요성이 강조되고 있다.",
+    "image": "data/techinsight-images/795b54b85a06.webp",
+    "publishedAt": "2026-10-23T12:10:00.000Z",
+    "createdAt": "2026-10-23T23:50:42.269Z"
+  },
+  {
+    "id": "765ba2e8859e",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "바이오테크 세계에서는 모든 것을 볼 수 없다",
+    "originalTitle": "In the biotech world, you can’t see everything",
+    "link": "https://www.technologyreview.com/2026/10/23/1147610/biotech-you-can-see-everything-theranos-holmes/",
+    "summary": "엘리자베스 홈스의 테라노스 사건을 다룬 다큐멘터리를 본 기자는 겉으로 보이는 것만으로는 과학 사기를 적발하기 어렵다는 점을 깨달았다. 테라노스는 혈액 검사 기술을 주장했지만 동료 심사를 거친 공개 데이터가 없었고, 기자는 홈스의 설득력 있는 이야기에 자신도 넘어갈 수 있었을 것 같은 위험을 느꼈다. 과학 논문 발표 과정에서 동료 심사가 일반화되면서도 여전히 조작이나 과장된 결과가 적발되지 않은 채 발표되고 있다. 사전 출판 서버, 보도자료, 소셜 미디어 등 동료 심사를 거치지 않는 경로가 늘어나면서 검증되지 않은 주장이 더 쉽게 퍼질 수 있다. 과학 기자로서 신뢰할 만한 과학자들에게 확인하려고 노력하지만, 그럼에도 기만적인 내러티브에 빠질 가능성은 항상 존재한다.",
+    "image": "data/techinsight-images/765ba2e8859e.webp",
+    "publishedAt": "2026-10-23T09:00:00.000Z",
+    "createdAt": "2026-10-23T23:51:01.731Z"
+  },
+  {
+    "id": "c2aa4b8eb5b1",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "인공지능은 빠르게 진화하고 있다, 우리의 판단력도 따라잡고 있을까?",
+    "originalTitle": "Author Talks: AI is advancing. Is our judgment keeping up?",
+    "link": "https://www.mckinsey.com/featured-insights/mckinsey-on-books/author-talks-ai-is-advancing-is-our-judgment-keeping-up",
+    "summary": "인공지능의 잠재력을 활용하면서도 인간의 판단력을 잃지 않기 위한 방법이 필요하다. 기술 리더 티파니 왕은 AI를 신뢰할지 말지의 문제가 아니라, 언제 그리고 어느 정도로 신뢰할 것인지를 배워야 한다고 강조한다. 결국 AI와 인간의 판단력을 적절히 결합하는 것이 미래의 핵심이다.",
+    "image": "data/techinsight-images/c2aa4b8eb5b1.webp",
+    "publishedAt": "2026-10-23T00:00:00.000Z",
+    "createdAt": "2026-10-23T23:50:49.905Z"
+  },
+  {
     "id": "308e0e5b7af7",
     "sourceKey": "oecd",
     "source": "OECD",
@@ -178,65 +238,5 @@
     "image": "data/techinsight-images/153fcac26eb5.webp",
     "publishedAt": "2026-10-19T18:00:03.000Z",
     "createdAt": "2026-10-20T00:16:53.589Z"
-  },
-  {
-    "id": "7216fffbb8a1",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "AI 연구자가 주장하는 \"우리가 잘못 봤다\"...신경망 이해의 패러다임 전환",
-    "originalTitle": "“We were looking at it wrong”: The explosive claim that’s upended the AI world",
-    "link": "https://www.technologyreview.com/2026/10/19/1147149/we-were-looking-at-it-wrong-the-explosive-claim-thats-upended-the-ai-world/",
-    "summary": "AI 스타트업 굿파이어의 연구자 닉 카마라타가 발표한 2만6000단어 분량의 블로그 글이 AI 업계에 파장을 일으키고 있다. 그는 대형언어모델이 기존의 생각보다 훨씬 이해하기 쉬울 수 있으며, 따라서 감시와 통제가 가능할 수도 있다고 주장한다. 카마라타는 신경망 내부의 뉴런들을 오랜 시간 관찰한 결과 겉보기에 무질서해 보이는 구조 속에도 논리적 패턴이 존재한다는 것을 발견했으며, 초기 연구들이 확인 편향에 빠져 신경망의 복잡성을 과대평가했을 가능성을 제시한다. 다만 스탠포드 대학의 크리스 포츠 교수 등 일부 전문가들은 이것이 검증되지 않은 추측에 불과하며 실질적으로 문제를 해결하지 못한다고 지적하고 있다.",
-    "image": "data/techinsight-images/7216fffbb8a1.webp",
-    "publishedAt": "2026-10-19T17:45:55.000Z",
-    "createdAt": "2026-10-20T00:16:50.492Z"
-  },
-  {
-    "id": "b657bbd1f782",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "예상과 달리 현실성을 택한 휴머노이드 로봇의 탄생",
-    "originalTitle": "The Robot I Didn’t Expect to Build",
-    "link": "https://spectrum.ieee.org/agility-robotics-digit-5-redesign",
-    "summary": "애질리티 로보틱스의 공동창립자인 조너선 허스트는 우아하고 자연스러운 동작의 휴머노이드 로봇을 꿈꿨지만, 현실적인 상용화를 위해 다른 길을 걷게 되었다. 최근 출시한 디짓 5는 23킬로그램의 짐을 높은 선반에 올릴 수 있고 9분 충전으로 90분간 작동하는 실용적인 창고 작업용 로봇이다. 이는 인간이 하기 싫어하는 육체적으로 힘든 반복 작업을 대체하기 위해 설계되었다. 당초 꿈꾼 우아한 로봇과는 거리가 있지만, 수만 대의 휴머노이드 로봇을 실제 세계에 배치한다는 실질적 목표를 달성하기 위한 선택이었다.",
-    "image": "data/techinsight-images/b657bbd1f782.webp",
-    "publishedAt": "2026-10-19T13:00:03.000Z",
-    "createdAt": "2026-10-20T00:17:10.096Z"
-  },
-  {
-    "id": "fdc5154063be",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "스마트 시티의 엣지 AI: 실시간 통찰에서 인지형 도시 시스템으로",
-    "originalTitle": "Edge AI for Smart Cities: From Insight to Cognitive Action",
-    "link": "https://content.knowledgehub.wiley.com/edge-ai-for-smart-cities-from-real-time-insights-to-cognitive-urban-systems/?utm_source=IEEE",
-    "summary": "엣지 AI와 물리적 AI 기술이 도시를 단순한 모니터링에서 벗어나 능동적인 의사결정이 가능한 체계로 진화시키고 있다. 도시 인프라가 공공안전, 교통, 인프라 관리 등 다양한 분야에서 실시간 조건을 감지하고 분석하며 즉각적으로 대응할 수 있게 된다. 이는 도시가 스스로 학습하고 사고하며 행동하는 인지형 시스템으로 변모하는 것을 의미한다.",
-    "image": "data/techinsight-images/fdc5154063be.webp",
-    "publishedAt": "2026-10-19T10:00:04.000Z",
-    "createdAt": "2026-10-20T23:49:38.622Z"
-  },
-  {
-    "id": "cdf304dfec33",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "2026년 비즈니스 항공 시장, 역풍 속에서도 견고한 회복력 유지",
-    "originalTitle": "The state of business aviation in 2026: Resilient, despite headwinds",
-    "link": "https://www.mckinsey.com/industries/aerospace-and-defense/our-insights/the-state-of-business-aviation-in-2026-resilient-despite-headwinds",
-    "summary": "비즈니스 항공 서비스에 대한 수요가 지속적으로 증가하면서 공급망과 인프라에 압박이 가해지고 있습니다. 이러한 상황 속에서 빠르게 대응하는 기업들이 시장의 선두주자로 자리잡을 것으로 예상됩니다. 비즈니스 항공 산업은 외부의 제약 요인에도 불구하고 탄력성을 유지하며 성장 추세를 이어나가고 있습니다.",
-    "image": "data/techinsight-images/cdf304dfec33.webp",
-    "publishedAt": "2026-10-19T00:00:00.000Z",
-    "createdAt": "2026-10-22T23:58:17.838Z"
-  },
-  {
-    "id": "f5f0086a8065",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "숨겨진 전력 절감 장치, 미국 전력망에 기가와트 규모의 여유 전력 확보할 수 있어",
-    "originalTitle": "This Hidden Device Could Free Up Gigawatts of Grid Power",
-    "link": "https://spectrum.ieee.org/variable-frequency-drives",
-    "summary": "미국 경제 전역의 5천만 개 전동모터는 전체 전력 수요의 3분의 1에 해당하는 전기를 소비하지만 실제 필요량보다 훨씬 많은 에너지를 낭비하고 있다. 변주파수드라이브(VFD)라는 전자 제어장치를 설치하면 모터의 에너지 사용을 40~60% 감소시킬 수 있으나 산업시설의 16%, 상업용 모터의 4%만 이를 채택하고 있다. VFD 기술의 도입을 확대하면 데이터센터와 전기자동차 같은 대형 전력 사용처를 위해 전력망 용량을 확보할 수 있고 산업의 전기화 비용도 절감할 수 있다. 최근 VFD 기술은 더욱 정교해지고 설치 비용도 낮아져 연방 정부와 전력회사의 재정 지원과 효율 기준 강화를 통해 광범위한 보급이 충분히 가능해진 상태다.",
-    "image": "data/techinsight-images/f5f0086a8065.webp",
-    "publishedAt": "2026-10-17T13:00:02.000Z",
-    "createdAt": "2026-10-17T23:04:11.872Z"
   }
 ]
