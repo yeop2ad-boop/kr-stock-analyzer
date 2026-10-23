@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-23T08:15:25.475Z",
+  "updatedAt": "2026-10-23T14:01:11.801Z",
   "dataYear": 2025,
   "buybackPeriod": {
     "from": "20251023",
@@ -50,7 +50,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1444788899697000,
+        "marketCap": 1451524512283000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -148,10 +148,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 890346892395000,
-        "rightsRatio": 4.4952221018416125,
+        "marketCap": 929659020105000,
+        "rightsRatio": 4.305134401372195,
         "cbRatio": null,
-        "totalRatio": 4.4952221018416125
+        "totalRatio": 4.305134401372195
       },
       "sector": "기술",
       "eps": {
@@ -246,7 +246,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 99039111063000,
+        "marketCap": 102204142575000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -344,7 +344,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 88852778600000,
+        "marketCap": 87067962960000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -442,7 +442,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 80015117562000,
+        "marketCap": 78422776914000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -540,7 +540,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 60347304694600,
+        "marketCap": 58363701759000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -640,7 +640,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 43840192540200,
+        "marketCap": 42772103685400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -740,7 +740,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 41817918211000,
+        "marketCap": 40838213592000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -838,7 +838,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 49461632659000,
+        "marketCap": 49375910592000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -936,7 +936,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 39452654348800,
+        "marketCap": 38043630979200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1034,7 +1034,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 42279976480000,
+        "marketCap": 41541631302500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1132,7 +1132,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 30576880471000,
+        "marketCap": 29805653515500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1230,7 +1230,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 32438875098300,
+        "marketCap": 31464897197100,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1330,7 +1330,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 42088154112000,
+        "marketCap": 40320780453000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1428,7 +1428,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 44620484379600,
+        "marketCap": 44643449116800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1526,10 +1526,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 26385872662800,
-        "rightsRatio": 5.612472465569955,
+        "marketCap": 25967049287200,
+        "rightsRatio": 5.7029962150146325,
         "cbRatio": null,
-        "totalRatio": 5.612472465569955
+        "totalRatio": 5.7029962150146325
       },
       "sector": "커뮤니케이션",
       "eps": {
@@ -1624,7 +1624,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 43367309128500,
+        "marketCap": 43995820855000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1724,7 +1724,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 26019030560000,
+        "marketCap": 25547435631100,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1822,7 +1822,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 23146824272000,
+        "marketCap": 22297028276000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1920,7 +1920,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 22939885000000,
+        "marketCap": 22095697232000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2020,10 +2020,10 @@
           "latestDate": "2026-08-03",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 25161904846000,
+        "marketCap": 25379992862000,
         "rightsRatio": null,
-        "cbRatio": 0.03457846316982293,
-        "totalRatio": 0.03457846316982293
+        "cbRatio": 0.03428133351852477,
+        "totalRatio": 0.03428133351852477
       },
       "sector": "산업재",
       "eps": {
@@ -2118,7 +2118,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 24215603968000,
+        "marketCap": 23976634192000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2218,7 +2218,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 91260000000000,
+        "marketCap": 89622000000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2316,7 +2316,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 17663096150000,
+        "marketCap": 16942153450000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2414,7 +2414,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 17820086760000,
+        "marketCap": 17537228240000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2512,10 +2512,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 63001984311000,
-        "rightsRatio": 4.229993752013777,
+        "marketCap": 67862534166000,
+        "rightsRatio": 3.927026941671726,
         "cbRatio": null,
-        "totalRatio": 4.229993752013777
+        "totalRatio": 3.927026941671726
       },
       "sector": "헬스케어",
       "eps": {
@@ -2610,7 +2610,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 24210000000000,
+        "marketCap": 23535000000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2708,7 +2708,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 32424227166000,
+        "marketCap": 32004496070000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2806,7 +2806,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 20118466372800,
+        "marketCap": 19661700366400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2904,7 +2904,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 16367002038600,
+        "marketCap": 16001858948500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3002,7 +3002,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 15243589115400,
+        "marketCap": 14812332841350,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3101,7 +3101,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 17915789684000,
+        "marketCap": 17478137857000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3199,7 +3199,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 8479380669550,
+        "marketCap": 8367626064350,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3297,7 +3297,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 16800977158000,
+        "marketCap": 16165646089000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3395,7 +3395,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 17525919096400,
+        "marketCap": 16943764441100,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3493,7 +3493,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 11983631121750,
+        "marketCap": 11794614858000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3591,10 +3591,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 10551255750000,
-        "rightsRatio": 5.041752020843585,
+        "marketCap": 10387416375000,
+        "rightsRatio": 5.12127492338055,
         "cbRatio": null,
-        "totalRatio": 5.041752020843585
+        "totalRatio": 5.12127492338055
       },
       "sector": "산업재",
       "eps": {
@@ -3689,7 +3689,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9331666051500,
+        "marketCap": 9026067631100,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3787,7 +3787,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 18488565417600,
+        "marketCap": 18392270806050,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3885,7 +3885,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 10070251275000,
+        "marketCap": 9738109654000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3983,7 +3983,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 15255273203600,
+        "marketCap": 14968008396000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4082,7 +4082,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 17942555444400,
+        "marketCap": 17582263166400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4180,7 +4180,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 18135893982400,
+        "marketCap": 18116923382000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4278,10 +4278,10 @@
           "latestDate": "2026-02-05",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 10322613831300,
+        "marketCap": 9961955935400,
         "rightsRatio": null,
-        "cbRatio": 4.843734427843374,
-        "totalRatio": 4.843734427843374
+        "cbRatio": 5.019094676209523,
+        "totalRatio": 5.019094676209523
       },
       "sector": "산업재",
       "eps": {
@@ -4376,7 +4376,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 24131682023800,
+        "marketCap": 23518597653400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4474,7 +4474,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 10892320605000,
+        "marketCap": 10649021347500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4572,10 +4572,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 18170369712000,
-        "rightsRatio": 15.594411485494819,
+        "marketCap": 17415820128000,
+        "rightsRatio": 16.27004758029963,
         "cbRatio": null,
-        "totalRatio": 15.594411485494819
+        "totalRatio": 16.27004758029963
       },
       "sector": "소재",
       "eps": {
@@ -4670,10 +4670,10 @@
           "latestDate": "2026-04-15",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 16017204600000,
+        "marketCap": 16520160300000,
         "rightsRatio": null,
-        "cbRatio": 7.616809739697025,
-        "totalRatio": 7.616809739697025
+        "cbRatio": 7.384916234741379,
+        "totalRatio": 7.384916234741379
       },
       "sector": "기술",
       "eps": {
@@ -4768,7 +4768,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 22883963553800,
+        "marketCap": 22393342589400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4868,10 +4868,10 @@
           "latestDate": "2026-06-09",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 10356086145000,
+        "marketCap": 10300408262500,
         "rightsRatio": null,
-        "cbRatio": 4.828078803123939,
-        "totalRatio": 4.828078803123939
+        "cbRatio": 4.854176526384068,
+        "totalRatio": 4.854176526384068
       },
       "sector": "산업재",
       "eps": {
@@ -4966,7 +4966,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9347480265000,
+        "marketCap": 8968848153000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5064,7 +5064,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 13727355199000,
+        "marketCap": 13115134204000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5162,7 +5162,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7773656816200,
+        "marketCap": 7657632087600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5262,7 +5262,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 10858400000000,
+        "marketCap": 11720800000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5360,7 +5360,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 13357500000000,
+        "marketCap": 13192500000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5458,7 +5458,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 12981746400000,
+        "marketCap": 12780532800000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5558,7 +5558,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9553406015150,
+        "marketCap": 9524817268970,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5754,7 +5754,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9739435134500,
+        "marketCap": 9500091738000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5852,7 +5852,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9092054785800,
+        "marketCap": 8798151033600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5950,7 +5950,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 15739074321600,
+        "marketCap": 14905961660800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6048,7 +6048,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 14836223658000,
+        "marketCap": 14302546548000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6146,7 +6146,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6636193397600,
+        "marketCap": 6386602053000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6244,7 +6244,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6920750000000,
+        "marketCap": 6929680000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6344,7 +6344,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9235476390000,
+        "marketCap": 9227943375000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6442,7 +6442,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 15828903459950,
+        "marketCap": 15517907371820,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6542,7 +6542,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 8005094126600,
+        "marketCap": 7965300783800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6640,7 +6640,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 13818801987900,
+        "marketCap": 12397653204300,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6738,7 +6738,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6171015917500,
+        "marketCap": 6004606499500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6836,7 +6836,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 8184093109500,
+        "marketCap": 7951854372000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6934,7 +6934,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7562243760200,
+        "marketCap": 7555116292000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7032,7 +7032,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6183725604000,
+        "marketCap": 6235256650700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7130,10 +7130,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 5801558398800,
-        "rightsRatio": 20.189402906678882,
+        "marketCap": 5671970324600,
+        "rightsRatio": 20.65067221737629,
         "cbRatio": null,
-        "totalRatio": 20.189402906678882
+        "totalRatio": 20.65067221737629
       },
       "sector": "기술",
       "eps": {
@@ -7228,7 +7228,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7514507184800,
+        "marketCap": 7331524055300,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7326,7 +7326,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7524318142400,
+        "marketCap": 7494594538000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7424,7 +7424,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 5800812451500,
+        "marketCap": 5747225269500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7522,7 +7522,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7791614692500,
+        "marketCap": 7517303164000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7620,7 +7620,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4845886358400,
+        "marketCap": 4669503521600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7720,10 +7720,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 8855081953200,
-        "rightsRatio": 4.5171799844884575,
+        "marketCap": 8742517352100,
+        "rightsRatio": 4.575341100168567,
         "cbRatio": null,
-        "totalRatio": 4.5171799844884575
+        "totalRatio": 4.575341100168567
       },
       "sector": "금융",
       "eps": {
@@ -7820,7 +7820,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6124492172760,
+        "marketCap": 6009896685120,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7918,7 +7918,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9033514002500,
+        "marketCap": 8809357327500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8016,7 +8016,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3771386864000,
+        "marketCap": 3623892031200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8114,7 +8114,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4325958840020,
+        "marketCap": 4242170541110,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8214,7 +8214,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4101501694500,
+        "marketCap": 3975450815000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8312,7 +8312,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7062985609200,
+        "marketCap": 7053297014400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8410,7 +8410,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4509567092000,
+        "marketCap": 4284088737400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8508,7 +8508,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 5865662425000,
+        "marketCap": 6022288925000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8606,7 +8606,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4087827788000,
+        "marketCap": 3957760540200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8704,7 +8704,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3669110976000,
+        "marketCap": 3455884132000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8802,7 +8802,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 5970169511600,
+        "marketCap": 6040020084000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8900,7 +8900,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4785690100000,
+        "marketCap": 4728261818800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8998,7 +8998,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3615000000000,
+        "marketCap": 3575000000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9096,7 +9096,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 5283855333300,
+        "marketCap": 5019510644400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9194,7 +9194,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4302603753200,
+        "marketCap": 4254748706400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9292,7 +9292,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3375744225000,
+        "marketCap": 3316933350000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9392,7 +9392,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9022205164000,
+        "marketCap": 8898801142000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9490,7 +9490,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4450941528800,
+        "marketCap": 4399554104400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9588,7 +9588,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3943481896000,
+        "marketCap": 3862853084000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9686,7 +9686,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2819783083000,
+        "marketCap": 2690473503750,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9784,7 +9784,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2297132422000,
+        "marketCap": 2235758655000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9882,7 +9882,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3772522836000,
+        "marketCap": 3649364874000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9980,7 +9980,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9033557811000,
+        "marketCap": 8777891080500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10078,7 +10078,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4698019287000,
+        "marketCap": 4583897361000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10176,7 +10176,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3636397641250,
+        "marketCap": 3583019327250,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10274,7 +10274,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2657696522400,
+        "marketCap": 2552360989500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10374,7 +10374,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2945913609600,
+        "marketCap": 2891621932500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10472,7 +10472,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2037132560000,
+        "marketCap": 1883105464000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10570,10 +10570,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3245313138600,
-        "rightsRatio": 35.96370982257484,
+        "marketCap": 3112774095600,
+        "rightsRatio": 37.495011335701506,
         "cbRatio": null,
-        "totalRatio": 35.96370982257484
+        "totalRatio": 37.495011335701506
       },
       "sector": "소재",
       "eps": {
@@ -10668,7 +10668,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2046468537100,
+        "marketCap": 2041390451400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10766,7 +10766,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2197006695000,
+        "marketCap": 2249584633000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10962,7 +10962,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2827678749500,
+        "marketCap": 2794584980000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11060,7 +11060,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2471072510000,
+        "marketCap": 2408728937500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11158,7 +11158,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2426260166400,
+        "marketCap": 2375713079600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11256,7 +11256,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3095727830000,
+        "marketCap": 3024345756250,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11356,7 +11356,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3269450111300,
+        "marketCap": 3245782944000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11454,7 +11454,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1786718416000,
+        "marketCap": 1753848432000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11552,7 +11552,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2480576010900,
+        "marketCap": 2437768613800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11650,7 +11650,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3671198232500,
+        "marketCap": 3560872068000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11748,7 +11748,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3211838489800,
+        "marketCap": 3198309262800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11846,7 +11846,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4696293962500,
+        "marketCap": 4601692357500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11944,7 +11944,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3043048008000,
+        "marketCap": 2936647728000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12042,7 +12042,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2826243645040,
+        "marketCap": 2806424264640,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12140,7 +12140,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2524923812200,
+        "marketCap": 2557256946000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12238,7 +12238,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2430015479000,
+        "marketCap": 2448263405000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12336,7 +12336,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1901973063000,
+        "marketCap": 1861790533500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12434,7 +12434,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2187321374000,
+        "marketCap": 2106178806900,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12532,7 +12532,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3189917112700,
+        "marketCap": 3194280884400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12630,7 +12630,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1652513819000,
+        "marketCap": 1625199541000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12728,7 +12728,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1358340228600,
+        "marketCap": 1332361043900,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12826,7 +12826,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3378479315840,
+        "marketCap": 3314330974400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12924,7 +12924,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2252507185500,
+        "marketCap": 2230649352750,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13022,7 +13022,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2362287496000,
+        "marketCap": 2178016988000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13120,7 +13120,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2933997495000,
+        "marketCap": 2845088480000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13218,7 +13218,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2329870528800,
+        "marketCap": 2279747201400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13316,7 +13316,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1948572282800,
+        "marketCap": 1932708736400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13414,7 +13414,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4455171516250,
+        "marketCap": 4497855794250,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13514,7 +13514,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3822828006200,
+        "marketCap": 3776646191360,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13612,7 +13612,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1270359163850,
+        "marketCap": 1226261248950,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13710,7 +13710,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1885061714100,
+        "marketCap": 1844998881250,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13808,7 +13808,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2961098143900,
+        "marketCap": 2922419068000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13906,7 +13906,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1195402091950,
+        "marketCap": 1145880256150,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14004,7 +14004,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1647559276800,
+        "marketCap": 1625994364800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14102,7 +14102,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2968130246450,
+        "marketCap": 2883109635810,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14200,7 +14200,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2116790779400,
+        "marketCap": 2030348128050,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14298,7 +14298,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1856250000000,
+        "marketCap": 1840500000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14396,7 +14396,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2713840654600,
+        "marketCap": 2600110338150,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14494,7 +14494,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2434102104000,
+        "marketCap": 2363425504000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14592,7 +14592,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2142957978000,
+        "marketCap": 2124841183500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14690,7 +14690,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1321907926500,
+        "marketCap": 1305949279500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14789,7 +14789,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1788303626000,
+        "marketCap": 1759055669500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14887,7 +14887,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1963548741600,
+        "marketCap": 1889277394400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14985,7 +14985,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2417561523000,
+        "marketCap": 2357591004600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15083,7 +15083,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2307378646200,
+        "marketCap": 2275139822800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15181,7 +15181,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1087988284500,
+        "marketCap": 1077258617000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15279,7 +15279,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1551205549800,
+        "marketCap": 1508116506750,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15377,7 +15377,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1322362052700,
+        "marketCap": 1292444359200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15475,7 +15475,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2766675000000,
+        "marketCap": 2761690000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15573,7 +15573,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 847185487720,
+        "marketCap": 810920710600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15671,10 +15671,10 @@
           "latestDate": "2025-10-23",
           "latestNote": "기명식 무보증 사모 전환사채"
         },
-        "marketCap": 1152994797500,
+        "marketCap": 1115455432000,
         "rightsRatio": null,
-        "cbRatio": 2.3417278255325344,
-        "totalRatio": 2.3417278255325344
+        "cbRatio": 2.420535973507187,
+        "totalRatio": 2.420535973507187
       },
       "sector": "소재",
       "eps": {
@@ -15769,7 +15769,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1495119637000,
+        "marketCap": 1508815389400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15867,7 +15867,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 936022500000,
+        "marketCap": 910552500000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15965,7 +15965,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2348102287500,
+        "marketCap": 2283006382500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16063,7 +16063,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2325726480000,
+        "marketCap": 2294012028000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16161,7 +16161,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1169377286400,
+        "marketCap": 1141432608600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16259,7 +16259,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 712861457000,
+        "marketCap": 707811671000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16357,7 +16357,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2263763641600,
+        "marketCap": 2187989126400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16455,7 +16455,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1183995183000,
+        "marketCap": 1178242048000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16553,7 +16553,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1331493988000,
+        "marketCap": 1293054051000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16651,7 +16651,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 899941256000,
+        "marketCap": 893039866000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16749,7 +16749,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 896881651950,
+        "marketCap": 889555897500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16847,7 +16847,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1380595163400,
+        "marketCap": 1365556000400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16945,7 +16945,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1208553410300,
+        "marketCap": 1181656821050,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17043,7 +17043,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 711476908400,
+        "marketCap": 692481165700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17141,7 +17141,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1129604869100,
+        "marketCap": 1118914602200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17239,7 +17239,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1110902621000,
+        "marketCap": 1078229014500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17337,7 +17337,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 851719354430,
+        "marketCap": 840339753600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17435,7 +17435,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1544929715000,
+        "marketCap": 1520652248050,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17533,7 +17533,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 550578442500,
+        "marketCap": 535359201000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17631,7 +17631,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1139810315000,
+        "marketCap": 1150975803800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17729,7 +17729,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 569960011250,
+        "marketCap": 566841689000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17827,10 +17827,10 @@
           "latestDate": "2026-04-08",
           "latestNote": "무기명식 무이권부 무보증 사모 전환사채"
         },
-        "marketCap": 582469912860,
+        "marketCap": 574412028690,
         "rightsRatio": null,
-        "cbRatio": 8.584134372622572,
-        "totalRatio": 8.584134372622572
+        "cbRatio": 8.704553091276596,
+        "totalRatio": 8.704553091276596
       },
       "sector": "소재",
       "eps": {
@@ -17925,7 +17925,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 660344335200,
+        "marketCap": 636600610800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -18023,7 +18023,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 889844975600,
+        "marketCap": 880566091600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -18121,7 +18121,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1251683512440,
+        "marketCap": 1239916804920,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -18219,7 +18219,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 630553125000,
+        "marketCap": 628451281250,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -18317,7 +18317,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 918999888400,
+        "marketCap": 895465960400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -18415,7 +18415,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 508910640000,
+        "marketCap": 499646490000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -18513,7 +18513,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 386770855960,
+        "marketCap": 367950824240,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -18611,7 +18611,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 807429701250,
+        "marketCap": 819391622750,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -18709,7 +18709,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 857984930400,
+        "marketCap": 846406186400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -18807,7 +18807,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 583618651100,
+        "marketCap": 563366899800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -18905,7 +18905,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 330832000000,
+        "marketCap": 319672000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -19003,7 +19003,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 629375000000,
+        "marketCap": 608950000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -19101,7 +19101,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 404046100000,
+        "marketCap": 406066330500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -19199,7 +19199,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 320577919200,
+        "marketCap": 310400842400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -19297,7 +19297,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 616064742500,
+        "marketCap": 613165614300,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -19395,7 +19395,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 619135826600,
+        "marketCap": 609506964600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -19493,7 +19493,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9229271598400,
+        "marketCap": 8832110320600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -19634,10 +19634,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 16060668624000,
-        "rightsRatio": 1.2452741973091592,
+        "marketCap": 15608745048000,
+        "rightsRatio": 1.2813289068080882,
         "cbRatio": null,
-        "totalRatio": 1.2452741973091592
+        "totalRatio": 1.2813289068080882
       },
       "sector": "헬스케어",
       "eps": {
@@ -19732,7 +19732,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 10374373853200,
+        "marketCap": 9769649988700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -19830,10 +19830,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9736271243000,
-        "rightsRatio": 9.101416578108372,
+        "marketCap": 9200875472000,
+        "rightsRatio": 9.63102487036899,
         "cbRatio": null,
-        "totalRatio": 9.101416578108372
+        "totalRatio": 9.63102487036899
       },
       "sector": "산업재",
       "eps": {
@@ -19928,7 +19928,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 8531055237400,
+        "marketCap": 8220336567800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -20026,10 +20026,10 @@
           "latestDate": "2026-08-05",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 5487770663900,
+        "marketCap": 5527633404800,
         "rightsRatio": null,
-        "cbRatio": 1.0022284706940194,
-        "totalRatio": 1.0022284706940194
+        "cbRatio": 0.9950008615303605,
+        "totalRatio": 0.9950008615303605
       },
       "sector": "산업재",
       "eps": {
@@ -20124,7 +20124,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2377798694700,
+        "marketCap": 2428934150500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -20222,7 +20222,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4695274085000,
+        "marketCap": 4651483964000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -20320,7 +20320,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7080948170000,
+        "marketCap": 6838449945000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -20418,7 +20418,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 5051015500000,
+        "marketCap": 4977098200000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -20516,7 +20516,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4872497520000,
+        "marketCap": 4675168960000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -20614,10 +20614,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2453069842500,
-        "rightsRatio": 0.8856014746755014,
+        "marketCap": 2439288551250,
+        "rightsRatio": 0.89060487283751,
         "cbRatio": null,
-        "totalRatio": 0.8856014746755014
+        "totalRatio": 0.89060487283751
       },
       "sector": "헬스케어",
       "eps": {
@@ -20712,7 +20712,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3933336352000,
+        "marketCap": 3876449256000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -20810,7 +20810,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3395488896000,
+        "marketCap": 3293038800000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -20908,7 +20908,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4461407264000,
+        "marketCap": 4237403552000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -21006,10 +21006,10 @@
           "latestDate": "2026-07-22",
           "latestNote": "무기명식 무이권부 무보증 사모 전환사채"
         },
-        "marketCap": 2528904631200,
-        "rightsRatio": 13.049115159530972,
-        "cbRatio": 6.722278013280898,
-        "totalRatio": 19.771393172811873
+        "marketCap": 2485177173600,
+        "rightsRatio": 13.278718358818905,
+        "cbRatio": 6.840558564834229,
+        "totalRatio": 20.119276923653135
       },
       "sector": "헬스케어",
       "eps": {
@@ -21104,7 +21104,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2649360240000,
+        "marketCap": 2488320696000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -21202,7 +21202,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3394898880800,
+        "marketCap": 3403588895000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -21300,7 +21300,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4693196933000,
+        "marketCap": 4662767227200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -21398,10 +21398,10 @@
           "latestDate": "2026-03-13",
           "latestNote": "무기명식 무이권부 무보증 사모 전환사채"
         },
-        "marketCap": 2182665139200,
+        "marketCap": 2209611622400,
         "rightsRatio": null,
-        "cbRatio": 2.061699671278646,
-        "totalRatio": 2.061699671278646
+        "cbRatio": 2.0365569923606137,
+        "totalRatio": 2.0365569923606137
       },
       "sector": "기술",
       "eps": {
@@ -21496,10 +21496,10 @@
           "latestDate": "2026-04-15",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 1789306173000,
+        "marketCap": 1774068772500,
         "rightsRatio": null,
-        "cbRatio": 12.658537896856629,
-        "totalRatio": 12.658537896856629
+        "cbRatio": 12.767261535234537,
+        "totalRatio": 12.767261535234537
       },
       "sector": "헬스케어",
       "eps": {
@@ -21594,10 +21594,10 @@
           "latestDate": "2026-08-05",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 1663040425680,
+        "marketCap": 1618555805240,
         "rightsRatio": null,
-        "cbRatio": 3.728111418256645,
-        "totalRatio": 3.728111418256645
+        "cbRatio": 3.8305753684412887,
+        "totalRatio": 3.8305753684412887
       },
       "sector": "산업재",
       "eps": {
@@ -21692,10 +21692,10 @@
           "latestDate": "2026-09-01",
           "latestNote": "무기명식 이권부 무보증 사모 영구 전환사채"
         },
-        "marketCap": 2011212564550,
-        "rightsRatio": 8.949825561589718,
-        "cbRatio": 9.9442497290061,
-        "totalRatio": 18.894075290595815
+        "marketCap": 1966782242800,
+        "rightsRatio": 9.15200535590274,
+        "cbRatio": 10.168893924691478,
+        "totalRatio": 19.32089928059422
       },
       "sector": "기술",
       "eps": {
@@ -21790,7 +21790,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2474050039800,
+        "marketCap": 2431082077500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -21986,10 +21986,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2143741564800,
-        "rightsRatio": 5.1665818609685425,
+        "marketCap": 2097050223900,
+        "rightsRatio": 5.281617081493495,
         "cbRatio": null,
-        "totalRatio": 5.1665818609685425
+        "totalRatio": 5.281617081493495
       },
       "sector": "헬스케어",
       "eps": {
@@ -22086,7 +22086,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2452529939400,
+        "marketCap": 2382742502100,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -22184,7 +22184,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3149439148800,
+        "marketCap": 3034839673600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -22282,7 +22282,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1929472908800,
+        "marketCap": 1954300685200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -22380,10 +22380,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1904719689600,
-        "rightsRatio": 15.750347499321613,
+        "marketCap": 1846723417000,
+        "rightsRatio": 16.244986511697004,
         "cbRatio": null,
-        "totalRatio": 15.750347499321613
+        "totalRatio": 16.244986511697004
       },
       "sector": "필수소비재",
       "eps": {
@@ -22478,7 +22478,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1969904482500,
+        "marketCap": 1930308412500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -22576,7 +22576,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2050923439200,
+        "marketCap": 1994803643600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -22674,7 +22674,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1871286254600,
+        "marketCap": 1873370092300,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -22772,7 +22772,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1025291190000,
+        "marketCap": 1000879495000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -22870,7 +22870,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1783059744000,
+        "marketCap": 1725398608000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -22968,7 +22968,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1953235193600,
+        "marketCap": 1945672889200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -23066,7 +23066,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1456208248500,
+        "marketCap": 1428418014750,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -23262,10 +23262,10 @@
           "latestDate": "2026-07-10",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 2815133680500,
+        "marketCap": 2842787253000,
         "rightsRatio": null,
-        "cbRatio": 3.5522291780559017,
-        "totalRatio": 3.5522291780559017
+        "cbRatio": 3.5176744195145013,
+        "totalRatio": 3.5176744195145013
       },
       "sector": "기술",
       "eps": {
@@ -23360,7 +23360,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1992517337710,
+        "marketCap": 1947966922110,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -23458,10 +23458,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 359676313920,
-        "rightsRatio": 40.31387097601626,
+        "marketCap": 345238303680,
+        "rightsRatio": 41.99981391966269,
         "cbRatio": null,
-        "totalRatio": 40.31387097601626
+        "totalRatio": 41.99981391966269
       },
       "sector": "헬스케어",
       "eps": {
@@ -23556,7 +23556,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1434681600000,
+        "marketCap": 1425117056000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -23654,7 +23654,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2425933272000,
+        "marketCap": 2386805316000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -23752,7 +23752,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1420243950600,
+        "marketCap": 1384660496500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -23850,7 +23850,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1721171925000,
+        "marketCap": 1655106740000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -23948,10 +23948,10 @@
           "latestDate": "2026-07-22",
           "latestNote": "무기명식 이권부 무보증 사모 전환사채"
         },
-        "marketCap": 1520667321600,
+        "marketCap": 1491671546400,
         "rightsRatio": null,
-        "cbRatio": 1.1179302506555553,
-        "totalRatio": 1.1179302506555553
+        "cbRatio": 1.1396610762622508,
+        "totalRatio": 1.1396610762622508
       },
       "sector": "필수소비재",
       "eps": {
@@ -24046,7 +24046,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2116708249500,
+        "marketCap": 2125924686000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -24144,7 +24144,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1579937814000,
+        "marketCap": 1567737522000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -24242,7 +24242,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1262369547900,
+        "marketCap": 1220953224150,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -24340,10 +24340,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1501166529600,
-        "rightsRatio": 0.9992171624021532,
+        "marketCap": 1508710080000,
+        "rightsRatio": 0.9942210765901426,
         "cbRatio": null,
-        "totalRatio": 0.9992171624021532
+        "totalRatio": 0.9942210765901426
       },
       "sector": "헬스케어",
       "eps": {
@@ -24438,7 +24438,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1948338119000,
+        "marketCap": 1897969801000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -24536,7 +24536,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1991922498000,
+        "marketCap": 1951506679200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -24634,10 +24634,10 @@
           "latestDate": "2026-10-14",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 1528672062000,
+        "marketCap": 1438750176000,
         "rightsRatio": null,
-        "cbRatio": 4.579137785014351,
-        "totalRatio": 4.579137785014351
+        "cbRatio": 4.865333896577748,
+        "totalRatio": 4.865333896577748
       },
       "sector": "기술",
       "eps": {
@@ -24732,7 +24732,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1569396448750,
+        "marketCap": 1542062983750,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -24830,7 +24830,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1852239338000,
+        "marketCap": 1809846536250,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -24928,7 +24928,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1053714681600,
+        "marketCap": 1044727776000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -25026,7 +25026,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1709774802400,
+        "marketCap": 1665480118400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -25124,7 +25124,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1822880243200,
+        "marketCap": 1754461145600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -25222,7 +25222,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3633263557500,
+        "marketCap": 3736763053500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -25320,7 +25320,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1122468000000,
+        "marketCap": 1113924000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -25418,7 +25418,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1196627521600,
+        "marketCap": 1149725807300,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -25516,10 +25516,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 611381452800,
-        "rightsRatio": 0.4906917909041287,
+        "marketCap": 599440408800,
+        "rightsRatio": 0.5004665277747288,
         "cbRatio": null,
-        "totalRatio": 0.4906917909041287
+        "totalRatio": 0.5004665277747288
       },
       "sector": "기술",
       "eps": {
@@ -25614,7 +25614,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1764447415500,
+        "marketCap": 1695702711000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -25712,10 +25712,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 509036248320,
-        "rightsRatio": 22.23548919621269,
+        "marketCap": 499800235520,
+        "rightsRatio": 22.64638788780057,
         "cbRatio": null,
-        "totalRatio": 22.23548919621269
+        "totalRatio": 22.64638788780057
       },
       "sector": "기술",
       "eps": {
@@ -25810,7 +25810,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 850143300400,
+        "marketCap": 825943676750,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -26006,10 +26006,10 @@
           "latestDate": "2026-09-08",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 1879454809500,
+        "marketCap": 1868816386050,
         "rightsRatio": null,
-        "cbRatio": 8.11405516265487,
-        "totalRatio": 8.11405516265487
+        "cbRatio": 8.160245229994462,
+        "totalRatio": 8.160245229994462
       },
       "sector": "기술",
       "eps": {
@@ -26104,10 +26104,10 @@
           "latestDate": "2026-06-15",
           "latestNote": "무기명식 이권부 무보증 사모 전환사채"
         },
-        "marketCap": 591598416640,
+        "marketCap": 612726931520,
         "rightsRatio": null,
-        "cbRatio": 1.6903358289556087,
-        "totalRatio": 1.6903358289556087
+        "cbRatio": 1.6320483865778292,
+        "totalRatio": 1.6320483865778292
       },
       "sector": "헬스케어",
       "eps": {
@@ -26202,7 +26202,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 705872456170,
+        "marketCap": 707751442300,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -26300,7 +26300,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1325884286800,
+        "marketCap": 1284054285400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -26496,7 +26496,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1227803215500,
+        "marketCap": 1215197433000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -26594,7 +26594,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1012696230000,
+        "marketCap": 1008838339600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -26692,10 +26692,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 685186865880,
-        "rightsRatio": 20.432378697772478,
+        "marketCap": 665663223840,
+        "rightsRatio": 21.031652374662453,
         "cbRatio": null,
-        "totalRatio": 20.432378697772478
+        "totalRatio": 21.031652374662453
       },
       "sector": "헬스케어",
       "eps": {
@@ -26790,7 +26790,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 768768093100,
+        "marketCap": 755785278500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -26888,7 +26888,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 666036176400,
+        "marketCap": 636977006400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -26986,10 +26986,10 @@
           "latestDate": "2026-05-08",
           "latestNote": "무기명식 이권부 무보증 사모 전환사채"
         },
-        "marketCap": 503538235900,
+        "marketCap": 487295067000,
         "rightsRatio": null,
-        "cbRatio": 7.943786022228466,
-        "totalRatio": 7.943786022228466
+        "cbRatio": 8.208578889636081,
+        "totalRatio": 8.208578889636081
       },
       "sector": "기술",
       "eps": {
@@ -27084,7 +27084,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 563794978600,
+        "marketCap": 548334421600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -27182,7 +27182,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 834137821800,
+        "marketCap": 838260414000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -27280,7 +27280,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 499486789620,
+        "marketCap": 493099490520,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -27380,7 +27380,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 584025000000,
+        "marketCap": 573300000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -27479,7 +27479,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 599034906600,
+        "marketCap": 578227478400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -27577,7 +27577,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1508976827350,
+        "marketCap": 1519155423150,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -27675,7 +27675,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 502155955100,
+        "marketCap": 492568251900,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -27773,7 +27773,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 635268275950,
+        "marketCap": 616796505600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -27871,7 +27871,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 713783783500,
+        "marketCap": 681019937700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -27969,7 +27969,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1275744023190,
+        "marketCap": 1252222842780,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -28067,10 +28067,10 @@
           "latestDate": "2026-05-13",
           "latestNote": "무기명식 이권부 무보증 사모 전환사채"
         },
-        "marketCap": 753271644600,
+        "marketCap": 719091779400,
         "rightsRatio": null,
-        "cbRatio": 6.637711688530483,
-        "totalRatio": 6.637711688530483
+        "cbRatio": 6.953215351970689,
+        "totalRatio": 6.953215351970689
       },
       "sector": "소재",
       "eps": {
@@ -28165,10 +28165,10 @@
           "latestDate": "2026-10-16",
           "latestNote": "무기명식 무이권부 무보증 사모 전환사채"
         },
-        "marketCap": 746855910000,
+        "marketCap": 751005109500,
         "rightsRatio": null,
-        "cbRatio": 4.686312249976036,
-        "totalRatio": 4.686312249976036
+        "cbRatio": 4.660421022075616,
+        "totalRatio": 4.660421022075616
       },
       "sector": "기술",
       "eps": {
@@ -28263,7 +28263,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1457648841110,
+        "marketCap": 1433054091260,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -28361,7 +28361,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 942401539870,
+        "marketCap": 875425407460,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -28459,7 +28459,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 696632000000,
+        "marketCap": 683488000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -28557,7 +28557,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 697566867000,
+        "marketCap": 668801223000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -28655,7 +28655,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 633723207000,
+        "marketCap": 628810624000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -28753,10 +28753,10 @@
           "latestDate": "2026-01-30",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 406448920150,
+        "marketCap": 395931643510,
         "rightsRatio": null,
-        "cbRatio": 7.184174579483134,
-        "totalRatio": 7.184174579483134
+        "cbRatio": 7.375010428855126,
+        "totalRatio": 7.375010428855126
       },
       "sector": "산업재",
       "eps": {
@@ -28851,7 +28851,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1057095015000,
+        "marketCap": 1044803212500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -28949,10 +28949,10 @@
           "latestDate": "2026-05-29",
           "latestNote": "무기명식 무이권부 무보증 사모 전환사채"
         },
-        "marketCap": 967589973760,
-        "rightsRatio": 24.80389410251675,
-        "cbRatio": 6.200973721011534,
-        "totalRatio": 31.004867823528283
+        "marketCap": 1027175018100,
+        "rightsRatio": 23.365053492240886,
+        "cbRatio": 5.841263557108701,
+        "totalRatio": 29.206317049349583
       },
       "sector": "커뮤니케이션",
       "eps": {
@@ -29047,7 +29047,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1369766894400,
+        "marketCap": 1404645218100,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -29145,7 +29145,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 595697548600,
+        "marketCap": 567846754120,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -29243,7 +29243,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 691280584500,
+        "marketCap": 671396033000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -29343,7 +29343,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 725016037200,
+        "marketCap": 706425882400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -29441,7 +29441,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 536503206550,
+        "marketCap": 530395010650,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -29539,10 +29539,10 @@
           "latestDate": "2026-04-02",
           "latestNote": "무기명식 이권부 무보증 사모 전환사채"
         },
-        "marketCap": 739109915100,
+        "marketCap": 731968756500,
         "rightsRatio": null,
-        "cbRatio": 12.447404387418155,
-        "totalRatio": 12.447404387418155
+        "cbRatio": 12.568842479002724,
+        "totalRatio": 12.568842479002724
       },
       "sector": "소재",
       "eps": {
@@ -29637,7 +29637,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 841059774000,
+        "marketCap": 842098119400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -29735,10 +29735,10 @@
           "latestDate": "2026-07-06",
           "latestNote": "무기명식 이권부 무보증 사모 전환사채"
         },
-        "marketCap": 392122989700,
+        "marketCap": 383852405550,
         "rightsRatio": null,
-        "cbRatio": 15.301321671015506,
-        "totalRatio": 15.301321671015506
+        "cbRatio": 15.631007942761087,
+        "totalRatio": 15.631007942761087
       },
       "sector": "경기소비재",
       "eps": {
@@ -29833,7 +29833,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1092101499900,
+        "marketCap": 1086383691000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -29931,10 +29931,10 @@
           "latestDate": "2026-05-22",
           "latestNote": "국내 무기명식\n 무보증 사모 전환사채"
         },
-        "marketCap": 414359740080,
-        "rightsRatio": 3.378698153758143,
-        "cbRatio": 5.623133173001193,
-        "totalRatio": 9.001831326759335
+        "marketCap": 409932819780,
+        "rightsRatio": 3.415185174857043,
+        "cbRatio": 5.683858153271185,
+        "totalRatio": 9.099043328128227
       },
       "sector": "기술",
       "eps": {
@@ -30029,7 +30029,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 498707706000,
+        "marketCap": 497989107000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -30127,7 +30127,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 781760795200,
+        "marketCap": 818345660000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -30225,7 +30225,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 325591567385,
+        "marketCap": 317302107395,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -30323,7 +30323,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 762776806960,
+        "marketCap": 751316053600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -30421,7 +30421,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 732346440000,
+        "marketCap": 708632364800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -30617,7 +30617,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 449713943400,
+        "marketCap": 441009802560,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -30715,7 +30715,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 397212621830,
+        "marketCap": 390028670870,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -30813,7 +30813,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 483398358300,
+        "marketCap": 470890848330,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -30911,7 +30911,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 505659278000,
+        "marketCap": 486660519000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -31009,7 +31009,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 707877627900,
+        "marketCap": 701865928300,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -31107,7 +31107,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 404274637000,
+        "marketCap": 397314385000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -31205,7 +31205,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 411322409100,
+        "marketCap": 405453996000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -31303,7 +31303,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 783783858400,
+        "marketCap": 704686404800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -31401,7 +31401,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 610841710880,
+        "marketCap": 591518071520,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -31499,7 +31499,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 480254355750,
+        "marketCap": 479269218610,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -31597,7 +31597,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 756968236500,
+        "marketCap": 731470359060,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -31695,7 +31695,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 432754518130,
+        "marketCap": 425555274760,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -31793,7 +31793,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 404899025020,
+        "marketCap": 391390845400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -31891,7 +31891,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 356262955520,
+        "marketCap": 346407320480,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -31991,7 +31991,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 384461792920,
+        "marketCap": 378762544600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -32089,7 +32089,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 289112177400,
+        "marketCap": 284514987300,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -32187,7 +32187,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 865407342800,
+        "marketCap": 864167504200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -32285,10 +32285,10 @@
           "latestDate": "2026-04-22",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 300778726800,
+        "marketCap": 295847928000,
         "rightsRatio": null,
-        "cbRatio": 0.16623516075073697,
-        "totalRatio": 0.16623516075073697
+        "cbRatio": 0.16900574676324925,
+        "totalRatio": 0.16900574676324925
       },
       "sector": "헬스케어",
       "eps": {
@@ -32383,7 +32383,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 648802000000,
+        "marketCap": 639610000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -32481,7 +32481,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 373781548800,
+        "marketCap": 367162500540,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -32579,7 +32579,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 346313594400,
+        "marketCap": 338973251910,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -32677,7 +32677,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 474274577010,
+        "marketCap": 454703984280,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -32775,7 +32775,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 379969717200,
+        "marketCap": 372530551050,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -32873,7 +32873,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 401758963200,
+        "marketCap": 385019006400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -32971,7 +32971,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 313621674560,
+        "marketCap": 310476471520,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -33069,10 +33069,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 370244940240,
-        "rightsRatio": 4.6725768262453,
+        "marketCap": 367619089600,
+        "rightsRatio": 4.705952375004195,
         "cbRatio": null,
-        "totalRatio": 4.6725768262453
+        "totalRatio": 4.705952375004195
       },
       "sector": "기술",
       "eps": {
@@ -33167,7 +33167,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 407918286400,
+        "marketCap": 402223995600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -33265,7 +33265,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 479515801200,
+        "marketCap": 475955040300,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -33363,7 +33363,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 684607496700,
+        "marketCap": 705340089660,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -33461,7 +33461,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 360939433680,
+        "marketCap": 358003375380,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -33559,7 +33559,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 347348439250,
+        "marketCap": 351708461500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -33657,7 +33657,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 594915958120,
+        "marketCap": 596802583780,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -33755,10 +33755,10 @@
           "latestDate": "2026-06-15",
           "latestNote": "무기명식 무이권부 무보증 사모 전환사채"
         },
-        "marketCap": 781036474200,
+        "marketCap": 760590493200,
         "rightsRatio": null,
-        "cbRatio": 5.761574713407923,
-        "totalRatio": 5.761574713407923
+        "cbRatio": 5.916455754090933,
+        "totalRatio": 5.916455754090933
       },
       "sector": "소재",
       "eps": {
@@ -33853,7 +33853,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 138814038840,
+        "marketCap": 134647424720,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -33951,7 +33951,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 337087765305,
+        "marketCap": 325420945245,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -34049,7 +34049,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 286339148280,
+        "marketCap": 273074235660,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -34147,7 +34147,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 267088315680,
+        "marketCap": 259192738560,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
