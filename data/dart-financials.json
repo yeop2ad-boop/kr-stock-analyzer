@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-24T07:54:07.759Z",
+  "updatedAt": "2026-10-24T13:04:23.541Z",
   "dataYear": 2025,
   "buybackPeriod": {
     "from": "20251024",
@@ -19581,14 +19581,20 @@
         "totalRatio": null
       },
       "sector": "헬스케어",
-      "crash": {
-        "pct": -24.444444444444446,
-        "from": "2026-02-27",
-        "to": "2026-03-09",
-        "fromPrice": 675000.0,
-        "toPrice": 510000.0,
-        "rangeFrom": "2025-11-25",
-        "rangeTo": "2026-10-23"
+      "eps": {
+        "current": 3455,
+        "prev": null,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": null,
+        "pricePrev": null,
+        "priceChangePct": null,
+        "periodFrom": null,
+        "periodTo": "2026-06-30",
+        "dateFrom": null,
+        "dateTo": "2026-06-30",
+        "reportLabel": "야후 분기 실적",
+        "source": "yahoo"
       },
       "quarter": {
         "label": "야후 분기 실적",
@@ -19597,10 +19603,10 @@
         "dateFrom": null,
         "yearTo": "2026",
         "yearFrom": null,
-        "revenue": 391892643040.0,
+        "revenue": 391892643040,
         "revenuePrev": null,
         "revenuePct": null,
-        "netIncome": 85809008610.0,
+        "netIncome": 85809008610,
         "netIncomePrev": null,
         "netIncomePct": null,
         "niTurnedLoss": false,
@@ -19619,20 +19625,14 @@
         "periodFrom": null,
         "source": "yahoo"
       },
-      "eps": {
-        "current": 3455.0,
-        "prev": null,
-        "changePct": null,
-        "turnedLoss": false,
-        "priceCurrent": null,
-        "pricePrev": null,
-        "priceChangePct": null,
-        "periodFrom": null,
-        "periodTo": "2026-06-30",
-        "dateFrom": null,
-        "dateTo": "2026-06-30",
-        "reportLabel": "야후 분기 실적",
-        "source": "yahoo"
+      "crash": {
+        "pct": -24.444444444444446,
+        "from": "2026-02-27",
+        "to": "2026-03-09",
+        "fromPrice": 675000.0,
+        "toPrice": 510000.0,
+        "rangeFrom": "2025-11-25",
+        "rangeTo": "2026-10-23"
       }
     },
     {
@@ -34279,14 +34279,20 @@
         "totalRatio": null
       },
       "sector": "헬스케어",
-      "crash": {
-        "pct": -32.122093023255815,
-        "from": "2026-05-29",
-        "to": "2026-06-08",
-        "fromPrice": 34400.0,
-        "toPrice": 23350.0,
-        "rangeFrom": "2025-12-04",
-        "rangeTo": "2026-10-23"
+      "eps": {
+        "current": 168,
+        "prev": -653,
+        "changePct": null,
+        "turnedLoss": false,
+        "priceCurrent": null,
+        "pricePrev": null,
+        "priceChangePct": null,
+        "periodFrom": "2025-06-30",
+        "periodTo": "2026-06-30",
+        "dateFrom": "2025-06-30",
+        "dateTo": "2026-06-30",
+        "reportLabel": "야후 분기 실적",
+        "source": "yahoo"
       },
       "quarter": {
         "label": "야후 분기 실적",
@@ -34295,11 +34301,11 @@
         "dateFrom": "2025-06-30",
         "yearTo": "2026",
         "yearFrom": "2025",
-        "revenue": 20197147790.0,
-        "revenuePrev": 7604066360.0,
+        "revenue": 20197147790,
+        "revenuePrev": 7604066360,
         "revenuePct": 165.60983076428596,
-        "netIncome": 10883727960.0,
-        "netIncomePrev": -23638614140.0,
+        "netIncome": 10883727960,
+        "netIncomePrev": -23638614140,
         "netIncomePct": null,
         "niTurnedLoss": false,
         "source": "yahoo"
@@ -34317,20 +34323,14 @@
         "periodFrom": null,
         "source": "yahoo"
       },
-      "eps": {
-        "current": 168.0,
-        "prev": -653.0,
-        "changePct": null,
-        "turnedLoss": false,
-        "priceCurrent": null,
-        "pricePrev": null,
-        "priceChangePct": null,
-        "periodFrom": "2025-06-30",
-        "periodTo": "2026-06-30",
-        "dateFrom": "2025-06-30",
-        "dateTo": "2026-06-30",
-        "reportLabel": "야후 분기 실적",
-        "source": "yahoo"
+      "crash": {
+        "pct": -32.122093023255815,
+        "from": "2026-05-29",
+        "to": "2026-06-08",
+        "fromPrice": 34400.0,
+        "toPrice": 23350.0,
+        "rangeFrom": "2025-12-04",
+        "rangeTo": "2026-10-23"
       }
     }
   ]
