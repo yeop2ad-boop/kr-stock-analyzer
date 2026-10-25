@@ -1,5 +1,17 @@
 [
   {
+    "id": "ca4d48f1c853",
+    "sourceKey": "oecd",
+    "source": "OECD",
+    "title": "자율형 AI 시스템의 실제 운영 현황: 실무자들이 말하는 배포와 거버넌스",
+    "originalTitle": "Putting agentic AI systems to work: What practitioners reveal about deployment and governance",
+    "link": "https://oecd.ai/en/wonk/putting-agentic-ai-systems-to-work-what-practitioners-reveal-about-deployment-and-governance",
+    "summary": "조직들이 자율형 AI 시스템을 실제로 활용하기 시작했으며, 보안 취약점 탐지, 코드 수정, 행정 업무 처리 등 다양한 분야에서 생산성 향상을 추진하고 있다. OECD는 25개 조직의 실무자들을 대상으로 한 인터뷰를 통해 자율형 AI의 배포 현황과 거버넌스 방식을 분석했다. 현재 대부분의 조직들은 완전한 자율성보다는 체크포인트 제도를 도입해 일정 단계에서 인간의 검토와 승인을 거치도록 하며, 구조화된 작업이고 오류의 비용이 제한적인 영역에 집중하고 있다. 자율형 AI는 단순 권장에서 실제 행동으로 나아가면서 환각, 도구 오용 등 기존의 AI 문제들이 더욱 심화되고 있으며, 이는 새로운 거버넌스 도전과제를 만들고 있다. 조직 규모, 기술 준비도, 위험 허용 수준에 따라 자율형 AI의 도입 정도와 성숙도가 상당히 다양하게 나타나고 있다.",
+    "image": "data/techinsight-images/ca4d48f1c853.webp",
+    "publishedAt": null,
+    "createdAt": "2026-10-25T23:11:30.780Z"
+  },
+  {
     "id": "1136737ea8bf",
     "sourceKey": "oecd",
     "source": "OECD",
@@ -144,6 +156,18 @@
     "createdAt": "2026-10-24T23:07:56.333Z"
   },
   {
+    "id": "17209c2cce30",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "영구동토층에 대해 알아야 할 세 가지",
+    "originalTitle": "Three things you should know about permafrost",
+    "link": "https://www.technologyreview.com/2026/10/22/1147591/permafrost-primer/",
+    "summary": "영구동토층은 북반구 육지의 약 15%를 차지하는 동결된 토양층으로, 수천 년 동안 갇혀 있던 유기물이 해빙되면서 이산화탄소와 메탄을 방출하여 기후 변화를 가속화하고 있으나 대부분의 기후 모델에서 제대로 반영되지 않고 있다. 산불은 기후 변화로 인해 더욱 강해지고 있으며 영구동토층의 해빙을 급속화시킬 수 있는데, 세기 말까지 약 800억 톤의 이산화탄소 방출을 유발할 수 있다. 영구동토층에 갇혀 있는 약 1.5조 톤의 탄소가 방출될 경우 지구 대기의 탄소량의 2배에 달하지만, 해빙 후 북쪽으로 이동하는 식물들이 대기 중 탄소를 흡수하는 등 복잡한 생태계 변화가 동시에 일어나 정확한 영향을 예측하기 어렵다.",
+    "image": "data/techinsight-images/17209c2cce30.webp",
+    "publishedAt": "2026-10-22T10:00:00.000Z",
+    "createdAt": "2026-10-25T23:11:29.010Z"
+  },
+  {
     "id": "6a85074051ec",
     "sourceKey": "mit",
     "source": "MIT Technology Review",
@@ -154,6 +178,18 @@
     "image": "data/techinsight-images/6a85074051ec.webp",
     "publishedAt": "2026-10-22T10:00:00.000Z",
     "createdAt": "2026-10-24T23:08:13.177Z"
+  },
+  {
+    "id": "1597d0c89aca",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "AI 추론이 남기는 숨겨진 저장소 비용",
+    "originalTitle": "AI’s hidden storage bill: What inference leaves behind",
+    "link": "https://www.technologyreview.com/2026/10/22/1146948/ais-hidden-storage-bill-what-inference-leaves-behind/",
+    "summary": "AI 인프라 비용 논의에서 GPU와 계산 비용에만 집중하지만, 추론 과정에서 생성되는 대량의 백엔드 데이터 저장 비용이 간과되고 있다. 훈련과 달리 추론은 지속적으로 이루어지며 매번 로그, 캐시, 백업 등의 데이터가 축적되는데, 사용자가 받는 결과물보다 130배 이상의 데이터가 백엔드에 저장된다. AI 추론 수요가 2030년까지 연 35%로 증가할 것으로 예상되면서 저장소 비용이 기존 예산을 빠르게 초과할 수 있다. 조직들은 데이터 수명주기 전반을 고려한 저장소 아키텍처를 구축하고 AI 인프라 예산 계획에 저장소 비용을 명확히 포함시켜야 한다.",
+    "image": "data/techinsight-images/1597d0c89aca.webp",
+    "publishedAt": "2026-10-22T08:41:18.000Z",
+    "createdAt": "2026-10-25T23:11:48.895Z"
   },
   {
     "id": "3afe1d8dce6f",
@@ -192,51 +228,15 @@
     "createdAt": "2026-10-21T23:59:25.939Z"
   },
   {
-    "id": "26ff3c995518",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "불가능을 향한 도전: MIT 테크놀로지 리뷰의 임파서블 이슈 소개",
-    "originalTitle": "The Download: introducing the Impossible issue",
-    "link": "https://www.technologyreview.com/2026/10/21/1147573/the-download-introducing-impossible-issue/",
-    "summary": "MIT 테크놀로지 리뷰는 2026년 마지막 인쇄판에서 과학자들과 엔지니어들이 추진 중인 대담한 프로젝트들을 다루는 '임파서블 이슈'를 선보였다. 달 표면 도시 건설, 합성 혈액 개발, 인지적 불멸성 달성 등 기술이 인류의 삶을 더 낫고 안전하며 건강하게 만들기 위한 야심 찬 시도들을 탐구한다. 이번 호에서는 달 로버의 대규모 언어 모델 운영, 극한 기후 재난 연구, 신경망 이해도 증진 등 다양한 혁신 기술들을 소개한다. 또한 엘론 머스크의 스타링크 우크라이나 속도 제한 논란, OpenAI 모델의 안전장치 무력화, SpaceX와 테슬라 합병 추진 등 기술 업계의 최신 뉴스도 전달한다.",
-    "image": "data/techinsight-images/26ff3c995518.webp",
-    "publishedAt": "2026-10-21T12:10:00.000Z",
-    "createdAt": "2026-10-21T23:59:23.041Z"
-  },
-  {
-    "id": "7e687ee1014d",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "불가능한 것들을 가능하게 만들다",
-    "originalTitle": "We can do impossible things",
-    "link": "https://www.technologyreview.com/2026/10/21/1146053/editor-letter-we-can-do-impossible-things/",
-    "summary": "MIT 테크놀로지 리뷰의 편집자는 현실적 사고로 인해 대담한 아이디어를 자주 포기하는 경향이 있었지만, 이번 호를 통해 불가능해 보이는 도전들을 다루기로 결심했다. 문제 해결에 몰두하다 보면 더 큰 비전을 잃기 쉽지만, 달 거주나 뇌 업로드 같은 대담한 과학 프로젝트들은 우리에게 기술의 본래 목적을 상기시킨다. 기술은 삶을 더 낫고 안전하고 건강하게 만들기 위한 것이며, 실패했을 때는 다시 돌아가 문제를 해결해야 한다. 이번 호는 불가능하다고 여겨지는 도전을 감행하는 과학자들과 엔지니어들, 그리고 그들을 따르는 모든 사람들을 위한 것이다.",
-    "image": "data/techinsight-images/7e687ee1014d.webp",
-    "publishedAt": "2026-10-21T09:00:00.000Z",
-    "createdAt": "2026-10-21T23:59:40.524Z"
-  },
-  {
-    "id": "3c83529c6d35",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "보스턴 차 사건의 유물로 알려진 중국 차 상자, 실제론 100년 뒤의 물건",
-    "originalTitle": "Here’s the tea",
-    "link": "https://www.technologyreview.com/2026/10/20/1145274/heres-the-tea/",
-    "summary": "MIT 역사학자 트리스탄 브라운이 보스턴 차 사건의 유물로 전해져 온 중국 차 상자 레이블을 재검증한 결과, 실제로는 1773년이 아닌 1860~70년대 미국의 차 무역 회사인 스미스·아처 상회의 상표임을 밝혀냈다. 그는 광동어로 된 중국 문자를 재해석함으로써 선대 학자들이 놓친 진실을 발견할 수 있었다. 이 레이블은 골드러시 시대 캘리포니아에서 차 사업을 했던 사람의 후손이 소유했으며, 그 역사적 의미는 1870년대 건국 100주년 기념 행사를 거치면서 과장되었을 가능성이 높다. 이 발견은 레이블 자체의 가치를 떨어뜨리지 않으며, 오히려 평범한 물건이 어떻게 역사적 권위를 획득하고 역사적 기억이 만들어지는지를 보여주는 사례가 된다.",
-    "image": "data/techinsight-images/3c83529c6d35.webp",
-    "publishedAt": "2026-10-20T21:00:00.000Z",
-    "createdAt": "2026-10-20T23:49:35.214Z"
-  },
-  {
-    "id": "7ab77eba0938",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "새와 비행기를 합친 로봇 퍼핀, 물과 하늘을 자유롭게 오간다",
-    "originalTitle": "It’s a bird, it’s a plane … it’s a robo-puffin?",
-    "link": "https://www.technologyreview.com/2026/10/20/1145205/its-a-bird-its-a-plane-its-a-robo-puffin/",
-    "summary": "MIT와 스위스 EPFL 연구진이 수중과 대기 두 환경을 모두 이동할 수 있는 로봇을 개발했다. 300그램 미만의 무게로 설계된 이 로봇은 유연한 날개, 조종 가능한 꼬리, 방수 모터를 갖추고 있으며, 새의 비행 방식을 모방한다. 실험을 통해 중간 크기의 유연한 날개, 적절한 날개짓 빈도, 70도의 각도 조합으로 수영에서 비행으로의 매끄러운 전환이 가능함을 확인했다. 이 기술은 빙산이나 고래 무리 관찰 등 위험한 해양 탐사 지역에서 샘플 채집과 데이터 수집을 저비용으로 수행할 수 있는 새로운 드론 클래스를 개발하는 데 활용될 것으로 기대된다. 연구진은 현재 날개의 회전 기능을 추가하고 난기류 환경에서의 성능을 테스트하는 후속 연구를 진행 중이다.",
-    "image": "data/techinsight-images/7ab77eba0938.webp",
-    "publishedAt": "2026-10-20T21:00:00.000Z",
-    "createdAt": "2026-10-20T23:49:35.005Z"
+    "id": "acb3a24ef951",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "위키피디아 편집자들이 인공지능 생성 콘텐츠로부터 온라인 백과사전을 지키는 방법",
+    "originalTitle": "How Wikipedia’s Editors Keep the Online Encyclopedia Human-Written",
+    "link": "https://spectrum.ieee.org/wikipedia-wikiproject-ai-writing-cleanup",
+    "summary": "2023년부터 본격화된 AI 생성 콘텐츠 문제에 대응하기 위해 위키피디아 자원봉사자들이 WikiProject AI Cleanup을 시작했다. 초기에는 반복되는 표현이나 부자연스러운 구조로 AI 텍스트를 쉽게 적발할 수 있었지만, 현재 AI 모델이 진화하면서 더 미묘한 언어 패턴과 허위 인용 같은 문제가 심각해지고 있다. 2025년 말 신규 문서의 약 20%가 AI 생성으로 의심되었으며, 편집자들은 출처 검증 AI 도구 같은 기술적 해결책도 개발 중이다. 다만 AI 탐지의 정확성과 효율성 사이의 균형을 맞추는 과제가 남아있다.",
+    "image": "data/techinsight-images/acb3a24ef951.webp",
+    "publishedAt": "2026-10-21T13:00:02.000Z",
+    "createdAt": "2026-10-25T23:11:34.477Z"
   }
 ]
