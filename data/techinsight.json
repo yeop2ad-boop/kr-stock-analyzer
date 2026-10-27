@@ -1,5 +1,77 @@
 [
   {
+    "id": "603f58699d60",
+    "sourceKey": "oecd",
+    "source": "OECD",
+    "title": "금융 부문이 AI 혁신을 감시하면서도 빠른 발전속도를 유지할 수 있을까?",
+    "originalTitle": "Can the finance sector oversee AI innovation while maintaining its rapid progress?",
+    "link": "https://oecd.ai/en/wonk/can-the-finance-sector-oversee-ai-innovation-while-maintaining-its-rapid-progress",
+    "summary": "금융산업에서 AI의 활용이 확산되면서 규제당국은 혁신을 저해하지 않으면서도 시장 안정성과 소비자 보호를 동시에 보장해야 하는 과제에 직면했다. 기존 금융규제의 감시 관행을 강화하는 방식으로 접근하면 기술 중립적 원칙을 유지하면서도 AI 도입을 촉진할 수 있다. 현실적으로는 모델 위험관리, 설명 가능성, 공정성 기준 설정 등 여러 기술적 과제들이 AI 채택을 저해하고 있다. 새로운 규제를 추가하기보다는 기존 규제 프레임워크를 AI 맥락에 맞게 해석하고 실행하기 위한 지침을 제공하는 것이 더 효과적인 해결책이 될 수 있다. OECD 보고서는 혁신과 감시가 함께 진화할 수 있도록 하는 감시 접근방식을 제시하고 있다.",
+    "image": "data/techinsight-images/603f58699d60.webp",
+    "publishedAt": null,
+    "createdAt": "2026-10-27T00:22:40.984Z"
+  },
+  {
+    "id": "d57e9a8a9f2d",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "IEEE Xplore 디지털 라이브러리, AI 어시스턴트 추가",
+    "originalTitle": "IEEE Xplore Digital Library Adds AI Assistant",
+    "link": "https://spectrum.ieee.org/ieee-xplore-digital-library-ai",
+    "summary": "IEEE는 수백만 개의 동료심사 논문을 기반으로 구축된 IEEE Xplore AI 연구 스위트를 출시했다. 이 AI 도구는 검증된 과학적 결과에 기반한 답변을 제공하여 높은 정확성과 신뢰성을 보장한다. 사용자는 자연스러운 대화형 검색으로 복잡한 기술 논문을 빠르게 이해할 수 있으며, AI가 생성한 답변에는 원본 문헌의 링크가 포함되어 정보 검증이 가능하다. IEEE는 AI의 환각 현상과 편향 문제를 방지하기 위해 엄격한 안전장치를 적용했으며, 3000명 이상의 엔지니어와 과학자의 피드백으로 개발했다. 이 스위트는 IEEE Xplore 디지털 라이브러리의 기관 구독자를 위한 선택적 업그레이드 상품으로 제공된다.",
+    "image": "data/techinsight-images/d57e9a8a9f2d.webp",
+    "publishedAt": "2026-10-26T18:00:03.000Z",
+    "createdAt": "2026-10-27T00:22:41.333Z"
+  },
+  {
+    "id": "c6549f35a055",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "안스로픽의 진정한 모습은 무엇인가",
+    "originalTitle": "Will the real Anthropic please stand up",
+    "link": "https://www.technologyreview.com/2026/10/26/1147672/will-the-real-anthropic-please-stand-up/",
+    "summary": "안스로픽이 IPO 상장을 앞두고 있는 가운데, 회사가 수년간 정교한 이야기 전략으로 자신의 이미지를 만들어왔다는 비판이 제기되고 있다. 특이점이 도래했다거나 AI가 인간의 감정을 가지고 있다는 식의 과학소설적 서사를 통해 회사는 자신을 신뢰할 수 있는 유일한 기술 관리자로 포장해왔다. 안스로픽은 실제로 AI 안전 연구 조직, 책임 있는 기술 개발사, 그리고 이윤 추구를 하는 대기업이라는 모순된 역할을 동시에 수행하고 있다. 이러한 다중적 정체성은 외부 감시와 투명성보다 자체 규제를 우선하려는 태도로 이어지며, 결국 회사의 진정한 의도와 신뢰성에 대한 의문을 낳는다.",
+    "image": "data/techinsight-images/c6549f35a055.webp",
+    "publishedAt": "2026-10-26T17:45:43.000Z",
+    "createdAt": "2026-10-27T00:22:37.770Z"
+  },
+  {
+    "id": "2b5e3b374d0e",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "일상 속 AI 피해와 핵심 우주 기술의 경쟁",
+    "originalTitle": "The Download: everyday AI harms and the race to nuclear spaceflight",
+    "link": "https://www.technologyreview.com/2026/10/26/1147650/the-download-everyday-ai-harms-nuclear-spaceflight/",
+    "summary": "AI 안전 논의가 극단적 재해에만 집중하는 사이 청소년들이 중요한 문제를 AI와 상담하거나 학생들이 챗봇으로 과제를 작성하는 등 일상적 해악이 간과되고 있다. 동시에 NASA는 화성 탐사를 위한 첫 핵반응로 우주선 스페이스 리액터-1 프리덤을 2028년까지 건설할 계획으로, 성공 시 우주 항행의 효율성을 크게 높이고 우주 방사선 노출을 줄일 수 있다. 75년간 여러 차례 중단된 핵우주추진 기술이 이번 20억 달러 투자로 실현될 수 있을지 주목된다. 그 외 우크라이나의 스타링크 고속 연결 회복, 인류공학 자궁 장치 개발 등 다양한 기술 뉴스가 보도되고 있다.",
+    "image": "data/techinsight-images/2b5e3b374d0e.webp",
+    "publishedAt": "2026-10-26T12:40:00.000Z",
+    "createdAt": "2026-10-27T00:22:59.367Z"
+  },
+  {
+    "id": "bce699eec5a6",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "금융 범죄 예방의 에이전틱 AI: 성공 사례에서 배우는 교훈",
+    "originalTitle": "Agentic AI in financial-crime prevention: Lessons from winners",
+    "link": "https://www.mckinsey.com/capabilities/risk-and-resilience/our-insights/agentic-ai-in-financial-crime-prevention-lessons-from-winners",
+    "summary": "금융 범죄 예방 분야에서 에이전틱 AI를 도입한 기관들의 1년간의 운영 결과는 사전 예상을 대부분 확인해주었다. 이러한 경험을 통해 기관들이 에이전틱 AI를 효과적으로 확대 적용하기 위해 답해야 할 다섯 가지 핵심 질문이 도출되었다. 이 질문들은 금융 범죄 예방 시스템을 더욱 고도화하고 확장하는 데 중요한 지침이 된다.",
+    "image": "data/techinsight-images/bce699eec5a6.webp",
+    "publishedAt": "2026-10-26T00:00:00.000Z",
+    "createdAt": "2026-10-27T00:22:55.385Z"
+  },
+  {
+    "id": "27af1fa8b168",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "에이전트형 AI 동료의 부상: 은행 CIO를 위한 차세대 AI 가이드",
+    "originalTitle": "The rise of the agentic coworker: A banking CIO’s guide to the next wave of AI",
+    "link": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/the-rise-of-the-agentic-coworker-a-banking-cios-guide-to-the-next-wave-of-ai",
+    "summary": "AI 에이전트는 워크플로우 전반에서 의사결정을 내리고 행동하며 협업할 수 있는 수준으로 진화했다.\n이러한 AI 에이전트를 조직 차원에서 대규모로 도입하려면 기존과 다른 거버넌스 체계를 구축해야 한다.\n동시에 새로운 시스템 아키텍처 설계와 책임 구조의 명확화가 필수적이다.\n금융기관의 리더들은 이런 변화에 대비한 전략적 준비가 필요하다.",
+    "image": "data/techinsight-images/27af1fa8b168.webp",
+    "publishedAt": "2026-10-26T00:00:00.000Z",
+    "createdAt": "2026-10-27T00:23:14.286Z"
+  },
+  {
     "id": "ca4d48f1c853",
     "sourceKey": "oecd",
     "source": "OECD",
@@ -166,77 +238,5 @@
     "image": "data/techinsight-images/17209c2cce30.webp",
     "publishedAt": "2026-10-22T10:00:00.000Z",
     "createdAt": "2026-10-25T23:11:29.010Z"
-  },
-  {
-    "id": "6a85074051ec",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "맥락을 이해하는 AI가 기업 운영의 핵심이다",
-    "originalTitle": "Making the case for context-aware AI",
-    "link": "https://www.technologyreview.com/2026/10/22/1146812/making-the-case-for-context-aware-ai/",
-    "summary": "기업 AI가 실험 단계에서 실제 운영으로 넘어가려면 단순한 강력한 모델만으로는 부족하며, 비즈니스 프로세스의 구체적인 맥락과 제약조건을 이해해야 한다. AI 에이전트는 개별 작업을 자동화할 수 있지만, 각 작업이 전체 의사결정 과정에서 어떤 역할을 하는지 알지 못하면 중요한 제약을 간과하거나 비용이 많이 드는 실수를 할 수 있다. 조직은 기존의 프로세스와 데이터에 AI를 연결하고 구체적인 비즈니스 결정부터 시작하여 AI가 실제로 개선할 수 있는 부분을 파악해야 한다. 이러한 맥락 중심의 접근은 직원들이 반복적인 업무에서 벗어나 더 전략적인 의사결정에 집중할 수 있도록 해줄 것이다.",
-    "image": "data/techinsight-images/6a85074051ec.webp",
-    "publishedAt": "2026-10-22T10:00:00.000Z",
-    "createdAt": "2026-10-24T23:08:13.177Z"
-  },
-  {
-    "id": "1597d0c89aca",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "AI 추론이 남기는 숨겨진 저장소 비용",
-    "originalTitle": "AI’s hidden storage bill: What inference leaves behind",
-    "link": "https://www.technologyreview.com/2026/10/22/1146948/ais-hidden-storage-bill-what-inference-leaves-behind/",
-    "summary": "AI 인프라 비용 논의에서 GPU와 계산 비용에만 집중하지만, 추론 과정에서 생성되는 대량의 백엔드 데이터 저장 비용이 간과되고 있다. 훈련과 달리 추론은 지속적으로 이루어지며 매번 로그, 캐시, 백업 등의 데이터가 축적되는데, 사용자가 받는 결과물보다 130배 이상의 데이터가 백엔드에 저장된다. AI 추론 수요가 2030년까지 연 35%로 증가할 것으로 예상되면서 저장소 비용이 기존 예산을 빠르게 초과할 수 있다. 조직들은 데이터 수명주기 전반을 고려한 저장소 아키텍처를 구축하고 AI 인프라 예산 계획에 저장소 비용을 명확히 포함시켜야 한다.",
-    "image": "data/techinsight-images/1597d0c89aca.webp",
-    "publishedAt": "2026-10-22T08:41:18.000Z",
-    "createdAt": "2026-10-25T23:11:48.895Z"
-  },
-  {
-    "id": "3afe1d8dce6f",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "CPG 업계 리더들이 놓치고 있는 AI 전략, 소규모 브랜드의 혁신을 따라잡아야",
-    "originalTitle": "Focus, scale, fund: The AI playbook CPG leaders are missing",
-    "link": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/focus-scale-fund-the-ai-playbook-cpg-leaders-are-missing",
-    "summary": "소규모 브랜드들이 대기업보다 혁신 속도에서 앞서가고 있으며 소비자의 구매 패턴이 빠르게 변하고 있어 과거처럼 규모의 경제만으로는 경쟁 우위를 유지하기 어려워지고 있다. 식음료 산업의 주요 기업들은 포커싱, 확장, 자금 조달이라는 AI 기반의 전략을 통해 다음 단계의 성장을 견인할 수 있다. AI를 효과적으로 활용하면 변화하는 시장에 더 민첩하게 대응하고 새로운 성장의 기회를 포착할 수 있다.",
-    "image": "data/techinsight-images/3afe1d8dce6f.webp",
-    "publishedAt": "2026-10-22T00:00:00.000Z",
-    "createdAt": "2026-10-22T23:58:02.311Z"
-  },
-  {
-    "id": "0059a1e3c2a2",
-    "sourceKey": "oecd",
-    "source": "OECD",
-    "title": "정부를 대신해 행동하는 에이전트 AI: 자율적 기계의 등장과 거버넌스 과제",
-    "originalTitle": "Governing with agentic AI: when machines act on government’s behalf",
-    "link": "https://oecd.ai/en/wonk/governing-with-agentic-ai-when-machines-act-on-governments-behalf",
-    "summary": "정부 서비스가 인공지능으로 인해 새로운 단계로 접어들고 있다. 기존의 질문에 답하고 의사결정을 지원하는 AI 도구에서 벗어나 목표 달성을 위해 자율적으로 행동하는 에이전트 AI 시스템으로의 전환이 일어나고 있다. OECD는 이러한 변화에 대응하기 위해 에이전트 AI 거버넌스 워킹그룹을 설립했으며, 정부가 기계의 자율 행동을 유지하면서도 안전성과 신뢰성을 보장하는 방법을 모색하고 있다. 에이전트 AI는 실직자를 위한 복합 지원 서비스나 공공 구매 보조와 같이 정부 서비스를 혁신할 잠재력을 가지고 있으나, 기술 발전 속도가 이를 안전하게 관리할 거버넌스 체계보다 빠르다는 점이 핵심 과제이다. 각국의 행정 전통과 법적 틀이 다르지만 안전하고 신뢰할 수 있는 에이전트 AI 구축이라는 공통의 목표 아래 국제적 협력을 추진하고 있다.",
-    "image": "data/techinsight-images/0059a1e3c2a2.webp",
-    "publishedAt": null,
-    "createdAt": "2026-10-21T23:59:26.582Z"
-  },
-  {
-    "id": "f21aa2af0599",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "마크프레드 슈인들러, 2027년 IEEE 회장 당선인으로 선출",
-    "originalTitle": "Manfred “Fred” J. Schindler Is 2027 IEEE President-Elect",
-    "link": "https://spectrum.ieee.org/schindler-2027-ieee-president-elect",
-    "summary": "마이크로웨이브 반도체 기술 전문가인 마크프레드 \"프레드\" 슈인들러가 2028년 1월부터 IEEE 회장직을 맡게 될 2027년 회장 당선인으로 선출되었다. 그는 16,421표를 획득해 13,874표를 받은 라이벌 후보를 앞질렀다. 30년 이상 IEEE 자원봉사자로 활동해온 그는 산업과의 연결 강화, 디지털 기반시설 개선, 미래 세대를 위한 기술 발전을 최우선 과제로 삼고 있다. 그는 다양한 기업에서 CTO 및 디렉터직을 역임했으며 11개의 특허를 보유하고 있고, IEEE 마이크로웨이브 이론 및 기술 학회 회장을 역임하는 등 여러 영예로운 상을 수상했다.",
-    "image": "data/techinsight-images/f21aa2af0599.webp",
-    "publishedAt": "2026-10-21T18:00:03.000Z",
-    "createdAt": "2026-10-21T23:59:25.939Z"
-  },
-  {
-    "id": "acb3a24ef951",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "위키피디아 편집자들이 인공지능 생성 콘텐츠로부터 온라인 백과사전을 지키는 방법",
-    "originalTitle": "How Wikipedia’s Editors Keep the Online Encyclopedia Human-Written",
-    "link": "https://spectrum.ieee.org/wikipedia-wikiproject-ai-writing-cleanup",
-    "summary": "2023년부터 본격화된 AI 생성 콘텐츠 문제에 대응하기 위해 위키피디아 자원봉사자들이 WikiProject AI Cleanup을 시작했다. 초기에는 반복되는 표현이나 부자연스러운 구조로 AI 텍스트를 쉽게 적발할 수 있었지만, 현재 AI 모델이 진화하면서 더 미묘한 언어 패턴과 허위 인용 같은 문제가 심각해지고 있다. 2025년 말 신규 문서의 약 20%가 AI 생성으로 의심되었으며, 편집자들은 출처 검증 AI 도구 같은 기술적 해결책도 개발 중이다. 다만 AI 탐지의 정확성과 효율성 사이의 균형을 맞추는 과제가 남아있다.",
-    "image": "data/techinsight-images/acb3a24ef951.webp",
-    "publishedAt": "2026-10-21T13:00:02.000Z",
-    "createdAt": "2026-10-25T23:11:34.477Z"
   }
 ]
