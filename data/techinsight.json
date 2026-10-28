@@ -1,5 +1,53 @@
 [
   {
+    "id": "38c808dff0e0",
+    "sourceKey": "oecd",
+    "source": "OECD",
+    "title": "AI 평가 격차 해소를 위한 5단계 로드맵",
+    "originalTitle": "A five-step roadmap to closing the AI evaluation gap",
+    "link": "https://oecd.ai/en/wonk/a-five-step-roadmap-to-closing-the-ai-evaluation-gap",
+    "summary": "현재 AI 평가 기법은 실제 성능을 제대로 예측하지 못하고 있으며, 이러한 평가 격차는 국제적으로 시급히 해결해야 할 과제로 인식되고 있다. AI 평가 기준을 표준화하고 개선하면 신뢰도 높은 AI 시스템의 도입을 촉진하고, 정책 입안자들의 불확실성을 줄이며, 기업들의 운영 비용을 절감할 수 있다. 또한 규제 체계의 국제적 호환성을 강화하고 AI 시장의 경쟁을 활성화할 수 있다. 이미 미국, 영국, EU, 인도, 싱가포르 등 11개 지역이 AI 안전 연구소를 설립하여 기초 모델에 대한 평가와 테스트를 진행하고 있으며, 이들 기관 간 국제 조율의 길이 마련되었다.",
+    "image": "data/techinsight-images/38c808dff0e0.webp",
+    "publishedAt": null,
+    "createdAt": "2026-10-28T00:27:51.331Z"
+  },
+  {
+    "id": "1698e31ea5a4",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "로봇의 안전장치는 작동하지만, 입력값이 조작된다면?",
+    "originalTitle": "Your Robot’s Safety Functions Already Work. What If the Input Lies?",
+    "link": "https://spectrum.ieee.org/ai-robot-safety-cybersecurity-vicone",
+    "summary": "로봇의 안전 기능이 정상적으로 작동하더라도 입력되는 정보가 의도적으로 조작되면 로봇의 행동이 예기치 않게 변할 수 있다. 카메라 영상 변조, 거짓 음성 신호, 위조된 센서 데이터 등을 통해 로봇이 설계된 대로 반응하면서도 실제로는 위험한 행동을 수행하도록 만들 수 있다. 안전 보호 시스템 역시 입력값에 의존하기 때문에 그 입력값이 조작되면 안전장치 자체도 제 역할을 하지 못할 수 있다. 이러한 사이버 위협으로부터 로봇을 보호하기 위해서는 입력값의 신뢰성 검증과 강화된 테스트가 필요하다.",
+    "image": "data/techinsight-images/1698e31ea5a4.webp",
+    "publishedAt": "2026-10-27T16:14:39.000Z",
+    "createdAt": "2026-10-28T00:27:53.129Z"
+  },
+  {
+    "id": "2f3094c64e2f",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "인류의 미래를 좌우할 앤스로픽의 상장, 스마트 전력망, 그리고 운동 약의 시대",
+    "originalTitle": "The Download: Anthropic’s IPO, smarter power grids, and exercise pills",
+    "link": "https://www.technologyreview.com/2026/10/27/1147693/the-download-anthropic-ipo-smarter-power-grids-exercise-pills/",
+    "summary": "AI 안전 기업 앤스로픽이 IPO 신청서를 제출했으며, 이번 상장은 AI 투자 붐의 향방을 결정할 수 있는 중요한 사건이다. 미국 전력망의 효율을 높이기 위해 고체상태 변압기 같은 차세대 기술이 개발 중이며, 이는 증가하는 전력 수요를 충족시키는 데 핵심 역할을 할 것으로 예상된다. 운동의 이점을 약물로 제공하는 운동 약 개발도 진행 중으로, 거동이 불편한 사람들을 위한 대체 치료법이 될 수 있다. 태양광 에너지가 핵에너지를 제치고 주요 전력원으로 부상하고 있으며, 마이크로플라스틱 문제와 우주 거울 기술 등 여러 기술 이슈들이 동시에 진행 중이다. 이러한 기술들의 발전은 긍정적 가능성과 함께 윤리적·환경적 우려를 함께 제기하고 있다.",
+    "image": "data/techinsight-images/2f3094c64e2f.webp",
+    "publishedAt": "2026-10-27T12:10:00.000Z",
+    "createdAt": "2026-10-28T00:27:47.798Z"
+  },
+  {
+    "id": "9dbb9e5222c0",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "제조업의 차세대 성장 동력, 산업용 인공지능",
+    "originalTitle": "Industrial Intelligence: The next growth opportunity for manufacturing",
+    "link": "https://www.technologyreview.com/2026/10/27/1147142/industrial-intelligence-the-next-growth-opportunity-for-manufacturing/",
+    "summary": "제조업체들이 보유한 경험 많은 인력의 노하우와 운영 데이터를 조직 전체에서 활용할 수 있도록 하는 것이 산업용 인공지능의 핵심이다. 물리적 AI는 기계와 공정을 연결하여 공장 바닥의 상황을 인지하고 패턴을 파악한 뒤 자동으로 대응함으로써 문제를 사전에 해결할 수 있게 한다. 도요타 인더스트리즈의 사례처럼 단편화된 데이터를 연결하면 분석 시간을 5일에서 4시간으로 단축하고 불량률을 25% 낮출 수 있다. 안전한 운영을 위해서는 명확한 권한, 신뢰할 수 있는 장비 연결, 정의된 안전 경계, 그리고 인간의 개입이 보장되어야 한다. 결국 산업용 인공지능은 기계를 더 똑똑하게 만드는 것이 아니라 인력의 역량을 높여 지속 가능한 성장을 실현하는 것을 목표로 한다.",
+    "image": "data/techinsight-images/9dbb9e5222c0.webp",
+    "publishedAt": "2026-10-27T11:19:18.000Z",
+    "createdAt": "2026-10-28T00:28:05.319Z"
+  },
+  {
     "id": "603f58699d60",
     "sourceKey": "oecd",
     "source": "OECD",
@@ -10,6 +58,18 @@
     "image": "data/techinsight-images/603f58699d60.webp",
     "publishedAt": null,
     "createdAt": "2026-10-27T00:22:40.984Z"
+  },
+  {
+    "id": "3a001020bfd4",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "AI가 대체할 수 없는 것들—그리고 그것이 왜 중요한가",
+    "originalTitle": "What AI can’t replace—and why it matters for value",
+    "link": "https://www.mckinsey.com/capabilities/people-and-organization/our-insights/what-ai-cant-replace-and-why-it-matters-for-value",
+    "summary": "스탠포드 연구 심리학자 자밀 자키는 AI가 인간관계의 단절 위기를 심화시킬 수 있다고 지적한다. 리더십에서 공감 능력은 AI 기술로 절대 대체될 수 없는 핵심 역량이다. 변화 관리 과정에서 공감을 바탕으로 한 소통은 조직 내 신뢰를 구축하고 인간관계를 강화한다. 이러한 인간중심적 접근은 AI 투자의 가치를 극대화하는 데 필수적이다. 결국 기술 도입 시대에 진정한 경쟁력은 인간의 감정 지능에서 비롯된다.",
+    "image": "data/techinsight-images/3a001020bfd4.webp",
+    "publishedAt": "2026-10-27T00:00:00.000Z",
+    "createdAt": "2026-10-28T00:28:01.164Z"
   },
   {
     "id": "d57e9a8a9f2d",
@@ -46,6 +106,18 @@
     "image": "data/techinsight-images/2b5e3b374d0e.webp",
     "publishedAt": "2026-10-26T12:40:00.000Z",
     "createdAt": "2026-10-27T00:22:59.367Z"
+  },
+  {
+    "id": "ddf3109d65db",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "거래 모니터링의 에이전틱 AI: 은행이 컴플라이언스 AI를 확대하는 방법",
+    "originalTitle": "Agentic AI in transaction monitoring: How banks can scale AI in compliance",
+    "link": "https://www.mckinsey.com/capabilities/risk-and-resilience/our-insights/agentic-ai-in-transaction-monitoring-how-banks-can-scale-ai-in-compliance",
+    "summary": "거래 모니터링에 AI를 적용하면 에이전트 기술이 컴플라이언스 업무와 프로세스를 근본적으로 변화시킬 수 있다. 기존의 비용 부담으로만 여겨지던 컴플라이언스 영역을 AI를 통해 경쟁 우위를 창출하는 전략적 자산으로 전환할 수 있다. 에이전틱 AI의 도입으로 은행은 더욱 효율적이고 정확한 거래 감시 체계를 구축할 수 있으며, 이는 규제 대응 능력을 강화하는 동시에 운영 비용을 절감하는 기회를 제공한다.",
+    "image": "data/techinsight-images/ddf3109d65db.webp",
+    "publishedAt": "2026-10-26T00:00:00.000Z",
+    "createdAt": "2026-10-28T00:28:27.525Z"
   },
   {
     "id": "bce699eec5a6",
@@ -166,77 +238,5 @@
     "image": "data/techinsight-images/308e0e5b7af7.webp",
     "publishedAt": null,
     "createdAt": "2026-10-22T23:57:45.229Z"
-  },
-  {
-    "id": "2aedd54f3eb3",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "오래 지속되는 AI 서빙 시스템 설계하기",
-    "originalTitle": "Designing an AI serving harness built to last",
-    "link": "https://www.technologyreview.com/2026/10/22/1146109/designing-an-ai-serving-harness-built-to-last/",
-    "summary": "AI 모델의 성능보다 그것을 둘러싼 엔지니어링 시스템이 기업 AI의 경쟁력을 좌우하게 되었다. 실제 운영 환경에서는 모델 정확도보다 지연시간, 동시성, 메모리 효율, 비용 등 다양한 제약 조건이 중요하며, 이러한 제약을 우선적으로 파악하고 해결하는 것이 핵심이다. 조직은 최고 성능의 모델보다 비즈니스 요구에 맞는 최적의 성능을 제공하는 모델을 선택해야 하며, 메모리 관리, 스케줄링, GPU 활용 등 시스템 요소들 간의 상호작용을 통합적으로 최적화해야 한다. 기술 리더는 개별 최적화 기법을 수집하기보다 가장 큰 병목을 제거하는 기법을 선택해야 하며, 미래의 모델과 하드웨어 변화에 적응할 수 있는 유연한 아키텍처를 구축해야 한다. 결국 모델이 지능을 제공한다면 서빙 시스템이 그것을 안정적이고 경제적이며 규모있게 전달할 수 있는지를 결정한다.",
-    "image": "data/techinsight-images/2aedd54f3eb3.webp",
-    "publishedAt": "2026-10-22T21:17:29.000Z",
-    "createdAt": "2026-10-22T23:57:45.269Z"
-  },
-  {
-    "id": "d8c2939ee8cf",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "확장 가능한 AI를 위한 기초 구축",
-    "originalTitle": "The Foundations of Scalable AI",
-    "link": "https://www.technologyreview.com/2026/10/22/1146103/the-foundations-of-scalable-ai/",
-    "summary": "확장 가능한 AI 시스템을 구축하기 위해서는 데이터, 엔지니어링, 플랫폼, 운영 모델, 거버넌스가 통합되어 하나로 작동해야 한다. MIT 기술 리뷰의 EmTech Future 컨퍼런스에서는 규제가 많은 환경에서 이러한 기초를 구축하는 방법과 책임감 있고 신뢰할 수 있는 AI 구현 방식을 다룬다. 밴가드의 Jing Wang은 신흥 기술을 투자자들에게 지속적인 가치를 제공하는 신뢰할 수 있는 솔루션으로 전환하는 과정을 설명한다.",
-    "image": "data/techinsight-images/d8c2939ee8cf.webp",
-    "publishedAt": "2026-10-22T18:48:04.000Z",
-    "createdAt": "2026-10-22T23:58:02.072Z"
-  },
-  {
-    "id": "ba1967cf9869",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "AI는 엔지니어링 팀을 대체할 수 없다",
-    "originalTitle": "Why AI Can’t Replace Engineering Teams",
-    "link": "https://spectrum.ieee.org/engineering-jobs-that-ai-cant-replace",
-    "summary": "생성형 AI의 부상으로 엔지니어들이 자신의 가치를 의심받고 있지만, 데모와 실제 운영 환경은 근본적으로 다르다. 작동하는 웹사이트 데모는 레거시 코드 통합, 법적 요구사항, 접근성 표준, 복잡한 배포 프로세스 등의 실제 복잡성을 숨긴다. 엔지니어들은 AI 모델의 작동 원리를 깊이 있게 이해하고 이를 경영진에게 설명함으로써 AI의 한계를 명확히 할 수 있다. 엔지니어링 팀은 단순한 코드 작성이 아닌 안전하고 유용한 제품을 구축하는 본질적인 역할을 수행하며, 이는 AI로 대체될 수 없는 영역이다.",
-    "image": "data/techinsight-images/ba1967cf9869.webp",
-    "publishedAt": "2026-10-22T18:02:20.000Z",
-    "createdAt": "2026-10-22T23:57:48.620Z"
-  },
-  {
-    "id": "bac3b1cc8940",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "기술 정책 결정에 목소리를 내야 하는 엔지니어들",
-    "originalTitle": "Why Engineers Should Brave Capitol Hill",
-    "link": "https://spectrum.ieee.org/engineers-lobbying-congress",
-    "summary": "미국의 엔지니어들이 의회를 방문해 기술 정책에 직접 영향을 미칠 수 있는 기회가 있다. IEEE-USA가 주최하는 연례 의회 방문의 날에 참가한 소프트웨어 엔지니어 니킬 자타르의 사례를 통해 엔지니어들이 의회 의원들과 소통하는 방법과 그 중요성을 보여준다. 의회 보좌진들은 로비스트들의 이해관계보다 객관적인 기술 전문지식을 제공할 수 있는 엔지니어들의 의견을 환영한다. 의회 방문을 통한 효과적인 정책 영향을 위해서는 명확한 요구사항과 철저한 준비가 필요하다. 전문 로비 활동과 일반 시민 옹호의 차이를 이해하는 것도 중요하다.",
-    "image": "data/techinsight-images/bac3b1cc8940.webp",
-    "publishedAt": "2026-10-22T13:00:02.000Z",
-    "createdAt": "2026-10-24T23:07:56.585Z"
-  },
-  {
-    "id": "0f63b95564f2",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "컴퓨팅의 다음 도약과 영구동토층의 기후 위협",
-    "originalTitle": "The Download: computing’s next leap and permafrost’s climate threat",
-    "link": "https://www.technologyreview.com/2026/10/22/1147612/the-download-computing-next-leap-permafrost-climate-threat/",
-    "summary": "반도체 축소라는 쉬운 성장이 한계에 도달하면서 컴퓨팅 업계는 더 큰 데이터센터 건설로 성능 향상을 추구하고 있지만, 물리학의 법칙은 여전히 개선의 여지를 남기고 있다. 한편 알래스카의 산불로 위협받고 있는 영구동토층의 해빙은 복잡한 기후 영향을 미칠 것으로 예상된다. 이 외에도 AI가 웹의 대부분을 구성하는 PHP 코드의 10년 묵은 취약점을 발견했으며, 해커들이 클로드와 그록 같은 AI를 이용해 400여 개 은행을 대상으로 자동화된 공격을 시도했다. AI 설계 바이러스가 항생제 내성 박테리아를 치료하는 첫 번째 환자 사례도 보고되었으나 아직 동료 검증이 이루어지지 않았다.",
-    "image": "data/techinsight-images/0f63b95564f2.webp",
-    "publishedAt": "2026-10-22T12:10:00.000Z",
-    "createdAt": "2026-10-24T23:07:56.333Z"
-  },
-  {
-    "id": "17209c2cce30",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "영구동토층에 대해 알아야 할 세 가지",
-    "originalTitle": "Three things you should know about permafrost",
-    "link": "https://www.technologyreview.com/2026/10/22/1147591/permafrost-primer/",
-    "summary": "영구동토층은 북반구 육지의 약 15%를 차지하는 동결된 토양층으로, 수천 년 동안 갇혀 있던 유기물이 해빙되면서 이산화탄소와 메탄을 방출하여 기후 변화를 가속화하고 있으나 대부분의 기후 모델에서 제대로 반영되지 않고 있다. 산불은 기후 변화로 인해 더욱 강해지고 있으며 영구동토층의 해빙을 급속화시킬 수 있는데, 세기 말까지 약 800억 톤의 이산화탄소 방출을 유발할 수 있다. 영구동토층에 갇혀 있는 약 1.5조 톤의 탄소가 방출될 경우 지구 대기의 탄소량의 2배에 달하지만, 해빙 후 북쪽으로 이동하는 식물들이 대기 중 탄소를 흡수하는 등 복잡한 생태계 변화가 동시에 일어나 정확한 영향을 예측하기 어렵다.",
-    "image": "data/techinsight-images/17209c2cce30.webp",
-    "publishedAt": "2026-10-22T10:00:00.000Z",
-    "createdAt": "2026-10-25T23:11:29.010Z"
   }
 ]
