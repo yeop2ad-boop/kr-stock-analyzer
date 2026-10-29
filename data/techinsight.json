@@ -1,5 +1,53 @@
 [
   {
+    "id": "8bb8eec3e5d8",
+    "sourceKey": "oecd",
+    "source": "OECD",
+    "title": "양자기술이 인공지능의 새로운 지평을 열 수 있는 방법",
+    "originalTitle": "How quantum technologies could open new frontiers for AI",
+    "link": "https://oecd.ai/en/wonk/how-quantum-technologies-could-open-new-frontiers-for-ai",
+    "summary": "양자기술과 인공지능의 상호보완적 관계를 다루는 시리즈의 최종편으로, 양자컴퓨팅, 센싱, 통신 기술이 미래 AI 시스템의 발전을 어떻게 지원할 수 있는지를 탐색한다. 현재 대규모 양자컴퓨터는 장기적 목표이지만 초기 양자기기와 기존 AI 시스템의 통합은 이미 양자 강화 AI의 길을 열어주고 있다. 양자컴퓨팅은 특히 에너지 효율성 개선과 최적화, 패턴 인식 등 특정 문제 해결에서 고전 컴퓨팅의 한계를 극복함으로써 AI 성능을 크게 향상시킬 수 있다. 다만 데이터 전송 제약, 성능 우위 입증의 어려움, 하드웨어 요구사항 불명확 등의 병목으로 인해 양자머신러닝의 광범위한 상용화는 향후 10년 내 기대하기 어렵다. 한편 텐서 네트워크 같은 양자에서 영감을 받은 AI 기법들은 이미 고전 컴퓨팅 하드웨어에서 실질적인 이점을 제공하고 있다.",
+    "image": "data/techinsight-images/8bb8eec3e5d8.webp",
+    "publishedAt": null,
+    "createdAt": "2026-10-29T00:50:33.370Z"
+  },
+  {
+    "id": "5d25973f5352",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "기업 맥락을 활용한 AI 가치 창출",
+    "originalTitle": "Creating AI value with enterprise context",
+    "link": "https://www.technologyreview.com/2026/10/28/1147709/creating-ai-value-with-enterprise-context/",
+    "summary": "많은 기업들이 여러 AI 플랫폼을 동시에 운영하고 있지만, 실제로는 AI 투자에서 의미 있는 수익을 얻지 못하고 있다. 조사에 따르면 조직의 16%만이 AI 배포에서 혁신적 가치를 창출하고 있으며, 대다수는 여전히 파일럿 단계에 머물러 있다. 문제의 핵심은 AI 모델이 기업 조직과 비즈니스 환경을 충분히 이해하지 못한다는 점이다. 이를 해결하기 위해 기업의 시스템과 AI 플랫폼 사이에 맥락 계층이 필요하며, 이것이 AI 에이전트가 기업 정보를 효과적으로 활용할 수 있도록 돕는다. 결국 기업 맥락을 제공하는 아키텍처 없이는 AI의 진정한 가치를 실현하기 어렵다.",
+    "image": "data/techinsight-images/5d25973f5352.webp",
+    "publishedAt": "2026-10-28T20:32:02.000Z",
+    "createdAt": "2026-10-29T00:50:30.097Z"
+  },
+  {
+    "id": "d27073b544a7",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "AI 시대에 더욱 중요해지는 시스템 사고",
+    "originalTitle": "Systems Thinking Is Vital in the Age of AI",
+    "link": "https://spectrum.ieee.org/systems-thinking-vital-in-ai",
+    "summary": "AI 기술의 발전으로 엔지니어들은 문제 정의부터 시뮬레이션, 설계 비교까지 AI의 도움을 받을 수 있게 되었지만, 최종 의사결정은 여전히 인간의 책임이다. 엔지니어의 역할은 각 기술 단계를 직접 수행하는 것에서 AI, 인간, 전문가의 협력을 조율하는 것으로 확대되고 있다. 문제 해결 과정에서 필요한 다양한 분야의 전문성을 인식하고 적절한 인력과 도구를 결집시키는 능력이 점점 더 중요해지고 있다. 시스템 사고는 문제의 전체상을 파악하고 상호작용을 이해하며, AI에게 맡길 업무와 인간이 검증할 영역을 구분하는 데 필수적이다. 엔지니어의 진정한 가치는 모든 것을 아는 데 있지 않고, 문제를 올바르게 정의하고 적절한 질문을 던지며 새로운 통찰이 나타날 때 범위를 조정할 수 있는 능력에 있다.",
+    "image": "data/techinsight-images/d27073b544a7.webp",
+    "publishedAt": "2026-10-28T18:00:02.000Z",
+    "createdAt": "2026-10-29T00:50:32.664Z"
+  },
+  {
+    "id": "741a865a00c3",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "폐업한 스타트업의 데이터가 AI 학습을 돕고, 동물 의사소통 해석이 진전되다",
+    "originalTitle": "The Download: dead startups fueling AI and interspecies communication",
+    "link": "https://www.technologyreview.com/2026/10/28/1147767/the-download-dead-startups-fueling-ai-interspecies-communication/",
+    "summary": "AI 연구소들이 훈련 데이터 부족을 해결하기 위해 문을 닫은 스타트업들의 코드베이스와 작업 데이터를 구매하는 시장이 성장하고 있지만, 이러한 거래는 법적·윤리적 문제를 야기하고 있다. 한편 AI와 첨단 기술의 발전으로 동물들의 울음소리와 신호를 해석하는 능력이 향상되고 있으며, 이는 다양한 종의 내적 세계를 이해하는 새로운 기회를 제공한다. 미국과 중국은 달 기지 건설 경쟁을 벌이고 있으며, 이를 위해서는 자율 로봇, 핵 에너지, 그리고 달의 자원 활용이 필수적이다. 이 밖에 연방선거위원회 웹사이트 해킹, 스타링크 제약에 따른 유럽의 우려, 탄소 중립 목표를 위한 애플의 대규모 나무 심기 등 다양한 기술 관련 이슈들이 전개되고 있다.",
+    "image": "data/techinsight-images/741a865a00c3.webp",
+    "publishedAt": "2026-10-28T12:10:00.000Z",
+    "createdAt": "2026-10-29T00:50:50.485Z"
+  },
+  {
     "id": "38c808dff0e0",
     "sourceKey": "oecd",
     "source": "OECD",
@@ -10,6 +58,30 @@
     "image": "data/techinsight-images/38c808dff0e0.webp",
     "publishedAt": null,
     "createdAt": "2026-10-28T00:27:51.331Z"
+  },
+  {
+    "id": "f05fca276caf",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "조달 분야의 에이전트 AI, 과대광고인가 혁신인가?",
+    "originalTitle": "Agentic AI in strategic sourcing: Hype or hero?",
+    "link": "https://www.mckinsey.com/capabilities/operations/our-insights/agentic-ai-in-strategic-sourcing-hype-or-hero",
+    "summary": "조달 부서들이 비용 절감과 효율성 향상을 목표로 에이전트 AI에 투자하고 있다. 이러한 기술이 실제로 기대만큼 가치 있는지에 대한 의문이 제기되고 있다. 기업들은 높은 기대감 속에 에이전트 AI 도입을 추진 중이지만, 실제 효과가 명확하지 않아 신중한 검토가 필요한 상황이다.",
+    "image": "data/techinsight-images/f05fca276caf.webp",
+    "publishedAt": "2026-10-28T00:00:00.000Z",
+    "createdAt": "2026-10-29T00:50:45.580Z"
+  },
+  {
+    "id": "f17c289cf923",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "AI가 쇼핑할 때 누가 이기는가? 에이전트 커머스의 새로운 증거",
+    "originalTitle": "Who wins when AI does the shopping? New evidence on agentic commerce",
+    "link": "https://www.mckinsey.com/capabilities/growth-marketing-and-sales/our-insights/who-wins-when-ai-does-the-shopping-new-evidence-on-agentic-commerce",
+    "summary": "약 21,000명의 소비자를 분석한 결과 AI 쇼핑 행동이 빠르게 증가하고 진화하고 있는 것으로 나타났다.\n초기 증거에 따르면 기업들은 증가하는 AI 쇼핑 수요에 아직 제대로 대응할 준비가 되어있지 않은 상태다.\n현재 많은 기업이 에이전트 커머스 시대에 적응하기 위한 인프라와 전략을 개발하는 과정에 있다.",
+    "image": "data/techinsight-images/f17c289cf923.webp",
+    "publishedAt": "2026-10-28T00:00:00.000Z",
+    "createdAt": "2026-10-29T00:51:08.252Z"
   },
   {
     "id": "1698e31ea5a4",
@@ -166,77 +238,5 @@
     "image": "data/techinsight-images/1136737ea8bf.webp",
     "publishedAt": null,
     "createdAt": "2026-10-24T23:07:58.732Z"
-  },
-  {
-    "id": "25d791239c29",
-    "sourceKey": "oecd",
-    "source": "OECD",
-    "title": "투명성 의무를 경쟁 우위로 전환하는 히로시마 AI 프로세스",
-    "originalTitle": "HAIP is transforming transparency from a compliance burden to a competitive advantage",
-    "link": "https://oecd.ai/en/wonk/haip-transforming-transparency-from-ai-compliance-burden-to-competitive-advantage",
-    "summary": "OECD의 히로시마 AI 프로세스(HAIP) 보고 프레임워크는 AI 투명성을 규제 부담에서 경쟁 이점으로 전환하고 있다. 자율 AI 에이전트 시대로의 진입으로 모델 개발자부터 최종 사용자까지 AI 가치사슬이 확대되면서 책임성 격차와 의사결정 불투명성 문제가 심화되고 있다. 각 국가의 상이한 AI 규제 체계는 중소기업에게 시장 진입 장벽이 되고 있으며, 글로벌 조화된 기준 마련이 책임감 있는 AI 경제 참여를 확대할 수 있다. 공통 프레임워크와 표준화된 언어는 기업들이 신뢰할 수 있는 AI 개발 경로를 명확히 하는 데 필수적이다. HAIP 보고 프레임워크는 규제 단편화를 극복하고 진정한 인간 통제를 보장하는 거버넌스 구조를 구축하는 데 핵심 역할을 한다.",
-    "image": "data/techinsight-images/25d791239c29.webp",
-    "publishedAt": null,
-    "createdAt": "2026-10-23T23:50:43.034Z"
-  },
-  {
-    "id": "57d1526d44c4",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "칩 설계자에서 무대의 주인공으로: 아날로그 회로 설계 분야의 여성 엔지니어",
-    "originalTitle": "From Chip Lab to Center Stage",
-    "link": "https://spectrum.ieee.org/preethi-ashwath-chip-designer",
-    "summary": "아날로그 반도체 설계 분야의 여성 엔지니어인 프리티 아슈와스는 칩 개발 실험실에서의 기술적 업무를 넘어 소비자와 직접 소통하는 역할로 나아갔다. 아날로그 디바이스에서 개발한 귀걸이형 웨어러블 기기를 CES에서 시연하며 복잡한 기술을 쉽게 설명하는 능력을 입증한 후, 업계 행사와 기술 강연에서 회사를 대표하게 되었다. 공학 커뮤니티 활성화와 학문 발전에 기여하는 방식으로 강연과 패널 토론 참여를 보람 있게 여기는 그녀는 IEEE 회로 및 시스템 학회의 활동적인 자원봉사자이기도 하다. 인도에서의 물리학 교습과 대학 시절 인텔 인턴십을 통해 회로 설계의 매력을 발견한 그녀는 기술 개발의 전 과정을 이해하고 창의적 문제해결의 만족감을 추구하는 엔지니어로 성장했다.",
-    "image": "data/techinsight-images/57d1526d44c4.webp",
-    "publishedAt": "2026-10-23T18:00:03.000Z",
-    "createdAt": "2026-10-23T23:50:44.328Z"
-  },
-  {
-    "id": "795b54b85a06",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "기술 약속 6가지 검증과 바이오텍의 사각지대",
-    "originalTitle": "The Download: testing six tech promises and biotech’s blind spots",
-    "link": "https://www.technologyreview.com/2026/10/23/1147628/the-download-testing-tech-promises-science-blind-spots/",
-    "summary": "MIT 테크놀로지 리뷰는 수십 년간 '곧 실현될' 것으로 약속된 6가지 주요 기술이 실제로 얼마나 진전했는지 전문가들을 통해 검증했다. 약물 형태의 운동부터 핵추진 우주선까지 각 기술이 직면한 장애물과 현재 진행 상황을 점검했다. 한편 바이오텍 산업에서는 매력적인 이야기에 현혹되기 쉬우며, 엘리자베스 홈스 사건 같은 사례는 과학 보도의 신뢰성 문제를 다시 일깨웠다. 이 외에도 유전자 편집 개를 개발하는 스타트업, mRNA 암 백신의 효과, 신약 유전자 편집 기술 등 다양한 바이오텍 뉴스가 전해졌다. 기술 보도의 투명성과 검증 강화의 필요성이 강조되고 있다.",
-    "image": "data/techinsight-images/795b54b85a06.webp",
-    "publishedAt": "2026-10-23T12:10:00.000Z",
-    "createdAt": "2026-10-23T23:50:42.269Z"
-  },
-  {
-    "id": "765ba2e8859e",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "바이오테크 세계에서는 모든 것을 볼 수 없다",
-    "originalTitle": "In the biotech world, you can’t see everything",
-    "link": "https://www.technologyreview.com/2026/10/23/1147610/biotech-you-can-see-everything-theranos-holmes/",
-    "summary": "엘리자베스 홈스의 테라노스 사건을 다룬 다큐멘터리를 본 기자는 겉으로 보이는 것만으로는 과학 사기를 적발하기 어렵다는 점을 깨달았다. 테라노스는 혈액 검사 기술을 주장했지만 동료 심사를 거친 공개 데이터가 없었고, 기자는 홈스의 설득력 있는 이야기에 자신도 넘어갈 수 있었을 것 같은 위험을 느꼈다. 과학 논문 발표 과정에서 동료 심사가 일반화되면서도 여전히 조작이나 과장된 결과가 적발되지 않은 채 발표되고 있다. 사전 출판 서버, 보도자료, 소셜 미디어 등 동료 심사를 거치지 않는 경로가 늘어나면서 검증되지 않은 주장이 더 쉽게 퍼질 수 있다. 과학 기자로서 신뢰할 만한 과학자들에게 확인하려고 노력하지만, 그럼에도 기만적인 내러티브에 빠질 가능성은 항상 존재한다.",
-    "image": "data/techinsight-images/765ba2e8859e.webp",
-    "publishedAt": "2026-10-23T09:00:00.000Z",
-    "createdAt": "2026-10-23T23:51:01.731Z"
-  },
-  {
-    "id": "c2aa4b8eb5b1",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "인공지능은 빠르게 진화하고 있다, 우리의 판단력도 따라잡고 있을까?",
-    "originalTitle": "Author Talks: AI is advancing. Is our judgment keeping up?",
-    "link": "https://www.mckinsey.com/featured-insights/mckinsey-on-books/author-talks-ai-is-advancing-is-our-judgment-keeping-up",
-    "summary": "인공지능의 잠재력을 활용하면서도 인간의 판단력을 잃지 않기 위한 방법이 필요하다. 기술 리더 티파니 왕은 AI를 신뢰할지 말지의 문제가 아니라, 언제 그리고 어느 정도로 신뢰할 것인지를 배워야 한다고 강조한다. 결국 AI와 인간의 판단력을 적절히 결합하는 것이 미래의 핵심이다.",
-    "image": "data/techinsight-images/c2aa4b8eb5b1.webp",
-    "publishedAt": "2026-10-23T00:00:00.000Z",
-    "createdAt": "2026-10-23T23:50:49.905Z"
-  },
-  {
-    "id": "308e0e5b7af7",
-    "sourceKey": "oecd",
-    "source": "OECD",
-    "title": "HAIP 2.0, EU AI Act와의 상호운용성으로 글로벌 AI 거버넌스 강화",
-    "originalTitle": "Bridging frameworks: How HAIP 2.0 supports interoperability with the EU AI Act",
-    "link": "https://oecd.ai/en/wonk/bridging-frameworks-how-haip-2-0-supports-interoperability-with-the-eu-ai-act",
-    "summary": "OECD가 2026년 5월 출시한 HAIP 2.0은 AI 기업들이 자발적으로 신뢰할 수 있는 AI 거버넌스 실천 사항을 보고하는 글로벌 표준 프레임워크다. EU AI Act와 달리 자발적이고 공개적이지만, 두 프레임워크 간에 80%의 질문이 EU 규제 요구사항과 겹치며 58%가 강력하거나 부분적으로 일치한다. 이는 EU 규정을 이미 준수하는 기업들이 기존 컴플라이언스 자료를 HAIP 보고서 작성에 재활용할 수 있다는 장점을 의미한다. HAIP 2.0은 자발성과 투명성을 기반으로 글로벌 차원의 비교 가능한 기준을 제시하면서도 EU의 구속력 있는 규제와 상호보완적인 역할을 한다.",
-    "image": "data/techinsight-images/308e0e5b7af7.webp",
-    "publishedAt": null,
-    "createdAt": "2026-10-22T23:57:45.229Z"
   }
 ]
