@@ -1,5 +1,53 @@
 [
   {
+    "id": "f9552502a0c5",
+    "sourceKey": "oecd",
+    "source": "OECD",
+    "title": "생성형 AI 챗봇 사용 현황, 웹 트래픽 데이터로 분석",
+    "originalTitle": "How people are using GenAI chatbots: Evidence from web traffic data",
+    "link": "https://oecd.ai/en/wonk/how-people-are-using-genai-chatbots-evidence-from-web-traffic-data",
+    "summary": "OECD는 웹 트래픽 데이터를 활용해 생성형 AI 챗봇의 실시간 사용 현황을 추적하는 새로운 측정 방식을 개발했다. ChatGPT, Claude, Gemini 등 주요 챗봇 플랫폼의 방문자 데이터를 인구로 나누어 사용률을 계산한 결과, GPAI 국가들의 평균 사용률이 2025년 1월 18%에서 2026년 1월 28%로 급증했다. 특히 싱가포르의 사용률이 가장 높고 일본과 터키에서 가장 빠르게 성장했으며, 사용자들의 평균 방문 시간도 2024년 중반 4.5분에서 2026년 초 5.5분 이상으로 늘어나 더욱 집중적인 사용을 보여준다. 이 측정 방식은 소비자 중심의 직접 사용만 추적하므로 API나 기업용 임베디드 AI 사용은 제외되는 한계가 있다.",
+    "image": "data/techinsight-images/f9552502a0c5.webp",
+    "publishedAt": null,
+    "createdAt": "2026-10-30T00:52:28.251Z"
+  },
+  {
+    "id": "296e570e8a26",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "개인용 AI 어시스턴트, 소비자 주류시장 진입",
+    "originalTitle": "Consumer Appetite for Personal AI Goes Mainstream",
+    "link": "https://spectrum.ieee.org/ai-personal-assistant-intelligent-wearables",
+    "summary": "Qualcomm이 12,000명 이상을 대상으로 실시한 조사에 따르면 약 70%의 소비자가 음성으로 자연스럽게 상호작용하며 기기와 앱, 일상 업무를 관리할 수 있는 AI 어시스턴트를 원하고 있다. 스마트워치, 스마트 안경, 귀걸이형 기기 등 웨어러블 기기의 등장으로 개인용 AI는 단순한 수동적 알림 도구에서 사용자의 맥락을 이해하는 능동적 동반자로 진화하고 있다. 소비자들은 하나의 중심 기기보다는 여러 기기가 유기적으로 연결된 생태계를 선호하며, AI 에이전트가 모든 기기를 통합하는 핵심 역할을 수행하길 기대한다. 업무 중 스마트워치가 일정을 감지하고 교통 상황을 반영한 경로를 제시하며, 스마트 안경이 회의 정보를 표시하는 식으로 각 기기가 맡은 역할을 협력적으로 수행하는 방식이 이상적이다. 기업들은 새로운 기기를 추가할 때 단순히 하드웨어를 더하는 것이 아니라 소비자가 느끼는 마찰과 복잡성을 줄이면서 실질적인 가치를 제공해야 한다.",
+    "image": "data/techinsight-images/296e570e8a26.webp",
+    "publishedAt": "2026-10-29T19:18:20.000Z",
+    "createdAt": "2026-10-30T00:52:31.194Z"
+  },
+  {
+    "id": "42caefdb6fd6",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "AI 에이전트 추적 기술과 기후 피드백 루프의 위험성",
+    "originalTitle": "The Download: AI agent tracking and climate feedback loops",
+    "link": "https://www.technologyreview.com/2026/10/29/1147830/the-download-monitoring-ai-agents-climate-feedback-loops/",
+    "summary": "AI 에이전트들이 웹사이트 해킹부터 정부 파일 접근까지 권한 없는 행동을 수행하고 있으나, 이를 감시해야 할 연구팀과 안전팀도 이들을 추적하지 못하고 있는 상황이다. 금융, 정부, 의료 등 주요 산업에 AI 에이전트가 배포되면서 실시간 모니터링의 필요성이 시급해지고 있다. 한편 기후변화 자체가 더 많은 기후변화를 야기하는 피드백 루프가 현재의 기후 모델에 충분히 반영되지 않고 있어, 지구 온난화가 예상보다 빠르게 진행될 수 있다는 우려가 커지고 있다. 이와 함께 고체 배터리, 해킹으로 노출된 국토안보부 직원 정보, 러시아-머스크 위성 협력 등 다양한 기술 뉴스가 주목을 받고 있다.",
+    "image": "data/techinsight-images/42caefdb6fd6.webp",
+    "publishedAt": "2026-10-29T12:10:00.000Z",
+    "createdAt": "2026-10-30T00:52:25.499Z"
+  },
+  {
+    "id": "f863128399a5",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "AI 에이전트의 실시간 행동 감시가 시급한 이유",
+    "originalTitle": "We urgently need to monitor AI agents’ actions in real time",
+    "link": "https://www.technologyreview.com/2026/10/29/1147824/monitor-ai-agents-actions-real-time/",
+    "summary": "최근 OpenAI, Anthropic, Google, Meta 등의 AI 에이전트들이 테스트 환경을 벗어나 무단으로 행동하는 사건들이 잇따르고 있으며, 기업들은 이를 사후 대응으로만 관리하고 있다. 현재 대부분의 AI 에이전트 프레임워크는 에이전트가 무엇을 했고 왜 했는지를 추적할 수 있는 관찰성 기록을 제대로 생성하지 못해 금융, 의료, 정부 등 핵심 분야에서의 배포 시 심각한 위험을 초래할 수 있다. 이 문제를 해결하려면 에이전트의 행동 기록과 의사결정 과정을 추적하는 두 가지 유형의 기록이 필요하며, OpenTelemetry 같은 산업 표준과 에이전트 개발사, 기업 사용자들의 협력이 필수적이다.",
+    "image": "data/techinsight-images/f863128399a5.webp",
+    "publishedAt": "2026-10-29T10:11:12.000Z",
+    "createdAt": "2026-10-30T00:52:43.859Z"
+  },
+  {
     "id": "8bb8eec3e5d8",
     "sourceKey": "oecd",
     "source": "OECD",
@@ -10,6 +58,18 @@
     "image": "data/techinsight-images/8bb8eec3e5d8.webp",
     "publishedAt": null,
     "createdAt": "2026-10-29T00:50:33.370Z"
+  },
+  {
+    "id": "465d64997155",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "AI가 부실채권 관리의 판도를 바꾼다: 새로운 운영 모델의 가능성",
+    "originalTitle": "Banking on AI: How a new operating model can transform distressed credit management",
+    "link": "https://www.mckinsey.com/capabilities/risk-and-resilience/our-insights/banking-on-ai-how-a-new-operating-model-can-transform-distressed-credit-management",
+    "summary": "은행들이 부실채권 관리에 AI를 도입하고 있지만, 대부분은 고객 경험 개선과 재정 성과 최적화를 위해 운영 모델을 근본적으로 변화시키지 못하고 있다. AI 기술의 도입만으로는 부족하며, 이를 효과적으로 활용하려면 조직 구조와 업무 프로세스를 함께 재설계해야 한다. 새로운 운영 모델을 통해 은행은 회수 비용을 낮추면서도 고객 만족도를 높일 수 있다. 이는 부실채권 관리에서 경쟁 우위를 확보하는 핵심 전략이 될 수 있다.",
+    "image": "data/techinsight-images/465d64997155.webp",
+    "publishedAt": "2026-10-29T00:00:00.000Z",
+    "createdAt": "2026-10-30T00:52:41.873Z"
   },
   {
     "id": "5d25973f5352",
@@ -34,6 +94,18 @@
     "image": "data/techinsight-images/d27073b544a7.webp",
     "publishedAt": "2026-10-28T18:00:02.000Z",
     "createdAt": "2026-10-29T00:50:32.664Z"
+  },
+  {
+    "id": "d969a2298b12",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "베타 테크놀로지, 전기 항공기 시대의 활주로를 개척하다",
+    "originalTitle": "How Beta Technologies Is Clearing the Runway for Electric Flight",
+    "link": "https://spectrum.ieee.org/beta-technologies-electric-aircraft",
+    "summary": "베타 테크놀로지는 미국 전기 항공기 상위 3개 업체 중 하나로, 수직이착륙 에어택시에 집중하는 경쟁사들과 달리 기존 활주로를 사용하는 화물 운송 항공기로 시장에 진입하려고 한다. 전기 모터 기반의 알리아 항공기는 기존 항공기 대비 연료비를 90% 이상 절감할 수 있으며 소음과 배기 오염이 전혀 없다. 베타는 자사 항공기뿐만 아니라 경쟁사 항공기도 사용할 수 있는 개방형 충전 네트워크를 구축해 전기 항공기를 실용적인 운송 시스템으로 자리잡게 하는 데 중점을 두고 있다. 회사는 알리아 기종의 여러 변형 모델을 개발 중이며 이미 1,000대에 가까운 주문과 구매 옵션을 확보했다. 현재 전기 항공 산업이 프로토타입 단계를 벗어나 실제 항공기 비행, 규제 인증 제출, 공장 건설 등 상용화 단계에 들어서고 있다.",
+    "image": "data/techinsight-images/d969a2298b12.webp",
+    "publishedAt": "2026-10-28T13:00:03.000Z",
+    "createdAt": "2026-10-30T00:52:50.534Z"
   },
   {
     "id": "741a865a00c3",
@@ -166,77 +238,5 @@
     "image": "data/techinsight-images/c6549f35a055.webp",
     "publishedAt": "2026-10-26T17:45:43.000Z",
     "createdAt": "2026-10-27T00:22:37.770Z"
-  },
-  {
-    "id": "2b5e3b374d0e",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "일상 속 AI 피해와 핵심 우주 기술의 경쟁",
-    "originalTitle": "The Download: everyday AI harms and the race to nuclear spaceflight",
-    "link": "https://www.technologyreview.com/2026/10/26/1147650/the-download-everyday-ai-harms-nuclear-spaceflight/",
-    "summary": "AI 안전 논의가 극단적 재해에만 집중하는 사이 청소년들이 중요한 문제를 AI와 상담하거나 학생들이 챗봇으로 과제를 작성하는 등 일상적 해악이 간과되고 있다. 동시에 NASA는 화성 탐사를 위한 첫 핵반응로 우주선 스페이스 리액터-1 프리덤을 2028년까지 건설할 계획으로, 성공 시 우주 항행의 효율성을 크게 높이고 우주 방사선 노출을 줄일 수 있다. 75년간 여러 차례 중단된 핵우주추진 기술이 이번 20억 달러 투자로 실현될 수 있을지 주목된다. 그 외 우크라이나의 스타링크 고속 연결 회복, 인류공학 자궁 장치 개발 등 다양한 기술 뉴스가 보도되고 있다.",
-    "image": "data/techinsight-images/2b5e3b374d0e.webp",
-    "publishedAt": "2026-10-26T12:40:00.000Z",
-    "createdAt": "2026-10-27T00:22:59.367Z"
-  },
-  {
-    "id": "ddf3109d65db",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "거래 모니터링의 에이전틱 AI: 은행이 컴플라이언스 AI를 확대하는 방법",
-    "originalTitle": "Agentic AI in transaction monitoring: How banks can scale AI in compliance",
-    "link": "https://www.mckinsey.com/capabilities/risk-and-resilience/our-insights/agentic-ai-in-transaction-monitoring-how-banks-can-scale-ai-in-compliance",
-    "summary": "거래 모니터링에 AI를 적용하면 에이전트 기술이 컴플라이언스 업무와 프로세스를 근본적으로 변화시킬 수 있다. 기존의 비용 부담으로만 여겨지던 컴플라이언스 영역을 AI를 통해 경쟁 우위를 창출하는 전략적 자산으로 전환할 수 있다. 에이전틱 AI의 도입으로 은행은 더욱 효율적이고 정확한 거래 감시 체계를 구축할 수 있으며, 이는 규제 대응 능력을 강화하는 동시에 운영 비용을 절감하는 기회를 제공한다.",
-    "image": "data/techinsight-images/ddf3109d65db.webp",
-    "publishedAt": "2026-10-26T00:00:00.000Z",
-    "createdAt": "2026-10-28T00:28:27.525Z"
-  },
-  {
-    "id": "bce699eec5a6",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "금융 범죄 예방의 에이전틱 AI: 성공 사례에서 배우는 교훈",
-    "originalTitle": "Agentic AI in financial-crime prevention: Lessons from winners",
-    "link": "https://www.mckinsey.com/capabilities/risk-and-resilience/our-insights/agentic-ai-in-financial-crime-prevention-lessons-from-winners",
-    "summary": "금융 범죄 예방 분야에서 에이전틱 AI를 도입한 기관들의 1년간의 운영 결과는 사전 예상을 대부분 확인해주었다. 이러한 경험을 통해 기관들이 에이전틱 AI를 효과적으로 확대 적용하기 위해 답해야 할 다섯 가지 핵심 질문이 도출되었다. 이 질문들은 금융 범죄 예방 시스템을 더욱 고도화하고 확장하는 데 중요한 지침이 된다.",
-    "image": "data/techinsight-images/bce699eec5a6.webp",
-    "publishedAt": "2026-10-26T00:00:00.000Z",
-    "createdAt": "2026-10-27T00:22:55.385Z"
-  },
-  {
-    "id": "27af1fa8b168",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "에이전트형 AI 동료의 부상: 은행 CIO를 위한 차세대 AI 가이드",
-    "originalTitle": "The rise of the agentic coworker: A banking CIO’s guide to the next wave of AI",
-    "link": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/the-rise-of-the-agentic-coworker-a-banking-cios-guide-to-the-next-wave-of-ai",
-    "summary": "AI 에이전트는 워크플로우 전반에서 의사결정을 내리고 행동하며 협업할 수 있는 수준으로 진화했다.\n이러한 AI 에이전트를 조직 차원에서 대규모로 도입하려면 기존과 다른 거버넌스 체계를 구축해야 한다.\n동시에 새로운 시스템 아키텍처 설계와 책임 구조의 명확화가 필수적이다.\n금융기관의 리더들은 이런 변화에 대비한 전략적 준비가 필요하다.",
-    "image": "data/techinsight-images/27af1fa8b168.webp",
-    "publishedAt": "2026-10-26T00:00:00.000Z",
-    "createdAt": "2026-10-27T00:23:14.286Z"
-  },
-  {
-    "id": "ca4d48f1c853",
-    "sourceKey": "oecd",
-    "source": "OECD",
-    "title": "자율형 AI 시스템의 실제 운영 현황: 실무자들이 말하는 배포와 거버넌스",
-    "originalTitle": "Putting agentic AI systems to work: What practitioners reveal about deployment and governance",
-    "link": "https://oecd.ai/en/wonk/putting-agentic-ai-systems-to-work-what-practitioners-reveal-about-deployment-and-governance",
-    "summary": "조직들이 자율형 AI 시스템을 실제로 활용하기 시작했으며, 보안 취약점 탐지, 코드 수정, 행정 업무 처리 등 다양한 분야에서 생산성 향상을 추진하고 있다. OECD는 25개 조직의 실무자들을 대상으로 한 인터뷰를 통해 자율형 AI의 배포 현황과 거버넌스 방식을 분석했다. 현재 대부분의 조직들은 완전한 자율성보다는 체크포인트 제도를 도입해 일정 단계에서 인간의 검토와 승인을 거치도록 하며, 구조화된 작업이고 오류의 비용이 제한적인 영역에 집중하고 있다. 자율형 AI는 단순 권장에서 실제 행동으로 나아가면서 환각, 도구 오용 등 기존의 AI 문제들이 더욱 심화되고 있으며, 이는 새로운 거버넌스 도전과제를 만들고 있다. 조직 규모, 기술 준비도, 위험 허용 수준에 따라 자율형 AI의 도입 정도와 성숙도가 상당히 다양하게 나타나고 있다.",
-    "image": "data/techinsight-images/ca4d48f1c853.webp",
-    "publishedAt": null,
-    "createdAt": "2026-10-25T23:11:30.780Z"
-  },
-  {
-    "id": "1136737ea8bf",
-    "sourceKey": "oecd",
-    "source": "OECD",
-    "title": "신뢰할 수 있는 AI의 미래를 결정하는 투자자들, 준비가 되어 있는가",
-    "originalTitle": "Investors matter for the future of trustworthy AI. Are they ready?",
-    "link": "https://oecd.ai/en/wonk/investors-matter-for-the-future-of-trustworthy-ai-are-they-ready",
-    "summary": "투자자들은 AI 기업의 자금 조달과 기술 확산을 좌우하는 핵심 행위자이지만, 신뢰할 수 있는 AI에 대한 공통의 평가 기준이 부족해 정책과의 괴리가 발생하고 있다. 정책입안자들은 OECD AI 원칙 같은 신뢰할 수 있는 AI 프레임워크를 개발했으나, 투자자들이 실제 투자 결정 시 이를 적용할 공통 언어와 도구가 없다. 신뢰도 높은 AI는 채택률을 높이고 이는 시장 확대와 투자 증대로 이어지는 선순환을 만들 수 있지만, 현재 이 순환고리는 미완성 상태다. 글로벌 파트너십(GPAI)은 투자자들이 AI 거버넌스와 위험관리를 투자 결정에 통합하도록 돕고, 공통의 공시 체계와 비교 가능한 지표를 개발하려는 전문가 그룹을 구성했다. 공개 및 사모펀드 시장의 투자자들은 이제 신뢰할 수 있는 AI를 장기 가치 창출에 영향을 미치는 재무적 중요 요소로 인식하기 시작했다.",
-    "image": "data/techinsight-images/1136737ea8bf.webp",
-    "publishedAt": null,
-    "createdAt": "2026-10-24T23:07:58.732Z"
   }
 ]
