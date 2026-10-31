@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-10-30T15:30:47.486Z",
+  "updatedAt": "2026-10-31T09:15:37.002Z",
   "dataYear": 2025,
   "buybackPeriod": {
-    "from": "20251030",
-    "to": "20261030"
+    "from": "20251031",
+    "to": "20261031"
   },
   "source": "DART Open API(opendart.fss.or.kr) — 사업보고서 임직원 현황(empSttus), 자기주식취득결정(tsstkAqDecsn)",
   "items": [
@@ -36,8 +36,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -107,7 +107,7 @@
         "fromPrice": 270000.0,
         "toPrice": 207000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -139,8 +139,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 1,
           "amount": 40023070290000,
@@ -210,7 +210,7 @@
         "fromPrice": 1919000.0,
         "toPrice": 1322000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -242,8 +242,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -313,7 +313,7 @@
         "fromPrice": 1221000.0,
         "toPrice": 799000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -345,8 +345,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -416,7 +416,7 @@
         "fromPrice": 1448000.0,
         "toPrice": 879000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -448,8 +448,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -519,7 +519,7 @@
         "fromPrice": 674000.0,
         "toPrice": 501000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -551,8 +551,8 @@
         "reportCode": "11011"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -622,7 +622,7 @@
         "fromPrice": 167700.0,
         "toPrice": 137700.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -654,8 +654,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -725,7 +725,7 @@
         "fromPrice": 100900.0,
         "toPrice": 88800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -757,8 +757,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -828,7 +828,7 @@
         "fromPrice": 1122000.0,
         "toPrice": 872000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -860,8 +860,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -931,7 +931,7 @@
         "fromPrice": 360000.0,
         "toPrice": 272000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -963,8 +963,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1034,7 +1034,7 @@
         "fromPrice": 106300.0,
         "toPrice": 80600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -1066,8 +1066,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1137,7 +1137,7 @@
         "fromPrice": 205500.0,
         "toPrice": 153400.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -1169,8 +1169,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1240,7 +1240,7 @@
         "fromPrice": 759000.0,
         "toPrice": 570000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -1272,8 +1272,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1343,7 +1343,7 @@
         "fromPrice": 126100.0,
         "toPrice": 105500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -1375,8 +1375,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1446,7 +1446,7 @@
         "fromPrice": 688000.0,
         "toPrice": 503000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -1478,8 +1478,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1549,7 +1549,7 @@
         "fromPrice": 236666.671875,
         "toPrice": 188000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -1581,8 +1581,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 1,
           "amount": 1480899838000,
@@ -1652,7 +1652,7 @@
         "fromPrice": 260500.0,
         "toPrice": 208000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -1684,8 +1684,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1755,7 +1755,7 @@
         "fromPrice": 480000.0,
         "toPrice": 368000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -1787,8 +1787,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1858,7 +1858,7 @@
         "fromPrice": 392500.0,
         "toPrice": 224000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -1890,8 +1890,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -1961,7 +1961,7 @@
         "fromPrice": 413000.0,
         "toPrice": 321500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -1993,8 +1993,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2064,7 +2064,7 @@
         "fromPrice": 39100.0,
         "toPrice": 31800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -2096,8 +2096,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2167,7 +2167,7 @@
         "fromPrice": 655000.0,
         "toPrice": 468500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -2199,8 +2199,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2270,7 +2270,7 @@
         "fromPrice": 630000.0,
         "toPrice": 482000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -2302,8 +2302,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2373,7 +2373,7 @@
         "fromPrice": 427000.0,
         "toPrice": 347500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -2405,8 +2405,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2476,7 +2476,7 @@
         "fromPrice": 869000.0,
         "toPrice": 583000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -2508,8 +2508,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2579,7 +2579,7 @@
         "fromPrice": 467500.0,
         "toPrice": 379000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -2611,8 +2611,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 1,
           "amount": 2664980000000,
@@ -2682,7 +2682,7 @@
         "fromPrice": 1419363.625,
         "toPrice": 1201000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -2714,8 +2714,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2785,7 +2785,7 @@
         "fromPrice": 223500.0,
         "toPrice": 150300.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -2817,8 +2817,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2888,7 +2888,7 @@
         "fromPrice": 733000.0,
         "toPrice": 598000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -2920,8 +2920,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -2991,7 +2991,7 @@
         "fromPrice": 179700.0,
         "toPrice": 151600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -3023,8 +3023,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3094,7 +3094,7 @@
         "fromPrice": 100000.0,
         "toPrice": 78200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -3126,8 +3126,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3197,7 +3197,7 @@
         "fromPrice": 29000.0,
         "toPrice": 23500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -3229,8 +3229,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3300,7 +3300,7 @@
         "fromPrice": 2866000.0,
         "toPrice": 1894000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -3332,8 +3332,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3403,7 +3403,7 @@
         "fromPrice": 62300.0,
         "toPrice": 47050.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -3435,8 +3435,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3506,7 +3506,7 @@
         "fromPrice": 417500.0,
         "toPrice": 300000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -3538,8 +3538,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3609,7 +3609,7 @@
         "fromPrice": 116100.0,
         "toPrice": 78600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -3641,8 +3641,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3712,7 +3712,7 @@
         "fromPrice": 65700.0,
         "toPrice": 54900.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -3744,8 +3744,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 1,
           "amount": 531968150000,
@@ -3815,7 +3815,7 @@
         "fromPrice": 597000.0,
         "toPrice": 429000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -3847,8 +3847,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -3918,7 +3918,7 @@
         "fromPrice": 166500.0,
         "toPrice": 120100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -3950,8 +3950,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4021,7 +4021,7 @@
         "fromPrice": 64300.0,
         "toPrice": 45550.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -4053,8 +4053,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4124,7 +4124,7 @@
         "fromPrice": 272000.0,
         "toPrice": 211000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -4156,8 +4156,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4227,7 +4227,7 @@
         "fromPrice": 165800.0,
         "toPrice": 112600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -4259,8 +4259,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4330,7 +4330,7 @@
         "fromPrice": 73065.1171875,
         "toPrice": 56089.390625,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -4362,8 +4362,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4433,7 +4433,7 @@
         "fromPrice": 409500.0,
         "toPrice": 287500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -4465,8 +4465,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4536,7 +4536,7 @@
         "fromPrice": 164100.0,
         "toPrice": 117500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -4568,8 +4568,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4639,7 +4639,7 @@
         "fromPrice": 137700.0,
         "toPrice": 109000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -4671,8 +4671,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4742,7 +4742,7 @@
         "fromPrice": 379000.0,
         "toPrice": 283000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -4774,8 +4774,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 1,
           "amount": 2833562221325,
@@ -4845,7 +4845,7 @@
         "fromPrice": 2115000.0,
         "toPrice": 1632000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -4877,8 +4877,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -4948,7 +4948,7 @@
         "fromPrice": 362000.0,
         "toPrice": 236000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -4980,8 +4980,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5051,7 +5051,7 @@
         "fromPrice": 134900.0,
         "toPrice": 109800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -5083,8 +5083,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5154,7 +5154,7 @@
         "fromPrice": 108900.0,
         "toPrice": 81700.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -5186,8 +5186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5257,7 +5257,7 @@
         "fromPrice": 679000.0,
         "toPrice": 424000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -5289,8 +5289,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5360,7 +5360,7 @@
         "fromPrice": 1276000.0,
         "toPrice": 900000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -5392,8 +5392,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5463,7 +5463,7 @@
         "fromPrice": 270000.0,
         "toPrice": 206500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -5495,8 +5495,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5566,7 +5566,7 @@
         "fromPrice": 56700.0,
         "toPrice": 44850.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -5598,8 +5598,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5669,7 +5669,7 @@
         "fromPrice": 284000.0,
         "toPrice": 210500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -5701,8 +5701,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5772,7 +5772,7 @@
         "fromPrice": 144000.0,
         "toPrice": 120100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -5804,8 +5804,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5875,7 +5875,7 @@
         "fromPrice": 28450.0,
         "toPrice": 22200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -5907,8 +5907,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -5978,7 +5978,7 @@
         "fromPrice": 24500.0,
         "toPrice": 20500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -6010,8 +6010,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6081,7 +6081,7 @@
         "fromPrice": 28100.0,
         "toPrice": 22400.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -6113,8 +6113,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6184,7 +6184,7 @@
         "fromPrice": 266000.0,
         "toPrice": 211000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -6216,8 +6216,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6287,7 +6287,7 @@
         "fromPrice": 156200.0,
         "toPrice": 127700.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -6319,8 +6319,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6390,7 +6390,7 @@
         "fromPrice": 247000.0,
         "toPrice": 185200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -6422,8 +6422,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6493,7 +6493,7 @@
         "fromPrice": 93400.0,
         "toPrice": 59200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -6525,8 +6525,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6596,7 +6596,7 @@
         "fromPrice": 111100.0,
         "toPrice": 88000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -6628,8 +6628,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6699,7 +6699,7 @@
         "fromPrice": 1243000.0,
         "toPrice": 1040000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -6731,8 +6731,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6802,7 +6802,7 @@
         "fromPrice": 26600.0,
         "toPrice": 22400.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -6834,8 +6834,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -6905,7 +6905,7 @@
         "fromPrice": 173000.0,
         "toPrice": 113000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -6937,8 +6937,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7008,7 +7008,7 @@
         "fromPrice": 106400.0,
         "toPrice": 81900.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -7040,8 +7040,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7111,7 +7111,7 @@
         "fromPrice": 321500.0,
         "toPrice": 223500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -7143,8 +7143,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7214,7 +7214,7 @@
         "fromPrice": 79200.0,
         "toPrice": 65000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -7246,8 +7246,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7317,7 +7317,7 @@
         "fromPrice": 85100.0,
         "toPrice": 73800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -7349,8 +7349,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7420,7 +7420,7 @@
         "fromPrice": 113600.0,
         "toPrice": 92400.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -7452,8 +7452,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 1,
           "amount": 1171300000000,
@@ -7523,7 +7523,7 @@
         "fromPrice": 51700.0,
         "toPrice": 36800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -7555,8 +7555,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7626,7 +7626,7 @@
         "fromPrice": 75900.0,
         "toPrice": 58200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -7658,8 +7658,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7729,7 +7729,7 @@
         "fromPrice": 225000.0,
         "toPrice": 163000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -7761,8 +7761,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7832,7 +7832,7 @@
         "fromPrice": 471500.0,
         "toPrice": 372500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -7864,8 +7864,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -7935,7 +7935,7 @@
         "fromPrice": 157700.0,
         "toPrice": 125400.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -7967,8 +7967,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8038,7 +8038,7 @@
         "fromPrice": 34150.0,
         "toPrice": 28300.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -8070,8 +8070,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 1,
           "amount": 399999989600,
@@ -8141,7 +8141,7 @@
         "fromPrice": 36500.0,
         "toPrice": 28800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -8173,8 +8173,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8244,7 +8244,7 @@
         "fromPrice": 17810.0,
         "toPrice": 14580.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -8276,8 +8276,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8347,7 +8347,7 @@
         "fromPrice": 213000.0,
         "toPrice": 169600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -8379,8 +8379,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8450,7 +8450,7 @@
         "fromPrice": 318000.0,
         "toPrice": 216000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -8482,8 +8482,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8553,7 +8553,7 @@
         "fromPrice": 14610.0,
         "toPrice": 11780.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -8585,8 +8585,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8656,7 +8656,7 @@
         "fromPrice": 338000.0,
         "toPrice": 257000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -8688,8 +8688,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8759,7 +8759,7 @@
         "fromPrice": 143700.0,
         "toPrice": 99000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -8791,8 +8791,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8862,7 +8862,7 @@
         "fromPrice": 155900.0,
         "toPrice": 119100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -8894,8 +8894,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -8965,7 +8965,7 @@
         "fromPrice": 119800.0,
         "toPrice": 97500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -8997,8 +8997,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9068,7 +9068,7 @@
         "fromPrice": 31000.0,
         "toPrice": 20800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -9100,8 +9100,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9171,7 +9171,7 @@
         "fromPrice": 89100.0,
         "toPrice": 65600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -9203,8 +9203,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9274,7 +9274,7 @@
         "fromPrice": 16340.0,
         "toPrice": 11200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -9306,8 +9306,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9377,7 +9377,7 @@
         "fromPrice": 65400.0,
         "toPrice": 53100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -9409,8 +9409,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9480,7 +9480,7 @@
         "fromPrice": 15850.0,
         "toPrice": 11000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -9512,8 +9512,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9583,7 +9583,7 @@
         "fromPrice": 183600.0,
         "toPrice": 120800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -9615,8 +9615,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9686,7 +9686,7 @@
         "fromPrice": 110100.0,
         "toPrice": 71200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -9718,8 +9718,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9789,7 +9789,7 @@
         "fromPrice": 35450.0,
         "toPrice": 29200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -9821,8 +9821,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9892,7 +9892,7 @@
         "fromPrice": 938000.0,
         "toPrice": 687000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -9924,8 +9924,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -9995,7 +9995,7 @@
         "fromPrice": 141000.0,
         "toPrice": 123600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -10027,8 +10027,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10098,7 +10098,7 @@
         "fromPrice": 269500.0,
         "toPrice": 225000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -10130,8 +10130,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10201,7 +10201,7 @@
         "fromPrice": 78400.0,
         "toPrice": 58400.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -10233,8 +10233,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10304,7 +10304,7 @@
         "fromPrice": 544000.0,
         "toPrice": 396000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -10336,8 +10336,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10407,7 +10407,7 @@
         "fromPrice": 166700.0,
         "toPrice": 106600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -10439,8 +10439,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10510,7 +10510,7 @@
         "fromPrice": 65300.0,
         "toPrice": 50300.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -10542,8 +10542,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10613,7 +10613,7 @@
         "fromPrice": 534000.0,
         "toPrice": 386000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -10645,8 +10645,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10716,7 +10716,7 @@
         "fromPrice": 46500.0,
         "toPrice": 33750.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -10748,8 +10748,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10819,7 +10819,7 @@
         "fromPrice": 20400.0,
         "toPrice": 16280.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -10851,8 +10851,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -10922,7 +10922,7 @@
         "fromPrice": 145600.0,
         "toPrice": 122500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -10954,8 +10954,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11025,7 +11025,7 @@
         "fromPrice": 165000.0,
         "toPrice": 121200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -11057,8 +11057,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 1,
           "amount": 1167135000000,
@@ -11128,7 +11128,7 @@
         "fromPrice": 144600.0,
         "toPrice": 105600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -11160,8 +11160,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11231,7 +11231,7 @@
         "fromPrice": 64400.0,
         "toPrice": 47050.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -11263,8 +11263,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11334,7 +11334,7 @@
         "fromPrice": 89400.0,
         "toPrice": 59100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -11366,8 +11366,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11437,7 +11437,7 @@
         "fromPrice": 199400.0,
         "toPrice": 155700.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -11469,8 +11469,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11540,7 +11540,7 @@
         "fromPrice": 680000.0,
         "toPrice": 495000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -11572,8 +11572,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11643,7 +11643,7 @@
         "fromPrice": 304000.0,
         "toPrice": 238000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -11675,8 +11675,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11746,7 +11746,7 @@
         "fromPrice": 111100.0,
         "toPrice": 81600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -11778,8 +11778,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11849,7 +11849,7 @@
         "fromPrice": 6600.0,
         "toPrice": 4955.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -11881,8 +11881,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -11952,7 +11952,7 @@
         "fromPrice": 88700.0,
         "toPrice": 70500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -11984,8 +11984,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12055,7 +12055,7 @@
         "fromPrice": 76900.0,
         "toPrice": 49350.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -12087,8 +12087,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12158,7 +12158,7 @@
         "fromPrice": 153400.0,
         "toPrice": 114100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -12190,8 +12190,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12261,7 +12261,7 @@
         "fromPrice": 175100.0,
         "toPrice": 132900.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -12293,8 +12293,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12364,7 +12364,7 @@
         "fromPrice": 217000.0,
         "toPrice": 167500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -12396,8 +12396,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12467,7 +12467,7 @@
         "fromPrice": 68300.0,
         "toPrice": 52300.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -12499,8 +12499,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12570,7 +12570,7 @@
         "fromPrice": 90700.0,
         "toPrice": 77100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -12602,8 +12602,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12673,7 +12673,7 @@
         "fromPrice": 19530.0,
         "toPrice": 17370.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -12705,8 +12705,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12776,7 +12776,7 @@
         "fromPrice": 219500.0,
         "toPrice": 190300.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -12808,8 +12808,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12879,7 +12879,7 @@
         "fromPrice": 453000.0,
         "toPrice": 387000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -12911,8 +12911,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -12982,7 +12982,7 @@
         "fromPrice": 118700.0,
         "toPrice": 88500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -13014,8 +13014,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13085,7 +13085,7 @@
         "fromPrice": 71900.0,
         "toPrice": 55300.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -13117,8 +13117,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13188,7 +13188,7 @@
         "fromPrice": 44250.0,
         "toPrice": 36150.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -13220,8 +13220,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13291,7 +13291,7 @@
         "fromPrice": 79800.0,
         "toPrice": 63900.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -13323,8 +13323,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13394,7 +13394,7 @@
         "fromPrice": 57800.0,
         "toPrice": 47900.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -13426,8 +13426,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13497,7 +13497,7 @@
         "fromPrice": 6200.0,
         "toPrice": 5000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -13529,8 +13529,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13600,7 +13600,7 @@
         "fromPrice": 21100.0,
         "toPrice": 18590.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -13632,8 +13632,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13703,7 +13703,7 @@
         "fromPrice": 115200.0,
         "toPrice": 85000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -13735,8 +13735,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13806,7 +13806,7 @@
         "fromPrice": 50700.0,
         "toPrice": 34900.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -13838,8 +13838,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -13909,7 +13909,7 @@
         "fromPrice": 137200.0,
         "toPrice": 111900.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -13941,8 +13941,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14012,7 +14012,7 @@
         "fromPrice": 48750.0,
         "toPrice": 41400.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -14044,8 +14044,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14115,7 +14115,7 @@
         "fromPrice": 53300.0,
         "toPrice": 46550.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -14147,8 +14147,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14218,7 +14218,7 @@
         "fromPrice": 5190.0,
         "toPrice": 3950.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -14250,8 +14250,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14321,7 +14321,7 @@
         "fromPrice": 67700.0,
         "toPrice": 47900.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -14353,8 +14353,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14424,7 +14424,7 @@
         "fromPrice": 54700.0,
         "toPrice": 40550.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -14456,8 +14456,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14527,7 +14527,7 @@
         "fromPrice": 57500.0,
         "toPrice": 45750.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -14559,8 +14559,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14630,7 +14630,7 @@
         "fromPrice": 87600.0,
         "toPrice": 71000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -14662,8 +14662,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14733,7 +14733,7 @@
         "fromPrice": 110000.0,
         "toPrice": 84700.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -14765,8 +14765,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14836,7 +14836,7 @@
         "fromPrice": 38700.0,
         "toPrice": 25650.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -14868,8 +14868,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -14939,7 +14939,7 @@
         "fromPrice": 95900.0,
         "toPrice": 71200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -14971,8 +14971,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15042,7 +15042,7 @@
         "fromPrice": 63900.0,
         "toPrice": 49700.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -15074,8 +15074,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15145,7 +15145,7 @@
         "fromPrice": 50500.0,
         "toPrice": 41400.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -15177,8 +15177,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15248,7 +15248,7 @@
         "fromPrice": 155300.0,
         "toPrice": 126500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -15280,8 +15280,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15351,7 +15351,7 @@
         "fromPrice": 62800.0,
         "toPrice": 44200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -15383,8 +15383,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15454,7 +15454,7 @@
         "fromPrice": 86100.0,
         "toPrice": 63400.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -15486,8 +15486,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15557,7 +15557,7 @@
         "fromPrice": 23500.0,
         "toPrice": 18660.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -15589,8 +15589,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15660,7 +15660,7 @@
         "fromPrice": 250000.0,
         "toPrice": 214000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -15692,8 +15692,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15763,7 +15763,7 @@
         "fromPrice": 80500.0,
         "toPrice": 61800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -15795,8 +15795,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15866,7 +15866,7 @@
         "fromPrice": 76200.0,
         "toPrice": 58600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -15898,8 +15898,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -15969,7 +15969,7 @@
         "fromPrice": 425500.0,
         "toPrice": 305500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -16001,8 +16001,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16072,7 +16072,7 @@
         "fromPrice": 7800.0,
         "toPrice": 5850.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -16104,8 +16104,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16175,7 +16175,7 @@
         "fromPrice": 138800.0,
         "toPrice": 110500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -16207,8 +16207,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16278,7 +16278,7 @@
         "fromPrice": 29250.0,
         "toPrice": 24650.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -16310,8 +16310,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16381,7 +16381,7 @@
         "fromPrice": 35650.0,
         "toPrice": 28000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -16413,8 +16413,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16484,7 +16484,7 @@
         "fromPrice": 20050.0,
         "toPrice": 11590.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -16516,8 +16516,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16587,7 +16587,7 @@
         "fromPrice": 176900.0,
         "toPrice": 138700.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -16619,8 +16619,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16690,7 +16690,7 @@
         "fromPrice": 51400.0,
         "toPrice": 41950.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -16722,8 +16722,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16793,7 +16793,7 @@
         "fromPrice": 33300.0,
         "toPrice": 25500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -16825,8 +16825,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16896,7 +16896,7 @@
         "fromPrice": 37600.0,
         "toPrice": 29600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -16928,8 +16928,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -16999,7 +16999,7 @@
         "fromPrice": 56800.0,
         "toPrice": 47300.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -17031,8 +17031,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17102,7 +17102,7 @@
         "fromPrice": 1570000.0,
         "toPrice": 1075000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -17134,8 +17134,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17205,7 +17205,7 @@
         "fromPrice": 33300.0,
         "toPrice": 24350.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -17237,8 +17237,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17308,7 +17308,7 @@
         "fromPrice": 194000.0,
         "toPrice": 156000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -17340,8 +17340,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17411,7 +17411,7 @@
         "fromPrice": 27850.0,
         "toPrice": 20500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -17443,8 +17443,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17514,7 +17514,7 @@
         "fromPrice": 95200.0,
         "toPrice": 81500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -17546,8 +17546,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17617,7 +17617,7 @@
         "fromPrice": 52600.0,
         "toPrice": 40150.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -17649,8 +17649,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17720,7 +17720,7 @@
         "fromPrice": 28300.0,
         "toPrice": 24500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -17752,8 +17752,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17823,7 +17823,7 @@
         "fromPrice": 49500.0,
         "toPrice": 34900.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -17855,8 +17855,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -17926,7 +17926,7 @@
         "fromPrice": 68800.0,
         "toPrice": 54800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -17958,8 +17958,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18029,7 +18029,7 @@
         "fromPrice": 18120.0,
         "toPrice": 16280.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -18061,8 +18061,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18132,7 +18132,7 @@
         "fromPrice": 411000.0,
         "toPrice": 362500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -18164,8 +18164,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18235,7 +18235,7 @@
         "fromPrice": 12550.0,
         "toPrice": 9670.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -18267,8 +18267,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18338,7 +18338,7 @@
         "fromPrice": 45450.0,
         "toPrice": 37600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -18370,8 +18370,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18441,7 +18441,7 @@
         "fromPrice": 88300.0,
         "toPrice": 62000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -18473,8 +18473,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18544,7 +18544,7 @@
         "fromPrice": 133200.0,
         "toPrice": 113700.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -18576,8 +18576,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18647,7 +18647,7 @@
         "fromPrice": 23900.0,
         "toPrice": 20400.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -18679,8 +18679,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18750,7 +18750,7 @@
         "fromPrice": 20700.0,
         "toPrice": 16900.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -18782,8 +18782,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18853,7 +18853,7 @@
         "fromPrice": 263500.0,
         "toPrice": 195300.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -18885,8 +18885,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -18956,7 +18956,7 @@
         "fromPrice": 146000.0,
         "toPrice": 121000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -18988,8 +18988,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -19059,7 +19059,7 @@
         "fromPrice": 18380.0,
         "toPrice": 16000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -19091,8 +19091,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -19162,7 +19162,7 @@
         "fromPrice": 28900.0,
         "toPrice": 22050.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -19194,8 +19194,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -19265,7 +19265,7 @@
         "fromPrice": 51400.0,
         "toPrice": 41000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -19297,8 +19297,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -19368,7 +19368,7 @@
         "fromPrice": 189900.0,
         "toPrice": 121500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -19400,8 +19400,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -19471,7 +19471,7 @@
         "fromPrice": 17740.0,
         "toPrice": 12720.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -19503,8 +19503,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -19574,7 +19574,7 @@
         "fromPrice": 9260.0,
         "toPrice": 7260.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -19606,8 +19606,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -19677,7 +19677,7 @@
         "fromPrice": 91600.0,
         "toPrice": 72200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -19709,8 +19709,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -19780,7 +19780,7 @@
         "fromPrice": 64600.0,
         "toPrice": 51100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -19812,8 +19812,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -19883,7 +19883,7 @@
         "fromPrice": 28250.0,
         "toPrice": 22100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -19915,8 +19915,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -19986,7 +19986,7 @@
         "fromPrice": 154300.0,
         "toPrice": 130000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -20018,8 +20018,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -20089,7 +20089,7 @@
         "fromPrice": 148800.0,
         "toPrice": 115500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -20121,8 +20121,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -20192,7 +20192,7 @@
         "fromPrice": 212000.0,
         "toPrice": 167100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -20224,8 +20224,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -20295,7 +20295,7 @@
         "fromPrice": 27900.0,
         "toPrice": 22900.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -20327,8 +20327,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -20398,7 +20398,7 @@
         "fromPrice": 143100.0,
         "toPrice": 125000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -20430,8 +20430,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -20501,7 +20501,7 @@
         "fromPrice": 199509.9375,
         "toPrice": 157201.671875,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -20517,8 +20517,8 @@
       "recent": null,
       "recentPrev": null,
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -20588,7 +20588,7 @@
         "fromPrice": 675000.0,
         "toPrice": 510000.0,
         "rangeFrom": "2025-11-25",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -20620,8 +20620,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 4,
           "amount": 199999362290,
@@ -20691,7 +20691,7 @@
         "fromPrice": 398461.53125,
         "toPrice": 284615.375,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -20723,8 +20723,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -20794,7 +20794,7 @@
         "fromPrice": 185000.0,
         "toPrice": 133800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -20826,8 +20826,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 1,
           "amount": 886138605000,
@@ -20897,7 +20897,7 @@
         "fromPrice": 217000.0,
         "toPrice": 159700.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -20929,8 +20929,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -21000,7 +21000,7 @@
         "fromPrice": 163900.0,
         "toPrice": 98300.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -21032,8 +21032,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -21103,7 +21103,7 @@
         "fromPrice": 52200.0,
         "toPrice": 25650.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -21135,8 +21135,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -21206,7 +21206,7 @@
         "fromPrice": 187700.0,
         "toPrice": 108200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -21238,8 +21238,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -21309,7 +21309,7 @@
         "fromPrice": 165600.0,
         "toPrice": 102700.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -21341,8 +21341,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -21412,7 +21412,7 @@
         "fromPrice": 878000.0,
         "toPrice": 638000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -21444,8 +21444,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -21515,7 +21515,7 @@
         "fromPrice": 328500.0,
         "toPrice": 240000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -21547,8 +21547,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -21618,7 +21618,7 @@
         "fromPrice": 73900.0,
         "toPrice": 55200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -21650,8 +21650,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 1,
           "amount": 21724422700,
@@ -21721,7 +21721,7 @@
         "fromPrice": 172700.0,
         "toPrice": 127600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -21753,8 +21753,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -21824,7 +21824,7 @@
         "fromPrice": 83500.0,
         "toPrice": 56600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -21856,8 +21856,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -21927,7 +21927,7 @@
         "fromPrice": 405000.0,
         "toPrice": 274500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -21959,8 +21959,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -22030,7 +22030,7 @@
         "fromPrice": 98300.0,
         "toPrice": 63800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -22062,8 +22062,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 1,
           "amount": 329999677600,
@@ -22133,7 +22133,7 @@
         "fromPrice": 197700.0,
         "toPrice": 138200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -22165,8 +22165,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -22236,7 +22236,7 @@
         "fromPrice": 534000.0,
         "toPrice": 336500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -22268,8 +22268,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -22339,7 +22339,7 @@
         "fromPrice": 157000.0,
         "toPrice": 101400.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -22371,8 +22371,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -22442,7 +22442,7 @@
         "fromPrice": 1184000.0,
         "toPrice": 609000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -22474,8 +22474,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -22545,7 +22545,7 @@
         "fromPrice": 80900.0,
         "toPrice": 50100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -22577,8 +22577,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -22648,7 +22648,7 @@
         "fromPrice": 111200.0,
         "toPrice": 77700.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -22680,8 +22680,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -22751,7 +22751,7 @@
         "fromPrice": 10880.0,
         "toPrice": 7740.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -22783,8 +22783,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 1,
           "amount": 180000016200,
@@ -22854,7 +22854,7 @@
         "fromPrice": 42500.0,
         "toPrice": 27900.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -22886,8 +22886,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -22957,7 +22957,7 @@
         "fromPrice": 206500.0,
         "toPrice": 135200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -22989,8 +22989,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -23044,7 +23044,7 @@
         "fromPrice": 287000.0,
         "toPrice": 181000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       },
       "quarter": {
         "label": "야후 분기 실적",
@@ -23092,8 +23092,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 2,
           "amount": 110758162833,
@@ -23163,7 +23163,7 @@
         "fromPrice": 175100.0,
         "toPrice": 122400.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -23195,8 +23195,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -23266,7 +23266,7 @@
         "fromPrice": 51300.0,
         "toPrice": 34150.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -23298,8 +23298,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -23369,7 +23369,7 @@
         "fromPrice": 147200.0,
         "toPrice": 106500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -23401,8 +23401,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -23472,7 +23472,7 @@
         "fromPrice": 213000.0,
         "toPrice": 135700.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -23504,8 +23504,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 1,
           "amount": 299999970000,
@@ -23575,7 +23575,7 @@
         "fromPrice": 53000.0,
         "toPrice": 41300.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -23607,8 +23607,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -23678,7 +23678,7 @@
         "fromPrice": 33650.0,
         "toPrice": 25000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -23710,8 +23710,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -23781,7 +23781,7 @@
         "fromPrice": 45400.0,
         "toPrice": 33150.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -23813,8 +23813,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -23884,7 +23884,7 @@
         "fromPrice": 117900.0,
         "toPrice": 84700.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -23916,8 +23916,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -23987,7 +23987,7 @@
         "fromPrice": 81600.0,
         "toPrice": 50600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -24019,8 +24019,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -24090,7 +24090,7 @@
         "fromPrice": 151700.0,
         "toPrice": 108400.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -24122,8 +24122,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -24193,7 +24193,7 @@
         "fromPrice": 231500.0,
         "toPrice": 186100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -24225,8 +24225,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -24296,7 +24296,7 @@
         "fromPrice": 50800.0,
         "toPrice": 31900.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -24328,8 +24328,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -24399,7 +24399,7 @@
         "fromPrice": 296000.0,
         "toPrice": 224500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -24431,8 +24431,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -24502,7 +24502,7 @@
         "fromPrice": 239500.0,
         "toPrice": 143600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -24534,8 +24534,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -24605,7 +24605,7 @@
         "fromPrice": 46350.0,
         "toPrice": 31500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -24637,8 +24637,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 2,
           "amount": 144999445125,
@@ -24708,7 +24708,7 @@
         "fromPrice": 53400.0,
         "toPrice": 24250.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -24740,8 +24740,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -24811,7 +24811,7 @@
         "fromPrice": 61300.0,
         "toPrice": 46500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -24843,8 +24843,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -24914,7 +24914,7 @@
         "fromPrice": 199600.0,
         "toPrice": 138200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -24946,8 +24946,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -25017,7 +25017,7 @@
         "fromPrice": 47100.0,
         "toPrice": 34600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -25049,8 +25049,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -25120,7 +25120,7 @@
         "fromPrice": 339500.0,
         "toPrice": 249000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -25152,8 +25152,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -25223,7 +25223,7 @@
         "fromPrice": 27400.0,
         "toPrice": 21100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -25255,8 +25255,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -25326,7 +25326,7 @@
         "fromPrice": 68500.0,
         "toPrice": 41500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -25358,8 +25358,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -25429,7 +25429,7 @@
         "fromPrice": 35000.0,
         "toPrice": 24050.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -25461,8 +25461,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -25532,7 +25532,7 @@
         "fromPrice": 70200.0,
         "toPrice": 58100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -25564,8 +25564,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 1,
           "amount": 14999913600,
@@ -25635,7 +25635,7 @@
         "fromPrice": 32150.0,
         "toPrice": 23800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -25667,8 +25667,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -25738,7 +25738,7 @@
         "fromPrice": 115500.0,
         "toPrice": 95900.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -25770,8 +25770,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -25841,7 +25841,7 @@
         "fromPrice": 83300.0,
         "toPrice": 51800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -25873,8 +25873,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -25944,7 +25944,7 @@
         "fromPrice": 153100.0,
         "toPrice": 108500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -25976,8 +25976,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -26047,7 +26047,7 @@
         "fromPrice": 27100.0,
         "toPrice": 22000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -26079,8 +26079,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -26150,7 +26150,7 @@
         "fromPrice": 46350.0,
         "toPrice": 33400.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -26182,8 +26182,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -26253,7 +26253,7 @@
         "fromPrice": 41700.0,
         "toPrice": 31500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -26285,8 +26285,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -26356,7 +26356,7 @@
         "fromPrice": 75700.0,
         "toPrice": 57700.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -26388,8 +26388,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -26459,7 +26459,7 @@
         "fromPrice": 107500.0,
         "toPrice": 82000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -26491,8 +26491,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -26562,7 +26562,7 @@
         "fromPrice": 121000.0,
         "toPrice": 77200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -26594,8 +26594,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -26665,7 +26665,7 @@
         "fromPrice": 91200.0,
         "toPrice": 75100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -26697,8 +26697,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -26768,7 +26768,7 @@
         "fromPrice": 48200.0,
         "toPrice": 35300.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -26800,8 +26800,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 2,
           "amount": 2999998600,
@@ -26871,7 +26871,7 @@
         "fromPrice": 15240.0,
         "toPrice": 10410.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -26903,8 +26903,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -26974,7 +26974,7 @@
         "fromPrice": 32600.0,
         "toPrice": 21950.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -27006,8 +27006,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 1,
           "amount": 113186700000,
@@ -27077,7 +27077,7 @@
         "fromPrice": 74200.0,
         "toPrice": 50800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -27109,8 +27109,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -27180,7 +27180,7 @@
         "fromPrice": 55000.0,
         "toPrice": 43100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -27212,8 +27212,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -27283,7 +27283,7 @@
         "fromPrice": 65700.0,
         "toPrice": 42200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -27315,8 +27315,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -27386,7 +27386,7 @@
         "fromPrice": 30600.0,
         "toPrice": 18690.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -27418,8 +27418,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -27489,7 +27489,7 @@
         "fromPrice": 20000.0,
         "toPrice": 11780.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -27521,8 +27521,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -27592,7 +27592,7 @@
         "fromPrice": 14710.0,
         "toPrice": 11140.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -27624,8 +27624,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -27695,7 +27695,7 @@
         "fromPrice": 130100.0,
         "toPrice": 84200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -27727,8 +27727,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -27798,7 +27798,7 @@
         "fromPrice": 57300.0,
         "toPrice": 45550.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -27830,8 +27830,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -27901,7 +27901,7 @@
         "fromPrice": 36600.0,
         "toPrice": 26560.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -27933,8 +27933,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -28004,7 +28004,7 @@
         "fromPrice": 67000.0,
         "toPrice": 48100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -28036,8 +28036,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 3,
           "amount": 139999975224,
@@ -28107,7 +28107,7 @@
         "fromPrice": 21650.0,
         "toPrice": 17270.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -28139,8 +28139,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -28210,7 +28210,7 @@
         "fromPrice": 88000.0,
         "toPrice": 63600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -28242,8 +28242,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -28313,7 +28313,7 @@
         "fromPrice": 54700.0,
         "toPrice": 41550.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -28345,8 +28345,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -28416,7 +28416,7 @@
         "fromPrice": 33150.0,
         "toPrice": 21800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -28448,8 +28448,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -28519,7 +28519,7 @@
         "fromPrice": 150000.0,
         "toPrice": 111700.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -28551,8 +28551,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -28622,7 +28622,7 @@
         "fromPrice": 39750.0,
         "toPrice": 28100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -28654,8 +28654,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -28709,7 +28709,7 @@
         "fromPrice": 14480.0,
         "toPrice": 10820.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       },
       "quarter": {
         "label": "야후 분기 실적",
@@ -28757,8 +28757,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -28828,7 +28828,7 @@
         "fromPrice": 158800.0,
         "toPrice": 103600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -28860,8 +28860,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -28931,7 +28931,7 @@
         "fromPrice": 85200.0,
         "toPrice": 57600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -28963,8 +28963,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -29034,7 +29034,7 @@
         "fromPrice": 33600.0,
         "toPrice": 25100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -29066,8 +29066,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -29137,7 +29137,7 @@
         "fromPrice": 9610.0,
         "toPrice": 7410.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -29169,8 +29169,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -29240,7 +29240,7 @@
         "fromPrice": 57200.0,
         "toPrice": 43000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -29272,8 +29272,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -29343,7 +29343,7 @@
         "fromPrice": 54600.0,
         "toPrice": 39200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -29375,8 +29375,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -29446,7 +29446,7 @@
         "fromPrice": 19610.0,
         "toPrice": 15450.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -29478,8 +29478,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -29549,7 +29549,7 @@
         "fromPrice": 23650.0,
         "toPrice": 18000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -29581,8 +29581,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -29652,7 +29652,7 @@
         "fromPrice": 38200.0,
         "toPrice": 26450.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -29684,8 +29684,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -29755,7 +29755,7 @@
         "fromPrice": 11010.0,
         "toPrice": 7600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -29787,8 +29787,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -29858,7 +29858,7 @@
         "fromPrice": 12620.0,
         "toPrice": 9020.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -29890,8 +29890,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -29961,7 +29961,7 @@
         "fromPrice": 27650.0,
         "toPrice": 20650.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -29993,8 +29993,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -30064,7 +30064,7 @@
         "fromPrice": 71600.0,
         "toPrice": 53400.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -30096,8 +30096,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -30167,7 +30167,7 @@
         "fromPrice": 44600.0,
         "toPrice": 34000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -30199,8 +30199,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -30270,7 +30270,7 @@
         "fromPrice": 56000.0,
         "toPrice": 29950.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -30302,8 +30302,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -30373,7 +30373,7 @@
         "fromPrice": 9710.0,
         "toPrice": 7140.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -30405,8 +30405,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 1,
           "amount": 239999992438,
@@ -30476,7 +30476,7 @@
         "fromPrice": 10040.0,
         "toPrice": 6930.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -30508,8 +30508,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -30579,7 +30579,7 @@
         "fromPrice": 60000.0,
         "toPrice": 42800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -30611,8 +30611,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -30682,7 +30682,7 @@
         "fromPrice": 15060.0,
         "toPrice": 11180.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -30714,8 +30714,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -30785,7 +30785,7 @@
         "fromPrice": 126200.0,
         "toPrice": 92000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -30817,8 +30817,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -30888,7 +30888,7 @@
         "fromPrice": 46950.0,
         "toPrice": 34550.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -30920,8 +30920,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -30991,7 +30991,7 @@
         "fromPrice": 44050.0,
         "toPrice": 31100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -31023,8 +31023,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -31094,7 +31094,7 @@
         "fromPrice": 87800.0,
         "toPrice": 55000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -31126,8 +31126,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -31197,7 +31197,7 @@
         "fromPrice": 53000.0,
         "toPrice": 43550.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -31229,8 +31229,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -31300,7 +31300,7 @@
         "fromPrice": 5190.0,
         "toPrice": 4100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -31332,8 +31332,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -31403,7 +31403,7 @@
         "fromPrice": 24400.0,
         "toPrice": 16000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -31435,8 +31435,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 1,
           "amount": 13999964888,
@@ -31506,7 +31506,7 @@
         "fromPrice": 41750.0,
         "toPrice": 27800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -31538,8 +31538,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -31609,7 +31609,7 @@
         "fromPrice": 46333.33203125,
         "toPrice": 37066.66796875,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -31641,8 +31641,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -31712,7 +31712,7 @@
         "fromPrice": 95900.0,
         "toPrice": 73200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -31744,8 +31744,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -31815,7 +31815,7 @@
         "fromPrice": 5530.0,
         "toPrice": 4040.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -31847,8 +31847,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -31918,7 +31918,7 @@
         "fromPrice": 17300.0,
         "toPrice": 13540.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -31950,8 +31950,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32021,7 +32021,7 @@
         "fromPrice": 35650.0,
         "toPrice": 27700.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -32053,8 +32053,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32124,7 +32124,7 @@
         "fromPrice": 22350.0,
         "toPrice": 16610.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -32156,8 +32156,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32227,7 +32227,7 @@
         "fromPrice": 22550.0,
         "toPrice": 15740.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -32259,8 +32259,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32330,7 +32330,7 @@
         "fromPrice": 30850.0,
         "toPrice": 25050.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -32362,8 +32362,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32433,7 +32433,7 @@
         "fromPrice": 25100.0,
         "toPrice": 17510.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -32465,8 +32465,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32536,7 +32536,7 @@
         "fromPrice": 80800.0,
         "toPrice": 62600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -32568,8 +32568,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32639,7 +32639,7 @@
         "fromPrice": 46350.0,
         "toPrice": 37500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -32671,8 +32671,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32742,7 +32742,7 @@
         "fromPrice": 71700.0,
         "toPrice": 52800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -32774,8 +32774,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32845,7 +32845,7 @@
         "fromPrice": 49750.0,
         "toPrice": 42100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -32857,7 +32857,7 @@
       "headcountPrevYear": 1266,
       "headcountChange": -9,
       "avgSalaryPrevYear": 69451585.30805688,
-      "buybackAmount": 34232009000,
+      "buybackAmount": 20000009000,
       "recent": {
         "headcount": 1272,
         "avgSalary": 32583103.773584906,
@@ -32877,8 +32877,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -32948,7 +32948,7 @@
         "fromPrice": 89000.0,
         "toPrice": 75300.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -32980,8 +32980,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -33051,7 +33051,7 @@
         "fromPrice": 19650.0,
         "toPrice": 13960.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -33083,8 +33083,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -33154,7 +33154,7 @@
         "fromPrice": 16990.0,
         "toPrice": 13390.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -33186,8 +33186,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -33257,7 +33257,7 @@
         "fromPrice": 22200.0,
         "toPrice": 12450.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -33289,8 +33289,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -33360,7 +33360,7 @@
         "fromPrice": 8880.0,
         "toPrice": 6840.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -33392,8 +33392,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -33463,7 +33463,7 @@
         "fromPrice": 18710.0,
         "toPrice": 14310.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -33495,8 +33495,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -33566,7 +33566,7 @@
         "fromPrice": 14660.0,
         "toPrice": 10820.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -33598,8 +33598,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -33669,7 +33669,7 @@
         "fromPrice": 23150.0,
         "toPrice": 18550.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -33701,8 +33701,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -33772,7 +33772,7 @@
         "fromPrice": 35700.0,
         "toPrice": 25300.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -33804,8 +33804,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -33875,7 +33875,7 @@
         "fromPrice": 56400.0,
         "toPrice": 44850.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -33907,8 +33907,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -33978,7 +33978,7 @@
         "fromPrice": 17600.0,
         "toPrice": 13560.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -34010,8 +34010,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -34081,7 +34081,7 @@
         "fromPrice": 29850.0,
         "toPrice": 21200.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -34113,8 +34113,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -34184,7 +34184,7 @@
         "fromPrice": 7990.0,
         "toPrice": 6100.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -34216,8 +34216,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -34287,7 +34287,7 @@
         "fromPrice": 36550.0,
         "toPrice": 27850.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -34319,8 +34319,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -34390,7 +34390,7 @@
         "fromPrice": 20250.0,
         "toPrice": 15420.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -34422,8 +34422,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -34493,7 +34493,7 @@
         "fromPrice": 35950.0,
         "toPrice": 29900.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -34525,8 +34525,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -34596,7 +34596,7 @@
         "fromPrice": 54600.0,
         "toPrice": 40500.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -34628,8 +34628,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -34699,7 +34699,7 @@
         "fromPrice": 4995.0,
         "toPrice": 3760.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -34731,8 +34731,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 1,
           "amount": 17299979278,
@@ -34802,7 +34802,7 @@
         "fromPrice": 12900.0,
         "toPrice": 9370.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -34834,8 +34834,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -34905,7 +34905,7 @@
         "fromPrice": 41600.0,
         "toPrice": 37050.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -34937,8 +34937,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -35008,7 +35008,7 @@
         "fromPrice": 40900.0,
         "toPrice": 31800.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -35040,8 +35040,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -35111,7 +35111,7 @@
         "fromPrice": 9710.0,
         "toPrice": 6900.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -35143,8 +35143,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -35214,7 +35214,7 @@
         "fromPrice": 26650.0,
         "toPrice": 23000.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -35246,8 +35246,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -35317,7 +35317,7 @@
         "fromPrice": 17990.0,
         "toPrice": 14600.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -35349,8 +35349,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -35420,7 +35420,7 @@
         "fromPrice": 9270.0,
         "toPrice": 7910.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -35452,8 +35452,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -35523,7 +35523,7 @@
         "fromPrice": 55700.0,
         "toPrice": 43900.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -35555,8 +35555,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -35626,7 +35626,7 @@
         "fromPrice": 35000.0,
         "toPrice": 23400.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -35658,8 +35658,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -35729,7 +35729,7 @@
         "fromPrice": 5220.0,
         "toPrice": 3665.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -35761,8 +35761,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -35832,7 +35832,7 @@
         "fromPrice": 10790.0,
         "toPrice": 7960.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -35864,8 +35864,8 @@
         "reportCode": "11012"
       },
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -35935,7 +35935,7 @@
         "fromPrice": 31300.0,
         "toPrice": 24700.0,
         "rangeFrom": "2025-10-30",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     },
     {
@@ -35951,8 +35951,8 @@
       "recent": null,
       "recentPrev": null,
       "issuance": {
-        "windowFrom": "2025-10-30",
-        "windowTo": "2026-10-30",
+        "windowFrom": "2025-10-31",
+        "windowTo": "2026-10-31",
         "rights": {
           "count": 0,
           "amount": 0,
@@ -36022,7 +36022,7 @@
         "fromPrice": 34400.0,
         "toPrice": 23350.0,
         "rangeFrom": "2025-12-04",
-        "rangeTo": "2026-10-29"
+        "rangeTo": "2026-10-30"
       }
     }
   ]
