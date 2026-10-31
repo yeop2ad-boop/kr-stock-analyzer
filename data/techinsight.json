@@ -1,5 +1,41 @@
 [
   {
+    "id": "35584eb14e84",
+    "sourceKey": "oecd",
+    "source": "OECD",
+    "title": "포용적이고 탄력적인 농식품 시스템 구축을 위한 AI의 역할과 과제",
+    "originalTitle": "AI for inclusive and resilient agri-food systems: Potential ways forward",
+    "link": "https://oecd.ai/en/wonk/ai-inclusive-and-resilient-agri-food-systems",
+    "summary": "전 세계 농식품 시스템이 기후변화, 공급망 불안정, 노동력 부족 등으로 인한 심각한 위기에 직면해 있으며, 약 7억 명이 여전히 기아에 시달리고 있다. AI는 가뭄 예측, 살충제 사용 감소, 병충해 조기 발견 등을 통해 농업 생산성을 크게 향상시킬 수 있는 유망한 솔루션을 제공한다. 그러나 선진국과 개발도상국 간의 디지털 기술 접근성 격차, 데이터 호환성 문제, 사이버 보안 위협 등이 AI 도입의 주요 장애물로 작용하고 있다. 농식품 분야 특성에 맞는 맞춤형 AI 거버넌스 프레임워크와 국제 협력이 필요하며, OECD와 같은 국제기구의 역할이 중요하다. AI의 이점이 모든 국가와 농민에게 공평하게 분배되려면 정책 조정, 디지털 리터러시 강화, 보안 강화 등 다층적인 노력이 병행되어야 한다.",
+    "image": "data/techinsight-images/35584eb14e84.webp",
+    "publishedAt": null,
+    "createdAt": "2026-10-31T00:43:12.370Z"
+  },
+  {
+    "id": "34936df5c82f",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "GLP-1 약물의 섭식장애 악화, 자아를 가진 도시, 그리고 영구 화학물질",
+    "originalTitle": "The Download: GLP-1s and eating disorders, self-aware cities, and forever chemicals",
+    "link": "https://www.technologyreview.com/2026/10/30/1147843/the-download-glp-1s-eating-disorders-forever-chemicals/",
+    "summary": "체중 감량 약물 GLP-1이 획기적 바이오텍 성과인 동시에 섭식장애를 악화시킬 수 있다는 우려가 제기되고 있으며, 1990년부터 2023년 사이 신경성 거식증과 폭식증의 발생률이 71% 증가했다. 과학 소설 '러브 이즈 인프라스트럭처'에서는 주민의 투표로 의식을 갖게 된 두 도시가 사랑에 빠지는 이야기를 통해 자율적 도시의 미래를 상상한다. 수십 년간 코팅 팬과 소방용 거품에 사용된 '영구 화학물질' PFAS는 불임, 발달 지연, 암 등 심각한 건강 문제를 일으키며, 물 시스템에서 이를 제거하는 기술이 발전 중이다. 암호화폐 거래소 바이낸스가 역사상 최대 규모인 63억 달러 규모의 해킹을 당했고, 엔비디아 경영진이 중국 스파이 혐의자의 표적이 되는 등 기술 산업의 보안 위협이 고조되고 있다.",
+    "image": "data/techinsight-images/34936df5c82f.webp",
+    "publishedAt": "2026-10-30T11:30:00.000Z",
+    "createdAt": "2026-10-31T00:43:10.598Z"
+  },
+  {
+    "id": "bbc846977e88",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "급증하는 섭식장애, GLP-1 약물이 악화시킬 수 있다",
+    "originalTitle": "Eating disorders are on the rise. GLP-1s could make things worse.",
+    "link": "https://www.technologyreview.com/2026/10/30/1147838/eating-disorders-rise-glp-1s-weight-loss-drugs/",
+    "summary": "1990년부터 2023년 사이 거식증과 폭식증의 발병률이 71% 증가했으며, 2023년 기준 약 1,810만 명이 이 두 질환으로 고통받고 있다. 소셜 미디어의 확산, 코로나19 팬데믹, 그리고 극단적인 다이어트 콘텐츠 노출이 주요 원인으로 지적되고 있다. 최근에는 체중감량 약물인 GLP-1을 오용하는 섭식장애 환자들이 늘어나면서 임상심리학자들이 우려를 표하고 있다. 전문가들은 실제 섭식장애 환자 수가 보고된 수치보다 훨씬 많으며, 향후 상황이 더욱 악화될 것으로 예측하고 있다.",
+    "image": "data/techinsight-images/bbc846977e88.webp",
+    "publishedAt": "2026-10-30T09:00:00.000Z",
+    "createdAt": "2026-10-31T00:43:28.627Z"
+  },
+  {
     "id": "f9552502a0c5",
     "sourceKey": "oecd",
     "source": "OECD",
@@ -10,6 +46,30 @@
     "image": "data/techinsight-images/f9552502a0c5.webp",
     "publishedAt": null,
     "createdAt": "2026-10-30T00:52:28.251Z"
+  },
+  {
+    "id": "59217d15507f",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "은행권 AI 가치 격차를 줄이는 법: CEO 실행 가이드",
+    "originalTitle": "Closing banking’s AI value gap: A CEO guide",
+    "link": "https://www.mckinsey.com/industries/financial-services/our-insights/closing-bankings-ai-value-gap-a-ceo-guide",
+    "summary": "AI 도입이 빠르게 진행되고 있지만 기대했던 가치를 충분히 실현하지 못하고 있다. 은행 리더들은 AI 투자를 반복적으로 활용 가능한 자본으로 전환할 수 있는 운영 모델을 구축해야 한다. 이를 통해 AI 기술에서 나오는 실질적인 이익을 극대화하고 투자 수익률을 높일 수 있다.",
+    "image": "data/techinsight-images/59217d15507f.webp",
+    "publishedAt": "2026-10-30T00:00:00.000Z",
+    "createdAt": "2026-10-31T00:43:21.008Z"
+  },
+  {
+    "id": "7f580e98b186",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "보험 유통의 미래를 바꿀 AI 에이전트, 와니와니 CEO가 말하다",
+    "originalTitle": "Waniwani’s CEO on the agentic future of insurance distribution",
+    "link": "https://www.mckinsey.com/industries/financial-services/our-insights/waniwanis-ceo-on-the-agentic-future-of-insurance-distribution",
+    "summary": "AI 에이전트 기술이 보험 유통 구조의 근본적인 경제 체계를 변화시킬 수 있는 잠재력을 갖고 있다. 와니와니의 로빈 딜리전트 CEO는 이 기술이 가져올 새로운 기회들을 강조하면서도 동시에 보험업계가 직면할 수 있는 위험 요소들을 지적한다. 보험사들은 이러한 기술 변화에 어떻게 대응해야 할지를 전략적으로 고민해야 한다.",
+    "image": "data/techinsight-images/7f580e98b186.webp",
+    "publishedAt": "2026-10-30T00:00:00.000Z",
+    "createdAt": "2026-10-31T00:43:44.905Z"
   },
   {
     "id": "296e570e8a26",
@@ -168,75 +228,15 @@
     "createdAt": "2026-10-28T00:27:53.129Z"
   },
   {
-    "id": "2f3094c64e2f",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "인류의 미래를 좌우할 앤스로픽의 상장, 스마트 전력망, 그리고 운동 약의 시대",
-    "originalTitle": "The Download: Anthropic’s IPO, smarter power grids, and exercise pills",
-    "link": "https://www.technologyreview.com/2026/10/27/1147693/the-download-anthropic-ipo-smarter-power-grids-exercise-pills/",
-    "summary": "AI 안전 기업 앤스로픽이 IPO 신청서를 제출했으며, 이번 상장은 AI 투자 붐의 향방을 결정할 수 있는 중요한 사건이다. 미국 전력망의 효율을 높이기 위해 고체상태 변압기 같은 차세대 기술이 개발 중이며, 이는 증가하는 전력 수요를 충족시키는 데 핵심 역할을 할 것으로 예상된다. 운동의 이점을 약물로 제공하는 운동 약 개발도 진행 중으로, 거동이 불편한 사람들을 위한 대체 치료법이 될 수 있다. 태양광 에너지가 핵에너지를 제치고 주요 전력원으로 부상하고 있으며, 마이크로플라스틱 문제와 우주 거울 기술 등 여러 기술 이슈들이 동시에 진행 중이다. 이러한 기술들의 발전은 긍정적 가능성과 함께 윤리적·환경적 우려를 함께 제기하고 있다.",
-    "image": "data/techinsight-images/2f3094c64e2f.webp",
-    "publishedAt": "2026-10-27T12:10:00.000Z",
-    "createdAt": "2026-10-28T00:27:47.798Z"
-  },
-  {
-    "id": "9dbb9e5222c0",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "제조업의 차세대 성장 동력, 산업용 인공지능",
-    "originalTitle": "Industrial Intelligence: The next growth opportunity for manufacturing",
-    "link": "https://www.technologyreview.com/2026/10/27/1147142/industrial-intelligence-the-next-growth-opportunity-for-manufacturing/",
-    "summary": "제조업체들이 보유한 경험 많은 인력의 노하우와 운영 데이터를 조직 전체에서 활용할 수 있도록 하는 것이 산업용 인공지능의 핵심이다. 물리적 AI는 기계와 공정을 연결하여 공장 바닥의 상황을 인지하고 패턴을 파악한 뒤 자동으로 대응함으로써 문제를 사전에 해결할 수 있게 한다. 도요타 인더스트리즈의 사례처럼 단편화된 데이터를 연결하면 분석 시간을 5일에서 4시간으로 단축하고 불량률을 25% 낮출 수 있다. 안전한 운영을 위해서는 명확한 권한, 신뢰할 수 있는 장비 연결, 정의된 안전 경계, 그리고 인간의 개입이 보장되어야 한다. 결국 산업용 인공지능은 기계를 더 똑똑하게 만드는 것이 아니라 인력의 역량을 높여 지속 가능한 성장을 실현하는 것을 목표로 한다.",
-    "image": "data/techinsight-images/9dbb9e5222c0.webp",
-    "publishedAt": "2026-10-27T11:19:18.000Z",
-    "createdAt": "2026-10-28T00:28:05.319Z"
-  },
-  {
-    "id": "603f58699d60",
-    "sourceKey": "oecd",
-    "source": "OECD",
-    "title": "금융 부문이 AI 혁신을 감시하면서도 빠른 발전속도를 유지할 수 있을까?",
-    "originalTitle": "Can the finance sector oversee AI innovation while maintaining its rapid progress?",
-    "link": "https://oecd.ai/en/wonk/can-the-finance-sector-oversee-ai-innovation-while-maintaining-its-rapid-progress",
-    "summary": "금융산업에서 AI의 활용이 확산되면서 규제당국은 혁신을 저해하지 않으면서도 시장 안정성과 소비자 보호를 동시에 보장해야 하는 과제에 직면했다. 기존 금융규제의 감시 관행을 강화하는 방식으로 접근하면 기술 중립적 원칙을 유지하면서도 AI 도입을 촉진할 수 있다. 현실적으로는 모델 위험관리, 설명 가능성, 공정성 기준 설정 등 여러 기술적 과제들이 AI 채택을 저해하고 있다. 새로운 규제를 추가하기보다는 기존 규제 프레임워크를 AI 맥락에 맞게 해석하고 실행하기 위한 지침을 제공하는 것이 더 효과적인 해결책이 될 수 있다. OECD 보고서는 혁신과 감시가 함께 진화할 수 있도록 하는 감시 접근방식을 제시하고 있다.",
-    "image": "data/techinsight-images/603f58699d60.webp",
-    "publishedAt": null,
-    "createdAt": "2026-10-27T00:22:40.984Z"
-  },
-  {
-    "id": "3a001020bfd4",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "AI가 대체할 수 없는 것들—그리고 그것이 왜 중요한가",
-    "originalTitle": "What AI can’t replace—and why it matters for value",
-    "link": "https://www.mckinsey.com/capabilities/people-and-organization/our-insights/what-ai-cant-replace-and-why-it-matters-for-value",
-    "summary": "스탠포드 연구 심리학자 자밀 자키는 AI가 인간관계의 단절 위기를 심화시킬 수 있다고 지적한다. 리더십에서 공감 능력은 AI 기술로 절대 대체될 수 없는 핵심 역량이다. 변화 관리 과정에서 공감을 바탕으로 한 소통은 조직 내 신뢰를 구축하고 인간관계를 강화한다. 이러한 인간중심적 접근은 AI 투자의 가치를 극대화하는 데 필수적이다. 결국 기술 도입 시대에 진정한 경쟁력은 인간의 감정 지능에서 비롯된다.",
-    "image": "data/techinsight-images/3a001020bfd4.webp",
-    "publishedAt": "2026-10-27T00:00:00.000Z",
-    "createdAt": "2026-10-28T00:28:01.164Z"
-  },
-  {
-    "id": "d57e9a8a9f2d",
+    "id": "42c92fbc7a08",
     "sourceKey": "ieee",
     "source": "IEEE Spectrum",
-    "title": "IEEE Xplore 디지털 라이브러리, AI 어시스턴트 추가",
-    "originalTitle": "IEEE Xplore Digital Library Adds AI Assistant",
-    "link": "https://spectrum.ieee.org/ieee-xplore-digital-library-ai",
-    "summary": "IEEE는 수백만 개의 동료심사 논문을 기반으로 구축된 IEEE Xplore AI 연구 스위트를 출시했다. 이 AI 도구는 검증된 과학적 결과에 기반한 답변을 제공하여 높은 정확성과 신뢰성을 보장한다. 사용자는 자연스러운 대화형 검색으로 복잡한 기술 논문을 빠르게 이해할 수 있으며, AI가 생성한 답변에는 원본 문헌의 링크가 포함되어 정보 검증이 가능하다. IEEE는 AI의 환각 현상과 편향 문제를 방지하기 위해 엄격한 안전장치를 적용했으며, 3000명 이상의 엔지니어와 과학자의 피드백으로 개발했다. 이 스위트는 IEEE Xplore 디지털 라이브러리의 기관 구독자를 위한 선택적 업그레이드 상품으로 제공된다.",
-    "image": "data/techinsight-images/d57e9a8a9f2d.webp",
-    "publishedAt": "2026-10-26T18:00:03.000Z",
-    "createdAt": "2026-10-27T00:22:41.333Z"
-  },
-  {
-    "id": "c6549f35a055",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "안스로픽의 진정한 모습은 무엇인가",
-    "originalTitle": "Will the real Anthropic please stand up",
-    "link": "https://www.technologyreview.com/2026/10/26/1147672/will-the-real-anthropic-please-stand-up/",
-    "summary": "안스로픽이 IPO 상장을 앞두고 있는 가운데, 회사가 수년간 정교한 이야기 전략으로 자신의 이미지를 만들어왔다는 비판이 제기되고 있다. 특이점이 도래했다거나 AI가 인간의 감정을 가지고 있다는 식의 과학소설적 서사를 통해 회사는 자신을 신뢰할 수 있는 유일한 기술 관리자로 포장해왔다. 안스로픽은 실제로 AI 안전 연구 조직, 책임 있는 기술 개발사, 그리고 이윤 추구를 하는 대기업이라는 모순된 역할을 동시에 수행하고 있다. 이러한 다중적 정체성은 외부 감시와 투명성보다 자체 규제를 우선하려는 태도로 이어지며, 결국 회사의 진정한 의도와 신뢰성에 대한 의문을 낳는다.",
-    "image": "data/techinsight-images/c6549f35a055.webp",
-    "publishedAt": "2026-10-26T17:45:43.000Z",
-    "createdAt": "2026-10-27T00:22:37.770Z"
+    "title": "인공지능으로 위조 논문을 만들어본 결과",
+    "originalTitle": "I Used AI to Fake a Scientific Paper. Here’s What Happened",
+    "link": "https://spectrum.ieee.org/ai-generated-scientific-papers",
+    "summary": "연구자가 일반 AI 도구만을 사용해 실제로 수행되지 않은 연구를 설명하는 위조 학술논문을 만들 수 있는지 실험했다. 2025년 기준으로 발표된 학술논문의 57%가 대형언어모델의 영향을 보였으며, 완전히 AI로 생성된 논문들이 학술출판계에 범람하고 있는 상황이다. 이 실험을 통해 전문가가 아닌 일반인도 무료 AI 도구로 출판사의 심사 방어를 뚫을 수 있는 위조논문을 만들 수 있음을 보여주고자 했다. AI로 인한 위조논문 문제는 학술지의 신뢰성 뿐 아니라 과학 자체에 대한 신뢰를 침식시키고 있다. 이 실험은 AI 자동화가 학술출판 시스템 전반을 어떻게 변화시키고 있는지 보여주는 사례가 되었다.",
+    "image": "data/techinsight-images/42c92fbc7a08.webp",
+    "publishedAt": "2026-10-27T13:00:03.000Z",
+    "createdAt": "2026-10-31T00:43:16.254Z"
   }
 ]
