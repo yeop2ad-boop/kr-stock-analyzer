@@ -1438,6 +1438,46 @@ async function handleAnswer(request, env) {
   return new Response(JSON.stringify({ ...p, usage: { tokens: Math.round((u.input_tokens || 0) + (u.output_tokens || 0) + (u.cache_creation_input_tokens || 0) + (u.cache_read_input_tokens || 0) * 0.1) } }), { status: 200, headers: { "Content-Type": "application/json", ...CORS_HEADERS } });
 }
 
+
+// ---------- 슬라임의 전설 랭킹 (2026-10-31) ----------
+// GET  /slime/rank?me=ID&friends=ID1,ID2 → { top:[...9], me:{rank,total,...}, friends:[...] }
+// POST /slime/rank  body {id,name,score,tier,floor}  → 더 높은 점수일 때만 갱신. KV 키 slime_rank_v1 (최대 3000명)
+const SLIME_RANK_KEY = "slime_rank_v1";
+async function handleSlimeRank(request, requestUrl, env) {
+  if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
+  const table = (await env.CHAT_KV.get(SLIME_RANK_KEY, "json")) || {};
+  if (request.method === "POST") {
+    let body = null;
+    try { body = await request.json(); } catch { return jsonResponse({ error: "JSON 본문이 필요합니다." }, 400); }
+    const id = String(body && body.id || "").toUpperCase();
+    if (!/^[A-Z0-9]{4,12}$/.test(id)) return jsonResponse({ error: "id 형식 오류" }, 400);
+    const name = String(body.name || "모험가").replace(/[<>]/g, "").slice(0, 12);
+    const score = Math.max(0, Math.min(99999, parseInt(body.score, 10) || 0));
+    const tier = Math.max(0, Math.min(9, parseInt(body.tier, 10) || 0));
+    const floor = Math.max(0, Math.min(999, parseInt(body.floor, 10) || 0));
+    const prev = table[id];
+    if (!prev || score >= (prev.score | 0)) table[id] = { name, score, tier, floor, t: Date.now() };
+    else table[id] = { ...prev, name, t: Date.now() };
+    const ids = Object.keys(table);
+    if (ids.length > 3000) {
+      ids.sort((a, b) => (table[b].score | 0) - (table[a].score | 0) || (table[b].t | 0) - (table[a].t | 0));
+      for (const k of ids.slice(3000)) delete table[k];
+    }
+    await env.CHAT_KV.put(SLIME_RANK_KEY, JSON.stringify(table));
+    return jsonResponse({ ok: true }, 200);
+  }
+  const me = String(requestUrl.searchParams.get("me") || "").toUpperCase();
+  const friendIds = String(requestUrl.searchParams.get("friends") || "").toUpperCase().split(",").map((x) => x.trim()).filter((x) => /^[A-Z0-9]{4,12}$/.test(x)).slice(0, 50);
+  const sorted = Object.entries(table).map(([id, r]) => ({ id, name: r.name, score: r.score | 0, tier: r.tier | 0, floor: r.floor | 0 }))
+    .sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
+  const top = sorted.slice(0, 9);
+  let meRow = null;
+  const idx = sorted.findIndex((r) => r.id === me);
+  if (idx >= 0) meRow = { ...sorted[idx], rank: idx + 1, total: sorted.length };
+  const friends = friendIds.map((fid) => { const i = sorted.findIndex((r) => r.id === fid); return i >= 0 ? { ...sorted[i], rank: i + 1 } : { id: fid, name: "(기록 없음)", score: 0, tier: 0, floor: 0 }; });
+  return jsonResponse({ top, me: meRow, friends, total: sorted.length }, 200);
+}
+
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") {
@@ -1445,6 +1485,10 @@ export default {
     }
 
     const requestUrl = new URL(request.url);
+
+    if (requestUrl.pathname === "/slime/rank") {
+      return handleSlimeRank(request, requestUrl, env);
+    }
 
     if (requestUrl.pathname === "/news-summary") {
       return handleNewsSummary(request, env, requestUrl);
