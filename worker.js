@@ -1478,6 +1478,35 @@ async function handleSlimeRank(request, requestUrl, env) {
   return jsonResponse({ top, me: meRow, friends, total: sorted.length }, 200);
 }
 
+// ---- 슬라임의 탑: 이어하기 코드(기기 이전) ----
+// POST /slime/save  body {pid, data(문자열 JSON), code?} → {code, expires}. 같은 pid가 보낸 기존 code면 그 코드를 갱신. KV 키 slime_save:<CODE>, 30일 뒤 만료
+// GET  /slime/save?code=XXXXXXXX → {data, pid, t}
+const SLIME_SAVE_TTL = 60 * 60 * 24 * 30;
+const SLIME_SAVE_ALPHA = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+function slimeSaveCode() { const a = new Uint8Array(8); crypto.getRandomValues(a); let s = ""; for (const b of a) s += SLIME_SAVE_ALPHA[b % SLIME_SAVE_ALPHA.length]; return s; }
+async function handleSlimeSave(request, requestUrl, env) {
+  if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
+  if (request.method === "GET") {
+    const code = String(requestUrl.searchParams.get("code") || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (code.length !== 8) return jsonResponse({ error: "code 형식 오류" }, 400);
+    const row = await env.CHAT_KV.get("slime_save:" + code, "json");
+    if (!row) return jsonResponse({ error: "없거나 만료된 코드" }, 404);
+    return jsonResponse({ data: row.data, pid: row.pid, t: row.t }, 200);
+  }
+  if (request.method !== "POST") return jsonResponse({ error: "method" }, 405);
+  let body = null;
+  try { body = await request.json(); } catch { return jsonResponse({ error: "JSON 본문이 필요합니다." }, 400); }
+  const pid = String(body && body.pid || "").toUpperCase();
+  if (!/^[A-Z0-9]{4,12}$/.test(pid)) return jsonResponse({ error: "pid 형식 오류" }, 400);
+  const data = typeof body.data === "string" ? body.data : JSON.stringify(body.data || null);
+  if (!data || data === "null" || data.length > 64 * 1024) return jsonResponse({ error: "data 크기 오류" }, 400);
+  let code = String(body.code || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+  if (code.length === 8) { const prev = await env.CHAT_KV.get("slime_save:" + code, "json"); if (!prev || prev.pid !== pid) code = ""; }
+  if (!code) code = slimeSaveCode();
+  await env.CHAT_KV.put("slime_save:" + code, JSON.stringify({ pid, data, t: Date.now() }), { expirationTtl: SLIME_SAVE_TTL });
+  return jsonResponse({ ok: true, code, expires: Date.now() + SLIME_SAVE_TTL * 1000 }, 200);
+}
+
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") {
@@ -1488,6 +1517,10 @@ export default {
 
     if (requestUrl.pathname === "/slime/rank") {
       return handleSlimeRank(request, requestUrl, env);
+    }
+
+    if (requestUrl.pathname === "/slime/save") {
+      return handleSlimeSave(request, requestUrl, env);
     }
 
     if (requestUrl.pathname === "/news-summary") {
