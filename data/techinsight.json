@@ -1,5 +1,41 @@
 [
   {
+    "id": "fec5e7fa42db",
+    "sourceKey": "oecd",
+    "source": "OECD",
+    "title": "집단 AI 보안을 위한 공동의 기초 마련",
+    "originalTitle": "Establishing the shared foundations for collective AI security",
+    "link": "https://oecd.ai/en/wonk/establishing-the-shared-foundations-for-collective-ai-security",
+    "summary": "AI 에이전트 기술의 발전으로 인해 소프트웨어와 주요 부문에 AI가 점점 더 통합되면서 새로운 보안 위협이 등장하고 있다. 전통적 사이버 보안을 넘어서는 AI 보안은 프롬프트 주입 공격, 모델 중독, 연결된 도구의 보안 등 새로운 리스크 패턴을 포함하고 있다. AI 기술이 국경과 산업 경계를 넘나들기 때문에 단일 국가나 기관만으로는 보안 문제를 해결할 수 없으며, 국제적 협력을 통한 공동의 연구 방법과 평가 기준이 필요하다. 모델 보호에서 배포 후 운영까지 전체 AI 보안 생명주기를 아우르는 공동의 모범 사례를 개발해야 한다. 특히 재사용 가능한 프롬프트 주입 공격 방어, AI 에이전트와 도구 연결의 보안, 모델 가중치와 학습 데이터 무결성 강화 등 세 가지 영역에서 자원을 집중해야 한다.",
+    "image": "data/techinsight-images/fec5e7fa42db.webp",
+    "publishedAt": null,
+    "createdAt": "2026-11-01T00:04:11.353Z"
+  },
+  {
+    "id": "01d27cbf7f1d",
+    "sourceKey": "oecd",
+    "source": "OECD",
+    "title": "OECD AI 정책 툴킷, 더 나은 AI 정책으로 더 나은 삶을 만들다",
+    "originalTitle": "The OECD AI Policy Toolkit: Better AI policies for better lives",
+    "link": "https://oecd.ai/en/wonk/the-oecd-ai-policy-toolkit-better-ai-policies-for-better-lives",
+    "summary": "OECD가 GPAI와 함께 AI 정책 툴킷을 출시했으며, 이는 OECD AI 원칙을 실제 정책으로 구현하도록 돕는 실용적인 가이드다. 이 툴킷은 원칙 수립보다 구체적인 실행 방법을 보여주는 데 초점을 맞추며, AI 기반 의미론적 검색을 통해 각국의 정책 사례와 실제 지침을 제공한다. 개발 과정에서 동남아시아, 라틴아메리카, 아프리카 지역의 정책입안자, 산업계, 전문가들과 협력하여 각 국가의 실제 상황과 의사결정 방식을 반영했다. 그 결과 AI 정책은 국가별 필요성, 제도적 역량, 디지털 성숙도에 따라 맞춤형이어야 하며, 동시에 글로벌 도전과제 해결을 위한 국제협력이 필수라는 교훈을 얻었다. OECD는 향후 지속적인 피드백과 반복 개선, 신규 정책 사례 추가, 새로운 정책 이슈 확대를 통해 툴킷을 계속 진화시킬 계획이다.",
+    "image": "data/techinsight-images/01d27cbf7f1d.webp",
+    "publishedAt": null,
+    "createdAt": "2026-11-01T00:03:56.473Z"
+  },
+  {
+    "id": "062f94d6c1c8",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "전기자동차가 여성을 위한 차였던 시대",
+    "originalTitle": "When Electric Cars Were for Women",
+    "link": "https://spectrum.ieee.org/early-electric-vehicles",
+    "summary": "20세기 초 자동차 산업이 급속도로 성장하던 시기에 전기차는 증기차와 내연기관차와 경쟁하고 있었다. 전기차는 시동이 쉽고 조용하며 유해한 배기가스가 없다는 장점이 있었던 반면, 휘발유차는 손잡이로 시동을 걸어야 하고 소음과 악취가 심했다. 전기차 제조사들은 이러한 특성이 여성 운전자에게 이상적이라고 판단하여 마케팅 전략으로 삼았고, GE 같은 회사는 세련된 복장의 여성들이 전기차를 충전하는 모습을 광고에 담아냈다. 이 시대 팬니 굿나우 같은 여성 초기 전기차 소유자들은 GE의 수은 정류기를 사용하여 차량을 충전했다.",
+    "image": "data/techinsight-images/062f94d6c1c8.webp",
+    "publishedAt": "2026-10-31T13:00:02.000Z",
+    "createdAt": "2026-11-01T00:03:54.404Z"
+  },
+  {
     "id": "35584eb14e84",
     "sourceKey": "oecd",
     "source": "OECD",
@@ -108,6 +144,18 @@
     "createdAt": "2026-10-30T00:52:43.859Z"
   },
   {
+    "id": "ee403acd35d6",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "기후 모델의 큰 맹점: 온난화가 온난화를 부르는 악순환",
+    "originalTitle": "Our climate models have a big, dangerous blind spot",
+    "link": "https://www.technologyreview.com/2026/10/29/1147735/climate-models-blind-spot/",
+    "summary": "지구 온난화 자체가 추가 온난화를 촉발하는 피드백 루프가 현재의 기후 모델에 제대로 반영되지 않고 있다. 영구동토층 해빙, 산불 증가, 습지 온난화 등으로 방출되는 이산화탄소와 메탄만으로도 금세기 전지구 평균 기온을 0.2~0.4℃ 더 상승시킬 수 있지만, UN 기후보고서의 대부분의 모델은 이러한 효과를 제대로 고려하지 않고 있다. 이러한 피드백 효과들이 1.5℃, 2℃ 임계값에 도달하는 시간을 25% 단축시킬 수 있어 각국이 예상보다 훨씬 더 빠르고 적극적으로 탄소 감축에 나서야 한다. 연구팀들은 화재 예방, 습지 메탄 제어 등 다양한 방안을 탐색 중이지만, 화석연료 사용을 줄이는 것이 여전히 가장 확실한 해결책이다.",
+    "image": "data/techinsight-images/ee403acd35d6.webp",
+    "publishedAt": "2026-10-29T10:00:00.000Z",
+    "createdAt": "2026-11-01T00:03:51.153Z"
+  },
+  {
     "id": "8bb8eec3e5d8",
     "sourceKey": "oecd",
     "source": "OECD",
@@ -180,63 +228,15 @@
     "createdAt": "2026-10-29T00:50:50.485Z"
   },
   {
-    "id": "38c808dff0e0",
-    "sourceKey": "oecd",
-    "source": "OECD",
-    "title": "AI 평가 격차 해소를 위한 5단계 로드맵",
-    "originalTitle": "A five-step roadmap to closing the AI evaluation gap",
-    "link": "https://oecd.ai/en/wonk/a-five-step-roadmap-to-closing-the-ai-evaluation-gap",
-    "summary": "현재 AI 평가 기법은 실제 성능을 제대로 예측하지 못하고 있으며, 이러한 평가 격차는 국제적으로 시급히 해결해야 할 과제로 인식되고 있다. AI 평가 기준을 표준화하고 개선하면 신뢰도 높은 AI 시스템의 도입을 촉진하고, 정책 입안자들의 불확실성을 줄이며, 기업들의 운영 비용을 절감할 수 있다. 또한 규제 체계의 국제적 호환성을 강화하고 AI 시장의 경쟁을 활성화할 수 있다. 이미 미국, 영국, EU, 인도, 싱가포르 등 11개 지역이 AI 안전 연구소를 설립하여 기초 모델에 대한 평가와 테스트를 진행하고 있으며, 이들 기관 간 국제 조율의 길이 마련되었다.",
-    "image": "data/techinsight-images/38c808dff0e0.webp",
-    "publishedAt": null,
-    "createdAt": "2026-10-28T00:27:51.331Z"
-  },
-  {
-    "id": "f05fca276caf",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "조달 분야의 에이전트 AI, 과대광고인가 혁신인가?",
-    "originalTitle": "Agentic AI in strategic sourcing: Hype or hero?",
-    "link": "https://www.mckinsey.com/capabilities/operations/our-insights/agentic-ai-in-strategic-sourcing-hype-or-hero",
-    "summary": "조달 부서들이 비용 절감과 효율성 향상을 목표로 에이전트 AI에 투자하고 있다. 이러한 기술이 실제로 기대만큼 가치 있는지에 대한 의문이 제기되고 있다. 기업들은 높은 기대감 속에 에이전트 AI 도입을 추진 중이지만, 실제 효과가 명확하지 않아 신중한 검토가 필요한 상황이다.",
-    "image": "data/techinsight-images/f05fca276caf.webp",
-    "publishedAt": "2026-10-28T00:00:00.000Z",
-    "createdAt": "2026-10-29T00:50:45.580Z"
-  },
-  {
-    "id": "f17c289cf923",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "AI가 쇼핑할 때 누가 이기는가? 에이전트 커머스의 새로운 증거",
-    "originalTitle": "Who wins when AI does the shopping? New evidence on agentic commerce",
-    "link": "https://www.mckinsey.com/capabilities/growth-marketing-and-sales/our-insights/who-wins-when-ai-does-the-shopping-new-evidence-on-agentic-commerce",
-    "summary": "약 21,000명의 소비자를 분석한 결과 AI 쇼핑 행동이 빠르게 증가하고 진화하고 있는 것으로 나타났다.\n초기 증거에 따르면 기업들은 증가하는 AI 쇼핑 수요에 아직 제대로 대응할 준비가 되어있지 않은 상태다.\n현재 많은 기업이 에이전트 커머스 시대에 적응하기 위한 인프라와 전략을 개발하는 과정에 있다.",
-    "image": "data/techinsight-images/f17c289cf923.webp",
-    "publishedAt": "2026-10-28T00:00:00.000Z",
-    "createdAt": "2026-10-29T00:51:08.252Z"
-  },
-  {
-    "id": "1698e31ea5a4",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "로봇의 안전장치는 작동하지만, 입력값이 조작된다면?",
-    "originalTitle": "Your Robot’s Safety Functions Already Work. What If the Input Lies?",
-    "link": "https://spectrum.ieee.org/ai-robot-safety-cybersecurity-vicone",
-    "summary": "로봇의 안전 기능이 정상적으로 작동하더라도 입력되는 정보가 의도적으로 조작되면 로봇의 행동이 예기치 않게 변할 수 있다. 카메라 영상 변조, 거짓 음성 신호, 위조된 센서 데이터 등을 통해 로봇이 설계된 대로 반응하면서도 실제로는 위험한 행동을 수행하도록 만들 수 있다. 안전 보호 시스템 역시 입력값에 의존하기 때문에 그 입력값이 조작되면 안전장치 자체도 제 역할을 하지 못할 수 있다. 이러한 사이버 위협으로부터 로봇을 보호하기 위해서는 입력값의 신뢰성 검증과 강화된 테스트가 필요하다.",
-    "image": "data/techinsight-images/1698e31ea5a4.webp",
-    "publishedAt": "2026-10-27T16:14:39.000Z",
-    "createdAt": "2026-10-28T00:27:53.129Z"
-  },
-  {
-    "id": "42c92fbc7a08",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "인공지능으로 위조 논문을 만들어본 결과",
-    "originalTitle": "I Used AI to Fake a Scientific Paper. Here’s What Happened",
-    "link": "https://spectrum.ieee.org/ai-generated-scientific-papers",
-    "summary": "연구자가 일반 AI 도구만을 사용해 실제로 수행되지 않은 연구를 설명하는 위조 학술논문을 만들 수 있는지 실험했다. 2025년 기준으로 발표된 학술논문의 57%가 대형언어모델의 영향을 보였으며, 완전히 AI로 생성된 논문들이 학술출판계에 범람하고 있는 상황이다. 이 실험을 통해 전문가가 아닌 일반인도 무료 AI 도구로 출판사의 심사 방어를 뚫을 수 있는 위조논문을 만들 수 있음을 보여주고자 했다. AI로 인한 위조논문 문제는 학술지의 신뢰성 뿐 아니라 과학 자체에 대한 신뢰를 침식시키고 있다. 이 실험은 AI 자동화가 학술출판 시스템 전반을 어떻게 변화시키고 있는지 보여주는 사례가 되었다.",
-    "image": "data/techinsight-images/42c92fbc7a08.webp",
-    "publishedAt": "2026-10-27T13:00:03.000Z",
-    "createdAt": "2026-10-31T00:43:16.254Z"
+    "id": "056614830d95",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "산업용 AI 자율성과 인간의 통제를 결합하다",
+    "originalTitle": "Pairing industrial AI autonomy and human control",
+    "link": "https://www.technologyreview.com/2026/10/28/1147637/pairing-industrial-ai-autonomy-and-human-control/",
+    "summary": "디지털 트윈 기술이 진화하면서 AI가 실시간으로 산업 시설을 모니터링하고 자동으로 조정할 수 있는 '생명형 디지털 트윈'이 등장했다. 이는 단순히 문제를 진단하는 수준을 넘어 물리적 세계에 직접 개입하고 산업 설비의 자동 조절을 가능하게 한다. 제조업체의 66%가 에이전틱 AI 도입을 진행 중이지만, 65%는 운영 위험성을 우려하고 있다. 현재로서는 SCADA 시스템처럼 AI가 인간의 감독 아래 조언 역할을 수행하는 방식이 현실적이며, 운영자들은 일상적인 결정 승인에서 벗어나 AI의 활동을 검증하고 운영 한계를 정의하는 역할로 전환되고 있다. 조직들은 AI의 자율적 결정 범위를 명확히 정의하고 감시 및 감사 체계를 갖춰야 한다.",
+    "image": "data/techinsight-images/056614830d95.webp",
+    "publishedAt": "2026-10-28T12:00:00.000Z",
+    "createdAt": "2026-11-01T00:03:52.567Z"
   }
 ]
