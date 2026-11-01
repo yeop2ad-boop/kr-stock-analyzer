@@ -25,7 +25,7 @@ const NDX_EXTRA_DATA = {
       "dividendYield": null,
       "winRateScore": 62.5,
       "rsiWeekly": 45.5,
-      "ret10yAvg": 32.4
+      "ret10yAvg": 31.3
     },
     {
       "symbol": "ARM",
@@ -37,9 +37,9 @@ const NDX_EXTRA_DATA = {
       "per": 281.24,
       "eps": 0.85,
       "dividendYield": null,
-      "winRateScore": 54.3,
+      "winRateScore": 51.4,
       "rsiWeekly": 42.4,
-      "ret10yAvg": 83.5
+      "ret10yAvg": 59.0
     },
     {
       "symbol": "SHOP",
@@ -53,7 +53,7 @@ const NDX_EXTRA_DATA = {
       "dividendYield": null,
       "winRateScore": 61.7,
       "rsiWeekly": 57.8,
-      "ret10yAvg": 42.5
+      "ret10yAvg": 43.8
     },
     {
       "symbol": "PDD",
@@ -67,7 +67,7 @@ const NDX_EXTRA_DATA = {
       "dividendYield": null,
       "winRateScore": 49.5,
       "rsiWeekly": 40.8,
-      "ret10yAvg": 18.8
+      "ret10yAvg": 18.5
     },
     {
       "symbol": "MELI",
@@ -81,7 +81,7 @@ const NDX_EXTRA_DATA = {
       "dividendYield": null,
       "winRateScore": 51.7,
       "rsiWeekly": 40.5,
-      "ret10yAvg": 25.0
+      "ret10yAvg": 26.3
     },
     {
       "symbol": "NBIS",
@@ -93,9 +93,9 @@ const NDX_EXTRA_DATA = {
       "per": 615.24,
       "eps": 0.34,
       "dividendYield": null,
-      "winRateScore": 72.7,
+      "winRateScore": 66.7,
       "rsiWeekly": 42.0,
-      "ret10yAvg": 264.8
+      "ret10yAvg": 164.8
     },
     {
       "symbol": "ALAB",
@@ -107,9 +107,9 @@ const NDX_EXTRA_DATA = {
       "per": 219.3,
       "eps": 1.32,
       "dividendYield": null,
-      "winRateScore": 48.3,
+      "winRateScore": 45.2,
       "rsiWeekly": 45.2,
-      "ret10yAvg": 81.1
+      "ret10yAvg": 54.0
     },
     {
       "symbol": "MSTR",
@@ -121,9 +121,9 @@ const NDX_EXTRA_DATA = {
       "per": null,
       "eps": -15.23,
       "dividendYield": null,
-      "winRateScore": 51.7,
+      "winRateScore": 50.8,
       "rsiWeekly": 47.3,
-      "ret10yAvg": 24.8
+      "ret10yAvg": 21.0
     },
     {
       "symbol": "CCEP",
@@ -135,9 +135,9 @@ const NDX_EXTRA_DATA = {
       "per": 25.61,
       "eps": 4.26,
       "dividendYield": null,
-      "winRateScore": 57.5,
+      "winRateScore": 58.3,
       "rsiWeekly": 63.6,
-      "ret10yAvg": 9.8
+      "ret10yAvg": 13.3
     },
     {
       "symbol": "CRWV",
@@ -149,9 +149,9 @@ const NDX_EXTRA_DATA = {
       "per": null,
       "eps": -2.75,
       "dividendYield": null,
-      "winRateScore": 41.2,
+      "winRateScore": 36.8,
       "rsiWeekly": 36.6,
-      "ret10yAvg": 69.4
+      "ret10yAvg": 19.7
     },
     {
       "symbol": "TRI",
@@ -165,7 +165,7 @@ const NDX_EXTRA_DATA = {
       "dividendYield": null,
       "winRateScore": 56.7,
       "rsiWeekly": 61.7,
-      "ret10yAvg": 8.5
+      "ret10yAvg": 10.2
     },
     {
       "symbol": "FER",
@@ -177,9 +177,9 @@ const NDX_EXTRA_DATA = {
       "per": 47.36,
       "eps": 1.24,
       "dividendYield": null,
-      "winRateScore": 60.8,
+      "winRateScore": 61.7,
       "rsiWeekly": 41.4,
-      "ret10yAvg": 9.8
+      "ret10yAvg": 12.2
     },
     {
       "symbol": "RKLB",
@@ -191,9 +191,9 @@ const NDX_EXTRA_DATA = {
       "per": null,
       "eps": -0.37,
       "dividendYield": null,
-      "winRateScore": 49.3,
+      "winRateScore": 47.9,
       "rsiWeekly": 40.9,
-      "ret10yAvg": 39.9
+      "ret10yAvg": 33.0
     },
     {
       "symbol": "ALNY",
@@ -205,9 +205,9 @@ const NDX_EXTRA_DATA = {
       "per": 99.21,
       "eps": 2.39,
       "dividendYield": null,
-      "winRateScore": 52.5,
+      "winRateScore": 51.7,
       "rsiWeekly": 29.5,
-      "ret10yAvg": 13.8
+      "ret10yAvg": 14.2
     }
   ]
 };

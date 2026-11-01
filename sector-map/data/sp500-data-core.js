@@ -23,7 +23,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 66.2,
       "roe": 84.2,
       "debtRatio": 39.9,
-      "week52RangePct": 51.0
+      "week52RangePct": 51.0,
+      "pressureScore": 2.1,
+      "stabilityScore": 7.8,
+      "winRateScore": 64.2,
+      "rsiWeekly": 46.7,
+      "ret10yAvg": 56.6
     },
     {
       "symbol": "AAPL",
@@ -47,7 +52,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 32.6,
       "roe": 119.9,
       "debtRatio": 256.5,
-      "week52RangePct": 93.4
+      "week52RangePct": 93.4,
+      "pressureScore": 4.5,
+      "stabilityScore": 8.5,
+      "winRateScore": 60.0,
+      "rsiWeekly": 65.1,
+      "ret10yAvg": 28.7
     },
     {
       "symbol": "GOOGL",
@@ -71,7 +81,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 31.8,
       "roe": 34.8,
       "debtRatio": 48.1,
-      "week52RangePct": 6.6
+      "week52RangePct": 6.6,
+      "pressureScore": 2.1,
+      "stabilityScore": 8.1,
+      "winRateScore": 62.5,
+      "rsiWeekly": 33.1,
+      "ret10yAvg": 21.8
     },
     {
       "symbol": "MSFT",
@@ -95,7 +110,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 49.8,
       "roe": 30.3,
       "debtRatio": 65.7,
-      "week52RangePct": 85.5
+      "week52RangePct": 85.5,
+      "pressureScore": 4.3,
+      "stabilityScore": 9.1,
+      "winRateScore": 61.7,
+      "rsiWeekly": 63.1,
+      "ret10yAvg": 24.1
     },
     {
       "symbol": "AMZN",
@@ -119,7 +139,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 13.1,
       "roe": 20.5,
       "debtRatio": 107.4,
-      "week52RangePct": 48.6
+      "week52RangePct": 48.6,
+      "pressureScore": 2.6,
+      "stabilityScore": 6.6,
+      "winRateScore": 56.7,
+      "rsiWeekly": 45.5,
+      "ret10yAvg": 20.4
     },
     {
       "symbol": "AVGO",
@@ -143,7 +168,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 54.3,
       "roe": 38.4,
       "debtRatio": 88.7,
-      "week52RangePct": 17.6
+      "week52RangePct": 17.6,
+      "pressureScore": 1.7,
+      "stabilityScore": 4.4,
+      "winRateScore": 63.3,
+      "rsiWeekly": 40.8,
+      "ret10yAvg": 34.3
     },
     {
       "symbol": "TSLA",
@@ -167,7 +197,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 2.6,
       "roe": 3.6,
       "debtRatio": 75.7,
-      "week52RangePct": 50.8
+      "week52RangePct": 50.8,
+      "pressureScore": 4.2,
+      "stabilityScore": 2.8,
+      "winRateScore": 55.0,
+      "rsiWeekly": 55.9,
+      "ret10yAvg": 41.3
     },
     {
       "symbol": "META",
@@ -191,7 +226,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 20.1,
       "roe": 27.6,
       "debtRatio": 75.8,
-      "week52RangePct": 36.5
+      "week52RangePct": 36.5,
+      "pressureScore": 3.0,
+      "stabilityScore": 6.3,
+      "winRateScore": 57.5,
+      "rsiWeekly": 47.0,
+      "ret10yAvg": 17.9
     },
     {
       "symbol": "LLY",
@@ -215,7 +255,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 53.7,
       "roe": 68.5,
       "debtRatio": 267.7,
-      "week52RangePct": 94.6
+      "week52RangePct": 94.6,
+      "pressureScore": 6.4,
+      "stabilityScore": 5.3,
+      "winRateScore": 61.7,
+      "rsiWeekly": 71.4,
+      "ret10yAvg": 35.7
     },
     {
       "symbol": "MU",
@@ -239,7 +284,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 80.7,
       "roe": 61.4,
       "debtRatio": 41.6,
-      "week52RangePct": 65.1
+      "week52RangePct": 65.1,
+      "pressureScore": 2.6,
+      "stabilityScore": 2.4,
+      "winRateScore": 55.8,
+      "rsiWeekly": 51.3,
+      "ret10yAvg": 46.4
     },
     {
       "symbol": "BRK-B",
@@ -287,14 +337,19 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 17.4,
       "debtRatio": 1238.8,
-      "week52RangePct": 66.3
+      "week52RangePct": 66.3,
+      "pressureScore": 2.7,
+      "stabilityScore": 4.7,
+      "winRateScore": 55.8,
+      "rsiWeekly": 51.5,
+      "ret10yAvg": 15.4
     },
     {
       "symbol": "WMT",
       "name": "Walmart",
       "sector": "Consumer Staples",
       "sectorKo": "필수소비재",
-      "marketCap": 982902374400,
+      "marketCap": 979897024512,
       "changePercent": 1.86392,
       "per": 44.75,
       "eps": 2.76,
@@ -311,7 +366,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 5.0,
       "roe": 22.5,
       "debtRatio": 192.5,
-      "week52RangePct": 67.9
+      "week52RangePct": 67.9,
+      "pressureScore": 4.6,
+      "stabilityScore": 5.7,
+      "winRateScore": 59.2,
+      "rsiWeekly": 60.7,
+      "ret10yAvg": 18.1
     },
     {
       "symbol": "AMD",
@@ -335,7 +395,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 17.3,
       "roe": 9.6,
       "debtRatio": 25.6,
-      "week52RangePct": 67.3
+      "week52RangePct": 67.3,
+      "pressureScore": 2.9,
+      "stabilityScore": 3.2,
+      "winRateScore": 50.8,
+      "rsiWeekly": 52.5,
+      "ret10yAvg": 49.7
     },
     {
       "symbol": "V",
@@ -359,7 +424,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 61.3,
       "roe": 64.2,
       "debtRatio": 168.9,
-      "week52RangePct": 97.2
+      "week52RangePct": 97.2,
+      "pressureScore": 5.7,
+      "stabilityScore": 6.7,
+      "winRateScore": 60.8,
+      "rsiWeekly": 73.2,
+      "ret10yAvg": 18.3
     },
     {
       "symbol": "XOM",
@@ -383,7 +453,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 15.9,
       "roe": 12.6,
       "debtRatio": 76.5,
-      "week52RangePct": 98.4
+      "week52RangePct": 98.4,
+      "pressureScore": 5.7,
+      "stabilityScore": 4.9,
+      "winRateScore": 53.3,
+      "rsiWeekly": 71.2,
+      "ret10yAvg": 7.9
     },
     {
       "symbol": "JNJ",
@@ -407,7 +482,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 25.1,
       "roe": 19.7,
       "debtRatio": 142.2,
-      "week52RangePct": 90.9
+      "week52RangePct": 90.9,
+      "pressureScore": 3.8,
+      "stabilityScore": 7.2,
+      "winRateScore": 56.7,
+      "rsiWeekly": 60.3,
+      "ret10yAvg": 9.4
     },
     {
       "symbol": "MA",
@@ -416,8 +496,8 @@ const SP500_CORE_DATA = {
       "sectorKo": "금융",
       "marketCap": 555819073536,
       "changePercent": 0.363379,
-      "per": 33.386185,
-      "eps": 19.11,
+      "per": 35.09406,
+      "eps": 18.18,
       "dividendYield": 0.55,
       "dollarVolume": 2881829283.0299997,
       "winRateScore": 64.2,
@@ -431,7 +511,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 61.0,
       "roe": 251.1,
       "debtRatio": 761.3,
-      "week52RangePct": 96.5
+      "week52RangePct": 96.5,
+      "pressureScore": 6.0,
+      "stabilityScore": 6.0,
+      "winRateScore": 64.2,
+      "rsiWeekly": 70.8,
+      "ret10yAvg": 20.1
     },
     {
       "symbol": "INTC",
@@ -455,7 +540,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 12.2,
       "roe": -12.9,
       "debtRatio": 113.4,
-      "week52RangePct": 30.0
+      "week52RangePct": 30.0,
+      "pressureScore": 1.8,
+      "stabilityScore": 1.6,
+      "winRateScore": 53.3,
+      "rsiWeekly": 38.4,
+      "ret10yAvg": 6.6
     },
     {
       "symbol": "ABBV",
@@ -479,7 +569,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 39.6,
       "roe": -106.3,
       "debtRatio": -2375.8,
-      "week52RangePct": 96.4
+      "week52RangePct": 96.4,
+      "pressureScore": 5.4,
+      "stabilityScore": 3.5,
+      "winRateScore": 60.8,
+      "rsiWeekly": 73.3,
+      "ret10yAvg": 17.1
     },
     {
       "symbol": "CSCO",
@@ -503,7 +598,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 27.7,
       "roe": 26.4,
       "debtRatio": 157.8,
-      "week52RangePct": 56.8
+      "week52RangePct": 56.8,
+      "pressureScore": 2.2,
+      "stabilityScore": 3.9,
+      "winRateScore": 56.7,
+      "rsiWeekly": 47.5,
+      "ret10yAvg": 13.4
     },
     {
       "symbol": "PLTR",
@@ -527,7 +627,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 47.1,
       "roe": 30.9,
       "debtRatio": 18.4,
-      "week52RangePct": 72.9
+      "week52RangePct": 72.9,
+      "pressureScore": 2.9,
+      "stabilityScore": 5.5,
+      "winRateScore": 54.8,
+      "rsiWeekly": 55.8,
+      "ret10yAvg": 61.1
     },
     {
       "symbol": "BAC",
@@ -551,7 +656,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 10.6,
       "debtRatio": 1062.8,
-      "week52RangePct": 20.4
+      "week52RangePct": 20.4,
+      "pressureScore": 0.8,
+      "stabilityScore": 4.2,
+      "winRateScore": 55.0,
+      "rsiWeekly": 34.3,
+      "ret10yAvg": 9.0
     },
     {
       "symbol": "ORCL",
@@ -575,7 +685,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 35.3,
       "roe": 28.3,
       "debtRatio": 353.5,
-      "week52RangePct": 10.7
+      "week52RangePct": 10.7,
+      "pressureScore": 2.1,
+      "stabilityScore": 4.2,
+      "winRateScore": 52.5,
+      "rsiWeekly": 41.2,
+      "ret10yAvg": 12.5
     },
     {
       "symbol": "COST",
@@ -599,7 +714,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 4.0,
       "roe": 25.8,
       "debtRatio": 148.7,
-      "week52RangePct": 66.6
+      "week52RangePct": 66.6,
+      "pressureScore": 4.6,
+      "stabilityScore": 4.6,
+      "winRateScore": 62.5,
+      "rsiWeekly": 61.7,
+      "ret10yAvg": 21.0
     },
     {
       "symbol": "CVX",
@@ -608,8 +728,8 @@ const SP500_CORE_DATA = {
       "sectorKo": "에너지",
       "marketCap": 459499536384,
       "changePercent": 1.75408,
-      "per": 17.292217,
-      "eps": 13.62,
+      "per": 22.66795,
+      "eps": 10.39,
       "dividendYield": 3.02,
       "dollarVolume": 2592996065.28,
       "winRateScore": 55.0,
@@ -623,7 +743,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 21.2,
       "roe": 10.8,
       "debtRatio": 70.9,
-      "week52RangePct": 98.9
+      "week52RangePct": 98.9,
+      "pressureScore": 5.5,
+      "stabilityScore": 5.3,
+      "winRateScore": 54.2,
+      "rsiWeekly": 71.5,
+      "ret10yAvg": 7.8
     },
     {
       "symbol": "LRCX",
@@ -647,7 +772,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 40.0,
       "roe": 60.8,
       "debtRatio": 89.5,
-      "week52RangePct": 34.2
+      "week52RangePct": 34.2,
+      "pressureScore": 1.8,
+      "stabilityScore": 4.1,
+      "winRateScore": 59.2,
+      "rsiWeekly": 40.9,
+      "ret10yAvg": 36.6
     },
     {
       "symbol": "KO",
@@ -671,7 +801,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 35.1,
       "roe": 39.6,
       "debtRatio": 192.6,
-      "week52RangePct": 95.4
+      "week52RangePct": 95.4,
+      "pressureScore": 5.1,
+      "stabilityScore": 5.1,
+      "winRateScore": 61.7,
+      "rsiWeekly": 67.6,
+      "ret10yAvg": 8.8
     },
     {
       "symbol": "AMAT",
@@ -695,7 +830,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 33.7,
       "roe": 36.2,
       "debtRatio": 69.8,
-      "week52RangePct": 34.8
+      "week52RangePct": 34.8,
+      "pressureScore": 1.6,
+      "stabilityScore": 4.2,
+      "winRateScore": 60.0,
+      "rsiWeekly": 41.5,
+      "ret10yAvg": 28.3
     },
     {
       "symbol": "CAT",
@@ -719,7 +859,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 20.9,
       "roe": 55.9,
       "debtRatio": 429.1,
-      "week52RangePct": 16.0
+      "week52RangePct": 16.0,
+      "pressureScore": 1.0,
+      "stabilityScore": 4.4,
+      "winRateScore": 59.2,
+      "rsiWeekly": 29.6,
+      "ret10yAvg": 20.6
     },
     {
       "symbol": "MRK",
@@ -743,7 +888,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": -2.6,
       "roe": 7.6,
       "debtRatio": 209.4,
-      "week52RangePct": 90.1
+      "week52RangePct": 90.1,
+      "pressureScore": 4.4,
+      "stabilityScore": 4.8,
+      "winRateScore": 54.2,
+      "rsiWeekly": 64.9,
+      "ret10yAvg": 9.9
     },
     {
       "symbol": "GE",
@@ -767,7 +917,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 17.2,
       "roe": 52.0,
       "debtRatio": 624.6,
-      "week52RangePct": 27.4
+      "week52RangePct": 27.4,
+      "pressureScore": 2.3,
+      "stabilityScore": 4.0,
+      "winRateScore": 52.5,
+      "rsiWeekly": 43.1,
+      "ret10yAvg": 7.4
     },
     {
       "symbol": "UNH",
@@ -791,7 +946,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 7.1,
       "roe": 14.3,
       "debtRatio": 207.0,
-      "week52RangePct": 73.4
+      "week52RangePct": 73.4,
+      "pressureScore": 3.9,
+      "stabilityScore": 4.5,
+      "winRateScore": 54.2,
+      "rsiWeekly": 57.9,
+      "ret10yAvg": 9.9
     },
     {
       "symbol": "MS",
@@ -815,7 +975,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 17.3,
       "debtRatio": 1339.0,
-      "week52RangePct": 39.6
+      "week52RangePct": 39.6,
+      "pressureScore": 1.8,
+      "stabilityScore": 4.3,
+      "winRateScore": 60.0,
+      "rsiWeekly": 39.7,
+      "ret10yAvg": 16.1
     },
     {
       "symbol": "PG",
@@ -839,7 +1004,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 25.5,
       "roe": 29.1,
       "debtRatio": 141.2,
-      "week52RangePct": 80.8
+      "week52RangePct": 80.8,
+      "pressureScore": 5.1,
+      "stabilityScore": 5.6,
+      "winRateScore": 58.3,
+      "rsiWeekly": 68.4,
+      "ret10yAvg": 7.0
     },
     {
       "symbol": "HD",
@@ -863,7 +1033,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 14.3,
       "roe": 85.6,
       "debtRatio": 558.3,
-      "week52RangePct": 43.2
+      "week52RangePct": 43.2,
+      "pressureScore": 3.6,
+      "stabilityScore": 4.0,
+      "winRateScore": 58.3,
+      "rsiWeekly": 51.9,
+      "ret10yAvg": 9.8
     },
     {
       "symbol": "NFLX",
@@ -887,7 +1062,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 34.6,
       "roe": 50.4,
       "debtRatio": 100.4,
-      "week52RangePct": 1.2
+      "week52RangePct": 1.2,
+      "pressureScore": 1.0,
+      "stabilityScore": 3.7,
+      "winRateScore": 58.3,
+      "rsiWeekly": 31.6,
+      "ret10yAvg": 18.2
     },
     {
       "symbol": "GS",
@@ -900,18 +1080,18 @@ const SP500_CORE_DATA = {
       "eps": 69.55,
       "dividendYield": 2.24,
       "dollarVolume": 1911994173.55,
-      "winRateScore": 58.3,
-      "rsiWeekly": 38.5,
-      "ret10yAvg": 18.8,
-      "pressureScore": 1.5,
-      "stabilityScore": 3.9,
-      "revenueGrowth": 39.46,
-      "netIncomeGrowth": 78.03,
-      "cashFlowGrowth": 7.63,
+      "revenueGrowth": 14.37,
+      "netIncomeGrowth": 18.83,
+      "cashFlowGrowth": 14.4,
       "operatingMargin": null,
-      "roe": 17.1,
-      "debtRatio": 1633.5,
-      "week52RangePct": 35.1
+      "roe": 14.7,
+      "debtRatio": 1577.9,
+      "week52RangePct": 35.1,
+      "pressureScore": 1.3,
+      "stabilityScore": 3.9,
+      "winRateScore": 56.7,
+      "rsiWeekly": 38.5,
+      "ret10yAvg": 15.1
     },
     {
       "symbol": "PM",
@@ -935,7 +1115,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 42.5,
       "roe": -134.9,
       "debtRatio": -915.6,
-      "week52RangePct": 92.3
+      "week52RangePct": 92.3,
+      "pressureScore": 4.6,
+      "stabilityScore": 4.0,
+      "winRateScore": 57.5,
+      "rsiWeekly": 65.0,
+      "ret10yAvg": 9.0
     },
     {
       "symbol": "PANW",
@@ -959,7 +1144,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 5.0,
       "roe": 1.1,
       "debtRatio": 76.3,
-      "week52RangePct": 77.3
+      "week52RangePct": 77.3,
+      "pressureScore": 3.3,
+      "stabilityScore": 4.0,
+      "winRateScore": 60.0,
+      "rsiWeekly": 56.4,
+      "ret10yAvg": 32.2
     },
     {
       "symbol": "DELL",
@@ -983,7 +1173,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 11.6,
       "roe": -797.3,
       "debtRatio": -9027.3,
-      "week52RangePct": 64.7
+      "week52RangePct": 64.7,
+      "pressureScore": 2.2,
+      "stabilityScore": 1.1,
+      "winRateScore": 64.2,
+      "rsiWeekly": 49.9,
+      "ret10yAvg": 39.7
     },
     {
       "symbol": "RTX",
@@ -1007,7 +1202,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 13.4,
       "roe": 12.1,
       "debtRatio": 152.5,
-      "week52RangePct": 55.0
+      "week52RangePct": 55.0,
+      "pressureScore": 3.9,
+      "stabilityScore": 3.2,
+      "winRateScore": 59.2,
+      "rsiWeekly": 53.4,
+      "ret10yAvg": 11.4
     },
     {
       "symbol": "GEV",
@@ -1031,7 +1231,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 11.0,
       "roe": 91.1,
       "debtRatio": 647.4,
-      "week52RangePct": 49.2
+      "week52RangePct": 49.2,
+      "pressureScore": 2.6,
+      "stabilityScore": 2.5,
+      "winRateScore": 61.3,
+      "rsiWeekly": 43.2,
+      "ret10yAvg": 94.6
     },
     {
       "symbol": "WFC",
@@ -1055,7 +1260,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 13.1,
       "debtRatio": 1180.8,
-      "week52RangePct": 42.5
+      "week52RangePct": 42.5,
+      "pressureScore": 2.5,
+      "stabilityScore": 4.1,
+      "winRateScore": 54.2,
+      "rsiWeekly": 48.5,
+      "ret10yAvg": 4.7
     },
     {
       "symbol": "TXN",
@@ -1079,7 +1289,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 47.6,
       "roe": 37.1,
       "debtRatio": 92.0,
-      "week52RangePct": 81.7
+      "week52RangePct": 81.7,
+      "pressureScore": 4.6,
+      "stabilityScore": 4.1,
+      "winRateScore": 57.5,
+      "rsiWeekly": 60.2,
+      "ret10yAvg": 15.1
     },
     {
       "symbol": "KLAC",
@@ -1103,7 +1318,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 45.0,
       "roe": 80.6,
       "debtRatio": 182.1,
-      "week52RangePct": 25.3
+      "week52RangePct": 25.3,
+      "pressureScore": 2.1,
+      "stabilityScore": 4.4,
+      "winRateScore": 60.8,
+      "rsiWeekly": 42.9,
+      "ret10yAvg": 34.8
     },
     {
       "symbol": "ANET",
@@ -1127,7 +1347,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 45.4,
       "roe": 27.3,
       "debtRatio": 60.3,
-      "week52RangePct": 52.8
+      "week52RangePct": 52.8,
+      "pressureScore": 2.1,
+      "stabilityScore": 5.7,
+      "winRateScore": 65.8,
+      "rsiWeekly": 46.1,
+      "ret10yAvg": 39.8
     },
     {
       "symbol": "AMGN",
@@ -1151,7 +1376,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 35.0,
       "roe": 74.8,
       "debtRatio": 718.3,
-      "week52RangePct": 94.7
+      "week52RangePct": 94.7,
+      "pressureScore": 5.1,
+      "stabilityScore": 3.2,
+      "winRateScore": 55.0,
+      "rsiWeekly": 68.0,
+      "ret10yAvg": 12.5
     },
     {
       "symbol": "SNDK",
@@ -1175,7 +1405,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 78.5,
       "roe": 72.7,
       "debtRatio": 43.0,
-      "week52RangePct": 44.6
+      "week52RangePct": 44.6,
+      "pressureScore": 1.6,
+      "stabilityScore": 2.1,
+      "winRateScore": 70.0,
+      "rsiWeekly": 43.4,
+      "ret10yAvg": 576.1
     },
     {
       "symbol": "TMO",
@@ -1199,7 +1434,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 18.2,
       "roe": 13.2,
       "debtRatio": 114.6,
-      "week52RangePct": 94.6
+      "week52RangePct": 94.6,
+      "pressureScore": 4.7,
+      "stabilityScore": 3.8,
+      "winRateScore": 60.8,
+      "rsiWeekly": 70.4,
+      "ret10yAvg": 17.4
     },
     {
       "symbol": "AXP",
@@ -1223,7 +1463,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 33.4,
       "debtRatio": 799.1,
-      "week52RangePct": 29.2
+      "week52RangePct": 29.2,
+      "pressureScore": 2.5,
+      "stabilityScore": 3.7,
+      "winRateScore": 58.3,
+      "rsiWeekly": 47.4,
+      "ret10yAvg": 16.0
     },
     {
       "symbol": "LIN",
@@ -1247,7 +1492,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 27.1,
       "roe": 17.8,
       "debtRatio": 119.4,
-      "week52RangePct": 78.8
+      "week52RangePct": 78.8,
+      "pressureScore": 4.1,
+      "stabilityScore": 4.5,
+      "winRateScore": 60.0,
+      "rsiWeekly": 58.4,
+      "ret10yAvg": 15.6
     },
     {
       "symbol": "IBM",
@@ -1271,7 +1521,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 16.9,
       "roe": 31.4,
       "debtRatio": 334.3,
-      "week52RangePct": 44.0
+      "week52RangePct": 44.0,
+      "pressureScore": 3.9,
+      "stabilityScore": 3.7,
+      "winRateScore": 52.5,
+      "rsiWeekly": 54.8,
+      "ret10yAvg": 5.2
     },
     {
       "symbol": "C",
@@ -1295,7 +1550,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 8.4,
       "debtRatio": 1264.2,
-      "week52RangePct": 51.4
+      "week52RangePct": 51.4,
+      "pressureScore": 1.9,
+      "stabilityScore": 3.4,
+      "winRateScore": 50.0,
+      "rsiWeekly": 44.0,
+      "ret10yAvg": 8.1
     },
     {
       "symbol": "MRVL",
@@ -1319,7 +1579,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 16.7,
       "roe": 14.2,
       "debtRatio": 48.7,
-      "week52RangePct": 48.5
+      "week52RangePct": 48.5,
+      "pressureScore": 2.3,
+      "stabilityScore": 2.5,
+      "winRateScore": 56.7,
+      "rsiWeekly": 45.9,
+      "ret10yAvg": 29.9
     },
     {
       "symbol": "VZ",
@@ -1343,14 +1608,19 @@ const SP500_CORE_DATA = {
       "operatingMargin": 25.2,
       "roe": 15.5,
       "debtRatio": 290.8,
-      "week52RangePct": 46.5
+      "week52RangePct": 46.5,
+      "pressureScore": 2.4,
+      "stabilityScore": 3.3,
+      "winRateScore": 47.5,
+      "rsiWeekly": 45.7,
+      "ret10yAvg": -1.1
     },
     {
       "symbol": "ABT",
       "name": "Abbott Laboratories",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 183766712320,
+      "marketCap": 184980553728,
       "changePercent": 1.55876,
       "per": 39.479553,
       "eps": 2.69,
@@ -1367,7 +1637,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 12.0,
       "roe": 12.1,
       "debtRatio": 110.9,
-      "week52RangePct": 48.4
+      "week52RangePct": 48.4,
+      "pressureScore": 3.2,
+      "stabilityScore": 5.1,
+      "winRateScore": 57.5,
+      "rsiWeekly": 53.6,
+      "ret10yAvg": 10.8
     },
     {
       "symbol": "TMUS",
@@ -1391,7 +1666,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 24.0,
       "roe": 20.1,
       "debtRatio": 278.5,
-      "week52RangePct": 15.7
+      "week52RangePct": 15.7,
+      "pressureScore": 2.0,
+      "stabilityScore": 2.9,
+      "winRateScore": 57.5,
+      "rsiWeekly": 39.0,
+      "ret10yAvg": 11.2
     },
     {
       "symbol": "PEP",
@@ -1415,7 +1695,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 16.9,
       "roe": 48.9,
       "debtRatio": 401.4,
-      "week52RangePct": 28.9
+      "week52RangePct": 28.9,
+      "pressureScore": 3.0,
+      "stabilityScore": 4.5,
+      "winRateScore": 53.3,
+      "rsiWeekly": 48.0,
+      "ret10yAvg": 3.2
     },
     {
       "symbol": "CRWD",
@@ -1439,7 +1724,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": -2.3,
       "roe": 1.1,
       "debtRatio": 135.0,
-      "week52RangePct": 81.8
+      "week52RangePct": 81.8,
+      "pressureScore": 3.7,
+      "stabilityScore": 1.4,
+      "winRateScore": 60.2,
+      "rsiWeekly": 61.1,
+      "ret10yAvg": 39.1
     },
     {
       "symbol": "SCHW",
@@ -1463,7 +1753,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 20.1,
       "debtRatio": 931.5,
-      "week52RangePct": 13.4
+      "week52RangePct": 13.4,
+      "pressureScore": 0.8,
+      "stabilityScore": 4.4,
+      "winRateScore": 48.3,
+      "rsiWeekly": 33.9,
+      "ret10yAvg": 8.6
     },
     {
       "symbol": "APH",
@@ -1487,7 +1782,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 25.6,
       "roe": 31.9,
       "debtRatio": 200.6,
-      "week52RangePct": 65.6
+      "week52RangePct": 65.6,
+      "pressureScore": 3.1,
+      "stabilityScore": 4.0,
+      "winRateScore": 60.8,
+      "rsiWeekly": 51.2,
+      "ret10yAvg": 25.0
     },
     {
       "symbol": "STX",
@@ -1511,7 +1811,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 48.9,
       "roe": 127.3,
       "debtRatio": 199.0,
-      "week52RangePct": 45.4
+      "week52RangePct": 45.4,
+      "pressureScore": 2.3,
+      "stabilityScore": 1.8,
+      "winRateScore": 58.3,
+      "rsiWeekly": 43.2,
+      "ret10yAvg": 32.0
     },
     {
       "symbol": "MCD",
@@ -1535,7 +1840,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 46.5,
       "roe": -859.8,
       "debtRatio": -5963.1,
-      "week52RangePct": 25.7
+      "week52RangePct": 25.7,
+      "pressureScore": 2.7,
+      "stabilityScore": 3.7,
+      "winRateScore": 54.2,
+      "rsiWeekly": 45.5,
+      "ret10yAvg": 8.0
     },
     {
       "symbol": "BLK",
@@ -1559,7 +1869,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 34.9,
       "roe": 11.4,
       "debtRatio": 193.2,
-      "week52RangePct": 85.3
+      "week52RangePct": 85.3,
+      "pressureScore": 3.9,
+      "stabilityScore": 5.6,
+      "winRateScore": 58.3,
+      "rsiWeekly": 57.8,
+      "ret10yAvg": 12.0
     },
     {
       "symbol": "DIS",
@@ -1583,7 +1898,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 18.9,
       "roe": 7.8,
       "debtRatio": 79.9,
-      "week52RangePct": 75.3
+      "week52RangePct": 75.3,
+      "pressureScore": 3.5,
+      "stabilityScore": 3.7,
+      "winRateScore": 44.2,
+      "rsiWeekly": 57.7,
+      "ret10yAvg": 1.1
     },
     {
       "symbol": "UNP",
@@ -1607,7 +1927,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 40.9,
       "roe": 34.6,
       "debtRatio": 229.8,
-      "week52RangePct": 88.0
+      "week52RangePct": 88.0,
+      "pressureScore": 4.5,
+      "stabilityScore": 4.1,
+      "winRateScore": 53.3,
+      "rsiWeekly": 62.8,
+      "ret10yAvg": 11.6
     },
     {
       "symbol": "ADI",
@@ -1631,7 +1956,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 39.5,
       "roe": 12.3,
       "debtRatio": 44.3,
-      "week52RangePct": 87.1
+      "week52RangePct": 87.1,
+      "pressureScore": 4.4,
+      "stabilityScore": 3.4,
+      "winRateScore": 54.2,
+      "rsiWeekly": 60.3,
+      "ret10yAvg": 18.8
     },
     {
       "symbol": "GILD",
@@ -1655,7 +1985,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 32.5,
       "roe": -27.4,
       "debtRatio": 318.0,
-      "week52RangePct": 91.5
+      "week52RangePct": 91.5,
+      "pressureScore": 5.8,
+      "stabilityScore": 3.6,
+      "winRateScore": 47.5,
+      "rsiWeekly": 72.4,
+      "ret10yAvg": 8.8
     },
     {
       "symbol": "DE",
@@ -1679,7 +2014,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 18.9,
       "roe": 17.4,
       "debtRatio": 284.3,
-      "week52RangePct": 82.9
+      "week52RangePct": 82.9,
+      "pressureScore": 3.3,
+      "stabilityScore": 3.9,
+      "winRateScore": 55.8,
+      "rsiWeekly": 58.5,
+      "ret10yAvg": 21.0
     },
     {
       "symbol": "NEE",
@@ -1703,7 +2043,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 32.1,
       "roe": 18.9,
       "debtRatio": 277.6,
-      "week52RangePct": 38.2
+      "week52RangePct": 38.2,
+      "pressureScore": 3.2,
+      "stabilityScore": 4.2,
+      "winRateScore": 61.7,
+      "rsiWeekly": 49.8,
+      "ret10yAvg": 11.4
     },
     {
       "symbol": "T",
@@ -1727,7 +2072,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 23.1,
       "roe": 12.3,
       "debtRatio": 300.7,
-      "week52RangePct": 15.9
+      "week52RangePct": 15.9,
+      "pressureScore": 1.6,
+      "stabilityScore": 2.7,
+      "winRateScore": 48.3,
+      "rsiWeekly": 39.6,
+      "ret10yAvg": -3.0
     },
     {
       "symbol": "WELL",
@@ -1736,8 +2086,8 @@ const SP500_CORE_DATA = {
       "sectorKo": "부동산",
       "marketCap": 172104876032,
       "changePercent": 0.61329,
-      "per": 99.406784,
-      "eps": 2.36,
+      "per": 99.829796,
+      "eps": 2.35,
       "dividendYield": 1.45,
       "dollarVolume": 839104846.1999999,
       "winRateScore": 59.2,
@@ -1751,7 +2101,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 18.2,
       "roe": 3.1,
       "debtRatio": 49.1,
-      "week52RangePct": 72.9
+      "week52RangePct": 72.9,
+      "pressureScore": 3.9,
+      "stabilityScore": 3.5,
+      "winRateScore": 60.0,
+      "rsiWeekly": 56.3,
+      "ret10yAvg": 14.1
     },
     {
       "symbol": "BX",
@@ -1775,7 +2130,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 39.0,
       "debtRatio": 304.6,
-      "week52RangePct": 26.5
+      "week52RangePct": 26.5,
+      "pressureScore": 2.6,
+      "stabilityScore": 4.9,
+      "winRateScore": 60.8,
+      "rsiWeekly": 45.3,
+      "ret10yAvg": 16.5
     },
     {
       "symbol": "CRM",
@@ -1799,7 +2159,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 21.4,
       "roe": 25.2,
       "debtRatio": 185.6,
-      "week52RangePct": 67.5
+      "week52RangePct": 67.5,
+      "pressureScore": 2.6,
+      "stabilityScore": 4.3,
+      "winRateScore": 55.8,
+      "rsiWeekly": 55.0,
+      "ret10yAvg": 12.3
     },
     {
       "symbol": "BA",
@@ -1823,7 +2188,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 0.6,
       "roe": 42.2,
       "debtRatio": 2507.7,
-      "week52RangePct": 7.3
+      "week52RangePct": 7.3,
+      "pressureScore": 2.2,
+      "stabilityScore": 2.2,
+      "winRateScore": 50.0,
+      "rsiWeekly": 30.4,
+      "ret10yAvg": 1.3
     },
     {
       "symbol": "QCOM",
@@ -1847,7 +2217,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 16.3,
       "roe": 33.5,
       "debtRatio": 107.4,
-      "week52RangePct": 31.0
+      "week52RangePct": 31.0,
+      "pressureScore": 2.3,
+      "stabilityScore": 4.1,
+      "winRateScore": 46.7,
+      "rsiWeekly": 46.3,
+      "ret10yAvg": 9.2
     },
     {
       "symbol": "WDC",
@@ -1871,31 +2246,36 @@ const SP500_CORE_DATA = {
       "operatingMargin": 47.7,
       "roe": 105.9,
       "debtRatio": 52.3,
-      "week52RangePct": 35.0
+      "week52RangePct": 35.0,
+      "pressureScore": 1.9,
+      "stabilityScore": 2.7,
+      "winRateScore": 55.8,
+      "rsiWeekly": 44.1,
+      "ret10yAvg": 22.5
     },
     {
       "symbol": "ETN",
       "name": "Eaton Corporation",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 143696347136,
+      "marketCap": 143659352064,
       "changePercent": -6.03221,
       "per": 37.636826,
       "eps": 9.83,
       "dividendYield": 1.19,
       "dollarVolume": 1346725947.15,
-      "winRateScore": 60.8,
-      "rsiWeekly": 40.4,
-      "ret10yAvg": 20.7,
-      "pressureScore": 1.9,
+      "revenueGrowth": 16.84,
+      "netIncomeGrowth": -10.17,
+      "cashFlowGrowth": 113.03,
+      "operatingMargin": 15.7,
+      "roe": 20.2,
+      "debtRatio": 179.1,
+      "week52RangePct": 35.0,
+      "pressureScore": 1.8,
       "stabilityScore": 3.7,
-      "revenueGrowth": 21.39,
-      "netIncomeGrowth": -16.4,
-      "cashFlowGrowth": 22.77,
-      "operatingMargin": 16.3,
-      "roe": 18.9,
-      "debtRatio": 177.2,
-      "week52RangePct": 35.0
+      "winRateScore": 60.0,
+      "rsiWeekly": 40.4,
+      "ret10yAvg": 18.7
     },
     {
       "symbol": "COP",
@@ -1919,7 +2299,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 31.2,
       "roe": 14.2,
       "debtRatio": 90.1,
-      "week52RangePct": 99.6
+      "week52RangePct": 99.6,
+      "pressureScore": 6.0,
+      "stabilityScore": 3.2,
+      "winRateScore": 52.5,
+      "rsiWeekly": 70.9,
+      "ret10yAvg": 12.2
     },
     {
       "symbol": "UBER",
@@ -1943,7 +2328,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 13.3,
       "roe": 35.1,
       "debtRatio": 136.9,
-      "week52RangePct": 3.3
+      "week52RangePct": 3.3,
+      "pressureScore": 1.4,
+      "stabilityScore": 2.6,
+      "winRateScore": 44.9,
+      "rsiWeekly": 38.4,
+      "ret10yAvg": 4.7
     },
     {
       "symbol": "PFE",
@@ -1967,7 +2357,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 23.5,
       "roe": 5.1,
       "debtRatio": 135.7,
-      "week52RangePct": 97.9
+      "week52RangePct": 97.9,
+      "pressureScore": 4.9,
+      "stabilityScore": 4.2,
+      "winRateScore": 45.0,
+      "rsiWeekly": 68.8,
+      "ret10yAvg": 0.0
     },
     {
       "symbol": "IBKR",
@@ -1991,14 +2386,19 @@ const SP500_CORE_DATA = {
       "operatingMargin": 85.6,
       "roe": 19.1,
       "debtRatio": 3812.0,
-      "week52RangePct": 45.1
+      "week52RangePct": 45.1,
+      "pressureScore": 1.4,
+      "stabilityScore": 3.2,
+      "winRateScore": 56.7,
+      "rsiWeekly": 38.0,
+      "ret10yAvg": 23.7
     },
     {
       "symbol": "BKNG",
       "name": "Booking Holdings",
       "sector": "Consumer Discretionary",
       "sectorKo": "경기소비재",
-      "marketCap": 111301992448,
+      "marketCap": 114782748672,
       "changePercent": -1.52894,
       "per": 16.422394,
       "eps": 9.02,
@@ -2015,14 +2415,19 @@ const SP500_CORE_DATA = {
       "operatingMargin": 34.0,
       "roe": -66.9,
       "debtRatio": -375.3,
-      "week52RangePct": 2.5
+      "week52RangePct": 2.5,
+      "pressureScore": 0.9,
+      "stabilityScore": 3.7,
+      "winRateScore": 55.0,
+      "rsiWeekly": 34.9,
+      "ret10yAvg": 9.4
     },
     {
       "symbol": "TJX",
       "name": "TJX Companies",
       "sector": "Consumer Discretionary",
       "sectorKo": "경기소비재",
-      "marketCap": 154337345536,
+      "marketCap": 155001061376,
       "changePercent": -0.763846,
       "per": 25.983332,
       "eps": 5.4,
@@ -2039,7 +2444,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 13.1,
       "roe": 57.0,
       "debtRatio": 248.5,
-      "week52RangePct": 37.1
+      "week52RangePct": 37.1,
+      "pressureScore": 2.1,
+      "stabilityScore": 4.1,
+      "winRateScore": 60.0,
+      "rsiWeekly": 45.9,
+      "ret10yAvg": 13.6
     },
     {
       "symbol": "DHR",
@@ -2063,14 +2473,19 @@ const SP500_CORE_DATA = {
       "operatingMargin": 19.0,
       "roe": 8.1,
       "debtRatio": 73.9,
-      "week52RangePct": 87.1
+      "week52RangePct": 87.1,
+      "pressureScore": 3.9,
+      "stabilityScore": 3.9,
+      "winRateScore": 55.8,
+      "rsiWeekly": 62.8,
+      "ret10yAvg": 12.9
     },
     {
       "symbol": "VRTX",
       "name": "Vertex Pharmaceuticals",
       "sector": "Health Care",
       "sectorKo": "헬스케어",
-      "marketCap": 141654245376,
+      "marketCap": 141564297216,
       "changePercent": 3.4963,
       "per": 32.549797,
       "eps": 17.17,
@@ -2087,7 +2502,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 38.1,
       "roe": 21.8,
       "debtRatio": 35.4,
-      "week52RangePct": 96.9
+      "week52RangePct": 96.9,
+      "pressureScore": 4.9,
+      "stabilityScore": 5.3,
+      "winRateScore": 59.2,
+      "rsiWeekly": 64.0,
+      "ret10yAvg": 21.2
     },
     {
       "symbol": "NEM",
@@ -2111,7 +2531,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 50.0,
       "roe": 25.9,
       "debtRatio": 62.6,
-      "week52RangePct": 49.4
+      "week52RangePct": 49.4,
+      "pressureScore": 2.0,
+      "stabilityScore": 3.7,
+      "winRateScore": 55.0,
+      "rsiWeekly": 45.7,
+      "ret10yAvg": 12.6
     },
     {
       "symbol": "PLD",
@@ -2135,7 +2560,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 39.2,
       "roe": 7.6,
       "debtRatio": 77.9,
-      "week52RangePct": 20.6
+      "week52RangePct": 20.6,
+      "pressureScore": 1.2,
+      "stabilityScore": 5.1,
+      "winRateScore": 60.8,
+      "rsiWeekly": 38.8,
+      "ret10yAvg": 9.7
     },
     {
       "symbol": "BMY",
@@ -2159,7 +2589,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 33.7,
       "roe": 39.5,
       "debtRatio": 279.3,
-      "week52RangePct": 73.6
+      "week52RangePct": 73.6,
+      "pressureScore": 2.9,
+      "stabilityScore": 4.1,
+      "winRateScore": 51.7,
+      "rsiWeekly": 54.2,
+      "ret10yAvg": 1.0
     },
     {
       "symbol": "ISRG",
@@ -2183,14 +2618,19 @@ const SP500_CORE_DATA = {
       "operatingMargin": 34.2,
       "roe": 18.5,
       "debtRatio": 20.2,
-      "week52RangePct": 37.6
+      "week52RangePct": 37.6,
+      "pressureScore": 3.5,
+      "stabilityScore": 4.8,
+      "winRateScore": 55.8,
+      "rsiWeekly": 53.8,
+      "ret10yAvg": 19.7
     },
     {
       "symbol": "COF",
       "name": "Capital One",
       "sector": "Financials",
       "sectorKo": "금융",
-      "marketCap": 125672374272,
+      "marketCap": 125675487232,
       "changePercent": -1.86356,
       "per": 12.552084,
       "eps": 16.32,
@@ -2207,7 +2647,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 9.2,
       "debtRatio": 492.2,
-      "week52RangePct": 35.8
+      "week52RangePct": 35.8,
+      "pressureScore": 3.0,
+      "stabilityScore": 2.4,
+      "winRateScore": 60.0,
+      "rsiWeekly": 50.4,
+      "ret10yAvg": 9.3
     },
     {
       "symbol": "NOW",
@@ -2231,7 +2676,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 9.4,
       "roe": 11.0,
       "debtRatio": 143.1,
-      "week52RangePct": 23.1
+      "week52RangePct": 23.1,
+      "pressureScore": 3.0,
+      "stabilityScore": 3.8,
+      "winRateScore": 56.7,
+      "rsiWeekly": 42.1,
+      "ret10yAvg": 20.2
     },
     {
       "symbol": "CB",
@@ -2255,7 +2705,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 15.3,
       "debtRatio": 279.9,
-      "week52RangePct": 94.9
+      "week52RangePct": 94.9,
+      "pressureScore": 4.7,
+      "stabilityScore": 4.3,
+      "winRateScore": 57.5,
+      "rsiWeekly": 63.4,
+      "ret10yAvg": 11.0
     },
     {
       "symbol": "LMT",
@@ -2279,7 +2734,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 11.8,
       "roe": 64.7,
       "debtRatio": 541.1,
-      "week52RangePct": 78.4
+      "week52RangePct": 78.4,
+      "pressureScore": 6.7,
+      "stabilityScore": 3.4,
+      "winRateScore": 50.8,
+      "rsiWeekly": 64.5,
+      "ret10yAvg": 9.2
     },
     {
       "symbol": "GLW",
@@ -2303,7 +2763,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 15.5,
       "roe": 15.1,
       "debtRatio": 157.9,
-      "week52RangePct": 23.6
+      "week52RangePct": 23.6,
+      "pressureScore": 1.8,
+      "stabilityScore": 2.9,
+      "winRateScore": 56.7,
+      "rsiWeekly": 40.1,
+      "ret10yAvg": 17.8
     },
     {
       "symbol": "PGR",
@@ -2327,7 +2792,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 34.1,
       "debtRatio": 263.9,
-      "week52RangePct": 83.9
+      "week52RangePct": 83.9,
+      "pressureScore": 4.2,
+      "stabilityScore": 4.3,
+      "winRateScore": 59.2,
+      "rsiWeekly": 61.1,
+      "ret10yAvg": 21.4
     },
     {
       "symbol": "SPGI",
@@ -2351,7 +2821,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 47.7,
       "roe": 25.3,
       "debtRatio": 116.0,
-      "week52RangePct": 65.4
+      "week52RangePct": 65.4,
+      "pressureScore": 5.1,
+      "stabilityScore": 4.3,
+      "winRateScore": 61.7,
+      "rsiWeekly": 61.0,
+      "ret10yAvg": 15.3
     },
     {
       "symbol": "SYK",
@@ -2375,7 +2850,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 25.2,
       "roe": 15.5,
       "debtRatio": 99.8,
-      "week52RangePct": 20.3
+      "week52RangePct": 20.3,
+      "pressureScore": 2.5,
+      "stabilityScore": 3.0,
+      "winRateScore": 58.3,
+      "rsiWeekly": 43.2,
+      "ret10yAvg": 9.9
     },
     {
       "symbol": "PH",
@@ -2399,7 +2879,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 23.9,
       "roe": 23.7,
       "debtRatio": 100.4,
-      "week52RangePct": 42.0
+      "week52RangePct": 42.0,
+      "pressureScore": 2.0,
+      "stabilityScore": 3.4,
+      "winRateScore": 59.2,
+      "rsiWeekly": 43.0,
+      "ret10yAvg": 20.5
     },
     {
       "symbol": "SBUX",
@@ -2423,7 +2908,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 12.9,
       "roe": -25.8,
       "debtRatio": -468.6,
-      "week52RangePct": 79.0
+      "week52RangePct": 79.0,
+      "pressureScore": 4.0,
+      "stabilityScore": 2.9,
+      "winRateScore": 55.8,
+      "rsiWeekly": 55.0,
+      "ret10yAvg": 6.0
     },
     {
       "symbol": "LOW",
@@ -2447,7 +2937,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 13.7,
       "roe": -89.3,
       "debtRatio": -851.4,
-      "week52RangePct": 26.7
+      "week52RangePct": 26.7,
+      "pressureScore": 3.3,
+      "stabilityScore": 2.9,
+      "winRateScore": 53.3,
+      "rsiWeekly": 49.1,
+      "ret10yAvg": 11.5
     },
     {
       "symbol": "MDT",
@@ -2471,7 +2966,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 18.8,
       "roe": 10.4,
       "debtRatio": 84.5,
-      "week52RangePct": 70.4
+      "week52RangePct": 70.4,
+      "pressureScore": 3.9,
+      "stabilityScore": 4.3,
+      "winRateScore": 53.3,
+      "rsiWeekly": 61.9,
+      "ret10yAvg": 2.8
     },
     {
       "symbol": "CVS",
@@ -2495,7 +2995,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 4.4,
       "roe": 6.1,
       "debtRatio": 218.1,
-      "week52RangePct": 50.4
+      "week52RangePct": 50.4,
+      "pressureScore": 2.5,
+      "stabilityScore": 2.3,
+      "winRateScore": 50.0,
+      "rsiWeekly": 48.1,
+      "ret10yAvg": 1.6
     },
     {
       "symbol": "ACN",
@@ -2519,7 +3024,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 15.3,
       "roe": 26.5,
       "debtRatio": 127.8,
-      "week52RangePct": 81.0
+      "week52RangePct": 81.0,
+      "pressureScore": 7.3,
+      "stabilityScore": 5.2,
+      "winRateScore": 55.8,
+      "rsiWeekly": 72.8,
+      "ret10yAvg": 8.0
     },
     {
       "symbol": "FTNT",
@@ -2543,7 +3053,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 33.7,
       "roe": 136.7,
       "debtRatio": 600.1,
-      "week52RangePct": 50.6
+      "week52RangePct": 50.6,
+      "pressureScore": 3.0,
+      "stabilityScore": 3.3,
+      "winRateScore": 62.5,
+      "rsiWeekly": 44.9,
+      "ret10yAvg": 36.6
     },
     {
       "symbol": "ABNB",
@@ -2567,7 +3082,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 21.0,
       "roe": 34.5,
       "debtRatio": 268.7,
-      "week52RangePct": 64.8
+      "week52RangePct": 64.8,
+      "pressureScore": 2.7,
+      "stabilityScore": 3.9,
+      "winRateScore": 54.3,
+      "rsiWeekly": 53.8,
+      "ret10yAvg": -1.9
     },
     {
       "symbol": "ADP",
@@ -2591,7 +3111,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 23.0,
       "roe": 73.2,
       "debtRatio": 947.8,
-      "week52RangePct": 87.2
+      "week52RangePct": 87.2,
+      "pressureScore": 5.2,
+      "stabilityScore": 7.0,
+      "winRateScore": 60.0,
+      "rsiWeekly": 63.3,
+      "ret10yAvg": 11.8
     },
     {
       "symbol": "MO",
@@ -2615,7 +3140,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 60.9,
       "roe": -364.8,
       "debtRatio": -1647.2,
-      "week52RangePct": 92.9
+      "week52RangePct": 92.9,
+      "pressureScore": 5.4,
+      "stabilityScore": 3.8,
+      "winRateScore": 53.3,
+      "rsiWeekly": 64.5,
+      "ret10yAvg": 2.0
     },
     {
       "symbol": "FCX",
@@ -2639,7 +3169,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 28.2,
       "roe": 14.6,
       "debtRatio": 136.8,
-      "week52RangePct": 57.4
+      "week52RangePct": 57.4,
+      "pressureScore": 1.9,
+      "stabilityScore": 2.3,
+      "winRateScore": 48.3,
+      "rsiWeekly": 44.8,
+      "ret10yAvg": 15.1
     },
     {
       "symbol": "ADBE",
@@ -2663,7 +3198,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 34.8,
       "roe": 61.9,
       "debtRatio": 154.9,
-      "week52RangePct": 34.8
+      "week52RangePct": 34.8,
+      "pressureScore": 2.6,
+      "stabilityScore": 4.5,
+      "winRateScore": 56.7,
+      "rsiWeekly": 49.0,
+      "ret10yAvg": 9.3
     },
     {
       "symbol": "HWM",
@@ -2687,7 +3227,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 28.8,
       "roe": 35.6,
       "debtRatio": 130.5,
-      "week52RangePct": 12.4
+      "week52RangePct": 12.4,
+      "pressureScore": 1.2,
+      "stabilityScore": 3.3,
+      "winRateScore": 57.5,
+      "rsiWeekly": 33.8,
+      "ret10yAvg": 29.7
     },
     {
       "symbol": "BNY",
@@ -2711,7 +3256,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 13.3,
       "debtRatio": 1152.7,
-      "week52RangePct": 69.0
+      "week52RangePct": 69.0,
+      "pressureScore": 2.6,
+      "stabilityScore": 4.6,
+      "winRateScore": 59.2,
+      "rsiWeekly": 51.5,
+      "ret10yAvg": 12.0
     },
     {
       "symbol": "EQIX",
@@ -2735,7 +3285,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 26.4,
       "roe": 10.7,
       "debtRatio": 185.5,
-      "week52RangePct": 71.8
+      "week52RangePct": 71.8,
+      "pressureScore": 2.9,
+      "stabilityScore": 2.8,
+      "winRateScore": 60.0,
+      "rsiWeekly": 49.8,
+      "ret10yAvg": 11.6
     },
     {
       "symbol": "CVNA",
@@ -2759,7 +3314,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 8.9,
       "roe": 39.2,
       "debtRatio": 219.3,
-      "week52RangePct": 32.2
+      "week52RangePct": 32.2,
+      "pressureScore": 4.1,
+      "stabilityScore": 2.6,
+      "winRateScore": 56.1,
+      "rsiWeekly": 51.2,
+      "ret10yAvg": 44.9
     },
     {
       "symbol": "GD",
@@ -2783,14 +3343,19 @@ const SP500_CORE_DATA = {
       "operatingMargin": 10.4,
       "roe": 16.7,
       "debtRatio": 124.3,
-      "week52RangePct": 70.6
+      "week52RangePct": 70.6,
+      "pressureScore": 4.3,
+      "stabilityScore": 4.1,
+      "winRateScore": 54.2,
+      "rsiWeekly": 56.9,
+      "ret10yAvg": 7.8
     },
     {
       "symbol": "APP",
       "name": "AppLovin",
       "sector": "Communication Services",
       "sectorKo": "커뮤니케이션",
-      "marketCap": 76762177536,
+      "marketCap": 76467642368,
       "changePercent": -10.3605,
       "per": 17.563412,
       "eps": 13.01,
@@ -2807,7 +3372,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 77.7,
       "roe": 139.4,
       "debtRatio": 161.4,
-      "week52RangePct": 0.6
+      "week52RangePct": 0.6,
+      "pressureScore": 0.1,
+      "stabilityScore": 3.8,
+      "winRateScore": 53.0,
+      "rsiWeekly": 30.0,
+      "ret10yAvg": 22.7
     },
     {
       "symbol": "SO",
@@ -2831,14 +3401,19 @@ const SP500_CORE_DATA = {
       "operatingMargin": 25.5,
       "roe": 11.8,
       "debtRatio": 302.5,
-      "week52RangePct": 67.2
+      "week52RangePct": 67.2,
+      "pressureScore": 3.7,
+      "stabilityScore": 3.3,
+      "winRateScore": 60.0,
+      "rsiWeekly": 55.8,
+      "ret10yAvg": 7.2
     },
     {
       "symbol": "MPC",
       "name": "Marathon Petroleum",
       "sector": "Energy",
       "sectorKo": "에너지",
-      "marketCap": 124891201536,
+      "marketCap": 129832984576,
       "changePercent": 2.82537,
       "per": 15.399239,
       "eps": 28.88,
@@ -2855,7 +3430,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 13.4,
       "roe": 44.8,
       "debtRatio": 359.5,
-      "week52RangePct": 85.2
+      "week52RangePct": 85.2,
+      "pressureScore": 5.4,
+      "stabilityScore": 1.3,
+      "winRateScore": 64.2,
+      "rsiWeekly": 69.9,
+      "ret10yAvg": 25.2
     },
     {
       "symbol": "VRT",
@@ -2879,7 +3459,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 23.0,
       "roe": 38.1,
       "debtRatio": 230.3,
-      "week52RangePct": 36.5
+      "week52RangePct": 36.5,
+      "pressureScore": 2.9,
+      "stabilityScore": 2.7,
+      "winRateScore": 63.3,
+      "rsiWeekly": 45.0,
+      "ret10yAvg": 47.5
     },
     {
       "symbol": "VLO",
@@ -2903,7 +3488,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 19.7,
       "roe": 46.3,
       "debtRatio": 131.8,
-      "week52RangePct": 79.5
+      "week52RangePct": 79.5,
+      "pressureScore": 4.5,
+      "stabilityScore": 1.2,
+      "winRateScore": 55.8,
+      "rsiWeekly": 64.3,
+      "ret10yAvg": 20.6
     },
     {
       "symbol": "INTU",
@@ -2927,7 +3517,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 17.6,
       "roe": 24.0,
       "debtRatio": 93.7,
-      "week52RangePct": 20.6
+      "week52RangePct": 20.6,
+      "pressureScore": 3.7,
+      "stabilityScore": 3.5,
+      "winRateScore": 56.7,
+      "rsiWeekly": 49.4,
+      "ret10yAvg": 11.6
     },
     {
       "symbol": "KKR",
@@ -2951,7 +3546,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 5.8,
       "roe": 10.2,
       "debtRatio": 1075.8,
-      "week52RangePct": 18.9
+      "week52RangePct": 18.9,
+      "pressureScore": 2.1,
+      "stabilityScore": 4.0,
+      "winRateScore": 60.0,
+      "rsiWeekly": 45.3,
+      "ret10yAvg": 20.0
     },
     {
       "symbol": "MCK",
@@ -2975,7 +3575,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 1.3,
       "roe": -108.3,
       "debtRatio": -2113.9,
-      "week52RangePct": 88.4
+      "week52RangePct": 88.4,
+      "pressureScore": 5.3,
+      "stabilityScore": 2.8,
+      "winRateScore": 58.3,
+      "rsiWeekly": 69.4,
+      "ret10yAvg": 21.3
     },
     {
       "symbol": "TT",
@@ -2999,7 +3604,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 19.9,
       "roe": 34.6,
       "debtRatio": 162.0,
-      "week52RangePct": 39.2
+      "week52RangePct": 39.2,
+      "pressureScore": 2.1,
+      "stabilityScore": 3.6,
+      "winRateScore": 61.7,
+      "rsiWeekly": 38.3,
+      "ret10yAvg": 21.6
     },
     {
       "symbol": "CME",
@@ -3023,7 +3633,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 65.7,
       "roe": 16.6,
       "debtRatio": 623.2,
-      "week52RangePct": 76.5
+      "week52RangePct": 76.5,
+      "pressureScore": 4.7,
+      "stabilityScore": 6.5,
+      "winRateScore": 53.3,
+      "rsiWeekly": 61.2,
+      "ret10yAvg": 10.4
     },
     {
       "symbol": "DASH",
@@ -3047,7 +3662,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 3.5,
       "roe": 8.5,
       "debtRatio": 97.1,
-      "week52RangePct": 31.1
+      "week52RangePct": 31.1,
+      "pressureScore": 2.7,
+      "stabilityScore": 4.2,
+      "winRateScore": 50.0,
+      "rsiWeekly": 44.4,
+      "ret10yAvg": -1.3
     },
     {
       "symbol": "PSX",
@@ -3071,7 +3691,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 12.7,
       "roe": 36.6,
       "debtRatio": 147.0,
-      "week52RangePct": 90.4
+      "week52RangePct": 90.4,
+      "pressureScore": 5.4,
+      "stabilityScore": 2.0,
+      "winRateScore": 53.3,
+      "rsiWeekly": 72.1,
+      "ret10yAvg": 13.0
     },
     {
       "symbol": "HOOD",
@@ -3095,7 +3720,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 48.1,
       "roe": 19.8,
       "debtRatio": 481.9,
-      "week52RangePct": 25.0
+      "week52RangePct": 25.0,
+      "pressureScore": 1.9,
+      "stabilityScore": 4.2,
+      "winRateScore": 49.2,
+      "rsiWeekly": 42.2,
+      "ret10yAvg": 13.2
     },
     {
       "symbol": "PNC",
@@ -3119,7 +3749,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 11.9,
       "debtRatio": 862.4,
-      "week52RangePct": 62.0
+      "week52RangePct": 62.0,
+      "pressureScore": 2.6,
+      "stabilityScore": 4.2,
+      "winRateScore": 55.0,
+      "rsiWeekly": 47.8,
+      "ret10yAvg": 7.5
     },
     {
       "symbol": "CEG",
@@ -3143,7 +3778,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": -0.6,
       "roe": 10.8,
       "debtRatio": 206.2,
-      "week52RangePct": 21.6
+      "week52RangePct": 21.6,
+      "pressureScore": 2.3,
+      "stabilityScore": 2.8,
+      "winRateScore": 63.2,
+      "rsiWeekly": 46.9,
+      "ret10yAvg": 44.3
     },
     {
       "symbol": "USB",
@@ -3167,7 +3807,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 12.1,
       "debtRatio": 975.8,
-      "week52RangePct": 68.5
+      "week52RangePct": 68.5,
+      "pressureScore": 2.6,
+      "stabilityScore": 4.6,
+      "winRateScore": 50.8,
+      "rsiWeekly": 50.8,
+      "ret10yAvg": 1.8
     },
     {
       "symbol": "PWR",
@@ -3191,7 +3836,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 8.6,
       "roe": 16.0,
       "debtRatio": 210.0,
-      "week52RangePct": 55.8
+      "week52RangePct": 55.8,
+      "pressureScore": 2.9,
+      "stabilityScore": 2.2,
+      "winRateScore": 63.3,
+      "rsiWeekly": 48.7,
+      "ret10yAvg": 33.8
     },
     {
       "symbol": "CSX",
@@ -3215,7 +3865,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 39.1,
       "roe": 24.9,
       "debtRatio": 214.1,
-      "week52RangePct": 91.9
+      "week52RangePct": 91.9,
+      "pressureScore": 5.1,
+      "stabilityScore": 3.2,
+      "winRateScore": 59.2,
+      "rsiWeekly": 65.0,
+      "ret10yAvg": 15.9
     },
     {
       "symbol": "CMCSA",
@@ -3239,7 +3894,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 18.2,
       "roe": 12.2,
       "debtRatio": 178.4,
-      "week52RangePct": 22.1
+      "week52RangePct": 22.1,
+      "pressureScore": 2.6,
+      "stabilityScore": 3.7,
+      "winRateScore": 54.2,
+      "rsiWeekly": 45.0,
+      "ret10yAvg": -3.3
     },
     {
       "symbol": "MNST",
@@ -3263,7 +3923,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 29.2,
       "roe": 22.7,
       "debtRatio": 21.6,
-      "week52RangePct": 83.6
+      "week52RangePct": 83.6,
+      "pressureScore": 4.3,
+      "stabilityScore": 4.8,
+      "winRateScore": 55.8,
+      "rsiWeekly": 59.5,
+      "ret10yAvg": 15.5
     },
     {
       "symbol": "DUK",
@@ -3276,18 +3941,18 @@ const SP500_CORE_DATA = {
       "eps": 6.64,
       "dividendYield": 3.41,
       "dollarVolume": 625129736.68,
-      "winRateScore": 58.3,
-      "rsiWeekly": 57.7,
-      "ret10yAvg": 3.6,
+      "revenueGrowth": 11.26,
+      "netIncomeGrowth": 12.4,
+      "cashFlowGrowth": -30.55,
+      "operatingMargin": 25.5,
+      "roe": 9.4,
+      "debtRatio": 260.0,
+      "week52RangePct": 67.9,
       "pressureScore": 3.9,
       "stabilityScore": 3.3,
-      "revenueGrowth": 1.12,
-      "netIncomeGrowth": 10.98,
-      "cashFlowGrowth": -3.6,
-      "operatingMargin": 27.5,
-      "roe": 9.6,
-      "debtRatio": 263.4,
-      "week52RangePct": 67.9
+      "winRateScore": 59.2,
+      "rsiWeekly": 57.7,
+      "ret10yAvg": 5.6
     },
     {
       "symbol": "MAR",
@@ -3311,7 +3976,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 17.2,
       "roe": -57.2,
       "debtRatio": -720.7,
-      "week52RangePct": 92.3
+      "week52RangePct": 92.3,
+      "pressureScore": 5.1,
+      "stabilityScore": 2.3,
+      "winRateScore": 58.3,
+      "rsiWeekly": 66.7,
+      "ret10yAvg": 17.6
     },
     {
       "symbol": "HCA",
@@ -3335,7 +4005,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 14.8,
       "roe": -83.9,
       "debtRatio": -842.5,
-      "week52RangePct": 58.9
+      "week52RangePct": 58.9,
+      "pressureScore": 5.1,
+      "stabilityScore": 2.6,
+      "winRateScore": 55.8,
+      "rsiWeekly": 61.9,
+      "ret10yAvg": 20.9
     },
     {
       "symbol": "MMM",
@@ -3359,7 +4034,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 23.7,
       "roe": 85.7,
       "debtRatio": 833.2,
-      "week52RangePct": 76.8
+      "week52RangePct": 76.8,
+      "pressureScore": 3.8,
+      "stabilityScore": 3.2,
+      "winRateScore": 54.2,
+      "rsiWeekly": 58.0,
+      "ret10yAvg": 2.0
     },
     {
       "symbol": "MRSH",
@@ -3383,7 +4063,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 17.7,
       "roe": 27.5,
       "debtRatio": 305.9,
-      "week52RangePct": 95.5
+      "week52RangePct": 95.5,
+      "pressureScore": 5.1,
+      "stabilityScore": 3.9,
+      "winRateScore": 62.5,
+      "rsiWeekly": 64.1,
+      "ret10yAvg": 11.2
     },
     {
       "symbol": "ICE",
@@ -3407,7 +4092,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 38.9,
       "roe": 13.7,
       "debtRatio": 489.3,
-      "week52RangePct": 86.7
+      "week52RangePct": 86.7,
+      "pressureScore": 4.9,
+      "stabilityScore": 4.2,
+      "winRateScore": 55.0,
+      "rsiWeekly": 62.8,
+      "ret10yAvg": 11.8
     },
     {
       "symbol": "WM",
@@ -3431,7 +4121,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 19.1,
       "roe": 31.1,
       "debtRatio": 371.5,
-      "week52RangePct": 72.8
+      "week52RangePct": 72.8,
+      "pressureScore": 4.5,
+      "stabilityScore": 3.7,
+      "winRateScore": 59.2,
+      "rsiWeekly": 57.1,
+      "ret10yAvg": 12.9
     },
     {
       "symbol": "CDNS",
@@ -3455,31 +4150,36 @@ const SP500_CORE_DATA = {
       "operatingMargin": 28.8,
       "roe": 20.1,
       "debtRatio": 77.8,
-      "week52RangePct": 42.3
+      "week52RangePct": 42.3,
+      "pressureScore": 3.1,
+      "stabilityScore": 3.9,
+      "winRateScore": 59.2,
+      "rsiWeekly": 49.6,
+      "ret10yAvg": 28.7
     },
     {
       "symbol": "EMR",
       "name": "Emerson Electric",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 92003532800,
+      "marketCap": 92382887936,
       "changePercent": -3.39698,
       "per": 36.091904,
       "eps": 4.57,
       "dividendYield": 1.35,
       "dollarVolume": 672458730.6,
+      "revenueGrowth": 2.93,
+      "netIncomeGrowth": 27.42,
+      "cashFlowGrowth": 223.24,
+      "operatingMargin": 19.8,
+      "roe": 12.0,
+      "debtRatio": 107.2,
+      "week52RangePct": 87.0,
+      "pressureScore": 4.5,
+      "stabilityScore": 4.2,
       "winRateScore": 55.0,
       "rsiWeekly": 63.8,
-      "ret10yAvg": 11.0,
-      "pressureScore": 4.1,
-      "stabilityScore": 4.2,
-      "revenueGrowth": 7.03,
-      "netIncomeGrowth": 22.53,
-      "cashFlowGrowth": 33.08,
-      "operatingMargin": 22.7,
-      "roe": 12.6,
-      "debtRatio": 107.0,
-      "week52RangePct": 87.0
+      "ret10yAvg": 11.3
     },
     {
       "symbol": "MCO",
@@ -3488,8 +4188,8 @@ const SP500_CORE_DATA = {
       "sectorKo": "금융",
       "marketCap": 85161975808,
       "changePercent": 1.03922,
-      "per": 30.13484,
-      "eps": 16.39,
+      "per": 30.792393,
+      "eps": 16.04,
       "dividendYield": 0.83,
       "dollarVolume": 805278272.6500001,
       "winRateScore": 62.5,
@@ -3503,7 +4203,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 46.1,
       "roe": 88.2,
       "debtRatio": 349.4,
-      "week52RangePct": 63.4
+      "week52RangePct": 63.4,
+      "pressureScore": 4.0,
+      "stabilityScore": 4.3,
+      "winRateScore": 63.3,
+      "rsiWeekly": 55.2,
+      "ret10yAvg": 17.3
     },
     {
       "symbol": "ELV",
@@ -3527,7 +4232,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 11.5,
       "debtRatio": 185.8,
-      "week52RangePct": 82.6
+      "week52RangePct": 82.6,
+      "pressureScore": 4.0,
+      "stabilityScore": 3.7,
+      "winRateScore": 57.5,
+      "rsiWeekly": 57.3,
+      "ret10yAvg": 11.4
     },
     {
       "symbol": "UPS",
@@ -3551,7 +4261,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 4.1,
       "roe": 30.3,
       "debtRatio": 372.8,
-      "week52RangePct": 55.1
+      "week52RangePct": 55.1,
+      "pressureScore": 4.8,
+      "stabilityScore": 4.1,
+      "winRateScore": 53.3,
+      "rsiWeekly": 56.9,
+      "ret10yAvg": -0.7
     },
     {
       "symbol": "JCI",
@@ -3575,7 +4290,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 16.1,
       "roe": 26.5,
       "debtRatio": 187.2,
-      "week52RangePct": 78.1
+      "week52RangePct": 78.1,
+      "pressureScore": 3.6,
+      "stabilityScore": 3.1,
+      "winRateScore": 60.8,
+      "rsiWeekly": 54.6,
+      "ret10yAvg": 12.7
     },
     {
       "symbol": "WMB",
@@ -3599,7 +4319,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 38.3,
       "roe": 23.3,
       "debtRatio": 343.0,
-      "week52RangePct": 76.0
+      "week52RangePct": 76.0,
+      "pressureScore": 3.7,
+      "stabilityScore": 3.4,
+      "winRateScore": 56.7,
+      "rsiWeekly": 54.4,
+      "ret10yAvg": 9.2
     },
     {
       "symbol": "REGN",
@@ -3623,7 +4348,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 33.1,
       "roe": 13.7,
       "debtRatio": 31.6,
-      "week52RangePct": 97.8
+      "week52RangePct": 97.8,
+      "pressureScore": 6.6,
+      "stabilityScore": 3.6,
+      "winRateScore": 53.3,
+      "rsiWeekly": 69.5,
+      "ret10yAvg": 9.4
     },
     {
       "symbol": "DDOG",
@@ -3647,7 +4377,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 0.7,
       "roe": 4.1,
       "debtRatio": 72.8,
-      "week52RangePct": 67.7
+      "week52RangePct": 67.7,
+      "pressureScore": 2.6,
+      "stabilityScore": 3.1,
+      "winRateScore": 52.9,
+      "rsiWeekly": 50.9,
+      "ret10yAvg": 31.6
     },
     {
       "symbol": "SHW",
@@ -3671,7 +4406,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 17.6,
       "roe": 67.3,
       "debtRatio": 578.0,
-      "week52RangePct": 48.6
+      "week52RangePct": 48.6,
+      "pressureScore": 3.3,
+      "stabilityScore": 2.6,
+      "winRateScore": 56.7,
+      "rsiWeekly": 50.1,
+      "ret10yAvg": 14.0
     },
     {
       "symbol": "SPG",
@@ -3695,7 +4435,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 46.0,
       "roe": 104.2,
       "debtRatio": 763.6,
-      "week52RangePct": 67.9
+      "week52RangePct": 67.9,
+      "pressureScore": 3.8,
+      "stabilityScore": 5.4,
+      "winRateScore": 55.8,
+      "rsiWeekly": 57.9,
+      "ret10yAvg": 1.9
     },
     {
       "symbol": "MDLZ",
@@ -3719,7 +4464,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 8.5,
       "roe": 10.1,
       "debtRatio": 176.0,
-      "week52RangePct": 88.9
+      "week52RangePct": 88.9,
+      "pressureScore": 4.4,
+      "stabilityScore": 2.6,
+      "winRateScore": 48.3,
+      "rsiWeekly": 59.3,
+      "ret10yAvg": 4.6
     },
     {
       "symbol": "AMT",
@@ -3743,7 +4493,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 45.6,
       "roe": 94.2,
       "debtRatio": 1513.2,
-      "week52RangePct": 65.3
+      "week52RangePct": 65.3,
+      "pressureScore": 4.6,
+      "stabilityScore": 4.1,
+      "winRateScore": 57.5,
+      "rsiWeekly": 57.6,
+      "ret10yAvg": 6.3
     },
     {
       "symbol": "CTAS",
@@ -3767,31 +4522,36 @@ const SP500_CORE_DATA = {
       "operatingMargin": 24.1,
       "roe": 39.6,
       "debtRatio": 104.7,
-      "week52RangePct": 89.5
+      "week52RangePct": 89.5,
+      "pressureScore": 5.4,
+      "stabilityScore": 3.9,
+      "winRateScore": 64.2,
+      "rsiWeekly": 65.1,
+      "ret10yAvg": 22.6
     },
     {
       "symbol": "CMI",
       "name": "Cummins",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 68844625920,
+      "marketCap": 69006958592,
       "changePercent": -3.46313,
       "per": 25.55391,
       "eps": 19.57,
       "dividendYield": 1.76,
       "dollarVolume": 715844328.79,
-      "winRateScore": 57.5,
-      "rsiWeekly": 32.7,
-      "ret10yAvg": 15.0,
+      "revenueGrowth": 2.74,
+      "netIncomeGrowth": -20.63,
+      "cashFlowGrowth": 10400.0,
+      "operatingMargin": 11.9,
+      "roe": 21.6,
+      "debtRatio": 170.6,
+      "week52RangePct": 23.6,
       "pressureScore": 0.7,
       "stabilityScore": 4.1,
-      "revenueGrowth": 9.42,
-      "netIncomeGrowth": 4.72,
-      "cashFlowGrowth": 90.96,
-      "operatingMargin": 11.9,
-      "roe": 21.1,
-      "debtRatio": 169.1,
-      "week52RangePct": 23.6
+      "winRateScore": 56.7,
+      "rsiWeekly": 32.7,
+      "ret10yAvg": 13.4
     },
     {
       "symbol": "ITW",
@@ -3815,31 +4575,36 @@ const SP500_CORE_DATA = {
       "operatingMargin": 26.7,
       "roe": 110.4,
       "debtRatio": 469.9,
-      "week52RangePct": 61.8
+      "week52RangePct": 61.8,
+      "pressureScore": 4.0,
+      "stabilityScore": 5.0,
+      "winRateScore": 55.8,
+      "rsiWeekly": 55.1,
+      "ret10yAvg": 8.3
     },
     {
       "symbol": "EOG",
       "name": "EOG Resources",
       "sector": "Energy",
       "sectorKo": "에너지",
-      "marketCap": 86830555136,
+      "marketCap": 88171323392,
       "changePercent": 2.0466,
       "per": 12.882489,
       "eps": 12.85,
       "dividendYield": 2.46,
       "dollarVolume": 424414266.18,
+      "revenueGrowth": 15.68,
+      "netIncomeGrowth": 35.34,
+      "cashFlowGrowth": 29.58,
+      "operatingMargin": 36.9,
+      "roe": 17.8,
+      "debtRatio": 72.7,
+      "week52RangePct": 99.4,
+      "pressureScore": 5.3,
+      "stabilityScore": 3.6,
       "winRateScore": 55.0,
       "rsiWeekly": 66.4,
-      "ret10yAvg": 3.6,
-      "pressureScore": 5.2,
-      "stabilityScore": 3.6,
-      "revenueGrowth": 58.62,
-      "netIncomeGrowth": 102.53,
-      "cashFlowGrowth": 129.77,
-      "operatingMargin": 40.6,
-      "roe": 21.6,
-      "debtRatio": 71.9,
-      "week52RangePct": 99.4
+      "ret10yAvg": 4.9
     },
     {
       "symbol": "SLB",
@@ -3863,7 +4628,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 14.0,
       "roe": 11.9,
       "debtRatio": 111.3,
-      "week52RangePct": 74.0
+      "week52RangePct": 74.0,
+      "pressureScore": 3.7,
+      "stabilityScore": 3.8,
+      "winRateScore": 47.5,
+      "rsiWeekly": 54.8,
+      "ret10yAvg": -4.4
     },
     {
       "symbol": "GM",
@@ -3887,7 +4657,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 7.2,
       "roe": 6.3,
       "debtRatio": 357.7,
-      "week52RangePct": 82.3
+      "week52RangePct": 82.3,
+      "pressureScore": 4.5,
+      "stabilityScore": 2.3,
+      "winRateScore": 52.5,
+      "rsiWeekly": 56.5,
+      "ret10yAvg": 9.7
     },
     {
       "symbol": "MSI",
@@ -3911,7 +4686,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 26.4,
       "roe": 79.9,
       "debtRatio": 619.5,
-      "week52RangePct": 94.7
+      "week52RangePct": 94.7,
+      "pressureScore": 4.9,
+      "stabilityScore": 2.9,
+      "winRateScore": 60.0,
+      "rsiWeekly": 65.1,
+      "ret10yAvg": 19.9
     },
     {
       "symbol": "ECL",
@@ -3935,7 +4715,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 19.0,
       "roe": 20.0,
       "debtRatio": 198.1,
-      "week52RangePct": 90.5
+      "week52RangePct": 90.5,
+      "pressureScore": 4.9,
+      "stabilityScore": 3.7,
+      "winRateScore": 55.8,
+      "rsiWeekly": 64.0,
+      "ret10yAvg": 10.0
     },
     {
       "symbol": "NSC",
@@ -3959,7 +4744,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 34.6,
       "roe": 16.0,
       "debtRatio": 174.7,
-      "week52RangePct": 80.2
+      "week52RangePct": 80.2,
+      "pressureScore": 4.0,
+      "stabilityScore": 3.5,
+      "winRateScore": 56.7,
+      "rsiWeekly": 60.9,
+      "ret10yAvg": 12.4
     },
     {
       "symbol": "APO",
@@ -3983,7 +4773,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 25.6,
       "roe": 8.9,
       "debtRatio": 2154.5,
-      "week52RangePct": 30.3
+      "week52RangePct": 30.3,
+      "pressureScore": 2.0,
+      "stabilityScore": 4.0,
+      "winRateScore": 58.3,
+      "rsiWeekly": 43.6,
+      "ret10yAvg": 19.7
     },
     {
       "symbol": "NOC",
@@ -4007,7 +4802,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 11.4,
       "roe": 24.2,
       "debtRatio": 181.0,
-      "week52RangePct": 28.8
+      "week52RangePct": 28.8,
+      "pressureScore": 3.8,
+      "stabilityScore": 3.0,
+      "winRateScore": 50.8,
+      "rsiWeekly": 52.0,
+      "ret10yAvg": 8.4
     },
     {
       "symbol": "RCL",
@@ -4031,7 +4831,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 33.4,
       "roe": 38.9,
       "debtRatio": 280.9,
-      "week52RangePct": 63.3
+      "week52RangePct": 63.3,
+      "pressureScore": 4.7,
+      "stabilityScore": 3.1,
+      "winRateScore": 55.8,
+      "rsiWeekly": 57.4,
+      "ret10yAvg": 14.3
     },
     {
       "symbol": "LITE",
@@ -4055,7 +4860,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 28.0,
       "roe": -149.3,
       "debtRatio": 57.4,
-      "week52RangePct": 68.5
+      "week52RangePct": 68.5,
+      "pressureScore": 2.9,
+      "stabilityScore": 0.0,
+      "winRateScore": 53.3,
+      "rsiWeekly": 50.1,
+      "ret10yAvg": 35.6
     },
     {
       "symbol": "FDX",
@@ -4086,7 +4896,7 @@ const SP500_CORE_DATA = {
       "name": "Ross Stores",
       "sector": "Consumer Discretionary",
       "sectorKo": "경기소비재",
-      "marketCap": 73227902976,
+      "marketCap": 72924758016,
       "changePercent": -1.73052,
       "per": 27.603384,
       "eps": 8.27,
@@ -4103,7 +4913,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 17.6,
       "roe": 39.4,
       "debtRatio": 137.0,
-      "week52RangePct": 71.1
+      "week52RangePct": 71.1,
+      "pressureScore": 2.5,
+      "stabilityScore": 3.3,
+      "winRateScore": 55.0,
+      "rsiWeekly": 50.8,
+      "ret10yAvg": 12.9
     },
     {
       "symbol": "SNPS",
@@ -4127,7 +4942,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 14.5,
       "roe": 3.5,
       "debtRatio": 53.2,
-      "week52RangePct": 59.4
+      "week52RangePct": 59.4,
+      "pressureScore": 3.7,
+      "stabilityScore": 2.9,
+      "winRateScore": 57.5,
+      "rsiWeekly": 53.6,
+      "ret10yAvg": 22.7
     },
     {
       "symbol": "TRV",
@@ -4151,7 +4971,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 28.7,
       "debtRatio": 390.0,
-      "week52RangePct": 91.9
+      "week52RangePct": 91.9,
+      "pressureScore": 5.1,
+      "stabilityScore": 3.9,
+      "winRateScore": 61.7,
+      "rsiWeekly": 68.8,
+      "ret10yAvg": 13.3
     },
     {
       "symbol": "AON",
@@ -4175,14 +5000,19 @@ const SP500_CORE_DATA = {
       "operatingMargin": 22.0,
       "roe": 38.9,
       "debtRatio": 543.7,
-      "week52RangePct": 47.7
+      "week52RangePct": 47.7,
+      "pressureScore": 4.1,
+      "stabilityScore": 3.9,
+      "winRateScore": 56.7,
+      "rsiWeekly": 50.5,
+      "ret10yAvg": 10.9
     },
     {
       "symbol": "TGT",
       "name": "Target Corporation",
       "sector": "Consumer Staples",
       "sectorKo": "필수소비재",
-      "marketCap": 70134333440,
+      "marketCap": 70133514240,
       "changePercent": 1.68621,
       "per": 16.031153,
       "eps": 9.63,
@@ -4199,7 +5029,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 9.6,
       "roe": 24.6,
       "debtRatio": 243.2,
-      "week52RangePct": 81.3
+      "week52RangePct": 81.3,
+      "pressureScore": 3.6,
+      "stabilityScore": 3.4,
+      "winRateScore": 53.3,
+      "rsiWeekly": 60.3,
+      "ret10yAvg": 7.2
     },
     {
       "symbol": "HLT",
@@ -4223,7 +5058,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 27.3,
       "roe": -25.8,
       "debtRatio": -354.3,
-      "week52RangePct": 93.2
+      "week52RangePct": 93.2,
+      "pressureScore": 5.5,
+      "stabilityScore": 2.5,
+      "winRateScore": 64.2,
+      "rsiWeekly": 67.8,
+      "ret10yAvg": 21.4
     },
     {
       "symbol": "CI",
@@ -4247,7 +5087,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 3.4,
       "roe": 15.1,
       "debtRatio": 267.9,
-      "week52RangePct": 76.5
+      "week52RangePct": 76.5,
+      "pressureScore": 3.9,
+      "stabilityScore": 3.3,
+      "winRateScore": 55.0,
+      "rsiWeekly": 57.5,
+      "ret10yAvg": 8.3
     },
     {
       "symbol": "BSX",
@@ -4260,18 +5105,18 @@ const SP500_CORE_DATA = {
       "eps": 2.37,
       "dividendYield": 0.0,
       "dollarVolume": 943061095.3399999,
-      "winRateScore": 58.3,
-      "rsiWeekly": 34.3,
-      "ret10yAvg": 6.3,
+      "revenueGrowth": 11.58,
+      "netIncomeGrowth": 98.96,
+      "cashFlowGrowth": -35.67,
+      "operatingMargin": 20.6,
+      "roe": 13.8,
+      "debtRatio": 70.5,
+      "week52RangePct": 3.6,
       "pressureScore": 1.6,
       "stabilityScore": 3.1,
-      "revenueGrowth": 7.53,
-      "netIncomeGrowth": 13.8,
-      "cashFlowGrowth": 14.62,
-      "operatingMargin": 22.9,
-      "roe": 14.7,
-      "debtRatio": 80.4,
-      "week52RangePct": 3.6
+      "winRateScore": 58.3,
+      "rsiWeekly": 34.3,
+      "ret10yAvg": 7.5
     },
     {
       "symbol": "CL",
@@ -4295,7 +5140,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 19.0,
       "roe": 863.1,
       "debtRatio": 6874.6,
-      "week52RangePct": 83.7
+      "week52RangePct": 83.7,
+      "pressureScore": 4.6,
+      "stabilityScore": 4.6,
+      "winRateScore": 54.2,
+      "rsiWeekly": 61.2,
+      "ret10yAvg": 3.9
     },
     {
       "symbol": "ORLY",
@@ -4319,7 +5169,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 20.2,
       "roe": -144.4,
       "debtRatio": -1047.3,
-      "week52RangePct": 27.8
+      "week52RangePct": 27.8,
+      "pressureScore": 3.2,
+      "stabilityScore": 3.2,
+      "winRateScore": 58.3,
+      "rsiWeekly": 48.2,
+      "ret10yAvg": 17.0
     },
     {
       "symbol": "DLR",
@@ -4343,7 +5198,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 17.3,
       "roe": 5.9,
       "debtRatio": 100.4,
-      "week52RangePct": 55.7
+      "week52RangePct": 55.7,
+      "pressureScore": 3.2,
+      "stabilityScore": 3.5,
+      "winRateScore": 55.8,
+      "rsiWeekly": 48.6,
+      "ret10yAvg": 6.9
     },
     {
       "symbol": "WBD",
@@ -4391,7 +5251,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 12.0,
       "roe": 10.5,
       "debtRatio": 215.1,
-      "week52RangePct": 65.6
+      "week52RangePct": 65.6,
+      "pressureScore": 2.5,
+      "stabilityScore": 1.2,
+      "winRateScore": 55.0,
+      "rsiWeekly": 54.4,
+      "ret10yAvg": 14.8
     },
     {
       "symbol": "KMI",
@@ -4415,7 +5280,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 25.6,
       "roe": 11.4,
       "debtRatio": 134.7,
-      "week52RangePct": 89.8
+      "week52RangePct": 89.8,
+      "pressureScore": 4.5,
+      "stabilityScore": 2.8,
+      "winRateScore": 55.0,
+      "rsiWeekly": 58.0,
+      "ret10yAvg": 4.3
     },
     {
       "symbol": "PCAR",
@@ -4439,7 +5309,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 11.7,
       "roe": 12.3,
       "debtRatio": 116.4,
-      "week52RangePct": 17.7
+      "week52RangePct": 17.7,
+      "pressureScore": 1.2,
+      "stabilityScore": 4.6,
+      "winRateScore": 53.3,
+      "rsiWeekly": 31.1,
+      "ret10yAvg": 9.4
     },
     {
       "symbol": "HON",
@@ -4463,7 +5338,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 14.8,
       "roe": 31.5,
       "debtRatio": 135.8,
-      "week52RangePct": 34.9
+      "week52RangePct": 34.9,
+      "pressureScore": 2.6,
+      "stabilityScore": 4.2,
+      "winRateScore": 52.5,
+      "rsiWeekly": 47.7,
+      "ret10yAvg": 7.3
     },
     {
       "symbol": "URI",
@@ -4472,8 +5352,8 @@ const SP500_CORE_DATA = {
       "sectorKo": "산업재",
       "marketCap": 72445509632,
       "changePercent": -2.38846,
-      "per": 25.755009,
-      "eps": 45.43,
+      "per": 28.132965,
+      "eps": 41.59,
       "dividendYield": 0.67,
       "dollarVolume": 571723871.6,
       "winRateScore": 57.5,
@@ -4487,7 +5367,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 29.1,
       "roe": 29.5,
       "debtRatio": 238.2,
-      "week52RangePct": 93.6
+      "week52RangePct": 93.6,
+      "pressureScore": 4.9,
+      "stabilityScore": 2.6,
+      "winRateScore": 57.5,
+      "rsiWeekly": 62.2,
+      "ret10yAvg": 27.7
     },
     {
       "symbol": "APD",
@@ -4511,7 +5396,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 25.6,
       "roe": -0.3,
       "debtRatio": 171.8,
-      "week52RangePct": 99.8
+      "week52RangePct": 99.8,
+      "pressureScore": 4.7,
+      "stabilityScore": 3.3,
+      "winRateScore": 55.8,
+      "rsiWeekly": 62.2,
+      "ret10yAvg": 8.2
     },
     {
       "symbol": "AJG",
@@ -4535,7 +5425,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 14.7,
       "roe": 6.6,
       "debtRatio": 244.8,
-      "week52RangePct": 98.4
+      "week52RangePct": 98.4,
+      "pressureScore": 6.0,
+      "stabilityScore": 3.2,
+      "winRateScore": 61.7,
+      "rsiWeekly": 64.1,
+      "ret10yAvg": 18.6
     },
     {
       "symbol": "RSG",
@@ -4544,8 +5439,8 @@ const SP500_CORE_DATA = {
       "sectorKo": "산업재",
       "marketCap": 74344259584,
       "changePercent": 3.28424,
-      "per": 33.800552,
-      "eps": 7.22,
+      "per": 34.6156,
+      "eps": 7.05,
       "dividendYield": 1.1,
       "dollarVolume": 586639702.68,
       "winRateScore": 63.3,
@@ -4559,14 +5454,19 @@ const SP500_CORE_DATA = {
       "operatingMargin": 20.4,
       "roe": 18.2,
       "debtRatio": 192.2,
-      "week52RangePct": 89.9
+      "week52RangePct": 89.9,
+      "pressureScore": 5.5,
+      "stabilityScore": 3.2,
+      "winRateScore": 62.5,
+      "rsiWeekly": 67.9,
+      "ret10yAvg": 16.0
     },
     {
       "symbol": "TDG",
       "name": "TransDigm Group",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 63391674368,
+      "marketCap": 64145195008,
       "changePercent": -2.47468,
       "per": 34.78344,
       "eps": 32.97,
@@ -4583,7 +5483,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 45.5,
       "roe": -21.7,
       "debtRatio": -371.8,
-      "week52RangePct": 19.3
+      "week52RangePct": 19.3,
+      "pressureScore": 2.3,
+      "stabilityScore": 2.9,
+      "winRateScore": 62.5,
+      "rsiWeekly": 45.4,
+      "ret10yAvg": 16.4
     },
     {
       "symbol": "AEP",
@@ -4607,7 +5512,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 26.5,
       "roe": 10.2,
       "debtRatio": 279.6,
-      "week52RangePct": 63.0
+      "week52RangePct": 63.0,
+      "pressureScore": 4.0,
+      "stabilityScore": 3.9,
+      "winRateScore": 61.7,
+      "rsiWeekly": 55.4,
+      "ret10yAvg": 8.2
     },
     {
       "symbol": "MPWR",
@@ -4631,7 +5541,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 31.0,
       "roe": 20.7,
       "debtRatio": 20.3,
-      "week52RangePct": 43.0
+      "week52RangePct": 43.0,
+      "pressureScore": 2.5,
+      "stabilityScore": 5.0,
+      "winRateScore": 59.2,
+      "rsiWeekly": 45.2,
+      "ret10yAvg": 30.9
     },
     {
       "symbol": "ALL",
@@ -4655,7 +5570,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 39.5,
       "debtRatio": 270.3,
-      "week52RangePct": 80.5
+      "week52RangePct": 80.5,
+      "pressureScore": 4.4,
+      "stabilityScore": 3.6,
+      "winRateScore": 56.7,
+      "rsiWeekly": 61.0,
+      "ret10yAvg": 14.0
     },
     {
       "symbol": "TRGP",
@@ -4679,7 +5599,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 27.8,
       "roe": 62.0,
       "debtRatio": 676.0,
-      "week52RangePct": 99.0
+      "week52RangePct": 99.0,
+      "pressureScore": 5.3,
+      "stabilityScore": 1.8,
+      "winRateScore": 58.3,
+      "rsiWeekly": 67.0,
+      "ret10yAvg": 19.4
     },
     {
       "symbol": "CRH",
@@ -4703,7 +5628,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 18.0,
       "roe": 14.3,
       "debtRatio": 139.7,
-      "week52RangePct": 23.0
+      "week52RangePct": 23.0,
+      "pressureScore": 2.7,
+      "stabilityScore": 2.8,
+      "winRateScore": 55.0,
+      "rsiWeekly": 43.5,
+      "ret10yAvg": 10.6
     },
     {
       "symbol": "BKR",
@@ -4727,14 +5657,19 @@ const SP500_CORE_DATA = {
       "operatingMargin": 11.0,
       "roe": 14.4,
       "debtRatio": 191.2,
-      "week52RangePct": 42.0
+      "week52RangePct": 42.0,
+      "pressureScore": 2.6,
+      "stabilityScore": 4.1,
+      "winRateScore": 51.7,
+      "rsiWeekly": 43.4,
+      "ret10yAvg": -1.5
     },
     {
       "symbol": "GWW",
       "name": "W. W. Grainger",
       "sector": "Industrials",
       "sectorKo": "산업재",
-      "marketCap": 64018190336,
+      "marketCap": 64170659840,
       "changePercent": -0.925017,
       "per": 34.663864,
       "eps": 39.21,
@@ -4751,7 +5686,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": 16.1,
       "roe": 45.3,
       "debtRatio": 123.6,
-      "week52RangePct": 88.2
+      "week52RangePct": 88.2,
+      "pressureScore": 4.0,
+      "stabilityScore": 4.4,
+      "winRateScore": 58.3,
+      "rsiWeekly": 61.3,
+      "ret10yAvg": 19.4
     },
     {
       "symbol": "TFC",
@@ -4775,7 +5715,12 @@ const SP500_CORE_DATA = {
       "operatingMargin": null,
       "roe": 8.3,
       "debtRatio": 801.5,
-      "week52RangePct": 43.3
+      "week52RangePct": 43.3,
+      "pressureScore": 3.0,
+      "stabilityScore": 4.2,
+      "winRateScore": 53.3,
+      "rsiWeekly": 48.7,
+      "ret10yAvg": 0.8
     },
     {
       "symbol": "OXY",
@@ -4799,9 +5744,14 @@ const SP500_CORE_DATA = {
       "operatingMargin": 45.4,
       "roe": 17.4,
       "debtRatio": 91.0,
-      "week52RangePct": 88.0
+      "week52RangePct": 88.0,
+      "pressureScore": 4.7,
+      "stabilityScore": 2.3,
+      "winRateScore": 50.0,
+      "rsiWeekly": 62.3,
+      "ret10yAvg": -1.1
     }
   ],
   "ratiosUpdatedAt": "2026-08-25T11:26:13Z",
-  "generatedAt": "2026-11-01T00:41:25Z"
+  "generatedAt": "2026-10-31T23:58:56Z"
 };
