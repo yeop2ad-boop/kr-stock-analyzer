@@ -1451,7 +1451,10 @@ async function handleSlimeRank(request, requestUrl, env) {
     try { body = await request.json(); } catch { return jsonResponse({ error: "JSON 본문이 필요합니다." }, 400); }
     const id = String(body && body.id || "").toUpperCase();
     if (!/^[A-Z0-9]{4,12}$/.test(id)) return jsonResponse({ error: "id 형식 오류" }, 400);
-    const name = String(body.name || "모험가").replace(/[<>]/g, "").slice(0, 12);
+    const rawName = String(body.name || "모험가").replace(/[<>]/g, "").slice(0, 12);
+    const nm = await slimeNameForRank(env, id, rawName, table[id] && table[id].name);
+    const name = nm.name;
+    if (nm.changed) await env.CHAT_KV.put(SLIME_NAMES_KEY, JSON.stringify(nm.names));
     const score = Math.max(0, Math.min(99999, parseInt(body.score, 10) || 0));
     const tier = Math.max(0, Math.min(9, parseInt(body.tier, 10) || 0));
     const floor = Math.max(0, Math.min(999, parseInt(body.floor, 10) || 0));
@@ -1476,6 +1479,57 @@ async function handleSlimeRank(request, requestUrl, env) {
   if (idx >= 0) meRow = { ...sorted[idx], rank: idx + 1, total: sorted.length };
   const friends = friendIds.map((fid) => { const i = sorted.findIndex((r) => r.id === fid); return i >= 0 ? { ...sorted[i], rank: i + 1 } : { id: fid, name: "(기록 없음)", score: 0, tier: 0, floor: 0 }; });
   return jsonResponse({ top, me: meRow, friends, total: sorted.length }, 200);
+}
+
+// ---- 슬라임의 탑: 이름 등록(모든 모험가 중 유일) ----
+// POST /slime/name body {pid, name} → {ok:true,name} | {ok:false,error:'taken'|'invalid'}. 같은 pid가 쓰던 이전 이름은 풀어준다.
+// GET  /slime/name?name=… → {ok, taken}. 규칙: 한글·영문·숫자 2~8자(특수문자·띄어쓰기 없음), 대소문자 구분 없이 유일. KV 키 slime_names_v1 { norm: pid }
+const SLIME_NAMES_KEY = "slime_names_v1";
+function slimeNameNorm(s) { return String(s || "").normalize("NFC").trim().toLowerCase(); }
+function slimeNameValid(s) { return /^[가-힣A-Za-z0-9]{2,8}$/.test(String(s || "").normalize("NFC").trim()); }
+async function slimeNames(env) {
+  let names = await env.CHAT_KV.get(SLIME_NAMES_KEY, "json");
+  if (!names) { // 처음 한 번: 석판에 이미 있는 이름은 먼저 온 사람 것으로
+    names = { _seeded: 1 };
+    const table = (await env.CHAT_KV.get(SLIME_RANK_KEY, "json")) || {};
+    for (const [id, r] of Object.entries(table).sort((a, b) => (a[1].t | 0) - (b[1].t | 0))) { const k = slimeNameNorm(r.name); if (slimeNameValid(r.name) && !names[k]) names[k] = id; }
+  }
+  return names;
+}
+// 석판 POST 때: 비어 있으면 예약, 남의 이름이면 예전 이름(없으면 '모험가'+id 앞 4자)으로 바꿔 적는다 → 석판에 같은 이름이 둘 오르지 않는다
+async function slimeNameForRank(env, id, name, prevName) {
+  const names = await slimeNames(env);
+  const k = slimeNameNorm(name);
+  if (!slimeNameValid(name)) return { name: prevName || name, names, changed: false };
+  if (!names[k]) { names[k] = id; return { name, names, changed: true }; }
+  if (names[k] === id) return { name, names, changed: false };
+  return { name: (prevName && slimeNameNorm(prevName) !== k) ? prevName : ("모험가" + id.slice(0, 4)), names, changed: false };
+}
+async function handleSlimeName(request, requestUrl, env) {
+  if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
+  if (request.method === "GET") {
+    const name = String(requestUrl.searchParams.get("name") || "");
+    if (!slimeNameValid(name)) return jsonResponse({ ok: false, error: "invalid" }, 200);
+    const names = await slimeNames(env);
+    const owner = names[slimeNameNorm(name)];
+    return jsonResponse({ ok: !owner, taken: !!owner }, 200);
+  }
+  if (request.method !== "POST") return jsonResponse({ error: "method" }, 405);
+  let body = null;
+  try { body = await request.json(); } catch { return jsonResponse({ error: "JSON 본문이 필요합니다." }, 400); }
+  const pid = String(body && body.pid || "").toUpperCase();
+  if (!/^[A-Z0-9]{4,12}$/.test(pid)) return jsonResponse({ ok: false, error: "pid" }, 400);
+  const name = String(body.name || "").normalize("NFC").trim();
+  if (!slimeNameValid(name)) return jsonResponse({ ok: false, error: "invalid" }, 200);
+  const names = await slimeNames(env);
+  const k = slimeNameNorm(name);
+  if (names[k] && names[k] !== pid) return jsonResponse({ ok: false, error: "taken" }, 200);
+  for (const [nk, owner] of Object.entries(names)) if (owner === pid && nk !== k) delete names[nk];
+  names[k] = pid;
+  await env.CHAT_KV.put(SLIME_NAMES_KEY, JSON.stringify(names));
+  const table = (await env.CHAT_KV.get(SLIME_RANK_KEY, "json")) || {}; // 석판에 적힌 이름도 바로 맞춘다
+  if (table[pid] && table[pid].name !== name) { table[pid] = { ...table[pid], name }; await env.CHAT_KV.put(SLIME_RANK_KEY, JSON.stringify(table)); }
+  return jsonResponse({ ok: true, name }, 200);
 }
 
 // ---- 슬라임의 탑: 이어하기 코드(기기 이전) ----
@@ -1521,6 +1575,10 @@ export default {
 
     if (requestUrl.pathname === "/slime/save") {
       return handleSlimeSave(request, requestUrl, env);
+    }
+
+    if (requestUrl.pathname === "/slime/name") {
+      return handleSlimeName(request, requestUrl, env);
     }
 
     if (requestUrl.pathname === "/news-summary") {
