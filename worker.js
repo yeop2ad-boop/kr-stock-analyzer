@@ -1441,8 +1441,8 @@ async function handleAnswer(request, env) {
 
 // ---------- 슬라임의 전설 랭킹 (2026-10-31) ----------
 // GET  /slime/rank?me=ID&friends=ID1,ID2 → { top:[...9], me:{rank,total,...}, friends:[...] }
-// POST /slime/rank  body {id,name,score,tier,floor}  → 더 높은 점수일 때만 갱신. KV 키 slime_rank_v1 (최대 3000명)
-const SLIME_RANK_KEY = "slime_rank_v1";
+// POST /slime/rank  body {id,name,score,tier,floor,pct,lvl,color,wid,wlv}  → 점수는 더 높을 때만 갱신, 레벨·전투복·무기(강화)는 늘 갱신. KV 키 slime_rank_v1 (최대 3000명)
+const SLIME_RANK_KEY = "slime_rank_v2"; // 아레나 개편(2026-11-02)부터 새 판 — 점수 형식이 달라져 v1과 섞지 않는다
 async function handleSlimeRank(request, requestUrl, env) {
   if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
   const table = (await env.CHAT_KV.get(SLIME_RANK_KEY, "json")) || {};
@@ -1458,9 +1458,14 @@ async function handleSlimeRank(request, requestUrl, env) {
     const score = Math.max(0, Math.min(99999, parseInt(body.score, 10) || 0));
     const tier = Math.max(0, Math.min(9, parseInt(body.tier, 10) || 0));
     const floor = Math.max(0, Math.min(999, parseInt(body.floor, 10) || 0));
+    const pct = Math.max(0, Math.min(100, parseInt(body.pct, 10) || 0));
+    const lvl = Math.max(0, Math.min(999, parseInt(body.lvl, 10) || 0));
+    const color = Math.max(0, Math.min(9, parseInt(body.color, 10) || 0));
+    const wid = /^[a-z0-9_]{1,24}$/.test(String(body.wid || "")) ? String(body.wid) : "";
+    const wlv = Math.max(0, Math.min(10, parseInt(body.wlv, 10) || 0));
     const prev = table[id];
-    if (!prev || score >= (prev.score | 0)) table[id] = { name, score, tier, floor, t: Date.now() };
-    else table[id] = { ...prev, name, t: Date.now() };
+    if (!prev || score >= (prev.score | 0)) table[id] = { name, score, tier, floor, pct, lvl, color, wid, wlv, t: Date.now() };
+    else table[id] = { ...prev, name, lvl, color, wid, wlv, t: Date.now() };
     const ids = Object.keys(table);
     if (ids.length > 3000) {
       ids.sort((a, b) => (table[b].score | 0) - (table[a].score | 0) || (table[b].t | 0) - (table[a].t | 0));
@@ -1471,7 +1476,7 @@ async function handleSlimeRank(request, requestUrl, env) {
   }
   const me = String(requestUrl.searchParams.get("me") || "").toUpperCase();
   const friendIds = String(requestUrl.searchParams.get("friends") || "").toUpperCase().split(",").map((x) => x.trim()).filter((x) => /^[A-Z0-9]{4,12}$/.test(x)).slice(0, 50);
-  const sorted = Object.entries(table).map(([id, r]) => ({ id, name: r.name, score: r.score | 0, tier: r.tier | 0, floor: r.floor | 0 }))
+  const sorted = Object.entries(table).map(([id, r]) => ({ id, name: r.name, score: r.score | 0, tier: r.tier | 0, floor: r.floor | 0, pct: r.pct | 0, lvl: r.lvl | 0, color: r.color | 0, wid: r.wid || "", wlv: r.wlv | 0 }))
     .sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
   const top = sorted.slice(0, 9);
   let meRow = null;
