@@ -24,8 +24,8 @@ const NDX_EXTRA_DATA = {
       "eps": 24.73,
       "dividendYield": null,
       "winRateScore": 62.5,
-      "rsiWeekly": 45.5,
-      "ret10yAvg": 31.3
+      "rsiWeekly": 44.5,
+      "ret10yAvg": 30.9
     },
     {
       "symbol": "ARM",
@@ -37,9 +37,9 @@ const NDX_EXTRA_DATA = {
       "per": 281.24,
       "eps": 0.85,
       "dividendYield": null,
-      "winRateScore": 51.4,
-      "rsiWeekly": 42.4,
-      "ret10yAvg": 59.0
+      "winRateScore": 52.8,
+      "rsiWeekly": 41.5,
+      "ret10yAvg": 61.1
     },
     {
       "symbol": "SHOP",
@@ -51,9 +51,9 @@ const NDX_EXTRA_DATA = {
       "per": 161.96,
       "eps": 0.944088,
       "dividendYield": null,
-      "winRateScore": 61.7,
-      "rsiWeekly": 57.8,
-      "ret10yAvg": 43.8
+      "winRateScore": 62.5,
+      "rsiWeekly": 58.2,
+      "ret10yAvg": 43.9
     },
     {
       "symbol": "PDD",
@@ -65,9 +65,9 @@ const NDX_EXTRA_DATA = {
       "per": 1.22,
       "eps": 70.0,
       "dividendYield": null,
-      "winRateScore": 49.5,
-      "rsiWeekly": 40.8,
-      "ret10yAvg": 18.5
+      "winRateScore": 50.0,
+      "rsiWeekly": 46.2,
+      "ret10yAvg": 18.7
     },
     {
       "symbol": "MELI",
@@ -80,8 +80,8 @@ const NDX_EXTRA_DATA = {
       "eps": 39.4,
       "dividendYield": null,
       "winRateScore": 51.7,
-      "rsiWeekly": 40.5,
-      "ret10yAvg": 26.3
+      "rsiWeekly": 44.3,
+      "ret10yAvg": 25.5
     },
     {
       "symbol": "NBIS",
@@ -93,9 +93,9 @@ const NDX_EXTRA_DATA = {
       "per": 615.24,
       "eps": 0.34,
       "dividendYield": null,
-      "winRateScore": 66.7,
-      "rsiWeekly": 42.0,
-      "ret10yAvg": 164.8
+      "winRateScore": 69.6,
+      "rsiWeekly": 39.9,
+      "ret10yAvg": 176.2
     },
     {
       "symbol": "ALAB",
@@ -107,9 +107,9 @@ const NDX_EXTRA_DATA = {
       "per": 219.3,
       "eps": 1.32,
       "dividendYield": null,
-      "winRateScore": 45.2,
-      "rsiWeekly": 45.2,
-      "ret10yAvg": 54.0
+      "winRateScore": 46.7,
+      "rsiWeekly": 42.0,
+      "ret10yAvg": 56.3
     },
     {
       "symbol": "MSTR",
@@ -122,8 +122,8 @@ const NDX_EXTRA_DATA = {
       "eps": -15.23,
       "dividendYield": null,
       "winRateScore": 50.8,
-      "rsiWeekly": 47.3,
-      "ret10yAvg": 21.0
+      "rsiWeekly": 47.8,
+      "ret10yAvg": 20.9
     },
     {
       "symbol": "CCEP",
@@ -136,8 +136,8 @@ const NDX_EXTRA_DATA = {
       "eps": 4.26,
       "dividendYield": null,
       "winRateScore": 58.3,
-      "rsiWeekly": 63.6,
-      "ret10yAvg": 13.3
+      "rsiWeekly": 66.3,
+      "ret10yAvg": 11.4
     },
     {
       "symbol": "CRWV",
@@ -149,9 +149,9 @@ const NDX_EXTRA_DATA = {
       "per": null,
       "eps": -2.75,
       "dividendYield": null,
-      "winRateScore": 36.8,
-      "rsiWeekly": 36.6,
-      "ret10yAvg": 19.7
+      "winRateScore": 38.9,
+      "rsiWeekly": 35.3,
+      "ret10yAvg": 20.9
     },
     {
       "symbol": "TRI",
@@ -163,9 +163,9 @@ const NDX_EXTRA_DATA = {
       "per": 31.31,
       "eps": 3.392378,
       "dividendYield": null,
-      "winRateScore": 56.7,
-      "rsiWeekly": 61.7,
-      "ret10yAvg": 10.2
+      "winRateScore": 57.5,
+      "rsiWeekly": 63.8,
+      "ret10yAvg": 11.2
     },
     {
       "symbol": "FER",
@@ -178,8 +178,8 @@ const NDX_EXTRA_DATA = {
       "eps": 1.24,
       "dividendYield": null,
       "winRateScore": 61.7,
-      "rsiWeekly": 41.4,
-      "ret10yAvg": 12.2
+      "rsiWeekly": 46.1,
+      "ret10yAvg": 10.1
     },
     {
       "symbol": "RKLB",
@@ -191,9 +191,9 @@ const NDX_EXTRA_DATA = {
       "per": null,
       "eps": -0.37,
       "dividendYield": null,
-      "winRateScore": 47.9,
-      "rsiWeekly": 40.9,
-      "ret10yAvg": 33.0
+      "winRateScore": 48.6,
+      "rsiWeekly": 39.5,
+      "ret10yAvg": 33.6
     },
     {
       "symbol": "ALNY",
@@ -205,9 +205,9 @@ const NDX_EXTRA_DATA = {
       "per": 99.21,
       "eps": 2.39,
       "dividendYield": null,
-      "winRateScore": 51.7,
-      "rsiWeekly": 29.5,
-      "ret10yAvg": 14.2
+      "winRateScore": 52.5,
+      "rsiWeekly": 29.1,
+      "ret10yAvg": 16.6
     }
   ]
 };
