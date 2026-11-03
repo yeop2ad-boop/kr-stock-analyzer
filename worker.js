@@ -1439,6 +1439,107 @@ async function handleAnswer(request, env) {
 }
 
 
+// ---------- 슬라임 각성자 보안 (2026-11-03) ----------
+// 비밀 값(Cloudflare Worker secrets) — 넣기 전에는 검증을 건너뛰고(not_configured) 예전처럼 동작한다
+//  GOOGLE_SA_JSON          : Google Cloud 서비스 계정 키(JSON 전체). Play Console '사용자 및 권한'에 이 계정을 초대(주문·재무 데이터 보기),
+//                            Play Console '앱 무결성'에 같은 Cloud 프로젝트를 연결, 그 프로젝트에서 Play Integrity API · Android Publisher API 사용 설정
+//  SLIME_REQUIRE_INTEGRITY : "1"이면 Play Integrity 확인을 못 받은 기록은 순위판에 안 보인다(모두 새 버전으로 업데이트한 뒤 켜기)
+const SLIME_PKG = "kr.marketmap.slimetower";
+// 현금 상품 지급량은 서버가 정한다(게임의 SHOP_IAP와 같게)
+const SLIME_IAP = { energy_full: { kind: "energy", n: 5 }, gems_10: { kind: "gem", n: 10 }, gems_55: { kind: "gem", n: 55 }, gems_120: { kind: "gem", n: 120 }, gems_650: { kind: "gem", n: 650 }, gems_1450: { kind: "gem", n: 1450 },
+  gold_100: { kind: "coin", n: 100 }, gold_550: { kind: "coin", n: 550 }, gold_1200: { kind: "coin", n: 1200 }, gold_7000: { kind: "coin", n: 7000 }, gold_14500: { kind: "coin", n: 14500 } };
+// 게임이 보내는 표시 비트(p2b_sec SECF와 같다)
+const SLIME_SECF = { SAVE: 1, VAL: 2, SIG: 4, ROOT: 8, EMU: 16, DBG: 32, HOOK: 64 };
+let slimeGTok = { t: "", exp: 0 };
+function slimeB64url(buf) { const a = new Uint8Array(buf); let s = ""; for (let i = 0; i < a.length; i++) s += String.fromCharCode(a[i]); return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
+async function slimeSha256Hex(str) { const h = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str)); return [...new Uint8Array(h)].map((b) => b.toString(16).padStart(2, "0")).join(""); }
+async function slimeSha256B64url(str) { return slimeB64url(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str))); }
+// 서비스 계정 → Google OAuth 접근 토큰(RS256 JWT). 같은 워커 인스턴스에서는 만료 1분 전까지 다시 쓴다
+async function slimeGoogleToken(env) {
+  if (slimeGTok.t && Date.now() < slimeGTok.exp - 60000) return slimeGTok.t;
+  const sa = JSON.parse(env.GOOGLE_SA_JSON);
+  const now = Math.floor(Date.now() / 1000);
+  const enc = (o) => slimeB64url(new TextEncoder().encode(JSON.stringify(o)));
+  const unsigned = enc({ alg: "RS256", typ: "JWT" }) + "." + enc({ iss: sa.client_email, scope: "https://www.googleapis.com/auth/androidpublisher https://www.googleapis.com/auth/playintegrity", aud: "https://oauth2.googleapis.com/token", iat: now, exp: now + 3600 });
+  const pem = String(sa.private_key || "").replace(/-----[^-]+-----/g, "").replace(/\s+/g, "");
+  const der = Uint8Array.from(atob(pem), (c) => c.charCodeAt(0));
+  const key = await crypto.subtle.importKey("pkcs8", der, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["sign"]);
+  const sig = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", key, new TextEncoder().encode(unsigned));
+  const r = await fetch("https://oauth2.googleapis.com/token", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=" + unsigned + "." + slimeB64url(sig) });
+  const j = await r.json();
+  if (!j.access_token) throw new Error("google token: " + (j.error_description || j.error || r.status));
+  slimeGTok = { t: j.access_token, exp: Date.now() + (j.expires_in || 3600) * 1000 };
+  return slimeGTok.t;
+}
+// 세션 키(sk): Play Integrity를 통과한 모험가에게 1시간 동안 주는 서명. 서버 비밀(SLIME_SECRET 또는 서비스 계정 키)로 HMAC
+async function slimeSk(env, pid, exp) {
+  const raw = env.SLIME_SECRET || env.GOOGLE_SA_JSON || "";
+  if (!raw) return "";
+  const k = await crypto.subtle.importKey("raw", new TextEncoder().encode(await slimeSha256Hex("slime-sk|" + raw)), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  return slimeB64url(await crypto.subtle.sign("HMAC", k, new TextEncoder().encode(pid + "|" + exp)));
+}
+async function slimeSkOk(env, pid, sk, exp) { if (!sk || !exp || Date.now() > exp) return false; return (await slimeSk(env, pid, exp)) === sk; }
+// Play Integrity 판정: 우리 앱(패키지) · 이 요청의 nonce · Play에서 받은 정식 앱 · 정상 기기 · 정식 라이선스
+function slimeVerdict(p, nonce) {
+  const rd = p.requestDetails || {}, ai = p.appIntegrity || {}, di = p.deviceIntegrity || {}, ad = p.accountDetails || {};
+  const dv = di.deviceRecognitionVerdict || [];
+  const why = [];
+  if (rd.requestPackageName !== SLIME_PKG) why.push("package");
+  if (rd.nonce !== nonce) why.push("nonce");
+  if (ai.appRecognitionVerdict !== "PLAY_RECOGNIZED") why.push("app:" + (ai.appRecognitionVerdict || "?"));
+  if (!dv.includes("MEETS_DEVICE_INTEGRITY")) why.push("device:" + (dv.join("+") || "none"));
+  if (ad.appLicensingVerdict && ad.appLicensingVerdict !== "LICENSED") why.push("license:" + ad.appLicensingVerdict);
+  return { ok: why.length === 0, why, app: ai.appRecognitionVerdict || "", device: dv, lic: ad.appLicensingVerdict || "" };
+}
+// POST /slime/attest {pid, ts, token} → Google에 토큰을 풀어 판정 → 통과하면 {ok, sk, exp}
+async function handleSlimeAttest(request, env) {
+  if (request.method !== "POST") return jsonResponse({ error: "method" }, 405);
+  let body = null;
+  try { body = await request.json(); } catch { return jsonResponse({ ok: false, error: "json" }, 400); }
+  const pid = String(body && body.pid || "").toUpperCase(), ts = Number(body && body.ts) || 0, token = String(body && body.token || "");
+  if (!/^[A-Z0-9]{4,12}$/.test(pid) || !token || token.length > 8192) return jsonResponse({ ok: false, error: "bad_request" }, 400);
+  if (!env.GOOGLE_SA_JSON) return jsonResponse({ ok: false, error: "not_configured" }, 200);
+  if (Math.abs(Date.now() - ts) > 10 * 60 * 1000) return jsonResponse({ ok: false, error: "stale" }, 200);
+  let p = null;
+  try {
+    const at = await slimeGoogleToken(env);
+    const r = await fetch("https://playintegrity.googleapis.com/v1/" + SLIME_PKG + ":decodeIntegrityToken", { method: "POST", headers: { Authorization: "Bearer " + at, "Content-Type": "application/json" }, body: JSON.stringify({ integrity_token: token }) });
+    const j = await r.json();
+    p = j.tokenPayloadExternal;
+    if (!p) return jsonResponse({ ok: false, error: "google_error", detail: (j.error && j.error.message) || r.status }, 200);
+  } catch (e) { return jsonResponse({ ok: false, error: "google_error", detail: String(e) }, 200); }
+  const v = slimeVerdict(p, await slimeSha256B64url("attest|" + pid + "|" + ts));
+  if (!v.ok) return jsonResponse({ ok: false, error: "integrity", verdict: v }, 200);
+  const exp = Date.now() + 60 * 60 * 1000;
+  return jsonResponse({ ok: true, sk: await slimeSk(env, pid, exp), exp, verdict: v }, 200);
+}
+// POST /slime/iap/verify {pkg, sku, token, orderId, pid} → Google Play Developer API로 영수증 확인 → {iap:1, ok, kind, n}
+// 앱은 이 확인을 받은 뒤에만 소모(consume)·지급한다. 답의 iap:1은 '새 서버'라는 표시(없으면 앱이 예전처럼 지급)
+async function handleSlimeIapVerify(request, env) {
+  const R = (o, st) => jsonResponse({ iap: 1, ...o }, st || 200);
+  if (request.method !== "POST") return R({ ok: false, error: "method" }, 405);
+  let body = null;
+  try { body = await request.json(); } catch { return R({ ok: false, error: "json" }, 400); }
+  const sku = String(body && body.sku || ""), token = String(body && body.token || ""), pid = String(body && body.pid || "").toUpperCase().slice(0, 16);
+  const g = SLIME_IAP[sku];
+  if (!g || !token || token.length > 4096) return R({ ok: false, error: "bad_request" }, 400);
+  if (!env.GOOGLE_SA_JSON) return R({ ok: false, error: "not_configured" });
+  let j = null;
+  try {
+    const at = await slimeGoogleToken(env);
+    const r = await fetch("https://androidpublisher.googleapis.com/androidpublisher/v3/applications/" + SLIME_PKG + "/purchases/products/" + encodeURIComponent(sku) + "/tokens/" + encodeURIComponent(token), { headers: { Authorization: "Bearer " + at } });
+    j = await r.json().catch(() => ({}));
+    if (r.status === 400 || r.status === 404 || r.status === 410) return R({ ok: false, error: "invalid" });
+    if (!r.ok) return R({ ok: false, error: "google_error", detail: (j.error && j.error.message) || r.status });
+  } catch (e) { return R({ ok: false, error: "google_error", detail: String(e) }); }
+  if (j.purchaseState !== 0) return R({ ok: false, error: j.purchaseState === 2 ? "pending" : "not_purchased" });
+  if (j.consumptionState === 1) return R({ ok: false, error: "consumed" });
+  if (env.CHAT_KV) {
+    try { await env.CHAT_KV.put("slime_iap:" + (j.orderId || (await slimeSha256Hex(token)).slice(0, 32)), JSON.stringify({ pid, sku, t: Date.now(), test: j.purchaseType === 0 }), { expirationTtl: 60 * 60 * 24 * 400 }); } catch {}
+  }
+  return R({ ok: true, kind: g.kind, n: g.n, orderId: j.orderId || "" });
+}
+
 // ---------- 슬라임의 전설 랭킹 (2026-10-31) ----------
 // GET  /slime/rank?me=ID&friends=ID1,ID2 → { top:[...9], me:{rank,total,...}, friends:[...] }
 // POST /slime/rank  body {id,name,score,tier,floor,pct,lvl,color,wid,wlv}  → 점수는 더 높을 때만 갱신, 레벨·전투복·무기(강화)는 늘 갱신. KV 키 slime_rank_v1 (최대 3000명)
@@ -1451,23 +1552,42 @@ async function handleSlimeRank(request, requestUrl, env) {
     try { body = await request.json(); } catch { return jsonResponse({ error: "JSON 본문이 필요합니다." }, 400); }
     const id = String(body && body.id || "").toUpperCase();
     if (!/^[A-Z0-9]{4,12}$/.test(id)) return jsonResponse({ error: "id 형식 오류" }, 400);
+    if (table[id] && Date.now() - (Number(table[id].t) || 0) < 2000) return jsonResponse({ ok: true, throttled: true }, 200); // 너무 잦은 등록은 건너뛴다(KV 쓰기 절약)
     const rawName = String(body.name || "모험가").replace(/[<>]/g, "").slice(0, 12);
     const nm = await slimeNameForRank(env, id, rawName, table[id] && table[id].name);
     const name = nm.name;
     if (nm.changed) await env.CHAT_KV.put(SLIME_NAMES_KEY, JSON.stringify(nm.names));
-    const score = Math.max(0, Math.min(99999, parseInt(body.score, 10) || 0));
-    const tier = Math.max(0, Math.min(9, parseInt(body.tier, 10) || 0));
-    const floor = Math.max(0, Math.min(999, parseInt(body.floor, 10) || 0));
-    const pct = Math.max(0, Math.min(100, parseInt(body.pct, 10) || 0));
-    const lvl = Math.max(0, Math.min(999, parseInt(body.lvl, 10) || 0));
-    const color = Math.max(0, Math.min(9, parseInt(body.color, 10) || 0));
+    // 보안(2026-11-03, 보안 정보 sec를 보내는 0.9.24+만): 점수는 서버가 등급·층·보스%로 다시 계산 · 범위 밖 값·점수 불일치는 '비정상'
+    //  · 게임이 보낸 표시(저장 변조·비정상 수치·변조 앱·후킹·루팅·에뮬레이터·디버거) · (필수일 때) 무결성 미확인 → 순위판에서 숨김(hid)
+    const num = (k) => parseInt(body[k], 10) || 0;
+    const isNew = !!(body.sec && typeof body.sec === "object");
+    const tierR = num("tier"), floorR = num("floor"), pctR = num("pct"), lvlR = num("lvl"), wlvR = num("wlv"), wqR = num("wq"), woR = num("wo");
+    const tier = Math.max(0, Math.min(6, tierR));
+    const floor = Math.max(0, Math.min(99, floorR));
+    const pct = Math.max(0, Math.min(99, pctR));
+    const lvl = Math.max(0, Math.min(150, lvlR));
+    const color = Math.max(0, Math.min(9, num("color")));
     const wid = /^[a-z0-9_]{1,24}$/.test(String(body.wid || "")) ? String(body.wid) : "";
-    const wlv = Math.max(0, Math.min(10, parseInt(body.wlv, 10) || 0));
-    const wq = Math.max(0, Math.min(6, parseInt(body.wq, 10) || 0)); // 장착 유물 등급(유물 순위판 동점 정리용)
-    const wo = Math.max(0, Math.min(99999, parseInt(body.wo, 10) || 0)); // 장착 유물 추가 옵션 점수(등급·강화가 같을 때 위로)
+    const wlv = Math.max(0, Math.min(10, wlvR));
+    const wq = Math.max(0, Math.min(4, wqR)); // 장착 유물 등급(유물 순위판 동점 정리용)
+    const wo = Math.max(0, Math.min(3297, woR)); // 장착 유물 추가 옵션 점수(옛 3줄 유물까지: 3 × (단계 10×100 + 99))
+    const score = isNew ? tier * 10000 + Math.min(5, floor) * 1000 + Math.min(999, Math.round(pct * 9.99)) : Math.max(0, Math.min(99999, num("score")));
+    const why = [];
+    let iv = false;
+    if (isNew) {
+      if (tier !== tierR || floor !== floorR || pct !== pctR || lvl !== lvlR || wlv !== wlvR || wq !== wqR || wo !== woR || Math.abs(score - num("score")) > 6) why.push("val");
+      const f = (parseInt(body.sec.f, 10) || 0) | (parseInt(body.sec.dev, 10) || 0);
+      if (f & (SLIME_SECF.SAVE | SLIME_SECF.VAL)) why.push("save");
+      if (f & (SLIME_SECF.SIG | SLIME_SECF.HOOK)) why.push("tamper");
+      if (f & (SLIME_SECF.ROOT | SLIME_SECF.EMU | SLIME_SECF.DBG)) why.push("device");
+      iv = await slimeSkOk(env, id, String(body.sec.sk || ""), Number(body.sec.skExp) || 0);
+    }
+    if (env.SLIME_REQUIRE_INTEGRITY === "1" && !iv) why.push("unverified");
     const prev = table[id];
-    if (!prev || score >= (prev.score | 0)) table[id] = { name, score, tier, floor, pct, lvl, color, wid, wlv, wq, wo, t: Date.now() };
-    else table[id] = { ...prev, name, lvl, color, wid, wlv, wq, wo, t: Date.now() };
+    for (const w of String((prev && prev.hid) || "").split(",")) if (/^(val|save|tamper)$/.test(w) && !why.includes(w)) why.push(w); // 한 번 걸린 변조·비정상 기록은 계속 숨김
+    const hid = why.join(","), ivN = iv ? 1 : 0;
+    if (!prev || score >= (prev.score | 0)) table[id] = { name, score, tier, floor, pct, lvl, color, wid, wlv, wq, wo, hid, iv: ivN, t: Date.now() };
+    else table[id] = { ...prev, name, lvl, color, wid, wlv, wq, wo, hid, iv: ivN, t: Date.now() };
     const ids = Object.keys(table);
     if (ids.length > 3000) {
       ids.sort((a, b) => (table[b].score | 0) - (table[a].score | 0) || (table[b].t | 0) - (table[a].t | 0));
@@ -1481,12 +1601,14 @@ async function handleSlimeRank(request, requestUrl, env) {
   // 순위판: sort=lvl(레벨) | score(단계, 기본) | relic(장착 유물 강화 → 유물 등급 → 추가 옵션 점수 → 레벨)
   const sortKey = ["lvl", "relic"].includes(requestUrl.searchParams.get("sort")) ? requestUrl.searchParams.get("sort") : "score";
   const cmp = sortKey === "lvl" ? (a, b) => b.lvl - a.lvl || b.score - a.score : sortKey === "relic" ? (a, b) => b.wlv - a.wlv || b.wq - a.wq || b.wo - a.wo || b.lvl - a.lvl : (a, b) => b.score - a.score;
-  const sorted = Object.entries(table).map(([id, r]) => ({ id, name: r.name, score: r.score | 0, tier: r.tier | 0, floor: r.floor | 0, pct: r.pct | 0, lvl: r.lvl | 0, color: r.color | 0, wid: r.wid || "", wlv: r.wlv | 0, wq: r.wq | 0, wo: r.wo | 0 }))
-    .sort((a, b) => cmp(a, b) || a.id.localeCompare(b.id));
+  // 숨김(hid) 기록은 순위판·친구 목록에서 빼고, 본인에게만 '순위 제외'와 이유를 알려 준다
+  const all = Object.entries(table).map(([id, r]) => ({ id, name: r.name, score: r.score | 0, tier: r.tier | 0, floor: r.floor | 0, pct: r.pct | 0, lvl: r.lvl | 0, color: r.color | 0, wid: r.wid || "", wlv: r.wlv | 0, wq: r.wq | 0, wo: r.wo | 0, hid: r.hid || "" }));
+  const sorted = all.filter((r) => !r.hid).map(({ hid, ...r }) => r).sort((a, b) => cmp(a, b) || a.id.localeCompare(b.id));
   const top = sorted.slice(0, 9);
   let meRow = null;
   const idx = sorted.findIndex((r) => r.id === me);
   if (idx >= 0) meRow = { ...sorted[idx], rank: idx + 1, total: sorted.length };
+  else { const mr = all.find((r) => r.id === me); if (mr && mr.hid) { const { hid, ...rest } = mr; meRow = { ...rest, rank: 0, total: sorted.length, hidden: true, why: hid }; } }
   const friends = friendIds.map((fid) => { const i = sorted.findIndex((r) => r.id === fid); return i >= 0 ? { ...sorted[i], rank: i + 1 } : { id: fid, name: "(기록 없음)", score: 0, tier: 0, floor: 0 }; });
   return jsonResponse({ top, me: meRow, friends, total: sorted.length, sort: sortKey }, 200);
 }
@@ -1555,7 +1677,7 @@ async function handleSlimeSave(request, requestUrl, env) {
     if (code.length !== 8) return jsonResponse({ error: "code 형식 오류" }, 400);
     const row = await env.CHAT_KV.get("slime_save:" + code, "json");
     if (!row) return jsonResponse({ error: "없거나 만료된 코드" }, 404);
-    return jsonResponse({ data: row.data, pid: row.pid, t: row.t }, 200);
+    return jsonResponse({ data: row.data, pid: row.pid, t: row.t, v: row.v | 0, req: env.SLIME_REQUIRE_INTEGRITY === "1" }, 200); // v: 무결성 확인을 받은 앱이 올린 저장인지
   }
   if (request.method !== "POST") return jsonResponse({ error: "method" }, 405);
   let body = null;
@@ -1567,7 +1689,9 @@ async function handleSlimeSave(request, requestUrl, env) {
   let code = String(body.code || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
   if (code.length === 8) { const prev = await env.CHAT_KV.get("slime_save:" + code, "json"); if (!prev || prev.pid !== pid) code = ""; }
   if (!code) code = slimeSaveCode();
-  await env.CHAT_KV.put("slime_save:" + code, JSON.stringify({ pid, data, t: Date.now() }), { expirationTtl: SLIME_SAVE_TTL });
+  const sec = (body && body.sec) || {};
+  const v = (await slimeSkOk(env, pid, String(sec.sk || ""), Number(sec.skExp) || 0)) ? 1 : 0;
+  await env.CHAT_KV.put("slime_save:" + code, JSON.stringify({ pid, data, v, t: Date.now() }), { expirationTtl: SLIME_SAVE_TTL });
   return jsonResponse({ ok: true, code, expires: Date.now() + SLIME_SAVE_TTL * 1000 }, 200);
 }
 
@@ -1589,6 +1713,14 @@ export default {
 
     if (requestUrl.pathname === "/slime/name") {
       return handleSlimeName(request, requestUrl, env);
+    }
+
+    if (requestUrl.pathname === "/slime/attest") {
+      return handleSlimeAttest(request, env);
+    }
+
+    if (requestUrl.pathname === "/slime/iap/verify") {
+      return handleSlimeIapVerify(request, env);
     }
 
     if (requestUrl.pathname === "/news-summary") {
