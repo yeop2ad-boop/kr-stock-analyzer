@@ -1464,9 +1464,10 @@ async function handleSlimeRank(request, requestUrl, env) {
     const wid = /^[a-z0-9_]{1,24}$/.test(String(body.wid || "")) ? String(body.wid) : "";
     const wlv = Math.max(0, Math.min(10, parseInt(body.wlv, 10) || 0));
     const wq = Math.max(0, Math.min(6, parseInt(body.wq, 10) || 0)); // 장착 유물 등급(유물 순위판 동점 정리용)
+    const wo = Math.max(0, Math.min(99999, parseInt(body.wo, 10) || 0)); // 장착 유물 추가 옵션 점수(등급·강화가 같을 때 위로)
     const prev = table[id];
-    if (!prev || score >= (prev.score | 0)) table[id] = { name, score, tier, floor, pct, lvl, color, wid, wlv, wq, t: Date.now() };
-    else table[id] = { ...prev, name, lvl, color, wid, wlv, wq, t: Date.now() };
+    if (!prev || score >= (prev.score | 0)) table[id] = { name, score, tier, floor, pct, lvl, color, wid, wlv, wq, wo, t: Date.now() };
+    else table[id] = { ...prev, name, lvl, color, wid, wlv, wq, wo, t: Date.now() };
     const ids = Object.keys(table);
     if (ids.length > 3000) {
       ids.sort((a, b) => (table[b].score | 0) - (table[a].score | 0) || (table[b].t | 0) - (table[a].t | 0));
@@ -1477,10 +1478,10 @@ async function handleSlimeRank(request, requestUrl, env) {
   }
   const me = String(requestUrl.searchParams.get("me") || "").toUpperCase();
   const friendIds = String(requestUrl.searchParams.get("friends") || "").toUpperCase().split(",").map((x) => x.trim()).filter((x) => /^[A-Z0-9]{4,12}$/.test(x)).slice(0, 50);
-  // 순위판: sort=lvl(레벨) | score(단계, 기본) | relic(장착 유물 강화 → 유물 등급 → 레벨)
+  // 순위판: sort=lvl(레벨) | score(단계, 기본) | relic(장착 유물 강화 → 유물 등급 → 추가 옵션 점수 → 레벨)
   const sortKey = ["lvl", "relic"].includes(requestUrl.searchParams.get("sort")) ? requestUrl.searchParams.get("sort") : "score";
-  const cmp = sortKey === "lvl" ? (a, b) => b.lvl - a.lvl || b.score - a.score : sortKey === "relic" ? (a, b) => b.wlv - a.wlv || b.wq - a.wq || b.lvl - a.lvl : (a, b) => b.score - a.score;
-  const sorted = Object.entries(table).map(([id, r]) => ({ id, name: r.name, score: r.score | 0, tier: r.tier | 0, floor: r.floor | 0, pct: r.pct | 0, lvl: r.lvl | 0, color: r.color | 0, wid: r.wid || "", wlv: r.wlv | 0, wq: r.wq | 0 }))
+  const cmp = sortKey === "lvl" ? (a, b) => b.lvl - a.lvl || b.score - a.score : sortKey === "relic" ? (a, b) => b.wlv - a.wlv || b.wq - a.wq || b.wo - a.wo || b.lvl - a.lvl : (a, b) => b.score - a.score;
+  const sorted = Object.entries(table).map(([id, r]) => ({ id, name: r.name, score: r.score | 0, tier: r.tier | 0, floor: r.floor | 0, pct: r.pct | 0, lvl: r.lvl | 0, color: r.color | 0, wid: r.wid || "", wlv: r.wlv | 0, wq: r.wq | 0, wo: r.wo | 0 }))
     .sort((a, b) => cmp(a, b) || a.id.localeCompare(b.id));
   const top = sorted.slice(0, 9);
   let meRow = null;
