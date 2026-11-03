@@ -1450,6 +1450,10 @@ const SLIME_IAP = { energy_full: { kind: "energy", n: 5 }, gems_10: { kind: "gem
   gold_100: { kind: "coin", n: 100 }, gold_550: { kind: "coin", n: 550 }, gold_1200: { kind: "coin", n: 1200 }, gold_7000: { kind: "coin", n: 7000 }, gold_14500: { kind: "coin", n: 14500 } };
 // 게임이 보내는 표시 비트(p2b_sec SECF와 같다)
 const SLIME_SECF = { SAVE: 1, VAL: 2, SIG: 4, ROOT: 8, EMU: 16, DBG: 32, HOOK: 64 };
+// 등급 칸(게임 p3 dvMajor·dvFromMajor와 같다): 0 노말 · 1~5 실버 · 6~10 골드 · 11~15 플래티넘 · 16~20 다이아 · 21~25 마스터 · 26 챌린저
+function slimeDvMajor(L) { L = L | 0; return L <= 0 ? 0 : L >= 26 ? 6 : 1 + Math.floor((L - 1) / 5); }
+function slimeDvFromMajor(t) { t = t | 0; return t <= 0 ? 0 : t >= 6 ? 26 : 1 + (t - 1) * 5; }
+function slimeDvScore(dv, floor, pct) { return dv * 10000 + Math.min(5, Math.max(0, floor)) * 1000 + Math.min(999, Math.round(Math.max(0, Math.min(99, pct)) * 9.99)); }
 let slimeGTok = { t: "", exp: 0 };
 function slimeB64url(buf) { const a = new Uint8Array(buf); let s = ""; for (let i = 0; i < a.length; i++) s += String.fromCharCode(a[i]); return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
 async function slimeSha256Hex(str) { const h = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str)); return [...new Uint8Array(h)].map((b) => b.toString(16).padStart(2, "0")).join(""); }
@@ -1562,7 +1566,9 @@ async function handleSlimeRank(request, requestUrl, env) {
     const num = (k) => parseInt(body[k], 10) || 0;
     const isNew = !!(body.sec && typeof body.sec === "object");
     const tierR = num("tier"), floorR = num("floor"), pctR = num("pct"), lvlR = num("lvl"), wlvR = num("wlv"), wqR = num("wq"), woR = num("wo");
-    const tier = Math.max(0, Math.min(6, tierR));
+    const dvR = body.dv == null ? null : num("dv"); // 등급 칸(0.9.24+). 옛 버전은 등급(0~6)만 보낸다 → 그 등급의 첫 칸
+    const dv = dvR === null ? slimeDvFromMajor(Math.max(0, Math.min(6, tierR))) : Math.max(0, Math.min(26, dvR));
+    const tier = slimeDvMajor(dv);
     const floor = Math.max(0, Math.min(99, floorR));
     const pct = Math.max(0, Math.min(99, pctR));
     const lvl = Math.max(0, Math.min(150, lvlR));
@@ -1571,11 +1577,11 @@ async function handleSlimeRank(request, requestUrl, env) {
     const wlv = Math.max(0, Math.min(10, wlvR));
     const wq = Math.max(0, Math.min(4, wqR)); // 장착 유물 등급(유물 순위판 동점 정리용)
     const wo = Math.max(0, Math.min(3297, woR)); // 장착 유물 추가 옵션 점수(옛 3줄 유물까지: 3 × (단계 10×100 + 99))
-    const score = isNew ? tier * 10000 + Math.min(5, floor) * 1000 + Math.min(999, Math.round(pct * 9.99)) : Math.max(0, Math.min(99999, num("score")));
+    const score = slimeDvScore(dv, floor, pct); // 점수는 서버가 칸·층·보스%로 다시 계산(옛 버전 기록도 같은 식)
     const why = [];
     let iv = false;
     if (isNew) {
-      if (tier !== tierR || floor !== floorR || pct !== pctR || lvl !== lvlR || wlv !== wlvR || wq !== wqR || wo !== woR || Math.abs(score - num("score")) > 6) why.push("val");
+      if ((dvR !== null && dv !== dvR) || tier !== tierR || floor !== floorR || pct !== pctR || lvl !== lvlR || wlv !== wlvR || wq !== wqR || wo !== woR || Math.abs(score - num("score")) > 6) why.push("val");
       const f = (parseInt(body.sec.f, 10) || 0) | (parseInt(body.sec.dev, 10) || 0);
       if (f & (SLIME_SECF.SAVE | SLIME_SECF.VAL)) why.push("save");
       if (f & (SLIME_SECF.SIG | SLIME_SECF.HOOK)) why.push("tamper");
@@ -1586,7 +1592,7 @@ async function handleSlimeRank(request, requestUrl, env) {
     const prev = table[id];
     for (const w of String((prev && prev.hid) || "").split(",")) if (/^(val|save|tamper)$/.test(w) && !why.includes(w)) why.push(w); // 한 번 걸린 변조·비정상 기록은 계속 숨김
     const hid = why.join(","), ivN = iv ? 1 : 0;
-    if (!prev || score >= (prev.score | 0)) table[id] = { name, score, tier, floor, pct, lvl, color, wid, wlv, wq, wo, hid, iv: ivN, t: Date.now() };
+    if (!prev || score >= (prev.score | 0)) table[id] = { name, score, tier, dv, floor, pct, lvl, color, wid, wlv, wq, wo, hid, iv: ivN, t: Date.now() };
     else table[id] = { ...prev, name, lvl, color, wid, wlv, wq, wo, hid, iv: ivN, t: Date.now() };
     const ids = Object.keys(table);
     if (ids.length > 3000) {
@@ -1602,7 +1608,8 @@ async function handleSlimeRank(request, requestUrl, env) {
   const sortKey = ["lvl", "relic"].includes(requestUrl.searchParams.get("sort")) ? requestUrl.searchParams.get("sort") : "score";
   const cmp = sortKey === "lvl" ? (a, b) => b.lvl - a.lvl || b.score - a.score : sortKey === "relic" ? (a, b) => b.wlv - a.wlv || b.wq - a.wq || b.wo - a.wo || b.lvl - a.lvl : (a, b) => b.score - a.score;
   // 숨김(hid) 기록은 순위판·친구 목록에서 빼고, 본인에게만 '순위 제외'와 이유를 알려 준다
-  const all = Object.entries(table).map(([id, r]) => ({ id, name: r.name, score: r.score | 0, tier: r.tier | 0, floor: r.floor | 0, pct: r.pct | 0, lvl: r.lvl | 0, color: r.color | 0, wid: r.wid || "", wlv: r.wlv | 0, wq: r.wq | 0, wo: r.wo | 0, hid: r.hid || "" }));
+  // 칸(dv)이 없는 옛 기록은 등급의 첫 칸으로 보고 점수를 같은 식으로 다시 계산해 섞어 세운다
+  const all = Object.entries(table).map(([id, r]) => { const dv = r.dv != null ? r.dv | 0 : slimeDvFromMajor(r.tier | 0); return { id, name: r.name, score: r.dv != null ? r.score | 0 : slimeDvScore(dv, r.floor | 0, r.pct | 0), tier: slimeDvMajor(dv), dv, floor: r.floor | 0, pct: r.pct | 0, lvl: r.lvl | 0, color: r.color | 0, wid: r.wid || "", wlv: r.wlv | 0, wq: r.wq | 0, wo: r.wo | 0, hid: r.hid || "" }; });
   const sorted = all.filter((r) => !r.hid).map(({ hid, ...r }) => r).sort((a, b) => cmp(a, b) || a.id.localeCompare(b.id));
   const top = sorted.slice(0, 9);
   let meRow = null;
