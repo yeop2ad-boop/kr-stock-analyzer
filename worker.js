@@ -1560,7 +1560,7 @@ async function handleSlimeRank(request, requestUrl, env) {
     const rawName = String(body.name || "모험가").replace(/[<>]/g, "").slice(0, 12);
     const nm = await slimeNameForRank(env, id, rawName, table[id] && table[id].name);
     const name = nm.name;
-    if (nm.changed) await env.CHAT_KV.put(SLIME_NAMES_KEY, JSON.stringify(nm.names));
+    if (nm.changed || nm.names._seededNew) { delete nm.names._seededNew; try { await env.CHAT_KV.put(SLIME_NAMES_KEY, JSON.stringify(nm.names)); } catch (e) { return jsonResponse({ ok: false, error: "busy" }, 503); } }
     // 보안(2026-11-03, 보안 정보 sec를 보내는 0.9.24+만): 점수는 서버가 등급·층·보스%로 다시 계산 · 범위 밖 값·점수 불일치는 '비정상'
     //  · 게임이 보낸 표시(저장 변조·비정상 수치·변조 앱·후킹·루팅·에뮬레이터·디버거) · (필수일 때) 무결성 미확인 → 순위판에서 숨김(hid)
     const num = (k) => parseInt(body[k], 10) || 0;
@@ -1589,7 +1589,7 @@ async function handleSlimeRank(request, requestUrl, env) {
       iv = await slimeSkOk(env, id, String(body.sec.sk || ""), Number(body.sec.skExp) || 0);
     }
     if (env.SLIME_REQUIRE_INTEGRITY === "1" && !iv) why.push("unverified");
-    const prev = table[id];
+    const prev = table[id], prevJson = prev ? JSON.stringify({ ...prev, t: 0 }) : "";
     for (const w of String((prev && prev.hid) || "").split(",")) if (/^(val|save|tamper)$/.test(w) && !why.includes(w)) why.push(w); // 한 번 걸린 변조·비정상 기록은 계속 숨김
     const hid = why.join(","), ivN = iv ? 1 : 0;
     if (!prev || score >= (prev.score | 0)) table[id] = { name, score, tier, dv, floor, pct, lvl, color, wid, wlv, wq, wo, hid, iv: ivN, t: Date.now() };
@@ -1599,7 +1599,8 @@ async function handleSlimeRank(request, requestUrl, env) {
       ids.sort((a, b) => (table[b].score | 0) - (table[a].score | 0) || (table[b].t | 0) - (table[a].t | 0));
       for (const k of ids.slice(3000)) delete table[k];
     }
-    await env.CHAT_KV.put(SLIME_RANK_KEY, JSON.stringify(table));
+    if (prev && JSON.stringify({ ...table[id], t: 0 }) === prevJson && Date.now() - (Number(prev.t) || 0) < 12 * 3600e3) { table[id] = prev; return jsonResponse({ ok: true, same: true }, 200); } // 2026-11-05: 같은 기록이면 KV에 안 쓴다
+    try { await env.CHAT_KV.put(SLIME_RANK_KEY, JSON.stringify(table)); } catch (e) { return jsonResponse({ ok: false, error: "busy" }, 503); }
     return jsonResponse({ ok: true }, 200);
   }
   const me = String(requestUrl.searchParams.get("me") || "").toUpperCase();
@@ -1629,7 +1630,7 @@ function slimeNameValid(s) { return /^[가-힣A-Za-z0-9]{2,8}$/.test(String(s ||
 async function slimeNames(env) {
   let names = await env.CHAT_KV.get(SLIME_NAMES_KEY, "json");
   if (!names) { // 처음 한 번: 석판에 이미 있는 이름은 먼저 온 사람 것으로
-    names = { _seeded: 1 };
+    names = { _seeded: 1, _seededNew: 1 };
     const table = (await env.CHAT_KV.get(SLIME_RANK_KEY, "json")) || {};
     for (const [id, r] of Object.entries(table).sort((a, b) => (a[1].t | 0) - (b[1].t | 0))) { const k = slimeNameNorm(r.name); if (slimeNameValid(r.name) && !names[k]) names[k] = id; }
   }
@@ -1663,11 +1664,15 @@ async function handleSlimeName(request, requestUrl, env) {
   const names = await slimeNames(env);
   const k = slimeNameNorm(name);
   if (names[k] && names[k] !== pid) return jsonResponse({ ok: false, error: "taken" }, 200);
-  for (const [nk, owner] of Object.entries(names)) if (owner === pid && nk !== k) delete names[nk];
+  let dirty = names[k] !== pid || !!names._seededNew; // 2026-11-05: 이미 내 이름이고 다른 이름도 없으면 KV에 쓰지 않는다(하루 쓰기 한도 절약)
+  delete names._seededNew;
+  for (const [nk, owner] of Object.entries(names)) if (owner === pid && nk !== k) { delete names[nk]; dirty = true; }
   names[k] = pid;
-  await env.CHAT_KV.put(SLIME_NAMES_KEY, JSON.stringify(names));
-  const table = (await env.CHAT_KV.get(SLIME_RANK_KEY, "json")) || {}; // 석판에 적힌 이름도 바로 맞춘다
-  if (table[pid] && table[pid].name !== name) { table[pid] = { ...table[pid], name }; await env.CHAT_KV.put(SLIME_RANK_KEY, JSON.stringify(table)); }
+  try {
+    if (dirty) await env.CHAT_KV.put(SLIME_NAMES_KEY, JSON.stringify(names));
+    const table = (await env.CHAT_KV.get(SLIME_RANK_KEY, "json")) || {}; // 석판에 적힌 이름도 바로 맞춘다
+    if (table[pid] && table[pid].name !== name) { table[pid] = { ...table[pid], name }; await env.CHAT_KV.put(SLIME_RANK_KEY, JSON.stringify(table)); }
+  } catch (e) { return jsonResponse({ ok: false, error: "busy", detail: String(e && e.message || e).slice(0, 120) }, 503); } // KV 쓰기 한도 초과 등 → 게임은 '서버가 잠시 바쁘다'(이름은 기기에 두고 나중에 다시)
   return jsonResponse({ ok: true, name }, 200);
 }
 
@@ -1698,7 +1703,7 @@ async function handleSlimeSave(request, requestUrl, env) {
   if (!code) code = slimeSaveCode();
   const sec = (body && body.sec) || {};
   const v = (await slimeSkOk(env, pid, String(sec.sk || ""), Number(sec.skExp) || 0)) ? 1 : 0;
-  await env.CHAT_KV.put("slime_save:" + code, JSON.stringify({ pid, data, v, t: Date.now() }), { expirationTtl: SLIME_SAVE_TTL });
+  try { await env.CHAT_KV.put("slime_save:" + code, JSON.stringify({ pid, data, v, t: Date.now() }), { expirationTtl: SLIME_SAVE_TTL }); } catch (e) { return jsonResponse({ ok: false, error: "busy" }, 503); }
   return jsonResponse({ ok: true, code, expires: Date.now() + SLIME_SAVE_TTL * 1000 }, 200);
 }
 
