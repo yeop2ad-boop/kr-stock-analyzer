@@ -1,5 +1,77 @@
 [
   {
+    "id": "2550523e2a0e",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "AI 데이터센터 붐의 중심지였던 텍사스, 정치 변화로 위기 맞을 수 있다",
+    "originalTitle": "Texas was the new epicenter of the AI data center buildout. That might be kaput.",
+    "link": "https://www.technologyreview.com/2026/11/04/1148043/texas-was-the-new-epicenter-of-the-ai-data-center-buildout-that-might-be-kaput/",
+    "summary": "텍사스는 미국 최대 규모의 AI 데이터센터 건설이 진행 중인 핵심 지역이었으나, 최근 민주당의 정치적 승리로 상황이 급변했다. 신임 주지사 당선자는 데이터센터 건설 전면 중단을 공약했으며, 이미 주지사는 9월부터 데이터센터 허가를 중단하도록 지시했다. 스타게이트와 넥서스 허버드 같은 거대 프로젝트들이 텍사스에서 진행 중이지만, 이들 사업이 지연되거나 중단될 위험에 처했다. 유권자들은 전국적으로 데이터센터로 인한 전기료 인상을 우려하고 새로운 시설 건설 금지를 지지하는 의사를 명확히 했다. 다만 현지 정부와 건설 노조 등의 이해관계로 인해 중단 공약의 실행이 생각보다 복잡할 수 있다.",
+    "image": "data/techinsight-images/2550523e2a0e.webp",
+    "publishedAt": "2026-11-04T18:50:55.000Z",
+    "createdAt": "2026-11-05T01:26:55.603Z"
+  },
+  {
+    "id": "38c257273c68",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "인지적 불멸성을 향한 기술 혁신의 현주소",
+    "originalTitle": "Roundtables: Inside the Quest for Cognitive Immortality",
+    "link": "https://www.technologyreview.com/2026/11/04/1148049/roundtables-inside-the-quest-for-cognitive-immortality/",
+    "summary": "일부 기술 전문가들은 죽음 이후에도 인간의 정신을 지속시킬 수 있는 방법을 개발하기 위해 노력하고 있다. MIT 테크놀로지 리뷰의 과학편집자와 생의학 담당 선임편집자가 진행하는 이 대담에서는 뇌를 단계적으로 교체하거나 기억을 클라우드에 업로드하는 등 정신의 연속성을 유지하는 가능한 방법들을 탐구한다. 이는 자아의 연속성을 추구하려는 미래 기술의 대담한 시도를 보여주는 전문가 토론의 장이다.",
+    "image": "data/techinsight-images/38c257273c68.webp",
+    "publishedAt": "2026-11-04T18:21:40.000Z",
+    "createdAt": "2026-11-05T01:26:53.250Z"
+  },
+  {
+    "id": "943b2cb16dd8",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "중간선거 이후 미국 에너지 정책의 향방",
+    "originalTitle": "What’s next for US energy policy after the midterm elections?",
+    "link": "https://www.technologyreview.com/2026/11/04/1148022/us-energy-midterm/",
+    "summary": "중간선거에서 민주당이 상하원 다수당을 차지했지만 백악관은 여전히 트럼프 대통령이 통제하고 있어 대규모 연방 차원의 에너지 정책 변화는 제한적일 것으로 보인다. 양당이 타협할 수 있는 허가 개혁 같은 부분적 입법이 가능하지만 대통령 거부권으로 인해 민주당의 적극적인 기후 정책 추진은 어려울 것이다. 의회는 환경청장 등 행정부 인물들에 대한 조사권을 강화할 수 있으며, 연방 차원보다는 펜실베이니아와 조지아 같은 주 및 지방 수준에서 재생에너지 지원이 확대될 가능성이 높다. 데이터센터 개발 제한을 요구하는 유권자 의사가 강하게 표현되었으며, 텍사스에서는 데이터센터 개발 일시 중단을 주장한 후보가 당선되어 향후 에너지 정책에 영향을 미칠 것으로 예상된다.",
+    "image": "data/techinsight-images/943b2cb16dd8.webp",
+    "publishedAt": "2026-11-04T17:08:00.000Z",
+    "createdAt": "2026-11-05T01:27:15.721Z"
+  },
+  {
+    "id": "1637a0703f9f",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "혼합 고기, 회복된 시력, 그리고 자율 웹의 등장",
+    "originalTitle": "The Download: blended meat, restored sight, and the agentic web",
+    "link": "https://www.technologyreview.com/2026/11/04/1148001/the-download-blended-meat-sight-restoring-implant-agentic-web/",
+    "summary": "식물성 단백질과 실제 고기를 섞은 '블렌디드 미트' 스타트업들이 소비자들의 소고기 소비를 줄이려는 새로운 시도를 하고 있으며, 한 연구에서 버섯이 섞인 미트볼을 시식한 학생의 92%가 메뉴 추가를 원할 정도로 긍정적인 반응을 얻었다. 망막변성증으로 인한 시력 상실을 겪는 500만 명 이상의 환자들을 위해 망막 임플란트와 카메라 안경을 결합한 'PRIMA' 시스템이 개발되어 80% 이상의 사용자가 독서와 전화 사용이 가능해졌다. 25년 전 팀 버너스리가 제안한 '에이전트 웹' 개념이 현실화되고 있으며, 자율형 AI 에이전트들이 이메일 정리부터 은행 접근까지 사용자의 모든 필요를 대신 처리하면서 인터넷의 미래를 근본적으로 변화시키고 있다. 미 중간선거에서 민주당의 승리로 기술 억만장자들이 타격을 입었으며, 이는 AI와 데이터센터에 대한 더욱 엄격한 감시로 이어질 가능성이 높다.",
+    "image": "data/techinsight-images/1637a0703f9f.webp",
+    "publishedAt": "2026-11-04T13:10:00.000Z",
+    "createdAt": "2026-11-05T01:27:15.853Z"
+  },
+  {
+    "id": "ceeab902448c",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "미래 금융기관의 AI 기반 리스크 관리 체계",
+    "originalTitle": "The AI-enabled risk function of the future",
+    "link": "https://www.mckinsey.com/capabilities/risk-and-resilience/our-insights/the-ai-enabled-risk-function-of-the-future",
+    "summary": "인공지능 기술이 금융기관의 리스크 관리 방식을 근본적으로 변화시키고 있습니다. 단순히 AI 도구를 도입하는 것을 넘어 조직 전체의 리스크 운영 모델을 새롭게 재설계해야 AI 역량을 효과적으로 확대할 수 있습니다. 이는 기존의 리스크 관리 프로세스와 인력 구성, 기술 인프라를 통합적으로 개편하는 과정을 의미합니다. 금융기관들은 AI 기술의 잠재력을 최대한 활용하면서도 조직의 준비 상태와 현실적 제약을 고려한 전략적 접근이 필요합니다.",
+    "image": "data/techinsight-images/ceeab902448c.webp",
+    "publishedAt": "2026-11-04T00:00:00.000Z",
+    "createdAt": "2026-11-05T01:27:08.053Z"
+  },
+  {
+    "id": "d1e7331651e4",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "AI로 성장을 재정의하다: Slack 최고마케팅책임자와의 대화",
+    "originalTitle": "Rethinking growth with AI: A conversation with Slack CMO Ryan Gavin",
+    "link": "https://www.mckinsey.com/capabilities/growth-marketing-and-sales/our-insights/rethinking-growth-with-ai-a-conversation-with-slack-cmo-ryan-gavin",
+    "summary": "Slack의 최고마케팅책임자 라이언 개빈이 칸 라이온즈 2026에서 맥킨지 파트너 제프 제이콥스와 함께 AI 시대의 성장 전략에 대해 논의했다.\n두 전문가는 AI 기술이 단순한 업무 효율화를 넘어 기업의 성장 동력으로 어떻게 작용할 수 있는지 살펴봤다.\n생산성 향상이 실제 비즈니스 성장으로 전환되는 메커니즘을 분석하며 AI의 실질적 가치를 강조했다.",
+    "image": "data/techinsight-images/d1e7331651e4.webp",
+    "publishedAt": "2026-11-04T00:00:00.000Z",
+    "createdAt": "2026-11-05T01:27:09.386Z"
+  },
+  {
     "id": "142f7099240d",
     "sourceKey": "ieee",
     "source": "IEEE Spectrum",
@@ -166,77 +238,5 @@
     "image": "data/techinsight-images/062f94d6c1c8.webp",
     "publishedAt": "2026-10-31T13:00:02.000Z",
     "createdAt": "2026-11-01T00:03:54.404Z"
-  },
-  {
-    "id": "35584eb14e84",
-    "sourceKey": "oecd",
-    "source": "OECD",
-    "title": "포용적이고 탄력적인 농식품 시스템 구축을 위한 AI의 역할과 과제",
-    "originalTitle": "AI for inclusive and resilient agri-food systems: Potential ways forward",
-    "link": "https://oecd.ai/en/wonk/ai-inclusive-and-resilient-agri-food-systems",
-    "summary": "전 세계 농식품 시스템이 기후변화, 공급망 불안정, 노동력 부족 등으로 인한 심각한 위기에 직면해 있으며, 약 7억 명이 여전히 기아에 시달리고 있다. AI는 가뭄 예측, 살충제 사용 감소, 병충해 조기 발견 등을 통해 농업 생산성을 크게 향상시킬 수 있는 유망한 솔루션을 제공한다. 그러나 선진국과 개발도상국 간의 디지털 기술 접근성 격차, 데이터 호환성 문제, 사이버 보안 위협 등이 AI 도입의 주요 장애물로 작용하고 있다. 농식품 분야 특성에 맞는 맞춤형 AI 거버넌스 프레임워크와 국제 협력이 필요하며, OECD와 같은 국제기구의 역할이 중요하다. AI의 이점이 모든 국가와 농민에게 공평하게 분배되려면 정책 조정, 디지털 리터러시 강화, 보안 강화 등 다층적인 노력이 병행되어야 한다.",
-    "image": "data/techinsight-images/35584eb14e84.webp",
-    "publishedAt": null,
-    "createdAt": "2026-10-31T00:43:12.370Z"
-  },
-  {
-    "id": "34936df5c82f",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "GLP-1 약물의 섭식장애 악화, 자아를 가진 도시, 그리고 영구 화학물질",
-    "originalTitle": "The Download: GLP-1s and eating disorders, self-aware cities, and forever chemicals",
-    "link": "https://www.technologyreview.com/2026/10/30/1147843/the-download-glp-1s-eating-disorders-forever-chemicals/",
-    "summary": "체중 감량 약물 GLP-1이 획기적 바이오텍 성과인 동시에 섭식장애를 악화시킬 수 있다는 우려가 제기되고 있으며, 1990년부터 2023년 사이 신경성 거식증과 폭식증의 발생률이 71% 증가했다. 과학 소설 '러브 이즈 인프라스트럭처'에서는 주민의 투표로 의식을 갖게 된 두 도시가 사랑에 빠지는 이야기를 통해 자율적 도시의 미래를 상상한다. 수십 년간 코팅 팬과 소방용 거품에 사용된 '영구 화학물질' PFAS는 불임, 발달 지연, 암 등 심각한 건강 문제를 일으키며, 물 시스템에서 이를 제거하는 기술이 발전 중이다. 암호화폐 거래소 바이낸스가 역사상 최대 규모인 63억 달러 규모의 해킹을 당했고, 엔비디아 경영진이 중국 스파이 혐의자의 표적이 되는 등 기술 산업의 보안 위협이 고조되고 있다.",
-    "image": "data/techinsight-images/34936df5c82f.webp",
-    "publishedAt": "2026-10-30T11:30:00.000Z",
-    "createdAt": "2026-10-31T00:43:10.598Z"
-  },
-  {
-    "id": "bbc846977e88",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "급증하는 섭식장애, GLP-1 약물이 악화시킬 수 있다",
-    "originalTitle": "Eating disorders are on the rise. GLP-1s could make things worse.",
-    "link": "https://www.technologyreview.com/2026/10/30/1147838/eating-disorders-rise-glp-1s-weight-loss-drugs/",
-    "summary": "1990년부터 2023년 사이 거식증과 폭식증의 발병률이 71% 증가했으며, 2023년 기준 약 1,810만 명이 이 두 질환으로 고통받고 있다. 소셜 미디어의 확산, 코로나19 팬데믹, 그리고 극단적인 다이어트 콘텐츠 노출이 주요 원인으로 지적되고 있다. 최근에는 체중감량 약물인 GLP-1을 오용하는 섭식장애 환자들이 늘어나면서 임상심리학자들이 우려를 표하고 있다. 전문가들은 실제 섭식장애 환자 수가 보고된 수치보다 훨씬 많으며, 향후 상황이 더욱 악화될 것으로 예측하고 있다.",
-    "image": "data/techinsight-images/bbc846977e88.webp",
-    "publishedAt": "2026-10-30T09:00:00.000Z",
-    "createdAt": "2026-10-31T00:43:28.627Z"
-  },
-  {
-    "id": "f9552502a0c5",
-    "sourceKey": "oecd",
-    "source": "OECD",
-    "title": "생성형 AI 챗봇 사용 현황, 웹 트래픽 데이터로 분석",
-    "originalTitle": "How people are using GenAI chatbots: Evidence from web traffic data",
-    "link": "https://oecd.ai/en/wonk/how-people-are-using-genai-chatbots-evidence-from-web-traffic-data",
-    "summary": "OECD는 웹 트래픽 데이터를 활용해 생성형 AI 챗봇의 실시간 사용 현황을 추적하는 새로운 측정 방식을 개발했다. ChatGPT, Claude, Gemini 등 주요 챗봇 플랫폼의 방문자 데이터를 인구로 나누어 사용률을 계산한 결과, GPAI 국가들의 평균 사용률이 2025년 1월 18%에서 2026년 1월 28%로 급증했다. 특히 싱가포르의 사용률이 가장 높고 일본과 터키에서 가장 빠르게 성장했으며, 사용자들의 평균 방문 시간도 2024년 중반 4.5분에서 2026년 초 5.5분 이상으로 늘어나 더욱 집중적인 사용을 보여준다. 이 측정 방식은 소비자 중심의 직접 사용만 추적하므로 API나 기업용 임베디드 AI 사용은 제외되는 한계가 있다.",
-    "image": "data/techinsight-images/f9552502a0c5.webp",
-    "publishedAt": null,
-    "createdAt": "2026-10-30T00:52:28.251Z"
-  },
-  {
-    "id": "59217d15507f",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "은행권 AI 가치 격차를 줄이는 법: CEO 실행 가이드",
-    "originalTitle": "Closing banking’s AI value gap: A CEO guide",
-    "link": "https://www.mckinsey.com/industries/financial-services/our-insights/closing-bankings-ai-value-gap-a-ceo-guide",
-    "summary": "AI 도입이 빠르게 진행되고 있지만 기대했던 가치를 충분히 실현하지 못하고 있다. 은행 리더들은 AI 투자를 반복적으로 활용 가능한 자본으로 전환할 수 있는 운영 모델을 구축해야 한다. 이를 통해 AI 기술에서 나오는 실질적인 이익을 극대화하고 투자 수익률을 높일 수 있다.",
-    "image": "data/techinsight-images/59217d15507f.webp",
-    "publishedAt": "2026-10-30T00:00:00.000Z",
-    "createdAt": "2026-10-31T00:43:21.008Z"
-  },
-  {
-    "id": "7f580e98b186",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "보험 유통의 미래를 바꿀 AI 에이전트, 와니와니 CEO가 말하다",
-    "originalTitle": "Waniwani’s CEO on the agentic future of insurance distribution",
-    "link": "https://www.mckinsey.com/industries/financial-services/our-insights/waniwanis-ceo-on-the-agentic-future-of-insurance-distribution",
-    "summary": "AI 에이전트 기술이 보험 유통 구조의 근본적인 경제 체계를 변화시킬 수 있는 잠재력을 갖고 있다. 와니와니의 로빈 딜리전트 CEO는 이 기술이 가져올 새로운 기회들을 강조하면서도 동시에 보험업계가 직면할 수 있는 위험 요소들을 지적한다. 보험사들은 이러한 기술 변화에 어떻게 대응해야 할지를 전략적으로 고민해야 한다.",
-    "image": "data/techinsight-images/7f580e98b186.webp",
-    "publishedAt": "2026-10-30T00:00:00.000Z",
-    "createdAt": "2026-10-31T00:43:44.905Z"
   }
 ]
