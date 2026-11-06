@@ -1574,7 +1574,7 @@ async function handleSlimeRank(request, requestUrl, env) {
     const lvl = Math.max(0, Math.min(150, lvlR));
     const color = Math.max(0, Math.min(9, num("color")));
     const wid = /^[a-z0-9_]{1,24}$/.test(String(body.wid || "")) ? String(body.wid) : "";
-    const wlv = Math.max(0, Math.min(10, wlvR));
+    const wlv = Math.max(0, Math.min(20, wlvR)); // 강화 상한 20강(0.9.84+, 2026-11-06)
     const wq = Math.max(0, Math.min(4, wqR)); // 장착 유물 등급(유물 순위판 동점 정리용)
     const wo = Math.max(0, Math.min(3297, woR)); // 장착 유물 추가 옵션 점수(옛 3줄 유물까지: 3 × (단계 10×100 + 99))
     const cp = Math.max(0, Math.min(1e13, Math.floor(Number(body.cp) || 0))); // 전투력(0.9.83+, 2026-11-06): 공격력 × 초당 발사 × 각성 계수 × 10 — 순위판 맨 앞
