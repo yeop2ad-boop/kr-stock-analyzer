@@ -24,7 +24,7 @@ const NDX_EXTRA_DATA = {
       "eps": 24.73,
       "dividendYield": null,
       "winRateScore": 62.5,
-      "rsiWeekly": 40.7,
+      "rsiWeekly": 40.8,
       "ret10yAvg": 30.9
     },
     {
@@ -38,7 +38,7 @@ const NDX_EXTRA_DATA = {
       "eps": 0.85,
       "dividendYield": null,
       "winRateScore": 52.8,
-      "rsiWeekly": 38.7,
+      "rsiWeekly": 39.0,
       "ret10yAvg": 61.1
     },
     {
@@ -52,7 +52,7 @@ const NDX_EXTRA_DATA = {
       "eps": 0.944088,
       "dividendYield": null,
       "winRateScore": 62.5,
-      "rsiWeekly": 54.0,
+      "rsiWeekly": 53.3,
       "ret10yAvg": 43.9
     },
     {
@@ -66,7 +66,7 @@ const NDX_EXTRA_DATA = {
       "eps": 70.0,
       "dividendYield": null,
       "winRateScore": 50.0,
-      "rsiWeekly": 47.8,
+      "rsiWeekly": 46.9,
       "ret10yAvg": 18.7
     },
     {
@@ -108,7 +108,7 @@ const NDX_EXTRA_DATA = {
       "eps": 1.32,
       "dividendYield": null,
       "winRateScore": 46.7,
-      "rsiWeekly": 37.4,
+      "rsiWeekly": 38.1,
       "ret10yAvg": 56.3
     },
     {
@@ -122,7 +122,7 @@ const NDX_EXTRA_DATA = {
       "eps": -15.23,
       "dividendYield": null,
       "winRateScore": 50.8,
-      "rsiWeekly": 46.6,
+      "rsiWeekly": 46.8,
       "ret10yAvg": 20.9
     },
     {
@@ -136,7 +136,7 @@ const NDX_EXTRA_DATA = {
       "eps": 4.26,
       "dividendYield": null,
       "winRateScore": 58.3,
-      "rsiWeekly": 67.5,
+      "rsiWeekly": 65.3,
       "ret10yAvg": 11.4
     },
     {
@@ -150,7 +150,7 @@ const NDX_EXTRA_DATA = {
       "eps": -2.75,
       "dividendYield": null,
       "winRateScore": 38.9,
-      "rsiWeekly": 34.3,
+      "rsiWeekly": 34.8,
       "ret10yAvg": 20.9
     },
     {
@@ -164,7 +164,7 @@ const NDX_EXTRA_DATA = {
       "eps": 3.392378,
       "dividendYield": null,
       "winRateScore": 57.5,
-      "rsiWeekly": 57.6,
+      "rsiWeekly": 56.4,
       "ret10yAvg": 11.2
     },
     {
@@ -178,7 +178,7 @@ const NDX_EXTRA_DATA = {
       "eps": 1.24,
       "dividendYield": null,
       "winRateScore": 61.7,
-      "rsiWeekly": 49.1,
+      "rsiWeekly": 48.6,
       "ret10yAvg": 10.1
     },
     {
@@ -192,7 +192,7 @@ const NDX_EXTRA_DATA = {
       "eps": -0.37,
       "dividendYield": null,
       "winRateScore": 48.6,
-      "rsiWeekly": 40.5,
+      "rsiWeekly": 41.8,
       "ret10yAvg": 33.6
     },
     {
@@ -206,7 +206,7 @@ const NDX_EXTRA_DATA = {
       "eps": 2.39,
       "dividendYield": null,
       "winRateScore": 52.5,
-      "rsiWeekly": 28.6,
+      "rsiWeekly": 28.4,
       "ret10yAvg": 16.6
     }
   ]

@@ -21,10 +21,10 @@ const KR_EXTRA_DATA = {
       "roe": 17.4,
       "debtRatio": 30.6,
       "week52RangePct": 19.4,
-      "pressureScore": 1.4,
+      "pressureScore": 1.6,
       "stabilityScore": 5.3,
       "winRateScore": 49.2,
-      "rsiWeekly": 44.0,
+      "rsiWeekly": 43.9,
       "ret10yAvg": -2.7
     },
     {
@@ -47,10 +47,10 @@ const KR_EXTRA_DATA = {
       "roe": -41.6,
       "debtRatio": 374.4,
       "week52RangePct": 7.3,
-      "pressureScore": 1.0,
+      "pressureScore": 1.2,
       "stabilityScore": 1.0,
       "winRateScore": 55.0,
-      "rsiWeekly": 37.2,
+      "rsiWeekly": 36.8,
       "ret10yAvg": 18.4
     },
     {
@@ -73,10 +73,10 @@ const KR_EXTRA_DATA = {
       "roe": 17.9,
       "debtRatio": 651.2,
       "week52RangePct": 54.9,
-      "pressureScore": 1.9,
+      "pressureScore": 2.1,
       "stabilityScore": 4.9,
       "winRateScore": 51.7,
-      "rsiWeekly": 49.3,
+      "rsiWeekly": 49.7,
       "ret10yAvg": 2.2
     },
     {
@@ -99,7 +99,7 @@ const KR_EXTRA_DATA = {
       "roe": 14.4,
       "debtRatio": 31.4,
       "week52RangePct": 17.2,
-      "pressureScore": 1.3,
+      "pressureScore": 1.5,
       "stabilityScore": 2.0,
       "winRateScore": 49.2,
       "rsiWeekly": 39.9,
@@ -125,10 +125,10 @@ const KR_EXTRA_DATA = {
       "roe": 21.2,
       "debtRatio": 234.1,
       "week52RangePct": 1.5,
-      "pressureScore": 0.6,
+      "pressureScore": 0.8,
       "stabilityScore": 1.7,
       "winRateScore": 55.0,
-      "rsiWeekly": 32.6,
+      "rsiWeekly": 32.8,
       "ret10yAvg": 26.6
     },
     {
@@ -154,7 +154,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 1.3,
       "stabilityScore": 3.5,
       "winRateScore": 47.5,
-      "rsiWeekly": 39.4,
+      "rsiWeekly": 39.7,
       "ret10yAvg": -10.5
     },
     {
@@ -180,7 +180,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 1.9,
       "stabilityScore": 4.0,
       "winRateScore": 50.0,
-      "rsiWeekly": 45.1,
+      "rsiWeekly": 44.9,
       "ret10yAvg": -6.3
     },
     {
@@ -203,10 +203,10 @@ const KR_EXTRA_DATA = {
       "roe": 33.2,
       "debtRatio": 91.7,
       "week52RangePct": 8.6,
-      "pressureScore": 0.9,
+      "pressureScore": 1.1,
       "stabilityScore": 4.9,
       "winRateScore": 51.7,
-      "rsiWeekly": 34.6,
+      "rsiWeekly": 34.7,
       "ret10yAvg": -1.6
     },
     {
@@ -255,10 +255,10 @@ const KR_EXTRA_DATA = {
       "roe": 3.1,
       "debtRatio": 168.6,
       "week52RangePct": 10.4,
-      "pressureScore": 0.2,
+      "pressureScore": 0.3,
       "stabilityScore": 1.0,
       "winRateScore": 48.3,
-      "rsiWeekly": 31.0,
+      "rsiWeekly": 30.0,
       "ret10yAvg": 2.8
     },
     {
@@ -281,10 +281,10 @@ const KR_EXTRA_DATA = {
       "roe": 0.9,
       "debtRatio": 573.9,
       "week52RangePct": 5.1,
-      "pressureScore": 0.7,
+      "pressureScore": 0.8,
       "stabilityScore": 1.0,
       "winRateScore": 50.8,
-      "rsiWeekly": 35.9,
+      "rsiWeekly": 35.0,
       "ret10yAvg": -3.1
     },
     {
@@ -307,10 +307,10 @@ const KR_EXTRA_DATA = {
       "roe": 18.5,
       "debtRatio": 185.5,
       "week52RangePct": 45.9,
-      "pressureScore": 1.4,
+      "pressureScore": 1.9,
       "stabilityScore": 1.3,
       "winRateScore": 48.3,
-      "rsiWeekly": 46.3,
+      "rsiWeekly": 46.1,
       "ret10yAvg": 3.3
     },
     {
@@ -333,10 +333,10 @@ const KR_EXTRA_DATA = {
       "roe": 6.6,
       "debtRatio": 36.1,
       "week52RangePct": 13.1,
-      "pressureScore": 1.2,
+      "pressureScore": 1.1,
       "stabilityScore": 3.5,
       "winRateScore": 42.0,
-      "rsiWeekly": 39.8,
+      "rsiWeekly": 37.7,
       "ret10yAvg": -15.1
     },
     {
@@ -359,10 +359,10 @@ const KR_EXTRA_DATA = {
       "roe": 13.1,
       "debtRatio": 37.4,
       "week52RangePct": 32.4,
-      "pressureScore": 2.3,
+      "pressureScore": 2.5,
       "stabilityScore": 1.7,
       "winRateScore": 54.2,
-      "rsiWeekly": 45.3,
+      "rsiWeekly": 45.2,
       "ret10yAvg": 8.0
     },
     {
@@ -385,10 +385,10 @@ const KR_EXTRA_DATA = {
       "roe": 5.7,
       "debtRatio": 45.3,
       "week52RangePct": 12.2,
-      "pressureScore": 1.0,
+      "pressureScore": 1.1,
       "stabilityScore": 1.3,
       "winRateScore": 48.3,
-      "rsiWeekly": 41.4,
+      "rsiWeekly": 41.2,
       "ret10yAvg": 12.5
     },
     {
@@ -414,7 +414,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.8,
       "stabilityScore": 2.5,
       "winRateScore": 54.2,
-      "rsiWeekly": 35.7,
+      "rsiWeekly": 35.8,
       "ret10yAvg": 10.2
     },
     {
@@ -440,7 +440,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 1.4,
       "stabilityScore": 2.8,
       "winRateScore": 48.3,
-      "rsiWeekly": 41.0,
+      "rsiWeekly": 41.3,
       "ret10yAvg": 4.9
     },
     {
@@ -463,10 +463,10 @@ const KR_EXTRA_DATA = {
       "roe": 4.8,
       "debtRatio": 345.1,
       "week52RangePct": 36.8,
-      "pressureScore": 2.9,
+      "pressureScore": 2.6,
       "stabilityScore": 5.0,
       "winRateScore": 51.7,
-      "rsiWeekly": 50.6,
+      "rsiWeekly": 51.0,
       "ret10yAvg": -2.2
     },
     {
@@ -489,10 +489,10 @@ const KR_EXTRA_DATA = {
       "roe": -15.4,
       "debtRatio": 48.8,
       "week52RangePct": 1.6,
-      "pressureScore": 0.9,
+      "pressureScore": 0.8,
       "stabilityScore": 1.0,
       "winRateScore": 52.5,
-      "rsiWeekly": 37.8,
+      "rsiWeekly": 37.1,
       "ret10yAvg": 12.3
     },
     {
@@ -515,10 +515,10 @@ const KR_EXTRA_DATA = {
       "roe": 28.5,
       "debtRatio": 303.4,
       "week52RangePct": 63.4,
-      "pressureScore": 2.1,
+      "pressureScore": 2.4,
       "stabilityScore": 2.3,
       "winRateScore": 51.7,
-      "rsiWeekly": 53.5,
+      "rsiWeekly": 54.0,
       "ret10yAvg": 8.3
     },
     {
@@ -541,10 +541,10 @@ const KR_EXTRA_DATA = {
       "roe": 14.2,
       "debtRatio": 44.4,
       "week52RangePct": 75.1,
-      "pressureScore": 3.3,
+      "pressureScore": 3.5,
       "stabilityScore": 1.5,
       "winRateScore": 46.7,
-      "rsiWeekly": 61.8,
+      "rsiWeekly": 61.7,
       "ret10yAvg": -3.7
     },
     {
@@ -567,10 +567,10 @@ const KR_EXTRA_DATA = {
       "roe": -4.9,
       "debtRatio": 55.8,
       "week52RangePct": 27.6,
-      "pressureScore": 3.3,
+      "pressureScore": 3.6,
       "stabilityScore": 1.0,
       "winRateScore": 37.9,
-      "rsiWeekly": 51.5,
+      "rsiWeekly": 51.3,
       "ret10yAvg": -24.4
     },
     {
@@ -593,10 +593,10 @@ const KR_EXTRA_DATA = {
       "roe": 8.4,
       "debtRatio": 18.1,
       "week52RangePct": 15.3,
-      "pressureScore": 2.1,
+      "pressureScore": 2.2,
       "stabilityScore": 2.2,
       "winRateScore": 46.7,
-      "rsiWeekly": 43.2,
+      "rsiWeekly": 43.0,
       "ret10yAvg": -9.6
     },
     {
@@ -619,10 +619,10 @@ const KR_EXTRA_DATA = {
       "roe": 6.8,
       "debtRatio": 1589.4,
       "week52RangePct": 21.2,
-      "pressureScore": 1.2,
+      "pressureScore": 1.4,
       "stabilityScore": 2.1,
       "winRateScore": 49.2,
-      "rsiWeekly": 38.1,
+      "rsiWeekly": 38.2,
       "ret10yAvg": 5.1
     },
     {
@@ -645,10 +645,10 @@ const KR_EXTRA_DATA = {
       "roe": 1.2,
       "debtRatio": 139.6,
       "week52RangePct": 16.8,
-      "pressureScore": 1.0,
+      "pressureScore": 1.1,
       "stabilityScore": 3.5,
       "winRateScore": 44.2,
-      "rsiWeekly": 40.1,
+      "rsiWeekly": 39.9,
       "ret10yAvg": -9.8
     },
     {
@@ -674,7 +674,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 1.8,
       "stabilityScore": 4.0,
       "winRateScore": 47.5,
-      "rsiWeekly": 44.8,
+      "rsiWeekly": 44.7,
       "ret10yAvg": -6.8
     },
     {
@@ -697,10 +697,10 @@ const KR_EXTRA_DATA = {
       "roe": 8.9,
       "debtRatio": 38.8,
       "week52RangePct": 87.3,
-      "pressureScore": 5.9,
+      "pressureScore": 6.0,
       "stabilityScore": 1.4,
       "winRateScore": 45.8,
-      "rsiWeekly": 66.8,
+      "rsiWeekly": 67.0,
       "ret10yAvg": 0.5
     },
     {
@@ -726,7 +726,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.9,
       "stabilityScore": 1.9,
       "winRateScore": 37.5,
-      "rsiWeekly": 38.9,
+      "rsiWeekly": 37.9,
       "ret10yAvg": -20.9
     },
     {
@@ -749,10 +749,10 @@ const KR_EXTRA_DATA = {
       "roe": 7.5,
       "debtRatio": 34.4,
       "week52RangePct": 0.7,
-      "pressureScore": 1.0,
+      "pressureScore": 0.5,
       "stabilityScore": 3.2,
       "winRateScore": 50.8,
-      "rsiWeekly": 33.0,
+      "rsiWeekly": 31.3,
       "ret10yAvg": 4.3
     },
     {
@@ -775,10 +775,10 @@ const KR_EXTRA_DATA = {
       "roe": 11.3,
       "debtRatio": 86.4,
       "week52RangePct": 19.1,
-      "pressureScore": 0.7,
+      "pressureScore": 0.8,
       "stabilityScore": 3.8,
       "winRateScore": 54.4,
-      "rsiWeekly": 37.4,
+      "rsiWeekly": 37.5,
       "ret10yAvg": -0.4
     },
     {
@@ -801,10 +801,10 @@ const KR_EXTRA_DATA = {
       "roe": 6.5,
       "debtRatio": 36.9,
       "week52RangePct": 54.8,
-      "pressureScore": 2.5,
+      "pressureScore": 2.4,
       "stabilityScore": 1.3,
       "winRateScore": 51.7,
-      "rsiWeekly": 52.4,
+      "rsiWeekly": 52.5,
       "ret10yAvg": 3.3
     },
     {
@@ -827,10 +827,10 @@ const KR_EXTRA_DATA = {
       "roe": 33.9,
       "debtRatio": 207.6,
       "week52RangePct": 10.7,
-      "pressureScore": 1.6,
+      "pressureScore": 1.7,
       "stabilityScore": 3.6,
       "winRateScore": 50.8,
-      "rsiWeekly": 38.6,
+      "rsiWeekly": 37.2,
       "ret10yAvg": 6.0
     },
     {
@@ -856,7 +856,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 4.1,
       "stabilityScore": 2.6,
       "winRateScore": 42.5,
-      "rsiWeekly": 58.4,
+      "rsiWeekly": 59.1,
       "ret10yAvg": 0.5
     },
     {
@@ -879,10 +879,10 @@ const KR_EXTRA_DATA = {
       "roe": 16.3,
       "debtRatio": 170.1,
       "week52RangePct": 76.2,
-      "pressureScore": 4.6,
+      "pressureScore": 4.3,
       "stabilityScore": 1.1,
       "winRateScore": 44.8,
-      "rsiWeekly": 56.0,
+      "rsiWeekly": 57.5,
       "ret10yAvg": -5.6
     },
     {
@@ -931,10 +931,10 @@ const KR_EXTRA_DATA = {
       "roe": 3.9,
       "debtRatio": 43.9,
       "week52RangePct": 44.7,
-      "pressureScore": 4.0,
+      "pressureScore": 3.7,
       "stabilityScore": 1.2,
       "winRateScore": 44.2,
-      "rsiWeekly": 53.7,
+      "rsiWeekly": 54.0,
       "ret10yAvg": -16.2
     },
     {
@@ -983,10 +983,10 @@ const KR_EXTRA_DATA = {
       "roe": 14.1,
       "debtRatio": 59.1,
       "week52RangePct": 29.6,
-      "pressureScore": 1.3,
+      "pressureScore": 1.4,
       "stabilityScore": 1.3,
       "winRateScore": 54.2,
-      "rsiWeekly": 40.4,
+      "rsiWeekly": 40.3,
       "ret10yAvg": 12.2
     },
     {
@@ -1009,10 +1009,10 @@ const KR_EXTRA_DATA = {
       "roe": -6.3,
       "debtRatio": 215.1,
       "week52RangePct": 8.0,
-      "pressureScore": 1.3,
+      "pressureScore": 1.6,
       "stabilityScore": 3.0,
       "winRateScore": 44.2,
-      "rsiWeekly": 41.6,
+      "rsiWeekly": 41.0,
       "ret10yAvg": -11.9
     },
     {
@@ -1035,10 +1035,10 @@ const KR_EXTRA_DATA = {
       "roe": 25.4,
       "debtRatio": 26.7,
       "week52RangePct": 22.3,
-      "pressureScore": 1.7,
+      "pressureScore": 1.8,
       "stabilityScore": 2.2,
       "winRateScore": 48.4,
-      "rsiWeekly": 45.0,
+      "rsiWeekly": 44.9,
       "ret10yAvg": -10.3
     },
     {
@@ -1061,10 +1061,10 @@ const KR_EXTRA_DATA = {
       "roe": 14.1,
       "debtRatio": 41.9,
       "week52RangePct": 2.2,
-      "pressureScore": 0.7,
+      "pressureScore": 0.8,
       "stabilityScore": 4.0,
       "winRateScore": 51.7,
-      "rsiWeekly": 35.8,
+      "rsiWeekly": 36.0,
       "ret10yAvg": 9.8
     },
     {
@@ -1090,7 +1090,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.8,
       "stabilityScore": 3.5,
       "winRateScore": 42.5,
-      "rsiWeekly": 35.8,
+      "rsiWeekly": 33.9,
       "ret10yAvg": -16.4
     },
     {
@@ -1113,10 +1113,10 @@ const KR_EXTRA_DATA = {
       "roe": 16.3,
       "debtRatio": 146.7,
       "week52RangePct": 35.2,
-      "pressureScore": 1.4,
+      "pressureScore": 1.5,
       "stabilityScore": 1.4,
       "winRateScore": 52.5,
-      "rsiWeekly": 45.1,
+      "rsiWeekly": 45.2,
       "ret10yAvg": 13.4
     },
     {
@@ -1142,7 +1142,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 2.0,
       "stabilityScore": 1.3,
       "winRateScore": 50.0,
-      "rsiWeekly": 45.2,
+      "rsiWeekly": 45.0,
       "ret10yAvg": 7.9
     },
     {
@@ -1165,7 +1165,7 @@ const KR_EXTRA_DATA = {
       "roe": 7.6,
       "debtRatio": 9.7,
       "week52RangePct": 17.1,
-      "pressureScore": 1.9,
+      "pressureScore": 2.1,
       "stabilityScore": 2.4,
       "winRateScore": 47.5,
       "rsiWeekly": 48.6,
@@ -1217,7 +1217,7 @@ const KR_EXTRA_DATA = {
       "roe": 3.9,
       "debtRatio": 120.2,
       "week52RangePct": 45.7,
-      "pressureScore": 2.9,
+      "pressureScore": 3.0,
       "stabilityScore": 4.0,
       "winRateScore": 47.5,
       "rsiWeekly": 49.4,
@@ -1243,10 +1243,10 @@ const KR_EXTRA_DATA = {
       "roe": 8.3,
       "debtRatio": 104.7,
       "week52RangePct": 1.3,
-      "pressureScore": 0.3,
+      "pressureScore": 0.4,
       "stabilityScore": 3.7,
       "winRateScore": 50.8,
-      "rsiWeekly": 31.5,
+      "rsiWeekly": 31.6,
       "ret10yAvg": 5.1
     },
     {
@@ -1269,10 +1269,10 @@ const KR_EXTRA_DATA = {
       "roe": 9.6,
       "debtRatio": 25.1,
       "week52RangePct": 5.0,
-      "pressureScore": 1.0,
+      "pressureScore": 1.2,
       "stabilityScore": 4.5,
       "winRateScore": 47.5,
-      "rsiWeekly": 40.8,
+      "rsiWeekly": 40.4,
       "ret10yAvg": -2.8
     },
     {
@@ -1295,10 +1295,10 @@ const KR_EXTRA_DATA = {
       "roe": 19.7,
       "debtRatio": 152.8,
       "week52RangePct": 23.1,
-      "pressureScore": 1.1,
+      "pressureScore": 1.2,
       "stabilityScore": 3.4,
       "winRateScore": 45.0,
-      "rsiWeekly": 41.9,
+      "rsiWeekly": 41.8,
       "ret10yAvg": -6.6
     },
     {
@@ -1321,10 +1321,10 @@ const KR_EXTRA_DATA = {
       "roe": 5.0,
       "debtRatio": 119.9,
       "week52RangePct": 8.2,
-      "pressureScore": 1.2,
+      "pressureScore": 1.4,
       "stabilityScore": 4.8,
       "winRateScore": 51.7,
-      "rsiWeekly": 40.7,
+      "rsiWeekly": 40.4,
       "ret10yAvg": -4.5
     },
     {
@@ -1347,10 +1347,10 @@ const KR_EXTRA_DATA = {
       "roe": 0.3,
       "debtRatio": 168.5,
       "week52RangePct": 32.5,
-      "pressureScore": 4.2,
+      "pressureScore": 5.1,
       "stabilityScore": 1.1,
       "winRateScore": 50.8,
-      "rsiWeekly": 50.9,
+      "rsiWeekly": 50.8,
       "ret10yAvg": 12.6
     },
     {
@@ -1373,10 +1373,10 @@ const KR_EXTRA_DATA = {
       "roe": 13.2,
       "debtRatio": 52.0,
       "week52RangePct": 35.9,
-      "pressureScore": 3.3,
+      "pressureScore": 3.4,
       "stabilityScore": 1.4,
       "winRateScore": 51.7,
-      "rsiWeekly": 52.8,
+      "rsiWeekly": 52.7,
       "ret10yAvg": 11.4
     },
     {
@@ -1402,7 +1402,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 1.8,
       "stabilityScore": 1.0,
       "winRateScore": 50.0,
-      "rsiWeekly": 42.9,
+      "rsiWeekly": 43.1,
       "ret10yAvg": -36.1
     },
     {
@@ -1425,10 +1425,10 @@ const KR_EXTRA_DATA = {
       "roe": 0.2,
       "debtRatio": 160.8,
       "week52RangePct": 10.7,
-      "pressureScore": 2.8,
+      "pressureScore": 2.7,
       "stabilityScore": 3.5,
       "winRateScore": 44.2,
-      "rsiWeekly": 44.4,
+      "rsiWeekly": 43.9,
       "ret10yAvg": -8.2
     },
     {
@@ -1451,7 +1451,7 @@ const KR_EXTRA_DATA = {
       "roe": 11.3,
       "debtRatio": 104.4,
       "week52RangePct": 30.8,
-      "pressureScore": 2.6,
+      "pressureScore": 2.8,
       "stabilityScore": 3.7,
       "winRateScore": 43.3,
       "rsiWeekly": 48.4,
@@ -1477,10 +1477,10 @@ const KR_EXTRA_DATA = {
       "roe": 37.3,
       "debtRatio": 89.1,
       "week52RangePct": 2.2,
-      "pressureScore": 1.1,
+      "pressureScore": 1.2,
       "stabilityScore": 3.0,
       "winRateScore": 40.0,
-      "rsiWeekly": 34.2,
+      "rsiWeekly": 33.3,
       "ret10yAvg": -20.3
     },
     {
@@ -1529,10 +1529,10 @@ const KR_EXTRA_DATA = {
       "roe": 1.9,
       "debtRatio": 83.6,
       "week52RangePct": 3.9,
-      "pressureScore": 0.9,
+      "pressureScore": 1.1,
       "stabilityScore": 3.6,
       "winRateScore": 50.0,
-      "rsiWeekly": 34.4,
+      "rsiWeekly": 33.7,
       "ret10yAvg": -4.6
     },
     {
@@ -1558,7 +1558,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.6,
       "stabilityScore": 3.5,
       "winRateScore": 45.0,
-      "rsiWeekly": 33.7,
+      "rsiWeekly": 32.2,
       "ret10yAvg": -4.9
     },
     {
@@ -1581,10 +1581,10 @@ const KR_EXTRA_DATA = {
       "roe": 5.5,
       "debtRatio": 45.4,
       "week52RangePct": 54.2,
-      "pressureScore": 3.5,
+      "pressureScore": 3.8,
       "stabilityScore": 1.2,
       "winRateScore": 50.0,
-      "rsiWeekly": 52.4,
+      "rsiWeekly": 52.5,
       "ret10yAvg": -4.1
     },
     {
@@ -1607,10 +1607,10 @@ const KR_EXTRA_DATA = {
       "roe": 5.3,
       "debtRatio": 150.3,
       "week52RangePct": 5.8,
-      "pressureScore": 1.1,
+      "pressureScore": 1.3,
       "stabilityScore": 3.6,
       "winRateScore": 44.2,
-      "rsiWeekly": 38.2,
+      "rsiWeekly": 37.7,
       "ret10yAvg": -10.5
     },
     {
@@ -1633,10 +1633,10 @@ const KR_EXTRA_DATA = {
       "roe": -4.0,
       "debtRatio": 120.6,
       "week52RangePct": 43.9,
-      "pressureScore": 5.3,
+      "pressureScore": 5.1,
       "stabilityScore": 3.0,
       "winRateScore": 53.3,
-      "rsiWeekly": 57.2,
+      "rsiWeekly": 57.9,
       "ret10yAvg": -0.7
     },
     {
@@ -1659,10 +1659,10 @@ const KR_EXTRA_DATA = {
       "roe": 18.4,
       "debtRatio": 126.5,
       "week52RangePct": 4.8,
-      "pressureScore": 1.3,
+      "pressureScore": 1.2,
       "stabilityScore": 3.7,
       "winRateScore": 50.0,
-      "rsiWeekly": 38.4,
+      "rsiWeekly": 37.4,
       "ret10yAvg": 4.0
     },
     {
@@ -1685,10 +1685,10 @@ const KR_EXTRA_DATA = {
       "roe": 3.2,
       "debtRatio": 86.9,
       "week52RangePct": 4.0,
-      "pressureScore": 0.4,
+      "pressureScore": 0.5,
       "stabilityScore": 2.5,
       "winRateScore": 49.2,
-      "rsiWeekly": 33.0,
+      "rsiWeekly": 32.7,
       "ret10yAvg": -6.3
     },
     {
@@ -1711,7 +1711,7 @@ const KR_EXTRA_DATA = {
       "roe": 6.4,
       "debtRatio": 236.6,
       "week52RangePct": 24.4,
-      "pressureScore": 2.0,
+      "pressureScore": 2.4,
       "stabilityScore": 3.0,
       "winRateScore": 50.0,
       "rsiWeekly": 44.9,
@@ -1740,7 +1740,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.9,
       "stabilityScore": 1.1,
       "winRateScore": 46.7,
-      "rsiWeekly": 39.2,
+      "rsiWeekly": 39.3,
       "ret10yAvg": 2.5
     },
     {
@@ -1766,7 +1766,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 1.7,
       "stabilityScore": 3.0,
       "winRateScore": 50.0,
-      "rsiWeekly": 43.0,
+      "rsiWeekly": 42.6,
       "ret10yAvg": 6.4
     },
     {
@@ -1789,10 +1789,10 @@ const KR_EXTRA_DATA = {
       "roe": 3.8,
       "debtRatio": 103.9,
       "week52RangePct": 51.8,
-      "pressureScore": 2.5,
+      "pressureScore": 2.3,
       "stabilityScore": 4.1,
       "winRateScore": 47.7,
-      "rsiWeekly": 51.7,
+      "rsiWeekly": 52.0,
       "ret10yAvg": -2.7
     },
     {
@@ -1818,7 +1818,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 3.3,
       "stabilityScore": 3.3,
       "winRateScore": 52.6,
-      "rsiWeekly": 54.2,
+      "rsiWeekly": 55.0,
       "ret10yAvg": 0.9
     },
     {
@@ -1844,7 +1844,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.6,
       "stabilityScore": 2.0,
       "winRateScore": 43.8,
-      "rsiWeekly": 35.5,
+      "rsiWeekly": 35.6,
       "ret10yAvg": -37.5
     },
     {
@@ -1870,7 +1870,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.3,
       "stabilityScore": 1.6,
       "winRateScore": 51.7,
-      "rsiWeekly": 27.6,
+      "rsiWeekly": 27.4,
       "ret10yAvg": 9.5
     },
     {
@@ -1893,7 +1893,7 @@ const KR_EXTRA_DATA = {
       "roe": 7.9,
       "debtRatio": 11.1,
       "week52RangePct": 2.6,
-      "pressureScore": 0.5,
+      "pressureScore": 0.7,
       "stabilityScore": 1.3,
       "winRateScore": 48.3,
       "rsiWeekly": 31.5,
@@ -1919,10 +1919,10 @@ const KR_EXTRA_DATA = {
       "roe": 3.4,
       "debtRatio": 73.9,
       "week52RangePct": 23.5,
-      "pressureScore": 2.0,
+      "pressureScore": 2.5,
       "stabilityScore": 1.1,
       "winRateScore": 45.0,
-      "rsiWeekly": 44.2,
+      "rsiWeekly": 44.0,
       "ret10yAvg": -7.0
     },
     {
@@ -1948,7 +1948,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 4.8,
       "stabilityScore": 3.1,
       "winRateScore": 45.0,
-      "rsiWeekly": 57.5,
+      "rsiWeekly": 58.1,
       "ret10yAvg": -3.2
     },
     {
@@ -1971,10 +1971,10 @@ const KR_EXTRA_DATA = {
       "roe": 3.3,
       "debtRatio": 175.9,
       "week52RangePct": 25.0,
-      "pressureScore": 2.3,
+      "pressureScore": 2.7,
       "stabilityScore": 1.0,
       "winRateScore": 50.8,
-      "rsiWeekly": 45.6,
+      "rsiWeekly": 45.4,
       "ret10yAvg": -9.7
     },
     {
@@ -1997,10 +1997,10 @@ const KR_EXTRA_DATA = {
       "roe": 7.8,
       "debtRatio": 83.5,
       "week52RangePct": 8.8,
-      "pressureScore": 1.3,
+      "pressureScore": 1.2,
       "stabilityScore": 1.3,
       "winRateScore": 47.5,
-      "rsiWeekly": 35.5,
+      "rsiWeekly": 34.3,
       "ret10yAvg": 0.1
     },
     {
@@ -2023,10 +2023,10 @@ const KR_EXTRA_DATA = {
       "roe": 4.2,
       "debtRatio": 175.6,
       "week52RangePct": 29.1,
-      "pressureScore": 6.4,
+      "pressureScore": 6.5,
       "stabilityScore": 4.1,
       "winRateScore": 44.2,
-      "rsiWeekly": 58.5,
+      "rsiWeekly": 58.8,
       "ret10yAvg": -4.2
     },
     {
@@ -2049,10 +2049,10 @@ const KR_EXTRA_DATA = {
       "roe": 3.0,
       "debtRatio": 141.6,
       "week52RangePct": 46.4,
-      "pressureScore": 3.0,
+      "pressureScore": 2.8,
       "stabilityScore": 1.2,
       "winRateScore": 48.3,
-      "rsiWeekly": 53.5,
+      "rsiWeekly": 54.0,
       "ret10yAvg": -13.9
     },
     {
@@ -2075,10 +2075,10 @@ const KR_EXTRA_DATA = {
       "roe": 0.3,
       "debtRatio": 124.4,
       "week52RangePct": 16.3,
-      "pressureScore": 1.4,
+      "pressureScore": 1.5,
       "stabilityScore": 3.1,
       "winRateScore": 41.3,
-      "rsiWeekly": 42.8,
+      "rsiWeekly": 42.5,
       "ret10yAvg": -6.2
     },
     {
@@ -2101,10 +2101,10 @@ const KR_EXTRA_DATA = {
       "roe": 14.4,
       "debtRatio": 219.1,
       "week52RangePct": 17.9,
-      "pressureScore": 1.7,
+      "pressureScore": 1.9,
       "stabilityScore": 1.5,
       "winRateScore": 48.3,
-      "rsiWeekly": 43.8,
+      "rsiWeekly": 43.7,
       "ret10yAvg": 0.2
     },
     {
@@ -2127,10 +2127,10 @@ const KR_EXTRA_DATA = {
       "roe": 4.3,
       "debtRatio": 112.3,
       "week52RangePct": 3.9,
-      "pressureScore": 1.4,
+      "pressureScore": 1.2,
       "stabilityScore": 3.5,
       "winRateScore": 52.5,
-      "rsiWeekly": 36.0,
+      "rsiWeekly": 34.9,
       "ret10yAvg": -3.1
     },
     {
@@ -2153,10 +2153,10 @@ const KR_EXTRA_DATA = {
       "roe": 4.1,
       "debtRatio": 376.3,
       "week52RangePct": 8.0,
-      "pressureScore": 1.3,
+      "pressureScore": 1.5,
       "stabilityScore": 1.0,
       "winRateScore": 59.2,
-      "rsiWeekly": 39.4,
+      "rsiWeekly": 38.8,
       "ret10yAvg": -1.7
     },
     {
@@ -2182,7 +2182,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 2.1,
       "stabilityScore": 3.8,
       "winRateScore": 42.5,
-      "rsiWeekly": 43.8,
+      "rsiWeekly": 43.4,
       "ret10yAvg": -0.2
     },
     {
@@ -2205,10 +2205,10 @@ const KR_EXTRA_DATA = {
       "roe": 0.7,
       "debtRatio": 101.0,
       "week52RangePct": 1.9,
-      "pressureScore": 0.7,
+      "pressureScore": 1.0,
       "stabilityScore": 1.0,
       "winRateScore": 47.5,
-      "rsiWeekly": 30.4,
+      "rsiWeekly": 30.5,
       "ret10yAvg": -20.9
     },
     {
@@ -2234,7 +2234,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 1.8,
       "stabilityScore": 1.0,
       "winRateScore": 33.9,
-      "rsiWeekly": 46.7,
+      "rsiWeekly": 46.6,
       "ret10yAvg": -32.7
     },
     {
@@ -2283,10 +2283,10 @@ const KR_EXTRA_DATA = {
       "roe": 14.3,
       "debtRatio": 127.7,
       "week52RangePct": 10.6,
-      "pressureScore": 2.7,
+      "pressureScore": 2.4,
       "stabilityScore": 1.5,
       "winRateScore": 44.2,
-      "rsiWeekly": 43.5,
+      "rsiWeekly": 43.0,
       "ret10yAvg": 5.6
     },
     {
@@ -2309,10 +2309,10 @@ const KR_EXTRA_DATA = {
       "roe": 17.7,
       "debtRatio": 26.6,
       "week52RangePct": 71.1,
-      "pressureScore": 3.7,
+      "pressureScore": 4.1,
       "stabilityScore": 1.7,
       "winRateScore": 50.0,
-      "rsiWeekly": 56.4,
+      "rsiWeekly": 56.3,
       "ret10yAvg": 8.2
     },
     {
@@ -2335,10 +2335,10 @@ const KR_EXTRA_DATA = {
       "roe": 6.9,
       "debtRatio": 36.4,
       "week52RangePct": 10.9,
-      "pressureScore": 1.5,
+      "pressureScore": 1.8,
       "stabilityScore": 3.3,
       "winRateScore": 48.3,
-      "rsiWeekly": 41.3,
+      "rsiWeekly": 40.6,
       "ret10yAvg": -4.4
     },
     {
@@ -2361,10 +2361,10 @@ const KR_EXTRA_DATA = {
       "roe": -27.2,
       "debtRatio": 208.6,
       "week52RangePct": 19.2,
-      "pressureScore": 1.9,
+      "pressureScore": 1.8,
       "stabilityScore": 3.5,
       "winRateScore": 45.0,
-      "rsiWeekly": 44.9,
+      "rsiWeekly": 44.7,
       "ret10yAvg": -4.7
     },
     {
@@ -2390,7 +2390,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 2.4,
       "stabilityScore": 3.2,
       "winRateScore": 45.8,
-      "rsiWeekly": 45.5,
+      "rsiWeekly": 45.3,
       "ret10yAvg": -9.3
     },
     {
@@ -2413,7 +2413,7 @@ const KR_EXTRA_DATA = {
       "roe": 12.3,
       "debtRatio": 20.4,
       "week52RangePct": 56.1,
-      "pressureScore": 3.0,
+      "pressureScore": 3.1,
       "stabilityScore": 1.6,
       "winRateScore": 53.3,
       "rsiWeekly": 52.9,
@@ -2439,10 +2439,10 @@ const KR_EXTRA_DATA = {
       "roe": 3.9,
       "debtRatio": 40.4,
       "week52RangePct": 6.5,
-      "pressureScore": 1.9,
+      "pressureScore": 2.1,
       "stabilityScore": 1.1,
       "winRateScore": 42.5,
-      "rsiWeekly": 40.4,
+      "rsiWeekly": 39.5,
       "ret10yAvg": -9.0
     },
     {
@@ -2465,10 +2465,10 @@ const KR_EXTRA_DATA = {
       "roe": -5.6,
       "debtRatio": 193.3,
       "week52RangePct": 5.4,
-      "pressureScore": 1.8,
+      "pressureScore": 1.9,
       "stabilityScore": 2.1,
       "winRateScore": 50.8,
-      "rsiWeekly": 41.3,
+      "rsiWeekly": 40.8,
       "ret10yAvg": -4.3
     },
     {
@@ -2491,10 +2491,10 @@ const KR_EXTRA_DATA = {
       "roe": 1.7,
       "debtRatio": 140.6,
       "week52RangePct": 1.9,
-      "pressureScore": 0.3,
+      "pressureScore": 0.4,
       "stabilityScore": 2.0,
       "winRateScore": 45.8,
-      "rsiWeekly": 27.8,
+      "rsiWeekly": 27.9,
       "ret10yAvg": -1.1
     },
     {
@@ -2517,10 +2517,10 @@ const KR_EXTRA_DATA = {
       "roe": -8.3,
       "debtRatio": 289.9,
       "week52RangePct": 12.3,
-      "pressureScore": 1.0,
+      "pressureScore": 1.1,
       "stabilityScore": 2.0,
       "winRateScore": 51.7,
-      "rsiWeekly": 36.2,
+      "rsiWeekly": 36.4,
       "ret10yAvg": 11.4
     },
     {
@@ -2543,10 +2543,10 @@ const KR_EXTRA_DATA = {
       "roe": 2.3,
       "debtRatio": 103.9,
       "week52RangePct": 13.8,
-      "pressureScore": 1.9,
+      "pressureScore": 2.1,
       "stabilityScore": 2.1,
       "winRateScore": 55.8,
-      "rsiWeekly": 42.0,
+      "rsiWeekly": 41.8,
       "ret10yAvg": 6.6
     },
     {
@@ -2569,7 +2569,7 @@ const KR_EXTRA_DATA = {
       "roe": 1.9,
       "debtRatio": 59.8,
       "week52RangePct": 29.3,
-      "pressureScore": 1.9,
+      "pressureScore": 2.1,
       "stabilityScore": 1.0,
       "winRateScore": 47.1,
       "rsiWeekly": 45.5,
@@ -2587,7 +2587,7 @@ const KR_EXTRA_DATA = {
       "per": 78.83,
       "eps": 359.0,
       "dividendYield": 0.0,
-      "dollarVolume": 138543131100.0,
+      "dollarVolume": 137730185300.0,
       "revenueGrowth": 11.99,
       "netIncomeGrowth": 469.16,
       "cashFlowGrowth": -82.04,
@@ -2595,10 +2595,10 @@ const KR_EXTRA_DATA = {
       "roe": 5.4,
       "debtRatio": 69.8,
       "week52RangePct": 40.4,
-      "pressureScore": 5.1,
+      "pressureScore": 5.5,
       "stabilityScore": 1.3,
       "winRateScore": 48.3,
-      "rsiWeekly": 54.9,
+      "rsiWeekly": 55.1,
       "ret10yAvg": 16.3
     },
     {
@@ -2613,7 +2613,7 @@ const KR_EXTRA_DATA = {
       "per": 23.83,
       "eps": 4255.0,
       "dividendYield": 0.36,
-      "dollarVolume": 19144827000.0,
+      "dollarVolume": 19050829200.0,
       "revenueGrowth": 39.79,
       "netIncomeGrowth": 93.44,
       "cashFlowGrowth": -729.0,
@@ -2621,10 +2621,10 @@ const KR_EXTRA_DATA = {
       "roe": 23.3,
       "debtRatio": 146.1,
       "week52RangePct": 41.6,
-      "pressureScore": 1.9,
+      "pressureScore": 2.2,
       "stabilityScore": 1.4,
       "winRateScore": 45.4,
-      "rsiWeekly": 49.7,
+      "rsiWeekly": 49.5,
       "ret10yAvg": 14.0
     },
     {
@@ -2639,7 +2639,7 @@ const KR_EXTRA_DATA = {
       "per": 29.61,
       "eps": 1047.0,
       "dividendYield": 3.23,
-      "dollarVolume": 9998275000.0,
+      "dollarVolume": 9794140000.0,
       "revenueGrowth": 19.2,
       "netIncomeGrowth": 18213.4,
       "cashFlowGrowth": 241.87,
@@ -2647,10 +2647,10 @@ const KR_EXTRA_DATA = {
       "roe": 7.7,
       "debtRatio": 21.8,
       "week52RangePct": 49.6,
-      "pressureScore": 2.0,
+      "pressureScore": 2.1,
       "stabilityScore": 1.6,
       "winRateScore": 45.0,
-      "rsiWeekly": 48.8,
+      "rsiWeekly": 48.9,
       "ret10yAvg": 8.2
     },
     {
@@ -2665,7 +2665,7 @@ const KR_EXTRA_DATA = {
       "per": 26.56,
       "eps": 1135.0,
       "dividendYield": 2.99,
-      "dollarVolume": 30099860550.0,
+      "dollarVolume": 29629098450.0,
       "revenueGrowth": 84.38,
       "netIncomeGrowth": 752.4,
       "cashFlowGrowth": 127.45,
@@ -2673,10 +2673,10 @@ const KR_EXTRA_DATA = {
       "roe": 25.6,
       "debtRatio": 21.0,
       "week52RangePct": 8.0,
-      "pressureScore": 0.5,
+      "pressureScore": 0.6,
       "stabilityScore": 2.0,
       "winRateScore": 54.6,
-      "rsiWeekly": 35.6,
+      "rsiWeekly": 35.7,
       "ret10yAvg": 24.9
     },
     {
@@ -2691,7 +2691,7 @@ const KR_EXTRA_DATA = {
       "per": 26.54,
       "eps": 1368.0,
       "dividendYield": 0.0,
-      "dollarVolume": 8594025000.0,
+      "dollarVolume": 8474452800.0,
       "revenueGrowth": 425.61,
       "netIncomeGrowth": 2085.17,
       "cashFlowGrowth": 604.44,
@@ -2699,10 +2699,10 @@ const KR_EXTRA_DATA = {
       "roe": 43.6,
       "debtRatio": 19.9,
       "week52RangePct": 23.3,
-      "pressureScore": 2.1,
+      "pressureScore": 2.3,
       "stabilityScore": 3.0,
       "winRateScore": 56.7,
-      "rsiWeekly": 45.4,
+      "rsiWeekly": 45.1,
       "ret10yAvg": 19.0
     },
     {
@@ -2717,7 +2717,7 @@ const KR_EXTRA_DATA = {
       "per": 16.18,
       "eps": 1267.0,
       "dividendYield": 1.27,
-      "dollarVolume": 8004430000.0,
+      "dollarVolume": 7873701500.0,
       "revenueGrowth": 34.78,
       "netIncomeGrowth": 70.25,
       "cashFlowGrowth": 64.31,
@@ -2725,10 +2725,10 @@ const KR_EXTRA_DATA = {
       "roe": 19.9,
       "debtRatio": 19.0,
       "week52RangePct": 14.5,
-      "pressureScore": 0.4,
+      "pressureScore": 0.5,
       "stabilityScore": 2.3,
       "winRateScore": 45.0,
-      "rsiWeekly": 33.9,
+      "rsiWeekly": 34.1,
       "ret10yAvg": 19.3
     },
     {
@@ -2754,7 +2754,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.9,
       "stabilityScore": 2.7,
       "winRateScore": 40.0,
-      "rsiWeekly": 35.1,
+      "rsiWeekly": 35.2,
       "ret10yAvg": -0.3
     },
     {
@@ -2795,7 +2795,7 @@ const KR_EXTRA_DATA = {
       "per": 8.52,
       "eps": 4846.0,
       "dividendYield": 2.12,
-      "dollarVolume": 21112477400.0,
+      "dollarVolume": 20581070300.0,
       "revenueGrowth": -15.15,
       "netIncomeGrowth": -40.11,
       "cashFlowGrowth": -41.81,
@@ -2803,10 +2803,10 @@ const KR_EXTRA_DATA = {
       "roe": 16.7,
       "debtRatio": 34.2,
       "week52RangePct": 12.4,
-      "pressureScore": 2.0,
+      "pressureScore": 2.6,
       "stabilityScore": 2.1,
       "winRateScore": 51.7,
-      "rsiWeekly": 41.8,
+      "rsiWeekly": 41.6,
       "ret10yAvg": 21.7
     },
     {
@@ -2821,7 +2821,7 @@ const KR_EXTRA_DATA = {
       "per": 13.95,
       "eps": 1343.0,
       "dividendYield": 0.0,
-      "dollarVolume": 33829020930.0,
+      "dollarVolume": 33548501720.0,
       "revenueGrowth": 50.74,
       "netIncomeGrowth": -1545.83,
       "cashFlowGrowth": -340.99,
@@ -2832,7 +2832,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 1.3,
       "stabilityScore": 3.0,
       "winRateScore": 49.2,
-      "rsiWeekly": 42.7,
+      "rsiWeekly": 42.8,
       "ret10yAvg": 38.0
     },
     {
@@ -2847,7 +2847,7 @@ const KR_EXTRA_DATA = {
       "per": 54.1,
       "eps": 1377.0,
       "dividendYield": 0.13,
-      "dollarVolume": 19109399000.0,
+      "dollarVolume": 18583503500.0,
       "revenueGrowth": 58.6,
       "netIncomeGrowth": 0.0,
       "cashFlowGrowth": -215.62,
@@ -2858,7 +2858,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 1.8,
       "stabilityScore": 1.5,
       "winRateScore": 55.0,
-      "rsiWeekly": 40.5,
+      "rsiWeekly": 40.7,
       "ret10yAvg": 40.1
     },
     {
@@ -2884,7 +2884,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 1.3,
       "stabilityScore": 1.0,
       "winRateScore": 51.6,
-      "rsiWeekly": 43.1,
+      "rsiWeekly": 42.9,
       "ret10yAvg": 29.8
     },
     {
@@ -2899,7 +2899,7 @@ const KR_EXTRA_DATA = {
       "per": 32.89,
       "eps": 1131.0,
       "dividendYield": 1.08,
-      "dollarVolume": 13252053600.0,
+      "dollarVolume": 12953970000.0,
       "revenueGrowth": 15.37,
       "netIncomeGrowth": 24.24,
       "cashFlowGrowth": -671.74,
@@ -2907,10 +2907,10 @@ const KR_EXTRA_DATA = {
       "roe": 8.9,
       "debtRatio": 40.9,
       "week52RangePct": 11.5,
-      "pressureScore": 0.9,
+      "pressureScore": 0.8,
       "stabilityScore": 1.9,
       "winRateScore": 50.8,
-      "rsiWeekly": 36.4,
+      "rsiWeekly": 36.6,
       "ret10yAvg": 17.7
     },
     {
@@ -2925,7 +2925,7 @@ const KR_EXTRA_DATA = {
       "per": 4.67,
       "eps": 2360.0,
       "dividendYield": 1.09,
-      "dollarVolume": 8316079530.0,
+      "dollarVolume": 8149526530.0,
       "revenueGrowth": 23.58,
       "netIncomeGrowth": -64.96,
       "cashFlowGrowth": -53.18,
@@ -2933,10 +2933,10 @@ const KR_EXTRA_DATA = {
       "roe": 4.6,
       "debtRatio": 351.1,
       "week52RangePct": 30.0,
-      "pressureScore": 2.7,
+      "pressureScore": 2.8,
       "stabilityScore": 2.1,
       "winRateScore": 40.8,
-      "rsiWeekly": 48.0,
+      "rsiWeekly": 48.1,
       "ret10yAvg": 2.6
     },
     {
@@ -2951,7 +2951,7 @@ const KR_EXTRA_DATA = {
       "per": 13.36,
       "eps": 2672.0,
       "dividendYield": 1.15,
-      "dollarVolume": 4515657300.0,
+      "dollarVolume": 4394348700.0,
       "revenueGrowth": 1.57,
       "netIncomeGrowth": 13.55,
       "cashFlowGrowth": 1.81,
@@ -2962,7 +2962,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 1.5,
       "stabilityScore": 1.4,
       "winRateScore": 50.8,
-      "rsiWeekly": 39.3,
+      "rsiWeekly": 38.6,
       "ret10yAvg": -8.0
     },
     {
@@ -2977,7 +2977,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -1604.0,
       "dividendYield": 0.0,
-      "dollarVolume": 28722910280.0,
+      "dollarVolume": 28601039720.0,
       "revenueGrowth": -30.76,
       "netIncomeGrowth": 37.78,
       "cashFlowGrowth": 765.11,
@@ -2985,10 +2985,10 @@ const KR_EXTRA_DATA = {
       "roe": -30.8,
       "debtRatio": 174.9,
       "week52RangePct": 27.8,
-      "pressureScore": 1.4,
+      "pressureScore": 1.3,
       "stabilityScore": 1.0,
       "winRateScore": 48.7,
-      "rsiWeekly": 43.4,
+      "rsiWeekly": 43.1,
       "ret10yAvg": 7.3
     },
     {
@@ -3014,7 +3014,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 1.5,
       "stabilityScore": 1.6,
       "winRateScore": 56.7,
-      "rsiWeekly": 45.1,
+      "rsiWeekly": 45.2,
       "ret10yAvg": 72.4
     },
     {
@@ -3029,7 +3029,7 @@ const KR_EXTRA_DATA = {
       "per": 18.5,
       "eps": 1984.0,
       "dividendYield": 0.82,
-      "dollarVolume": 6062252800.0,
+      "dollarVolume": 5777534200.0,
       "revenueGrowth": 40.56,
       "netIncomeGrowth": 262.83,
       "cashFlowGrowth": 180.79,
@@ -3040,7 +3040,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.4,
       "stabilityScore": 1.8,
       "winRateScore": 51.3,
-      "rsiWeekly": 33.9,
+      "rsiWeekly": 34.0,
       "ret10yAvg": 19.8
     },
     {
@@ -3055,7 +3055,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -116.0,
       "dividendYield": 0.0,
-      "dollarVolume": 15005462040.0,
+      "dollarVolume": 14819852610.0,
       "revenueGrowth": 65.94,
       "netIncomeGrowth": 24.63,
       "cashFlowGrowth": -133.43,
@@ -3066,7 +3066,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 1.3,
       "stabilityScore": 1.0,
       "winRateScore": 55.0,
-      "rsiWeekly": 43.3,
+      "rsiWeekly": 43.4,
       "ret10yAvg": 13.9
     },
     {
@@ -3081,7 +3081,7 @@ const KR_EXTRA_DATA = {
       "per": 10.56,
       "eps": 2797.0,
       "dividendYield": 0.68,
-      "dollarVolume": 7940941950.0,
+      "dollarVolume": 7712993250.0,
       "revenueGrowth": 9.47,
       "netIncomeGrowth": 27.06,
       "cashFlowGrowth": -16.47,
@@ -3092,7 +3092,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.2,
       "stabilityScore": 2.4,
       "winRateScore": 49.2,
-      "rsiWeekly": 31.5,
+      "rsiWeekly": 31.6,
       "ret10yAvg": 16.5
     },
     {
@@ -3107,7 +3107,7 @@ const KR_EXTRA_DATA = {
       "per": 39.5,
       "eps": 239.0,
       "dividendYield": 0.0,
-      "dollarVolume": 10979758400.0,
+      "dollarVolume": 10842132640.0,
       "revenueGrowth": 30.58,
       "netIncomeGrowth": 595.18,
       "cashFlowGrowth": -23.8,
@@ -3115,10 +3115,10 @@ const KR_EXTRA_DATA = {
       "roe": 8.1,
       "debtRatio": 35.8,
       "week52RangePct": 15.1,
-      "pressureScore": 0.9,
+      "pressureScore": 0.8,
       "stabilityScore": 1.4,
       "winRateScore": 47.5,
-      "rsiWeekly": 38.5,
+      "rsiWeekly": 38.7,
       "ret10yAvg": 19.6
     },
     {
@@ -3133,7 +3133,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -148.0,
       "dividendYield": 0.0,
-      "dollarVolume": 5878235880.0,
+      "dollarVolume": 5822643075.0,
       "revenueGrowth": -51.65,
       "netIncomeGrowth": -427.96,
       "cashFlowGrowth": -199.18,
@@ -3141,10 +3141,10 @@ const KR_EXTRA_DATA = {
       "roe": -16.9,
       "debtRatio": 52.0,
       "week52RangePct": 2.0,
-      "pressureScore": 0.1,
+      "pressureScore": 0.2,
       "stabilityScore": 1.0,
       "winRateScore": 42.5,
-      "rsiWeekly": 31.4,
+      "rsiWeekly": 31.5,
       "ret10yAvg": 14.4
     },
     {
@@ -3167,7 +3167,7 @@ const KR_EXTRA_DATA = {
       "roe": -17.2,
       "debtRatio": 23.1,
       "week52RangePct": 3.5,
-      "pressureScore": 0.6,
+      "pressureScore": 0.9,
       "stabilityScore": 1.0,
       "winRateScore": 50.0,
       "rsiWeekly": 34.6,
@@ -3185,7 +3185,7 @@ const KR_EXTRA_DATA = {
       "per": 9.42,
       "eps": 2165.0,
       "dividendYield": 0.0,
-      "dollarVolume": 7739005200.0,
+      "dollarVolume": 7523091600.0,
       "revenueGrowth": 16.88,
       "netIncomeGrowth": 110.47,
       "cashFlowGrowth": 263.34,
@@ -3193,10 +3193,10 @@ const KR_EXTRA_DATA = {
       "roe": 14.6,
       "debtRatio": 55.6,
       "week52RangePct": 4.1,
-      "pressureScore": 0.2,
+      "pressureScore": 0.5,
       "stabilityScore": 1.9,
       "winRateScore": 52.5,
-      "rsiWeekly": 28.5,
+      "rsiWeekly": 28.7,
       "ret10yAvg": 4.6
     },
     {
@@ -3211,7 +3211,7 @@ const KR_EXTRA_DATA = {
       "per": 1.38,
       "eps": 24137.0,
       "dividendYield": 1.51,
-      "dollarVolume": 1924139200.0,
+      "dollarVolume": 1877460000.0,
       "revenueGrowth": 39.98,
       "netIncomeGrowth": 383.5,
       "cashFlowGrowth": -982.36,
@@ -3222,7 +3222,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 1.2,
       "stabilityScore": 3.0,
       "winRateScore": 46.7,
-      "rsiWeekly": 39.9,
+      "rsiWeekly": 40.1,
       "ret10yAvg": -3.7
     },
     {
@@ -3237,7 +3237,7 @@ const KR_EXTRA_DATA = {
       "per": 13.76,
       "eps": 380.0,
       "dividendYield": 2.31,
-      "dollarVolume": 3417339530.0,
+      "dollarVolume": 3383213780.0,
       "revenueGrowth": 2.42,
       "netIncomeGrowth": -74.39,
       "cashFlowGrowth": 337.55,
@@ -3245,7 +3245,7 @@ const KR_EXTRA_DATA = {
       "roe": 4.6,
       "debtRatio": 79.1,
       "week52RangePct": 11.1,
-      "pressureScore": 0.4,
+      "pressureScore": 0.5,
       "stabilityScore": 1.3,
       "winRateScore": 49.2,
       "rsiWeekly": 34.7,
@@ -3263,7 +3263,7 @@ const KR_EXTRA_DATA = {
       "per": 19.02,
       "eps": 582.0,
       "dividendYield": 0.0,
-      "dollarVolume": 3850954110.0,
+      "dollarVolume": 3798537660.0,
       "revenueGrowth": 0.26,
       "netIncomeGrowth": 175.65,
       "cashFlowGrowth": -86.68,
@@ -3274,7 +3274,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.6,
       "stabilityScore": 1.7,
       "winRateScore": 58.8,
-      "rsiWeekly": 36.0,
+      "rsiWeekly": 36.1,
       "ret10yAvg": 33.2
     },
     {
@@ -3289,7 +3289,7 @@ const KR_EXTRA_DATA = {
       "per": 37.62,
       "eps": 759.0,
       "dividendYield": 0.42,
-      "dollarVolume": 3464913650.0,
+      "dollarVolume": 3397450000.0,
       "revenueGrowth": 35.5,
       "netIncomeGrowth": 192.89,
       "cashFlowGrowth": -299.75,
@@ -3297,10 +3297,10 @@ const KR_EXTRA_DATA = {
       "roe": 11.0,
       "debtRatio": 264.9,
       "week52RangePct": 9.9,
-      "pressureScore": 0.7,
+      "pressureScore": 0.9,
       "stabilityScore": 1.1,
       "winRateScore": 47.5,
-      "rsiWeekly": 35.1,
+      "rsiWeekly": 34.9,
       "ret10yAvg": 24.7
     },
     {
@@ -3315,7 +3315,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -1637.0,
       "dividendYield": 0.0,
-      "dollarVolume": 3902482800.0,
+      "dollarVolume": 3867512670.0,
       "revenueGrowth": 5.87,
       "netIncomeGrowth": 150.05,
       "cashFlowGrowth": 93.13,
@@ -3323,7 +3323,7 @@ const KR_EXTRA_DATA = {
       "roe": 3.4,
       "debtRatio": 440.8,
       "week52RangePct": 4.8,
-      "pressureScore": 0.5,
+      "pressureScore": 0.8,
       "stabilityScore": 1.0,
       "winRateScore": 45.8,
       "rsiWeekly": 30.5,
@@ -3341,7 +3341,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -533.0,
       "dividendYield": 0.0,
-      "dollarVolume": 3983623200.0,
+      "dollarVolume": 3939505200.0,
       "revenueGrowth": 34.19,
       "netIncomeGrowth": 181.28,
       "cashFlowGrowth": 65.02,
@@ -3349,7 +3349,7 @@ const KR_EXTRA_DATA = {
       "roe": 0.4,
       "debtRatio": 29.3,
       "week52RangePct": 3.7,
-      "pressureScore": 0.6,
+      "pressureScore": 0.7,
       "stabilityScore": 1.0,
       "winRateScore": 45.8,
       "rsiWeekly": 37.0,
@@ -3367,7 +3367,7 @@ const KR_EXTRA_DATA = {
       "per": 35.96,
       "eps": 1396.0,
       "dividendYield": 0.2,
-      "dollarVolume": 2850506600.0,
+      "dollarVolume": 2758038200.0,
       "revenueGrowth": 14.96,
       "netIncomeGrowth": -85.95,
       "cashFlowGrowth": 221.23,
@@ -3375,10 +3375,10 @@ const KR_EXTRA_DATA = {
       "roe": 3.8,
       "debtRatio": 70.5,
       "week52RangePct": 2.6,
-      "pressureScore": 1.0,
+      "pressureScore": 0.5,
       "stabilityScore": 1.4,
       "winRateScore": 53.3,
-      "rsiWeekly": 33.5,
+      "rsiWeekly": 33.6,
       "ret10yAvg": 11.7
     },
     {
@@ -3393,7 +3393,7 @@ const KR_EXTRA_DATA = {
       "per": 82.56,
       "eps": 117.0,
       "dividendYield": 0.31,
-      "dollarVolume": 6077675940.0,
+      "dollarVolume": 5944638420.0,
       "revenueGrowth": 19.08,
       "netIncomeGrowth": 132.51,
       "cashFlowGrowth": 37.41,
@@ -3404,7 +3404,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.8,
       "stabilityScore": 1.3,
       "winRateScore": 52.4,
-      "rsiWeekly": 34.9,
+      "rsiWeekly": 35.1,
       "ret10yAvg": 21.5
     },
     {
@@ -3419,7 +3419,7 @@ const KR_EXTRA_DATA = {
       "per": 9.98,
       "eps": 2010.0,
       "dividendYield": 0.0,
-      "dollarVolume": 7178000250.0,
+      "dollarVolume": 7107885400.0,
       "revenueGrowth": 80.97,
       "netIncomeGrowth": 197.89,
       "cashFlowGrowth": -681.64,
@@ -3427,10 +3427,10 @@ const KR_EXTRA_DATA = {
       "roe": 43.0,
       "debtRatio": 550.0,
       "week52RangePct": 4.4,
-      "pressureScore": 0.8,
+      "pressureScore": 0.7,
       "stabilityScore": 1.0,
       "winRateScore": 48.3,
-      "rsiWeekly": 37.3,
+      "rsiWeekly": 37.1,
       "ret10yAvg": 17.6
     },
     {
@@ -3445,18 +3445,18 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -1198.0,
       "dividendYield": 0.0,
-      "dollarVolume": 8191366040.0,
+      "dollarVolume": 8114784000.0,
       "revenueGrowth": -35.22,
       "netIncomeGrowth": -87.72,
       "cashFlowGrowth": -40.5,
       "operatingMargin": -30.7,
-      "roe": -11.5,
-      "debtRatio": 130.3,
+      "roe": -9.8,
+      "debtRatio": 111.4,
       "week52RangePct": 47.7,
-      "pressureScore": 6.3,
+      "pressureScore": 5.9,
       "stabilityScore": 1.0,
       "winRateScore": 38.9,
-      "rsiWeekly": 61.9,
+      "rsiWeekly": 63.1,
       "ret10yAvg": -20.0
     },
     {
@@ -3471,7 +3471,7 @@ const KR_EXTRA_DATA = {
       "per": 2.76,
       "eps": 5713.0,
       "dividendYield": 3.49,
-      "dollarVolume": 1902442500.0,
+      "dollarVolume": 1883700000.0,
       "revenueGrowth": 246.18,
       "netIncomeGrowth": 127.78,
       "cashFlowGrowth": -545.71,
@@ -3479,10 +3479,10 @@ const KR_EXTRA_DATA = {
       "roe": 18.4,
       "debtRatio": 5613.1,
       "week52RangePct": 3.2,
-      "pressureScore": 0.9,
+      "pressureScore": 1.2,
       "stabilityScore": 2.6,
       "winRateScore": 48.3,
-      "rsiWeekly": 33.9,
+      "rsiWeekly": 34.0,
       "ret10yAvg": 4.6
     },
     {
@@ -3497,7 +3497,7 @@ const KR_EXTRA_DATA = {
       "per": 9.56,
       "eps": 3655.0,
       "dividendYield": 3.15,
-      "dollarVolume": 3772153500.0,
+      "dollarVolume": 3699562350.0,
       "revenueGrowth": -40.94,
       "netIncomeGrowth": 19.22,
       "cashFlowGrowth": -90.61,
@@ -3505,7 +3505,7 @@ const KR_EXTRA_DATA = {
       "roe": 22.2,
       "debtRatio": 14.4,
       "week52RangePct": 6.1,
-      "pressureScore": 0.8,
+      "pressureScore": 1.1,
       "stabilityScore": 2.5,
       "winRateScore": 53.3,
       "rsiWeekly": 37.9,
@@ -3523,7 +3523,7 @@ const KR_EXTRA_DATA = {
       "per": 25.31,
       "eps": 2778.0,
       "dividendYield": 0.64,
-      "dollarVolume": 9908925600.0,
+      "dollarVolume": 9796234700.0,
       "revenueGrowth": 10.84,
       "netIncomeGrowth": 59.61,
       "cashFlowGrowth": 14.71,
@@ -3534,7 +3534,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 4.3,
       "stabilityScore": 1.5,
       "winRateScore": 51.2,
-      "rsiWeekly": 64.3,
+      "rsiWeekly": 64.2,
       "ret10yAvg": 20.8
     },
     {
@@ -3557,10 +3557,10 @@ const KR_EXTRA_DATA = {
       "roe": -26.1,
       "debtRatio": 8.9,
       "week52RangePct": 11.8,
-      "pressureScore": 3.4,
+      "pressureScore": 2.1,
       "stabilityScore": 1.0,
       "winRateScore": 62.2,
-      "rsiWeekly": 42.8,
+      "rsiWeekly": 43.0,
       "ret10yAvg": 3.9
     },
     {
@@ -3583,7 +3583,7 @@ const KR_EXTRA_DATA = {
       "roe": 0.7,
       "debtRatio": 52.7,
       "week52RangePct": 1.8,
-      "pressureScore": 0.8,
+      "pressureScore": 0.9,
       "stabilityScore": 1.0,
       "winRateScore": 45.5,
       "rsiWeekly": 37.8,
@@ -3601,7 +3601,7 @@ const KR_EXTRA_DATA = {
       "per": 21.26,
       "eps": 1990.0,
       "dividendYield": 0.71,
-      "dollarVolume": 8216309700.0,
+      "dollarVolume": 8079257700.0,
       "revenueGrowth": 27.24,
       "netIncomeGrowth": -32.83,
       "cashFlowGrowth": 116.66,
@@ -3609,10 +3609,10 @@ const KR_EXTRA_DATA = {
       "roe": 6.5,
       "debtRatio": 34.6,
       "week52RangePct": 17.9,
-      "pressureScore": 1.9,
+      "pressureScore": 2.3,
       "stabilityScore": 1.4,
       "winRateScore": 49.2,
-      "rsiWeekly": 45.4,
+      "rsiWeekly": 45.2,
       "ret10yAvg": 2.6
     },
     {
@@ -3638,7 +3638,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.0,
       "stabilityScore": 1.0,
       "winRateScore": 56.5,
-      "rsiWeekly": 28.7,
+      "rsiWeekly": 28.8,
       "ret10yAvg": 54.9
     },
     {
@@ -3653,7 +3653,7 @@ const KR_EXTRA_DATA = {
       "per": 23.83,
       "eps": 856.0,
       "dividendYield": 0.64,
-      "dollarVolume": 7335574800.0,
+      "dollarVolume": 7151730000.0,
       "revenueGrowth": 16.72,
       "netIncomeGrowth": 1093.66,
       "cashFlowGrowth": -5.93,
@@ -3661,10 +3661,10 @@ const KR_EXTRA_DATA = {
       "roe": 9.1,
       "debtRatio": 187.6,
       "week52RangePct": 6.9,
-      "pressureScore": 0.9,
+      "pressureScore": 1.1,
       "stabilityScore": 1.1,
       "winRateScore": 50.8,
-      "rsiWeekly": 35.7,
+      "rsiWeekly": 35.9,
       "ret10yAvg": 12.4
     },
     {
@@ -3679,7 +3679,7 @@ const KR_EXTRA_DATA = {
       "per": 7.47,
       "eps": 3200.0,
       "dividendYield": 0.84,
-      "dollarVolume": 3850481200.0,
+      "dollarVolume": 3721277800.0,
       "revenueGrowth": 3.66,
       "netIncomeGrowth": -24.63,
       "cashFlowGrowth": 69.46,
@@ -3687,10 +3687,10 @@ const KR_EXTRA_DATA = {
       "roe": 11.3,
       "debtRatio": 171.4,
       "week52RangePct": 2.3,
-      "pressureScore": 0.6,
+      "pressureScore": 0.7,
       "stabilityScore": 1.6,
       "winRateScore": 55.8,
-      "rsiWeekly": 33.2,
+      "rsiWeekly": 33.3,
       "ret10yAvg": 15.5
     },
     {
@@ -3705,7 +3705,7 @@ const KR_EXTRA_DATA = {
       "per": 12.58,
       "eps": 1916.0,
       "dividendYield": 3.88,
-      "dollarVolume": 3006571400.0,
+      "dollarVolume": 2937717700.0,
       "revenueGrowth": -10.11,
       "netIncomeGrowth": 126.14,
       "cashFlowGrowth": 78964.24,
@@ -3713,10 +3713,10 @@ const KR_EXTRA_DATA = {
       "roe": 6.6,
       "debtRatio": 78.9,
       "week52RangePct": 36.9,
-      "pressureScore": 1.7,
+      "pressureScore": 1.8,
       "stabilityScore": 1.2,
       "winRateScore": 50.8,
-      "rsiWeekly": 45.2,
+      "rsiWeekly": 45.4,
       "ret10yAvg": -1.3
     },
     {
@@ -3731,7 +3731,7 @@ const KR_EXTRA_DATA = {
       "per": 32.49,
       "eps": 1422.0,
       "dividendYield": 0.0,
-      "dollarVolume": 6030855600.0,
+      "dollarVolume": 5961555600.0,
       "revenueGrowth": -8.35,
       "netIncomeGrowth": -81.17,
       "cashFlowGrowth": 323.72,
@@ -3739,10 +3739,10 @@ const KR_EXTRA_DATA = {
       "roe": -0.2,
       "debtRatio": 186.6,
       "week52RangePct": 34.9,
-      "pressureScore": 5.5,
+      "pressureScore": 5.8,
       "stabilityScore": 3.5,
       "winRateScore": 42.5,
-      "rsiWeekly": 59.7,
+      "rsiWeekly": 59.5,
       "ret10yAvg": -12.5
     },
     {
@@ -3757,7 +3757,7 @@ const KR_EXTRA_DATA = {
       "per": 8.37,
       "eps": 1242.0,
       "dividendYield": 0.96,
-      "dollarVolume": 6137570400.0,
+      "dollarVolume": 5370435200.0,
       "revenueGrowth": 65.37,
       "netIncomeGrowth": 201.16,
       "cashFlowGrowth": 130.52,
@@ -3765,10 +3765,10 @@ const KR_EXTRA_DATA = {
       "roe": 9.2,
       "debtRatio": 171.8,
       "week52RangePct": 14.5,
-      "pressureScore": 2.0,
+      "pressureScore": 2.2,
       "stabilityScore": 2.8,
       "winRateScore": 53.3,
-      "rsiWeekly": 43.9,
+      "rsiWeekly": 44.0,
       "ret10yAvg": 0.4
     },
     {
@@ -3783,7 +3783,7 @@ const KR_EXTRA_DATA = {
       "per": 60.36,
       "eps": 724.0,
       "dividendYield": 0.46,
-      "dollarVolume": 4345309500.0,
+      "dollarVolume": 4206605700.0,
       "revenueGrowth": 30.12,
       "netIncomeGrowth": 216.66,
       "cashFlowGrowth": 87.39,
@@ -3809,7 +3809,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -0.21,
       "dividendYield": 0.0,
-      "dollarVolume": 6120291120.0,
+      "dollarVolume": 6053124360.0,
       "revenueGrowth": 56.32,
       "netIncomeGrowth": -171.78,
       "cashFlowGrowth": -17.82,
@@ -3817,10 +3817,10 @@ const KR_EXTRA_DATA = {
       "roe": -27.7,
       "debtRatio": 27.1,
       "week52RangePct": 6.3,
-      "pressureScore": 0.7,
+      "pressureScore": 0.9,
       "stabilityScore": 1.0,
       "winRateScore": 45.8,
-      "rsiWeekly": 37.6,
+      "rsiWeekly": 37.5,
       "ret10yAvg": 8.2
     },
     {
@@ -3835,7 +3835,7 @@ const KR_EXTRA_DATA = {
       "per": 67.78,
       "eps": 343.0,
       "dividendYield": 0.0,
-      "dollarVolume": 2875141500.0,
+      "dollarVolume": 2775399000.0,
       "revenueGrowth": 26.9,
       "netIncomeGrowth": 449.11,
       "cashFlowGrowth": -67.47,
@@ -3843,10 +3843,10 @@ const KR_EXTRA_DATA = {
       "roe": 4.0,
       "debtRatio": 32.5,
       "week52RangePct": 13.5,
-      "pressureScore": 3.4,
+      "pressureScore": 3.3,
       "stabilityScore": 1.1,
       "winRateScore": 43.4,
-      "rsiWeekly": 44.7,
+      "rsiWeekly": 44.3,
       "ret10yAvg": -11.2
     },
     {
@@ -3861,7 +3861,7 @@ const KR_EXTRA_DATA = {
       "per": 5.75,
       "eps": 10959.0,
       "dividendYield": 1.59,
-      "dollarVolume": 3269763000.0,
+      "dollarVolume": 3223962000.0,
       "revenueGrowth": -89.35,
       "netIncomeGrowth": -113.4,
       "cashFlowGrowth": -52.55,
@@ -3869,10 +3869,10 @@ const KR_EXTRA_DATA = {
       "roe": 7.4,
       "debtRatio": 196.8,
       "week52RangePct": 19.9,
-      "pressureScore": 2.2,
+      "pressureScore": 2.1,
       "stabilityScore": 2.1,
       "winRateScore": 44.4,
-      "rsiWeekly": 43.6,
+      "rsiWeekly": 43.7,
       "ret10yAvg": 16.6
     },
     {
@@ -3887,7 +3887,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -673.0,
       "dividendYield": 0.0,
-      "dollarVolume": 4165790900.0,
+      "dollarVolume": 4060742200.0,
       "revenueGrowth": -3.8,
       "netIncomeGrowth": -3.96,
       "cashFlowGrowth": -754.56,
@@ -3895,10 +3895,10 @@ const KR_EXTRA_DATA = {
       "roe": -18.0,
       "debtRatio": 63.0,
       "week52RangePct": 12.9,
-      "pressureScore": 1.2,
+      "pressureScore": 1.4,
       "stabilityScore": 1.0,
       "winRateScore": 50.8,
-      "rsiWeekly": 41.9,
+      "rsiWeekly": 42.0,
       "ret10yAvg": 15.8
     },
     {
@@ -3913,7 +3913,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -736.0,
       "dividendYield": 0.0,
-      "dollarVolume": 3872460900.0,
+      "dollarVolume": 3782440200.0,
       "revenueGrowth": -75.75,
       "netIncomeGrowth": 29.62,
       "cashFlowGrowth": -21.01,
@@ -3924,7 +3924,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.8,
       "stabilityScore": 1.0,
       "winRateScore": 51.4,
-      "rsiWeekly": 37.9,
+      "rsiWeekly": 38.0,
       "ret10yAvg": 6.2
     },
     {
@@ -3939,7 +3939,7 @@ const KR_EXTRA_DATA = {
       "per": 16.58,
       "eps": 1297.0,
       "dividendYield": 0.93,
-      "dollarVolume": 19283844500.0,
+      "dollarVolume": 19064394000.0,
       "revenueGrowth": 10.37,
       "netIncomeGrowth": 48.36,
       "cashFlowGrowth": -46.31,
@@ -3947,10 +3947,10 @@ const KR_EXTRA_DATA = {
       "roe": 6.5,
       "debtRatio": 6.8,
       "week52RangePct": 4.5,
-      "pressureScore": 1.3,
+      "pressureScore": 1.9,
       "stabilityScore": 1.8,
       "winRateScore": 50.0,
-      "rsiWeekly": 37.5,
+      "rsiWeekly": 36.5,
       "ret10yAvg": 10.8
     },
     {
@@ -3965,7 +3965,7 @@ const KR_EXTRA_DATA = {
       "per": 17.71,
       "eps": 371.0,
       "dividendYield": 0.0,
-      "dollarVolume": 4584920490.0,
+      "dollarVolume": 4504135770.0,
       "revenueGrowth": -46.75,
       "netIncomeGrowth": 250.9,
       "cashFlowGrowth": 12.74,
@@ -3976,7 +3976,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 1.2,
       "stabilityScore": 1.4,
       "winRateScore": 44.2,
-      "rsiWeekly": 37.6,
+      "rsiWeekly": 37.7,
       "ret10yAvg": 12.5
     },
     {
@@ -3999,10 +3999,10 @@ const KR_EXTRA_DATA = {
       "roe": -16.8,
       "debtRatio": 64.4,
       "week52RangePct": 44.4,
-      "pressureScore": 7.5,
+      "pressureScore": 7.6,
       "stabilityScore": 1.0,
       "winRateScore": 46.0,
-      "rsiWeekly": 59.8,
+      "rsiWeekly": 60.8,
       "ret10yAvg": 16.6
     },
     {
@@ -4017,7 +4017,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -974.0,
       "dividendYield": 0.0,
-      "dollarVolume": 3174235040.0,
+      "dollarVolume": 3133457760.0,
       "revenueGrowth": 7.47,
       "netIncomeGrowth": 137.25,
       "cashFlowGrowth": -6.29,
@@ -4025,10 +4025,10 @@ const KR_EXTRA_DATA = {
       "roe": -23.8,
       "debtRatio": 68.2,
       "week52RangePct": 30.3,
-      "pressureScore": 1.6,
+      "pressureScore": 2.0,
       "stabilityScore": 1.0,
       "winRateScore": 44.2,
-      "rsiWeekly": 44.9,
+      "rsiWeekly": 44.8,
       "ret10yAvg": -0.2
     },
     {
@@ -4043,7 +4043,7 @@ const KR_EXTRA_DATA = {
       "per": 3.59,
       "eps": 5176.0,
       "dividendYield": 7.17,
-      "dollarVolume": 1686517800.0,
+      "dollarVolume": 1663342200.0,
       "revenueGrowth": 25.86,
       "netIncomeGrowth": 44.63,
       "cashFlowGrowth": 932.96,
@@ -4051,7 +4051,7 @@ const KR_EXTRA_DATA = {
       "roe": 34.1,
       "debtRatio": 109.1,
       "week52RangePct": 2.8,
-      "pressureScore": 0.4,
+      "pressureScore": 0.5,
       "stabilityScore": 2.4,
       "winRateScore": 40.8,
       "rsiWeekly": 32.5,
@@ -4069,7 +4069,7 @@ const KR_EXTRA_DATA = {
       "per": 16.74,
       "eps": 987.2,
       "dividendYield": 1.69,
-      "dollarVolume": 7188797820.0,
+      "dollarVolume": 7053069990.0,
       "revenueGrowth": 20.52,
       "netIncomeGrowth": -122.16,
       "cashFlowGrowth": 95.33,
@@ -4080,7 +4080,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.7,
       "stabilityScore": 1.5,
       "winRateScore": 53.5,
-      "rsiWeekly": 35.9,
+      "rsiWeekly": 36.1,
       "ret10yAvg": 21.4
     },
     {
@@ -4095,7 +4095,7 @@ const KR_EXTRA_DATA = {
       "per": 469.12,
       "eps": 136.0,
       "dividendYield": 0.39,
-      "dollarVolume": 16036512800.0,
+      "dollarVolume": 15667940200.0,
       "revenueGrowth": 24.48,
       "netIncomeGrowth": 409.7,
       "cashFlowGrowth": 171.39,
@@ -4103,10 +4103,10 @@ const KR_EXTRA_DATA = {
       "roe": 5.8,
       "debtRatio": 47.9,
       "week52RangePct": 49.3,
-      "pressureScore": 6.3,
+      "pressureScore": 5.7,
       "stabilityScore": 1.1,
       "winRateScore": 50.8,
-      "rsiWeekly": 55.6,
+      "rsiWeekly": 57.1,
       "ret10yAvg": 14.3
     },
     {
@@ -4121,7 +4121,7 @@ const KR_EXTRA_DATA = {
       "per": 11.93,
       "eps": 610.0,
       "dividendYield": 0.69,
-      "dollarVolume": 6629284480.0,
+      "dollarVolume": 6483415120.0,
       "revenueGrowth": 24.74,
       "netIncomeGrowth": -114.4,
       "cashFlowGrowth": -108.03,
@@ -4129,10 +4129,10 @@ const KR_EXTRA_DATA = {
       "roe": 14.5,
       "debtRatio": 60.1,
       "week52RangePct": 2.4,
-      "pressureScore": 0.6,
+      "pressureScore": 0.7,
       "stabilityScore": 1.7,
       "winRateScore": 49.2,
-      "rsiWeekly": 36.8,
+      "rsiWeekly": 36.9,
       "ret10yAvg": 13.3
     },
     {
@@ -4147,7 +4147,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -444.0,
       "dividendYield": 0.0,
-      "dollarVolume": 5498740800.0,
+      "dollarVolume": 5427021600.0,
       "revenueGrowth": -10.88,
       "netIncomeGrowth": 71.02,
       "cashFlowGrowth": 274.94,
@@ -4155,10 +4155,10 @@ const KR_EXTRA_DATA = {
       "roe": -4.2,
       "debtRatio": 118.4,
       "week52RangePct": 17.3,
-      "pressureScore": 0.8,
+      "pressureScore": 1.0,
       "stabilityScore": 1.0,
       "winRateScore": 42.5,
-      "rsiWeekly": 39.7,
+      "rsiWeekly": 39.6,
       "ret10yAvg": -5.9
     },
     {
@@ -4173,7 +4173,7 @@ const KR_EXTRA_DATA = {
       "per": 9.53,
       "eps": 1195.0,
       "dividendYield": 2.19,
-      "dollarVolume": 6535684510.0,
+      "dollarVolume": 6447298110.0,
       "revenueGrowth": 27.51,
       "netIncomeGrowth": 36.41,
       "cashFlowGrowth": 6820.71,
@@ -4181,10 +4181,10 @@ const KR_EXTRA_DATA = {
       "roe": 17.5,
       "debtRatio": 120.4,
       "week52RangePct": 3.4,
-      "pressureScore": 0.7,
+      "pressureScore": 0.8,
       "stabilityScore": 1.2,
       "winRateScore": 45.0,
-      "rsiWeekly": 37.5,
+      "rsiWeekly": 37.6,
       "ret10yAvg": 4.5
     },
     {
@@ -4199,7 +4199,7 @@ const KR_EXTRA_DATA = {
       "per": 308.82,
       "eps": 34.0,
       "dividendYield": 0.1,
-      "dollarVolume": 1908774000.0,
+      "dollarVolume": 1876297500.0,
       "revenueGrowth": 19.98,
       "netIncomeGrowth": 314.59,
       "cashFlowGrowth": 516.25,
@@ -4207,10 +4207,10 @@ const KR_EXTRA_DATA = {
       "roe": 12.6,
       "debtRatio": 33.8,
       "week52RangePct": 15.0,
-      "pressureScore": 0.9,
+      "pressureScore": 1.1,
       "stabilityScore": 1.0,
       "winRateScore": 46.7,
-      "rsiWeekly": 37.3,
+      "rsiWeekly": 36.3,
       "ret10yAvg": 14.6
     },
     {
@@ -4225,7 +4225,7 @@ const KR_EXTRA_DATA = {
       "per": 39.15,
       "eps": 1060.0,
       "dividendYield": 0.0,
-      "dollarVolume": 7262168000.0,
+      "dollarVolume": 7175640500.0,
       "revenueGrowth": 74.29,
       "netIncomeGrowth": -400.92,
       "cashFlowGrowth": -1515.67,
@@ -4233,10 +4233,10 @@ const KR_EXTRA_DATA = {
       "roe": 2.5,
       "debtRatio": 109.6,
       "week52RangePct": 16.0,
-      "pressureScore": 1.6,
+      "pressureScore": 1.5,
       "stabilityScore": 2.1,
       "winRateScore": 57.7,
-      "rsiWeekly": 40.2,
+      "rsiWeekly": 40.3,
       "ret10yAvg": 91.3
     },
     {
@@ -4251,7 +4251,7 @@ const KR_EXTRA_DATA = {
       "per": 6.67,
       "eps": 1480.0,
       "dividendYield": 3.75,
-      "dollarVolume": 1793171730.0,
+      "dollarVolume": 1768575690.0,
       "revenueGrowth": 41.9,
       "netIncomeGrowth": 22.39,
       "cashFlowGrowth": -194.58,
@@ -4259,10 +4259,10 @@ const KR_EXTRA_DATA = {
       "roe": 34.5,
       "debtRatio": 355.4,
       "week52RangePct": 19.2,
-      "pressureScore": 1.4,
+      "pressureScore": 2.2,
       "stabilityScore": 1.4,
       "winRateScore": 55.8,
-      "rsiWeekly": 44.5,
+      "rsiWeekly": 44.4,
       "ret10yAvg": 21.8
     },
     {
@@ -4288,7 +4288,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.4,
       "stabilityScore": 1.0,
       "winRateScore": 48.1,
-      "rsiWeekly": 34.1,
+      "rsiWeekly": 34.2,
       "ret10yAvg": 4.7
     },
     {
@@ -4303,7 +4303,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -551.0,
       "dividendYield": 2.09,
-      "dollarVolume": 2453858190.0,
+      "dollarVolume": 2428198110.0,
       "revenueGrowth": -7.32,
       "netIncomeGrowth": 136.38,
       "cashFlowGrowth": 36.4,
@@ -4311,10 +4311,10 @@ const KR_EXTRA_DATA = {
       "roe": 16.3,
       "debtRatio": 217.9,
       "week52RangePct": 7.0,
-      "pressureScore": 0.6,
+      "pressureScore": 0.9,
       "stabilityScore": 1.0,
       "winRateScore": 46.7,
-      "rsiWeekly": 37.8,
+      "rsiWeekly": 37.7,
       "ret10yAvg": 3.3
     },
     {
@@ -4329,7 +4329,7 @@ const KR_EXTRA_DATA = {
       "per": 17.34,
       "eps": 5714.0,
       "dividendYield": 1.41,
-      "dollarVolume": 52873714900.0,
+      "dollarVolume": 52375440100.0,
       "revenueGrowth": 14.48,
       "netIncomeGrowth": -45.47,
       "cashFlowGrowth": 55.86,
@@ -4337,10 +4337,10 @@ const KR_EXTRA_DATA = {
       "roe": 13.3,
       "debtRatio": 37.4,
       "week52RangePct": 55.8,
-      "pressureScore": 6.8,
+      "pressureScore": 8.1,
       "stabilityScore": 2.2,
       "winRateScore": 52.5,
-      "rsiWeekly": 64.1,
+      "rsiWeekly": 64.3,
       "ret10yAvg": 6.3
     },
     {
@@ -4355,7 +4355,7 @@ const KR_EXTRA_DATA = {
       "per": 6.13,
       "eps": 1869.0,
       "dividendYield": 3.49,
-      "dollarVolume": 2000979100.0,
+      "dollarVolume": 1960148400.0,
       "revenueGrowth": 16.14,
       "netIncomeGrowth": 140.95,
       "cashFlowGrowth": -147.43,
@@ -4363,10 +4363,10 @@ const KR_EXTRA_DATA = {
       "roe": 27.4,
       "debtRatio": 74.6,
       "week52RangePct": 1.8,
-      "pressureScore": 0.3,
+      "pressureScore": 0.4,
       "stabilityScore": 1.4,
       "winRateScore": 50.8,
-      "rsiWeekly": 28.7,
+      "rsiWeekly": 28.8,
       "ret10yAvg": 8.0
     },
     {
@@ -4389,10 +4389,10 @@ const KR_EXTRA_DATA = {
       "roe": -40.5,
       "debtRatio": 9.2,
       "week52RangePct": 6.9,
-      "pressureScore": 1.3,
+      "pressureScore": 1.4,
       "stabilityScore": 1.0,
       "winRateScore": 47.6,
-      "rsiWeekly": 34.2,
+      "rsiWeekly": 33.9,
       "ret10yAvg": -7.5
     },
     {
@@ -4407,7 +4407,7 @@ const KR_EXTRA_DATA = {
       "per": 2.43,
       "eps": 2110.0,
       "dividendYield": 3.9,
-      "dollarVolume": 1806626970.0,
+      "dollarVolume": 1780448580.0,
       "revenueGrowth": -2.39,
       "netIncomeGrowth": 80.85,
       "cashFlowGrowth": 234.65,
@@ -4415,10 +4415,10 @@ const KR_EXTRA_DATA = {
       "roe": 9.7,
       "debtRatio": 178.2,
       "week52RangePct": 3.5,
-      "pressureScore": 0.8,
+      "pressureScore": 1.1,
       "stabilityScore": 2.2,
       "winRateScore": 48.3,
-      "rsiWeekly": 34.3,
+      "rsiWeekly": 33.7,
       "ret10yAvg": -3.2
     },
     {
@@ -4433,7 +4433,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -613.0,
       "dividendYield": 0.0,
-      "dollarVolume": 3839262550.0,
+      "dollarVolume": 3782186600.0,
       "revenueGrowth": 17.5,
       "netIncomeGrowth": 321.26,
       "cashFlowGrowth": 50.49,
@@ -4441,10 +4441,10 @@ const KR_EXTRA_DATA = {
       "roe": -1.7,
       "debtRatio": 111.9,
       "week52RangePct": 15.1,
-      "pressureScore": 0.9,
+      "pressureScore": 1.1,
       "stabilityScore": 1.0,
       "winRateScore": 52.5,
-      "rsiWeekly": 39.7,
+      "rsiWeekly": 39.8,
       "ret10yAvg": 21.3
     },
     {
@@ -4459,7 +4459,7 @@ const KR_EXTRA_DATA = {
       "per": 3.23,
       "eps": 1420.0,
       "dividendYield": 0.0,
-      "dollarVolume": 5402345025.0,
+      "dollarVolume": 5317595885.0,
       "revenueGrowth": -50.43,
       "netIncomeGrowth": -53.73,
       "cashFlowGrowth": -63.96,
@@ -4470,7 +4470,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 1.0,
       "stabilityScore": 3.0,
       "winRateScore": 44.2,
-      "rsiWeekly": 39.6,
+      "rsiWeekly": 39.2,
       "ret10yAvg": 21.1
     },
     {
@@ -4485,7 +4485,7 @@ const KR_EXTRA_DATA = {
       "per": 93.65,
       "eps": 126.0,
       "dividendYield": 0.85,
-      "dollarVolume": 23005008600.0,
+      "dollarVolume": 22812420800.0,
       "revenueGrowth": 120.5,
       "netIncomeGrowth": 659.64,
       "cashFlowGrowth": -126.14,
@@ -4493,10 +4493,10 @@ const KR_EXTRA_DATA = {
       "roe": 12.1,
       "debtRatio": 35.7,
       "week52RangePct": 34.7,
-      "pressureScore": 2.6,
+      "pressureScore": 2.5,
       "stabilityScore": 1.5,
       "winRateScore": 49.5,
-      "rsiWeekly": 45.2,
+      "rsiWeekly": 45.5,
       "ret10yAvg": 28.5
     },
     {
@@ -4511,7 +4511,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -186.0,
       "dividendYield": 0.0,
-      "dollarVolume": 2097010520.0,
+      "dollarVolume": 2039200240.0,
       "revenueGrowth": 253.65,
       "netIncomeGrowth": 0.01,
       "cashFlowGrowth": 184.14,
@@ -4522,7 +4522,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.0,
       "stabilityScore": 1.0,
       "winRateScore": 44.2,
-      "rsiWeekly": 28.9,
+      "rsiWeekly": 29.0,
       "ret10yAvg": 9.5
     },
     {
@@ -4537,7 +4537,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -275.0,
       "dividendYield": 0.0,
-      "dollarVolume": 1925856120.0,
+      "dollarVolume": 1900811100.0,
       "revenueGrowth": -9.24,
       "netIncomeGrowth": -523.18,
       "cashFlowGrowth": -16.15,
@@ -4545,7 +4545,7 @@ const KR_EXTRA_DATA = {
       "roe": -16.5,
       "debtRatio": 120.7,
       "week52RangePct": 1.0,
-      "pressureScore": 0.4,
+      "pressureScore": 0.5,
       "stabilityScore": 1.0,
       "winRateScore": 43.3,
       "rsiWeekly": 29.7,
@@ -4563,7 +4563,7 @@ const KR_EXTRA_DATA = {
       "per": 20.29,
       "eps": 2657.0,
       "dividendYield": 0.83,
-      "dollarVolume": 3025245300.0,
+      "dollarVolume": 2987677000.0,
       "revenueGrowth": 56.0,
       "netIncomeGrowth": -17.56,
       "cashFlowGrowth": 116.54,
@@ -4571,7 +4571,7 @@ const KR_EXTRA_DATA = {
       "roe": 11.9,
       "debtRatio": 39.7,
       "week52RangePct": 5.5,
-      "pressureScore": 1.3,
+      "pressureScore": 1.5,
       "stabilityScore": 1.9,
       "winRateScore": 49.2,
       "rsiWeekly": 38.8,
@@ -4589,7 +4589,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -5752.0,
       "dividendYield": 0.0,
-      "dollarVolume": 1233852750.0,
+      "dollarVolume": 1214518500.0,
       "revenueGrowth": 54.14,
       "netIncomeGrowth": 59.5,
       "cashFlowGrowth": -279.35,
@@ -4597,7 +4597,7 @@ const KR_EXTRA_DATA = {
       "roe": -14.3,
       "debtRatio": 94.1,
       "week52RangePct": 7.5,
-      "pressureScore": 1.0,
+      "pressureScore": 1.1,
       "stabilityScore": 1.0,
       "winRateScore": 48.4,
       "rsiWeekly": 36.8,
@@ -4615,7 +4615,7 @@ const KR_EXTRA_DATA = {
       "per": 24.61,
       "eps": 785.0,
       "dividendYield": 1.64,
-      "dollarVolume": 2261290080.0,
+      "dollarVolume": 2222592120.0,
       "revenueGrowth": 15.7,
       "netIncomeGrowth": 168.68,
       "cashFlowGrowth": 85.94,
@@ -4623,10 +4623,10 @@ const KR_EXTRA_DATA = {
       "roe": 16.6,
       "debtRatio": 26.4,
       "week52RangePct": 11.1,
-      "pressureScore": 1.8,
+      "pressureScore": 2.2,
       "stabilityScore": 2.3,
       "winRateScore": 36.2,
-      "rsiWeekly": 40.4,
+      "rsiWeekly": 40.3,
       "ret10yAvg": -26.3
     },
     {
@@ -4641,7 +4641,7 @@ const KR_EXTRA_DATA = {
       "per": 5.79,
       "eps": 1728.0,
       "dividendYield": 0.0,
-      "dollarVolume": 1724820000.0,
+      "dollarVolume": 1680920000.0,
       "revenueGrowth": 18.07,
       "netIncomeGrowth": -86.78,
       "cashFlowGrowth": 39.37,
@@ -4649,10 +4649,10 @@ const KR_EXTRA_DATA = {
       "roe": 14.8,
       "debtRatio": 38.3,
       "week52RangePct": 4.6,
-      "pressureScore": 0.5,
+      "pressureScore": 0.6,
       "stabilityScore": 1.8,
       "winRateScore": 45.8,
-      "rsiWeekly": 35.9,
+      "rsiWeekly": 35.5,
       "ret10yAvg": 6.6
     },
     {
@@ -4667,7 +4667,7 @@ const KR_EXTRA_DATA = {
       "per": 66.09,
       "eps": 128.0,
       "dividendYield": 0.0,
-      "dollarVolume": 6301811700.0,
+      "dollarVolume": 6218336880.0,
       "revenueGrowth": 35.21,
       "netIncomeGrowth": 2015.33,
       "cashFlowGrowth": 126.23,
@@ -4675,7 +4675,7 @@ const KR_EXTRA_DATA = {
       "roe": 5.2,
       "debtRatio": 123.9,
       "week52RangePct": 12.4,
-      "pressureScore": 1.0,
+      "pressureScore": 1.1,
       "stabilityScore": 1.1,
       "winRateScore": 53.8,
       "rsiWeekly": 41.3,
@@ -4693,7 +4693,7 @@ const KR_EXTRA_DATA = {
       "per": 10.38,
       "eps": 1427.0,
       "dividendYield": 2.7,
-      "dollarVolume": 2210229590.0,
+      "dollarVolume": 2172138270.0,
       "revenueGrowth": 38.81,
       "netIncomeGrowth": 35.21,
       "cashFlowGrowth": -58.28,
@@ -4701,10 +4701,10 @@ const KR_EXTRA_DATA = {
       "roe": 10.2,
       "debtRatio": 60.4,
       "week52RangePct": 5.6,
-      "pressureScore": 0.7,
+      "pressureScore": 1.0,
       "stabilityScore": 1.6,
       "winRateScore": 45.0,
-      "rsiWeekly": 34.3,
+      "rsiWeekly": 34.4,
       "ret10yAvg": -1.5
     },
     {
@@ -4719,7 +4719,7 @@ const KR_EXTRA_DATA = {
       "per": 4.01,
       "eps": 9556.0,
       "dividendYield": 8.81,
-      "dollarVolume": 3552168750.0,
+      "dollarVolume": 3523521300.0,
       "revenueGrowth": -11.16,
       "netIncomeGrowth": -61.11,
       "cashFlowGrowth": -144.65,
@@ -4727,10 +4727,10 @@ const KR_EXTRA_DATA = {
       "roe": 18.9,
       "debtRatio": 74.5,
       "week52RangePct": 16.3,
-      "pressureScore": 1.4,
+      "pressureScore": 2.2,
       "stabilityScore": 2.2,
       "winRateScore": 45.8,
-      "rsiWeekly": 34.3,
+      "rsiWeekly": 33.5,
       "ret10yAvg": 4.0
     },
     {
@@ -4745,7 +4745,7 @@ const KR_EXTRA_DATA = {
       "per": 8.8,
       "eps": 1615.0,
       "dividendYield": 0.0,
-      "dollarVolume": 3801260260.0,
+      "dollarVolume": 3716767600.0,
       "revenueGrowth": 5.04,
       "netIncomeGrowth": -32.58,
       "cashFlowGrowth": -33.17,
@@ -4753,10 +4753,10 @@ const KR_EXTRA_DATA = {
       "roe": 13.4,
       "debtRatio": 56.9,
       "week52RangePct": 0.8,
-      "pressureScore": 0.9,
+      "pressureScore": 1.0,
       "stabilityScore": 2.2,
       "winRateScore": 40.8,
-      "rsiWeekly": 38.0,
+      "rsiWeekly": 38.1,
       "ret10yAvg": -14.6
     },
     {
@@ -4797,7 +4797,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -428.0,
       "dividendYield": 0.0,
-      "dollarVolume": 784595985.0,
+      "dollarVolume": 772335910.0,
       "revenueGrowth": 2.05,
       "netIncomeGrowth": -1.8,
       "cashFlowGrowth": 75.03,
@@ -4805,10 +4805,10 @@ const KR_EXTRA_DATA = {
       "roe": -10.2,
       "debtRatio": 24.2,
       "week52RangePct": 20.8,
-      "pressureScore": 1.2,
+      "pressureScore": 1.3,
       "stabilityScore": 1.0,
       "winRateScore": 42.5,
-      "rsiWeekly": 43.4,
+      "rsiWeekly": 43.2,
       "ret10yAvg": -4.5
     },
     {
@@ -4823,7 +4823,7 @@ const KR_EXTRA_DATA = {
       "per": 4.77,
       "eps": 3080.0,
       "dividendYield": 2.38,
-      "dollarVolume": 2625488640.0,
+      "dollarVolume": 2587761040.0,
       "revenueGrowth": -2.47,
       "netIncomeGrowth": 55.14,
       "cashFlowGrowth": 347.32,
@@ -4831,10 +4831,10 @@ const KR_EXTRA_DATA = {
       "roe": 13.9,
       "debtRatio": 141.0,
       "week52RangePct": 1.9,
-      "pressureScore": 0.9,
+      "pressureScore": 1.0,
       "stabilityScore": 1.8,
       "winRateScore": 50.9,
-      "rsiWeekly": 31.0,
+      "rsiWeekly": 31.1,
       "ret10yAvg": -7.2
     },
     {
@@ -4849,7 +4849,7 @@ const KR_EXTRA_DATA = {
       "per": 4.87,
       "eps": 8072.0,
       "dividendYield": 10.18,
-      "dollarVolume": 2004889500.0,
+      "dollarVolume": 1986850800.0,
       "revenueGrowth": 1.87,
       "netIncomeGrowth": -9.07,
       "cashFlowGrowth": 342.6,
@@ -4857,7 +4857,7 @@ const KR_EXTRA_DATA = {
       "roe": 16.6,
       "debtRatio": 84.5,
       "week52RangePct": 32.9,
-      "pressureScore": 2.5,
+      "pressureScore": 2.8,
       "stabilityScore": 1.6,
       "winRateScore": 48.3,
       "rsiWeekly": 50.5,
@@ -4875,7 +4875,7 @@ const KR_EXTRA_DATA = {
       "per": 38.19,
       "eps": 80.0,
       "dividendYield": 0.0,
-      "dollarVolume": 2043443675.0,
+      "dollarVolume": 1997750040.0,
       "revenueGrowth": -20.47,
       "netIncomeGrowth": -173.66,
       "cashFlowGrowth": 12.58,
@@ -4883,10 +4883,10 @@ const KR_EXTRA_DATA = {
       "roe": -0.0,
       "debtRatio": 53.4,
       "week52RangePct": 3.4,
-      "pressureScore": 0.1,
+      "pressureScore": 0.2,
       "stabilityScore": 1.2,
       "winRateScore": 50.0,
-      "rsiWeekly": 28.7,
+      "rsiWeekly": 28.8,
       "ret10yAvg": 8.7
     },
     {
@@ -4901,7 +4901,7 @@ const KR_EXTRA_DATA = {
       "per": 10.89,
       "eps": 3192.0,
       "dividendYield": 3.74,
-      "dollarVolume": 2789938500.0,
+      "dollarVolume": 2738717000.0,
       "revenueGrowth": -15.04,
       "netIncomeGrowth": -71.96,
       "cashFlowGrowth": 112.42,
@@ -4909,7 +4909,7 @@ const KR_EXTRA_DATA = {
       "roe": 1.3,
       "debtRatio": 52.1,
       "week52RangePct": 66.3,
-      "pressureScore": 2.3,
+      "pressureScore": 2.5,
       "stabilityScore": 2.3,
       "winRateScore": 40.8,
       "rsiWeekly": 54.7,
@@ -4927,7 +4927,7 @@ const KR_EXTRA_DATA = {
       "per": 7.18,
       "eps": 2522.0,
       "dividendYield": 1.67,
-      "dollarVolume": 1963247640.0,
+      "dollarVolume": 1936901160.0,
       "revenueGrowth": -7.22,
       "netIncomeGrowth": 32.61,
       "cashFlowGrowth": 84.46,
@@ -4935,10 +4935,10 @@ const KR_EXTRA_DATA = {
       "roe": 11.4,
       "debtRatio": 17.1,
       "week52RangePct": 13.6,
-      "pressureScore": 2.1,
+      "pressureScore": 2.7,
       "stabilityScore": 1.7,
       "winRateScore": 50.8,
-      "rsiWeekly": 44.9,
+      "rsiWeekly": 44.8,
       "ret10yAvg": 4.7
     },
     {
@@ -4953,7 +4953,7 @@ const KR_EXTRA_DATA = {
       "per": 98.06,
       "eps": 67.0,
       "dividendYield": 0.0,
-      "dollarVolume": 1939418010.0,
+      "dollarVolume": 1910917350.0,
       "revenueGrowth": 40.63,
       "netIncomeGrowth": 379.18,
       "cashFlowGrowth": 403.79,
@@ -4961,7 +4961,7 @@ const KR_EXTRA_DATA = {
       "roe": 5.5,
       "debtRatio": 10.5,
       "week52RangePct": 1.7,
-      "pressureScore": 0.4,
+      "pressureScore": 0.6,
       "stabilityScore": 1.2,
       "winRateScore": 47.5,
       "rsiWeekly": 32.0,
@@ -4979,7 +4979,7 @@ const KR_EXTRA_DATA = {
       "per": 9.3,
       "eps": 387.0,
       "dividendYield": 5.56,
-      "dollarVolume": 1538434800.0,
+      "dollarVolume": 1511931600.0,
       "revenueGrowth": 9.18,
       "netIncomeGrowth": 5.48,
       "cashFlowGrowth": 7.39,
@@ -4987,7 +4987,7 @@ const KR_EXTRA_DATA = {
       "roe": 30.0,
       "debtRatio": 28.5,
       "week52RangePct": 10.0,
-      "pressureScore": 1.0,
+      "pressureScore": 1.3,
       "stabilityScore": 1.8,
       "winRateScore": 46.7,
       "rsiWeekly": 38.9,
@@ -5005,7 +5005,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -240.0,
       "dividendYield": 2.29,
-      "dollarVolume": 1841699250.0,
+      "dollarVolume": 1807434250.0,
       "revenueGrowth": -10.05,
       "netIncomeGrowth": 236.48,
       "cashFlowGrowth": 334.46,
@@ -5016,7 +5016,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.1,
       "stabilityScore": 1.0,
       "winRateScore": 43.7,
-      "rsiWeekly": 29.8,
+      "rsiWeekly": 29.9,
       "ret10yAvg": -4.1
     },
     {
@@ -5031,7 +5031,7 @@ const KR_EXTRA_DATA = {
       "per": 15.28,
       "eps": 824.0,
       "dividendYield": 10.25,
-      "dollarVolume": 1882557520.0,
+      "dollarVolume": 1849420640.0,
       "revenueGrowth": -2.82,
       "netIncomeGrowth": -7.51,
       "cashFlowGrowth": 153.47,
@@ -5039,10 +5039,10 @@ const KR_EXTRA_DATA = {
       "roe": 4.6,
       "debtRatio": 12.9,
       "week52RangePct": 36.1,
-      "pressureScore": 2.7,
+      "pressureScore": 3.5,
       "stabilityScore": 1.8,
       "winRateScore": 46.7,
-      "rsiWeekly": 58.1,
+      "rsiWeekly": 57.9,
       "ret10yAvg": -3.6
     },
     {
@@ -5057,7 +5057,7 @@ const KR_EXTRA_DATA = {
       "per": null,
       "eps": -1001.0,
       "dividendYield": 0.0,
-      "dollarVolume": 471362640.0,
+      "dollarVolume": 462414400.0,
       "revenueGrowth": 13.57,
       "netIncomeGrowth": -272.57,
       "cashFlowGrowth": -749.61,
@@ -5068,7 +5068,7 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.6,
       "stabilityScore": 1.5,
       "winRateScore": 49.2,
-      "rsiWeekly": 36.0,
+      "rsiWeekly": 35.6,
       "ret10yAvg": -13.5
     },
     {
@@ -5083,7 +5083,7 @@ const KR_EXTRA_DATA = {
       "per": 15.05,
       "eps": 1329.0,
       "dividendYield": 0.0,
-      "dollarVolume": 731500000.0,
+      "dollarVolume": 725020000.0,
       "revenueGrowth": -0.78,
       "netIncomeGrowth": -613.24,
       "cashFlowGrowth": -102.4,
@@ -5091,10 +5091,10 @@ const KR_EXTRA_DATA = {
       "roe": 2.3,
       "debtRatio": 20.0,
       "week52RangePct": 15.4,
-      "pressureScore": 2.0,
+      "pressureScore": 2.2,
       "stabilityScore": 1.3,
       "winRateScore": 48.4,
-      "rsiWeekly": 43.2,
+      "rsiWeekly": 43.0,
       "ret10yAvg": -9.1
     },
     {
@@ -5109,7 +5109,7 @@ const KR_EXTRA_DATA = {
       "per": 12.08,
       "eps": 953.0,
       "dividendYield": 0.0,
-      "dollarVolume": 1355360050.0,
+      "dollarVolume": 1346635470.0,
       "revenueGrowth": -42.74,
       "netIncomeGrowth": -246.61,
       "cashFlowGrowth": -219.73,
@@ -5117,10 +5117,10 @@ const KR_EXTRA_DATA = {
       "roe": -28.9,
       "debtRatio": 102.6,
       "week52RangePct": 2.2,
-      "pressureScore": 0.4,
+      "pressureScore": 0.7,
       "stabilityScore": 2.2,
       "winRateScore": 43.3,
-      "rsiWeekly": 32.5,
+      "rsiWeekly": 32.3,
       "ret10yAvg": -7.8
     },
     {
@@ -5146,10 +5146,10 @@ const KR_EXTRA_DATA = {
       "pressureScore": 0.1,
       "stabilityScore": 3.0,
       "winRateScore": 51.7,
-      "rsiWeekly": 26.6,
+      "rsiWeekly": 26.7,
       "ret10yAvg": 6.0
     }
   ],
   "ratiosUpdatedAt": "2026-08-25T11:29:54Z",
-  "generatedAt": "2026-11-06T16:28:24Z"
+  "generatedAt": "2026-11-07T00:51:45Z"
 };
