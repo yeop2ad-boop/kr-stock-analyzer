@@ -1451,8 +1451,8 @@ const SLIME_IAP = { energy_full: { kind: "energy", n: 5 }, gems_10: { kind: "gem
 // 게임이 보내는 표시 비트(p2b_sec SECF와 같다)
 const SLIME_SECF = { SAVE: 1, VAL: 2, SIG: 4, ROOT: 8, EMU: 16, DBG: 32, HOOK: 64 };
 // 등급 칸(게임 p3 dvMajor·dvFromMajor와 같다): 0 노말 · 1~5 실버 · 6~10 골드 · 11~15 플래티넘 · 16~20 다이아 · 21~25 마스터 · 26 챌린저
-function slimeDvMajor(L) { L = L | 0; return L <= 0 ? 0 : L > 80 ? 9 : 1 + Math.floor((L - 1) / 10); } // 100칸 롤 티어(브론즈 1 … 그랜드마스터 8 = 10칸씩 · 챌린저 9 = 81~100, 0.9.91+ 2026-11-07)
-function slimeDvFromMajor(t) { t = t | 0; return t <= 0 ? 0 : t >= 9 ? 81 : Math.min(100, 1 + (t - 1) * 10); }
+function slimeDvMajor(L) { L = L | 0; return L <= 0 ? 0 : Math.min(9, 1 + Math.floor((L - 1) / 10)); } // 90칸 롤 티어(브론즈 1 … 챌린저 9, 10칸씩, 0.9.91+ 2026-11-07)
+function slimeDvFromMajor(t) { t = t | 0; return t <= 0 ? 0 : Math.min(90, 1 + (Math.min(9, t) - 1) * 10); }
 function slimeDvScore(dv, floor, pct) { return dv * 10000 + Math.min(5, Math.max(0, floor)) * 1000 + Math.min(999, Math.round(Math.max(0, Math.min(99, pct)) * 9.99)); }
 let slimeGTok = { t: "", exp: 0 };
 function slimeB64url(buf) { const a = new Uint8Array(buf); let s = ""; for (let i = 0; i < a.length; i++) s += String.fromCharCode(a[i]); return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
@@ -1567,7 +1567,7 @@ async function handleSlimeRank(request, requestUrl, env) {
     const isNew = !!(body.sec && typeof body.sec === "object");
     const tierR = num("tier"), floorR = num("floor"), pctR = num("pct"), lvlR = num("lvl"), wlvR = num("wlv"), wqR = num("wq"), woR = num("wo");
     const dvR = body.dv == null ? null : num("dv"); // 등급 칸(0.9.24+). 옛 버전은 등급(0~6)만 보낸다 → 그 등급의 첫 칸
-    const dv = dvR === null ? slimeDvFromMajor(Math.max(0, Math.min(9, tierR))) : Math.max(0, Math.min(100, dvR));
+    const dv = dvR === null ? slimeDvFromMajor(Math.max(0, Math.min(9, tierR))) : Math.max(0, Math.min(90, dvR));
     const tier = slimeDvMajor(dv);
     const floor = Math.max(0, Math.min(99, floorR));
     const pct = Math.max(0, Math.min(99, pctR));
