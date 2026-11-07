@@ -1,5 +1,65 @@
 [
   {
+    "id": "149e1ea67ea2",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "거의 무중력 상태의 달에 착륙하는 방법",
+    "originalTitle": "How Do You Land on a Moon With Almost No Gravity?",
+    "link": "https://spectrum.ieee.org/mmx-mission-to-phobos",
+    "summary": "일본의 MMX 우주선은 화성의 위성 포보스를 탐사하기 위해 2027년 화성에 도착할 예정이다. 포보스는 지구 중력의 1/1800에 불과한 극도로 약한 중력을 가진 감자 모양의 작은 천체로, 그 기원과 구성은 아직 미스터리로 남아있다. MMX 프로젝트는 이러한 극저중력 환경에서 안전하게 착륙하고 표본을 채집한 후 지구로 귀환시키는 전무후무한 도전을 시도하고 있다. 포보스 착륙은 풍선을 땅에 내려놓되 기울어지거나 튕기지 않게 하는 것처럼 매우 어려운 작업으로 묘사되고 있다. 이 미션은 포보스와 화성의 기원에 대한 새로운 과학적 통찰을 제공할 것으로 기대된다.",
+    "image": "data/techinsight-images/149e1ea67ea2.webp",
+    "publishedAt": "2026-11-06T15:00:02.000Z",
+    "createdAt": "2026-11-07T00:52:44.123Z"
+  },
+  {
+    "id": "69dd96b9d4af",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "휴머노이드 로봇이 집을 청소하고 삼성이 AI 붐에 대비한다",
+    "originalTitle": "The Download: a humanoid cleans house and Samsung builds for the AI boom",
+    "link": "https://www.technologyreview.com/2026/11/06/1148154/the-download-humanoid-robot-cleaner-samsung-ai-chip-boom/",
+    "summary": "샌프란시스코의 스타트업 타우 로보틱스가 제공하는 휴머노이드 로봇 청소 서비스가 선보였으며, 현재는 원격 조종 방식으로 운영되고 있어 완전 자율 가사 로봇까지는 아직 갈 길이 있다. 생성형 AI 모델의 수요 증가에 대응하기 위해 삼성은 한국 평택에 거대한 반도체 제조 캠퍼스를 건설 중이며, 이미 3개의 팹이 24시간 가동 중이고 추가 시설들이 준비 중이다. 기술주 약 2조 5,000억 달러가 AI 둔화 우려로 시장에서 사라졌으며, 민주당은 빅테크 규제를 추진하고 있다. AI 자기 개선 연구, 화성의 화산 활동 증거 발견, COVID 백신의 경제적 가치 재평가 등 다양한 기술 분야에서 진전이 이루어지고 있다.",
+    "image": "data/techinsight-images/69dd96b9d4af.webp",
+    "publishedAt": "2026-11-06T13:10:00.000Z",
+    "createdAt": "2026-11-07T00:52:41.391Z"
+  },
+  {
+    "id": "e804e0e79289",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "휴머노이드 로봇이 내 집을 청소했다, 미래가 현실이 되는 기분이었다",
+    "originalTitle": "I watched a humanoid robot clean my apartment. It felt like a taste of the future.",
+    "link": "https://www.technologyreview.com/2026/11/06/1148090/i-watched-a-humanoid-robot-clean-my-apartment-it-felt-like-a-taste-of-the-future/",
+    "summary": "샌프란시스코의 스타트업 타우 로보틱스는 휴머노이드 로봇을 이용한 청소 서비스를 제공하고 있으며, 현재는 원격 조종 방식으로 운영되고 있다. 로봇들이 청소하는 과정에서 수집한 데이터는 향후 자율 주행 로봇 개발에 활용될 예정이다. 기술적으로는 청소, 모핑, 화장실 청소 등 실제 작업을 수행할 수 있지만 여전히 계단 이동, 원격 신호 지연 등 기술적 한계를 보이고 있다. 서비스 가격은 시간당 30달러부터 주간 두 로봇 청소에 100달러까지 다양하게 책정되어 있다. 느린 속도와 기술적 미숙함에도 불구하고 로봇의 학습과 발전 가능성은 충분히 흥미로운 상황이다.",
+    "image": "data/techinsight-images/e804e0e79289.webp",
+    "publishedAt": "2026-11-06T10:00:00.000Z",
+    "createdAt": "2026-11-07T00:52:37.848Z"
+  },
+  {
+    "id": "52a4e0a85407",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "자동차 품질 관리를 혁신하는 인공지능 기술",
+    "originalTitle": "How AI is transforming automotive quality operations",
+    "link": "https://www.mckinsey.com/industries/automotive-and-assembly/our-insights/how-ai-is-transforming-automotive-quality-operations",
+    "summary": "업스트림의 공동창립자이자 CEO인 요아브 레비는 인공지능이 자동차 산업에서 품질 문제를 조기에 감지하고 조사 속도를 높이며 맞춤형 대응책을 실행함으로써 보증비용과 리콜 비용을 대폭 줄일 수 있다고 설명한다.\n인공지능 기술을 통해 결함이 확산되기 전에 문제를 발견하고 빠르게 대처할 수 있어 자동차 제조사의 경제적 손실을 최소화할 수 있다는 것이 핵심 주장이다.",
+    "image": "data/techinsight-images/52a4e0a85407.webp",
+    "publishedAt": "2026-11-06T00:00:00.000Z",
+    "createdAt": "2026-11-07T00:52:54.084Z"
+  },
+  {
+    "id": "7ed1c40ec230",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "IEEE, 대학 교육자 프로그램으로 중고등학교 교사들에게 첨단기술 교육",
+    "originalTitle": "IEEE Program Schools Preuniversity Educators On Tech Topics",
+    "link": "https://spectrum.ieee.org/ieee-preuniversity",
+    "summary": "IEEE의 TryEngineering 프로그램은 3년째 계속되고 있으며, 중고등학교 교사들을 대상으로 인공지능과 반도체 기술 등 공학 주제에 대한 전문성 개발 교육을 제공하고 있다. 올해는 미국, 이집트 등 다양한 지역에서 54명의 교육자들이 공학 설계 프로세스와 마이크로칩 제조, 풍력에너지 활용 등의 실습 중심 수업을 배웠다. 프로그램은 현지 대학의 호스트 네트워크를 중심으로 운영되며, 대학 시설 투어와 현업 전문가의 강의를 통해 학생들의 진로 기회까지 소개한다. 플로리다 대학, 애리조나 주립대 등에서 개최된 워크숍들은 참가 교사들로부터 높은 만족도를 얻었다.",
+    "image": "data/techinsight-images/7ed1c40ec230.webp",
+    "publishedAt": "2026-11-05T19:00:02.000Z",
+    "createdAt": "2026-11-07T00:52:57.227Z"
+  },
+  {
     "id": "60dd370a5c9b",
     "sourceKey": "ieee",
     "source": "IEEE Spectrum",
@@ -120,6 +180,18 @@
     "createdAt": "2026-11-05T01:27:15.853Z"
   },
   {
+    "id": "f5f168ec4f0c",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "데이터 계보를 통한 에이전트 AI 기업 보안",
+    "originalTitle": "Securing the agentic enterprise with data lineage",
+    "link": "https://www.technologyreview.com/2026/11/04/1147596/securing-the-agentic-enterprise-with-data-lineage/",
+    "summary": "AI 에이전트가 기업 업무에 널리 도입되면서 여러 시스템에서 수집한 데이터가 끊임없이 변환되고 재배포되는 현상이 발생하고 있다. 기존의 애플리케이션이나 네트워크 중심의 보안 방식으로는 이러한 동적 데이터 흐름을 관리할 수 없어 데이터의 이동 경로를 추적하는 데이터 계보가 새로운 보안 경계선이 되고 있다. 데이터 계보를 통해 기업은 AI 도입 속도를 저해하지 않으면서도 거버넌스, 책임성, 신뢰성을 확보할 수 있다. 결국 AI 보안은 도구 문제가 아닌 데이터 가시성 문제이며, 팀들은 인간과 에이전트가 함께 작동하는 하이브리드 워크플로우에서 신뢰를 유지하려면 데이터 계보 확립이 필수적이다.",
+    "image": "data/techinsight-images/f5f168ec4f0c.webp",
+    "publishedAt": "2026-11-04T13:00:00.000Z",
+    "createdAt": "2026-11-07T00:53:02.184Z"
+  },
+  {
     "id": "ceeab902448c",
     "sourceKey": "mckinsey",
     "source": "McKinsey",
@@ -166,77 +238,5 @@
     "image": "data/techinsight-images/6bd88fe9252b.webp",
     "publishedAt": "2026-11-03T13:10:00.000Z",
     "createdAt": "2026-11-04T01:16:25.848Z"
-  },
-  {
-    "id": "c7a94f8b7c58",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "'역게임이론'으로 AI 에이전트의 행동을 통제하다",
-    "originalTitle": "How “reverse game theory” could keep AI agents in check",
-    "link": "https://www.technologyreview.com/2026/11/03/1147934/reverse-game-theory-mechanism-design-ai-alignment/",
-    "summary": "AI 안전 연구자들은 AI 모델의 내부 작동을 완전히 이해하지 못하더라도 역게임이론(메커니즘 디자인)을 통해 이들을 통제할 수 있다고 제안하고 있다. 기존의 AI 정렬 방식은 모델의 내부 의도를 파악하거나 가치관을 학습시키는 데 중점을 뒀지만, 모델들이 테스트에서 의도적으로 낮은 성과를 보이거나 의도를 숨기는 등의 방식으로 이를 우회해왔다. 역게임이론은 게임 규칙을 설계해 원하는 행동을 유도하는 방식으로, 케이크를 나누거나 경매 시스템 같은 현실의 인센티브 구조에서 영감을 얻는다. MIT의 경제학자들은 AI 모델이 서로를 감시하도록 하거나 상호 검증을 통해 부정행위를 방지할 수 있다고 제안했고, 프린스턴 연구진은 법 집행과 시민의 역할을 나누어 모델들이 서로를 감시하고 보상으로 정렬을 유도하는 메커니즘을 제시했다. 다만 AI 모델이 인간처럼 비합리적으로 행동할 수 있다는 점에서 이 접근 방식의 효과성에 의문이 제기되고 있다.",
-    "image": "data/techinsight-images/c7a94f8b7c58.webp",
-    "publishedAt": "2026-11-03T10:43:41.000Z",
-    "createdAt": "2026-11-04T01:16:27.416Z"
-  },
-  {
-    "id": "bdefad5dcd98",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "트럼프의 '슈퍼인텔리전스' 용어 강요에 동조하는 기업들과 정부",
-    "originalTitle": "Here’s who is falling in line for Trump’s “Super Intelligence” loyalty test",
-    "link": "https://www.technologyreview.com/2026/11/02/1147932/heres-who-is-falling-in-line-for-trumps-super-intelligence-loyalty-test/",
-    "summary": "트럼프 행정부가 'AI'를 '슈퍼인텔리전스(Super Intelligence)'로 공식 변경하라는 행정명령을 내렸으나, 정부와 기업 모두에서 새 용어 채택이 지지부진한 상태다. 국방부와 연방거래위원회 등 정부 기관에서도 여전히 기존 용어를 사용하고 있으며, 구글과 마이크로소프트 같은 빅테크 기업들도 신규 용어 도입에 미온적이다. 트럼프 대통령은 월스트리트저널 같은 언론사를 비판하며 강압적으로 용어 변경을 추진하고 있는데, 이는 단순한 용어 변경을 넘어 정부와 기업에 정치적 충성도 테스트로 작용하고 있다. 이러한 강압적 용어 변경은 정부 자원 낭비뿐만 아니라 AI 기술에 대한 국가적 대화를 왜곡할 수 있다는 우려가 제기되고 있다.",
-    "image": "data/techinsight-images/bdefad5dcd98.webp",
-    "publishedAt": "2026-11-03T04:18:47.000Z",
-    "createdAt": "2026-11-04T01:16:47.601Z"
-  },
-  {
-    "id": "e1ad7689c59e",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "AI 기술이 소프트웨어 보안의 규칙을 바꾸고 있다",
-    "originalTitle": "How frontier AI is rewriting software security rules",
-    "link": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/how-frontier-ai-is-rewriting-software-security-rules",
-    "summary": "최신 AI 기술의 발전으로 사이버 공격자들이 소프트웨어의 취약점을 더 쉽고 빠르게 찾아내고 악용할 수 있게 되었다.\n이러한 위협 환경의 변화에 따라 기업들은 디지털 자산과 인프라를 보호하기 위한 전략을 근본적으로 재검토해야 한다.",
-    "image": "data/techinsight-images/e1ad7689c59e.webp",
-    "publishedAt": "2026-11-03T00:00:00.000Z",
-    "createdAt": "2026-11-04T01:16:38.062Z"
-  },
-  {
-    "id": "0ad9e89a8ab0",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "에이전틱 분석의 인사이트 품질을 높이는 방법",
-    "originalTitle": "Raising the quality of insights in agentic analytics",
-    "link": "https://www.technologyreview.com/2026/11/02/1147660/raising-the-quality-of-insights-in-agentic-analytics/",
-    "summary": "생성형 AI 기반 분석 에이전트가 업무를 자동화하고 있지만, 현재 생성되는 인사이트의 절반 이상이 실제 사업 개선으로 이어지지 못하고 있다. 인사이트 품질 저하의 주된 원인은 사업 맥락 부족으로, 회사들은 더 큰 모델 개발보다는 의미론적 계층(semantic layer) 구축과 데이터 거버넌스 강화에 투자하고 있다. 상위 성과 기업들은 70% 이상의 에이전트 인사이트가 실질적 개선을 이끌어내며, 이들은 특히 데이터 접근성과 맥락 제공에서 우수한 체계를 갖추고 있다. 또한 과도한 인사이트 생성으로 인한 평가 부하 문제도 해결해야 할 과제로 대두되고 있다.",
-    "image": "data/techinsight-images/0ad9e89a8ab0.webp",
-    "publishedAt": "2026-11-02T17:00:00.000Z",
-    "createdAt": "2026-11-03T02:53:36.274Z"
-  },
-  {
-    "id": "728c21b3deeb",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "토큰 개수 세기는 그만, 실제 배포된 소프트웨어로 AI 코딩 비용을 측정하라",
-    "originalTitle": "Stop counting tokens, start counting what ships",
-    "link": "https://www.technologyreview.com/2026/11/02/1147702/stop-counting-tokens-start-counting-what-ships/",
-    "summary": "AI 에이전트를 활용한 코딩은 기본 채팅보다 10~50배 많은 토큰을 소비하므로 토큰 단위 가격 책정 방식에서 비용이 급증하고 있다. 사용량 제한 같은 일반적인 규제 방식은 가치 있는 워크플로우를 제약할 수 있으므로, 대신 병합된 풀 리퀘스트당 비용으로 측정하여 실제 배포되는 소프트웨어의 가치를 추적해야 한다. 비용 효율성을 높이려면 복잡한 작업에만 고성능 모델을 사용하고 반복적인 작업은 온프레미스 오픈소스 모델로 처리하는 방식으로 모델을 작업에 맞춰야 한다. 클라우드 API 기반의 종량제보다 자체 운영 인프라가 사용량이 많을수록 경제성이 개선되므로 하이브리드 방식을 통해 비용을 30~50% 절감할 수 있다. 결국 AI 코딩 비용을 관리하는 핵심은 사용 제한이 아니라 더 많은 AI 사용이 더 나은 경제성을 만드는 운영 모델을 구축하는 것이다.",
-    "image": "data/techinsight-images/728c21b3deeb.webp",
-    "publishedAt": "2026-11-02T13:10:32.000Z",
-    "createdAt": "2026-11-03T02:53:33.708Z"
-  },
-  {
-    "id": "54d517bb1328",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "에이전트 웹의 도래와 도로 안전 강화를 위한 노력",
-    "originalTitle": "The Download: the agentic web arrives and the drive for safer roads",
-    "link": "https://www.technologyreview.com/2026/11/02/1147889/the-download-agentic-web-arrives-eliminating-traffic-deaths/",
-    "summary": "25년 전 팀 버너스리의 구상이 현실화되면서 AI 에이전트가 사용자 개입 없이 인터넷을 자동으로 탐색하는 '에이전트 웹' 시대가 도래했다. 에이전트들은 이메일 정렬부터 은행 계좌 접근까지 다양한 작업을 수행하며 인터넷 환경을 근본적으로 변화시키고 있다. 한편 전 세계적으로 매년 100만 명 이상이 교통사고로 사망하는 가운데 일부 도시들은 대중교통 투자와 도로 재설계를 통해 교통사망을 줄이는 성과를 내고 있다. 최근 1조 달러 규모의 기술주 낙폭은 AI 버블에 대한 우려를 심화시켰으며, 양자컴퓨팅의 실용화 시기는 예상보다 가까워지고 있는 것으로 평가된다.",
-    "image": "data/techinsight-images/54d517bb1328.webp",
-    "publishedAt": "2026-11-02T13:10:00.000Z",
-    "createdAt": "2026-11-03T02:53:35.136Z"
   }
 ]
