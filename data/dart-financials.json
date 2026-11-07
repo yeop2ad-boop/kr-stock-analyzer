@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-07T09:34:38.766Z",
+  "updatedAt": "2026-11-07T15:19:57.768Z",
   "dataYear": 2025,
   "buybackPeriod": {
     "from": "20251107",
@@ -30456,15 +30456,6 @@
         "niTurnedLoss": false,
         "source": "yahoo"
       },
-      "crash": {
-        "pct": -30.976095617529875,
-        "from": "2026-06-22",
-        "to": "2026-06-26",
-        "fromPrice": 10040.0,
-        "toPrice": 6930.0,
-        "rangeFrom": "2025-11-06",
-        "rangeTo": "2026-11-06"
-      },
       "debt": {
         "current": 111.40215195961343,
         "prev": 130.56686707401693,
@@ -30477,6 +30468,15 @@
         "periodTo": "2026-06-30",
         "periodFrom": "2025-06-30",
         "source": "yahoo"
+      },
+      "crash": {
+        "pct": -30.976095617529875,
+        "from": "2026-06-22",
+        "to": "2026-06-26",
+        "fromPrice": 10040.0,
+        "toPrice": 6930.0,
+        "rangeFrom": "2025-11-06",
+        "rangeTo": "2026-11-06"
       }
     },
     {
