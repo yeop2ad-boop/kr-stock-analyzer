@@ -1447,12 +1447,12 @@ async function handleAnswer(request, env) {
 const SLIME_PKG = "kr.marketmap.slimetower";
 // 현금 상품 지급량은 서버가 정한다(게임의 SHOP_IAP와 같게)
 const SLIME_IAP = { energy_full: { kind: "energy", n: 5 }, gems_10: { kind: "gem", n: 10 }, gems_55: { kind: "gem", n: 55 }, gems_120: { kind: "gem", n: 120 }, gems_650: { kind: "gem", n: 650 }, gems_1450: { kind: "gem", n: 1450 },
-  gold_100: { kind: "coin", n: 1000 }, gold_550: { kind: "coin", n: 5500 }, gold_1200: { kind: "coin", n: 12000 }, gold_7000: { kind: "coin", n: 70000 }, gold_14500: { kind: "coin", n: 145000 } }; // 골드 10배(2026-11-05)
+  gold_100: { kind: "coin", n: 100 }, gold_550: { kind: "coin", n: 550 }, gold_1200: { kind: "coin", n: 1200 }, gold_7000: { kind: "coin", n: 7000 }, gold_14500: { kind: "coin", n: 14500 } };
 // 게임이 보내는 표시 비트(p2b_sec SECF와 같다)
 const SLIME_SECF = { SAVE: 1, VAL: 2, SIG: 4, ROOT: 8, EMU: 16, DBG: 32, HOOK: 64 };
 // 등급 칸(게임 p3 dvMajor·dvFromMajor와 같다): 0 노말 · 1~5 실버 · 6~10 골드 · 11~15 플래티넘 · 16~20 다이아 · 21~25 마스터 · 26 챌린저
-function slimeDvMajor(L) { L = L | 0; return L <= 0 ? 0 : Math.min(9, 1 + Math.floor((L - 1) / 10)); } // 90칸 롤 티어(브론즈 1 … 챌린저 9, 10칸씩, 0.9.91+ 2026-11-07)
-function slimeDvFromMajor(t) { t = t | 0; return t <= 0 ? 0 : Math.min(90, 1 + (Math.min(9, t) - 1) * 10); }
+function slimeDvMajor(L) { L = L | 0; return L <= 0 ? 0 : L >= 26 ? 6 : 1 + Math.floor((L - 1) / 5); }
+function slimeDvFromMajor(t) { t = t | 0; return t <= 0 ? 0 : t >= 6 ? 26 : 1 + (t - 1) * 5; }
 function slimeDvScore(dv, floor, pct) { return dv * 10000 + Math.min(5, Math.max(0, floor)) * 1000 + Math.min(999, Math.round(Math.max(0, Math.min(99, pct)) * 9.99)); }
 let slimeGTok = { t: "", exp: 0 };
 function slimeB64url(buf) { const a = new Uint8Array(buf); let s = ""; for (let i = 0; i < a.length; i++) s += String.fromCharCode(a[i]); return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
@@ -1546,8 +1546,8 @@ async function handleSlimeIapVerify(request, env) {
 
 // ---------- 슬라임의 전설 랭킹 (2026-10-31) ----------
 // GET  /slime/rank?me=ID&friends=ID1,ID2 → { top:[...9], me:{rank,total,...}, friends:[...] }
-// POST /slime/rank  body {id,name,score,tier,floor,pct,lvl,color,wid,wlv,cp}  → 점수는 더 높을 때만 갱신, 레벨·전투복·무기(강화)·전투력(cp)은 늘 갱신. KV 키 slime_rank_v1 (최대 3000명)
-const SLIME_RANK_KEY = "slime_rank_v8"; // 2026-11-06 0.9.85 전체 리셋(서바이벌 메인·전투력·20강)과 함께 새 순위판(v4 기록은 KV에 그대로 남겨 둔다)
+// POST /slime/rank  body {id,name,score,tier,floor,pct,lvl,color,wid,wlv}  → 점수는 더 높을 때만 갱신, 레벨·전투복·무기(강화)는 늘 갱신. KV 키 slime_rank_v1 (최대 3000명)
+const SLIME_RANK_KEY = "slime_rank_v9"; // 2026-11-07 밤: 슬라임금님을 11/5 오전(0.9.65) 상태로 되돌리며 새 순위판(v3~v8 기록은 KV에 그대로 남겨 둔다) — 워커 코드도 11/5 오전(1da24b3) 그대로
 async function handleSlimeRank(request, requestUrl, env) {
   if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
   const table = (await env.CHAT_KV.get(SLIME_RANK_KEY, "json")) || {};
@@ -1560,24 +1560,23 @@ async function handleSlimeRank(request, requestUrl, env) {
     const rawName = String(body.name || "모험가").replace(/[<>]/g, "").slice(0, 12);
     const nm = await slimeNameForRank(env, id, rawName, table[id] && table[id].name);
     const name = nm.name;
-    if (nm.changed || nm.names._seededNew) { delete nm.names._seededNew; try { await env.CHAT_KV.put(SLIME_NAMES_KEY, JSON.stringify(nm.names)); } catch (e) { return jsonResponse({ ok: false, error: "busy" }, 503); } }
+    if (nm.changed) await env.CHAT_KV.put(SLIME_NAMES_KEY, JSON.stringify(nm.names));
     // 보안(2026-11-03, 보안 정보 sec를 보내는 0.9.24+만): 점수는 서버가 등급·층·보스%로 다시 계산 · 범위 밖 값·점수 불일치는 '비정상'
     //  · 게임이 보낸 표시(저장 변조·비정상 수치·변조 앱·후킹·루팅·에뮬레이터·디버거) · (필수일 때) 무결성 미확인 → 순위판에서 숨김(hid)
     const num = (k) => parseInt(body[k], 10) || 0;
     const isNew = !!(body.sec && typeof body.sec === "object");
     const tierR = num("tier"), floorR = num("floor"), pctR = num("pct"), lvlR = num("lvl"), wlvR = num("wlv"), wqR = num("wq"), woR = num("wo");
     const dvR = body.dv == null ? null : num("dv"); // 등급 칸(0.9.24+). 옛 버전은 등급(0~6)만 보낸다 → 그 등급의 첫 칸
-    const dv = dvR === null ? slimeDvFromMajor(Math.max(0, Math.min(9, tierR))) : Math.max(0, Math.min(90, dvR));
+    const dv = dvR === null ? slimeDvFromMajor(Math.max(0, Math.min(6, tierR))) : Math.max(0, Math.min(26, dvR));
     const tier = slimeDvMajor(dv);
     const floor = Math.max(0, Math.min(99, floorR));
     const pct = Math.max(0, Math.min(99, pctR));
     const lvl = Math.max(0, Math.min(150, lvlR));
     const color = Math.max(0, Math.min(9, num("color")));
     const wid = /^[a-z0-9_]{1,24}$/.test(String(body.wid || "")) ? String(body.wid) : "";
-    const wlv = Math.max(0, Math.min(30, wlvR)); // 강화 상한 30강(전설, 0.9.89+, 2026-11-07 · 노말 10 · 레어 15 · 에픽 20 · 유니크 25)
+    const wlv = Math.max(0, Math.min(10, wlvR));
     const wq = Math.max(0, Math.min(4, wqR)); // 장착 유물 등급(유물 순위판 동점 정리용)
     const wo = Math.max(0, Math.min(3297, woR)); // 장착 유물 추가 옵션 점수(옛 3줄 유물까지: 3 × (단계 10×100 + 99))
-    const cp = Math.max(0, Math.min(1e13, Math.floor(Number(body.cp) || 0))); // 전투력(0.9.83+, 2026-11-06): 공격력 × 초당 발사 × 각성 계수 × 10 — 순위판 맨 앞
     const score = slimeDvScore(dv, floor, pct); // 점수는 서버가 칸·층·보스%로 다시 계산(옛 버전 기록도 같은 식)
     const why = [];
     let iv = false;
@@ -1590,28 +1589,27 @@ async function handleSlimeRank(request, requestUrl, env) {
       iv = await slimeSkOk(env, id, String(body.sec.sk || ""), Number(body.sec.skExp) || 0);
     }
     if (env.SLIME_REQUIRE_INTEGRITY === "1" && !iv) why.push("unverified");
-    const prev = table[id], prevJson = prev ? JSON.stringify({ ...prev, t: 0 }) : "";
+    const prev = table[id];
     for (const w of String((prev && prev.hid) || "").split(",")) if (/^(val|save|tamper)$/.test(w) && !why.includes(w)) why.push(w); // 한 번 걸린 변조·비정상 기록은 계속 숨김
     const hid = why.join(","), ivN = iv ? 1 : 0;
-    if (!prev || score >= (prev.score | 0)) table[id] = { name, score, tier, dv, floor, pct, lvl, color, wid, wlv, wq, wo, cp, hid, iv: ivN, t: Date.now() };
-    else table[id] = { ...prev, name, lvl, color, wid, wlv, wq, wo, cp, hid, iv: ivN, t: Date.now() };
+    if (!prev || score >= (prev.score | 0)) table[id] = { name, score, tier, dv, floor, pct, lvl, color, wid, wlv, wq, wo, hid, iv: ivN, t: Date.now() };
+    else table[id] = { ...prev, name, lvl, color, wid, wlv, wq, wo, hid, iv: ivN, t: Date.now() };
     const ids = Object.keys(table);
     if (ids.length > 3000) {
       ids.sort((a, b) => (table[b].score | 0) - (table[a].score | 0) || (table[b].t | 0) - (table[a].t | 0));
       for (const k of ids.slice(3000)) delete table[k];
     }
-    if (prev && JSON.stringify({ ...table[id], t: 0 }) === prevJson && Date.now() - (Number(prev.t) || 0) < 12 * 3600e3) { table[id] = prev; return jsonResponse({ ok: true, same: true }, 200); } // 2026-11-05: 같은 기록이면 KV에 안 쓴다
-    try { await env.CHAT_KV.put(SLIME_RANK_KEY, JSON.stringify(table)); } catch (e) { return jsonResponse({ ok: false, error: "busy" }, 503); }
+    await env.CHAT_KV.put(SLIME_RANK_KEY, JSON.stringify(table));
     return jsonResponse({ ok: true }, 200);
   }
   const me = String(requestUrl.searchParams.get("me") || "").toUpperCase();
   const friendIds = String(requestUrl.searchParams.get("friends") || "").toUpperCase().split(",").map((x) => x.trim()).filter((x) => /^[A-Z0-9]{4,12}$/.test(x)).slice(0, 50);
-  // 순위판: sort=cp(전투력, 2026-11-06 맨 앞) | lvl(레벨) | score(단계) | relic(장착 유물 강화 → 유물 등급 → 추가 옵션 점수 → 레벨)
-  const sortKey = ["lvl", "relic", "cp"].includes(requestUrl.searchParams.get("sort")) ? requestUrl.searchParams.get("sort") : "score";
-  const cmp = sortKey === "cp" ? (a, b) => b.cp - a.cp || b.lvl - a.lvl || b.score - a.score : sortKey === "lvl" ? (a, b) => b.lvl - a.lvl || b.score - a.score : sortKey === "relic" ? (a, b) => b.wlv - a.wlv || b.wq - a.wq || b.wo - a.wo || b.lvl - a.lvl : (a, b) => b.score - a.score;
+  // 순위판: sort=lvl(레벨) | score(단계, 기본) | relic(장착 유물 강화 → 유물 등급 → 추가 옵션 점수 → 레벨)
+  const sortKey = ["lvl", "relic"].includes(requestUrl.searchParams.get("sort")) ? requestUrl.searchParams.get("sort") : "score";
+  const cmp = sortKey === "lvl" ? (a, b) => b.lvl - a.lvl || b.score - a.score : sortKey === "relic" ? (a, b) => b.wlv - a.wlv || b.wq - a.wq || b.wo - a.wo || b.lvl - a.lvl : (a, b) => b.score - a.score;
   // 숨김(hid) 기록은 순위판·친구 목록에서 빼고, 본인에게만 '순위 제외'와 이유를 알려 준다
   // 칸(dv)이 없는 옛 기록은 등급의 첫 칸으로 보고 점수를 같은 식으로 다시 계산해 섞어 세운다
-  const all = Object.entries(table).map(([id, r]) => { const dv = r.dv != null ? r.dv | 0 : slimeDvFromMajor(r.tier | 0); return { id, name: r.name, score: r.dv != null ? r.score | 0 : slimeDvScore(dv, r.floor | 0, r.pct | 0), tier: slimeDvMajor(dv), dv, floor: r.floor | 0, pct: r.pct | 0, lvl: r.lvl | 0, color: r.color | 0, wid: r.wid || "", wlv: r.wlv | 0, wq: r.wq | 0, wo: r.wo | 0, cp: Number(r.cp) || 0, hid: r.hid || "" }; });
+  const all = Object.entries(table).map(([id, r]) => { const dv = r.dv != null ? r.dv | 0 : slimeDvFromMajor(r.tier | 0); return { id, name: r.name, score: r.dv != null ? r.score | 0 : slimeDvScore(dv, r.floor | 0, r.pct | 0), tier: slimeDvMajor(dv), dv, floor: r.floor | 0, pct: r.pct | 0, lvl: r.lvl | 0, color: r.color | 0, wid: r.wid || "", wlv: r.wlv | 0, wq: r.wq | 0, wo: r.wo | 0, hid: r.hid || "" }; });
   const sorted = all.filter((r) => !r.hid).map(({ hid, ...r }) => r).sort((a, b) => cmp(a, b) || a.id.localeCompare(b.id));
   const top = sorted.slice(0, 9);
   let meRow = null;
@@ -1631,7 +1629,7 @@ function slimeNameValid(s) { return /^[가-힣A-Za-z0-9]{2,8}$/.test(String(s ||
 async function slimeNames(env) {
   let names = await env.CHAT_KV.get(SLIME_NAMES_KEY, "json");
   if (!names) { // 처음 한 번: 석판에 이미 있는 이름은 먼저 온 사람 것으로
-    names = { _seeded: 1, _seededNew: 1 };
+    names = { _seeded: 1 };
     const table = (await env.CHAT_KV.get(SLIME_RANK_KEY, "json")) || {};
     for (const [id, r] of Object.entries(table).sort((a, b) => (a[1].t | 0) - (b[1].t | 0))) { const k = slimeNameNorm(r.name); if (slimeNameValid(r.name) && !names[k]) names[k] = id; }
   }
@@ -1665,15 +1663,11 @@ async function handleSlimeName(request, requestUrl, env) {
   const names = await slimeNames(env);
   const k = slimeNameNorm(name);
   if (names[k] && names[k] !== pid) return jsonResponse({ ok: false, error: "taken" }, 200);
-  let dirty = names[k] !== pid || !!names._seededNew; // 2026-11-05: 이미 내 이름이고 다른 이름도 없으면 KV에 쓰지 않는다(하루 쓰기 한도 절약)
-  delete names._seededNew;
-  for (const [nk, owner] of Object.entries(names)) if (owner === pid && nk !== k) { delete names[nk]; dirty = true; }
+  for (const [nk, owner] of Object.entries(names)) if (owner === pid && nk !== k) delete names[nk];
   names[k] = pid;
-  try {
-    if (dirty) await env.CHAT_KV.put(SLIME_NAMES_KEY, JSON.stringify(names));
-    const table = (await env.CHAT_KV.get(SLIME_RANK_KEY, "json")) || {}; // 석판에 적힌 이름도 바로 맞춘다
-    if (table[pid] && table[pid].name !== name) { table[pid] = { ...table[pid], name }; await env.CHAT_KV.put(SLIME_RANK_KEY, JSON.stringify(table)); }
-  } catch (e) { return jsonResponse({ ok: false, error: "busy", detail: String(e && e.message || e).slice(0, 120) }, 503); } // KV 쓰기 한도 초과 등 → 게임은 '서버가 잠시 바쁘다'(이름은 기기에 두고 나중에 다시)
+  await env.CHAT_KV.put(SLIME_NAMES_KEY, JSON.stringify(names));
+  const table = (await env.CHAT_KV.get(SLIME_RANK_KEY, "json")) || {}; // 석판에 적힌 이름도 바로 맞춘다
+  if (table[pid] && table[pid].name !== name) { table[pid] = { ...table[pid], name }; await env.CHAT_KV.put(SLIME_RANK_KEY, JSON.stringify(table)); }
   return jsonResponse({ ok: true, name }, 200);
 }
 
@@ -1704,7 +1698,7 @@ async function handleSlimeSave(request, requestUrl, env) {
   if (!code) code = slimeSaveCode();
   const sec = (body && body.sec) || {};
   const v = (await slimeSkOk(env, pid, String(sec.sk || ""), Number(sec.skExp) || 0)) ? 1 : 0;
-  try { await env.CHAT_KV.put("slime_save:" + code, JSON.stringify({ pid, data, v, t: Date.now() }), { expirationTtl: SLIME_SAVE_TTL }); } catch (e) { return jsonResponse({ ok: false, error: "busy" }, 503); }
+  await env.CHAT_KV.put("slime_save:" + code, JSON.stringify({ pid, data, v, t: Date.now() }), { expirationTtl: SLIME_SAVE_TTL });
   return jsonResponse({ ok: true, code, expires: Date.now() + SLIME_SAVE_TTL * 1000 }, 200);
 }
 
