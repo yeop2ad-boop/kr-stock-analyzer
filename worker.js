@@ -1574,7 +1574,7 @@ async function handleSlimeRank(request, requestUrl, env) {
     const lvl = Math.max(0, Math.min(150, lvlR));
     const color = Math.max(0, Math.min(9, num("color")));
     const wid = /^[a-z0-9_]{1,24}$/.test(String(body.wid || "")) ? String(body.wid) : "";
-    const wlv = Math.max(0, Math.min(10, wlvR));
+    const wlv = Math.max(0, Math.min(30, wlvR)); // 강화 상한 30(슬라임금님 0.9.119, 2026-11-08: 노말10·레어15·에픽20·유니크25·전설30)
     const wq = Math.max(0, Math.min(4, wqR)); // 장착 유물 등급(유물 순위판 동점 정리용)
     const wo = Math.max(0, Math.min(3297, woR)); // 장착 유물 추가 옵션 점수(옛 3줄 유물까지: 3 × (단계 10×100 + 99))
     const score = slimeDvScore(dv, floor, pct); // 점수는 서버가 칸·층·보스%로 다시 계산(옛 버전 기록도 같은 식)
