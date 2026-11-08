@@ -1547,7 +1547,7 @@ async function handleSlimeIapVerify(request, env) {
 // ---------- 슬라임의 전설 랭킹 (2026-10-31) ----------
 // GET  /slime/rank?me=ID&friends=ID1,ID2 → { top:[...9], me:{rank,total,...}, friends:[...] }
 // POST /slime/rank  body {id,name,score,tier,floor,pct,lvl,color,wid,wlv}  → 점수는 더 높을 때만 갱신, 레벨·전투복·무기(강화)는 늘 갱신. KV 키 slime_rank_v1 (최대 3000명)
-const SLIME_RANK_KEY = "slime_rank_v9"; // 2026-11-07 밤: 슬라임금님을 11/5 오전(0.9.65) 상태로 되돌리며 새 순위판(v3~v8 기록은 KV에 그대로 남겨 둔다) — 워커 코드도 11/5 오전(1da24b3) 그대로
+const SLIME_RANK_KEY = "slime_rank_v10"; // 2026-11-09: 슬라임금님 0.9.120 전체 리셋(wipeV7)에 맞춰 새 순위판(v9까지 기록은 KV에 그대로) · 이전 v9 = 2026-11-07 밤: 슬라임금님을 11/5 오전(0.9.65) 상태로 되돌리며 새 순위판(v3~v8 기록은 KV에 그대로 남겨 둔다) — 워커 코드도 11/5 오전(1da24b3) 그대로
 async function handleSlimeRank(request, requestUrl, env) {
   if (!env.CHAT_KV) return jsonResponse({ error: "CHAT_KV binding이 설정되지 않았습니다." }, 500);
   const table = (await env.CHAT_KV.get(SLIME_RANK_KEY, "json")) || {};
