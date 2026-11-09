@@ -1165,8 +1165,8 @@ body[data-map-view-kind="asset"] .metric-chip[data-metric="dividendYield"],
 body[data-map-view-kind="asset"] .metric-chip[data-metric="revenueGrowth"],
 body[data-map-view-kind="asset"] .metric-chip[data-metric="netIncomeGrowth"],
 body[data-map-view-kind="asset"] .metric-chip[data-metric="debtRatio"],
-body[data-map-view-kind="asset"] .metric-chip[data-metric="cashFlowGrowth"],
-body[data-map-view-kind="asset"] .metric-chip[data-metric="changePct"]:not(.asset-only-chip) { display: none; }
+body[data-map-view-kind="asset"] .metric-chip[data-metric="cashFlowGrowth"] { display: none; }
+/* 2026-11-09: ETF·비트코인도 상승률·하락률 버튼 대신 주식 보기와 같은 '등락' 버튼 하나(오늘 등락률) */
 /* 10년승률·RSI 칩(2026-09-02, 같은 날 국내·ETF·코인 확장) — 배치 데이터가 없는 나스닥100 보기에서만 숨김
    (S&P 비편입 15종목의 winRateScore/rsiWeekly가 비어 필터가 그 종목들을 통째로 지워버리는 혼란 방지) */
 /* 2026-09-08: 나스닥100 추가 종목도 승률 배치에 포함돼 칩 숨김 해제 */

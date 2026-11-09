@@ -2093,20 +2093,8 @@ document.getElementById("resetViewBtn").addEventListener("click", () => {
 });
 document.getElementById("fitAllBtn").addEventListener("click", () => fitToViewport(true));
 
-// ETF200/비트코인50 보기 전용 상승률/하락률 원탭 토글(2026-09-01) — 등락률(changePct)을 0 기준 위/아래 범위로 필터
-document.querySelectorAll(".chg-half-chip").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    btn.classList.remove("boot-active");
-    const isUp = btn.dataset.chgHalf === "up";
-    const [min, max] = getMetricDomain("changePct");
-    const cur = activeFilters.get("changePct");
-    const alreadyThis = !!cur && (isUp ? cur[0] >= 0 : cur[1] <= 0);
-    if (alreadyThis) activeFilters.delete("changePct");
-    else activeFilters.set("changePct", isUp ? [0, Math.max(0.01, max)] : [Math.min(-0.01, min), 0]);
-    closeRangeSheet();
-    applyAllFilters();
-  });
-});
+// ETF200/비트코인 보기의 상승률·하락률 원탭 버튼 2개는 2026-11-09 사용자 요청으로 삭제 —
+// 주식 보기처럼 '등락' 버튼 하나(오늘 등락률 범위 슬라이더)로 합침
 
 // ---------- 6) 상단 10개 지표 버튼 → 범위 지정 바텀시트(실시간 필터) ----------
 // 해외(S&P500): 매출액·현금흐름·순이익 증가율/EPS/PER/시가총액/배당률은 하루 1회 배치, 상승률·하락률·인기종목은
@@ -2163,7 +2151,8 @@ function buildMetrics(market) {
     winRateScore: { label: "10년월간승률", hasData: true, get: (c) => c.winRateScore, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 100 },
     rsiWeekly: { label: "RSI", hasData: true, get: (c) => c.rsiWeekly, fmt: (v) => `${v.toFixed(1)}`, domainMin: 0, domainMax: 100 },
     // 상승률/하락률을 하나로 합쳐 근저(가장 큰 하락)~근고(가장 큰 상승)가 한 슬라이더 안에 전부 보이도록 함
-    changePct: { label: "등락률", hasData: true, live: !isKr, get: (c) => c.changePercent, fmt: (v) => `${v.toFixed(1)}%` },
+    // 0 근처로 끌면 "-0.0%"로 보이던 것 → "0.0%"(2026-11-09, 상승률·하락률 버튼을 이 슬라이더로 합치며)
+    changePct: { label: "등락률", hasData: true, live: !isKr, get: (c) => c.changePercent, fmt: (v) => `${Math.abs(v) < 0.05 ? "0.0" : v.toFixed(1)}%` },
     revenueGrowth: { label: "매출 성장률", hasData: true, get: (c) => c.revenueGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
     netIncomeGrowth: { label: "순이익 증가율", hasData: true, get: (c) => c.netIncomeGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
     dividendYield: { label: "배당률", hasData: true, get: (c) => c.dividendYield, fmt: (v) => `${v.toFixed(2)}%` },
@@ -2258,12 +2247,6 @@ function applyAllFilters() {
     el.classList.toggle("filtered-out", !pass);
   }
   syncMetricChipActive();
-  // ETF200/비트코인50 보기의 상승률/하락률 토글 칩 상태 동기화(초기화 버튼 등으로 필터가 풀렸을 때도 함께 꺼지게)
-  const chgRange = activeFilters.get("changePct");
-  document.querySelectorAll(".chg-half-chip").forEach((b) => {
-    const isUp = b.dataset.chgHalf === "up";
-    b.classList.toggle("active", !!chgRange && (isUp ? chgRange[0] >= 0 : chgRange[1] <= 0));
-  });
 }
 
 function setFilterRange(key, range) {
@@ -2961,9 +2944,6 @@ function applyChipOrder() {
     const b = document.querySelector(`.metric-chip[data-metric="${k}"]`);
     if (b) b.style.order = String(100 + i * 10);
   });
-  const pop = document.querySelector('.metric-chip[data-metric="popularStocks"]');
-  const base = pop ? parseInt(pop.style.order, 10) : 100;
-  document.querySelectorAll(".chg-half-chip").forEach((b, i) => (b.style.order = String(base + 1 + i))); // 상승률·하락률은 거래대금 칩 바로 뒤
 }
 function orderedMetricButtons() {
   return currentChipOrder().map((k) => document.querySelector(`.metric-chip[data-metric="${k}"]`)).filter(Boolean);
