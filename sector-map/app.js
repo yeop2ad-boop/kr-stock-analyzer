@@ -2167,7 +2167,7 @@ function buildMetrics(market) {
     revenueGrowth: { label: "매출 성장률", hasData: true, get: (c) => c.revenueGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
     netIncomeGrowth: { label: "순이익 증가율", hasData: true, get: (c) => c.netIncomeGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
     dividendYield: { label: "배당률", hasData: true, get: (c) => c.dividendYield, fmt: (v) => `${v.toFixed(2)}%` },
-    debtRatio: { label: "부채비율", hasData: true, get: (c) => c.debtRatio, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 300 },
+    debtRatio: { label: "부채비율", hasData: true, get: (c) => c.debtRatio, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 300, strictMin: true },
     cashFlowGrowth: { label: "현금흐름 증가", hasData: true, get: (c) => c.cashFlowGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
     per: { label: "PER", hasData: true, get: (c) => c.per, fmt: (v) => `${v.toFixed(1)}배`, domainMax: 80 },
   };
@@ -2219,17 +2219,33 @@ function syncMetricChipActive() {
   });
 }
 
+// 손잡이를 막대 끝(맨 왼쪽·눈금 '최대')에 두면 그 바깥 값까지 포함한다. 순이익·현금흐름 증가율(-30~60%)·부채비율(~300%)은
+// 슬라이더 범위를 잘라 둬서 끝을 넘는 종목이 많은데(국내 현금흐름은 150개 중 102개), 예전엔 한쪽 손잡이만 끌어도
+// 반대쪽 끝 바깥 종목이 전부 흐려져 지도 절반이 사라져 보였음(2026-11-09 사용자 제보).
+// strictMin 지표(부채비율)는 왼쪽 끝 아래(자기자본 마이너스로 부호가 뒤집힌 값)를 계속 뺀다.
+function effectiveRange(key, range) {
+  const m = METRICS[key];
+  const [domMin, domMax] = getMetricDomain(key);
+  const eps = (domMax - domMin) * 1e-6;
+  const lo = range[0] <= domMin + eps && !(m && m.strictMin) ? -Infinity : range[0];
+  const hi = range[1] >= domMax - eps ? Infinity : range[1];
+  return [lo, hi];
+}
+
 // 슬라이더가 움직일 때마다 바로 호출 — 500개 원을 한 번씩 훑어서 활성 필터를 전부 만족하는지 확인(실시간 반응)
 function applyAllFilters() {
   const watchSet = watchOnlyMode ? getWatchlistSymbols() : null;
+  const checks = [];
+  for (const [key, range] of activeFilters) {
+    const m = METRICS[key];
+    if (m && m.hasData) checks.push([m, effectiveRange(key, range)]);
+  }
   for (const c of ACTIVE_DATA.companies) {
     const el = bubbleBySymbol.get(c.symbol);
     if (!el) continue;
     let pass = !(watchSet && !watchSet.has(c.symbol));
     if (pass) {
-      for (const [key, range] of activeFilters) {
-        const m = METRICS[key];
-        if (!m || !m.hasData) continue;
+      for (const [m, range] of checks) {
         const v = m.get(c);
         if (typeof v !== "number" || !Number.isFinite(v) || v < range[0] || v > range[1]) {
           pass = false;
@@ -2311,7 +2327,14 @@ function createSliderController(getKey, els, onNoDataChange) {
     els.fill.style.right = `${(1 - tMax) * 100}%`;
     if (els.valueLabel) {
       const full = isFullRange(key, [selMin, selMax]);
-      els.valueLabel.textContent = full ? "전체" : `${m.fmt(selMin)} 이상 ${m.fmt(selMax)} 이하`;
+      const [lo, hi] = effectiveRange(key, [selMin, selMax]);
+      els.valueLabel.textContent = full
+        ? "전체"
+        : hi === Infinity
+          ? `${m.fmt(selMin)} 이상`
+          : lo === -Infinity
+            ? `${m.fmt(selMax)} 이하`
+            : `${m.fmt(selMin)} 이상 ${m.fmt(selMax)} 이하`;
       // 바텀시트 위쪽 "전체" 버튼은 아래 값 표시("전체")와 겹쳐 두 번 보였음 → 걸린 필터가 있을 때만 "초기화"로 보이게(2026-10-20)
       if (els.valueLabel.id === "rangeSheetValue") {
         rangeSheetResetBtn.style.visibility = full ? "hidden" : "visible";
