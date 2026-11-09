@@ -94,13 +94,19 @@ function rtShowTicker(animate) {
   const next = document.createElement("span");
   next.className = "rt-line" + (animate ? " rt-enter" : "");
   next.innerHTML = html;
-  const old = slot.querySelector(".rt-line");
+  // 2026-11-09: 종목 상세에서 돌아오면(페이지 다시 열림) 처음 표시 두 번이 0.45초 안에 겹쳐, 먼저 나가던 줄만 다시 표시되고
+  // 그 사이 줄은 영영 안 나가서 이름 두 개가 겹쳐 보이던 문제 — 남아 있는 줄을 전부 내보내고, 애니메이션 없는 표시는 바로 지움
+  const olds = slot.querySelectorAll(".rt-line");
   slot.appendChild(next);
-  if (old) {
+  olds.forEach((old) => {
+    if (!animate) return old.remove();
     old.classList.add("rt-leave");
     setTimeout(() => old.remove(), 450);
+  });
+  if (animate) {
+    requestAnimationFrame(() => requestAnimationFrame(() => next.classList.remove("rt-enter")));
+    setTimeout(() => next.classList.remove("rt-enter"), 500); // 화면이 멈춰 있어 프레임이 안 돌아도 들어온 줄은 꼭 보이게
   }
-  if (animate) requestAnimationFrame(() => requestAnimationFrame(() => next.classList.remove("rt-enter")));
 }
 function rtStartTicker() {
   clearInterval(rtTickerTimer);
