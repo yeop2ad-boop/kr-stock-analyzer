@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-09T10:50:44.484Z",
+  "updatedAt": "2026-11-09T19:24:21.290Z",
   "dataYear": 2025,
   "buybackPeriod": {
     "from": "20251109",
@@ -50,7 +50,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1275051462529800,
+        "marketCap": 1279092830081400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -107,7 +107,7 @@
         "fromPrice": 270000.0,
         "toPrice": 207000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -153,10 +153,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 823370674815000,
-        "rightsRatio": 4.860881194122274,
+        "marketCap": 827010686640000,
+        "rightsRatio": 4.839486470556595,
         "cbRatio": null,
-        "totalRatio": 4.860881194122274
+        "totalRatio": 4.839486470556595
       },
       "sector": "기술",
       "eps": {
@@ -210,7 +210,7 @@
         "fromPrice": 1919000.0,
         "toPrice": 1322000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -256,7 +256,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 93236553291000,
+        "marketCap": 95214697986000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -313,7 +313,7 @@
         "fromPrice": 1221000.0,
         "toPrice": 799000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -359,7 +359,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 65262171880000,
+        "marketCap": 65417373240000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -416,7 +416,7 @@
         "fromPrice": 1448000.0,
         "toPrice": 879000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -462,7 +462,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 72451499484000,
+        "marketCap": 72053414322000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -519,7 +519,7 @@
         "fromPrice": 674000.0,
         "toPrice": 501000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -565,7 +565,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 56990438188200,
+        "marketCap": 57562631342700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -622,7 +622,7 @@
         "fromPrice": 167700.0,
         "toPrice": 137700.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -668,7 +668,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 41752564324000,
+        "marketCap": 41655465337200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -725,7 +725,7 @@
         "fromPrice": 100900.0,
         "toPrice": 88800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -771,7 +771,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 32278689026000,
+        "marketCap": 32949013239000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -828,7 +828,7 @@
         "fromPrice": 1122000.0,
         "toPrice": 872000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -874,7 +874,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 45861305845000,
+        "marketCap": 46204194113000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -931,7 +931,7 @@
         "fromPrice": 360000.0,
         "toPrice": 272000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -977,7 +977,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 27700118516000,
+        "marketCap": 27764165032800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1034,7 +1034,7 @@
         "fromPrice": 106300.0,
         "toPrice": 80600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -1080,7 +1080,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 37655604052500,
+        "marketCap": 37694464325000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1137,7 +1137,7 @@
         "fromPrice": 205500.0,
         "toPrice": 153400.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -1183,7 +1183,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 30531514179500,
+        "marketCap": 30123217556000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1240,7 +1240,7 @@
         "fromPrice": 759000.0,
         "toPrice": 570000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -1286,7 +1286,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 31843666380900,
+        "marketCap": 31383732372000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1343,7 +1343,7 @@
         "fromPrice": 126100.0,
         "toPrice": 105500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -1389,7 +1389,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 35758490310000,
+        "marketCap": 34114421790000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1446,7 +1446,7 @@
         "fromPrice": 688000.0,
         "toPrice": 503000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -1492,7 +1492,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 49029713922000,
+        "marketCap": 48225948120000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1549,7 +1549,7 @@
         "fromPrice": 236666.671875,
         "toPrice": 188000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -1595,10 +1595,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 28494947518500,
-        "rightsRatio": 4.706799184765096,
+        "marketCap": 27986376276700,
+        "rightsRatio": 4.792331612494659,
         "cbRatio": null,
-        "totalRatio": 4.706799184765096
+        "totalRatio": 4.792331612494659
       },
       "sector": "커뮤니케이션",
       "eps": {
@@ -1652,7 +1652,7 @@
         "fromPrice": 260500.0,
         "toPrice": 208000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -1698,7 +1698,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 42918372181000,
+        "marketCap": 42559222623000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1755,7 +1755,7 @@
         "fromPrice": 480000.0,
         "toPrice": 368000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -1858,7 +1858,7 @@
         "fromPrice": 392500.0,
         "toPrice": 224000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -1904,7 +1904,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 21042567520000,
+        "marketCap": 20961634568000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -1961,7 +1961,7 @@
         "fromPrice": 413000.0,
         "toPrice": 321500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -2007,7 +2007,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 23049996448000,
+        "marketCap": 22682958288000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2064,7 +2064,7 @@
         "fromPrice": 39100.0,
         "toPrice": 31800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -2110,10 +2110,10 @@
           "latestDate": "2026-08-03",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 23935159756000,
+        "marketCap": 24425857792000,
         "rightsRatio": null,
-        "cbRatio": 0.03635070786531499,
-        "totalRatio": 0.03635070786531499
+        "cbRatio": 0.035620448109092144,
+        "totalRatio": 0.035620448109092144
       },
       "sector": "산업재",
       "eps": {
@@ -2167,7 +2167,7 @@
         "fromPrice": 655000.0,
         "toPrice": 468500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -2213,7 +2213,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 23936805896000,
+        "marketCap": 24135947376000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2270,7 +2270,7 @@
         "fromPrice": 630000.0,
         "toPrice": 482000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -2316,7 +2316,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 76635000000000,
+        "marketCap": 74412000000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2373,7 +2373,7 @@
         "fromPrice": 427000.0,
         "toPrice": 347500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -2419,7 +2419,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 12850803627500,
+        "marketCap": 12832780060000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2476,7 +2476,7 @@
         "fromPrice": 869000.0,
         "toPrice": 583000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -2579,7 +2579,7 @@
         "fromPrice": 467500.0,
         "toPrice": 379000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -2625,10 +2625,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 70917736932000,
-        "rightsRatio": 3.75784692982425,
+        "marketCap": 69899336010000,
+        "rightsRatio": 3.8125970175435433,
         "cbRatio": null,
-        "totalRatio": 3.75784692982425
+        "totalRatio": 3.8125970175435433
       },
       "sector": "헬스케어",
       "eps": {
@@ -2682,7 +2682,7 @@
         "fromPrice": 1419363.625,
         "toPrice": 1201000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -2728,7 +2728,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 16905000000000,
+        "marketCap": 16755000000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2785,7 +2785,7 @@
         "fromPrice": 223500.0,
         "toPrice": 150300.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -2831,7 +2831,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 26600458209000,
+        "marketCap": 27020189305000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2888,7 +2888,7 @@
         "fromPrice": 733000.0,
         "toPrice": 598000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -2934,7 +2934,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 19474841545600,
+        "marketCap": 18935027174400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -2991,7 +2991,7 @@
         "fromPrice": 179700.0,
         "toPrice": 151600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -3037,7 +3037,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 16474397065100,
+        "marketCap": 16624750102200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3094,7 +3094,7 @@
         "fromPrice": 100000.0,
         "toPrice": 78200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -3140,7 +3140,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 13756195027350,
+        "marketCap": 13483359425400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3197,7 +3197,7 @@
         "fromPrice": 29000.0,
         "toPrice": 23500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -3243,7 +3243,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 14442510291000,
+        "marketCap": 14423886809000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3300,7 +3300,7 @@
         "fromPrice": 2866000.0,
         "toPrice": 1894000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -3346,7 +3346,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9010215044250,
+        "marketCap": 8968307067300,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3403,7 +3403,7 @@
         "fromPrice": 62300.0,
         "toPrice": 47050.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -3449,7 +3449,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 15953869066000,
+        "marketCap": 15530315020000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3506,7 +3506,7 @@
         "fromPrice": 417500.0,
         "toPrice": 300000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -3609,7 +3609,7 @@
         "fromPrice": 116100.0,
         "toPrice": 78600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -3655,7 +3655,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 13180734125500,
+        "marketCap": 13155531957000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3712,7 +3712,7 @@
         "fromPrice": 65700.0,
         "toPrice": 54900.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -3758,10 +3758,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6422503500000,
-        "rightsRatio": 8.28287831995732,
+        "marketCap": 6488039250000,
+        "rightsRatio": 8.199212882381993,
         "cbRatio": null,
-        "totalRatio": 8.28287831995732
+        "totalRatio": 8.199212882381993
       },
       "sector": "산업재",
       "eps": {
@@ -3809,13 +3809,13 @@
         "source": "yahoo"
       },
       "crash": {
-        "pct": -30.03533568904594,
-        "from": "2026-11-02",
-        "to": "2026-11-09",
-        "fromPrice": 424500.0,
-        "toPrice": 297000.0,
+        "pct": -28.14070351758794,
+        "from": "2026-10-19",
+        "to": "2026-10-26",
+        "fromPrice": 597000.0,
+        "toPrice": 429000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -3861,7 +3861,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7563560904900,
+        "marketCap": 7618132051400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -3918,7 +3918,7 @@
         "fromPrice": 166500.0,
         "toPrice": 120100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -3964,7 +3964,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 19258922310000,
+        "marketCap": 19194725902300,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4021,7 +4021,7 @@
         "fromPrice": 64300.0,
         "toPrice": 45550.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -4067,7 +4067,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 8607414774000,
+        "marketCap": 8586214245000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4124,7 +4124,7 @@
         "fromPrice": 272000.0,
         "toPrice": 211000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -4170,7 +4170,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 13410730754800,
+        "marketCap": 13561922758800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4227,7 +4227,7 @@
         "fromPrice": 165800.0,
         "toPrice": 112600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -4273,7 +4273,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 15456538726200,
+        "marketCap": 15132275676000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4330,7 +4330,7 @@
         "fromPrice": 73065.1171875,
         "toPrice": 56089.390625,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -4376,7 +4376,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 15072142017800,
+        "marketCap": 15242877421400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4433,7 +4433,7 @@
         "fromPrice": 409500.0,
         "toPrice": 287500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -4479,10 +4479,10 @@
           "latestDate": "2026-02-05",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 9591550528800,
+        "marketCap": 9650035593000,
         "rightsRatio": null,
-        "cbRatio": 5.212921503136314,
-        "totalRatio": 5.212921503136314
+        "cbRatio": 5.181328039480942,
+        "totalRatio": 5.181328039480942
       },
       "sector": "산업재",
       "eps": {
@@ -4536,7 +4536,7 @@
         "fromPrice": 164100.0,
         "toPrice": 117500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -4582,7 +4582,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 18358470869200,
+        "marketCap": 18171139533800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4639,7 +4639,7 @@
         "fromPrice": 137700.0,
         "toPrice": 109000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -4685,7 +4685,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9076933837500,
+        "marketCap": 9245371785000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -4742,7 +4742,7 @@
         "fromPrice": 379000.0,
         "toPrice": 283000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -4788,10 +4788,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 19312390704000,
-        "rightsRatio": 14.672249877060068,
+        "marketCap": 19067671920000,
+        "rightsRatio": 14.860556827353887,
         "cbRatio": null,
-        "totalRatio": 14.672249877060068
+        "totalRatio": 14.860556827353887
       },
       "sector": "소재",
       "eps": {
@@ -4845,7 +4845,7 @@
         "fromPrice": 2115000.0,
         "toPrice": 1632000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -4891,10 +4891,10 @@
           "latestDate": "2026-04-15",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 16984427100000,
+        "marketCap": 16752293700000,
         "rightsRatio": null,
-        "cbRatio": 7.183050642903345,
-        "totalRatio": 7.183050642903345
+        "cbRatio": 7.282584831950505,
+        "totalRatio": 7.282584831950505
       },
       "sector": "기술",
       "eps": {
@@ -4948,7 +4948,7 @@
         "fromPrice": 362000.0,
         "toPrice": 236000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -4994,7 +4994,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 22866441376500,
+        "marketCap": 22515997830500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5051,7 +5051,7 @@
         "fromPrice": 134900.0,
         "toPrice": 109800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -5097,10 +5097,10 @@
           "latestDate": "2026-06-09",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 8451902563500,
+        "marketCap": 8373953528000,
         "rightsRatio": null,
-        "cbRatio": 5.915827782483877,
-        "totalRatio": 5.915827782483877
+        "cbRatio": 5.9708953283314665,
+        "totalRatio": 5.9708953283314665
       },
       "sector": "산업재",
       "eps": {
@@ -5154,7 +5154,7 @@
         "fromPrice": 108900.0,
         "toPrice": 81700.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -5200,7 +5200,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6152771820000,
+        "marketCap": 6247429848000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5257,7 +5257,7 @@
         "fromPrice": 679000.0,
         "toPrice": 424000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -5303,7 +5303,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 8190156422000,
+        "marketCap": 8312600621000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5354,13 +5354,13 @@
         "source": "yahoo"
       },
       "crash": {
-        "pct": -32.560706401766005,
+        "pct": -29.580573951434875,
         "from": "2026-11-02",
-        "to": "2026-11-09",
+        "to": "2026-11-06",
         "fromPrice": 906000.0,
-        "toPrice": 611000.0,
+        "toPrice": 638000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -5406,7 +5406,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6186227574900,
+        "marketCap": 6191501426200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5463,7 +5463,7 @@
         "fromPrice": 270000.0,
         "toPrice": 206500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -5566,7 +5566,7 @@
         "fromPrice": 56700.0,
         "toPrice": 44850.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -5612,7 +5612,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 14332500000000,
+        "marketCap": 14197500000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5669,7 +5669,7 @@
         "fromPrice": 284000.0,
         "toPrice": 210500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -5715,7 +5715,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 11864664000000,
+        "marketCap": 11871602400000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5772,7 +5772,7 @@
         "fromPrice": 144000.0,
         "toPrice": 120100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -5818,7 +5818,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9743997656350,
+        "marketCap": 9648701835750,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5875,7 +5875,7 @@
         "fromPrice": 28450.0,
         "toPrice": 22200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -5921,7 +5921,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 20373940152000,
+        "marketCap": 19477864080500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -5978,7 +5978,7 @@
         "fromPrice": 24500.0,
         "toPrice": 20500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -6024,7 +6024,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 10696808720500,
+        "marketCap": 10715219751000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6081,7 +6081,7 @@
         "fromPrice": 28100.0,
         "toPrice": 22400.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -6127,7 +6127,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 10642160059500,
+        "marketCap": 10310333242500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6184,7 +6184,7 @@
         "fromPrice": 266000.0,
         "toPrice": 211000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -6230,7 +6230,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 11809934880800,
+        "marketCap": 11888742835200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6281,13 +6281,13 @@
         "source": "yahoo"
       },
       "crash": {
-        "pct": -18.76923076923077,
+        "pct": -18.307692307692303,
         "from": "2026-11-02",
-        "to": "2026-11-09",
+        "to": "2026-11-06",
         "fromPrice": 130000.0,
-        "toPrice": 105600.0,
+        "toPrice": 106200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -6333,7 +6333,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 13662134016000,
+        "marketCap": 13671028634500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6390,7 +6390,7 @@
         "fromPrice": 247000.0,
         "toPrice": 185200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -6436,7 +6436,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4448598671400,
+        "marketCap": 4646803562700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6493,7 +6493,7 @@
         "fromPrice": 93400.0,
         "toPrice": 59200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -6539,7 +6539,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6483180000000,
+        "marketCap": 6358160000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6596,7 +6596,7 @@
         "fromPrice": 111100.0,
         "toPrice": 88000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -6642,7 +6642,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 8549972025000,
+        "marketCap": 8678033280000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6699,7 +6699,7 @@
         "fromPrice": 1243000.0,
         "toPrice": 1040000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -6745,7 +6745,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 15366396457090,
+        "marketCap": 15167039990340,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6802,7 +6802,7 @@
         "fromPrice": 26600.0,
         "toPrice": 22400.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -6848,7 +6848,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 14159797813000,
+        "marketCap": 13761864385000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -6905,7 +6905,7 @@
         "fromPrice": 173000.0,
         "toPrice": 113000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -6951,7 +6951,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 9256166419500,
+        "marketCap": 9349663050000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7002,13 +7002,13 @@
         "source": "yahoo"
       },
       "crash": {
-        "pct": -23.547400611620795,
+        "pct": -23.088685015290523,
         "from": "2026-11-02",
-        "to": "2026-11-09",
+        "to": "2026-11-06",
         "fromPrice": 65400.0,
-        "toPrice": 50000.0,
+        "toPrice": 50300.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -7054,7 +7054,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4764856335400,
+        "marketCap": 4795364728700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7111,7 +7111,7 @@
         "fromPrice": 321500.0,
         "toPrice": 223500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -7157,7 +7157,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7227269511000,
+        "marketCap": 7329454555500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7214,7 +7214,7 @@
         "fromPrice": 79200.0,
         "toPrice": 65000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -7260,7 +7260,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7519478951000,
+        "marketCap": 7084703390800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7317,7 +7317,7 @@
         "fromPrice": 85100.0,
         "toPrice": 73800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -7363,7 +7363,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 5845093011400,
+        "marketCap": 5727307761800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7420,7 +7420,7 @@
         "fromPrice": 113600.0,
         "toPrice": 92400.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -7466,10 +7466,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4964220073200,
-        "rightsRatio": 23.594844360817486,
+        "marketCap": 4834631999000,
+        "rightsRatio": 24.22728348801466,
         "cbRatio": null,
-        "totalRatio": 23.594844360817486
+        "totalRatio": 24.22728348801466
       },
       "sector": "기술",
       "eps": {
@@ -7523,7 +7523,7 @@
         "fromPrice": 51700.0,
         "toPrice": 36800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -7569,7 +7569,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7404717307100,
+        "marketCap": 7258330803500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7626,7 +7626,7 @@
         "fromPrice": 75900.0,
         "toPrice": 58200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -7672,7 +7672,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6195248402800,
+        "marketCap": 6080600214400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7729,7 +7729,7 @@
         "fromPrice": 225000.0,
         "toPrice": 163000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -7775,7 +7775,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4863036766500,
+        "marketCap": 4801411507200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7832,7 +7832,7 @@
         "fromPrice": 471500.0,
         "toPrice": 372500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -7878,7 +7878,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7616522227500,
+        "marketCap": 7418084100500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -7935,7 +7935,7 @@
         "fromPrice": 157700.0,
         "toPrice": 125400.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -7981,7 +7981,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4929436123200,
+        "marketCap": 4818036436800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8038,7 +8038,7 @@
         "fromPrice": 34150.0,
         "toPrice": 28300.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -8084,10 +8084,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 8404823548800,
-        "rightsRatio": 4.759171769371768,
+        "marketCap": 8198455113450,
+        "rightsRatio": 4.878967855099662,
         "cbRatio": null,
-        "totalRatio": 4.759171769371768
+        "totalRatio": 4.878967855099662
       },
       "sector": "금융",
       "eps": {
@@ -8141,7 +8141,7 @@
         "fromPrice": 36500.0,
         "toPrice": 28800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -8187,7 +8187,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6875729258400,
+        "marketCap": 6782355157360,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8244,7 +8244,7 @@
         "fromPrice": 17810.0,
         "toPrice": 14580.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -8290,7 +8290,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7195429267500,
+        "marketCap": 7025070194500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8347,7 +8347,7 @@
         "fromPrice": 213000.0,
         "toPrice": 169600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -8393,7 +8393,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3696705936000,
+        "marketCap": 3659365472000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8450,7 +8450,7 @@
         "fromPrice": 318000.0,
         "toPrice": 216000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -8496,7 +8496,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3975289292730,
+        "marketCap": 3928740237780,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8553,7 +8553,7 @@
         "fromPrice": 14610.0,
         "toPrice": 11780.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -8599,7 +8599,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4072413030000,
+        "marketCap": 4053020587000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8656,7 +8656,7 @@
         "fromPrice": 338000.0,
         "toPrice": 257000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -8702,7 +8702,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7169560152000,
+        "marketCap": 7489283780400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8759,7 +8759,7 @@
         "fromPrice": 143700.0,
         "toPrice": 99000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -8805,7 +8805,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3751576027600,
+        "marketCap": 3938675087800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8862,7 +8862,7 @@
         "fromPrice": 155900.0,
         "toPrice": 119100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -8908,7 +8908,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7134337075000,
+        "marketCap": 6789758775000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -8965,7 +8965,7 @@
         "fromPrice": 119800.0,
         "toPrice": 97500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -9011,7 +9011,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3069587048080,
+        "marketCap": 3086309979940,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9068,7 +9068,7 @@
         "fromPrice": 31000.0,
         "toPrice": 20800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -9114,7 +9114,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2852411932000,
+        "marketCap": 2820226748000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9171,7 +9171,7 @@
         "fromPrice": 89100.0,
         "toPrice": 65600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -9217,7 +9217,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4219796344400,
+        "marketCap": 4240340630400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9274,7 +9274,7 @@
         "fromPrice": 16340.0,
         "toPrice": 11200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -9320,7 +9320,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4957974943600,
+        "marketCap": 4938832183200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9377,7 +9377,7 @@
         "fromPrice": 65400.0,
         "toPrice": 53100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -9423,7 +9423,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3535000000000,
+        "marketCap": 3505000000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9480,7 +9480,7 @@
         "fromPrice": 15850.0,
         "toPrice": 11000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -9526,7 +9526,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3412173398100,
+        "marketCap": 3457750068600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9583,7 +9583,7 @@
         "fromPrice": 183600.0,
         "toPrice": 120800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -9686,7 +9686,7 @@
         "fromPrice": 110100.0,
         "toPrice": 71200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -9732,7 +9732,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3262043200000,
+        "marketCap": 3246360300000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9789,7 +9789,7 @@
         "fromPrice": 35450.0,
         "toPrice": 29200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -9835,7 +9835,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7321971972000,
+        "marketCap": 7376818204000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9892,7 +9892,7 @@
         "fromPrice": 938000.0,
         "toPrice": 687000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -9938,7 +9938,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4688114256800,
+        "marketCap": 4613009559600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -9995,7 +9995,7 @@
         "fromPrice": 141000.0,
         "toPrice": 123600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -10041,7 +10041,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3474368808000,
+        "marketCap": 3430389456000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10098,7 +10098,7 @@
         "fromPrice": 269500.0,
         "toPrice": 225000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -10144,7 +10144,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1960500072500,
+        "marketCap": 2064781991250,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10201,7 +10201,7 @@
         "fromPrice": 78400.0,
         "toPrice": 58400.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -10247,7 +10247,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2139314164000,
+        "marketCap": 2143698004500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10304,7 +10304,7 @@
         "fromPrice": 544000.0,
         "toPrice": 396000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -10350,7 +10350,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3137287032000,
+        "marketCap": 3163215024000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10407,7 +10407,7 @@
         "fromPrice": 166700.0,
         "toPrice": 106600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -10453,7 +10453,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 8087590908150,
+        "marketCap": 8062024235100,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10510,7 +10510,7 @@
         "fromPrice": 65300.0,
         "toPrice": 50300.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -10556,7 +10556,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6061142292000,
+        "marketCap": 6023101650000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10613,7 +10613,7 @@
         "fromPrice": 534000.0,
         "toPrice": 386000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -10659,7 +10659,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3749826558500,
+        "marketCap": 3723137401500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10716,7 +10716,7 @@
         "fromPrice": 46500.0,
         "toPrice": 33750.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -10762,7 +10762,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2455128189900,
+        "marketCap": 2458369283220,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10819,7 +10819,7 @@
         "fromPrice": 20400.0,
         "toPrice": 16280.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -10865,7 +10865,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2362868207700,
+        "marketCap": 2459649023400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -10922,7 +10922,7 @@
         "fromPrice": 145600.0,
         "toPrice": 122500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -10968,7 +10968,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1721625444000,
+        "marketCap": 1762616526000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11025,7 +11025,7 @@
         "fromPrice": 260000.0,
         "toPrice": 212500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -11071,10 +11071,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2362981795200,
-        "rightsRatio": 49.392466855683715,
+        "marketCap": 2400850093200,
+        "rightsRatio": 48.61340586426914,
         "cbRatio": null,
-        "totalRatio": 49.392466855683715
+        "totalRatio": 48.61340586426914
       },
       "sector": "소재",
       "eps": {
@@ -11128,7 +11128,7 @@
         "fromPrice": 144600.0,
         "toPrice": 105600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -11174,7 +11174,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1815415637750,
+        "marketCap": 1883969794700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11231,7 +11231,7 @@
         "fromPrice": 64400.0,
         "toPrice": 47050.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -11277,7 +11277,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1911583603000,
+        "marketCap": 1900316902000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11334,7 +11334,7 @@
         "fromPrice": 89400.0,
         "toPrice": 59100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -11380,7 +11380,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2739977373000,
+        "marketCap": 2734304542000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11437,7 +11437,7 @@
         "fromPrice": 219500.0,
         "toPrice": 177000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -11483,7 +11483,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2658532816500,
+        "marketCap": 2665886987500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11540,7 +11540,7 @@
         "fromPrice": 680000.0,
         "toPrice": 495000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -11586,7 +11586,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1861239019000,
+        "marketCap": 1941718903500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11643,7 +11643,7 @@
         "fromPrice": 304000.0,
         "toPrice": 238000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -11689,7 +11689,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2393765610600,
+        "marketCap": 2386544598200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11746,7 +11746,7 @@
         "fromPrice": 111100.0,
         "toPrice": 81600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -11792,7 +11792,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2922908072500,
+        "marketCap": 2904123316250,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11849,7 +11849,7 @@
         "fromPrice": 6600.0,
         "toPrice": 4955.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -11895,7 +11895,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3326927517600,
+        "marketCap": 3333689565400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -11952,7 +11952,7 @@
         "fromPrice": 88700.0,
         "toPrice": 70500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -11998,7 +11998,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1488540704000,
+        "marketCap": 1497932128000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12055,7 +12055,7 @@
         "fromPrice": 76900.0,
         "toPrice": 49350.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -12101,7 +12101,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2077285269800,
+        "marketCap": 2153887980400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12158,7 +12158,7 @@
         "fromPrice": 153400.0,
         "toPrice": 114100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -12204,7 +12204,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2735328009500,
+        "marketCap": 2769567164000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12261,7 +12261,7 @@
         "fromPrice": 175100.0,
         "toPrice": 132900.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -12307,7 +12307,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3065722838200,
+        "marketCap": 3030546848000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12364,7 +12364,7 @@
         "fromPrice": 217000.0,
         "toPrice": 167500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -12410,7 +12410,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4331402057500,
+        "marketCap": 4270586740000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12467,7 +12467,7 @@
         "fromPrice": 68300.0,
         "toPrice": 52300.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -12513,7 +12513,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3081352108800,
+        "marketCap": 3085608120000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12570,7 +12570,7 @@
         "fromPrice": 90700.0,
         "toPrice": 77100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -12616,7 +12616,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2838135273280,
+        "marketCap": 2784622946200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12673,7 +12673,7 @@
         "fromPrice": 19530.0,
         "toPrice": 17370.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -12719,7 +12719,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2661604786900,
+        "marketCap": 2623392901500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12776,7 +12776,7 @@
         "fromPrice": 219500.0,
         "toPrice": 190300.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -12822,7 +12822,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2490841899000,
+        "marketCap": 2442180763000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12879,7 +12879,7 @@
         "fromPrice": 453000.0,
         "toPrice": 387000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -12925,7 +12925,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1958228604300,
+        "marketCap": 1907330733600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -12982,7 +12982,7 @@
         "fromPrice": 118700.0,
         "toPrice": 88500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -13028,7 +13028,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1781608538500,
+        "marketCap": 1732217410700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13085,7 +13085,7 @@
         "fromPrice": 71900.0,
         "toPrice": 55300.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -13131,7 +13131,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3255373688200,
+        "marketCap": 3207372199500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13188,7 +13188,7 @@
         "fromPrice": 44250.0,
         "toPrice": 36150.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -13234,7 +13234,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1398491033600,
+        "marketCap": 1390296750200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13291,7 +13291,7 @@
         "fromPrice": 79800.0,
         "toPrice": 63900.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -13337,7 +13337,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1317515795500,
+        "marketCap": 1300814891050,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13394,7 +13394,7 @@
         "fromPrice": 57800.0,
         "toPrice": 47900.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -13440,7 +13440,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2611372066120,
+        "marketCap": 2584643590520,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13497,7 +13497,7 @@
         "fromPrice": 6200.0,
         "toPrice": 5000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -13543,7 +13543,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2262860895750,
+        "marketCap": 2243303887500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13600,7 +13600,7 @@
         "fromPrice": 21100.0,
         "toPrice": 18590.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -13703,7 +13703,7 @@
         "fromPrice": 115200.0,
         "toPrice": 85000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -13749,7 +13749,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3932514125000,
+        "marketCap": 3918835815000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13806,7 +13806,7 @@
         "fromPrice": 50700.0,
         "toPrice": 34900.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -13852,7 +13852,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2423203621200,
+        "marketCap": 2405919715200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -13909,7 +13909,7 @@
         "fromPrice": 137200.0,
         "toPrice": 111900.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -13955,7 +13955,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2025246090400,
+        "marketCap": 2001450770800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14012,7 +14012,7 @@
         "fromPrice": 48750.0,
         "toPrice": 41400.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -14058,7 +14058,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 4513862398500,
+        "marketCap": 4428493842500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14115,7 +14115,7 @@
         "fromPrice": 53300.0,
         "toPrice": 46550.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -14161,7 +14161,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3068525030480,
+        "marketCap": 3037737153920,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14218,7 +14218,7 @@
         "fromPrice": 5190.0,
         "toPrice": 3950.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -14264,7 +14264,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1156722229300,
+        "marketCap": 1170290818500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14321,7 +14321,7 @@
         "fromPrice": 67700.0,
         "toPrice": 47900.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -14367,7 +14367,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2079050167900,
+        "marketCap": 2051638755950,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14424,7 +14424,7 @@
         "fromPrice": 54700.0,
         "toPrice": 40550.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -14470,7 +14470,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2986884194500,
+        "marketCap": 2905228367600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14527,7 +14527,7 @@
         "fromPrice": 57500.0,
         "toPrice": 45750.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -14573,7 +14573,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 993187929100,
+        "marketCap": 995939142200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14630,7 +14630,7 @@
         "fromPrice": 87600.0,
         "toPrice": 71000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -14676,7 +14676,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1820078572800,
+        "marketCap": 1774792257600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14733,7 +14733,7 @@
         "fromPrice": 110000.0,
         "toPrice": 84700.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -14779,7 +14779,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3066814883800,
+        "marketCap": 3059223757850,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14836,7 +14836,7 @@
         "fromPrice": 38700.0,
         "toPrice": 25650.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -14882,7 +14882,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1941797119350,
+        "marketCap": 1851137753300,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -14939,7 +14939,7 @@
         "fromPrice": 95900.0,
         "toPrice": 71200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -14985,7 +14985,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1838250000000,
+        "marketCap": 1809000000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15042,7 +15042,7 @@
         "fromPrice": 63900.0,
         "toPrice": 49700.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -15088,7 +15088,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3274648766750,
+        "marketCap": 3168761920400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15145,7 +15145,7 @@
         "fromPrice": 50500.0,
         "toPrice": 41400.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -15191,7 +15191,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2383214952000,
+        "marketCap": 2309711288000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15248,7 +15248,7 @@
         "fromPrice": 155300.0,
         "toPrice": 126500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -15294,7 +15294,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1969554373500,
+        "marketCap": 1954025692500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15351,7 +15351,7 @@
         "fromPrice": 62800.0,
         "toPrice": 44200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -15397,7 +15397,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1291320519750,
+        "marketCap": 1276691760000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15454,7 +15454,7 @@
         "fromPrice": 86100.0,
         "toPrice": 63400.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -15500,7 +15500,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1972147924000,
+        "marketCap": 1959613085500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15557,7 +15557,7 @@
         "fromPrice": 23500.0,
         "toPrice": 18660.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -15603,7 +15603,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2139943191200,
+        "marketCap": 2129498783000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15660,7 +15660,7 @@
         "fromPrice": 250000.0,
         "toPrice": 214000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -15706,7 +15706,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2410065208200,
+        "marketCap": 2357591004600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15763,7 +15763,7 @@
         "fromPrice": 80500.0,
         "toPrice": 61800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -15809,7 +15809,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2111642932700,
+        "marketCap": 2090917974800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15866,7 +15866,7 @@
         "fromPrice": 76200.0,
         "toPrice": 58600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -15912,7 +15912,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1206014627000,
+        "marketCap": 1223182095000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -15969,7 +15969,7 @@
         "fromPrice": 425500.0,
         "toPrice": 305500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -16015,7 +16015,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1519606918230,
+        "marketCap": 1528224726840,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16072,7 +16072,7 @@
         "fromPrice": 7800.0,
         "toPrice": 5850.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -16118,7 +16118,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1370230362300,
+        "marketCap": 1348290720400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16175,7 +16175,7 @@
         "fromPrice": 138800.0,
         "toPrice": 110500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -16221,7 +16221,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2841450000000,
+        "marketCap": 2811540000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16278,7 +16278,7 @@
         "fromPrice": 29250.0,
         "toPrice": 24650.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -16324,7 +16324,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 705652121460,
+        "marketCap": 691045475120,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16381,7 +16381,7 @@
         "fromPrice": 35650.0,
         "toPrice": 28000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -16427,7 +16427,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 867695619700,
+        "marketCap": 870913279600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16484,7 +16484,7 @@
         "fromPrice": 20050.0,
         "toPrice": 11590.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -16530,7 +16530,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1605826968900,
+        "marketCap": 1560174460900,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16587,7 +16587,7 @@
         "fromPrice": 176900.0,
         "toPrice": 138700.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -16690,7 +16690,7 @@
         "fromPrice": 51400.0,
         "toPrice": 41950.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -16736,7 +16736,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2501542635000,
+        "marketCap": 2478294097500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16793,7 +16793,7 @@
         "fromPrice": 33300.0,
         "toPrice": 25500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -16839,7 +16839,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2389155384000,
+        "marketCap": 2346869448000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16896,7 +16896,7 @@
         "fromPrice": 37600.0,
         "toPrice": 29600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -16942,7 +16942,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1195172373600,
+        "marketCap": 1171526877000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -16999,7 +16999,7 @@
         "fromPrice": 56800.0,
         "toPrice": 47300.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -17045,7 +17045,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 700236992000,
+        "marketCap": 694345575000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17102,7 +17102,7 @@
         "fromPrice": 1570000.0,
         "toPrice": 1075000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -17148,7 +17148,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2301650899200,
+        "marketCap": 2036440096000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17205,7 +17205,7 @@
         "fromPrice": 33300.0,
         "toPrice": 24350.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -17251,7 +17251,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1188597691000,
+        "marketCap": 1169037032000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17308,7 +17308,7 @@
         "fromPrice": 194000.0,
         "toPrice": 156000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -17354,7 +17354,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1026428105000,
+        "marketCap": 1007617072000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17411,7 +17411,7 @@
         "fromPrice": 27850.0,
         "toPrice": 20500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -17457,7 +17457,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 869575140000,
+        "marketCap": 859913194000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17514,7 +17514,7 @@
         "fromPrice": 95200.0,
         "toPrice": 81500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -17560,7 +17560,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 954441151200,
+        "marketCap": 929324278800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17617,7 +17617,7 @@
         "fromPrice": 52600.0,
         "toPrice": 40150.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -17663,7 +17663,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1488877137000,
+        "marketCap": 1446767480600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17720,7 +17720,7 @@
         "fromPrice": 28300.0,
         "toPrice": 24500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -17766,7 +17766,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 962897895150,
+        "marketCap": 968277213000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17823,7 +17823,7 @@
         "fromPrice": 49500.0,
         "toPrice": 34900.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -17869,7 +17869,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 753785608050,
+        "marketCap": 746878065250,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -17926,7 +17926,7 @@
         "fromPrice": 68800.0,
         "toPrice": 54800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -17972,7 +17972,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1181630834680,
+        "marketCap": 1165239092100,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -18029,7 +18029,7 @@
         "fromPrice": 18120.0,
         "toPrice": 16280.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -18075,7 +18075,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1100584640000,
+        "marketCap": 1071350360500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -18132,7 +18132,7 @@
         "fromPrice": 411000.0,
         "toPrice": 362500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -18178,7 +18178,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 852594708340,
+        "marketCap": 842965815330,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -18235,7 +18235,7 @@
         "fromPrice": 12550.0,
         "toPrice": 9670.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -18281,7 +18281,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1580242394200,
+        "marketCap": 1573621266850,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -18338,7 +18338,7 @@
         "fromPrice": 45450.0,
         "toPrice": 37600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -18384,7 +18384,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 469110738000,
+        "marketCap": 472691736000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -18441,7 +18441,7 @@
         "fromPrice": 88300.0,
         "toPrice": 62000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -18487,7 +18487,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1144462602000,
+        "marketCap": 1133297113200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -18544,7 +18544,7 @@
         "fromPrice": 133200.0,
         "toPrice": 113700.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -18590,7 +18590,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 602875635000,
+        "marketCap": 590055865750,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -18647,7 +18647,7 @@
         "fromPrice": 23900.0,
         "toPrice": 20400.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -18693,10 +18693,10 @@
           "latestDate": "2026-04-08",
           "latestNote": "무기명식 무이권부 무보증 사모 전환사채"
         },
-        "marketCap": 574412028690,
+        "marketCap": 566737853290,
         "rightsRatio": null,
-        "cbRatio": 8.704553091276596,
-        "totalRatio": 8.704553091276596
+        "cbRatio": 8.822421108761722,
+        "totalRatio": 8.822421108761722
       },
       "sector": "소재",
       "eps": {
@@ -18750,7 +18750,7 @@
         "fromPrice": 20700.0,
         "toPrice": 16900.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -18796,7 +18796,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 654968397600,
+        "marketCap": 645112512000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -18853,7 +18853,7 @@
         "fromPrice": 263500.0,
         "toPrice": 195300.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -18899,7 +18899,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1018821463200,
+        "marketCap": 1021605128400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -18956,7 +18956,7 @@
         "fromPrice": 146000.0,
         "toPrice": 121000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -19002,7 +19002,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1220795905200,
+        "marketCap": 1206822940020,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -19059,7 +19059,7 @@
         "fromPrice": 18380.0,
         "toPrice": 16000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -19105,7 +19105,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 680997375000,
+        "marketCap": 658717831250,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -19162,7 +19162,7 @@
         "fromPrice": 28900.0,
         "toPrice": 22050.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -19208,7 +19208,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 949593994800,
+        "marketCap": 942533816400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -19265,7 +19265,7 @@
         "fromPrice": 51400.0,
         "toPrice": 41000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -19311,7 +19311,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 538555920000,
+        "marketCap": 542879190000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -19368,7 +19368,7 @@
         "fromPrice": 189900.0,
         "toPrice": 121500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -19414,7 +19414,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 328006267120,
+        "marketCap": 315715634160,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -19471,7 +19471,7 @@
         "fromPrice": 17740.0,
         "toPrice": 12720.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -19517,7 +19517,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 811018277700,
+        "marketCap": 795467779750,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -19574,7 +19574,7 @@
         "fromPrice": 9260.0,
         "toPrice": 7260.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -19620,7 +19620,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 837143191200,
+        "marketCap": 833669568000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -19677,7 +19677,7 @@
         "fromPrice": 91600.0,
         "toPrice": 72200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -19723,7 +19723,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 541274080200,
+        "marketCap": 536671409450,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -19780,7 +19780,7 @@
         "fromPrice": 64600.0,
         "toPrice": 51100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -19826,7 +19826,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 283464000000,
+        "marketCap": 278504000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -19883,7 +19883,7 @@
         "fromPrice": 28250.0,
         "toPrice": 22100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -19929,7 +19929,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 646000000000,
+        "marketCap": 655025000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -19986,7 +19986,7 @@
         "fromPrice": 154300.0,
         "toPrice": 130000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -20032,7 +20032,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 409702745400,
+        "marketCap": 400005639000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -20089,7 +20089,7 @@
         "fromPrice": 148800.0,
         "toPrice": 115500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -20135,7 +20135,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 314504502400,
+        "marketCap": 309415964000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -20192,7 +20192,7 @@
         "fromPrice": 212000.0,
         "toPrice": 167100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -20238,7 +20238,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 607367357900,
+        "marketCap": 589972588700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -20295,7 +20295,7 @@
         "fromPrice": 27900.0,
         "toPrice": 22900.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -20341,7 +20341,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 631653347200,
+        "marketCap": 633579119600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -20398,7 +20398,7 @@
         "fromPrice": 143100.0,
         "toPrice": 125000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -20444,7 +20444,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7574432940900,
+        "marketCap": 7385308522900,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -20501,7 +20501,7 @@
         "fromPrice": 199509.9375,
         "toPrice": 157201.671875,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -20531,7 +20531,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 8646859527500,
+        "marketCap": 8634418003000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -20588,7 +20588,7 @@
         "fromPrice": 675000.0,
         "toPrice": 510000.0,
         "rangeFrom": "2025-11-25",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -20634,10 +20634,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 12264510585600,
-        "rightsRatio": 1.6307162107619944,
+        "marketCap": 11708296953600,
+        "rightsRatio": 1.708184914361139,
         "cbRatio": null,
-        "totalRatio": 1.6307162107619944
+        "totalRatio": 1.708184914361139
       },
       "sector": "헬스케어",
       "eps": {
@@ -20691,7 +20691,7 @@
         "fromPrice": 398461.53125,
         "toPrice": 284615.375,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -20737,7 +20737,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 8466134103000,
+        "marketCap": 8143614708600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -20794,7 +20794,7 @@
         "fromPrice": 185000.0,
         "toPrice": 133800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -20840,10 +20840,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 7911959727000,
-        "rightsRatio": 11.199988821682231,
+        "marketCap": 7525285003500,
+        "rightsRatio": 11.775482318448512,
         "cbRatio": null,
-        "totalRatio": 11.199988821682231
+        "totalRatio": 11.775482318448512
       },
       "sector": "산업재",
       "eps": {
@@ -20897,7 +20897,7 @@
         "fromPrice": 217000.0,
         "toPrice": 159700.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -20943,7 +20943,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 6154971293400,
+        "marketCap": 6474828747400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -21000,7 +21000,7 @@
         "fromPrice": 163900.0,
         "toPrice": 98300.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -21046,10 +21046,10 @@
           "latestDate": "2026-08-05",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 4012849250600,
+        "marketCap": 4006205460450,
         "rightsRatio": null,
-        "cbRatio": 1.3705972132338742,
-        "totalRatio": 1.3705972132338742
+        "cbRatio": 1.3728701771032503,
+        "totalRatio": 1.3728701771032503
       },
       "sector": "산업재",
       "eps": {
@@ -21103,7 +21103,7 @@
         "fromPrice": 52200.0,
         "toPrice": 25650.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -21149,7 +21149,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2191851582700,
+        "marketCap": 2168608193700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -21206,7 +21206,7 @@
         "fromPrice": 187700.0,
         "toPrice": 108200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -21252,7 +21252,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3152888712000,
+        "marketCap": 3274527937000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -21309,7 +21309,7 @@
         "fromPrice": 165600.0,
         "toPrice": 102700.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -21355,7 +21355,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 5916956690000,
+        "marketCap": 5868457045000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -21412,7 +21412,7 @@
         "fromPrice": 878000.0,
         "toPrice": 638000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -21458,7 +21458,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3548030400000,
+        "marketCap": 3702024775000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -21515,7 +21515,7 @@
         "fromPrice": 391500.0,
         "toPrice": 283500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -21561,7 +21561,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3498787160000,
+        "marketCap": 3525350620000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -21618,7 +21618,7 @@
         "fromPrice": 73900.0,
         "toPrice": 55200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -21664,10 +21664,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1937649549750,
-        "rightsRatio": 1.1211739864312893,
+        "marketCap": 1962455874000,
+        "rightsRatio": 1.107001843344377,
         "cbRatio": null,
-        "totalRatio": 1.1211739864312893
+        "totalRatio": 1.107001843344377
       },
       "sector": "헬스케어",
       "eps": {
@@ -21721,7 +21721,7 @@
         "fromPrice": 172700.0,
         "toPrice": 127600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -21767,7 +21767,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2673693512000,
+        "marketCap": 2799657796000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -21824,7 +21824,7 @@
         "fromPrice": 83500.0,
         "toPrice": 56600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -21870,7 +21870,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3022277832000,
+        "marketCap": 3007642104000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -21927,7 +21927,7 @@
         "fromPrice": 405000.0,
         "toPrice": 274500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -21973,7 +21973,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3505658092800,
+        "marketCap": 3729661804800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -22030,7 +22030,7 @@
         "fromPrice": 98300.0,
         "toPrice": 63800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -22076,10 +22076,10 @@
           "latestDate": "2026-07-22",
           "latestNote": "무기명식 무이권부 무보증 사모 전환사채"
         },
-        "marketCap": 2073410281200,
-        "rightsRatio": 15.915792479287335,
-        "cbRatio": 8.199052620767915,
-        "totalRatio": 24.114845100055252
+        "marketCap": 2069766326400,
+        "rightsRatio": 15.943813240694531,
+        "cbRatio": 8.213487572565043,
+        "totalRatio": 24.157300813259575
       },
       "sector": "헬스케어",
       "eps": {
@@ -22133,7 +22133,7 @@
         "fromPrice": 197700.0,
         "toPrice": 138200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -22179,7 +22179,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2498710344000,
+        "marketCap": 2451956928000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -22236,7 +22236,7 @@
         "fromPrice": 534000.0,
         "toPrice": 336500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -22282,7 +22282,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2233333649400,
+        "marketCap": 2357890519600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -22339,7 +22339,7 @@
         "fromPrice": 157000.0,
         "toPrice": 101400.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -22385,7 +22385,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 3988632206400,
+        "marketCap": 3972246980200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -22442,7 +22442,7 @@
         "fromPrice": 1184000.0,
         "toPrice": 609000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -22488,10 +22488,10 @@
           "latestDate": "2026-03-13",
           "latestNote": "무기명식 무이권부 무보증 사모 전환사채"
         },
-        "marketCap": 1751521408000,
+        "marketCap": 1778467891200,
         "rightsRatio": null,
-        "cbRatio": 2.569194974978005,
-        "totalRatio": 2.569194974978005
+        "cbRatio": 2.530267778387429,
+        "totalRatio": 2.530267778387429
       },
       "sector": "기술",
       "eps": {
@@ -22545,7 +22545,7 @@
         "fromPrice": 80900.0,
         "toPrice": 50100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -22591,10 +22591,10 @@
           "latestDate": "2026-04-15",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 1589043195000,
+        "marketCap": 1652169568500,
         "rightsRatio": null,
-        "cbRatio": 14.25386048111801,
-        "totalRatio": 14.25386048111801
+        "cbRatio": 13.709246576042355,
+        "totalRatio": 13.709246576042355
       },
       "sector": "헬스케어",
       "eps": {
@@ -22648,7 +22648,7 @@
         "fromPrice": 111200.0,
         "toPrice": 77700.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -22694,10 +22694,10 @@
           "latestDate": "2026-08-05",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 1308874409100,
+        "marketCap": 1310585356040,
         "rightsRatio": null,
-        "cbRatio": 4.73689450790256,
-        "totalRatio": 4.73689450790256
+        "cbRatio": 4.7307105725136545,
+        "totalRatio": 4.7307105725136545
       },
       "sector": "산업재",
       "eps": {
@@ -22751,7 +22751,7 @@
         "fromPrice": 10880.0,
         "toPrice": 7740.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -22797,10 +22797,10 @@
           "latestDate": "2026-11-09",
           "latestNote": "무기명식 이권부 무보증 사모 전환사채"
         },
-        "marketCap": 1620225733150,
-        "rightsRatio": 11.109564088335317,
-        "cbRatio": 19.75033437951047,
-        "totalRatio": 30.859898467845788
+        "marketCap": 1635035840400,
+        "rightsRatio": 11.008933978839526,
+        "cbRatio": 19.571436423174323,
+        "totalRatio": 30.580370402013852
       },
       "sector": "기술",
       "eps": {
@@ -22854,7 +22854,7 @@
         "fromPrice": 42500.0,
         "toPrice": 27900.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -22900,7 +22900,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1623736680600,
+        "marketCap": 1655397284400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -22957,7 +22957,7 @@
         "fromPrice": 206500.0,
         "toPrice": 135200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -23003,7 +23003,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1715886806400,
+        "marketCap": 1787382090000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -23044,7 +23044,7 @@
         "fromPrice": 287000.0,
         "toPrice": 181000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       },
       "quarter": {
         "label": "야후 분기 실적",
@@ -23106,10 +23106,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1455551801100,
-        "rightsRatio": 7.6093590588323305,
+        "marketCap": 1504273200300,
+        "rightsRatio": 7.362902085266911,
         "cbRatio": null,
-        "totalRatio": 7.6093590588323305
+        "totalRatio": 7.362902085266911
       },
       "sector": "헬스케어",
       "eps": {
@@ -23163,7 +23163,7 @@
         "fromPrice": 175100.0,
         "toPrice": 122400.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -23209,7 +23209,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1618403903100,
+        "marketCap": 1674898495200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -23266,7 +23266,7 @@
         "fromPrice": 51300.0,
         "toPrice": 34150.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -23312,7 +23312,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2459795878400,
+        "marketCap": 2555977580800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -23369,7 +23369,7 @@
         "fromPrice": 147200.0,
         "toPrice": 106500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -23415,7 +23415,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1372621352400,
+        "marketCap": 1443557856400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -23472,7 +23472,7 @@
         "fromPrice": 213000.0,
         "toPrice": 135700.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -23518,10 +23518,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1523165264600,
-        "rightsRatio": 19.695825329812997,
+        "marketCap": 1562846924800,
+        "rightsRatio": 19.195736014798218,
         "cbRatio": null,
-        "totalRatio": 19.695825329812997
+        "totalRatio": 19.195736014798218
       },
       "sector": "필수소비재",
       "eps": {
@@ -23575,7 +23575,7 @@
         "fromPrice": 53000.0,
         "toPrice": 41300.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -23621,7 +23621,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1375963432500,
+        "marketCap": 1379263105000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -23678,7 +23678,7 @@
         "fromPrice": 29400.0,
         "toPrice": 20450.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -23724,7 +23724,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1607066874000,
+        "marketCap": 1617270473200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -23781,7 +23781,7 @@
         "fromPrice": 45400.0,
         "toPrice": 33150.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -23827,7 +23827,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1512866170200,
+        "marketCap": 1489943955500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -23884,7 +23884,7 @@
         "fromPrice": 117900.0,
         "toPrice": 84700.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -23930,7 +23930,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 729909680500,
+        "marketCap": 766527223000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -23987,7 +23987,7 @@
         "fromPrice": 81600.0,
         "toPrice": 50600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -24033,7 +24033,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1547979728000,
+        "marketCap": 1563503880000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -24090,7 +24090,7 @@
         "fromPrice": 151700.0,
         "toPrice": 108400.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -24136,7 +24136,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2016974616400,
+        "marketCap": 2021295933200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -24193,7 +24193,7 @@
         "fromPrice": 231500.0,
         "toPrice": 186100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -24239,7 +24239,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1065292293750,
+        "marketCap": 1122725443500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -24296,7 +24296,7 @@
         "fromPrice": 50800.0,
         "toPrice": 31900.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -24342,7 +24342,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1864882736000,
+        "marketCap": 1922322656000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -24399,7 +24399,7 @@
         "fromPrice": 296000.0,
         "toPrice": 224500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -24445,10 +24445,10 @@
           "latestDate": "2026-07-10",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 1817392784700,
+        "marketCap": 1895928930600,
         "rightsRatio": null,
-        "cbRatio": 5.502387862539422,
-        "totalRatio": 5.502387862539422
+        "cbRatio": 5.274459310473903,
+        "totalRatio": 5.274459310473903
       },
       "sector": "기술",
       "eps": {
@@ -24502,7 +24502,7 @@
         "fromPrice": 239500.0,
         "toPrice": 143600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -24548,7 +24548,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1707394677870,
+        "marketCap": 1648365377200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -24605,7 +24605,7 @@
         "fromPrice": 46350.0,
         "toPrice": 31500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -24651,10 +24651,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 308293983360,
-        "rightsRatio": 47.03284947201897,
+        "marketCap": 306170746560,
+        "rightsRatio": 47.35901347667929,
         "cbRatio": null,
-        "totalRatio": 47.03284947201897
+        "totalRatio": 47.35901347667929
       },
       "sector": "헬스케어",
       "eps": {
@@ -24708,7 +24708,7 @@
         "fromPrice": 53400.0,
         "toPrice": 24250.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -24754,7 +24754,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1386858880000,
+        "marketCap": 1383033062400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -24811,7 +24811,7 @@
         "fromPrice": 61300.0,
         "toPrice": 46500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -24857,7 +24857,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1579651480800,
+        "marketCap": 1682502108000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -24914,7 +24914,7 @@
         "fromPrice": 199600.0,
         "toPrice": 138200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -24960,7 +24960,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1056673876100,
+        "marketCap": 1052032556000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -25017,7 +25017,7 @@
         "fromPrice": 47100.0,
         "toPrice": 34600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -25063,7 +25063,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1299050164000,
+        "marketCap": 1289314242000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -25120,7 +25120,7 @@
         "fromPrice": 339500.0,
         "toPrice": 249000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -25166,10 +25166,10 @@
           "latestDate": "2026-07-22",
           "latestNote": "무기명식 이권부 무보증 사모 전환사채"
         },
-        "marketCap": 1424014737600,
+        "marketCap": 1404684220800,
         "rightsRatio": null,
-        "cbRatio": 1.1938078694783307,
-        "totalRatio": 1.1938078694783307
+        "cbRatio": 1.2102364181408765,
+        "totalRatio": 1.2102364181408765
       },
       "sector": "필수소비재",
       "eps": {
@@ -25223,7 +25223,7 @@
         "fromPrice": 27400.0,
         "toPrice": 21100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -25269,7 +25269,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2018399593500,
+        "marketCap": 1972317411000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -25326,7 +25326,7 @@
         "fromPrice": 68500.0,
         "toPrice": 41500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -25372,10 +25372,10 @@
           "latestDate": "2026-11-05",
           "latestNote": "무기명식 무이권부 무보증 사모 전환사채"
         },
-        "marketCap": 1338982047000,
+        "marketCap": 1314581463000,
         "rightsRatio": null,
-        "cbRatio": 5.227852020632805,
-        "totalRatio": 5.227852020632805
+        "cbRatio": 5.324888717071465,
+        "totalRatio": 5.324888717071465
       },
       "sector": "산업재",
       "eps": {
@@ -25429,7 +25429,7 @@
         "fromPrice": 35000.0,
         "toPrice": 24050.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -25475,7 +25475,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1379991907350,
+        "marketCap": 1335262277700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -25532,7 +25532,7 @@
         "fromPrice": 70200.0,
         "toPrice": 58100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -25578,10 +25578,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 594683223200,
-        "rightsRatio": 2.5223367693618837,
+        "marketCap": 567023538400,
+        "rightsRatio": 2.6453775873795364,
         "cbRatio": null,
-        "totalRatio": 2.5223367693618837
+        "totalRatio": 2.6453775873795364
       },
       "sector": "헬스케어",
       "eps": {
@@ -25635,7 +25635,7 @@
         "fromPrice": 32150.0,
         "toPrice": 23800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -25681,7 +25681,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1806391041000,
+        "marketCap": 1762891130000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -25738,7 +25738,7 @@
         "fromPrice": 115500.0,
         "toPrice": 95900.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -25784,7 +25784,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1181681559200,
+        "marketCap": 1206700875600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -25841,7 +25841,7 @@
         "fromPrice": 83300.0,
         "toPrice": 51800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -25887,10 +25887,10 @@
           "latestDate": "2026-10-14",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 1098545707300,
+        "marketCap": 1091052216800,
         "rightsRatio": null,
-        "cbRatio": 6.372060764958578,
-        "totalRatio": 6.372060764958578
+        "cbRatio": 6.415824918564063,
+        "totalRatio": 6.415824918564063
       },
       "sector": "기술",
       "eps": {
@@ -25944,7 +25944,7 @@
         "fromPrice": 153100.0,
         "toPrice": 108500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -25990,7 +25990,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1182172361250,
+        "marketCap": 1129783220000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -26041,13 +26041,13 @@
         "source": "yahoo"
       },
       "crash": {
-        "pct": -23.809523809523814,
-        "from": "2026-11-02",
-        "to": "2026-11-09",
-        "fromPrice": 32550.0,
-        "toPrice": 24800.0,
+        "pct": -18.81918819188192,
+        "from": "2026-02-24",
+        "to": "2026-03-04",
+        "fromPrice": 27100.0,
+        "toPrice": 22000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -26093,7 +26093,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1685929115750,
+        "marketCap": 1666363207250,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -26150,7 +26150,7 @@
         "fromPrice": 46350.0,
         "toPrice": 33400.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -26196,7 +26196,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 914417644800,
+        "marketCap": 909924192000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -26253,7 +26253,7 @@
         "fromPrice": 41700.0,
         "toPrice": 31500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -26299,7 +26299,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1782861031000,
+        "marketCap": 1745210549600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -26356,7 +26356,7 @@
         "fromPrice": 75700.0,
         "toPrice": 57700.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -26402,7 +26402,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1373269030400,
+        "marketCap": 1343946560000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -26459,7 +26459,7 @@
         "fromPrice": 107500.0,
         "toPrice": 82000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -26505,7 +26505,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2471050467000,
+        "marketCap": 2600424837000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -26562,7 +26562,7 @@
         "fromPrice": 121000.0,
         "toPrice": 77200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -26608,7 +26608,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 965472000000,
+        "marketCap": 919548000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -26665,7 +26665,7 @@
         "fromPrice": 91200.0,
         "toPrice": 75100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -26711,7 +26711,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 963386564000,
+        "marketCap": 1076204201100,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -26768,7 +26768,7 @@
         "fromPrice": 52000.0,
         "toPrice": 37200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -26814,10 +26814,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 548690971800,
-        "rightsRatio": 0.5467555972642304,
+        "marketCap": 534958771200,
+        "rightsRatio": 0.5607906181761471,
         "cbRatio": null,
-        "totalRatio": 0.5467555972642304
+        "totalRatio": 0.5607906181761471
       },
       "sector": "기술",
       "eps": {
@@ -26871,7 +26871,7 @@
         "fromPrice": 15240.0,
         "toPrice": 10410.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -26917,7 +26917,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 2104351787750,
+        "marketCap": 2077617736000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -26974,7 +26974,7 @@
         "fromPrice": 32600.0,
         "toPrice": 21950.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -27020,10 +27020,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 435939804160,
-        "rightsRatio": 25.963836960952953,
+        "marketCap": 425648247040,
+        "rightsRatio": 26.5916048725941,
         "cbRatio": null,
-        "totalRatio": 25.963836960952953
+        "totalRatio": 26.5916048725941
       },
       "sector": "기술",
       "eps": {
@@ -27077,7 +27077,7 @@
         "fromPrice": 74200.0,
         "toPrice": 50800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -27123,7 +27123,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 639711790400,
+        "marketCap": 658650626300,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -27180,7 +27180,7 @@
         "fromPrice": 38350.0,
         "toPrice": 29550.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -27226,7 +27226,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 848287725150,
+        "marketCap": 886807349400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -27283,7 +27283,7 @@
         "fromPrice": 65700.0,
         "toPrice": 42200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -27329,10 +27329,10 @@
           "latestDate": "2026-09-08",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 1341859811160,
+        "marketCap": 1340441354700,
         "rightsRatio": null,
-        "cbRatio": 11.364823562915118,
-        "totalRatio": 11.364823562915118
+        "cbRatio": 11.376849831235663,
+        "totalRatio": 11.376849831235663
       },
       "sector": "기술",
       "eps": {
@@ -27386,7 +27386,7 @@
         "fromPrice": 30600.0,
         "toPrice": 18690.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -27432,10 +27432,10 @@
           "latestDate": "2026-06-15",
           "latestNote": "무기명식 이권부 무보증 사모 전환사채"
         },
-        "marketCap": 542618677600,
+        "marketCap": 519569388640,
         "rightsRatio": null,
-        "cbRatio": 1.842914815286115,
-        "totalRatio": 1.842914815286115
+        "cbRatio": 1.9246707405483459,
+        "totalRatio": 1.9246707405483459
       },
       "sector": "헬스케어",
       "eps": {
@@ -27489,7 +27489,7 @@
         "fromPrice": 20000.0,
         "toPrice": 11780.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -27535,10 +27535,10 @@
           "latestDate": "2026-11-04",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 1028431741820,
+        "marketCap": 1012773524070,
         "rightsRatio": null,
-        "cbRatio": 4.638129888483025,
-        "totalRatio": 4.638129888483025
+        "cbRatio": 4.709838761217766,
+        "totalRatio": 4.709838761217766
       },
       "sector": "헬스케어",
       "eps": {
@@ -27592,7 +27592,7 @@
         "fromPrice": 14710.0,
         "toPrice": 11140.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -27638,7 +27638,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 789699723400,
+        "marketCap": 809980936200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -27695,7 +27695,7 @@
         "fromPrice": 130100.0,
         "toPrice": 84200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -27741,7 +27741,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1022709065100,
+        "marketCap": 987296701350,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -27798,7 +27798,7 @@
         "fromPrice": 57300.0,
         "toPrice": 45550.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -27844,7 +27844,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 834502801500,
+        "marketCap": 842066271000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -27901,7 +27901,7 @@
         "fromPrice": 23000.0,
         "toPrice": 16530.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -27947,7 +27947,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 701171580200,
+        "marketCap": 728176813000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -28004,7 +28004,7 @@
         "fromPrice": 67000.0,
         "toPrice": 48100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -28050,10 +28050,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 695413535520,
-        "rightsRatio": 20.131902540452295,
+        "marketCap": 674030499000,
+        "rightsRatio": 20.77056979345975,
         "cbRatio": null,
-        "totalRatio": 20.131902540452295
+        "totalRatio": 20.77056979345975
       },
       "sector": "헬스케어",
       "eps": {
@@ -28107,7 +28107,7 @@
         "fromPrice": 21650.0,
         "toPrice": 17270.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -28153,7 +28153,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 808643880800,
+        "marketCap": 751148559000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -28210,7 +28210,7 @@
         "fromPrice": 74000.0,
         "toPrice": 62600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -28256,7 +28256,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 545417986200,
+        "marketCap": 536074637400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -28313,7 +28313,7 @@
         "fromPrice": 54700.0,
         "toPrice": 41550.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -28359,10 +28359,10 @@
           "latestDate": "2026-05-08",
           "latestNote": "무기명식 이권부 무보증 사모 전환사채"
         },
-        "marketCap": 449703733260,
+        "marketCap": 445294873130,
         "rightsRatio": null,
-        "cbRatio": 8.894744926850242,
-        "totalRatio": 8.894744926850242
+        "cbRatio": 8.982811708304206,
+        "totalRatio": 8.982811708304206
       },
       "sector": "기술",
       "eps": {
@@ -28416,7 +28416,7 @@
         "fromPrice": 33150.0,
         "toPrice": 21800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -28462,7 +28462,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 444748689700,
+        "marketCap": 450932912500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -28519,7 +28519,7 @@
         "fromPrice": 150000.0,
         "toPrice": 111700.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -28565,7 +28565,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 784666715400,
+        "marketCap": 759931162200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -28622,7 +28622,7 @@
         "fromPrice": 39750.0,
         "toPrice": 28100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -28668,7 +28668,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 415174441500,
+        "marketCap": 424755390150,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -28709,7 +28709,7 @@
         "fromPrice": 14480.0,
         "toPrice": 10820.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       },
       "quarter": {
         "label": "야후 분기 실적",
@@ -28771,7 +28771,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 488475000000,
+        "marketCap": 486525000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -28828,7 +28828,7 @@
         "fromPrice": 158800.0,
         "toPrice": 103600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -28874,7 +28874,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 573846967200,
+        "marketCap": 605605673400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -28931,7 +28931,7 @@
         "fromPrice": 85200.0,
         "toPrice": 57600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -28977,7 +28977,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1274869123950,
+        "marketCap": 1249422634450,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -29034,7 +29034,7 @@
         "fromPrice": 33600.0,
         "toPrice": 25100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -29080,7 +29080,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 443431273000,
+        "marketCap": 458412059250,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -29137,7 +29137,7 @@
         "fromPrice": 9610.0,
         "toPrice": 7410.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -29183,7 +29183,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 560578074100,
+        "marketCap": 539696942400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -29240,7 +29240,7 @@
         "fromPrice": 57200.0,
         "toPrice": 43000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -29286,7 +29286,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 534752768950,
+        "marketCap": 531242356900,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -29343,7 +29343,7 @@
         "fromPrice": 54600.0,
         "toPrice": 39200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -29389,7 +29389,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1271263798350,
+        "marketCap": 1247742617940,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -29446,7 +29446,7 @@
         "fromPrice": 19610.0,
         "toPrice": 15450.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -29492,10 +29492,10 @@
           "latestDate": "2026-05-13",
           "latestNote": "무기명식 이권부 무보증 사모 전환사채"
         },
-        "marketCap": 629040980700,
+        "marketCap": 605377997100,
         "rightsRatio": null,
-        "cbRatio": 7.948607727331174,
-        "totalRatio": 7.948607727331174
+        "cbRatio": 8.259302491917408,
+        "totalRatio": 8.259302491917408
       },
       "sector": "소재",
       "eps": {
@@ -29549,7 +29549,7 @@
         "fromPrice": 23650.0,
         "toPrice": 18000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -29595,10 +29595,10 @@
           "latestDate": "2026-10-16",
           "latestNote": "무기명식 무이권부 무보증 사모 전환사채"
         },
-        "marketCap": 667606199550,
+        "marketCap": 712002634200,
         "rightsRatio": null,
-        "cbRatio": 5.242611591023533,
-        "totalRatio": 5.242611591023533
+        "cbRatio": 4.915712150324514,
+        "totalRatio": 4.915712150324514
       },
       "sector": "기술",
       "eps": {
@@ -29652,7 +29652,7 @@
         "fromPrice": 38200.0,
         "toPrice": 26450.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -29698,7 +29698,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1051015643590,
+        "marketCap": 1132998143090,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -29755,7 +29755,7 @@
         "fromPrice": 11010.0,
         "toPrice": 7600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -29801,7 +29801,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 601432138510,
+        "marketCap": 591960766250,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -29858,7 +29858,7 @@
         "fromPrice": 12620.0,
         "toPrice": 9020.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -29904,7 +29904,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 527074400000,
+        "marketCap": 544161600000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -29961,7 +29961,7 @@
         "fromPrice": 27650.0,
         "toPrice": 20650.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -30007,7 +30007,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 753899586500,
+        "marketCap": 729928216500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -30064,7 +30064,7 @@
         "fromPrice": 71600.0,
         "toPrice": 53400.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -30110,7 +30110,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 489784525100,
+        "marketCap": 499855320250,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -30167,7 +30167,7 @@
         "fromPrice": 44600.0,
         "toPrice": 34000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -30213,10 +30213,10 @@
           "latestDate": "2026-01-30",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 332389763810,
+        "marketCap": 324720916260,
         "rightsRatio": null,
-        "cbRatio": 8.78486739943389,
-        "totalRatio": 8.78486739943389
+        "cbRatio": 8.992337277288268,
+        "totalRatio": 8.992337277288268
       },
       "sector": "산업재",
       "eps": {
@@ -30270,7 +30270,7 @@
         "fromPrice": 56000.0,
         "toPrice": 29950.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -30316,7 +30316,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 775203011000,
+        "marketCap": 807981151000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -30373,7 +30373,7 @@
         "fromPrice": 9710.0,
         "toPrice": 7140.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -30419,10 +30419,10 @@
           "latestDate": "2026-05-29",
           "latestNote": "무기명식 무이권부 무보증 사모 전환사채"
         },
-        "marketCap": 1090317378520,
-        "rightsRatio": 22.011938648889252,
-        "cbRatio": 5.502984835612193,
-        "totalRatio": 27.51492348450145
+        "marketCap": 1061858849880,
+        "rightsRatio": 22.60187335304709,
+        "cbRatio": 5.650468516298617,
+        "totalRatio": 28.252341869345702
       },
       "sector": "커뮤니케이션",
       "eps": {
@@ -30476,7 +30476,7 @@
         "fromPrice": 10040.0,
         "toPrice": 6930.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -30522,7 +30522,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1103423331600,
+        "marketCap": 1100252574900,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -30579,7 +30579,7 @@
         "fromPrice": 60000.0,
         "toPrice": 42800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -30625,7 +30625,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 502087933820,
+        "marketCap": 489709802940,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -30682,7 +30682,7 @@
         "fromPrice": 15060.0,
         "toPrice": 11180.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -30728,7 +30728,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 640984366000,
+        "marketCap": 622269494000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -30785,7 +30785,7 @@
         "fromPrice": 126200.0,
         "toPrice": 92000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -30831,7 +30831,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 528757117240,
+        "marketCap": 529553838160,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -30882,13 +30882,13 @@
         "source": "yahoo"
       },
       "crash": {
-        "pct": -33.53333333333334,
+        "pct": -28.333333333333332,
         "from": "2026-11-02",
-        "to": "2026-11-09",
+        "to": "2026-11-06",
         "fromPrice": 30000.0,
-        "toPrice": 19940.0,
+        "toPrice": 21500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -30934,7 +30934,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 411285190600,
+        "marketCap": 415357321200,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -30991,7 +30991,7 @@
         "fromPrice": 44050.0,
         "toPrice": 31100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -31037,10 +31037,10 @@
           "latestDate": "2026-04-02",
           "latestNote": "무기명식 이권부 무보증 사모 전환사채"
         },
-        "marketCap": 496310522700,
+        "marketCap": 517733998500,
         "rightsRatio": null,
-        "cbRatio": 18.53678207334934,
-        "totalRatio": 18.53678207334934
+        "cbRatio": 17.76974281514178,
+        "totalRatio": 17.76974281514178
       },
       "sector": "소재",
       "eps": {
@@ -31094,7 +31094,7 @@
         "fromPrice": 87800.0,
         "toPrice": 55000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -31140,7 +31140,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 970852949000,
+        "marketCap": 949047695600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -31197,7 +31197,7 @@
         "fromPrice": 53000.0,
         "toPrice": 43550.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -31243,10 +31243,10 @@
           "latestDate": "2026-07-06",
           "latestNote": "무기명식 이권부 무보증 사모 전환사채"
         },
-        "marketCap": 398934059000,
+        "marketCap": 398447554050,
         "rightsRatio": null,
-        "cbRatio": 15.040079593705485,
-        "totalRatio": 15.040079593705485
+        "cbRatio": 15.058443549253356,
+        "totalRatio": 15.058443549253356
       },
       "sector": "경기소비재",
       "eps": {
@@ -31300,7 +31300,7 @@
         "fromPrice": 5190.0,
         "toPrice": 4100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -31346,7 +31346,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 918851890230,
+        "marketCap": 927428603580,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -31403,7 +31403,7 @@
         "fromPrice": 24400.0,
         "toPrice": 16000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -31449,10 +31449,10 @@
           "latestDate": "2026-05-22",
           "latestNote": "국내 무기명식\n 무보증 사모 전환사채"
         },
-        "marketCap": 372303997230,
-        "rightsRatio": 3.7603584683919404,
-        "cbRatio": 6.258326575421067,
-        "totalRatio": 10.018685043813006
+        "marketCap": 363450156630,
+        "rightsRatio": 3.851962815977615,
+        "cbRatio": 6.41078276483449,
+        "totalRatio": 10.262745580812105
       },
       "sector": "기술",
       "eps": {
@@ -31506,7 +31506,7 @@
         "fromPrice": 41750.0,
         "toPrice": 27800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -31552,7 +31552,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 266025349800,
+        "marketCap": 258408200400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -31609,7 +31609,7 @@
         "fromPrice": 46333.33203125,
         "toPrice": 37066.66796875,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -31655,7 +31655,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 600761990400,
+        "marketCap": 590171634800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -31712,7 +31712,7 @@
         "fromPrice": 95900.0,
         "toPrice": 73200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -31758,7 +31758,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 281381114105,
+        "marketCap": 275394281890,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -31815,7 +31815,7 @@
         "fromPrice": 5530.0,
         "toPrice": 4040.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -31918,7 +31918,7 @@
         "fromPrice": 17300.0,
         "toPrice": 13540.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -31964,7 +31964,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 666783996800,
+        "marketCap": 673758724800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -32021,7 +32021,7 @@
         "fromPrice": 35650.0,
         "toPrice": 27700.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -32067,7 +32067,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 433360482330,
+        "marketCap": 428457361120,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -32124,7 +32124,7 @@
         "fromPrice": 22350.0,
         "toPrice": 16610.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -32170,7 +32170,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 342362873040,
+        "marketCap": 337285457550,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -32227,7 +32227,7 @@
         "fromPrice": 22550.0,
         "toPrice": 15740.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -32273,7 +32273,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 341537001890,
+        "marketCap": 333155725770,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -32330,7 +32330,7 @@
         "fromPrice": 30850.0,
         "toPrice": 25050.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -32376,7 +32376,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 477989705340,
+        "marketCap": 472581052380,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -32433,7 +32433,7 @@
         "fromPrice": 25100.0,
         "toPrice": 17510.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -32479,7 +32479,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 398243217500,
+        "marketCap": 401166103500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -32536,7 +32536,7 @@
         "fromPrice": 80800.0,
         "toPrice": 62600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -32582,7 +32582,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 743947825500,
+        "marketCap": 725912726700,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -32639,7 +32639,7 @@
         "fromPrice": 46350.0,
         "toPrice": 37500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -32685,7 +32685,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 314951403000,
+        "marketCap": 317851508000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -32742,7 +32742,7 @@
         "fromPrice": 71700.0,
         "toPrice": 52800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -32788,7 +32788,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 401186059200,
+        "marketCap": 394250661900,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -32845,7 +32845,7 @@
         "fromPrice": 49750.0,
         "toPrice": 42100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -32891,7 +32891,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 945574104400,
+        "marketCap": 954562451400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -32948,7 +32948,7 @@
         "fromPrice": 118100.0,
         "toPrice": 98200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -32994,7 +32994,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 558238470400,
+        "marketCap": 551797257280,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -33051,7 +33051,7 @@
         "fromPrice": 19650.0,
         "toPrice": 13960.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -33097,7 +33097,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 492076001430,
+        "marketCap": 482224630030,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -33154,7 +33154,7 @@
         "fromPrice": 16990.0,
         "toPrice": 13390.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -33200,7 +33200,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 589638415800,
+        "marketCap": 577420682860,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -33257,7 +33257,7 @@
         "fromPrice": 22200.0,
         "toPrice": 12450.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -33303,7 +33303,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 412756619880,
+        "marketCap": 403957544650,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -33360,7 +33360,7 @@
         "fromPrice": 8880.0,
         "toPrice": 6840.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -33406,7 +33406,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 345670852840,
+        "marketCap": 336319036180,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -33463,7 +33463,7 @@
         "fromPrice": 18710.0,
         "toPrice": 14310.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -33509,7 +33509,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 295669051200,
+        "marketCap": 292018816000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -33566,7 +33566,7 @@
         "fromPrice": 14660.0,
         "toPrice": 10820.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -33612,7 +33612,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 351453646400,
+        "marketCap": 344329586000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -33669,7 +33669,7 @@
         "fromPrice": 23150.0,
         "toPrice": 18550.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -33715,7 +33715,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 223729918200,
+        "marketCap": 220154325900,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -33772,7 +33772,7 @@
         "fromPrice": 35700.0,
         "toPrice": 25300.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -33818,7 +33818,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 864167504200,
+        "marketCap": 855488634000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -33875,7 +33875,7 @@
         "fromPrice": 56400.0,
         "toPrice": 44850.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -33921,10 +33921,10 @@
           "latestDate": "2026-04-22",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 271193934000,
+        "marketCap": 261743236300,
         "rightsRatio": null,
-        "cbRatio": 0.1843699055599083,
-        "totalRatio": 0.1843699055599083
+        "cbRatio": 0.19102690371984216,
+        "totalRatio": 0.19102690371984216
       },
       "sector": "헬스케어",
       "eps": {
@@ -33978,7 +33978,7 @@
         "fromPrice": 17600.0,
         "toPrice": 13560.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -34024,7 +34024,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 603991000000,
+        "marketCap": 598629000000,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -34081,7 +34081,7 @@
         "fromPrice": 29850.0,
         "toPrice": 21200.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -34127,7 +34127,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 351198913560,
+        "marketCap": 355871182920,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -34184,7 +34184,7 @@
         "fromPrice": 7990.0,
         "toPrice": 6100.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -34230,7 +34230,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 271404458220,
+        "marketCap": 272910169500,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -34287,7 +34287,7 @@
         "fromPrice": 36550.0,
         "toPrice": 27850.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -34333,7 +34333,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 430553040060,
+        "marketCap": 421392337080,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -34390,7 +34390,7 @@
         "fromPrice": 20250.0,
         "toPrice": 15420.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -34436,7 +34436,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 402287215650,
+        "marketCap": 393703562400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -34493,7 +34493,7 @@
         "fromPrice": 35950.0,
         "toPrice": 29900.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -34539,7 +34539,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 350941237200,
+        "marketCap": 346158392400,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -34596,7 +34596,7 @@
         "fromPrice": 54600.0,
         "toPrice": 40500.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -34642,7 +34642,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 327999745600,
+        "marketCap": 326202486720,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -34699,7 +34699,7 @@
         "fromPrice": 4995.0,
         "toPrice": 3760.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -34745,10 +34745,10 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 295595757760,
-        "rightsRatio": 5.852580364852933,
+        "marketCap": 294470393200,
+        "rightsRatio": 5.874946914017976,
         "cbRatio": null,
-        "totalRatio": 5.852580364852933
+        "totalRatio": 5.874946914017976
       },
       "sector": "기술",
       "eps": {
@@ -34802,7 +34802,7 @@
         "fromPrice": 12900.0,
         "toPrice": 9370.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -34848,7 +34848,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 409988937600,
+        "marketCap": 399635681600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -34905,7 +34905,7 @@
         "fromPrice": 41600.0,
         "toPrice": 37050.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -34951,7 +34951,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 463373685120,
+        "marketCap": 454827858960,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -35008,7 +35008,7 @@
         "fromPrice": 40900.0,
         "toPrice": 31800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -35054,7 +35054,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 499309947120,
+        "marketCap": 557188435800,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -35111,7 +35111,7 @@
         "fromPrice": 16980.0,
         "toPrice": 11800.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -35157,7 +35157,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 352131258780,
+        "marketCap": 342148660560,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -35214,7 +35214,7 @@
         "fromPrice": 26650.0,
         "toPrice": 23000.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -35260,7 +35260,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 365951200850,
+        "marketCap": 361009842300,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -35317,7 +35317,7 @@
         "fromPrice": 17990.0,
         "toPrice": 14600.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -35363,7 +35363,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 616297715600,
+        "marketCap": 593029332460,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -35420,7 +35420,7 @@
         "fromPrice": 9270.0,
         "toPrice": 7910.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -35466,10 +35466,10 @@
           "latestDate": "2026-06-15",
           "latestNote": "무기명식 무이권부 무보증 사모 전환사채"
         },
-        "marketCap": 685962662550,
+        "marketCap": 672672774900,
         "rightsRatio": null,
-        "cbRatio": 6.560123816756562,
-        "totalRatio": 6.560123816756562
+        "cbRatio": 6.689731126206161,
+        "totalRatio": 6.689731126206161
       },
       "sector": "소재",
       "eps": {
@@ -35523,7 +35523,7 @@
         "fromPrice": 55700.0,
         "toPrice": 43900.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -35569,7 +35569,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 125656310040,
+        "marketCap": 122915116540,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -35626,7 +35626,7 @@
         "fromPrice": 35000.0,
         "toPrice": 23400.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -35672,7 +35672,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 312504108750,
+        "marketCap": 309170731590,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -35729,7 +35729,7 @@
         "fromPrice": 5220.0,
         "toPrice": 3665.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -35775,7 +35775,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 241055481060,
+        "marketCap": 232822087020,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -35832,7 +35832,7 @@
         "fromPrice": 10790.0,
         "toPrice": 7960.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -35878,7 +35878,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 274983892800,
+        "marketCap": 274303239600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -35935,7 +35935,7 @@
         "fromPrice": 31300.0,
         "toPrice": 24700.0,
         "rangeFrom": "2025-11-10",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     },
     {
@@ -35965,7 +35965,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 1144545912240,
+        "marketCap": 1149036843510,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -36022,7 +36022,7 @@
         "fromPrice": 34400.0,
         "toPrice": 23350.0,
         "rangeFrom": "2025-12-04",
-        "rangeTo": "2026-11-09"
+        "rangeTo": "2026-11-06"
       }
     }
   ]
