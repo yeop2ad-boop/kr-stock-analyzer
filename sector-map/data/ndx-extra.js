@@ -24,7 +24,7 @@ const NDX_EXTRA_DATA = {
       "eps": 24.73,
       "dividendYield": null,
       "winRateScore": 62.5,
-      "rsiWeekly": 44.2,
+      "rsiWeekly": 44.4,
       "ret10yAvg": 30.9
     },
     {
@@ -38,7 +38,7 @@ const NDX_EXTRA_DATA = {
       "eps": 0.85,
       "dividendYield": null,
       "winRateScore": 52.8,
-      "rsiWeekly": 40.5,
+      "rsiWeekly": 40.6,
       "ret10yAvg": 61.1
     },
     {
@@ -80,7 +80,7 @@ const NDX_EXTRA_DATA = {
       "eps": 39.4,
       "dividendYield": null,
       "winRateScore": 51.7,
-      "rsiWeekly": 37.5,
+      "rsiWeekly": 37.6,
       "ret10yAvg": 25.5
     },
     {
@@ -94,7 +94,7 @@ const NDX_EXTRA_DATA = {
       "eps": 0.34,
       "dividendYield": null,
       "winRateScore": 69.6,
-      "rsiWeekly": 40.5,
+      "rsiWeekly": 40.9,
       "ret10yAvg": 176.2
     },
     {
@@ -108,7 +108,7 @@ const NDX_EXTRA_DATA = {
       "eps": 1.32,
       "dividendYield": null,
       "winRateScore": 46.7,
-      "rsiWeekly": 40.9,
+      "rsiWeekly": 41.5,
       "ret10yAvg": 56.3
     },
     {
@@ -122,7 +122,7 @@ const NDX_EXTRA_DATA = {
       "eps": -15.23,
       "dividendYield": null,
       "winRateScore": 50.8,
-      "rsiWeekly": 45.8,
+      "rsiWeekly": 45.7,
       "ret10yAvg": 20.9
     },
     {
@@ -136,7 +136,7 @@ const NDX_EXTRA_DATA = {
       "eps": 4.26,
       "dividendYield": null,
       "winRateScore": 58.3,
-      "rsiWeekly": 67.5,
+      "rsiWeekly": 67.7,
       "ret10yAvg": 11.4
     },
     {
@@ -150,7 +150,7 @@ const NDX_EXTRA_DATA = {
       "eps": -2.75,
       "dividendYield": null,
       "winRateScore": 38.9,
-      "rsiWeekly": 35.3,
+      "rsiWeekly": 35.5,
       "ret10yAvg": 20.9
     },
     {
@@ -164,7 +164,7 @@ const NDX_EXTRA_DATA = {
       "eps": 3.392378,
       "dividendYield": null,
       "winRateScore": 57.5,
-      "rsiWeekly": 54.3,
+      "rsiWeekly": 53.3,
       "ret10yAvg": 11.2
     },
     {
@@ -178,7 +178,7 @@ const NDX_EXTRA_DATA = {
       "eps": 1.24,
       "dividendYield": null,
       "winRateScore": 61.7,
-      "rsiWeekly": 53.2,
+      "rsiWeekly": 53.4,
       "ret10yAvg": 10.1
     },
     {
