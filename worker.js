@@ -1447,7 +1447,8 @@ async function handleAnswer(request, env) {
 const SLIME_PKG = "kr.marketmap.slimetower";
 // 현금 상품 지급량은 서버가 정한다(게임의 SHOP_IAP와 같게)
 const SLIME_IAP = { energy_full: { kind: "energy", n: 5 }, gems_10: { kind: "gem", n: 10 }, gems_55: { kind: "gem", n: 55 }, gems_120: { kind: "gem", n: 120 }, gems_650: { kind: "gem", n: 650 }, gems_1450: { kind: "gem", n: 1450 },
-  gold_100: { kind: "coin", n: 100 }, gold_550: { kind: "coin", n: 550 }, gold_1200: { kind: "coin", n: 1200 }, gold_7000: { kind: "coin", n: 7000 }, gold_14500: { kind: "coin", n: 14500 } };
+  gold_100: { kind: "coin", n: 100 }, gold_550: { kind: "coin", n: 550 }, gold_1200: { kind: "coin", n: 1200 }, gold_7000: { kind: "coin", n: 7000 }, gold_14500: { kind: "coin", n: 14500 },
+  class_stone: { kind: "cstone", n: 1 } }; // 2026-11-10 슬라임금님 0.9.125: 직업 변환의 돌(₩4,900)
 // 게임이 보내는 표시 비트(p2b_sec SECF와 같다)
 const SLIME_SECF = { SAVE: 1, VAL: 2, SIG: 4, ROOT: 8, EMU: 16, DBG: 32, HOOK: 64 };
 // 등급 칸(게임 p3 dvMajor·dvFromMajor와 같다): 0 노말 · 1~5 실버 · 6~10 골드 · 11~15 플래티넘 · 16~20 다이아 · 21~25 마스터 · 26 챌린저
