@@ -1,5 +1,77 @@
 [
   {
+    "id": "f908b1bdd038",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "음성 처리 분야의 거장 비슈누 사루프 아탈 93세로 타계",
+    "originalTitle": "Speech Processing Pioneer Bishnu Saroop Atal Dies at 93",
+    "link": "https://spectrum.ieee.org/speech-processing-pioneer-in-memoriam",
+    "summary": "벨 연구소와 AT&T 섀넌 연구실에서 활동한 음향 및 신호 처리 분야의 선구자 비슈누 사루프 아탈이 93세로 별세했다. 그는 1960년대 선형 예측 부호화(LPC)를 개발했으며, 동료 만프레드 슈뢰더와 함께 부호 여기 선형 예측(CELP) 기술을 만들어 현대 음성 코딩의 기초를 마련했다. 이러한 저비트율 음성 코딩 기술은 휴대폰 네트워크에서 효율적인 고음질 음성 전송을 가능하게 하고 무선 네트워크의 용량을 크게 확대했다. 그는 2013년 IEEE 잭 킬비 신호처리 메달을 수상했으며, 미국 공학 한림원과 과학 한림원에 선출되는 등 많은 상을 받았다. 퇴직 후 워싱턴 대학 전기공학 부교수로서 음성 처리 연구를 계속했다.",
+    "image": "data/techinsight-images/f908b1bdd038.webp",
+    "publishedAt": "2026-11-10T19:00:02.000Z",
+    "createdAt": "2026-11-11T01:12:57.722Z"
+  },
+  {
+    "id": "997ee517f70b",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "펠로시 후임자의 AI 규제 추진과 데이터센터의 전력 위기",
+    "originalTitle": "The Download: Pelosi’s successor targets AI and data centers face power woes",
+    "link": "https://www.technologyreview.com/2026/11/10/1148150/the-download-pelosi-successor-ai-regulation-data-center-backlash/",
+    "summary": "샌프란시스코 의석을 승리로 거머쥔 스콧 위너 하원의원이 AI 위험성 규제에 나선다. 캘리포니아 주 상원의원 재직 중 AI 관련 규제 입법을 추진했던 그는 연방 AI 정책 수립에서 중요한 역할을 할 것으로 예상된다. 한편 미국 전역에서 데이터센터에 대한 반발이 커지고 있으며, 이는 단순한 기술 진보에 대한 저항이 아닌 전력 공급 부족이 핵심 쟁점임이 드러났다. 데이터센터는 전력 그리드에 대한 막대한 수요 증가로 인한 환경적, 경제적 우려가 실질적인 갈등의 원인이다. 업계는 이미지 개선으로는 전력 수급의 근본적인 문제를 해결할 수 없는 상황에 처해 있다.",
+    "image": "data/techinsight-images/997ee517f70b.webp",
+    "publishedAt": "2026-11-10T13:10:00.000Z",
+    "createdAt": "2026-11-11T01:12:54.770Z"
+  },
+  {
+    "id": "8482284ea775",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "금속 추출 공정의 혁신, 저탄소 생산과 자원 효율성의 새로운 길 열다",
+    "originalTitle": "Evolving metal extraction processes",
+    "link": "https://www.technologyreview.com/2026/11/10/1147726/evolving-metal-extraction-processes/",
+    "summary": "금속 산업은 1세기 이상 근본적으로 동일한 추출 기술에 의존해왔지만, 전기화와 첨단산업 확대로 인한 광물 수요 증가와 공급망 위기에 직면해 있다. 아웃오쿰푸가 개발한 EvoMaterials는 기존 탄소 집약적 제련 방식 대신 새로운 화학적 경로를 활용하여 더 효율적이고 저탄소인 금속 추출을 가능하게 한다. 실험실 연구에서 이 기술은 낮은 품질의 광석과 산업 부산물에서도 가치 있는 금속을 회수할 수 있음을 입증했다. 단일 공정이 아닌 플랫폼 기술로 설계된 EvoMaterials는 초기 적용 이후 다양한 전략 광물과 자원에 확대 적용될 수 있는 확장성을 갖추고 있다. 이는 공급망 안정성을 강화하고 자원 효율성을 개선하는 동시에 기업의 지식재산권과 기술 경쟁력을 확보하는 새로운 가치 창출 모델을 제시한다.",
+    "image": "data/techinsight-images/8482284ea775.webp",
+    "publishedAt": "2026-11-10T13:00:00.000Z",
+    "createdAt": "2026-11-11T01:12:58.407Z"
+  },
+  {
+    "id": "4b2c2f063eae",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "하드웨어 제작 전에 전자제품의 충격 및 낙하 문제를 미리 파악하기",
+    "originalTitle": "Catch Electronics Shock and Drop Failures Before Hardware Is Built",
+    "link": "https://content.knowledgehub.wiley.com/shifting-reliability-left-guided-virtual-validation-for-electronics-shock-and-drop-testing/",
+    "summary": "전자제품의 신뢰성 검증을 개발 초기 단계로 앞당기는 '좌측 이동' 전략을 다룬 백서입니다. 가상 충격 및 낙하 분석을 통해 엔지니어링 팀은 물리적 테스트 전에 신뢰성 위험을 조기에 발견할 수 있습니다. 이러한 가이드 기반 가상 검증 방식은 적격성 반복 횟수를 줄이고 포장 설계를 최적화하며 전자제품 개발 주기를 단축하는 데 도움을 줍니다.",
+    "image": "data/techinsight-images/4b2c2f063eae.webp",
+    "publishedAt": "2026-11-10T11:00:02.000Z",
+    "createdAt": "2026-11-11T01:13:19.451Z"
+  },
+  {
+    "id": "0e39b9f32bbf",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "에이전트 AI로 비즈니스 계획 체계를 혁신하다",
+    "originalTitle": "Reinventing business planning with agentic AI",
+    "link": "https://www.mckinsey.com/capabilities/quantumblack/our-insights/reinventing-business-planning-with-agentic-ai",
+    "summary": "향상된 예측 기술과 AI 에이전트를 결합하면 기업의 계획 수립 과정이 보다 지속적이고 지능적인 의사결정 체계로 진화할 수 있다.\nAI 에이전트는 예측 결과를 실제 행동으로 전환하는 데 필요한 수작업을 크게 줄여줄 것으로 기대된다.\n이를 통해 기업은 시장 변화에 더욱 신속하게 대응하는 동적인 계획 시스템을 갖추게 된다.",
+    "image": "data/techinsight-images/0e39b9f32bbf.webp",
+    "publishedAt": "2026-11-10T00:00:00.000Z",
+    "createdAt": "2026-11-11T01:13:09.317Z"
+  },
+  {
+    "id": "b13a5203248e",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "2026년 글로벌 뱅킹 리뷰: AI가 만드는 새로운 수익 기회",
+    "originalTitle": "Global Banking Annual Review 2026: The AI disruption dividend",
+    "link": "https://www.mckinsey.com/industries/financial-services/our-insights/global-banking-annual-review",
+    "summary": "은행권이 2025년에 사상 최대 규모인 1조 3천억 달러의 수익을 달성했다. 이제 AI 기술로 인한 산업 재편 속에서 새로운 수익 기회가 나타나고 있으며, 이를 선점하는 것은 빠르고 정확하게 움직이는 은행들에게 돌아갈 것이다. 과거와 달리 이번에는 준비 기간이 주어지지 않으므로 은행들은 즉각적인 대응을 필요로 한다.",
+    "image": "data/techinsight-images/b13a5203248e.webp",
+    "publishedAt": "2026-11-10T00:00:00.000Z",
+    "createdAt": "2026-11-11T01:13:28.946Z"
+  },
+  {
     "id": "3ec2e278915e",
     "sourceKey": "mit",
     "source": "MIT Technology Review",
@@ -166,77 +238,5 @@
     "image": "data/techinsight-images/2009a33d518f.webp",
     "publishedAt": "2026-11-05T13:10:00.000Z",
     "createdAt": "2026-11-06T01:29:52.363Z"
-  },
-  {
-    "id": "1025afbf9ca2",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "미국 에너지 기반시설 건설 방식을 바꿀 새로운 법안",
-    "originalTitle": "A new bill could change how the US builds energy infrastructure",
-    "link": "https://www.technologyreview.com/2026/11/05/1148062/permitting-reform/",
-    "summary": "미국 상원은 규제 절차를 간소화하려는 초당파 법안인 'BAAJA'에 대해 투표할 예정이며, 이는 에너지 프로젝트 승인 과정을 대폭 단축할 수 있다. 해당 법안은 재정 정책과 환경 정책을 모두 지원하는 입장이 많지만, 신재생에너지뿐 아니라 화석연료 프로젝트도 함께 가속화할 수 있다는 우려가 존재한다. 여러 분석에 따르면 최선의 경우 2040년까지 경제 전체 배출량을 4% 감축하고 청정에너지 200기가와트를 추가할 수 있으나, 최악의 경우 천연가스 발전소 급증으로 오히려 배출량이 증가할 가능성도 있다. 결국 허가 절차 간소화로 더 많은 청정에너지가 건설되는 한편, 동시에 화석연료 산업도 성장하는 이중적 결과를 초래할 수 있다.",
-    "image": "data/techinsight-images/1025afbf9ca2.webp",
-    "publishedAt": "2026-11-05T10:00:00.000Z",
-    "createdAt": "2026-11-06T01:29:55.368Z"
-  },
-  {
-    "id": "94a3afa0c9d2",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "판매 채널의 혁신: 파트너 생태계가 AI 성장을 어떻게 견인할 것인가",
-    "originalTitle": "Reinventing the channel: How can your partner ecosystem fuel AI growth?",
-    "link": "https://www.mckinsey.com/industries/technology-media-and-telecommunications/our-insights/reinventing-the-channel-how-can-your-partner-ecosystem-fuel-ai-growth",
-    "summary": "인공지능은 기술 기업들이 영업 채널을 근본적으로 재편할 수 있는 기회를 제시하고 있다. AI 시대에 적응하고 성장하기 위해서는 판매 전략과 파트너 관계 구조에 대한 포괄적인 개혁이 필수적이다. 이러한 변화를 주도하기 위해 기업들이 실행해야 할 다섯 가지 핵심 과제들이 있다. 파트너 생태계를 효과적으로 활용하면 AI 기반 비즈니스 성장을 가속화할 수 있다. 기술 기업들은 이 전환기에 전략적으로 대응해야 경쟁력을 유지할 수 있다.",
-    "image": "data/techinsight-images/94a3afa0c9d2.webp",
-    "publishedAt": "2026-11-05T00:00:00.000Z",
-    "createdAt": "2026-11-06T01:30:13.447Z"
-  },
-  {
-    "id": "59b8c2e1478e",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "AI 기술이 라틴아메리카 보험시장의 성장을 견인하는 방법",
-    "originalTitle": "How AI can help unlock insurance growth in Latin America",
-    "link": "https://www.mckinsey.com/industries/financial-services/our-insights/how-ai-can-help-unlock-insurance-growth-in-latin-america",
-    "summary": "라틴아메리카의 보험시장은 높은 성장률을 보이고 있으며 아직 개발되지 않은 수요가 충분히 남아있다.\nAI 기술을 활용하면 보험사들이 더 많은 고객에게 접근할 수 있다.\n동시에 보험사들의 운영 효율성을 크게 향상시킬 수 있다.\n결과적으로 AI는 라틴아메리카 보험시장의 미개척 잠재력을 실현하는 핵심 도구가 될 수 있다.",
-    "image": "data/techinsight-images/59b8c2e1478e.webp",
-    "publishedAt": "2026-11-05T00:00:00.000Z",
-    "createdAt": "2026-11-06T01:30:27.229Z"
-  },
-  {
-    "id": "2550523e2a0e",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "AI 데이터센터 붐의 중심지였던 텍사스, 정치 변화로 위기 맞을 수 있다",
-    "originalTitle": "Texas was the new epicenter of the AI data center buildout. That might be kaput.",
-    "link": "https://www.technologyreview.com/2026/11/04/1148043/texas-was-the-new-epicenter-of-the-ai-data-center-buildout-that-might-be-kaput/",
-    "summary": "텍사스는 미국 최대 규모의 AI 데이터센터 건설이 진행 중인 핵심 지역이었으나, 최근 민주당의 정치적 승리로 상황이 급변했다. 신임 주지사 당선자는 데이터센터 건설 전면 중단을 공약했으며, 이미 주지사는 9월부터 데이터센터 허가를 중단하도록 지시했다. 스타게이트와 넥서스 허버드 같은 거대 프로젝트들이 텍사스에서 진행 중이지만, 이들 사업이 지연되거나 중단될 위험에 처했다. 유권자들은 전국적으로 데이터센터로 인한 전기료 인상을 우려하고 새로운 시설 건설 금지를 지지하는 의사를 명확히 했다. 다만 현지 정부와 건설 노조 등의 이해관계로 인해 중단 공약의 실행이 생각보다 복잡할 수 있다.",
-    "image": "data/techinsight-images/2550523e2a0e.webp",
-    "publishedAt": "2026-11-04T18:50:55.000Z",
-    "createdAt": "2026-11-05T01:26:55.603Z"
-  },
-  {
-    "id": "38c257273c68",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "인지적 불멸성을 향한 기술 혁신의 현주소",
-    "originalTitle": "Roundtables: Inside the Quest for Cognitive Immortality",
-    "link": "https://www.technologyreview.com/2026/11/04/1148049/roundtables-inside-the-quest-for-cognitive-immortality/",
-    "summary": "일부 기술 전문가들은 죽음 이후에도 인간의 정신을 지속시킬 수 있는 방법을 개발하기 위해 노력하고 있다. MIT 테크놀로지 리뷰의 과학편집자와 생의학 담당 선임편집자가 진행하는 이 대담에서는 뇌를 단계적으로 교체하거나 기억을 클라우드에 업로드하는 등 정신의 연속성을 유지하는 가능한 방법들을 탐구한다. 이는 자아의 연속성을 추구하려는 미래 기술의 대담한 시도를 보여주는 전문가 토론의 장이다.",
-    "image": "data/techinsight-images/38c257273c68.webp",
-    "publishedAt": "2026-11-04T18:21:40.000Z",
-    "createdAt": "2026-11-05T01:26:53.250Z"
-  },
-  {
-    "id": "943b2cb16dd8",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "중간선거 이후 미국 에너지 정책의 향방",
-    "originalTitle": "What’s next for US energy policy after the midterm elections?",
-    "link": "https://www.technologyreview.com/2026/11/04/1148022/us-energy-midterm/",
-    "summary": "중간선거에서 민주당이 상하원 다수당을 차지했지만 백악관은 여전히 트럼프 대통령이 통제하고 있어 대규모 연방 차원의 에너지 정책 변화는 제한적일 것으로 보인다. 양당이 타협할 수 있는 허가 개혁 같은 부분적 입법이 가능하지만 대통령 거부권으로 인해 민주당의 적극적인 기후 정책 추진은 어려울 것이다. 의회는 환경청장 등 행정부 인물들에 대한 조사권을 강화할 수 있으며, 연방 차원보다는 펜실베이니아와 조지아 같은 주 및 지방 수준에서 재생에너지 지원이 확대될 가능성이 높다. 데이터센터 개발 제한을 요구하는 유권자 의사가 강하게 표현되었으며, 텍사스에서는 데이터센터 개발 일시 중단을 주장한 후보가 당선되어 향후 에너지 정책에 영향을 미칠 것으로 예상된다.",
-    "image": "data/techinsight-images/943b2cb16dd8.webp",
-    "publishedAt": "2026-11-04T17:08:00.000Z",
-    "createdAt": "2026-11-05T01:27:15.721Z"
   }
 ]
