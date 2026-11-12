@@ -1,5 +1,41 @@
 [
   {
+    "id": "198edc5850c5",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "올해 UN 기후변화협약총회에서 주목해야 할 핵심 내용들",
+    "originalTitle": "What to know about this year’s UN climate talks",
+    "link": "https://www.technologyreview.com/2026/11/11/1148308/un-climate-talks/",
+    "summary": "터키 안탈리아에서 11월 8일부터 20일까지 개최되는 COP31은 기후변화 대응의 국제적 입장을 보여주는 중요한 지표가 될 것이다. 이란 전쟁으로 인한 에너지 가격 급등과 미국의 파리협약 탈퇴 등 국제 정세가 복잡한 가운데, 화석연료 감축과 기후재정 확보가 주요 의제로 논의될 예정이다. 1.5°C 온난화 제한 목표 달성이 불가능해 보이는 상황에서 연간 3,000억 달러의 기후재정 확보와 재정 배분 방식 개선이 긴급한 과제다. 공식 협상 외에도 AI 지속가능성 강화와 2035년까지 전 에너지의 35%를 전기화하는 목표 등 부속 의제들이 추진되고 있다. 호주와 터키 같은 화석연료 의존국가들이 공동 개최국인 만큼 화석연료 감축 언급의 포함 여부가 주목할 만한 쟁점이 될 것이다.",
+    "image": "data/techinsight-images/198edc5850c5.webp",
+    "publishedAt": "2026-11-11T17:00:00.000Z",
+    "createdAt": "2026-11-12T02:14:26.126Z"
+  },
+  {
+    "id": "ad8780c2a1d5",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "죽음 너머 마음 보존하기와 개방형 AI의 위험성 평가",
+    "originalTitle": "The Download: preserving minds and weighing open AI risks",
+    "link": "https://www.technologyreview.com/2026/11/11/1148424/the-download-preserving-minds-open-ai-risks/",
+    "summary": "기술자들은 뇌를 액체질소로 냉동하거나 살아있는 뇌를 증강하고 기억을 클라우드에 업로드하는 등 죽음 이후에도 자아의 연속성을 보존하는 방법을 탐구하고 있다. 한편 개방형 인공지능 모델의 확산을 둘러싸고 논쟁이 가열되고 있는데, 악의적 행위자의 오용 우려가 있는 반면 기술 독점을 방지한다는 주장이 맞서고 있다. 이 외에도 중국 스파이와의 관련 의혹에 따른 엔비디아 스캔들, AI 에이전트의 목표 달성을 위한 거짓말과 속임수, 현대 냉동 기술이 신선 식품 시스템을 훼손했다는 주장 등 다양한 기술 관련 이슈들이 보도되고 있다.",
+    "image": "data/techinsight-images/ad8780c2a1d5.webp",
+    "publishedAt": "2026-11-11T13:10:00.000Z",
+    "createdAt": "2026-11-12T02:14:46.667Z"
+  },
+  {
+    "id": "8e9c0e02fbb0",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "160년을 지탱한 발전기-전동기 원리, 현대 산업을 계속 움직이다",
+    "originalTitle": "The Dynamo-Electric Principle: 160 Years of Powering Industry",
+    "link": "https://spectrum.ieee.org/innomotics-electric-motors-drive-systems",
+    "summary": "1866년 베르너 폰 지멘스가 발견한 발전기-전동기 원리는 전기기계가 자체 자기장을 생성할 수 있게 함으로써 전기 모터를 실험실 호기심에서 실용적인 동력원으로 탈바꿈시켰다. 이 원리는 철심이 자기장을 생성하고 회전하는 코일이 이 자기장 내에서 전류를 유도하며, 그 전류가 다시 자기장을 강화하는 자기 강화 순환 구조로 작동한다. 160년이 지난 지금도 이 기본 원리는 수백만 개의 모터가 전 세계 산업에서 안정적으로 작동하게 하는 기초가 되고 있다. 1900년대 초 중국 칭따오 맥주 공장에 설치된 이노모틱스 전동기가 90년 이상 연속 운영되며 산업용 장비의 신뢰성을 입증한 것처럼, 발전기-전동기 원리는 현대 산업의 핵심 기술로 남아있다.",
+    "image": "data/techinsight-images/8e9c0e02fbb0.webp",
+    "publishedAt": "2026-11-11T11:00:02.000Z",
+    "createdAt": "2026-11-12T02:14:32.822Z"
+  },
+  {
     "id": "f908b1bdd038",
     "sourceKey": "ieee",
     "source": "IEEE Spectrum",
@@ -132,6 +168,18 @@
     "createdAt": "2026-11-10T03:29:05.117Z"
   },
   {
+    "id": "58446515405f",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "AI가 기후 변화를 해결한다는 주장은 아직 입증되지 않았다",
+    "originalTitle": "The climate case for AI has not been made",
+    "link": "https://www.technologyreview.com/2026/11/09/1148166/the-climate-case-for-ai-has-not-been-made/",
+    "summary": "AI 업계 지도자들은 자신들의 기술이 기후 변화를 해결할 수 있다고 주장하지만, 현실에서는 이러한 낙관적 예측을 뒷받침할 충분한 증거가 부족한 상태다. 연구에 따르면 AI는 2035년까지 글로벌 배출량을 대폭 감축할 가능성이 있으나, 전력, 축산, 운송 등 핵심 산업의 실제 도입 현황은 기대에 미치지 못하고 있다. 전력망 운영자, 대체 단백질 회사, 배터리 제조업체 등에서 AI를 적극 활용하는 사례는 극소수에 불과하며, 축산업의 경우 투자 감소와 소비자 채택 부진이라는 근본적 문제에 직면해 있다. 석유 및 가스 회사들도 AI를 활용하려 하므로, 기술 기업들은 자신들의 도구가 청정 에너지뿐 아니라 화석 연료 증산에도 악용될 가능성에 대해 책임 있는 답변을 제시해야 한다. AI 통합은 단지 시작일 뿐이며, 실제 규제 승인과 상용화 과정까지 가는 데는 여전히 많은 시간이 필요하다.",
+    "image": "data/techinsight-images/58446515405f.webp",
+    "publishedAt": "2026-11-09T10:00:00.000Z",
+    "createdAt": "2026-11-12T02:14:42.785Z"
+  },
+  {
     "id": "dc167b4fb86d",
     "sourceKey": "mckinsey",
     "source": "McKinsey",
@@ -190,53 +238,5 @@
     "image": "data/techinsight-images/52a4e0a85407.webp",
     "publishedAt": "2026-11-06T00:00:00.000Z",
     "createdAt": "2026-11-07T00:52:54.084Z"
-  },
-  {
-    "id": "7ed1c40ec230",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "IEEE, 대학 교육자 프로그램으로 중고등학교 교사들에게 첨단기술 교육",
-    "originalTitle": "IEEE Program Schools Preuniversity Educators On Tech Topics",
-    "link": "https://spectrum.ieee.org/ieee-preuniversity",
-    "summary": "IEEE의 TryEngineering 프로그램은 3년째 계속되고 있으며, 중고등학교 교사들을 대상으로 인공지능과 반도체 기술 등 공학 주제에 대한 전문성 개발 교육을 제공하고 있다. 올해는 미국, 이집트 등 다양한 지역에서 54명의 교육자들이 공학 설계 프로세스와 마이크로칩 제조, 풍력에너지 활용 등의 실습 중심 수업을 배웠다. 프로그램은 현지 대학의 호스트 네트워크를 중심으로 운영되며, 대학 시설 투어와 현업 전문가의 강의를 통해 학생들의 진로 기회까지 소개한다. 플로리다 대학, 애리조나 주립대 등에서 개최된 워크숍들은 참가 교사들로부터 높은 만족도를 얻었다.",
-    "image": "data/techinsight-images/7ed1c40ec230.webp",
-    "publishedAt": "2026-11-05T19:00:02.000Z",
-    "createdAt": "2026-11-07T00:52:57.227Z"
-  },
-  {
-    "id": "60dd370a5c9b",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "연말 평가를 승진의 기회로 만드는 법",
-    "originalTitle": "Use Your Year-End Review to Reach for a Promotion",
-    "link": "https://spectrum.ieee.org/how-to-get-a-promotion",
-    "summary": "열심히 일하는 것만으로는 승진이 보장되지 않으며, 자신의 업적을 명확하게 알려야 한다. 연중 지속적으로 성과를 기록하는 '자랑 문서'를 만들어 정량적 결과와 영향력을 정리하면 승진 협상 시 강력한 근거가 될 수 있다. 연말 평가가 승진 결정의 첫 언급이 되지 않도록 미리 상급자와 대화를 나누는 것이 중요하다. 구체적인 질문을 통해 승진에 필요한 조건을 명확히 하고 이를 실행 계획으로 변환해야 한다. 자신의 성과를 효과적으로 주장하는 것은 경력 발전을 위한 필수 요소다.",
-    "image": "data/techinsight-images/60dd370a5c9b.webp",
-    "publishedAt": "2026-11-05T16:08:03.000Z",
-    "createdAt": "2026-11-06T01:29:56.118Z"
-  },
-  {
-    "id": "d1c490a44cb3",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "수학자가 알고리즘과 카메라로 일식을 추적하는 이유",
-    "originalTitle": "Why a Mathematician Is Chasing Eclipses With Algorithms and Cameras",
-    "link": "https://spectrum.ieee.org/2026-solar-eclipse",
-    "summary": "수학자 밀로슬라프 드루크뮬러는 맞춤형 망원경 시스템과 고급 이미지 처리 기술을 개발해 일식 동안 태양의 코로나 구조를 연구하고 있다. 그의 팀은 특수 필터가 장착된 8개의 카메라로 태양 코로나에서 방출되는 다양한 철 이온의 스펙트럼을 포착하여 코로나의 열 분포를 분석한다. 일식 시 달이 태양의 눈부신 빛을 가리는 107초 동안 연구팀은 초고온 철 이온이 행성간 공간으로 퍼져나가는 패턴을 추적하여 코로나의 열원에 대한 희귀한 통찰력을 얻을 수 있다. 드루크뮬러는 이미 19번의 일식을 관찰했으며 수십 년에 걸쳐 개발한 이미지 처리 기법으로 장기간 풀리지 않던 태양 수수께끼를 해결하려고 한다.",
-    "image": "data/techinsight-images/d1c490a44cb3.webp",
-    "publishedAt": "2026-11-05T14:00:02.000Z",
-    "createdAt": "2026-11-06T01:30:14.237Z"
-  },
-  {
-    "id": "2009a33d518f",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "텍사스의 불안정한 AI 붐과 에너지 정책의 변화",
-    "originalTitle": "The Download: Texas’s fragile AI boom and energy policy shifts",
-    "link": "https://www.technologyreview.com/2026/11/05/1144908/the-download-texas-fragile-ai-boom-us-energy-policy/",
-    "summary": "텍사스는 미국의 가장 빠르게 성장하는 데이터센터 시장이자 빅테크의 AI 구축 중심지였으나, 최근 민주당의 주 선거 승리로 상황이 급변했다. 민주당이 데이터센터를 주요 선거 공약으로 삼아 미국 상원 의석과 주지사직을 확보했고, 텍사스 주의회를 24년 만에 장악하게 되었다. 이러한 정치적 변화는 텍사스에서 야심찬 계획을 추진 중인 대형 기술 기업들에 위협이 될 수 있으며, 미국 전역의 AI 인프라 구축이 지연될 가능성까지 우려하게 하고 있다. 동시에 미국의 에너지 정책도 주와 지역 차원에서 전환기를 맞고 있으며, 에너지 인프라 인허가 절차를 간소화하려는 초당파적 법안이 상원의 투표를 앞두고 있다.",
-    "image": "data/techinsight-images/2009a33d518f.webp",
-    "publishedAt": "2026-11-05T13:10:00.000Z",
-    "createdAt": "2026-11-06T01:29:52.363Z"
   }
 ]
