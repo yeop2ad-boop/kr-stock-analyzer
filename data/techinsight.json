@@ -1,5 +1,41 @@
 [
   {
+    "id": "07356858caea",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "엔비디아, 칩 밀수 적발을 위한 추적 기술 가능성을 비공개로 확인",
+    "originalTitle": "Nvidia privately confirmed it could track chips to fight smuggling, even as industry publicly questioned feasibility",
+    "link": "https://www.technologyreview.com/2026/11/12/1148483/nvidia-chip-tracking/",
+    "summary": "엔비디아는 반도체 산업 단체가 공개적으로 기술 구현이 불가능하다고 주장하는 와중에도, 미국 의원과의 비공개 논의에서 칩 보안법의 지리적 추적 요구사항을 기술적으로 구현할 수 있다고 확인했다. 엔비디아는 이미 고객들이 데이터센터 위치별 칩 성능을 모니터링하는 '플릿 인텔리전스' 도구를 개발했으며, 이는 칩의 국가별 위치 파악이 가능하다. 칩 보안법은 핑 기반 위치 신호 메커니즘을 통해 칩의 위치를 추적하고 밀수를 방지하도록 요구하고 있다. 엔비디아의 CEO 비위 논란과 싱가포르 회사의 칩 밀수 의혹이 불거지면서 이 법안에 대한 의원들의 지지가 높아지고 있다. 관련 의원은 칩 운영 라이선스 검증 제도를 추가하는 더 엄격한 입법을 추진할 계획이다.",
+    "image": "data/techinsight-images/07356858caea.webp",
+    "publishedAt": "2026-11-12T20:16:24.000Z",
+    "createdAt": "2026-11-13T01:47:18.256Z"
+  },
+  {
+    "id": "56aae23ea0ec",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "COP31 기후협상과 뇌의 불멸성 추구",
+    "originalTitle": "The Download: COP31’s climate challenge and the quest for immortality",
+    "link": "https://www.technologyreview.com/2026/11/12/1148444/the-download-cop31-climate-talks-cognitive-immortality/",
+    "summary": "터키 안탈리아에서 열린 COP31 UN 기후회담에서는 파리협정 목표 달성이 점점 어려워지는 상황 속에서 화석연료와 기후금융 문제를 놓고 본격적인 협상이 예상된다. 한편 기술자들은 뇌를 사망 이후에도 유지하는 방법을 모색하고 있으며, 부분적 뇌 교체나 클라우드 메모리 업로드 같은 개념들이 논의되고 있다. 엔비디아 CEO 교체, 바이오무기 감지 AI, 중국의 AI 단편드라마 대량 생산 등 다양한 기술 뉴스가 보도되었다. 우크라이나의 스타쉴드 제한, 우주 위성 추적 기술, 생명의 기원에 관한 새로운 가설 등 과학 기술 분야의 주요 발전들이 계속되고 있다.",
+    "image": "data/techinsight-images/56aae23ea0ec.webp",
+    "publishedAt": "2026-11-12T13:10:00.000Z",
+    "createdAt": "2026-11-13T01:47:19.592Z"
+  },
+  {
+    "id": "a106a1a1b5a5",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "페이팔 광고 부문이 말하는 AI 투자의 비즈니스 가치 입증 방법",
+    "originalTitle": "Proving AI’s business value: Views from PayPal Ads SVP and GM Mark Grether",
+    "link": "https://www.mckinsey.com/capabilities/growth-marketing-and-sales/our-insights/proving-ais-business-value-views-from-paypal-ads-svp-and-gm-mark-grether",
+    "summary": "페이팔 광고 부문의 마크 그레더 SVP 겸 GM은 마케터들이 독점적 거래 데이터를 활용하여 기술 투자를 실제 성과와 연결할 수 있는 방법을 설명한다. CMO와 CFO 간의 긴밀한 협력을 통해 경영진과 마케팅 부서의 목표를 일치시키는 것이 중요하다. 또한 고객 여정의 변화를 추적함으로써 AI 기술이 실제로 어떤 비즈니스 임팩트를 만드는지 명확히 입증할 수 있다.",
+    "image": "data/techinsight-images/a106a1a1b5a5.webp",
+    "publishedAt": "2026-11-12T00:00:00.000Z",
+    "createdAt": "2026-11-13T01:47:34.191Z"
+  },
+  {
     "id": "198edc5850c5",
     "sourceKey": "mit",
     "source": "MIT Technology Review",
@@ -202,41 +238,5 @@
     "image": "data/techinsight-images/149e1ea67ea2.webp",
     "publishedAt": "2026-11-06T15:00:02.000Z",
     "createdAt": "2026-11-07T00:52:44.123Z"
-  },
-  {
-    "id": "69dd96b9d4af",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "휴머노이드 로봇이 집을 청소하고 삼성이 AI 붐에 대비한다",
-    "originalTitle": "The Download: a humanoid cleans house and Samsung builds for the AI boom",
-    "link": "https://www.technologyreview.com/2026/11/06/1148154/the-download-humanoid-robot-cleaner-samsung-ai-chip-boom/",
-    "summary": "샌프란시스코의 스타트업 타우 로보틱스가 제공하는 휴머노이드 로봇 청소 서비스가 선보였으며, 현재는 원격 조종 방식으로 운영되고 있어 완전 자율 가사 로봇까지는 아직 갈 길이 있다. 생성형 AI 모델의 수요 증가에 대응하기 위해 삼성은 한국 평택에 거대한 반도체 제조 캠퍼스를 건설 중이며, 이미 3개의 팹이 24시간 가동 중이고 추가 시설들이 준비 중이다. 기술주 약 2조 5,000억 달러가 AI 둔화 우려로 시장에서 사라졌으며, 민주당은 빅테크 규제를 추진하고 있다. AI 자기 개선 연구, 화성의 화산 활동 증거 발견, COVID 백신의 경제적 가치 재평가 등 다양한 기술 분야에서 진전이 이루어지고 있다.",
-    "image": "data/techinsight-images/69dd96b9d4af.webp",
-    "publishedAt": "2026-11-06T13:10:00.000Z",
-    "createdAt": "2026-11-07T00:52:41.391Z"
-  },
-  {
-    "id": "e804e0e79289",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "휴머노이드 로봇이 내 집을 청소했다, 미래가 현실이 되는 기분이었다",
-    "originalTitle": "I watched a humanoid robot clean my apartment. It felt like a taste of the future.",
-    "link": "https://www.technologyreview.com/2026/11/06/1148090/i-watched-a-humanoid-robot-clean-my-apartment-it-felt-like-a-taste-of-the-future/",
-    "summary": "샌프란시스코의 스타트업 타우 로보틱스는 휴머노이드 로봇을 이용한 청소 서비스를 제공하고 있으며, 현재는 원격 조종 방식으로 운영되고 있다. 로봇들이 청소하는 과정에서 수집한 데이터는 향후 자율 주행 로봇 개발에 활용될 예정이다. 기술적으로는 청소, 모핑, 화장실 청소 등 실제 작업을 수행할 수 있지만 여전히 계단 이동, 원격 신호 지연 등 기술적 한계를 보이고 있다. 서비스 가격은 시간당 30달러부터 주간 두 로봇 청소에 100달러까지 다양하게 책정되어 있다. 느린 속도와 기술적 미숙함에도 불구하고 로봇의 학습과 발전 가능성은 충분히 흥미로운 상황이다.",
-    "image": "data/techinsight-images/e804e0e79289.webp",
-    "publishedAt": "2026-11-06T10:00:00.000Z",
-    "createdAt": "2026-11-07T00:52:37.848Z"
-  },
-  {
-    "id": "52a4e0a85407",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "자동차 품질 관리를 혁신하는 인공지능 기술",
-    "originalTitle": "How AI is transforming automotive quality operations",
-    "link": "https://www.mckinsey.com/industries/automotive-and-assembly/our-insights/how-ai-is-transforming-automotive-quality-operations",
-    "summary": "업스트림의 공동창립자이자 CEO인 요아브 레비는 인공지능이 자동차 산업에서 품질 문제를 조기에 감지하고 조사 속도를 높이며 맞춤형 대응책을 실행함으로써 보증비용과 리콜 비용을 대폭 줄일 수 있다고 설명한다.\n인공지능 기술을 통해 결함이 확산되기 전에 문제를 발견하고 빠르게 대처할 수 있어 자동차 제조사의 경제적 손실을 최소화할 수 있다는 것이 핵심 주장이다.",
-    "image": "data/techinsight-images/52a4e0a85407.webp",
-    "publishedAt": "2026-11-06T00:00:00.000Z",
-    "createdAt": "2026-11-07T00:52:54.084Z"
   }
 ]
