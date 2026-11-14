@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-14T09:48:06.802Z",
+  "updatedAt": "2026-11-14T15:29:20.910Z",
   "dataYear": 2025,
   "buybackPeriod": {
     "from": "20251114",
@@ -2110,10 +2110,10 @@
           "latestDate": "2026-08-03",
           "latestNote": "무기명식 무보증 사모 전환사채"
         },
-        "marketCap": 27479090016000,
+        "marketCap": 36541362312000,
         "rightsRatio": null,
-        "cbRatio": 0.03166262054141524,
-        "totalRatio": 0.03166262054141524
+        "cbRatio": 0.02381027813279629,
+        "totalRatio": 0.02381027813279629
       },
       "sector": "산업재",
       "eps": {
@@ -20135,7 +20135,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 305968889600,
+        "marketCap": 391362457600,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -29704,15 +29704,6 @@
         "totalRatio": null
       },
       "sector": "기술",
-      "crash": {
-        "pct": -30.97184377838329,
-        "from": "2026-05-26",
-        "to": "2026-06-02",
-        "fromPrice": 11010.0,
-        "toPrice": 7600.0,
-        "rangeFrom": "2025-11-13",
-        "rangeTo": "2026-11-13"
-      },
       "quarter": {
         "label": "야후 분기 실적",
         "quarterLabel": "분기",
@@ -29720,11 +29711,11 @@
         "dateFrom": "2025-09-30",
         "yearTo": "2026",
         "yearFrom": "2025",
-        "revenue": 148150695920.0,
-        "revenuePrev": 96471790660.0,
+        "revenue": 148150695920,
+        "revenuePrev": 96471790660,
         "revenuePct": 53.56892922422717,
-        "netIncome": -9521007660.0,
-        "netIncomePrev": -4972125670.0,
+        "netIncome": -9521007660,
+        "netIncomePrev": -4972125670,
         "netIncomePct": null,
         "niTurnedLoss": false,
         "source": "yahoo"
@@ -29741,6 +29732,15 @@
         "periodTo": "2026-09-30",
         "periodFrom": "2025-09-30",
         "source": "yahoo"
+      },
+      "crash": {
+        "pct": -30.97184377838329,
+        "from": "2026-05-26",
+        "to": "2026-06-02",
+        "fromPrice": 11010.0,
+        "toPrice": 7600.0,
+        "rangeFrom": "2025-11-13",
+        "rangeTo": "2026-11-13"
       },
       "eps": {
         "current": -33.0,
@@ -30451,16 +30451,16 @@
         "source": "yahoo"
       },
       "debt": {
-        "current": 111.40215195961343,
-        "prev": 130.56686707401693,
-        "changePp": -19.164715114403492,
+        "current": 130.91539552387349,
+        "prev": null,
+        "changePp": null,
         "tinyEquity": false,
         "negativeEquity": false,
-        "dateTo": "2026-06-30",
-        "dateFrom": "2025-06-30",
+        "dateTo": "2026-03-31",
+        "dateFrom": null,
         "label": "야후 분기 재무상태표",
-        "periodTo": "2026-06-30",
-        "periodFrom": "2025-06-30",
+        "periodTo": "2026-03-31",
+        "periodFrom": null,
         "source": "yahoo"
       },
       "eps": {
@@ -31552,7 +31552,7 @@
           "latestDate": null,
           "latestNote": null
         },
-        "marketCap": 259701678600,
+        "marketCap": 389552517900,
         "rightsRatio": null,
         "cbRatio": null,
         "totalRatio": null
@@ -33618,15 +33618,6 @@
         "totalRatio": null
       },
       "sector": "기술",
-      "crash": {
-        "pct": -19.87041036717062,
-        "from": "2026-02-24",
-        "to": "2026-03-04",
-        "fromPrice": 23150.0,
-        "toPrice": 18550.0,
-        "rangeFrom": "2025-11-13",
-        "rangeTo": "2026-11-13"
-      },
       "quarter": {
         "label": "야후 분기 실적",
         "quarterLabel": "분기",
@@ -33634,11 +33625,11 @@
         "dateFrom": "2025-09-30",
         "yearTo": "2026",
         "yearFrom": "2025",
-        "revenue": 92050568030.0,
-        "revenuePrev": 84065726110.0,
+        "revenue": 92050568030,
+        "revenuePrev": 84065726110,
         "revenuePct": 9.498332185404353,
-        "netIncome": 2906511970.0,
-        "netIncomePrev": 11841456370.0,
+        "netIncome": 2906511970,
+        "netIncomePrev": 11841456370,
         "netIncomePct": -75.45477617631926,
         "niTurnedLoss": false,
         "source": "yahoo"
@@ -33655,6 +33646,15 @@
         "periodTo": "2026-09-30",
         "periodFrom": "2025-09-30",
         "source": "yahoo"
+      },
+      "crash": {
+        "pct": -19.87041036717062,
+        "from": "2026-02-24",
+        "to": "2026-03-04",
+        "fromPrice": 23150.0,
+        "toPrice": 18550.0,
+        "rangeFrom": "2025-11-13",
+        "rangeTo": "2026-11-13"
       },
       "eps": {
         "current": 932.0,
