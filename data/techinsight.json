@@ -1,5 +1,65 @@
 [
   {
+    "id": "0d9fae548b15",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "마이크로자격증으로 엔지니어들의 신뢰할 수 있는 AI 개발 역량 강화",
+    "originalTitle": "How Microcredentials Help Engineers Build Trustworthy AI",
+    "link": "https://spectrum.ieee.org/microcredentials-trustworthy-ai",
+    "summary": "AI 기술 개발 속도는 빠르지만 규정 준수와 윤리 기준 적용이 새로운 병목이 되고 있다. 전통적인 공학 교육은 AI 감시, 데이터 추적, 안전 프로토콜 등 규제 요구사항을 다루지 않아 엔지니어들의 역량 격차가 심하다. 마이크로자격증은 경력 단절 없이 편향 완화, 알고리즘 투명성, 위험 감사 등 필수 역량을 습득하게 해준다. IEEE는 AI 윤리를 위한 7000 시리즈 표준을 기반으로 업계 맞춤형 마이크로자격증 프로그램을 제공하여 엔지니어들이 개발 단계에서 시스템의 안전성과 규정 준수를 인증할 수 있도록 지원한다.",
+    "image": "data/techinsight-images/0d9fae548b15.webp",
+    "publishedAt": "2026-11-13T19:00:03.000Z",
+    "createdAt": "2026-11-14T01:25:13.871Z"
+  },
+  {
+    "id": "f1dbc25a6463",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "실리콘밸리의 정치적 오판과 엔비디아의 칩 추적 계획",
+    "originalTitle": "The Download: Silicon Valley’s blind spot and Nvidia’s chip-tracking plan",
+    "link": "https://www.technologyreview.com/2026/11/13/1148551/the-download-silicon-valley-midterms-nvidia-chip-tracking/",
+    "summary": "실리콘밸리의 기술 리더들이 중간선거 직전 트럼프를 지지하며 정치 판세를 크게 잘못 읽었다는 지적이 제기되고 있다. 한편 엔비디아는 공개적으로는 난제라고 평가받던 칩 추적 기술이 실제로 가능하다고 의회에 비공개 확인했다. 뇌 임플란트 시험에 참여한 자원자들이 자신의 뇌 데이터에 대한 접근권과 더 많은 자율성을 요구하고 있다. 마이크로소프트의 대규모 장애가 전 세계 서비스에 영향을 미쳤으며, 엔비디아 최고경영자 사임으로 인한 후속 파장이 계속되고 있다. 전 세계적으로 AI 규제와 스타트업 개발 중단을 요구하는 목소리가 높아지고 있다.",
+    "image": "data/techinsight-images/f1dbc25a6463.webp",
+    "publishedAt": "2026-11-13T13:10:00.000Z",
+    "createdAt": "2026-11-14T01:25:15.189Z"
+  },
+  {
+    "id": "eec9abe0c41c",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "극한 기후 환경에서 견딜 수 있도록 설계된 송전선로 엔지니어링",
+    "originalTitle": "Engineer Overhead Lines to Withstand Ice, Wind and FreezingRain",
+    "link": "https://content.knowledgehub.wiley.com/engineering-overhead-electric-lines-for-ice-wind-and-freezing-rain/",
+    "summary": "이 백서는 얼음, 바람, 식생 부하가 동시에 송전선에 미치는 영향을 설명하며, 엔지니어들이 송전선 시스템 전체를 평가하고 복원력 있는 설계 옵션을 비교하는 방법을 제시한다. 결빙우, 착빙, 습설 등 다양한 극한 기후 현상이 송전선에 어떤 하중을 가하는지에 대한 이해를 돕는다. 이를 통해 송전선로의 안정성을 높이고 악천후로 인한 전력 공급 중단을 줄일 수 있는 엔지니어링 솔루션을 제공한다.",
+    "image": "data/techinsight-images/eec9abe0c41c.webp",
+    "publishedAt": "2026-11-13T11:00:02.000Z",
+    "createdAt": "2026-11-14T01:25:15.691Z"
+  },
+  {
+    "id": "04ab322d24b7",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "뇌 임플란트 임상시험 참여자들, 자율성 보장과 비밀유지계약 완화 요구",
+    "originalTitle": "More autonomy, fewer NDAs: Volunteers have new requests for brain implant trials",
+    "link": "https://www.technologyreview.com/2026/11/13/1148474/more-autonomy-fewer-ndas-volunteers-have-new-requests-for-brain-implant-trials/",
+    "summary": "뇌-컴퓨터 인터페이스 임상시험에 참여한 사람들이 연구진에게 더 많은 자율성과 존중을 요구하고 있다. 2014년 처음으로 손 제어용 뇌 임플란트 시술을 받은 이안 버크하트는 BCI 파이오니어 연합을 설립하여 참여자들의 경험을 바탕으로 윤리 지침을 개발했다. 새로운 지침은 참여자의 보상 인정, 뇌 데이터에 대한 접근권 보장, 비밀유지계약 제한, 시술 후 기기 유지 등 13개 범주의 권장사항을 제시한다. 참여자들은 자신의 뇌 데이터를 개인정보로 간주하고 의사와 공유할 수 있어야 하며, 임상시험 종료 후에도 뇌 기기가 합리적인 기간 동안 유지되어야 한다고 주장한다.",
+    "image": "data/techinsight-images/04ab322d24b7.webp",
+    "publishedAt": "2026-11-13T10:00:00.000Z",
+    "createdAt": "2026-11-14T01:25:11.492Z"
+  },
+  {
+    "id": "5de37488cd54",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "미래를 안다던 실리콘밸리, 중간선거는 왜 틀렸나",
+    "originalTitle": "Silicon Valley claims to know the future. So why did it get the midterms so wrong?",
+    "link": "https://www.technologyreview.com/2026/11/13/1148498/silicon-valley-claims-to-know-the-future-so-why-did-it-get-the-midterms-so-wrong/",
+    "summary": "샘 알트먼, 엘론 머스크 등 실리콘밸리 지도자들은 미래 예측 능력을 자산으로 삼아왔지만, 중간선거 5주 전 트럼프 대통령과의 \"슈퍼인텔리전스\" 협약 체결로 장기적 이익을 단기 정치적 이득에 팔아넘겼다. 수많은 여론조사가 반트럼프 감정과 AI·데이터센터에 대한 양당의 거부감을 보였음에도 이들은 정치 지형도를 완전히 오판했다. 이제 과학기술 업계는 민주당의 표적이 되었으며, 직원들도 경영진이 명백한 현실을 보지 못한 이유를 이해하지 못하고 있다. 실리콘밸리의 기술 리더들은 정치, 경제, 규제 문제에 대해서는 전문가가 아니었으며, 대통령과의 인맥과 보조금이라는 즉각적 보상에 눈이 멀어 기본적인 정치 계산을 놓쳤다. 이번 오판은 실리콘밸리 리더들이 실제로는 미래를 예측할 수 없다는 신화를 여지없이 드러냈다.",
+    "image": "data/techinsight-images/5de37488cd54.webp",
+    "publishedAt": "2026-11-13T10:00:00.000Z",
+    "createdAt": "2026-11-14T01:25:32.335Z"
+  },
+  {
     "id": "07356858caea",
     "sourceKey": "mit",
     "source": "MIT Technology Review",
@@ -178,65 +238,5 @@
     "image": "data/techinsight-images/273d7db17a98.webp",
     "publishedAt": "2026-11-09T16:25:06.000Z",
     "createdAt": "2026-11-10T03:28:44.893Z"
-  },
-  {
-    "id": "b09ab79ba3e1",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "빈말뿐인 AI 기후 대응 주장과 엔비디아 CEO 논란",
-    "originalTitle": "The Download: empty AI climate claims, and an Nvidia investigation",
-    "link": "https://www.technologyreview.com/2026/11/09/1148176/the-download-empty-ai-climate-claims-and-an-nvidia-investigation/",
-    "summary": "UN 기후 회의에서 AI가 기후 변화 해결의 핵심으로 거론되고 있지만, 실제로 AI 업계는 온실가스 감축을 위해 충분한 노력을 기울이지 않고 있다. 엔비디아 CEO 젠슨 황이 중국 스파이 혐의자와의 부적절한 관계를 인정하면서 회사 주가가 급락했다. 민주당은 애플, 메타, 머스크 회사 등 빅테크 기업에 대한 대규모 조사를 계획 중이며, 데이터센터 반발을 AI 산업 규제의 계기로 활용하려 하고 있다. AI는 음악, 해킹, 온라인 저작권 침해 등 다양한 분야에서 빠르게 영향력을 확대하고 있다.",
-    "image": "data/techinsight-images/b09ab79ba3e1.webp",
-    "publishedAt": "2026-11-09T13:15:00.000Z",
-    "createdAt": "2026-11-10T03:29:02.835Z"
-  },
-  {
-    "id": "b044ec790c18",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "특수화학 산업에서 AI로 혁신하다",
-    "originalTitle": "Innovating with AI in the special chemicals industry",
-    "link": "https://www.technologyreview.com/2026/11/09/1147654/innovating-with-ai-in-the-special-chemicals-industry/",
-    "summary": "특수화학 제조업체 루브리졸은 AI와 클라우드 컴퓨팅, 첨단 모델링을 활용해 연구 개발을 가속화하고 있으며, 핵심은 신기술을 신뢰할 수 있는 데이터와 과학적 전문성을 연결하는 것이다. 데이터 과학자들은 패턴 인식과 가설 검증을 통해 물리적 실험 전에 가능성을 모델링함으로써 과학자들의 의사결정을 더욱 효과적으로 지원할 수 있다. 루브리졸은 과학자, 데이터 과학자, IT 전문가로 구성된 '퓨전 팀'을 구성하여 서로 다른 관점을 통합하고 공동의 목표를 달성하고 있다. AI 기반의 디지털 모델링은 더 많은 제품 배합을 검토하고 옥수수 전분 같은 지속 가능한 소재를 탐색하며 제품 전체 수명주기에 걸친 트레이드오프를 평가할 수 있게 해준다. 향후 AI, 자동화, 첨단 모델링, 디지털 트윈, 연결된 데이터가 수렴하면서 지능형 실험실과 효율적인 제조 공장이 실현될 것으로 예상된다.",
-    "image": "data/techinsight-images/b044ec790c18.webp",
-    "publishedAt": "2026-11-09T13:00:00.000Z",
-    "createdAt": "2026-11-10T03:29:05.117Z"
-  },
-  {
-    "id": "58446515405f",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "AI가 기후 변화를 해결한다는 주장은 아직 입증되지 않았다",
-    "originalTitle": "The climate case for AI has not been made",
-    "link": "https://www.technologyreview.com/2026/11/09/1148166/the-climate-case-for-ai-has-not-been-made/",
-    "summary": "AI 업계 지도자들은 자신들의 기술이 기후 변화를 해결할 수 있다고 주장하지만, 현실에서는 이러한 낙관적 예측을 뒷받침할 충분한 증거가 부족한 상태다. 연구에 따르면 AI는 2035년까지 글로벌 배출량을 대폭 감축할 가능성이 있으나, 전력, 축산, 운송 등 핵심 산업의 실제 도입 현황은 기대에 미치지 못하고 있다. 전력망 운영자, 대체 단백질 회사, 배터리 제조업체 등에서 AI를 적극 활용하는 사례는 극소수에 불과하며, 축산업의 경우 투자 감소와 소비자 채택 부진이라는 근본적 문제에 직면해 있다. 석유 및 가스 회사들도 AI를 활용하려 하므로, 기술 기업들은 자신들의 도구가 청정 에너지뿐 아니라 화석 연료 증산에도 악용될 가능성에 대해 책임 있는 답변을 제시해야 한다. AI 통합은 단지 시작일 뿐이며, 실제 규제 승인과 상용화 과정까지 가는 데는 여전히 많은 시간이 필요하다.",
-    "image": "data/techinsight-images/58446515405f.webp",
-    "publishedAt": "2026-11-09T10:00:00.000Z",
-    "createdAt": "2026-11-12T02:14:42.785Z"
-  },
-  {
-    "id": "dc167b4fb86d",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "CFO가 AI 투자에서 실질적 수익을 얻기 위한 전략",
-    "originalTitle": "How CFOs can make AI pay off",
-    "link": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/how-cfos-can-make-ai-pay-off",
-    "summary": "재무 부서에서 AI의 가치를 창출하기 위해서는 단순히 기술을 도입하는 것만으로는 부족하다. 명확하게 측정 가능한 목표를 설정하고 기존 업무 프로세스를 근본적으로 재설계해야 한다. 이러한 접근방식은 재무 분야뿐만 아니라 기업 전반의 경영 효율성을 높일 수 있다. CFO는 AI 도입이 실제 성과로 이어지도록 전략적으로 계획하고 관리해야 한다.",
-    "image": "data/techinsight-images/dc167b4fb86d.webp",
-    "publishedAt": "2026-11-09T00:00:00.000Z",
-    "createdAt": "2026-11-10T03:28:55.046Z"
-  },
-  {
-    "id": "149e1ea67ea2",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "거의 무중력 상태의 달에 착륙하는 방법",
-    "originalTitle": "How Do You Land on a Moon With Almost No Gravity?",
-    "link": "https://spectrum.ieee.org/mmx-mission-to-phobos",
-    "summary": "일본의 MMX 우주선은 화성의 위성 포보스를 탐사하기 위해 2027년 화성에 도착할 예정이다. 포보스는 지구 중력의 1/1800에 불과한 극도로 약한 중력을 가진 감자 모양의 작은 천체로, 그 기원과 구성은 아직 미스터리로 남아있다. MMX 프로젝트는 이러한 극저중력 환경에서 안전하게 착륙하고 표본을 채집한 후 지구로 귀환시키는 전무후무한 도전을 시도하고 있다. 포보스 착륙은 풍선을 땅에 내려놓되 기울어지거나 튕기지 않게 하는 것처럼 매우 어려운 작업으로 묘사되고 있다. 이 미션은 포보스와 화성의 기원에 대한 새로운 과학적 통찰을 제공할 것으로 기대된다.",
-    "image": "data/techinsight-images/149e1ea67ea2.webp",
-    "publishedAt": "2026-11-06T15:00:02.000Z",
-    "createdAt": "2026-11-07T00:52:44.123Z"
   }
 ]
