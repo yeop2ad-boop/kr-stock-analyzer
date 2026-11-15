@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-15T10:21:26.328Z",
+  "updatedAt": "2026-11-15T16:01:34.190Z",
   "dataYear": 2025,
   "buybackPeriod": {
     "from": "20251115",
@@ -30451,16 +30451,16 @@
         "source": "yahoo"
       },
       "debt": {
-        "current": 130.91539552387349,
-        "prev": null,
-        "changePp": null,
+        "current": 111.40215195961343,
+        "prev": 130.56686707401693,
+        "changePp": -19.164715114403492,
         "tinyEquity": false,
         "negativeEquity": false,
-        "dateTo": "2026-03-31",
-        "dateFrom": null,
+        "dateTo": "2026-06-30",
+        "dateFrom": "2025-06-30",
         "label": "야후 분기 재무상태표",
-        "periodTo": "2026-03-31",
-        "periodFrom": null,
+        "periodTo": "2026-06-30",
+        "periodFrom": "2025-06-30",
         "source": "yahoo"
       },
       "eps": {
