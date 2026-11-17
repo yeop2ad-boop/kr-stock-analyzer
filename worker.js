@@ -1451,6 +1451,7 @@ const SLIME_IAP = { energy_full: { kind: "energy", n: 5 }, gems_10: { kind: "gem
   gold_100: { kind: "coin", n: 1000 }, gold_550: { kind: "coin", n: 5500 }, gold_1200: { kind: "coin", n: 12000 }, gold_7000: { kind: "coin", n: 70000 }, gold_14500: { kind: "coin", n: 145000 },
   class_stone: { kind: "cstone", n: 1 }, // 2026-11-10 슬라임금님 0.9.125: 직업 변환의 돌(₩4,900)
   noads_stone: { kind: "noads", n: 1 }, // 2026-11-15 슬라임금님 0.9.165: 광고 제거의 돌(₩6,600) — 소모하지 않는 상품(앱이 확인만 한다)
+  train_stone: { kind: "pgboost", n: 1 }, // 2026-11-17 슬라임금님 0.9.178: 수련 강화의 돌(₩3,500) — 폐관수련 돌 2배·피버 돌·골드 증가 · 소모하지 않는 상품(앱이 확인만 한다)
   boss_ticket: { kind: "ticket", n: 1 } }; // 2026-11-16 슬라임금님 0.9.167: 보스전 입장권(₩1,000 → 0.9.169 부터 ₩1,500, 값은 Play 상품 가격) — 한 장
 // 게임이 보내는 표시 비트(p2b_sec SECF와 같다)
 const SLIME_SECF = { SAVE: 1, VAL: 2, SIG: 4, ROOT: 8, EMU: 16, DBG: 32, HOOK: 64 };
