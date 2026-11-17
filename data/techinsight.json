@@ -1,5 +1,77 @@
 [
   {
+    "id": "9c493a96e3fa",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "오픈소스 AI 진영이 젠슨 황 복귀를 원하는 이유",
+    "originalTitle": "The open-source movement wants Jensen Huang back",
+    "link": "https://www.technologyreview.com/2026/11/16/1148624/the-open-source-movement-wants-jensen-huang-back/",
+    "summary": "엔비디아 CEO 젠슨 황의 복귀를 촉구하는 청원서에 일론 머스크 등 115,000명 이상이 서명했으며, 오픈소스 AI 진영의 주요 인사들도 적극 지지하고 있다. 황은 중국의 AI 리더십 위협에 맞서 오픈소스 AI를 미국의 기술 경쟁력 강화 수단으로 옹호해온 핵심 인물이었다. 하지만 중국 스타트업의 엔비디아 칩 접근성이 예상보다 훨씬 높다는 연구 결과와 미 상무부의 새로운 규제가 발표되면서 황의 복귀는 더욱 어려워 보인다. 이 규제는 중국 기업이 해외 데이터센터를 통해 엔비디아 칩에 원격으로 접근하는 방식을 차단하려는 것으로, 오픈소스 AI 발전에 직접적인 영향을 미칠 수 있다. 오픈소스 진영의 가장 영향력 있는 대변인을 잃으면서 정책입안자들에 대한 영향력도 함께 약해질 위험에 처해있다.",
+    "image": "data/techinsight-images/9c493a96e3fa.webp",
+    "publishedAt": "2026-11-16T18:38:47.000Z",
+    "createdAt": "2026-11-17T03:45:13.487Z"
+  },
+  {
+    "id": "adba844aff17",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "신뢰할 수 있는 AI는 예측이 아닌 경계 설정으로 만든다",
+    "originalTitle": "Building trustworthy AI by fencing it in, not predicting it",
+    "link": "https://www.technologyreview.com/2026/11/16/1148565/building-trustworthy-ai-by-fencing-it-in-not-predicting-it/",
+    "summary": "전통적으로 기술에 대한 신뢰는 예측 가능성에 기반해왔지만, AI는 인간이 프로그래밍하지 않은 상황을 해석하고 미리 정한 대로 행동하지 않기 때문에 이런 접근 방식이 더 이상 유효하지 않다. AI를 신뢰할 수 있게 하려면 그것이 무엇을 할지 예측하는 대신, 외부에서 강제할 수 있는 명확한 경계와 제약 조건을 설정해야 한다. AI의 행동 범위가 너무 커서 사전에 모든 경우를 예측할 수 없으므로, 결정론적 AI를 만드는 것이 아니라 경계가 명확하고 관찰 가능하며 통제 가능한 AI를 만들어야 한다. 신뢰는 일회성 테스트가 아닌 배포 후에도 지속적으로 모니터링하고 검증하는 과정을 통해 구축되어야 한다.",
+    "image": "data/techinsight-images/adba844aff17.webp",
+    "publishedAt": "2026-11-16T16:04:28.000Z",
+    "createdAt": "2026-11-17T03:45:09.041Z"
+  },
+  {
+    "id": "d40156bb9a84",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "로봇 수술이 원격 지역 뇌졸중 치료의 해법이 될 수 있을까",
+    "originalTitle": "Can Robots Bring Stroke Surgery to Remote Hospitals?",
+    "link": "https://spectrum.ieee.org/telesurgery-stroke",
+    "summary": "Remedy Robotics는 원격지에서 뇌졸중 수술을 수행할 수 있는 로봇 시스템을 개발하고 있다. 이 기술은 혈전을 제거하는 혈전제거술이 필요한 급성 허혈성 뇌졸중 환자들이 원격 지역에서 치료받을 수 있도록 하려는 목표다. 현재 뇌졸중 치료 대상자 중 10명 중 1명만이 필요한 수술을 받고 있으며, 먼 거리 이동 중 치명적인 손상이 발생하는 문제를 해결하는 것이 핵심이다. 단순한 로봇의 성능만으로는 충분하지 않으며 통신 인프라, 병원 운영 체계, 환자의 실제 치료 결과 등 종합적인 조건이 갖춰져야 실질적인 원격 수술 의료 체계가 구축될 수 있다.",
+    "image": "data/techinsight-images/d40156bb9a84.webp",
+    "publishedAt": "2026-11-16T14:00:02.000Z",
+    "createdAt": "2026-11-17T03:45:16.934Z"
+  },
+  {
+    "id": "bc38a17a0110",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "반도체 수율 향상을 위한 선진 측정기술: 결함 탐지부터 공정 도구 상태 진단까지",
+    "originalTitle": "Advanced Metrology for Defect Detection, Tool Health, and Semiconductor Yield Enhancement",
+    "link": "https://event.on24.com/wcc/mr/7058967/655F0A675F5C3415546D597247025DA8?utm_source=evident122&utm_medium=IEEE&utm_campaign=series1",
+    "summary": "반도체 제조에서 박막 공정의 수율을 높이기 위해 고도의 측정 기술이 필수적이다. 선진 계측 시스템은 미세한 결함을 조기에 감지하여 생산 단계에서의 불량률을 줄일 수 있다. 동시에 공정 도구의 건강도를 실시간으로 모니터링함으로써 예방적 유지보수가 가능해진다. 이러한 측정 기술들은 반도체 칩의 품질 일관성을 보장하고 전체 생산 효율을 극대화한다. 결과적으로 제조 비용 절감과 제품 신뢰성 향상으로 이어져 반도체 산업의 경쟁력 강화에 기여한다.",
+    "image": "data/techinsight-images/bc38a17a0110.webp",
+    "publishedAt": "2026-11-16T11:00:03.000Z",
+    "createdAt": "2026-11-17T03:45:34.869Z"
+  },
+  {
+    "id": "205c208541f4",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "AI 인프라의 불균형 문제를 짚어보는 이퀴닉스 CEO의 통찰",
+    "originalTitle": "Navigating the AI infrastructure mismatch: Equinix CEO Adaire Fox-Martin",
+    "link": "https://www.mckinsey.com/industries/technology-media-and-telecommunications/our-insights/navigating-the-ai-infrastructure-mismatch-equinix-ceo-adaire-fox-martin",
+    "summary": "AI 인프라 구축 과정에서 경제성 변화, 에너지 제약, 그리고 연결성 병목 현상이 복합적으로 작용하고 있다.\n데이터센터 산업의 선도 기업인 이퀴닉스의 CEO는 현재 AI 기반 시설 개발이 직면한 주요 도전 과제들을 분석하고 있다.\n단순한 기술적 확충만으로는 부족하며, 에너지 효율성과 네트워크 인프라의 동시 발전이 필수적이라는 점을 강조한다.\n향후 AI 산업의 성장을 위해서는 이러한 기반 시설들 간의 균형 잡힌 개발이 필요하다.",
+    "image": "data/techinsight-images/205c208541f4.webp",
+    "publishedAt": "2026-11-16T00:00:00.000Z",
+    "createdAt": "2026-11-17T03:45:26.792Z"
+  },
+  {
+    "id": "e414c17dcfb7",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "아시아 보험업계, 에이전틱 AI로 운영 혁신",
+    "originalTitle": "AI in Asia: Reimagining insurance operations through agentic AI",
+    "link": "https://www.mckinsey.com/capabilities/operations/our-insights/ai-in-asia-reimagining-insurance-operations-through-agentic-ai",
+    "summary": "아시아태평양 지역 보험사들이 에이전틱 AI 기술을 활용하여 운영 효율성을 높일 수 있다.\nAI와 에이전트가 가능하게 하는 새로운 역량 중심으로 보험 운영 체계를 재설계해야 한다.\n이를 통해 보험업계는 실질적인 가치 창출을 기대할 수 있다.",
+    "image": "data/techinsight-images/e414c17dcfb7.webp",
+    "publishedAt": "2026-11-16T00:00:00.000Z",
+    "createdAt": "2026-11-17T03:45:42.912Z"
+  },
+  {
     "id": "0d9fae548b15",
     "sourceKey": "ieee",
     "source": "IEEE Spectrum",
@@ -166,77 +238,5 @@
     "image": "data/techinsight-images/8482284ea775.webp",
     "publishedAt": "2026-11-10T13:00:00.000Z",
     "createdAt": "2026-11-11T01:12:58.407Z"
-  },
-  {
-    "id": "4b2c2f063eae",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "하드웨어 제작 전에 전자제품의 충격 및 낙하 문제를 미리 파악하기",
-    "originalTitle": "Catch Electronics Shock and Drop Failures Before Hardware Is Built",
-    "link": "https://content.knowledgehub.wiley.com/shifting-reliability-left-guided-virtual-validation-for-electronics-shock-and-drop-testing/",
-    "summary": "전자제품의 신뢰성 검증을 개발 초기 단계로 앞당기는 '좌측 이동' 전략을 다룬 백서입니다. 가상 충격 및 낙하 분석을 통해 엔지니어링 팀은 물리적 테스트 전에 신뢰성 위험을 조기에 발견할 수 있습니다. 이러한 가이드 기반 가상 검증 방식은 적격성 반복 횟수를 줄이고 포장 설계를 최적화하며 전자제품 개발 주기를 단축하는 데 도움을 줍니다.",
-    "image": "data/techinsight-images/4b2c2f063eae.webp",
-    "publishedAt": "2026-11-10T11:00:02.000Z",
-    "createdAt": "2026-11-11T01:13:19.451Z"
-  },
-  {
-    "id": "0e39b9f32bbf",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "에이전트 AI로 비즈니스 계획 체계를 혁신하다",
-    "originalTitle": "Reinventing business planning with agentic AI",
-    "link": "https://www.mckinsey.com/capabilities/quantumblack/our-insights/reinventing-business-planning-with-agentic-ai",
-    "summary": "향상된 예측 기술과 AI 에이전트를 결합하면 기업의 계획 수립 과정이 보다 지속적이고 지능적인 의사결정 체계로 진화할 수 있다.\nAI 에이전트는 예측 결과를 실제 행동으로 전환하는 데 필요한 수작업을 크게 줄여줄 것으로 기대된다.\n이를 통해 기업은 시장 변화에 더욱 신속하게 대응하는 동적인 계획 시스템을 갖추게 된다.",
-    "image": "data/techinsight-images/0e39b9f32bbf.webp",
-    "publishedAt": "2026-11-10T00:00:00.000Z",
-    "createdAt": "2026-11-11T01:13:09.317Z"
-  },
-  {
-    "id": "b13a5203248e",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "2026년 글로벌 뱅킹 리뷰: AI가 만드는 새로운 수익 기회",
-    "originalTitle": "Global Banking Annual Review 2026: The AI disruption dividend",
-    "link": "https://www.mckinsey.com/industries/financial-services/our-insights/global-banking-annual-review",
-    "summary": "은행권이 2025년에 사상 최대 규모인 1조 3천억 달러의 수익을 달성했다. 이제 AI 기술로 인한 산업 재편 속에서 새로운 수익 기회가 나타나고 있으며, 이를 선점하는 것은 빠르고 정확하게 움직이는 은행들에게 돌아갈 것이다. 과거와 달리 이번에는 준비 기간이 주어지지 않으므로 은행들은 즉각적인 대응을 필요로 한다.",
-    "image": "data/techinsight-images/b13a5203248e.webp",
-    "publishedAt": "2026-11-10T00:00:00.000Z",
-    "createdAt": "2026-11-11T01:13:28.946Z"
-  },
-  {
-    "id": "3ec2e278915e",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "데이터센터 논란의 핵심은 문화전쟁이 아닌 전력 수급 문제다",
-    "originalTitle": "The backlash about data centers might really just be about electricity",
-    "link": "https://www.technologyreview.com/2026/11/09/1148194/the-backlash-about-data-centers-might-really-just-be-about-electricity/",
-    "summary": "빅테크 기업들은 데이터센터 반발을 기업권력에 대한 광범위한 불안감으로 설명하지만, 실제 핵심은 막대한 전력 수요에 있다. 기존 전력망에 연결하는 방식과 자체 발전 설비를 갖추는 방식 모두 지역사회에 직접적인 피해를 야기한다. 전력망 연결 시 지역 인프라에 과부하가 발생하고, 자체 발전 시에는 천연가스 터빈이나 디젤 발전기로 인한 대기오염 문제가 발생한다. AI 데이터센터가 요구하는 전력 규모는 시카고 같은 도시 전체에 필요한 수준으로, 어떤 방식이든 주변 지역사회에 무거운 부담을 준다. 결국 데이터센터 반발은 기업 이미지 개선으로 해결할 수 없는 물리적이고 환경적인 문제인 것이다.",
-    "image": "data/techinsight-images/3ec2e278915e.webp",
-    "publishedAt": "2026-11-09T19:35:33.000Z",
-    "createdAt": "2026-11-10T03:28:44.388Z"
-  },
-  {
-    "id": "50d303e5bf84",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "낸시 펠로시의 후임자, AI 규제에 나선다",
-    "originalTitle": "Nancy Pelosi’s replacement is ready to regulate AI",
-    "link": "https://www.technologyreview.com/2026/11/09/1148182/nancy-pelosis-replacement-is-ready-to-regulate-ai/",
-    "summary": "캘리포니아 주 상원의원 스콧 위너가 펠로시의 빈 샌프란시스코 하원의석을 승리로 장악했으며, 그는 AI 규제를 자신의 정치 경력의 핵심으로 삼아왔다. 그는 2024년 AI 규제 법안 SB 1047을 작성했고, 주지사의 거부 후 더 온건한 SB 53을 통과시켰으며 이는 연방 차원의 입법에 영향을 미쳤다. 위너는 재귀적 자기개선으로 인한 AI의 통제 불능 위험을 강조하며 강력한 연방 규제자 설립과 감시자 보호, 테스트 요구사항 등을 주장한다. 하지만 그는 기술산업 규제에 대한 의회의 부진한 기록과 트럼프 행정부와의 협력 가능성을 우려하면서도 조심스러운 낙관주의를 유지하고 있다.",
-    "image": "data/techinsight-images/50d303e5bf84.webp",
-    "publishedAt": "2026-11-09T17:05:43.000Z",
-    "createdAt": "2026-11-10T03:28:43.455Z"
-  },
-  {
-    "id": "273d7db17a98",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "자율형 AI 에이전트가 제로트러스트 보안의 한계를 시험하다",
-    "originalTitle": "AI Agents Are Testing the Limits of Zero-Trust Security",
-    "link": "https://spectrum.ieee.org/zero-trust-agentic-ai-architecture",
-    "summary": "여러 AI 에이전트가 협력하며 작동할 때 그들의 행동을 검증하고 보안 정책을 적용하며 책임성을 유지하는 것이 점점 더 어려워지고 있다. 에이전트 시스템은 맥락 복구 공격이나 삭제된 정보 유출 같은 보안 위협에 노출될 수 있으며, 제로트러스트 아키텍처로도 완벽한 신뢰를 보장하기 어렵다. 신뢰할 수 없는 외부 모델 기반의 AI 에이전트를 무분별하게 도입하면 코드베이스 유출이나 대규모 취약점 확산 같은 심각한 사이버 위험이 발생할 수 있다. 실시간으로 각 쿼리를 검증해야 할 때 계산 비용과 성능의 트레이드오프 문제가 발생하며, 제로데이 공격이나 인프라 장애 시 전체 에이전트 생태계가 붕괴될 위험이 있다. 따라서 에이전트 도입 시 적절한 보안 가드레일과 다층 신뢰 체계 구축이 필수적이다.",
-    "image": "data/techinsight-images/273d7db17a98.webp",
-    "publishedAt": "2026-11-09T16:25:06.000Z",
-    "createdAt": "2026-11-10T03:28:44.893Z"
   }
 ]
