@@ -1,7 +1,8 @@
 // 슬라임금님 PVP 실시간 서버 (Cloudflare Worker + Durable Object) — 2026-11-18
 //  주소: wss://slime-pvp.<계정>.workers.dev/pvp   (게임: slime-dungeon/parts/p8s7_pvp.html 의 PVP_WS)
 //  하는 일은 두 가지뿐: ① 같은 버전으로 기다리는 사람끼리 짝을 지어 준다 ② 짝이 된 뒤에는 받은 글을 그대로 상대에게 넘긴다(게임 계산은 안 함)
-//  · 첫 글 {t:'hello', v, name, color, wid, wlv, lvl} → 기다리는 사람이 있으면 둘에게 {t:'match', i, seed, peer} · 없으면 {t:'wait'}
+//  · 첫 글 {t:'hello', v, name, color, wid, wlv, lvl, wq} → 유물 등급(wq)이 비슷한(한 등급 차이까지) 사람이 기다리고 있으면 둘에게 {t:'match', i, seed, peer} · 없으면 {t:'wait'}
+//  · 기다리던 쪽이 20초 뒤에 {t:'any'} 를 보내면 그때부터 등급 무관(게임은 30초에 연결을 끊고 AI와 붙는다)
 //  · 한쪽이 끊기면 상대에게 {t:'bye'}
 //  · 시험용 로컬 서버(slime-dungeon/bench/rec_server.py 의 /pvp)와 같은 규칙 — 둘을 같이 고친다
 //  배포: 이 폴더에서 `npx wrangler deploy` (또는 Cloudflare 대시보드 Workers Builds 로 이 폴더를 연결). Durable Object 는 대시보드 붙여넣기로는 만들 수 없다.
@@ -33,6 +34,29 @@ export class PvpLobby extends DurableObject {
     return l.length ? l[0] : null;
   }
 
+  // 짝 찾기(2026-11-18 2차): 유물 등급(wq)이 한 등급 차이까지인 사람과 먼저 · 둘 중 한쪽이 20초를 넘게 기다렸으면(any) 등급 무관 · 등급 차이가 작은 사람, 오래 기다린 사람 순
+  tryMatch(ws, me) {
+    const C = [];
+    for (const s of this.ctx.getWebSockets()) {
+      if (s === ws) continue;
+      const b = s.deserializeAttachment();
+      if (!b || b.st !== "wait" || b.v !== me.v) continue;
+      const d = Math.abs((b.wq | 0) - (me.wq | 0));
+      if (d > 1 && !b.any && !me.any) continue;
+      C.push({ s, b, d });
+    }
+    C.sort((x, y) => x.d - y.d || (x.b.t || 0) - (y.b.t || 0));
+    const seed = ((Math.random() * 2147483646) | 0) + 1;
+    for (const { s, b } of C) {
+      try { s.send(JSON.stringify({ t: "match", i: 0, seed, peer: me.prof })); } catch (e) { continue; } // 이미 끊긴 소켓이면 다음 사람
+      s.serializeAttachment({ sid: b.sid, st: "play", peer: me.sid });
+      ws.serializeAttachment({ sid: me.sid, st: "play", peer: b.sid });
+      ws.send(JSON.stringify({ t: "match", i: 1, seed, peer: b.prof }));
+      return true;
+    }
+    return false;
+  }
+
   async webSocketMessage(ws, message) {
     const a = ws.deserializeAttachment() || {};
     if (a.st === "play") {
@@ -41,24 +65,19 @@ export class PvpLobby extends DurableObject {
       if (p) { try { p.send(message); } catch (e) {} }
       return;
     }
-    if (a.st !== "new" || typeof message !== "string" || message.length > 600) return;
+    if (typeof message !== "string" || message.length > 600) return;
     let h;
     try { h = JSON.parse(message); } catch (e) { return; }
-    if (!h || h.t !== "hello") return;
-    const prof = PROF(h), v = String(h.v || "").slice(0, 16);
-    const seed = ((Math.random() * 2147483646) | 0) + 1;
-    for (const s of this.ctx.getWebSockets()) {
-      if (s === ws) continue;
-      const b = s.deserializeAttachment();
-      if (!b || b.st !== "wait" || b.v !== v) continue;
-      try { s.send(JSON.stringify({ t: "match", i: 0, seed, peer: prof })); } catch (e) { continue; } // 이미 끊긴 소켓이면 다음 사람
-      s.serializeAttachment({ sid: b.sid, st: "play", peer: a.sid });
-      ws.serializeAttachment({ sid: a.sid, st: "play", peer: b.sid });
-      ws.send(JSON.stringify({ t: "match", i: 1, seed, peer: b.prof }));
+    if (!h) return;
+    if (a.st === "new" && h.t === "hello") {
+      const me = { sid: a.sid, st: "wait", v: String(h.v || "").slice(0, 16), prof: PROF(h), wq: Math.max(0, Math.min(5, h.wq | 0)), any: false, t: Date.now() };
+      if (!this.tryMatch(ws, me)) { ws.serializeAttachment(me); ws.send(JSON.stringify({ t: "wait" })); }
       return;
     }
-    ws.serializeAttachment({ sid: a.sid, st: "wait", v, prof });
-    ws.send(JSON.stringify({ t: "wait" }));
+    if (a.st === "wait" && h.t === "any" && !a.any) {
+      a.any = true; // 20초를 넘게 기다렸다 → 등급 무관
+      if (!this.tryMatch(ws, a)) ws.serializeAttachment(a);
+    }
   }
 
   drop(ws) {
