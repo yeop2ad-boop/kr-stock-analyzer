@@ -1,0 +1,17 @@
+# 슬라임금님 PVP 실시간 서버 — us-stock 워커(대시보드 붙여넣기)와 달리 Durable Object 를 쓰므로 wrangler 로만 배포할 수 있다.
+#   이 폴더에서:  npx wrangler deploy      (처음 한 번 `npx wrangler login`)
+#   또는 Cloudflare 대시보드 → Workers & Pages → 저장소 연결(Workers Builds) → 루트 폴더를 slime-pvp-worker 로
+# 배포되면 주소는 wss://slime-pvp.<계정 하위 도메인>.workers.dev/pvp — 게임의 PVP_WS(parts/p8s7_pvp.html)와 같아야 한다.
+name = "slime-pvp"
+main = "worker.js"
+compatibility_date = "2026-04-07"
+workers_dev = true
+
+[[durable_objects.bindings]]
+name = "PVP"
+class_name = "PvpLobby"
+
+# 무료 요금제는 SQLite 방식 Durable Object 만 된다
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["PvpLobby"]
