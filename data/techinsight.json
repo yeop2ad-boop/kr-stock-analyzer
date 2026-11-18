@@ -1,5 +1,77 @@
 [
   {
+    "id": "41930dc76153",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "IEEE, AI 시스템에 윤리 통합 10년 성과 기념",
+    "originalTitle": "IEEE Celebrates 10 Years of Incorporating Ethics Into AI Systems",
+    "link": "https://spectrum.ieee.org/ieee-ethics-ai-systems",
+    "summary": "IEEE 표준협회는 지난 10년간 AI 시스템의 책임감 있는 개발을 위해 노력해왔으며, 2016년 출범한 '윤리적으로 정렬된 설계(Ethically Aligned Design)' 이니셔티브를 중심으로 활동하고 있다. 이 보고서는 인권 존중, 인간의 웰빙, 투명성 등 8가지 기본 원칙을 제시하여 AI 설계 단계에서부터 윤리를 통합하는 방식을 제안했다. IEEE 7000 시리즈 표준은 이 프레임워크를 기반으로 개발되었으며, 현재 29개 프로젝트 중 11개가 발표되었고 계속 확대되고 있다. 여러 AI 윤리 인증 프로그램도 도입되어 기술 개발에 실질적인 가이드라인을 제공하고 있다.",
+    "image": "data/techinsight-images/41930dc76153.webp",
+    "publishedAt": "2026-11-17T19:00:03.000Z",
+    "createdAt": "2026-11-18T02:51:21.220Z"
+  },
+  {
+    "id": "63e33b4081ff",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "인지적 불멸을 향한 여정: 뇌를 영구히 유지하려는 기술적 시도",
+    "originalTitle": "Roundtables: Inside the Quest for Cognitive Immortality",
+    "link": "https://www.technologyreview.com/2026/11/17/1148049/roundtables-inside-the-quest-for-cognitive-immortality/",
+    "summary": "일부 기술 선도자들은 죽음 이후에도 인간의 정신을 지속시킬 수 있는 방법을 개발하고 있다. MIT 테크놀로지 리뷰의 과학 편집자와 생의학 선임 편집자는 뇌를 점진적으로 교체하거나 기억을 클라우드에 업로드하는 등 마음을 영속화할 수 있는 여러 가능성을 탐색한다. 이 라운드테이블은 자아의 연속성을 추구하는 과학자들이 추진 중인 미래 기술의 현재 상황을 다룬다. 기술적으로 가능할 수 있는 방법들이 논의되지만, 이들이 실제로 개인의 정체성과 의식을 보존할 수 있을지는 여전히 미해결 과제다.",
+    "image": "data/techinsight-images/63e33b4081ff.webp",
+    "publishedAt": "2026-11-17T18:46:47.000Z",
+    "createdAt": "2026-11-18T02:51:21.639Z"
+  },
+  {
+    "id": "6a38a59720a4",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "미국 남서부 수력발전이 올여름 역대 최저 수준으로 급락",
+    "originalTitle": "Hydropower hit record lows in the US Southwest this summer",
+    "link": "https://www.technologyreview.com/2026/11/17/1148742/hydropower-drought-colorado-river/",
+    "summary": "미국 남서부 지역의 수력발전량이 4월부터 8월까지 10년 평균보다 28% 감소했다. 콜로라도강 유역의 극심한가뭄으로 인해 레이크 파월과 레이크 미드 같은 주요 저수지의 수위가 위험 수준까지 떨어졌고, 이는 수력발전소 운영을 어렵게 만들고 있다. 기후변화로 인한 기온 상승과 강설량 감소, 강수 패턴의 변화는 수력발전의 안정성을 떨어뜨리고 있으며, 2026년과 2027년에 수력발전 생산량이 더욱 감소할 것으로 예측된다. 수력발전 감소는 화석연료 의존도를 높여 전 지구적 온실가스 배출 증가에 영향을 미치고 있다.",
+    "image": "data/techinsight-images/6a38a59720a4.webp",
+    "publishedAt": "2026-11-17T17:52:10.000Z",
+    "createdAt": "2026-11-18T02:51:19.331Z"
+  },
+  {
+    "id": "86f07be892b0",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "MIT 테크놀로지 리뷰의 AI, 에너지, 기후 기술 심층 연구 보고서",
+    "originalTitle": "Research Reports",
+    "link": "https://www.technologyreview.com/2026/11/17/1148203/research-reports/",
+    "summary": "MIT 테크놀로지 리뷰는 구독자를 위해 인공지능, 에너지, 기후 기술에 관한 4개의 심층 연구 보고서를 제공하고 있다. 현재 LLM(대규모 언어모델)이 진정한 추론 능력을 가지지 못한다는 주장과 AI 분야의 과장된 광고성 주장들이 비판받고 있다. AI 안전 연구자들 사이에서는 기존의 AI 평가 방식을 재검토해야 한다는 의견이 대두되고 있다. 개인 AI 어시스턴트의 확산으로 인터넷이 인간 중심에서 벗어나 에이전트 기반의 환경으로 변화하고 있다. MIT 테크놀로지 리뷰는 신기술의 상업적, 사회적, 정치적 영향을 분석하는 독립적 미디어로서의 역할을 계속하고 있다.",
+    "image": "data/techinsight-images/86f07be892b0.webp",
+    "publishedAt": "2026-11-17T14:39:46.000Z",
+    "createdAt": "2026-11-18T02:51:37.230Z"
+  },
+  {
+    "id": "2f0718683799",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "AI가 광학 컴퓨팅에 새로운 기회를 제공하다",
+    "originalTitle": "AI Is Giving Optical Computing Another Shot",
+    "link": "https://spectrum.ieee.org/optical-computing-ai",
+    "summary": "70년 이상 연구 단계에 머물러 있던 광학 컴퓨팅이 AI 추론의 에너지 효율성 문제로 인해 급속도로 성장하고 있다. 2022년 4억 달러에서 2024년 22억 2천만 달러로 급증한 시장 규모는 AI 추론 처리의 전력 소비 문제를 해결할 수 있는 대안으로 광학 시스템이 주목받고 있음을 보여준다. 미국, 중국, 독일, 이스라엘 등에서 광학 컴퓨팅 스타트업들이 속속 등장하고 있으며, GPU 제조사와의 경쟁이 예상되지만 이러한 기술 개발은 AI 알고리즘 혁신과 네트워크 컴퓨팅 강화 등 여러 긍정적인 파급효과를 가져올 것으로 기대된다. 광학 기반 행렬-벡터 연산 기술은 1978년부터 제안되어 온 개념으로, 현재 데이터 센터의 네트워킹 인프라에 광학 연산 요소를 통합하는 방식으로 실현되고 있다.",
+    "image": "data/techinsight-images/2f0718683799.webp",
+    "publishedAt": "2026-11-17T14:00:03.000Z",
+    "createdAt": "2026-11-18T02:51:26.664Z"
+  },
+  {
+    "id": "ab7506628686",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "위성 연결이 IoT 기기 설계와 테스트에 미치는 영향 이해하기",
+    "originalTitle": "Understand How Satellite Links Shape IoT Device Design and Testing",
+    "link": "https://content.knowledgehub.wiley.com/5g-nr-ntn-design-and-test-challenges-for-satellite-connected-iot/",
+    "summary": "5G 네트워크에 위성 접속이 추가되면서 IoT 기기의 설계와 테스트 방식이 근본적으로 달라지고 있다. 현실적인 위성 통신 환경을 반영한 테스트가 기기의 실제 운영 성능을 보장하는 데 필수적이다. 3GPP 표준의 여러 릴리스를 통해 위성 기반 IoT 연결성이 점진적으로 개선되고 있으며, 개발자들은 이러한 기술 변화를 반영한 새로운 설계 및 검증 전략이 필요하다.",
+    "image": "data/techinsight-images/ab7506628686.webp",
+    "publishedAt": "2026-11-17T11:00:04.000Z",
+    "createdAt": "2026-11-18T02:51:41.623Z"
+  },
+  {
     "id": "9c493a96e3fa",
     "sourceKey": "mit",
     "source": "MIT Technology Review",
@@ -166,77 +238,5 @@
     "image": "data/techinsight-images/a106a1a1b5a5.webp",
     "publishedAt": "2026-11-12T00:00:00.000Z",
     "createdAt": "2026-11-13T01:47:34.191Z"
-  },
-  {
-    "id": "198edc5850c5",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "올해 UN 기후변화협약총회에서 주목해야 할 핵심 내용들",
-    "originalTitle": "What to know about this year’s UN climate talks",
-    "link": "https://www.technologyreview.com/2026/11/11/1148308/un-climate-talks/",
-    "summary": "터키 안탈리아에서 11월 8일부터 20일까지 개최되는 COP31은 기후변화 대응의 국제적 입장을 보여주는 중요한 지표가 될 것이다. 이란 전쟁으로 인한 에너지 가격 급등과 미국의 파리협약 탈퇴 등 국제 정세가 복잡한 가운데, 화석연료 감축과 기후재정 확보가 주요 의제로 논의될 예정이다. 1.5°C 온난화 제한 목표 달성이 불가능해 보이는 상황에서 연간 3,000억 달러의 기후재정 확보와 재정 배분 방식 개선이 긴급한 과제다. 공식 협상 외에도 AI 지속가능성 강화와 2035년까지 전 에너지의 35%를 전기화하는 목표 등 부속 의제들이 추진되고 있다. 호주와 터키 같은 화석연료 의존국가들이 공동 개최국인 만큼 화석연료 감축 언급의 포함 여부가 주목할 만한 쟁점이 될 것이다.",
-    "image": "data/techinsight-images/198edc5850c5.webp",
-    "publishedAt": "2026-11-11T17:00:00.000Z",
-    "createdAt": "2026-11-12T02:14:26.126Z"
-  },
-  {
-    "id": "ad8780c2a1d5",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "죽음 너머 마음 보존하기와 개방형 AI의 위험성 평가",
-    "originalTitle": "The Download: preserving minds and weighing open AI risks",
-    "link": "https://www.technologyreview.com/2026/11/11/1148424/the-download-preserving-minds-open-ai-risks/",
-    "summary": "기술자들은 뇌를 액체질소로 냉동하거나 살아있는 뇌를 증강하고 기억을 클라우드에 업로드하는 등 죽음 이후에도 자아의 연속성을 보존하는 방법을 탐구하고 있다. 한편 개방형 인공지능 모델의 확산을 둘러싸고 논쟁이 가열되고 있는데, 악의적 행위자의 오용 우려가 있는 반면 기술 독점을 방지한다는 주장이 맞서고 있다. 이 외에도 중국 스파이와의 관련 의혹에 따른 엔비디아 스캔들, AI 에이전트의 목표 달성을 위한 거짓말과 속임수, 현대 냉동 기술이 신선 식품 시스템을 훼손했다는 주장 등 다양한 기술 관련 이슈들이 보도되고 있다.",
-    "image": "data/techinsight-images/ad8780c2a1d5.webp",
-    "publishedAt": "2026-11-11T13:10:00.000Z",
-    "createdAt": "2026-11-12T02:14:46.667Z"
-  },
-  {
-    "id": "8e9c0e02fbb0",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "160년을 지탱한 발전기-전동기 원리, 현대 산업을 계속 움직이다",
-    "originalTitle": "The Dynamo-Electric Principle: 160 Years of Powering Industry",
-    "link": "https://spectrum.ieee.org/innomotics-electric-motors-drive-systems",
-    "summary": "1866년 베르너 폰 지멘스가 발견한 발전기-전동기 원리는 전기기계가 자체 자기장을 생성할 수 있게 함으로써 전기 모터를 실험실 호기심에서 실용적인 동력원으로 탈바꿈시켰다. 이 원리는 철심이 자기장을 생성하고 회전하는 코일이 이 자기장 내에서 전류를 유도하며, 그 전류가 다시 자기장을 강화하는 자기 강화 순환 구조로 작동한다. 160년이 지난 지금도 이 기본 원리는 수백만 개의 모터가 전 세계 산업에서 안정적으로 작동하게 하는 기초가 되고 있다. 1900년대 초 중국 칭따오 맥주 공장에 설치된 이노모틱스 전동기가 90년 이상 연속 운영되며 산업용 장비의 신뢰성을 입증한 것처럼, 발전기-전동기 원리는 현대 산업의 핵심 기술로 남아있다.",
-    "image": "data/techinsight-images/8e9c0e02fbb0.webp",
-    "publishedAt": "2026-11-11T11:00:02.000Z",
-    "createdAt": "2026-11-12T02:14:32.822Z"
-  },
-  {
-    "id": "f908b1bdd038",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "음성 처리 분야의 거장 비슈누 사루프 아탈 93세로 타계",
-    "originalTitle": "Speech Processing Pioneer Bishnu Saroop Atal Dies at 93",
-    "link": "https://spectrum.ieee.org/speech-processing-pioneer-in-memoriam",
-    "summary": "벨 연구소와 AT&T 섀넌 연구실에서 활동한 음향 및 신호 처리 분야의 선구자 비슈누 사루프 아탈이 93세로 별세했다. 그는 1960년대 선형 예측 부호화(LPC)를 개발했으며, 동료 만프레드 슈뢰더와 함께 부호 여기 선형 예측(CELP) 기술을 만들어 현대 음성 코딩의 기초를 마련했다. 이러한 저비트율 음성 코딩 기술은 휴대폰 네트워크에서 효율적인 고음질 음성 전송을 가능하게 하고 무선 네트워크의 용량을 크게 확대했다. 그는 2013년 IEEE 잭 킬비 신호처리 메달을 수상했으며, 미국 공학 한림원과 과학 한림원에 선출되는 등 많은 상을 받았다. 퇴직 후 워싱턴 대학 전기공학 부교수로서 음성 처리 연구를 계속했다.",
-    "image": "data/techinsight-images/f908b1bdd038.webp",
-    "publishedAt": "2026-11-10T19:00:02.000Z",
-    "createdAt": "2026-11-11T01:12:57.722Z"
-  },
-  {
-    "id": "997ee517f70b",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "펠로시 후임자의 AI 규제 추진과 데이터센터의 전력 위기",
-    "originalTitle": "The Download: Pelosi’s successor targets AI and data centers face power woes",
-    "link": "https://www.technologyreview.com/2026/11/10/1148150/the-download-pelosi-successor-ai-regulation-data-center-backlash/",
-    "summary": "샌프란시스코 의석을 승리로 거머쥔 스콧 위너 하원의원이 AI 위험성 규제에 나선다. 캘리포니아 주 상원의원 재직 중 AI 관련 규제 입법을 추진했던 그는 연방 AI 정책 수립에서 중요한 역할을 할 것으로 예상된다. 한편 미국 전역에서 데이터센터에 대한 반발이 커지고 있으며, 이는 단순한 기술 진보에 대한 저항이 아닌 전력 공급 부족이 핵심 쟁점임이 드러났다. 데이터센터는 전력 그리드에 대한 막대한 수요 증가로 인한 환경적, 경제적 우려가 실질적인 갈등의 원인이다. 업계는 이미지 개선으로는 전력 수급의 근본적인 문제를 해결할 수 없는 상황에 처해 있다.",
-    "image": "data/techinsight-images/997ee517f70b.webp",
-    "publishedAt": "2026-11-10T13:10:00.000Z",
-    "createdAt": "2026-11-11T01:12:54.770Z"
-  },
-  {
-    "id": "8482284ea775",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "금속 추출 공정의 혁신, 저탄소 생산과 자원 효율성의 새로운 길 열다",
-    "originalTitle": "Evolving metal extraction processes",
-    "link": "https://www.technologyreview.com/2026/11/10/1147726/evolving-metal-extraction-processes/",
-    "summary": "금속 산업은 1세기 이상 근본적으로 동일한 추출 기술에 의존해왔지만, 전기화와 첨단산업 확대로 인한 광물 수요 증가와 공급망 위기에 직면해 있다. 아웃오쿰푸가 개발한 EvoMaterials는 기존 탄소 집약적 제련 방식 대신 새로운 화학적 경로를 활용하여 더 효율적이고 저탄소인 금속 추출을 가능하게 한다. 실험실 연구에서 이 기술은 낮은 품질의 광석과 산업 부산물에서도 가치 있는 금속을 회수할 수 있음을 입증했다. 단일 공정이 아닌 플랫폼 기술로 설계된 EvoMaterials는 초기 적용 이후 다양한 전략 광물과 자원에 확대 적용될 수 있는 확장성을 갖추고 있다. 이는 공급망 안정성을 강화하고 자원 효율성을 개선하는 동시에 기업의 지식재산권과 기술 경쟁력을 확보하는 새로운 가치 창출 모델을 제시한다.",
-    "image": "data/techinsight-images/8482284ea775.webp",
-    "publishedAt": "2026-11-10T13:00:00.000Z",
-    "createdAt": "2026-11-11T01:12:58.407Z"
   }
 ]
