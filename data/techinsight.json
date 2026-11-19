@@ -1,5 +1,65 @@
 [
   {
+    "id": "6f41e71febfa",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "채용담당자가 찾을 수 있도록 개인 브랜드를 구축하라",
+    "originalTitle": "Build a Personal Brand to Help Employers Find You",
+    "link": "https://spectrum.ieee.org/personal-branding-for-engineers",
+    "summary": "기술자의 취업성을 높이기 위해서는 온라인에서 자신을 발견 가능하게 만드는 개인 브랜드 구축이 효과적이다. 개인 브랜드는 팔로워 수가 아니라 채용담당자와 리크루터가 당신을 쉽게 찾을 수 있는 '흔적'을 남기는 것이 핵심이다. 인공지능 생성 콘텐츠로 범람한 링크드인에서 돋보이기 위해서는 실제 경험과 구체적인 성과에 대해 인간답게 작성하고, 주관적인 의견도 담되 신중하게 접근해야 한다. 주 2회 정도의 꾸준한 포스팅으로 충분하며, 이를 통해 쌓이는 네트워크가 결국 더 많은 기회로 이어진다.",
+    "image": "data/techinsight-images/6f41e71febfa.webp",
+    "publishedAt": "2026-11-18T17:33:26.000Z",
+    "createdAt": "2026-11-19T02:30:07.162Z"
+  },
+  {
+    "id": "bb3ee1cf50e2",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "AI는 어디에나 있다: 과장된 AI 열풍의 현주소",
+    "originalTitle": "The AI Hype Index: AI is everywhere",
+    "link": "https://www.technologyreview.com/2026/11/18/1148650/ai-hype-index-ai-is-everywhere/",
+    "summary": "AI 기술이 일상 곳곳에 침투하면서 과도한 마케팅과 현실 사이의 괴리가 심화되고 있다. 구글의 AI 오버뷰부터 AI 로봇, 영화 각색 등 AI는 광범위하게 확산되고 있지만, 많은 경우 실제 가치보다 과장된 광고성 메시지로 소비자를 압도하고 있다. 현재의 AI 열풍 속에서 사용자들은 AI로 가득 찬 디지털 환경을 헤쳐나가야 하는 현대판 오디세우스의 처지에 놓여 있다. AGI와 새로운 기능에 대한 과장된 주장들은 면밀한 검토 아래에서 급속도로 무너지고 있으며, AI의 실제 능력과 한계에 대한 현실적 평가가 필요한 상황이다.",
+    "image": "data/techinsight-images/bb3ee1cf50e2.webp",
+    "publishedAt": "2026-11-18T14:42:44.000Z",
+    "createdAt": "2026-11-19T02:30:07.583Z"
+  },
+  {
+    "id": "5fe5c48115f1",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "AI가 냄새를 맡기 시작했고 수력발전은 위기에 빠졌다",
+    "originalTitle": "The Download: AI learns to smell and hydropower struggles",
+    "link": "https://www.technologyreview.com/2026/11/18/1148845/the-download-ai-learns-to-smell-hydropower-struggles/",
+    "summary": "AI 스타트업 오스모는 인간 수준의 후각 능력을 갖춘 AI 모델을 개발했으며, 향수 디자인부터 위조품 탐지, 질병 진단까지 다양한 분야 적용을 목표로 하고 있다. 미국 남서부 지역은 극심한가뭄의 영향으로 올 여름 수력발전 발전량이 10년 평균보다 28% 감소했으며, 기후변화가 주요 저수지의 수위를 위협하고 있다. 미국 정부 통신망을 포함한 대규모 시스템 장애가 계속되고 있으며, AI는 보안 취약점 발견을 가속화하면서 동시에 온라인 범죄도 용이하게 하고 있다. 고체 상태 변압기 같은 신기술은 전력망 현대화를 도와 전력 수급 문제 해결에 기여할 수 있을 것으로 기대된다. IVF 기술에 AI와 로봇 자동화 같은 혁신이 도입되면서 생식의학이 더 효과적이고 접근 가능해질 가능성이 높아지고 있다.",
+    "image": "data/techinsight-images/5fe5c48115f1.webp",
+    "publishedAt": "2026-11-18T13:10:00.000Z",
+    "createdAt": "2026-11-19T02:30:08.848Z"
+  },
+  {
+    "id": "066eff481cde",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "클라우드 컴퓨팅이란 무엇인가",
+    "originalTitle": "What is cloud computing? -test",
+    "link": "https://www.mckinsey.com/what-is-cloud-computing--test",
+    "summary": "클라우드 컴퓨팅은 기업의 IT 인프라를 인터넷을 통해 원격으로 관리할 수 있는 기술이다.\n이를 통해 기업들은 자체 서버와 데이터센터 운영에 필요한 비용을 대폭 절감할 수 있다.\n결과적으로 기업의 운영 효율성을 높이고 새로운 가치를 창출하는 데 기여한다.",
+    "image": "data/techinsight-images/066eff481cde.webp",
+    "publishedAt": "2026-11-18T00:00:00.000Z",
+    "createdAt": "2026-11-19T02:30:17.069Z"
+  },
+  {
+    "id": "331f38367a9d",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "클라우드 컴퓨팅이란 무엇인가",
+    "originalTitle": "What is cloud computing? -test",
+    "link": "https://www.mckinsey.com/our-people/what-is-cloud-computing--test",
+    "summary": "클라우드 컴퓨팅은 기업들이 인터넷을 통해 자신의 IT 인프라를 원격으로 보관할 수 있는 기술이다. 이를 통해 기업은 운영 비용을 절감하고 더 큰 가치를 창출할 수 있다.",
+    "image": "data/techinsight-images/331f38367a9d.webp",
+    "publishedAt": "2026-11-18T00:00:00.000Z",
+    "createdAt": "2026-11-19T02:30:37.292Z"
+  },
+  {
     "id": "41930dc76153",
     "sourceKey": "ieee",
     "source": "IEEE Spectrum",
@@ -120,6 +180,18 @@
     "createdAt": "2026-11-17T03:45:34.869Z"
   },
   {
+    "id": "1dea03b2350e",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "로봇 소프트웨어에서 이틀 만에 28개 제로데이 취약점 발견, 로봇 보안이 위협에 대응할 수 있을까?",
+    "originalTitle": "28 Zero-Day Findings in Under Two Days. Is Robotics Security Keeping Pace?",
+    "link": "https://spectrum.ieee.org/zero-day-robotics-vulnerabilities-vicone-security",
+    "summary": "AI 기반 보안 연구를 통해 Google, NVIDIA, Meta 등의 로봇 개발 도구에서 48시간 이내 28개의 제로데이 취약점이 발견되었다.\n이러한 취약점들은 로봇의 학습, 테스트, 실제 운영 단계에 걸쳐 영향을 미칠 수 있으며, AI가 취약점을 더 빠르게 발견하면서 대응 시간이 급격히 줄어들고 있다.\n개발 및 학습 단계에서 악의적 파일이 모델을 조작할 수 있고, 검증 단계에서 테스트 결과를 조작해 불안전한 로봇을 배포하게 할 수 있으며, 운영 단계에서는 운영자의 제어 권한을 상실하게 할 수 있다.\n로봇 보안 팀은 AI의 빠른 취약점 발견에 대응하고, 각 취약점이 로봇의 안전성과 운영에 미치는 영향을 신속하게 평가해야 한다.",
+    "image": "data/techinsight-images/1dea03b2350e.webp",
+    "publishedAt": "2026-11-16T10:00:01.000Z",
+    "createdAt": "2026-11-19T02:30:29.459Z"
+  },
+  {
     "id": "205c208541f4",
     "sourceKey": "mckinsey",
     "source": "McKinsey",
@@ -166,77 +238,5 @@
     "image": "data/techinsight-images/f1dbc25a6463.webp",
     "publishedAt": "2026-11-13T13:10:00.000Z",
     "createdAt": "2026-11-14T01:25:15.189Z"
-  },
-  {
-    "id": "eec9abe0c41c",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "극한 기후 환경에서 견딜 수 있도록 설계된 송전선로 엔지니어링",
-    "originalTitle": "Engineer Overhead Lines to Withstand Ice, Wind and FreezingRain",
-    "link": "https://content.knowledgehub.wiley.com/engineering-overhead-electric-lines-for-ice-wind-and-freezing-rain/",
-    "summary": "이 백서는 얼음, 바람, 식생 부하가 동시에 송전선에 미치는 영향을 설명하며, 엔지니어들이 송전선 시스템 전체를 평가하고 복원력 있는 설계 옵션을 비교하는 방법을 제시한다. 결빙우, 착빙, 습설 등 다양한 극한 기후 현상이 송전선에 어떤 하중을 가하는지에 대한 이해를 돕는다. 이를 통해 송전선로의 안정성을 높이고 악천후로 인한 전력 공급 중단을 줄일 수 있는 엔지니어링 솔루션을 제공한다.",
-    "image": "data/techinsight-images/eec9abe0c41c.webp",
-    "publishedAt": "2026-11-13T11:00:02.000Z",
-    "createdAt": "2026-11-14T01:25:15.691Z"
-  },
-  {
-    "id": "04ab322d24b7",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "뇌 임플란트 임상시험 참여자들, 자율성 보장과 비밀유지계약 완화 요구",
-    "originalTitle": "More autonomy, fewer NDAs: Volunteers have new requests for brain implant trials",
-    "link": "https://www.technologyreview.com/2026/11/13/1148474/more-autonomy-fewer-ndas-volunteers-have-new-requests-for-brain-implant-trials/",
-    "summary": "뇌-컴퓨터 인터페이스 임상시험에 참여한 사람들이 연구진에게 더 많은 자율성과 존중을 요구하고 있다. 2014년 처음으로 손 제어용 뇌 임플란트 시술을 받은 이안 버크하트는 BCI 파이오니어 연합을 설립하여 참여자들의 경험을 바탕으로 윤리 지침을 개발했다. 새로운 지침은 참여자의 보상 인정, 뇌 데이터에 대한 접근권 보장, 비밀유지계약 제한, 시술 후 기기 유지 등 13개 범주의 권장사항을 제시한다. 참여자들은 자신의 뇌 데이터를 개인정보로 간주하고 의사와 공유할 수 있어야 하며, 임상시험 종료 후에도 뇌 기기가 합리적인 기간 동안 유지되어야 한다고 주장한다.",
-    "image": "data/techinsight-images/04ab322d24b7.webp",
-    "publishedAt": "2026-11-13T10:00:00.000Z",
-    "createdAt": "2026-11-14T01:25:11.492Z"
-  },
-  {
-    "id": "5de37488cd54",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "미래를 안다던 실리콘밸리, 중간선거는 왜 틀렸나",
-    "originalTitle": "Silicon Valley claims to know the future. So why did it get the midterms so wrong?",
-    "link": "https://www.technologyreview.com/2026/11/13/1148498/silicon-valley-claims-to-know-the-future-so-why-did-it-get-the-midterms-so-wrong/",
-    "summary": "샘 알트먼, 엘론 머스크 등 실리콘밸리 지도자들은 미래 예측 능력을 자산으로 삼아왔지만, 중간선거 5주 전 트럼프 대통령과의 \"슈퍼인텔리전스\" 협약 체결로 장기적 이익을 단기 정치적 이득에 팔아넘겼다. 수많은 여론조사가 반트럼프 감정과 AI·데이터센터에 대한 양당의 거부감을 보였음에도 이들은 정치 지형도를 완전히 오판했다. 이제 과학기술 업계는 민주당의 표적이 되었으며, 직원들도 경영진이 명백한 현실을 보지 못한 이유를 이해하지 못하고 있다. 실리콘밸리의 기술 리더들은 정치, 경제, 규제 문제에 대해서는 전문가가 아니었으며, 대통령과의 인맥과 보조금이라는 즉각적 보상에 눈이 멀어 기본적인 정치 계산을 놓쳤다. 이번 오판은 실리콘밸리 리더들이 실제로는 미래를 예측할 수 없다는 신화를 여지없이 드러냈다.",
-    "image": "data/techinsight-images/5de37488cd54.webp",
-    "publishedAt": "2026-11-13T10:00:00.000Z",
-    "createdAt": "2026-11-14T01:25:32.335Z"
-  },
-  {
-    "id": "07356858caea",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "엔비디아, 칩 밀수 적발을 위한 추적 기술 가능성을 비공개로 확인",
-    "originalTitle": "Nvidia privately confirmed it could track chips to fight smuggling, even as industry publicly questioned feasibility",
-    "link": "https://www.technologyreview.com/2026/11/12/1148483/nvidia-chip-tracking/",
-    "summary": "엔비디아는 반도체 산업 단체가 공개적으로 기술 구현이 불가능하다고 주장하는 와중에도, 미국 의원과의 비공개 논의에서 칩 보안법의 지리적 추적 요구사항을 기술적으로 구현할 수 있다고 확인했다. 엔비디아는 이미 고객들이 데이터센터 위치별 칩 성능을 모니터링하는 '플릿 인텔리전스' 도구를 개발했으며, 이는 칩의 국가별 위치 파악이 가능하다. 칩 보안법은 핑 기반 위치 신호 메커니즘을 통해 칩의 위치를 추적하고 밀수를 방지하도록 요구하고 있다. 엔비디아의 CEO 비위 논란과 싱가포르 회사의 칩 밀수 의혹이 불거지면서 이 법안에 대한 의원들의 지지가 높아지고 있다. 관련 의원은 칩 운영 라이선스 검증 제도를 추가하는 더 엄격한 입법을 추진할 계획이다.",
-    "image": "data/techinsight-images/07356858caea.webp",
-    "publishedAt": "2026-11-12T20:16:24.000Z",
-    "createdAt": "2026-11-13T01:47:18.256Z"
-  },
-  {
-    "id": "56aae23ea0ec",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "COP31 기후협상과 뇌의 불멸성 추구",
-    "originalTitle": "The Download: COP31’s climate challenge and the quest for immortality",
-    "link": "https://www.technologyreview.com/2026/11/12/1148444/the-download-cop31-climate-talks-cognitive-immortality/",
-    "summary": "터키 안탈리아에서 열린 COP31 UN 기후회담에서는 파리협정 목표 달성이 점점 어려워지는 상황 속에서 화석연료와 기후금융 문제를 놓고 본격적인 협상이 예상된다. 한편 기술자들은 뇌를 사망 이후에도 유지하는 방법을 모색하고 있으며, 부분적 뇌 교체나 클라우드 메모리 업로드 같은 개념들이 논의되고 있다. 엔비디아 CEO 교체, 바이오무기 감지 AI, 중국의 AI 단편드라마 대량 생산 등 다양한 기술 뉴스가 보도되었다. 우크라이나의 스타쉴드 제한, 우주 위성 추적 기술, 생명의 기원에 관한 새로운 가설 등 과학 기술 분야의 주요 발전들이 계속되고 있다.",
-    "image": "data/techinsight-images/56aae23ea0ec.webp",
-    "publishedAt": "2026-11-12T13:10:00.000Z",
-    "createdAt": "2026-11-13T01:47:19.592Z"
-  },
-  {
-    "id": "a106a1a1b5a5",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "페이팔 광고 부문이 말하는 AI 투자의 비즈니스 가치 입증 방법",
-    "originalTitle": "Proving AI’s business value: Views from PayPal Ads SVP and GM Mark Grether",
-    "link": "https://www.mckinsey.com/capabilities/growth-marketing-and-sales/our-insights/proving-ais-business-value-views-from-paypal-ads-svp-and-gm-mark-grether",
-    "summary": "페이팔 광고 부문의 마크 그레더 SVP 겸 GM은 마케터들이 독점적 거래 데이터를 활용하여 기술 투자를 실제 성과와 연결할 수 있는 방법을 설명한다. CMO와 CFO 간의 긴밀한 협력을 통해 경영진과 마케팅 부서의 목표를 일치시키는 것이 중요하다. 또한 고객 여정의 변화를 추적함으로써 AI 기술이 실제로 어떤 비즈니스 임팩트를 만드는지 명확히 입증할 수 있다.",
-    "image": "data/techinsight-images/a106a1a1b5a5.webp",
-    "publishedAt": "2026-11-12T00:00:00.000Z",
-    "createdAt": "2026-11-13T01:47:34.191Z"
   }
 ]
