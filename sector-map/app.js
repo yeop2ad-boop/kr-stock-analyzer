@@ -711,6 +711,11 @@ function computeViewData(viewKey) {
   }
   // 나스닥 100 보기: S&P500 비편입 15종목(ndx-extra.js)을 합친 뒤 나스닥 구성종목으로만 필터
   if (v.needNdx && typeof NDX_EXTRA_DATA !== "undefined" && NDX_EXTRA_DATA.companies) {
+    // 2026-11-20: 구성종목은 배치가 매일 받아 오는 명단(ndx-extra.js의 constituents)을 쓴다 — 예전엔 이 파일에 적어 둔 8월 명단 그대로였다
+    if (Array.isArray(NDX_EXTRA_DATA.constituents) && NDX_EXTRA_DATA.constituents.length >= 90) {
+      NDX100_SET.clear();
+      NDX_EXTRA_DATA.constituents.forEach((s) => NDX100_SET.add(s));
+    }
     companies = [...companies, ...NDX_EXTRA_DATA.companies];
   }
   if (v.filter) companies = companies.filter(v.filter);
@@ -2165,7 +2170,7 @@ function buildMetrics(market) {
     // 본체(app.js)의 computeAttractivenessScore·computeRiskScore와 동일 공식으로 배치 계산해둔 값
     // (sector-map/scripts/fetch-momentum-scores.ps1, data/*-sectors.json에 pressureScore/stabilityScore로 저장)
     // 2026-09-04 개편: 상승압력 → 연평균 상승(fetch-winrate-scores.ps1이 ret10yAvg로 병합), 투자안정 삭제(10년월간승률로 대체)
-    ret10yAvg: { label: "10년 연평균", hasData: true, get: (c) => c.ret10yAvg, fmt: (v) => `${v > 0 ? "+" : ""}${v.toFixed(1)}%`, domainMin: -20, domainMax: 80 },
+    ret10yAvg: { label: "1년 평균 상승", hasData: true, get: (c) => c.ret10yAvg, fmt: (v) => `${v > 0 ? "+" : ""}${v.toFixed(1)}%`, domainMin: -20, domainMax: 80 },
     // 10년월간승률·주간RSI(2026-09-02, 같은 날 국내·ETF·코인 확장): 본체 승률점수와 같은 배치(fetch-winrate-scores.ps1)가
     // sp500-sectors.json/kr-sectors.json/etf-crypto-map.js에 winRateScore/rsiWeekly로 병합 — 나스닥100 보기만 칩 숨김
     winRateScore: { label: "10년 과거승률(오른 달 비율)", hasData: true, get: (c) => c.winRateScore, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 100 },
@@ -2464,7 +2469,7 @@ for (const [k, mk] of Object.entries(METRIC_MX_KEY)) METRIC_DESCS[k] = (typeof M
 
 // 각 지표 시트의 "+○○이란" — 대표 종목들의 현재 값을 색깔별 막대로 비교(2026-10-20 사용자 요청). 승률은 기존 대표자산 비교(SCORE_INFO_CONTENT)를 그대로 씀
 const METRIC_EXPLAIN_NAME = {
-  week52RangePct: "52주 위치", popularStocks: "거래 몰림", ret10yAvg: "10년 연평균", rsiWeekly: "과열도(RSI)", changePct: "등락률", revenueGrowth: "매출 증가",
+  week52RangePct: "52주 위치", popularStocks: "거래 몰림", ret10yAvg: "1년 평균 상승", rsiWeekly: "과열도(RSI)", changePct: "등락률", revenueGrowth: "매출 증가",
   netIncomeGrowth: "순이익 증가", dividendYield: "배당률", debtRatio: "부채비율", cashFlowGrowth: "현금 증가", per: "PER",
 };
 const METRIC_REP_SYMBOLS = ["AAPL", "MSFT", "NVDA", "TSLA", "KO", "JPM", "XOM", "JNJ", "005930.KS", "000660.KS", "005380.KS", "035420.KS", "373220.KS", "207940.KS", "SPY", "QQQ", "BTC-USD", "ETH-USD", "KRW-BTC", "KRW-ETH"];

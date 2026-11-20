@@ -3849,7 +3849,7 @@ async function runBranchCConfirm() {
     const table = wizardResultTableHtml(top30, "연평균 상승+10년 과거승률 합계", (r) => `${partialMarkHtml(r.winTotal, "wr-mark-front", partialMonthsFor(r.symbol))}<b>${r.combinedTotal}</b>`);
     wizardShareTitle = `기업검색 결과 (${marketLabel})`;
     wizardShareText =
-      `${marketLabel} 10년 연평균+10년 과거승률 합계 TOP30\n` +
+      `${marketLabel} 1년 평균 상승+10년 과거승률 합계 TOP30\n` +
       top30.map((r, i) => `${i + 1}. ${r.displayName || r.symbol} (${r.combinedTotal})`).join("\n") +
       `\n\nmarketmap.kr`;
     bodyEl.innerHTML = `
@@ -4900,7 +4900,7 @@ const S_REPORT_EXPLAIN = Object.assign({}, typeof MX_TEXT !== "undefined" ? MX_T
 // 풀어 쓴 긴 이름은 이 설명 안에서만 보여준다(2026-09-16 사용자 요청)
 const S_REPORT_TITLES = {
   win: "10년 과거승률(오른 달 비율)",
-  ret: "10년 연평균",
+  ret: "1년 평균 상승(최근 10년 기준)",
   rev: "매출 증가(1년 전 같은 분기 대비)",
   ret1y: "최근 1년 수익률",
   vol: "하루 변동폭(3개월 평균)",
@@ -5081,7 +5081,7 @@ async function buildSrExampleHtml(key) {
 const SR_HINTS = [
   "모든 항목은 눌러서 자세한 설명을 볼 수 있습니다.",
   "과거승률이 높을수록 과거에 꾸준히 올랐다는 뜻이에요.",
-  "10년 연평균이 높을수록 오랜 기간 많이 올랐어요. 눌러서 확인해 보세요.",
+  "1년 평균 상승이 높을수록 오랜 기간 많이 올랐어요. 눌러서 확인해 보세요.",
 ];
 // 2026-10-08 사용자 요청: 투자분석 맨 위 안내 2개 번갈아(타이머는 POPULAR_HINTS 옆)
 const IA_HINTS = ["모든 항목은 눌러서 자세히 볼 수 있습니다.", "종목을 누르면 상세 화면으로 이동합니다."];
@@ -5114,7 +5114,7 @@ function sReportCoreSpecs(isAsset, isEtf) {
     // ETF만 🔥 기준이 등수가 아니라 절대값 — 승률 60% 이상, 변동성 0.8% 미만(2026-09-17 사용자 지정)
     // 2026-10-08 사용자 요청: 오각형·표 이름만 길게(10년 과거승률·연 상승률·1일 변동성·매출성장) — 눌렀을 때 설명 제목은 S_REPORT_TITLES 그대로
     { key: "win", label: "10년 과거승률", sub: "10년 월간", better: "high", band: 2, fmt: (v, d) => sPct(v, d), axis: (v) => (v - 40) / 30, ...(isEtf ? { fireIf: (v) => v >= 60 } : {}) },
-    { key: "ret", label: "10년 연평균", sub: "연평균", better: "high", band: 2, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true), axis: (v) => v / 50 },
+    { key: "ret", label: "1년 평균 상승", sub: "최근 10년", better: "high", band: 2, rel: 0.15, signed: true, fmt: (v, d) => sPct(v, d, true), axis: (v) => v / 50 },
     // 변동성은 등수(상위 N%) 대신 5단계 등급(2026-10-06 사용자 요청) — sReportVolJudge 참고
     { key: "vol", label: "하루 변동폭", sub: "3개월 평균", better: "low", isVol: true, band: 0.1, rel: 0.1, fmt: (v, d) => `${v.toFixed(d ? 2 : 1)}%`, axis: (v) => (5 - v) / 4 },
     // 과열도는 낮을수록 좋은 점수(2026-09-16 사용자 요청) — 등수도 낮은 순으로 1위, 레이더에서도 낮을수록 바깥.
@@ -5343,7 +5343,7 @@ const SR_RANK_GROUPS = [
     key: "growth",
     items: [
       { k: "win", label: "과거승률", tab: "trend", run: () => runTrendRsiWinRate("winrate") },
-      { k: "ret", label: "10년 연평균", tab: "trend", run: () => runTrendRsiWinRate("cagr") },
+      { k: "ret", label: "1년 평균 상승", tab: "trend", run: () => runTrendRsiWinRate("cagr") },
       { k: "rev", label: "매출 증가", tab: "valuation", run: () => runValueRevenue() },
       { k: "vol", label: "하루 변동폭", tab: "trend", run: () => runStockVolatility() },
       { k: "rsi", label: "과열도(RSI)", tab: "trend", run: () => runTrendRsiWinRate("rsi") },
@@ -5393,7 +5393,7 @@ const SR_ASSET_GROUP_TITLES = ["성장 · 추세", "시장"];
 const SR_STOCK_GROUP_TITLES = { growth: "성장 · 추세", profit: "수익성 · 재무", market: "시장" };
 const SR_ASSET_ITEM_ORDER = { etf: SR_ASSET_GROUPS.etf.flat(), crypto: SR_ASSET_GROUPS.crypto.flat() };
 const SR_ASSET_ITEM_LABEL = {
-  win: "과거승률", ret: "10년 연평균", rev: "1년 수익률", vol: "하루 변동폭", rsi: "과열도(RSI)",
+  win: "과거승률", ret: "1년 평균 상승", rev: "1년 수익률", vol: "하루 변동폭", rsi: "과열도(RSI)",
   div: "배당률", fee: "운용보수", mcap: "규모", aum: "규모", w52: "52주 위치",
 };
 
@@ -7185,7 +7185,7 @@ const RANK_TH_WINRATE = `<th data-explain="10년 과거승률(오른 달 비율)
 // 2026-09-13 사용자 재요청: 머리글 (%) 대신 칸 안 숫자마다 %를 직접 적는다(한눈에 %인 걸 알아보도록)
 // 1년 수익률(2026-09-12 사용자 요청) — "수익률" 탭의 기준. 연평균(CAGR)이 아니라 1년 전 같은 시점 대비 실제 상승량
 const RANK_TH_RET1Y = `<th data-explain="1년 수익률 — 1년 전 같은 시점의 가격과 비교해 지금까지 얼마나 올랐는지입니다. 매년 평균(연평균 상승)이 아니라 최근 1년치 실제 성적이라, 작년 한 해 수익률이 그대로 보입니다.">1년<br>수익률</th>`;
-const RANK_TH_RET10 = `<th data-explain="10년 연평균 — 10년 전에 샀다면 해마다 평균 몇 %씩 불어난 셈인지입니다. 상장 10년 미만이면 상장 뒤 기간으로 계산하고, 값 아래 괄호에 실제 계산 기간을 적습니다.">10년<br>연평균</th>`;
+const RANK_TH_RET10 = `<th data-explain="1년 평균 상승 — 최근 10년 동안 1년에 평균 몇 %씩 올랐는지입니다. 상장 10년 미만이면 상장 뒤 기간으로 계산하고, 값 아래 괄호에 실제 계산 기간을 적습니다.">1년<br>평균 상승</th>`;
 const RANK_TH_RSI = `<th data-explain="과열도(RSI) — 최근 14주 동안 오른 힘이 전체 움직임에서 차지한 비율(0~100)입니다. 50이 반반, 70 이상은 짧은 기간에 많이 오른 상태, 30 이하는 많이 빠진 상태입니다. 사라·팔라는 신호가 아닙니다.">과열도<br>(RSI)</th>`;
 
 // ---------- 순위 표 공통 3칸 틀(2026-09-13 사용자 요청) ----------
@@ -12744,12 +12744,12 @@ function renderFutureChart(data) {
   // 2026-10-09 사용자 요청: 맨 위에 "과거 N년 계절성 흐름 기울기 평균 / 결과: 6개월후 +46.2%", 그래프 아래엔 두 경고 문구를 하나로 합쳐 표시
   const titleEl = el("futureHeadlineTitle");
   const resultEl = el("futureHeadlineResult");
-  if (titleEl) titleEl.textContent = data.historicalBuckets.length ? `지난 ${data.historicalBuckets.length}년, 같은 시기 6개월 등락률 평균` : "최근 흐름";
+  if (titleEl) titleEl.textContent = data.historicalBuckets.length ? `지난 ${data.historicalBuckets.length}년 같은 시기 · 앞으로 6개월` : "최근 흐름";
   if (resultEl) {
     if (data.currentPrice && data.forecast.price) {
       const pctFromToday = (data.forecast.price / data.currentPrice - 1) * 100;
       const fr = data.forwardRange;
-      resultEl.innerHTML = `이맘때부터 6개월 평균 <b class="${pctFromToday >= 0 ? "fh-up" : "fh-down"}">${pctFromToday >= 0 ? "+" : ""}${pctFromToday.toFixed(1)}%</b>${fr ? `<span class="fh-range">해마다 ${fr.min >= 0 ? "+" : ""}${fr.min.toFixed(0)}% ~ ${fr.max >= 0 ? "+" : ""}${fr.max.toFixed(0)}%</span>` : ""}`;
+      resultEl.innerHTML = `${data.historicalBuckets.length || 4}년간 상승 기울기 평균 <b class="${pctFromToday >= 0 ? "fh-up" : "fh-down"}">${pctFromToday >= 0 ? "+" : ""}${pctFromToday.toFixed(1)}%</b>${fr ? `<span class="fh-range">해마다 ${fr.min >= 0 ? "+" : ""}${fr.min.toFixed(0)}% ~ ${fr.max >= 0 ? "+" : ""}${fr.max.toFixed(0)}%</span>` : ""}`;
     } else {
       resultEl.textContent = "과거 평균을 계산할 수 없습니다";
     }
