@@ -835,6 +835,97 @@ async function refreshIndexQuotes() {
   refreshMarketIndexLabels();
 }
 
+// ---------- 균등 모드 배치(2026-11-21 사용자 요청: 섹터 원 안에 빈자리 없게) ----------
+// 예전엔 d3.pack에 맡겼는데, 같은 크기 원을 나선으로 하나씩 붙여 가는 방식이라 종목 수에 따라 한쪽이 덜 찬 덩어리
+// (예: 12개 = 3·4·5줄 사다리꼴)가 되고, 그 덩어리를 감싸는 섹터 원의 반대쪽이 통째로 비었다.
+// 균등 모드에서는 종목을 가운데부터 고리 모양으로 고르게 놓아 덩어리가 늘 둥글게 차도록 한다(시총 모드는 크기가 제각각이라 d3.pack 그대로).
+const EQ_GAP = 0.9; // 종목 원 사이 간격(종목 반지름의 배수) — 예전 간격과 비슷하게
+const EQ_MARGIN = 0.9; // 섹터 테두리와 가장 바깥 종목 원 사이(종목 반지름의 배수)
+const EQ_SECTOR_GAP = 0.08; // 섹터 원끼리의 간격
+const eqChordR = (m) => (m <= 1 ? 0 : 0.5 / Math.sin(Math.PI / m)); // 이웃끼리 거리 1로 m개를 고리에 놓을 때의 고리 반지름
+const eqRingCap = (rho) => (rho < 0.5 ? 1 : Math.floor(Math.PI / Math.asin(Math.min(1, 0.5 / rho)) + 1e-9)); // 반지름 rho인 고리에 놓을 수 있는 최대 개수
+const EQ_RING_CACHE = new Map();
+// n개를 놓을 자리(가운데가 원점, 이웃 거리 1 단위)와 가장 바깥 고리 반지름 — 가운데 묶음(1~5개) + 바깥 고리들, 고리 사이 거리는 1 이상
+function eqRingLayout(n) {
+  if (EQ_RING_CACHE.has(n)) return EQ_RING_CACHE.get(n);
+  const total = (cs) => cs.reduce((a, b) => a + b, 0);
+  let best = null;
+  for (let core = 1; core <= Math.min(5, n); core++) {
+    const rho0 = eqChordR(core);
+    for (let rings = 0; rings <= 14; rings++) {
+      const countsAt = (d) => {
+        const cs = [core];
+        for (let i = 1; i <= rings; i++) cs.push(eqRingCap(rho0 + i * d));
+        return cs;
+      };
+      let d = 1;
+      if (total(countsAt(1)) < n) {
+        if (!rings) continue;
+        // 고리 사이 거리를 조금 벌려 n개가 다 들어가는 가장 작은 거리를 찾음
+        let lo = 1;
+        let hi = 1;
+        for (let g = 0; g < 40 && total(countsAt(hi)) < n; g++) hi *= 1.2;
+        if (total(countsAt(hi)) < n) continue;
+        for (let it = 0; it < 34; it++) {
+          const mid = (lo + hi) / 2;
+          if (total(countsAt(mid)) >= n) hi = mid;
+          else lo = mid;
+        }
+        d = hi;
+      }
+      const outer = rho0 + rings * d;
+      if (!best || outer < best.outer - 1e-9) best = { rho0, rings, d, counts: countsAt(d), outer };
+      if (d === 1) break; // 고리를 더 늘려 봐야 커지기만 함
+    }
+  }
+  // 자리가 남으면 바깥 고리부터 한 자리씩 빼서 남는 틈이 고리마다 고르게 퍼지게
+  const counts = best.counts.slice();
+  const caps = counts.slice();
+  for (let surplus = total(counts) - n; surplus > 0; surplus--) {
+    let pick = -1;
+    for (let i = counts.length - 1; i >= (counts.length > 1 ? 1 : 0); i--) {
+      if (counts[i] > 1 && (pick < 0 || counts[i] / caps[i] > counts[pick] / caps[pick] + 1e-9)) pick = i;
+    }
+    counts[pick < 0 ? 0 : pick]--;
+  }
+  const pts = [];
+  counts.forEach((m, i) => {
+    const rho = i === 0 ? (m === best.counts[0] ? best.rho0 : eqChordR(m)) : best.rho0 + i * best.d;
+    const step = (Math.PI * 2) / m;
+    // 가장 바깥 고리는 맨 위(섹터 이름표 자리)에 종목 사이 틈이 오도록, 안쪽 고리는 번갈아 어긋나게
+    const start = -Math.PI / 2 + ((counts.length - 1 - i) % 2 === 0 ? step / 2 : 0);
+    for (let j = 0; j < m; j++) pts.push({ x: rho * Math.cos(start + j * step), y: rho * Math.sin(start + j * step) });
+  });
+  const res = { pts, outer: best.outer };
+  EQ_RING_CACHE.set(n, res);
+  return res;
+}
+function layoutEqualRings(root) {
+  const pitch = 2 + EQ_GAP; // 종목 반지름 1 기준, 이웃 종목 중심 사이 거리
+  const circles = root.children.map((sec) => {
+    const lay = eqRingLayout(sec.children.length);
+    return { sec, lay, rr: lay.outer * pitch + 1 + EQ_MARGIN, r: lay.outer * pitch + 1 + EQ_MARGIN + EQ_SECTOR_GAP / 2 };
+  });
+  d3.packSiblings(circles);
+  const enc = d3.packEnclose(circles);
+  const h = WORLD_SIZE - MARKET_LABEL_STRIP;
+  const k = Math.min(WORLD_SIZE, h) / (2 * enc.r);
+  root.x = WORLD_SIZE / 2;
+  root.y = MARKET_LABEL_STRIP + h / 2;
+  root.r = enc.r * k;
+  for (const c of circles) {
+    c.sec.x = root.x + (c.x - enc.x) * k;
+    c.sec.y = root.y + (c.y - enc.y) * k;
+    c.sec.r = c.rr * k;
+    c.sec.children.forEach((leaf, i) => {
+      leaf.x = c.sec.x + c.lay.pts[i].x * pitch * k;
+      leaf.y = c.sec.y + c.lay.pts[i].y * pitch * k;
+      leaf.r = k;
+    });
+  }
+  return root;
+}
+
 function buildPackedRoot(data) {
   if (isMineView()) return buildMineRoot(data); // 내 시장: 저장된 섹터 위치·크기대로
   const bySector = new Map();
@@ -854,6 +945,7 @@ function buildPackedRoot(data) {
 
   // "원형" 모드 — 예전 버블맵(pack) 레이아웃 그대로(로고만 폐기, 텍스트 배지 표시)
   if (shapeMode === "circle") {
+    if (sizeMode === "equal") return layoutEqualRings(root); // 균등: 고리 모양으로 고르게(빈자리 없게)
     d3.pack().size([WORLD_SIZE, WORLD_SIZE - MARKET_LABEL_STRIP]).padding((d) => (d.depth === 1 ? 30 : 2))(root);
     for (const node of root.descendants()) node.y += MARKET_LABEL_STRIP;
     return root;
