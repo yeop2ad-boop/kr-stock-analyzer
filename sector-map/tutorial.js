@@ -7,16 +7,16 @@ const TUT_DONE_KEY = "map_tutorial_done_v1";
 // dir: 화살표가 대상의 어느 쪽에서 가리키는지 — up(대상 아래에서 위로) / down(대상 위에서 아래로) / right(대상 왼쪽에서 오른쪽으로)
 // 1 시장추가 · 2 상단 필터 · 3 오른쪽 보기방법 · 4 실시간 랭킹
 const TUT_STEPS = [
-  { target: "#mapViewBtn", dir: "up", text: "여기를 눌러 보고 싶은 시장을 바꿔요", group: "시장추가" },
-  { target: ".map-view-foot", dir: "up", text: "＋ 로 시장을 더하고, 편집으로 순서·삭제를 해요", group: "시장추가", enter: () => tutMenu(true), leave: () => tutMenu(false) },
+  { target: "#mapViewBtn", dir: "up", text: "여기를 눌러 보고 싶은 보기를 바꿔요", group: "보기 추가" },
+  { target: ".map-view-foot", dir: "up", text: "＋ 로 보기를 더하고, 편집으로 순서·삭제를 해요", group: "보기 추가", enter: () => tutMenu(true), leave: () => tutMenu(false) },
   { target: ".filter-bar", dir: "up", text: "상단 버튼을 누르면 조건에 맞는 종목만 골라 볼 수 있어요", group: "상단 필터" },
   { target: "#allFiltersBtn", dir: "up", text: "여기서 모든 버튼을 보고, 편집으로 순서를 바꿔요", group: "상단 필터" },
   { target: "#sizeModeBtn", dir: "right", text: "균등: 원 크기를 같게 / 시총: 시가총액만큼 크게", group: "오른쪽 보기" },
-  { target: "#volModeBtn", dir: "right", text: "대금: 거래대금이 터진 종목을 색으로 보여줘요", group: "오른쪽 보기" },
-  { target: "#changeModeBtn", dir: "right", text: "등락: 오늘 오른 곳은 빨강, 내린 곳은 파랑", group: "오른쪽 보기" },
-  { target: "#watchFilterBtn", dir: "right", text: "관심: 내가 찜한 종목만 모아서 봐요", group: "오른쪽 보기" },
-  { target: "#rtTicker", dir: "down", text: "실시간 인기 종목이 돌아가요. 누르면 거래량·상승·하락 랭킹!", group: "실시간 랭킹" },
-  { target: null, text: "끝! 튜토리얼은 시장 목록에서 언제든 다시 볼 수 있어요", group: "완료" },
+  { target: "#volModeBtn", dir: "right", text: "몰림: 거래대금이 평소보다 몰린 종목을 색으로 보여줘요", group: "오른쪽 보기" },
+  { target: "#changeModeBtn", dir: "right", text: "업종: 업종별 평균 등락을 색과 숫자로 보여줘요", group: "오른쪽 보기" },
+  { target: "#watchFilterBtn", dir: "right", text: "관심: 내 관심종목만 모아서 봐요", group: "오른쪽 보기" },
+  { target: "#rtTicker", dir: "down", text: "인기 종목이 돌아가요. 누르면 거래대금·상승·하락 랭킹!", group: "랭킹" },
+  { target: null, text: "끝! 튜토리얼은 보기 목록에서 언제든 다시 볼 수 있어요", group: "완료" },
 ];
 
 let tutIdx = -1;

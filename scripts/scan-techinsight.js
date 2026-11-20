@@ -20,7 +20,7 @@ const MAX_ITEMS = 20; // 30일이 안 지났어도 최신순으로 이 개수를
 const SEEN_MAX = 400;
 const MAX_AGE_DAYS = 14; // 이보다 오래전에 올라온 글은 후보에서 제외(옛 글이 최신 칸을 채우지 않게)
 
-const UA_HEADERS = { "User-Agent": "netuja.com techinsight-bot contact@netuja.com" };
+const UA_HEADERS = { "User-Agent": "marketmap.kr techinsight-bot" };
 
 // ---------- 소스 4곳(기관당 이번 실행에서 최신 글 1건씩만 후보로 사용) ----------
 // MIT Technology Review·IEEE Spectrum·McKinsey는 표준 RSS 제공. OECD는 RSS가 없어져 AI 정책 블로그

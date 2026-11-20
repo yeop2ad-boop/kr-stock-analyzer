@@ -2673,3 +2673,11 @@ html.ov-embed #tabPageTech, html.ov-embed .site-footer, html.ov-embed #companyPa
 .rf-period { display: inline-block; margin-top: 1px; font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: -0.3px; }
 .rf-head-btns { display: inline-flex; gap: 6px; flex: none; }
 .rf-rev-btn.on { background: var(--text); color: var(--bg); border-color: var(--text); }
+/* 2026-11-20: 순위 머리글 맨 아래 "높은 순·낮은 순" · 버튼이 세 개가 되는 줄(10년미만 포함)은 안내 글 아래로 내려 쓴다 · 같은 시기 흐름의 해마다 범위 */
+.th-dir { display: block; margin-top: 2px; font-size: 9.5px; font-weight: 800; color: #7230f0; letter-spacing: -0.2px; }
+.rf-head-row { flex-wrap: wrap; row-gap: 6px; }
+.rf-head-row .rf-head-btns { margin-left: auto; }
+.future-headline-result .fh-range { display: block; margin-top: 2px; font-size: 12.5px; font-weight: 700; color: var(--muted); letter-spacing: -0.2px; }
+/* 2026-11-20: 상세 버튼 이름이 길어져(최근 12개월·같은 시기 흐름) 한 줄에 들어가게 간격만 조금 줄임 */
+.summary-action-row { gap: 5px; }
+.summary-action-btn { padding: 2px 6px; letter-spacing: -0.2px; }

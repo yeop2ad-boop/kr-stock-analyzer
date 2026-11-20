@@ -16,11 +16,11 @@ const MAP_I18N = {
   "nav.map": { ko: "마켓맵", en: "MarketMap" }, // 2026-09-08: 하단 버튼 이름 본체와 통일
   "nav.ranking": { ko: "랭킹", en: "Ranking" },
   "tab.search": { ko: "순위검색", en: "Search" },
-  "map.watchlist": { ko: "관심목록", en: "Watchlist" },
+  "map.watchlist": { ko: "관심종목", en: "Watchlist" },
   "tab.watchlist": { ko: "관심종목", en: "Watchlist" },
   "nav.marketBtn": { ko: "시장", en: "Market" },
   "nav.etf": { ko: "ETF", en: "ETF" },
-  "nav.crypto": { ko: "비트코인", en: "Bitcoin" },
+  "nav.crypto": { ko: "코인", en: "Crypto" },
   "nav.more": { ko: "더보기", en: "More" },
 };
 function detectDefaultMapLang() {
@@ -102,7 +102,7 @@ const SECTOR_COLOR_VAR = {
   "미국주식 TOP": "--sector-communication",
   "한국ETF TOP": "--sector-healthcare",
   "미국ETF TOP": "--sector-consumer-discretionary",
-  "비트코인 TOP": "--sector-materials",
+  "코인 TOP": "--sector-materials",
   "Information Technology": "--sector-technology",
   "Health Care": "--sector-healthcare",
   Financials: "--sector-financials",
@@ -338,13 +338,13 @@ const NDX100_SET = new Set("NVDA,AAPL,MSFT,AMZN,GOOGL,SPCX,GOOG,AVGO,META,TSLA,M
 const MAP_VIEWS = {
   kospi200: { label: "코스피 200", mark: "kr", market: "domestic", needExtra: true, filter: (c) => c.symbol.endsWith(".KS") },
   kosdaq150: { label: "코스닥 150", mark: "kr", market: "domestic", needExtra: true, filter: (c) => c.symbol.endsWith(".KQ") },
-  sp200: { label: "S&P200", mark: "us", market: "overseas", needExtra: false, filter: null },
+  sp200: { label: "미국 상위 200", mark: "us", market: "overseas", needExtra: false, filter: null },
   sp500: { label: "S&P500", mark: "us", market: "overseas", needExtra: true, filter: null },
   ndx100: { label: "나스닥 100", mark: "us", market: "overseas", needExtra: true, needNdx: true, filter: (c) => NDX100_SET.has(c.symbol) },
   // ETF200(미국 100+한국 100)·비트코인50(2026-09-01 신설) — 데이터는 배치 생성 파일(etf-crypto-map.js)에서,
   // 상단 필터 칩은 52주최저~투자안정 6개만 노출(custom="asset" 계열)
-  etf200: { label: "ETF200", mark: "etf", market: "overseas", custom: "etf" },
-  crypto100: { label: "비트코인200", mark: "crypto", market: "overseas", custom: "crypto" }, // 2026-09-02 TOP50 → TOP100, 2026-09-14 업비트 100 추가로 200(키 이름은 저장값 호환 위해 유지)
+  etf200: { label: "ETF 200", mark: "etf", market: "overseas", custom: "etf" },
+  crypto100: { label: "코인 200", mark: "crypto", market: "overseas", custom: "crypto" }, // 2026-09-02 TOP50 → TOP100, 2026-09-14 업비트 100 추가로 200(키 이름은 저장값 호환 위해 유지)
   // 최근 5년 신규 상장(IPO) 전용 보기(2026-09-11 사용자 요청) — 스팩·이전상장을 뺀 실제 신규 상장사만.
   // 데이터는 data/ipo-map.js(fetch-ipo-map.ps1)로, 12개 지표를 주식 지도와 같은 공식으로 채워두었기 때문에
   // custom(ETF·코인)과 달리 필터 칩은 주식 보기 그대로 전부 쓴다.
@@ -353,7 +353,7 @@ const MAP_VIEWS = {
   krIpo: { label: "신규상장200", mark: "kr", market: "domestic", ipo: "kr" }, // 2026-10-19: 글자 KR로 깨져 보이는 국기 이모지 대신 다른 보기와 같은 국기 마크
   usIpo: { label: "신규상장200", mark: "us", market: "overseas", ipo: "us" },
   // 2026-10-21 사용자 요청: 시장 보기 3개 추가 — 우량주 모음(한국·미국 주식 + ETF + 비트코인 대표 묶음), 한국 기술주 78, 미국 기술주 73
-  blueChip: { label: "우량주 모음", mark: "mix", market: "overseas", needAll: true, build: () => buildBlueChipData() },
+  blueChip: { label: "시총 상위 모음", mark: "mix", market: "overseas", needAll: true, build: () => buildBlueChipData() },
   krTech: { label: "한국 기술주", mark: "kr", market: "domestic", needExtra: true, build: () => buildTechData("kr") },
   usTech: { label: "미국 기술주", mark: "us", market: "overseas", needExtra: true, build: () => buildTechData("us") },
   // 2026-10-22 사용자 요청: 시장 목록의 "튜토리얼" — 지도를 바꾸지 않고 누르면 튜토리얼(tutorial.js)이 시작된다. 다른 시장처럼 추가·삭제 가능
@@ -667,7 +667,7 @@ function buildBlueChipData() {
         ...tag(top(us, 100), "미국주식 TOP"),
         ...tag(top(etf.filter(isKrEtf), 20), "한국ETF TOP"),
         ...tag(top(etf.filter((c) => !isKrEtf(c)), 20), "미국ETF TOP"),
-        ...tag(top(coin, 10), "비트코인 TOP"),
+        ...tag(top(coin, 10), "코인 TOP"),
       ],
     };
   });
@@ -880,10 +880,31 @@ function buildPackedRoot(data) {
 // 섹터들 위(지도 안 월드 좌표)에 전체 시장 이름+평균 등락률 표시 — 버튼이 아니라 지도 요소.
 // 국내: 코스피100/코스닥50(축소) ↔ 코스피200/코스닥150(전체보기), 해외: S&P200(축소) ↔ S&P500(전체보기)
 // 등락률 집계 공용 헬퍼 — 균등 모드: 단순 평균 / 시총 모드: 시총 가중 평균(전체 시총 중 몇 %가 움직였는지)
-// 한국(원)·미국(달러)이 섞인 보기에서도 같은 단위로 비교하도록 시가총액을 달러로 환산(원화는 1400원 기준)
+// 원·달러 환율 — 하루 2번 배치가 쓰는 data/fx.js(window.MM_FX)의 값, 없으면 1,400원(2026-11-20: 예전엔 늘 1,400원 고정)
+function usdKrwRate() {
+  const r = typeof window !== "undefined" && window.MM_FX ? Number(window.MM_FX.usdkrw) : NaN;
+  return Number.isFinite(r) && r > 900 && r < 2500 ? r : 1400;
+}
+// 증시 휴장일(data/market-holidays.json, 2026-11-20) — 평일이어도 휴장일이면 장중으로 보지 않는다(대금 배수·지도 시계)
+var MARKET_HOLIDAYS = { kr: new Set(), us: new Set() }; // var: 이 줄보다 먼저 불려도(끌어올림) 오류 없이 '휴장일 아님'으로 처리되게
+fetch("../data/market-holidays.json", { cache: "no-cache" })
+  .then((r) => (r.ok ? r.json() : null))
+  .then((d) => {
+    if (!d) return;
+    (d.kr || []).forEach((x) => MARKET_HOLIDAYS.kr.add(x));
+    (d.us || []).forEach((x) => MARKET_HOLIDAYS.us.add(x));
+  })
+  .catch(() => {});
+function isMarketHoliday(kind, date) {
+  return !!(MARKET_HOLIDAYS && MARKET_HOLIDAYS[kind] && MARKET_HOLIDAYS[kind].has(date));
+}
+function marketDateIn(tz) {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+}
+// 한국(원)·미국(달러)이 섞인 보기에서도 같은 단위로 비교하도록 시가총액을 달러로 환산
 function capUsdOf(c) {
   const cap = typeof c.marketCap === "number" ? c.marketCap : 0;
-  return /\.(KS|KQ)$/i.test(c.symbol || "") || c.currency === "KRW" ? cap / 1400 : cap;
+  return /\.(KS|KQ)$/i.test(c.symbol || "") || c.currency === "KRW" ? cap / usdKrwRate() : cap;
 }
 function avgChangeOf(list) {
   const useCap = true; // 2026-10-20 사용자 요청: 균등/시총 어느 쪽이든 등락 평균은 시총 비율로 계산해 같은 값을 보여줌
@@ -1510,7 +1531,7 @@ function readWatchlistGroups() {
 }
 
 // ---------- 관심목록 선택 시트(2026-09-13 사용자 요청: 본체와 동일) ----------
-// 별을 누르면 바로 담지 않고, 화면 아래에서 "어느 관심목록에 담을까요?"를 띄워 고른 그룹에 담는다
+// 별을 누르면 바로 담지 않고, 화면 아래에서 "어느 묶음에 담을까요?"를 띄워 고른 그룹에 담는다
 function openMapGroupPickSheet(symbol, onAdded) {
   const active = localStorage.getItem("watchlist_active_group_v1_all");
   const cur = readUnifiedWatchlist().find((w) => w.symbol === symbol);
@@ -1547,7 +1568,7 @@ function openMapGroupPickSheet(symbol, onAdded) {
     <div class="map-group-pick-backdrop"></div>
     <div class="map-group-pick-panel">
       <div class="map-group-pick-head">
-        <span class="map-group-pick-title">어느 관심목록에 담을까요?</span>
+        <span class="map-group-pick-title">어느 묶음에 담을까요?</span>
         <button type="button" class="map-group-pick-close" aria-label="닫기">✕</button>
       </div>
       <div class="map-group-pick-list"></div>
@@ -1563,7 +1584,7 @@ function openMapGroupPickSheet(symbol, onAdded) {
   const list = sheet.querySelector(".map-group-pick-list");
   list.addEventListener("click", (e) => {
     if (e.target.closest(".map-group-pick-add")) {
-      const name = prompt("새 관심목록 이름을 입력해주세요.");
+      const name = prompt("새 관심종목 묶음 이름을 입력해주세요.");
       const trimmed = (name || "").trim();
       if (!trimmed) return;
       const groups = readWatchlistGroups();
@@ -1756,7 +1777,7 @@ function openCompanySheet(d) {
         <div class="sheet-stat-value" id="sheetChangeValue" style="color:${chgTextColor};">${chgText}</div>
       </div>
       <div>
-        <div class="sheet-stat-label">거래대금</div>
+        <div class="sheet-stat-label">거래 몰림</div>
         <div class="sheet-stat-value" id="sheetVolValue">-</div>
       </div>
       <div>
@@ -1790,9 +1811,9 @@ function openCompanySheet(d) {
     const g = groups.find((x) => x.id === active) || groups[0];
     addSheetWatchlist(d.symbol, [g.id]);
     setActive(true);
-    showToast(`관심목록 '${g.name || "기본"}'에 담았습니다`);
+    showToast(`관심종목 '${g.name || "기본"}'에 담았습니다`);
   });
-  // 종목명을 누르면 본체(내투자닷컴)의 검색 상세 페이지로 이동 — 지도에선 요약 정보만 보여주므로 더 자세히 보려면 여기로
+  // 종목명을 누르면 본체(마켓맵)의 검색 상세 페이지로 이동 — 지도에선 요약 정보만 보여주므로 더 자세히 보려면 여기로
   const nameLink = document.getElementById("sheetNameLink");
   const goToTickerDetail = () => {
     try {
@@ -1885,10 +1906,10 @@ function volKindOf(sym) {
   if (/-(USD|KRW|USDT)$/.test(sym)) return "crypto";
   return "us";
 }
-function volPrevWeekday(dateStr) {
+function volPrevWeekday(dateStr, kind) {
   const d = new Date(`${dateStr}T00:00:00Z`);
   do d.setUTCDate(d.getUTCDate() - 1);
-  while (d.getUTCDay() === 0 || d.getUTCDay() === 6);
+  while (d.getUTCDay() === 0 || d.getUTCDay() === 6 || isMarketHoliday(kind, d.toISOString().slice(0, 10))); // 주말·휴장일은 건너뜀
   return d.toISOString().slice(0, 10);
 }
 // 지금 그 시장의 "가장 최근 거래일 날짜"와 장 시작 후 흐른 분(장이 닫혀 있으면 하루 전체)
@@ -1901,9 +1922,9 @@ function volSession(kind) {
   const date = `${parts.year}-${parts.month}-${parts.day}`;
   const mins = (Number(parts.hour) % 24) * 60 + Number(parts.minute);
   if (kind === "crypto") return { date, elapsed: mins, len: cfg.len, open: true };
-  const weekend = parts.weekday === "Sat" || parts.weekday === "Sun";
-  if (weekend) return { date: volPrevWeekday(date), elapsed: cfg.len, len: cfg.len, open: false }; // 주말이면 직전 금요일의 하루 전체
-  if (mins < cfg.start) return { date: volPrevWeekday(date), elapsed: cfg.len, len: cfg.len, open: false };
+  const weekend = parts.weekday === "Sat" || parts.weekday === "Sun" || isMarketHoliday(kind, date);
+  if (weekend) return { date: volPrevWeekday(date, kind), elapsed: cfg.len, len: cfg.len, open: false }; // 주말·휴장일이면 직전 거래일의 하루 전체
+  if (mins < cfg.start) return { date: volPrevWeekday(date, kind), elapsed: cfg.len, len: cfg.len, open: false };
   if (mins >= cfg.start + cfg.len) return { date, elapsed: cfg.len, len: cfg.len, open: false };
   return { date, elapsed: mins - cfg.start, len: cfg.len, open: true };
 }
@@ -1971,7 +1992,7 @@ function applyVolMode() {
     if (!note) {
       note = document.createElement("div");
       note.id = "volLegendNote";
-      note.textContent = "거래대금 증감";
+      note.textContent = "거래 몰림";
       note.style.cssText = "font-size:10px;font-weight:600;color:var(--text-mid);margin:-2px 0 0 14px;display:none";
       blc.appendChild(note);
     }
@@ -2044,8 +2065,7 @@ async function refreshCustomVals() {
 // 지금 보기에 실시간 거래대금이 없으면 한 번 받아 옴
 async function ensureVolLive() {
   if (ACTIVE_DATA.companies.some((c) => c.volLive)) return true;
-  if (MAP_VIEWS[ACTIVE_VIEW] && MAP_VIEWS[ACTIVE_VIEW].custom) return refreshCustomVals();
-  if (MAP_VIEWS[ACTIVE_VIEW] && MAP_VIEWS[ACTIVE_VIEW].ipo) return false;
+  if (MAP_VIEWS[ACTIVE_VIEW] && (MAP_VIEWS[ACTIVE_VIEW].custom || MAP_VIEWS[ACTIVE_VIEW].ipo)) return refreshCustomVals();
   await refreshActiveMarketLiveData({ silent: true });
   return ACTIVE_DATA.companies.some((c) => c.volLive);
 }
@@ -2061,14 +2081,14 @@ document.getElementById("volModeBtn").addEventListener("click", async (e) => {
   const [data, live] = await Promise.all([loadVolProfile(), ensureVolLive()]);
   btn.disabled = false;
   if (!data) {
-    showToast("대금 기준 데이터를 불러오지 못했어요");
+    showToast("몰림 기준 데이터를 불러오지 못했어요");
     return;
   }
   volModeOn = true;
   btn.classList.add("active");
   applyVolMode();
   if (!live) {
-    showToast("이 보기는 실시간 거래대금을 아직 받지 못했어요");
+    showToast("이 보기는 오늘 거래대금을 아직 받지 못했어요");
     return;
   }
   // 2026-10-19: 멘트는 "1일 거래대금 / 20거래일 거래대금", 뒤쪽은 작게
@@ -2120,7 +2140,7 @@ function buildMetrics(market) {
   popularRank.refresh();
   return {
     week52RangePct: {
-      label: "52주최저",
+      label: "52주 위치",
       hasData: true,
       get: (c) => c.week52RangePct,
       fmt: (v) => `${v.toFixed(0)}%`,
@@ -2128,7 +2148,7 @@ function buildMetrics(market) {
       domainMax: 100,
     },
     popularStocks: {
-      label: "거래대금 증감",
+      label: "거래 몰림",
       hasData: true,
       needsLive: true,
       // 2026-10-19 사용자 요청: 거래대금은 순위가 아니라 "1일 거래대금 증감"(오늘 ÷ 직전 20거래일 평균, 몇 배) — 대금 버튼과 같은 값.
@@ -2145,19 +2165,19 @@ function buildMetrics(market) {
     // 본체(app.js)의 computeAttractivenessScore·computeRiskScore와 동일 공식으로 배치 계산해둔 값
     // (sector-map/scripts/fetch-momentum-scores.ps1, data/*-sectors.json에 pressureScore/stabilityScore로 저장)
     // 2026-09-04 개편: 상승압력 → 연평균 상승(fetch-winrate-scores.ps1이 ret10yAvg로 병합), 투자안정 삭제(10년월간승률로 대체)
-    ret10yAvg: { label: "연평균 상승률", hasData: true, get: (c) => c.ret10yAvg, fmt: (v) => `${v > 0 ? "+" : ""}${v.toFixed(1)}%`, domainMin: -20, domainMax: 80 },
+    ret10yAvg: { label: "10년 연평균", hasData: true, get: (c) => c.ret10yAvg, fmt: (v) => `${v > 0 ? "+" : ""}${v.toFixed(1)}%`, domainMin: -20, domainMax: 80 },
     // 10년월간승률·주간RSI(2026-09-02, 같은 날 국내·ETF·코인 확장): 본체 승률점수와 같은 배치(fetch-winrate-scores.ps1)가
     // sp500-sectors.json/kr-sectors.json/etf-crypto-map.js에 winRateScore/rsiWeekly로 병합 — 나스닥100 보기만 칩 숨김
-    winRateScore: { label: "10년월간승률", hasData: true, get: (c) => c.winRateScore, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 100 },
-    rsiWeekly: { label: "RSI", hasData: true, get: (c) => c.rsiWeekly, fmt: (v) => `${v.toFixed(1)}`, domainMin: 0, domainMax: 100 },
+    winRateScore: { label: "10년 과거승률(오른 달 비율)", hasData: true, get: (c) => c.winRateScore, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 100 },
+    rsiWeekly: { label: "과열도(RSI)", hasData: true, get: (c) => c.rsiWeekly, fmt: (v) => `${v.toFixed(1)}`, domainMin: 0, domainMax: 100 },
     // 상승률/하락률을 하나로 합쳐 근저(가장 큰 하락)~근고(가장 큰 상승)가 한 슬라이더 안에 전부 보이도록 함
     // 0 근처로 끌면 "-0.0%"로 보이던 것 → "0.0%"(2026-11-09, 상승률·하락률 버튼을 이 슬라이더로 합치며)
     changePct: { label: "등락률", hasData: true, live: !isKr, get: (c) => c.changePercent, fmt: (v) => `${Math.abs(v) < 0.05 ? "0.0" : v.toFixed(1)}%` },
-    revenueGrowth: { label: "매출 성장률", hasData: true, get: (c) => c.revenueGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
-    netIncomeGrowth: { label: "순이익 증가율", hasData: true, get: (c) => c.netIncomeGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
+    revenueGrowth: { label: "매출 증가", hasData: true, get: (c) => c.revenueGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
+    netIncomeGrowth: { label: "순이익 증가", hasData: true, get: (c) => c.netIncomeGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
     dividendYield: { label: "배당률", hasData: true, get: (c) => c.dividendYield, fmt: (v) => `${v.toFixed(2)}%` },
     debtRatio: { label: "부채비율", hasData: true, get: (c) => c.debtRatio, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 300, strictMin: true },
-    cashFlowGrowth: { label: "현금흐름 증가", hasData: true, get: (c) => c.cashFlowGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
+    cashFlowGrowth: { label: "현금 증가", hasData: true, get: (c) => c.cashFlowGrowth, fmt: (v) => `${v.toFixed(1)}%`, domainMax: 60, domainMin: -30 },
     per: { label: "PER", hasData: true, get: (c) => c.per, fmt: (v) => `${v.toFixed(1)}배`, domainMax: 80 },
   };
 }
@@ -2188,7 +2208,7 @@ function getMetricDomain(key) {
 const activeFilters = new Map();
 let liveDataLoaded = false; // 상승률/하락률/인기종목이 실시간 데이터로 한 번이라도 갱신됐는지
 
-// "관심" 버튼 — 본체(내투자닷컴)와 같은 origin이라 localStorage(watchlist_v1_us/kr)를 그대로 읽을 수 있다
+// "관심" 버튼 — 본체(마켓맵)와 같은 origin이라 localStorage(watchlist_v1_us/kr)를 그대로 읽을 수 있다
 let watchOnlyMode = false;
 // 통합 관심종목(2026-09-01) — 시장 구분 없이 저장된 전체 목록을 읽음(지도에선 현재 보는 시장의 종목만 자연히 매칭됨)
 function getWatchlistSymbols() {
@@ -2408,10 +2428,9 @@ function createSliderController(getKey, els, onNoDataChange) {
 function noDataMessage(key, m) {
   if (key === "popularStocks" && m.getRankCount) {
     const count = m.getRankCount();
-    const marketLabel = ACTIVE_MARKET === "domestic" ? "국내 주식 시장과" : "글로벌 주식 시장과";
-    return `${marketLabel} 실시간 연동중... ${count}개`;
+    return `시세 불러오는 중... ${count}개`;
   }
-  return m.needsLive && !liveDataLoaded ? "실시간 데이터를 불러오는 중입니다..." : "데이터 준비중입니다";
+  return m.needsLive && !liveDataLoaded ? "시세를 불러오는 중입니다..." : "데이터 준비중입니다";
 }
 
 // ---------- 6-1) 빠른 버튼 하나짜리 바텀시트 ----------
@@ -2438,25 +2457,15 @@ const quickSliderCtrl = createSliderController(
 
 // 칩 바텀시트에 표시할 지표 한 줄 설명 — 상승압력/투자안정은 "+자세히"로 배점 방식(본체 +자세히와 동일 공식)까지 안내
 // 칩 바텀시트 설명 — 2026-10-06 사용자 요청: 모두 2줄(①공식/정의 ②"높을수록 ~한다는 의미예요")로 통일
-const METRIC_DESCS = {
-  winRateScore: "최근 10년 중 전달보다 오른 달의 비율이에요.\n높을수록 꾸준히 우상향했다는 뜻이에요.",
-  ret10yAvg: "최근 10년 연복리 수익률(CAGR)이에요.\n높을수록 오래 크게 오른 종목이에요.",
-  revenueGrowth: "최근 분기 매출 ÷ 1년 전 같은 분기 − 1이에요.\n높을수록 사업이 빠르게 커지는 중이에요.",
-  changePct: "오늘 주가 ÷ 전일 종가 − 1이에요.\n높을수록 오늘 많이 올랐다는 뜻이에요.",
-  popularStocks: "오늘 거래대금 ÷ 20거래일 평균이에요.\n클수록 평소보다 돈이 몰렸다는 뜻이에요.",
-  rsiWeekly: "주간 RSI(14) — 상승폭 ÷ (상승+하락폭) × 100.\n70↑ 과열, 30↓ 침체를 뜻해요.",
-  per: "주가 ÷ 주당순이익(EPS)이에요.\n높을수록 이익 대비 비싸다는 뜻이에요.",
-  dividendYield: "최근 1년 배당금 ÷ 현재 주가예요.\n높을수록 배당을 많이 준다는 뜻이에요.",
-  week52RangePct: "(현재가 − 52주 최저) ÷ (최고 − 최저)예요.\n높을수록 52주 최고가에 가까워요.",
-  netIncomeGrowth: "최근 분기 순이익 ÷ 1년 전 같은 분기 − 1이에요.\n높을수록 이익이 빠르게 늘고 있어요.",
-  debtRatio: "부채총계 ÷ 자본총계예요.\n높을수록 빚 부담이 크다는 뜻이에요.",
-  cashFlowGrowth: "영업현금흐름 ÷ 1년 전 영업현금흐름 − 1이에요.\n높을수록 들어오는 현금이 늘고 있어요.",
-};
+const METRIC_MX_KEY = { ret10yAvg: "ret", revenueGrowth: "rev", changePct: "chg", popularStocks: "surge", rsiWeekly: "rsi", per: "per", dividendYield: "div", week52RangePct: "w52", netIncomeGrowth: "ni", debtRatio: "debt", cashFlowGrowth: "cf" };
+// 칩 바텀시트 설명 — 본체와 같은 한 벌(metric-explain.js의 MX_TEXT, 2026-11-20). 승률만 예전 글 그대로
+const METRIC_DESCS = { winRateScore: "최근 10년 중 전달보다 오른 달의 비율이에요.\n높을수록 꾸준히 우상향했다는 뜻이에요." };
+for (const [k, mk] of Object.entries(METRIC_MX_KEY)) METRIC_DESCS[k] = (typeof MX_TEXT !== "undefined" && MX_TEXT[mk]) || "";
 
 // 각 지표 시트의 "+○○이란" — 대표 종목들의 현재 값을 색깔별 막대로 비교(2026-10-20 사용자 요청). 승률은 기존 대표자산 비교(SCORE_INFO_CONTENT)를 그대로 씀
 const METRIC_EXPLAIN_NAME = {
-  week52RangePct: "52주 구간", popularStocks: "거래대금", ret10yAvg: "연상승률", rsiWeekly: "RSI", changePct: "등락률", revenueGrowth: "매출성장률",
-  netIncomeGrowth: "순이익", dividendYield: "배당률", debtRatio: "부채비율", cashFlowGrowth: "현금흐름", per: "PER",
+  week52RangePct: "52주 위치", popularStocks: "거래 몰림", ret10yAvg: "10년 연평균", rsiWeekly: "과열도(RSI)", changePct: "등락률", revenueGrowth: "매출 증가",
+  netIncomeGrowth: "순이익 증가", dividendYield: "배당률", debtRatio: "부채비율", cashFlowGrowth: "현금 증가", per: "PER",
 };
 const METRIC_REP_SYMBOLS = ["AAPL", "MSFT", "NVDA", "TSLA", "KO", "JPM", "XOM", "JNJ", "005930.KS", "000660.KS", "005380.KS", "035420.KS", "373220.KS", "207940.KS", "SPY", "QQQ", "BTC-USD", "ETH-USD", "KRW-BTC", "KRW-ETH"];
 const METRIC_REP_COLORS = ["#ef4444", "#3b82f6", "#16a34a", "#f59e0b", "#8b5cf6", "#ec4899", "#0ea5e9", "#84cc16"];
@@ -2506,7 +2515,8 @@ function buildMetricExplainInfo(key) {
   const hasBatchim = last >= 0xac00 && last <= 0xd7a3 && (last - 0xac00) % 28 !== 0;
   const title = `${nm}${hasBatchim ? "이란" : "란"}?`;
   const intro = `<p>${mapEscapeHtml(METRIC_DESCS[key] || "").replace(/\n/g, "<br>")}</p>`;
-  if (picked.length < 3) return { title, html: `${intro}<p class="score-info-note">비교할 대표 종목 값을 아직 불러오지 못했어요.</p>` };
+  const diagram = typeof mxDiagramHtml === "function" ? mxDiagramHtml(METRIC_MX_KEY[key]) : "";
+  if (picked.length < 3) return { title, html: `${intro}${diagram}` };
   const vals = picked.map((c) => m.get(c));
   const vmin = Math.min(0, ...vals);
   const vmax = Math.max(0, ...vals);
@@ -2525,25 +2535,25 @@ function buildMetricExplainInfo(key) {
     .join("");
   return {
     title,
-    html: `${intro}<h3 class="wr-bench-title">대표 종목 ${nm} 비교</h3><div class="mx-chart">${rows}</div><p class="wr-bench-note">현재 보고 있는 시장의 대표 종목 값이에요. 과거·현재 데이터이며 미래 수익을 보장하지 않고 투자 자문이 아닙니다.</p>`,
+    html: `${intro}${diagram}<h3 class="wr-bench-title">대표 종목 ${nm} 비교</h3><div class="mx-chart">${rows}</div><p class="wr-bench-note">지금 보고 있는 보기의 대표 종목 값이에요. 과거·현재 데이터이며 미래 수익을 보장하지 않고 투자 자문이 아닙니다.</p>`,
   };
 }
 // 2026-09-04 개편: 상승압력·투자안정 삭제로 +자세히 배점 안내가 필요한 지표가 없어짐(버튼은 자동 숨김)
 const SCORE_INFO_CONTENT = {
   // 2026-10-06 사용자 요청: 승률 칩 시트에 "+승률이란?" — 본체 인기종목 "+승률이란"과 같은 내용(공용 winrate-benchmark.js)
   winRateScore: {
-    button: "+승률이란?",
-    title: "승률이란?",
+    button: "+과거승률이란?",
+    title: "과거승률이란?",
     get html() {
       if (typeof buildWinRateBenchmarkSvg !== "function") return "<p>설명을 불러오지 못했습니다.</p>";
       const rows = WINRATE_BENCHMARKS.map(
         (b, i) => `<tr><td>${i + 1}</td><td><span class="wr-bench-dot" style="background:${b.color};"></span><b>${b.name}</b></td><td>${b.up}회</td><td>${b.down}회</td><td><b class="wr-pct">${b.score.toFixed(1)}%</b></td></tr>`
       ).join("");
       return `${WINRATE_INTRO_HTML}
-        <h3 class="wr-bench-title">대표자산 10년월간승률비교</h3>
+        <h3 class="wr-bench-title">대표자산 10년 과거승률 비교</h3>
         ${buildWinRateBenchmarkSvg()}
         <table class="wr-bench-table">
-          <thead><tr><th>순위</th><th>이름</th><th>상승</th><th>하락</th><th>승률</th></tr></thead>
+          <thead><tr><th>순위</th><th>이름</th><th>상승</th><th>하락</th><th>과거승률</th></tr></thead>
           <tbody>${rows}<tr class="wr-bench-deposit"><td>기준</td><td><span class="wr-bench-dot" style="background:#0f766e;"></span><b>예금·적금</b></td><td>120회</td><td>0회</td><td><b class="wr-pct">100.0%</b></td></tr></tbody>
         </table>
         <p class="wr-bench-note">과거 데이터이며 미래 수익률을 보장하지 않고 투자 자문이 아닙니다.</p>`;
@@ -2558,7 +2568,7 @@ function openRangeSheet(key) {
   closeWatchlistSheet();
   quickSheetKey = key;
   rangeSheetTitle.textContent = METRICS[key].label;
-  document.getElementById("rangeSheetDescText").textContent = METRIC_DESCS[key] || "";
+  document.getElementById("rangeSheetDescText").textContent = (METRIC_DESCS[key] || "").split("\n")[0];
   const detailBtn = document.getElementById("rangeSheetDetailBtn");
   detailBtn.style.display = "";
   detailBtn.textContent = metricExplainButtonText(key);
@@ -2716,7 +2726,7 @@ function renderWatchlistSheet() {
     const empty = document.createElement("div");
     empty.className = "watchlist-sheet-empty";
     const catName = { all: "", kr: "한국 ", us: "미국 ", etf: "ETF ", crypto: "코인 " }[wlCat];
-    empty.textContent = isEn ? "No stocks in your watchlist yet. Tap the ★ on a stock to add it." : symbols.length ? `${catName}관심종목이 없어요.` : "관심목록에 담긴 종목이 없습니다. 종목 상세에서 ★을 눌러 추가해보세요.";
+    empty.textContent = isEn ? "No stocks in your watchlist yet. Tap the ★ on a stock to add it." : symbols.length ? `${catName}관심종목이 없어요.` : "관심종목이 없습니다. 종목 상세에서 ★을 눌러 추가해보세요.";
     watchlistSheetList.appendChild(empty);
     // 2026-10-21 사용자 요청: 관심종목이 하나도 없으면 + 버튼 → 누르면 검색 화면
     if (!symbols.length) {
@@ -3121,7 +3131,7 @@ document.getElementById("allFiltersCloseBtn").addEventListener("click", closeAll
 allFiltersBackdrop.addEventListener("click", closeAllFiltersPanel);
 
 // ---------- 7) 상승률·하락률·인기종목 실시간 갱신 ----------
-// 브라우저에서 직접 Yahoo Finance로 요청하면 CORS에 막히므로, 내투자닷컴 본체와 같은 방식으로
+// 브라우저에서 직접 Yahoo Finance로 요청하면 CORS에 막히므로, 마켓맵 본체와 같은 방식으로
 // 공개 CORS 프록시(corsproxy.io → 실패 시 allorigins)를 거쳐서 가져온다.
 async function proxyFetchJson(targetUrl) {
   // corsproxy.io가 근근 이 도메인에서의 요청을 403으로 막는 경우가 잦아, 이미 안정적으로 쓰고 있는
@@ -3259,6 +3269,33 @@ async function refreshDomesticLiveData() {
       updated++;
     }
     if (updated === 0) return false;
+    // 서버의 한국 종목 명단(고정)에 없는 종목 — 지도에는 있는데 값이 안 오던 종목(새 편입 등)은 /day-vals로 따로 받아 채운다(2026-11-20).
+    // 이렇게 하면 정기변경 때 서버 명단을 같이 고치지 않아도 지도의 모든 종목이 오늘 값으로 칠해진다. 서버 부담을 막으려 최대 135종목(3묶음)
+    const missing = ACTIVE_DATA.companies.filter((c) => /\.(KS|KQ)$/.test(c.symbol) && !(c.symbol in quotes)).map((c) => c.symbol).slice(0, 135);
+    if (missing.length) {
+      const chunks = [];
+      for (let i = 0; i < missing.length; i += 45) chunks.push(missing.slice(i, i + 45));
+      await Promise.all(
+        chunks.map(async (chunk) => {
+          try {
+            const res = await fetch(`https://us-stock.yeop2ad.workers.dev/day-vals?symbols=${encodeURIComponent(chunk.join(","))}`);
+            if (!res.ok) return;
+            const dv = await res.json();
+            for (const [sym, pct] of Object.entries((dv && dv.chgs) || {})) {
+              const c = companyBySymbol.get(sym);
+              if (c && Number.isFinite(pct)) c.changePercent = pct;
+            }
+            for (const [sym, v] of Object.entries((dv && dv.vals) || {})) {
+              const c = companyBySymbol.get(sym);
+              if (c && v > 0) {
+                c.dollarVolume = v;
+                c.volLive = true;
+              }
+            }
+          } catch {}
+        })
+      );
+    }
     liveDataLoaded = true;
     // 개별 종목이 아니라 코스피 지수(^KS11) 자체의 실제 시각을 지도 시계 기준으로 씀 — 코스피가 멈추면(장마감) 시계도 그대로 멈춤
     if (indexAsOf) lastDataAsOfTime = indexAsOf;
@@ -3279,7 +3316,7 @@ async function refreshDomesticLiveData() {
 function isUsMarketOpen() {
   const et = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
   const day = et.getDay();
-  if (day === 0 || day === 6) return false;
+  if (day === 0 || day === 6 || isMarketHoliday("us", marketDateIn("America/New_York"))) return false;
   const mins = et.getHours() * 60 + et.getMinutes();
   return mins >= 9 * 60 + 30 && mins <= 16 * 60;
 }
@@ -3409,11 +3446,12 @@ function renderAiFabTimestamp() {
   const asOfKst = fmtKstParts(asOf);
   if (!isToday) {
     // 아직 오늘 장이 시작 전이라 직전 거래일 마감 시각에 고정된 상태 — 시:분:초 대신 그 날짜를 보여줌
-    timeEl.textContent = `${asOfKst.month}/${asOfKst.day}`;
+    timeEl.textContent = `${asOfKst.month}/${asOfKst.day} 기준`;
     timeEl.className = "ai-fab";
     return;
   }
-  timeEl.textContent = `${asOfKst.hour}:${asOfKst.minute}:${asOfKst.second}`;
+  // 2026-11-20: 숫자만 있으면 무슨 시각인지 알 수 없어 "기준 · 20분 지연"을 붙인다(초는 뺌)
+  timeEl.textContent = `${asOfKst.hour}:${asOfKst.minute} 기준 · 20분 지연`;
   timeEl.className = marketOpen ? "ai-fab ai-fab-time-live" : "ai-fab";
 }
 
@@ -3433,7 +3471,8 @@ document.getElementById("aiFabTime").addEventListener("click", async () => {
 async function refreshActiveMarketLiveData({ silent = false } = {}) {
   // ETF200/비트코인50 보기는 배치 스냅샷 기반이라 주식용 실시간 갱신(스크리너/국내 워커)이 적용되지 않음 — 건너뜀
   const _av = MAP_VIEWS[ACTIVE_VIEW];
-  if (_av && (_av.custom || _av.mine || _av.needAll)) {
+  if (_av && (_av.custom || _av.mine || _av.needAll || _av.ipo)) {
+    // 2026-11-20: 신규상장200도 같은 길로 — 예전엔 주 1회 배치 값(지난 금요일 등락)이 오늘 색으로 칠해졌다
     // 2026-10-21 사용자 요청: ETF·코인·내 시장·우량주 모음도 어제 값이 아니라 지금 값 — 워커 /day-vals로 현재 등락·거래대금을 받아 다시 칠함
     if (await refreshCustomVals()) {
       lastColorRefreshAt = Date.now();
@@ -3441,7 +3480,7 @@ async function refreshActiveMarketLiveData({ silent = false } = {}) {
       for (const key of ["changePct"]) if (METRICS[key]) delete METRICS[key].domain;
       applyAllFilters();
       applyChangeModeToSectorBubbles();
-      if (!silent) showToast("실시간 시세로 갱신됨");
+      if (!silent) showToast("최신 시세로 갱신됨");
     }
     renderAiFabTimestamp();
     return false;
@@ -3449,7 +3488,7 @@ async function refreshActiveMarketLiveData({ silent = false } = {}) {
   const ok = ACTIVE_MARKET === "domestic" ? await refreshDomesticLiveData() : await refreshLiveData();
   if (ok) {
     lastColorRefreshAt = Date.now();
-    if (!silent) showToast("실시간 시세로 갱신됨");
+    if (!silent) showToast("최신 시세로 갱신됨");
   }
   renderAiFabTimestamp();
   return ok;
@@ -3514,7 +3553,7 @@ function escHtmlLocal(s) {
 function isKrMarketOpen() {
   const kst = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
   const day = kst.getDay();
-  if (day === 0 || day === 6) return false;
+  if (day === 0 || day === 6 || isMarketHoliday("kr", marketDateIn("Asia/Seoul"))) return false;
   const mins = kst.getHours() * 60 + kst.getMinutes();
   return mins >= 9 * 60 && mins <= 15 * 60 + 30;
 }
@@ -3902,7 +3941,7 @@ document.getElementById("mapViewMenu").addEventListener("click", (e) => {
       renderMapViewMenu();
     };
     if (key.startsWith("my_")) {
-      mineConfirm(`'${MAP_VIEWS[key].label}' 시장을 삭제할까요? 만든 내용이 사라져요.`, "삭제", doRemove);
+      mineConfirm(`'${MAP_VIEWS[key].label}' 보기를 삭제할까요? 만든 내용이 사라져요.`, "삭제", doRemove);
     } else {
       doRemove();
     }
@@ -3963,7 +4002,7 @@ function saveMapRestoreState() {
     sessionStorage.setItem("map_restore_view_v1", JSON.stringify({ view: ACTIVE_VIEW, t: Date.now() }));
   } catch {}
 }
-// 본체(내투자닷컴)로 돌아가기 — 세션 동안은 다시 섹터맵으로 안 튕기도록 플래그를 남김
+// 본체(마켓맵)로 돌아가기 — 세션 동안은 다시 섹터맵으로 안 튕기도록 플래그를 남김
 function goToMainSite(openPanel) {
   try {
     sessionStorage.setItem("ntj_skip_map_redirect", "1");
@@ -4032,7 +4071,7 @@ window.addEventListener("message", (e) => {
 if (typeof initMyMarkets === "function") initMyMarkets(); // 내 시장(my-market.js): 저장된 시장을 보기 목록에 등록
 window.addEventListener("resize", () => fitToViewport(false));
 
-// 내투자닷컴 첫 화면에서 넘어온 경우 ?market=domestic 이면 코스피 200 보기를, 아니면 S&P200 보기를 기본값으로 염
+// 마켓맵 첫 화면에서 넘어온 경우 ?market=domestic 이면 코스피 200 보기를, 아니면 S&P200 보기를 기본값으로 염
 const requestedMarket = new URLSearchParams(window.location.search).get("market");
 // 뒤로가기 복원(2026-09-03): 지도→상세로 떠나기 직전에 저장한 보기가 있으면(30분 이내) 그 보기로 복원.
 // 저장값은 1회 소비(제거) — 본체에서 새로 들어오는 정상 딥링크가 옛 보기로 오염되지 않도록 함

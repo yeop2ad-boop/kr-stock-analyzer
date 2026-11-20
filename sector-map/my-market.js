@@ -266,7 +266,7 @@ function renderMapMine(root) {
         const copy = document.createElement("button");
         copy.type = "button";
         copy.className = "mine-copy-top";
-        copy.textContent = "+ 시장 복사·붙여넣기";
+        copy.textContent = "+ 보기 복사·붙여넣기";
         const w = Math.max(240, sectorNode.r * 1.05);
         copy.style.width = `${w}px`;
         copy.style.height = `${w * 0.2}px`;
@@ -507,7 +507,7 @@ function mineExitEdit(save) {
   if (isMineView()) {
     updateActiveDataForUniverseState();
     rerenderMap(true);
-    if (save) showToast("내 시장을 저장했어요");
+    if (save) showToast("내 보기를 저장했어요");
   }
 }
 // 편집 도구 줄 — 두 줄: ①섹터·시장 도구 ②선택한 섹터 색
@@ -518,12 +518,12 @@ function mineBuildBar() {
     `<div class="mine-bar-row">` +
     `<button type="button" class="mine-bar-btn" id="mineAddSectorBtn">＋ 섹터</button>` +
     `<button type="button" class="mine-bar-btn danger" id="mineDelSectorBtn">－ 섹터 삭제</button>` +
-    `<button type="button" class="mine-bar-btn" id="mineCopyBtn">⧉ 시장 복사</button>` +
+    `<button type="button" class="mine-bar-btn" id="mineCopyBtn">⧉ 보기 복사</button>` +
     `<button type="button" class="mine-bar-btn" id="mineThemeBtn">▦ 테마</button>` +
     `<button type="button" class="mine-bar-btn" id="mineMoveBtn">✥ 이동</button>` +
     `<button type="button" class="mine-bar-btn" id="mineMergeBtn">⊕ 합치기</button>` +
     `<button type="button" class="mine-bar-btn" id="mineSplitBtn">⑂ 분리</button>` +
-    `<button type="button" class="mine-bar-btn danger" id="mineDeleteBtn">시장 삭제</button>` +
+    `<button type="button" class="mine-bar-btn danger" id="mineDeleteBtn">보기 삭제</button>` +
     `</div><div class="mine-bar-row"><span class="mine-bar-label" id="mineSelLabel">색</span>` +
     MINE_COLORS.map((c) => `<button type="button" class="mine-swatch" data-color="${c}" style="background:${c}" aria-label="색상 ${c}"></button>`).join("") +
     `<label class="mine-swatch mine-swatch-custom" aria-label="색 직접 고르기"><input type="color" id="mineColorInput" value="#7230f0" /></label>` +
@@ -733,7 +733,7 @@ window.addEventListener("pointercancel", mineEndGesture);
     if (!mineEditing) return;
     timer = setTimeout(() => {
       timer = null;
-      minePrompt("시장 이름", mineDraft.name, (v) => {
+      minePrompt("보기 이름", mineDraft.name, (v) => {
         mineDraft.name = v;
         MAP_VIEWS[mineViewKey(mineDraft.id)].label = v;
         syncMapViewUi();
@@ -777,7 +777,7 @@ function mineOpenStockSheet(symbol, secId) {
 }
 
 // ---- 종목 검색·추가 시트 ----
-const MINE_TABS = [["kr", "한국주식"], ["us", "미국주식"], ["etf", "ETF"], ["crypto", "비트코인"]];
+const MINE_TABS = [["kr", "한국주식"], ["us", "미국주식"], ["etf", "ETF"], ["crypto", "코인"]];
 const MINE_PAGE = 30; // 종목 목록은 30개씩, 아래 "더보기"로 계속
 let mineAddState = null; // { secId, tab, selected:Set, query }
 function mineTabCompanies(tab) {
@@ -916,7 +916,7 @@ function mineOpenCopySheet() {
   if (!mineDraft) return;
   const keys = [...MAP_VIEW_ORDER, ...mineViewKeys().filter((k) => k !== mineViewKey(mineDraft.id))].filter((k) => MAP_VIEWS[k] && !MAP_VIEWS[k].tutorial);
   const { box, close } = mineModal(
-    `<b>복사할 시장을 고르세요</b>
+    `<b>복사할 보기를 고르세요</b>
      <div class="mine-copy-list">${keys.map((k) => `<button type="button" class="mine-copy-item" data-view="${mineEsc(k)}">${viewMarkHtml(k)}<span>${mineEsc(MAP_VIEWS[k].label)}</span></button>`).join("")}</div>
      <div class="mine-modal-actions"><button type="button" data-no>닫기</button></div>`,
     true
@@ -1195,7 +1195,7 @@ function mineBindUi() {
   // 보기 추가 창 맨 위 "+ 내 시장 만들기"
   $("mineCreateBtn").addEventListener("click", async () => {
     const n = MY_MARKETS.length + 1;
-    const m = { id: mineUid(), name: `내 시장 ${n}`, sectors: [] };
+    const m = { id: mineUid(), name: `내 보기 ${n}`, sectors: [] };
     const first = { id: mineUid(), name: "섹터 1", color: MINE_COLORS[0], x: MINE_WORLD / 2, y: MINE_WORLD / 2, r: 620, symbols: [] };
     m.sectors.push(first);
     MY_MARKETS.push(m);
@@ -1254,12 +1254,12 @@ function mineBindUi() {
       return;
     }
     if (e.target.closest("#mineDeleteBtn")) {
-      mineConfirm(`'${mineDraft.name}' 시장을 삭제할까요? 되돌릴 수 없어요.`, "삭제", async () => {
+      mineConfirm(`'${mineDraft.name}' 보기를 삭제할까요? 되돌릴 수 없어요.`, "삭제", async () => {
         const id = mineDraft.id;
         mineDeleteMarketById(id);
         const keys = visibleMapViews();
         await setMapView(keys.includes("sp200") ? "sp200" : keys[0], false);
-        showToast("시장을 삭제했어요");
+        showToast("보기를 삭제했어요");
       });
     }
   });

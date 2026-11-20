@@ -1,4 +1,4 @@
-// ---------- 별별순위 빠른 순위 엔진 (2026-10-21 사용자 요청) ----------
+// ---------- 별별순위 빠른 순위 엔진 (2026-10-21 사용자 요청 · 2026-11-20 이름·방향 표시·10년미만 버튼) ----------
 // 예전: 시가총액 상위 30개만 먼저 조회·정렬하고 "전체보기"를 누르면 약 1분간 종목마다 재무제표를 불러왔다.
 // 지금: ① 순위는 항상 "전체 종목"(한국 350 · 미국 S&P500 · ETF · 비트코인 200) 중에서 매기고 30위씩 더보기,
 //       ② 값은 하루 두 번(한국 18시·미국 6시, ETF·코인은 둘 다) 갱신되는 DB(data/sreport-baseline.json)에서 즉시 읽고,
@@ -12,27 +12,29 @@ const RF_LIVE_MS_KEY = "rank_live_ms_v1";
 const RF_LIVE_FIELDS = new Set(["w52", "dv", "per", "vol", "rsi"]); // 값 자체가 실시간으로 바뀌는 항목(등락률·현재가는 모든 순위의 현재가 칸에 반영)
 
 // 항목 설정: dir=정렬방향(desc 큰 값이 1위, asc 작은 값이 1위), positive=0 이하는 순위에서 제외, th=머리글, sub=머리글 둘째 줄
+// 2026-11-20 사용자 요청: 이름을 실제 계산과 맞추고(매출액 → 매출 증가 등) 화면마다 같은 이름을 쓴다. th=머리글 이름, sub=둘째 줄(기준),
+//   머리글 맨 아래 줄에는 "높은 순"/"낮은 순"을 늘 적는다(변동폭·과열도·부채비율·PER·52주 위치는 낮은 값이 1위인데 표시가 없어 헷갈렸다).
 const RF_ITEMS = {
-  win: { label: "10년월간승률", dir: "desc", th: RANK_TH_WINRATE },
-  ret: { label: "연평균 상승", dir: "desc", th: RANK_TH_RET10 },
-  rev: { label: "매출 증가율", dir: "desc", th: `매출 증가율${THEAD_SUB("작년 대비")}`, assetLabel: "수익률", assetTh: RANK_TH_RET1Y },
-  vol: { label: "변동성", dir: "asc", th: `변동성${THEAD_SUB("3개월")}` },
-  rsi: { label: "과열도(RSI)", dir: "asc", th: RANK_TH_RSI },
-  ni: { label: "순이익 증가", dir: "desc", th: `순이익 증가${THEAD_SUB("작년 대비")}` },
-  om: { label: "영업이익률", dir: "desc", th: `영업이익률${THEAD_SUB("직전분기")}` },
-  roe: { label: "ROE", dir: "desc", th: `ROE${THEAD_SUB("최근 1년")}` },
-  cf: { label: "현금흐름 증가", dir: "desc", th: `현금흐름 증가${THEAD_SUB("작년 대비")}` },
-  debt: { label: "부채비율", dir: "asc", positive: true, th: `부채비율${THEAD_SUB("직전분기")}` },
+  win: { label: "10년 과거승률", dir: "desc", th: "10년<br>과거승률", short10: true },
+  ret: { label: "10년 연평균", dir: "desc", th: "10년<br>연평균", short10: true },
+  rev: { label: "매출 증가", dir: "desc", th: "매출 증가", sub: "작년 같은 분기 대비", assetLabel: "1년 수익률", assetTh: "1년<br>수익률", assetExplain: "ret1y" },
+  vol: { label: "하루 변동폭", dir: "asc", th: "하루 변동폭", sub: "3개월" },
+  rsi: { label: "과열도(RSI)", dir: "asc", th: "과열도<br>(RSI)" },
+  ni: { label: "순이익 증가", dir: "desc", th: "순이익 증가", sub: "작년 같은 분기 대비" },
+  om: { label: "영업이익률", dir: "desc", th: "영업이익률", sub: "직전분기" },
+  roe: { label: "ROE", dir: "desc", th: "ROE", sub: "최근 1년" },
+  cf: { label: "현금 증가", dir: "desc", th: "현금 증가", sub: "작년 같은 분기 대비" },
+  debt: { label: "부채비율", dir: "asc", positive: true, th: "부채비율", sub: "직전분기" },
   mcap: { label: "시가총액", dir: "desc", th: "시가총액" },
-  dv: { label: "거래대금", dir: "desc", th: `거래대금${THEAD_SUB("오늘")}` },
-  w52: { label: "52주 구간", dir: "asc", th: `52주 위치${THEAD_SUB("0=최저")}` },
-  per: { label: "PER", dir: "asc", positive: true, th: `PER${THEAD_SUB("현재가")}` },
-  div: { label: "배당률", dir: "desc", th: `배당률${THEAD_SUB("최근 1년")}` },
-  fee: { label: "운용보수", dir: "asc", positive: true, th: `운용보수${THEAD_SUB("연 총보수")}` },
-  aum: { label: "규모", dir: "desc", th: `규모${THEAD_SUB("순자산")}` },
+  dv: { label: "거래대금", dir: "desc", th: "거래대금", sub: "오늘" },
+  w52: { label: "52주 위치", dir: "asc", th: "52주 위치", sub: "0=최저" },
+  per: { label: "PER", dir: "asc", positive: true, th: "PER", sub: "현재가" },
+  div: { label: "배당률", dir: "desc", th: "배당률", sub: "최근 1년" },
+  fee: { label: "운용보수", dir: "asc", positive: true, th: "운용보수", sub: "연 총보수" },
+  aum: { label: "규모", dir: "desc", th: "규모", sub: "순자산" },
 };
-// 데이터에 이 값이 없을 때(예: ETF 규모) 쓰는 별도 공급자
-const rfState = { sec: "stocks", market: "kr", key: "win", shown: RF_PAGE, rows: null, token: 0, liveFailed: false, reverse: false };
+// inclShort: 과거승률·10년 연평균 순위에 기록이 10년(코인 7년)이 안 되는 종목도 넣을지 — 기본은 뺀다(2026-11-20 사용자 요청: "10년미만 포함" 버튼)
+const rfState = { sec: "stocks", market: "kr", key: "win", shown: RF_PAGE, rows: null, token: 0, liveFailed: false, reverse: false, inclShort: false, hiddenShort: 0 };
 
 function rfLiveMsGet() {
   try {
@@ -139,11 +141,21 @@ function rfBuildRows(baseline) {
   const gk = rfGroupKey();
   const item = RF_ITEMS[rfState.key];
   const rows = [];
+  const dropShort = !!item.short10 && !rfState.inclShort;
+  rfState.hiddenShort = 0;
   for (const [sym, m] of Object.entries((baseline && baseline.members) || {})) {
     if (m.g !== gk) continue;
     const v = rfValueOf(sym, m, rfState.key);
     if (!Number.isFinite(v)) continue;
     if (item.positive && v <= 0) continue;
+    if (item.short10) {
+      // 기록이 10년(코인 7년)이 안 되는 종목 — 2~3년 기록이 10년 기록 위에 서지 않게 기본 순위에서는 뺀다
+      const total = rfWrTotal(sym);
+      if (Number.isFinite(total) && total < partialMonthsFor(sym)) {
+        rfState.hiddenShort++;
+        if (dropShort) continue;
+      }
+    }
     rows.push({ symbol: sym, m, v });
   }
   rows.sort(item.dir === "asc" ? (a, b) => a.v - b.v : (a, b) => b.v - a.v);
@@ -248,7 +260,7 @@ async function rfRender(opts) {
     liveOk = await rfFetchLive(
       universe,
       (done, total) => {
-        if (token === rfState.token) statusEl.textContent = `${rfLabelOf(key)} 실시간 값 취합 중... (${done}/${total}종목)`;
+        if (token === rfState.token) statusEl.textContent = `${rfLabelOf(key)} 최신 시세를 모으는 중... (${done}/${total}종목)`;
       },
       !!(opts && opts.force)
     );
@@ -277,7 +289,7 @@ async function rfRender(opts) {
       for (let i = 1; i <= steps; i++) {
         await rfSleep(wait / steps);
         if (token !== rfState.token) return;
-        statusEl.textContent = `${rfLabelOf(key)} 순위 계산 중... (${Math.round((total * i) / steps)}/${total}종목)`;
+        statusEl.textContent = `${rfLabelOf(key)} 순위를 불러오는 중...`; // 2026-11-20: 가짜 진행 숫자("117/350종목")는 뺐다 — 순위는 이미 만들어져 있고 시세만 기다리는 시간
       }
     })();
     await Promise.all([livePart, waitPart]);
@@ -313,12 +325,17 @@ async function rfPaint() {
     )
   ).join("");
   const th = isAsset && item.assetTh ? item.assetTh : item.th;
-  const thHtml = th.startsWith("<th") ? th : `<th data-explain="${escapeHtml(S_REPORT_EXPLAIN[key] || "")}">${th}</th>`;
+  const exKey = isAsset && item.assetExplain ? item.assetExplain : key;
+  // 머리글: 이름 / (기준) / 높은 순·낮은 순 — "뒤에서부터"를 누르면 방향 글자도 같이 바뀐다
+  const dirAsc = (item.dir === "asc") !== !!rfState.reverse;
+  const thHtml = `<th data-explain="${escapeHtml(`${S_REPORT_TITLES[exKey] || rfLabelOf(key)} — ${String(S_REPORT_EXPLAIN[exKey] || "").replace(/\n/g, " ")}`)}">${th}${item.sub && !(isAsset && item.assetTh) ? THEAD_SUB(item.sub) : ""}<span class="th-dir">${dirAsc ? "낮은 순" : "높은 순"}</span></th>`;
   const total = rows.length;
   const more = shown.length < total;
   const nextN = Math.min(RF_PAGE, total - shown.length);
-  const groupLabel = isAsset ? (rfState.sec === "etf" ? (rfState.market === "kr" ? "국내 상장 ETF" : "미국 상장 ETF") : "비트코인 시총 상위") : rfState.market === "kr" ? "코스피200+코스닥150" : "S&P500";
-  const liveNote = RF_LIVE_FIELDS.has(key) ? "실시간 값 기준" : `DB 기준(하루 2번 갱신${rfState.asOf ? " · " + String(rfState.asOf).slice(0, 10) : ""})`;
+  const groupLabel = isAsset ? (rfState.sec === "etf" ? (rfState.market === "kr" ? "국내 상장 ETF" : "미국 상장 ETF") : "코인 시총 상위") : rfState.market === "kr" ? "코스피200+코스닥150" : "S&P500";
+  const liveNote = RF_LIVE_FIELDS.has(key) ? "지금 시세 기준" : `DB 기준(하루 2번 갱신${rfState.asOf ? " · " + String(rfState.asOf).slice(0, 10) : ""})`;
+  const shortYears = rfState.sec === "crypto" ? 7 : 10;
+  const scopeNote = item.short10 && !rfState.inclShort ? `${groupLabel} 중 기록이 ${shortYears}년 이상인 ${total.toLocaleString()}개` : `${groupLabel} ${total.toLocaleString()}개 전체`;
   resultsEl.innerHTML = `
     ${rfHeadHtml(key)}
     <table class="top30-table rk-table">
@@ -326,13 +343,16 @@ async function rfPaint() {
       <tbody>${body}</tbody>
     </table>
     ${more ? `<button type="button" class="cat-btn load-more-btn rf-more">더보기 (${nextN}개 더 · 전체 ${total.toLocaleString()}개 중 ${rfState.reverse ? `뒤에서 ${shown.length}위까지` : `${shown.length}위까지`})</button>` : ""}
-    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${groupLabel} ${total.toLocaleString()}개 전체를 대상으로 매긴 순위(${liveNote})이며, 현재가·등락률은 실시간입니다.${rfState.liveFailed ? " <b>※ 지금은 실시간 값을 못 받아 최근 갱신 값으로 매겼어요.</b>" : ""} 투자 자문이 아닙니다.</p>`;
+    <p class="disclaimer tab-note"><span style="filter:grayscale(1);">📢</span> ${scopeNote}를 대상으로 매긴 순위(${liveNote})이며, 현재가·등락률은 최대 20분 늦을 수 있습니다.${rfState.liveFailed ? " <b>※ 지금은 최신 시세를 못 받아 최근 갱신 값으로 매겼어요.</b>" : ""} 투자 자문이 아닙니다.</p>`;
 }
 // 머리줄: 안내 + 오른쪽 "+○○이란" (승률은 기존 "+승률이란" 자리 그대로)
 function rfHeadHtml(key) {
   const btn = `<button type="button" class="score-method-detail-btn metric-explain-btn" data-rf-explain="${key}">${rfExplainLabel(key)}</button>`;
   const rev = `<button type="button" class="score-method-detail-btn rf-rev-btn${rfState.reverse ? " on" : ""}" data-rf-reverse="1">${rfState.reverse ? "앞에서부터" : "뒤에서부터"}</button>`;
-  return `<div class="popular-head-row"><span class="tap-hint pop-hint">${RANK_HINT_SPAN}</span><span class="rf-head-btns">${rev}${btn}</span></div>`;
+  // 과거승률·10년 연평균: 기본은 기록 10년(코인 7년) 이상만 — 이 버튼을 켜면 전 종목 순위
+  const item = RF_ITEMS[key];
+  const short = item && item.short10 ? `<button type="button" class="score-method-detail-btn rf-rev-btn rf-short-btn${rfState.inclShort ? " on" : ""}" data-rf-short="1">${rfState.sec === "crypto" ? "7년미만 포함" : "10년미만 포함"}</button>` : "";
+  return `<div class="popular-head-row rf-head-row"><span class="tap-hint pop-hint">${RANK_HINT_SPAN}</span><span class="rf-head-btns">${short}${rev}${btn}</span></div>`;
 }
 function rfHasBatchim(nm) {
   const last = nm.charCodeAt(nm.length - 1);
@@ -362,6 +382,21 @@ document.addEventListener("click", async (e) => {
     rfState.shown += RF_PAGE;
     const ord2 = rfState.reverse ? (rfState.rows || []).slice().reverse() : rfState.rows || [];
     const visible = ord2.slice(0, rfState.shown).map((r) => r.symbol);
+    const ok = await rfFetchLive(visible, null, false).catch(() => false);
+    if (!ok) await rfFallbackQuotes(visible);
+    await rfPaint();
+    return;
+  }
+  const sh = e.target.closest("[data-rf-short]");
+  if (sh) {
+    e.preventDefault();
+    e.stopPropagation();
+    rfState.inclShort = !rfState.inclShort;
+    rfState.shown = RF_PAGE;
+    const baseline = await getSReportBaseline();
+    rfState.rows = rfBuildRows(baseline);
+    const ord0 = rfState.reverse ? rfState.rows.slice().reverse() : rfState.rows;
+    const visible = ord0.slice(0, RF_PAGE).map((r) => r.symbol);
     const ok = await rfFetchLive(visible, null, false).catch(() => false);
     if (!ok) await rfFallbackQuotes(visible);
     await rfPaint();
@@ -406,13 +441,13 @@ document.addEventListener("click", async (e) => {
 // ---------- "+○○이란" 설명(2026-10-21 사용자 요청) — 지도의 "+RSI란?" 같은 설명을 별별순위·검색상세에서 그대로 ----------
 // 글(2줄) + 대표 종목들의 지금 값을 색깔 막대로 비교. 값은 DB(sreport-baseline)에서 읽어 별도 조회가 없다.
 const RF_EXPLAIN_NAME = {
-  win: "승률", ret: "상승률", rev: "매출성장률", vol: "변동성", rsi: "RSI", ni: "순이익", om: "영업이익률", roe: "ROE", cf: "현금흐름",
-  debt: "부채비율", mcap: "시가총액", dv: "거래대금", w52: "52주 구간", per: "PER", div: "배당률", fee: "운용보수", aum: "규모", ret1y: "수익률",
+  win: "과거승률", ret: "10년 연평균", rev: "매출 증가", vol: "하루 변동폭", rsi: "과열도(RSI)", ni: "순이익 증가", om: "영업이익률", roe: "ROE", cf: "현금 증가",
+  debt: "부채비율", mcap: "시가총액", dv: "거래대금", w52: "52주 위치", per: "PER", div: "배당률", fee: "운용보수", aum: "규모", ret1y: "1년 수익률", surge: "거래 몰림",
 };
-// section: 지금 화면의 투자처(기본은 별별순위 상태) — ETF·코인에서 "매출성장률" 자리는 "수익률"
+// section: 지금 화면의 투자처(기본은 별별순위 상태) — ETF·코인에서 "매출 증가" 자리는 "1년 수익률"
 function rfExplainName(key, section) {
   const sec = section || (rfState.sec === "stocks" ? "stocks" : rfState.sec);
-  if (key === "rev" && sec !== "stocks" && sec !== "kr" && sec !== "us") return "수익률";
+  if (key === "rev" && sec !== "stocks" && sec !== "kr" && sec !== "us") return "1년 수익률";
   return RF_EXPLAIN_NAME[key] || (RF_ITEMS[key] && RF_ITEMS[key].label) || key;
 }
 function rfExplainLabel(key, section) {
@@ -444,9 +479,13 @@ const RF_AMT_KEYS = new Set(["mcap", "dv", "aum"]);
 async function buildMetricExplainHtml(key, section) {
   if (key === "win") return buildWinRateBenchmarkHtml();
   const baseline = await getSReportBaseline();
-  const desc = S_REPORT_EXPLAIN[key === "ret1y" ? "rev" : key] || "";
+  // ETF·코인의 "rev" 칸은 매출이 아니라 1년 수익률이다 — 글·그림도 수익률 것으로(예전엔 매출 설명이 나왔다)
+  const tKey = key === "ret1y" || (key === "rev" && (section === "etf" || section === "crypto")) ? "ret1y" : key;
+  const desc = S_REPORT_EXPLAIN[tKey] || "";
   const nm = rfExplainName(key, section);
-  const intro = `<p class="rf-explain-intro">${escapeHtml(desc).replace(/\n/g, "<br>")}</p>`;
+  // 2026-11-20 사용자 요청: 쉬운 말(metric-explain.js) + "어떻게 구하는지"를 보여 주는 그림. 대표 종목 비교 막대는 그 아래에 그대로
+  const intro = `<p class="rf-explain-intro">${escapeHtml(desc).replace(/\n/g, "<br>")}</p>${typeof mxDiagramHtml === "function" ? mxDiagramHtml(tKey) : ""}`;
+  if (key === "surge") return intro; // 거래 몰림(종목 상세): 대표 종목 값이 DB에 없어 글과 그림만
   if (key === "rsi") {
     // RSI는 SPY 5년 주봉 그래프 예시가 이미 있어 같이 보여줌
     try {

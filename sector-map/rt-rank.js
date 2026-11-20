@@ -5,11 +5,11 @@
 // app.js 다음에 불러온다(app.js의 함수·데이터를 그대로 사용).
 
 const RT_API = "https://us-stock.yeop2ad.workers.dev";
-const RT_GROUPS = [["all", "통합"], ["kr", "한국주식"], ["us", "미국주식"], ["etf", "ETF"], ["crypto", "비트코인"]];
+const RT_GROUPS = [["all", "통합"], ["kr", "한국주식"], ["us", "미국주식"], ["etf", "ETF"], ["crypto", "코인"]];
 const RT_MARK = { all: "mix", kr: "kr", us: "us", etf: "etf", crypto: "crypto" }; // 앱 안에서 쓰는 시장 마크(VIEW_MARK_SVG)
 const RT_PAGE = 20; // 처음 20개, "더보기"를 누르면 최대 40개
 const RT_MAX = 40;
-const RT_TABS = [["popular", "인기"], ["volume", "거래량"], ["up", "상승"], ["down", "하락"]];
+const RT_TABS = [["popular", "인기"], ["volume", "거래대금"], ["up", "상승"], ["down", "하락"]];
 // 아직 조회가 쌓이지 않았을 때 1~10위를 채우는 기본 종목(시가총액 큰 순)
 const RT_FALLBACK = ["005930.KS", "NVDA", "000660.KS", "TSLA", "AAPL", "MSFT", "035420.KS", "GOOGL", "AMZN", "META"];
 
@@ -271,7 +271,7 @@ async function rtRenderList() {
         return { c, chg: Number.isFinite(l.chg) ? l.chg : c.changePercent, val: Number.isFinite(l.val) ? l.val : c.dollarVolume };
       })
       .filter((x) => (rtTab === "volume" ? Number.isFinite(x.val) : Number.isFinite(x.chg)));
-    const usd = (x) => (rtIsKrw(x.c.symbol) ? x.val / 1400 : x.val); // 원화·달러가 섞인 투자처(ETF·코인)도 같은 단위로 비교
+    const usd = (x) => (rtIsKrw(x.c.symbol) ? x.val / (typeof usdKrwRate === "function" ? usdKrwRate() : 1400) : x.val); // 원화·달러가 섞인 투자처(ETF·코인)도 같은 단위로 비교
     if (rtTab === "volume") items.sort((a, b) => usd(b) - usd(a));
     else if (rtTab === "up") items.sort((a, b) => b.chg - a.chg);
     else items.sort((a, b) => a.chg - b.chg);
@@ -306,10 +306,10 @@ function rtSyncHead() {
     rtTab === "popular"
       ? "최근 24시간 · 검색 + 시장 종목 클릭 + 관심 등록"
       : rtTab === "volume"
-      ? "지금까지 거래대금이 큰 순서 (실시간)"
+      ? "오늘 지금까지 거래대금이 큰 순서 · 지연 시세"
       : rtTab === "up"
-      ? "오늘 가장 많이 오른 순서 (실시간)"
-      : "오늘 가장 많이 내린 순서 (실시간)";
+      ? "오늘 가장 많이 오른 순서 · 지연 시세"
+      : "오늘 가장 많이 내린 순서 · 지연 시세";
 }
 function rtOpen() {
   // 처음 열면 맨 앞 "인기" = 한국·미국·ETF·코인 통합. 거래량·상승·하락을 누르면 보던 시장의 순위부터 보여줌
