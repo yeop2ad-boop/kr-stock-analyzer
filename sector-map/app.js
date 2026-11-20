@@ -2086,7 +2086,7 @@ document.getElementById("volModeBtn").addEventListener("click", async (e) => {
   const [data, live] = await Promise.all([loadVolProfile(), ensureVolLive()]);
   btn.disabled = false;
   if (!data) {
-    showToast("몰림 기준 데이터를 불러오지 못했어요");
+    showToast("대금 기준 데이터를 불러오지 못했어요");
     return;
   }
   volModeOn = true;
@@ -2173,7 +2173,7 @@ function buildMetrics(market) {
     ret10yAvg: { label: "1년 평균 상승", hasData: true, get: (c) => c.ret10yAvg, fmt: (v) => `${v > 0 ? "+" : ""}${v.toFixed(1)}%`, domainMin: -20, domainMax: 80 },
     // 10년월간승률·주간RSI(2026-09-02, 같은 날 국내·ETF·코인 확장): 본체 승률점수와 같은 배치(fetch-winrate-scores.ps1)가
     // sp500-sectors.json/kr-sectors.json/etf-crypto-map.js에 winRateScore/rsiWeekly로 병합 — 나스닥100 보기만 칩 숨김
-    winRateScore: { label: "10년 과거승률(오른 달 비율)", hasData: true, get: (c) => c.winRateScore, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 100 },
+    winRateScore: { label: "10년 과거승률", hasData: true, get: (c) => c.winRateScore, fmt: (v) => `${v.toFixed(1)}%`, domainMin: 0, domainMax: 100 },
     rsiWeekly: { label: "과열도(RSI)", hasData: true, get: (c) => c.rsiWeekly, fmt: (v) => `${v.toFixed(1)}`, domainMin: 0, domainMax: 100 },
     // 상승률/하락률을 하나로 합쳐 근저(가장 큰 하락)~근고(가장 큰 상승)가 한 슬라이더 안에 전부 보이도록 함
     // 0 근처로 끌면 "-0.0%"로 보이던 것 → "0.0%"(2026-11-09, 상승률·하락률 버튼을 이 슬라이더로 합치며)

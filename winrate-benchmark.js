@@ -57,6 +57,6 @@ function buildWinRateBenchmarkSvg() {
 // 맨 위 설명 문구(2026-09-13 사용자 지정)
 const WINRATE_INTRO_HTML = `
     <div class="wr-intro">
-      <p class="wr-intro-q">10년 과거승률(오른 달 비율)이란?</p>
+      <p class="wr-intro-q">10년 과거승률이란?</p>
       <p class="wr-intro-def">최근 10년(최대 120개월) 동안 <b>전달보다 오르며 마감한 달의 비율</b>입니다. 수익률의 크기가 아니라 <b>이긴 횟수</b>라, <b class="wr-intro-key">높을수록 꾸준히 우상향했다는 뜻입니다.</b></p>
     </div>`;
