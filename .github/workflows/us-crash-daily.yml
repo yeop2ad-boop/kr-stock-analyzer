@@ -2,8 +2,9 @@ name: 미국 52주 최대 하락폭(급락률) 매일 갱신
 
 on:
   schedule:
-    # 평일 22:50 UTC = 미국 장 마감 후(한국시간 다음날 오전 7시 50분)
-    - cron: "50 22 * * 1-5"
+    # 평일 21:37 UTC = 미국 장 마감(겨울 21:00 UTC) 뒤(한국시간 다음날 오전 6시 37분)
+    # 2026-11-20: 22:50 → 21:37. GitHub 예약 실행이 몇 시간씩 밀려 앞당겼다(마감 값이 필요해 21:20 이전으로는 당기지 않음).
+    - cron: "37 21 * * 1-5"
   workflow_dispatch: {}
 
 permissions:
@@ -29,13 +30,5 @@ jobs:
       - name: 변경사항 커밋 및 푸시
         if: always()
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/us-workforce.json
-          if git diff --cached --quiet; then
-            echo "변경된 데이터 없음"
-          else
-            git commit -m "미국 52주 최대 하락폭 자동 갱신 ($(date -u +%Y-%m-%d))"
-            git pull --rebase -X theirs origin main
-            git push
-          fi
+          # 2026-11-20: 커밋·rebase(-X theirs)·push 재시도는 공용 스크립트로(다른 배치와 겹쳐도 실패하지 않게)
+          bash scripts/ci-commit-push.sh "미국 52주 최대 하락폭 자동 갱신 ($(date -u +%Y-%m-%d))" data/us-workforce.json

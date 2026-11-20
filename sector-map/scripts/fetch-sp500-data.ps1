@@ -47,6 +47,12 @@ foreach ($block in $rowBlocks) {
   $companies += [PSCustomObject]@{ symbol = $symbol; name = $name; sector = $sector }
 }
 Write-Host "   -> $($companies.Count)개 종목 파싱 완료"
+# 2026-11-20: 지도 종목 구성도 이 파일을 따라가게 됐다(regenerate-core-extra.ps1). 위키 표 형식이 바뀌거나 조회가 실패해
+# 종목 수가 터무니없이 적게 파싱되면 파일을 덮어쓰지 않고 끝낸다(직전 파일 유지 — 뒤 단계는 직전 값으로 계속 돈다).
+if ($companies.Count -lt 450) {
+  Write-Host "::warning::S&P500 구성종목이 $($companies.Count)개만 파싱돼 sp500-sectors.json 을 그대로 둡니다(위키 표 형식 확인 필요)."
+  exit 0
+}
 
 Write-Host "2) 섹터별 Yahoo 스크리너로 시가총액 수집 중..."
 $capBySymbol = @{}

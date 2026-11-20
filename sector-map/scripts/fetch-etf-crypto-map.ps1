@@ -4,12 +4,59 @@
 # 계산해 sector-map/data/etf-crypto-map.js(ETF_MAP_DATA/CRYPTO_MAP_DATA)로 저장한다.
 # 시총·순자산은 data/etf-marketcap.json(DB)을 사용. 갱신: 이 스크립트 재실행 후 커밋.
 #   powershell -NoProfile -ExecutionPolicy Bypass -File sector-map/scripts/fetch-etf-crypto-map.ps1
+#
+# 2026-11-20: 9/13 이후 자동 배치에 들어 있지 않아 종목 명단·시가총액·52주 위치·등락률·거래대금이 9/13 값에서 멈춰 있었다
+# (매일 바뀌던 것은 fetch-winrate-scores.ps1 이 덧쓰는 승률·RSI뿐) → daily-sp500-data.yml 에 넣고, 매일 돌려도 안전하게 고쳤다.
+#   - 직전 파일 값 이어받기: 이 스크립트가 만들지 않는 필드(winRateScore·rsiWeekly·ret10yAvg·vol3m 등)는 종목별로 직전 값을 그대로 둔다.
+#   - 일시적인 조회 실패(시간 초과·429·5xx)는 3번까지 다시 시도하고, 그래도 안 되면 그 종목은 직전 값을 통째로 유지한다
+#     (종목이 하루 걸러 사라졌다 나타나지 않게). 야후에 없는 종목(404)과 가격 단절 종목은 예전처럼 뺀다.
+#   - 덮어쓰기 전 검증: 필수 필드가 비었거나 중복인 행은 그 행만 빼고, ETF·코인 각각 종목 수가 150개 미만이거나
+#     직전의 80% 미만, 새로 받아 온 종목이 80% 미만이면 그 묶음은 직전 내용(generatedAt 포함)을 그대로 둔다.
+#     둘 다 비정상이면 파일을 쓰지 않는다.
+#   - 경로를 Join-Path 한 단계씩으로(CI ubuntu pwsh 7 에서 .NET 파일 쓰기가 역슬래시 경로를 못 읽는 문제 방지).
 
 $ProgressPreference = 'SilentlyContinue'
-[Console]::OutputEncoding = [Text.Encoding]::UTF8
+try { [Console]::OutputEncoding = [Text.Encoding]::UTF8 } catch {}
 $headers = @{ "User-Agent" = "Mozilla/5.0" }
-$root = Join-Path $PSScriptRoot "..\.."
-$outPath = Join-Path $root "sector-map\data\etf-crypto-map.js"
+$root = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
+$dataDir = Join-Path $root "data"
+$outPath = Join-Path (Join-Path (Join-Path $root "sector-map") "data") "etf-crypto-map.js"
+function Write-Warn($msg) { Write-Host "::warning::$msg" }
+
+# ---------- 직전 파일(이어받기·검증 기준) ----------
+function Read-PrevVar($text, $varName) {
+  # 파일은 "const X = {...};" 한 줄씩(2줄) — 줄 단위로 잘라 끝 세미콜론만 뗀다
+  try {
+    $prefix = "const $varName = "
+    $start = $text.IndexOf($prefix)
+    if ($start -lt 0) { return $null }
+    $jsonStart = $start + $prefix.Length
+    $lineEnd = $text.IndexOf("`n", $jsonStart)
+    if ($lineEnd -lt 0) { $lineEnd = $text.Length }
+    $jsonText = $text.Substring($jsonStart, $lineEnd - $jsonStart).Trim()
+    if ($jsonText.EndsWith(";")) { $jsonText = $jsonText.Substring(0, $jsonText.Length - 1) }
+    return ($jsonText | ConvertFrom-Json)
+  } catch { return $null }
+}
+$prevEtf = $null; $prevCrypto = $null
+if (Test-Path $outPath) {
+  $prevText = Get-Content -Path $outPath -Raw -Encoding UTF8
+  $prevEtf = Read-PrevVar $prevText "ETF_MAP_DATA"
+  $prevCrypto = Read-PrevVar $prevText "CRYPTO_MAP_DATA"
+}
+$prevEtfMap = @{}; $prevCryptoMap = @{}
+if ($prevEtf -and $prevEtf.companies) { foreach ($c in @($prevEtf.companies)) { if ($c.symbol) { $prevEtfMap[[string]$c.symbol] = $c } } }
+if ($prevCrypto -and $prevCrypto.companies) { foreach ($c in @($prevCrypto.companies)) { if ($c.symbol) { $prevCryptoMap[[string]$c.symbol] = $c } } }
+function ConvertTo-OrderedEntry($obj) {
+  $o = [ordered]@{}
+  foreach ($p in $obj.PSObject.Properties) { $o[$p.Name] = $p.Value }
+  return $o
+}
+# 조회 실패 원인이 "야후에 없는 종목(404)"인지 — 그 경우는 직전 값을 붙들지 않고 뺀다
+function Test-NotFound($err) {
+  try { if ([int]$err.Exception.Response.StatusCode -eq 404) { return $true } } catch {}
+  return $false
+}
 
 # ---------- 미국 ETF TOP100 (app.js의 US_ETF_TOP100과 동일 순서 — 순자산 순 큐레이션) ----------
 $US_ETF_TOP100 = @(
@@ -79,7 +126,15 @@ function Round1($v) { return [math]::Round($v, 1) }
 
 function Get-Chart($symbol, $range) {
   $uri = "https://query1.finance.yahoo.com/v8/finance/chart/$([uri]::EscapeDataString($symbol))?range=$range&interval=1d"
-  return Invoke-RestMethod -Uri $uri -Headers $headers -TimeoutSec 15
+  for ($attempt = 1; $attempt -le 3; $attempt++) {
+    try {
+      return Invoke-RestMethod -Uri $uri -Headers $headers -TimeoutSec 20
+    } catch {
+      # 404(야후에 없는 종목)는 다시 불러도 같으므로 바로 넘긴다
+      if ((Test-NotFound $_) -or $attempt -eq 3) { throw }
+      Start-Sleep -Milliseconds (700 * $attempt)
+    }
+  }
 }
 
 # 차트에서 지표 일괄 계산 — 본체 computeChartDerivedMetrics와 동일 로직.
@@ -100,7 +155,21 @@ function Get-DerivedMetrics($symbol, $fiveYear) {
     }
   }
   if ($allPairs.Count -lt 10) { return $null }
-  $allPairs = $allPairs | Sort-Object t
+  $allPairs = @($allPairs | Sort-Object t)
+  # 2026-11-20: 야후는 한국 등 미국 밖 거래소의 '가장 최근 거래일' 일봉 종가를 장 마감 뒤 몇 시간 동안 null로 준다.
+  # 그 시간대에 돌면 마지막 날이 빠져 등락률이 이틀치가 되고 52주 위치·거래대금도 하루 전 기준이 된다 →
+  # 마지막 유효 일봉의 거래일이 현재가의 거래일(거래소 현지 날짜)보다 앞서면 현재가·당일 거래량을 마지막 날로 붙인다.
+  $meta0 = $result.meta
+  if ($null -ne $meta0.regularMarketTime -and $null -ne $meta0.regularMarketPrice) {
+    $off0 = 0.0; if ($null -ne $meta0.gmtoffset) { $off0 = [double]$meta0.gmtoffset }
+    $lastValid = $allPairs[$allPairs.Count - 1]
+    $dLast = [math]::Floor(([double]$lastValid.t + $off0) / 86400)
+    $dNow = [math]::Floor(([double]$meta0.regularMarketTime + $off0) / 86400)
+    if ($dNow -gt $dLast) {
+      $v0 = 0; if ($null -ne $meta0.regularMarketVolume) { $v0 = [double]$meta0.regularMarketVolume }
+      $allPairs += [PSCustomObject]@{ t = $lastValid.t + 86400 * ($dNow - $dLast); c = [double]$meta0.regularMarketPrice; v = $v0 }
+    }
+  }
   $lastAll = $allPairs[$allPairs.Count - 1]
   $pairs = $allPairs
   if ($fiveYear) { $pairs = @($allPairs | Where-Object { $_.t -ge $lastAll.t - 365 * 86400 }) }
@@ -187,7 +256,7 @@ function Get-CryptoPressure($m, $rsi) {
 function Get-CryptoRisk($m, $winRate, $btcReturn) {
   $age = 1
   if ($m.firstTrade) {
-    $years = ((Get-Date -UFormat %s) - $m.firstTrade) / (365.25 * 86400)
+    $years = ([DateTimeOffset]::UtcNow.ToUnixTimeSeconds() - $m.firstTrade) / (365.25 * 86400)
     $age = Clamp ((2 * ($years - 3)) / 7) 0 2
   }
   $win = 1.5; if ($null -ne $winRate) { $win = Clamp ((3 * ($winRate - 40)) / 20) 0 3 }
@@ -201,10 +270,16 @@ function Get-CryptoRisk($m, $winRate, $btcReturn) {
 
 # ---------- 기준 데이터 ----------
 Write-Host "기준 데이터(시총 DB·S&P500·비트코인 1년 수익률·환율) 조회 중..."
-$capDb = Get-Content (Join-Path $root "data\etf-marketcap.json") -Raw -Encoding UTF8 | ConvertFrom-Json
-$krCapMap = @{}; foreach ($it in $capDb.kr) { $krCapMap[$it.s] = [double]$it.m }
-$usCapMap = @{}; foreach ($it in $capDb.us) { $usCapMap[$it.s] = [double]$it.a }
-$krEtfTop100 = $capDb.kr | Sort-Object -Property m -Descending | Select-Object -First 100
+$capDb = $null
+try { $capDb = Get-Content (Join-Path $dataDir "etf-marketcap.json") -Raw -Encoding UTF8 | ConvertFrom-Json } catch {}
+if (-not $capDb -or @($capDb.kr).Count -lt 100 -or @($capDb.us).Count -lt 50) {
+  Write-Warn "ETF 규모 DB(data/etf-marketcap.json)를 읽지 못했거나 비어 있어 ETF·코인 지도 파일을 그대로 둡니다."
+  Write-Host "ALL_DONE"
+  exit 0
+}
+$krCapMap = @{}; foreach ($it in $capDb.kr) { $krCapMap[[string]$it.s] = [double]$it.m }
+$usCapMap = @{}; foreach ($it in $capDb.us) { $usCapMap[[string]$it.s] = [double]$it.a }
+$krEtfTop100 = @($capDb.kr | Sort-Object -Property @{ Expression = { [double]$_.m }; Descending = $true } | Select-Object -First 100)
 
 function Get-1yReturnOf($symbol) {
   try {
@@ -220,7 +295,7 @@ try { $fx = Get-Chart "KRW=X" "5d"; $usdkrw = [double]$fx.chart.result[0].meta.r
 Write-Host "   BTC 1y=$btcReturn / USDKRW=$usdkrw"
 
 # 승률·주간 RSI DB(새 배점 입력, 2026-09-03) — fetch-winrate-scores.ps1이 만들어둔 데이터를 그대로 사용
-$wrPath = Join-Path (Join-Path $root "data") "winrate-scores-us.json"
+$wrPath = Join-Path $dataDir "winrate-scores-us.json"
 $wrEtfMap = $null; $wrCryptoMap = $null
 if (Test-Path $wrPath) {
   $wrDb = Get-Content -Path $wrPath -Raw -Encoding UTF8 | ConvertFrom-Json
@@ -237,6 +312,7 @@ function Get-WrEntry($map, $symbol) {
 
 # ---------- ETF 200 스캔 ----------
 $etfCompanies = @()
+$etfFresh = 0; $etfKept = @(); $etfDropped = @()
 $done = 0
 foreach ($e in $US_ETF_TOP100) {
   $sym = $e[0]; $name = $e[1]
@@ -254,8 +330,12 @@ foreach ($e in $US_ETF_TOP100) {
         pressureScore = Get-EtfPressure $m ($(if ($wrE) { $wrE.rsi } else { $null }))
         stabilityScore = Get-EtfRisk $m ($(if ($wrE) { $wrE.score } else { $null }))
       }
-    }
-  } catch {}
+      $etfFresh++
+    } else { $etfDropped += $sym }
+  } catch {
+    if (-not (Test-NotFound $_) -and $prevEtfMap.ContainsKey($sym)) { $etfCompanies += (ConvertTo-OrderedEntry $prevEtfMap[$sym]); $etfKept += $sym }
+    else { $etfDropped += $sym }
+  }
   $done++; if ($done % 25 -eq 0) { Write-Host "   미국 ETF $done/100" }
   Start-Sleep -Milliseconds 80
 }
@@ -276,21 +356,36 @@ foreach ($e in $krEtfTop100) {
         pressureScore = Get-EtfPressure $m ($(if ($wrE) { $wrE.rsi } else { $null }))
         stabilityScore = Get-EtfRisk $m ($(if ($wrE) { $wrE.score } else { $null }))
       }
-    }
-  } catch {}
+      $etfFresh++
+    } else { $etfDropped += $sym }
+  } catch {
+    if (-not (Test-NotFound $_) -and $prevEtfMap.ContainsKey($sym)) { $etfCompanies += (ConvertTo-OrderedEntry $prevEtfMap[$sym]); $etfKept += $sym }
+    else { $etfDropped += $sym }
+  }
   $done++; if ($done % 25 -eq 0) { Write-Host "   한국 ETF $done/100" }
   Start-Sleep -Milliseconds 80
 }
-Write-Host "   -> ETF $($etfCompanies.Count)개"
+Write-Host "   -> ETF $($etfCompanies.Count)개 (새로 받음 $etfFresh, 직전 값 유지 $($etfKept.Count), 제외 $($etfDropped.Count))"
+if ($etfKept.Count) { Write-Host "      직전 값 유지: $($etfKept -join ', ')" }
+if ($etfDropped.Count) { Write-Host "      제외(시세 없음·가격 단절): $($etfDropped -join ', ')" }
 
 # ---------- 코인 100 스캔 (2026-09-02 TOP50 → TOP100 확장) ----------
 Write-Host "암호화폐 TOP100 목록 조회 중..."
-$scr = Invoke-RestMethod -Uri 'https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?formatted=false&lang=en-US&region=US&scrIds=all_cryptocurrencies_us&count=100' -TimeoutSec 20 -Headers $headers
-$coins = @($scr.finance.result[0].quotes | Where-Object { $_.symbol })
+$coins = @()
+$screenerOk = $false
+for ($attempt = 1; $attempt -le 3; $attempt++) {
+  try {
+    $scr = Invoke-RestMethod -Uri 'https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?formatted=false&lang=en-US&region=US&scrIds=all_cryptocurrencies_us&count=100' -TimeoutSec 20 -Headers $headers
+    $coins = @($scr.finance.result[0].quotes | Where-Object { $_.symbol })
+    if ($coins.Count -ge 80) { $screenerOk = $true; break }
+  } catch {}
+  Start-Sleep -Seconds (2 * $attempt)
+}
+if (-not $screenerOk) { Write-Warn "야후 코인 스크리너 조회 실패 — 코인 묶음은 직전 내용을 그대로 둡니다." }
 # 관리 대상 200개(2026-09-14 사용자 요청): 야후 시총 상위 100 + 업비트 KRW 마켓 중 그 100에 없는 코인 시총순 100개
 # (data/crypto-extra-upbit.json). 업비트 한글명을 우선 사용한다.
 $extraKo = @{}
-$extraPath = Join-Path $root "data\crypto-extra-upbit.json"
+$extraPath = Join-Path $dataDir "crypto-extra-upbit.json"
 if (Test-Path $extraPath) {
   $extra = (Get-Content $extraPath -Raw -Encoding UTF8) | ConvertFrom-Json
   $coins = @($coins | Where-Object { @("GRAM-USD", "DEL-USD") -notcontains $_.symbol })
@@ -303,6 +398,7 @@ if (Test-Path $extraPath) {
   }
 }
 $cryptoCompanies = @()
+$cryptoFresh = 0; $cryptoKept = @()
 $n = $coins.Count
 for ($i = 0; $i -lt $n; $i++) {
   # 딱 200개(2026-09-14 사용자 요청): 시세를 못 받거나 제외된 코인만큼 업비트 여유분에서 이어서 채우고, 200개가 차면 멈춘다
@@ -327,28 +423,32 @@ for ($i = 0; $i -lt $n; $i++) {
         pressureScore = Get-CryptoPressure $m ($(if ($wrE) { $wrE.rsi } else { $null }))
         stabilityScore = Get-CryptoRisk $m ($(if ($wrE) { $wrE.score } else { $null })) $btcReturn
       }
+      $cryptoFresh++
     }
-  } catch {}
+  } catch {
+    if (-not (Test-NotFound $_) -and $prevCryptoMap.ContainsKey($sym)) { $cryptoCompanies += (ConvertTo-OrderedEntry $prevCryptoMap[$sym]); $cryptoKept += $sym }
+  }
   if (($i + 1) % 25 -eq 0) { Write-Host "   코인 $($i + 1)/$n" }
   Start-Sleep -Milliseconds 80
 }
-Write-Host "   -> 코인 $($cryptoCompanies.Count)개"
+Write-Host "   -> 코인 $($cryptoCompanies.Count)개 (새로 받음 $cryptoFresh, 직전 값 유지 $($cryptoKept.Count))"
+if ($cryptoKept.Count) { Write-Host "      직전 값 유지: $($cryptoKept -join ', ')" }
 
 $generatedAt = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 
 # 승률점수·주간RSI 재병합(2026-09-02): 이 스크립트는 파일을 처음부터 다시 만들기 때문에, fetch-winrate-scores.ps1이
-# 병합해둔 winRateScore/rsiWeekly가 여기서 사라지지 않도록 기존 DB(data/winrate-scores-us.json)에서 다시 붙여준다
-$wrPath = Join-Path (Join-Path $root "data") "winrate-scores-us.json"
+# 병합해둔 winRateScore/rsiWeekly/ret10yAvg가 여기서 사라지지 않도록 기존 DB(data/winrate-scores-us.json)에서 다시 붙여준다
 if (Test-Path $wrPath) {
   $wr = Get-Content -Path $wrPath -Raw -Encoding UTF8 | ConvertFrom-Json
   $mergeWr = {
     param($companies, $scoreMap)
     $n = 0
     foreach ($c in $companies) {
-      $e = if ($scoreMap) { $scoreMap.($c.symbol) } else { $null }
+      $e = if ($scoreMap) { $scoreMap.($c["symbol"]) } else { $null }
       if ($e) {
         $c["winRateScore"] = $e.score
         $c["rsiWeekly"] = $e.rsi
+        $c["ret10yAvg"] = $e.ret10y
         $n++
       }
     }
@@ -359,9 +459,94 @@ if (Test-Path $wrPath) {
   Write-Host "   승률/RSI 재병합: ETF $ne 건, 코인 $nc 건"
 }
 
-$etfJson = @{ generatedAt = $generatedAt; companies = $etfCompanies } | ConvertTo-Json -Depth 4 -Compress
-$cryptoJson = @{ generatedAt = $generatedAt; companies = $cryptoCompanies } | ConvertTo-Json -Depth 4 -Compress
+# 직전 파일에만 있던 필드 이어받기(2026-11-20): 다른 배치가 덧써 둔 값(winRateScore·rsiWeekly·ret10yAvg·vol3m 등)이
+# 이 스크립트가 다시 만든 파일에서 사라지지 않게 한다. 이 스크립트가 새로 계산한 값은 건드리지 않는다.
+function Add-PrevFields($companies, $prevMap) {
+  $n = 0
+  foreach ($c in $companies) {
+    $p = $prevMap[[string]$c["symbol"]]
+    if (-not $p) { continue }
+    foreach ($prop in $p.PSObject.Properties) {
+      if (-not $c.Contains($prop.Name)) { $c[$prop.Name] = $prop.Value; $n++ }
+    }
+  }
+  return $n
+}
+$ce = Add-PrevFields $etfCompanies $prevEtfMap
+$cc = Add-PrevFields $cryptoCompanies $prevCryptoMap
+Write-Host "   직전 파일 필드 이어받기: ETF $ce 개 값, 코인 $cc 개 값"
+
+# ---------- 덮어쓰기 전 검증 ----------
+# 필수 필드가 비었거나 중복인 행은 그 행만 뺀다(한두 종목 때문에 묶음 전체가 멈추지 않게). 많이 빠지면 아래 개수 검증에 걸린다.
+function Remove-BadRows($label, $companies) {
+  $out = @(); $badRows = @(); $seen = @{}
+  foreach ($c in $companies) {
+    $sym = [string]$c["symbol"]
+    $ok = $true
+    foreach ($k in @("symbol", "name", "displayName", "sector", "sectorKo", "currency")) {
+      if ($null -eq $c[$k] -or [string]::IsNullOrWhiteSpace([string]$c[$k])) { $ok = $false }
+    }
+    $cap = 0.0; try { $cap = [double]$c["marketCap"] } catch {}
+    if (-not ($cap -gt 0)) { $ok = $false }
+    if ($null -eq $c["dollarVolume"]) { $ok = $false }
+    if ($seen.ContainsKey($sym)) { $ok = $false }
+    if ($ok) { $seen[$sym] = $true; $out += $c } else { $badRows += $sym }
+  }
+  if ($badRows.Count -gt 0) { Write-Host "   [$label] 필수 필드가 비었거나 중복이라 뺀 행: $($badRows -join ', ')" }
+  return $out
+}
+$etfCompanies = @(Remove-BadRows "ETF" $etfCompanies)
+$cryptoCompanies = @(Remove-BadRows "코인" $cryptoCompanies)
+function Test-Section($label, $companies, $fresh, $prevCount, $extraProblems) {
+  $problems = @()
+  if ($extraProblems) { $problems += $extraProblems }
+  $count = @($companies).Count
+  if ($count -lt 150) { $problems += "$count 개 < 150" }
+  if ($prevCount -gt 0 -and $count -lt [math]::Ceiling($prevCount * 0.8)) { $problems += "$count 개가 직전($prevCount)의 80% 미만" }
+  if ($count -gt 0 -and $fresh -lt [math]::Ceiling($count * 0.8)) { $problems += "새로 받은 종목 $fresh/$count (80% 미만)" }
+  if ($problems.Count -gt 0) {
+    Write-Warn "[$label] 비정상이라 직전 내용을 그대로 둡니다: $($problems -join ' / ')"
+    return $false
+  }
+  return $true
+}
+$usEtfCount = @($etfCompanies | Where-Object { $_["sector"] -eq "US ETF" }).Count
+$krEtfCount = @($etfCompanies | Where-Object { $_["sector"] -eq "KR ETF" }).Count
+$etfExtra = @()
+if ($usEtfCount -lt 80) { $etfExtra += "미국 ETF $usEtfCount 개 < 80" }
+if ($krEtfCount -lt 80) { $etfExtra += "한국 ETF $krEtfCount 개 < 80" }
+$cryptoExtra = @()
+if (-not $screenerOk) { $cryptoExtra += "코인 스크리너 조회 실패" }
+$etfOk = Test-Section "ETF" $etfCompanies $etfFresh $prevEtfMap.get_Count() $etfExtra
+$cryptoOk = Test-Section "코인" $cryptoCompanies $cryptoFresh $prevCryptoMap.get_Count() $cryptoExtra
+
+if (-not $etfOk -and -not $cryptoOk) {
+  Write-Warn "ETF·코인 둘 다 비정상 — sector-map/data/etf-crypto-map.js 를 덮어쓰지 않았습니다."
+  Write-Host "ALL_DONE"
+  exit 0
+}
+if ((-not $etfOk -and -not $prevEtf) -or (-not $cryptoOk -and -not $prevCrypto)) {
+  Write-Warn "비정상인 묶음을 대신할 직전 내용이 없어 파일을 덮어쓰지 않았습니다."
+  Write-Host "ALL_DONE"
+  exit 0
+}
+
+$etfObj = $prevEtf
+if ($etfOk) { $etfObj = [ordered]@{ companies = @($etfCompanies); generatedAt = $generatedAt } }
+$cryptoObj = $prevCrypto
+if ($cryptoOk) { $cryptoObj = [ordered]@{ companies = @($cryptoCompanies); generatedAt = $generatedAt } }
+$etfJson = $etfObj | ConvertTo-Json -Depth 4 -Compress
+$cryptoJson = $cryptoObj | ConvertTo-Json -Depth 4 -Compress
+# 되읽어 개수 확인(직렬화가 어긋나면 쓰지 않는다)
+$chkE = -1; $chkC = -1
+try { $chkE = @(($etfJson | ConvertFrom-Json).companies).Count } catch {}
+try { $chkC = @(($cryptoJson | ConvertFrom-Json).companies).Count } catch {}
+if ($chkE -ne @($etfObj.companies).Count -or $chkC -ne @($cryptoObj.companies).Count -or $etfJson.Contains("`n") -or $cryptoJson.Contains("`n")) {
+  Write-Warn "JSON 되읽기 개수가 달라 sector-map/data/etf-crypto-map.js 를 덮어쓰지 않았습니다(ETF $chkE, 코인 $chkC)."
+  Write-Host "ALL_DONE"
+  exit 0
+}
 $js = "const ETF_MAP_DATA = $etfJson;`nconst CRYPTO_MAP_DATA = $cryptoJson;`n"
-[System.IO.File]::WriteAllText((Join-Path (Resolve-Path $root) "sector-map\data\etf-crypto-map.js"), $js, (New-Object System.Text.UTF8Encoding($false)))
-Write-Host "저장 완료: $outPath"
+[System.IO.File]::WriteAllText($outPath, $js, (New-Object System.Text.UTF8Encoding($false)))
+Write-Host "저장 완료: $outPath (ETF $chkE · 코인 $chkC, 직전 ETF $($prevEtfMap.get_Count()) · 코인 $($prevCryptoMap.get_Count()))"
 Write-Host "ALL_DONE"

@@ -57,6 +57,25 @@ function Get-TtmGrowth($qSeries, $aSeries) {
 $now = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
 $fiveYearsAgo = $now - 5 * 365 * 24 * 3600
 
+# 2026-11-20: 갓 상장·분할 상장 종목은 야후에 발행주식수가 없어 시가총액을 못 구했다(예: 0220W0.KS 한화머시너리앤서비스홀딩스
+# — marketCap null이라 지도에서 통째로 빠짐). 그럴 때만 네이버 종목 요약의 시가총액("1조 2,345억"·"6,567억")을 원 단위로 바꿔 쓴다.
+# 응답은 UTF-8 — Windows PowerShell 5.1에서도 한글 단위가 깨지지 않게 바이트를 직접 디코딩한다.
+function Get-NaverMarketCap($symbol) {
+  try {
+    $code = $symbol -replace '\.(KS|KQ)$', ''
+    $resp = Invoke-WebRequest -Uri "https://m.stock.naver.com/api/stock/$code/integration" -Headers $headers -TimeoutSec 15 -UseBasicParsing
+    $text = [System.Text.Encoding]::UTF8.GetString($resp.RawContentStream.ToArray())
+    $info = ($text | ConvertFrom-Json).totalInfos | Where-Object { $_.code -eq "marketValue" } | Select-Object -First 1
+    if (-not $info -or -not $info.value) { return $null }
+    $v = ([string]$info.value) -replace '[,\s]', ''
+    $won = 0.0
+    if ($v -match '([0-9.]+)조') { $won += [double]$Matches[1] * 1e12 }
+    if ($v -match '([0-9.]+)억') { $won += [double]$Matches[1] * 1e8 }
+    if ($won -gt 0) { return $won }
+  } catch {}
+  return $null
+}
+
 # 직전 수집본 로드 — 재시도 후에도 실패한 종목은 null로 비우지 않고 마지막 성공값을 유지
 # (2026-08-31: 단일 시도+null 폴백 구조 때문에 48종목이 marketCap null이 되어 지도에서 통째로 빠졌던 문제 재발 방지)
 $prevMap = @{}
@@ -77,7 +96,20 @@ foreach ($t in $tickers) {
     $chart = Invoke-RestMethod -Uri "https://query1.finance.yahoo.com/v8/finance/chart/$sym`?range=5d&interval=1d" -Headers $headers -TimeoutSec 15
     $meta = $chart.chart.result[0].meta
     $price = $meta.regularMarketPrice
-    $prevClose = $meta.chartPreviousClose
+    # 전일 종가(2026-11-20 수정): meta.chartPreviousClose 는 range=5d 에서 '5거래일 전 종가'라 등락률이 5일치로 나왔다
+    # (예: 11/20 삼성전자 실제 -7.0%인데 -11.1%). 현재가와 같은 거래일(한국 날짜)보다 앞선 마지막 일봉 종가를 쓴다 —
+    # 장 마감 뒤 야후가 당일 일봉 종가를 null로 주는 시간대에도 맞는 값이 나온다. 일봉이 없을 때만 예전 값으로 대신.
+    $prevClose = $null
+    $barTs = @($chart.chart.result[0].timestamp)
+    $barClose = @($chart.chart.result[0].indicators.quote[0].close)
+    if ($null -ne $meta.regularMarketTime) {
+      $gmtOff = 32400.0; if ($null -ne $meta.gmtoffset) { $gmtOff = [double]$meta.gmtoffset }
+      $curDay = [math]::Floor(([double]$meta.regularMarketTime + $gmtOff) / 86400)
+      for ($bi = 0; $bi -lt $barTs.Count; $bi++) {
+        if ($null -ne $barClose[$bi] -and [math]::Floor(([double]$barTs[$bi] + $gmtOff) / 86400) -lt $curDay) { $prevClose = [double]$barClose[$bi] }
+      }
+    }
+    if ($null -eq $prevClose) { $prevClose = $meta.chartPreviousClose }
     $volume = $meta.regularMarketVolume
     $changePercent = $null
     if ($price -and $prevClose -and $prevClose -ne 0) {
@@ -128,6 +160,7 @@ foreach ($t in $tickers) {
     $per = $null
     if ($price -and $eps -and $eps -gt 0) { $per = [math]::Round($price / $eps, 2) }
 
+    if ($null -eq $marketCap) { $marketCap = Get-NaverMarketCap $sym } # 야후에 발행주식수가 없을 때만(위 설명)
     if ($null -eq $marketCap) { throw "marketCap null (발행주식수 조회 실패)" }
     $entry = [PSCustomObject]@{
       symbol         = $sym

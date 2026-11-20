@@ -4,11 +4,17 @@
   (스크리너의 가격 필드는 오래된 값이 섞여 있어 판별에 쓰지 않음 — UNI 스크리너 3.76달러 vs 실제 6.25달러)
 - 제외: 최근 1년 하루 20배↑·1/20↓ 가격 단절, 시세 30일 미만
 결과: data/crypto-extra-upbit.json
+
+2026-11-20: 9/13 이후 한 번도 안 돌아 업비트 쪽 100개의 명단·시가총액이 9월 값이었다 → 자동 배치(daily-sp500-data.yml)에 넣음.
+  - 저장 경로를 이 스크립트 위치 기준으로(예전엔 개인 PC 절대 경로라 CI에서 못 돌았다).
+  - 덮어쓰기 전 검증: 고른 코인이 100개 미만이거나 직전의 80% 미만, 값이 빈 행이 있으면 파일을 그대로 둔다.
+  - 야후·업비트 조회가 실패하면 예외로 끝나고(파일은 그대로) 워크플로는 continue-on-error 로 다음 단계를 계속한다.
+실행: python3 sector-map/scripts/build-crypto-extra-upbit.py
 """
 import json, re, time, urllib.request, urllib.parse, sys, pathlib
 
 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"}
-OUT = pathlib.Path(r"C:\Users\User\Desktop\클로드코드\1. 미국기업분석\data\crypto-extra-upbit.json")
+OUT = pathlib.Path(__file__).resolve().parents[2] / "data" / "crypto-extra-upbit.json"
 
 def get(url, timeout=25, tries=3):
     for i in range(tries):
@@ -94,6 +100,17 @@ for c in cands:
         continue
     picked.append({"symbol": q["symbol"], "base": c["base"], "nameKo": c["ko"], "nameEn": c["en"], "upbitMarket": "KRW-" + c["base"], "marketCapUsd": round(q.get("marketCap") or 0)})
     print(len(picked), q["symbol"], c["ko"], file=sys.stderr)
+
+# 덮어쓰기 전 검증(2026-11-20): 비정상이면 직전 파일을 그대로 둔다
+prev_count = 0
+try:
+    prev_count = len(json.loads(OUT.read_bytes().decode("utf-8-sig")).get("coins") or [])
+except Exception:
+    pass
+bad = [c["base"] for c in picked if not c.get("symbol") or not c.get("nameKo")]
+if len(picked) < 100 or len(picked) < prev_count * 0.8 or bad:
+    print(f"::warning::업비트 추가 코인 {len(picked)}개(직전 {prev_count}개, 값이 빈 행 {bad}) — 비정상이라 data/crypto-extra-upbit.json 을 그대로 둡니다.")
+    sys.exit(0)
 
 OUT.write_text(json.dumps({
     "generatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),

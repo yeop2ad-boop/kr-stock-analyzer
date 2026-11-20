@@ -3,7 +3,8 @@
 #   · 포드·애보트: 연결 손익계산서 매출을 비차원 태그로 공시하지 않아 SEC companyconcept에서 안 잡힘
 #   · ASML·CCEP 등 유럽 상장사: 보고 통화가 EUR라 USD만 읽던 코드에서 통째로 빠짐(비율 지표라 통화는 무관)
 #   · 국내 은행·보험: "매출액" 계정 자체가 없음(이자·수수료·보험수익으로 나뉨) → 야후의 총수익을 사용
-# 실행: python scripts/fill-risk-gaps.py [kr|us|all]
+# 실행: python scripts/fill-risk-gaps.py [kr|us|all|kr-crash|us-crash]
+#   kr-crash / us-crash = 급락률(52주 최대 하락폭)만 새로 계산 — 예약 배치는 이 둘만 돈다(2026-11-20)
 import json
 import sys
 import time
@@ -163,6 +164,21 @@ def y_crash(symbol):
         pts = [(t, c) for t, c in zip(res["timestamp"], res["indicators"]["quote"][0]["close"]) if c]
     except Exception:
         return None
+    # 2026-11-20: 야후는 한국 등 미국 밖 거래소의 '가장 최근 거래일' 일봉 종가를 장 마감 뒤 몇 시간 동안 null로 준다
+    # (현지 자정 무렵부터 일일 마감 자료가 들어올 때까지). 그 시간대에 도는 저녁 실행은 마지막 날이 빠져
+    # 급락률 구간(rangeTo)이 낮 실행보다 하루 전으로 덮였다. 현재가(meta.regularMarketPrice)는 그 날 종가 그대로이므로,
+    # 마지막 유효 일봉의 거래일이 현재가의 거래일(거래소 현지 날짜)보다 앞서면 현재가를 마지막 날 종가로 붙인다.
+    try:
+        meta = res.get("meta") or {}
+        off = int(meta.get("gmtoffset") or 0)
+        rmt, rmp = meta.get("regularMarketTime"), meta.get("regularMarketPrice")
+        if pts and rmt and rmp:
+            d_last = (pts[-1][0] + off) // 86400
+            d_now = (int(rmt) + off) // 86400
+            if d_now > d_last:
+                pts.append((pts[-1][0] + 86400 * (d_now - d_last), float(rmp)))
+    except Exception:
+        pass
     if len(pts) < 30:
         return None
     day = lambda t: time.strftime("%Y-%m-%d", time.gmtime(t + 9 * 3600))
@@ -214,6 +230,30 @@ def run_kr():
             if msg:
                 print("  ", msg, flush=True)
     json.dump(data, open(KR_FILE, "w", encoding="utf-8", newline="\n"), ensure_ascii=False, indent=2)
+    # 2026-11-20: 이 값을 돌려주지 않아(None) 아래 __main__ 에서 항상 '급락률 실패'로 보고 종료코드 1을 냈다
+    # → 다트공시 워크플로가 매번 실패로 끝남. 급락률이 90% 이상 갱신됐으면 True.
+    return crash_ok
+
+
+def run_kr_crash():
+    """한국 종목의 52주 최대 하락폭(급락률)만 새로 계산한다(2026-11-20) — run_us_crash 의 한국판.
+    리스크 탭이 없어진 뒤 앱은 dart-financials.json 에서 급락률만 읽으므로, 예약 실행은 이것만 돈다
+    (DART 4대 지표 수집·EPS/매출/부채 보완은 수동 실행 `kr` 에서만)."""
+    data = json.load(open(KR_FILE, encoding="utf-8-sig"))
+    items = data["items"]
+    with ThreadPoolExecutor(4) as ex:
+        crashes = list(ex.map(lambda i: y_crash(i["symbol"]), items))
+    ok = 0
+    for i, c in zip(items, crashes):
+        if c:
+            i["crash"] = c
+            ok += 1
+    print("한국 급락률 갱신", ok, "/", len(items), flush=True)
+    good = ok >= len(items) * 0.9
+    if not good:
+        print("⚠ 한국 급락률 갱신 실패 — 마지막 오류:", CRASH_LAST_ERR[0], flush=True)
+    json.dump(data, open(KR_FILE, "w", encoding="utf-8", newline="\n"), ensure_ascii=False, indent=2)
+    return good
 
 
 def run_us():
@@ -253,6 +293,8 @@ if __name__ == "__main__":
     which = sys.argv[1] if len(sys.argv) > 1 else "all"
     if which == "us-crash":
         sys.exit(0 if run_us_crash() else 1)
+    if which == "kr-crash":
+        sys.exit(0 if run_kr_crash() else 1)
     crash_ok = True
     if which in ("kr", "all"):
         crash_ok = run_kr()

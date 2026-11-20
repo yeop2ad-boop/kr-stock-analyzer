@@ -246,6 +246,163 @@ def is_monthly(txt):
     return bool(re.search(r"월간|월별\s*실적", plain))
 
 
+# ---------- 정기보고서(분기·반기·사업보고서)의 매출·순이익을 DART에서 바로 읽기 (2026-11-20 사용자 요청) ----------
+# 예전: 잠정실적 공시를 하지 않는 회사는 '발표일'(분기보고서 제출일)만 잡히고 실제 숫자는 네이버 증권 분기 재무가 올라올 때까지
+#       (보통 1~3주) 화면에 "실제 반영 전"으로 남았다 — 11/20 기준 최근실적 125종목 중 97종목.
+# 지금: 보고서가 나온 날 DART 단일회사 주요계정(fnlttSinglAcnt)에서 그 분기 3개월 매출·순이익과 직전 분기 매출을 읽어 rep에 넣는다.
+#   · 12월 결산 기준 이름만 처리한다: 분기보고서(03)=1분기 · 반기보고서(06)=2분기 · 분기보고서(09)=3분기 · 사업보고서(12)=4분기(연간 − 3분기 누적)
+#   · 연결 우선, 당기·직전 분기는 같은 재무제표(연결/별도)에서. 값이 이상하면(직전 분기 대비 5배 초과·1/5 미만) 버리고 예전처럼 둔다.
+PERIODIC = {}  # symbol -> [(rcept_dt, report_nm, corp_code)] 정기보고서
+PREV_KR = {}  # 직전 실행 결과의 kr — 이미 읽은 보고서는 다시 묻지 않는다
+_REV_RE = re.compile(r"^(매출액|수익\(매출액\)|영업수익|매출|순영업수익|보험료수익|이자수익)$")
+_NI_RE = re.compile(r"^(당기순이익|당기순이익\(손실\)|당기순손익|연결당기순이익|분기순이익|반기순이익)")
+_ACNT_CACHE = {}
+
+
+def _to_num(s):
+    if s is None:
+        return None
+    t = str(s).replace(",", "").strip()
+    if not t or t == "-":
+        return None
+    try:
+        return float(t)
+    except ValueError:
+        return None
+
+
+def dart_accounts(key, corp, year, code):
+    """주요계정 → {"CFS": {"rev": (3개월, 누적), "ni": (3개월, 누적)}, "OFS": {...}} · 없으면 None"""
+    ck = (corp, year, code)
+    if ck in _ACNT_CACHE:
+        return _ACNT_CACHE[ck]
+    q = urllib.parse.urlencode({"crtfc_key": key, "corp_code": corp, "bsns_year": year, "reprt_code": code})
+    js = get_json(f"https://opendart.fss.or.kr/api/fnlttSinglAcnt.json?{q}", tries=2, timeout=40)
+    time.sleep(0.15)
+    out = None
+    if js and js.get("status") == "000" and js.get("list"):
+        out = {}
+        for r in js["list"]:
+            div = r.get("fs_div")
+            nm = re.sub(r"\s", "", r.get("account_nm") or "")
+            k = "rev" if _REV_RE.match(nm) else "ni" if _NI_RE.match(nm) else None
+            if not k or div not in ("CFS", "OFS") or k in out.setdefault(div, {}):
+                continue
+            out[div][k] = (_to_num(r.get("thstrm_amount")), _to_num(r.get("thstrm_add_amount")))
+    elif js and js.get("status") in ("020", "021"):
+        raise RuntimeError("DART 한도 초과")
+    _ACNT_CACHE[ck] = out
+    return out
+
+
+def report_quarter(nm):
+    """보고서 이름 → (사업연도, 분기 1~4) · 12월 결산 모양이 아니면 None"""
+    m = re.search(r"\((\d{4})\.(\d{2})\)", nm or "")
+    if not m:
+        return None
+    y, mm = int(m.group(1)), m.group(2)
+    if "사업보고서" in nm and mm == "12":
+        return y, 4
+    if "반기보고서" in nm and mm == "06":
+        return y, 2
+    if "분기보고서" in nm and mm == "03":
+        return y, 1
+    if "분기보고서" in nm and mm == "09":
+        return y, 3
+    return None
+
+
+_Q_CODE = {1: "11013", 2: "11012", 3: "11014", 4: "11011"}
+
+
+def quarter_values(key, corp, year, qn, div):
+    """그 분기 3개월 값 {"rev":…, "ni":…} — 4분기는 연간에서 3분기 누적을 뺀다"""
+    a = dart_accounts(key, corp, year, _Q_CODE[qn])
+    a = a and a.get(div)
+    if not a:
+        return None
+    if qn != 4:
+        # 2·3분기 보고서는 3개월 값(thstrm_amount)과 누적 값(thstrm_add_amount)이 따로 온다 — 누적이 3개월보다 충분히 크지 않으면
+        # 3개월 값인지 확신할 수 없으니 쓰지 않는다(누적을 3개월로 잘못 읽으면 '직전 분기 대비'가 엉뚱해진다)
+        rv = a.get("rev")
+        if qn in (2, 3) and rv and rv[0] and rv[0] > 0 and not (rv[1] is not None and rv[1] > rv[0] * 1.2):
+            return None
+        return {k: v[0] for k, v in a.items()}
+    b = dart_accounts(key, corp, year, "11014")
+    b = b and b.get(div)
+    if not b:
+        return None
+    out = {}
+    for k, v in a.items():
+        cum = b.get(k) and b[k][1]
+        if v[0] is not None and cum is not None:
+            out[k] = v[0] - cum
+    return out
+
+
+def kr_report_rep(key, corp, year, qn):
+    """정기보고서 → {"rev","ni","prev","qoq"} (3개월 기준) · 못 읽으면 None"""
+    for div in ("CFS", "OFS"):
+        cur = quarter_values(key, corp, year, qn, div)
+        if not cur or not cur.get("rev"):
+            continue
+        py, pq = (year, qn - 1) if qn > 1 else (year - 1, 4)
+        prv = quarter_values(key, corp, py, pq, div)
+        rev, prev_rev = cur["rev"], prv and prv.get("rev")
+        if rev <= 0 or not prev_rev or prev_rev <= 0:
+            continue
+        ratio = rev / prev_rev
+        if ratio > 5 or ratio < 0.2:  # 3개월·누적이 섞였거나 계정이 달라진 경우 — 틀린 숫자를 '실제'로 보여 주느니 뺀다
+            continue
+        out = {"rev": rev, "prev": prev_rev, "qoq": round((ratio - 1) * 100, 2)}
+        if cur.get("ni") is not None:
+            out["ni"] = cur["ni"]
+        return out
+    return None
+
+
+def kr_report_scan(key, today, reps):
+    """최근 45일 안에 정기보고서를 낸 회사 중 잠정실적 값이 없는(또는 순이익이 빠진) 회사 → rep 채움. 돌려주는 값: 새로 채운 종목 수"""
+    n_new = n_ni = n_keep = 0
+    for sym, lst in PERIODIC.items():
+        dt, nm, corp = max(lst, key=lambda x: x[0])
+        d = date(int(dt[:4]), int(dt[4:6]), int(dt[6:]))
+        yq = report_quarter(nm)
+        if (today - d).days > 45 or not yq or not corp:
+            continue
+        qlabel = f"{yq[1]}Q{yq[0]}"
+        have = reps.get(sym)
+        old = (PREV_KR.get(sym) or {}).get("rep") or {}
+        if have and have.get("ni") is None and old.get("ni") is not None and old.get("date") == have.get("date"):
+            have["ni"] = old["ni"]  # 지난 실행에서 보태 둔 순이익
+        if have and have.get("ni") is not None:
+            continue
+        if not have and old.get("src") == "보고서" and old.get("q") == qlabel and old.get("date") == d.isoformat():
+            reps[sym] = old  # 지난 실행에서 읽어 둔 값 그대로
+            n_keep += 1
+            continue
+        try:
+            v = kr_report_rep(key, corp, yq[0], yq[1])
+        except RuntimeError as e:
+            print("  ", e, "— 정기보고서 읽기를 여기서 멈춤", flush=True)
+            break
+        if not v:
+            continue
+        if have:
+            # 잠정실적에 순이익이 없던 회사(삼성전자·셀트리온 등): 같은 분기 매출이 맞을 때만 순이익을 보탠다
+            if v.get("ni") is not None and have.get("rev") and abs(v["rev"] / have["rev"] - 1) < 0.03:
+                have["ni"] = v["ni"]
+                n_ni += 1
+            continue
+        reps[sym] = {"date": d.isoformat(), "q": qlabel, "src": "보고서", **v}
+        n_new += 1
+    print(f"한국: 정기보고서 매출 {n_new}종목 새로 읽음 · 이어 씀 {n_keep} · 순이익 보탬 {n_ni}", flush=True)
+    return n_new
+
+
+NONMONTHLY = {}  # symbol -> {잠정실적 중 분기 실적(월별 아님)으로 확인된 공시일 "YYYYMMDD"}
+
+
 def kr_prelim_scan(key, today):
     """최근 60일 잠정실적 공시 본문 → (월간 공시 회사 집합, {symbol: rep})"""
     monthly, reps = set(), {}
@@ -268,6 +425,7 @@ def kr_prelim_scan(key, today):
             if is_monthly(txt):
                 monthly.add(sym)
                 continue
+            NONMONTHLY.setdefault(sym, set()).add(dt)
             if sym in reps or (today - d).days > 45:
                 continue
             rv = parse_prelim_revenue(raw)
@@ -304,6 +462,8 @@ def kr_filings_chunk(syms, key, bgn, end):
                         out.setdefault(syms[code], []).append(f"{dt[:4]}-{dt[4:6]}-{dt[6:]}")
                         if "잠정" in nm and it.get("rcept_no"):
                             PRELIM.setdefault(syms[code], []).append((dt, it["rcept_no"]))
+                        elif "잠정" not in nm and bgn >= date.today() - timedelta(days=200):
+                            PERIODIC.setdefault(syms[code], []).append((dt, nm, it.get("corp_code")))
                 if page >= int(js.get("total_page") or 1):
                     break
                 page += 1
@@ -323,8 +483,14 @@ def kr_calendar(today, key):
     except RuntimeError:
         return None
     monthly, reps = kr_prelim_scan(key, today)
+    try:
+        kr_report_scan(key, today, reps)
+    except Exception as e:  # 여기서 무슨 일이 나도 일정 자체는 예전처럼 만든다
+        print("  정기보고서 읽기 실패:", type(e).__name__, str(e)[:120], flush=True)
     for sym in monthly:
-        drop = {f"{dt[:4]}-{dt[4:6]}-{dt[6:]}" for dt, _ in PRELIM.get(sym, [])}
+        # 월별 매출 공시만 뺀다 — 분기 잠정실적으로 확인된 날은 남겨서 발표일(last)이 분기보고서 날짜로 밀리지 않게(현대차·기아 등, 2026-11-20)
+        keep = NONMONTHLY.get(sym, set())
+        drop = {f"{dt[:4]}-{dt[4:6]}-{dt[6:]}" for dt, _ in PRELIM.get(sym, []) if dt not in keep}
         recent[sym] = [d for d in recent.get(sym, []) if d not in drop]
         ly[sym] = [d for d in ly.get(sym, []) if d not in drop and not (sym in monthly and False)]
     out = {}
@@ -361,13 +527,14 @@ def main():
         print("미국 조회 실패 — 이전 값 유지", flush=True)
         us = prev.get("us") or {}
     key = os.environ.get("DART_API_KEY")
+    PREV_KR.update(prev.get("kr") or {})
     kr = kr_calendar(today, key) if key else None
     if kr is None:
         print("한국: DART_API_KEY 없음 또는 실패 — 이전 값 유지", flush=True)
         kr = prev.get("kr") or {}
     out = {
         "generatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "description": "실적발표 일정 — us: 나스닥 실적 캘린더(next 예정일·nextTime pre/after·last 최근 발표일), kr: DART 잠정실적·정기보고서 첫 공시일(last). scripts/build-earnings-calendar.py",
+        "description": "실적발표 일정 — us: 나스닥 실적 캘린더(next 예정일·nextTime pre/after·last 최근 발표일), kr: DART 잠정실적·정기보고서 첫 공시일(last), rep = 그 분기 매출·순이익(src 잠정: 잠정실적 공시 본문 / 보고서: 정기보고서 주요계정, prev = 직전 분기 매출). scripts/build-earnings-calendar.py",
         "us": us,
         "kr": kr,
     }

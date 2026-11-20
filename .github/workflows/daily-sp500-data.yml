@@ -2,10 +2,12 @@ name: 섹터맵 데이터 자동 갱신(해외 S&P500 + 국내 코스피200/코�
 
 on:
   schedule:
-    # 매일 09:00 UTC = 한국시간(KST) 오후 6시(한국주식·ETF·코인) / 21:00 UTC = KST 오전 6시(미국주식·ETF·코인) — 2026-10-21 사용자 요청
-    # 한 번 돌릴 때 한국·미국·ETF·코인 DB를 모두 갱신하므로 하루 두 번이면 요청한 시각을 전부 만족한다
-    - cron: "0 9 * * *"
-    - cron: "0 21 * * *"
+    # 하루 두 번(2026-10-21 사용자 요청: 한국 저녁·미국 아침) — 한 번 돌 때 한국·미국·ETF·코인 DB를 모두 갱신한다.
+    # 2026-11-20 시각 조정: GitHub 예약 실행이 몇 시간씩 늦게 시작해(09:00 예약이 실제 15~18시 UTC) 정각을 피하고 앞당김.
+    #   07:47 UTC = 한국시간(KST) 오후 4시 47분 — 한국 장 마감(06:30 UTC) 뒤. 한국 저녁 배치(07:17)보다 30분 뒤
+    #   21:47 UTC = KST 오전 6시 47분 — 미국 장 마감(겨울 21:00 UTC) 뒤. 예전 21:00은 겨울엔 마감 순간이라 늦춤. 미국 아침 배치(21:23)보다 24분 뒤
+    - cron: "47 7 * * *"
+    - cron: "47 21 * * *"
   workflow_dispatch: {}
 
 permissions:
@@ -43,6 +45,41 @@ jobs:
         working-directory: sector-map
         run: ./scripts/fetch-momentum-scores.ps1
 
+      # ---- 2026-11-20 추가: 그동안 자동 배치에 없어 멈춰 있던 것들(아래 승률 단계보다 앞에 와야 함) ----
+      # 지도의 원화·달러 환산용 환율(1,400원 고정 대신) — sector-map/data/fx.js
+      - name: 원·달러 환율 갱신(fx.js)
+        shell: pwsh
+        working-directory: sector-map
+        continue-on-error: true
+        run: ./scripts/fetch-fx.ps1
+
+      # ETF 규모 DB(data/etf-marketcap.json, 9/1에서 멈춰 있었음) — 아래 ETF·코인 지도와 ETF 운용보수·보유종목 단계가 이 값을 쓴다
+      - name: ETF 규모 DB 갱신(한국 전체·미국)
+        shell: pwsh
+        continue-on-error: true
+        run: ./scripts/fetch-etf-marketcap.ps1
+
+      # 코인 200 중 업비트 쪽 100개의 명단·시가총액(data/crypto-extra-upbit.json, 9/13에서 멈춰 있었음) — 본체 코인 목록과 아래 지도 단계가 읽는다
+      - name: 업비트 추가 코인 목록 갱신(crypto-extra-upbit.json)
+        continue-on-error: true
+        run: python3 sector-map/scripts/build-crypto-extra-upbit.py
+
+      # ETF200·비트코인200 지도 기본값(종목 명단·시가총액·52주 위치·등락률·거래대금, 9/13에서 멈춰 있었음).
+      # 바로 아래 승률 단계가 이 파일의 종목 명단을 읽어 승률·RSI를 다시 덧쓰므로 반드시 그 앞에 둔다.
+      # 직전 파일의 승률·RSI·연평균 값은 스크립트가 이어받고, 결과가 비정상이면 파일을 덮어쓰지 않는다.
+      - name: ETF·코인 지도 기본값 갱신(etf-crypto-map.js)
+        shell: pwsh
+        working-directory: sector-map
+        continue-on-error: true
+        run: ./scripts/fetch-etf-crypto-map.ps1
+
+      # 나스닥100 중 S&P500 밖 종목 값 + 구성종목 명단(8/31에서 멈춰 있었음) — 승률 단계가 여기에도 승률·RSI를 덧쓴다
+      - name: 나스닥100 추가 종목·구성종목 명단 갱신(ndx-extra.js)
+        shell: pwsh
+        working-directory: sector-map
+        continue-on-error: true
+        run: ./scripts/fetch-ndx-extra.ps1
+
       - name: 승률점수/주간RSI 갱신(해외 S&P500 — 본체 DB + 지도 병합)
         shell: pwsh
         working-directory: sector-map
@@ -63,39 +100,29 @@ jobs:
         continue-on-error: true
         run: python3 scripts/build-etf-holdings.py
 
-      - name: 지도가 실제 로드하는 core/extra 데이터 파일에 병합
+      # 2026-11-20: 값뿐 아니라 종목 구성(편입·편출, core/extra 나눔)도 원본(sp500-sectors.json·kr-sectors.json)에 맞춘다
+      # 스크립트를 2026-11-20에 새로 썼고 CI(pwsh 7)에서는 아직 돌려 보지 못했다 — 여기서 실패해도 위에서 만든 데이터는 커밋되게 한다
+      # (실패하면 지도 파일만 직전 내용 그대로 남는다. 첫 실행 로그를 확인한 뒤 이 줄은 빼도 된다)
+      - name: 지도가 실제 로드하는 core/extra 데이터 파일 재생성
         shell: pwsh
         working-directory: sector-map
+        continue-on-error: true
         run: ./scripts/regenerate-core-extra.ps1
 
       - name: 변경사항 커밋 및 푸시
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          # sector-map/data 전체를 스테이징 — 개별 나열 시 스크립트가 새로 쓰는 파일(2026-09-05부터 etf-crypto-map.js)이
-          # 빠져 작업트리가 더러운 채로 남고, 그러면 아래 git pull --rebase 가 fatal(exit 128)로 죽어 5일간 푸시가 막혔음
-          # 2026-09-15: 9/11부터 투자방법 비교 단계가 쓰는 data/strategy-compare.json·strategy-series-cache.json이 목록에 없어
-          # 같은 이유로 매일 실패(승률·RSI DB가 9/10에 멈춤) → 두 파일 추가 + 커밋 뒤 남은 변경은 stash로 치워 pull이 다시는 막히지 않게
-          # 2026-10-06: 그런데 strategy-series-cache.json은 .gitignore 대상이라 git add가 "ignored 경로" 오류로 exit 1 →
-          # 9/15~10/5 매일 이 단계에서 실패(승률·ETF·코인 지도 3주 정지). 목록에서 뺐다 — 무시 대상 파일을 여기 넣지 말 것
-          git add -A sector-map/data data/winrate-scores-us.json data/etf-info.json data/sreport-baseline.json data/etf-holdings-kr.json data/etf-holding-names.json scripts/kr-suffix-cache.json
-          if git diff --cached --quiet; then
-            echo "변경된 데이터 없음"
-          else
-            git commit -m "섹터맵 데이터 자동 갱신 ($(date -u +%Y-%m-%d))"
-            git status --short
-            git stash --include-untracked || true
-            # 2026-09-17: 커밋까지는 되는데 이 단계에서 매일 실패(9/11~9/16, 승률·RSI DB가 9/10에 멈춤).
-            # 앱 쪽에서 같은 데이터 파일(sreport-baseline.json 등)을 손대면 rebase가 내용 충돌로 죽는다 —
-            # 데이터 파일은 방금 배치가 만든 값이 맞으므로 -X theirs(재적용 커밋 쪽)로 자동 해결하고,
-            # 그래도 실패하면 rebase를 접고 원격 위에 우리 커밋만 다시 얹는다.
-            git pull --rebase -X theirs origin main || {
-              echo "rebase 실패 — 원격 위에 데이터 커밋만 다시 얹는다"
-              git rebase --abort || true
-              git fetch origin main
-              git reset --soft origin/main
-              git add -A sector-map/data data/winrate-scores-us.json data/etf-info.json data/sreport-baseline.json data/etf-holdings-kr.json data/etf-holding-names.json scripts/kr-suffix-cache.json
-              git commit -m "섹터맵 데이터 자동 갱신 ($(date -u +%Y-%m-%d))" || true
-            }
-            git push
-          fi
+          # 커밋·rebase·push 재시도는 공용 스크립트(scripts/ci-commit-push.sh)가 한다. 지금까지 겪은 일:
+          #  - sector-map/data 는 폴더째 스테이징한다. 파일을 하나씩 나열했더니 스크립트가 새로 쓰기 시작한 파일
+          #    (2026-09-05 etf-crypto-map.js)이 빠져 작업 폴더가 더러운 채 남았고, pull --rebase 가 막혀 5일간 푸시가 안 됐다
+          #    → 공용 스크립트가 커밋 뒤 남은 변경을 stash 로 치운다.
+          #  - .gitignore 대상 파일(strategy-series-cache.json)을 목록에 넣었다가 git add 오류로 3주간 실패(9/15~10/5)
+          #    → 공용 스크립트는 그런 경로를 경고만 하고 넘어간다. 그래도 무시 대상 파일은 여기 넣지 말 것.
+          #  - 같은 데이터 파일을 앱 쪽·다른 배치가 먼저 고치면 rebase 가 내용 충돌로 죽었다(9/11~9/16)
+          #    → -X theirs(방금 배치가 만든 값)로 자동 해결, 그래도 안 되면 원격 최신 위에 이번에 바뀐 파일만 다시 얹는다.
+          # 2026-11-20: data/etf-marketcap.json·data/crypto-extra-upbit.json 추가(위 새 단계들이 쓴다). fx.js·ndx-extra.js·etf-crypto-map.js 는 sector-map/data 에 포함.
+          bash scripts/ci-commit-push.sh "섹터맵 데이터 자동 갱신 ($(date -u +%Y-%m-%d))" \
+            sector-map/data \
+            data/winrate-scores-us.json data/etf-info.json data/sreport-baseline.json \
+            data/etf-holdings-kr.json data/etf-holding-names.json \
+            data/etf-marketcap.json data/crypto-extra-upbit.json \
+            scripts/kr-suffix-cache.json
