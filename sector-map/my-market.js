@@ -130,10 +130,25 @@ async function mineEnsureViewData(viewKey) {
 }
 
 // ---- 레이아웃: 저장된 섹터 위치·크기대로 원을 놓고, 그 안에 종목 원을 채운다 ----
+const MINE_STOCK_R = 76; // 섹터 크기를 정할 때 기준으로 삼는 종목 원 반지름(월드 좌표) — 예전 크기(130 + 70√n)와 비슷하게 나오는 값
+const MINE_GAP = 0.06; // 종목 원 사이 간격(종목 반지름의 배수) — 내 보기는 예전처럼 종목끼리 거의 붙여 놓는다
+const MINE_MARGIN = 0.4; // 섹터 테두리와 가장 바깥 종목 원 사이(이름표·＋ 단추 자리)
 function mineAutoRadius(n) {
-  // 2026-10-22: 빈 섹터가 너무 커 보이던 문제 — 작게 시작해서 종목 수에 맞춰 조금씩 커진다(면적이 종목 수에 비례)
+  // 2026-10-22: 빈 섹터가 너무 커 보이던 문제 — 작게 시작해서 종목 수에 맞춰 조금씩 커진다
   if (!n) return 190;
+  // 2026-11-21: 종목 n개의 벌집 덩어리가 딱 들어가는 크기(지도 본체의 균등 배치와 같은 계산) — 섹터마다 종목 원 크기·간격이 같아져
+  // 보기 화면에서 원을 따로 줄일 필요가 없다(수정 화면과 완료 화면이 같아짐)
+  if (typeof eqHexLayout === "function") return Math.max(150, Math.min(1100, (eqHexLayout(n).outer * (2 + MINE_GAP) + 1 + MINE_MARGIN) * MINE_STOCK_R));
   return Math.max(200, Math.min(1100, 130 + 70 * Math.sqrt(n)));
+}
+// 지금 보기의 섹터들이 기준 크기의 몇 배로 그려져 있는지(전체를 줄여 담았으면 1보다 작다) — 새로 크기를 정하는 섹터도 같은 배율로 맞춰야 종목 원 크기·간격이 섹터마다 같다(2026-11-21)
+function mineScaleOf(market, except) {
+  const ks = ((market && market.sectors) || [])
+    .filter((s) => s !== except && s.symbols && s.symbols.length >= 3)
+    .map((s) => s.r / mineAutoRadius(s.symbols.length))
+    .sort((a, b) => a - b);
+  if (!ks.length) return 1;
+  return Math.max(0.2, Math.min(1.2, ks[Math.floor(ks.length / 2)])); // 가운데 값
 }
 function buildMineRoot(data) {
   const market = mineMarketOf();
@@ -150,31 +165,41 @@ function buildMineRoot(data) {
     const inner = sec.r * 0.9;
     const kids = comps.map((c) => ({ data: { ...c, value: equal ? 1 : mineUsdCap(c) }, x: 0, y: 0, r: 0 }));
     let h = null;
+    let lay = null;
     if (kids.length) {
-      h = d3.hierarchy({ children: kids.map((k) => k.data) }).sum((d) => (d.value ? d.value : 0));
-      d3.pack().size([inner * 2, inner * 2]).padding(2)(h);
+      if (equal) {
+        lay = eqHexLayout(kids.length); // 균등: 지도 본체와 같은 벌집 배치(2026-11-21)
+      } else {
+        h = d3.hierarchy({ children: kids.map((k) => k.data) }).sum((d) => (d.value ? d.value : 0));
+        d3.pack().size([inner * 2, inner * 2]).padding(2)(h);
+      }
     }
-    packs.push({ sec, kids, h, inner });
+    packs.push({ sec, kids, h, inner, lay });
   }
-  // 균등 모드(2026-10-22 사용자 요청): 섹터가 달라도 모든 종목 원이 똑같은 크기가 되도록, 가장 촘촘한 섹터의 종목 크기에 전부 맞춘다.
-  // 종목이 적은 섹터는 안쪽을 그만큼 줄여(원 크기도 같은 비율로) 종목들이 한가운데 모이게 한다.
-  let uniform = 0;
-  if (equal) {
-    const rs = packs.filter((p) => p.h).map((p) => p.h.children[0].r);
-    uniform = rs.length ? Math.min(...rs) : 0;
-  }
-  for (const { sec, kids, h, inner } of packs) {
-    let secR = sec.r;
-    if (h) {
-      const f = equal && uniform ? uniform / h.children[0].r : 1;
-      h.children.forEach((n, i) => {
-        kids[i].x = sec.x + (n.x - inner) * f;
-        kids[i].y = sec.y + (n.y - inner) * f;
-        kids[i].r = n.r * f;
+  // 균등 모드(2026-10-22 사용자 요청): 섹터가 달라도 모든 종목 원이 똑같은 크기가 되도록, 가장 촘촘한 섹터에 들어가는 종목 크기에 전부 맞춘다.
+  // 2026-11-21 사용자 요청("수정이랑 완료 위치가 동일하도록"): 예전엔 보기 화면에서만 섹터 원을 줄여 그려서 완료를 누르면 원끼리 떨어져 보였다.
+  // 이제 섹터 원은 저장된 크기 그대로(수정·보기 화면 동일) 그리고, 원이 넉넉한 섹터는 종목 사이를 조금 벌려(최대 1.3배) 안을 채운다.
+  const fitR = (p) => p.sec.r / (p.lay.outer * (2 + MINE_GAP) + 1 + MINE_MARGIN); // 그 섹터 원에 딱 맞는 종목 반지름
+  const fits = packs.filter((p) => p.lay).map(fitR);
+  const uniform = fits.length ? Math.min(...fits) : 0;
+  for (const { sec, kids, h, inner, lay } of packs) {
+    if (lay) {
+      const stdPitch = (2 + MINE_GAP) * uniform;
+      const spread = lay.outer > 0 ? (sec.r - uniform * (1 + MINE_MARGIN)) / lay.outer : stdPitch;
+      const pitch = Math.max(stdPitch, Math.min(spread, stdPitch * 1.3));
+      lay.pts.forEach((pt, i) => {
+        kids[i].x = sec.x + pt.x * pitch;
+        kids[i].y = sec.y + pt.y * pitch;
+        kids[i].r = uniform;
       });
-      if (equal && !mineEditing) secR = Math.max(40, sec.r * f); // 보기 모드에서는 바깥 원도 같은 비율로 줄여 빈 공간을 없앤다
+    } else if (h) {
+      h.children.forEach((n, i) => {
+        kids[i].x = sec.x + (n.x - inner);
+        kids[i].y = sec.y + (n.y - inner);
+        kids[i].r = n.r;
+      });
     }
-    children.push({ data: { name: sec.name, sectorKo: sec.name, color: sec.color, mineId: sec.id }, x: sec.x, y: sec.y, r: secR, children: kids });
+    children.push({ data: { name: sec.name, sectorKo: sec.name, color: sec.color, mineId: sec.id }, x: sec.x, y: sec.y, r: sec.r, children: kids });
   }
   const root = { data: { name: "root" }, children };
   root.descendants = () => [root, ...children, ...children.flatMap((s) => s.children)];
@@ -390,7 +415,7 @@ function mineScaleAll(market, k, except) {
 }
 
 // ---- 자동 배치: 정렬(센터로 모으기) / 위·아래로 쌓기 ----
-const mineSecRadiusFor = (n) => (n ? Math.max(120, 100 + 52 * Math.sqrt(n)) : 190);
+const mineSecRadiusFor = (n) => mineAutoRadius(n); // 2026-11-21: 섹터 크기 계산을 한 가지로(예전 100 + 52√n) — 섹터마다 종목 원 크기가 같게
 // 정렬(2026-10-21 사용자 요청): 크기는 그대로 두고, 센터를 향해 끌어당겨 서로 겹치지 않게 딱 붙인다
 function mineGather(market) {
   const secs = market.sectors;
@@ -857,7 +882,7 @@ function mineConfirmAdd() {
   });
   const wasEmpty = !sec.symbols.length;
   sec.symbols = sel;
-  sec.r = mineAutoRadius(sel.length);
+  sec.r = mineAutoRadius(sel.length) * mineScaleOf(mineDraft, sec);
   if (!mineFindSpot(mineDraft, sec, wasEmpty && mineDraft.sectors.length > 1)) showToast("놓을 자리가 부족해요. 정렬을 눌러 섹터를 모아 보세요");
   const id = sec.id;
   mineCloseAddSheet();
@@ -985,7 +1010,7 @@ function mineAddImported(secs, fromLabel) {
       return true;
     });
     if (!symbols.length) return;
-    fresh.push({ id: mineUid(), name: mineUniqueNameAmong(s.name, [...existing, ...fresh]), color: s.color || MINE_COLORS[i % MINE_COLORS.length], x: MINE_WORLD / 2, y: MINE_WORLD / 2, r: mineSecRadiusFor(symbols.length), symbols });
+    fresh.push({ id: mineUid(), name: mineUniqueNameAmong(s.name, [...existing, ...fresh]), color: s.color || MINE_COLORS[i % MINE_COLORS.length], x: MINE_WORLD / 2, y: MINE_WORLD / 2, r: mineSecRadiusFor(symbols.length) * mineScaleOf(mineDraft), symbols });
   });
   if (!fresh.length) {
     showToast("이미 모두 담겨 있어요");
@@ -1081,7 +1106,7 @@ function mineOpenThemeSheet() {
         return true;
       });
       if (!symbols.length) return;
-      fresh.push({ id: mineUid(), name: mineUniqueNameAmong(`${theme} (${key === "kr" ? "한국" : "미국"})`, [...existing, ...fresh]), color: MINE_COLORS[(existing.length + fresh.length) % MINE_COLORS.length], x: MINE_WORLD / 2, y: MINE_WORLD / 2, r: mineSecRadiusFor(symbols.length), symbols });
+      fresh.push({ id: mineUid(), name: mineUniqueNameAmong(`${theme} (${key === "kr" ? "한국" : "미국"})`, [...existing, ...fresh]), color: MINE_COLORS[(existing.length + fresh.length) % MINE_COLORS.length], x: MINE_WORLD / 2, y: MINE_WORLD / 2, r: mineSecRadiusFor(symbols.length) * mineScaleOf(mineDraft), symbols });
     });
     if (!fresh.length) {
       if (emptyFirst) mineDraft.sectors = [mineNewSector("섹터 1")];
@@ -1134,7 +1159,7 @@ function mineOpenMergeModal() {
     mineDraft.sectors = mineDraft.sectors.filter((s) => s.id === target.id || !picked.has(s.id));
     target.symbols = symbols;
     target.name = mineUniqueNameAmong(name, mineDraft.sectors.filter((s) => s.id !== target.id));
-    target.r = Math.max(target.r, mineAutoRadius(symbols.length));
+    target.r = Math.max(target.r, mineAutoRadius(symbols.length) * mineScaleOf(mineDraft, target));
     close();
     if (!mineFindSpot(mineDraft, target, false)) mineGather(mineDraft);
     mineSelectedSectorId = target.id;
@@ -1177,8 +1202,9 @@ function mineOpenSplitModal() {
     const moved = sec.symbols.filter((s) => picked.has(s));
     if (!moved.length || moved.length >= sec.symbols.length) return;
     sec.symbols = sec.symbols.filter((s) => !picked.has(s));
-    sec.r = mineAutoRadius(sec.symbols.length);
-    const ns = { id: mineUid(), name: mineUniqueName(name), color: MINE_COLORS[mineDraft.sectors.length % MINE_COLORS.length], x: MINE_WORLD / 2, y: MINE_WORLD / 2, r: mineAutoRadius(moved.length), symbols: moved };
+    const splitScale = mineScaleOf(mineDraft, sec);
+    sec.r = mineAutoRadius(sec.symbols.length) * splitScale;
+    const ns = { id: mineUid(), name: mineUniqueName(name), color: MINE_COLORS[mineDraft.sectors.length % MINE_COLORS.length], x: MINE_WORLD / 2, y: MINE_WORLD / 2, r: mineAutoRadius(moved.length) * splitScale, symbols: moved };
     mineDraft.sectors.push(ns);
     close();
     if (!mineFindSpot(mineDraft, ns, true)) mineGather(mineDraft);

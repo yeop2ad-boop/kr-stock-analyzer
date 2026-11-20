@@ -835,75 +835,67 @@ async function refreshIndexQuotes() {
   refreshMarketIndexLabels();
 }
 
-// ---------- 균등 모드 배치(2026-11-21 사용자 요청: 섹터 원 안에 빈자리 없게) ----------
+// ---------- 균등 모드 배치(2026-11-21 사용자 요청: 섹터 원 안에 빈자리 없게 · 모양은 예전 같은 벌집) ----------
 // 예전엔 d3.pack에 맡겼는데, 같은 크기 원을 나선으로 하나씩 붙여 가는 방식이라 종목 수에 따라 한쪽이 덜 찬 덩어리
 // (예: 12개 = 3·4·5줄 사다리꼴)가 되고, 그 덩어리를 감싸는 섹터 원의 반대쪽이 통째로 비었다.
-// 균등 모드에서는 종목을 가운데부터 고리 모양으로 고르게 놓아 덩어리가 늘 둥글게 차도록 한다(시총 모드는 크기가 제각각이라 d3.pack 그대로).
+// 균등 모드에서는 벌집 칸 가운데서 "가장 둥글게 모이는 n칸"을 골라 채우고, 섹터 원은 그 덩어리에 딱 맞춘다(시총 모드는 크기가 제각각이라 d3.pack 그대로).
+// (같은 날 처음엔 고리 모양으로 놓았는데 사용자가 "예전처럼 벌집 모양이 더 좋아, 공백은 최대한 없도록"이라 해서 벌집으로 바꿈)
 const EQ_GAP = 0.9; // 종목 원 사이 간격(종목 반지름의 배수) — 예전 간격과 비슷하게
 const EQ_MARGIN = 0.9; // 섹터 테두리와 가장 바깥 종목 원 사이(종목 반지름의 배수)
 const EQ_SECTOR_GAP = 0.08; // 섹터 원끼리의 간격
-const eqChordR = (m) => (m <= 1 ? 0 : 0.5 / Math.sin(Math.PI / m)); // 이웃끼리 거리 1로 m개를 고리에 놓을 때의 고리 반지름
-const eqRingCap = (rho) => (rho < 0.5 ? 1 : Math.floor(Math.PI / Math.asin(Math.min(1, 0.5 / rho)) + 1e-9)); // 반지름 rho인 고리에 놓을 수 있는 최대 개수
-const EQ_RING_CACHE = new Map();
-// n개를 놓을 자리(가운데가 원점, 이웃 거리 1 단위)와 가장 바깥 고리 반지름 — 가운데 묶음(1~5개) + 바깥 고리들, 고리 사이 거리는 1 이상
-function eqRingLayout(n) {
-  if (EQ_RING_CACHE.has(n)) return EQ_RING_CACHE.get(n);
-  const total = (cs) => cs.reduce((a, b) => a + b, 0);
+const EQ_HEX_CACHE = new Map();
+// n개를 놓을 벌집 자리(덩어리를 감싸는 가장 작은 원의 중심이 원점, 이웃 거리 1 단위)와 가장 먼 자리까지의 거리
+function eqHexLayout(n) {
+  if (EQ_HEX_CACHE.has(n)) return EQ_HEX_CACHE.get(n);
+  const H = Math.sqrt(3) / 2;
+  const M = Math.ceil(Math.sqrt(n)) + 3;
+  const lattice = [];
+  for (let r = -M; r <= M; r++) for (let q = -M; q <= M; q++) lattice.push({ x: q + r / 2, y: r * H });
+  // 덩어리 중심 후보: 칸 한가운데 · 두 칸 사이 · 세 칸 사이(위/아래)
+  const centers = [[0, 0], [0.5, 0], [0.5, H / 3], [0.5, -H / 3]];
   let best = null;
-  for (let core = 1; core <= Math.min(5, n); core++) {
-    const rho0 = eqChordR(core);
-    for (let rings = 0; rings <= 14; rings++) {
-      const countsAt = (d) => {
-        const cs = [core];
-        for (let i = 1; i <= rings; i++) cs.push(eqRingCap(rho0 + i * d));
-        return cs;
-      };
-      let d = 1;
-      if (total(countsAt(1)) < n) {
-        if (!rings) continue;
-        // 고리 사이 거리를 조금 벌려 n개가 다 들어가는 가장 작은 거리를 찾음
-        let lo = 1;
-        let hi = 1;
-        for (let g = 0; g < 40 && total(countsAt(hi)) < n; g++) hi *= 1.2;
-        if (total(countsAt(hi)) < n) continue;
-        for (let it = 0; it < 34; it++) {
-          const mid = (lo + hi) / 2;
-          if (total(countsAt(mid)) >= n) hi = mid;
-          else lo = mid;
-        }
-        d = hi;
+  for (const [cx, cy] of centers) {
+    const withD = lattice.map((p) => ({ x: p.x, y: p.y, d: Math.hypot(p.x - cx, p.y - cy), a: Math.atan2(p.y - cy, p.x - cx) }));
+    withD.sort((u, v) => u.d - v.d);
+    const cutD = withD[n - 1].d;
+    const inner = withD.filter((p) => p.d < cutD - 1e-6);
+    const shell = withD.filter((p) => Math.abs(p.d - cutD) <= 1e-6);
+    const need = n - inner.length;
+    // 마지막 겹(중심에서 같은 거리인 칸들)에서 need칸을 고르는 방법 — ①한쪽부터 이어서 채우기 ②둘레에 고르게 띄워 채우기를 방향을 돌려 가며 다 해 보고,
+    // 가장 작은 원에 들어가는 것을 쓴다. 크기가 같으면(0.3% 이내) 종목들의 무게중심이 원 한가운데에 더 가까운(한쪽으로 덜 쏠린) 쪽
+    const ring = shell.slice().sort((u, v) => u.a - v.a);
+    const tries = [];
+    for (let s = 0; s < 12; s++) {
+      const a0 = -Math.PI + (s * Math.PI) / 6;
+      tries.push(ring.map((p) => ({ p, k: (p.a - a0 + Math.PI * 4) % (Math.PI * 2) })).sort((u, v) => u.k - v.k).slice(0, need).map((u) => u.p));
+    }
+    for (let s = 0; s < Math.min(ring.length, 12); s++) {
+      const used = new Set();
+      for (let i = 0; i < need; i++) {
+        let j = (s + Math.round((i * ring.length) / need)) % ring.length;
+        while (used.has(j)) j = (j + 1) % ring.length;
+        used.add(j);
       }
-      const outer = rho0 + rings * d;
-      if (!best || outer < best.outer - 1e-9) best = { rho0, rings, d, counts: countsAt(d), outer };
-      if (d === 1) break; // 고리를 더 늘려 봐야 커지기만 함
+      tries.push([...used].map((j) => ring[j]));
+    }
+    for (const picked of tries) {
+      const pts = inner.concat(picked);
+      const enc = d3.packEnclose(pts.map((p) => ({ x: p.x, y: p.y, r: 0.5 })));
+      const off = Math.hypot(pts.reduce((a, p) => a + p.x, 0) / n - enc.x, pts.reduce((a, p) => a + p.y, 0) / n - enc.y);
+      if (!best || enc.r < best.enc.r * 0.997 || (enc.r <= best.enc.r * 1.003 && off < best.off - 1e-9)) best = { pts, enc, off };
     }
   }
-  // 자리가 남으면 바깥 고리부터 한 자리씩 빼서 남는 틈이 고리마다 고르게 퍼지게
-  const counts = best.counts.slice();
-  const caps = counts.slice();
-  for (let surplus = total(counts) - n; surplus > 0; surplus--) {
-    let pick = -1;
-    for (let i = counts.length - 1; i >= (counts.length > 1 ? 1 : 0); i--) {
-      if (counts[i] > 1 && (pick < 0 || counts[i] / caps[i] > counts[pick] / caps[pick] + 1e-9)) pick = i;
-    }
-    counts[pick < 0 ? 0 : pick]--;
-  }
-  const pts = [];
-  counts.forEach((m, i) => {
-    const rho = i === 0 ? (m === best.counts[0] ? best.rho0 : eqChordR(m)) : best.rho0 + i * best.d;
-    const step = (Math.PI * 2) / m;
-    // 가장 바깥 고리는 맨 위(섹터 이름표 자리)에 종목 사이 틈이 오도록, 안쪽 고리는 번갈아 어긋나게
-    const start = -Math.PI / 2 + ((counts.length - 1 - i) % 2 === 0 ? step / 2 : 0);
-    for (let j = 0; j < m; j++) pts.push({ x: rho * Math.cos(start + j * step), y: rho * Math.sin(start + j * step) });
-  });
-  const res = { pts, outer: best.outer };
-  EQ_RING_CACHE.set(n, res);
+  const pts = best.pts
+    .map((p) => ({ x: p.x - best.enc.x, y: p.y - best.enc.y }))
+    .sort((u, v) => Math.hypot(u.x, u.y) - Math.hypot(v.x, v.y) || u.y - v.y || u.x - v.x); // 가운데 칸부터(목록 앞쪽 종목이 가운데)
+  const res = { pts, outer: Math.max(0, best.enc.r - 0.5) };
+  EQ_HEX_CACHE.set(n, res);
   return res;
 }
-function layoutEqualRings(root) {
+function layoutEqualHex(root) {
   const pitch = 2 + EQ_GAP; // 종목 반지름 1 기준, 이웃 종목 중심 사이 거리
   const circles = root.children.map((sec) => {
-    const lay = eqRingLayout(sec.children.length);
+    const lay = eqHexLayout(sec.children.length);
     return { sec, lay, rr: lay.outer * pitch + 1 + EQ_MARGIN, r: lay.outer * pitch + 1 + EQ_MARGIN + EQ_SECTOR_GAP / 2 };
   });
   d3.packSiblings(circles);
@@ -945,7 +937,7 @@ function buildPackedRoot(data) {
 
   // "원형" 모드 — 예전 버블맵(pack) 레이아웃 그대로(로고만 폐기, 텍스트 배지 표시)
   if (shapeMode === "circle") {
-    if (sizeMode === "equal") return layoutEqualRings(root); // 균등: 고리 모양으로 고르게(빈자리 없게)
+    if (sizeMode === "equal") return layoutEqualHex(root); // 균등: 벌집 모양, 덩어리는 늘 둥글게 가운데(빈자리 최소)
     d3.pack().size([WORLD_SIZE, WORLD_SIZE - MARKET_LABEL_STRIP]).padding((d) => (d.depth === 1 ? 30 : 2))(root);
     for (const node of root.descendants()) node.y += MARKET_LABEL_STRIP;
     return root;
