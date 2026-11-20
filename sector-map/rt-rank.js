@@ -302,14 +302,16 @@ function rtSyncHead() {
   rtEl("rtRegionLabel").innerHTML = `${rtMarkHtml(cur[0])}<span>${cur[1]}</span>`;
   rtEl("rtTabs").innerHTML = RT_TABS.map(([k, l]) => `<button type="button" class="rt-tab${k === rtTab ? " active" : ""}" data-tab="${k}">${l}</button>`).join("");
   rtEl("rtRegionMenu").innerHTML = groups.map(([k, l]) => `<button type="button" class="rt-region-item${k === rtGroup ? " active" : ""}" data-group="${k}">${rtMarkHtml(k)}<span>${l}</span></button>`).join("");
+  // 2026-11-21 사용자 요청: 미국주식·코인은 지연 시세가 아니므로 "지연 시세" 꼬리표는 한국주식·ETF에만
+  const delayNote = rtGroup === "us" || rtGroup === "crypto" ? "" : " · 지연 시세";
   rtEl("rtSub").textContent =
     rtTab === "popular"
       ? "최근 24시간 · 검색 + 시장 종목 클릭 + 관심 등록"
       : rtTab === "volume"
-      ? "오늘 지금까지 거래대금이 큰 순서 · 지연 시세"
+      ? `오늘 지금까지 거래대금이 큰 순서${delayNote}`
       : rtTab === "up"
-      ? "오늘 가장 많이 오른 순서 · 지연 시세"
-      : "오늘 가장 많이 내린 순서 · 지연 시세";
+      ? `오늘 가장 많이 오른 순서${delayNote}`
+      : `오늘 가장 많이 내린 순서${delayNote}`;
 }
 function rtOpen() {
   // 처음 열면 맨 앞 "인기" = 한국·미국·ETF·코인 통합. 거래량·상승·하락을 누르면 보던 시장의 순위부터 보여줌

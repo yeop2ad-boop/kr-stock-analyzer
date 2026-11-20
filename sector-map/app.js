@@ -2122,19 +2122,28 @@ function liveOverlayOf(sym) {
   return LIVE_OVERLAY.get(sym);
 }
 // ETF·코인 보기용 실시간 거래대금 — 워커 /day-vals(현재가 × 당일 누적 거래량, 코인은 24시간 거래대금)
+const CUSTOM_VALS_AT = new Map(); // 보기별로 /day-vals를 마지막으로 받은 때 — 코인 보기는 1분마다 갱신하지만 이 주소는 서버가 5분 보관하므로 5분에 한 번만 부른다
 async function refreshCustomVals() {
+  const viewAtStart = ACTIVE_VIEW;
   const syms = ACTIVE_DATA.companies.map((c) => c.symbol);
   const bySym = new Map(ACTIVE_DATA.companies.map((c) => [c.symbol, c]));
+  const mk = viewMarkets();
+  const cryptoOnly = mk.crypto && !mk.kr && !mk.us;
   let got = 0;
+  let fetchedAt = Infinity; // 서버가 값을 받아 둔 때(묶음 중 가장 오래된 것)
   // 워커는 호출 하나에서 바깥 요청 50개까지만 보낼 수 있어 45종목씩 나눠 동시에 부른다
   const chunks = [];
-  for (let i = 0; i < syms.length; i += 45) chunks.push(syms.slice(i, i + 45));
+  const lastFull = CUSTOM_VALS_AT.get(viewAtStart);
+  const skipDayVals = cryptoOnly && lastFull && Date.now() - lastFull.at < 5 * 60 * 1000;
+  if (skipDayVals) fetchedAt = lastFull.fetchedAt;
+  else for (let i = 0; i < syms.length; i += 45) chunks.push(syms.slice(i, i + 45));
   await Promise.all(
     chunks.map(async (chunk) => {
       try {
         const res = await fetch(`https://us-stock.yeop2ad.workers.dev/day-vals?symbols=${encodeURIComponent(chunk.join(","))}`);
         if (!res.ok) return;
         const data = await res.json();
+        if (data && Number.isFinite(data.fetchedAt)) fetchedAt = Math.min(fetchedAt, data.fetchedAt);
         for (const [sym, v] of Object.entries((data && data.vals) || {})) {
           const c = bySym.get(sym);
           if (c && v > 0) {
@@ -2157,7 +2166,24 @@ async function refreshCustomVals() {
       } catch {}
     })
   );
-  return got > 0;
+  if (!Number.isFinite(fetchedAt)) fetchedAt = Date.now();
+  if (got > 0 && !skipDayVals) CUSTOM_VALS_AT.set(viewAtStart, { at: Date.now(), fetchedAt });
+  // 코인은 야후 코인 목록으로 지금 값을 한 번 더 덮어씀(위 주소는 5분 보관이라 그만큼 늦을 수 있다)
+  let coinT = 0;
+  if (mk.crypto) coinT = await refreshCryptoScreener(bySym).catch(() => 0);
+  // 지도 시계에 쓸 "데이터 자체의 시각" — 들어 있는 자산별 시각 중 가장 최근 것
+  if (got > 0 || coinT || skipDayVals) {
+    const times = [];
+    if (mk.crypto) times.push(coinT ? coinT * 1000 : fetchedAt);
+    const [usTime, krFeed] = await Promise.all([mk.us ? fetchIndexAsOfTime("^GSPC") : null, mk.kr ? fetchQuoteTime("005930.KS") : null]);
+    if (mk.us) times.push(usTime ? Math.min(fetchedAt, usTime.getTime()) : fetchedAt); // 장중이면 받아 둔 때, 장이 끝났으면 마지막 시각
+    if (mk.kr) {
+      const kt = krDataTime(krFeed, fetchedAt);
+      times.push(kt ? Math.min(fetchedAt, kt.getTime()) : fetchedAt);
+    }
+    if (viewAtStart === ACTIVE_VIEW && times.length) setDataAsOf(new Date(Math.max(...times)));
+  }
+  return got > 0 || coinT > 0;
 }
 // 지금 보기에 실시간 거래대금이 없으면 한 번 받아 옴
 async function ensureVolLive() {
@@ -3267,15 +3293,81 @@ const LIVE_SECTOR_SCREENER_ID = {
 };
 
 async function fetchSectorScreenerLive(scrId) {
-  const url = `https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?formatted=false&lang=en-US&region=US&scrIds=${scrId}&count=250`;
+  // 끝의 range=1d: 중계 서버가 '장중 시세' 주소로 알아보고 짧게만 보관하게 하는 표식(없으면 10분 보관 — 2026-11-21 측정: 8분 전 값이 왔음).
+  // t=…: 30초마다 바뀌는 표식 — 30초 넘게 묵힌 값을 주지 않게 한다(여러 사람이 같이 봐도 야후에는 30초에 한 번만 물어봄). 야후는 두 값을 무시한다
+  const url = `https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?formatted=false&lang=en-US&region=US&scrIds=${scrId}&count=250&range=1d&t=${Math.floor(Date.now() / 30000)}`;
   const data = await proxyFetchJson(url);
   return (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
 }
 
+// ---------- 지도 시계에 쓸 "데이터 자체의 시각" 도우미(2026-11-21) ----------
+// 지금 보기에 어떤 자산이 들어 있는지 — 한국 상장(20분 지연 시세)·미국 상장(실시간)·코인(24시간 실시간)
+let _viewMarketsKey = null;
+let _viewMarkets = { kr: false, us: false, crypto: false };
+function viewMarkets() {
+  const list = (ACTIVE_DATA && ACTIVE_DATA.companies) || [];
+  const key = `${typeof ACTIVE_VIEW === "undefined" ? "" : ACTIVE_VIEW}:${list.length}:${list.length ? list[0].symbol : ""}`;
+  if (key !== _viewMarketsKey) {
+    const m = { kr: false, us: false, crypto: false };
+    for (const c of list) {
+      const s = c.symbol || "";
+      if (/\.(KS|KQ)$/i.test(s)) m.kr = true;
+      else if (/-(USD|KRW|USDT)$/.test(s)) m.crypto = true;
+      else m.us = true;
+    }
+    _viewMarkets = m;
+    _viewMarketsKey = key;
+  }
+  return _viewMarkets;
+}
+// 종목 하나의 마지막 체결 시각(야후 시세의 regularMarketTime) — 한국 종목은 20분 지연 시세의 시각이 그대로 온다
+async function fetchQuoteTime(symbol) {
+  try {
+    const data = await proxyFetchJson(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=1d&interval=1d`);
+    const meta = data && data.chart && data.chart.result && data.chart.result[0] && data.chart.result[0].meta;
+    return meta && typeof meta.regularMarketTime === "number" ? new Date(meta.regularMarketTime * 1000) : null;
+  } catch {
+    return null;
+  }
+}
+// 한국 시세가 가리키는 시각 — feedTime: 지금 지연 시세의 시각, fetchedAt: 서버가 값을 받아 둔 때(ms). 장중이면 서버가 받아 둔 뒤 흐른 시간만큼 더 예전 값이다
+function krDataTime(feedTime, fetchedAt) {
+  if (!feedTime) return null;
+  const now = Date.now();
+  const advancing = now - feedTime.getTime() < 30 * 60 * 1000; // 시세가 계속 들어오는 중(장중)
+  if (advancing && Number.isFinite(fetchedAt)) return new Date(feedTime.getTime() - Math.max(0, now - fetchedAt));
+  return feedTime;
+}
+// 코인: 야후 코인 목록 한 번으로 시가총액 상위 250개의 지금 등락률·24시간 거래대금(지도 코인 200개 중 150개쯤 해당). 받은 값 중 가장 최근 시각(초)을 돌려줌
+async function refreshCryptoScreener(bySym) {
+  // 끝의 t=…: 20초마다 바뀌는 표식 — 중계 서버가 20초 넘게 묵힌 값을 주지 않게 한다(여러 사람이 같이 봐도 야후에는 20초에 한 번만 물어봄). 야후는 이 값을 무시한다
+  const data = await proxyFetchJson(`https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?formatted=false&lang=en-US&region=US&scrIds=all_cryptocurrencies_us&count=250&range=1d&t=${Math.floor(Date.now() / 20000)}`);
+  const quotes = (data && data.finance && data.finance.result && data.finance.result[0] && data.finance.result[0].quotes) || [];
+  let maxT = 0;
+  for (const q of quotes) {
+    const c = q && bySym.get(q.symbol);
+    if (!c) continue;
+    if (typeof q.regularMarketChangePercent === "number") {
+      c.changePercent = q.regularMarketChangePercent;
+      liveOverlayOf(q.symbol).changePercent = q.regularMarketChangePercent;
+    }
+    if (typeof q.regularMarketVolume === "number" && q.regularMarketVolume > 0) {
+      c.dollarVolume = q.regularMarketVolume; // 코인은 야후 거래량이 이미 24시간 거래대금(달러)
+      c.volLive = true;
+      liveOverlayOf(q.symbol).dollarVolume = q.regularMarketVolume;
+      liveOverlayOf(q.symbol).volLive = true;
+    }
+    if (typeof q.regularMarketTime === "number" && q.regularMarketTime > maxT) maxT = q.regularMarketTime;
+  }
+  return maxT;
+}
+
 async function refreshLiveData() {
+  const viewAtStart = ACTIVE_VIEW;
   const companyBySymbol = new Map(ACTIVE_DATA.companies.map((c) => [c.symbol, c]));
   const sectorIds = Object.values(LIVE_SECTOR_SCREENER_ID);
   let updated = 0;
+  let quoteMaxT = 0; // 받은 시세 중 가장 최근 체결 시각(초) — 지도 시계의 기준
 
   // 섹터 하나가 끝날 때마다 바로 반영 — 거래량(순위) 시트를 보고 있으면 "OO/500" 진행 숫자가 실시간으로 올라간다
   async function processSector(scrId) {
@@ -3290,6 +3382,7 @@ async function refreshLiveData() {
         c.dollarVolume = q.regularMarketPrice * q.regularMarketVolume;
         c.volLive = true; // 대금 모드가 "지금 시각까지 누적"으로 비교할 수 있는 실시간 값
       }
+      if (typeof q.regularMarketTime === "number" && q.regularMarketTime > quoteMaxT) quoteMaxT = q.regularMarketTime;
       updated++;
     }
     if (METRICS.popularStocks) {
@@ -3306,13 +3399,13 @@ async function refreshLiveData() {
       await processSector(sectorIds[idx++]);
     }
   }
-  // 개별 종목들의 시각이 아니라 S&P500 지수(^GSPC) 자체의 실제 시각을 지도 시계 기준으로 씀 — 지수가 멈추면(장마감)
-  // 시계도 그대로 멈추고, 본체 시장 위젯이 보여주는 S&P500 시각과 항상 일치하게 됨
+  // 지도 시계 = 실제로 받은 종목 시세 중 가장 최근 체결 시각(2026-11-21: 예전엔 S&P500 지수의 시각을 썼는데, 종목 값은 그보다 10분까지 예전일 수 있었다).
+  // 장이 끝나면 마지막 체결 시각에 그대로 멈춘다. 종목 시각을 못 받았을 때만 지수(^GSPC) 시각으로 대신함
   const [, indexAsOf] = await Promise.all([
     Promise.all(Array.from({ length: Math.min(3, sectorIds.length) }, worker)),
     fetchIndexAsOfTime("^GSPC"),
   ]);
-  if (indexAsOf) lastDataAsOfTime = indexAsOf;
+  if (viewAtStart === ACTIVE_VIEW) setDataAsOf(quoteMaxT ? new Date(quoteMaxT * 1000) : indexAsOf);
 
   if (updated === 0) return false; // 전부 실패(프록시 다운 등) — 정적 스냅샷 값 유지
   liveDataLoaded = true;
@@ -3341,16 +3434,20 @@ async function fetchKrQuotesAll() {
   );
   const quotes = {};
   const vals = {};
+  let fetchedAt = Infinity; // 서버가 값을 받아 둔 때(묶음 중 가장 오래된 것) — 최대 15분 보관
   for (const p of parts) {
     if (!p) continue;
     Object.assign(quotes, p.quotes || {});
     Object.assign(vals, p.vals || {});
+    if (Number.isFinite(p.fetchedAt) && p.quotes && Object.keys(p.quotes).length) fetchedAt = Math.min(fetchedAt, p.fetchedAt);
   }
-  return { quotes, vals };
+  return { quotes, vals, fetchedAt: Number.isFinite(fetchedAt) ? fetchedAt : null };
 }
 async function refreshDomesticLiveData() {
   try {
-    const [data, indexAsOf] = await Promise.all([fetchKrQuotesAll(), fetchIndexAsOfTime("^KS11")]);
+    const viewAtStart = ACTIVE_VIEW;
+    // 지도 시계 = 한국 종목 시세의 시각(삼성전자의 마지막 체결 시각 — 20분 지연 시세 그대로). 못 받으면 코스피 지수(^KS11) 시각
+    const [data, feedTime, indexAsOf] = await Promise.all([fetchKrQuotesAll(), fetchQuoteTime("005930.KS"), fetchIndexAsOfTime("^KS11")]);
     const quotes = data && data.quotes;
     if (!quotes || !Object.keys(quotes).length) return false;
     const companyBySymbol = new Map(ACTIVE_DATA.companies.map((c) => [c.symbol, c]));
@@ -3395,8 +3492,8 @@ async function refreshDomesticLiveData() {
       );
     }
     liveDataLoaded = true;
-    // 개별 종목이 아니라 코스피 지수(^KS11) 자체의 실제 시각을 지도 시계 기준으로 씀 — 코스피가 멈추면(장마감) 시계도 그대로 멈춤
-    if (indexAsOf) lastDataAsOfTime = indexAsOf;
+    // 장이 끝나면 마지막 체결 시각(15:30)에 그대로 멈춘다(2026-11-21: 예전엔 코스피 지수 시각을 써서 저녁에 20:05로 보였음)
+    if (viewAtStart === ACTIVE_VIEW) setDataAsOf(krDataTime(feedTime, data.fetchedAt) || indexAsOf);
     refreshAllBubbleColors();
     for (const key of ["changePct"]) {
       if (METRICS[key]) delete METRICS[key].domain;
@@ -3464,6 +3561,15 @@ let lastColorRefreshAt = null;
 // 실제 데이터 자체의 시각(해외: S&P500 지수 ^GSPC, 국내: 코스피 지수 ^KS11의 실제 regularMarketTime) — 지도 시계를
 // "지금 몇 시니까 아마 이쯤이겠지" 식 추정이 아니라 본체 시장 위젯이 보여주는 지수와 동일한 시점으로 맞추는 데 씀
 let lastDataAsOfTime = null;
+// 그 시각이 어느 보기의 것인지(2026-11-21) — 예전엔 코인·ETF 보기로 넘어가도 앞서 보던 주식 지수의 시각이 그대로 남아 "코인인데 06:59 기준"처럼 보였다
+let lastDataAsOfView = null;
+let lastRefreshDoneView = null; // 마지막으로 갱신을 끝낸(성공이든 실패든) 보기
+let lastLiveRefreshTryAt = Date.now(); // 마지막으로 시세 갱신을 시작한 때(자동 갱신 주기 계산용)
+function setDataAsOf(date) {
+  if (!date || Number.isNaN(date.getTime())) return;
+  lastDataAsOfTime = date;
+  lastDataAsOfView = ACTIVE_VIEW;
+}
 // 본체 시장탭이 보여주는 시각(지수 데이터의 regularMarketTime)을 그대로 사용 — 예전에 여기서 20분을 더 빼서
 // 지도 시계만 본체보다 뒤처져 보이던 문제(사용자 보고: "지도가 50분 지연") 해결(2026-08-31)
 async function fetchIndexAsOfTime(indexSymbol) {
@@ -3480,6 +3586,8 @@ async function fetchIndexAsOfTime(indexSymbol) {
 // 지수 시각 조회 실패 시 폴백 — 장중이면 현재 시각, 장 마감 후에는 마감 시각에 고정(본체 시장탭 표기와 동일 기준).
 // 장이 이미 끝났으면 그 이후로는 데이터가 더 안 들어오니 마감 시각에 고정하고 더 흘러가지 않게 함
 function computeDelayedAsOfTime() {
+  const mk = viewMarkets();
+  if (mk.crypto && !mk.kr && !mk.us) return { time: new Date(), isToday: true }; // 코인은 24시간 거래
   const isKr = ACTIVE_MARKET === "domestic";
   const tz = isKr ? "Asia/Seoul" : "America/New_York";
   const local = new Date(new Date().toLocaleString("en-US", { timeZone: tz }));
@@ -3530,11 +3638,18 @@ function renderAiFabTimestamp() {
     timeEl.className = "ai-fab ai-fab-time-stale";
     return;
   }
-  const marketOpen = ACTIVE_MARKET === "domestic" ? isKrMarketOpen() : isUsMarketOpen();
+  const mk = viewMarkets();
+  const marketOpen = mk.crypto || (mk.kr && isKrMarketOpen()) || (mk.us && isUsMarketOpen());
+  // 보기를 막 바꿔 새 보기의 시세를 아직 못 받았으면 앞 보기의 시각을 보여 주지 않는다
+  if (lastDataAsOfView !== ACTIVE_VIEW && lastRefreshDoneView !== ACTIVE_VIEW) {
+    timeEl.textContent = "연결중...";
+    timeEl.className = "ai-fab";
+    return;
+  }
   // 실제 데이터 자체의 시각이 있으면(정상 케이스) 그걸 그대로 씀 — 장 마감 후에도 본체 시장 위젯처럼 데이터가
   // 실제로 더 들어오는 만큼 시계도 따라 움직이고, 더 이상 안 들어오면 자연히 그 마지막 시각에 멈춰 있게 됨(가짜 고정 아님)
   let asOf, isToday;
-  if (lastDataAsOfTime) {
+  if (lastDataAsOfTime && lastDataAsOfView === ACTIVE_VIEW) {
     const p = fmtKstParts(lastDataAsOfTime);
     asOf = lastDataAsOfTime;
     isToday = p.year === nowKst.year && p.month === nowKst.month && p.day === nowKst.day;
@@ -3548,8 +3663,9 @@ function renderAiFabTimestamp() {
     timeEl.className = "ai-fab";
     return;
   }
-  // 2026-11-20: 숫자만 있으면 무슨 시각인지 알 수 없어 "기준 · 20분 지연"을 붙인다(초는 뺌)
-  timeEl.textContent = `${asOfKst.hour}:${asOfKst.minute} 기준 · 20분 지연`;
+  // 2026-11-20: 숫자만 있으면 무슨 시각인지 알 수 없어 "기준"을 붙인다(초는 뺌).
+  // 2026-11-21 사용자 요청: 미국주식·코인은 지연 시세가 아니므로 "20분 지연"은 한국 상장 종목이 들어 있는 보기에만
+  timeEl.textContent = `${asOfKst.hour}:${asOfKst.minute} 기준${mk.kr ? " · 20분 지연" : ""}`;
   timeEl.className = marketOpen ? "ai-fab ai-fab-time-live" : "ai-fab";
 }
 
@@ -3567,6 +3683,16 @@ document.getElementById("aiFabTime").addEventListener("click", async () => {
 
 // 국내/해외 어느 쪽이 활성인지에 맞춰 알맞은 실시간 갱신 함수를 호출하고, 성공 시 AI 버튼의 갱신 시각을 함께 업데이트
 async function refreshActiveMarketLiveData({ silent = false } = {}) {
+  lastLiveRefreshTryAt = Date.now(); // 자동 갱신 주기는 마지막 갱신(직접 누른 것 포함)부터 다시 센다
+  const viewAtStart = ACTIVE_VIEW;
+  try {
+    return await refreshActiveMarketLiveDataInner({ silent });
+  } finally {
+    if (viewAtStart === ACTIVE_VIEW) lastRefreshDoneView = viewAtStart;
+    renderAiFabTimestamp();
+  }
+}
+async function refreshActiveMarketLiveDataInner({ silent = false } = {}) {
   // ETF200/비트코인50 보기는 배치 스냅샷 기반이라 주식용 실시간 갱신(스크리너/국내 워커)이 적용되지 않음 — 건너뜀
   const _av = MAP_VIEWS[ACTIVE_VIEW];
   if (_av && (_av.custom || _av.mine || _av.needAll || _av.ipo)) {
@@ -3927,12 +4053,24 @@ function loadMarket(mode, animate) {
   scheduleInactiveMarketPreload(); // 시장 전환 시에도 방금 떠난 쪽 로고를 한가할 때 다시 캐시해둠(다음에 돌아왔을 때 즉시 뜨도록)
 }
 
-// 20분 지연 표시에 맞춰 5분마다 조용히(토스트 없이) 색상을 다시 갱신 — 페이지를 오래 켜둬도 계속 근신에 가깝게 유지됨
-setInterval(() => {
+// 조용히(토스트 없이) 색상을 다시 갱신 — 페이지를 오래 켜둬도 계속 근신에 가깝게 유지됨.
+// 2026-11-21 사용자 요청("바로바로 기준시간"): 실시간으로 바뀌는 보기는 더 자주 — 코인만 있는 보기 30초, 미국 장중 1분, 그 밖(한국은 20분 지연 시세·서버 15분 보관)은 5분.
+// 화면이 가려져 있는 동안은 쉬고, 다시 보이면 밀린 갱신을 바로 한다
+function liveRefreshEveryMs() {
+  const mk = viewMarkets();
+  if (mk.crypto && !mk.kr && !mk.us) return 30 * 1000;
+  if (mk.us && !mk.kr && isUsMarketOpen()) return 60 * 1000;
+  return 5 * 60 * 1000;
+}
+function tickLiveRefresh() {
+  if (document.hidden) return;
+  if (Date.now() - lastLiveRefreshTryAt < liveRefreshEveryMs()) return;
   refreshActiveMarketLiveData({ silent: true })
     .catch(() => {})
     .then(() => applyChangeModeToSectorBubbles());
-}, 5 * 60 * 1000);
+}
+setInterval(tickLiveRefresh, 10 * 1000);
+document.addEventListener("visibilitychange", tickLiveRefresh);
 // AI 버튼 시각 표시는 매초 새로고침(장중 HH:MM:SS가 실시간으로 흐르는 것처럼 보이게)
 setInterval(renderAiFabTimestamp, 1000);
 
