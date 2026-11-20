@@ -1553,7 +1553,10 @@ body.mine-editing .mine-stock { cursor: pointer; }
 
 /* 2026-10-22: 튜토리얼 — 어두운 화면 + 밝은 구멍 + 통통 튀는 빨간 화살표 + 한 줄 말풍선 */
 .tut-root { position: fixed; inset: 0; z-index: 10000; touch-action: manipulation; }
-.tut-hole { position: fixed; border-radius: 999px; box-shadow: 0 0 0 100vmax rgba(8, 10, 24, 0.68); outline: 3px solid #ff2d2d; outline-offset: 0; transition: left 0.3s ease, top 0.3s ease, width 0.3s ease, height 0.3s ease; animation: tut-pulse 1.2s ease-in-out infinite; pointer-events: none; }
+.tut-hole { position: fixed; border-radius: 999px; box-shadow: 0 0 0 100vmax rgba(8, 10, 24, 0.68); outline: 3px solid #ff2d2d; outline-offset: 0; transition: left 0.3s ease, top 0.3s ease, width 0.3s ease, height 0.3s ease, box-shadow 0.3s ease; animation: tut-pulse 1.2s ease-in-out infinite; pointer-events: none; }
+/* 지도에서 종목이 걸러지는 모습을 보여 주는 장은 화면을 어둡게 덮지 않음(2026-11-20) */
+.tut-root.tut-clear .tut-hole { box-shadow: 0 0 0 100vmax rgba(8, 10, 24, 0); }
+.tut-root.tut-clear .tut-bubble { border: 2px solid #ff2d2d; }
 @keyframes tut-pulse { 0%, 100% { outline-color: #ff2d2d; outline-width: 3px; } 50% { outline-color: rgba(255, 45, 45, 0.35); outline-width: 6px; } }
 .tut-arrow { position: fixed; width: 44px; height: 52px; transform: rotate(var(--rot, 0deg)); transition: left 0.3s ease, top 0.3s ease; pointer-events: none; filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.45)); }
 .tut-arrow svg { display: block; animation: tut-bounce 0.7s ease-in-out infinite; }
