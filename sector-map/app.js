@@ -835,87 +835,49 @@ async function refreshIndexQuotes() {
   refreshMarketIndexLabels();
 }
 
-// ---------- 균등 모드 배치(2026-11-21 사용자 요청: 섹터 원 안에 빈자리 없게 · 모양은 예전 같은 벌집) ----------
-// 예전엔 d3.pack에 맡겼는데, 같은 크기 원을 나선으로 하나씩 붙여 가는 방식이라 종목 수에 따라 한쪽이 덜 찬 덩어리
-// (예: 12개 = 3·4·5줄 사다리꼴)가 되고, 그 덩어리를 감싸는 섹터 원의 반대쪽이 통째로 비었다.
-// 균등 모드에서는 벌집 칸 가운데서 "가장 둥글게 모이는 n칸"을 골라 채우고, 섹터 원은 그 덩어리에 딱 맞춘다(시총 모드는 크기가 제각각이라 d3.pack 그대로).
-// (같은 날 처음엔 고리 모양으로 놓았는데 사용자가 "예전처럼 벌집 모양이 더 좋아, 공백은 최대한 없도록"이라 해서 벌집으로 바꿈)
-const EQ_GAP = 0.9; // 종목 원 사이 간격(종목 반지름의 배수) — 예전 간격과 비슷하게
-const EQ_MARGIN = 0.9; // 섹터 테두리와 가장 바깥 종목 원 사이(종목 반지름의 배수)
-const EQ_SECTOR_GAP = 0.08; // 섹터 원끼리의 간격
-const EQ_HEX_CACHE = new Map();
-// n개를 놓을 벌집 자리(덩어리를 감싸는 가장 작은 원의 중심이 원점, 이웃 거리 1 단위)와 가장 먼 자리까지의 거리
-function eqHexLayout(n) {
-  if (EQ_HEX_CACHE.has(n)) return EQ_HEX_CACHE.get(n);
-  const H = Math.sqrt(3) / 2;
-  const M = Math.ceil(Math.sqrt(n)) + 3;
-  const lattice = [];
-  for (let r = -M; r <= M; r++) for (let q = -M; q <= M; q++) lattice.push({ x: q + r / 2, y: r * H });
-  // 덩어리 중심 후보: 칸 한가운데 · 두 칸 사이 · 세 칸 사이(위/아래)
-  const centers = [[0, 0], [0.5, 0], [0.5, H / 3], [0.5, -H / 3]];
-  let best = null;
-  for (const [cx, cy] of centers) {
-    const withD = lattice.map((p) => ({ x: p.x, y: p.y, d: Math.hypot(p.x - cx, p.y - cy), a: Math.atan2(p.y - cy, p.x - cx) }));
-    withD.sort((u, v) => u.d - v.d);
-    const cutD = withD[n - 1].d;
-    const inner = withD.filter((p) => p.d < cutD - 1e-6);
-    const shell = withD.filter((p) => Math.abs(p.d - cutD) <= 1e-6);
-    const need = n - inner.length;
-    // 마지막 겹(중심에서 같은 거리인 칸들)에서 need칸을 고르는 방법 — ①한쪽부터 이어서 채우기 ②둘레에 고르게 띄워 채우기를 방향을 돌려 가며 다 해 보고,
-    // 가장 작은 원에 들어가는 것을 쓴다. 크기가 같으면(0.3% 이내) 종목들의 무게중심이 원 한가운데에 더 가까운(한쪽으로 덜 쏠린) 쪽
-    const ring = shell.slice().sort((u, v) => u.a - v.a);
-    const tries = [];
-    for (let s = 0; s < 12; s++) {
-      const a0 = -Math.PI + (s * Math.PI) / 6;
-      tries.push(ring.map((p) => ({ p, k: (p.a - a0 + Math.PI * 4) % (Math.PI * 2) })).sort((u, v) => u.k - v.k).slice(0, need).map((u) => u.p));
-    }
-    for (let s = 0; s < Math.min(ring.length, 12); s++) {
-      const used = new Set();
-      for (let i = 0; i < need; i++) {
-        let j = (s + Math.round((i * ring.length) / need)) % ring.length;
-        while (used.has(j)) j = (j + 1) % ring.length;
-        used.add(j);
-      }
-      tries.push([...used].map((j) => ring[j]));
-    }
-    for (const picked of tries) {
-      const pts = inner.concat(picked);
-      const enc = d3.packEnclose(pts.map((p) => ({ x: p.x, y: p.y, r: 0.5 })));
-      const off = Math.hypot(pts.reduce((a, p) => a + p.x, 0) / n - enc.x, pts.reduce((a, p) => a + p.y, 0) / n - enc.y);
-      if (!best || enc.r < best.enc.r * 0.997 || (enc.r <= best.enc.r * 1.003 && off < best.off - 1e-9)) best = { pts, enc, off };
-    }
+// ---------- 섹터 원 안에서 한쪽으로 쏠린 종목 덩어리를 가운데로(2026-11-21) ----------
+// 종목 배치는 예전 그대로(d3.pack) 둔다. 다만 같은 크기 원을 나선으로 붙여 가는 방식이라 종목 수에 따라 덩어리가 위쪽 절반에만 몰리고
+// (예: 12개 = 3·4·5줄) 섹터 원 아래쪽이 통째로 비는 경우가 있어, 그렇게 많이 치우친 섹터만 덩어리를 통째로 가운데 쪽으로 옮긴다.
+// 사용자 요청: "기존처럼 유지해주고 아래나 위가 너무 빈 것만 가운데로 모아줘" (같은 날 고리 배치·새 벌집 배치를 차례로 해 봤으나 둘 다 반려)
+const LOPSIDED_LIMIT = 0.07; // 덩어리 가운데가 섹터 원 가운데에서 반지름의 7% 넘게 벗어난 것만 옮긴다
+function centerLopsidedCluster(sec, kids) {
+  if (!kids || kids.length < 2 || !(sec.r > 0)) return;
+  let x0 = Infinity;
+  let x1 = -Infinity;
+  let y0 = Infinity;
+  let y1 = -Infinity;
+  let pad = Infinity; // 지금 가장 바깥 종목과 섹터 테두리 사이 여백
+  for (const k of kids) {
+    x0 = Math.min(x0, k.x - k.r);
+    x1 = Math.max(x1, k.x + k.r);
+    y0 = Math.min(y0, k.y - k.r);
+    y1 = Math.max(y1, k.y + k.r);
+    pad = Math.min(pad, sec.r - Math.hypot(k.x - sec.x, k.y - sec.y) - k.r);
   }
-  const pts = best.pts
-    .map((p) => ({ x: p.x - best.enc.x, y: p.y - best.enc.y }))
-    .sort((u, v) => Math.hypot(u.x, u.y) - Math.hypot(v.x, v.y) || u.y - v.y || u.x - v.x); // 가운데 칸부터(목록 앞쪽 종목이 가운데)
-  const res = { pts, outer: Math.max(0, best.enc.r - 0.5) };
-  EQ_HEX_CACHE.set(n, res);
-  return res;
-}
-function layoutEqualHex(root) {
-  const pitch = 2 + EQ_GAP; // 종목 반지름 1 기준, 이웃 종목 중심 사이 거리
-  const circles = root.children.map((sec) => {
-    const lay = eqHexLayout(sec.children.length);
-    return { sec, lay, rr: lay.outer * pitch + 1 + EQ_MARGIN, r: lay.outer * pitch + 1 + EQ_MARGIN + EQ_SECTOR_GAP / 2 };
-  });
-  d3.packSiblings(circles);
-  const enc = d3.packEnclose(circles);
-  const h = WORLD_SIZE - MARKET_LABEL_STRIP;
-  const k = Math.min(WORLD_SIZE, h) / (2 * enc.r);
-  root.x = WORLD_SIZE / 2;
-  root.y = MARKET_LABEL_STRIP + h / 2;
-  root.r = enc.r * k;
-  for (const c of circles) {
-    c.sec.x = root.x + (c.x - enc.x) * k;
-    c.sec.y = root.y + (c.y - enc.y) * k;
-    c.sec.r = c.rr * k;
-    c.sec.children.forEach((leaf, i) => {
-      leaf.x = c.sec.x + c.lay.pts[i].x * pitch * k;
-      leaf.y = c.sec.y + c.lay.pts[i].y * pitch * k;
-      leaf.r = k;
-    });
+  let dx = sec.x - (x0 + x1) / 2;
+  let dy = sec.y - (y0 + y1) / 2;
+  if (Math.abs(dx) < sec.r * LOPSIDED_LIMIT) dx = 0;
+  if (Math.abs(dy) < sec.r * LOPSIDED_LIMIT) dy = 0;
+  if (!dx && !dy) return;
+  // 옮긴 뒤에도 모든 종목이 섹터 원 안에 있도록 갈 수 있는 만큼만 — 테두리와의 여백은 원래의 3분의 1까지 줄어드는 것을 허용
+  const keep = Math.max(0, pad) * 0.34;
+  const fits = (t) => kids.every((k) => Math.hypot(k.x + dx * t - sec.x, k.y + dy * t - sec.y) + k.r <= sec.r - keep + 1e-6);
+  let t = 1;
+  if (!fits(1)) {
+    let lo = 0;
+    let hi = 1;
+    for (let i = 0; i < 24; i++) {
+      const mid = (lo + hi) / 2;
+      if (fits(mid)) lo = mid;
+      else hi = mid;
+    }
+    t = lo;
   }
-  return root;
+  if (t <= 0) return;
+  for (const k of kids) {
+    k.x += dx * t;
+    k.y += dy * t;
+  }
 }
 
 function buildPackedRoot(data) {
@@ -937,9 +899,9 @@ function buildPackedRoot(data) {
 
   // "원형" 모드 — 예전 버블맵(pack) 레이아웃 그대로(로고만 폐기, 텍스트 배지 표시)
   if (shapeMode === "circle") {
-    if (sizeMode === "equal") return layoutEqualHex(root); // 균등: 벌집 모양, 덩어리는 늘 둥글게 가운데(빈자리 최소)
     d3.pack().size([WORLD_SIZE, WORLD_SIZE - MARKET_LABEL_STRIP]).padding((d) => (d.depth === 1 ? 30 : 2))(root);
     for (const node of root.descendants()) node.y += MARKET_LABEL_STRIP;
+    for (const sec of root.children || []) centerLopsidedCluster(sec, sec.children); // 위·아래(좌·우)가 많이 빈 섹터만 덩어리를 가운데로
     return root;
   }
 
