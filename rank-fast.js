@@ -16,7 +16,7 @@ const RF_LIVE_FIELDS = new Set(["w52", "dv", "per", "vol", "rsi"]); // 값 자�
 //   머리글 맨 아래 줄에는 "높은 순"/"낮은 순"을 늘 적는다(변동폭·과열도·부채비율·PER·52주 위치는 낮은 값이 1위인데 표시가 없어 헷갈렸다).
 const RF_ITEMS = {
   win: { label: "10년 과거승률", dir: "desc", th: "10년<br>과거승률", short10: true },
-  ret: { label: "1년 평균 상승", dir: "desc", th: "1년<br>평균 상승", short10: true },
+  ret: { label: "1년상승", dir: "desc", th: "1년상승", sub: "10년 평균", short10: true },
   rev: { label: "매출 증가", dir: "desc", th: "매출 증가", sub: "작년 같은 분기 대비", assetLabel: "1년 수익률", assetTh: "1년<br>수익률", assetExplain: "ret1y" },
   vol: { label: "하루 변동폭", dir: "asc", th: "하루 변동폭", sub: "3개월" },
   rsi: { label: "과열도(RSI)", dir: "asc", th: "과열도<br>(RSI)" },
@@ -33,7 +33,7 @@ const RF_ITEMS = {
   fee: { label: "운용보수", dir: "asc", positive: true, th: "운용보수", sub: "연 총보수" },
   aum: { label: "규모", dir: "desc", th: "규모", sub: "순자산" },
 };
-// inclShort: 과거승률·1년 평균 상승 순위에 기록이 10년(코인 7년)이 안 되는 종목도 넣을지 — 기본은 뺀다(2026-11-20 사용자 요청: "10년미만 포함" 버튼)
+// inclShort: 과거승률·1년상승 순위에 기록이 10년(코인 7년)이 안 되는 종목도 넣을지 — 기본은 뺀다(2026-11-20 사용자 요청: "10년미만 포함" 버튼)
 const rfState = { sec: "stocks", market: "kr", key: "win", shown: RF_PAGE, rows: null, token: 0, liveFailed: false, reverse: false, inclShort: false, hiddenShort: 0 };
 
 function rfLiveMsGet() {
@@ -349,7 +349,7 @@ async function rfPaint() {
 function rfHeadHtml(key) {
   const btn = `<button type="button" class="score-method-detail-btn metric-explain-btn" data-rf-explain="${key}">${rfExplainLabel(key)}</button>`;
   const rev = `<button type="button" class="score-method-detail-btn rf-rev-btn${rfState.reverse ? " on" : ""}" data-rf-reverse="1">${rfState.reverse ? "앞에서부터" : "뒤에서부터"}</button>`;
-  // 과거승률·1년 평균 상승: 기본은 기록 10년(코인 7년) 이상만 — 이 버튼을 켜면 전 종목 순위
+  // 과거승률·1년상승: 기본은 기록 10년(코인 7년) 이상만 — 이 버튼을 켜면 전 종목 순위
   const item = RF_ITEMS[key];
   const short = item && item.short10 ? `<button type="button" class="score-method-detail-btn rf-rev-btn rf-short-btn${rfState.inclShort ? " on" : ""}" data-rf-short="1">${rfState.sec === "crypto" ? "7년미만 포함" : "10년미만 포함"}</button>` : "";
   return `<div class="popular-head-row rf-head-row"><span class="tap-hint pop-hint">${RANK_HINT_SPAN}</span><span class="rf-head-btns">${short}${rev}${btn}</span></div>`;
@@ -441,7 +441,7 @@ document.addEventListener("click", async (e) => {
 // ---------- "+○○이란" 설명(2026-10-21 사용자 요청) — 지도의 "+RSI란?" 같은 설명을 별별순위·검색상세에서 그대로 ----------
 // 글(2줄) + 대표 종목들의 지금 값을 색깔 막대로 비교. 값은 DB(sreport-baseline)에서 읽어 별도 조회가 없다.
 const RF_EXPLAIN_NAME = {
-  win: "과거승률", ret: "1년 평균 상승", rev: "매출 증가", vol: "하루 변동폭", rsi: "과열도(RSI)", ni: "순이익 증가", om: "영업이익률", roe: "ROE", cf: "현금 증가",
+  win: "과거승률", ret: "1년상승", rev: "매출 증가", vol: "하루 변동폭", rsi: "과열도(RSI)", ni: "순이익 증가", om: "영업이익률", roe: "ROE", cf: "현금 증가",
   debt: "부채비율", mcap: "시가총액", dv: "거래대금", w52: "52주 위치", per: "PER", div: "배당률", fee: "운용보수", aum: "규모", ret1y: "1년 수익률", surge: "거래 몰림",
 };
 // section: 지금 화면의 투자처(기본은 별별순위 상태) — ETF·코인에서 "매출 증가" 자리는 "1년 수익률"

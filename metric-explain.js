@@ -93,7 +93,7 @@ function mxDiagramHtml(key) {
     case "vol":
       return mxdCard("하루 변동폭", mxdFrac("하루하루 오르내린 크기를 더한 값", "날짜 수"), mxdFrac("2% + 1% + 3%", "3일"), "2%");
     case "ret":
-      return `<div class="mxd"><div class="mxd-line"><span class="mxd-name">1년 평균 상승</span><span class="mxd-op">=</span><span class="mxd-term">10년 동안 오른 것을 1년 평균으로 나눈 값</span></div><div class="mxd-line"><span class="mxd-ex">예</span><span class="mxd-term">10년 전 100만원</span><span class="mxd-op">→</span><span class="mxd-term">지금 259만원</span><span class="mxd-op">=</span><span class="mxd-res">해마다 10%씩</span></div></div>`;
+      return `<div class="mxd"><div class="mxd-line"><span class="mxd-name">1년상승(10년 평균)</span><span class="mxd-op">=</span><span class="mxd-term">10년 동안 오른 것을 1년 평균으로 나눈 값</span></div><div class="mxd-line"><span class="mxd-ex">예</span><span class="mxd-term">10년 전 100만원</span><span class="mxd-op">→</span><span class="mxd-term">지금 259만원</span><span class="mxd-op">=</span><span class="mxd-res">해마다 10%씩</span></div></div>`;
     default:
       return "";
   }
