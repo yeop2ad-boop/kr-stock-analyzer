@@ -1,5 +1,5 @@
 const NDX_EXTRA_DATA = {
-  "generatedAt": "2026-11-21T03:04:54Z",
+  "generatedAt": "2026-11-21T15:58:23Z",
   "count": 15,
   "constituentsAsOf": "2026-11-21",
   "constituents": [
@@ -166,8 +166,8 @@ const NDX_EXTRA_DATA = {
       "sectorKo": "경기소비재",
       "marketCap": 476439263760.64,
       "changePercent": -2.7,
-      "per": 1.18,
-      "eps": 71.08,
+      "per": 1.2,
+      "eps": 70.0,
       "dividendYield": null,
       "winRateScore": 50.0,
       "rsiWeekly": 48.5,
