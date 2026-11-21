@@ -1,5 +1,41 @@
 [
   {
+    "id": "01449c61c8b8",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "AI 분야의 가장 오해받는 그래프가 대폭 업데이트되다",
+    "originalTitle": "The most misunderstood graph in AI just got a major update",
+    "link": "https://www.technologyreview.com/2026/11/20/1149399/the-most-misunderstood-graph-in-ai-just-got-a-major-update/",
+    "summary": "AI 평가 기관 METR이 발표한 최신 보고서는 AI 모델의 성능이 여전히 빠르게 향상되고 있지만, 판단력을 요구하는 작업에서는 약점을 보인다는 사실을 드러냈다. METR의 시간 지평선 플롯은 AI 성능 추적의 핵심 도구이지만 측정 방식의 복잡성으로 인해 종종 오해받아왔다. 코딩이나 수학 같은 검증 가능한 작업에서는 AI가 뛰어난 성과를 내고 있으나, AI 평가 설계나 철학적 주장 채점 같이 모호하고 판단을 필요로 하는 작업에서는 인간의 성능에 미치지 못한다. 이번 업데이트는 AI 연구 개발의 자동화에 필수적인 개방형 작업에 대한 평가를 추가함으로써, AI 성능 측정의 한계를 더욱 명확히 보여준다.",
+    "image": "data/techinsight-images/01449c61c8b8.webp",
+    "publishedAt": "2026-11-20T18:15:15.000Z",
+    "createdAt": "2026-11-21T02:08:21.922Z"
+  },
+  {
+    "id": "6d39921c7e25",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "딥페이크 시대, 영상 콘텐츠의 진위 판단이 역전되어야 한다",
+    "originalTitle": "I Don’t Trust Visual Recordings Anymore. But One Day I Will Again",
+    "link": "https://spectrum.ieee.org/fighting-back-against-deep-fakes",
+    "summary": "AI 기술의 발전으로 가짜 영상을 구별하기 점점 어려워지자, 컴퓨터 과학자인 필자는 기존의 \"진정성 추정\" 원칙을 \"가짜 추정\" 원칙으로 바꿔야 한다고 주장한다. 이는 의심자가 아닌 콘텐츠 제작자가 자신의 영상이 진짜임을 증명할 책임을 져야 한다는 뜻이다. 필자는 직접 겪은 미사일 타격 영상 사례를 통해 프레임 정렬, 미사일 크기 검증 등 디지털 포렌식 기법으로 조작 여부를 판단하는 과정을 보여준다. 비록 현재는 가짜 영상을 구별하기 어렵지만, 콘텐츠 진위 증명 시스템이 발전하면 언젠가는 다시 온라인 미디어를 신뢰할 수 있게 될 것이라고 본다.",
+    "image": "data/techinsight-images/6d39921c7e25.webp",
+    "publishedAt": "2026-11-20T14:00:03.000Z",
+    "createdAt": "2026-11-21T02:08:25.263Z"
+  },
+  {
+    "id": "956a058c400b",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "인간의 정신을 영원히 보존하려는 과학자들의 도전",
+    "originalTitle": "The Download: inside the quest to make our minds immortal",
+    "link": "https://www.technologyreview.com/2026/11/20/1149371/the-download-quest-to-make-minds-immortal/",
+    "summary": "죽음 이후에도 인간의 의식을 살려두려는 시도들이 진행 중이며, 뇌 이식, 뇌 동결, 디지털 아바타 등 다양한 방식이 모색되고 있다. 대규모 정부 자금이 투입되는 뇌 조직 대체 프로젝트부터 거대 언어 모델을 활용한 인공지능 복제인간까지 기술은 빠르게 진화하고 있다. 하지만 무엇을 보존하려는 것인지, 그것이 과연 '나'인지 하는 철학적 의문과 현실적 한계들이 여전히 존재한다. 불멸에 대한 판매 전략의 어려움과 개념적 모호성에도 불구하고, 이 분야는 과학과 철학을 교차하는 흥미로운 질문들을 던지고 있다.",
+    "image": "data/techinsight-images/956a058c400b.webp",
+    "publishedAt": "2026-11-20T13:10:00.000Z",
+    "createdAt": "2026-11-21T02:08:22.191Z"
+  },
+  {
     "id": "a2b4200aad77",
     "sourceKey": "oecd",
     "source": "OECD",
@@ -10,6 +46,30 @@
     "image": "data/techinsight-images/a2b4200aad77.webp",
     "publishedAt": null,
     "createdAt": "2026-11-20T02:15:07.994Z"
+  },
+  {
+    "id": "1b0708bc9f02",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "물리적 AI, 현실 세계로 본격 진출하다",
+    "originalTitle": "Physical AI is breaking out of the box",
+    "link": "https://www.mckinsey.com/industries/industrials/our-insights/physical-ai-is-breaking-out-of-the-box",
+    "summary": "물리적 AI 기술이 급속도로 발전하면서 현재 주목받고 있는 애플리케이션과 자금이 집중된 기술들을 넘어서는 새로운 기회들이 등장하고 있다. 로봇과 자동화 분야에서 물리적 AI의 확산이 진행되고 있으며, 이는 기존에 예상하지 못했던 다양한 산업과 분야에 혁신을 가져올 수 있는 가능성을 보여준다. 현재 가시화된 기술들 너머에 더욱 광범위한 실제 적용 사례들이 개발될 여지가 충분하다는 점이 업계의 주요 관심사가 되고 있다.",
+    "image": "data/techinsight-images/1b0708bc9f02.webp",
+    "publishedAt": "2026-11-20T00:00:00.000Z",
+    "createdAt": "2026-11-21T02:08:33.444Z"
+  },
+  {
+    "id": "d6ffd324a49c",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "인공지능 시대, 미국 경제 이동성을 높이기 위한 과제",
+    "originalTitle": "Advancing US economic mobility in the age of AI",
+    "link": "https://www.mckinsey.com/institute-for-economic-mobility/our-insights/advancing-us-economic-mobility-in-the-age-of-ai",
+    "summary": "인공지능은 미국의 경제 격차를 심화시킬 수도, 축소시킬 수도 있는 양날의 기술이다. 현재 지도자들이 어떤 선택을 하느냐에 따라 AI가 경제적 기회 창출의 도구가 될지, 아니면 불평등을 악화시킬지가 결정된다. 따라서 AI 발전의 방향과 활용 방식에 대한 전략적 결정이 경제 이동성 개선의 핵심이 된다.",
+    "image": "data/techinsight-images/d6ffd324a49c.webp",
+    "publishedAt": "2026-11-20T00:00:00.000Z",
+    "createdAt": "2026-11-21T02:08:54.373Z"
   },
   {
     "id": "7a9fd6201afb",
@@ -58,6 +118,18 @@
     "image": "data/techinsight-images/200c26dcc801.webp",
     "publishedAt": "2026-11-19T12:00:00.000Z",
     "createdAt": "2026-11-20T02:15:16.067Z"
+  },
+  {
+    "id": "1208f01e00a6",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "미국 배터리 시장의 미래를 보여주는 10억 달러 규모 계약",
+    "originalTitle": "What a billion-dollar deal says about the US battery market",
+    "link": "https://www.technologyreview.com/2026/11/19/1148922/sila-panasonic-battery-deal/",
+    "summary": "차세대 배터리 개발사 실라(Sila)가 글로벌 배터리 제조업체 파나소닉 에너지와 10억 달러 규모의 실리콘-카본 애노드 공급 계약을 체결했다. 실라의 신소재는 기존 흑연 애노드 대비 무게는 5분의 1, 부피는 절반 수준으로 감소시켜 더 가볍고 소형의 배터리 제조를 가능하게 한다. 과거 수년간 차세대 배터리 산업이 어려움을 겪었지만 이 계약은 긍정적인 신호로, 트럼프 행정부 국방부의 14억 달러 대출 지원을 받아 추진된다. 배터리 산업이 과거 기후 기술에서 지정학적 경쟁으로 초점이 이동하면서, 중국이 90% 이상의 흑연 생산을 지배하는 상황에서 미국의 공급망 자립이 중요해졌다. 실라의 발표는 에너지 전환과 감축보다 미국 산업화와 기술 주권에 초점을 맞추고 있다.",
+    "image": "data/techinsight-images/1208f01e00a6.webp",
+    "publishedAt": "2026-11-19T11:00:00.000Z",
+    "createdAt": "2026-11-21T02:08:40.846Z"
   },
   {
     "id": "6f41e71febfa",
@@ -166,77 +238,5 @@
     "image": "data/techinsight-images/6a38a59720a4.webp",
     "publishedAt": "2026-11-17T17:52:10.000Z",
     "createdAt": "2026-11-18T02:51:19.331Z"
-  },
-  {
-    "id": "86f07be892b0",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "MIT 테크놀로지 리뷰의 AI, 에너지, 기후 기술 심층 연구 보고서",
-    "originalTitle": "Research Reports",
-    "link": "https://www.technologyreview.com/2026/11/17/1148203/research-reports/",
-    "summary": "MIT 테크놀로지 리뷰는 구독자를 위해 인공지능, 에너지, 기후 기술에 관한 4개의 심층 연구 보고서를 제공하고 있다. 현재 LLM(대규모 언어모델)이 진정한 추론 능력을 가지지 못한다는 주장과 AI 분야의 과장된 광고성 주장들이 비판받고 있다. AI 안전 연구자들 사이에서는 기존의 AI 평가 방식을 재검토해야 한다는 의견이 대두되고 있다. 개인 AI 어시스턴트의 확산으로 인터넷이 인간 중심에서 벗어나 에이전트 기반의 환경으로 변화하고 있다. MIT 테크놀로지 리뷰는 신기술의 상업적, 사회적, 정치적 영향을 분석하는 독립적 미디어로서의 역할을 계속하고 있다.",
-    "image": "data/techinsight-images/86f07be892b0.webp",
-    "publishedAt": "2026-11-17T14:39:46.000Z",
-    "createdAt": "2026-11-18T02:51:37.230Z"
-  },
-  {
-    "id": "2f0718683799",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "AI가 광학 컴퓨팅에 새로운 기회를 제공하다",
-    "originalTitle": "AI Is Giving Optical Computing Another Shot",
-    "link": "https://spectrum.ieee.org/optical-computing-ai",
-    "summary": "70년 이상 연구 단계에 머물러 있던 광학 컴퓨팅이 AI 추론의 에너지 효율성 문제로 인해 급속도로 성장하고 있다. 2022년 4억 달러에서 2024년 22억 2천만 달러로 급증한 시장 규모는 AI 추론 처리의 전력 소비 문제를 해결할 수 있는 대안으로 광학 시스템이 주목받고 있음을 보여준다. 미국, 중국, 독일, 이스라엘 등에서 광학 컴퓨팅 스타트업들이 속속 등장하고 있으며, GPU 제조사와의 경쟁이 예상되지만 이러한 기술 개발은 AI 알고리즘 혁신과 네트워크 컴퓨팅 강화 등 여러 긍정적인 파급효과를 가져올 것으로 기대된다. 광학 기반 행렬-벡터 연산 기술은 1978년부터 제안되어 온 개념으로, 현재 데이터 센터의 네트워킹 인프라에 광학 연산 요소를 통합하는 방식으로 실현되고 있다.",
-    "image": "data/techinsight-images/2f0718683799.webp",
-    "publishedAt": "2026-11-17T14:00:03.000Z",
-    "createdAt": "2026-11-18T02:51:26.664Z"
-  },
-  {
-    "id": "ab7506628686",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "위성 연결이 IoT 기기 설계와 테스트에 미치는 영향 이해하기",
-    "originalTitle": "Understand How Satellite Links Shape IoT Device Design and Testing",
-    "link": "https://content.knowledgehub.wiley.com/5g-nr-ntn-design-and-test-challenges-for-satellite-connected-iot/",
-    "summary": "5G 네트워크에 위성 접속이 추가되면서 IoT 기기의 설계와 테스트 방식이 근본적으로 달라지고 있다. 현실적인 위성 통신 환경을 반영한 테스트가 기기의 실제 운영 성능을 보장하는 데 필수적이다. 3GPP 표준의 여러 릴리스를 통해 위성 기반 IoT 연결성이 점진적으로 개선되고 있으며, 개발자들은 이러한 기술 변화를 반영한 새로운 설계 및 검증 전략이 필요하다.",
-    "image": "data/techinsight-images/ab7506628686.webp",
-    "publishedAt": "2026-11-17T11:00:04.000Z",
-    "createdAt": "2026-11-18T02:51:41.623Z"
-  },
-  {
-    "id": "9c493a96e3fa",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "오픈소스 AI 진영이 젠슨 황 복귀를 원하는 이유",
-    "originalTitle": "The open-source movement wants Jensen Huang back",
-    "link": "https://www.technologyreview.com/2026/11/16/1148624/the-open-source-movement-wants-jensen-huang-back/",
-    "summary": "엔비디아 CEO 젠슨 황의 복귀를 촉구하는 청원서에 일론 머스크 등 115,000명 이상이 서명했으며, 오픈소스 AI 진영의 주요 인사들도 적극 지지하고 있다. 황은 중국의 AI 리더십 위협에 맞서 오픈소스 AI를 미국의 기술 경쟁력 강화 수단으로 옹호해온 핵심 인물이었다. 하지만 중국 스타트업의 엔비디아 칩 접근성이 예상보다 훨씬 높다는 연구 결과와 미 상무부의 새로운 규제가 발표되면서 황의 복귀는 더욱 어려워 보인다. 이 규제는 중국 기업이 해외 데이터센터를 통해 엔비디아 칩에 원격으로 접근하는 방식을 차단하려는 것으로, 오픈소스 AI 발전에 직접적인 영향을 미칠 수 있다. 오픈소스 진영의 가장 영향력 있는 대변인을 잃으면서 정책입안자들에 대한 영향력도 함께 약해질 위험에 처해있다.",
-    "image": "data/techinsight-images/9c493a96e3fa.webp",
-    "publishedAt": "2026-11-16T18:38:47.000Z",
-    "createdAt": "2026-11-17T03:45:13.487Z"
-  },
-  {
-    "id": "adba844aff17",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "신뢰할 수 있는 AI는 예측이 아닌 경계 설정으로 만든다",
-    "originalTitle": "Building trustworthy AI by fencing it in, not predicting it",
-    "link": "https://www.technologyreview.com/2026/11/16/1148565/building-trustworthy-ai-by-fencing-it-in-not-predicting-it/",
-    "summary": "전통적으로 기술에 대한 신뢰는 예측 가능성에 기반해왔지만, AI는 인간이 프로그래밍하지 않은 상황을 해석하고 미리 정한 대로 행동하지 않기 때문에 이런 접근 방식이 더 이상 유효하지 않다. AI를 신뢰할 수 있게 하려면 그것이 무엇을 할지 예측하는 대신, 외부에서 강제할 수 있는 명확한 경계와 제약 조건을 설정해야 한다. AI의 행동 범위가 너무 커서 사전에 모든 경우를 예측할 수 없으므로, 결정론적 AI를 만드는 것이 아니라 경계가 명확하고 관찰 가능하며 통제 가능한 AI를 만들어야 한다. 신뢰는 일회성 테스트가 아닌 배포 후에도 지속적으로 모니터링하고 검증하는 과정을 통해 구축되어야 한다.",
-    "image": "data/techinsight-images/adba844aff17.webp",
-    "publishedAt": "2026-11-16T16:04:28.000Z",
-    "createdAt": "2026-11-17T03:45:09.041Z"
-  },
-  {
-    "id": "d40156bb9a84",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "로봇 수술이 원격 지역 뇌졸중 치료의 해법이 될 수 있을까",
-    "originalTitle": "Can Robots Bring Stroke Surgery to Remote Hospitals?",
-    "link": "https://spectrum.ieee.org/telesurgery-stroke",
-    "summary": "Remedy Robotics는 원격지에서 뇌졸중 수술을 수행할 수 있는 로봇 시스템을 개발하고 있다. 이 기술은 혈전을 제거하는 혈전제거술이 필요한 급성 허혈성 뇌졸중 환자들이 원격 지역에서 치료받을 수 있도록 하려는 목표다. 현재 뇌졸중 치료 대상자 중 10명 중 1명만이 필요한 수술을 받고 있으며, 먼 거리 이동 중 치명적인 손상이 발생하는 문제를 해결하는 것이 핵심이다. 단순한 로봇의 성능만으로는 충분하지 않으며 통신 인프라, 병원 운영 체계, 환자의 실제 치료 결과 등 종합적인 조건이 갖춰져야 실질적인 원격 수술 의료 체계가 구축될 수 있다.",
-    "image": "data/techinsight-images/d40156bb9a84.webp",
-    "publishedAt": "2026-11-16T14:00:02.000Z",
-    "createdAt": "2026-11-17T03:45:16.934Z"
   }
 ]
