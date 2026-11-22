@@ -6056,13 +6056,15 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   runSummaryChart(symbol, "1y");
 }
 
-// ---------- 52주 최대 하락폭(2026-10-19 사용자 요청) ----------
-// 예전 "리스크 점검"에서 급락률(최근 52주 중 5거래일 기준 가장 크게 빠진 구간)만 떼어 와 상세의 "미래예측" 오른쪽 버튼으로 옮겼다.
-// 이 종목의 값은 열 때마다 야후 1년 일봉으로 오늘 기준으로 다시 계산하고, 전체 종목 분포·순위는 매일 갱신되는 리스크 데이터(주식만)를 쓴다.
+// ---------- 최대 급락: 달마다 가장 크게 빠진 1주(2026-11-22 사용자 요청) ----------
+// 예전(2026-10-19): "1년 중 가장 크게 빠진 1주" 숫자 하나 + 전체 분포 그림 + 전체 순위 목록.
+// 지금: 최근 12개월을 달마다 나눠 "그 달에 5거래일 안에서 가장 크게 빠진 폭"을 막대 12개로 그리고, 가장 많이 빠진 달에 ✔와 %를 붙인다.
+// 전체 순위(많이 빠진 순 00위/000)는 그림 없이 그래프 아래 글자로만.
+// 이 종목 값은 열 때마다 야후 1년 일봉으로 다시 계산하고, 순위에 쓰는 다른 종목 값은 매일 갱신되는 리스크 데이터(주식만)를 쓴다.
 const crashInlineWrap = document.createElement("div");
 crashInlineWrap.id = "crashInlineWrap";
 crashInlineWrap.style.display = "none";
-function computeCrash52(chart) {
+function computeCrashMonthly(chart, monthCount = 12) {
   const res = chart && chart.chart && chart.chart.result && chart.chart.result[0];
   if (!res) return null;
   const closes = (res.indicators && res.indicators.quote && res.indicators.quote[0] && res.indicators.quote[0].close) || [];
@@ -6070,73 +6072,105 @@ function computeCrash52(chart) {
   const pts = (res.timestamp || []).map((t, i) => ({ t, c: closes[i] })).filter((p) => Number.isFinite(p.c) && p.c > 0);
   if (pts.length < 30) return null;
   const day = (t) => new Date((t + off) * 1000).toISOString().slice(0, 10);
-  let best = null;
-  for (let i = 0; i < pts.length; i++) {
-    for (let j = i + 1; j < Math.min(i + 6, pts.length); j++) {
+  // 달마다: 그 달에 끝난 구간(길어야 5거래일) 가운데 가장 크게 빠진 것
+  const best = new Map();
+  for (let j = 1; j < pts.length; j++) {
+    const key = day(pts[j].t).slice(0, 7);
+    for (let i = Math.max(0, j - 5); i < j; i++) {
       const v = (pts[j].c / pts[i].c - 1) * 100;
-      if (!best || v < best.v) best = { v, i, j };
+      const cur = best.get(key);
+      if (!cur || v < cur.v) best.set(key, { v, i, j });
     }
   }
-  if (!best) return null;
-  const a = pts[best.i];
-  const b = pts[best.j];
-  return { pct: best.v, from: day(a.t), to: day(b.t), fromPrice: a.c, toPrice: b.c, rangeFrom: day(pts[0].t), rangeTo: day(pts[pts.length - 1].t) };
+  const lastKey = day(pts[pts.length - 1].t).slice(0, 7);
+  const ly = Number(lastKey.slice(0, 4));
+  const lm = Number(lastKey.slice(5, 7));
+  const months = [];
+  for (let k = monthCount - 1; k >= 0; k--) {
+    const d = new Date(Date.UTC(ly, lm - 1 - k, 1));
+    const key = d.toISOString().slice(0, 7);
+    const hit = best.get(key);
+    const base = { key, y: d.getUTCFullYear(), m: d.getUTCMonth() + 1 };
+    months.push(
+      hit
+        ? { ...base, pct: Math.min(hit.v, 0), from: day(pts[hit.i].t), to: day(pts[hit.j].t), fromPrice: pts[hit.i].c, toPrice: pts[hit.j].c }
+        : { ...base, pct: null } // 상장 전이라 시세가 없는 달
+    );
+  }
+  const have = months.filter((x) => Number.isFinite(x.pct));
+  if (!have.length) return null;
+  const worst = have.reduce((p, c) => (c.pct < p.pct ? c : p));
+  return { months, worst, currency: (res.meta && res.meta.currency) || "" };
 }
 let crashRenderToken = 0;
 async function renderCrashInto(wrap, ticker) {
   const token = ++crashRenderToken;
-  wrap.innerHTML = `<p class="muted" style="padding:10px 2px;margin:0;">52주 시세를 불러오는 중...</p>`;
+  wrap.innerHTML = `<p class="muted" style="padding:10px 2px;margin:0;">최근 1년 시세를 불러오는 중...</p>`;
   const section = sectionOfSymbol(ticker);
   const isKr = isKrTicker(ticker);
-  let crash = null;
+  let cm = null;
   try {
-    crash = computeCrash52(await yahooChart(ticker, "1y", "1d"));
+    cm = computeCrashMonthly(await yahooChart(ticker, "1y", "1d"));
   } catch {}
-  // 전체 종목 분포·순위 — 코스피200+코스닥150 / S&P500 주식만(ETF·코인은 비교군이 없어 이 종목 값만)
+  // 전체 순위 — 코스피200+코스닥150 / S&P500 주식만(ETF·코인은 비교군이 없어 순위 줄을 뺀다)
   let rows = [];
   if (section === "kr" || section === "us") {
     try {
       const ds = await loadRiskDataset(isKr);
-      rows = ds.items.filter((r) => r.crash && Number.isFinite(r.crash.pct)).map((r) => ({ symbol: r.symbol, name: r.name, _pct: r.crash.pct }));
+      rows = ds.items.filter((r) => r.crash && Number.isFinite(r.crash.pct)).map((r) => ({ symbol: r.symbol, _pct: r.crash.pct }));
     } catch {}
   }
   if (token !== crashRenderToken) return;
-  if (!crash) {
-    wrap.innerHTML = `<p class="muted" style="padding:10px 2px;margin:0;">52주 시세를 가져오지 못했습니다.</p>`;
+  if (!cm) {
+    wrap.innerHTML = `<p class="muted" style="padding:10px 2px;margin:0;">최근 1년 시세를 가져오지 못했습니다.</p>`;
     return;
   }
+  const worst = cm.worst;
   // 이 종목은 방금 계산한 값으로 바꿔 끼움(배치 값은 하루 전일 수 있음)
   const mine = rows.find((r) => r.symbol === ticker);
-  if (mine) mine._pct = crash.pct;
-  else if (rows.length) rows.push({ symbol: ticker, name: TICKER_TO_KOREAN_NAME[ticker] || ticker, _pct: crash.pct });
+  if (mine) mine._pct = worst.pct;
+  else if (rows.length) rows.push({ symbol: ticker, _pct: worst.pct });
   rows.sort((a, b) => a._pct - b._pct);
   const rank = rows.findIndex((r) => r.symbol === ticker) + 1;
-  const price = (v) => (isKr ? `${Math.round(v).toLocaleString()}원` : `$${v.toFixed(2)}`);
-  const grade =
-    crash.pct <= -RISK_DANGER_PCT ? { cls: "risk-bad", label: "급락 있음" } : crash.pct <= -10 ? { cls: "risk-warn", label: "하락 있음" } : { cls: "risk-good", label: "완만" };
-  wrap.innerHTML = `<div class="risk-card crash-card">
-      <div class="risk-card-top"><span class="risk-card-title">1년 중 가장 크게 빠진 1주</span><span class="risk-chip ${grade.cls}">${grade.label}</span></div>
-      <div class="crash-big"><b class="${riskDeltaCls(crash.pct)}">${riskFmtPct(crash.pct)}</b></div>
-      <div class="risk-card-value">가장 크게 빠진 1주(5거래일) <span class="muted">(${price(crash.fromPrice)} → ${price(crash.toPrice)})</span></div>
-      ${rows.length >= 10 ? riskDistributionChart(rows.map((r) => r._pct), crash.pct, (v) => riskFmtPct(v)) : ""}
-      ${riskBasisHtml(crash.from, crash.to, `최근 52주(${crash.rangeFrom} ~ ${crash.rangeTo}) 중 가장 큰 5거래일 낙폭`)}
-      ${rank ? `<div class="risk-card-rank">낙폭 ${rows.length}곳 중 <b>${rank}위</b> <span class="muted">(많이 빠진 순)</span></div>` : ""}
-      ${
-        rows.length >= 10
-          ? `<button type="button" class="risk-more-btn" data-crash-toggle>+ 전체 순위 (${rows.length}곳)</button>
-      <div class="risk-more" data-crash-list style="display:none;">${riskRankListHtml(rows, (r) => `<span class="risk-rank-val ${riskDeltaCls(r._pct)}">${riskFmtPct(r._pct)}</span>`, ticker)}</div>`
-          : ""
-      }
-      <p class="risk-source" style="margin-top:8px;">매일 오늘 기준으로 다시 계산합니다(출처: 야후 시세). 투자 권유가 아닙니다.</p>
+  const price = (v) => fmtPriceFull(v, cm.currency || (isKr ? "KRW" : "USD"));
+  const md = (d) => `${Number(d.slice(5, 7))}/${Number(d.slice(8, 10))}`;
+  const fmtV = (v) => `${Math.round(v)}%`;
+  const maxAbs = Math.max(...cm.months.map((x) => (Number.isFinite(x.pct) ? Math.abs(x.pct) : 0)), 1);
+  const thisMonth = new Date().toISOString().slice(0, 7);
+  let hasPartial = false;
+  const cols = cm.months
+    .map((x, i) => {
+      const isLast = i === cm.months.length - 1;
+      const partial = isLast && x.key === thisMonth; // 이번 달은 오늘까지(진행 중)
+      if (partial) hasPartial = true;
+      // 1월에는 연도를 붙여 해가 바뀌는 지점을 보여줌(예: 26.1) — "최근 12개월" 카드와 같은 표기
+      const moLabel = (x.m === 1 ? `${String(x.y).slice(2)}.1` : `${x.m}월`) + (partial ? "*" : "");
+      if (!Number.isFinite(x.pct)) return `<div class="oxb-col"><div class="crashm-cell"><span class="oxb-val">–</span></div><span class="oxb-month">${moLabel}</span></div>`;
+      const isWorst = x === worst;
+      const h = Math.max(3, Math.round((Math.abs(x.pct) / maxAbs) * 46)); // px — 칸(64px)에서 값 글자를 뺀 46px가 최대
+      // 가장 많이 빠진 달: 값은 위 큰 숫자와 같게 소수 한 자리, 달 이름 앞에 ✔
+      return `<div class="oxb-col${isWorst ? " crashm-worst" : ""}${isLast ? " oxb-last" : ""}" title="${moLabel} ${riskFmtPct(x.pct)}">
+            <div class="crashm-cell"><span class="oxb-bar crashm-bar" style="height:${h}px"></span><span class="oxb-val">${isWorst ? riskFmtPct(x.pct) : fmtV(x.pct)}</span></div>
+            <span class="oxb-month">${isWorst ? "✔" : ""}${moLabel}</span>
+          </div>`;
+    })
+    .join("");
+  const first = cm.months[0];
+  const last = cm.months[cm.months.length - 1];
+  const rangeLabel = `${String(first.y).slice(2)}.${first.m} – ${String(last.y).slice(2)}.${last.m}`;
+  wrap.innerHTML = `<div class="oxb-card crashm-card">
+      <div class="oxb-head">
+        <div class="oxb-title-wrap">
+          <span class="oxb-title">달마다 가장 크게 빠진 1주</span>
+          <span class="oxb-range">${rangeLabel}</span>
+        </div>
+        <div class="oxb-wr-big crashm-big"><span>가장 많이 빠진 달 ✔ ${worst.m}월:</span><b>${riskFmtPct(worst.pct)}</b></div>
+      </div>
+      <div class="oxb-chart crashm-chart" style="grid-template-columns:repeat(${cm.months.length},1fr);">${cols}</div>
+      ${rank ? `<p class="crashm-rank">많이 빠진 순 <b>${rank}위</b>/${rows.length} <span class="muted">(${isKr ? "코스피200·코스닥150" : "S&amp;P500"})</span></p>` : ""}
+      <p class="oxb-note">✔ ${worst.m}월: ${md(worst.from)} → ${md(worst.to)} 사이 ${price(worst.fromPrice)} → ${price(worst.toPrice)}</p>
+      <p class="oxb-note">달마다 1주(5거래일) 안에서 가장 크게 빠진 폭이에요.${hasPartial ? " * 이번 달은 오늘까지." : ""} 출처: 야후 시세 · 투자 권유가 아닙니다.</p>
     </div>`;
-  const btn = wrap.querySelector("[data-crash-toggle]");
-  if (btn)
-    btn.addEventListener("click", () => {
-      const list = wrap.querySelector("[data-crash-list]");
-      const open = list.style.display === "none";
-      list.style.display = open ? "" : "none";
-      btn.textContent = btn.textContent.replace(open ? "+" : "−", open ? "−" : "+");
-    });
 }
 
 // ---------- 배당(2026-10-09 사용자 요청) ----------

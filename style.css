@@ -2526,9 +2526,20 @@ body[data-header-tone="dark"] .fh-sec-chevron { color: #fff; }
 /* 신기술 탭 페이지 */
 #techRoot .tech-insight-list { margin-top: 4px; }
 /* 52주 최대 하락폭(2026-10-19) */
-.crash-card { margin-top: 10px; }
-.crash-big { margin: 2px 0 6px; }
-.crash-big b { font-size: 30px; font-weight: 800; letter-spacing: -0.6px; }
+/* 최대 급락 — 달마다 가장 크게 빠진 1주(2026-11-22 사용자 요청): "최근 12개월" 카드 틀에 아래로 뻗는 막대 12개, 가장 많이 빠진 달만 진하게 */
+.crashm-card { margin-top: 10px; }
+.crashm-card .oxb-head { flex-direction: column; align-items: flex-start; gap: 8px; flex-wrap: nowrap; }
+.crashm-card .oxb-title-wrap { white-space: nowrap; }
+.crashm-big b { color: var(--neg); }
+.crashm-cell { height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; border-top: 1px solid var(--border); }
+.crashm-bar { background: var(--neg); opacity: 0.3; border-radius: 1px 1px 5px 5px; }
+.crashm-cell .oxb-val { color: var(--muted); }
+.crashm-worst .crashm-bar { opacity: 1; }
+.crashm-worst .oxb-val { color: var(--neg); font-weight: 900; font-size: 10.5px; }
+.crashm-worst .oxb-month { color: var(--neg); font-weight: 800; }
+.crashm-rank { margin: 12px 0 0; font-size: 13.5px; font-weight: 600; }
+.crashm-rank b { font-weight: 900; }
+.crashm-rank .muted { font-size: 12px; }
 /* 과거분석 12개월 — 이번 달(진행 중) 칸은 흐리게 */
 .oxb-partial .oxb-bar { opacity: 0.55; }
 .oxb-note { margin: 6px 0 0; font-size: 11px; color: var(--muted); }
