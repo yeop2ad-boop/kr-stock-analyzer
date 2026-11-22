@@ -6158,11 +6158,17 @@ async function renderCrashInto(wrap, ticker) {
   const first = cm.months[0];
   const last = cm.months[cm.months.length - 1];
   const rangeLabel = `${String(first.y).slice(2)}.${first.m} – ${String(last.y).slice(2)}.${last.m}`;
+  // 오른쪽 위 등급 표시(2026-11-22 사용자 요청으로 되살림) — 가장 많이 빠진 1주 기준: -20% 이하 급락 있음 · -10% 이하 하락 있음 · 그 밖은 완만
+  const grade =
+    worst.pct <= -RISK_DANGER_PCT ? { cls: "risk-bad", label: "급락 있음" } : worst.pct <= -10 ? { cls: "risk-warn", label: "하락 있음" } : { cls: "risk-good", label: "완만" };
   wrap.innerHTML = `<div class="oxb-card crashm-card">
       <div class="oxb-head">
-        <div class="oxb-title-wrap">
-          <span class="oxb-title">달마다 가장 크게 빠진 1주</span>
-          <span class="oxb-range">${rangeLabel}</span>
+        <div class="crashm-top">
+          <div class="oxb-title-wrap">
+            <span class="oxb-title">달마다 가장 크게 빠진 1주</span>
+            <span class="oxb-range">${rangeLabel}</span>
+          </div>
+          <span class="risk-chip ${grade.cls}">${grade.label}</span>
         </div>
         <div class="oxb-wr-big crashm-big"><span>가장 많이 빠진 달 ✔ ${worst.m}월:</span><b>${riskFmtPct(worst.pct)}</b></div>
       </div>
