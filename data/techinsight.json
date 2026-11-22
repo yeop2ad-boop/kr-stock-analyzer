@@ -168,6 +168,30 @@
     "createdAt": "2026-11-19T02:30:08.848Z"
   },
   {
+    "id": "d1dd49b4f83d",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "향기 인식 AI, 인간 수준의 후각 능력 달성",
+    "originalTitle": "This smell startup says its AI nose is as good as a human’s",
+    "link": "https://www.technologyreview.com/2026/11/18/1148816/smell-startup-osmo-ai-nose-good-as-humans/",
+    "summary": "AI 스타트업 오스모는 인간 후각사들의 데이터를 기반으로 훈련된 첫 번째 후각 기초 모델을 개발했으며, 최근 평균 인간 수준의 냄새 감지 및 판별 능력을 갖추게 됐다고 주장한다. 회사는 1천만 개 이상의 인간 라벨과 8억 개의 향 토큰을 포함한 대규모 데이터셋을 구축했으며, 현재 향수 산업에서 신제품 개발에 활용되고 있다. 향 프린팅 로봇을 이용해 텍스트 프롬프트 기반으로 맞춤형 향기를 제작할 수 있으며, 프로터 앤 갬블 같은 거대 기업들과 협업 중이다. 그러나 일부 후각 과학자들은 마케팅 과장 및 여전한 인간 감각 의존도를 지적하며 회의적 입장을 보이고 있다. 향수 산업과 질병 진단, 공항 위협 탐지 등 다양한 분야로의 확대 가능성이 논의되고 있다.",
+    "image": "data/techinsight-images/d1dd49b4f83d.webp",
+    "publishedAt": "2026-11-18T10:20:30.000Z",
+    "createdAt": "2026-11-22T01:11:35.559Z"
+  },
+  {
+    "id": "2d591e6df04f",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "클라우드 컴퓨팅이란 무엇인가",
+    "originalTitle": "What is cloud computing? -test",
+    "link": "https://www.mckinsey.com/our-people/what-is-cloud-computing-for-product-testing-only---hidden-from-search",
+    "summary": "클라우드 컴퓨팅은 기업의 IT 인프라를 인터넷을 통해 원격으로 저장하고 관리할 수 있게 해주는 기술이다. 이를 통해 기업들은 자체 서버 운영에 필요한 비용을 크게 절감할 수 있다. 결과적으로 클라우드 컴퓨팅은 비용 효율성을 높이면서 동시에 사업 가치를 창출하는 솔루션으로 작용한다.",
+    "image": "data/techinsight-images/2d591e6df04f.webp",
+    "publishedAt": "2026-11-18T00:00:00.000Z",
+    "createdAt": "2026-11-22T01:11:47.274Z"
+  },
+  {
     "id": "6593f91a3f31",
     "sourceKey": "mckinsey",
     "source": "McKinsey",
@@ -214,29 +238,5 @@
     "image": "data/techinsight-images/41930dc76153.webp",
     "publishedAt": "2026-11-17T19:00:03.000Z",
     "createdAt": "2026-11-18T02:51:21.220Z"
-  },
-  {
-    "id": "63e33b4081ff",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "인지적 불멸을 향한 여정: 뇌를 영구히 유지하려는 기술적 시도",
-    "originalTitle": "Roundtables: Inside the Quest for Cognitive Immortality",
-    "link": "https://www.technologyreview.com/2026/11/17/1148049/roundtables-inside-the-quest-for-cognitive-immortality/",
-    "summary": "일부 기술 선도자들은 죽음 이후에도 인간의 정신을 지속시킬 수 있는 방법을 개발하고 있다. MIT 테크놀로지 리뷰의 과학 편집자와 생의학 선임 편집자는 뇌를 점진적으로 교체하거나 기억을 클라우드에 업로드하는 등 마음을 영속화할 수 있는 여러 가능성을 탐색한다. 이 라운드테이블은 자아의 연속성을 추구하는 과학자들이 추진 중인 미래 기술의 현재 상황을 다룬다. 기술적으로 가능할 수 있는 방법들이 논의되지만, 이들이 실제로 개인의 정체성과 의식을 보존할 수 있을지는 여전히 미해결 과제다.",
-    "image": "data/techinsight-images/63e33b4081ff.webp",
-    "publishedAt": "2026-11-17T18:46:47.000Z",
-    "createdAt": "2026-11-18T02:51:21.639Z"
-  },
-  {
-    "id": "6a38a59720a4",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "미국 남서부 수력발전이 올여름 역대 최저 수준으로 급락",
-    "originalTitle": "Hydropower hit record lows in the US Southwest this summer",
-    "link": "https://www.technologyreview.com/2026/11/17/1148742/hydropower-drought-colorado-river/",
-    "summary": "미국 남서부 지역의 수력발전량이 4월부터 8월까지 10년 평균보다 28% 감소했다. 콜로라도강 유역의 극심한가뭄으로 인해 레이크 파월과 레이크 미드 같은 주요 저수지의 수위가 위험 수준까지 떨어졌고, 이는 수력발전소 운영을 어렵게 만들고 있다. 기후변화로 인한 기온 상승과 강설량 감소, 강수 패턴의 변화는 수력발전의 안정성을 떨어뜨리고 있으며, 2026년과 2027년에 수력발전 생산량이 더욱 감소할 것으로 예측된다. 수력발전 감소는 화석연료 의존도를 높여 전 지구적 온실가스 배출 증가에 영향을 미치고 있다.",
-    "image": "data/techinsight-images/6a38a59720a4.webp",
-    "publishedAt": "2026-11-17T17:52:10.000Z",
-    "createdAt": "2026-11-18T02:51:19.331Z"
   }
 ]
