@@ -419,7 +419,7 @@ async function main() {
     items.forEach((r) => {
       const old = prevItems.get(r.symbol);
       if (!old) return;
-      ["eps", "quarter", "debt", "crash"].forEach((k) => {
+      ["eps", "quarter", "debt", "crash", "surge"].forEach((k) => {
         if (r[k] === undefined && old[k] !== undefined) r[k] = old[k];
       });
     });

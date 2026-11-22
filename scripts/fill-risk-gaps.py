@@ -5,6 +5,7 @@
 #   · 국내 은행·보험: "매출액" 계정 자체가 없음(이자·수수료·보험수익으로 나뉨) → 야후의 총수익을 사용
 # 실행: python scripts/fill-risk-gaps.py [kr|us|all|kr-crash|us-crash]
 #   kr-crash / us-crash = 급락률(52주 최대 하락폭)만 새로 계산 — 예약 배치는 이 둘만 돈다(2026-11-20)
+#     2026-11-22: 같은 시세로 급등률(52주 중 5거래일 최대 상승폭, surge)도 함께 계산해 넣는다 — 종목 상세 '최대 급등' 순위용
 import json
 import sys
 import time
@@ -147,8 +148,9 @@ def fill_one(sym, item, name):
 CRASH_LAST_ERR = [""]  # 급락률 조회가 마지막으로 실패한 이유(진단용)
 
 
-def y_crash(symbol):
-    """급락률: 최근 52주 일봉에서 5거래일 안에 가장 크게 떨어진 구간(%)"""
+def y_swings(symbol):
+    """급락률·급등률: 최근 52주 일봉에서 5거래일 안에 가장 크게 떨어진 구간과 가장 크게 오른 구간(%).
+    (급락, 급등) 두 값을 돌려주고, 시세를 못 구하면 None."""
     js = None
     for n in range(4):
         # 서버(GitHub 러너)에서 한쪽 호스트가 막히거나 429를 줄 수 있어 query1/query2를 번갈아 시도
@@ -182,14 +184,27 @@ def y_crash(symbol):
     if len(pts) < 30:
         return None
     day = lambda t: time.strftime("%Y-%m-%d", time.gmtime(t + 9 * 3600))
-    best = None
+    best = None  # 가장 크게 빠진 구간
+    top = None  # 가장 크게 오른 구간(2026-11-22 '최대 급등')
     for i in range(len(pts)):
         for j in range(i + 1, min(i + 6, len(pts))):
             v = (pts[j][1] / pts[i][1] - 1) * 100
             if best is None or v < best[0]:
                 best = (v, i, j)
-    v, i, j = best
-    return {"pct": v, "from": day(pts[i][0]), "to": day(pts[j][0]), "fromPrice": pts[i][1], "toPrice": pts[j][1], "rangeFrom": day(pts[0][0]), "rangeTo": day(pts[-1][0])}
+            if top is None or v > top[0]:
+                top = (v, i, j)
+
+    def pack(hit):
+        v, i, j = hit
+        return {"pct": v, "from": day(pts[i][0]), "to": day(pts[j][0]), "fromPrice": pts[i][1], "toPrice": pts[j][1], "rangeFrom": day(pts[0][0]), "rangeTo": day(pts[-1][0])}
+
+    return pack(best), pack(top)
+
+
+def y_crash(symbol):
+    """급락률만(예전 이름 그대로 남겨 둠)"""
+    sw = y_swings(symbol)
+    return sw[0] if sw else None
 
 
 def refresh_stale_kr(items):
@@ -213,11 +228,11 @@ def run_kr():
     print("새 보고서로 다시 채울 항목", refresh_stale_kr(items), flush=True)
     # 급락률은 시세 기반이라 매일 새로 계산(2026-10-06)
     with ThreadPoolExecutor(4) as ex:
-        crashes = list(ex.map(lambda i: y_crash(i["symbol"]), items))
+        crashes = list(ex.map(lambda i: y_swings(i["symbol"]), items))
     ok = 0
     for i, c in zip(items, crashes):
         if c:
-            i["crash"] = c
+            i["crash"], i["surge"] = c
             ok += 1
     print("급락률 갱신", ok, "/", len(items), flush=True)
     crash_ok = ok >= len(items) * 0.9
@@ -242,11 +257,11 @@ def run_kr_crash():
     data = json.load(open(KR_FILE, encoding="utf-8-sig"))
     items = data["items"]
     with ThreadPoolExecutor(4) as ex:
-        crashes = list(ex.map(lambda i: y_crash(i["symbol"]), items))
+        crashes = list(ex.map(lambda i: y_swings(i["symbol"]), items))
     ok = 0
     for i, c in zip(items, crashes):
         if c:
-            i["crash"] = c
+            i["crash"], i["surge"] = c
             ok += 1
     print("한국 급락률 갱신", ok, "/", len(items), flush=True)
     good = ok >= len(items) * 0.9
@@ -275,11 +290,11 @@ def run_us_crash():
     items = data["items"]
     syms = list(items.keys())
     with ThreadPoolExecutor(4) as ex:
-        crashes = list(ex.map(y_crash, syms))
+        crashes = list(ex.map(y_swings, syms))
     ok = 0
     for sym, c in zip(syms, crashes):
         if c:
-            items[sym]["crash"] = c
+            items[sym]["crash"], items[sym]["surge"] = c
             ok += 1
     print("미국 급락률 갱신", ok, "/", len(syms), flush=True)
     good = ok >= len(syms) * 0.9

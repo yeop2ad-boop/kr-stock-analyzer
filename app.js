@@ -5825,11 +5825,13 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   // 펼침 섹션들은 지난 렌더 때 #summarySection 안으로 옮겨져 있어, 아래 innerHTML로 지우면 문서에서 떨어져 나간다 —
   // 그동안 renderMacro 등이 el("macroSection")을 못 찾아 오류가 났음(2026-09-15) → 지우기 전에 개요 패널로 잠시 옮겨 둠
   const summaryPanelEl = document.querySelector('[data-summary-subtabpanel="summary"]');
-  [futureInlineWrap, oxInlineWrap, crashInlineWrap, sReportInlineWrap].forEach((wrap) => {
+  [futureInlineWrap, oxInlineWrap, surgeInlineWrap, crashInlineWrap, sReportInlineWrap].forEach((wrap) => {
     if (wrap && el("summarySection").contains(wrap)) summaryPanelEl.appendChild(wrap);
   });
   crashInlineWrap.style.display = "none";
   crashInlineWrap.innerHTML = "";
+  surgeInlineWrap.style.display = "none";
+  surgeInlineWrap.innerHTML = "";
   el("summarySection").innerHTML = `<p class="muted">불러오는 중...</p>`;
   // 새 종목 검색 시 이전 종목의 과거분석/미래예측/s리포트 펼침 상태를 초기화(과거분석 3버튼 결과는 종목 무관이라 내용은 유지, 열림 상태만 접음)
   historicalInlineWrap.style.display = "none";
@@ -5936,6 +5938,7 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
         ${/* 2026-09-15 사용자 요청: 버튼 = 과거분석(12개월 승률 카드) · 미래예측 · 공포지수(코인은 알트시즌지수). S리포트는 버튼 대신 아래 요약 카드로 펼쳐 둠 */ ""}
         <button type="button" class="summary-action-btn" id="tickerHistoricalToggleBtn" data-ticker="${escapeHtml(symbol)}">🕰️ 최근 12개월</button>
         <button type="button" class="summary-action-btn" id="tickerFutureToggleBtn" data-ticker="${escapeHtml(symbol)}">🔮 같은 시기 흐름</button>
+        <button type="button" class="summary-action-btn" id="tickerSurgeToggleBtn" data-ticker="${escapeHtml(symbol)}">📈 최대 급등</button>
         <button type="button" class="summary-action-btn" id="tickerCrashToggleBtn" data-ticker="${escapeHtml(symbol)}">📉 최대 급락</button>
         <button type="button" class="summary-action-btn" id="tickerDividendToggleBtn" style="display:none;">💰 배당</button>
         <button type="button" class="summary-action-btn" id="tickerFearToggleBtn" style="display:none;"></button>
@@ -5953,7 +5956,7 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   // 2026-09-13 사용자 요청: ETF는 버튼 아래에 보유종목 TOP10 블록이 있어 그 밑에서 열렸음 → 보유종목 블록 "앞"(버튼 바로 아래)에 끼움
   const holdingsAnchor = el("etfHoldingsBlock");
   if (holdingsAnchor) el("summarySection").insertBefore(el("tickerHistoricalRow"), holdingsAnchor);
-  [futureInlineWrap, oxInlineWrap, crashInlineWrap, ensureDividendWrap()].forEach((wrap) => {
+  [futureInlineWrap, oxInlineWrap, surgeInlineWrap, crashInlineWrap, ensureDividendWrap()].forEach((wrap) => {
     wrap.style.display = "none";
     wrap.classList.remove("section-expanded");
     if (holdingsAnchor) el("summarySection").insertBefore(wrap, holdingsAnchor);
@@ -5976,9 +5979,11 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   const dividendWrap = ensureDividendWrap();
 
   const crashToggleBtn = el("tickerCrashToggleBtn");
+  const surgeToggleBtn = el("tickerSurgeToggleBtn");
   const sections = [
     { btn: historicalToggleBtn, els: [oxInlineWrap] },
     { btn: futureToggleBtn, els: [futureInlineWrap] },
+    { btn: surgeToggleBtn, els: [surgeInlineWrap] },
     { btn: crashToggleBtn, els: [crashInlineWrap] },
   ];
   if (holdingsToggleBtn) sections.push({ btn: holdingsToggleBtn, els: [holdingsAnchor] });
@@ -6005,6 +6010,8 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   });
   // 52주 최대 하락폭 — 열 때마다 오늘 기준으로 다시 계산
   bindSimpleToggle(crashToggleBtn, crashInlineWrap, () => renderCrashInto(crashInlineWrap, symbol));
+  // 최대 급등(2026-11-22) — 최대 급락의 반대, 같은 방식으로 열 때마다 다시 계산
+  bindSimpleToggle(surgeToggleBtn, surgeInlineWrap, () => renderSurgeInto(surgeInlineWrap, symbol));
   // 배당: 배당을 주는 종목(주식·ETF)에서만 버튼을 보여주고, 누르면 최근 1년 배당 내역을 펼친다(코인은 해당 없음)
   bindSimpleToggle(dividendToggleBtn, dividendWrap);
   if (dividendToggleBtn && dividendWrap && summaryAssetSection !== "crypto") {
@@ -6056,15 +6063,38 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   runSummaryChart(symbol, "1y");
 }
 
-// ---------- 최대 급락: 달마다 가장 크게 빠진 1주(2026-11-22 사용자 요청) ----------
+// ---------- 최대 급락 · 최대 급등: 달마다 가장 크게 빠진/오른 1주(2026-11-22 사용자 요청) ----------
 // 예전(2026-10-19): "1년 중 가장 크게 빠진 1주" 숫자 하나 + 전체 분포 그림 + 전체 순위 목록.
-// 지금: 최근 12개월을 달마다 나눠 "그 달에 5거래일 안에서 가장 크게 빠진 폭"을 막대 12개로 그리고, 가장 많이 빠진 달에 ✔와 %를 붙인다.
-// 전체 순위(많이 빠진 순 00위/000)는 그림 없이 그래프 아래 글자로만.
-// 이 종목 값은 열 때마다 야후 1년 일봉으로 다시 계산하고, 순위에 쓰는 다른 종목 값은 매일 갱신되는 리스크 데이터(주식만)를 쓴다.
+// 지금: 최근 12개월을 달마다 나눠 "그 달에 5거래일 안에서 가장 크게 빠진(오른) 폭"을 막대 12개로 그리고, 가장 큰 달에 ✔와 %를 붙인다.
+//  · 최대 급락: 달 이름이 위, 막대가 아래로 / 최대 급등: 완전히 반대로 막대가 위로, 달 이름이 아래(둘 다 달 이름은 기준선 쪽, 값은 막대 끝)
+//  · 순위(많이 빠진·오른 순 00위/000)는 그래프 아래 글자로, 그 밑 "+ 전체 순위"를 누르면 목록이 펼쳐진다.
+// 이 종목 값은 열 때마다 야후 1년 일봉으로 다시 계산하고, 순위에 쓰는 다른 종목 값은 매일 갱신되는 배치 데이터(주식만 — crash·surge)를 쓴다.
 const crashInlineWrap = document.createElement("div");
 crashInlineWrap.id = "crashInlineWrap";
 crashInlineWrap.style.display = "none";
-function computeCrashMonthly(chart, monthCount = 12) {
+const surgeInlineWrap = document.createElement("div");
+surgeInlineWrap.id = "surgeInlineWrap";
+surgeInlineWrap.style.display = "none";
+const SWING_DROP = {
+  field: "crash",
+  cardCls: "",
+  title: "달마다 가장 크게 빠진 1주",
+  bigLabel: "가장 많이 빠진 달",
+  rankLabel: "많이 빠진 순",
+  // 가장 많이 빠진 1주 기준: -20% 이하 급락 있음 · -10% 이하 하락 있음 · 그 밖은 완만
+  grade: (p) => (p <= -RISK_DANGER_PCT ? { cls: "risk-bad", label: "급락 있음" } : p <= -10 ? { cls: "risk-warn", label: "하락 있음" } : { cls: "risk-good", label: "완만" }),
+};
+const SWING_RISE = {
+  field: "surge",
+  cardCls: " surgem-card",
+  title: "달마다 가장 크게 오른 1주",
+  bigLabel: "가장 많이 오른 달",
+  rankLabel: "많이 오른 순",
+  // 급락과 같은 기준을 뒤집음: +20% 이상 급등 있음 · +10% 이상 상승 있음 · 그 밖은 완만
+  grade: (p) => (p >= RISK_DANGER_PCT ? { cls: "risk-bad", label: "급등 있음" } : p >= 10 ? { cls: "risk-warn", label: "상승 있음" } : { cls: "risk-good", label: "완만" }),
+};
+// dir: -1 = 급락(가장 크게 빠진 구간), +1 = 급등(가장 크게 오른 구간)
+function computeSwingMonthly(chart, dir, monthCount = 12) {
   const res = chart && chart.chart && chart.chart.result && chart.chart.result[0];
   if (!res) return null;
   const closes = (res.indicators && res.indicators.quote && res.indicators.quote[0] && res.indicators.quote[0].close) || [];
@@ -6072,14 +6102,15 @@ function computeCrashMonthly(chart, monthCount = 12) {
   const pts = (res.timestamp || []).map((t, i) => ({ t, c: closes[i] })).filter((p) => Number.isFinite(p.c) && p.c > 0);
   if (pts.length < 30) return null;
   const day = (t) => new Date((t + off) * 1000).toISOString().slice(0, 10);
-  // 달마다: 그 달에 끝난 구간(길어야 5거래일) 가운데 가장 크게 빠진 것
+  const beats = (v, cur) => (dir < 0 ? v < cur : v > cur);
+  // 달마다: 그 달에 끝난 구간(길어야 5거래일) 가운데 가장 크게 빠진(오른) 것
   const best = new Map();
   for (let j = 1; j < pts.length; j++) {
     const key = day(pts[j].t).slice(0, 7);
     for (let i = Math.max(0, j - 5); i < j; i++) {
       const v = (pts[j].c / pts[i].c - 1) * 100;
       const cur = best.get(key);
-      if (!cur || v < cur.v) best.set(key, { v, i, j });
+      if (!cur || beats(v, cur.v)) best.set(key, { v, i, j });
     }
   }
   const lastKey = day(pts[pts.length - 1].t).slice(0, 7);
@@ -6093,82 +6124,86 @@ function computeCrashMonthly(chart, monthCount = 12) {
     const base = { key, y: d.getUTCFullYear(), m: d.getUTCMonth() + 1 };
     months.push(
       hit
-        ? { ...base, pct: Math.min(hit.v, 0), from: day(pts[hit.i].t), to: day(pts[hit.j].t), fromPrice: pts[hit.i].c, toPrice: pts[hit.j].c }
+        ? { ...base, pct: dir < 0 ? Math.min(hit.v, 0) : Math.max(hit.v, 0), from: day(pts[hit.i].t), to: day(pts[hit.j].t), fromPrice: pts[hit.i].c, toPrice: pts[hit.j].c }
         : { ...base, pct: null } // 상장 전이라 시세가 없는 달
     );
   }
   const have = months.filter((x) => Number.isFinite(x.pct));
   if (!have.length) return null;
-  const worst = have.reduce((p, c) => (c.pct < p.pct ? c : p));
-  return { months, worst, currency: (res.meta && res.meta.currency) || "" };
+  const top = have.reduce((p, c) => (beats(c.pct, p.pct) ? c : p));
+  return { months, top, currency: (res.meta && res.meta.currency) || "" };
 }
-let crashRenderToken = 0;
-async function renderCrashInto(wrap, ticker) {
-  const token = ++crashRenderToken;
+const swingRenderToken = new WeakMap(); // 카드(wrap)마다 — 그사이 다른 종목을 열었으면 늦게 온 결과를 버림
+async function renderSwingInto(wrap, ticker, dir) {
+  const kind = dir < 0 ? SWING_DROP : SWING_RISE;
+  const token = (swingRenderToken.get(wrap) || 0) + 1;
+  swingRenderToken.set(wrap, token);
   wrap.innerHTML = `<p class="muted" style="padding:10px 2px;margin:0;">최근 1년 시세를 불러오는 중...</p>`;
   const section = sectionOfSymbol(ticker);
   const isKr = isKrTicker(ticker);
   let cm = null;
   try {
-    cm = computeCrashMonthly(await yahooChart(ticker, "1y", "1d"));
+    cm = computeSwingMonthly(await yahooChart(ticker, "1y", "1d"), dir);
   } catch {}
   // 전체 순위 — 코스피200+코스닥150 / S&P500 주식만(ETF·코인은 비교군이 없어 순위 줄을 뺀다)
   let rows = [];
   if (section === "kr" || section === "us") {
     try {
       const ds = await loadRiskDataset(isKr);
-      rows = ds.items.filter((r) => r.crash && Number.isFinite(r.crash.pct)).map((r) => ({ symbol: r.symbol, name: r.name, _pct: r.crash.pct }));
+      rows = ds.items.filter((r) => r[kind.field] && Number.isFinite(r[kind.field].pct)).map((r) => ({ symbol: r.symbol, name: r.name, _pct: r[kind.field].pct }));
     } catch {}
   }
-  if (token !== crashRenderToken) return;
+  if (swingRenderToken.get(wrap) !== token) return;
   if (!cm) {
     wrap.innerHTML = `<p class="muted" style="padding:10px 2px;margin:0;">최근 1년 시세를 가져오지 못했습니다.</p>`;
     return;
   }
-  const worst = cm.worst;
+  const top = cm.top;
   // 이 종목은 방금 계산한 값으로 바꿔 끼움(배치 값은 하루 전일 수 있음)
   const mine = rows.find((r) => r.symbol === ticker);
-  if (mine) mine._pct = worst.pct;
-  else if (rows.length) rows.push({ symbol: ticker, name: TICKER_TO_KOREAN_NAME[ticker] || ticker, _pct: worst.pct });
-  rows.sort((a, b) => a._pct - b._pct);
+  if (mine) mine._pct = top.pct;
+  else if (rows.length) rows.push({ symbol: ticker, name: TICKER_TO_KOREAN_NAME[ticker] || ticker, _pct: top.pct });
+  rows.sort((a, b) => (dir < 0 ? a._pct - b._pct : b._pct - a._pct));
   const rank = rows.findIndex((r) => r.symbol === ticker) + 1;
-  const fmtV = (v) => `${Math.round(v)}%`;
+  const fmtV = (v) => `${dir > 0 && Math.round(v) > 0 ? "+" : ""}${Math.round(v)}%`;
   const maxAbs = Math.max(...cm.months.map((x) => (Number.isFinite(x.pct) ? Math.abs(x.pct) : 0)), 1);
-  // 달 이름은 막대 위에(2026-11-22 사용자 요청: 아래에 있으니 정신없다) — 위: 달 이름 · 기준선 · 아래로 뻗는 막대 · 값
+  // 급락: 위에서부터 달 이름 · 기준선 · 아래로 뻗는 막대 · 값 / 급등: 값 · 위로 뻗는 막대 · 기준선 · 달 이름
   const cols = cm.months
     .map((x, i) => {
       const isLast = i === cm.months.length - 1;
       // 1월에는 연도를 붙여 해가 바뀌는 지점을 보여줌(예: 26.1) — "최근 12개월" 카드와 같은 표기
       const moLabel = x.m === 1 ? `${String(x.y).slice(2)}.1` : `${x.m}월`;
-      if (!Number.isFinite(x.pct)) return `<div class="oxb-col"><span class="oxb-month">${moLabel}</span><div class="crashm-cell"><span class="oxb-val">–</span></div></div>`;
-      const isWorst = x === worst;
+      const isTop = x === top;
+      const month = `<span class="oxb-month">${isTop ? "✔" : ""}${moLabel}</span>`;
+      if (!Number.isFinite(x.pct)) {
+        const empty = `<div class="crashm-cell"><span class="oxb-val">–</span></div>`;
+        return `<div class="oxb-col">${dir < 0 ? month + empty : empty + month}</div>`;
+      }
       const h = Math.max(3, Math.round((Math.abs(x.pct) / maxAbs) * 46)); // px — 칸(64px)에서 값 글자를 뺀 46px가 최대
-      // 가장 많이 빠진 달: 값은 위 큰 숫자와 같게 소수 한 자리, 달 이름 앞에 ✔
-      return `<div class="oxb-col${isWorst ? " crashm-worst" : ""}${isLast ? " oxb-last" : ""}" title="${moLabel} ${riskFmtPct(x.pct)}">
-            <span class="oxb-month">${isWorst ? "✔" : ""}${moLabel}</span>
-            <div class="crashm-cell"><span class="oxb-bar crashm-bar" style="height:${h}px"></span><span class="oxb-val">${isWorst ? riskFmtPct(x.pct) : fmtV(x.pct)}</span></div>
-          </div>`;
+      const bar = `<span class="oxb-bar crashm-bar" style="height:${h}px"></span>`;
+      // 가장 큰 달: 값은 위 큰 숫자와 같게 소수 한 자리, 달 이름 앞에 ✔
+      const val = `<span class="oxb-val">${isTop ? riskFmtPct(x.pct) : fmtV(x.pct)}</span>`;
+      const cell = `<div class="crashm-cell">${dir < 0 ? bar + val : val + bar}</div>`;
+      return `<div class="oxb-col${isTop ? " crashm-worst" : ""}${isLast ? " oxb-last" : ""}" title="${moLabel} ${riskFmtPct(x.pct)}">${dir < 0 ? month + cell : cell + month}</div>`;
     })
     .join("");
   const first = cm.months[0];
   const last = cm.months[cm.months.length - 1];
   const rangeLabel = `${String(first.y).slice(2)}.${first.m} – ${String(last.y).slice(2)}.${last.m}`;
-  // 오른쪽 위 등급 표시(2026-11-22 사용자 요청으로 되살림) — 가장 많이 빠진 1주 기준: -20% 이하 급락 있음 · -10% 이하 하락 있음 · 그 밖은 완만
-  const grade =
-    worst.pct <= -RISK_DANGER_PCT ? { cls: "risk-bad", label: "급락 있음" } : worst.pct <= -10 ? { cls: "risk-warn", label: "하락 있음" } : { cls: "risk-good", label: "완만" };
-  wrap.innerHTML = `<div class="oxb-card crashm-card">
+  const grade = kind.grade(top.pct); // 오른쪽 위 등급 표시
+  wrap.innerHTML = `<div class="oxb-card crashm-card${kind.cardCls}">
       <div class="oxb-head">
         <div class="crashm-top">
           <div class="oxb-title-wrap">
-            <span class="oxb-title">달마다 가장 크게 빠진 1주</span>
+            <span class="oxb-title">${kind.title}</span>
             <span class="oxb-range">${rangeLabel}</span>
           </div>
           <span class="risk-chip ${grade.cls}">${grade.label}</span>
         </div>
-        <div class="oxb-wr-big crashm-big"><span>가장 많이 빠진 달 ✔ ${worst.m}월:</span><b>${riskFmtPct(worst.pct)}</b></div>
+        <div class="oxb-wr-big crashm-big"><span>${kind.bigLabel} ✔ ${top.m}월:</span><b>${riskFmtPct(top.pct)}</b></div>
       </div>
       <div class="oxb-chart crashm-chart" style="grid-template-columns:repeat(${cm.months.length},1fr);">${cols}</div>
-      ${rank ? `<p class="crashm-rank">많이 빠진 순 <b>${rank}위</b>/${rows.length} <span class="muted">(${isKr ? "코스피200·코스닥150" : "S&amp;P500"})</span></p>` : ""}
+      ${rank ? `<p class="crashm-rank">${kind.rankLabel} <b>${rank}위</b>/${rows.length} <span class="muted">(${isKr ? "코스피200·코스닥150" : "S&amp;P500"})</span></p>` : ""}
       ${
         rank && rows.length >= 10
           ? `<button type="button" class="risk-more-btn" data-crash-toggle>+ 전체 순위 (${rows.length}곳)</button>
@@ -6176,7 +6211,7 @@ async function renderCrashInto(wrap, ticker) {
           : ""
       }
     </div>`;
-  // 전체 순위 펼치기/접기(2026-11-22 사용자 요청으로 되살림 — 설명 글 자리에)
+  // 전체 순위 펼치기/접기
   const btn = wrap.querySelector("[data-crash-toggle]");
   if (btn)
     btn.addEventListener("click", () => {
@@ -6185,6 +6220,12 @@ async function renderCrashInto(wrap, ticker) {
       list.style.display = open ? "" : "none";
       btn.textContent = btn.textContent.replace(open ? "+" : "−", open ? "−" : "+");
     });
+}
+function renderCrashInto(wrap, ticker) {
+  return renderSwingInto(wrap, ticker, -1);
+}
+function renderSurgeInto(wrap, ticker) {
+  return renderSwingInto(wrap, ticker, 1);
 }
 
 // ---------- 배당(2026-10-09 사용자 요청) ----------
@@ -13221,6 +13262,7 @@ async function loadRiskDataset(isKr) {
           debt: r.debt || null,
           sector: r.sector || null,
           crash: r.crash || null,
+          surge: r.surge || null,
         };
       }),
       hasIssuance: true,
@@ -13250,6 +13292,7 @@ async function loadRiskDataset(isKr) {
       debt: r.debt || null,
       sector: r.sector || null,
       crash: r.crash || null,
+      surge: r.surge || null,
     })),
     hasIssuance: true,
     payLabel: "직원 중위 연봉",

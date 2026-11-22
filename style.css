@@ -2544,6 +2544,12 @@ body[data-header-tone="dark"] .fh-sec-chevron { color: #fff; }
 .crashm-rank { margin: 12px 0 0; font-size: 13.5px; font-weight: 600; }
 .crashm-rank b { font-weight: 900; }
 .crashm-rank .muted { font-size: 12px; }
+/* 최대 급등(2026-11-22 사용자 요청) — 최대 급락과 반대: 막대가 위로, 달 이름은 아래(기준선 쪽), 색은 상승색 */
+.surgem-card .crashm-cell { justify-content: flex-end; border-top: 0; border-bottom: 1px solid var(--border); }
+.surgem-card .crashm-bar { background: var(--pos); border-radius: 5px 5px 1px 1px; }
+.surgem-card .crashm-big b { color: var(--pos); }
+.surgem-card .crashm-worst .oxb-val, .surgem-card .crashm-worst .oxb-month { color: var(--pos); }
+.surgem-card .oxb-month { margin: 4px 0 0; }
 /* 과거분석 12개월 — 이번 달(진행 중) 칸은 흐리게 */
 .oxb-partial .oxb-bar { opacity: 0.55; }
 .oxb-note { margin: 6px 0 0; font-size: 11px; color: var(--muted); }
