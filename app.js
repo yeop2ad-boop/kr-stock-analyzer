@@ -12833,7 +12833,10 @@ function renderFutureChart(data) {
   // 2026-10-09 사용자 요청: 맨 위에 "과거 N년 계절성 흐름 기울기 평균 / 결과: 6개월후 +46.2%", 그래프 아래엔 두 경고 문구를 하나로 합쳐 표시
   const titleEl = el("futureHeadlineTitle");
   const resultEl = el("futureHeadlineResult");
-  if (titleEl) titleEl.textContent = data.historicalBuckets.length ? `지난 ${data.historicalBuckets.length}년 같은 시기 · 앞으로 6개월` : "최근 흐름";
+  // 2026-11-23 사용자 요청: '앞으로 6개월' 대신 몇 월부터 몇 월까지인지(그래프 가로축과 같은 달: 이번 달 ~ 6개월 뒤 달)
+  const spanFrom = FUTURE_MONTH_NAMES_KO[addMonths(data.axisMonthStart, 6).getMonth()];
+  const spanTo = FUTURE_MONTH_NAMES_KO[addMonths(data.axisMonthStart, 12).getMonth()];
+  if (titleEl) titleEl.textContent = data.historicalBuckets.length ? `지난 ${data.historicalBuckets.length}년 같은 시기 · ${spanFrom}~${spanTo}` : "최근 흐름";
   if (resultEl) {
     if (data.currentPrice && data.forecast.price) {
       const pctFromToday = (data.forecast.price / data.currentPrice - 1) * 100;
@@ -12843,7 +12846,7 @@ function renderFutureChart(data) {
       resultEl.textContent = "과거 평균을 계산할 수 없습니다";
     }
   }
-  el("futureChartCaption").innerHTML = `<span style="color:var(--warn);font-weight:700;">⚠️ 과거 같은 시기의 평균일 뿐 예측이 아닙니다. ${data.historicalBuckets.length || 4}년 과거 그래프가 차이가 심할수록 평균과 다르게 움직일 가능성이 높습니다.</span><br>${escapeHtml(baseNote)}`;
+  el("futureChartCaption").innerHTML = `<span style="color:var(--warn);font-weight:700;word-break:keep-all;">⚠️ ${data.historicalBuckets.length || 4}년 과거 그래프가 차이가 심할수록 평균과 다르게 움직일 가능성이 높습니다. 과거 같은 시기의 평균일 뿐 예측이 아닙니다.</span><br>${escapeHtml(baseNote)}`;
   el("futureResultsSection").style.display = "block"; // 전체화면 모달 대신 탭 화면 안에 그대로 이어붙여 표시
 }
 
