@@ -12783,12 +12783,12 @@ function renderFutureChart(data) {
     if (data.currentPrice && data.forecast.price) {
       const pctFromToday = (data.forecast.price / data.currentPrice - 1) * 100;
       const fr = data.forwardRange;
-      resultEl.innerHTML = `${data.historicalBuckets.length || 4}년간 상승 기울기 평균 <b class="${pctFromToday >= 0 ? "fh-up" : "fh-down"}">${pctFromToday >= 0 ? "+" : ""}${pctFromToday.toFixed(1)}%</b>${fr ? `<span class="fh-range">해마다 ${fr.min >= 0 ? "+" : ""}${fr.min.toFixed(0)}% ~ ${fr.max >= 0 ? "+" : ""}${fr.max.toFixed(0)}%</span>` : ""}`;
+      resultEl.innerHTML = `${data.historicalBuckets.length || 4}년간 기울기 평균 <b class="${pctFromToday >= 0 ? "fh-up" : "fh-down"}">${pctFromToday >= 0 ? "+" : ""}${pctFromToday.toFixed(1)}%</b>${fr ? `<span class="fh-range">해마다 ${fr.min >= 0 ? "+" : ""}${fr.min.toFixed(0)}% ~ ${fr.max >= 0 ? "+" : ""}${fr.max.toFixed(0)}%</span>` : ""}`;
     } else {
       resultEl.textContent = "과거 평균을 계산할 수 없습니다";
     }
   }
-  el("futureChartCaption").innerHTML = `<span style="color:var(--warn);font-weight:700;">⚠️ 과거 같은 시기의 평균일 뿐 예측이 아닙니다. 해마다 차이가 크면 평균의 뜻이 작아요.</span><br>${escapeHtml(baseNote)}`;
+  el("futureChartCaption").innerHTML = `<span style="color:var(--warn);font-weight:700;">⚠️ 과거 같은 시기의 평균일 뿐 예측이 아닙니다. ${data.historicalBuckets.length || 4}년 과거 그래프가 차이가 심할수록 평균과 다르게 움직일 가능성이 높습니다.</span><br>${escapeHtml(baseNote)}`;
   el("futureResultsSection").style.display = "block"; // 전체화면 모달 대신 탭 화면 안에 그대로 이어붙여 표시
 }
 
