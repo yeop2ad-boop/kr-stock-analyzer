@@ -5588,7 +5588,7 @@ document.addEventListener("click", (e) => {
     if (!isOpen && !slot.innerHTML) {
       slot.innerHTML = `<p class="muted" style="padding:8px 2px;">불러오는 중...</p>`;
       const sec = srDetailSection() === "stocks" ? (isKrTicker(currentDetailSymbol || "") ? "kr" : "us") : srDetailSection();
-      buildMetricExplainHtml(key, sec).then((html) => {
+      buildMetricExplainHtml(key, sec, { noText: true }).then((html) => {
         if (slot.dataset.open === "1") slot.innerHTML = html;
       });
     }

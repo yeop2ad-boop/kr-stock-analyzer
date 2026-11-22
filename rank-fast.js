@@ -476,15 +476,17 @@ function etfShortLabel(sym, name) {
 }
 const RF_PCT_KEYS = new Set(["win", "ret", "rev", "ni", "cf", "om", "roe", "debt", "div", "fee", "vol", "ret1y"]);
 const RF_AMT_KEYS = new Set(["mcap", "dv", "aum"]);
-async function buildMetricExplainHtml(key, section) {
+// opts.noText(2026-11-22 사용자 요청): 종목 상세는 줄을 누르면 같은 설명 글이 이미 위에 나와 있어, "+○○이란"을 눌렀을 때 글이 두 번 보였다 → 그때는 글을 빼고 그림·비교만.
+async function buildMetricExplainHtml(key, section, opts) {
   if (key === "win") return buildWinRateBenchmarkHtml();
+  const noText = !!(opts && opts.noText);
   const baseline = await getSReportBaseline();
   // ETF·코인의 "rev" 칸은 매출이 아니라 1년 수익률이다 — 글·그림도 수익률 것으로(예전엔 매출 설명이 나왔다)
   const tKey = key === "ret1y" || (key === "rev" && (section === "etf" || section === "crypto")) ? "ret1y" : key;
   const desc = S_REPORT_EXPLAIN[tKey] || "";
   const nm = rfExplainName(key, section);
   // 2026-11-20 사용자 요청: 쉬운 말(metric-explain.js) + "어떻게 구하는지"를 보여 주는 그림. 대표 종목 비교 막대는 그 아래에 그대로
-  const intro = `<p class="rf-explain-intro">${escapeHtml(desc).replace(/\n/g, "<br>")}</p>${typeof mxDiagramHtml === "function" ? mxDiagramHtml(tKey) : ""}`;
+  const intro = `${noText ? "" : `<p class="rf-explain-intro">${escapeHtml(desc).replace(/\n/g, "<br>")}</p>`}${typeof mxDiagramHtml === "function" ? mxDiagramHtml(tKey) : ""}`;
   if (key === "surge") return intro; // 거래 몰림(종목 상세): 대표 종목 값이 DB에 없어 글과 그림만
   if (key === "rsi") {
     // RSI는 SPY 5년 주봉 그래프 예시가 이미 있어 같이 보여줌
