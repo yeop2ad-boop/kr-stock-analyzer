@@ -6117,7 +6117,7 @@ async function renderCrashInto(wrap, ticker) {
   if (section === "kr" || section === "us") {
     try {
       const ds = await loadRiskDataset(isKr);
-      rows = ds.items.filter((r) => r.crash && Number.isFinite(r.crash.pct)).map((r) => ({ symbol: r.symbol, _pct: r.crash.pct }));
+      rows = ds.items.filter((r) => r.crash && Number.isFinite(r.crash.pct)).map((r) => ({ symbol: r.symbol, name: r.name, _pct: r.crash.pct }));
     } catch {}
   }
   if (token !== crashRenderToken) return;
@@ -6129,29 +6129,24 @@ async function renderCrashInto(wrap, ticker) {
   // 이 종목은 방금 계산한 값으로 바꿔 끼움(배치 값은 하루 전일 수 있음)
   const mine = rows.find((r) => r.symbol === ticker);
   if (mine) mine._pct = worst.pct;
-  else if (rows.length) rows.push({ symbol: ticker, _pct: worst.pct });
+  else if (rows.length) rows.push({ symbol: ticker, name: TICKER_TO_KOREAN_NAME[ticker] || ticker, _pct: worst.pct });
   rows.sort((a, b) => a._pct - b._pct);
   const rank = rows.findIndex((r) => r.symbol === ticker) + 1;
-  const price = (v) => fmtPriceFull(v, cm.currency || (isKr ? "KRW" : "USD"));
-  const md = (d) => `${Number(d.slice(5, 7))}/${Number(d.slice(8, 10))}`;
   const fmtV = (v) => `${Math.round(v)}%`;
   const maxAbs = Math.max(...cm.months.map((x) => (Number.isFinite(x.pct) ? Math.abs(x.pct) : 0)), 1);
-  const thisMonth = new Date().toISOString().slice(0, 7);
-  let hasPartial = false;
+  // 달 이름은 막대 위에(2026-11-22 사용자 요청: 아래에 있으니 정신없다) — 위: 달 이름 · 기준선 · 아래로 뻗는 막대 · 값
   const cols = cm.months
     .map((x, i) => {
       const isLast = i === cm.months.length - 1;
-      const partial = isLast && x.key === thisMonth; // 이번 달은 오늘까지(진행 중)
-      if (partial) hasPartial = true;
       // 1월에는 연도를 붙여 해가 바뀌는 지점을 보여줌(예: 26.1) — "최근 12개월" 카드와 같은 표기
-      const moLabel = (x.m === 1 ? `${String(x.y).slice(2)}.1` : `${x.m}월`) + (partial ? "*" : "");
-      if (!Number.isFinite(x.pct)) return `<div class="oxb-col"><div class="crashm-cell"><span class="oxb-val">–</span></div><span class="oxb-month">${moLabel}</span></div>`;
+      const moLabel = x.m === 1 ? `${String(x.y).slice(2)}.1` : `${x.m}월`;
+      if (!Number.isFinite(x.pct)) return `<div class="oxb-col"><span class="oxb-month">${moLabel}</span><div class="crashm-cell"><span class="oxb-val">–</span></div></div>`;
       const isWorst = x === worst;
       const h = Math.max(3, Math.round((Math.abs(x.pct) / maxAbs) * 46)); // px — 칸(64px)에서 값 글자를 뺀 46px가 최대
       // 가장 많이 빠진 달: 값은 위 큰 숫자와 같게 소수 한 자리, 달 이름 앞에 ✔
       return `<div class="oxb-col${isWorst ? " crashm-worst" : ""}${isLast ? " oxb-last" : ""}" title="${moLabel} ${riskFmtPct(x.pct)}">
-            <div class="crashm-cell"><span class="oxb-bar crashm-bar" style="height:${h}px"></span><span class="oxb-val">${isWorst ? riskFmtPct(x.pct) : fmtV(x.pct)}</span></div>
             <span class="oxb-month">${isWorst ? "✔" : ""}${moLabel}</span>
+            <div class="crashm-cell"><span class="oxb-bar crashm-bar" style="height:${h}px"></span><span class="oxb-val">${isWorst ? riskFmtPct(x.pct) : fmtV(x.pct)}</span></div>
           </div>`;
     })
     .join("");
@@ -6174,9 +6169,22 @@ async function renderCrashInto(wrap, ticker) {
       </div>
       <div class="oxb-chart crashm-chart" style="grid-template-columns:repeat(${cm.months.length},1fr);">${cols}</div>
       ${rank ? `<p class="crashm-rank">많이 빠진 순 <b>${rank}위</b>/${rows.length} <span class="muted">(${isKr ? "코스피200·코스닥150" : "S&amp;P500"})</span></p>` : ""}
-      <p class="oxb-note">✔ ${worst.m}월: ${md(worst.from)} → ${md(worst.to)} 사이 ${price(worst.fromPrice)} → ${price(worst.toPrice)}</p>
-      <p class="oxb-note">달마다 1주(5거래일) 안에서 가장 크게 빠진 폭이에요.${hasPartial ? " * 이번 달은 오늘까지." : ""} 출처: 야후 시세 · 투자 권유가 아닙니다.</p>
+      ${
+        rank && rows.length >= 10
+          ? `<button type="button" class="risk-more-btn" data-crash-toggle>+ 전체 순위 (${rows.length}곳)</button>
+      <div class="risk-more" data-crash-list style="display:none;">${riskRankListHtml(rows, (r) => `<span class="risk-rank-val ${riskDeltaCls(r._pct)}">${riskFmtPct(r._pct)}</span>`, ticker)}</div>`
+          : ""
+      }
     </div>`;
+  // 전체 순위 펼치기/접기(2026-11-22 사용자 요청으로 되살림 — 설명 글 자리에)
+  const btn = wrap.querySelector("[data-crash-toggle]");
+  if (btn)
+    btn.addEventListener("click", () => {
+      const list = wrap.querySelector("[data-crash-list]");
+      const open = list.style.display === "none";
+      list.style.display = open ? "" : "none";
+      btn.textContent = btn.textContent.replace(open ? "+" : "−", open ? "−" : "+");
+    });
 }
 
 // ---------- 배당(2026-10-09 사용자 요청) ----------
