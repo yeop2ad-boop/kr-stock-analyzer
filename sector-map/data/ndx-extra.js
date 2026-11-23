@@ -1,7 +1,7 @@
 const NDX_EXTRA_DATA = {
-  "generatedAt": "2026-11-22T16:09:27Z",
+  "generatedAt": "2026-11-23T02:24:51Z",
   "count": 15,
-  "constituentsAsOf": "2026-11-22",
+  "constituentsAsOf": "2026-11-23",
   "constituents": [
     "AAPL",
     "MSFT",
@@ -175,7 +175,7 @@ const NDX_EXTRA_DATA = {
     },
     {
       "symbol": "MELI",
-      "name": "MercadoLibre, Inc.",
+      "name": "MercadoLibre Inc",
       "sector": "Consumer Discretionary",
       "sectorKo": "경기소비재",
       "marketCap": 69000818115.0,
