@@ -377,11 +377,14 @@ function viewMarkHtml(viewKey) {
   return v && VIEW_MARK_SVG[v.mark] ? `<span class="map-view-mark">${VIEW_MARK_SVG[v.mark]}</span>` : "";
 }
 // ---------- 대표 지수 띠(2026-11-23 사용자 요청) ----------
-// 필터 아래에 숨어 있다가 사용자가 지도를 움직이거나 확대·축소하는 동안만 내려오고, 1초 동안 가만히 있으면 다시 위로 올라가 숨는다.
-// 처음 접속했을 때는 보이지 않는다. 어느 보기에서든 같은 6개(코스피·코스닥·S&P500·나스닥종합·비트코인·달러/원)를 보여 주고,
-// 보기를 바꾸면 그 시장의 지표가 맨 앞에 오도록 좌우 위치만 맞춘다(한국 → 코스피부터, 미국 → S&P500부터, 코인 → 비트코인부터).
-// 띠는 손으로 좌우로 밀 수 있다. 로고는 보기 선택 버튼에 쓰는 국기·코인 마크(VIEW_MARK_SVG) 그대로.
-// ※ 이 블록의 let 들은 첫 화면을 그리는 코드(파일 끝)보다 먼저 선언돼 있어야 한다(syncMapViewUi 가 여기 함수를 부름).
+// 필터 줄 바로 아래에 늘 보이는 한 줄 띠. 어느 보기에서든 같은 6개(코스피·코스닥·S&P500·나스닥종합·비트코인·달러/원)를 보여 주고,
+// 보기를 바꾸면 그 시장의 지표가 맨 앞에 오도록 좌우 위치만 맞춘다(한국 → 코스피부터, 미국 → S&P500부터, 코인 → 비트코인).
+// 띠는 손으로 좌우로 밀 수 있고, 띠 아래 가운데의 손잡이로 접고 편다 — 접어 둔 상태는 이 기기에 저장된다.
+// (같은 날 처음에는 "지도를 움직일 때만 내려오고 1초 뒤 숨김"으로 만들었다가, 사용자 요청으로 "기본은 보임 + 접고 여는 버튼"으로 바꿈)
+// 띠는 지도 영역 위에 겹쳐 놓는다(지도 크기는 그대로). 펴져 있는 동안 지도 위 단추들은 CSS로 띠 높이만큼 내려가고,
+// 지도 첫 위치(fitToViewport)도 그만큼을 위쪽 여백으로 쳐서 잡는다.
+// 로고는 보기 선택 버튼에 쓰는 국기·코인 마크(VIEW_MARK_SVG) 그대로.
+// ※ 이 블록의 let 들은 첫 화면을 그리는 코드(파일 끝)보다 먼저 선언돼 있어야 한다(syncMapViewUi·fitToViewport 가 여기 함수를 부름).
 const IDX_STRIP_ITEMS = [
   { key: "kospi", symbol: "^KS11", name: "코스피", marks: ["kr"], digits: 2 },
   { key: "kosdaq", symbol: "^KQ11", name: "코스닥", marks: ["kr"], digits: 2 },
@@ -390,25 +393,28 @@ const IDX_STRIP_ITEMS = [
   { key: "btc", symbol: "BTC-USD", name: "비트코인", marks: ["crypto"], digits: 0, prefix: "$" },
   { key: "usdkrw", symbol: "KRW=X", name: "달러/원", marks: [], digits: 2 }, // 2026-11-23 사용자 요청: 로고 없이 "달러/원"만
 ];
-const IDX_STRIP_IDLE_MS = 1000; // 이만큼 가만히 있으면 숨김
-const IDX_STRIP_REFRESH_MS = 60 * 1000; // 띠가 내려올 때 시세가 이보다 오래됐으면 다시 받음
-const IDX_STRIP_PAN_MIN = 8; // 종목을 누르다 손가락이 살짝 흔들린 정도(px)는 '움직임'으로 치지 않음
+const IDX_STRIP_H = 54; // style.css 의 --idx-strip-h 와 같은 값
+const IDX_STRIP_REFRESH_MS = 60 * 1000; // 시세를 다시 받는 간격
+const IDX_STRIP_FOLD_KEY = "mm_idx_strip_folded"; // "1" = 접어 둠(없으면 펴짐 = 기본)
 const idxStripQuotes = {}; // symbol -> { price, pct }
 let idxStripBuilt = false;
-let idxStripHideTimer = null;
-let idxStripHeld = false; // 띠를 손으로 잡고 있는 동안은 숨기지 않음
 let idxStripFetchedAt = 0;
 let idxStripFetching = false;
-let idxStripPanDist = 0;
 let idxStripFocusKey = null;
-let idxStripAlignPending = false;
 let idxStripAlignedLeft = null; // 마지막으로 자리를 맞춘 위치 — 사용자가 직접 밀었는지 가리는 데 씀
+try {
+  if (localStorage.getItem(IDX_STRIP_FOLD_KEY) === "1") document.body.classList.add("idx-strip-folded");
+} catch {}
 
-function idxStripEl() {
-  return document.getElementById("idxStrip");
+function idxStripScroller() {
+  return document.getElementById("idxStripScroll");
 }
 function idxStripIsOpen() {
-  return document.body.classList.contains("idx-strip-open");
+  return !document.body.classList.contains("idx-strip-folded");
+}
+// 띠가 지도 위쪽을 가리는 높이 — 접혀 있거나 내 시장 편집 중(띠를 숨김)이면 0
+function idxStripMapOffset() {
+  return idxStripIsOpen() && !document.body.classList.contains("mine-editing") ? IDX_STRIP_H : 0;
 }
 function idxStripValHtml(it) {
   const q = idxStripQuotes[it.symbol];
@@ -418,8 +424,26 @@ function idxStripValHtml(it) {
   const up = q.pct >= 0;
   return `<span class="idx-price">${price}</span><span class="idx-chg ${up ? "up" : "down"}">${up ? "▲" : "▼"}${Math.abs(q.pct).toFixed(2)}%</span>`;
 }
+function idxStripSyncTab() {
+  const tab = document.getElementById("idxStripTab");
+  if (!tab) return;
+  const open = idxStripIsOpen();
+  tab.setAttribute("aria-expanded", open ? "true" : "false");
+  tab.setAttribute("aria-label", open ? "대표 지수 접기" : "대표 지수 펴기");
+}
+function idxStripSetFolded(folded) {
+  const atFit = mapViewIsAtFit();
+  document.body.classList.toggle("idx-strip-folded", folded);
+  try {
+    if (folded) localStorage.setItem(IDX_STRIP_FOLD_KEY, "1");
+    else localStorage.removeItem(IDX_STRIP_FOLD_KEY);
+  } catch {}
+  idxStripSyncTab();
+  if (!folded) refreshIdxStripQuotes();
+  if (atFit) fitToViewport(true); // 지도를 아직 움직이지 않았다면 첫 위치도 띠에 맞춰 부드럽게 옮김(움직여 둔 지도는 건드리지 않음)
+}
 function renderIdxStrip() {
-  const el = idxStripEl();
+  const el = idxStripScroller();
   if (!el) return;
   if (idxStripBuilt) {
     // 이미 그려져 있으면 숫자만 바꿈(밀고 있는 중에 통째로 다시 그려 끊기지 않게)
@@ -427,8 +451,7 @@ function renderIdxStrip() {
       const v = el.querySelector(`[data-idx="${it.key}"] .idx-val`);
       if (v) v.innerHTML = idxStripValHtml(it);
     }
-    // 숫자가 들어오면 칸 폭이 달라진다 — 사용자가 직접 밀지 않았다면 이 시장 지표가 다시 맨 앞에 오게 맞춘다
-    if (idxStripAlignedLeft !== null && Math.abs(el.scrollLeft - idxStripAlignedLeft) < 2) idxStripAlign();
+    idxStripRealignIfUntouched(); // 숫자가 들어오면 칸 폭이 달라진다
     return;
   }
   el.innerHTML = IDX_STRIP_ITEMS.map((it) => {
@@ -437,28 +460,19 @@ function renderIdxStrip() {
     return `<div class="idx-item" data-idx="${it.key}"><div class="idx-name">${marks ? `<span class="idx-marks">${marks}</span>` : ""}<span>${name}</span></div><div class="idx-val">${idxStripValHtml(it)}</div></div>`;
   }).join("");
   idxStripBuilt = true;
-  // 띠를 직접 만지는 동안은 계속 보이게(손을 떼거나 밀기가 멈추고 1초 뒤 숨김)
-  const touch = () => {
-    if (idxStripIsOpen()) idxStripPoke();
-  };
-  el.addEventListener("scroll", touch, { passive: true });
+  // 손가락은 브라우저가 알아서 좌우로 밀어 준다. 마우스는 끌어서 좌우로
   let mouseDrag = null;
   el.addEventListener("pointerdown", (e) => {
-    idxStripHeld = true;
-    clearTimeout(idxStripHideTimer);
-    if (e.pointerType === "mouse") mouseDrag = { x: e.clientX, left: el.scrollLeft }; // 마우스는 끌어서 좌우로
+    if (e.pointerType === "mouse") mouseDrag = { x: e.clientX, left: el.scrollLeft };
   });
   el.addEventListener("pointermove", (e) => {
     if (mouseDrag && e.pointerType === "mouse") el.scrollLeft = mouseDrag.left - (e.clientX - mouseDrag.x);
   });
-  ["pointerup", "pointercancel", "pointerleave"].forEach((ev) =>
-    el.addEventListener(ev, () => {
-      mouseDrag = null;
-      if (!idxStripHeld) return;
-      idxStripHeld = false;
-      touch();
-    })
-  );
+  ["pointerup", "pointercancel", "pointerleave"].forEach((ev) => el.addEventListener(ev, () => (mouseDrag = null)));
+  const tab = document.getElementById("idxStripTab");
+  if (tab) tab.addEventListener("click", () => idxStripSetFolded(idxStripIsOpen()));
+  idxStripSyncTab();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(idxStripRealignIfUntouched).catch(() => {});
 }
 async function refreshIdxStripQuotes() {
   if (idxStripFetching || Date.now() - idxStripFetchedAt < IDX_STRIP_REFRESH_MS) return;
@@ -480,6 +494,12 @@ async function refreshIdxStripQuotes() {
   idxStripFetching = false;
   renderIdxStrip();
 }
+// 펴져 있고 화면이 보이는 동안에만 1분마다 다시 받음(접어 두면 받지 않음)
+function idxStripTick() {
+  if (idxStripBuilt && idxStripIsOpen() && !document.hidden) refreshIdxStripQuotes();
+}
+setInterval(idxStripTick, 20 * 1000);
+document.addEventListener("visibilitychange", idxStripTick);
 // 지금 보기의 시장에 맞는 지표 — 한국 보기 = 코스피부터, 미국 보기 = S&P500부터, 코인 = 비트코인부터(ETF·모음·내 시장은 맨 앞부터)
 function idxStripFocusForView() {
   const v = MAP_VIEWS[ACTIVE_VIEW];
@@ -489,55 +509,29 @@ function idxStripFocusForView() {
   return "kospi";
 }
 function idxStripAlign() {
-  const el = idxStripEl();
+  const el = idxStripScroller();
   if (!el || !idxStripBuilt) return;
   const item = el.querySelector(`[data-idx="${idxStripFocusKey}"]`);
   if (item) el.scrollLeft = item.offsetLeft;
   idxStripAlignedLeft = el.scrollLeft;
-  idxStripAlignPending = false;
 }
-// 보기가 바뀔 때마다(syncMapViewUi) 호출 — 띠를 보여 주지는 않고, 다음에 내려올 때 그 시장 지표가 앞에 오도록 자리만 맞춘다.
+// 사용자가 직접 밀지 않았다면(마지막으로 맞춘 자리 그대로라면) 이 시장 지표가 다시 맨 앞에 오게 맞춘다
+function idxStripRealignIfUntouched() {
+  const el = idxStripScroller();
+  if (el && idxStripAlignedLeft !== null && Math.abs(el.scrollLeft - idxStripAlignedLeft) < 2) idxStripAlign();
+}
+// 보기가 바뀔 때마다(syncMapViewUi) 호출 — 그 시장 지표가 앞에 오도록 자리를 맞춘다.
 // 같은 시장 안에서 보기만 바꾼 경우(예: 코스피 200 → 코스닥 150)에는 사용자가 밀어 둔 자리를 그대로 둔다.
 function idxStripSyncView() {
-  const el = idxStripEl();
-  if (!el) return;
+  if (!idxStripScroller()) return;
   if (!idxStripBuilt) {
     renderIdxStrip();
-    setTimeout(refreshIdxStripQuotes, 2500); // 첫 화면이 뜬 뒤 조용히 받아 둠(처음 내려올 때 숫자가 비어 있지 않게)
+    setTimeout(idxStripTick, 300);
   }
   const key = idxStripFocusForView();
   if (key === idxStripFocusKey) return;
   idxStripFocusKey = key;
-  idxStripAlignPending = true;
   idxStripAlign();
-  idxStripAlignPending = true; // 글꼴이 늦게 들어와 폭이 달라질 수 있어, 다음에 내려올 때 한 번 더 맞춘다
-}
-function idxStripHide() {
-  clearTimeout(idxStripHideTimer);
-  document.body.classList.remove("idx-strip-open");
-  const el = idxStripEl();
-  if (el) el.setAttribute("aria-hidden", "true");
-}
-// 사용자가 지도를 움직였다(끌기·두 손가락 확대·휠·섹터 눌러 확대) → 띠를 내리고, 숨김 타이머를 처음부터 다시 잰다
-function idxStripPoke() {
-  const el = idxStripEl();
-  if (!el) return;
-  if (!idxStripBuilt) renderIdxStrip();
-  if (!idxStripIsOpen()) {
-    if (idxStripAlignPending) idxStripAlign();
-    document.body.classList.add("idx-strip-open");
-    el.setAttribute("aria-hidden", "false");
-    refreshIdxStripQuotes();
-  }
-  clearTimeout(idxStripHideTimer);
-  if (!idxStripHeld) idxStripHideTimer = setTimeout(idxStripHide, IDX_STRIP_IDLE_MS);
-}
-function idxStripPanStart() {
-  idxStripPanDist = 0;
-}
-function idxStripOnPan(dist) {
-  idxStripPanDist += dist;
-  if (idxStripPanDist >= IDX_STRIP_PAN_MIN) idxStripPoke();
 }
 
 // ---------- 지도 보기 목록(2026-10-21 개편) ----------
@@ -1513,6 +1507,10 @@ function renderCompanyBubble(leaf, sectorColorValue) {
 const view = { x: 0, y: 0, k: 1 };
 let fitK = 1;
 let minK = 0.4;
+let lastFitView = null; // fitToViewport 가 마지막으로 잡은 위치 — 사용자가 지도를 움직였는지 가리는 데 씀(대표 지수 띠 접고 펴기)
+function mapViewIsAtFit() {
+  return !!lastFitView && Math.abs(view.x - lastFitView.x) < 1 && Math.abs(view.y - lastFitView.y) < 1 && Math.abs(view.k - lastFitView.k) < 1e-6;
+}
 const maxK = 10;
 
 function applyTransform(animate) {
@@ -1563,7 +1561,7 @@ function fitToViewport(animate) {
   const upShift = isKr ? 40 : 50;
   view.k = fitK;
   view.x = (vw - RIGHT_CONTROLS_RESERVE - WORLD_SIZE * view.k) / 2;
-  view.y = (vh + TOP_CONTROLS_RESERVE - WORLD_SIZE * view.k) / 2 - upShift;
+  view.y = (vh + TOP_CONTROLS_RESERVE + idxStripMapOffset() - WORLD_SIZE * view.k) / 2 - upShift; // 대표 지수 띠가 펴져 있으면 그 높이도 위쪽 여백으로 침
   // 지도 중심이 우측 버튼 공간(RIGHT_CONTROLS_RESERVE)만큼 왼쪽으로 밀리므로,
   // 상단 지수 카드는 그만큼 오른쪽으로 보정해 화면 기준 정중앙에 오도록 함
   document.documentElement.style.setProperty(
@@ -1571,11 +1569,11 @@ function fitToViewport(animate) {
     `${Math.round(RIGHT_CONTROLS_RESERVE / 2 / view.k)}px`
   );
   applyTransform(animate);
+  lastFitView = { x: view.x, y: view.y, k: view.k };
 }
 
 function zoomToNode(node) {
   if (mapLocked) return; // 고정 모드에선 섹터/종목 줌 이동도 잠금
-  idxStripPoke(); // 확대하면 대표 지수 띠가 내려옴
   const vw = mapViewport.clientWidth;
   const vh = mapViewport.clientHeight;
   // 사각 타일은 가로/세로가 다르므로 양쪽 다 화면에 들어오는 배율로(원형 시절 r 기반 계산을 대체)
@@ -1597,7 +1595,6 @@ mapViewport.addEventListener(
   (e) => {
     e.preventDefault();
     if (mapLocked) return;
-    idxStripPoke();
     const rect = mapViewport.getBoundingClientRect();
     const px = e.clientX - rect.left;
     const py = e.clientY - rect.top;
@@ -1628,7 +1625,6 @@ mapViewport.addEventListener("pointerdown", (e) => {
   mapViewport.setPointerCapture(e.pointerId);
   activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
   mapViewport.classList.add("grabbing");
-  if (activePointers.size === 1) idxStripPanStart();
   if (activePointers.size === 1) {
     dragLast = { x: e.clientX, y: e.clientY };
   } else if (activePointers.size === 2) {
@@ -1643,13 +1639,11 @@ mapViewport.addEventListener("pointermove", (e) => {
   activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
   if (activePointers.size === 1 && dragLast) {
-    idxStripOnPan(Math.abs(e.clientX - dragLast.x) + Math.abs(e.clientY - dragLast.y));
     view.x += e.clientX - dragLast.x;
     view.y += e.clientY - dragLast.y;
     dragLast = { x: e.clientX, y: e.clientY };
     applyTransform(false);
   } else if (activePointers.size === 2 && pinchStartDist) {
-    idxStripPoke();
     const pts = [...activePointers.values()];
     const rect = mapViewport.getBoundingClientRect();
     const midX = (pts[0].x + pts[1].x) / 2 - rect.left;

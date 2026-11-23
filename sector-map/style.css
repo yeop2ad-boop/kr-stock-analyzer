@@ -1582,12 +1582,20 @@ body.mine-editing .mine-stock { cursor: pointer; }
 .range-slider-thumb { touch-action: none; width: 26px; height: 26px; }
 .range-slider-thumb::before { content: ""; position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; transform: translate(-50%, -50%); border-radius: 50%; }
 .all-filters-body { overflow-x: hidden; }
-/* ===== 2026-11-23: 대표 지수 띠 — 필터 아래에 숨어 있다가 지도를 움직이는 동안만 내려옴 ===== */
-:root { --idx-strip-h: 54px; }
+/* ===== 2026-11-23: 대표 지수 띠 — 필터 아래에 늘 보이고, 가운데 손잡이로 접고 편다(지도 영역 위에 겹쳐 놓음) ===== */
+:root { --idx-strip-h: 54px; --idx-tab-h: 18px; }
 .top-bar { position: relative; }
-.idx-strip { position: absolute; left: 0; right: 0; top: 100%; height: var(--idx-strip-h); box-sizing: border-box; z-index: -1; display: flex; align-items: stretch; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; touch-action: pan-x; background: var(--surface); border-bottom: 1px solid var(--line); white-space: nowrap; user-select: none; -webkit-user-select: none; cursor: grab; transform: translateY(-100%); visibility: hidden; pointer-events: none; transition: transform 0.28s ease, visibility 0s linear 0.28s; }
-.idx-strip::-webkit-scrollbar { display: none; }
-body.idx-strip-open .idx-strip { transform: translateY(0); visibility: visible; pointer-events: auto; box-shadow: 0 6px 14px rgba(15, 23, 42, 0.1); transition: transform 0.28s ease, visibility 0s; }
+.idx-strip { position: absolute; left: 0; right: 0; top: 100%; height: var(--idx-strip-h); z-index: -1; transition: transform 0.28s ease; }
+.idx-strip-scroll { height: 100%; box-sizing: border-box; display: flex; align-items: stretch; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; touch-action: pan-x; background: var(--surface); border-bottom: 1px solid var(--line); box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08); white-space: nowrap; user-select: none; -webkit-user-select: none; cursor: grab; }
+.idx-strip-scroll::-webkit-scrollbar { display: none; }
+body.idx-strip-folded .idx-strip { transform: translateY(-100%); }
+body.idx-strip-folded .idx-strip-scroll { visibility: hidden; box-shadow: none; transition: visibility 0s linear 0.28s; }
+/* 손잡이 — 띠 아래 가운데에 달린 작은 반달 단추(펴져 있으면 ⌃, 접혀 있으면 ⌄). 접으면 필터 줄 바로 아래에 이것만 남는다 */
+.idx-strip-tab { position: absolute; left: 50%; top: 100%; margin-top: -1px; transform: translateX(-50%); width: 56px; height: var(--idx-tab-h); padding: 0; border: 1px solid var(--line); border-top: none; border-radius: 0 0 12px 12px; background: var(--surface); color: var(--text-mid); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 5px 10px rgba(15, 23, 42, 0.1); -webkit-tap-highlight-color: transparent; }
+.idx-strip-tab::after { content: ""; position: absolute; left: -12px; right: -12px; top: 0; bottom: -14px; } /* 누르는 영역만 넓힘 */
+.idx-strip-tab svg { width: 16px; height: 16px; display: block; transition: transform 0.28s ease; }
+.idx-strip-tab:active { background: var(--surface-2); }
+body.idx-strip-folded .idx-strip-tab svg { transform: rotate(180deg); }
 .idx-item { flex: none; display: flex; flex-direction: column; justify-content: center; padding: 0 13px; border-left: 1px solid var(--line); }
 .idx-item:first-child { border-left: none; }
 .idx-name { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 800; color: var(--brand); line-height: 1.2; letter-spacing: -0.2px; }
@@ -1601,6 +1609,10 @@ body.idx-strip-open .idx-strip { transform: translateY(0); visibility: visible; 
 :root[data-theme="dark"] .idx-name { color: #b79cff; }
 :root[data-theme="dark"] .idx-chg.up { color: #ff5a52; }
 :root[data-theme="dark"] .idx-chg.down { color: #6b9bff; }
-/* 띠가 내려와 있는 동안 지도 위 단추(인기·기준 시각·균등/대금/등락/관심)는 띠 높이만큼 같이 내려간다 */
+/* 지도 위 단추(인기·기준 시각·균등/대금/등락/관심)는 띠와 손잡이 아래로 — 띠가 펴져 있으면 띠 높이만큼 더 내려간다 */
 .map-side-buttons { transition: transform 0.28s ease; }
-body.idx-strip-open .ai-fab-row, body.idx-strip-open .map-side-buttons { transform: translateY(var(--idx-strip-h)); }
+.ai-fab-row, .map-side-buttons { transform: translateY(calc(var(--idx-strip-h) + 8px)); }
+body.idx-strip-folded .ai-fab-row, body.idx-strip-folded .map-side-buttons { transform: translateY(8px); }
+/* 내 시장 편집 중·고정 모드에서는 띠를 쓰지 않음 */
+body.mine-editing .idx-strip { display: none; }
+body.mine-editing .ai-fab-row, body.mine-editing .map-side-buttons, body.map-fixed-mode .ai-fab-row, body.map-fixed-mode .map-side-buttons { transform: none; }
