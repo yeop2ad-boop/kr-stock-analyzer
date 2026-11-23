@@ -1582,3 +1582,25 @@ body.mine-editing .mine-stock { cursor: pointer; }
 .range-slider-thumb { touch-action: none; width: 26px; height: 26px; }
 .range-slider-thumb::before { content: ""; position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; transform: translate(-50%, -50%); border-radius: 50%; }
 .all-filters-body { overflow-x: hidden; }
+/* ===== 2026-11-23: 대표 지수 띠 — 필터 아래에 숨어 있다가 지도를 움직이는 동안만 내려옴 ===== */
+:root { --idx-strip-h: 54px; }
+.top-bar { position: relative; }
+.idx-strip { position: absolute; left: 0; right: 0; top: 100%; height: var(--idx-strip-h); box-sizing: border-box; z-index: -1; display: flex; align-items: stretch; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; touch-action: pan-x; background: var(--surface); border-bottom: 1px solid var(--line); white-space: nowrap; user-select: none; -webkit-user-select: none; cursor: grab; transform: translateY(-100%); visibility: hidden; pointer-events: none; transition: transform 0.28s ease, visibility 0s linear 0.28s; }
+.idx-strip::-webkit-scrollbar { display: none; }
+body.idx-strip-open .idx-strip { transform: translateY(0); visibility: visible; pointer-events: auto; box-shadow: 0 6px 14px rgba(15, 23, 42, 0.1); transition: transform 0.28s ease, visibility 0s; }
+.idx-item { flex: none; display: flex; flex-direction: column; justify-content: center; padding: 0 13px; border-left: 1px solid var(--line); }
+.idx-item:first-child { border-left: none; }
+.idx-name { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 800; color: var(--brand); line-height: 1.2; letter-spacing: -0.2px; }
+.idx-marks { display: inline-flex; align-items: center; gap: 2px; flex: none; }
+.idx-mark { display: inline-flex; align-items: center; flex: none; }
+.idx-mark svg { width: 19px; height: 13px; display: block; }
+.idx-val { margin-top: 4px; font-size: 12.5px; font-weight: 700; color: var(--text-dark); line-height: 1.2; }
+.idx-chg { margin-left: 4px; }
+.idx-chg.up { color: #e5342f; }
+.idx-chg.down { color: #1d4ed8; }
+:root[data-theme="dark"] .idx-name { color: #b79cff; }
+:root[data-theme="dark"] .idx-chg.up { color: #ff5a52; }
+:root[data-theme="dark"] .idx-chg.down { color: #6b9bff; }
+/* 띠가 내려와 있는 동안 지도 위 단추(인기·기준 시각·균등/대금/등락/관심)는 띠 높이만큼 같이 내려간다 */
+.map-side-buttons { transition: transform 0.28s ease; }
+body.idx-strip-open .ai-fab-row, body.idx-strip-open .map-side-buttons { transform: translateY(var(--idx-strip-h)); }

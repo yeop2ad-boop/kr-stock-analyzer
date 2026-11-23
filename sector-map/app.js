@@ -376,6 +376,170 @@ function viewMarkHtml(viewKey) {
   const v = MAP_VIEWS[viewKey];
   return v && VIEW_MARK_SVG[v.mark] ? `<span class="map-view-mark">${VIEW_MARK_SVG[v.mark]}</span>` : "";
 }
+// ---------- 대표 지수 띠(2026-11-23 사용자 요청) ----------
+// 필터 아래에 숨어 있다가 사용자가 지도를 움직이거나 확대·축소하는 동안만 내려오고, 1초 동안 가만히 있으면 다시 위로 올라가 숨는다.
+// 처음 접속했을 때는 보이지 않는다. 어느 보기에서든 같은 6개(코스피·코스닥·S&P500·나스닥종합·비트코인·원달러 환율)를 보여 주고,
+// 보기를 바꾸면 그 시장의 지표가 맨 앞에 오도록 좌우 위치만 맞춘다(한국 → 코스피부터, 미국 → S&P500부터, 코인 → 비트코인부터).
+// 띠는 손으로 좌우로 밀 수 있다. 로고는 보기 선택 버튼에 쓰는 국기·코인 마크(VIEW_MARK_SVG) 그대로.
+// ※ 이 블록의 let 들은 첫 화면을 그리는 코드(파일 끝)보다 먼저 선언돼 있어야 한다(syncMapViewUi 가 여기 함수를 부름).
+const IDX_STRIP_ITEMS = [
+  { key: "kospi", symbol: "^KS11", name: "코스피", marks: ["kr"], digits: 2 },
+  { key: "kosdaq", symbol: "^KQ11", name: "코스닥", marks: ["kr"], digits: 2 },
+  { key: "spx", symbol: "^GSPC", name: "S&P500", marks: ["us"], digits: 2 },
+  { key: "ixic", symbol: "^IXIC", name: "나스닥종합", marks: ["us"], digits: 2 },
+  { key: "btc", symbol: "BTC-USD", name: "비트코인", marks: ["crypto"], digits: 0, prefix: "$" },
+  { key: "usdkrw", symbol: "KRW=X", name: "원달러 환율", marks: ["kr", "us"], digits: 2 },
+];
+const IDX_STRIP_IDLE_MS = 1000; // 이만큼 가만히 있으면 숨김
+const IDX_STRIP_REFRESH_MS = 60 * 1000; // 띠가 내려올 때 시세가 이보다 오래됐으면 다시 받음
+const IDX_STRIP_PAN_MIN = 8; // 종목을 누르다 손가락이 살짝 흔들린 정도(px)는 '움직임'으로 치지 않음
+const idxStripQuotes = {}; // symbol -> { price, pct }
+let idxStripBuilt = false;
+let idxStripHideTimer = null;
+let idxStripHeld = false; // 띠를 손으로 잡고 있는 동안은 숨기지 않음
+let idxStripFetchedAt = 0;
+let idxStripFetching = false;
+let idxStripPanDist = 0;
+let idxStripFocusKey = null;
+let idxStripAlignPending = false;
+let idxStripAlignedLeft = null; // 마지막으로 자리를 맞춘 위치 — 사용자가 직접 밀었는지 가리는 데 씀
+
+function idxStripEl() {
+  return document.getElementById("idxStrip");
+}
+function idxStripIsOpen() {
+  return document.body.classList.contains("idx-strip-open");
+}
+function idxStripValHtml(it) {
+  const q = idxStripQuotes[it.symbol];
+  if (!q || !Number.isFinite(q.price)) return `<span class="idx-price">-</span>`;
+  const price = (it.prefix || "") + q.price.toLocaleString("en-US", { minimumFractionDigits: it.digits, maximumFractionDigits: it.digits });
+  if (!Number.isFinite(q.pct)) return `<span class="idx-price">${price}</span>`;
+  const up = q.pct >= 0;
+  return `<span class="idx-price">${price}</span><span class="idx-chg ${up ? "up" : "down"}">${up ? "▲" : "▼"}${Math.abs(q.pct).toFixed(2)}%</span>`;
+}
+function renderIdxStrip() {
+  const el = idxStripEl();
+  if (!el) return;
+  if (idxStripBuilt) {
+    // 이미 그려져 있으면 숫자만 바꿈(밀고 있는 중에 통째로 다시 그려 끊기지 않게)
+    for (const it of IDX_STRIP_ITEMS) {
+      const v = el.querySelector(`[data-idx="${it.key}"] .idx-val`);
+      if (v) v.innerHTML = idxStripValHtml(it);
+    }
+    // 숫자가 들어오면 칸 폭이 달라진다 — 사용자가 직접 밀지 않았다면 이 시장 지표가 다시 맨 앞에 오게 맞춘다
+    if (idxStripAlignedLeft !== null && Math.abs(el.scrollLeft - idxStripAlignedLeft) < 2) idxStripAlign();
+    return;
+  }
+  el.innerHTML = IDX_STRIP_ITEMS.map((it) => {
+    const marks = it.marks.map((m) => `<span class="idx-mark">${VIEW_MARK_SVG[m] || ""}</span>`).join("");
+    const name = it.name.replace(/&/g, "&amp;");
+    return `<div class="idx-item" data-idx="${it.key}"><div class="idx-name"><span class="idx-marks">${marks}</span><span>${name}</span></div><div class="idx-val">${idxStripValHtml(it)}</div></div>`;
+  }).join("");
+  idxStripBuilt = true;
+  // 띠를 직접 만지는 동안은 계속 보이게(손을 떼거나 밀기가 멈추고 1초 뒤 숨김)
+  const touch = () => {
+    if (idxStripIsOpen()) idxStripPoke();
+  };
+  el.addEventListener("scroll", touch, { passive: true });
+  let mouseDrag = null;
+  el.addEventListener("pointerdown", (e) => {
+    idxStripHeld = true;
+    clearTimeout(idxStripHideTimer);
+    if (e.pointerType === "mouse") mouseDrag = { x: e.clientX, left: el.scrollLeft }; // 마우스는 끌어서 좌우로
+  });
+  el.addEventListener("pointermove", (e) => {
+    if (mouseDrag && e.pointerType === "mouse") el.scrollLeft = mouseDrag.left - (e.clientX - mouseDrag.x);
+  });
+  ["pointerup", "pointercancel", "pointerleave"].forEach((ev) =>
+    el.addEventListener(ev, () => {
+      mouseDrag = null;
+      if (!idxStripHeld) return;
+      idxStripHeld = false;
+      touch();
+    })
+  );
+}
+async function refreshIdxStripQuotes() {
+  if (idxStripFetching || Date.now() - idxStripFetchedAt < IDX_STRIP_REFRESH_MS) return;
+  idxStripFetching = true;
+  let got = 0;
+  try {
+    await Promise.all(
+      IDX_STRIP_ITEMS.map(async (it) => {
+        const q = await fetchIndexQuote(it.symbol);
+        if (q) {
+          idxStripQuotes[it.symbol] = { price: q.price, pct: q.pct };
+          got++;
+        }
+      })
+    );
+  } catch {}
+  // 하나도 못 받았으면 1분을 다 기다리지 않고 15초 뒤 다시 시도
+  idxStripFetchedAt = got ? Date.now() : Date.now() - IDX_STRIP_REFRESH_MS + 15000;
+  idxStripFetching = false;
+  renderIdxStrip();
+}
+// 지금 보기의 시장에 맞는 지표 — 한국 보기 = 코스피부터, 미국 보기 = S&P500부터, 코인 = 비트코인부터(ETF·모음·내 시장은 맨 앞부터)
+function idxStripFocusForView() {
+  const v = MAP_VIEWS[ACTIVE_VIEW];
+  const mark = v && v.mark;
+  if (mark === "us") return "spx";
+  if (mark === "crypto") return "btc";
+  return "kospi";
+}
+function idxStripAlign() {
+  const el = idxStripEl();
+  if (!el || !idxStripBuilt) return;
+  const item = el.querySelector(`[data-idx="${idxStripFocusKey}"]`);
+  if (item) el.scrollLeft = item.offsetLeft;
+  idxStripAlignedLeft = el.scrollLeft;
+  idxStripAlignPending = false;
+}
+// 보기가 바뀔 때마다(syncMapViewUi) 호출 — 띠를 보여 주지는 않고, 다음에 내려올 때 그 시장 지표가 앞에 오도록 자리만 맞춘다.
+// 같은 시장 안에서 보기만 바꾼 경우(예: 코스피 200 → 코스닥 150)에는 사용자가 밀어 둔 자리를 그대로 둔다.
+function idxStripSyncView() {
+  const el = idxStripEl();
+  if (!el) return;
+  if (!idxStripBuilt) {
+    renderIdxStrip();
+    setTimeout(refreshIdxStripQuotes, 2500); // 첫 화면이 뜬 뒤 조용히 받아 둠(처음 내려올 때 숫자가 비어 있지 않게)
+  }
+  const key = idxStripFocusForView();
+  if (key === idxStripFocusKey) return;
+  idxStripFocusKey = key;
+  idxStripAlignPending = true;
+  idxStripAlign();
+  idxStripAlignPending = true; // 글꼴이 늦게 들어와 폭이 달라질 수 있어, 다음에 내려올 때 한 번 더 맞춘다
+}
+function idxStripHide() {
+  clearTimeout(idxStripHideTimer);
+  document.body.classList.remove("idx-strip-open");
+  const el = idxStripEl();
+  if (el) el.setAttribute("aria-hidden", "true");
+}
+// 사용자가 지도를 움직였다(끌기·두 손가락 확대·휠·섹터 눌러 확대) → 띠를 내리고, 숨김 타이머를 처음부터 다시 잰다
+function idxStripPoke() {
+  const el = idxStripEl();
+  if (!el) return;
+  if (!idxStripBuilt) renderIdxStrip();
+  if (!idxStripIsOpen()) {
+    if (idxStripAlignPending) idxStripAlign();
+    document.body.classList.add("idx-strip-open");
+    el.setAttribute("aria-hidden", "false");
+    refreshIdxStripQuotes();
+  }
+  clearTimeout(idxStripHideTimer);
+  if (!idxStripHeld) idxStripHideTimer = setTimeout(idxStripHide, IDX_STRIP_IDLE_MS);
+}
+function idxStripPanStart() {
+  idxStripPanDist = 0;
+}
+function idxStripOnPan(dist) {
+  idxStripPanDist += dist;
+  if (idxStripPanDist >= IDX_STRIP_PAN_MIN) idxStripPoke();
+}
+
 // ---------- 지도 보기 목록(2026-10-21 개편) ----------
 // 기본은 대표 자산 4개(코스피 200 · S&P200 · ETF200 · 비트코인200). 드롭다운 맨 아래 ＋로 다른 보기를 더하고, ✎(편집)으로
 // 기본 4개를 포함한 모든 보기의 순서를 바꾸거나(▲▼) 뺄 수 있다(−). 순서·구성은 이 기기에 저장(map_views_order_v2).
@@ -732,6 +896,7 @@ function syncMapViewUi() {
   if (mark) mark.innerHTML = viewMarkHtml(ACTIVE_VIEW);
   renderMapViewMenu();
   if (typeof mineSyncUi === "function") mineSyncUi(); // 내 시장이면 오른쪽 위 '수정' 버튼 표시
+  idxStripSyncView(); // 대표 지수 띠: 이 시장의 지표가 앞에 오게
 }
 
 // 지도 맨 위에 실제 지수 카드(국기·이름/지수값/등락/미니그래프)가 들어갈 띠 높이(월드 좌표) — 섹터 원들은 이 아래로 배치됨.
@@ -1410,6 +1575,7 @@ function fitToViewport(animate) {
 
 function zoomToNode(node) {
   if (mapLocked) return; // 고정 모드에선 섹터/종목 줌 이동도 잠금
+  idxStripPoke(); // 확대하면 대표 지수 띠가 내려옴
   const vw = mapViewport.clientWidth;
   const vh = mapViewport.clientHeight;
   // 사각 타일은 가로/세로가 다르므로 양쪽 다 화면에 들어오는 배율로(원형 시절 r 기반 계산을 대체)
@@ -1431,6 +1597,7 @@ mapViewport.addEventListener(
   (e) => {
     e.preventDefault();
     if (mapLocked) return;
+    idxStripPoke();
     const rect = mapViewport.getBoundingClientRect();
     const px = e.clientX - rect.left;
     const py = e.clientY - rect.top;
@@ -1461,6 +1628,7 @@ mapViewport.addEventListener("pointerdown", (e) => {
   mapViewport.setPointerCapture(e.pointerId);
   activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
   mapViewport.classList.add("grabbing");
+  if (activePointers.size === 1) idxStripPanStart();
   if (activePointers.size === 1) {
     dragLast = { x: e.clientX, y: e.clientY };
   } else if (activePointers.size === 2) {
@@ -1475,11 +1643,13 @@ mapViewport.addEventListener("pointermove", (e) => {
   activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
   if (activePointers.size === 1 && dragLast) {
+    idxStripOnPan(Math.abs(e.clientX - dragLast.x) + Math.abs(e.clientY - dragLast.y));
     view.x += e.clientX - dragLast.x;
     view.y += e.clientY - dragLast.y;
     dragLast = { x: e.clientX, y: e.clientY };
     applyTransform(false);
   } else if (activePointers.size === 2 && pinchStartDist) {
+    idxStripPoke();
     const pts = [...activePointers.values()];
     const rect = mapViewport.getBoundingClientRect();
     const midX = (pts[0].x + pts[1].x) / 2 - rect.left;
