@@ -386,20 +386,30 @@ function viewMarkHtml(viewKey) {
 // 로고는 보기 선택 버튼에 쓰는 국기·코인 마크(VIEW_MARK_SVG) 그대로.
 // ※ 이 블록의 let 들은 첫 화면을 그리는 코드(파일 끝)보다 먼저 선언돼 있어야 한다(syncMapViewUi·fitToViewport 가 여기 함수를 부름).
 const IDX_STRIP_ITEMS = [
-  { key: "kospi", symbol: "^KS11", name: "코스피", marks: ["kr"], digits: 2 },
-  { key: "kosdaq", symbol: "^KQ11", name: "코스닥", marks: ["kr"], digits: 2 },
-  { key: "spx", symbol: "^GSPC", name: "S&P500", marks: ["us"], digits: 2 },
-  { key: "ixic", symbol: "^IXIC", name: "나스닥종합", marks: ["us"], digits: 2 },
-  { key: "btc", symbol: "BTC-USD", name: "비트코인", marks: ["crypto"], digits: 0, prefix: "$" },
-  { key: "usdkrw", symbol: "KRW=X", name: "달러/원", marks: [], digits: 2 }, // 2026-11-23 사용자 요청: 로고 없이 "달러/원"만
+  // mkt: 장이 열려 있는지 가리는 기준(kr 한국 증시 · us 미국 증시 · crypto 24시간 · fx 외환)
+  { key: "kospi", symbol: "^KS11", name: "코스피", marks: ["kr"], digits: 2, mkt: "kr" },
+  { key: "kosdaq", symbol: "^KQ11", name: "코스닥", marks: ["kr"], digits: 2, mkt: "kr" },
+  { key: "spx", symbol: "^GSPC", name: "S&P500", marks: ["us"], digits: 2, mkt: "us" },
+  { key: "ixic", symbol: "^IXIC", name: "나스닥종합", marks: ["us"], digits: 2, mkt: "us" },
+  { key: "btc", symbol: "BTC-USD", name: "비트코인", marks: ["crypto"], digits: 0, prefix: "$", mkt: "crypto" },
+  { key: "usdkrw", symbol: "KRW=X", name: "달러/원", marks: [], digits: 2, mkt: "fx" }, // 2026-11-23 사용자 요청: 로고 없이 "달러/원"만
 ];
 const IDX_STRIP_H = 54; // style.css 의 --idx-strip-h 와 같은 값
-const IDX_STRIP_REFRESH_MS = 60 * 1000; // 시세를 다시 받는 간격
+// 2026-11-24 사용자 요청: "실시간으로 장 운영 중인 지수는 깜박이면서 1초마다 업데이트"
+const IDX_STRIP_LIVE_MS = 1000; // 장이 열린 지표가 있는 동안 다시 받는 간격
+const IDX_STRIP_SLOW_MS = 60 * 1000; // 전부 닫혔을 때·오래 손대지 않았을 때·연달아 실패했을 때의 가장 긴 간격
+const IDX_STRIP_IDLE_AFTER_MS = 10 * 60 * 1000; // 이만큼 화면을 건드리지 않으면 1분 간격으로 늦춤(켜 둔 채 잊은 화면이 하루 종일 1초마다 묻지 않게). 건드리면 바로 1초로 복귀
+const IDX_STRIP_FRESH_MS = 30 * 60 * 1000; // 시세 시각이 이보다 오래됐으면 '장중'으로 보지 않음(목록에 없는 휴장일·시세가 끊긴 때)
+const IDX_STRIP_PROXY = "https://us-stock.yeop2ad.workers.dev/?url="; // proxyFetchJson 의 첫 중계 서버와 같은 곳 — 1초 요청은 여기로만 보낸다(공개 중계 서버에는 안 보냄)
 const IDX_STRIP_FOLD_KEY = "mm_idx_strip_folded"; // "1" = 접어 둠(없으면 펴짐 = 기본)
-const idxStripQuotes = {}; // symbol -> { price, pct }
+const idxStripQuotes = {}; // symbol -> { price, pct, time(초), tick(직전 값보다 +1 올랐다 / -1 내렸다 / 0) }
 let idxStripBuilt = false;
-let idxStripFetchedAt = 0;
-let idxStripFetching = false;
+let idxStripTimer = null; // 다음 받기 예약(없으면 null)
+let idxStripBusy = false; // 받는 중
+let idxStripFails = 0; // 연달아 실패한 횟수
+let idxStripStartedAt = 0; // 마지막으로 받기 시작한 때
+let idxStripFallbackAt = 0; // 예전 방식(지표마다 따로)으로 받은 마지막 때
+let idxStripInputAt = Date.now(); // 마지막으로 화면을 건드린 때
 let idxStripFocusKey = null;
 let idxStripAlignedLeft = null; // 마지막으로 자리를 맞춘 위치 — 사용자가 직접 밀었는지 가리는 데 씀
 try {
@@ -439,7 +449,7 @@ function idxStripSetFolded(folded) {
     else localStorage.removeItem(IDX_STRIP_FOLD_KEY);
   } catch {}
   idxStripSyncTab();
-  if (!folded) refreshIdxStripQuotes();
+  if (!folded) idxStripKick();
   if (atFit) fitToViewport(true); // 지도를 아직 움직이지 않았다면 첫 위치도 띠에 맞춰 부드럽게 옮김(움직여 둔 지도는 건드리지 않음)
 }
 function renderIdxStrip() {
@@ -448,8 +458,23 @@ function renderIdxStrip() {
   if (idxStripBuilt) {
     // 이미 그려져 있으면 숫자만 바꿈(밀고 있는 중에 통째로 다시 그려 끊기지 않게)
     for (const it of IDX_STRIP_ITEMS) {
-      const v = el.querySelector(`[data-idx="${it.key}"] .idx-val`);
-      if (v) v.innerHTML = idxStripValHtml(it);
+      const item = el.querySelector(`[data-idx="${it.key}"]`);
+      const v = item && item.querySelector(".idx-val");
+      if (!v) continue;
+      const html = idxStripValHtml(it);
+      if (v.dataset.html !== html) {
+        v.dataset.html = html;
+        v.innerHTML = html;
+      }
+      item.classList.toggle("is-live", idxStripItemLive(it)); // 장이 열려 있는 지표: 이름 옆 초록 점이 깜박임
+      const q = idxStripQuotes[it.symbol];
+      if (q && q.tick) {
+        // 값이 바뀐 순간: 숫자 바탕이 잠깐 물든다(올랐으면 빨강, 내렸으면 파랑). 같은 방향이 연달아 와도 다시 깜박이게 한 번 떼었다 붙임
+        v.classList.remove("tick-up", "tick-down");
+        void v.offsetWidth;
+        v.classList.add(q.tick > 0 ? "tick-up" : "tick-down");
+        q.tick = 0;
+      }
     }
     idxStripRealignIfUntouched(); // 숫자가 들어오면 칸 폭이 달라진다
     return;
@@ -457,7 +482,7 @@ function renderIdxStrip() {
   el.innerHTML = IDX_STRIP_ITEMS.map((it) => {
     const marks = it.marks.map((m) => `<span class="idx-mark">${VIEW_MARK_SVG[m] || ""}</span>`).join("");
     const name = it.name.replace(/&/g, "&amp;");
-    return `<div class="idx-item" data-idx="${it.key}"><div class="idx-name">${marks ? `<span class="idx-marks">${marks}</span>` : ""}<span>${name}</span></div><div class="idx-val">${idxStripValHtml(it)}</div></div>`;
+    return `<div class="idx-item" data-idx="${it.key}"><div class="idx-name">${marks ? `<span class="idx-marks">${marks}</span>` : ""}<span>${name}</span><i class="idx-live" aria-hidden="true"></i></div><div class="idx-val">${idxStripValHtml(it)}</div></div>`;
   }).join("");
   idxStripBuilt = true;
   // 손가락은 브라우저가 알아서 좌우로 밀어 준다. 마우스는 끌어서 좌우로
@@ -474,32 +499,135 @@ function renderIdxStrip() {
   idxStripSyncTab();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(idxStripRealignIfUntouched).catch(() => {});
 }
-async function refreshIdxStripQuotes() {
-  if (idxStripFetching || Date.now() - idxStripFetchedAt < IDX_STRIP_REFRESH_MS) return;
-  idxStripFetching = true;
-  let got = 0;
+// ----- 시세 받기(2026-11-24: 1분마다 → 장이 열린 지표가 있으면 1초마다) -----
+// 야후 묶음 차트(v7 spark) 하나로 6개 지표를 한 번에 받는다. 지표별 응답은 차트(v8)와 같은 모양이라 yahooQuoteFromChart 를 그대로 쓴다.
+// 주소 끝의 t=초: 중계 서버가 같은 주소를 45초 보관하므로 초마다 다른 주소로 물어야 새 값이 온다
+// (같은 초에 여러 사람이 물으면 같은 주소라 야후에는 한 번만 간다).
+async function fetchIdxStripBatch() {
+  const symbols = IDX_STRIP_ITEMS.map((it) => it.symbol).join(",");
+  const target = `https://query1.finance.yahoo.com/v7/finance/spark?symbols=${encodeURIComponent(symbols)}&range=5d&interval=1d&t=${Math.floor(Date.now() / 1000)}`;
+  const opts = { cache: "no-store" };
+  if (typeof AbortSignal !== "undefined" && AbortSignal.timeout) opts.signal = AbortSignal.timeout(5000);
+  const res = await fetch(IDX_STRIP_PROXY + encodeURIComponent(target), opts);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  const list = data && data.spark && data.spark.result;
+  if (!Array.isArray(list)) throw new Error("no result");
+  const out = {};
+  for (const r of list) {
+    const q = yahooQuoteFromChart(r && r.response && r.response[0]);
+    if (q && r.symbol) out[r.symbol] = q;
+  }
+  return out;
+}
+function idxStripApply(got) {
+  for (const it of IDX_STRIP_ITEMS) {
+    const q = got[it.symbol];
+    if (!q) continue;
+    const old = idxStripQuotes[it.symbol];
+    if (old && Number.isFinite(old.time) && Number.isFinite(q.time) && q.time < old.time) continue; // 더 예전 값이 늦게 도착한 경우는 버림
+    // 화면에 보이는 자릿수에서 달라졌을 때만 깜박임 방향을 남긴다
+    const f = 10 ** it.digits;
+    const moved = old && Number.isFinite(old.price) ? Math.sign(Math.round(q.price * f) - Math.round(old.price * f)) : 0;
+    idxStripQuotes[it.symbol] = { price: q.price, pct: q.pct, time: q.time, tick: moved || (old && old.tick) || 0 };
+  }
+}
+// 한 번 받기 — 성공하면 true
+async function idxStripFetchOnce() {
+  let got = null;
   try {
+    got = await fetchIdxStripBatch();
+  } catch {
+    got = null;
+  }
+  if (got && Object.keys(got).length) {
+    idxStripApply(got);
+    return true;
+  }
+  // 묶음 요청이 안 될 때: 예전 방식(지표마다 따로, 다른 중계 서버까지 시도)으로 1분에 한 번만.
+  // 아직 값이 하나도 없으면 바로, 값이 있으면 두 번 연달아 실패한 뒤부터
+  const empty = !Object.keys(idxStripQuotes).length;
+  if ((empty || idxStripFails >= 2) && Date.now() - idxStripFallbackAt >= IDX_STRIP_SLOW_MS) {
+    idxStripFallbackAt = Date.now();
+    const each = {};
     await Promise.all(
       IDX_STRIP_ITEMS.map(async (it) => {
         const q = await fetchIndexQuote(it.symbol);
-        if (q) {
-          idxStripQuotes[it.symbol] = { price: q.price, pct: q.pct };
-          got++;
-        }
+        if (q) each[it.symbol] = q;
       })
     );
+    idxStripApply(each);
+  }
+  return false;
+}
+// 외환 시장: 뉴욕 시각 일요일 17시 ~ 금요일 17시
+function idxStripFxOpen() {
+  const et = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
+  const day = et.getDay();
+  const mins = et.getHours() * 60 + et.getMinutes();
+  if (day === 6) return false;
+  if (day === 0) return mins >= 17 * 60;
+  if (day === 5) return mins < 17 * 60;
+  return true;
+}
+// 시계로 본 '지금 장이 열려 있는가'(휴장일 목록 반영) — 코인은 늘 열려 있다
+function idxStripClockOpen(it) {
+  if (it.mkt === "kr") return isKrMarketOpen();
+  if (it.mkt === "us") return isUsMarketOpen();
+  if (it.mkt === "fx") return idxStripFxOpen();
+  return true;
+}
+// 깜박이는 점을 켤지 — 장이 열려 있고, 받은 시세도 요즘 값일 때만
+function idxStripItemLive(it) {
+  const q = idxStripQuotes[it.symbol];
+  return !!q && Number.isFinite(q.time) && idxStripClockOpen(it) && Date.now() - q.time * 1000 < IDX_STRIP_FRESH_MS;
+}
+// 받을 조건: 띠가 그려져 있고, 펴져 있고, 화면이 보이고, 내 시장 편집 중이 아닐 때(접어 두거나 다른 앱으로 가면 멈춤)
+function idxStripShouldRun() {
+  return idxStripBuilt && idxStripIsOpen() && !document.hidden && !document.body.classList.contains("mine-editing");
+}
+function idxStripNextDelay() {
+  if (idxStripFails) return Math.min(IDX_STRIP_SLOW_MS, 1000 * 2 ** idxStripFails); // 실패하면 2초 → 4초 → 8초 … 최대 1분
+  if (Date.now() - idxStripInputAt > IDX_STRIP_IDLE_AFTER_MS) return IDX_STRIP_SLOW_MS;
+  return IDX_STRIP_ITEMS.some(idxStripClockOpen) ? IDX_STRIP_LIVE_MS : IDX_STRIP_SLOW_MS;
+}
+async function idxStripLoop() {
+  idxStripTimer = null;
+  if (idxStripBusy || !idxStripShouldRun()) return;
+  idxStripBusy = true;
+  idxStripStartedAt = Date.now();
+  let ok = false;
+  try {
+    ok = await idxStripFetchOnce();
   } catch {}
-  // 하나도 못 받았으면 1분을 다 기다리지 않고 15초 뒤 다시 시도
-  idxStripFetchedAt = got ? Date.now() : Date.now() - IDX_STRIP_REFRESH_MS + 15000;
-  idxStripFetching = false;
+  idxStripBusy = false;
+  idxStripFails = ok ? 0 : idxStripFails + 1;
   renderIdxStrip();
+  if (!idxStripShouldRun()) return;
+  // 앞 요청이 끝난 뒤에만 다음 요청(겹치지 않음). 간격은 '받기 시작한 때'부터 잰다
+  idxStripTimer = setTimeout(idxStripLoop, Math.max(0, idxStripNextDelay() - (Date.now() - idxStripStartedAt)));
 }
-// 펴져 있고 화면이 보이는 동안에만 1분마다 다시 받음(접어 두면 받지 않음)
-function idxStripTick() {
-  if (idxStripBuilt && idxStripIsOpen() && !document.hidden) refreshIdxStripQuotes();
+// 바로 받기 시작(펼 때·화면으로 돌아올 때·늦춰 둔 상태에서 다시 건드릴 때) — 그래도 1초에 한 번을 넘기지 않는다
+function idxStripKick() {
+  if (idxStripBusy || !idxStripShouldRun()) return;
+  clearTimeout(idxStripTimer);
+  idxStripTimer = setTimeout(idxStripLoop, Math.max(0, IDX_STRIP_LIVE_MS - (Date.now() - idxStripStartedAt)));
 }
-setInterval(idxStripTick, 20 * 1000);
-document.addEventListener("visibilitychange", idxStripTick);
+function idxStripOnInput() {
+  const wasIdle = Date.now() - idxStripInputAt > IDX_STRIP_IDLE_AFTER_MS;
+  idxStripInputAt = Date.now();
+  if (wasIdle) idxStripKick();
+}
+["pointerdown", "keydown", "wheel", "touchstart"].forEach((ev) => window.addEventListener(ev, idxStripOnInput, { passive: true, capture: true }));
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) return;
+  idxStripInputAt = Date.now();
+  idxStripKick();
+});
+// 멈춰 있는데 받을 조건이 다시 됐으면 살림(내 시장 편집을 끝낸 뒤 등) + 장이 열리고 닫히는 순간 점을 켜고 끔
+setInterval(() => {
+  if (idxStripTimer === null && !idxStripBusy && idxStripShouldRun()) idxStripKick();
+}, 5000);
 // 지금 보기의 시장에 맞는 지표 — 한국 보기 = 코스피부터, 미국 보기 = S&P500부터, 코인 = 비트코인부터(ETF·모음·내 시장은 맨 앞부터)
 function idxStripFocusForView() {
   const v = MAP_VIEWS[ACTIVE_VIEW];
@@ -526,7 +654,7 @@ function idxStripSyncView() {
   if (!idxStripScroller()) return;
   if (!idxStripBuilt) {
     renderIdxStrip();
-    setTimeout(idxStripTick, 300);
+    setTimeout(idxStripKick, 300);
   }
   const key = idxStripFocusForView();
   if (key === idxStripFocusKey) return;
@@ -917,26 +1045,67 @@ function currentIndexDefs() {
   return MARKET_INDEX_DEFS[ACTIVE_MARKET] || [];
 }
 
+// ---------- 야후 차트 한 건 → 현재가·직전 종가·등락(2026-11-24 고침) ----------
+// 예전에는 "일봉 뒤에서 두 번째 종가"를 직전 종가로 썼다. 그런데 야후는 한국 지수의 가장 최근 일봉 종가 칸을 비워서 줄 때가 있고,
+// 그러면 빈 칸이 걸러지면서 '이틀 전 종가'와 비교하게 된다 — 2026-11-24 새벽 사용자 보고: 코스피 실제 -3.3%인데 -8.4%, 코스닥 -1.6%인데 -7.2%.
+// 고친 기준(본체 app.js getDailyChangePercent·워커 fetchKrQuoteSnap 과 같은 순서):
+//  ① 야후가 현재가와 같은 순간 값으로 주는 등락률(meta.regularMarketChangePercent)
+//  ② 없으면 현재가 ÷ '시세 시각이 속한 거래일(거래소 현지 날짜)보다 앞선 마지막 종가'
+// 등락 금액은 반올림 오차가 없게, ①과 맞아떨어지는 실제 종가(일봉·previousClose 등)가 있으면 그 값으로 계산한다.
+// (환율은 일봉 종가가 실제 금요일 마감과 어긋나 있고, 코인은 야후 등락률이 '24시간 전 대비'라 지도 색과 같은 기준이 된다 — 둘 다 ①이 맞음을 확인)
+function yahooQuoteFromChart(result) {
+  if (!result) return null;
+  const meta = result.meta || {};
+  const timestamps = result.timestamp || [];
+  const closes = (result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
+  const pairs = timestamps.map((t, i) => ({ t, c: closes[i] })).filter((p) => Number.isFinite(p.c));
+  pairs.sort((a, b) => a.t - b.t);
+  const latest = pairs.length ? pairs[pairs.length - 1] : null;
+  const price = Number.isFinite(meta.regularMarketPrice) ? meta.regularMarketPrice : latest ? latest.c : null;
+  if (!Number.isFinite(price)) return null;
+  const time = Number.isFinite(meta.regularMarketTime) ? meta.regularMarketTime : latest ? latest.t : null;
+  const off = Number.isFinite(meta.gmtoffset) ? meta.gmtoffset : 0;
+  const dayOf = (t) => Math.floor((t + off) / 86400);
+  let barPrev = null;
+  if (Number.isFinite(meta.regularMarketTime)) {
+    const today = dayOf(meta.regularMarketTime);
+    for (let i = pairs.length - 1; i >= 0; i--) {
+      if (dayOf(pairs[i].t) < today) {
+        barPrev = pairs[i].c;
+        break;
+      }
+    }
+  } else if (pairs.length >= 2) barPrev = pairs[pairs.length - 2].c;
+  if (barPrev === null && pairs.length < 2 && Number.isFinite(meta.chartPreviousClose)) barPrev = meta.chartPreviousClose; // 하루치만 받은 차트
+  const candidates = [
+    barPrev,
+    meta.previousClose,
+    Number.isFinite(meta.regularMarketChange) ? price - meta.regularMarketChange : null,
+    meta.fulldayPrice === price && Number.isFinite(meta.fulldayChange) ? price - meta.fulldayChange : null,
+  ].filter((v) => Number.isFinite(v) && v > 0);
+  const yPct = meta.regularMarketChangePercent;
+  let prev;
+  let pct;
+  if (Number.isFinite(yPct) && yPct > -100) {
+    prev = candidates.find((v) => Math.abs(((price - v) / v) * 100 - yPct) < 0.006); // 야후 값은 소수 3자리로 반올림돼 온다
+    if (prev !== undefined) pct = ((price - prev) / prev) * 100;
+    else {
+      pct = yPct;
+      prev = price / (1 + yPct / 100);
+    }
+  } else if (candidates.length) {
+    prev = candidates[0];
+    pct = ((price - prev) / prev) * 100;
+  } else return null;
+  return { price, prev, change: price - prev, pct, time };
+}
+
 async function fetchIndexQuote(symbol) {
-  // 본체 시장탭의 yahooSnapshot()과 완전히 동일한 계산 — meta.chartPreviousClose는 KR 지수에서 깨진 값이
-  // 오는 경우가 있어(등락률 불일치 원인, 2026-08-31), 5d/1d 차트의 "직전 거래일 종가"를 직접 골라서 계산
+  // 등락 계산은 yahooQuoteFromChart 한 곳에서(2026-11-24) — 지수 띠·상세 시트·시세 띠가 모두 같은 값을 쓴다
   try {
     const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=5d&interval=1d`;
     const data = await proxyFetchJson(url);
-    const result = data && data.chart && data.chart.result && data.chart.result[0];
-    if (!result) return null;
-    const meta = result.meta || {};
-    const timestamps = result.timestamp || [];
-    const closes = (result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
-    const pairs = timestamps.map((t, i) => ({ t, c: closes[i] })).filter((p) => p.c !== null && p.c !== undefined);
-    pairs.sort((a, b) => a.t - b.t);
-    if (pairs.length < 1) return null;
-    const latest = pairs[pairs.length - 1];
-    const prev = pairs.length >= 2 ? pairs[pairs.length - 2].c : (meta.chartPreviousClose ?? null);
-    const price = meta.regularMarketPrice ?? latest.c;
-    if (typeof price !== "number" || typeof prev !== "number" || prev === 0) return null;
-    const time = typeof meta.regularMarketTime === "number" ? meta.regularMarketTime : latest.t;
-    return { price, change: price - prev, pct: ((price - prev) / prev) * 100, time };
+    return yahooQuoteFromChart(data && data.chart && data.chart.result && data.chart.result[0]);
   } catch {
     return null;
   }
@@ -1868,7 +2037,9 @@ async function fetchLiveQuoteForSheet(symbol) {
   const closes = (result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close) || [];
   const pairs = timestamps.map((t, i) => ({ t, c: closes[i] })).filter((p) => p.c !== null && p.c !== undefined);
   pairs.sort((a, b) => a.t - b.t);
-  const prevClose = pairs.length >= 2 ? pairs[pairs.length - 2].c : (meta.chartPreviousClose ?? null);
+  // 2026-11-24: 가장 최근 일봉 칸이 비어 오면 '이틀 전 종가'가 잡히던 문제 — yahooQuoteFromChart 의 직전 종가를 쓴다
+  const dayQuote = yahooQuoteFromChart(result);
+  const prevClose = dayQuote ? dayQuote.prev : pairs.length >= 2 ? pairs[pairs.length - 2].c : (meta.chartPreviousClose ?? null);
   // regularMarketOpen은 Yahoo가 아예 안 채워주는 경우가 흔해서(장중이 아니면 특히), 없으면 전일종가를 시가 대용으로 사용
   const open = meta.regularMarketOpen ?? prevClose;
   return {
@@ -3913,7 +4084,8 @@ async function fetchYahooChartSnap(symbol) {
     const pairs = timestamps.map((t, i) => ({ t, c: closes[i] })).filter((p) => p.c !== null && p.c !== undefined);
     if (!pairs.length) return null;
     const latest = pairs[pairs.length - 1];
-    const prevClose = pairs.length >= 2 ? pairs[pairs.length - 2].c : meta.chartPreviousClose ?? null;
+    const dayQuote = yahooQuoteFromChart(result); // 2026-11-24: 직전 종가는 공통 계산으로(가장 최근 일봉 칸이 비어 올 때 이틀 전 종가가 잡히던 문제)
+    const prevClose = dayQuote ? dayQuote.prev : pairs.length >= 2 ? pairs[pairs.length - 2].c : meta.chartPreviousClose ?? null;
     const price = meta.regularMarketPrice ?? latest.c;
     const change = prevClose !== null && prevClose !== undefined && price !== null && price !== undefined ? price - prevClose : null;
     const changePct = change !== null && prevClose ? (change / prevClose) * 100 : null;
