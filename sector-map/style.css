@@ -1591,8 +1591,8 @@ body.mine-editing .mine-stock { cursor: pointer; }
 body.idx-strip-folded .idx-strip { transform: translateY(-100%); }
 body.idx-strip-folded .idx-strip-scroll { visibility: hidden; box-shadow: none; transition: visibility 0s linear 0.28s; }
 /* 손잡이 — 띠 아래에 달린 작은 반달 단추(펴져 있으면 ⌃, 접혀 있으면 ⌄). 접으면 필터 줄 바로 아래에 이것만 남는다.
-   자리: 한가운데는 왼쪽 '인기' 단추(오른쪽 끝 185px)와 너무 가까워(2026-11-23 사용자 지적), '인기' 단추와 오른쪽 단추 줄(왼쪽 끝 = 100% - 51px) 사이 빈 곳의 가운데 */
-.idx-strip-tab { position: absolute; left: calc(50% + 67px); top: 100%; margin-top: -1px; transform: translateX(-50%); width: 56px; height: var(--idx-tab-h); padding: 0; border: 1px solid var(--line); border-top: none; border-radius: 0 0 12px 12px; background: var(--surface); color: var(--text-mid); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 5px 10px rgba(15, 23, 42, 0.1); -webkit-tap-highlight-color: transparent; }
+   자리: 한가운데(2026-11-23 — '인기' 단추와 가깝다고 해서 오른쪽 빈 곳으로 옮겨 봤지만, 사용자가 '가운데가 낫다'고 해 되돌림. 다시 옮기지 말 것) */
+.idx-strip-tab { position: absolute; left: 50%; top: 100%; margin-top: -1px; transform: translateX(-50%); width: 56px; height: var(--idx-tab-h); padding: 0; border: 1px solid var(--line); border-top: none; border-radius: 0 0 12px 12px; background: var(--surface); color: var(--text-mid); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 5px 10px rgba(15, 23, 42, 0.1); -webkit-tap-highlight-color: transparent; }
 .idx-strip-tab::after { content: ""; position: absolute; left: -12px; right: -12px; top: 0; bottom: -14px; } /* 누르는 영역만 넓힘 */
 .idx-strip-tab svg { width: 16px; height: 16px; display: block; transition: transform 0.28s ease; }
 .idx-strip-tab:active { background: var(--surface-2); }
