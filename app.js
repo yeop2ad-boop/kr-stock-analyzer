@@ -73,6 +73,13 @@ const shareInstaBtn = el("shareInstaBtn");
 const shareSaveBtn = el("shareSaveBtn");
 const statusBox = el("statusBox");
 const results = el("results");
+// 2026-11-23: 상세에서 다른 기업으로 갔다가 바로 뒤로 오면, 늦게 끝난 앞 종목 그리기가 화면을 덮어 두 종목이 섞여 보였다 → 가장 마지막에 연 종목만 그린다.
+// 주소(?ticker=)로 바로 들어오면 스크립트 중간에서 runAnalysis가 불리므로, 그보다 앞인 여기(맨 위)에 선언해 둔다
+let analysisRunSeq = 0;
+let summaryRenderSeq = 0;
+let lastAnalysisTicker = ""; // 가장 마지막에 열기 시작한 종목(화면에 다 그려지기 전에도 바로 바뀜) — 뒤로가기 처리가 "지금 이 종목을 보고 있나"를 이걸로 판단
+let summaryReadyRun = 0; // 요약(버튼 포함)까지 다 그려진 가장 최근 실행 번호 — 되돌아온 뒤 자리 복원이 이걸 기다린다
+let swingRestoreSeq = 0; // 최대 급락·급등 순위에서 다른 기업으로 갔다가 돌아왔을 때의 자리 복원 번호
 const fixedHeader = el("fixedHeader");
 const loadingSplash = el("loadingSplash");
 const carouselViewport = el("carouselViewport");
@@ -2880,6 +2887,11 @@ function closeCompanyPanel({ push = true } = {}) {
   }
 }
 companyPanelCloseBtn.addEventListener("click", () => {
+  // 2026-11-23 사용자 요청: 다른 기업의 최대 급락·급등 순위에서 넘어온 상세는 닫지 않고 한 칸 뒤로 — 원래 보던 기업의 그 자리로 돌아간다(뒤로가기 처리가 복원)
+  if (history.state && history.state.fromApp && history.state.fromDetail) {
+    history.back();
+    return;
+  }
   // 2026-10-20 사용자 요청: 상세에서 닫으면 인기종목이 아니라 원래 있던 곳으로.
   // 지도 등 다른 화면에서 링크로 바로 열린 상세(앱 안에서 쌓은 기록이 없음)는 온 곳으로 되돌아가고, 온 곳을 알 수 없으면 별별순위
   const landed = window.__landedOnDetail && !(history.state && history.state.fromApp);
@@ -3926,11 +3938,12 @@ function rememberRecentTicker(sym) {
     localStorage.setItem(RECENT_VIEWED_KEY, JSON.stringify(list.slice(0, 40)));
   } catch {}
 }
-function navigateToTicker(ticker, { push = true } = {}) {
+// fromDetail(2026-11-23): 다른 기업 상세의 최대 급락·급등 순위에서 넘어온 경우 그 기업 — 화면 위 ←를 눌렀을 때 닫지 않고 그 자리로 돌아가게
+function navigateToTicker(ticker, { push = true, fromDetail = "" } = {}) {
   ticker = ticker.toUpperCase();
   rememberRecentTicker(ticker);
   if (push) {
-    history.pushState({ ticker, fromApp: true }, "", "?ticker=" + encodeURIComponent(ticker));
+    history.pushState(fromDetail ? { ticker, fromApp: true, fromDetail } : { ticker, fromApp: true }, "", "?ticker=" + encodeURIComponent(ticker));
     backTrackHistory(); // 뒤로가기 모듈이 "지금 머문 항목"을 알게 함(위에 뜬 창을 닫을 때 이 항목을 다시 얹음)
   }
   tickerInput.value = ticker;
@@ -4460,7 +4473,10 @@ async function quoteFromChartMeta(ticker) {
     return null;
   }
 }
+// (실행 번호 analysisRunSeq 등은 파일 맨 위에 선언 — 주소로 바로 들어오면 이 줄보다 먼저 불린다)
 async function runAnalysis(ticker) {
+  const runSeq = ++analysisRunSeq;
+  lastAnalysisTicker = String(ticker).toUpperCase();
   analyzeBtn.disabled = true;
   results.style.display = "none";
   setStatus("loading", `${ticker} 데이터를 불러오는 중입니다...`);
@@ -4481,6 +4497,7 @@ async function runAnalysis(ticker) {
     }
 
     const chartData = await yahooChart(ticker);
+    if (runSeq !== analysisRunSeq) return; // 그사이 다른 종목을 열었음
     if (!chartData || !chartData.chart || !chartData.chart.result) {
       throw new Error(`'${ticker}'의 시세 데이터를 가져오지 못했습니다.`);
     }
@@ -4594,9 +4611,13 @@ async function runAnalysis(ticker) {
           .then((news) => (news.length ? { news } : searchData))
           .catch(() => searchData)
       : Promise.resolve(searchData);
-    newsDataPromise.then((d) => renderNews(d)).catch((e) => {
-      el("newsSection").innerHTML = `<p class="error-inline">뉴스를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
-    });
+    newsDataPromise
+      .then((d) => {
+        if (runSeq === analysisRunSeq) renderNews(d);
+      })
+      .catch((e) => {
+        if (runSeq === analysisRunSeq) el("newsSection").innerHTML = `<p class="error-inline">뉴스를 가져오지 못했습니다: ${escapeHtml(e.message)}</p>`;
+      });
 
     // 개요 9칸 지표 표(2026-09-04 사용자 요청): 10년/작년/내년 승률·상승률·RSI 9칸 + 최근 12개월 승패(OX) 표
     // — 기존 4점수 미니 배지(상승압력/투자안정/우상향/RSI)를 대체. 값은 배치 DB(winrate-scores-us.json)
@@ -4606,9 +4627,9 @@ async function runAnalysis(ticker) {
 
     setStatus(null, null);
   } catch (err) {
-    setStatus("error", `❌ ${escapeHtml(err.message || "알 수 없는 오류가 발생했습니다.")}`);
+    if (runSeq === analysisRunSeq) setStatus("error", `❌ ${escapeHtml(err.message || "알 수 없는 오류가 발생했습니다.")}`);
   } finally {
-    analyzeBtn.disabled = false;
+    if (runSeq === analysisRunSeq) analyzeBtn.disabled = false;
   }
 }
 
@@ -5822,6 +5843,8 @@ window.addEventListener("resize", () => {
 
 // ---------- 1. 사업 요약 ----------
 async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketReturnsPromise, changeAmount = null) {
+  const sumSeq = ++summaryRenderSeq; // 아래에서 기다리는 동안 다른 종목이 열리면 이 그리기는 버린다
+  const sumRun = analysisRunSeq;
   // 펼침 섹션들은 지난 렌더 때 #summarySection 안으로 옮겨져 있어, 아래 innerHTML로 지우면 문서에서 떨어져 나간다 —
   // 그동안 renderMacro 등이 el("macroSection")을 못 찾아 오류가 났음(2026-09-15) → 지우기 전에 개요 패널로 잠시 옮겨 둠
   const summaryPanelEl = document.querySelector('[data-summary-subtabpanel="summary"]');
@@ -5912,6 +5935,7 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     }
   }
 
+  if (sumSeq !== summaryRenderSeq) return; // 그사이 다른 종목을 열었음 — 늦게 끝난 이 종목 요약으로 덮지 않는다
   el("summarySection").innerHTML = `
     <div class="summary-main">
       <p class="summary-text">
@@ -6061,6 +6085,7 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   // 요약 탭 상단 가격 차트: 새 종목 조회 시 기간 버튼을 기본값(1년)으로 되돌리고 다시 그림
   Array.from(summaryChartPeriodNav.children).forEach((b) => b.classList.toggle("active", b.dataset.chartPeriod === "1y"));
   runSummaryChart(symbol, "1y");
+  summaryReadyRun = sumRun;
 }
 
 // ---------- 최대 급락 · 최대 급등: 달마다 가장 크게 빠진/오른 1주(2026-11-22 사용자 요청) ----------
@@ -6220,12 +6245,85 @@ async function renderSwingInto(wrap, ticker, dir) {
       list.style.display = open ? "" : "none";
       btn.textContent = btn.textContent.replace(open ? "+" : "−", open ? "−" : "+");
     });
+  // 2026-11-23 사용자 요청: 전체 순위의 기업을 누르면 그 기업 상세로(지금 보고 있는 종목 줄은 그대로)
+  const listBox = wrap.querySelector("[data-crash-list]");
+  if (listBox)
+    listBox.addEventListener("click", (e) => {
+      const row = e.target.closest("[data-risk-ticker]");
+      const sym = row && row.dataset.riskTicker;
+      if (!sym || sym.toUpperCase() === String(ticker).toUpperCase()) return;
+      swingLeaveTo(sym, ticker, dir, wrap);
+    });
 }
 function renderCrashInto(wrap, ticker) {
   return renderSwingInto(wrap, ticker, -1);
 }
 function renderSurgeInto(wrap, ticker) {
   return renderSwingInto(wrap, ticker, 1);
+}
+// ---------- 최대 급락·급등 전체 순위 → 기업 상세, 뒤로가면 제자리(2026-11-23 사용자 요청) ----------
+// 순위 줄을 누르면 지금 자리(어느 카드인지 · 카드가 화면 어디에 있었는지 · 목록을 얼마나 내렸는지)를 이 히스토리 항목에 적어 두고 그 기업 상세로 간다.
+// 뒤로가기(화면 위 ← 포함)로 돌아오면 handleBackNavigation이 그 메모를 읽어 같은 카드를 다시 펼치고 같은 위치로 맞춘다.
+function swingLeaveTo(target, from, dir, wrap) {
+  const body = companyPanel.querySelector(".company-panel-body");
+  const ol = wrap.querySelector(".risk-rank-list");
+  try {
+    const spot = { ticker: String(from).toUpperCase(), dir, off: body ? wrap.getBoundingClientRect().top - body.getBoundingClientRect().top : 0, listTop: ol ? ol.scrollTop : 0 };
+    history.replaceState(Object.assign({}, history.state || {}, { swingBack: spot }), "", location.href);
+  } catch {}
+  navigateToTicker(target, { fromDetail: String(from).toUpperCase() });
+  if (body) body.scrollTop = 0; // 새로 연 기업은 맨 위부터
+}
+async function swingRestoreAfterBack(ticker, spot) {
+  const seq = ++swingRestoreSeq;
+  const run = analysisRunSeq; // 방금(navigateToTicker) 시작한 이 종목 그리기
+  const up = String(ticker).toUpperCase();
+  if (!spot || spot.ticker !== up) return;
+  // 메모는 한 번만 쓴다 — 나중에 다른 길로 나갔다 돌아올 때 엉뚱하게 펼쳐지지 않게
+  try {
+    const st = Object.assign({}, history.state || {});
+    delete st.swingBack;
+    history.replaceState(st, "", location.href);
+  } catch {}
+  const body = companyPanel.querySelector(".company-panel-body");
+  const wrap = spot.dir < 0 ? crashInlineWrap : surgeInlineWrap;
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  // 그사이 사용자가 화면을 직접 만지거나 다른 종목으로 가면 자리 맞추기를 그만둔다
+  let touched = false;
+  const stop = () => (touched = true);
+  if (body) ["touchstart", "wheel", "mousedown"].forEach((ev) => body.addEventListener(ev, stop, { once: true, passive: true }));
+  const alive = () => seq === swingRestoreSeq && run === analysisRunSeq && !touched;
+  // 1) 이 종목 요약(버튼)이 새로 그려질 때까지
+  for (let i = 0; i < 200 && alive() && summaryReadyRun !== run; i++) await wait(100);
+  if (!alive() || summaryReadyRun !== run) return;
+  const btn = el(spot.dir < 0 ? "tickerCrashToggleBtn" : "tickerSurgeToggleBtn");
+  if (!btn) return;
+  const place = () => {
+    if (alive() && body && wrap.isConnected) body.scrollTop += wrap.getBoundingClientRect().top - body.getBoundingClientRect().top - spot.off;
+  };
+  // 2) 같은 카드를 다시 펼치고(먼저 화면 위치부터 맞춰 둠)
+  if (wrap.style.display === "none") btn.click();
+  place();
+  // 3) 순위가 계산되면 전체 순위를 다시 펼쳐 보던 줄까지 내림
+  let toggle = null;
+  for (let i = 0; i < 150 && alive(); i++) {
+    toggle = wrap.querySelector("[data-crash-toggle]");
+    if (toggle) break;
+    await wait(100);
+  }
+  if (!alive()) return;
+  if (toggle) {
+    const list = wrap.querySelector("[data-crash-list]");
+    if (list && list.style.display === "none") toggle.click();
+    const ol = wrap.querySelector(".risk-rank-list");
+    if (ol) ol.scrollTop = spot.listTop || 0;
+  }
+  place();
+  // 위쪽 그래프 등이 늦게 그려져 밀리는 것을 몇 번 더 보정
+  for (const ms of [300, 500, 900]) {
+    await wait(ms);
+    place();
+  }
 }
 
 // ---------- 배당(2026-10-09 사용자 요청) ----------
@@ -13012,7 +13110,14 @@ function handleBackNavigation() {
   }
   if (ticker) {
     const panelOpen = companyPanel.style.display !== "none" && companyPanel.style.display !== "";
-    if (!(panelOpen && currentDetailSymbol && currentDetailSymbol.toUpperCase() === ticker.toUpperCase())) navigateToTicker(ticker, { push: false });
+    // 2026-11-23: 화면에 그려진 종목(currentDetailSymbol)은 한 박자 늦게 바뀐다 — 다른 기업을 누르고 곧바로 뒤로 오면 "이미 이 종목"으로 잘못 봐서
+    // 주소와 화면이 어긋났다 → 가장 마지막에 열기 시작한 종목으로 판단
+    const showing = (lastAnalysisTicker || currentDetailSymbol || "").toUpperCase();
+    if (!(panelOpen && showing === ticker.toUpperCase())) {
+      const spot = history.state && history.state.swingBack; // 최대 급락·급등 순위에서 다른 기업으로 갔다가 돌아온 경우의 자리 메모
+      navigateToTicker(ticker, { push: false });
+      if (spot) swingRestoreAfterBack(ticker, spot);
+    }
     backHistCur = { state: history.state, url: location.href };
     return;
   }

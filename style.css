@@ -2250,6 +2250,9 @@ span.risk-good { color: #2f9e44; font-weight: 700; }
 .risk-rank-list { list-style: none; margin: 8px 0 0; padding: 0; max-height: 360px; overflow-y: auto; }
 .risk-rank-row { display: flex; align-items: center; gap: 10px; padding: 8px 2px; border-top: 1px solid var(--border); font-size: 13px; cursor: pointer; }
 .risk-rank-row.is-self { background: rgba(240, 140, 0, 0.12); }
+/* 최대 급락·급등 전체 순위: 줄을 누르면 그 기업 상세로(2026-11-23) — 누르는 순간 살짝 어두워짐. 지금 보는 종목 줄은 누르는 곳이 아님 */
+[data-crash-list] .risk-rank-row:not(.is-self):active { background: rgba(127, 127, 127, 0.16); }
+[data-crash-list] .risk-rank-row.is-self { cursor: default; }
 .risk-rank-no { width: 26px; flex: none; color: var(--muted); font-weight: 700; text-align: right; }
 .risk-rank-name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .risk-rank-val { flex: none; font-variant-numeric: tabular-nums; }
