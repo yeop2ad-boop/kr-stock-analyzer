@@ -378,7 +378,7 @@ function viewMarkHtml(viewKey) {
 }
 // ---------- 대표 지수 띠(2026-11-23 사용자 요청) ----------
 // 필터 아래에 숨어 있다가 사용자가 지도를 움직이거나 확대·축소하는 동안만 내려오고, 1초 동안 가만히 있으면 다시 위로 올라가 숨는다.
-// 처음 접속했을 때는 보이지 않는다. 어느 보기에서든 같은 6개(코스피·코스닥·S&P500·나스닥종합·비트코인·원달러 환율)를 보여 주고,
+// 처음 접속했을 때는 보이지 않는다. 어느 보기에서든 같은 6개(코스피·코스닥·S&P500·나스닥종합·비트코인·달러/원)를 보여 주고,
 // 보기를 바꾸면 그 시장의 지표가 맨 앞에 오도록 좌우 위치만 맞춘다(한국 → 코스피부터, 미국 → S&P500부터, 코인 → 비트코인부터).
 // 띠는 손으로 좌우로 밀 수 있다. 로고는 보기 선택 버튼에 쓰는 국기·코인 마크(VIEW_MARK_SVG) 그대로.
 // ※ 이 블록의 let 들은 첫 화면을 그리는 코드(파일 끝)보다 먼저 선언돼 있어야 한다(syncMapViewUi 가 여기 함수를 부름).
@@ -388,7 +388,7 @@ const IDX_STRIP_ITEMS = [
   { key: "spx", symbol: "^GSPC", name: "S&P500", marks: ["us"], digits: 2 },
   { key: "ixic", symbol: "^IXIC", name: "나스닥종합", marks: ["us"], digits: 2 },
   { key: "btc", symbol: "BTC-USD", name: "비트코인", marks: ["crypto"], digits: 0, prefix: "$" },
-  { key: "usdkrw", symbol: "KRW=X", name: "원달러 환율", marks: ["kr", "us"], digits: 2 },
+  { key: "usdkrw", symbol: "KRW=X", name: "달러/원", marks: [], digits: 2 }, // 2026-11-23 사용자 요청: 로고 없이 "달러/원"만
 ];
 const IDX_STRIP_IDLE_MS = 1000; // 이만큼 가만히 있으면 숨김
 const IDX_STRIP_REFRESH_MS = 60 * 1000; // 띠가 내려올 때 시세가 이보다 오래됐으면 다시 받음
@@ -434,7 +434,7 @@ function renderIdxStrip() {
   el.innerHTML = IDX_STRIP_ITEMS.map((it) => {
     const marks = it.marks.map((m) => `<span class="idx-mark">${VIEW_MARK_SVG[m] || ""}</span>`).join("");
     const name = it.name.replace(/&/g, "&amp;");
-    return `<div class="idx-item" data-idx="${it.key}"><div class="idx-name"><span class="idx-marks">${marks}</span><span>${name}</span></div><div class="idx-val">${idxStripValHtml(it)}</div></div>`;
+    return `<div class="idx-item" data-idx="${it.key}"><div class="idx-name">${marks ? `<span class="idx-marks">${marks}</span>` : ""}<span>${name}</span></div><div class="idx-val">${idxStripValHtml(it)}</div></div>`;
   }).join("");
   idxStripBuilt = true;
   // 띠를 직접 만지는 동안은 계속 보이게(손을 떼거나 밀기가 멈추고 1초 뒤 숨김)
