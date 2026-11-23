@@ -13579,7 +13579,10 @@ async function renderEarningsTab() {
     return kind === "done" ? (rec.date === date ? rec.data : undefined) : rec.data;
   };
   soon.sort((a, b) => a.date.localeCompare(b.date) || (names.get(a.symbol) || "").localeCompare(names.get(b.symbol) || ""));
-  done.sort((a, b) => b.date.localeCompare(a.date) || (names.get(a.symbol) || "").localeCompare(names.get(b.symbol) || ""));
+  // 2026-11-23 사용자 요청: 최근실적은 발표 날짜가 같으면 시가총액이 큰 순으로(시총을 모르는 종목은 뒤로, 그다음 이름순)
+  const caps = new Map(((uni && uni.companies) || []).map((c) => [c.symbol, c.marketCap]));
+  const capOf = (sym) => (Number.isFinite(caps.get(sym)) ? caps.get(sym) : -1);
+  done.sort((a, b) => b.date.localeCompare(a.date) || capOf(b.symbol) - capOf(a.symbol) || (names.get(a.symbol) || "").localeCompare(names.get(b.symbol) || ""));
   // 2026-10-20 사용자 요청: 맨 위 "관심" — 내 관심종목의 예정 + 최근 발표를 합쳐서(예정일 순, 종목당 한 줄)
   const watchRows = [];
   const wlSyms = getWatchlist().map((w) => w.symbol);

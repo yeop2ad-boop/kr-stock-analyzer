@@ -488,13 +488,7 @@ async function buildMetricExplainHtml(key, section, opts) {
   // 2026-11-20 사용자 요청: 쉬운 말(metric-explain.js) + "어떻게 구하는지"를 보여 주는 그림. 대표 종목 비교 막대는 그 아래에 그대로
   const intro = `${noText ? "" : `<p class="rf-explain-intro">${escapeHtml(desc).replace(/\n/g, "<br>")}</p>`}${typeof mxDiagramHtml === "function" ? mxDiagramHtml(tKey) : ""}`;
   if (key === "surge") return intro; // 거래 몰림(종목 상세): 대표 종목 값이 DB에 없어 글과 그림만
-  if (key === "rsi") {
-    // RSI는 SPY 5년 주봉 그래프 예시가 이미 있어 같이 보여줌
-    try {
-      const chart = await buildRsiSpyDetailHtml();
-      return `${intro}${chart}`;
-    } catch {}
-  }
+  // 2026-11-23 사용자 요청: RSI만 따로 붙이던 5년 그래프 3개(SPY·비트코인·삼성전자)를 빼고, 시장(지도)의 "과열도(RSI)란?"과 똑같이 계산 그림 + 대표 종목 비교 막대로
   if (!baseline || !baseline.members) return `${intro}<p class="muted">비교할 대표 종목 값을 아직 불러오지 못했어요.</p>`;
   const reps = RF_REPS[section] || RF_REPS.us;
   const rows = [];
