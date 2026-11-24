@@ -1,5 +1,77 @@
 [
   {
+    "id": "0ff2224e5527",
+    "sourceKey": "oecd",
+    "source": "OECD",
+    "title": "고급 AI 개발 조직들의 위험 관리 실태, HAIP 2.0 보고 프레임워크로 공개",
+    "originalTitle": "Inside AI risk management: early insights from the HAIP 2.0 reporting framework",
+    "link": "https://oecd.ai/en/wonk/inside-ai-risk-management-early-insights-from-the-haip-2-0-reporting-framework",
+    "summary": "OECD가 G7의 요청으로 개발한 히로시마 AI 프로세스 국제 행동강령 준수 현황을 추적하기 위해 HAIP 2.0 보고 프레임워크를 운영 중이며, 2026년 6월부터 9월 사이 31개 기관의 보고서를 분석한 결과를 공개했다. 이 보고서들은 고급 AI 시스템을 개발하는 주요 기관들이 위험을 어떻게 식별하고 관리하며 소통하는지에 대한 실질적인 사례를 보여준다. 개선된 HAIP 2.0은 보고 절차를 단순화하고 중소기업 참여를 확대했으며, AI 에이전트 운영과 같은 최신 기술 동향을 반영했다. 31개 기관 중 26개가 AI 에이전트를 개발 또는 배포 중이라고 보고하는 등 보고 기관들의 범위와 다양성이 크게 확대되었다.",
+    "image": "data/techinsight-images/0ff2224e5527.webp",
+    "publishedAt": null,
+    "createdAt": "2026-11-24T05:17:50.722Z"
+  },
+  {
+    "id": "02839082ff9f",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "저명한 철학자가 앤스로픽의 AI 의식론을 거부하다",
+    "originalTitle": "A legendary philosopher isn’t buying Anthropic’s consciousness argument",
+    "link": "https://www.technologyreview.com/2026/11/23/1149569/a-legendary-philosopher-isnt-buying-anthropics-consciousness-argument/",
+    "summary": "앤스로픽은 IPO 전 투자자들에게 AI가 의식을 가질 수 있다는 위험성을 공시했으나, 이는 자사 사업 모델과 충돌할 수 있다. 의식 연구의 거장인 토마스 나겔은 뇌의 정보 처리 과정을 재현하는 것이 의식 경험을 재현하는 것과 같지 않다며 AI 의식론을 강하게 비판했다. 언어 능력이 뛰어난 AI를 의식 있는 존재로 보는 것이 맞는지에 대해 철학계에서도 의견이 갈리고 있다. AI 모델이 실제로 의식을 가진다면 데이터 센터에서 24시간 운영하는 앤스로픽의 비즈니스 모델 자체가 도덕적 문제가 될 수 있다. 이 논쟁은 근본적으로 인간 의식 자체에 대한 이해 부족을 반영하고 있다.",
+    "image": "data/techinsight-images/02839082ff9f.webp",
+    "publishedAt": "2026-11-23T17:36:08.000Z",
+    "createdAt": "2026-11-24T05:17:48.411Z"
+  },
+  {
+    "id": "99ce44242649",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "5G 비지상 네트워크가 6G 시대를 준비하는 방식",
+    "originalTitle": "Learn How 5G NTN Architecture, Mobility, and Testing Shape 6G",
+    "link": "https://content.knowledgehub.wiley.com/5g-ntn-takes-flight-a-deep-dive-into-nr-ntn-technology-and-testing-aspects/",
+    "summary": "5G 비지상 네트워크(NTN)는 위성과 고고도 플랫폼을 활용하여 기존 지상 네트워크의 커버리지를 확장하는 기술이다. NR-NTN 기술은 아키텍처, 이동성, 물리 계층의 과제들을 해결하며 발전하고 있다. 이러한 기술의 테스팅과 검증은 차세대 통신 표준 개발에 필수적이다. 비지상 네트워크 기술의 성숙도는 6G 시대의 연결성 혁신을 가능하게 할 것으로 예상된다.",
+    "image": "data/techinsight-images/99ce44242649.webp",
+    "publishedAt": "2026-11-23T14:08:53.000Z",
+    "createdAt": "2026-11-24T05:17:52.625Z"
+  },
+  {
+    "id": "9c079ad7f691",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "AI의 판단력 약점과 탄소 제거 기술의 농작물 위협",
+    "originalTitle": "The Download: AI’s judgment problem and carbon removal’s crop threat",
+    "link": "https://www.technologyreview.com/2026/11/23/1149548/the-download-ai-judgment-problem-carbon-removal-crop-threat/",
+    "summary": "AI 평가 기관 METR의 보고서에 따르면 일부 AI 역량은 지수적으로 향상되고 있지만, 코딩 작업에 비해 판단력이 필요한 과제에서는 성능이 떨어진다는 것이 밝혀졌다. 한편 대형 기술 기업들이 투자 중인 쇄석을 이용한 탄소 제거 기술인 암석 풍화 촉진 방식은 토양 질을 개선할 수 있지만, 새로운 연구 결과는 과도한 양의 쇄석을 농경지에 추가할 경우 오히려 수확량이 감소할 수 있음을 시사한다. 이 발견은 종전의 전망보다 탄소 제거 잠재력이 훨씬 작을 수 있음을 의미한다.",
+    "image": "data/techinsight-images/9c079ad7f691.webp",
+    "publishedAt": "2026-11-23T13:10:00.000Z",
+    "createdAt": "2026-11-24T05:18:07.059Z"
+  },
+  {
+    "id": "629751396015",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "AI로부터 실제 가치를 얻기 위한 조건: 맥킨지가 말하는 성공의 비결",
+    "originalTitle": "What it really takes to get value from AI: Highlights from McKinsey Media Day",
+    "link": "https://www.mckinsey.com/featured-insights/what-it-really-takes-to-get-value-from-ai-highlights-from-mckinsey-media-day",
+    "summary": "기업들이 AI에 막대한 투자를 하고 있지만 대부분 실질적인 성과를 거두지 못하고 있다. 맥킨지 경영진들은 성공하는 소수의 기업들이 올바른 문제를 선택하고 조직의 역할을 재설계하는 데서 차별화된다고 설명한다. 단순한 기술 도입만으로는 AI의 가치를 창출할 수 없으며, 전략적 접근과 조직적 변화가 필수적이라는 점을 강조한다.",
+    "image": "data/techinsight-images/629751396015.webp",
+    "publishedAt": "2026-11-23T00:00:00.000Z",
+    "createdAt": "2026-11-24T05:18:04.688Z"
+  },
+  {
+    "id": "8e491f7dd588",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "산업 기업의 AI 도입, 업무 프로세스 재설계가 핵심",
+    "originalTitle": "The unit of activation: How industrial companies can make AI work",
+    "link": "https://www.mckinsey.com/industries/industrials/our-insights/the-unit-of-activation-how-industrial-companies-can-make-ai-work",
+    "summary": "산업 기업들이 기존 프로세스에 AI 도구를 단순히 추가하는 것만으로는 AI의 진정한 가치를 발휘할 수 없다.\nAI가 최대의 효과를 발휘하려면 전체 업무 흐름을 근본적으로 재구조화해야 한다.\n단순한 기술 도입이 아닌 조직적 변화와 함께 실질적인 워크플로우 개선이 필요하다.\n이 같은 변환을 현실적으로 실행할 수 있는 방법론이 존재한다.",
+    "image": "data/techinsight-images/8e491f7dd588.webp",
+    "publishedAt": "2026-11-23T00:00:00.000Z",
+    "createdAt": "2026-11-24T05:18:24.241Z"
+  },
+  {
     "id": "01449c61c8b8",
     "sourceKey": "mit",
     "source": "MIT Technology Review",
@@ -166,77 +238,5 @@
     "image": "data/techinsight-images/5fe5c48115f1.webp",
     "publishedAt": "2026-11-18T13:10:00.000Z",
     "createdAt": "2026-11-19T02:30:08.848Z"
-  },
-  {
-    "id": "d1dd49b4f83d",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "향기 인식 AI, 인간 수준의 후각 능력 달성",
-    "originalTitle": "This smell startup says its AI nose is as good as a human’s",
-    "link": "https://www.technologyreview.com/2026/11/18/1148816/smell-startup-osmo-ai-nose-good-as-humans/",
-    "summary": "AI 스타트업 오스모는 인간 후각사들의 데이터를 기반으로 훈련된 첫 번째 후각 기초 모델을 개발했으며, 최근 평균 인간 수준의 냄새 감지 및 판별 능력을 갖추게 됐다고 주장한다. 회사는 1천만 개 이상의 인간 라벨과 8억 개의 향 토큰을 포함한 대규모 데이터셋을 구축했으며, 현재 향수 산업에서 신제품 개발에 활용되고 있다. 향 프린팅 로봇을 이용해 텍스트 프롬프트 기반으로 맞춤형 향기를 제작할 수 있으며, 프로터 앤 갬블 같은 거대 기업들과 협업 중이다. 그러나 일부 후각 과학자들은 마케팅 과장 및 여전한 인간 감각 의존도를 지적하며 회의적 입장을 보이고 있다. 향수 산업과 질병 진단, 공항 위협 탐지 등 다양한 분야로의 확대 가능성이 논의되고 있다.",
-    "image": "data/techinsight-images/d1dd49b4f83d.webp",
-    "publishedAt": "2026-11-18T10:20:30.000Z",
-    "createdAt": "2026-11-22T01:11:35.559Z"
-  },
-  {
-    "id": "2d591e6df04f",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "클라우드 컴퓨팅이란 무엇인가",
-    "originalTitle": "What is cloud computing? -test",
-    "link": "https://www.mckinsey.com/our-people/what-is-cloud-computing-for-product-testing-only---hidden-from-search",
-    "summary": "클라우드 컴퓨팅은 기업의 IT 인프라를 인터넷을 통해 원격으로 저장하고 관리할 수 있게 해주는 기술이다. 이를 통해 기업들은 자체 서버 운영에 필요한 비용을 크게 절감할 수 있다. 결과적으로 클라우드 컴퓨팅은 비용 효율성을 높이면서 동시에 사업 가치를 창출하는 솔루션으로 작용한다.",
-    "image": "data/techinsight-images/2d591e6df04f.webp",
-    "publishedAt": "2026-11-18T00:00:00.000Z",
-    "createdAt": "2026-11-22T01:11:47.274Z"
-  },
-  {
-    "id": "6593f91a3f31",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "150년 전통의 건설회사, AI로 성장의 기회를 포착하다",
-    "originalTitle": "Infrastructure entrepreneurs: How HOCHTIEF captures growth with AI",
-    "link": "https://www.mckinsey.com/capabilities/business-building/our-insights/infrastructure-entrepreneurs-how-hochtief-captures-growth-in-the-ai-age",
-    "summary": "150년의 역사를 가진 엔지니어링 회사 호흐티프가 성장 주도 기업으로 변모하는 방법을 탐색한다. 맥킨지의 파트너가 호흐티프 PPP 솔루션의 경영진들과 인터뷰를 통해 그들의 혁신 전략을 살펴본다. 오랜 역사를 가진 전통 기업도 AI와 같은 신기술을 적절히 도입하면 새로운 성장 동력을 확보할 수 있음을 보여준다.",
-    "image": "data/techinsight-images/6593f91a3f31.webp",
-    "publishedAt": "2026-11-18T00:00:00.000Z",
-    "createdAt": "2026-11-20T02:15:12.481Z"
-  },
-  {
-    "id": "066eff481cde",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "클라우드 컴퓨팅이란 무엇인가",
-    "originalTitle": "What is cloud computing? -test",
-    "link": "https://www.mckinsey.com/what-is-cloud-computing--test",
-    "summary": "클라우드 컴퓨팅은 기업의 IT 인프라를 인터넷을 통해 원격으로 관리할 수 있는 기술이다.\n이를 통해 기업들은 자체 서버와 데이터센터 운영에 필요한 비용을 대폭 절감할 수 있다.\n결과적으로 기업의 운영 효율성을 높이고 새로운 가치를 창출하는 데 기여한다.",
-    "image": "data/techinsight-images/066eff481cde.webp",
-    "publishedAt": "2026-11-18T00:00:00.000Z",
-    "createdAt": "2026-11-19T02:30:17.069Z"
-  },
-  {
-    "id": "331f38367a9d",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "클라우드 컴퓨팅이란 무엇인가",
-    "originalTitle": "What is cloud computing? -test",
-    "link": "https://www.mckinsey.com/our-people/what-is-cloud-computing--test",
-    "summary": "클라우드 컴퓨팅은 기업들이 인터넷을 통해 자신의 IT 인프라를 원격으로 보관할 수 있는 기술이다. 이를 통해 기업은 운영 비용을 절감하고 더 큰 가치를 창출할 수 있다.",
-    "image": "data/techinsight-images/331f38367a9d.webp",
-    "publishedAt": "2026-11-18T00:00:00.000Z",
-    "createdAt": "2026-11-19T02:30:37.292Z"
-  },
-  {
-    "id": "41930dc76153",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "IEEE, AI 시스템에 윤리 통합 10년 성과 기념",
-    "originalTitle": "IEEE Celebrates 10 Years of Incorporating Ethics Into AI Systems",
-    "link": "https://spectrum.ieee.org/ieee-ethics-ai-systems",
-    "summary": "IEEE 표준협회는 지난 10년간 AI 시스템의 책임감 있는 개발을 위해 노력해왔으며, 2016년 출범한 '윤리적으로 정렬된 설계(Ethically Aligned Design)' 이니셔티브를 중심으로 활동하고 있다. 이 보고서는 인권 존중, 인간의 웰빙, 투명성 등 8가지 기본 원칙을 제시하여 AI 설계 단계에서부터 윤리를 통합하는 방식을 제안했다. IEEE 7000 시리즈 표준은 이 프레임워크를 기반으로 개발되었으며, 현재 29개 프로젝트 중 11개가 발표되었고 계속 확대되고 있다. 여러 AI 윤리 인증 프로그램도 도입되어 기술 개발에 실질적인 가이드라인을 제공하고 있다.",
-    "image": "data/techinsight-images/41930dc76153.webp",
-    "publishedAt": "2026-11-17T19:00:03.000Z",
-    "createdAt": "2026-11-18T02:51:21.220Z"
   }
 ]
