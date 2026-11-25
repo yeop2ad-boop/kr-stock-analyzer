@@ -1,5 +1,53 @@
 [
   {
+    "id": "3921b84cccb9",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "멀티미디어 연구원에서 CEO까지, 미쓰비시전기연구소 최고경영진의 30년 여정",
+    "originalTitle": "Mitsubishi Electric Research Lab CEO on How He Reached the C-Suite",
+    "link": "https://spectrum.ieee.org/mitsubishi-electric-research-lab-ceo",
+    "summary": "Anthony Vetro는 1996년 대학 졸업 직후 미쓰비시전기연구소에 입사해 약 30년간 근무하며 CEO까지 올라간 인물이다. 비디오 압축 등 멀티미디어 신호 처리 분야의 연구로 알려져 있으며 2011년 IEEE Fellow로 선정되었다. 2018년 부사장 겸 연구소장으로 승진했고 2023년 CEO에 임명되었으며 현재 글로벌 R&D 활동의 부회장으로도 활동 중이다. Vetro는 IEEE 활동과 국제 표준 제정 업무를 통해 경영 리더십을 개발했으며, 이탈리아계 아버지와 스웨덴계 어머니를 둔 이민자 자녀로서 부모의 교육을 중시하는 가치관이 자신의 성공 기반이 되었다고 밝혔다.",
+    "image": "data/techinsight-images/3921b84cccb9.webp",
+    "publishedAt": "2026-11-24T19:00:01.000Z",
+    "createdAt": "2026-11-25T04:06:47.254Z"
+  },
+  {
+    "id": "22d7270e7a58",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "AI 현대화로 엔터프라이즈 네트워크의 부담 급증",
+    "originalTitle": "Raising the stakes for enterprise networks with AI modernization",
+    "link": "https://www.technologyreview.com/2026/11/24/1148091/raising-the-stakes-for-enterprise-networks-with-ai-modernization/",
+    "summary": "기업들이 AI를 배포하면서 네트워크 트래픽이 급증하고 있으며, 특히 에이전트 AI는 인간이 수행하는 작업 대비 450% 더 많은 네트워크 트래픽을 발생시킨다. AI 추론이 클라우드에서 온프레미스로 이동함에 따라 대기시간 요구사항이 증가하고 있어, 절반 이상의 기업이 현재 네트워크로 AI의 대역폭과 지연시간 요구를 충족할 수 없다고 느끼고 있다. 기업들은 클라우드 중심 접근에서 벗어나 온프레미스 또는 근처 인프라에 AI 추론을 배치해야 하며, 이는 데이터 센터 아키텍처와 연결성에 대한 근본적인 재검토를 요구한다. 네트워크 현대화는 일회성 프로젝트가 아닌 지속적인 전략으로 접근해야 하며, NaaS와 AI 기반 모니터링 도구를 활용하면 운영 효율성과 비용 절감을 달성할 수 있다.",
+    "image": "data/techinsight-images/22d7270e7a58.webp",
+    "publishedAt": "2026-11-24T15:15:16.000Z",
+    "createdAt": "2026-11-25T04:06:45.584Z"
+  },
+  {
+    "id": "5ece1567bced",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "AI 붐을 등에 업은 가스발전소 급증과 인공지능 의식 논쟁",
+    "originalTitle": "The Download: AI’s gas power boom and a consciousness reality check",
+    "link": "https://www.technologyreview.com/2026/11/24/1149669/the-download-data-centers-gas-ai-consciousness/",
+    "summary": "AI 데이터센터의 전력 수요 급증으로 전력망 연결 대기 시간을 피하기 위해 개발사들이 자체 가스발전소를 건설하고 있으며, 2026년 10월 기준 미국에서 100개 이상의 계획이 발표되었다. 이러한 추세는 기후 배출과 전체 에너지 비용 상승 등의 문제를 야기할 수 있다. 한편 인류의 의식 개념을 정의한 철학자 토마스 나겔은 Anthropic의 AI 의식 주장을 비판하며 단순한 언어 생성만으로는 의식을 증명할 수 없다고 주장했다. AI 의식 논쟁은 철학자들 사이에서도 견해가 나뉘고 있으며 이는 향후 규제와 보호 정책에 영향을 미칠 수 있다.",
+    "image": "data/techinsight-images/5ece1567bced.webp",
+    "publishedAt": "2026-11-24T13:10:00.000Z",
+    "createdAt": "2026-11-25T04:06:44.499Z"
+  },
+  {
+    "id": "9f04eb00d9b2",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "데이터센터, 자체 천연가스 발전소 건설 붐",
+    "originalTitle": "Data centers are getting their own natural gas power plants",
+    "link": "https://www.technologyreview.com/2026/11/24/1149622/data-centers-natural-gas/",
+    "summary": "전력망 연결 승인에 최대 10년이 걸리자 데이터센터 개발사들이 자체 천연가스 발전소를 건설하는 추세가 확산되고 있다. 2026년 10월 현재 미국 내 100개 이상의 자체 발전시설 계획이 발표되었으며, 총 용량이 115기가와트를 넘어 캘리포니아 최대 전력수요의 2배를 초과한다. AI 붐으로 더 빠르게 가동하기 위해 비용을 감수하려는 개발사들이 늘어나고 있지만, 이는 화석연료 의존도를 높이고 온실가스 배출량을 대폭 증가시킬 수 있다는 우려를 낳고 있다. 만약 계획된 모든 자체 발전시설이 완성되면 2035년까지 연간 3억 4,500만 톤의 이산화탄소가 배출될 것으로 예측되며, 이는 전력망 사용 시보다 1억 5,200만 톤 많은 수치다.",
+    "image": "data/techinsight-images/9f04eb00d9b2.webp",
+    "publishedAt": "2026-11-24T11:00:00.000Z",
+    "createdAt": "2026-11-25T04:07:01.567Z"
+  },
+  {
     "id": "0ff2224e5527",
     "sourceKey": "oecd",
     "source": "OECD",
@@ -10,6 +58,30 @@
     "image": "data/techinsight-images/0ff2224e5527.webp",
     "publishedAt": null,
     "createdAt": "2026-11-24T05:17:50.722Z"
+  },
+  {
+    "id": "8a3306b18bf8",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "AI 도입 의지와 실행 능력의 괴리",
+    "originalTitle": "The AI readiness gap",
+    "link": "https://www.mckinsey.com/capabilities/people-and-organization/our-insights/the-ai-readiness-gap",
+    "summary": "직원들은 AI 전환에 대해 준비가 되어 있지만 경영진은 이러한 준비 상태를 실제 성과로 전환하지 못하고 있다. 조직 내 AI 도입 의지와 실제 실행 능력 사이에 상당한 격차가 존재한다는 것을 시사한다. 이는 경영진의 의사결정 지연, 불충분한 리소스 배분, 또는 명확한 실행 전략의 부재로 인한 문제일 수 있다. 직원들의 준비 상태를 성과로 연결하기 위해서는 경영진의 과단한 리더십과 조직 차원의 종합적인 전략이 필요하다.",
+    "image": "data/techinsight-images/8a3306b18bf8.webp",
+    "publishedAt": "2026-11-24T00:00:00.000Z",
+    "createdAt": "2026-11-25T04:06:55.056Z"
+  },
+  {
+    "id": "01ac3211c271",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "금융 서비스 기업의 변혁을 주도할 에이전틱 팩토리, 무엇인가?",
+    "originalTitle": "What is the agentic factory? An update to the machinery of transformation for financial-services businesses",
+    "link": "https://www.mckinsey.com/capabilities/quantumblack/our-insights/what-is-the-agentic-factory-an-update-to-the-machinery-of-transformation-for-financial-services-businesses",
+    "summary": "에이전틱 팩토리는 효과적인 에이전틱 시스템의 개발을 가속화하기 위해 설계된 중앙집중식 모델이다.\n금융 서비스 업계에서 디지털 변혁의 새로운 방식으로 주목받고 있다.\n이를 통해 기업들은 자동화된 에이전트 기술을 더욱 빠르게 구축하고 운영할 수 있다.",
+    "image": "data/techinsight-images/01ac3211c271.webp",
+    "publishedAt": "2026-11-24T00:00:00.000Z",
+    "createdAt": "2026-11-25T04:07:17.506Z"
   },
   {
     "id": "02839082ff9f",
@@ -166,77 +238,5 @@
     "image": "data/techinsight-images/0011ae0145f0.webp",
     "publishedAt": "2026-11-19T13:10:00.000Z",
     "createdAt": "2026-11-20T02:14:59.042Z"
-  },
-  {
-    "id": "97b20df2e79d",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "초인공지능의 도래는 불가능하다고 주장하는 컴퓨터과학자",
-    "originalTitle": "Why a Computer Scientist Thinks Superintelligence Won’t Happen",
-    "link": "https://spectrum.ieee.org/ai-superintelligence-debate",
-    "summary": "AI 업계 지도자들이 초인공지능으로 인한 인류 멸종 가능성을 공개적으로 논의하면서 재귀적 자기 개선을 통한 지능 폭발에 대한 우려가 확산되고 있다. 그러나 공학적 관점에서 초인공지능의 실현 가능성을 검토하면 이는 1960년대부터 순환해온 사변적 개념일 뿐 실제 기술적 근거가 부족하다는 주장이 제기된다. 비록 초인공지능이 현실화되지 않더라도 이를 추구하는 과정 자체가 실질적인 해를 초래할 수 있다는 우려가 있다. 엔지니어링 관점에서 초인공지능의 가능성을 과학적으로 검증하는 것이 불안감을 올바르게 측정하고 효과적인 대응을 개발하는 데 중요하다.",
-    "image": "data/techinsight-images/97b20df2e79d.webp",
-    "publishedAt": "2026-11-19T12:00:03.000Z",
-    "createdAt": "2026-11-20T02:15:23.576Z"
-  },
-  {
-    "id": "200c26dcc801",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "인간 간을 체외에서 7주간 생존시키는 신기록 달성",
-    "originalTitle": "A human liver has been kept alive outside the body for a record seven weeks",
-    "link": "https://www.technologyreview.com/2026/11/19/1148934/a-human-liver-has-been-kept-alive-outside-the-body-for-seven-weeks-setting-a-record/",
-    "summary": "호주의 연구팀이 자동화된 펌프와 센서 시스템을 이용해 기증받은 간을 체외에서 7주간 생존시키는 데 성공했으며, 이는 이전 기록인 2주를 훨씬 넘어선 성과다. 정상체온 상태에서 간에 영양분과 혈액을 공급하고 노폐물을 제거하는 머신 퍼퓨전 기술이 핵심이며, 자동화 시스템이 수동 조작 시스템보다 평균 생존 시간을 3배 이상 연장했다. 이러한 장기 보존 기술은 장기 이식 수혜자를 늘릴 뿐만 아니라 인공장기 개발, 유전자 치료 연구, 신약 개발 등 혁신적인 의료 응용 가능성을 열어줄 것으로 기대된다. 연구팀은 현재 1개의 간을 여러 개의 이식 가능한 장기로 증식하는 방법과 체내 장기를 체외 머신에 임시 연결해 치료하는 개념도 모색 중이다.",
-    "image": "data/techinsight-images/200c26dcc801.webp",
-    "publishedAt": "2026-11-19T12:00:00.000Z",
-    "createdAt": "2026-11-20T02:15:16.067Z"
-  },
-  {
-    "id": "1208f01e00a6",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "미국 배터리 시장의 미래를 보여주는 10억 달러 규모 계약",
-    "originalTitle": "What a billion-dollar deal says about the US battery market",
-    "link": "https://www.technologyreview.com/2026/11/19/1148922/sila-panasonic-battery-deal/",
-    "summary": "차세대 배터리 개발사 실라(Sila)가 글로벌 배터리 제조업체 파나소닉 에너지와 10억 달러 규모의 실리콘-카본 애노드 공급 계약을 체결했다. 실라의 신소재는 기존 흑연 애노드 대비 무게는 5분의 1, 부피는 절반 수준으로 감소시켜 더 가볍고 소형의 배터리 제조를 가능하게 한다. 과거 수년간 차세대 배터리 산업이 어려움을 겪었지만 이 계약은 긍정적인 신호로, 트럼프 행정부 국방부의 14억 달러 대출 지원을 받아 추진된다. 배터리 산업이 과거 기후 기술에서 지정학적 경쟁으로 초점이 이동하면서, 중국이 90% 이상의 흑연 생산을 지배하는 상황에서 미국의 공급망 자립이 중요해졌다. 실라의 발표는 에너지 전환과 감축보다 미국 산업화와 기술 주권에 초점을 맞추고 있다.",
-    "image": "data/techinsight-images/1208f01e00a6.webp",
-    "publishedAt": "2026-11-19T11:00:00.000Z",
-    "createdAt": "2026-11-21T02:08:40.846Z"
-  },
-  {
-    "id": "6f41e71febfa",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "채용담당자가 찾을 수 있도록 개인 브랜드를 구축하라",
-    "originalTitle": "Build a Personal Brand to Help Employers Find You",
-    "link": "https://spectrum.ieee.org/personal-branding-for-engineers",
-    "summary": "기술자의 취업성을 높이기 위해서는 온라인에서 자신을 발견 가능하게 만드는 개인 브랜드 구축이 효과적이다. 개인 브랜드는 팔로워 수가 아니라 채용담당자와 리크루터가 당신을 쉽게 찾을 수 있는 '흔적'을 남기는 것이 핵심이다. 인공지능 생성 콘텐츠로 범람한 링크드인에서 돋보이기 위해서는 실제 경험과 구체적인 성과에 대해 인간답게 작성하고, 주관적인 의견도 담되 신중하게 접근해야 한다. 주 2회 정도의 꾸준한 포스팅으로 충분하며, 이를 통해 쌓이는 네트워크가 결국 더 많은 기회로 이어진다.",
-    "image": "data/techinsight-images/6f41e71febfa.webp",
-    "publishedAt": "2026-11-18T17:33:26.000Z",
-    "createdAt": "2026-11-19T02:30:07.162Z"
-  },
-  {
-    "id": "bb3ee1cf50e2",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "AI는 어디에나 있다: 과장된 AI 열풍의 현주소",
-    "originalTitle": "The AI Hype Index: AI is everywhere",
-    "link": "https://www.technologyreview.com/2026/11/18/1148650/ai-hype-index-ai-is-everywhere/",
-    "summary": "AI 기술이 일상 곳곳에 침투하면서 과도한 마케팅과 현실 사이의 괴리가 심화되고 있다. 구글의 AI 오버뷰부터 AI 로봇, 영화 각색 등 AI는 광범위하게 확산되고 있지만, 많은 경우 실제 가치보다 과장된 광고성 메시지로 소비자를 압도하고 있다. 현재의 AI 열풍 속에서 사용자들은 AI로 가득 찬 디지털 환경을 헤쳐나가야 하는 현대판 오디세우스의 처지에 놓여 있다. AGI와 새로운 기능에 대한 과장된 주장들은 면밀한 검토 아래에서 급속도로 무너지고 있으며, AI의 실제 능력과 한계에 대한 현실적 평가가 필요한 상황이다.",
-    "image": "data/techinsight-images/bb3ee1cf50e2.webp",
-    "publishedAt": "2026-11-18T14:42:44.000Z",
-    "createdAt": "2026-11-19T02:30:07.583Z"
-  },
-  {
-    "id": "5fe5c48115f1",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "AI가 냄새를 맡기 시작했고 수력발전은 위기에 빠졌다",
-    "originalTitle": "The Download: AI learns to smell and hydropower struggles",
-    "link": "https://www.technologyreview.com/2026/11/18/1148845/the-download-ai-learns-to-smell-hydropower-struggles/",
-    "summary": "AI 스타트업 오스모는 인간 수준의 후각 능력을 갖춘 AI 모델을 개발했으며, 향수 디자인부터 위조품 탐지, 질병 진단까지 다양한 분야 적용을 목표로 하고 있다. 미국 남서부 지역은 극심한가뭄의 영향으로 올 여름 수력발전 발전량이 10년 평균보다 28% 감소했으며, 기후변화가 주요 저수지의 수위를 위협하고 있다. 미국 정부 통신망을 포함한 대규모 시스템 장애가 계속되고 있으며, AI는 보안 취약점 발견을 가속화하면서 동시에 온라인 범죄도 용이하게 하고 있다. 고체 상태 변압기 같은 신기술은 전력망 현대화를 도와 전력 수급 문제 해결에 기여할 수 있을 것으로 기대된다. IVF 기술에 AI와 로봇 자동화 같은 혁신이 도입되면서 생식의학이 더 효과적이고 접근 가능해질 가능성이 높아지고 있다.",
-    "image": "data/techinsight-images/5fe5c48115f1.webp",
-    "publishedAt": "2026-11-18T13:10:00.000Z",
-    "createdAt": "2026-11-19T02:30:08.848Z"
   }
 ]
