@@ -1,14 +1,22 @@
 {
-  "generatedAt": "2026-11-24T19:19:50Z",
+  "generatedAt": "2026-11-25T04:56:23Z",
   "description": "업비트 KRW 마켓 코인 중 야후 시총 TOP100에 없는 코인을 시가총액(야후 스크리너) 순으로 110개(앞 100개 사용 + 여유분 10개로 총 200 유지) — 기호 일치 + 야후 차트 가격이 업비트 원화가÷USDT의 ±35% 이내인 것만, 최근 1년 하루 20배↑·1/20↓ 가격 단절·시세 30일 미만 제외.",
   "coins": [
+    {
+      "symbol": "ALGO-USD",
+      "base": "ALGO",
+      "nameKo": "알고랜드",
+      "nameEn": "Algorand",
+      "upbitMarket": "KRW-ALGO",
+      "marketCapUsd": 705380544
+    },
     {
       "symbol": "ATOM-USD",
       "base": "ATOM",
       "nameKo": "코스모스",
       "nameEn": "Cosmos",
       "upbitMarket": "KRW-ATOM",
-      "marketCapUsd": 678770944
+      "marketCapUsd": 671761600
     },
     {
       "symbol": "LIT39125-USD",
@@ -16,7 +24,7 @@
       "nameKo": "라이터",
       "nameEn": "Lighter",
       "upbitMarket": "KRW-LIT",
-      "marketCapUsd": 585014720
+      "marketCapUsd": 579983424
     },
     {
       "symbol": "INJ-USD",
@@ -24,7 +32,7 @@
       "nameKo": "인젝티브",
       "nameEn": "Injective",
       "upbitMarket": "KRW-INJ",
-      "marketCapUsd": 580918720
+      "marketCapUsd": 577121088
     },
     {
       "symbol": "STX4847-USD",
@@ -32,7 +40,7 @@
       "nameKo": "스택스",
       "nameEn": "Stacks",
       "upbitMarket": "KRW-STX",
-      "marketCapUsd": 487168544
+      "marketCapUsd": 487694848
     },
     {
       "symbol": "FIL-USD",
@@ -40,15 +48,7 @@
       "nameKo": "파일코인",
       "nameEn": "Filecoin",
       "upbitMarket": "KRW-FIL",
-      "marketCapUsd": 461893248
-    },
-    {
-      "symbol": "EURC-USD",
-      "base": "EURC",
-      "nameKo": "이유알코인",
-      "nameEn": "EURC",
-      "upbitMarket": "KRW-EURC",
-      "marketCapUsd": 443814208
+      "marketCapUsd": 454962976
     },
     {
       "symbol": "ETHFI-USD",
@@ -56,15 +56,15 @@
       "nameKo": "이더파이",
       "nameEn": "Ether.fi",
       "upbitMarket": "KRW-ETHFI",
-      "marketCapUsd": 439007840
+      "marketCapUsd": 444174528
     },
     {
-      "symbol": "ZRO26997-USD",
-      "base": "ZRO",
-      "nameKo": "레이어제로",
-      "nameEn": "LayerZero",
-      "upbitMarket": "KRW-ZRO",
-      "marketCapUsd": 420343136
+      "symbol": "EURC-USD",
+      "base": "EURC",
+      "nameKo": "이유알코인",
+      "nameEn": "EURC",
+      "upbitMarket": "KRW-EURC",
+      "marketCapUsd": 443150688
     },
     {
       "symbol": "KITE-USD",
@@ -72,7 +72,7 @@
       "nameKo": "카이트",
       "nameEn": "Kite",
       "upbitMarket": "KRW-KITE",
-      "marketCapUsd": 412470400
+      "marketCapUsd": 406000608
     },
     {
       "symbol": "VET-USD",
@@ -80,7 +80,7 @@
       "nameKo": "비체인",
       "nameEn": "VeChain",
       "upbitMarket": "KRW-VET",
-      "marketCapUsd": 404141056
+      "marketCapUsd": 403196640
     },
     {
       "symbol": "PYTH-USD",
@@ -88,7 +88,7 @@
       "nameKo": "피스네트워크",
       "nameEn": "Pyth Network",
       "upbitMarket": "KRW-PYTH",
-      "marketCapUsd": 384459072
+      "marketCapUsd": 377847072
     },
     {
       "symbol": "FF38482-USD",
@@ -96,7 +96,7 @@
       "nameKo": "팔콘파이낸스",
       "nameEn": "Falcon Finance",
       "upbitMarket": "KRW-FF",
-      "marketCapUsd": 358316704
+      "marketCapUsd": 359285216
     },
     {
       "symbol": "RAY-USD",
@@ -104,7 +104,7 @@
       "nameKo": "레이디움",
       "nameEn": "Raydium",
       "upbitMarket": "KRW-RAY",
-      "marketCapUsd": 336529920
+      "marketCapUsd": 329524288
     },
     {
       "symbol": "APT21794-USD",
@@ -112,7 +112,7 @@
       "nameKo": "앱토스",
       "nameEn": "Aptos",
       "upbitMarket": "KRW-APT",
-      "marketCapUsd": 330232160
+      "marketCapUsd": 321171200
     },
     {
       "symbol": "TIA-USD",
@@ -120,15 +120,7 @@
       "nameKo": "셀레스티아",
       "nameEn": "Celestia",
       "upbitMarket": "KRW-TIA",
-      "marketCapUsd": 325508512
-    },
-    {
-      "symbol": "AERO29270-USD",
-      "base": "AERO",
-      "nameKo": "에어로드롬파이낸스",
-      "nameEn": "Aerodrome Finance",
-      "upbitMarket": "KRW-AERO",
-      "marketCapUsd": 319199232
+      "marketCapUsd": 319411232
     },
     {
       "symbol": "DRV35014-USD",
@@ -136,7 +128,15 @@
       "nameKo": "디라이브",
       "nameEn": "Derive",
       "upbitMarket": "KRW-DRV",
-      "marketCapUsd": 300055264
+      "marketCapUsd": 318211744
+    },
+    {
+      "symbol": "AERO29270-USD",
+      "base": "AERO",
+      "nameKo": "에어로드롬파이낸스",
+      "nameEn": "Aerodrome Finance",
+      "upbitMarket": "KRW-AERO",
+      "marketCapUsd": 308351488
     },
     {
       "symbol": "BTT-USD",
@@ -144,7 +144,7 @@
       "nameKo": "비트토렌트",
       "nameEn": "BitTorrent",
       "upbitMarket": "KRW-BTT",
-      "marketCapUsd": 290288384
+      "marketCapUsd": 289065216
     },
     {
       "symbol": "BSV-USD",
@@ -152,15 +152,7 @@
       "nameKo": "비트코인에스브이",
       "nameEn": "Bitcoin SV",
       "upbitMarket": "KRW-BSV",
-      "marketCapUsd": 282481344
-    },
-    {
-      "symbol": "CRV-USD",
-      "base": "CRV",
-      "nameKo": "커브",
-      "nameEn": "Curve",
-      "upbitMarket": "KRW-CRV",
-      "marketCapUsd": 280798912
+      "marketCapUsd": 282678176
     },
     {
       "symbol": "SUN-USD",
@@ -168,7 +160,15 @@
       "nameKo": "썬",
       "nameEn": "SUN",
       "upbitMarket": "KRW-SUN",
-      "marketCapUsd": 280549600
+      "marketCapUsd": 280808224
+    },
+    {
+      "symbol": "CRV-USD",
+      "base": "CRV",
+      "nameKo": "커브",
+      "nameEn": "Curve",
+      "upbitMarket": "KRW-CRV",
+      "marketCapUsd": 279785632
     },
     {
       "symbol": "PENGU34466-USD",
@@ -176,23 +176,7 @@
       "nameKo": "펏지펭귄",
       "nameEn": "Pudgy Penguins",
       "upbitMarket": "KRW-PENGU",
-      "marketCapUsd": 266103408
-    },
-    {
-      "symbol": "SEI-USD",
-      "base": "SEI",
-      "nameKo": "세이",
-      "nameEn": "Sei",
-      "upbitMarket": "KRW-SEI",
-      "marketCapUsd": 261494944
-    },
-    {
-      "symbol": "SPX28081-USD",
-      "base": "SPX",
-      "nameKo": "에스피엑스6900",
-      "nameEn": "SPX6900",
-      "upbitMarket": "KRW-SPX",
-      "marketCapUsd": 253139008
+      "marketCapUsd": 263593952
     },
     {
       "symbol": "MON30495-USD",
@@ -200,7 +184,23 @@
       "nameKo": "모나드",
       "nameEn": "Monad",
       "upbitMarket": "KRW-MON",
-      "marketCapUsd": 252622176
+      "marketCapUsd": 256510816
+    },
+    {
+      "symbol": "SEI-USD",
+      "base": "SEI",
+      "nameKo": "세이",
+      "nameEn": "Sei",
+      "upbitMarket": "KRW-SEI",
+      "marketCapUsd": 251848704
+    },
+    {
+      "symbol": "SPX28081-USD",
+      "base": "SPX",
+      "nameKo": "에스피엑스6900",
+      "nameEn": "SPX6900",
+      "upbitMarket": "KRW-SPX",
+      "marketCapUsd": 249949856
     },
     {
       "symbol": "TRUMP35336-USD",
@@ -208,15 +208,7 @@
       "nameKo": "오피셜트럼프",
       "nameEn": "Official Trump",
       "upbitMarket": "KRW-TRUMP",
-      "marketCapUsd": 234147328
-    },
-    {
-      "symbol": "VIRTUAL-USD",
-      "base": "VIRTUAL",
-      "nameKo": "버추얼프로토콜",
-      "nameEn": "Virtuals Protocol",
-      "upbitMarket": "KRW-VIRTUAL",
-      "marketCapUsd": 233988352
+      "marketCapUsd": 235557616
     },
     {
       "symbol": "XTZ-USD",
@@ -224,15 +216,15 @@
       "nameKo": "테조스",
       "nameEn": "Tezos",
       "upbitMarket": "KRW-XTZ",
-      "marketCapUsd": 229505552
+      "marketCapUsd": 232418768
     },
     {
-      "symbol": "PENDLE-USD",
-      "base": "PENDLE",
-      "nameKo": "펜들",
-      "nameEn": "Pendle",
-      "upbitMarket": "KRW-PENDLE",
-      "marketCapUsd": 217587088
+      "symbol": "VIRTUAL-USD",
+      "base": "VIRTUAL",
+      "nameKo": "버추얼프로토콜",
+      "nameEn": "Virtuals Protocol",
+      "upbitMarket": "KRW-VIRTUAL",
+      "marketCapUsd": 230107904
     },
     {
       "symbol": "XPL-USD",
@@ -240,7 +232,15 @@
       "nameKo": "플라즈마",
       "nameEn": "Plasma",
       "upbitMarket": "KRW-XPL",
-      "marketCapUsd": 213102480
+      "marketCapUsd": 220896320
+    },
+    {
+      "symbol": "PENDLE-USD",
+      "base": "PENDLE",
+      "nameKo": "펜들",
+      "nameEn": "Pendle",
+      "upbitMarket": "KRW-PENDLE",
+      "marketCapUsd": 213656160
     },
     {
       "symbol": "KAIA-USD",
@@ -248,7 +248,7 @@
       "nameKo": "카이아",
       "nameEn": "Kaia",
       "upbitMarket": "KRW-KAIA",
-      "marketCapUsd": 179647264
+      "marketCapUsd": 181613392
     },
     {
       "symbol": "GRT6719-USD",
@@ -256,7 +256,7 @@
       "nameKo": "더그래프",
       "nameEn": "The Graph",
       "upbitMarket": "KRW-GRT",
-      "marketCapUsd": 179526528
+      "marketCapUsd": 176579424
     },
     {
       "symbol": "IMX10603-USD",
@@ -264,7 +264,7 @@
       "nameKo": "이뮤터블엑스",
       "nameEn": "Immutable X",
       "upbitMarket": "KRW-IMX",
-      "marketCapUsd": 176156864
+      "marketCapUsd": 175942816
     },
     {
       "symbol": "COMP5692-USD",
@@ -272,7 +272,7 @@
       "nameKo": "컴파운드",
       "nameEn": "Compound",
       "upbitMarket": "KRW-COMP",
-      "marketCapUsd": 173716560
+      "marketCapUsd": 172073072
     },
     {
       "symbol": "CFX-USD",
@@ -280,7 +280,7 @@
       "nameKo": "콘플럭스",
       "nameEn": "Conflux",
       "upbitMarket": "KRW-CFX",
-      "marketCapUsd": 169217760
+      "marketCapUsd": 167014992
     },
     {
       "symbol": "BEAM28298-USD",
@@ -288,15 +288,7 @@
       "nameKo": "빔",
       "nameEn": "Beam",
       "upbitMarket": "KRW-BEAM",
-      "marketCapUsd": 166037808
-    },
-    {
-      "symbol": "OP-USD",
-      "base": "OP",
-      "nameKo": "옵티미즘",
-      "nameEn": "Optimism",
-      "upbitMarket": "KRW-OP",
-      "marketCapUsd": 158471696
+      "marketCapUsd": 164241296
     },
     {
       "symbol": "SOON36542-USD",
@@ -304,31 +296,15 @@
       "nameKo": "쑨",
       "nameEn": "SOON",
       "upbitMarket": "KRW-SOON",
-      "marketCapUsd": 157488704
+      "marketCapUsd": 157018960
     },
     {
-      "symbol": "ENS-USD",
-      "base": "ENS",
-      "nameKo": "이더리움네임서비스",
-      "nameEn": "Ethereum Name Service",
-      "upbitMarket": "KRW-ENS",
-      "marketCapUsd": 147269664
-    },
-    {
-      "symbol": "SENT38868-USD",
-      "base": "SENT",
-      "nameKo": "센티언트",
-      "nameEn": "Sentient",
-      "upbitMarket": "KRW-SENT",
-      "marketCapUsd": 146758128
-    },
-    {
-      "symbol": "IOTA-USD",
-      "base": "IOTA",
-      "nameKo": "아이오타",
-      "nameEn": "IOTA",
-      "upbitMarket": "KRW-IOTA",
-      "marketCapUsd": 146382464
+      "symbol": "OP-USD",
+      "base": "OP",
+      "nameKo": "옵티미즘",
+      "nameEn": "Optimism",
+      "upbitMarket": "KRW-OP",
+      "marketCapUsd": 155846016
     },
     {
       "symbol": "CAP40531-USD",
@@ -336,15 +312,23 @@
       "nameKo": "캡",
       "nameEn": "Cap",
       "upbitMarket": "KRW-CAP",
-      "marketCapUsd": 143489984
+      "marketCapUsd": 145183296
     },
     {
-      "symbol": "AKT-USD",
-      "base": "AKT",
-      "nameKo": "아카시네트워크",
-      "nameEn": "Akash Network",
-      "upbitMarket": "KRW-AKT",
-      "marketCapUsd": 143195360
+      "symbol": "IOTA-USD",
+      "base": "IOTA",
+      "nameKo": "아이오타",
+      "nameEn": "IOTA",
+      "upbitMarket": "KRW-IOTA",
+      "marketCapUsd": 145059536
+    },
+    {
+      "symbol": "ENS-USD",
+      "base": "ENS",
+      "nameKo": "이더리움네임서비스",
+      "nameEn": "Ethereum Name Service",
+      "upbitMarket": "KRW-ENS",
+      "marketCapUsd": 144651040
     },
     {
       "symbol": "ZAMA-USD",
@@ -352,7 +336,23 @@
       "nameKo": "자마",
       "nameEn": "Zama",
       "upbitMarket": "KRW-ZAMA",
-      "marketCapUsd": 142448128
+      "marketCapUsd": 141880448
+    },
+    {
+      "symbol": "SENT38868-USD",
+      "base": "SENT",
+      "nameKo": "센티언트",
+      "nameEn": "Sentient",
+      "upbitMarket": "KRW-SENT",
+      "marketCapUsd": 137853792
+    },
+    {
+      "symbol": "AKT-USD",
+      "base": "AKT",
+      "nameKo": "아카시네트워크",
+      "nameEn": "Akash Network",
+      "upbitMarket": "KRW-AKT",
+      "marketCapUsd": 137731280
     },
     {
       "symbol": "KMNO-USD",
@@ -360,7 +360,7 @@
       "nameKo": "카미노파이낸스",
       "nameEn": "Kamino Finance",
       "upbitMarket": "KRW-KMNO",
-      "marketCapUsd": 139164688
+      "marketCapUsd": 136547536
     },
     {
       "symbol": "TRAC-USD",
@@ -368,7 +368,7 @@
       "nameKo": "오리진트레일",
       "nameEn": "OriginTrail",
       "upbitMarket": "KRW-TRAC",
-      "marketCapUsd": 129192608
+      "marketCapUsd": 127910104
     },
     {
       "symbol": "THETA-USD",
@@ -376,7 +376,7 @@
       "nameKo": "쎄타토큰",
       "nameEn": "Theta Token",
       "upbitMarket": "KRW-THETA",
-      "marketCapUsd": 127673488
+      "marketCapUsd": 125655008
     },
     {
       "symbol": "JTO-USD",
@@ -384,15 +384,7 @@
       "nameKo": "지토",
       "nameEn": "Jito",
       "upbitMarket": "KRW-JTO",
-      "marketCapUsd": 127233944
-    },
-    {
-      "symbol": "FLUID-USD",
-      "base": "FLUID",
-      "nameKo": "플루이드",
-      "nameEn": "Fluid",
-      "upbitMarket": "KRW-FLUID",
-      "marketCapUsd": 122683632
+      "marketCapUsd": 125469568
     },
     {
       "symbol": "WIF-USD",
@@ -400,7 +392,15 @@
       "nameKo": "도그위프햇",
       "nameEn": "dogwifhat",
       "upbitMarket": "KRW-WIF",
-      "marketCapUsd": 120748320
+      "marketCapUsd": 119983656
+    },
+    {
+      "symbol": "FLUID-USD",
+      "base": "FLUID",
+      "nameKo": "플루이드",
+      "nameEn": "Fluid",
+      "upbitMarket": "KRW-FLUID",
+      "marketCapUsd": 119949336
     },
     {
       "symbol": "XCN18679-USD",
@@ -408,7 +408,7 @@
       "nameKo": "오닉스코인",
       "nameEn": "Onyxcoin",
       "upbitMarket": "KRW-XCN",
-      "marketCapUsd": 117785976
+      "marketCapUsd": 116840216
     },
     {
       "symbol": "BAT-USD",
@@ -416,15 +416,7 @@
       "nameKo": "베이직어텐션토큰",
       "nameEn": "Basic Attention Token",
       "upbitMarket": "KRW-BAT",
-      "marketCapUsd": 113958552
-    },
-    {
-      "symbol": "A36462-USD",
-      "base": "A",
-      "nameKo": "볼타",
-      "nameEn": "Vaulta",
-      "upbitMarket": "KRW-A",
-      "marketCapUsd": 111479064
+      "marketCapUsd": 112648480
     },
     {
       "symbol": "MANA-USD",
@@ -432,7 +424,15 @@
       "nameKo": "디센트럴랜드",
       "nameEn": "Decentraland",
       "upbitMarket": "KRW-MANA",
-      "marketCapUsd": 110442624
+      "marketCapUsd": 108878568
+    },
+    {
+      "symbol": "A36462-USD",
+      "base": "A",
+      "nameKo": "볼타",
+      "nameEn": "Vaulta",
+      "upbitMarket": "KRW-A",
+      "marketCapUsd": 108558608
     },
     {
       "symbol": "AXS-USD",
@@ -440,7 +440,7 @@
       "nameKo": "엑시인피니티",
       "nameEn": "Axie Infinity",
       "upbitMarket": "KRW-AXS",
-      "marketCapUsd": 110093336
+      "marketCapUsd": 108552064
     },
     {
       "symbol": "NEO-USD",
@@ -448,7 +448,7 @@
       "nameKo": "네오",
       "nameEn": "NEO",
       "upbitMarket": "KRW-NEO",
-      "marketCapUsd": 107629680
+      "marketCapUsd": 106400584
     },
     {
       "symbol": "AWE-USD",
@@ -456,7 +456,7 @@
       "nameKo": "에이더블유이",
       "nameEn": "AWE Network",
       "upbitMarket": "KRW-AWE",
-      "marketCapUsd": 101364352
+      "marketCapUsd": 100597856
     },
     {
       "symbol": "XEC-USD",
@@ -464,7 +464,7 @@
       "nameKo": "이캐시",
       "nameEn": "eCash",
       "upbitMarket": "KRW-XEC",
-      "marketCapUsd": 99914248
+      "marketCapUsd": 100579288
     },
     {
       "symbol": "O40092-USD",
@@ -472,7 +472,7 @@
       "nameKo": "오원익스체인지",
       "nameEn": "o1.exchange",
       "upbitMarket": "KRW-O",
-      "marketCapUsd": 98042456
+      "marketCapUsd": 94731088
     },
     {
       "symbol": "SAND-USD",
@@ -480,7 +480,7 @@
       "nameKo": "샌드박스",
       "nameEn": "The Sandbox",
       "upbitMarket": "KRW-SAND",
-      "marketCapUsd": 94041928
+      "marketCapUsd": 93132208
     },
     {
       "symbol": "CHZ-USD",
@@ -488,23 +488,7 @@
       "nameKo": "칠리즈",
       "nameEn": "Chiliz",
       "upbitMarket": "KRW-CHZ",
-      "marketCapUsd": 93353744
-    },
-    {
-      "symbol": "PROS39682-USD",
-      "base": "PROS",
-      "nameKo": "파로스",
-      "nameEn": "Pharos",
-      "upbitMarket": "KRW-PROS",
-      "marketCapUsd": 92379760
-    },
-    {
-      "symbol": "GLM-USD",
-      "base": "GLM",
-      "nameKo": "골렘",
-      "nameEn": "Golem",
-      "upbitMarket": "KRW-GLM",
-      "marketCapUsd": 91295520
+      "marketCapUsd": 92121312
     },
     {
       "symbol": "EDGE36288-USD",
@@ -512,7 +496,23 @@
       "nameKo": "디피니티브",
       "nameEn": "Definitive",
       "upbitMarket": "KRW-EDGE",
-      "marketCapUsd": 19618272
+      "marketCapUsd": 19543262
+    },
+    {
+      "symbol": "PROS39682-USD",
+      "base": "PROS",
+      "nameKo": "파로스",
+      "nameEn": "Pharos",
+      "upbitMarket": "KRW-PROS",
+      "marketCapUsd": 88241648
+    },
+    {
+      "symbol": "GLM-USD",
+      "base": "GLM",
+      "nameKo": "골렘",
+      "nameEn": "Golem",
+      "upbitMarket": "KRW-GLM",
+      "marketCapUsd": 86509248
     },
     {
       "symbol": "GEOD-USD",
@@ -520,23 +520,7 @@
       "nameKo": "지오드넷",
       "nameEn": "GEODNET",
       "upbitMarket": "KRW-GEOD",
-      "marketCapUsd": 89296152
-    },
-    {
-      "symbol": "SYRUP-USD",
-      "base": "SYRUP",
-      "nameKo": "메이플파이낸스",
-      "nameEn": "Maple Finance",
-      "upbitMarket": "KRW-SYRUP",
-      "marketCapUsd": 85736192
-    },
-    {
-      "symbol": "1INCH-USD",
-      "base": "1INCH",
-      "nameKo": "1인치네트워크",
-      "nameEn": "1inch Network",
-      "upbitMarket": "KRW-1INCH",
-      "marketCapUsd": 82868232
+      "marketCapUsd": 85872400
     },
     {
       "symbol": "PROM-USD",
@@ -544,7 +528,23 @@
       "nameKo": "프롬",
       "nameEn": "Prom",
       "upbitMarket": "KRW-PROM",
-      "marketCapUsd": 82092288
+      "marketCapUsd": 85104664
+    },
+    {
+      "symbol": "SYRUP-USD",
+      "base": "SYRUP",
+      "nameKo": "메이플파이낸스",
+      "nameEn": "Maple Finance",
+      "upbitMarket": "KRW-SYRUP",
+      "marketCapUsd": 84518784
+    },
+    {
+      "symbol": "1INCH-USD",
+      "base": "1INCH",
+      "nameKo": "1인치네트워크",
+      "nameEn": "1inch Network",
+      "upbitMarket": "KRW-1INCH",
+      "marketCapUsd": 81793904
     },
     {
       "symbol": "RSR-USD",
@@ -552,7 +552,7 @@
       "nameKo": "리저브라이트",
       "nameEn": "Reserve Rights",
       "upbitMarket": "KRW-RSR",
-      "marketCapUsd": 76794688
+      "marketCapUsd": 75875928
     },
     {
       "symbol": "PLUME-USD",
@@ -560,23 +560,7 @@
       "nameKo": "플룸",
       "nameEn": "Plume",
       "upbitMarket": "KRW-PLUME",
-      "marketCapUsd": 73919432
-    },
-    {
-      "symbol": "ZK24091-USD",
-      "base": "ZK",
-      "nameKo": "지케이싱크",
-      "nameEn": "ZKsync",
-      "upbitMarket": "KRW-ZK",
-      "marketCapUsd": 72628880
-    },
-    {
-      "symbol": "ATH30083-USD",
-      "base": "ATH",
-      "nameKo": "에이셔",
-      "nameEn": "Aethir",
-      "upbitMarket": "KRW-ATH",
-      "marketCapUsd": 71969576
+      "marketCapUsd": 72822776
     },
     {
       "symbol": "SUPER8290-USD",
@@ -584,7 +568,23 @@
       "nameKo": "슈퍼버스",
       "nameEn": "SuperVerse",
       "upbitMarket": "KRW-SUPER",
-      "marketCapUsd": 71912704
+      "marketCapUsd": 71974192
+    },
+    {
+      "symbol": "ZK24091-USD",
+      "base": "ZK",
+      "nameKo": "지케이싱크",
+      "nameEn": "ZKsync",
+      "upbitMarket": "KRW-ZK",
+      "marketCapUsd": 71114320
+    },
+    {
+      "symbol": "ATH30083-USD",
+      "base": "ATH",
+      "nameKo": "에이셔",
+      "nameEn": "Aethir",
+      "upbitMarket": "KRW-ATH",
+      "marketCapUsd": 70674504
     },
     {
       "symbol": "ORCA-USD",
@@ -592,15 +592,7 @@
       "nameKo": "오르카",
       "nameEn": "Orca",
       "upbitMarket": "KRW-ORCA",
-      "marketCapUsd": 71239872
-    },
-    {
-      "symbol": "DEEP33391-USD",
-      "base": "DEEP",
-      "nameKo": "딥북",
-      "nameEn": "DeepBook",
-      "upbitMarket": "KRW-DEEP",
-      "marketCapUsd": 68880640
+      "marketCapUsd": 70302104
     },
     {
       "symbol": "CARDS38283-USD",
@@ -608,7 +600,15 @@
       "nameKo": "콜렉터크립트",
       "nameEn": "Collector Crypt",
       "upbitMarket": "KRW-CARDS",
-      "marketCapUsd": 67080988
+      "marketCapUsd": 68708872
+    },
+    {
+      "symbol": "DEEP33391-USD",
+      "base": "DEEP",
+      "nameKo": "딥북",
+      "nameEn": "DeepBook",
+      "upbitMarket": "KRW-DEEP",
+      "marketCapUsd": 68063648
     },
     {
       "symbol": "QTUM-USD",
@@ -616,7 +616,7 @@
       "nameKo": "퀀텀",
       "nameEn": "Qtum",
       "upbitMarket": "KRW-QTUM",
-      "marketCapUsd": 66799616
+      "marketCapUsd": 65551440
     },
     {
       "symbol": "ZRX-USD",
@@ -624,7 +624,7 @@
       "nameKo": "제로엑스",
       "nameEn": "0x Protocol",
       "upbitMarket": "KRW-ZRX",
-      "marketCapUsd": 64427992
+      "marketCapUsd": 64167604
     },
     {
       "symbol": "LPT-USD",
@@ -632,15 +632,7 @@
       "nameKo": "라이브피어",
       "nameEn": "Livepeer",
       "upbitMarket": "KRW-LPT",
-      "marketCapUsd": 61012128
-    },
-    {
-      "symbol": "RED21707-USD",
-      "base": "RED",
-      "nameKo": "레드스톤",
-      "nameEn": "RedStone",
-      "upbitMarket": "KRW-RED",
-      "marketCapUsd": 60943776
+      "marketCapUsd": 60290548
     },
     {
       "symbol": "GAS-USD",
@@ -648,23 +640,15 @@
       "nameKo": "가스",
       "nameEn": "GAS",
       "upbitMarket": "KRW-GAS",
-      "marketCapUsd": 59136396
+      "marketCapUsd": 59753992
     },
     {
-      "symbol": "SAFE21585-USD",
-      "base": "SAFE",
-      "nameKo": "세이프",
-      "nameEn": "Safe",
-      "upbitMarket": "KRW-SAFE",
-      "marketCapUsd": 57126540
-    },
-    {
-      "symbol": "2Z-USD",
-      "base": "2Z",
-      "nameKo": "더블제로",
-      "nameEn": "DoubleZero",
-      "upbitMarket": "KRW-2Z",
-      "marketCapUsd": 56967300
+      "symbol": "RED21707-USD",
+      "base": "RED",
+      "nameKo": "레드스톤",
+      "nameEn": "RedStone",
+      "upbitMarket": "KRW-RED",
+      "marketCapUsd": 59670312
     },
     {
       "symbol": "WAL36119-USD",
@@ -672,15 +656,7 @@
       "nameKo": "월러스",
       "nameEn": "Walrus",
       "upbitMarket": "KRW-WAL",
-      "marketCapUsd": 56406076
-    },
-    {
-      "symbol": "NMR-USD",
-      "base": "NMR",
-      "nameKo": "뉴메레르",
-      "nameEn": "Numeraire",
-      "upbitMarket": "KRW-NMR",
-      "marketCapUsd": 56223512
+      "marketCapUsd": 55836636
     },
     {
       "symbol": "PONS-USD",
@@ -688,7 +664,31 @@
       "nameKo": "폰즈",
       "nameEn": "Pons",
       "upbitMarket": "KRW-PONS",
-      "marketCapUsd": 55882828
+      "marketCapUsd": 55834692
+    },
+    {
+      "symbol": "2Z-USD",
+      "base": "2Z",
+      "nameKo": "더블제로",
+      "nameEn": "DoubleZero",
+      "upbitMarket": "KRW-2Z",
+      "marketCapUsd": 55759296
+    },
+    {
+      "symbol": "SAFE21585-USD",
+      "base": "SAFE",
+      "nameKo": "세이프",
+      "nameEn": "Safe",
+      "upbitMarket": "KRW-SAFE",
+      "marketCapUsd": 55661244
+    },
+    {
+      "symbol": "NMR-USD",
+      "base": "NMR",
+      "nameKo": "뉴메레르",
+      "nameEn": "Numeraire",
+      "upbitMarket": "KRW-NMR",
+      "marketCapUsd": 54868284
     },
     {
       "symbol": "W-USD",
@@ -696,15 +696,7 @@
       "nameKo": "웜홀",
       "nameEn": "Wormhole",
       "upbitMarket": "KRW-W",
-      "marketCapUsd": 55117920
-    },
-    {
-      "symbol": "COW19269-USD",
-      "base": "COW",
-      "nameKo": "카우프로토콜",
-      "nameEn": "CoW Protocol",
-      "upbitMarket": "KRW-COW",
-      "marketCapUsd": 54788360
+      "marketCapUsd": 54443908
     },
     {
       "symbol": "CHIP39870-USD",
@@ -712,7 +704,15 @@
       "nameKo": "유에스디에이아이",
       "nameEn": "USD.AI",
       "upbitMarket": "KRW-CHIP",
-      "marketCapUsd": 53842584
+      "marketCapUsd": 54275392
+    },
+    {
+      "symbol": "COW19269-USD",
+      "base": "COW",
+      "nameKo": "카우프로토콜",
+      "nameEn": "CoW Protocol",
+      "upbitMarket": "KRW-COW",
+      "marketCapUsd": 53918712
     },
     {
       "symbol": "MINA-USD",
@@ -720,7 +720,7 @@
       "nameKo": "미나",
       "nameEn": "Mina",
       "upbitMarket": "KRW-MINA",
-      "marketCapUsd": 52322216
+      "marketCapUsd": 52057100
     },
     {
       "symbol": "MEGA38770-USD",
@@ -728,7 +728,7 @@
       "nameKo": "메가이더",
       "nameEn": "MegaETH",
       "upbitMarket": "KRW-MEGA",
-      "marketCapUsd": 47885144
+      "marketCapUsd": 46610756
     },
     {
       "symbol": "TFUEL-USD",
@@ -736,15 +736,7 @@
       "nameKo": "쎄타퓨엘",
       "nameEn": "Theta Fuel",
       "upbitMarket": "KRW-TFUEL",
-      "marketCapUsd": 47858468
-    },
-    {
-      "symbol": "ELF-USD",
-      "base": "ELF",
-      "nameKo": "엘프",
-      "nameEn": "aelf",
-      "upbitMarket": "KRW-ELF",
-      "marketCapUsd": 47047364
+      "marketCapUsd": 46428856
     },
     {
       "symbol": "MMT38231-USD",
@@ -752,23 +744,7 @@
       "nameKo": "모멘텀",
       "nameEn": "Momentum",
       "upbitMarket": "KRW-MMT",
-      "marketCapUsd": 45426416
-    },
-    {
-      "symbol": "SKR39377-USD",
-      "base": "SKR",
-      "nameKo": "시커",
-      "nameEn": "Seeker",
-      "upbitMarket": "KRW-SKR",
-      "marketCapUsd": 44937088
-    },
-    {
-      "symbol": "ZETA-USD",
-      "base": "ZETA",
-      "nameKo": "제타체인",
-      "nameEn": "ZetaChain",
-      "upbitMarket": "KRW-ZETA",
-      "marketCapUsd": 44323924
+      "marketCapUsd": 46376216
     },
     {
       "symbol": "BABY32198-USD",
@@ -776,7 +752,15 @@
       "nameKo": "바빌론",
       "nameEn": "Babylon",
       "upbitMarket": "KRW-BABY",
-      "marketCapUsd": 44093068
+      "marketCapUsd": 44593400
+    },
+    {
+      "symbol": "SKR39377-USD",
+      "base": "SKR",
+      "nameKo": "시커",
+      "nameEn": "Seeker",
+      "upbitMarket": "KRW-SKR",
+      "marketCapUsd": 43778632
     },
     {
       "symbol": "VTHO-USD",
@@ -784,95 +768,15 @@
       "nameKo": "비토르토큰",
       "nameEn": "VeThor Token",
       "upbitMarket": "KRW-VTHO",
-      "marketCapUsd": 43634184
+      "marketCapUsd": 43739304
     },
     {
-      "symbol": "IO29835-USD",
-      "base": "IO",
-      "nameKo": "아이오넷",
-      "nameEn": "io.net",
-      "upbitMarket": "KRW-IO",
-      "marketCapUsd": 43299272
-    },
-    {
-      "symbol": "IRYS-USD",
-      "base": "IRYS",
-      "nameKo": "아이리스",
-      "nameEn": "Irys",
-      "upbitMarket": "KRW-IRYS",
-      "marketCapUsd": 42149968
-    },
-    {
-      "symbol": "NXPC-USD",
-      "base": "NXPC",
-      "nameKo": "넥스페이스",
-      "nameEn": "Nexpace",
-      "upbitMarket": "KRW-NXPC",
-      "marketCapUsd": 41140044
-    },
-    {
-      "symbol": "T-USD",
-      "base": "T",
-      "nameKo": "쓰레스홀드",
-      "nameEn": "Threshold",
-      "upbitMarket": "KRW-T",
-      "marketCapUsd": 40756412
-    },
-    {
-      "symbol": "SPK36569-USD",
-      "base": "SPK",
-      "nameKo": "스파크",
-      "nameEn": "Spark",
-      "upbitMarket": "KRW-SPK",
-      "marketCapUsd": 40659720
-    },
-    {
-      "symbol": "ASTR-USD",
-      "base": "ASTR",
-      "nameKo": "아스타",
-      "nameEn": "Astar",
-      "upbitMarket": "KRW-ASTR",
-      "marketCapUsd": 39205052
-    },
-    {
-      "symbol": "AXL17799-USD",
-      "base": "AXL",
-      "nameKo": "엑셀라",
-      "nameEn": "Axelar",
-      "upbitMarket": "KRW-AXL",
-      "marketCapUsd": 38564832
-    },
-    {
-      "symbol": "CKB-USD",
-      "base": "CKB",
-      "nameKo": "너보스",
-      "nameEn": "Nervos Network",
-      "upbitMarket": "KRW-CKB",
-      "marketCapUsd": 37917876
-    },
-    {
-      "symbol": "KAITO-USD",
-      "base": "KAITO",
-      "nameKo": "카이토",
-      "nameEn": "KAITO",
-      "upbitMarket": "KRW-KAITO",
-      "marketCapUsd": 37816820
-    },
-    {
-      "symbol": "CASHCAT-USD",
-      "base": "CASHCAT",
-      "nameKo": "캐시캣",
-      "nameEn": "Cash Cat",
-      "upbitMarket": "KRW-CASHCAT",
-      "marketCapUsd": 37515388
-    },
-    {
-      "symbol": "BIO34812-USD",
-      "base": "BIO",
-      "nameKo": "바이오프로토콜",
-      "nameEn": "Bio Protocol",
-      "upbitMarket": "KRW-BIO",
-      "marketCapUsd": 37213968
+      "symbol": "ZETA-USD",
+      "base": "ZETA",
+      "nameKo": "제타체인",
+      "nameEn": "ZetaChain",
+      "upbitMarket": "KRW-ZETA",
+      "marketCapUsd": 43626380
     },
     {
       "symbol": "OPG-USD",
@@ -880,7 +784,103 @@
       "nameKo": "오픈그라디언트",
       "nameEn": "OpenGradient",
       "upbitMarket": "KRW-OPG",
-      "marketCapUsd": 36773764
+      "marketCapUsd": 42945676
+    },
+    {
+      "symbol": "IO29835-USD",
+      "base": "IO",
+      "nameKo": "아이오넷",
+      "nameEn": "io.net",
+      "upbitMarket": "KRW-IO",
+      "marketCapUsd": 42484652
+    },
+    {
+      "symbol": "IRYS-USD",
+      "base": "IRYS",
+      "nameKo": "아이리스",
+      "nameEn": "Irys",
+      "upbitMarket": "KRW-IRYS",
+      "marketCapUsd": 42315684
+    },
+    {
+      "symbol": "T-USD",
+      "base": "T",
+      "nameKo": "쓰레스홀드",
+      "nameEn": "Threshold",
+      "upbitMarket": "KRW-T",
+      "marketCapUsd": 41119272
+    },
+    {
+      "symbol": "ELF-USD",
+      "base": "ELF",
+      "nameKo": "엘프",
+      "nameEn": "aelf",
+      "upbitMarket": "KRW-ELF",
+      "marketCapUsd": 39845988
+    },
+    {
+      "symbol": "SPK36569-USD",
+      "base": "SPK",
+      "nameKo": "스파크",
+      "nameEn": "Spark",
+      "upbitMarket": "KRW-SPK",
+      "marketCapUsd": 39710888
+    },
+    {
+      "symbol": "NXPC-USD",
+      "base": "NXPC",
+      "nameKo": "넥스페이스",
+      "nameEn": "Nexpace",
+      "upbitMarket": "KRW-NXPC",
+      "marketCapUsd": 39603672
+    },
+    {
+      "symbol": "ASTR-USD",
+      "base": "ASTR",
+      "nameKo": "아스타",
+      "nameEn": "Astar",
+      "upbitMarket": "KRW-ASTR",
+      "marketCapUsd": 38466852
+    },
+    {
+      "symbol": "CKB-USD",
+      "base": "CKB",
+      "nameKo": "너보스",
+      "nameEn": "Nervos Network",
+      "upbitMarket": "KRW-CKB",
+      "marketCapUsd": 38285636
+    },
+    {
+      "symbol": "AXL17799-USD",
+      "base": "AXL",
+      "nameKo": "엑셀라",
+      "nameEn": "Axelar",
+      "upbitMarket": "KRW-AXL",
+      "marketCapUsd": 38282548
+    },
+    {
+      "symbol": "CASHCAT-USD",
+      "base": "CASHCAT",
+      "nameKo": "캐시캣",
+      "nameEn": "Cash Cat",
+      "upbitMarket": "KRW-CASHCAT",
+      "marketCapUsd": 38072104
+    },
+    {
+      "symbol": "KAITO-USD",
+      "base": "KAITO",
+      "nameKo": "카이토",
+      "nameEn": "KAITO",
+      "upbitMarket": "KRW-KAITO",
+      "marketCapUsd": 37013456
+    },
+    {
+      "symbol": "BIO34812-USD",
+      "base": "BIO",
+      "nameKo": "바이오프로토콜",
+      "nameEn": "Bio Protocol",
+      "upbitMarket": "KRW-BIO",
+      "marketCapUsd": 36662204
     }
   ]
 }

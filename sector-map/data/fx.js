@@ -1,1 +1,1 @@
-window.MM_FX = {"usdkrw": 1342.3, "asOf": "2026-11-25"};
+window.MM_FX = {"usdkrw": 1343.0, "asOf": "2026-11-25"};
