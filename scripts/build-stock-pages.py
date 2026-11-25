@@ -36,6 +36,10 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://marketmap.kr"
 TPL = "3"  # 틀(HTML 짜임)을 바꾸면 올린다 → 모든 종목 페이지를 다시 쓴다
+# AI 학습용으로 글을 긁어 가는 봇 (검색에 노출해 주는 봇은 넣지 않는다: Googlebot · Yeti(네이버) · bingbot ·
+# OAI-SearchBot · ChatGPT-User · PerplexityBot · Claude-SearchBot 등은 그대로 허용)
+NO_TRAIN_BOTS = ["GPTBot", "ClaudeBot", "anthropic-ai", "Google-Extended", "CCBot", "Bytespider", "Applebot-Extended",
+                 "meta-externalagent", "Amazonbot", "cohere-ai", "Diffbot", "Omgilibot", "AI2Bot", "ImagesiftBot"]
 ICON_V = "20261019a"
 FONT_CSS = "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css"
 KST = datetime.timezone(datetime.timedelta(hours=9))
@@ -481,7 +485,10 @@ def main():
     sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     sm += [f"<url><loc>{SITE}{u}</loc>" + (f"<lastmod>{d}</lastmod>" if d else "") + "</url>" for u, d in urls]
     write("sitemap.xml", "\n".join(sm + ["</urlset>"]) + "\n")
-    write("robots.txt", f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
+    # 검색 엔진(구글·네이버·빙 등)과 AI 검색 봇은 그대로 두고, 글을 긁어 AI 학습에 쓰는 수집 봇만 막는다.
+    # (robots.txt 는 지키는 봇에게만 통한다 — 막무가내로 긁는 쪽은 이걸로 못 막는다)
+    block = "".join(f"User-agent: {b}\n" for b in NO_TRAIN_BOTS) + "Disallow: /\n\n"
+    write("robots.txt", block + f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
     print(f"종목 {len(stocks)}개 · 새로 쓴 페이지 {n_new} · 지운 페이지 {n_del} · 앱 설치 버튼 {'켜짐' if cfg['playLive'] else '출시 예정'}", flush=True)
 
 
