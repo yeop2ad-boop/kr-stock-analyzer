@@ -1,7 +1,7 @@
 {
   "minTwaVersion": 1,
   "playUrl": "https://play.google.com/store/apps/details?id=kr.marketmap.app",
-  "playLive": false,
+  "playLive": true,
   "playLiveNote": "플레이스토어에 앱이 공개되면 playLive 를 true 로 바꾸세요. 검색용 종목 페이지(stock/, earnings/)의 'Android 앱 출시 예정' 버튼이 'Google Play에서 앱 받기' 링크로 바뀝니다(scripts/build-stock-pages.py 가 다음 실행 때 반영).",
   "note": "새 안드로이드 앱(아이콘 변경판, 시작 주소 ?app=2)이 플레이스토어에 올라간 뒤에만 minTwaVersion을 2로 올리세요. 올리면 예전 앱으로 들어온 사람에게 '업데이트' 안내 화면이 뜹니다."
 }

@@ -35,7 +35,7 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://marketmap.kr"
-TPL = "3"  # 틀(HTML 짜임)을 바꾸면 올린다 → 모든 종목 페이지를 다시 쓴다
+TPL = "4"  # 틀(HTML 짜임)을 바꾸면 올린다 → 모든 종목 페이지를 다시 쓴다
 # AI 학습용으로 글을 긁어 가는 봇 (검색에 노출해 주는 봇은 넣지 않는다: Googlebot · Yeti(네이버) · bingbot ·
 # OAI-SearchBot · ChatGPT-User · PerplexityBot · Claude-SearchBot 등은 그대로 허용)
 NO_TRAIN_BOTS = ["GPTBot", "ClaudeBot", "anthropic-ai", "Google-Extended", "CCBot", "Bytespider", "Applebot-Extended",
@@ -183,6 +183,7 @@ def load():
             nxt = e.get("next")
             if nxt and nxt < TODAY.isoformat():
                 nxt = None
+            c = dict(c, name=re.sub(r"\s*\((?:company|corporation)\)$", "", c["name"]))  # 'FIS (company)' → 'FIS'
             name_ko = c["name"] if iskr else ko.get(sym)
             w52 = num(m.get("w52"))
             if w52 is None:
@@ -239,7 +240,7 @@ def topbar(cur=""):
     def a(href, label, key):
         return f'<a href="{href}"{CUR if cur == key else ""}>{label}</a>'
     return (f'<header class="top"><div class="wrap"><a class="brand" href="/"><img src="/logos/marketmap-180.png?v={ICON_V}" width="24" height="24" alt="">마켓맵</a>'
-            f'<nav>{a("/stock/", "종목", "stock")}{a("/earnings/", "실적 일정", "earn")}{a("/sector-map/", "지도", "map")}</nav></div></header>\n')
+            f'<nav>{a("/stock/", "종목", "stock")}{a("/rank/", "순위", "rank")}{a("/earnings/", "실적 일정", "earn")}{a("/sector-map/", "지도", "map")}</nav></div></header>\n')
 
 
 FOOT = ('<footer><div class="wrap"><p>투자 권유가 아닌 참고 자료입니다.</p>'
@@ -304,8 +305,11 @@ def stock_page(s, peers, cfg):
         bits.append(f"{k_win} {pct(s['win'])}")
     if s["ret"] is not None:
         bits.append(f"{k_ret} {pct(s['ret'], True)}")
-    title = f"{s['name']}({s['code']}) 실적 · 과거승률 | 마켓맵"
-    desc = f"{s['name']}({s['code']}) " + " · ".join(bits + ["시가총액 · PER · 연도별 매출과 순이익 · 실적 발표일"])
+    # 다음 발표일을 알면 제목·설명에 '실적 발표일'을 넣는다 (실적 철에 사람들이 그 말로 찾는다)
+    if s["next"]:
+        bits.append(f"다음 실적 발표 {day(s['next'])}{'(예상)' if s['nextEst'] else ''}")
+    title = f"{s['name']}({s['code']}) {'실적 발표일' if s['next'] else '실적'} · 과거승률 | 마켓맵"
+    desc = f"{s['name']}({s['code']}) " + " · ".join(bits + ["시가총액 · PER · 연도별 매출과 순이익"])
 
     ld = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": 1, "name": "마켓맵", "item": SITE + "/"},
@@ -417,6 +421,95 @@ def earnings_page(stocks, cfg):
             + '<main class="wrap">\n<div class="page-h"><h1>실적 일정</h1></div>\n' + sec + cta + "</main>\n" + FOOT + "</body>\n</html>\n")
 
 
+# ---------- 순위 페이지 (검색용: '시가총액 순위' · '배당수익률 순위' 같은 말로 찾는 사람이 닿는 곳) ----------
+RANK_TOP = 100
+RANKS = [  # (주소 조각, 짧은 이름, 제목에 쓰는 말)
+    ("market-cap", "시가총액", "시가총액 순위"),
+    ("dividend", "배당수익률", "배당수익률 순위"),
+    ("low-per", "저PER", "저PER 주식 순위"),
+    ("winrate", "10년 과거승률", "10년 과거승률 순위"),
+    ("return", "1년상승", "1년상승(10년 평균) 순위"),
+]
+MK_LABEL = {"kr": "한국", "us": "미국"}
+MK_SCOPE = {"kr": "코스피200 · 코스닥150", "us": "S&P 500"}
+
+
+def app_button(cfg):
+    if cfg["playLive"]:
+        return f'<a class="btn line app-btn" href="{E(cfg["playUrl"])}" rel="noopener">Google Play에서 앱 받기</a>'
+    return '<span class="btn line off app-btn" aria-disabled="true">Android 앱 <small>출시 예정</small></span>'
+
+
+def rank_rows(stocks, mk, key):
+    """순위에 드는 종목(위에서부터) · 칸 이름 · 종목 → 칸에 넣을 글자들"""
+    kr = mk == "kr"
+    mine = [s for s in stocks if s["mk"] == mk]
+    full = [s for s in mine if (s["total"] or 0) >= 118]  # '10년' 순위에는 10년치가 다 있는 종목만
+    if key == "market-cap":
+        arr = sorted((s for s in mine if s["mcap"]), key=lambda s: -s["mcap"])
+        cols, cell = ("시가총액",), lambda s: (money(s["mcap"], kr),)
+    elif key == "dividend":
+        arr = sorted((s for s in mine if s["div"] and s["div"] > 0), key=lambda s: -s["div"])
+        cols, cell = ("배당수익률", "시가총액"), lambda s: (pct(s["div"]), money(s["mcap"], kr))
+    elif key == "low-per":
+        arr = sorted((s for s in mine if s["per"] and s["per"] > 0), key=lambda s: s["per"])
+        cols, cell = ("PER", "시가총액"), lambda s: (f"{s['per']:.1f}배", money(s["mcap"], kr))
+    elif key == "winrate":
+        arr = sorted((s for s in full if s["win"] is not None), key=lambda s: (-s["win"], -(s["ret"] or 0)))
+        cols, cell = ("10년 과거승률", "1년상승"), lambda s: (pct(s["win"]), pct(s["ret"], True))
+    else:
+        arr = sorted((s for s in full if s["ret"] is not None), key=lambda s: -s["ret"])
+        cols, cell = ("1년상승", "10년 과거승률"), lambda s: (pct(s["ret"], True), pct(s["win"]))
+    return arr[:RANK_TOP], cols, cell
+
+
+def rank_page(stocks, mk, key, cfg):
+    name, ttl = next((n, t) for k, n, t in RANKS if k == key)
+    arr, cols, cell = rank_rows(stocks, mk, key)
+    path = f"/rank/{mk}-{key}/"
+    h1 = f"{MK_LABEL[mk]} {ttl}"
+    title = f"{h1} TOP {len(arr)} | 마켓맵"
+    desc = f"{MK_SCOPE[mk]} 종목의 {ttl} {len(arr)}위까지. 종목마다 실적과 과거승률을 볼 수 있습니다."
+    ld = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "마켓맵", "item": SITE + "/"},
+        {"@type": "ListItem", "position": 2, "name": "순위", "item": SITE + "/rank/"},
+        {"@type": "ListItem", "position": 3, "name": h1, "item": SITE + path}]}
+    extra = f'<script type="application/ld+json">{json.dumps(ld, ensure_ascii=False, separators=(",", ":"))}</script>\n'
+
+    seg = '<div class="seg">' + "".join(f'<a href="/rank/{m}-{key}/"{CUR if m == mk else ""}>{MK_LABEL[m]}</a>' for m in ("kr", "us")) + "</div>\n"
+    tabs = '<div class="chips tabs">' + "".join(f'<a href="/rank/{mk}-{k}/"{CUR if k == key else ""}>{E(n)}</a>' for k, n, _t in RANKS) + "</div>\n"
+    rows = []
+    for i, s in enumerate(arr, 1):
+        vals = cell(s)
+        tds = "".join(f'<td class="{"val" if j == 0 else "num sub"}{" neg" if v.startswith("-") else ""}">{E(v)}</td>' for j, v in enumerate(vals))
+        rows.append(f'<tr><td>{i}</td><td class="name"><a href="/stock/{s["slug"]}/">{E(s["name"])}</a><small>{E(s["code"])}</small></td>{tds}</tr>')
+    th = "".join(f"<th>{E(c)}</th>" for c in cols)
+    asof = next((s["asof"] for s in arr if s["asof"]), "")
+    return (head(title, desc, path, cfg["css"], extra) + "<body>\n" + topbar("rank")
+            + f'<main class="wrap">\n<div class="page-h"><h1>{E(h1)}</h1></div>\n' + seg + tabs
+            + f'<table class="rank"><thead><tr><th>순위</th><th class="l">종목</th>{th}</tr></thead><tbody>{"".join(rows)}</tbody></table>\n'
+            + f'<p class="note">{MK_SCOPE[mk]} · 시세 기준 {E(asof)}</p>\n'
+            + f'<section class="cta"><a class="btn" href="/?open=rank">별별순위 더 보기</a>{app_button(cfg)}</section>\n'
+            + "</main>\n" + FOOT + "</body>\n</html>\n")
+
+
+def rank_hub(stocks, cfg):
+    title = "주식 순위 — 시가총액 · 배당수익률 · 저PER · 과거승률 | 마켓맵"
+    desc = "한국 · 미국 주식의 시가총액, 배당수익률, 저PER, 10년 과거승률, 1년상승(10년 평균) 순위."
+    blocks = []
+    for mk in ("kr", "us"):
+        lis = []
+        for key, _n, ttl in RANKS:
+            arr, _cols, _cell = rank_rows(stocks, mk, key)
+            first = f"1위 {arr[0]['name']}" if arr else ""
+            lis.append(f'<li><a href="/rank/{mk}-{key}/"><span>{E(ttl)}</span><small>{E(first)}</small></a></li>')
+        blocks.append(f'<div class="grp"><h3>{MK_LABEL[mk]} · {MK_SCOPE[mk]}</h3><ul class="list one">{"".join(lis)}</ul></div>')
+    return (head(title, desc, "/rank/", cfg["css"]) + "<body>\n" + topbar("rank")
+            + '<main class="wrap">\n<div class="page-h"><h1>순위</h1></div>\n' + "\n".join(blocks)
+            + f'\n<section class="cta"><a class="btn" href="/?open=rank">별별순위 더 보기</a>{app_button(cfg)}</section>\n'
+            + "</main>\n" + FOOT + "</body>\n</html>\n")
+
+
 # ---------- 실행 ----------
 def main():
     try:
@@ -432,6 +525,14 @@ def main():
     stocks = [s for s in stocks if not (s["slug"] in seen or seen.add(s["slug"]))]
     # 승률도 실적도 없는 종목(갓 상장·분할)은 내용이 너무 얇아 페이지를 만들지 않는다 — 자료가 생기면 저절로 생긴다
     stocks = [s for s in stocks if s["win"] is not None or len(s["years"]) >= 2 or s["rep"]]
+    # 한국 52주 위치는 아침 배치가 쓴 자료에만 있고 저녁 배치가 쓴 자료에는 비어 있다 → 비어 있으면 지난번에 알던 값을 그대로 둔다
+    for mk in ("kr", "us"):
+        prev = J(f"stock/q-{mk}.json", {}).get("d", {})
+        for s in stocks:
+            if s["mk"] == mk and s["w52"] is None:
+                v = prev.get(s["slug"])
+                if v and len(v) > 3 and v[3] is not None:
+                    s["w52"] = v[3]
     slugs = sorted(s["slug"] for s in stocks)
     state = J("stock/_state.json", {"pages": {}})
     old = state.get("pages", {})
@@ -480,7 +581,15 @@ def main():
     write("earnings/index.html", earnings_page(stocks, cfg))
     write("stock/_state.json", json.dumps({"pages": pages}, ensure_ascii=False, separators=(",", ":"), sort_keys=True))
 
+    rank_urls = ["/rank/"]
+    write("rank/index.html", rank_hub(stocks, cfg))
+    for mk in ("kr", "us"):
+        for key, _n, _t in RANKS:
+            write(f"rank/{mk}-{key}/index.html", rank_page(stocks, mk, key, cfg))
+            rank_urls.append(f"/rank/{mk}-{key}/")
+
     urls = [("/", None), ("/sector-map/", None), ("/stock/", TODAY.isoformat()), ("/earnings/", TODAY.isoformat())]
+    urls += [(u, TODAY.isoformat()) for u in rank_urls]
     urls += [(f"/stock/{slug}/", pages[slug]["d"]) for slug in slugs]
     sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     sm += [f"<url><loc>{SITE}{u}</loc>" + (f"<lastmod>{d}</lastmod>" if d else "") + "</url>" for u, d in urls]
