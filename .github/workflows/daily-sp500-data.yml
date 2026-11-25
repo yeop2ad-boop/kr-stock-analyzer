@@ -109,6 +109,12 @@ jobs:
         continue-on-error: true
         run: ./scripts/regenerate-core-extra.ps1
 
+      # 2026-11-25: 검색에 잡히는 종목 페이지(stock/ · earnings/ · sitemap.xml · robots.txt)
+      # 내용(승률·실적·발표일)이 바뀐 종목만 다시 쓴다. 여기서 실패해도 위에서 만든 데이터는 커밋되게 한다
+      - name: 검색용 종목 페이지 생성
+        continue-on-error: true
+        run: python3 scripts/build-stock-pages.py
+
       - name: 변경사항 커밋 및 푸시
         run: |
           # 커밋·rebase·push 재시도는 공용 스크립트(scripts/ci-commit-push.sh)가 한다. 지금까지 겪은 일:
@@ -125,4 +131,5 @@ jobs:
             data/winrate-scores-us.json data/etf-info.json data/sreport-baseline.json \
             data/etf-holdings-kr.json data/etf-holding-names.json \
             data/etf-marketcap.json data/crypto-extra-upbit.json \
-            scripts/kr-suffix-cache.json
+            scripts/kr-suffix-cache.json \
+            stock earnings sitemap.xml robots.txt
