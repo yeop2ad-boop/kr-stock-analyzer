@@ -1,5 +1,41 @@
 [
   {
+    "id": "ddad6bd46fa1",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "데이터센터 급증이 미국의 천연가스 붐을 주도하고 있다",
+    "originalTitle": "How data centers are driving a US natural-gas boom",
+    "link": "https://www.technologyreview.com/2026/11/25/1149836/data-centers-gas-power-plants/",
+    "summary": "AI 기반 데이터센터의 급속한 확산으로 미국의 전력 수요가 폭발적으로 증가하면서, 재생에너지보다 천연가스 발전소 건설이 대폭 늘어나고 있다. 메타의 루이지애나 데이터센터 사례처럼 계획된 천연가스 발전소가 3개에서 10개로 증가한 예에서 보듯이, 그리드 연결 대기 시간을 피하기 위해 데이터센터 운영사들이 자체 가스 발전소를 직접 건설하는 추세도 확산되고 있다. 미국 전역에서 100개 이상의 독립형 데이터센터 전력시설이 제안되었으며, 이는 캘리포니아 최대 전력 수요의 2배를 초과하는 규모다. 결과적으로 AI 붐이 곧 천연가스 붐으로 이어지면서, 메타를 포함한 대형 기술회사들의 탄소 배출량이 급증하고 있으며 넷제로 목표 달성까지 불투명한 상황이다.",
+    "image": "data/techinsight-images/ddad6bd46fa1.webp",
+    "publishedAt": "2026-11-25T17:00:00.000Z",
+    "createdAt": "2026-11-26T03:30:31.883Z"
+  },
+  {
+    "id": "79d027e2e048",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "AI가 공공기록 시스템을 압박하고 영구동토층 화재 대응이 시급한 상황",
+    "originalTitle": "The Download: AI swamping open records, and firefighting for permafrost",
+    "link": "https://www.technologyreview.com/2026/11/25/1149808/the-download-ai-open-records-permafrost-fires/",
+    "summary": "AI 기업들이 공공기록을 대량으로 수집하여 활용하면서 미국의 정보공개 시스템이 압박받고 있으며, 일부 주에서는 요청 거부를 용이하게 하는 법안을 추진 중이다. 한편 기후변화로 인한 북극권 산불이 증가하면서 영구동토층이 빠르게 해빙되고 온실가스가 방출되는 악순환이 발생하고 있다. 연구자들은 화재 대응을 통해 토양에 갇힌 탄소를 보존하려는 노력을 기울이고 있다. 추가로 중국 해커들이 미국 첩보기관 침투에 AI 도구를 사용했으며, 엔비디아 CEO의 재임명 등 여러 AI 관련 뉴스가 주목받고 있다. 아울러 아이들이 기계학습보다 훨씬 적은 데이터로 언어를 학습하는 메커니즘을 역으로 분석하여 더 효율적인 AI 모델 개발을 시도하는 연구도 진행 중이다.",
+    "image": "data/techinsight-images/79d027e2e048.webp",
+    "publishedAt": "2026-11-25T13:10:00.000Z",
+    "createdAt": "2026-11-26T03:30:31.429Z"
+  },
+  {
+    "id": "cb4782794f2f",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "AI가 미국의 정보공개 시스템에 부담을 가중시키고 있다",
+    "originalTitle": "AI is straining America’s open records systems",
+    "link": "https://www.technologyreview.com/2026/11/25/1149702/ai-is-straining-americas-open-records-systems/",
+    "summary": "AI 스타트업들이 공개 기록을 대규모로 수집해 정부 판매용 데이터 상품으로 변환하려는 움직임이 가속화되고 있다. 동시에 챗봇을 활용한 개인들의 정보공개 청구도 급증하면서 소규모 지방자치단체의 공무원들이 처리 부담에 시달리고 있다. 데이터 채굴 업체들은 하루에 수천 건의 요청을 보내며 역사적 데이터를 축적하고 있으며, 이는 투명성이라는 본래 취지보다는 상업적 이익 추구의 도구로 변질되고 있다. 정보공개 시스템이 과부하 상태에 빠지자 일부 주정부는 청구를 거절하기 쉽게 하는 법안을 추진하고 있어 역설적으로 정부 투명성이 저하될 수 있는 상황이 벌어지고 있다.",
+    "image": "data/techinsight-images/cb4782794f2f.webp",
+    "publishedAt": "2026-11-25T10:00:00.000Z",
+    "createdAt": "2026-11-26T03:30:52.740Z"
+  },
+  {
     "id": "3921b84cccb9",
     "sourceKey": "ieee",
     "source": "IEEE Spectrum",
@@ -120,6 +156,42 @@
     "createdAt": "2026-11-24T05:18:07.059Z"
   },
   {
+    "id": "dc02d0ba7ca7",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "암석을 이용한 탄소 제거가 결국 농작물 수확량을 감소시킬 수 있는 이유",
+    "originalTitle": "Why using rocks for carbon removal could eventually reduce crop growth",
+    "link": "https://www.technologyreview.com/2026/11/23/1149392/why-using-rocks-for-carbon-removal-could-eventually-reduce-crop-growth/",
+    "summary": "구글, 마이크로소프트 등 거대 기술 회사들이 쇄석 현무암이나 감람석 같은 알칼리성 광물을 농지에 뿌려 대기 중 탄소를 포집하는 강화된 암석 풍화(ERW) 방식에 수백억 달러를 투자하고 있다. 이 방식은 연간 30억~80억 톤의 이산화탄소를 제거할 수 있고 토양 품질도 개선하는 이점이 있지만, 새로운 연구에 따르면 토양에 너무 많은 암석을 추가하면 토양의 pH를 중성 이상으로 올려 미량 영양소 결핍과 질병 감수성을 증가시켜 농작물 수확량을 오히려 감소시킬 수 있다. 이러한 토양 알칼리화의 극단적 영향을 방지하려면 ERW의 탄소 제거 잠재량을 연간 6억 톤 이하로 제한해야 한다. 따라서 기후 편익과 농업 편익 사이에 심각한 트레이드오프가 존재하며, 이는 현재 대규모 확대 추진 중인 기술에 대한 의문을 제기한다.",
+    "image": "data/techinsight-images/dc02d0ba7ca7.webp",
+    "publishedAt": "2026-11-23T11:00:00.000Z",
+    "createdAt": "2026-11-26T03:30:59.248Z"
+  },
+  {
+    "id": "3e78be502e44",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "AI 경제학 실전: 4개 기업의 도입 사례와 교훈",
+    "originalTitle": "AI economics in action: What four companies have done and learned",
+    "link": "https://www.mckinsey.com/capabilities/quantumblack/our-insights/ai-economics-in-action-what-four-companies-have-done-and-learned",
+    "summary": "AI 도입에 따른 증가하는 비용 문제를 해결하기 위해 일부 기업들이 혁신적인 접근 방식을 개발했다.\n이들은 AI 기술을 효율적으로 활용하여 운영 비용을 절감하면서도 동시에 사업 성과를 개선하는 데 성공했다.\n실제 기업 사례들은 AI 투자가 단순한 비용이 아니라 전략적 수익 창출 수단이 될 수 있음을 보여준다.\n이러한 기업들의 경험은 다른 조직들이 제한된 예산 내에서 AI를 효과적으로 도입할 수 있는 실질적인 가이드라인을 제공한다.",
+    "image": "data/techinsight-images/3e78be502e44.webp",
+    "publishedAt": "2026-11-23T00:00:00.000Z",
+    "createdAt": "2026-11-26T03:30:47.588Z"
+  },
+  {
+    "id": "7d007c9d641e",
+    "sourceKey": "mckinsey",
+    "source": "McKinsey",
+    "title": "걸프 협력회의 국가들의 AI 전환: 정부 부문에서의 가치 실현",
+    "originalTitle": "Rewiring GCC countries for AI: Realizing value in government",
+    "link": "https://www.mckinsey.com/capabilities/quantumblack/our-insights/rewiring-gcc-countries-for-ai-realizing-value-in-government",
+    "summary": "걸프 협력회의 국가들에서 AI 도입이 거의 보편화되었지만, 실제 가치 창출은 이에 미치지 못하고 있다. 공공 부문에서 AI 도입을 실질적인 성과로 전환하기 위해서는 전달 체계와 주권 문제에 대한 체계적인 관심이 필요하다.",
+    "image": "data/techinsight-images/7d007c9d641e.webp",
+    "publishedAt": "2026-11-23T00:00:00.000Z",
+    "createdAt": "2026-11-26T03:30:48.367Z"
+  },
+  {
     "id": "629751396015",
     "sourceKey": "mckinsey",
     "source": "McKinsey",
@@ -166,77 +238,5 @@
     "image": "data/techinsight-images/6d39921c7e25.webp",
     "publishedAt": "2026-11-20T14:00:03.000Z",
     "createdAt": "2026-11-21T02:08:25.263Z"
-  },
-  {
-    "id": "956a058c400b",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "인간의 정신을 영원히 보존하려는 과학자들의 도전",
-    "originalTitle": "The Download: inside the quest to make our minds immortal",
-    "link": "https://www.technologyreview.com/2026/11/20/1149371/the-download-quest-to-make-minds-immortal/",
-    "summary": "죽음 이후에도 인간의 의식을 살려두려는 시도들이 진행 중이며, 뇌 이식, 뇌 동결, 디지털 아바타 등 다양한 방식이 모색되고 있다. 대규모 정부 자금이 투입되는 뇌 조직 대체 프로젝트부터 거대 언어 모델을 활용한 인공지능 복제인간까지 기술은 빠르게 진화하고 있다. 하지만 무엇을 보존하려는 것인지, 그것이 과연 '나'인지 하는 철학적 의문과 현실적 한계들이 여전히 존재한다. 불멸에 대한 판매 전략의 어려움과 개념적 모호성에도 불구하고, 이 분야는 과학과 철학을 교차하는 흥미로운 질문들을 던지고 있다.",
-    "image": "data/techinsight-images/956a058c400b.webp",
-    "publishedAt": "2026-11-20T13:10:00.000Z",
-    "createdAt": "2026-11-21T02:08:22.191Z"
-  },
-  {
-    "id": "a2b4200aad77",
-    "sourceKey": "oecd",
-    "source": "OECD",
-    "title": "동남아시아에서 AI 거버넌스 원칙을 실제 정책으로 구현하기",
-    "originalTitle": "From dialogue to delivery: making AI governance work in Southeast Asia",
-    "link": "https://oecd.ai/en/wonk/from-dialogue-to-delivery-making-ai-governance-work-in-southeast-asia",
-    "summary": "동남아시아 국가들은 AI의 기회를 활용하면서 동시에 새로운 위험을 관리하기 위한 거버넌스 체계를 구축하고 있다. OECD는 지난해 여러 정책 대화와 워크숍을 통해 동남아 국가들과 협력한 결과, 원칙 정의보다 이를 실제로 작동시키는 것이 핵심 과제임을 확인했다. OECD AI 정책 툴킷은 각국이 정책 우선순위를 파악하고 실제 구현을 위해 국제적 경험을 활용할 수 있도록 지원한다. AI 기술이 빠르게 진화하는 상황에서 싱가포르 같은 국가들은 기존 법제를 기반으로 자발적 지침과 검증 도구를 보완하는 방식으로 대응하고 있다. 히로시마 AI 프로세스 보고 체계는 AI 개발사와 배포사의 적극적 참여를 통해 국제적으로 합의된 원칙을 실제 운영 수준에서 구현하고 투명성을 강화하는 역할을 하고 있다.",
-    "image": "data/techinsight-images/a2b4200aad77.webp",
-    "publishedAt": null,
-    "createdAt": "2026-11-20T02:15:07.994Z"
-  },
-  {
-    "id": "1b0708bc9f02",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "물리적 AI, 현실 세계로 본격 진출하다",
-    "originalTitle": "Physical AI is breaking out of the box",
-    "link": "https://www.mckinsey.com/industries/industrials/our-insights/physical-ai-is-breaking-out-of-the-box",
-    "summary": "물리적 AI 기술이 급속도로 발전하면서 현재 주목받고 있는 애플리케이션과 자금이 집중된 기술들을 넘어서는 새로운 기회들이 등장하고 있다. 로봇과 자동화 분야에서 물리적 AI의 확산이 진행되고 있으며, 이는 기존에 예상하지 못했던 다양한 산업과 분야에 혁신을 가져올 수 있는 가능성을 보여준다. 현재 가시화된 기술들 너머에 더욱 광범위한 실제 적용 사례들이 개발될 여지가 충분하다는 점이 업계의 주요 관심사가 되고 있다.",
-    "image": "data/techinsight-images/1b0708bc9f02.webp",
-    "publishedAt": "2026-11-20T00:00:00.000Z",
-    "createdAt": "2026-11-21T02:08:33.444Z"
-  },
-  {
-    "id": "d6ffd324a49c",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "인공지능 시대, 미국 경제 이동성을 높이기 위한 과제",
-    "originalTitle": "Advancing US economic mobility in the age of AI",
-    "link": "https://www.mckinsey.com/institute-for-economic-mobility/our-insights/advancing-us-economic-mobility-in-the-age-of-ai",
-    "summary": "인공지능은 미국의 경제 격차를 심화시킬 수도, 축소시킬 수도 있는 양날의 기술이다. 현재 지도자들이 어떤 선택을 하느냐에 따라 AI가 경제적 기회 창출의 도구가 될지, 아니면 불평등을 악화시킬지가 결정된다. 따라서 AI 발전의 방향과 활용 방식에 대한 전략적 결정이 경제 이동성 개선의 핵심이 된다.",
-    "image": "data/techinsight-images/d6ffd324a49c.webp",
-    "publishedAt": "2026-11-20T00:00:00.000Z",
-    "createdAt": "2026-11-21T02:08:54.373Z"
-  },
-  {
-    "id": "7a9fd6201afb",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "콜로라도 농부들을 위해 AI 도구를 보급하는 지역 밀착형 학자",
-    "originalTitle": "Community-Focused Academic Brings AI Tools to Colorado Farmers",
-    "link": "https://spectrum.ieee.org/ai-tools-for-rural-communities",
-    "summary": "콜로라도 주립대학교 확장 프로그램의 전문가 동쉐(Alice Dong)는 AI를 활용하여 농촌 지역 농민들을 지원하는 역할을 하고 있다. 그녀가 개발한 AI 챗봇 웹사이트는 농민들이 관광 농업 사업을 계획하고 운영하도록 돕고 있으며, 직접 워크숍을 통해 AI 도구 활용법을 교육하고 있다. 기술 교육이 부족한 고령의 농민들에게 대학의 연구 성과를 실질적으로 전달하는 가교 역할을 함으로써 AI의 혜택이 농촌 지역까지 미치도록 하고 있다. 그녀의 노력은 IEEE와 국제전기통신연합이 주최한 GenAI for Good 챌린지 최종 후보에 선정되는 등 국제적으로 인정받고 있다. 동쉐는 설계와 문제 해결에 대한 오랜 열정을 바탕으로 현실의 문제를 해결하는 실질적인 솔루션을 만드는 것을 추구해왔다.",
-    "image": "data/techinsight-images/7a9fd6201afb.webp",
-    "publishedAt": "2026-11-19T19:00:02.000Z",
-    "createdAt": "2026-11-20T02:15:04.222Z"
-  },
-  {
-    "id": "0011ae0145f0",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "장기 생명 유지, 10억 달러 배터리 계약, 그리고 AI의 과장광고",
-    "originalTitle": "The Download: a living liver, a billion-dollar battery deal, and AI hype",
-    "link": "https://www.technologyreview.com/2026/11/19/1148979/the-download-liver-kept-alive-sila-battery-deal-ai-hype/",
-    "summary": "호주 연구팀이 인간의 간을 체외에서 7주간 생존시키는 데 성공했으며, 이는 기존 기록인 2주를 크게 갱신한 것으로 손상된 장기 복구와 새로운 장기 생성 등 생의학 공학 분야에 새로운 가능성을 열어줄 것으로 기대된다. 미국 배터리 시장에서는 실라가 파나소닉 에너지와 10억 달러 규모의 규소-탄소 양극재 공급 계약을 체결했으며, 이는 차세대 배터리의 소형화와 경량화를 가능하게 할 것으로 보인다. 한편 AI 분야에서는 Anthropic이 역대 최대 규모 IPO로 810억 달러를 조달했으나 AI 안전성 우려가 제기되고 있으며, AI 하이프 인덱스는 문학상부터 사이버공격까지 다양한 분야에 걸친 AI의 과장된 활용 사례를 추적하고 있다. 추가로 중국이 세계 최초의 침습형 뇌-컴퓨터 인터페이스인 NEO를 임상시험 외 용도로 승인함으로써 뇌 임플란트 분야에서의 글로벌 리더십을 확보하려는 움직임을 보이고 있다.",
-    "image": "data/techinsight-images/0011ae0145f0.webp",
-    "publishedAt": "2026-11-19T13:10:00.000Z",
-    "createdAt": "2026-11-20T02:14:59.042Z"
   }
 ]
