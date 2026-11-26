@@ -2118,9 +2118,9 @@ async function renderPopularSearches() {
     return;
   }
   try {
-    const res = await fetch(`${AUTH_ORIGIN}/search-popular`);
+    const res = await fetch(`${AUTH_ORIGIN}/search-popular?n=30`); // 지수·환율을 걸러 낸 뒤에도 10개가 차도록 넉넉히 받는다
     const data = await res.json();
-    const popular = (data && data.popular) || [];
+    const popular = ((data && data.popular) || []).filter((r) => r && !isIndexTicker(r.symbol)); // 지수·환율은 종목이 아니라 인기 검색에서 뺀다(2026-11-27)
     if (popular.length === 0) {
       popularSearchList.innerHTML = `<p class="muted search-chip-empty">아직 인기 검색어가 없습니다.</p>`;
       return;
@@ -2134,6 +2134,7 @@ async function renderPopularSearches() {
 // 검색 성공 시 서버에 기록(실패해도 UI에 영향 없도록 조용히 무시) — 최근 24시간 인기 검색어 집계용
 // kind: search(검색·상세 열기) / click(시장 지도에서 종목 클릭) / watch(관심 등록) — 실시간 랭킹 조회수 = 이 셋의 합(24시간, IP당 종목별 최대 10회는 서버가 처리)
 function logSearchEvent(symbol, kind) {
+  if (isIndexTicker(symbol)) return; // 지수·환율 상세는 인기 순위(종목 조회수)에 넣지 않는다 — '인기 2 ^KS11'처럼 기호가 돌던 문제(2026-11-27 사용자 제보)
   fetch(`${AUTH_ORIGIN}/search-log`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

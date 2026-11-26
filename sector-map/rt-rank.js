@@ -34,12 +34,17 @@ let rtTickerTimer = null;
 const rtLiveCache = {}; // group -> { at, map: Map(symbol -> {chg, val}) }
 const rtEl = (id) => document.getElementById(id);
 
+// 지수(^KS11 · ^GSPC …)·환율(KRW=X)은 종목이 아니라 인기 순위에서 뺀다.
+// 2026-11-26 대표 지수 상세 화면이 생기면서 그 조회가 집계에 들어가 '인기 2 ^KS11'처럼 기호가 그대로 돌던 문제(2026-11-27 사용자 제보)
+function rtIsIndexSymbol(sym) {
+  return /^\^/.test(String(sym || "")) || /=[XF]$/i.test(String(sym || ""));
+}
 async function rtFetchPopular(force) {
   if (!force && rtPopular && Date.now() - rtPopularAt < 120000) return rtPopular;
   try {
     const res = await fetch(`${RT_API}/search-popular?n=300`);
     const data = await res.json();
-    rtPopular = (data && data.popular) || [];
+    rtPopular = ((data && data.popular) || []).filter((p) => p && !rtIsIndexSymbol(p.symbol));
   } catch {
     rtPopular = rtPopular || [];
   }
