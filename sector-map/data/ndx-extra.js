@@ -1,5 +1,5 @@
 const NDX_EXTRA_DATA = {
-  "generatedAt": "2026-11-26T04:09:12Z",
+  "generatedAt": "2026-11-26T18:19:56Z",
   "count": 15,
   "constituentsAsOf": "2026-11-26",
   "constituents": [
