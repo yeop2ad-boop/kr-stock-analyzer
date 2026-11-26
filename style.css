@@ -2705,3 +2705,32 @@ html.ov-embed #tabPageTech, html.ov-embed .site-footer, html.ov-embed #companyPa
 /* 2026-11-20: 상세 버튼 이름이 길어져(최근 12개월·같은 시기 흐름) 한 줄에 들어가게 간격만 조금 줄임 */
 .summary-action-row { gap: 5px; }
 .summary-action-btn { padding: 2px 6px; letter-spacing: -0.2px; }
+
+/* ---------- 2026-11-26 상세 화면 실시간 시세 점 + 지수 상세 ---------- */
+/* 점: 장중 = 초록(시세가 들어올 때마다 한 번 번쩍) · 장 마감 = 회색 */
+.live-dot { display: inline-block; flex: none; align-self: center; width: 7px; height: 7px; margin-right: 5px; border-radius: 50%; background: #9aa2b1; vertical-align: middle; position: relative; top: -1px; }
+.live-dot.is-live { background: #16a34a; }
+/* 번쩍임은 점 크기 밖으로 나가지 않게(맨 위 가격 줄이 넘치는 부분을 잘라서 원이 잘려 보였음 — 2026-11-26 사용자 지적): 제자리에서 작아졌다 돌아온다 */
+.live-dot.is-live.ping { animation: live-dot-ping 0.9s ease-out; }
+@keyframes live-dot-ping { 0% { transform: scale(0.4); opacity: 0.3; } 45% { transform: scale(1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+:root[data-theme="dark"] .live-dot { background: #6b7280; }
+:root[data-theme="dark"] .live-dot.is-live { background: #34d399; }
+.detail-identity-priceline .live-dot { margin-left: 1px; margin-right: 3px; top: 0; }
+/* 값이 바뀐 순간 숫자 바탕이 잠깐 물든다(오르면 빨강 · 내리면 파랑) */
+#companyPanelPrice, #summaryLivePrice { border-radius: 4px; font-variant-numeric: tabular-nums; }
+.live-tick-up { animation: live-tick-up 0.8s ease-out; }
+.live-tick-down { animation: live-tick-down 0.8s ease-out; }
+@keyframes live-tick-up { 0% { background: rgba(229, 52, 47, 0.3); box-shadow: 0 0 0 3px rgba(229, 52, 47, 0.3); } 100% { background: rgba(229, 52, 47, 0); box-shadow: 0 0 0 3px rgba(229, 52, 47, 0); } }
+@keyframes live-tick-down { 0% { background: rgba(29, 78, 216, 0.28); box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.28); } 100% { background: rgba(29, 78, 216, 0); box-shadow: 0 0 0 3px rgba(29, 78, 216, 0); } }
+/* 지수 상세: 로고 자리는 국기(환율은 글자) */
+.index-logo { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+.index-logo svg { width: 100%; height: auto; display: block; }
+.detail-identity-logo .index-logo { width: 40px; height: 40px; }
+.detail-identity-logo .index-logo svg { width: 36px; }
+.summary-ticker-logo-wrap .index-logo svg { width: 54px; }
+.index-logo-text { font-size: 13px; font-weight: 800; color: var(--muted); border: 1px solid var(--border, #d1d5db); border-radius: 8px; box-sizing: border-box; letter-spacing: -0.5px; }
+/* 지수는 재무가 없다 — 코인 상세처럼 재무 탭과 그 안쪽 묶음을 숨긴다 */
+.company-panel.index-detail #summarySubtabRevenueBtn,
+.company-panel.index-detail .summary-subtab-panel[data-summary-subtabpanel="revenue"] { display: none !important; }
+/* 환율은 비교할 시장이 없어 핵심지표를 숨긴다 */
+.fx-detail #summarySubtabSReportBtn, .fx-detail #sReportTopSection { display: none !important; }

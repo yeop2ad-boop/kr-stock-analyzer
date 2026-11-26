@@ -2921,8 +2921,252 @@ function fmtPriceChangeAmount(v, currency) {
   if (v >= 1) return v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   return v === 0 ? "0" : v.toLocaleString("en-US", { maximumSignificantDigits: 3 }); // 1달러 미만(밈코인 등)은 유효숫자 3자리
 }
+// ---------- 지수 상세(2026-11-26 사용자 요청) ----------
+// "메인페이지에 대표지수들 누르면 해당 검색상세 페이지를 만들어서 다른 종목들처럼 차트랑 이것저것 볼 수 있도록"
+// 대표 지수 띠(sector-map)의 지표를 누르면 ?ticker=^GSPC 처럼 이 상세 화면으로 온다(비트코인은 원래 있던 코인 상세).
+// 지수는 회사가 아니라서: 값에 통화 기호를 붙이지 않고 · 로고 자리는 국기 · 업종/거래소 대신 구분/시장 · 재무 탭 없음 ·
+// 핵심지표는 가격만으로 계산되는 다섯 가지(코인과 같은 틀)를 그 시장 종목들과 비교한다(환율은 핵심지표도 없음).
+const INDEX_INFO = {
+  "^KS11": { name: "코스피", mark: "kr", kind: "주가지수", market: "한국", cmp: "kr350", news: "코스피", desc: "한국거래소 유가증권시장에 상장된 보통주 전체의 시가총액으로 계산하는 한국 대표 주가지수입니다. 1980년 1월 4일의 시가총액을 100으로 놓고, 지금 시가총액이 그 몇 배인지를 나타냅니다." },
+  "^KQ11": { name: "코스닥", mark: "kr", kind: "주가지수", market: "한국", cmp: "kr350", news: "코스닥", desc: "코스닥시장에 상장된 종목 전체의 시가총액으로 계산하는 지수입니다. 기술·바이오 같은 성장 기업과 중소형주가 많이 들어 있습니다. 1996년 7월 1일을 1,000으로 놓습니다." },
+  "^GSPC": { name: "S&P500", mark: "us", kind: "주가지수", market: "미국", cmp: "sp500", news: "S&P500 지수", desc: "미국 증시에 상장된 대표 대형주 500곳의 시가총액으로 계산하는 지수입니다. 미국 주식시장 전체의 흐름을 볼 때 가장 많이 쓰입니다." },
+  "^IXIC": { name: "나스닥종합", mark: "us", kind: "주가지수", market: "미국", cmp: "sp500", news: "나스닥 지수", desc: "나스닥 거래소에 상장된 모든 종목(3,000곳 이상)의 시가총액으로 계산하는 지수입니다. 기술주 비중이 높습니다." },
+  "KRW=X": { name: "달러/원", mark: "us", kind: "환율", market: "외환", cmp: null, news: "원달러 환율", desc: "미국 돈 1달러를 살 때 필요한 원화 금액입니다. 숫자가 오르면 원화 가치가 내린(달러가 비싸진) 것입니다." }, // 2026-11-26 사용자 '로고는 미국 로고로' → 미국 국기
+  // 띠에는 없지만 검색으로 자주 여는 미국 지수 — 같은 틀로(미국 국기 · N/A 없이)
+  "^DJI": { name: "다우존스", mark: "us", kind: "주가지수", market: "미국", cmp: "sp500", news: "다우존스 지수", desc: "미국을 대표하는 대형 우량주 30곳의 주가로 계산하는 지수입니다. 1896년부터 발표된 가장 오래된 미국 주가지수입니다." },
+  "^NDX": { name: "나스닥100", mark: "us", kind: "주가지수", market: "미국", cmp: "sp500", news: "나스닥100 지수", desc: "나스닥에 상장된 금융회사를 뺀 대형주 100곳의 시가총액으로 계산하는 지수입니다." },
+  "^RUT": { name: "러셀2000", mark: "us", kind: "주가지수", market: "미국", cmp: "sp500", news: "러셀2000 지수", desc: "미국 중소형주 2,000곳의 시가총액으로 계산하는 지수입니다." },
+  "^SOX": { name: "필라델피아 반도체", mark: "us", kind: "주가지수", market: "미국", cmp: "sp500", news: "필라델피아 반도체지수", desc: "미국 증시에 상장된 주요 반도체 회사 30곳으로 계산하는 지수입니다." },
+  "^VIX": { name: "변동성지수(VIX)", mark: "us", kind: "변동성지수", market: "미국", cmp: null, news: "VIX 지수", desc: "S&P500 옵션 가격으로 계산한 값으로, 앞으로 30일 동안 시장이 얼마나 출렁일지에 대한 예상을 나타냅니다. 흔히 '공포지수'로 불립니다." },
+};
+// 목록에 있는 지수는 그 정보를, 목록에 없는 지수(^로 시작)·환율(=X로 끝남)은 이름·설명 없이 틀만 돌려준다(글자 로고 · 업종/섹터 N/A 대신 구분만)
+function indexInfoOf(symbol) {
+  const s = String(symbol || "").toUpperCase();
+  if (INDEX_INFO[s]) return INDEX_INFO[s];
+  if (/^\^/.test(s)) return { name: null, mark: null, kind: "주가지수", market: null, cmp: "sp500", news: null, desc: null, text: s.slice(1, 5) };
+  if (/=X$/.test(s)) return { name: null, mark: null, kind: "환율", market: "외환", cmp: null, news: null, desc: null, text: s.replace(/=X$/, "").slice(0, 6) };
+  return null;
+}
+function isIndexTicker(symbol) {
+  return !!indexInfoOf(symbol);
+}
+function fmtIndexValue(v) {
+  return Number(v ?? 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+// 지수의 로고 자리: 대표 지수 띠와 같은 국기 마크(환율은 로고 없이 글자)
+function indexLogoHtml(symbol) {
+  const info = indexInfoOf(symbol);
+  const svg = info && info.mark === "kr" ? FLAG_SVG_KR : info && info.mark === "us" ? FLAG_SVG_US : "";
+  return `<span class="index-logo${svg ? "" : " index-logo-text"}">${svg || escapeHtml((info && info.text) || "지수")}</span>`;
+}
+// 개요 '현재가' 줄의 등락 표기 "▼ 6.08 (-3.91%)" — 처음 그릴 때와 1초 갱신이 같은 모양을 쓰도록 한 곳에서 만든다
+function summaryChangeHtmlOf(price, changePct, changeAmount, currency, symbol) {
+  if (changePct === null || changePct === undefined || !Number.isFinite(changePct)) return "";
+  const cls = changePct >= 0 ? "delta-up" : "delta-down";
+  if (price && changePct > -100) {
+    // 실제 직전 종가 기준 금액(getDailyChangeAmount) 우선, 없을 때만 등락률로 역산
+    const diff = Math.abs(Number.isFinite(changeAmount) ? changeAmount : price - price / (1 + changePct / 100));
+    const amt = isIndexTicker(symbol) ? fmtIndexValue(diff) : fmtPriceChangeAmount(diff, currency);
+    return `<span class="${cls}">${changePct >= 0 ? "▲" : "▼"} ${amt} (${changePct >= 0 ? "+" : ""}${changePct.toFixed(2)}%)</span>`;
+  }
+  return `<span class="${cls}">(${fmtPct(changePct)})</span>`;
+}
+
+// ---------- 상세 화면 실시간 시세(2026-11-26 사용자 요청) ----------
+// "모든 검색상세에서 맨 위 가격이랑 아래 현재가도 … 1초마다 초록색 불빛이 나오면서 최신화 · 장 종료되었으면 회색"
+// 맨 위 가격 앞과 개요의 '현재가' 앞에 작은 점: 장이 열려 있고 시세가 들어오는 동안 초록(값이 들어올 때마다 한 번 번쩍), 장이 닫혔으면 회색.
+// 값이 바뀌면 숫자 바탕이 잠깐 물든다(오르면 빨강·내리면 파랑 — 대표 지수 띠와 같은 방식).
+// 안전장치도 띠와 같다: 상세 화면을 닫거나 다른 앱으로 가면 멈춤 · 10분 동안 건드리지 않으면 1분 간격 · 실패하면 2초→4초…최대 1분 · 장이 닫혔으면 1분 간격.
+const DETAIL_LIVE_MS = 1000;
+const DETAIL_LIVE_SLOW_MS = 60 * 1000;
+const DETAIL_LIVE_IDLE_AFTER_MS = 10 * 60 * 1000;
+const DETAIL_LIVE_FRESH_MS = 30 * 60 * 1000; // 시세 시각이 이보다 오래됐으면 '장중'으로 보지 않음
+const DETAIL_LIVE_PROXY = "https://us-stock.yeop2ad.workers.dev/?url="; // 1초 요청은 우리 중계 서버로만 보낸다
+const detailLive = { symbol: null, currency: "USD", timer: null, busy: false, fails: 0, startedAt: 0, inputAt: Date.now(), q: null };
+var DETAIL_HOLIDAYS = { kr: new Set(), us: new Set() }; // 증시 휴장일(지도와 같은 파일)
+fetch("data/market-holidays.json", { cache: "no-cache" })
+  .then((r) => (r.ok ? r.json() : null))
+  .then((d) => {
+    if (!d) return;
+    (d.kr || []).forEach((x) => DETAIL_HOLIDAYS.kr.add(x));
+    (d.us || []).forEach((x) => DETAIL_HOLIDAYS.us.add(x));
+  })
+  .catch(() => {});
+function detailLiveMarketOf(symbol) {
+  const s = String(symbol || "").toUpperCase();
+  if (/-(USD|KRW)$/.test(s)) return "crypto";
+  if (/=X$/.test(s)) return "fx";
+  if (isKrTicker(s) || s === "^KS11" || s === "^KQ11") return "kr";
+  return "us";
+}
+// 시계로 본 '지금 장이 열려 있는가' — 코인은 늘 열려 있고, 외환은 뉴욕 시각 일요일 17시 ~ 금요일 17시
+function detailLiveClockOpen(mkt) {
+  if (mkt === "crypto") return true;
+  const tz = mkt === "kr" ? "Asia/Seoul" : "America/New_York";
+  const now = new Date(new Date().toLocaleString("en-US", { timeZone: tz }));
+  const day = now.getDay();
+  const mins = now.getHours() * 60 + now.getMinutes();
+  if (mkt === "fx") {
+    if (day === 6) return false;
+    if (day === 0) return mins >= 17 * 60;
+    if (day === 5) return mins < 17 * 60;
+    return true;
+  }
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+  if (day === 0 || day === 6 || DETAIL_HOLIDAYS[mkt].has(today)) return false;
+  return mkt === "kr" ? mins >= 9 * 60 && mins <= 15 * 60 + 30 : mins >= 9 * 60 + 30 && mins <= 16 * 60;
+}
+// 초록 점을 켤지 — 장이 열려 있고, 받은 시세도 요즘 값일 때만
+function detailLiveIsLive() {
+  const q = detailLive.q;
+  return !!q && Number.isFinite(q.time) && detailLiveClockOpen(detailLiveMarketOf(detailLive.symbol)) && Date.now() - q.time * 1000 < DETAIL_LIVE_FRESH_MS;
+}
+function detailLivePriceText(v) {
+  return isIndexTicker(detailLive.symbol) ? fmtIndexValue(v) : fmtPriceFull(v, detailLive.currency);
+}
+function detailLiveFlash(node, dir) {
+  node.classList.remove("live-tick-up", "live-tick-down");
+  void node.offsetWidth; // 같은 방향이 연달아 와도 다시 깜박이게
+  node.classList.add(dir > 0 ? "live-tick-up" : "live-tick-down");
+}
+// 화면에 반영: 점 색(초록/회색) · 맨 위 가격·등락률 · 개요의 현재가 줄. arrived = 방금 새 시세가 들어왔다(점이 한 번 번쩍)
+function detailLiveRender(arrived) {
+  const live = detailLiveIsLive();
+  document.querySelectorAll("#companyPanel .live-dot").forEach((d) => {
+    d.classList.toggle("is-live", live);
+    d.title = live ? "장중 · 1초마다 새로 받는 중" : "장 마감";
+    if (arrived && live) {
+      d.classList.remove("ping");
+      void d.offsetWidth;
+      d.classList.add("ping");
+    }
+  });
+  const q = detailLive.q;
+  if (!q || !Number.isFinite(q.price)) return;
+  const tick = q.tick;
+  q.tick = 0;
+  const text = detailLivePriceText(q.price);
+  [el("companyPanelPrice"), el("summaryLivePrice")].forEach((node) => {
+    if (!node) return;
+    if (node.textContent !== text) node.textContent = text;
+    if (tick) detailLiveFlash(node, tick);
+  });
+  if (!Number.isFinite(q.pct)) return;
+  const pctEl = el("companyPanelChangePct");
+  if (pctEl) {
+    const up = q.pct >= 0;
+    pctEl.textContent = `${up ? "▲" : "▼"}(${up ? "+" : ""}${q.pct.toFixed(2)}%)`;
+    pctEl.className = `detail-identity-change ${up ? "delta-up" : "delta-down"}`;
+  }
+  const chg = el("summaryLiveChange");
+  if (chg) {
+    const html = summaryChangeHtmlOf(q.price, q.pct, q.amt, detailLive.currency, detailLive.symbol);
+    if (chg.dataset.html !== html) {
+      chg.dataset.html = html;
+      chg.innerHTML = html;
+    }
+  }
+}
+// 한 번 받기 — 야후 차트(5일 일봉)의 meta 가 지금 값·시각을 준다. 주소 끝의 t=초: 중계 서버가 같은 주소를 45초 보관하므로 초마다 다른 주소로 묻는다
+async function detailLiveFetchOnce(symbol) {
+  const target = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=5d&interval=1d&t=${Math.floor(Date.now() / 1000)}`;
+  const opts = { cache: "no-store" };
+  if (typeof AbortSignal !== "undefined" && AbortSignal.timeout) opts.signal = AbortSignal.timeout(5000);
+  const res = await fetch(DETAIL_LIVE_PROXY + encodeURIComponent(target), opts);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  const r = data && data.chart && data.chart.result && data.chart.result[0];
+  const meta = r && r.meta;
+  if (!meta || !Number.isFinite(meta.regularMarketPrice)) throw new Error("no quote");
+  return { price: meta.regularMarketPrice, time: meta.regularMarketTime, pct: getDailyChangePercent(data), amt: getDailyChangeAmount(data) };
+}
+// 받을 조건: 상세 화면이 열려 있고 화면이 보일 때(닫거나 다른 앱으로 가면 멈춤)
+function detailLiveShouldRun() {
+  const panel = el("companyPanel");
+  return !!detailLive.symbol && !!panel && panel.style.display !== "none" && !document.hidden;
+}
+function detailLiveNextDelay() {
+  if (detailLive.fails) return Math.min(DETAIL_LIVE_SLOW_MS, 1000 * 2 ** detailLive.fails);
+  if (Date.now() - detailLive.inputAt > DETAIL_LIVE_IDLE_AFTER_MS) return DETAIL_LIVE_SLOW_MS;
+  return detailLiveClockOpen(detailLiveMarketOf(detailLive.symbol)) ? DETAIL_LIVE_MS : DETAIL_LIVE_SLOW_MS;
+}
+async function detailLiveLoop() {
+  detailLive.timer = null;
+  if (detailLive.busy || !detailLiveShouldRun()) return;
+  const symbol = detailLive.symbol;
+  detailLive.busy = true;
+  detailLive.startedAt = Date.now();
+  let got = null;
+  try {
+    got = await detailLiveFetchOnce(symbol);
+  } catch {}
+  detailLive.busy = false;
+  if (symbol !== detailLive.symbol) {
+    detailLiveKick(); // 그사이 다른 종목을 열었음 — 이 응답은 버리고 새 종목으로 다시
+    return;
+  }
+  detailLive.fails = got ? 0 : detailLive.fails + 1;
+  if (got) {
+    const old = detailLive.q;
+    const stale = old && Number.isFinite(old.time) && Number.isFinite(got.time) && got.time < old.time; // 더 예전 값이 늦게 도착한 경우
+    if (!stale) {
+      const moved = old && Number.isFinite(old.price) && detailLivePriceText(old.price) !== detailLivePriceText(got.price) ? Math.sign(got.price - old.price) : 0;
+      detailLive.q = { ...got, tick: moved };
+    }
+  }
+  detailLiveRender(!!got);
+  if (!detailLiveShouldRun()) return;
+  // 앞 요청이 끝난 뒤에만 다음 요청(겹치지 않음). 간격은 '받기 시작한 때'부터 잰다
+  detailLive.timer = setTimeout(detailLiveLoop, Math.max(0, detailLiveNextDelay() - (Date.now() - detailLive.startedAt)));
+}
+function detailLiveKick() {
+  if (detailLive.busy || !detailLiveShouldRun()) return;
+  clearTimeout(detailLive.timer);
+  detailLive.timer = setTimeout(detailLiveLoop, Math.max(0, DETAIL_LIVE_MS - (Date.now() - detailLive.startedAt)));
+}
+// 종목 상세를 열 때(runAnalysis) 부른다 — 방금 받은 차트 값으로 시작하고 1초 뒤부터 새로 받는다
+function detailLiveStart(symbol, meta, changePct, changeAmount) {
+  detailLive.symbol = symbol;
+  detailLive.currency = (meta && meta.currency) || "USD";
+  detailLive.fails = 0;
+  detailLive.inputAt = Date.now();
+  detailLive.q = meta && Number.isFinite(meta.regularMarketPrice) ? { price: meta.regularMarketPrice, time: meta.regularMarketTime, pct: changePct, amt: changeAmount, tick: 0 } : null;
+  if (!el("companyPanelLiveDot")) {
+    const dot = document.createElement("i");
+    dot.id = "companyPanelLiveDot";
+    dot.className = "live-dot";
+    dot.setAttribute("aria-hidden", "true");
+    el("companyPanelPrice").insertAdjacentElement("beforebegin", dot);
+  }
+  detailLiveRender(false);
+  detailLiveKick();
+}
+["pointerdown", "keydown", "wheel", "touchstart"].forEach((ev) =>
+  window.addEventListener(
+    ev,
+    () => {
+      const wasIdle = Date.now() - detailLive.inputAt > DETAIL_LIVE_IDLE_AFTER_MS;
+      detailLive.inputAt = Date.now();
+      if (wasIdle) detailLiveKick();
+    },
+    { passive: true, capture: true }
+  )
+);
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) return;
+  detailLive.inputAt = Date.now();
+  detailLiveKick();
+});
+// 멈춰 있는데 받을 조건이 다시 됐으면 살림 + 장이 열리고 닫히는 순간 점 색을 바꿈
+setInterval(() => {
+  if (detailLive.timer === null && !detailLive.busy && detailLiveShouldRun()) detailLiveKick();
+  else if (detailLive.symbol && detailLiveShouldRun()) detailLiveRender(false);
+}, 5000);
+
 function renderCompanyIdentity(ticker, quote, meta, changePct) {
   let displayName = TICKER_TO_KOREAN_NAME[ticker] || quote.longname || quote.shortname || meta.longName || ticker;
+  const idxInfo = indexInfoOf(ticker);
+  if (idxInfo && idxInfo.name) displayName = idxInfo.name;
   // 암호화폐는 한글명(비트코인·페페 등)을 우선 표시, 없으면 "Cardano USD"의 " USD"만 떼고 표시(2026-09-01)
   const identitySection = sectionOfSymbol(ticker, quote.quoteType);
   if (identitySection === "crypto") displayName = cryptoKoName(ticker, displayName);
@@ -2931,7 +3175,7 @@ function renderCompanyIdentity(ticker, quote, meta, changePct) {
   if (identitySection === "etf" && ETF_NAME_BY_SYMBOL.has(ticker)) displayName = ETF_NAME_BY_SYMBOL.get(ticker);
   if (identitySection === "etf" && !isKrTicker(ticker)) registerEtfName(ticker, displayName);
   const price = meta.regularMarketPrice;
-  el("companyPanelLogoWrap").innerHTML = tickerLogoHtml(ticker);
+  el("companyPanelLogoWrap").innerHTML = idxInfo ? indexLogoHtml(ticker) : tickerLogoHtml(ticker);
   el("companyPanelName").textContent = displayName;
   // 2026-09-15 사용자 요청: 헤더는 무조건 2줄 — 1줄 = 기업명 + 바로 오른쪽 국기/섹션 마크(+ETF 티커), 2줄 = 가격(변동률)
   //  (예전엔 이름 아래에 마크 줄이 따로 있어 3줄이었음) ETF 티커는 국내 "069500", 미국 "SPY"(2026-09-13)
@@ -2953,8 +3197,12 @@ function renderCompanyIdentity(ticker, quote, meta, changePct) {
   tickerLineEl.style.display = identitySection === "etf" ? "" : "none";
   // 제목 옆 섹션 마크(한국주식/미국주식/ETF/비트코인, 2026-09-01) — Yahoo quoteType이 있으면 그걸 우선 사용
   const sectionMarkEl = el("companyPanelSectionMark");
-  if (sectionMarkEl) sectionMarkEl.outerHTML = sectionMarkHtml(ticker, quote && quote.quoteType).replace('class="section-mark"', 'class="section-mark" id="companyPanelSectionMark"');
-  el("companyPanelPrice").textContent = price !== undefined && price !== null ? fmtPriceFull(price, meta.currency) : "";
+  // 지수는 로고 자리가 이미 국기라 이름 옆 마크는 뺀다
+  if (sectionMarkEl)
+    sectionMarkEl.outerHTML = idxInfo
+      ? '<span class="section-mark" id="companyPanelSectionMark" style="display:none;"></span>'
+      : sectionMarkHtml(ticker, quote && quote.quoteType).replace('class="section-mark"', 'class="section-mark" id="companyPanelSectionMark"');
+  el("companyPanelPrice").textContent = price !== undefined && price !== null ? (idxInfo ? fmtIndexValue(price) : fmtPriceFull(price, meta.currency)) : "";
   const pctEl = el("companyPanelChangePct");
   if (changePct !== null && changePct !== undefined) {
     const isUp = changePct >= 0;
@@ -4524,6 +4772,7 @@ async function runAnalysis(ticker) {
     setStatus("loading", "섹션별 데이터를 정리하는 중입니다...");
 
     renderCompanyIdentity(ticker, quote, meta, getDailyChangePercent(chartData));
+    detailLiveStart(ticker, meta, getDailyChangePercent(chartData), getDailyChangeAmount(chartData)); // 맨 위 가격·현재가를 1초마다 새로(장중 초록 점 · 장 마감 회색 점)
     el("summaryChartExpandBtn").dataset.chartSymbol = ticker;
 
     // 암호화폐 상세(2026-09-01 사용자 요청): 개요(차트+요약)와 주요 뉴스만 표시 —
@@ -4536,7 +4785,11 @@ async function runAnalysis(ticker) {
     const isEtfDetail = !isCryptoDetail && sectionOfSymbol(ticker, quote.quoteType) === "etf";
     // ETF 상세(2026-09-03 사용자 요청): 코인처럼 매출액 서브탭 숨김(펀드라 매출 개념이 없음) — CSS .etf-detail 참조
     el("companyPanel").classList.toggle("etf-detail", isEtfDetail);
-    const scoreMode = isCryptoDetail ? "crypto" : isEtfDetail ? "etf" : "stock";
+    // 지수 상세(2026-11-26): 재무 탭 없음 · 핵심지표는 가격으로 계산되는 다섯 가지만 · 환율(비교할 시장이 없음)은 핵심지표도 숨김(CSS .fx-detail)
+    const isIndexDetail = isIndexTicker(ticker);
+    el("companyPanel").classList.toggle("index-detail", isIndexDetail);
+    el("companyPanel").classList.toggle("fx-detail", isIndexDetail && !indexInfoOf(ticker).cmp);
+    const scoreMode = isIndexDetail ? "index" : isCryptoDetail ? "crypto" : isEtfDetail ? "etf" : "stock";
 
     // 나스닥·다우존스·S&P500 1년 수익률과, 분석 대상 자신의 지표(차트+재무제표)는
     // 경쟁사 비교(3)·상승압력도(5)·투자 안정성(6)·미래예측(요약 탭의 🔮 토글) 섹션이 각자 다시 조회하지 않고 공유해서
@@ -4567,7 +4820,7 @@ async function runAnalysis(ticker) {
         .catch(() => {});
     }
     // 2026-10-08 사용자 요청: 재무정보 옆에 실적발표 날짜 — 7일 안에 나왔으면 그 날짜 + '실적' 마크, 아니면 다음 발표일(확정/추정)
-    if (!isEtfDetail && !isCryptoDetail) {
+    if (!isEtfDetail && !isCryptoDetail && !isIndexDetail) {
       const headTicker = ticker;
       window.__finHeadTicker = ticker; // 늦게 끝난 이전 종목 결과가 덮지 않게
       (async () => {
@@ -4586,8 +4839,8 @@ async function runAnalysis(ticker) {
         if (h && html && window.__finHeadTicker === headTicker) h.innerHTML = `재무${html}`;
       })();
     }
-    el("summarySubtabRevenueBtn").style.display = isCryptoDetail ? "none" : "";
-    if (isCryptoDetail || isEtfDetail) {
+    el("summarySubtabRevenueBtn").style.display = isCryptoDetail || isIndexDetail ? "none" : "";
+    if (isCryptoDetail || isEtfDetail || isIndexDetail) {
       FIN2_STATE.token++; // 매출액 차트가 없는 자산 — 앞서 연 주식의 늦게 도착한 차트가 숨은 영역에 그려지지 않게
       // ETF는 renderSummary가 이 자리에 보유 종목을 넣으므로 비우지 않는다(비우면 늦게 끝난 쪽이 상대를 지움)
       if (!isEtfDetail) el("financialsSection").innerHTML = "";
@@ -4601,7 +4854,9 @@ async function runAnalysis(ticker) {
 
     // 국내 종목·암호화폐는 Yahoo 뉴스가 해당 종목과 무관한 기사를 자주 섞어 내보내(2026-09-01 사용자 확인),
     // 한글 이름(코인은 "비트코인" 등, 없으면 "Cardano"처럼 영문명)으로 구글/Bing 뉴스 RSS를 검색해 대체하고 실패 시에만 Yahoo 뉴스로 폴백
-    const newsQueryName = isKrTicker(ticker)
+    const newsQueryName = isIndexDetail
+      ? indexInfoOf(ticker).news // 지수는 한글 이름으로 뉴스 검색(목록에 없는 지수는 없음 → 야후 뉴스)
+      : isKrTicker(ticker)
       ? TICKER_TO_KOREAN_NAME[ticker] || quote.longname || quote.shortname || ticker
       : isCryptoDetail
       ? cryptoKoName(ticker, quote.shortname || quote.longname || ticker)
@@ -5659,7 +5914,7 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
   const section = el("sReportTopSection");
   sReportInlineWrap.style.display = "none";
   sReportInlineWrap.innerHTML = "";
-  const isAsset = scoreMode === "etf" || scoreMode === "crypto";
+  const isAsset = scoreMode === "etf" || scoreMode === "crypto" || scoreMode === "index"; // 지수도 가격만으로 계산되는 다섯 가지(코인과 같은 틀)
 
   const baseline = await getSReportBaseline();
   if (token !== sReportTopToken) return; // 그사이 다른 종목을 열었으면 버림
@@ -5668,6 +5923,8 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
   // 코인 = 시총 200, ETF = 한·미 통합 200(평균선만 상장 시장별로 S&P500 / 코스피·코스닥350), IPO = 두 지수에 없는 신규 상장주 200
   const groupKey = member
     ? member.g
+    : scoreMode === "index"
+    ? (indexInfoOf(ticker) || {}).cmp || "sp500" // 지수는 그 시장 종목들과 비교
     : scoreMode === "crypto"
     ? "crypto200"
     : scoreMode === "etf"
@@ -5704,7 +5961,7 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
       <div class="srt-card">
         <div class="srt-radar-head">
           <span class="srt-radar-title">핵심지표${asOfText ? `<span class="srt-asof">${asOfText}</span>` : ""}</span>
-          <span class="srt-legend"><i class="srt-lg-self"></i>이 종목 <i class="srt-lg-avg"></i>${escapeHtml(group ? sReportMedName(group) : "비교 기준")}</span>
+          <span class="srt-legend"><i class="srt-lg-self"></i>${scoreMode === "index" ? "이 지수" : "이 종목"} <i class="srt-lg-avg"></i>${escapeHtml(group ? sReportMedName(group) : "비교 기준")}</span>
         </div>
         ${S_REPORT_TAP_HINT}
         ${group ? sReportRadarSvg(items) : `<p class="muted" style="padding:10px 0;">비교 기준 데이터를 불러오지 못했습니다. 잠시 후 다시 열어 주세요.</p>`}
@@ -5714,6 +5971,7 @@ async function renderSReportTop(ticker, scoreMode, quote, selfMetricsPromise) {
       </div>`;
     // 더보기 항목은 5개 행 바로 아래(버튼 위)에 붙음
     el("sReportMoreSlot").appendChild(sReportInlineWrap);
+    if (scoreMode === "index") el("sReportTopMoreBtn").style.display = "none"; // 지수는 더 볼 항목(재무·가치)이 없다
     fitSReportRoundCells(section);
     let loaded = false;
     el("sReportTopMoreBtn").addEventListener("click", async () => {
@@ -5868,11 +6126,14 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   currentDetailSection = summaryAssetSection; // 과거분석 한달/1년 버튼의 자산별 분기용(2026-09-02)
   currentDetailSymbol = meta.symbol || quote.symbol || "";
   // 암호화폐는 "Bitcoin USD"처럼 통화쌍 표기라 위키 검색·표시용 이름에서 " USD"를 떼어냄(2026-09-01)
-  const companyName = summaryAssetSection === "crypto" ? rawCompanyName.replace(/\s+USD$/i, "") : rawCompanyName;
+  const idxInfo = indexInfoOf(meta.symbol || quote.symbol || ""); // 지수 상세(2026-11-26)
+  const companyName = idxInfo && idxInfo.name ? idxInfo.name : summaryAssetSection === "crypto" ? rawCompanyName.replace(/\s+USD$/i, "") : rawCompanyName;
   // 개요 한 줄 설명(2026-09-03 사용자 요청): 코인·ETF는 위키 자동 매칭이 엉뚱한 문서를 자주 잡아
   // 직접 관리하는 정적 설명·템플릿(cryptoDescriptionOf/etfDescriptionOf)으로 대체, 주식만 기존 위키 요약 유지
   let oneLiner = "사업 개요 정보를 찾을 수 없습니다.";
-  if (summaryAssetSection === "crypto") {
+  if (idxInfo && idxInfo.desc) {
+    oneLiner = idxInfo.desc; // 지수 설명은 직접 적어 둔 글(위키 자동 검색을 쓰지 않음)
+  } else if (summaryAssetSection === "crypto") {
     oneLiner = cryptoDescriptionOf(cryptoBaseTicker(meta.symbol || quote.symbol || ""), companyName);
   } else if (summaryAssetSection === "etf") {
     oneLiner = etfDescriptionOf(meta.symbol || quote.symbol || "", companyName);
@@ -5914,26 +6175,17 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
   // ETF 상세 헤더도 목록과 같은 로고를 써야 같은 종목으로 알아본다 — 실제 로고가 없을 때만 테마 이모지(2026-09-11)
   // 2026-09-13 사용자 요청: 이모지 로고는 쓰지 않음 — 로고가 없으면 이미지 실패 시 글자 배지로 떨어짐
   const _etfEmoji = null;
-  const summaryLogoImg = _etfEmoji
+  const summaryLogoImg = idxInfo
+    ? indexLogoHtml(symbol)
+    : _etfEmoji
     ? `<span class="summary-etf-emoji">${etfThemeMarkHtml(_etfEmoji)}</span>`
     : _logoOv
     ? `<img class="summary-ticker-logo" src="${_logoOv.src}" alt="${escapeHtml(symbol)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />`
     : `<img class="summary-ticker-logo" src="${_logoSrc.primary}" alt="${escapeHtml(symbol)}" ${_logoSrc.useFallback ? `data-fallback="${_logoSrc.fmp}"` : ""} onerror="${LOGO_ONERROR}" />`;
 
   // 현재가 옆 등락 표기 — 암호화폐(2026-09-03 사용자 요청)는 오늘 등락금액+등락률을 함께, 그 외는 기존처럼 등락률만
-  let summaryChangeHtml = "";
-  if (changePct !== null && changePct !== undefined) {
-    const cls = changePct >= 0 ? "delta-up" : "delta-down";
-    const price = meta.regularMarketPrice ?? 0;
-    // 현재가 줄: "▼ 6,992 (-0.41%)" — 화살표 + 오르내린 금액 + 등락률(2026-09-15 사용자 요청, 모든 종목)
-    if (price && changePct > -100) {
-      // 실제 직전 종가 기준 금액(getDailyChangeAmount) 우선, 없을 때만 등락률로 역산
-      const diff = Math.abs(Number.isFinite(changeAmount) ? changeAmount : price - price / (1 + changePct / 100));
-      summaryChangeHtml = `<span class="${cls}">${changePct >= 0 ? "▲" : "▼"} ${fmtPriceChangeAmount(diff, meta.currency)} (${changePct >= 0 ? "+" : ""}${changePct.toFixed(2)}%)</span>`;
-    } else {
-      summaryChangeHtml = `<span class="${cls}">(${fmtPct(changePct)})</span>`;
-    }
-  }
+  // 현재가 줄: "▼ 6,992 (-0.41%)" — 화살표 + 오르내린 금액 + 등락률(2026-09-15 사용자 요청, 모든 종목). 1초 갱신도 같은 함수로 그린다
+  const summaryChangeHtml = summaryChangeHtmlOf(meta.regularMarketPrice ?? 0, changePct, changeAmount, meta.currency, symbol);
 
   if (sumSeq !== summaryRenderSeq) return; // 그사이 다른 종목을 열었음 — 늦게 끝난 이 종목 요약으로 덮지 않는다
   el("summarySection").innerHTML = `
@@ -5946,17 +6198,20 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
         <b>${escapeHtml(companyName)}</b> — ${escapeHtml(oneLiner)}
       </p>
       <div class="company-meta">
-        ${summaryAssetSection === "crypto"
+        ${idxInfo
+          ? `<span>구분: <b>${escapeHtml(idxInfo.kind)}</b></span>
+        ${idxInfo.market ? `<span>시장: <b>${escapeHtml(idxInfo.market)}</b></span>` : ""}`
+          : summaryAssetSection === "crypto"
           ? `<span>섹터: <b>${escapeHtml(cryptoSectorOf(cryptoBaseTicker(symbol)))}</b></span>
         ${cryptoExchangesOf(cryptoBaseTicker(symbol)) ? `<span>상장 거래소: <b>${escapeHtml(cryptoExchangesOf(cryptoBaseTicker(symbol)))}</b></span>` : ""}`
           : summaryAssetSection === "etf"
           ? `${/* ETF는 업종이 없어 빼고, 섹터는 마켓맵 지도와 같은 분류(2026-09-16 사용자 요청) */ ""}
         <span>섹터: <b>${escapeHtml(etfSectorOf(symbol, companyName))}</b></span>
-        <span>거래소: <b>${escapeHtml(krExchangeName(symbol) || quote.exchDisp || meta.fullExchangeName || "N/A")}</b></span>`
-          : `<span>업종: <b>${escapeHtml(industryKo || "N/A")}</b></span>
-        <span>섹터: <b>${escapeHtml(sectorKo || "N/A")}</b></span>
-        <span>거래소: <b>${escapeHtml(krExchangeName(symbol) || quote.exchDisp || meta.fullExchangeName || "N/A")}</b></span>`}
-        <span>현재가: <b>${fmtPriceFull(meta.regularMarketPrice ?? 0, meta.currency)}</b> ${summaryChangeHtml}</span>${/* 2026-09-13 사용자 요청: 차트보기 버튼 제거(위 차트로 충분) */ ""}
+        ${krExchangeName(symbol) || quote.exchDisp || meta.fullExchangeName ? `<span>거래소: <b>${escapeHtml(krExchangeName(symbol) || quote.exchDisp || meta.fullExchangeName)}</b></span>` : ""}`
+          : `${/* 2026-11-26 사용자 요청: 값이 없으면 'N/A'를 보여 주지 말고 그 칸을 뺀다 */ ""}${industryKo ? `<span>업종: <b>${escapeHtml(industryKo)}</b></span>` : ""}
+        ${sectorKo ? `<span>섹터: <b>${escapeHtml(sectorKo)}</b></span>` : ""}
+        ${krExchangeName(symbol) || quote.exchDisp || meta.fullExchangeName ? `<span>거래소: <b>${escapeHtml(krExchangeName(symbol) || quote.exchDisp || meta.fullExchangeName)}</b></span>` : ""}`}
+        <span class="summary-live-row">현재가: <i class="live-dot" id="summaryLiveDot" aria-hidden="true"></i><b id="summaryLivePrice">${idxInfo ? fmtIndexValue(meta.regularMarketPrice ?? 0) : fmtPriceFull(meta.regularMarketPrice ?? 0, meta.currency)}</b> <span id="summaryLiveChange">${summaryChangeHtml}</span></span>${/* 2026-09-13 사용자 요청: 차트보기 버튼 제거(위 차트로 충분) */ ""}
       </div>
       <div class="summary-action-row">
         ${/* 2026-09-15 사용자 요청: 버튼 = 과거분석(12개월 승률 카드) · 미래예측 · 공포지수(코인은 알트시즌지수). S리포트는 버튼 대신 아래 요약 카드로 펼쳐 둠 */ ""}
@@ -5973,6 +6228,7 @@ async function renderSummary(quote, meta, changePct, selfMetricsPromise, marketR
     <div id="tickerHistoricalRow" style="display:none;"></div>
   `;
   etfHoldingsShowMore = false;
+  detailLiveRender(false); // 개요를 그리는 사이 들어온 최신 시세·점 색을 현재가 줄에도 맞춘다
 
   // 세 버튼(과거분석·미래예측·S리포트) 모두 누른 자리 바로 아래에서 열리도록 정적 섹션을 요약 영역 안으로 이동
   // — innerHTML 재렌더로 DOM에서 떨어져 나가도 상단 const 참조가 노드를 붙잡고 있어 매 렌더마다 다시 붙임(내용·리스너 유지)
@@ -12411,6 +12667,7 @@ function aggregateCandles(pairs, target = SUMMARY_CANDLE_TARGET) {
     const chunk = pairs.slice(Math.max(0, end - size), end);
     out.unshift({
       t: chunk[0].t,
+      te: chunk[chunk.length - 1].t, // 묶음의 마지막 날 — 누른 지점의 날짜 표시에 씀(종가가 찍힌 날)
       o: chunk[0].o,
       c: chunk[chunk.length - 1].c,
       h: Math.max(...chunk.map((p) => p.h)),
@@ -12420,6 +12677,7 @@ function aggregateCandles(pairs, target = SUMMARY_CANDLE_TARGET) {
   return out;
 }
 function fmtChartPrice(v, currency = "USD") {
+  if (currency === "IDX") return v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); // 지수·환율: 통화 기호 없이
   if (currency === "KRW") return v.toLocaleString(undefined, { maximumFractionDigits: 0 }) + "원";
   if (Math.abs(v) >= 1000) return "$" + v.toLocaleString(undefined, { maximumFractionDigits: 0 });
   return "$" + v.toFixed(2);
@@ -12465,6 +12723,39 @@ const CHART_CROSSHAIR = "#9aa2b1";
 const CHART_TAG_BG = "#f95403";
 const CHART_TAG_TEXT = "#ffffff";
 
+// 차트를 누른 지점의 날짜 표시(2026-11-26 사용자 요청: "누르면 가격만 나오고 날짜는 표시가 안 되더라 · 날짜도 하얀색으로 · 맨 위에 한 줄로 날짜·종가·변동")
+//  ① 가로축 위 날짜 꼬리표 — 검정 테마: 흰 칸·검은 글자 / 화이트 테마: 흰 바탕에서도 보이게 반대로(검은 칸·흰 글자)
+//  ② 차트 맨 위 한 줄 — 날짜 · 종가 · 변동(바로 앞 점 대비 금액과 %)
+function chartDateTagBg() {
+  return isDarkTheme() ? "#ffffff" : "#111827";
+}
+function chartDateTagText() {
+  return isDarkTheme() ? "#111827" : "#ffffff";
+}
+function chartInfoStrong() {
+  return isDarkTheme() ? "#f3f4f6" : "#111827";
+}
+// short=true 는 가로축 꼬리표용(하루 차트는 시:분만), false 는 맨 위 한 줄용
+function fmtCrosshairDate(tsSec, period, short) {
+  const d = new Date(tsSec * 1000);
+  const p2 = (n) => String(n).padStart(2, "0");
+  const ymd = `${d.getFullYear()}.${p2(d.getMonth() + 1)}.${p2(d.getDate())}`;
+  const hm = `${p2(d.getHours())}:${p2(d.getMinutes())}`;
+  if (period === "1d") return short ? hm : `${ymd} ${hm}`;
+  if (period === "5d") return short ? `${p2(d.getMonth() + 1)}.${p2(d.getDate())} ${hm}` : `${ymd} ${hm}`;
+  if (period === "max") return `${d.getFullYear()}.${p2(d.getMonth() + 1)}`;
+  return ymd;
+}
+// 크로스헤어 묶음(#pcCrosshair) 안에 같이 넣는 조각 — 누르고 있을 때만 보임
+function priceCrosshairExtrasSvg(period) {
+  const { ML, MT, MB, H } = PRICE_CHART_GEOM;
+  const axisY = H - MB; // 그림 영역 아래쪽 끝
+  const closeLabel = period === "1d" || period === "5d" ? "가격" : "종가";
+  return `<rect id="pcCrosshairDateBox" x="0" y="${(axisY + 10).toFixed(1)}" width="10" height="36" rx="7" fill="${chartDateTagBg()}" />
+      <text id="pcCrosshairDateText" x="0" y="${(axisY + 35).toFixed(1)}" text-anchor="middle" font-size="20" font-weight="700" fill="${chartDateTagText()}"></text>
+      <text id="pcCrosshairInfo" x="${ML}" y="${(MT - 6).toFixed(1)}" font-size="19" fill="${chartAxisText()}"><tspan id="pcInfoDate" font-weight="700" fill="${chartInfoStrong()}"></tspan><tspan dx="16">${closeLabel}</tspan><tspan id="pcInfoClose" dx="7" font-weight="700" fill="${chartInfoStrong()}"></tspan><tspan dx="16">변동</tspan><tspan id="pcInfoChange" dx="7" font-weight="700"></tspan></text>`;
+}
+
 // 현재가/터치 위치를 가리키는 "책갈피" 모양(왼쪽 삼각 포인터 + 사각 라벨) path
 function bookmarkTagPath(xStart, yCenter) {
   const halfH = PRICE_TAG_H / 2;
@@ -12503,7 +12794,7 @@ function priceChartScalesOhlc(pairs) {
 
 function buildPriceChartSvg(pairs, period, symbol) {
   const { W, H, ML, MT, PW, PH, N, lo, hi, xFn, yFn } = priceChartScales(pairs);
-  const chartCurrency = isKrTicker(symbol) ? "KRW" : "USD";
+  const chartCurrency = isIndexTicker(symbol) ? "IDX" : isKrTicker(symbol) ? "KRW" : "USD";
 
   // Y축 라벨은 항상 정확히 5개(lo~hi를 4등분한 점)만 표시
   let gridSvg = "";
@@ -12557,6 +12848,7 @@ function buildPriceChartSvg(pairs, period, symbol) {
       <circle id="pcCrosshairDot" r="4" fill="${chartBg()}" stroke="#2f6fed" stroke-width="2" />
       <path id="pcCrosshairTagPath" fill="${CHART_TAG_BG}" />
       <text id="pcCrosshairTagText" text-anchor="start" font-size="20" font-weight="700" fill="${CHART_TAG_TEXT}"></text>
+      ${priceCrosshairExtrasSvg(period)}
     </g>
   </svg>`;
 }
@@ -12564,7 +12856,7 @@ function buildPriceChartSvg(pairs, period, symbol) {
 // 캔들 차트 1행 렌더러 — buildPriceChartSvg와 같은 그리드·책갈피 패턴을 재사용하되 선 대신 봉을 그림
 function buildCandleChartSvg(pairs, period, symbol) {
   const { W, H, ML, MT, PW, PH, N, lo, hi, xFn, yFn } = priceChartScalesOhlc(pairs);
-  const chartCurrency = isKrTicker(symbol) ? "KRW" : "USD";
+  const chartCurrency = isIndexTicker(symbol) ? "IDX" : isKrTicker(symbol) ? "KRW" : "USD";
 
   let gridSvg = "";
   for (let k = 0; k <= 4; k++) {
@@ -12621,14 +12913,15 @@ function buildCandleChartSvg(pairs, period, symbol) {
       <circle id="pcCrosshairDot" r="4" fill="${chartBg()}" stroke="#2f6fed" stroke-width="2" />
       <path id="pcCrosshairTagPath" fill="${CHART_TAG_BG}" />
       <text id="pcCrosshairTagText" text-anchor="start" font-size="20" font-weight="700" fill="${CHART_TAG_TEXT}"></text>
+      ${priceCrosshairExtrasSvg(period)}
     </g>
   </svg>`;
 }
 
 // 차트를 누르고 있는 동안 가장 가까운 지점의 가격을 오른쪽 책갈피에 실시간으로 보여줌(증권앱 스타일)
 // scalesFn: 라인 차트는 종가 기준(priceChartScales), 캔들 차트는 고가/저가까지 포함한 기준(priceChartScalesOhlc)을 써야 렌더링과 좌표가 일치함
-function setupPriceChartCrosshair(containerEl, pairs, scalesFn = priceChartScales, symbol = null) {
-  const chartCurrency = isKrTicker(symbol) ? "KRW" : "USD";
+function setupPriceChartCrosshair(containerEl, pairs, scalesFn = priceChartScales, symbol = null, period = "1y") {
+  const chartCurrency = isIndexTicker(symbol) ? "IDX" : isKrTicker(symbol) ? "KRW" : "USD";
   const svg = containerEl.querySelector("svg");
   const hitArea = svg && svg.querySelector("#pcHitArea");
   if (!svg || !hitArea) return;
@@ -12639,6 +12932,11 @@ function setupPriceChartCrosshair(containerEl, pairs, scalesFn = priceChartScale
   const dot = svg.querySelector("#pcCrosshairDot");
   const tagPath = svg.querySelector("#pcCrosshairTagPath");
   const tagText = svg.querySelector("#pcCrosshairTagText");
+  const dateBox = svg.querySelector("#pcCrosshairDateBox");
+  const dateText = svg.querySelector("#pcCrosshairDateText");
+  const infoDate = svg.querySelector("#pcInfoDate");
+  const infoClose = svg.querySelector("#pcInfoClose");
+  const infoChange = svg.querySelector("#pcInfoChange");
   const currentMarker = svg.querySelector("#pcCurrentMarker");
 
   function indexFromClientX(clientX) {
@@ -12663,6 +12961,27 @@ function setupPriceChartCrosshair(containerEl, pairs, scalesFn = priceChartScale
     tagText.textContent = fmtChartPrice(pairs[idx].c, chartCurrency);
     crosshair.style.display = "";
     currentMarker.style.display = "none";
+    // 날짜 꼬리표(가로축 위 · 세로선 바로 아래 · 양 끝에서는 화면 밖으로 나가지 않게)와 맨 위 한 줄(날짜 · 종가 · 변동)
+    const p = pairs[idx];
+    const ts = p.te || p.t; // 묶은 캔들은 그 묶음의 마지막 날(종가가 찍힌 날)
+    dateText.textContent = fmtCrosshairDate(ts, period, true);
+    const tagW = dateText.getComputedTextLength() + 24;
+    const cx = Math.max(tagW / 2 + 2, Math.min(PRICE_CHART_GEOM.W - tagW / 2 - 2, x));
+    dateBox.setAttribute("x", (cx - tagW / 2).toFixed(1));
+    dateBox.setAttribute("width", tagW.toFixed(1));
+    dateText.setAttribute("x", cx.toFixed(1));
+    infoDate.textContent = fmtCrosshairDate(ts, period, false);
+    infoClose.textContent = fmtChartPrice(p.c, chartCurrency);
+    const prev = idx > 0 ? pairs[idx - 1].c : null;
+    if (prev) {
+      const diff = p.c - prev;
+      const sign = diff > 0 ? "+" : diff < 0 ? "-" : "";
+      infoChange.textContent = `${sign}${fmtChartPrice(Math.abs(diff), chartCurrency)} (${sign}${Math.abs((diff / prev) * 100).toFixed(2)}%)`;
+      infoChange.style.fill = diff > 0 ? "var(--pos)" : diff < 0 ? "var(--neg)" : chartAxisText();
+    } else {
+      infoChange.textContent = "-";
+      infoChange.style.fill = chartAxisText();
+    }
   }
   function hide() {
     crosshair.style.display = "none";
@@ -12732,10 +13051,10 @@ function renderSummaryChartPairs(pairs, period, symbol) {
   if (summaryChartMode === "candle") {
     const candles = aggregateCandles(pairs); // 한 화면 약 20개
     containerEl.innerHTML = buildCandleChartSvg(candles, period, symbol);
-    setupPriceChartCrosshair(containerEl, candles, priceChartScalesOhlc, symbol);
+    setupPriceChartCrosshair(containerEl, candles, priceChartScalesOhlc, symbol, period);
   } else {
     containerEl.innerHTML = buildPriceChartSvg(pairs, period, symbol);
-    setupPriceChartCrosshair(containerEl, pairs, priceChartScales, symbol);
+    setupPriceChartCrosshair(containerEl, pairs, priceChartScales, symbol, period);
   }
 }
 

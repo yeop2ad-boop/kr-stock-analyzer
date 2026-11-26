@@ -487,11 +487,23 @@ function renderIdxStrip() {
   idxStripBuilt = true;
   // 손가락은 브라우저가 알아서 좌우로 밀어 준다. 마우스는 끌어서 좌우로
   let mouseDrag = null;
+  let dragged = false; // 마우스로 끌어 옮긴 직후의 click 은 '누름'으로 보지 않는다
   el.addEventListener("pointerdown", (e) => {
+    dragged = false;
     if (e.pointerType === "mouse") mouseDrag = { x: e.clientX, left: el.scrollLeft };
   });
   el.addEventListener("pointermove", (e) => {
-    if (mouseDrag && e.pointerType === "mouse") el.scrollLeft = mouseDrag.left - (e.clientX - mouseDrag.x);
+    if (mouseDrag && e.pointerType === "mouse") {
+      if (Math.abs(e.clientX - mouseDrag.x) > 5) dragged = true;
+      el.scrollLeft = mouseDrag.left - (e.clientX - mouseDrag.x);
+    }
+  });
+  // 2026-11-26 사용자 요청: 지표를 누르면 그 지수의 상세 화면(차트 등)으로 — 비트코인은 코인 상세
+  el.addEventListener("click", (e) => {
+    const item = e.target.closest(".idx-item");
+    if (!item || dragged) return;
+    const it = IDX_STRIP_ITEMS.find((x) => x.key === item.dataset.idx);
+    if (it) window.location.href = `../index.html?ticker=${encodeURIComponent(it.symbol)}`;
   });
   ["pointerup", "pointercancel", "pointerleave"].forEach((ev) => el.addEventListener(ev, () => (mouseDrag = null)));
   const tab = document.getElementById("idxStripTab");

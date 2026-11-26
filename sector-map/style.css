@@ -1607,6 +1607,7 @@ body.idx-strip-folded .idx-strip-tab svg { transform: rotate(180deg); }
 .idx-chg { margin-left: 4px; }
 /* 2026-11-24 사용자 요청("장 운영 중인 지수는 깜박이면서 1초마다 업데이트"):
    장이 열려 있는 지표는 이름 옆 초록 점이 1초 박자로 깜박이고, 값이 바뀌는 순간 숫자 바탕이 잠깐 물든다(오르면 빨강·내리면 파랑) */
+.idx-item { cursor: pointer; } /* 2026-11-26: 누르면 그 지수의 상세 화면으로 */
 .idx-val { font-variant-numeric: tabular-nums; border-radius: 4px; } /* 숫자 폭을 같게 — 1초마다 바뀌어도 칸이 흔들리지 않게 */
 .idx-live { display: none; flex: none; width: 6px; height: 6px; margin-left: 1px; border-radius: 50%; background: #16a34a; animation: idx-live-blink 1s ease-in-out infinite; }
 .idx-item.is-live .idx-live { display: block; }
