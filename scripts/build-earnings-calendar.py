@@ -480,6 +480,10 @@ def kr_calendar(today, key):
                 recent.setdefault(sym, []).extend(ds)
         # 작년 같은 시기(오늘-1년-3일 ~ +60일) 첫 실적 공시 → +364일(같은 요일)을 다음 발표 예상일로
         ly = kr_filings(syms, key, today - timedelta(days=368), today - timedelta(days=305))
+        # 2026-11-26 사용자 요청("3주 안에 예정이 없으면 가장 빠른 실적 일정 10개"): 실적 철이 막 끝난 때에도 다음 철 일정이 잡히도록
+        # 작년의 그다음 두 달(+61일 ~ +120일)도 본다 — 12월 결산 회사의 4분기 잠정실적(1~2월)·사업보고서(3월)가 여기 들어온다
+        for sym, ds in kr_filings(syms, key, today - timedelta(days=304), today - timedelta(days=245)).items():
+            ly.setdefault(sym, []).extend(ds)
     except RuntimeError:
         return None
     monthly, reps = kr_prelim_scan(key, today)
@@ -504,7 +508,11 @@ def kr_calendar(today, key):
         season_done = ds and (today - date.fromisoformat(e["last"])).days <= 40
         cand = [date.fromisoformat(d) + timedelta(days=364) for d in sorted(set(ly.get(sym, [])))]
         cand = [d for d in cand if d >= today - timedelta(days=1)]
-        if cand and not season_done:
+        if season_done:
+            # 이번 철 실적을 이미 낸 회사: 작년 이맘때 날짜는 같은 철이라 건너뛰고, 그다음 철(이번 발표 45일 뒤부터)만 다음 발표 예상일로 쓴다
+            # (예전에는 이런 회사에 다음 일정을 아예 안 붙여서, 철이 끝나면 한국 '예정'이 텅 비었다 — 2026-11-26)
+            cand = [d for d in cand if d > date.fromisoformat(e["last"]) + timedelta(days=45)]
+        if cand:
             e["next"], e["nextEst"] = cand[0].isoformat(), True
         if e:
             out[sym] = e

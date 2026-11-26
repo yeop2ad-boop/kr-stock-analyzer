@@ -13638,7 +13638,20 @@ function earnWindowRows(cal, isKr) {
       if (d >= 0 && d <= 7) done.push({ symbol: sym, date: e.last, days: d });
     }
   });
-  return { soon, done };
+  // 2026-11-26 사용자 요청: 기간(한국 3주·미국 2주) 안에 예정이 하나도 없으면 가장 빠른 실적 일정 10개만 보여 준다(실적 철이 막 끝난 때 '예정'이 텅 비지 않게)
+  let soonFar = false;
+  if (!soon.length) {
+    const later = [];
+    Object.entries(src).forEach(([sym, e]) => {
+      if (!e.next) return;
+      const d = -earnDaysSince(e.next);
+      if (d >= (e.nextEst ? 0 : -1)) later.push({ symbol: sym, date: e.next, days: d, time: e.nextTime || "", est: !!e.nextEst });
+    });
+    later.sort((a, b) => a.date.localeCompare(b.date) || a.symbol.localeCompare(b.symbol));
+    soon.push(...later.slice(0, 10));
+    soonFar = soon.length > 0;
+  }
+  return { soon, done, soonFar };
 }
 window.__buildEarningsDb = async function () {
   const cal = await getEarningsCal();
@@ -13675,7 +13688,7 @@ async function renderEarningsTab() {
   if (seq !== earnSeq) return;
   const names = new Map([...((uniOther && uniOther.companies) || []), ...((uni && uni.companies) || [])].map((c) => [c.symbol, c.name]));
   // 2026-10-08 사용자 요청: 발표 예정은 한국 3주 · 미국 2주까지 목록에(이름 옆 '예정' 마크는 그대로 7일 안만)
-  const { soon, done } = earnWindowRows(cal, isKr);
+  const { soon, done, soonFar } = earnWindowRows(cal, isKr);
   const dbMap = (edb && (isKr ? edb.kr : edb.us)) || {};
   // 미리 계산해 둔 값(DB) — 없으면 undefined, 화면이 그 자리에서 계산
   const dbData = (sym, kind, date) => {
@@ -13760,7 +13773,7 @@ async function renderEarningsTab() {
     box.innerHTML = `
       ${watchSec}
       <section class="pop-sec" data-earn-sec="done"><div class="pop-sec-head"><b>최근실적</b><span class="pop-asof">지난 7일 · ${done.length}종목</span></div>${tableHtml(done, "done")}</section>
-      <section class="pop-sec" data-earn-sec="soon"><div class="pop-sec-head"><b>예정</b><span class="pop-asof">앞으로 ${isKr ? "3주" : "2주"} · ${soon.length}종목${isKr ? " · 추정" : ""}</span></div>${tableHtml(soon, "soon")}</section>
+      <section class="pop-sec" data-earn-sec="soon"><div class="pop-sec-head"><b>예정</b><span class="pop-asof">${soonFar ? "가장 빠른 일정" : `앞으로 ${isKr ? "3주" : "2주"}`} · ${soon.length}종목${isKr ? " · 추정" : ""}</span></div>${tableHtml(soon, "soon")}</section>
       <p class="disclaimer tab-note">% = 지난 분기 대비 매출 · 전망 = 증권사 전망 평균 · 예상 = 최근 분기 흐름을 그대로 이은 값(증권사 전망 아님)</p>`;
     bindEarnRows();
     box.querySelectorAll("[data-earn-add]").forEach((b) => b.addEventListener("click", () => openSearchOverlay())); // 검색을 켜서 관심종목 추가
