@@ -2734,3 +2734,18 @@ html.ov-embed #tabPageTech, html.ov-embed .site-footer, html.ov-embed #companyPa
 .company-panel.index-detail .summary-subtab-panel[data-summary-subtabpanel="revenue"] { display: none !important; }
 /* 환율은 비교할 시장이 없어 핵심지표를 숨긴다 */
 .fx-detail #summarySubtabSReportBtn, .fx-detail #sReportTopSection { display: none !important; }
+
+/* ---------- 2026-11-26 대표 지수 상세의 맨 위 = 메인 화면 지수 띠의 한 칸과 같은 모양 ----------
+   (sector-map/style.css 의 .idx-name · .idx-mark · .idx-val · .idx-live 와 같은 색·굵기·순서 — 맨 위 자리에 맞게 크기만 조금 키움) */
+.detail-identity.idx-head { gap: 0; }
+.detail-identity.idx-head .detail-identity-logo { display: none; }
+.detail-identity.idx-head .detail-identity-text { gap: 4px; }
+.detail-identity.idx-head .detail-identity-namerow { gap: 6px; }
+.detail-identity.idx-head .detail-identity-name { font-size: 16px; font-weight: 800; color: var(--brand); letter-spacing: -0.2px; line-height: 1.2; }
+.detail-identity.idx-head .idx-head-mark { order: -1; display: inline-flex; align-items: center; flex: none; margin: 0; }
+.detail-identity.idx-head .idx-head-mark svg { width: 23px; height: 16px; display: block; }
+.detail-identity.idx-head .detail-identity-namerow .live-dot { margin: 0 0 0 1px; top: 0; }
+.detail-identity.idx-head .detail-identity-priceline { gap: 5px; }
+.detail-identity.idx-head .detail-identity-priceline .detail-identity-price { font-size: 15.5px; font-weight: 700; color: var(--text); letter-spacing: 0; }
+.detail-identity.idx-head .detail-identity-priceline .detail-identity-change { font-size: 15.5px; font-weight: 700; letter-spacing: 0; }
+:root[data-theme="dark"] .detail-identity.idx-head .detail-identity-name { color: #b79cff; }

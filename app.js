@@ -2959,6 +2959,38 @@ function indexLogoHtml(symbol) {
   const svg = info && info.mark === "kr" ? FLAG_SVG_KR : info && info.mark === "us" ? FLAG_SVG_US : "";
   return `<span class="index-logo${svg ? "" : " index-logo-text"}">${svg || escapeHtml((info && info.text) || "지수")}</span>`;
 }
+// 메인 화면 대표 지수 띠의 여섯 지표(sector-map/app.js 의 IDX_STRIP_ITEMS 와 같은 이름·마크·자릿수).
+// 2026-11-26 사용자 요청: "대표지수들은 상세페이지 들어가도 상단에 메인페이지에 있는 그대로 … 다른 종목 같아서 최대한 동일하게 · 대표지수들만"
+// → 이 여섯은 상세 화면 맨 위를 띠의 한 칸과 같은 모양으로 그린다: 작은 마크 + 보라색 이름 + 이름 옆 점 / 값 + ▲0.29%(큰 로고 없음)
+const IDX_STRIP_HEAD = {
+  "^KS11": { name: "코스피", mark: "kr", digits: 2 },
+  "^KQ11": { name: "코스닥", mark: "kr", digits: 2 },
+  "^GSPC": { name: "S&P500", mark: "us", digits: 2 },
+  "^IXIC": { name: "나스닥종합", mark: "us", digits: 2 },
+  "BTC-USD": { name: "비트코인", mark: "crypto", digits: 0, prefix: "$" },
+  "KRW=X": { name: "달러/원", mark: null, digits: 2 }, // 띠처럼 로고 없이 이름만
+};
+function idxStripHeadOf(symbol) {
+  return IDX_STRIP_HEAD[String(symbol || "").toUpperCase()] || null;
+}
+function idxStripHeadPrice(sh, v) {
+  return (sh.prefix || "") + Number(v ?? 0).toLocaleString("en-US", { minimumFractionDigits: sh.digits, maximumFractionDigits: sh.digits });
+}
+// 맨 위 등락률 글자: 띠 모양이면 "▲0.29%", 그 밖의 종목은 "▲(+0.29%)"
+function headChangeText(pct, stripStyle) {
+  const up = pct >= 0;
+  return stripStyle ? `${up ? "▲" : "▼"}${Math.abs(pct).toFixed(2)}%` : `${up ? "▲" : "▼"}(${up ? "+" : ""}${pct.toFixed(2)}%)`;
+}
+// 맨 위의 실시간 점 자리: 띠 모양이면 이름 바로 뒤(띠와 같은 자리), 그 밖의 종목은 가격 앞
+function placeHeaderLiveDot() {
+  const dot = el("companyPanelLiveDot");
+  const nameEl = el("companyPanelName");
+  const priceEl = el("companyPanelPrice");
+  if (!dot || !nameEl || !priceEl) return;
+  if (el("companyPanelIdentity").classList.contains("idx-head")) {
+    if (nameEl.nextElementSibling !== dot) nameEl.insertAdjacentElement("afterend", dot);
+  } else if (priceEl.previousElementSibling !== dot) priceEl.insertAdjacentElement("beforebegin", dot);
+}
 // 개요 '현재가' 줄의 등락 표기 "▼ 6.08 (-3.91%)" — 처음 그릴 때와 1초 갱신이 같은 모양을 쓰도록 한 곳에서 만든다
 function summaryChangeHtmlOf(price, changePct, changeAmount, currency, symbol) {
   if (changePct === null || changePct === undefined || !Number.isFinite(changePct)) return "";
@@ -3046,17 +3078,20 @@ function detailLiveRender(arrived) {
   const tick = q.tick;
   q.tick = 0;
   const text = detailLivePriceText(q.price);
-  [el("companyPanelPrice"), el("summaryLivePrice")].forEach((node) => {
+  const sh = idxStripHeadOf(detailLive.symbol); // 대표 지수는 맨 위를 띠와 같은 글자로
+  [
+    [el("companyPanelPrice"), sh ? idxStripHeadPrice(sh, q.price) : text],
+    [el("summaryLivePrice"), text],
+  ].forEach(([node, t]) => {
     if (!node) return;
-    if (node.textContent !== text) node.textContent = text;
+    if (node.textContent !== t) node.textContent = t;
     if (tick) detailLiveFlash(node, tick);
   });
   if (!Number.isFinite(q.pct)) return;
   const pctEl = el("companyPanelChangePct");
   if (pctEl) {
-    const up = q.pct >= 0;
-    pctEl.textContent = `${up ? "▲" : "▼"}(${up ? "+" : ""}${q.pct.toFixed(2)}%)`;
-    pctEl.className = `detail-identity-change ${up ? "delta-up" : "delta-down"}`;
+    pctEl.textContent = headChangeText(q.pct, !!sh);
+    pctEl.className = `detail-identity-change ${q.pct >= 0 ? "delta-up" : "delta-down"}`;
   }
   const chg = el("summaryLiveChange");
   if (chg) {
@@ -3138,6 +3173,7 @@ function detailLiveStart(symbol, meta, changePct, changeAmount) {
     dot.setAttribute("aria-hidden", "true");
     el("companyPanelPrice").insertAdjacentElement("beforebegin", dot);
   }
+  placeHeaderLiveDot();
   detailLiveRender(false);
   detailLiveKick();
 }
@@ -3167,6 +3203,9 @@ function renderCompanyIdentity(ticker, quote, meta, changePct) {
   let displayName = TICKER_TO_KOREAN_NAME[ticker] || quote.longname || quote.shortname || meta.longName || ticker;
   const idxInfo = indexInfoOf(ticker);
   if (idxInfo && idxInfo.name) displayName = idxInfo.name;
+  const stripHead = idxStripHeadOf(ticker); // 대표 지수 띠의 지표면 맨 위를 띠와 같은 모양으로
+  if (stripHead) displayName = stripHead.name;
+  el("companyPanelIdentity").classList.toggle("idx-head", !!stripHead);
   // 암호화폐는 한글명(비트코인·페페 등)을 우선 표시, 없으면 "Cardano USD"의 " USD"만 떼고 표시(2026-09-01)
   const identitySection = sectionOfSymbol(ticker, quote.quoteType);
   if (identitySection === "crypto") displayName = cryptoKoName(ticker, displayName);
@@ -3175,7 +3214,7 @@ function renderCompanyIdentity(ticker, quote, meta, changePct) {
   if (identitySection === "etf" && ETF_NAME_BY_SYMBOL.has(ticker)) displayName = ETF_NAME_BY_SYMBOL.get(ticker);
   if (identitySection === "etf" && !isKrTicker(ticker)) registerEtfName(ticker, displayName);
   const price = meta.regularMarketPrice;
-  el("companyPanelLogoWrap").innerHTML = idxInfo ? indexLogoHtml(ticker) : tickerLogoHtml(ticker);
+  el("companyPanelLogoWrap").innerHTML = stripHead ? "" : idxInfo ? indexLogoHtml(ticker) : tickerLogoHtml(ticker); // 띠 모양이면 큰 로고 없이 이름 앞 작은 마크만
   el("companyPanelName").textContent = displayName;
   // 2026-09-15 사용자 요청: 헤더는 무조건 2줄 — 1줄 = 기업명 + 바로 오른쪽 국기/섹션 마크(+ETF 티커), 2줄 = 가격(변동률)
   //  (예전엔 이름 아래에 마크 줄이 따로 있어 3줄이었음) ETF 티커는 국내 "069500", 미국 "SPY"(2026-09-13)
@@ -3198,18 +3237,24 @@ function renderCompanyIdentity(ticker, quote, meta, changePct) {
   // 제목 옆 섹션 마크(한국주식/미국주식/ETF/비트코인, 2026-09-01) — Yahoo quoteType이 있으면 그걸 우선 사용
   const sectionMarkEl = el("companyPanelSectionMark");
   // 지수는 로고 자리가 이미 국기라 이름 옆 마크는 뺀다
-  if (sectionMarkEl)
-    sectionMarkEl.outerHTML = idxInfo
+  if (sectionMarkEl) {
+    const stripMark = stripHead ? (stripHead.mark === "kr" ? FLAG_SVG_KR : stripHead.mark === "us" ? FLAG_SVG_US : stripHead.mark === "crypto" ? ICON_SVG_BTC : "") : "";
+    sectionMarkEl.outerHTML = stripHead
+      ? `<span class="section-mark idx-head-mark" id="companyPanelSectionMark"${stripMark ? "" : ' style="display:none;"'}>${stripMark}</span>` // 띠처럼 이름 '앞'에(CSS order) · 달러/원은 마크 없음
+      : idxInfo
       ? '<span class="section-mark" id="companyPanelSectionMark" style="display:none;"></span>'
       : sectionMarkHtml(ticker, quote && quote.quoteType).replace('class="section-mark"', 'class="section-mark" id="companyPanelSectionMark"');
-  el("companyPanelPrice").textContent = price !== undefined && price !== null ? (idxInfo ? fmtIndexValue(price) : fmtPriceFull(price, meta.currency)) : "";
+  }
+  placeHeaderLiveDot();
+  el("companyPanelPrice").textContent =
+    price !== undefined && price !== null ? (stripHead ? idxStripHeadPrice(stripHead, price) : idxInfo ? fmtIndexValue(price) : fmtPriceFull(price, meta.currency)) : "";
   const pctEl = el("companyPanelChangePct");
   if (changePct !== null && changePct !== undefined) {
     const isUp = changePct >= 0;
     const arrow = isUp ? "▲" : "▼";
     const cls = isUp ? "delta-up" : "delta-down";
     // 맨 위 헤더는 등락률만(2026-09-15 사용자 정정) — 오르내린 금액은 개요의 "현재가" 줄에 표시
-    pctEl.textContent = `${arrow}(${isUp ? "+" : ""}${changePct.toFixed(2)}%)`; // 화살표와 %를 붙여서(2026-09-16 사용자 요청)
+    pctEl.textContent = headChangeText(changePct, !!stripHead); // 화살표와 %를 붙여서(2026-09-16 사용자 요청) · 대표 지수는 띠와 같이 "▲0.29%"
     pctEl.className = `detail-identity-change ${cls}`;
   } else {
     pctEl.textContent = "";
