@@ -1,41 +1,41 @@
 {
  "day": "2026-11-27-gemini",
- "at": "2026-11-27T03:55:42.338Z",
+ "at": "2026-11-27T03:56:21.785Z",
  "items": [
   {
    "id": "kore",
    "provider": "gemini",
    "voice": "Kore",
-   "ok": false,
-   "error": "GEMINI_API_KEY 환경변수가 설정되지 않음(GitHub Secrets 에 GEMINI_API_KEY 가 없음)"
+   "ok": true,
+   "bytes": 271228
   },
   {
    "id": "aoede",
    "provider": "gemini",
    "voice": "Aoede",
-   "ok": false,
-   "error": "GEMINI_API_KEY 환경변수가 설정되지 않음(GitHub Secrets 에 GEMINI_API_KEY 가 없음)"
+   "ok": true,
+   "bytes": 266428
   },
   {
    "id": "leda",
    "provider": "gemini",
    "voice": "Leda",
-   "ok": false,
-   "error": "GEMINI_API_KEY 환경변수가 설정되지 않음(GitHub Secrets 에 GEMINI_API_KEY 가 없음)"
+   "ok": true,
+   "bytes": 272188
   },
   {
    "id": "zephyr",
    "provider": "gemini",
    "voice": "Zephyr",
-   "ok": false,
-   "error": "GEMINI_API_KEY 환경변수가 설정되지 않음(GitHub Secrets 에 GEMINI_API_KEY 가 없음)"
+   "ok": true,
+   "bytes": 269308
   },
   {
    "id": "sulafat",
    "provider": "gemini",
    "voice": "Sulafat",
-   "ok": false,
-   "error": "GEMINI_API_KEY 환경변수가 설정되지 않음(GitHub Secrets 에 GEMINI_API_KEY 가 없음)"
+   "ok": true,
+   "bytes": 280348
   }
  ]
 }
