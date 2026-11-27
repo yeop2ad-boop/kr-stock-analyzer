@@ -1,0 +1,41 @@
+name: 오늘의 증시지도 그림 생성
+
+# 아침 브리핑 쇼츠("오늘의 증시지도")에 넣을 그림 5장 — 신기술(techinsight-daily.yml)과 같은 OpenAI gpt-image-2 사용.
+# 주문 글(data/brief-images/<날짜>/prompts.json)이 올라오면 돌고, 만든 그림을 같은 폴더에 넣어 다시 올린다. (2026-11-27)
+on:
+  push:
+    branches: [main]
+    paths:
+      - "data/brief-images/*/prompts.json"
+  workflow_dispatch:
+    inputs:
+      day:
+        description: "날짜(YYYY-MM-DD) — 비우면 가장 최근 주문"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: brief-images
+  cancel-in-progress: false
+
+jobs:
+  gen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: 그림 생성
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: node scripts/gen-brief-images.js ${{ inputs.day }}
+
+      - name: 변경사항 커밋 및 푸시
+        if: always()
+        run: |
+          bash scripts/ci-commit-push.sh "오늘의 증시지도 그림: 자동 생성 ($(date -u +%Y-%m-%d))" data/brief-images
