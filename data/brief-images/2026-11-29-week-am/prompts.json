@@ -1,0 +1,28 @@
+{
+ "day": "2026-11-29-week-am",
+ "note": "이번주 핵심 이슈(SK하이닉스) — 장면 묘사 · 실사 보도 사진 · 세로 · 글자·로고 없음",
+ "quality": "low",
+ "size": "1024x1536",
+ "items": [
+  {
+   "n": 1,
+   "prompt": "Close-up of rows of memory chip modules standing upright on a dark circuit board, lit by warm orange and red light, with softly blurred server racks in the background."
+  },
+  {
+   "n": 2,
+   "prompt": "A dark trading room at night with large wall displays glowing red and blue, strongly out of focus so nothing on them is legible, empty desks in the foreground."
+  },
+  {
+   "n": 3,
+   "prompt": "A calculator, a pen and printed pages with rising bar charts on a wooden office desk beside a window in soft daylight; the pages are out of focus so nothing is legible."
+  },
+  {
+   "n": 4,
+   "prompt": "Inside a semiconductor cleanroom under yellow light, long rows of wafer processing machines stretching into the distance, two workers in white protective suits seen small and far away from behind."
+  },
+  {
+   "n": 5,
+   "prompt": "A large container port at dawn seen from above, tall cranes and stacks of colorful shipping containers beside a cargo ship, calm water and a pale orange sky."
+  }
+ ]
+}
