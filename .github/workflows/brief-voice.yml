@@ -1,6 +1,6 @@
 name: 오늘의 증시지도 음성 생성
 
-# 아침 브리핑 쇼츠("오늘의 증시지도") 대본을 음성으로 — 그림(brief-images.yml)과 같은 키(OPENAI_API_KEY) 사용.
+# 아침 브리핑 쇼츠("오늘의 증시지도") 대본을 음성으로 — 그림(brief-images.yml)과 같은 키(OPENAI_API_KEY) 사용. 주문의 provider 가 gemini 면 GEMINI_API_KEY.
 # 주문(data/brief-voice/<날짜>/job.json)이 올라오면 돌고, 만든 mp3 를 같은 폴더에 넣어 다시 올린다. (2026-11-27)
 on:
   push:
@@ -33,6 +33,7 @@ jobs:
       - name: 음성 생성
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: node scripts/gen-brief-voice.js ${{ inputs.day }}
 
       - name: 변경사항 커밋 및 푸시
