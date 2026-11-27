@@ -9,6 +9,8 @@
 // provider
 //   openai (기본) : gpt-4o-mini-tts · 키 OPENAI_API_KEY
 //   gemini        : gemini-3.8-flash-tts(Interactions API · 2026-11-27 공식 문서 기준) · 키 GEMINI_API_KEY · WAV(24kHz 모노)로 받음
+//                   무료 한도 = 하루 10번(2026-11-27 거절 글로 확인: "limit: 10 requests per day on Free Tier") — 문장마다 부르면 모자란다.
+//                   주문의 model 로 gemini-3.8-flash-lite-tts(가벼운 모델 · 한도 따로)를 고를 수 있다.
 //
 // 폴더를 지정하지 않으면 주문이 있는 폴더를 모두 보고, 아직 없는 파일만 만든다(job.force 가 true 면 다시 만듦).
 // 로컬 수동 실행: OPENAI_API_KEY=... node scripts/gen-brief-voice.js [폴더 이름]
@@ -110,7 +112,8 @@ async function runDay(day) {
           break;
         } catch (e) {
           // 잠깐 몰려서 거절(429)되거나 서버가 바쁠 때(5xx)만 기다렸다가 다시 — 다른 실패는 그대로 실패 처리
-          if (attempt >= 5 || !/ (429|500|502|503|504) /.test(String(e.message || e))) throw e;
+          // 하루 한도(per day)에 걸린 것은 기다려도 소용없으니 바로 실패 처리
+          if (attempt >= 5 || /per day/i.test(String(e.message || e)) || !/ (429|500|502|503|504) /.test(String(e.message || e))) throw e;
           console.error(`[${day}] 음성 ${id} 다시 시도(${attempt}) — ${String(e.message || e).slice(0, 120)}`);
           await new Promise((r) => setTimeout(r, 25000));
         }
