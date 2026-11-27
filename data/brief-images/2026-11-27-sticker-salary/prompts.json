@@ -1,0 +1,33 @@
+{
+ "day": "2026-11-27-sticker-salary",
+ "note": "Mavest 순위 쇼츠 새 스타일 시험 — 움직이는 스티커(이모티콘처럼)용 그림 · 자홍 바탕은 영상에서 지운다 · 2026-11-27 사용자 '해당 내용에 해당하는 이미지를 받아서 움직이게 깔고'",
+ "quality": "medium",
+ "size": "1024x1024",
+ "style": " 3D glossy emoji-style sticker icon with soft rounded shapes and bright saturated colors, one single object centered and filling about 70 percent of the frame, isolated on a perfectly flat solid pure magenta (#FF00FF) background with no gradient, no floor, no shadow and no other objects. No text, no letters, no numbers, no logos. The object itself must not contain any pink, purple or magenta color.",
+ "items": [
+  {
+   "n": 1,
+   "prompt": "A chubby brown leather wallet bursting open with a thick fan of green banknotes."
+  },
+  {
+   "n": 2,
+   "prompt": "A plump tan canvas money bag tied with a rope, with shiny gold coins spilling out of the top."
+  },
+  {
+   "n": 3,
+   "prompt": "A cute red and white toy rocket flying diagonally upward with an orange and yellow flame at its tail."
+  },
+  {
+   "n": 4,
+   "prompt": "A wooden hourglass with golden sand flowing down inside clear glass."
+  },
+  {
+   "n": 5,
+   "prompt": "A single thick shiny gold coin seen at a slight angle, with a simple star embossed on its face."
+  },
+  {
+   "n": 6,
+   "prompt": "A single green banknote with two small white feathered wings, flying."
+  }
+ ]
+}
