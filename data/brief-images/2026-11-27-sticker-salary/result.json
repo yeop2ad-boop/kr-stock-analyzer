@@ -1,0 +1,39 @@
+{
+ "day": "2026-11-27-sticker-salary",
+ "model": "gpt-image-2",
+ "size": "1024x1024",
+ "quality": "medium",
+ "at": "2026-11-27T10:52:54.130Z",
+ "items": [
+  {
+   "n": 1,
+   "ok": true,
+   "bytes": 143316
+  },
+  {
+   "n": 2,
+   "ok": true,
+   "bytes": 133990
+  },
+  {
+   "n": 3,
+   "ok": true,
+   "bytes": 63066
+  },
+  {
+   "n": 4,
+   "ok": true,
+   "bytes": 93544
+  },
+  {
+   "n": 5,
+   "ok": true,
+   "bytes": 65520
+  },
+  {
+   "n": 6,
+   "ok": true,
+   "bytes": 57718
+  }
+ ]
+}
