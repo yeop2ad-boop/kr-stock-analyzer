@@ -1,0 +1,14 @@
+{
+ "day": "2026-11-28-rank",
+ "note": "주간 급등 랭킹(11/23~11/27) 메인페이지 사진 6장 — 1 대성하이텍 · 2 휴림로봇 · 3 코스모로보틱스 · 4 안랩 · 5 풍원정밀 · 6 에이치브이엠 · 실사 보도 사진 · 세로 · 글자·로고 없음",
+ "quality": "low",
+ "size": "1024x1536",
+ "items": [
+  {"n": 1, "prompt": "Close-up inside a machine-tool factory: a precision automatic lathe cutting a small shiny steel part, fine coolant spray and metal shavings, warm workshop light, other machines softly blurred behind."},
+  {"n": 2, "prompt": "Rows of white industrial robot arms working on an automated assembly line in a bright modern factory, seen from a low angle, the nearest arm sharp and the rest softly blurred."},
+  {"n": 3, "prompt": "In a bright hospital rehabilitation room, a patient walks along parallel bars wearing a lower-body exoskeleton robot on the legs while a therapist walks beside; seen from the side at waist height, faces turned away."},
+  {"n": 4, "prompt": "A dark security operations center at night: analysts seen from behind at desks facing a wall of glowing blue screens, strongly out of focus so nothing on the screens is legible."},
+  {"n": 5, "prompt": "Extreme close-up of an ultra-thin metal sheet perforated with a fine grid of microscopic holes, held over a light table in a cleanroom, glowing edges, shallow depth of field."},
+  {"n": 6, "prompt": "A gleaming silver superalloy ingot on a steel workbench in a metal plant, beside a polished rocket engine nozzle part, molten metal glowing orange in a furnace in the blurred background."}
+ ]
+}
