@@ -4,7 +4,7 @@
  "quality": "medium",
  "size": "1536x1024",
  "style": "",
- "force": true,
+ "force": false,
  "items": [
   {
    "n": 1,
