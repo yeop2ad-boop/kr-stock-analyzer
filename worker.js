@@ -18,6 +18,53 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
+// ---------- 긁어가기 방지(2026-11-27 사용자 요청) — 마켓맵 경로에만 적용(/slime/* 은 게임 앱이 부르므로 그대로) ----------
+// 1) 우리 사이트 화면에서 부른 요청만 받는다: 브라우저가 붙이는 Origin(없으면 Referer)이 우리 주소여야 함. 주소창·프로그램으로 직접 부르면 403.
+//    머리글은 꾸밀 수 있어서 작정한 수집까지 막지는 못한다 — 손쉬운 긁어가기와, 남의 사이트가 우리 서버를 끌어다 쓰는 것을 막는 장치.
+// 2) 같은 주소(IP)에서 1분 600번 · 1시간 20,000번을 넘기면 429. 워커 메모리에 세는 어림 장치(실행 묶음마다 따로 셈)라 정확한 한도는 아니다.
+//    기준: 화면 하나가 장중에 지수 띠 1초 + 종목 상세 1초 = 1분에 120번쯤 → 한 주소를 여럿이 같이 쓰는 통신사 주소에서도 걸리지 않게 넉넉히 잡음.
+const SITE_ORIGINS = ["https://marketmap.kr", "https://www.marketmap.kr"];
+const LOCAL_ORIGIN_RE = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/; // 개발용 미리보기
+const RATE_MIN_MAX = 600;
+const RATE_HOUR_MAX = 20000;
+const rateMap = new Map(); // ip -> { m: 1분 창이 시작된 때, mn: 그 창의 횟수, h: 1시간 창이 시작된 때, hn }
+
+function isSiteOrigin(o) {
+  return SITE_ORIGINS.includes(o) || LOCAL_ORIGIN_RE.test(o);
+}
+
+function requestFromSite(request) {
+  const origin = request.headers.get("Origin");
+  if (origin) return isSiteOrigin(origin);
+  const ref = request.headers.get("Referer");
+  if (!ref) return false;
+  try {
+    return isSiteOrigin(new URL(ref).origin);
+  } catch {
+    return false;
+  }
+}
+
+// 한도를 넘겼으면 다시 받을 수 있을 때까지 남은 초, 아니면 0
+function rateLimitWait(request) {
+  const ip = request.headers.get("CF-Connecting-IP") || "";
+  if (!ip) return 0;
+  const now = Date.now();
+  let r = rateMap.get(ip);
+  if (!r) {
+    if (rateMap.size > 20000) rateMap.clear();
+    r = { m: now, mn: 0, h: now, hn: 0 };
+    rateMap.set(ip, r);
+  }
+  if (now - r.m >= 60000) { r.m = now; r.mn = 0; }
+  if (now - r.h >= 3600000) { r.h = now; r.hn = 0; }
+  r.mn++;
+  r.hn++;
+  if (r.mn > RATE_MIN_MAX) return Math.max(1, Math.ceil((r.m + 60000 - now) / 1000));
+  if (r.hn > RATE_HOUR_MAX) return Math.max(1, Math.ceil((r.h + 3600000 - now) / 1000));
+  return 0;
+}
+
 // ---------- 인기 검색어: 방문자 전체의 검색을 KV에 기록해 최근 24시간 기준으로 집계(검색 오버레이의 "인기 검색") ----------
 const SEARCH_LOG_KEY = "search_log_events";
 const SEARCH_LOG_MAX = 8000; // 저장 이벤트 상한(오래된 것부터 정리)
@@ -1733,6 +1780,18 @@ export default {
 
     if (requestUrl.pathname === "/slime/iap/verify") {
       return handleSlimeIapVerify(request, env);
+    }
+
+    // 여기부터는 마켓맵 경로 — 우리 사이트에서 온 요청만 받고, 주소(IP)별 횟수를 제한한다(맨 위 '긁어가기 방지')
+    if (!requestFromSite(request)) {
+      return jsonResponse({ error: "Forbidden" }, 403);
+    }
+    const waitSec = rateLimitWait(request);
+    if (waitSec) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), {
+        status: 429,
+        headers: { "Content-Type": "application/json", "Retry-After": String(waitSec), ...CORS_HEADERS },
+      });
     }
 
     if (requestUrl.pathname === "/news-summary") {
