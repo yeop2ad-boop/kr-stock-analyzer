@@ -1,7 +1,7 @@
 const NDX_EXTRA_DATA = {
-  "generatedAt": "2026-11-26T18:19:56Z",
+  "generatedAt": "2026-11-27T04:08:45Z",
   "count": 15,
-  "constituentsAsOf": "2026-11-26",
+  "constituentsAsOf": "2026-11-27",
   "constituents": [
     "AAPL",
     "NVDA",
