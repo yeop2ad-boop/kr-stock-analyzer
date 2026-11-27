@@ -1,0 +1,43 @@
+{
+ "day": "2026-11-27-sample",
+ "model": "gpt-4o-mini-tts",
+ "at": "2026-11-27T03:12:44.343Z",
+ "items": [
+  {
+   "id": "nova",
+   "voice": "nova",
+   "ok": true,
+   "bytes": 58368
+  },
+  {
+   "id": "shimmer",
+   "voice": "shimmer",
+   "ok": true,
+   "bytes": 71424
+  },
+  {
+   "id": "coral",
+   "voice": "coral",
+   "ok": true,
+   "bytes": 67968
+  },
+  {
+   "id": "sage",
+   "voice": "sage",
+   "ok": true,
+   "bytes": 89088
+  },
+  {
+   "id": "marin",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 61824
+  },
+  {
+   "id": "alloy",
+   "voice": "alloy",
+   "ok": true,
+   "bytes": 74496
+  }
+ ]
+}
