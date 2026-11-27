@@ -1,0 +1,28 @@
+{
+ "day": "2026-11-27-close",
+ "note": "오늘의 증시 마감 11/27 — 맨 처음 방식(장면 묘사 · 실사 보도 사진 · 세로)",
+ "quality": "low",
+ "size": "1024x1536",
+ "items": [
+  {
+   "n": 1,
+   "prompt": "A white humanoid robot standing on a bright modern factory floor, with robotic arms working on an assembly line in the softly blurred background, cool blue light."
+  },
+  {
+   "n": 2,
+   "prompt": "Close-up of rows of cylindrical lithium battery cells on a production line, with laboratory flasks of clear liquid in the foreground, cool white light."
+  },
+  {
+   "n": 3,
+   "prompt": "Glass skyscrapers of a financial district at dusk seen from street level, warm office lights glowing in the windows, deep blue sky."
+  },
+  {
+   "n": 4,
+   "prompt": "A huge stock market display wall glowing red in a dark trading hall, with silhouettes of people looking up at it; the screens are out of focus so nothing is legible."
+  },
+  {
+   "n": 5,
+   "prompt": "A desk by a window at sunrise with a blank desk calendar, a closed notebook and a cup of coffee, a city skyline outside in soft golden light."
+  }
+ ]
+}
