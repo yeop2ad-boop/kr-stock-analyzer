@@ -1,0 +1,33 @@
+{
+ "day": "2026-11-27-sticker-theme",
+ "note": "Mavest 순위 쇼츠 새 스타일 2판 — 주제를 바로 알아보는 그림(월급 · 블랙프라이데이 · 비싼 주식) · 작게 뒤에 붙인다 · 자홍 바탕은 지운다 · 2026-11-27 사용자 '블랙프라이데이, 한달월급 이런 걸 직관적으로'",
+ "quality": "medium",
+ "size": "1024x1024",
+ "style": " 3D glossy emoji-style sticker icon with soft rounded shapes and bright saturated colors, one single object centered and filling about 70 percent of the frame, isolated on a perfectly flat solid pure magenta (#FF00FF) background with no gradient, no floor, no shadow and no other objects. No logos and no writing other than what is described. The object itself must not contain any pink, purple or magenta color.",
+ "items": [
+  {
+   "n": 1,
+   "prompt": "A cream-white paper pay envelope seen straight from the front, with the Korean word '월급' printed in large bold black letters in the center of the envelope, and a thick stack of green banknotes sticking out of its open top."
+  },
+  {
+   "n": 2,
+   "prompt": "A cream-white paper pay envelope seen straight from the front with a completely blank front and no writing at all, and a thick stack of green banknotes sticking out of its open top."
+  },
+  {
+   "n": 3,
+   "prompt": "A glossy black paper shopping bag seen straight from the front, with the words 'BLACK FRIDAY' printed in large bold white capital letters on two lines, and a small red tag with a white percent sign hanging from its rope handle."
+  },
+  {
+   "n": 4,
+   "prompt": "A glossy black paper shopping bag seen straight from the front with a completely blank front and no writing at all, and a small red tag with a white percent sign hanging from its rope handle."
+  },
+  {
+   "n": 5,
+   "prompt": "A luxurious black price tag with a gold string seen straight from the front, with three large gold dollar signs '$$$' embossed on it, and a sparkling white diamond beside it."
+  },
+  {
+   "n": 6,
+   "prompt": "A shiny gold bar with a small black price tag tied to it by a gold string, and a sparkling white diamond beside it. No writing."
+  }
+ ]
+}
