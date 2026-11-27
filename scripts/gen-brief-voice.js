@@ -49,17 +49,13 @@ function prune(today) {
   }
 }
 
-async function main() {
-  const days = fs.existsSync(ROOT)
-    ? fs.readdirSync(ROOT).filter((d) => /^\d{4}-\d{2}-\d{2}/.test(d) && fs.existsSync(path.join(ROOT, d, "job.json"))).sort()
-    : [];
-  const day = process.argv[2] || days[days.length - 1];
-  if (!day) throw new Error("data/brief-voice/<날짜>/job.json 이 없음");
+async function runDay(day) {
   const dir = path.join(ROOT, day);
   const job = JSON.parse(fs.readFileSync(path.join(dir, "job.json"), "utf8"));
   const model = job.model || "gpt-4o-mini-tts";
   const result = { day, model, at: new Date().toISOString(), items: [] };
   let failed = 0;
+  let made = 0;
   for (const it of job.items || []) {
     const id = String(it.id).replace(/[^A-Za-z0-9_-]/g, "");
     const file = path.join(dir, `${id}.mp3`);
@@ -71,16 +67,30 @@ async function main() {
     try {
       const buf = await speak(String(it.text), voice, it.instructions || job.instructions || DEFAULT_STYLE, model);
       fs.writeFileSync(file, buf);
+      made++;
       result.items.push({ id, voice, ok: true, bytes: buf.length });
-      console.log(`음성 ${id}(${voice}) 완료 (${buf.length} bytes)`);
+      console.log(`[${day}] 음성 ${id}(${voice}) 완료 (${buf.length} bytes)`);
     } catch (e) {
       failed++;
       result.items.push({ id, voice, ok: false, error: String(e.message || e).slice(0, 400) });
-      console.error(`음성 ${id}(${voice}) 실패: ${e.message || e}`);
+      console.error(`[${day}] 음성 ${id}(${voice}) 실패: ${e.message || e}`);
     }
   }
-  fs.writeFileSync(path.join(dir, "result.json"), JSON.stringify(result, null, 1));
-  prune(day);
+  // 새로 만든 것도 실패도 없으면(전부 이미 있음) 결과 파일을 건드리지 않는다
+  if (made || failed || !fs.existsSync(path.join(dir, "result.json"))) fs.writeFileSync(path.join(dir, "result.json"), JSON.stringify(result, null, 1));
+  return failed;
+}
+
+async function main() {
+  const days = fs.existsSync(ROOT)
+    ? fs.readdirSync(ROOT).filter((d) => /^\d{4}-\d{2}-\d{2}/.test(d) && fs.existsSync(path.join(ROOT, d, "job.json"))).sort()
+    : [];
+  // 폴더를 지정하지 않으면 주문이 있는 폴더를 모두 본다(이미 만든 파일은 건너뛰므로 새 주문만 만들어진다)
+  const targets = process.argv[2] ? [process.argv[2]] : days;
+  if (!targets.length) throw new Error("data/brief-voice/<날짜>/job.json 이 없음");
+  let failed = 0;
+  for (const day of targets) failed += await runDay(day);
+  prune(targets[targets.length - 1]);
   if (failed) process.exitCode = 1;
 }
 
