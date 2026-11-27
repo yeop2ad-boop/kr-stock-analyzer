@@ -1,28 +1,30 @@
 {
  "day": "2026-11-27",
- "quality": "low",
- "size": "1024x1536",
- "style": "Style: eye-catching YouTube finance news thumbnail, photorealistic 3D render mixed with photo, vivid saturated colors, high contrast, dramatic rim lighting, crisp sharp details, bright and punchy (not dark, not foggy, not abstract). Vertical 2:3 composition: put ALL key elements (main subject and arrow) large inside the middle third of the frame; the top and bottom thirds are a simpler continuation of the same scene. Absolutely no text, no letters, no numbers, no logos, no watermarks, no brand names, no recognizable real people.",
+ "note": "2026-11-27 사용자: 다른 말 없이 제목을 그대로 적고 \"유튜브 썸네일 느낌으로 만들어줘\" 라고만 주문",
+ "quality": "medium",
+ "size": "1536x1024",
+ "style": "",
+ "force": true,
  "items": [
   {
    "n": 1,
-   "prompt": "A big white space rocket lifting off with a bright orange flame and thick white smoke against a vivid blue sky with white clouds. Beside it a huge glossy 3D glowing red arrow zig-zags upward to the upper right like a rising stock chart. A large waving flag of the United States fills the left side behind the rocket."
+   "prompt": "우주항공, 미국서 +1.3% 오늘 국장도 우주항공부터 볼까?\n유튜브 썸네일 느낌으로 만들어줘"
   },
   {
    "n": 2,
-   "prompt": "A glowing blue DNA double helix rising from a clean white laboratory bench with glass medicine vials and red-and-white capsules in the foreground, bright teal and white light. A huge glossy 3D glowing red arrow rises to the upper right like a stock chart, with a faint red candlestick chart glowing in the background. No flags of any country anywhere in the image."
+   "prompt": "어제 강했던 테마, 바이오 평균 +1.0% 오늘도 이어질까?\n유튜브 썸네일 느낌으로 만들어줘"
   },
   {
    "n": 3,
-   "prompt": "A white desk calendar with an empty grid where one square is circled with a thick red marker, standing on a bright office desk next to a stack of financial report pages with colorful bar charts, a magnifying glass and a shiny golden bell. Faint glowing bar-chart graphics float in the blue background. No flags of any country anywhere in the image."
+   "prompt": "오늘 실적 발표 일정 한국·미국 모두 일정 없음\n유튜브 썸네일 느낌으로 만들어줘"
   },
   {
    "n": 4,
-   "prompt": "A shiny golden bull statue charging forward on a glossy reflective floor, in front of giant screens showing red rising candlestick charts. A huge glossy 3D glowing red arrow shoots upward to the upper right behind the bull. Warm golden and red light, sparks. No flags of any country anywhere in the image."
+   "prompt": "미래에셋벤처투자 +21.6% 어제 유독 강했던 종목 10\n유튜브 썸네일 느낌으로 만들어줘"
   },
   {
    "n": 5,
-   "prompt": "A dark bronze bear statue standing on a glossy reflective floor, in front of giant screens showing blue falling line charts. A huge glossy 3D glowing blue arrow plunges downward to the lower right behind the bear. Cold blue light, light rain. No flags of any country anywhere in the image."
+   "prompt": "엔켐 -9.3% 어제 유독 약했던 종목 10\n유튜브 썸네일 느낌으로 만들어줘"
   }
  ]
 }

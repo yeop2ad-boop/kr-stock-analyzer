@@ -77,7 +77,7 @@ async function main() {
       continue;
     }
     try {
-      const buf = await generate(String(it.prompt).trim() + " " + String(job.style || STYLE_TAIL).trim(), size, quality);
+      const buf = await generate((String(it.prompt).trim() + " " + String(job.style !== undefined ? job.style : STYLE_TAIL).trim()).trim(), size, quality);   // style 을 빈 글로 주면 주문 글만 그대로 보낸다
       fs.writeFileSync(file, buf);
       result.items.push({ n: it.n, ok: true, bytes: buf.length });
       console.log(`그림 ${it.n} 완료 (${buf.length} bytes)`);
