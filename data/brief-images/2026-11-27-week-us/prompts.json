@@ -1,0 +1,13 @@
+{
+ "day": "2026-11-27-week-us",
+ "note": "미국 장전 브리핑(2026-11-27 블랙프라이데이 · 조기 폐장) — 맨 처음 방식(장면 묘사 · 실사 보도 사진 · 세로 · 글자·로고 없음)",
+ "quality": "low",
+ "size": "1024x1536",
+ "items": [
+  {"n": 1, "prompt": "A dim trading floor before dawn with rows of glowing monitors showing blurred green and red charts, empty chairs, soft blue light; nothing on the screens is legible."},
+  {"n": 2, "prompt": "Exterior of a grand neoclassical stock exchange building with tall stone columns in early morning light, wet street reflecting warm lights; no signs, no lettering, no flags."},
+  {"n": 3, "prompt": "Close-up of several curved monitors on a desk displaying abstract candlestick charts in green and red, shallow depth of field, all numbers blurred and unreadable."},
+  {"n": 4, "prompt": "Paper shopping bags and wrapped boxes stacked by a store entrance at dawn with warm lights, a blurred crowd far in the background; no logos and no text anywhere."},
+  {"n": 5, "prompt": "A desk calendar and a small clock on a tidy office desk beside a coffee cup and a closed laptop, morning light from a window; the calendar pages are out of focus so nothing is legible."}
+ ]
+}
