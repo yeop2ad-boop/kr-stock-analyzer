@@ -1,0 +1,127 @@
+{
+ "day": "2026-11-27",
+ "model": "gpt-4o-mini-tts",
+ "at": "2026-11-27T03:17:50.144Z",
+ "items": [
+  {
+   "id": "L00",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 63360
+  },
+  {
+   "id": "L01",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 66432
+  },
+  {
+   "id": "L02",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 65664
+  },
+  {
+   "id": "L03",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 117120
+  },
+  {
+   "id": "L04",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 72192
+  },
+  {
+   "id": "L05",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 104064
+  },
+  {
+   "id": "L06",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 52224
+  },
+  {
+   "id": "L07",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 133632
+  },
+  {
+   "id": "L08",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 82560
+  },
+  {
+   "id": "L09",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 52224
+  },
+  {
+   "id": "L10",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 38400
+  },
+  {
+   "id": "L11",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 78720
+  },
+  {
+   "id": "L12",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 157824
+  },
+  {
+   "id": "L13",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 115200
+  },
+  {
+   "id": "L14",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 100992
+  },
+  {
+   "id": "L15",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 108288
+  },
+  {
+   "id": "L16",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 55296
+  },
+  {
+   "id": "L17",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 69120
+  },
+  {
+   "id": "L18",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 100224
+  },
+  {
+   "id": "L19",
+   "voice": "marin",
+   "ok": true,
+   "bytes": 101760
+  }
+ ]
+}
