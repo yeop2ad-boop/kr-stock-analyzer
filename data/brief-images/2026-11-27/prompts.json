@@ -1,12 +1,28 @@
 {
-  "day": "2026-11-27",
-  "quality": "low",
-  "size": "1024x1536",
-  "items": [
-    { "n": 1, "prompt": "A rocket lifting off from a launch pad at dawn, bright exhaust flame and billowing smoke clouds, deep navy-blue sky with a faint orange horizon, launch tower silhouettes, seen from a distance." },
-    { "n": 2, "prompt": "Close-up of a scientist's hands in blue gloves using a pipette over rows of small glass vials in a modern biotech laboratory, cool blue lighting, softly blurred lab equipment in the background." },
-    { "n": 3, "prompt": "An office desk in soft morning window light with a desk calendar, printed financial report pages with charts, a calculator, a pen and a cup of coffee; all pages and the calendar slightly out of focus so that no writing is legible." },
-    { "n": 4, "prompt": "A stock trading floor at night with several monitors glowing red with rising line charts and candlestick charts, warm red ambient light, blurred silhouettes of traders in the background, screens out of focus so nothing is legible." },
-    { "n": 5, "prompt": "A rainy night seen through a window covered with raindrops, behind the glass a blurred computer monitor showing a falling blue line chart, cold blue mood, empty dark office." }
-  ]
+ "day": "2026-11-27",
+ "quality": "low",
+ "size": "1024x1536",
+ "style": "Style: eye-catching YouTube finance news thumbnail, photorealistic 3D render mixed with photo, vivid saturated colors, high contrast, dramatic rim lighting, crisp sharp details, bright and punchy (not dark, not foggy, not abstract). Vertical 2:3 composition: put ALL key elements (main subject, arrow, flag) large inside the middle third of the frame; the top and bottom thirds are a simpler continuation of the same scene. Absolutely no text, no letters, no numbers, no logos, no watermarks, no brand names, no recognizable real people.",
+ "items": [
+  {
+   "n": 1,
+   "prompt": "A big white space rocket lifting off with a bright orange flame and thick white smoke against a vivid blue sky with white clouds. Beside it a huge glossy 3D glowing red arrow zig-zags upward to the upper right like a rising stock chart. A large waving flag of the United States fills the left side behind the rocket."
+  },
+  {
+   "n": 2,
+   "prompt": "A glowing blue DNA double helix rising from a clean white laboratory bench with glass medicine vials and red-and-white capsules in the foreground, bright teal and white light. A huge glossy 3D glowing red arrow rises to the upper right like a stock chart, with a faint red candlestick chart glowing in the background."
+  },
+  {
+   "n": 3,
+   "prompt": "A white desk calendar with an empty grid where one square is circled with a thick red marker, standing on a bright office desk next to a stack of financial report pages with colorful bar charts, a magnifying glass and a shiny golden bell. Faint glowing bar-chart graphics float in the blue background."
+  },
+  {
+   "n": 4,
+   "prompt": "A shiny golden bull statue charging forward on a glossy reflective floor, in front of giant screens showing red rising candlestick charts. A huge glossy 3D glowing red arrow shoots upward to the upper right behind the bull. Warm golden and red light, sparks."
+  },
+  {
+   "n": 5,
+   "prompt": "A dark bronze bear statue standing on a glossy reflective floor, in front of giant screens showing blue falling line charts. A huge glossy 3D glowing blue arrow plunges downward to the lower right behind the bear. Cold blue light, light rain."
+  }
+ ]
 }

@@ -3,6 +3,7 @@
 //
 //   data/brief-images/<YYYY-MM-DD>/prompts.json  ← 이 PC 에서 대본과 함께 써서 올리는 주문 글
 //       { "day": "2026-11-27", "quality": "low", "size": "1024x1536", "items": [ { "n": 1, "prompt": "..." }, ... ] }
+//       style(선택) = 모든 그림 끝에 붙는 그림체 글 — 없으면 아래 STYLE_TAIL(차분한 보도 사진). 섬네일 느낌 등으로 바꿀 때 쓴다.
 //   → data/brief-images/<YYYY-MM-DD>/<n>.webp  + result.json(장별 성공·실패)
 //
 // prompts.json 이 올라오면 .github/workflows/brief-images.yml 이 이 스크립트를 돌린다. 이미 있는 그림은 다시 만들지 않는다.
@@ -76,7 +77,7 @@ async function main() {
       continue;
     }
     try {
-      const buf = await generate(String(it.prompt).trim() + STYLE_TAIL, size, quality);
+      const buf = await generate(String(it.prompt).trim() + " " + String(job.style || STYLE_TAIL).trim(), size, quality);
       fs.writeFileSync(file, buf);
       result.items.push({ n: it.n, ok: true, bytes: buf.length });
       console.log(`그림 ${it.n} 완료 (${buf.length} bytes)`);

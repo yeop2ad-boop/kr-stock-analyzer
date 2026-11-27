@@ -16,7 +16,8 @@
 const fs = require("fs");
 const path = require("path");
 
-const ROOT = path.join(__dirname, "..", "data", "brief-voice");
+// BRIEF_VOICE_ROOT 를 주면 그 폴더에서 주문을 읽고 거기에 만든다(이 PC 에서 바로 만들 때 — 저장소 밖 폴더)
+const ROOT = process.env.BRIEF_VOICE_ROOT || path.join(__dirname, "..", "data", "brief-voice");
 const KEEP_DAYS = 7;
 const DEFAULT_STYLE = "차분하고 또렷한 한국어 아침 뉴스 앵커의 말투로, 조금 빠르고 밝게 읽습니다. 숫자와 종목 이름은 정확하게 발음합니다.";
 const DEFAULT_STYLE_GEMINI = "calm, clear Korean morning news anchor; slightly fast and bright; numbers and company names pronounced precisely";
@@ -102,9 +103,22 @@ async function runDay(day) {
     }
     try {
       const style = it.instructions || job.instructions;
-      const buf = provider === "gemini" ? await speakGemini(String(it.text), voice, style, job.model) : await speakOpenAI(String(it.text), voice, style, job.model);
+      let buf = null;
+      for (let attempt = 1; ; attempt++) {
+        try {
+          buf = provider === "gemini" ? await speakGemini(String(it.text), voice, style, job.model) : await speakOpenAI(String(it.text), voice, style, job.model);
+          break;
+        } catch (e) {
+          // 잠깐 몰려서 거절(429)되거나 서버가 바쁠 때(5xx)만 기다렸다가 다시 — 다른 실패는 그대로 실패 처리
+          if (attempt >= 5 || !/ (429|500|502|503|504) /.test(String(e.message || e))) throw e;
+          console.error(`[${day}] 음성 ${id} 다시 시도(${attempt}) — ${String(e.message || e).slice(0, 120)}`);
+          await new Promise((r) => setTimeout(r, 25000));
+        }
+      }
       fs.writeFileSync(file, buf);
       made++;
+      // 제미나이는 짧은 시간에 여러 번 부르면 한동안 거절한다(2026-11-27: 8번 연달아 뒤부터 느려지다 멈춤) → 한 문장 만들고 조금 쉰다
+      if (provider === "gemini") await new Promise((r) => setTimeout(r, Number(job.pace_ms || 7000)));
       result.items.push({ id, provider, voice, ok: true, bytes: buf.length });
       console.log(`[${day}] 음성 ${id}(${provider} ${voice}) 완료 (${buf.length} bytes)`);
     } catch (e) {
