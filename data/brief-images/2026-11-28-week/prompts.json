@@ -1,0 +1,28 @@
+{
+ "day": "2026-11-28-week",
+ "note": "이번주 핵심 이슈(엔비디아) 샘플 — 맨 처음 방식(장면 묘사 · 실사 보도 사진 · 세로 · 글자·로고 없음)",
+ "quality": "low",
+ "size": "1024x1536",
+ "items": [
+  {
+   "n": 1,
+   "prompt": "Close-up of a powerful graphics processor chip glowing with green light on a dark circuit board, with softly blurred server racks behind it."
+  },
+  {
+   "n": 2,
+   "prompt": "A modern glass corporate headquarters building at dusk seen from below, with warm lights in the windows and a dramatic cloudy sky."
+  },
+  {
+   "n": 3,
+   "prompt": "Printed financial report pages with rising bar charts on a bright office desk next to a laptop and a pen; everything on the pages is slightly out of focus so nothing is legible."
+  },
+  {
+   "n": 4,
+   "prompt": "A long aisle of server racks in a large AI data center glowing with blue and green lights, strong perspective toward the far end."
+  },
+  {
+   "n": 5,
+   "prompt": "A neoclassical government building with tall white columns at dusk, seen from the bottom of its wide steps, deep blue sky."
+  }
+ ]
+}
