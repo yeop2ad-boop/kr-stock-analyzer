@@ -51,25 +51,34 @@ async function generate(prompt, size, quality) {
 
 function prune(today) {
   if (!fs.existsSync(ROOT)) return;
-  const cutoff = Date.parse(today) - KEEP_DAYS * 24 * 60 * 60 * 1000;
+  const cutoff = Date.parse(today.slice(0, 10)) - KEEP_DAYS * 24 * 60 * 60 * 1000;
   for (const name of fs.readdirSync(ROOT)) {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(name)) continue;
-    if (Date.parse(name) < cutoff) fs.rmSync(path.join(ROOT, name), { recursive: true, force: true });
+    if (!/^\d{4}-\d{2}-\d{2}/.test(name)) continue;
+    if (Date.parse(name.slice(0, 10)) < cutoff) fs.rmSync(path.join(ROOT, name), { recursive: true, force: true });
   }
 }
 
 async function main() {
   const days = fs.existsSync(ROOT)
-    ? fs.readdirSync(ROOT).filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d) && fs.existsSync(path.join(ROOT, d, "prompts.json"))).sort()
+    ? fs.readdirSync(ROOT).filter((d) => /^\d{4}-\d{2}-\d{2}/.test(d) && fs.existsSync(path.join(ROOT, d, "prompts.json"))).sort()
     : [];
-  const day = process.argv[2] || days[days.length - 1];
-  if (!day) throw new Error("data/brief-images/<날짜>/prompts.json 이 없음");
+  // 폴더를 지정하지 않으면 주문이 있는 폴더를 모두 본다(이미 있는 그림은 건너뛰므로 새 주문만 만들어진다 — 같은 날 아침판 <날짜> 와 마감판 <날짜>-close 가 함께 있어도 됨)
+  const targets = process.argv[2] ? [process.argv[2]] : days;
+  if (!targets.length) throw new Error("data/brief-images/<날짜>/prompts.json 이 없음");
+  let failedAll = 0;
+  for (const day of targets) failedAll += await runDay(day);
+  prune(targets[targets.length - 1]);
+  if (failedAll) process.exitCode = 1;
+}
+
+async function runDay(day) {
   const dir = path.join(ROOT, day);
   const job = JSON.parse(fs.readFileSync(path.join(dir, "prompts.json"), "utf8"));
   const size = job.size || "1024x1536";
   const quality = job.quality || "low";
   const result = { day, model: "gpt-image-2", size, quality, at: new Date().toISOString(), items: [] };
   let failed = 0;
+  let made = 0;
   for (const it of job.items || []) {
     const file = path.join(dir, `${it.n}.webp`);
     if (fs.existsSync(file) && !job.force) {
@@ -79,17 +88,18 @@ async function main() {
     try {
       const buf = await generate((String(it.prompt).trim() + " " + String(job.style !== undefined ? job.style : STYLE_TAIL).trim()).trim(), size, quality);   // style 을 빈 글로 주면 주문 글만 그대로 보낸다
       fs.writeFileSync(file, buf);
+      made++;
       result.items.push({ n: it.n, ok: true, bytes: buf.length });
-      console.log(`그림 ${it.n} 완료 (${buf.length} bytes)`);
+      console.log(`[${day}] 그림 ${it.n} 완료 (${buf.length} bytes)`);
     } catch (e) {
       failed++;
       result.items.push({ n: it.n, ok: false, error: String(e.message || e).slice(0, 400) });
       console.error(`그림 ${it.n} 실패: ${e.message || e}`);
     }
   }
-  fs.writeFileSync(path.join(dir, "result.json"), JSON.stringify(result, null, 1));
-  prune(day);
-  if (failed) process.exitCode = 1;
+  // 새로 만든 것도 실패도 없으면(전부 이미 있음) 결과 파일을 건드리지 않는다
+  if (made || failed || !fs.existsSync(path.join(dir, "result.json"))) fs.writeFileSync(path.join(dir, "result.json"), JSON.stringify(result, null, 1));
+  return failed;
 }
 
 main().catch((e) => {
