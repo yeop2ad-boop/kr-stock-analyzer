@@ -1,38 +1,39 @@
 {
  "day": "2026-11-27",
  "model": "gpt-image-2",
- "size": "1536x1024",
- "quality": "medium",
- "at": "2026-11-27T04:28:31.951Z",
+ "size": "1024x1536",
+ "quality": "low",
+ "at": "2026-11-27T04:33:39.788Z",
  "items": [
   {
    "n": 1,
    "ok": true,
    "skipped": true,
-   "bytes": 292276
+   "bytes": 80962
   },
   {
    "n": 2,
    "ok": true,
    "skipped": true,
-   "bytes": 304320
+   "bytes": 95294
   },
   {
    "n": 3,
    "ok": true,
    "skipped": true,
-   "bytes": 189578
+   "bytes": 74230
   },
   {
    "n": 4,
    "ok": true,
-   "bytes": 312478
+   "skipped": true,
+   "bytes": 81078
   },
   {
    "n": 5,
    "ok": true,
    "skipped": true,
-   "bytes": 296208
+   "bytes": 154182
   }
  ]
 }
