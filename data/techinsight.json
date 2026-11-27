@@ -1,5 +1,29 @@
 [
   {
+    "id": "df757b3ca1dd",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "감각 되찾은 바이오닉 손과 AI가 촉발한 천연가스 붐",
+    "originalTitle": "The Download: Better bionic hands and AI’s natural-gas boom",
+    "link": "https://www.technologyreview.com/2026/11/26/1149934/the-download-better-bionic-hands-ai-natural-gas-boom/",
+    "summary": "신경과 연결된 차세대 의수가 개발되어 처음으로 사용자가 압력을 감지하고 포도나 계란 같은 섬세한 물체를 다룰 수 있게 되었다. AI 데이터센터의 급증하는 전력 수요를 충족하기 위해 미국 전역에서 천연가스 발전소 건설이 급속도로 증가하고 있으며, 메타의 루이지애나 데이터센터 프로젝트만 해도 계획된 가스 발전소가 3개에서 10개로 늘어났다. SpaceX는 AI 컴퓨팅 수요를 충족하기 위해 100만 개의 위성 데이터센터 발사 승인을 얻었으며, 뉴럴링크는 ALS 환자 대상 뇌임플란트 임상시험 승인을 획득했다. 한편 AI 모델의 성능이 빠르게 향상되고 있어 2024년 말 최고 성능 모델이 18%만 풀던 뉴욕타임스 퍼즐을 2025년 초에는 거의 완벽하게 해결하고 있다.",
+    "image": "data/techinsight-images/df757b3ca1dd.webp",
+    "publishedAt": "2026-11-26T13:10:00.000Z",
+    "createdAt": "2026-11-27T03:36:58.157Z"
+  },
+  {
+    "id": "3351794e6a63",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "감각을 느낄 수 있는 차세대 생체 의수가 현실이 되다",
+    "originalTitle": "The next generation of bionic hands is here—and they can feel",
+    "link": "https://www.technologyreview.com/2026/11/26/1149923/the-next-generation-of-bionic-hands-is-here-and-they-can-feel/",
+    "summary": "16세 때 감전 사고로 왼손을 잃은 아비 데이비슨은 유타 대학의 임상시험에 참여하여 신경과 직접 연결된 실험용 생체 의수를 처음으로 가정에서 사용하는 사람이 되었다. 이 의수는 팔의 신경에 임플란트된 전극을 통해 압력을 감지하고 사용자에게 피드백을 전달하는 기술로, 데이비슨은 처음으로 포도나 계란 같은 섬세한 물체를 다루고 사랑하는 사람의 손을 느낄 수 있게 되었다. 연구팀은 데이비슨의 경험을 통해 이 기술이 일상생활에서 얼마나 유용한지, 어떤 상황에서 한계가 있는지 등 오랫동안 미답의 질문들에 대한 답을 찾기를 기대하고 있다. 복잡한 수술 과정을 거쳐 신경 신호를 의수의 움직임으로 변환하는 컴퓨터 시스템이 훈련되었으며, 이는 생체 의수 기술의 획기적인 진전을 의미한다.",
+    "image": "data/techinsight-images/3351794e6a63.webp",
+    "publishedAt": "2026-11-26T09:59:00.000Z",
+    "createdAt": "2026-11-27T03:36:57.614Z"
+  },
+  {
     "id": "ddad6bd46fa1",
     "sourceKey": "mit",
     "source": "MIT Technology Review",
@@ -214,29 +238,5 @@
     "image": "data/techinsight-images/8e491f7dd588.webp",
     "publishedAt": "2026-11-23T00:00:00.000Z",
     "createdAt": "2026-11-24T05:18:24.241Z"
-  },
-  {
-    "id": "01449c61c8b8",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "AI 분야의 가장 오해받는 그래프가 대폭 업데이트되다",
-    "originalTitle": "The most misunderstood graph in AI just got a major update",
-    "link": "https://www.technologyreview.com/2026/11/20/1149399/the-most-misunderstood-graph-in-ai-just-got-a-major-update/",
-    "summary": "AI 평가 기관 METR이 발표한 최신 보고서는 AI 모델의 성능이 여전히 빠르게 향상되고 있지만, 판단력을 요구하는 작업에서는 약점을 보인다는 사실을 드러냈다. METR의 시간 지평선 플롯은 AI 성능 추적의 핵심 도구이지만 측정 방식의 복잡성으로 인해 종종 오해받아왔다. 코딩이나 수학 같은 검증 가능한 작업에서는 AI가 뛰어난 성과를 내고 있으나, AI 평가 설계나 철학적 주장 채점 같이 모호하고 판단을 필요로 하는 작업에서는 인간의 성능에 미치지 못한다. 이번 업데이트는 AI 연구 개발의 자동화에 필수적인 개방형 작업에 대한 평가를 추가함으로써, AI 성능 측정의 한계를 더욱 명확히 보여준다.",
-    "image": "data/techinsight-images/01449c61c8b8.webp",
-    "publishedAt": "2026-11-20T18:15:15.000Z",
-    "createdAt": "2026-11-21T02:08:21.922Z"
-  },
-  {
-    "id": "6d39921c7e25",
-    "sourceKey": "ieee",
-    "source": "IEEE Spectrum",
-    "title": "딥페이크 시대, 영상 콘텐츠의 진위 판단이 역전되어야 한다",
-    "originalTitle": "I Don’t Trust Visual Recordings Anymore. But One Day I Will Again",
-    "link": "https://spectrum.ieee.org/fighting-back-against-deep-fakes",
-    "summary": "AI 기술의 발전으로 가짜 영상을 구별하기 점점 어려워지자, 컴퓨터 과학자인 필자는 기존의 \"진정성 추정\" 원칙을 \"가짜 추정\" 원칙으로 바꿔야 한다고 주장한다. 이는 의심자가 아닌 콘텐츠 제작자가 자신의 영상이 진짜임을 증명할 책임을 져야 한다는 뜻이다. 필자는 직접 겪은 미사일 타격 영상 사례를 통해 프레임 정렬, 미사일 크기 검증 등 디지털 포렌식 기법으로 조작 여부를 판단하는 과정을 보여준다. 비록 현재는 가짜 영상을 구별하기 어렵지만, 콘텐츠 진위 증명 시스템이 발전하면 언젠가는 다시 온라인 미디어를 신뢰할 수 있게 될 것이라고 본다.",
-    "image": "data/techinsight-images/6d39921c7e25.webp",
-    "publishedAt": "2026-11-20T14:00:03.000Z",
-    "createdAt": "2026-11-21T02:08:25.263Z"
   }
 ]
