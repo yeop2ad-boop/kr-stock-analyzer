@@ -3,32 +3,32 @@
  "model": "gpt-image-2",
  "size": "1024x1536",
  "quality": "low",
- "at": "2026-11-27T03:06:20.201Z",
+ "at": "2026-11-27T04:17:19.280Z",
  "items": [
   {
    "n": 1,
    "ok": true,
-   "bytes": 80962
+   "bytes": 188092
   },
   {
    "n": 2,
    "ok": true,
-   "bytes": 95294
+   "bytes": 197206
   },
   {
    "n": 3,
    "ok": true,
-   "bytes": 74230
+   "bytes": 118474
   },
   {
    "n": 4,
    "ok": true,
-   "bytes": 81078
+   "bytes": 255236
   },
   {
    "n": 5,
    "ok": true,
-   "bytes": 154182
+   "bytes": 286190
   }
  ]
 }
