@@ -1,30 +1,12 @@
 {
- "day": "2026-11-27",
- "note": "2026-11-27 사용자: 다른 말 없이 제목을 그대로 적고 \"유튜브 썸네일 느낌으로 만들어줘\" 라고만 주문",
- "quality": "medium",
- "size": "1536x1024",
- "style": "",
- "force": false,
- "items": [
-  {
-   "n": 1,
-   "prompt": "우주항공, 미국서 +1.3% 오늘 국장도 우주항공부터 볼까?\n유튜브 썸네일 느낌으로 만들어줘"
-  },
-  {
-   "n": 2,
-   "prompt": "어제 강했던 테마, 바이오 평균 +1.0% 오늘도 이어질까?\n유튜브 썸네일 느낌으로 만들어줘"
-  },
-  {
-   "n": 3,
-   "prompt": "오늘 실적 발표 일정 한국·미국 모두 일정 없음\n유튜브 썸네일 느낌으로 만들어줘"
-  },
-  {
-   "n": 4,
-   "prompt": "미래에셋벤처투자 +21.6% 어제 유독 강했던 종목 10\n유튜브 썸네일 느낌으로 만들어줘"
-  },
-  {
-   "n": 5,
-   "prompt": "엔켐 -9.3% 어제 유독 약했던 종목 10\n유튜브 썸네일 느낌으로 만들어줘"
-  }
- ]
+  "day": "2026-11-27",
+  "quality": "low",
+  "size": "1024x1536",
+  "items": [
+    { "n": 1, "prompt": "A rocket lifting off from a launch pad at dawn, bright exhaust flame and billowing smoke clouds, deep navy-blue sky with a faint orange horizon, launch tower silhouettes, seen from a distance." },
+    { "n": 2, "prompt": "Close-up of a scientist's hands in blue gloves using a pipette over rows of small glass vials in a modern biotech laboratory, cool blue lighting, softly blurred lab equipment in the background." },
+    { "n": 3, "prompt": "An office desk in soft morning window light with a desk calendar, printed financial report pages with charts, a calculator, a pen and a cup of coffee; all pages and the calendar slightly out of focus so that no writing is legible." },
+    { "n": 4, "prompt": "A stock trading floor at night with several monitors glowing red with rising line charts and candlestick charts, warm red ambient light, blurred silhouettes of traders in the background, screens out of focus so nothing is legible." },
+    { "n": 5, "prompt": "A rainy night seen through a window covered with raindrops, behind the glass a blurred computer monitor showing a falling blue line chart, cold blue mood, empty dark office." }
+  ]
 }
