@@ -1,5 +1,65 @@
 [
   {
+    "id": "0f9957586415",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "응급실 의사에서 병원 최초 임상 AI 엔지니어로 변신한 의사",
+    "originalTitle": "This ER Doctor Became a Hospital’s First Clinical AI Engineer",
+    "link": "https://spectrum.ieee.org/clinical-ai-engineer-dinesh-rai",
+    "summary": "보스턴 어린이병원의 임상 AI 엔지니어 디네시 라이는 2023년 프롬프트 엔지니어 채용 공고에 지원하게 되었는데, 그는 응급의학 훈련을 받으면서도 독학으로 프로그래밍을 배운 독특한 경력을 갖고 있었다. 초기에는 대형언어모델에 최적의 명령을 입력하는 프롬프트 엔지니어링이 중요한 역할이었지만, AI 모델이 발전하면서 그의 역할은 의료 시스템에 AI를 실제로 통합하고 신뢰성을 검증하는 더 광범위한 임상 AI 엔지니어로 확대되었다. 라이는 개별 환자를 돕는 의학의 직접적 영향력보다는 수천 명의 의료진과 더 많은 환자에게 영향을 미칠 수 있는 소프트웨어 개발의 가능성에 매력을 느껴 이 직무로의 전환을 결정했다. 현재 그는 의료 현장에 AI 도구를 실질적으로 도입하고 의사 결정을 자동화하는 에이전트 구축을 중심으로 일하고 있다.",
+    "image": "data/techinsight-images/0f9957586415.webp",
+    "publishedAt": "2026-11-27T14:00:01.000Z",
+    "createdAt": "2026-11-28T03:15:23.947Z"
+  },
+  {
+    "id": "e0750e6833be",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "35세 이하 혁신가 공모전 개시, 뇌-의수 연결 기술로 인간의 뇌 비밀 풀린다",
+    "originalTitle": "The Download: Innovators Under 35 nominations are open, and a bionic window into the mind",
+    "link": "https://www.technologyreview.com/2026/11/27/1149960/the-download-the-download-innovators-under-35-nominations-bionic-hand/",
+    "summary": "MIT 테크놀로지 리뷰가 2027년 혁신가 35인 공모전을 시작했으며, 세계 각지의 과학자, 기업가, 발명가들을 발굴하고 있다. 한편 획기적인 의수 기술 임상시험에 참여 중인 한 연구 참가자의 뇌 스캔 결과는 의수 착용으로 뇌의 신경지도가 어떻게 변화하는지 밝혀낼 수 있는 기회를 제공한다. 이 연구는 선천적으로 사지가 없는 사람들에게도 중요한 함의를 가질 수 있다. 추가로 엔비디아의 중국 칩 수출 제한이 아시아 AI 산업 지형을 재편하고 있으며, 해킹, AI 쇼핑봇, 드론 무기화 등 다양한 기술 관련 이슈가 세계적으로 대두되고 있다.",
+    "image": "data/techinsight-images/e0750e6833be.webp",
+    "publishedAt": "2026-11-27T13:00:00.000Z",
+    "createdAt": "2026-11-28T03:15:23.712Z"
+  },
+  {
+    "id": "b4e61911e477",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "MIT 테크놀로지 리뷰, 2027 혁신가 35인 공모전 개시",
+    "originalTitle": "Our 2027 Innovators Under 35 competition is now open",
+    "link": "https://www.technologyreview.com/2026/11/27/1149857/2027-innovators-under-35-competition-nominate/",
+    "summary": "MIT 테크놀로지 리뷰가 매년 개최하는 '35세 이하 혁신가' 공모전이 올해도 시작되었으며, 1월 19일까지 지원 신청을 받고 있다. 질병 치료와 기후변화 해결 등 사회의 중대 문제를 다루는 과학자, 기업가, 발명가들을 대상으로 하며, 실제 영향력 있는 성과를 낸 35세 이하(2027년 10월 1일 기준)의 인물들을 모색 중이다. 자체 추천 또는 타인 추천 모두 가능하며, 1999년부터 시작된 이 프로그램은 과학과 기술 분야의 떠오르는 인재들을 발굴하고 소개하는 중요한 역할을 해오고 있다.",
+    "image": "data/techinsight-images/b4e61911e477.webp",
+    "publishedAt": "2026-11-27T10:48:47.000Z",
+    "createdAt": "2026-11-28T03:15:22.134Z"
+  },
+  {
+    "id": "f7c430bedf7a",
+    "sourceKey": "mit",
+    "source": "MIT Technology Review",
+    "title": "첨단 의수 기술이 인간의 뇌를 이해하는 데 어떻게 도움이 될까",
+    "originalTitle": "How cutting-edge prosthetics can help probe the human mind",
+    "link": "https://www.technologyreview.com/2026/11/27/1149946/cutting-edge-prosthetics-allow-researchers-to-probe-the-human-mind/",
+    "summary": "신경에 직접 연결되어 감각 피드백을 제공하는 차세대 의수 기술의 임상 시험에 참여한 아비 데이비슨은 집에서 독립적으로 이를 사용하는 첫 번째 피험자다. 유타 대학 연구팀은 이 시험을 통해 현실 환경에서의 의수 성능과 사용자의 개선 요청 사항을 파악하려 한다. 흥미롭게도 아비는 과도하게 사용된 의수 손목이 실제 손목처럼 뻣뻣해지고 스트레칭으로 완화되는 현상을 경험했는데, 과학자들도 이 메커니즘을 아직 완전히 이해하지 못하고 있다. 연구진은 의수 사용이 아비의 뇌 구조를 어떻게 변화시킬지, 특히 선천적으로 사지가 없는 사람들에게 미칠 영향을 조사할 계획이다. 이 연구는 첨단 보철 기술이 신경계와 뇌의 적응 능력에 대해 근본적인 질문을 던지고 있다.",
+    "image": "data/techinsight-images/f7c430bedf7a.webp",
+    "publishedAt": "2026-11-27T10:00:00.000Z",
+    "createdAt": "2026-11-28T03:15:58.849Z"
+  },
+  {
+    "id": "1beb336d7314",
+    "sourceKey": "ieee",
+    "source": "IEEE Spectrum",
+    "title": "목성의 얼음 위성 탐사: 유로파 클리퍼 미션 설계 엔지니어링",
+    "originalTitle": "How Engineers Designed a Mission to One of Jupiter’s Icy Moons",
+    "link": "https://spectrum.ieee.org/jupiter-europa-clipper-mission-jpl",
+    "summary": "NASA의 유로파 클리퍼는 2030년 목성 궤도에 도달해 얼음으로 뒤덮인 위성 유로파를 50회 비행하며 탐사할 예정이다. 직접 궤도 진입 대신 플라이바이 방식을 선택한 이유는 목성 주변의 극심한 방사선 환경 때문으로, 이를 통해 우주선의 수명을 연장하면서도 충분한 관측 데이터를 수집할 수 있다. 태양 전지판을 전력원으로 사용하며 모든 전자 부품을 150킬로래드의 방사선 노출에 견디도록 설계했다. 장기 미션을 위해 우주선의 기술 정보를 데이터베이스에 기록하고 인력 중복 배치를 통해 지식 단절을 방지하고 있다.",
+    "image": "data/techinsight-images/1beb336d7314.webp",
+    "publishedAt": "2026-11-26T14:00:02.000Z",
+    "createdAt": "2026-11-28T03:15:45.367Z"
+  },
+  {
     "id": "df757b3ca1dd",
     "sourceKey": "mit",
     "source": "MIT Technology Review",
@@ -178,65 +238,5 @@
     "image": "data/techinsight-images/9c079ad7f691.webp",
     "publishedAt": "2026-11-23T13:10:00.000Z",
     "createdAt": "2026-11-24T05:18:07.059Z"
-  },
-  {
-    "id": "dc02d0ba7ca7",
-    "sourceKey": "mit",
-    "source": "MIT Technology Review",
-    "title": "암석을 이용한 탄소 제거가 결국 농작물 수확량을 감소시킬 수 있는 이유",
-    "originalTitle": "Why using rocks for carbon removal could eventually reduce crop growth",
-    "link": "https://www.technologyreview.com/2026/11/23/1149392/why-using-rocks-for-carbon-removal-could-eventually-reduce-crop-growth/",
-    "summary": "구글, 마이크로소프트 등 거대 기술 회사들이 쇄석 현무암이나 감람석 같은 알칼리성 광물을 농지에 뿌려 대기 중 탄소를 포집하는 강화된 암석 풍화(ERW) 방식에 수백억 달러를 투자하고 있다. 이 방식은 연간 30억~80억 톤의 이산화탄소를 제거할 수 있고 토양 품질도 개선하는 이점이 있지만, 새로운 연구에 따르면 토양에 너무 많은 암석을 추가하면 토양의 pH를 중성 이상으로 올려 미량 영양소 결핍과 질병 감수성을 증가시켜 농작물 수확량을 오히려 감소시킬 수 있다. 이러한 토양 알칼리화의 극단적 영향을 방지하려면 ERW의 탄소 제거 잠재량을 연간 6억 톤 이하로 제한해야 한다. 따라서 기후 편익과 농업 편익 사이에 심각한 트레이드오프가 존재하며, 이는 현재 대규모 확대 추진 중인 기술에 대한 의문을 제기한다.",
-    "image": "data/techinsight-images/dc02d0ba7ca7.webp",
-    "publishedAt": "2026-11-23T11:00:00.000Z",
-    "createdAt": "2026-11-26T03:30:59.248Z"
-  },
-  {
-    "id": "3e78be502e44",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "AI 경제학 실전: 4개 기업의 도입 사례와 교훈",
-    "originalTitle": "AI economics in action: What four companies have done and learned",
-    "link": "https://www.mckinsey.com/capabilities/quantumblack/our-insights/ai-economics-in-action-what-four-companies-have-done-and-learned",
-    "summary": "AI 도입에 따른 증가하는 비용 문제를 해결하기 위해 일부 기업들이 혁신적인 접근 방식을 개발했다.\n이들은 AI 기술을 효율적으로 활용하여 운영 비용을 절감하면서도 동시에 사업 성과를 개선하는 데 성공했다.\n실제 기업 사례들은 AI 투자가 단순한 비용이 아니라 전략적 수익 창출 수단이 될 수 있음을 보여준다.\n이러한 기업들의 경험은 다른 조직들이 제한된 예산 내에서 AI를 효과적으로 도입할 수 있는 실질적인 가이드라인을 제공한다.",
-    "image": "data/techinsight-images/3e78be502e44.webp",
-    "publishedAt": "2026-11-23T00:00:00.000Z",
-    "createdAt": "2026-11-26T03:30:47.588Z"
-  },
-  {
-    "id": "7d007c9d641e",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "걸프 협력회의 국가들의 AI 전환: 정부 부문에서의 가치 실현",
-    "originalTitle": "Rewiring GCC countries for AI: Realizing value in government",
-    "link": "https://www.mckinsey.com/capabilities/quantumblack/our-insights/rewiring-gcc-countries-for-ai-realizing-value-in-government",
-    "summary": "걸프 협력회의 국가들에서 AI 도입이 거의 보편화되었지만, 실제 가치 창출은 이에 미치지 못하고 있다. 공공 부문에서 AI 도입을 실질적인 성과로 전환하기 위해서는 전달 체계와 주권 문제에 대한 체계적인 관심이 필요하다.",
-    "image": "data/techinsight-images/7d007c9d641e.webp",
-    "publishedAt": "2026-11-23T00:00:00.000Z",
-    "createdAt": "2026-11-26T03:30:48.367Z"
-  },
-  {
-    "id": "629751396015",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "AI로부터 실제 가치를 얻기 위한 조건: 맥킨지가 말하는 성공의 비결",
-    "originalTitle": "What it really takes to get value from AI: Highlights from McKinsey Media Day",
-    "link": "https://www.mckinsey.com/featured-insights/what-it-really-takes-to-get-value-from-ai-highlights-from-mckinsey-media-day",
-    "summary": "기업들이 AI에 막대한 투자를 하고 있지만 대부분 실질적인 성과를 거두지 못하고 있다. 맥킨지 경영진들은 성공하는 소수의 기업들이 올바른 문제를 선택하고 조직의 역할을 재설계하는 데서 차별화된다고 설명한다. 단순한 기술 도입만으로는 AI의 가치를 창출할 수 없으며, 전략적 접근과 조직적 변화가 필수적이라는 점을 강조한다.",
-    "image": "data/techinsight-images/629751396015.webp",
-    "publishedAt": "2026-11-23T00:00:00.000Z",
-    "createdAt": "2026-11-24T05:18:04.688Z"
-  },
-  {
-    "id": "8e491f7dd588",
-    "sourceKey": "mckinsey",
-    "source": "McKinsey",
-    "title": "산업 기업의 AI 도입, 업무 프로세스 재설계가 핵심",
-    "originalTitle": "The unit of activation: How industrial companies can make AI work",
-    "link": "https://www.mckinsey.com/industries/industrials/our-insights/the-unit-of-activation-how-industrial-companies-can-make-ai-work",
-    "summary": "산업 기업들이 기존 프로세스에 AI 도구를 단순히 추가하는 것만으로는 AI의 진정한 가치를 발휘할 수 없다.\nAI가 최대의 효과를 발휘하려면 전체 업무 흐름을 근본적으로 재구조화해야 한다.\n단순한 기술 도입이 아닌 조직적 변화와 함께 실질적인 워크플로우 개선이 필요하다.\n이 같은 변환을 현실적으로 실행할 수 있는 방법론이 존재한다.",
-    "image": "data/techinsight-images/8e491f7dd588.webp",
-    "publishedAt": "2026-11-23T00:00:00.000Z",
-    "createdAt": "2026-11-24T05:18:24.241Z"
   }
 ]
