@@ -1,0 +1,14 @@
+{
+ "day": "2026-11-28-rank-sil",
+ "model": "gpt-image-2",
+ "size": "1024x1536",
+ "quality": "low",
+ "at": "2026-11-28T00:23:50.584Z",
+ "items": [
+  {
+   "n": 1,
+   "ok": true,
+   "bytes": 93572
+  }
+ ]
+}
