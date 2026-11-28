@@ -1,0 +1,11 @@
+{
+ "day": "2026-11-28-rank-cover",
+ "note": "주간 급등 랭킹 표지 시안 3장(주제: 코스피 1% 오를 때 74% 오른 종목) — 실사 · 세로 · 글자·로고·숫자 없음 · 아래쪽 3분의 1은 어둡게 비워 둠(표지 글자 자리)",
+ "quality": "low",
+ "size": "1024x1536",
+ "items": [
+  {"n": 1, "prompt": "A rocket lifting off at dusk, a bright column of fire and billowing smoke below it, shot from far away so the rocket sits in the upper half of the frame against a deep blue sky; the lower third of the image is dark ground and shadowed smoke."},
+  {"n": 2, "prompt": "Hundreds of gray balloons resting low over a dark city square at night, and a single bright red balloon soaring far above them high in the frame, lit by a warm glow; the lower third of the image is dark and calm."},
+  {"n": 3, "prompt": "A trader seen from behind in a dark room, facing a huge wall screen where one glowing red line shoots almost straight up through a field of dim flat blue lines; the screen is softly out of focus so no numbers or letters are legible; the lower third of the image is the dark silhouette and desk."}
+ ]
+}
