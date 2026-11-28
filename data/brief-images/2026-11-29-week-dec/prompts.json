@@ -1,0 +1,11 @@
+{
+ "day": "2026-11-29-week-dec",
+ "note": "12월 미리보기(2026-11-29 일요일 오후 · '12월엔 주식이 오를까?') — 맨 처음 방식(장면 묘사 · 실사 보도 사진 · 세로 · 글자·로고 없음)",
+ "quality": "medium",
+ "size": "1024x1536",
+ "items": [
+  {"n": 1, "prompt": "A financial district plaza in Seoul at dusk in December: a tall Christmas tree covered in warm golden lights stands in front of modern glass office towers, light snow falling, a few people in winter coats walking past, slightly blurred. Realistic news photograph. No signs, no lettering, no logos anywhere."},
+  {"n": 2, "prompt": "Close-up of a hand circling a day on a paper desk calendar with a red marker, a cup of coffee and a smartphone beside it on a wooden desk, soft morning window light. Very shallow depth of field so every number and word on the calendar is blurred and unreadable. Realistic photograph, no logos."},
+  {"n": 3, "prompt": "A city financial district skyline under heavy dark storm clouds, a single beam of sunlight breaking through the clouds and lighting one glass office tower, wet streets reflecting the light. Realistic news photograph. No signs, no lettering, no logos."}
+ ]
+}
