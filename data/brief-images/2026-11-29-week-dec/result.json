@@ -1,0 +1,24 @@
+{
+ "day": "2026-11-29-week-dec",
+ "model": "gpt-image-2",
+ "size": "1024x1536",
+ "quality": "medium",
+ "at": "2026-11-28T13:53:12.866Z",
+ "items": [
+  {
+   "n": 1,
+   "ok": true,
+   "bytes": 366158
+  },
+  {
+   "n": 2,
+   "ok": true,
+   "bytes": 70456
+  },
+  {
+   "n": 3,
+   "ok": true,
+   "bytes": 144758
+  }
+ ]
+}
