@@ -1,0 +1,19 @@
+{
+ "day": "2026-11-28-rank-hvm",
+ "model": "gpt-image-2",
+ "size": "1024x1536",
+ "quality": "high",
+ "at": "2026-11-28T08:28:04.956Z",
+ "items": [
+  {
+   "n": 1,
+   "ok": true,
+   "bytes": 246896
+  },
+  {
+   "n": 2,
+   "ok": true,
+   "bytes": 229658
+  }
+ ]
+}
