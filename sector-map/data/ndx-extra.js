@@ -1,7 +1,7 @@
 const NDX_EXTRA_DATA = {
-  "generatedAt": "2026-11-27T18:04:01Z",
+  "generatedAt": "2026-11-28T03:56:24Z",
   "count": 15,
-  "constituentsAsOf": "2026-11-27",
+  "constituentsAsOf": "2026-11-28",
   "constituents": [
     "AAPL",
     "MSFT",
@@ -128,7 +128,7 @@ const NDX_EXTRA_DATA = {
       "eps": 24.73,
       "dividendYield": null,
       "winRateScore": 62.5,
-      "rsiWeekly": 38.4,
+      "rsiWeekly": 38.3,
       "ret10yAvg": 30.9
     },
     {
@@ -136,13 +136,13 @@ const NDX_EXTRA_DATA = {
       "name": "Arm Holdings plc",
       "sector": "Information Technology",
       "sectorKo": "기술",
-      "marketCap": 182559959585.63998,
-      "changePercent": 6.23,
-      "per": 201.85,
+      "marketCap": 182538678480.6,
+      "changePercent": 6.22,
+      "per": 201.82,
       "eps": 0.85,
       "dividendYield": null,
       "winRateScore": 52.8,
-      "rsiWeekly": 40.5,
+      "rsiWeekly": 40.4,
       "ret10yAvg": 61.1
     },
     {
@@ -156,7 +156,7 @@ const NDX_EXTRA_DATA = {
       "eps": 0.944088,
       "dividendYield": null,
       "winRateScore": 62.5,
-      "rsiWeekly": 50.7,
+      "rsiWeekly": 50.4,
       "ret10yAvg": 43.9
     },
     {
@@ -170,7 +170,7 @@ const NDX_EXTRA_DATA = {
       "eps": 70.0,
       "dividendYield": null,
       "winRateScore": 50.0,
-      "rsiWeekly": 53.8,
+      "rsiWeekly": 53.7,
       "ret10yAvg": 18.7
     },
     {
@@ -184,7 +184,7 @@ const NDX_EXTRA_DATA = {
       "eps": 39.4,
       "dividendYield": null,
       "winRateScore": 51.7,
-      "rsiWeekly": 41.6,
+      "rsiWeekly": 41.4,
       "ret10yAvg": 25.5
     },
     {
@@ -212,7 +212,7 @@ const NDX_EXTRA_DATA = {
       "eps": 3.392378,
       "dividendYield": null,
       "winRateScore": 57.5,
-      "rsiWeekly": 55.2,
+      "rsiWeekly": 55.1,
       "ret10yAvg": 11.2
     },
     {
@@ -226,7 +226,7 @@ const NDX_EXTRA_DATA = {
       "eps": 1.24,
       "dividendYield": null,
       "winRateScore": 61.7,
-      "rsiWeekly": 51.4,
+      "rsiWeekly": 51.3,
       "ret10yAvg": 10.1
     },
     {
@@ -240,7 +240,7 @@ const NDX_EXTRA_DATA = {
       "eps": -15.23,
       "dividendYield": null,
       "winRateScore": 50.8,
-      "rsiWeekly": 35.3,
+      "rsiWeekly": 35.2,
       "ret10yAvg": 20.9
     },
     {
@@ -254,7 +254,7 @@ const NDX_EXTRA_DATA = {
       "eps": 1.32,
       "dividendYield": null,
       "winRateScore": 46.7,
-      "rsiWeekly": 42.2,
+      "rsiWeekly": 42.0,
       "ret10yAvg": 56.3
     },
     {
@@ -268,7 +268,7 @@ const NDX_EXTRA_DATA = {
       "eps": -0.37,
       "dividendYield": null,
       "winRateScore": 48.6,
-      "rsiWeekly": 41.9,
+      "rsiWeekly": 41.8,
       "ret10yAvg": 33.6
     },
     {
@@ -282,7 +282,7 @@ const NDX_EXTRA_DATA = {
       "eps": 0.34,
       "dividendYield": null,
       "winRateScore": 69.6,
-      "rsiWeekly": 33.9,
+      "rsiWeekly": 33.8,
       "ret10yAvg": 176.2
     },
     {
@@ -296,7 +296,7 @@ const NDX_EXTRA_DATA = {
       "eps": -2.75,
       "dividendYield": null,
       "winRateScore": 38.9,
-      "rsiWeekly": 36.3,
+      "rsiWeekly": 36.2,
       "ret10yAvg": 20.9
     },
     {
@@ -310,7 +310,7 @@ const NDX_EXTRA_DATA = {
       "eps": 2.39,
       "dividendYield": null,
       "winRateScore": 52.5,
-      "rsiWeekly": 34.4,
+      "rsiWeekly": 34.2,
       "ret10yAvg": 16.6
     }
   ]
