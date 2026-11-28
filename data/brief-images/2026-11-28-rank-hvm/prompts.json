@@ -1,0 +1,10 @@
+{
+ "day": "2026-11-28-rank-hvm",
+ "note": "주간 급등 랭킹 5위 에이치브이엠 사진 교체 — 실제 제품(진공 유도용해·진공 아크 재용해로 만드는 니켈·티타늄계 초합금·특수합금 잉곳과 빌렛, 고순도 금속 · 우주·방산용)에 맞춘 실사. 글자·상표 없음.",
+ "quality": "high",
+ "size": "1024x1536",
+ "items": [
+  {"n": 1, "prompt": "Inside a vacuum metal melting plant: in the foreground, a stack of freshly cast nickel superalloy ingots, thick silver-gray cylinders with machined ends, resting on a heavy steel rack; in the background, a large industrial vacuum induction melting furnace chamber with a small viewport glowing bright orange from molten metal inside, pipes and gauges around it, dim industrial lighting with warm highlights on the metal. No text, no logos."},
+  {"n": 2, "prompt": "Close view of long polished special-alloy metal billets and round bars, bright silver with subtle blue reflections, neatly lined up on a steel cradle in a high-tech metals factory; behind them, slightly out of focus, a worker in a gray protective suit beside a tall vacuum arc remelting furnace with an orange glow. Clean, precise, aerospace-grade feel. No text, no logos."}
+ ]
+}

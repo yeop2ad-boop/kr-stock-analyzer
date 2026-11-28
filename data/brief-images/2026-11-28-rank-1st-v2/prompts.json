@@ -1,0 +1,11 @@
+{
+ "day": "2026-11-28-rank-1st-v2",
+ "note": "주간 급등 랭킹 1위(대성하이텍) 메인 사진 고화질판 — 사용자가 보낸 사진(600px, 5축 가공기 + 로봇팔 + 완성 부품 트레이 + 자동화 라인)과 같은 장면을 고화질로 다시 생성(사용자 '저화질이라 고화질로 변환해서 넣어도 될 것 같아'). 글자·상표 없음.",
+ "quality": "high",
+ "size": "1024x1024",
+ "style": "Photorealistic industrial photograph, crisp sharp focus, cool white factory lighting, square composition. No readable text, no letters or numbers, no brand names, no logos anywhere.",
+ "items": [
+  {"n": 1, "prompt": "A bright, clean, modern smart factory seen from a slightly elevated three-quarter angle. On the left, a large white and dark-gray five-axis CNC machining center with its glass door showing a metal spindle and fixture inside. In the center, a white six-axis industrial robot arm lifts a freshly machined shiny aluminum part from a tray. In front, a roller conveyor carries blue trays filled with neat rows of precision-machined cylindrical metal parts. Behind, more CNC machines and an automated production line recede into the distance, with a wall monitor showing a green status screen. Polished gray epoxy floor with yellow safety lines."},
+  {"n": 2, "prompt": "A modern automated machining line in a spotless factory: a white five-axis CNC machining center on the left with an illuminated glass door, a white robot arm in the middle loading a gleaming machined metal part, and in the foreground a conveyor with blue trays holding dozens of finished precision metal parts in tidy rows. Additional CNC machines, signal tower lights and a small autonomous cart in the background. Gray floor with yellow lane markings, cool daylight from high windows."}
+ ]
+}
