@@ -1,0 +1,24 @@
+{
+ "day": "2026-11-28-rank-cover",
+ "model": "gpt-image-2",
+ "size": "1024x1536",
+ "quality": "low",
+ "at": "2026-11-28T00:13:37.642Z",
+ "items": [
+  {
+   "n": 1,
+   "ok": true,
+   "bytes": 48686
+  },
+  {
+   "n": 2,
+   "ok": true,
+   "bytes": 65756
+  },
+  {
+   "n": 3,
+   "ok": true,
+   "bytes": 53700
+  }
+ ]
+}
