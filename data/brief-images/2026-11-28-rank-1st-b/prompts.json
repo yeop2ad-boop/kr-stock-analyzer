@@ -1,0 +1,11 @@
+{
+ "day": "2026-11-28-rank-1st-b",
+ "note": "주간 급등 랭킹 1위 대성하이텍 사진 — 사용자가 보낸 느낌(반짝이는 완성 부품 클로즈업 · 깔끔한 회색·남색 자동선반)으로 3장 · 다른 회사 제품 사진은 쓰지 않고 로고 없이 새로 · 글자 없음",
+ "quality": "low",
+ "size": "1024x1536",
+ "items": [
+  {"n": 1, "prompt": "Close-up of a pile of polished precision-turned steel parts filling the frame: short cylinders with machined grooves, small cross holes and threaded bores, crisp metallic reflections, soft studio light, black background at the top and bottom edges."},
+  {"n": 2, "prompt": "A modern Swiss-type CNC automatic lathe in light gray and deep navy blue photographed like a clean product shot in a dark studio, with no logos, labels or text anywhere; in the foreground a neat group of polished precision-turned steel parts with grooves and threaded holes."},
+  {"n": 3, "prompt": "Vertical composition: in the lower half, a close-up pile of polished precision-turned steel parts with grooves, cross holes and threaded bores, sharp and bright; in the upper half, a modern light gray and navy CNC automatic lathe softly out of focus, no logos or text; dark moody background."}
+ ]
+}
