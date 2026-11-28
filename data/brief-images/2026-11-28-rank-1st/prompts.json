@@ -1,0 +1,11 @@
+{
+ "day": "2026-11-28-rank-1st",
+ "note": "주간 급등 랭킹 1위 대성하이텍 사진 다시(사용자: 완성품 위주 · 방산용 선반도 하니까 선반이랑 밀링 치구가 있는 사진) — 실사 · 세로 · 글자·로고 없음 · 아래쪽은 조금 어둡게",
+ "quality": "low",
+ "size": "1024x1536",
+ "items": [
+  {"n": 1, "prompt": "On a steel workbench in a precision machining shop, rows of finished machined metal parts with a bright polished finish, such as cylindrical shafts, threaded fittings and precision-turned rings, arranged neatly in the foreground; behind them a CNC lathe and a milling fixture clamping a part, softly lit, shallow depth of field; the lower part of the image falls into shadow."},
+  {"n": 2, "prompt": "Close-up of a milling fixture bolted to a CNC machine table, clamping several precision-machined steel parts, with a neat row of finished turned parts lined up beside it; a modern CNC lathe with its door open in the softly blurred background; cool industrial light, the lower part of the image darker."},
+  {"n": 3, "prompt": "A tray of finished military-spec precision metal components, long turned cylindrical bodies, rings and threaded parts in steel and titanium, on an inspection table in a clean machining factory; a CNC lathe and a milling machine with a workholding fixture stand behind; warm light, the lower part of the image darker."}
+ ]
+}
