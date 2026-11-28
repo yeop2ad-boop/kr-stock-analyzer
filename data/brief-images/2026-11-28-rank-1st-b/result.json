@@ -1,0 +1,24 @@
+{
+ "day": "2026-11-28-rank-1st-b",
+ "model": "gpt-image-2",
+ "size": "1024x1536",
+ "quality": "low",
+ "at": "2026-11-28T00:31:04.902Z",
+ "items": [
+  {
+   "n": 1,
+   "ok": true,
+   "bytes": 125696
+  },
+  {
+   "n": 2,
+   "ok": true,
+   "bytes": 120774
+  },
+  {
+   "n": 3,
+   "ok": true,
+   "bytes": 151466
+  }
+ ]
+}
