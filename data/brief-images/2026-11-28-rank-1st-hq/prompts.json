@@ -1,0 +1,11 @@
+{
+ "day": "2026-11-28-rank-1st-hq",
+ "note": "주간 급등 랭킹 1위 사진 고화질판(사용자: 보낸 완성 부품 사진을 고화질로) — 같은 장면을 글로 적어 high 품질 · 정사각 · 2장",
+ "quality": "high",
+ "size": "1024x1024",
+ "style": "Photorealistic industrial product photograph, soft studio lighting, crisp focus, square composition. No text, no letters, no numbers, no logos, no watermarks.",
+ "items": [
+  {"n": 1, "prompt": "A tightly packed pile of polished precision-turned steel parts filling the whole frame, seen from slightly above: thick cylindrical bushings with a large center bore, round parts with two machined grooves around the body, small radial cross holes, internally threaded holes, and one stepped part in the center with a narrower threaded shank pointing toward the lower right; bright brushed-steel reflections with soft white highlights, neutral gray tones, dark shadows between the parts."},
+  {"n": 2, "prompt": "Close-up of many polished machined steel cylinders lying in a heap and filling the frame: chunky bushings with wide center holes, parts with twin grooves and small side holes, threaded bores, and a stepped part with a slim threaded neck in the middle; silver brushed-metal surfaces with clean white reflections, monochrome gray look, deep shadows in the gaps."}
+ ]
+}
